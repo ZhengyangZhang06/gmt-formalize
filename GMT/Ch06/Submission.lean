@@ -507,6 +507,149 @@ theorem Submission.isoperimetric_lattice_face_cutoff :
     have h3 := abs_le.1 ((hxL i).2 hA)
     rw [h1] at h3
     rcases hzi with h | h <;> nlinarith
+/-- Integrals over a lattice face as integrals over the parameter cube: for every `g`,
+`∫_{latticeFace ρ G} g dHᵈ = ∫_{[0,ρ]^d} g(∑_l ρ w_l e_l + ∑_j s_j e_{γ(j)}) ds`, `G = (w, γ)`.
+The map `L(t) = ∑_l ρ w_l e_l + ∑_j t_j e_{γ(j)}` is an isometry (`(e_{γ(j)})_j` is orthonormal)
+whose range contains the face, so `L_* Hᵈ = Hᵈ ⌞ range L` and the integral is pulled back along
+`L` and then along the volume-preserving `toLp : (Fin d → ℝ) → ℝᵈ`; the face pulls back to
+`[0,ρ]^d`. -/
+theorem Submission.br_latticeFace_setIntegral_eq_cube :
+    ∀ (P d : ℕ) (ρ : ℝ) (G : LatticeFaceIndex d P) (g : Eucl P → ℝ),
+      ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P)) =
+        ∫ s in Set.Icc (0 : Fin d → ℝ) (fun _ => ρ),
+          g (∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+            ∑ j, s j • EuclideanSpace.single (G.2 j) (1 : ℝ)) := by
+  intro P d ρ G g
+  -- The parametrization `L(t) = ∑_l ρ w_l e_l + ∑_j t_j e_{γ(j)}` of the face.
+  obtain ⟨L, hL⟩ : ∃ L : EuclideanSpace ℝ (Fin d) → Eucl P, ∀ t, L t =
+      ∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+        ∑ j, t j • EuclideanSpace.single (G.2 j) (1 : ℝ) := ⟨_, fun _ => rfl⟩
+  -- Coordinates: `L(t)_{γ(j)} = ρ w_{γ(j)} + t_j` and `L(t)_l = ρ w_l` for `l ∉ range γ`.
+  have hcoord : ∀ (t : EuclideanSpace ℝ (Fin d)) (l : Fin P),
+      L t l = ρ * (G.1 l : ℝ) + ∑ j, if l = G.2 j then t j else 0 := by
+    intro t l
+    rw [hL]
+    simp [Pi.single_apply]
+  have hcoord₁ : ∀ (t : EuclideanSpace ℝ (Fin d)) (j : Fin d),
+      L t (G.2 j) = ρ * (G.1 (G.2 j) : ℝ) + t j := by
+    intro t j
+    rw [hcoord]
+    simp
+  have hcoord₂ : ∀ (t : EuclideanSpace ℝ (Fin d)) (l : Fin P), l ∉ Set.range G.2 →
+      L t l = ρ * (G.1 l : ℝ) := by
+    intro t l hl
+    rw [hcoord, add_eq_left]
+    exact Finset.sum_eq_zero fun j _ => ite_eq_right fun h => hl ⟨j, h.symm⟩
+  -- `L` is an isometry because `(e_{γ(j)})_j` is orthonormal.
+  have hv : Orthonormal ℝ (fun j => EuclideanSpace.single (G.2 j) (1 : ℝ)) :=
+    (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin P)).comp _ G.2.injective
+  have hiso : Isometry L := by
+    refine Isometry.of_dist_eq fun t t' => ?_
+    have hdiff : L t - L t' = ∑ j, (t j - t' j) • EuclideanSpace.single (G.2 j) (1 : ℝ) := by
+      rw [hL, hL]
+      simp [sub_smul, Finset.sum_sub_distrib]
+    have h2 : ‖L t - L t'‖ ^ 2 = ‖t - t'‖ ^ 2 := by
+      rw [hdiff, ← real_inner_self_eq_norm_sq, hv.inner_sum, EuclideanSpace.norm_sq_eq]
+      simp [sq]
+    rw [dist_eq_norm, dist_eq_norm]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h2
+  -- The face lies in the range of `L`.
+  have hrange : latticeFace ρ G ⊆ Set.range L := by
+    intro x hx
+    refine ⟨WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ)), PiLp.ext fun l => ?_⟩
+    by_cases hl : l ∈ Set.range G.2
+    · obtain ⟨j, rfl⟩ := hl
+      rw [hcoord₁]
+      simp
+    · rw [hcoord₂ _ _ hl]
+      exact ((hx l).2 hl).symm
+  -- The face pulls back to the cube `[0,ρ]^d` of parameters.
+  have hpre : (WithLp.toLp 2 : (Fin d → ℝ) → EuclideanSpace ℝ (Fin d)) ⁻¹'
+      (L ⁻¹' latticeFace ρ G) = Set.Icc 0 (fun _ => ρ) := by
+    ext s
+    simp only [Set.mem_preimage, Set.mem_Icc]
+    constructor
+    · intro h
+      refine ⟨fun j => ?_, fun j => ?_⟩
+      · have := ((h (G.2 j)).1 ⟨j, rfl⟩).1
+        rw [hcoord₁] at this
+        simp only [Pi.zero_apply]
+        linarith
+      · have := ((h (G.2 j)).1 ⟨j, rfl⟩).2
+        rw [hcoord₁] at this
+        linarith
+    · rintro ⟨h0, h1⟩ i
+      refine ⟨?_, hcoord₂ _ i⟩
+      rintro ⟨j, rfl⟩
+      rw [hcoord₁]
+      have h0j := h0 j
+      have h1j := h1 j
+      simp only [Pi.zero_apply] at h0j
+      constructor <;> nlinarith
+  -- `L_* Hᵈ = Hᵈ ⌞ range L`; change variables along `L`, then along `toLp`.
+  calc ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P))
+      = ∫ x in latticeFace ρ G, g x
+          ∂((μHE[d] : Measure (EuclideanSpace ℝ (Fin d))).map L) := by
+        rw [hiso.map_euclideanHausdorffMeasure, Measure.restrict_restrict_of_subset hrange]
+    _ = ∫ t in L ⁻¹' latticeFace ρ G, g (L t)
+          ∂(μHE[d] : Measure (EuclideanSpace ℝ (Fin d))) :=
+        hiso.isClosedEmbedding.setIntegral_map _
+    _ = ∫ t in L ⁻¹' latticeFace ρ G, g (L t) := by
+        rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    _ = ∫ s in (WithLp.toLp 2 : (Fin d → ℝ) → EuclideanSpace ℝ (Fin d)) ⁻¹'
+          (L ⁻¹' latticeFace ρ G), g (L (WithLp.toLp 2 s)) :=
+        ((PiLp.volume_preserving_toLp (Fin d)).setIntegral_preimage_emb
+          (MeasurableEquiv.toLp 2 (Fin d → ℝ)).measurableEmbedding
+          (fun t => g (L t)) (L ⁻¹' latticeFace ρ G)).symm
+    _ = _ := by
+        rw [hpre]
+        simp only [hL]
+
+/-- A continuous `g ≥ 0` that is positive at a relative-interior point `p` of the face
+`latticeFace ρ F` (`ρ > 0`) has positive integral over the face: by
+`br_latticeFace_setIntegral_eq_cube` the integral is `∫_{[0,ρ]^n} g(ι(s)) ds`, the point
+`s₀ = (p_{α(j)} − ρ z_{α(j)})_j` lies in the open cube `(0,ρ)^n` with `ι(s₀) = p`, and
+`support (g ∘ ι) ∩ (0,ρ)^n` is open and nonempty, hence of positive Lebesgue measure. -/
+theorem Submission.fiw_tb_lcc_face_integral_pos : ∀ (n N : ℕ) (ρ : ℝ) (F : LatticeFaceIndex n N) (g : Eucl N → ℝ) (p : Eucl N), 0 < ρ → Continuous g → (∀ x, 0 ≤ g x) → 0 < g p → (∀ i : Fin N, (i ∈ range F.2 → ρ * (F.1 i : ℝ) < p i ∧ p i < ρ * ((F.1 i : ℝ) + 1)) ∧ (i ∉ range F.2 → p i = ρ * (F.1 i : ℝ))) → 0 < ∫ x in latticeFace ρ F, g x ∂(μHE[n] : Measure (Eucl N)) := by
+  intro n N ρ F g p hρ hg hg0 hgp hp
+  rw [Submission.br_latticeFace_setIntegral_eq_cube N n ρ F g]
+  -- the affine parametrization of the face
+  set ι : (Fin n → ℝ) → Eucl N := fun s =>
+    ∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+      ∑ j, s j • EuclideanSpace.single (F.2 j) (1 : ℝ) with hι
+  have hιc : Continuous ι := by
+    rw [hι]
+    fun_prop
+  have hcoord : ∀ (s : Fin n → ℝ) (l : Fin N),
+      ι s l = ρ * (F.1 l : ℝ) + ∑ j, if l = F.2 j then s j else 0 := by
+    intro s l
+    simp [hι, Pi.single_apply]
+  set s₀ : Fin n → ℝ := fun j => p (F.2 j) - ρ * (F.1 (F.2 j) : ℝ) with hs₀
+  have hιs₀ : ι s₀ = p := by
+    ext l
+    rw [hcoord]
+    by_cases hl : l ∈ range F.2
+    · obtain ⟨j, rfl⟩ := hl
+      simp [hs₀, F.2.injective.eq_iff]
+    · have hne : ∀ j, l ≠ F.2 j := fun j h => hl ⟨j, h.symm⟩
+      simp [hne, (hp l).2 hl]
+  have hs₀mem : s₀ ∈ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ) := by
+    intro j _
+    obtain ⟨h1, h2⟩ := (hp (F.2 j)).1 ⟨j, rfl⟩
+    constructor <;> simp only [hs₀] <;> linarith
+  have hh : Continuous fun s => g (ι s) := hg.comp hιc
+  rw [setIntegral_pos_iff_support_of_nonneg_ae (ae_of_all _ fun s => hg0 _)
+    (hh.continuousOn.integrableOn_compact isCompact_Icc)]
+  have hopen : IsOpen (Function.support (fun s => g (ι s)) ∩ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ)) :=
+    hh.isOpen_support.inter (isOpen_set_pi finite_univ fun _ _ => isOpen_Ioo)
+  have hne : (Function.support (fun s => g (ι s)) ∩ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ)).Nonempty :=
+    ⟨s₀, by simp only [Function.mem_support, hιs₀]; exact hgp.ne', hs₀mem⟩
+  calc (0 : ℝ≥0∞) < volume (Function.support (fun s => g (ι s)) ∩ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ)) :=
+        hopen.measure_pos volume hne
+    _ ≤ volume (Function.support (fun s => g (ι s)) ∩ Icc (0 : Fin n → ℝ) (fun _ => ρ)) := by
+        refine measure_mono (inter_subset_inter_right _ fun s hs => ⟨fun j => ?_, fun j => ?_⟩)
+        · exact (hs j (mem_univ j)).1.le
+        · exact (hs j (mem_univ j)).2.le
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
