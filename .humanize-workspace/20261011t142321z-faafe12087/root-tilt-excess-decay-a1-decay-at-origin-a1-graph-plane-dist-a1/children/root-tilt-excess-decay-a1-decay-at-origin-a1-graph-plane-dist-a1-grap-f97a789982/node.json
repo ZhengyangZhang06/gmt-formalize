@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_plane_dist-a1.graph_plane_finrank-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_plane_dist-a1",
+  "depth": 4,
+  "title": "Dimension of a rotated linear graph plane",
+  "statement": "For all natural numbers n, l, every linear isometry equivalence q of R^(n+l) and every continuous linear map A : R^n -> R^l, the subspace S = span_R{q(graphPoint v (A v)) : v in R^n} of R^(n+l) has dimension n, i.e. Module.finrank R S = n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ), Module.finrank ℝ (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))) = n",
+  "lean_name": "tdo_gpd_graph_plane_finrank",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.graph_point_linear_equiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.graph_point_linear_equiv-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-graph-poi-152c2738dc-a1",
+      "result_commit": "18a457c495d0ee5b9257b1656886d4da963c6fd8",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-plane-dist-a1-grap-f97a789982-a1"
+}
