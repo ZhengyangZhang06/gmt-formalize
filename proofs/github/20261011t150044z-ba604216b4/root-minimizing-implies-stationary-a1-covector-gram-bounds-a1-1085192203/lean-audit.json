@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "86c571b24ec8f3e1b1438b188e37cf3f8081f0c7b7990ebefdf1da214f68de0f",
+  "git_delta": {
+    "base_commit": "c36d11c25906697028ef66b85732cab5268c4fa7",
+    "candidate_commit": "2fd8f6ff9db8d5c94835632a4abd3e7d37106715",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "covectorEuclideanNorm_gram_bounds",
+    "diff_sha256": "8a65fe6b5535f88472a3da998212d336fa6c5a1143295b1d071d6c8c417215e6",
+    "source_sha256": "fc6523211b734bea5fb39abc2b7884bcde2eb6df51aa0a9344db11f581cad569",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.covectorEuclideanNorm_gram_bounds",
+      "statement": "∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
