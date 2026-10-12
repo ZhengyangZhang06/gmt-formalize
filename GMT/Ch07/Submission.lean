@@ -451,6 +451,135 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The carrier of a `0`-dimensional integer multiplicity triple `(M, θ, ξ)` in `U` meets every
+compact `K ⊆ U` in a finite set.  `H⁰ = μHE[0]` gives each point mass `1` and `θ ≥ 1` on `M`, so
+any `N` points of `M ∩ K` give `N ≤ ∫_{M ∩ K} θ dH⁰`, which is finite by local integrability. -/
+theorem Submission.dimred_zdv_carrier_finite : ∀ (P : ℕ) (U K : Set (Euclid P)) (R : IMRep U 0), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite := by
+  intro P U K R hK hKU
+  by_contra hinf
+  apply R.locallyIntegrable_mult K hK hKU
+  -- an `N`-element subset `t ⊆ M ∩ K` gives `N ≤ Σ_{x ∈ t} θ(x) H⁰{x} ≤ ∫_{M ∩ K} θ dH⁰`
+  have hN : ∀ N : ℕ, (N : ℝ≥0∞) ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[0] := by
+    intro N
+    obtain ⟨t, hts, htN⟩ := Set.Infinite.exists_subset_card_eq hinf N
+    calc (N : ℝ≥0∞) = ∑ x ∈ t, (1 : ℝ≥0∞) := by simp [htN]
+      _ ≤ ∑ x ∈ t, (R.mult x : ℝ≥0∞) * μHE[0] {x} := by
+        refine Finset.sum_le_sum fun x hx => ?_
+        rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton,
+          mul_one]
+        exact Nat.one_le_cast.mpr (R.mult_pos x (hts hx).1)
+      _ = ∫⁻ x in (t : Set (Euclid P)), (R.mult x : ℝ≥0∞) ∂μHE[0] := (lintegral_finset t _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[0] := lintegral_mono_set hts
+  exact top_le_iff.mp (le_of_tendsto' ENNReal.tendsto_nat_nhds_top hN)
+/-- **Deleting a point other than the base point preserves approximate tangent spaces**
+(Simon Ch. 3, 1.4): if `Q` is an approximate tangent space of the Borel set `M` at `x` and
+`p ≠ x`, then `Q` is an approximate tangent space of `M \ {p}` at `x`.
+
+Let `f ∈ C_c(ℝᴾ)` with `spt f ⊆ B̄_{R₀}(0)` and `0 < r < ‖p − x‖/(max R₀ 1 + 1)`.  Then `η_{x,r}`
+is injective, so `η_{x,r}(M \ {p}) = η_{x,r}(M) \ {η_{x,r}(p)}`; `η_{x,r}(M) = {y | x + ry ∈ M}`
+is Borel; and `‖η_{x,r}(p)‖ = ‖p − x‖/r > R₀`, so `f` vanishes at the deleted point.  Hence the
+blow-up integrals of `f` over `M` and over `M \ {p}` agree for all small `r > 0`, and so do their
+limits. -/
+theorem Submission.dimred_zdv_approxTangent_sdiff_singleton : ∀ (P n : ℕ) (M : Set (Euclid P)) (x p : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → x ≠ p → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n (M \ {p}) x Q := by
+  intro P n M x p Q hM hxp hT
+  refine ⟨hT.1, fun f => (hT.2 f).congr' ?_⟩
+  -- `spt f ⊆ B̄_{R₀}(0)`
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+  have hd : 0 < ‖p - x‖ := norm_pos_iff.2 (sub_ne_zero.2 hxp.symm)
+  have hR₁ : 0 < max R₀ 1 + 1 := by
+    have := le_max_right R₀ 1
+    linarith
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hd hR₁)] with r ⟨hr, hrd⟩
+  -- `η_{x,r}` is injective
+  have hinj : Injective (Poincare.SimonGMT.Chapter03.blowUpMap x r) := fun a b hab =>
+    sub_left_injective (smul_right_injective (Euclid P) (inv_ne_zero hr.ne') hab)
+  -- `η_{x,r}(M) = {y | x + r y ∈ M}` is Borel
+  have hmeas : MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M) := by
+    have himage :
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' M = (fun y => x + r • y) ⁻¹' M := by
+      ext y
+      constructor
+      · rintro ⟨z, hz, rfl⟩
+        simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne'] using hz
+      · intro hy
+        refine ⟨x + r • y, hy, ?_⟩
+        simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, inv_mul_cancel₀ hr.ne']
+    rw [himage]
+    exact hM.preimage (by fun_prop)
+  -- `f` vanishes at `η_{x,r}(p)`, as `‖η_{x,r}(p)‖ = r⁻¹ ‖p − x‖ > R₀`
+  have hfq : f (Poincare.SimonGMT.Chapter03.blowUpMap x r p) = 0 := by
+    refine image_eq_zero_of_notMem_tsupport fun hq => ?_
+    have h1 := mem_closedBall_zero_iff.1 (hR₀ hq)
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul_of_nonneg (inv_nonneg.2 hr.le),
+      inv_mul_le_iff₀ hr] at h1
+    have h2 : r * (max R₀ 1 + 1) < ‖p - x‖ := (lt_div_iff₀ hR₁).1 hrd
+    have h3 : r * R₀ ≤ r * max R₀ 1 := mul_le_mul_of_nonneg_left (le_max_left R₀ 1) hr.le
+    linarith
+  -- deleting `η_{x,r}(p)`, where `f` vanishes, does not change the integral
+  rw [image_sdiff hinj, image_singleton]
+  refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hmeas sdiff_subset fun y hy => ?_
+  obtain rfl : y = Poincare.SimonGMT.Chapter03.blowUpMap x r p := by
+    by_contra hne
+    exact hy.2 ⟨hy.1, hne⟩
+  exact hfq
+
+/-- Deleting a point `p ∈ M` from a `0`-dimensional triple `R = (M, θ, ξ)` leaves the triple
+`R' = (M ∖ {p}, θ, ξ)`, and `R(ω) = R'(ω) + θ(p)⟨ω(p), ξ(p)⟩` for `ω ∈ 𝒟⁰(U)`.  The fields of
+`R'` are inherited from `R`; a.e. `x ∈ M ∖ {p}` has `x ≠ p`, so `M ∖ {p}` keeps the approximate
+tangent space at `x`.  The integrand vanishes off the compact `spt ω ⊆ U`, and `M ∩ spt ω` is
+finite with `H⁰{y} = 1`, so it is integrable on `M`; then split `M = (M ∖ {p}) ∪ {p}`. -/
+theorem Submission.dimred_zdv_erase_point : ∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0) (p : Euclid P), p ∈ R.carrier → ∃ R' : IMRep U 0, R'.carrier = R.carrier \ {p} ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ ∀ ω : TestFormOn U 0, R.action (ω : DifferentialForm (Euclid P) 0) = R'.action (ω : DifferentialForm (Euclid P) 0) + (R.mult p : ℝ) * R.orient p ((ω : DifferentialForm (Euclid P) 0) p) := by
+  intro P U R p hp
+  -- `H⁰{x} = 1`, as `μHE[0] = μH[0]`
+  have hpt : ∀ x : Euclid P, (μHE[0] : Measure (Euclid P)) {x} = 1 := fun x => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  have hM' : MeasurableSet (R.carrier \ {p}) :=
+    R.measurableSet_carrier.diff (measurableSet_singleton p)
+  -- `R' = (M ∖ {p}, θ, ξ)`: each field of `R` passes to the smaller carrier
+  let R' : IMRep U 0 :=
+    { carrier := R.carrier \ {p}
+      mult := R.mult
+      orient := R.orient
+      measurableSet_carrier := hM'
+      carrier_subset := sdiff_subset.trans R.carrier_subset
+      rectifiable := R.rectifiable.mono sdiff_subset
+      measurable_mult := R.measurable_mult
+      mult_pos := fun x hx => R.mult_pos x hx.1
+      locallyIntegrable_mult := fun K hK hKU =>
+        ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU)
+          (lintegral_mono_set (inter_subset_inter_left K sdiff_subset))
+      aestronglyMeasurable_orient :=
+        R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono sdiff_subset le_rfl)
+      orients := by
+        -- a.e. `x ∈ M ∖ {p}` has `x ≠ p`, so `TₓM` is also the tangent space of `M ∖ {p}`
+        filter_upwards [ae_restrict_of_ae_restrict_of_subset sdiff_subset R.orients,
+          ae_restrict_mem hM'] with x hxQ hx
+        obtain ⟨Q, hQ, hξ⟩ := hxQ
+        exact ⟨Q, Submission.dimred_zdv_approxTangent_sdiff_singleton P 0 R.carrier x p Q
+          R.measurableSet_carrier hx.2 hQ, hξ⟩ }
+  refine ⟨R', rfl, rfl, rfl, fun ω => ?_⟩
+  -- the integrand `g = θ⟨ω, ξ⟩` vanishes off the compact set `spt ω ⊆ U`
+  obtain ⟨⟨-, hK⟩, hKU⟩ := ω.2
+  set g : Euclid P → ℝ :=
+    fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 0) x) with hg
+  have hg0 : ∀ x ∉ tsupport (ω : DifferentialForm (Euclid P) 0), g x = 0 := fun x hx => by
+    simp only [hg, image_eq_zero_of_notMem_tsupport hx, map_zero, mul_zero]
+  -- `M ∩ spt ω` is finite and `H⁰{y} = 1`, so `g` is integrable on `M ∩ spt ω`, hence on `M`
+  have hgK : IntegrableOn g (R.carrier ∩ tsupport (ω : DifferentialForm (Euclid P) 0)) μHE[0] := by
+    rw [← biUnion_of_singleton (R.carrier ∩ tsupport (ω : DifferentialForm (Euclid P) 0)),
+      integrableOn_finite_biUnion
+        (Submission.dimred_zdv_carrier_finite P U _ R hK.isCompact hKU)]
+    exact fun y _ => integrableOn_singleton (hx := (hpt y).trans_lt ENNReal.one_lt_top)
+  have hgM : IntegrableOn g R.carrier μHE[0] :=
+    hgK.of_forall_sdiff_eq_zero R.measurableSet_carrier fun x hx =>
+      hg0 x fun hxK => hx.2 ⟨hx.1, hxK⟩
+  -- `∫_M g = ∫_{M ∖ {p}} g + H⁰{p} g(p)` and `H⁰{p} = 1`
+  have hsplit := setIntegral_union (μ := μHE[0]) disjoint_sdiff_left (measurableSet_singleton p)
+    (hgM.mono_set sdiff_subset) (hgM.mono_set (singleton_subset_iff.2 hp))
+  rw [sdiff_union_of_subset (singleton_subset_iff.2 hp), integral_singleton, measureReal_def,
+    hpt, ENNReal.toReal_one, one_smul] at hsplit
+  exact hsplit
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
