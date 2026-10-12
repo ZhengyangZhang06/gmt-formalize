@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cef54ee5bd9572f162d041280e971514742ec117174bd2f9efa1a51db7c9ba2e",
+  "git_delta": {
+    "base_commit": "7719eef6a4b7169ffb64315810c67863b4bab51c",
+    "candidate_commit": "3eab424063765b285d5eb26cdb2459f14e7bf888",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "626270fa3760d73cc0b528bd6816cf3312402bf1336813758e30639803f8cab7",
+    "source_sha256": "cbccdf9dcb80305ac070f5efb30c8f1c557d11541a980e7ecdc79d01c4c503fe",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_covector_rotated_expansion",
+      "statement": "∀ (P n : ℕ) (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (φ : Covector (Eucl P) n), φ = ∑ α : SimonMultiIndex n P, φ (fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ))) • wedgeCovectors n (fun i => (EuclideanSpace.proj (α i) : Eucl P →L[ℝ] ℝ).comp (Q : Eucl P →L[ℝ] Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

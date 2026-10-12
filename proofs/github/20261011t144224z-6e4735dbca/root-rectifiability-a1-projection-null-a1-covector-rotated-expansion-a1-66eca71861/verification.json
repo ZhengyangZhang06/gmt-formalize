@@ -1,0 +1,18 @@
+{
+  "node_id": "root.rectifiability-a1.projection_null-a1.covector_rotated_expansion-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2428",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "3eab424063765b285d5eb26cdb2459f14e7bf888",
+  "integrated_commit": "",
+  "proof_base_commit": "dfd88241360975c108ba15cfd4aea32b6edcbd54",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.rectifiability-a1.projection_null-a1",
+  "requires": [
+    "root.polyhedral_approximation-a1.pairing_expansion-a1.wedge_kronecker-a1",
+    "root.polyhedral_approximation-a1.pairing_expansion-a1.covector_ext-a1"
+  ]
+}
