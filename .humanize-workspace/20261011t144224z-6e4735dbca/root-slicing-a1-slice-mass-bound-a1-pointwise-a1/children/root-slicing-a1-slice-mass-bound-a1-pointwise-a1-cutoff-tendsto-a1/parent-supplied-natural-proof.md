@@ -1,0 +1,86 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_mass_bound-a1.pointwise-a1`
+- Child DAG node: `root.slicing-a1.slice_mass_bound-a1.pointwise-a1.cutoff_tendsto-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Step 4 (h ↓ 0: the cut-offs converge to the indicator of A_t, dominated convergence along 𝓝[>] 0), extracted for one pair (ν, F). In the parent this lemma is applied twice: once with (ν, F) = (μ₂, x ↦ v₂(x)(ω(x))) and once with (ν, F) = (μ₁, x ↦ v₁(x)(dω(x))).
+
+Setting. P ∈ ℕ; U ⊆ ℝ^P open; f : ℝ^P → ℝ L-Lipschitz on U; ν a measure on ℝ^P; F : ℝ^P → ℝ ν-integrable with F(x) = 0 for every x ∉ U; t ∈ ℝ; χ : ℝ → ℝ → ℝ, written h ↦ χ_h, such that for every h > 0: χ_h is Borel measurable, |χ_h(s)| ≤ 1 for all s, χ_h(s) = 1 for s ≤ t − h and χ_h(s) = 0 for s ≥ t. Put A := {x | x ∈ U ∧ f(x) < t}. Claim: ∫ χ_h(f(x))·F(x) dν(x) → ∫_A F dν as h → 0+ (along the filter 𝓝[>] 0).
+
+1. (McShane extension.) Since f is L-Lipschitz on U, there is g : ℝ^P → ℝ which is L-Lipschitz on all of ℝ^P and agrees with f on U (McShane extension, `LipschitzOnWith.extend_real`). In particular g is continuous, hence Borel measurable.
+
+2. (The limit set is open, so the set integral is an indicator integral.) Because f = g on U, A = U ∩ g⁻¹((−∞, t)): if x ∈ U then f(x) < t ⟺ g(x) < t. U is open and g⁻¹((−∞, t)) is open (g continuous), so A is open and in particular measurable. Hence ∫_A F dν = ∫ 1_A(x)·F(x) dν(x) (`integral_indicator`), and it suffices to prove ∫ χ_h(f(x))·F(x) dν(x) → ∫ 1_A(x)·F(x) dν(x) as h → 0+.
+
+3. (f may be replaced by g inside the integrand.) For every h ∈ ℝ and every x ∈ ℝ^P, χ_h(f(x))·F(x) = χ_h(g(x))·F(x). Indeed, if x ∈ U then f(x) = g(x); if x ∉ U then F(x) = 0 and both sides are 0.
+
+4. (Measurability.) Let h > 0. The map x ↦ χ_h(g(x)) is Borel measurable, being the composition of the Borel function χ_h with the continuous map g. F is a.e.-strongly measurable for ν because it is ν-integrable. Hence x ↦ χ_h(g(x))·F(x) is a.e.-strongly measurable for ν, and by step 3 it is the same function as x ↦ χ_h(f(x))·F(x). This holds for every h in (0, ∞), and (0, ∞) belongs to 𝓝[>] 0, so the integrands are eventually a.e.-strongly measurable along 𝓝[>] 0.
+
+5. (Domination.) For h > 0 and every x, |χ_h(f(x))·F(x)| = |χ_h(f(x))|·|F(x)| ≤ 1·|F(x)| = |F(x)|, and x ↦ |F(x)| is ν-integrable because F is. So the integrands are eventually (for h ∈ (0, ∞)) dominated by the integrable function |F|.
+
+6. (Pointwise convergence at every x.) Fix x ∈ ℝ^P.
+ (a) x ∉ U. Then F(x) = 0 and x ∉ A, so χ_h(f(x))·F(x) = 0 = 1_A(x)·F(x) for every h; the constant function converges.
+ (b) x ∈ U and f(x) < t. Then x ∈ A and 1_A(x)·F(x) = F(x). Since t − f(x) > 0, the interval (0, t − f(x)) belongs to 𝓝[>] 0. For h in this interval we have h > 0 and f(x) < t − h, so f(x) ≤ t − h and χ_h(f(x)) = 1, whence χ_h(f(x))·F(x) = F(x). Thus h ↦ χ_h(f(x))·F(x) is eventually equal to the constant F(x) along 𝓝[>] 0, and converges to F(x) = 1_A(x)·F(x).
+ (c) x ∈ U and f(x) ≥ t. Then x ∉ A and 1_A(x)·F(x) = 0. For every h > 0, χ_h(f(x)) = 0 because f(x) ≥ t, so χ_h(f(x))·F(x) = 0 for all h in (0, ∞) ∈ 𝓝[>] 0, and the limit is 0 = 1_A(x)·F(x).
+ Hence χ_h(f(x))·F(x) → 1_A(x)·F(x) as h → 0+, for every x (in particular ν-a.e.).
+
+7. (Dominated convergence.) The filter 𝓝[>] 0 on ℝ is countably generated. By the dominated convergence theorem along countably generated filters (`tendsto_integral_filter_of_dominated_convergence`, with bound |F|, using steps 4, 5 and 6), ∫ χ_h(f(x))·F(x) dν(x) → ∫ 1_A(x)·F(x) dν(x) as h → 0+. By step 2 the right side equals ∫_A F dν, i.e. ∫_{{x ∈ U : f(x) < t}} F dν. ∎
+
+## Key steps
+
+1. McShane extension g of f|U (globally L-Lipschitz, g = f on U); A = {x ∈ U : f(x) < t} = U ∩ g⁻¹((−∞, t)) is open, so ∫_A F dν = ∫ 1_A F dν.
+2. χ_h(f(x))F(x) = χ_h(g(x))F(x) for all x because F = 0 off U; hence the integrands are a.e.-strongly measurable for h > 0, and they are dominated by the integrable |F|.
+3. Pointwise limit: for x ∈ U with f(x) < t the integrand equals F(x) once 0 < h < t − f(x); for x ∈ U with f(x) ≥ t, or x ∉ U, it is 0 = 1_A(x)F(x).
+4. Dominated convergence along the countably generated filter 𝓝[>] 0 gives ∫ χ_h(f)F dν → ∫_A F dν.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean workspaces/gmt-ch06/GMT/Ch06/Submission.lean (identical); cmp GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean (identical)`
+- `rg -n 'IsSlice|slicing_mb' local-references/197bdd4b88278494/project (only the IsSlice definition/use in Contract.lean, Submission.lean and README.md; no slicing_mb lemma)`
+- `rg -n 'theorem LipschitzOnWith.extend_real|theorem tendsto_integral_filter_of_dominated_convergence|theorem liminf_const_mul_of_ne_top|theorem ofReal_div_of_pos|theorem integral_indicator \(|theorem Tendsto.mul_const|instance nhdsGT_neBot|theorem tendsto_ofReal' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `grep -n 'image_eq_one_of_notMem_mulTSupport' local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean (to_additive source of image_eq_zero_of_notMem_tsupport)`
+- `rg -n 'liminf.*ofReal h|ofReal_div.*liminf' local-references/197bdd4b88278494/mathlib/Mathlib (no match: no existing liminf/difference-quotient lemma of child 2's form)`
+- `rg -n 'IsSlice|IsRestriction' lake-packages-25730c7c/simongmt/Poincare (no match: SimonGMT has no restriction/slice notions)`
+- `grep -n 'def massAdmissibleOn|def GeometricCurrentOn.massOn|def covectorEuclideanNorm|abbrev TestFormOn|def exteriorDerivativeTestOn|theorem tsupport_exteriorDerivative_subset|theorem GeometricCurrentOn.boundary_apply|abbrev exteriorDerivative' simongmt/Poincare/SimonGMT/Chapter06/{Mass,Currents,Forms}.lean`
+- `python3 read of dag.json: frozen lean_statements of slicing_mb_cutoff, slicing_mb_cutoff_defect_bound, slicing_mb_pointwise; all lean_names unique; no name with prefix slicing_mb_pointwise_ (239 nodes at last check)`
+- `rg -n 'slicing_mb_pointwise_cutoff_tendsto|slicing_mb_pointwise_liminf_bound' over the snapshot project, SimonGMT and dag.json (no match)`
+- `python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (replayed child scope: opens, namespace GMT.Ch06, noncomputable section, end)`
+- `python3 validate_lean_statement (verifier/lean_contract.py) on both child lean_statements (accepted, single line)`
+- `lean --root=/tmp/pw_split_XUzTfR/src -o /tmp/pw_split_XUzTfR/out/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean (scratch build of the frozen Submission, LEAN_PATH from lake env)`
+- `lean /tmp/pw_split_XUzTfR/check/Stmts.lean (both child types + parent type elaborate in the comparator child scope; only sorry warnings)`
+- `lean /tmp/pw_split_XUzTfR/check/Assembly.lean (exact parent type from slicing_mb_cutoff, slicing_mb_cutoff_defect_bound and both child types; #print axioms: [propext, Classical.choice, Quot.sound])`
+- `lean /tmp/pw_split_XUzTfR/check/ChildProofs.lean (complete proofs of both child types; axioms [propext, Classical.choice, Quot.sound])`
+- `sed -n '1340,1415p' book/chapter-06.txt (Simon Ch. 6, 4.6-4.11: statement of 4.9 and the cut-off argument of 4.11)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/DenselyOrdered.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-pointwise-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1/decomposition-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/pw_split_XUzTfR/check/Stmts.lean`
+- `/tmp/pw_split_XUzTfR/check/Assembly.lean`
+- `/tmp/pw_split_XUzTfR/check/ChildProofs.lean`
+
+The pinned snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract, byte-identical to the workspace Submission. IsSlice unpacks to IsRestriction data, and the restriction set {x | x ∈ U ∧ f x < t} is syntactically the set used in child 1's conclusion. SimonGMT provides massOn and massAdmissibleOn, exteriorDerivativeTestOn (whose coercion is definitionally exteriorDerivative), boundary_apply and tsupport_exteriorDerivative_subset; these are the facts the parent glue uses. Mathlib provides every lemma cited in the child proofs: LipschitzOnWith.extend_real, tendsto_integral_filter_of_dominated_convergence, integral_indicator, ENNReal.liminf_const_mul_of_ne_top, ENNReal.ofReal_div_of_pos, ENNReal.tendsto_ofReal, ENNReal.Tendsto.mul_const, the nhdsGT_neBot instance, and image_eq_zero_of_notMem_tsupport (via to_additive). It has neither child statement, and no match for a liminf difference-quotient lemma of child 2's form. Both child types and the parent type elaborate in the comparator's child scope. The exact parent type follows from the frozen sibling types slicing_mb_cutoff and slicing_mb_cutoff_defect_bound plus the two child types, with axioms [propext, Classical.choice, Quot.sound]. Both child types were also fully proved in scratch Lean with the same axioms. The proposed names are unused in the DAG, the snapshot project, SimonGMT and Mathlib. The printed Simon text (4.9, 4.11) matches the parent proof from which both child proofs are extracted.

@@ -359,6 +359,61 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Level cut-offs converge to the indicator of `{x ∈ U : f x < t}` under the integral: for
+`χ_h = 1` on `(-∞, t - h]`, `χ_h = 0` on `[t, ∞)` and `|χ_h| ≤ 1`,
+`∫ χ_h(f) F dν → ∫_{x ∈ U, f x < t} F dν` as `h → 0+` (dominated convergence; Simon 4.11). -/
+theorem Submission.slicing_mb_pointwise_cutoff_tendsto :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ (ν : Measure (Eucl P)) (F : Eucl P → ℝ), Integrable F ν → (∀ x, x ∉ U → F x = 0) → ∀ (t : ℝ) (χ : ℝ → ℝ → ℝ), (∀ h : ℝ, 0 < h → Measurable (χ h)) → (∀ h s : ℝ, 0 < h → |χ h s| ≤ 1) → (∀ h s : ℝ, 0 < h → s ≤ t - h → χ h s = 1) → (∀ h s : ℝ, 0 < h → t ≤ s → χ h s = 0) → Tendsto (fun h : ℝ => ∫ x, χ h (f x) * F x ∂ν) (𝓝[>] 0) (𝓝 (∫ x in {x | x ∈ U ∧ f x < t}, F x ∂ν)) := by
+  intro P U hU f L hf ν F hF hF0 t χ hχm hχb hχ1 hχ0
+  -- McShane extension `g` of `f|U`: globally Lipschitz, hence continuous.
+  obtain ⟨g, hg, hfg⟩ := hf.extend_real
+  have hgc : Continuous g := hg.continuous
+  -- The limit set `A = U ∩ g⁻¹(-∞, t)` is open, so the set integral is an indicator integral.
+  set A : Set (Eucl P) := {x | x ∈ U ∧ f x < t} with hA
+  have hAeq : A = U ∩ g ⁻¹' Iio t := by
+    ext x
+    constructor
+    · rintro ⟨hx, hfx⟩
+      exact ⟨hx, show g x < t from hfg hx ▸ hfx⟩
+    · rintro ⟨hx, hgx⟩
+      exact ⟨hx, show f x < t from (hfg hx).symm ▸ hgx⟩
+  have hAm : MeasurableSet A := by
+    rw [hAeq]
+    exact (hU.inter (isOpen_Iio.preimage hgc)).measurableSet
+  rw [← integral_indicator hAm]
+  -- Off `U` we have `F = 0`, so `f` may be replaced by `g` inside the integrand.
+  have hfg' : ∀ h x, χ h (f x) * F x = χ h (g x) * F x := by
+    intro h x
+    by_cases hx : x ∈ U
+    · rw [hfg hx]
+    · simp [hF0 x hx]
+  refine tendsto_integral_filter_of_dominated_convergence (fun x => ‖F x‖) ?_ ?_ hF.norm ?_
+  · -- measurability for `h > 0`
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    have : (fun x => χ h (f x) * F x) = fun x => χ h (g x) * F x := funext (hfg' h)
+    rw [this]
+    exact ((hχm h hh).comp hgc.measurable).aestronglyMeasurable.mul hF.aestronglyMeasurable
+  · -- domination by `‖F‖` for `h > 0`
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    refine Eventually.of_forall fun x => ?_
+    rw [norm_mul, Real.norm_eq_abs (χ h (f x))]
+    calc |χ h (f x)| * ‖F x‖ ≤ 1 * ‖F x‖ := by gcongr; exact hχb h _ hh
+      _ = ‖F x‖ := one_mul _
+  · -- pointwise convergence at every `x`
+    refine Eventually.of_forall fun x => ?_
+    by_cases hx : x ∈ U
+    · by_cases hft : f x < t
+      · rw [indicator_of_mem (show x ∈ A from ⟨hx, hft⟩)]
+        apply tendsto_const_nhds.congr'
+        filter_upwards [Ioo_mem_nhdsGT (sub_pos.mpr hft)] with h hh
+        rw [hχ1 h (f x) hh.1 (by linarith [hh.2]), one_mul]
+      · rw [indicator_of_notMem (show x ∉ A from fun h => hft h.2)]
+        apply tendsto_const_nhds.congr'
+        filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+        rw [hχ0 h (f x) hh (not_lt.mp hft), zero_mul]
+    · rw [indicator_of_notMem (show x ∉ A from fun h => hx h.1), hF0 x hx]
+      simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
