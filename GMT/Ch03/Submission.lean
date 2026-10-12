@@ -335,6 +335,49 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Open exhaustion by sets of finite measure** (Simon Ch. 1, Def. 1.14 and the remark after it,
+as used in the proof of Ch. 1, Thm. 3.16; parent proof step 1). If `U ⊆ ℝᴺ` is open and
+`μ(K) < ∞` for every compact `K ⊆ U`, then `U = ⋃ᵢ Wᵢ` with `Wᵢ` open and `μ(Wᵢ) < ∞`.
+With `d(y, Uᶜ) ∈ [0, ∞]` the extended distance and `cᵢ = (i + 1)⁻¹ > 0`, take
+`Wᵢ = B_{i+1}(0) ∩ {y : cᵢ < d(y, Uᶜ)}`: it is open, it lies in the compact set
+`Kᵢ = B̄_{i+1}(0) ∩ {y : cᵢ ≤ d(y, Uᶜ)} ⊆ U`, and every `y ∈ U` has `d(y, Uᶜ) > 0` since `Uᶜ` is
+closed, so `y ∈ Wᵢ` once `cᵢ < d(y, Uᶜ)` and `‖y‖ < i + 1`. -/
+theorem Submission.deGiorgiBFM_exists_open_exhaustion : ∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → ∃ W : ℕ → Set (Rn N), (∀ i, IsOpen (W i)) ∧ (∀ i, μ (W i) < ∞) ∧ ⋃ i, W i = U := by
+  intro N U μ hU hK
+  -- `cᵢ = (i + 1)⁻¹` is positive, so `cᵢ ≤ d(y, Uᶜ)` forces `y ∈ U` (`d(y, Uᶜ) = 0` on `Uᶜ`).
+  have hc : ∀ i : ℕ, ((i : ℝ≥0∞) + 1)⁻¹ ≠ 0 := fun i ↦
+    ENNReal.inv_ne_zero.2 (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩)
+  have hmem : ∀ (i : ℕ) (y : Rn N), ((i : ℝ≥0∞) + 1)⁻¹ ≤ Metric.infEDist y Uᶜ → y ∈ U := by
+    intro i y hy
+    by_contra h
+    rw [Metric.infEDist_zero_of_mem (show y ∈ Uᶜ from h)] at hy
+    exact hc i (nonpos_iff_eq_zero.1 hy)
+  refine ⟨fun i ↦ Metric.ball 0 ((i : ℝ) + 1) ∩ {y | ((i : ℝ≥0∞) + 1)⁻¹ < Metric.infEDist y Uᶜ},
+    fun i ↦ ?_, fun i ↦ ?_, Subset.antisymm (iUnion_subset fun i y hy ↦ hmem i y (le_of_lt hy.2))
+      fun y hy ↦ ?_⟩
+  · exact Metric.isOpen_ball.inter (isOpen_lt continuous_const Metric.continuous_infEDist)
+  · -- `Wᵢ ⊆ Kᵢ`, and `Kᵢ` is a compact subset of `U`.
+    have hKi : IsCompact (Metric.closedBall (0 : Rn N) ((i : ℝ) + 1) ∩
+        {y | ((i : ℝ≥0∞) + 1)⁻¹ ≤ Metric.infEDist y Uᶜ}) :=
+      (isCompact_closedBall _ _).inter_right
+        (isClosed_le continuous_const Metric.continuous_infEDist)
+    refine (measure_mono ?_).trans_lt (hK _ hKi fun y hy ↦ hmem i y hy.2)
+    exact inter_subset_inter Metric.ball_subset_closedBall
+      (ofPred_subset_ofPred_of_imp fun _ ↦ le_of_lt)
+  · -- `d(y, Uᶜ) ≠ 0` as `Uᶜ` is closed; take `i = max n m` with `n⁻¹ < d(y, Uᶜ)` and `‖y‖ < m`.
+    have hd : Metric.infEDist y Uᶜ ≠ 0 := fun h0 ↦
+      (Metric.mem_iff_infEDist_zero_of_closed hU.isClosed_compl).2 h0 hy
+    obtain ⟨n, hn⟩ := ENNReal.exists_inv_nat_lt hd
+    obtain ⟨m, hm⟩ := exists_nat_gt ‖y‖
+    refine mem_iUnion.2 ⟨max n m, ?_, ?_⟩
+    · rw [mem_ball_zero_iff]
+      calc ‖y‖ < m := hm
+        _ ≤ ((max n m : ℕ) : ℝ) := by exact_mod_cast le_max_right n m
+        _ < ((max n m : ℕ) : ℝ) + 1 := lt_add_one _
+    · calc (((max n m : ℕ) : ℝ≥0∞) + 1)⁻¹ ≤ (n : ℝ≥0∞)⁻¹ :=
+            ENNReal.inv_le_inv.2 (by exact_mod_cast (show n ≤ max n m + 1 by omega))
+        _ < Metric.infEDist y Uᶜ := hn
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
