@@ -451,6 +451,347 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Radial tangency from a constant density ratio** (Simon Ch. 4, 3.6 with `H = 0` and centre
+`0`, as used in the proof of 7.4.5).  Let `R = (M, θ, ξ)` be an integer multiplicity triple in `ℝᴾ`
+and `μ = θ Hⁿ⌞M`.  If `v(M, θ)` is stationary in `ℝᴾ`, `x ↦ p_{TₓM}` is `μ`-measurable and
+`μ(B̄_ρ(0)) = ρⁿ μ(B̄_1(0))` for every `ρ > 0`, then `p_{TₓM}(x) = x` for `μ`-a.e. `x`.
+
+For `n = 0` all balls have the same mass, so `μ` is carried by `{0}`.  For `n ≥ 1` the ball masses
+fix the image of `μ` under `x ↦ ‖x‖` as `μ(B̄_1) n tⁿ⁻¹ dt` on `(0, ∞)`.  Testing stationarity
+with `X(x) = η(‖x‖²) x`, `η' = −max(r² − ·, 0)`, whose tangential divergence is
+`n η(‖x‖²) + 2 η'(‖x‖²) ‖pₓ x‖²` (4.3.2), and subtracting `∫ (n η(‖x‖²) + 2 η'(‖x‖²) ‖x‖²) dμ = 0`
+gives `∫ max(r² − ‖x‖², 0) ‖x − pₓ x‖² dμ = 0` for every `r > 0`: the defect term of the
+monotonicity identity 4.3.6 vanishes. -/
+theorem Submission.stationary_imrep_radial_tangency_of_ball_ratio : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall (0 : Euclid P) ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall (0 : Euclid P) 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x := by
+  intro P n R hstat hproj hratio
+  -- Step 1: `μ = θ Hⁿ⌞M` is finite on compact sets.
+  have hfin : IsFiniteMeasureOnCompacts R.measure := by
+    refine ⟨fun K hK => ?_⟩
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK (subset_univ K))
+  have hball_fin : ∀ r : ℝ, R.measure (closedBall (0 : Euclid P) r) ≠ ∞ :=
+    fun r => (isCompact_closedBall 0 r).measure_lt_top.ne
+  have hc : R.measure (closedBall (0 : Euclid P) 1) ≠ ∞ := hball_fin 1
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: all balls have the same mass, so `μ` is carried by the origin.
+    have hann : ∀ j : ℕ, R.measure (closedBall (0 : Euclid P) ((j : ℝ) + 1) \
+        closedBall 0 (1 / ((j : ℝ) + 1))) = 0 := by
+      intro j
+      have hj : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+      have hsub : closedBall (0 : Euclid P) (1 / ((j : ℝ) + 1)) ⊆
+          closedBall 0 ((j : ℝ) + 1) := by
+        refine closedBall_subset_closedBall ?_
+        rw [div_le_iff₀ hj]
+        nlinarith
+      rw [measure_sdiff hsub measurableSet_closedBall.nullMeasurableSet (hball_fin _),
+        hratio _ hj, hratio (1 / ((j : ℝ) + 1)) (by positivity)]
+      simp
+    rw [ae_iff]
+    refine measure_mono_null (fun x hx => ?_) (measure_iUnion_null hann)
+    have hx0 : x ≠ 0 := by
+      rintro rfl
+      exact hx (map_zero _)
+    have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx0
+    obtain ⟨j, hj⟩ := exists_nat_gt (max ‖x‖ (1 / ‖x‖))
+    have hjpos : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+    have hj1 : ‖x‖ < (j : ℝ) + 1 := by
+      have := le_max_left ‖x‖ (1 / ‖x‖)
+      linarith
+    have hj2 : 1 / ((j : ℝ) + 1) < ‖x‖ := by
+      have h3 := le_max_right ‖x‖ (1 / ‖x‖)
+      rw [div_lt_iff₀ hjpos]
+      have h4 : 1 / ‖x‖ < (j : ℝ) + 1 := by linarith
+      rw [div_lt_iff₀ hxpos] at h4
+      linarith
+    refine mem_iUnion.2 ⟨j, ?_⟩
+    simp only [Set.mem_sdiff, mem_closedBall, dist_zero_right, not_le]
+    exact ⟨hj1.le, hj2⟩
+  · obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, (Nat.succ_pred_eq_of_pos hn).symm⟩
+    -- Step 2: `Tₓ = approxTangentPlane` is an `n`-plane for `μ`-a.e. `x` (`R.orients`).
+    have hrank : ∀ᵐ x ∂R.measure,
+        Module.finrank ℝ (approxTangentPlane (m + 1) R.carrier x) = m + 1 := by
+      have hac : R.measure ≪ μHE[m + 1].restrict R.carrier :=
+        withDensity_absolutelyContinuous _ _
+      refine hac.ae_le ?_
+      filter_upwards [R.orients] with x hx
+      obtain ⟨Q, hQ, -⟩ := hx
+      have h : ∃ Q, HasApproximateTangentSpaceAt (m + 1) R.carrier x Q := ⟨Q, hQ⟩
+      rw [approxTangentPlane, dite_eq_left h]
+      exact h.choose_spec.finrank_eq
+    -- The origin is not an atom: `μ{0} ≤ μ(B̄_ε) = εⁿ μ(B̄₁) → 0`.
+    have hzero : R.measure {0} = 0 := by
+      have hlim : Tendsto (fun ε : ℝ => ENNReal.ofReal (ε ^ (m + 1)) *
+          R.measure (closedBall (0 : Euclid P) 1)) (𝓝[>] 0) (𝓝 0) := by
+        have h1 : Tendsto (fun ε : ℝ => ε ^ (m + 1)) (𝓝[>] 0) (𝓝 0) := by
+          have h : Tendsto (fun ε : ℝ => ε ^ (m + 1)) (𝓝 0) (𝓝 ((0 : ℝ) ^ (m + 1))) :=
+            (continuous_pow (m + 1)).tendsto 0
+          rw [zero_pow (Nat.succ_ne_zero m)] at h
+          exact h.mono_left nhdsWithin_le_nhds
+        simpa using ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hc)
+      refine nonpos_iff_eq_zero.1 (ge_of_tendsto hlim ?_)
+      filter_upwards [self_mem_nhdsWithin] with ε hε
+      rw [← hratio ε hε]
+      exact measure_mono (singleton_subset_iff.2 (mem_closedBall_self (le_of_lt hε)))
+    -- Ball masses for every real radius.
+    have hcdf : ∀ t : ℝ, R.measure (closedBall (0 : Euclid P) t) =
+        R.measure (closedBall (0 : Euclid P) 1) * ENNReal.ofReal (max t 0 ^ (m + 1)) := by
+      intro t
+      rcases lt_trichotomy t 0 with ht | rfl | ht
+      · rw [closedBall_eq_empty.2 ht, measure_empty, max_eq_right ht.le]
+        simp
+      · rw [closedBall_zero, hzero]
+        simp
+      · rw [hratio t ht, max_eq_left ht.le, mul_comm]
+    -- Step 5 (radial form): the image of `μ` under `x ↦ ‖x‖` is `μ(B̄₁) · n tⁿ⁻¹ dt` on `(0, ∞)`.
+    set ν : Measure ℝ := (volume.restrict (Ioi (0 : ℝ))).withDensity
+      (fun t => ENNReal.ofReal (((m : ℝ) + 1) * t ^ m)) with hν
+    have hνIoc : ∀ a b : ℝ, a < b → ν (Ioc a b) =
+        ENNReal.ofReal (max b 0 ^ (m + 1)) - ENNReal.ofReal (max a 0 ^ (m + 1)) := by
+      intro a b hab
+      rw [hν, withDensity_apply _ measurableSet_Ioc, Measure.restrict_restrict measurableSet_Ioc,
+        Ioc_inter_Ioi]
+      rcases le_or_gt b (max a 0) with hba | hab'
+      · have hb0 : b ≤ 0 := by
+          rcases le_total a 0 with ha | ha
+          · rwa [max_eq_right ha] at hba
+          · rw [max_eq_left ha] at hba
+            exact absurd hab (not_lt.2 hba)
+        rw [Ioc_eq_empty (not_lt.2 hba), Measure.restrict_empty, lintegral_zero_measure,
+          max_eq_right hb0, max_eq_right (hab.le.trans hb0)]
+        simp
+      · have ha0 : 0 ≤ max a 0 := le_max_right _ _
+        rw [max_eq_left (ha0.trans hab'.le)]
+        have hcont : Continuous fun t : ℝ => ((m : ℝ) + 1) * t ^ m := by fun_prop
+        rw [← ofReal_integral_eq_lintegral_ofReal
+            (hcont.integrableOn_Icc.mono_set Ioc_subset_Icc_self)
+            ((ae_restrict_iff' measurableSet_Ioc).2 (ae_of_all _ fun t ht =>
+              mul_nonneg (by positivity) (pow_nonneg (ha0.trans ht.1.le) m))),
+          ← intervalIntegral.integral_of_le hab'.le,
+          intervalIntegral.integral_eq_sub_of_hasDerivAt (f := fun t : ℝ => t ^ (m + 1))
+            (fun t _ => by simpa using hasDerivAt_pow (m + 1) t) (hcont.intervalIntegrable _ _),
+          ENNReal.ofReal_sub _ (pow_nonneg ha0 _)]
+    have hmap : R.measure.map (fun x : Euclid P => ‖x‖) =
+        R.measure (closedBall (0 : Euclid P) 1) • ν := by
+      refine Measure.ext_of_Ioc' _ _ (fun a b _ => ?_) (fun a b hab => ?_)
+      · rw [Measure.map_apply continuous_norm.measurable measurableSet_Ioc]
+        refine ne_top_of_le_ne_top (hball_fin b) (measure_mono fun x hx => ?_)
+        simpa using hx.2
+      · have hpre : (fun x : Euclid P => ‖x‖) ⁻¹' Ioc a b = closedBall 0 b \ closedBall 0 a := by
+          ext x
+          simp [and_comm]
+        rw [Measure.map_apply continuous_norm.measurable measurableSet_Ioc, Measure.smul_apply,
+          smul_eq_mul, hνIoc a b hab, hpre,
+          measure_sdiff (closedBall_subset_closedBall hab.le)
+            measurableSet_closedBall.nullMeasurableSet (hball_fin a),
+          hcdf b, hcdf a, ENNReal.mul_sub (fun _ _ => hc)]
+    -- Steps 3–6 at the radius `r`: `∫ max(r² − ‖x‖², 0) (‖x‖² − ‖pₓ x‖²) dμ = 0`.
+    have key : ∀ r : ℝ, 0 < r → ∀ᵐ x ∂R.measure, max (r ^ 2 - ‖x‖ ^ 2) 0 *
+        (‖x‖ ^ 2 - ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2) = 0 := by
+      intro r hr
+      -- The profile `g(s) = max(r² − s, 0) ≥ 0` and its primitive `η(s) = ∫ₛ^{r²} g`, `η' = −g`.
+      obtain ⟨η, hη_deriv, hη_zero⟩ : ∃ η : ℝ → ℝ,
+          (∀ s, HasDerivAt η (-max (r ^ 2 - s) 0) s) ∧ ∀ s, r ^ 2 ≤ s → η s = 0 := by
+        have hgc : Continuous fun u : ℝ => max (r ^ 2 - u) 0 := by fun_prop
+        refine ⟨fun s => ∫ u in s..r ^ 2, max (r ^ 2 - u) 0, fun s => ?_, fun s hs => ?_⟩
+        · exact intervalIntegral.integral_hasDerivAt_left (hgc.intervalIntegrable _ _)
+            (hgc.stronglyMeasurableAtFilter _ _) hgc.continuousAt
+        · show ∫ u in s..r ^ 2, max (r ^ 2 - u) 0 = 0
+          rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) fun u hu => ?_]
+          · simp
+          · rw [uIcc_of_ge hs] at hu
+            exact max_eq_right (by linarith [hu.1])
+      have hηc : Continuous η := continuous_iff_continuousAt.2 fun s => (hη_deriv s).continuousAt
+      have hη_C1 : ContDiff ℝ 1 η := by
+        have hderiv : deriv η = fun s => -max (r ^ 2 - s) 0 :=
+          funext fun s => (hη_deriv s).deriv
+        exact contDiff_one_iff_deriv.2
+          ⟨fun s => (hη_deriv s).differentiableAt, by rw [hderiv]; fun_prop⟩
+      -- Functions vanishing off `B̄_r(0)` have compact support.
+      have hcs : ∀ f : Euclid P → ℝ, (∀ x : Euclid P, r < ‖x‖ → f x = 0) →
+          HasCompactSupport f := by
+        intro f hf
+        refine (isCompact_closedBall (0 : Euclid P) r).of_isClosed_subset (isClosed_tsupport _) ?_
+        refine closure_minimal (fun x hx => ?_) isClosed_closedBall
+        by_contra hxr
+        exact hx (hf x (by simpa using hxr))
+      have hη_out : ∀ x : Euclid P, r < ‖x‖ →
+          η (‖x‖ ^ 2) = 0 ∧ max (r ^ 2 - ‖x‖ ^ 2) 0 = 0 :=
+        fun x hx => ⟨hη_zero _ (by nlinarith [norm_nonneg x]),
+          max_eq_right (by nlinarith [norm_nonneg x])⟩
+      -- The radial test field `X(x) = η(‖x‖²) x` (`C¹`, supported in `B̄_r(0)`).
+      have hX_C1 : ContDiff ℝ 1 (fun x : Euclid P => η (‖x‖ ^ 2) • x) :=
+        (hη_C1.comp (contDiff_norm_sq ℝ)).smul contDiff_id
+      have hX_cs : HasCompactSupport (fun x : Euclid P => η (‖x‖ ^ 2) • x) := by
+        refine (isCompact_closedBall (0 : Euclid P) r).of_isClosed_subset (isClosed_tsupport _) ?_
+        refine closure_minimal (fun x hx => ?_) isClosed_closedBall
+        by_contra hxr
+        exact hx (by simp [(hη_out x (by simpa using hxr)).1])
+      have hX_fderiv : ∀ x : Euclid P, HasFDerivAt (fun x : Euclid P => η (‖x‖ ^ 2) • x)
+          (η (‖x‖ ^ 2) • ContinuousLinearMap.id ℝ (Euclid P) +
+            (2 * -max (r ^ 2 - ‖x‖ ^ 2) 0) • (innerSL ℝ x).smulRight x) x := by
+        intro x
+        have hsq := (hasFDerivAt_id x).norm_sq
+        have hηComp := (hη_deriv (‖x‖ ^ 2)).comp_hasFDerivAt x hsq
+        refine (hηComp.smul (hasFDerivAt_id x)).congr_fderiv
+          (ContinuousLinearMap.ext fun w => ?_)
+        simp [mul_smul]
+        module
+      -- Simon 4.3.2: `div_M X = n η(‖x‖²) − 2 g(‖x‖²) ‖pₓ x‖²` wherever `dim Tₓ = n`.
+      have hdiv : ∀ x : Euclid P,
+          Module.finrank ℝ (approxTangentPlane (m + 1) R.carrier x) = m + 1 →
+          tangentialDivergence (m + 1) R.carrier (fun x : Euclid P => η (‖x‖ ^ 2) • x) x =
+            ((m : ℝ) + 1) * η (‖x‖ ^ 2) + 2 * -max (r ^ 2 - ‖x‖ ^ 2) 0 *
+              ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2 := by
+        intro x hx
+        set T := approxTangentPlane (m + 1) R.carrier x
+        rw [tangentialDivergence, (hX_fderiv x).fderiv, LinearMap.trace_comp_comm']
+        have hcomp : ((η (‖x‖ ^ 2) • ContinuousLinearMap.id ℝ (Euclid P) +
+            (2 * -max (r ^ 2 - ‖x‖ ^ 2) 0) • (innerSL ℝ x).smulRight x).toLinearMap ∘ₗ
+              T.starProjection.toLinearMap) =
+            η (‖x‖ ^ 2) • T.starProjection.toLinearMap +
+              (2 * -max (r ^ 2 - ‖x‖ ^ 2) 0) •
+                ((innerSL ℝ x).toLinearMap ∘ₗ T.starProjection.toLinearMap).smulRight x := by
+          ext w
+          simp
+        have htr : LinearMap.trace ℝ (Euclid P) T.starProjection.toLinearMap =
+            (m : ℝ) + 1 := by
+          rw [Submodule.starProjection, ContinuousLinearMap.toLinearMap_comp,
+            LinearMap.trace_comp_comm']
+          have hid : T.orthogonalProjectionOnto.toLinearMap ∘ₗ T.subtypeL.toLinearMap =
+              LinearMap.id := by
+            ext y
+            simp
+          rw [hid, LinearMap.trace_id, hx]
+          push_cast
+          ring
+        have hinner : inner ℝ x (T.starProjection x) = ‖T.starProjection x‖ ^ 2 := by
+          rw [← T.inner_starProjection_left_eq_right x x]
+          simpa using T.re_inner_starProjection_eq_normSq x
+        rw [hcomp, map_add, map_smul, map_smul, LinearMap.trace_smulRight, htr]
+        simp only [LinearMap.coe_comp, ContinuousLinearMap.coe_coe, Function.comp_apply,
+          innerSL_apply_apply, smul_eq_mul, hinner]
+        ring
+      -- Steps 3–4: stationarity, rewritten as an integral against `μ`.
+      have hstatX : ∫ x, tangentialDivergence (m + 1) R.carrier
+          (fun x : Euclid P => η (‖x‖ ^ 2) • x) x ∂R.measure = 0 := by
+        have hden : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+          funext x
+          simp
+        have hmeas : Measurable fun x => (R.mult x : NNReal) :=
+          measurable_from_nat.comp R.measurable_mult
+        rw [IMRep.measure, hden, integral_withDensity_eq_integral_smul hmeas,
+          ← hstat _ hX_C1 hX_cs, IMRep.firstVariation]
+        congr 1
+      have hstat' : ∫ x, (((m : ℝ) + 1) * η (‖x‖ ^ 2) + 2 * -max (r ^ 2 - ‖x‖ ^ 2) 0 *
+          ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2) ∂R.measure = 0 := by
+        refine (integral_congr_ae ?_).trans hstatX
+        filter_upwards [hrank] with x hx
+        exact (hdiv x hx).symm
+      -- Step 6: by Step 5 the same integral with `‖x‖²` in place of `‖pₓ x‖²` is
+      -- `μ(B̄₁) ∫₀^r (d/dt)(n tⁿ η(t²)) dt = 0`.
+      have hhom : ∫ x, (((m : ℝ) + 1) * η (‖x‖ ^ 2) + 2 * -max (r ^ 2 - ‖x‖ ^ 2) 0 * ‖x‖ ^ 2)
+          ∂R.measure = 0 := by
+        set G : ℝ → ℝ := fun t =>
+          ((m : ℝ) + 1) * η (t ^ 2) + 2 * -max (r ^ 2 - t ^ 2) 0 * t ^ 2 with hG
+        have hGc : Continuous G := by fun_prop
+        change ∫ x, G ‖x‖ ∂R.measure = 0
+        rw [← integral_map continuous_norm.aemeasurable hGc.aestronglyMeasurable, hmap,
+          integral_smul_measure]
+        suffices h : ∫ t, G t ∂ν = 0 by rw [h, smul_zero]
+        have hd : (fun t : ℝ => ENNReal.ofReal (((m : ℝ) + 1) * t ^ m)) =
+            fun t => ((Real.toNNReal (((m : ℝ) + 1) * t ^ m) : NNReal) : ℝ≥0∞) := rfl
+        rw [hν, hd, integral_withDensity_eq_integral_smul (by fun_prop)]
+        have hF : ∀ t, HasDerivAt (fun t : ℝ => ((m : ℝ) + 1) * (t ^ (m + 1) * η (t ^ 2)))
+            (((m : ℝ) + 1) * t ^ m * G t) t := by
+          intro t
+          have h3 := ((hasDerivAt_pow (m + 1) t).mul
+            ((hη_deriv (t ^ 2)).comp t (hasDerivAt_pow 2 t))).const_mul ((m : ℝ) + 1)
+          refine h3.congr_deriv ?_
+          simp only [hG, Function.comp_apply]
+          push_cast
+          ring
+        rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi
+          (Ioc_subset_Ioi_self : Ioc (0 : ℝ) r ⊆ Ioi 0) fun t ht => ?_]
+        · rw [setIntegral_congr_fun measurableSet_Ioc
+            (g := fun t => ((m : ℝ) + 1) * t ^ m * G t) fun t ht => ?_,
+            ← intervalIntegral.integral_of_le hr.le,
+            intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hF t)
+              ((by fun_prop : Continuous fun t : ℝ =>
+                ((m : ℝ) + 1) * t ^ m * G t).intervalIntegrable _ _)]
+          · simp [hη_zero (r ^ 2) le_rfl]
+          · simp only [NNReal.smul_def, smul_eq_mul]
+            rw [Real.coe_toNNReal _ (mul_nonneg (by positivity) (pow_nonneg ht.1.le m))]
+        · have hrt : r < t := by
+            simp only [Set.mem_sdiff, mem_Ioi, mem_Ioc, not_and, not_le] at ht
+            exact ht.2 ht.1
+          have hG0 : G t = 0 := by
+            simp only [hG, hη_zero (t ^ 2) (by nlinarith),
+              max_eq_right (by nlinarith : r ^ 2 - t ^ 2 ≤ 0)]
+            ring
+          simp [hG0]
+      -- Subtracting, `∫ g(‖x‖²) (‖x‖² − ‖pₓ x‖²) dμ = 0` with a nonnegative integrand.
+      have hpx_meas : AEMeasurable
+          (fun x => ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2) R.measure :=
+        ((ContinuousLinearMap.measurable_apply₂.comp_aemeasurable
+          (hproj.prodMk aemeasurable_id)).norm).pow_const 2
+      have hint1 : Integrable (fun x : Euclid P => ((m : ℝ) + 1) * η (‖x‖ ^ 2) +
+          2 * -max (r ^ 2 - ‖x‖ ^ 2) 0 * ‖x‖ ^ 2) R.measure := by
+        refine Continuous.integrable_of_hasCompactSupport (by fun_prop) (hcs _ fun x hx => ?_)
+        simp [(hη_out x hx).1, (hη_out x hx).2]
+      have hint2 : Integrable (fun x : Euclid P => max (r ^ 2 - ‖x‖ ^ 2) 0 *
+          (‖x‖ ^ 2 - ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2))
+          R.measure := by
+        refine Integrable.mono' (g := fun x : Euclid P => max (r ^ 2 - ‖x‖ ^ 2) 0 * ‖x‖ ^ 2)
+          ?_ ?_ (ae_of_all _ fun x => ?_)
+        · refine Continuous.integrable_of_hasCompactSupport (by fun_prop) (hcs _ fun x hx => ?_)
+          simp [(hη_out x hx).2]
+        · exact (by fun_prop : Continuous fun x : Euclid P =>
+            max (r ^ 2 - ‖x‖ ^ 2) 0).aestronglyMeasurable.mul
+              ((by fun_prop : Continuous fun x : Euclid P => ‖x‖ ^ 2).aestronglyMeasurable.sub
+                hpx_meas.aestronglyMeasurable)
+        · have h2 : ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2 ≤ ‖x‖ ^ 2 :=
+            pow_le_pow_left₀ (norm_nonneg _) (Submodule.norm_starProjection_apply_le _ x) 2
+          have h3 : 0 ≤ ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2 := by
+            positivity
+          rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (le_max_right _ _) (sub_nonneg.2 h2))]
+          exact mul_le_mul_of_nonneg_left (by linarith) (le_max_right _ _)
+      have hsplit : (fun x : Euclid P => ((m : ℝ) + 1) * η (‖x‖ ^ 2) +
+          2 * -max (r ^ 2 - ‖x‖ ^ 2) 0 *
+            ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2) =
+          fun x => (((m : ℝ) + 1) * η (‖x‖ ^ 2) + 2 * -max (r ^ 2 - ‖x‖ ^ 2) 0 * ‖x‖ ^ 2) +
+            2 * (max (r ^ 2 - ‖x‖ ^ 2) 0 *
+              (‖x‖ ^ 2 - ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2)) := by
+        funext x
+        ring
+      rw [hsplit, integral_add hint1 (hint2.const_mul 2), hhom, zero_add, integral_const_mul]
+        at hstat'
+      have h0 : ∫ x, max (r ^ 2 - ‖x‖ ^ 2) 0 *
+          (‖x‖ ^ 2 - ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2)
+            ∂R.measure = 0 := by
+        linarith
+      have hnn : 0 ≤ᵐ[R.measure] fun x : Euclid P => max (r ^ 2 - ‖x‖ ^ 2) 0 *
+          (‖x‖ ^ 2 - ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2) :=
+        ae_of_all _ fun x => mul_nonneg (le_max_right _ _) (sub_nonneg.2
+          (pow_le_pow_left₀ (norm_nonneg _) (Submodule.norm_starProjection_apply_le _ x) 2))
+      filter_upwards [(integral_eq_zero_iff_of_nonneg_ae hnn hint2).1 h0] with x hx
+      exact hx
+    -- Step 7: exhaust `ℝᴾ` by the balls `B_{k+1}(0)`; then `‖x − pₓ x‖² = ‖x‖² − ‖pₓ x‖² = 0`.
+    have hall : ∀ᵐ x ∂R.measure, ∀ k : ℕ, max (((k : ℝ) + 1) ^ 2 - ‖x‖ ^ 2) 0 *
+        (‖x‖ ^ 2 - ‖(approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2) = 0 :=
+      ae_all_iff.2 fun k => key _ (by positivity)
+    filter_upwards [hall] with x hx
+    obtain ⟨k, hk⟩ := exists_nat_gt ‖x‖
+    have hpos : 0 < max (((k : ℝ) + 1) ^ 2 - ‖x‖ ^ 2) 0 :=
+      lt_max_of_lt_left (by nlinarith [norm_nonneg x])
+    have hq := (mul_eq_zero.1 (hx k)).resolve_left hpos.ne'
+    have hpy := Submodule.norm_sq_eq_add_norm_sq_starProjection x
+      (approxTangentPlane (m + 1) R.carrier x)
+    rw [Submodule.starProjection_orthogonal, sub_apply, ContinuousLinearMap.id_apply] at hpy
+    have h0 : ‖x - (approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2 = 0 := by
+      linarith
+    exact (sub_eq_zero.1 (norm_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 h0))).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
