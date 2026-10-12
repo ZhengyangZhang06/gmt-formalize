@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bcb5c064c76c308793c4a6430c97299728ec97cc72ab95e34e38938770fb60ef",
+  "git_delta": {
+    "base_commit": "3193cd9eb7c6d3f466d04fa3e5e033b517260b4f",
+    "candidate_commit": "e64d13aa6fd26d2a08a7373e1795bb5c3450c331",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_wlm_eval_eq_integral_restrict",
+    "diff_sha256": "62b753dca55d8b5b03df6edde4ecd45ed220cc75e2de0bc7ff903194cac8265b",
+    "source_sha256": "a5aa1f6125cfc19d27160e8e642ffcda9215eecb1641ef15212825216a179fe0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_wlm_eval_eq_integral_restrict",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ (V : Set (Euclid P)) (ω : TestFormOn U n), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ V → T ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂(R.measure.restrict V)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
