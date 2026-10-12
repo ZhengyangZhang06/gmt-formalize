@@ -458,6 +458,36 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The operator norm of a linear map `A : ℝᵐ → ℝᵏ` is at most its Hilbert–Schmidt norm,
+`‖A‖ ≤ |A| = (Σᵢ |A eᵢ|²)^{1/2}` (Simon, Notation p. ix).  Proof: writing `x = Σᵢ xᵢ eᵢ`, the
+triangle inequality gives `|A x| ≤ Σᵢ |xᵢ| |A eᵢ|`, and Cauchy–Schwarz for finite sums bounds this
+by `|A| |x|`; `opNorm_le_bound` then gives the claim. -/
+theorem arp_opNorm_le_hsNorm : ∀ {m k : ℕ} (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A := by
+  intro m k A
+  -- Step 1: `hsNorm A ≥ 0`, so it suffices to show `|A x| ≤ hsNorm A * |x|` for every `x`.
+  refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun x => ?_
+  -- Step 2: expand `x = Σᵢ xᵢ eᵢ` in the standard basis `eᵢ = EuclideanSpace.single i 1`.
+  have hx : ∑ i, x i • EuclideanSpace.single i (1 : ℝ) = x := by
+    simpa only [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr] using
+      (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr x
+  calc ‖A x‖ = ‖∑ i, x i • A (EuclideanSpace.single i 1)‖ := by
+        conv_lhs => rw [← hx]
+        rw [map_sum]
+        simp only [map_smul]
+    _ ≤ ∑ i, ‖x i‖ * ‖A (EuclideanSpace.single i 1)‖ := by
+        refine (norm_sum_le _ _).trans_eq ?_
+        simp only [norm_smul]
+    -- Step 3: Cauchy–Schwarz for finite real sums.
+    _ ≤ √(∑ i, ‖x i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+        Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+    -- Step 4: the two factors are `|x|` and `hsNorm A`.
+    _ = hsNorm A * ‖x‖ := by
+        rw [hsNorm, hsNormSq, EuclideanSpace.norm_eq x, mul_comm]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
