@@ -435,85 +435,6 @@ theorem Submission.coarea_chart_area_pullback : ∀ (N m k : ℕ) (M : Set (Rn N
       have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
         simpa only [dist_eq_norm] using hL.le_mul_dist x y
       have herror : ‖φ x - φ y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
-/-- **Simon Ch. 2, §6 (pp. 66–67), toward the co-area formula 6.6: fibrewise disintegration in a
-chart.** Let `Ψ : ℝᵐ × ℝᵏ ⊇ Ω → ℝᴺ` be `C¹`, injective, with injective derivative, and straighten
-`f` (`f ∘ Ψ = fst` on `Ω`). For Borel `S ⊆ Ψ(Ω)` and Borel `g ≥ 0`, the fibre integrals
-`y ↦ ∫_{S ∩ f⁻¹y} g dHᵏ` are Borel and
-`∫_{Ω ∩ Ψ⁻¹S} J_v Ψ · g ∘ Ψ = ∫_{ℝᵐ} ∫_{S ∩ f⁻¹y} g dHᵏ dLᵐ(y)`,
-where `J_v Ψ(p) = normDet(DΨ(p) ∘ j)` is the area Jacobian of `Ψ` along the vertical directions
-`j(b) = (0, b)`. Proof: the area formula (Simon 3.2, 3.5) for the fibre maps `b ↦ Ψ(a, b)` and
-Tonelli. -/
-theorem Submission.coarea_chart_fiber_disintegration : ∀ (N m k : ℕ) (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N) (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω → (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) → MeasurableSet S → S ⊆ Ψ '' Ω → Measurable g → Measurable (fun y ↦ ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧ ∫⁻ p in Ω ∩ Ψ ⁻¹' S, ENNReal.ofReal (((fderiv ℝ Ψ p).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet) * g (Ψ p) = ∫⁻ y, ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
-  intro N m k f Ω Ψ S g hΩ hΨ hinj hreg hfΨ hS hSΨ hg
-  classical
-  /- Part I: the area formula (Simon 3.2, 3.5) for an injective map `ℝᵏ → ℝᴺ` with injective
-  derivative, proved as in SimonGMT `Chapter02.AreaFormula` (not among this file's imports): cut the
-  source into pieces on which the map is close to a linear map, compare with the linear area formula
-  on each piece, and let the relative error tend to `1`. -/
-  -- Step 1: the metric Jacobian `normDet` depends continuously on the linear map.
-  have hcont_nd : Continuous (fun L : Rn k →L[ℝ] Rn N ↦ L.toLinearMap.normDet) := by
-    have heq : (fun L : Rn k →L[ℝ] Rn N ↦ L.toLinearMap.normDet) =
-        fun L ↦ Real.sqrt ((ContinuousLinearMap.adjoint L ∘L L).det) := by
-      funext L
-      rw [← L.normDet_sq]
-      simpa only [RCLike.ofReal_real_eq_id, id_eq] using
-        (Real.sqrt_sq L.toLinearMap.normDet_nonneg).symm
-    rw [heq]
-    exact Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
-      (Continuous.clm_comp ContinuousLinearMap.adjoint.continuous continuous_id))
-  -- Step 2: the linear area formula (Simon 3.1), `Hᵏ(L(t)) = normDet L · Lᵏ(t)`.
-  have hlin : ∀ (L : Rn k →L[ℝ] Rn N) (t : Set (Rn k)),
-      μHE[k] (L '' t) = ENNReal.ofReal L.toLinearMap.normDet * volume t := by
-    intro L t
-    have h := L.toLinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume t
-    rwa [finrank_euclideanSpace_fin, ContinuousLinearMap.coe_coe] at h
-  -- Step 3: a pairwise distance comparison of two maps compares the measures of the images.
-  have hdist : ∀ (φ₁ φ₂ : Rn k → Rn N) (t : Set (Rn k)) (K : ℝ≥0), InjOn φ₂ t →
-      (∀ x ∈ t, ∀ y ∈ t, dist (φ₁ x) (φ₁ y) ≤ K * dist (φ₂ x) (φ₂ y)) →
-      μHE[k] (φ₁ '' t) ≤ (K : ℝ≥0∞) ^ k * μHE[k] (φ₂ '' t) := by
-    intro φ₁ φ₂ t K h₂ h₁₂
-    have hh : LipschitzOnWith K (φ₁ ∘ Function.invFunOn φ₂ t) (φ₂ '' t) := by
-      rw [lipschitzOnWith_iff_dist_le_mul]
-      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
-      simpa only [Function.comp_apply, h₂.leftInvOn_invFunOn hx, h₂.leftInvOn_invFunOn hy] using
-        h₁₂ x hx y hy
-    have himage : (φ₁ ∘ Function.invFunOn φ₂ t) '' (φ₂ '' t) = φ₁ '' t := by
-      rw [image_comp, h₂.invFunOn_image Subset.rfl]
-    simpa only [himage] using Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k hh
-  -- Step 4: a map `δ`-close to an injective linear map `L` (`L` `K`-antilipschitz) multiplies
-  -- `Hᵏ` by `normDet L` up to the factors `(1 + δK)ᵏ` and `(1 - δK)⁻ᵏ`.
-  have hupper : ∀ (φ₁ : Rn k → Rn N) (L : Rn k →L[ℝ] Rn N) (t : Set (Rn k)) (δ K : ℝ≥0),
-      ApproximatesLinearOn φ₁ L t δ → AntilipschitzWith K L →
-      μHE[k] (φ₁ '' t) ≤
-        ((1 + δ * K : ℝ≥0) : ℝ≥0∞) ^ k * (ENNReal.ofReal L.toLinearMap.normDet * volume t) := by
-    intro φ₁ L t δ K hf hL
-    rw [← hlin]
-    apply hdist φ₁ L t _ hL.injective.injOn
-    intro x hx y hy
-    have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
-      simpa only [dist_eq_norm] using hL.le_mul_dist x y
-    have herror : ‖φ₁ x - φ₁ y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
-      calc
-        _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
-        _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
-        _ = _ := by ring
-    simp only [dist_eq_norm, NNReal.coe_add, NNReal.coe_one, NNReal.coe_mul]
-    calc
-      ‖φ₁ x - φ₁ y‖ ≤ ‖φ₁ x - φ₁ y - (L x - L y)‖ + ‖L x - L y‖ := norm_le_norm_sub_add _ _
-      _ ≤ (δ : ℝ) * K * ‖L x - L y‖ + ‖L x - L y‖ := add_le_add herror le_rfl
-      _ = (1 + (δ : ℝ) * K) * ‖L x - L y‖ := by ring
-  have hlower : ∀ (φ₁ : Rn k → Rn N) (L : Rn k →L[ℝ] Rn N) (t : Set (Rn k)) (δ K : ℝ≥0),
-      ApproximatesLinearOn φ₁ L t δ → AntilipschitzWith K L → δ * K < 1 →
-      ENNReal.ofReal L.toLinearMap.normDet * volume t ≤
-        (((1 - δ * K)⁻¹ : ℝ≥0) : ℝ≥0∞) ^ k * μHE[k] (φ₁ '' t) := by
-    intro φ₁ L t δ K hf hL hδ
-    have hδR : (δ : ℝ) * K < 1 := hδ
-    have hd : ∀ x ∈ t, ∀ y ∈ t,
-        dist (L x) (L y) ≤ ((1 - δ * K)⁻¹ : ℝ≥0) * dist (φ₁ x) (φ₁ y) := by
-      intro x hx y hy
-      have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
-        simpa only [dist_eq_norm] using hL.le_mul_dist x y
-      have herror : ‖φ₁ x - φ₁ y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
         calc
           _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
           _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
@@ -912,6 +833,90 @@ theorem Submission.coarea_chart_fiber_disintegration : ∀ (N m k : ℕ) (f : Rn
   simp only
   rw [← hjac, ENNReal.ofReal_mul hnn]
   ring
+
+/-- **Simon Ch. 2, §6 (pp. 66–67), toward the co-area formula 6.6: fibrewise disintegration in a
+chart.** Let `Ψ : ℝᵐ × ℝᵏ ⊇ Ω → ℝᴺ` be `C¹`, injective, with injective derivative, and straighten
+`f` (`f ∘ Ψ = fst` on `Ω`). For Borel `S ⊆ Ψ(Ω)` and Borel `g ≥ 0`, the fibre integrals
+`y ↦ ∫_{S ∩ f⁻¹y} g dHᵏ` are Borel and
+`∫_{Ω ∩ Ψ⁻¹S} J_v Ψ · g ∘ Ψ = ∫_{ℝᵐ} ∫_{S ∩ f⁻¹y} g dHᵏ dLᵐ(y)`,
+where `J_v Ψ(p) = normDet(DΨ(p) ∘ j)` is the area Jacobian of `Ψ` along the vertical directions
+`j(b) = (0, b)`. Proof: the area formula (Simon 3.2, 3.5) for the fibre maps `b ↦ Ψ(a, b)` and
+Tonelli. -/
+theorem Submission.coarea_chart_fiber_disintegration : ∀ (N m k : ℕ) (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N) (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω → (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) → MeasurableSet S → S ⊆ Ψ '' Ω → Measurable g → Measurable (fun y ↦ ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧ ∫⁻ p in Ω ∩ Ψ ⁻¹' S, ENNReal.ofReal (((fderiv ℝ Ψ p).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet) * g (Ψ p) = ∫⁻ y, ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
+  intro N m k f Ω Ψ S g hΩ hΨ hinj hreg hfΨ hS hSΨ hg
+  classical
+  /- Part I: the area formula (Simon 3.2, 3.5) for an injective map `ℝᵏ → ℝᴺ` with injective
+  derivative, proved as in SimonGMT `Chapter02.AreaFormula` (not among this file's imports): cut the
+  source into pieces on which the map is close to a linear map, compare with the linear area formula
+  on each piece, and let the relative error tend to `1`. -/
+  -- Step 1: the metric Jacobian `normDet` depends continuously on the linear map.
+  have hcont_nd : Continuous (fun L : Rn k →L[ℝ] Rn N ↦ L.toLinearMap.normDet) := by
+    have heq : (fun L : Rn k →L[ℝ] Rn N ↦ L.toLinearMap.normDet) =
+        fun L ↦ Real.sqrt ((ContinuousLinearMap.adjoint L ∘L L).det) := by
+      funext L
+      rw [← L.normDet_sq]
+      simpa only [RCLike.ofReal_real_eq_id, id_eq] using
+        (Real.sqrt_sq L.toLinearMap.normDet_nonneg).symm
+    rw [heq]
+    exact Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      (Continuous.clm_comp ContinuousLinearMap.adjoint.continuous continuous_id))
+  -- Step 2: the linear area formula (Simon 3.1), `Hᵏ(L(t)) = normDet L · Lᵏ(t)`.
+  have hlin : ∀ (L : Rn k →L[ℝ] Rn N) (t : Set (Rn k)),
+      μHE[k] (L '' t) = ENNReal.ofReal L.toLinearMap.normDet * volume t := by
+    intro L t
+    have h := L.toLinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume t
+    rwa [finrank_euclideanSpace_fin, ContinuousLinearMap.coe_coe] at h
+  -- Step 3: a pairwise distance comparison of two maps compares the measures of the images.
+  have hdist : ∀ (φ₁ φ₂ : Rn k → Rn N) (t : Set (Rn k)) (K : ℝ≥0), InjOn φ₂ t →
+      (∀ x ∈ t, ∀ y ∈ t, dist (φ₁ x) (φ₁ y) ≤ K * dist (φ₂ x) (φ₂ y)) →
+      μHE[k] (φ₁ '' t) ≤ (K : ℝ≥0∞) ^ k * μHE[k] (φ₂ '' t) := by
+    intro φ₁ φ₂ t K h₂ h₁₂
+    have hh : LipschitzOnWith K (φ₁ ∘ Function.invFunOn φ₂ t) (φ₂ '' t) := by
+      rw [lipschitzOnWith_iff_dist_le_mul]
+      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+      simpa only [Function.comp_apply, h₂.leftInvOn_invFunOn hx, h₂.leftInvOn_invFunOn hy] using
+        h₁₂ x hx y hy
+    have himage : (φ₁ ∘ Function.invFunOn φ₂ t) '' (φ₂ '' t) = φ₁ '' t := by
+      rw [image_comp, h₂.invFunOn_image Subset.rfl]
+    simpa only [himage] using Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k hh
+  -- Step 4: a map `δ`-close to an injective linear map `L` (`L` `K`-antilipschitz) multiplies
+  -- `Hᵏ` by `normDet L` up to the factors `(1 + δK)ᵏ` and `(1 - δK)⁻ᵏ`.
+  have hupper : ∀ (φ₁ : Rn k → Rn N) (L : Rn k →L[ℝ] Rn N) (t : Set (Rn k)) (δ K : ℝ≥0),
+      ApproximatesLinearOn φ₁ L t δ → AntilipschitzWith K L →
+      μHE[k] (φ₁ '' t) ≤
+        ((1 + δ * K : ℝ≥0) : ℝ≥0∞) ^ k * (ENNReal.ofReal L.toLinearMap.normDet * volume t) := by
+    intro φ₁ L t δ K hf hL
+    rw [← hlin]
+    apply hdist φ₁ L t _ hL.injective.injOn
+    intro x hx y hy
+    have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
+      simpa only [dist_eq_norm] using hL.le_mul_dist x y
+    have herror : ‖φ₁ x - φ₁ y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
+      calc
+        _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
+        _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
+        _ = _ := by ring
+    simp only [dist_eq_norm, NNReal.coe_add, NNReal.coe_one, NNReal.coe_mul]
+    calc
+      ‖φ₁ x - φ₁ y‖ ≤ ‖φ₁ x - φ₁ y - (L x - L y)‖ + ‖L x - L y‖ := norm_le_norm_sub_add _ _
+      _ ≤ (δ : ℝ) * K * ‖L x - L y‖ + ‖L x - L y‖ := add_le_add herror le_rfl
+      _ = (1 + (δ : ℝ) * K) * ‖L x - L y‖ := by ring
+  have hlower : ∀ (φ₁ : Rn k → Rn N) (L : Rn k →L[ℝ] Rn N) (t : Set (Rn k)) (δ K : ℝ≥0),
+      ApproximatesLinearOn φ₁ L t δ → AntilipschitzWith K L → δ * K < 1 →
+      ENNReal.ofReal L.toLinearMap.normDet * volume t ≤
+        (((1 - δ * K)⁻¹ : ℝ≥0) : ℝ≥0∞) ^ k * μHE[k] (φ₁ '' t) := by
+    intro φ₁ L t δ K hf hL hδ
+    have hδR : (δ : ℝ) * K < 1 := hδ
+    have hd : ∀ x ∈ t, ∀ y ∈ t,
+        dist (L x) (L y) ≤ ((1 - δ * K)⁻¹ : ℝ≥0) * dist (φ₁ x) (φ₁ y) := by
+      intro x hx y hy
+      have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
+        simpa only [dist_eq_norm] using hL.le_mul_dist x y
+      have herror : ‖φ₁ x - φ₁ y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
+        calc
+          _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
+          _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
+          _ = _ := by ring
       have htriangle : ‖L x - L y‖ ≤ ‖φ₁ x - φ₁ y‖ + ‖φ₁ x - φ₁ y - (L x - L y)‖ := by
         simpa only [norm_sub_rev, add_comm] using
           norm_le_norm_sub_add (L x - L y) (φ₁ x - φ₁ y)
@@ -1323,6 +1328,7 @@ theorem Submission.coarea_chart_fiber_disintegration : ∀ (N m k : ℕ) (f : Rn
   · rw [hfun]
     exact hHT_meas.lintegral_prod_right'
   · rw [hTonelli, hfun]
+
 /-- **The co-area Jacobian as a norm determinant** (Simon Ch. 2, §6, p. 66). Let `T = T_x M`, let
 `L = Df(x) ∘ ι_T : T → ℝᵐ` with `ι_T` the inclusion of `T` in `ℝᴺ`, and let `L*` be the adjoint
 of `L`. Then `J*_f(x) = √det(L ∘ L*) = normDet(L*)`. For `g = L*` we have `g* = L`, so
@@ -1519,37 +1525,6 @@ theorem Submission.coareaJacobian_mul_normDet_chart : ∀ (N m k : ℕ) (M : Set
     ← LinearMap.normDet_codRestrict hBT]
   exact key
 
-/-- **Co-area formula on one straightening chart** (Step 3 of the supplied proof of 6.6).
-`Ψ` is an injective `C¹` immersion of the open set `Ω ⊆ ℝᵐ × ℝᵏ` with `f ∘ Ψ = WithLp.fst` and
-`T_{Ψ p} M = range DΨ(p)`; `S ⊆ Ψ(Ω)` and `g` are Borel. Write `j b = toLp(0, b)` and
-`J_v(p) = normDet(DΨ(p) ∘ j)`. The area formula for `Ψ`, together with the pointwise identity
-`J*_f(Ψ p) · normDet DΨ(p) = J_v(p)` (part (2) of `coarea_jacobian_linear_algebra`), gives
-`∫_S g J*_f dHᵐ⁺ᵏ = ∫_{Ω ∩ Ψ⁻¹S} J_v · g ∘ Ψ` (`coarea_chart_area_pullback`). Tonelli and the
-area formula for the fibre maps `b ↦ Ψ(toLp(a, b))` identify the right side with
-`∫_{ℝᵐ} ∫_{S ∩ f⁻¹{y}} g dHᵏ dLᵐ(y)` and show that the inner integral is Borel in `y`
-(`coarea_chart_fiber_disintegration`). -/
-theorem Submission.coarea_formula_on_straightening_chart : ∀ (N m k : ℕ) (M : Set (Rn N))
-    (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N)
-    (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω →
-    (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, DifferentiableAt ℝ f (Ψ p)) →
-    (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) →
-    (∀ p ∈ Ω, tangentSpace M (Ψ p) = LinearMap.range (fderiv ℝ Ψ p).toLinearMap) →
-    MeasurableSet S → S ⊆ Ψ '' Ω → Measurable g →
-    Measurable (fun y ↦ ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧
-      ∫⁻ x in S, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] =
-        ∫⁻ y, ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
-  intro N m k M f Ω Ψ S g hΩ hΨ hΨi hΨd hfd hfΨ hT hS hSΨ hg
-  -- Steps 1–3: pull the left side back to `Ω ∩ Ψ⁻¹S`, using the pointwise Jacobian identity.
-  have hpull := Submission.coarea_chart_area_pullback N m k M f Ω Ψ S g hΩ hΨ hΨi hΨd hfd hfΨ hT
-    hS hSΨ (Submission.coarea_jacobian_linear_algebra.2 N m k M f)
-  -- Steps 4–7: Tonelli and the area formula on the fibres `{toLp(a, ·)} ∩ Ω`.
-  obtain ⟨hmeas, hfib⟩ := Submission.coarea_chart_fiber_disintegration N m k f Ω Ψ S g hΩ hΨ hΨi
-    hΨd hfΨ hS hSΨ hg
-  exact ⟨hmeas, hpull.trans hfib⟩
-
-/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
-
 /-- **`J*_f(x) = 0` iff `Df(x) ∘ A` is not onto** (Simon Ch. 2, §6, p. 66: `J*_f(x) ≠ 0`
 precisely when `df_x` has rank `m`), for `A : ℝⁿ → ℝᴺ` with `T_x M = range A`. With
 `L = df_x = Df(x)|_{T_x M}`, `J*_f(x) = normDet(L*)` (`coareaJacobian_eq_normDet_adjoint`), which
@@ -1583,5 +1558,36 @@ theorem Submission.coarea_jacobian_linear_algebra : (∀ (N m n : ℕ) (M : Set 
   -- Part (2), Steps 4–9: corestrict `A` and `B` to `T` and compute in block-triangular form.
   ⟨Submission.coareaJacobian_eq_zero_iff_not_surjective,
     Submission.coareaJacobian_mul_normDet_chart⟩
+
+/-- **Co-area formula on one straightening chart** (Step 3 of the supplied proof of 6.6).
+`Ψ` is an injective `C¹` immersion of the open set `Ω ⊆ ℝᵐ × ℝᵏ` with `f ∘ Ψ = WithLp.fst` and
+`T_{Ψ p} M = range DΨ(p)`; `S ⊆ Ψ(Ω)` and `g` are Borel. Write `j b = toLp(0, b)` and
+`J_v(p) = normDet(DΨ(p) ∘ j)`. The area formula for `Ψ`, together with the pointwise identity
+`J*_f(Ψ p) · normDet DΨ(p) = J_v(p)` (part (2) of `coarea_jacobian_linear_algebra`), gives
+`∫_S g J*_f dHᵐ⁺ᵏ = ∫_{Ω ∩ Ψ⁻¹S} J_v · g ∘ Ψ` (`coarea_chart_area_pullback`). Tonelli and the
+area formula for the fibre maps `b ↦ Ψ(toLp(a, b))` identify the right side with
+`∫_{ℝᵐ} ∫_{S ∩ f⁻¹{y}} g dHᵏ dLᵐ(y)` and show that the inner integral is Borel in `y`
+(`coarea_chart_fiber_disintegration`). -/
+theorem Submission.coarea_formula_on_straightening_chart : ∀ (N m k : ℕ) (M : Set (Rn N))
+    (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N)
+    (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω →
+    (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, DifferentiableAt ℝ f (Ψ p)) →
+    (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) →
+    (∀ p ∈ Ω, tangentSpace M (Ψ p) = LinearMap.range (fderiv ℝ Ψ p).toLinearMap) →
+    MeasurableSet S → S ⊆ Ψ '' Ω → Measurable g →
+    Measurable (fun y ↦ ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧
+      ∫⁻ x in S, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] =
+        ∫⁻ y, ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
+  intro N m k M f Ω Ψ S g hΩ hΨ hΨi hΨd hfd hfΨ hT hS hSΨ hg
+  -- Steps 1–3: pull the left side back to `Ω ∩ Ψ⁻¹S`, using the pointwise Jacobian identity.
+  have hpull := Submission.coarea_chart_area_pullback N m k M f Ω Ψ S g hΩ hΨ hΨi hΨd hfd hfΨ hT
+    hS hSΨ (Submission.coarea_jacobian_linear_algebra.2 N m k M f)
+  -- Steps 4–7: Tonelli and the area formula on the fibres `{toLp(a, ·)} ∩ Ω`.
+  obtain ⟨hmeas, hfib⟩ := Submission.coarea_chart_fiber_disintegration N m k f Ω Ψ S g hΩ hΨ hΨi
+    hΨd hfΨ hS hSΨ hg
+  exact ⟨hmeas, hpull.trans hfib⟩
+
+/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
 end GMT.Ch02
