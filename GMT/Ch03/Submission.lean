@@ -3863,6 +3863,118 @@ theorem Submission.chart_approx_tangent_and_differential : ∀ (n ℓ p : ℕ) (
   filter_upwards [hA, hBC] with u hAu hBCu huV huM
   exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
 
+/-- **Simon Ch. 3, area formula (2.4)–(2.5) (pp. 76–77)** (`chapter-03.txt` lines 327–401;
+erratum: the outer integrals are over the target `ℝ^{n+ℓ₁}`), along the route of lines 370–371:
+the Lipschitz area formula on parameter domains plus the Jacobian chain rule (Ch. 2 (4.11)).
+By Lemma 1.2 (`submanifoldCoverCharacterization_holds`) `M ⊆ N₀ ∪ ⋃ N_j` with `Hⁿ(N₀) = 0` and
+`C¹` submanifolds `N_j`, refined (`areaFormula_good_chart_pieces`) to countably many compact chart
+pieces `ψ_α(D_α)` with `ψ_α` bi-Lipschitz and `f ∘ ψ_α` Lipschitz on `D_α`. For `Lⁿ`-a.e. `u ∈ V_α`
+with `ψ_α(u) ∈ M`, `chart_approx_tangent_and_differential` and
+`areaFormula_chart_jacobian_identity` (`θ > 0` on `M`) give the weighted tangent plane
+`range Dψ_α(u)`, a tangential differential, and `J^M_f(ψ_α u) · Jψ_α(u) = J(f ∘ ψ_α)(u)`.
+(a): with `v_α` an `Lⁿ`-conull set of such parameters, the exceptional set lies in
+`N₀ ∪ ⋃_α ψ_α(D_α ∖ v_α)`, which is `Hⁿ`-null (Lipschitz image bound for `ψ_α` on `D_α`,
+`Hⁿ = Lⁿ` on `ℝⁿ`). (b), (c): `areaFormula_on_chart_piece` gives the formula on every
+`Hⁿ`-measurable `S ⊆ M ∩ ψ_α(D_α)`, and `areaFormula_glue_pieces` sums over `α`; the uncovered
+part `A ∖ ⋃_α ψ_α(D_α) ⊆ N₀ ∩ U` is `Hⁿ`-null, and so is its image
+(`areaFormula_image_null_of_locallyLipschitzOn`). For (2.4) take `h ≡ 1`, whose fibre sums are
+`encard` (`ENNReal.tsum_set_one`). -/
+theorem Submission.areaFormula_holds : AreaFormula := by
+  intro n ℓ ℓ₁ M U θ f hM hrect hθ hU hMU hf
+  -- Lemma 1.2, then countably many good chart pieces `ψ α '' D α`.
+  obtain ⟨N₀, Nj, hN₀, hNj, hMcov⟩ :=
+    (Submission.submanifoldCoverCharacterization_holds n ℓ M).mp hrect
+  obtain ⟨V, D, ψ, K, C, hpc, hMcov'⟩ :=
+    Submission.areaFormula_good_chart_pieces n (n + ℓ) (n + ℓ₁) M U N₀ Nj f hU hMU hf hNj hMcov
+  set J : Rn (n + ℓ) → ℝ := fun x ↦ areaJacobian (approxTangentPlane n M θ x) f x
+  -- Pointwise identification of `T_x M`, `d^M f_x` and `J^M_f` at a.e. chart parameter.
+  have hgood : ∀ α, ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V α → ψ α u ∈ M →
+      HasWeightedApproximateTangentSpaceAt n M θ (ψ α u)
+        (LinearMap.range (fderiv ℝ (ψ α) u).toLinearMap) ∧
+      DifferentiableAt ℝ (f ∘ ψ α) u ∧
+      (∃ L : ↥(LinearMap.range (fderiv ℝ (ψ α) u).toLinearMap) →L[ℝ] Rn (n + ℓ₁),
+        HasTangentialDifferentialAt (LinearMap.range (fderiv ℝ (ψ α) u).toLinearMap) f
+          (ψ α u) L) ∧
+      J (ψ α u) * (fderiv ℝ (ψ α) u).toLinearMap.normDet =
+        (fderiv ℝ (f ∘ ψ α) u).toLinearMap.normDet := by
+    intro α
+    obtain ⟨hVo, hψC, hψinj, -, -, -, -, -⟩ := hpc α
+    filter_upwards [Submission.chart_approx_tangent_and_differential n ℓ (n + ℓ₁) M U θ f (V α)
+      (ψ α) hM hθ hU hMU hf hVo hψC hψinj] with u hu huV huM
+    obtain ⟨hA, hB, hC⟩ := hu huV huM
+    obtain ⟨-, hL, hjac⟩ :=
+      Submission.areaFormula_chart_jacobian_identity n (n + ℓ) (n + ℓ₁) M θ f (ψ α) u
+        (hθ.1 _ huM).ne' hA hC
+    exact ⟨hA, hB, hL, hjac⟩
+  -- The pieces are compact, the uncovered part of `M` is null and so is its image.
+  have hGmeas : ∀ α, NullMeasurableSet (ψ α '' D α) (μHE[n] : Measure (Rn (n + ℓ))) := by
+    intro α
+    obtain ⟨-, -, -, hDc, -, hLψ, -, -⟩ := hpc α
+    exact (hDc.image_of_continuousOn hLψ.continuousOn).isClosed.measurableSet.nullMeasurableSet
+  have huncov : ∀ A ⊆ M, μHE[n] (A \ ⋃ α, ψ α '' D α) = 0 := by
+    intro A hAM
+    refine measure_mono_null (fun x hx ↦ ?_) hN₀
+    rcases hMcov' (hAM hx.1) with hx0 | hx1
+    · exact hx0
+    · exact absurd hx1 hx.2
+  have himnull : ∀ A ⊆ M, μHE[n] (f '' (A \ ⋃ α, ψ α '' D α)) = 0 := fun A hAM ↦
+    Submission.areaFormula_image_null_of_locallyLipschitzOn (n + ℓ) (n + ℓ₁) n U _ f hf
+      (fun x hx ↦ hMU (hAM hx.1)) (huncov A hAM)
+  -- The weighted area formula on every measurable subset of one piece.
+  have hpiece : ∀ (h : Rn (n + ℓ) → ℝ≥0∞) (α : ℕ) (S : Set (Rn (n + ℓ))),
+      S ⊆ M ∩ ψ α '' D α → NullMeasurableSet S μHE[n] →
+      AEMeasurable h ((μHE[n] : Measure (Rn (n + ℓ))).restrict S) →
+      (∫⁻ x in S, h x * ENNReal.ofReal (J x) ∂μHE[n] =
+        ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂μHE[n]) ∧
+      AEMeasurable (fun y ↦ ∑' x : ↥(S ∩ f ⁻¹' {y}), h x) (μHE[n] : Measure (Rn (n + ℓ₁))) := by
+    intro h α S hS hSmeas hh
+    obtain ⟨hVo, hψC, hψinj, hDc, hDV, hLψ, hanti, hLfψ⟩ := hpc α
+    refine Submission.areaFormula_on_chart_piece n (n + ℓ) (n + ℓ₁) (ψ α) f (D α) (K α) (C α) J S
+      h hDc (fun u hu ↦ ((hψC.differentiableOn one_ne_zero) u (hDV hu)).differentiableAt
+        (hVo.mem_nhds (hDV hu))) (fun u hu ↦ hψinj u (hDV hu)) hLψ hanti hLfψ
+      (fun x hx ↦ (hS hx).2) hSmeas ?_ hh
+    filter_upwards [hgood α] with u hu huD huS
+    obtain ⟨-, hB, -, hjac⟩ := hu (hDV huD) (hS huS).1
+    exact ⟨hB, hjac⟩
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a): off `N₀ ∪ ⋃ α, ψ α '' (D α \ v α)`, every point of `M` is a good chart point.
+    choose v hv hvgood using fun α ↦ (hgood α).exists_mem
+    rw [ae_iff]
+    refine measure_mono_null (t := N₀ ∪ ⋃ α, ψ α '' (D α \ v α)) (fun x hx ↦ ?_) ?_
+    · simp only [mem_ofPred_eq, not_imp] at hx
+      obtain ⟨hxM, hxbad⟩ := hx
+      rcases hMcov' hxM with hx0 | hx1
+      · exact Or.inl hx0
+      · obtain ⟨α, u, huD, rfl⟩ := mem_iUnion.mp hx1
+        by_cases huv : u ∈ v α
+        · obtain ⟨hA, -, ⟨L, hL⟩, -⟩ := hvgood α u huv ((hpc α).2.2.2.2.1 huD) hxM
+          exact absurd ⟨_, L, hA, hL⟩ hxbad
+        · exact Or.inr (mem_iUnion.mpr ⟨α, u, ⟨huD, huv⟩, rfl⟩)
+    · refine measure_union_null hN₀ (measure_iUnion_null fun α ↦ le_antisymm ?_ bot_le)
+      obtain ⟨-, -, -, -, -, hLψ, -, -⟩ := hpc α
+      calc μHE[n] (ψ α '' (D α \ v α))
+          ≤ (K α : ℝ≥0∞) ^ n * μHE[n] (D α \ v α) :=
+            Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+              (hLψ.mono sdiff_subset)
+        _ = 0 := by
+            rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+              measure_mono_null (fun u hu ↦ hu.2) (mem_ae_iff.mp (hv α)), mul_zero]
+  · -- (b), i.e. (2.4): glue the pieces with `h ≡ 1`.
+    intro A hAM hA
+    have key := Submission.areaFormula_glue_pieces (Rn (n + ℓ)) (Rn (n + ℓ₁)) μHE[n] μHE[n] f
+      (fun x ↦ ENNReal.ofReal (J x)) (fun _ ↦ 1) A (fun α ↦ ψ α '' D α) hA hGmeas
+      (huncov A hAM) (himnull A hAM) fun α S hS hSmeas ↦ by
+        simpa only [one_mul] using hpiece (fun _ ↦ 1) α S
+          (fun x hx ↦ ⟨hAM (hS hx).1, (hS hx).2⟩) hSmeas aemeasurable_const
+    simpa only [ENNReal.tsum_set_one] using key
+  · -- (c), i.e. (2.5): glue the pieces with the weight `h`.
+    intro h hh
+    exact Submission.areaFormula_glue_pieces (Rn (n + ℓ)) (Rn (n + ℓ₁)) μHE[n] μHE[n] f
+      (fun x ↦ h x * ENNReal.ofReal (J x)) h M (fun α ↦ ψ α '' D α) hM hGmeas
+      (huncov M subset_rfl) (himnull M subset_rfl) fun α S hS hSmeas ↦
+        hpiece h α S hS hSmeas (hh.mono_measure (Measure.restrict_mono (fun x hx ↦ (hS hx).1)
+          le_rfl))
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
