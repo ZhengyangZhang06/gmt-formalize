@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1.besicovitch_cover_estimate-a1",
+  "parent_id": "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1",
+  "depth": 4,
+  "title": "Besicovitch covering estimate: μ(A) ≤ C·t·ν(thickening(ρ₀, A)) when every x ∈ A carries a closed ball of radius in (0, ρ₀) with μ ≤ t·ν (parent steps 1–2)",
+  "statement": "For every N ∈ ℕ there is C ∈ ℕ (depending only on N) such that the following holds. Let μ and ν be measures on ℝ^N = Euclidean N, let A ⊆ ℝ^N be an arbitrary set, ρ₀ ∈ ℝ and t ∈ [0,∞]. Suppose every x ∈ A has some σ ∈ ℝ with 0 < σ < ρ₀ and μ(B_σ(x)) ≤ t·ν(B_σ(x)), where B_σ(x) = closedBall x σ. Then μ(A) ≤ C·t·ν(thickening(ρ₀, A)) in [0,∞]. Here μ(A) is the outer measure, and thickening(ρ₀, A) = {y : infEdist(y, A) < ofReal(ρ₀)} (Metric.thickening).",
+  "lean_statement": "∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A : Set (Euclidean N)) (ρ₀ : ℝ) (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧ μ (closedBall x σ) ≤ t * ν (closedBall x σ)) → μ A ≤ (C : ℝ≥0∞) * t * ν (thickening ρ₀ A)",
+  "lean_name": "intcpt_vdb_besicovitch_cover_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-variation-density-bound-a1-liminf-ratio-dd5c124c71-a1"
+}
