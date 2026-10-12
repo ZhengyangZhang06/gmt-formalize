@@ -410,6 +410,152 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Change of variables for `H^n` set integrals under the blow-up map (step 1 of the tangent-point
+density argument, Simon Ch. 3, Remark 1.8(2)): for `r > 0`, `η = η_{x,r}` (`η y = r⁻¹ • (y - x)`),
+an arbitrary set `M` and an arbitrary `F : ℝ^N → ℝ`, `∫_{η(M)} F dH^n = r⁻¹ ^ n ∫_M F ∘ η dH^n`. -/
+theorem Submission.intcpt_id_tpd_setIntegral_blowUpMap_image :
+    ∀ (N n : ℕ) (x : Euclidean N) (r : ℝ) (M : Set (Euclidean N)) (F : Euclidean N → ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, F y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, F (Chapter03.blowUpMap x r z) ∂μHE[n] := by
+  intro N n x r M F hr
+  -- Step 1: `η` is a homeomorphism of `ℝ^N` (inverse `y ↦ x + r • y`), hence an injective
+  -- measurable embedding.
+  let η : Euclidean N ≃ₜ Euclidean N :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have hη : (η : Euclidean N → Euclidean N) = Chapter03.blowUpMap x r := rfl
+  have hemb : MeasurableEmbedding η := η.measurableEmbedding
+  -- Step 2: for every set `S`, `η⁻¹(S) = x + r • S`, so `H^n(η⁻¹(S)) = r ^ n H^n(S)`.
+  have hpre : ∀ S : Set (Euclidean N),
+      (μHE[n] : Measure (Euclidean N)) (η ⁻¹' S) = ENNReal.ofReal (r ^ n) * μHE[n] S := by
+    intro S
+    have hS : (η : Euclidean N → Euclidean N) ⁻¹' S = (x + ·) '' (r • S) := by
+      ext y
+      constructor
+      · intro hy
+        refine ⟨r • η y, Set.smul_mem_smul_set hy, ?_⟩
+        change x + r • (r⁻¹ • (y - x)) = y
+        rw [smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+      · rintro ⟨_, ⟨s, hs, rfl⟩, rfl⟩
+        change r⁻¹ • (x + r • s - x) ∈ S
+        rwa [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+    rw [hS, (isometry_add_left x).euclideanHausdorffMeasure_image,
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne', ENNReal.smul_def, smul_eq_mul,
+      ENNReal.coe_pow, ← enorm_eq_nnnorm, Real.enorm_eq_ofReal hr.le, ENNReal.ofReal_pow hr.le]
+  -- Step 3: `H^n.map η = r ^ n • H^n`, checked on Borel sets.
+  have hmap : (μHE[n] : Measure (Euclidean N)).map η =
+      ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Euclidean N)) := by
+    ext S hS
+    rw [Measure.map_apply hemb.measurable hS, hpre, Measure.smul_apply, smul_eq_mul]
+  -- Step 4: `(H^n ⌞ M).map η = r ^ n • H^n ⌞ η(M)`, since `η⁻¹(η(M)) = M`.
+  have hres : ((μHE[n] : Measure (Euclidean N)).restrict M).map η =
+      ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Euclidean N)).restrict (η '' M) := by
+    rw [← Measure.restrict_smul, ← hmap, hemb.restrict_map, Set.preimage_image_eq M η.injective]
+  -- Step 5: `∫_M F ∘ η dH^n = r ^ n ∫_{η(M)} F dH^n`; neither `M` nor `F` need be measurable.
+  have hcov : ∫ z in M, F (η z) ∂μHE[n] = r ^ n * ∫ y in η '' M, F y ∂μHE[n] := by
+    rw [← hemb.integral_map, hres, integral_smul_measure,
+      ENNReal.toReal_ofReal (pow_nonneg hr.le n), smul_eq_mul]
+  -- Step 6: multiply by `r⁻¹ ^ n`, as `r⁻¹ ^ n * r ^ n = 1`.
+  rw [← hη, hcov, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ hr.ne', one_pow, one_mul]
+
+/-- Cut-off sandwich for one blow-up integral (tangent point density, Simon Ch. 3, Remark 1.8(2)):
+let `θ ≥ 0` on `M` be `H^n`-integrable on `M ∩ B_{r₀}(x)`, `ν = (H^n ⌞ M) ⌞ θ`, `η = η_{x,r}`
+(`η z = r⁻¹ • (z - x)`) with `r > 0`, and `f ∈ C_c(ℝ^N)` with `0 ≤ f ≤ 1`, `f = 1` on `B_a(0)` and
+`f = 0` off `B_R(0)`, where `rR ≤ r₀`. Then
+`ν(B_{ra}(x)) ≤ r^n ∫_{η(M)} f(y) θ(x + r y) dH^n(y) ≤ ν(B_{rR}(x))`. -/
+theorem Submission.intcpt_id_tpd_ball_sandwich :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (f : C_c(Euclidean N, ℝ)) (r₀ a R r : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → (∀ y, 0 ≤ f y) → (∀ y, f y ≤ 1) → (∀ y, ‖y‖ ≤ a → f y = 1) → (∀ y, R < ‖y‖ → f y = 0) → 0 < r → r * R ≤ r₀ → (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x (r * a)) ≤ ENNReal.ofReal (r ^ n * ∫ y in Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂μHE[n]) ∧ ENNReal.ofReal (r ^ n * ∫ y in Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂μHE[n]) ≤ (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x (r * R)) := by
+  intro N n M θ x f r₀ a R r hM hθ hint hf0 hf1 hfa hfR hr hrR
+  -- Notation: `η = blowUpMap x r`, `ν` the weighted measure of the statement, and
+  -- `J = ∫⁻_M ofReal (f (η z)) * ofReal (θ z) dH^n(z) ∈ [0, ∞]`.
+  -- Step 1: `‖η z‖ = |z - x| / r`, so `f ∘ η = 1` on `B_{ra}(x)` and `f ∘ η = 0` off `B_{rR}(x)`.
+  have hnorm : ∀ z, ‖Chapter03.blowUpMap x r z‖ = dist z x / r := by
+    intro z
+    rw [Chapter03.blowUpMap, norm_smul, norm_inv, Real.norm_of_nonneg hr.le, dist_eq_norm,
+      inv_mul_eq_div]
+  have hone : ∀ z ∈ closedBall x (r * a), f (Chapter03.blowUpMap x r z) = 1 := by
+    intro z hz
+    refine hfa _ ?_
+    rw [hnorm, div_le_iff₀ hr, mul_comm a r]
+    exact hz
+  have hzero : ∀ z ∉ closedBall x (r * R), f (Chapter03.blowUpMap x r z) = 0 := by
+    intro z hz
+    refine hfR _ ?_
+    rw [hnorm, lt_div_iff₀ hr, mul_comm R r]
+    exact not_le.1 hz
+  -- Step 2: `ν(B_s(x)) = ∫⁻_M 1_{B_s(x)} ofReal θ dH^n` (no measurability of `θ` is needed).
+  have hball : ∀ s : ℝ, (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity
+      fun y ↦ ENNReal.ofReal (θ y)) (closedBall x s) =
+      ∫⁻ z in M, (closedBall x s).indicator (fun y ↦ ENNReal.ofReal (θ y)) z ∂μHE[n] := by
+    intro s
+    rw [withDensity_apply _ measurableSet_closedBall, lintegral_indicator measurableSet_closedBall]
+  -- Step 3: `ν(B_{ra}(x)) ≤ J ≤ ν(B_{rR}(x))`, comparing the integrands pointwise.
+  have hlow_pt : ∀ z, (closedBall x (r * a)).indicator (fun y ↦ ENNReal.ofReal (θ y)) z ≤
+      ENNReal.ofReal (f (Chapter03.blowUpMap x r z)) * ENNReal.ofReal (θ z) := by
+    intro z
+    by_cases hz : z ∈ closedBall x (r * a)
+    · rw [indicator_of_mem hz, hone z hz, ENNReal.ofReal_one, one_mul]
+    · rw [indicator_of_notMem hz]
+      exact zero_le
+  have hup_pt : ∀ z, ENNReal.ofReal (f (Chapter03.blowUpMap x r z)) * ENNReal.ofReal (θ z) ≤
+      (closedBall x (r * R)).indicator (fun y ↦ ENNReal.ofReal (θ y)) z := by
+    intro z
+    by_cases hz : z ∈ closedBall x (r * R)
+    · rw [indicator_of_mem hz]
+      exact mul_le_of_le_one_left zero_le (ENNReal.ofReal_le_one.2 (hf1 _))
+    · rw [indicator_of_notMem hz, hzero z hz, ENNReal.ofReal_zero, zero_mul]
+  have hlow : (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity
+      fun y ↦ ENNReal.ofReal (θ y)) (closedBall x (r * a)) ≤
+      ∫⁻ z in M, ENNReal.ofReal (f (Chapter03.blowUpMap x r z)) * ENNReal.ofReal (θ z) ∂μHE[n] := by
+    rw [hball]
+    exact lintegral_mono hlow_pt
+  have hup : ∫⁻ z in M, ENNReal.ofReal (f (Chapter03.blowUpMap x r z)) * ENNReal.ofReal (θ z)
+      ∂μHE[n] ≤ (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity
+      fun y ↦ ENNReal.ofReal (θ y)) (closedBall x (r * R)) := by
+    rw [hball]
+    exact lintegral_mono hup_pt
+  -- Step 4: `J ≤ ν(B_{r₀}(x)) = ∫⁻_{M ∩ B_{r₀}(x)} ofReal θ dH^n < ∞`, as `rR ≤ r₀`.
+  have hfin : ∫⁻ z in M, ENNReal.ofReal (f (Chapter03.blowUpMap x r z)) * ENNReal.ofReal (θ z)
+      ∂μHE[n] ≠ ∞ := by
+    refine ne_top_of_le_ne_top ?_ (hup.trans (measure_mono (closedBall_subset_closedBall hrR)))
+    rw [withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+    exact (Integrable.lintegral_lt_top hint).ne
+  -- Step 5: change of variables (`blowup_cov`) and `x + r • η z = z` give
+  -- `r^n ∫_{η(M)} f(y) θ(x + r y) dH^n(y) = ∫_M f(η z) θ(z) dH^n(z)`.
+  have hback : ∀ z, x + r • Chapter03.blowUpMap x r z = z := by
+    intro z
+    rw [Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+  have hI : r ^ n * ∫ y in Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂μHE[n] =
+      ∫ z in M, f (Chapter03.blowUpMap x r z) * θ z ∂μHE[n] := by
+    rw [Submission.intcpt_id_tpd_setIntegral_blowUpMap_image N n x r M
+      (fun y ↦ f y * θ (x + r • y)) hr]
+    simp only [hback]
+    rw [← mul_assoc, ← mul_pow, mul_inv_cancel₀ hr.ne', one_pow, one_mul]
+  -- Step 6: `g = (f ∘ η) θ` is `≥ 0` a.e. on `M` and vanishes off `B_{r₀}(x)`, where `θ` is
+  -- integrable, so `g` is a.e. strongly measurable and `∫_M g dH^n = J.toReal`.
+  have hg0 : 0 ≤ᵐ[(μHE[n] : Measure (Euclidean N)).restrict M]
+      fun z ↦ f (Chapter03.blowUpMap x r z) * θ z := by
+    filter_upwards [ae_restrict_mem₀ hM] with z hz
+    exact mul_nonneg (hf0 _) (hθ z hz)
+  have hind : (closedBall x r₀).indicator (fun z ↦ f (Chapter03.blowUpMap x r z) * θ z) =
+      fun z ↦ f (Chapter03.blowUpMap x r z) * θ z := by
+    funext z
+    by_cases hz : z ∈ closedBall x r₀
+    · rw [indicator_of_mem hz]
+    · rw [indicator_of_notMem hz,
+        hzero z fun h ↦ hz (closedBall_subset_closedBall hrR h), zero_mul]
+  have hgm : AEStronglyMeasurable (fun z ↦ f (Chapter03.blowUpMap x r z) * θ z)
+      ((μHE[n] : Measure (Euclidean N)).restrict M) := by
+    rw [← hind, aestronglyMeasurable_indicator_iff measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+    have hcont : Continuous fun z ↦ f (Chapter03.blowUpMap x r z) :=
+      (map_continuous f).comp ((continuous_id.sub continuous_const).const_smul r⁻¹)
+    exact hcont.aestronglyMeasurable.mul hint.aestronglyMeasurable
+  have hJ : ∫⁻ z in M, ENNReal.ofReal (f (Chapter03.blowUpMap x r z) * θ z) ∂μHE[n] =
+      ∫⁻ z in M, ENNReal.ofReal (f (Chapter03.blowUpMap x r z)) * ENNReal.ofReal (θ z) ∂μHE[n] :=
+    lintegral_congr fun z ↦ ENNReal.ofReal_mul (hf0 _)
+  -- Step 7: `ofReal (r^n I) = ofReal J.toReal = J`, and Step 3 is the claim.
+  rw [hI, integral_eq_lintegral_of_nonneg_ae hg0 hgm, hJ, ENNReal.ofReal_toReal hfin]
+  exact ⟨hlow, hup⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
