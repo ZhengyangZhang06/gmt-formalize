@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "det_one_add_smul|derivative_det_one_add_X_smul|coeff_det_one_add_X_smul_one",
+        "hasFDerivAt_det|fderiv_det|hasStrictFDerivAt_det|deriv_det|contDiff_det|ContDiff.*\\.det\\b|det.*contDiff|differentiable_det|analyticAt_det|AnalyticAt.*det\\b|Differentiable.*det\\b",
+        "contDiff_rn_continuousLinearMap_det|hasDerivAt_rn_det_one_add_smul_trace",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 /tmp/detjacobi-independent-audit-dyq5_jed/check.py proof Child0.lean",
+        "python3 /tmp/detjacobi-independent-audit-dyq5_jed/check.py proof Child1.lean",
+        "python3 /tmp/detjacobi-independent-audit-dyq5_jed/check.py proof Instances.lean",
+        "python3 /tmp/detjacobi-independent-audit-dyq5_jed/check.py candidate",
+        "python3 /tmp/detjacobi-independent-audit-dyq5_jed/check.py challenge NodeChallenge0.lean",
+        "python3 /tmp/detjacobi-independent-audit-dyq5_jed/check.py challenge NodeChallenge1.lean",
+        "python3 /tmp/detjacobi-independent-audit-dyq5_jed/check.py solution NodeSolution2.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Polynomial.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-chart-divergence-a1-det-jacobi-a1/parent-child-handoff.json",
+        "/tmp/detjacobi-independent-audit-dyq5_jed/checks/Child0.lean",
+        "/tmp/detjacobi-independent-audit-dyq5_jed/checks/Child1.lean",
+        "/tmp/detjacobi-independent-audit-dyq5_jed/checks/Instances.lean",
+        "/tmp/detjacobi-independent-audit-dyq5_jed/candidate/GMT/Ch02/Submission.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected Jacobi theorem. The snapshot supplies the determinant polynomial expansion and generic calculus lemmas; the searches found no ready-made determinant ContDiff/fderiv theorem. Verified the pinned mathlib revision and byte compatibility of inspected library sources. Both children compiled independently, and their challenge types elaborated without their implementations. The exact frozen parent compiled from the children: specialize regularity to k = 1, factor at a unit, then apply the chain rule and derivative uniqueness. All generated challenge/solution modules compiled; child, parent and solution proofs use only propext, Classical.choice and Quot.sound. Both names are bare identifiers, unreserved across all 170 DAG nodes; neither type duplicates a registered node. Empty child dependency lists are correct and acyclic. Instance checks confirm continuous-linear-map operations and composition multiplication. The unit-case formula also agrees with [Kahan, p. 1](https://people.eecs.berkeley.edu/~wkahan/MathH110/jacobi.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_contdiff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary n and every order k, including the analytic order. The supplied proof establishes the coordinate identity and Leibniz formula, identifies each coordinate as continuous linear, and applies finite-product and finite-sum regularity at the same arbitrary order. It covers n = 0 and requires no additional hypothesis, search, or circular reliance. The standalone proof compiled with only permitted axioms. The bare name is available."
+    },
+    {
+      "key": "det_line_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly states the claimed derivative for every n and K, with identity, determinant and trace correctly interpreted. The supplied proof fixes a polynomial remainder, transports Matrix.det_one_add_smul through the basis representation, differentiates the remainder-times-square term to zero at zero, and transfers the derivative using trace compatibility and function equality. Every step is justified, including n = 0, independently of the other child and parent theorem. Instance checks confirm the intended continuous-linear-map operations. The standalone proof compiled with only permitted axioms, and the bare name is available."
+    }
+  ],
+  "required_changes": []
+}
