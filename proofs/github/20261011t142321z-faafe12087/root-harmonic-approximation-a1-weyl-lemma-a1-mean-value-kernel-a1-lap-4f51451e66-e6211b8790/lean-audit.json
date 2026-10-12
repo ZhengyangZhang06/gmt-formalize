@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ce15e6567811867f19a5c90eca5a2f9a287680d98c7028623a82b5cf3340c85d",
+  "git_delta": {
+    "base_commit": "949117079b001523313f6f59fdbf32d0e767b7f6",
+    "candidate_commit": "4407e9b246fbfca69fb6c221901859dcbe3f8eaa",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mvk_laplacian_comp_add_smul",
+    "diff_sha256": "b59090dd1da4b3fbdc3a310c9a726c1c1bc0e74b7133f63499d231e1a90ccdab",
+    "source_sha256": "cf73c41369cc0aa53e64117e5de52c38794f3c464871733b5450eb04a33e67d2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mvk_laplacian_comp_add_smul",
+      "statement": "∀ (n : ℕ) (h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), ContDiff ℝ 2 h → ∀ z : Rn n, Laplacian.laplacian (fun y => h (x₀ + σ • y)) z = σ ^ 2 * Laplacian.laplacian h (x₀ + σ • z)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
