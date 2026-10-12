@@ -2042,6 +2042,66 @@ theorem Submission.weighted_monotonicity_identity : ∀ (n ℓ : ℕ) (V : Recti
         hσρ hε hεR hu hq hbd hG hφ h0 fun τ hτ ↦
           hode ε φ hε hεR hφ h1 h0 τ (hσ.trans_le hτ.1) hτ.2
 
+/-- **Stationary monotonicity and density** (Ch. 4, 3.6–3.11, pp. 90–91), given the structure
+facts of §1 for every varifold (`μ_V` finite on compact sets, `dim T_x V = n` for `μ_V`-a.e. `x`,
+and `x ↦ p_{T_x V}` `μ_V`-measurable). A stationary `V` has generalized mean curvature `0` in `U`,
+so the weighted monotonicity identity with `h ≡ 1` and `H ≡ 0` is the identity 3.6, with
+`r⁻ⁿ|D^⊥r|²` integrable on every annulus. From 3.6 follow 3.8–3.10 and the bound
+`Θⁿ(μ_V, ξ) ≤ (ωₙρⁿ)⁻¹ μ_V(B_ρ(ξ))` for `B_R(ξ) ⊆ U` and `0 < ρ < R`; each point of the open set
+`U` is the centre of such a ball (3.9), and the bound gives 3.11. -/
+theorem Submission.stationary_monotonicity_density : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ),
+    0 < n → IsFiniteMeasureOnCompacts V.weight ∧
+      (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+      AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) →
+    StationaryMonotonicity ∧ StationaryDensity := by
+  intro hGF
+  -- 3.6, with the integrand integrable on the annulus: the weighted identity with `h ≡ 1` and
+  -- `H ≡ 0`, where the error term vanishes since `∇^M 1 = 0`.
+  have hannulus : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ))
+      (ξ : Ambient n ℓ) (R : ℝ), 0 < n → IsOpen U → V.IsStationaryIn U → closedBall ξ R ⊆ U →
+      ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < R →
+        IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)
+            (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧
+          V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n =
+            ∫ x in closedBall ξ ρ \ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n
+              ∂V.weight := by
+    intro n ℓ V U ξ R hn hU hV hball σ ρ hσ hσρ hρR
+    obtain ⟨hfin, hdim, hmeas⟩ := hGF n ℓ V hn
+    -- A stationary varifold has generalized mean curvature `0`.
+    have hH : V.HasMeanCurvatureIn U 0 := by
+      refine ⟨locallyIntegrableOn_zero, fun X hX ↦ ?_⟩
+      rw [hV X hX]
+      simp only [Pi.zero_apply, inner_zero_right, integral_zero, neg_zero]
+    have hsupp : tsupport (fun _ : Ambient n ℓ ↦ (1 : ℝ)) ∩ closedBall ξ ρ ⊆ U :=
+      fun x hx ↦ hball (closedBall_subset_closedBall hρR.le hx.2)
+    obtain ⟨-, hint, heq⟩ := Submission.weighted_monotonicity_identity n ℓ V U 0 (fun _ ↦ 1) ξ
+      σ ρ hn hfin hdim hmeas hU hH contDiffOn_const hsupp hσ hσρ
+    have hgrad : ∀ x, V.tangentialGradient (fun _ ↦ (1 : ℝ)) x = 0 := fun x ↦ by
+      simp only [tangentialGradient, gradient_fun_const, map_zero]
+    simp only [one_mul, hgrad, Pi.zero_apply, smul_zero, add_zero, inner_zero_right,
+      integral_zero, zero_div, setIntegral_const, smul_eq_mul, mul_one] at hint heq
+    exact ⟨hint, heq⟩
+  refine ⟨?_, ?_⟩
+  · -- 3.6, and 3.8 and 3.10 from it.
+    intro n ℓ V U ξ R hn hU hV hball
+    obtain ⟨hmono, hfull, -, -⟩ := Submission.stationary_ratio_limit_of_annulus_identity n ℓ V ξ R
+      (hannulus n ℓ V U ξ R hn hU hV hball)
+    exact ⟨fun σ ρ hσ hσρ hρR ↦ (hannulus n ℓ V U ξ R hn hU hV hball σ ρ hσ hσρ hρR).2, hmono,
+      hfull⟩
+  · intro n ℓ V U hn hU hV
+    -- 3.9: every `ξ ∈ U` is the centre of a closed ball `B_{ε/2}(ξ) ⊆ U`.
+    have hdens : ∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ) := by
+      intro ξ hξ
+      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU ξ hξ
+      exact (Submission.stationary_ratio_limit_of_annulus_identity n ℓ V ξ (ε / 2)
+        (hannulus n ℓ V U ξ (ε / 2) hn hU hV
+          ((closedBall_subset_ball (half_lt_self hε)).trans hεU))).2.2.1 (half_pos hε)
+    -- 3.11, from `Θⁿ(μ_V, η) ≤ (ωₙρⁿ)⁻¹ μ_V(B_ρ(η))` whenever `B_R(η) ⊆ U` and `0 < ρ < R`.
+    refine ⟨hdens, Submission.stationary_density_usc_of_ratio_bound n ℓ V U hU (hGF n ℓ V hn).1
+      hdens fun η R ρ hball hρ hρR ↦ ?_⟩
+    exact (Submission.stationary_ratio_limit_of_annulus_identity n ℓ V η R
+      (hannulus n ℓ V U η R hn hU hV hball)).2.2.2 ρ hρ hρR
+
 end
 
 end GMT.Ch04
