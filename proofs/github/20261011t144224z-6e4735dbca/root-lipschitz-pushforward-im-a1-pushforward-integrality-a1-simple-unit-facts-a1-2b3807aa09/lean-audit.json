@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a9b9e0beee5f867146b06dfcaf2d4b876cf5709b72b553ba93987ea45e5f6955",
+  "git_delta": {
+    "base_commit": "2a9df835e9c7991cb668fe018b5e19a9f2add6b4",
+    "candidate_commit": "a6e4e44adce894a6735a264769031afe0e131c97",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pi_simple_unit_facts",
+    "diff_sha256": "5d7e0bcb78dae3f577342db5536bbfa2ba1aed6c9d083e7719236c8f23897ee3",
+    "source_sha256": "b3cd32fd6395e455362cd2035cc6eb34756fce8155623292e3ab1d940159a718",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pi_simple_unit_facts",
+      "statement": "((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → (∀ (Q n : ℕ) (σ : Fin n → Eucl Q), Orthonormal ℝ σ → ‖simpleNVector σ‖ = 1) ∧ ∀ (Q n : ℕ) (σ σ' : Fin n → Eucl Q), Orthonormal ℝ σ → Orthonormal ℝ σ' → Submodule.span ℝ (range σ) = Submodule.span ℝ (range σ') → simpleNVector σ' = simpleNVector σ ∨ simpleNVector σ' = -simpleNVector σ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
