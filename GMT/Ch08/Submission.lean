@@ -410,6 +410,40 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Density squeeze (Simon Ch. 3, Remark 1.8(2), final step): if, as `t ↓ 0`, eventually
+`c t^n ≤ μ(B_t(x))` for each `c < a ω_n` and eventually `μ(B_t(x)) ≤ c t^n` for each
+`c > a ω_n`, then `Θ^n(μ, x)` exists and equals `a`. -/
+theorem Submission.intcpt_id_tpd_hasDensity_of_ball_mass_bounds :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (a : ℝ≥0∞), (∀ c : ℝ≥0∞, c < a * unitBallVolume n → ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) → (∀ c : ℝ≥0∞, a * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ (closedBall x t) ≤ c * ENNReal.ofReal t ^ n) → HasDensity n μ x a := by
+  intro N n μ x a hlower hupper
+  -- `0 < ω_n < ∞`: the open unit ball of `ℝ^n` is nonempty, open and bounded.
+  have hω₀ : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hω : unitBallVolume n ≠ ∞ := measure_ball_ne_top
+  -- By `tendsto_order`, bound the density ratio eventually from below and from above.
+  rw [HasDensity, tendsto_order]
+  refine ⟨fun b hb ↦ ?_, fun b hb ↦ ?_⟩
+  · -- For `b < b' < a`: eventually `(b' ω_n) t^n ≤ μ(B_t(x))`, so `b' ≤ densityRatio`.
+    obtain ⟨b', hbb', hb'a⟩ := exists_between hb
+    filter_upwards [hlower _ (ENNReal.mul_lt_mul_left hω₀ hω hb'a), self_mem_nhdsWithin]
+      with t hmass ht
+    -- For `t > 0` the normalizer `ω_n t^n` is nonzero and finite.
+    have hD₀ : unitBallVolume n * ENNReal.ofReal t ^ n ≠ 0 :=
+      mul_ne_zero hω₀ (pow_ne_zero n (ENNReal.ofReal_pos.mpr ht).ne')
+    have hD : unitBallVolume n * ENNReal.ofReal t ^ n ≠ ∞ :=
+      ENNReal.mul_ne_top hω (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+    calc b < b' := hbb'
+      _ ≤ densityRatio n μ x t := by
+        rw [densityRatio, ENNReal.le_div_iff_mul_le (Or.inl hD₀) (Or.inl hD), ← mul_assoc]
+        exact hmass
+  · -- For `a < b' < b`: eventually `μ(B_t(x)) ≤ (b' ω_n) t^n`, so `densityRatio ≤ b'`.
+    obtain ⟨b', hab', hb'b⟩ := exists_between hb
+    filter_upwards [hupper _ (ENNReal.mul_lt_mul_left hω₀ hω hab')] with t hmass
+    calc densityRatio n μ x t ≤ b' := by
+          rw [densityRatio]
+          exact ENNReal.div_le_of_le_mul (by rwa [← mul_assoc])
+      _ < b := hb'b
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
