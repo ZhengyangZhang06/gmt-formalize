@@ -777,6 +777,82 @@ theorem poincare_approx_ball_double_integral_bound : ∀ (n : ℕ) (f : Rn n →
         liminf_le_liminf (Eventually.of_forall hbound)
     _ = C * (eLpNorm g 2 μ + 0) ^ 2 := hlim.liminf_eq
     _ = C * ∫⁻ x in B, ‖g x‖ₑ ^ 2 := by rw [add_zero, eL2sq hg]
+/-- **Exhaustion of the unit ball for the double integral** (step `r → 1` of the `W^{1,2}`
+Poincaré inequality on `B̆₁(0)`; Gilbarg–Trudinger, Lemma 7.16).  If `f` is a.e.-strongly
+measurable on `B̆₁(0)` and `∫_{B̆_r}∫_{B̆_r} |f(x) - f(y)|² dy dx ≤ K` for every `r ∈ (0,1)`, then
+the same bound holds on `B̆₁(0)`.  The balls `B̆_{r_m}`, `r_m = 1 - 1/(m+2)`, increase to `B̆₁(0)`;
+for a strongly measurable representative of `f` the union formula for directed unions and
+monotone convergence reduce the double integral over `B̆₁(0)` to the diagonal radii. -/
+theorem poincare_ball_double_integral_exhaustion : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0∞), AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) 1)) → (∀ r : ℝ, 0 < r → r < 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ K) → ∫⁻ x in ball (0 : Rn n) 1, ∫⁻ y in ball (0 : Rn n) 1, ‖f x - f y‖ₑ ^ 2 ≤ K := by
+  intro n f K hf hK
+  -- double integrals over `s` only depend on the a.e.-class of `f` on `s`
+  have dbl : ∀ {s : Set (Rn n)} {f₁ f₂ : Rn n → ℝ}, f₁ =ᵐ[volume.restrict s] f₂ →
+      ∫⁻ x in s, ∫⁻ y in s, ‖f₁ x - f₁ y‖ₑ ^ 2 = ∫⁻ x in s, ∫⁻ y in s, ‖f₂ x - f₂ y‖ₑ ^ 2 := by
+    intro s f₁ f₂ h
+    have h1 : ∀ x, ∫⁻ y in s, ‖f₁ x - f₁ y‖ₑ ^ 2 = ∫⁻ y in s, ‖f₁ x - f₂ y‖ₑ ^ 2 := fun x =>
+      lintegral_congr_ae (h.mono fun y hy => by simp [hy])
+    simp_rw [h1]
+    exact lintegral_congr_ae (h.mono fun x hx => by simp [hx])
+  have hff' := hf.ae_eq_mk
+  have hm : StronglyMeasurable (hf.mk f) := hf.stronglyMeasurable_mk
+  set f' := hf.mk f
+  -- radii `r m = 1 - 1/(m+2)` increase to `1`
+  let r : ℕ → ℝ := fun m => 1 - 1 / ((m : ℝ) + 2)
+  have hr0 : ∀ m, 0 < r m := fun m => by
+    have : (1 : ℝ) / ((m : ℝ) + 2) < 1 := by
+      rw [div_lt_one (by positivity)]; linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+    simp only [r]; linarith
+  have hr1 : ∀ m, r m < 1 := fun m => by
+    have : (0 : ℝ) < 1 / ((m : ℝ) + 2) := by positivity
+    simp only [r]; linarith
+  have hrmono : Monotone r := by
+    intro a b hab
+    simp only [r]
+    have hab' : (a : ℝ) + 2 ≤ (b : ℝ) + 2 := by exact_mod_cast Nat.add_le_add_right hab 2
+    have : (1 : ℝ) / ((b : ℝ) + 2) ≤ 1 / ((a : ℝ) + 2) :=
+      one_div_le_one_div_of_le (by positivity) hab'
+    linarith
+  set B : ℕ → Set (Rn n) := fun m => ball 0 (r m) with hBdef
+  have hBmono : Monotone B := fun a b hab => ball_subset_ball (hrmono hab)
+  have hBdir : Directed (· ⊆ ·) B := hBmono.directed_le
+  have hU : ⋃ m, B m = ball (0 : Rn n) 1 := by
+    ext x
+    simp only [mem_iUnion, mem_ball, dist_zero_right, B]
+    constructor
+    · rintro ⟨m, hm⟩; exact hm.trans (hr1 m)
+    · intro hx
+      have h1 : 0 < 1 - ‖x‖ := by linarith
+      obtain ⟨m, hm⟩ := exists_nat_gt (1 / (1 - ‖x‖))
+      refine ⟨m, ?_⟩
+      simp only [r]
+      have : 1 / ((m : ℝ) + 2) < 1 - ‖x‖ := by
+        rw [div_lt_iff₀ (by positivity)]
+        rw [div_lt_iff₀ h1] at hm
+        nlinarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+      linarith
+  -- the hypothesis transfers to the representative `f'`
+  have hK' : ∀ m, ∫⁻ x in B m, ∫⁻ y in B m, ‖f' x - f' y‖ₑ ^ 2 ≤ K := fun m => by
+    rw [← dbl (ae_restrict_of_ae_restrict_of_subset (ball_subset_ball (hr1 m).le) hff')]
+    exact hK _ (hr0 m) (hr1 m)
+  rw [dbl hff', ← hU]
+  have hF : Measurable (fun p : Rn n × Rn n => ‖f' p.1 - f' p.2‖ₑ ^ 2) :=
+    ((hm.measurable.comp measurable_fst).sub (hm.measurable.comp measurable_snd)).enorm.pow_const 2
+  -- inner integrals: union formula along the directed family `B`
+  have hG : ∀ x, ∫⁻ y in ⋃ m, B m, ‖f' x - f' y‖ₑ ^ 2 = ⨆ m, ∫⁻ y in B m, ‖f' x - f' y‖ₑ ^ 2 :=
+    fun x => setLIntegral_iUnion_of_directed _ hBdir
+  simp_rw [hG]
+  -- outer integral: union formula, then monotone convergence
+  rw [setLIntegral_iUnion_of_directed _ hBdir]
+  refine iSup_le fun k => ?_
+  rw [lintegral_iSup (fun m => hF.lintegral_prod_right')
+    (fun a b hab x => lintegral_mono_set (hBmono hab))]
+  refine iSup_le fun m => ?_
+  -- diagonal comparison at the radius `r (max k m)`
+  calc ∫⁻ x in B k, ∫⁻ y in B m, ‖f' x - f' y‖ₑ ^ 2
+      ≤ ∫⁻ x in B (max k m), ∫⁻ y in B (max k m), ‖f' x - f' y‖ₑ ^ 2 := by
+        refine (lintegral_mono_set (hBmono (le_max_left k m))).trans ?_
+        exact lintegral_mono fun x => lintegral_mono_set (hBmono (le_max_right k m))
+    _ ≤ K := hK' _
 
 end Submission
 
