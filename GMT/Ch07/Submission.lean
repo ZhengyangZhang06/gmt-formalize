@@ -664,6 +664,77 @@ theorem Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq : ∀ (P 
   rw [heq]
   exact hΛ.measurable.comp_aemeasurable (AEMeasurable.of_eval fun ab => hcoef _ _)
 
+/-- **Simon Ch. 3, 1.4; Ch. 4**: the approximate tangent planes `TₓM` of an integer multiplicity
+representation `R = (M, θ, ξ)` in `ℝᴾ` form an `R.measure`-a.e.-measurable field of orthogonal
+projections `x ↦ p_{TₓM}` (Borel σ-algebra of the operator-norm topology).  For `n = 0` every
+`TₓM` is `⊥`.  For `n ≥ 1` let `f_u(y) = max(1 − |y|², 0)⟨u, y⟩²`: as `θ ≥ 1` on `M`,
+`Hⁿ⌞M` is finite on compact sets, so `x ↦ ∫_{η_{x,r}(M)} f_u dHⁿ` is continuous; at `μ`-a.e. `x`
+(`R.orients`, `μ = θHⁿ⌞M ≪ Hⁿ⌞M`) `TₓM` exists and these integrals tend, along `r = 1/(k+1)`, to
+`∫_{TₓM} f_u dHⁿ = cₙ|p_{TₓM} u|²`, `cₙ > 0`.  So each `x ↦ |p_{TₓM} u|²` is a.e.-measurable,
+hence so is `x ↦ p_{TₓM}`. -/
+theorem Submission.imrep_univ_tangent_starProjection_aemeasurable : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure := by
+  intro P n R
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: a `0`-dimensional approximate tangent plane is `⊥`, so `p_{TₓM} = 0` for every `x`
+    have h0 : ∀ x, (approxTangentPlane 0 R.carrier x).starProjection = 0 := by
+      intro x
+      have hx : approxTangentPlane 0 R.carrier x = ⊥ := by
+        unfold approxTangentPlane
+        split_ifs with h
+        · exact Submodule.finrank_eq_zero.1 h.choose_spec.1
+        · rfl
+      rw [hx, Submodule.starProjection_bot]
+    simp_rw [h0]
+    exact aemeasurable_const
+  obtain ⟨c, hc, hcQ⟩ := Submission.exists_plane_cutoff_quadratic_moment_eq n hn
+  -- `Hⁿ(M ∩ K) ≤ ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K`, as `θ ≥ 1` on `M`
+  have hM : ∀ K : Set (Euclid P), IsCompact K → μHE[n] (R.carrier ∩ K) ≠ ∞ := by
+    intro K hK
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK (subset_univ K)) ?_
+    calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+        setLIntegral_mono' (R.measurableSet_carrier.inter hK.isClosed.measurableSet)
+          fun x hx => by exact_mod_cast R.mult_pos x hx.1
+  -- `TₓM` is an approximate tangent plane at `μ`-a.e. `x`, since `μ ≪ Hⁿ⌞M`
+  have hT : ∀ᵐ x ∂R.measure,
+      HasApproximateTangentSpaceAt n R.carrier x (approxTangentPlane n R.carrier x) := by
+    have h : ∀ᵐ x ∂μHE[n].restrict R.carrier,
+        HasApproximateTangentSpaceAt n R.carrier x (approxTangentPlane n R.carrier x) := by
+      filter_upwards [R.orients] with x hx
+      obtain ⟨Q, hQ, -⟩ := hx
+      have h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+      unfold approxTangentPlane
+      rw [dite_eq_left h]
+      exact h.choose_spec
+    exact (withDensity_absolutelyContinuous _ _).ae_le h
+  refine Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq P R.measure
+    (approxTangentPlane n R.carrier) fun u => ?_
+  -- the test function `f_u(y) = max(1 − |y|², 0)⟨u, y⟩²`, continuous with support in `B̄₁(0)`
+  obtain ⟨φ, hφ_def⟩ : ∃ φ : Euclid P → ℝ, φ = fun y => max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2 :=
+    ⟨_, rfl⟩
+  have hφ : Continuous φ := by
+    rw [hφ_def]
+    fun_prop
+  have hφs : HasCompactSupport φ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) 1) fun z hz => ?_
+    have h1 : 1 < ‖z‖ := by simpa using hz
+    have h2 : 1 - ‖z‖ ^ 2 ≤ 0 := by nlinarith
+    simp [hφ_def, max_eq_right h2]
+  -- `|p_x u|² = lim_k c⁻¹ ∫_{η_{x,1/(k+1)}(M)} f_u dHⁿ` at `μ`-a.e. `x`
+  refine aemeasurable_of_tendsto_metrizable_ae' (f := fun (k : ℕ) x => c⁻¹ *
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x (1 / ((k : ℝ) + 1)) '' R.carrier, φ y ∂μHE[n])
+    (fun k => (continuous_const.mul (Submission.continuous_blowUp_image_setIntegral P n R.carrier
+      hM φ hφ hφs (1 / ((k : ℝ) + 1)) (by positivity))).aemeasurable) ?_
+  filter_upwards [hT] with x hx
+  have hr : Tendsto (fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+      Eventually.of_forall fun k => mem_Ioi.2 (by positivity)⟩
+  have hval : ‖(approxTangentPlane n R.carrier x).starProjection u‖ ^ 2 =
+      c⁻¹ * ∫ y in (approxTangentPlane n R.carrier x : Set (Euclid P)), φ y ∂μHE[n] := by
+    rw [hφ_def, hcQ P _ hx.1 u, inv_mul_cancel_left₀ hc.ne']
+  rw [hval]
+  exact ((hx.2 ⟨⟨φ, hφ⟩, hφs⟩).comp hr).const_mul c⁻¹
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
