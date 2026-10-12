@@ -495,6 +495,43 @@ theorem Submission.imsupp_unit_orientation_ne_zero_norm_le_one : ∀ (P n : ℕ)
     calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
       _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
 
+/-- **Simon Ch. 6, 3.1 (‡)**: for an integer multiplicity triple `(M, θ, ξ)` in `U`, a compact
+`K ⊆ U` and an `n`-covector `α`, the component `θ ⟨α, ξ⟩` is `Hⁿ`-integrable on `M ∩ K`.  `θ` is
+locally `Hⁿ`-integrable, and `ξ` is `Hⁿ`-a.e. on `M` a unit orientation, so `‖ξ‖ ≤ 1` and
+`|θ ⟨α, ξ⟩| ≤ θ ‖ξ‖ ‖α‖ ≤ ‖α‖ θ`, an integrable majorant on `M ∩ K`. -/
+theorem Submission.lcn_mult_mul_orient_apply_integrableOn : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n), IsCompact K → K ⊆ U → ∀ α : Covector (Euclid P) n, IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x α) (R.carrier ∩ K) μHE[n] := by
+  intro P n U K R hK hKU α
+  -- `μ := Hⁿ⌞(M ∩ K) ≤ Hⁿ⌞M`
+  have hμ : μHE[n].restrict (R.carrier ∩ K) ≤ μHE[n].restrict R.carrier :=
+    Measure.restrict_mono inter_subset_left le_rfl
+  -- `θ` is `μ`-integrable, as `∫⁻_{M ∩ K} θ dHⁿ < ∞`; hence so is `‖α‖ θ`
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  have hmaj : Integrable (fun x => ‖α‖ * (R.mult x : ℝ)) (μHE[n].restrict (R.carrier ∩ K)) := by
+    simpa using (integrable_toReal_of_lintegral_ne_top hθ.aemeasurable
+      (R.locallyIntegrable_mult K hK hKU)).const_mul ‖α‖
+  -- `‖ξ‖ ≤ 1` `Hⁿ⌞M`-a.e., hence `μ`-a.e.
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ K)), ‖R.orient x‖ ≤ 1 := by
+    refine ae_mono hμ ?_
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact (Submission.imsupp_unit_orientation_ne_zero_norm_le_one P n _ Q hQ).2
+  -- `θ ⟨α, ξ⟩` is `μ`-a.e. strongly measurable: `ξ` is, and evaluation at `α` is continuous
+  have hm : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x α)
+      (μHE[n].restrict (R.carrier ∩ K)) := by
+    have hξα : AEStronglyMeasurable (fun x => R.orient x α) (μHE[n].restrict (R.carrier ∩ K)) :=
+      (ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
+        (R.aestronglyMeasurable_orient.mono_measure hμ)
+    exact (measurable_from_nat.comp R.measurable_mult).aestronglyMeasurable.mul hξα
+  -- domination: `|θ ⟨α, ξ⟩| ≤ θ ‖ξ‖ ‖α‖ ≤ ‖α‖ θ` `μ`-a.e.
+  refine hmaj.mono' hm ?_
+  filter_upwards [hξ] with x hx
+  rw [Real.norm_eq_abs, abs_mul, Nat.abs_cast]
+  calc (R.mult x : ℝ) * |R.orient x α| ≤ (R.mult x : ℝ) * (‖R.orient x‖ * ‖α‖) := by
+        gcongr
+        exact (Real.norm_eq_abs _).symm.trans_le ((R.orient x).le_opNorm α)
+    _ ≤ (R.mult x : ℝ) * (1 * ‖α‖) := by gcongr
+    _ = ‖α‖ * R.mult x := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
