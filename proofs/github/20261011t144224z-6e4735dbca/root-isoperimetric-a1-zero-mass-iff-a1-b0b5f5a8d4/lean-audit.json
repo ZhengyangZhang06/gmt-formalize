@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "964750f7a73534a07b1ca320a7c5ab77b523a1334f9eb8db08cfb3fb8ac7f68c",
+  "git_delta": {
+    "base_commit": "29a6be3e1a074c8a8a225b9d2feb62947f28db89",
+    "candidate_commit": "43971b5da77043c26e59c9962602a14f8bf4ef18",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "09e813adbf19b65cff36f54a04a23b0ef7b9fb7c1a5dc53f9a2157de6ad97c8e",
+    "source_sha256": "8e88d1d20a92f4a9d925ff59f4a7787f1e830c763c84ebaa25163c538479cd7d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_mass_eq_zero_iff",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n), T.mass = 0 ↔ T = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
