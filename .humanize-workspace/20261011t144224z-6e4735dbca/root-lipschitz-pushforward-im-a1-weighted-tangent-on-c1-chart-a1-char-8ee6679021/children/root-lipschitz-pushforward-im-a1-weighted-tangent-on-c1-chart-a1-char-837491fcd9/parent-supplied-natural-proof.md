@@ -1,0 +1,135 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent proof (lower bound for L = DΦ(w)), stated for an arbitrary real c and a map that is only differentiable at w.
+
+Conventions: ℝ^P = EuclideanSpace ℝ (Fin P) = Eucl P with Euclidean norm ‖·‖; L := fderiv ℝ Φ w.
+
+1. (Setup.) Fix s ∈ ℝⁿ. Since Φ is differentiable at w, Φ has Fréchet derivative L at w (DifferentiableAt.hasFDerivAt).
+
+2. (Derivative along the line.)
+ - The curve ℓ(t) := w + t•s (t ∈ ℝ) has derivative s at t = 0. Lean: ((hasDerivAt_id 0).smul_const s).const_add w, after simp rewrites (1 : ℝ) • s to s.
+ - ℓ(0) = w + 0•s = w, so by the chain rule γ(t) := Φ(w + t•s) has derivative L s at t = 0. Lean: HasFDerivAt.comp_hasDerivAt_of_eq 0 hline h, with h : w = w + 0•s.
+
+3. (Slope limit.) By HasDerivAt.tendsto_slope_zero_right, t⁻¹•(γ(0 + t) − γ(0)) → L s as t → 0 with t > 0, i.e. along the filter 𝓝[>] 0. Here γ(0 + t) = Φ(w + (0 + t)•s) and γ(0) = Φ(w + 0•s). The norm is continuous (Tendsto.norm), so ‖t⁻¹•(γ(0 + t) − γ(0))‖ → ‖L s‖ along 𝓝[>] 0.
+
+4. (The line stays in Ω for small t.) The map t ↦ w + t•s is continuous and equals w at t = 0. Ω is open with w ∈ Ω, so Ω ∈ 𝓝 w (IsOpen.mem_nhds). Hence {t : w + t•s ∈ Ω} ∈ 𝓝 0 (ContinuousAt.preimage_mem_nhds), and it also belongs to 𝓝[>] 0 (nhdsWithin_le_nhds).
+
+5. (Inequality for small positive t.) By step 4 and self_mem_nhdsWithin, 𝓝[>]0-eventually every t satisfies t > 0 and w + t•s ∈ Ω. Fix such a t.
+ - Apply the hypothesis to v := w + t•s ∈ Ω and v′ := w ∈ Ω. Since (w + t•s) − w = t•s (add_sub_cancel_left), this gives c‖t•s‖ ≤ ‖Φ(w + t•s) − Φ(w)‖.
+ - Because t > 0, ‖t•s‖ = |t|·‖s‖ = t‖s‖ (norm_smul, Real.norm_of_nonneg). So c·(t‖s‖) ≤ X, where X := ‖Φ(w + t•s) − Φ(w)‖.
+ - Also ‖t⁻¹•(Φ(w + t•s) − Φ(w))‖ = t⁻¹·X, since t⁻¹ ≥ 0.
+ - For t > 0, c‖s‖ ≤ t⁻¹·X ⟺ t·(c‖s‖) ≤ X (le_inv_mul_iff₀). And t·(c‖s‖) = c·(t‖s‖) ≤ X (linarith).
+ - Hence, after simp rewrites 0 + t to t and 0•s to 0: c‖s‖ ≤ ‖t⁻¹•(γ(0 + t) − γ(0))‖ for 𝓝[>]0-eventually all t.
+
+6. (Pass to the limit.) The filter 𝓝[>] 0 on ℝ is nontrivial. Steps 3 and 5 give an eventual lower bound for a convergent real sequence-like family, so the bound passes to the limit (ge_of_tendsto): c‖s‖ ≤ ‖L s‖. Since s was arbitrary, c‖s‖ ≤ ‖fderiv ℝ Φ w s‖ for all s. ∎
+
+Lean remark. The following proof was verified in the exact comparator scope as the declaration `theorem Submission.lpf_wtc_cat_fderiv_lower_bound : (<frozen statement>) := by` inside `namespace GMT.Ch06` of GMT/Ch06/Submission.lean. Axioms: propext, Classical.choice, Quot.sound.
+  intro Q n Φ Ω c w hΩ hw hdiff hanti s
+  have hline : HasDerivAt (fun t : ℝ => w + t • s) s 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const s).const_add w
+  have hγ : HasDerivAt (fun t : ℝ => Φ (w + t • s)) (fderiv ℝ Φ w s) 0 := by
+    have h0 : w + (0 : ℝ) • s = w := by simp
+    exact hdiff.hasFDerivAt.comp_hasDerivAt_of_eq 0 hline h0.symm
+  have hslope := hγ.tendsto_slope_zero_right
+  have hnorm : Tendsto (fun t : ℝ => ‖t⁻¹ • (Φ (w + (0 + t) • s) - Φ (w + (0 : ℝ) • s))‖)
+      (𝓝[>] 0) (𝓝 ‖fderiv ℝ Φ w s‖) := hslope.norm
+  have hcont : Continuous (fun t : ℝ => w + t • s) := continuous_const.add (continuous_id.smul continuous_const)
+  have hmem : ∀ᶠ t in 𝓝 (0 : ℝ), w + t • s ∈ Ω := by
+    apply hcont.continuousAt.preimage_mem_nhds
+    simpa using hΩ.mem_nhds hw
+  have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ‖s‖ ≤ ‖t⁻¹ • (Φ (w + (0 + t) • s) - Φ (w + (0 : ℝ) • s))‖ := by
+    filter_upwards [nhdsWithin_le_nhds hmem, self_mem_nhdsWithin] with t ht htpos
+    have htpos : (0 : ℝ) < t := htpos
+    have h1 := hanti (w + t • s) ht w hw
+    simp only [zero_add, zero_smul, add_zero]
+    rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg htpos.le] at h1
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr htpos.le)]
+    rw [le_inv_mul_iff₀ htpos]
+    linarith [h1]
+  exact ge_of_tendsto hnorm hev
+
+## Key steps
+
+1. Chain rule: γ(t) = Φ(w + t•s) has derivative DΦ(w)s at t = 0.
+2. Slope limit: t⁻¹(Φ(w + t•s) − Φ(w)) → DΦ(w)s as t → 0+ (HasDerivAt.tendsto_slope_zero_right), hence norms converge.
+3. Ω open: w + t•s ∈ Ω for 𝓝[>]0-eventually all t.
+4. Antilipschitz with v = w + t•s, v′ = w and division by t > 0: c‖s‖ ≤ ‖t⁻¹(Φ(w + t•s) − Φ(w))‖ eventually.
+5. Pass to the limit with ge_of_tendsto: c‖s‖ ≤ ‖DΦ(w)s‖.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff of snapshot project/GMT/Ch06/Contract.lean against workspace GMT/Ch06/Contract.lean (identical)`
+- `python3 scan of dag.json: lean_name/lean_statement/status/depends_on of root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.* ; scan of all nodes for dependencies on non-siblings (none); grep -c 'lpf_wtc_cat_|fderiv_lower_bound|rescaled_integral_tendsto|gram_jacobian_continuous' dag.json DAG.md dag.mmd issue-workers.json problem.json (0 hits)`
+- `inspection of parent-child-handoff.json of children of split nodes that have uncle dependencies (nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-*): children carry only sibling deps; the split parent uses its own resolved deps in its assembly`
+- `sed -n 1,160p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt)`
+- `contract_scope and child_modules from verifier/gmt-compare.py (CHILD_TARGET = HumanizeNodeComparator.target) to generate the exact child-scope prefix and NodeChallenge/NodeSolution files; lean_contract.validate_lean_statement on the 3 child statements`
+- `lean -R . -o out/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean in /tmp/cat_decomp_scratch_e41b with LEAN_PATH = lake-packages-25730c7c/*/.lake/build/lib/lean; lean Scratch/Stmts.lean, Scratch/Assembly.lean, Scratch/ProveAC.lean, Scratch/ProveB.lean; simulated sim/GMT/Ch06/Submission.lean with the 3 children and the parent; lean sim/Scratch/*_NodeSolution.lean and sim/Scratch/AllNodes.lean (#print axioms)`
+- `rg -n 'integral_comp_smul_of_nonneg|integral_add_left_eq_self|tendsto_slope_zero_right|tendsto_integral_filter_of_dominated_convergence' Mathlib/MeasureTheory Mathlib/Analysis/Calculus; rg -n for Continuous.matrix_det, ContDiff.continuous_fderiv, HasFDerivAt.comp_hasDerivAt_of_eq, LinearMap.finrank_range_of_inj, coe_range, comp_homeomorph, integral_mul_left_eq_self in the snapshot mathlib`
+- `rg -n 'theorem .*(antilip|Antilip)' simongmt/Poincare/SimonGMT; rg -ln 'Matrix.of fun i j => inner|Gram' simongmt/Poincare/SimonGMT`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8ee6679021/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8ee6679021/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaBranches.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/Matrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/tmp/cat_decomp_scratch_e41b/Scratch/Assembly.lean`
+- `/tmp/cat_decomp_scratch_e41b/Scratch/ProveAC.lean`
+- `/tmp/cat_decomp_scratch_e41b/Scratch/ProveB.lean`
+- `/tmp/cat_decomp_scratch_e41b/sim/GMT/Ch06/Submission.lean`
+
+The snapshot pins project d8d46c95 and Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace contract.
+
+The child scope is `import GMT.Ch06.Submission`, then `open MeasureTheory Filter Set Metric` and `open scoped ENNReal NNReal Topology`, then `namespace GMT.Ch06` with its opens, then `noncomputable section` … `end`. It was derived with gmt-compare.py contract_scope.
+
+Definitions checked in simongmt Chapter03/Rectifiable.lean:
+- `blowUpMap x r y := r⁻¹ • (y - x)`. So the sibling outputs match the child-B integrand by rfl.
+- `HasApproximateTangentSpaceAt n M x P := finrank ℝ P = n ∧ ∀ f : C_c(E, ℝ), Tendsto (fun r ↦ ∫ y in blowUpMap x r '' M, f y ∂μHE[n]) (𝓝[>] 0) (𝓝 (∫ y in (P : Set E), f y ∂μHE[n]))`.
+
+DAG checks:
+- No existing node depends on a non-sibling. So the children cannot cite the sibling nodes BLOWUP/AREA, and they are designed not to need them.
+- No lpf_wtc_cat_* name is reserved, and no existing declaration has these statements.
+
+Library search: no SimonGMT lemma states the derivative lower bound, the rescaled dominated-convergence limit, or continuity of the Gram Jacobian. The only antilipschitz lemma is ApproximatesLinearOn.injOn_of_antilipschitz in Chapter02/AreaBranches.lean; the Chapter05 Gram files concern graph area expansions.
+
+Mathlib lemmas used, as located in the snapshot:
+- Measure.integral_comp_smul_of_nonneg (Haar/NormedSpace.lean:115);
+- integral_add_left_eq_self (additive form of Group/Integral.lean:91);
+- HasDerivAt.tendsto_slope_zero_right (Deriv/Slope.lean:89);
+- tendsto_integral_filter_of_dominated_convergence (Integral/DominatedConvergence.lean:67);
+- HasFDerivAt.comp_hasDerivAt_of_eq (Deriv/Comp.lean:380);
+- ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);
+- Continuous.matrix_det (Topology/Instances/Matrix.lean:212);
+- LinearMap.finrank_range_of_inj (Dimension/Finrank.lean:127);
+- LinearMap.coe_range (Submodule/Range.lean:60);
+- HasCompactSupport.comp_homeomorph (additive form of Topology/Algebra/Support.lean:562).
+
+All 3 child statements pass validate_lean_statement and elaborate in the exact scope. The needed instances are found: IsAddHaarMeasure for volume on Eucl n, and IsCountablyGenerated for 𝓝[>] 0.
+
+All 3 children were fully proved in Lean with only standard axioms. The frozen parent was kernel-checked from them plus sorry-stubs of the two sibling declarations.
