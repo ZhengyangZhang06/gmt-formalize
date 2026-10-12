@@ -2,7 +2,6 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import Poincare.SimonGMT.Chapter08.ConstancyTangent
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -496,7 +495,12 @@ theorem Submission.allard_tc_scf_constancy_plane :
   constructor
   · rintro ⟨hx, S, hS, hxS⟩
     rw [Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx] at hS
-    rw [Grassmannian.eq_of_plane_eq (SetLike.coe_injective hS)] at hxS
+    -- A point of `G(N,n)` is determined by its plane: `S = ofSubmodule S.plane = T`.
+    have hST : S = T := by
+      rw [← S.ofSubmodule_plane, ← T.ofSubmodule_plane]
+      congr 1
+      exact SetLike.coe_injective hS
+    rw [hST] at hxS
     exact ⟨hxS, hx⟩
   · rintro ⟨hxT, hx⟩
     exact ⟨hx, T, (Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx).symm, hxT⟩
