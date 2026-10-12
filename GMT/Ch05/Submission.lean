@@ -597,6 +597,93 @@ theorem arp_rotatedPlane_graphPoint_coords : ∀ (n ℓ : ℕ),
       rw [rsod_norm_graphPoint_sq]
       nlinarith [sq_nonneg ‖a - a'‖]
     exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp hsq
+/-- **Tilt bound from a slab** (used when patching local graphs in the proof of Simon's
+Remark 5.3, p. 122).  If `y + q(graph v)` over `B_s(0)` stays within distance `h` of
+`T₀ = q₀(ℝⁿ × {0})` and `v` is `ε`-Lipschitz on `B_s(0)`, then `dist(q(e, 0), T₀) ≤ (h/s + ε)|e|`.
+The vertical coordinate `σ z = (E (q₀⁻¹ z)).2` is linear with `dist(z, T₀) = |σ z|`
+(`arp_rotatedPlane_graphPoint_coords`); testing the slab at `x± = ±(s/|e|) e` and subtracting
+cancels `y` and leaves `q(2(s/|e|) e, 0)` up to `q(0, v x₊ - v x₋)`, with `|v x₊ - v x₋| ≤ 2εs`. -/
+theorem arp_tilt_le_of_slab : ∀ {n ℓ : ℕ} (q q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (s ε h : ℝ), 0 < s → (∀ x₁ ∈ closedBall (0 : Rn n) s, ∀ x₂ ∈ closedBall (0 : Rn n) s, ‖v x₁ - v x₂‖ ≤ ε * ‖x₁ - x₂‖) → (∀ x ∈ closedBall (0 : Rn n) s, infDist (y + q (graphPoint x (v x))) (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ h) → ∀ e : Rn n, infDist (q (graphPoint e 0)) (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ (h / s + ε) * ‖e‖ := by
+  intro n ℓ q q₀ v y s ε h hs hv hslab e
+  obtain ⟨hgp, hpyth, hdist⟩ := Submission.arp_rotatedPlane_graphPoint_coords n ℓ
+  generalize (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ) = E at hgp
+  -- Step 0: the vertical coordinate `σ z = (E (q₀⁻¹ z)).2` is linear, and
+  -- `dist(z, T₀) = |σ z| ≤ |z|` since `z = q₀(graphPoint (E (q₀⁻¹ z)).1 (σ z))` and `0 ∈ T₀`.
+  obtain ⟨σ, hσ⟩ : ∃ σ : Amb n ℓ →ₗ[ℝ] Rn ℓ, ∀ z, σ z = (E (q₀.symm z)).2 :=
+    ⟨LinearMap.snd ℝ (Rn n) (Rn ℓ) ∘ₗ (E : Amb n ℓ →ₗ[ℝ] Rn n × Rn ℓ) ∘ₗ
+      (q₀.symm : Amb n ℓ →ₗ[ℝ] Amb n ℓ), fun z => rfl⟩
+  have hdistσ : ∀ z, infDist z (rotatedPlane q₀ : Set (Amb n ℓ)) = ‖σ z‖ := by
+    intro z
+    have hz : q₀ (graphPoint (E (q₀.symm z)).1 (σ z)) = z := by
+      rw [hσ, hgp, Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply,
+        LinearIsometryEquiv.apply_symm_apply]
+    rw [← hdist q₀ (E (q₀.symm z)).1 (σ z), hz]
+  have hσle : ∀ z, ‖σ z‖ ≤ ‖z‖ := by
+    intro z
+    rw [← hdistσ z, ← dist_zero_right z]
+    exact infDist_le_dist_of_mem (Submodule.zero_mem _)
+  -- Step 1: `e = 0`, where `q(graphPoint 0 0) = 0`.
+  rcases eq_or_ne e 0 with rfl | he
+  · rw [hdistσ, hgp, Prod.mk_zero_zero]
+    simp
+  -- Step 2: the test points `x± = ±t e` with `t = s/|e|` lie in `B_s(0)`.
+  have he' : 0 < ‖e‖ := norm_pos_iff.mpr he
+  obtain ⟨t, ht0, hte⟩ : ∃ t : ℝ, 0 < t ∧ t * ‖e‖ = s :=
+    ⟨s / ‖e‖, div_pos hs he', div_mul_cancel₀ s he'.ne'⟩
+  have hxp : t • e ∈ closedBall (0 : Rn n) s := by
+    rw [mem_closedBall_zero_iff, norm_smul, Real.norm_of_nonneg ht0.le, hte]
+  have hxm : (-t) • e ∈ closedBall (0 : Rn n) s := by
+    rw [mem_closedBall_zero_iff, norm_smul, norm_neg, Real.norm_of_nonneg ht0.le, hte]
+  have hdiff : t • e - (-t) • e = (2 * t) • e := by
+    rw [← sub_smul]; ring_nf
+  -- Step 3: `q(graphPoint (2t e) 0)` is the difference of the slab points at `x₊` and `x₋`
+  -- minus `q(graphPoint 0 (v x₊ - v x₋))`.
+  have hid : q (graphPoint ((2 * t) • e) 0) =
+      (y + q (graphPoint (t • e) (v (t • e)))) - (y + q (graphPoint ((-t) • e) (v ((-t) • e)))) -
+        q (graphPoint 0 (v (t • e) - v ((-t) • e))) := by
+    simp only [hgp, add_sub_add_left_eq_sub, ← map_sub, Prod.mk_sub_mk, sub_zero, sub_self, hdiff]
+  -- Step 4: both slab points have `|σ| ≤ h`, and the last term has
+  -- `|σ| ≤ |graphPoint 0 (v x₊ - v x₋)| = |v x₊ - v x₋| ≤ 2εs`.
+  have h₁ : ‖σ (y + q (graphPoint (t • e) (v (t • e))))‖ ≤ h := by
+    rw [← hdistσ]; exact hslab _ hxp
+  have h₂ : ‖σ (y + q (graphPoint ((-t) • e) (v ((-t) • e))))‖ ≤ h := by
+    rw [← hdistσ]; exact hslab _ hxm
+  have hgp0 : ∀ b : Rn ℓ, ‖graphPoint (0 : Rn n) b‖ = ‖b‖ := by
+    intro b
+    have hb := hpyth 0 b
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at hb
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp hb
+  have h₃ : ‖σ (q (graphPoint 0 (v (t • e) - v ((-t) • e))))‖ ≤ 2 * ε * s := by
+    calc ‖σ (q (graphPoint 0 (v (t • e) - v ((-t) • e))))‖
+        ≤ ‖q (graphPoint 0 (v (t • e) - v ((-t) • e)))‖ := hσle _
+      _ = ‖v (t • e) - v ((-t) • e)‖ := by rw [LinearIsometryEquiv.norm_map, hgp0]
+      _ ≤ ε * ‖t • e - (-t) • e‖ := hv _ hxp _ hxm
+      _ = 2 * ε * s := by
+        rw [hdiff, norm_smul, Real.norm_of_nonneg (by positivity), ← hte]; ring
+  have hsum : ‖σ (q (graphPoint ((2 * t) • e) 0))‖ ≤ 2 * h + 2 * ε * s := by
+    rw [hid, map_sub, map_sub]
+    have k₁ := norm_sub_le (σ (y + q (graphPoint (t • e) (v (t • e)))) -
+      σ (y + q (graphPoint ((-t) • e) (v ((-t) • e)))))
+      (σ (q (graphPoint 0 (v (t • e) - v ((-t) • e)))))
+    have k₂ := norm_sub_le (σ (y + q (graphPoint (t • e) (v (t • e)))))
+      (σ (y + q (graphPoint ((-t) • e) (v ((-t) • e)))))
+    linarith
+  -- Step 5: `graphPoint (2t e) 0 = 2t • graphPoint e 0`, so `2t |σ(q(graphPoint e 0))| ≤ 2h + 2εs`.
+  have hscale : graphPoint ((2 * t) • e) (0 : Rn ℓ) = (2 * t) • graphPoint e (0 : Rn ℓ) := by
+    rw [hgp, hgp, ← map_smul, Prod.smul_mk, smul_zero]
+  have hD : t * ‖σ (q (graphPoint e 0))‖ ≤ h + ε * s := by
+    rw [hscale, map_smul, map_smul, norm_smul, Real.norm_of_nonneg (by positivity)] at hsum
+    linarith
+  -- Step 6: divide by `t = s/|e|`.
+  rw [hdistσ]
+  have hsD : s * ‖σ (q (graphPoint e 0))‖ ≤ (h + ε * s) * ‖e‖ := by
+    calc s * ‖σ (q (graphPoint e 0))‖ = ‖e‖ * (t * ‖σ (q (graphPoint e 0))‖) := by
+          rw [← hte]; ring
+      _ ≤ ‖e‖ * (h + ε * s) := mul_le_mul_of_nonneg_left hD (norm_nonneg e)
+      _ = (h + ε * s) * ‖e‖ := by ring
+  calc ‖σ (q (graphPoint e 0))‖ ≤ (h + ε * s) * ‖e‖ / s := by
+        rw [le_div_iff₀ hs]; linarith
+    _ = (h / s + ε) * ‖e‖ := by field_simp
 
 end Submission
 
