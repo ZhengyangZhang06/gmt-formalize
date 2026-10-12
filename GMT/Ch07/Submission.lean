@@ -451,6 +451,159 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 3 (boundary layer) of the Rellich compactness argument on the unit ball, used for the
+harmonic approximation in Allard's theorem (Simon 7.4.3): for `L`-Lipschitz `u : ℝⁿ → ℝ` and
+`0 < s ≤ 1/2`, the annulus `A_s = B₁ \ B_{1-s}` satisfies
+`∫_{A_s} u² ≤ 2^{n+3} s (∫_{B₁} u² + ∫_{B₁} ‖Du‖²)`.  Along a.e. ray
+`u(x) - u(tx) = ∫_t^1 Du(σx)x dσ` (`Submission.dorag_ha_rb_ray_ftc`), so Cauchy–Schwarz on
+`[1/2, 1]` gives `u(x)² ≤ 4 ∫_{1/2}^1 u(tx)² dt + ∫_{1/2}^1 ‖Du(tx)‖² dt` for `x ∈ B₁`;
+integrate over `A_s` and average over dilations (`Submission.dorag_ha_rb_dilation_average`). -/
+theorem Submission.dorag_ha_rb_boundary_layer : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (s : ℝ), LipschitzWith L u → 0 < s → s ≤ 1 / 2 → ∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), u x ^ 2 ≤ 2 ^ (n + 3) * s * ((∫ x in ball (0 : Euclid n) 1, u x ^ 2) + ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2) := by
+  intro n u L s hu hs hs2
+  set B : Set (Euclid n) := ball (0 : Euclid n) 1
+  set A : Set (Euclid n) := B \ ball (0 : Euclid n) (1 - s)
+  have hBm : MeasurableSet B := measurableSet_ball
+  have hAm : MeasurableSet A := hBm.diff measurableSet_ball
+  have hBfin : volume B ≠ ∞ := measure_ball_lt_top.ne
+  have hcont : Continuous u := hu.continuous
+  have hhalf : (1 / 2 : ℝ) ≤ 1 := by norm_num
+  -- `‖Du‖ ≤ L` everywhere and `|u| ≤ |u 0| + L` on the closed unit ball
+  have hDu : ∀ y, ‖fderiv ℝ u y‖ ≤ L := fun y => norm_fderiv_le_of_lipschitz ℝ hu
+  have hu_bd : ∀ y : Euclid n, ‖y‖ ≤ 1 → |u y| ≤ |u 0| + L := by
+    intro y hy
+    have h1 : dist (u y) (u 0) ≤ L * dist y 0 := hu.dist_le_mul y 0
+    rw [Real.dist_eq, dist_zero_right] at h1
+    have h2 : (L : ℝ) * ‖y‖ ≤ L := mul_le_of_le_one_right L.coe_nonneg hy
+    have h3 := abs_sub_abs_le_abs_sub (u y) (u 0)
+    linarith
+  have hsq_bd : ∀ y : Euclid n, ‖y‖ ≤ 1 → ‖u y ^ 2‖ ≤ (|u 0| + L) ^ 2 := fun y hy => by
+    rw [Real.norm_eq_abs, abs_pow]
+    exact pow_le_pow_left₀ (abs_nonneg _) (hu_bd y hy) 2
+  have hDsq_bd : ∀ y : Euclid n, ‖‖fderiv ℝ u y‖ ^ 2‖ ≤ (L : ℝ) ^ 2 := fun y => by
+    rw [Real.norm_eq_abs, abs_pow, abs_norm]
+    exact pow_le_pow_left₀ (norm_nonneg _) (hDu y) 2
+  -- a bounded measurable function is interval integrable
+  have hii : ∀ (f : ℝ → ℝ) (C : ℝ) (a b : ℝ), Measurable f → (∀ σ, ‖f σ‖ ≤ C) →
+      IntervalIntegrable f volume a b := fun f C a b hf hC =>
+    (intervalIntegrable_const (c := C)).mono_fun' hf.aestronglyMeasurable
+      (Eventually.of_forall hC)
+  -- `u²` and `‖Du‖²` are measurable, nonnegative and integrable on `B`
+  have hmF₁ : Measurable fun y => u y ^ 2 := (hcont.pow 2).measurable
+  have hmF₂ : Measurable fun y => ‖fderiv ℝ u y‖ ^ 2 := by fun_prop
+  have hiF₁ : IntegrableOn (fun y => u y ^ 2) B := by
+    refine Measure.integrableOn_of_bounded (M := (|u 0| + L) ^ 2) hBfin
+      hmF₁.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem hBm] with y hy
+    exact hsq_bd y (mem_ball_zero_iff.mp hy).le
+  have hiF₂ : IntegrableOn (fun y => ‖fderiv ℝ u y‖ ^ 2) B :=
+    Measure.integrableOn_of_bounded (M := (L : ℝ) ^ 2) hBfin hmF₂.aestronglyMeasurable
+      (Eventually.of_forall hDsq_bd)
+  -- the dilation averages `I₁(x) = ∫_{1/2}^1 u(tx)² dt` and `J(x) = ∫_{1/2}^1 ‖Du(tx)‖² dt`
+  set I₁ : Euclid n → ℝ := fun x => ∫ t in (1 / 2 : ℝ)..1, u (t • x) ^ 2
+  set J : Euclid n → ℝ := fun x => ∫ t in (1 / 2 : ℝ)..1, ‖fderiv ℝ u (t • x)‖ ^ 2
+  -- the pointwise estimate on a ray along which the fundamental theorem of calculus holds
+  have key : ∀ x : Euclid n, ‖x‖ ≤ 1 →
+      (∀ t : ℝ, u x - u (t • x) = ∫ σ in t..1, fderiv ℝ u (σ • x) x) →
+      u x ^ 2 ≤ 4 * I₁ x + J x := by
+    intro x hx hray
+    have hgm : Measurable fun σ : ℝ => ‖fderiv ℝ u (σ • x)‖ := by fun_prop
+    have hgi : ∀ a b : ℝ, IntervalIntegrable (fun σ : ℝ => ‖fderiv ℝ u (σ • x)‖) volume a b :=
+      fun a b => hii _ L a b hgm fun σ => by rw [norm_norm]; exact hDu _
+    have hg2i : IntervalIntegrable (fun σ : ℝ => ‖fderiv ℝ u (σ • x)‖ ^ 2) volume (1 / 2) 1 :=
+      hii _ ((L : ℝ) ^ 2) _ _ (hgm.pow_const 2) fun σ => hDsq_bd _
+    set γ : ℝ := ∫ σ in (1 / 2 : ℝ)..1, ‖fderiv ℝ u (σ • x)‖ with hγ
+    -- (a) `|u(x) - u(tx)| ≤ ∫_t^1 ‖Du(σx)‖ dσ ≤ γ` for `t ∈ [1/2, 1]`
+    have ha : ∀ t ∈ Icc (1 / 2 : ℝ) 1, |u x - u (t • x)| ≤ γ := by
+      intro t ht
+      rw [hray t, ← Real.norm_eq_abs]
+      calc ‖∫ σ in t..1, fderiv ℝ u (σ • x) x‖
+          ≤ ∫ σ in t..1, ‖fderiv ℝ u (σ • x)‖ :=
+            intervalIntegral.norm_integral_le_of_norm_le ht.2
+              (Eventually.of_forall fun σ _ => ((fderiv ℝ u (σ • x)).le_opNorm x).trans
+                (mul_le_of_le_one_right (norm_nonneg _) hx)) (hgi t 1)
+        _ ≤ γ := intervalIntegral.integral_mono_interval ht.1 ht.2 le_rfl
+              (Eventually.of_forall fun σ => norm_nonneg _) (hgi _ _)
+    -- (b) `u(x)² ≤ 2u(tx)² + 2γ²`
+    have hb : ∀ t ∈ Icc (1 / 2 : ℝ) 1, u x ^ 2 ≤ 2 * u (t • x) ^ 2 + 2 * γ ^ 2 := by
+      intro t ht
+      have h1 := abs_le.mp (ha t ht)
+      have h2 : (u x - u (t • x)) ^ 2 ≤ γ ^ 2 := sq_le_sq' h1.1 h1.2
+      linarith [sq_nonneg (2 * u (t • x) - u x)]
+    -- (c) Cauchy–Schwarz on `[1/2, 1]`: integrating `4γ‖Du(σx)‖ ≤ ‖Du(σx)‖² + 4γ²` gives
+    -- `4γ² ≤ J(x) + 2γ²`
+    have hc : 2 * γ ^ 2 ≤ J x := by
+      have h1 : ∫ σ in (1 / 2 : ℝ)..1, 4 * γ * ‖fderiv ℝ u (σ • x)‖ ≤
+          ∫ σ in (1 / 2 : ℝ)..1, (‖fderiv ℝ u (σ • x)‖ ^ 2 + 4 * γ ^ 2) :=
+        intervalIntegral.integral_mono_on hhalf ((hgi _ _).const_mul _)
+          (hg2i.add intervalIntegrable_const)
+          fun σ _ => by linarith [sq_nonneg (‖fderiv ℝ u (σ • x)‖ - 2 * γ)]
+      rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_add hg2i
+        intervalIntegrable_const, intervalIntegral.integral_const, smul_eq_mul, ← hγ] at h1
+      have hJx : J x = ∫ σ in (1 / 2 : ℝ)..1, ‖fderiv ℝ u (σ • x)‖ ^ 2 := rfl
+      linarith
+    -- (d) averaging (b) over `t ∈ [1/2, 1]` gives `u(x)² ≤ 4I₁(x) + 2γ²`
+    have hd : (1 - 1 / 2 : ℝ) * u x ^ 2 ≤ 2 * I₁ x + (1 - 1 / 2) * (2 * γ ^ 2) := by
+      have hcu : Continuous fun t : ℝ => u (t • x) ^ 2 := by fun_prop
+      have h1 : ∫ t in (1 / 2 : ℝ)..1, u x ^ 2 ≤
+          ∫ t in (1 / 2 : ℝ)..1, (2 * u (t • x) ^ 2 + 2 * γ ^ 2) :=
+        intervalIntegral.integral_mono_on hhalf intervalIntegrable_const
+          (((hcu.intervalIntegrable _ _).const_mul 2).add intervalIntegrable_const) hb
+      rw [intervalIntegral.integral_const, intervalIntegral.integral_add
+        ((hcu.intervalIntegrable _ _).const_mul 2) intervalIntegrable_const,
+        intervalIntegral.integral_const_mul, intervalIntegral.integral_const, smul_eq_mul,
+        smul_eq_mul] at h1
+      have hI₁x : I₁ x = ∫ t in (1 / 2 : ℝ)..1, u (t • x) ^ 2 := rfl
+      linarith
+    linarith
+  -- `I₁` and `J` are strongly measurable (Fubini) and bounded on `B`, hence integrable on `A`
+  have hI₁m : StronglyMeasurable I₁ := by
+    have h : Measurable fun p : Euclid n × ℝ => u (p.2 • p.1) ^ 2 := by fun_prop
+    convert h.stronglyMeasurable.integral_prod_right' (ν := volume.restrict (Ioc (1 / 2 : ℝ) 1))
+      using 1
+    funext x
+    exact intervalIntegral.integral_of_le hhalf
+  have hJm : StronglyMeasurable J := by
+    have h : Measurable fun p : Euclid n × ℝ => ‖fderiv ℝ u (p.2 • p.1)‖ ^ 2 := by fun_prop
+    convert h.stronglyMeasurable.integral_prod_right' (ν := volume.restrict (Ioc (1 / 2 : ℝ) 1))
+      using 1
+    funext x
+    exact intervalIntegral.integral_of_le hhalf
+  have hI₁A : IntegrableOn I₁ A := by
+    refine (Measure.integrableOn_of_bounded (M := (|u 0| + L) ^ 2 * |1 - 1 / 2|) hBfin
+      hI₁m.aestronglyMeasurable ?_).mono_set sdiff_subset
+    filter_upwards [ae_restrict_mem hBm] with x hx
+    refine intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => hsq_bd _ ?_
+    rw [uIoc_of_le hhalf] at ht
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos (by linarith [ht.1])]
+    have hx1 : ‖x‖ < 1 := mem_ball_zero_iff.mp hx
+    nlinarith [ht.2, norm_nonneg x]
+  have hJA : IntegrableOn J A :=
+    (Measure.integrableOn_of_bounded (M := (L : ℝ) ^ 2 * |1 - 1 / 2|) hBfin
+      hJm.aestronglyMeasurable (Eventually.of_forall fun x =>
+        intervalIntegral.norm_integral_le_of_norm_le_const fun t _ => hDsq_bd _)).mono_set
+      sdiff_subset
+  -- integrate the pointwise estimate over `A`
+  have hae : ∀ᵐ x ∂(volume.restrict A), u x ^ 2 ≤ 4 * I₁ x + J x := by
+    filter_upwards [ae_restrict_mem hAm,
+      ae_restrict_of_ae (Submission.dorag_ha_rb_ray_ftc n u L hu)] with x hxA hray
+    exact key x (mem_ball_zero_iff.mp hxA.1).le hray
+  have hmain : ∫ x in A, u x ^ 2 ≤ ∫ x in A, (4 * I₁ x + J x) :=
+    integral_mono_of_nonneg (Eventually.of_forall fun x => sq_nonneg (u x))
+      ((hI₁A.const_mul 4).add hJA) hae
+  rw [integral_add (hI₁A.const_mul 4) hJA, integral_const_mul] at hmain
+  -- average over dilations, then `4 · 2^{n+1} = 2^{n+3}`
+  have hdil₁ : ∫ x in A, I₁ x ≤ 2 ^ (n + 1) * s * ∫ y in B, u y ^ 2 :=
+    Submission.dorag_ha_rb_dilation_average n (fun y => u y ^ 2) s hmF₁ (fun y => sq_nonneg _)
+      hiF₁ hs hs2
+  have hdil₂ : ∫ x in A, J x ≤ 2 ^ (n + 1) * s * ∫ y in B, ‖fderiv ℝ u y‖ ^ 2 :=
+    Submission.dorag_ha_rb_dilation_average n (fun y => ‖fderiv ℝ u y‖ ^ 2) s hmF₂
+      (fun y => sq_nonneg _) hiF₂ hs hs2
+  have hJB : 0 ≤ 2 ^ (n + 1) * s * ∫ y in B, ‖fderiv ℝ u y‖ ^ 2 :=
+    mul_nonneg (mul_nonneg (by positivity) hs.le) (setIntegral_nonneg hBm fun y _ => sq_nonneg _)
+  have h2 : (2 : ℝ) ^ (n + 3) = 4 * 2 ^ (n + 1) := by ring
+  rw [h2]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
