@@ -410,6 +410,50 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Countable cover of an open set by open subsets of finite mass** (child
+`open_cover_finite_measure` of `null_transfer`; step 2 of the supplied proof of
+`intcpt_canon_hausdorff_null_of_weight_null`): if `μ` is finite on the compact subsets of an open set
+`U ⊆ ℝ^N`, then `U` is covered by countably many open sets `W i ⊆ U` with `μ (W i) < ∞`.
+Every `y ∈ U` has a ball `B_y = ball y r_y` with `closedBall y r_y ⊆ U`; that closed ball is compact
+(`ℝ^N` is proper), so `μ B_y < ∞`.  Lindelöf (`ℝ^N` is second countable) extracts a countable
+subfamily `(B_y)_{y ∈ T}` with the same union, enumerated by a surjection `ℕ → Option T`
+(`none ↦ ∅`). -/
+theorem Submission.intcpt_canon_nt_open_cover_finite_measure :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (U : Set (Euclidean N)), IsOpen U →
+      (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) →
+      ∃ W : ℕ → Set (Euclidean N), (∀ i, IsOpen (W i) ∧ W i ⊆ U ∧ μ (W i) ≠ ∞) ∧ U ⊆ ⋃ i, W i := by
+  intro N μ U hU hfin
+  -- Radii: `0 < r y` and `closedBall y (r y) ⊆ U` for every `y ∈ U`.
+  have hr : ∀ y : U, ∃ r : ℝ, 0 < r ∧ closedBall (y : Euclidean N) r ⊆ U := fun y => by
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU y y.2
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hball⟩
+  choose r hr0 hrU using hr
+  -- Lindelöf: countably many of the balls `ball y (r y)` already have the full union.
+  obtain ⟨T, hTc, hT⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun y : U => ball (y : Euclidean N) (r y)) (fun _ => isOpen_ball)
+  have : Countable T := hTc.to_subtype
+  -- Enumerate `T` and one extra index `none`, which is sent to `∅`.
+  obtain ⟨f, hf⟩ := exists_surjective_nat (Option T)
+  refine ⟨fun i => (f i).elim ∅ (fun y => ball ((y : U) : Euclidean N) (r y)), ?_, ?_⟩
+  · intro i
+    cases h : f i with
+    | none => simp [h]
+    | some y =>
+      simp only [h, Option.elim_some]
+      refine ⟨isOpen_ball, ball_subset_closedBall.trans (hrU y), ?_⟩
+      -- `μ (ball y r) ≤ μ (closedBall y r) < ∞`, the closed ball being a compact subset of `U`.
+      exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall _ _) (hrU y))
+        (measure_mono ball_subset_closedBall)
+  · intro x hx
+    have hx' : x ∈ ⋃ y : U, ball (y : Euclidean N) (r y) :=
+      mem_iUnion.2 ⟨⟨x, hx⟩, mem_ball_self (hr0 _)⟩
+    rw [← hT] at hx'
+    obtain ⟨y, hyT, hxy⟩ := mem_iUnion₂.1 hx'
+    obtain ⟨i, hi⟩ := hf (some ⟨y, hyT⟩)
+    refine mem_iUnion.2 ⟨i, ?_⟩
+    simp only [hi, Option.elim_some]
+    exact hxy
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
