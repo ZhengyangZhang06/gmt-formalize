@@ -451,6 +451,73 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Finite sup-norm nets** (the total-boundedness half of Arzelà–Ascoli, i.e. the Arzelà–Ascoli
+step of the Rellich compactness argument behind the harmonic approximation lemma, Simon Ch. 5).
+If the `g j` are bounded by `C` and `C`-Lipschitz on the compact set `K`, then for every `δ > 0`
+there is a finite set `S` of indices such that every `g j` is `δ`-close on `K` to some `g k`,
+`k ∈ S`.  With `C' = max C 0 + 1` and `r = δ / (3C')`, cover `K` by finitely many `r`-balls
+centred in `T ⊆ K`; the vectors `(g j y)_{y ∈ T}` lie in a compact ball of `T → ℝ`, so finitely
+many of them form a `δ/3`-net; then `|g j x − g k x| ≤ C'r + δ/3 + C'r = δ`. -/
+theorem Submission.dorag_ha_rb_sup_net : ∀ (n : ℕ) (K : Set (Euclid n)) (g : ℕ → Euclid n → ℝ) (C : ℝ), IsCompact K → (∀ j, ∀ x ∈ K, |g j x| ≤ C) → (∀ j, ∀ x ∈ K, ∀ y ∈ K, |g j x - g j y| ≤ C * ‖x - y‖) → ∀ δ : ℝ, 0 < δ → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∀ x ∈ K, |g j x - g k x| ≤ δ := by
+  intro n K g C hK hbd hlip δ hδ
+  -- Step 1: `C' = max C 0 + 1`, `r = δ / (3C')`, and finitely many `r`-balls centred in `T ⊆ K`
+  -- cover `K`
+  obtain ⟨C', hC'pos, hCC'⟩ : ∃ C' : ℝ, 0 < C' ∧ C ≤ C' :=
+    ⟨max C 0 + 1, by linarith [le_max_right C 0], by linarith [le_max_left C 0]⟩
+  have hr : 0 < δ / (3 * C') := div_pos hδ (mul_pos three_pos hC'pos)
+  have hC'r : C' * (δ / (3 * C')) = δ / 3 := by
+    field_simp
+  obtain ⟨T, hTK, hcover⟩ :=
+    hK.elim_nhds_subcover (fun x => ball x (δ / (3 * C'))) (fun x _ => ball_mem_nhds x hr)
+  -- Step 2: the evaluation vectors `Φ j = (g j y)_{y ∈ T}` lie in a compact ball of `T → ℝ`
+  let Φ : ℕ → T → ℝ := fun j y => g j y
+  have hrange : range Φ ⊆ closedBall 0 C' := by
+    rintro _ ⟨j, rfl⟩
+    rw [mem_closedBall, dist_pi_le_iff hC'pos.le]
+    intro y
+    rw [Pi.zero_apply, Real.dist_eq, sub_zero]
+    exact (hbd j y (hTK y y.2)).trans hCC'
+  have htb : TotallyBounded (range Φ) :=
+    (isCompact_closedBall (0 : T → ℝ) C').totallyBounded.subset hrange
+  -- Step 3: a finite `δ/3`-net `t ⊆ range Φ`; each `q ∈ t` is `Φ (invFun Φ q)`
+  obtain ⟨t, htΦ, htfin, htcover⟩ :=
+    finite_approx_of_totallyBounded htb (δ / 3) (div_pos hδ three_pos)
+  refine ⟨htfin.toFinset.image (Function.invFun Φ), fun j => ?_⟩
+  -- Step 4: `Φ j` is `δ/3`-close to some `q = Φ k ∈ t`, so `|g j - g k| < δ/3` on `T`
+  obtain ⟨q, hqt, hjq⟩ := mem_iUnion₂.1 (htcover (mem_range_self j))
+  refine ⟨Function.invFun Φ q, Finset.mem_image_of_mem _ (htfin.mem_toFinset.2 hqt), ?_⟩
+  have hkq : Φ (Function.invFun Φ q) = q := Function.invFun_eq (htΦ hqt)
+  have hT : ∀ y ∈ T, |g j y - g (Function.invFun Φ q) y| < δ / 3 := fun y hy =>
+    calc |g j y - g (Function.invFun Φ q) y|
+        = dist (Φ j ⟨y, hy⟩) (Φ (Function.invFun Φ q) ⟨y, hy⟩) := rfl
+      _ ≤ dist (Φ j) (Φ (Function.invFun Φ q)) :=
+        dist_le_pi_dist (Φ j) (Φ (Function.invFun Φ q)) ⟨y, hy⟩
+      _ = dist (Φ j) q := by rw [hkq]
+      _ < δ / 3 := hjq
+  -- Step 5: the three-term estimate through a centre `y ∈ T` with `‖x - y‖ < r`
+  intro x hx
+  obtain ⟨y, hyT, hxy⟩ := mem_iUnion₂.1 (hcover hx)
+  have hyK : y ∈ K := hTK y hyT
+  have hxy' : ‖x - y‖ < δ / (3 * C') := by
+    rw [← dist_eq_norm]
+    exact hxy
+  have hCr : C * ‖x - y‖ ≤ δ / 3 :=
+    calc C * ‖x - y‖ ≤ C' * ‖x - y‖ := mul_le_mul_of_nonneg_right hCC' (norm_nonneg _)
+      _ ≤ C' * (δ / (3 * C')) := mul_le_mul_of_nonneg_left hxy'.le hC'pos.le
+      _ = δ / 3 := hC'r
+  have h1 := hlip j x hx y hyK
+  have h2 := hT y hyT
+  have h3 := hlip (Function.invFun Φ q) y hyK x hx
+  rw [norm_sub_rev] at h3
+  calc |g j x - g (Function.invFun Φ q) x|
+      ≤ |g j x - g j y| + |g j y - g (Function.invFun Φ q) x| := abs_sub_le _ _ _
+    _ ≤ |g j x - g j y| +
+          (|g j y - g (Function.invFun Φ q) y| +
+            |g (Function.invFun Φ q) y - g (Function.invFun Φ q) x|) := by
+      gcongr
+      exact abs_sub_le _ _ _
+    _ ≤ δ := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
