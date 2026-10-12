@@ -524,6 +524,60 @@ theorem mvk_exists_kernel_potential : ∀ n : ℕ, ∃ ρ Ψ : Rn n → ℝ, Con
     simp only [smul_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, hρ₀_def]
     push_cast
     ring
+/-- Fundamental theorem of calculus along rays, averaged against a kernel (used for the mean value
+kernel in Weyl's lemma, Simon Ch. 5, proof of Lemma 3.1): for continuous `ρ` vanishing where
+`‖z‖ ≥ 1`, `h ∈ C¹` and `t ≥ 0`,
+`∫ ρ(z) h(x₀ + t z) dz = (∫ ρ) h(x₀) + ∫₀ᵗ ∫ ρ(z) Dh(x₀ + σ z)[z] dz dσ`.  Raywise FTC, then
+Fubini for the continuous integrand, which vanishes off `[0, t] × B₁(0)`. -/
+theorem mvk_integral_ray_fubini : ∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 ≤ t → Continuous ρ → (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ 1 h → ∫ z, ρ z * h (x₀ + t • z) = (∫ z, ρ z) * h x₀ + ∫ σ in (0 : ℝ)..t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z := by
+  intro n ρ h x₀ t ht hρ hρ0 hh
+  -- `ρ` vanishes off the compact closed unit ball, so it has compact support.
+  have hρs : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Rn n) 1) fun z hz => hρ0 z ?_
+    rw [mem_closedBall, dist_zero_right, not_le] at hz
+    exact hz.le
+  have hhd : Differentiable ℝ h := hh.differentiable one_ne_zero
+  have hDh : Continuous (fderiv ℝ h) := hh.continuous_fderiv one_ne_zero
+  -- Products of `ρ` with continuous functions are integrable.
+  have hint : ∀ g : Rn n → ℝ, Continuous g → Integrable fun z => ρ z * g z := fun g hg =>
+    (hρ.mul hg).integrable_of_hasCompactSupport hρs.mul_right
+  -- FTC along the ray `σ ↦ x₀ + σ • z`, multiplied by the constant `ρ z`.
+  have hftc : ∀ z : Rn n, ∫ σ in (0 : ℝ)..t, ρ z * fderiv ℝ h (x₀ + σ • z) z =
+      ρ z * h (x₀ + t • z) - ρ z * h x₀ := by
+    intro z
+    have hderiv : ∀ σ : ℝ,
+        HasDerivAt (fun σ : ℝ => h (x₀ + σ • z)) (fderiv ℝ h (x₀ + σ • z) z) σ := by
+      intro σ
+      have hray : HasDerivAt (fun σ : ℝ => x₀ + σ • z) z σ := by
+        simpa using ((hasDerivAt_id σ).smul_const z).const_add x₀
+      exact (hhd (x₀ + σ • z)).hasFDerivAt.comp_hasDerivAt σ hray
+    have hcont : Continuous fun σ : ℝ => fderiv ℝ h (x₀ + σ • z) z := by fun_prop
+    rw [intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_eq_sub_of_hasDerivAt (fun σ _ => hderiv σ)
+        (hcont.intervalIntegrable _ _), zero_smul, add_zero, mul_sub]
+  -- The integrand is integrable on `(0, t] × ℝⁿ`: it is continuous and vanishes off the compact
+  -- set `[0, t] × B₁(0)`.
+  have hF : Integrable
+      (Function.uncurry fun (σ : ℝ) (z : Rn n) => ρ z * fderiv ℝ h (x₀ + σ • z) z)
+      ((volume.restrict (uIoc (0 : ℝ) t)).prod volume) := by
+    rw [Measure.restrict_prod_eq_prod_univ]
+    have hK : IntegrableOn
+        (Function.uncurry fun (σ : ℝ) (z : Rn n) => ρ z * fderiv ℝ h (x₀ + σ • z) z)
+        (Icc (0 : ℝ) t ×ˢ closedBall (0 : Rn n) 1) (volume.prod volume) :=
+      (Continuous.continuousOn (by fun_prop)).integrableOn_compact
+        (isCompact_Icc.prod (isCompact_closedBall _ _))
+    refine hK.of_forall_sdiff_eq_zero (measurableSet_uIoc.prod MeasurableSet.univ) ?_
+    rintro ⟨σ, z⟩ ⟨⟨hσ, -⟩, hnot⟩
+    rw [uIoc_of_le ht] at hσ
+    have hz : z ∉ closedBall (0 : Rn n) 1 := fun hz => hnot ⟨Ioc_subset_Icc_self hσ, hz⟩
+    rw [mem_closedBall, dist_zero_right, not_le] at hz
+    simp [hρ0 z hz.le]
+  -- Fubini, then integrate the raywise identity over `z`.
+  rw [MeasureTheory.intervalIntegral_integral_swap hF]
+  simp_rw [hftc]
+  rw [integral_sub (hint (fun z => h (x₀ + t • z)) (by fun_prop))
+    (hint (fun _ => h x₀) continuous_const), integral_mul_const]
+  ring
 
 end Submission
 
