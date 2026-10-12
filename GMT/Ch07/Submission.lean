@@ -579,6 +579,63 @@ theorem Submission.dsmc_tangentSpace_subset_range_of_secant : ∀ (P d : ℕ) (N
     exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun ε hε => key ε hε)
   -- Step 7: `L` is closed, so `dist(w, L) = 0` gives `w ∈ L`
   exact (hLc.mem_iff_infDist_zero hLne).mpr (le_antisymm h0 infDist_nonneg)
+/-- **Simon Ch. 2, §4, (4.3)**: if `ψ` is `Cʳ` (`r ≥ 1`) on an open `V ⊆ ℝᵈ` and `ψ(V) ⊆ N`,
+then every `Dψ(v) a`, `v ∈ V`, is the velocity at `0` of a `C¹` curve in `N` through `ψ(v)`, i.e.
+`Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N`.  For `a = 0` take the constant curve.  Otherwise, with
+`B_{ρ₀}(v) ⊆ V`, `c = ρ₀ / |a|` and `h(t) = t / (1 + t² / c²)` (smooth, `h(0) = 0`, `h'(0) = 1`,
+`|h| ≤ c / 2`), the curve `γ(t) = ψ(v + h(t) a)` stays in `ψ(V)` and has velocity `Dψ(v) a`. -/
+theorem Submission.dsmc_chart_range_subset_tangentSpace : ∀ (P r d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), 1 ≤ r → IsOpen V → ContDiffOn ℝ r ψ V → ψ '' V ⊆ N → ∀ v ∈ V, Set.range (fderiv ℝ ψ v) ⊆ tangentSpace N (ψ v) := by
+  rintro P r d N V ψ hr hV hψ hN v hv _ ⟨a, rfl⟩
+  -- `ψ` is `C¹` on `V`, hence differentiable at the interior point `v`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+  by_cases ha : a = 0
+  · -- `a = 0`: the constant curve `ψ(v)` has velocity `0 = Dψ(v) 0`
+    subst ha
+    refine ⟨fun _ => ψ v, contDiffOn_const, fun _ _ => hN (mem_image_of_mem ψ hv), rfl, ?_⟩
+    simpa using hasDerivAt_const (0 : ℝ) (ψ v)
+  · -- `a ≠ 0`: `β(t) = v + h(t) a` with `h(t) = t / (1 + t² / c²)`, `c = ρ₀ / |a|`
+    obtain ⟨ρ₀, hρ₀, hball⟩ := Metric.isOpen_iff.mp hV v hv
+    have ha' : 0 < ‖a‖ := norm_pos_iff.mpr ha
+    set c : ℝ := ρ₀ / ‖a‖ with hc_def
+    have hc : 0 < c := div_pos hρ₀ ha'
+    have hden : ∀ t : ℝ, 0 < 1 + t ^ 2 / c ^ 2 := fun t => by positivity
+    set h : ℝ → ℝ := fun t => t / (1 + t ^ 2 / c ^ 2) with hh_def
+    -- (a) `h` is smooth
+    have h_cd : ContDiff ℝ 1 h :=
+      contDiff_id.div (contDiff_const.add ((contDiff_id.pow 2).div_const _)) fun t => (hden t).ne'
+    -- (b) `h'(0) = 1`
+    have h_deriv : HasDerivAt h 1 0 := by
+      have := hasDerivAt_id' (x := (0 : ℝ)) |>.fun_div
+        (((hasDerivAt_id' (x := (0 : ℝ))).fun_pow 2).div_const (c ^ 2) |>.const_add 1) (hden 0).ne'
+      convert this using 1
+      simp
+    -- (c) `|h(t)| ≤ c / 2`, since `2 c |t| ≤ c² + t²`
+    have h_bd : ∀ t, |h t| ≤ c / 2 := by
+      intro t
+      rw [hh_def, abs_div, abs_of_pos (hden t), div_le_iff₀ (hden t)]
+      have h1 : c / 2 * (1 + t ^ 2 / c ^ 2) = (c ^ 2 + |t| ^ 2) / (2 * c) := by
+        rw [sq_abs]; field_simp
+      rw [h1, le_div_iff₀ (by positivity)]
+      nlinarith [sq_nonneg (c - |t|)]
+    -- `β` stays in `B_{ρ₀}(v) ⊆ V`, `β(0) = v` and `β'(0) = a`
+    set β : ℝ → Euclid d := fun t => v + h t • a with hβ_def
+    have hβV : ∀ t, β t ∈ V := fun t => hball <| by
+      rw [Metric.mem_ball, dist_eq_norm, hβ_def]
+      simp only [add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+      calc |h t| * ‖a‖ ≤ c / 2 * ‖a‖ := by gcongr; exact h_bd t
+        _ = ρ₀ / 2 := by rw [hc_def]; field_simp
+        _ < ρ₀ := by linarith
+    have hβ0 : β 0 = v := by simp [hβ_def, hh_def]
+    have hβ_cd : ContDiff ℝ 1 β := contDiff_const.add (h_cd.smul contDiff_const)
+    have hβ_deriv : HasDerivAt β a 0 := by
+      have := HasDerivAt.const_add v (h_deriv.smul_const a)
+      rwa [one_smul] at this
+    -- `γ = ψ ∘ β` is `C¹` on `(-1, 1)`, lies in `ψ(V) ⊆ N`, and `γ'(0) = Dψ(v) a`
+    refine ⟨ψ ∘ β, hψ1.comp hβ_cd.contDiffOn fun t _ => hβV t,
+      fun t _ => hN (mem_image_of_mem ψ (hβV t)), by simp [hβ0], ?_⟩
+    exact hψv.comp_hasDerivAt_of_eq 0 hβ_deriv hβ0.symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
