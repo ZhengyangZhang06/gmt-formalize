@@ -533,6 +533,88 @@ theorem Submission.fiw_tl_blowup_setIntegral :
   rw [hc] at h
   rw [← h, inv_mul_cancel_left₀ (pow_ne_zero n hr.ne')]
 
+/-- Simon Ch. 3, 1.7: if `M` has weighted approximate tangent space `Q` at `x` and `θ ≥ 0` is
+`Hⁿ`-integrable on `M ∩ B̄_ρ(x)`, then `∫_{M ∩ B̄_s(x)} θ dHⁿ ≤ C sⁿ` for all small `s > 0`.
+Test with the cut-off `f₀ = max 0 (min 1 (2 - ‖·‖))` (`= 1` on `B̄₁(0)`, `= 0` off `B₂(0)`): by
+`fiw_tl_blowup_setIntegral` the tangent integrals equal `s⁻ⁿ ∫_M f₀(η_s z) θ(z) dHⁿ(z)`, which
+dominate `s⁻ⁿ ∫_{M ∩ B̄_s(x)} θ dHⁿ` and converge as `s ↓ 0`. -/
+theorem Submission.fiw_tl_growth_bound :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (ρ : ℝ)
+      (Q : Submodule ℝ (Eucl P)), 0 < ρ → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) →
+      (∀ y ∈ M, 0 ≤ θ y) → IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) →
+      HasWeightedApproximateTangentSpaceAt n M θ x Q → ∃ C : ℝ, ∀ᶠ s in 𝓝[>] (0 : ℝ),
+        ∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂(μHE[n] : Measure (Eucl P)) ≤
+          ENNReal.ofReal (C * s ^ n) := by
+  intro P n M θ x ρ Q hρ hM hθ hθi hT
+  -- Step 1: the cut-off `f₀ ∈ C_c(ℝ^P)`: `f₀ = 1` on `B̄₁(0)`, `f₀ = 0` off `B₂(0)`, `0 ≤ f₀ ≤ 1`.
+  obtain ⟨f₀, hf₀0, hf₀1, hf₀nn, hf₀le⟩ : ∃ f₀ : CompactlySupportedContinuousMap (Eucl P) ℝ,
+      (∀ y, 2 ≤ ‖y‖ → f₀ y = 0) ∧ (∀ y, ‖y‖ ≤ 1 → f₀ y = 1) ∧ (∀ y, 0 ≤ f₀ y) ∧
+        ∀ y, f₀ y ≤ 1 := by
+    have h0 : ∀ y : Eucl P, 2 ≤ ‖y‖ → max 0 (min 1 (2 - ‖y‖)) = 0 := fun y hy =>
+      max_eq_left (min_le_of_right_le (by linarith))
+    refine ⟨⟨⟨fun y => max 0 (min 1 (2 - ‖y‖)),
+        continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm))⟩,
+      HasCompactSupport.intro (isCompact_closedBall 0 2) fun y hy =>
+        h0 y (not_le.1 fun h => hy (mem_closedBall_zero_iff.2 h)).le⟩, h0, fun y hy => ?_,
+      fun y => le_max_left _ _, fun y => max_le zero_le_one (min_le_left _ _)⟩
+    show max 0 (min 1 (2 - ‖y‖)) = 1
+    rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+  -- Step 2: `I(s) → L := θ(x) ∫_Q f₀ dHⁿ` as `s ↓ 0`, so `I(s) < C := |L| + 1` for small `s`.
+  refine ⟨|θ x * ∫ y in (Q : Set (Eucl P)), f₀ y ∂(μHE[n] : Measure (Eucl P))| + 1, ?_⟩
+  filter_upwards [(hT.2 f₀).eventually (gt_mem_nhds ((le_abs_self _).trans_lt (lt_add_one _))),
+    Ioo_mem_nhdsGT (half_pos hρ)] with s hIs hs
+  obtain ⟨hs0, hsρ⟩ := hs
+  -- Step 3: `I(s) = s⁻ⁿ ∫_M F dHⁿ`, `F z = f₀(η_s z) θ(z)`, since `x + s η_s(z) = z`.
+  have hη : ∀ z, Poincare.SimonGMT.Chapter03.blowUpMap x s z = s⁻¹ • (z - x) := fun z => rfl
+  have hxη : ∀ z, x + s • Poincare.SimonGMT.Chapter03.blowUpMap x s z = z := fun z => by
+    rw [hη, smul_inv_smul₀ hs0.ne', add_sub_cancel]
+  have hcv := Submission.fiw_tl_blowup_setIntegral P n x s M (fun y => f₀ y * θ (x + s • y)) hs0
+  simp only [hxη] at hcv
+  -- Step 4: `F = 0` off `B̄_ρ(x)` (as `2s < ρ`) and `F = θ` on `B̄_s(x)`.
+  have hnη : ∀ z, ‖Poincare.SimonGMT.Chapter03.blowUpMap x s z‖ = dist z x / s := fun z => by
+    rw [hη, norm_smul, norm_inv, Real.norm_of_nonneg hs0.le, dist_eq_norm, inv_mul_eq_div]
+  have hF0 : ∀ z, z ∉ closedBall x ρ →
+      f₀ (Poincare.SimonGMT.Chapter03.blowUpMap x s z) * θ z = 0 := fun z hz => by
+    rw [mem_closedBall, not_le] at hz
+    rw [hf₀0 _ (by rw [hnη, le_div_iff₀ hs0]; linarith), zero_mul]
+  have hF1 : ∀ z ∈ closedBall x s,
+      f₀ (Poincare.SimonGMT.Chapter03.blowUpMap x s z) * θ z = θ z := fun z hz => by
+    rw [hf₀1 _ (by rw [hnη, div_le_one hs0]; exact hz), one_mul]
+  -- Step 5: `F` is integrable on `M`: bounded continuous times `θ` on `M ∩ B̄_ρ(x)`, zero off it.
+  have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x s) := by
+    show Continuous fun z => s⁻¹ • (z - x)
+    fun_prop
+  have hFρ : IntegrableOn (fun z => f₀ (Poincare.SimonGMT.Chapter03.blowUpMap x s z) * θ z)
+      (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) :=
+    Integrable.bdd_mul (c := 1) hθi (f₀.continuous.comp hηc).aestronglyMeasurable
+      (Eventually.of_forall fun z => (Real.norm_of_nonneg (hf₀nn _)).trans_le (hf₀le _))
+  have hFi : IntegrableOn (fun z => f₀ (Poincare.SimonGMT.Chapter03.blowUpMap x s z) * θ z) M
+      (μHE[n] : Measure (Eucl P)) :=
+    hFρ.of_ae_sdiff_eq_zero hM (Eventually.of_forall fun z hz => hF0 z fun h => hz.2 ⟨hz.1, h⟩)
+  -- Steps 6–7: `∫_{M ∩ B̄_s(x)} θ = ∫_{M ∩ B̄_s(x)} F ≤ ∫_M F = sⁿ I(s) ≤ C sⁿ`.
+  have hMs : NullMeasurableSet (M ∩ closedBall x s) (μHE[n] : Measure (Eucl P)) :=
+    hM.inter measurableSet_closedBall.nullMeasurableSet
+  have hθs : IntegrableOn θ (M ∩ closedBall x s) (μHE[n] : Measure (Eucl P)) :=
+    hθi.mono_set (inter_subset_inter_right _ (closedBall_subset_closedBall (by linarith)))
+  rw [← ofReal_integral_eq_lintegral_ofReal hθs
+    (by filter_upwards [ae_restrict_mem₀ hMs] with z hz using hθ z hz.1)]
+  refine ENNReal.ofReal_le_ofReal ?_
+  calc ∫ z in M ∩ closedBall x s, θ z ∂(μHE[n] : Measure (Eucl P))
+      = ∫ z in M ∩ closedBall x s, f₀ (Poincare.SimonGMT.Chapter03.blowUpMap x s z) * θ z
+          ∂(μHE[n] : Measure (Eucl P)) :=
+        setIntegral_congr_fun₀ hMs fun z hz => (hF1 z hz.2).symm
+    _ ≤ ∫ z in M, f₀ (Poincare.SimonGMT.Chapter03.blowUpMap x s z) * θ z
+          ∂(μHE[n] : Measure (Eucl P)) :=
+        setIntegral_mono_set hFi (by
+          filter_upwards [ae_restrict_mem₀ hM] with z hz using mul_nonneg (hf₀nn _) (hθ z hz))
+          inter_subset_left.eventuallyLE
+    _ = s ^ n * ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x s '' M, f₀ y * θ (x + s • y)
+          ∂(μHE[n] : Measure (Eucl P)) := by
+        rw [hcv, ← mul_assoc, mul_inv_cancel₀ (pow_ne_zero _ hs0.ne'), one_mul]
+    _ ≤ s ^ n * (|θ x * ∫ y in (Q : Set (Eucl P)), f₀ y ∂(μHE[n] : Measure (Eucl P))| + 1) :=
+        mul_le_mul_of_nonneg_left hIs.le (pow_nonneg hs0.le _)
+    _ = _ := mul_comm _ _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
