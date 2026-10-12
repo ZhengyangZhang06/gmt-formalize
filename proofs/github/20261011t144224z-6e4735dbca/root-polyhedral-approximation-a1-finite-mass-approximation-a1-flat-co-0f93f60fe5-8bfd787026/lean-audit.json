@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "39ea1df88a576789ecf7130ae13c2e78e2930e69b1b2463ffd80b7310585fb1b",
+  "git_delta": {
+    "base_commit": "5498b6d65f7bc803a249f70cbce355a1491016a2",
+    "candidate_commit": "ca2d03cda38d8f780a152c12049d22272a8ba328",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_flat_seq_tendsto",
+    "diff_sha256": "51de974a4b9535a0fbfddd347ed665cecbdbdf60f83a140e96eaa095049f0b55",
+    "source_sha256": "8675e8b55f1cc39cf087bc53341c5d7c7a58fcf2337e0dfae881df91f3c2255e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_flat_seq_tendsto",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (X Pc S : ℕ → GeometricCurrentOn U n) (R : ℕ → GeometricCurrentOn U (n + 1)), (∀ (k : ℕ) (ω : TestFormOn U n), X k ω - Pc k ω = (R k).boundary ω + S k ω) → Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) → ∀ ω : TestFormOn U n, Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
