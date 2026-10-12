@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7734e485505cef020bb1d2780a606ff299967c156e505de5c8666e176c8dc414",
+  "git_delta": {
+    "base_commit": "7692c471e48ae7e29a182c53a149e0ffa80c4544",
+    "candidate_commit": "2d60fe36525b7553445c881a6d8c965837c795a1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_chart_secant_estimate",
+    "diff_sha256": "3d4ad4a55c92a3d59b86c0db5479c3247f7960a1eab65dcba33de5a1c2e5adf6",
+    "source_sha256": "f091e1b6e2647aa8745933c84e2b6eab602153706fb807c49965550da1654d63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_chart_secant_estimate",
+      "statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P) (A : Euclid d →L[ℝ] Euclid P) (v : Euclid d), IsOpen W → ψ '' V = W ∩ N → v ∈ V → HasFDerivAt ψ A v → Injective A → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y (ψ v) < δ → ∃ a : Euclid d, ‖y - ψ v - A a‖ ≤ ε * ‖y - ψ v‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
