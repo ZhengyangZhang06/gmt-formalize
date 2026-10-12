@@ -458,6 +458,62 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 44)**, run inside `B = B_R(0)`.
+If `f : ℝⁿ → ℝ` is Lipschitz, then for every `R` and `ε > 0` some `g ∈ C¹(ℝⁿ)` has
+`Lⁿ(B_R(0) ∩ {f ≠ g}) < ε`.  Proof: `D = {x : f is differentiable at x}` is Borel with
+`Lⁿ(ℝⁿ \ D) = 0` (Rademacher), and `Df` is Borel.  Lusin's theorem gives a closed `C ⊆ B ∩ D` with
+`Df` continuous on `C` and `Lⁿ((B ∩ D) \ C) < ε/2`.  The Egoroff argument gives a closed `A ⊆ C`
+with `Lⁿ(C \ A) < ε/2` on which `|f(y) − f(x) − Df(x)(y − x)| ≤ τ|y − x|` holds uniformly for
+`|x − y| < ρ(τ)`.  Whitney's extension theorem then gives `g ∈ C¹` with `g = f` on `A`, and
+`B ∩ {f ≠ g} ⊆ (ℝⁿ \ D) ∪ ((B ∩ D) \ C) ∪ (C \ A)`. -/
+theorem rsod_lipschitz_c1_approx_closedBall : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ (R : ℝ) (ε : ℝ≥0∞), 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume (closedBall (0 : Rn n) R ∩ {x | f x ≠ g x}) < ε := by
+  intro n f K hf R ε hε
+  set B : Set (Rn n) := closedBall (0 : Rn n) R
+  set D : Set (Rn n) := {x | DifferentiableAt ℝ f x}
+  -- Step 1: `B` is compact, so `Lⁿ(B) < ∞`; the tolerance `ε/2` is positive.
+  have hBfin : volume B < ∞ := measure_closedBall_lt_top
+  have hε2 : ε / 2 ≠ 0 := (ENNReal.half_pos hε.ne').ne'
+  -- Step 2: `D` is Borel and, by Rademacher's theorem, `Lⁿ(ℝⁿ \ D) = 0`; `Df` is Borel.
+  have hDmeas : MeasurableSet D := measurableSet_of_differentiableAt ℝ f
+  have hDnull : volume Dᶜ = 0 := ae_iff.mp hf.ae_differentiableAt
+  -- Step 3 (Lusin): a closed `C ⊆ B ∩ D` with `Df` continuous on `C`, `Lⁿ((B ∩ D) \ C) < ε/2`.
+  obtain ⟨C, hCBD, hC, hBDC, hDfC⟩ :=
+    Submission.rsod_c1ab_clm_lusin_closed n (fderiv ℝ f) (measurable_fderiv ℝ f) (B ∩ D)
+      (measurableSet_closedBall.inter hDmeas)
+      ((measure_mono inter_subset_left).trans_lt hBfin).ne (ε / 2) hε2
+  -- Step 4 (Egoroff): a closed `A ⊆ C` with `Lⁿ(C \ A) < ε/2` and a uniform Taylor estimate on `A`.
+  obtain ⟨A, hAC, hA, hCA, hrem⟩ :=
+    Submission.rsod_c1ab_uniform_taylor_remainder n f K hf C hC
+      ((measure_mono (hCBD.trans inter_subset_left)).trans_lt hBfin).ne
+      (fun x hx => (hCBD hx).2) (ε / 2) hε2
+  -- Step 5 (Whitney): `f` and `Df` satisfy Whitney's `C¹` condition on `A`, so `f|A` extends to
+  -- some `g ∈ C¹`; the uniform estimate on `A` gives the one on each compact `Q ⊆ A`.
+  obtain ⟨g, hg, hgf⟩ :=
+    Submission.rsod_c1ab_whitney_c1_extension n A f (fderiv ℝ f) hA hf.continuous.continuousOn
+      (hDfC.mono hAC) fun Q _ hQA τ hτ => by
+        obtain ⟨ρ, hρ, h⟩ := hrem τ hτ
+        exact ⟨ρ, hρ, fun x hx y hy hxy => h x (hQA hx) y hy hxy⟩
+  refine ⟨g, hg, ?_⟩
+  -- Step 6: `B ∩ {f ≠ g} ⊆ (ℝⁿ \ D) ∪ ((B ∩ D) \ C) ∪ (C \ A)`, of measure `< 0 + ε/2 + ε/2`.
+  have hsub : B ∩ {x | f x ≠ g x} ⊆ Dᶜ ∪ ((B ∩ D) \ C) ∪ (C \ A) := by
+    rintro x ⟨hxB, hfg⟩
+    by_cases hxD : x ∈ D
+    · by_cases hxC : x ∈ C
+      · exact Or.inr ⟨hxC, fun hxA => hfg (hgf x hxA).symm⟩
+      · exact Or.inl (Or.inr ⟨⟨hxB, hxD⟩, hxC⟩)
+    · exact Or.inl (Or.inl hxD)
+  calc volume (B ∩ {x | f x ≠ g x})
+      ≤ volume Dᶜ + volume ((B ∩ D) \ C) + volume (C \ A) :=
+        (measure_mono hsub).trans
+          ((measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl))
+    _ = volume ((B ∩ D) \ C) + volume (C \ A) := by rw [hDnull, zero_add]
+    _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBDC hCA
+    _ = ε := ENNReal.add_halves ε
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
