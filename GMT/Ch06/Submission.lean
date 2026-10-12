@@ -776,6 +776,72 @@ theorem Submission.cmb_measureRepresentation_continuous_bound : ∀ (P n : ℕ) 
   have h := key _ hε
   nlinarith
 
+/-- **Convergence on continuous forms in Simon Ch. 6, Lemma 2.15 (p. 137).**  If
+`sup_q M_W(S_q) < ∞` for each `W ⊂⊂ U` and `S_q ⇀ S₀`, then `∫ ⟨ω, v_q⟩ dμ_q → ∫ ⟨ω, v₀⟩ dμ₀`
+for every continuous compactly supported `n`-form `ω` with `tsupport ω ⊆ U` and all
+representations (2.7) `(μ_q, v_q)` of `S_q` and `(μ₀, v₀)` of `S₀`.  Take `W ⊂⊂ U` containing
+`tsupport ω` and `B = sup_q M_W(S_q)`, so that `M_W(S₀) ≤ B` by 2.14.  A test form `η` supported
+in `W` with `|ω - η| ≤ δ` splits `∫ ⟨ω, v⟩ dμ = T(η) + ∫ ⟨ω - η, v⟩ dμ` with remainder at most
+`B δ`, and `S_q(η) → S₀(η)`. -/
+theorem Submission.cmb_tendsto_integral_of_weaklyConvergesOn : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (S : ℕ → GeometricCurrentOn U n) (S₀ : GeometricCurrentOn U n), (∀ W, CompactlyContainedOpen W U → (⨆ q, (S q).massOn W) < ∞) → WeaklyConvergesOn S S₀ → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → ∀ (μ : ℕ → Measure (Eucl P)) (v : ℕ → Eucl P → NVector (Eucl P) n) (μ₀ : Measure (Eucl P)) (v₀ : Eucl P → NVector (Eucl P) n), (∀ q, IsMeasureRepresentation (S q) (μ q) (v q)) → IsMeasureRepresentation S₀ μ₀ v₀ → Tendsto (fun q => ∫ x, v q x (ω x) ∂(μ q)) atTop (𝓝 (∫ x, v₀ x (ω x) ∂μ₀)) := by
+  intro P n U hU S S₀ hmass hconv ω hω hωc hωU μ v μ₀ v₀ hrep hrep₀
+  -- Step 1: an open `W ⊂⊂ U` with `tsupport ω ⊆ W`.
+  obtain ⟨W, hWo, hωW, hWU, hWc⟩ :=
+    exists_open_between_and_isCompact_closure hωc.isCompact hU hωU
+  have hW : CompactlyContainedOpen W U := ⟨hWo, hWc, hWU⟩
+  -- Step 2: `B = sup_q M_W(S_q)` is finite and bounds every `M_W(S_q)`, and also `M_W(S₀)` by
+  -- lower semicontinuity of mass (2.14).
+  set B : ℝ := (⨆ q, (S q).massOn W).toReal
+  have hB : 0 ≤ B := ENNReal.toReal_nonneg
+  have hBeq : ENNReal.ofReal B = ⨆ q, (S q).massOn W := ENNReal.ofReal_toReal (hmass W hW).ne
+  have hSB : ∀ q, (S q).massOn W ≤ ENNReal.ofReal B := fun q =>
+    (le_iSup (fun q => (S q).massOn W) q).trans hBeq.ge
+  have hS₀B : S₀.massOn W ≤ ENNReal.ofReal B :=
+    calc S₀.massOn W ≤ liminf (fun q => (S q).massOn W) atTop := hconv.massOn_le_liminf W
+      _ ≤ limsup (fun q => (S q).massOn W) atTop := liminf_le_limsup
+      _ ≤ ⨆ q, (S q).massOn W := limsup_le_iSup
+      _ = ENNReal.ofReal B := hBeq.symm
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  -- Step 3: a test form `η` supported in `W` with `|ω - η| ≤ δ`, where `δ = ε / (2B + 2)`.
+  set δ : ℝ := ε / (2 * B + 2)
+  have hB2 : 0 < 2 * B + 2 := by linarith
+  have hδ : 0 < δ := div_pos hε hB2
+  obtain ⟨η, hηW, hωη⟩ := Submission.cmb_exists_testForm_uniform_approx P n U W ω hWo
+    (subset_closure.trans hWU) hω hωc hωW δ hδ
+  -- Step 4: the remainder `ω - η` is continuous, supported in `W` and bounded by `δ`.
+  have hω'c : Continuous fun x => ω x - (η : DifferentialForm (Eucl P) n) x :=
+    hω.sub (ContDiff.continuous η.2.1.1)
+  have hω'W : tsupport (fun x => ω x - (η : DifferentialForm (Eucl P) n) x) ⊆ W :=
+    (tsupport_sub _ _).trans (union_subset hωW hηW)
+  -- Step 5: for a representation `(μ', v')` of `T` with `M_W(T) ≤ B`,
+  -- `∫ ⟨ω, v'⟩ dμ' = T(η) + ∫ ⟨ω - η, v'⟩ dμ'` and the remainder is at most `B δ`.
+  have hrem : ∀ (T : GeometricCurrentOn U n) (μ' : Measure (Eucl P))
+      (v' : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ' v' →
+      T.massOn W ≤ ENNReal.ofReal B → |∫ x, v' x (ω x) ∂μ' - T η| ≤ B * δ := by
+    intro T μ' v' hT hTB
+    obtain ⟨hint, hbd⟩ := Submission.cmb_measureRepresentation_continuous_bound P n U W hW T μ'
+      v' hT B δ hB hTB _ hω'c hω'W hωη
+    obtain ⟨hηint, hTη⟩ := hT η
+    have hsplit : ∫ x, v' x (ω x) ∂μ' =
+        T η + ∫ x, v' x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ' := by
+      rw [hTη, ← integral_add hηint hint]
+      congr 1
+      ext x
+      rw [← map_add, add_sub_cancel]
+    rwa [hsplit, add_sub_cancel_left]
+  -- Step 6: `S_q(η) → S₀(η)`, so eventually the difference is `< δ + 2 B δ < ε`.
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp (hconv η) δ hδ
+  refine ⟨N, fun q hq => ?_⟩
+  have hq₁ := abs_le.mp (hrem (S q) (μ q) (v q) (hrep q) (hSB q))
+  have hq₀ := abs_le.mp (hrem S₀ μ₀ v₀ hrep₀ hS₀B)
+  have hqη := abs_lt.mp (Real.dist_eq _ _ ▸ hN q hq)
+  have hδε : δ + B * δ + B * δ < ε := by
+    have : δ * (2 * B + 2) = ε := div_mul_cancel₀ ε hB2.ne'
+    nlinarith
+  rw [Real.dist_eq, abs_lt]
+  constructor <;> linarith [hq₁.1, hq₁.2, hq₀.1, hq₀.2, hqη.1, hqη.2]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
