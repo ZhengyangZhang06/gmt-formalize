@@ -509,7 +509,8 @@ theorem aetp_c1_piece_approxTangent : ∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ)
     have hloc : ∀ η > 0, ∃ ρ > 0, ball b ρ ⊆ ball c r ∧
         ∀ u ∈ ball b ρ, ∀ v ∈ ball b ρ, ‖G u - G v - L (u - v)‖ ≤ η * ‖u - v‖ := by
       intro η hη
-      obtain ⟨ρ₁, hρ₁, h₁⟩ := Metric.eventually_nhds_iff.1 (hstrict.isLittleO.def hη)
+      obtain ⟨ρ₁, hρ₁, h₁⟩ :=
+        Metric.eventually_nhds_iff.1 (Asymptotics.isLittleO_iff.1 hstrict.isLittleO hη)
       obtain ⟨ρ₂, hρ₂, h₂⟩ := Metric.isOpen_iff.1 isOpen_ball b hb
       refine ⟨min ρ₁ ρ₂, lt_min hρ₁ hρ₂, (ball_subset_ball (min_le_right _ _)).trans h₂, ?_⟩
       intro u hu v hv
