@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1.cutoff_integral_tendsto-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+  "depth": 4,
+  "title": "Dominated convergence for shrinking radial cutoffs (step 4 of the cylinder-monotonicity proof)",
+  "statement": "Let N ∈ ℕ, let μ be a measure on ℝ^N = Euclidean N (Borel σ-algebra), y ∈ ℝ^N, and h : ℝ^N → ℝ measurable with 0 ≤ h ≤ 1. For j ∈ ℕ let φ_j : ℝ → ℝ be measurable with 0 ≤ φ_j ≤ 1, φ_j(s) = 1 for every s ≤ 1 and φ_j(s) = 0 for every s ≥ A_j², where A_j > 0 for all j and A_j → 1 as j → ∞. Let t > 0 and R ∈ ℝ with t·A_j ≤ R for all j and μ(B_R(y)) < ∞, where B_r(y) = closedBall y r. Then the Bochner integrals ∫ φ_j(|z − y|²/t²)·h(z) dμ(z) converge, as j → ∞, to the Bochner integral ∫_{B_t(y)} h dμ.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℕ → ℝ → ℝ) (A : ℕ → ℝ) (t R : ℝ), Measurable h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ j, Measurable (φ j)) → (∀ j s, 0 ≤ φ j s ∧ φ j s ≤ 1) → (∀ j s, s ≤ 1 → φ j s = 1) → (∀ j s, A j ^ 2 ≤ s → φ j s = 0) → (∀ j, 0 < A j) → Tendsto A atTop (𝓝 1) → 0 < t → (∀ j, t * A j ≤ R) → μ (closedBall y R) ≠ ∞ → Tendsto (fun j ↦ ∫ z, φ j (‖z - y‖ ^ 2 / t ^ 2) * h z ∂μ) atTop (𝓝 (∫ z in closedBall y t, h z ∂μ))",
+  "lean_name": "intcpt_allard_cm_cutoff_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-monotonicity-a1-3cceb8df42-a1"
+}
