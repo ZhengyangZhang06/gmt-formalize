@@ -458,6 +458,90 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- `n`-dimensional growth of a compactly contained `C¹` graph piece: if `0 < ρ < R` and `u` is
+`C¹` on `B̆_R(0)`, then `Hⁿ(graph u|B̆_ρ(0) ∩ B_r(z)) ≤ C rⁿ` for all `z` and all `r > 0`.  On the
+compact convex ball `B_ρ(0) ⊆ B̆_R(0)` the map `u` is `K`-Lipschitz
+(`ContDiffOn.exists_lipschitzOnWith`), so `G x = (x, u x)` satisfies
+`|a - b| ≤ |G a - G b| ≤ (1 + K) |a - b|` there (`|G a - G b|² = |a - b|² + |u a - u b|²`, split the
+coordinate sum with `Fin.sum_univ_add`).  Graph points in `B_r(z)` come from one parameter ball
+`B_{2r}(a)`, and the Lipschitz image bound `LipschitzOnWith.hausdorffMeasure_image_le` (rescaled to
+`μHE[n] = c • μH[n]`, which is Lebesgue measure on `ℝⁿ`) gives `C = (1 + K)ⁿ 2ⁿ Lⁿ(B_1(0))`. -/
+theorem dohr_tp_graph_ball_growth : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (R ρ : ℝ) (u : Rn n → Rn ℓ), 0 < ρ →
+    ρ < R → ContDiffOn ℝ 1 u (ball 0 R) → ∃ C : ℝ, 0 ≤ C ∧ ∀ (z : Amb n ℓ) (r : ℝ), 0 < r →
+      (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 ρ) ∩ closedBall z r) ≤
+        ENNReal.ofReal (C * r ^ n) := by
+  intro n ℓ _ R ρ u _ hρR hu
+  obtain ⟨K, hK⟩ := (hu.mono (closedBall_subset_ball hρR)).exists_lipschitzOnWith one_ne_zero
+    (convex_closedBall 0 ρ) (isCompact_closedBall 0 ρ)
+  have hdist : ∀ a b : Rn n, dist (graphPoint a (u a)) (graphPoint b (u b)) ^ 2 =
+      dist a b ^ 2 + dist (u a) (u b) ^ 2 := by
+    intro a b
+    simp only [EuclideanSpace.dist_eq]
+    rw [Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _),
+      Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _),
+      Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _), Fin.sum_univ_add]
+    simp [graphPoint]
+  have hlow : ∀ a b : Rn n, dist a b ≤ dist (graphPoint a (u a)) (graphPoint b (u b)) := by
+    intro a b
+    nlinarith [hdist a b, dist_nonneg (x := a) (y := b), sq_nonneg (dist (u a) (u b)),
+      dist_nonneg (x := graphPoint a (u a)) (y := graphPoint b (u b))]
+  have hLip : LipschitzOnWith (1 + K) (fun x => graphPoint x (u x)) (closedBall 0 ρ) := by
+    refine LipschitzOnWith.of_dist_le_mul fun a ha b hb => ?_
+    have hu' : dist (u a) (u b) ≤ K * dist a b := hK.dist_le_mul a ha b hb
+    have h1 : dist (graphPoint a (u a)) (graphPoint b (u b)) ≤ dist a b + dist (u a) (u b) := by
+      nlinarith [hdist a b, dist_nonneg (x := a) (y := b), dist_nonneg (x := u a) (y := u b),
+        dist_nonneg (x := graphPoint a (u a)) (y := graphPoint b (u b))]
+    push_cast
+    linarith
+  -- `μHE[n] = c • μH[n]` with the same `c` on every space, and `μHE[n] = volume` on `ℝⁿ`.
+  have key : ∀ s : Set (Rn n), s ⊆ closedBall 0 ρ →
+      (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' s) ≤
+        ((1 + K : ℝ≥0) : ℝ≥0∞) ^ n * volume s := by
+    intro s hs
+    have h1 := (hLip.mono hs).hausdorffMeasure_image_le (d := (n : ℝ)) (Nat.cast_nonneg n)
+    rw [ENNReal.rpow_natCast] at h1
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+      Measure.euclideanHausdorffMeasure_def, Measure.euclideanHausdorffMeasure_def,
+      Measure.smul_apply, Measure.smul_apply, ENNReal.smul_def, ENNReal.smul_def, smul_eq_mul,
+      smul_eq_mul]
+    calc _ ≤ _ := by gcongr
+      _ = _ := mul_left_comm _ _ _
+  set ω : ℝ≥0∞ := volume (closedBall (0 : Rn n) 1)
+  have hωtop : ω ≠ ∞ := measure_closedBall_lt_top.ne
+  refine ⟨((1 + K : ℝ≥0) : ℝ) ^ n * 2 ^ n * ω.toReal, by positivity, fun z r hr => ?_⟩
+  rcases (graphOver u (ball 0 ρ) ∩ closedBall z r).eq_empty_or_nonempty with hE | ⟨p, hp⟩
+  · rw [hE, measure_empty]
+    exact zero_le
+  obtain ⟨⟨a, -, rfl⟩, hpz⟩ := hp
+  have hX : graphOver u (ball 0 ρ) ∩ closedBall z r ⊆
+      (fun x => graphPoint x (u x)) '' (ball 0 ρ ∩ closedBall a (2 * r)) := by
+    rintro y ⟨⟨b, hb, rfl⟩, hyz⟩
+    refine ⟨b, ⟨hb, ?_⟩, rfl⟩
+    rw [mem_closedBall] at hyz hpz ⊢
+    calc dist b a ≤ dist (graphPoint b (u b)) (graphPoint a (u a)) := hlow b a
+      _ ≤ dist (graphPoint b (u b)) z + dist (graphPoint a (u a)) z := dist_triangle_right _ _ _
+      _ ≤ 2 * r := by linarith
+  calc (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 ρ) ∩ closedBall z r)
+      ≤ (μHE[n] : Measure (Amb n ℓ))
+          ((fun x => graphPoint x (u x)) '' (ball 0 ρ ∩ closedBall a (2 * r))) := measure_mono hX
+    _ ≤ ((1 + K : ℝ≥0) : ℝ≥0∞) ^ n * volume (ball 0 ρ ∩ closedBall a (2 * r)) :=
+        key _ (inter_subset_left.trans ball_subset_closedBall)
+    _ ≤ ((1 + K : ℝ≥0) : ℝ≥0∞) ^ n * volume (closedBall a (2 * r)) := by
+        gcongr
+        exact inter_subset_right
+    _ = ((1 + K : ℝ≥0) : ℝ≥0∞) ^ n * (ENNReal.ofReal ((2 * r) ^ n) * ω) := by
+        rw [Measure.addHaar_closedBall' _ _ (by positivity), finrank_euclideanSpace_fin]
+    _ = ENNReal.ofReal (((1 + K : ℝ≥0) : ℝ) ^ n * 2 ^ n * ω.toReal * r ^ n) := by
+        rw [show ((1 + K : ℝ≥0) : ℝ) ^ n * 2 ^ n * ω.toReal * r ^ n =
+            ((1 + K : ℝ≥0) : ℝ) ^ n * ((2 * r) ^ n * ω.toReal) by ring,
+          ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity),
+          ENNReal.ofReal_pow (NNReal.coe_nonneg _), ENNReal.ofReal_coe_nnreal,
+          ENNReal.ofReal_toReal hωtop]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
