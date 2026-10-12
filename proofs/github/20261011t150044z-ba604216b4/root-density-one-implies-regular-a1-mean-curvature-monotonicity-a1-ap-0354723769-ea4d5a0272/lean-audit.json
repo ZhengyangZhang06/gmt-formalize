@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a4aa6366776c6a95389b1159b952402138c41bb8784874c307c05242fc443b23",
+  "git_delta": {
+    "base_commit": "014b4ba400b21da94a1d6bbfe8e813404beb4f85",
+    "candidate_commit": "cb667a61bedac01a38adc25c5277e01b9c79d4d4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_att_blowUp_points_of_approxTangent",
+    "diff_sha256": "0596242b41788446489bae7a0ec3fc4816f733817f3b8455645e36f33a8b15ff",
+    "source_sha256": "d6d69b99aa428b067cc91f6e86e11b2dadc737a158e63bc5be15f71b72bfccde",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_att_blowUp_points_of_approxTangent",
+      "statement": "∀ (P n : ℕ) (M N : Set (Euclid P)) (x w : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (M \\ N) = 0 → HasApproximateTangentSpaceAt n M x Q → w ∈ Q → ∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ M ∩ N, ‖lam⁻¹ • (y - x) - w‖ < s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
