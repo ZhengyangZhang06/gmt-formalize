@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_monotonicity-a1.density_usc-a1",
+  "parent_id": "root.stationary_monotonicity-a1",
+  "depth": 2,
+  "title": "Upper semicontinuity of the density from the ratio bound (Simon 3.11)",
+  "statement": "Let n, ℓ ∈ ℕ, V a rectifiable n-varifold in ℝ^{n+ℓ} with weight μ = μ_V, and U ⊆ ℝ^{n+ℓ} open. Assume μ(K) < ∞ for every compact K, and (a) for every ξ ∈ U the quotient μ(B_r(ξ))/(ω_n rⁿ) tends to V.density ξ as r ↓ 0 (V.HasDensityAt ξ (V.density ξ)); (b) for all η ∈ ℝ^{n+ℓ} and reals R, ρ with B_R(η) ⊆ U and 0 < ρ < R, V.density η ≤ μ(B_ρ(η))/(ω_nρⁿ) (closed balls, μ(·) the real value μ.real). Then Θⁿ(μ_V, ·) = V.density is upper semicontinuous on U.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), IsOpen U → IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) → (∀ (η : Ambient n ℓ) (R ρ : ℝ), closedBall η R ⊆ U → 0 < ρ → ρ < R → V.density η ≤ V.weight.real (closedBall η ρ) / (omega n * ρ ^ n)) → UpperSemicontinuousOn V.density U",
+  "lean_name": "stationary_density_usc_of_ratio_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-monotonicity-a1-density-usc-a1-a1"
+}

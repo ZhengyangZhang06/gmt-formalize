@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.canonical_representatives-a1.canonical_pair_weight-a1",
+  "parent_id": "root.canonical_representatives-a1",
+  "depth": 2,
+  "title": "The canonical pair (M_V, Θ) is admissible and has weight μ_V⌞U (Simon 3.12)",
+  "statement": "Assume ApproxTangentAE. Let n ≥ 1, ℓ ≥ 0, V a rectifiable n-varifold in ℝ^{n+ℓ} whose weight μ_V = V.weight is finite on compact sets, and U ⊆ ℝ^{n+ℓ} open. Suppose that for every ξ ∈ U the quotients μ_V.real(B_ρ(ξ)) / (ω_n ρⁿ) converge as ρ ↓ 0 to Θ(ξ) := V.density ξ, i.e. V.HasDensityAt ξ (V.density ξ). Let M_V := V.canonicalCarrier U = {x ∈ U : Θ(x) > 0}. Then (M_V, Θ) is an admissible pair, i.e. IsRectifiablePair n M_V Θ: M_V is countably n-rectifiable and Hⁿ-null-measurable, Θ > 0 on M_V, and Θ is Hⁿ-integrable on M_V ∩ K for every compact K. Moreover pairWeight n M_V Θ = (Hⁿ⌞M_V).withDensity(ofReal ∘ Θ) equals μ_V⌞U.",
+  "lean_statement": "ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) → IsRectifiablePair n (V.canonicalCarrier U) V.density ∧ pairWeight n (V.canonicalCarrier U) V.density = V.weight.restrict U",
+  "lean_name": "canonicalCarrier_rectifiablePair_weight",
+  "depends_on": [
+    "root.canonical_representatives-a1.hausdorff_null_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.canonical_representatives-a1.hausdorff_null_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-canonical-representatives-a1-canonical-pair-weight-a1-a1"
+}

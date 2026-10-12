@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.canonical_representatives-a1.canonical_closed_support-a1",
+  "parent_id": "root.canonical_representatives-a1",
+  "depth": 2,
+  "title": "Relative closedness of {Θ ≥ α} and M_V = spt V ∩ U under θ ≥ α (Simon 3.13, 4.10(1))",
+  "statement": "Assume ApproxTangentAE. Let n ≥ 1, ℓ ≥ 0, V a rectifiable n-varifold in ℝ^{n+ℓ}, and U ⊆ ℝ^{n+ℓ} open. Write Θ = V.density, μ_V = V.weight and M_V = V.canonicalCarrier U = {x ∈ U : Θ(x) > 0}. Suppose V.HasDensityAt ξ (Θ(ξ)) for every ξ ∈ U and Θ is upper semicontinuous on U. Then (iii) for every α > 0 there is a closed set C ⊆ ℝ^{n+ℓ} with {x ∈ M_V : α ≤ Θ(x)} = C ∩ U. And (iv) for every α > 0 with V.MultiplicityGE α U (some admissible pair (M, θ) with mk (M, θ) = V has α ≤ θ Hⁿ-a.e. on M ∩ U), M_V = spt V ∩ U, where spt V is the support of μ_V, and α ≤ Θ(x) for every x ∈ M_V.",
+  "lean_statement": "ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) → UpperSemicontinuousOn V.density U → (∀ α : ℝ, 0 < α → ∃ C, IsClosed C ∧ {x | x ∈ V.canonicalCarrier U ∧ α ≤ V.density x} = C ∩ U) ∧ ∀ α : ℝ, 0 < α → V.MultiplicityGE α U → V.canonicalCarrier U = V.support ∩ U ∧ ∀ x ∈ V.canonicalCarrier U, α ≤ V.density x",
+  "lean_name": "canonicalCarrier_closed_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-canonical-representatives-a1-canonical-closed-support-a1-a1"
+}
