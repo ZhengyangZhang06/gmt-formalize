@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0b9fcb1cba449e18882ac40cc6a418d627632ff7e61b4b2c6efbaccd60221edf",
+  "git_delta": {
+    "base_commit": "2e9cbce84edbf1686bf88f5c304d59bf8b01654b",
+    "candidate_commit": "de98dbe3d528b28157f496f1c41d20cde9ee2155",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rh_edc_hasDerivAt_dilate_integral",
+    "diff_sha256": "000cd4e6e08d68b7e6f530c587dd39eea3731776a73d11a9d92f47981751f3e7",
+    "source_sha256": "b6493a6eff39b24c5dfab3dafbcd80023db2035a4064777f38580781a77fb99e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_edc_hasDerivAt_dilate_integral",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ t : ℝ, 0 < t → HasDerivAt (fun r : ℝ => ∫ y, g (r⁻¹ • y) ∂μ) (-(t⁻¹ * ∫ y, fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) ∂μ)) t",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
