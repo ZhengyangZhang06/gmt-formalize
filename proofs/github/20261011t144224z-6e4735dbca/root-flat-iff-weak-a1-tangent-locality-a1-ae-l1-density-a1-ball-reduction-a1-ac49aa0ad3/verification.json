@@ -1,0 +1,15 @@
+{
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1.ball_reduction-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3174",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "92d0d93e647196d1657cab74eeb6519614287df9",
+  "integrated_commit": "",
+  "proof_base_commit": "f75bd8a0e8a761d8751e01680fb1eb6bd3108997",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1",
+  "requires": []
+}
