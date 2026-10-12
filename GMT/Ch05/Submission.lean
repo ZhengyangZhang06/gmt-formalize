@@ -535,6 +535,72 @@ theorem poincare_c1_segment_sq_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDi
     _ ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
         gcongr
         exact Ioc_subset_Icc_self
+/-- **Convex-combination averaging bound on a ball** (the change-of-variables step in the proof of
+the Poincaré inequality on convex domains, Gilbarg–Trudinger Lemma 7.16; Evans §5.8.1).  For a
+measurable `h ≥ 0`, `r > 0` and `t ∈ [0, 1]`,
+`∫_{B_r} ∫_{B_r} h((1 - t) y + t x) dy dx ≤ 2ⁿ |B_r| ∫_{B_r} h`.
+
+Since `B_r` is convex, `(1 - t) y + t x ∈ B_r`.  One of the two variables has coefficient
+`s ≥ 1/2`; substituting `z = c + s •` (that variable) (Jacobian `sⁿ`, `Measure.map_addHaar_smul`
+and translation invariance) bounds the integral in that variable by `s⁻ⁿ ∫_{B_r} h ≤ 2ⁿ ∫_{B_r} h`,
+and integrating this constant over the other variable (after Tonelli when `t ≥ 1/2`) gives the
+claim. -/
+theorem poincare_ball_convex_combination_bound : ∀ (n : ℕ) (h : Rn n → ℝ≥0∞), Measurable h → ∀ r t : ℝ, 0 < r → 0 ≤ t → t ≤ 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, h ((1 - t) • y + t • x) ≤ (2 : ℝ≥0∞) ^ n * volume (ball (0 : Rn n) r) * ∫⁻ z in ball (0 : Rn n) r, h z := by
+  intro n h hh r t hr ht0 ht1
+  set B := ball (0 : Rn n) r with hB
+  -- 1. affine change of variables: ∫ F(c + s x) dx = |s|^{-n} ∫ F
+  have affine : ∀ (F : Rn n → ℝ≥0∞), Measurable F → ∀ (c : Rn n) {s : ℝ}, s ≠ 0 →
+      ∫⁻ x, F (c + s • x) = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z, F z := by
+    intro F hF c s hs
+    have hm : Measurable (fun z : Rn n => F (c + z)) := hF.comp (measurable_const_add c)
+    have hmap := lintegral_map (μ := (volume : Measure (Rn n))) hm
+      (measurable_const_smul s : Measurable fun x : Rn n => s • x)
+    rw [← hmap, Measure.map_addHaar_smul volume hs, lintegral_smul_measure,
+      lintegral_add_left_eq_self (μ := (volume : Measure (Rn n))) F c, smul_eq_mul,
+      finrank_euclideanSpace_fin]
+  -- 2. convexity of the ball
+  have hmem : ∀ x ∈ B, ∀ y ∈ B, (1 - t) • y + t • x ∈ B := fun x hx y hy =>
+    convex_ball (0 : Rn n) r hy hx (by linarith) ht0 (by ring)
+  -- 3. one-variable bound when the coefficient of the integration variable is ≥ 1/2
+  have key : ∀ (c : Rn n) (s : ℝ), 1 / 2 ≤ s → (∀ x ∈ B, c + s • x ∈ B) →
+      ∫⁻ x in B, h (c + s • x) ≤ (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+    intro c s hs hcs
+    have hs' : 0 < s := by linarith
+    calc ∫⁻ x in B, h (c + s • x) = ∫⁻ x in B, B.indicator h (c + s • x) := by
+          refine setLIntegral_congr_fun measurableSet_ball (fun x hx => ?_)
+          rw [indicator_of_mem (hcs x hx)]
+      _ ≤ ∫⁻ x, B.indicator h (c + s • x) := setLIntegral_le_lintegral _ _
+      _ = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z, B.indicator h z :=
+          affine _ (hh.indicator measurableSet_ball) c hs'.ne'
+      _ = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z in B, h z := by
+          rw [lintegral_indicator measurableSet_ball]
+      _ ≤ (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+          gcongr
+          have h1 : |(s ^ n)⁻¹| ≤ (2 : ℝ) ^ n := by
+            rw [abs_of_pos (by positivity), ← inv_pow]
+            exact pow_le_pow_left₀ (by positivity) (inv_le_of_inv_le₀ (by norm_num) (by linarith)) n
+          calc ENNReal.ofReal |(s ^ n)⁻¹| ≤ ENNReal.ofReal ((2 : ℝ) ^ n) := ENNReal.ofReal_le_ofReal h1
+            _ = (2 : ℝ≥0∞) ^ n := by rw [ENNReal.ofReal_pow (by norm_num)]; simp
+  have hH : Measurable (fun p : Rn n × Rn n => h ((1 - t) • p.2 + t • p.1)) :=
+    hh.comp (by fun_prop : Continuous fun p : Rn n × Rn n => (1 - t) • p.2 + t • p.1).measurable
+  rcases le_or_gt (1 / 2 : ℝ) t with ht | ht
+  · -- 4. t ≥ 1/2: Tonelli, then substitute in x
+    rw [lintegral_lintegral_swap hH.aemeasurable]
+    calc ∫⁻ y in B, ∫⁻ x in B, h ((1 - t) • y + t • x)
+        ≤ ∫⁻ y in B, (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+          refine setLIntegral_mono' measurableSet_ball fun y hy => ?_
+          exact key ((1 - t) • y) t ht (fun x hx => hmem x hx y hy)
+      _ = (2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, h z := by
+          rw [setLIntegral_const]; ring
+  · -- 5. t < 1/2: substitute in y directly
+    calc ∫⁻ x in B, ∫⁻ y in B, h ((1 - t) • y + t • x)
+        ≤ ∫⁻ x in B, (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+          refine setLIntegral_mono' measurableSet_ball fun x hx => ?_
+          have e : ∀ y : Rn n, (1 - t) • y + t • x = t • x + (1 - t) • y := fun y => add_comm _ _
+          simp_rw [e]
+          exact key (t • x) (1 - t) (by linarith) (fun y hy => by rw [← e]; exact hmem x hx y hy)
+      _ = (2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, h z := by
+          rw [setLIntegral_const]; ring
 
 end Submission
 
