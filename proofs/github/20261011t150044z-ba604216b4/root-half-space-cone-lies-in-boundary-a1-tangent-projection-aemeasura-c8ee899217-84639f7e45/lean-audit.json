@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d85bffc6a8416502605fe7ccaeebba5ea98675d2b349681d5bd59d9f8035a66",
+  "git_delta": {
+    "base_commit": "afd14c9aec14105ad4a16050851cf0d3899e65f6",
+    "candidate_commit": "39153bf6fb0d2459cae99fc5fd0bb6f83b88f8a5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "continuous_integral_comp_blowUpMap",
+    "diff_sha256": "35652920ca944ea9c5007e043fda3828ab7243435fc05dce90836b5ac1f9744c",
+    "source_sha256": "08e6e1651462ffde9accc2546d48f9a6d77f32588dc904c59bfcb1ba8cf419a0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.continuous_integral_comp_blowUpMap",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun x : Euclid P => ∫ y, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
