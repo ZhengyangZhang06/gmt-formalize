@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+namespace Submission
+
+/-- Strong `L²(B_R)` convergence `fⱼ → W` gives `∫_{B_R} fⱼ g → ∫_{B_R} W g` for every
+`g ∈ L²(B_R)`: by Cauchy–Schwarz (Hölder with `p = q = 2`),
+`|∫ fⱼ g − ∫ W g| ≤ ∫ |fⱼ − W| |g| ≤ (∫ (fⱼ − W)²)^{1/2} (∫ g²)^{1/2} → 0`. -/
+theorem dorag_haa_l2_pairing_tendsto : ∀ (n : ℕ) (R : ℝ) (f : ℕ → Euclid n → ℝ) (W g : Euclid n → ℝ), (∀ j, MemLp (f j) 2 (volume.restrict (ball (0 : Euclid n) R))) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → MemLp g 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, f j x * g x) atTop (𝓝 (∫ x in ball (0 : Euclid n) R, W x * g x)) := by
+  intro n R f W g hf hW hg hlim
+  -- Cauchy–Schwarz: `|∫ fⱼ g − ∫ W g| ≤ √(∫ (fⱼ − W)²) · √(∫ g²)`.
+  have hbound : ∀ j, ‖(∫ x in ball (0 : Euclid n) R, f j x * g x) -
+      ∫ x in ball (0 : Euclid n) R, W x * g x‖ ≤
+      √(∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) *
+        √(∫ x in ball (0 : Euclid n) R, g x ^ 2) := by
+    intro j
+    have hd : MemLp (fun x => f j x - W x) (ENNReal.ofReal 2)
+        (volume.restrict (ball (0 : Euclid n) R)) := by
+      rw [ENNReal.ofReal_ofNat]; exact (hf j).sub hW
+    have hg' : MemLp g (ENNReal.ofReal 2) (volume.restrict (ball (0 : Euclid n) R)) := by
+      rw [ENNReal.ofReal_ofNat]; exact hg
+    -- Products of two `L²` functions are integrable (Hölder `2, 2, 1`).
+    have hi₁ : Integrable (fun x => f j x * g x) (volume.restrict (ball (0 : Euclid n) R)) :=
+      (hf j).integrable_mul hg
+    have hi₂ : Integrable (fun x => W x * g x) (volume.restrict (ball (0 : Euclid n) R)) :=
+      hW.integrable_mul hg
+    rw [← integral_sub hi₁ hi₂, Real.norm_eq_abs]
+    calc |∫ x in ball (0 : Euclid n) R, (f j x * g x - W x * g x)|
+        ≤ ∫ x in ball (0 : Euclid n) R, |f j x * g x - W x * g x| := abs_integral_le_integral_abs
+      _ = ∫ x in ball (0 : Euclid n) R, ‖f j x - W x‖ * ‖g x‖ := by
+          congr 1; funext x; rw [← sub_mul, abs_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      _ ≤ (∫ x in ball (0 : Euclid n) R, ‖f j x - W x‖ ^ (2 : ℝ)) ^ (1 / (2 : ℝ)) *
+            (∫ x in ball (0 : Euclid n) R, ‖g x‖ ^ (2 : ℝ)) ^ (1 / (2 : ℝ)) :=
+          integral_mul_norm_le_Lp_mul_Lq Real.HolderConjugate.two_two hd hg'
+      _ = _ := by simp only [Real.rpow_two, Real.norm_eq_abs, sq_abs, ← Real.sqrt_eq_rpow]
+  -- The bound tends to `√0 · √(∫ g²) = 0`; squeeze.
+  have hsq : Tendsto (fun j => √(∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) *
+      √(∫ x in ball (0 : Euclid n) R, g x ^ 2)) atTop (𝓝 0) := by
+    simpa using ((Real.continuous_sqrt.tendsto 0).comp hlim).mul_const
+      (√(∫ x in ball (0 : Euclid n) R, g x ^ 2))
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero (fun j => norm_nonneg _) hbound hsq
+
+end Submission
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
