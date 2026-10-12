@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Extraction step of the Rellich argument (step 5 of its proof).  If `f j ∈ L²(μ)` and for every
+`η > 0` finitely many `f k` form an `η`-net for `∫ (f j - f k) ^ 2`, then a subsequence converges
+in `L²(μ)`: the classes of the `f j` form a totally bounded set in the complete space `L²(μ)`. -/
+theorem Submission.dorag_ha_rb_l2_subseq : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : ℕ → α → ℝ), (∀ j, MemLp (f j) 2 μ) → (∀ η : ℝ, 0 < η → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∫ x, (f j x - f k x) ^ 2 ∂μ ≤ η) → ∃ (φ : ℕ → ℕ) (W : α → ℝ), StrictMono φ ∧ MemLp W 2 μ ∧ Tendsto (fun j => ∫ x, (f (φ j) x - W x) ^ 2 ∂μ) atTop (𝓝 0) := by
+  intro α _ μ f hf hnet
+  -- Step 2: for `h ∈ L²`, `‖toLp h‖ ^ 2 = ∫ h ^ 2`
+  have hnorm : ∀ (h : α → ℝ) (hh : MemLp h 2 μ), ‖hh.toLp h‖ ^ 2 = ∫ x, h x ^ 2 ∂μ := by
+    intro h hh
+    have h0 : 0 ≤ ∫ x, h x ^ 2 ∂μ := integral_nonneg fun x => sq_nonneg (h x)
+    rw [Lp.norm_toLp, hh.eLpNorm_eq_integral_rpow_norm two_ne_zero ENNReal.ofNat_ne_top]
+    simp only [ENNReal.toReal_ofNat, Real.norm_eq_abs, Real.rpow_two, sq_abs]
+    rw [ENNReal.toReal_ofReal (Real.rpow_nonneg h0 _), ← Real.rpow_natCast, ← Real.rpow_mul h0]
+    norm_num
+  -- Step 1: the classes `F j ∈ L²`, with `dist (F j) (F k) ^ 2 = ∫ (f j - f k) ^ 2`
+  set F : ℕ → Lp ℝ 2 μ := fun j => (hf j).toLp (f j) with hF
+  have hdist : ∀ j k, dist (F j) (F k) ^ 2 = ∫ x, (f j x - f k x) ^ 2 ∂μ := by
+    intro j k
+    rw [dist_eq_norm, hF, ← MemLp.toLp_sub (hf j) (hf k)]
+    exact hnorm _ _
+  -- Step 3: the hypothesis with `η = ε ^ 2 / 2` gives a finite `ε`-net of `range F`
+  have htb : TotallyBounded (range F) := by
+    rw [Metric.totallyBounded_iff]
+    intro ε hε
+    obtain ⟨S, hS⟩ := hnet (ε ^ 2 / 2) (by positivity)
+    refine ⟨F '' (S : Set ℕ), S.finite_toSet.image F, ?_⟩
+    rintro _ ⟨j, rfl⟩
+    obtain ⟨k, hk, hjk⟩ := hS j
+    refine mem_iUnion₂.2 ⟨F k, mem_image_of_mem F hk, ?_⟩
+    rw [mem_ball]
+    refine lt_of_pow_lt_pow_left₀ 2 hε.le ?_
+    rw [hdist]
+    have : 0 < ε ^ 2 := by positivity
+    linarith
+  -- Steps 4–5: `closure (range F)` is compact in the complete space `L²`, so a subsequence
+  -- `F ∘ φ` converges to some `G`
+  obtain ⟨G, -, φ, hφ, hlim⟩ :=
+    (htb.closure.isCompact_of_isClosed isClosed_closure).tendsto_subseq
+      (x := F) fun j => subset_closure (mem_range_self j)
+  -- Step 6: `W = ⇑G`, and `∫ (f (φ j) - W) ^ 2 = ‖F (φ j) - G‖ ^ 2 → 0`
+  refine ⟨φ, G, hφ, Lp.memLp G, ?_⟩
+  have heq : ∀ j, ‖F (φ j) - G‖ ^ 2 = ∫ x, (f (φ j) x - G x) ^ 2 ∂μ := by
+    intro j
+    have := hnorm _ ((hf (φ j)).sub (Lp.memLp G))
+    rw [MemLp.toLp_sub (hf (φ j)) (Lp.memLp G), Lp.toLp_coeFn] at this
+    exact this
+  have h2 := (tendsto_iff_norm_sub_tendsto_zero.1 hlim).pow 2
+  rw [zero_pow two_ne_zero] at h2
+  exact h2.congr heq
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
