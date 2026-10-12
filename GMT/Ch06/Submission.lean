@@ -455,6 +455,73 @@ theorem Submission.lpf_c1r_lusin_closed :
       rcases mem_iInter.1 hxC k with hxF | hxG'
       · exact ((hFE k) hxF).2
       · exact absurd hxG' hxG
+/-- Closed Egorov theorem on `ℝⁿ` (Simon Ch. 2, proof of Theorem 1.5): if Borel `f k` converge
+pointwise on a Borel set `C` to a Borel `g`, then for every `ε > 0` there is a closed `A ⊆ C` with
+`Lⁿ(C \ A) < ε` such that `f k → g` uniformly on every bounded part `A ∩ B̄_R(0)`. -/
+theorem Submission.lpf_c1r_egoroff_closed : ∀ (n : ℕ) (C : Set (Eucl n)) (f : ℕ → Eucl n → ℝ) (g : Eucl n → ℝ), MeasurableSet C → (∀ k, Measurable (f k)) → Measurable g → (∀ x ∈ C, Tendsto (fun k => f k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Eucl n), IsClosed A ∧ A ⊆ C ∧ (volume : Measure (Eucl n)) (C \ A) < ε ∧ ∀ R : ℝ, TendstoUniformlyOn f g atTop (A ∩ closedBall 0 R) := by
+  intro n C f g hC hf hg hfg ε hε
+  -- Step 1: positive budgets `δ j` with `∑ j, δ j < ε` (this also covers `ε = ∞`).
+  obtain ⟨δ, hδpos, hδsum⟩ := ENNReal.exists_pos_sum_of_countable hε.ne' ℕ
+  -- Step 2: the bounded annuli `S j = {x : j ≤ ‖x‖ < j + 1}` partition `ℝⁿ`.
+  set S : ℕ → Set (Eucl n) := fun j => ball 0 ((j : ℝ) + 1) \ ball 0 j
+  have hSle : ∀ j, ∀ x ∈ S j, (j : ℝ) ≤ ‖x‖ := fun j x hx => by
+    simpa [mem_ball_zero_iff] using hx.2
+  have hScov : ∀ x : Eucl n, x ∈ S ⌊‖x‖⌋₊ := fun x => by
+    simp only [S, Set.mem_sdiff, mem_ball_zero_iff, not_lt]
+    exact ⟨Nat.lt_floor_add_one _, Nat.floor_le (norm_nonneg x)⟩
+  -- Step 3: on each `C ∩ S j` (finite measure), Egorov gives `t` with `Lⁿ(t) ≤ δ j / 2` and
+  -- uniform convergence on `(C ∩ S j) \ t`; inner regularity gives a closed `F ⊆ (C ∩ S j) \ t`
+  -- with defect `< δ j / 2`.
+  have key : ∀ j, ∃ F : Set (Eucl n), F ⊆ C ∩ S j ∧ IsClosed F ∧
+      (volume : Measure (Eucl n)) ((C ∩ S j) \ F) < δ j ∧ TendstoUniformlyOn f g atTop F := by
+    intro j
+    have hm : MeasurableSet (C ∩ S j) := hC.inter (measurableSet_ball.diff measurableSet_ball)
+    have hfin : (volume : Measure (Eucl n)) (C ∩ S j) ≠ ∞ :=
+      ((measure_mono (inter_subset_right.trans sdiff_subset)).trans_lt measure_ball_lt_top).ne
+    have hδ2 : (0 : ℝ≥0∞) < (δ j : ℝ≥0∞) / 2 := ENNReal.half_pos (ENNReal.coe_ne_zero.2 (hδpos j).ne')
+    obtain ⟨t, -, htm, htμ, htu⟩ := tendstoUniformlyOn_of_ae_tendsto (μ := volume)
+      (fun k => (hf k).stronglyMeasurable) hg.stronglyMeasurable hm hfin
+      (Eventually.of_forall fun x hx => hfg x hx.1) hδ2
+    obtain ⟨F, hF, hFc, hFμ⟩ := (hm.diff htm).exists_isClosed_sdiff_lt (μ := volume)
+      (ne_top_of_le_ne_top hfin (measure_mono sdiff_subset)) hδ2.ne'
+    refine ⟨F, hF.trans sdiff_subset, hFc, ?_, htu.mono hF⟩
+    calc (volume : Measure (Eucl n)) ((C ∩ S j) \ F)
+        ≤ volume (t ∪ ((C ∩ S j) \ t) \ F) := measure_mono fun x hx => by
+          by_cases hxt : x ∈ t
+          · exact Or.inl hxt
+          · exact Or.inr ⟨⟨hx.1, hxt⟩, hx.2⟩
+      _ ≤ volume t + volume (((C ∩ S j) \ t) \ F) := measure_union_le _ _
+      _ < (δ j : ℝ≥0∞) / 2 + (δ j : ℝ≥0∞) / 2 :=
+          (add_le_add htμ le_rfl).trans_lt (ENNReal.add_lt_add_left
+            (ENNReal.div_ne_top ENNReal.coe_ne_top two_ne_zero) hFμ)
+      _ = δ j := ENNReal.add_halves _
+  choose F hFsub hFc hFμ hFu using key
+  refine ⟨⋃ j, F j, ?_, iUnion_subset fun j => (hFsub j).trans inter_subset_left, ?_, ?_⟩
+  · -- Step 4: `ball x 1` meets `F j ⊆ S j` only for `j < ‖x‖ + 1`, so the family is locally
+    -- finite and its union is closed.
+    refine LocallyFinite.isClosed_iUnion (fun x => ⟨ball x 1, ball_mem_nhds x one_pos, ?_⟩) hFc
+    refine (finite_Iio ⌈‖x‖ + 1⌉₊).subset fun j ⟨y, hyF, hyx⟩ => ?_
+    have h1 := hSle j y (hFsub j hyF).2
+    have h2 := norm_sub_norm_le y x
+    have h3 := mem_ball_iff_norm.1 hyx
+    exact Nat.lt_ceil.2 (by linarith)
+  · -- Step 5: `C \ ⋃ j, F j ⊆ ⋃ j, (C ∩ S j) \ F j`, of measure `≤ ∑ j, δ j < ε`.
+    calc (volume : Measure (Eucl n)) (C \ ⋃ j, F j)
+        ≤ volume (⋃ j, (C ∩ S j) \ F j) := measure_mono fun x hx =>
+          mem_iUnion.2 ⟨⌊‖x‖⌋₊, ⟨hx.1, hScov x⟩, fun h => hx.2 (mem_iUnion.2 ⟨_, h⟩)⟩
+      _ ≤ ∑' j, volume ((C ∩ S j) \ F j) := measure_iUnion_le _
+      _ ≤ ∑' j, (δ j : ℝ≥0∞) := ENNReal.tsum_le_tsum fun j => (hFμ j).le
+      _ < ε := hδsum
+  · -- Step 6: `(⋃ j, F j) ∩ B̄_R(0)` lies in the finite union of `F j`, `j ≤ ⌈R⌉₊`, on each of
+    -- which the convergence is uniform.
+    intro R u hu
+    filter_upwards [(Finset.range (⌈R⌉₊ + 1)).eventually_all.2 fun j _ => hFu j u hu]
+      with k hk x hx
+    obtain ⟨j, hj⟩ := mem_iUnion.1 hx.1
+    refine hk j (Finset.mem_range.2 (Nat.lt_succ_of_le ?_)) x hj
+    have h1 := hSle j x (hFsub j hj).2
+    have h2 : ‖x‖ ≤ R := mem_closedBall_zero_iff.1 hx.2
+    exact_mod_cast (h1.trans h2).trans (Nat.le_ceil R)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
