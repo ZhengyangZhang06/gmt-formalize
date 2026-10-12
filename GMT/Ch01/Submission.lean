@@ -943,7 +943,26 @@ theorem Submission.radon_compactness : RadonCompactness := by
   exact hl f
 
 /-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
-theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
+theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by
+  -- Each conjunct is supplied by its child node.  The paired children
+  -- `upper_density_comparison_and_theorem` and `general_density_and_differentiation` use one
+  -- universe `u` for both halves, while the statement gives those conjuncts independent universe
+  -- parameters, so each half is projected from its own occurrence of the child.
+  exact ⟨Submission.caratheodory_criterion,
+    Submission.borel_regular_approximation,
+    Submission.lusin_theorem,
+    Submission.lebesgue_eq_hausdorff_and_isodiametric.1,
+    Submission.lebesgue_eq_hausdorff_and_isodiametric.2,
+    Submission.upper_density_comparison_and_theorem.1,
+    Submission.upper_density_comparison_and_theorem.2,
+    Submission.besicovitch_covering,
+    Submission.general_density_and_differentiation.1,
+    Submission.general_density_and_differentiation.2,
+    Submission.radon_nikodym_theorem,
+    Submission.hausdorff_density_bounds,
+    Submission.riesz_positive,
+    Submission.riesz_vector,
+    Submission.radon_compactness⟩
 
 /-- Simon Ch. 1, Theorem 3.26, with (2.4)–(2.6).  (1) `Hⁿ` is additive on positively
 separated sets (`simonHausdorffOuterMeasureReal_isMetric`), so Theorem 1.13 makes every Borel
