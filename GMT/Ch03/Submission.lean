@@ -335,6 +335,31 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Integral bound for a bounded continuous function supported in a ball** (the integrability
+and estimate step of the proof of Simon Ch. 3, Theorem 4.3, passing from `C¹_c` to `C_c` test
+functions). If `ν(B_ρ(a)) < ∞`, `g` is continuous with `|g| ≤ M` and `g` vanishes off
+`B_ρ(a)`, then `g` is `ν`-integrable and `|∫ g dν| ≤ M ν(B_ρ(a))`: a bounded continuous function
+is integrable on the finite-measure ball, hence on the whole space as its support lies in the
+ball, and `∫ g dν = ∫_{B_ρ(a)} g dν` is bounded by `M ν(B_ρ(a))`. -/
+theorem Submission.deGiorgiTM_integral_bound_of_ball : ∀ (N : ℕ) (ν : Measure (Rn N)) (a : Rn N) (ρ M : ℝ) (g : Rn N → ℝ), ν (Metric.ball a ρ) < ∞ → Continuous g → (∀ y, |g y| ≤ M) → (∀ y, g y ≠ 0 → y ∈ Metric.ball a ρ) → Integrable g ν ∧ |∫ y, g y ∂ν| ≤ M * ν.real (Metric.ball a ρ) := by
+  intro N ν a ρ M g hball hg hM hsupp
+  -- `‖g y‖ = |g y| ≤ M` everywhere.
+  have hnorm : ∀ y, ‖g y‖ ≤ M := fun y => (Real.norm_eq_abs (g y)).le.trans (hM y)
+  -- `g` vanishes off the ball `B_ρ(a)`.
+  have hzero : ∀ y, y ∉ Metric.ball a ρ → g y = 0 := fun y hy => by
+    by_contra h
+    exact hy (hsupp y h)
+  -- `g` is bounded and continuous, hence integrable on the finite-measure ball, hence on the
+  -- whole space since its support lies in the ball.
+  have hint : Integrable g ν :=
+    (integrableOn_iff_integrable_of_support_subset fun y hy => hsupp y hy).1
+      (Measure.integrableOn_of_bounded hball.ne hg.aestronglyMeasurable
+        (Eventually.of_forall hnorm))
+  refine ⟨hint, ?_⟩
+  -- `∫ g dν = ∫_{B_ρ(a)} g dν`, and `|∫_{B_ρ(a)} g dν| ≤ M ν(B_ρ(a))`.
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero, ← Real.norm_eq_abs]
+  exact norm_setIntegral_le_of_norm_le_const hball fun y _ => hnorm y
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
