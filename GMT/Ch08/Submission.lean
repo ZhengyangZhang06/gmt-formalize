@@ -410,6 +410,78 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The normal defect of the annuli `B_ρ(x) ∖ B_σ(x)` tends to that of `B_ρ(x)` as `σ ↓ 0`
+(Simon Ch. 8, 3.4, p. 211): the defect is continuous from below along the annuli, and its
+integrand vanishes at the centre `y = x`.  No hypothesis on `V` or `ρ` is needed. -/
+theorem Submission.normalDefect_annulus_tendsto_closedBall :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ : ℝ), Tendsto (fun σ : ℝ ↦ normalDefect V x (closedBall x ρ \ closedBall x σ)) (𝓝[>] 0) (𝓝 (normalDefect V x (closedBall x ρ))) := by
+  intro N n U V x ρ
+  -- The defect integrand `f` and the measure `ν = V.withDensity f`, so that
+  -- `ν(A × G) = normalDefect V x A` for every Borel set `A`.
+  set f : Euclidean N × Grassmannian N n → ℝ≥0∞ := fun z ↦
+    ENNReal.ofReal (‖(z.1 - x) - Grassmannian.project z.2 (z.1 - x)‖ ^ 2 / ‖z.1 - x‖ ^ (n + 2))
+    with hf
+  set ν := V.measure.withDensity f with hν
+  have hD : ∀ A : Set (Euclidean N), MeasurableSet A →
+      normalDefect V x A = ν (A ×ˢ (univ : Set (Grassmannian N n))) := fun A hA ↦
+    (withDensity_apply f (hA.prod MeasurableSet.univ)).symm
+  -- Step 1: `f` vanishes on `{x} × G` (`0 ^ (n + 2) = 0` and `a / 0 = 0`), so `ν({x} × G) = 0`.
+  have hcentre : ν ({x} ×ˢ (univ : Set (Grassmannian N n))) = 0 := by
+    have hs : MeasurableSet ({x} ×ˢ (univ : Set (Grassmannian N n))) :=
+      (measurableSet_singleton x).prod MeasurableSet.univ
+    rw [hν, withDensity_apply f hs, setLIntegral_congr_fun hs (g := fun _ ↦ 0) ?_, lintegral_zero]
+    rintro ⟨y, S⟩ ⟨hy, -⟩
+    rw [mem_singleton_iff] at hy
+    subst hy
+    simp [hf]
+  -- Step 2: removing the centre does not change the defect of `B_ρ(x)`.
+  have hpunct : ν ((closedBall x ρ \ {x}) ×ˢ (univ : Set (Grassmannian N n))) =
+      normalDefect V x (closedBall x ρ) := by
+    have hset : (closedBall x ρ \ {x}) ×ˢ (univ : Set (Grassmannian N n)) =
+        closedBall x ρ ×ˢ univ \ {x} ×ˢ univ := by
+      ext ⟨y, S⟩
+      simp
+    rw [hD _ measurableSet_closedBall, hset]
+    exact measure_sdiff_null hcentre
+  -- Step 3: the annular defect is antitone in `σ` and bounded by the defect of `B_ρ(x)`.
+  have hanti : Antitone fun σ : ℝ ↦ normalDefect V x (closedBall x ρ \ closedBall x σ) :=
+    fun σ σ' h ↦ lintegral_mono_set <|
+      prod_mono (sdiff_subset_sdiff_right (closedBall_subset_closedBall h)) subset_rfl
+  have hle : ∀ σ : ℝ, normalDefect V x (closedBall x ρ \ closedBall x σ) ≤
+      normalDefect V x (closedBall x ρ) := fun σ ↦
+    lintegral_mono_set (prod_mono sdiff_subset subset_rfl)
+  -- Step 4: the annuli with inner radii `1 / (k + 1)` increase to `(B_ρ(x) ∖ {x}) × G`.
+  set s : ℕ → Set (Euclidean N × Grassmannian N n) := fun k ↦
+    (closedBall x ρ \ closedBall x (1 / ((k : ℝ) + 1))) ×ˢ univ with hs
+  have hsmono : Monotone s := fun k l hkl ↦
+    prod_mono (sdiff_subset_sdiff_right
+      (closedBall_subset_closedBall (Nat.one_div_le_one_div hkl))) subset_rfl
+  have hsunion : ⋃ k, s k = (closedBall x ρ \ {x}) ×ˢ (univ : Set (Grassmannian N n)) := by
+    ext ⟨y, S⟩
+    simp only [hs, mem_iUnion, mem_prod, Set.mem_sdiff, mem_closedBall, mem_univ, and_true,
+      mem_singleton_iff]
+    constructor
+    · rintro ⟨k, hyρ, hyk⟩
+      refine ⟨hyρ, fun hyx ↦ hyk ?_⟩
+      rw [hyx, dist_self]
+      positivity
+    · rintro ⟨hyρ, hyx⟩
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt (dist_pos.2 hyx)
+      exact ⟨k, hyρ, not_le.2 hk⟩
+  -- Step 5: continuity from below of `ν` along these annuli.
+  have hseq : Tendsto
+      (fun k : ℕ ↦ normalDefect V x (closedBall x ρ \ closedBall x (1 / ((k : ℝ) + 1))))
+      atTop (𝓝 (normalDefect V x (closedBall x ρ))) := by
+    have h := tendsto_measure_iUnion_atTop (μ := ν) hsmono
+    rw [hsunion, hpunct] at h
+    exact h.congr fun k ↦ (hD _ (measurableSet_closedBall.diff measurableSet_closedBall)).symm
+  -- Step 6: monotonicity upgrades the sequential limit to the limit as `σ ↓ 0`.
+  rw [tendsto_order]
+  refine ⟨fun a ha ↦ ?_, fun b hb ↦ Eventually.of_forall fun σ ↦ (hle σ).trans_lt hb⟩
+  obtain ⟨k, hk⟩ := (hseq.eventually (lt_mem_nhds ha)).exists
+  filter_upwards [Ioc_mem_nhdsGT (show (0 : ℝ) < 1 / ((k : ℝ) + 1) by positivity)] with σ hσ
+  exact hk.trans_le (hanti hσ.2)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
