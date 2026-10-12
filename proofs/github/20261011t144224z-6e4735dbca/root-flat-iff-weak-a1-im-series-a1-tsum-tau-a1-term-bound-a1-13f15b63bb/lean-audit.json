@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "07a5ea6fa9160eacb850ac44f01ad5ad497c68072e15c9fd567111b6da4f96a8",
+  "git_delta": {
+    "base_commit": "d15b2dd43e52e4d063bf577f4e35728618ad3c5d",
+    "candidate_commit": "3446f5312c3a752a92d36733909adc0d402c7075",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_tt_term_bound",
+    "diff_sha256": "cdbb6cb6b90d0c194f59e179aedbb2b76a8c0b6b96c2f5df59ca11e555e46af3",
+    "source_sha256": "d64137836ab3aeadd88a05c8298bf79d38fcd28a60b2fe2844fc68bc7cb972e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_tt_term_bound",
+      "statement": "∀ (P n : ℕ) (U W M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (ω : Eucl P → Covector (Eucl P) n) (B : ℝ), IsRectifiableTriple U n M θ ξ → CompactlyContainedOpen W U → Continuous ω → tsupport ω ⊆ W → (∀ x, ‖ω x‖ ≤ B) → AEStronglyMeasurable (M.indicator fun x => θ x * ξ x (ω x)) (μHE[n] : Measure (Eucl P)) ∧ ∫⁻ x, ‖M.indicator (fun y => θ y * ξ y (ω y)) x‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal B * ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
