@@ -373,7 +373,155 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Concavity of the distance to the complement of a convex set** (Simon 2.8, proof, C1(b)).
+For a convex `U ⊆ ℝⁿ`, `d(x) = infDist x Uᶜ` is concave on `U`; `U` need not be open, and
+`infDist x ∅ = 0`. Fix `x, y ∈ U` and `a, b ≥ 0` with `a + b = 1`, and put `z = a • x + b • y`,
+`s = a d(x) + b d(y)`. Suppose some `p ∈ Uᶜ` had `dist z p < s`, and put `h = p - z`. Then the
+shifted points `x + (d(x)/s) • h` and `y + (d(y)/s) • h` lie in `U`
+(`Metric.ball_infDist_compl_subset`), and their `a, b`-combination is `p`. This contradicts
+convexity, so `s ≤ d(z)` by `Metric.le_infDist`. -/
+theorem Submission.bv_ext_infDist_compl_concaveOn : ∀ (n : ℕ) (U : Set (Rn n)), Convex ℝ U → ConcaveOn ℝ U (fun x ↦ infDist x Uᶜ) := by
+  intro n U hU
+  -- Step 1: fix `x, y ∈ U` and weights `a, b ≥ 0` with `a + b = 1`.
+  refine ⟨hU, fun x hx y hy a b ha hb hab ↦ ?_⟩
+  simp only [smul_eq_mul]
+  -- Step 2: if `Uᶜ = ∅` both sides vanish; otherwise it suffices to bound `dist z p`, `p ∈ Uᶜ`.
+  rcases (Uᶜ).eq_empty_or_nonempty with hE | hne
+  · simp [hE]
+  rw [le_infDist hne]
+  intro p hp
+  -- Step 4: suppose `dist z p < s`; then `s > 0`, and `h = p - z` has `‖h‖ < s`.
+  by_contra! hlt
+  set s := a * infDist x Uᶜ + b * infDist y Uᶜ
+  have hs0 : 0 < s := dist_nonneg.trans_lt hlt
+  set h := p - (a • x + b • y) with hh
+  have hnorm : ‖h‖ < s := by rwa [hh, ← dist_eq_norm, dist_comm]
+  -- Steps 3 and 5: each shifted point `q + (d(q)/s) • h`, `q ∈ U`, lies in `U`.
+  have hshift : ∀ q ∈ U, q + (infDist q Uᶜ / s) • h ∈ U := by
+    intro q hq
+    rcases (infDist_nonneg (x := q) (s := Uᶜ)).eq_or_lt with h0 | hpos
+    · rw [← h0, zero_div, zero_smul, add_zero]
+      exact hq
+    · apply ball_infDist_compl_subset
+      rw [mem_ball, dist_self_add_left, norm_smul, Real.norm_of_nonneg (div_nonneg hpos.le hs0.le)]
+      calc infDist q Uᶜ / s * ‖h‖ < infDist q Uᶜ / s * s := by gcongr
+        _ = infDist q Uᶜ := div_mul_cancel₀ _ hs0.ne'
+  -- Step 6: the `a, b`-combination of the shifted points is `z + h = p`, so `p ∈ U`.
+  have hcoef : a * (infDist x Uᶜ / s) + b * (infDist y Uᶜ / s) = 1 := by
+    rw [mul_div_assoc', mul_div_assoc', ← add_div, div_self hs0.ne']
+  have hp' : a • (x + (infDist x Uᶜ / s) • h) + b • (y + (infDist y Uᶜ / s) • h) = p := by
+    calc a • (x + (infDist x Uᶜ / s) • h) + b • (y + (infDist y Uᶜ / s) • h)
+        = (a • x + b • y) + (a * (infDist x Uᶜ / s) + b * (infDist y Uᶜ / s)) • h := by
+          simp only [smul_add, smul_smul, add_smul]
+          abel
+      _ = p := by rw [hcoef, one_smul, hh, add_sub_cancel]
+  exact hp (hp' ▸ hU (hshift x hx) (hshift y hy) ha hb hab)
+/-- **Unit gradient of the distance function off a closed set** (Simon 2.8 proof, C1(c), with `S`
+in place of `Uᶜ`). If `S ⊆ ℝⁿ` is closed and nonempty, `x ∉ S` and `d = infDist · S` is
+differentiable at `x`, then `‖Dd(x)‖ = 1`. Since `d` is 1-Lipschitz, `‖Dd(x)‖ ≤ 1`
+(`norm_fderiv_le_of_lipschitz`). Conversely, take a nearest point `a ∈ S`
+(`IsClosed.exists_infDist_eq_dist`), `ρ = d(x) > 0` and the unit vector `e = ρ⁻¹ • (a - x)`. Then
+`d(x + t • e) ≤ ρ - t` for `0 ≤ t ≤ ρ`, so the right difference quotients of `t ↦ d(x + t • e)` at
+`0` give `Dd(x) e ≤ -1`, and `‖Dd(x)‖ ≥ |Dd(x) e| ≥ 1`. -/
+theorem Submission.bv_ext_norm_fderiv_infDist_eq_one : ∀ (n : ℕ) (S : Set (Rn n)) (x : Rn n), IsClosed S → S.Nonempty → x ∉ S → DifferentiableAt ℝ (fun y ↦ infDist y S) x → ‖fderiv ℝ (fun y ↦ infDist y S) x‖ = 1 := by
+  intro n S x hS hne hx hd
+  set L := fderiv ℝ (fun y ↦ infDist y S) x with hL
+  -- Step 1: `infDist · S` is 1-Lipschitz, so `‖L‖ ≤ 1`.
+  have hup : ‖L‖ ≤ 1 := by
+    simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := x) (lipschitz_infDist_pt S)
+  -- Step 2: a nearest point `a ∈ S`, with `ρ = infDist x S = ‖a - x‖ > 0`.
+  obtain ⟨a, haS, hda⟩ := hS.exists_infDist_eq_dist hne x
+  have hρ : 0 < infDist x S := (hS.notMem_iff_infDist_pos hne).1 hx
+  set ρ := infDist x S with hρdef
+  have hax : ‖a - x‖ = ρ := by rw [hda, dist_comm, dist_eq_norm]
+  -- Step 3: along the unit vector `e` towards `a`, `infDist (x + t • e) S ≤ ρ - t` on `[0, ρ]`.
+  set e : Rn n := ρ⁻¹ • (a - x) with he
+  have he1 : ‖e‖ = 1 := by
+    rw [he, norm_smul, hax, Real.norm_eq_abs, abs_inv, abs_of_pos hρ, inv_mul_cancel₀ hρ.ne']
+  have hdec : ∀ t : ℝ, 0 ≤ t → t ≤ ρ → infDist (x + t • e) S ≤ ρ - t := by
+    intro t ht0 htρ
+    have hvec : a - (x + t • e) = (1 - t / ρ) • (a - x) := by
+      rw [he, smul_smul, sub_smul, one_smul, div_eq_mul_inv]; abel
+    have hcoef : 0 ≤ 1 - t / ρ := by rw [sub_nonneg, div_le_one hρ]; exact htρ
+    calc infDist (x + t • e) S ≤ dist (x + t • e) a := infDist_le_dist_of_mem haS
+      _ = ρ - t := by
+        rw [dist_comm, dist_eq_norm, hvec, norm_smul, hax, Real.norm_eq_abs, abs_of_nonneg hcoef]
+        field_simp
+  -- Step 4: `t ↦ infDist (x + t • e) S` has derivative `L e` at `0`; its right difference
+  -- quotients are `≤ -1` on `(0, ρ]`, hence `L e ≤ -1`.
+  have hderiv : HasDerivAt (fun t : ℝ ↦ infDist (x + t • e) S) (L e) 0 := by
+    have hline : HasDerivAt (fun t : ℝ ↦ x + t • e) e 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const e).const_add x
+    have hdx : HasFDerivAt (fun y ↦ infDist y S) L (x + (0 : ℝ) • e) := by
+      simpa using hd.hasFDerivAt
+    exact hdx.comp_hasDerivAt (0 : ℝ) hline
+  have hLe : L e ≤ -1 := by
+    refine le_of_tendsto hderiv.tendsto_slope_zero_right ?_
+    filter_upwards [Ioc_mem_nhdsGT hρ] with t ht
+    have h3 := hdec t ht.1.le ht.2
+    simp only [zero_add, zero_smul, add_zero, smul_eq_mul]
+    rw [inv_mul_le_iff₀ ht.1]
+    linarith
+  -- Step 5: `1 ≤ -L e = ‖L e‖ ≤ ‖L‖ * ‖e‖ = ‖L‖`.
+  have hlow : 1 ≤ ‖L‖ := by
+    have h := L.le_opNorm e
+    rw [he1, mul_one, Real.norm_eq_abs, abs_of_neg (by linarith)] at h
+    linarith
+  -- Step 6: combine the two bounds.
+  exact le_antisymm hup hlow
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+/-- **The distance gradient points into `U` near `∂U`** (Simon 2.8, proof, C2, inequality (1)).
+Let `U ⊆ ℝⁿ` be open and convex with `Uᶜ ≠ ∅`, `r > 0`, `closedBall ξ r ⊆ U`, and
+`d(y) = infDist y Uᶜ`. Take `η > 0` to be the minimum of `d` over the compact ball
+`closedBall ξ r ⊆ U`. Fix `x ∈ U` with `d(x) < η` at which `d` is differentiable, and put
+`L = Dd(x)`. Then `‖L‖ = 1` (`Submission.bv_ext_norm_fderiv_infDist_eq_one`), so the Riesz
+vector `ν` of `L` is a unit vector with `L ν = 1`. The point `w = ξ - r • ν` lies in the ball,
+so `d(x) < η ≤ d(w)`. Since `d` is concave on `U` (`Submission.bv_ext_infDist_compl_concaveOn`),
+its restriction to the segment from `x` to `w` gives `d(w) - d(x) ≤ L (w - x) = -L (x - ξ) - r`
+(`ConcaveOn.slope_le_of_hasDerivAt`). -/
+theorem Submission.bv_ext_infDist_compl_fderiv_lt : ∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (r : ℝ), IsOpen U → Convex ℝ U → Uᶜ.Nonempty → 0 < r → closedBall ξ r ⊆ U → ∃ η : ℝ, 0 < η ∧ ∀ x ∈ U, infDist x Uᶜ < η → DifferentiableAt ℝ (fun y ↦ infDist y Uᶜ) x → r < -fderiv ℝ (fun y ↦ infDist y Uᶜ) x (x - ξ) := by
+  intro n U ξ r hUo hUc hne hr hball
+  -- Step 1: `Uᶜ` is closed and nonempty, so `d > 0` on `U`.
+  have hcl : IsClosed Uᶜ := hUo.isClosed_compl
+  have hpos : ∀ y ∈ U, 0 < infDist y Uᶜ := fun y hy ↦
+    (hcl.notMem_iff_infDist_pos hne).1 (Set.notMem_compl_iff.2 hy)
+  -- Step 2: `η = d(y₀)` is the minimum of `d` over the compact ball `closedBall ξ r ⊆ U`.
+  obtain ⟨y₀, hy₀, hmin⟩ := (isCompact_closedBall ξ r).exists_isMinOn
+    (nonempty_closedBall.2 hr.le) (continuous_infDist_pt Uᶜ).continuousOn
+  refine ⟨infDist y₀ Uᶜ, hpos y₀ (hball hy₀), fun x hx hxη hdiff ↦ ?_⟩
+  -- Step 3: `L = Dd(x)` has norm `1`.
+  generalize hL : fderiv ℝ (fun y ↦ infDist y Uᶜ) x = L
+  have hfd : HasFDerivAt (fun y ↦ infDist y Uᶜ) L x := hL ▸ hdiff.hasFDerivAt
+  have hLnorm : ‖L‖ = 1 := hL ▸ Submission.bv_ext_norm_fderiv_infDist_eq_one n Uᶜ x hcl hne
+    (Set.notMem_compl_iff.2 hx) hdiff
+  -- Step 4: the Riesz vector `ν` of `L` is a unit vector with `L ν = 1`.
+  obtain ⟨ν, hν, hLν⟩ : ∃ ν : Rn n, ‖ν‖ = 1 ∧ L ν = 1 := by
+    set e := InnerProductSpace.toDual ℝ (Rn n)
+    refine ⟨e.symm L, by rw [LinearIsometryEquiv.norm_map, hLnorm], ?_⟩
+    rw [← InnerProductSpace.toDual_symm_apply (x := e.symm L) (y := L),
+      real_inner_self_eq_norm_sq, LinearIsometryEquiv.norm_map, hLnorm, one_pow]
+  -- Step 5: `w = ξ - r • ν` lies in `closedBall ξ r ⊆ U`, so `d(x) < η ≤ d(w)`.
+  obtain ⟨w, hw⟩ : ∃ w : Rn n, w = ξ - r • ν := ⟨_, rfl⟩
+  have hwball : w ∈ closedBall ξ r := by
+    rw [mem_closedBall, dist_eq_norm, hw, sub_sub_cancel_left, norm_neg, norm_smul, hν, mul_one,
+      Real.norm_of_nonneg hr.le]
+  have hdw : infDist x Uᶜ < infDist w Uᶜ := hxη.trans_le (isMinOn_iff.1 hmin w hwball)
+  -- Step 6: concavity of `d` along the segment from `x` to `w` gives `d(w) - d(x) ≤ L (w - x)`.
+  have hsuper : infDist w Uᶜ - infDist x Uᶜ ≤ L (w - x) := by
+    have hcv := (Submission.bv_ext_infDist_compl_concaveOn n U hUc).comp_affineMap
+      (AffineMap.lineMap x w)
+    have hder := hfd.comp_hasDerivAt_of_eq 0 (AffineMap.hasDerivAt_lineMap (a := x) (b := w))
+      (AffineMap.lineMap_apply_zero x w).symm
+    simpa [slope_def_field] using
+      hcv.slope_le_of_hasDerivAt (by simpa using hx) (by simpa using hball hwball) zero_lt_one hder
+  -- Step 7: `L (w - x) = -L (x - ξ) - r`.
+  have hcomp : L (w - x) = -L (x - ξ) - r := by
+    rw [show w - x = -(x - ξ) - r • ν by rw [hw]; abel, map_sub, map_neg, map_smul, hLν,
+      smul_eq_mul, mul_one]
+  -- Step 8: `0 < d(w) - d(x) ≤ -L (x - ξ) - r`.
+  linarith
 
 end GMT.Ch02
