@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c225957ce8cc0846ce4baefdf2ccfbb18804f6c0ad2cd7d1ef583c5fc2e4932f",
+  "git_delta": {
+    "base_commit": "a874a0f7584cf26f1ffe971bc7881ac0b3d1ab97",
+    "candidate_commit": "47c34bb7b135d93bb5005a5ceb5b8bfcac562213",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_ext_ofReal_integral_le_bvVariationOn",
+    "diff_sha256": "a88b174cdf901772b39592dd723eaab3f1af4415901fd14d9d0073165ee82df8",
+    "source_sha256": "3017c57665a6cbad378bfb8507ed8c39a556e0a98020415ea30762fe046c33e2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_ext_ofReal_integral_le_bvVariationOn",
+      "statement": "∀ (n : ℕ) (W : Set (Rn n)) (v : Rn n → ℝ) (G : Rn n → Rn n) (K : ℝ≥0), LipschitzWith K G → HasCompactSupport G → tsupport G ⊆ W → (∀ x, ‖G x‖ ≤ 1) → ENNReal.ofReal (∫ x in W, v x * Chapter02.euclideanDivergence G x) ≤ Chapter02.bvVariationOn v W",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
