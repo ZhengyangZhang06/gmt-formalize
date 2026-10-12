@@ -335,6 +335,133 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Bi-invariant Haar probability on the orthogonal stabilizer of a subspace** (Step 1 of the
+frame-averaging argument in the proof of Simon Ch. 3, Theorem 3.6; Mattila, *Geometry of Sets and
+Measures in Euclidean Spaces*, Ch. 3). Let `U ⊆ ℝᴺ` be a subspace, `𝓛 = ℝᴺ →L[ℝ] ℝᴺ` and
+`K_U = {g ∈ 𝓛 : g* g = 1, g x = x for x ∈ U}`. There is a Borel probability `θ` on `𝓛` with
+`θ`-a.e. `g ∈ K_U`, invariant under `g ↦ k g` and `g ↦ g k` for every `k ∈ K_U`. `K_U` is a closed
+bounded subgroup of the unitary group of the finite-dimensional `𝓛`, hence a compact group; `θ` is
+the image under the inclusion of its Haar probability `μ`, and `μ` is also right invariant by
+uniqueness of Haar measure on compact groups. -/
+theorem Submission.bf_orthStabilizer_haar_exists : ∀ (N : ℕ) (U : Submodule ℝ (Rn N)), ∃ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ ∧ (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ U, g x = x) ∧ ∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ U, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ := by
+  intro N U
+  -- Step 3 (topology): the adjoint `g ↦ g*` is continuous, so `star` is continuous on `𝓛` and
+  -- `unitary 𝓛` (inversion = `star`) is a topological group.
+  have hadj : Continuous (fun g : Rn N →L[ℝ] Rn N ↦ ContinuousLinearMap.adjoint g) :=
+    (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn N) (F := Rn N)).continuous
+  have : ContinuousStar (Rn N →L[ℝ] Rn N) := ⟨by
+    have h : (star : (Rn N →L[ℝ] Rn N) → (Rn N →L[ℝ] Rn N)) =
+        fun g ↦ ContinuousLinearMap.adjoint g := funext ContinuousLinearMap.star_eq_adjoint
+    rw [h]
+    exact hadj⟩
+  have : ContinuousInv (unitary (Rn N →L[ℝ] Rn N)) :=
+    ⟨continuous_induced_rng.mpr continuous_subtype_val.star⟩
+  have : IsTopologicalGroup (unitary (Rn N →L[ℝ] Rn N)) := {}
+  -- Step 1: `g* g = 1` forces `g g* = 1` (`g` is injective, hence surjective), so `g ∈ unitary 𝓛`.
+  have hunit : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      g ∈ unitary (Rn N →L[ℝ] Rn N) := by
+    intro g hg
+    have hgg : ∀ x, ContinuousLinearMap.adjoint g (g x) = x := fun x ↦ by
+      rw [← mul_apply_eq_comp, hg, one_apply_eq_self]
+    have hsurj : Function.Surjective g :=
+      LinearMap.surjective_of_injective (f := (g : Rn N →ₗ[ℝ] Rn N))
+        (Function.LeftInverse.injective hgg)
+    rw [Unitary.mem_iff, ContinuousLinearMap.star_eq_adjoint]
+    refine ⟨hg, ?_⟩
+    ext1 y
+    obtain ⟨x, rfl⟩ := hsurj y
+    rw [mul_apply_eq_comp, hgg, one_apply_eq_self]
+  -- Step 2: `K = K_U` as a subgroup of `unitary 𝓛`, with inclusion `ι : K → 𝓛`.
+  let K : Subgroup (unitary (Rn N →L[ℝ] Rn N)) :=
+    { carrier := {u | ∀ x ∈ U, (u : Rn N →L[ℝ] Rn N) x = x}
+      mul_mem' := by
+        intro a b ha hb x hx
+        change ((a : Rn N →L[ℝ] Rn N) * (b : Rn N →L[ℝ] Rn N)) x = x
+        rw [mul_apply_eq_comp, hb x hx, ha x hx]
+      one_mem' := fun _ _ ↦ rfl
+      inv_mem' := by
+        intro a ha x hx
+        change (star (a : Rn N →L[ℝ] Rn N)) x = x
+        conv_lhs => rw [← ha x hx]
+        rw [← mul_apply_eq_comp, Unitary.star_mul_self_of_mem a.2, one_apply_eq_self] }
+  let ι : K → Rn N →L[ℝ] Rn N := fun k ↦ ((k : unitary (Rn N →L[ℝ] Rn N)) : Rn N →L[ℝ] Rn N)
+  have hι : Continuous ι := continuous_subtype_val.comp continuous_subtype_val
+  have hιind : Topology.IsInducing ι :=
+    Topology.IsInducing.subtypeVal.comp Topology.IsInducing.subtypeVal
+  -- Step 3: `S = ι(K)` is closed and bounded (`‖g‖ ≤ 1`) in the finite-dimensional `𝓛`, so `K`
+  -- is compact.
+  set S : Set (Rn N →L[ℝ] Rn N) :=
+    {g | ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ U, g x = x}
+  have hSclosed : IsClosed S := by
+    have h1 : IsClosed {g : Rn N →L[ℝ] Rn N | ContinuousLinearMap.adjoint g * g = 1} :=
+      isClosed_eq (hadj.mul continuous_id) continuous_const
+    have h2 : IsClosed {g : Rn N →L[ℝ] Rn N | ∀ x ∈ U, g x = x} := by
+      have : {g : Rn N →L[ℝ] Rn N | ∀ x ∈ U, g x = x} = ⋂ x ∈ U, {g | g x = x} := by
+        ext g
+        simp
+      rw [this]
+      exact isClosed_biInter fun x _ ↦
+        isClosed_eq (continuous_id.clm_apply continuous_const) continuous_const
+    exact h1.inter h2
+  have hrange : Set.range ι = S := by
+    ext g
+    constructor
+    · rintro ⟨k, rfl⟩
+      refine ⟨?_, k.2⟩
+      have := Unitary.star_mul_self_of_mem (k : unitary (Rn N →L[ℝ] Rn N)).2
+      rwa [ContinuousLinearMap.star_eq_adjoint] at this
+    · rintro ⟨hg, hfix⟩
+      exact ⟨⟨⟨g, hunit g hg⟩, hfix⟩, rfl⟩
+  have hSbdd : Bornology.IsBounded S := by
+    refine (Metric.isBounded_iff_subset_closedBall 0).mpr ⟨1, fun g hg ↦ ?_⟩
+    rw [Metric.mem_closedBall, dist_zero_right]
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun x ↦ ?_
+    have h2 : inner ℝ (g x) (g x) = inner ℝ x x := by
+      rw [← ContinuousLinearMap.adjoint_inner_right, ← mul_apply_eq_comp, hg.1, one_apply_eq_self]
+    rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq] at h2
+    rw [one_mul, (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h2]
+  have : CompactSpace K := by
+    rw [← isCompact_univ_iff, hιind.isCompact_iff, Set.image_univ, hrange]
+    exact Metric.isCompact_of_isClosed_isBounded hSclosed hSbdd
+  -- Step 4: the Haar measure `μ` on `K` normalized by `μ(K) = 1`.
+  let μ : Measure K := Measure.haarMeasure ⊤
+  have : IsProbabilityMeasure μ := ⟨by
+    have := Measure.haarMeasure_self (G := K) (K₀ := ⊤)
+    rw [TopologicalSpace.PositiveCompacts.coe_top] at this
+    exact this⟩
+  -- Step 5: right invariance of `μ`, by uniqueness of Haar measure on the compact group `K`.
+  have hright : ∀ k : K, Measure.map (fun h ↦ h * k) μ = μ := by
+    intro k
+    set ρ := Measure.map (fun h ↦ h * k) μ with hρ
+    have hc := Measure.isMulInvariant_eq_smul_of_compactSpace ρ μ
+    have huniv : ρ univ = 1 := by
+      rw [hρ, Measure.map_apply (measurable_mul_const k) MeasurableSet.univ, Set.preimage_univ,
+        measure_univ]
+    have hc1 : ρ.haarScalarFactor μ = 1 := by
+      have h := congrArg (fun m : Measure K ↦ m univ) hc
+      simp only [Measure.smul_apply, measure_univ, huniv] at h
+      have h' : ((ρ.haarScalarFactor μ : ℝ≥0) : ℝ≥0∞) = 1 := by
+        simpa [ENNReal.smul_def] using h.symm
+      exact_mod_cast h'
+    rw [hc1, one_smul] at hc
+    exact hc
+  -- Steps 6–7: `θ = ι_* μ` is concentrated on `S`, and translations by `k ∈ K_U` commute with `ι`.
+  refine ⟨Measure.map ι μ, inferInstance, ?_, ?_⟩
+  · rw [ae_map_iff hι.aemeasurable hSclosed.measurableSet]
+    exact Eventually.of_forall fun k ↦ (hrange ▸ ⟨k, rfl⟩ : ι k ∈ S)
+  · intro k hk hfix
+    let k' : K := ⟨⟨k, hunit k hk⟩, hfix⟩
+    have hl : Measurable (fun g : Rn N →L[ℝ] Rn N ↦ k * g) := measurable_const_mul k
+    have hr : Measurable (fun g : Rn N →L[ℝ] Rn N ↦ g * k) := measurable_mul_const k
+    constructor
+    · rw [Measure.map_map hl hι.measurable]
+      have : (fun g : Rn N →L[ℝ] Rn N ↦ k * g) ∘ ι = ι ∘ (fun h : K ↦ k' * h) := rfl
+      rw [this, ← Measure.map_map hι.measurable (measurable_const_mul k'),
+        map_mul_left_eq_self μ k']
+    · rw [Measure.map_map hr hι.measurable]
+      have : (fun g : Rn N →L[ℝ] Rn N ↦ g * k) ∘ ι = ι ∘ (fun h : K ↦ h * k') := rfl
+      rw [this, ← Measure.map_map hι.measurable (measurable_mul_const k'), hright k']
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
