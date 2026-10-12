@@ -691,6 +691,108 @@ gives the density. -/
 theorem Submission.monotonicity_formula_8_3_3 : MonotonicityFormula := by
   open Chapter04.RectifiableVarifold in
   intro N n U V x ρ₀ Λ hV hρ₀ hball hΛ hbound
+/-- The normal defect of the annuli `B_ρ(x) ∖ B_σ(x)` tends to that of `B_ρ(x)` as `σ ↓ 0`
+(Simon Ch. 8, 3.4, p. 211): the defect is continuous from below along the annuli, and its
+integrand vanishes at the centre `y = x`.  No hypothesis on `V` or `ρ` is needed. -/
+theorem Submission.normalDefect_annulus_tendsto_closedBall :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ : ℝ), Tendsto (fun σ : ℝ ↦ normalDefect V x (closedBall x ρ \ closedBall x σ)) (𝓝[>] 0) (𝓝 (normalDefect V x (closedBall x ρ))) := by
+  intro N n U V x ρ
+  -- The defect integrand `f` and the measure `ν = V.withDensity f`, so that
+  -- `ν(A × G) = normalDefect V x A` for every Borel set `A`.
+  set f : Euclidean N × Grassmannian N n → ℝ≥0∞ := fun z ↦
+    ENNReal.ofReal (‖(z.1 - x) - Grassmannian.project z.2 (z.1 - x)‖ ^ 2 / ‖z.1 - x‖ ^ (n + 2))
+    with hf
+  set ν := V.measure.withDensity f with hν
+  have hD : ∀ A : Set (Euclidean N), MeasurableSet A →
+      normalDefect V x A = ν (A ×ˢ (univ : Set (Grassmannian N n))) := fun A hA ↦
+    (withDensity_apply f (hA.prod MeasurableSet.univ)).symm
+  -- Step 1: `f` vanishes on `{x} × G` (`0 ^ (n + 2) = 0` and `a / 0 = 0`), so `ν({x} × G) = 0`.
+  have hcentre : ν ({x} ×ˢ (univ : Set (Grassmannian N n))) = 0 := by
+    have hs : MeasurableSet ({x} ×ˢ (univ : Set (Grassmannian N n))) :=
+      (measurableSet_singleton x).prod MeasurableSet.univ
+    rw [hν, withDensity_apply f hs, setLIntegral_congr_fun hs (g := fun _ ↦ 0) ?_, lintegral_zero]
+    rintro ⟨y, S⟩ ⟨hy, -⟩
+    rw [mem_singleton_iff] at hy
+    subst hy
+    simp [hf]
+  -- Step 2: removing the centre does not change the defect of `B_ρ(x)`.
+  have hpunct : ν ((closedBall x ρ \ {x}) ×ˢ (univ : Set (Grassmannian N n))) =
+      normalDefect V x (closedBall x ρ) := by
+    have hset : (closedBall x ρ \ {x}) ×ˢ (univ : Set (Grassmannian N n)) =
+        closedBall x ρ ×ˢ univ \ {x} ×ˢ univ := by
+      ext ⟨y, S⟩
+      simp
+    rw [hD _ measurableSet_closedBall, hset]
+    exact measure_sdiff_null hcentre
+  -- Step 3: the annular defect is antitone in `σ` and bounded by the defect of `B_ρ(x)`.
+  have hanti : Antitone fun σ : ℝ ↦ normalDefect V x (closedBall x ρ \ closedBall x σ) :=
+    fun σ σ' h ↦ lintegral_mono_set <|
+      prod_mono (sdiff_subset_sdiff_right (closedBall_subset_closedBall h)) subset_rfl
+  have hle : ∀ σ : ℝ, normalDefect V x (closedBall x ρ \ closedBall x σ) ≤
+      normalDefect V x (closedBall x ρ) := fun σ ↦
+    lintegral_mono_set (prod_mono sdiff_subset subset_rfl)
+  -- Step 4: the annuli with inner radii `1 / (k + 1)` increase to `(B_ρ(x) ∖ {x}) × G`.
+  set s : ℕ → Set (Euclidean N × Grassmannian N n) := fun k ↦
+    (closedBall x ρ \ closedBall x (1 / ((k : ℝ) + 1))) ×ˢ univ with hs
+  have hsmono : Monotone s := fun k l hkl ↦
+    prod_mono (sdiff_subset_sdiff_right
+      (closedBall_subset_closedBall (Nat.one_div_le_one_div hkl))) subset_rfl
+  have hsunion : ⋃ k, s k = (closedBall x ρ \ {x}) ×ˢ (univ : Set (Grassmannian N n)) := by
+    ext ⟨y, S⟩
+    simp only [hs, mem_iUnion, mem_prod, Set.mem_sdiff, mem_closedBall, mem_univ, and_true,
+      mem_singleton_iff]
+    constructor
+    · rintro ⟨k, hyρ, hyk⟩
+      refine ⟨hyρ, fun hyx ↦ hyk ?_⟩
+      rw [hyx, dist_self]
+      positivity
+    · rintro ⟨hyρ, hyx⟩
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt (dist_pos.2 hyx)
+      exact ⟨k, hyρ, not_le.2 hk⟩
+  -- Step 5: continuity from below of `ν` along these annuli.
+  have hseq : Tendsto
+      (fun k : ℕ ↦ normalDefect V x (closedBall x ρ \ closedBall x (1 / ((k : ℝ) + 1))))
+      atTop (𝓝 (normalDefect V x (closedBall x ρ))) := by
+    have h := tendsto_measure_iUnion_atTop (μ := ν) hsmono
+    rw [hsunion, hpunct] at h
+    exact h.congr fun k ↦ (hD _ (measurableSet_closedBall.diff measurableSet_closedBall)).symm
+  -- Step 6: monotonicity upgrades the sequential limit to the limit as `σ ↓ 0`.
+  rw [tendsto_order]
+  refine ⟨fun a ha ↦ ?_, fun b hb ↦ Eventually.of_forall fun σ ↦ (hle σ).trans_lt hb⟩
+  obtain ⟨k, hk⟩ := (hseq.eventually (lt_mem_nhds ha)).exists
+  filter_upwards [Ioc_mem_nhdsGT (show (0 : ℝ) < 1 / ((k : ℝ) + 1) by positivity)] with σ hσ
+  exact hk.trans_le (hanti hσ.2)
+/-- Passage to the limit `σ ↓ 0` in an additive annular identity in `[0, ∞]` (Simon Ch. 8, 3.4):
+if `P σ + D σ ρ = P ρ` for `0 < σ ≤ ρ < ρ₀` and `D σ ρ → T ρ` as `σ ↓ 0`, then `P` has a limit `θ`
+at `0⁺` and `θ + T ρ = P ρ` for `0 < ρ < ρ₀`. -/
+theorem Submission.annular_identity_limit_at_zero :
+    ∀ (P : ℝ → ℝ≥0∞) (D : ℝ → ℝ → ℝ≥0∞) (T : ℝ → ℝ≥0∞) (ρ₀ : ℝ), 0 < ρ₀ → (∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ → P σ + D σ ρ = P ρ) → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → Tendsto (fun σ : ℝ ↦ D σ ρ) (𝓝[>] 0) (𝓝 (T ρ))) → ∃ θ : ℝ≥0∞, Tendsto P (𝓝[>] 0) (𝓝 θ) ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → θ + T ρ = P ρ := by
+  intro P D T ρ₀ hρ₀ hPD hD
+  -- Step 1: `P` is monotone on `(0, ρ₀)`, since `P σ ≤ P σ + D σ ρ = P ρ` for `σ ≤ ρ` there.
+  have hmono : MonotoneOn P (Ioo 0 ρ₀) := fun σ hσ ρ hρ hσρ ↦
+    le_self_add.trans_eq (hPD σ ρ hσ.1 hσρ hρ.2)
+  -- Step 2: hence `P t → θ := inf P((0, ρ₀))` as `t → 0⁺`.
+  have hlim : Tendsto P (𝓝[>] 0) (𝓝 (sInf (P '' Ioo 0 ρ₀))) :=
+    hmono.tendsto_nhdsWithin_Ioo_right (nonempty_Ioo.2 hρ₀) (OrderBot.bddBelow _)
+  refine ⟨sInf (P '' Ioo 0 ρ₀), hlim, fun ρ hρ hρρ₀ ↦ ?_⟩
+  -- Step 3: `P σ + D σ ρ → θ + T ρ` as `σ → 0⁺`, by continuity of addition on `[0, ∞]`.
+  have h₁ : Tendsto (fun σ ↦ P σ + D σ ρ) (𝓝[>] 0) (𝓝 (sInf (P '' Ioo 0 ρ₀) + T ρ)) :=
+    hlim.add (hD ρ hρ hρρ₀)
+  -- Step 4: on `(0, ρ] ∈ 𝓝[>] 0` the same function is the constant `P ρ`.
+  have h₂ : Tendsto (fun σ ↦ P σ + D σ ρ) (𝓝[>] 0) (𝓝 (P ρ)) :=
+    tendsto_const_nhds.congr' <| eventuallyEq_of_mem (Ioc_mem_nhdsGT hρ) fun σ hσ ↦
+      (hPD σ ρ hσ.1 hσ.2 hρρ₀).symm
+  -- Step 5: limits along the proper filter `𝓝[>] 0` in the Hausdorff space `[0, ∞]` are unique.
+  exact tendsto_nhds_unique h₁ h₂
+
+/-- **Simon Ch. 8, 3.4 (monotonicity identity, `Λ = 0`), p. 211.**
+If `V` is stationary in the open ball `B°_{ρ₀}(x) ⊆ U`, then `Θ^n(μ_V, x)` exists and
+`Θ^n(μ_V, x) + ω_n^{-1} ∫_{Gₙ(B_ρ(x))} r^{-n-2} |p_{S^⊥}(y - x)|² dV = ω_n^{-1} ρ^{-n} μ_V(B_ρ(x))`
+for `0 < ρ < ρ₀`.  The annular identity for `0 < σ ≤ ρ` is SimonGMT's
+`StationaryOn.stationaryMonotonicity` on a ball `B_R(x)` with `ρ < R < ρ₀`; the two preceding
+lemmas pass it to the limit `σ ↓ 0`. -/
+theorem Submission.stationary_monotonicity_identity_8_3_4 : StationaryMonotonicityIdentity := by
+  intro N n U V x ρ₀ hρ₀ hball hstat
   -- Step 0: `0 < ω_n < ∞`.
   have hω₀ : unitBallVolume n ≠ 0 := by
     unfold unitBallVolume
@@ -936,6 +1038,26 @@ theorem Submission.monotonicity_formula_8_3_3 : MonotonicityFormula := by
     obtain ⟨θ, hθ, hθtop, hθle⟩ := Submission.mono833_exp_weighted_density_limit
       (densityRatio n V.weight x) ρ₀ Λ hρ₀ hmono hfin
     exact ⟨θ, hθ, hθtop, fun σ ρ hσ hσρ hρ ↦ ⟨hθle σ hσ (hσρ.trans_lt hρ), hnorm σ ρ hσ hσρ hρ⟩⟩
+  -- Step 1: the annular identity, from stationarity in `B_R(x)` with `R = (ρ + ρ₀) / 2`.
+  have hann : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ →
+      densityRatio n V.weight x σ +
+          (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ \ closedBall x σ) =
+        densityRatio n V.weight x ρ := by
+    intro σ ρ hσ hσρ hρ
+    have hR : ρ < (ρ + ρ₀) / 2 := by linarith
+    have hRU : closedBall x ((ρ + ρ₀) / 2) ⊆ U :=
+      (closedBall_subset_ball (by linarith)).trans hball
+    have hstatR : V.StationaryOn (ball x ((ρ + ρ₀) / 2)) := fun X hX ↦
+      hstat X (hX.trans (ball_subset_ball (by linarith)))
+    rw [hratio σ hσ, hratio ρ (hσ.trans_le hσρ), hdefect, ← mul_add,
+      hstatR.stationaryMonotonicity hRU hσ hσρ hR]
+  -- Steps 2–4: `σ ↓ 0` in the annular identity (density limit and centre continuity of the defect).
+  exact Submission.annular_identity_limit_at_zero (densityRatio n V.weight x)
+    (fun σ ρ ↦ (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ \ closedBall x σ))
+    (fun ρ ↦ (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ)) ρ₀ hρ₀ hann
+    fun ρ _ _ ↦ ENNReal.Tendsto.const_mul
+      (Submission.normalDefect_annulus_tendsto_closedBall N n U V x ρ)
+      (Or.inr (ENNReal.inv_ne_top.2 hω₀))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
