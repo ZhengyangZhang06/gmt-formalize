@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f795f56ccca6da710d404d00f4c7be40dc10cce989e95f4e7afd6c606fd03d27",
+  "git_delta": {
+    "base_commit": "7e56eb155feb6302f1e41a1422bda1c8fb966d90",
+    "candidate_commit": "6b29d5173b77c7cd7513176412fe9419b6e88b97",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "imsupp_orient_apply_ae_eq_zero_of_vanishesOn",
+    "diff_sha256": "07bd3b40f0e17d1aa909273ca467af5ee3436f07eb2056bd8e2cf2bdc89bcd77",
+    "source_sha256": "bc7bf6e0ed0cd1e6144534e40ef6b3f21c24f3fd8589ed3d5e3b5084d709a012",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imsupp_orient_apply_ae_eq_zero_of_vanishesOn",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂R.measure, x ∈ W → R.orient x α = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
