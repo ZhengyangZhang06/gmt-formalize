@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1",
+  "depth": 4,
+  "title": "Weak-* convergence of gradients of uniformly convergent, uniformly Lipschitz functions on an open set of ℝⁿ",
+  "statement": "Let n ∈ ℕ, Ω ⊆ ℝⁿ open, C ≥ 0, and let u : ℝⁿ → ℝ and u_k : ℝⁿ → ℝ (k ∈ ℕ) all be C-Lipschitz on Ω, with u_k → u uniformly on Ω. Then for every c : ℝⁿ → ℝⁿ which is Lebesgue integrable on Ω, ∫_Ω Du_k(w)(c(w)) dw → ∫_Ω Du(w)(c(w)) dw as k → ∞, where Df(w) = fderiv ℝ f w (the Fréchet derivative where it exists, 0 otherwise; by Rademacher's theorem it exists at a.e. point of Ω).",
+  "lean_statement": "∀ (n : ℕ) (Ω : Set (Eucl n)) (C : ℝ≥0) (u : Eucl n → ℝ) (ug : ℕ → Eucl n → ℝ), IsOpen Ω → LipschitzOnWith C u Ω → (∀ k, LipschitzOnWith C (ug k) Ω) → TendstoUniformlyOn ug u atTop Ω → ∀ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) → Tendsto (fun k => ∫ w in Ω, fderiv ℝ (ug k) w (c w)) atTop (𝓝 (∫ w in Ω, fderiv ℝ u w (c w)))",
+  "lean_name": "slicing_im_ll_gradient_weak_star",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-gr-b207eb8151-a1"
+}
