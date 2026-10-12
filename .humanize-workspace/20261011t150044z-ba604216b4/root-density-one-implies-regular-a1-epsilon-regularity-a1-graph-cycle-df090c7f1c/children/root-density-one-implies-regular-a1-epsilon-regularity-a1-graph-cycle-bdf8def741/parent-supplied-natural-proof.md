@@ -1,0 +1,121 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1.left_inverse_tangent-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 4 and 5 of the parent-supplied proof, written for an arbitrary map Φ that is C¹ on the ball with a continuous affine left inverse Pr(x) := L(x − z). For the parent's graph map, L = ι* (sibling graph_left_inverse). The parent's steps 4–5 use only the properties assumed here: Φ is C¹ on D, Pr is affine with linear part L, and Pr(Φ(v)) = v on D. This is Simon Ch. 2, 4.3 (book/chapter-02.txt lines 865–871: T_yM is spanned by the partial derivatives of a local representation). The book prints no proof (it says 'One readily checks').
+Notation: ℝ^m := Euclid m. D := B_s(0) ⊆ ℝ^d (open ball). Σ := Φ(D). DΦ(v) := fderiv ℝ Φ v. Fix v₀ ∈ D and let T := tangentSpace Σ (Φ(v₀)). That is, T is the set of w ∈ ℝ^P for which some γ : ℝ → ℝ^P is C¹ on (−1, 1), maps (−1, 1) into Σ, has γ(0) = Φ(v₀), and has HasDerivAt γ w 0.
+0. Setup. D is open and Φ is C¹ on D, so Φ is differentiable at v₀ (ContDiffOn.differentiableOn_one, then DifferentiableOn.differentiableAt with isOpen_ball.mem_nhds). Thus Φ has Fréchet derivative DΦ(v₀) at v₀. Also Φ(v₀) ∈ Σ.
+1. T ⊆ range DΦ(v₀). Let w ∈ T with witness γ: C¹ on (−1, 1), γ(t) ∈ Σ for t ∈ (−1, 1), γ(0) = Φ(v₀), and HasDerivAt γ w 0. Put c(t) := L(γ(t) − z). The map t ↦ γ(t) − z has derivative w at 0 (HasDerivAt.sub_const). L is continuous linear, so by the chain rule c has derivative Lw at 0 (HasFDerivAt.comp_hasDerivAt applied to L.hasFDerivAt). Moreover c(0) = L(Φ(v₀) − z) = v₀.
+2. By step 0 and c(0) = v₀, Φ has derivative DΦ(v₀) at c(0). The chain rule (HasFDerivAt.comp_hasDerivAt) then gives that Φ∘c has derivative DΦ(v₀)(Lw) at 0.
+3. Let t ∈ (−1, 1). Then γ(t) ∈ Σ, so γ(t) = Φ(v) for some v ∈ D. Hence c(t) = L(Φ(v) − z) = v and Φ(c(t)) = Φ(v) = γ(t). Since (−1, 1) is a neighbourhood of 0 (Ioo_mem_nhds), γ = Φ∘c on a neighbourhood of 0.
+4. Hence γ also has derivative DΦ(v₀)(Lw) at 0 (HasDerivAt.congr_of_eventuallyEq). Uniqueness of derivatives (HasDerivAt.unique) gives w = DΦ(v₀)(Lw). So w lies in the range of DΦ(v₀), with witness Lw (LinearMap.mem_range).
+5. range DΦ(v₀) ⊆ T, case a = 0. Let a ∈ ℝ^d; we show DΦ(v₀)a ∈ T. If a = 0, then DΦ(v₀)a = 0. The constant curve γ(t) := Φ(v₀) is C¹ (contDiffOn_const). It maps (−1, 1) into Σ because Φ(v₀) ∈ Σ, satisfies γ(0) = Φ(v₀), and has derivative 0 at 0 (hasDerivAt_const). So 0 ∈ T.
+6. Case a ≠ 0: a bounded reparametrization. Then ‖a‖ > 0, and ‖v₀‖ < s because v₀ ∈ D. Put c₀ := (s − ‖v₀‖)/(2‖a‖) > 0 and θ(t) := c₀·sin(t/c₀). Then:
+ - θ is C^∞: Real.contDiff_sin composed with t ↦ t/c₀, times a constant.
+ - For every t, |θ(t)| = c₀|sin(t/c₀)| ≤ c₀ (Real.abs_sin_le_one).
+ - θ(0) = c₀·sin 0 = 0.
+ - By the chain rule (Real.hasDerivAt_sin, HasDerivAt.div_const, HasDerivAt.comp, HasDerivAt.const_mul), θ has derivative c₀·cos(0)·(1/c₀) = 1 at 0 (Real.cos_zero, c₀ ≠ 0).
+7. Let κ(t) := v₀ + θ(t)a. Then:
+ - κ is C^∞, being the sum of a constant and the smooth scalar θ times the constant vector a.
+ - κ(0) = v₀.
+ - κ has derivative θ'(0)a = a at 0 (HasDerivAt.smul_const, HasDerivAt.const_add).
+ - For every t ∈ ℝ, ‖κ(t)‖ ≤ ‖v₀‖ + |θ(t)|‖a‖ ≤ ‖v₀‖ + c₀‖a‖ = ‖v₀‖ + (s − ‖v₀‖)/2 < s (norm_add_le, norm_smul). So κ(t) ∈ D.
+8. Let γ := Φ∘κ. Then:
+ - κ is C¹ and maps ℝ, in particular (−1, 1), into D, where Φ is C¹. So γ is C¹ on (−1, 1) (ContDiffOn.comp with ContDiff.contDiffOn and the MapsTo fact of step 7).
+ - For every t, γ(t) = Φ(κ(t)) ∈ Φ(D) = Σ.
+ - γ(0) = Φ(κ(0)) = Φ(v₀).
+ - Φ has derivative DΦ(v₀) at κ(0) = v₀ (step 0) and κ has derivative a at 0. By the chain rule (HasFDerivAt.comp_hasDerivAt), γ has derivative DΦ(v₀)a at 0.
+ Hence DΦ(v₀)a ∈ T. As in the parent, sine is used because Real.contDiff_sin and Real.hasDerivAt_sin are directly available.
+9. Steps 1–4 and 5–8 give the two inclusions, so T = range DΦ(v₀) as sets (Set.Subset.antisymm). This holds for every v₀ ∈ D. ∎
+
+## Key steps
+
+1. Φ is differentiable at v₀ ∈ D because it is C¹ on the open ball.
+2. Tangent ⊆ range: for a witness γ, the curve c := L(γ − z) has c'(0) = Lw and c(0) = v₀. Since γ maps (−1, 1) into Σ = Φ(D) and Pr∘Φ = id on D, γ = Φ∘c near 0.
+3. The chain rule and uniqueness of derivatives give w = DΦ(v₀)(Lw) ∈ range DΦ(v₀).
+4. Range ⊆ tangent for a = 0: use the constant curve at Φ(v₀).
+5. Range ⊆ tangent for a ≠ 0: κ(t) = v₀ + c₀ sin(t/c₀) a with c₀ = (s − ‖v₀‖)/(2‖a‖) stays in D, with κ(0) = v₀ and κ'(0) = a. Then γ = Φ∘κ is C¹ on (−1, 1), maps into Σ, has γ(0) = Φ(v₀), and has γ'(0) = DΦ(v₀)a.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD (compared with manifest.json)`
+- `rg -n 'def tangentSpace|def IsEmbeddedSubmanifold' project/GMT --glob '*.lean' (in the snapshot)`
+- `rg -n 'dgce_|left_inverse_chart|left_inverse_tangentSpace|graph_contDiffOn_left_inverse' project --glob '*.lean' (in the snapshot; no match)`
+- `rg -n 'theorem adjoint_inner_left|theorem LinearIsometry.inner_map_map|theorem ext_inner_right|theorem ContDiffOn.differentiableOn_one|theorem HasFDerivAt.comp_hasDerivAt |theorem HasFDerivAt.congr_of_eventuallyEq|theorem HasDerivAt.congr_of_eventuallyEq|theorem HasDerivAt.unique|theorem HasFDerivAt.unique|theorem IsCompact.exists_isMaxOn|theorem ContinuousOn.preimage_isClosed_of_isClosed|theorem IsCompact.of_isClosed_subset|theorem closedBall_subset_ball|theorem hasDerivAt_sin|theorem contDiff_sin|theorem abs_sin_le_one|theorem Ioo_mem_nhds|theorem ContDiffOn.comp |theorem ContinuousLinearMap.contDiff|theorem ContDiff.comp_contDiffOn|theorem LinearMap.mem_range' mathlib/Mathlib (in the snapshot)`
+- `python3 scan of every lean_name value in dag.json and nodes/*/*.json (682 names); grep -rl dgce_ dag.json nodes; git grep -l dgce_ over all 977 refs (*.lean)`
+- `inspect DAG nodes whose lean_statement mentions tangentSpace or IsEmbeddedSubmanifold, and the decomposition/audit files of nodes root-minimizing-implies-stationary-a1-chart-tangent-space-a1 and root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1`
+- `python3 -I /tmp/dgce-decomp/scripts/gen_checks.py (lean_contract.validate_lean_statement and gmt-compare.contract_scope replay)`
+- `lake env lean /tmp/dgce-decomp/Parent.lean; lake env lean /tmp/dgce-decomp/Full.lean; lake env lean /tmp/dgce-decomp/Scope.lean; lake env lean /tmp/dgce-decomp/Instances.lean`
+- `grep -n 'Submanifolds of R|readily checks|is proper (i.e.|Local graphical representations' book/chapter-02.txt; grep -n '4.3 Theorem' book/chapter-07.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Trigonometric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-df090c7f1c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-df090c7f1c/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-df090c7f1c/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-audit-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/decomposition-audit-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/dgce-decomp/Parent.lean`
+- `/tmp/dgce-decomp/Full.lean`
+- `/tmp/dgce-decomp/Scope.lean`
+- `/tmp/dgce-decomp/Instances.lean`
+- `/tmp/dgce-decomp/scripts/gen_checks.py`
+
+Pins and contract:
+- The snapshot is project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b with Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Both match the workspace HEAD and .lake/packages/mathlib.
+- The snapshot Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. IsEmbeddedSubmanifold (line 221) and tangentSpace (line 228) are the frozen definitions used.
+
+No reusable project declaration:
+- No project file states the chart or tangent facts for graphs, or for maps with an affine left inverse: there is no match for dgce_ or left-inverse chart names.
+- The Ch02 tangentSpace hit is a different, Submodule-valued definition in another chapter's contract, so it does not apply.
+- The DAG's other chart-tangent nodes are chart_tangentSpace_eq_range_fderiv, dsmc_chart_tangentSpace_eq_range and dsmc_chart_range_subset_tangentSpace. They sit in other branches, none is accepted, and they assume properness rather than a left inverse. They are therefore neither reused nor duplicated.
+
+Mathlib:
+- Every cited lemma exists at the pinned revision with the expected signature, e.g. ContDiffOn.differentiableOn_one, ContinuousLinearMap.adjoint_inner_left, LinearIsometry.inner_map_map, ext_inner_right, HasFDerivAt.comp_hasDerivAt, HasDerivAt.congr_of_eventuallyEq, HasFDerivAt.unique, IsCompact.exists_isMaxOn, ContinuousOn.preimage_isClosed_of_isClosed, Real.contDiff_sin, Real.hasDerivAt_sin, Real.abs_sin_le_one and Ioo_mem_nhds.
+- All of them are in the import closure of GMT.Ch07.Submission: the full sorry-free scratch proofs in /tmp/dgce-decomp/Full.lean compile after import GMT.Ch07.Submission.
+
+Lean checks:
+- The three child types pass validate_lean_statement unchanged and elaborate in the exact gmt-compare contract_scope replay.
+- The parent's exact frozen type follows from them by a 6-line assembly.
+- #print axioms reports only propext, Classical.choice and Quot.sound.
+- The instance checks confirm the Euclidean ball, the Euclidean inner product, LinearMap.range coerced to Set.range, and the order ((1 : ℕ) : WithTop ℕ∞).
+
+Names: the proposed names collide with none of the 682 DAG lean_name values and appear on none of the 977 git refs.
+
+Book: Simon Ch. 2 §4 (book/chapter-02.txt lines 849–871) states 4.1–4.3 without proof ('One readily checks'). The child proofs are therefore extracted from the parent-supplied proof.

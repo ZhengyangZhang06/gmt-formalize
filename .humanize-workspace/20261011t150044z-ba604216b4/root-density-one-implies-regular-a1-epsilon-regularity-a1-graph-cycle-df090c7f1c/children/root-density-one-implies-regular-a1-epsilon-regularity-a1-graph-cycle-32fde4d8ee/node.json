@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1.graph_left_inverse-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1",
+  "depth": 5,
+  "title": "The graph map is C¹ on the ball and has a continuous affine left inverse",
+  "statement": "Let n, k ∈ ℕ, and let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝ^k. Let s ∈ ℝ and z ∈ ℝ^{n+k}, and let u : ℝⁿ → ℝ^k be of class C¹ on the open ball D = B_s(0) ⊆ ℝⁿ. Put Φ(v) := z + ιv + ι'u(v). Then Φ is of class C¹ on D, and there is a continuous linear map L : ℝ^{n+k} → ℝⁿ with L(Φ(v) − z) = v for every v ∈ ℝⁿ; one may take L = ι*, the adjoint of ι. Here ℝ^m denotes Euclid m = EuclideanSpace ℝ (Fin m).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → ContDiffOn ℝ 1 (fun v => z + ι v + ι' (u v)) (ball (0 : Euclid n) s) ∧ ∃ L : Euclid (n + k) →L[ℝ] Euclid n, ∀ v, L (z + ι v + ι' (u v) - z) = v",
+  "lean_name": "dgce_graph_contDiffOn_left_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-32fde4d8ee-a1"
+}
