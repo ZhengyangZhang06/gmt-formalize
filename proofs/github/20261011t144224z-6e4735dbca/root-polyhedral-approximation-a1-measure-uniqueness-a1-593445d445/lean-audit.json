@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "567eb8612177562dc0e5c3221a833ecec4e73a6d00c79755ccc67cdffeb22965",
+  "git_delta": {
+    "base_commit": "fac3cd053bcc6d494869d8151da43f9c6a71db9d",
+    "candidate_commit": "d5f2301589a88533013f36eb15761783d521ac8e",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "27fa17a6163f1031d57857db61b40d3463353b63ac4765f6e5956addc2ecc1b5",
+    "source_sha256": "399dbaa8db317bdf0b82bfb50ab9a243483d8e72925cb5e45bf97de7dd588e56",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_measure_uniqueness",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn g₁ K μ₁ ∧ IntegrableOn g₂ K μ₂) → (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ U → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ u : Eucl P → ℝ, Continuous u → HasCompactSupport u → tsupport u ⊆ U → ∫ x in A, u x * g₁ x ∂μ₁ = ∫ x in A, u x * g₂ x ∂μ₂",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
