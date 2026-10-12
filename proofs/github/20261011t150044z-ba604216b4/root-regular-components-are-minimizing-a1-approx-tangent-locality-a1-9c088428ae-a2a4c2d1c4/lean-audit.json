@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e12274ce3f2a3601ce122f6c8260b230c85d2906c37d3c9e57e4039c9bc8ab2e",
+  "git_delta": {
+    "base_commit": "bd425a21458739a29d577d23266ecebe6d4d6801",
+    "candidate_commit": "6c098c2db907a349129e4681beb7c76fbbb4d281",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_atl_pc_density_rescale_tendsto",
+    "diff_sha256": "ed948acb9b433a10d5246b4972413898d4bf63128e54141c7a8fc2232c741c92",
+    "source_sha256": "c5926023454cd18c7806800549871c128bb32c86e50bcabe8847c2e35b32435f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_atl_pc_density_rescale_tendsto",
+      "statement": "∀ (n : ℕ) (g : ℝ → ℝ≥0∞) (R : ℝ), 0 < R → Tendsto (fun ρ : ℝ => g ρ / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
