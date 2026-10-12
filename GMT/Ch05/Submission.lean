@@ -458,6 +458,49 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 3, Lemma 1.2 ("only if").**  A countably `n`-rectifiable `M ⊆ ℝ^{n+ℓ}` lies in
+`N₀ ∪ ⋃_j N_j` with `Hⁿ(N₀) = 0` and each `N_j` an `n`-dimensional `C¹` submanifold of finite
+`Hⁿ`-measure.  Write `M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and `F_j` Lipschitz; each `F_j(ℝⁿ)`
+lies in an `Hⁿ`-null set and countably many `C¹` images `G_{j,k}(ℝⁿ)`
+(`rsod_lipschitz_range_subset_c1_ranges`, Simon 2.1.5 and the first half of 3.1.2), and each
+`G_{j,k}(ℝⁿ)` lies in an `Hⁿ`-null set (critical values) and countably many finite-measure patches
+`N^{j,k}_q` (`rsod_c1_range_subset_submanifold_cover`).  The patches are enumerated by
+`p ↦ (j, (k, q))` through `Nat.unpair`. -/
+theorem rsod_rectifiable_subset_c1_cover : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (M : Set (Amb n ℓ)), Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N₀ : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ j, IsC1Submanifold n (N j) ∧ (μHE[n] : Measure (Amb n ℓ)) (N j) < ∞) ∧ M ⊆ N₀ ∪ ⋃ j, N j := by
+  intro n ℓ _ M hM
+  -- Step 1: `M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and every `F_j` Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hM
+  choose K hK using hF
+  -- Steps 2–3 (child `lipschitz_range_c1_cover`): `F_j(ℝⁿ) ⊆ Z_j ∪ ⋃_k G_{j,k}(ℝⁿ)`, `Hⁿ(Z_j) = 0`.
+  choose Z G hZ hG hFG using fun j =>
+    Submission.rsod_lipschitz_range_subset_c1_ranges n ℓ (F j) (K j) (hK j)
+  -- Steps 4–6 (child `c1_range_submanifold_cover`): `G_{j,k}(ℝⁿ) ⊆ Y_{j,k} ∪ ⋃_q P_{j,k,q}`,
+  -- `Hⁿ(Y_{j,k}) = 0`, each `P_{j,k,q}` a finite-measure `C¹` submanifold.
+  choose Y P hY hP hGP using fun j k =>
+    Submission.rsod_c1_range_subset_submanifold_cover n ℓ (G j k) (hG j k)
+  -- Step 7: `N₀ = M₀ ∪ ⋃_j Z_j ∪ ⋃_{j,k} Y_{j,k}` and `N_p = P_{j,k,q}` for `p = ⟨j, ⟨k, q⟩⟩`.
+  refine ⟨M₀ ∪ (⋃ j, Z j) ∪ ⋃ j, ⋃ k, Y j k,
+    fun p => P p.unpair.1 p.unpair.2.unpair.1 p.unpair.2.unpair.2,
+    measure_union_null (measure_union_null hM₀ (measure_iUnion_null hZ))
+      (measure_iUnion_null fun j => measure_iUnion_null (hY j)),
+    fun p => hP _ _ _, ?_⟩
+  intro x hx
+  rcases hMF hx with hx₀ | hx
+  · exact Or.inl (Or.inl (Or.inl hx₀))
+  obtain ⟨j, hj⟩ := mem_iUnion.1 hx
+  rcases hFG j hj with hxZ | hx
+  · exact Or.inl (Or.inl (Or.inr (mem_iUnion.2 ⟨j, hxZ⟩)))
+  obtain ⟨k, hk⟩ := mem_iUnion.1 hx
+  rcases hGP j k hk with hxY | hx
+  · exact Or.inl (Or.inr (mem_iUnion₂.2 ⟨j, k, hxY⟩))
+  obtain ⟨q, hq⟩ := mem_iUnion.1 hx
+  refine Or.inr (mem_iUnion.2 ⟨Nat.pair j (Nat.pair k q), ?_⟩)
+  simpa only [Nat.unpair_pair] using hq
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
