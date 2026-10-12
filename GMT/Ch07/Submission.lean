@@ -469,6 +469,56 @@ theorem Submission.rsd_cmr_ir_blowUp_image_measure : ∀ (P n : ℕ) (x : Euclid
   congr 2
   simp [abs_of_pos hr]
 
+/-- Deleting from the Borel set `M` a set that is `Hⁿ`-null near `x` keeps the approximate
+tangent space of `M` at `x` (Simon Ch. 3, 1.4): if `M' ⊆ M` and `Hⁿ((M ∖ M') ∩ B_δ(x)) = 0`, then
+`TₓM = Q` gives `TₓM' = Q`.  Choose `R₀ > 0` with `spt f ⊆ B̄_{R₀}(0)`.  For
+`0 < λ < δ/(R₀ + 1)`, a point `z = η_{x,λ}(y)` of `η_{x,λ}(M) ∖ η_{x,λ}(M')` with `f(z) ≠ 0` has
+`y ∈ M ∖ M'` and `|y − x| = λ|z| ≤ λR₀ < δ`, so it lies in `η_{x,λ}((M ∖ M') ∩ B_δ(x))`, which is
+`Hⁿ`-null by `rsd_cmr_ir_blowUp_image_measure`.  Hence `f = 0` a.e. on
+`η_{x,λ}(M) ∖ η_{x,λ}(M')`, and the Borel set `η_{x,λ}(M)` and its subset `η_{x,λ}(M')` carry the
+same integral of `f` for all small `λ` (as in the proof of 1.6 "⇒"). -/
+theorem Submission.rsd_cmr_ir_approxTangent_of_local_null : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → 0 < δ → μHE[n] ((M \ M') ∩ ball x δ) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q := by
+  intro P n M M' x δ Q hM hM'M hδ hnull hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- `spt f ⊆ B̄_{R₀}(0)` with `R₀ > 0`
+  obtain ⟨R₀, hR₀, hfR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall_lt 0 0
+  have hR₀' : (0 : ℝ) < R₀ + 1 := by linarith
+  refine (hT.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR₀')] with r hr
+  have hr0 : r ≠ 0 := hr.1.ne'
+  -- `Z_λ = η_{x,λ}((M ∖ M') ∩ B_δ(x))` is `Hⁿ`-null
+  have hZ : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' ((M \ M') ∩ ball x δ)) = 0 := by
+    rw [Submission.rsd_cmr_ir_blowUp_image_measure P n x r _ hr.1, hnull, mul_zero]
+  -- `η_{x,λ}(y) = λ⁻¹ • (y − x)`
+  have hη : Poincare.SimonGMT.Chapter03.blowUpMap x r = fun y => r⁻¹ • (y - x) := rfl
+  rw [hη] at hZ ⊢
+  -- `η_{x,λ}(M)` is Borel: it is the preimage of `M` under `z ↦ x + λ • z`
+  have hmeas : MeasurableSet ((fun y => r⁻¹ • (y - x)) '' M) := by
+    have himg : (fun y => r⁻¹ • (y - x)) '' M = (fun z => x + r • z) ⁻¹' M := by
+      ext z
+      constructor
+      · rintro ⟨y, hy, rfl⟩
+        simpa [smul_smul, mul_inv_cancel₀ hr0] using hy
+      · intro hz
+        exact ⟨x + r • z, hz, by simp [smul_smul, inv_mul_cancel₀ hr0]⟩
+    rw [himg]
+    exact hM.preimage (by fun_prop)
+  -- `f` vanishes on `η_{x,λ}(M) ∖ η_{x,λ}(M')` off `Z_λ`, hence a.e. there
+  refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hmeas.nullMeasurableSet
+    (image_mono hM'M) ?_
+  filter_upwards [measure_eq_zero_iff_ae_notMem.mp hZ] with z hzZ hz
+  obtain ⟨⟨y, hyM, rfl⟩, hyM'⟩ := hz
+  apply image_eq_zero_of_notMem_tsupport
+  intro hyf
+  apply hzZ
+  refine ⟨y, ⟨⟨hyM, fun h => hyM' ⟨y, h, rfl⟩⟩, ?_⟩, rfl⟩
+  -- `|y − x| = λ|η_{x,λ}(y)| ≤ λR₀ < λ(R₀ + 1) < δ`
+  have h1 : ‖r⁻¹ • (y - x)‖ ≤ R₀ := mem_closedBall_zero_iff.mp (hfR₀ hyf)
+  rw [norm_smul, norm_inv, Real.norm_of_nonneg hr.1.le, inv_mul_le_iff₀ hr.1] at h1
+  have h2 := (lt_div_iff₀ hR₀').mp hr.2
+  rw [mem_ball, dist_eq_norm]
+  linarith [hr.1]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
