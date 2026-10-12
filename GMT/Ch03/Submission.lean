@@ -438,6 +438,8 @@ theorem Submission.bf_cone_subset_iUnion_slabCones : ∀ (n ℓ : ℕ), 0 < ℓ 
         nlinarith [sq_nonneg ‖W.starProjection y‖]
     _ = (Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖) ^ 2 := by
         rw [mul_pow, mul_pow, hsqrt, hpj]
+        ring
+
 /-- **Transfer of the cone density trichotomy from finitely many comparable cone families**: the
 case analysis in the slab-to-cone step of the proof of the Besicovitch–Federer projection theorem,
 Simon Ch. 3, Theorem 3.6 (`chapter-03.txt` lines 530–536, which defers the proof to [Fed69]; cf.
