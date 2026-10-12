@@ -458,6 +458,73 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.7–4.8 (p. 94)**: the `ε ↓ 0` limit of the cutoff integrals over `(0, t]`.
+With `β = n / p ∈ [0, 1)` and `κ = (p - n) / (4p)`, the majorant `2κΛR⁻¹ (τ / R)^{-β}` equals
+`C τ^{-β}` with `C = 2κΛR⁻¹ R^β`; it is integrable on `[0, t]` with integral
+`C t^{1-β} / (1 - β) = (Λ / 2) (t / R)^{1-β}`, since `2κ / (1 - β) = 1 / 2`.  Dominated convergence
+gives the limit, and the eventual bound `|∫₀ᵗ a k| ≤ ∫₀ᵗ C τ^{-β}` passes to it. -/
+theorem allard52_amcl_interval_limit : ∀ (n : ℕ) (p R Λ t : ℝ) (a : ℕ → ℝ → ℝ) (g : ℝ → ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < t → (∀ᶠ k in atTop, ∀ τ : ℝ, 0 < τ → τ ≤ t → ContinuousAt (a k) τ ∧ |a k τ| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (τ / R) ^ (-((n : ℝ) / p))) → (∀ τ : ℝ, 0 < τ → τ ≤ t → Tendsto (fun k => a k τ) atTop (𝓝 (g τ))) → Tendsto (fun k => ∫ τ in (0)..t, a k τ) atTop (𝓝 (∫ τ in (0)..t, g τ)) ∧ |∫ τ in (0)..t, g τ| ≤ Λ / 2 * (t / R) ^ (1 - (n : ℝ) / p) := by
+  intro n p R Λ t a g hnp hR _hΛ ht hev hlim
+  have hp : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg n) hnp
+  set β : ℝ := (n : ℝ) / p with hβ
+  have hβ1 : β < 1 := (div_lt_one hp).2 hnp
+  set C : ℝ := 2 * ((p - n) / (4 * p)) * Λ / R * R ^ β with hC
+  -- (1) the majorant is `C τ^{-β}` for `τ ≥ 0`
+  have hb_eq : ∀ τ : ℝ, 0 ≤ τ →
+      2 * ((p - n) / (4 * p)) * Λ / R * (τ / R) ^ (-β) = C * τ ^ (-β) := by
+    intro τ hτ
+    rw [Real.div_rpow hτ hR.le, Real.rpow_neg hR.le, div_inv_eq_mul, hC]
+    ring
+  have hI : uIoc (0 : ℝ) t = Ioc 0 t := uIoc_of_le ht.le
+  -- (2) `C τ^{-β}` is integrable on `[0, t]` since `-β > -1`
+  have hb_int : IntervalIntegrable (fun τ => C * τ ^ (-β)) volume 0 t :=
+    (intervalIntegral.intervalIntegrable_rpow' (by linarith)).const_mul C
+  -- (3) its integral is `C t^{1-β} / (1 - β) = (Λ / 2) (t / R)^{1-β}`, as `0^{1-β} = 0`
+  have hb_val : ∫ τ in (0 : ℝ)..t, C * τ ^ (-β) = Λ / 2 * (t / R) ^ (1 - β) := by
+    have h1β : 1 - β ≠ 0 := by linarith
+    rw [intervalIntegral.integral_const_mul, integral_rpow (Or.inl (by linarith)), neg_add_eq_sub,
+      Real.zero_rpow h1β, sub_zero, Real.div_rpow ht.le hR.le, Real.rpow_sub hR, Real.rpow_one, hC]
+    have hpn : p - n ≠ 0 := by linarith
+    have h1β' : 1 - β = (p - n) / p := by rw [hβ]; field_simp
+    rw [h1β']
+    have hRβ : R ^ β ≠ 0 := (Real.rpow_pos_of_pos hR β).ne'
+    generalize t ^ ((p - n) / p) = T
+    field_simp
+    ring
+  -- (4) dominated convergence on `Ι 0 t = (0, t]`: eventually `a k` is continuous there, hence
+  -- measurable, and dominated by `C τ^{-β}`
+  have hmeas : ∀ᶠ k in atTop, AEStronglyMeasurable (a k) (volume.restrict (uIoc 0 t)) := by
+    filter_upwards [hev] with k hk
+    rw [hI]
+    exact ContinuousOn.aestronglyMeasurable
+      (fun τ hτ => (hk τ hτ.1 hτ.2).1.continuousWithinAt) measurableSet_Ioc
+  have hbound : ∀ᶠ k in atTop, ∀ᵐ τ ∂volume, τ ∈ uIoc 0 t → ‖a k τ‖ ≤ C * τ ^ (-β) := by
+    filter_upwards [hev] with k hk
+    refine Eventually.of_forall (fun τ hτ => ?_)
+    rw [hI] at hτ
+    rw [Real.norm_eq_abs, ← hb_eq τ hτ.1.le]
+    exact (hk τ hτ.1 hτ.2).2
+  have hlim' : ∀ᵐ τ ∂volume, τ ∈ uIoc 0 t → Tendsto (fun k => a k τ) atTop (𝓝 (g τ)) := by
+    refine Eventually.of_forall (fun τ hτ => ?_)
+    rw [hI] at hτ
+    exact hlim τ hτ.1 hτ.2
+  have hT : Tendsto (fun k => ∫ τ in (0)..t, a k τ) atTop (𝓝 (∫ τ in (0)..t, g τ)) :=
+    intervalIntegral.tendsto_integral_filter_of_dominated_convergence _ hmeas hbound hb_int hlim'
+  refine ⟨hT, ?_⟩
+  -- (5) eventually `|∫₀ᵗ a k| ≤ ∫₀ᵗ C τ^{-β}`, and this passes to the limit
+  have hk_le : ∀ᶠ k in atTop, |∫ τ in (0)..t, a k τ| ≤ ∫ τ in (0 : ℝ)..t, C * τ ^ (-β) := by
+    filter_upwards [hbound] with k hk
+    rw [← Real.norm_eq_abs]
+    refine intervalIntegral.norm_integral_le_of_norm_le ht.le ?_ hb_int
+    filter_upwards [hk] with τ hτ h
+    exact hτ (hI ▸ h)
+  rw [← hb_val]
+  exact le_of_tendsto hT.abs hk_le
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
