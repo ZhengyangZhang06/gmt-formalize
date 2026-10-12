@@ -434,6 +434,65 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Tangential Jacobian as a Gram determinant.** Let `P ⊆ ℝᴺ` be a subspace with orthogonal
+projection `p` and orthonormal basis `b₁, …, b_k`, and let `Λ : ℝᴺ → ℝᴺ` be linear. Then
+`det (⟪Λ p eᵢ, Λ p eⱼ⟫ + ⟪eᵢ - p eᵢ, eⱼ - p eⱼ⟫)ᵢⱼ = det (⟪Λ b_a, Λ b_c⟫)_{a c}`. With
+`B i a = ⟪eᵢ, b_a⟫` the left matrix is `1 + B (G Bᵀ - Bᵀ)`, `G` the right Gram matrix, and
+`Bᵀ B = 1`, so `det (1 + X W) = det (1 + W X)` gives `det (1 + G - 1) = det G`. -/
+theorem Submission.ts_fv_det_tangential_gram_eq : ∀ (N k : ℕ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (b : OrthonormalBasis (Fin k) ℝ P) (Λ : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N)), Matrix.det (Matrix.of fun i j : Fin N ↦ inner ℝ (Λ (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (Λ (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))) = Matrix.det (Matrix.of fun a c : Fin k ↦ inner ℝ (Λ (b a)) (Λ (b c))) := by
+  intro N k P b Λ
+  -- `B i a = ⟪eᵢ, b_a⟫` is the `i`-th coordinate of `b_a`; `G` is the Gram matrix of `Λ b`
+  set B : Matrix (Fin N) (Fin k) ℝ :=
+    Matrix.of fun i a ↦ inner ℝ (EuclideanSpace.single i (1 : ℝ)) (b a : EuclideanSpace ℝ (Fin N))
+  set G : Matrix (Fin k) (Fin k) ℝ := Matrix.of fun a c ↦ inner ℝ (Λ (b a)) (Λ (b c))
+  have hBl : ∀ i a, inner ℝ (EuclideanSpace.single i (1 : ℝ)) (b a : EuclideanSpace ℝ (Fin N)) =
+      B i a := fun _ _ ↦ rfl
+  have hBr : ∀ i a, inner ℝ (b a : EuclideanSpace ℝ (Fin N)) (EuclideanSpace.single i (1 : ℝ)) =
+      B i a := fun _ _ ↦ real_inner_comm _ _
+  have hG : ∀ a c, inner ℝ (Λ (b a)) (Λ (b c)) = G a c := fun _ _ ↦ rfl
+  -- `p eᵢ = ∑ₐ B i a • b_a`
+  have hp : ∀ i, P.starProjection (EuclideanSpace.single i (1 : ℝ)) =
+      ∑ a, B i a • (b a : EuclideanSpace ℝ (Fin N)) := fun i ↦ by
+    rw [b.starProjection_eq_sum_rankOne, sum_apply]
+    exact Finset.sum_congr rfl fun a _ ↦ by rw [InnerProductSpace.rankOne_apply, hBr]
+  -- `⟪b_a, b_c⟫ = δ_ac` and `⟪eᵢ, eⱼ⟫ = δᵢⱼ`
+  have hb : ∀ a c, inner ℝ (b a : EuclideanSpace ℝ (Fin N)) (b c : EuclideanSpace ℝ (Fin N)) =
+      if a = c then (1 : ℝ) else 0 := fun a c ↦ by
+    rw [← Submodule.coe_inner]
+    exact orthonormal_iff_ite.mp b.orthonormal a c
+  have he : ∀ i j, inner ℝ (EuclideanSpace.single i (1 : ℝ))
+      (EuclideanSpace.single j (1 : ℝ) : EuclideanSpace ℝ (Fin N)) = if i = j then (1 : ℝ) else 0 :=
+    orthonormal_iff_ite.mp EuclideanSpace.orthonormal_single
+  -- `Bᵀ B = 1`: Parseval in the standard basis `eᵢ` of `ℝᴺ`
+  have hBB : B.transpose * B = 1 := by
+    ext a c
+    rw [Matrix.mul_apply, Matrix.one_apply, ← hb,
+      ← (EuclideanSpace.basisFun (Fin N) ℝ).sum_inner_mul_inner]
+    exact Finset.sum_congr rfl fun i _ ↦ by rw [EuclideanSpace.basisFun_apply, hBr, hBl]; rfl
+  -- entrywise, the left matrix is `B G Bᵀ + (1 - B Bᵀ) = 1 + B (G Bᵀ - Bᵀ)`
+  have hS : (Matrix.of fun i j : Fin N ↦
+      inner ℝ (Λ (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+        (Λ (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) +
+      inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ)))
+        (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))) =
+      1 + B * (G * B.transpose - B.transpose) := by
+    ext i j
+    rw [Matrix.of_apply, hp i, hp j]
+    simp only [map_sum, map_smul, inner_sum, sum_inner, real_inner_smul_left,
+      real_inner_smul_right, inner_sub_left, inner_sub_right, hb, he, hBl, hBr, hG,
+      Matrix.add_apply, Matrix.one_apply, Matrix.mul_apply, Matrix.sub_apply,
+      Matrix.transpose_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
+      ite_true, sub_self, Finset.sum_const_zero, sub_zero, mul_sub, Finset.mul_sum,
+      Finset.sum_sub_distrib]
+    have hswap : ∑ c, ∑ a, B j c * (B i a * G a c) = ∑ a, ∑ c, B i a * (G a c * B j c) := by
+      rw [Finset.sum_comm]
+      exact Finset.sum_congr rfl fun _ _ ↦ Finset.sum_congr rfl fun _ _ ↦ by ring
+    rw [hswap]
+    ring
+  -- Weinstein–Aronszajn `det (1 + X W) = det (1 + W X)`, then `Bᵀ B = 1`
+  rw [hS, Matrix.det_one_add_mul_comm, Matrix.sub_mul, Matrix.mul_assoc, hBB, Matrix.mul_one,
+    add_sub_cancel]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
