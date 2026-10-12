@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.density_one_flat_covers-a1.plane_density-a1",
+  "parent_id": "root.first_rectifiability-a1.density_one_flat_covers-a1",
+  "depth": 3,
+  "title": "Lebesgue density one of H^n on an arbitrary subset of an n-plane",
+  "statement": "Let N, n ∈ ℕ, let P ∈ G(N,n) (Grassmannian N n, an orthogonal projection matrix whose range P.plane is an n-dimensional linear subspace of ℝ^N = Euclidean N), and let T ⊆ P.plane be an arbitrary, not necessarily measurable, set. Then there is a set Z ⊆ ℝ^N with H^n(Z) = 0, where H^n := μHE[n], such that HasDensity n (H^n⌞T) a 1 for every a ∈ T ∖ Z. In terms of closed balls and ω_n = unitBallVolume n, this says H^n(T ∩ B_s(a))/(ω_n s^n) → 1 as s ↓ 0.",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (T : Set (Euclidean N)), T ⊆ (P.plane : Set (Euclidean N)) → ∃ Z : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) Z = 0 ∧ ∀ a ∈ T, a ∉ Z → HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict T) a 1",
+  "lean_name": "frt_plane_subset_hasDensity_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-density-one-flat-covers-a1-plane-density-a1-a1"
+}

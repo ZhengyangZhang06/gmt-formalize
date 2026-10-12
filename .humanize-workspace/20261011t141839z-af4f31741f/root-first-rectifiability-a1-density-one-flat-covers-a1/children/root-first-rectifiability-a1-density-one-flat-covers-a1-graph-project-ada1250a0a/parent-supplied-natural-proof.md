@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.first_rectifiability-a1.density_one_flat_covers-a1`
+- Child DAG node: `root.first_rectifiability-a1.density_one_flat_covers-a1.graph_projection_compare-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–3 of the parent-supplied proof (graph geometry and comparison with the projection), together with the estimate H^n(X_c) ≤ β^n H^n(N_c) from its step 4. Here they are stated for an arbitrary L-graph S.
+
+Notation:
+- ℝ^N := Euclidean N, and H^n := μHE[n] on ℝ^N.
+- B_r(y) := closedBall y r.
+- p := Grassmannian.project P, i.e. the linear map projectionLinearMap P applied to vectors.
+- β := √(1 + L²), and β^n means ENNReal.ofReal(β)^n.
+
+No measurability of S or Y and no assumption n ≥ 1 are needed.
+
+1. β ≥ 1 > 0, because 1 + L² ≥ 1, √ is monotone and √1 = 1.
+
+2. Linearity: p(u − v) = p u − p v for all u, v (map_sub for projectionLinearMap P).
+
+3. Pythagoras.
+- p is symmetric (Grassmannian.projectionLinearMap_isSymmetric) and idempotent (Grassmannian.project_project).
+- So for v ∈ ℝ^N, ⟪p v, p v⟫ = ⟪v, p(p v)⟫ = ⟪v, p v⟫ = ⟪p v, v⟫, hence ⟪p v, v − p v⟫ = 0.
+- The vectors p v and v − p v sum to v. Applying norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero to them gives ‖v‖² = ‖p v‖² + ‖v − p v‖².
+- In particular ‖p v‖ ≤ ‖v‖. With step 2, p is 1-Lipschitz on ℝ^N: ‖p u − p v‖ = ‖p(u − v)‖ ≤ ‖u − v‖.
+
+4. Bi-Lipschitz estimate on S. Let y, z ∈ S and v := y − z.
+- The hypothesis gives 0 ≤ ‖v − p v‖ ≤ L‖p v‖, so ‖v − p v‖² ≤ L²‖p v‖².
+- By step 3, ‖v‖² ≤ (1 + L²)‖p v‖² = (β‖p v‖)².
+- Hence ‖y − z‖ ≤ β‖p(y − z)‖ = β‖p y − p z‖.
+- Consequently p is injective on S: if p y = p z then ‖y − z‖ ≤ 0.
+
+5. Lipschitz inverse. Let h := Function.invFunOn p S.
+- By injectivity (Set.InjOn.leftInvOn_invFunOn), h(p y) = y for every y ∈ S.
+- For a = p y and a' = p z with y, z ∈ S, step 4 gives ‖h a − h a'‖ = ‖y − z‖ ≤ β‖a − a'‖.
+- So h is Lipschitz on p(S) with constant β.toNNReal. By definition, (β.toNNReal : ℝ≥0∞) = ENNReal.ofReal β.
+
+6. Lipschitz image bound. If f is K-Lipschitz on a set A, then H^n(f(A)) ≤ K^n H^n(A) for arbitrary A. This is SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean), which is Mathlib's LipschitzOnWith.hausdorffMeasure_image_le transported to μHE[n] = c_n · μH[n].
+
+7. Proof of (b). Let Y ⊆ ℝ^N.
+- S ∩ p⁻¹(Y) ⊆ S and p is injective on S, so Set.InjOn.invFunOn_image gives h(p(S ∩ p⁻¹(Y))) = S ∩ p⁻¹(Y).
+- p(S ∩ p⁻¹(Y)) ⊆ p(S), so h is β-Lipschitz on it.
+- p(S ∩ p⁻¹(Y)) ⊆ p(p⁻¹(Y)) ⊆ Y.
+- By step 6 and monotonicity:
+ H^n(S ∩ p⁻¹(Y)) = H^n(h(p(S ∩ p⁻¹(Y)))) ≤ β^n H^n(p(S ∩ p⁻¹(Y))) ≤ β^n H^n(Y).
+
+8. Proof of the first inequality in (a). Let x ∈ S and r ∈ ℝ.
+- Take a ∈ p(S) ∩ B_{r/β}(p x) and write a = p z with z ∈ S.
+- By step 4, ‖z − x‖ ≤ β‖p z − p x‖ ≤ β · (r/β) = r. So z ∈ S ∩ B_r(x) and a ∈ p(S ∩ B_r(x)).
+- Hence p(S) ∩ B_{r/β}(p x) ⊆ p(S ∩ B_r(x)).
+- Monotonicity, then step 6 for the 1-Lipschitz map p (K = 1, by step 3), give
+ H^n(p(S) ∩ B_{r/β}(p x)) ≤ H^n(p(S ∩ B_r(x))) ≤ 1^n · H^n(S ∩ B_r(x)) = H^n(S ∩ B_r(x)).
+
+9. Proof of the second inequality in (a). Let x ∈ S, r ∈ ℝ and z ∈ S ∩ B_r(x).
+- Then p z ∈ p(S), and ‖p z − p x‖ = ‖p(z − x)‖ ≤ ‖z − x‖ ≤ r by steps 2 and 3.
+- So S ∩ B_r(x) ⊆ S ∩ p⁻¹(Y) with Y := p(S) ∩ B_r(p x).
+- By monotonicity and step 7:
+ H^n(S ∩ B_r(x)) ≤ H^n(S ∩ p⁻¹(Y)) ≤ β^n H^n(p(S) ∩ B_r(p x)).
+
+10. Steps 8 and 9 prove (a) for every x ∈ S and every r ∈ ℝ, and step 7 proves (b). ∎
+
+## Key steps
+
+1. Pythagoras for the symmetric idempotent p: ‖v‖² = ‖p v‖² + ‖v − p v‖², so ‖p v‖ ≤ ‖v‖ and p is 1-Lipschitz.
+2. On the L-graph S: ‖y − z‖ ≤ β‖p y − p z‖. So p is injective on S, and h := invFunOn p S is β-Lipschitz on p(S) with h ∘ p = id on S.
+3. Lipschitz image bound H^n(f(A)) ≤ K^n H^n(A) for arbitrary A (SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+4. (b): S ∩ p⁻¹(Y) = h(p(S ∩ p⁻¹(Y))) and p(S ∩ p⁻¹(Y)) ⊆ Y, which gives the β^n bound.
+5. (a), first inequality: p(S) ∩ B_{r/β}(p x) ⊆ p(S ∩ B_r(x)), then the 1-Lipschitz image bound for p. (a), second inequality: S ∩ B_r(x) ⊆ S ∩ p⁻¹(p(S) ∩ B_r(p x)), then (b).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Contract.lean, GMT/Ch08/Submission.lean (all 2e5cd5b3…c487)`
+- `rg -n 'theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div_of_measurableSet' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -n '^variable' mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean (instHasBesicovitchCovering needs only NormedSpace ℝ E and FiniteDimensional ℝ E)`
+- `sed -n 1,320p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem hausdorffMeasure_image_le|theorem hausdorffMeasure_zero_singleton|theorem hausdorffMeasure_apply' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'theorem ae_restrict_biUnion_iff|theorem restrict_eq_self_of_ae_mem|theorem ae_restrict_mem₀|theorem restrict_restrict|theorem restrict_apply' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `grep -n 'theorem exists_measurable_superset_of_null' mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean; grep -n 'theorem addHaar_closedBall ' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `grep -n 'theorem tendsto_of_le_liminf_of_limsup_le' mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `rg -n 'theorem (norm_project|project_sub|project_eq|inner_project|continuous_project|project_apply)' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -rn 'hausdorffMeasure_image_le|euclideanHausdorffMeasure_image' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n 'theorem finrank_plane|theorem projectionLinearMap_isSymmetric|theorem project_project' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `lake env lean on scratch files: child statements plus parent assembly; API #check after import GMT.Ch08.Submission; full proofs of the 3 children and the parent with #print axioms; comparator NodeChallenge form per child; solution replay via exact Submission.X`
+- `python3 dag.json lean_name collision check (84 nodes)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-density-one-flat-covers-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+
+The snapshot is project 63436ae6 on Mathlib 25730c7c, and its Contract.lean is byte-identical to the workspace Contract and Submission. Mathlib supplies every analytic tool the children need, with no Nontrivial or n ≥ 1 assumption:
+- Besicovitch.ae_tendsto_measure_inter_div for arbitrary sets (Besicovitch.lean:1105), plus the HasBesicovitchCovering instance for any finite-dimensional real normed space (BesicovitchVectorSpace.lean:499).
+- Isometry.euclideanHausdorffMeasure_image (Volume/Measure.lean:131) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume for every d, including 0 (:187).
+- Measure.addHaar_closedBall (EqHaar.lean:500).
+- exists_measurable_superset_of_null, restrict_apply, restrict_restrict, ae_restrict_mem₀, restrict_eq_self_of_ae_mem and ae_restrict_biUnion_iff (Restrict.lean:75/205/637/347/571).
+- tendsto_of_le_liminf_of_limsup_le (LiminfLimsup.lean:305).
+Pinned SimonGMT supplies Grassmannian.finrank_plane, projectionLinearMap_isSymmetric and project_project (Chapter08/Varifold.lean:126/98/108). It also supplies Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean:216, inside the Submission import closure), the μHE form of Mathlib's LipschitzOnWith.hausdorffMeasure_image_le. Grassmannian.project_eq_starProjection and euclideanHausdorffMeasure_image_le_of_dist_le lie outside the closure, so the child proofs re-derive the Pythagorean identity from symmetry and idempotence instead. No existing declaration states Lebesgue density on planes or graph/projection Hausdorff comparisons, and no DAG node has an identical type to reuse. All three children were proved in scratch Lean, and the parent assembly was proved from them. Only standard axioms are used, every child type passes the comparator's NodeChallenge and solution-replay forms, and all names are unique.

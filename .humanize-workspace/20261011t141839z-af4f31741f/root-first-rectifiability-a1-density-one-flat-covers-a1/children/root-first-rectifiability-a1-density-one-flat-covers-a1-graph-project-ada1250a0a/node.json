@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.density_one_flat_covers-a1.graph_projection_compare-a1",
+  "parent_id": "root.first_rectifiability-a1.density_one_flat_covers-a1",
+  "depth": 3,
+  "title": "Hausdorff-measure comparisons between a Lipschitz graph and its projection",
+  "statement": "Let N, n ∈ ℕ, let P ∈ G(N,n) with orthogonal projection p := Grassmannian.project P, let L ≥ 0 and β := (1 + L²)^{1/2}, and let S ⊆ ℝ^N be an L-graph over P, i.e. ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for all y, z ∈ S. Write H^n := μHE[n], B_r for closed balls, and β^n for ENNReal.ofReal(β)^n. No measurability is assumed. Then: (a) for every x ∈ S and every r ∈ ℝ, H^n(p(S) ∩ B_{r/β}(p x)) ≤ H^n(S ∩ B_r(x)) and H^n(S ∩ B_r(x)) ≤ β^n H^n(p(S) ∩ B_r(p x)); (b) for every Y ⊆ ℝ^N, H^n(S ∩ p⁻¹(Y)) ≤ β^n H^n(Y).",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (S : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ S, ∀ z ∈ S, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → (∀ x ∈ S, ∀ r : ℝ, (μHE[n] : Measure (Euclidean N)) ((Grassmannian.project P '' S) ∩ closedBall (Grassmannian.project P x) (r / Real.sqrt (1 + L ^ 2))) ≤ (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) ∧ (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) ((Grassmannian.project P '' S) ∩ closedBall (Grassmannian.project P x) r)) ∧ ∀ Y : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) (S ∩ Grassmannian.project P ⁻¹' Y) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) Y",
+  "lean_name": "frt_lipschitz_graph_hausdorff_compare",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-density-one-flat-covers-a1-graph-project-ada1250a0a-a1"
+}
