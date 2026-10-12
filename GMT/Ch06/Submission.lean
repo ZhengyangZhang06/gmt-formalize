@@ -622,6 +622,24 @@ theorem Submission.br_cube_stokes_lattice :
   · refine setIntegral_congr_fun measurableSet_Icc fun s' _ => ?_
     simp only [φ, hA_ins, hrem, zero_smul, add_zero]
 
+/-- Stokes' theorem on a lattice face (Simon Ch. 6, §5 and the proof of 6.3): for
+`F = (z, α) ∈ 𝓛ₘ₊₁(ρ)` and a smooth `m`-form `ω`,
+`[[F]](dω) = ∑ᵢ (-1)ⁱ ([[(z + e_{α(i)}, α ∘ succAboveᵢ)]](ω) - [[(z, α ∘ succAboveᵢ)]](ω))`.
+Every face integral is the integral over its parameter cube `[0, ρ]ᵈ`, and on the cube this is
+Stokes' theorem (Fubini and the fundamental theorem of calculus). -/
+theorem Submission.br_lattice_face_stokes :
+    ∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (F : LatticeFaceIndex (m + 1) P)
+      (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω →
+      latticeFaceAction ρ F (exteriorDerivative ω) =
+        ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+          (latticeFaceAction ρ (F.1 + Pi.single (F.2 i) 1, (Fin.succAboveOrderEmb i).trans F.2) ω -
+            latticeFaceAction ρ (F.1, (Fin.succAboveOrderEmb i).trans F.2) ω) := by
+  intro P m ρ hρ F ω hω
+  -- Both sides become integrals over parameter cubes: `[0, ρ]ᵐ⁺¹` for `F` and `[0, ρ]ᵐ` for
+  -- the two faces opposite in direction `α(i)`.
+  simp only [latticeFaceAction, Submission.br_latticeFace_setIntegral_eq_cube]
+  exact Submission.br_cube_stokes_lattice P m ρ hρ F ω hω
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
