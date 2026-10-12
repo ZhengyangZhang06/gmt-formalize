@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.eq_near-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "depth": 4,
+  "title": "A current vanishing off K only sees test forms on a neighbourhood of K",
+  "statement": "Let P, q ∈ ℕ and V, K, N ⊆ ℝ^P with N open and K ⊆ N. Let Z ∈ D_q(V) (GeometricCurrentOn V q) satisfy Z(ω) = 0 for every ω ∈ D^q(V) (TestFormOn V q) whose tsupport is disjoint from K. Then Z(η) = Z(ω) for all ω, η ∈ D^q(V) with η(x) = ω(x) for every x ∈ N.",
+  "lean_statement": "∀ (P q : ℕ) (V K N : Set (Eucl P)) (Z : GeometricCurrentOn V q), IsOpen N → K ⊆ N → (∀ ω : TestFormOn V q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → ∀ ω η : TestFormOn V q, (∀ x ∈ N, (η : DifferentialForm (Eucl P) q) x = (ω : DifferentialForm (Eucl P) q) x) → Z η = Z ω",
+  "lean_name": "fiw_tb_ext_apply_eq_of_eqOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-eq-near-a1-a1"
+}

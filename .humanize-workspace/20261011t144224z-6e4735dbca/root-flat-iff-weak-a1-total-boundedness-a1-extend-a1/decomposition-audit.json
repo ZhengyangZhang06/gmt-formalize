@@ -1,0 +1,124 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^(open|namespace|noncomputable|structure IsRectifiableTriple|def tauAction|def IsIntegerMultiplicity|theorem|axiom)|sorry' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06 -g '*.lean'",
+        "TestFormOnConverges|structure GeometricCurrentOn|def TestFormOn|def GeometricCurrentOn.boundary|boundary_apply|tsupport_exteriorDerivative_subset|def GeometricCurrentOn.(support|zeroRegion|VanishesOn)|testFormOnInclusion|restrictDomain_apply|covectorEuclideanNorm|massAdmissibleOn|def GeometricCurrentOn.mass|theorem GeometricCurrentOn.le_massOn",
+        "exists_contDiff_support_eq_eq_one_iff|exists_compact_between|ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "CountablyRectifiable.mono|def HasWeightedApproximateTangentSpaceAt|def blowUpMap|def CountablyRectifiable",
+        "covectorEuclideanNorm_smul|fiw_tb_ext_",
+        "theorem restrict_congr_set|theorem setIntegral_congr_fun₀|theorem exists_compact_between|hausdorffMeasure_image_le|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|euclideanHausdorffMeasure_def",
+        "git show d771ac3ae563701d45563ad2e197624b3f42977f:GMT/Ch06/Submission.lean",
+        "git show 49ba437cb4c73c41041035a8f5eda19c11c4711b:GMT/Ch06/Submission.lean",
+        "git show b0d12af0ae3de012b5efa6fa488511b9ff716893:GMT/Ch06/Submission.lean",
+        "git show def607d836e2e6071aa1efb85ad37d0ca1d1ac19:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/extension-audit-v_zt08wd/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/store.py",
+        "/tmp/extension-audit-v_zt08wd/Types.lean",
+        "/tmp/extension-audit-v_zt08wd/Proofs.lean",
+        "/tmp/extension-audit-v_zt08wd/Reuse_eval_bound.lean",
+        "/tmp/extension-audit-v_zt08wd/Reuse_converges_small.lean",
+        "/tmp/extension-audit-v_zt08wd/Reuse_rect_support_null.lean",
+        "/tmp/extension-audit-v_zt08wd/Reuse_tangent_congr.lean"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT revisions and their relevant definitions. The searched project/SimonGMT sources contain no covectorEuclideanNorm_smul helper or proposed fiw_tb_ext_ declarations. All twelve frozen types independently elaborate as propositions and match their prose hypotheses and conclusions; none contains a matrix-unit construction. All names are bare identifiers. The eight new names have no reservations in the DAG or other saved proposals. The four reused declarations have byte-identical frozen types, compatible contract definitions, and independently checked proofs using only propext, Classical.choice and Quot.sound. Their existing dependency histories are retained by reuse. The augmented DAG is acyclic. All eight supplied new proofs kernel-check with precisely their declared dependencies abstracted as hypotheses. The supplied parent assembly also kernel-checks against the exact selected frozen type with its required child and sibling contracts as hypotheses, using only the permitted standard axioms. Splitting appropriately isolates cutoff calculus, continuity, locality, mass and integrality. The stronger accepted support-null theorem permits MF to remain unused without changing the parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two compact neighbourhoods and smooth Urysohn construction establish every claimed property. Closure of the function's support lies in the compact L contained in U. The exact supplied proof kernel-checks."
+    },
+    {
+      "key": "smul_testform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Smoothness, compactness inherited from the test form, and support containment inherited from χ justify the construction for arbitrary V and W. Pointwise addition and scalar multiplication prove linearity; no extra hypotheses are needed."
+    },
+    {
+      "key": "eq_near",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The difference η−ω vanishes on open N, so its topological support lies in the closed complement, disjoint from K. The vanishing hypothesis and linearity give exactly Z η = Z ω."
+    },
+    {
+      "key": "support_subset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Openness of V and closedness of K provide a ball with compact closure inside V∖K. The vanishing hypothesis places this ball in zeroRegion, contradicting membership in support. This matches the pinned relative-support definition."
+    },
+    {
+      "key": "norm_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Pointwise scalar multiplication multiplies every squared coefficient by c², including the zero summands. Factoring the finite sum and applying the square-root identities proves the exact equality for all P, q and c."
+    },
+    {
+      "key": "eval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Positive scaling makes the form mass-admissible; finite mass permits conversion to a real inequality. Applying this to ω and −ω proves the absolute-value bound. The accepted proof independently passes its axiom check."
+    },
+    {
+      "key": "converges_small",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse with its accepted covector-norm prerequisite retained. Zeroth-derivative convergence controls the operator norm on the common compact support; vanishing outside it and the coefficient-norm estimate give the claimed global eventual bound."
+    },
+    {
+      "key": "rect_support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. A countable cover of the zero region reduces to relatively compact vanishing opens. Local integrability supplies a finite weighted measure; smooth testing and the fundamental lemma force every covector component of ξ to vanish, contradicting its almost-everywhere unit norm. No openness assumption on U is missing."
+    },
+    {
+      "key": "tangent_congr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Blow-ups preserve Hausdorff-null sets; compact support localizes the integrals inside V for small positive radii. The measurable null-superset argument transfers the weights without assuming measurability of the carriers. Eventual integral equality and equality of the weights at x yield the exact conclusion."
+    },
+    {
+      "key": "cutoff_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The multiplication map gives the linear functional X∘L. Uniform coefficient smallness, scalar homogeneity and the finite-mass evaluation bound prove sequential continuity using δ=ε/(X.mass.toReal+1). Pointwise equality identifies every eligible η with Lω. Exactly the declared dependencies suffice."
+    },
+    {
+      "key": "mass_le_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Cutoff multiplication preserves mass admissibility, and locality identifies each whole-space evaluation with a restricted evaluation. Taking the defining supremum proves the stated inequality without an unstated finite-mass assumption."
+    },
+    {
+      "key": "im_extend",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes support containment for the restriction, obtains nullity of M∖K, and verifies all seven rectifiable-triple fields for M∩K. Compactness supplies integrability, tangent congruence transfers orientation, and null-measurable set-integral congruence proves the representation. Integer multiplicity follows with exactly the declared dependencies."
+    }
+  ],
+  "required_changes": []
+}

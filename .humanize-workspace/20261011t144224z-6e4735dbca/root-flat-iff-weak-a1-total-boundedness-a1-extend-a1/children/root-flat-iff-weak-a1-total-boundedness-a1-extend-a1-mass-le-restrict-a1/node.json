@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.mass_le_restrict-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "depth": 4,
+  "title": "Lemma A: a current on ℝ^P vanishing off a compact K ⊆ U has M(Z) ≤ M(Z|_U)",
+  "statement": "Let P, q ∈ ℕ, U ⊆ ℝ^P open, K ⊆ U compact, and Z ∈ D_q(ℝ^P) (GeometricCurrentOn univ q) with Z(ω) = 0 for every ω ∈ D^q(ℝ^P) whose tsupport is disjoint from K. Let Z|_U := Z.restrictDomain (subset_univ U) ∈ D_q(U), so Z|_U(ω) = Z(ω) for ω ∈ D^q(U) ⊆ D^q(ℝ^P). Then M(Z) ≤ M(Z|_U), where M(Z) = Z.mass = Z.massOn univ and M(Z|_U) = (Z|_U).mass = (Z|_U).massOn U.",
+  "lean_statement": "∀ (P q : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∀ Z : GeometricCurrentOn (univ : Set (Eucl P)) q, (∀ ω : TestFormOn (univ : Set (Eucl P)) q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → Z.mass ≤ (Z.restrictDomain (subset_univ U)).mass",
+  "lean_name": "fiw_tb_ext_mass_le_restrictDomain",
+  "depends_on": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.cutoff-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.eq_near-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.norm_smul-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.eq_near-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.norm_smul-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-mass-le-restrict-a1-a1"
+}

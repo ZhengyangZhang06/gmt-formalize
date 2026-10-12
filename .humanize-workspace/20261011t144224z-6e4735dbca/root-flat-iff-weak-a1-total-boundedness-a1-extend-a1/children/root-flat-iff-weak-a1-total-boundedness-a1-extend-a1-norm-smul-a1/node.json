@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.norm_smul-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "depth": 4,
+  "title": "Homogeneity of the Euclidean coefficient norm: |cα| = |c|·|α|",
+  "statement": "For all P, q ∈ ℕ, every c ∈ ℝ and every q-covector α ∈ Covector (Eucl P) q: covectorEuclideanNorm (c • α) = |c| · covectorEuclideanNorm α. Here covectorEuclideanNorm α = √(Σ_{I : Fin q → Fin P} t_I(α)), where t_I(α) = α(e_{I(0)}, …, e_{I(q−1)})² if I is strictly increasing and t_I(α) = 0 otherwise, and e_i = EuclideanSpace.basisFun (Fin P) ℝ i.",
+  "lean_statement": "∀ (P q : ℕ) (c : ℝ) (α : Covector (Eucl P) q), covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α",
+  "lean_name": "fiw_tb_ext_covectorNorm_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-norm-smul-a1-a1"
+}
