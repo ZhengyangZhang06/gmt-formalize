@@ -397,6 +397,41 @@ theorem Submission.c1_sard_coarea_jacobian_eq_zero_iff : ∀ (N m : ℕ) (M : Se
   refine ⟨fun h ↦ (Submodule.finrank_lt h).trans_eq hm, fun h htop ↦ ?_⟩
   rw [htop, finrank_top, hm] at h
   exact lt_irrefl m h
+/-- **Simon Ch. 2, §6 (pp. 66–67), toward Theorem 6.4.** If `f` is `C¹` on an open `U ⊇ M` and
+the tangent projection `x ↦ P_x` is continuous on `M`, then `J*_f` is continuous on `M`: the
+adjoint of the inclusion `T_x M → ℝᴺ` is the orthogonal projection onto `T_x M`, so
+`df_x ∘ df_x* = Df(x) ∘ P_x ∘ Df(x)*`. Hence for every `y` the critical part
+`M ∩ f⁻¹{y} ∩ {J*_f = 0}` of the fiber is relatively closed in `M`. -/
+theorem Submission.c1_sard_coarea_jacobian_continuousOn : ∀ (N m : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → ContinuousOn (tangentProjection M) M → ContinuousOn (coareaJacobian M f) M ∧ ∀ y : Rn m, ∃ F : Set (Rn N), IsClosed F ∧ M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0} = M ∩ F := by
+  intro N m M U f hU hMU hf hP
+  -- `(Df(x) ∘ ι)(Df(x) ∘ ι)* = Df(x) ∘ (ι ∘ π) ∘ Df(x)*`, as `ι* = π` and `ι ∘ π = P_x`.
+  have key : ∀ x, coareaJacobian M f x = Real.sqrt ((fderiv ℝ f x ∘L
+      (tangentProjection M x ∘L ContinuousLinearMap.adjoint (fderiv ℝ f x))).det) := by
+    intro x
+    simp only [coareaJacobian]
+    congr 2
+    rw [ContinuousLinearMap.adjoint_comp, Submodule.adjoint_subtypeL]
+    rfl
+  have hJ : ContinuousOn (coareaJacobian M f) M := by
+    have hD : ContinuousOn (fderiv ℝ f) M := (hf.continuousOn_fderiv_of_isOpen hU le_rfl).mono hMU
+    have hD' : ContinuousOn (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ f x)) M :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn N) (F := Rn m)).continuous.comp_continuousOn hD
+    refine ContinuousOn.congr ?_ fun x _ ↦ key x
+    exact Real.continuous_sqrt.comp_continuousOn
+      (ContinuousLinearMap.continuous_det.comp_continuousOn (hD.clm_comp (hP.clm_comp hD')))
+  refine ⟨hJ, fun y ↦ ?_⟩
+  -- `S = M ∩ f⁻¹{y} ∩ {J*_f = 0}` satisfies `S = M ∩ closure S`, as `f` and `J*_f` are continuous
+  -- on `M ⊇ S`.
+  set S := M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}
+  refine ⟨closure S, isClosed_closure, Subset.antisymm (fun x hx ↦ ⟨hx.1.1, subset_closure hx⟩) ?_⟩
+  rintro x ⟨hxM, hxS⟩
+  have hSM : S ⊆ M := fun z hz ↦ hz.1.1
+  have hfx : f x ∈ closure {y} :=
+    (((hf.continuousOn.mono hMU) x hxM).mono hSM).mem_closure hxS fun z hz ↦ hz.1.2
+  have hJx : coareaJacobian M f x ∈ closure {0} :=
+    ((hJ x hxM).mono hSM).mem_closure hxS fun z hz ↦ hz.2
+  rw [closure_singleton] at hfx hJx
+  exact ⟨⟨hxM, hfx⟩, hJx⟩
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
