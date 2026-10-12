@@ -359,6 +359,55 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, 2.7–2.9 (the final step of the unit-form density argument): if `|g| ≤ 1`, `g = 1`
+on `C ⊆ A`, `g = 0` off `S` with `μ(S) < ∞` and `c + μ(S ∖ C) < μ(C)`, then `c < ∫_A g dμ`.  As
+`g = 1` on `C` and `g = 0` off `S`, `C ⊆ S`, so all measures involved are finite, and `|g| ≤ 1_S`
+makes `g` integrable.  Then `∫_A g = μ(C) + ∫_{A ∖ C} g` and
+`|∫_{A ∖ C} g| = |∫_{(A ∖ C) ∩ S} g| ≤ μ(S ∖ C)`, so `∫_A g ≥ μ(C) − μ(S ∖ C) > c`. -/
+theorem Submission.smr_ufd_integral_lower_bound :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (g : Eucl P → ℝ) (A C S : Set (Eucl P)) (c : ℝ≥0∞), MeasurableSet A → MeasurableSet C → MeasurableSet S → C ⊆ A → μ S < ∞ → Measurable g → (∀ x, |g x| ≤ 1) → (∀ x ∈ C, g x = 1) → (∀ x, x ∉ S → g x = 0) → c + μ (S \ C) < μ C → c < ENNReal.ofReal (∫ x in A, g x ∂μ) := by
+  intro P μ g A C S c hA hC hS hCA hSfin hg hg1 hgC hgS hc
+  -- Step 1 (finiteness): `C ⊆ S`, so `μ C ≤ μ S < ∞`, and `c`, `μ (S \ C)` are finite.
+  have hCS : C ⊆ S := fun x hx => by
+    by_contra hxS
+    have h := hgC x hx
+    rw [hgS x hxS] at h
+    exact zero_ne_one h
+  have hCfin : μ C ≠ ∞ := ((measure_mono hCS).trans_lt hSfin).ne
+  have hsum : c + μ (S \ C) ≠ ∞ := ne_top_of_lt hc
+  have hcfin : c ≠ ∞ := (ENNReal.add_ne_top.1 hsum).1
+  have hSCfin : μ (S \ C) ≠ ∞ := (ENNReal.add_ne_top.1 hsum).2
+  have hreal : c.toReal + μ.real (S \ C) < μ.real C := by
+    rw [measureReal_def, measureReal_def, ← ENNReal.toReal_add hcfin hSCfin]
+    exact (ENNReal.toReal_lt_toReal hsum hCfin).2 hc
+  -- Step 2 (integrability): `|g| ≤ 1_S` and `μ S < ∞`.
+  have hgint : Integrable g μ := by
+    refine ((integrable_indicator_iff hS).2 (integrableOn_const (C := (1 : ℝ)) hSfin.ne)).mono'
+      hg.aestronglyMeasurable (Eventually.of_forall fun x => ?_)
+    by_cases hx : x ∈ S
+    · simpa [hx, Real.norm_eq_abs] using hg1 x
+    · simp [hx, hgS x hx]
+  -- Step 3 (splitting): `∫_A g = ∫_C g + ∫_{A \ C} g = μ(C) + ∫_{A \ C} g`.
+  have hsplit : ∫ x in A, g x ∂μ = μ.real C + ∫ x in A \ C, g x ∂μ := by
+    have hCint : ∫ x in C, g x ∂μ = ∫ _ in C, (1 : ℝ) ∂μ := setIntegral_congr_fun hC hgC
+    rw [← integral_inter_add_sdiff (s := A) hC hgint.integrableOn, inter_eq_right.2 hCA, hCint,
+      setIntegral_const, smul_eq_mul, mul_one]
+  -- Step 4 (remainder): `|∫_{A \ C} g| ≤ μ((A \ C) ∩ S) ≤ μ(S \ C)`.
+  have hsub : (A \ C) ∩ S ⊆ S \ C := fun x hx => ⟨hx.2, hx.1.2⟩
+  have hrem : |∫ x in A \ C, g x ∂μ| ≤ μ.real (S \ C) := by
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (s := (A \ C) ∩ S) (hA.diff hC)
+      inter_subset_left fun x hx => hgS x fun hxS => hx.2 ⟨hx.1, hxS⟩]
+    have h1 : ‖∫ x in (A \ C) ∩ S, g x ∂μ‖ ≤ 1 * μ.real ((A \ C) ∩ S) :=
+      norm_setIntegral_le_of_norm_le_const
+        ((measure_mono hsub).trans_lt (lt_top_iff_ne_top.2 hSCfin))
+        fun x _ => (Real.norm_eq_abs (g x)).trans_le (hg1 x)
+    rw [one_mul, Real.norm_eq_abs] at h1
+    exact h1.trans (measureReal_mono hsub hSCfin)
+  -- Step 5 (conclusion): `∫_A g ≥ μ(C) − μ(S \ C) > c`.
+  rw [ENNReal.lt_ofReal_iff_toReal_lt hcfin, hsplit]
+  have := neg_abs_le (∫ x in A \ C, g x ∂μ)
+  linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
