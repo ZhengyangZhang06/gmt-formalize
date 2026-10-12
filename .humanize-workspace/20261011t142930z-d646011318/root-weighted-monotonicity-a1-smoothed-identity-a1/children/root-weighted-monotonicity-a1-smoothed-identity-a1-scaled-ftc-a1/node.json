@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.smoothed_identity-a1.scaled_ftc-a1",
+  "parent_id": "root.weighted_monotonicity-a1.smoothed_identity-a1",
+  "depth": 3,
+  "title": "Integrating the first-order monotonicity ODE for I(t)/tⁿ",
+  "statement": "Let n ∈ ℕ, let I, I₁, J₁, L: ℝ → ℝ, and let σ, ρ ∈ ℝ with 0 < σ ≤ ρ. Assume that for every τ ∈ [σ, ρ], I is differentiable at τ with derivative I₁(τ), and n·I(τ) − τ·I₁(τ) + τ·J₁(τ) + L(τ) = 0. Assume also that J₁ and L are continuous on [σ, ρ]. Then I(ρ)/ρⁿ − I(σ)/σⁿ = ∫_{(σ,ρ]} J₁(τ)/τⁿ dτ + ∫_{(σ,ρ]} L(τ)/τⁿ⁺¹ dτ, where ∫_{(σ,ρ]} is the Lebesgue integral over Ioc σ ρ.",
+  "lean_statement": "∀ (n : ℕ) (I I₁ J₁ L : ℝ → ℝ) (σ ρ : ℝ), 0 < σ → σ ≤ ρ → (∀ τ ∈ Icc σ ρ, HasDerivAt I (I₁ τ) τ) → (∀ τ ∈ Icc σ ρ, (n : ℝ) * I τ - τ * I₁ τ + τ * J₁ τ + L τ = 0) → ContinuousOn J₁ (Icc σ ρ) → ContinuousOn L (Icc σ ρ) → I ρ / ρ ^ n - I σ / σ ^ n = (∫ τ in Ioc σ ρ, J₁ τ / τ ^ n) + ∫ τ in Ioc σ ρ, L τ / τ ^ (n + 1)",
+  "lean_name": "wm_smoothed_scaled_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-smoothed-identity-a1-scaled-ftc-a1-a1"
+}
