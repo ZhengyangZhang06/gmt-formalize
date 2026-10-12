@@ -622,6 +622,132 @@ theorem Submission.variation_gram_det_identity : ∀ (N N' : ℕ) (T : Submodule
   rw [ContinuousLinearMap.det, ContinuousLinearMap.det, hblock, LinearMap.det_conj,
     LinearMap.det_prodMap, LinearMap.det_id, mul_one]
 
+/-- **Derivatives of the Jacobian of a linear family on a subspace** (Simon Ch. 2, §5,
+pp. 62–63: the expansion of `J_t = √det(b_ij)` behind the variation formulas 5.3–5.4). Let
+`T ⊆ ℝᴺ` be a subspace with orthogonal projection `P` and orthonormal basis `b`, let `A(0) = I`
+and `j(t) = √det(I - P + P A(t)* A(t) P)`. (1) If `A'(0) = A₁`, then `j'(0) = ∑ᵢ ⟨bᵢ, A₁ bᵢ⟩`.
+(2) If moreover `A` is differentiable near `0` and `(deriv A)'(0) = A₂`, then `deriv j` has
+derivative `∑ᵢ ⟨bᵢ, A₂ bᵢ⟩ + (∑ᵢ ⟨bᵢ, A₁ bᵢ⟩)² + ∑ᵢ ‖(A₁ bᵢ)^⊥‖² - ∑ᵢ ∑ₖ ⟨bᵢ, A₁ bₖ⟩⟨bₖ, A₁ bᵢ⟩`
+at `0`. By the Gram identity, `j = √det G` with `G(t)_{ik} = ⟨A(t) bᵢ, A(t) bₖ⟩` and `G(0) = I`.
+The derivatives of `det G` at `I` (Jacobi's formula to second order) and of `√` at `1` give the
+result; Parseval and Pythagoras in `T` turn `∑ᵢ ‖A₁ bᵢ‖² - ∑ᵢ ∑ₖ ⟨bᵢ, A₁ bₖ⟩²` into the normal
+parts. -/
+theorem Submission.variation_gram_det_derivatives : ∀ (N : ℕ) (T : Submodule ℝ (Rn N)) (ι : Type) [Fintype ι] (b : OrthonormalBasis ι ℝ T) (A : ℝ → Rn N →L[ℝ] Rn N), A 0 = 1 → let j : ℝ → ℝ := fun t ↦ Real.sqrt ((1 - T.starProjection + T.starProjection ∘L ContinuousLinearMap.adjoint (A t) ∘L A t ∘L T.starProjection).det); (∀ A₁ : Rn N →L[ℝ] Rn N, HasDerivAt A A₁ 0 → HasDerivAt j (∑ i, inner ℝ (b i : Rn N) (A₁ (b i : Rn N))) 0) ∧ ∀ A₁ A₂ : Rn N →L[ℝ] Rn N, (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ A t) → HasDerivAt A A₁ 0 → HasDerivAt (deriv A) A₂ 0 → HasDerivAt (deriv j) (∑ i, inner ℝ (b i : Rn N) (A₂ (b i : Rn N)) + (∑ i, inner ℝ (b i : Rn N) (A₁ (b i : Rn N))) ^ 2 + ∑ i, ‖A₁ (b i : Rn N) - T.starProjection (A₁ (b i : Rn N))‖ ^ 2 - ∑ i, ∑ k, inner ℝ (b i : Rn N) (A₁ (b k : Rn N)) * inner ℝ (b k : Rn N) (A₁ (b i : Rn N))) 0 := by
+  intro N T ι _ b A hA0 j
+  classical
+  -- Step 1: the Gram matrix `G(t)_{ik} = ⟨A(t) b_i, A(t) b_k⟩` (Simon's `b_ij`) and `j = √det G`:
+  -- `j(t) = areaJacobian (A(t) ∘ ι_T)` by the Gram identity, and `(L* L).det = normDet L ^ 2`
+  -- is the Gram determinant of `L b_i` for `L = A(t) ∘ ι_T`.
+  let G : ℝ → Matrix ι ι ℝ := fun t ↦
+    Matrix.of fun i k ↦ inner ℝ (A t (b i : Rn N)) (A t (b k : Rn N))
+  have hj : j = fun t ↦ Real.sqrt (G t).det := by
+    funext t
+    dsimp only [j]
+    rw [← Submission.variation_gram_det_identity N N T (A t), areaJacobian,
+      ← ContinuousLinearMap.normDet_sq, LinearMap.normDet_sq_eq_det_gram _ b]
+    rfl
+  -- Step 2: `G(0) = I`, since `A(0) = I` and `b` is orthonormal.
+  have hG0 : G 0 = 1 := by
+    ext i k
+    simp [G, hA0, Matrix.one_apply, ← Submodule.coe_inner, orthonormal_iff_ite.mp b.orthonormal]
+  have hh0 : (G 0).det = 1 := by rw [hG0, Matrix.det_one]
+  -- `s ↦ B(s) v` has derivative `B' v` wherever `B` has derivative `B'`.
+  have happ : ∀ {B : ℝ → Rn N →L[ℝ] Rn N} {B' : Rn N →L[ℝ] Rn N} {t : ℝ} (v : Rn N),
+      HasDerivAt B B' t → HasDerivAt (fun s ↦ B s v) (B' v) t := by
+    intro B B' t v hB
+    simpa using hB.clm_apply (hasDerivAt_const t v)
+  obtain ⟨hdet1, hdet2⟩ := Submission.variation_matrix_det_derivatives_at_one ι G hG0
+  refine ⟨fun A₁ hA₁ ↦ ?_, fun A₁ A₂ hdiff hA₁ hA₂ ↦ ?_⟩
+  · -- Step 3(a): `Ġ(0)_{ik} = ⟨b_i, A₁ b_k⟩ + ⟨A₁ b_i, b_k⟩`.
+    let G₁ : Matrix ι ι ℝ := Matrix.of fun i k ↦
+      inner ℝ (b i : Rn N) (A₁ (b k : Rn N)) + inner ℝ (A₁ (b i : Rn N)) (b k : Rn N)
+    have hG₁ : ∀ i k, HasDerivAt (fun t ↦ G t i k) (G₁ i k) 0 := by
+      intro i k
+      have h := (happ (b i : Rn N) hA₁).inner ℝ (happ (b k : Rn N) hA₁)
+      rw [hA0, one_apply_eq_self, one_apply_eq_self] at h
+      exact h
+    -- Step 5: `h'(0) = tr Ġ(0) = 2 D` and `j'(0) = h'(0) / 2 = D`.
+    have h := (Submission.variation_sqrt_derivatives_at_one (fun t ↦ (G t).det) _ hh0
+      (hdet1 G₁ hG₁)).1
+    rw [hj]
+    convert h using 1
+    simp only [G₁, Matrix.trace, Matrix.diag_apply, Matrix.of_apply, real_inner_comm (b _ : Rn N)
+      (A₁ _), ← two_mul, ← Finset.mul_sum]
+    ring
+  · -- Step 3(b): near `0`, `Ġ(t)_{ik} = ⟨A(t) b_i, A'(t) b_k⟩ + ⟨A'(t) b_i, A(t) b_k⟩`.
+    have hd0 : deriv A 0 = A₁ := hA₁.deriv
+    let G' : ℝ → Matrix ι ι ℝ := fun t ↦ Matrix.of fun i k ↦
+      inner ℝ (A t (b i : Rn N)) (deriv A t (b k : Rn N)) +
+        inner ℝ (deriv A t (b i : Rn N)) (A t (b k : Rn N))
+    have hG' : ∀ᶠ t in 𝓝 0, ∀ i k, HasDerivAt (fun s ↦ G s i k) (G' t i k) t := by
+      filter_upwards [hdiff] with t ht i k
+      exact (happ (b i : Rn N) ht.hasDerivAt).inner ℝ (happ (b k : Rn N) ht.hasDerivAt)
+    -- `G̈(0)_{ik} = ⟨b_i, A₂ b_k⟩ + 2 ⟨A₁ b_i, A₁ b_k⟩ + ⟨A₂ b_i, b_k⟩`.
+    let G₂ : Matrix ι ι ℝ := Matrix.of fun i k ↦
+      (inner ℝ (b i : Rn N) (A₂ (b k : Rn N)) + inner ℝ (A₁ (b i : Rn N)) (A₁ (b k : Rn N))) +
+        (inner ℝ (A₁ (b i : Rn N)) (A₁ (b k : Rn N)) + inner ℝ (A₂ (b i : Rn N)) (b k : Rn N))
+    have hG₂ : ∀ i k, HasDerivAt (fun t ↦ G' t i k) (G₂ i k) 0 := by
+      intro i k
+      have h := ((happ (b i : Rn N) hA₁).inner ℝ (happ (b k : Rn N) hA₂)).add
+        ((happ (b i : Rn N) hA₂).inner ℝ (happ (b k : Rn N) hA₁))
+      rw [hA0, hd0, one_apply_eq_self, one_apply_eq_self] at h
+      exact h
+    -- Step 6: `h = det G` is differentiable near `0` and `h''(0) = tr G̈ + (tr Ġ)² - tr (Ġ²)`.
+    obtain ⟨hhdiff, hh2⟩ := hdet2 G' G₂ hG' hG₂
+    -- Step 7: `deriv j` has derivative `h''(0) / 2 - h'(0)² / 4` at `0`.
+    have h := (Submission.variation_sqrt_derivatives_at_one (fun t ↦ (G t).det) _ hh0
+      (hdet1 (G' 0) hG'.self_of_nhds)).2 _ hhdiff hh2
+    rw [hj]
+    convert h using 1
+    -- Step 8: evaluate the traces at `G(0) = I`, with `a_{ik} = ⟨b_i, A₁ b_k⟩`.
+    have hG'0 : ∀ i k, G' 0 i k = inner ℝ (b i : Rn N) (A₁ (b k : Rn N)) +
+        inner ℝ (b k : Rn N) (A₁ (b i : Rn N)) := by
+      intro i k
+      simp only [G', Matrix.of_apply, hA0, hd0, one_apply_eq_self, real_inner_comm (b k : Rn N)]
+    have htr1 : (G' 0).trace = 2 * ∑ i, inner ℝ (b i : Rn N) (A₁ (b i : Rn N)) := by
+      simp only [Matrix.trace, Matrix.diag_apply, hG'0, ← two_mul, ← Finset.mul_sum]
+    have htr2 : G₂.trace = 2 * ∑ i, inner ℝ (b i : Rn N) (A₂ (b i : Rn N)) +
+        2 * ∑ i, ‖A₁ (b i : Rn N)‖ ^ 2 := by
+      simp only [G₂, Matrix.trace, Matrix.diag_apply, Matrix.of_apply, real_inner_self_eq_norm_sq,
+        real_inner_comm (b _ : Rn N) (A₂ _), Finset.mul_sum, ← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      ring
+    have hsq : ∀ a : ι → ι → ℝ, ∑ i, ∑ k, (a i k + a k i) * (a k i + a i k) =
+        2 * ∑ i, ∑ k, a i k ^ 2 + 2 * ∑ i, ∑ k, a i k * a k i := by
+      intro a
+      have hc : ∑ i, ∑ k, a k i ^ 2 = ∑ i, ∑ k, a i k ^ 2 := Finset.sum_comm
+      calc ∑ i, ∑ k, (a i k + a k i) * (a k i + a i k)
+          = ∑ i, ∑ k, a i k ^ 2 + ∑ i, ∑ k, a k i ^ 2 + 2 * ∑ i, ∑ k, a i k * a k i := by
+            simp only [Finset.mul_sum, ← Finset.sum_add_distrib]
+            refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun k _ ↦ ?_
+            ring
+        _ = 2 * ∑ i, ∑ k, a i k ^ 2 + 2 * ∑ i, ∑ k, a i k * a k i := by rw [hc]; ring
+    have htr3 : (G' 0 * G' 0).trace =
+        2 * ∑ i, ∑ k, inner ℝ (b i : Rn N) (A₁ (b k : Rn N)) ^ 2 +
+          2 * ∑ i, ∑ k, inner ℝ (b i : Rn N) (A₁ (b k : Rn N)) *
+            inner ℝ (b k : Rn N) (A₁ (b i : Rn N)) := by
+      simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply, hG'0]
+      exact hsq fun i k ↦ inner ℝ (b i : Rn N) (A₁ (b k : Rn N))
+    -- Step 9: Parseval in `T` and Pythagoras give `‖v - P v‖² = ‖v‖² - ∑_k ⟨b_k, v⟩²`.
+    have hnormal : ∀ v : Rn N,
+        ‖v - T.starProjection v‖ ^ 2 = ‖v‖ ^ 2 - ∑ k, inner ℝ (b k : Rn N) v ^ 2 := by
+      intro v
+      have hpars : ∑ k, inner ℝ (b k : Rn N) v ^ 2 = ‖T.starProjection v‖ ^ 2 := by
+        rw [Submodule.starProjection_apply, Submodule.norm_coe, ← b.sum_sq_inner_right]
+        simp only [Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+      have horth : inner ℝ (v - T.starProjection v) (T.starProjection v) = 0 :=
+        Submodule.starProjection_inner_eq_zero v _ (T.starProjection_apply_mem v)
+      have hpyth := norm_add_sq_real (v - T.starProjection v) (T.starProjection v)
+      rw [sub_add_cancel, horth] at hpyth
+      rw [hpars]
+      linarith
+    have hnsum : ∑ i, ‖A₁ (b i : Rn N) - T.starProjection (A₁ (b i : Rn N))‖ ^ 2 =
+        ∑ i, ‖A₁ (b i : Rn N)‖ ^ 2 - ∑ i, ∑ k, inner ℝ (b i : Rn N) (A₁ (b k : Rn N)) ^ 2 := by
+      simp only [hnormal, Finset.sum_sub_distrib]
+      rw [Finset.sum_comm (f := fun i k ↦ inner ℝ (b k : Rn N) (A₁ (b i : Rn N)) ^ 2)]
+    rw [htr1, htr2, htr3, hnsum]
+    ring
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
