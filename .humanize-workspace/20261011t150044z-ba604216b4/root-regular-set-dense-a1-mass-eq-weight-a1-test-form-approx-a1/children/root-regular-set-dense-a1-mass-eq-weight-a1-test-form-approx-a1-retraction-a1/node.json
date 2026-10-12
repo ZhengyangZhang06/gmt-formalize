@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.retraction-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+  "depth": 4,
+  "title": "A continuous radial retraction onto the unit ball of the Euclidean covector norm",
+  "statement": "Let P, n ∈ ℕ, let F := Covector (Euclid P) n, and let N := covectorEuclideanNorm. Then there is a continuous map ρ : F → F with ρ(0) = 0, N(ρ(a)) ≤ 1 for every a ∈ F, and N(ρ(a) − b) ≤ 2·N(a − b) for all a, b ∈ F with N(b) ≤ 1.",
+  "lean_statement": "∀ (P n : ℕ), ∃ ρ : Covector (Euclid P) n → Covector (Euclid P) n, Continuous ρ ∧ ρ 0 = 0 ∧ (∀ a, covectorEuclideanNorm (ρ a) ≤ 1) ∧ ∀ a b, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm (ρ a - b) ≤ 2 * covectorEuclideanNorm (a - b)",
+  "lean_name": "rsd_mw_tfa_retraction",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-retraction-a1-a1"
+}
