@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'simon_theorem_3_6|dimensionalDensityQuotient|dimensionalUpperDensity|measure_toOuterMeasure_isBorelRegular|isCaratheodoryMeasurable_restrict|simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure|realUnitBallVolume_pos' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01 -g Basic.lean -g Densities.lean -g DensityComparison.lean -g Hausdorff.lean",
+        "rg -n 'hausdorff_carrier_diff_support_null|upperDensity_ne_zero_outside_hausdorff_null|hausdorff_support_diff_carrier_null' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project -g '*.lean'",
+        "rg -n 'hausdorff_carrier_diff_support_null|upperDensity_ne_zero_outside_hausdorff_null|hausdorff_support_diff_carrier_null' GMT .lake/packages/simongmt/Poincare -g '*.lean'",
+        "sed -n '240,435p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "sed -n '690,728p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/carrier-support-independent-audit-pf3m8ffw/TypesOnly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/carrier-support-independent-audit-pf3m8ffw/ProofAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Bases.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-carrier-support-null-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/csn-a1-check/proofs.lean",
+        "/tmp/carrier-support-independent-audit-pf3m8ffw/TypesOnly.lean",
+        "/tmp/carrier-support-independent-audit-pf3m8ffw/ProofAudit.lean"
+      ],
+      "conclusion": "The handoff matches the selected frozen parent. Snapshot project ea5607598f3133b40a13241f2e51517a8c6423cd pins Mathlib 25730c7c759d108ef87ab70af2342a196760f79d and SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197; installed revisions match, and inspected contract/Mathlib files match the snapshot byte-for-byte. SimonGMT supplies the required upper-density theorem and normalization bridge, including dimension zero. No proposed declaration name occurs in the searched project/library sources or is reserved in the DAG. Independently generated TypesOnly.lean elaborates all three exact propositions before any child implementation and verifies the Borel, second-countability, right-neighborhood and ENNReal constructions. ProofAudit.lean successfully recompiles the supplied proofs and exact-type applications; all children, the selected parent and Simon's theorem use only propext, Classical.choice and Quot.sound. The split is appropriate: two distinct null-set directions plus their analytic normalization tool. Its sole child dependency is support_diff_carrier_null on upper_density_null; the graph is acyclic. The two directional conclusions prove precisely the selected parent using symmDiff_def and measure_union_null."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "carrier_diff_support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree, with the contract hypotheses and arbitrary U preserved. The proof correctly reduces to the complement of the weight support, uses second countability to obtain zero weight, transfers the zero integral through measurable restriction, and uses a.e.-measurability and positive multiplicity to obtain Hausdorff nullity. No density assumption or circular dependency is introduced. The bare declaration name is unreserved."
+    },
+    {
+      "key": "upper_density_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses the stated exceptional-set conclusion for a finite null-measurable A and arbitrary Borel measure. Every proof step is justified: Borel regularity of the induced outer measure, Caratheodory measurability of A, eventual equality of ENNReal quotients, Simon 3.6, and transfer through the nonzero Hausdorff normalization factor. No local finiteness or positive-dimension hypothesis is missing. The additional import is permitted, the proof is complete and independent, and the bare name is unreserved."
+    },
+    {
+      "key": "support_diff_carrier_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact proposition retain the positive finite density hypothesis on all of V.support. The proof establishes concentration on the carrier and its weight-null-measurability, obtains finite-mass radii from ENNReal convergence, takes a countable open-ball cover, and meets both hypotheses of upper_density_null. Local equality of ball masses then makes each relevant limsup strictly positive, placing the difference inside countably many null exceptional sets. The declared dependency is sufficient and correctly directed; no parent theorem is used. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

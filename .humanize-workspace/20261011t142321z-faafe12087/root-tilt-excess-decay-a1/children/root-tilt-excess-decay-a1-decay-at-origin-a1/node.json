@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Tilt-excess decay at the origin at the natural scale delta rho",
+  "statement": "Assume the contract Props TiltExcessHeightEstimate (Simon 2.1), AffineApproximationLemma (2.5), LipschitzApproximationLemma (2.6) and HarmonicApproximationLemma (3.1). For n >= 1, l and p > n there is C > 0 such that for every t in (0, 1/128] there is delta_1 > 0 with the property: if U is open, V has generalized mean curvature H and AllardHypotheses H p delta rho hold with 0 < delta <= delta_1, then for every n-dimensional subspace T there is an n-dimensional subspace S with E(0, t delta rho, S) <= C t^2 E_*(0, delta rho, T), where E = tiltExcess and E_* = tiltExcessStar with this delta.",
+  "lean_statement": "TiltExcessHeightEstimate → AffineApproximationLemma → LipschitzApproximationLemma → HarmonicApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C : ℝ, 0 < C ∧ ∀ t : ℝ, 0 < t → t ≤ 1 / 128 → ∃ δ₁ : ℝ, 0 < δ₁ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ∃ S : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S = n ∧ V.tiltExcess 0 (t * (δ * ρ)) S ≤ C * t ^ 2 * V.tiltExcessStar H p δ 0 (δ * ρ) T",
+  "lean_name": "ted_decay_at_origin",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.allard_density_bounds-a1",
+    "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+    "root.tilt_excess_decay-a1.harmonic_affine_approx-a1",
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+    "root.tilt_excess_decay-a1.lemma_a_tilt_height-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.allard_density_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.harmonic_affine_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.lemma_a_tilt_height-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-a1"
+}
