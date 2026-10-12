@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6aa59394e70cd97f050134ff75dcb86532d7cd9803f643d1046f7bccdddc7cd",
+  "git_delta": {
+    "base_commit": "ef546a5763ebe1c4433ebd7fd07bcc106b405015",
+    "candidate_commit": "faacb9cb5caf6ce728ef10ab3b0f5bdd7a47b04d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsdic_imrep_action_int_combination",
+    "diff_sha256": "40452350e1b0c135556e1f00753a710c1d253e14738d95bba5b9d0d277b9debf",
+    "source_sha256": "8b362252194d93884807d6c71f4e7981781ac82c427f2e1fec859549b1fbb296",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsdic_imrep_action_int_combination",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (p₁ p₂ : ℤ), (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → ∀ ω : TestFormOn U n, R.action (ω : DifferentialForm (Euclid P) n) = (p₁ : ℝ) * R₁.action (ω : DifferentialForm (Euclid P) n) + (p₂ : ℝ) * R₂.action (ω : DifferentialForm (Euclid P) n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
