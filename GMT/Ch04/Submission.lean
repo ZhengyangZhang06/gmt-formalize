@@ -1133,6 +1133,104 @@ theorem Submission.bounded_curvature_ball_average_estimate : (∀ (n ℓ : ℕ) 
     _ ≤ (f r + (n : ℝ)⁻¹ * Kg) * Real.exp (Λ * (r - s)) := by gcongr
     _ = Real.exp (Λ * (r - s)) * (f r + (n : ℝ)⁻¹ * Kg) := mul_comm _ _
 
+/-- **Mean value inequality at a point of density `≥ 1`** (Simon Ch. 4, the display after 5.5:
+`σ ↓ 0` in 5.4). If `|H| ≤ Λ`, `g ∈ C¹(U)` is non-negative, `B_r(ζ) ⊆ U` and
+`Θⁿ(μ_V, ζ) = θ₀ ≥ 1`, then
+`ωₙ g(ζ) ≤ e^{Λr} (r⁻ⁿ ∫_{B_r(ζ)} g dμ_V + n⁻¹ ∫_{B_r(ζ)} |∇^M g| |x - ζ|^{1-n} dμ_V)`.
+The ball-average estimate 5.4 bounds `s⁻ⁿ ∫_{B_s(ζ)} g dμ_V` by `e^{Λ(r-s)}` times the bracket
+for `0 < s ≤ r`, and as `s ↓ 0` the left side tends to `ωₙ θ₀ g(ζ)` because `g` is continuous
+at `ζ` and the density quotient `μ_V(B_s(ζ)) / (ωₙ sⁿ)` tends to `θ₀`. -/
+theorem Submission.density_point_mean_value_estimate : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (Λ : ℝ) (g : Ambient n ℓ → ℝ) (ζ : Ambient n ℓ) (r θ₀ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → 0 ≤ Λ → (∀ᵐ x ∂V.weight, x ∈ U → ‖H x‖ ≤ Λ) → ContDiffOn ℝ 1 g U → (∀ x ∈ U, 0 ≤ g x) → 0 < r → closedBall ζ r ⊆ U → V.HasDensityAt ζ θ₀ → 1 ≤ θ₀ → IntegrableOn (fun x ↦ ‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ))) (closedBall ζ r) V.weight → omega n * g ζ ≤ Real.exp (Λ * r) * ((∫ x in closedBall ζ r, g x ∂V.weight) / r ^ n + (n : ℝ)⁻¹ * ∫ x in closedBall ζ r, ‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ)) ∂V.weight) := by
+  intro hWMI n ℓ V U H Λ g ζ r θ₀ hn hFV1 hFV2 hFV3 hU hH hΛ hHΛ hg hg0 hr hball hdens hθ hint
+  set μ := V.weight
+  -- the bracket `Q` on the right-hand side
+  set Q := (∫ x in closedBall ζ r, g x ∂μ) / r ^ n + (n : ℝ)⁻¹ *
+    ∫ x in closedBall ζ r, ‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ)) ∂μ
+  -- 1. `ζ ∈ U` and `ωₙ > 0`
+  have hζU : ζ ∈ U := hball (mem_closedBall_self hr.le)
+  have hω : 0 < omega n := by
+    unfold omega
+    exact ENNReal.toReal_pos (Metric.measure_ball_pos _ _ one_pos).ne' measure_ball_lt_top.ne
+  -- 2. the ball-average estimate 5.4 at `y = ζ`: `F(s) ≤ e^{Λ(r-s)} Q` for `0 < s ≤ r`
+  have hF : ∀ s : ℝ, 0 < s → s ≤ r →
+      (∫ x in closedBall ζ s, g x ∂μ) / s ^ n ≤ Real.exp (Λ * (r - s)) * Q := fun s hs hsr =>
+    Submission.bounded_curvature_ball_average_estimate hWMI n ℓ V U H Λ g ζ r s hn hFV1 hFV2 hFV3
+      hU hH hΛ hHΛ hg hg0 hball hs hsr hint
+  -- 3. `F(s) = g(ζ) ωₙ D(s) + E(s)`, where the density quotient `D(s)` tends to `θ₀`
+  set D : ℝ → ℝ := fun s => μ.real (closedBall ζ s) / (omega n * s ^ n) with hD
+  have hDlim : Tendsto D (𝓝[>] 0) (𝓝 θ₀) := hdens
+  have hgcont : ContinuousAt g ζ := hg.continuousOn.continuousAt (hU.mem_nhds hζU)
+  set E : ℝ → ℝ := fun s => (∫ x in closedBall ζ s, (g x - g ζ) ∂μ) / s ^ n with hE
+  -- 4. `E(s) → 0`: on small balls `|g - g(ζ)| < η / (2K)` with `K = ωₙ(θ₀ + 1)`, and
+  -- eventually `D(s) < θ₀ + 1`
+  have hElim : Tendsto E (𝓝[>] 0) (𝓝 0) := by
+    rw [Metric.tendsto_nhds]
+    intro η hη
+    set K := omega n * (θ₀ + 1) with hK
+    have hKpos : 0 < K := by
+      have : (0:ℝ) < θ₀ + 1 := by linarith
+      positivity
+    obtain ⟨δ, hδ, hδg⟩ := Metric.continuousAt_iff.1 hgcont (η / (2 * K)) (by positivity)
+    have hD1 : ∀ᶠ s in 𝓝[>] (0:ℝ), D s < θ₀ + 1 := hDlim (Iio_mem_nhds (by linarith))
+    have hsmall : ∀ᶠ s in 𝓝[>] (0:ℝ), s ∈ Ioo 0 (min δ r) :=
+      Ioo_mem_nhdsGT (lt_min hδ hr)
+    filter_upwards [hD1, hsmall] with s hDs hs
+    have hs0 : 0 < s := hs.1
+    have hsδ : s < δ := hs.2.trans_le (min_le_left _ _)
+    have hsn : 0 < s ^ n := pow_pos hs0 n
+    have hfin : μ (closedBall ζ s) < ⊤ := (isCompact_closedBall ζ s).measure_lt_top
+    have hbound :
+        ‖∫ x in closedBall ζ s, (g x - g ζ) ∂μ‖ ≤ η / (2 * K) * μ.real (closedBall ζ s) := by
+      have := norm_setIntegral_le_of_norm_le_const hfin (C := η / (2 * K)) (f := fun x => g x - g ζ)
+        (fun x hx => by
+          have hxζ : dist x ζ < δ := lt_of_le_of_lt (mem_closedBall.1 hx) hsδ
+          exact (le_of_lt (by simpa [Real.dist_eq] using hδg hxζ)))
+      linarith [this]
+    have hμs : μ.real (closedBall ζ s) = D s * (omega n * s ^ n) := by
+      rw [hD]; field_simp
+    rw [dist_zero_right, hE]
+    simp only
+    rw [norm_div, Real.norm_of_nonneg hsn.le, div_lt_iff₀ hsn]
+    calc ‖∫ x in closedBall ζ s, (g x - g ζ) ∂μ‖
+        ≤ η / (2 * K) * μ.real (closedBall ζ s) := hbound
+      _ = η / (2 * K) * (D s * (omega n * s ^ n)) := by rw [hμs]
+      _ ≤ η / (2 * K) * ((θ₀ + 1) * (omega n * s ^ n)) := by gcongr
+      _ = η / 2 * s ^ n := by rw [hK]; field_simp
+      _ < η * s ^ n := by nlinarith
+  -- 5. hence `F(s) → g(ζ) ωₙ θ₀` and `e^{Λ(r-s)} Q → e^{Λr} Q` as `s ↓ 0`; step 2 passes to the
+  -- limit
+  have hFlim : Tendsto (fun s => (∫ x in closedBall ζ s, g x ∂μ) / s ^ n) (𝓝[>] 0)
+      (𝓝 (g ζ * (omega n * θ₀) + 0)) := by
+    have h1 : Tendsto (fun s => g ζ * (omega n * D s) + E s) (𝓝[>] 0)
+        (𝓝 (g ζ * (omega n * θ₀) + 0)) :=
+      ((hDlim.const_mul (omega n)).const_mul (g ζ)).add hElim
+    refine h1.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hr] with s hs
+    have hsn : 0 < s ^ n := pow_pos hs.1 n
+    have hsub : closedBall ζ s ⊆ U := (closedBall_subset_closedBall hs.2.le).trans hball
+    have hgint : IntegrableOn g (closedBall ζ s) μ :=
+      (hg.continuousOn.mono hsub).integrableOn_compact (isCompact_closedBall ζ s)
+    have hfin : μ (closedBall ζ s) ≠ ⊤ := (isCompact_closedBall ζ s).measure_lt_top.ne
+    simp only [hD, hE]
+    rw [integral_sub hgint (integrableOn_const hfin), setIntegral_const, smul_eq_mul]
+    field_simp
+    ring
+  have hQlim : Tendsto (fun s => Real.exp (Λ * (r - s)) * Q) (𝓝[>] 0)
+      (𝓝 (Real.exp (Λ * r) * Q)) := by
+    have : Continuous fun s : ℝ => Real.exp (Λ * (r - s)) * Q := by fun_prop
+    have h := this.tendsto 0
+    simp only [sub_zero] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  have hle : g ζ * (omega n * θ₀) + 0 ≤ Real.exp (Λ * r) * Q := by
+    refine le_of_tendsto_of_tendsto hFlim hQlim ?_
+    filter_upwards [Ioo_mem_nhdsGT hr] with s hs
+    exact hF s hs.1 hs.2.le
+  -- 6. `g(ζ) ≥ 0` and `θ₀ ≥ 1` give `ωₙ g(ζ) ≤ ωₙ θ₀ g(ζ)`
+  have hgζ : 0 ≤ g ζ := hg0 ζ hζU
+  calc omega n * g ζ ≤ g ζ * (omega n * θ₀) + 0 := by
+        nlinarith [mul_nonneg (mul_nonneg hω.le hgζ) (sub_nonneg.2 hθ)]
+    _ ≤ _ := hle
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
