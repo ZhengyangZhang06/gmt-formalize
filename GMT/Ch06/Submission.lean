@@ -1366,6 +1366,77 @@ theorem Submission.slicing_mb_cutoff_defect_bound :
   exact le_of_tendsto_of_tendsto' ((ENNReal.continuous_ofReal.tendsto _).comp (hL₂.sub hL₁).abs)
     hR key
 
+/-- Simon Ch. 6, 4.9 (p. 158) for the slice `S = ⟨T, f, t₋⟩` of 4.6, `T` represented by `(μ, v)`:
+for open `W ⊆ U` with `|Df| ≤ L_W` a.e. on `W`,
+`M_W(S) ≤ L_W · liminf_{h ↓ 0} μ(W ∩ {t - h ≤ f ≤ t}) / h`.  For admissible `ω` and the
+cut-offs `χ_h` of `slicing_mb_cutoff` (slope at most `(1 + ε)/h`), the defect
+`X(h) = ∫ χ_h(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ_h(f) ⟨dω, v₁⟩ dμ₁` of 4.11 tends to `B(ω) - ∂A(ω) = -S(ω)`
+as `h ↓ 0` and satisfies `|X(h)| ≤ (1 + ε)/h · L_W · μ(W ∩ {t - h ≤ f ≤ t})`; let `h ↓ 0`,
+then `ε ↓ 0`. -/
+theorem Submission.slicing_mb_pointwise : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U →
+    ∀ (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+    (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) →
+    (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+    ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+    ∀ (t : ℝ) (S : GeometricCurrentOn U m), IsSlice T f t S →
+    ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ LW : ℝ≥0,
+    (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+    S.massOn W ≤ (LW : ℝ≥0∞) *
+      liminf (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) := by
+  intro P m U hU T μ v hT hμ hv f L hf t S hS W hW hWU LW hLW
+  -- `S = ∂A - B`, `A = T ⌞ {f < t}` (represented by `μ₁, v₁`), `B = (∂T) ⌞ {f < t}` (`μ₂, v₂`).
+  obtain ⟨A, B, ⟨-, μ₁, v₁, hT₁, hA⟩, ⟨-, μ₂, v₂, hT₂, hB⟩, hSAB⟩ := hS
+  -- It suffices to bound `S ω` for every `ω` admissible for `M_W`.
+  refine sSup_le ?_
+  rintro _ ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+  have hSω : S ω = (∫ x in {x | x ∈ U ∧ f x < t},
+        v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁) -
+      ∫ x in {x | x ∈ U ∧ f x < t}, v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ := by
+    have := hSAB ω
+    rw [GeometricCurrentOn.boundary_apply, hA, hB] at this
+    exact this
+  -- The integrands `⟨ω, v₂⟩` and `⟨dω, v₁⟩` are integrable and vanish off `U`.
+  have hint₂ : Integrable (fun x => v₂ x ((ω : DifferentialForm (Eucl P) m) x)) μ₂ := (hT₂ ω).1
+  have hint₁ : Integrable
+      (fun x => v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x)) μ₁ :=
+    (hT₁ (exteriorDerivativeTestOn U m ω)).1
+  have hvan₂ : ∀ x, x ∉ U → v₂ x ((ω : DifferentialForm (Eucl P) m) x) = 0 := fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport fun hx' => hx (ω.property.2 hx'), map_zero]
+  have hvan₁ : ∀ x, x ∉ U → v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) = 0 :=
+    fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport fun hx' =>
+        hx (ω.property.2 (tsupport_exteriorDerivative_subset _ hx')), map_zero]
+  calc ENNReal.ofReal (S ω) ≤ ENNReal.ofReal |S ω| := ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ = ENNReal.ofReal |(∫ x in {x | x ∈ U ∧ f x < t},
+          v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂) -
+        ∫ x in {x | x ∈ U ∧ f x < t},
+          v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| := by
+      rw [hSω, abs_sub_comm]
+    _ ≤ _ := by
+      refine Submission.slicing_mb_pointwise_liminf_bound
+        (fun h => μ (W ∩ f ⁻¹' Icc (t - h) t)) LW _ fun ε hε => ?_
+      -- The cut-offs `χ_h`, `h > 0`, of slope at most `(1 + ε)/h`.
+      choose! χ hχs hχ01 hχ1 hχ0 hχd hχd0 using
+        fun h (hh : 0 < h) => Submission.slicing_mb_cutoff t h ε hh hε
+      have hχm : ∀ h : ℝ, 0 < h → Measurable (χ h) := fun h hh =>
+        (hχs h hh).continuous.measurable
+      have hχabs : ∀ h s : ℝ, 0 < h → |χ h s| ≤ 1 := fun h s hh =>
+        abs_le.2 ⟨by linarith [(hχ01 h hh s).1], (hχ01 h hh s).2⟩
+      refine ⟨fun h => (∫ x, χ h (f x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂) -
+          ∫ x, χ h (f x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁,
+        ?_, fun h hh => ?_⟩
+      · -- `X(h) → B(ω) - ∂A(ω)` as `h ↓ 0`.
+        exact (Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf μ₂ _ hint₂ hvan₂ t χ
+          hχm hχabs (fun h s hh => hχ1 h hh s) (fun h s hh => hχ0 h hh s)).sub
+          (Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf μ₁ _ hint₁ hvan₁ t χ
+            hχm hχabs (fun h s hh => hχ1 h hh s) (fun h s hh => hχ0 h hh s))
+      · -- `|X(h)| ≤ (1 + ε)/h · L_W · μ(spt ω ∩ {t - h ≤ f ≤ t})`, and `spt ω ⊆ W`.
+        refine (Submission.slicing_mb_cutoff_defect_bound P m U T μ v hT hμ hv μ₁ v₁ hT₁ μ₂ v₂
+          hT₂ f L hf W hW hWU LW hLW ω hωW hω1 (χ h) t h ((1 + ε) / h) (hχs h hh)
+          (fun s => hχabs h s hh) (hχd h hh) (hχd0 h hh)).trans ?_
+        gcongr
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
