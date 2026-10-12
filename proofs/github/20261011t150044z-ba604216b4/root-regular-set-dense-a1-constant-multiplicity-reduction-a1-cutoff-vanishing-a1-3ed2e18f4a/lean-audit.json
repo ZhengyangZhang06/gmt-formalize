@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e49a5c86418dd05499472e0537a8d1667349b51065b5430a0bfc9993d00441e8",
+  "git_delta": {
+    "base_commit": "d3ea2e1c191b161a95169c907a576bb52a804fed",
+    "candidate_commit": "e2146094dd3ff21ab6d50c9b6d07020f96023b21",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_eq_zero_of_vanish_off_compact",
+    "diff_sha256": "73b40e050e219c57bdbd32ddfd9143b0dcd27bb8d985a0eddc2fdfd17bf4251c",
+    "source_sha256": "cc6431281fd6ef524b37dd0e74c4bfc789409324d752a2e8a76a7d724a4d068d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_eq_zero_of_vanish_off_compact",
+      "statement": "∀ (P m : ℕ) (U B K : Set (Euclid P)) (hBU : B ⊆ U) (F : GeometricCurrentOn U m), IsOpen B → IsCompact K → K ⊆ B → (∀ ω : TestFormOn U m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → F ω = 0) → (∀ ψ : TestFormOn B m, F (testFormOnInclusion hBU m ψ) = 0) → ∀ ω : TestFormOn U m, F ω = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
