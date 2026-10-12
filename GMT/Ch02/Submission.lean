@@ -12,6 +12,7 @@ import Mathlib.Topology.Algebra.Module.Determinant
 import Poincare.SimonGMT.Chapter01.Hausdorff
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter02.Submanifold
+import Poincare.SimonGMT.Chapter02.SubmanifoldTopology
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 2: Some further preliminaries from analysis (pp. 39–68)
@@ -451,6 +452,58 @@ theorem Submission.sff_immersion_local_left_inverse : ∀ (n N : ℕ) (ψ : Rn n
     exact hh.to_localInverse.differentiableAt.comp (ψ x₀) L.differentiableAt
   · -- Step 5: `g(ψ(x)) = k(h(x)) = x` near `x₀`.
     exact hh.eventually_left_inverse
+
+/-- **Local differentiable extension of the tangent projection.** Let `ψ` be a `C²` Simon local
+representation `V → W` of `M` with `T_{ψ x} M = range Dψ(x)` for `x ∈ V`, and let `x₀ ∈ V`. Write
+`Π(B) = (range B).starProjection`. There is `Q` differentiable at `ψ x₀` with `P_z = Q(z)` for
+`z ∈ M` near `ψ x₀` and `Q(ψ x) = Π(Dψ x)` for `x` near `x₀`. Take a left inverse `g` of `ψ` near
+`x₀` that is differentiable at `ψ x₀` (`Submission.sff_immersion_local_left_inverse`) and
+`Q = Π ∘ Dψ ∘ g`. `Q` is differentiable at `ψ x₀` by the chain rule
+(`Submission.sff_range_starProjection_differentiableAt`, `ContDiffAt.fderiv_right`). By Simon 4.2
+(`IsSimonLocalRepresentation.exists_open_image_eq_inter`), the points of `M` near `ψ x₀` are the
+`ψ x` with `g (ψ x) = x`, where `Q (ψ x) = Π(Dψ x) = P_{ψ x}`. -/
+theorem Submission.sff_tangentProjection_local_extension : ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ∀ x₀ ∈ V, ∃ Q : Rn N → (Rn N →L[ℝ] Rn N), DifferentiableAt ℝ Q (ψ x₀) ∧ tangentProjection M =ᶠ[𝓝[M] ψ x₀] Q ∧ ∀ᶠ x in 𝓝 x₀, Q (ψ x) = (LinearMap.range (fderiv ℝ ψ x).toLinearMap).starProjection := by
+  intro n N M V W ψ hrep hT x₀ hx₀
+  -- Step 1: `ψ` is `C²` at `x₀`, so `ψ` is `C¹` there and `Dψ` is differentiable at `x₀`.
+  have h2 : ContDiffAt ℝ 2 ψ x₀ := hrep.contDiffOn.contDiffAt (hrep.isOpen_source.mem_nhds hx₀)
+  have h1 : ContDiffAt ℝ 1 ψ x₀ := h2.of_le (by norm_num)
+  have hA : DifferentiableAt ℝ (fderiv ℝ ψ) x₀ :=
+    (h2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hinj : Function.Injective (fderiv ℝ ψ x₀) := hrep.injective_fderiv hx₀
+  -- Step 2: a left inverse `g` of `ψ` on an open `U ∋ x₀`, differentiable at `ψ x₀`.
+  obtain ⟨g, hg, hgψ⟩ := Submission.sff_immersion_local_left_inverse n N ψ x₀ h1 hinj
+  obtain ⟨U, hUg, hUo, hxU⟩ := _root_.eventually_nhds_iff.mp hgψ
+  have hgx₀ : g (ψ x₀) = x₀ := hUg x₀ hxU
+  -- Step 3 (Simon 4.2): `ψ (U ∩ V) = W₀ ∩ M` for an open `W₀`, and `ψ x₀ ∈ W₀`.
+  obtain ⟨W₀, hW₀o, -, hW₀⟩ :=
+    hrep.exists_open_image_eq_inter (hUo.inter hrep.isOpen_source) inter_subset_right
+  have hy₀ : ψ x₀ ∈ W₀ := by
+    have h : ψ x₀ ∈ ψ '' (U ∩ V) := ⟨x₀, ⟨hxU, hx₀⟩, rfl⟩
+    rw [hW₀] at h
+    exact h.1
+  -- Step 4: `Q = Π ∘ Dψ ∘ g` is differentiable at `ψ x₀` by the chain rule.
+  let Pr : (Rn n →L[ℝ] Rn N) → (Rn N →L[ℝ] Rn N) :=
+    fun B ↦ (LinearMap.range B.toLinearMap).starProjection
+  refine ⟨fun z ↦ Pr (fderiv ℝ ψ (g z)), ?_, ?_, ?_⟩
+  · have hPr : DifferentiableAt ℝ Pr (fderiv ℝ ψ (g (ψ x₀))) := by
+      rw [hgx₀]; exact Submission.sff_range_starProjection_differentiableAt n N _ hinj
+    have hAg : DifferentiableAt ℝ (fderiv ℝ ψ) (g (ψ x₀)) := by rw [hgx₀]; exact hA
+    exact hPr.comp (ψ x₀) (hAg.comp (ψ x₀) hg)
+  -- Step 5: each `z ∈ W₀ ∩ M` is `ψ x` with `x ∈ U ∩ V`, so `Q z = Π(Dψ x) = P_z` by (T).
+  · -- Equal subspaces have equal projections (`HasOrthogonalProjection` is a `Prop`).
+    have key : ∀ K K' : Submodule ℝ (Rn N), K = K' → K.starProjection = K'.starProjection := by
+      rintro K K' rfl; rfl
+    rw [Filter.EventuallyEq, eventually_nhdsWithin_iff]
+    filter_upwards [hW₀o.mem_nhds hy₀] with z hzW₀ hzM
+    have hz : z ∈ ψ '' (U ∩ V) := by rw [hW₀]; exact ⟨hzW₀, hzM⟩
+    obtain ⟨x, ⟨hxU', hxV⟩, rfl⟩ := hz
+    show (tangentSpace M (ψ x)).starProjection = Pr (fderiv ℝ ψ (g (ψ x)))
+    rw [hUg x hxU']
+    exact key _ _ (hT x hxV)
+  -- Step 6: for `x ∈ U`, `Q (ψ x) = Π(Dψ (g (ψ x))) = Π(Dψ x)`.
+  · filter_upwards [hUo.mem_nhds hxU] with x hx
+    show Pr (fderiv ℝ ψ (g (ψ x))) = _
+    rw [hUg x hx]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
