@@ -3280,50 +3280,6 @@ theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞
   exact .biUnion hTc fun y hy ↦
     (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
-/-- **Simon Ch. 2, 6.3 and 6.6 (pp. 66–67), co-area formula** (Step 5 of the supplied proof).
-`Submission.coarea_formula_of_measurable` is the formula for Borel `g`. For `g` a.e.-measurable
-for `Hⁿ⌊M`, take a Borel `g₀` with `g = g₀` `Hⁿ⌊M`-a.e. and a Borel `Hⁿ⌊M`-null set
-`Z ⊇ {g ≠ g₀}`. The formula for `1_Z` has left side `0`, so `Hᵏ(M ∩ f⁻¹{y} ∩ Z) = 0` for
-`Lᵐ`-a.e. `y`; for such `y` the fibre integrals of `g` and `g₀` agree, and both conclusions
-transfer from `g₀` to `g`. -/
-theorem Submission.coarea_formula_theorem : CoareaFormula := by
-  intro N m k M U f g _ hM hU hMU hf hg
-  -- Tangent spaces of Simon charts and Borel measurability of `M` (sibling `submanifold_tangent`).
-  have hT : ∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N),
-      Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V,
-        tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
-    fun V W ψ ↦ Submission.simon_submanifold_tangent_basics.1 (m + k) N 1 M V W ψ le_rfl
-  have hMmeas : MeasurableSet M :=
-    (Submission.simon_submanifold_tangent_basics.2 (m + k) N 1 M hM).1
-  -- A Borel representative `g₀` of `g` and a Borel `Hⁿ⌊M`-null set `Z ⊇ {g ≠ g₀}`.
-  obtain ⟨g₀, hg₀, hgg₀⟩ := hg
-  obtain ⟨Z, hgZ, hZ, hZnull⟩ := exists_measurable_superset_of_null (ae_iff.1 hgg₀)
-  -- The formula for `1_Z` has left side `0`, so a.e. fibre meets `Z` in an `Hᵏ`-null set.
-  obtain ⟨hZae, hZform⟩ := Submission.coarea_formula_of_measurable N m k M U f (Z.indicator 1)
-    hM hU hMU hf hT hMmeas (measurable_one.indicator hZ)
-  have hZlhs :
-      ∫⁻ x in M, Z.indicator 1 x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] = 0 := by
-    refine (lintegral_congr_ae ?_).trans lintegral_zero
-    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hZnull] with x hx
-    simp [hx]
-  rw [hZlhs, eq_comm, lintegral_eq_zero_iff' hZae] at hZform
-  have hfib : ∀ᵐ y ∂volume,
-      ∫⁻ x in M ∩ f ⁻¹' {y}, g₀ x ∂μHE[k] = ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] := by
-    filter_upwards [hZform] with y hy
-    have hyZ : μHE[k].restrict (M ∩ f ⁻¹' {y}) Z = 0 := by
-      rw [← lintegral_indicator_one hZ]
-      exact hy
-    exact lintegral_congr_ae (ae_iff.2 (measure_mono_null (fun x hx ↦ hgZ (Ne.symm hx)) hyZ))
-  -- Both conclusions for the Borel representative `g₀` transfer to `g`.
-  obtain ⟨hmeas₀, hform₀⟩ := Submission.coarea_formula_of_measurable N m k M U f g₀
-    hM hU hMU hf hT hMmeas hg₀
-  refine ⟨hmeas₀.congr hfib, ?_⟩
-  calc ∫⁻ x in M, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k]
-      = ∫⁻ x in M, g₀ x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] :=
-        lintegral_congr_ae (hgg₀.mono fun x hx ↦ by simp only [hx])
-    _ = ∫⁻ y, ∫⁻ x in M ∩ f ⁻¹' {y}, g₀ x ∂μHE[k] ∂volume := hform₀
-    _ = ∫⁻ y, ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := lintegral_congr_ae hfib
-
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
@@ -3431,5 +3387,49 @@ theorem Submission.simon_submanifold_tangent_basics : (∀ (n N : ℕ) (r : ℕ�
   ⟨Submission.simon_submanifold_tangentSpace_eq_range, fun n N r M hM ↦
     ⟨Submission.simon_submanifold_measurableSet n N r M hM,
       Submission.simon_submanifold_tangentProjection_continuousOn n N r M hM⟩⟩
+
+/-- **Simon Ch. 2, 6.3 and 6.6 (pp. 66–67), co-area formula** (Step 5 of the supplied proof).
+`Submission.coarea_formula_of_measurable` is the formula for Borel `g`. For `g` a.e.-measurable
+for `Hⁿ⌊M`, take a Borel `g₀` with `g = g₀` `Hⁿ⌊M`-a.e. and a Borel `Hⁿ⌊M`-null set
+`Z ⊇ {g ≠ g₀}`. The formula for `1_Z` has left side `0`, so `Hᵏ(M ∩ f⁻¹{y} ∩ Z) = 0` for
+`Lᵐ`-a.e. `y`; for such `y` the fibre integrals of `g` and `g₀` agree, and both conclusions
+transfer from `g₀` to `g`. -/
+theorem Submission.coarea_formula_theorem : CoareaFormula := by
+  intro N m k M U f g _ hM hU hMU hf hg
+  -- Tangent spaces of Simon charts and Borel measurability of `M` (sibling `submanifold_tangent`).
+  have hT : ∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N),
+      Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V,
+        tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    fun V W ψ ↦ Submission.simon_submanifold_tangent_basics.1 (m + k) N 1 M V W ψ le_rfl
+  have hMmeas : MeasurableSet M :=
+    (Submission.simon_submanifold_tangent_basics.2 (m + k) N 1 M hM).1
+  -- A Borel representative `g₀` of `g` and a Borel `Hⁿ⌊M`-null set `Z ⊇ {g ≠ g₀}`.
+  obtain ⟨g₀, hg₀, hgg₀⟩ := hg
+  obtain ⟨Z, hgZ, hZ, hZnull⟩ := exists_measurable_superset_of_null (ae_iff.1 hgg₀)
+  -- The formula for `1_Z` has left side `0`, so a.e. fibre meets `Z` in an `Hᵏ`-null set.
+  obtain ⟨hZae, hZform⟩ := Submission.coarea_formula_of_measurable N m k M U f (Z.indicator 1)
+    hM hU hMU hf hT hMmeas (measurable_one.indicator hZ)
+  have hZlhs :
+      ∫⁻ x in M, Z.indicator 1 x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] = 0 := by
+    refine (lintegral_congr_ae ?_).trans lintegral_zero
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hZnull] with x hx
+    simp [hx]
+  rw [hZlhs, eq_comm, lintegral_eq_zero_iff' hZae] at hZform
+  have hfib : ∀ᵐ y ∂volume,
+      ∫⁻ x in M ∩ f ⁻¹' {y}, g₀ x ∂μHE[k] = ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] := by
+    filter_upwards [hZform] with y hy
+    have hyZ : μHE[k].restrict (M ∩ f ⁻¹' {y}) Z = 0 := by
+      rw [← lintegral_indicator_one hZ]
+      exact hy
+    exact lintegral_congr_ae (ae_iff.2 (measure_mono_null (fun x hx ↦ hgZ (Ne.symm hx)) hyZ))
+  -- Both conclusions for the Borel representative `g₀` transfer to `g`.
+  obtain ⟨hmeas₀, hform₀⟩ := Submission.coarea_formula_of_measurable N m k M U f g₀
+    hM hU hMU hf hT hMmeas hg₀
+  refine ⟨hmeas₀.congr hfib, ?_⟩
+  calc ∫⁻ x in M, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k]
+      = ∫⁻ x in M, g₀ x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] :=
+        lintegral_congr_ae (hgg₀.mono fun x hx ↦ by simp only [hx])
+    _ = ∫⁻ y, ∫⁻ x in M ∩ f ⁻¹' {y}, g₀ x ∂μHE[k] ∂volume := hform₀
+    _ = ∫⁻ y, ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := lintegral_congr_ae hfib
 
 end GMT.Ch02
