@@ -514,6 +514,105 @@ theorem aal_dge1_density_le_monotone_bound : ∀ (n ℓ : ℕ) (μ : Measure (Am
   have hFle : F t ≤ 1 + A * (t / R) ^ β := by linarith [le_abs_self (F t - 1)]
   have := mul_le_mul_of_nonneg_right hFle hmt
   linarith [le_abs_self (F t - 1)]
+/-- Simon Ch. 4, 3.11 and Remark 4.10(1), for an arbitrary measure `μ`: let `y ∈ spt μ` with
+`μ(B_{2r}(y)) < ∞`, let `c ≥ 0` on `(0, r]` with `c(t) → 0` as `t ↓ 0`, and suppose that for
+`μ`-a.e. `x ∈ B̆_r(y)` the estimate `ω ≤ (1 + c(t)) t⁻ⁿ μ(B_t(x)) + c(t)` holds for every
+`t ∈ (0, r]`.  Every neighbourhood of `y` has positive measure, so it contains such a good point
+`x`; `B_t(x) ⊆ B_u(y)` when `|x − y| < u − t`, and `μ(B_u(y)) → μ(B_t(y))` as `u ↓ t`, so the
+estimate also holds at `y`.  Since `c(s) → 0`, this gives `μ(B_s(y)) ≥ (1 − ε) ω sⁿ` for all small
+`s > 0`. -/
+theorem aal_dge1_support_density_lower_bound : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (ω r : ℝ) (c : ℝ → ℝ), 0 < ω → 0 < r → y ∈ μ.support → μ (closedBall y (2 * r)) < ⊤ → (∀ t : ℝ, 0 < t → t ≤ r → 0 ≤ c t) → Tendsto c (𝓝[>] 0) (𝓝 0) → (∀ᵐ x ∂μ, x ∈ ball y r → ∀ t : ℝ, 0 < t → t ≤ r → ω ≤ (1 + c t) * ((μ (closedBall x t)).toReal / t ^ n) + c t) → ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - ε) * (ω * s ^ n)) ≤ μ (closedBall y s) := by
+  intro n ℓ μ y ω r c hω hr hy hfin hc0 hc hae ε hε
+  -- Step 1: `μ(B_u(y)) ≤ μ(B_{2r}(y)) < ∞` for `u ≤ 2r`.
+  have hfin' : ∀ u : ℝ, u ≤ 2 * r → μ (closedBall y u) ≠ ⊤ := fun u hu =>
+    (lt_of_le_of_lt (measure_mono (closedBall_subset_closedBall hu)) hfin).ne
+  -- Steps 2–4: the estimate also holds at `y`, for every `t ∈ (0, r]`.
+  have hA : ∀ t : ℝ, 0 < t → t ≤ r →
+      ω ≤ (1 + c t) * ((μ (closedBall y t)).toReal / t ^ n) + c t := by
+    intro t ht htr
+    have hct : 0 ≤ c t := hc0 t ht htr
+    have htn : 0 < t ^ n := pow_pos ht n
+    -- Steps 2–3: for `u ∈ (t, t + r)`, `B̆_{u−t}(y)` has positive measure, so it is not inside the
+    -- null set of bad points; a good point `x` in it has `B_t(x) ⊆ B_u(y)`.
+    have hu : ∀ u : ℝ, t < u → u < t + r →
+        ω ≤ (1 + c t) * ((μ (closedBall y u)).toReal / t ^ n) + c t := by
+      intro u htu hut
+      have hη : 0 < u - t := sub_pos.mpr htu
+      have hpos : 0 < μ (ball y (u - t)) :=
+        (Measure.mem_support_iff_forall y).mp hy _ (ball_mem_nhds y hη)
+      obtain ⟨x, hxb, hx⟩ : ∃ x ∈ ball y (u - t), (x ∈ ball y r → ∀ t : ℝ, 0 < t → t ≤ r →
+          ω ≤ (1 + c t) * ((μ (closedBall x t)).toReal / t ^ n) + c t) := by
+        by_contra hcon
+        have hsub : ball y (u - t) ⊆ {x | ¬ (x ∈ ball y r → ∀ t : ℝ, 0 < t → t ≤ r →
+            ω ≤ (1 + c t) * ((μ (closedBall x t)).toReal / t ^ n) + c t)} := by
+          intro x hx hgood
+          exact hcon ⟨x, hx, hgood⟩
+        exact absurd (measure_mono_null hsub (ae_iff.mp hae)) hpos.ne'
+      have hxr : x ∈ ball y r := ball_subset_ball (by linarith) hxb
+      have h1 := hx hxr t ht htr
+      have hsub : closedBall x t ⊆ closedBall y u := by
+        intro z hz
+        rw [mem_closedBall] at hz ⊢
+        rw [mem_ball] at hxb
+        linarith [dist_triangle z x y]
+      have hle : (μ (closedBall x t)).toReal ≤ (μ (closedBall y u)).toReal :=
+        ENNReal.toReal_mono (hfin' u (by linarith)) (measure_mono hsub)
+      have : (1 + c t) * ((μ (closedBall x t)).toReal / t ^ n) ≤
+          (1 + c t) * ((μ (closedBall y u)).toReal / t ^ n) := by
+        apply mul_le_mul_of_nonneg_left _ (by linarith)
+        exact div_le_div_of_nonneg_right hle htn.le
+      linarith
+    -- Step 4: `μ(B_u(y)) → μ(B_t(y))` as `u ↓ t`, by continuity from above
+    -- (`⋂_{u > t} B_u(y) = B_t(y)` and `μ(B_{2r}(y)) < ∞`); pass to the limit in Step 3.
+    have hlim : Tendsto (fun u => (μ (closedBall y u)).toReal) (𝓝[>] t)
+        (𝓝 ((μ (closedBall y t)).toReal)) := by
+      have h1 := tendsto_measure_biInter_gt (μ := μ) (s := fun u => closedBall y u) (a := t)
+        (fun u _ => measurableSet_closedBall.nullMeasurableSet)
+        (fun i j _ hij => closedBall_subset_closedBall hij)
+        ⟨2 * r, by linarith, hfin.ne⟩
+      rw [biInter_gt_closedBall] at h1
+      exact (ENNReal.tendsto_toReal (hfin' t (by linarith))).comp h1
+    have hlim2 : Tendsto (fun u => (1 + c t) * ((μ (closedBall y u)).toReal / t ^ n) + c t)
+        (𝓝[>] t) (𝓝 ((1 + c t) * ((μ (closedBall y t)).toReal / t ^ n) + c t)) :=
+      ((hlim.div_const _).const_mul _).add_const _
+    apply ge_of_tendsto hlim2
+    filter_upwards [Ioo_mem_nhdsGT (by linarith : t < t + r)] with u hu'
+    exact hu u hu'.1 hu'.2
+  rcases le_or_gt 1 ε with h1 | h1
+  -- Step 5: for `ε ≥ 1` the left side is `ofReal` of a nonpositive number, i.e. `0`.
+  · filter_upwards [self_mem_nhdsWithin] with s hs
+    have hs0 : (0:ℝ) < s := hs
+    have : (1 - ε) * (ω * s ^ n) ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg (by linarith) (by positivity)
+    rw [ENNReal.ofReal_of_nonpos this]
+    exact zero_le
+  -- Step 6: for `0 < ε < 1` put `γ = εω/(1 + ω)`.  Once `c(s) < γ` and `s < r`, the estimate at `y`
+  -- gives `ω ≤ (1 + γ) q + γ` for `q = s⁻ⁿ μ(B_s(y))`, which forces `q ≥ (1 − ε) ω`.
+  · set γ := ε * ω / (1 + ω) with hγ_def
+    have hγ : 0 < γ := by positivity
+    have hγ' : γ * (1 + ω) = ε * ω := by rw [hγ_def]; field_simp
+    have hev1 : ∀ᶠ s in 𝓝[>] (0:ℝ), c s < γ := hc.eventually (gt_mem_nhds hγ)
+    have hev2 : ∀ᶠ s in 𝓝[>] (0:ℝ), s ∈ Ioo 0 r := Ioo_mem_nhdsGT hr
+    filter_upwards [hev1, hev2] with s hcs hs
+    have hA' := hA s hs.1 hs.2.le
+    have hsn : 0 < s ^ n := pow_pos hs.1 n
+    have hcs0 : 0 ≤ c s := hc0 s hs.1 hs.2.le
+    set q := (μ (closedBall y s)).toReal / s ^ n with hq_def
+    have hq : 0 ≤ q := div_nonneg ENNReal.toReal_nonneg hsn.le
+    have h2 : ω ≤ (1 + γ) * q + γ := by nlinarith
+    have key : (1 - ε) * ω ≤ q := by
+      by_contra hlt
+      push Not at hlt
+      have h3 : (1 + γ) * q < (1 + γ) * ((1 - ε) * ω) := mul_lt_mul_of_pos_left hlt (by linarith)
+      have h4 : 0 < γ * ε * ω := by positivity
+      nlinarith [hγ']
+    have key2 : (1 - ε) * (ω * s ^ n) ≤ (μ (closedBall y s)).toReal := by
+      have h5 : (μ (closedBall y s)).toReal = q * s ^ n := by
+        rw [hq_def, div_mul_cancel₀ _ hsn.ne']
+      rw [h5]
+      nlinarith [mul_le_mul_of_nonneg_right key hsn.le]
+    rw [← ENNReal.ofReal_toReal (hfin' s (by linarith [hs.2]))]
+    exact ENNReal.ofReal_le_ofReal key2
 
 end Submission
 
