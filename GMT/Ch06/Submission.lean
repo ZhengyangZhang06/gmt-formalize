@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter02.AreaDomain
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -456,6 +457,69 @@ theorem Submission.lpf_raf_fiber_sum_glue : ∀ (X Y : Type) [MeasurableSpace X]
   rw [Measure.restrict_congr_set hAe, lintegral_iUnion₀ hBm hdisj.aedisjoint F,
     lintegral_congr_ae hae, lintegral_tsum fun m => (hg m).1]
   exact tsum_congr fun m => (hg m).2
+
+/-- Area formula for a map locally Lipschitz on an open set (Simon Ch. 2, (3.5), localized by the
+countable decomposition of the proof of Ch. 3, 2.4–2.5; used for Ch. 6, 3.9): if `u` is locally
+Lipschitz on open `Ω ⊆ ℝⁿ`, `D ⊆ Ω` is `Lⁿ`-null-measurable and `w ≥ 0` is `Lⁿ ⌞ D`-a.e.
+measurable, then the fibre sum `N(y) = ∑_{x ∈ D, u x = y} w x` is `Hⁿ`-a.e. measurable and
+`∫_D w Ju dLⁿ = ∫ N dHⁿ`, where `Ju = √det(⟨Du eᵢ, Du eⱼ⟩)`.  Split `D` into disjoint pieces
+`B m` inside open `V m ⊆ Ω` on which `u` is Lipschitz, apply SimonGMT's area formula for maps
+Lipschitz on a set to each piece (its within-derivative Jacobian is `Ju` a.e. on `B m`, via a
+Lipschitz extension of `u|V m`), and glue the pieces. -/
+theorem Submission.lpf_raf_local_lipschitz_area : ∀ (n Q : ℕ) (Ω D : Set (Eucl n)) (u : Eucl n → Eucl Q) (w : Eucl n → ℝ≥0∞), IsOpen Ω → LocallyLipschitzOn Ω u → D ⊆ Ω → NullMeasurableSet D (volume : Measure (Eucl n)) → AEMeasurable w ((volume : Measure (Eucl n)).restrict D) → AEMeasurable (fun y => ∑' x : {x : Eucl n // x ∈ D ∧ u x = y}, w x) (μHE[n] : Measure (Eucl Q)) ∧ ∫⁻ x in D, w x * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ u x (EuclideanSpace.single i 1)) (fderiv ℝ u x (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n)) = ∫⁻ y, ∑' x : {x : Eucl n // x ∈ D ∧ u x = y}, w x ∂(μHE[n] : Measure (Eucl Q)) := by
+  intro n Q Ω D u w hΩ hu hDΩ hD hw
+  -- Step 1: `normDet T = √det(⟨T eᵢ, T eⱼ⟩)`, the Gram determinant in the orthonormal basis `eᵢ`.
+  have hJ : ∀ T : Eucl n →L[ℝ] Eucl Q, (T : Eucl n →ₗ[ℝ] Eucl Q).normDet =
+      Real.sqrt (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1))
+        (T (EuclideanSpace.single j 1))).det := by
+    intro T
+    have h := (T : Eucl n →ₗ[ℝ] Eucl Q).normDet_sq_eq_det_gram (EuclideanSpace.basisFun (Fin n) ℝ)
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe,
+      RCLike.ofReal_real_eq_id, id_eq] at h
+    rw [← Real.sqrt_sq (T : Eucl n →ₗ[ℝ] Eucl Q).normDet_nonneg, h]
+    rfl
+  -- Steps 2–3: pairwise disjoint null-measurable `B m ⊆ D ∩ V m` covering `D`, where `V m` is
+  -- open and `u` is `K m`-Lipschitz on `V m`.
+  obtain ⟨V, B, K, hVo, -, hK, hBDV, hBd, hBm, hDB⟩ :=
+    Submission.lpf_raf_lla_disjoint_lipschitz_pieces n Q Ω D u hΩ hu hDΩ hD
+  have hdim : Module.finrank ℝ (Eucl n) = n := finrank_euclideanSpace_fin
+  -- Steps 4–5: the area formula on each piece `B m`.
+  have hpiece : ∀ m, AEMeasurable (fun y => ∑' x : {x : Eucl n // x ∈ B m ∧ u x = y}, w x)
+        (μHE[n] : Measure (Eucl Q)) ∧
+      ∫⁻ x in B m, w x * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j =>
+        inner ℝ (fderiv ℝ u x (EuclideanSpace.single i 1))
+          (fderiv ℝ u x (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n)) =
+        ∫⁻ y, ∑' x : {x : Eucl n // x ∈ B m ∧ u x = y}, w x ∂(μHE[n] : Measure (Eucl Q)) := by
+    intro m
+    have hBV : B m ⊆ V m := fun x hx => (hBDV m hx).2
+    have hL : LipschitzOnWith (K m) u (B m) := (hK m).mono hBV
+    have hwm : AEMeasurable w ((volume : Measure (Eucl n)).restrict (B m)) :=
+      hw.mono_set fun x hx => (hBDV m hx).1
+    -- Step 4: SimonGMT's weighted area formula for `u` Lipschitz on `B m`.
+    have hmeas :=
+      Poincare.SimonGMT.Chapter02.aemeasurable_weightedAreaFiberSum_lipschitzOn (hBm m) hL hwm
+    have harea :=
+      Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitzOn_fiberSum (hBm m) hL hwm
+    rw [hdim] at hmeas harea
+    refine ⟨hmeas, Eq.trans ?_ harea.symm⟩
+    -- Step 5: `fderivWithin ℝ u (B m) = fderiv ℝ u` a.e. on `B m`, through a global Lipschitz
+    -- extension `g` of `u|V m` (`u = g` near every point of the open `V m ⊇ B m`).
+    obtain ⟨g, L, hg, hug⟩ :=
+      Poincare.SimonGMT.Chapter02.exists_lipschitz_extension_finiteDimensional (hK m)
+    have hder := Poincare.SimonGMT.Chapter02.ae_fderivWithin_eq_of_lipschitz_extension (hBm m) hg
+      (hug.mono hBV)
+    refine lintegral_congr_ae ?_
+    filter_upwards [hder, ae_restrict_mem₀ (hBm m)] with x hx hxB
+    have hxg : fderiv ℝ u x = fderiv ℝ g x :=
+      (Filter.eventuallyEq_of_mem ((hVo m).mem_nhds (hBV hxB)) hug).fderiv_eq
+    rw [Poincare.SimonGMT.Chapter02.areaJacobianWithin, hx, ← hxg, hJ, mul_comm]
+  -- Step 6: glue the pieces with `Z = ∅`.
+  exact Submission.lpf_raf_fiber_sum_glue (Eucl n) (Eucl Q) volume μHE[n] u w
+    (fun x => w x * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j =>
+      inner ℝ (fderiv ℝ u x (EuclideanSpace.single i 1))
+        (fderiv ℝ u x (EuclideanSpace.single j 1))).det))
+    D ∅ B (fun m => (hBDV m).trans inter_subset_left) hBd hBm (hDB.trans subset_union_right)
+    measure_empty (by rw [image_empty, measure_empty]) hpiece
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
