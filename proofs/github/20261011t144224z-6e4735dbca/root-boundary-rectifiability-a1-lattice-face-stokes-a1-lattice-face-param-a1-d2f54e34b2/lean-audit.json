@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fe5f2460233ab57bcc31369aaa560ae54759ce10dfe6deb236db6d9d58866ede",
+  "git_delta": {
+    "base_commit": "e0df518f3f8b92c67f771f7ac8248909ca85f0bf",
+    "candidate_commit": "0561b355216f4041a30f4aaf2a4b139abdf038ca",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_latticeFace_setIntegral_eq_cube",
+    "diff_sha256": "14a2452611f0f8bec9c0aac9074dfc2dfc5f855241d67850133700cd922cf9aa",
+    "source_sha256": "01d7315165703c66eb45145a0ab94b3f75504f450b637d14b443bc52c10d8d7e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_latticeFace_setIntegral_eq_cube",
+      "statement": "∀ (P d : ℕ) (ρ : ℝ) (G : LatticeFaceIndex d P) (g : Eucl P → ℝ), ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P)) = ∫ s in Set.Icc (0 : Fin d → ℝ) (fun _ => ρ), g (∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) + ∑ j, s j • EuclideanSpace.single (G.2 j) (1 : ℝ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
