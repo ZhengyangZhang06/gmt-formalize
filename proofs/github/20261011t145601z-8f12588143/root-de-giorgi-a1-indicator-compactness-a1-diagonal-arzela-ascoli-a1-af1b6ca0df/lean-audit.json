@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8f75a69b3afba95c68b457a1d6c1210bb6284d46782d8671cc2c6ced48c94dfe",
+  "git_delta": {
+    "base_commit": "a88bcb961baed1a469fe0c64b82509d80e237c1a",
+    "candidate_commit": "a56b514a5825eb67730d013c492b53a57bc9424d",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_diagonal_mollified_uniform_cauchy",
+    "diff_sha256": "3ee4a1c18ccd8f7b67feb226170c5328e485c02f248a9cd0d95482cc1012be28",
+    "source_sha256": "5c402e23bd9e1eba07c3a8a914231cdd2d77a12afedb0de71e5b44cb5ec29e99",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_diagonal_mollified_uniform_cauchy",
+      "statement": "∀ (N : ℕ) (ρ : ℕ → Rn N → ℝ) (F : ℕ → Set (Rn N)), (∀ m, Continuous (ρ m)) → (∀ m, HasCompactSupport (ρ m)) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ (m : ℕ) (ε : ℝ), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, ∀ y ∈ Metric.closedBall (0 : Rn N) m, |(∫ z in F (φ k), ρ m (y - z)) - ∫ z in F (φ l), ρ m (y - z)| ≤ ε",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
