@@ -1,0 +1,17 @@
+{
+  "node_id": "root.submanifold_cover-a1.c1_range_cover-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/46",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "64408edce6e7d8ebf9844b9b1de80492a272eb2f",
+  "integrated_commit": "",
+  "proof_base_commit": "e0a773a2bd8de9cf47665fb5a072dacd8d56a67c",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.submanifold_cover-a1",
+  "requires": [
+    "root.submanifold_cover-a1.regular_ball_submanifold-a1"
+  ]
+}

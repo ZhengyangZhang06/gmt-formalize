@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "26a52a963192ed2d72a243a7aa9d4716b49b6db151ea2781f2ee348c548e3316",
+  "git_delta": {
+    "base_commit": "e5cfa3cf014f9bf749d1c35c506046730b560316",
+    "candidate_commit": "64408edce6e7d8ebf9844b9b1de80492a272eb2f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "c1_range_null_union_submanifolds",
+    "diff_sha256": "b1f2fab8bed1af903af21c12a4e1631678e38f83e5d79cd12a7cfb8397bdb64d",
+    "source_sha256": "bfe4ce9bb3a3ea551c6e89d7d29b47773468308ef2502f4b1de99e8094172660",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_range_null_union_submanifolds",
+      "statement": "∀ (n p : ℕ) (G : Rn n → Rn p), ContDiff ℝ 1 G → ∃ (N₀ : Set (Rn p)) (N : ℕ → Set (Rn p)), μHE[n] N₀ = 0 ∧ (∀ k, IsC1Submanifold n (N k)) ∧ Set.range G ⊆ N₀ ∪ ⋃ k, N k",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
