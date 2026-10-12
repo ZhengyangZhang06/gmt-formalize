@@ -458,6 +458,77 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, Theorem 7.1, proof (p. 127): "after applying the appropriate translation".**
+For `τ(x) = x − ξ`, `V' = v(τ(M), θ(· + ξ))` is a rectifiable `n`-varifold in `τ(U)`.  `τ` and its
+inverse `σ = (· + ξ)` are isometries, so they preserve `Hⁿ`, and `τ(S) = σ⁻¹(S)` for every set `S`;
+null-measurability, countable rectifiability (via `τ(M₀)` and the Lipschitz maps `F_j − ξ`),
+positivity, a.e.-measurability of `θ ∘ σ` and its integrability on `τ(M) ∩ K` (through the compact
+set `σ(K) ⊆ U`) all transfer along `σ`. -/
+theorem dohr_tv_exists_translate : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ ∀ y, V'.mult y = V.mult (y + ξ) := by
+  intro n ℓ U V ξ
+  -- Step 0: `τ = (· − ξ)` is an isometry, `σ = (· + ξ)` is an `Hⁿ`-measure-preserving measurable
+  -- embedding, and `τ(S) = σ⁻¹(S)` for every set `S`.
+  have himage : ∀ S : Set (Amb n ℓ), (fun x => x - ξ) '' S = (fun x => x + ξ) ⁻¹' S := by
+    intro S
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      simpa using hx
+    · intro hy
+      exact ⟨y + ξ, hy, add_sub_cancel_right y ξ⟩
+  have hτ : Isometry (fun x : Amb n ℓ => x - ξ) := (IsometryEquiv.subRight ξ).isometry
+  have hσ : MeasurePreserving (fun x : Amb n ℓ => x + ξ) μHE[n] μHE[n] :=
+    (IsometryEquiv.addRight ξ).measurePreserving_euclideanHausdorffMeasure n
+  have hσe : MeasurableEmbedding (fun x : Amb n ℓ => x + ξ) := measurableEmbedding_addRight ξ
+  -- Steps 1–2: `V' = v(τ(M), θ ∘ σ)`; the two required equalities hold by definition.
+  refine ⟨{
+    carrier := (fun x => x - ξ) '' V.carrier
+    mult := fun y => V.mult (y + ξ)
+    carrier_subset := image_mono V.carrier_subset
+    nullMeasurableSet_carrier := ?_
+    countablyRectifiable := ?_
+    mult_pos := ?_
+    aemeasurable_mult := ?_
+    integrableOn_mult := ?_ }, rfl, fun y => rfl⟩
+  · -- Step 3: `τ(M) = σ⁻¹(M)` and `σ` is quasi-measure-preserving.
+    rw [himage]
+    exact V.nullMeasurableSet_carrier.preimage hσ.quasiMeasurePreserving
+  · -- Step 4: translate the null set `M₀` and the Lipschitz pieces `F j` by `−ξ`.
+    obtain ⟨M₀, hM₀, F, hF, hcov⟩ := V.countablyRectifiable
+    refine ⟨(fun x => x - ξ) '' M₀, ?_, fun j z => F j z - ξ, fun j => ?_, ?_⟩
+    · rw [hτ.euclideanHausdorffMeasure_image]
+      exact hM₀
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨K, LipschitzWith.of_dist_le_mul fun z w =>
+        (dist_sub_right (F j z) (F j w) ξ).le.trans (hK.dist_le_mul z w)⟩
+    · rintro _ ⟨x, hx, rfl⟩
+      rcases hcov hx with h | h
+      · exact Or.inl ⟨x, h, rfl⟩
+      · obtain ⟨j, z, rfl⟩ := mem_iUnion.mp h
+        exact Or.inr (mem_iUnion.mpr ⟨j, z, rfl⟩)
+  · -- Step 5: `θ(x − ξ + ξ) = θ(x) > 0` for `x ∈ M`.
+    rintro _ ⟨x, hx, rfl⟩
+    show 0 < V.mult (x - ξ + ξ)
+    rw [sub_add_cancel]
+    exact V.mult_pos x hx
+  · -- Step 6: `σ` is measure preserving from `Hⁿ⌞σ⁻¹(M)` to `Hⁿ⌞M`.
+    rw [himage]
+    exact V.aemeasurable_mult.comp_quasiMeasurePreserving
+      (hσ.restrict_preimage_emb hσe V.carrier).quasiMeasurePreserving
+  · -- Step 7: `σ(K)` is a compact subset of `U`, and `τ(M) ∩ K = σ⁻¹(M ∩ σ(K))`.
+    intro K hK hKU
+    have hσK : (fun x => x + ξ) '' K ⊆ U := by
+      rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨x, hx, rfl⟩ := hKU hy
+      simpa using hx
+    have h := (hσ.integrableOn_comp_preimage hσe).2
+      (V.integrableOn_mult _ (hK.image (continuous_add_const ξ)) hσK)
+    rwa [preimage_inter, hσe.injective.preimage_image, ← himage] at h
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
