@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "12ffb97eb8dc423969838b6fc13c012f45993594b3900d190f8a8f82a86d66bc",
+  "git_delta": {
+    "base_commit": "6013848f1ba1fe4a5e83e75984dc99fe2a191ede",
+    "candidate_commit": "dd3aca16ea469333a862bffa6378bd275a56c210",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_exists_isometry_rotatedPlane",
+    "diff_sha256": "3aaed9e57f476f856a25a0ffeff15e97ed2cb2e6d59df0a6e0a990d0464cc7a8",
+    "source_sha256": "61e8eaa42bab86d6abe7c39de20e938868e2dfb73cdae78fbb42992de5bd717f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_exists_isometry_rotatedPlane",
+      "statement": "∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
