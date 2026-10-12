@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1.ball_volume-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1",
+  "depth": 5,
+  "title": "Box bound for the volume of a Euclidean ball",
+  "statement": "For every n ∈ ℕ and every real r ≥ 0, the closed ball closedBall(0, r) of ℝ^n (Eucl n, with the Euclidean norm) has Lebesgue measure at most (2r)^n: L(closedBall(0, r)) ≤ ofReal((2r)^n) in [0, ∞].",
+  "lean_statement": "∀ (n : ℕ) (r : ℝ), 0 ≤ r → volume (closedBall (0 : Eucl n) r) ≤ ENNReal.ofReal ((2 * r) ^ n)",
+  "lean_name": "fiw_tb_tda_ps_ball_volume_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-poincare-c5f2db523d-a1"
+}
