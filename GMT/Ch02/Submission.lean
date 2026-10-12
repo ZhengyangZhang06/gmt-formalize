@@ -672,6 +672,91 @@ theorem Submission.convex_open_exists_inner_exhaustion : ∀ (n : ℕ) (U : Set 
     intro x hx p hp
     rw [mem_closedBall, dist_comm] at hp
     exact key x p (hp.trans_lt hx)
+/-- **Mean-oscillation bounds pass to the `L¹` limit along an increasing exhaustion** (step B4 of
+the proof of Simon 2.7, "letting `σ ↓ 0`"). Let measurable `O j` increase to `U` with `μ(U) < ∞`,
+`u ∈ L¹(U)` and `w j ∈ L¹(O j)`. If `e_j = ∫⁻_{O j} ‖w j - u‖ₑ → 0` and `∫⁻_{O j} ‖w j - c_j‖ₑ ≤ K`
+for the means `c_j` of `w j` over `O j`, then `∫⁻_U ‖u - ū‖ₑ ≤ K` for the mean `ū` of `u` over `U`.
+Since `μ(O j) → μ(U)` and `|∫_{O j} w j - ∫_{O j} u| ≤ e_j`, `c_j → ū`; the integrated triangle
+inequality gives `∫⁻_{O j} ‖u - ū‖ₑ ≤ K + e_j + ‖c_j - ū‖ₑ μ(U)`, and `∫⁻_U = ⨆ j, ∫⁻_{O j}`
+(`setLIntegral_iUnion_of_directed`). -/
+theorem Submission.mean_oscillation_lintegral_le_of_approx : ∀ (n : ℕ) (U : Set (Rn n)) (u : Rn n → ℝ) (O : ℕ → Set (Rn n)) (w : ℕ → Rn n → ℝ) (K : ℝ≥0∞), volume U < ⊤ → IntegrableOn u U volume → (∀ j, MeasurableSet (O j)) → Monotone O → ⋃ j, O j = U → (∀ j, IntegrableOn (w j) (O j) volume) → Tendsto (fun j ↦ ∫⁻ x in O j, ‖w j x - u x‖ₑ) atTop (𝓝 0) → (∀ j, ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ ≤ K) → ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤ K := by
+  intro n U u O w K hUfin hu hOm hOmono hOU hw he hK
+  -- Step 1: every `O j` lies in `U`.
+  have hsub : ∀ j, O j ⊆ U := fun j ↦ hOU ▸ subset_iUnion O j
+  -- Step 2: the case `μ(U) = 0` is trivial.
+  by_cases hU0 : volume U = 0
+  · rw [setLIntegral_measure_zero U _ hU0]
+    exact zero_le
+  -- Step 3: `μ(O_j) → μ(U)` by continuity from below.
+  have hmeas : Tendsto (fun j ↦ (volume (O j)).toReal) atTop (𝓝 (volume U).toReal) := by
+    have h := tendsto_measure_iUnion_atTop (μ := volume) hOmono
+    rw [hOU] at h
+    exact (ENNReal.tendsto_toReal hUfin.ne).comp h
+  -- Step 4: `∫_{O_j} u → ∫_U u`.
+  have hint_u : Tendsto (fun j ↦ ∫ y in O j, u y) atTop (𝓝 (∫ y in U, u y)) := by
+    have h := tendsto_setIntegral_of_monotone (μ := volume) (f := u) hOm hOmono (hOU.symm ▸ hu)
+    rwa [hOU] at h
+  -- Step 5: `|∫_{O_j} w_j − ∫_{O_j} u| ≤ e_j → 0`, hence `∫_{O_j} w_j → ∫_U u`.
+  have hdiff : Tendsto (fun j ↦ (∫ y in O j, w j y) - ∫ y in O j, u y) atTop (𝓝 0) := by
+    refine tendsto_zero_iff_enorm_tendsto_zero.mpr
+      (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds he (fun j ↦ zero_le)
+        (fun j ↦ ?_))
+    show ‖(∫ y in O j, w j y) - ∫ y in O j, u y‖ₑ ≤ ∫⁻ x in O j, ‖w j x - u x‖ₑ
+    rw [← integral_sub (hw j) (hu.mono_set (hsub j))]
+    exact enorm_integral_le_lintegral_enorm _
+  have hint_w : Tendsto (fun j ↦ ∫ y in O j, w j y) atTop (𝓝 (∫ y in U, u y)) := by
+    simpa using hdiff.add hint_u
+  -- Step 6: the means `c_j` converge to `ū`.
+  have hM : (volume U).toReal ≠ 0 := (ENNReal.toReal_pos hU0 hUfin.ne).ne'
+  have hc : Tendsto (fun j ↦ (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y) atTop
+      (𝓝 ((volume U).toReal⁻¹ * ∫ y in U, u y)) := (hmeas.inv₀ hM).mul hint_w
+  have hc' : Tendsto (fun j ↦ ‖(volume (O j)).toReal⁻¹ * (∫ y in O j, w j y) -
+      (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ * volume U) atTop (𝓝 0) := by
+    have h1 := tendsto_zero_iff_enorm_tendsto_zero.mp (tendsto_sub_nhds_zero_iff.mpr hc)
+    simpa using ENNReal.Tendsto.mul_const h1 (Or.inr hUfin.ne)
+  have hr := he.add hc'
+  rw [add_zero] at hr
+  -- Step 7: the integrated triangle inequality on each `O_j`.
+  have hbound : ∀ j, ∫⁻ x in O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤
+      K + ((∫⁻ x in O j, ‖w j x - u x‖ₑ) + ‖(volume (O j)).toReal⁻¹ * (∫ y in O j, w j y) -
+        (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ * volume U) := by
+    intro j
+    set ub := (volume U).toReal⁻¹ * ∫ y in U, u y
+    set cj := (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y
+    have hpt : ∀ x, ‖u x - ub‖ₑ ≤ ‖w j x - u x‖ₑ + (‖w j x - cj‖ₑ + ‖cj - ub‖ₑ) := by
+      intro x
+      calc ‖u x - ub‖ₑ = ‖-(w j x - u x) + ((w j x - cj) + (cj - ub))‖ₑ := by congr 1; ring
+        _ ≤ ‖-(w j x - u x)‖ₑ + ‖(w j x - cj) + (cj - ub)‖ₑ := enorm_add_le _ _
+        _ ≤ ‖w j x - u x‖ₑ + (‖w j x - cj‖ₑ + ‖cj - ub‖ₑ) := by
+          rw [enorm_neg]
+          gcongr
+          exact enorm_add_le _ _
+    have hae : AEMeasurable (fun x ↦ ‖w j x - u x‖ₑ) (volume.restrict (O j)) :=
+      ((hw j).sub (hu.mono_set (hsub j))).aemeasurable.enorm
+    calc ∫⁻ x in O j, ‖u x - ub‖ₑ
+        ≤ ∫⁻ x in O j, ‖w j x - u x‖ₑ + (‖w j x - cj‖ₑ + ‖cj - ub‖ₑ) := lintegral_mono hpt
+      _ = (∫⁻ x in O j, ‖w j x - u x‖ₑ) +
+            ((∫⁻ x in O j, ‖w j x - cj‖ₑ) + ‖cj - ub‖ₑ * volume (O j)) := by
+          rw [lintegral_add_left' hae, lintegral_add_right _ measurable_const, setLIntegral_const]
+      _ ≤ (∫⁻ x in O j, ‖w j x - u x‖ₑ) + (K + ‖cj - ub‖ₑ * volume U) := by
+          gcongr
+          · exact hK j
+          · exact hsub j
+      _ = K + ((∫⁻ x in O j, ‖w j x - u x‖ₑ) + ‖cj - ub‖ₑ * volume U) := add_left_comm _ _ _
+  -- Step 8: for each fixed `j`, `∫⁻_{O_j} ‖u − ū‖ₑ ≤ K`.
+  have hO : ∀ j, ∫⁻ x in O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤ K := by
+    intro j
+    have hlim := (tendsto_const_nhds (x := K)).add hr
+    rw [add_zero] at hlim
+    refine ge_of_tendsto hlim ?_
+    filter_upwards [eventually_ge_atTop j] with k hk
+    exact (lintegral_mono_set (hOmono hk)).trans (hbound k)
+  -- Step 9: pass to the directed union `⋃ j, O j = U`.
+  calc ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ
+      = ∫⁻ x in ⋃ j, O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ := by rw [hOU]
+    _ = ⨆ j, ∫⁻ x in O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ :=
+        setLIntegral_iUnion_of_directed _ hOmono.directed_le
+    _ ≤ K := iSup_le hO
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
