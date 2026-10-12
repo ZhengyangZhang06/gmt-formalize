@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f002569f5b8dec2fe7aa1e83974f035abefb4800bb96d5c078da113d4ab434e8",
+  "git_delta": {
+    "base_commit": "91725bc6273f8c4b48ea9977ee2458d60f2167ef",
+    "candidate_commit": "e39e8b7df821851607057075fd5d6155f58c7023",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_ae_tendsto_withDensity_div_closedBall",
+    "diff_sha256": "44caf3950c30cf489a17995c9cd86ce275a33edb84a3623a19a98782584bc6d6",
+    "source_sha256": "2d2b0cfdf396ee42b38c50a6adda9ba04172bfc6eab88fb493264c0c3f3d71ce",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_ae_tendsto_withDensity_div_closedBall",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (θ : Euclid P → ℝ≥0∞), IsOpen U → Measurable θ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ.withDensity θ K ≠ ∞) → ∀ᵐ x ∂μ, x ∈ U → Tendsto (fun ρ : ℝ => μ.withDensity θ (closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (θ x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

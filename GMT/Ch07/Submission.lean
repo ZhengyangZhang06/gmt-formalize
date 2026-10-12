@@ -451,6 +451,94 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 1, 3.16–3.17 with 3.11(3)**, localized to an open `U`: if `μ` and
+`ν = μ.withDensity θ` (`θ` Borel) are finite on compact subsets of `U`, then
+`ν(B̄_ρ(x))/μ(B̄_ρ(x)) → θ(x)` as `ρ ↓ 0` for `μ`-a.e. `x ∈ U`.  Besicovitch differentiation
+(`Besicovitch.ae_tendsto_rnDeriv`, `Measure.rnDeriv_withDensity`) is applied to `μ⌞Kⱼ` and
+`ν⌞Kⱼ = (μ⌞Kⱼ).withDensity θ` for the compact exhaustion
+`Kⱼ = B̄_{j+1}(0) ∩ {y : dist(y, z) ≥ 1/(j+1) for all z ∉ U}` of `U`; each `x ∈ U` has
+`B_{1/(j+1)}(x) ⊆ Kⱼ` for some `j`, and there the localized ball ratios are the global ones. -/
+theorem Submission.rsd_ae_tendsto_withDensity_div_closedBall : ∀ (P : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (θ : Euclid P → ℝ≥0∞), IsOpen U → Measurable θ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ.withDensity θ K ≠ ∞) → ∀ᵐ x ∂μ, x ∈ U → Tendsto (fun ρ : ℝ => μ.withDensity θ (closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (θ x)) := by
+  intro P U μ θ hU hθ hμK hνK
+  -- the compact exhaustion `K j`
+  set K : ℕ → Set (Euclid P) := fun j =>
+    closedBall 0 ((j : ℝ) + 1) ∩ {y | ∀ z ∉ U, 1 / ((j : ℝ) + 1) ≤ dist y z} with hKdef
+  have hKclosed' : ∀ j : ℕ, IsClosed {y : Euclid P | ∀ z ∉ U, 1 / ((j : ℝ) + 1) ≤ dist y z} := by
+    intro j
+    have : {y : Euclid P | ∀ z ∉ U, 1 / ((j : ℝ) + 1) ≤ dist y z} =
+        ⋂ z ∈ Uᶜ, {y | 1 / ((j : ℝ) + 1) ≤ dist y z} := by
+      ext y; simp
+    rw [this]
+    exact isClosed_biInter fun z _ => isClosed_le continuous_const (continuous_id.dist continuous_const)
+  have hKclosed : ∀ j, IsClosed (K j) := fun j => isClosed_closedBall.inter (hKclosed' j)
+  have hKcpt : ∀ j, IsCompact (K j) := fun j =>
+    (isCompact_closedBall (0 : Euclid P) _).inter_right (hKclosed' j)
+  have hKU : ∀ j, K j ⊆ U := by
+    intro j y hy
+    by_contra hyU
+    have h := hy.2 y hyU
+    rw [dist_self] at h
+    have : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+    linarith
+  have hcover : ∀ x ∈ U, ∃ j : ℕ, ball x (1 / ((j : ℝ) + 1)) ⊆ K j := by
+    intro x hx
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hU x hx
+    obtain ⟨j, hj⟩ := exists_nat_gt (max (2 / δ) ‖x‖)
+    have hj1 : 2 / δ < (j : ℝ) + 1 := by
+      have := le_max_left (2 / δ) ‖x‖; linarith
+    have hj2 : ‖x‖ < (j : ℝ) := lt_of_le_of_lt (le_max_right _ _) hj
+    have hjpos : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+    have hsmall : 2 / ((j : ℝ) + 1) < δ := by
+      rw [div_lt_iff₀ hjpos]
+      rw [div_lt_iff₀ hδ] at hj1
+      linarith
+    refine ⟨j, fun y hy => ⟨?_, ?_⟩⟩
+    · rw [mem_closedBall, dist_zero_right]
+      have h1 : ‖y‖ ≤ ‖x‖ + dist y x := by
+        have := norm_le_norm_add_norm_sub' y x
+        rw [dist_eq_norm]; linarith [norm_sub_rev y x]
+      have h2 : dist y x < 1 / ((j : ℝ) + 1) := hy
+      have h3 : 1 / ((j : ℝ) + 1) ≤ 1 := by
+        rw [div_le_one hjpos]; linarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
+      linarith
+    · intro z hz
+      have hxz : δ ≤ dist x z := by
+        by_contra h
+        exact hz (hball (by rw [mem_ball, dist_comm]; linarith))
+      have h2 : dist y x < 1 / ((j : ℝ) + 1) := hy
+      have htri := dist_triangle x y z
+      have h4 : 2 / ((j : ℝ) + 1) = 2 * (1 / ((j : ℝ) + 1)) := by ring
+      rw [dist_comm] at h2
+      linarith
+  -- Besicovitch on each `K j`
+  have hj : ∀ j : ℕ, ∀ᵐ x ∂μ, x ∈ K j → Tendsto (fun ρ : ℝ =>
+      ((μ.withDensity θ).restrict (K j)) (closedBall x ρ) / (μ.restrict (K j)) (closedBall x ρ))
+      (𝓝[>] 0) (𝓝 (θ x)) := by
+    intro j
+    have hKm : MeasurableSet (K j) := (hKclosed j).measurableSet
+    have : IsFiniteMeasure (μ.restrict (K j)) :=
+      ⟨by rw [Measure.restrict_apply_univ]; exact (hμK _ (hKcpt j) (hKU j)).lt_top⟩
+    have : IsFiniteMeasure ((μ.withDensity θ).restrict (K j)) :=
+      ⟨by rw [Measure.restrict_apply_univ]; exact (hνK _ (hKcpt j) (hKU j)).lt_top⟩
+    have h1 := Besicovitch.ae_tendsto_rnDeriv ((μ.withDensity θ).restrict (K j)) (μ.restrict (K j))
+    have h2 := Measure.rnDeriv_withDensity (μ.restrict (K j)) hθ
+    rw [← restrict_withDensity hKm] at h2
+    have h3 : ∀ᵐ x ∂(μ.restrict (K j)), Tendsto (fun ρ : ℝ =>
+        ((μ.withDensity θ).restrict (K j)) (closedBall x ρ) / (μ.restrict (K j)) (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 (θ x)) := by
+      filter_upwards [h1, h2] with x hx1 hx2
+      rwa [hx2] at hx1
+    exact (ae_restrict_iff' hKm).1 h3
+  filter_upwards [ae_all_iff.2 hj] with x hx hxU
+  obtain ⟨j, hjK⟩ := hcover x hxU
+  have hr : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+  have hxK : x ∈ K j := hjK (mem_ball_self hr)
+  refine (hx j hxK).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
+  have hsub : closedBall x ρ ⊆ K j := (closedBall_subset_ball hρ.2).trans hjK
+  rw [Measure.restrict_apply measurableSet_closedBall, Measure.restrict_apply measurableSet_closedBall,
+    inter_eq_left.2 hsub]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
