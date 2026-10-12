@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_congr_on_open-a1",
+  "parent_id": "root.boundary_rectifiability-a1.local_to_global_im-a1",
+  "depth": 3,
+  "title": "Locality of τ(M, θ, ξ): agreement up to null sets on an open set",
+  "statement": "Let P, k ∈ ℕ, M, M' ⊆ ℝ^P, θ, θ' : ℝ^P → ℝ, ξ, ξ' : ℝ^P → Λ_k(ℝ^P) (k-vectors), and V ⊆ ℝ^P open. Suppose Hᵏ((M Δ M') ∩ V) = 0, and θ = θ' and ξ = ξ' hold Hᵏ⌞(M ∩ V)-a.e. Then for every k-form ω : ℝ^P → Λᵏ(ℝ^P) (no regularity assumed) with tsupport ω ⊆ V:\n∫_M θ(x)·ξ(x)(ω(x)) dHᵏ = ∫_{M'} θ'(x)·ξ'(x)(ω(x)) dHᵏ,\ni.e. tauAction k M θ ξ ω = tauAction k M' θ' ξ' ω (Bochner integrals; no integrability assumed).",
+  "lean_statement": "∀ (P k : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (ξ ξ' : Eucl P → NVector (Eucl P) k) (V : Set (Eucl P)), IsOpen V → (μHE[k] : Measure (Eucl P)) (symmDiff M M' ∩ V) = 0 → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)), θ x = θ' x ∧ ξ x = ξ' x) → ∀ ω : DifferentialForm (Eucl P) k, tsupport ω ⊆ V → tauAction k M θ ξ ω = tauAction k M' θ' ξ' ω",
+  "lean_name": "ltg_tau_congr_on_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-congr-on-open-a1-a1"
+}
