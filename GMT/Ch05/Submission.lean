@@ -458,6 +458,84 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Quantitative right inverse on balls of a near-linear self-map of `ℝⁿ`: if
+`|A h| ≥ (11/12)|h|` and `Φ` is `ε`-close to `A` on `B_r(0)` with `ε ≤ 1/24`, then every
+`w ∈ B_{r/2}(Φ 0)` has a preimage `X w ∈ B_{3r/5}(0)`, unique in `B_r(0)`, and `X` is
+`8/7`-Lipschitz on `B_{r/2}(Φ 0)`. -/
+theorem arp_rgr_ball_right_inverse : ∀ {n : ℕ} (Φ : Rn n → Rn n) (A : Rn n →L[ℝ] Rn n) (c : Rn n) (r ε : ℝ), 0 < r → 0 ≤ ε → ε ≤ 1 / 24 → (∀ h : Rn n, 11 / 12 * ‖h‖ ≤ ‖A h‖) → (∀ x₁ ∈ closedBall (0 : Rn n) r, ∀ x₂ ∈ closedBall (0 : Rn n) r, ‖Φ x₁ - Φ x₂ - A (x₁ - x₂)‖ ≤ ε * ‖x₁ - x₂‖) → Φ 0 = c → ∃ X : Rn n → Rn n, (∀ w ∈ closedBall c (r / 2), X w ∈ closedBall (0 : Rn n) (3 * r / 5) ∧ Φ (X w) = w) ∧ (∀ x ∈ closedBall (0 : Rn n) r, ∀ w ∈ closedBall c (r / 2), Φ x = w → x = X w) ∧ (∀ w₁ ∈ closedBall c (r / 2), ∀ w₂ ∈ closedBall c (r / 2), 7 / 8 * ‖X w₁ - X w₂‖ ≤ ‖w₁ - w₂‖) := by
+  intro n Φ A c r ε hr hε0 hε hA hΦ hc
+  -- Step 1: `(7/8)|x₁ − x₂| ≤ |Φ(x₁) − Φ(x₂)|` for `x₁, x₂ ∈ B_r(0)`.
+  have hinj : ∀ x₁ ∈ closedBall (0 : Rn n) r, ∀ x₂ ∈ closedBall (0 : Rn n) r,
+      7 / 8 * ‖x₁ - x₂‖ ≤ ‖Φ x₁ - Φ x₂‖ := by
+    intro x₁ hx₁ x₂ hx₂
+    have h₁ := hA (x₁ - x₂)
+    have h₂ := hΦ x₁ hx₁ x₂ hx₂
+    have h₃ : ‖A (x₁ - x₂)‖ ≤ ‖Φ x₁ - Φ x₂‖ + ‖Φ x₁ - Φ x₂ - A (x₁ - x₂)‖ :=
+      calc ‖A (x₁ - x₂)‖ = ‖(Φ x₁ - Φ x₂) - (Φ x₁ - Φ x₂ - A (x₁ - x₂))‖ := by
+            rw [sub_sub_cancel]
+        _ ≤ _ := norm_sub_le _ _
+    have h₄ : ε * ‖x₁ - x₂‖ ≤ 1 / 24 * ‖x₁ - x₂‖ :=
+      mul_le_mul_of_nonneg_right hε (norm_nonneg _)
+    linarith
+  -- Step 2: `A` is injective, hence bijective, with a right inverse of norm `≤ 12/11`.
+  have hAinj : Function.Injective A := by
+    intro a b hab
+    have h := hA (a - b)
+    rw [map_sub, hab, sub_self, norm_zero] at h
+    have h' : ‖a - b‖ = 0 := le_antisymm (by linarith [norm_nonneg (a - b)]) (norm_nonneg _)
+    exact sub_eq_zero.mp (norm_eq_zero.mp h')
+  have hAsurj : Function.Surjective A :=
+    (LinearMap.injective_iff_surjective (f := (A : Rn n →ₗ[ℝ] Rn n))).mp hAinj
+  let Ainv : A.NonlinearRightInverse :=
+    { toFun := Function.surjInv hAsurj
+      nnnorm := 12 / 11
+      bound' := fun k => by
+        have h := hA (Function.surjInv hAsurj k)
+        rw [Function.surjInv_eq hAsurj] at h
+        push_cast
+        linarith
+      right_inv' := Function.surjInv_eq hAsurj }
+  -- Step 3: `B_{r/2}(c) ⊆ Φ(B_{3r/5}(0))`, by the contraction argument packaged in
+  -- `ApproximatesLinearOn.surjOn_closedBall_of_nonlinearRightInverse`.
+  have happrox : ApproximatesLinearOn Φ A (closedBall 0 r) ⟨ε, hε0⟩ := hΦ
+  have hsurj := happrox.surjOn_closedBall_of_nonlinearRightInverse Ainv (ε := 3 * r / 5)
+    (b := 0) (by positivity) (closedBall_subset_closedBall (by linarith))
+  have hball : closedBall c (r / 2) ⊆
+      closedBall (Φ 0) (((Ainv.nnnorm : ℝ)⁻¹ - ((⟨ε, hε0⟩ : ℝ≥0) : ℝ)) * (3 * r / 5)) := by
+    rw [hc]
+    refine closedBall_subset_closedBall ?_
+    show r / 2 ≤ (((12 / 11 : ℝ≥0) : ℝ)⁻¹ - ε) * (3 * r / 5)
+    push_cast
+    nlinarith
+  have hex : ∀ w ∈ closedBall c (r / 2), ∃ x ∈ closedBall (0 : Rn n) (3 * r / 5), Φ x = w :=
+    fun w hw => hsurj (hball hw)
+  -- Step 4: `X(w)` is a chosen preimage for `w ∈ B_{r/2}(c)`, and `0` otherwise.
+  classical
+  let X : Rn n → Rn n := fun w =>
+    if hw : w ∈ closedBall c (r / 2) then (hex w hw).choose else 0
+  have hX : ∀ w ∈ closedBall c (r / 2),
+      X w ∈ closedBall (0 : Rn n) (3 * r / 5) ∧ Φ (X w) = w := by
+    intro w hw
+    simp only [X, hw, ↓reduceDIte]
+    exact (hex w hw).choose_spec
+  have hXr : ∀ w ∈ closedBall c (r / 2), X w ∈ closedBall (0 : Rn n) r := fun w hw =>
+    closedBall_subset_closedBall (by linarith) (hX w hw).1
+  refine ⟨X, hX, ?_, ?_⟩
+  · -- Step 5: a preimage in `B_r(0)` is `X(w)`.
+    intro x hx w hw hxw
+    have h := hinj x hx (X w) (hXr w hw)
+    rw [hxw, (hX w hw).2, sub_self, norm_zero] at h
+    have h' : ‖x - X w‖ = 0 := le_antisymm (by linarith [norm_nonneg (x - X w)]) (norm_nonneg _)
+    exact sub_eq_zero.mp (norm_eq_zero.mp h')
+  · -- Step 6: `(7/8)|X(w₁) − X(w₂)| ≤ |w₁ − w₂|`.
+    intro w₁ hw₁ w₂ hw₂
+    have h := hinj (X w₁) (hXr w₁ hw₁) (X w₂) (hXr w₂ hw₂)
+    rwa [(hX w₁ hw₁).2, (hX w₂ hw₂).2] at h
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
