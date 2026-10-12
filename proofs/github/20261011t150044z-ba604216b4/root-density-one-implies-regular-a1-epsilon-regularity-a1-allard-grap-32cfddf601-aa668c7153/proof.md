@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_pushforward-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 0 (Φ⁻¹ is 1-Lipschitz on F, hence Lⁿ(Z) ≤ Hⁿ(Φ(Z))) and step 1 (Hⁿ ≤ μ on spt μ ∩ W, from support_null and θ ≥ 1), packaged as one measure inequality; in parent step 5 it replaces the area formula, of which only the inequality ∫_Z w∘Φ dLⁿ ≤ ∫_{Φ(Z)} w dμ is used. The hypothesis Hⁿ((spt μ ∩ W) ∖ M) = 0 is the conclusion of the parent's sibling support_null.
+1. (A 1-Lipschitz left inverse of Φ.) Let ι* be the adjoint of ι and π(x) := ι*(x − z). For u, v ∈ ℝⁿ, ⟨u, π(Φ(v))⟩ = ⟨ιu, ιv + ι'f(v)⟩ = ⟨u, v⟩ + 0, so π(Φ(v)) = v. As ‖ι*‖ = ‖ι‖ ≤ 1, |π(x) − π(x')| = |ι*(x − x')| ≤ |x − x'|.
+2. (Lⁿ ≤ Hⁿ∘Φ.) For every Z ⊆ ℝⁿ: π(Φ(Z)) = Z, and a 1-Lipschitz map does not increase Hⁿ, so Hⁿ(Z) ≤ 1ⁿ·Hⁿ(Φ(Z)); on ℝⁿ the normalized Hⁿ equals Lebesgue measure. Hence Lⁿ(Z) ≤ Hⁿ(Φ(Z)).
+3. (Hⁿ ≤ μ on subsets of spt μ ∩ W.) Let T ⊆ spt μ ∩ W and let T' be a measurable hull of T for μ (T ⊆ T', T' measurable, μ(T') = μ(T)). Since T ⊆ (T' ∩ M) ∪ ((spt μ ∩ W) ∖ M), Hⁿ(T) ≤ Hⁿ(T' ∩ M) + Hⁿ((spt μ ∩ W) ∖ M) = Hⁿ(T' ∩ M). As θ ≥ 1 on M, Hⁿ(T' ∩ M) = ∫_{T'∩M} 1 dHⁿ ≤ ∫_{T'∩M} θ dHⁿ = μ(T') = μ(T).
+4. (Conclusion.) Φ is continuous, hence measurable. For measurable Y ⊆ ℝ^P put Z := Φ⁻¹(Y) ∩ A; then (Φ_#(Lⁿ⌞A))(Y) = Lⁿ(Z). Since Φ(Z) ⊆ Φ(A) ⊆ spt μ ∩ W and Φ(Z) ⊆ Y ∩ Φ(A), steps 2 and 3 give Lⁿ(Z) ≤ Hⁿ(Φ(Z)) ≤ μ(Φ(Z)) ≤ μ(Y ∩ Φ(A)) = (μ⌞Φ(A))(Y). Testing on measurable sets suffices (Measure.le_iff), so Φ_#(Lⁿ⌞A) ≤ μ⌞Φ(A). ∎
+Lean notes: π := fun x => ι.toContinuousLinearMap.adjoint (x − z), with ext_inner_left, ContinuousLinearMap.adjoint_inner_right, LinearIsometry.inner_map_map, ι.norm_toContinuousLinearMap_le, LinearIsometryEquiv.norm_map; step 2 by Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (in the frozen import closure) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume n; step 3 by toMeasurable, measure_union_le, withDensity_apply, Measure.restrict_restrict, setLIntegral_mono', R.mult_pos; step 4 by Measure.le_iff, Measure.map_apply, Measure.restrict_apply. Reference implementation: a compiled proof of exactly this declaration (single theorem, default maxHeartbeats, no helper declarations or set_option, axioms propext/Classical.choice/Quot.sound, passes the leaf-delta rule) is in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/graph_c1_decomposition/GraphC1Full.lean (git-ignored scratch; same machine).
+
+## Key steps
+
+1. π(x) := ι*(x − z) is 1-Lipschitz with π ∘ Φ = id.
+2. Lⁿ(Z) ≤ Hⁿ(Φ(Z)) by the Lipschitz image bound and Hⁿ = Lⁿ on ℝⁿ.
+3. Hⁿ(T) ≤ μ(T) for T ⊆ spt μ ∩ W, using Hⁿ((spt μ ∩ W) ∖ M) = 0 and θ ≥ 1 on M.
+4. On measurable Y: Lⁿ(Φ⁻¹(Y) ∩ A) ≤ μ(Y ∩ Φ(A)); conclude by Measure.le_iff.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean  (all three e4148e7f9503aa28930a4e6a30b0aed205977718fd3c4d1938266b009467ef20)`
+- `rg -n -i 'campanato' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory  (no match, exit 1); rg -n 'dorag|graph_slope|campanato' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT  (no match, exit 1)`
+- `rg -n 'theorem hasFDerivAt_of_tendstoLocallyUniformlyOn' Analysis/Calculus/UniformLimitsDeriv.lean; rg -n 'theorem ae_tendsto_lintegral_enorm_sub_div|theorem ae_tendsto_average_norm_sub' MeasureTheory/Covering/Differentiation.lean; rg -n 'theorem tendsto_filterAt' MeasureTheory/Covering/Besicovitch.lean  (snapshot Mathlib)`
+- `rg -n 'theorem measurable_fderiv\b' Analysis/Calculus/FDeriv/Measurable.lean; rg -n 'theorem continuousOn_extendFrom|theorem extendFrom_extends' Topology/ExtendFrom.lean; rg -n 'theorem hasFDerivAt_integral_of_dominated_loc_of_lip\b' Analysis/Calculus/ParametricIntegral.lean  (snapshot Mathlib)`
+- `rg -n 'theorem starProjection_eq_self_iff|theorem inner_starProjection_left_eq_right|theorem starProjection_norm_le' Analysis/InnerProductSpace/Projection/Basic.lean; rg -n 'theorem ae_differentiableAt|theorem LipschitzWith.ae_differentiableAt' Analysis/Calculus/Rademacher.lean; rg -n 'theorem norm_fderiv_le_of_lipschitz\b' Analysis/Calculus/FDeriv/Basic.lean; rg -n 'theorem contDiffOn_succ_iff_fderiv_of_isOpen' Analysis/Calculus/ContDiff/*.lean  (snapshot Mathlib)`
+- `rg -n 'euclideanHausdorffMeasure_eq_volume' MeasureTheory Geometry; rg -n "theorem lintegral_map'" MeasureTheory/Integral/Lebesgue/Map.lean; rg -n 'theorem le_iff\b' MeasureTheory/Measure/*.lean  (snapshot Mathlib); rg -n euclideanHausdorffMeasure_image_le_of_lipschitzOn /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean; grep -n import .../Chapter03/Rectifiable.lean`
+- `python3 -I: lean_name scan of the 7 dorag_gc_* names over workspaces/gmt-ch0*/.humanize/github-theorem-prover/runs/*/dag.json (1616 nodes; no match); comparison of the four sibling stubs in GraphC1Full.lean with the dag.json lean_statement of tangent_projection_measurable, monotonicity, support_null, graph_tangent (all equal)`
+- `python3 -I gmt-compare.child_modules (contract mode) → 8 Challenge_<key>.lean modules (7 children + parent); lean-4.35.0-rc3 with the built workspace LEAN_PATH on each (exit 0, only the sorry warning)`
+- `python3 -I lean_contract.validate_lean_statement on the 7 child types; leaf_verification.check_source_delta for each child inserted alone before main_theorem (all pass)`
+- `source GMT/Scratch/graph_c1_decomposition/env.sh; lean GraphC1Full.lean with #print axioms (exit 0, 120 s)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ExtendFrom.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/graph_c1_decomposition/GraphC1Full.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical (sha256 e4148e7f…) to the workspace Contract and to Submission, which is the compiler context of every child type.
+
+Nothing in the snapshot proves a child, so nothing can be reused: 'campanato' and the dorag/graph_slope names have no match (rg exit 1).
+
+The pinned library supplies every API the child proofs use:
+- hasFDerivAt_of_tendstoLocallyUniformlyOn (UniformLimitsDeriv.lean:396);
+- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (Differentiation.lean:818);
+- Besicovitch.tendsto_filterAt (Besicovitch.lean:1060);
+- measurable_fderiv (FDeriv/Measurable.lean:378);
+- extendFrom_extends and continuousOn_extendFrom (ExtendFrom.lean:55, 61);
+- hasFDerivAt_integral_of_dominated_loc_of_lip (ParametricIntegral.lean:163);
+- Submodule.starProjection_eq_self_iff, starProjection_norm_le and inner_starProjection_left_eq_right (Projection/Basic.lean:290, 386, 652);
+- LipschitzWith.ae_differentiableAt (Rademacher.lean:385);
+- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947);
+- contDiffOn_succ_iff_fderiv_of_isOpen (ContDiff/Defs.lean:891);
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187);
+- lintegral_map' (Lebesgue/Map.lean:36);
+- Measure.le_iff (CompleteLattice.lean:41);
+- SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean:216), in the import closure via Chapter03/Rectifiable.
+
+Lean checks:
+- All 8 comparator-format challenge modules (7 children and the parent) elaborate.
+- The complete development compiles; every child uses only propext, Classical.choice and Quot.sound.
+- The parent assembly proves the exact frozen type from the children and the four sibling stubs, whose types equal the frozen DAG types.
+- No dorag_gc_* name collides with any DAG reservation, so the v1 names are kept with identical types.

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "04d94dfac51783862e8c29a11f5d4891c785a1afc3102ed76a4faa7c515404dd",
+  "git_delta": {
+    "base_commit": "026079c7132f598c0b885a1456ff3594e0ff3114",
+    "candidate_commit": "c5419675debe4f9cadfd546fb030c72b11565a17",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_gc_graph_map_volume_le_measure",
+    "diff_sha256": "9f4f8d3e54fed017bbb0e74d4f779aea3df5bee538f37868a98848e2fc9d2bf0",
+    "source_sha256": "7bc337048b9611e2e57026baf6eca5b989b37e2f700dc0d9cb425a483ae8cc11",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_gc_graph_map_volume_le_measure",
+      "statement": "∀ (n k P : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (f : Euclid n → Euclid k) (z : Euclid P) (A : Set (Euclid n)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → Continuous f → μHE[n] ((R.measure.support ∩ W) \\ R.carrier) = 0 → (∀ v ∈ A, z + ι v + ι' (f v) ∈ R.measure.support ∩ W) → Measure.map (fun v => z + ι v + ι' (f v)) (volume.restrict A) ≤ R.measure.restrict ((fun v => z + ι v + ι' (f v)) '' A)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
