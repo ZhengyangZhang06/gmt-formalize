@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "depth": 3,
+  "title": "Approximate tangent spaces are invariant under dilations",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, x, y ∈ ℝ^P, λ > 0, Q a linear subspace of ℝ^P and η = η_{x,λ}. If Q is the approximate tangent space of M at y in the sense of Simon 3.1.4 (SimonGMT HasApproximateTangentSpaceAt n M y Q: dim Q = n and ∫_{η_{y,r}(M)} f dHⁿ → ∫_Q f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^P)), then HasApproximateTangentSpaceAt n (η(M)) (η(y)) Q.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x y : Euclid P) (lam : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < lam → HasApproximateTangentSpaceAt n M y Q → HasApproximateTangentSpaceAt n (dilation x lam '' M) (dilation x lam y) Q",
+  "lean_name": "dtc_approxTangent_dilation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1-a1"
+}
