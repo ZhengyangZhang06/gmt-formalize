@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "216e39d2a3712dac91a929182188ebc840ad5a091355ffbf69cebfd942e24b16",
+  "git_delta": {
+    "base_commit": "19eeaaf84ea793313a3ea8f7676d1ee974df048b",
+    "candidate_commit": "e3de3d35c7b0dfe1f1c365afca4657511e52ded8",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7f31d470cdf76600baae269065e194d26561c1b20ac207eacc9adc00d88da341",
+    "source_sha256": "48c4e3f11fa2f7ef62039f2445ca32ac31e08644547b7a55610beb1e19c0f439",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ted_planes_limit",
+      "statement": "∀ (P n : ℕ) (S : ℕ → Submodule ℝ (Euclid P)) (a q : ℝ), (∀ j, Module.finrank ℝ (S j) = n) → 0 ≤ q → q ≤ 1 / 4 → (∀ j : ℕ, ∑ i : Fin P, ‖(S (j + 1)).starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ a * q ^ j) → ∃ S' : Submodule ℝ (Euclid P), Module.finrank ℝ S' = n ∧ ∀ j : ℕ, ∑ i : Fin P, ‖S'.starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 4 * a * q ^ j",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

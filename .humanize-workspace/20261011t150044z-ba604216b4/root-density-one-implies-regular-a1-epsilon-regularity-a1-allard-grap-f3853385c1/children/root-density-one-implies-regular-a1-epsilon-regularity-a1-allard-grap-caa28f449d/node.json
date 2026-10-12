@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1.planes_limit-a1.proj_limit_rank-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1.planes_limit-a1",
+  "depth": 6,
+  "title": "A column-wise limit of orthogonal projections onto n-planes is the orthogonal projection onto an n-plane",
+  "statement": "Let P, n ∈ ℕ and E := ℝ^P (EuclideanSpace ℝ (Fin P), written Euclid P) with standard basis e_i := EuclideanSpace.single i 1 (i < P). For a subspace V ⊆ E let p_V := V.starProjection be the orthogonal projection onto V. Let (S_j)_{j∈ℕ} be subspaces of E with dim S_j = n (Module.finrank ℝ S_j = n) for every j. Let w_0, …, w_{P−1} ∈ E (a family w : Fin P → E) be such that p_{S_j} e_i → w_i as j → ∞ for every i < P. Then there is a subspace S' ⊆ E with dim S' = n (Module.finrank ℝ S' = n) and p_{S'} e_i = w_i for every i < P.",
+  "lean_statement": "∀ (P n : ℕ) (S : ℕ → Submodule ℝ (Euclid P)) (w : Fin P → Euclid P), (∀ j, Module.finrank ℝ (S j) = n) → (∀ i : Fin P, Tendsto (fun j => (S j).starProjection (EuclideanSpace.single i (1 : ℝ))) atTop (𝓝 (w i))) → ∃ S' : Submodule ℝ (Euclid P), Module.finrank ℝ S' = n ∧ ∀ i : Fin P, S'.starProjection (EuclideanSpace.single i (1 : ℝ)) = w i",
+  "lean_name": "dorag_ted_pl_proj_limit_rank",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-caa28f449d-a1"
+}
