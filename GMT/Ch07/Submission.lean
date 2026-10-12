@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+namespace Submission
+
+/-- Weyl's lemma, convolution step: for locally integrable `f` and `φ` smooth with compact
+support, `F(x) = ∫ f(y) φ(x − y) dy` is `C^m` for every `m` and `ΔF(x) = ∫ f(y) Δφ(x − y) dy`,
+`Δψ(z) = Σᵢ D²ψ(z)(eᵢ, eᵢ)` (Evans, PDE, App. C, Thm 7(i)).  `F = f ⋆[L] φ` for multiplication
+`L`; differentiating under the integral twice gives `D(DF) = f ⋆ D²φ`, and evaluation at
+`(v, w)` commutes with the integral (`convolution_precompR_apply`). -/
+theorem dorag_ha_weyl_conv_laplacian : ∀ (n : ℕ) (f φ : Euclid n → ℝ), LocallyIntegrable f → (∀ m : ℕ, ContDiff ℝ m φ) → HasCompactSupport φ → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, f y * φ (x - y))) ∧ ∀ x : Euclid n, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, f y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = ∫ y, f y * ∑ i : Fin n, iteratedFDeriv ℝ 2 φ (x - y) ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+  intro n f φ hf hφ hφc
+  -- `F = f ⋆[L] φ` for the multiplication bilinear map `L a b = a * b`.
+  set L : ℝ →L[ℝ] ℝ →L[ℝ] ℝ := ContinuousLinearMap.mul ℝ ℝ with hL
+  have hF : (fun x => ∫ y, f y * φ (x - y)) = convolution f φ L volume := by
+    funext x
+    rw [hL, convolution_mul]
+  have hφ1 : ContDiff ℝ 1 φ := by exact_mod_cast hφ 1
+  have hφ2 : ContDiff ℝ 2 φ := by exact_mod_cast hφ 2
+  have hdφ : ContDiff ℝ 1 (fderiv ℝ φ) := hφ2.fderiv_right one_add_one_eq_two.le
+  refine ⟨fun m => ?_, fun x => ?_⟩
+  · rw [hF]
+    exact hφc.contDiff_convolution_right L hf (hφ m)
+  -- `DF = f ⋆[L.precompR] Dφ` and `D(DF)(x) v w = ∫ f(y) D²φ(x − y) v w dy`.
+  have hD : fderiv ℝ (convolution f φ L volume) =
+      convolution f (fderiv ℝ φ) (L.precompR (Euclid n)) volume := by
+    ext1 x₀
+    exact (hφc.hasFDerivAt_convolution_right L hf hφ1 x₀).fderiv
+  have hc2 : Continuous (fderiv ℝ (fderiv ℝ φ)) := hdφ.continuous_fderiv one_ne_zero
+  have hs2 : HasCompactSupport (fderiv ℝ (fderiv ℝ φ)) := (hφc.fderiv ℝ).fderiv ℝ
+  have hD2 : ∀ v w : Euclid n, fderiv ℝ (fderiv ℝ (convolution f φ L volume)) x v w =
+      ∫ y, f y * fderiv ℝ (fderiv ℝ φ) (x - y) v w := by
+    intro v w
+    have hc3 : Continuous fun a => fderiv ℝ (fderiv ℝ φ) a v := hc2.clm_apply continuous_const
+    have hs3 : HasCompactSupport fun a => fderiv ℝ (fderiv ℝ φ) a v :=
+      hs2.comp_left (g := fun A : Euclid n →L[ℝ] Euclid n →L[ℝ] ℝ => A v) rfl
+    rw [hD, ((hφc.fderiv ℝ).hasFDerivAt_convolution_right (L.precompR (Euclid n)) hf hdφ x).fderiv,
+      convolution_precompR_apply (L.precompR (Euclid n)) hf hs2 hc2 x v,
+      convolution_precompR_apply L hf hs3 hc3 x w, hL, convolution_mul]
+  -- Each integrand `f(y) D²φ(x − y) v w` is integrable, so the sum over `i` commutes with `∫`.
+  have hint : ∀ v w : Euclid n, Integrable fun y => f y * fderiv ℝ (fderiv ℝ φ) (x - y) v w := by
+    intro v w
+    have hc4 : Continuous fun a => fderiv ℝ (fderiv ℝ φ) a v w :=
+      (hc2.clm_apply continuous_const).clm_apply continuous_const
+    have hs4 : HasCompactSupport fun a => fderiv ℝ (fderiv ℝ φ) a v w :=
+      hs2.comp_left (g := fun A : Euclid n →L[ℝ] Euclid n →L[ℝ] ℝ => A v w) rfl
+    exact hs4.convolutionExists_right L hf hc4 x
+  simp only [iteratedFDeriv_two_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [hF]
+  simp_rw [hD2, Finset.mul_sum]
+  rw [integral_finsetSum _ fun i _ => hint _ _]
+
+end Submission
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
