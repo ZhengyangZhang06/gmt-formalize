@@ -335,6 +335,55 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **`normDet` of an adjoint** (Simon Ch. 2, §6, co-area formula for linear maps,
+`chapter-02.txt` lines 1424–1461, and Ch. 3 (2.7), `chapter-03.txt` lines 412–419): for a linear
+map `P : X → Y` of finite-dimensional real inner product spaces, if `P` is surjective then
+`normDet P* = normDet (P ∘ ι)` with `ι` the inclusion of `(ker P)ᗮ`, and otherwise
+`normDet P* = 0`. The horizontal map `h = P ∘ ι` is an isomorphism, `P*` corestricts to `h*`
+(as `range P* = (ker P)ᗮ`), and in orthonormal bases with a common index the matrix of `h*` is
+the transpose of that of `h`. If `P` is not surjective, `ker P* = (range P)ᗮ ≠ 0`. -/
+theorem Submission.coarea_normDet_adjoint_eq_horizontal : ∀ {X Y : Type} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (P : X →ₗ[ℝ] Y), (Function.Surjective P → (LinearMap.adjoint P).normDet = (P ∘ₗ (LinearMap.ker P)ᗮ.subtype).normDet) ∧ (¬ Function.Surjective P → (LinearMap.adjoint P).normDet = 0) := by
+  intro X Y _ _ _ _ _ _ P
+  refine ⟨fun hP => ?_, fun hP => ?_⟩
+  · set H := (LinearMap.ker P)ᗮ
+    set h : H →ₗ[ℝ] Y := P ∘ₗ H.subtype with hh
+    -- `h` is injective, as `ker P ⊓ (ker P)ᗮ = ⊥`.
+    have hinj : Function.Injective h := by
+      rw [← LinearMap.ker_eq_bot, eq_bot_iff]
+      intro u hu
+      have hz : (u : X) ∈ LinearMap.ker P ⊓ H := ⟨hu, u.property⟩
+      rw [Submodule.inf_orthogonal_eq_bot] at hz
+      exact (Submodule.mem_bot ℝ).mpr (Subtype.ext ((Submodule.mem_bot ℝ).mp hz))
+    -- `h` is surjective: `P x = h (x - π x)` with `π` the orthogonal projection onto `ker P`.
+    have hsurj : Function.Surjective h := by
+      intro y
+      obtain ⟨x, rfl⟩ := hP y
+      refine ⟨⟨x - (LinearMap.ker P).starProjection x,
+        Submodule.sub_starProjection_mem_orthogonal x⟩, ?_⟩
+      simp [hh, (LinearMap.mem_ker).mp ((LinearMap.ker P).starProjection_apply_mem x)]
+    have hd : finrank ℝ H = finrank ℝ Y := (LinearEquiv.ofBijective h ⟨hinj, hsurj⟩).finrank_eq
+    -- `P*` takes values in `H = (ker P)ᗮ = range P*`, and its corestriction to `H` is `h*`.
+    have hm : ∀ y, LinearMap.adjoint P y ∈ H := by
+      intro y
+      rw [show H = LinearMap.range (LinearMap.adjoint P) from LinearMap.orthogonal_ker P]
+      exact ⟨y, rfl⟩
+    have ha : (LinearMap.adjoint P).codRestrict H hm = LinearMap.adjoint h := by
+      apply (LinearMap.eq_adjoint_iff _ _).mpr
+      intro y u
+      exact LinearMap.adjoint_inner_left P (u : X) y
+    rw [← LinearMap.normDet_codRestrict hm, ha]
+    -- In orthonormal bases indexed by the same `Fin d`, the matrix of `h*` is `Mᴴ = Mᵀ`.
+    classical
+    let bH := stdOrthonormalBasis ℝ H
+    let bY := (stdOrthonormalBasis ℝ Y).reindex (finCongr hd.symm)
+    rw [(LinearMap.adjoint h).normDet_eq_norm_det_toMatrix bY bH,
+      h.normDet_eq_norm_det_toMatrix bH bY, LinearMap.toMatrix_adjoint, Matrix.det_conjTranspose]
+    simp
+  · -- `ker P* = (range P)ᗮ ≠ ⊥`, since `range P ≠ ⊤`.
+    rw [LinearMap.normDet_eq_zero_iff_ker_ne_bot, ← LinearMap.orthogonal_range, ne_eq,
+      Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
+    exact hP
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
