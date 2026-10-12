@@ -669,6 +669,26 @@ theorem Submission.plane_disint_pointwise_measure :
     inferInstance (by filter_upwards [Ioo_mem_nhdsGT hr] using hm_prob) hf hm_lim
   exact ⟨η, hη, fun g ↦ (hηlim g).congr fun ρ ↦ hm_int ρ g⟩
 
+/-- **Simon Ch. 8, Lemma 1.3, last part** (child `identity_of_limits` of `plane_disintegration`):
+if for `μ_V`-a.e. `x` the measure `η(x)` on `G(N,n)` is a probability measure and the slice ratios
+`(∫_{Gₙ(B_ρ(x))} β(S) dV(y,S)) / μ_V(B_ρ(x))` tend to `∫ β dη(x)` for every continuous `β`, then
+`∫_{Gₙ(A)} β(S) dV(y,S) = ∫_A ∫ β dη(x) dμ_V(x)` for Borel `A` and continuous `β ≥ 0`.  The density
+`e` of `plane_disint_slice_density` is the limit of the same ratios, so `e(x) = ∫ β dη(x)` for
+`μ_V`-a.e. `x` by uniqueness of limits ("`e(x,j)` is exactly `η̃_V^(x)(β_j)`"). -/
+theorem Submission.plane_disint_identity_of_limits :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (η : Euclidean N → Measure (Grassmannian N n)), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) → ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight := by
+  intro N n U V η hη A β hA hβ
+  -- Printed (1)–(2) for `β`: the slice ratios tend to `e(x)` a.e. and `γ(A) = ∫_A e dμ_V`.
+  obtain ⟨e, -, he, hslice⟩ := Submission.plane_disint_slice_density N n U V β hβ
+  rw [hslice A hA]
+  refine setLIntegral_congr_fun_ae hA ?_
+  -- `e(x) = ∫ β dη(x)` by uniqueness of limits as `ρ ↓ 0`; `β` is bounded, so `η(x)`-integrable.
+  filter_upwards [hη, he] with x ⟨hprob, hlim⟩ hex _
+  rw [tendsto_nhds_unique hex (hlim β)]
+  exact ofReal_integral_eq_lintegral_ofReal
+    (β.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace β))
+    (ae_of_all _ hβ)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
