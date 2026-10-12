@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1.top_density_unique-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1",
+  "depth": 4,
+  "title": "Densities of top-degree test-form functionals on an open set are unique a.e.",
+  "statement": "Let m ∈ ℕ, n := m+1, and U ⊆ ℝⁿ = Eucl n open. Let e_i := EuclideanSpace.single i 1, and let dx be Lebesgue measure (volume). Let u, v : ℝⁿ → ℝ be integrable on every compact K ⊆ U. Suppose that for every ω ∈ Dⁿ(U) (TestFormOn U n: C^∞ compactly supported n-forms with tsupport ω ⊆ U),\n∫_U u(x)·ω(x)(e_1,…,e_n) dx = ∫_U v(x)·ω(x)(e_1,…,e_n) dx.\nThen u(x) = v(x) for Lebesgue-a.e. x ∈ U, i.e. ∀ᵐ x, x ∈ U → u x = v x.",
+  "lean_statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (u v : Eucl (m + 1) → ℝ), IsOpen U → (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) → (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn v K volume) → (∀ ω : TestFormOn U (m + 1), ∫ x in U, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume = ∫ x in U, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → u x = v x",
+  "lean_name": "ind_top_form_density_ae_unique",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-const-integer-a1-t-2c180ab89c-a1"
+}
