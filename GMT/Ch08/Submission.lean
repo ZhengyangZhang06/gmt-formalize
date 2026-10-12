@@ -410,6 +410,37 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Integrating-factor comparison in mean value theorem form (Simon Ch. 8, 3.3, with the
+integrating factor `e^{Lt}` of Ch. 4, 3.15–3.17): if `0 ≤ L`, `0 ≤ a ≤ b`, `f` and `g` have
+derivatives `f'` and `g'` at every point of `[a, b]`, and `0 ≤ f' t + L f t` and
+`g' t ≤ f' t + L f t` on `[a, b]`, then `e^{La} f(a) + (g(b) - g(a)) ≤ e^{Lb} f(b)`. -/
+theorem Submission.mono833_integrating_factor_comparison :
+    ∀ (L a b : ℝ) (f g f' g' : ℝ → ℝ), 0 ≤ L → 0 ≤ a → a ≤ b → (∀ t ∈ Icc a b, HasDerivAt f (f' t) t) → (∀ t ∈ Icc a b, HasDerivAt g (g' t) t) → (∀ t ∈ Icc a b, 0 ≤ f' t + L * f t) → (∀ t ∈ Icc a b, g' t ≤ f' t + L * f t) → Real.exp (L * a) * f a + (g b - g a) ≤ Real.exp (L * b) * f b := by
+  intro L a b f g f' g' hL ha hab hf hg hpos hle
+  -- Steps 1–2: by the chain and product rules, `H s = e^{Ls} f s - g s` has derivative
+  -- `e^{Lt} (f' t + L f t) - g' t` at every `t ∈ [a, b]`.
+  have hH : ∀ t ∈ Icc a b, HasDerivAt (fun s ↦ Real.exp (L * s) * f s - g s)
+      (Real.exp (L * t) * (f' t + L * f t) - g' t) t := by
+    intro t ht
+    have he : HasDerivAt (fun s ↦ Real.exp (L * s)) (Real.exp (L * t) * (L * 1)) t :=
+      ((hasDerivAt_id t).const_mul L).exp
+    convert (he.fun_mul (hf t ht)).fun_sub (hg t ht) using 1
+    ring
+  -- Steps 3–4: on `interior [a, b] = (a, b)`, `0 ≤ L t` gives `1 ≤ e^{Lt}`, so with
+  -- `u = f' t + L f t ≥ 0` we get `H' t = e^{Lt} u - g' t ≥ u - g' t ≥ 0`; hence `H` is
+  -- monotone on `[a, b]` by the mean value theorem.
+  have hmono : MonotoneOn (fun s ↦ Real.exp (L * s) * f s - g s) (Icc a b) := by
+    refine monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc a b)
+      (fun t ht ↦ (hH t ht).continuousAt.continuousWithinAt)
+      (fun t ht ↦ (hH t (interior_subset ht)).hasDerivWithinAt) fun t ht ↦ ?_
+    have ht' : t ∈ Icc a b := interior_subset ht
+    have h1 : 1 ≤ Real.exp (L * t) := Real.one_le_exp (mul_nonneg hL (ha.trans ht'.1))
+    linarith [mul_le_mul_of_nonneg_right h1 (hpos t ht'), hle t ht']
+  -- Step 5: `H a ≤ H b` rearranges to the claim.
+  have hab' : Real.exp (L * a) * f a - g a ≤ Real.exp (L * b) * f b - g b :=
+    hmono ⟨le_rfl, hab⟩ ⟨hab, le_rfl⟩ hab
+  linarith
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
