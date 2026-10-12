@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "addd597e352768b94987067f3cb0970b93edf9c10efa2903f9711b52b11ef735",
+  "git_delta": {
+    "base_commit": "c73fba00e392d39c54fadae3b48c1f67ffaa3e38",
+    "candidate_commit": "faab72573cf7c2f6cc96292c9cb1ffd08cf1bd02",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_lintegral_image_eq_of_pieces",
+    "diff_sha256": "d74e971f67c7e7f9efe0983703cd641bdc3650e4024df9ee1f2b54c3829d0735",
+    "source_sha256": "9e6f6b3776d5e647f161d100f9b59f996f28979d567ca3821cec21f81c2a5a85",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_lintegral_image_eq_of_pieces",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (f : X → X) (Z : Set X) (D : ℕ → Set X) (u g : X → ℝ≥0∞), Function.Injective f → (∀ Y : Set X, μ Y = 0 → μ (f '' Y) = 0) → (∀ Y : Set X, NullMeasurableSet Y μ → NullMeasurableSet (f '' Y) μ) → NullMeasurableSet Z μ → (∀ i, MeasurableSet (D i)) → Pairwise (fun i j ↦ Disjoint (D i) (D j)) → μ (Z \\ ⋃ i, D i) = 0 → (∀ i, ∫⁻ y in f '' (Z ∩ D i), u y ∂μ = ∫⁻ x in Z ∩ D i, g x ∂μ) → ∫⁻ y in f '' Z, u y ∂μ = ∫⁻ x in Z, g x ∂μ",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
