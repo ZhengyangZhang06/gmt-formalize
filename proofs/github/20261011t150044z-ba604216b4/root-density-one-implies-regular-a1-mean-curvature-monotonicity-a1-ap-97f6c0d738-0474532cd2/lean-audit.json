@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8ee72efe92b6f4ae8a33826839b91d031bfd98ebc022085be7f80c0b5a1ea0bb",
+  "git_delta": {
+    "base_commit": "872a26fa08f841e6a76ef0c60291c593e8d3464f",
+    "candidate_commit": "4dcaa4c4d5b44d8202bdf95bf131069381e21c2b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "08fbf5fbc2b2e53dc88c349ee1c809218c4bd32f7446e3403e1303853f9d9860",
+    "source_sha256": "2d909ed7d1627b36b7e126716dbd535240c0aa76529d090ab37e68ab3d94bd6b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_approxTangentPlane_subset_tangentSpace",
+      "statement": "∀ (P n r d : ℕ) (M N : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 1 ≤ r → IsEmbeddedSubmanifold r d N → x ∈ N → μHE[n] (M \\ N) = 0 → HasApproximateTangentSpaceAt n M x Q → (Q : Set (Euclid P)) ⊆ tangentSpace N x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
