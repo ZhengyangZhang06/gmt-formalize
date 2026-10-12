@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "62634897ffe9c59c7f1b75017870ecc29480f28f74049aa4bd7f23c27efe7794",
+  "git_delta": {
+    "base_commit": "9e9e0ab99fe0401c8673445557b82ecc54880992",
+    "candidate_commit": "4c017693ec7b180f8b0743dde7a04312a6d21cb9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_zdv_erase_point",
+    "diff_sha256": "e7a049ee799b0b2299c092e66e3c37672d913b204e712dc31eab738a6be55860",
+    "source_sha256": "0a439501359abdfc1d78fc66468034065767bf8dc5d673bc9606bfe37a73d7bf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_zdv_erase_point",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0) (p : Euclid P), p ∈ R.carrier → ∃ R' : IMRep U 0, R'.carrier = R.carrier \\ {p} ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ ∀ ω : TestFormOn U 0, R.action (ω : DifferentialForm (Euclid P) 0) = R'.action (ω : DifferentialForm (Euclid P) 0) + (R.mult p : ℝ) * R.orient p ((ω : DifferentialForm (Euclid P) 0) p)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
