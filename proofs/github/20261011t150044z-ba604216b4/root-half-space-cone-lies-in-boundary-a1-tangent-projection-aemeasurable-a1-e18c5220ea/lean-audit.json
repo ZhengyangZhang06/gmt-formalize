@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d432a0262c8f44b88f66eedf6ff936cae283fe696386c483341e5d02cc4a7d83",
+  "git_delta": {
+    "base_commit": "30fff6e384053612318de9d0699c96304e69b7be",
+    "candidate_commit": "74a7d9117386066688fb3586d8463c5a8900db71",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "6620fa54b22bc665b624f9fa48c9d0f4ef72fab65bcf58362bce9516a5fb86d5",
+    "source_sha256": "1657b8c9b6748c84674acbdb1de5ff4f59f48cc56eaa648c48b29848059755a6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_univ_tangent_starProjection_aemeasurable",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

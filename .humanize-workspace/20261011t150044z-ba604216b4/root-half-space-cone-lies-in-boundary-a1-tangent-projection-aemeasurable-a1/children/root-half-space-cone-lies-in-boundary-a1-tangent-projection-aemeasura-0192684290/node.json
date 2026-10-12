@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+  "depth": 3,
+  "title": "Blow-up integrals over a locally Hⁿ-finite set are continuous in the centre",
+  "statement": "Let P, n ∈ ℕ and let M ⊆ ℝ^P be any set such that Hⁿ(M ∩ K) < ∞ for every compact K ⊆ ℝ^P, where Hⁿ = μHE[n]. Let f : ℝ^P → ℝ be continuous with compact support, and let r > 0. Put η_{x,r}(y) := r⁻¹(y − x) (SimonGMT Chapter03.blowUpMap x r). Then x ↦ ∫_{η_{x,r}(M)} f dHⁿ, the integral of f against Hⁿ⌞η_{x,r}(M), is a continuous function on ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun x : Euclid P => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n])",
+  "lean_name": "continuous_blowUp_image_setIntegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290-a1"
+}

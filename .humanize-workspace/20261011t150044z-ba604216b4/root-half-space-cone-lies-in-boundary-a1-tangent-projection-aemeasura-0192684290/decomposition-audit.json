@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|continuousAt_of_dominated|theorem integral_smul_measure|MeasurableEmbedding.integral_map|bounded_above_of_compact_support|integrable_indicator_iff|theorem integrableOn_const",
+        "theorem restrict_apply |theorem map_apply |Homeomorph.measurableEmbedding|subset_closedBall|PiLp.borelSpace|WithLp.measurableSpace",
+        "setIntegral_blowUpMap_image_eq_inv_pow_mul|continuous_integral_comp_blowUpMap",
+        "git for-each-ref --format=%(objectname)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-blowup-audit-ik411x3f/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-blowup-audit-ik411x3f/CheckedRoute.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        "lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/tmp/bic2-v2/gen/Full.lean",
+        "/tmp/gmt-blowup-audit-ik411x3f/Contracts.lean",
+        "/tmp/gmt-blowup-audit-ik411x3f/CheckedRoute.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical contracts and compatibility of the inspected Mathlib sources. Both exact child propositions elaborate before either child is declared; Borel, proper-space and first-countability instances check. Independently inspected and recompiled the supplied proof bodies at the exact frozen types, under Submission.X. Both children and the assembled parent use only propext, Classical.choice and Quot.sound. A separate Lean proof derives the exact selected parent from the two child propositions as hypotheses. No conflicting name reservation was found in the DAG, other nodes' JSON, searched libraries or available Submission.lean files across 235 distinct ref objects. The split is appropriate: change of variables and dominated continuity are independent obligations with correctly empty dependency lists. Applying the second child to μHE[n].restrict M and using the first establishes the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including arbitrary M and f, positive r and the real factor (r⁻¹)^n. Each proof step is justified: the affine homeomorphism, arbitrary-set Hausdorff scaling, push-forward equality on Borel test sets, and unconditional measurable-embedding and measure-scaling integral identities. Restriction requires measurability only of the test sets, so no hypothesis on M is missing. The totalized Bochner integral convention is correctly handled. The proof is complete and non-circular; the bare identifier is unreserved."
+    },
+    {
+      "key": "blowup_integrand_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition includes exactly the prose hypotheses. Compact support supplies the uniform bound and support radius; positivity of r justifies the support estimate; finite-dimensionality makes the dominating closed ball compact. Compact-set finiteness makes its constant indicator integrable. Continuous sections supply AE-strong measurability and pointwise parameter continuity, satisfying every hypothesis of continuousAt_of_dominated. The proof covers the stated arbitrary measure without additional assumptions or circular reliance. The bare identifier is unreserved."
+    }
+  ],
+  "required_changes": []
+}
