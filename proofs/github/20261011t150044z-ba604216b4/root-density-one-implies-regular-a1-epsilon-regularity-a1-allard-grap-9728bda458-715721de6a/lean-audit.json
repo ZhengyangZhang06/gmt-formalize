@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65768bd2ec1babb2e60ee0400c037550fa53d4ff46e3451082aed7aa226f55a3",
+  "git_delta": {
+    "base_commit": "87d390dce181791c777882d6dcff57d81e90f6eb",
+    "candidate_commit": "d4cfe330b1fa81f79b82b680bc615a9646230428",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_pb_pair_sq_bound",
+    "diff_sha256": "ffb006d99aa5fdc185474d9bd3654d6d04b5d85e4e4b05119436cd234c3c2e57",
+    "source_sha256": "76b8112c0a89dd68eb3ad62f8600631e472b9649e6f2139fb09169137bf5d571",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_pb_pair_sq_bound",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∀ᵐ p : Euclid n × Euclid n, (u p.1 - u p.2) ^ 2 ≤ ‖p.1 - p.2‖ ^ 2 * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ u ((1 - t) • p.2 + t • p.1)‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
