@@ -458,6 +458,107 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Generalized mean curvature of a rescaled varifold** (Simon Ch. 4, Definition 3.14; used for
+the rescalings behind Ch. 5, Remark 5.3).  Let `ψ(x) = c + R x` and `φ(y) = R⁻¹ (y − c)`, `R > 0`.
+If `μ_W = R⁻ⁿ φ_# μ_V` and `p_{T_x W} = p_{T_{ψ x} V}`, then `W` has generalized mean curvature
+`R H ∘ ψ` in `ψ⁻¹ U`: neighbourhoods `t ∈ 𝓝[U] (ψ x)` pull back to `ψ⁻¹ t ∈ 𝓝[ψ⁻¹ U] x`, and for
+`X ∈ C¹_c(ψ⁻¹ U)` the field `X̃ = R X ∘ φ ∈ C¹_c(U)` has `DX̃ = DX ∘ φ`, so `div_W X ∘ φ = div_V X̃`
+and `X ∘ φ · R H = X̃ · H`; changing variables along `φ` turns the first variation of `W` at `X`
+into `R⁻ⁿ` times that of `V` at `X̃`. -/
+theorem any_radius_rv_meanCurvature : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → (∀ x, W.tangentProj x = V.tangentProj (c + R • x)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x)) := by
+  intro n ℓ U V c R hR W hw hT H hH
+  obtain ⟨hHloc, hHfv⟩ := hH
+  have hR0 : R ≠ 0 := hR.ne'
+  -- `κ = R⁻ⁿ` is finite.
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ ∞ :=
+    ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne'
+  -- `ψ (φ y) = y` and `φ (ψ x) = x`.
+  have hψφ : ∀ y : Amb n ℓ, c + R • R⁻¹ • (y - c) = y := fun y => by
+    rw [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
+  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • (c + R • x - c) = x := fun x => by
+    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR0, one_smul]
+  have hψc : Continuous (fun x : Amb n ℓ => c + R • x) :=
+    continuous_const.add (continuous_const_smul R)
+  -- `φ` is a homeomorphism with inverse `ψ`; as a measurable equivalence, `μ_W = κ • φ_# μ_V`.
+  let φ : Amb n ℓ ≃ₜ Amb n ℓ :=
+    { toFun := fun y => R⁻¹ • (y - c)
+      invFun := fun x => c + R • x
+      left_inv := hψφ
+      right_inv := hφψ
+      continuous_toFun := (continuous_sub_right c).const_smul R⁻¹
+      continuous_invFun := hψc }
+  have hw' : W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map φ.toMeasurableEquiv := hw
+  refine ⟨?_, ?_⟩
+  · -- Local integrability: transport `t ∈ 𝓝[U] (ψ x)` to `ψ⁻¹ t ∈ 𝓝[ψ⁻¹ U] x`.
+    intro x hx
+    obtain ⟨t, ht, hti⟩ := hHloc (c + R • x) hx
+    refine ⟨(fun x => c + R • x) ⁻¹' t, ?_, ?_⟩
+    · exact (hψc.continuousWithinAt.tendsto_nhdsWithin (mapsTo_preimage _ _)) ht
+    · -- `(κ • ν)⌞s = κ • ν⌞s` with `κ ≠ ∞`, and
+      -- `IntegrableOn (R H ∘ ψ) (ψ⁻¹ t) (φ_# μ_V) ↔ IntegrableOn (R H) t μ_V`.
+      rw [hw', IntegrableOn, Measure.restrict_smul]
+      refine Integrable.smul_measure ?_ hκ
+      change IntegrableOn _ _ (V.weight.map φ.toMeasurableEquiv)
+      rw [integrableOn_map_equiv]
+      have h1 : (fun x => R • H (c + R • x)) ∘ φ.toMeasurableEquiv = R • H := by
+        funext y
+        show R • H (c + R • R⁻¹ • (y - c)) = R • H y
+        rw [hψφ]
+      have h2 : φ.toMeasurableEquiv ⁻¹' ((fun x => c + R • x) ⁻¹' t) = t := by
+        ext y
+        show c + R • R⁻¹ • (y - c) ∈ t ↔ y ∈ t
+        rw [hψφ]
+      rw [h1, h2]
+      exact Integrable.smul R hti
+  · -- First variation: test `V` with the transported field `X̃(y) = R X(φ y)`.
+    intro X hX hXc hXs
+    have hXd : Differentiable ℝ X := hX.differentiable one_ne_zero
+    have hX'c : ContDiff ℝ 1 (fun y => R • X (R⁻¹ • (y - c))) :=
+      (hX.comp ((contDiff_id.sub contDiff_const).const_smul R⁻¹)).const_smul R
+    have hX'cs : HasCompactSupport (fun y => R • X (R⁻¹ • (y - c))) :=
+      (hXc.comp_homeomorph φ).comp_left (g := fun v : Amb n ℓ => R • v) (smul_zero R)
+    -- `y ∈ tsupport X̃` gives `φ y ∈ tsupport X ⊆ ψ⁻¹ U`, i.e. `y = ψ (φ y) ∈ U`.
+    have hX's : tsupport (fun y => R • X (R⁻¹ • (y - c))) ⊆ U := by
+      intro y hy
+      have h1 := tsupport_smul_subset_right (fun _ => R) (fun y => X (R⁻¹ • (y - c))) hy
+      have h2 := hXs (tsupport_comp_subset_preimage X φ.continuous h1)
+      have h3 : c + R • R⁻¹ • (y - c) ∈ U := h2
+      rwa [hψφ] at h3
+    have key := hHfv _ hX'c hX'cs hX's
+    -- `DX̃(y) = R • (DX(φ y) ∘ R⁻¹ • id) = DX(φ y)`.
+    have hder : ∀ y, fderiv ℝ (fun y => R • X (R⁻¹ • (y - c))) y =
+        fderiv ℝ X (R⁻¹ • (y - c)) := by
+      intro y
+      have h1 : HasFDerivAt (fun y : Amb n ℓ => R⁻¹ • (y - c))
+          (R⁻¹ • ContinuousLinearMap.id ℝ (Amb n ℓ)) y :=
+        ((hasFDerivAt_id y).sub_const c).const_smul R⁻¹
+      have h2 : HasFDerivAt (fun y => R • X (R⁻¹ • (y - c)))
+          (R • ((fderiv ℝ X (R⁻¹ • (y - c))).comp (R⁻¹ • ContinuousLinearMap.id ℝ (Amb n ℓ)))) y :=
+        ((hXd (R⁻¹ • (y - c))).hasFDerivAt.comp y h1).const_smul R
+      rw [h2.fderiv]
+      refine ContinuousLinearMap.ext fun v => ?_
+      rw [smul_apply, ContinuousLinearMap.comp_apply, smul_apply, ContinuousLinearMap.id_apply,
+        ContinuousLinearMap.map_smul, smul_smul, mul_inv_cancel₀ hR0, one_smul]
+    -- `div_W X (φ y) = div_V X̃ (y)`, by the tangent hypothesis and `ψ (φ y) = y`.
+    have hdiv : ∀ y, W.divM X (R⁻¹ • (y - c)) = V.divM (fun y => R • X (R⁻¹ • (y - c))) y := by
+      intro y
+      simp only [RectifiableVarifold.divM, hT, hψφ, hder]
+    -- `X (φ y) · R H (ψ (φ y)) = X̃ (y) · H (y)`.
+    have hpair : ∀ y, inner ℝ (X (R⁻¹ • (y - c))) (R • H (c + R • R⁻¹ • (y - c))) =
+        inner ℝ (R • X (R⁻¹ • (y - c))) (H y) := by
+      intro y
+      rw [hψφ, real_inner_smul_right, real_inner_smul_left]
+    -- `∫ g dμ_W = κ.toReal • ∫ g ∘ φ dμ_V` on both sides, then the first variation of `V` at `X̃`.
+    rw [hw', integral_smul_measure, integral_smul_measure, integral_map_equiv, integral_map_equiv]
+    show (ENNReal.ofReal (R ^ n))⁻¹.toReal • ∫ y, W.divM X (R⁻¹ • (y - c)) ∂V.weight =
+      -((ENNReal.ofReal (R ^ n))⁻¹.toReal •
+        ∫ y, inner ℝ (X (R⁻¹ • (y - c))) (R • H (c + R • R⁻¹ • (y - c))) ∂V.weight)
+    simp only [hdiv, hpair, key, smul_neg]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
