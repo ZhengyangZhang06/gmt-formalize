@@ -373,6 +373,117 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, proof of Theorem 1.5 (p. 44), Lusin's theorem for sets of infinite measure.** If
+`S ⊆ ℝⁿ` is Borel and `ν : ℝⁿ → ℝᵐ` is Borel, then for each `ε > 0` there is a closed `C ⊆ S` with
+`ν|C` continuous and `Lⁿ(S \ C) < ε` (Simon Ch. 1, Theorem 1.17, extended to `Lⁿ(S) = ∞`). On a
+Borel set `E` of finite measure, closed inner approximations (weak regularity of `Lⁿ`) of
+`E ∩ ν⁻¹(U)` and `E \ ν⁻¹(U)`, `U` running through a countable basis of `ℝᵐ`, cut out a closed
+`F ⊆ E` on which `ν⁻¹(U)` is relatively open for every basic `U`. Applied to `S ∩ P j` for the
+bounded shells `P j = {j ≤ |x| < j + 1}`, this gives a locally finite family of closed sets whose
+union is the required `C`. -/
+theorem Submission.c1approx_lusin_closed_continuousOn : ∀ (n m : ℕ) (S : Set (Rn n)) (ν : Rn n → Rn m), MeasurableSet S → Measurable ν → ∀ ε : ℝ, 0 < ε → ∃ C ⊆ S, IsClosed C ∧ ContinuousOn ν C ∧ volume (S \ C) < ENNReal.ofReal ε := by
+  intro n m S ν hS hν ε hε
+  -- Lusin on a Borel set `E` of finite measure: a countable basis `b` of `ℝᵐ`, and for each
+  -- `U ∈ b` closed `A U ⊆ E ∩ ν⁻¹(U)`, `B U ⊆ E \ ν⁻¹(U)` with `Lⁿ(E \ (A U ∪ B U)) < η U`.
+  have fin_lusin : ∀ E : Set (Rn n), MeasurableSet E → volume E ≠ ∞ → ∀ δ : ℝ≥0∞, δ ≠ 0 →
+      ∃ F ⊆ E, IsClosed F ∧ ContinuousOn ν F ∧ volume (E \ F) < δ := by
+    intro E hE hEfin δ hδ
+    obtain ⟨b, hbc, -, hb⟩ := TopologicalSpace.exists_countable_basis (Rn m)
+    have : Countable b := hbc.to_subtype
+    have hδ2 : δ / 2 ≠ 0 := (ENNReal.half_pos hδ).ne'
+    obtain ⟨η, hηpos, hηsum⟩ := ENNReal.exists_pos_sum_of_countable' hδ2 b
+    have hAB : ∀ U : b, ∃ A B : Set (Rn n), A ⊆ E ∩ ν ⁻¹' (U : Set (Rn m)) ∧
+        B ⊆ E \ ν ⁻¹' (U : Set (Rn m)) ∧ IsClosed A ∧ IsClosed B ∧
+        volume (E \ (A ∪ B)) < η U := by
+      intro U
+      have hU : MeasurableSet (ν ⁻¹' (U : Set (Rn m))) := hν (hb.isOpen U.2).measurableSet
+      have hη2 : η U / 2 ≠ 0 := (ENNReal.half_pos (hηpos U).ne').ne'
+      obtain ⟨A, hAsub, hAc, hAμ⟩ := (hE.inter hU).exists_isClosed_sdiff_lt
+        (ne_top_of_le_ne_top hEfin (measure_mono inter_subset_left)) hη2
+      obtain ⟨B, hBsub, hBc, hBμ⟩ := (hE.diff hU).exists_isClosed_sdiff_lt
+        (ne_top_of_le_ne_top hEfin (measure_mono sdiff_subset)) hη2
+      refine ⟨A, B, hAsub, hBsub, hAc, hBc, ?_⟩
+      have hsub : E \ (A ∪ B) ⊆ ((E ∩ ν ⁻¹' (U : Set (Rn m))) \ A) ∪
+          ((E \ ν ⁻¹' (U : Set (Rn m))) \ B) := by
+        rintro x ⟨hxE, hxAB⟩
+        by_cases hx : x ∈ ν ⁻¹' (U : Set (Rn m))
+        · exact Or.inl ⟨⟨hxE, hx⟩, fun h ↦ hxAB (Or.inl h)⟩
+        · exact Or.inr ⟨⟨hxE, hx⟩, fun h ↦ hxAB (Or.inr h)⟩
+      calc volume (E \ (A ∪ B))
+          ≤ volume ((E ∩ ν ⁻¹' (U : Set (Rn m))) \ A) +
+              volume ((E \ ν ⁻¹' (U : Set (Rn m))) \ B) :=
+            (measure_mono hsub).trans (measure_union_le _ _)
+        _ < η U / 2 + η U / 2 := ENNReal.add_lt_add hAμ hBμ
+        _ = η U := ENNReal.add_halves _
+    choose A B hAsub hBsub hAc hBc hABμ using hAB
+    obtain ⟨F0, hF0sub, hF0c, hF0μ⟩ := hE.exists_isClosed_sdiff_lt hEfin hδ2
+    refine ⟨F0 ∩ ⋂ U, (A U ∪ B U), inter_subset_left.trans hF0sub,
+      hF0c.inter (isClosed_iInter fun U ↦ (hAc U).union (hBc U)), ?_, ?_⟩
+    · -- For `x ∈ F` and open `t ∋ ν x` pick `U ∈ b` with `ν x ∈ U ⊆ t`; then `(B U)ᶜ` is an
+      -- open neighbourhood of `x` whose points in `F` lie in `A U ⊆ ν⁻¹(U)`.
+      rw [_root_.continuousOn_iff]
+      intro x _ t ht hxt
+      obtain ⟨U, hUb, hxU, hUt⟩ := hb.exists_subset_of_mem_open hxt ht
+      refine ⟨(B ⟨U, hUb⟩)ᶜ, (hBc _).isOpen_compl, fun hxB ↦ (hBsub _ hxB).2 hxU, ?_⟩
+      rintro y ⟨hyB, -, hy⟩
+      rcases mem_iInter.1 hy ⟨U, hUb⟩ with hyA | hyB'
+      · exact hUt (hAsub _ hyA).2
+      · exact absurd hyB' hyB
+    · have hsub : E \ (F0 ∩ ⋂ U, (A U ∪ B U)) ⊆ (E \ F0) ∪ ⋃ U, E \ (A U ∪ B U) := by
+        rintro x ⟨hxE, hx⟩
+        by_cases h0 : x ∈ F0
+        · obtain ⟨U, hU⟩ : ∃ U, x ∉ A U ∪ B U := by
+            by_contra! hcon
+            exact hx ⟨h0, mem_iInter.2 hcon⟩
+          exact Or.inr (mem_iUnion.2 ⟨U, hxE, hU⟩)
+        · exact Or.inl ⟨hxE, h0⟩
+      calc volume (E \ (F0 ∩ ⋂ U, (A U ∪ B U)))
+          ≤ volume (E \ F0) + volume (⋃ U, E \ (A U ∪ B U)) :=
+            (measure_mono hsub).trans (measure_union_le _ _)
+        _ ≤ volume (E \ F0) + ∑' U, volume (E \ (A U ∪ B U)) := by
+            gcongr; exact measure_iUnion_le _
+        _ < δ / 2 + δ / 2 :=
+            ENNReal.add_lt_add hF0μ ((ENNReal.tsum_le_tsum fun U ↦ (hABμ U).le).trans_lt hηsum)
+        _ = δ := ENNReal.add_halves δ
+  -- The half-open shells `P j = {j ≤ |x| < j + 1}`: Borel, bounded, and covering `ℝⁿ`.
+  let P : ℕ → Set (Rn n) := fun j ↦ ball (0 : Rn n) ((j : ℝ) + 1) \ ball 0 (j : ℝ)
+  have hPmeas : ∀ j, MeasurableSet (P j) := fun j ↦ measurableSet_ball.diff measurableSet_ball
+  have hPfin : ∀ j, volume (S ∩ P j) ≠ ∞ := fun j ↦
+    ((measure_mono (inter_subset_right.trans sdiff_subset)).trans_lt measure_ball_lt_top).ne
+  have hcover : ∀ x : Rn n, ∃ j, x ∈ P j := by
+    intro x
+    refine ⟨⌊‖x‖⌋₊, ?_, ?_⟩
+    · simp only [mem_ball, dist_zero_right]; exact Nat.lt_floor_add_one _
+    · simp only [mem_ball, dist_zero_right, not_lt]; exact Nat.floor_le (norm_nonneg _)
+  -- Closed `C j ⊆ S ∩ P j` with `ν|C j` continuous and losses `δ j` summing to less than `ε`.
+  obtain ⟨δ, hδpos, hδsum⟩ :=
+    ENNReal.exists_pos_sum_of_countable' (ENNReal.ofReal_pos.2 hε).ne' ℕ
+  have hpiece : ∀ j, ∃ F ⊆ S ∩ P j, IsClosed F ∧ ContinuousOn ν F ∧
+      volume ((S ∩ P j) \ F) < δ j :=
+    fun j ↦ fin_lusin _ (hS.inter (hPmeas j)) (hPfin j) _ (hδpos j).ne'
+  choose C hCsub hCclosed hCcont hCμ using hpiece
+  -- `ball x 1` meets `C j ⊆ P j` only for `j < ⌈|x| + 1⌉`, so the family `C` is locally finite.
+  have hlf : LocallyFinite C := by
+    intro x
+    refine ⟨ball x 1, ball_mem_nhds x one_pos, (Set.finite_Iio ⌈‖x‖ + 1⌉₊).subset ?_⟩
+    rintro j ⟨y, hyC, hyx⟩
+    have hyP := (hCsub j hyC).2
+    simp only [P, Set.mem_sdiff, mem_ball, dist_zero_right, not_lt] at hyP
+    rw [mem_ball, dist_eq_norm] at hyx
+    have hy : ‖y‖ < ‖x‖ + 1 := by linarith [norm_sub_norm_le y x]
+    exact Nat.lt_ceil.2 (lt_of_le_of_lt hyP.2 hy)
+  refine ⟨⋃ j, C j, iUnion_subset fun j ↦ (hCsub j).trans inter_subset_left,
+    hlf.isClosed_iUnion hCclosed, hlf.continuousOn_iUnion hCclosed hCcont, ?_⟩
+  -- `S \ ⋃ j, C j ⊆ ⋃ j, (S ∩ P j) \ C j`, of measure at most `∑ j, δ j < ε`.
+  have hsub : S \ ⋃ j, C j ⊆ ⋃ j, (S ∩ P j) \ C j := by
+    rintro x ⟨hxS, hxC⟩
+    obtain ⟨j, hj⟩ := hcover x
+    exact mem_iUnion.2 ⟨j, ⟨hxS, hj⟩, fun h ↦ hxC (mem_iUnion.2 ⟨j, h⟩)⟩
+  calc volume (S \ ⋃ j, C j) ≤ ∑' j, volume ((S ∩ P j) \ C j) :=
+        (measure_mono hsub).trans (measure_iUnion_le _)
+    _ ≤ ∑' j, δ j := ENNReal.tsum_le_tsum fun j ↦ (hCμ j).le
+    _ < ENNReal.ofReal ε := hδsum
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 

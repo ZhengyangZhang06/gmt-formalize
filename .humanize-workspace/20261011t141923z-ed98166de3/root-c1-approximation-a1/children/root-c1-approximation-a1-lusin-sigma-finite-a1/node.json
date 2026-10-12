@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1.lusin_sigma_finite-a1",
+  "parent_id": "root.c1_approximation-a1",
+  "depth": 2,
+  "title": "Lusin's theorem on ℝⁿ for vector-valued maps on sets of infinite measure",
+  "statement": "For all n, m ∈ ℕ, every Borel set S ⊆ ℝⁿ (of possibly infinite Lebesgue measure), every Borel map ν : ℝⁿ → ℝᵐ and every real ε > 0, there is a closed set C ⊆ S such that ν restricted to C is continuous and Lⁿ(S∖C) < ε. Here ℝⁿ = EuclideanSpace ℝ (Fin n) and Lⁿ = volume.",
+  "lean_statement": "∀ (n m : ℕ) (S : Set (Rn n)) (ν : Rn n → Rn m), MeasurableSet S → Measurable ν → ∀ ε : ℝ, 0 < ε → ∃ C ⊆ S, IsClosed C ∧ ContinuousOn ν C ∧ volume (S \\ C) < ENNReal.ofReal ε",
+  "lean_name": "c1approx_lusin_closed_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-approximation-a1-lusin-sigma-finite-a1-a1"
+}
