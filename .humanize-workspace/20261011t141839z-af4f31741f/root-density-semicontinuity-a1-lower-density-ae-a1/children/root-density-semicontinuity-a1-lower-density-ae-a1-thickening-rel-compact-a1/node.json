@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.lower_density_ae-a1.thickening_rel_compact-a1",
+  "parent_id": "root.density_semicontinuity-a1.lower_density_ae-a1",
+  "depth": 3,
+  "title": "Some uniform thickening of W ⊂⊂ U is still ⊂⊂ U (choice of ρ₀ and W̃ in the proof of 3.7)",
+  "statement": "Let N ∈ ℕ, let U ⊆ ℝ^N = Euclidean N be open, and let W ⊆ ℝ^N satisfy W ⊂⊂ U, i.e. IsRelCompactOpenIn W U: W is open, closure W is compact and closure W ⊆ U. Then there is ρ₀ > 0 such that W̃ := thickening(ρ₀, W) = {z ∈ ℝ^N : infEdist(z, W) < ofReal ρ₀} also satisfies W̃ ⊂⊂ U: W̃ is open, closure W̃ is compact and closure W̃ ⊆ U.",
+  "lean_statement": "∀ (N : ℕ) (U W : Set (Euclidean N)), IsOpen U → IsRelCompactOpenIn W U → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ IsRelCompactOpenIn (thickening ρ₀ W) U",
+  "lean_name": "exists_thickening_isRelCompactOpenIn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-lower-density-ae-a1-thickening-rel-compact-a1-a1"
+}
