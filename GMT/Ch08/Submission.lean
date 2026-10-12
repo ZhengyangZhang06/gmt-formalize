@@ -801,6 +801,136 @@ theorem Submission.allard_tc_stationary_cone_flat :
     Submission.allard_tc_scf_plane_ball_mass N n T 1 one_pos, ENNReal.ofReal_one, one_pow,
     mul_one, mul_one, ENNReal.mul_left_inj hω0 hωt] at h1
   exact ⟨T, by rw [hCθ, h1]⟩
+/-- Lebesgue density theorem for a measure `μ` on `ℝ^N` that vanishes off an open set `U` and is
+finite on compact subsets of `U` (Simon Ch. 8, Remark 5.6(iii), localized as in Simon Ch. 1, 3.23):
+for measurable `A` and `μ`-a.e. `x`, `μ(A ∩ B_ρ(x)) / μ(B_ρ(x)) → 1_A(x)` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_dbd_lebesgue_density :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∀ A : Set (Euclidean N), MeasurableSet A → ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (A.indicator 1 x)) := by
+  intro N U μ hU hUc hK A hA
+  -- Step 1: the countable family of compact balls `K_i = B_r(q) ⊆ U`, `i = (q, r) ∈ I`, with `q`
+  -- in a countable dense set `D` and `r ∈ ℚ_{>0}`.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Euclidean N)
+  let I : Set (Euclidean N × ℚ) := {i | i.1 ∈ D ∧ 0 < i.2 ∧ closedBall i.1 (i.2 : ℝ) ⊆ U}
+  have hIc : I.Countable :=
+    (hDc.prod (countable_univ (α := ℚ))).mono fun i hi ↦ mem_prod.2 ⟨hi.1, mem_univ _⟩
+  -- Steps 3–4: Besicovitch differentiation for each finite measure `μ ⌞ K_i`, off one `μ`-null set.
+  have hball : ∀ᵐ x ∂μ, ∀ i ∈ I, x ∈ closedBall i.1 (i.2 : ℝ) →
+      Tendsto (fun ρ : ℝ ↦ μ.restrict (closedBall i.1 (i.2 : ℝ)) (A ∩ closedBall x ρ) /
+          μ.restrict (closedBall i.1 (i.2 : ℝ)) (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 (A.indicator 1 x)) := by
+    refine (ae_ball_iff hIc).2 fun i hi ↦ ?_
+    have : IsFiniteMeasure (μ.restrict (closedBall i.1 (i.2 : ℝ))) :=
+      isFiniteMeasure_restrict.2 (hK _ (isCompact_closedBall _ _) hi.2.2)
+    exact (ae_restrict_iff' measurableSet_closedBall).1
+      (Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet _ hA)
+  filter_upwards [hball, mem_ae_iff.2 hUc] with x hx hxU
+  -- Steps 2 and 5: some `i = (q, r) ∈ I` with `dist x q < r`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hxU
+  obtain ⟨r, hr0, hr⟩ := exists_rat_btwn (half_pos hε)
+  obtain ⟨q, hqD, hqx⟩ := hDd.exists_mem_open isOpen_ball ⟨x, mem_ball_self hr0⟩
+  have hxq : dist x q < r := by rw [dist_comm]; exact mem_ball.1 hqx
+  have hi : (q, r) ∈ I := by
+    have h1 : (r : ℝ) + dist q x < ε := by linarith [mem_ball.1 hqx]
+    exact ⟨hqD, Rat.cast_pos.1 hr0, (closedBall_subset_ball' h1).trans hεU⟩
+  -- Step 6: for `0 < ρ < r - dist x q`, `B_ρ(x) ⊆ K_i`, so the two ratios agree near `0`.
+  refine (hx (q, r) hi (mem_closedBall.2 hxq.le)).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hxq)] with ρ hρ
+  have hsub : closedBall x ρ ⊆ closedBall q r := closedBall_subset_closedBall' (by linarith [hρ.2])
+  rw [Measure.restrict_apply' measurableSet_closedBall,
+    Measure.restrict_apply' measurableSet_closedBall, inter_assoc, inter_eq_left.2 hsub]
+/-- Relative density zero at a point of finite density gives `o(ρ^n)` mass (closing steps 8–9 of
+the density blow-up decay for Simon Ch. 8, 5.6(iii)): if `Θ^n(μ, x) = θ < ∞`,
+`μ(A ∩ B_ρ(x)) / μ(B_ρ(x)) → 0` as `ρ ↓ 0` and `μ`-a.e. point of `E` lies in `A`, then
+`μ(B_ρ(x) ∩ E) / ρ^n → 0` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_dbd_relative_decay :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞) (A E : Set (Euclidean N)), HasDensity n μ x θ → θ ≠ ∞ → Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → (∀ᵐ y ∂μ, y ∈ E → y ∈ A) → Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro N n μ x θ A E hθ hθ_ne hκ hAE
+  -- Step 1: `0 < ω_n < ∞`.
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Step 2: `μ(B_ρ) / ρ^n = ω_n · densityRatio ρ → ω_n θ ≠ ∞`.
+  have hf_eq : ∀ ρ : ℝ, μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n =
+      unitBallVolume n * densityRatio n μ x ρ := fun ρ ↦ by
+    rw [densityRatio, ← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop]
+  have hf : Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0)
+      (𝓝 (unitBallVolume n * θ)) := by
+    simp_rw [hf_eq]
+    exact ENNReal.Tendsto.const_mul hθ (Or.inr hωtop)
+  have hωθ : unitBallVolume n * θ ≠ ∞ := ENNReal.mul_ne_top hωtop hθ_ne
+  -- Step 3: `κ(ρ) · μ(B_ρ) / ρ^n → 0 · ω_n θ = 0`.
+  have hprod : Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) *
+      (μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
+    simpa using ENNReal.Tendsto.mul hκ (Or.inr hωθ) hf (Or.inr ENNReal.zero_ne_top)
+  -- Step 4: eventually `μ(B_ρ) / ρ^n < ∞`.
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n < ∞ :=
+    hf.eventually (gt_mem_nhds hωθ.lt_top)
+  -- Step 6: squeeze `0 ≤ μ(B_ρ ∩ E) / ρ^n ≤ κ(ρ) · μ(B_ρ) / ρ^n`, the upper bound holding for
+  -- every `ρ` of step 4.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hprod
+    (Eventually.of_forall fun _ ↦ zero_le) ?_
+  filter_upwards [hev] with ρ hρ
+  -- Step 4, continued: `ρ^n ≠ ∞`, hence `μ(B_ρ) ≠ ∞`.
+  have hP : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have hB : μ (closedBall x ρ) ≠ ∞ := fun h ↦ by
+    rw [h, ENNReal.top_div_of_ne_top hP] at hρ
+    exact lt_irrefl _ hρ
+  -- Step 5(a): `μ(B_ρ ∩ E) ≤ μ(A ∩ B_ρ)`, since `B_ρ ∩ E ⊆ A ∩ B_ρ` up to a `μ`-null set.
+  have ha : μ (closedBall x ρ ∩ E) ≤ μ (A ∩ closedBall x ρ) :=
+    measure_mono_ae (hAE.mono fun y hy hyBE ↦ ⟨hy hyBE.2, hyBE.1⟩)
+  -- Step 5(b): `μ(A ∩ B_ρ) ≤ κ(ρ) · μ(B_ρ)`, the case `μ(B_ρ) = 0` separately.
+  have hb : μ (A ∩ closedBall x ρ) ≤
+      μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) * μ (closedBall x ρ) := by
+    by_cases h0 : μ (closedBall x ρ) = 0
+    · rw [h0, mul_zero]
+      exact (measure_mono inter_subset_right).trans h0.le
+    · exact (ENNReal.div_mul_cancel h0 hB).ge
+  -- Step 5(c): divide by `ρ^n`.
+  calc μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n
+      ≤ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) * μ (closedBall x ρ) /
+          ENNReal.ofReal ρ ^ n := ENNReal.div_le_div_right (ha.trans hb) _
+    _ = _ := mul_div_assoc _ _ _
+
+/-- Density blow-up decay (Simon Ch. 8, Remark 5.6(iii) and (3)–(4) in the proof of 5.5): assuming
+3.6, if `V` has locally bounded first variation, then for `μ_V`-a.e. `x`, whenever
+`Θ^n(μ_V, x) = θ₀` and `τ < θ₀`, `ρ^{-n} μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V, y) exists and is ≥ τ)})`
+tends to `0` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_density_blowup_decay :
+    DensityExistsAE → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∀ θ₀ τ : ℝ, HasDensity n V.weight x (ENNReal.ofReal θ₀) → τ < θ₀ → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro hD N n U V hV
+  -- Step 1: a Borel `Θ̃`, finite and equal to the density off a `μ_V`-null set.
+  obtain ⟨Θ, hΘm, hΘ⟩ := hD N n U V hV
+  -- Step 2: `μ_V(Uᶜ) = 0`.
+  have hUc : V.weight Uᶜ = 0 := by
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  -- Steps 3–4: off one `μ_V`-null set, `x` is a Lebesgue density point of every
+  -- `A_p = {Θ̃ < p}`, `p ∈ ℚ`.
+  have hLeb : ∀ᵐ x ∂V.weight, ∀ p : ℚ,
+      Tendsto (fun ρ : ℝ ↦ V.weight ({y | Θ y < ENNReal.ofReal p} ∩ closedBall x ρ) /
+          V.weight (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 ({y | Θ y < ENNReal.ofReal p}.indicator 1 x)) :=
+    ae_all_iff.2 fun p ↦ Submission.allard_tc_dbd_lebesgue_density N U V.weight V.isOpen_domain
+      hUc V.weight_finite_on_compact _ (measurableSet_lt hΘm measurable_const)
+  filter_upwards [hΘ, hLeb] with x hx hxL
+  intro θ₀ τ hθ₀ hτ
+  -- Step 5: `Θ̃(x) = θ₀`, so a rational `p ∈ (τ, θ₀)` has `x ∉ A_p`.
+  have heq : Θ x = ENNReal.ofReal θ₀ := tendsto_nhds_unique hx.2 hθ₀
+  obtain ⟨p, hτp, hpθ⟩ := exists_rat_btwn hτ
+  have hxA : x ∉ {y | Θ y < ENNReal.ofReal p} := by
+    rw [Set.mem_ofPred_eq, not_lt, heq]
+    exact ENNReal.ofReal_le_ofReal hpθ.le
+  -- Step 7: `μ_V(A_p ∩ B_ρ(x)) / μ_V(B_ρ(x)) → 0`.
+  have hκ := hxL p
+  rw [Set.indicator_of_notMem hxA] at hκ
+  -- Steps 8–9: the relative decay, applied with `A = A_p` and `E = E_τ`.
+  refine Submission.allard_tc_dbd_relative_decay N n V.weight x (ENNReal.ofReal θ₀)
+    {y | Θ y < ENNReal.ofReal p}
+    {y | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ}
+    hθ₀ ENNReal.ofReal_ne_top hκ ?_
+  -- Step 6: `E_τ ⊆ Z ∪ A_p`.
+  filter_upwards [hΘ] with y hy hyE
+  by_contra hyA
+  exact hyE ⟨Θ y, hy.2, (ENNReal.ofReal_le_ofReal hτp.le).trans (not_lt.1 hyA)⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
