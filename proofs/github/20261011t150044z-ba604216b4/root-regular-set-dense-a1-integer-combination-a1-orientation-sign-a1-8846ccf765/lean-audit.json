@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8c638561ef486e90f8b8f6b95669491715918319c6c7b49305147322cfa8f2e2",
+  "git_delta": {
+    "base_commit": "ef546a5763ebe1c4433ebd7fd07bcc106b405015",
+    "candidate_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsdic_unitOrientation_eq_or_eq_neg",
+    "diff_sha256": "7d8153f798a6405b05ea0d5eab0daad821335bbe0d7268a0669adaff4b5a657d",
+    "source_sha256": "1f1df8692ba79a50a58141eb9ca48da76edb40b7db33021caba80fcc39bfbc27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsdic_unitOrientation_eq_or_eq_neg",
+      "statement": "∀ (P n : ℕ) (v w : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf v Q → IsUnitOrientationOf w Q → w = v ∨ w = -v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
