@@ -412,6 +412,56 @@ theorem Submission.iwl_rl_monotone_helly_selection : ∀ (F : ℕ → ℝ → �
   have hgab : g b - g a < ε := by linarith [h3.2, h4.1]
   -- Pointwise convergence at `a` and `b` along `ψ`.
   exact ((hconv b).sub (hconv a)).eventually (gt_mem_nhds hgab)
+/-- **Smooth cutoff of a test form between two disjoint closed sets** (the cutoffs `χω` and `ζω`
+in the proof of Simon Ch. 6, 8.2, p. 176).  Normality of `ℝ^P` gives open `N₀ ⊇ C₀` and
+`N₁ ⊇ C₁` with disjoint closures, and the smooth Urysohn lemma gives a `C^∞` function
+`χ : ℝ^P → [0, 1]` with `χ = 0` on `closure N₀` and `χ = 1` on `closure N₁`.  Then `ω' = χ ω` is
+a test form in `U` with `tsupport ω' ⊆ tsupport ω`, and `|ω - ω'| = (1 - χ) |ω| ≤ |ω|` by
+homogeneity of the Euclidean coefficient norm. -/
+theorem Submission.iwl_rl_testForm_smooth_cutoff : ∀ (P k : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U k) (C₀ C₁ : Set (Eucl P)), IsClosed C₀ → IsClosed C₁ → Disjoint C₀ C₁ → ∃ ω' : TestFormOn U k, (∃ N₀ : Set (Eucl P), IsOpen N₀ ∧ C₀ ⊆ N₀ ∧ ∀ x ∈ N₀, (ω' : DifferentialForm (Eucl P) k) x = 0) ∧ (∃ N₁ : Set (Eucl P), IsOpen N₁ ∧ C₁ ⊆ N₁ ∧ ∀ x ∈ N₁, (ω' : DifferentialForm (Eucl P) k) x = (ω : DifferentialForm (Eucl P) k) x) ∧ tsupport (ω' : DifferentialForm (Eucl P) k) ⊆ tsupport (ω : DifferentialForm (Eucl P) k) ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x - (ω' : DifferentialForm (Eucl P) k) x) ≤ covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x) := by
+  intro P k U ω C₀ C₁ hC₀ hC₁ hd
+  -- Step 1: by normality, open `N₁ ⊇ C₁` and `N₀ ⊇ C₀` with disjoint closures.
+  obtain ⟨N₁, hN₁, hCN₁, hN₁C₀⟩ :=
+    normal_exists_closure_subset hC₁ hC₀.isOpen_compl hd.subset_compl_left
+  obtain ⟨N₀, hN₀, hCN₀, hN₀N₁⟩ :=
+    normal_exists_closure_subset hC₀ isClosed_closure.isOpen_compl (subset_compl_comm.mp hN₁C₀)
+  -- Step 2: a smooth Urysohn function `χ : ℝ^P → [0, 1]`, `0` on `closure N₀`, `1` on `closure N₁`.
+  obtain ⟨χ, hχ, hχr, hχ0, hχ1⟩ := exists_contDiff_zero_iff_one_iff_of_isClosed (n := ⊤)
+    isClosed_closure isClosed_closure (subset_compl_iff_disjoint_right.mp hN₀N₁)
+  -- Step 3: homogeneity of the Euclidean coefficient norm, `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) k),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- Step 4: `ω' = χ ω` is a test form in `U` with `tsupport ω' ⊆ tsupport ω`.
+  let f : DifferentialForm (Eucl P) k := fun x => χ x • (ω : DifferentialForm (Eucl P) k) x
+  have hfω : tsupport f ⊆ tsupport (ω : DifferentialForm (Eucl P) k) :=
+    tsupport_smul_subset_right χ _
+  have hf : f ∈ TestFormOn U k :=
+    ⟨⟨hχ.smul ω.2.1.1, ω.2.1.2.of_isClosed_subset (isClosed_tsupport f) hfω⟩, hfω.trans ω.2.2⟩
+  refine ⟨⟨f, hf⟩, ⟨N₀, hN₀, hCN₀, fun x hx => ?_⟩, ⟨N₁, hN₁, hCN₁, fun x hx => ?_⟩, hfω,
+    fun x => ?_⟩
+  · -- Step 5 (i): `χ = 0` on `N₀ ⊆ closure N₀`.
+    change χ x • (ω : DifferentialForm (Eucl P) k) x = 0
+    rw [(hχ0 x).mp (subset_closure hx), zero_smul]
+  · -- (ii): `χ = 1` on `N₁ ⊆ closure N₁`.
+    change χ x • (ω : DifferentialForm (Eucl P) k) x = (ω : DifferentialForm (Eucl P) k) x
+    rw [(hχ1 x).mp (subset_closure hx), one_smul]
+  · -- Step 6 (iv): `ω - χ ω = (1 - χ) ω` with `0 ≤ 1 - χ ≤ 1`.
+    obtain ⟨h0, h1⟩ := hχr (mem_range_self x)
+    change covectorEuclideanNorm
+      ((ω : DifferentialForm (Eucl P) k) x - χ x • (ω : DifferentialForm (Eucl P) k) x) ≤ _
+    have hsub : (ω : DifferentialForm (Eucl P) k) x - χ x • (ω : DifferentialForm (Eucl P) k) x =
+        (1 - χ x) • (ω : DifferentialForm (Eucl P) k) x :=
+      ((sub_smul (1 : ℝ) (χ x) ((ω : DifferentialForm (Eucl P) k) x)).trans (by rw [one_smul])).symm
+    rw [hsub, hsmul, abs_of_nonneg (by linarith)]
+    exact mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (by linarith)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
