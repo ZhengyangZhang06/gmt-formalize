@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.continuous_extension-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Currents of locally finite mass extend to locally bounded linear functionals on continuous compactly supported forms (Simon 6.2.7, step R1 preliminaries)",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P open and X ∈ D_k(U) with M_W(X) < ∞ for every open W whose closure is a compact subset of U. Then there is L : (ℝ^P → Covector (Eucl P) k) → ℝ such that: (1) L(ω) = X(ω) for every ω ∈ D^k(U); (2) L(φ + ψ) = L(φ) + L(ψ) for all φ, ψ ∈ CF(U) (continuous, compactly supported, tsupport ⊆ U); (3) L(cφ) = c·L(φ) for all c ∈ ℝ, φ ∈ CF(U); (4) for every compact K ⊆ U there is B ∈ ℝ with |L(φ)| ≤ B for every continuous φ with tsupport φ ⊆ K and covectorEuclideanNorm(φ(x)) ≤ 1 for all x.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, (∀ W, CompactlyContainedOpen W U → X.massOn W < ∞) → ∃ L : (Eucl P → Covector (Eucl P) k) → ℝ, (∀ ω : TestFormOn U k, L (ω : DifferentialForm (Eucl P) k) = X ω) ∧ (∀ φ ψ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → Continuous ψ → HasCompactSupport ψ → tsupport ψ ⊆ U → L (φ + ψ) = L φ + L ψ) ∧ (∀ (c : ℝ) (φ : Eucl P → Covector (Eucl P) k), Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → L (c • φ) = c * L φ) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ, ∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → tsupport φ ⊆ K → (∀ x, covectorEuclideanNorm (φ x) ≤ 1) → |L φ| ≤ B",
+  "lean_name": "smr_exists_continuous_extension",
+  "depends_on": [
+    "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+    "root.slicing-a1.mass_representation-a1.testform_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.testform_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-continuous-extension-a1-a1"
+}
