@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bc24def44a65759275f4ba51b334fbf0c279c5914f2291a60da97d45351de953",
+  "git_delta": {
+    "base_commit": "41e856e4a94f195e59343a7af42a8d6819f2d6c8",
+    "candidate_commit": "b633a94f45fcd63db7f868a5e3803ba27dd504e5",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "d4c6e34bb925089268afaba83826c7aec6fad9be6468421d312be584307204a7",
+    "source_sha256": "31f4befecb38aca3c64b8e539d2a59898454140d1e60376fad12a5b533728a43",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.besicovitchFedererProjectionTheorem_holds",
+      "statement": "BesicovitchFedererProjectionTheorem",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
