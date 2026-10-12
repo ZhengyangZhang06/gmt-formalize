@@ -397,6 +397,33 @@ theorem Submission.br_la_abs_apply_le_mul_mass :
   have hYneg : Y (-ω) = -Y ω := map_neg Y.toCurrent ω
   rw [hYneg] at hneg
   exact abs_le.mpr ⟨by linarith, hone ω hω⟩
+/-- **Test forms have bounded Euclidean coefficient norm** (Simon Ch. 6, 1.15 and 2.4; the
+finiteness of `sup_x |ω(x)|` behind "Evidently (1), (2) give `Pₖ(ω) → T(ω)`" in the proof of
+6.2, p. 169): for `ω ∈ 𝒟ⁿ(U)` there is `C > 0` with `|ω(x)| ≤ C` for all `x`.
+`α ↦ |α|` is continuous (a square root of a finite sum of squares of evaluations) and `ω` is
+smooth, so `x ↦ |ω(x)|` is continuous; it has compact support since `|0| = 0`.  Hence it is
+bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` works. -/
+theorem Submission.polyhedral_approx_testForm_covectorNorm_bounded : ∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C := by
+  intro P n U ω
+  -- `α ↦ |α|` is continuous on `Λⁿ`: evaluations are continuous, and so are squares, finite
+  -- sums and the square root.
+  have hnorm : Continuous (covectorEuclideanNorm : Covector (Eucl P) n → ℝ) :=
+    Real.continuous_sqrt.comp <| continuous_finsetSum _ fun I _ =>
+      continuous_if_const _ (fun _ => (continuous_eval_const _).pow 2) fun _ => continuous_const
+  -- `x ↦ |ω(x)|` is continuous, since `ω` is smooth.
+  have hcont : Continuous fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) :=
+    hnorm.comp ω.property.1.1.continuous
+  -- `x ↦ |ω(x)|` vanishes where `ω` does, so it inherits the compact support of `ω`.
+  have hsupp : HasCompactSupport fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) :=
+    ω.property.1.2.mono' fun x hx => subset_tsupport _ fun h => hx (by simp [h])
+  -- A continuous compactly supported real function is bounded by some `C₀ ≥ ‖|ω(0)|‖ ≥ 0`.
+  obtain ⟨C₀, hC₀⟩ := hcont.bounded_above_of_compact_support hsupp
+  refine ⟨C₀ + 1, by linarith [norm_nonneg (covectorEuclideanNorm
+    ((ω : DifferentialForm (Eucl P) n) 0)), hC₀ 0], fun x => ?_⟩
+  linarith [Real.le_norm_self (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)),
+    hC₀ x]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
