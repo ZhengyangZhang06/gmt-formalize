@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68be3d2f9c2fbca95da94f2a62882d3bade54c99263e645237f63b7cf66a634b",
+  "git_delta": {
+    "base_commit": "1e8f98b873f64b66bd9cd792f49b2b0df6ff816c",
+    "candidate_commit": "d5eadc8d2eab6c7c3556b2c0f2333c373a4dbd7a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_positive_density_cover_null",
+    "diff_sha256": "6d5be3a6b6938baf760d2d621967bdcf5cccbe6e094d225df90115f81b49aaf2",
+    "source_sha256": "f5dedce9977f6954cd1b6f083596ba02ac572fac603dd96dafc6d90803ad8ca5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_positive_density_cover_null",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Eucl P)) (W : ℕ → Set (Eucl P)) (S : Set (Eucl P)), (∀ q, IsOpen (W q)) → (∀ q, ν (W q) < ∞) → S ⊆ ⋃ q, W q → (∀ x ∈ S, 0 < dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x) → (∃ C : ℕ → Set (Eucl P), S ⊆ ⋃ i, C i ∧ ∀ i, (μHE[n] : Measure (Eucl P)) (C i) < ∞) ∧ (ν S = 0 → (μHE[n] : Measure (Eucl P)) S = 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
