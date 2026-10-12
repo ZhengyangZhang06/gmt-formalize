@@ -451,6 +451,657 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform upper mass bound from the monotonicity formula** (Simon Ch. 4, 3.1–3.4 and
+3.14–3.17), as used in step 4 of the proof of 7.5.11 (`μ_T(B_r(ξ')) ≤ C rⁿ`).  If the varifold
+`v(M, θ)` of `R = (M, θ, ξ)` has locally bounded generalized mean curvature in the open set `U`,
+then for every compact `K ⊆ U` there are `C` and `r₁ > 0` with `μ(B_r(x)) ≤ C rⁿ` for all
+`x ∈ K` and `0 < r < r₁`, where `μ = θ Hⁿ⌞M`.  With `X_ρ(z) = ψ(|z - x₀|²/ρ²)(z - x₀)` and
+`I(ρ) = ∫ ψ(|z - x₀|²/ρ²) dμ`, the first variation gives `n I(ρ) − ρ I'(ρ) ≤ 2Λρ I(ρ)`, so
+`e^{2Λρ} ρ⁻ⁿ I(ρ)` is nondecreasing. -/
+theorem Submission.regcomp_monotonicity_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → R.HasLocallyBoundedMeanCurvature → ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ x ∈ K, ∀ r : ℝ, 0 < r → r < r₁ → R.measure (ball x r) ≤ ENNReal.ofReal (C * r ^ n) := by
+  intro P n U R hU hH K hK hKU
+  classical
+  /- Step 1 (measurability of the tangent projection).  `Hⁿ⌞M`-a.e. the orientation is
+  `ξ(z) = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM` (uniqueness of `TₓM`).  A unit
+  simple `n`-vector determines its plane (determinant covectors), and its coordinates in a basis
+  of covectors depend continuously on `(τ, ±1)` in a compact set of frames; hence the projection
+  onto `TₓM` is a Borel function of the coordinates of `ξ(z)`. -/
+  have hPM : AEStronglyMeasurable (fun z => (approxTangentPlane n R.carrier z).starProjection)
+        (μHE[n].restrict R.carrier) ∧
+      ∀ᵐ z ∂(μHE[n].restrict R.carrier), ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧
+        (approxTangentPlane n R.carrier z).starProjection =
+          ∑ i, InnerProductSpace.rankOne ℝ (τ i) (τ i) := by
+    -- covectors form a finite-dimensional space
+    have hfd : FiniteDimensional ℝ (Covector (Euclid P) n) := by
+      let L : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+        { toFun := fun α J => α (fun i => EuclideanSpace.single (J i) 1)
+          map_add' := by intro α β; ext J; simp
+          map_smul' := by intro c α; ext J; simp }
+      refine FiniteDimensional.of_injective L ?_
+      intro α β h
+      have h' : α.toMultilinearMap = β.toMultilinearMap := by
+        refine Module.Basis.ext_multilinear
+          (fun _ => (EuclideanSpace.basisFun (Fin P) ℝ).toBasis) ?_
+        intro J
+        simpa [L] using congrFun h J
+      ext m
+      exact congrArg (fun f => f m) h'
+    -- determinant covectors `u ↦ det (⟪c a, u b⟫)`
+    have hdet : ∀ c : Fin n → Euclid P, ∃ α : Covector (Euclid P) n,
+        ∀ u : Fin n → Euclid P, α u = (Matrix.of fun b a => inner ℝ (c a) (u b)).det := by
+      intro c
+      let A : (Euclid P) [⋀^Fin n]→ₗ[ℝ] ℝ :=
+        (Matrix.detRowAlternating : (Fin n → ℝ) [⋀^Fin n]→ₗ[ℝ] ℝ).compLinearMap
+          (LinearMap.pi fun a => (innerSL ℝ (c a)).toLinearMap)
+      refine ⟨{ A with
+        cont := by
+          show Continuous fun u : Fin n → Euclid P => Matrix.det (fun b a => inner ℝ (c a) (u b))
+          fun_prop }, fun u => rfl⟩
+    -- the projection onto the span of an orthonormal family
+    have hproj : ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ →
+        (Submodule.span ℝ (range τ)).starProjection =
+          ∑ i, InnerProductSpace.rankOne ℝ (τ i) (τ i) := by
+      intro τ hτ
+      let b0 := Module.Basis.span hτ.linearIndependent
+      have hb0 : ∀ i, (b0 i : Euclid P) = τ i := fun i =>
+        congrArg Subtype.val (Module.Basis.span_apply hτ.linearIndependent i)
+      have hb0o : Orthonormal ℝ b0 := by
+        have e : (Submodule.span ℝ (range τ)).subtypeₗᵢ ∘ b0 = τ := funext hb0
+        rw [← (Submodule.span ℝ (range τ)).subtypeₗᵢ.orthonormal_comp_iff, e]
+        exact hτ
+      rw [OrthonormalBasis.starProjection_eq_sum_rankOne (b0.toOrthonormalBasis hb0o),
+        Module.Basis.coe_toOrthonormalBasis]
+      simp only [hb0]
+    -- a unit simple `n`-vector determines its plane
+    have hfib0 : ∀ τ τ' : Fin n → Euclid P, Orthonormal ℝ τ → Orthonormal ℝ τ' →
+        ∀ s s' : ℝ, s' ≠ 0 → (∀ α : Covector (Euclid P) n, s * α τ = s' * α τ') →
+        Submodule.span ℝ (range τ') ≤ Submodule.span ℝ (range τ) := by
+      intro τ τ' hτ hτ' s s' hs' h
+      rw [Submodule.span_le]
+      rintro _ ⟨j, rfl⟩
+      by_contra hj
+      obtain ⟨w, hw⟩ : ∃ w, w = τ' j - (Submodule.span ℝ (range τ)).starProjection (τ' j) :=
+        ⟨_, rfl⟩
+      have hwQ : ∀ q ∈ Submodule.span ℝ (range τ), inner ℝ w q = 0 := fun q hq => by
+        rw [hw]
+        exact Submodule.inner_left_of_mem_orthogonal hq
+          (Submodule.sub_starProjection_mem_orthogonal _)
+      have hwj : inner ℝ w (τ' j) = ‖w‖ ^ 2 := by
+        have h1 : τ' j = w + (Submodule.span ℝ (range τ)).starProjection (τ' j) := by
+          rw [hw, sub_add_cancel]
+        rw [h1, inner_add_right, hwQ _ (Submodule.starProjection_apply_mem _ _), add_zero,
+          real_inner_self_eq_norm_sq]
+      have hwne : w ≠ 0 := by
+        rintro rfl
+        exact hj (Submodule.starProjection_eq_self_iff.mp (sub_eq_zero.mp hw.symm).symm)
+      obtain ⟨α, hα⟩ := hdet (Function.update τ' j w)
+      have h1 : α τ = 0 := by
+        rw [hα]
+        refine Matrix.det_eq_zero_of_column_eq_zero j fun b => ?_
+        rw [Matrix.of_apply, Function.update_self]
+        exact hwQ _ (Submodule.subset_span (mem_range_self b))
+      have h2 : α τ' = ‖w‖ ^ 2 := by
+        rw [hα]
+        have hM : (Matrix.of fun b a => inner ℝ (Function.update τ' j w a) (τ' b)) =
+            (1 : Matrix (Fin n) (Fin n) ℝ).updateCol j
+              (fun k => ∑ i, (fun b => inner ℝ w (τ' b)) i • (1 : Matrix (Fin n) (Fin n) ℝ) k i) := by
+          ext b a
+          by_cases ha : a = j
+          · subst ha
+            simp [Matrix.one_apply]
+          · simp [ha, Matrix.one_apply, orthonormal_iff_ite.mp hτ' a b, eq_comm]
+        rw [hM, Matrix.det_updateCol_sum, Matrix.det_one, smul_eq_mul, mul_one, hwj]
+      have h3 := h α
+      rw [h1, h2, mul_zero] at h3
+      exact hwne (norm_eq_zero.mp ((pow_eq_zero_iff two_ne_zero).mp
+        ((mul_eq_zero.mp h3.symm).resolve_left hs')))
+    -- coordinates `ζ ↦ (ζ (b k))ₖ` of `n`-vectors in a basis `b` of covectors
+    let b := Module.finBasis ℝ (Covector (Euclid P) n)
+    -- the compact set of signed orthonormal frames, `Φ(τ, s) = coordinates of s τ₁ ∧ ⋯ ∧ τₙ`
+    let Ω : Set ((Fin n → Euclid P) × ℝ) := {p | Orthonormal ℝ p.1 ∧ (p.2 = 1 ∨ p.2 = -1)}
+    let Φ : (Fin n → Euclid P) × ℝ → (Fin (Module.finrank ℝ (Covector (Euclid P) n)) → ℝ) :=
+      fun p k => p.2 * b k p.1
+    let Gt : (Fin n → Euclid P) × ℝ → (Euclid P →L[ℝ] Euclid P) :=
+      fun p => ∑ i, InnerProductSpace.rankOne ℝ (p.1 i) (p.1 i)
+    have hΩc : IsCompact Ω := by
+      have h1 : IsCompact {τ : Fin n → Euclid P | Orthonormal ℝ τ} := by
+        apply Metric.isCompact_of_isClosed_isBounded
+        · have : {τ : Fin n → Euclid P | Orthonormal ℝ τ} =
+              ⋂ i, ⋂ j, {τ | inner ℝ (τ i) (τ j) = if i = j then (1:ℝ) else 0} := by
+            ext τ
+            simp [orthonormal_iff_ite]
+          rw [this]
+          exact isClosed_iInter fun i => isClosed_iInter fun j =>
+            isClosed_eq (by fun_prop) continuous_const
+        · rw [Metric.isBounded_iff_subset_closedBall 0]
+          refine ⟨1, fun τ hτ => ?_⟩
+          rw [mem_closedBall, dist_zero_right]
+          exact (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun i => (hτ.1 i).le
+      exact h1.prod (Set.toFinite ({1, -1} : Set ℝ)).isCompact
+    have hΦc : Continuous Φ :=
+      continuous_pi fun k => continuous_snd.mul ((b k).cont.comp continuous_fst)
+    have hGtc : Continuous Gt := by
+      rw [continuous_clm_apply]
+      intro v
+      simp only [Gt, sum_apply, InnerProductSpace.rankOne_apply]
+      fun_prop
+    have hfib : ∀ p ∈ Ω, ∀ q ∈ Ω, Φ p = Φ q → Gt p = Gt q := by
+      rintro ⟨τ, s⟩ ⟨hτ, hs⟩ ⟨τ', s'⟩ ⟨hτ', hs'⟩ hpq
+      have hlin : (s • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ τ).toLinearMap =
+          (s' • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ τ').toLinearMap :=
+        b.ext fun k => congrFun hpq k
+      have hval : ∀ α : Covector (Euclid P) n, s * α τ = s' * α τ' := fun α =>
+        LinearMap.congr_fun hlin α
+      have hs0 : s ≠ 0 := by
+        rcases hs with h | h
+        · exact (show s = 1 from h) ▸ one_ne_zero
+        · exact (show s = -1 from h) ▸ neg_ne_zero.mpr one_ne_zero
+      have hs'0 : s' ≠ 0 := by
+        rcases hs' with h | h
+        · exact (show s' = 1 from h) ▸ one_ne_zero
+        · exact (show s' = -1 from h) ▸ neg_ne_zero.mpr one_ne_zero
+      show ∑ i, InnerProductSpace.rankOne ℝ (τ i) (τ i) =
+        ∑ i, InnerProductSpace.rankOne ℝ (τ' i) (τ' i)
+      rw [← hproj τ hτ, ← hproj τ' hτ', le_antisymm
+        (hfib0 τ' τ hτ' hτ s' s hs0 fun α => (hval α).symm) (hfib0 τ τ' hτ hτ' s s' hs'0 hval)]
+    let G : (Fin (Module.finrank ℝ (Covector (Euclid P) n)) → ℝ) → (Euclid P →L[ℝ] Euclid P) :=
+      fun y => if h : ∃ p ∈ Ω, Φ p = y then Gt h.choose else 0
+    have hG : ∀ p ∈ Ω, G (Φ p) = Gt p := by
+      intro p hp
+      have h : ∃ q ∈ Ω, Φ q = Φ p := ⟨p, hp, rfl⟩
+      simp only [G, dite_eq_left h]
+      exact hfib _ h.choose_spec.1 _ hp h.choose_spec.2
+    -- `G` is Borel: on the compact image of `Φ` its closed-set preimages are compact
+    have hGm : Measurable G := by
+      refine measurable_of_isClosed fun F hF => ?_
+      have hset : G ⁻¹' F = Φ '' (Ω ∩ Gt ⁻¹' F) ∪
+          ((Φ '' Ω)ᶜ ∩ {_y | (0 : Euclid P →L[ℝ] Euclid P) ∈ F}) := by
+        ext y
+        by_cases h : ∃ p ∈ Ω, Φ p = y
+        · obtain ⟨p, hp, rfl⟩ := h
+          simp only [mem_preimage, hG p hp, mem_union, mem_image, mem_inter_iff, mem_compl_iff,
+            mem_ofPred_eq]
+          constructor
+          · intro hF'
+            exact Or.inl ⟨p, ⟨hp, hF'⟩, rfl⟩
+          · rintro (⟨q, ⟨hq, hqF⟩, hqp⟩ | ⟨hn, _⟩)
+            · rwa [← hfib q hq p hp hqp]
+            · exact absurd ⟨p, hp, rfl⟩ hn
+        · have hG0 : G y = 0 := by simp only [G, dite_eq_right h]
+          simp only [mem_preimage, hG0, mem_union, mem_image, mem_inter_iff, mem_compl_iff,
+            mem_ofPred_eq]
+          constructor
+          · intro h0
+            exact Or.inr ⟨fun ⟨p, hp, hpz⟩ => h ⟨p, hp, hpz⟩, h0⟩
+          · rintro (⟨q, ⟨hq, _⟩, hqz⟩ | ⟨_, h0⟩)
+            · exact absurd ⟨q, hq, hqz⟩ h
+            · exact h0
+      rw [hset]
+      exact (((hΩc.inter_right (hF.preimage hGtc)).image hΦc).isClosed.measurableSet).union
+        ((hΩc.image hΦc).isClosed.measurableSet.compl.inter (MeasurableSet.const _))
+    -- almost everywhere, the approximate tangent plane is the plane oriented by `ξ`
+    have hae : ∀ᵐ z ∂(μHE[n].restrict R.carrier), ∃ p ∈ Ω,
+        (approxTangentPlane n R.carrier z).starProjection = Gt p ∧
+          (fun k => R.orient z (b k)) = Φ p := by
+      filter_upwards [R.orients] with z ⟨Q, hQ, τ, hτ, hspan, hsign⟩
+      have hex : ∃ Q', HasApproximateTangentSpaceAt n R.carrier z Q' := ⟨Q, hQ⟩
+      have happrox : approxTangentPlane n R.carrier z = Q := by
+        rw [approxTangentPlane, dite_eq_left hex]
+        exact hex.choose_spec.unique hQ
+      have hP : (approxTangentPlane n R.carrier z).starProjection = Gt (τ, 1) := by
+        rw [happrox, ← hspan, hproj τ hτ]
+      rcases hsign with hsign | hsign
+      · exact ⟨(τ, 1), ⟨hτ, Or.inl rfl⟩, hP,
+          funext fun k => (hsign (b k)).trans (one_mul _).symm⟩
+      · exact ⟨(τ, -1), ⟨hτ, Or.inr rfl⟩, hP,
+          funext fun k => (hsign (b k)).trans (neg_one_mul _).symm⟩
+    have hξ : AEMeasurable (fun z => fun k => R.orient z (b k)) (μHE[n].restrict R.carrier) :=
+      ((continuous_pi fun k => (ContinuousLinearMap.apply ℝ ℝ (b k)).continuous :
+        Continuous fun ζ : MultiVector P n => fun k => ζ (b k)).comp_aestronglyMeasurable
+          R.aestronglyMeasurable_orient).aemeasurable
+    refine ⟨(hGm.comp_aemeasurable hξ).aestronglyMeasurable.congr ?_, ?_⟩
+    · filter_upwards [hae] with z ⟨p, hp, h1, h2⟩
+      show G (fun k => R.orient z (b k)) = _
+      rw [h2, hG p hp, h1]
+    · filter_upwards [hae] with z ⟨p, hp, h1, _⟩
+      exact ⟨p.1, hp.1, h1⟩
+  obtain ⟨hPmeas, hPae⟩ := hPM
+  set μ : Measure (Euclid P) := R.measure with hμ
+  have hμac : μ ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hPmeasμ : AEStronglyMeasurable
+      (fun z => (approxTangentPlane n R.carrier z).starProjection) μ := hPmeas.mono_ac hμac
+  have hPaeμ : ∀ᵐ z ∂μ, ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧
+      (approxTangentPlane n R.carrier z).starProjection =
+        ∑ i, InnerProductSpace.rankOne ℝ (τ i) (τ i) := hμac.ae_le hPae
+  -- integrals against `μ = θ Hⁿ⌞M`
+  have hμint : ∀ f : Euclid P → ℝ,
+      ∫ z, f z ∂μ = ∫ z in R.carrier, (R.mult z : ℝ) * f z ∂μHE[n] := by
+    intro f
+    have hθ : (fun z => (R.mult z : ℝ≥0∞)) = fun z => ((R.mult z : NNReal) : ℝ≥0∞) := by
+      funext z
+      simp
+    have hθm : Measurable fun z => (R.mult z : NNReal) :=
+      measurable_from_top.comp R.measurable_mult
+    rw [hμ, IMRep.measure, hθ, integral_withDensity_eq_integral_smul hθm]
+    refine integral_congr_ae (ae_of_all _ fun z => ?_)
+    simp [NNReal.smul_def]
+  /- Step 2.  `K' = {z : dist(z, K) ≤ 2δ}` is a compact subset of `U` of finite `μ`-measure. -/
+  obtain ⟨δ₀, hδ₀, hδ₀U⟩ := hK.exists_thickening_subset_open hU hKU
+  set δ : ℝ := δ₀ / 4 with hδ
+  have hδpos : 0 < δ := by positivity
+  set K' : Set (Euclid P) := cthickening (2 * δ) K with hK'
+  have hK'c : IsCompact K' := hK.cthickening
+  have hK'm : MeasurableSet K' := hK'c.measurableSet
+  have hK'U : K' ⊆ U := (cthickening_subset_thickening' hδ₀ (by linarith) K).trans hδ₀U
+  have hμK' : μ K' < ∞ := by
+    rw [hμ, IMRep.measure, withDensity_apply _ hK'm, Measure.restrict_restrict hK'm, inter_comm]
+    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K' hK'c hK'U)
+  have hballK' : ∀ x ∈ K, ∀ ρ ≤ δ, closedBall x (2 * ρ) ⊆ K' := by
+    intro x hx ρ hρ
+    exact (closedBall_subset_cthickening hx _).trans
+      (cthickening_mono (mul_le_mul_of_nonneg_left hρ zero_le_two) K)
+  have hind : ∀ c : ℝ, Integrable (K'.indicator fun _ => c) μ := fun c =>
+    (integrable_indicator_iff hK'm).mpr (integrableOn_const hμK'.ne)
+  /- Step 3.  The mean curvature `H` is bounded by `Λ ≥ 0` `μ`-a.e. on `K'`. -/
+  obtain ⟨H, -, hHb, hHfv⟩ := hH
+  obtain ⟨Λ', hΛ'⟩ := hHb K' hK'c hK'U
+  set Λ : ℝ := max Λ' 0 with hΛ
+  have hΛ0 : 0 ≤ Λ := le_max_right _ _
+  have hHΛ : ∀ᵐ z ∂μ, z ∈ K' → ‖H z‖ ≤ Λ := by
+    filter_upwards [hΛ'] with z hz hzK
+    exact (hz hzK).trans (le_max_left _ _)
+  /- Step 4.  The cutoff `ψ(s) = smoothTransition (2 - s)`: `ψ = 1` on `s ≤ 1`, `ψ = 0` on
+  `s ≥ 2`, `0 ≤ ψ ≤ 1`, `ψ' ≤ 0`, `|ψ'| ≤ M`. -/
+  let ψ : ℝ → ℝ := fun s => Real.smoothTransition (2 - s)
+  let ψ' : ℝ → ℝ := fun s => -deriv Real.smoothTransition (2 - s)
+  have hψd : ∀ s, HasDerivAt ψ (ψ' s) s := by
+    intro s
+    have h1 : HasDerivAt Real.smoothTransition (deriv Real.smoothTransition (2 - s)) (2 - s) :=
+      ((Real.smoothTransition.contDiff (n := 1)).differentiable (by norm_num)).differentiableAt.hasDerivAt
+    have h2 : HasDerivAt (fun s : ℝ => 2 - s) (-1) s := by
+      simpa using (hasDerivAt_id s).const_sub 2
+    have := h1.comp s h2
+    rw [mul_neg_one] at this
+    exact this
+  have hψcont : Continuous ψ := Real.smoothTransition.continuous.comp (by fun_prop)
+  have hderivc : Continuous (deriv Real.smoothTransition) :=
+    (Real.smoothTransition.contDiff (n := 1)).continuous_deriv le_rfl
+  have hψ'c : Continuous ψ' := (hderivc.comp (by fun_prop)).neg
+  have hψ0 : ∀ s, 0 ≤ ψ s := fun s => Real.smoothTransition.nonneg _
+  have hψ1 : ∀ s, ψ s ≤ 1 := fun s => Real.smoothTransition.le_one _
+  have hψone : ∀ s ≤ 1, ψ s = 1 := fun s hs => Real.smoothTransition.one_of_one_le (by linarith)
+  have hψzero : ∀ s, 2 ≤ s → ψ s = 0 := fun s hs =>
+    Real.smoothTransition.zero_of_nonpos (sub_nonpos.mpr hs)
+  have hψ'nonpos : ∀ s, ψ' s ≤ 0 := fun s =>
+    neg_nonpos.mpr Real.smoothTransition.monotone.deriv_nonneg
+  have hderiv0 : ∀ x, x < 0 → deriv Real.smoothTransition x = 0 := by
+    intro x hx
+    have : Real.smoothTransition =ᶠ[𝓝 x] fun _ => 0 := by
+      filter_upwards [Iio_mem_nhds hx] with y hy
+      exact Real.smoothTransition.zero_of_nonpos hy.le
+    rw [this.deriv_eq]
+    simp
+  have hderiv1 : ∀ x, 1 < x → deriv Real.smoothTransition x = 0 := by
+    intro x hx
+    have : Real.smoothTransition =ᶠ[𝓝 x] fun _ => 1 := by
+      filter_upwards [Ioi_mem_nhds hx] with y hy
+      exact Real.smoothTransition.one_of_one_le hy.le
+    rw [this.deriv_eq]
+    simp
+  have hψ'zero : ∀ s, 2 < s → ψ' s = 0 := by
+    intro s hs
+    simp only [ψ', neg_eq_zero]
+    exact hderiv0 _ (sub_neg.mpr hs)
+  obtain ⟨M, hM⟩ : ∃ M, ∀ s, |ψ' s| ≤ M := by
+    have hcs : HasCompactSupport (deriv Real.smoothTransition) := by
+      refine HasCompactSupport.intro (isCompact_Icc (a := (0:ℝ)) (b := 1)) ?_
+      intro x hx
+      simp only [mem_Icc, not_and_or, not_le] at hx
+      rcases hx with h | h
+      · exact hderiv0 x h
+      · exact hderiv1 x h
+    obtain ⟨C, hC⟩ := hderivc.bounded_above_of_compact_support hcs
+    exact ⟨C, fun s => by simpa [ψ', abs_neg] using hC (2 - s)⟩
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  have h42 : ∀ s : ℝ, 4 < s → 2 < s := fun s hs => lt_trans (by norm_num) hs
+  have hψsmooth : ContDiff ℝ 1 ψ :=
+    (Real.smoothTransition.contDiff (n := 1)).comp (contDiff_const.sub contDiff_id)
+  -- `trace ((∑ τᵢ ⊗ τᵢ) ∘ L) = ∑ ⟪τᵢ, L τᵢ⟫`
+  have htr : ∀ (τ : Fin n → Euclid P) (L : Euclid P →L[ℝ] Euclid P),
+      LinearMap.trace ℝ (Euclid P) ((∑ i, InnerProductSpace.rankOne ℝ (τ i) (τ i) :
+        Euclid P →L[ℝ] Euclid P).toLinearMap ∘ₗ L.toLinearMap) =
+        ∑ i, inner ℝ (τ i) (L (τ i)) := by
+    intro τ L
+    rw [← ContinuousLinearMap.toLinearMap_comp, ContinuousLinearMap.finsetSum_comp,
+      ContinuousLinearMap.toLinearMap_sum, map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [ContinuousLinearMap.toLinearMap_comp, LinearMap.trace_comp_comm',
+      ← ContinuousLinearMap.toLinearMap_comp, InnerProductSpace.comp_rankOne,
+      InnerProductSpace.trace_rankOne]
+  -- Bessel's inequality
+  have hbessel : ∀ (τ : Fin n → Euclid P), Orthonormal ℝ τ → ∀ v : Euclid P,
+      ∑ i, inner ℝ (τ i) v ^ 2 ≤ ‖v‖ ^ 2 := by
+    intro τ hτ v
+    have := hτ.sum_inner_products_le (s := Finset.univ) (x := v)
+    simpa [Real.norm_eq_abs, sq_abs] using this
+  /- Step 5.  Constants: `r₁ = δ/2`, `C = e^{2Λ r₁} μ(K') / r₁ⁿ`.  Fix `x₀ ∈ K`. -/
+  set R₀ : ℝ := δ / 2 with hR₀
+  have hR₀pos : 0 < R₀ := by positivity
+  have hR₀δ : R₀ < δ := by linarith
+  refine ⟨Real.exp (2 * Λ * R₀) * μ.real K' / R₀ ^ n, R₀, hR₀pos, ?_⟩
+  intro x₀ hx₀ r hr hrR₀
+  -- the radial field `X ρ z = ψ(‖z - x₀‖² / ρ²) • (z - x₀)`
+  let X : ℝ → Euclid P → Euclid P := fun ρ z => ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) • (z - x₀)
+  have hXd : ∀ ρ z, HasFDerivAt (X ρ)
+      (ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) • ContinuousLinearMap.id ℝ (Euclid P) +
+        ((ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) * (2 / ρ ^ 2)) • innerSL ℝ (z - x₀)).smulRight (z - x₀)) z := by
+    intro ρ z
+    have h1 : HasFDerivAt (fun z : Euclid P => z - x₀) (ContinuousLinearMap.id ℝ _) z :=
+      (hasFDerivAt_id z).sub_const x₀
+    have h3 : HasFDerivAt (fun z : Euclid P => ‖z - x₀‖ ^ 2 / ρ ^ 2)
+        ((ρ ^ 2)⁻¹ • (2 • (innerSL ℝ (z - x₀)).comp (ContinuousLinearMap.id ℝ (Euclid P)))) z := by
+      simpa only [div_eq_mul_inv] using HasFDerivAt.mul_const h1.norm_sq (ρ ^ 2)⁻¹
+    have h5 := ((hψd (‖z - x₀‖ ^ 2 / ρ ^ 2)).comp_hasFDerivAt z h3).smul h1
+    refine HasFDerivAt.congr_fderiv (f := X ρ) h5 (ContinuousLinearMap.ext fun v => ?_)
+    simp only [add_apply, FunLike.coe_smul, Pi.smul_apply,
+      ContinuousLinearMap.id_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
+      ContinuousLinearMap.comp_apply, Function.comp_apply, smul_eq_mul]
+    congr 2
+    rw [nsmul_eq_mul]
+    push_cast
+    ring
+  have hXcd : ∀ ρ, ContDiff ℝ 1 (X ρ) := by
+    intro ρ
+    have h1 : ContDiff ℝ 1 (fun z : Euclid P => ‖z - x₀‖ ^ 2 / ρ ^ 2) :=
+      ((contDiff_norm_sq ℝ).comp (contDiff_id.sub contDiff_const)).div_const _
+    exact (hψsmooth.comp h1).smul (contDiff_id.sub contDiff_const)
+  -- the size of `s = ‖z - x₀‖² / ρ²`
+  have hs_gt : ∀ ρ, 0 < ρ → ∀ z, z ∉ closedBall x₀ (2 * ρ) → 4 < ‖z - x₀‖ ^ 2 / ρ ^ 2 := by
+    intro ρ hρ z hz
+    rw [mem_closedBall, dist_eq_norm, not_le] at hz
+    rw [lt_div_iff₀ (pow_pos hρ 2)]
+    calc 4 * ρ ^ 2 = (2 * ρ) ^ 2 := by ring
+      _ < ‖z - x₀‖ ^ 2 := pow_lt_pow_left₀ hz (by positivity) two_ne_zero
+  have hs_le : ∀ ρ, 0 < ρ → ∀ z, z ∈ closedBall x₀ (2 * ρ) → ‖z - x₀‖ ^ 2 / ρ ^ 2 ≤ 4 := by
+    intro ρ hρ z hz
+    rw [mem_closedBall, dist_eq_norm] at hz
+    rw [div_le_iff₀ (pow_pos hρ 2)]
+    calc ‖z - x₀‖ ^ 2 ≤ (2 * ρ) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hz 2
+      _ = 4 * ρ ^ 2 := by ring
+  have hs_lt1 : ∀ ρ, 0 < ρ → ∀ z, z ∈ ball x₀ ρ → ‖z - x₀‖ ^ 2 / ρ ^ 2 ≤ 1 := by
+    intro ρ hρ z hz
+    rw [mem_ball, dist_eq_norm] at hz
+    rw [div_le_iff₀ (pow_pos hρ 2), one_mul]
+    exact pow_le_pow_left₀ (norm_nonneg _) hz.le 2
+  have hXzero : ∀ ρ, 0 < ρ → ∀ z, z ∉ closedBall x₀ (2 * ρ) → X ρ z = 0 := by
+    intro ρ hρ z hz
+    have h4 := hs_gt ρ hρ z hz
+    show ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) • (z - x₀) = 0
+    rw [hψzero _ (h42 _ h4).le, zero_smul]
+  have hXts : ∀ ρ, 0 < ρ → tsupport (X ρ) ⊆ closedBall x₀ (2 * ρ) := by
+    intro ρ hρ
+    refine closure_minimal (fun z hz => ?_) isClosed_closedBall
+    by_contra h
+    exact hz (hXzero ρ hρ z h)
+  have hXcs : ∀ ρ, 0 < ρ → HasCompactSupport (X ρ) := fun ρ hρ =>
+    HasCompactSupport.intro (isCompact_closedBall x₀ (2 * ρ)) (hXzero ρ hρ)
+  /- Step 6.  The tangential divergence of `X ρ` is `μ`-measurable and, `μ`-a.e.,
+  `n ψ(s) + 2 s ψ'(s) ≤ div_M X ρ ≤ n ψ(s)` (Simon Ch. 4, 3.2). -/
+  let d : ℝ → Euclid P → ℝ := fun ρ z => tangentialDivergence n R.carrier (X ρ) z
+  have hTc : Continuous fun p : (Euclid P →L[ℝ] Euclid P) × (Euclid P →L[ℝ] Euclid P) =>
+      LinearMap.trace ℝ (Euclid P) (p.1.toLinearMap ∘ₗ p.2.toLinearMap) := by
+    have h1 : Continuous fun A : Euclid P →L[ℝ] Euclid P =>
+        LinearMap.trace ℝ (Euclid P) A.toLinearMap :=
+      ((LinearMap.trace ℝ (Euclid P)).comp
+        (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional
+    exact h1.comp (continuous_fst.clm_comp continuous_snd)
+  have hdmeas : ∀ ρ, AEStronglyMeasurable (d ρ) μ := by
+    intro ρ
+    have h3 := hTc.comp_aestronglyMeasurable
+      (hPmeasμ.prodMk ((hXcd ρ).continuous_fderiv one_ne_zero).aestronglyMeasurable)
+    show AEStronglyMeasurable (fun z => tangentialDivergence n R.carrier (X ρ) z) μ
+    unfold tangentialDivergence
+    exact h3
+  have hdae : ∀ ρ, ∀ᵐ z ∂μ,
+      n * ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) + 2 * (‖z - x₀‖ ^ 2 / ρ ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) ≤
+        d ρ z ∧ d ρ z ≤ n * ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) := by
+    intro ρ
+    filter_upwards [hPaeμ] with z ⟨τ, hτ, hPz⟩
+    have h1 : ∀ i, inner ℝ (τ i) (τ i) = (1:ℝ) := fun i => by
+      rw [real_inner_self_eq_norm_sq, hτ.1 i, one_pow]
+    have e : d ρ z = n * ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) + ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) * (2 / ρ ^ 2) *
+        ∑ i, inner ℝ (τ i) (z - x₀) ^ 2 := by
+      show tangentialDivergence n R.carrier (X ρ) z = _
+      unfold tangentialDivergence
+      rw [hPz, (hXd ρ z).fderiv, htr]
+      simp only [add_apply, FunLike.coe_smul, Pi.smul_apply, ContinuousLinearMap.id_apply,
+        ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_eq_mul, inner_add_right,
+        inner_smul_right, h1, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ,
+        Fintype.card_fin, nsmul_eq_mul, mul_one, Finset.mul_sum]
+      congr 1
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [real_inner_comm (z - x₀) (τ i)]
+      ring
+    have hb := hbessel τ hτ (z - x₀)
+    have hS0 : 0 ≤ ∑ i, inner ℝ (τ i) (z - x₀) ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
+    have hk : ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) * (2 / ρ ^ 2) ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg (hψ'nonpos _) (div_nonneg zero_le_two (sq_nonneg ρ))
+    have h2 := mul_le_mul_of_nonpos_left hb hk
+    have h3 := mul_nonpos_of_nonpos_of_nonneg hk hS0
+    have e2 : ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) * (2 / ρ ^ 2) * ‖z - x₀‖ ^ 2 =
+        2 * (‖z - x₀‖ ^ 2 / ρ ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) := by ring
+    rw [e]
+    exact ⟨e2 ▸ add_le_add le_rfl h2, add_le_of_nonpos_right h3⟩
+  have hdint : ∀ ρ, 0 < ρ → ρ ≤ δ → Integrable (d ρ) μ := by
+    intro ρ hρ hρδ
+    refine Integrable.mono' (hind (n + 8 * M)) (hdmeas ρ) ?_
+    filter_upwards [hdae ρ] with z hz
+    rw [Real.norm_eq_abs]
+    by_cases hzB : z ∈ closedBall x₀ (2 * ρ)
+    · rw [indicator_of_mem (hballK' x₀ hx₀ ρ hρδ hzB), abs_le]
+      have h4 := hs_le ρ hρ z hzB
+      have e0 : 0 ≤ (n : ℝ) * ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) := mul_nonneg (Nat.cast_nonneg n) (hψ0 _)
+      have e1 : (n : ℝ) * ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) ≤ n :=
+        mul_le_of_le_one_right (Nat.cast_nonneg n) (hψ1 _)
+      have e2 : (‖z - x₀‖ ^ 2 / ρ ^ 2) * -ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) ≤ 4 * M :=
+        mul_le_mul h4 ((neg_le_abs _).trans (hM _)) (neg_nonneg.mpr (hψ'nonpos _)) (by norm_num)
+      exact ⟨by linarith only [hz.1, e0, e2, hM0], by linarith only [hz.2, e1, hM0]⟩
+    · have hs4 := hs_gt ρ hρ z hzB
+      have h1 : ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) = 0 := hψzero _ (h42 _ hs4).le
+      have h2 : ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) = 0 := hψ'zero _ (h42 _ hs4)
+      rw [h1, h2, mul_zero, mul_zero, add_zero] at hz
+      rw [le_antisymm hz.2 hz.1, abs_zero]
+      exact indicator_nonneg (fun _ _ => add_nonneg (Nat.cast_nonneg n)
+        (mul_nonneg (by norm_num) hM0)) _
+  /- Step 7.  `I(ρ) = ∫ ψ(‖z - x₀‖²/ρ²) dμ` is differentiable on `(0, δ)` with
+  `ρ I'(ρ) = -∫ 2 s ψ'(s) dμ`. -/
+  let F : ℝ → Euclid P → ℝ := fun ρ z => ψ (‖z - x₀‖ ^ 2 / ρ ^ 2)
+  let F' : ℝ → Euclid P → ℝ := fun ρ z =>
+    -(2 * (‖z - x₀‖ ^ 2 / ρ ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2)) / ρ
+  let I : ℝ → ℝ := fun ρ => ∫ z, F ρ z ∂μ
+  have hFcont : ∀ ρ, Continuous (F ρ) := fun ρ => hψcont.comp (by fun_prop)
+  have hFint : ∀ ρ, 0 < ρ → ρ ≤ δ → Integrable (F ρ) μ := by
+    intro ρ hρ hρδ
+    refine Integrable.mono' (hind 1) (hFcont ρ).aestronglyMeasurable (ae_of_all _ fun z => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (hψ0 _)]
+    by_cases hzB : z ∈ closedBall x₀ (2 * ρ)
+    · rw [indicator_of_mem (hballK' x₀ hx₀ ρ hρδ hzB)]
+      exact hψ1 _
+    · have h4 := hs_gt ρ hρ z hzB
+      rw [hψzero (‖z - x₀‖ ^ 2 / ρ ^ 2) (h42 _ h4).le]
+      exact indicator_nonneg (fun _ _ => zero_le_one) _
+  have hI0 : ∀ ρ, 0 ≤ I ρ := fun ρ => integral_nonneg fun z => hψ0 _
+  have hFd : ∀ ρ, ρ ≠ 0 → ∀ z, HasDerivAt (fun ρ => F ρ z) (F' ρ z) ρ := by
+    intro ρ hρ z
+    have h1 : HasDerivAt (fun ρ : ℝ => ‖z - x₀‖ ^ 2 / ρ ^ 2)
+        (-(2 * (‖z - x₀‖ ^ 2 / ρ ^ 2)) / ρ) ρ := by
+      have h2 := ((hasDerivAt_pow 2 ρ).inv (pow_ne_zero 2 hρ)).const_mul (‖z - x₀‖ ^ 2)
+      simp only [div_eq_mul_inv] at h2 ⊢
+      refine h2.congr_deriv ?_
+      field_simp
+      ring
+    refine ((hψd _).comp ρ h1).congr_deriv ?_
+    show ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) * (-(2 * (‖z - x₀‖ ^ 2 / ρ ^ 2)) / ρ) =
+      -(2 * (‖z - x₀‖ ^ 2 / ρ ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2)) / ρ
+    ring
+  have hderivI : ∀ ρ ∈ Ioo 0 δ, Integrable (F' ρ) μ ∧ HasDerivAt I (∫ z, F' ρ z ∂μ) ρ := by
+    rintro ρ ⟨hρ, hρδ⟩
+    refine hasDerivAt_integral_of_dominated_loc_of_deriv_le
+      (bound := K'.indicator fun _ => 16 * M / ρ)
+      (Ioo_mem_nhds (half_lt_self hρ) hρδ)
+      (Eventually.of_forall fun ρ' => (hFcont ρ').aestronglyMeasurable)
+      (hFint ρ hρ hρδ.le)
+      ((by fun_prop : Continuous (F' ρ))).aestronglyMeasurable ?_ (hind _) ?_
+    · refine ae_of_all _ fun z ρ' hρ' => ?_
+      obtain ⟨h1, h2⟩ := hρ'
+      have hρ'pos : 0 < ρ' := (half_pos hρ).trans h1
+      by_cases hzB : z ∈ closedBall x₀ (2 * ρ')
+      · rw [indicator_of_mem (hballK' x₀ hx₀ ρ' h2.le hzB)]
+        have h4 := hs_le ρ' hρ'pos z hzB
+        have hs0 : 0 ≤ ‖z - x₀‖ ^ 2 / ρ' ^ 2 := by positivity
+        have hnum : |-(2 * (‖z - x₀‖ ^ 2 / ρ' ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ' ^ 2))| ≤ 8 * M := by
+          rw [abs_neg, abs_mul, abs_of_nonneg (mul_nonneg zero_le_two hs0)]
+          calc 2 * (‖z - x₀‖ ^ 2 / ρ' ^ 2) * |ψ' (‖z - x₀‖ ^ 2 / ρ' ^ 2)| ≤ (2 * 4) * M :=
+                mul_le_mul (mul_le_mul_of_nonneg_left h4 zero_le_two) (hM _) (abs_nonneg _)
+                  (by norm_num)
+            _ = 8 * M := by ring
+        rw [Real.norm_eq_abs, abs_div, abs_of_pos hρ'pos]
+        calc |-(2 * (‖z - x₀‖ ^ 2 / ρ' ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ' ^ 2))| / ρ'
+            ≤ 8 * M / ρ' := div_le_div_of_nonneg_right hnum hρ'pos.le
+          _ ≤ 8 * M / (ρ / 2) :=
+            div_le_div_of_nonneg_left (mul_nonneg (by norm_num) hM0) (half_pos hρ) h1.le
+          _ = 16 * M / ρ := by ring
+      · have h4 := hs_gt ρ' hρ'pos z hzB
+        rw [show F' ρ' z = 0 by
+          show -(2 * (‖z - x₀‖ ^ 2 / ρ' ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ' ^ 2)) / ρ' = 0
+          rw [hψ'zero _ (h42 _ h4), mul_zero, neg_zero, zero_div], norm_zero]
+        exact indicator_nonneg (fun _ _ => div_nonneg (mul_nonneg (by norm_num) hM0) hρ.le) _
+    · exact ae_of_all _ fun z ρ' hρ' =>
+        hFd ρ' ((half_pos hρ).trans hρ'.1).ne' z
+  /- Step 8.  First variation (Simon Ch. 4, 3.3–3.4):
+  `n I(ρ) − ρ I'(ρ) ≤ ∫ div_M X_ρ dμ = −∫ X_ρ·H dμ ≤ 2Λρ I(ρ)`. -/
+  have hmain : ∀ ρ ∈ Ioo 0 δ, n * I ρ - ρ * ∫ z, F' ρ z ∂μ ≤ 2 * Λ * ρ * I ρ := by
+    rintro ρ ⟨hρ, hρδ⟩
+    obtain ⟨hF'int, -⟩ := hderivI ρ ⟨hρ, hρδ⟩
+    have hFi := hFint ρ hρ hρδ.le
+    have e1 : n * I ρ - ρ * ∫ z, F' ρ z ∂μ = ∫ z, (n * F ρ z - ρ * F' ρ z) ∂μ := by
+      rw [integral_sub (hFi.const_mul _) (hF'int.const_mul _), integral_const_mul,
+        integral_const_mul]
+    have e3 : ∫ z, (n * F ρ z - ρ * F' ρ z) ∂μ ≤ ∫ z, d ρ z ∂μ := by
+      refine integral_mono_ae ((hFi.const_mul _).sub (hF'int.const_mul _)) (hdint ρ hρ hρδ.le) ?_
+      filter_upwards [hdae ρ] with z hz
+      have e2 : n * F ρ z - ρ * F' ρ z = n * ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) +
+          2 * (‖z - x₀‖ ^ 2 / ρ ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2) := by
+        show n * ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) -
+            ρ * (-(2 * (‖z - x₀‖ ^ 2 / ρ ^ 2) * ψ' (‖z - x₀‖ ^ 2 / ρ ^ 2)) / ρ) = _
+        rw [mul_div_assoc', mul_div_cancel_left₀ _ hρ.ne']
+        ring
+      rw [e2]
+      exact hz.1
+    have e4 : ∫ z, d ρ z ∂μ = -∫ z, inner ℝ (X ρ z) (H z) ∂μ := by
+      rw [hμint]
+      exact hHfv (X ρ) (hXcd ρ) (hXcs ρ hρ)
+        ((hXts ρ hρ).trans ((hballK' x₀ hx₀ ρ hρδ.le).trans hK'U))
+    have e5 : -∫ z, inner ℝ (X ρ z) (H z) ∂μ ≤ 2 * Λ * ρ * I ρ := by
+      have h1 : -∫ z, inner ℝ (X ρ z) (H z) ∂μ ≤ ∫ z, ‖inner ℝ (X ρ z) (H z)‖ ∂μ := by
+        refine (neg_le_abs _).trans ?_
+        rw [← Real.norm_eq_abs]
+        exact norm_integral_le_integral_norm _
+      have h2 : ∫ z, ‖inner ℝ (X ρ z) (H z)‖ ∂μ ≤ ∫ z, 2 * Λ * ρ * F ρ z ∂μ := by
+        refine integral_mono_of_nonneg (ae_of_all _ fun z => norm_nonneg _) (hFi.const_mul _) ?_
+        filter_upwards [hHΛ] with z hz
+        by_cases hzB : z ∈ closedBall x₀ (2 * ρ)
+        · have hHz := hz (hballK' x₀ hx₀ ρ hρδ.le hzB)
+          have hXn : ‖X ρ z‖ ≤ F ρ z * (2 * ρ) := by
+            show ‖ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) • (z - x₀)‖ ≤ ψ (‖z - x₀‖ ^ 2 / ρ ^ 2) * (2 * ρ)
+            rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (hψ0 _)]
+            exact mul_le_mul_of_nonneg_left (by rwa [mem_closedBall, dist_eq_norm] at hzB) (hψ0 _)
+          calc ‖inner ℝ (X ρ z) (H z)‖ ≤ ‖X ρ z‖ * ‖H z‖ := norm_inner_le_norm _ _
+            _ ≤ (F ρ z * (2 * ρ)) * Λ :=
+              mul_le_mul hXn hHz (norm_nonneg _) (mul_nonneg (hψ0 _) (mul_nonneg zero_le_two hρ.le))
+            _ = 2 * Λ * ρ * F ρ z := by ring
+        · rw [hXzero ρ hρ z hzB, inner_zero_left, norm_zero]
+          exact mul_nonneg (mul_nonneg (mul_nonneg zero_le_two hΛ0) hρ.le) (hψ0 _)
+      rw [integral_const_mul] at h2
+      exact h1.trans h2
+    calc n * I ρ - ρ * ∫ z, F' ρ z ∂μ = _ := e1
+      _ ≤ _ := e3
+      _ = _ := e4
+      _ ≤ _ := e5
+  /- Step 9.  `g(ρ) = e^{2Λρ} ρ⁻ⁿ I(ρ)` is nondecreasing on `(0, δ)` (Simon Ch. 4, 3.17). -/
+  let g : ℝ → ℝ := fun ρ => Real.exp (2 * Λ * ρ - n * Real.log ρ) * I ρ
+  have hgd : ∀ ρ ∈ Ioo 0 δ, HasDerivAt g (Real.exp (2 * Λ * ρ - n * Real.log ρ) *
+      ((2 * Λ - n / ρ) * I ρ + ∫ z, F' ρ z ∂μ)) ρ := by
+    intro ρ hρ
+    have h1 : HasDerivAt (fun ρ => 2 * Λ * ρ - n * Real.log ρ) (2 * Λ - n / ρ) ρ := by
+      have := ((hasDerivAt_id ρ).const_mul (2 * Λ)).sub
+        ((Real.hasDerivAt_log hρ.1.ne').const_mul (n : ℝ))
+      refine this.congr_deriv ?_
+      rw [mul_one, div_eq_mul_inv]
+    refine (h1.exp.mul (hderivI ρ hρ).2).congr_deriv ?_
+    ring
+  have hgmono : MonotoneOn g (Ioo 0 δ) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Ioo 0 δ) ?_ ?_ ?_
+    · exact fun ρ hρ => (hgd ρ hρ).continuousAt.continuousWithinAt
+    · rw [interior_Ioo]
+      exact fun ρ hρ => (hgd ρ hρ).differentiableAt.differentiableWithinAt
+    · rw [interior_Ioo]
+      intro ρ hρ
+      rw [(hgd ρ hρ).deriv]
+      refine mul_nonneg (Real.exp_pos _).le ?_
+      have hm := hmain ρ hρ
+      have hρ0 : ρ ≠ 0 := hρ.1.ne'
+      have e : (2 * Λ - n / ρ) * I ρ + ∫ z, F' ρ z ∂μ =
+          (2 * Λ * ρ * I ρ - (n * I ρ - ρ * ∫ z, F' ρ z ∂μ)) / ρ := by
+        field_simp
+        ring
+      rw [e]
+      exact div_nonneg (sub_nonneg.mpr hm) hρ.1.le
+  /- Step 10.  Conclusion: `μ(B_r(x₀)) ≤ I(r) ≤ e^{2Λr₁} r₁⁻ⁿ I(r₁) rⁿ ≤ C rⁿ`. -/
+  have hexp_log : ∀ ρ, 0 < ρ → Real.exp (2 * Λ * ρ - n * Real.log ρ) =
+      Real.exp (2 * Λ * ρ) / ρ ^ n := by
+    intro ρ hρ
+    rw [Real.exp_sub, Real.exp_nat_mul, Real.exp_log hρ]
+  have hrδ : r < δ := hrR₀.trans hR₀δ
+  have hIr : I r ≤ Real.exp (2 * Λ * R₀) * I R₀ / R₀ ^ n * r ^ n := by
+    have h1 : g r ≤ g R₀ := hgmono ⟨hr, hrδ⟩ ⟨hR₀pos, hR₀δ⟩ hrR₀.le
+    simp only [g, hexp_log r hr, hexp_log R₀ hR₀pos] at h1
+    have hrn : 0 < r ^ n := pow_pos hr n
+    have h2 : Real.exp (2 * Λ * r) * I r ≤
+        Real.exp (2 * Λ * R₀) / R₀ ^ n * I R₀ * r ^ n := by
+      have := mul_le_mul_of_nonneg_right h1 hrn.le
+      rwa [div_mul_eq_mul_div, div_mul_cancel₀ _ hrn.ne'] at this
+    have h3 : I r ≤ Real.exp (2 * Λ * r) * I r :=
+      le_mul_of_one_le_left (hI0 r)
+        (Real.one_le_exp (mul_nonneg (mul_nonneg zero_le_two hΛ0) hr.le))
+    calc I r ≤ _ := h3.trans h2
+      _ = Real.exp (2 * Λ * R₀) * I R₀ / R₀ ^ n * r ^ n := by ring
+  have hIR₀ : I R₀ ≤ μ.real K' := by
+    rw [← integral_indicator_one hK'm]
+    refine integral_mono (hFint R₀ hR₀pos hR₀δ.le) (hind 1) (fun z => ?_)
+    by_cases hzB : z ∈ closedBall x₀ (2 * R₀)
+    · rw [indicator_of_mem (hballK' x₀ hx₀ R₀ hR₀δ.le hzB)]
+      exact hψ1 _
+    · have h4 := hs_gt R₀ hR₀pos z hzB
+      show ψ (‖z - x₀‖ ^ 2 / R₀ ^ 2) ≤ _
+      rw [hψzero _ (h42 _ h4).le]
+      exact indicator_nonneg (fun _ _ => zero_le_one) _
+  have hball_le : μ (ball x₀ r) ≤ ENNReal.ofReal (I r) := by
+    rw [ofReal_integral_eq_lintegral_ofReal (hFint r hr hrδ.le) (ae_of_all _ fun z => hψ0 _)]
+    calc μ (ball x₀ r) = ∫⁻ z, (ball x₀ r).indicator 1 z ∂μ :=
+          (lintegral_indicator_one measurableSet_ball).symm
+      _ ≤ ∫⁻ z, ENNReal.ofReal (F r z) ∂μ := by
+          refine lintegral_mono fun z => ?_
+          by_cases hz : z ∈ ball x₀ r
+          · rw [indicator_of_mem hz, Pi.one_apply,
+              show F r z = 1 from hψone _ (hs_lt1 r hr z hz), ENNReal.ofReal_one]
+          · rw [indicator_of_notMem hz]
+            exact zero_le
+  calc μ (ball x₀ r) ≤ ENNReal.ofReal (I r) := hball_le
+    _ ≤ ENNReal.ofReal (Real.exp (2 * Λ * R₀) * μ.real K' / R₀ ^ n * r ^ n) := by
+        refine ENNReal.ofReal_le_ofReal (hIr.trans ?_)
+        gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

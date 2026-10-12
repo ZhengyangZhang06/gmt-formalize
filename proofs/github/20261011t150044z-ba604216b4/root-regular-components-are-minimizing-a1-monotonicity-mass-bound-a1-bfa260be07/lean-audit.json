@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7da65c4c4cf3f52fe08137cb9d16ee53d5882923626309a5735a672743d3f4c4",
+  "git_delta": {
+    "base_commit": "7d8e61061713f8a4e1b5335a1b89c27562592ae3",
+    "candidate_commit": "67f6a7b1fc3e73fedcbc4e5b142824247e756fb2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_monotonicity_mass_bound",
+    "diff_sha256": "cc72d5daba5e06dd2a042f79cc338a73124f53d55d2c9e5956e98c746ff54b9b",
+    "source_sha256": "15ee76c0092b465e7de50412066e0a55568035dfa9b5ab91b005b177e9c79027",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_monotonicity_mass_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → R.HasLocallyBoundedMeanCurvature → ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ x ∈ K, ∀ r : ℝ, 0 < r → r < r₁ → R.measure (ball x r) ≤ ENNReal.ofReal (C * r ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
