@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6b93b8f7149d310ac6c684b35b2f5e16993853d3a87750f3c6a6f9746ab96aa",
+  "git_delta": {
+    "base_commit": "d7f5808dc5175e6aa940bcc56eedfeaefec69bc8",
+    "candidate_commit": "8cec0bbe8ac3738431ffef61ab64c53591320e5c",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pdb_image_closedBall_measure_le",
+    "diff_sha256": "89611c9857f9404766923c73cd6c90447a77923b0a6a88f68a42b2fe399ee196",
+    "source_sha256": "63272e2dceb6c09527831f04cf9f251f79d90cc76af631e65083b91ddb6a8375",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pdb_image_closedBall_measure_le",
+      "statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (K : NNReal) (c : ℝ) (w : EuclideanSpace ℝ (Fin n)), LipschitzWith K F → 0 < c → (∀ v ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → ∀ ρ : ℝ, 0 < ρ → (μHE[n] : Measure (Ambient n ℓ)) (F '' C ∩ closedBall (F w) ρ) ≤ ENNReal.ofReal ((K : ℝ) ^ n * omega n / c ^ n * ρ ^ n)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
