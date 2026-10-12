@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b118ab37dc096ac04dd5331cd68c8475702b4fa4993989b762f2bee5485e15ce",
+  "git_delta": {
+    "base_commit": "a6b27d63ebdd5bbfbed860a0ad341121141b548e",
+    "candidate_commit": "e34f6696d59b1ac9ddfe4ab1749fd053871cbf03",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "pcoarea_implicit_chart",
+    "diff_sha256": "213222ae1e227d924fafc734cff9d041d5bab871a2f65aa2972fb71a3c02e368",
+    "source_sha256": "c1676178060afc50e3c9de9b6f4af06b6162a3602325157f4e28a45c0f55a5ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pcoarea_implicit_chart",
+      "statement": "∀ (m k : ℕ) (G : Rn (m + k) → Rn m) (D : Set (Rn (m + k))) (u₀ : Rn (m + k)), IsOpen D → u₀ ∈ D → ContDiff ℝ 1 G → Function.Surjective (fderiv ℝ G u₀) → ∃ Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k)), u₀ ∈ Φ.source ∧ Φ.source ⊆ D ∧ ContDiffOn ℝ 1 Φ Φ.source ∧ ContDiffOn ℝ 1 Φ.symm Φ.target ∧ ∀ u ∈ Φ.source, (Φ u).fst = G u",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
