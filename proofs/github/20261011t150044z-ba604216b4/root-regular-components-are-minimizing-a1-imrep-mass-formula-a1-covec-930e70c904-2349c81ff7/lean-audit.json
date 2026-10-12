@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3def988305933cc9d139a00087d2f4fdb15972dfd593b5bd0c52c6257bf9f09e",
+  "git_delta": {
+    "base_commit": "afc6c9511e4ca904446293841047d8039a864f6d",
+    "candidate_commit": "b7846b639953f647296619e6e73dec8a8a22ba73",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_covector_eval_orthonormal_le",
+    "diff_sha256": "65a177f40ad0317dfcb2965e3f39d190245f69e07f3179c78aa8466212dc4e59",
+    "source_sha256": "76cf364cd232543a87a071145db4fdcbe96d0b1fa727d755a061653e79ff395a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covector_eval_orthonormal_le",
+      "statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
