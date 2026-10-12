@@ -658,6 +658,840 @@ theorem Submission.dorag_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
     ).congr hae.symm
 
+/-- Facts about `D = δ^{1/(2n+2)}` used in the tilt-excess decay step: if `δ ≤ min(1, η^{2n+2})`
+then `0 < D ≤ η`, `δ ≤ D` and `√δ ≤ D`. -/
+theorem Submission.dorag_tesDecay_rpow (n : ℕ) (δ η : ℝ) (hδ : 0 < δ) (hδ1 : δ ≤ 1) (hη : 0 < η)
+    (hδη : δ ≤ η ^ (2 * n + 2)) :
+    0 < δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) ∧ δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) ≤ η ∧
+      δ ≤ δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) ∧ Real.sqrt δ ≤ δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) := by
+  have hα : (1 : ℝ) / (2 * (n : ℝ) + 2) = (((2 * n + 2 : ℕ) : ℝ))⁻¹ := by
+    push_cast
+    ring
+  have hαpos : 0 < (1 : ℝ) / (2 * (n : ℝ) + 2) := by positivity
+  have hα2 : (1 : ℝ) / (2 * (n : ℝ) + 2) ≤ 1 / 2 := by
+    rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+  refine ⟨Real.rpow_pos_of_pos hδ _, ?_, ?_, ?_⟩
+  · calc δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))
+        ≤ (η ^ (2 * n + 2)) ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) :=
+          Real.rpow_le_rpow hδ.le hδη hαpos.le
+      _ = η := by rw [hα, Real.pow_rpow_inv_natCast hη.le (by omega)]
+  · calc δ = δ ^ (1 : ℝ) := (Real.rpow_one δ).symm
+      _ ≤ δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) :=
+          Real.rpow_le_rpow_of_exponent_ge hδ hδ1 (by linarith)
+  · rw [Real.sqrt_eq_rpow]
+    exact Real.rpow_le_rpow_of_exponent_ge hδ hδ1 hα2
+
+/-- The height bound produced by the plane reduction of Step 1:
+`2C₃Dσ + (4a/M)^{1/2}σ = C₁₁Dσ` for `a = C₃D²σⁿ`, `M = ω_nσⁿ/2`. -/
+theorem Submission.dorag_tesDecay_height_const (n : ℕ) (C₃ ω D σ : ℝ) (hC₃ : 0 ≤ C₃) (hω : 0 < ω)
+    (hD : 0 ≤ D) (hσ : 0 < σ) :
+    C₃ * D * (2 * σ) + Real.sqrt (4 * (C₃ * D ^ 2 * σ ^ n) / (ω * σ ^ n / 2)) * σ =
+      (2 * C₃ + Real.sqrt (8 * C₃ / ω)) * D * σ := by
+  have hσn : 0 < σ ^ n := pow_pos hσ n
+  have h1 : 4 * (C₃ * D ^ 2 * σ ^ n) / (ω * σ ^ n / 2) = 8 * C₃ / ω * D ^ 2 := by
+    field_simp
+    ring
+  rw [h1, Real.sqrt_mul (by positivity), Real.sqrt_sq hD]
+  ring
+
+/-- A finite `[0, ∞]` quantity bounded by `ofReal a` is `ofReal I` for a real `0 ≤ I ≤ a`. -/
+theorem Submission.dorag_tesDecay_real_of_le {J : ℝ≥0∞} {a : ℝ} (ha : 0 ≤ a)
+    (h : J ≤ ENNReal.ofReal a) : ∃ I : ℝ, 0 ≤ I ∧ ENNReal.ofReal I = J ∧ I ≤ a :=
+  ⟨J.toReal, ENNReal.toReal_nonneg, ENNReal.ofReal_toReal (ne_top_of_le_ne_top ENNReal.ofReal_ne_top h),
+    ENNReal.toReal_le_of_le_ofReal ha h⟩
+
+/-- Step 1, the normalised excess `E₀ = max(σ⁻ⁿI, κ²σ²/δ)` (`I = ∫_{B_σ(ξ)}|p_x − p_{T'}|² dμ`):
+`I ≤ σⁿE₀`, `κ²σ² ≤ δE₀`, `E₀ ≤ C₃D²` (as `κσ ≤ δ²`) and `κσ ≤ D E₀^{1/2}` (as `δ^{1/2} ≤ D`). -/
+theorem Submission.dorag_tesDecay_excess_facts (n : ℕ) (C₃ D δ E₀ I κ ρ σ : ℝ) (hδ : 0 < δ)
+    (hδ8 : δ ≤ 1 / 8) (hσ : 0 < σ) (hσδρ : σ ≤ δ * ρ) (hκ : 0 ≤ κ) (hκρ : κ * ρ ≤ δ)
+    (hC₃ : 1 ≤ C₃) (hδD : δ ≤ D) (hsδD : Real.sqrt δ ≤ D)
+    (hIa : I ≤ C₃ * D ^ 2 * σ ^ n) (hE₀def : E₀ = max (1 / σ ^ n * I) (κ ^ 2 * σ ^ 2 / δ)) :
+    0 ≤ E₀ ∧ I ≤ σ ^ n * E₀ ∧ κ ^ 2 * σ ^ 2 ≤ δ * E₀ ∧ E₀ ≤ C₃ * D ^ 2 ∧
+      κ * σ ≤ D * Real.sqrt E₀ := by
+  have hE₀1 : 1 / σ ^ n * I ≤ E₀ := hE₀def ▸ le_max_left _ _
+  have hE₀2 : κ ^ 2 * σ ^ 2 / δ ≤ E₀ := hE₀def ▸ le_max_right _ _
+  have hσn : 0 < σ ^ n := pow_pos hσ n
+  have hκE : κ ^ 2 * σ ^ 2 ≤ δ * E₀ := by
+    calc κ ^ 2 * σ ^ 2 = δ * (κ ^ 2 * σ ^ 2 / δ) := by field_simp
+      _ ≤ δ * E₀ := by gcongr
+  refine ⟨le_trans (by positivity) hE₀2, ?_, hκE, ?_, ?_⟩
+  · calc I = σ ^ n * (1 / σ ^ n * I) := by field_simp
+      _ ≤ σ ^ n * E₀ := by gcongr
+  · rw [hE₀def]
+    apply max_le
+    · calc 1 / σ ^ n * I ≤ 1 / σ ^ n * (C₃ * D ^ 2 * σ ^ n) := by gcongr
+        _ = C₃ * D ^ 2 := by field_simp
+    · have hκσ : κ * σ ≤ δ * δ := by
+        calc κ * σ ≤ κ * (δ * ρ) := by gcongr
+          _ = δ * (κ * ρ) := by ring
+          _ ≤ δ * δ := by gcongr
+      have h1 : κ ^ 2 * σ ^ 2 ≤ δ ^ 4 := by
+        calc κ ^ 2 * σ ^ 2 = (κ * σ) ^ 2 := by ring
+          _ ≤ (δ * δ) ^ 2 := pow_le_pow_left₀ (mul_nonneg hκ hσ.le) hκσ 2
+          _ = δ ^ 4 := by ring
+      have h3 : δ ^ 3 ≤ D ^ 2 := by
+        calc δ ^ 3 ≤ δ ^ 2 := pow_le_pow_of_le_one hδ.le (by linarith) (by norm_num)
+          _ ≤ D ^ 2 := pow_le_pow_left₀ hδ.le hδD 2
+      rw [div_le_iff₀ hδ]
+      calc κ ^ 2 * σ ^ 2 ≤ δ ^ 4 := h1
+        _ = δ ^ 3 * δ := by ring
+        _ ≤ D ^ 2 * δ := by gcongr
+        _ = 1 * (D ^ 2 * δ) := by ring
+        _ ≤ C₃ * (D ^ 2 * δ) := by gcongr
+        _ = C₃ * D ^ 2 * δ := by ring
+  · rw [← Real.sqrt_sq (mul_nonneg hκ hσ.le)]
+    calc Real.sqrt ((κ * σ) ^ 2) ≤ Real.sqrt (δ * E₀) :=
+          Real.sqrt_le_sqrt (by rw [mul_pow]; exact hκE)
+      _ = Real.sqrt δ * Real.sqrt E₀ := Real.sqrt_mul hδ.le _
+      _ ≤ D * Real.sqrt E₀ := by gcongr
+
+/-- Step 11: `θE₀ = θE_*(ξ, σ, T')` is at most `θE_*(ξ, σ, T)` when `E(ξ, σ, T') ≤ E(ξ, σ, T)`. -/
+theorem Submission.dorag_tesDecay_rhs (θ E₀ a b I : ℝ) (J : ℝ≥0∞) (hθ : 0 ≤ θ) (ha : 0 ≤ a)
+    (hE₀ : E₀ = max (a * I) b) (hI : ENNReal.ofReal I ≤ J) :
+    ENNReal.ofReal (θ * E₀) ≤ ENNReal.ofReal θ * max (ENNReal.ofReal a * J) (ENNReal.ofReal b) := by
+  rw [ENNReal.ofReal_mul hθ, hE₀, ENNReal.ofReal_max, ENNReal.ofReal_mul ha]
+  gcongr
+
+/-- `μ_V = θ Hⁿ⌞M ≪ Hⁿ⌞M`: an `Hⁿ⌞(M ∩ W)`-a.e. property holds `μ_V`-a.e. on `W`. -/
+theorem Submission.dorag_tesDecay_ae_of_carrier {P n : ℕ} {U W : Set (Euclid P)} (R : IMRep U n)
+    (hW : MeasurableSet W) {p : Euclid P → Prop}
+    (h : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), p x) : ∀ᵐ x ∂R.measure, x ∈ W → p x := by
+  have h1 : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ W → p x := by
+    rw [← ae_restrict_iff' hW, Measure.restrict_restrict hW, Set.inter_comm]
+    exact h
+  exact (withDensity_absolutelyContinuous _ _).ae_le h1
+
+/-- The energy normalisation of Step 7: `s⁻²(2 + C₇)I ≤ (σ/8)ⁿ` for `s² = (2 + C₇)8ⁿE₀`. -/
+theorem Submission.dorag_tesDecay_energy_real (n : ℕ) (C₇ E₀ I σ : ℝ) (hC₇ : 0 < C₇) (hE₀ : 0 < E₀)
+    (hσ : 0 < σ) (hIle : I ≤ σ ^ n * E₀) :
+    (Real.sqrt ((2 + C₇) * 8 ^ n * E₀))⁻¹ ^ 2 * (2 * I + C₇ * I) ≤ (σ / 4 / 2) ^ n := by
+  have hpos : 0 < (2 + C₇) * 8 ^ n * E₀ := by positivity
+  rw [inv_pow, Real.sq_sqrt hpos.le]
+  have h8 : (σ / 4 / 2) ^ n = σ ^ n / 8 ^ n := by
+    rw [show σ / 4 / 2 = σ / 8 by ring, div_pow]
+  rw [h8, inv_mul_le_iff₀ hpos]
+  have h8pos : (0 : ℝ) < 8 ^ n := by positivity
+  calc 2 * I + C₇ * I = (2 + C₇) * I := by ring
+    _ ≤ (2 + C₇) * (σ ^ n * E₀) := by gcongr
+    _ = (2 + C₇) * 8 ^ n * E₀ * (σ ^ n / 8 ^ n) := by field_simp
+
+/-- The weak-form normalisation of Step 7 (Simon (15)–(17)): the right side of the weak equation
+for `fʲ`, divided by `s = ((2 + C₇)8ⁿE₀)^{1/2}`, is at most `δ_h(σ/8)ⁿG`. -/
+theorem Submission.dorag_tesDecay_weak_real (n k : ℕ) (C₃ C₇ ω D δh E₀ I κ σ G : ℝ)
+    (hC₃ : 1 ≤ C₃) (hC₇ : 0 < C₇) (hω : 0 < ω) (hD : 0 ≤ D) (hE₀ : 0 < E₀) (hσ : 0 < σ)
+    (hG : 0 ≤ G) (hIle : I ≤ σ ^ n * E₀) (hE₀le : E₀ ≤ C₃ * D ^ 2)
+    (hκσ : κ * σ ≤ D * Real.sqrt E₀)
+    (hδh : 8 ^ n * ((2 + 2 ^ (n + 1) * k) * (1 + C₇) * Real.sqrt C₃ + 2 * ω / 4 ^ (n + 1)) /
+      Real.sqrt ((2 + C₇) * 8 ^ n) * D ≤ δh) :
+    (Real.sqrt ((2 + C₇) * 8 ^ n * E₀))⁻¹ *
+        (G * ((2 + 2 ^ (n + 1) * k) * (I + C₇ * I) + κ * (σ / 4) * (2 * ω * (σ / 4) ^ n))) ≤
+      δh * (σ / 4 / 2) ^ n * G := by
+  set r := Real.sqrt E₀ with hr
+  have hrpos : 0 < r := Real.sqrt_pos.mpr hE₀
+  have hrr : r * r = E₀ := Real.mul_self_sqrt hE₀.le
+  have hC₁₃ : 0 < (2 + C₇) * 8 ^ n := by positivity
+  have hsC : 0 < Real.sqrt ((2 + C₇) * 8 ^ n) := Real.sqrt_pos.mpr hC₁₃
+  have hs : Real.sqrt ((2 + C₇) * 8 ^ n * E₀) = Real.sqrt ((2 + C₇) * 8 ^ n) * r := by
+    rw [Real.sqrt_mul hC₁₃.le]
+  have hsC₃ : 1 ≤ Real.sqrt C₃ := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]
+    exact Real.sqrt_le_sqrt hC₃
+  -- `√E₀ ≤ √C₃ D`
+  have hrD : r ≤ Real.sqrt C₃ * D := by
+    rw [hr, ← Real.sqrt_sq hD, ← Real.sqrt_mul (by linarith)]
+    exact Real.sqrt_le_sqrt hE₀le
+  -- `I ≤ σⁿ √E₀ √C₃ D`
+  have hI' : I ≤ σ ^ n * r * (Real.sqrt C₃ * D) := by
+    calc I ≤ σ ^ n * E₀ := hIle
+      _ = σ ^ n * r * r := by rw [← hrr]; ring
+      _ ≤ σ ^ n * r * (Real.sqrt C₃ * D) := by gcongr
+  set B := (2 + 2 ^ (n + 1) * k) * (1 + C₇) * Real.sqrt C₃ + 2 * ω / 4 ^ (n + 1) with hB
+  have hX : (2 + 2 ^ (n + 1) * (k : ℝ)) * (I + C₇ * I) + κ * (σ / 4) * (2 * ω * (σ / 4) ^ n) ≤
+      σ ^ n * r * D * B := by
+    have h1 : (2 + 2 ^ (n + 1) * (k : ℝ)) * (I + C₇ * I) ≤
+        (2 + 2 ^ (n + 1) * (k : ℝ)) * (1 + C₇) * (σ ^ n * r * (Real.sqrt C₃ * D)) := by
+      have : (2 + 2 ^ (n + 1) * (k : ℝ)) * (I + C₇ * I) =
+          (2 + 2 ^ (n + 1) * (k : ℝ)) * (1 + C₇) * I := by
+        ring
+      rw [this]
+      gcongr
+    have h2 : κ * (σ / 4) * (2 * ω * (σ / 4) ^ n) = (κ * σ) * (2 * ω * σ ^ n / 4 ^ (n + 1)) := by
+      rw [div_pow, pow_succ]
+      field_simp
+    have h3 : (κ * σ) * (2 * ω * σ ^ n / 4 ^ (n + 1)) ≤ (D * r) * (2 * ω * σ ^ n / 4 ^ (n + 1)) := by
+      gcongr
+    calc (2 + 2 ^ (n + 1) * (k : ℝ)) * (I + C₇ * I) + κ * (σ / 4) * (2 * ω * (σ / 4) ^ n)
+        ≤ (2 + 2 ^ (n + 1) * (k : ℝ)) * (1 + C₇) * (σ ^ n * r * (Real.sqrt C₃ * D)) +
+            (D * r) * (2 * ω * σ ^ n / 4 ^ (n + 1)) := by rw [h2]; exact add_le_add h1 h3
+      _ = σ ^ n * r * D * B := by rw [hB]; ring
+  have h8 : (σ / 4 / 2) ^ n = σ ^ n / 8 ^ n := by
+    rw [show σ / 4 / 2 = σ / 8 by ring, div_pow]
+  have hB0 : 0 ≤ B := by positivity
+  calc (Real.sqrt ((2 + C₇) * 8 ^ n * E₀))⁻¹ *
+        (G * ((2 + 2 ^ (n + 1) * k) * (I + C₇ * I) + κ * (σ / 4) * (2 * ω * (σ / 4) ^ n)))
+      ≤ (Real.sqrt ((2 + C₇) * 8 ^ n * E₀))⁻¹ * (G * (σ ^ n * r * D * B)) := by gcongr
+    _ = (8 ^ n * B / Real.sqrt ((2 + C₇) * 8 ^ n) * D) * (σ / 4 / 2) ^ n * G := by
+      rw [hs, h8]
+      field_simp
+    _ ≤ δh * (σ / 4 / 2) ^ n * G := by gcongr
+
+/-- Step 7 (Simon (17)–(18)): for each component `fʲ` of the Lipschitz approximation, the
+harmonic approximation lemma applied to `w = s⁻¹fʲ` on `Bⁿ_{σ/8}` gives an affine
+`a + b` with `‖b‖ ≤ C_H`, `|a| ≤ C_H s⁻¹C₇Dσω^{1/2} + C_Hε'^{1/2}σ/8` and the `L²` decay
+on `Bⁿ_{θ'σ/8}`. -/
+theorem Submission.dorag_tesDecay_harmonic_step (n k : ℕ) (f : Euclid n → Euclid k)
+    (C₃ C₇ CH ω D δh ε' E₀ I κ σ s θ' : ℝ)
+    (hHA' : ∀ (R₀ : ℝ) (w : Euclid n → ℝ) (Lw : NNReal), 0 < R₀ → LipschitzWith Lw w →
+      ∫ v in ball (0 : Euclid n) R₀, ‖fderiv ℝ w v‖ ^ 2 ≤ R₀ ^ n →
+      (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+        tsupport ζ ⊆ ball (0 : Euclid n) R₀ → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) →
+        |∫ v in ball (0 : Euclid n) R₀, ∑ i : Fin n, fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) *
+          fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δh * R₀ ^ n * G) →
+      ∃ (a : ℝ) (b : Euclid n →L[ℝ] ℝ), ‖b‖ ≤ CH ∧
+        |a| ≤ CH * Real.sqrt ((∫ v in ball (0 : Euclid n) R₀, w v ^ 2) / R₀ ^ n) +
+          CH * Real.sqrt ε' * R₀ ∧
+        ∀ θ' : ℝ, 0 < θ' → θ' ≤ 1 / 4 → ∫ v in ball (0 : Euclid n) (θ' * R₀), (w v - a - b v) ^ 2 ≤
+          CH * (ε' / θ' ^ (n + 2) + θ' ^ 2) * (θ' * R₀) ^ (n + 2))
+    (hGE : ∀ j : Fin k, ∫ v in ball (0 : Euclid n) (σ / 4 / 2),
+      ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2 ≤ 2 * I + C₇ * I)
+    (hGW : ∀ (j : Fin k) (ζ : Euclid n → ℝ) (G : ℝ), ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball (0 : Euclid n) (σ / 4 / 2) → (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) →
+      |∫ v in ball (0 : Euclid n) (σ / 4 / 2), ∑ i : Fin n,
+        fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v (EuclideanSpace.single i (1 : ℝ)) *
+          fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤
+        G * ((2 + 2 ^ (n + 1) * k) * (I + C₇ * I) + κ * (σ / 4) * (2 * ω * (σ / 4) ^ n)))
+    (hf1 : ∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) (hfb : ∀ v, ‖f v‖ ≤ C₇ * D * σ)
+    (hsdef : s = Real.sqrt ((2 + C₇) * 8 ^ n * E₀))
+    (hC₃ : 1 ≤ C₃) (hC₇ : 0 < C₇) (hCH : 0 < CH) (hω : 0 < ω) (hD : 0 ≤ D) (hE₀ : 0 < E₀)
+    (hσ : 0 < σ) (hθ' : 0 < θ') (hθ'4 : θ' ≤ 1 / 4)
+    (hIE : I ≤ σ ^ n * E₀) (hE₀le : E₀ ≤ C₃ * D ^ 2) (hκσE : κ * σ ≤ D * Real.sqrt E₀)
+    (hD14 : 8 ^ n * ((2 + 2 ^ (n + 1) * k) * (1 + C₇) * Real.sqrt C₃ + 2 * ω / 4 ^ (n + 1)) /
+      Real.sqrt ((2 + C₇) * 8 ^ n) * D ≤ δh)
+    (hvol : volume.real (ball (0 : Euclid n) (σ / 4 / 2)) = (σ / 4 / 2) ^ n * ω) :
+    ∀ j : Fin k, ∃ (a : ℝ) (b : Euclid n →L[ℝ] ℝ), ‖b‖ ≤ CH ∧
+      |a| ≤ CH * (s⁻¹ * (C₇ * D * σ) * Real.sqrt ω) + CH * Real.sqrt ε' * (σ / 4 / 2) ∧
+      ∫ v in ball (0 : Euclid n) (θ' * (σ / 4 / 2)),
+          (s⁻¹ * EuclideanSpace.proj j (f v) - a - b v) ^ 2 ≤
+        CH * (ε' / θ' ^ (n + 2) + θ' ^ 2) * (θ' * (σ / 4 / 2)) ^ (n + 2) := by
+  intro j
+  have hs : 0 < s := hsdef ▸ Real.sqrt_pos.mpr (by positivity)
+  have hsi : 0 < s⁻¹ := inv_pos.mpr hs
+  have hR₀ : 0 < σ / 4 / 2 := by positivity
+  have hderiv : ∀ v, fderiv ℝ (fun v => s⁻¹ * EuclideanSpace.proj j (f v)) v =
+      s⁻¹ • fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v := by
+    intro v
+    have : (fun v => s⁻¹ * EuclideanSpace.proj j (f v)) =
+        s⁻¹ • fun v => EuclideanSpace.proj j (f v) := rfl
+    rw [this, fderiv_const_smul_field]
+    rfl
+  have hproj : ∀ y : Euclid k, |EuclideanSpace.proj j y| ≤ ‖y‖ := fun y => by
+    simpa using PiLp.norm_apply_le y j
+  -- `w = s⁻¹fʲ` is `s⁻¹`-Lipschitz
+  have hwLip : LipschitzWith (Real.toNNReal s⁻¹) (fun v => s⁻¹ * EuclideanSpace.proj j (f v)) := by
+    refine LipschitzWith.of_dist_le_mul fun v w => ?_
+    rw [Real.coe_toNNReal _ hsi.le, Real.dist_eq, dist_eq_norm, ← mul_sub, ← map_sub, abs_mul,
+      abs_of_pos hsi]
+    gcongr
+    exact (hproj _).trans (hf1 v w)
+  -- the energy of `w` on `Bⁿ_{σ/8}` is at most `(σ/8)ⁿ`
+  have hwE : ∫ v in ball (0 : Euclid n) (σ / 4 / 2),
+      ‖fderiv ℝ (fun v => s⁻¹ * EuclideanSpace.proj j (f v)) v‖ ^ 2 ≤ (σ / 4 / 2) ^ n := by
+    simp_rw [hderiv, norm_smul, mul_pow, Real.norm_eq_abs, abs_of_pos hsi]
+    rw [integral_const_mul]
+    refine le_trans ?_ (Submission.dorag_tesDecay_energy_real n C₇ E₀ I σ hC₇ hE₀ hσ hIE)
+    rw [← hsdef]
+    exact mul_le_mul_of_nonneg_left (hGE j) (by positivity)
+  -- `w` is weakly `δ_h`-harmonic on `Bⁿ_{σ/8}`
+  have hwW : ∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball (0 : Euclid n) (σ / 4 / 2) → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) →
+      |∫ v in ball (0 : Euclid n) (σ / 4 / 2), ∑ i : Fin n,
+        fderiv ℝ (fun v => s⁻¹ * EuclideanSpace.proj j (f v)) v (EuclideanSpace.single i (1 : ℝ)) *
+          fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δh * (σ / 4 / 2) ^ n * G := by
+    intro ζ hζ hζc hζs G hG
+    have hG0 : 0 ≤ G := (norm_nonneg _).trans (hG 0)
+    have h1 := hGW j ζ G hζ hζc hζs hG
+    simp_rw [hderiv, smul_apply, smul_eq_mul, mul_assoc, ← Finset.mul_sum]
+    rw [integral_const_mul, abs_mul, abs_of_pos hsi]
+    refine le_trans (mul_le_mul_of_nonneg_left h1 hsi.le) ?_
+    rw [hsdef]
+    exact (Submission.dorag_tesDecay_weak_real n k C₃ C₇ ω D δh E₀ I κ σ G hC₃ hC₇ hω hD hE₀
+      hσ hG0 hIE hE₀le hκσE hD14).trans_eq (mul_assoc _ _ _)
+  obtain ⟨a, b, hb, ha, hab⟩ := hHA' (σ / 4 / 2) (fun v => s⁻¹ * EuclideanSpace.proj j (f v))
+    (Real.toNNReal s⁻¹) hR₀ hwLip hwE hwW
+  refine ⟨a, b, hb, ha.trans ?_, hab θ' hθ' hθ'4⟩
+  -- `|a| ≤ A`, from `|w| ≤ s⁻¹C₇Dσ` on `Bⁿ_{σ/8}`
+  gcongr
+  have hw2 : ∫ v in ball (0 : Euclid n) (σ / 4 / 2), (s⁻¹ * EuclideanSpace.proj j (f v)) ^ 2 ≤
+      (s⁻¹ * (C₇ * D * σ)) ^ 2 * ((σ / 4 / 2) ^ n * ω) := by
+    refine (le_abs_self _).trans ?_
+    rw [← Real.norm_eq_abs, ← hvol]
+    refine norm_setIntegral_le_of_norm_le_const measure_ball_lt_top fun v _ => ?_
+    rw [Real.norm_eq_abs, abs_pow, abs_mul, abs_of_pos hsi]
+    gcongr
+    exact (hproj _).trans (hfb v)
+  calc Real.sqrt ((∫ v in ball (0 : Euclid n) (σ / 4 / 2),
+        (s⁻¹ * EuclideanSpace.proj j (f v)) ^ 2) / (σ / 4 / 2) ^ n)
+      ≤ Real.sqrt ((s⁻¹ * (C₇ * D * σ)) ^ 2 * ω) := by
+        apply Real.sqrt_le_sqrt
+        rw [div_le_iff₀ (by positivity)]
+        exact hw2.trans_eq (by ring)
+    _ = s⁻¹ * (C₇ * D * σ) * Real.sqrt ω := by
+        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity)]
+
+/-- Bounds on the affine data `c, Λ` of Step 8 (Simon (18)): `|c| ≤ C₁₅DR₀` and
+`‖Λ‖ ≤ kC_H(C₁₃C₃)^{1/2}D`, `R₀ = σ/8`. -/
+theorem Submission.dorag_tesDecay_affine_consts (k : ℕ) (C₃ C₁₃ C₇ CH ω D E₀ ε' σ s A c Λ : ℝ)
+    (hs : s = Real.sqrt (C₁₃ * E₀)) (hE₀ : 0 < E₀) (hE₀le : E₀ ≤ C₃ * D ^ 2) (hC₃ : 0 ≤ C₃)
+    (hC₁₃ : 0 < C₁₃) (hD : 0 ≤ D) (hε'1 : ε' ≤ 1) (hCH : 0 < CH) (hC₇ : 0 < C₇) (hω : 0 < ω)
+    (hσ : 0 < σ)
+    (hA : A = CH * (s⁻¹ * (C₇ * D * σ) * Real.sqrt ω) + CH * Real.sqrt ε' * (σ / 4 / 2))
+    (hc : c ≤ k * s * A) (hΛ : Λ ≤ k * s * CH) :
+    c ≤ (k + 1) * CH * (8 * C₇ * Real.sqrt ω + Real.sqrt (C₁₃ * C₃)) * D * (σ / 4 / 2) ∧
+      Λ ≤ k * CH * Real.sqrt (C₁₃ * C₃) * D := by
+  have hspos : 0 < s := by rw [hs]; exact Real.sqrt_pos.mpr (mul_pos hC₁₃ hE₀)
+  have hsle : s ≤ Real.sqrt (C₁₃ * C₃) * D := by
+    rw [hs, ← Real.sqrt_sq hD, ← Real.sqrt_mul (by positivity)]
+    exact Real.sqrt_le_sqrt (by rw [mul_assoc]; gcongr)
+  have hε's : Real.sqrt ε' ≤ 1 := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]
+    exact Real.sqrt_le_sqrt hε'1
+  have hkA : (k : ℝ) * s * A ≤
+      k * CH * (8 * C₇ * Real.sqrt ω + Real.sqrt (C₁₃ * C₃)) * D * (σ / 4 / 2) := by
+    have h1 : (k : ℝ) * s * A =
+        k * (CH * (C₇ * D * σ) * Real.sqrt ω + s * (CH * Real.sqrt ε' * (σ / 4 / 2))) := by
+      rw [hA]
+      field_simp
+    rw [h1]
+    have h3 : (k : ℝ) * (CH * (C₇ * D * σ) * Real.sqrt ω + s * (CH * Real.sqrt ε' * (σ / 4 / 2))) ≤
+        k * (CH * (C₇ * D * σ) * Real.sqrt ω +
+          (Real.sqrt (C₁₃ * C₃) * D) * (CH * 1 * (σ / 4 / 2))) := by
+      gcongr
+    refine h3.trans (le_of_eq ?_)
+    ring
+  constructor
+  · refine hc.trans (hkA.trans ?_)
+    gcongr
+    linarith
+  · refine hΛ.trans ?_
+    calc (k : ℝ) * s * CH ≤ k * (Real.sqrt (C₁₃ * C₃) * D) * CH := by gcongr
+      _ = k * CH * Real.sqrt (C₁₃ * C₃) * D := by ring
+
+/-- The final real inequality of Steps 9–10 (Simon (20)–(23)), with `R₀ = σ/8`, `t = θ'R₀`:
+`(θ₀σ)^{-n}C_T(t^{-2}((1 + n2ⁿ)ks²Q + K²C₇I) + κ²t²·2ωtⁿ) ≤ θ₀E₀`, `θ₀ = θ'/32`. -/
+theorem Submission.dorag_tesDecay_final_real (n k : ℕ)
+    (CT CH C₇ C₁₃ C₁₇ C₁₆ ω θ' ε' D δ E₀ I s Q K σ R₀ t κ : ℝ)
+    (hCT : 0 < CT) (hCH : 0 < CH) (hC₇ : 0 < C₇) (hC₁₃ : 0 < C₁₃) (hω : 0 < ω)
+    (hθ' : 0 < θ') (hθ'4 : θ' ≤ 1 / 4) (hε' : 0 ≤ ε') (hδ : 0 ≤ δ) (hE₀ : 0 ≤ E₀)
+    (hR₀ : 0 < R₀) (hσ : σ = 8 * R₀) (ht : t = θ' * R₀) (hs : s ^ 2 = C₁₃ * E₀)
+    (hQ : Q = CH * (ε' / θ' ^ (n + 2) + θ' ^ 2) * t ^ (n + 2))
+    (hK : 0 ≤ K) (hKle : K ≤ C₁₇ * D * R₀) (hI : 0 ≤ I) (hIle : I ≤ σ ^ n * E₀)
+    (hκ : κ ^ 2 * σ ^ 2 ≤ δ * E₀)
+    (hC₁₆ : C₁₆ = 4 ^ n * CT * ((1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ + C₁₇ ^ 2 * C₇ * 8 ^ n +
+      2 * ω))
+    (h1 : C₁₆ * θ' ^ 2 ≤ θ' / 128) (h2 : C₁₆ * (ε' / θ' ^ (n + 2)) ≤ θ' / 128)
+    (h3 : C₁₆ * (D ^ 2 / θ' ^ (n + 2)) ≤ θ' / 128) (h4 : C₁₆ * δ ≤ θ' / 128) :
+    1 / (θ' / 32 * σ) ^ n * (CT * (1 / t ^ 2 * ((1 + n * 2 ^ n) * (k * s ^ 2 * Q) +
+      K ^ 2 * (C₇ * I)) + κ ^ 2 * t ^ 2 * (2 * ω * t ^ n))) ≤ θ' / 32 * E₀ := by
+  subst hσ ht
+  set t := θ' * R₀ with ht
+  have htpos : 0 < t := mul_pos hθ' hR₀
+  have hθ'pos : 0 < θ' ^ (n + 2) := pow_pos hθ' _
+  have hpre : 1 / (θ' / 32 * (8 * R₀)) ^ n = 4 ^ n / t ^ n := by
+    rw [show θ' / 32 * (8 * R₀) = t / 4 by rw [ht]; ring, div_pow]
+    field_simp
+  have htn : 0 < t ^ n := pow_pos htpos n
+  set a := ε' / θ' ^ (n + 2) with ha
+  set b := D ^ 2 / θ' ^ (n + 2) with hb
+  have ha0 : 0 ≤ a := by positivity
+  have hb0 : 0 ≤ b := by positivity
+  -- the three terms
+  have hT1 : 4 ^ n / t ^ n * (CT * (1 / t ^ 2 * ((1 + n * 2 ^ n) * (k * s ^ 2 * Q)))) =
+      4 ^ n * CT * ((1 + n * 2 ^ n) * k * CH * C₁₃) * (a + θ' ^ 2) * E₀ := by
+    rw [hs, hQ]
+    field_simp
+    ring
+  have hT2 : 4 ^ n / t ^ n * (CT * (1 / t ^ 2 * (K ^ 2 * (C₇ * I)))) ≤
+      4 ^ n * CT * (C₁₇ ^ 2 * C₇ * 8 ^ n) * b * E₀ := by
+    have hK2 : K ^ 2 ≤ (C₁₇ * D * R₀) ^ 2 := pow_le_pow_left₀ hK hKle 2
+    calc 4 ^ n / t ^ n * (CT * (1 / t ^ 2 * (K ^ 2 * (C₇ * I))))
+        ≤ 4 ^ n / t ^ n * (CT * (1 / t ^ 2 * ((C₁₇ * D * R₀) ^ 2 * (C₇ * ((8 * R₀) ^ n * E₀))))) := by
+          gcongr
+      _ = 4 ^ n * CT * (C₁₇ ^ 2 * C₇ * 8 ^ n) * b * E₀ := by
+          rw [hb, ht]
+          field_simp
+          ring
+  have hT3 : 4 ^ n / t ^ n * (CT * (κ ^ 2 * t ^ 2 * (2 * ω * t ^ n))) ≤
+      4 ^ n * CT * (2 * ω) * δ * E₀ := by
+    have htσ : t ^ 2 ≤ (8 * R₀) ^ 2 := by
+      have : t ≤ 8 * R₀ := by rw [ht]; nlinarith
+      exact pow_le_pow_left₀ htpos.le this 2
+    have hκt : κ ^ 2 * t ^ 2 ≤ δ * E₀ := le_trans (by gcongr) hκ
+    calc 4 ^ n / t ^ n * (CT * (κ ^ 2 * t ^ 2 * (2 * ω * t ^ n)))
+        = 4 ^ n * CT * (2 * ω) * (κ ^ 2 * t ^ 2) := by field_simp
+      _ ≤ 4 ^ n * CT * (2 * ω) * (δ * E₀) := by gcongr
+      _ = 4 ^ n * CT * (2 * ω) * δ * E₀ := by ring
+  -- coefficient comparisons with `C₁₆`
+  have hc1 : 4 ^ n * CT * ((1 + n * 2 ^ n) * k * CH * C₁₃) ≤ C₁₆ := by
+    rw [hC₁₆]
+    have : (1 + n * 2 ^ n) * (k : ℝ) * CH * C₁₃ ≤
+        (1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ + C₁₇ ^ 2 * C₇ * 8 ^ n + 2 * ω := by
+      have h0 : (0 : ℝ) ≤ C₁₇ ^ 2 * C₇ * 8 ^ n + 2 * ω := by positivity
+      have h1' : (1 + n * 2 ^ n) * (k : ℝ) * CH * C₁₃ ≤ (1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ := by
+        gcongr
+        linarith
+      linarith
+    gcongr
+  have hc2 : 4 ^ n * CT * (C₁₇ ^ 2 * C₇ * 8 ^ n) ≤ C₁₆ := by
+    rw [hC₁₆]
+    gcongr
+    have : (0 : ℝ) ≤ (1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ := by positivity
+    linarith
+  have hc3 : 4 ^ n * CT * (2 * ω) ≤ C₁₆ := by
+    rw [hC₁₆]
+    gcongr
+    have : (0 : ℝ) ≤ (1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ := by positivity
+    have : (0 : ℝ) ≤ C₁₇ ^ 2 * C₇ * 8 ^ n := by positivity
+    linarith
+  rw [hpre]
+  calc 4 ^ n / t ^ n * (CT * (1 / t ^ 2 * ((1 + n * 2 ^ n) * (k * s ^ 2 * Q) + K ^ 2 * (C₇ * I)) +
+        κ ^ 2 * t ^ 2 * (2 * ω * t ^ n)))
+      = 4 ^ n / t ^ n * (CT * (1 / t ^ 2 * ((1 + n * 2 ^ n) * (k * s ^ 2 * Q)))) +
+          4 ^ n / t ^ n * (CT * (1 / t ^ 2 * (K ^ 2 * (C₇ * I)))) +
+          4 ^ n / t ^ n * (CT * (κ ^ 2 * t ^ 2 * (2 * ω * t ^ n))) := by ring
+    _ ≤ 4 ^ n * CT * ((1 + n * 2 ^ n) * k * CH * C₁₃) * (a + θ' ^ 2) * E₀ +
+          4 ^ n * CT * (C₁₇ ^ 2 * C₇ * 8 ^ n) * b * E₀ + 4 ^ n * CT * (2 * ω) * δ * E₀ := by
+          rw [hT1]
+          exact add_le_add (add_le_add le_rfl hT2) hT3
+    _ ≤ C₁₆ * (a + θ' ^ 2) * E₀ + C₁₆ * b * E₀ + C₁₆ * δ * E₀ := by
+          gcongr
+    _ = (C₁₆ * a + C₁₆ * θ' ^ 2 + C₁₆ * b + C₁₆ * δ) * E₀ := by ring
+    _ ≤ (θ' / 128 + θ' / 128 + θ' / 128 + θ' / 128) * E₀ := by gcongr
+    _ = θ' / 32 * E₀ := by ring
+
+/-- Steps 9–10, `ENNReal` form: the chain of the tilt-height, graph-height, affine-assembly and
+density estimates gives `(θ₀σ)^{-n}∫_{B_{θ₀σ}(ξ)}|p_x − p_S|² dμ ≤ θ₀E₀`. -/
+theorem Submission.dorag_tesDecay_conclude (n k : ℕ) (X J L MF Mt : ℝ≥0∞)
+    (CT CH C₇ C₁₃ C₁₇ C₁₆ ω θ' ε' D δ E₀ I s Q K σ R₀ t κ : ℝ)
+    (hX : X ≤ ENNReal.ofReal CT * (ENNReal.ofReal (1 / t ^ 2) * J +
+      ENNReal.ofReal (κ ^ 2 * t ^ 2) * Mt))
+    (hJ : J ≤ ENNReal.ofReal (1 + n * 2 ^ n) * L + ENNReal.ofReal (K ^ 2) * MF)
+    (hL : L ≤ ENNReal.ofReal (k * s ^ 2 * Q)) (hMF : MF ≤ ENNReal.ofReal (C₇ * I))
+    (hMt : Mt ≤ ENNReal.ofReal (2 * ω * t ^ n))
+    (hCT : 0 < CT) (hCH : 0 < CH) (hC₇ : 0 < C₇) (hC₁₃ : 0 < C₁₃) (hω : 0 < ω)
+    (hθ' : 0 < θ') (hθ'4 : θ' ≤ 1 / 4) (hε' : 0 ≤ ε') (hδ : 0 ≤ δ) (hE₀ : 0 ≤ E₀)
+    (hR₀ : 0 < R₀) (hσ : σ = 8 * R₀) (ht : t = θ' * R₀) (hs : s ^ 2 = C₁₃ * E₀)
+    (hQ : Q = CH * (ε' / θ' ^ (n + 2) + θ' ^ 2) * t ^ (n + 2))
+    (hK : 0 ≤ K) (hKle : K ≤ C₁₇ * D * R₀) (hI : 0 ≤ I) (hIle : I ≤ σ ^ n * E₀)
+    (hκ : κ ^ 2 * σ ^ 2 ≤ δ * E₀)
+    (hC₁₆ : C₁₆ = 4 ^ n * CT * ((1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ + C₁₇ ^ 2 * C₇ * 8 ^ n +
+      2 * ω))
+    (h1 : C₁₆ * θ' ^ 2 ≤ θ' / 128) (h2 : C₁₆ * (ε' / θ' ^ (n + 2)) ≤ θ' / 128)
+    (h3 : C₁₆ * (D ^ 2 / θ' ^ (n + 2)) ≤ θ' / 128) (h4 : C₁₆ * δ ≤ θ' / 128) :
+    ENNReal.ofReal (1 / (θ' / 32 * σ) ^ n) * X ≤ ENNReal.ofReal (θ' / 32 * E₀) := by
+  have htpos : 0 < t := ht ▸ mul_pos hθ' hR₀
+  have hσpos : 0 < σ := by rw [hσ]; positivity
+  have hQ0 : 0 ≤ Q := by rw [hQ]; positivity
+  calc ENNReal.ofReal (1 / (θ' / 32 * σ) ^ n) * X
+      ≤ ENNReal.ofReal (1 / (θ' / 32 * σ) ^ n) * (ENNReal.ofReal CT * (ENNReal.ofReal (1 / t ^ 2) *
+        (ENNReal.ofReal (1 + n * 2 ^ n) * ENNReal.ofReal (k * s ^ 2 * Q) +
+          ENNReal.ofReal (K ^ 2) * ENNReal.ofReal (C₇ * I)) +
+        ENNReal.ofReal (κ ^ 2 * t ^ 2) * ENNReal.ofReal (2 * ω * t ^ n))) := by
+        gcongr
+        refine hX.trans ?_
+        gcongr
+        refine hJ.trans ?_
+        gcongr
+    _ = ENNReal.ofReal (1 / (θ' / 32 * σ) ^ n * (CT * (1 / t ^ 2 * ((1 + n * 2 ^ n) *
+          (k * s ^ 2 * Q) + K ^ 2 * (C₇ * I)) + κ ^ 2 * t ^ 2 * (2 * ω * t ^ n)))) := by
+        rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+          ← ENNReal.ofReal_add (by positivity) (by positivity), ← ENNReal.ofReal_mul (by positivity),
+          ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_add (by positivity) (by positivity),
+          ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
+    _ ≤ ENNReal.ofReal (θ' / 32 * E₀) :=
+        ENNReal.ofReal_le_ofReal (Submission.dorag_tesDecay_final_real n k CT CH C₇ C₁₃ C₁₇ C₁₆ ω θ'
+          ε' D δ E₀ I s Q K σ R₀ t κ hCT hCH hC₇ hC₁₃ hω hθ' hθ'4 hε' hδ hE₀ hR₀ hσ ht hs hQ hK
+          hKle hI hIle hκ hC₁₆ h1 h2 h3 h4)
+
+/-- Steps 3–9 of the tilt-excess decay (Simon Ch. 5, proof of 4.5, (5)–(22)).  Let `f` be the
+`1`-Lipschitz approximation over the plane `T'` (tilt `I ≤ σⁿE₀` and height `≤ C₁₁Dσ` on `B_σ(ξ)`)
+with the estimate (4′) for the non-graph part.  Then (Steps 3–6) every component `fʲ` has energy
+`≤ (2 + C₇)I` and is weakly harmonic up to an error, on `Bⁿ_{σ/8}`; (Step 7) the harmonic
+approximation lemma applies to `(C₁₃E₀)^{-1/2}fʲ`; (Step 8) the components assemble to an affine
+map `c + Λ`; (Step 9) the height about `S = graph Λ` at `τ = ξ + ι'c` is controlled, and the
+tilt-height estimate at `(τ, θ'σ/8)` gives `(θ₀σ)^{-n}∫_{B_{θ₀σ}(ξ)}|p_x − p_S|² dμ ≤ θ₀E₀`,
+`θ₀ = θ'/32`. -/
+theorem Submission.dorag_tesDecay_core (n k : ℕ) (hn : 0 < n) (U W : Set (Euclid (n + k)))
+    (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ) (ξ : Euclid (n + k)) (σ : ℝ)
+    (T' : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k))
+    (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k)
+    (C₃ C₇ C₁₁ C₁₃ C₁₄ C₁₅ C₁₆ C₁₇ CT CH ω θ' ε' δh D δ E₀ I : ℝ)
+    (hW : IsOpen W) (hWU : W ⊆ U) (hH : AEStronglyMeasurable H R.measure)
+    (hHκ : ∀ x, ‖H x‖ ≤ κ)
+    (hMC : ∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X →
+      tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure)
+    (hTH : ∀ (ξ : Euclid (n + k)) (r : ℝ) (S : Submodule ℝ (Euclid (n + k))), 0 < r →
+      closedBall ξ r ⊆ W → Module.finrank ℝ S = n →
+      ∫⁻ x in closedBall ξ (r / 2), ENNReal.ofReal (∑ i : Fin (n + k),
+        ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤
+        ENNReal.ofReal CT * (ENNReal.ofReal (1 / r ^ 2) * ∫⁻ x in closedBall ξ r,
+          ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂R.measure +
+          ENNReal.ofReal (κ ^ 2 * r ^ 2) * R.measure (closedBall ξ r)))
+    (hHA' : ∀ (R₀ : ℝ) (w : Euclid n → ℝ) (Lw : NNReal), 0 < R₀ → LipschitzWith Lw w →
+      ∫ v in ball (0 : Euclid n) R₀, ‖fderiv ℝ w v‖ ^ 2 ≤ R₀ ^ n →
+      (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+        tsupport ζ ⊆ ball (0 : Euclid n) R₀ → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) →
+        |∫ v in ball (0 : Euclid n) R₀, ∑ i : Fin n, fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) *
+          fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δh * R₀ ^ n * G) →
+      ∃ (a : ℝ) (b : Euclid n →L[ℝ] ℝ), ‖b‖ ≤ CH ∧
+        |a| ≤ CH * Real.sqrt ((∫ v in ball (0 : Euclid n) R₀, w v ^ 2) / R₀ ^ n) +
+          CH * Real.sqrt ε' * R₀ ∧
+        ∀ θ' : ℝ, 0 < θ' → θ' ≤ 1 / 4 → ∫ v in ball (0 : Euclid n) (θ' * R₀), (w v - a - b v) ^ 2 ≤
+          CH * (ε' / θ' ^ (n + 2) + θ' ^ 2) * (θ' * R₀) ^ (n + 2))
+    (hσ : 0 < σ) (hBW : closedBall ξ σ ⊆ W)
+    (hμ : ∀ y ∈ closedBall ξ σ, ∀ t : ℝ, 0 < t → t ≤ σ →
+      R.measure (closedBall y t) ≤ ENNReal.ofReal (2 * ω * t ^ n))
+    (hmult : ∀ᵐ x ∂R.measure, x ∈ closedBall ξ σ → R.mult x = 1)
+    (hT'n : Module.finrank ℝ T' = n)
+    (hT'h : ∀ x ∈ R.measure.support ∩ closedBall ξ σ,
+      ‖(x - ξ) - T'.starProjection (x - ξ)‖ ≤ C₁₁ * D * σ)
+    (hItilt : ∫⁻ x in closedBall ξ (σ / 4), ENNReal.ofReal (∑ i : Fin (n + k),
+      ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        T'.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal I)
+    (hιι' : ∀ v w, inner ℝ (ι v) (ι' w) = 0) (hιT : ∀ v, ι v ∈ T')
+    (hfL : ∀ v w, ‖f v - f w‖ ≤ 1 * ‖v - w‖) (hfb : ∀ v, ‖f v‖ ≤ C₇ * D * σ)
+    (h5A : R.measure (closedBall ξ (σ / 2) \ range (fun v => ξ + ι v + ι' (f v))) +
+      μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \ R.measure.support) ∩ closedBall ξ (σ / 4)) ≤
+        ENNReal.ofReal (C₇ * I))
+    (hωeq : unitBallVolume n = ENNReal.ofReal ω)
+    (hC₃ : 1 ≤ C₃) (hC₇ : 0 < C₇) (hC₁₁ : 0 < C₁₁) (hCT : 0 < CT) (hCH : 0 < CH) (hω : 0 < ω)
+    (hC₁₃def : C₁₃ = (2 + C₇) * 8 ^ n)
+    (hC₁₄def : C₁₄ = 8 ^ n * ((2 + 2 ^ (n + 1) * k) * (1 + C₇) * Real.sqrt C₃ +
+      2 * ω / 4 ^ (n + 1)) / Real.sqrt ((2 + C₇) * 8 ^ n))
+    (hC₁₅def : C₁₅ = (k + 1) * CH * (8 * C₇ * Real.sqrt ω + Real.sqrt (C₁₃ * C₃)))
+    (hC₁₇def : C₁₇ = 8 * C₁₁ + C₁₅ + k * CH * Real.sqrt (C₁₃ * C₃))
+    (hC₁₆def : C₁₆ = 4 ^ n * CT * ((1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ +
+      C₁₇ ^ 2 * C₇ * 8 ^ n + 2 * ω))
+    (hθ' : 0 < θ') (hθ'4 : θ' ≤ 1 / 4) (hθ'C : θ' * C₁₆ ≤ 1 / 128) (hε' : 0 < ε')
+    (hε'1 : ε' ≤ 1) (hε'C : ε' * C₁₆ ≤ θ' ^ (n + 3) / 128)
+    (hD : 0 < D) (hD1 : D ≤ 1) (hD7 : D * C₇ ≤ 1 / 16) (hD11 : D * C₁₁ ≤ 1 / 16)
+    (hD14 : D * C₁₄ ≤ δh) (hD15 : D * C₁₅ ≤ θ' / 4) (hD16a : D * C₁₆ ≤ θ' ^ (n + 3) / 128)
+    (hD16b : D * C₁₆ ≤ θ' / 128) (hδ : 0 < δ) (hδD : δ ≤ D)
+    (hI0 : 0 ≤ I) (hE₀p : 0 < E₀) (hIE : I ≤ σ ^ n * E₀) (hκE : κ ^ 2 * σ ^ 2 ≤ δ * E₀)
+    (hE₀le : E₀ ≤ C₃ * D ^ 2) (hκσE : κ * σ ≤ D * Real.sqrt E₀) :
+    ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧
+      ENNReal.ofReal (1 / (θ' / 32 * σ) ^ n) * ∫⁻ x in closedBall ξ (θ' / 32 * σ),
+        ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection
+          (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)
+          ∂R.measure ≤ ENNReal.ofReal (θ' / 32 * E₀) := by
+  have hC₁₃ : 0 < C₁₃ := by rw [hC₁₃def]; positivity
+  have hC₁₆ : 0 < C₁₆ := by rw [hC₁₆def]; positivity
+  have hE₀0 : 0 ≤ E₀ := hE₀p.le
+  have hAESM := Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R
+  have hnull := Submission.dorag_support_sdiff_carrier_null n k hn U W R H κ hW hWU hH hHκ hMC
+  have hf1 : ∀ v w, ‖f v - f w‖ ≤ ‖v - w‖ := fun v w => by simpa using hfL v w
+  have hfLip : LipschitzWith 1 f := LipschitzWith.of_dist_le_mul fun v w => by
+    simpa [dist_eq_norm] using hfL v w
+  /- Steps 3–6: energy bound and weak harmonic equation for `fʲ` on `Bⁿ_{σ/8}`. -/
+  have hGT := Submission.dorag_tesDecay_ae_of_carrier R hW.measurableSet
+    (Submission.dorag_lipschitz_graph_approxTangent n k hn U W R ι ι' ξ f 1 hW hWU hιι' hfLip)
+  have hσ4 : σ / 4 ≤ σ := by linarith only [hσ]
+  have hsmall : ∀ C : ℝ, D * C ≤ 1 / 16 → C * D * σ ≤ σ / 4 / 4 := fun C hC => by
+    calc C * D * σ = (D * C) * σ := by ring
+      _ ≤ 1 / 16 * σ := by gcongr
+      _ = σ / 4 / 4 := by ring
+  have hμσ4 : R.measure (closedBall ξ (σ / 4)) ≤ ENNReal.ofReal (2 * ω * (σ / 4) ^ n) :=
+    hμ ξ (mem_closedBall_self hσ.le) (σ / 4) (by positivity) hσ4
+  obtain ⟨hGE, hGW⟩ := Submission.dorag_tes_graph_weak_harmonic n k hn U W R H κ ξ (σ / 4) I (C₇ * I)
+    (2 * ω * (σ / 4) ^ n) T' ι ι' f hW hWU hH hHκ hMC hAESM (by positivity)
+    ((closedBall_subset_closedBall hσ4).trans hBW) hI0 (by positivity) (by positivity) hT'n hιι' hιT
+    hf1 (fun v => (hfb v).trans (hsmall C₇ hD7))
+    (fun x hx => (hT'h x ⟨hx.1, closedBall_subset_closedBall hσ4 hx.2⟩).trans (hsmall C₁₁ hD11))
+    (by
+      filter_upwards [hGT] with x hx hxB using hx (hBW (closedBall_subset_closedBall hσ4 hxB)))
+    (by filter_upwards [hmult] with x hx hxB using hx (closedBall_subset_closedBall hσ4 hxB))
+    hnull hItilt
+    ((add_le_add (measure_mono (sdiff_subset_sdiff_left (closedBall_subset_closedBall
+      (by linarith only [hσ] : σ / 4 ≤ σ / 2)))) le_rfl).trans h5A)
+    hμσ4
+  /- Step 7: harmonic approximation of `w = s⁻¹fʲ`, `s = (C₁₃E₀)^{1/2}`, on `Bⁿ_{R₀}`, `R₀ = σ/8`. -/
+  obtain ⟨s, hsdef⟩ : ∃ s : ℝ, s = Real.sqrt (C₁₃ * E₀) := ⟨_, rfl⟩
+  have hs : 0 < s := hsdef ▸ Real.sqrt_pos.mpr (mul_pos hC₁₃ hE₀p)
+  have hs2 : s ^ 2 = C₁₃ * E₀ := by rw [hsdef, Real.sq_sqrt (by positivity)]
+  have hsi : 0 < s⁻¹ := inv_pos.mpr hs
+  have hR₀ : 0 < σ / 4 / 2 := by positivity
+  obtain ⟨t, htdef⟩ : ∃ t : ℝ, t = θ' * (σ / 4 / 2) := ⟨_, rfl⟩
+  have ht : 0 < t := htdef ▸ mul_pos hθ' hR₀
+  obtain ⟨A, hAdef⟩ : ∃ A : ℝ,
+      A = CH * (s⁻¹ * (C₇ * D * σ) * Real.sqrt ω) + CH * Real.sqrt ε' * (σ / 4 / 2) := ⟨_, rfl⟩
+  have hvol : volume.real (ball (0 : Euclid n) (σ / 4 / 2)) = (σ / 4 / 2) ^ n * ω := by
+    rw [Measure.real, Measure.addHaar_ball_of_pos volume 0 hR₀, finrank_euclideanSpace_fin]
+    change (ENNReal.ofReal ((σ / 4 / 2) ^ n) * unitBallVolume n).toReal = _
+    rw [hωeq, ← ENNReal.ofReal_mul (by positivity), ENNReal.toReal_ofReal (by positivity)]
+  have hwj := Submission.dorag_tesDecay_harmonic_step n k f C₃ C₇ CH ω D δh ε' E₀ I κ σ s θ' hHA'
+    hGE hGW hf1 hfb (by rw [hsdef, hC₁₃def]) hC₃ hC₇ hCH hω hD.le hE₀p hσ hθ' hθ'4 hIE hE₀le hκσE
+    (by rw [← hC₁₄def, mul_comm]; exact hD14) hvol
+  clear hHA' hGE hGW
+  rw [← hAdef, ← htdef] at hwj
+  /- Step 8: the affine map `c + Λ`. -/
+  obtain ⟨c, Λ, hc, hΛ, hfcΛ⟩ := Submission.dorag_tes_componentwise_affine_assembly n k f s A CH
+    (CH * (ε' / θ' ^ (n + 2) + θ' ^ 2) * t ^ (n + 2)) t hfLip.continuous hs hwj
+  obtain ⟨hc', hΛ'⟩ := Submission.dorag_tesDecay_affine_consts k C₃ C₁₃ C₇ CH ω D E₀ ε' σ s A ‖c‖ ‖Λ‖
+    hsdef hE₀p hE₀le (by linarith only [hC₃]) hC₁₃ hD.le hε'1 hCH hC₇ hω hσ hAdef hc hΛ
+  rw [← hC₁₅def] at hc'
+  /- Step 9: height about `S = graph Λ` at `τ = ξ + ι'c`, then tilt via the tilt-height estimate. -/
+  have hcR : ‖c‖ ≤ t / 4 := by
+    calc ‖c‖ ≤ C₁₅ * D * (σ / 4 / 2) := hc'
+      _ = (D * C₁₅) * (σ / 4 / 2) := by ring
+      _ ≤ θ' / 4 * (σ / 4 / 2) := by gcongr
+      _ = t / 4 := by rw [htdef]; ring
+  have hτξ : dist (ξ + ι' c) ξ = ‖c‖ := by
+    rw [dist_eq_norm, add_sub_cancel_left, LinearIsometry.norm_map]
+  have htσ : t ≤ σ / 32 := by
+    calc t = θ' * (σ / 4 / 2) := htdef
+      _ ≤ 1 / 4 * (σ / 4 / 2) := by gcongr
+      _ = σ / 32 := by ring
+  have hBt2 : closedBall (ξ + ι' c) t ⊆ closedBall ξ (σ / 2) :=
+    closedBall_subset_closedBall' (by rw [hτξ]; linarith only [hcR, htσ, ht, hσ])
+  have hBtσ : closedBall (ξ + ι' c) t ⊆ closedBall ξ σ :=
+    hBt2.trans (closedBall_subset_closedBall (by linarith only [hσ]))
+  obtain ⟨hSn, hSh⟩ := Submission.dorag_tes_graph_affine_height n k hn U R ξ T' ι ι' f c Λ t
+    (C₁₁ * D * σ) ht (by positivity) hT'n hιι' hιT hf1
+    (by filter_upwards [hmult] with x hx hxB using hx (hBtσ hxB))
+    (fun x hx => hT'h x ⟨hx.1, hBtσ hx.2⟩)
+  have hTHS := hTH (ξ + ι' c) t _ ht (hBtσ.trans hBW) hSn
+  have hμt : R.measure (closedBall (ξ + ι' c) t) ≤ ENNReal.ofReal (2 * ω * t ^ n) :=
+    hμ (ξ + ι' c) (hBtσ (mem_closedBall_self ht.le)) t ht (htσ.trans (by linarith only [hσ]))
+  have hμtF : R.measure (closedBall (ξ + ι' c) t \ range fun v => ξ + ι v + ι' (f v)) ≤
+      ENNReal.ofReal (C₇ * I) :=
+    (measure_mono (sdiff_subset_sdiff_left hBt2)).trans (le_self_add.trans h5A)
+  have hθσ : θ' / 32 * σ = t / 4 := by rw [htdef]; ring
+  have hBsub : closedBall ξ (θ' / 32 * σ) ⊆ closedBall (ξ + ι' c) (t / 2) :=
+    closedBall_subset_closedBall' (by rw [hθσ, dist_comm, hτξ]; linarith only [hcR])
+  obtain ⟨K, hKdef⟩ : ∃ K : ℝ, K = C₁₁ * D * σ + ‖c‖ + ‖Λ‖ * t := ⟨_, rfl⟩
+  rw [← hKdef] at hSh
+  have hK0 : 0 ≤ K := by rw [hKdef]; positivity
+  have hKle : K ≤ C₁₇ * D * (σ / 4 / 2) := by
+    have htR : t ≤ σ / 4 / 2 := by
+      rw [htdef]
+      exact mul_le_of_le_one_left hR₀.le (by linarith only [hθ'4])
+    calc K = C₁₁ * D * σ + ‖c‖ + ‖Λ‖ * t := hKdef
+      _ ≤ C₁₁ * D * σ + C₁₅ * D * (σ / 4 / 2) +
+          (k * CH * Real.sqrt (C₁₃ * C₃) * D) * (σ / 4 / 2) := by gcongr
+      _ = C₁₇ * D * (σ / 4 / 2) := by rw [hC₁₇def]; ring
+  obtain ⟨Q, hQdef⟩ : ∃ Q : ℝ, Q = CH * (ε' / θ' ^ (n + 2) + θ' ^ 2) * t ^ (n + 2) := ⟨_, rfl⟩
+  rw [← hQdef] at hfcΛ
+  refine ⟨_, hSn, ?_⟩
+  -- Step 10: the choice of `θ'`, `ε'` and `δ₂`
+  have hc1 : C₁₆ * θ' ^ 2 ≤ θ' / 128 := by
+    calc C₁₆ * θ' ^ 2 = (θ' * C₁₆) * θ' := by ring
+      _ ≤ 1 / 128 * θ' := by gcongr
+      _ = θ' / 128 := by ring
+  have hc2 : C₁₆ * (ε' / θ' ^ (n + 2)) ≤ θ' / 128 := by
+    rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+    calc C₁₆ * ε' = ε' * C₁₆ := by ring
+      _ ≤ θ' ^ (n + 3) / 128 := hε'C
+      _ = θ' / 128 * θ' ^ (n + 2) := by ring
+  have hc3 : C₁₆ * (D ^ 2 / θ' ^ (n + 2)) ≤ θ' / 128 := by
+    rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+    calc C₁₆ * D ^ 2 = (D * C₁₆) * D := by ring
+      _ ≤ θ' ^ (n + 3) / 128 * 1 := by gcongr
+      _ = θ' / 128 * θ' ^ (n + 2) := by ring
+  have hc4 : C₁₆ * δ ≤ θ' / 128 := by
+    calc C₁₆ * δ ≤ C₁₆ * D := by gcongr
+      _ = D * C₁₆ := by ring
+      _ ≤ θ' / 128 := hD16b
+  exact Submission.dorag_tesDecay_conclude n k _ _ _ _ _ CT CH C₇ C₁₃ C₁₇ C₁₆ ω θ' ε' D δ E₀ I s Q K σ
+    (σ / 4 / 2) t κ ((lintegral_mono_set hBsub).trans hTHS) hSh hfcΛ hμtF hμt hCT hCH hC₇ hC₁₃ hω
+    hθ' hθ'4 hε'.le hδ.le hE₀0 hR₀ (by ring) htdef hs2 hQdef hK0 hKle hI0 hIE hκE hC₁₆def hc1 hc2 hc3
+    hc4
+
+/-- **Tilt-excess decay, one step** (Simon Ch. 5, Theorem 4.5 with `p = 2n`, bounded `H`; parent
+proof Part 7, Claim 7A, Steps 0–11).  There are `θ₀ ∈ (0, 1/4]` and `δ₂ ∈ (0, 1/8]` such that under
+(SA_δ), `δ ≤ δ₂`, for every `ξ ∈ spt μ ∩ B_{δρ}(z)`, `σ ∈ (0, δρ]` and `n`-plane `T` there is an
+`n`-plane `S` with `E_*(ξ, θ₀σ, S) ≤ θ₀E_*(ξ, σ, T)`.
+Step 1 replaces `T` by a plane `T'` with `E(ξ, σ, T') ≤ C₃δ^{2α}` and height `≤ C₁₁δ^ασ`
+(affine approximation and plane reduction).  Step 2 is the Lipschitz approximation `f` over `T'`;
+Steps 3–6 give the energy bound and the weak harmonic equation for `fʲ` on `Bⁿ_{σ/8}`; Step 7 is
+the harmonic approximation of `(C₁₃E₀)^{-1/2}fʲ`; Step 8 assembles the affine map `c + Λ`; Step 9
+bounds the height about `S = graph Λ` at `τ = ξ + ι'c` and converts it to tilt; Step 10 fixes
+`θ' = 32θ₀`, `ε'` and `δ₂` in this order. -/
+theorem Submission.dorag_tilt_excess_one_step_decay : ∀ (n k : ℕ), 0 < n → ∃ θ₀ δ₂ : ℝ, 0 < θ₀ ∧ θ₀ ≤ 1 / 4 ∧ 0 < δ₂ ∧ δ₂ ≤ 1 / 8 ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₂ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → ∀ ξ ∈ R.measure.support ∩ closedBall z (δ * ρ), ∀ (σ : ℝ) (T : Submodule ℝ (Euclid (n + k))), 0 < σ → σ ≤ δ * ρ → Module.finrank ℝ T = n → ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧ max (ENNReal.ofReal (1 / (θ₀ * σ) ^ n) * ∫⁻ x in closedBall ξ (θ₀ * σ), ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure) (ENNReal.ofReal (κ ^ 2 * (θ₀ * σ) ^ 2 / δ)) ≤ ENNReal.ofReal θ₀ * max (ENNReal.ofReal (1 / σ ^ n) * ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure) (ENNReal.ofReal (κ ^ 2 * σ ^ 2 / δ)) := by
+  intro n k hn
+  /- Step 0: the constants.  Sibling constants first. -/
+  obtain ⟨δ₁, C₂, hδ₁, hδ₁8, -, hDB⟩ := Submission.dorag_standing_density_bounds n k hn
+  obtain ⟨δ₃, C₃, hδ₃, hδ₃8, hC₃, hAA⟩ := Submission.dorag_affine_approximation n k hn
+  obtain ⟨CT, hCT, hTH⟩ := Submission.dorag_tilt_height_estimate n k
+  obtain ⟨CH, hCH, hHA⟩ := Submission.dorag_harmonic_affine_approximation n hn
+  -- `ω = ω_n ∈ (0, ∞)`
+  have hωfin : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  obtain ⟨ω, hωdef⟩ : ∃ ω : ℝ, ω = (unitBallVolume n).toReal := ⟨_, rfl⟩
+  have hω : 0 < ω := hωdef ▸ ENNReal.toReal_pos hω0 hωfin
+  have hωeq : unitBallVolume n = ENNReal.ofReal ω := by rw [hωdef, ENNReal.ofReal_toReal hωfin]
+  have h2ω : ∀ x : ℝ, 0 ≤ x → 2 * unitBallVolume n * ENNReal.ofReal x = ENNReal.ofReal (2 * ω * x) := by
+    intro x hx
+    rw [hωeq, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_ofNat]
+  -- `C₁₁ = 2C₃ + (8C₃/ω)^{1/2}` and the Lipschitz approximation constants for `C₆ = C₁₁`
+  obtain ⟨C₁₁, hC₁₁def⟩ : ∃ C : ℝ, C = 2 * C₃ + Real.sqrt (8 * C₃ / ω) := ⟨_, rfl⟩
+  have hC₃C₁₁ : C₃ ≤ C₁₁ := by
+    rw [hC₁₁def]
+    have := Real.sqrt_nonneg (8 * C₃ / ω)
+    linarith only [this, hC₃]
+  have hC₁₁ : 1 ≤ C₁₁ := hC₃.trans hC₃C₁₁
+  have hC₁₁0 : 0 < C₁₁ := by linarith only [hC₁₁]
+  obtain ⟨δ₅, β, β', C₇, hδ₅, -, hβ', hβ'β, -, hC₇, hLA⟩ :=
+    Submission.dorag_lipschitz_approximation n k hn C₁₁ hC₁₁
+  have hβ : 0 < β := hβ'.trans_le hβ'β
+  -- `C₁₃, …, C₁₆` (Steps 6–9)
+  obtain ⟨C₁₃, hC₁₃def⟩ : ∃ C : ℝ, C = (2 + C₇) * 8 ^ n := ⟨_, rfl⟩
+  obtain ⟨C₁₄, hC₁₄def⟩ : ∃ C : ℝ, C = 8 ^ n * ((2 + 2 ^ (n + 1) * k) * (1 + C₇) * Real.sqrt C₃ +
+      2 * ω / 4 ^ (n + 1)) / Real.sqrt ((2 + C₇) * 8 ^ n) := ⟨_, rfl⟩
+  obtain ⟨C₁₅, hC₁₅def⟩ : ∃ C : ℝ,
+      C = (k + 1) * CH * (8 * C₇ * Real.sqrt ω + Real.sqrt (C₁₃ * C₃)) := ⟨_, rfl⟩
+  obtain ⟨C₁₇, hC₁₇def⟩ : ∃ C : ℝ, C = 8 * C₁₁ + C₁₅ + k * CH * Real.sqrt (C₁₃ * C₃) := ⟨_, rfl⟩
+  obtain ⟨C₁₆, hC₁₆def⟩ : ∃ C : ℝ, C = 4 ^ n * CT * ((1 + n * 2 ^ n) * (k + 1) * CH * C₁₃ +
+      C₁₇ ^ 2 * C₇ * 8 ^ n + 2 * ω) := ⟨_, rfl⟩
+  have hC₁₃ : 0 < C₁₃ := by rw [hC₁₃def]; positivity
+  have hC₁₄ : 0 < C₁₄ := by rw [hC₁₄def]; positivity
+  have hC₁₅ : 0 < C₁₅ := by rw [hC₁₅def]; positivity
+  have hC₁₆ : 0 < C₁₆ := by rw [hC₁₆def]; positivity
+  -- Step 10: `θ'` with `C₁₆θ'² ≤ θ'/128`, then `ε'` with `C₁₆θ'^{-n-2}ε' ≤ θ'/128`
+  obtain ⟨θ', hθ'def⟩ : ∃ θ : ℝ, θ = min (1 / 4) (1 / 128 / C₁₆) := ⟨_, rfl⟩
+  have hθ' : 0 < θ' := by rw [hθ'def]; positivity
+  have hθ'4 : θ' ≤ 1 / 4 := hθ'def ▸ min_le_left _ _
+  have hθ'C : θ' * C₁₆ ≤ 1 / 128 :=
+    (le_div_iff₀ hC₁₆).mp (hθ'def ▸ min_le_right _ _)
+  obtain ⟨ε', hε'def⟩ : ∃ ε : ℝ, ε = min 1 (θ' ^ (n + 3) / 128 / C₁₆) := ⟨_, rfl⟩
+  have hε' : 0 < ε' := by rw [hε'def]; positivity
+  have hε'1 : ε' ≤ 1 := hε'def ▸ min_le_left _ _
+  have hε'C : ε' * C₁₆ ≤ θ' ^ (n + 3) / 128 :=
+    (le_div_iff₀ hC₁₆).mp (hε'def ▸ min_le_right _ _)
+  obtain ⟨δh, hδh, hHA'⟩ := hHA ε' hε'
+  -- the smallness threshold for `D = δ^{1/(2n+2)}`, and `δ₂`
+  obtain ⟨η, hηdef⟩ : ∃ η : ℝ, η = min (min (min β (1 / 16 / C₁₁)) (min (1 / 16 / C₇) (δh / C₁₄)))
+      (min (min (θ' / 4 / C₁₅) (θ' ^ (n + 3) / 128 / C₁₆)) (min (θ' / 128 / C₁₆) 1)) := ⟨_, rfl⟩
+  have hη : 0 < η := by rw [hηdef]; positivity
+  have hηs : η ≤ β ∧ η ≤ 1 / 16 / C₁₁ ∧ η ≤ 1 / 16 / C₇ ∧ η ≤ δh / C₁₄ ∧ η ≤ θ' / 4 / C₁₅ ∧
+      η ≤ θ' ^ (n + 3) / 128 / C₁₆ ∧ η ≤ θ' / 128 / C₁₆ ∧ η ≤ 1 := by
+    rw [hηdef]
+    simp only [min_le_iff, le_refl, true_or, or_true, and_self]
+  obtain ⟨hηβ, hη11, hη7, hη14, hη15, hη16a, hη16b, hη1⟩ := hηs
+  obtain ⟨δ₂, hδ₂def⟩ : ∃ d : ℝ, d = min (min (min (min (1 / 8) δ₁) δ₃) δ₅) (η ^ (2 * n + 2)) :=
+    ⟨_, rfl⟩
+  have hδ₂ : 0 < δ₂ := by rw [hδ₂def]; positivity
+  have hδ₂8 : δ₂ ≤ 1 / 8 := by
+    rw [hδ₂def]
+    exact (min_le_left _ _).trans ((min_le_left _ _).trans ((min_le_left _ _).trans
+      (min_le_left _ _)))
+  refine ⟨θ' / 32, δ₂, by positivity, by linarith only [hθ'4], hδ₂, hδ₂8, ?_⟩
+  intro δ hδ hδδ₂ U W R H κ ρ z hW hWU hρ hzρ hH hHκ hMC hz hdens hκρ ξ hξ σ T hσ hσδρ hT
+  have hδs : δ ≤ 1 / 8 ∧ δ ≤ δ₁ ∧ δ ≤ δ₃ ∧ δ ≤ δ₅ ∧ δ ≤ η ^ (2 * n + 2) := by
+    rw [hδ₂def] at hδδ₂
+    simp only [le_min_iff] at hδδ₂
+    tauto
+  obtain ⟨hδ8, hδ₁', hδ₃', hδ₅', hδη⟩ := hδs
+  -- `D = δ^α`, `α = 1/(2n+2)`
+  obtain ⟨D, hDdef⟩ : ∃ D : ℝ, D = δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) := ⟨_, rfl⟩
+  obtain ⟨hD, hDη, hδD, hsδD⟩ :=
+    Submission.dorag_tesDecay_rpow n δ η hδ (by linarith only [hδ8]) hη hδη
+  rw [← hDdef] at hD hDη hδD hsδD
+  have hDβ : D ≤ β := hDη.trans hηβ
+  have hD11 : D * C₁₁ ≤ 1 / 16 := (le_div_iff₀ hC₁₁0).mp (hDη.trans hη11)
+  have hD7 : D * C₇ ≤ 1 / 16 := (le_div_iff₀ hC₇).mp (hDη.trans hη7)
+  have hD14 : D * C₁₄ ≤ δh := (le_div_iff₀ hC₁₄).mp (hDη.trans hη14)
+  have hD15 : D * C₁₅ ≤ θ' / 4 := (le_div_iff₀ hC₁₅).mp (hDη.trans hη15)
+  have hD16a : D * C₁₆ ≤ θ' ^ (n + 3) / 128 := (le_div_iff₀ hC₁₆).mp (hDη.trans hη16a)
+  have hD16b : D * C₁₆ ≤ θ' / 128 := (le_div_iff₀ hC₁₆).mp (hDη.trans hη16b)
+  have hD1 : D ≤ 1 := hDη.trans hη1
+  -- elementary facts about the data
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+  have hξz : dist ξ z ≤ δ * ρ := mem_closedBall.mp hξ.2
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hδρ8 : δ * ρ ≤ ρ / 8 := by
+    calc δ * ρ ≤ 1 / 8 * ρ := mul_le_mul_of_nonneg_right hδ8 hρ.le
+      _ = ρ / 8 := by ring
+  have hBz : closedBall ξ σ ⊆ closedBall z (4 * δ * ρ) :=
+    closedBall_subset_closedBall' (by linarith only [hσδρ, hξz, hδρ])
+  have hBW : closedBall ξ σ ⊆ W :=
+    (closedBall_subset_closedBall' (by linarith only [hσδρ, hξz, hδρ8, hρ])).trans hzρ
+  have hσρ : σ ≤ (1 - 4 * δ) * ρ := by linarith only [hσδρ, hδρ8, hρ]
+  obtain ⟨hDBa, hDBb, -, hDBd⟩ :=
+    hDB δ hδ hδ₁' U W R H κ ρ z hW hWU hρ hzρ hH hHκ hMC hz hdens hκρ
+  clear hDB
+  have hAESM := Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R
+  /- Step 1: affine approximation at `(ξ, 2σ)` and reduction to a plane `T'` with small tilt and
+  height. -/
+  obtain ⟨T₁, hT₁n, hT₁h, hT₁t⟩ := hAA δ hδ hδ₃' U W R H κ ρ z hW hWU hρ hzρ hH hHκ hMC hz hdens hκρ ξ
+    ⟨hξ.1, mem_closedBall.mpr (by linarith only [hξz, hδρ])⟩ (2 * σ) (by linarith only [hσ])
+    (by linarith only [hσδρ])
+  clear hAA
+  rw [← hDdef] at hT₁h hT₁t
+  rw [show 2 * σ / 2 = σ by ring] at hT₁t
+  have hμσ : ENNReal.ofReal (ω * σ ^ n / 2) ≤ R.measure (closedBall ξ σ) := by
+    have h := hDBb ξ ⟨hξ.1, hBz (mem_closedBall_self hσ.le)⟩ σ hσ hσρ
+    rw [hωeq, ← ENNReal.ofReal_mul hω.le] at h
+    rw [ENNReal.ofReal_div_of_pos two_pos, ENNReal.ofReal_ofNat]
+    exact ENNReal.div_le_of_le_mul (h.trans_eq (mul_comm _ _))
+  obtain ⟨T', hT'TT, hT'a, hT'T, hT'h⟩ := Submission.dorag_tes_plane_reduction (n + k) R.measure
+    (approxTangentPlane n R.carrier) ξ σ (C₃ * D ^ 2 * σ ^ n) (ω * σ ^ n / 2) (C₃ * D * (2 * σ)) T T₁
+    hσ (by positivity) (by positivity) hAESM hμσ hT₁t
+    (fun x hx => hT₁h x ⟨hx.1, closedBall_subset_closedBall (by linarith only [hσ]) hx.2⟩)
+  rw [Submission.dorag_tesDecay_height_const n C₃ ω D σ (by linarith only [hC₃]) hω hD.le hσ,
+    ← hC₁₁def]
+    at hT'h
+  have hT'n : Module.finrank ℝ T' = n := by
+    rcases hT'TT with rfl | rfl <;> assumption
+  -- `I = ∫_{B_σ(ξ)} |p_x − p_{T'}|² dμ` and `E₀ = E_*(ξ, σ, T')`
+  obtain ⟨I, hI0, hIeq, hIa⟩ := Submission.dorag_tesDecay_real_of_le (by positivity) hT'a
+  rw [← hIeq] at hT'T
+  obtain ⟨E₀, hE₀def⟩ : ∃ E : ℝ, E = max (1 / σ ^ n * I) (κ ^ 2 * σ ^ 2 / δ) := ⟨_, rfl⟩
+  obtain ⟨hE₀0, hIE, hκE, hE₀le, hκσE⟩ := Submission.dorag_tesDecay_excess_facts n C₃ D δ E₀ I κ ρ σ
+    hδ hδ8 hσ hσδρ hκ hκρ hC₃ hδD hsδD hIa hE₀def
+  have hE₀2 : κ ^ 2 * σ ^ 2 / δ ≤ E₀ := hE₀def ▸ le_max_right _ _
+  -- it suffices to prove `E_*(ξ, θ₀σ, S) ≤ θ₀E₀`
+  have hRHS := Submission.dorag_tesDecay_rhs (θ' / 32) E₀ (1 / σ ^ n) (κ ^ 2 * σ ^ 2 / δ) I _
+    (by positivity) (by positivity) hE₀def hT'T
+  have hθ32 : θ' / 32 ≤ 1 := by linarith only [hθ'4]
+  have hsecond : ENNReal.ofReal (κ ^ 2 * (θ' / 32 * σ) ^ 2 / δ) ≤ ENNReal.ofReal (θ' / 32 * E₀) := by
+    apply ENNReal.ofReal_le_ofReal
+    rw [show κ ^ 2 * (θ' / 32 * σ) ^ 2 / δ = (θ' / 32) ^ 2 * (κ ^ 2 * σ ^ 2 / δ) by ring]
+    calc (θ' / 32) ^ 2 * (κ ^ 2 * σ ^ 2 / δ) ≤ (θ' / 32) ^ 2 * E₀ := by gcongr
+      _ ≤ θ' / 32 * E₀ := by
+        gcongr
+        rw [sq]
+        exact mul_le_of_le_one_left (by positivity) hθ32
+  rcases hE₀0.eq_or_lt with hE₀z | hE₀p
+  · /- `E₀ = 0`: `S = T'` works. -/
+    have hIz : I = 0 := by
+      have := hIE
+      rw [← hE₀z, mul_zero] at this
+      exact le_antisymm this hI0
+    refine ⟨T', hT'n, le_trans (max_le ?_ hsecond) hRHS⟩
+    refine (mul_le_mul_right (lintegral_mono_set (closedBall_subset_closedBall
+      (mul_le_of_le_one_left hσ.le hθ32))) _).trans ?_
+    rw [← hIeq, hIz, ENNReal.ofReal_zero, mul_zero]
+    exact zero_le
+  /- `E₀ > 0`.  Step 2: Lipschitz approximation over `T'` with `L = 1`. -/
+  obtain ⟨ι, ι', f, hιι', hιT, hfL, hfb, h5A, -⟩ := hLA δ hδ hδ₅' U W R H κ ρ z hW hWU hρ hzρ hH hHκ
+    hMC hz hdens hκρ ξ hξ σ 1 T' hσ hσδρ hT'n one_pos le_rfl (by rw [← hDdef, mul_one]; exact hDβ)
+    (by rw [← hDdef, ← hIeq]; exact ENNReal.ofReal_le_ofReal (hIa.trans (by gcongr)))
+    (by rw [← hDdef]; exact hT'h)
+  clear hLA
+  rw [← hDdef] at hfb
+  rw [one_pow, div_one, ← hIeq, ← ENNReal.ofReal_mul hC₇.le] at h5A
+  /- Steps 3–9: the core estimate. -/
+  obtain ⟨S, hSn, hS⟩ := Submission.dorag_tesDecay_core n k hn U W R H κ ξ σ T' ι ι' f C₃ C₇ C₁₁ C₁₃
+    C₁₄ C₁₅ C₁₆ C₁₇ CT CH ω θ' ε' δh D δ E₀ I hW hWU hH hHκ hMC
+    (fun ξ' r S' => hTH U W R H κ ξ' r S' hW hWU hH hHκ hMC) hHA' hσ hBW
+    (fun y hy t ht htσ => (hDBa y (hBz hy) t ht (htσ.trans hσρ)).trans_eq (h2ω _ (by positivity)))
+    (by filter_upwards [hDBd] with x hx hxB using hx (hBz hxB)) hT'n hT'h
+    (by rw [hIeq]; exact lintegral_mono_set (closedBall_subset_closedBall (by linarith only [hσ])))
+    hιι' hιT hfL hfb h5A hωeq hC₃ hC₇ hC₁₁0 hCT hCH hω hC₁₃def hC₁₄def hC₁₅def hC₁₇def hC₁₆def hθ'
+    hθ'4 hθ'C hε' hε'1 hε'C hD hD1 hD7 hD11 hD14 hD15 hD16a hD16b hδ hδD hI0 hE₀p hIE hκE hE₀le hκσE
+  exact ⟨S, hSn, le_trans (max_le hS hsecond) hRHS⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
