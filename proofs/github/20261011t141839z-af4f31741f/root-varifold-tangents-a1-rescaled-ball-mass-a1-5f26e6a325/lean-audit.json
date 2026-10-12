@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c4d8bfac75fd6a9e8d5f21a51f3f3d13a1ea663801d11079ac813a06a2ebda55",
+  "git_delta": {
+    "base_commit": "5d7b7716b11af0164776ba1a265155823669571e",
+    "candidate_commit": "783517dd1122a966bf786624d782cd8027adbe22",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rescaled_ball_mass_tendsto",
+    "diff_sha256": "23e19cb30c0fd0d037da76bbc0cd53d08e75f5cced669ab7265781481080353e",
+    "source_sha256": "c9a111e8869121ddb1d99a6bcc4b916ae15be10350e984507a00a2deea908760",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rescaled_ball_mass_tendsto",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ : ℝ≥0∞) (R : ℝ), HasDensity n V.weight x θ → 0 < R → Tendsto (fun t : ℝ ↦ rescaledMeasure V x t (closedBall (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)))) (𝓝[>] 0) (𝓝 (θ * unitBallVolume n * ENNReal.ofReal R ^ n))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
