@@ -1,0 +1,105 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_regularity-a1`
+- Child DAG node: `root.density_one_regularity-a1.holder_class-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof (the C^{1,1-n/p} class of u on W from the finite norm of Theorem 5.2), with all details.
+1. Finiteness of the pieces. Write N := scaledC1AlphaNorm u B alpha rho = a S_0 + S_1 + b S_2 with a := rho^{-1} > 0, b := rho^alpha > 0, S_0 := sup_{x in B} |u(x)|, S_1 := sup_{x in B} |D_B u(x)|_HS, S_2 := sup_{x != y in B} |D_B u(x) - D_B u(y)|_HS / |x - y|^alpha, all in [0, infinity]. Since N < infinity, each summand is finite; as a and b are finite and positive, S_0, S_1, S_2 < infinity. Let s_0, s_1, s_2 >= 0 be their real values.
+2. Derivatives on W. Let x be in W. Since W is contained in the interior of B, B is a neighbourhood of x; as u is C^1 on B, u is differentiable at x and D_B u(x) = Du(x) (the derivative within a neighbourhood of x is the derivative).
+3. C^1 on W. W is contained in B, so u is C^1 on W (restriction of ContDiffOn to a subset).
+4. Operator norm versus Hilbert-Schmidt norm. For a linear A : R^n -> R^l and v = sum_i v_i e_i: |A v| <= sum_i |v_i| |A e_i| <= (sum_i v_i^2)^(1/2) (sum_i |A e_i|^2)^(1/2) = |v| |A|_HS (Cauchy-Schwarz), hence ||A||_op <= |A|_HS.
+5. Bounds of order 0 and 1. For x in W (contained in B): ||iteratedFDeriv^0 u(x)|| = |u(x)| <= s_0. The first iterated derivative is Du composed with the canonical linear isometry between linear maps and 1-multilinear maps, so ||iteratedFDeriv^1 u(x)|| = ||Du(x)||_op <= |Du(x)|_HS = |D_B u(x)|_HS <= s_1 (steps 2, 4). Hence Bd := max(s_0, s_1) bounds ||iteratedFDeriv^i u(x)|| for all i <= 1 and x in W.
+6. Hoelder bound. Put K := s_2 and let x, y be in W. If x = y, the left side is 0 and K |x - y|^alpha = K 0^alpha = 0 because alpha > 0. If x != y, then, the canonical identification being a linear isometry, ||iteratedFDeriv^1 u(x) - iteratedFDeriv^1 u(y)|| = ||Du(x) - Du(y)||_op <= |Du(x) - Du(y)|_HS = |D_B u(x) - D_B u(y)|_HS <= s_2 |x - y|^alpha, since x != y are points of B and |x - y|^alpha > 0, so |D_B u(x) - D_B u(y)|_HS / |x - y|^alpha <= S_2.
+7. Steps 3, 5, 6 are the three clauses of IsHolderCkα 1 alpha u W.
+
+## Key steps
+
+1. rho > 0 makes the three suprema in the scaled norm finite
+2. At interior points the derivative within B is the derivative
+3. Operator norm is at most the Hilbert-Schmidt norm
+4. Order-0 and order-1 bounds and the Hoelder bound with K = sup of difference quotients
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sed -n 1280,1400p book/chapter-05.txt (Theorem 7.1 and its printed proof)`
+- `sed -n 215,575p book/chapter-04.txt (3.1-3.17, 4.1-4.11); sed -n 1,200p and 270,340p book/chapter-03.txt (1.1-1.9); sed -n 560,720p book/chapter-01.txt (3.1-3.7); grep -n 'Approximation Theorem' book/chapter-02.txt`
+- `grep -n '^def \|^theorem ' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -rn 'ae_hasWeightedApproximateTangent\|ae_hasApproximateTangent\|Theorem 1.9\|1\.9' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n '^theorem \|^def ' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/{Densities,DensityComparison,LowerDensityComparison,HausdorffDensityBounds,RelativeDensityComparison,GeneralDensity,EuclideanNormalization,Hausdorff}.lean`
+- `cat .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/{LpLowerDensity,MultiplicityBridge}.lean; sed -n 1,227p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `grep -n '^theorem \|^lemma \|^def ' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/{Lipschitz,WhitneyExtension}.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/{SubmanifoldCover,Differential}.lean; grep -n 'injective_area_formula_lipschitz_simon' -A 12 .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n '^theorem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `grep -rn 'μHE\[' <snapshot>/mathlib/Mathlib --include=*.lean; sed -n 1,200p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n image_symmDiff <snapshot>/mathlib/Mathlib/Data/Set/Image.lean; rg -n 'inf_symmDiff_distrib_right|symmDiff_inf_distrib|inter_symmDiff_distrib' <snapshot>/mathlib/Mathlib/Order/SymmDiff.lean <snapshot>/mathlib/Mathlib/Data/Set/*.lean`
+- `grep -n 'divRight\|mulRight\|to_additive' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean`
+- `rg -n 'theorem fderivWithin_of_mem_nhds|theorem ball_subset_interior_closedBall|theorem closedBall_mem_nhds ' <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean <snapshot>/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `rg -n 'isometry_sub_const|isometry_add_const|IsometryEquiv.subRight|def subRight|def addRight' <snapshot>/mathlib/Mathlib/Topology <snapshot>/mathlib/Mathlib/Analysis/Normed`
+- `cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/README.md GMT/Ch05/README.md`
+- `grep -rl '<the seven proposed lean_names>' .humanize GMT; python3 scan of dag.json nodes for reserved children/theorems`
+- `lake env lean /tmp/dor-a1-check/Check2.lean (contract lines 1-460, namespace Submission with allard_regularity_theorem and the 7 children as sorry placeholders, full proof of density_one_regularity : DensityOneRegularity, sanity example transferring tangentProj measurability to V.weight)`
+- `lake env lean /tmp/dor-a1-check/verify/FormalAll.lean (reviewer's sorry-free proofs of four children with the frozen types; #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Set/SymmDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/SymmDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/tmp/dor-a1-check/Check2.lean`
+- `/tmp/dor-a1-check/verify/FormalAll.lean`
+
+Snapshot: project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). The snapshot's Contract.lean and README.md are byte-identical to the workspace copies (cmp).
+
+No prior work: there is no existing proof of DensityOneRegularity or of any proposed child. The seven proposed names occur nowhere in .humanize or GMT, and dag.json reserves no child names yet.
+
+SimonGMT, Chapter03/Rectifiable.lean: defines HasWeightedApproximateTangentSpaceAt (l.330) and proves uniqueness (l.345), but the grep finds no a.e.-existence result (Ch. 3, 1.9 is not formalized) and nothing on measurability of the tangent field. Hence child tangent_ae.
+
+SimonGMT Chapter04 L^p density results (LpLowerDensity.lean: one_le_stationaryDensityReal_of_mem_support_lp) are stated for Chapter04.RectifiableVarifold. That structure stores a tangent field, a measurable carrier and a globally locally finite weight (Chapter04/Basic.lean), so they do not apply to the contract varifold. Hence child density_ge_one, proved from the contract's first variation following Simon 4.1-4.10(1).
+
+SimonGMT Chapter01/DensityComparison.lean has the Upper Density Theorem (simon_theorem_3_6) and the comparison theorem (simon_theorem_3_3, mul_simonHausdorff_le_of_le_dimensionalUpperDensity). Both are stated for simonHausdorffOuterMeasureReal, a positive multiple of μH[n] (Hausdorff.lean: simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure). Since μHE[n] is also a nonzero multiple of μH[n] (Mathlib Geometry/Euclidean/Volume/Measure.lean), null sets agree; this is used by carrier_support_null.
+
+SimonGMT also provides, for tangent_ae: Lusin (Chapter01/Lusin.lean, simon_theorem_1_17), the injective Lipschitz area formula (Chapter02/AreaLipschitz.lean:126) and Whitney C^1 extension (Chapter02/WhitneyExtension.lean).
+
+Mathlib items used by the parent assembly:
+- Isometry.euclideanHausdorffMeasure_image and IsometryEquiv.measurePreserving_euclideanHausdorffMeasure (Measure.lean)
+- Set.image_symmDiff (Data/Set/Image.lean:388)
+- Set.inter_symmDiff_distrib_right (Data/Set/SymmDiff.lean:46)
+- IsometryEquiv.subRight, via to_additive of divRight (IsometricSMul.lean:166-172)
+- fderivWithin_of_mem_nhds (FDeriv/Basic.lean:522)
+- ball_subset_interior_closedBall (Pseudo/Defs.lean:1216) and closedBall_mem_nhds (Pseudo/Defs.lean:842)
+The names isometry_sub_const / isometry_add_const / def subRight have no match in Topology or Analysis/Normed.
+
+Lean checks:
+- All 7 child types elaborate in the contract scope.
+- density_one_regularity : DensityOneRegularity compiles from the children plus the sibling AllardRegularityTheorem. The only warnings are the 8 sorry warnings on the placeholders; an independent reviewer reproduced this.
+- The reviewer's sorry-free Lean proofs of allard_scale, translate_varifold, open_graph_domain and holder_class use exactly the frozen types and recompile with axioms propext, Classical.choice, Quot.sound.

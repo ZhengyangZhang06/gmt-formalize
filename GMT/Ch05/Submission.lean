@@ -458,6 +458,71 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, Theorem 7.1, proof, first sentence (p. 127).**  If `H` is locally in `Lᵖ(μ_V)`
+on the open set `U` for some `p > n` and `ξ ∈ U` has `Θⁿ(μ_V, ξ) = 1`, then `ξ ∈ spt V`, and for
+every `δ > 0` there is `r > 0` with `B_r(ξ) ⊆ U`, `μ_V(B_r(ξ)) ≤ (1 + δ) ω_n rⁿ` and
+`(r^{p−n} ∫_{B_r(ξ)} |H|ᵖ dμ_V)^{1/p} ≤ δ`. -/
+theorem density_one_allard_scale : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U)
+    (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (ξ : Amb n ℓ) (δ : ℝ), IsOpen U → (n : ℝ) < p →
+    V.LocallyLp H p → ξ ∈ U → V.HasDensity ξ 1 → 0 < δ → ξ ∈ V.support ∧ ∃ r : ℝ, 0 < r ∧
+      closedBall ξ r ⊆ U ∧
+      V.weight (closedBall ξ r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * r ^ n)) ∧
+      V.scaledLpNorm H p ξ r ≤ ENNReal.ofReal δ := by
+  intro n ℓ U V H p ξ δ hU hp hLp hξU hξ hδ
+  rw [RectifiableVarifold.HasDensity, ENNReal.ofReal_one] at hξ
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  have hpn : 0 < p - n := sub_pos.mpr hp
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  -- A closed ball `B_{r₀}(ξ) ⊆ U`; it is compact, so `∫_{B_{r₀}(ξ)} |H|ᵖ dμ_V < ∞`.
+  obtain ⟨r₀, hr₀, hr₀U⟩ := nhds_basis_closedBall.mem_iff.mp (hU.mem_nhds hξU)
+  have hA := hLp _ (isCompact_closedBall ξ r₀) hr₀U
+  -- `(r^{p−n} ∫_{B_{r₀}(ξ)} |H|ᵖ dμ_V)^{1/p} → 0` as `r ↓ 0`, since `p > n`.
+  have hdecay : Tendsto (fun r : ℝ => (ENNReal.ofReal (r ^ (p - n)) *
+      ∫⁻ x in closedBall ξ r₀, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p)) (𝓝[>] 0) (𝓝 0) := by
+    have h1 : Tendsto (fun r : ℝ => r ^ (p - n)) (𝓝[>] 0) (𝓝 0) := by
+      have h := (Real.continuousAt_rpow_const 0 (p - n) (Or.inr hpn.le)).tendsto
+      rw [Real.zero_rpow hpn.ne'] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    have h2 := ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hA.ne)
+    rw [ENNReal.ofReal_zero, zero_mul] at h2
+    have h3 : Tendsto (fun r : ℝ => (ENNReal.ofReal (r ^ (p - n)) *
+        ∫⁻ x in closedBall ξ r₀, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p)) (𝓝[>] 0) (𝓝 (0 ^ (1 / p))) :=
+      (ENNReal.continuous_rpow_const.tendsto 0).comp h2
+    rwa [ENNReal.zero_rpow_of_pos (one_div_pos.mpr hp0)] at h3
+  refine ⟨⟨hξU, nhds_basis_closedBall.mem_measureSupport.mpr fun ε hε => ?_⟩, ?_⟩
+  · -- `ξ ∈ spt μ_V`: the density ratio tends to `1 > 0`, so `μ_V(B_ε(ξ)) > 0` for every `ε > 0`.
+    have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), r ∈ Ioo 0 ε ∧
+        0 < V.weight (closedBall ξ r) / ENNReal.ofReal (unitBallVolume n * r ^ n) := by
+      filter_upwards [Ioo_mem_nhdsGT hε, hξ.eventually_const_lt zero_lt_one] with r h1 h2
+      exact ⟨h1, h2⟩
+    obtain ⟨r, hr, hQ⟩ := hev.exists
+    have h0 : V.weight (closedBall ξ r) ≠ 0 := fun h0 => by simp [h0] at hQ
+    exact (pos_iff_ne_zero.mpr h0).trans_le (measure_mono (closedBall_subset_closedBall hr.2.le))
+  -- A radius `r ∈ (0, r₀)` below both the mass threshold and the `Lᵖ` threshold.
+  have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), r ∈ Ioo 0 r₀ ∧
+      V.weight (closedBall ξ r) / ENNReal.ofReal (unitBallVolume n * r ^ n) <
+        ENNReal.ofReal (1 + δ) ∧
+      (ENNReal.ofReal (r ^ (p - n)) * ∫⁻ x in closedBall ξ r₀, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) <
+        ENNReal.ofReal δ := by
+    filter_upwards [Ioo_mem_nhdsGT hr₀,
+      hξ.eventually_lt_const (ENNReal.one_lt_ofReal.mpr (show (1 : ℝ) < 1 + δ by linarith)),
+      hdecay.eventually_lt_const (ENNReal.ofReal_pos.mpr hδ)] with r h1 h2 h3
+    exact ⟨h1, h2, h3⟩
+  obtain ⟨r, ⟨hr, hrr₀⟩, hQ, hS⟩ := hev.exists
+  have hball : closedBall ξ r ⊆ closedBall ξ r₀ := closedBall_subset_closedBall hrr₀.le
+  refine ⟨r, hr, hball.trans hr₀U, ?_, ?_⟩
+  · have hv : 0 < unitBallVolume n * r ^ n := mul_pos hω (pow_pos hr n)
+    rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 1 + δ by linarith)]
+    exact (ENNReal.div_le_iff (ENNReal.ofReal_pos.mpr hv).ne' ENNReal.ofReal_ne_top).mp hQ.le
+  · refine le_trans ?_ hS.le
+    exact ENNReal.rpow_le_rpow (mul_le_mul' le_rfl (lintegral_mono_set hball))
+      (one_div_pos.mpr hp0).le
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.allard_scale-a1",
+  "parent_id": "root.density_one_regularity-a1",
+  "depth": 2,
+  "title": "Allard scale at a point of density one (Simon 7.1, proof, first sentence)",
+  "statement": "Let n, l be natural numbers, U an open subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U (contract structure RectifiableVarifold n l U) with weight mu = mu_V, H : R^(n+l) -> R^(n+l), and p a real number with p > n, such that H is locally in L^p(mu) on U (integral over K of |H|^p dmu < infinity for every compact K contained in U). Let xi be in U with Theta^n(mu, xi) = 1, i.e. mu(B_r(xi)) / (omega_n r^n) -> 1 as r decreases to 0 (closed balls, quotient in [0, infinity]), and let delta > 0. Then xi is in spt V = U cap spt mu, and there is r > 0 with B_r(xi) contained in U, mu(B_r(xi)) <= (1 + delta) omega_n r^n and (r^(p-n) integral_{B_r(xi)} |H|^p dmu)^(1/p) <= delta (both inequalities in [0, infinity], the second being V.scaledLpNorm H p xi r <= delta).",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (ξ : Amb n ℓ) (δ : ℝ), IsOpen U → (n : ℝ) < p → V.LocallyLp H p → ξ ∈ U → V.HasDensity ξ 1 → 0 < δ → ξ ∈ V.support ∧ ∃ r : ℝ, 0 < r ∧ closedBall ξ r ⊆ U ∧ V.weight (closedBall ξ r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * r ^ n)) ∧ V.scaledLpNorm H p ξ r ≤ ENNReal.ofReal δ",
+  "lean_name": "density_one_allard_scale",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-allard-scale-a1-a1"
+}
