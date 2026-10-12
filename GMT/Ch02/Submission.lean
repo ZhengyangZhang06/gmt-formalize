@@ -373,6 +373,22 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Leibniz-form derivative of `t ↦ det G(t)`.** If every entry `s ↦ G(s)ᵢₖ` has derivative `Hᵢₖ`
+at `x`, then `t ↦ det G(t)` has derivative
+`∑_σ sgn σ ∑_m (∏_{j ≠ m} G(x)_{σ(j) j}) H_{σ(m) m}` at `x`. Expand `det G(t)` by the Leibniz
+formula (`Matrix.det_apply'`), then apply the finite product rule (`HasDerivAt.fun_finsetProd`) to
+each `∏ᵢ G(t)_{σ(i) i}`, the constant-multiple rule for `sgn σ` and the finite sum rule over
+`Perm ι`. -/
+theorem Submission.variation_matrix_det_hasDerivAt_leibniz : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G : ℝ → Matrix ι ι ℝ) (H : Matrix ι ι ℝ) (x : ℝ), (∀ i k, HasDerivAt (fun s ↦ G s i k) (H i k) x) → HasDerivAt (fun t ↦ (G t).det) (∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∏ j ∈ Finset.univ.erase m, G x (σ j) j) * H (σ m) m) x := by
+  intro ι _ _ G H x hG
+  -- Step 1: Leibniz expansion `det G(t) = ∑_σ sgn σ ∏ᵢ G(t)_{σ(i) i}`.
+  simp_rw [Matrix.det_apply']
+  -- Steps 4 and 3: sum rule over `Perm ι`, then the constant factor `sgn σ`.
+  refine HasDerivAt.fun_sum fun σ _ ↦ HasDerivAt.const_mul _ ?_
+  -- Step 2: finite product rule for `t ↦ ∏ᵢ G(t)_{σ(i) i}`; on `ℝ`, `•` is multiplication.
+  simpa only [smul_eq_mul] using HasDerivAt.fun_finsetProd (u := Finset.univ)
+    (f := fun i s ↦ G s (σ i) i) (f' := fun i ↦ H (σ i) i) fun i _ ↦ hG (σ i) i
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
