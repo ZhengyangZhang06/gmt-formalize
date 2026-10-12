@@ -373,6 +373,31 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Partial derivatives of a jointly `C^n` family.** Let `O ⊆ ℝ × ℝᴺ` be open, let
+`F(t, x) = Φ t x` be `C^n` on `O`, and let `m + 1 ≤ n`. Then the spatial derivative
+`(t, x) ↦ fderiv ℝ (Φ t) x` and the time derivative `(t, x) ↦ deriv (s ↦ Φ s x) t` are `C^m` on
+`O`. On `O` they equal `DF(t, x) ∘ inr` and `DF(t, x) (1, 0)` (chain rule along `x' ↦ (t, x')` and
+`s ↦ (s, x)`), and `p ↦ DF(p)` is `C^m` on `O` (`ContDiffOn.fderiv_of_isOpen`). -/
+theorem Submission.variation_deformation_partials_contDiffOn : ∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (O : Set (ℝ × Rn N)) (m n : WithTop ℕ∞), IsOpen O → ContDiffOn ℝ n (fun p : ℝ × Rn N ↦ Φ p.1 p.2) O → m + 1 ≤ n → ContDiffOn ℝ m (fun p : ℝ × Rn N ↦ fderiv ℝ (Φ p.1) p.2) O ∧ ContDiffOn ℝ m (fun p : ℝ × Rn N ↦ deriv (fun s ↦ Φ s p.2) p.1) O := by
+  intro N Φ O m n hO hF hmn
+  -- Step 1: `0 < 1 ≤ m + 1 ≤ n`, so `F` is differentiable at every point of the open set `O`.
+  have hn : n ≠ 0 := (zero_lt_one.trans_le (le_add_self.trans hmn)).ne'
+  have hdiff : ∀ p ∈ O, DifferentiableAt ℝ (fun p : ℝ × Rn N ↦ Φ p.1 p.2) p := fun p hp ↦
+    (hF.contDiffAt (hO.mem_nhds hp)).differentiableAt hn
+  -- Step 2: `p ↦ DF(p)` is `C^m` on `O`.
+  have hDF : ContDiffOn ℝ m (fderiv ℝ fun p : ℝ × Rn N ↦ Φ p.1 p.2) O :=
+    hF.fderiv_of_isOpen hO hmn
+  constructor
+  · -- Steps 3–4: `fderiv ℝ (Φ t) x = DF(t, x) ∘ inr` on `O`, by the chain rule along `x' ↦ (t, x')`.
+    refine (hDF.clm_comp (contDiffOn_const (c := ContinuousLinearMap.inr ℝ ℝ (Rn N)))).congr ?_
+    rintro ⟨t, x⟩ hp
+    exact ((hdiff (t, x) hp).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).fderiv
+  · -- Steps 5–6: `deriv (s ↦ Φ s x) t = DF(t, x) (1, 0)` on `O`, by the chain rule along `s ↦ (s, x)`.
+    refine (hDF.clm_apply (contDiffOn_const (c := ((1 : ℝ), (0 : Rn N))))).congr ?_
+    rintro ⟨t, x⟩ hp
+    exact ((hdiff (t, x) hp).hasFDerivAt.comp_hasDerivAt t
+      ((hasDerivAt_id t).prodMk (hasDerivAt_const t x))).deriv
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
