@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ee5b32311907897a1a53fe66e139a5f5c8aa954d726f0abc87f60c66eb784961",
+  "git_delta": {
+    "base_commit": "84f837882ed23b27a9e4d4e124d203f68c4fcd3b",
+    "candidate_commit": "f10130b4dbb7b44908d7ad7b38aa4a962ba07605",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_amcl_annular_lintegral_le",
+    "diff_sha256": "b2219255c6b589f580a7658fcdacb1331e40cb5e105f6af9aa8f799f9edd4578",
+    "source_sha256": "236fd63ddc8dfb2f5d510fef7ca7d0f808fc523294d1874e39f321853d724c77",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_amcl_annular_lintegral_le",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ≥0∞) (y : Amb n ℓ) (ε c : ℕ → ℝ) (s r L : ℝ), 0 < s → Tendsto ε atTop (𝓝 0) → Tendsto c atTop (𝓝 L) → (∀ᶠ k in atTop, ∫⁻ x in closedBall y r \\ ball y ((1 + ε k) * s), g x ∂μ ≤ ENNReal.ofReal (c k)) → ∫⁻ x in closedBall y r \\ closedBall y s, g x ∂μ ≤ ENNReal.ofReal L",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
