@@ -536,6 +536,117 @@ theorem Submission.second_variation_integrand_eq_div_accel_add_stable : ∀ (N :
   -- Step 4: substitute both identities into the 5.4 integrand and regroup.
   simp only [secondVariationIntegrand, stableSecondVariationIntegrand, hdiv, hcross]
   ring
+/-- **Regularity and support of the initial velocity and acceleration** (Simon Ch. 2, 5.1–5.2,
+pp. 61–62). If `φ` is an admissible `C^r` deformation of `U` fixing the outside of the compact set
+`K ⊆ U`, then `X = initialVelocity φ` is `C^{r-1}` and `Z = initialAcceleration φ` is `C^{r-2}` on
+all of `ℝᴺ`, and both vanish off `K`; this is stated for `r = 2` and `r = 3`. With
+`Φ(t, x) = φ t x` and `e = (1, 0)`, the chain rule along `s ↦ (s, x)` gives `X(x) = DΦ(0, x) e`
+and `Z(x) = D²Φ(0, x) e e` for `x ∈ U`. Off `K`, `t ↦ φ t x` is constant on `(-1, 1)`, so
+`X = Z = 0` on the open set `Kᶜ`. Since `U ∪ Kᶜ = ℝᴺ` and `ContDiff` is local, `X` and `Z` are
+`C^{r-1}` and `C^{r-2}` on `ℝᴺ`. -/
+theorem Submission.deformation_velocity_acceleration_regularity : (∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), IsAdmissibleDeformation 2 U K φ → ContDiff ℝ 1 (initialVelocity φ) ∧ ∀ x ∉ K, initialVelocity φ x = 0) ∧ ∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), IsAdmissibleDeformation 3 U K φ → ContDiff ℝ 2 (initialVelocity φ) ∧ ContDiff ℝ 1 (initialAcceleration φ) ∧ ∀ x ∉ K, initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 := by
+  -- Steps 1-6 for an arbitrary order `r`; step 7 specialises to `r = 2, 3`.
+  have key : ∀ (N : ℕ) (r : ℕ∞) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N),
+      IsAdmissibleDeformation r U K φ →
+      (∀ x ∉ K, initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0) ∧
+      (∀ k : ℕ, ((k + 1 : ℕ) : WithTop ℕ∞) ≤ (r : WithTop ℕ∞) →
+        ContDiff ℝ k (initialVelocity φ)) ∧
+      (∀ k : ℕ, ((k + 2 : ℕ) : WithTop ℕ∞) ≤ (r : WithTop ℕ∞) →
+        ContDiff ℝ k (initialAcceleration φ)) := by
+    intro N r U K φ hφ
+    obtain ⟨hU, hK, hKU, hC, -, hfix, -⟩ := hφ
+    set Φ : ℝ × Rn N → Rn N := fun p ↦ φ p.1 p.2
+    set O : Set (ℝ × Rn N) := Ioo (-1 : ℝ) 1 ×ˢ U
+    have hO : IsOpen O := isOpen_Ioo.prod hU
+    have hIoo0 : Ioo (-1 : ℝ) 1 ∈ 𝓝 (0 : ℝ) := Ioo_mem_nhds (by norm_num) (by norm_num)
+    -- Step 2: chain rule along the slice `s ↦ (s, x)`.
+    have htime : ∀ (t : ℝ) (x : Rn N), DifferentiableAt ℝ Φ (t, x) →
+        HasDerivAt (fun s ↦ φ s x) (fderiv ℝ Φ (t, x) ((1 : ℝ), (0 : Rn N))) t := by
+      intro t x h
+      exact h.hasFDerivAt.comp_hasDerivAt t ((hasDerivAt_id t).prodMk (hasDerivAt_const t x))
+    -- Step 5: vanishing off `K`.
+    have hderiv_off : ∀ x ∉ K, ∀ t ∈ Ioo (-1 : ℝ) 1, deriv (fun s ↦ φ s x) t = 0 := by
+      intro x hx t ht
+      have : (fun s ↦ φ s x) =ᶠ[𝓝 t] fun _ ↦ x := by
+        filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs
+        exact hfix s hs x hx
+      rw [this.deriv_eq, deriv_const]
+    have hvan : ∀ x ∉ K, initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 := by
+      intro x hx
+      refine ⟨hderiv_off x hx 0 (by norm_num), ?_⟩
+      have : (fun t ↦ deriv (fun s ↦ φ s x) t) =ᶠ[𝓝 0] fun _ ↦ (0 : Rn N) := by
+        filter_upwards [hIoo0] with t ht
+        exact hderiv_off x hx t ht
+      unfold initialAcceleration
+      rw [this.deriv_eq, deriv_const]
+    -- Step 6: patching over `U ∪ Kᶜ = ℝᴺ`.
+    have glue : ∀ (k : ℕ) (F : Rn N → Rn N), ContDiffOn ℝ k F U → (∀ x ∉ K, F x = 0) →
+        ContDiff ℝ k F := by
+      intro k F hF hF0
+      refine contDiff_iff_contDiffAt.2 fun x ↦ ?_
+      by_cases hx : x ∈ U
+      · exact hF.contDiffAt (hU.mem_nhds hx)
+      · have hxK : x ∉ K := fun h ↦ hx (hKU h)
+        have : F =ᶠ[𝓝 x] fun _ ↦ (0 : Rn N) := by
+          filter_upwards [hK.isClosed.isOpen_compl.mem_nhds hxK] with y hy
+          exact hF0 y hy
+        exact contDiffAt_const.congr_of_eventuallyEq this
+    -- The smooth slice `j x = (0, x)` maps `U` into `O`.
+    have hj : ContDiffOn ℝ ⊤ (fun x : Rn N ↦ ((0 : ℝ), x)) U :=
+      (contDiff_const.prodMk contDiff_id).contDiffOn
+    have hjmaps : MapsTo (fun x : Rn N ↦ ((0 : ℝ), x)) U O := fun x hx ↦
+      ⟨⟨by norm_num, by norm_num⟩, hx⟩
+    refine ⟨hvan, ?_, ?_⟩
+    · -- Steps 1-3: `X = (DΦ · e) ∘ j` on `U`.
+      intro k hk
+      have hD : ContDiffOn ℝ k (fderiv ℝ Φ) O := hC.fderiv_of_isOpen hO (by exact_mod_cast hk)
+      have hg : ContDiffOn ℝ k (fun p ↦ fderiv ℝ Φ p ((1 : ℝ), (0 : Rn N))) O :=
+        hD.clm_apply contDiffOn_const
+      have hXU : ContDiffOn ℝ k
+          (fun x : Rn N ↦ fderiv ℝ Φ ((0 : ℝ), x) ((1 : ℝ), (0 : Rn N))) U :=
+        hg.comp (hj.of_le le_top) hjmaps
+      refine glue k _ (hXU.congr fun x hx ↦ ?_) (fun x hx ↦ (hvan x hx).1)
+      have hdiff : DifferentiableAt ℝ Φ ((0 : ℝ), x) :=
+        (hC.contDiffAt (hO.mem_nhds (hjmaps hx))).differentiableAt (by
+          intro h; rw [h] at hk; exact absurd hk (by norm_num))
+      exact (htime 0 x hdiff).deriv
+    · -- Steps 1 and 4: `Z = (D²Φ · e · e) ∘ j` on `U`.
+      intro k hk
+      have hD1 : ContDiffOn ℝ (k + 1 : ℕ) (fderiv ℝ Φ) O :=
+        hC.fderiv_of_isOpen hO (le_of_eq_of_le (by push_cast; ring) hk)
+      have hD2 : ContDiffOn ℝ k (fderiv ℝ (fderiv ℝ Φ)) O :=
+        hD1.fderiv_of_isOpen hO (by push_cast; exact le_rfl)
+      have hg : ContDiffOn ℝ k
+          (fun p ↦ fderiv ℝ (fderiv ℝ Φ) p ((1 : ℝ), (0 : Rn N)) ((1 : ℝ), (0 : Rn N))) O :=
+        (hD2.clm_apply contDiffOn_const).clm_apply contDiffOn_const
+      have hZU : ContDiffOn ℝ k (fun x : Rn N ↦
+          fderiv ℝ (fderiv ℝ Φ) ((0 : ℝ), x) ((1 : ℝ), (0 : Rn N)) ((1 : ℝ), (0 : Rn N))) U :=
+        hg.comp (hj.of_le le_top) hjmaps
+      refine glue k _ (hZU.congr fun x hx ↦ ?_) (fun x hx ↦ (hvan x hx).2)
+      have hdiffΦ : ∀ t ∈ Ioo (-1 : ℝ) 1, DifferentiableAt ℝ Φ (t, x) := by
+        intro t ht
+        exact (hC.contDiffAt (hO.mem_nhds ⟨ht, hx⟩)).differentiableAt (by
+          intro h; rw [h] at hk; exact absurd hk (by norm_num))
+      have hEq : (fun t ↦ deriv (fun s ↦ φ s x) t) =ᶠ[𝓝 0]
+          fun t ↦ fderiv ℝ Φ (t, x) ((1 : ℝ), (0 : Rn N)) := by
+        filter_upwards [hIoo0] with t ht
+        exact (htime t x (hdiffΦ t ht)).deriv
+      have hdiffD : DifferentiableAt ℝ (fderiv ℝ Φ) ((0 : ℝ), x) :=
+        (hD1.contDiffAt (hO.mem_nhds (hjmaps hx))).differentiableAt (by simp)
+      have hgd : HasFDerivAt (fun p ↦ fderiv ℝ Φ p ((1 : ℝ), (0 : Rn N)))
+          ((fderiv ℝ (fderiv ℝ Φ) ((0 : ℝ), x)).flip ((1 : ℝ), (0 : Rn N))) ((0 : ℝ), x) := by
+        simpa using hdiffD.hasFDerivAt.clm_apply
+          (hasFDerivAt_const ((1 : ℝ), (0 : Rn N)) ((0 : ℝ), x))
+      have hcomp := hgd.comp_hasDerivAt (0 : ℝ)
+        ((hasDerivAt_id (0 : ℝ)).prodMk (hasDerivAt_const 0 x))
+      unfold initialAcceleration
+      rw [hEq.deriv_eq]
+      exact hcomp.deriv
+  refine ⟨fun N U K φ hφ ↦ ?_, fun N U K φ hφ ↦ ?_⟩
+  · obtain ⟨hvan, hX, -⟩ := key N 2 U K φ hφ
+    exact ⟨hX 1 (by norm_num), fun x hx ↦ (hvan x hx).1⟩
+  · obtain ⟨hvan, hX, hZ⟩ := key N 3 U K φ hφ
+    exact ⟨hX 2 (by norm_num), hZ 1 (by norm_num), hvan⟩
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
