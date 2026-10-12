@@ -458,6 +458,56 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 2, Theorem 1.5 (C¹ approximation of Lipschitz functions), with derivatives.**
+A Lipschitz `f : ℝⁿ → ℝ` agrees with a `C¹` function `g`, and `Df` with `Dg`, outside a set of
+arbitrarily small Lebesgue measure.  Proof, following Simon's printed argument: by Rademacher
+`f` is differentiable off a Borel null set `Bᶜ` and `Df` is Borel; Lusin
+(`tae_c1_lusin_clm_volume`) gives a closed `C ⊆ B` with `Df|C` continuous and `Lⁿ(B \ C) < ε/2`;
+Egorov (`tae_c1_uniform_remainder`) gives a closed `A ⊆ C` with `Lⁿ(C \ A) < ε/2` on whose
+compact subsets the first-order Taylor remainder of `f` is uniformly small; Whitney's extension
+theorem (`tae_whitney_c1_extension`, Simon Ch. 2, 1.6) then yields `g ∈ C¹` with `g = f` and
+`Dg = Df` on `A`, so `{f ≠ g} ∪ {Df ≠ Dg} ⊆ Bᶜ ∪ (B \ C) ∪ (C \ A)`. -/
+theorem tae_lipschitz_c1_approximation : ∀ {n : ℕ} (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ, 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume ({x | f x ≠ g x} ∪ {x | fderiv ℝ f x ≠ fderiv ℝ g x}) < ENNReal.ofReal ε := by
+  intro n f K hf ε hε
+  -- Rademacher: `f` is differentiable off a Borel null set, and `Df` is Borel.
+  have hBm : MeasurableSet {x | DifferentiableAt ℝ f x} := measurableSet_of_differentiableAt ℝ f
+  have hB0 : volume {x | DifferentiableAt ℝ f x}ᶜ = 0 := by
+    have h1 := hf.ae_differentiableAt (μ := (volume : Measure (Rn n)))
+    rwa [ae_iff, ← Set.compl_ofPred] at h1
+  have hε2 : ENNReal.ofReal ε / 2 ≠ 0 := (ENNReal.half_pos (ENNReal.ofReal_pos.2 hε).ne').ne'
+  -- Lusin: a closed `C ⊆ B` with `Lⁿ(B \ C) < ε/2` on which `Df` is continuous.
+  obtain ⟨C, hCB, hCc, hBC, hDC⟩ :=
+    Submission.tae_c1_lusin_clm_volume (fderiv ℝ f) (measurable_fderiv ℝ f) _ hBm _ hε2
+  -- Egorov: a closed `A ⊆ C` with `Lⁿ(C \ A) < ε/2` and a compact-uniform Taylor estimate.
+  obtain ⟨A, hAC, hAc, hCA, hrem⟩ :=
+    Submission.tae_c1_uniform_remainder f K hf C hCc hCB _ hε2
+  -- Whitney: `g ∈ C¹` with `g = f` and `Dg = Df` on `A`.
+  obtain ⟨g, hg, hgA, hgD⟩ := Submission.tae_whitney_c1_extension A f (fderiv ℝ f) hAc
+    hf.continuous.continuousOn (hDC.mono hAC) hrem
+  refine ⟨g, hg, ?_⟩
+  calc volume ({x | f x ≠ g x} ∪ {x | fderiv ℝ f x ≠ fderiv ℝ g x})
+      ≤ volume ({x | DifferentiableAt ℝ f x}ᶜ ∪ ({x | DifferentiableAt ℝ f x} \ C) ∪ (C \ A)) := by
+        refine measure_mono fun x hx => ?_
+        by_cases hxA : x ∈ A
+        · exfalso
+          rcases hx with hx | hx
+          · exact hx (hgA x hxA).symm
+          · exact hx (hgD x hxA).fderiv.symm
+        by_cases hxC : x ∈ C
+        · exact Or.inr ⟨hxC, hxA⟩
+        by_cases hxB : DifferentiableAt ℝ f x
+        · exact Or.inl (Or.inr ⟨hxB, hxC⟩)
+        · exact Or.inl (Or.inl hxB)
+    _ ≤ volume {x | DifferentiableAt ℝ f x}ᶜ + volume ({x | DifferentiableAt ℝ f x} \ C)
+          + volume (C \ A) := (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+    _ = volume ({x | DifferentiableAt ℝ f x} \ C) + volume (C \ A) := by rw [hB0, zero_add]
+    _ < ENNReal.ofReal ε / 2 + ENNReal.ofReal ε / 2 := ENNReal.add_lt_add hBC hCA
+    _ = ENNReal.ofReal ε := ENNReal.add_halves _
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
