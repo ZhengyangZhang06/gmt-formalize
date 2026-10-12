@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.flux_zero-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+  "depth": 6,
+  "title": "Vanishing of ∫ Dh(x − s y)(y) g(|y|²) dy for harmonic h and 0 < s ≤ 1",
+  "statement": "Let n ∈ ℕ, let U ⊆ ℝⁿ (= Euclid n) be open, and let h : ℝⁿ → ℝ be C² on U with Δh(y) := Σ_{i<n} D²h(y)(e_i, e_i) = 0 for all y ∈ U, where D²h(y)(a, b) = iteratedFDeriv ℝ 2 h y ![a, b] and e_i = EuclideanSpace.single i 1. Let x ∈ ℝⁿ and 0 < r < R with closedBall(x, R) ⊆ U, let g : ℝ → ℝ be continuous with g(t) = 0 for all t ≥ r², and let 0 < s ≤ 1. Then ∫_{ℝⁿ} Dh(x − s y)(y)·g(|y|²) dy = 0, where Dh(z) = fderiv ℝ h z.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ), IsOpen U → ContDiffOn ℝ 2 h U → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∀ (x : Euclid n) (r R : ℝ), 0 < r → r < R → closedBall x R ⊆ U → ∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, 0 < s → s ≤ 1 → ∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2) = 0",
+  "lean_name": "dorag_ha_mv_flux_zero",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.radial_potential-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.green_identity-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.affine_comp_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.radial_potential-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.green_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.affine_comp_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-a9babf6cc9-a1"
+}

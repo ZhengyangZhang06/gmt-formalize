@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.ball_of_kernel-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+  "depth": 6,
+  "title": "Radial-kernel mean value identity implies the open-ball mean value identity",
+  "statement": "Let n ∈ ℕ, h : ℝⁿ → ℝ (ℝⁿ = Euclid n), x ∈ ℝⁿ and r > 0, with h continuous on closedBall(x, r). Assume that for every continuous g : ℝ → ℝ with g(t) = 0 for all t ≥ r², ∫_{ℝⁿ} h(x − y)·g(|y|²) dy = h(x)·∫_{ℝⁿ} g(|y|²) dy. Then ∫_{B̆_r(x)} h = Lⁿ(B̆_r(x))·h(x). Here B̆_r(x) = ball(x, r) is the open ball, Lⁿ = volume is Lebesgue measure, and the measure is taken as a real number via ENNReal.toReal.",
+  "lean_statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (x : Euclid n) (r : ℝ), 0 < r → ContinuousOn h (closedBall x r) → (∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∫ y : Euclid n, h (x - y) * g (‖y‖ ^ 2) = h x * ∫ y : Euclid n, g (‖y‖ ^ 2)) → ∫ y in ball x r, h y = (volume (ball x r)).toReal * h x",
+  "lean_name": "dorag_ha_mv_ball_of_kernel",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-31ca2dfd66-a1"
+}

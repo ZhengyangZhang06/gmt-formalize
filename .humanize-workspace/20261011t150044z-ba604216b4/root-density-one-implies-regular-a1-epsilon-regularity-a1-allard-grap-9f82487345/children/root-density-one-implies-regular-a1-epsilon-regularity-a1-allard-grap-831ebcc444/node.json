@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.affine_comp_deriv-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+  "depth": 6,
+  "title": "First and second derivatives of z ↦ h(x − s z) for an arbitrary h",
+  "statement": "Let n ∈ ℕ, let h : ℝⁿ → ℝ (= Euclid n → ℝ) be an arbitrary function (no regularity assumed), let x ∈ ℝⁿ and s ∈ ℝ, and put G(z) := h(x − s z). Then for all y, a, b ∈ ℝⁿ: DG(y)a = −(s·Dh(x − s y)a) and D²G(y)(a, b) = s²·D²h(x − s y)(a, b). Here D = fderiv ℝ and D²F(y)(a, b) = iteratedFDeriv ℝ 2 F y ![a, b] are Mathlib's total derivatives, which are 0 at points of non-differentiability.",
+  "lean_statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (x : Euclid n) (s : ℝ) (y a b : Euclid n), fderiv ℝ (fun z : Euclid n => h (x - s • z)) y a = -(s * fderiv ℝ h (x - s • y) a) ∧ iteratedFDeriv ℝ 2 (fun z : Euclid n => h (x - s • z)) y ![a, b] = s ^ 2 * iteratedFDeriv ℝ 2 h (x - s • y) ![a, b]",
+  "lean_name": "dorag_ha_mv_affine_comp_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-831ebcc444-a1"
+}
