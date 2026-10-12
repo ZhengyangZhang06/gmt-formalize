@@ -458,6 +458,84 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.8–4.9** (density at the centre, for an abstract measure `μ`).  Let `R, α > 0`,
+`μ(B_R(y)) < ∞`, and on `(0, R)` let `e^{-Λ} ≤ F(r) ≤ e^Λ` and `|F(r) − 1| ≤ Λ (r/R)^α`.  If
+`Φ(r) = F(r) r⁻ⁿ μ(B_r(y)) + F(r) − 1` is nondecreasing on `(0, R)`, then there is `t ≥ 0` with
+`μ(B_r(y)) / (ω_n rⁿ) → t` as `r ↓ 0`, and `ω_n t ≤ Φ(r)` for every `r ∈ (0, R)`.
+Proof: `F → 1` as `r ↓ 0`; `Φ ≥ e^{-Λ} − 1` is monotone, so it tends to `L = inf Φ`; hence
+`r⁻ⁿ μ(B_r(y)) = (Φ(r) + 1)/F(r) − 1 → L ≥ 0`, and `t = L/ω_n` works since `ω_n > 0`. -/
+theorem allard52_am_center_density : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (F : ℝ → ℝ) (R Λ α : ℝ), 0 < R → 0 < α → μ (closedBall y R) < ⊤ → (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ * (r / R) ^ α) → (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) → ∃ t : ℝ, 0 ≤ t ∧ Tendsto (fun r : ℝ => μ (closedBall y r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal t)) ∧ ∀ r ∈ Ioo 0 R, unitBallVolume n * t ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1 := by
+  intro n ℓ μ y F R Λ α hR hα hfin hF hmono0
+  -- Notation: `Φ(r) = F(r) r⁻ⁿ m(r) + F(r) − 1` with `m(r) = μ(B_r(y))`.
+  set Φ := fun r : ℝ => F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1 with hΦ
+  have hmono : MonotoneOn Φ (Ioo 0 R) := fun s hs r hr hsr => hmono0 s r hs.1 hsr hr.2
+  have hne : (Ioo (0 : ℝ) R).Nonempty := ⟨R / 2, half_pos hR, half_lt_self hR⟩
+  -- Step 1: on `(0, R)`, `μ(B_r(y)) ≤ μ(B_R(y)) < ∞` and `F(r) ≥ e^{-Λ} > 0`.
+  have hmfin : ∀ r ∈ Ioo 0 R, μ (closedBall y r) ≠ ⊤ := fun r hr =>
+    ne_top_of_le_ne_top hfin.ne (measure_mono (closedBall_subset_closedBall hr.2.le))
+  have hFpos : ∀ r ∈ Ioo 0 R, 0 < F r := fun r hr => (Real.exp_pos _).trans_le (hF r hr).1
+  -- Step 2: `F → 1` as `r ↓ 0`, squeezing `|F(r) − 1| ≤ Λ (r/R)^α → Λ 0^α = 0` (`α > 0`).
+  have hF1 : Tendsto F (𝓝[>] 0) (𝓝 1) := by
+    have hlim : Tendsto (fun r : ℝ => Λ * (r / R) ^ α) (𝓝[>] 0) (𝓝 0) := by
+      have h : Tendsto (fun r : ℝ => Λ * (r / R) ^ α) (𝓝 0) (𝓝 (Λ * (0 / R) ^ α)) :=
+        ((tendsto_id.div_const R).rpow_const (Or.inr hα.le)).const_mul Λ
+      rw [zero_div, Real.zero_rpow hα.ne', mul_zero] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun r => norm_nonneg _) ?_ hlim
+    filter_upwards [Ioo_mem_nhdsGT hR] with r hr
+    rw [Real.norm_eq_abs]
+    exact (hF r hr).2.2
+  -- Step 3: `Φ(r) ≥ F(r) − 1 ≥ e^{-Λ} − 1` on `(0, R)`; the monotone `Φ` tends to `L = inf Φ`.
+  have hbdd : BddBelow (Φ '' Ioo 0 R) := by
+    refine ⟨Real.exp (-Λ) - 1, ?_⟩
+    rintro _ ⟨r, hr, rfl⟩
+    have h1 := (hF r hr).1
+    have h2 : 0 ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal :=
+      mul_nonneg (mul_nonneg (hFpos r hr).le (inv_nonneg.2 (pow_nonneg hr.1.le n)))
+        ENNReal.toReal_nonneg
+    simp only [hΦ]
+    linarith
+  set L := sInf (Φ '' Ioo 0 R)
+  have hΦL : Tendsto Φ (𝓝[>] 0) (𝓝 L) := hmono.tendsto_nhdsWithin_Ioo_right hne hbdd
+  -- Step 4: `r⁻ⁿ m(r) = (Φ(r) + 1)/F(r) − 1 → (L + 1)/1 − 1 = L`, and `L ≥ 0`.
+  set g := fun r : ℝ => (r ^ n)⁻¹ * (μ (closedBall y r)).toReal with hg_def
+  have hg : Tendsto g (𝓝[>] 0) (𝓝 L) := by
+    have h := ((hΦL.add_const 1).div hF1 one_ne_zero).sub_const 1
+    have heq : (fun r => (Φ r + 1) / F r - 1) =ᶠ[𝓝[>] 0] g := by
+      filter_upwards [Ioo_mem_nhdsGT hR] with r hr
+      have hFr : F r ≠ 0 := (hFpos r hr).ne'
+      simp only [hΦ, hg_def]
+      field_simp
+      ring
+    simpa using h.congr' heq
+  have hL0 : 0 ≤ L := by
+    apply ge_of_tendsto hg
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact mul_nonneg (inv_nonneg.2 (pow_nonneg (le_of_lt hr) n)) ENNReal.toReal_nonneg
+  -- Step 5: `ω_n = π^{n/2}/Γ(n/2 + 1) > 0`.
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- Step 6: `t = L/ω_n`; on `(0, R)`, `μ(B_r(y)) / ofReal(ω_n rⁿ) = ofReal(r⁻ⁿ m(r)/ω_n)`.
+  refine ⟨L / unitBallVolume n, div_nonneg hL0 hω.le, ?_, ?_⟩
+  · have h := ENNReal.tendsto_ofReal (hg.div_const (unitBallVolume n))
+    apply h.congr'
+    filter_upwards [Ioo_mem_nhdsGT hR] with r hr
+    have hr0 : 0 < unitBallVolume n * r ^ n := mul_pos hω (pow_pos hr.1 n)
+    rw [← ENNReal.ofReal_toReal (hmfin r hr), ← ENNReal.ofReal_div_of_pos hr0]
+    congr 1
+    simp only [hg_def]
+    field_simp
+  -- Step 7: `ω_n t = L ≤ Φ(r)` for every `r ∈ (0, R)`.
+  · intro r hr
+    rw [mul_div_cancel₀ _ hω.ne']
+    exact csInf_le hbdd ⟨r, hr, rfl⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
