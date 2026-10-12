@@ -979,6 +979,62 @@ theorem Submission.rectifiability_density_comparison : ∀ (P n : ℕ) (ν : Mea
       gcongr
     _ ≤ ν V := hsum
 
+/-- Simon Ch. 6, proof of 8.1, (1) and (6): a set `S` of positive upper density `Θ*ⁿ(ν, ·)`,
+covered by open sets `W q` of finite `ν`-measure, is covered by countably many sets of finite
+`Hⁿ`-measure, and it is `Hⁿ`-null when it is `ν`-null.  The pieces
+`{x ∈ S ∩ W q : (j + 1)⁻¹ ≤ Θ*ⁿ(ν, x)}` are controlled by the density comparison with
+`V = W q`, and, when `ν(S) = 0`, with `V = O ∩ W q` for an open `O ⊇ S` given by outer
+regularity of the finite measure `ν ⌞ W q`. -/
+theorem Submission.rectifiability_positive_density_cover_null : ∀ (P n : ℕ) (ν : Measure (Eucl P)) (W : ℕ → Set (Eucl P)) (S : Set (Eucl P)), (∀ q, IsOpen (W q)) → (∀ q, ν (W q) < ∞) → S ⊆ ⋃ q, W q → (∀ x ∈ S, 0 < dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x) → (∃ C : ℕ → Set (Eucl P), S ⊆ ⋃ i, C i ∧ ∀ i, (μHE[n] : Measure (Eucl P)) (C i) < ∞) ∧ (ν S = 0 → (μHE[n] : Measure (Eucl P)) S = 0) := by
+  intro P n ν W S hWo hWfin hSW hpos
+  -- The pieces `A j q = {x ∈ S ∩ W q : (j + 1)⁻¹ ≤ Θ*ⁿ(ν, x)}` cover `S`.
+  obtain ⟨A, hAS, hAW, hAD, hcover⟩ : ∃ A : ℕ → ℕ → Set (Eucl P), (∀ j q, A j q ⊆ S) ∧
+      (∀ j q, A j q ⊆ W q) ∧ (∀ j q, ∀ x ∈ A j q,
+        ((j : ℝ≥0∞) + 1)⁻¹ ≤ dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x) ∧
+      S ⊆ ⋃ j, ⋃ q, A j q := by
+    refine ⟨fun j q => {x | x ∈ S ∧ x ∈ W q ∧
+      ((j : ℝ≥0∞) + 1)⁻¹ ≤ dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x},
+      fun j q x hx => hx.1, fun j q x hx => hx.2.1, fun j q x hx => hx.2.2, ?_⟩
+    intro x hx
+    obtain ⟨q, hq⟩ := mem_iUnion.1 (hSW hx)
+    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt (hpos x hx).ne'
+    refine mem_iUnion.2 ⟨k, mem_iUnion.2 ⟨q, hx, hq, ?_⟩⟩
+    calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
+      _ ≤ _ := hk.le
+  have ht0 : ∀ j : ℕ, ((j : ℝ≥0∞) + 1)⁻¹ ≠ 0 := fun j =>
+    ENNReal.inv_ne_zero.2 (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top j, ENNReal.one_ne_top⟩)
+  refine ⟨⟨fun i => A (Nat.unpair i).1 (Nat.unpair i).2, ?_, ?_⟩, ?_⟩
+  · -- Reindex the pieces by `Nat.pair`.
+    intro x hx
+    obtain ⟨j, q, hjq⟩ : ∃ j q, x ∈ A j q := by simpa only [mem_iUnion] using hcover hx
+    refine mem_iUnion.2 ⟨Nat.pair j q, ?_⟩
+    simpa only [Nat.unpair_pair] using hjq
+  · -- Density comparison with `V = W q`: `(j + 1)⁻¹ Hⁿ(A j q) ≤ ν(W q) < ∞`.
+    intro i
+    have h := Submission.rectifiability_density_comparison P n ν
+      (A (Nat.unpair i).1 (Nat.unpair i).2) (W (Nat.unpair i).2) _ (hWo _) (hAW _ _) (hAD _ _)
+    rcases ENNReal.mul_lt_top_iff.1 (h.trans_lt (hWfin _)) with h1 | h1 | h1
+    · exact h1.2
+    · exact absurd h1 (ht0 _)
+    · simp [h1]
+  · -- If `ν(S) = 0`, every piece is `Hⁿ`-null.
+    intro hS0
+    have hpiece : ∀ j q, (μHE[n] : Measure (Eucl P)) (A j q) = 0 := by
+      intro j q
+      by_contra hne
+      have hc : 0 < ((j : ℝ≥0∞) + 1)⁻¹ * (μHE[n] : Measure (Eucl P)) (A j q) :=
+        ENNReal.mul_pos (ht0 j) hne
+      -- Outer regularity of the finite measure `ν ⌞ W q` gives an open `O ⊇ S` with
+      -- `ν(O ∩ W q) < (j + 1)⁻¹ Hⁿ(A j q)`.
+      have : IsFiniteMeasure (ν.restrict (W q)) := isFiniteMeasure_restrict.2 (hWfin q).ne
+      obtain ⟨O, hSO, hOo, hOlt⟩ := Set.exists_isOpen_lt_of_lt (μ := ν.restrict (W q)) S _
+        (((Measure.restrict_apply_le _ _).trans hS0.le).trans_lt hc)
+      rw [Measure.restrict_apply hOo.measurableSet] at hOlt
+      exact (Submission.rectifiability_density_comparison P n ν (A j q) (O ∩ W q) _
+        (hOo.inter (hWo q)) (fun x hx => ⟨hSO (hAS j q hx), hAW j q hx⟩) (hAD j q)).not_gt hOlt
+    exact measure_mono_null hcover
+      (measure_iUnion_null fun j => measure_iUnion_null fun q => hpiece j q)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
