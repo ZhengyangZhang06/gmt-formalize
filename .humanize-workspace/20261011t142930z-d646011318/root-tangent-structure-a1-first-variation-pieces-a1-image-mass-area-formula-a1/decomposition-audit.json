@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "normDet_nonneg|normDet_sq_eq_det_gram|normDet_comp|normDet_of_subsingleton",
+        "theorem det_one_add_mul_comm|starProjection_eq_sum_rankOne|sum_inner_mul_inner|def gram",
+        "weighted_area_formula_lipschitz_injOn|areaJacobianAt_eq_normDet|def areaJacobianAt|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "lintegral_iUnion₀|setLIntegral_congr|image_of_continuousOn_injOn|exists_measurable_superset_ae_eq|exists_measurable_subset_ae_eq",
+        "ts_fv_det_tangential_gram_eq|ts_fv_piece_image_area_formula|ts_fv_lintegral_image_eq_of_pieces",
+        "python3 /tmp/ch04-imaf-independent-audit-0zhe0wkp/runlean.py /tmp/ch04-imaf-independent-audit-0zhe0wkp/gen/Challenge_ts_fv_det_tangential_gram_eq.lean",
+        "python3 /tmp/ch04-imaf-independent-audit-0zhe0wkp/runlean.py /tmp/ch04-imaf-independent-audit-0zhe0wkp/gen/Challenge_ts_fv_piece_image_area_formula.lean",
+        "python3 /tmp/ch04-imaf-independent-audit-0zhe0wkp/runlean.py /tmp/ch04-imaf-independent-audit-0zhe0wkp/gen/Challenge_ts_fv_lintegral_image_eq_of_pieces.lean",
+        "python3 /tmp/ch04-imaf-independent-audit-0zhe0wkp/runlean.py /tmp/ch04-imaf-independent-audit-0zhe0wkp/Full.lean",
+        "python3 /tmp/ch04-imaf-independent-audit-0zhe0wkp/runlean.py /tmp/ch04-imaf-independent-audit-0zhe0wkp/Facts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Matrix/SchurComplement.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-formula-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-formula-a1/decomposition-v1.json",
+        "/tmp/ch04-imaf-independent-audit-0zhe0wkp/Full.lean",
+        "/tmp/ch04-imaf-independent-audit-0zhe0wkp/Facts.lean"
+      ],
+      "conclusion": "Confirmed pinned revisions and compatibility of the inspected sources. The weighted area formula permits arbitrary weights; normDet_comp requires no injective-derivative assumption; the gluing lemmas require neither measurable integrands nor finite measures. No proposed name is reserved in the DAG or another node's decomposition. All names are bare identifiers, and all three exact one-line propositions independently elaborate in a freshly rebuilt frozen scope. Matrix.of selects ordinary matrix multiplication. The supplied four proofs compile with types byte-identical to the child contracts and selected parent handoff; their only axioms are propext, Classical.choice and Quot.sound. The split is appropriate: the parent follows from the piece formula and gluing, with the determinant lemma used through the piece formula."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_tangential_gram",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including the orthonormal-basis hypothesis. Projection expansion and Parseval give BᵀB = I and S = I + B(GBᵀ − Bᵀ); Sylvester's determinant identity then proves exactly the claimed equality. The proof handles singular and zero-dimensional cases without extra assumptions and has no circular dependence."
+    },
+    {
+      "key": "piece_image_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every stated hypothesis is represented correctly. The proof establishes Borelness and image equality for B = C ∩ F⁻¹(A), composite injectivity, and the Jacobian chain rule, then compares two valid arbitrary-weight area formulas. Its sole child dependency is correctly directed toward det_tangential_gram. The parent can apply it to the chart-range field on each Borel hull and subsequently identify that field with the tangent almost everywhere."
+    },
+    {
+      "key": "image_lintegral_gluing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract measure-space prose matches the exact Lean proposition. Null preservation gives the image remainder equality almost everywhere; injectivity and null-measurability preservation justify disjoint measurable summation on the image side. Applying setLIntegral_congr and lintegral_iUnion₀ on both sides proves the conclusion for arbitrary weights. The proof is complete and independent of the other children and parent."
+    }
+  ],
+  "required_changes": []
+}
