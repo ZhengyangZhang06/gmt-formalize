@@ -923,6 +923,50 @@ theorem rsod_allardHypotheses_small_scale : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (
   obtain ⟨ρ, ⟨hρmass, hρlp⟩, hρ0, hρρ₁⟩ := ((hmass.and hlp).and (Ioc_mem_nhdsGT hρ₁)).exists
   exact ⟨ρ, hρ0, hH, hmult, ⟨h0U, hsupp⟩, (closedBall_subset_closedBall hρρ₁).trans hρ₁U,
     hρmass, hρlp⟩
+/-- **Simon Ch. 5, Theorem 7.1, support form** (first paragraph of the printed proof, p. 127):
+given Theorem 5.2, a point `x₀ ∈ U` with `Θⁿ(μ_V, x₀) = 1` is a regular point of `V`
+(Definition 7.2).  The translate `W` of `V` by `-x₀` has density `1` at `0`, so 5.1 holds for `W`
+with `δ = δ₀` at a small scale `ρ`; Theorem 5.2 makes `spt W ∩ B_{γρ}(0)` a rotated `C¹` graph
+over `Bⁿ_{γρ}(0)`, hence `B̆_{γρ}(x₀) ∩ spt V` is an `n`-dimensional `C¹` submanifold. -/
+theorem rsod_mem_regularSet_of_density_one : AllardRegularityTheorem → ∀ (n ℓ : ℕ), 1 ≤ n →
+    ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U)
+    (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H →
+    V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ x₀ ∈ U, V.HasDensity x₀ 1 →
+    x₀ ∈ V.regularSet := by
+  intro hAllard n ℓ hn U hU V H p hp hH hLp hθ x₀ hx₀ hdens
+  -- Step 1: the constants `δ₀, γ` of Theorem 5.2 for `n, ℓ, p`.
+  obtain ⟨δ₀, γ, C, hδ₀, -, hγ, -, hallard⟩ := hAllard n ℓ hn p hp
+  -- Steps 2–3: the translate `W` of `V` by `-x₀`, living in the open set `U - x₀ ∋ 0`.
+  obtain ⟨W, -, hWmult, hWweight, hWspt, hWH, hWLp⟩ :=
+    Submission.rsod_exists_translated_varifold n ℓ U V x₀
+  have hU' : IsOpen ((fun y => y + x₀) ⁻¹' U) := hU.preimage (continuous_id.add_const x₀)
+  have h0U' : (0 : Amb n ℓ) ∈ (fun y => y + x₀) ⁻¹' U := by simpa using hx₀
+  -- Step 4: `μ_W(B_r(0)) = μ_V(B_r(x₀))`, so `Θⁿ(μ_W, 0) = Θⁿ(μ_V, x₀) = 1`.
+  have hball (r : ℝ) : W.weight (closedBall 0 r) = V.weight (closedBall x₀ r) := by
+    rw [hWweight, (measurableEmbedding_subRight x₀).map_apply]
+    congr 1
+    ext y
+    simp [dist_eq_norm]
+  have hWdens : W.HasDensity 0 1 := by
+    unfold RectifiableVarifold.HasDensity at hdens ⊢
+    simpa only [hball] using hdens
+  -- Step 5: `θ_W ≥ 1` `μ_W`-a.e., since `θ_W(x - x₀) = θ_V(x)`.
+  have hWθ : ∀ᵐ y ∂W.weight, 1 ≤ W.mult y := by
+    rw [hWweight, (measurableEmbedding_subRight x₀).ae_map_iff]
+    filter_upwards [hθ] with x hx
+    rwa [hWmult, sub_add_cancel]
+  -- Step 6: the hypotheses 5.1 for `W` with `δ = δ₀` at some scale `ρ`.
+  obtain ⟨ρ, hρ⟩ := Submission.rsod_allardHypotheses_small_scale n ℓ hn _ hU' W
+    (fun y => H (y + x₀)) p hp (hWH H hH) (hWLp H p hLp) hWθ h0U' hWdens δ₀ hδ₀
+  -- Step 7: Theorem 5.2 for `W`: `spt W ∩ B_{γρ}(0) = q(graph u) ∩ B_{γρ}(0)`, `u ∈ C¹`.
+  obtain ⟨q, u, hu, -, -, hgraph, -⟩ := hallard _ hU' W _ δ₀ ρ hδ₀ le_rfl hρ
+  obtain ⟨hρ, -, -, h0W, -⟩ := hρ
+  rw [hWspt] at hgraph h0W
+  -- Steps 8–9: `x₀ = 0 + x₀ ∈ spt V`, and `B̆_{γρ}(x₀) ∩ spt V` is an `n`-dimensional `C¹`
+  -- submanifold by the graph lemma.
+  refine ⟨by simpa using h0W, γ * ρ, mul_pos hγ hρ, ?_⟩
+  exact Submission.rsod_isC1Submanifold_ball_inter_graph n ℓ q u x₀ (γ * ρ) V.support
+    (mul_pos hγ hρ) hu hgraph
 
 end Submission
 
