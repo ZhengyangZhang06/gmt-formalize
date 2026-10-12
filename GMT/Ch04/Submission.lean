@@ -739,6 +739,86 @@ theorem Submission.weighted_mono_cutoff_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Mea
     hF_int hF'_meas h_bound (hind _) h_diff
   exact ⟨hF_int, hint', hderiv⟩
 
+/-- **Smoothed monotonicity identity** (Simon Ch. 4, 3.3–3.5, p. 90, for one cutoff `φ`). Write
+`r = |x - ξ|`, `I(t) = ∫ u φ(r/t) dμ`, `I₁(t) = ∫ u · (-(r/t²) φ'(r/t)) dμ`,
+`J₁(t) = ∫ u q · (-(r/t²) φ'(r/t)) dμ` and `L(t) = ∫ φ(r/t) G dμ`. For `τ ∈ [σ, ρ]`,
+`weighted_mono_cutoff_hasDerivAt` (with `c = 1 + ε`, `f = u` and `f = u q`) gives `I' = I₁` and
+the integrability of both kernels, so `(ODE_τ)` becomes `n I - τ I₁ + τ J₁ + L = 0`. `L` and
+`J₁(τ) = -(∫ u q ψ₁(r/τ) dμ) / τ`, `ψ₁(s) = s φ'(s)`, are continuous on `[σ, ρ]`
+(`wm_smoothed_scale_integral_continuousOn`), so `wm_smoothed_scaled_ftc` gives
+`I(ρ)/ρⁿ - I(σ)/σⁿ = ∫_{(σ,ρ]} J₁/τⁿ + ∫_{(σ,ρ]} L/τⁿ⁺¹`, and `wm_smoothed_kernel_fubini`
+(`w = u q`, `χ = φ'`) turns `∫_{(σ,ρ]} J₁/τⁿ` into `∫ u q k(r) dμ`. -/
+theorem Submission.weighted_mono_smoothed_identity : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (u q G : Ambient n ℓ → ℝ) (φ : ℝ → ℝ) (ξ : Ambient n ℓ) (ε σ ρ R A : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → σ ≤ ρ → 0 < ε → (1 + ε) * ρ < R → AEStronglyMeasurable u (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |u x| ≤ A ∧ |q x| ≤ 1) → IntegrableOn G (closedBall ξ R) μ → ContDiff ℝ 1 φ → (∀ t, 1 + ε ≤ t → φ t = 0) → (∀ τ ∈ Icc σ ρ, (n : ℝ) * ∫ x, u x * φ (‖x - ξ‖ / τ) ∂μ + ∫ x, u x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) ∂μ + ∫ x, φ (‖x - ξ‖ / τ) * G x ∂μ = 0) → (∫ x, u x * φ (‖x - ξ‖ / ρ) ∂μ) / ρ ^ n - (∫ x, u x * φ (‖x - ξ‖ / σ) ∂μ) / σ ^ n = ∫ x, u x * q x * (∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ) / τ ^ n) ∂μ + ∫ τ in Ioc σ ρ, (∫ x, φ (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1) := by
+  intro n ℓ μ u q G φ ξ ε σ ρ R A hμ hσ hσρ hε hR hu hq huq hG hφ hφ0 hODE
+  -- step 0: every `τ ∈ [σ, ρ]` has `τ > 0` and `(1 + ε) τ < R`; `u q` is bounded by `A` on
+  -- `B = B_R(ξ)`, hence integrable there (`μ(B) < ∞`)
+  have hc : (0 : ℝ) < 1 + ε := by linarith
+  have hτ : ∀ τ ∈ Icc σ ρ, 0 < τ ∧ (1 + ε) * τ < R := fun τ hτσ ↦
+    ⟨hσ.trans_le hτσ.1, (mul_le_mul_of_nonneg_left hτσ.2 hc.le).trans_lt hR⟩
+  have huA : ∀ x ∈ closedBall ξ R, |u x| ≤ A := fun x hx ↦ (huq x hx).1
+  have huqm : AEStronglyMeasurable (fun x ↦ u x * q x) (μ.restrict (closedBall ξ R)) :=
+    hu.fun_mul hq
+  have huqA : ∀ x ∈ closedBall ξ R, |u x * q x| ≤ A := fun x hx ↦ by
+    rw [abs_mul, ← mul_one A]
+    exact mul_le_mul (huq x hx).1 (huq x hx).2 (abs_nonneg _) ((abs_nonneg _).trans (huq x hx).1)
+  have huqi : IntegrableOn (fun x ↦ u x * q x) (closedBall ξ R) μ :=
+    IntegrableOn.of_bound (isCompact_closedBall ξ R).measure_lt_top huqm A
+      (ae_restrict_of_forall_mem measurableSet_closedBall fun x hx ↦
+        (Real.norm_eq_abs _).trans_le (huqA x hx))
+  -- `φ'` is continuous and vanishes on the open set `(1 + ε, ∞)`
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hφ' : ∀ s, 1 + ε < s → deriv φ s = 0 := by
+    intro s hs
+    have h : φ =ᶠ[𝓝 s] fun _ ↦ 0 :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hs) fun t ht ↦ hφ0 t (le_of_lt ht)
+    rw [h.deriv_eq, deriv_const]
+  -- step 1: `I' = I₁` on `[σ, ρ]`, and both kernels are integrable (`f = u` and `f = u q`)
+  have hD := fun τ (hτσ : τ ∈ Icc σ ρ) ↦ Submission.weighted_mono_cutoff_hasDerivAt n ℓ μ u φ ξ
+    (1 + ε) R A τ hμ hφ hφ0 hc (hτ τ hτσ).1 (hτ τ hτσ).2 hu huA
+  have hDq := fun τ (hτσ : τ ∈ Icc σ ρ) ↦ Submission.weighted_mono_cutoff_hasDerivAt n ℓ μ
+    (fun x ↦ u x * q x) φ ξ (1 + ε) R A τ hμ hφ hφ0 hc (hτ τ hτσ).1 (hτ τ hτσ).2 huqm huqA
+  -- step 2: since `τ (r / τ²) = r / τ`, `(ODE_τ)` becomes `n I - τ I₁ + τ J₁ + L = 0`
+  have hE : ∀ τ ∈ Icc σ ρ, (n : ℝ) * (∫ x, u x * φ (‖x - ξ‖ / τ) ∂μ) -
+      τ * (∫ x, u x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ)) ∂μ) +
+      τ * (∫ x, u x * q x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ)) ∂μ) +
+      ∫ x, φ (‖x - ξ‖ / τ) * G x ∂μ = 0 := by
+    intro τ hτσ
+    have hτ0 : τ ≠ 0 := (hτ τ hτσ).1.ne'
+    have hmid : ∫ x, u x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) ∂μ =
+        ∫ x, (-τ * (u x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ))) +
+          τ * (u x * q x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ)))) ∂μ := by
+      refine integral_congr_ae (ae_of_all _ fun x ↦ ?_)
+      field_simp
+      ring
+    rw [integral_add ((hD τ hτσ).2.1.const_mul (-τ)) ((hDq τ hτσ).2.1.const_mul τ),
+      integral_const_mul, integral_const_mul] at hmid
+    linear_combination hODE τ hτσ - hmid
+  -- step 4: `L` is continuous on `[σ, ρ]`
+  have hL : ContinuousOn (fun τ ↦ ∫ x, φ (‖x - ξ‖ / τ) * G x ∂μ) (Icc σ ρ) :=
+    (Submission.wm_smoothed_scale_integral_continuousOn n ℓ μ G φ ξ (1 + ε) σ ρ R hσ hc hR hG
+      hφ.continuous fun t ht ↦ hφ0 t ht.le).congr fun τ _ ↦
+      integral_congr_ae (ae_of_all _ fun x ↦ mul_comm _ _)
+  -- step 4: `J₁(τ) = -(∫ u q ψ₁(r / τ) dμ) / τ` with `ψ₁(s) = s φ'(s)` is continuous on `[σ, ρ]`
+  have hJ : ContinuousOn
+      (fun τ ↦ ∫ x, u x * q x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ)) ∂μ) (Icc σ ρ) := by
+    have hK := Submission.wm_smoothed_scale_integral_continuousOn n ℓ μ (fun x ↦ u x * q x)
+      (fun s ↦ s * deriv φ s) ξ (1 + ε) σ ρ R hσ hc hR huqi (continuous_id.mul hφ'c)
+      fun s hs ↦ by simp only [hφ' s hs, mul_zero]
+    refine (hK.fun_neg.div₀ continuousOn_id fun τ hτσ ↦ (hτ τ hτσ).1.ne').congr fun τ _ ↦ ?_
+    show ∫ x, u x * q x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ)) ∂μ =
+      -(∫ x, u x * q x * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) ∂μ) / τ
+    rw [← integral_neg, ← integral_div]
+    exact integral_congr_ae (ae_of_all _ fun x ↦ by ring)
+  -- steps 3 and 5: quotient rule and FTC, `I(ρ)/ρⁿ - I(σ)/σⁿ = ∫ J₁/τⁿ + ∫ L/τⁿ⁺¹` over `(σ, ρ]`
+  have hftc := Submission.wm_smoothed_scaled_ftc n (fun t ↦ ∫ x, u x * φ (‖x - ξ‖ / t) ∂μ)
+    (fun t ↦ ∫ x, u x * (-(‖x - ξ‖ / t ^ 2) * deriv φ (‖x - ξ‖ / t)) ∂μ)
+    (fun t ↦ ∫ x, u x * q x * (-(‖x - ξ‖ / t ^ 2) * deriv φ (‖x - ξ‖ / t)) ∂μ)
+    (fun t ↦ ∫ x, φ (‖x - ξ‖ / t) * G x ∂μ) σ ρ hσ hσρ (fun τ hτσ ↦ (hD τ hτσ).2.2) hE hJ hL
+  -- steps 6 and 7: Fubini for the `J₁`-term (`w = u q`, `χ = φ'`, `k = n`)
+  rw [Submission.wm_smoothed_kernel_fubini n ℓ n μ (fun x ↦ u x * q x) (deriv φ) ξ (1 + ε) σ ρ R A
+    hμ hσ hc hR huqm huqA hφ'c hφ'] at hftc
+  exact hftc
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
