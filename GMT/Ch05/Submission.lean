@@ -458,6 +458,134 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **`Hⁿ ⌞ P` on balls about `0`** (the normalization `Hⁿ = Lⁿ` on `n`-planes, Simon's Notation
+p. ix, with scaling).  If `P ⊆ ℝ^{n+ℓ}` is an `n`-dimensional subspace and `s ≥ 0`, then
+`Hⁿ(P ∩ B_s(0)) = ω_n sⁿ`.  The inclusion `P → ℝ^{n+ℓ}` is an isometry, so `Hⁿ ⌞ P` is the image
+of `Hⁿ` on `P`, which is Lebesgue measure of the `n`-dimensional inner product space `P`; there
+`|B_s(0)| = sⁿ |B_1(0)|`.  Mathlib's value of `|B_1(0)|` lies outside the frozen import closure, so
+it is computed here by evaluating `I = ∫_P e^{-|x|²} dx` twice: in orthonormal coordinates
+`I = (∫_ℝ e^{-t²} dt)ⁿ = π^{n/2}` (Fubini), while the layer-cake formula with
+`{e^{-|x|²} > t} = B_{√(-log t)}(0)` and the substitution `t = e^{-u}` give
+`I = |B_1(0)| ∫_0^∞ u^{n/2} e^{-u} du = |B_1(0)| Γ(n/2 + 1)`. -/
+theorem rsod_planeMeasure_closedBall : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ P = n → ∀ s : ℝ, 0 ≤ s → ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) (closedBall 0 s) = ENNReal.ofReal (unitBallVolume n * s ^ n) := by
+  intro n ℓ hn P hP s hs
+  have : Nontrivial P := Module.nontrivial_of_finrank_pos (R := ℝ) (by omega)
+  -- `Hⁿ ⌞ P` is the image of `Hⁿ` on `P` under the isometric inclusion `ι : P → ℝ^{n+ℓ}`, and
+  -- `ι⁻¹(B_s(0))` is the closed ball `B_s(0)` of `P`.
+  have hrange : range (P.subtypeₗᵢ : P → Amb n ℓ) = (P : Set (Amb n ℓ)) := by ext x; simp
+  rw [← hrange, ← P.subtypeₗᵢ.isometry.map_euclideanHausdorffMeasure,
+    Measure.map_apply P.subtypeₗᵢ.continuous.measurable measurableSet_closedBall]
+  have hpre : (P.subtypeₗᵢ : P → Amb n ℓ) ⁻¹' closedBall (0 : Amb n ℓ) s =
+      closedBall (0 : P) s := by
+    ext x; simp [mem_closedBall, dist_eq_norm]
+  -- On the `n`-dimensional inner product space `P`, `Hⁿ` is Lebesgue measure.
+  have hvol : (μHE[n] : Measure P) = volume := by
+    have h := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := P); rwa [hP] at h
+  -- `∫_ℝ e^{-t²} dt = √π`.
+  have hA : ∫⁻ x : ℝ, ENNReal.ofReal (Real.exp (-x ^ 2)) = ENNReal.ofReal (√Real.pi) := by
+    have h := integral_gaussian 1
+    simp only [neg_mul, one_mul, div_one] at h
+    rw [← h, ofReal_integral_eq_lintegral_ofReal]
+    · simpa using integrable_exp_neg_mul_sq (b := 1) one_pos
+    · exact ae_of_all _ (fun x => (Real.exp_pos _).le)
+  -- Fubini, splitting off the first coordinate: `∫_{ℝᵐ} e^{-|y|²} dy = (√π)ᵐ`.
+  have hB : ∀ m : ℕ, ∫⁻ x : Fin m → ℝ, ENNReal.ofReal (Real.exp (-∑ i, x i ^ 2)) =
+      ENNReal.ofReal (√Real.pi) ^ m := by
+    intro m
+    induction m with
+    | zero => simp [volume_pi]
+    | succ m ih =>
+      have e := volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) 0
+      have hf : Measurable fun p : ℝ × (Fin m → ℝ) =>
+          ENNReal.ofReal (Real.exp (-p.1 ^ 2)) * ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)) := by
+        fun_prop
+      calc ∫⁻ x : Fin (m + 1) → ℝ, ENNReal.ofReal (Real.exp (-∑ i, x i ^ 2))
+          = ∫⁻ x : Fin (m + 1) → ℝ, (fun p : ℝ × (Fin m → ℝ) =>
+              ENNReal.ofReal (Real.exp (-p.1 ^ 2)) * ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)))
+                (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) 0 x) := by
+            refine lintegral_congr fun x => ?_
+            simp only [MeasurableEquiv.piFinSuccAbove_apply, Fin.sum_univ_succ]
+            rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add, neg_add]
+            rfl
+        _ = ∫⁻ p : ℝ × (Fin m → ℝ), ENNReal.ofReal (Real.exp (-p.1 ^ 2)) *
+              ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)) := e.lintegral_comp hf
+        _ = (∫⁻ a : ℝ, ENNReal.ofReal (Real.exp (-a ^ 2))) *
+              ∫⁻ y : Fin m → ℝ, ENNReal.ofReal (Real.exp (-∑ i, y i ^ 2)) :=
+            lintegral_prod_mul (f := fun a : ℝ => ENNReal.ofReal (Real.exp (-a ^ 2)))
+              (g := fun y : Fin m → ℝ => ENNReal.ofReal (Real.exp (-∑ i, y i ^ 2)))
+              (by fun_prop) (Measurable.aemeasurable (by fun_prop))
+        _ = ENNReal.ofReal (√Real.pi) ^ (m + 1) := by rw [hA, ih, pow_succ']
+  -- In orthonormal coordinates on `P`: `∫_P e^{-|x|²} dx = (√π)^{dim P}`.
+  have hC : ∫⁻ x : P, ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) =
+      ENNReal.ofReal (√Real.pi) ^ Module.finrank ℝ P := by
+    have e := (PiLp.volume_preserving_ofLp (Fin (Module.finrank ℝ P))).comp
+      (stdOrthonormalBasis ℝ P).measurePreserving_repr
+    rw [← hB, ← e.lintegral_comp (by fun_prop)]
+    refine lintegral_congr fun x => ?_
+    rw [← (stdOrthonormalBasis ℝ P).repr.norm_map x, EuclideanSpace.norm_sq_eq]
+    simp [Real.norm_eq_abs, sq_abs]
+  -- `t = e^{-u}`: `∫_0^∞ (√(-log t))^{dim P} dt = ∫_0^∞ u^{dim P/2} e^{-u} du = Γ(dim P/2 + 1)`.
+  have hE : ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (√(-Real.log t) ^ Module.finrank ℝ P) =
+      ENNReal.ofReal (Real.Gamma ((Module.finrank ℝ P : ℝ) / 2 + 1)) := by
+    have himg : (fun u : ℝ => Real.exp (-u)) '' univ = Ioi 0 := by
+      rw [image_univ]; ext t; simp only [mem_range, mem_Ioi]
+      constructor
+      · rintro ⟨u, rfl⟩; exact Real.exp_pos _
+      · intro ht; exact ⟨-Real.log t, by rw [neg_neg, Real.exp_log ht]⟩
+    rw [← himg, lintegral_image_eq_lintegral_abs_deriv_mul MeasurableSet.univ
+        (fun u _ => (hasDerivAt_neg u).exp.hasDerivWithinAt)
+        (fun u _ v _ h => by simpa using h), Measure.restrict_univ]
+    simp only [mul_neg, mul_one, abs_neg, abs_of_pos (Real.exp_pos _), Real.log_exp, neg_neg]
+    rw [Real.Gamma_eq_integral (by positivity), ofReal_integral_eq_lintegral_ofReal
+      (Real.GammaIntegral_convergent (by positivity))
+      (ae_restrict_of_forall_mem measurableSet_Ioi fun u hu => by
+        have : 0 < u := hu
+        positivity)]
+    rw [← setLIntegral_eq_of_support_subset (s := Ioi 0)]
+    · refine setLIntegral_congr_fun measurableSet_Ioi fun u hu => ?_
+      have hu : 0 < u := hu
+      rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, Real.sqrt_eq_rpow, ← Real.rpow_natCast,
+        ← Real.rpow_mul hu.le]
+      congr 3
+      ring
+    · intro u hu
+      by_contra h
+      simp only [mem_Ioi, not_lt] at h
+      apply hu
+      simp [Real.sqrt_eq_zero'.2 h, zero_pow (by omega : Module.finrank ℝ P ≠ 0)]
+  -- Layer cake: `{x ∈ P : e^{-|x|²} > t}` is the ball `B_{√(-log t)}(0)` of `P`.
+  have hD : ∫⁻ x : P, ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) =
+      ENNReal.ofReal (Real.Gamma ((Module.finrank ℝ P : ℝ) / 2 + 1)) * volume (ball (0 : P) 1) := by
+    rw [lintegral_eq_lintegral_meas_lt volume (ae_of_all _ fun x => (Real.exp_pos _).le)
+      (by fun_prop), ← hE, ← lintegral_mul_const _ (by fun_prop)]
+    refine setLIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
+    have ht : 0 < t := ht
+    have hset : {a : P | t < Real.exp (-‖a‖ ^ 2)} = ball (0 : P) √(-Real.log t) := by
+      ext a
+      rw [mem_ofPred_eq, mem_ball_zero_iff, ← Real.log_lt_iff_lt_exp ht,
+        Real.lt_sqrt (norm_nonneg _)]
+      constructor <;> intro h <;> linarith
+    rw [hset, Measure.addHaar_ball volume 0 (Real.sqrt_nonneg _)]
+  -- Hence `|B_1(0)| = (√π)ⁿ / Γ(n/2 + 1) = π^{n/2} / Γ(n/2 + 1) = ω_n`.
+  have hΓ : 0 < Real.Gamma ((Module.finrank ℝ P : ℝ) / 2 + 1) :=
+    Real.Gamma_pos_of_pos (by positivity)
+  have hω : unitBallVolume n = √Real.pi ^ n / Real.Gamma ((n : ℝ) / 2 + 1) := by
+    unfold unitBallVolume
+    rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul Real.pi_pos.le]
+    congr 2
+    ring
+  have hball : volume (ball (0 : P) 1) = ENNReal.ofReal (unitBallVolume n) := by
+    rw [hP] at hC hD hΓ
+    rw [hω, ENNReal.ofReal_div_of_pos hΓ,
+      ENNReal.eq_div_iff (ENNReal.ofReal_pos.2 hΓ).ne' ENNReal.ofReal_ne_top, ← hD, hC,
+      ENNReal.ofReal_pow (Real.sqrt_nonneg _)]
+  rw [hpre, hvol, Measure.addHaar_closedBall volume (0 : P) hs, hball, hP,
+    ← ENNReal.ofReal_mul (pow_nonneg hs n), mul_comm]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
