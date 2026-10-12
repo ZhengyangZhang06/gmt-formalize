@@ -445,6 +445,39 @@ theorem Submission.polyhedral_approx_pairing_coordinate_bound : ∀ (P n : ℕ) 
         exact Real.sqrt_le_sqrt (Finset.single_le_sum ht0 (Finset.mem_univ _))
     _ = covectorEuclideanNorm c := rfl
 
+/-- **Pairing expansion** (Simon Ch. 6, 1.2 and 1.7, pp. 132–133; used for 6.2, p. 169).  For an
+`n`-vector `w` and an `n`-covector `c` on `ℝ^P`, `w(c) = ∑_I c_I · w(dx^I)`, the sum over the
+increasing multi-indices `I`, where `c_I = c(e_{I(1)}, …, e_{I(n)})` and
+`dx^I = dx^{I(1)} ∧ ⋯ ∧ dx^{I(n)}`; moreover `|c_I| ≤ |c|`.  Since `dx^I(e_J) = δ_{IJ}` on
+increasing multi-indices, `c` and `∑_I c_I dx^I` have the same increasing coordinates, hence are
+equal (1.2), and `w` is linear. -/
+theorem Submission.polyhedral_approx_pairing_expansion : ∀ (P n : ℕ) (w : NVector (Eucl P) n) (c : Covector (Eucl P) n), w c = ∑ I : SimonMultiIndex n P, euclideanCovectorCoordinate c I * w (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∧ ∀ I : SimonMultiIndex n P, |euclideanCovectorCoordinate c I| ≤ covectorEuclideanNorm c := by
+  intro P n w c
+  refine ⟨?_, Submission.polyhedral_approx_pairing_coordinate_bound P n c⟩
+  -- `c = ∑_I c_I • dx^I`: both sides have the same increasing coordinates.
+  have hc : c = ∑ I : SimonMultiIndex n P,
+      euclideanCovectorCoordinate c I • wedgeCovectors n (fun j => EuclideanSpace.proj (I j)) := by
+    refine Submission.polyhedral_approx_pairing_covector_ext P n _ _ fun J => ?_
+    -- The `J`-th coordinate of the sum is `∑_I c_I · dx^I(e_J)`.
+    have hsum : euclideanCovectorCoordinate (∑ I : SimonMultiIndex n P,
+          euclideanCovectorCoordinate c I • wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J =
+        ∑ I : SimonMultiIndex n P, euclideanCovectorCoordinate c I *
+          euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J := by
+      simp only [euclideanCovectorCoordinate, ContinuousAlternatingMap.sum_apply,
+        ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+    -- Only `I = J` contributes, since `dx^I(e_J) = δ_{IJ}`.
+    rw [hsum, Finset.sum_eq_single J]
+    · rw [(Submission.polyhedral_approx_pairing_wedge_kronecker P n J).1, mul_one]
+    · intro I _ hIJ
+      rw [(Submission.polyhedral_approx_pairing_wedge_kronecker P n I).2 J (Ne.symm hIJ), mul_zero]
+    · intro hJ
+      exact absurd (Finset.mem_univ J) hJ
+  -- `w(∑_I c_I • dx^I) = ∑_I c_I · w(dx^I)` by linearity.
+  calc w c = w (∑ I : SimonMultiIndex n P,
+        euclideanCovectorCoordinate c I • wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) :=
+        congrArg w hc
+    _ = _ := by simp only [map_sum, map_smul, smul_eq_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
