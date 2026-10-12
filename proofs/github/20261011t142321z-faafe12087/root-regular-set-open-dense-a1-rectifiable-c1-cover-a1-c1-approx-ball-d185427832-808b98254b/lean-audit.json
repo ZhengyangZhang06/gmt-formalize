@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea97e413ec361f813f1a81f4d208e49c3e4a91596259d7ac1b3d2d0740f837f3",
+  "git_delta": {
+    "base_commit": "4a88187547c73682c00e0a5fb57af15bd5b7c568",
+    "candidate_commit": "899f711dedcbe81946d4614c1abf6c68932fcb24",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_c1ab_utr_remainder_sup_control",
+    "diff_sha256": "9feb0d0f7ac34ff35cb00daed58873f6848f0a2fe0ff6d6ad5fca9fdf4252c1a",
+    "source_sha256": "e98323135d634c35d2217b82e13fdc9fd08205ec77c69240d2bcdb7cd2d23cca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_c1ab_utr_remainder_sup_control",
+      "statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ f x) → ∃ η : ℕ → Rn n → ℝ, (∀ k, Measurable (η k)) ∧ (∀ x ∈ C, Tendsto (fun k => η k x) atTop (𝓝 0)) ∧ ∀ k : ℕ, ∀ x ∈ C, ∀ y ∈ C, 0 < ‖y - x‖ → ‖y - x‖ < 1 / ((k : ℝ) + 1) → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η k x * ‖y - x‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
