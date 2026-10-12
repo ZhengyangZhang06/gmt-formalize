@@ -359,6 +359,70 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of 4.8–4.9 (p. 158): the integral bounding the right side of 4.11, for a
+differentiable approximation `g` of `f` (Simon's `f^{(σ)}`):
+`∫ |D(χ ∘ g)| |ω| dμ ≤ c L_W μ(spt ω ∩ {t − h − δ < f < t + δ})` when `|ω| ≤ 1`,
+`|g − f| ≤ δ` and `‖Dg‖ ≤ L_W` on `spt ω`, `|χ'| ≤ c` and `χ' = 0` off `(t − h, t)`.
+Off `spt ω` the integrand vanishes.  On `spt ω` the chain rule gives
+`‖D(χ ∘ g)(x)‖ ≤ |χ'(g x)| ‖Dg(x)‖`; this is `0` unless `t − h < g x < t`, and then
+`t − h − δ < f x < t + δ` and the bound is `c L_W`.  Integrate the indicator bound. -/
+theorem Submission.slicing_mb_cdb_grad_lintegral_le :
+    ∀ (P m : ℕ) (μ : Measure (Eucl P)) (ω : DifferentialForm (Eucl P) m) (f g : Eucl P → ℝ) (LW : ℝ≥0) (χ : ℝ → ℝ) (t h c δ : ℝ), (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → Differentiable ℝ g → Differentiable ℝ χ → (∀ x ∈ tsupport ω, |g x - f x| ≤ δ) → (∀ x ∈ tsupport ω, ‖fderiv ℝ g x‖₊ ≤ LW) → (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) → ∫⁻ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) * ENNReal.ofReal (covectorEuclideanNorm (ω x)) ∂μ ≤ ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport ω ∩ f ⁻¹' Ioo (t - h - δ) (t + δ)) := by
+  intro P m μ ω f g LW χ t h c δ hω hg hχ hgf hDg hc hband
+  set E := tsupport ω ∩ f ⁻¹' Ioo (t - h - δ) (t + δ)
+  set a : ℝ≥0∞ := ENNReal.ofReal c * (LW : ℝ≥0∞)
+  -- `c ≥ |χ'(0)| ≥ 0`.
+  have hc0 : 0 ≤ c := (abs_nonneg _).trans (hc 0)
+  -- Pointwise bound of the integrand by `1_E · a`.
+  have hpt : ∀ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+      ENNReal.ofReal (covectorEuclideanNorm (ω x)) ≤ E.indicator (fun _ => a) x := by
+    intro x
+    by_cases hxK : x ∈ tsupport ω
+    · -- Chain rule: `D(χ ∘ g)(x) = Dχ(g x) ∘ Dg(x)`.
+      have hchain : fderiv ℝ (fun y => χ (g y)) x = (fderiv ℝ χ (g x)).comp (fderiv ℝ g x) :=
+        fderiv_fun_comp x (hχ (g x)) (hg x)
+      by_cases hgx : g x ∈ Ioo (t - h) t
+      · -- `t − h < g x < t` and `|g x − f x| ≤ δ` put `x` in `E`.
+        have hxE : x ∈ E := by
+          refine ⟨hxK, ?_⟩
+          have hab := abs_le.mp (hgf x hxK)
+          rw [mem_Ioo] at hgx
+          rw [mem_preimage, mem_Ioo]
+          constructor <;> linarith [hgx.1, hgx.2, hab.1, hab.2]
+        rw [indicator_of_mem hxE]
+        have hnorm : ‖fderiv ℝ (fun y => χ (g y)) x‖ ≤ c * LW := by
+          rw [hchain]
+          calc ‖(fderiv ℝ χ (g x)).comp (fderiv ℝ g x)‖
+              ≤ ‖fderiv ℝ χ (g x)‖ * ‖fderiv ℝ g x‖ := ContinuousLinearMap.opNorm_comp_le _ _
+            _ ≤ c * LW := by
+              apply mul_le_mul _ _ (norm_nonneg _) hc0
+              · rw [← norm_deriv_eq_norm_fderiv, Real.norm_eq_abs]
+                exact hc _
+              · exact_mod_cast hDg x hxK
+        have h1 : (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) ≤ a := by
+          calc (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞)
+              = ENNReal.ofReal ‖fderiv ℝ (fun y => χ (g y)) x‖ := (ofReal_norm _).symm
+            _ ≤ ENNReal.ofReal (c * LW) := ENNReal.ofReal_le_ofReal hnorm
+            _ = a := by rw [ENNReal.ofReal_mul hc0, ENNReal.ofReal_coe_nnreal]
+        have h2 : ENNReal.ofReal (covectorEuclideanNorm (ω x)) ≤ 1 :=
+          ENNReal.ofReal_le_one.mpr (hω x)
+        calc (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+              ENNReal.ofReal (covectorEuclideanNorm (ω x))
+            ≤ a * 1 := mul_le_mul' h1 h2
+          _ = a := mul_one _
+      · -- `χ'(g x) = 0`, so `Dχ(g x) = 0` and `D(χ ∘ g)(x) = 0`.
+        have hfd : fderiv ℝ χ (g x) = 0 := by
+          rw [← norm_eq_zero, ← norm_deriv_eq_norm_fderiv, hband _ hgx, norm_zero]
+        rw [hchain, hfd]
+        simp
+    · -- Off `spt ω`, `ω x = 0`.
+      have h0 : ω x = 0 := image_eq_zero_of_notMem_tsupport hxK
+      simp [h0]
+  calc ∫⁻ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+        ENNReal.ofReal (covectorEuclideanNorm (ω x)) ∂μ
+      ≤ ∫⁻ x, E.indicator (fun _ => a) x ∂μ := lintegral_mono hpt
+    _ ≤ a * μ E := lintegral_indicator_const_le _ _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
