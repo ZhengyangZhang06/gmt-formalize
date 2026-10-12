@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weak_compactness-a1",
+  "parent_id": "root.harmonic_approximation-a1",
+  "depth": 2,
+  "title": "Weak sequential compactness of the unit ball of L^2(B;R^n)",
+  "statement": "Let n in N and G_k : R^n -> R^n (k in N) with G_k in L^2(B;R^n) and int_B |G_k|^2 <= 1 (B the open unit ball, lintegral bound). Then there are a strictly increasing phi : N -> N and g in L^2(B;R^n) with int_B |g|^2 <= 1 such that int_B <G_{phi(k)}, h> -> int_B <g, h> for every h in L^2(B;R^n) (Bochner integrals).",
+  "lean_statement": "∀ (n : ℕ) (G : ℕ → Rn n → Rn n), (∀ k, MemLp (G k) 2 (volume.restrict (ball (0 : Rn n) 1))) → (∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖G k x‖ₑ ^ 2 ≤ 1) → ∃ (φ : ℕ → ℕ) (g : Rn n → Rn n), StrictMono φ ∧ MemLp g 2 (volume.restrict (ball (0 : Rn n) 1)) ∧ ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 ≤ 1 ∧ ∀ h : Rn n → Rn n, MemLp h 2 (volume.restrict (ball (0 : Rn n) 1)) → Tendsto (fun k => ∫ x in ball (0 : Rn n) 1, inner ℝ (G (φ k) x) (h x)) atTop (𝓝 (∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (h x)))",
+  "lean_name": "l2_ball_weak_subsequence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weak-compactness-a1-a1"
+}

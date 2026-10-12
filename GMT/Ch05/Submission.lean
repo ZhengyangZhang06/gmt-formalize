@@ -13,6 +13,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
+import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -457,6 +459,470 @@ def RegularSetOpenDense : Prop :=
     (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) →
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
+
+namespace Submission
+
+/-- **`L²` contraction of mollification** (Young's inequality with exponents `(1, 2; 2)`;
+Gilbarg–Trudinger §7.2, Evans Appendix C).  Convolution with a continuous probability kernel
+`ρ ≥ 0`, `∫ ρ = 1`, does not increase the `L²` energy: `∫⁻ ‖ρ ⋆ H‖ₑ² ≤ ∫⁻ ‖H‖ₑ²`.
+
+With the weight `a = ofReal ∘ ρ` (mass one), `‖∫ ρ(z) H(x - z) dz‖ₑ ≤ ∫⁻ a(z) ‖H(x - z)‖ₑ dz`, and
+Hölder's inequality for `a^{1/2}` and `a^{1/2} ‖H(x - ·)‖ₑ` bounds the square of the right side by
+`∫⁻ a(z) ‖H(x - z)‖ₑ² dz`.  Integrating in `x`, Tonelli and the translation invariance of Lebesgue
+measure turn the double integral into `(∫⁻ a) ∫⁻ ‖H‖ₑ² = ∫⁻ ‖H‖ₑ²`. -/
+theorem mollifier_l2_contraction : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (ρ : Rn n → ℝ) (H : Rn n → E), Continuous ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → AEStronglyMeasurable H volume → ∫⁻ x, ‖∫ z, ρ z • H (x - z)‖ₑ ^ 2 ≤ ∫⁻ x, ‖H x‖ₑ ^ 2 := by
+  intro n E _ _ _ ρ H hρc hρ0 hρ1 hH
+  -- Step 1: `ρ` is integrable, so the weight `a = ofReal ∘ ρ` has mass one.
+  have hρi : Integrable ρ := integrable_of_integral_eq_one hρ1
+  have hmass : ∫⁻ z, ENNReal.ofReal (ρ z) = 1 := by
+    rw [← ofReal_integral_eq_lintegral_ofReal hρi (Eventually.of_forall hρ0), hρ1,
+      ENNReal.ofReal_one]
+  -- Step 2: measurability of the weight and of `‖H‖ₑ`.
+  have ha : AEMeasurable (fun z => ENNReal.ofReal (ρ z)) volume :=
+    (ENNReal.measurable_ofReal.comp hρc.measurable).aemeasurable
+  have hh : AEMeasurable (fun y => ‖H y‖ₑ) volume := hH.enorm
+  -- Steps 3–5: `‖∫ ρ(z) H(x - z) dz‖ₑ² ≤ ∫⁻ a(z) ‖H(x - z)‖ₑ² dz` for every `x`.
+  have hpt : ∀ x, ‖∫ z, ρ z • H (x - z)‖ₑ ^ 2 ≤
+      ∫⁻ z, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ ^ 2 := by
+    intro x
+    have h1 : ‖∫ z, ρ z • H (x - z)‖ₑ ≤ ∫⁻ z, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ := by
+      refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq ?_)
+      congr 1; funext z
+      rw [enorm_smul, Real.enorm_of_nonneg (hρ0 z)]
+    have hg : AEMeasurable (fun z => ‖H (x - z)‖ₑ) volume :=
+      hh.comp_quasiMeasurePreserving
+        (Measure.measurePreserving_sub_left volume x).quasiMeasurePreserving
+    -- Hölder with `p = q = 2` for `a^{1/2}` and `a^{1/2} ‖H(x - ·)‖ₑ`, then `∫⁻ a = 1`.
+    have key := ENNReal.lintegral_mul_le_Lp_mul_Lq volume Real.HolderConjugate.two_two
+      (f := fun z => ENNReal.ofReal (ρ z) ^ (1 / 2 : ℝ))
+      (g := fun z => ENNReal.ofReal (ρ z) ^ (1 / 2 : ℝ) * ‖H (x - z)‖ₑ)
+      (ha.pow_const _) ((ha.pow_const _).mul hg)
+    have e1 : ∀ t s : ℝ≥0∞, t ^ (1 / 2 : ℝ) * (t ^ (1 / 2 : ℝ) * s) = t * s := by
+      intro t s
+      rw [← mul_assoc, ← ENNReal.rpow_add_of_nonneg _ _ (by norm_num) (by norm_num)]
+      norm_num
+    have e2 : ∀ t : ℝ≥0∞, (t ^ (1 / 2 : ℝ)) ^ (2 : ℝ) = t := by
+      intro t
+      rw [← ENNReal.rpow_mul]; norm_num
+    have e3 : ∀ t s : ℝ≥0∞, (t ^ (1 / 2 : ℝ) * s) ^ (2 : ℝ) = t * s ^ 2 := by
+      intro t s
+      rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num), e2, ENNReal.rpow_two]
+    simp only [Pi.mul_apply, e1, e2, e3, hmass, ENNReal.one_rpow, one_mul] at key
+    calc ‖∫ z, ρ z • H (x - z)‖ₑ ^ 2 ≤ (∫⁻ z, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ) ^ 2 := by
+          gcongr
+      _ ≤ ((∫⁻ z, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ ^ 2) ^ (1 / 2 : ℝ)) ^ 2 := by gcongr
+      _ = ∫⁻ z, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ ^ 2 := by
+          rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]; norm_num
+  -- Step 7: Tonelli and translation invariance of Lebesgue measure.
+  have hprod : AEMeasurable
+      (Function.uncurry fun x z => ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ ^ 2)
+      ((volume : Measure (Rn n)).prod volume) := by
+    have h1 : AEMeasurable (fun p : Rn n × Rn n => ENNReal.ofReal (ρ p.2))
+        ((volume : Measure (Rn n)).prod volume) := ha.comp_snd
+    have h2 : AEMeasurable (fun p : Rn n × Rn n => ‖H (p.1 - p.2)‖ₑ ^ 2)
+        ((volume : Measure (Rn n)).prod volume) :=
+      (hh.pow_const 2).comp_quasiMeasurePreserving (quasiMeasurePreserving_sub volume volume)
+    exact h1.mul h2
+  have hz : ∀ z, ∫⁻ x, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ ^ 2 =
+      ENNReal.ofReal (ρ z) * ∫⁻ y, ‖H y‖ₑ ^ 2 := fun z => by
+    rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+      lintegral_sub_right_eq_self (fun y => ‖H y‖ₑ ^ 2) z]
+  -- Steps 6 and 8: integrate the pointwise bound and use `∫⁻ a = 1`.
+  calc ∫⁻ x, ‖∫ z, ρ z • H (x - z)‖ₑ ^ 2
+      ≤ ∫⁻ x, ∫⁻ z, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ ^ 2 := lintegral_mono hpt
+    _ = ∫⁻ z, ∫⁻ x, ENNReal.ofReal (ρ z) * ‖H (x - z)‖ₑ ^ 2 := lintegral_lintegral_swap hprod
+    _ = ∫⁻ z, ENNReal.ofReal (ρ z) * ∫⁻ y, ‖H y‖ₑ ^ 2 := lintegral_congr hz
+    _ = ∫⁻ y, ‖H y‖ₑ ^ 2 := by rw [lintegral_mul_const'' _ ha, hmass, one_mul]
+
+/-- **Mollifiers are an approximate identity in `L²`** (Gilbarg–Trudinger §7.2, Evans Appendix C).
+If `ρ j ≥ 0` are continuous with `∫ ρ j = 1` and `ρ j = 0` outside `ball 0 (ε j)` with `ε j → 0`,
+then `∫⁻ ‖ρ j ⋆ H - H‖ₑ² → 0` for every `H ∈ L¹ ∩ L²`.
+
+For continuous compactly supported `Φ`, uniform continuity bounds `‖ρ j ⋆ Φ - Φ‖` uniformly and
+the difference vanishes off a fixed ball, so `∫⁻ ‖ρ j ⋆ Φ - Φ‖ₑ² → 0`.  Such `Φ` are dense in `L²`
+(simple functions, inner/outer regularity of Lebesgue measure and Urysohn's lemma), and splitting
+`ρ j ⋆ H - H = ρ j ⋆ (H - Φ) + (ρ j ⋆ Φ - Φ) + (Φ - H)`, the first term is controlled by the
+`L²` contraction `mollifier_l2_contraction`. -/
+theorem mollifier_l2_tendsto : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (H : Rn n → E), Integrable H → MemLp H 2 volume → ∀ (ρ : ℕ → Rn n → ℝ) (ε : ℕ → ℝ), (∀ j, Continuous (ρ j)) → (∀ j z, 0 ≤ ρ j z) → (∀ j, ∫ z, ρ j z = 1) → (∀ j z, ε j ≤ ‖z‖ → ρ j z = 0) → Tendsto ε atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖(∫ z, ρ j z • H (x - z)) - H x‖ₑ ^ 2) atTop (𝓝 0) := by
+  intro n E _ _ _ H hHi hH2 ρ ε hρc hρ0 hρ1 hρs hε
+  -- Step 1: `ρ j` vanishes off `ball 0 (ε j)`, so it is continuous with compact support and the
+  -- mollification `x ↦ ∫ ρ j z • u (x - z)` of a locally integrable `u` is continuous.
+  have hρsupp : ∀ j r, ε j ≤ r → Function.support (ρ j) ⊆ ball (0 : Rn n) r := by
+    intro j r hr z hz
+    rw [mem_ball_zero_iff]
+    by_contra h
+    exact hz (hρs j z (hr.trans (not_lt.1 h)))
+  have hρcs : ∀ j, HasCompactSupport (ρ j) := fun j =>
+    HasCompactSupport.intro (isCompact_closedBall (0 : Rn n) (ε j)) fun z hz =>
+      hρs j z (by rw [mem_closedBall_zero_iff, not_le] at hz; exact hz.le)
+  have hMc : ∀ j (u : Rn n → E), LocallyIntegrable u volume →
+      Continuous (fun x => ∫ z, ρ j z • u (x - z)) := fun j u hu =>
+    (hρcs j).continuous_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρc j) hu
+  -- Step 2: `(a + b)² ≤ 2 (a² + b²)` in `ℝ≥0∞`.
+  have sq2 : ∀ a b : ℝ≥0∞, (a + b) ^ 2 ≤ 2 * (a ^ 2 + b ^ 2) := by
+    intro a b
+    have h := ENNReal.rpow_add_le_mul_rpow_add_rpow a b (p := 2) one_le_two
+    norm_num [ENNReal.rpow_two] at h
+    exact h
+  -- Step 3: for continuous compactly supported `Φ`, `∫⁻ ‖ρ j ⋆ Φ - Φ‖ₑ² → 0`.
+  have hCc : ∀ Φ : Rn n → E, Continuous Φ → HasCompactSupport Φ → ∀ δ : ℝ≥0∞, δ ≠ 0 →
+      ∀ᶠ j in atTop, ∫⁻ x, ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2 ≤ δ := by
+    intro Φ hΦc hΦcs δ hδ
+    obtain ⟨R, hR⟩ := hΦcs.isCompact.isBounded.subset_closedBall (0 : Rn n)
+    have hΦ0 : ∀ y : Rn n, R < ‖y‖ → Φ y = 0 := fun y hy =>
+      image_eq_zero_of_notMem_tsupport fun h => not_le.2 hy (mem_closedBall_zero_iff.1 (hR h))
+    obtain ⟨θ, θpos, hθ⟩ := ENNReal.exists_nnreal_pos_mul_lt
+      (measure_closedBall_lt_top (μ := (volume : Measure (Rn n))) (x := 0) (r := R + 1)).ne hδ
+    set η : ℝ := Real.sqrt θ with hη
+    have ηpos : 0 < η := Real.sqrt_pos.2 (by exact_mod_cast θpos)
+    obtain ⟨r, rpos, hr⟩ :=
+      Metric.uniformContinuous_iff.1 (hΦcs.uniformContinuous_of_continuous hΦc) η ηpos
+    filter_upwards [hε.eventually_lt_const (lt_min rpos one_pos)] with j hj
+    have hpt : ∀ x, ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2 ≤
+        (closedBall (0 : Rn n) (R + 1)).indicator (fun _ => (θ : ℝ≥0∞)) x := by
+      intro x
+      by_cases hx : x ∈ closedBall (0 : Rn n) (R + 1)
+      · rw [indicator_of_mem hx]
+        have h1 := dist_convolution_le (μ := volume) (f := ρ j) (g := Φ) (x₀ := x) (z₀ := Φ x)
+          ηpos.le (hρsupp j r (hj.le.trans (min_le_left _ _))) (hρ0 j) (hρ1 j)
+          hΦc.aestronglyMeasurable fun y hy => (hr (mem_ball.1 hy)).le
+        rw [convolution_lsmul, dist_eq_norm] at h1
+        calc ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2 ≤ ENNReal.ofReal η ^ 2 := by
+              gcongr
+              rw [← ofReal_norm]
+              exact ENNReal.ofReal_le_ofReal h1
+          _ = (θ : ℝ≥0∞) := by
+              rw [← ENNReal.ofReal_pow ηpos.le, hη, Real.sq_sqrt θ.coe_nonneg,
+                ENNReal.ofReal_coe_nnreal]
+      · rw [indicator_of_notMem hx]
+        rw [mem_closedBall_zero_iff, not_le] at hx
+        have h1 := dist_convolution_le (μ := volume) (f := ρ j) (g := Φ) (x₀ := x) (z₀ := 0)
+          le_rfl (hρsupp j 1 (hj.le.trans (min_le_right _ _))) (hρ0 j) (hρ1 j)
+          hΦc.aestronglyMeasurable fun y hy => by
+            have h2 : ‖x‖ - ‖y‖ ≤ ‖x - y‖ := norm_sub_norm_le x y
+            rw [← dist_eq_norm, dist_comm] at h2
+            rw [hΦ0 y (by linarith [mem_ball.1 hy]), dist_self]
+        rw [convolution_lsmul, dist_le_zero] at h1
+        rw [h1, hΦ0 x (by linarith), sub_zero, enorm_zero]
+        simp
+    calc ∫⁻ x, ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2
+        ≤ ∫⁻ x, (closedBall (0 : Rn n) (R + 1)).indicator (fun _ => (θ : ℝ≥0∞)) x :=
+          lintegral_mono hpt
+      _ = θ * volume (closedBall (0 : Rn n) (R + 1)) :=
+          lintegral_indicator_const measurableSet_closedBall _
+      _ ≤ δ := hθ.le
+  -- Step 4: continuous compactly supported functions are dense in `L²`.
+  have hdense : ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ Φ : Rn n → E,
+      eLpNorm (H - Φ) 2 volume ≤ δ ∧ (Continuous Φ ∧ HasCompactSupport Φ) := by
+    intro δ hδ
+    refine hH2.induction_dense (by norm_num) (fun g => Continuous g ∧ HasCompactSupport g)
+      ?_ ?_ hδ
+    · intro c S hS hSμ η hη
+      obtain ⟨θ, θpos, hθ⟩ := exists_eLpNorm_indicator_le (μ := (volume : Measure (Rn n)))
+        (by norm_num : (2 : ℝ≥0∞) ≠ ∞) c hη
+      have hθ2 : (θ : ℝ≥0∞) / 2 ≠ 0 := (ENNReal.div_pos (by exact_mod_cast θpos.ne')
+        (by norm_num)).ne'
+      obtain ⟨K, hKS, hKc, hSK⟩ := hS.exists_isCompact_sdiff_lt hSμ.ne hθ2
+      obtain ⟨U, hSU, hUo, -, hUS⟩ := hS.exists_isOpen_sdiff_lt hSμ.ne hθ2
+      obtain ⟨f, hf1, hf0, hfcs, hf01⟩ := exists_continuous_one_zero_of_isCompact hKc
+        hUo.isClosed_compl (disjoint_compl_right_iff_subset.2 (hKS.trans hSU))
+      have hfc : Continuous fun x => f x • c := f.continuous.smul continuous_const
+      refine ⟨fun x => f x • c, ?_, hfc, hfcs.smul_right (f' := fun _ => c)⟩
+      have hmeas : AEStronglyMeasurable ((fun x => f x • c) - S.indicator fun _ => c) volume :=
+        hfc.aestronglyMeasurable.sub (aestronglyMeasurable_const.indicator hS)
+      refine (eLpNorm_mono hmeas (g := (U \ K).indicator fun _ => c) fun x => ?_).trans
+        (hθ _ ?_ (hUo.measurableSet.diff hKc.measurableSet).nullMeasurableSet)
+      · have hf01' : ‖f x‖ ≤ 1 := by
+          rw [Real.norm_eq_abs, abs_le]; constructor <;> linarith [(hf01 x).1, (hf01 x).2]
+        have hf01'' : ‖f x - 1‖ ≤ 1 := by
+          rw [Real.norm_eq_abs, abs_le]; constructor <;> linarith [(hf01 x).1, (hf01 x).2]
+        rw [Pi.sub_apply]
+        by_cases hxK : x ∈ K
+        · rw [hf1 hxK, indicator_of_mem (hKS hxK)]
+          simp
+        by_cases hxU : x ∈ U
+        · rw [indicator_of_mem (show x ∈ U \ K from ⟨hxU, hxK⟩)]
+          by_cases hxS : x ∈ S
+          · have h3 : f x • c - c = (f x - 1) • c := by rw [sub_smul, one_smul]
+            rw [indicator_of_mem hxS, h3, norm_smul]
+            exact mul_le_of_le_one_left (norm_nonneg _) hf01''
+          · rw [indicator_of_notMem hxS, sub_zero, norm_smul]
+            exact mul_le_of_le_one_left (norm_nonneg _) hf01'
+        · rw [hf0 hxU, indicator_of_notMem fun h => hxU (hSU h)]
+          simp
+      · calc volume (U \ K) ≤ volume ((U \ S) ∪ (S \ K)) := by
+              refine measure_mono fun x hx => ?_
+              by_cases hxS : x ∈ S
+              · exact Or.inr ⟨hxS, hx.2⟩
+              · exact Or.inl ⟨hx.1, hxS⟩
+          _ ≤ volume (U \ S) + volume (S \ K) := measure_union_le _ _
+          _ ≤ θ / 2 + θ / 2 := add_le_add hUS.le hSK.le
+          _ = θ := ENNReal.add_halves _
+    · rintro f g ⟨hfc, hfcs⟩ ⟨hgc, hgcs⟩
+      exact ⟨hfc.add hgc, hfcs.add hgcs⟩
+  -- Step 5: split `ρ j ⋆ H - H` and conclude.
+  rw [ENNReal.tendsto_nhds_zero]
+  intro e he
+  set δ := e / 10
+  have hδ : δ ≠ 0 := (ENNReal.div_pos he.ne' (by norm_num)).ne'
+  obtain ⟨Φ, hHΦ, hΦc, hΦcs⟩ := hdense (min δ 1) (lt_min (pos_iff_ne_zero.2 hδ) one_pos).ne'
+  have hΦi : Integrable Φ volume := hΦc.integrable_of_hasCompactSupport hΦcs
+  have hHΦi : Integrable (H - Φ) volume := hHi.sub hΦi
+  have hC : ∫⁻ x, ‖(H - Φ) x‖ₑ ^ 2 ≤ δ := by
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top
+      hHΦi.aestronglyMeasurable] at hHΦ
+    simp only [ENNReal.toReal_ofNat, ENNReal.rpow_two] at hHΦ
+    calc ∫⁻ x, ‖(H - Φ) x‖ₑ ^ 2 = ((∫⁻ x, ‖(H - Φ) x‖ₑ ^ 2) ^ (1 / 2 : ℝ)) ^ 2 := by
+          rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]; norm_num
+      _ ≤ (min δ 1) ^ 2 := by gcongr
+      _ ≤ min δ 1 := pow_le_of_le_one (by positivity) (min_le_right _ _) two_ne_zero
+      _ ≤ δ := min_le_left _ _
+  filter_upwards [hCc Φ hΦc hΦcs δ hδ] with j hj
+  have hA := mollifier_l2_contraction n E (ρ j) (H - Φ) (hρc j) (hρ0 j) (hρ1 j)
+    hHΦi.aestronglyMeasurable
+  have hlin : ∀ x, (∫ z, ρ j z • H (x - z)) =
+      (∫ z, ρ j z • (H - Φ) (x - z)) + ∫ z, ρ j z • Φ (x - z) := by
+    intro x
+    have h := ((hρcs j).convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρc j)
+      hHΦi.locallyIntegrable x).distrib_add
+      ((hρcs j).convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρc j)
+        hΦi.locallyIntegrable x)
+    rw [sub_add_cancel] at h
+    simpa only [convolution_lsmul] using h
+  have hpt : ∀ x, ‖(∫ z, ρ j z • H (x - z)) - H x‖ₑ ^ 2 ≤
+      2 * ‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2 +
+        4 * ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2 + 4 * ‖(H - Φ) x‖ₑ ^ 2 := by
+    intro x
+    have heq : (∫ z, ρ j z • H (x - z)) - H x = (∫ z, ρ j z • (H - Φ) (x - z)) +
+        (((∫ z, ρ j z • Φ (x - z)) - Φ x) + -(H - Φ) x) := by
+      rw [hlin x, Pi.sub_apply]; abel
+    rw [heq]
+    calc ‖(∫ z, ρ j z • (H - Φ) (x - z)) +
+          (((∫ z, ρ j z • Φ (x - z)) - Φ x) + -(H - Φ) x)‖ₑ ^ 2
+        ≤ (‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ +
+          (‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ + ‖(H - Φ) x‖ₑ)) ^ 2 := by
+          gcongr
+          refine (enorm_add_le _ _).trans ?_
+          gcongr
+          exact (enorm_add_le _ _).trans_eq (by rw [enorm_neg])
+      _ ≤ 2 * (‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2 +
+          (‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ + ‖(H - Φ) x‖ₑ) ^ 2) := sq2 _ _
+      _ ≤ 2 * (‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2 +
+          2 * (‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2 + ‖(H - Φ) x‖ₑ ^ 2)) := by
+          gcongr; exact sq2 _ _
+      _ = 2 * ‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2 +
+          4 * ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2 + 4 * ‖(H - Φ) x‖ₑ ^ 2 := by ring
+  have hmA : AEMeasurable (fun x => 2 * ‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2) volume :=
+    (((hMc j _ hHΦi.locallyIntegrable).enorm.measurable.pow_const 2).const_mul 2).aemeasurable
+  have hmB : AEMeasurable (fun x => 4 * ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2) volume :=
+    ((((hMc j _ hΦi.locallyIntegrable).sub hΦc).enorm.measurable.pow_const 2).const_mul
+      4).aemeasurable
+  calc ∫⁻ x, ‖(∫ z, ρ j z • H (x - z)) - H x‖ₑ ^ 2
+      ≤ ∫⁻ x, (2 * ‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2 +
+        4 * ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2 + 4 * ‖(H - Φ) x‖ₑ ^ 2) := lintegral_mono hpt
+    _ = 2 * (∫⁻ x, ‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2) +
+        4 * (∫⁻ x, ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2) + 4 * ∫⁻ x, ‖(H - Φ) x‖ₑ ^ 2 := by
+      have hmAB : AEMeasurable (fun x => 2 * ‖∫ z, ρ j z • (H - Φ) (x - z)‖ₑ ^ 2 +
+          4 * ‖(∫ z, ρ j z • Φ (x - z)) - Φ x‖ₑ ^ 2) volume := hmA.add hmB
+      rw [lintegral_add_left' hmAB, lintegral_add_left' hmA,
+        lintegral_const_mul' _ _ (by norm_num), lintegral_const_mul' _ _ (by norm_num),
+        lintegral_const_mul' _ _ (by norm_num)]
+    _ ≤ 2 * δ + 4 * δ + 4 * δ := by gcongr; exact hA.trans hC
+    _ = 10 * δ := by ring
+    _ = e := ENNReal.mul_div_cancel' (by norm_num) (by norm_num)
+/-- **Mollified `W^{1,2}` functions on the unit ball** (Evans, *PDE*, §5.3.1; Gilbarg–Trudinger,
+§7.3).  Let `f ∈ W^{1,2}(B)` with weak gradient `g`, `B = B̆₁(0)`, and let `ρ` be `C^∞` with
+`ρ(z) = 0` for `‖z‖ ≥ ε`.  For the zero extensions `F = 1_B f`, `G = 1_B g`, the mollification
+`Φ(x) = ∫ ρ(z) F(x - z) dz` is `C^∞`, and `∇Φ(x) = ∫ ρ(z) G(x - z) dz` whenever `‖x‖ < 1 - ε`.
+
+`ρ` is supported in `B_ε(0)` and `F` is integrable (`L²` on a ball of finite measure), so
+`Φ = F ⋆ ρ` is smooth with `DΦ(x) v = ∫ F(t) Dρ(x - t) v dt`, i.e. `∇Φ(x) = ∫ F(t) ∇ρ(x - t) dt`.
+For `‖x‖ < 1 - ε` the reflected kernel `ζ(y) = ρ(x - y)` is a test function in `B` with
+`∇ζ(y) = -∇ρ(x - y)`, so the weak identity gives `∫_B f(y) ∇ρ(x - y) dy = ∫_B ρ(x - y) g(y) dy`,
+which is `∫ ρ(z) G(x - z) dz` after the substitution `z = x - y`. -/
+theorem w12_ball_mollification_gradient : ∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ (ρ : Rn n → ℝ) (ε : ℝ), ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, ε ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ (⊤ : ℕ∞) (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) ∧ ∀ x : Rn n, ‖x‖ < 1 - ε → gradient (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) x = ∫ z, ρ z • (ball (0 : Rn n) 1).indicator g (x - z) := by
+  intro n f g hW ρ ε hρ hρ0
+  obtain ⟨hf2, hg2, hweak⟩ := hW
+  -- Step 1: `tsupport ρ ⊆ B_ε(0)`, so `ρ` is a compactly supported `C^∞` (in particular `C¹`)
+  -- kernel.
+  have hts : tsupport ρ ⊆ closedBall 0 ε := by
+    refine closure_minimal (fun z hz => ?_) isClosed_closedBall
+    rw [mem_closedBall_zero_iff]
+    by_contra h
+    exact (Function.mem_support.1 hz) (hρ0 z (not_le.1 h).le)
+  have hρc : HasCompactSupport ρ :=
+    HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall (0 : Rn n) ε)
+      (subset_closure.trans hts)
+  have hρ1 : ContDiff ℝ 1 ρ := hρ.of_le (by exact_mod_cast le_top)
+  -- Step 2: `F = 1_B f` is integrable, since `f ∈ L²(B)` and `B` has finite measure.
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hFi : Integrable ((ball (0 : Rn n) 1).indicator f) volume :=
+    (integrable_indicator_iff measurableSet_ball).2 (hf2.integrable one_le_two)
+  -- Step 3: `Φ = F ⋆ ρ` (kernel on the right) is `C^∞`.
+  have hΦ : (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) =
+      convolution ((ball (0 : Rn n) 1).indicator f) ρ (ContinuousLinearMap.lsmul ℝ ℝ).flip
+        volume := by
+    rw [convolution_flip]; rfl
+  refine ⟨?_, fun x hx => ?_⟩
+  · rw [hΦ]
+    exact hρc.contDiff_convolution_right _ hFi.locallyIntegrable hρ
+  -- Step 4: `∇Φ(x) = ∫ F(t) ∇ρ(x - t) dt`, by testing `DΦ(x) = ∫ F(t) Dρ(x - t) dt` against each
+  -- `v` and commuting `⟪v, ·⟫` with the (integrable) vector integral.
+  have hgrad : ∀ p v, fderiv ℝ ρ p v = inner ℝ (gradient ρ p) v := fun p v => by
+    rw [gradient, InnerProductSpace.toDual_symm_apply]
+  have hgc : Continuous (gradient ρ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hρ1.continuous_fderiv one_ne_zero)
+  have hgcs : HasCompactSupport (gradient ρ) :=
+    (hρc.fderiv ℝ).comp_left (g := (InnerProductSpace.toDual ℝ (Rn n)).symm) (map_zero _)
+  have hint : Integrable (fun t => (ball (0 : Rn n) 1).indicator f t • gradient ρ (x - t)) volume :=
+    hgcs.convolutionExists_right (ContinuousLinearMap.lsmul ℝ ℝ) hFi.locallyIntegrable hgc x
+  have hD := hρc.hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ).flip
+    hFi.locallyIntegrable hρ1 x
+  have key : gradient (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) x =
+      ∫ t, (ball (0 : Rn n) 1).indicator f t • gradient ρ (x - t) := by
+    rw [hΦ]
+    refine HasGradientAt.gradient ?_
+    rw [hasGradientAt_iff_hasFDerivAt]
+    convert hD using 1
+    ext v
+    rw [convolution_precompR_apply _ hFi.locallyIntegrable (hρc.fderiv ℝ)
+      (hρ1.continuous_fderiv one_ne_zero) x v, InnerProductSpace.toDual_apply_apply,
+      real_inner_comm, ← innerSL_apply_apply ℝ, ← ContinuousLinearMap.integral_comp_comm _ hint,
+      convolution_def]
+    refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    simp only [innerSL_apply_apply, real_inner_smul_right, ContinuousLinearMap.flip_apply,
+      ContinuousLinearMap.lsmul_apply, smul_eq_mul, hgrad, real_inner_comm v]
+    ring
+  rw [key]
+  -- Step 5: for `‖x‖ < 1 - ε`, `ζ(y) = ρ(x - y)` is a `C^∞` test function with
+  -- `tsupport ζ ⊆ B_ε(x) ⊆ B` and `∇ζ(y) = -∇ρ(x - y)`.
+  have hζ : ContDiff ℝ (⊤ : ℕ∞) (fun y => ρ (x - y)) := hρ.comp (contDiff_const.sub contDiff_id)
+  have hζc : HasCompactSupport (fun y => ρ (x - y)) := hρc.comp_homeomorph (Homeomorph.subLeft x)
+  have hζs : tsupport (fun y => ρ (x - y)) ⊆ ball 0 1 := by
+    refine (tsupport_comp_subset_preimage ρ (continuous_const.sub continuous_id)).trans
+      fun y hy => ?_
+    have h1 : x - y ∈ tsupport ρ := hy
+    have h2 : ‖x - y‖ ≤ ε := mem_closedBall_zero_iff.1 (hts h1)
+    rw [mem_ball_zero_iff]
+    calc ‖y‖ = ‖x - (x - y)‖ := by rw [sub_sub_cancel]
+      _ ≤ ‖x‖ + ‖x - y‖ := norm_sub_le _ _
+      _ < 1 := by linarith
+  have hζg : ∀ y, gradient (fun y => ρ (x - y)) y = -gradient ρ (x - y) := fun y => by
+    have hd : fderiv ℝ (fun y => ρ (x - y)) y = -(fderiv ℝ ρ (x - y)) := by
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_neg,
+        ContinuousLinearMap.comp_id] using
+        ((hρ1.differentiable one_ne_zero (x - y)).hasFDerivAt.comp y
+          ((hasFDerivAt_id y).const_sub x)).fderiv
+    rw [gradient, hd, map_neg, gradient]
+  -- Step 6: the weak identity for `ζ`: `∫_B f(y) ∇ρ(x - y) dy = ∫_B ρ(x - y) g(y) dy`.
+  have hw := hweak (fun y => ρ (x - y)) hζ hζc hζs
+  simp only [hζg, smul_neg, integral_neg, neg_inj] at hw
+  -- Step 7: pass to the zero extensions and substitute `z = x - y`.
+  calc ∫ t, (ball (0 : Rn n) 1).indicator f t • gradient ρ (x - t)
+      = ∫ y in ball (0 : Rn n) 1, f y • gradient ρ (x - y) := by
+        rw [← integral_indicator measurableSet_ball]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        rw [indicator_smul_apply_left]
+    _ = ∫ y in ball (0 : Rn n) 1, ρ (x - y) • g y := hw
+    _ = ∫ y, ρ (x - y) • (ball (0 : Rn n) 1).indicator g y := by
+        rw [← integral_indicator measurableSet_ball]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        rw [indicator_smul_apply]
+    _ = ∫ z, ρ z • (ball (0 : Rn n) 1).indicator g (x - z) := by
+        rw [← integral_sub_left_eq_self
+          (fun z => ρ z • (ball (0 : Rn n) 1).indicator g (x - z)) volume x]
+        simp only [sub_sub_cancel]
+/-- Interior smooth approximation of `W^{1,2}(B)`, `B = B̆₁(0)` (Friedrichs mollification; Evans,
+*PDE*, §5.3.1; Gilbarg–Trudinger §§7.2–7.3), used in the proof of Simon Ch. 5, Lemma 3.1 (p. 114):
+for `0 < r < 1` there are `C^∞` functions `φ_j` with `φ_j → f` and `∇φ_j → g` in `L²(B_r)`.
+With `F = 1_B f`, `G = 1_B g`, `ε_j = (1 - r)/(j + 2)` and `ρ_j` the normalized bump supported in
+`B_{ε_j}`, take `φ_j = ρ_j * F`.  It is smooth with `∇φ_j = ρ_j * G` on `B_{1-ε_j} ⊇ B_r`, and
+`F = f`, `G = g` on `B_r`, so the two errors on `B_r` are at most `∫_{ℝⁿ} |ρ_j * H - H|²` for
+`H = F, G`, which tends to `0`. -/
+theorem w12_ball_smooth_approximation : ∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ r : ℝ, 0 < r → r < 1 → ∃ φ : ℕ → Rn n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (φ j)) ∧ Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖φ j x - f x‖ₑ ^ 2) atTop (𝓝 0) ∧ Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖gradient (φ j) x - g x‖ₑ ^ 2) atTop (𝓝 0) := by
+  intro n _ f g hfg r hr hr1
+  -- Step 1: the zero extensions `F = 1_B f` and `G = 1_B g` lie in `L¹(ℝⁿ)` and `L²(ℝⁿ)`.
+  have hB : MeasurableSet (ball (0 : Rn n) 1) := measurableSet_ball
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hF2 : MemLp ((ball (0 : Rn n) 1).indicator f) 2 volume :=
+    (memLp_indicator_iff_restrict hB.nullMeasurableSet).2 hfg.1
+  have hG2 : MemLp ((ball (0 : Rn n) 1).indicator g) 2 volume :=
+    (memLp_indicator_iff_restrict hB.nullMeasurableSet).2 hfg.2.1
+  have hF1 : Integrable ((ball (0 : Rn n) 1).indicator f) :=
+    (integrable_indicator_iff hB).2 (hfg.1.integrable one_le_two)
+  have hG1 : Integrable ((ball (0 : Rn n) 1).indicator g) :=
+    (integrable_indicator_iff hB).2 (hfg.2.1.integrable one_le_two)
+  -- Step 2: radii `ε_j = (1 - r)/(j + 2) ∈ (0, 1 - r)` with `ε_j → 0`, and normalized bumps
+  -- `ρ_j ≥ 0` with `∫ ρ_j = 1` and `ρ_j = 0` off `B_{ε_j}`.
+  obtain ⟨ε, hεpos, hεlt, hεlim⟩ : ∃ ε : ℕ → ℝ,
+      (∀ j, 0 < ε j) ∧ (∀ j, ε j < 1 - r) ∧ Tendsto ε atTop (𝓝 0) := by
+    refine ⟨fun j => (1 - r) / ((j : ℝ) + 2), fun j => div_pos (sub_pos.2 hr1) (by positivity),
+      fun j => div_lt_self (sub_pos.2 hr1) ?_, ?_⟩
+    · have := (Nat.cast_nonneg j : (0 : ℝ) ≤ j)
+      linarith
+    · exact tendsto_const_nhds.div_atTop
+        (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+  obtain ⟨ρ, hρsmooth, hρcont, hρnonneg, hρint, hρsupp⟩ : ∃ ρ : ℕ → Rn n → ℝ,
+      (∀ j, ContDiff ℝ (⊤ : ℕ∞) (ρ j)) ∧ (∀ j, Continuous (ρ j)) ∧ (∀ j z, 0 ≤ ρ j z) ∧
+        (∀ j, ∫ z, ρ j z = 1) ∧ ∀ j z, ε j ≤ ‖z‖ → ρ j z = 0 := by
+    let b : ℕ → ContDiffBump (0 : Rn n) := fun j =>
+      ⟨ε j / 2, ε j, half_pos (hεpos j), half_lt_self (hεpos j)⟩
+    refine ⟨fun j => (b j).normed volume, fun j => (b j).contDiff_normed,
+      fun j => (b j).continuous_normed, fun j z => (b j).nonneg_normed z,
+      fun j => (b j).integral_normed, fun j z hz => ?_⟩
+    have hz' : z ∉ Function.support ((b j).normed volume) := by
+      rw [(b j).support_normed_eq, mem_ball_zero_iff, not_lt]
+      exact hz
+    exact Function.notMem_support.1 hz'
+  -- Step 3: `φ_j = ρ_j * F` is smooth, and `∇φ_j = ρ_j * G` on `B_{1 - ε_j}`.
+  have hmol := fun j : ℕ => Submission.w12_ball_mollification_gradient n f g hfg (ρ j) (ε j)
+    (hρsmooth j) (hρsupp j)
+  refine ⟨fun j x => ∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z),
+    fun j => (hmol j).1, ?_, ?_⟩
+  · -- Step 4: `F = f` on `B_r ⊆ B`, so the error is at most `∫_{ℝⁿ} |ρ_j * F - F|² → 0`.
+    have hlim := Submission.mollifier_l2_tendsto n ℝ ((ball (0 : Rn n) 1).indicator f) hF1 hF2
+      ρ ε hρcont hρnonneg hρint hρsupp hεlim
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun j => ?_
+    have hpt : ∀ x ∈ ball (0 : Rn n) r,
+        ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) - f x‖ₑ ^ 2 =
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) -
+            (ball (0 : Rn n) 1).indicator f x‖ₑ ^ 2 := by
+      intro x hx
+      rw [indicator_of_mem (ball_subset_ball hr1.le hx)]
+    calc ∫⁻ x in ball (0 : Rn n) r,
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) - f x‖ₑ ^ 2
+        = ∫⁻ x in ball (0 : Rn n) r,
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) -
+            (ball (0 : Rn n) 1).indicator f x‖ₑ ^ 2 := setLIntegral_congr_fun measurableSet_ball hpt
+      _ ≤ ∫⁻ x, ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) -
+            (ball (0 : Rn n) 1).indicator f x‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+  · -- Step 5: on `B_r` we have `‖x‖ < 1 - ε_j`, so `∇φ_j = ρ_j * G` there, and `G = g`; the error
+    -- is at most `∫_{ℝⁿ} |ρ_j * G - G|² → 0`.
+    have hlim := Submission.mollifier_l2_tendsto n (Rn n) ((ball (0 : Rn n) 1).indicator g) hG1
+      hG2 ρ ε hρcont hρnonneg hρint hρsupp hεlim
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun j => ?_
+    have hpt : ∀ x ∈ ball (0 : Rn n) r,
+        ‖gradient (fun x => ∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) x - g x‖ₑ ^ 2 =
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
+            (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := by
+      intro x hx
+      have hx' : ‖x‖ < 1 - ε j := by
+        have := mem_ball_zero_iff.1 hx
+        linarith [hεlt j]
+      rw [(hmol j).2 x hx', indicator_of_mem (ball_subset_ball hr1.le hx)]
+    calc ∫⁻ x in ball (0 : Rn n) r,
+          ‖gradient (fun x => ∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) x - g x‖ₑ ^ 2
+        = ∫⁻ x in ball (0 : Rn n) r,
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
+            (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_congr_fun measurableSet_ball hpt
+      _ ≤ ∫⁻ x, ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
+            (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 

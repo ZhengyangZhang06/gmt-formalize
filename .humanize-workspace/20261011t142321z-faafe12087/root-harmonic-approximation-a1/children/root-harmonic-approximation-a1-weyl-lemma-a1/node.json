@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1",
+  "parent_id": "root.harmonic_approximation-a1",
+  "depth": 2,
+  "title": "Weyl's lemma for weakly harmonic W^{1,2}(B) functions",
+  "statement": "Let n >= 1, and let w : R^n -> R and g : R^n -> R^n satisfy IsW12WithGradient w g B, where B is the open unit ball. Suppose int_B <g, grad zeta> = 0 for every zeta in C^infinity(R^n) with compact support and tsupport zeta in B. Then there is u : R^n -> R that is harmonic near every point of B (InnerProductSpace.HarmonicOnNhd u B: u is C^2 near each x in B, with Laplacian 0 on a neighbourhood of x), with u = w a.e. on B and grad u = g a.e. on B.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (w : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) = 0) → ∃ u : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd u (ball 0 1) ∧ (∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), gradient u x = g x",
+  "lean_name": "w12_ball_weyl_lemma",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-a1"
+}
