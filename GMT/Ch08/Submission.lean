@@ -457,6 +457,106 @@ theorem Submission.allard_tc_fbl_plane_ball_measure :
   -- Step 6: conclusion.
   exact ⟨by rw [hcl, hmeas, hcl_vol], by rw [hop, hmeas, hop_vol]⟩
 
+/-- The plane integrals of the unit-ball cut-offs `φ_k⁺ = max(0, 1 - (k+1) max(0, |y| - 1))` and
+`φ_k⁻ = min(1, (k+1) max(0, 1 - |y|))` over an `n`-plane `T ∈ G(N,n)` both converge to `ω_n`
+(steps 5–6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5): dominated convergence with
+the bound `1_{B_2(0)}` and the pointwise limits `1_{B_1(0)}`, `1_{B°_1(0)}`, whose integrals are
+`ω_n` by `allard_tc_fbl_plane_ball_measure`. -/
+theorem Submission.allard_tc_fbl_plane_cutoff_limits :
+    ∀ (N n : ℕ) (T : Grassmannian N n), Tendsto (fun k : ℕ ↦ ∫ y in (T.plane : Set (Euclidean N)), max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1)) ∂(μHE[n] : Measure (Euclidean N))) atTop (𝓝 (unitBallVolume n).toReal) ∧ Tendsto (fun k : ℕ ↦ ∫ y in (T.plane : Set (Euclidean N)), min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖)) ∂(μHE[n] : Measure (Euclidean N))) atTop (𝓝 (unitBallVolume n).toReal) := by
+  intro N n T
+  set μ : Measure (Euclidean N) :=
+    (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) with hμ
+  -- Step 1: masses of balls under `μ = H^n ⌞ T.plane`, from `allard_tc_fbl_plane_ball_measure`.
+  have hball : ∀ r : ℝ, 0 < r → μ (closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧
+      μ (ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+    intro r hr
+    obtain ⟨h₁, h₂⟩ := Submission.allard_tc_fbl_plane_ball_measure N n T r hr
+    rw [hμ, Measure.restrict_apply measurableSet_closedBall,
+      Measure.restrict_apply measurableSet_ball, inter_comm, h₁, inter_comm, h₂]
+    exact ⟨rfl, rfl⟩
+  have hω : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have h₂ : μ (closedBall 0 2) ≠ ∞ := by
+    rw [(hball 2 two_pos).1]
+    exact ENNReal.mul_ne_top hω (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have h₁cl : μ (closedBall 0 1) = unitBallVolume n := by
+    rw [(hball 1 one_pos).1, ENNReal.ofReal_one, one_pow, mul_one]
+  have h₁op : μ (ball 0 1) = unitBallVolume n := by
+    rw [(hball 1 one_pos).2, ENNReal.ofReal_one, one_pow, mul_one]
+  -- Step 2: the dominating function `g = 1_{B_2(0)}` is `μ`-integrable.
+  have hg : Integrable ((closedBall (0 : Euclidean N) 2).indicator 1) μ :=
+    (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const (C := (1 : ℝ)) h₂)
+  have hk : ∀ k : ℕ, (1 : ℝ) ≤ (k : ℝ) + 1 := fun k ↦ le_add_of_nonneg_left (Nat.cast_nonneg k)
+  constructor
+  · -- Steps 3–6 for `φ_k⁺`, with pointwise limit `1_{B_1(0)}`.
+    have key := tendsto_integral_of_dominated_convergence (μ := μ)
+      (F := fun (k : ℕ) (y : Euclidean N) ↦ max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1)))
+      (f := (closedBall (0 : Euclidean N) 1).indicator 1)
+      ((closedBall (0 : Euclidean N) 2).indicator 1)
+      (fun k ↦ by fun_prop) hg ?_ ?_
+    · rwa [integral_indicator_one measurableSet_closedBall, Measure.real, h₁cl] at key
+    · -- Step 3: `|φ_k⁺| ≤ 1_{B_2(0)}`.
+      intro k
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases le_or_gt ‖y‖ 2 with hy | hy
+      · rw [indicator_of_mem (mem_closedBall_zero_iff.2 hy), Pi.one_apply,
+          Real.norm_of_nonneg (le_max_left _ _)]
+        exact max_le zero_le_one
+          (sub_le_self _ (mul_nonneg (zero_le_one.trans (hk k)) (le_max_left _ _)))
+      · rw [indicator_of_notMem (fun h ↦ hy.not_ge (mem_closedBall_zero_iff.1 h)),
+          max_eq_right (by linarith : (0 : ℝ) ≤ ‖y‖ - 1),
+          max_eq_left (by nlinarith [hk k] : 1 - ((k : ℝ) + 1) * (‖y‖ - 1) ≤ 0), norm_zero]
+    · -- Step 4(a): `φ_k⁺ → 1_{B_1(0)}` pointwise; the sequence is eventually constant.
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases le_or_gt ‖y‖ 1 with hy | hy
+      · rw [indicator_of_mem (mem_closedBall_zero_iff.2 hy), Pi.one_apply]
+        have h : ∀ k : ℕ, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1)) = 1 := fun k ↦ by
+          rw [max_eq_left (by linarith : ‖y‖ - 1 ≤ 0), mul_zero, sub_zero,
+            max_eq_right zero_le_one]
+        exact tendsto_const_nhds.congr fun k ↦ (h k).symm
+      · rw [indicator_of_notMem (fun h ↦ hy.not_ge (mem_closedBall_zero_iff.1 h))]
+        have h₁ : 0 < ‖y‖ - 1 := sub_pos.2 hy
+        obtain ⟨k₀, hk₀⟩ := exists_nat_gt (1 / (‖y‖ - 1))
+        rw [div_lt_iff₀ h₁] at hk₀
+        apply tendsto_nhds_of_eventually_eq
+        filter_upwards [eventually_ge_atTop k₀] with k hk'
+        have h₃ : (k₀ : ℝ) ≤ k := Nat.cast_le.2 hk'
+        rw [max_eq_right h₁.le]
+        exact max_eq_left (by nlinarith)
+  · -- Steps 3–6 for `φ_k⁻`, with pointwise limit `1_{B°_1(0)}`.
+    have key := tendsto_integral_of_dominated_convergence (μ := μ)
+      (F := fun (k : ℕ) (y : Euclidean N) ↦ min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖)))
+      (f := (ball (0 : Euclidean N) 1).indicator 1)
+      ((closedBall (0 : Euclidean N) 2).indicator 1)
+      (fun k ↦ by fun_prop) hg ?_ ?_
+    · rwa [integral_indicator_one measurableSet_ball, Measure.real, h₁op] at key
+    · -- Step 3: `|φ_k⁻| ≤ 1_{B_2(0)}`.
+      intro k
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases le_or_gt ‖y‖ 2 with hy | hy
+      · rw [indicator_of_mem (mem_closedBall_zero_iff.2 hy), Pi.one_apply,
+          Real.norm_of_nonneg
+            (le_min zero_le_one (mul_nonneg (zero_le_one.trans (hk k)) (le_max_left _ _)))]
+        exact min_le_left _ _
+      · rw [indicator_of_notMem (fun h ↦ hy.not_ge (mem_closedBall_zero_iff.1 h)),
+          max_eq_left (by linarith : 1 - ‖y‖ ≤ 0), mul_zero, min_eq_right zero_le_one, norm_zero]
+    · -- Step 4(b): `φ_k⁻ → 1_{B°_1(0)}` pointwise; the sequence is eventually constant.
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases lt_or_ge ‖y‖ 1 with hy | hy
+      · rw [indicator_of_mem (mem_ball_zero_iff.2 hy), Pi.one_apply]
+        have h₁ : 0 < 1 - ‖y‖ := sub_pos.2 hy
+        obtain ⟨k₀, hk₀⟩ := exists_nat_gt (1 / (1 - ‖y‖))
+        rw [div_lt_iff₀ h₁] at hk₀
+        apply tendsto_nhds_of_eventually_eq
+        filter_upwards [eventually_ge_atTop k₀] with k hk'
+        have h₃ : (k₀ : ℝ) ≤ k := Nat.cast_le.2 hk'
+        rw [max_eq_right h₁.le]
+        exact min_eq_left (by nlinarith)
+      · rw [indicator_of_notMem (fun h ↦ hy.not_gt (mem_ball_zero_iff.1 h))]
+        have h : ∀ k : ℕ, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖)) = 0 := fun k ↦ by
+          rw [max_eq_left (by linarith : 1 - ‖y‖ ≤ 0), mul_zero, min_eq_right zero_le_one]
+        exact tendsto_const_nhds.congr fun k ↦ (h k).symm
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
