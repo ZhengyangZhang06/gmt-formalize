@@ -522,6 +522,85 @@ theorem Submission.pcoarea_chart_change_of_variables : ∀ (m k : ℕ) (f : Rn (
   rw [ContinuousLinearMap.det, ContinuousLinearMap.toLinearMap_comp, ← LinearMap.normDet_eq_abs_det,
     LinearMap.normDet_comp_of_finrank_eq _ _ (by rw [hfin, finrank_euclideanSpace_fin]), hE,
     one_mul]
+/-- **Pointwise Jacobian identity on a `C¹` chart** (steps 1 and 7 of the supplied proof of the
+chart formula for the `C¹` parametric co-area formula, Simon Ch. 3, (2.8)–(2.9)). Let `Φ` be an
+open partial homeomorphism from `ℝ^{m+k}` to `ℝᵐ × ℝᵏ` (Euclidean product) such that `Φ` and `Φ⁻¹`
+are `C¹`, whose first component is `G`, and let `ψ` be `C¹` on `Φ.source`. If the flat Jacobian
+identity (FJ) holds for `(m, k, N)`, then at every `u ∈ Φ.source`, with `j z = (0, z)`,
+`normDet(D(ψ ∘ Φ⁻¹)(Φ u) ∘ j) · normDet(DΦ(u)) = normDet(Dψ(u) ∘ ι_{ker DG(u)}) · normDet(DG(u)*)`:
+`DΦ(u)` and `DΦ⁻¹(Φ u)` are mutually inverse, `DG(u) = fst ∘ DΦ(u)`, and (FJ) applies to
+`A = Dψ(u)`, `Γ = DG(u)`, `T = DΦ(u)` and `E = DΦ⁻¹(Φ u) ∘ j`. -/
+theorem Submission.pcoarea_chart_pointwise_jacobian : ∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))), ContDiffOn ℝ 1 ψ Φ.source → ContDiffOn ℝ 1 Φ Φ.source → ContDiffOn ℝ 1 Φ.symm Φ.target → (∀ u ∈ Φ.source, (Φ u).fst = G u) → (∀ (A : Rn (m + k) →ₗ[ℝ] Rn N) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) (E : Rn k →ₗ[ℝ] Rn (m + k)), Function.Bijective T → (∀ v, (T v).fst = Γ v) → (∀ z, T (E z) = WithLp.toLp 2 (0, z)) → (A ∘ₗ E).normDet * T.normDet = (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet) → ∀ u ∈ Φ.source, ((fderiv ℝ (ψ ∘ Φ.symm) (Φ u)).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet * (fderiv ℝ Φ u).toLinearMap.normDet = ((fderiv ℝ ψ u).toLinearMap ∘ₗ (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet * (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet := by
+  intro m k N ψ G Φ hψ hΦ hΦs hfst hFJ u hu
+  set j : Rn k →L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.inr ℝ (Rn m) (Rn k))
+  have hw : Φ u ∈ Φ.target := Φ.map_source hu
+  have hleft : Φ.symm (Φ u) = u := Φ.left_inv hu
+  -- Step 1: `Φ`, `Φ⁻¹` and `ψ` are differentiable at `u`, `Φ u` and `u` (`C¹` on open sets).
+  have hΦd : DifferentiableAt ℝ Φ u :=
+    (hΦ.differentiableOn one_ne_zero u hu).differentiableAt (Φ.open_source.mem_nhds hu)
+  have hΦsd : DifferentiableAt ℝ Φ.symm (Φ u) :=
+    (hΦs.differentiableOn one_ne_zero _ hw).differentiableAt (Φ.open_target.mem_nhds hw)
+  have hψd : DifferentiableAt ℝ ψ u :=
+    (hψ.differentiableOn one_ne_zero u hu).differentiableAt (Φ.open_source.mem_nhds hu)
+  set T := fderiv ℝ Φ u
+  set Λ := fderiv ℝ Φ.symm (Φ u)
+  -- Step 2: `Λ ∘ T = id`, as `Φ⁻¹ ∘ Φ = id` near `u`.
+  have hLT : Λ.comp T = ContinuousLinearMap.id ℝ _ := by
+    have h1 : HasFDerivAt (Φ.symm ∘ Φ) (Λ.comp T) u := hΦsd.hasFDerivAt.comp u hΦd.hasFDerivAt
+    have h2 : HasFDerivAt (Φ.symm ∘ Φ) (ContinuousLinearMap.id ℝ _) u := by
+      apply (hasFDerivAt_id u).congr_of_eventuallyEq
+      filter_upwards [Φ.open_source.mem_nhds hu] with x hx
+      exact Φ.left_inv hx
+    exact h1.unique h2
+  -- Step 3: `T ∘ Λ = id`, as `Φ ∘ Φ⁻¹ = id` near `Φ u`.
+  have hTL : T.comp Λ = ContinuousLinearMap.id ℝ _ := by
+    have hΦd' : HasFDerivAt Φ T (Φ.symm (Φ u)) := by rw [hleft]; exact hΦd.hasFDerivAt
+    have h1 : HasFDerivAt (Φ ∘ Φ.symm) (T.comp Λ) (Φ u) := hΦd'.comp (Φ u) hΦsd.hasFDerivAt
+    have h2 : HasFDerivAt (Φ ∘ Φ.symm) (ContinuousLinearMap.id ℝ _) (Φ u) := by
+      apply (hasFDerivAt_id (Φ u)).congr_of_eventuallyEq
+      filter_upwards [Φ.open_target.mem_nhds hw] with x hx
+      exact Φ.right_inv hx
+    exact h1.unique h2
+  -- Step 4: `T` is bijective.
+  have hbij : Function.Bijective (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) := by
+    constructor
+    · intro v v' h
+      have h' : Λ (T v) = Λ (T v') := congrArg Λ h
+      rw [← ContinuousLinearMap.comp_apply, ← ContinuousLinearMap.comp_apply, hLT] at h'
+      simpa using h'
+    · intro p
+      refine ⟨Λ p, ?_⟩
+      show T (Λ p) = p
+      rw [← ContinuousLinearMap.comp_apply, hTL]
+      rfl
+  -- Step 5: `G = fst ∘ Φ` near `u`, so `DG(u) = fst ∘ T`.
+  have hG : fderiv ℝ G u = (WithLp.fstL 2 ℝ (Rn m) (Rn k)).comp T := by
+    have heq : G =ᶠ[𝓝 u] (fun x ↦ (Φ x).fst) := by
+      filter_upwards [Φ.open_source.mem_nhds hu] with x hx
+      exact (hfst x hx).symm
+    rw [heq.fderiv_eq]
+    exact ((WithLp.fstL 2 ℝ (Rn m) (Rn k)).hasFDerivAt.comp u hΦd.hasFDerivAt).fderiv
+  have hfstT : ∀ v, ((T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) v).fst =
+      (fderiv ℝ G u : Rn (m + k) →ₗ[ℝ] Rn m) v := by
+    intro v
+    rw [hG]
+    rfl
+  -- Step 6: `E = Λ ∘ j` satisfies `T (E z) = (0, z)`.
+  let E : Rn k →ₗ[ℝ] Rn (m + k) := ((Λ.comp j : Rn k →L[ℝ] Rn (m + k)) : Rn k →ₗ[ℝ] Rn (m + k))
+  have hE : ∀ z, (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) (E z) = WithLp.toLp 2 (0, z) := by
+    intro z
+    show T (Λ (j z)) = _
+    rw [← ContinuousLinearMap.comp_apply, hTL]
+    rfl
+  -- Step 7: chain rule, `D(ψ ∘ Φ⁻¹)(Φ u) = Dψ(u) ∘ Λ`.
+  have hchain : fderiv ℝ (ψ ∘ Φ.symm) (Φ u) = (fderiv ℝ ψ u).comp Λ := by
+    have hψd' : DifferentiableAt ℝ ψ (Φ.symm (Φ u)) := by rw [hleft]; exact hψd
+    rw [fderiv_comp (Φ u) hψd' hΦsd, hleft]
+  -- Step 8: (FJ) with `A = Dψ(u)`, `Γ = DG(u)`, `T` and `E`.
+  rw [hchain]
+  exact hFJ (fderiv ℝ ψ u) (fderiv ℝ G u) T E hbij hfstT hE
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
