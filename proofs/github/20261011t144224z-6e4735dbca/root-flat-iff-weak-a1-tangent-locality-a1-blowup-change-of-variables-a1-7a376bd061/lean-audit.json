@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7e88c63d1ae9b78d286181ee439a221129f539f99e2083556e7100eaf3cbb10f",
+  "git_delta": {
+    "base_commit": "477b163f7202dfb784d7ba2e3105bfecef52807b",
+    "candidate_commit": "91a22d1bfc9063820dd1583526d3d097beffd0ec",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tl_blowup_setIntegral",
+    "diff_sha256": "874df59f43d5669c971df88a4d36f923cbe62af4529dd362ea4ab63bcac4e4cf",
+    "source_sha256": "30e67987158e51a2a533a09e75d9c354dee9a78e3bf14ff1235775c2bc338391",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tl_blowup_setIntegral",
+      "statement": "∀ (P n : ℕ) (x : Eucl P) (r : ℝ) (S : Set (Eucl P)) (g : Eucl P → ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) = (r ^ n)⁻¹ * ∫ z in S, g (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
