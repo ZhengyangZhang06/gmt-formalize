@@ -518,6 +518,80 @@ theorem Submission.exists_separated_finset_subset_cover_closedBall : ∀ (X : Ty
     · exact hFr x hxF y hyF hxy
   · rw [Finset.card_insert_of_notMem ha', hFc]
 
+/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+/-- **Image of a ball under a map whose derivative is not surjective.** Let `G : ℝⁿ → ℝᵐ` be
+differentiable on `B̄(x, r)`, with `‖DG(z) - DG(x)‖ ≤ η` there, `‖DG(x)‖ ≤ L` and `DG(x)` not
+surjective. Then `Lᵐ(G(B̄(x, r))) ≤ 2(ηr)(2(L + η)r)^{m-1}`. This bounds the images of small balls
+centred at critical points, for the critical fibres in Simon Ch. 2, 6.4 (the same slab argument
+proves Sard's theorem for `C¹` maps between spaces of equal dimension; Spivak, *Calculus on
+Manifolds*, 3-14). The range of `A = DG(x)` is proper, so it has a unit normal `e`
+(`Submodule.orthogonal_eq_bot_iff`). By the mean value inequality,
+`‖G(z) - G(x) - A(z - x)‖ ≤ ηr` on the ball, so `G(B̄(x, r))` lies in the slab
+`{w : ‖w - G(x)‖ ≤ (L + η)r, |⟨e, w - G(x)⟩| ≤ ηr}`, whose volume is bounded by
+`euclidean_slab_inter_closedBall_volume_le`. -/
+theorem Submission.volume_image_closedBall_le_of_fderiv_not_surjective : ∀ (n m : ℕ) (G : Rn n → Rn m) (x : Rn n) (r η L : ℝ), 0 ≤ r → (∀ z ∈ closedBall x r, DifferentiableAt ℝ G z) → (∀ z ∈ closedBall x r, ‖fderiv ℝ G z - fderiv ℝ G x‖ ≤ η) → ‖fderiv ℝ G x‖ ≤ L → ¬ Function.Surjective (fderiv ℝ G x) → volume (G '' closedBall x r) ≤ ENNReal.ofReal (2 * (η * r) * (2 * ((L + η) * r)) ^ (m - 1)) := by
+  intro n m G x r η L hr hdiff hbound hL hns
+  set A := fderiv ℝ G x
+  -- Step 1 (signs): `x ∈ B̄(x, r)`, so `η ≥ ‖A - A‖ ≥ 0`; and `L ≥ ‖A‖ ≥ 0`.
+  have hx : x ∈ closedBall x r := mem_closedBall_self hr
+  have hη : 0 ≤ η := (norm_nonneg _).trans (hbound x hx)
+  have hL0 : 0 ≤ L := (norm_nonneg A).trans hL
+  -- Step 2 (unit normal): `range A ≠ ⊤`, so `(range A)ᗮ ≠ ⊥` contains some `u ≠ 0`, and
+  -- `e = ‖u‖⁻¹ • u` is a unit vector with `⟨e, A w⟩ = 0` for every `w`.
+  obtain ⟨e, he, hAe⟩ : ∃ e : Rn m, ‖e‖ = 1 ∧ ∀ w, inner ℝ e (A w) = 0 := by
+    have hW : (LinearMap.range (A : Rn n →ₗ[ℝ] Rn m))ᗮ ≠ ⊥ := by
+      rw [Ne, Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
+      exact hns
+    obtain ⟨u, hu, hu0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW
+    refine ⟨‖u‖⁻¹ • u, ?_, fun w ↦ ?_⟩
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hu0)]
+    · rw [real_inner_smul_left,
+        (Submodule.mem_orthogonal' _ u).1 hu (A w) (LinearMap.mem_range_self _ w), mul_zero]
+  -- Steps 3–4 (mean value inequality, slab containment): for `z ∈ B̄(x, r)` the remainder
+  -- `d = G z - G x - A (z - x)` has `‖d‖ ≤ η‖z - x‖ ≤ ηr`. Hence
+  -- `‖G z - G x‖ ≤ ‖A‖‖z - x‖ + ηr ≤ (L + η)r` and `|⟨e, G z - G x⟩| = |⟨e, d⟩| ≤ ‖d‖ ≤ ηr`.
+  have hsub : G '' closedBall x r ⊆
+      {v : Rn m | ‖v - G x‖ ≤ (L + η) * r ∧ |inner ℝ e (v - G x)| ≤ η * r} := by
+    rintro _ ⟨z, hz, rfl⟩
+    have hzx : ‖z - x‖ ≤ r := mem_closedBall_iff_norm.1 hz
+    have hd : ‖G z - G x - A (z - x)‖ ≤ η * r :=
+      ((convex_closedBall x r).norm_image_sub_le_of_norm_fderiv_le' hdiff hbound hx hz).trans
+        (mul_le_mul_of_nonneg_left hzx hη)
+    constructor
+    · calc ‖G z - G x‖ = ‖A (z - x) + (G z - G x - A (z - x))‖ := by rw [add_sub_cancel]
+        _ ≤ ‖A‖ * ‖z - x‖ + η * r := (norm_add_le _ _).trans (add_le_add (A.le_opNorm _) hd)
+        _ ≤ L * r + η * r := add_le_add (mul_le_mul hL hzx (norm_nonneg _) hL0) le_rfl
+        _ = (L + η) * r := (add_mul L η r).symm
+    · calc |inner ℝ e (G z - G x)| = |inner ℝ e (G z - G x - A (z - x))| := by
+            rw [inner_sub_right e (G z - G x), hAe, sub_zero]
+        _ ≤ ‖e‖ * ‖G z - G x - A (z - x)‖ := abs_real_inner_le_norm _ _
+        _ ≤ η * r := by rw [he, one_mul]; exact hd
+  -- Step 5 (volume): monotonicity, then the slab bound with `ε = ηr` and `R = (L + η)r`.
+  exact (measure_mono hsub).trans
+    (Submission.euclidean_slab_inter_closedBall_volume_le m e (G x) (η * r) ((L + η) * r) he
+      (mul_nonneg hη hr) (mul_nonneg (add_nonneg hL0 hη) hr))
+/-- **Closed-ball covers of a bounded set in `ℝⁿ`.** Let `K ⊆ ℝⁿ` be bounded. There is `C` such that
+for every `0 < r ≤ 1` some finite `s ⊆ K` has `K ⊆ ⋃_{x ∈ s} B̄(x, r)` and `card(s)·rⁿ ≤ C`. Take `C`
+from the packing bound: `card(F)·rⁿ ≤ C` for every finite `r`-separated `F ⊆ K`. As `0 < rⁿ`, every
+such `F` has at most `⌊C / rⁿ⌋₊` points, so a maximal `r`-separated `F ⊆ K` covers `K` by closed
+`r`-balls, and the packing bound applies to this `F` as well. -/
+theorem Submission.bounded_set_closedBall_cover_card_mul_pow_le : ∀ (n : ℕ) (K : Set (Rn n)), Bornology.IsBounded K → ∃ C : ℝ, ∀ r : ℝ, 0 < r → r ≤ 1 → ∃ s : Finset (Rn n), (↑s : Set (Rn n)) ⊆ K ∧ K ⊆ ⋃ x ∈ s, closedBall x r ∧ (s.card : ℝ) * r ^ n ≤ C := by
+  intro n K hK
+  -- Step 1: the packing bound gives `C`, fixed before `r` is chosen.
+  obtain ⟨C, hC⟩ := Submission.bounded_set_separated_finset_card_mul_pow_le n K hK
+  refine ⟨C, fun r hr hr1 ↦ ?_⟩
+  -- Step 2: as `0 < rⁿ`, every finite `r`-separated `F ⊆ K` has at most `⌊C / rⁿ⌋₊` points.
+  have hN : ∀ F : Finset (Rn n), (↑F : Set (Rn n)) ⊆ K →
+      (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → F.card ≤ ⌊C / r ^ n⌋₊ :=
+    fun F hFK hFr ↦ Nat.le_floor ((le_div_iff₀ (pow_pos hr n)).2 (hC r hr hr1 F hFK hFr))
+  -- Step 3: hence some finite `r`-separated `F ⊆ K` covers `K` by closed `r`-balls.
+  obtain ⟨F, hFK, hFr, hcov⟩ :=
+    Submission.exists_separated_finset_subset_cover_closedBall (Rn n) K r ⌊C / r ^ n⌋₊ hr.le hN
+  -- Step 4: take `s := F`; the packing bound gives `card(F)·rⁿ ≤ C`.
+  exact ⟨F, hFK, hcov, hC r hr hr1 F hFK hFr⟩
+
 /-- **Simon Ch. 2, §6 (pp. 66–67), toward `Hᵏ(C ∩ f⁻¹(y)) = 0` for `Lᵐ`-a.e. `y` (6.3, 6.4):
 small ball covers of the critical set on a compact set.** Let `n = m + k`, `G : ℝⁿ → ℝᵐ` be `C¹`
 on the open `V`, `Q ⊆ V` compact and `K = {x ∈ Q : DG(x) not surjective}`. For `ε, δ > 0` there
@@ -617,79 +691,5 @@ theorem Submission.critical_set_small_ball_covers_of_isCompact : ∀ (m k : ℕ)
         calc 2 ^ (k + (m' + 1)) * η * (L + 1) ^ m' * C'
             = 2 ^ (k + (m' + 1)) * (L + 1) ^ m' * C' * η := by ring
           _ ≤ ε := hDη
-
-/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
-
-/-- **Image of a ball under a map whose derivative is not surjective.** Let `G : ℝⁿ → ℝᵐ` be
-differentiable on `B̄(x, r)`, with `‖DG(z) - DG(x)‖ ≤ η` there, `‖DG(x)‖ ≤ L` and `DG(x)` not
-surjective. Then `Lᵐ(G(B̄(x, r))) ≤ 2(ηr)(2(L + η)r)^{m-1}`. This bounds the images of small balls
-centred at critical points, for the critical fibres in Simon Ch. 2, 6.4 (the same slab argument
-proves Sard's theorem for `C¹` maps between spaces of equal dimension; Spivak, *Calculus on
-Manifolds*, 3-14). The range of `A = DG(x)` is proper, so it has a unit normal `e`
-(`Submodule.orthogonal_eq_bot_iff`). By the mean value inequality,
-`‖G(z) - G(x) - A(z - x)‖ ≤ ηr` on the ball, so `G(B̄(x, r))` lies in the slab
-`{w : ‖w - G(x)‖ ≤ (L + η)r, |⟨e, w - G(x)⟩| ≤ ηr}`, whose volume is bounded by
-`euclidean_slab_inter_closedBall_volume_le`. -/
-theorem Submission.volume_image_closedBall_le_of_fderiv_not_surjective : ∀ (n m : ℕ) (G : Rn n → Rn m) (x : Rn n) (r η L : ℝ), 0 ≤ r → (∀ z ∈ closedBall x r, DifferentiableAt ℝ G z) → (∀ z ∈ closedBall x r, ‖fderiv ℝ G z - fderiv ℝ G x‖ ≤ η) → ‖fderiv ℝ G x‖ ≤ L → ¬ Function.Surjective (fderiv ℝ G x) → volume (G '' closedBall x r) ≤ ENNReal.ofReal (2 * (η * r) * (2 * ((L + η) * r)) ^ (m - 1)) := by
-  intro n m G x r η L hr hdiff hbound hL hns
-  set A := fderiv ℝ G x
-  -- Step 1 (signs): `x ∈ B̄(x, r)`, so `η ≥ ‖A - A‖ ≥ 0`; and `L ≥ ‖A‖ ≥ 0`.
-  have hx : x ∈ closedBall x r := mem_closedBall_self hr
-  have hη : 0 ≤ η := (norm_nonneg _).trans (hbound x hx)
-  have hL0 : 0 ≤ L := (norm_nonneg A).trans hL
-  -- Step 2 (unit normal): `range A ≠ ⊤`, so `(range A)ᗮ ≠ ⊥` contains some `u ≠ 0`, and
-  -- `e = ‖u‖⁻¹ • u` is a unit vector with `⟨e, A w⟩ = 0` for every `w`.
-  obtain ⟨e, he, hAe⟩ : ∃ e : Rn m, ‖e‖ = 1 ∧ ∀ w, inner ℝ e (A w) = 0 := by
-    have hW : (LinearMap.range (A : Rn n →ₗ[ℝ] Rn m))ᗮ ≠ ⊥ := by
-      rw [Ne, Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
-      exact hns
-    obtain ⟨u, hu, hu0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW
-    refine ⟨‖u‖⁻¹ • u, ?_, fun w ↦ ?_⟩
-    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hu0)]
-    · rw [real_inner_smul_left,
-        (Submodule.mem_orthogonal' _ u).1 hu (A w) (LinearMap.mem_range_self _ w), mul_zero]
-  -- Steps 3–4 (mean value inequality, slab containment): for `z ∈ B̄(x, r)` the remainder
-  -- `d = G z - G x - A (z - x)` has `‖d‖ ≤ η‖z - x‖ ≤ ηr`. Hence
-  -- `‖G z - G x‖ ≤ ‖A‖‖z - x‖ + ηr ≤ (L + η)r` and `|⟨e, G z - G x⟩| = |⟨e, d⟩| ≤ ‖d‖ ≤ ηr`.
-  have hsub : G '' closedBall x r ⊆
-      {v : Rn m | ‖v - G x‖ ≤ (L + η) * r ∧ |inner ℝ e (v - G x)| ≤ η * r} := by
-    rintro _ ⟨z, hz, rfl⟩
-    have hzx : ‖z - x‖ ≤ r := mem_closedBall_iff_norm.1 hz
-    have hd : ‖G z - G x - A (z - x)‖ ≤ η * r :=
-      ((convex_closedBall x r).norm_image_sub_le_of_norm_fderiv_le' hdiff hbound hx hz).trans
-        (mul_le_mul_of_nonneg_left hzx hη)
-    constructor
-    · calc ‖G z - G x‖ = ‖A (z - x) + (G z - G x - A (z - x))‖ := by rw [add_sub_cancel]
-        _ ≤ ‖A‖ * ‖z - x‖ + η * r := (norm_add_le _ _).trans (add_le_add (A.le_opNorm _) hd)
-        _ ≤ L * r + η * r := add_le_add (mul_le_mul hL hzx (norm_nonneg _) hL0) le_rfl
-        _ = (L + η) * r := (add_mul L η r).symm
-    · calc |inner ℝ e (G z - G x)| = |inner ℝ e (G z - G x - A (z - x))| := by
-            rw [inner_sub_right e (G z - G x), hAe, sub_zero]
-        _ ≤ ‖e‖ * ‖G z - G x - A (z - x)‖ := abs_real_inner_le_norm _ _
-        _ ≤ η * r := by rw [he, one_mul]; exact hd
-  -- Step 5 (volume): monotonicity, then the slab bound with `ε = ηr` and `R = (L + η)r`.
-  exact (measure_mono hsub).trans
-    (Submission.euclidean_slab_inter_closedBall_volume_le m e (G x) (η * r) ((L + η) * r) he
-      (mul_nonneg hη hr) (mul_nonneg (add_nonneg hL0 hη) hr))
-/-- **Closed-ball covers of a bounded set in `ℝⁿ`.** Let `K ⊆ ℝⁿ` be bounded. There is `C` such that
-for every `0 < r ≤ 1` some finite `s ⊆ K` has `K ⊆ ⋃_{x ∈ s} B̄(x, r)` and `card(s)·rⁿ ≤ C`. Take `C`
-from the packing bound: `card(F)·rⁿ ≤ C` for every finite `r`-separated `F ⊆ K`. As `0 < rⁿ`, every
-such `F` has at most `⌊C / rⁿ⌋₊` points, so a maximal `r`-separated `F ⊆ K` covers `K` by closed
-`r`-balls, and the packing bound applies to this `F` as well. -/
-theorem Submission.bounded_set_closedBall_cover_card_mul_pow_le : ∀ (n : ℕ) (K : Set (Rn n)), Bornology.IsBounded K → ∃ C : ℝ, ∀ r : ℝ, 0 < r → r ≤ 1 → ∃ s : Finset (Rn n), (↑s : Set (Rn n)) ⊆ K ∧ K ⊆ ⋃ x ∈ s, closedBall x r ∧ (s.card : ℝ) * r ^ n ≤ C := by
-  intro n K hK
-  -- Step 1: the packing bound gives `C`, fixed before `r` is chosen.
-  obtain ⟨C, hC⟩ := Submission.bounded_set_separated_finset_card_mul_pow_le n K hK
-  refine ⟨C, fun r hr hr1 ↦ ?_⟩
-  -- Step 2: as `0 < rⁿ`, every finite `r`-separated `F ⊆ K` has at most `⌊C / rⁿ⌋₊` points.
-  have hN : ∀ F : Finset (Rn n), (↑F : Set (Rn n)) ⊆ K →
-      (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → F.card ≤ ⌊C / r ^ n⌋₊ :=
-    fun F hFK hFr ↦ Nat.le_floor ((le_div_iff₀ (pow_pos hr n)).2 (hC r hr hr1 F hFK hFr))
-  -- Step 3: hence some finite `r`-separated `F ⊆ K` covers `K` by closed `r`-balls.
-  obtain ⟨F, hFK, hFr, hcov⟩ :=
-    Submission.exists_separated_finset_subset_cover_closedBall (Rn n) K r ⌊C / r ^ n⌋₊ hr.le hN
-  -- Step 4: take `s := F`; the packing bound gives `card(F)·rⁿ ≤ C`.
-  exact ⟨F, hFK, hcov, hC r hr hr1 F hFK hFr⟩
 
 end GMT.Ch02
