@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "structure GeometricCurrentOn|def TestFormOnConverges|abbrev CurrentOn|def support|support_subset_domain|structure TestFormOn|def IsTestForm|def nVectorPushforward|def covectorPullback|def simpleNVector|abbrev NVector|def NVector",
+        "theorem (restrict_apply₀|ae_restrict_mem₀)|LocallyIntegrableOn.aestronglyMeasurable|ContinuousOn.aemeasurable|continuous_compContinuousLinearMapCLM|norm_compContinuousLinearMap_le|norm_iteratedFDeriv_zero",
+        "theorem Continuous.clm_comp|theorem isBoundedBilinearMap_apply",
+        "rg -n 'lpf_pic_current_of_dominated_density|lpf_pic_density_aestronglyMeasurable|lpf_pic_density_dominated' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "lc.validate_lean_statement(s['lean_statement'])",
+        "cmp.contract_scope(text,'GMT.Ch06.main_theorem')",
+        "#synth Norm (NVector (Eucl Q) n)",
+        "#synth Norm (Covector (Eucl Q) n)",
+        "#synth SMul ℝ (NVector (Eucl Q) n)",
+        "#print axioms GMT.Ch06.Submission.lpf_pic_current_of_dominated_density",
+        "#print axioms GMT.Ch06.Submission.lpf_pic_density_dominated",
+        "#print axioms GMT.Ch06.Submission.lpf_pic_density_aestronglyMeasurable"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-is-current-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-is-current-a1/decomposition-v1.json",
+        "/tmp/lpf_pic_independent_audit_dv45z_2m/CheckedProofs.lean",
+        "/tmp/lpf_pic_independent_audit_dv45z_2m/Instances.lean",
+        "/tmp/lpf_pic_independent_audit_dv45z_2m/current_of_dominated_density_Challenge.lean",
+        "/tmp/lpf_pic_independent_audit_dv45z_2m/density_measurable_Challenge.lean",
+        "/tmp/lpf_pic_independent_audit_dv45z_2m/density_dominated_Challenge.lean"
+      ],
+      "conclusion": "The three-way split is appropriate for the selected lpf_pushforward_is_current contract. Snapshot/workspace contracts agree, and inspected library sources match the pinned revisions. Each frozen child type passes lexical validation and independently elaborates in comparator scope without a child implementation. No proposed name occurs in the snapshot project or is reserved by another DAG branch; all are bare identifiers. The children are mutually independent, and the selected dependency closure is acyclic. Their conclusions, together with the existing frozen rectifiable_support_null dependency, establish exactly the selected parent. After reviewing the natural proofs, I independently recompiled the supplied child proofs and parent assembly, treating the sibling theorem as an explicit premise: all use only propext, Classical.choice and Quot.sound. Instance probes confirm continuous-linear-map scalar multiplication and the intended operator norms. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "current_of_dominated_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree, including arbitrary V and μ and conditional a.e. domination. The proof establishes measurability, integrability using B|h|, linearity, and precisely the zero-sequence continuity required by GeometricCurrentOn. The ε/(I+1) estimate is valid without finiteness assumptions on μ. This is a complete, non-circular constructor used directly by the parent."
+    },
+    {
+      "key": "density_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and matches the independently usable one-line type. Compact neighborhoods inside open U establish local integrability of θ on M; second countability yields restricted a.e. strong measurability. Continuous covector pullback, continuous linear-map composition, and scalar multiplication then prove the exact density measurability claim. No child or parent theorem is assumed."
+    },
+    {
+      "key": "density_dominated",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including arbitrary f, K and Z. Null measurability of M justifies a.e. membership in M ∩ Z without assuming Z measurable. Compactness of K′ makes its indicator measurable and gives integrability of Cⁿθ there. Orientation and push-forward norm bounds prove domination; C ≥ 0 is derived only where needed, and n = 0 is covered. The proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}
