@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c36f0b355f7fdbba11e1fbd2ae24dca53c513df5b82178ba703fc7e77189968b",
+  "git_delta": {
+    "base_commit": "fdde16fcbe8bbdab6b401f1a0cba409e817c9dc5",
+    "candidate_commit": "3f08fbeca32469aa7d4fb60227992a2cd773311f",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "sff_fderivWithin_chart_direction",
+    "diff_sha256": "24a2464892110258e292fe5fe1e7e37918f06b8843f7dcd97d40487b358de3e5",
+    "source_sha256": "afe57251fda34283bab06fad03ceab23686b419762dec8adc5529f23bb0a5666",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sff_fderivWithin_chart_direction",
+      "statement": "∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (ψ : Rn n → Rn N) (f g : Rn N → (Rn N →L[ℝ] Rn N)) (x₀ : Rn n), V ∈ 𝓝 x₀ → ψ '' V ⊆ M → DifferentiableAt ℝ ψ x₀ → DifferentiableAt ℝ g (ψ x₀) → f =ᶠ[𝓝[M] ψ x₀] g → ∀ a : Rn n, fderivWithin ℝ f M (ψ x₀) (fderiv ℝ ψ x₀ a) = fderiv ℝ g (ψ x₀) (fderiv ℝ ψ x₀ a)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
