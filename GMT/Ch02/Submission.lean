@@ -2467,6 +2467,86 @@ theorem Submission.chart_divergence_density_formula : ((∀ (n N : ℕ) (r : ℕ
     ContinuousLinearMap.comp_apply]
   linear_combination Chapter02.areaJacobianAt ψ x * hcore
 
+/-- **Simon Ch. 2, 4.22(*) and 4.30 (pp. 59–61), divergence identity for compact support.**
+Assume (TH), the statement of `Submission.simon_submanifold_tangent_basics`. Let `M ⊆ ℝᴺ` be an
+`n`-dimensional `C²` submanifold and `Y` a `C¹` field vanishing off a closed `S` with `M ∩ S`
+compact. Then `div_M Y` and `⟨Y, H⟩` are `Hⁿ`-integrable on `M` and
+`∫_M div_M Y dHⁿ = -∫_M ⟨Y, H⟩ dHⁿ`. A finite `C¹` partition of unity `ζ_q` near `M ∩ S`, each
+`tsupport ζ_q` inside a chart target, gives `div_M Y + ⟨Y, H⟩ = ∑_q (div_M (ζ_q Y) + ⟨ζ_q Y, H⟩)`
+on `M`. In the chart, `Jψ · (div_M (ζ_q Y) + ⟨ζ_q Y, H⟩) ∘ ψ` is the divergence of a field
+vanishing off the compact `V ∩ ψ⁻¹(tsupport ζ_q)`, so each summand has integral `0`. -/
+theorem Submission.submanifold_divergence_identity_compact : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M S : Set (Rn N)) (Y : Rn N → Rn N), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → ContDiff ℝ 1 Y → IsClosed S → (∀ x ∉ S, Y x = 0) → IsCompact (M ∩ S) → IntegrableOn (tangentialDivergence M Y) M μHE[n] ∧ IntegrableOn (fun y ↦ inner ℝ (Y y) (meanCurvature M y)) M μHE[n] ∧ ∫ y in M, tangentialDivergence M Y y ∂μHE[n] = -∫ y in M, inner ℝ (Y y) (meanCurvature M y) ∂μHE[n] := by
+  intro hTH n N M S Y hM hY hS hYS hMS
+  -- `M` is measurable, `P` and `H` are continuous on `M`, and compact subsets of `M` have finite
+  -- `Hⁿ`-measure.
+  obtain ⟨hMmeas, hP⟩ := hTH.2 n N 2 M hM
+  have hH : ContinuousOn (meanCurvature M) M :=
+    (Submission.second_fundamental_form_symm_normal_continuity hTH n N M hM).2.1
+  have hfin : ∀ C ⊆ M, IsCompact C → μHE[n] C < ⊤ :=
+    (Submission.simon_submanifold_hausdorff_finite_pos n N 2 M hM).1
+  -- The two integrability conjuncts.
+  obtain ⟨hdiv, hinner⟩ := Submission.tangentialDivergence_meanCurvature_integrableOn n N M S Y
+    hMmeas hP hH hfin hY hS hYS hMS
+  refine ⟨hdiv, hinner, ?_⟩
+  -- A finite `C¹` partition of unity near `M ∩ S`, each `tsupport ζ_q` inside a chart target.
+  obtain ⟨p, ζ, O, hO, hMSO, hζsum, hζ⟩ := Submission.exists_finite_contDiff_partition_near_compact
+    N (M ∩ S) (fun U ↦ ∃ (V : Set (Rn n)) (ψ : Rn n → Rn N),
+      Chapter02.IsSimonLocalRepresentation 2 M V U ψ) hMS fun y hy ↦ by
+    obtain ⟨V, W, ψ, hyW, hψ⟩ := hM.2 y hy.1
+    exact ⟨W, hψ.isOpen_target, hyW, V, ψ, hψ⟩
+  -- Each localized integrand `div_M (ζ_q Y) + ⟨ζ_q Y, H⟩` is integrable on `M` with integral `0`.
+  have hloc : ∀ q, IntegrableOn (fun y ↦ tangentialDivergence M (fun z ↦ ζ q z • Y z) y +
+        inner ℝ (ζ q y • Y y) (meanCurvature M y)) M μHE[n] ∧
+      ∫ y in M, (tangentialDivergence M (fun z ↦ ζ q z • Y z) y +
+        inner ℝ (ζ q y • Y y) (meanCurvature M y)) ∂μHE[n] = 0 := by
+    intro q
+    obtain ⟨hζq, hζK, U, ⟨V, ψ, hψ⟩, hKU⟩ := hζ q
+    have hK : IsCompact (tsupport (ζ q)) := hζK.isCompact
+    have hYq : ContDiff ℝ 1 (fun z ↦ ζ q z • Y z) := hζq.smul hY
+    -- `ζ_q Y` vanishes on a neighbourhood of every point outside `tsupport ζ_q`.
+    have hvan : ∀ y ∉ tsupport (ζ q), (fun z ↦ ζ q z • Y z) =ᶠ[𝓝 y] 0 := fun y hy ↦ by
+      filter_upwards [notMem_tsupport_iff_eventuallyEq.mp hy] with z hz
+      simp only [hz, Pi.zero_apply, zero_smul]
+    have hYq0 : ∀ y ∉ tsupport (ζ q), ζ q y • Y y = 0 := fun y hy ↦ (hvan y hy).eq_of_nhds
+    -- `M ∩ tsupport ζ_q = ψ(V ∩ ψ⁻¹(tsupport ζ_q))` is compact by relative properness.
+    have hMK : IsCompact (M ∩ tsupport (ζ q)) := by
+      have himg : ψ '' (V ∩ ψ ⁻¹' tsupport (ζ q)) = M ∩ tsupport (ζ q) := by
+        ext z
+        constructor
+        · rintro ⟨x, ⟨hxV, hxK⟩, rfl⟩
+          have h : ψ x ∈ U ∩ M := hψ.image_eq ▸ mem_image_of_mem ψ hxV
+          exact ⟨h.2, hxK⟩
+        · rintro ⟨hzM, hzK⟩
+          have h : z ∈ ψ '' V := by
+            rw [hψ.image_eq]
+            exact ⟨hKU hzK, hzM⟩
+          obtain ⟨x, hxV, rfl⟩ := h
+          exact ⟨x, ⟨hxV, hzK⟩, rfl⟩
+      rw [← himg]
+      exact (hψ.isCompact_source_inter_preimage _ hK hKU).image_of_continuousOn
+        (hψ.contDiffOn.continuousOn.mono inter_subset_left)
+    obtain ⟨hdq, hiq⟩ := Submission.tangentialDivergence_meanCurvature_integrableOn n N M
+      (tsupport (ζ q)) (fun z ↦ ζ q z • Y z) hMmeas hP hH hfin hYq (isClosed_tsupport _) hYq0 hMK
+    refine ⟨hdq.add hiq, ?_⟩
+    -- The chart field `w` with `trace Dw = Jψ · (div_M (ζ_q Y) + ⟨ζ_q Y, H⟩) ∘ ψ` on `V`.
+    obtain ⟨w, hw, hw0, htr⟩ := Submission.chart_divergence_density_formula hTH n N M V U ψ
+      (fun z ↦ ζ q z • Y z) hψ hYq
+    refine Submission.chart_setIntegral_eq_zero_of_trace_fderiv_eq n N 2 M V U (tsupport (ζ q)) ψ
+      (fun y ↦ tangentialDivergence M (fun z ↦ ζ q z • Y z) y +
+        inner ℝ (ζ q y • Y y) (meanCurvature M y)) w one_le_two hψ hMmeas hK hKU
+      (fun y _ hy ↦ ?_) hw (fun x hx hxK ↦ hw0 x hx (hYq0 _ hxK)) htr
+    -- Off `tsupport ζ_q` both `D(ζ_q Y)` and `ζ_q Y` vanish.
+    have hD : fderiv ℝ (fun z ↦ ζ q z • Y z) y = 0 := by
+      rw [(hvan y hy).fderiv_eq, fderiv_zero, Pi.zero_apply]
+    simp only [tangentialDivergence, hD, zero_apply, inner_zero_right,
+      Finset.sum_const_zero, hYq0 y hy, inner_zero_left, add_zero]
+  -- Sum the localized identities over the partition.
+  have hsum := Submission.tangentialDivergence_add_inner_eq_sum_partition N p M S O Y ζ hY
+    (fun q ↦ (hζ q).1) hS hYS hO hMSO hζsum
+  rw [eq_neg_iff_add_eq_zero, ← integral_add hdiv hinner, setIntegral_congr_fun hMmeas hsum,
+    integral_finsetSum _ fun q _ ↦ (hloc q).1]
+  exact Finset.sum_eq_zero fun q _ ↦ (hloc q).2
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
