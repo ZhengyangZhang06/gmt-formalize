@@ -1,0 +1,19 @@
+{
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.key_ineq-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3024",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "62348767c455604db259e91a0291f991193f9524",
+  "integrated_commit": "",
+  "proof_base_commit": "0c855c7db8bbdcc6cbb50606e4542872c1bcd6b5",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1",
+  "requires": [
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_ideal-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_proj_split-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.graph_param-a1"
+  ]
+}
