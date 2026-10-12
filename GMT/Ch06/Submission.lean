@@ -479,6 +479,30 @@ theorem Submission.slicing_mb_cdb_band_measure_tendsto :
   have h := tendsto_measure_iInter_atTop (fun j => (hmeas j).nullMeasurableSet) hanti hfin
   rw [hinter] at h
   exact h
+/-- Dominated convergence for the bounded continuous multipliers `χ(g_j)` against an integrable
+density `F` (the limit `σ ↓ 0` in the cutoff defect bound of the slice mass estimate, Simon Ch. 6,
+4.9–4.10): if `F` vanishes off `K` and `g_j → f` on `K`, then `∫ χ(g_j) F dν → ∫ χ(f) F dν`.
+The integrands are dominated by `|F|` since `|χ| ≤ 1`, and converge everywhere: on `K` by
+continuity of `χ`, off `K` because `F = 0`. -/
+theorem Submission.slicing_mb_cdb_multiplier_integral_tendsto :
+    ∀ (P : ℕ) (ν : Measure (Eucl P)) (F : Eucl P → ℝ) (K : Set (Eucl P)) (f : Eucl P → ℝ)
+      (g : ℕ → Eucl P → ℝ) (χ : ℝ → ℝ), Integrable F ν → (∀ x, x ∉ K → F x = 0) →
+      (∀ j, Measurable (g j)) → (∀ x ∈ K, Tendsto (fun j => g j x) atTop (𝓝 (f x))) →
+      Continuous χ → (∀ s, |χ s| ≤ 1) →
+      Tendsto (fun j => ∫ x, χ (g j x) * F x ∂ν) atTop (𝓝 (∫ x, χ (f x) * F x ∂ν)) := by
+  intro P ν F K f g χ hF hFK hg hgf hχ hχ1
+  refine tendsto_integral_of_dominated_convergence (fun x => ‖F x‖) (fun j => ?_) hF.norm
+    (fun j => Eventually.of_forall fun x => ?_) (Eventually.of_forall fun x => ?_)
+  · -- `χ ∘ g j` is measurable and `F` is integrable.
+    exact (hχ.measurable.comp (hg j)).aestronglyMeasurable.mul hF.aestronglyMeasurable
+  · -- `|χ| ≤ 1`.
+    rw [norm_mul, Real.norm_eq_abs (χ (g j x))]
+    exact mul_le_of_le_one_left (norm_nonneg _) (hχ1 _)
+  · -- On `K` by continuity of `χ`; off `K` both sides vanish.
+    by_cases hx : x ∈ K
+    · exact ((hχ.tendsto (f x)).comp (hgf x hx)).mul_const (F x)
+    · simp only [hFK x hx, mul_zero]
+      exact tendsto_const_nhds
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
