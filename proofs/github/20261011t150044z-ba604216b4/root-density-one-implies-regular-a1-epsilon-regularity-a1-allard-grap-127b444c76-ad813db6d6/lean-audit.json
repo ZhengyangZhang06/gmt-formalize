@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "db8d0d1cfe91177a647dbfd163236b724cebac70c28af80427111d8ede856e8a",
+  "git_delta": {
+    "base_commit": "fa2b1a667e399a01d7c45eab9bd10a32db12f3ed",
+    "candidate_commit": "a5426e9ff81a830302b23a28f2ba077bb7a31544",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_haa_ball_rescale_integral",
+    "diff_sha256": "65abf2205f0fbfe89ff8db96ee6b5a45524d54a620ff817da74ed9f52a42944a",
+    "source_sha256": "aa26730bf4bfbce75da1a02b2ab5ceac75c57e173d6b450d980571e0f853fde4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_haa_ball_rescale_integral",
+      "statement": "∀ (n : ℕ) (F : Euclid n → ℝ) (r : ℝ), 0 < r → (IntegrableOn (fun y => F (r • y)) (ball (0 : Euclid n) 1) ↔ IntegrableOn F (ball (0 : Euclid n) r)) ∧ ∫ y in ball (0 : Euclid n) 1, F (r • y) = (r ^ n)⁻¹ * ∫ x in ball (0 : Euclid n) r, F x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
