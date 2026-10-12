@@ -501,6 +501,90 @@ theorem Submission.constancy_riesz_bounded_density_of_dominated_additive : ∀ {
       integral_toReal hf_meas.aemeasurable ?_, hf_lint A hA, ENNReal.toReal_ofReal (hg_nonneg A hA)]
     · simp only [hg_def, smul_eq_mul]; ring
     · exact ae_restrict_of_ae (hf_le.mono fun x hx => lt_of_le_of_lt hx ENNReal.ofReal_lt_top)
+/-- Extension from indicators for the duality `(L¹(μ))* = L^∞(μ)` (Riesz), used in Simon Ch. 6,
+proof of Theorem 2.34 (p. 142).  Let `μ` be finite and let `F` be additive and homogeneous with
+`|F f| ≤ C ∫ |f| dμ` on `μ`-integrable functions.  Let `θ` be measurable with `|θ| ≤ M`, and
+suppose `F (1_A) = ∫_A θ dμ` for every measurable `A`.  Then `F f = ∫ f θ dμ` for every integrable
+`f`.  Both sides are additive and `L¹`-Lipschitz, hence continuous on `α →₁[μ] ℝ`, so
+`Integrable.induction` extends the identity from multiples of indicators to all of `L¹(μ)`. -/
+theorem Submission.constancy_riesz_eq_integral_mul_of_indicator_eq : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∀ (θ : α → ℝ) (M : ℝ), Measurable θ → (∀ x, |θ x| ≤ M) → (∀ A : Set α, MeasurableSet A → F (A.indicator 1) = ∫ x in A, θ x ∂μ) → ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ := by
+  intro α _ μ _ F C hadd hsmul hbound θ M hθ hθM hind f hf
+  -- Step 2: `F (g - h) = F g - F h`, since `g - h = g + (-1) • h`.
+  have hsub : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ → F (g - h) = F g - F h := by
+    intro g h hg hh
+    have e : g - h = g + (-1 : ℝ) • h := by rw [neg_one_smul, sub_eq_add_neg]
+    rw [e, hadd _ _ hg (hh.smul _), hsmul _ _ hh]
+    ring
+  -- Step 3: `|F g - F h| = |F (g - h)| ≤ C * ∫ |g - h| dμ`.
+  have hFlip : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ →
+      |F g - F h| ≤ C * ∫ x, |g x - h x| ∂μ := by
+    intro g h hg hh
+    rw [← hsub g h hg hh]
+    exact hbound _ (hg.sub hh)
+  -- Step 4: `F` respects `μ`-a.e. equality.
+  have hFae : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ → g =ᵐ[μ] h → F g = F h := by
+    intro g h hg hh hgh
+    have h0 : ∫ x, |g x - h x| ∂μ = 0 := integral_eq_zero_of_ae (by
+      filter_upwards [hgh] with x hx
+      simp [hx])
+    have hle := hFlip g h hg hh
+    rw [h0, mul_zero] at hle
+    exact sub_eq_zero.mp (abs_nonpos_iff.mp hle)
+  -- Step 5: `g θ` is integrable for integrable `g`, since `θ` is measurable and `|θ| ≤ M`.
+  have hθbd : ∀ᵐ x ∂μ, ‖θ x‖ ≤ M := Eventually.of_forall fun x => by
+    rw [Real.norm_eq_abs]
+    exact hθM x
+  have hint : ∀ g : α → ℝ, Integrable g μ → Integrable (fun x => g x * θ x) μ :=
+    fun g hg => hg.mul_bdd hθ.aestronglyMeasurable hθbd
+  -- Step 6: `|∫ g θ dμ - ∫ h θ dμ| ≤ ∫ |g - h| |θ| dμ ≤ M * ∫ |g - h| dμ`.
+  have hIlip : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ →
+      |∫ x, g x * θ x ∂μ - ∫ x, h x * θ x ∂μ| ≤ M * ∫ x, |g x - h x| ∂μ := by
+    intro g h hg hh
+    rw [← integral_sub (hint g hg) (hint h hh), ← integral_const_mul]
+    refine abs_integral_le_integral_abs.trans (integral_mono ((hint g hg).sub (hint h hh)).abs
+      ((hg.sub hh).abs.const_mul _) fun x => ?_)
+    show |g x * θ x - h x * θ x| ≤ M * |g x - h x|
+    rw [← sub_mul, abs_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_right (hθM x) (abs_nonneg _)
+  -- Step 7: if `|Φ g - Φ h| ≤ K * ∫ |g - h| dμ`, then `u ↦ Φ u` is `K⁺`-Lipschitz, hence
+  -- continuous, on `α →₁[μ] ℝ`, because `‖u - v‖ = ∫ |u - v| dμ`.
+  have hcont : ∀ (Φ : (α → ℝ) → ℝ) (K : ℝ),
+      (∀ g h : α → ℝ, Integrable g μ → Integrable h μ →
+        |Φ g - Φ h| ≤ K * ∫ x, |g x - h x| ∂μ) →
+      Continuous fun u : α →₁[μ] ℝ => Φ u := by
+    intro Φ K hΦ
+    refine LipschitzWith.continuous (LipschitzWith.of_dist_le' (K := K) fun u v => ?_)
+    rw [Real.dist_eq, dist_eq_norm, L1.norm_eq_integral_norm]
+    refine (hΦ _ _ (L1.integrable_coeFn u) (L1.integrable_coeFn v)).trans_eq ?_
+    congr 1
+    refine integral_congr_ae ?_
+    filter_upwards [Lp.coeFn_sub u v] with x hx
+    rw [hx, Pi.sub_apply, Real.norm_eq_abs]
+  -- Step 8: `Integrable.induction` for `F g = ∫ g θ dμ`.
+  refine Integrable.induction (fun g => F g = ∫ x, g x * θ x ∂μ) ?_ ?_ ?_ ?_ hf
+  · -- (a) multiples of indicators of measurable sets
+    intro c s hs _
+    have hs1 : Integrable (s.indicator (1 : α → ℝ)) μ := (integrable_const (1 : ℝ)).indicator hs
+    have e : (s.indicator fun _ => c) = c • s.indicator (1 : α → ℝ) := by
+      ext x
+      by_cases hx : x ∈ s <;> simp [hx]
+    rw [e, hsmul c _ hs1, hind s hs, ← integral_const_mul, ← integral_indicator hs]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    by_cases hx : x ∈ s <;> simp [hx]
+  · -- (b) sums
+    intro g h _ hg hh hPg hPh
+    rw [hadd g h hg hh, hPg, hPh, ← integral_add (hint g hg) (hint h hh)]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only [Pi.add_apply, add_mul]
+  · -- (c) the set where the two continuous maps on `α →₁[μ] ℝ` agree is closed
+    exact isClosed_eq (hcont F C hFlip) (hcont (fun g => ∫ x, g x * θ x ∂μ) M hIlip)
+  · -- (d) `μ`-a.e. congruence
+    intro g h hgh hg hPg
+    have hh : Integrable h μ := hg.congr hgh
+    rw [← hFae g h hg hh hgh, hPg]
+    refine integral_congr_ae ?_
+    filter_upwards [hgh] with x hx
+    rw [hx]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
