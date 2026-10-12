@@ -790,6 +790,43 @@ theorem Submission.besicovitch_ratio_cover_estimate :
           mul_le_mul_right (measure_mono (iUnion₂_subset fun x _ ↦ hsub x)) t
     _ = (C : ℝ≥0∞) * t * ν (thickening ρ₀ A) := by
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_assoc]
+/-- **Simon Ch. 8, 3.7, printed step (4)** (child `monotonicity_mass_lower_bound` of the density
+semicontinuity theorem): at a point where `Θ^n(μ_V, x) ≥ 1` and the ball bound 3.1 holds on
+`(0, ρ₀)`, the monotonicity formula 3.3 gives `e^{-Λρ} ω_n ρ^n ≤ μ_V(B_ρ(x))` for `0 < ρ < ρ₀`.
+The density supplied by 3.3 equals `θ` by uniqueness of limits along `𝓝[>] 0`, and
+`D = ω_n ρ^n ∈ (0, ∞)` cancels in `1 ≤ θ ≤ e^{Λρ} μ_V(B_ρ(x)) / D`. -/
+theorem Submission.weight_closedBall_lower_bound_of_density_ge_one :
+    MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U)
+      (x : Euclidean N) (ρ₀ Λ : ℝ) (θ : ℝ≥0∞), V.HasLocallyBoundedFirstVariation → 0 < ρ₀ →
+      ball x ρ₀ ⊆ U → 0 ≤ Λ →
+      (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        variationMeasure V (closedBall x ρ) ≤ ENNReal.ofReal Λ * V.weight (closedBall x ρ)) →
+      HasDensity n V.weight x θ → 1 ≤ θ → ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+        V.weight (closedBall x ρ) := by
+  intro hMF N n U V x ρ₀ Λ θ hV hρ₀ hU hΛ hδ hθ h1 ρ hρ hρρ₀
+  obtain ⟨-, θ', hθ', -, hθ'le⟩ := hMF N n U V x ρ₀ Λ hV hρ₀ hU hΛ hδ
+  have hθθ' : θ = θ' := tendsto_nhds_unique hθ hθ'
+  have hle : 1 ≤ ENNReal.ofReal (Real.exp (Λ * ρ)) * densityRatio n V.weight x ρ :=
+    h1.trans (hθθ' ▸ (hθ'le ρ ρ hρ le_rfl hρρ₀).1)
+  have hω0 : unitBallVolume n ≠ 0 := (Metric.measure_ball_pos volume _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hD0 : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+    mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ).ne')
+  have hDtop : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have hexp : ENNReal.ofReal (Real.exp (-(Λ * ρ))) * ENNReal.ofReal (Real.exp (Λ * ρ)) = 1 := by
+    rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add, neg_add_cancel, Real.exp_zero,
+      ENNReal.ofReal_one]
+  calc ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n
+      = ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal ρ ^ n) * 1 := by
+        rw [mul_one, mul_assoc]
+    _ ≤ ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal ρ ^ n) *
+          (ENNReal.ofReal (Real.exp (Λ * ρ)) * densityRatio n V.weight x ρ) := by gcongr
+    _ = ENNReal.ofReal (Real.exp (-(Λ * ρ))) * ENNReal.ofReal (Real.exp (Λ * ρ)) *
+          ((unitBallVolume n * ENNReal.ofReal ρ ^ n) * densityRatio n V.weight x ρ) := by ring
+    _ = V.weight (closedBall x ρ) := by
+        rw [hexp, one_mul, densityRatio, ENNReal.mul_div_cancel hD0 hDtop]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
