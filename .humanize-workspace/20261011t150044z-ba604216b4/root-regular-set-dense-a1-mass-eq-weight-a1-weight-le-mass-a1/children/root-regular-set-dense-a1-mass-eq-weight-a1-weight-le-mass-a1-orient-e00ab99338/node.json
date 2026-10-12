@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.orient_opnorm_bound-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "depth": 4,
+  "title": "Unit orientations have operator norm at most 1",
+  "statement": "Let P, n ∈ ℕ, let Q be a linear subspace of ℝ^P (Euclid P) and let ξ ∈ MultiVector P n = (Covector (Euclid P) n →L[ℝ] ℝ). Here Covector (Euclid P) n is the normed space of continuous alternating n-linear forms on ℝ^P with the operator norm, and MultiVector P n carries the operator norm of continuous linear functionals. Suppose IsUnitOrientationOf ξ Q: there is an orthonormal family τ = (τ_1, …, τ_n) in ℝ^P spanning Q such that either ξ(α) = α(τ_1, …, τ_n) for every n-covector α, or ξ(α) = −α(τ_1, …, τ_n) for every n-covector α. Then ‖ξ‖ ≤ 1.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1",
+  "lean_name": "rsd_mw_wlm_orient_opNorm_le_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338-a1"
+}

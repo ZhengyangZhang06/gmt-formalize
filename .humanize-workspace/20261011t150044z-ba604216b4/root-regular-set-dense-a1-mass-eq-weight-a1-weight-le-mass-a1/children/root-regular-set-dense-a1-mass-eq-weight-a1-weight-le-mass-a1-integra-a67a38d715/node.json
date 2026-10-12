@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.integral_estimate-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "depth": 4,
+  "title": "Integral lower bound for ⟨ω, ξ⟩ from an L¹-close unit dual field",
+  "statement": "Let P, n ∈ ℕ and let ν be a finite measure on ℝ^P (Euclid P). Let ξ : ℝ^P → MultiVector P n be ν-a.e. strongly measurable. Let β, ω : ℝ^P → Covector (Euclid P) n, with ω continuous and N(ω(x)) ≤ 1 for every x, where N := covectorEuclideanNorm. Assume that for ν-a.e. x, |ξ(x)(α)| ≤ N(α) for every n-covector α, and ξ(x)(β(x)) = 1. Let ε ∈ ℝ satisfy ∫⁻ ENNReal.ofReal(N(ω(x) − β(x))) dν(x) < ENNReal.ofReal ε. Then ν(ℝ^P).toReal − ε < ∫ ξ(x)(ω(x)) dν(x).",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β ω : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → Continuous ω → (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → (∀ᵐ x ∂ν, (∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) ∧ ξ x (β x) = 1) → ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε → (ν univ).toReal - ε < ∫ x, ξ x (ω x) ∂ν",
+  "lean_name": "rsd_mw_wlm_sub_lt_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715-a1"
+}
