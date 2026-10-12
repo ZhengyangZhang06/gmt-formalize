@@ -474,6 +474,62 @@ theorem Submission.dorag_tes_ga_prod_one_add_bounds : ∀ (m : ℕ) (lam : Fin m
         mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 2 ^ m) hS) (sub_nonneg.2 hμ1),
         mul_nonneg hμ0 (by linarith : (0 : ℝ) ≤ 2 ^ m * 2 - 1)]
 
+/-- Determinant bounds for `id + B* ∘ B` (graph area, steps 6–7).  If `B : ℝⁿ → ℝᵏ` has
+`‖B‖ ≤ 1`, then `1 ≤ det (id + B* B) ≤ 1 + 2ⁿ ∑ᵢ |B eᵢ|²`: in an orthonormal eigenbasis of the
+symmetric map `B* B` the eigenvalues are `λᵢ = |B bᵢ|² ∈ [0, 1]`, `det (id + B* B) = ∏ (1 + λᵢ)`,
+and `∑ λᵢ = trace (B* B) = ∑ |B eᵢ|²`. -/
+theorem Submission.dorag_tes_ga_det_id_add_adjoint_comp_bounds : ∀ (n k : ℕ) (B : Euclid n →L[ℝ] Euclid k), ‖B‖ ≤ 1 → 1 ≤ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ∧ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ≤ 1 + 2 ^ n * ∑ i : Fin n, ‖B (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+  intro n k B hB
+  -- Step 1: `P = B* ∘ B` is symmetric, with `⟪x, P y⟫ = ⟪B x, B y⟫`
+  let P : Euclid n →ₗ[ℝ] Euclid n := (B.adjoint ∘L B : Euclid n →L[ℝ] Euclid n)
+  have hP : ∀ x y, inner ℝ x (P y) = inner ℝ (B x) (B y) := fun x y =>
+    ContinuousLinearMap.adjoint_inner_right B x (B y)
+  have hsym : P.IsSymmetric := fun x y => by
+    rw [real_inner_comm, hP, hP, real_inner_comm]
+  -- Step 2: an orthonormal eigenbasis `b` of `P`, with eigenvalues `lam`
+  have hn : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
+  set b := hsym.eigenvectorBasis hn
+  set lam := hsym.eigenvalues hn
+  have hPb : ∀ i, P (b i) = lam i • b i := fun i => hsym.apply_eigenvectorBasis hn i
+  -- Step 3: `lam i = ‖B (b i)‖ ^ 2`, so `0 ≤ lam i ≤ 1`
+  have hlam : ∀ i, lam i = ‖B (b i)‖ ^ 2 := fun i => by
+    rw [← real_inner_self_eq_norm_sq, ← hP, hPb, real_inner_smul_right, real_inner_self_eq_norm_sq,
+      b.orthonormal.1 i, one_pow, mul_one]
+  have hlam0 : ∀ i, 0 ≤ lam i := fun i => (hlam i).symm ▸ sq_nonneg _
+  have hlam1 : ∀ i, lam i ≤ 1 := fun i => by
+    have h : ‖B (b i)‖ ≤ 1 :=
+      calc ‖B (b i)‖ ≤ ‖B‖ * ‖b i‖ := B.le_opNorm _
+        _ = ‖B‖ := by rw [b.orthonormal.1 i, mul_one]
+        _ ≤ 1 := hB
+    rw [hlam i]
+    exact pow_le_one₀ (norm_nonneg _) h
+  -- Step 4: the matrix of `id + P` in the basis `b` is `diagonal (1 + lam i)`
+  have hdet : (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det = ∏ i, (1 + lam i) := by
+    have hM : LinearMap.toMatrix b.toBasis b.toBasis
+        ((ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B : Euclid n →L[ℝ] Euclid n) :
+          Euclid n →ₗ[ℝ] Euclid n) = Matrix.diagonal (fun i => 1 + lam i) := by
+      ext i j
+      have hj : (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B) (b j) = (1 + lam j) • b j := by
+        rw [add_smul, one_smul, ← hPb j]
+        rfl
+      rw [LinearMap.toMatrix_apply, b.coe_toBasis, b.coe_toBasis_repr_apply, ContinuousLinearMap.coe_coe, hj,
+        map_smul, b.repr_self, Matrix.diagonal_apply]
+      by_cases h : i = j
+      · subst h
+        simp
+      · simp [h]
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b.toBasis, hM, Matrix.det_diagonal]
+  -- Step 5: `trace P` in the bases `b` and `e` gives `∑ lam i = ∑ ‖B e_i‖ ^ 2`
+  have htr : ∑ i, lam i = ∑ i : Fin n, ‖B (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+    calc ∑ i, lam i = LinearMap.trace ℝ (Euclid n) P := (hsym.trace_eq_sum_eigenvalues hn).symm
+      _ = ∑ i, inner ℝ (EuclideanSpace.basisFun (Fin n) ℝ i) (P (EuclideanSpace.basisFun (Fin n) ℝ i)) :=
+        LinearMap.trace_eq_sum_inner P _
+      _ = ∑ i : Fin n, ‖B (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+        simp_rw [EuclideanSpace.basisFun_apply, hP, real_inner_self_eq_norm_sq]
+  -- Step 6: the sibling `prod_bound` with `m = n`
+  rw [hdet, ← htr]
+  exact Submission.dorag_tes_ga_prod_one_add_bounds n lam hlam0 hlam1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
