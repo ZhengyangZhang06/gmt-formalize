@@ -574,6 +574,54 @@ theorem Submission.second_fundamental_form_symm_normal_of_chart_formula : ∀ (n
   -- Step 5: the normal part `w - P_y w` of `w = D²ψ(x)[b, a]` lies in `(T_y M)^⊥`.
   exact ⟨rfl, fun v hv ↦ Submodule.inner_left_of_mem_orthogonal hv
     (Submodule.sub_starProjection_mem_orthogonal _)⟩
+/-- **Derivative of a field normal along `M`** (Simon 5.11 proof: `τᵢ · D_{τⱼ}X = -X · B(τᵢ, τⱼ)`
+"by virtue of 4.24 and the fact that `X` is normal to `M`"). Let `M` be an `n`-dimensional `C²`
+submanifold such that, on every class-2 chart `ψ`, (R) `T_{ψ(x)}M = range Dψ(x)` and
+(C) `B_{ψ(x)}(Dψ(x)a, Dψ(x)b) = (D²ψ(x)[a, b])^⊥`. If `Y` is differentiable at `y ∈ M` and normal
+along `M`, then `η · DY(y)τ = -Y(y) · B_y(τ, η)` for all `τ, η ∈ T_y M`. In a chart with `ψ(x) = y`,
+`τ = Dψ(x)a` and `η = Dψ(x)b`, the function `x' ↦ Y(ψ(x')) · Dψ(x')b` vanishes on the open set
+`V`, so its derivative at `x` in direction `a`, `Y(y) · D²ψ(x)[a, b] + DY(y)τ · η`, is `0`; and
+`Y(y) · D²ψ(x)[a, b] = Y(y) · (D²ψ(x)[a, b])^⊥ = Y(y) · B_y(τ, η)` as `Y(y) ⊥ T_y M`. -/
+theorem Submission.inner_fderiv_normal_field_eq_neg_second_fundamental_form : ∀ (n N : ℕ) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, ∀ a b : Rn n, secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) = normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b)) → ∀ (Y : Rn N → Rn N) (y : Rn N), y ∈ M → DifferentiableAt ℝ Y y → (∀ z ∈ M, ∀ v ∈ tangentSpace M z, inner ℝ (Y z) v = 0) → ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ Y y τ) = -inner ℝ (Y y) (secondFundamentalForm M y τ η) := by
+  intro n N M hM hR hC Y y hy hY hnorm τ hτ η hη
+  -- Step 1: a class-2 chart `(V, W, ψ)` and `x ∈ V` with `ψ x = y`; by (R), `τ = Dψ(x) a` and
+  -- `η = Dψ(x) b`.
+  obtain ⟨V, W, ψ, hyW, hrep⟩ := hM.2 y hy
+  obtain ⟨x, hxV, rfl⟩ : y ∈ ψ '' V := hrep.image_eq ▸ ⟨hyW, hy⟩
+  rw [hR V W ψ hrep x hxV] at hτ hη
+  obtain ⟨a, rfl⟩ := hτ
+  obtain ⟨b, rfl⟩ := hη
+  simp only [ContinuousLinearMap.coe_coe]
+  -- Step 2: `ψ` and `Dψ` are differentiable at `x`; derivatives of `x' ↦ Dψ(x') b` and `Y ∘ ψ`.
+  have hV : IsOpen V := hrep.isOpen_source
+  have hψ2 : ContDiffAt ℝ 2 ψ x := hrep.contDiffOn.contDiffAt (hV.mem_nhds hxV)
+  have hψ : HasFDerivAt ψ (fderiv ℝ ψ x) x := (hψ2.differentiableAt (by norm_num)).hasFDerivAt
+  have hDψ : HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) x) x :=
+    ((hψ2.fderiv_right (m := 1) (by norm_num)).differentiableAt one_ne_zero).hasFDerivAt
+  have hg := hDψ.clm_apply (hasFDerivAt_const b x)
+  have hYψ := hY.hasFDerivAt.comp x hψ
+  -- Step 3: `f x' = ⟪Y (ψ x'), Dψ(x') b⟫` vanishes on the open set `V`, so `Df(x) = 0`.
+  have hf0 : HasFDerivAt (fun x' => inner ℝ ((Y ∘ ψ) x') (fderiv ℝ ψ x' b))
+      (0 : Rn n →L[ℝ] ℝ) x := by
+    refine (hasFDerivAt_const (0 : ℝ) x).congr_of_eventuallyEq ?_
+    filter_upwards [hV.mem_nhds hxV] with x' hx'
+    have hmem : ψ x' ∈ M := (hrep.image_eq ▸ mem_image_of_mem ψ hx').2
+    exact hnorm _ hmem _ (by rw [hR V W ψ hrep x' hx']; exact ⟨b, rfl⟩)
+  -- Step 4: product rule and uniqueness of the derivative, evaluated at `a`.
+  have h4 : inner ℝ (Y (ψ x)) (fderiv ℝ (fderiv ℝ ψ) x a b) +
+      inner ℝ (fderiv ℝ Y (ψ x) (fderiv ℝ ψ x a)) (fderiv ℝ ψ x b) = 0 := by
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply,
+      fderivInnerCLM_apply, Function.comp_apply, ContinuousLinearMap.comp_zero, zero_add,
+      ContinuousLinearMap.flip_apply, zero_apply] using
+      DFunLike.congr_fun ((hYψ.inner ℝ hg).unique hf0) a
+  -- Step 5: `Y (ψ x)` is normal, so it only sees the normal part of `D²ψ(x)[a, b]`, which is
+  -- `B(τ, η)` by (C).
+  have h5 : inner ℝ (Y (ψ x)) (tangentProjection M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b)) = 0 :=
+    hnorm _ hy _ (Submodule.starProjection_apply_mem _ _)
+  rw [hC V W ψ hrep x hxV a b, normalPart, inner_sub_right, h5, sub_zero]
+  -- Step 6: symmetry of the real inner product.
+  have h6 := real_inner_comm (fderiv ℝ ψ x b) (fderiv ℝ Y (ψ x) (fderiv ℝ ψ x a))
+  linarith
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
