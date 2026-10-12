@@ -410,6 +410,85 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Cylinder masses from cut-off ball integrals (Simon Ch. 8, proof of Lemma 5.10, display (7):
+the last step after integrating 3.5 from `σ` to `ρ`).  Let `0 ≤ h ≤ 1` be measurable with `h = 1`
+where `‖q(z - y)‖ < τ` and `h = 0` where `‖q(z - y)‖ ≥ 2τ` (`q = id - p_P`), `0 < σ ≤ ρ` and
+`μ(B_ρ(y)) < ∞`.  If `σ^{-n} ∫_{B_σ(y)} h dμ ≤ ρ^{-n} ∫_{B_ρ(y)} h dμ + E`, then in `[0, ∞]`
+`σ^{-n} μ(U^τ_σ(y)) ≤ ρ^{-n} μ(U^{2τ}_ρ(y)) + max(E, 0)`, where
+`U^τ_r(y) = B_r(y) ∩ {z : ‖q(z - y)‖ < τ}`. -/
+theorem Submission.intcpt_allard_cm_cylinder_mass_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (y : Euclidean N) (h : Euclidean N → ℝ) (τ σ ρ E : ℝ), Measurable h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ z, ‖(z - y) - Grassmannian.project P (z - y)‖ < τ → h z = 1) → (∀ z, 2 * τ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ → h z = 0) → 0 < σ → σ ≤ ρ → μ (closedBall y ρ) ≠ ∞ → (∫ z in closedBall y σ, h z ∂μ) / σ ^ n ≤ (∫ z in closedBall y ρ, h z ∂μ) / ρ ^ n + E → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal E := by
+  intro N n μ P y h τ σ ρ E hmeas hbd h1 h0 hσ hσρ hfin hineq
+  -- Step 1: `z ↦ ‖q(z - y)‖` is continuous (`p_P` is linear on `ℝ^N`), so the cylinders
+  -- `S₁ = {‖q(z - y)‖ < τ}` and `S₂ = {‖q(z - y)‖ < 2τ}` are open, hence measurable.
+  have hcont : Continuous fun z : Euclidean N ↦ ‖(z - y) - Grassmannian.project P (z - y)‖ := by
+    have hP : Continuous (Grassmannian.project P) :=
+      (Grassmannian.projectionLinearMap P).continuous_of_finiteDimensional
+    exact ((continuous_id.sub continuous_const).sub
+      (hP.comp (continuous_id.sub continuous_const))).norm
+  have hS₁ : MeasurableSet {z : Euclidean N | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ} :=
+    (isOpen_lt hcont continuous_const).measurableSet
+  have hS₂ : MeasurableSet
+      {z : Euclidean N | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ} :=
+    (isOpen_lt hcont continuous_const).measurableSet
+  -- Step 2: `B_σ(y) ⊆ B_ρ(y)`, so `B_σ(y)`, `U₁ = B_σ(y) ∩ S₁` and `U₂ = B_ρ(y) ∩ S₂` have finite
+  -- measure.
+  have hρ : 0 < ρ := lt_of_lt_of_le hσ hσρ
+  have hfinσ : μ (closedBall y σ) ≠ ∞ :=
+    ne_top_of_le_ne_top hfin (measure_mono (closedBall_subset_closedBall hσρ))
+  have hU₁fin : μ (closedBall y σ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) ≠ ∞ :=
+    ne_top_of_le_ne_top hfinσ (measure_mono inter_subset_left)
+  have hU₂fin : μ (closedBall y ρ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) ≠ ∞ :=
+    ne_top_of_le_ne_top hfin (measure_mono inter_subset_left)
+  -- Step 3: `h` is measurable with `|h| ≤ 1`, hence integrable on every set of finite measure.
+  have hint : ∀ s, μ s ≠ ∞ → IntegrableOn h s μ := fun s hs ↦
+    Measure.integrableOn_of_bounded hs hmeas.aestronglyMeasurable (M := 1)
+      (Eventually.of_forall fun z ↦ by
+        rw [Real.norm_eq_abs, abs_le]; exact ⟨by linarith [(hbd z).1], (hbd z).2⟩)
+  -- Step 4: `h = 1` on `U₁` and `h ≥ 0`, so `μ(U₁) = ∫_{U₁} h dμ ≤ ∫_{B_σ(y)} h dμ`.
+  have hlow : μ.real (closedBall y σ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) ≤ ∫ z in closedBall y σ, h z ∂μ := by
+    have heq : ∫ z in closedBall y σ ∩
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}, h z ∂μ =
+        μ.real (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) := by
+      rw [setIntegral_congr_fun (measurableSet_closedBall.inter hS₁) (g := fun _ ↦ (1 : ℝ))
+        (fun z hz ↦ h1 z hz.2)]
+      exact setIntegral_one_eq_measureReal
+    rw [← heq]
+    exact setIntegral_mono_set (hint _ hfinσ) (Eventually.of_forall fun z ↦ (hbd z).1)
+      (Eventually.of_forall fun z hz ↦ hz.1)
+  -- Step 5: `h = 0` on `B_ρ(y) ∖ S₂` and `h ≤ 1`, so `∫_{B_ρ(y)} h dμ = ∫_{U₂} h dμ ≤ μ(U₂)`.
+  have hup : ∫ z in closedBall y ρ, h z ∂μ ≤ μ.real (closedBall y ρ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) := by
+    rw [← integral_inter_add_sdiff hS₂ (hint _ hfin)]
+    have hzero : ∫ z in closedBall y ρ \
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}, h z ∂μ = 0 :=
+      setIntegral_eq_zero_of_forall_eq_zero fun z hz ↦ h0 z (not_lt.mp hz.2)
+    rw [hzero, add_zero, ← setIntegral_one_eq_measureReal]
+    exact setIntegral_mono_on (hint _ hU₂fin) (integrableOn_const hU₂fin)
+      (measurableSet_closedBall.inter hS₂) fun z _ ↦ (hbd z).2
+  -- Step 6: the real inequality `μ(U₁)/σ^n ≤ μ(U₂)/ρ^n + E`.
+  have hσn : 0 < σ ^ n := pow_pos hσ n
+  have hρn : 0 < ρ ^ n := pow_pos hρ n
+  have hreal : μ.real (closedBall y σ ∩
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / σ ^ n ≤
+      μ.real (closedBall y ρ ∩
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ρ ^ n + E :=
+    calc _ ≤ (∫ z in closedBall y σ, h z ∂μ) / σ ^ n := div_le_div_of_nonneg_right hlow hσn.le
+      _ ≤ (∫ z in closedBall y ρ, h z ∂μ) / ρ ^ n + E := hineq
+      _ ≤ _ := by gcongr
+  -- Step 7: for `r > 0` and `μ s < ∞`, `μ s / ofReal r ^ n = ofReal (μ.real s / r ^ n)`; conclude
+  -- with monotonicity of `ofReal` and `ofReal (a + E) ≤ ofReal a + ofReal E`.
+  have hconv : ∀ (s : Set (Euclidean N)) (r : ℝ), 0 < r → μ s ≠ ∞ →
+      μ s / ENNReal.ofReal r ^ n = ENNReal.ofReal (μ.real s / r ^ n) := by
+    intro s r hr hs
+    rw [ENNReal.ofReal_div_of_pos (pow_pos hr n), ENNReal.ofReal_pow hr.le, measureReal_def,
+      ENNReal.ofReal_toReal hs]
+  rw [hconv _ σ hσ hU₁fin, hconv _ ρ hρ hU₂fin]
+  exact (ENNReal.ofReal_le_ofReal hreal).trans ENNReal.ofReal_add_le
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
