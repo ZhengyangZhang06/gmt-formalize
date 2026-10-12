@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.c1_holder_extension-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1",
+  "depth": 3,
+  "title": "A Lipschitz map with Hoelder derivative on a full-measure set is C^1 with the same Hoelder bound",
+  "statement": "Let n, l >= 0, f : R^n -> R^l, c in R^n, r real, K >= 0, Z a subset of R^n, and M, R, alpha real with M >= 0, R > 0 and alpha > 0. Assume f is K-Lipschitz on the open ball B := B^o_r(c), Z is contained in B, B minus Z is Lebesgue-null, f is differentiable at every point of Z, and hsNorm(Df(x) - Df(y)) <= M (||x - y||/R)^alpha for all x, y in Z, where Df = fderiv f and hsNorm is the Hilbert-Schmidt norm. Then f is C^1 on B (ContDiffOn R 1 f B) and hsNorm(Df(x) - Df(y)) <= M (||x - y||/R)^alpha for all x, y in B.",
+  "lean_statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (c : Rn n) (r : ℝ) (K : ℝ≥0) (Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → LipschitzOnWith K f (ball c r) → Z ⊆ ball c r → volume (ball c r \\ Z) = 0 → (∀ x ∈ Z, DifferentiableAt ℝ f x) → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α) → ContDiffOn ℝ 1 f (ball c r) ∧ ∀ x ∈ ball c r, ∀ y ∈ ball c r, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α",
+  "lean_name": "allard52_c1_holder_of_ae_fderiv",
+  "depends_on": [
+    "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-c1-holder-extension-a1-a1"
+}
