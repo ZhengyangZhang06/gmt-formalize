@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c0f4309e4a41027e37242ad1d60848d429a50bf73c107fa1963c7b555cb2e725",
+  "git_delta": {
+    "base_commit": "34d204e303910b3034e41b188c77d49c68e708c6",
+    "candidate_commit": "07416221aa07784d1908213ab6bc06d38069e900",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doragm_support_ball_ratio_ge",
+    "diff_sha256": "1ce7b6d23f109b08449780993d7536c95e136fa3c84f8fc66fa59ca0bb4acbca",
+    "source_sha256": "5a604f5e60ad8c0529a8531e65effe5a946ac691634815dc97cd40c11f28a09f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doragm_support_ball_ratio_ge",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (κ : ℝ), 0 < n → IsOpen W → W ⊆ U → 0 ≤ κ → (∀ (z : Euclid P) (s t : ℝ), 0 < s → s < t → closedBall z t ⊆ W → ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * R.measure (closedBall z s) ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall z t)) → ∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
