@@ -373,6 +373,116 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, proof of Theorem 1.6 (pp. 42–43), Whitney gluing off `A`: local structure.**
+Let `A ⊆ ℝⁿ` be closed, let the weights `φ i` (`i : ι`) be nonnegative and `C¹` off `A`, locally
+finitely supported off `A`, with `∑ᶠ i, φ i = 1` off `A`, and let `g = ∑ᶠ i, φ i * P i` off `A`,
+where `P i y = h (p i) + ⟪ν (p i), y - p i⟫` is affine. Then at each `x ∉ A`, `g` is `C¹` at `x`
+and a finite `S` with `φ i x > 0` on `S` carries every sum: `∑_{i∈S} φ i x = 1`,
+`g x = ∑_{i∈S} φ i x * P i x`, `Dg(x) = ∑_{i∈S} (φ i x • ⟪ν (p i), ·⟫ + P i x • Dφ i (x))`,
+`∑_{i∈S} Dφ i (x) = 0` and `∑ᶠ i, ‖Dφ i (x)‖ = ∑_{i∈S} ‖Dφ i (x)‖`. Near `x` both finsums are
+sums over the finite `s` given by local finiteness, so the product, sum and constant rules apply;
+`S = {i ∈ s | φ i x ≠ 0}`, and an index with `φ i x = 0` has `Dφ i (x) = 0` because `x` is then a
+local minimum of `φ i ≥ 0` on the open set `ℝⁿ \ A`. -/
+theorem Submission.whitney_gluing_local_structure : ∀ (n : ℕ) (A : Set (Rn n)) (h : Rn n → ℝ) (ν : Rn n → Rn n) (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (g : Rn n → ℝ), IsClosed A → (∀ i, ∀ x ∉ A, ContDiffAt ℝ 1 (φ i) x) → (∀ i, ∀ x ∉ A, 0 ≤ φ i x) → (∀ x ∉ A, ∃ s : Finset ι, ∃ V ∈ 𝓝 x, ∀ i ∉ s, ∀ y ∈ V, φ i y = 0) → (∀ x ∉ A, ∑ᶠ i, φ i x = 1) → (∀ x ∉ A, g x = ∑ᶠ i, φ i x * (h (p i) + inner ℝ (ν (p i)) (x - p i))) → ∀ x ∉ A, ContDiffAt ℝ 1 g x ∧ ∃ S : Finset ι, (∀ i ∈ S, 0 < φ i x) ∧ ∑ i ∈ S, φ i x = 1 ∧ g x = ∑ i ∈ S, φ i x * (h (p i) + inner ℝ (ν (p i)) (x - p i)) ∧ fderiv ℝ g x = ∑ i ∈ S, (φ i x • innerSL ℝ (ν (p i)) + (h (p i) + inner ℝ (ν (p i)) (x - p i)) • fderiv ℝ (φ i) x) ∧ ∑ i ∈ S, fderiv ℝ (φ i) x = 0 ∧ ∑ᶠ i, ‖fderiv ℝ (φ i) x‖ = ∑ i ∈ S, ‖fderiv ℝ (φ i) x‖ := by
+  intro n A h ν ι φ p g hA hφC1 hφnn hlf hsum hgU x hx
+  classical
+  obtain ⟨s, V, hV, hVzero⟩ := hlf x hx
+  -- The affine pieces `P i`: derivative `⟪ν (p i), ·⟫` everywhere, and `C¹`.
+  set P : ι → Rn n → ℝ := fun i y => h (p i) + inner ℝ (ν (p i)) (y - p i)
+  have hPderiv : ∀ i y, HasFDerivAt (P i) (innerSL ℝ (ν (p i))) y := by
+    intro i y
+    have h1 := (((innerSL ℝ (ν (p i))).hasFDerivAt (x := y - p i)).comp y
+      ((hasFDerivAt_id y).sub_const (p i))).const_add (h (p i))
+    simpa [P, Function.comp_def, innerSL_apply_apply] using h1
+  have hPcd : ∀ i, ContDiff ℝ 1 (P i) := by
+    intro i
+    exact contDiff_const.add ((innerSL ℝ (ν (p i))).contDiff.comp (contDiff_id.sub contDiff_const))
+  -- On `W = V ∩ Aᶜ ∈ 𝓝 x` both finsums are finite sums over `s`.
+  have hU : (Aᶜ : Set (Rn n)) ∈ 𝓝 x := hA.isOpen_compl.mem_nhds hx
+  have hW : V ∩ Aᶜ ∈ 𝓝 x := inter_mem hV hU
+  have hrep : ∀ y ∈ V ∩ Aᶜ, g y = ∑ i ∈ s, φ i y * P i y ∧ ∑ i ∈ s, φ i y = 1 := by
+    intro y hy
+    have hsupp1 : Function.support (fun i => φ i y) ⊆ ↑s := by
+      intro i hi
+      by_contra his
+      exact hi (hVzero i his y hy.1)
+    have hsupp2 : Function.support (fun i => φ i y * P i y) ⊆ ↑s := by
+      intro i hi
+      by_contra his
+      apply hi
+      simp [hVzero i his y hy.1]
+    constructor
+    · rw [hgU y hy.2, finsum_eq_sum_of_support_subset _ hsupp2]
+    · rw [← finsum_eq_sum_of_support_subset _ hsupp1]
+      exact hsum y hy.2
+  have hg_ev : g =ᶠ[𝓝 x] fun y => ∑ i ∈ s, φ i y * P i y := by
+    filter_upwards [hW] with y hy using (hrep y hy).1
+  have hsum_ev : (fun y => ∑ i ∈ s, φ i y) =ᶠ[𝓝 x] fun _ => (1 : ℝ) := by
+    filter_upwards [hW] with y hy using (hrep y hy).2
+  -- `g` is `C¹` at `x`; its derivative, and that of `∑ i ∈ s, φ i = 1`, as sums over `s`.
+  have hGcd : ContDiffAt ℝ 1 (fun y => ∑ i ∈ s, φ i y * P i y) x :=
+    ContDiffAt.sum fun i _ => (hφC1 i x hx).mul (hPcd i).contDiffAt
+  have hgcd : ContDiffAt ℝ 1 g x := hGcd.congr_of_eventuallyEq hg_ev
+  have hφdiff : ∀ i, DifferentiableAt ℝ (φ i) x := fun i =>
+    (hφC1 i x hx).differentiableAt (by norm_num)
+  have hGderiv : HasFDerivAt (fun y => ∑ i ∈ s, φ i y * P i y)
+      (∑ i ∈ s, (φ i x • innerSL ℝ (ν (p i)) + P i x • fderiv ℝ (φ i) x)) x := by
+    apply HasFDerivAt.fun_sum
+    intro i _
+    exact (hφdiff i).hasFDerivAt.mul (hPderiv i x)
+  have hfd_s : fderiv ℝ g x = ∑ i ∈ s, (φ i x • innerSL ℝ (ν (p i)) + P i x • fderiv ℝ (φ i) x) := by
+    rw [hg_ev.fderiv_eq, hGderiv.fderiv]
+  have hD0_s : ∑ i ∈ s, fderiv ℝ (φ i) x = 0 := by
+    have h1 : HasFDerivAt (fun y => ∑ i ∈ s, φ i y) (∑ i ∈ s, fderiv ℝ (φ i) x) x :=
+      HasFDerivAt.fun_sum fun i _ => (hφdiff i).hasFDerivAt
+    have h2 : HasFDerivAt (fun y => ∑ i ∈ s, φ i y) (0 : Rn n →L[ℝ] ℝ) x :=
+      (hasFDerivAt_const (1 : ℝ) x).congr_of_eventuallyEq hsum_ev
+    exact h1.unique h2
+  -- Indices with zero weight at `x` have zero derivative there (local minimum of `φ i ≥ 0`).
+  have hzero : ∀ i, φ i x = 0 → fderiv ℝ (φ i) x = 0 := by
+    intro i hi
+    apply IsLocalMin.fderiv_eq_zero
+    filter_upwards [hU] with y hy
+    rw [hi]
+    exact hφnn i y hy
+  have hxV : x ∈ V := mem_of_mem_nhds hV
+  have hout : ∀ i, i ∉ s → φ i x = 0 := fun i hi => hVzero i hi x hxV
+  -- `S = {i ∈ s | φ i x ≠ 0}`: dropping the other indices of `s` changes no sum.
+  let S : Finset ι := s.filter (fun i => φ i x ≠ 0)
+  have hSpos : ∀ i ∈ S, 0 < φ i x := by
+    intro i hi
+    have hi' := (Finset.mem_filter.mp hi).2
+    exact lt_of_le_of_ne (hφnn i x hx) (Ne.symm hi')
+  have hS1 : ∑ i ∈ S, φ i x = 1 := by
+    have := (hrep x ⟨hxV, hx⟩).2
+    rw [← this]
+    exact Finset.sum_filter_ne_zero s
+  refine ⟨hgcd, S, hSpos, hS1, ?_, ?_, ?_, ?_⟩
+  · rw [(hrep x ⟨hxV, hx⟩).1]
+    symm
+    apply Finset.sum_filter_of_ne
+    intro i _ hne h0
+    exact hne (by rw [h0, zero_mul])
+  · rw [hfd_s]
+    symm
+    apply Finset.sum_filter_of_ne
+    intro i _ hne h0
+    exact hne (by rw [h0, hzero i h0, zero_smul, smul_zero, add_zero])
+  · rw [← hD0_s]
+    apply Finset.sum_filter_of_ne
+    intro i _ hne h0
+    exact hne (hzero i h0)
+  · apply finsum_eq_sum_of_support_subset
+    intro i hi
+    have hne : fderiv ℝ (φ i) x ≠ 0 := by
+      intro h0
+      exact hi (by simp [h0])
+    have hφne : φ i x ≠ 0 := fun h0 => hne (hzero i h0)
+    have his : i ∈ s := by
+      by_contra his
+      exact hφne (hout i his)
+    exact Finset.mem_filter.mpr ⟨his, hφne⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 

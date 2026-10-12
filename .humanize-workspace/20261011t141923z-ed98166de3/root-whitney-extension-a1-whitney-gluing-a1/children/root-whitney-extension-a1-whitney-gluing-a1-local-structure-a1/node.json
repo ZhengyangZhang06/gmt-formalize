@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.whitney_extension-a1.whitney_gluing-a1.local_structure-a1",
+  "parent_id": "root.whitney_extension-a1.whitney_gluing-a1",
+  "depth": 3,
+  "title": "Local C¹ structure of the Whitney gluing off A",
+  "statement": "Let n ∈ ℕ, ℝⁿ = EuclideanSpace ℝ (Fin n), A ⊆ ℝⁿ closed, h : ℝⁿ → ℝ, ν : ℝⁿ → ℝⁿ, ι a type, φ_i : ℝⁿ → ℝ and p_i ∈ ℝⁿ (i ∈ ι), and g : ℝⁿ → ℝ. Write P_i(y) := h(p_i) + ⟨ν(p_i), y − p_i⟩, L_v := ⟨v, ·⟩ = innerSL ℝ v, and Dψ(x) := fderiv ℝ ψ x with the operator norm ‖·‖. Assume (P2) every φ_i is C¹ at every x ∉ A; (P3) φ_i(x) ≥ 0 for x ∉ A; (P4) every x ∉ A has a neighbourhood V and a finite s ⊆ ι with φ_i ≡ 0 on V for i ∉ s; (P5) Σᶠ_i φ_i(x) = 1 for x ∉ A; and (G) g(x) = Σᶠ_i φ_i(x)P_i(x) for x ∉ A. Then for every x ∉ A, g is C¹ at x and there is a finite S ⊆ ι such that φ_i(x) > 0 for all i ∈ S, Σ_{i∈S} φ_i(x) = 1, g(x) = Σ_{i∈S} φ_i(x)P_i(x), Dg(x) = Σ_{i∈S}(φ_i(x)·L_{ν(p_i)} + P_i(x)·Dφ_i(x)), Σ_{i∈S} Dφ_i(x) = 0, and Σᶠ_i ‖Dφ_i(x)‖ = Σ_{i∈S} ‖Dφ_i(x)‖.",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Rn n)) (h : Rn n → ℝ) (ν : Rn n → Rn n) (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (g : Rn n → ℝ), IsClosed A → (∀ i, ∀ x ∉ A, ContDiffAt ℝ 1 (φ i) x) → (∀ i, ∀ x ∉ A, 0 ≤ φ i x) → (∀ x ∉ A, ∃ s : Finset ι, ∃ V ∈ 𝓝 x, ∀ i ∉ s, ∀ y ∈ V, φ i y = 0) → (∀ x ∉ A, ∑ᶠ i, φ i x = 1) → (∀ x ∉ A, g x = ∑ᶠ i, φ i x * (h (p i) + inner ℝ (ν (p i)) (x - p i))) → ∀ x ∉ A, ContDiffAt ℝ 1 g x ∧ ∃ S : Finset ι, (∀ i ∈ S, 0 < φ i x) ∧ ∑ i ∈ S, φ i x = 1 ∧ g x = ∑ i ∈ S, φ i x * (h (p i) + inner ℝ (ν (p i)) (x - p i)) ∧ fderiv ℝ g x = ∑ i ∈ S, (φ i x • innerSL ℝ (ν (p i)) + (h (p i) + inner ℝ (ν (p i)) (x - p i)) • fderiv ℝ (φ i) x) ∧ ∑ i ∈ S, fderiv ℝ (φ i) x = 0 ∧ ∑ᶠ i, ‖fderiv ℝ (φ i) x‖ = ∑ i ∈ S, ‖fderiv ℝ (φ i) x‖",
+  "lean_name": "whitney_gluing_local_structure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-whitney-extension-a1-whitney-gluing-a1-local-structure-a1-a1"
+}
