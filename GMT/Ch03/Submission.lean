@@ -335,6 +335,197 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **The exceptional set of the cone trichotomy is Borel** (used in the proof of Simon Ch. 3,
+Theorem 3.6; Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Ch. 18). Let
+`A ⊆ ℝ^{n+ℓ}` be compact with `Hⁿ(A) < ∞`, `δ > 0`, `X` a finite-dimensional normed space,
+`α : X → ℝ^{n+ℓ}` continuous and `F₁, F₂ : X → ℝ^{n+ℓ} → ℝ^{n+ℓ}` jointly continuous. With the
+cones `C(ξ, r, s) = {x : |F₁ ξ (x - αξ)| < s |F₂ ξ (x - αξ)|} ∩ B(αξ, r)` and
+`m(ξ, r, s) = Hⁿ(A ∩ C(ξ, r, s))`, the set of `ξ` with `αξ ∈ A` at which none of
+`(Φ0)` `m(ξ, r, s) ≤ c (rs)ⁿ` (every `c > 0`, small `s`, all `r < δ`), `(Φ∞)` `K (rs)ⁿ ≤ m(ξ, r, s)`
+(every `K`, arbitrarily small `s`, some `r < δ`) and `(Ax)` `F₁ ξ (b - αξ) = 0` (some `b ∈ A`,
+`0 < |b - αξ| < δ`) holds is measurable. For fixed `r, s`, `ξ ↦ m(ξ, r, s)` is measurable by
+Tonelli (the cones are the sections of an open subset of `X × ℝ^{n+ℓ}` and `Hⁿ ⌞ A` is finite);
+`m` is monotone in `(r, s)` and continuous from below along rationals, so `{Φ0}` and `{Φ∞}` are
+countable Boolean combinations of sublevel and superlevel sets of these functions; `{Ax}` is
+`F_σ` because the projection `X × A → X` is closed; and `α⁻¹(A)` is closed. -/
+theorem Submission.bf_coneExceptional_measurableSet : ∀ (n ℓ : ℕ) {X : Type} [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X] [MeasurableSpace X] [BorelSpace X] (A : Set (Rn (n + ℓ))), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → ∀ (α : X → Rn (n + ℓ)) (F₁ F₂ : X → Rn (n + ℓ) → Rn (n + ℓ)), Continuous α → Continuous (fun q : X × Rn (n + ℓ) ↦ F₁ q.1 q.2) → Continuous (fun q : X × Rn (n + ℓ) ↦ F₂ q.1 q.2) → MeasurableSet {ξ : X | α ξ ∈ A ∧ ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖F₁ ξ (x - α ξ)‖ < s * ‖F₂ ξ (x - α ξ)‖} ∩ Metric.ball (α ξ) r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖F₁ ξ (x - α ξ)‖ < s * ‖F₂ ξ (x - α ξ)‖} ∩ Metric.ball (α ξ) r))) ∨ ∃ b ∈ A, b ≠ (α ξ) ∧ dist b (α ξ) < δ ∧ F₁ ξ (b - α ξ) = 0)} := by
+  intro n ℓ X _ _ _ _ _ A hA hAfin δ _hδ α F₁ F₂ hα hF₁ hF₂
+  -- Step 1: the cone mass `m ξ r s = Hⁿ(A ∩ C(ξ, r, s))`.
+  let m : X → ℝ → ℝ → ℝ≥0∞ := fun ξ r s ↦
+    μHE[n] (A ∩ ({x | ‖F₁ ξ (x - α ξ)‖ < s * ‖F₂ ξ (x - α ξ)‖} ∩ Metric.ball (α ξ) r))
+  -- Step 2: for fixed `r, s`, `ξ ↦ m ξ r s` is measurable: `C(ξ, r, s)` is the `ξ`-section of an
+  -- open set `U ⊆ X × ℝ^{n+ℓ}` and `Hⁿ ⌞ A` is a finite measure (Tonelli).
+  have hm : ∀ r s : ℝ, Measurable (fun ξ ↦ m ξ r s) := by
+    intro r s
+    have : IsFiniteMeasure ((μHE[n] : Measure (Rn (n + ℓ))).restrict A) :=
+      isFiniteMeasure_restrict.mpr hAfin.ne
+    let U : Set (X × Rn (n + ℓ)) := {q | ‖F₁ q.1 (q.2 - α q.1)‖ < s * ‖F₂ q.1 (q.2 - α q.1)‖ ∧
+      q.2 ∈ Metric.ball (α q.1) r}
+    have hg : Continuous (fun q : X × Rn (n + ℓ) ↦ (q.1, q.2 - α q.1)) :=
+      continuous_fst.prodMk (continuous_snd.sub (hα.comp continuous_fst))
+    have hU : IsOpen U :=
+      (isOpen_lt (hF₁.comp hg).norm (continuous_const.mul (hF₂.comp hg).norm)).inter
+        (isOpen_lt (continuous_snd.dist (hα.comp continuous_fst)) continuous_const)
+    convert measurable_measure_prodMk_left
+      (ν := (μHE[n] : Measure (Rn (n + ℓ))).restrict A) hU.measurableSet using 1
+    funext ξ
+    rw [Measure.restrict_apply' hA.measurableSet, inter_comm]
+    rfl
+  -- Step 3: `C(ξ, r, s)` is monotone in `(r, s)` and is the directed union of the cones with
+  -- rational `0 < r' < r`, `0 < s' < s` (since `‖F₂‖ > 0` on it); by continuity from below, every
+  -- `t < m ξ r s` is exceeded by some `m ξ r' s'` with such rationals `r', s'`.
+  have happrox : ∀ (ξ : X) (r s : ℝ) (t : ℝ≥0∞), t < m ξ r s →
+      ∃ r' s' : ℚ, 0 < r' ∧ (r' : ℝ) < r ∧ 0 < s' ∧ (s' : ℝ) < s ∧ t < m ξ r' s' := by
+    intro ξ r s t ht
+    let C : ℝ → ℝ → Set (Rn (n + ℓ)) := fun r s ↦
+      A ∩ ({x | ‖F₁ ξ (x - α ξ)‖ < s * ‖F₂ ξ (x - α ξ)‖} ∩ Metric.ball (α ξ) r)
+    have hmono : ∀ r₁ r₂ s₁ s₂ : ℝ, r₁ ≤ r₂ → s₁ ≤ s₂ → C r₁ s₁ ⊆ C r₂ s₂ := by
+      rintro r₁ r₂ s₁ s₂ hr hs x ⟨hxA, hx1, hx2⟩
+      exact ⟨hxA, lt_of_lt_of_le hx1 (mul_le_mul_of_nonneg_right hs (norm_nonneg _)),
+        Metric.ball_subset_ball hr hx2⟩
+    let I := {q : ℚ × ℚ // 0 < q.1 ∧ (q.1 : ℝ) < r ∧ 0 < q.2 ∧ (q.2 : ℝ) < s}
+    have hU : C r s = ⋃ q : I, C q.1.1 q.1.2 := by
+      refine Subset.antisymm (fun x hx ↦ ?_)
+        (iUnion_subset fun q ↦ hmono _ _ _ _ q.2.2.1.le q.2.2.2.2.le)
+      obtain ⟨hxA, hx1, hx2⟩ := hx
+      have hx1' : ‖F₁ ξ (x - α ξ)‖ < s * ‖F₂ ξ (x - α ξ)‖ := hx1
+      have hv : 0 < ‖F₂ ξ (x - α ξ)‖ := by
+        by_contra h
+        rw [le_antisymm (not_lt.mp h) (norm_nonneg _), mul_zero] at hx1'
+        exact (norm_nonneg _).not_gt hx1'
+      obtain ⟨s', hs'1, hs'2⟩ := exists_rat_btwn ((div_lt_iff₀ hv).mpr hx1')
+      obtain ⟨r', hr'1, hr'2⟩ := exists_rat_btwn (Metric.mem_ball.mp hx2)
+      have hs'pos : (0 : ℝ) < s' := lt_of_le_of_lt (by positivity) hs'1
+      have hr'pos : (0 : ℝ) < r' := lt_of_le_of_lt dist_nonneg hr'1
+      exact mem_iUnion.mpr ⟨⟨(r', s'), Rat.cast_pos.mp hr'pos, hr'2, Rat.cast_pos.mp hs'pos, hs'2⟩,
+        hxA, (div_lt_iff₀ hv).mp hs'1, Metric.mem_ball.mpr hr'1⟩
+    have hdir : Directed (· ⊆ ·) fun q : I ↦ C q.1.1 q.1.2 := by
+      intro q₁ q₂
+      refine ⟨⟨(max q₁.1.1 q₂.1.1, max q₁.1.2 q₂.1.2), lt_max_of_lt_left q₁.2.1, ?_,
+        lt_max_of_lt_left q₁.2.2.2.1, ?_⟩, hmono _ _ _ _ ?_ ?_, hmono _ _ _ _ ?_ ?_⟩
+      · rw [Rat.cast_max]
+        exact max_lt q₁.2.2.1 q₂.2.2.1
+      · rw [Rat.cast_max]
+        exact max_lt q₁.2.2.2.2 q₂.2.2.2.2
+      all_goals simp
+    have ht' : t < μHE[n] (⋃ q : I, C q.1.1 q.1.2) := by
+      rw [← hU]
+      exact ht
+    rw [hdir.measure_iUnion] at ht'
+    obtain ⟨q, hq⟩ := lt_iSup_iff.mp ht'
+    exact ⟨q.1.1, q.1.2, q.2.1, q.2.2.1, q.2.2.2.1, q.2.2.2.2, hq⟩
+  -- Step 4: `{Φ0}` is the countable combination
+  -- `⋂_{c ∈ ℚ₊} ⋃_{ε ∈ ℚ₊} ⋂_{s ∈ ℚ ∩ (0, ε)} ⋂_{r ∈ ℚ ∩ (0, δ)} {m(·, r, s) ≤ c (rs)ⁿ}`.
+  have h0 : MeasurableSet {ξ : X | ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε →
+      ∀ r : ℝ, 0 < r → r < δ → m ξ r s ≤ ENNReal.ofReal (c * (r * s) ^ n)} := by
+    have heq : {ξ : X | ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ,
+        0 < r → r < δ → m ξ r s ≤ ENNReal.ofReal (c * (r * s) ^ n)} =
+        ⋂ (c : ℚ) (_ : 0 < c), ⋃ (ε : ℚ) (_ : 0 < ε), ⋂ (s : ℚ) (_ : 0 < s) (_ : (s : ℝ) < ε),
+          ⋂ (r : ℚ) (_ : 0 < r) (_ : (r : ℝ) < δ),
+            {ξ | m ξ r s ≤ ENNReal.ofReal ((c : ℝ) * ((r : ℝ) * (s : ℝ)) ^ n)} := by
+      ext ξ
+      simp only [mem_ofPred_eq, mem_iInter, mem_iUnion]
+      constructor
+      · intro h c hc
+        obtain ⟨ε, hε, hb⟩ := h c (Rat.cast_pos.mpr hc)
+        obtain ⟨ε', hε'1, hε'2⟩ := exists_rat_btwn hε
+        exact ⟨ε', Rat.cast_pos.mp hε'1, fun s hs hsε r hr hrδ ↦
+          hb s (Rat.cast_pos.mpr hs) (hsε.trans hε'2) r (Rat.cast_pos.mpr hr) hrδ⟩
+      · intro h c hc
+        obtain ⟨c', hc'1, hc'2⟩ := exists_rat_btwn hc
+        obtain ⟨ε, hε, hb⟩ := h c' (Rat.cast_pos.mp hc'1)
+        refine ⟨ε, Rat.cast_pos.mpr hε, fun s hs hsε r hr hrδ ↦ ?_⟩
+        by_contra hcon
+        obtain ⟨r', s', hr', hr'r, hs', hs's, hlt⟩ := happrox ξ r s _ (not_le.mp hcon)
+        have hr'0 : (0 : ℝ) < r' := Rat.cast_pos.mpr hr'
+        have hs'0 : (0 : ℝ) < s' := Rat.cast_pos.mpr hs'
+        have hle : ENNReal.ofReal ((c' : ℝ) * ((r' : ℝ) * (s' : ℝ)) ^ n) ≤
+            ENNReal.ofReal (c * (r * s) ^ n) :=
+          ENNReal.ofReal_le_ofReal (mul_le_mul hc'2.le (pow_le_pow_left₀ (by positivity)
+            (mul_le_mul hr'r.le hs's.le hs'0.le hr.le) n) (by positivity) hc.le)
+        exact (hlt.trans_le ((hb s' hs' (hs's.trans hsε) r' hr' (hr'r.trans hrδ)).trans hle)).false
+    rw [heq]
+    refine MeasurableSet.iInter fun c ↦ MeasurableSet.iInter fun _ ↦ MeasurableSet.iUnion fun ε ↦
+      MeasurableSet.iUnion fun _ ↦ MeasurableSet.iInter fun s ↦ MeasurableSet.iInter fun _ ↦
+        MeasurableSet.iInter fun _ ↦ MeasurableSet.iInter fun r ↦ MeasurableSet.iInter fun _ ↦
+          MeasurableSet.iInter fun _ ↦ measurableSet_le (hm r s) measurable_const
+  -- Step 5: `{Φ∞}` is the countable combination
+  -- `⋂_{K ∈ ℕ} ⋂_{ε ∈ ℚ₊} ⋃_{s ∈ ℚ ∩ (0, ε)} ⋃_{r ∈ ℚ ∩ (0, δ)} {K (rs)ⁿ < m(·, r, s)}`.
+  have hinf : MeasurableSet {ξ : X | ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ,
+      0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ m ξ r s} := by
+    have heq : {ξ : X | ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧
+        r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ m ξ r s} =
+        ⋂ (K : ℕ) (ε : ℚ) (_ : 0 < ε), ⋃ (s : ℚ) (_ : 0 < s) (_ : (s : ℝ) < ε),
+          ⋃ (r : ℚ) (_ : 0 < r) (_ : (r : ℝ) < δ),
+            {ξ | ENNReal.ofReal ((K : ℝ) * ((r : ℝ) * (s : ℝ)) ^ n) < m ξ r s} := by
+      ext ξ
+      simp only [mem_ofPred_eq, mem_iInter, mem_iUnion]
+      constructor
+      · intro h K ε hε
+        obtain ⟨s, hs, hsε, r, hr, hrδ, hle⟩ := h ((K : ℝ) + 1) ε (Rat.cast_pos.mpr hε)
+        have hrs : 0 < (r * s) ^ n := pow_pos (mul_pos hr hs) n
+        have hlt : ENNReal.ofReal ((K : ℝ) * (r * s) ^ n) < m ξ r s := by
+          refine lt_of_lt_of_le ?_ hle
+          rw [ENNReal.ofReal_lt_ofReal_iff (by positivity)]
+          linarith
+        obtain ⟨r', s', hr', hr'r, hs', hs's, hlt'⟩ := happrox ξ r s _ hlt
+        have hr'0 : (0 : ℝ) < r' := Rat.cast_pos.mpr hr'
+        have hs'0 : (0 : ℝ) < s' := Rat.cast_pos.mpr hs'
+        refine ⟨s', hs', hs's.trans hsε, r', hr', hr'r.trans hrδ, lt_of_le_of_lt ?_ hlt'⟩
+        exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left (pow_le_pow_left₀
+          (by positivity) (mul_le_mul hr'r.le hs's.le hs'0.le hr.le) n) (Nat.cast_nonneg K))
+      · intro h K ε hε
+        obtain ⟨K', hK'⟩ := exists_nat_ge K
+        obtain ⟨ε', hε'1, hε'2⟩ := exists_rat_btwn hε
+        obtain ⟨s, hs, hsε, r, hr, hrδ, hlt⟩ := h K' ε' (Rat.cast_pos.mp hε'1)
+        have hr0 : (0 : ℝ) < r := Rat.cast_pos.mpr hr
+        have hs0 : (0 : ℝ) < s := Rat.cast_pos.mpr hs
+        refine ⟨s, hs0, hsε.trans hε'2, r, hr0, hrδ, (lt_of_le_of_lt ?_ hlt).le⟩
+        exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right hK' (by positivity))
+    rw [heq]
+    refine MeasurableSet.iInter fun K ↦ MeasurableSet.iInter fun ε ↦ MeasurableSet.iInter fun _ ↦
+      MeasurableSet.iUnion fun s ↦ MeasurableSet.iUnion fun _ ↦ MeasurableSet.iUnion fun _ ↦
+        MeasurableSet.iUnion fun r ↦ MeasurableSet.iUnion fun _ ↦ MeasurableSet.iUnion fun _ ↦
+          measurableSet_lt measurable_const (hm r s)
+  -- Step 6: the axis set is `⋃_j fst '' C_j`, where
+  -- `C_j = {(ξ, b) ∈ X × A : 1/(j+1) ≤ |b - αξ| ≤ δ - 1/(j+1), F₁ ξ (b - αξ) = 0}` is closed and
+  -- the projection `X × A → X` is a closed map since `A` is compact; so it is `F_σ`.
+  have hax : MeasurableSet {ξ : X | ∃ b ∈ A, b ≠ α ξ ∧ dist b (α ξ) < δ ∧ F₁ ξ (b - α ξ) = 0} := by
+    have : CompactSpace A := isCompact_iff_compactSpace.mp hA
+    let C : ℕ → Set (X × A) := fun j ↦ {q | 1 / ((j : ℝ) + 1) ≤ dist (q.2 : Rn (n + ℓ)) (α q.1) ∧
+      dist (q.2 : Rn (n + ℓ)) (α q.1) ≤ δ - 1 / ((j : ℝ) + 1) ∧
+        F₁ q.1 ((q.2 : Rn (n + ℓ)) - α q.1) = 0}
+    have hc1 : Continuous (fun q : X × A ↦ dist (q.2 : Rn (n + ℓ)) (α q.1)) :=
+      (continuous_subtype_val.comp continuous_snd).dist (hα.comp continuous_fst)
+    have hc2 : Continuous (fun q : X × A ↦ F₁ q.1 ((q.2 : Rn (n + ℓ)) - α q.1)) :=
+      hF₁.comp (continuous_fst.prodMk
+        ((continuous_subtype_val.comp continuous_snd).sub (hα.comp continuous_fst)))
+    have hC : ∀ j, IsClosed (C j) := fun j ↦
+      (isClosed_le continuous_const hc1).inter
+        ((isClosed_le hc1 continuous_const).inter (isClosed_eq hc2 continuous_const))
+    have heq : {ξ : X | ∃ b ∈ A, b ≠ α ξ ∧ dist b (α ξ) < δ ∧ F₁ ξ (b - α ξ) = 0} =
+        ⋃ j, Prod.fst '' C j := by
+      ext ξ
+      simp only [mem_ofPred_eq, mem_iUnion, mem_image]
+      constructor
+      · rintro ⟨b, hbA, hne, hlt, h0⟩
+        obtain ⟨j, hj⟩ := exists_nat_one_div_lt (lt_min (dist_pos.mpr hne) (sub_pos.mpr hlt))
+        refine ⟨j, (ξ, ⟨b, hbA⟩), ⟨(hj.trans_le (min_le_left _ _)).le, ?_, h0⟩, rfl⟩
+        have := hj.trans_le (min_le_right _ _)
+        simp only at this ⊢
+        linarith
+      · rintro ⟨j, ⟨ξ', b⟩, ⟨h1, h2, h3⟩, rfl⟩
+        have hj : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+        refine ⟨b, b.2, fun h ↦ ?_, ?_, h3⟩
+        · simp only [h, dist_self] at h1
+          linarith
+        · simp only at h2
+          linarith
+    rw [heq]
+    exact MeasurableSet.iUnion fun j ↦ (isClosedMap_fst_of_compactSpace _ (hC j)).measurableSet
+  -- Step 7: the exceptional set is `α⁻¹(A) ∖ ({Φ0} ∪ {Φ∞} ∪ {Ax})`, and `α⁻¹(A)` is closed.
+  exact (hA.isClosed.preimage hα).measurableSet.inter (h0.union (hinf.union hax)).compl
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
