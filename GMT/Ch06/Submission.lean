@@ -359,6 +359,32 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The fundamental theorem of calculus along a ray: for `a` of class `C¹` with compact support
+and `θ ≠ 0`, `∫_{(0,∞)} Da(y - rθ)θ dr = a(y)`.  The function `h(r) = a(y - rθ)` is `C¹` with
+`h'(r) = -Da(y - rθ)θ`.  It has compact support because `r ↦ y - rθ` is a closed embedding.
+So `HasCompactSupport.integral_Ioi_deriv_eq` gives `∫_{(0,∞)} h' = -h(0) = -a(y)`. -/
+theorem Submission.rpn_pe_ray_ftc :
+    ∀ (n : ℕ) (a : Eucl n → ℝ), ContDiff ℝ 1 a → HasCompactSupport a → ∀ y θ : Eucl n, θ ≠ 0 →
+      ∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • θ) θ = a y := by
+  intro n a ha hsupp y θ hθ
+  -- `h(r) = a(y - rθ)` is `C¹` and compactly supported (the line is a closed embedding as `θ ≠ 0`).
+  have hh : ContDiff ℝ 1 (fun r : ℝ => a (y - r • θ)) :=
+    ha.comp (contDiff_const.sub (contDiff_id.smul contDiff_const))
+  have hhsupp : HasCompactSupport (fun r : ℝ => a (y - r • θ)) :=
+    hsupp.comp_isClosedEmbedding
+      ((Homeomorph.subLeft y).isClosedEmbedding.comp (isClosedEmbedding_smul_left hθ))
+  -- Chain rule: `h'(r) = Da(y - rθ)(-θ)`.
+  have hderiv : ∀ r : ℝ, deriv (fun r : ℝ => a (y - r • θ)) r = -fderiv ℝ a (y - r • θ) θ := by
+    intro r
+    have hline : HasDerivAt (fun r : ℝ => y - r • θ) (-θ) r := by
+      simpa using ((hasDerivAt_id r).smul_const θ).const_sub y
+    exact (((ha.differentiable one_ne_zero) (y - r • θ)).hasFDerivAt.comp_hasDerivAt r
+      hline).deriv.trans (map_neg _ _)
+  -- FTC on `(0, ∞)`: `∫_{(0,∞)} h' = -h(0) = -a(y)`.
+  have key := HasCompactSupport.integral_Ioi_deriv_eq hh hhsupp 0
+  simp_rw [hderiv, integral_neg, zero_smul, sub_zero] at key
+  exact neg_injective key
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
