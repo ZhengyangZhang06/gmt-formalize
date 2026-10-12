@@ -1891,6 +1891,160 @@ theorem aetp_c1_piece_approxTangent : ∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ)
       _ = |∫ y, f y ∂μ₁ - ∫ y, f y ∂μ₂| + |∫ y, f (Φ y) ∂μ₃ - ∫ y, f y ∂μ₃| := by
           rw [hmap]
       _ < ε := by linarith only [hE1, hE2, hfin1, hfin2]
+/-- **Blow-up integrals over a set of zero `n`-density vanish** (the error estimate in Simon Ch. 3,
+proof of Theorem 1.6 `⇒`): if `Hⁿ(S ∩ B_r(x)) / rⁿ → 0` as `r ↓ 0`, then
+`∫_{η_{x,r}(S)} f dHⁿ → 0` as `r ↓ 0` for every `f ∈ C_c(ℝ^{n+ℓ}, ℝ)`, where
+`η_{x,r}(y) = r⁻¹(y − x)`.  No measurability or finiteness of `S` is needed.
+
+Simon's estimate, inline (SimonGMT's `Chapter04.hausdorff_blowUp_image` is outside the frozen
+import closure).  Choose `R > 0` with `f = 0` off `B_R(0)` and `C` with `|f| ≤ C`.  For `r > 0`,
+`η_{x,r}` is a translation followed by the dilation by `r⁻¹`, so `Hⁿ(η_{x,r}(T)) = r⁻ⁿ Hⁿ(T)`;
+since `η_{x,r}⁻¹(B_R(0)) = B_{rR}(x)`, this gives
+`Hⁿ(η_{x,r}(S) ∩ B_R(0)) = r⁻ⁿ Hⁿ(S ∩ B_{rR}(x)) = Rⁿ · Hⁿ(S ∩ B_{rR}(x)) / (rR)ⁿ → 0`.  Hence
+`|∫_{η_{x,r}(S)} f dHⁿ| = |∫_{B_R(0)} f d(Hⁿ ⌞ η_{x,r}(S))| ≤ C Hⁿ(η_{x,r}(S) ∩ B_R(0)) → 0`. -/
+theorem aetp_blowUp_integral_tendsto_zero_of_density_zero : ∀ (n ℓ : ℕ) (x : Amb n ℓ) (S : Set (Amb n ℓ)), Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (S ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ x S hS f
+  -- `f` vanishes off `B_R(0)` and `|f| ≤ C`.
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Amb n ℓ)
+  obtain ⟨R, hRpos, hf0⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y, y ∉ closedBall (0 : Amb n ℓ) R → f y = 0 :=
+    ⟨max R₀ 1, zero_lt_one.trans_le (le_max_right _ _), fun y hy => by
+      by_contra hfy
+      exact hy (closedBall_subset_closedBall (le_max_left _ _) (hR₀ (subset_tsupport _ hfy)))⟩
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  -- Scaling: `Hⁿ(η_{x,r}(T)) = ofReal(rⁿ)⁻¹ Hⁿ(T)` for `r > 0`.
+  have hscale : ∀ r : ℝ, 0 < r → ∀ T : Set (Amb n ℓ),
+      (μHE[n] : Measure (Amb n ℓ)) (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
+        (ENNReal.ofReal (r ^ n))⁻¹ * (μHE[n] : Measure (Amb n ℓ)) T := by
+    intro r hr T
+    have h := Measure.euclideanHausdorffMeasure_smul₀ (E := Amb n ℓ) n (inv_ne_zero hr.ne')
+      ((IsometryEquiv.subRight x) '' T)
+    rw [← Set.image_smul, Set.image_image,
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image, ENNReal.smul_def,
+      smul_eq_mul] at h
+    refine Eq.trans h ?_
+    congr 1
+    rw [← ENNReal.ofReal_inv_of_pos (pow_pos hr n), ← ENNReal.ofReal_coe_nnreal, NNReal.coe_pow,
+      coe_nnnorm, Real.norm_of_nonneg (inv_nonneg.2 hr.le), inv_pow]
+  -- Ball identity: `η_{x,r}⁻¹(B_R(0)) = B_{rR}(x)` for `r > 0`.
+  have hpre : ∀ r : ℝ, 0 < r →
+      Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' closedBall 0 R = closedBall x (r * R) := by
+    intro r hr
+    ext y
+    simp only [Set.mem_preimage, mem_closedBall_iff_norm, sub_zero,
+      Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr]
+    exact inv_mul_le_iff₀ hr
+  -- `Hⁿ(η_{x,r}(S) ∩ B_R(0)) = ofReal(Rⁿ) · Hⁿ(S ∩ B_{rR}(x)) / ofReal((rR)ⁿ) → 0` as `r ↓ 0`.
+  have hmul : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h := (tendsto_id (x := 𝓝 (0 : ℝ))).mul_const R
+      rw [zero_mul] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hRpos
+  have hg : Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ))
+      (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R)) (𝓝[>] 0) (𝓝 0) := by
+    have h1 := ENNReal.Tendsto.const_mul (hS.comp hmul) (Or.inr ENNReal.ofReal_ne_top)
+      (a := ENNReal.ofReal (R ^ n))
+    rw [mul_zero] at h1
+    refine h1.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    have hR' : ENNReal.ofReal (R ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos hRpos n)).ne'
+    rw [Function.comp_apply, ← Set.image_inter_preimage, hpre r hr, hscale r hr, mul_pow,
+      ENNReal.ofReal_mul (pow_nonneg hr.le n), ← mul_div_assoc, mul_comm (ENNReal.ofReal (R ^ n)),
+      ENNReal.mul_div_mul_right _ _ hR' ENNReal.ofReal_ne_top, ENNReal.div_eq_inv_mul]
+  -- `|∫_{η_{x,r}(S)} f dHⁿ| ≤ C Hⁿ(η_{x,r}(S) ∩ B_R(0))` once the latter is finite.
+  have hbound : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      ‖∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, f y ∂(μHE[n] : Measure (Amb n ℓ))‖ ≤
+        C * ((μHE[n] : Measure (Amb n ℓ))
+          (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R)).toReal := by
+    filter_upwards [hg.eventually (gt_mem_nhds ENNReal.zero_lt_top)] with r hr
+    have h2 : ((μHE[n] : Measure (Amb n ℓ)).restrict
+        (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S)) (closedBall 0 R) =
+        (μHE[n] : Measure (Amb n ℓ))
+          (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) := by
+      rw [Measure.restrict_apply measurableSet_closedBall, Set.inter_comm]
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hf0, ← h2]
+    exact norm_setIntegral_le_of_norm_le_const (h2 ▸ hr) (fun y _ => hC y)
+  have hlim : Tendsto (fun r : ℝ => C * ((μHE[n] : Measure (Amb n ℓ))
+      (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R)).toReal)
+      (𝓝[>] 0) (𝓝 0) := by
+    simpa using ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hg).const_mul C
+  exact squeeze_zero_norm' hbound hlim
+/-- **Simon Ch. 3, Remark 1.5(2) / proof of Theorem 1.6 "⇒" at a single point** (locality of the
+approximate tangent space): let `A, N ⊆ ℝ^{n+ℓ}` be Borel with `Hⁿ(A), Hⁿ(N) < ∞`, such that
+`A \ N` and `N \ A` both have `n`-density `0` at `x`.  If `Q` is the approximate tangent space of
+`N` at `x`, then it is also the approximate tangent space of `A` at `x`.
+
+Simon's proof, with `M ↦ A`, `N_j ↦ N`, `M_j ↦ A ∩ N`.  For `r > 0` the blow-up `η_{x,r}` is a
+homeomorphism with inverse `z ↦ x + r • z` that scales `Hⁿ` by `r⁻ⁿ`.  So every `f ∈ C_c` is
+integrable on the images of `A ∩ N`, `A \ N` and `N \ A`, and additivity gives
+`∫_{η_r(A)} f = ∫_{η_r(N)} f - ∫_{η_r(N \ A)} f + ∫_{η_r(A \ N)} f`.  As `r ↓ 0` the first term
+tends to `∫_Q f` by hypothesis, and the two error terms tend to `0` by
+`aetp_blowUp_integral_tendsto_zero_of_density_zero`. -/
+theorem aetp_approxTangent_of_density_zero_symmDiff : ∀ (n ℓ : ℕ) (A N : Set (Amb n ℓ)) (x : Amb n ℓ) (Q : Submodule ℝ (Amb n ℓ)), MeasurableSet A → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) A < ⊤ → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((A \ N) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((N \ A) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x Q → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n A x Q := by
+  intro n ℓ A N x Q hA hN hAμ hNμ hAN hNA hNQ
+  -- Step 1: `finrank Q = n` is part of the hypothesis on `N`; fix a test function `f`.
+  refine ⟨hNQ.1, fun f => ?_⟩
+  -- Step 2: `∫_{η_r(N)} f - ∫_{η_r(N \ A)} f + ∫_{η_r(A \ N)} f → ∫_Q f - 0 + 0`.
+  have hlim := ((hNQ.2 f).sub
+    (Submission.aetp_blowUp_integral_tendsto_zero_of_density_zero n ℓ x (N \ A) hNA f)).add
+    (Submission.aetp_blowUp_integral_tendsto_zero_of_density_zero n ℓ x (A \ N) hAN f)
+  rw [sub_zero, add_zero] at hlim
+  -- Step 3: it suffices to prove the decomposition identity `(∗)` for each fixed `r > 0`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- Step 4: `η_r` has the continuous inverse `g z = x + r • z`, so `η_r(S) = g⁻¹(S)`: images of
+  -- Borel sets are Borel, and unions and disjointness pass to images.
+  set g : Amb n ℓ → Amb n ℓ := fun z => x + r • z
+  have hg : Continuous g := continuous_const.add (continuous_const_smul r)
+  have himg : ∀ S : Set (Amb n ℓ), Poincare.SimonGMT.Chapter03.blowUpMap x r '' S = g ⁻¹' S := by
+    intro S
+    refine congrFun (image_eq_preimage_of_inverse (fun y => ?_) (fun z => ?_)) S
+    · simp [g, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr.ne']
+    · simp [g, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr.ne']
+  -- Step 5: `Hⁿ(η_r(T)) = r⁻ⁿ Hⁿ(T)` (an isometric translation followed by a homothety), so
+  -- `η_r` preserves finiteness of `Hⁿ`.
+  have hshift : Isometry fun y : Amb n ℓ => y - x := by
+    apply Isometry.of_dist_eq
+    intro y z
+    simp only [dist_eq_norm]
+    congr 1
+    abel
+  have hfin : ∀ T : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) T < ⊤ →
+      (μHE[n] : Measure (Amb n ℓ)) (g ⁻¹' T) < ⊤ := by
+    intro T hT
+    have himage : g ⁻¹' T =
+        AffineMap.homothety (0 : Amb n ℓ) r⁻¹ '' ((fun y : Amb n ℓ => y - x) '' T) := by
+      rw [← himg, ← image_comp]
+      congr 1
+      funext y
+      simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Amb n ℓ) (inv_ne_zero hr.ne'),
+      hshift.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul]
+    exact ENNReal.mul_lt_top ENNReal.coe_lt_top hT
+  -- Step 6: `f` is bounded, hence integrable on every set of finite measure.
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  have hint : ∀ T : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) T < ⊤ →
+      IntegrableOn f (g ⁻¹' T) (μHE[n] : Measure (Amb n ℓ)) := fun T hT =>
+    Measure.integrableOn_of_bounded (hfin T hT).ne f.continuous.aestronglyMeasurable
+      (ae_of_all _ hC)
+  have hANμ : (μHE[n] : Measure (Amb n ℓ)) (A ∩ N) < ⊤ :=
+    (measure_mono inter_subset_left).trans_lt hAμ
+  have hAdNμ : (μHE[n] : Measure (Amb n ℓ)) (A \ N) < ⊤ := (measure_mono sdiff_subset).trans_lt hAμ
+  have hNdAμ : (μHE[n] : Measure (Amb n ℓ)) (N \ A) < ⊤ := (measure_mono sdiff_subset).trans_lt hNμ
+  -- Step 7: additivity over `A = (A ∩ N) ∪ (A \ N)` and `N = (A ∩ N) ∪ (N \ A)`; eliminating
+  -- `∫_{η_r(A ∩ N)} f` gives `(∗)`.
+  have hAsplit : g ⁻¹' A = g ⁻¹' (A ∩ N) ∪ g ⁻¹' (A \ N) := by
+    rw [← preimage_union, inter_union_sdiff]
+  have hNsplit : g ⁻¹' N = g ⁻¹' (A ∩ N) ∪ g ⁻¹' (N \ A) := by
+    rw [← preimage_union, inter_comm A N, inter_union_sdiff]
+  simp only [himg]
+  rw [hAsplit, hNsplit,
+    setIntegral_union ((disjoint_sdiff_right.mono_left inter_subset_right).preimage g)
+      (hg.measurable (hA.diff hN)) (hint _ hANμ) (hint _ hAdNμ),
+    setIntegral_union ((disjoint_sdiff_right.mono_left inter_subset_left).preimage g)
+      (hg.measurable (hN.diff hA)) (hint _ hANμ) (hint _ hNdAμ)]
+  ring
 /-- **Simon Ch. 1, Upper Density Theorem 3.6** (cited fact (H2) of the a.e. tangent-plane proof),
 in Mathlib's normalization `Hⁿ = μHE[n]`: if `A ⊆ ℝ^{n+ℓ}` is Borel and `ν(A) < ∞`, then
 `ν(A ∩ B_r(x)) / rⁿ → 0` as `r ↓ 0` for `Hⁿ`-a.e. `x ∉ A`.
@@ -2035,6 +2189,30 @@ theorem aetp_upper_density_zero_ae : ∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)
   obtain ⟨ε, hε, hfreq⟩ := hnt
   obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
   exact mem_iUnion.2 ⟨k, hxA, hfreq.mono fun r hr => hk.trans hr⟩
+
+/-- **Simon Ch. 3, Remark 1.5(2)** (locality of approximate tangent spaces, from the proof of
+Theorem 1.6 "⇒"): if `A, N ⊆ ℝ^{n+ℓ}` are Borel with `Hⁿ(A), Hⁿ(N) < ∞` and `P(x) = T_x N` for
+every `x ∈ N`, then `P(x) = T_x A` for `Hⁿ`-a.e. `x ∈ A ∩ N`.
+
+The Upper Density Theorem (`aetp_upper_density_zero_ae` with `ν = Hⁿ`) applied to `A \ N` and to
+`N \ A` gives `Hⁿ((A \ N) ∩ B_r(x)) / rⁿ → 0` and `Hⁿ((N \ A) ∩ B_r(x)) / rⁿ → 0` as `r ↓ 0` for
+`Hⁿ`-a.e. `x` outside the respective set, hence for `Hⁿ`-a.e. `x ∈ A ∩ N`.  At such `x` the blow-ups
+`η_{x,r}(A)` and `η_{x,r}(N)` differ by the images of these two sets, whose integrals vanish in the
+limit, so `T_x A = T_x N = P(x)` (`aetp_approxTangent_of_density_zero_symmDiff`). -/
+theorem aetp_approxTangent_ae_of_inter : ∀ (n ℓ : ℕ) (A N : Set (Amb n ℓ)) (P : Amb n ℓ → Submodule ℝ (Amb n ℓ)), MeasurableSet A → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) A < ⊤ → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → (∀ x ∈ N, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x (P x)) → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)).restrict (A ∩ N), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n A x (P x) := by
+  intro n ℓ A N P hA hN hAfin hNfin hP
+  -- Upper density zero for `A \ N` and `N \ A` (Borel, of finite `Hⁿ` measure), with `ν = Hⁿ`.
+  have hAN := Submission.aetp_upper_density_zero_ae n ℓ (μHE[n]) (A \ N) (hA.diff hN)
+    ((measure_mono sdiff_subset).trans_lt hAfin)
+  have hNA := Submission.aetp_upper_density_zero_ae n ℓ (μHE[n]) (N \ A) (hN.diff hA)
+    ((measure_mono sdiff_subset).trans_lt hNfin)
+  -- A point of `A ∩ N` lies in neither `A \ N` nor `N \ A`, so both limits hold
+  -- `Hⁿ ⌞ (A ∩ N)`-a.e.
+  filter_upwards [ae_restrict_mem (hA.inter hN), ae_restrict_of_ae hAN, ae_restrict_of_ae hNA]
+    with x hx hxAN hxNA
+  -- At such `x ∈ N`, `T_x N = P(x)` transfers to `A`.
+  exact Submission.aetp_approxTangent_of_density_zero_symmDiff n ℓ A N x (P x) hA hN hAfin hNfin
+    (hxAN fun h => h.2 hx.2) (hxNA fun h => h.2 hx.1) (hP x hx.2)
 
 end Submission
 
