@@ -410,6 +410,140 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Cylinder grouping (Simon Ch. 8, proof of 5.10 (8), steps (b)–(d)): for a `d`-separated finite
+set `s` in one fibre of `p = Grassmannian.project P`, the cylinders `U^{d/2}_ρ(y)`, `y ∈ s`, are
+disjoint and lie in the enlarged cylinders `U^{d/2+S}_{ρ+S}(z)` about representatives `z ∈ Z`
+within distance `S`; hence the `ρ^{-n}`-normalized sum over `s` is at most `1 + (2^n - 1) u` times
+the `(ρ + S)^{-n}`-normalized sum over `Z`, when `S ≤ u ρ` and `u ≤ 1`. -/
+theorem Submission.intcpt_allard_ccb_cylinder_grouping :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s Z : Finset (Euclidean N)) (d ρ S u : ℝ), (∀ y ∈ s, Grassmannian.project P y = x) → Z ⊆ s → 0 < d → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖) → 0 < ρ → 0 ≤ S → S ≤ u * ρ → u ≤ 1 → (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) → ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) / ENNReal.ofReal ρ ^ n ≤ ENNReal.ofReal (1 + (2 ^ n - 1) * u) * ∑ y ∈ Z, μ (closedBall y (ρ + S) ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2 + S}) / ENNReal.ofReal (ρ + S) ^ n := by
+  intro N n μ P x s Z d ρ S u hpx hZs hd hsep hρ hS hSu hu1 hcov
+  classical
+  -- Step 0: `p = Grassmannian.project P` is linear and continuous, and `p (y - y') = 0` on `s`.
+  have hsub : ∀ a b : Euclidean N,
+      Grassmannian.project P (a - b) = Grassmannian.project P a - Grassmannian.project P b :=
+    fun a b ↦ map_sub (Grassmannian.projectionLinearMap P) a b
+  have hadd : ∀ a b : Euclidean N,
+      Grassmannian.project P (a + b) = Grassmannian.project P a + Grassmannian.project P b :=
+    fun a b ↦ map_add (Grassmannian.projectionLinearMap P) a b
+  have hcont : Continuous (Grassmannian.project P) :=
+    (Grassmannian.projectionLinearMap P).continuous_of_finiteDimensional
+  have hfibre : ∀ y ∈ s, ∀ y' ∈ s, Grassmannian.project P (y - y') = 0 := fun y hy y' hy' ↦ by
+    rw [hsub, hpx y hy, hpx y' hy', sub_self]
+  have hu0 : 0 ≤ u := by nlinarith
+  -- Step 1: representatives `r y ∈ Z` with `‖y - r y‖ ≤ S`.
+  choose! r hrZ hrS using hcov
+  -- Steps 2–5: the disjoint Borel cylinders about the fibre `{y ∈ s | r y = w}` lie in the
+  -- enlarged cylinder about `w`.
+  have hfib : ∀ w ∈ Z, ∑ y ∈ s with r y = w,
+      μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) ≤
+        μ (closedBall w (ρ + S) ∩
+          {z | ‖(z - w) - Grassmannian.project P (z - w)‖ < d / 2 + S}) := by
+    intro w hw
+    rw [← measure_biUnion_finset]
+    · -- Step 4: inclusion, by the triangle inequality and `q (z - r y) = q (z - y) + (y - r y)`.
+      refine measure_mono (iUnion₂_subset fun y hy z hz ↦ ?_)
+      obtain ⟨hys, rfl⟩ := Finset.mem_filter.1 hy
+      have hws : r y ∈ s := hZs (hrZ y hys)
+      obtain ⟨hzball, hzcyl⟩ := hz
+      rw [mem_closedBall, dist_eq_norm] at hzball
+      have hq : (z - r y) - Grassmannian.project P (z - r y) =
+          ((z - y) - Grassmannian.project P (z - y)) + (y - r y) := by
+        have h1 : z - r y = (z - y) + (y - r y) := by abel
+        rw [h1, hadd, hfibre y hys (r y) hws, add_zero]
+        abel
+      refine ⟨?_, ?_⟩
+      · rw [mem_closedBall, dist_eq_norm]
+        calc ‖z - r y‖ = ‖(z - y) + (y - r y)‖ := by congr 1; abel
+          _ ≤ ‖z - y‖ + ‖y - r y‖ := norm_add_le _ _
+          _ ≤ ρ + S := add_le_add hzball (hrS y hys)
+      · show ‖(z - r y) - Grassmannian.project P (z - r y)‖ < d / 2 + S
+        rw [hq]
+        calc _ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ + ‖y - r y‖ := norm_add_le _ _
+          _ < d / 2 + S := add_lt_add_of_lt_of_le hzcyl (hrS y hys)
+    · -- Step 3: disjointness, as `y - y' = q (z - y') - q (z - y)` would have norm `< d`.
+      intro y hy y' hy' hne
+      have hys : y ∈ s := (Finset.mem_filter.1 hy).1
+      have hy's : y' ∈ s := (Finset.mem_filter.1 hy').1
+      refine Set.disjoint_left.2 fun z hz hz' ↦ ?_
+      have h1 : ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2 := hz.2
+      have h2 : ‖(z - y') - Grassmannian.project P (z - y')‖ < d / 2 := hz'.2
+      have hkey : y - y' = ((z - y') - Grassmannian.project P (z - y')) -
+          ((z - y) - Grassmannian.project P (z - y)) := by
+        have h3 : Grassmannian.project P (z - y') - Grassmannian.project P (z - y) =
+            Grassmannian.project P (y - y') := by
+          rw [← hsub]
+          congr 1
+          abel
+        rw [hfibre y hys y' hy's, sub_eq_zero] at h3
+        rw [h3]
+        abel
+      have h4 : ‖y - y'‖ < d := by
+        rw [hkey]
+        calc _ ≤ ‖(z - y') - Grassmannian.project P (z - y')‖ +
+              ‖(z - y) - Grassmannian.project P (z - y)‖ := norm_sub_le _ _
+          _ < d / 2 + d / 2 := add_lt_add h2 h1
+          _ = d := add_halves d
+      linarith [hsep y hys y' hy's hne]
+    · -- Step 2: each cylinder is a closed ball intersected with an open set.
+      intro y _
+      refine measurableSet_closedBall.inter (IsOpen.measurableSet ?_)
+      exact isOpen_lt (by fun_prop) continuous_const
+  -- Step 6: `(1 + u)^k ≤ 1 + (2^k - 1) u` for `0 ≤ u ≤ 1`.
+  have hF1 : ∀ k : ℕ, (1 + u) ^ k ≤ 1 + (2 ^ k - 1) * u := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      have h2k : (1 : ℝ) ≤ 2 ^ k := one_le_pow₀ (by norm_num)
+      calc (1 + u) ^ (k + 1) = (1 + u) ^ k * (1 + u) := pow_succ _ _
+        _ ≤ (1 + (2 ^ k - 1) * u) * (1 + u) := mul_le_mul_of_nonneg_right ih (by linarith)
+        _ ≤ 1 + (2 ^ (k + 1) - 1) * u := by
+          rw [pow_succ]
+          nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 h2k) hu0) (sub_nonneg.2 hu1)]
+  -- Step 7: rescaling, `X / ρ^n ≤ κ (X / (ρ + S)^n)` with `κ = ofReal (1 + (2^n - 1) u)`.
+  have hk1 : (1 : ℝ) ≤ 1 + (2 ^ n - 1) * u := by
+    have h2n : (1 : ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
+    nlinarith
+  have hreal : (ρ + S) ^ n ≤ (1 + (2 ^ n - 1) * u) * ρ ^ n := by
+    calc (ρ + S) ^ n ≤ ((1 + u) * ρ) ^ n := pow_le_pow_left₀ (by linarith) (by linarith) n
+      _ = (1 + u) ^ n * ρ ^ n := mul_pow _ _ _
+      _ ≤ (1 + (2 ^ n - 1) * u) * ρ ^ n :=
+          mul_le_mul_of_nonneg_right (hF1 n) (pow_nonneg hρ.le n)
+  have hκ : ENNReal.ofReal (ρ + S) ^ n ≤
+      ENNReal.ofReal (1 + (2 ^ n - 1) * u) * ENNReal.ofReal ρ ^ n := by
+    rw [← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_pow hρ.le,
+      ← ENNReal.ofReal_mul (by linarith)]
+    exact ENNReal.ofReal_le_ofReal hreal
+  have hκ0 : ENNReal.ofReal (1 + (2 ^ n - 1) * u) ≠ 0 := by
+    rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+    linarith
+  have hresc : ∀ X : ℝ≥0∞, X / ENNReal.ofReal ρ ^ n ≤
+      ENNReal.ofReal (1 + (2 ^ n - 1) * u) * (X / ENNReal.ofReal (ρ + S) ^ n) := by
+    intro X
+    rw [← ENNReal.mul_div_mul_left X (ENNReal.ofReal ρ ^ n) hκ0 ENNReal.ofReal_ne_top,
+      ← mul_div_assoc]
+    exact ENNReal.div_le_div_left hκ _
+  -- Step 8: group the sum over `s` by representatives, then rescale.
+  calc ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
+        ENNReal.ofReal ρ ^ n
+      = ∑ w ∈ Z, ∑ y ∈ s with r y = w,
+          μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
+            ENNReal.ofReal ρ ^ n :=
+        (Finset.sum_fiberwise_of_maps_to hrZ _).symm
+    _ = ∑ w ∈ Z, (∑ y ∈ s with r y = w,
+          μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2})) /
+            ENNReal.ofReal ρ ^ n := by
+        simp_rw [ENNReal.sum_div]
+    _ ≤ ∑ w ∈ Z, μ (closedBall w (ρ + S) ∩
+          {z | ‖(z - w) - Grassmannian.project P (z - w)‖ < d / 2 + S}) / ENNReal.ofReal ρ ^ n :=
+        Finset.sum_le_sum fun w hw ↦ ENNReal.div_le_div_right (hfib w hw) _
+    _ ≤ ∑ w ∈ Z, ENNReal.ofReal (1 + (2 ^ n - 1) * u) * (μ (closedBall w (ρ + S) ∩
+          {z | ‖(z - w) - Grassmannian.project P (z - w)‖ < d / 2 + S}) /
+            ENNReal.ofReal (ρ + S) ^ n) :=
+        Finset.sum_le_sum fun w _ ↦ hresc _
+    _ = _ := (Finset.mul_sum _ _ _).symm
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
