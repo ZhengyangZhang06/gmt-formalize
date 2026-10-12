@@ -831,6 +831,261 @@ theorem Submission.indCompact_translation_estimate : ∀ (N : ℕ) (F : Set (Rn 
       nlinarith [ht.2, norm_nonneg h]
     rw [sub_zero, abs_one, mul_one, Real.norm_eq_abs] at hb
     linarith [neg_le_abs (∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h)]
+/-- **L¹ mollification error of an indicator** (Step 2 of the supplied proof that translation
+estimates and uniformly Cauchy mollifications give local Cauchy in measure, part of the
+compactness of indicators used for De Giorgi's theorem, Simon Ch. 3, Theorem 4.3; cf. the
+mollification argument in the proof of Simon Ch. 2, Theorem 2.6). Let `F ⊆ ℝᴺ` be
+`Lᴺ`-measurable and `ρ ≥ 0` continuous with `∫ ρ = 1` and support in `B̄_σ(0)`. If
+`Lᴺ(B_R ∩ (F_h Δ F)) ≤ C|h|` for all `|h| ≤ σ`, where `F_h = {y : y + h ∈ F}` and `C ≥ 0`, then
+`∫_{B_R} |∫_F ρ(y - z) dz - χ_F(y)| dy ≤ σ C`. -/
+theorem Submission.indCompact_mollCauchy_l1_error : ∀ (N : ℕ) (F : Set (Rn N)) (ρ : Rn N → ℝ) (σ R C : ℝ), NullMeasurableSet F volume → Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → ∫ y, ρ y = 1 → Function.support ρ ⊆ Metric.closedBall (0 : Rn N) σ → 0 ≤ C → (∀ h : Rn N, ‖h‖ ≤ σ → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F) F) ≤ ENNReal.ofReal (C * ‖h‖)) → ∫⁻ y in Metric.ball (0 : Rn N) R, ENNReal.ofReal |(∫ z in F, ρ (y - z)) - F.indicator (fun _ ↦ (1 : ℝ)) y| ≤ ENNReal.ofReal (σ * C) := by
+  intro N F ρ σ R C hF hρc hρs hρ0 hρ1 hsupp hC htr
+  have hρi : Integrable ρ := hρc.integrable_of_hasCompactSupport hρs
+  have hρm : Measurable ρ := hρc.measurable
+  -- Step 1: replace `F` by its measurable hull `F'`.
+  set F' := toMeasurable volume F
+  have hF'm : MeasurableSet F' := measurableSet_toMeasurable _ _
+  have hae : F' =ᵐ[volume] F := hF.toMeasurable_ae_eq
+  have hind : F'.indicator (fun _ ↦ (1 : ℝ)) =ᵐ[volume] F.indicator (fun _ ↦ (1 : ℝ)) :=
+    indicator_ae_eq_of_ae_eq_set hae
+  have htr' : ∀ h : Rn N, ‖h‖ ≤ σ → volume (Metric.ball (0 : Rn N) R ∩
+      symmDiff ((fun y ↦ y + h) ⁻¹' F') F') ≤ ENNReal.ofReal (C * ‖h‖) := by
+    intro h hh
+    have hpre : (fun y ↦ y + h) ⁻¹' F' =ᵐ[volume] (fun y ↦ y + h) ⁻¹' F :=
+      (measurePreserving_add_right volume h).quasiMeasurePreserving.preimage_ae_eq hae
+    rw [measure_congr (ae_eq_set_inter (EventuallyEq.refl _ _) (ae_eq_set_symmDiff hpre hae))]
+    exact htr h hh
+  have hcongr : ∫⁻ y in Metric.ball (0 : Rn N) R,
+      ENNReal.ofReal |(∫ z in F, ρ (y - z)) - F.indicator (fun _ ↦ (1 : ℝ)) y| =
+      ∫⁻ y in Metric.ball (0 : Rn N) R,
+        ENNReal.ofReal |(∫ z in F', ρ (y - z)) - F'.indicator (fun _ ↦ (1 : ℝ)) y| := by
+    apply lintegral_congr_ae
+    filter_upwards [ae_restrict_of_ae hind] with y hy
+    rw [setIntegral_congr_set hae, hy]
+  rw [hcongr]
+  clear_value F'
+  clear hcongr htr hind hae hF
+  set χ : Rn N → ℝ := F'.indicator (fun _ ↦ (1 : ℝ)) with hχ
+  set B := Metric.ball (0 : Rn N) R with hB
+  have hχm : Measurable χ := measurable_const.indicator hF'm
+  have hχb : ∀ x, |χ x| ≤ 1 := by
+    intro x; by_cases hx : x ∈ F' <;> simp [hχ, hx]
+  have hχd : ∀ x x', |χ x - χ x'| ≤ 1 := by
+    intro x x'; by_cases hx : x ∈ F' <;> by_cases hx' : x' ∈ F' <;> simp [hχ, hx, hx']
+  -- Step 3: pointwise bound.
+  have hpt : ∀ y, ENNReal.ofReal |(∫ z in F', ρ (y - z)) - χ y| ≤
+      ∫⁻ h, ENNReal.ofReal (ρ h) * ENNReal.ofReal |χ (y - h) - χ y| := by
+    intro y
+    have h1 : (∫ z in F', ρ (y - z)) = ∫ h, ρ h * χ (y - h) := by
+      rw [← integral_indicator hF'm]
+      have : (fun z ↦ F'.indicator (fun z ↦ ρ (y - z)) z) =
+          fun z ↦ (fun h ↦ ρ h * χ (y - h)) (y - z) := by
+        ext z
+        by_cases hz : z ∈ F' <;> simp [hχ, hz]
+      rw [this, integral_sub_left_eq_self (fun h ↦ ρ h * χ (y - h)) volume y]
+    have hint1 : Integrable (fun h ↦ ρ h * χ (y - h)) := by
+      refine hρi.mono' (Measurable.aestronglyMeasurable (by fun_prop)) (ae_of_all _ fun h ↦ ?_)
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 h)]
+      exact mul_le_of_le_one_right (hρ0 h) (hχb _)
+    have h3 : (∫ z in F', ρ (y - z)) - χ y = ∫ h, ρ h * (χ (y - h) - χ y) := by
+      have e : (fun h ↦ ρ h * (χ (y - h) - χ y)) = fun h ↦ ρ h * χ (y - h) - ρ h * χ y := by
+        ext h; ring
+      rw [e, integral_sub hint1 (hρi.mul_const _), integral_mul_const, hρ1, one_mul, h1]
+    have hint3 : Integrable (fun h ↦ ρ h * |χ (y - h) - χ y|) := by
+      refine hρi.mono' (Measurable.aestronglyMeasurable (by fun_prop)) (ae_of_all _ fun h ↦ ?_)
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 h), abs_abs]
+      exact mul_le_of_le_one_right (hρ0 h) (hχd _ _)
+    rw [h3]
+    calc ENNReal.ofReal |∫ h, ρ h * (χ (y - h) - χ y)|
+        ≤ ENNReal.ofReal (∫ h, |ρ h * (χ (y - h) - χ y)|) :=
+          ENNReal.ofReal_le_ofReal abs_integral_le_integral_abs
+      _ = ENNReal.ofReal (∫ h, ρ h * |χ (y - h) - χ y|) := by
+          congr 2; ext h; rw [abs_mul, abs_of_nonneg (hρ0 h)]
+      _ = ∫⁻ h, ENNReal.ofReal (ρ h * |χ (y - h) - χ y|) :=
+          ofReal_integral_eq_lintegral_ofReal hint3
+            (ae_of_all _ fun h ↦ mul_nonneg (hρ0 h) (abs_nonneg _))
+      _ = ∫⁻ h, ENNReal.ofReal (ρ h) * ENNReal.ofReal |χ (y - h) - χ y| := by
+          congr 1; ext h; rw [ENNReal.ofReal_mul (hρ0 h)]
+  -- Steps 4–6: Tonelli, inner integral, conclusion.
+  calc ∫⁻ y in B, ENNReal.ofReal |(∫ z in F', ρ (y - z)) - χ y|
+      ≤ ∫⁻ y in B, ∫⁻ h, ENNReal.ofReal (ρ h) * ENNReal.ofReal |χ (y - h) - χ y| :=
+        lintegral_mono hpt
+    _ = ∫⁻ h, ∫⁻ y in B, ENNReal.ofReal (ρ h) * ENNReal.ofReal |χ (y - h) - χ y| := by
+        apply lintegral_lintegral_swap
+        apply Measurable.aemeasurable
+        fun_prop
+    _ ≤ ∫⁻ h, ENNReal.ofReal (ρ h) * ENNReal.ofReal (σ * C) := by
+        refine lintegral_mono fun h ↦ ?_
+        dsimp only
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+        by_cases hρh : ρ h = 0
+        · simp [hρh]
+        · gcongr
+          have hnorm : ‖h‖ ≤ σ := by
+            have := hsupp hρh
+            simpa [Metric.mem_closedBall, dist_zero_right] using this
+          have hmeas : MeasurableSet (symmDiff ((fun y ↦ y + -h) ⁻¹' F') F') :=
+            (measurable_add_const (-h) hF'm).symmDiff hF'm
+          have hset : ∀ y, ENNReal.ofReal |χ (y - h) - χ y| =
+              (symmDiff ((fun y ↦ y + -h) ⁻¹' F') F').indicator 1 y := by
+            intro y
+            by_cases h1 : y - h ∈ F' <;> by_cases h2 : y ∈ F' <;>
+              simp [hχ, h1, h2, Set.mem_symmDiff, ← sub_eq_add_neg]
+          simp_rw [hset]
+          rw [lintegral_indicator_one hmeas, Measure.restrict_apply hmeas, Set.inter_comm]
+          calc volume (B ∩ symmDiff ((fun y ↦ y + -h) ⁻¹' F') F')
+              ≤ ENNReal.ofReal (C * ‖-h‖) := htr' (-h) (by rwa [norm_neg])
+            _ ≤ ENNReal.ofReal (σ * C) := by
+              apply ENNReal.ofReal_le_ofReal
+              rw [norm_neg, mul_comm]
+              exact mul_le_mul_of_nonneg_right hnorm hC
+    _ = (∫⁻ h, ENNReal.ofReal (ρ h)) * ENNReal.ofReal (σ * C) :=
+        lintegral_mul_const' _ _ ENNReal.ofReal_ne_top
+    _ = ENNReal.ofReal (σ * C) := by
+        rw [← ofReal_integral_eq_lintegral_ofReal hρi (ae_of_all _ hρ0), hρ1, ENNReal.ofReal_one,
+          one_mul]
+/-- **Continuity of the mollified set integral** (Step 1 of the supplied proof that translation
+estimates and uniformly Cauchy mollifications give local Cauchy in measure, part of the
+compactness of indicators used for De Giorgi's theorem, Simon Ch. 3, Theorem 4.3; cf. the
+mollification argument in the proof of Simon Ch. 2, Theorem 2.6). For an arbitrary `F ⊆ ℝᴺ` and a
+continuous, compactly supported `ρ`, the map `y ↦ ∫_F ρ(y - z) dz` is continuous: it is the
+convolution of `1` with `ρ` for the locally finite measure `Lᴺ ⌞ F`. -/
+theorem Submission.indCompact_mollCauchy_setIntegral_continuous : ∀ (N : ℕ) (F : Set (Rn N)) (ρ : Rn N → ℝ), Continuous ρ → HasCompactSupport ρ → Continuous (fun y : Rn N ↦ ∫ z in F, ρ (y - z)) := by
+  intro N F ρ hρ hρc
+  -- `y ↦ ∫_F ρ(y - z) dz` is the convolution of `1` with `ρ` for the measure `volume.restrict F`.
+  have hconv : (fun y : Rn N ↦ ∫ z in F, ρ (y - z)) =
+      convolution (fun _ ↦ (1 : ℝ)) ρ (ContinuousLinearMap.lsmul ℝ ℝ) (volume.restrict F) := by
+    ext y
+    simp only [convolution_def, ContinuousLinearMap.lsmul_apply, one_smul]
+  rw [hconv]
+  -- `volume.restrict F` is locally finite for every `F`, so the constant `1` is locally
+  -- integrable; convolving with the continuous, compactly supported `ρ` gives a continuous map.
+  exact hρc.continuous_convolution_right _ (locallyIntegrable_const 1) hρ
+
+/-- **Translation estimates and uniformly Cauchy mollifications give local Cauchy in measure**
+(Steps 3 and 6 of the supplied proof of the compactness of indicators used for De Giorgi's theorem,
+Simon Ch. 3, Theorem 4.3; cf. the mollification argument in the proof of Simon Ch. 2,
+Theorem 2.6). Let `ρ_m ≥ 0` be continuous kernels with `∫ ρ_m = 1` and support in
+`B̄_{1/(m+1)}(0)`, and `v_{m,k}(y) = ∫_{F_k} ρ_m(y - z) dz`. If the `F_k` satisfy a uniform local
+translation estimate `Lᴺ(B_R ∩ ((F_k)_h Δ F_k)) ≤ C_R |h|` and, for each `m`, the `v_{m,k}` are
+uniformly Cauchy on `B̄_m(0)`, then `Lᴺ(B_R ∩ (F_k Δ F_l)) → 0`: on `B_R ⊆ B̄_m(0)`,
+`1_{F_k Δ F_l} ≤ |v_{m,k} - 1_{F_k}| + |v_{m,k} - v_{m,l}| + |v_{m,l} - 1_{F_l}|`, and the outer
+terms have `L¹(B_R)`-norm at most `C_R / (m + 1)`. -/
+theorem Submission.indCompact_local_cauchy_of_mollified_cauchy : ∀ (N : ℕ) (F : ℕ → Set (Rn N)) (ρ : ℕ → Rn N → ℝ), (∀ k, NullMeasurableSet (F k) volume) → (∀ m, Continuous (ρ m)) → (∀ m, HasCompactSupport (ρ m)) → (∀ m y, 0 ≤ ρ m y) → (∀ m, ∫ y, ρ m y = 1) → (∀ m, Function.support (ρ m) ⊆ Metric.closedBall (0 : Rn N) (1 / ((m : ℝ) + 1))) → (∀ R : ℕ, ∃ C : ℝ, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ h : Rn N, ‖h‖ ≤ 1 → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F k) (F k)) ≤ ENNReal.ofReal (C * ‖h‖)) → (∀ (m : ℕ) (ε : ℝ), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, ∀ y ∈ Metric.closedBall (0 : Rn N) m, |(∫ z in F k, ρ m (y - z)) - ∫ z in F l, ρ m (y - z)| ≤ ε) → ∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε := by
+  intro N F ρ hF hρc hρs hρ0 hρ1 hρsupp htrans hcauchy R ε hε
+  -- For `ε = ∞` any `k₀` works; otherwise put `e := ε.toReal > 0`, so that `ε = ofReal e`.
+  rcases eq_or_ne ε ∞ with rfl | hε_top
+  · exact ⟨0, fun _ _ _ _ ↦ le_top⟩
+  set e := ε.toReal
+  have he : 0 < e := ENNReal.toReal_pos hε.ne' hε_top
+  have hεe : ε = ENNReal.ofReal e := (ENNReal.ofReal_toReal hε_top).symm
+  -- (a) The translation estimate on `B_R`, with the nonnegative constant `C' := max C 0`.
+  obtain ⟨C, k₁, hC⟩ := htrans R
+  set C' := max C 0
+  have hC' : 0 ≤ C' := le_max_right _ _
+  -- (b) A kernel index `m ≥ R` with `σ_m C' ≤ e / 4`, where `σ_m := 1 / (m + 1) ≤ 1`.
+  obtain ⟨m₀, hm₀⟩ := exists_nat_gt (4 * C' / e)
+  set m := max m₀ R
+  have hm_pos : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+  have hσ_le : 1 / ((m : ℝ) + 1) ≤ 1 := by
+    rw [div_le_one hm_pos]
+    linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+  have hσC : 1 / ((m : ℝ) + 1) * C' ≤ e / 4 := by
+    have hm₀m : (m₀ : ℝ) ≤ m := by exact_mod_cast le_max_left m₀ R
+    have h4 : 4 * C' / e < (m : ℝ) + 1 := by linarith
+    rw [div_lt_iff₀ he] at h4
+    rw [one_div_mul_eq_div, div_le_iff₀ hm_pos]
+    linarith
+  have hRm : Metric.ball (0 : Rn N) R ⊆ Metric.closedBall (0 : Rn N) m :=
+    Metric.ball_subset_closedBall.trans
+      (Metric.closedBall_subset_closedBall (by exact_mod_cast le_max_right m₀ R))
+  -- (c) The uniform Cauchy property of `v_{m,·}` on `B̄_m(0)` with `η := e / (2 (Lᴺ(B_R) + 1))`.
+  set V := (volume (Metric.ball (0 : Rn N) R)).toReal with hV_def
+  have hV : 0 ≤ V := ENNReal.toReal_nonneg
+  set η := e / (2 * (V + 1)) with hη_def
+  have hη : 0 < η := by positivity
+  have hηV : η * V ≤ e / 2 := by
+    rw [hη_def, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  obtain ⟨k₂, hk₂⟩ := hcauchy m η hη
+  refine ⟨max k₁ k₂, fun k hk l hl ↦ ?_⟩
+  -- Step 2 (mollification error): `∫⁻_{B_R} |v_{m,j} - 1_{F_j}| ≤ σ_m C' ≤ e / 4` for `j ≥ k₁`.
+  have herr : ∀ j ≥ k₁, ∫⁻ y in Metric.ball (0 : Rn N) R,
+      ENNReal.ofReal |(∫ z in F j, ρ m (y - z)) - (F j).indicator (fun _ ↦ (1 : ℝ)) y| ≤
+        ENNReal.ofReal (e / 4) := by
+    intro j hj
+    refine (Submission.indCompact_mollCauchy_l1_error N (F j) (ρ m) (1 / ((m : ℝ) + 1)) R C'
+      (hF j) (hρc m) (hρs m) (hρ0 m) (hρ1 m) (hρsupp m) hC' fun h hh ↦ ?_).trans
+        (ENNReal.ofReal_le_ofReal hσC)
+    exact (hC j hj h (hh.trans hσ_le)).trans (ENNReal.ofReal_le_ofReal
+      (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg h)))
+  -- Step 1: each `v_{m,j}` is continuous and `F_j` is null-measurable, so the error terms are
+  -- a.e.-measurable and `∫⁻` is additive on them.
+  have hmeas : ∀ j, AEMeasurable (fun y ↦
+      ENNReal.ofReal |(∫ z in F j, ρ m (y - z)) - (F j).indicator (fun _ ↦ (1 : ℝ)) y|)
+      (volume.restrict (Metric.ball (0 : Rn N) R)) := by
+    intro j
+    have hv : AEMeasurable (fun y : Rn N ↦ ∫ z in F j, ρ m (y - z)) volume :=
+      (Submission.indCompact_mollCauchy_setIntegral_continuous N (F j) (ρ m) (hρc m)
+        (hρs m)).measurable.aemeasurable
+    have hχ : AEMeasurable ((F j).indicator (fun _ ↦ (1 : ℝ))) volume :=
+      aemeasurable_const.indicator₀ (hF j)
+    exact (continuous_abs.measurable.comp_aemeasurable (hv.sub hχ)).ennreal_ofReal.restrict
+  -- (d) For `y ∈ B_R ⊆ B̄_m(0)`:
+  -- `1_{F_k Δ F_l}(y) ≤ |v_{m,k}(y) - 1_{F_k}(y)| + η + |v_{m,l}(y) - 1_{F_l}(y)|`.
+  have hpt : ∀ y ∈ Metric.ball (0 : Rn N) R, (symmDiff (F k) (F l)).indicator 1 y ≤
+      ENNReal.ofReal |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| +
+        ENNReal.ofReal η +
+          ENNReal.ofReal |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y| := by
+    intro y hy
+    have hvkl := hk₂ k (le_of_max_le_right hk) l (le_of_max_le_right hl) y (hRm hy)
+    refine Set.indicator_apply_le' (fun hyD ↦ ?_) (fun _ ↦ zero_le)
+    have h1 : |(F k).indicator (fun _ ↦ (1 : ℝ)) y - (F l).indicator (fun _ ↦ (1 : ℝ)) y| = 1 := by
+      rcases Set.mem_symmDiff.mp hyD with ⟨hk', hl'⟩ | ⟨hl', hk'⟩ <;> simp [hk', hl']
+    have h2 : |(F k).indicator (fun _ ↦ (1 : ℝ)) y - (F l).indicator (fun _ ↦ (1 : ℝ)) y| ≤
+        |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| + η +
+          |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y| := by
+      rw [abs_le] at hvkl ⊢
+      constructor <;>
+        linarith [le_abs_self ((∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y),
+          neg_abs_le ((∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y),
+          le_abs_self ((∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y),
+          neg_abs_le ((∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y)]
+    rw [h1] at h2
+    calc (1 : Rn N → ℝ≥0∞) y = ENNReal.ofReal 1 := by simp
+      _ ≤ ENNReal.ofReal (|(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| + η +
+            |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y|) :=
+          ENNReal.ofReal_le_ofReal h2
+      _ ≤ _ := ENNReal.ofReal_add_le.trans (add_le_add ENNReal.ofReal_add_le le_rfl)
+  -- (e) Integrate over `B_R`: `Lᴺ(B_R ∩ (F_k Δ F_l)) ≤ e / 4 + η Lᴺ(B_R) + e / 4 ≤ e`.
+  have hconst : ∫⁻ _ in Metric.ball (0 : Rn N) R, ENNReal.ofReal η ≤ ENNReal.ofReal (e / 2) := by
+    rw [setLIntegral_const, ← ENNReal.ofReal_toReal (measure_ball_lt_top (μ := volume)).ne,
+      ← hV_def, ← ENNReal.ofReal_mul hη.le]
+    exact ENNReal.ofReal_le_ofReal hηV
+  calc volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l))
+      = ∫⁻ y in Metric.ball (0 : Rn N) R, (symmDiff (F k) (F l)).indicator 1 y := by
+        rw [lintegral_indicator_one₀
+            (((hF k).symmDiff (hF l)).mono_ac Measure.absolutelyContinuous_restrict),
+          Measure.restrict_apply' measurableSet_ball, Set.inter_comm]
+    _ ≤ ∫⁻ y in Metric.ball (0 : Rn N) R,
+          (ENNReal.ofReal |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| +
+            ENNReal.ofReal η +
+              ENNReal.ofReal |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y|) :=
+        setLIntegral_mono' measurableSet_ball hpt
+    _ = (∫⁻ y in Metric.ball (0 : Rn N) R,
+          ENNReal.ofReal |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y|) +
+        (∫⁻ _ in Metric.ball (0 : Rn N) R, ENNReal.ofReal η) +
+          ∫⁻ y in Metric.ball (0 : Rn N) R,
+            ENNReal.ofReal |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y| := by
+        rw [lintegral_add_right' _ (hmeas l), lintegral_add_right' _ aemeasurable_const]
+    _ ≤ ENNReal.ofReal (e / 4) + ENNReal.ofReal (e / 2) + ENNReal.ofReal (e / 4) :=
+        add_le_add (add_le_add (herr k (le_of_max_le_left hk)) hconst)
+          (herr l (le_of_max_le_left hl))
+    _ = ε := by
+        rw [← ENNReal.ofReal_add (by positivity) (by positivity),
+          ← ENNReal.ofReal_add (by positivity) (by positivity), hεe]
+        congr 1
+        ring
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.mollified_cauchy-a1.mollifier_l1_error-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.mollified_cauchy-a1",
+  "depth": 4,
+  "title": "L¹ mollification error of an indicator controlled by its translation modulus",
+  "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be L^N-null-measurable, and let ρ : ℝ^N → ℝ be continuous with compact support, ρ ≥ 0 and ∫ρ dL^N = 1. Let σ, R, C ∈ ℝ with C ≥ 0 and support ρ ⊆ B̄_σ(0). Write S_h := {y : y + h ∈ S} and B_R := B_R(0) (open ball). Assume L^N(B_R ∩ (F_h Δ F)) ≤ ofReal(C|h|) for every h ∈ ℝ^N with |h| ≤ σ. Then ∫⁻_{B_R} ofReal|∫_F ρ(y − z) dz − 1_F(y)| dy ≤ ofReal(σC). Here ∫_F ρ(y − z) dz is the integral with respect to the restricted measure L^N⌞F, and ∫⁻ is the [0, ∞]-valued Lebesgue integral.",
+  "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (ρ : Rn N → ℝ) (σ R C : ℝ), NullMeasurableSet F volume → Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → ∫ y, ρ y = 1 → Function.support ρ ⊆ Metric.closedBall (0 : Rn N) σ → 0 ≤ C → (∀ h : Rn N, ‖h‖ ≤ σ → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F) F) ≤ ENNReal.ofReal (C * ‖h‖)) → ∫⁻ y in Metric.ball (0 : Rn N) R, ENNReal.ofReal |(∫ z in F, ρ (y - z)) - F.indicator (fun _ ↦ (1 : ℝ)) y| ≤ ENNReal.ofReal (σ * C)",
+  "lean_name": "indCompact_mollCauchy_l1_error",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-mollified-cauchy-a1-mollif-65753d89c7-a1"
+}
