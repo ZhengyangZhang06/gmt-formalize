@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1.integrable_smooth_ext-a1",
+  "parent_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1",
+  "depth": 3,
+  "title": "Integrable densities agreeing on smooth tests in an open set agree on bounded Borel functions supported there",
+  "statement": "Let P ∈ ℕ, let μ₁ and μ₂ be measures on the Borel σ-algebra of ℝ^P (σ-finiteness is not assumed), let g₁ : ℝ^P → ℝ be μ₁-integrable and g₂ : ℝ^P → ℝ be μ₂-integrable, and let O ⊆ ℝ^P be open. Suppose ∫ ψ g₁ dμ₁ = ∫ ψ g₂ dμ₂ for every C^∞ function ψ : ℝ^P → ℝ with compact support and tsupport ψ ⊆ O. Then ∫ b g₁ dμ₁ = ∫ b g₂ dμ₂ for every Borel measurable bounded function b : ℝ^P → ℝ (|b(x)| ≤ C for some constant C) with b(x) = 0 for all x ∉ O.",
+  "lean_statement": "∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ O → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) → ∀ b : Eucl P → ℝ, Measurable b → (∃ C : ℝ, ∀ x, |b x| ≤ C) → (∀ x, x ∉ O → b x = 0) → ∫ x, b x * g₁ x ∂μ₁ = ∫ x, b x * g₂ x ∂μ₂",
+  "lean_name": "polyhedral_approx_integrable_smooth_ext",
+  "depends_on": [
+    "root.polyhedral_approximation-a1.measure_uniqueness-a1.density_split-a1",
+    "root.polyhedral_approximation-a1.measure_uniqueness-a1.finite_smooth_ext-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1.density_split-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1.finite_smooth_ext-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-measure-uniqueness-a1-integrable-smooth-ext-a1-a1"
+}

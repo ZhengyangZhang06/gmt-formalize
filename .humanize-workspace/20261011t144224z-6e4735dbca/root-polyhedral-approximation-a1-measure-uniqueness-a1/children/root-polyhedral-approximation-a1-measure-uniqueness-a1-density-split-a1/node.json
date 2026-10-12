@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1.density_split-a1",
+  "parent_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1",
+  "depth": 3,
+  "title": "An integrable density is a difference of two finite measures",
+  "statement": "Let P ∈ ℕ, let μ be any measure on the Borel σ-algebra of ℝ^P (σ-finiteness is not assumed), and let g : ℝ^P → ℝ be μ-integrable. Then there are finite measures ν⁺ and ν⁻ on ℝ^P such that ∫ b dν⁺ − ∫ b dν⁻ = ∫ b g dμ for every Borel measurable function b : ℝ^P → ℝ that is bounded, i.e. |b(x)| ≤ C for some constant C and all x.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (g : Eucl P → ℝ), Integrable g μ → ∃ νpos νneg : Measure (Eucl P), IsFiniteMeasure νpos ∧ IsFiniteMeasure νneg ∧ ∀ b : Eucl P → ℝ, Measurable b → (∃ C : ℝ, ∀ x, |b x| ≤ C) → ∫ x, b x ∂νpos - ∫ x, b x ∂νneg = ∫ x, b x * g x ∂μ",
+  "lean_name": "polyhedral_approx_density_split",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-measure-uniqueness-a1-density-split-a1-a1"
+}
