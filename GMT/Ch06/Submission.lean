@@ -544,6 +544,79 @@ theorem Submission.fiw_ims_mass_bound :
         ENNReal.ofReal_mul (mul_nonneg (inv_nonneg.mpr hC.le) (abs_nonneg _))
     _ ≤ X.massOn V * ENNReal.ofReal C := by gcongr
 
+/-- Series of currents: if `∑' r, |c_r| M_W(T_r) < ∞` for every `W ⊂⊂ U`, then `∑ c_r T_r`
+converges unconditionally on every test form to a current `S` with
+`M_W(S) ≤ ∑' r, |c_r| M_W(T_r)` for every set `W`. -/
+theorem Submission.fiw_ims_series_current :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : ℕ → GeometricCurrentOn U n) (c : ℕ → ℤ),
+      (∀ W, CompactlyContainedOpen W U →
+        (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) < ∞) →
+      ∃ S : GeometricCurrentOn U n, (∀ ω, HasSum (fun r => (c r : ℝ) * T r ω) (S ω)) ∧
+        ∀ W, S.massOn W ≤ ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W := by
+  intro P n U hU T c hT
+  -- Every compact `K ⊆ U` lies in some `W ⊂⊂ U`.
+  have hW : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+      ∃ W, CompactlyContainedOpen W U ∧ K ⊆ W := by
+    intro K hK hKU
+    obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
+    exact ⟨W, ⟨hWo, hWc, hWU⟩, hKW⟩
+  -- Core estimate: for `ω` supported in `V` with `|ω| ≤ C`, the series converges and
+  -- `|∑' r, c_r T_r(ω)| ≤ C ∑' r, |c_r| M_V(T_r)` in `[0, ∞]`.
+  have hcore : ∀ (V : Set (Eucl P)) (ω : TestFormOn U n) (C : ℝ), 0 < C →
+      tsupport (ω : DifferentialForm (Eucl P) n) ⊆ V →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn V) < ∞ →
+      Summable (fun r => (c r : ℝ) * T r ω) ∧
+        ENNReal.ofReal |∑' r, (c r : ℝ) * T r ω| ≤
+          ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn V :=
+    fun V ω C hC hV hω hfin =>
+      Submission.fiw_ims_sc_series_bound (fun r => T r ω) c (fun r => (T r).massOn V) C
+        (fun r => Submission.fiw_ims_mass_bound P n U (T r) V ω C hC hV hω) hfin
+  -- The series converges on every test form: `tsupport ω` is a compact subset of `U`.
+  have hsum : ∀ ω : TestFormOn U n, Summable (fun r => (c r : ℝ) * T r ω) := by
+    intro ω
+    obtain ⟨C, hC, hω⟩ := Submission.fiw_ims_sc_testForm_bounded P n U ω
+    obtain ⟨W, hWU, hKW⟩ := hW (tsupport (ω : DifferentialForm (Eucl P) n))
+      ω.property.1.2 ω.property.2
+    exact (hcore W ω C hC hKW hω (hT W hWU)).1
+  -- The sum `S₀(ω) = ∑' r, c_r T_r(ω)` is linear in `ω`.
+  let S₀ : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑' r, (c r : ℝ) * T r ω
+      map_add' := fun ω η => by
+        simp only [map_add, mul_add]
+        exact (hsum ω).tsum_add (hsum η)
+      map_smul' := fun a ω => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        rw [← tsum_mul_left]
+        exact tsum_congr fun r => mul_left_comm _ _ _ }
+  -- Sequential continuity: on forms supported in a compact `K ⊆ U` with `|ω| ≤ C`,
+  -- `|S₀(ω)| ≤ A C` with `A = ∑' r, |c_r| M_W(T_r)` for some `W ⊂⊂ U` containing `K`.
+  have hcont : ∀ ωs : ℕ → TestFormOn U n, TestFormOnConverges ωs 0 →
+      Tendsto (fun q => S₀ (ωs q)) atTop (𝓝 0) := by
+    refine Submission.fiw_ims_sc_continuous_of_bound P n U S₀ fun K hK hKU => ?_
+    obtain ⟨W, hWU, hKW⟩ := hW K hK hKU
+    have hA := hT W hWU
+    refine ⟨(∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W).toReal,
+      fun ω C hC hω hωC => ?_⟩
+    have h : ENNReal.ofReal |S₀ ω| ≤
+        ENNReal.ofReal (C * (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W).toReal) := by
+      rw [ENNReal.ofReal_mul hC.le, ENNReal.ofReal_toReal hA.ne]
+      exact (hcore W ω C hC (hω.trans hKW) hωC hA).2
+    rw [mul_comm]
+    exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hC.le ENNReal.toReal_nonneg)).1 h
+  refine ⟨⟨S₀, hcont⟩, fun ω => (hsum ω).hasSum, fun W => ?_⟩
+  -- Mass bound: test the admissible forms of `M_W` with `C = 1`.
+  rcases eq_top_or_lt_top (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) with hA | hA
+  · rw [hA]
+    exact le_top
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  calc ENNReal.ofReal (S₀ ω) ≤ ENNReal.ofReal |S₀ ω| := ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ENNReal.ofReal 1 * ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W :=
+      (hcore W ω 1 one_pos hω.1 hω.2 hA).2
+    _ = ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W := by
+      rw [ENNReal.ofReal_one, one_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
