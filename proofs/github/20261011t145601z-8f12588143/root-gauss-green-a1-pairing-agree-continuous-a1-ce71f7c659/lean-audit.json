@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74e61d38140a66c6c74a567a9b0b3e6caee7c2cd0f6c07bfc4d8a79662b93b33",
+  "git_delta": {
+    "base_commit": "1904c4c4200094334834dadfd3fefc5bc6cfe515",
+    "candidate_commit": "65d414c3202e879b1b1e899f63819c1b158cf4bf",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_pairing_eq_continuous",
+    "diff_sha256": "84f6e14c0dcb152b50e3c9e5f0ac25320bcae3fa303a96215b471e26e91475cb",
+    "source_sha256": "7aaa0b5ad75b1229c710b704849e603c2cf2a9b1ae0245b5e32b4371e1b481dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_pairing_eq_continuous",
+      "statement": "∀ (N : ℕ) (U E : Set (Rn N)) (μ μ' : Measure (Rn N)) (ν ν' : Rn N → Rn N), IsOpen U → IsGaussGreenPair U E μ ν → IsGaussGreenPair U E μ' ν' → ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ x, inner ℝ (g x) (ν' x) ∂μ'",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
