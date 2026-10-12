@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1.radial_gradient_bound-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1",
+  "depth": 3,
+  "title": "The radial lift of a K-Lipschitz profile has ‖Dζ(x)‖ ≤ K/ρ everywhere",
+  "statement": "Let m ∈ N, ξ ∈ R^m (Euclidean space EuclideanSpace ℝ (Fin m)), ρ > 0, K ∈ ℝ≥0, and let φ : R → R be K-Lipschitz, i.e. |φ(s) − φ(t)| <= K|s − t| for all s, t. Put ζ(y) := φ(‖y − ξ‖/ρ). Then for every x ∈ R^m the Fréchet derivative of ζ at x satisfies ‖Dζ(x)‖ <= K/ρ (operator norm). In Lean this is fderiv ℝ ζ x, which is 0 wherever ζ is not differentiable.",
+  "lean_statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (K : ℝ≥0) (φ : ℝ → ℝ), 0 < ρ → LipschitzWith K φ → ∀ x : Rn m, ‖fderiv ℝ (fun y : Rn m => φ (‖y - ξ‖ / ρ)) x‖ ≤ (K : ℝ) / ρ",
+  "lean_name": "norm_fderiv_radial_profile_le_of_lipschitzWith",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-radial-gradient-bound-a1-a1"
+}
