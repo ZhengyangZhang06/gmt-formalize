@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fb4f4e51a1d12feb9a1e9739c8e538ba6c25d59bebbe52899ea27b1989df496c",
+  "git_delta": {
+    "base_commit": "fd582ac5ddbff0569f3beb4dbf94e7a551ab1855",
+    "candidate_commit": "2527748da70b09774a09fb289587a318d32d7832",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_extend_by_zero",
+    "diff_sha256": "b1f4d8f2332f26fcb87c8a50430d91c5844f79e159a606ab4c2225ae17418fda",
+    "source_sha256": "1a3bde265e18682c6b42659a7a0afaa13450a76adf8c77ccb83f12df56671ec1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_extend_by_zero",
+      "statement": "∀ (P n : ℕ) (U V K : Set (Euclid P)) (hVU : V ⊆ U) (X : GeometricCurrentOn V n) (R : IMRep V n), IsOpen U → IsOpen V → IsCompact K → K ⊆ V → R.Represents X → μHE[n] (R.carrier \\ K) = 0 → ∃ Y : GeometricCurrentOn U n, Y.restrictDomain hVU = X ∧ Y.support ⊆ K ∧ IsCompact Y.support ∧ (BoundaryVanishes X → BoundaryVanishes Y) ∧ IsIntegerMultiplicity Y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
