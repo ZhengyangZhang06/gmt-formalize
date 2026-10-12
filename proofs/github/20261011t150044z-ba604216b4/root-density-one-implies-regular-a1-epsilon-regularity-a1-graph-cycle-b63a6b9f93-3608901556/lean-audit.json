@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ad2ed916811b05f7ad9d462034289543bfcf509db38ab3c17516264a0d23c457",
+  "git_delta": {
+    "base_commit": "9c7cb223777cba57370974783e6e94730cd385ab",
+    "candidate_commit": "571bac44b99a6cb8ce6e9bd2e8e9ae95b2d6b096",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_atg_graph_tangent_finrank",
+    "diff_sha256": "87e55fbd89e1bc82c76d3af177f9eaa1b112dc23ea9e159e28161873840d82b3",
+    "source_sha256": "d6fe8cf1fee3152e1716ac228bc9a1e9602621e707a59bdbb78e35b074a2e9c7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_atg_graph_tangent_finrank",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (v₀ : Euclid n), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ u v₀ → Module.finrank ℝ (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k))) = n",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
