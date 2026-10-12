@@ -451,6 +451,88 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Shifted-ball comparison: if `‖w‖ ≤ ρ` and `|u| ≤ K` on `B_{ρ+‖w‖}(x)`, then the integrals of
+`u` over `B_ρ(x + w)` and `B_ρ(x)` differ by at most `K ωₙ ((ρ + ‖w‖)ⁿ − (ρ − ‖w‖)ⁿ)`.  Both balls
+lie in `B_{ρ+‖w‖}(x)`; the difference of the integrals is `∫_{S₁} u − ∫_{S₂} u` with
+`S₁ = B_ρ(x + w) \ B_ρ(x)`, `S₂ = B_ρ(x) \ B_ρ(x + w)`, and the disjoint sets `S₁`, `S₂` lie in the
+annulus `B_{ρ+‖w‖}(x) \ B_{ρ−‖w‖}(x)`, of measure `ωₙ ((ρ + ‖w‖)ⁿ − (ρ − ‖w‖)ⁿ)`. -/
+theorem Submission.dorag_ha_ie_shifted_ball_integral_sub_le : ∀ (n : ℕ) (u : Euclid n → ℝ) (x w : Euclid n) (ρ K : ℝ), 0 < n → ‖w‖ ≤ ρ → 0 ≤ K → IntegrableOn u (ball x (ρ + ‖w‖)) → (∀ z ∈ ball x (ρ + ‖w‖), |u z| ≤ K) → |(∫ y in ball (x + w) ρ, u y) - ∫ y in ball x ρ, u y| ≤ K * (volume (ball (0 : Euclid n) 1)).toReal * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n) := by
+  intro n u x w ρ K hn hwρ hK hint hbound
+  have hs0 : 0 ≤ ‖w‖ := norm_nonneg w
+  -- Step 1: both balls lie in `B_{ρ+‖w‖}(x)`
+  have hdist : ∀ z : Euclid n, ‖z - x‖ ≤ ‖z - (x + w)‖ + ‖w‖ := fun z => by
+    calc ‖z - x‖ = ‖(z - (x + w)) + w‖ := by congr 1; abel
+      _ ≤ ‖z - (x + w)‖ + ‖w‖ := norm_add_le _ _
+  have hdist' : ∀ z : Euclid n, ‖z - (x + w)‖ ≤ ‖z - x‖ + ‖w‖ := fun z => by
+    calc ‖z - (x + w)‖ = ‖(z - x) + -w‖ := by congr 1; abel
+      _ ≤ ‖z - x‖ + ‖-w‖ := norm_add_le _ _
+      _ = ‖z - x‖ + ‖w‖ := by rw [norm_neg]
+  have h₁ : ball (x + w) ρ ⊆ ball x (ρ + ‖w‖) := by
+    intro z hz
+    rw [mem_ball_iff_norm] at hz ⊢
+    linarith [hdist z]
+  have h₀ : ball x ρ ⊆ ball x (ρ + ‖w‖) := ball_subset_ball (by linarith)
+  -- Step 2: split each ball along the other
+  have e₁ := integral_inter_add_sdiff (μ := volume) (t := ball x ρ) measurableSet_ball
+    (hint.mono_set h₁)
+  have e₀ := integral_inter_add_sdiff (μ := volume) (t := ball (x + w) ρ) measurableSet_ball
+    (hint.mono_set h₀)
+  rw [inter_comm] at e₀
+  rw [← e₁, ← e₀, add_sub_add_left_eq_sub]
+  -- Step 3: bound each piece by `K` times its measure
+  have hS₁ : ball (x + w) ρ \ ball x ρ ⊆ ball x (ρ + ‖w‖) := sdiff_subset.trans h₁
+  have hS₂ : ball x ρ \ ball (x + w) ρ ⊆ ball x (ρ + ‖w‖) := sdiff_subset.trans h₀
+  have hpiece : ∀ S ⊆ ball x (ρ + ‖w‖), |∫ y in S, u y| ≤ K * volume.real S := by
+    intro S hS
+    have := norm_setIntegral_le_of_norm_le_const (μ := volume) (f := u)
+      ((measure_mono hS).trans_lt measure_ball_lt_top) (fun z hz => by
+        rw [Real.norm_eq_abs]; exact hbound z (hS hz))
+    rwa [Real.norm_eq_abs] at this
+  -- Step 4: the two pieces are disjoint and lie in the annulus `B_{ρ+‖w‖}(x) \ B_{ρ−‖w‖}(x)`
+  have hdisj : Disjoint (ball (x + w) ρ \ ball x ρ) (ball x ρ \ ball (x + w) ρ) :=
+    disjoint_sdiff_sdiff
+  have hin : Disjoint ((ball (x + w) ρ \ ball x ρ) ∪ (ball x ρ \ ball (x + w) ρ))
+      (ball x (ρ - ‖w‖)) := by
+    rw [Set.disjoint_left]
+    rintro z (⟨_, hz0⟩ | ⟨_, hz1⟩) hzin
+    · exact hz0 (ball_subset_ball (by linarith) hzin)
+    · apply hz1
+      rw [mem_ball_iff_norm] at hzin ⊢
+      linarith [hdist' z]
+  have hU : (ball (x + w) ρ \ ball x ρ) ∪ (ball x ρ \ ball (x + w) ρ) ∪ ball x (ρ - ‖w‖) ⊆
+      ball x (ρ + ‖w‖) :=
+    union_subset (union_subset hS₁ hS₂) (ball_subset_ball (by linarith))
+  have hmeas : volume.real (ball (x + w) ρ \ ball x ρ) + volume.real (ball x ρ \ ball (x + w) ρ) +
+      volume.real (ball x (ρ - ‖w‖)) ≤ volume.real (ball x (ρ + ‖w‖)) := by
+    rw [← measureReal_union hdisj (measurableSet_ball.diff measurableSet_ball)
+      (measure_ne_top_of_subset hS₁ measure_ball_lt_top.ne)
+      (measure_ne_top_of_subset hS₂ measure_ball_lt_top.ne),
+      ← measureReal_union hin measurableSet_ball
+      (measure_ne_top_of_subset (union_subset hS₁ hS₂) measure_ball_lt_top.ne)
+      measure_ball_lt_top.ne]
+    exact measureReal_mono hU measure_ball_lt_top.ne
+  -- Step 5: measure of balls, `Lⁿ(B_r(x)) = ωₙ rⁿ` for `r ≥ 0`
+  have : Nontrivial (Euclid n) :=
+    Module.nontrivial_of_finrank_pos (R := ℝ) (by rw [finrank_euclideanSpace_fin]; exact hn)
+  have hball : ∀ r : ℝ, 0 ≤ r →
+      volume.real (ball x r) = r ^ n * (volume (ball (0 : Euclid n) 1)).toReal := by
+    intro r hr
+    rw [measureReal_def, Measure.addHaar_ball volume x hr, finrank_euclideanSpace_fin,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (pow_nonneg hr n)]
+  rw [hball (ρ + ‖w‖) (by linarith), hball (ρ - ‖w‖) (by linarith)] at hmeas
+  -- Step 6: conclusion
+  calc |(∫ y in ball (x + w) ρ \ ball x ρ, u y) - ∫ y in ball x ρ \ ball (x + w) ρ, u y|
+      ≤ |∫ y in ball (x + w) ρ \ ball x ρ, u y| + |∫ y in ball x ρ \ ball (x + w) ρ, u y| :=
+        abs_sub _ _
+    _ ≤ K * volume.real (ball (x + w) ρ \ ball x ρ) +
+        K * volume.real (ball x ρ \ ball (x + w) ρ) := add_le_add (hpiece _ hS₁) (hpiece _ hS₂)
+    _ = K * (volume.real (ball (x + w) ρ \ ball x ρ) +
+        volume.real (ball x ρ \ ball (x + w) ρ)) := by ring
+    _ ≤ K * ((ρ + ‖w‖) ^ n * (volume (ball (0 : Euclid n) 1)).toReal -
+        (ρ - ‖w‖) ^ n * (volume (ball (0 : Euclid n) 1)).toReal) :=
+        mul_le_mul_of_nonneg_left (by linarith) hK
+    _ = K * (volume (ball (0 : Euclid n) 1)).toReal * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n) := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
