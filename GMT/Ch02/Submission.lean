@@ -12,6 +12,7 @@ import Mathlib.Topology.Algebra.Module.Determinant
 import Poincare.SimonGMT.Chapter01.Hausdorff
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter02.Submanifold
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 2: Some further preliminaries from analysis (pp. 39–68)
@@ -1307,6 +1308,70 @@ theorem Submission.bv_mollifier_fderiv_lintegral_le : ∀ (n : ℕ) (W K : Set (
       Submission.bv_lintegral_open_le_of_compact n O (fun x ↦ ‖fderiv ℝ w x‖ₑ) _ hO hmeas
         fun L hL hLO ↦
           Submission.bv_lintegral_norm_fderiv_le_of_dual_compact n w O L _ hw hO hL hLO hdual
+
+/-- **Simon Ch. 2, proof of Theorem 2.6 (mollifier estimate).** If `W` is open, `u ∈ L¹(W)` and
+the continuous kernel `ρ ≥ 0` has integral `1` and support in `ball 0 σ`, then
+`∫_Q |ρ * (1_W u) - u| ≤ σ |Du|(W)` for every measurable `Q` with `closedBall x σ ⊆ W` for `x ∈ Q`.
+For `‖z‖ < σ` the translation estimate `∫_Q |F(x - z) - F(x)| ≤ ‖z‖ |Du|(W)`, `F = 1_W u`, holds for
+the smooth mollifications `w_j = ψ_j * F` (normed bumps of radius `τ_j → 0`) by the gradient bound
+on the translates `Q - s z`, and passes to `F` in the `L¹` limit `w_j → F`; averaging the
+translates against `ρ` gives the claim. -/
+theorem Submission.bv_mollifier_sub_lintegral_le : ∀ (n : ℕ) (W Q : Set (Rn n)) (u ρ : Rn n → ℝ) (σ : ℝ), IsOpen W → IntegrableOn u W volume → MeasurableSet Q → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → (∀ x ∈ Q, closedBall x σ ⊆ W) → ∫⁻ x in Q, ‖convolution ρ (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume x - u x‖ₑ ≤ ENNReal.ofReal σ * Chapter02.bvVariationOn u W := by
+  intro n W Q u ρ σ hW hu hQ hρc hρn hρs hρi hQW
+  have hF : Integrable (W.indicator u) volume := (integrable_indicator_iff hW.measurableSet).2 hu
+  -- Step 0: `σ > 0`, since otherwise `ball 0 σ = ∅` forces `ρ = 0`, contradicting `∫ ρ = 1`.
+  have hσ : 0 < σ := by
+    by_contra hσ
+    have hρ0 : ρ = 0 :=
+      Function.support_eq_empty_iff.1 (subset_eq_empty hρs (ball_eq_empty.2 (not_lt.1 hσ)))
+    simp [hρ0] at hρi
+  -- Step 1: the translation estimate `∫_Q |F(x - z) - F(x)| ≤ ‖z‖ |Du|(W)` for `‖z‖ < σ`.
+  have htrans : ∀ z : Rn n, ‖z‖ < σ →
+      ∫⁻ x in Q, ‖W.indicator u (x - z) - W.indicator u x‖ₑ ≤
+        ENNReal.ofReal ‖z‖ * Chapter02.bvVariationOn u W := by
+    intro z hz
+    -- Smooth kernels `ψ j` (normed bumps) of radius `τ j = (σ - ‖z‖) / (j + 2) → 0`.
+    set τ : ℕ → ℝ := fun j ↦ (σ - ‖z‖) / (j + 2)
+    have hτpos : ∀ j, 0 < τ j := fun j ↦ div_pos (sub_pos.2 hz) (by positivity)
+    have hτle : ∀ j, τ j ≤ σ - ‖z‖ := fun j ↦
+      div_le_self (sub_pos.2 hz).le (by linarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)])
+    have hτlim : Tendsto τ atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop)
+    let c : ℕ → ContDiffBump (0 : Rn n) := fun j ↦
+      ⟨τ j / 2, τ j, half_pos (hτpos j), half_lt_self (hτpos j)⟩
+    set ψ : ℕ → Rn n → ℝ := fun j ↦ (c j).normed volume
+    have hψs : ∀ j, Function.support (ψ j) ⊆ ball 0 (τ j) := fun j ↦
+      (c j).support_normed_eq.subset
+    set w : ℕ → Rn n → ℝ :=
+      fun j ↦ convolution (ψ j) (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume
+    have hwc : ∀ j, ContDiff ℝ 1 (w j) := fun j ↦
+      (c j).hasCompactSupport_normed.contDiff_convolution_left _ (c j).contDiff_normed
+        hF.locallyIntegrable
+    -- Gradient bound on the translates `Q - s z`, `s ∈ [0, 1]`: for `x ∈ Q`,
+    -- `closedBall (x - s z) (τ j) ⊆ closedBall x σ ⊆ W` because `τ j + s ‖z‖ ≤ σ`.
+    have hgrad : ∀ j, ∀ s ∈ Icc (0 : ℝ) 1,
+        ∫⁻ y in (fun x ↦ x - s • z) '' Q, ‖fderiv ℝ (w j) y‖ₑ ≤ Chapter02.bvVariationOn u W := by
+      intro j s hs
+      refine Submission.bv_mollifier_fderiv_lintegral_le n W _ u (ψ j) (τ j) hW hu
+        (c j).contDiff_normed (c j).nonneg_normed (hψs j) (c j).integral_normed ?_
+      rintro _ ⟨x, hx, rfl⟩
+      refine (closedBall_subset_closedBall' (?_ : τ j + dist (x - s • z) x ≤ σ)).trans (hQW x hx)
+      rw [dist_eq_norm, sub_sub_cancel_left, norm_neg, norm_smul, Real.norm_of_nonneg hs.1]
+      nlinarith [hτle j, hs.2, norm_nonneg z]
+    -- The smooth translation estimate for each `w j` passes to the `L¹` limit `w j → F`.
+    exact Submission.bv_translate_sub_lintegral_le_of_tendsto n (W.indicator u) w Q z _
+      hF.aestronglyMeasurable (fun j ↦ (hwc j).continuous.aestronglyMeasurable)
+      (Submission.bv_mollifier_tendsto_L1 n (W.indicator u) ψ τ hF
+        (fun j ↦ (c j).continuous_normed) (fun j ↦ (c j).nonneg_normed) hψs
+        (fun j ↦ (c j).integral_normed) hτlim)
+      fun j ↦ Submission.bv_translate_sub_lintegral_le_of_fderiv n (w j) Q z _ (hwc j) (hgrad j)
+  -- Steps 2–3: average the translation estimate against `ρ`, whose support lies in `ball 0 σ`.
+  have hconv := Submission.bv_convolution_sub_lintegral_le_of_translate n (W.indicator u) ρ Q σ
+    (ENNReal.ofReal σ * Chapter02.bvVariationOn u W) hF hρc hρn hρs hρi fun t ht ↦
+      (htrans t ht).trans (mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal ht.le) zero_le)
+  -- On `Q` we have `1_W u = u`, because `x ∈ closedBall x σ ⊆ W`.
+  refine (setLIntegral_congr_fun hQ fun x hx ↦ ?_).trans_le hconv
+  simp only [indicator_of_mem (hQW x hx (mem_closedBall_self hσ.le))]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
