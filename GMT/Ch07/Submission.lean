@@ -451,6 +451,170 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+namespace Submission
+
+/-- Dilation averaging on the boundary annulus `A_s = B₁(0) \ B_{1-s}(0)`: for measurable
+`F ≥ 0` integrable on `B₁(0)` and `0 < s ≤ 1/2`,
+`∫_{A_s} ∫_{1/2}^1 F(t x) dt dx ≤ 2^(n+1) s ∫_{B₁(0)} F`.  In lower integrals: Tonelli, the
+substitution `y = t x` (Jacobian `t⁻ⁿ ≤ 2ⁿ`), Tonelli again, and for each `y` the admissible
+`t` lie in `(‖y‖, ‖y‖ / (1 - s)]`, of length `≤ 2 s`, and only when `‖y‖ < 1`. -/
+theorem dorag_ha_rb_dilation_average : ∀ (n : ℕ) (F : Euclid n → ℝ) (s : ℝ), Measurable F → (∀ y, 0 ≤ F y) → IntegrableOn F (ball (0 : Euclid n) 1) → 0 < s → s ≤ 1 / 2 → ∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), (∫ t in (1 / 2 : ℝ)..1, F (t • x)) ≤ 2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y := by
+  intro n F s hF hF0 hFi hs hs2
+  have hC0 : 0 ≤ 2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y :=
+    mul_nonneg (mul_nonneg (by positivity) hs.le) (integral_nonneg hF0)
+  rw [← ENNReal.ofReal_le_ofReal_iff hC0]
+  -- `ofReal` of a Bochner integral is at most the lower integral of `ofReal`
+  have step1 : ENNReal.ofReal (∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        (∫ t in (1 / 2 : ℝ)..1, F (t • x)))
+      ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := by
+    calc ENNReal.ofReal (∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          (∫ t in (1 / 2 : ℝ)..1, F (t • x)))
+        ≤ ‖∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          (∫ t in (1 / 2 : ℝ)..1, F (t • x))‖ₑ := by
+          rw [Real.enorm_eq_ofReal_abs]; exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+      _ ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          ‖∫ t in (1 / 2 : ℝ)..1, F (t • x)‖ₑ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := by
+          refine lintegral_mono fun x => ?_
+          rw [intervalIntegral.integral_of_le (by norm_num)]
+          calc ‖∫ t in Ioc (1 / 2 : ℝ) 1, F (t • x)‖ₑ
+              ≤ ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ‖F (t • x)‖ₑ := enorm_integral_le_lintegral_enorm _
+            _ = ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := by
+              congr 1; ext t; exact Real.enorm_eq_ofReal (hF0 _)
+  -- Tonelli
+  have hmeas : Measurable (fun p : Euclid n × ℝ => ENNReal.ofReal (F (p.2 • p.1))) :=
+    (hF.comp (measurable_snd.smul measurable_fst)).ennreal_ofReal
+  have step2 : ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x))
+      = ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ENNReal.ofReal (F (t • x)) :=
+    lintegral_lintegral_swap hmeas.aemeasurable
+  -- the region `{(t, y) : t (1 - s) ≤ ‖y‖ < t}` and the integrand on it
+  obtain ⟨T, hT⟩ : ∃ T : Set (ℝ × Euclid n), T = {p | p.1 * (1 - s) ≤ ‖p.2‖ ∧ ‖p.2‖ < p.1} :=
+    ⟨_, rfl⟩
+  have hTm : MeasurableSet T := hT ▸
+    (measurableSet_le (measurable_fst.mul_const _) measurable_snd.norm).inter
+      (measurableSet_lt measurable_snd.norm measurable_fst)
+  obtain ⟨H, hH⟩ : ∃ H : ℝ × Euclid n → ℝ≥0∞, H = T.indicator (fun p => ENNReal.ofReal (F p.2)) :=
+    ⟨_, rfl⟩
+  have hHm : Measurable H := hH ▸ (hF.comp measurable_snd).ennreal_ofReal.indicator hTm
+  -- change of variables `y = t x`
+  have step3 : ∀ t ∈ Ioc (1 / 2 : ℝ) 1,
+      ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), ENNReal.ofReal (F (t • x))
+        ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, H (t, y) := by
+    intro t ht
+    have ht0 : 0 < t := lt_trans (by norm_num) ht.1
+    have hmem : ∀ x : Euclid n,
+        x ∈ ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s) ↔ (t, t • x) ∈ T := by
+      intro x
+      rw [hT]
+      simp only [Set.mem_sdiff, mem_ball_zero_iff, mem_ofPred_eq, norm_smul, Real.norm_eq_abs,
+        abs_of_pos ht0, not_lt]
+      constructor
+      · rintro ⟨h1, h2⟩
+        exact ⟨mul_le_mul_of_nonneg_left h2 ht0.le, mul_lt_of_lt_one_right ht0 h1⟩
+      · rintro ⟨h1, h2⟩
+        exact ⟨lt_of_mul_lt_mul_left (by linarith) ht0.le, le_of_mul_le_mul_left h1 ht0⟩
+    have hind : (ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s)).indicator
+        (fun x => ENNReal.ofReal (F (t • x))) = fun x => H (t, t • x) := by
+      ext x
+      rw [hH]
+      by_cases hx : x ∈ ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s)
+      · rw [indicator_of_mem hx, indicator_of_mem ((hmem x).1 hx)]
+      · rw [indicator_of_notMem hx, indicator_of_notMem (fun h => hx ((hmem x).2 h))]
+    have hHt : Measurable fun y : Euclid n => H (t, y) := hHm.comp measurable_prodMk_left
+    have hjac : ENNReal.ofReal |(t ^ Module.finrank ℝ (Euclid n))⁻¹| ≤ ENNReal.ofReal (2 ^ n) := by
+      apply ENNReal.ofReal_le_ofReal
+      rw [finrank_euclideanSpace_fin, abs_of_pos (by positivity), ← inv_pow]
+      have : t⁻¹ ≤ 2 := by
+        rw [inv_le_comm₀ ht0 (by norm_num)]; linarith [ht.1]
+      exact pow_le_pow_left₀ (by positivity) this n
+    calc ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), ENNReal.ofReal (F (t • x))
+        = ∫⁻ x, H (t, t • x) := by
+          rw [← lintegral_indicator (measurableSet_ball.diff measurableSet_ball), hind]
+      _ = ∫⁻ y, H (t, y) ∂(Measure.map (t • ·) volume) :=
+          (lintegral_map hHt (measurable_const_smul t)).symm
+      _ = ENNReal.ofReal |(t ^ Module.finrank ℝ (Euclid n))⁻¹| * ∫⁻ y, H (t, y) := by
+          rw [Measure.map_addHaar_smul volume ht0.ne', lintegral_smul_measure, smul_eq_mul]
+      _ ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, H (t, y) := by gcongr
+  have step4 : ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ENNReal.ofReal (F (t • x))
+      ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y) := by
+    calc ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          ENNReal.ofReal (F (t • x))
+        ≤ ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (2 ^ n) * ∫⁻ y, H (t, y) :=
+          setLIntegral_mono' measurableSet_Ioc step3
+      _ = ENNReal.ofReal (2 ^ n) * ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ y, H (t, y) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ = ENNReal.ofReal (2 ^ n) * ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y) := by
+          rw [lintegral_lintegral_swap (f := fun t y => H (t, y)) hHm.aemeasurable]
+  -- length of the admissible parameter interval
+  have step5 : ∀ y : Euclid n, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y)
+      ≤ (ball (0 : Euclid n) 1).indicator
+          (fun y => ENNReal.ofReal (2 * s) * ENNReal.ofReal (F y)) y := by
+    intro y
+    have hSm : MeasurableSet {t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t} :=
+      (measurableSet_le (measurable_id.mul_const _) measurable_const).inter
+        (measurableSet_lt measurable_const measurable_id)
+    have hHy : (fun t => H (t, y)) = {t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t}.indicator
+        (fun _ => ENNReal.ofReal (F y)) := by
+      ext t
+      rw [hH, hT]
+      simp only [indicator, mem_ofPred_eq]
+    rw [hHy, lintegral_indicator_const hSm, Measure.restrict_apply hSm]
+    by_cases hy : ‖y‖ < 1
+    · rw [indicator_of_mem (mem_ball_zero_iff.2 hy), mul_comm]
+      gcongr
+      have h1s : 0 < 1 - s := by linarith
+      calc volume ({t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t} ∩ Ioc (1 / 2 : ℝ) 1)
+          ≤ volume (Ioc ‖y‖ (‖y‖ / (1 - s))) := by
+            apply measure_mono
+            rintro t ⟨⟨h1, h2⟩, -⟩
+            exact ⟨h2, (le_div_iff₀ h1s).2 h1⟩
+        _ = ENNReal.ofReal (‖y‖ / (1 - s) - ‖y‖) := Real.volume_Ioc
+        _ ≤ ENNReal.ofReal (2 * s) := by
+            apply ENNReal.ofReal_le_ofReal
+            rw [sub_le_iff_le_add, div_le_iff₀ h1s]
+            nlinarith [mul_pos hs (show 0 < 2 - 2 * s - ‖y‖ by linarith)]
+    · rw [indicator_of_notMem (by simpa using hy)]
+      have hempty : {t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t} ∩ Ioc (1 / 2 : ℝ) 1 = ∅ := by
+        ext t
+        simp only [mem_inter_iff, mem_ofPred_eq, mem_Ioc, mem_empty_iff_false, iff_false]
+        rintro ⟨⟨-, h2⟩, -, h4⟩
+        exact hy (h2.trans_le h4)
+      rw [hempty, measure_empty, mul_zero]
+  have step6 : ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y)
+      ≤ ENNReal.ofReal (2 * s) * ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y) := by
+    calc ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y)
+        ≤ ∫⁻ y, (ball (0 : Euclid n) 1).indicator
+          (fun y => ENNReal.ofReal (2 * s) * ENNReal.ofReal (F y)) y := lintegral_mono step5
+      _ = ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (2 * s) * ENNReal.ofReal (F y) :=
+          lintegral_indicator measurableSet_ball _
+      _ = ENNReal.ofReal (2 * s) * ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  have hBeq : ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y)
+      = ENNReal.ofReal (∫ y in ball (0 : Euclid n) 1, F y) :=
+    (ofReal_integral_eq_lintegral_ofReal hFi (ae_of_all _ hF0)).symm
+  calc ENNReal.ofReal (∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        (∫ t in (1 / 2 : ℝ)..1, F (t • x)))
+      ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := step1
+    _ = ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ENNReal.ofReal (F (t • x)) := step2
+    _ ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y) := step4
+    _ ≤ ENNReal.ofReal (2 ^ n) *
+        (ENNReal.ofReal (2 * s) * ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y)) := by
+        gcongr
+    _ = ENNReal.ofReal (2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y) := by
+        rw [hBeq, ← mul_assoc, ← ENNReal.ofReal_mul (by positivity),
+          ← ENNReal.ofReal_mul (by positivity)]
+        congr 1
+        ring
+
+end Submission
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
