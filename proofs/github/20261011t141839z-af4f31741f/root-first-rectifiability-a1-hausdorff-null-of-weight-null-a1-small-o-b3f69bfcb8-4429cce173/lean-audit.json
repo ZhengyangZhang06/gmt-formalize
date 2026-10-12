@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e1cdb31d5d692d166ce41fbf75547f35690c35741f12c8c3db15e7a38f599084",
+  "git_delta": {
+    "base_commit": "296d71ce515269b0bee350c07bbde24b589ba9f8",
+    "candidate_commit": "5061cb8d004f2ea3a75ac6efbc9aa488970984ed",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_hnw_exists_open_superset_measure_lt",
+    "diff_sha256": "9110fd8f1872ce6d3d57fbfc6c315b7eb28e41bf5bf795928236ecfbae61c5aa",
+    "source_sha256": "c3b648cec230397394b63ca360256733e825d517d2a9f66b1de17581512b522d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_hnw_exists_open_superset_measure_lt",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)) (ζ : ℝ≥0∞), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → 0 < ζ → ∃ O : Set (Euclidean N), IsOpen O ∧ Z ⊆ O ∧ O ⊆ U ∧ μ O < ζ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
