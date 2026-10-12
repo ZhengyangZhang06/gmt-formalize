@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "54d9cb3ced568c770ffbe1ba5e451d30daa2a11ae71955fb4171c126049c1281",
+  "git_delta": {
+    "base_commit": "2093263984b2a1afe3a6e92b13da48e63e0e93f8",
+    "candidate_commit": "dd9361e25ccd56b61e0bcb8d2989b85d879accc7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ufd_cl_vector_lusin",
+    "diff_sha256": "d84058d42de8edfc200c2328f102f0a47af98b8a60e2774ce0682d9517ac62e3",
+    "source_sha256": "90ede117b920abf532e719a12552f4b7a7f16f01e5b49e7316a579e5fbe7e57b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ufd_cl_vector_lusin",
+      "statement": "∀ (P N : ℕ) (μ : Measure (Eucl P)) (u : Eucl P → EuclideanSpace ℝ (Fin N)), Measurable u → ∀ A : Set (Eucl P), MeasurableSet A → μ A ≠ ∞ → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ C : Set (Eucl P), IsCompact C ∧ C ⊆ A ∧ μ (A \\ C) < ε ∧ ContinuousOn u C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
