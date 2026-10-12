@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_duality_compact-a1.regularized_field-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_duality_compact-a1",
+  "depth": 4,
+  "title": "Admissibility of the regularized unit test field −(χ/√(‖G‖²+η²))·G",
+  "statement": "Let n ∈ ℕ and ℝⁿ = EuclideanSpace ℝ (Fin n) with the Euclidean norm. Let G : ℝⁿ → ℝⁿ be a C¹ vector field. Let χ : ℝⁿ → ℝ be C¹ with compact support and 0 ≤ χ(x) ≤ 1 for all x. Let η > 0 be real, and let g : ℝⁿ → ℝⁿ satisfy g(x) = −(χ(x)/√(‖G(x)‖² + η²)) • G(x) for every x. Then g is C¹, g has compact support, tsupport g ⊆ tsupport χ, and ‖g(x)‖ ≤ 1 for every x.",
+  "lean_statement": "∀ (n : ℕ) (G : Rn n → Rn n) (χ : Rn n → ℝ) (η : ℝ) (g : Rn n → Rn n), ContDiff ℝ 1 G → ContDiff ℝ 1 χ → HasCompactSupport χ → (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) → 0 < η → (∀ x, g x = -(χ x / Real.sqrt (‖G x‖ ^ 2 + η ^ 2)) • G x) → ContDiff ℝ 1 g ∧ HasCompactSupport g ∧ tsupport g ⊆ tsupport χ ∧ ∀ x, ‖g x‖ ≤ 1",
+  "lean_name": "bv_regularized_unit_field_admissible",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-smooth-duality-compact-a1-re-ee0a5bb0b4-a1"
+}
