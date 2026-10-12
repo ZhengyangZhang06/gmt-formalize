@@ -894,6 +894,160 @@ theorem Submission.pcoarea_c1_injOn_area_formula : ∀ (k N : ℕ) (V : Set (Rn 
   refine setLIntegral_congr_fun hS fun z hz => ?_
   simp only [Pi.mul_apply, hueq z hz]
   exact mul_comm _ _
+/-- **Block-triangular factorization of `normDet`** (steps 1 and 6 of the flat Jacobian identity
+for the co-area formula, Simon Ch. 3, (2.7)–(2.8)). Let `Γ : ℝ^{m+k} → ℝᵐ` be surjective and
+`S : ℝ^{m+k} → ℝᵏ` linear, let `T : ℝ^{m+k} → WithLp 2 (ℝᵐ × ℝᵏ)` have components `Γ` and `S`,
+and let `K = ker Γ`. Then `normDet T = normDet (Γ|_{K^⊥}) · normDet (S|_K)`. In the coordinates
+`c(a, b) = a + b`, a linear isometry `WithLp 2 (K^⊥ × K) ≃ ℝ^{m+k}`, and orthonormal bases of
+`K^⊥`, `K`, `ℝᵐ`, `ℝᵏ`, the matrix of `T ∘ c` is block lower-triangular because `Γ` vanishes on
+`K`; its diagonal blocks are the matrices of `Γ|_{K^⊥}` and `S|_K`. -/
+theorem Submission.pcoarea_flat_normDet_block : ∀ (m k : ℕ) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (S : Rn (m + k) →ₗ[ℝ] Rn k) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)), Function.Surjective Γ → (∀ v, (T v).fst = Γ v) → (∀ v, (T v).snd = S v) → T.normDet = (Γ.domRestrict (LinearMap.ker Γ)ᗮ).normDet * (S ∘ₗ (LinearMap.ker Γ).subtype).normDet := by
+  intro m k Γ S T hΓ hfst hsnd
+  -- Step 1: `dim K = k` by rank–nullity (`Γ` is onto), hence `dim K^⊥ = m`.
+  have hK : finrank ℝ (LinearMap.ker Γ) = k := by
+    have h := LinearMap.finrank_range_add_finrank_ker Γ
+    rw [LinearMap.range_eq_top.mpr hΓ, finrank_top, finrank_euclideanSpace_fin,
+      finrank_euclideanSpace_fin] at h
+    omega
+  have hKp : finrank ℝ (LinearMap.ker Γ)ᗮ = m := by
+    have h := Submodule.finrank_add_finrank_orthogonal (LinearMap.ker Γ)
+    rw [hK, finrank_euclideanSpace_fin] at h
+    omega
+  -- Step 2: `c(a, b) = a + b` is a linear isometry `WithLp 2 (K^⊥ × K) ≃ ℝ^{m+k}`, so
+  -- `normDet (T ∘ c) = normDet T · normDet c = normDet T`.
+  let c : WithLp 2 ((LinearMap.ker Γ)ᗮ × LinearMap.ker Γ) ≃ₗᵢ[ℝ] Rn (m + k) :=
+    ((LinearMap.ker Γ).orthogonalDecomposition.trans
+      (LinearIsometryEquiv.withLpProdComm 2 ℝ _ _)).symm
+  have hc : ∀ p, c p = (p.fst : Rn (m + k)) + (p.snd : Rn (m + k)) := by
+    intro p
+    change ((p.snd : Rn (m + k)) + (p.fst : Rn (m + k))) = _
+    exact add_comm _ _
+  have hTc : (T ∘ₗ c.toLinearEquiv.toLinearMap).normDet = T.normDet := by
+    rw [LinearMap.normDet_comp_of_finrank_eq _ _ c.toLinearEquiv.finrank_eq,
+      show c.toLinearEquiv.toLinearMap.normDet = 1 from c.toLinearIsometry.normDet_eq_one,
+      mul_one]
+  -- Steps 3–5: in the product orthonormal bases `β₁.prod β₂` of `WithLp 2 (K^⊥ × K)` and
+  -- `γ₁.prod γ₂` of `WithLp 2 (ℝᵐ × ℝᵏ)`, the matrix of `T ∘ c` has the blocks
+  -- `⟨γ₁ i, Γ (β₁ j)⟩`, `⟨γ₁ i, Γ (β₂ j)⟩ = 0` (as `β₂ j ∈ ker Γ`), `⟨γ₂ i, S (β₁ j)⟩` and
+  -- `⟨γ₂ i, S (β₂ j)⟩`.
+  let β₁ : OrthonormalBasis (Fin m) ℝ (LinearMap.ker Γ)ᗮ :=
+    (stdOrthonormalBasis ℝ (LinearMap.ker Γ)ᗮ).reindex (finCongr hKp)
+  let β₂ : OrthonormalBasis (Fin k) ℝ (LinearMap.ker Γ) :=
+    (stdOrthonormalBasis ℝ (LinearMap.ker Γ)).reindex (finCongr hK)
+  let γ₁ := EuclideanSpace.basisFun (Fin m) ℝ
+  let γ₂ := EuclideanSpace.basisFun (Fin k) ℝ
+  have hmat : LinearMap.toMatrix (β₁.prod β₂).toBasis (γ₁.prod γ₂).toBasis
+      (T ∘ₗ c.toLinearEquiv.toLinearMap) =
+      Matrix.fromBlocks
+        (LinearMap.toMatrix β₁.toBasis γ₁.toBasis (Γ.domRestrict (LinearMap.ker Γ)ᗮ)) 0
+        (LinearMap.toMatrix β₁.toBasis γ₂.toBasis (S.domRestrict (LinearMap.ker Γ)ᗮ))
+        (LinearMap.toMatrix β₂.toBasis γ₂.toBasis (S ∘ₗ (LinearMap.ker Γ).subtype)) := by
+    have hc' : ∀ x, c.toLinearEquiv x = c x := fun _ => rfl
+    ext (i | i) (j | j) <;>
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.coe_toBasis, OrthonormalBasis.prod_apply,
+        OrthonormalBasis.repr_apply_apply, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂,
+        Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.zero_apply,
+        LinearMap.comp_apply, Sum.elim_inl, Sum.elim_inr, Function.comp_apply,
+        WithLp.prod_inner_apply, LinearMap.domRestrict_apply, Submodule.subtype_apply] <;>
+      simp [hc', hc, hfst, hsnd]
+  -- Steps 6–7: `det (fromBlocks M₁₁ 0 M₂₁ M₂₂) = det M₁₁ · det M₂₂`, and `normDet` is `‖det‖` of
+  -- the matrix in orthonormal bases indexed by the same type.
+  rw [← hTc, LinearMap.normDet_eq_norm_det_toMatrix _ (β₁.prod β₂) (γ₁.prod γ₂), hmat,
+    Matrix.det_fromBlocks_zero₁₂, norm_mul,
+    ← LinearMap.normDet_eq_norm_det_toMatrix _ β₁ γ₁,
+    ← LinearMap.normDet_eq_norm_det_toMatrix _ β₂ γ₂]
+/-- **Section identity for the flat co-area Jacobian** (steps (i) and (iv) of the flat-Jacobian
+computation behind Simon Ch. 3, (2.7)–(2.8)). Let `K ⊆ ℝⁿ` be a subspace with `dim K = k`,
+`ι_K : K → ℝⁿ` its inclusion, and `E : ℝᵏ → ℝⁿ` linear with range in `K` and left inverse
+`S : ℝⁿ → ℝᵏ`. Then `normDet(A ∘ E) normDet(S ∘ ι_K) = normDet(A ∘ ι_K)` for every linear
+`A : ℝⁿ → ℝᴺ`. Corestricting `E` to `E' : ℝᵏ → K` gives `A ∘ E = (A ∘ ι_K) ∘ E'` and
+`(S ∘ ι_K) ∘ E' = id`; as `dim ℝᵏ = dim K`, `normDet` is multiplicative on both composites, so
+`normDet(A ∘ E) = normDet(A ∘ ι_K) normDet(E')` and `normDet(S ∘ ι_K) normDet(E') = 1`. -/
+theorem Submission.pcoarea_flat_normDet_section : ∀ (n k N : ℕ) (A : Rn n →ₗ[ℝ] Rn N) (K : Submodule ℝ (Rn n)) (S : Rn n →ₗ[ℝ] Rn k) (E : Rn k →ₗ[ℝ] Rn n), Module.finrank ℝ K = k → (∀ z, E z ∈ K) → (∀ z, S (E z) = z) → (A ∘ₗ E).normDet * (S ∘ₗ K.subtype).normDet = (A ∘ₗ K.subtype).normDet := by
+  intro n k N A K S E hK hEK hSE
+  -- Step 1: corestrict `E` to `E' : ℝᵏ → K`; then `A ∘ E = (A ∘ ι_K) ∘ E'`.
+  let E' : Rn k →ₗ[ℝ] K := E.codRestrict K hEK
+  have hAE : A ∘ₗ E = (A ∘ₗ K.subtype) ∘ₗ E' := rfl
+  -- Step 2: `(S ∘ ι_K) ∘ E' = id`.
+  have hSE' : (S ∘ₗ K.subtype) ∘ₗ E' = LinearMap.id := LinearMap.ext hSE
+  -- Step 3: `dim ℝᵏ = k = dim K`.
+  have hdim : finrank ℝ (Rn k) = finrank ℝ K := by rw [finrank_euclideanSpace_fin, hK]
+  -- Steps 4–5: `normDet` is multiplicative on both composites.
+  have h4 := LinearMap.normDet_comp_of_finrank_eq E' (A ∘ₗ K.subtype) hdim
+  have h5 := LinearMap.normDet_comp_of_finrank_eq E' (S ∘ₗ K.subtype) hdim
+  rw [hSE', LinearMap.normDet_id] at h5
+  -- Step 6: `normDet(A ∘ E) normDet(S ∘ ι_K) = normDet(A ∘ ι_K) (normDet(S ∘ ι_K) normDet(E'))`.
+  rw [hAE, h4, mul_right_comm, mul_assoc, ← h5, mul_one]
+
+/-- **Flat Jacobian identity**: the linear algebra behind the co-area formula 2.7–2.8 of Simon
+Ch. 3 (`chapter-03.txt` lines 411–425), which "follows from the `C¹` case". Let `n = m + k`,
+`T : ℝⁿ → WithLp 2 (ℝᵐ × ℝᵏ)` be bijective with first component `Γ` and `T (E z) = (0, z)`, and
+`K = ker Γ`. Then `normDet (A ∘ E) · normDet T = normDet (A ∘ ι_K) · normDet Γ*`.
+`Γ` is onto (as `T` is), so `dim K = k`. With `S` the second component of `T`, `E` maps into `K`
+and `S ∘ E = id`, whence `normDet (A ∘ E) · normDet (S ∘ ι_K) = normDet (A ∘ ι_K)`
+(`pcoarea_flat_normDet_section`). In the orthogonal splitting `ℝⁿ = K^⊥ ⊕ K`, `T` is block lower
+triangular, so `normDet T = normDet (Γ|_{K^⊥}) · normDet (S ∘ ι_K)`
+(`pcoarea_flat_normDet_block`). Finally `Γ*`, corestricted to `K^⊥ = range Γ*`, is the adjoint
+of the square map `Γ|_{K^⊥}` and so has the same `normDet`. No property of `A` is used. -/
+theorem Submission.pcoarea_flat_jacobian_identity : ∀ (m k N : ℕ) (A : Rn (m + k) →ₗ[ℝ] Rn N)
+    (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k))
+    (E : Rn k →ₗ[ℝ] Rn (m + k)), Function.Bijective T → (∀ v, (T v).fst = Γ v) →
+    (∀ z, T (E z) = WithLp.toLp 2 (0, z)) →
+    (A ∘ₗ E).normDet * T.normDet =
+      (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet := by
+  intro m k N A Γ T E hT hfst hE
+  -- Step 1: `Γ = fst ∘ T` is surjective because `T` is, so `K = ker Γ` has dimension `k`.
+  have hΓ : Function.Surjective Γ := by
+    intro y
+    obtain ⟨v, hv⟩ := hT.2 (WithLp.toLp 2 (y, 0))
+    exact ⟨v, by rw [← hfst, hv, WithLp.toLp_fst]⟩
+  have hK : finrank ℝ (LinearMap.ker Γ) = k := by
+    have h := LinearMap.finrank_range_add_finrank_ker Γ
+    rw [LinearMap.range_eq_top.mpr hΓ, finrank_top, finrank_euclideanSpace_fin,
+      finrank_euclideanSpace_fin] at h
+    omega
+  -- Step 2: `T v = (Γ v, S v)` with `S = snd ∘ T`; `E` maps into `K` and `S ∘ E = id`.
+  obtain ⟨S, hsnd⟩ : ∃ S : Rn (m + k) →ₗ[ℝ] Rn k, ∀ v, (T v).snd = S v :=
+    ⟨WithLp.sndₗ 2 ℝ (Rn m) (Rn k) ∘ₗ T, fun v ↦ rfl⟩
+  have hEK : ∀ z, E z ∈ LinearMap.ker Γ := by
+    intro z
+    rw [LinearMap.mem_ker, ← hfst, hE, WithLp.toLp_fst]
+  have hSE : ∀ z, S (E z) = z := by
+    intro z
+    rw [← hsnd, hE, WithLp.toLp_snd]
+  -- Steps 3–4: `normDet (A ∘ E) · normDet (S ∘ ι_K) = normDet (A ∘ ι_K)`.
+  have hsec := Submission.pcoarea_flat_normDet_section (m + k) k N A (LinearMap.ker Γ) S E hK
+    hEK hSE
+  -- Step 6: `normDet T = normDet (Γ|_{K^⊥}) · normDet (S ∘ ι_K)`.
+  have hblock := Submission.pcoarea_flat_normDet_block m k Γ S T hΓ hfst hsnd
+  -- Step 5: `normDet (Γ|_{K^⊥}) = normDet Γ*`.
+  have hadj : (Γ.domRestrict (LinearMap.ker Γ)ᗮ).normDet = (LinearMap.adjoint Γ).normDet := by
+    have hm : ∀ y, LinearMap.adjoint Γ y ∈ (LinearMap.ker Γ)ᗮ := by
+      intro y
+      rw [LinearMap.orthogonal_ker]
+      exact ⟨y, rfl⟩
+    have ha : (LinearMap.adjoint Γ).codRestrict (LinearMap.ker Γ)ᗮ hm =
+        LinearMap.adjoint (Γ.domRestrict (LinearMap.ker Γ)ᗮ) := by
+      apply (LinearMap.eq_adjoint_iff _ _).mpr
+      intro y x
+      exact LinearMap.adjoint_inner_left Γ x y
+    have hd : finrank ℝ (LinearMap.ker Γ)ᗮ = finrank ℝ (Rn m) := by
+      have h := Submodule.finrank_add_finrank_orthogonal (LinearMap.ker Γ)
+      rw [hK, finrank_euclideanSpace_fin] at h
+      rw [finrank_euclideanSpace_fin]
+      omega
+    classical
+    let b₁ := stdOrthonormalBasis ℝ (LinearMap.ker Γ)ᗮ
+    let b₂ := (stdOrthonormalBasis ℝ (Rn m)).reindex (finCongr hd.symm)
+    rw [← LinearMap.normDet_codRestrict hm, ha,
+      (LinearMap.adjoint _).normDet_eq_norm_det_toMatrix b₂ b₁,
+      (Γ.domRestrict _).normDet_eq_norm_det_toMatrix b₁ b₂, LinearMap.toMatrix_adjoint,
+      Matrix.det_conjTranspose]
+    simp
+  -- Step 7: combine.
+  rw [hblock, ← hsec, hadj]
+  ring
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry

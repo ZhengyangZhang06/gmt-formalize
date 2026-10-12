@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -A 16 -B 5 'theorem normDet_comp_of_finrank_eq|theorem normDet_eq_norm_det_toMatrix|theorem _root_.LinearIsometry.normDet_eq_one|theorem normDet_id|theorem normDet_codRestrict' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "rg -n -A 18 -B 7 'theorem det_fromBlocks_zero₁₂' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "sed -n '1,120p' mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "rg -n -A 8 -B 4 'theorem finrank_add_finrank_orthogonal' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "rg -n 'fromBlocks|prodMap|block' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "rg -n 'pcoarea_flat|normDet_block|normDet_section' project/GMT",
+        "sed -n '1,165p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/FlatJacSplitScope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/FlatJacSplitInst.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/FlatJacSplitFull.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1-flat-jacobian-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1-flat-jacobian-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitScope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitInst.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitFull.lean"
+      ],
+      "conclusion": "Independently verified the pinned revisions and compatibility of the inspected sources with the compiler packages. NormDet.lean supplies the composition, orthonormal-matrix, isometry and identity facts; ProdL2.lean supplies the intended L² inner product and product bases; the determinant and SimonGMT lemmas have the required hypotheses. Targeted searches found no block/product normDet lemma in NormDet.lean and no proposed declarations in the snapshot project. Both types pass validate_lean_statement unchanged and elaborate independently in the comparator's replayed scope. Instance checks compile and identify WithLp.instProdInnerProductSpace and the restricted subspace inner products. Full proofs, exact-type comparator-style targets and the selected parent assembly compile; all three proved declarations depend only on propext, Classical.choice and Quot.sound. Neither proposed name occurs in the 166-node DAG. The split is appropriate: its independent children isolate the block computation and section identity. Taking S = snd ∘ T supplies their hypotheses; their conclusions together with coareaHorizontalLinear_normDet imply exactly pcoarea_flat_jacobian_identity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "block_normdet",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact one-line Lean proposition. Step 1 correctly obtains dimensions k and m from surjectivity. Step 2 uses an orthogonal linear isometric equivalence and justifies the composition dimension equality. Steps 3–5 derive all four matrix blocks from the component hypotheses and kernel membership. Steps 6–7 apply the square-block determinant formula and orthonormal-basis normDet identities correctly, including zero-dimensional cases. The proof is complete, directly formalizable and independent of the parent and sibling. The empty dependency list is correct. pcoarea_flat_normDet_block is a fresh bare identifier; its type requires no implementation-dependent alias or problematic matrix-unit construction."
+    },
+    {
+      "key": "section_normdet",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line Lean proposition agree, including the dimension, range-containment and left-inverse hypotheses. Steps 1–2 legitimately corestrict E and establish both composition identities. Step 3 supplies precisely the dimension equality required by both applications of normDet_comp_of_finrank_eq. Steps 4–6 yield the claimed product identity by commutativity and associativity, without cancellation, injectivity assumptions on A or division. The argument covers zero dimensions and singular A and needs no further proof planning. It is independent of the parent and sibling, so the empty dependency list is correct. pcoarea_flat_normDet_section is a fresh bare identifier with an independently elaborating comparator type."
+    }
+  ],
+  "required_changes": []
+}
