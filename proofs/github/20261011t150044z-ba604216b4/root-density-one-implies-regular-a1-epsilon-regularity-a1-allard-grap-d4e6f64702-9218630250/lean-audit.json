@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65f05428bad3e289aeec27cb533ac81bb994487ebe8dce1f9a1aedcd1bd40d29",
+  "git_delta": {
+    "base_commit": "8b01563b9d6790df0714baeba297a3b33428d7d3",
+    "candidate_commit": "dd8fcf8bcea714d918709c56ea7e24f4d81f39ea",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_lip_orthonormal_coordinates",
+    "diff_sha256": "a9ecf7f575c6496a196c8f13174f232631ea36316d3c9b7249bd6c6641538ade",
+    "source_sha256": "a084f00980626dd339fa2f068f0931d26f8d79eac6c504dedd0b541c7ca4fa70",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_lip_orthonormal_coordinates",
+      "statement": "∀ (n k : ℕ) (T₀ : Submodule ℝ (Euclid (n + k))), Module.finrank ℝ T₀ = n → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ v, ι v ∈ T₀) ∧ (∀ x, ∃ v w, x = ι v + ι' w) ∧ (∀ v w, T₀.starProjection (ι v + ι' w) = ι v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
