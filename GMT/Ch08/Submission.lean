@@ -870,6 +870,103 @@ theorem Submission.frt_tangent_points_flat_graph_cover :
     obtain ⟨P, hPD, hP⟩ := hnet T
     obtain ⟨i, hi⟩ := hΓx P x T θ hx hP
     exact mem_iUnion₂.2 ⟨(P, Γ P i), ⟨(P, i), ⟨hPD, mem_univ i⟩, rfl⟩, hi⟩
+/-- Sets covered by countably many `1`-graphs are countably `n`-rectifiable (Simon Ch. 3, proof of
+Theorem 1.6 "⇐", p. 74): if `C` is countable and every `(P, Γ) ∈ C` satisfies
+`|(y - z) - p_P(y - z)| ≤ |p_P(y - z)|` for `y, z ∈ Γ`, then `p_P` is injective on `Γ` with a
+`√2`-Lipschitz inverse, so `Γ` lies in the range of a Lipschitz map `ℝ^n → ℝ^N`, and every
+`M ⊆ ⋃_{c ∈ C} c.2` is countably `n`-rectifiable. -/
+theorem Submission.frt_countablyRectifiable_of_graph_cover :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (C : Set (Grassmannian N n × Set (Euclidean N))), C.Countable → (∀ c ∈ C, ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ ‖Grassmannian.project c.1 (y - z)‖) → M ⊆ ⋃ c ∈ C, c.2 → Chapter03.CountablyRectifiable n M := by
+  intro N n M C hC hgraph hM
+  -- Step 1: `p_P` is symmetric and idempotent, so `|v|² = |p_P v|² + |v - p_P v|²`.
+  have hpyth : ∀ (P : Grassmannian N n) (v : Euclidean N),
+      ‖v‖ ^ 2 = ‖Grassmannian.project P v‖ ^ 2 + ‖v - Grassmannian.project P v‖ ^ 2 := by
+    intro P v
+    have hker : Grassmannian.project P (v - Grassmannian.project P v) = 0 := by
+      rw [show Grassmannian.project P (v - Grassmannian.project P v) =
+          Grassmannian.project P v - Grassmannian.project P (Grassmannian.project P v) from
+        map_sub P.projectionLinearMap v (Grassmannian.project P v),
+        Grassmannian.project_project, sub_self]
+    have horth : inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) = 0 := by
+      rw [show inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) =
+          inner ℝ v (Grassmannian.project P (v - Grassmannian.project P v)) from
+        P.projectionLinearMap_isSymmetric v (v - Grassmannian.project P v), hker, inner_zero_right]
+    have h := norm_add_sq_real (Grassmannian.project P v) (v - Grassmannian.project P v)
+    rw [horth, add_sub_cancel] at h
+    linarith
+  -- Step 3 (plane coordinates): a linear isometry `ι : ℝ^n → ℝ^N` onto `P.plane`, from an
+  -- orthonormal basis of `P.plane` indexed by `Fin n` (`finrank P.plane = n`).
+  have hparam : ∀ P : Grassmannian N n, ∃ ι : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N,
+      ∀ x ∈ P.plane, ∃ a, ι a = x := by
+    intro P
+    let b := (stdOrthonormalBasis ℝ P.plane).reindex (finCongr P.finrank_plane)
+    exact ⟨P.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry,
+      fun x hx ↦ ⟨b.repr ⟨x, hx⟩, by simp⟩⟩
+  -- Steps 2–5: each `1`-graph `Γ` over `P` lies in the range of a Lipschitz map `ℝ^n → ℝ^N`.
+  have hone : ∀ (P : Grassmannian N n) (Γ : Set (Euclidean N)),
+      (∀ y ∈ Γ, ∀ z ∈ Γ,
+        ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ ‖Grassmannian.project P (y - z)‖) →
+      ∃ (K : NNReal) (F : EuclideanSpace ℝ (Fin n) → Euclidean N),
+        LipschitzWith K F ∧ Γ ⊆ range F := by
+    intro P Γ hΓ
+    -- Step 2: `|y - z|² ≤ 2 |p_P y - p_P z|²` on `Γ`, so `p_P` is injective on `Γ` and its
+    -- inverse `h` is `√2`-Lipschitz on `p_P(Γ)`.
+    have hkey : ∀ y ∈ Γ, ∀ z ∈ Γ,
+        ‖y - z‖ ≤ Real.sqrt 2 * ‖Grassmannian.project P y - Grassmannian.project P z‖ := by
+      intro y hy z hz
+      have hsub : Grassmannian.project P (y - z) =
+          Grassmannian.project P y - Grassmannian.project P z :=
+        map_sub P.projectionLinearMap y z
+      have h1 := hpyth P (y - z)
+      have h2 := hΓ y hy z hz
+      have h3 : ‖y - z‖ ^ 2 ≤ 2 * ‖Grassmannian.project P (y - z)‖ ^ 2 := by
+        nlinarith [norm_nonneg ((y - z) - Grassmannian.project P (y - z)),
+          norm_nonneg (Grassmannian.project P (y - z))]
+      rw [hsub] at h3
+      calc ‖y - z‖ = Real.sqrt (‖y - z‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+        _ ≤ Real.sqrt (2 * ‖Grassmannian.project P y - Grassmannian.project P z‖ ^ 2) :=
+          Real.sqrt_le_sqrt h3
+        _ = Real.sqrt 2 * ‖Grassmannian.project P y - Grassmannian.project P z‖ := by
+          rw [Real.sqrt_mul (by norm_num), Real.sqrt_sq (norm_nonneg _)]
+    have hinj : InjOn (Grassmannian.project P) Γ := by
+      intro y hy z hz hyz
+      have h := hkey y hy z hz
+      rw [hyz, sub_self, norm_zero, mul_zero] at h
+      exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+    let h := Function.invFunOn (Grassmannian.project P) Γ
+    have hleft : ∀ y ∈ Γ, h (Grassmannian.project P y) = y :=
+      fun y hy ↦ hinj.leftInvOn_invFunOn hy
+    -- Step 3: `k = h ∘ ι` is `√2`-Lipschitz on `S = ι⁻¹(p_P(Γ))`, as `ι` is an isometry.
+    obtain ⟨ι, hι⟩ := hparam P
+    let S : Set (EuclideanSpace ℝ (Fin n)) := ι ⁻¹' (Grassmannian.project P '' Γ)
+    have hk : LipschitzOnWith (Real.toNNReal (Real.sqrt 2)) (fun a ↦ h (ι a)) S := by
+      refine LipschitzOnWith.of_dist_le' fun a ha b hb ↦ ?_
+      obtain ⟨y, hy, hya⟩ := ha
+      obtain ⟨z, hz, hzb⟩ := hb
+      have hka : h (ι a) = y := by rw [← hya, hleft y hy]
+      have hkb : h (ι b) = z := by rw [← hzb, hleft z hz]
+      rw [hka, hkb, dist_eq_norm, dist_eq_norm]
+      calc ‖y - z‖ ≤ Real.sqrt 2 * ‖Grassmannian.project P y - Grassmannian.project P z‖ :=
+            hkey y hy z hz
+        _ = Real.sqrt 2 * ‖a - b‖ := by rw [hya, hzb, ← map_sub, ι.norm_map]
+    -- Step 4: extend `k` to a Lipschitz map `F : ℝ^n → ℝ^N` (coordinatewise McShane extension).
+    obtain ⟨F, hF, hkF⟩ := hk.extend_finite_dimension
+    -- Step 5: for `y ∈ Γ` write `p_P y = ι a`; then `a ∈ S` and `F a = h (p_P y) = y`.
+    refine ⟨_, F, hF, fun y hy ↦ ?_⟩
+    obtain ⟨a, ha⟩ := hι (Grassmannian.project P y) (LinearMap.mem_range_self _ y)
+    refine ⟨a, ?_⟩
+    rw [← hkF (show a ∈ S from ⟨y, hy, ha.symm⟩)]
+    change h (ι a) = y
+    rw [ha, hleft y hy]
+  -- Step 6: `{c.2 : c ∈ C}` is a countable family of countably `n`-rectifiable sets (the empty
+  -- family included), and `M` is contained in its union.
+  have hrect : ∀ S ∈ (fun c : Grassmannian N n × Set (Euclidean N) ↦ c.2) '' C,
+      Chapter03.CountablyRectifiable n S := by
+    rintro S ⟨c, hc, rfl⟩
+    obtain ⟨K, F, hF, hsub⟩ := hone c.1 c.2 (hgraph c hc)
+    exact (Chapter03.countablyRectifiable_range hF).mono hsub
+  refine (Chapter03.countablyRectifiable_sUnion (hC.image _) hrect).mono ?_
+  rwa [sUnion_image]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
