@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c33fd69eee8da8e9c09902f2798ad9fa1b9b0db8199dc2f3741a61fb449f861b",
+  "git_delta": {
+    "base_commit": "59387efbfe5184cd9f891c98a52cf7be9e049c4c",
+    "candidate_commit": "31080f00641474243d153a0d7c934c7076791324",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_te_directional_form",
+    "diff_sha256": "8fbd6942a8680cf4ade1f2bb584e6c7e61a2080595e8fe3b2cd51de30e954400",
+    "source_sha256": "87b0438b991af10d40ae76c4681064d78cb23658aa5fc17d8582725d51175139",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_te_directional_form",
+      "statement": "∀ (m : ℕ) (φ : Eucl (m + 1) → ℝ) (h : Eucl (m + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → ∃ ω : TestFormOn (univ : Set (Eucl (m + 1))) m, (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl (m + 1)) m) x) ≤ ‖h‖ * |φ x|) ∧ ∀ x, ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) m ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1)) : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ φ x h",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
