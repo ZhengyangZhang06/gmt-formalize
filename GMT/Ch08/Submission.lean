@@ -410,6 +410,62 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Small open neighbourhoods of null sets (used for the First Rectifiability Theorem, Simon Ch. 8,
+1.2): if `μ` is finite on compact subsets of the open set `U` and `Z ⊆ U` is `μ`-null, then for every
+`ζ > 0` there is an open `O` with `Z ⊆ O ⊆ U` and `μ(O) < ζ`. -/
+theorem Submission.frt_hnw_exists_open_superset_measure_lt :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)) (ζ : ℝ≥0∞), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → 0 < ζ → ∃ O : Set (Euclidean N), IsOpen O ∧ Z ⊆ O ∧ O ⊆ U ∧ μ O < ζ := by
+  intro N μ U Z ζ hU hfin hZU hZ hζ
+  -- Step 1: for each `x ∈ U` a radius `r x > 0` with `closedBall x (r x) ⊆ U`.
+  have hrad : ∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ U := by
+    intro x hx
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU x hx
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hεU⟩
+  choose! r hr using hrad
+  -- Steps 2–3: the balls `ball x (r x)`, `x ∈ U`, cover `U`; by Lindelöf, so do those with
+  -- centres in a countable `T ⊆ U`.
+  have hcover : ⋃ x ∈ U, ball x (r x) = U := by
+    apply Subset.antisymm
+    · exact iUnion₂_subset fun x hx ↦ ball_subset_closedBall.trans (hr x hx).2
+    · intro x hx
+      exact mem_iUnion₂.mpr ⟨x, hx, mem_ball_self (hr x hx).1⟩
+  obtain ⟨T, hTU, hTc, hTcover⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable U (fun x ↦ ball x (r x)) (fun _ _ ↦ isOpen_ball)
+  rw [hcover] at hTcover
+  have : Countable T := hTc.to_subtype
+  -- Step 4: a budget `ε i > 0` with `∑' i, ε i < ζ`.
+  obtain ⟨ε, hεpos, hεsum⟩ := ENNReal.exists_pos_sum_of_countable hζ.ne' T
+  -- Step 5: outer regularity of the finite measure `μ.restrict (ball i (r i))` gives an open
+  -- `O' i ⊇ Z` with `μ (O' i ∩ ball i (r i)) < ε i`.
+  have hloc : ∀ i : T, ∃ O' : Set (Euclidean N), Z ⊆ O' ∧ IsOpen O' ∧
+      μ (O' ∩ ball (i : Euclidean N) (r i)) < ε i := by
+    intro i
+    have hballfin : μ (ball (i : Euclidean N) (r i)) ≠ ∞ :=
+      ne_top_of_le_ne_top (hfin _ (isCompact_closedBall _ _) (hr _ (hTU i.2)).2)
+        (measure_mono ball_subset_closedBall)
+    have : IsFiniteMeasure (μ.restrict (ball (i : Euclidean N) (r i))) :=
+      isFiniteMeasure_restrict.mpr hballfin
+    have hZν : μ.restrict (ball (i : Euclidean N) (r i)) Z < ε i := by
+      rw [Measure.restrict_apply' measurableSet_ball]
+      exact (measure_mono_null inter_subset_left hZ).trans_lt (by exact_mod_cast hεpos i)
+    obtain ⟨O', hZO', hO'open, hO'⟩ := Set.exists_isOpen_lt_of_lt Z _ hZν
+    refine ⟨O', hZO', hO'open, ?_⟩
+    rwa [Measure.restrict_apply hO'open.measurableSet] at hO'
+  choose O' hZO' hO'open hO' using hloc
+  -- Step 6: glue `O = ⋃ i, O' i ∩ ball i (r i)`.
+  refine ⟨⋃ i : T, O' i ∩ ball (i : Euclidean N) (r i), ?_, ?_, ?_, ?_⟩
+  · exact isOpen_iUnion fun i ↦ (hO'open i).inter isOpen_ball
+  · intro z hz
+    have hz' : z ∈ ⋃ x ∈ T, ball x (r x) := hTcover ▸ hZU hz
+    obtain ⟨x, hxT, hzx⟩ := mem_iUnion₂.mp hz'
+    exact mem_iUnion.mpr ⟨⟨x, hxT⟩, hZO' _ hz, hzx⟩
+  · exact iUnion_subset fun i ↦ inter_subset_right.trans
+      (ball_subset_closedBall.trans (hr _ (hTU i.2)).2)
+  · calc μ (⋃ i : T, O' i ∩ ball (i : Euclidean N) (r i))
+        ≤ ∑' i : T, μ (O' i ∩ ball (i : Euclidean N) (r i)) := measure_iUnion_le _
+      _ ≤ ∑' i : T, (ε i : ℝ≥0∞) := ENNReal.tsum_le_tsum fun i ↦ (hO' i).le
+      _ < ζ := hεsum
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
