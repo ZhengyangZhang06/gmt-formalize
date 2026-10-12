@@ -458,6 +458,46 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 116–120), integrals over a Lipschitz image: if
+`F : ℝⁿ → ℝ^N` is `K`-Lipschitz on the measurable set `D`, then for measurable `g ≥ 0`
+`∫_{F(D)} g dHⁿ ≤ Kⁿ ∫_D g(F(x')) dx'`.  For `E ⊆ D` the image bound gives
+`Hⁿ(F(E)) ≤ Kⁿ Hⁿ(E) = Kⁿ Lⁿ(E)`.  With `ν = F_#(Lⁿ ⌞ D)` (`F` is continuous on `D`, hence
+a.e. measurable for `Lⁿ ⌞ D`) and `B ∩ F(D) = F(F⁻¹(B) ∩ D)`, this gives
+`(Hⁿ ⌞ F(D))(B) ≤ Kⁿ ν(B)` for measurable `B`, i.e. `Hⁿ ⌞ F(D) ≤ Kⁿ ν`; integrate `g` and
+change variables. -/
+theorem tdo_gl_lintegral_image_le : ∀ (n N : ℕ) (F : Rn n → EuclideanSpace ℝ (Fin N)) (D : Set (Rn n)) (K : ℝ≥0), MeasurableSet D → LipschitzOnWith K F D → ∀ g : EuclideanSpace ℝ (Fin N) → ℝ≥0∞, Measurable g → ∫⁻ x in F '' D, g x ∂(μHE[n] : Measure (EuclideanSpace ℝ (Fin N))) ≤ (K : ℝ≥0∞) ^ n * ∫⁻ x' in D, g (F x') := by
+  intro n N F D K hD hF g hg
+  -- `F` is continuous on the measurable set `D`, hence a.e. measurable for `Lⁿ ⌞ D`
+  have hFm : AEMeasurable F ((volume : Measure (Rn n)).restrict D) :=
+    hF.continuousOn.aemeasurable hD
+  -- `Hⁿ ⌞ F(D) ≤ Kⁿ F_#(Lⁿ ⌞ D)`, tested on measurable `B` via `B ∩ F(D) = F(F⁻¹(B) ∩ D)`
+  have hle : (μHE[n] : Measure (EuclideanSpace ℝ (Fin N))).restrict (F '' D) ≤
+      ((K : ℝ≥0∞) ^ n) • Measure.map F ((volume : Measure (Rn n)).restrict D) := by
+    refine Measure.le_iff.2 fun B hB => ?_
+    rw [Measure.restrict_apply hB, Measure.smul_apply, Measure.map_apply_of_aemeasurable hFm hB,
+      Measure.restrict_apply' hD, smul_eq_mul]
+    have hset : B ∩ F '' D = F '' (F ⁻¹' B ∩ D) := by
+      ext y
+      constructor
+      · rintro ⟨hyB, x, hxD, rfl⟩
+        exact ⟨x, ⟨hyB, hxD⟩, rfl⟩
+      · rintro ⟨x, ⟨hxB, hxD⟩, rfl⟩
+        exact ⟨hxB, x, hxD, rfl⟩
+    rw [hset, ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume n]
+    exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hF.mono Set.inter_subset_right)
+  calc ∫⁻ x in F '' D, g x ∂(μHE[n] : Measure (EuclideanSpace ℝ (Fin N)))
+      ≤ ∫⁻ x, g x ∂(((K : ℝ≥0∞) ^ n) • Measure.map F ((volume : Measure (Rn n)).restrict D)) :=
+        lintegral_mono' hle le_rfl
+    _ = (K : ℝ≥0∞) ^ n * ∫⁻ x, g x ∂(Measure.map F ((volume : Measure (Rn n)).restrict D)) := by
+        rw [lintegral_smul_measure, smul_eq_mul]
+    _ = (K : ℝ≥0∞) ^ n * ∫⁻ x' in D, g (F x') := by
+        rw [lintegral_map' hg.aemeasurable hFm]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
