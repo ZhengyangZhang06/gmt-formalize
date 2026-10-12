@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3545882a5640e4e208f52c942bffbbf730b9046a8b61d736db773acdc21abbe5",
+  "git_delta": {
+    "base_commit": "d416af9629ee4f74ffe6d1bf0ffcfc6156aee6e2",
+    "candidate_commit": "0d15cc92e2486cd2931803120ce9a5ff4058c465",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_null_compact_ball_cover",
+    "diff_sha256": "2234d99137c420d30596e5b431351806af8e661ea6c03bbbd5f11278c9dbefdf",
+    "source_sha256": "fdd78221a242d919c83eb057e36ca9530878d74d3c0cf9e7bcd5c0f0cb9135cb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_null_compact_ball_cover",
+      "statement": "∀ (P m : ℕ) (Z : Set (Euclid P)), IsCompact Z → μH[(m : ℝ)] Z = 0 → ∀ ε δ : ℝ, 0 < ε → 0 < δ → ∃ (J : ℕ) (p : Fin J → Euclid P) (σ : Fin J → ℝ), (∀ j, p j ∈ Z) ∧ (∀ j, 0 < σ j ∧ σ j < δ) ∧ Z ⊆ ⋃ j, ball (p j) (σ j) ∧ ∑ j, σ j ^ m < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
