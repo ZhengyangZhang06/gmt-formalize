@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0e58a80a5891033971f066e04c9025d0e0f71fe5e666ce2f0c94fcca5cb0dae3",
+  "git_delta": {
+    "base_commit": "9305473129b1605935eb357f70521be1c2e9f135",
+    "candidate_commit": "3dd1ccc10fa64aceabce790a8135b80387173c1f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_lipschitz_smooth_approx",
+    "diff_sha256": "06c73e5afd331d414de6925a683eb0907814bc90c2afafd6358c656587523fed",
+    "source_sha256": "36df2e94bd040305856a3c115f7c7f1a29e25e0c22cfc1a4eedf7dad14c6cd4a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_lipschitz_smooth_approx",
+      "statement": "∀ (N : ℕ) (u : Rn N → ℝ) (K : ℝ≥0), LipschitzWith K u → HasCompactSupport u → ∃ v : ℕ → Rn N → ℝ, (∀ j, ContDiff ℝ 1 (v j)) ∧ (∀ j, HasCompactSupport (v j)) ∧ (∀ j, tsupport (v j) ⊆ Metric.cthickening (1 / ((j : ℝ) + 1)) (tsupport u)) ∧ (∀ j y, ‖fderiv ℝ (v j) y‖ ≤ K) ∧ TendstoUniformly v u atTop ∧ ∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ fderiv ℝ (v j) y) atTop (𝓝 (fderiv ℝ u y))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
