@@ -803,6 +803,34 @@ theorem Submission.dsmc_chart_tangentSpace_eq_range : ∀ (P r d : ℕ) (N : Set
         (himg.subset.trans inter_subset_right) v hv),
     hii, hiii⟩
 
+/-- **Approximate tangent planes of a set carried by a `Cʳ` submanifold lie in its tangent
+spaces** (Simon Ch. 3, 1.4–1.5, chapter-03.txt lines 75–90; Ch. 2, 4.1 and 4.3, chapter-02.txt
+lines 850–871).  Let `N` be an embedded `Cʳ` `d`-submanifold of `ℝᴾ`, `r ≥ 1`, let `x ∈ N`, let
+`Hⁿ(M \ N) = 0` and let `Q` be an approximate tangent space of `M` at `x`.  Then `Q ⊆ T_xN`.
+A chart `ψ` of `N` with `x = ψ(v₀)` gives `T_xN = Dψ(v₀)(ℝᵈ)` and the secant estimate
+`|y − x − Dψ(v₀)a| ≤ ε|y − x|` for `y ∈ N` near `x`.  Every `w ∈ Q` is, at every small scale `λ`,
+within `s` of a rescaled secant `λ⁻¹(y − x)` with `y ∈ M ∩ N`; hence `w ∈ Dψ(v₀)(ℝᵈ)`. -/
+theorem Submission.dsmc_approxTangentPlane_subset_tangentSpace : ∀ (P n r d : ℕ) (M N : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 1 ≤ r → IsEmbeddedSubmanifold r d N → x ∈ N → μHE[n] (M \ N) = 0 → HasApproximateTangentSpaceAt n M x Q → (Q : Set (Euclid P)) ⊆ tangentSpace N x := by
+  intro P n r d M N x Q hr hN hxN hMN hQ
+  -- a chart `ψ : V → W` of `N` at `x`; `x ∈ W ∩ N = ψ(V)`, so `x = ψ(v₀)` with `v₀ ∈ V`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, himg, hprop, hrank⟩ := hN x hxN
+  obtain ⟨v₀, hv₀, rfl⟩ : x ∈ ψ '' V := by
+    rw [himg]
+    exact ⟨hxW, hxN⟩
+  -- `T_xN = Dψ(v₀)(ℝᵈ)`, and `N` satisfies the secant estimate at `x` for `Dψ(v₀)`
+  obtain ⟨hT, -, hsec⟩ := Submission.dsmc_chart_tangentSpace_eq_range P r d N V W ψ hr hV hW hψ
+    hinj himg hprop hrank v₀ hv₀
+  intro w hw
+  rw [hT]
+  -- the blow-up points `y ∈ M ∩ N` with `|λ⁻¹(y − x) − w| < s`, `0 < λ < λ₀`, lie in `N`
+  refine Submission.dsmc_att_mem_range_of_secant_blowUp P d N (ψ v₀) w (fderiv ℝ ψ v₀) hsec
+    fun s hs => ?_
+  obtain ⟨lam₀, hlam₀, hpts⟩ :=
+    Submission.dsmc_att_blowUp_points_of_approxTangent P n M N (ψ v₀) w Q hMN hQ hw s hs
+  refine ⟨lam₀, hlam₀, fun lam hlam hlt => ?_⟩
+  obtain ⟨y, hy, hyw⟩ := hpts lam hlam hlt
+  exact ⟨y, hy.2, hyw⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
