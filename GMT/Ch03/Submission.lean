@@ -335,6 +335,43 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Derivative bounds for a `C¹` chart with upper and lower Lipschitz bounds** (Simon Ch. 3, the
+`C¹` charts in the proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 113–143, and Remark 1.5(2)).
+Let `B ⊆ ℝⁿ` be open and `ψ : ℝⁿ → ℝᴺ` be `C¹` and `K`-Lipschitz on `B`, with
+`c |u - u'| ≤ |ψ(u) - ψ(u')|` for all `u, u' ∈ B` (no sign condition on `c`). Then for every
+`v ∈ B`: `‖Dψ(v)‖ ≤ K` by `norm_fderiv_le_of_lipschitzOn`, as `B ∈ 𝓝 v`; and `c |w| ≤ |Dψ(v) w|`
+for every `w ∈ ℝⁿ`, since for small `t > 0` we have `v + t w ∈ B`, hence
+`c |w| ≤ |t⁻¹ (ψ(v + t w) - ψ(v))|`, and these difference quotients tend to `Dψ(v) w` as `t ↓ 0`
+(`HasFDerivAt.lim`). -/
+theorem Submission.chartTD_chart_fderiv_bounds : ∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B → LipschitzOnWith K ψ B → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) → ∀ v ∈ B, ‖fderiv ℝ ψ v‖ ≤ K ∧ ∀ w : Rn n, c * ‖w‖ ≤ ‖fderiv ℝ ψ v w‖ := by
+  intro n N B ψ K c hB hψ hLip hlow v hv
+  have hBv : B ∈ 𝓝 v := hB.mem_nhds hv
+  -- Upper bound: `ψ` is `K`-Lipschitz on the neighbourhood `B` of `v`.
+  refine ⟨norm_fderiv_le_of_lipschitzOn ℝ hBv hLip, fun w ↦ ?_⟩
+  -- `ψ` is `C¹` on the open set `B`, so it has derivative `Dψ(v)` at `v`.
+  have hd : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ.differentiableOn one_ne_zero).differentiableAt hBv).hasFDerivAt
+  -- `|t⁻¹ (ψ(v + t w) - ψ(v))| → |Dψ(v) w|` as `t ↓ 0`, since `|t⁻¹| = t⁻¹ → ∞`.
+  have hlim : Tendsto (fun t : ℝ ↦ ‖t⁻¹ • (ψ (v + t⁻¹⁻¹ • w) - ψ v)‖) (𝓝[>] 0)
+      (𝓝 ‖fderiv ℝ ψ v w‖) := by
+    refine (hd.lim w (c := fun t : ℝ ↦ t⁻¹) ?_).norm
+    refine (tendsto_inv_nhdsGT_zero (𝕜 := ℝ)).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+    rw [Real.norm_of_nonneg (inv_nonneg.2 ht.le)]
+  -- Eventually `v + t w ∈ B`, as `v + t w → v` when `t ↓ 0`.
+  have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), v + t • w ∈ B := by
+    have hcont : Tendsto (fun t : ℝ ↦ v + t • w) (𝓝 0) (𝓝 v) :=
+      (continuous_const.add (continuous_id.smul continuous_const)).tendsto' 0 v (by simp)
+    exact hcont.mono_left nhdsWithin_le_nhds hBv
+  -- For such `t > 0`: `c |w| = t⁻¹ c |t w| ≤ t⁻¹ |ψ(v + t w) - ψ(v)|`.
+  refine ge_of_tendsto hlim ?_
+  filter_upwards [hev, self_mem_nhdsWithin] with t ht (htpos : 0 < t)
+  have h := hlow (v + t • w) ht v hv
+  rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg htpos.le] at h
+  rw [inv_inv, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 htpos.le)]
+  calc c * ‖w‖ = t⁻¹ * (c * (t * ‖w‖)) := by field_simp
+    _ ≤ t⁻¹ * ‖ψ (v + t • w) - ψ v‖ := by gcongr
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
