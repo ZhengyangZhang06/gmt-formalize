@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "540ffad856811735b9adcf4b35ad82b96ac6cb7abe8e2e8226dbcdcacab9a9e2",
+  "git_delta": {
+    "base_commit": "631a403dbf9b75e2f71df20a8dc6d02bf79bb1ee",
+    "candidate_commit": "d340e07de8374ec516ec89fe6bed87ab733d3a06",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "638e24b825b2febff6a4eb7591e2d6a3e6bd73d4ac8906fee8a56d69aba20a06",
+    "source_sha256": "85499ee27a7243889cea697836ce921b0aca0ab6ae317d6e6a516a2325bc339a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_tangent_structure",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ V : RectifiableVarifold n ℓ U, (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ AEStronglyMeasurable V.tangentProj V.weight ∧ (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
