@@ -425,6 +425,55 @@ theorem Submission.cmb_rb_measureRepresentation_integrableOn_coeff :
   refine (hrep ⟨ψ, hψ⟩).1.integrableOn.congr_fun (fun x hx => ?_) hK.isClosed.measurableSet
   simp [ψ, c, (hχK x).1 hx, euclideanNVectorCoordinate]
 
+/-- **Coordinate pairing estimate, the step "by (2.7)" in the proof of Simon Ch. 6, Lemma 2.15
+(p. 137).**  Let the coefficients `v^β = ⟨dx^β, v⟩` of `v` be `μ`-integrable on a measurable set
+`K`, and let `θ` be a continuous `n`-form vanishing off `K` with `|θ| ≤ D` (Euclidean coefficient
+norm).  Then `f = ∑_β θ(e_β) v^β` is `μ`-integrable and `|∫ f dμ| ≤ D ∑_β ∫_K |v^β| dμ`.  Each
+coefficient `θ(e_β)` is continuous with `|θ(e_β)| ≤ |θ| ≤ D`, so `f` is integrable on `K`; it
+vanishes off `K`; and `|f| ≤ ∑_β D |v^β|` pointwise. -/
+theorem Submission.cmb_rb_integral_coeff_pairing_bound : ∀ (P n : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), MeasurableSet K → (∀ β : SimonMultiIndex n P, IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ) → ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ → (∀ x, x ∉ K → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) → Integrable (fun x => ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) μ ∧ |∫ x, ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ| ≤ D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ := by
+  intro P n μ v K _hK hv θ D hθ hθK hθD
+  -- Step 1: every coefficient is bounded, `|θ(x)(e_β)| ≤ |θ(x)| ≤ D`.
+  have hcD : ∀ (β : SimonMultiIndex n P) (x : Eucl P),
+      |euclideanCovectorCoordinate (θ x) β| ≤ D := fun β x =>
+    (Submission.cmb_rb_abs_euclideanCovectorCoordinate_le P n (θ x) β).trans (hθD x)
+  -- Step 2: `x ↦ θ(x)(e_β)` is continuous, as evaluation at `e_β` is continuous.
+  have hcc : ∀ β : SimonMultiIndex n P,
+      Continuous fun x => euclideanCovectorCoordinate (θ x) β := fun β =>
+    hθ.eval_const _
+  -- Step 3: each `θ(e_β) v^β`, hence `f`, is `μ`-integrable on `K`.
+  have hfK : IntegrableOn (fun x => ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) K μ :=
+    integrable_finsetSum _ fun β _ => Integrable.bdd_mul (hv β) (hcc β).aestronglyMeasurable
+      (ae_of_all _ fun x => (Real.norm_eq_abs _).trans_le (hcD β x))
+  -- Step 4: `f = 0` off `K`, so `f` is `μ`-integrable and `∫ f dμ = ∫_K f dμ`.
+  have hf0 : ∀ x, x ∉ K → ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β = 0 := by
+    intro x hx
+    simp [euclideanCovectorCoordinate, hθK x hx]
+  refine ⟨(integrableOn_iff_integrable_of_support_subset
+    (Function.support_subset_iff'.2 hf0)).1 hfK, ?_⟩
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hf0]
+  -- Steps 5–6: `|f| ≤ ∑_β D |v^β|` pointwise; integrate over `K`.
+  have hg : ∀ β ∈ (Finset.univ : Finset (SimonMultiIndex n P)),
+      IntegrableOn (fun x => D * |euclideanNVectorCoordinate (v x) β|) K μ := fun β _ =>
+    (hv β).abs.const_mul D
+  calc |∫ x in K, ∑ β : SimonMultiIndex n P,
+          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ|
+      ≤ ∫ x in K, |∑ β : SimonMultiIndex n P,
+          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β| ∂μ :=
+        abs_integral_le_integral_abs
+    _ ≤ ∫ x in K, ∑ β : SimonMultiIndex n P, D * |euclideanNVectorCoordinate (v x) β| ∂μ :=
+        integral_mono hfK.abs (integrable_finsetSum _ hg) fun x =>
+          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun β _ => by
+            rw [abs_mul]
+            exact mul_le_mul_of_nonneg_right (hcD β x) (abs_nonneg _))
+    _ = ∑ β : SimonMultiIndex n P, D * ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ := by
+        rw [integral_finsetSum _ hg]
+        simp only [integral_const_mul]
+    _ = D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ :=
+        (Finset.mul_sum _ _ _).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
