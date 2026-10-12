@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.line_deriv-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+  "depth": 4,
+  "title": "Directional derivatives of a locally Lipschitz function along a differentiable chart (Simon Ch. 2, 4.10)",
+  "statement": "Let n, P ∈ ℕ, F : ℝ^P → ℝ, Φ : ℝⁿ → ℝ^P and w ∈ ℝⁿ. Assume F is Lipschitz (with some constant K ≥ 0) on some neighbourhood V of Φ(w), Φ is differentiable at w and F∘Φ is differentiable at w. Then for every s ∈ ℝⁿ the function t ↦ F(Φ(w) + t·DΦ(w)s) has derivative D(F∘Φ)(w)s at t = 0.",
+  "lean_statement": "∀ (n P : ℕ) (F : Eucl P → ℝ) (Φ : Eucl n → Eucl P) (w : Eucl n), (∃ K : ℝ≥0, ∃ V ∈ 𝓝 (Φ w), LipschitzOnWith K F V) → DifferentiableAt ℝ Φ w → DifferentiableAt ℝ (F ∘ Φ) w → ∀ s : Eucl n, HasDerivAt (fun t : ℝ => F (Φ w + t • fderiv ℝ Φ w s)) (fderiv ℝ (F ∘ Φ) w s) 0",
+  "lean_name": "slicing_im_coarea_line_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-line-deriv-a1-a1"
+}
