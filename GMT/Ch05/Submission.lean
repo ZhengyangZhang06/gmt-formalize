@@ -458,6 +458,37 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Second derivative of a `C²` function along a line (the chain-rule step used for the Legendre
+condition of the area integrand in the elliptic bootstrap, Simon Ch. 5, Theorem 7.1): if
+`F : E → ℝ` is `C²`, then `g(t) = F(x + t v)` satisfies `g''(0) = D²F(x)[v][v]`.  By the chain
+rule `g'(t) = DF(x + t v)[v]` for every `t`; the chain rule for `t ↦ DF(x + t v)` at `t = 0` and
+evaluation at the constant vector `v` give `g''(0) = D(DF)(x)[v][v]`. -/
+theorem dohr_eb_ail_line_second_deriv : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x v : E, deriv (deriv (fun t : ℝ => F (x + t • v))) 0 = fderiv ℝ (fderiv ℝ F) x v v := by
+  intro E _ _ F hF x v
+  -- Step 1 (regularity): `F` is differentiable and `DF = fderiv ℝ F` is `C¹`, hence differentiable.
+  have hF1 : Differentiable ℝ F := hF.differentiable (by norm_num)
+  have hD : Differentiable ℝ (fderiv ℝ F) :=
+    (hF.fderiv_right (m := 1) (by norm_num)).differentiable (by norm_num)
+  -- Step 2: the line `γ(t) = x + t v` has derivative `v` at every `t`.
+  have hline : ∀ t : ℝ, HasDerivAt (fun s : ℝ => x + s • v) v t := fun t => by
+    simpa using ((hasDerivAt_id t).smul_const v).const_add x
+  -- Step 3 (chain rule): `deriv g` is `t ↦ DF(x + t v)[v]`.
+  have hg : deriv (fun t : ℝ => F (x + t • v)) = fun t => fderiv ℝ F (x + t • v) v := by
+    funext t
+    exact ((hF1 _).hasFDerivAt.comp_hasDerivAt t (hline t)).deriv
+  rw [hg]
+  -- Step 4 (chain rule for `t ↦ DF(x + t v)` at `0`, then evaluation at the constant `v`):
+  -- the derivative at `0` is `D(DF)(x)[v][v] + DF(x)[0] = D(DF)(x)[v][v]`.
+  have h0 := (hD _).hasFDerivAt.comp_hasDerivAt (0 : ℝ) (hline 0)
+  have h2 := h0.clm_apply (hasDerivAt_const (0 : ℝ) v)
+  simp only [zero_smul, add_zero, map_zero] at h2
+  -- Step 5: conclude.
+  exact h2.deriv
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
