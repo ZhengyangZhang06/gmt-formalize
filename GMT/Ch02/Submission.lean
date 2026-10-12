@@ -557,6 +557,86 @@ theorem Submission.c1approx_measurable_remainder_modulus : ∀ (n : ℕ) (K : �
     have h0 : 0 ≤ η k x := Real.iSup_nonneg fun q ↦ hφ0 k q x
     rw [Real.dist_eq, sub_zero, abs_of_nonneg h0]
     exact hle.trans_lt (half_lt_self hδ)
+/-- **Simon Ch. 2, proof of Theorem 1.5 (p. 44), Egorov step with a closed set.** If `C ⊆ ℝⁿ` is
+Borel and the Borel functions `F k` converge to the Borel function `G` at every point of `C`, then
+for each `ε > 0` there is a closed `A ⊆ C` with `Lⁿ(C \ A) < ε` such that `F k → G` uniformly on
+every compact subset of `A`. Egorov's theorem on the bounded shells `P j = {j ≤ |x| < j + 1}` and
+closed inner approximation (weak regularity of `Lⁿ`) give closed `Fc j ⊆ P j` of total loss `ε/2`
+on which `F k → G` uniformly. The family `Fc` is locally finite, so `A = ⋃ j, Fc j` is closed, and
+a compact `K ⊆ A` meets only finitely many `Fc j`. -/
+theorem Submission.c1approx_egorov_closed_compact_uniform : ∀ (n : ℕ) (C : Set (Rn n)) (F : ℕ → Rn n → ℝ) (G : Rn n → ℝ), MeasurableSet C → (∀ k, Measurable (F k)) → Measurable G → (∀ x ∈ C, Tendsto (fun k ↦ F k x) atTop (𝓝 (G x))) → ∀ ε : ℝ, 0 < ε → ∃ A ⊆ C, IsClosed A ∧ volume (C \ A) < ENNReal.ofReal ε ∧ ∀ K ⊆ A, IsCompact K → TendstoUniformlyOn F G atTop K := by
+  intro n C F G hC hF hG hconv ε hε
+  -- The shells `P j = {j ≤ |x| < j + 1}`: Borel, bounded, and covering `ℝⁿ`.
+  let P : ℕ → Set (Rn n) := fun j ↦ {x | (j : ℝ) ≤ ‖x‖ ∧ ‖x‖ < j + 1}
+  have hPmeas (j : ℕ) : MeasurableSet (P j) :=
+    (measurableSet_le measurable_const measurable_norm).inter
+      (measurableSet_lt measurable_norm measurable_const)
+  have hCP (j : ℕ) : MeasurableSet (C ∩ P j) := hC.inter (hPmeas j)
+  have hCPfin (j : ℕ) : volume (C ∩ P j) ≠ ∞ :=
+    ((measure_mono fun x hx ↦ mem_closedBall_zero_iff.2 hx.2.2.le).trans_lt
+      measure_closedBall_lt_top).ne
+  have hmemP (x : Rn n) : x ∈ P ⌊‖x‖⌋₊ := ⟨Nat.floor_le (norm_nonneg x), Nat.lt_floor_add_one _⟩
+  -- Egorov on `C ∩ P j`, then a closed inner approximation of the good set, each with loss
+  -- `η j = ε 2^{-j-3}`.
+  let η : ℕ → ℝ≥0∞ := fun j ↦ ENNReal.ofReal (ε / 2 ^ (j + 3))
+  have hη (j : ℕ) : 0 < η j := ENNReal.ofReal_pos.2 (by positivity)
+  have hEg (j : ℕ) : ∃ t ⊆ C ∩ P j, MeasurableSet t ∧ volume t ≤ η j ∧
+      TendstoUniformlyOn F G atTop ((C ∩ P j) \ t) :=
+    tendstoUniformlyOn_of_ae_tendsto (fun k ↦ (hF k).stronglyMeasurable) hG.stronglyMeasurable
+      (hCP j) (hCPfin j) (ae_of_all _ fun x hx ↦ hconv x hx.1) (hη j)
+  choose t _ ht htη htunif using hEg
+  have hcl (j : ℕ) : ∃ Fc ⊆ (C ∩ P j) \ t j, IsClosed Fc ∧ volume (((C ∩ P j) \ t j) \ Fc) < η j :=
+    ((hCP j).diff (ht j)).exists_isClosed_sdiff_lt
+      ((measure_mono sdiff_subset).trans_lt (hCPfin j).lt_top).ne (hη j).ne'
+  choose Fc hFc hFcc hFcη using hcl
+  have hFcP (j : ℕ) : Fc j ⊆ P j := (hFc j).trans (sdiff_subset.trans inter_subset_right)
+  refine ⟨⋃ j, Fc j, iUnion_subset fun j ↦ (hFc j).trans (sdiff_subset.trans inter_subset_left),
+    ?_, ?_, ?_⟩
+  · -- `ball x 1` meets `Fc j ⊆ P j` only for `j < ⌈|x|⌉ + 1`, so `⋃ j, Fc j` is closed.
+    refine LocallyFinite.isClosed_iUnion (fun x ↦ ?_) hFcc
+    refine ⟨ball x 1, ball_mem_nhds x one_pos, (finite_lt_nat (⌈‖x‖⌉₊ + 1)).subset ?_⟩
+    rintro j ⟨y, hyF, hyx⟩
+    have hj : (j : ℝ) ≤ ‖y‖ := (hFcP j hyF).1
+    have hy : ‖y‖ - ‖x‖ < 1 := (norm_sub_norm_le y x).trans_lt (mem_ball_iff_norm.1 hyx)
+    have hx := Nat.le_ceil ‖x‖
+    have : (j : ℝ) < ⌈‖x‖⌉₊ + 1 := by linarith
+    exact_mod_cast this
+  · -- `C \ ⋃ j, Fc j ⊆ ⋃ j, (t j ∪ (A'_j \ Fc j))` has measure `≤ ∑ j, 2 η j = ε/2 < ε`.
+    have hsub : C \ ⋃ j, Fc j ⊆ ⋃ j, (t j ∪ (((C ∩ P j) \ t j) \ Fc j)) := by
+      rintro x ⟨hxC, hxA⟩
+      refine mem_iUnion.2 ⟨⌊‖x‖⌋₊, ?_⟩
+      by_cases hxt : x ∈ t ⌊‖x‖⌋₊
+      · exact Or.inl hxt
+      · exact Or.inr ⟨⟨⟨hxC, hmemP x⟩, hxt⟩, fun hxF ↦ hxA (mem_iUnion.2 ⟨_, hxF⟩)⟩
+    have h2η (j : ℕ) : η j + η j = ENNReal.ofReal (ε / 2 / 2 / 2 ^ j) := by
+      rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
+      congr 1
+      ring
+    have hsum : ∑' j, (η j + η j) = ENNReal.ofReal (ε / 2) := by
+      rw [tsum_congr h2η, ← ENNReal.ofReal_tsum_of_nonneg (fun j ↦ by positivity)
+        (summable_geometric_two' _), tsum_geometric_two']
+    calc volume (C \ ⋃ j, Fc j)
+        ≤ volume (⋃ j, (t j ∪ (((C ∩ P j) \ t j) \ Fc j))) := measure_mono hsub
+      _ ≤ ∑' j, volume (t j ∪ (((C ∩ P j) \ t j) \ Fc j)) := measure_iUnion_le _
+      _ ≤ ∑' j, (η j + η j) := ENNReal.tsum_le_tsum fun j ↦
+          (measure_union_le _ _).trans (add_le_add (htη j) (hFcη j).le)
+      _ = ENNReal.ofReal (ε / 2) := hsum
+      _ < ENNReal.ofReal ε := (ENNReal.ofReal_lt_ofReal_iff hε).2 (by linarith)
+  · -- A compact `K ⊆ A` lies in `closedBall 0 J`, hence in `Fc 0 ∪ ⋯ ∪ Fc J`, and the uniform
+    -- convergence on the finitely many good sets `A'_j`, `j ≤ J`, passes to `K`.
+    intro K hKA hK
+    obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
+    obtain ⟨J, hJ⟩ := exists_nat_ge R
+    intro u hu
+    have hev : ∀ᶠ k in atTop, ∀ j ∈ Finset.range (J + 1), ∀ x, x ∈ (C ∩ P j) \ t j →
+        (G x, F k x) ∈ u :=
+      (eventually_all_finset _).2 fun j _ ↦ htunif j u hu
+    filter_upwards [hev] with k hk x hx
+    obtain ⟨j, hj⟩ := mem_iUnion.1 (hKA hx)
+    have h1 : (j : ℝ) ≤ ‖x‖ := (hFcP j hj).1
+    have h2 : ‖x‖ ≤ R := mem_closedBall_zero_iff.1 (hR hx)
+    have hjJ : (j : ℝ) ≤ J := by linarith
+    exact hk j (Finset.mem_range_succ_iff.2 (by exact_mod_cast hjJ)) x (hFc j hj)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
