@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1.block_normdet-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1",
+  "depth": 4,
+  "title": "Block-triangular factorization normDet(T) = normDet(Γ|_{(ker Γ)^⊥})·normDet(S∘ι_{ker Γ}) (parent steps 1 and 6, parent (ii))",
+  "statement": "Let m, k ∈ ℕ, let V := ℝ^{m+k} = EuclideanSpace ℝ (Fin (m+k)), and let P := WithLp 2 (ℝᵐ × ℝᵏ), the Euclidean product with inner product ⟨(y,z),(y',z')⟩ = ⟨y,y'⟩ + ⟨z,z'⟩. Let Γ : V → ℝᵐ, S : V → ℝᵏ and T : V → P be linear maps. Assume Γ is surjective, and that for every v ∈ V the first component of T v is Γ v and the second component of T v is S v. Let K := ker Γ, let K^⊥ be its orthogonal complement in V (both with the induced inner product), and let ι_K : K → V be the inclusion. Then normDet(T) = normDet(Γ|_{K^⊥})·normDet(S∘ι_K). Here Γ|_{K^⊥} = Γ.domRestrict K^⊥ : K^⊥ → ℝᵐ and normDet = LinearMap.normDet.",
+  "lean_statement": "∀ (m k : ℕ) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (S : Rn (m + k) →ₗ[ℝ] Rn k) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)), Function.Surjective Γ → (∀ v, (T v).fst = Γ v) → (∀ v, (T v).snd = S v) → T.normDet = (Γ.domRestrict (LinearMap.ker Γ)ᗮ).normDet * (S ∘ₗ (LinearMap.ker Γ).subtype).normDet",
+  "lean_name": "pcoarea_flat_normDet_block",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-flat-jacobian-a1-bl-80a8f003e5-a1"
+}
