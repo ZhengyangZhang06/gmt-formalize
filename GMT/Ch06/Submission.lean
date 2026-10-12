@@ -511,6 +511,18 @@ theorem Submission.lpf_wtc_cat_rescaled_integral_tendsto :
   refine hdct.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with r hr
   exact hcov r hr
+/-- Continuity of the Jacobian `JΦ = √det((DΦ)* DΦ)` (Simon Ch. 2, (3.3)) of a `C¹` map
+`Φ : ℝⁿ → ℝ^Q`, written as the Gram determinant `det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)` of the columns of
+`DΦ(v)`.  `v ↦ DΦ(v)` is continuous since `Φ` is `C¹`, so are the columns `DΦ(v)eᵢ`, the Gram
+entries, the Gram matrix (entrywise), its determinant (a polynomial in the entries) and the
+square root. -/
+theorem Submission.lpf_wtc_cat_gram_jacobian_continuous :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q), ContDiff ℝ 1 Φ → Continuous (fun v : Eucl n => Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det) := by
+  intro Q n Φ hΦ
+  have hD : Continuous (fderiv ℝ Φ) := hΦ.continuous_fderiv one_ne_zero
+  refine Real.continuous_sqrt.comp (Continuous.matrix_det ?_)
+  refine continuous_pi fun i => continuous_pi fun j => ?_
+  exact (hD.clm_apply continuous_const).inner (hD.clm_apply continuous_const)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
