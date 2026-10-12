@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.deformation_regularity-a1",
+  "parent_id": "root.stationary_results-a1",
+  "depth": 2,
+  "title": "Regularity and support of the initial velocity and acceleration of admissible deformations (Simon 5.1-5.2)",
+  "statement": "For every N ∈ ℕ, U, K ⊆ ℝᴺ (ℝᴺ = EuclideanSpace ℝ (Fin N)) and φ : ℝ → ℝᴺ → ℝᴺ: (a) if IsAdmissibleDeformation 2 U K φ (U open, K compact ⊆ U, (t, x) ↦ φ t x of class C² on (−1,1) × U, φ 0 = id on U, φ t x = x for t ∈ (−1,1) and x ∉ K, each φ t a bijection of U with bijective derivative on U), then the initial velocity X = initialVelocity φ, X(x) = d/dt φ(t,x)|_{t=0}, is C¹ on ℝᴺ and X(x) = 0 for x ∉ K; (b) if IsAdmissibleDeformation 3 U K φ, then X is C² on ℝᴺ, the initial acceleration Z = initialAcceleration φ, Z(x) = d/dt[d/ds φ(s,x)|_{s=t}]|_{t=0}, is C¹ on ℝᴺ, and X(x) = Z(x) = 0 for x ∉ K.",
+  "lean_statement": "(∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), IsAdmissibleDeformation 2 U K φ → ContDiff ℝ 1 (initialVelocity φ) ∧ ∀ x ∉ K, initialVelocity φ x = 0) ∧ ∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), IsAdmissibleDeformation 3 U K φ → ContDiff ℝ 2 (initialVelocity φ) ∧ ContDiff ℝ 1 (initialAcceleration φ) ∧ ∀ x ∉ K, initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0",
+  "lean_name": "deformation_velocity_acceleration_regularity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-deformation-regularity-a1-a1"
+}

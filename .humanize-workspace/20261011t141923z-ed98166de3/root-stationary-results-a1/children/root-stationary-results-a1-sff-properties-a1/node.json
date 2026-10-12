@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_properties-a1",
+  "parent_id": "root.stationary_results-a1",
+  "depth": 2,
+  "title": "Symmetry and normality of B, continuity of H, and the normal-field identity",
+  "statement": "Assume (TH). (TH) is the frozen statement of the sibling root.submanifold_tangent-a1, taken as an explicit hypothesis: (TH1) for every Simon local representation (V, W, ψ) of class r ≥ 1 of any M ⊆ ℝᴺ, tangentSpace M (ψ x) = range Dψ(x) for x ∈ V; (TH2) every n-dimensional C^r Simon submanifold of ℝᴺ is a measurable set on which y ↦ tangentProjection M y is continuous. Let M ⊆ ℝᴺ be an n-dimensional C² Simon submanifold. Then (i) for y ∈ M and τ, η ∈ T_yM: B_y(τ, η) = B_y(η, τ) and ⟨B_y(τ, η), v⟩ = 0 for all v ∈ T_yM, where B_y(τ, η) = secondFundamentalForm M y τ η; (ii) y ↦ meanCurvature M y is continuous on M; (iii) if Y : ℝᴺ → ℝᴺ is differentiable at y ∈ M and normal along M (⟨Y(z), v⟩ = 0 for all z ∈ M, v ∈ T_zM), then ⟨η, DY(y)τ⟩ = −⟨Y(y), B_y(τ, η)⟩ for all τ, η ∈ T_yM.",
+  "lean_statement": "((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → (∀ y ∈ M, ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, secondFundamentalForm M y τ η = secondFundamentalForm M y η τ ∧ ∀ v ∈ tangentSpace M y, inner ℝ (secondFundamentalForm M y τ η) v = 0) ∧ ContinuousOn (meanCurvature M) M ∧ ∀ (Y : Rn N → Rn N) (y : Rn N), y ∈ M → DifferentiableAt ℝ Y y → (∀ z ∈ M, ∀ v ∈ tangentSpace M z, inner ℝ (Y z) v = 0) → ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ Y y τ) = -inner ℝ (Y y) (secondFundamentalForm M y τ η)",
+  "lean_name": "second_fundamental_form_symm_normal_continuity",
+  "depends_on": [
+    "root.stationary_results-a1.sff_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.sff_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-properties-a1-a1"
+}

@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.stationary_results-a1`
+- Child DAG node: `root.stationary_results-a1.deformation_regularity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Introduction to GMT, Ch. 2, 5.1-5.2 (pp. 61-62): X_x = ∂φ(t,x)/∂t|_{t=0} and Z_x = ∂²φ(t,x)/∂t²|_{t=0} "have supports which are compact subsets of U" (asserted without proof). This is step II.0′ of the parent proof, written out completely.
+
+Setting. Let r ∈ {2, 3} and assume IsAdmissibleDeformation r U K φ: U ⊆ ℝᴺ is open, K is compact, K ⊆ U, Φ(t, x) := φ t x is C^r on O := (−1,1) × U, φ 0 x = x for x ∈ U, and φ t x = x whenever t ∈ (−1,1) and x ∉ K (the bijectivity clauses are not used). X := initialVelocity φ, X(x) = deriv (t ↦ φ t x) 0; Z := initialAcceleration φ, Z(x) = deriv (t ↦ deriv (s ↦ φ s x) t) 0. Put e := (1, 0) ∈ ℝ × ℝᴺ.
+
+1. O is open. Since Φ is C^r on the open set O and r ≥ 2, DΦ = fderiv ℝ Φ is C^{r−1} on O and D²Φ = fderiv ℝ (fderiv ℝ Φ) is C^{r−2} on O (Mathlib ContDiffOn.fderiv_of_isOpen, applied once and twice).
+2. Let x ∈ U and t ∈ (−1,1). Then (t, x) ∈ O and Φ is differentiable at (t, x) (C^r with r ≥ 1 on an open set). The map s ↦ φ s x equals Φ ∘ ι_x with ι_x(s) := (s, x), whose derivative is e. By the chain rule, s ↦ φ s x has derivative DΦ(t, x)e at t, so deriv (s ↦ φ s x) t = g(t, x) := DΦ(t, x)e. In particular X(x) = g(0, x) for x ∈ U.
+3. g = (evaluation at e) ∘ DΦ is C^{r−1} on O, because evaluation at the fixed vector e is a continuous linear map. The map j : x ↦ (0, x) is smooth and maps U into O. Hence X = g ∘ j is C^{r−1} on U.
+4. Let x ∈ U. The functions t ↦ deriv (s ↦ φ s x) t and t ↦ g(t, x) coincide on (−1,1), an open neighbourhood of 0 (step 2), so they have the same derivative at 0 (Filter.EventuallyEq.deriv_eq). By the chain rule with ι_x, the derivative of t ↦ g(t, x) at 0 is Dg(0, x)e = D²Φ(0, x)(e)(e). Hence Z(x) = D²Φ(0, x) e e for x ∈ U, and Z is C^{r−2} on U (D²Φ is C^{r−2} on O, double evaluation at e is continuous linear, and we compose with j).
+5. K is compact in a Hausdorff space, hence closed, so Kᶜ is open. Let x ∉ K. For every t ∈ (−1,1) the function s ↦ φ s x is constant (= x) on the neighbourhood (−1,1) of t, so deriv (s ↦ φ s x) t = 0. Taking t = 0 gives X(x) = 0. Moreover t ↦ deriv (s ↦ φ s x) t vanishes on the neighbourhood (−1,1) of 0, so its derivative at 0 is 0: Z(x) = 0. Thus X ≡ 0 and Z ≡ 0 on the open set Kᶜ, and they are C^∞ there.
+6. Since K ⊆ U, U ∪ Kᶜ = ℝᴺ. Every point of ℝᴺ has an open neighbourhood (U or Kᶜ) on which X is C^{r−1} and Z is C^{r−2}; ContDiffOn on an open set gives ContDiffAt at each of its points, and ContDiff ℝ k F ↔ ∀ x, ContDiffAt ℝ k F x (contDiff_iff_contDiffAt). Hence X is C^{r−1} and Z is C^{r−2} on ℝᴺ, and X(x) = Z(x) = 0 for x ∉ K by step 5.
+7. Conclusion. With r = 2 (the numeral (2 : ℕ∞) coerced to WithTop ℕ∞): ContDiff ℝ 1 X and X(x) = 0 for x ∉ K, the first conjunct. With r = 3: ContDiff ℝ 2 X, ContDiff ℝ 1 Z, and X(x) = Z(x) = 0 for x ∉ K, the second conjunct.
+
+## Key steps
+
+1. Φ(t,x) = φ t x is C^r on the open set (−1,1) × U, so DΦ is C^{r−1} and D²Φ is C^{r−2} there.
+2. On U, chain rule: X(x) = DΦ(0,x)(1,0) and, since t ↦ ∂_sφ(s,x)|_{s=t} agrees with DΦ(t,x)(1,0) near 0, Z(x) = D²Φ(0,x)(1,0)(1,0); so X ∈ C^{r−1}(U), Z ∈ C^{r−2}(U).
+3. Off the closed set K, t ↦ φ_t(x) is constant on (−1,1), so X = Z = 0 on the open set Kᶜ.
+4. U ∪ Kᶜ = ℝᴺ and ContDiff is local, giving global C^{r−1}/C^{r−2}; specialise r = 2 and r = 3.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat -n GMT/Ch02/Contract.lean; diff GMT/Ch02/Contract.lean GMT/Ch02/Submission.lean; cat GMT/Ch02/README.md`
+- `grep -rn "μHE\[" mathlib/Mathlib --include=*.lean | grep -E "notation|def "; sed -n 1,140p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `cat -n simongmt/Poincare/SimonGMT/Chapter02/{Submanifold,SubmanifoldCalculus,SecondFundamentalForm,SecondFundamentalFormCalculus,SubmanifoldIntegral,SubmanifoldTopology,WeightedArea,Area}.lean; grep -n 'injective_area_formula_of_injective_derivative' AreaFormula.lean`
+- `grep -rn "theorem ContDiffAt.isSymmSndFDerivAt\|theorem HasFDerivWithinAt.unique_on\|theorem ContDiffAt.to_localInverse\|theorem LipschitzOnWith.hausdorffMeasure_image_le\|theorem HasCompactSupport.fderiv\|theorem finrank_euclideanSpace_fin" mathlib/Mathlib`
+- `grep -rn tangentConeAt mathlib/Mathlib --include=*.lean | grep -E "theorem|lemma" | grep -iE "deriv|curve|segment|mem_tangentCone"; grep -rn mapsTo_tangent mathlib/Mathlib`
+- `grep -rn "integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable\|integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable" mathlib/Mathlib; grep -n "theorem\|lemma" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `grep -rn "Submission\.\|stationary_imp_mean_curvature_zero\|second_fundamental_form_chart_formula\|submanifold_divergence_identity_compact\|deformation_velocity_acceleration_regularity" project simongmt/Poincare; python3 -I lean_name collision check against dag.json`
+- `python3 -I gen_checks.py (replays verifier gmt-compare.py contract_scope/child_modules and lean_contract.validate_lean_statement for the 10 lean_statements); lake build GMT.Ch02.Submission; lake env lean NodeChallenge_00..09.lean; lake env lean AssemblyCheck.lean`
+- `lake env lean LibCheck.lean: #print axioms Poincare.SimonGMT.Chapter02.{integral_area_formula_of_injective_derivative, IsSimonLocalRepresentation.area_formula, IsSimonLocalRepresentation.weighted_area_formula, IsSimonLocalRepresentation.exists_open_image_eq_inter, IsSimonLocalRepresentation.isEmbedding_chartMap, submanifoldDivergenceAt_eq_sum_inner, measurable_areaJacobianAt}; #check of every cited Mathlib lemma`
+- `sed -n 1030,1420p book/chapter-02.txt (printed 4.18-5.12); read dag.json and nodes/root-stationary-results-a1/parent-child-handoff.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/TangentCone/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalForm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalFormCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/stat-decomp2/AssemblyCheck.lean`
+
+The frozen contract (Contract.lean lines 83-176 and 297-342) defines the key notions:
+- B is fderivWithin of tangentProjection;
+- H is the frame trace;
+- IsStationaryIn is defined variationally.
+
+Collision checks: the snapshot project has no Submission.* declarations and no declaration with any of the ten proposed names, and dag.json (50 nodes) has no lean_name collision.
+
+SimonGMT supplies kernel-checked tools used by the children:
+- WeightedArea.lean: integral_area_formula_of_injective_derivative and IsSimonLocalRepresentation.area_formula;
+- SubmanifoldTopology.lean: IsSimonLocalRepresentation.exists_open_image_eq_inter and isEmbedding_chartMap;
+- SubmanifoldCalculus.lean: submanifoldDivergenceAt_eq_sum_inner;
+- measurable_areaJacobianAt.
+#print axioms shows only propext, Classical.choice and Quot.sound for all of them.
+
+SimonGMT has no divergence theorem on submanifolds (integral_submanifoldDivergence_eq_curvature_sub_boundary takes it as a hypothesis), no chart formula for the frame-free B, and nothing on admissible deformations. These are therefore genuine new obligations.
+
+Mathlib 25730c7c supplies ContDiffAt.isSymmSndFDerivAt, HasFDerivWithinAt.unique_on, HasFDerivWithinAt.mapsTo_tangent_cone, tangentConeAt_mono, tangentConeAt_of_mem_nhds, ContDiffAt.toOpenPartialHomeomorph, ContDiffAt.to_localInverse, OpenPartialHomeomorph.contDiffAt_symm, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable, LinearMap.normDet_ne_zero_tfae, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, LipschitzOnWith.hausdorffMeasure_image_le, ContractingWith.fixedPoint, HasCompactSupport.fderiv and ContDiffBump. exists_smooth_tsupport_subset does not exist, so it is not cited. setIntegral_eq_of_subset_of_forall_diff_eq_zero is deprecated, so the _sdiff_ name is cited.
+
+Compile checks:
+- All ten lean_statements pass the workflow validator and elaborate in the comparator-replayed contract scope; NodeChallenge_00..09 compiled with only sorry warnings.
+- AssemblyCheck.lean proves the frozen parent type StationaryIffMeanCurvatureZero ∧ SecondVariationStationary from the children and the sibling types. Its axioms are sorryAx from the stubs plus propext, Classical.choice and Quot.sound.
+- Glue examples that instantiate the children as their proofs use them also compile.
