@@ -1,0 +1,15 @@
+{
+  "node_id": "root.rectifiability-a1.mickle_rado-a1.sup_lsc-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2500",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "c24b145c9e3f3f52f0a335b502dfa050ebfd7adf",
+  "integrated_commit": "",
+  "proof_base_commit": "fa6a180514582c612267b20322541440d54613c3",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.rectifiability-a1.mickle_rado-a1",
+  "requires": []
+}
