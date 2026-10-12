@@ -627,6 +627,98 @@ theorem Submission.intcpt_id_tpd_ball_sandwich :
   rw [hI, integral_eq_lintegral_of_nonneg_ae hg0 hgm, hJ, ENNReal.ofReal_toReal hfin]
   exact ⟨hlow, hup⟩
 
+/-- Plane cutoffs (steps 2 and 4 of the tangent-point density argument, Simon Ch. 3,
+Remark 1.8(2)): for an `n`-dimensional subspace `P` of `ℝ^N` and `0 < a < R`, the radial cutoff
+`f y = min 1 (max 0 ((R - ‖y‖) / (R - a)))` is in `C_c(ℝ^N, ℝ)`, takes values in `[0, 1]`, equals
+`1` on `B_a(0)` and `0` off `B_R(0)`, and `ω_n a^n ≤ ∫_P f dH^n ≤ ω_n R^n`. -/
+theorem Submission.intcpt_id_tpd_plane_cutoff :
+    ∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)) (a R : ℝ), Module.finrank ℝ P = n → 0 < a → a < R → ∃ f : C_c(Euclidean N, ℝ), (∀ y, 0 ≤ f y) ∧ (∀ y, f y ≤ 1) ∧ (∀ y, ‖y‖ ≤ a → f y = 1) ∧ (∀ y, R < ‖y‖ → f y = 0) ∧ (unitBallVolume n).toReal * a ^ n ≤ ∫ y in (P : Set (Euclidean N)), f y ∂μHE[n] ∧ ∫ y in (P : Set (Euclidean N)), f y ∂μHE[n] ≤ (unitBallVolume n).toReal * R ^ n := by
+  intro N n P a R hP ha haR
+  have hRa : 0 < R - a := sub_pos.mpr haR
+  have hR : 0 ≤ R := ha.le.trans haR.le
+  -- Step 1: the cutoff `g y = min 1 (max 0 ((R - ‖y‖) / (R - a)))` is continuous, `[0, 1]`-valued,
+  -- `1` where `‖y‖ ≤ a` and `0` where `R ≤ ‖y‖`; it vanishes off the compact `B̄_R`, so it
+  -- packages as `f ∈ C_c(ℝ^N, ℝ)`.
+  set g : Euclidean N → ℝ := fun y ↦ min 1 (max 0 ((R - ‖y‖) / (R - a))) with hg_def
+  have hg_cont : Continuous g := by
+    simp only [hg_def]
+    fun_prop
+  have hg_nonneg : ∀ y, 0 ≤ g y := fun y ↦ le_min zero_le_one (le_max_left _ _)
+  have hg_le_one : ∀ y, g y ≤ 1 := fun y ↦ min_le_left _ _
+  have hg_one : ∀ y, ‖y‖ ≤ a → g y = 1 := by
+    intro y hy
+    have h1 : 1 ≤ (R - ‖y‖) / (R - a) := by
+      rw [le_div_iff₀ hRa]
+      linarith
+    simp only [hg_def]
+    exact min_eq_left (h1.trans (le_max_right _ _))
+  have hg_zero : ∀ y, R ≤ ‖y‖ → g y = 0 := by
+    intro y hy
+    have h1 : (R - ‖y‖) / (R - a) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hRa.le
+    simp only [hg_def]
+    rw [max_eq_left h1, min_eq_right zero_le_one]
+  have hg_supp : HasCompactSupport g := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclidean N) R) fun y hy ↦ ?_
+    rw [mem_closedBall, dist_zero_right, not_le] at hy
+    exact hg_zero y hy.le
+  let f : C_c(Euclidean N, ℝ) := ⟨⟨g, hg_cont⟩, hg_supp⟩
+  have hf : ∀ y, f y = g y := fun y ↦ rfl
+  -- Step 2: by the sibling `plane_ball`, `(H^n ⌞ P)(B̄_s) = ω_n s^n < ∞` for `s ≥ 0`, so
+  -- `1_{B̄_s}` is `H^n ⌞ P`-integrable and `∫_P 1_{B̄_s} dH^n = ω_n s^n`.
+  have hω : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume
+    exact measure_ball_lt_top.ne
+  have hball : ∀ s : ℝ, 0 ≤ s →
+      ((μHE[n] : Measure (Euclidean N)).restrict (P : Set (Euclidean N))) (closedBall 0 s) =
+        unitBallVolume n * ENNReal.ofReal s ^ n := by
+    intro s hs
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+    exact Submission.intcpt_id_tpd_plane_closedBall_hausdorff N n P s hP hs
+  have hind_int : ∀ s : ℝ, 0 ≤ s →
+      Integrable ((closedBall (0 : Euclidean N) s).indicator (1 : Euclidean N → ℝ))
+        ((μHE[n] : Measure (Euclidean N)).restrict (P : Set (Euclidean N))) := by
+    intro s hs
+    rw [integrable_indicator_iff measurableSet_closedBall]
+    refine integrableOn_const ?_
+    rw [hball s hs]
+    exact ENNReal.mul_ne_top hω (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have hind_integral : ∀ s : ℝ, 0 ≤ s →
+      ∫ y in (P : Set (Euclidean N)),
+          (closedBall (0 : Euclidean N) s).indicator (1 : Euclidean N → ℝ) y ∂μHE[n] =
+        (unitBallVolume n).toReal * s ^ n := by
+    intro s hs
+    rw [integral_indicator_one measurableSet_closedBall, measureReal_def, hball s hs,
+      ENNReal.toReal_mul, ENNReal.toReal_pow, ENNReal.toReal_ofReal hs]
+  -- Step 3: pointwise `1_{B̄_a} ≤ f ≤ 1_{B̄_R}`; as `|f| = f ≤ 1_{B̄_R}`, `f` is `H^n ⌞ P`-integrable.
+  have hlow : ∀ y, (closedBall (0 : Euclidean N) a).indicator (1 : Euclidean N → ℝ) y ≤ f y := by
+    intro y
+    by_cases hy : y ∈ closedBall (0 : Euclidean N) a
+    · rw [indicator_of_mem hy, hf, hg_one y (by rwa [mem_closedBall, dist_zero_right] at hy)]
+      rfl
+    · rw [indicator_of_notMem hy, hf]
+      exact hg_nonneg y
+  have hup : ∀ y, f y ≤ (closedBall (0 : Euclidean N) R).indicator (1 : Euclidean N → ℝ) y := by
+    intro y
+    by_cases hy : y ∈ closedBall (0 : Euclidean N) R
+    · rw [indicator_of_mem hy, hf]
+      exact hg_le_one y
+    · rw [indicator_of_notMem hy, hf]
+      rw [mem_closedBall, dist_zero_right, not_le] at hy
+      exact (hg_zero y hy.le).le
+  have hf_int : Integrable (fun y ↦ f y)
+      ((μHE[n] : Measure (Euclidean N)).restrict (P : Set (Euclidean N))) := by
+    refine Integrable.mono' (hind_int R hR) f.continuous.aestronglyMeasurable
+      (Eventually.of_forall fun y ↦ ?_)
+    have hfy : 0 ≤ f y := hg_nonneg y
+    rw [Real.norm_eq_abs, abs_of_nonneg hfy]
+    exact hup y
+  -- Step 4: integrate the comparison over `P` and evaluate both sides by step 2.
+  refine ⟨f, hg_nonneg, hg_le_one, hg_one, fun y hy ↦ hg_zero y hy.le, ?_, ?_⟩
+  · rw [← hind_integral a ha.le]
+    exact integral_mono (hind_int a ha.le) hf_int hlow
+  · rw [← hind_integral R hR]
+    exact integral_mono hf_int (hind_int R hR) hup
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
