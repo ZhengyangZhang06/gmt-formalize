@@ -434,6 +434,92 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Backward integral Gronwall inequality** (the Gronwall form of Simon Ch. 4, 5.4, used in the
+proof of 5.6). If `a ≤ b`, `Λ ≥ 0`, `f` is integrable on `[a, b]` and
+`f(s) ≤ C + Λ ∫_{(s,b]} f` for every `s ∈ [a, b]`, then `f(s) ≤ C e^{Λ(b - s)}` on `[a, b]`; no sign
+condition on `C` or `f` is needed. The continuous majorant `F(s) = C + Λ ∫_s^b f` of `f` satisfies
+`F ≤ G := C + Λ ∫_s^b F` by monotonicity of the integral, and by the fundamental theorem of calculus
+for the continuous `F`, `e^{Λs} G(s)` has derivative `Λ e^{Λs} (G(s) - F(s)) ≥ 0` on `(a, b)`. Hence
+it is nondecreasing on `[a, b]`, so `e^{Λs} G(s) ≤ e^{Λb} G(b) = e^{Λb} C` and
+`f(s) ≤ F(s) ≤ G(s) ≤ C e^{Λ(b - s)}`. -/
+theorem Submission.backward_integral_gronwall_Ioc : ∀ (a b Λ C : ℝ) (f : ℝ → ℝ), a ≤ b → 0 ≤ Λ → IntegrableOn f (Icc a b) → (∀ s ∈ Icc a b, f s ≤ C + Λ * ∫ τ in Ioc s b, f τ) → ∀ s ∈ Icc a b, f s ≤ C * Real.exp (Λ * (b - s)) := by
+  intro a b Λ C f hab hΛ hf hineq
+  have hsub : ∀ s ∈ Icc a b, uIcc s b ⊆ Icc a b := fun s hs ↦ by
+    rw [uIcc_of_le hs.2]
+    exact Icc_subset_Icc hs.1 le_rfl
+  -- Step 1: `F(s) = C + Λ ∫_s^b f` majorizes `f` on `[a, b]` (for `s ≤ b`, `∫_s^b = ∫_{(s,b]}`)
+  set F : ℝ → ℝ := fun s ↦ C + Λ * ∫ τ in s..b, f τ
+  have hfF : ∀ s ∈ Icc a b, f s ≤ F s := fun s hs ↦ by
+    have h := hineq s hs
+    rwa [← intervalIntegral.integral_of_le hs.2] at h
+  -- Step 2: `F` is continuous on `[a, b]` (continuity of the primitive of an integrable function)
+  have hFcont : ContinuousOn F (Icc a b) := by
+    have h := intervalIntegral.continuousOn_primitive_interval_left (μ := volume) (f := f)
+      (a := a) (b := b) (by rwa [uIcc_of_le hab])
+    rw [uIcc_of_le hab] at h
+    exact continuousOn_const.add (continuousOn_const.mul h)
+  have hFint : IntegrableOn F (Icc a b) := hFcont.integrableOn_Icc
+  -- Step 3: `F ≤ G := C + Λ ∫_s^b F` on `[a, b]` (monotonicity of the integral, `Λ ≥ 0`)
+  set G : ℝ → ℝ := fun s ↦ C + Λ * ∫ τ in s..b, F τ with hG
+  have hFG : ∀ s ∈ Icc a b, F s ≤ G s := by
+    intro s hs
+    have hmono : ∫ τ in s..b, f τ ≤ ∫ τ in s..b, F τ :=
+      intervalIntegral.integral_mono_on hs.2 (hf.mono_set (hsub s hs)).intervalIntegrable
+        (hFint.mono_set (hsub s hs)).intervalIntegrable
+        fun x hx ↦ hfF x (Icc_subset_Icc hs.1 le_rfl hx)
+    show C + Λ * ∫ τ in s..b, f τ ≤ C + Λ * ∫ τ in s..b, F τ
+    gcongr
+  -- Step 4: `G` is continuous on `[a, b]` with `G'(s) = -Λ F(s)` on `(a, b)` (FTC, `F` continuous)
+  have hGcont : ContinuousOn G (Icc a b) := by
+    have h := intervalIntegral.continuousOn_primitive_interval_left (μ := volume) (f := F)
+      (a := a) (b := b) (by rwa [uIcc_of_le hab])
+    rw [uIcc_of_le hab] at h
+    exact continuousOn_const.add (continuousOn_const.mul h)
+  have hGderiv : ∀ s ∈ Ioo a b, HasDerivAt G (Λ * -F s) s := by
+    intro s hs
+    have hFi : IntervalIntegrable F volume s b :=
+      (hFint.mono_set (hsub s (Ioo_subset_Icc_self hs))).intervalIntegrable
+    have hmeas : StronglyMeasurableAtFilter F (𝓝 s) :=
+      (hFcont.mono Ioo_subset_Icc_self).stronglyMeasurableAtFilter isOpen_Ioo s hs
+    have hcont : ContinuousAt F s := hFcont.continuousAt (Icc_mem_nhds hs.1 hs.2)
+    exact ((intervalIntegral.integral_hasDerivAt_left hFi hmeas hcont).const_mul Λ).const_add C
+  -- Step 5: `Φ(s) = e^{Λs} G(s)` has `Φ' = Λ e^{Λs} (G - F) ≥ 0` on `(a, b)`, so it is monotone
+  set Φ : ℝ → ℝ := fun s ↦ Real.exp (Λ * s) * G s with hΦ
+  have hΦderiv : ∀ s ∈ Ioo a b,
+      HasDerivAt Φ (Real.exp (Λ * s) * Λ * G s + Real.exp (Λ * s) * (Λ * -F s)) s := by
+    intro s hs
+    have hexp : HasDerivAt (fun y ↦ Real.exp (Λ * y)) (Real.exp (Λ * s) * Λ) s := by
+      simpa using ((hasDerivAt_id s).const_mul Λ).exp
+    exact hexp.mul (hGderiv s hs)
+  have hΦmono : MonotoneOn Φ (Icc a b) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Icc a b) ?_ ?_ ?_
+    · exact ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).continuousOn).mul
+        hGcont
+    · rw [interior_Icc]
+      exact fun s hs ↦ (hΦderiv s hs).differentiableAt.differentiableWithinAt
+    · rw [interior_Icc]
+      intro s hs
+      rw [(hΦderiv s hs).deriv]
+      have hFGs := hFG s (Ioo_subset_Icc_self hs)
+      have hexp := Real.exp_pos (Λ * s)
+      have h : Real.exp (Λ * s) * Λ * G s + Real.exp (Λ * s) * (Λ * -F s) =
+          Real.exp (Λ * s) * Λ * (G s - F s) := by ring
+      rw [h]
+      exact mul_nonneg (mul_nonneg hexp.le hΛ) (by linarith)
+  -- Step 6: `e^{Λs} G(s) ≤ e^{Λb} G(b) = e^{Λb} C`, i.e. `G(s) ≤ C e^{Λ(b - s)}`
+  intro s hs
+  have hGb : G b = C := by simp [hG]
+  have h1 : Real.exp (Λ * s) * G s ≤ Real.exp (Λ * b) * C := by
+    simpa [hΦ, hGb] using hΦmono hs (right_mem_Icc.2 hab) hs.2
+  have h2 : G s ≤ C * Real.exp (Λ * (b - s)) := by
+    have h : Real.exp (Λ * b) = Real.exp (Λ * s) * Real.exp (Λ * (b - s)) := by
+      rw [← Real.exp_add]
+      ring_nf
+    rw [h, mul_assoc, mul_comm (Real.exp (Λ * (b - s)))] at h1
+    exact le_of_mul_le_mul_left h1 (Real.exp_pos (Λ * s))
+  -- Step 7: `f(s) ≤ F(s) ≤ G(s) ≤ C e^{Λ(b - s)}`
+  exact (hfF s hs).trans ((hFG s hs).trans h2)
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end

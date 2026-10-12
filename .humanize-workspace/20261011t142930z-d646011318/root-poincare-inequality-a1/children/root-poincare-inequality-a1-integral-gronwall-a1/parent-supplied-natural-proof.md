@@ -1,0 +1,173 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.poincare_inequality-a1`
+- Child DAG node: `root.poincare_inequality-a1.integral_gronwall-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Gronwall step of the parent proof (step 2, 'Gronwall form of 5.4'), where the integrating factor e^{Λs} is applied to u(s) = ∫_s^b f. Here the same integrating-factor argument is applied to the continuous majorant G defined below, so that only the derivative of an integral of a continuous function is needed and f may be an arbitrary integrable function.
+
+Throughout, ∫_s^b denotes the oriented interval integral; for s ≤ b it equals the set integral over (s, b].
+
+1. For s ∈ ℝ put F(s) := C + Λ ∫_s^b f(τ) dτ. For s ∈ [a, b] we have s ≤ b, so ∫_{(s,b]} f = ∫_s^b f and the hypothesis says f(s) ≤ F(s) for every s ∈ [a, b].
+
+2. F is continuous on [a, b]: since f is integrable on [a, b], the map s ↦ ∫_s^b f is continuous on [a, b] (continuity of the indefinite integral, a consequence of dominated convergence). Hence F is continuous on [a, b] and in particular integrable on [a, b].
+
+3. For s ∈ ℝ put G(s) := C + Λ ∫_s^b F(τ) dτ. Claim: F(s) ≤ G(s) for every s ∈ [a, b]. Indeed, for s ∈ [a, b] both f and F are integrable on [s, b] ⊆ [a, b], and f ≤ F on [s, b] by step 1, so ∫_s^b f ≤ ∫_s^b F (monotonicity of the integral, s ≤ b); multiplying by Λ ≥ 0 and adding C gives F(s) ≤ G(s).
+
+4. G is continuous on [a, b] (step 2 applied to the integrable function F). For s ∈ (a, b), F is continuous at s (continuous on [a, b], which is a neighbourhood of the interior point s) and F is integrable on [s, b] and measurable near s; by the fundamental theorem of calculus, u ↦ ∫_u^b F has derivative −F(s) at u = s. Hence G is differentiable at s with G'(s) = −Λ F(s).
+
+5. Let Φ(s) := e^{Λs} G(s). Then Φ is continuous on [a, b] and, for s ∈ (a, b), differentiable with
+Φ'(s) = Λ e^{Λs} G(s) + e^{Λs}(−Λ F(s)) = Λ e^{Λs} (G(s) − F(s)) ≥ 0,
+using Λ ≥ 0 and step 3. A function continuous on the interval [a, b] with nonnegative derivative on its interior is nondecreasing on [a, b] (mean value theorem). Hence Φ is nondecreasing on [a, b].
+
+6. Let s ∈ [a, b]. Since s ≤ b, Φ(s) ≤ Φ(b) = e^{Λb} G(b) = e^{Λb} C, because G(b) = C + Λ·∫_b^b F = C. Writing e^{Λb} = e^{Λ(b−s)} e^{Λs} and dividing by e^{Λs} > 0 gives G(s) ≤ C e^{Λ(b−s)}.
+
+7. Combining steps 1, 3 and 6: f(s) ≤ F(s) ≤ G(s) ≤ C e^{Λ(b − s)} for every s ∈ [a, b]. ∎
+
+Formalization notes (Mathlib/Lean names used in a machine-checked transcription of the numbered argument): intervalIntegral.integral_of_le, intervalIntegral.continuousOn_primitive_interval_left, intervalIntegral.integral_mono_on, intervalIntegral.integral_hasDerivAt_left, ContinuousOn.stronglyMeasurableAtFilter, HasDerivAt.exp, monotoneOn_of_deriv_nonneg.
+
+Appendix (machine-checked reference transcription; the numbered argument above is the proof). The following tactic block is the proof (the text after `:= by`) of the declaration `theorem backward_integral_gronwall_Ioc` with exactly the frozen lean_statement above as its type, inside `namespace Submission` (scope `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal ContDiff CompactlySupported`, `namespace GMT.Ch04`, `noncomputable section`, `open RectifiableVarifold`, after `import GMT.Ch04.Submission`), compiles with Lean v4.35.0-rc3 / Mathlib 25730c7c and depends only on propext, Classical.choice and Quot.sound. Extra imports: `Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus`, `Mathlib.MeasureTheory.Integral.DominatedConvergence`.
+```lean
+  intro a b Λ C f hab hΛ hf hineq
+  set F : ℝ → ℝ := fun s => C + Λ * ∫ τ in s..b, f τ with hFdef
+  have hfF : ∀ s ∈ Icc a b, f s ≤ F s := fun s hs => by
+    have := hineq s hs
+    rwa [← intervalIntegral.integral_of_le hs.2] at this
+  have hFcont : ContinuousOn F (Icc a b) := by
+    have := intervalIntegral.continuousOn_primitive_interval_left (μ := volume) (f := f)
+      (a := a) (b := b) (by rwa [uIcc_of_le hab])
+    rw [uIcc_of_le hab] at this
+    exact continuousOn_const.add (continuousOn_const.mul this)
+  have hFint : IntegrableOn F (Icc a b) := hFcont.integrableOn_Icc
+  set G : ℝ → ℝ := fun s => C + Λ * ∫ τ in s..b, F τ with hGdef
+  have hsub : ∀ s ∈ Icc a b, Icc s b ⊆ Icc a b := fun s hs => Icc_subset_Icc hs.1 le_rfl
+  have hFG : ∀ s ∈ Icc a b, F s ≤ G s := by
+    intro s hs
+    have hmono : ∫ τ in s..b, f τ ≤ ∫ τ in s..b, F τ := by
+      refine intervalIntegral.integral_mono_on hs.2 ?_ ?_ fun x hx => hfF x (hsub s hs hx)
+      · exact (hf.mono_set (by rw [uIcc_of_le hs.2]; exact hsub s hs)).intervalIntegrable
+      · exact (hFint.mono_set (by rw [uIcc_of_le hs.2]; exact hsub s hs)).intervalIntegrable
+    show C + Λ * ∫ τ in s..b, f τ ≤ C + Λ * ∫ τ in s..b, F τ
+    gcongr
+  have hGcont : ContinuousOn G (Icc a b) := by
+    have := intervalIntegral.continuousOn_primitive_interval_left (μ := volume) (f := F)
+      (a := a) (b := b) (by rwa [uIcc_of_le hab])
+    rw [uIcc_of_le hab] at this
+    exact continuousOn_const.add (continuousOn_const.mul this)
+  have hGderiv : ∀ s ∈ Ioo a b, HasDerivAt G (Λ * -F s) s := by
+    intro s hs
+    have hFi : IntervalIntegrable F volume s b :=
+      (hFint.mono_set (by rw [uIcc_of_le hs.2.le]; exact Icc_subset_Icc hs.1.le le_rfl)).intervalIntegrable
+    have hmeas : StronglyMeasurableAtFilter F (𝓝 s) :=
+      (hFcont.mono Ioo_subset_Icc_self).stronglyMeasurableAtFilter isOpen_Ioo s hs
+    have hca : ContinuousAt F s := hFcont.continuousAt (Icc_mem_nhds hs.1 hs.2)
+    exact ((intervalIntegral.integral_hasDerivAt_left hFi hmeas hca).const_mul Λ).const_add C
+  set Hf : ℝ → ℝ := fun s => Real.exp (Λ * s) * G s with hHdef
+  have hHd : ∀ s ∈ Ioo a b, HasDerivAt Hf
+      (Real.exp (Λ * s) * Λ * G s + Real.exp (Λ * s) * (Λ * -F s)) s := by
+    intro s hs
+    have hexpd : HasDerivAt (fun y => Real.exp (Λ * y)) (Real.exp (Λ * s) * Λ) s := by
+      have := ((hasDerivAt_id s).const_mul Λ).exp
+      simpa using this
+    exact hexpd.mul (hGderiv s hs)
+  have hHmono : MonotoneOn Hf (Icc a b) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Icc a b) ?_ ?_ ?_
+    · exact ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).continuousOn).mul hGcont
+    · rw [interior_Icc]
+      intro s hs
+      exact (hHd s hs).differentiableAt.differentiableWithinAt
+    · rw [interior_Icc]
+      intro s hs
+      rw [(hHd s hs).deriv]
+      have hFGs := hFG s (Ioo_subset_Icc_self hs)
+      have hexp := Real.exp_pos (Λ * s)
+      have : Real.exp (Λ * s) * Λ * G s + Real.exp (Λ * s) * (Λ * -F s) =
+          Real.exp (Λ * s) * Λ * (G s - F s) := by ring
+      rw [this]
+      exact mul_nonneg (mul_nonneg hexp.le hΛ) (by linarith)
+  intro s hs
+  have hGb : G b = C := by simp [hGdef]
+  have h1 : Real.exp (Λ * s) * G s ≤ Real.exp (Λ * b) * C := by
+    have := hHmono hs (right_mem_Icc.2 hab) hs.2
+    simpa [hHdef, hGb] using this
+  have h2 : G s ≤ C * Real.exp (Λ * (b - s)) := by
+    have hpos := Real.exp_pos (Λ * s)
+    have : Real.exp (Λ * b) = Real.exp (Λ * (b - s)) * Real.exp (Λ * s) := by
+      rw [← Real.exp_add]; ring_nf
+    rw [this] at h1
+    nlinarith
+  exact (hfF s hs).trans ((hFG s hs).trans h2)
+```
+
+## Key steps
+
+1. F(s) := C + Λ∫_s^b f is a continuous majorant of f on [a, b]
+2. G(s) := C + Λ∫_s^b F satisfies F ≤ G on [a, b] (Λ ≥ 0, monotonicity of the integral)
+3. FTC: G'(s) = −ΛF(s) on (a, b), so (e^{Λs}G)' = Λe^{Λs}(G − F) ≥ 0
+4. e^{Λs}G(s) is nondecreasing, hence e^{Λs}G(s) ≤ e^{Λb}G(b) = e^{Λb}C
+5. f ≤ F ≤ G ≤ Ce^{Λ(b−s)}
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `python3: read lean_name/lean_statement of every node in <run>/dag.json and every */decomposition*.json (uncle frozen types; name-collision check)`
+- `rg -n 'theorem|lemma' <snapshot>/mathlib/Mathlib/Analysis/ODE/Gronwall.lean; grep -ril gronwall <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem lintegral_eq_lintegral_meas_lt|theorem lintegral_comp_eq_lintegral_meas_lt_mul|theorem lintegral_lintegral_swap|theorem lintegral_prod_swap' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem measurable_fderiv |theorem measurable_deriv |theorem measurableSet_of_differentiableAt ' <snapshot>/mathlib/Mathlib`
+- `rg -n '^theorem|^lemma' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean; rg -n 'gradient_fun_const|gradient_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean`
+- `rg -n 'Integrable.bdd_mul|support_mem_ae|norm_starProjection_apply_le|aestronglyMeasurable_comp₂|apply_continuousLinearMap|Monotone.deriv_nonneg|integral_comp_sub_left|integral_deriv_eq_sub|integral_Ioi_rpow_of_lt|integrableOn_Ioi_rpow_of_lt|rpow_inv_lt_iff_of_neg|lt_rpow_inv_iff_of_neg|continuousOn_primitive_interval_left|integral_hasDerivAt_left|monotoneOn_of_deriv_nonneg|aemeasurable_restrict_of_monotoneOn|integrableOn_of_bounded|setIntegral_mono_set|AEMeasurable.comp_snd' <snapshot>/mathlib/Mathlib`
+- `grep -rniE 'gronwall|layercake|poincare|monotonicity' lake-packages-25730c7c/simongmt/Poincare; grep -n '^theorem' simongmt/Poincare/SimonGMT/Chapter04/{Poincare,PoincareKernel,PoincareTruncation,LayerCake}.lean`
+- `python3: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch04.main_theorem') and lean_contract.validate_lean_statement on all child statements`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-poincare-split/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=...:/tmp/ch04-poincare-split/olean lean /tmp/ch04-poincare-split/src/ChildTypes.lean`
+- `lean /tmp/ch04-poincare-split/asm/A7.lean (parent assembly from sorried children and byte-identical uncle stubs)`
+- `lean /tmp/ch04-poincare-split/kids/K1..K7.lean and /tmp/ch04-poincare-split/full/Full.lean with #print axioms`
+- `HUMANIZE_RUN_DIR=/tmp/ch04-poincare-split/fakerun python3 verifier/gmt-compare.py --lean-target GMT/Ch04/Submission.lean --verifier-dir verifier --packages lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef --dry-run root.poincare_inequality-a1.tangentialGradient_comp_of_differentiableAt-a1`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-poincare-inequality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/ODE/Gronwall.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/ODE/DiscreteGronwall.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/PoincareKernel.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/PoincareTruncation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LayerCake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ch04-poincare-split/src/ChildTypes.lean`
+- `/tmp/ch04-poincare-split/asm/A7.lean`
+- `/tmp/ch04-poincare-split/full/Full.lean`
+
+The snapshot contract (sha256 6e58e5dd…0f4770b) is byte-identical to the workspace Contract.lean and Submission.lean. The Mathlib (25730c7c) and SimonGMT (2b366308) revisions match the project manifest. The pinned Mathlib has no integral-form Gronwall inequality (only Analysis/ODE/Gronwall.lean, which is differential, and DiscreteGronwall.lean), so integral_gronwall is a genuine new obligation. Mathlib supplies the other ingredients: the layer-cake formula (lintegral_eq_lintegral_meas_lt), Tonelli (lintegral_lintegral_swap), measurable_fderiv for arbitrary functions, Real.smoothTransition, improper rpow integrals (integral_Ioi_rpow_of_lt) and FTC/monotonicity lemmas. SimonGMT has an earlier Poincaré development (Chapter04/Poincare.lean, PoincareKernel.lean, PoincareTruncation.lean), but it is stated for the strengthened Chapter04.RectifiableVarifold, which the Ch04 README says needs a transport construction, so it is not reused. Its generic kernel and truncation lemmas have different hypotheses, and the children were proved without them. All seven child types elaborate in the exact comparator scope and pass the comparator's statement validator, and a comparator dry run generates the expected challenge and solution modules. All children have machine-checked Lean proofs using only propext, Classical.choice and Quot.sound. The selected frozen type compiles from the seven children plus the byte-identical uncle types, with no other sorry.
