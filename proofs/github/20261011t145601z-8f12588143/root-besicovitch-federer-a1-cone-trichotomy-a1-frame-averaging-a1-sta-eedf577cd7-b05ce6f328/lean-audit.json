@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d72fad362d85a200cf1ed8d8da8cf726e26307a3307169ce065234186fa41c6e",
+  "git_delta": {
+    "base_commit": "5af8d437a3af81d3d9ef9eba4bb8120f277c237c",
+    "candidate_commit": "47cdcc56cc9b7a9186cf5a8b02d764d8e11de8f8",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_stabilizerOrbit_null",
+    "diff_sha256": "af64f5760d8a8107dcf7a3ed480f38556b5eb98492eaf3191f6d92f85509c347",
+    "source_sha256": "6364505b4dc95fec0ca5244e713855c52de041ab3fc8a0b57706860ba488e92f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_stabilizerOrbit_null",
+      "statement": "∀ (N n : ℕ) (V : Submodule ℝ (Rn N)) (θ : Measure (Rn N →L[ℝ] Rn N)), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ Vᗮ, g x = x) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ Vᗮ, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ) → 0 < μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} → μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} < ∞ → ∀ ζ ∈ V, ‖ζ‖ = 1 → ∀ Y : Set (Rn N), MeasurableSet Y → μHE[n] (Y ∩ {x : Rn N | x ∈ V ∧ ‖x‖ = 1}) = 0 → θ {g | g ζ ∈ Y} = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
