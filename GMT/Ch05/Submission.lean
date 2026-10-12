@@ -3341,6 +3341,74 @@ theorem tae_weightedApproxTangent_ae_on_piece : ∀ {n ℓ : ℕ} {U : Set (Amb 
   have h := hdiff.add ((hTlim f).const_mul (V.mult x))
   simp only [sub_add_cancel, zero_add] at h
   exact h
+/-- **Simon Ch. 3, 1.2–1.9** (Remarks 1.3, 1.5(2), 1.8(1),(2)) for `V = v(M, θ)` in the open set
+`U`: `x ↦ p_{T_x V}` is `Hⁿ ⌞ M`-a.e. strongly measurable, and at `Hⁿ`-a.e. `x ∈ M` the approximate
+tangent space of `M` with respect to `θ` exists and `Θⁿ(μ_V, x) = θ(x)`.  Up to an `Hⁿ`-null set,
+`M` is covered by the pieces `C_i ∩ N_k` (`C_i` compact Lusin pieces of `θ`, `N_k` bi-Lipschitz `C¹`
+chart images); at a.e. point of a piece the tangent space is `T_x N_k`, and uniqueness (`θ > 0`)
+identifies `p_{T_x V}` there with the continuous field `p_{T_x N_k}`. -/
+theorem ae_weightedApproximateTangent_density_eq_mult : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), 1 ≤ n → IsOpen U → AEStronglyMeasurable V.tangentProj ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier) ∧ ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier), (∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P) ∧ V.HasDensity x (V.mult x) := by
+  intro n ℓ U V hn hU
+  -- Step 1 (Lemma 1.2, Remark 1.3): the charts `N_k = G_k(B̆_{ρ_k}(c_k))` cover `M` up to the
+  -- `Hⁿ`-null set `N₀`.
+  obtain ⟨N₀, G, c, ρ, hN₀, hG, hinj, hbi, hcover⟩ :=
+    Submission.tae_rectifiable_c1_chart_cover V.carrier hn V.countablyRectifiable
+  choose κ hκ hκbi using hbi
+  -- Step 2: `N_k` is Borel with `Hⁿ(N_k) < ∞`, and `T k x` is its approximate tangent space at
+  -- every `x ∈ N_k`, with `x ↦ p_{T k x}` continuous on `N_k`.
+  choose hNm hNfin T hTcont hT using fun k =>
+    Submission.tae_c1_chart_image_approxTangent (G k) (c k) (ρ k) (κ k) hn (hG k) (hκ k)
+      (hinj k) (hκbi k)
+  -- Step 3 (Remark 1.8(1)): compact pieces `C_i ⊆ M` on which `θ` is continuous.
+  obtain ⟨C, hC, hCnull⟩ := Submission.tae_mult_lusin_compact_pieces V hU
+  -- Step 4: at a.e. point of `C_i ∩ N_k`, `T k x` is the tangent space of `M` with respect to `θ`.
+  have hgood : ∀ i k, ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)).restrict (C i ∩ G k '' ball (c k) (ρ k)),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x
+        (T k x) := fun i k =>
+    Submission.tae_weightedApproxTangent_ae_on_piece V (C i) _ (T k) hn hU (hC i).1 (hC i).2.1
+      (hC i).2.2 (hNm k) (hNfin k) (hT k)
+  -- `M` is covered by the null set `(M \ ⋃ᵢ C_i) ∪ N₀` and the pieces `C_i ∩ N_k`.
+  obtain ⟨Z, hZ, hsub⟩ : ∃ Z : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)).restrict Z = 0 ∧
+      V.carrier ⊆ Z ∪ ⋃ i, ⋃ k, C i ∩ G k '' ball (c k) (ρ k) := by
+    refine ⟨(V.carrier \ ⋃ i, C i) ∪ N₀,
+      Measure.restrict_eq_zero.2 (measure_union_null hCnull hN₀), fun x hx => ?_⟩
+    by_cases hxC : x ∈ ⋃ i, C i
+    · obtain ⟨i, hi⟩ := mem_iUnion.1 hxC
+      rcases hcover hx with h₀ | hN
+      · exact Or.inl (Or.inr h₀)
+      · obtain ⟨k, hk⟩ := mem_iUnion.1 hN
+        exact Or.inr (mem_iUnion₂.2 ⟨i, k, hi, hk⟩)
+    · exact Or.inl (Or.inl ⟨hx, hxC⟩)
+  refine ⟨?_, ?_⟩
+  · -- Step 6 (Remark 1.5(2)): by uniqueness (`θ > 0` on `M`), `p_{T_x V} = p_{T k x}` a.e. on
+    -- `C_i ∩ N_k`; glue over the countable cover.
+    refine AEStronglyMeasurable.mono_set hsub ?_
+    rw [aestronglyMeasurable_union_iff, hZ]
+    refine ⟨aestronglyMeasurable_zero_measure _, ?_⟩
+    rw [aestronglyMeasurable_iUnion_iff]
+    intro i
+    rw [aestronglyMeasurable_iUnion_iff]
+    intro k
+    refine (((hTcont k).aestronglyMeasurable (hNm k)).mono_set inter_subset_right).congr ?_
+    filter_upwards [hgood i k, ae_restrict_mem ((hC i).1.measurableSet.inter (hNm k))]
+      with x hx hxm
+    have h : ∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
+        V.mult x P := ⟨_, hx⟩
+    rw [RectifiableVarifold.tangentProj, dite_eq_left h]
+    simp only [(Classical.choose_spec h).unique (V.mult_pos x ((hC i).2.1 hxm.1)).ne' hx]
+  · -- Step 5 (Remark 1.8(2)): `Θⁿ(μ_V, x) = θ(x)` wherever the tangent space exists.
+    have hex : ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)).restrict V.carrier, ∃ P,
+        Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P := by
+      refine ae_restrict_of_ae_restrict_of_subset hsub ?_
+      rw [ae_restrict_union_iff, hZ, ae_zero]
+      refine ⟨eventually_bot, ?_⟩
+      rw [ae_restrict_iUnion_iff]
+      intro i
+      rw [ae_restrict_iUnion_iff]
+      intro k
+      filter_upwards [hgood i k] with x hx using ⟨_, hx⟩
+    filter_upwards [hex, ae_restrict_mem₀ V.nullMeasurableSet_carrier] with x ⟨P, hP⟩ hx
+    exact ⟨⟨P, hP⟩, Submission.tae_hasDensity_of_weightedApproxTangent V x P hn hU hx hP⟩
 
 end Submission
 
