@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.4.3** (proof, via Allard's Theorem 5.2 of Ch. 5): the graph `Σ = Φ(D)`,
+`Φ(v) = z + ιv + ι'u(v)` with orthogonal linear isometries `ι`, `ι'`, is flat at `Φ(v₀)` along
+`range DΦ(v₀)` (the step identifying its approximate tangent plane, Ch. 3, 1.4).  Pythagoras gives
+`‖v − v₀‖ ≤ ‖Φ(v) − Φ(v₀)‖`, so points of `Φ(D)` near `Φ(v₀)` come from `v` near `v₀`, where
+`t = DΦ(v₀)(v − v₀)` has `‖Φ(v) − Φ(v₀) − t‖ ≤ ε‖v − v₀‖ ≤ ε‖Φ(v) − Φ(v₀)‖`. -/
+theorem Submission.dgcr_atg_graph_image_flat : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (D : Set (Euclid n)) (v₀ : Euclid n), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ u v₀ → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ y ∈ (fun v => z + ι v + ι' (u v)) '' D, dist y (z + ι v₀ + ι' (u v₀)) < ρ → ∃ t ∈ LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k)), ‖y - (z + ι v₀ + ι' (u v₀)) - t‖ ≤ ε * ‖y - (z + ι v₀ + ι' (u v₀))‖ := by
+  intro n k ι ι' u z D v₀ horth hu ε hε
+  set Φ : Euclid n → Euclid (n + k) := fun v => z + ι v + ι' (u v) with hΦ
+  -- coercivity: `‖Φ v − Φ v₀‖² = ‖v − v₀‖² + ‖u v − u v₀‖²` by Pythagoras
+  have hcoer : ∀ v, ‖v - v₀‖ ≤ ‖Φ v - Φ v₀‖ := by
+    intro v
+    have hsplit : Φ v - Φ v₀ = ι (v - v₀) + ι' (u v - u v₀) := by
+      simp only [hΦ, map_sub]
+      abel
+    have hpyth : ‖Φ v - Φ v₀‖ * ‖Φ v - Φ v₀‖ =
+        ‖v - v₀‖ * ‖v - v₀‖ + ‖u v - u v₀‖ * ‖u v - u v₀‖ := by
+      rw [hsplit, ← ι.norm_map (v - v₀), ← ι'.norm_map (u v - u v₀)]
+      exact norm_add_sq_eq_norm_sq_add_norm_sq_real (horth _ _)
+    exact (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).2
+      (hpyth ▸ le_add_of_nonneg_right (mul_self_nonneg _))
+  -- `Φ = z + ι + ι' ∘ u` is differentiable at `v₀`
+  have hΦd : HasFDerivAt Φ (fderiv ℝ Φ v₀) v₀ :=
+    (((differentiableAt_const z).add ι.toContinuousLinearMap.differentiableAt).add
+      (ι'.toContinuousLinearMap.differentiableAt.comp v₀ hu)).hasFDerivAt
+  -- little-o: `‖Φ v − Φ v₀ − DΦ(v₀)(v − v₀)‖ ≤ ε‖v − v₀‖` whenever `dist v v₀ < ρ`
+  obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.1 (hΦd.isLittleO.def hε)
+  refine ⟨ρ, hρ, ?_⟩
+  -- `y = Φ v` with `‖v − v₀‖ ≤ ‖y − Φ v₀‖ < ρ`; take `t = DΦ(v₀)(v − v₀)`
+  rintro y ⟨v, -, rfl⟩ hy
+  refine ⟨fderiv ℝ Φ v₀ (v - v₀), LinearMap.mem_range_self _ _, ?_⟩
+  have hv : dist v v₀ < ρ := by
+    rw [dist_eq_norm] at hy ⊢
+    exact (hcoer v).trans_lt hy
+  calc ‖Φ v - Φ v₀ - fderiv ℝ Φ v₀ (v - v₀)‖ ≤ ε * ‖v - v₀‖ := hball hv
+    _ ≤ ε * ‖Φ v - Φ v₀‖ := mul_le_mul_of_nonneg_left (hcoer v) hε.le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
