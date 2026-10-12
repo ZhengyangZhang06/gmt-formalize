@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "876aeb3d55d8999750b1332425ddb4f0e20550666919dcebacd536650b7a165e",
+  "git_delta": {
+    "base_commit": "a492b4f6a9dec819389abb1a526fed5319fa54be",
+    "candidate_commit": "c69cb6e6ed253aa5c4e6f9b4cf6b8397a907de24",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "hasDerivAt_rn_det_one_add_smul_trace",
+    "diff_sha256": "6eebfdc5902755b0845e6f5f100de80e02d678b768460323d73d012a17db0cbf",
+    "source_sha256": "4f5d2cf32abd0ce3ba7267074c71a8b678b51a34e1e4e38a2dea56bd4737d2c6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.hasDerivAt_rn_det_one_add_smul_trace",
+      "statement": "∀ (n : ℕ) (K : Rn n →L[ℝ] Rn n), HasDerivAt (fun t : ℝ ↦ (1 + t • K).det) (LinearMap.trace ℝ (Rn n) K.toLinearMap) 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
