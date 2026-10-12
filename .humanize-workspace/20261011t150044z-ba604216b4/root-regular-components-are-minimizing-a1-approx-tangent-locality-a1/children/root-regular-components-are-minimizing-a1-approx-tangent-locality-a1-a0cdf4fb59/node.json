@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.upper_density_zero-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+  "depth": 3,
+  "title": "Upper Density Theorem for μHE[n] and a finite-measure Borel set (Simon Ch. 1, 3.3 and 3.6)",
+  "statement": "Let P, n ∈ ℕ and let S ⊆ ℝ^P be a Borel set with H^n(S) < ∞, where H^n = μHE[n]. Then for H^n-almost every x ∈ ℝ^P: if x ∉ S, then H^n(S ∩ closedBall(x, ρ)) / ρ^n → 0 as ρ ↓ 0 (the quotient taken in [0, ∞], with ρ^n = ENNReal.ofReal(ρ)^n).",
+  "lean_statement": "∀ (P n : ℕ) (S : Set (Euclid P)), MeasurableSet S → μHE[n] S ≠ ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "regcomp_atl_upper_density_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-a0cdf4fb59-a1"
+}
