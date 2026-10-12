@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "10c16f48a04ccc80714c2ff57dbe43ee7862eff967e86d570194c586a4a4e537",
+  "git_delta": {
+    "base_commit": "ebe0e6cfbeee858e708d07666d3fcc0f02b5efd6",
+    "candidate_commit": "45b4ab0d7c677dd9feaee07061e1c6f8daeb5544",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_rs_dilation_measurePreserving",
+    "diff_sha256": "ad51f856917c98b73414cc3129aef688ff57fcaf32edce030492491ec51c199a",
+    "source_sha256": "f1f4dc9f8d31bb292151fe425ac10860a597fc6f2ddad71e373950f9a7940a97",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_rs_dilation_measurePreserving",
+      "statement": "∀ (P n : ℕ) (x : Eucl P) (r : ℝ), 0 < r → MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) ∧ MeasurePreserving (fun y : Eucl P => r⁻¹ • (y - x)) (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) (μHE[n] : Measure (Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
