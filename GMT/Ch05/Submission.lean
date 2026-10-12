@@ -490,6 +490,34 @@ theorem allard52_am_cc_profile_integral_continuousAt : ∀ (n ℓ : ℕ) (μ : M
   obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u → |g u| ≤ C := by
     obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
       hg.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hg0 u h, abs_zero]
+      exact le_max_right _ _
+  -- Steps 4-6: dominated convergence for `μ ⌞ B_S(y)` at `t`, with bound `C ‖f‖`.
+  have hmain : ContinuousAt (fun s =>
+      ∫ x, g (‖x - y‖ / s) * f x ∂(μ.restrict (closedBall y S))) t := by
+    refine continuousAt_of_dominated (bound := fun x => C * ‖f x‖) ?_ ?_
+      (hfν.norm.const_mul C) ?_
+    · -- Step 4: `x ↦ g(‖x − y‖/s)` is continuous and `f` is a.e. strongly measurable.
+      refine Eventually.of_forall fun s => ?_
+      exact (hg.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / s)
+        ).aestronglyMeasurable.mul hfν.aestronglyMeasurable
+    · -- Step 3: for `s > 0`, `‖x − y‖/s ≥ 0`, so `|g(‖x − y‖/s) f(x)| ≤ C ‖f(x)‖`.
+      filter_upwards [lt_mem_nhds ht] with s hs
+      refine Eventually.of_forall fun x => ?_
+      rw [norm_mul, Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_right (hC _ (div_nonneg (norm_nonneg _) hs.le)) (norm_nonneg _)
+    · -- Step 5: `s ↦ g(‖x − y‖/s) f(x)` is continuous at `t ≠ 0`.
+      refine Eventually.of_forall fun x => ?_
+      exact (hg.continuousAt.comp (continuousAt_const.div continuousAt_id ht.ne')).mul
+        continuousAt_const
+  -- Step 7: both functions agree on the neighbourhood `(0, S/T)` of `t`.
+  exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
+
 /-- Differentiation in the scale of a radial cutoff integral (step 2(c) of the annular
 monotonicity proof, part (c) of `allard52_am_cutoff_integral_calculus`): if `f` is
 `μ`-integrable on `B_S(y)`, `φ` is `C¹` with `φ = 0` on `[T, ∞)`, `T > 0`, `t > 0` and `T t < S`,
@@ -519,28 +547,6 @@ theorem allard52_am_cc_cutoff_integral_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Meas
     · have h' := hC u ⟨hu, h⟩
       rw [Real.norm_eq_abs] at h'
       exact h'.trans (le_max_left _ _)
-    · rw [hg0 u h, abs_zero]
-      exact le_max_right _ _
-  -- Steps 4-6: dominated convergence for `μ ⌞ B_S(y)` at `t`, with bound `C ‖f‖`.
-  have hmain : ContinuousAt (fun s =>
-      ∫ x, g (‖x - y‖ / s) * f x ∂(μ.restrict (closedBall y S))) t := by
-    refine continuousAt_of_dominated (bound := fun x => C * ‖f x‖) ?_ ?_
-      (hfν.norm.const_mul C) ?_
-    · -- Step 4: `x ↦ g(‖x − y‖/s)` is continuous and `f` is a.e. strongly measurable.
-      refine Eventually.of_forall fun s => ?_
-      exact (hg.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / s)
-        ).aestronglyMeasurable.mul hfν.aestronglyMeasurable
-    · -- Step 3: for `s > 0`, `‖x − y‖/s ≥ 0`, so `|g(‖x − y‖/s) f(x)| ≤ C ‖f(x)‖`.
-      filter_upwards [lt_mem_nhds ht] with s hs
-      refine Eventually.of_forall fun x => ?_
-      rw [norm_mul, Real.norm_eq_abs]
-      exact mul_le_mul_of_nonneg_right (hC _ (div_nonneg (norm_nonneg _) hs.le)) (norm_nonneg _)
-    · -- Step 5: `s ↦ g(‖x − y‖/s) f(x)` is continuous at `t ≠ 0`.
-      refine Eventually.of_forall fun x => ?_
-      exact (hg.continuousAt.comp (continuousAt_const.div continuousAt_id ht.ne')).mul
-        continuousAt_const
-  -- Step 7: both functions agree on the neighbourhood `(0, S/T)` of `t`.
-  exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
     · rw [hφ0 u h.le, abs_zero]
       exact le_max_right _ _
   obtain ⟨C₁, hC₁0, hC₁⟩ : ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℝ, 0 ≤ u → |u * deriv φ u| ≤ C := by
@@ -632,6 +638,7 @@ theorem allard52_am_cc_cutoff_integral_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Meas
   · refine Eventually.of_forall fun x s hs => ?_
     have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
     exact (hderiv ‖x - y‖ s hs0.ne').mul_const (f x)
+
 /-- **Simon Ch. 4, 3.3–3.4 and 4.1** (step 2(c) of the annular monotonicity argument: calculus in
 the scale of radial cutoff integrals, where `s ∂ₛ φ(r/s) = -(r/s) φ'(r/s)`).  Let `f` be
 `μ`-integrable on `B_S(y)`, let `φ` be `C¹` with `φ = 0` on `[T, ∞)`, `T > 0`, and let `t > 0`
