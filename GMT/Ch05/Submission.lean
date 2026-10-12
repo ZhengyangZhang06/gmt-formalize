@@ -924,6 +924,95 @@ theorem aal_cfs_squeeze_of_deriv : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) 
   rw [← hA]
   beta_reduce at hlow hup
   constructor <;> nlinarith [hlow, hup]
+/-- **Integrating-factor squeeze for one cutoff** (Simon Ch. 4, 3.4–3.5 and 4.3–4.4, with the
+weight `|D^⊥ r|²` replaced by an abstract `w`, `0 ≤ w ≤ 1`, and the Hölder bound 3.1 by
+`|a(t)| ≤ M t^{−β}`, `β < 1`).  Write `r = |x − y|`, `I(t) = ∫ φ(r/t) dμ`,
+`L(t) = ∫ φ(r/t) (x − y)·H dμ` and `a(t) = t^{−(n+1)} L(t) / (1 + t^{−n} I(t))`.  If the radial
+identity `∫ (n φ(r/ρ) + (r/ρ) φ'(r/ρ)(1 − w)) dμ = −L(ρ)` holds whenever `0 < ρ`,
+`(1 + ε)ρ ≤ S`, then for `0 < σ ≤ ρ`, `(1 + ε)ρ < S`, with `F(t) = exp(−∫_0^t a)`,
+`c = ∫_0^ρ |a|` and `A = ∫ (φ(r/ρ) − φ(r/σ)) w / rⁿ dμ`,
+`e^{−c} A ≤ F(ρ)(1 + ρ^{−n} I(ρ)) − F(σ)(1 + σ^{−n} I(σ)) ≤ e^c (1 + ε)ⁿ A`.
+
+With `P(t) = I'(t)` and `Q(t) = J'(t)` (`J(t) = ∫ φ(r/t) w dμ`) from
+`aal_cfs_hasDerivAt_cutoff_integral`, the radial identity splits into
+`n I(t) − t P(t) + t Q(t) = −L(t)`; `L` is continuous by `aal_cfs_cutoff_pairing_continuousAt`.
+`aal_cfs_integrating_factor_deriv` turns this into `(F (1 + t^{−n} I))' = F Q / tⁿ` and
+`e^{−c} ≤ F ≤ e^c` on `(0, ρ]`, and `aal_cfs_squeeze_of_deriv` integrates the squeeze. -/
+theorem aal_cutoff_integrating_factor_squeeze : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (I a : ℝ → ℝ) (S ε M β : ℝ), 0 < ε → β < 1 → μ (closedBall y S) < ⊤ → AEStronglyMeasurable w μ → (∀ᵐ x ∂μ, 0 ≤ w x ∧ w x ≤ 1) → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, 1 + ε ≤ t → φ t = 0) → (∀ ρ : ℝ, 0 < ρ → (1 + ε) * ρ ≤ S → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - w x)) ∂μ = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → (∀ t : ℝ, I t = ∫ x, φ (‖x - y‖ / t) ∂μ) → (∀ t : ℝ, a t = (∫ x, φ (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ) / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → (1 + ε) * t < S → |a t| ≤ M * t ^ (-β)) → ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → (1 + ε) * ρ < S → Real.exp (-∫ t in (0)..ρ, |a t|) * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ ≤ Real.exp (-∫ t in (0)..ρ, a t) * (1 + I ρ / ρ ^ n) - Real.exp (-∫ t in (0)..σ, a t) * (1 + I σ / σ ^ n) ∧ Real.exp (-∫ t in (0)..ρ, a t) * (1 + I ρ / ρ ^ n) - Real.exp (-∫ t in (0)..σ, a t) * (1 + I σ / σ ^ n) ≤ Real.exp (∫ t in (0)..ρ, |a t|) * (1 + ε) ^ n * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ := by
+  intro n ℓ μ H w y φ I a S ε M β hε hβ hμS hw hw01 hH hφ hanti hone hzero hrad hI ha hab
+    σ ρ hσ hσρ hρS
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  -- All radii used below lie in `(0, S / (1 + ε))`, i.e. `0 < t` and `(1 + ε) t < S`.
+  have hRiff : ∀ t : ℝ, t < S / (1 + ε) ↔ (1 + ε) * t < S := fun t => by
+    rw [lt_div_iff₀ hε1, mul_comm]
+  have hρR : ρ < S / (1 + ε) := (hRiff ρ).2 hρS
+  -- `0 ≤ φ`, so `I ≥ 0`; `|w| ≤ 1` a.e.
+  have hφnn : ∀ s, 0 ≤ φ s := fun s => by
+    have h := hanti (le_max_left s (1 + ε))
+    rwa [hzero _ (le_max_right _ _)] at h
+  have hw1 : ∀ᵐ x ∂μ, |w x| ≤ 1 :=
+    hw01.mono fun x hx => abs_le.mpr ⟨by linarith [hx.1], hx.2⟩
+  have hc1 : ∀ᵐ x ∂μ, |(fun _ : Amb n ℓ => (1 : ℝ)) x| ≤ 1 :=
+    Eventually.of_forall fun x => by simp
+  -- The cutoff derivative with weight `1`: integrability and `I' = P`.
+  have hB1 : ∀ t : ℝ, 0 < t → (1 + ε) * t < S →
+      Integrable (fun x => φ (‖x - y‖ / t)) μ ∧
+        Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧
+        HasDerivAt I (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t) t := by
+    intro t ht htS
+    have h := Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ (fun _ => 1) y φ S ε 1 t hε
+      hμS aestronglyMeasurable_const hc1 hφ hanti hone hzero ht htS
+    simp only [mul_one] at h
+    refine ⟨h.1, h.2.1, ?_⟩
+    rw [show I = fun s => ∫ x, φ (‖x - y‖ / s) ∂μ from funext hI]
+    exact h.2.2
+  -- The cutoff derivative with weight `w`: integrability of `(r/t) φ'(r/t) w`.
+  have hBw := fun t (ht : 0 < t) (htS : (1 + ε) * t < S) =>
+    Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ w y φ S ε 1 t hε hμS hw hw1 hφ hanti
+      hone hzero ht htS
+  -- The integrating factor `F` and its bounds, from the differential identity
+  -- `n I(t) − t P(t) + t Q(t) = −L(t)` (the radial identity split into integrable pieces).
+  obtain ⟨hD1, hD2⟩ := Submission.aal_cfs_integrating_factor_deriv n I
+    (fun t => ∫ x, φ (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ) a
+    (fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t)
+    (fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t)
+    (S / (1 + ε)) M β hβ
+    (fun t ht htR => (hB1 t ht ((hRiff t).1 htR)).2.2)
+    (fun t ht htR => Submission.aal_cfs_cutoff_pairing_continuousAt n ℓ μ H y φ S ε t hε hH hφ
+      hanti hone hzero ht ((hRiff t).1 htR))
+    (fun t _ _ => by
+      rw [hI t]
+      exact integral_nonneg fun x => hφnn _)
+    (fun t ht htR => by
+      have htS := (hRiff t).1 htR
+      obtain ⟨h1f, h1d, -⟩ := hB1 t ht htS
+      obtain ⟨-, hwd, -⟩ := hBw t ht htS
+      have hR := hrad t ht htS.le
+      have e1 : ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) +
+            ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * (1 - w x)) ∂μ =
+          ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) +
+            (‖x - y‖ / t * deriv φ (‖x - y‖ / t) -
+              ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x)) ∂μ := by
+        congr 1
+        funext x
+        ring
+      have h2 : Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) -
+          ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x) μ := h1d.sub hwd
+      rw [e1, integral_add (h1f.const_mul _) h2, integral_const_mul,
+        integral_sub h1d hwd, ← hI t] at hR
+      have ht0 : t ≠ 0 := ht.ne'
+      have key : ∀ z : ℝ, t * (-z / t) = -z := fun z => by field_simp
+      rw [key, key]
+      linarith)
+    (fun t _ _ => ha t)
+    (fun t ht htR => hab t ht ((hRiff t).1 htR))
+  -- Integrate the squeeze `e^{−c} ≤ F ≤ e^c` against `Q / tⁿ = J' / tⁿ` over `[σ, ρ]`.
+  exact Submission.aal_cfs_squeeze_of_deriv n ℓ μ w y φ
+    (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n))
+    (fun t => Real.exp (-∫ u in (0)..t, a u)) S ε (∫ t in (0)..ρ, |a t|) σ ρ hε hμS hw hw01
+    hφ hanti hone hzero hσ hσρ hρS
+    (fun t hσt htρ => hD2 t ρ (hσ.trans_le hσt) htρ hρR)
+    (fun t hσt htρ => hD1 t (hσ.trans_le hσt) (htρ.trans_lt hρR))
 
 end Submission
 
