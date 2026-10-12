@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "279ad710affb6571df03948e25818dff74733941e6b6f970c454e6b92b351b5f",
+  "git_delta": {
+    "base_commit": "3aa1de9f1f4bbc09ef4587bff3016656a82a0a94",
+    "candidate_commit": "092cf1b60471a836586fb7b490b52722198aeab5",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_ext_prod_of_finite_rectangles",
+    "diff_sha256": "366b8b774938ffeb985346de52c251fa9875402ea9732d25e89e8570ca49dffd",
+    "source_sha256": "ff019ae9dbdbf6e9ddf71bf125b20158f73ebd2512d1f4b33c11c1cbdb352422",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_ext_prod_of_finite_rectangles",
+      "statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ρ₁ ρ₂ : Measure (X × Y)), SigmaFinite μ → (∀ A : Set X, MeasurableSet A → μ A ≠ ∞ → ρ₁ (A ×ˢ (univ : Set Y)) ≠ ∞) → (∀ (A : Set X) (B : Set Y), MeasurableSet A → MeasurableSet B → μ A ≠ ∞ → ρ₁ (A ×ˢ B) = ρ₂ (A ×ˢ B)) → ρ₁ = ρ₂",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
