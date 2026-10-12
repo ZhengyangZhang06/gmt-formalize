@@ -458,6 +458,36 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Hessian at the origin of the area integrand (Legendre condition for the elliptic bootstrap
+of Simon 7.1): for `J(P) = √det(I + G(P))` with Gram matrix `G(P)_{ab} = ⟨P e_a, P e_b⟩`,
+`D²J(0)[Q, Q] = Σ_a |Q e_a|²`.  Along the line `t ↦ t • Q` the Gram matrix scales as
+`G(t • Q) = t² G(Q)`, so `D²J(0)[Q, Q]` is the second derivative at `0` of
+`t ↦ √det(I + t² G(Q))`, which is `trace G(Q) = Σ_a |Q e_a|²`. -/
+theorem dohr_eb_ail_hessian_zero : ∀ n ℓ : ℕ, ∀ Q : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))) 0 Q Q = ∑ a : Fin n, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2 := by
+  intro n ℓ Q
+  -- Step 1: `J` is `C^∞`, hence `C²`.
+  have hC2 := (Submission.dohr_eb_ail_contDiff n ℓ).of_le (m := 2) (by norm_cast)
+  -- Step 2: `D²J(0)[Q, Q]` is the second derivative at `0` of `t ↦ J(0 + t • Q)`.
+  rw [← Submission.dohr_eb_ail_line_second_deriv _ hC2 0 Q]
+  -- Step 3: `G(0 + t • Q) = t² G(Q)`, so `J(0 + t • Q) = √det(I + t² G(Q))` for every `t`.
+  have hfun : (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+      Matrix.of fun a b : Fin n => inner ℝ ((0 + t • Q) (EuclideanSpace.single a (1 : ℝ)))
+        ((0 + t • Q) (EuclideanSpace.single b (1 : ℝ)))))) =
+      fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+        t ^ 2 • Matrix.of fun a b : Fin n => inner ℝ (Q (EuclideanSpace.single a (1 : ℝ)))
+          (Q (EuclideanSpace.single b (1 : ℝ))))) := by
+    funext t
+    congr 3
+    ext a b
+    simp [inner_smul_left, inner_smul_right, pow_two, mul_assoc]
+  -- Steps 4–5: the one-variable second derivative is `trace G(Q) = Σ_a ‖Q e_a‖²`.
+  rw [hfun, Submission.dohr_eb_ail_sqrt_det_second_deriv]
+  simp [Matrix.trace]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
