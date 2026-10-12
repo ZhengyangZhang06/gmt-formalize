@@ -602,6 +602,37 @@ theorem allard52_cft_tilt_lintegral_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
   rw [RectifiableVarifold.tiltExcess, mul_inv_cancel_left₀ (pow_ne_zero n hs.ne'),
     ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun y => (hbd y).1)]
 
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11): for `f` `1`-Lipschitz on `D ⊆ ℝⁿ` and a linear
+isometry `q` of `ℝ^{n+ℓ}`, the graph map `F(x) = q(x, f(x))` is `√2`-Lipschitz on `D`, and
+`|F(x)| ≤ √2 |x|` on `D` when `f(0) = 0` and `0 ∈ D`. By the graph coordinates
+(`lip_approx_graph_coordinates` (i), (ii)) and since `q` is a linear isometry,
+`|F(x) − F(x')|² = |x − x'|² + |f(x) − f(x')|² ≤ 2 |x − x'|²`; and `F(0) = q(0, 0) = 0`. -/
+theorem allard52_cft_graph_map_sqrt_two : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)), LipschitzOnWith 1 f D → (∀ x ∈ D, ∀ x' ∈ D, ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖) ∧ (f 0 = 0 → (0 : Rn n) ∈ D → ∀ x ∈ D, ‖q (graphPoint x (f x))‖ ≤ Real.sqrt 2 * ‖x‖) := by
+  intro n ℓ q f D hf
+  obtain ⟨hsub, hnorm, -, -⟩ := lip_approx_graph_coordinates n ℓ q
+  have hlip : ∀ x ∈ D, ∀ x' ∈ D,
+      ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖ := by
+    intro x hx x' hx'
+    -- `|f(x) − f(x')| ≤ |x − x'|`
+    have hf' : ‖f x - f x'‖ ≤ ‖x - x'‖ := by
+      have h := hf.dist_le_mul x hx x' hx'
+      rwa [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at h
+    -- `|F(x) − F(x')| = |(x − x', f(x) − f(x'))|`, whose square is at most `2 |x − x'|²`
+    rw [← map_sub, q.norm_map, hsub]
+    have hsq : ‖graphPoint (x - x') (f x - f x')‖ ^ 2 ≤ (Real.sqrt 2 * ‖x - x'‖) ^ 2 := by
+      rw [hnorm, mul_pow, Real.sq_sqrt zero_le_two, two_mul]
+      exact add_le_add le_rfl (pow_le_pow_left₀ (norm_nonneg _) hf' 2)
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _)
+      (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) two_ne_zero).mp hsq
+  refine ⟨hlip, fun hf0 h0 x hx => ?_⟩
+  -- `(0, 0) = (0, 0) − (0, 0) = 0`, so `F(0) = 0`; compare `F(x)` with `F(0)`
+  have hzero : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    have h := hsub 0 0 0 0
+    rw [sub_self, sub_self, sub_self] at h
+    exact h.symm
+  have h := hlip x hx 0 h0
+  rwa [hf0, hzero, map_zero, sub_zero, sub_zero] at h
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
