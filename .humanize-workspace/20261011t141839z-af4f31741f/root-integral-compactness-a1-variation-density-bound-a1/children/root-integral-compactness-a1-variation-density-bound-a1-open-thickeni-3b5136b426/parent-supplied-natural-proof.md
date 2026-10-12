@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.variation_density_bound-a1`
+- Child DAG node: `root.integral_compactness-a1.variation_density_bound-a1.open_thickening_exhaustion-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 3 of the parent proof. Step 1 localises to open sets W ⊂⊂ U with a margin r_W > 0 such that thickening(r_W, W) is still ⊂⊂ U. Step 3 is a countable exhaustion of U. Here both are realized with balls: for W = B°_s(x) with B°_{3s}(x) ⊆ U the margin is r_W = s, and the countable exhaustion comes from the Lindelöf property instead of a compact exhaustion.
+
+Notation: B°_ρ(x) := ball x ρ, B_ρ(x) := closedBall x ρ, and thickening(δ, E) := {y : infEdist(y, E) < ofReal(δ)}. IsRelCompactOpenIn V U means that V is open, closure V is compact, and closure V ⊆ U.
+
+1. Radii. Let x ∈ U. Since U is open, there is ε > 0 with B°_ε(x) ⊆ U (Metric.isOpen_iff). Put s_x := ε/3 > 0, so B°_{3s_x}(x) ⊆ U. For x ∉ U the value s_x is irrelevant; in Lean one may choose s as a total function, e.g. with choose!.
+
+2. Each enlarged ball is relatively compact in U. Fix x ∈ U and put V_x := thickening(s_x, B°_{s_x}(x)).
+(a) V_x is open, because every thickening is open (Mathlib Metric.isOpen_thickening).
+(b) V_x ⊆ B°_{2s_x}(x). If infEdist(y, B°_{s_x}(x)) < s_x, there is z with dist(z, x) < s_x and dist(y, z) < s_x, so dist(y, x) < 2s_x. In Mathlib this is Metric.thickening_ball: thickening ε (ball x δ) ⊆ ball x (ε + δ), with no sign conditions. Do not confuse it with the root-level equality lemma thickening_ball, which needs ε, δ > 0.
+(c) Hence closure V_x ⊆ closure B°_{2s_x}(x) ⊆ B_{2s_x}(x) (closure_ball_subset_closedBall).
+(d) closure V_x is closed and contained in the closed ball B_{2s_x}(x). That ball is compact because ℝ^N is a proper space (isCompact_closedBall), so closure V_x is compact (IsCompact.of_isClosed_subset).
+(e) B_{2s_x}(x) ⊆ B°_{3s_x}(x) ⊆ U because 2s_x < 3s_x (closedBall_subset_ball), so closure V_x ⊆ U.
+Thus IsRelCompactOpenIn V_x U.
+
+3. Countable subcover. The open balls B°_{s_x}(x), x ∈ U, cover U, since x ∈ B°_{s_x}(x) when s_x > 0. ℝ^N is second countable, so there is a countable set T ⊆ U with ⋃_{x∈T} B°_{s_x}(x) = ⋃_{x∈U} B°_{s_x}(x) (Mathlib TopologicalSpace.isOpen_biUnion_countable). In particular, U ⊆ ⋃_{x∈T} B°_{s_x}(x).
+
+4. Case T = ∅. Then U ⊆ ∅. Take W_p := ∅ and r_p := 1 for all p. Then r_p > 0. Also thickening(1, ∅) = ∅ is open, and its closure ∅ is compact and contained in U. Finally U = ∅ ⊆ ⋃_p W_p.
+
+5. Case T ≠ ∅. A nonempty countable set is the range of a sequence (Mathlib Set.Countable.exists_eq_range), so T = {f(p) : p ∈ ℕ}. Put W_p := B°_{s_{f(p)}}(f(p)) and r_p := s_{f(p)}. Since f(p) ∈ T ⊆ U, step 1 gives r_p > 0. Since thickening(r_p, W_p) = V_{f(p)}, step 2 gives IsRelCompactOpenIn (thickening(r_p, W_p)) U. Finally, by step 3, U ⊆ ⋃_{x∈T} B°_{s_x}(x) = ⋃_p B°_{s_{f(p)}}(f(p)) = ⋃_p W_p. ∎
+
+## Key steps
+
+1. For each x ∈ U pick s_x > 0 with ball x (3s_x) ⊆ U.
+2. thickening(s_x, ball x s_x) ⊆ ball x (2s_x) by Metric.thickening_ball. So it is open, and its closure is compact and contained in closedBall x (2s_x) ⊆ U.
+3. Lindelöf (TopologicalSpace.isOpen_biUnion_countable) gives a countable T ⊆ U with U ⊆ ⋃_{x∈T} ball x s_x.
+4. If T = ∅ (so U = ∅), take W_p = ∅ and r_p = 1. Otherwise write T = range f and take W_p = ball (f p) (s_{f p}) and r_p = s_{f p}.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean <snapshot>/project/GMT/Ch08/Contract.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `grep -n 'HasDensity\|IsRelCompactOpenIn\|abbrev Euclidean\|def Euclidean\|unitBallVolume\|^open\|^namespace' GMT/Ch08/Contract.lean; sed -n 1,165p GMT/Ch08/Contract.lean`
+- `rg -n 'theorem no_satelliteConfig|theorem exist_disjoint_covering_families|theorem countable_of_nonempty_interior|theorem ball_subset_interior_closedBall|theorem _root_.Monotone.measure_iUnion|theorem eventually_lt_of_lt_liminf|theorem tendsto_inv_nat_nhds_zero|theorem thickening_ball|theorem mem_nhdsGT_iff_exists_Ioo_subset|theorem isOpen_biUnion_countable|theorem isOpen_iUnion_countable|theorem Countable.exists_eq_range|theorem thickening_mono|theorem thickening_subset_of_subset|theorem ball_subset_thickening|theorem measure_ball_pos|theorem measure_ball_lt_top|theorem measure_biUnion_le|theorem measure_iUnion_fintype_le|theorem measure_biUnion |theorem cthickening_thickening|theorem closure_thickening_subset_cthickening|theorem IsCompact.exists_cthickening_subset_open' <snapshot>/mathlib/Mathlib`
+- `rg -n 'HasBesicovitchCovering' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean (instance Besicovitch.instHasBesicovitchCovering, line 499); sed -n 150,165p Covering/Besicovitch.lean (class field no_satelliteConfig)`
+- `grep -rn exists_besicovitchCovering_families --include=*.lean .lake/packages/simongmt (Chapter01/Densities.lean:631, arbitrary radius bound R, built on Besicovitch.exist_disjoint_covering_families)`
+- `python3 dag.json scans: node records of root.density_semicontinuity-a1.besicovitch_ratio_cover-a1 (accepted besicovitch_ratio_cover_estimate) and root.integral_compactness-a1.variation_density_bound-a1; duplicate-lean_name scan over the dag.json of every chapter run (no duplicates, so no cross-branch reuse precedent)`
+- `git show b70dd9d5e02268a56fe635fac6f34398f3674925:GMT/Ch08/Submission.lean (45-line accepted proof of besicovitch_ratio_cover_estimate); git branch -a --contains b70dd9d5`
+- `python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') -> ['open Set Filter MeasureTheory Metric', 'open scoped Topology ENNReal CompactlySupported Pointwise', 'namespace GMT.Ch08', 'open Poincare.SimonGMT', 'open Poincare.SimonGMT.Chapter08', 'section Definitions', 'end Definitions']`
+- `lake env lean /tmp/vdb-decomp/Test/Statements.lean (3 child statements as theorem _root_.HumanizeNodeComparator.targetK : (stmt) := by sorry in the replayed scope: elaborate)`
+- `lake env lean /tmp/vdb-decomp/Test/Assembly.lean (parent Submission.intcpt_variation_liminf_density_bound proved from the 3 sorried children; no sorry of its own)`
+- `lake env lean /tmp/vdb-decomp/Test/Child1.lean, Child2.lean, Child3.lean, Integrated.lean (complete proofs; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/vdb-decomp/Test/Names.lean (#check every cited lemma/instance: Besicovitch.instHasBesicovitchCovering, Metric.thickening_ball, _root_.thickening_ball, Set.Countable.exists_eq_range, Metric.isOpen_thickening, ENNReal.div_le_iff, ...)`
+- `python3 verifier/lean_contract.py validate_lean_statement on the 3 child statements; parent statement == dag.json lean_statement; grep -rl intcpt_vdb <run dir>; git grep -l intcpt_vdb over all branch heads (no match)`
+- `sed -n 680,740p book/chapter-08.txt (Simon 8.5.9 printed (1)-(2)); grep -n -i 'errat|correction' book/sources/chapter-08-source.txt (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-variation-density-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-variation-density-bound-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1/speculative-prompt-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/tmp/vdb-decomp/Test/Statements.lean`
+- `/tmp/vdb-decomp/Test/Assembly.lean`
+- `/tmp/vdb-decomp/Test/Integrated.lean`
+
+The snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Contract is byte-identical to the workspace Contract and Submission (sha256 2e5cd5b3…).
+
+Every Mathlib lemma and instance cited in the three child proofs exists in the pinned snapshot with the stated hypotheses: Besicovitch.instHasBesicovitchCovering, HasBesicovitchCovering.no_satelliteConfig, Besicovitch.exist_disjoint_covering_families (arbitrary radius bound), Set.PairwiseDisjoint.countable_of_nonempty_interior, Monotone.measure_iUnion (valid for arbitrary sets), Filter.eventually_lt_of_lt_liminf, ENNReal.tendsto_inv_nat_nhds_zero, Metric.thickening_ball (subset form, no sign conditions), TopologicalSpace.isOpen_biUnion_countable, Set.Countable.exists_eq_range, mem_nhdsGT_iff_exists_Ioo_subset, measure_ball_pos, measure_ball_lt_top and ENNReal.div_le_iff.
+
+The accepted besicovitch_ratio_cover_estimate (commit b70dd9d5, another branch) proves the covering estimate of child A's step 2. It is not available in this branch, and no run has a precedent for cross-branch reuse, so child A re-derives the estimate.
+
+In the comparator's replayed contract scope, all three child lean_statements elaborate and pass validate_lean_statement. Complete scratch proofs of the three children, together with the parent proved from them (183 lines), type-check using only propext, Classical.choice and Quot.sound, and the parent type equals the frozen dag.json lean_statement. The intcpt_vdb_* names are unused in dag.json, in the run directory and in all git branch heads.

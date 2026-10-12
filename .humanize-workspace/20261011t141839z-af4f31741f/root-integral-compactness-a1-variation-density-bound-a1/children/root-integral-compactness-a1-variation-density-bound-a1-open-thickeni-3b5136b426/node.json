@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1.open_thickening_exhaustion-a1",
+  "parent_id": "root.integral_compactness-a1.variation_density_bound-a1",
+  "depth": 3,
+  "title": "Countable cover of an open U ⊆ ℝ^N by sets W_p whose r_p-thickenings are ⊂⊂ U (steps 1 and 3)",
+  "statement": "Let N ∈ ℕ and let U ⊆ ℝ^N = Euclidean N be open. Then there are sets W_p ⊆ ℝ^N and reals r_p > 0 (p ∈ ℕ) with two properties. First, for every p the open thickening thickening(r_p, W_p) = {y : infEdist(y, W_p) < ofReal(r_p)} is relatively compact open in U (IsRelCompactOpenIn: it is open and its closure is compact and contained in U). Second, U ⊆ ⋃_p W_p.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ (W : ℕ → Set (Euclidean N)) (r : ℕ → ℝ), (∀ p, 0 < r p) ∧ (∀ p, IsRelCompactOpenIn (thickening (r p) (W p)) U) ∧ U ⊆ ⋃ p, W p",
+  "lean_name": "intcpt_vdb_open_thickening_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-variation-density-bound-a1-open-thickeni-3b5136b426-a1"
+}
