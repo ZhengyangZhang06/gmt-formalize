@@ -458,6 +458,50 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Hölder's inequality on a set `B` for an arbitrary (not necessarily measurable) function
+`g : X → [0, ∞]` and exponents `0 < q ≤ p`:
+`∫⁻_B g^q dμ ≤ (∫⁻_B g^p dμ)^{q/p} μ(B)^{1-q/p}`, as used for the scaled `Lᵖ` bounds of the mean
+curvature in the tilt-excess decay (cf. Simon Ch. 5, Remark 2.2, p. 107).
+Replace `g^q` by a measurable minorant `G` with the same integral over `B`
+(`exists_measurable_le_lintegral_eq`), write `G = (G^{p/q})^{q/p} · 1^{1-q/p}`, apply the
+two-exponent Hölder inequality `ENNReal.lintegral_mul_norm_pow_le` for `μ.restrict B`, and use
+`G^{p/q} ≤ (g^q)^{p/q} = g^p` with the monotonicity of the lower integral. -/
+theorem tdo_slb_setLIntegral_rpow_le_holder : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (B : Set X) (g : X → ℝ≥0∞) (p q : ℝ), 0 < q → q ≤ p → ∫⁻ x in B, g x ^ q ∂μ ≤ (∫⁻ x in B, g x ^ p ∂μ) ^ (q / p) * μ B ^ (1 - q / p) := by
+  intro X _ μ B g p q hq hqp
+  -- 1. the exponents: `q / p, 1 - q / p ≥ 0` sum to `1`, and `(p / q) (q / p) = 1`, `q (p / q) = p`
+  have hp : 0 < p := hq.trans_le hqp
+  have ha : 0 ≤ q / p := (div_pos hq hp).le
+  have hb : 0 ≤ 1 - q / p := sub_nonneg.mpr ((div_le_one hp).mpr hqp)
+  have hab : q / p + (1 - q / p) = 1 := add_sub_cancel _ _
+  have hpq : p / q * (q / p) = 1 := by field_simp
+  have hqp' : q * (p / q) = p := by field_simp
+  -- 2. a measurable minorant `G ≤ g ^ q` with the same integral over `B`
+  obtain ⟨G, hGm, hGg, hG⟩ := exists_measurable_le_lintegral_eq (μ.restrict B) fun x => g x ^ q
+  -- 3. `G = (G ^ (p / q)) ^ (q / p) * 1 ^ (1 - q / p)` pointwise
+  have hGF : ∀ x, (G x ^ (p / q)) ^ (q / p) * (1 : ℝ≥0∞) ^ (1 - q / p) = G x := fun x => by
+    rw [ENNReal.one_rpow, mul_one, ← ENNReal.rpow_mul, hpq, ENNReal.rpow_one]
+  -- 4. Hölder for `G ^ (p / q)` and `1` with the exponents `q / p` and `1 - q / p` on `μ.restrict B`
+  have hH := ENNReal.lintegral_mul_norm_pow_le (μ := μ.restrict B)
+    (hGm.pow_const (p / q)).aemeasurable (aemeasurable_const (b := (1 : ℝ≥0∞))) ha hb hab
+  -- 5. `G ^ (p / q) ≤ (g ^ q) ^ (p / q) = g ^ p`
+  have hGp : ∀ x, G x ^ (p / q) ≤ g x ^ p := fun x => by
+    calc G x ^ (p / q) ≤ (g x ^ q) ^ (p / q) := ENNReal.rpow_le_rpow (hGg x) (div_pos hp hq).le
+      _ = g x ^ p := by rw [← ENNReal.rpow_mul, hqp']
+  -- 6. chain the steps; `∫⁻_B 1 dμ = μ(B)`
+  calc ∫⁻ x in B, g x ^ q ∂μ = ∫⁻ x in B, G x ∂μ := hG
+    _ = ∫⁻ x in B, (G x ^ (p / q)) ^ (q / p) * (1 : ℝ≥0∞) ^ (1 - q / p) ∂μ := by
+        simp only [hGF]
+    _ ≤ (∫⁻ x in B, G x ^ (p / q) ∂μ) ^ (q / p) * (∫⁻ _ in B, (1 : ℝ≥0∞) ∂μ) ^ (1 - q / p) := hH
+    _ = (∫⁻ x in B, G x ^ (p / q) ∂μ) ^ (q / p) * μ B ^ (1 - q / p) := by
+        rw [setLIntegral_one]
+    _ ≤ (∫⁻ x in B, g x ^ p ∂μ) ^ (q / p) * μ B ^ (1 - q / p) := by
+        gcongr
+        exact hGp _
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
