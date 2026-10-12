@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ConicalApproximationTheorem|aetp_upper_density_zero_ae|aetp_weightedTangent_of_lusin_compact|aetp_starProjection_range_continuousOn|aetp_lusin_compact_exhaustion|rsod_blowUp_setIntegral_eq",
+        "ae_dimensionalUpperDensity_eq_zero_outside|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|map_inverse_blowUp_carrier|weighted_area_formula_lipschitz_injOn|area_image_criticalSet_eq_zero|exists_contDiff_one_extension_of_whitney|theorem trace_starProjection",
+        "integral_map|euclideanHausdorffMeasure_homothety_image|euclideanHausdorffMeasure_image|inverse_continuousAt|isOpen_injective|exists_isClosed_sdiff_lt|exists_measurable_subset_ae_eq",
+        "def mul|instance.*Ring|mul_apply|isUnit_iff_isUnit_toLinearMap",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/conical-independent-audit-a5/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/conical-independent-audit-a5/AssemblyAx.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-conical-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-conical-approximation-a1/decomposition-v5.json",
+        "/tmp/conical-independent-audit-a5/Challenges.lean",
+        "/tmp/conical-independent-audit-a5/upper_density_zero.lean",
+        "/tmp/conical-independent-audit-a5/weighted_tangent_compact.lean",
+        "/tmp/conical-independent-audit-a5/projection_continuity.lean",
+        "/tmp/conical-independent-audit-a5/lusin_exhaustion.lean",
+        "/tmp/conical-independent-audit-a5/blowup_change_of_variables.lean",
+        "/tmp/conical-independent-audit-a5/Upstream.lean",
+        "/tmp/conical-independent-audit-a5/Glue5.lean",
+        "/tmp/conical-independent-audit-a5/Glue6.lean",
+        "/tmp/conical-independent-audit-a5/AssemblyAx.lean"
+      ],
+      "conclusion": "Verified the selected handoff and ConicalApproximationTheorem at Contract.lean:391. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the compiler uses that Mathlib revision and SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. Inspected source copies agree with the compiler package sources. No proposed child declaration occurs in the searched frozen project, MeasureTheory, or Geometry sources. Instead, all five reuse accepted candidates: names are unique bare identifiers, types are byte-identical to DAG and handoff contracts, and comparator evidence and candidate-source hashes match. All five propositions elaborate independently against the frozen source. All five accepted proofs compile and inhabit the exact proposed types, with only propext, Classical.choice, and Quot.sound. Relevant upstream results pass axiom checks, including Whitney extension compiled from source. The split is appropriate: the children establish the tangent-projection facts needed by this selected theorem. Their empty dependency lists are justified and adding their reuse edges creates no cycle. Independently checking Lemma T, P1–P4, and the assembly found no blocking mathematical gap, including the closed-ball limits, exceptional endpoints, and enlarged ball outside U. Glue5 and Glue6 compile. AssemblyAx compiles with the exact selected type, conditionally on T, P2, P3, and P4; their supplied prose proofs discharge those remaining mathematical obligations without invoking the parent or an ancestor."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary dimensions, finite mass on the Borel set, closed balls, and ENNReal convergence. Borel regularity permits the cited upper-density theorem; the positive finite normalization preserves null sets, and nonnegative limsup zero gives convergence. Its two applications in Lemma T satisfy the required hypotheses. Exact accepted-type reuse verified."
+    },
+    {
+      "key": "weighted_tangent_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in the matching type. Compactness, positivity, and local integrability give finite Hausdorff mass on K. The three-term decomposition is integrable; tangent convergence controls I1, the assumed density limit controls I3, and continuity plus a compact test-function bound controls I2. Scaling is independently supplied from the pinned library, so no sibling dependency is missing. Exact accepted-type reuse verified."
+    },
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states operator-norm continuity on injective maps, including n = 0. The Gram operator is invertible, its inverse formula gives the orthogonal projection, and continuity follows from adjoint, composition, and inversion at units. The unit construction uses the continuous-linear-map composition ring, independently checked, with no pointwise multiplication ambiguity. Exact accepted-type reuse verified."
+    },
+    {
+      "key": "lusin_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type include every compactness, containment, continuity, finiteness, and null-remainder conclusion. Compact exhaustion makes the restricted weight measures finite; Lusin supplies compact pieces, positivity gives finite Hausdorff mass, and zero weighted remainder implies zero Hausdorff remainder. No global finiteness assumption is introduced. The proof supplies precisely the compacts used in Lemma T. Exact accepted-type reuse verified."
+    },
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The unrestricted sets and functions in the prose match the exact type. Hausdorff scaling holds for arbitrary sets; comparison on Borel test sets establishes the restricted-measure identity without measurability of M. Measurable-embedding transport and finite positive measure scaling apply to Bochner integrals without integrability assumptions. The inverse-map simplification gives the stated factor and integrand. Exact accepted-type reuse verified."
+    }
+  ],
+  "required_changes": []
+}
