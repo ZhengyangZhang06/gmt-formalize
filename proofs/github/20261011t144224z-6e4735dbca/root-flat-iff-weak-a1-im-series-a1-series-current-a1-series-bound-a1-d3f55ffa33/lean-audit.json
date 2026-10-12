@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6cddbaf5119e9a9158500b45fcd5732e234cb02b79f894716350d458da73828a",
+  "git_delta": {
+    "base_commit": "1d7999716359f25d4ac8d109deb57cda9d063deb",
+    "candidate_commit": "182e22ce56928079d57943260b9f61c4beab2b06",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_sc_series_bound",
+    "diff_sha256": "25f43028a78103272e2ea242afc16d256b676e8b36c8faf082ac7f7bd5f99376",
+    "source_sha256": "56b31160a60529c35bedcb1bdfdd1f01fff7db0af281682064be51b121e55596",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_sc_series_bound",
+      "statement": "∀ (a : ℕ → ℝ) (c : ℕ → ℤ) (m : ℕ → ℝ≥0∞) (C : ℝ), (∀ r, ENNReal.ofReal |a r| ≤ m r * ENNReal.ofReal C) → (∑' r, ((c r).natAbs : ℝ≥0∞) * m r) < ∞ → Summable (fun r => (c r : ℝ) * a r) ∧ ENNReal.ofReal |∑' r, (c r : ℝ) * a r| ≤ ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
