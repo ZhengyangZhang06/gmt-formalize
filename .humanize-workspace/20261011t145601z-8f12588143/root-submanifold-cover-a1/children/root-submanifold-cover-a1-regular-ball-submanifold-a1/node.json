@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_cover-a1.regular_ball_submanifold-a1",
+  "parent_id": "root.submanifold_cover-a1",
+  "depth": 2,
+  "title": "Regular-point balls of a C¹ map have embedded C¹ submanifold images",
+  "statement": "For all n, p ∈ ℕ (ℝᵈ := EuclideanSpace ℝ (Fin d)), every map G : ℝⁿ → ℝᵖ of class C¹ (ContDiff ℝ 1 G), and every x ∈ ℝⁿ at which the Fréchet derivative DG(x) = fderiv ℝ G x is injective, there is σ > 0 such that G(B_σ(x)) (B_σ(x) = Metric.ball x σ) is an n-dimensional embedded C¹ submanifold of ℝᵖ in the sense of IsC1Submanifold n. That is, for every y ∈ G(B_σ(x)) there are an open V ⊆ ℝⁿ, an open W ⊆ ℝᵖ with y ∈ W, and a map ψ : ℝⁿ → ℝᵖ such that: ψ is C¹ and injective on V; ψ(V) = W ∩ G(B_σ(x)); V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W; and fderiv ℝ ψ z is injective for every z ∈ V.",
+  "lean_statement": "∀ (n p : ℕ) (G : Rn n → Rn p), ContDiff ℝ 1 G → ∀ x : Rn n, Function.Injective (fderiv ℝ G x) → ∃ σ : ℝ, 0 < σ ∧ IsC1Submanifold n (G '' Metric.ball x σ)",
+  "lean_name": "c1_regular_point_ball_image_isC1Submanifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-submanifold-cover-a1-regular-ball-submanifold-a1-a1"
+}
