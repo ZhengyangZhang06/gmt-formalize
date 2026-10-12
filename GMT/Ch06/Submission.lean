@@ -359,6 +359,94 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, (3.6): an `n`-vector density `w` that is dominated by an integrable function on
+`g⁻¹(K)` for every compact `K ⊆ V` defines a current `ω ↦ ∫ ⟨ω(g x), w x⟩ dμ(x)` in `𝒟ₙ(V)`. -/
+theorem Submission.lpf_pic_current_of_dominated_density :
+    ∀ (P Q n : ℕ) (V : Set (Eucl Q)) (μ : Measure (Eucl P)) (g : Eucl P → Eucl Q) (w : Eucl P → NVector (Eucl Q) n), AEMeasurable g μ → AEStronglyMeasurable w μ → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∃ h : Eucl P → ℝ, Integrable h μ ∧ ∀ᵐ x ∂μ, g x ∈ K → ‖w x‖ ≤ h x) → ∃ S : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, S ω = ∫ x, w x ((ω : DifferentialForm (Eucl Q) n) (g x)) ∂μ := by
+  intro P Q n V μ g w hg hw hdom
+  -- Step 1: `x ↦ ⟨η (g x), w x⟩` is a.e. strongly measurable for continuous `η`.
+  have hmeas : ∀ η : Eucl Q → Covector (Eucl Q) n, Continuous η →
+      AEStronglyMeasurable (fun x => w x (η (g x))) μ := by
+    intro η hη
+    have hηg : AEStronglyMeasurable (fun x => η (g x)) μ :=
+      hη.comp_aestronglyMeasurable hg.aestronglyMeasurable
+    have hev : Continuous (Function.uncurry
+        fun (φ : NVector (Eucl Q) n) (v : Covector (Eucl Q) n) => φ v) :=
+      continuous_fst.clm_apply continuous_snd
+    exact hev.comp_aestronglyMeasurable₂ hw hηg
+  -- Step 2: if `tsupport η ⊆ K` and `‖η‖ ≤ B`, then `|⟨η ∘ g, w⟩| ≤ B |h|` a.e.
+  have hkey : ∀ (η : Eucl Q → Covector (Eucl Q) n) (K : Set (Eucl Q)) (h : Eucl P → ℝ) (B : ℝ),
+      Continuous η → tsupport η ⊆ K → Integrable h μ → (∀ᵐ x ∂μ, g x ∈ K → ‖w x‖ ≤ h x) →
+      (∀ y, ‖η y‖ ≤ B) →
+      Integrable (fun x => w x (η (g x))) μ ∧
+        ‖∫ x, w x (η (g x)) ∂μ‖ ≤ B * ∫ x, ‖h x‖ ∂μ := by
+    intro η K h B hη hK hh hwh hB
+    have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+    have hbound : ∀ᵐ x ∂μ, ‖w x (η (g x))‖ ≤ B * ‖h x‖ := by
+      filter_upwards [hwh] with x hx
+      by_cases hgx : g x ∈ K
+      · calc ‖w x (η (g x))‖ ≤ ‖w x‖ * ‖η (g x)‖ := (w x).le_opNorm _
+          _ ≤ ‖h x‖ * B :=
+            mul_le_mul ((hx hgx).trans (Real.le_norm_self _)) (hB _) (norm_nonneg _)
+              (norm_nonneg _)
+          _ = B * ‖h x‖ := mul_comm _ _
+      · rw [image_eq_zero_of_notMem_tsupport fun hx' => hgx (hK hx'), map_zero, norm_zero]
+        exact mul_nonneg hB0 (norm_nonneg _)
+    have hint : Integrable (fun x => B * ‖h x‖) μ := hh.norm.const_mul B
+    refine ⟨hint.mono' (hmeas η hη) hbound, ?_⟩
+    calc ‖∫ x, w x (η (g x)) ∂μ‖ ≤ ∫ x, B * ‖h x‖ ∂μ := norm_integral_le_of_norm_le hint hbound
+      _ = B * ∫ x, ‖h x‖ ∂μ := integral_const_mul B _
+  -- Step 3: the integrand of every test form is integrable.
+  have hintω : ∀ ω : TestFormOn V n,
+      Integrable (fun x => w x ((ω : DifferentialForm (Eucl Q) n) (g x))) μ := by
+    intro ω
+    have hcont : Continuous (ω : DifferentialForm (Eucl Q) n) := ContDiff.continuous ω.property.1.1
+    have hcs : HasCompactSupport (ω : DifferentialForm (Eucl Q) n) := ω.property.1.2
+    obtain ⟨h, hh, hwh⟩ := hdom (tsupport (ω : DifferentialForm (Eucl Q) n)) hcs ω.property.2
+    obtain ⟨B, hB⟩ := hcont.bounded_above_of_compact_support hcs
+    exact (hkey _ _ h B hcont subset_rfl hh hwh hB).1
+  -- Step 4: the linear functional `ω ↦ ∫ ⟨ω (g x), w x⟩ dμ`.
+  let S₀ : TestFormOn V n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x, w x ((ω : DifferentialForm (Eucl Q) n) (g x)) ∂μ
+      map_add' := by
+        intro ω₁ ω₂
+        simp only [Submodule.coe_add, Pi.add_apply, map_add]
+        exact integral_add (hintω ω₁) (hintω ω₂)
+      map_smul' := by
+        intro c ω
+        simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul, RingHom.id_apply]
+        exact integral_const_mul c _ }
+  -- Step 5: sequential continuity at `0`, from uniform convergence of the forms themselves.
+  refine ⟨⟨S₀, ?_⟩, fun ω => rfl⟩
+  intro ωs hconv
+  obtain ⟨K, hKc, hKV, hsupp, -, hunif⟩ := hconv
+  obtain ⟨h, hh, hwh⟩ := hdom K hKc hKV
+  set I := ∫ x, ‖h x‖ ∂μ
+  have hI0 : 0 ≤ I := integral_nonneg fun x => norm_nonneg _
+  have h0 := Metric.tendstoUniformlyOn_iff.1 (hunif 0)
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (I + 1) := div_pos hε (by linarith)
+  filter_upwards [h0 _ hδ] with j hj
+  have hBj : ∀ y, ‖(ωs j : DifferentialForm (Eucl Q) n) y‖ ≤ ε / (I + 1) := by
+    intro y
+    by_cases hy : y ∈ K
+    · have h1 := hj y hy
+      have h2 : iteratedFDeriv ℝ 0 ((0 : TestFormOn V n) : DifferentialForm (Eucl Q) n) y = 0 := by
+        rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+        simp
+      rw [h2, dist_zero_left, norm_iteratedFDeriv_zero] at h1
+      exact h1.le
+    · rw [image_eq_zero_of_notMem_tsupport fun hy' => hy (hsupp j hy'), norm_zero]
+      exact hδ.le
+  have hcont : Continuous (ωs j : DifferentialForm (Eucl Q) n) :=
+    ContDiff.continuous (ωs j).property.1.1
+  have hle := (hkey _ K h _ hcont (hsupp j) hh hwh hBj).2
+  rw [Real.dist_eq, sub_zero, ← Real.norm_eq_abs]
+  refine lt_of_le_of_lt hle ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
