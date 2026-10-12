@@ -410,6 +410,37 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Radon convergence of varifolds gives vague convergence of their weights on `U` (Simon Ch. 8,
+proof of 3.7): if `V_i → V` as Radon measures on `Gₙ(U)` and `g ∈ C_c(ℝ^N)` has `spt g ⊆ U`, then
+`∫ g dμ_{V_i} → ∫ g dμ_V`. -/
+theorem Submission.varifold_weight_integral_tendsto_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(Vi i).weight) atTop (𝓝 (∫ x, g x ∂V.weight)) := by
+  intro N n U Vi V hconv g hg hgc hgU
+  -- Step 1: the lift `F z = g z.1.1` of `g` to Simon's open product `Gₙ(U)`.
+  let Ω := U ×ˢ (univ : Set (Grassmannian N n))
+  -- Step 2: `F` vanishes off the compact set `ι⁻¹(spt g × G(N,n))`, so `F ∈ C_c(Gₙ(U))`.
+  let F : C_c(Ω, ℝ) :=
+    { toFun := fun z ↦ g z.1.1
+      continuous_toFun := hg.comp (continuous_fst.comp continuous_subtype_val)
+      hasCompactSupport' := by
+        have hK : IsCompact ((Subtype.val : Ω → Euclidean N × Grassmannian N n) ⁻¹'
+            (tsupport g ×ˢ (univ : Set (Grassmannian N n)))) :=
+          Topology.IsInducing.subtypeVal.isCompact_preimage' (hgc.isCompact.prod isCompact_univ)
+            (by
+              intro z hz
+              exact ⟨⟨z, hgU hz.1, mem_univ _⟩, rfl⟩)
+        refine HasCompactSupport.intro hK fun z hz ↦ ?_
+        exact image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩ }
+  -- Step 3: `∫ F dX = ∫ g(p.1) dX.measure(p) = ∫ g dμ_X` for every varifold `X` on `U`.
+  have hdom : ∀ X : Varifold N n U, ∫ z, F z ∂X.domainMeasure = ∫ x, g x ∂X.weight := by
+    intro X
+    rw [Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable,
+      ← X.map_domainMeasure, (MeasurableEmbedding.subtype_coe
+        (X.isOpen_domain.measurableSet.prod MeasurableSet.univ)).integral_map]
+    rfl
+  -- Step 4: apply `RadonConverges` to `F` and rewrite both sides with step 3.
+  simpa only [hdom] using hconv F
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
