@@ -458,6 +458,140 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 3, Definition 1.7 and Remark 1.8(1): the weighted approximate tangent space at `x`
+only sees `A` and `ϑ` near `x` and up to an `Hⁿ`-null set.  If `A` is `Hⁿ`-measurable, `O ∋ x` is
+open, `Hⁿ(Z) = 0`, `(A ∩ O) \ Z = (A' ∩ O) \ Z`, `ϑ = ϑ'` on `(A ∩ O) \ Z` and `ϑ(x) = ϑ'(x)`, then
+`T_x A = P` with respect to `ϑ` implies `T_x A' = P` with respect to `ϑ'`.  For `f ∈ C_c` vanishing
+off `B_R(0)` and `B̆_ρ(x) ⊆ O`, both blow-up integrals at `0 < r < ρ/R` reduce to
+`η_{x,r}(A ∩ B_{rR}(x))`, which differs from `η_{x,r}(A' ∩ B_{rR}(x))` only inside the null set
+`η_{x,r}(Z)` (`rsod_blowUpMap_measure_scaling`), and the weights agree off `η_{x,r}(Z)`. -/
+theorem rsod_weightedApproxTangent_congr : ∀ (n ℓ : ℕ) (A A' O Z : Set (Amb n ℓ)) (ϑ ϑ' : Amb n ℓ → ℝ) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), NullMeasurableSet A (μHE[n] : Measure (Amb n ℓ)) → IsOpen O → x ∈ O → (μHE[n] : Measure (Amb n ℓ)) Z = 0 → (A ∩ O) \ Z = (A' ∩ O) \ Z → (∀ z ∈ (A ∩ O) \ Z, ϑ z = ϑ' z) → ϑ x = ϑ' x → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A' ϑ' x P := by
+  intro n ℓ A A' O Z ϑ ϑ' x P hA hO hxO hZ hAA' hϑ hϑx hP
+  refine ⟨hP.1, fun f => ?_⟩
+  -- Step 1: `f = 0` off `B_R(0)` with `R = max R₀ 1 > 0`, and `B̆_ρ(x) ⊆ O`.
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Amb n ℓ)
+  have hRpos : (0 : ℝ) < max R₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hfR : ∀ y, y ∉ closedBall (0 : Amb n ℓ) (max R₀ 1) → f y = 0 := by
+    intro y hy
+    by_contra hne
+    exact hy (closedBall_subset_closedBall (le_max_left _ _) (hR₀ (subset_tsupport _ hne)))
+  obtain ⟨ρ, hρpos, hρO⟩ := Metric.isOpen_iff.mp hO x hxO
+  -- The two blow-up integrals agree for every `r ∈ (0, ρ/R)`.
+  have hmain : ∀ r ∈ Ioo (0 : ℝ) (ρ / max R₀ 1),
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y * ϑ (x + r • y)
+          ∂(μHE[n] : Measure (Amb n ℓ)) =
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A', f y * ϑ' (x + r • y)
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+    rintro r ⟨hr0, hrρ⟩
+    -- Step 2: `B_{rR}(x) ⊆ O`, `η⁻¹(B_R(0)) = B_{rR}(x)` and `x + r η(z) = z`.
+    have hηapp : ∀ z, Poincare.SimonGMT.Chapter03.blowUpMap x r z = r⁻¹ • (z - x) := fun z => rfl
+    have hback : ∀ z, x + r • Poincare.SimonGMT.Chapter03.blowUpMap x r z = z := by
+      intro z
+      rw [hηapp, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul]
+      abel
+    have hrR : r * max R₀ 1 < ρ := by rwa [lt_div_iff₀ hRpos] at hrρ
+    have hBxO : closedBall x (r * max R₀ 1) ⊆ O := (closedBall_subset_ball hrR).trans hρO
+    have hpre : Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' closedBall (0 : Amb n ℓ) (max R₀ 1)
+        = closedBall x (r * max R₀ 1) := by
+      ext z
+      simp only [mem_preimage, mem_closedBall, dist_eq_norm, sub_zero, hηapp, norm_smul,
+        Real.norm_eq_abs, abs_inv, abs_of_pos hr0]
+      rw [inv_mul_le_iff₀ hr0]
+    -- Step 3: cut-off, `∫_{η(S)} f ψ(x + r·) = ∫_{η(S ∩ B_{rR}(x))} f ψ(x + r·)`.
+    have hcut : ∀ (S : Set (Amb n ℓ)) (ψ : Amb n ℓ → ℝ),
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, f y * ψ (x + r • y)
+            ∂(μHE[n] : Measure (Amb n ℓ)) =
+          ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * max R₀ 1)),
+            f y * ψ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      intro S ψ
+      have h1 : (fun y => f y * ψ (x + r • y)) =
+          (closedBall (0 : Amb n ℓ) (max R₀ 1)).indicator (fun y => f y * ψ (x + r • y)) := by
+        funext y
+        by_cases hy : y ∈ closedBall (0 : Amb n ℓ) (max R₀ 1)
+        · rw [indicator_of_mem hy]
+        · rw [indicator_of_notMem hy, hfR y hy, zero_mul]
+      have h2 := setIntegral_indicator (μ := (μHE[n] : Measure (Amb n ℓ)))
+        (s := Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) (f := fun y => f y * ψ (x + r • y))
+        (isClosed_closedBall (x := (0 : Amb n ℓ)) (ε := max R₀ 1)).measurableSet
+      rw [← h1, ← image_inter_preimage, hpre] at h2
+      exact h2
+    -- Step 4: `η` maps `Hⁿ`-null sets to `Hⁿ`-null sets (blowup_scaling, part (i)).
+    have hnull : ∀ S : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) S = 0 →
+        (μHE[n] : Measure (Amb n ℓ)) (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) = 0 := by
+      intro S hS
+      have h := (Submission.rsod_blowUpMap_measure_scaling n ℓ x r hr0 S).1
+      rw [hS] at h
+      have hne : ENNReal.ofReal (r ^ n) ≠ 0 := by
+        rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+        positivity
+      exact (mul_eq_zero.mp h).resolve_left hne
+    -- Step 5: the cut sets `s = η(A ∩ B_{rR}(x))` and `s' = η(A' ∩ B_{rR}(x))` differ only
+    -- inside `η(Z)`, so they are `Hⁿ`-a.e. equal.
+    have hss' : Poincare.SimonGMT.Chapter03.blowUpMap x r '' (A ∩ closedBall x (r * max R₀ 1))
+        =ᵐ[(μHE[n] : Measure (Amb n ℓ))]
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' (A' ∩ closedBall x (r * max R₀ 1)) := by
+      rw [ae_eq_set]
+      constructor
+      · refine measure_mono_null ?_ (hnull Z hZ)
+        rintro y ⟨⟨z, ⟨hzA, hzB⟩, rfl⟩, hy'⟩
+        refine ⟨z, ?_, rfl⟩
+        by_contra hzZ
+        have hz' : z ∈ (A' ∩ O) \ Z := hAA' ▸ ⟨⟨hzA, hBxO hzB⟩, hzZ⟩
+        exact hy' ⟨z, ⟨hz'.1.1, hzB⟩, rfl⟩
+      · refine measure_mono_null ?_ (hnull Z hZ)
+        rintro y ⟨⟨z, ⟨hzA, hzB⟩, rfl⟩, hy'⟩
+        refine ⟨z, ?_, rfl⟩
+        by_contra hzZ
+        have hz' : z ∈ (A ∩ O) \ Z := hAA'.symm ▸ ⟨⟨hzA, hBxO hzB⟩, hzZ⟩
+        exact hy' ⟨z, ⟨hz'.1.1, hzB⟩, rfl⟩
+    -- Step 6: `s` is null-measurable: `η` is a measurable embedding, and `s` is the image of a
+    -- Borel subset `T ⊆ A ∩ B_{rR}(x)` together with the image of a null set.
+    have hηemb : MeasurableEmbedding (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+      have h : Poincare.SimonGMT.Chapter03.blowUpMap x r =
+          ⇑((Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr0.ne'))) := by
+        funext z; rfl
+      rw [h]
+      exact Homeomorph.measurableEmbedding _
+    have hsnm : NullMeasurableSet
+        (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (A ∩ closedBall x (r * max R₀ 1)))
+        (μHE[n] : Measure (Amb n ℓ)) := by
+      have hAB : NullMeasurableSet (A ∩ closedBall x (r * max R₀ 1)) (μHE[n] : Measure (Amb n ℓ)) :=
+        hA.inter isClosed_closedBall.measurableSet.nullMeasurableSet
+      obtain ⟨T, hTsub, hTmeas, hTae⟩ := hAB.exists_measurable_subset_ae_eq
+      have hdiff : (μHE[n] : Measure (Amb n ℓ)) ((A ∩ closedBall x (r * max R₀ 1)) \ T) = 0 :=
+        (ae_eq_set.mp hTae).2
+      have hunion : Poincare.SimonGMT.Chapter03.blowUpMap x r '' (A ∩ closedBall x (r * max R₀ 1)) =
+          Poincare.SimonGMT.Chapter03.blowUpMap x r '' T ∪
+          Poincare.SimonGMT.Chapter03.blowUpMap x r '' ((A ∩ closedBall x (r * max R₀ 1)) \ T) := by
+        rw [← image_union, union_sdiff_cancel hTsub]
+      rw [hunion]
+      exact (hηemb.measurableSet_image.mpr hTmeas).nullMeasurableSet.union
+        (NullMeasurableSet.of_null (hnull _ hdiff))
+    -- Step 7: off `η(Z)`, a point `y = η(z)` of `s` has `z ∈ (A ∩ O) \ Z` and `x + r y = z`, so the
+    -- integrands `f ϑ(x + r·)` and `f ϑ'(x + r·)` agree a.e. on `s`.
+    have hae : ∀ᵐ y ∂(μHE[n] : Measure (Amb n ℓ)),
+        y ∈ Poincare.SimonGMT.Chapter03.blowUpMap x r '' (A ∩ closedBall x (r * max R₀ 1)) →
+          f y * ϑ (x + r • y) = f y * ϑ' (x + r • y) := by
+      filter_upwards [measure_eq_zero_iff_ae_notMem.mp (hnull Z hZ)] with y hyZ hy
+      obtain ⟨z, ⟨hzA, hzB⟩, rfl⟩ := hy
+      have hzZ : z ∉ Z := fun h => hyZ ⟨z, h, rfl⟩
+      rw [hback z, hϑ z ⟨⟨hzA, hBxO hzB⟩, hzZ⟩]
+    -- Step 8: combine the cut-off, the a.e. equal integrands and the a.e. equal sets.
+    rw [hcut A ϑ, hcut A' ϑ']
+    exact (setIntegral_congr_ae₀ hsnm hae).trans (setIntegral_congr_set hss')
+  -- Step 1 (conclusion): the integrals agree on `(0, ρ/R) ∈ 𝓝[>] 0` and `ϑ(x) = ϑ'(x)`.
+  have hev : (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A,
+        f y * ϑ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) =ᶠ[𝓝[>] 0]
+      (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A',
+        f y * ϑ' (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) :=
+    Filter.eventually_of_mem (Ioo_mem_nhdsGT (div_pos hρpos hRpos)) hmain
+  have h := (hP.2 f).congr' hev
+  rwa [hϑx] at h
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
