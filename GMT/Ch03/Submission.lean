@@ -554,6 +554,36 @@ theorem Submission.deGiorgiSobIndMFL_integral_mul_swap : ∀ (N : ℕ) (μ : Mea
   rw [← hout, ← integral_integral_swap hFint]
   exact integral_congr_ae (Eventually.of_forall fun y ↦ (hin y).symm)
 
+/-- Weighted bound on the derivative of a mollified indicator: Simon Ch. 2, Lemma 2.5 (3)
+(p. 49, `chapter-02.txt` lines 543–596), as used in the proof of Ch. 3, Theorem 4.3
+(`chapter-03.txt` lines 689–705), for a general `C¹` kernel `ρ` and a Gauss–Green pair `(μ, ν)`
+of `G` in `U`. Let `ζ ≥ 0` be continuous with compact support, `ρ ≥ 0` be `C¹` with compact
+support and `tsupport ρ ⊆ B̄_r(0)`, and `K' = cthickening r (tsupport ζ) ⊆ U`. Then
+`u(x) = ∫_G ρ(x - z) dz` satisfies `∫ ζ |Du| dLᴺ ≤ ∫ (∫ ζ(y) ρ(y - z) dy) dμ(z)`.
+`K'` is a compact subset of `U`, so `μ(K') < ∞`. For `y ∈ tsupport ζ`, `B̄_r(y) ⊆ K' ⊆ U`, hence
+`|Du(y)| ≤ ∫ ρ(y - z) dμ(z)` (`deGiorgiSobIndMFL_norm_fderiv_le`); off `tsupport ζ` both sides
+vanish. Integrating against `ζ` and swapping the integrals (`deGiorgiSobIndMFL_integral_mul_swap`)
+gives the bound. -/
+theorem Submission.deGiorgiSobInd_mollified_fderiv_le : ∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ ρ : Rn N → ℝ) (r : ℝ), Continuous ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.cthickening r (tsupport ζ) ⊆ U → ∫ y, ζ y * ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) y‖ ≤ ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ := by
+  intro N U G μ ν hU hG hGG ζ ρ r hζ hζc hζ0 hρ hρc hρ0 hρr hK
+  -- (a) `K' = cthickening r (tsupport ζ)` is a compact subset of `U`, so `μ K' < ∞`.
+  have hK'fin : μ (Metric.cthickening r (tsupport ζ)) < ∞ :=
+    hGG.2.1 _ hζc.isCompact.cthickening hK
+  -- (b) Fubini: `y ↦ ζ y * ∫ ρ (y - z) dμ` is integrable, and its integral is the right-hand side.
+  obtain ⟨hint, hswap⟩ :=
+    Submission.deGiorgiSobIndMFL_integral_mul_swap N μ ζ ρ r hζ hζc hρ.continuous hρc hρr hK'fin
+  rw [← hswap]
+  -- (c) Pointwise comparison of the nonnegative integrands, then (d) monotonicity of the integral.
+  refine integral_mono_of_nonneg
+    (Eventually.of_forall fun y ↦ mul_nonneg (hζ0 y) (norm_nonneg _)) hint
+    (Eventually.of_forall fun y ↦ ?_)
+  by_cases hy : y ∈ tsupport ζ
+  · -- `B̄_r(y) ⊆ K' ⊆ U`, so the pointwise bound applies at `y`.
+    exact mul_le_mul_of_nonneg_left
+      (Submission.deGiorgiSobIndMFL_norm_fderiv_le N U G μ ν hU hG hGG ρ r y hρ hρc hρ0 hρr
+        ((Metric.closedBall_subset_cthickening hy r).trans hK)) (hζ0 y)
+  · simp [image_eq_zero_of_notMem_tsupport hy]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
