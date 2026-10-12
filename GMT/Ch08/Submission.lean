@@ -2,6 +2,8 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter01.DensityComparison
+import Poincare.SimonGMT.Chapter02.AreaLiteral
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -486,6 +488,51 @@ theorem Submission.frt_hnw_exists_open_superset_measure_lt :
         ≤ ∑' i : T, μ (O' i ∩ ball (i : Euclidean N) (r i)) := measure_iUnion_le _
       _ ≤ ∑' i : T, (ε i : ℝ≥0∞) := ENNReal.tsum_le_tsum fun i ↦ (hO' i).le
       _ < ζ := hεsum
+/-- Step (3b) in the proof of Simon Ch. 8, 1.2 (child `hausdorff_null_of_weight_null` of
+`first_rectifiability`), via Simon Ch. 1, 3.3: let `U` be open and `μ` finite on compact subsets
+of `U`.  If `Z ⊆ U` is `μ`-null and `limsup_{ρ↓0} μ(B_ρ(x)) / (ω_n ρ^n) > 0` at every `x ∈ Z`,
+then `H^n(Z) = 0`.  For `Z_m = {x ∈ Z : limsup ≥ 1/m}`, Simon 3.3 gives `(1/m) H^n(Z_m) ≤ μ(O)`
+for every open `O ⊇ Z_m`, and there are such `O` with `μ(O)` arbitrarily small. -/
+theorem Submission.frt_hausdorff_null_of_weight_null :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → (∀ x ∈ Z, 0 < limsup (densityRatio n μ x) (𝓝[>] 0)) → μHE[n] Z = 0 := by
+  intro N n μ U Z hU hfin hZU hZ hpos
+  -- (a) `ω_n` is Simon's normalization `π^{n/2} / Γ(n/2 + 1)`, also for `n = 0`.
+  have hω : unitBallVolume n = Chapter01.realUnitBallVolume (n : ℝ) := by
+    rw [Chapter01.realUnitBallVolume_eq]
+    exact Submission.frt_hnw_unitBallVolume_eq_gamma n
+  -- (b) Borel sets are Carathéodory measurable for `μ`.
+  have hcar : borel (Euclidean N) ≤ μ.toOuterMeasure.caratheodory := by
+    rw [← BorelSpace.measurable_eq]
+    exact le_toOuterMeasure_caratheodory μ
+  -- (c) Simon 3.3: if `t ≤ limsup densityRatio` on `A ⊆ O` with `O` open, then
+  -- `t H^n(A) ≤ μ(O)`, because `O ∩ B_ρ(x) = B_ρ(x)` for small `ρ`.
+  have hcomp : ∀ (O A : Set (Euclidean N)) (t : ℝ≥0∞), IsOpen O → A ⊆ O →
+      (∀ x ∈ A, t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)) → t * μHE[n] A ≤ μ O := by
+    intro O A t hO hAO hA
+    have h := Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity μ.toOuterMeasure hcar
+      (Nat.cast_nonneg n) A O t fun x hx ↦ by
+        obtain ⟨R, hR, hRO⟩ := Metric.isOpen_iff.1 hO x (hAO hx)
+        refine (hA x hx).trans_eq (limsup_congr ?_)
+        filter_upwards [Ioo_mem_nhdsGT hR] with ρ hρ
+        rw [Chapter01.dimensionalDensityQuotient, densityRatio, hω, ENNReal.rpow_natCast,
+          inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hRO), Measure.toOuterMeasure_apply]
+    rwa [← Chapter01.simonHausdorffMeasureReal_toOuterMeasure (Nat.cast_nonneg n),
+      Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure] at h
+  -- (d) For `t ≠ 0`, `Z_t = {x ∈ Z : t ≤ limsup densityRatio}` is `H^n`-null: otherwise an open
+  -- `O ⊇ Z_t` with `μ(O) < t H^n(Z_t)` exists (`Z_t` is `μ`-null), contradicting (c).
+  have hnull : ∀ t : ℝ≥0∞, t ≠ 0 →
+      μHE[n] {x | x ∈ Z ∧ t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)} = 0 := by
+    intro t ht
+    by_contra hH
+    obtain ⟨O, hO, hZO, -, hμO⟩ := Submission.frt_hnw_exists_open_superset_measure_lt N μ U
+      {x | x ∈ Z ∧ t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)} _ hU hfin
+      ((sep_subset _ _).trans hZU) (measure_mono_null (sep_subset _ _) hZ) (ENNReal.mul_pos ht hH)
+    exact (hcomp O _ t hO hZO fun x hx ↦ hx.2).not_gt hμO
+  -- (e) `Z ⊆ ⋃ m, Z_{1/m}`, as `limsup densityRatio > 0` exceeds some `1/m` at each `x ∈ Z`.
+  refine measure_mono_null (fun x hx ↦ ?_)
+    (measure_iUnion_null fun m : ℕ ↦ hnull _ (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top m)))
+  obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt (hpos x hx).ne'
+  exact mem_iUnion.2 ⟨m, hx, hm.le⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
