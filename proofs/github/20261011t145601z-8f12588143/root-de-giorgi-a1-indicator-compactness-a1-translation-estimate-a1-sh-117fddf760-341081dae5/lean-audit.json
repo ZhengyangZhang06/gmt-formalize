@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2dc9af94793d8bc7cc5326ed76974ed575138992efba2a8842e3bbbc67ad605f",
+  "git_delta": {
+    "base_commit": "438f8b53b94cda550d889a04beb0332de28b8d46",
+    "candidate_commit": "f5194db51085718664065f19ecf6ff3f9ef0738f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_transEst_integral_indicator_shift_mul",
+    "diff_sha256": "41778634bdb8768b9b44478690afdf8f0a903acc97ee792a1ea931fc44bf5bac",
+    "source_sha256": "75cce96abd6f3f6d08cd82418630072c4596a65a55bed7ab403a58280a3484f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_transEst_integral_indicator_shift_mul",
+      "statement": "∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), NullMeasurableSet F volume → Integrable ψ volume → ∫ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y = ∫ z in F, (ψ (z - h) - ψ z)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

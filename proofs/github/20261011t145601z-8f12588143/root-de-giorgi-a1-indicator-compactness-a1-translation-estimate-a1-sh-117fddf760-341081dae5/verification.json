@@ -1,0 +1,15 @@
+{
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.shift_change_of_variables-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1850",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "f5194db51085718664065f19ecf6ff3f9ef0738f",
+  "integrated_commit": "",
+  "proof_base_commit": "438f8b53b94cda550d889a04beb0332de28b8d46",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+  "requires": []
+}
