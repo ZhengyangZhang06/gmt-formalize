@@ -930,6 +930,35 @@ theorem Submission.eilenberg_compact_fiber_measurable : ∀ (X : Type) [MetricSp
       (Submission.eilenberg_fiber_open_content_upperSemicontinuous X m k _ Q f hQ hf).measurable
   simp only [Chapter01.simonHausdorffMeasureReal, Measure.smul_apply, smul_eq_mul]
   exact hμ.const_mul _
+/-- **Simon Ch. 2, proof of Theorem 1.8(i) (p. 45), compact exhaustion**, as used for Theorem 1.9.
+In a σ-compact metric space, a `μ`-null-measurable `A` with `μ A < ∞` contains increasing compact
+`Q j` with `μ (A \ ⋃ j, Q j) = 0`. A Borel kernel `B ⊆ A`, `B =ᵐ[μ] A`, carries the finite, hence
+regular, measure `μ.restrict B`; it gives compact `K j ⊆ B` with `μ (B \ K j) < j⁻¹`, and
+`Q = accumulate K` collects their finite unions. -/
+theorem Submission.eilenberg_compact_exhaustion : ∀ (X : Type) [MetricSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (A : Set X), NullMeasurableSet A μ → μ A < ⊤ → ∃ Q : ℕ → Set X, (∀ j, IsCompact (Q j)) ∧ (∀ j, Q j ⊆ A) ∧ Monotone Q ∧ μ (A \ ⋃ j, Q j) = 0 := by
+  intro X _ _ _ _ μ A hA hAfin
+  obtain ⟨B, hBA, hB, hBae⟩ := hA.exists_measurable_subset_ae_eq
+  have : IsFiniteMeasure (μ.restrict B) :=
+    isFiniteMeasure_restrict.2 ((measure_mono hBA).trans_lt hAfin).ne
+  have hK (j : ℕ) : ∃ K, K ⊆ B ∧ IsCompact K ∧ μ.restrict B (B \ K) < (j : ℝ≥0∞)⁻¹ :=
+    hB.exists_isCompact_sdiff_lt (measure_ne_top _ _)
+      (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top j))
+  choose K hKB hKc hKlt using hK
+  refine ⟨accumulate K, isCompact_accumulate hKc,
+    fun j ↦ (accumulate_subset_iUnion j).trans ((iUnion_subset hKB).trans hBA),
+    monotone_accumulate, ?_⟩
+  -- `B \ ⋃ j, K j` is null, its measure being below every `j⁻¹`.
+  have hnull : μ (B \ ⋃ j, K j) = 0 := by
+    by_contra h
+    obtain ⟨j, hj⟩ := ENNReal.exists_inv_nat_lt h
+    have hle : μ (B \ ⋃ j, K j) ≤ μ.restrict B (B \ K j) := by
+      rw [Measure.restrict_eq_self μ sdiff_subset]
+      exact measure_mono (sdiff_subset_sdiff_right (subset_iUnion K j))
+    exact lt_asymm hj (hle.trans_lt (hKlt j))
+  rw [iUnion_accumulate]
+  refine measure_mono_null (fun x hx ↦ ?_) (measure_union_null (ae_eq_set.1 hBae).2 hnull)
+  by_cases hxB : x ∈ B
+  exacts [Or.inr ⟨hxB, hx.2⟩, Or.inl ⟨hx.1, hxB⟩]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
