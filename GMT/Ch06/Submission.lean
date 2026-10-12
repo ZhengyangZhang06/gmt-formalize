@@ -359,6 +359,57 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The coordinate covector `dx^α = wedgeCovectors n (proj ∘ α)` on `ℝ^N` is dual to the
+coordinate frames: `dx^α(e_α) = 1`, `dx^α(e_{α'}) = 0` for every other increasing multi-index
+`α'`, and `covectorEuclideanNorm (c • dx^α) = |c|`. -/
+theorem Submission.isoperimetric_coord_covector_eval : ∀ (n N : ℕ) (α : SimonMultiIndex n N), (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n) (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 1 ∧ (∀ α' : SimonMultiIndex n N, α' ≠ α → (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n) (fun j => EuclideanSpace.single (α' j) (1 : ℝ)) = 0) ∧ ∀ c : ℝ, covectorEuclideanNorm (c • (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n)) = |c| := by
+  intro n N α
+  classical
+  set η : Covector (Eucl N) n := wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) with hη
+  -- Kronecker property on increasing coordinate frames: `dx^α(e_I) = δ_{α I}`.
+  have hK : ∀ I : Fin n → Fin N, StrictMono I →
+      η (fun j => EuclideanSpace.single (I j) (1 : ℝ)) = if I = ⇑α then 1 else 0 := by
+    intro I hI
+    rw [hη, wedgeCovectors_apply_det]
+    split_ifs with hIα
+    · -- the matrix `[δ_{α i, α j}]` is the identity
+      subst hIα
+      convert Matrix.det_one (n := Fin n) (R := ℝ)
+      ext i j
+      simp [Matrix.one_apply, PiLp.single_apply, α.injective.eq_iff]
+    · -- some `α i` is not among the `I j`, so row `i` vanishes
+      obtain ⟨i, hi⟩ : ∃ i, ∀ j, α i ≠ I j := by
+        by_contra! h
+        apply hIα
+        rw [← StrictMono.range_inj_of_wellFoundedLT hI α.strictMono]
+        have hsub : Set.range α ⊆ Set.range I := by
+          rintro _ ⟨i, rfl⟩
+          obtain ⟨j, hj⟩ := h i
+          exact ⟨j, hj.symm⟩
+        refine (Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range I)).symm
+        rw [Set.ncard_range_of_injective hI.injective, Set.ncard_range_of_injective α.injective]
+      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [PiLp.single_apply, hi j]
+  refine ⟨?_, ?_, ?_⟩
+  · simpa using hK α α.strictMono
+  · intro α' hα'
+    rw [hK α' α'.strictMono, ite_eq_right fun h => hα' (DFunLike.coe_injective h)]
+  · intro c
+    -- only the summand `I = α` survives, and it contributes `c²`
+    have hs : ∀ I : Fin n → Fin N, (if StrictMono I then
+        ((c • η) (fun i => EuclideanSpace.basisFun (Fin N) ℝ (I i))) ^ 2 else 0) =
+        if I = ⇑α then c ^ 2 else 0 := by
+      intro I
+      by_cases hI : StrictMono I
+      · rw [ite_eq_left hI]
+        simp only [EuclideanSpace.basisFun_apply, ContinuousAlternatingMap.smul_apply,
+          smul_eq_mul]
+        rw [hK I hI]
+        split_ifs <;> ring
+      · have hIα : I ≠ ⇑α := fun h => hI (h ▸ α.strictMono)
+        rw [ite_eq_right hI, ite_eq_right hIα]
+    rw [covectorEuclideanNorm, Finset.sum_congr rfl fun I _ => hs I, Finset.sum_ite_eq',
+      ite_eq_left (Finset.mem_univ _), Real.sqrt_sq_eq_abs]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
