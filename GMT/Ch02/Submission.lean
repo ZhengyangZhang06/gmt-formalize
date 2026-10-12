@@ -12,6 +12,7 @@ import Mathlib.Topology.Algebra.Module.Determinant
 import Poincare.SimonGMT.Chapter01.Hausdorff
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter02.Submanifold
+import Mathlib.Analysis.Convex.Measure
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 2: Some further preliminaries from analysis (pp. 39–68)
@@ -1794,6 +1795,120 @@ theorem Submission.bv_abs_variation_le : ∀ (n : ℕ) (O : Set (Rn n)) (u : Rn 
     refine (ENNReal.tendsto_ofReal hlim).congr fun j ↦ ?_
     rw [hIV j]
   exact le_of_tendsto' hlim' hIbound
+
+/-- **Simon Ch. 2, Lemma 2.8 (p. 51), BV extension estimate**, with `C = max (1 + δ⁻¹) (n δ⁻¹)`.
+The first conjunct is `bv_ext_variation_eq_zero_of_ae_eq_zero` on the open set `(closure U)ᶜ`.
+For the second, take the cut-offs `φ_j` of `bv_ext_exists_cutoffs` with `r = δR`. By
+`bv_ext_lintegral_enorm_mul_fderiv_le` and `bv_abs_variation_le`,
+`∫ |u| |Dφ_j| ≤ δ⁻¹ |Du|(U) + n δ⁻¹ R⁻¹ ∫_U |u|`. For an admissible field `g` on `ℝⁿ`,
+`bv_ext_ofReal_integral_cutoff_le` bounds `∫ φ_j u div g` by `|Du|(U) + ∫ |u| |Dφ_j|`, hence by
+`C (|Du|(U) + R⁻¹ ∫_U |u|)`. Since `φ_j → 1_U` and `1_U u = u` a.e. (`u = 0` a.e. off `Ū`, and the
+frontier of the convex set `U` is null), dominated convergence gives `∫ φ_j u div g → ∫ u div g`;
+the supremum over `g` is the claim. -/
+theorem Submission.bv_extension_estimate_theorem : BVExtensionEstimate := by
+  intro n δ hδ _hδ1
+  -- Step 1: the constant `C = max (1 + δ⁻¹) (n δ⁻¹)`.
+  set C : ℝ := max (1 + δ⁻¹) (n * δ⁻¹)
+  refine ⟨C, le_max_of_le_left (by positivity), ?_⟩
+  intro U R ξ u hUo hUb hUc hR _hξ hball hUR hu hsupp
+  have hu_int : Integrable u volume := integrableOn_univ.1 hu.2.1
+  -- Step 2 (C0): `u = 0` a.e. on the open set `(closure U)ᶜ`, so its variation there vanishes.
+  refine ⟨Submission.bv_ext_variation_eq_zero_of_ae_eq_zero n _ u
+    isClosed_closure.isOpen_compl.measurableSet hsupp, ?_⟩
+  -- Step 3 (C3): the cut-offs `φ_j`, with `r = δR`.
+  have hδR : 0 < δ * R := mul_pos hδ hR
+  obtain ⟨φ, hφL, hφ01, hφc, hφs, hφlim, hφae⟩ :=
+    Submission.bv_ext_exists_cutoffs n U ξ (δ * R) hUo hUb hUc hδR hball
+  set A := Chapter02.bvVariationOn u U
+  set B := ∫⁻ x in U, ‖u x‖ₑ
+  -- Step 4 (C4): `∫ |u| |Dφ_j| ≤ δ⁻¹ |Du|(U) + n δ⁻¹ R⁻¹ ∫_U |u|`.
+  have habs : Chapter02.bvVariationOn (fun x ↦ |u x|) U ≤ A :=
+    Submission.bv_abs_variation_le n U u hUo hu_int.integrableOn.locallyIntegrableOn
+  have hgrad : ∀ j, ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ ≤
+      ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B) := by
+    intro j
+    have hw := Submission.bv_ext_lintegral_enorm_mul_fderiv_le n U ξ R (δ * R) u (φ j) hUo hR hUR
+      hu_int (hφL j) (hφ01 j) (hφc j) (hφs j) (hφae j)
+    have hinv : ENNReal.ofReal (δ * R)⁻¹ * ENNReal.ofReal (δ * R) = 1 := by
+      rw [← ENNReal.ofReal_mul (inv_nonneg.2 hδR.le), inv_mul_cancel₀ hδR.ne', ENNReal.ofReal_one]
+    have e1 : ENNReal.ofReal (δ * R)⁻¹ * ENNReal.ofReal R = ENNReal.ofReal δ⁻¹ := by
+      rw [← ENNReal.ofReal_mul (inv_nonneg.2 hδR.le)]
+      congr 1
+      field_simp
+    have e2 : ENNReal.ofReal (δ * R)⁻¹ * (n : ℝ≥0∞) =
+        ENNReal.ofReal (n * δ⁻¹) * ENNReal.ofReal R⁻¹ := by
+      rw [← ENNReal.ofReal_natCast n, ← ENNReal.ofReal_mul (inv_nonneg.2 hδR.le),
+        ← ENNReal.ofReal_mul (by positivity)]
+      congr 1
+      field_simp
+    calc ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ
+        = ENNReal.ofReal (δ * R)⁻¹ *
+            (ENNReal.ofReal (δ * R) * ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ) := by
+          rw [← mul_assoc, hinv, one_mul]
+      _ ≤ ENNReal.ofReal (δ * R)⁻¹ * (ENNReal.ofReal R * A + n * B) := by
+          gcongr
+          exact hw.trans (by gcongr)
+      _ = ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B) := by
+          rw [mul_add, ← mul_assoc, e1, ← mul_assoc, e2, mul_assoc]
+  -- Step 5: `A + (δ⁻¹ A + n δ⁻¹ R⁻¹ B) ≤ C (A + R⁻¹ B)`.
+  have hfin : A + (ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B)) ≤
+      ENNReal.ofReal C * (A + ENNReal.ofReal R⁻¹ * B) := by
+    have h1 : 1 + ENNReal.ofReal δ⁻¹ ≤ ENNReal.ofReal C := by
+      rw [← ENNReal.ofReal_one, ← ENNReal.ofReal_add zero_le_one (inv_nonneg.2 hδ.le)]
+      exact ENNReal.ofReal_le_ofReal (le_max_left _ _)
+    have h2 : ENNReal.ofReal (n * δ⁻¹) ≤ ENNReal.ofReal C :=
+      ENNReal.ofReal_le_ofReal (le_max_right _ _)
+    calc A + (ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B))
+        = (1 + ENNReal.ofReal δ⁻¹) * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B) := by
+          ring
+      _ ≤ ENNReal.ofReal C * A + ENNReal.ofReal C * (ENNReal.ofReal R⁻¹ * B) := by gcongr
+      _ = ENNReal.ofReal C * (A + ENNReal.ofReal R⁻¹ * B) := by ring
+  -- Step 6 (C5): fix an admissible test field `g` on `ℝⁿ`, `K`-Lipschitz.
+  refine iSup_le fun g ↦ iSup_le fun hg ↦ iSup_le fun _ ↦ iSup_le fun hn ↦ ?_
+  obtain ⟨K, hK⟩ := hg
+  rw [setIntegral_univ]
+  -- Step 7: a.e. `x ∈ U` or `u x = 0`, since `u = 0` a.e. off `closure U` and the frontier of the
+  -- convex set `U` is null.
+  have hae : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ U ∨ u x = 0 := by
+    filter_upwards [hsupp, measure_eq_zero_iff_ae_notMem.1 (hUc.addHaar_frontier volume)]
+      with x hx hxf
+    by_cases hxU : x ∈ U
+    · exact Or.inl hxU
+    · refine Or.inr (hx fun hxc ↦ hxf ?_)
+      rw [hUo.frontier_eq]
+      exact ⟨hxc, hxU⟩
+  -- Step 8: dominated convergence, `∫ φ_j u div g → ∫ u div g`, dominated by `n K |u|`.
+  have hlim : Tendsto (fun j ↦ ∫ x, φ j x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      atTop (𝓝 (∫ x, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)) := by
+    refine tendsto_integral_of_dominated_convergence
+      (fun x ↦ ‖u x‖ * ((Module.finrank ℝ (Rn n) : ℝ) * K)) (fun j ↦ ?_)
+      (hu_int.norm.mul_const _) (fun j ↦ ae_of_all _ fun x ↦ ?_) ?_
+    · obtain ⟨Kj, hKj⟩ := hφL j
+      exact (hKj.continuous.aestronglyMeasurable.mul hu_int.aestronglyMeasurable).mul
+        (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+    · have h1 : ‖φ j x‖ ≤ 1 := by
+        rw [Real.norm_of_nonneg (hφ01 j x).1]
+        exact (hφ01 j x).2
+      rw [norm_mul, norm_mul]
+      calc ‖φ j x‖ * ‖u x‖ * ‖Chapter02.euclideanDivergence (g : Rn n → Rn n) x‖
+          ≤ 1 * ‖u x‖ * ((Module.finrank ℝ (Rn n) : ℝ) * K) := by
+            gcongr
+            exact Chapter02.norm_euclideanDivergence_le_of_lipschitz hK x
+        _ = ‖u x‖ * ((Module.finrank ℝ (Rn n) : ℝ) * K) := by rw [one_mul]
+    · filter_upwards [hae] with x hx
+      convert ((hφlim x).mul_const (u x)).mul_const
+        (Chapter02.euclideanDivergence (g : Rn n → Rn n) x) using 2
+      rcases hx with hx | hx <;> simp [hx]
+  -- Step 9: each `∫ φ_j u div g` is at most `C (|Du|(U) + R⁻¹ ∫_U |u|)`; pass to the limit.
+  refine le_of_tendsto' ((ENNReal.continuous_ofReal.tendsto _).comp hlim) fun j ↦ ?_
+  calc ENNReal.ofReal (∫ x, φ j x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      ≤ A + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ :=
+        Submission.bv_ext_ofReal_integral_cutoff_le n U u (φ j) g hUo hu_int (hφL j) (hφ01 j)
+          (hφc j) (hφs j) ⟨K, hK⟩ hn
+    _ ≤ A + (ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B)) := by
+        gcongr
+        exact hgrad j
+    _ ≤ ENNReal.ofReal C * (A + ENNReal.ofReal R⁻¹ * B) := hfin
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
