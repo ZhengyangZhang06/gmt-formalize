@@ -579,6 +579,95 @@ theorem Submission.smr_covector_coord_isometry :
   rw [Submission.smr_ci_norm_eq_sqrt_sum_coord_sq, LinearEquiv.ofBijective_apply,
     EuclideanSpace.norm_eq, ← σ.sum_comp]
   simp only [hJ, Real.norm_eq_abs, sq_abs]
+/-- **Mollification step of Simon Ch. 6, 2.7–2.9 (pp. 136–137).**  A continuous compactly
+supported `k`-form `φ` with `tsupport φ ⊆ V`, `V` open, is a uniform limit, in the Euclidean
+coefficient norm, of test forms supported in `V`.  As `|α| ≤ √M ‖α‖` (`M = #(Fin k → Fin P)`,
+`‖α‖` the operator norm), it suffices to approximate in `‖·‖`.  The approximant is `χ • (ψ ⋆ φ)`:
+`ψ ⋆ φ` is the convolution of `φ` with a normalized smooth bump `ψ` supported in a ball whose
+radius is a uniform-continuity modulus of `φ`, and `χ` is a smooth cutoff with values in `[0, 1]`,
+equal to `1` exactly on `tsupport φ`, whose support `V'` has compact closure in `V`. -/
+theorem Submission.smr_exists_testForm_uniform_approx : ∀ (P k : ℕ) (U V : Set (Eucl P)) (φ : Eucl P → Covector (Eucl P) k), IsOpen V → V ⊆ U → Continuous φ → HasCompactSupport φ → tsupport φ ⊆ V → ∀ ε : ℝ, 0 < ε → ∃ η : TestFormOn U k, tsupport (η : DifferentialForm (Eucl P) k) ⊆ V ∧ ∀ x, covectorEuclideanNorm (φ x - (η : DifferentialForm (Eucl P) k) x) ≤ ε := by
+  intro P k U V φ hV hVU hφ hφc hφV ε hε
+  -- Step 1: `|α| ≤ C ‖α‖` with `C = √M`, since every coefficient satisfies
+  -- `|α(e_I)| ≤ ‖α‖ ∏ ‖e_{I j}‖ = ‖α‖`.
+  set C : ℝ := Real.sqrt (Fintype.card (Fin k → Fin P)) with hC_def
+  have hC : 0 ≤ C := Real.sqrt_nonneg _
+  have hcmp : ∀ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ C * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hC_def, ← Real.sqrt_sq (norm_nonneg α), ← Real.sqrt_mul (by positivity)]
+    apply Real.sqrt_le_sqrt
+    calc ∑ I : Fin k → Fin P,
+          (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+        ≤ ∑ _I : Fin k → Fin P, ‖α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h := α.le_opNorm fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)
+            simp only [EuclideanSpace.basisFun_apply, PiLp.norm_single, norm_one,
+              Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+            exact sq_le_sq.mpr (by simpa [abs_of_nonneg (norm_nonneg α)] using h)
+          · positivity
+      _ = (Fintype.card (Fin k → Fin P) : ℝ) * ‖α‖ ^ 2 := by simp
+  have hC1 : 0 < C + 1 := by linarith
+  set ε' : ℝ := ε / (C + 1) with hε'_def
+  have hε' : 0 < ε' := div_pos hε hC1
+  -- Step 2: an open `V'` with `tsupport φ ⊆ V'` and `closure V' ⊆ V` compact.
+  obtain ⟨V', hV'o, hKV', hV'V, hV'c⟩ :=
+    exists_open_between_and_isCompact_closure hφc.isCompact hV hφV
+  -- Step 3: a smooth cutoff `χ : ℝ^P → [0, 1]` with `support χ = V'` and `χ = 1` exactly on
+  -- `tsupport φ`.
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hV'o (isClosed_tsupport φ) hKV'
+  -- Step 4: mollification.  `φ` is uniformly continuous with modulus `δ` at accuracy `ε'`; `ψ` is
+  -- a smooth bump `≥ 0` with `∫ ψ = 1` and `support ψ ⊆ ball 0 δ`, so `g = ψ ⋆ φ` is smooth and
+  -- `dist (g x) (φ x) ≤ ε'`.
+  obtain ⟨δ, hδ, hφδ⟩ :=
+    Metric.uniformContinuous_iff.mp (hφc.uniformContinuous_of_continuous hφ) ε' hε'
+  obtain ⟨b, hbs, hbc, hbd, hbr, hb0⟩ :=
+    exists_contDiff_tsupport_subset (n := ⊤) (ball_mem_nhds (0 : Eucl P) hδ)
+  have hbnn : ∀ y, 0 ≤ b y := fun y => (hbr (mem_range_self y)).1
+  have hbint : 0 < ∫ y, b y :=
+    hbd.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hbc (fun y => hbnn y)
+      (hb0.symm ▸ one_ne_zero : b 0 ≠ 0)
+  set ψ : Eucl P → ℝ := fun y => (∫ z, b z)⁻¹ * b y with hψ_def
+  have hψd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ := contDiff_const.mul hbd
+  have hψc : HasCompactSupport ψ := hbc.mul_left
+  have hψnn : ∀ y, 0 ≤ ψ y := fun y => mul_nonneg (inv_nonneg.mpr hbint.le) (hbnn y)
+  have hψs : Function.support ψ ⊆ ball 0 δ :=
+    (Function.support_mul_subset_right _ _).trans ((subset_tsupport b).trans hbs)
+  have hψ1 : ∫ y, ψ y = 1 := by
+    rw [hψ_def, integral_const_mul, inv_mul_cancel₀ hbint.ne']
+  obtain ⟨g, hg, hgd⟩ : ∃ g : Eucl P → Covector (Eucl P) k,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ ∀ x, dist (g x) (φ x) ≤ ε' :=
+    ⟨convolution ψ φ (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+      hψc.contDiff_convolution_left _ hψd hφ.locallyIntegrable,
+      fun x => dist_convolution_le hε'.le hψs hψnn hψ1 hφ.aestronglyMeasurable
+        fun y hy => (hφδ (mem_ball.mp hy)).le⟩
+  -- Step 5: `η = χ • g` is a test form with `tsupport η ⊆ closure V' ⊆ V ⊆ U`.
+  have hη_supp : tsupport (fun x => χ x • g x) ⊆ closure V' := by
+    refine (tsupport_smul_subset_left χ g).trans ?_
+    rw [tsupport, hχs]
+  have hη_cpt : HasCompactSupport (fun x => χ x • g x) :=
+    hV'c.of_isClosed_subset (isClosed_tsupport _) hη_supp
+  refine ⟨⟨fun x => χ x • g x, ⟨⟨hχ.smul hg, hη_cpt⟩, hη_supp.trans (hV'V.trans hVU)⟩⟩,
+    hη_supp.trans hV'V, fun x => ?_⟩
+  -- Step 6: `‖φ x - η x‖ ≤ ε'` (on `tsupport φ`, `η = g`; off it, `φ = 0` and `0 ≤ χ ≤ 1`),
+  -- hence `|φ x - η x| ≤ C ε' ≤ ε`.
+  have hle : ‖φ x - χ x • g x‖ ≤ ε' := by
+    by_cases hx : x ∈ tsupport φ
+    · rw [(hχ1 x).1 hx, one_smul, ← dist_eq_norm, dist_comm]
+      exact hgd x
+    · have h0 : φ x = 0 := image_eq_zero_of_notMem_tsupport hx
+      have hχx := hχr (mem_range_self x)
+      have hgx : ‖g x‖ ≤ ε' := by simpa [h0, dist_eq_norm] using hgd x
+      rw [h0, zero_sub, norm_neg, norm_smul, Real.norm_eq_abs, abs_of_nonneg hχx.1]
+      exact (mul_le_of_le_one_left (norm_nonneg _) hχx.2).trans hgx
+  calc covectorEuclideanNorm (φ x - χ x • g x) ≤ C * ‖φ x - χ x • g x‖ := hcmp _
+    _ ≤ C * ε' := mul_le_mul_of_nonneg_left hle hC
+    _ ≤ ε := by
+      rw [hε'_def, mul_div_assoc', div_le_iff₀ hC1]
+      nlinarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
