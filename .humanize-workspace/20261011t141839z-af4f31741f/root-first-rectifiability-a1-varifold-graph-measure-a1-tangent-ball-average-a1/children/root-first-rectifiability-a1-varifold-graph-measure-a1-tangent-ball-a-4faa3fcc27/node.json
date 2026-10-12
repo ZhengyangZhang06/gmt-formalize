@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.nonneg_ball_limit-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1",
+  "depth": 4,
+  "title": "Blow-up limit of ball integrals for β ≥ 0: t^{-n}∫_{Gₙ(B_t(x))} β dV → θ ω_n β(T)",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N (V : Varifold N n U), x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ, and suppose HasTangentPlane V x T θ (Simon Ch. 8, Def. 1.1: x ∈ U, θ > 0, and ∫ f dV_{x,t} → θ ∫ f dv(T) as t ↓ 0 for every f ∈ C_c(ℝ^N × G(N,n)), where V_{x,t} = rescaledMeasure V x t and v(T) = planeVarifoldMeasure T). Then for every continuous β : G(N,n) → ℝ with β ≥ 0, t^{-n} ∫_{B_t(x) × G(N,n)} β(S) dV(y,S) → θ ω_n β(T) as t → 0⁺, where t^{-n} = (t⁻¹)^n, B_t(x) is the closed ball, ω_n = (unitBallVolume n).toReal, and the integral is the Bochner set integral with respect to V.measure.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), (∀ S, 0 ≤ β S) → Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (unitBallVolume n).toReal * β T))",
+  "lean_name": "frt_vgm_tba_nonneg_ball_limit",
+  "depends_on": [
+    "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.product_blowup-a1",
+    "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.ball_cutoff_sandwich-a1",
+    "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.plane_cutoff_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.product_blowup-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.ball_cutoff_sandwich-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.plane_cutoff_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-a-4faa3fcc27-a1"
+}

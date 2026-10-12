@@ -410,6 +410,381 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Simon Ch. 8, Definition 1.1 tested on a product function: if `V` has tangent plane `T` with
+multiplicity `θ` at `x`, then for `g ∈ C_c(ℝ^N)` and continuous `β` on `G(N,n)`,
+`t^{-n} ∫ g(t⁻¹(y - x)) β(S) dV(y,S) → θ β(T) ∫_T g dH^n` as `t ↓ 0` (the test function is
+`f(y,S) = g(y) β(S)`; used for the tangent-ball averages in the proof of 1.2). -/
+theorem Submission.frt_vgm_tba_product_blowup_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ (g : C_c(Euclidean N, ℝ)) (β : C(Grassmannian N n, ℝ)), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z.1 - x)) * β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (β T * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n]))) := by
+  intro N n U V x T θ hT g β
+  -- Step 1: the product test function `f(y,S) = g(y) β(S)` lies in `C_c(ℝ^N × G(N,n))`: it is
+  -- continuous and vanishes off the compact set `tsupport g × G(N,n)`.
+  have hcont : Continuous (fun z : Euclidean N × Grassmannian N n ↦ g z.1 * β z.2) :=
+    (g.continuous.comp continuous_fst).mul (β.continuous.comp continuous_snd)
+  have hsupp : HasCompactSupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1 * β z.2) := by
+    refine HasCompactSupport.intro (g.hasCompactSupport.isCompact.prod isCompact_univ) ?_
+    intro z hz
+    have hz1 : z.1 ∉ tsupport g := fun h ↦ hz ⟨h, mem_univ _⟩
+    simp [image_eq_zero_of_notMem_tsupport hz1]
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) := ⟨⟨_, hcont⟩, hsupp⟩
+  -- Step 2: Def. 1.1 applied to `f`.
+  have h := hT.2.2 f
+  -- Step 3: the plane side, `∫ f dv(T) = β(T) ∫_T g dH^n`.
+  have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+      β T * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] := by
+    rw [planeVarifoldMeasure, integral_map (φ := fun y : Euclidean N ↦ (y, T))
+      (continuous_id.prodMk continuous_const).aemeasurable (map_continuous f).aestronglyMeasurable]
+    change ∫ y in (T.plane : Set (Euclidean N)), g y * β T ∂μHE[n] = _
+    rw [integral_mul_const, mul_comm]
+  -- Step 4: the rescaled side, `∫ f dV_{x,t} = t^{-n} ∫ g(t⁻¹(y - x)) β(S) dV` for `t > 0`.
+  have hresc : ∀ t ∈ Ioi (0 : ℝ), ∫ z, f z ∂(rescaledMeasure V x t) =
+      t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z.1 - x)) * β z.2 ∂V.measure := by
+    intro t ht
+    rw [rescaledMeasure, integral_smul_measure,
+      integral_map (φ := fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2))
+        (show Continuous (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2)) by
+          fun_prop).aemeasurable (map_continuous f).aestronglyMeasurable,
+      ENNReal.toReal_ofReal (pow_nonneg (inv_nonneg.mpr (mem_Ioi.mp ht).le) n), smul_eq_mul]
+    rfl
+  -- Step 5: the two sides agree on `(0, ∞) ∈ 𝓝[>] 0`, so the limit transfers.
+  rw [hplane] at h
+  exact h.congr' (eventually_nhdsWithin_of_forall hresc)
+/-- The cut-off sandwich for a ball (steps 2 and 7 of the tangent-ball average used for Simon
+Ch. 8, 1.2): with `χ⁻ = max(0, min(1, (1 - |w|)/κ))`, `χ⁺ = max(0, min(1, (1 + κ - |w|)/κ))` and
+`w = t⁻¹(y - x)`, `∫ χ⁻ β dV ≤ ∫_{B_t(x) × G} β dV ≤ ∫ χ⁺ β dV` for `β ≥ 0`, since
+`χ⁻(w) β ≤ 1_{B_t(x) × G} β ≤ χ⁺(w) β` pointwise and all three integrands are bounded, measurable
+and vanish off `B_{2t}(x) × G`, which has finite `V`-measure. -/
+theorem Submission.frt_vgm_tba_ball_cutoff_sandwich :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (β : C(Grassmannian N n, ℝ)) (κ t : ℝ), 0 < κ → κ < 1 → 0 < t → closedBall x (2 * t) ⊆ U → (∀ S, 0 ≤ β S) → (∫ z, max 0 (min 1 ((1 - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 ∂V.measure) ≤ ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure ∧ ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure ≤ ∫ z, max 0 (min 1 ((1 + κ - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 ∂V.measure := by
+  intro N n U V x β κ t hκ hκ1 ht hU hβ
+  -- Step 1: `V(B_{2t}(x) × G) < ∞` (`B_{2t}(x)` is a compact subset of `U`), and
+  -- `B = B_t(x) × G` is Borel.
+  have hK : V.measure (closedBall x (2 * t) ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ :=
+    V.finite_on_compact _ (isCompact_closedBall x (2 * t)) hU
+  have hB : MeasurableSet (closedBall x t ×ˢ (univ : Set (Grassmannian N n))) :=
+    measurableSet_closedBall.prod MeasurableSet.univ
+  -- Step 2: `|β| ≤ ‖β‖` on the compact Grassmannian.
+  have hβb : ∀ S, ‖β S‖ ≤ ‖β‖ := β.norm_coe_le_norm
+  -- Step 3: `|t⁻¹(y - x)| = dist(y, x)/t`; hence `z ∈ B ↔ |w(z)| ≤ 1`, and `|w(z)| > 2` off
+  -- `B_{2t}(x) × G`.
+  have hw : ∀ y : Euclidean N, ‖t⁻¹ • (y - x)‖ = dist y x / t := fun y ↦ by
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 ht.le), dist_eq_norm, inv_mul_eq_div]
+  have hin : ∀ z : Euclidean N × Grassmannian N n,
+      z ∈ closedBall x t ×ˢ (univ : Set (Grassmannian N n)) ↔ ‖t⁻¹ • (z.1 - x)‖ ≤ 1 := fun z ↦ by
+    rw [mem_prod, mem_closedBall, hw, div_le_one ht, and_iff_left (mem_univ _)]
+  have hfar : ∀ z : Euclidean N × Grassmannian N n,
+      z ∉ closedBall x (2 * t) ×ˢ (univ : Set (Grassmannian N n)) → 2 < ‖t⁻¹ • (z.1 - x)‖ := by
+    intro z hz
+    rw [mem_prod, mem_closedBall, and_iff_left (mem_univ _), not_le] at hz
+    rw [hw, lt_div_iff₀ ht]
+    exact hz
+  -- Step 4: cut-off facts for `χ_a(w) = max(0, min(1, (a - |w|)/κ))`.
+  have hχ0 : ∀ a r : ℝ, 0 ≤ max 0 (min 1 ((a - r) / κ)) := fun a r ↦ le_max_left _ _
+  have hχ1 : ∀ a r : ℝ, max 0 (min 1 ((a - r) / κ)) ≤ 1 := fun a r ↦
+    max_le zero_le_one (min_le_left _ _)
+  have hχz : ∀ a r : ℝ, a ≤ r → max 0 (min 1 ((a - r) / κ)) = 0 := fun a r h ↦
+    max_eq_left (min_le_of_right_le (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 h) hκ.le))
+  have hχo : ∀ a r : ℝ, r ≤ a - κ → max 0 (min 1 ((a - r) / κ)) = 1 := fun a r h ↦ by
+    rw [min_eq_left ((one_le_div hκ).2 (by linarith)), max_eq_right zero_le_one]
+  -- Step 5: a measurable function bounded by `‖β‖` and vanishing off `B_{2t}(x) × G` is
+  -- `V`-integrable.
+  have hint : ∀ k : Euclidean N × Grassmannian N n → ℝ, AEStronglyMeasurable k V.measure →
+      (∀ z, ‖k z‖ ≤ ‖β‖) →
+      (∀ z, z ∉ closedBall x (2 * t) ×ˢ (univ : Set (Grassmannian N n)) → k z = 0) →
+      Integrable k V.measure := fun k hk hb h0 ↦
+    (Measure.integrableOn_of_bounded hK hk (ae_of_all _ hb)).integrable_of_forall_notMem_eq_zero h0
+  have hβc : Continuous fun z : Euclidean N × Grassmannian N n ↦ β z.2 :=
+    β.continuous.comp continuous_snd
+  have hbd : ∀ (a : ℝ) (z : Euclidean N × Grassmannian N n),
+      ‖max 0 (min 1 ((a - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2‖ ≤ ‖β‖ := fun a z ↦ by
+    rw [norm_mul, Real.norm_of_nonneg (hχ0 _ _)]
+    exact (mul_le_mul (hχ1 _ _) (hβb _) (norm_nonneg _) zero_le_one).trans (one_mul _).le
+  have hm : Integrable (fun z : Euclidean N × Grassmannian N n ↦
+      max 0 (min 1 ((1 - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2) V.measure := by
+    refine hint _ (Continuous.aestronglyMeasurable (by fun_prop)) (hbd 1) fun z hz ↦ ?_
+    rw [hχz 1 _ (by linarith [hfar z hz]), zero_mul]
+  have hp : Integrable (fun z : Euclidean N × Grassmannian N n ↦
+      max 0 (min 1 ((1 + κ - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2) V.measure := by
+    refine hint _ (Continuous.aestronglyMeasurable (by fun_prop)) (hbd (1 + κ)) fun z hz ↦ ?_
+    rw [hχz (1 + κ) _ (by linarith [hfar z hz]), zero_mul]
+  have hi : Integrable ((closedBall x t ×ˢ (univ : Set (Grassmannian N n))).indicator
+      fun z : Euclidean N × Grassmannian N n ↦ β z.2) V.measure := by
+    refine hint _ (hβc.aestronglyMeasurable.indicator hB)
+      (fun z ↦ (norm_indicator_le_norm_self _ z).trans (hβb _)) fun z hz ↦ ?_
+    refine indicator_of_notMem (fun hzB ↦ hz ?_) _
+    exact ⟨mem_closedBall.2 ((mem_closedBall.1 hzB.1).trans (by linarith)), mem_univ _⟩
+  -- Step 6: the pointwise sandwich `χ⁻(w) β ≤ 1_B β ≤ χ⁺(w) β`.
+  have hle₁ : (fun z : Euclidean N × Grassmannian N n ↦
+      max 0 (min 1 ((1 - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2) ≤
+      (closedBall x t ×ˢ (univ : Set (Grassmannian N n))).indicator fun z ↦ β z.2 := by
+    intro z
+    dsimp only
+    by_cases hz : z ∈ closedBall x t ×ˢ (univ : Set (Grassmannian N n))
+    · rw [indicator_of_mem hz]
+      exact mul_le_of_le_one_left (hβ _) (hχ1 _ _)
+    · rw [indicator_of_notMem hz, hχz 1 _ (not_le.1 (mt (hin z).2 hz)).le, zero_mul]
+  have hle₂ : (closedBall x t ×ˢ (univ : Set (Grassmannian N n))).indicator
+      (fun z : Euclidean N × Grassmannian N n ↦ β z.2) ≤
+      fun z ↦ max 0 (min 1 ((1 + κ - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 := by
+    intro z
+    dsimp only
+    by_cases hz : z ∈ closedBall x t ×ˢ (univ : Set (Grassmannian N n))
+    · rw [indicator_of_mem hz, hχo (1 + κ) _ (by linarith [(hin z).1 hz]), one_mul]
+    · rw [indicator_of_notMem hz]
+      exact mul_nonneg (hχ0 _ _) (hβ _)
+  -- Step 7: integrate, using `∫ 1_B β dV = ∫_B β dV`.
+  rw [← integral_indicator hB]
+  exact ⟨integral_mono hm hi hle₁, integral_mono hi hp hle₂⟩
+/-- The `n`-dimensional Hausdorff measure of the closed ball `B_r(0)` of an `n`-plane
+`T ∈ G(N,n)` is `ω_n r^n` (step 5, plane balls, of the tangent-ball average proof for Simon Ch. 8,
+1.2): `H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.frt_vgm_tba_plane_closedBall_hausdorff :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: an orthonormal basis `b` of `T.plane` indexed by `Fin n`, since `finrank T.plane = n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  -- Step 2: the isometric parametrization `ι : ℝ^n → ℝ^N`, `ι v = b.repr.symm v ∈ T.plane`.
+  let ι : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 3: `ι '' B_r(0) = T.plane ∩ B_r(0)`.
+  have himage : ι '' closedBall 0 r = (T.plane : Set (Euclidean N)) ∩ closedBall 0 r := by
+    ext w
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      refine ⟨(b.repr.symm v).2, ?_⟩
+      rw [mem_closedBall_zero_iff] at hv ⊢
+      rwa [ι.norm_map]
+    · rintro ⟨hw, hwr⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · rw [mem_closedBall_zero_iff] at hwr ⊢
+        rwa [b.repr.norm_map]
+      · change ((b.repr.symm (b.repr ⟨w, hw⟩) : T.plane) : Euclidean N) = w
+        rw [b.repr.symm_apply_apply]
+  -- Step 4: `H^n` is invariant under the isometry `ι`, and `H^n = vol` on `ℝ^n`.
+  rw [← himage, ι.isometry.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 5: Haar scaling `vol (B_r(0)) = r^n vol (B°_1(0))` (`r ≥ 0`; no `0 < n` needed).
+  rw [Measure.addHaar_closedBall _ _ hr, finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr,
+    unitBallVolume, mul_comm]
+
+/-- The plane integrals of the radial cut-offs `χ⁻ = χ_{1-κ,1}` and `χ⁺ = χ_{1,1+κ}`, where
+`χ_{a,b}(y) = max(0, min(1, (b - |y|)/(b - a)))`, over an `n`-plane `T ∈ G(N,n)` satisfy
+`ω_n (1-κ)^n ≤ ∫_T χ⁻ dH^n` and `∫_T χ⁺ dH^n ≤ ω_n (1+κ)^n` for `0 < κ < 1` (step 6 of the
+tangent-ball average in the proof of Simon Ch. 8, 1.2): `1_{B_{1-κ}(0)} ≤ χ⁻` and
+`χ⁺ ≤ 1_{B_{1+κ}(0)}`, while `H^n(T ∩ B_r(0)) = ω_n r^n`
+(`frt_vgm_tba_plane_closedBall_hausdorff`). -/
+theorem Submission.frt_vgm_tba_plane_cutoff_bounds :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (κ : ℝ), 0 < κ → κ < 1 → (unitBallVolume n).toReal * (1 - κ) ^ n ≤ ∫ y in (T.plane : Set (Euclidean N)), max 0 (min 1 ((1 - ‖y‖) / κ)) ∂μHE[n] ∧ ∫ y in (T.plane : Set (Euclidean N)), max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n] ≤ (unitBallVolume n).toReal * (1 + κ) ^ n := by
+  intro N n T κ hκ hκ1
+  set μ : Measure (Euclidean N) :=
+    (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) with hμ
+  -- Step 1: `μ(B_r(0)) = ω_n r^n < ∞` for `r ≥ 0`, from `frt_vgm_tba_plane_closedBall_hausdorff`.
+  have hball : ∀ r : ℝ, 0 ≤ r → μ (closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+    intro r hr
+    rw [hμ, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+    exact Submission.frt_vgm_tba_plane_closedBall_hausdorff N n T r hr
+  have hfin : ∀ r : ℝ, 0 ≤ r → μ (closedBall 0 r) ≠ ∞ := by
+    intro r hr
+    rw [hball r hr]
+    exact ENNReal.mul_ne_top measure_ball_lt_top.ne (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have hreal : ∀ r : ℝ, 0 ≤ r → μ.real (closedBall 0 r) = (unitBallVolume n).toReal * r ^ n := by
+    intro r hr
+    rw [measureReal_def, hball r hr, ENNReal.toReal_mul, ENNReal.toReal_pow,
+      ENNReal.toReal_ofReal hr]
+  -- Step 2: the cut-off `χ_a(y) = max(0, min(1, (a - |y|)/κ))` takes values in `[0,1]`, vanishes
+  -- where `|y| ≥ a` and equals `1` where `|y| ≤ a - κ`.
+  have hχ0 : ∀ (a : ℝ) (y : Euclidean N), 0 ≤ max 0 (min 1 ((a - ‖y‖) / κ)) :=
+    fun a y ↦ le_max_left _ _
+  have hχ1 : ∀ (a : ℝ) (y : Euclidean N), max 0 (min 1 ((a - ‖y‖) / κ)) ≤ 1 :=
+    fun a y ↦ max_le zero_le_one (min_le_left _ _)
+  have hχ_out : ∀ (a : ℝ) (y : Euclidean N), a ≤ ‖y‖ → max 0 (min 1 ((a - ‖y‖) / κ)) = 0 :=
+    fun a y hy ↦ max_eq_left
+      ((min_le_right _ _).trans (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 hy) hκ.le))
+  have hχ_in : ∀ (a : ℝ) (y : Euclidean N), ‖y‖ ≤ a - κ → max 0 (min 1 ((a - ‖y‖) / κ)) = 1 := by
+    intro a y hy
+    rw [min_eq_left ((le_div_iff₀ hκ).2 (by linarith)), max_eq_right zero_le_one]
+  -- Step 3: `χ_a` (`a ≤ 2`) and the ball indicators are `μ`-integrable.
+  have hχ_int : ∀ a : ℝ, a ≤ 2 →
+      Integrable (fun y : Euclidean N ↦ max 0 (min 1 ((a - ‖y‖) / κ))) μ := by
+    intro a ha
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero
+      (s := closedBall (0 : Euclidean N) 2) ?_ fun y hy ↦ hχ_out a y ?_
+    · refine Measure.integrableOn_of_bounded (M := 1) (hfin 2 zero_le_two) (by fun_prop) ?_
+      exact Eventually.of_forall fun y ↦ by rw [Real.norm_of_nonneg (hχ0 a y)]; exact hχ1 a y
+    · rw [mem_closedBall_zero_iff, not_le] at hy
+      linarith
+  have hind_int : ∀ r : ℝ, 0 ≤ r → Integrable ((closedBall (0 : Euclidean N) r).indicator 1) μ :=
+    fun r hr ↦ (integrable_indicator_iff measurableSet_closedBall).2
+      (integrableOn_const (C := (1 : ℝ)) (hfin r hr))
+  constructor
+  · -- Step 4: `1_{B_{1-κ}(0)} ≤ χ⁻`, so `ω_n (1-κ)^n = μ(B_{1-κ}(0)) ≤ ∫ χ⁻ dμ`.
+    rw [← hreal (1 - κ) (by linarith), ← integral_indicator_one measurableSet_closedBall]
+    refine integral_mono (hind_int (1 - κ) (by linarith)) (hχ_int 1 (by norm_num)) fun y ↦ ?_
+    by_cases hy : y ∈ closedBall (0 : Euclidean N) (1 - κ)
+    · rw [indicator_of_mem hy, Pi.one_apply, hχ_in 1 y (mem_closedBall_zero_iff.1 hy)]
+    · rw [indicator_of_notMem hy]
+      exact hχ0 1 y
+  · -- Step 5: `χ⁺ ≤ 1_{B_{1+κ}(0)}`, so `∫ χ⁺ dμ ≤ μ(B_{1+κ}(0)) = ω_n (1+κ)^n`.
+    rw [← hreal (1 + κ) (by linarith), ← integral_indicator_one measurableSet_closedBall]
+    refine integral_mono (hχ_int (1 + κ) (by linarith)) (hind_int (1 + κ) (by linarith))
+      fun y ↦ ?_
+    by_cases hy : y ∈ closedBall (0 : Euclidean N) (1 + κ)
+    · rw [indicator_of_mem hy, Pi.one_apply]
+      exact hχ1 (1 + κ) y
+    · rw [indicator_of_notMem hy, hχ_out (1 + κ) y (not_le.1 (mt mem_closedBall_zero_iff.2 hy)).le]
+
+/-- Ball integrals at a tangent plane for `β ≥ 0` (the step "`ν_V^{(x)}(β) = θ(x) β(T_x)`" in the
+proof of Simon Ch. 8, 1.2, p. 207, for the ratios of 1.3): if `V` has tangent space `T` with
+multiplicity `θ` at `x` (1.1), then `t^{-n} ∫_{B_t(x) × G(N,n)} β(S) dV(y,S) → θ ω_n β(T)` as
+`t ↓ 0` for every continuous `β ≥ 0` on `G(N,n)`. -/
+theorem Submission.frt_vgm_tba_nonneg_ball_limit :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), (∀ S, 0 ≤ β S) → Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (unitBallVolume n).toReal * β T)) := by
+  intro N n U V x T θ hT β hβ
+  -- `J(t) = t^{-n} ∫_{B_t(x) × G(N,n)} β dV` is to tend to `c = θ β(T) ω_n`; here `θ β(T) ≥ 0`
+  -- since `θ > 0` and `β ≥ 0`.
+  have hθβ : 0 ≤ θ * β T := mul_nonneg hT.2.1.le (hβ T)
+  set c : ℝ := θ * β T * (unitBallVolume n).toReal with hc
+  -- Step 1: `x ∈ U` and `U` is open, so eventually as `t → 0⁺`, `t > 0` and `B_{2t}(x) ⊆ U`.
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hT.1
+  have hgood : ∀ᶠ t in 𝓝[>] (0 : ℝ), 0 < t ∧ closedBall x (2 * t) ⊆ U := by
+    filter_upwards [Ioo_mem_nhdsGT (half_pos hδ)] with t ht
+    exact ⟨ht.1, (closedBall_subset_ball (by linarith [ht.2])).trans hδU⟩
+  -- Step 2: the cut-off `χ_a(y) = max(0, min(1, (a - |y|)/κ))` is continuous and vanishes off the
+  -- compact ball `B_a(0)`, so it is an element of `C_c(ℝ^N)`.
+  have hcut : ∀ a κ : ℝ, 0 < κ →
+      ∃ g : C_c(Euclidean N, ℝ), ∀ y, g y = max 0 (min 1 ((a - ‖y‖) / κ)) := by
+    intro a κ hκ
+    refine ⟨⟨⟨fun y ↦ max 0 (min 1 ((a - ‖y‖) / κ)), by fun_prop⟩,
+      HasCompactSupport.intro (isCompact_closedBall (0 : Euclidean N) a) fun y hy ↦ ?_⟩,
+      fun _ ↦ rfl⟩
+    have hay : a < ‖y‖ := by simpa using hy
+    exact max_eq_left ((min_le_right _ _).trans (div_neg_of_neg_of_pos (by linarith) hκ).le)
+  -- Step 3: by `tendsto_order`, show that eventually `a' < J(t)` for each `a' < c`, and
+  -- `J(t) < b'` for each `b' > c`.
+  rw [show θ * (unitBallVolume n).toReal * β T = c by rw [hc]; ring]
+  refine tendsto_order.2 ⟨fun a' ha' ↦ ?_, fun b' hb' ↦ ?_⟩
+  · -- Step 4: with `ε = c - a'`, fix `κ ∈ (0,1)` such that `c (1 - κ)^n > c - ε/2`.
+    have hε : 0 < c - a' := sub_pos.2 ha'
+    have hcont : Tendsto (fun κ : ℝ ↦ c * (1 - κ) ^ n) (𝓝[>] 0) (𝓝 c) := by
+      have h : Continuous fun κ : ℝ ↦ c * (1 - κ) ^ n := by fun_prop
+      simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+    obtain ⟨κ, hκc, hκ⟩ := ((hcont.eventually (lt_mem_nhds (sub_lt_self c (half_pos hε)))).and
+      (Ioo_mem_nhdsGT one_pos)).exists
+    -- (a) `I⁻(t) = t^{-n} ∫ χ⁻(t⁻¹(y - x)) β(S) dV → θ β(T) c⁻` with `c⁻ = ∫_T χ⁻ dHⁿ`.
+    obtain ⟨g, hg⟩ := hcut 1 κ hκ.1
+    have hlim := Submission.frt_vgm_tba_product_blowup_tendsto N n U V x T θ hT g β
+    simp only [hg] at hlim
+    -- (b) `c (1 - κ)^n ≤ θ β(T) c⁻`, from `ω_n (1 - κ)^n ≤ c⁻`.
+    have hL : c * (1 - κ) ^ n ≤ θ * (β T * ∫ y in (T.plane : Set (Euclidean N)),
+        max 0 (min 1 ((1 - ‖y‖) / κ)) ∂μHE[n]) := by
+      calc c * (1 - κ) ^ n = θ * β T * ((unitBallVolume n).toReal * (1 - κ) ^ n) := by
+            rw [hc]; ring
+        _ ≤ θ * β T * ∫ y in (T.plane : Set (Euclidean N)),
+            max 0 (min 1 ((1 - ‖y‖) / κ)) ∂μHE[n] :=
+          mul_le_mul_of_nonneg_left
+            (Submission.frt_vgm_tba_plane_cutoff_bounds N n T κ hκ.1 hκ.2).1 hθβ
+        _ = _ := mul_assoc _ _ _
+    -- (c), (d): eventually `a' < I⁻(t) ≤ J(t)`, the second by the ball cut-off sandwich.
+    filter_upwards [hlim.eventually (lt_mem_nhds (sub_lt_self _ (half_pos hε))), hgood]
+      with t hI ht
+    have hJ := mul_le_mul_of_nonneg_left
+      (Submission.frt_vgm_tba_ball_cutoff_sandwich N n U V x β κ t hκ.1 hκ.2 ht.1 ht.2 hβ).1
+      (pow_nonneg (inv_nonneg.2 ht.1.le) n)
+    linarith
+  · -- Step 5: with `ε = b' - c`, fix `κ ∈ (0,1)` such that `c (1 + κ)^n < c + ε/2`.
+    have hε : 0 < b' - c := sub_pos.2 hb'
+    have hcont : Tendsto (fun κ : ℝ ↦ c * (1 + κ) ^ n) (𝓝[>] 0) (𝓝 c) := by
+      have h : Continuous fun κ : ℝ ↦ c * (1 + κ) ^ n := by fun_prop
+      simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+    obtain ⟨κ, hκc, hκ⟩ := ((hcont.eventually
+      (gt_mem_nhds (lt_add_of_pos_right c (half_pos hε)))).and (Ioo_mem_nhdsGT one_pos)).exists
+    -- (a) `I⁺(t) = t^{-n} ∫ χ⁺(t⁻¹(y - x)) β(S) dV → θ β(T) c⁺` with `c⁺ = ∫_T χ⁺ dHⁿ`.
+    obtain ⟨g, hg⟩ := hcut (1 + κ) κ hκ.1
+    have hlim := Submission.frt_vgm_tba_product_blowup_tendsto N n U V x T θ hT g β
+    simp only [hg] at hlim
+    -- (b) `θ β(T) c⁺ ≤ c (1 + κ)^n`, from `c⁺ ≤ ω_n (1 + κ)^n`.
+    have hU : θ * (β T * ∫ y in (T.plane : Set (Euclidean N)),
+        max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n]) ≤ c * (1 + κ) ^ n := by
+      calc θ * (β T * ∫ y in (T.plane : Set (Euclidean N)),
+            max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n])
+          = θ * β T * ∫ y in (T.plane : Set (Euclidean N)),
+            max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n] := (mul_assoc _ _ _).symm
+        _ ≤ θ * β T * ((unitBallVolume n).toReal * (1 + κ) ^ n) :=
+          mul_le_mul_of_nonneg_left
+            (Submission.frt_vgm_tba_plane_cutoff_bounds N n T κ hκ.1 hκ.2).2 hθβ
+        _ = c * (1 + κ) ^ n := by rw [hc]; ring
+    -- (c), (d): eventually `J(t) ≤ I⁺(t) < b'`, the first by the ball cut-off sandwich.
+    filter_upwards [hlim.eventually (gt_mem_nhds (lt_add_of_pos_right _ (half_pos hε))), hgood]
+      with t hI ht
+    have hJ := mul_le_mul_of_nonneg_left
+      (Submission.frt_vgm_tba_ball_cutoff_sandwich N n U V x β κ t hκ.1 hκ.2 ht.1 ht.2 hβ).2
+      (pow_nonneg (inv_nonneg.2 ht.1.le) n)
+    linarith
+
+/-- Averages over balls at a tangent plane (Simon Ch. 8, proof of 1.2, p. 208, with the erratum
+`η_V^{(x)}(β) = β(T_x)`): if `V` has tangent plane `T` with multiplicity `θ` at `x` (Def. 1.1),
+then `μ_V(B_ρ(x))⁻¹ ∫_{Gₙ(B_ρ(x))} β(S) dV(y,S) → β(T)` as `ρ ↓ 0` for every continuous `β` on
+`G(N,n)`.  The multiplicity cancels because the averages are normalised by `μ_V(B_ρ(x))`. -/
+theorem Submission.frt_vgm_tangent_ball_average :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (β T)) := by
+  intro N n U V x T θ hT β
+  -- Step 1: `ω_n = (unitBallVolume n).toReal` is positive (the unit ball has positive, finite
+  -- volume).
+  have hω : 0 < (unitBallVolume n).toReal := by
+    rw [unitBallVolume]
+    exact ENNReal.toReal_pos (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+      measure_ball_lt_top.ne
+  -- Step 2: `x ∈ U` and `U` is open, so for small `t > 0` the closed ball `B_t(x)` is a compact
+  -- subset of `U`, hence `V(B_t(x) × G(N,n)) < ∞`.
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hT.1
+  have hfin : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+      V.measure (closedBall x t ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ := by
+    filter_upwards [Ioo_mem_nhdsGT hδ] with t ht
+    exact V.finite_on_compact _ (isCompact_closedBall x t)
+      ((closedBall_subset_ball ht.2).trans hδU)
+  -- Step 8: `β = β⁺ - β⁻` with `β⁺ = max(β, 0)` and `β⁻ = max(-β, 0)` continuous and `≥ 0`. The
+  -- sibling `nonneg_ball_limit` gives `t^{-n} ∫_{Gₙ(B_t(x))} β^± dV → θ ω_n β^±(T)`, and the ball
+  -- integrals split once `V(B_t(x) × G(N,n)) < ∞`.
+  let βp : C(Grassmannian N n, ℝ) := ⟨fun S ↦ max (β S) 0, β.continuous.max continuous_const⟩
+  let βm : C(Grassmannian N n, ℝ) := ⟨fun S ↦ max (-β S) 0, β.continuous.neg.max continuous_const⟩
+  have hβpm : ∀ S, βp S - βm S = β S := fun S ↦ max_zero_sub_max_neg_zero_eq_self (β S)
+  have hnum : Tendsto (fun t : ℝ ↦ t⁻¹ ^ n *
+      ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) (𝓝[>] 0)
+      (𝓝 (θ * (unitBallVolume n).toReal * β T)) := by
+    have hlim := (Submission.frt_vgm_tba_nonneg_ball_limit N n U V x T θ hT βp
+      fun _ ↦ le_max_right _ _).sub
+      (Submission.frt_vgm_tba_nonneg_ball_limit N n U V x T θ hT βm fun _ ↦ le_max_right _ _)
+    rw [← mul_sub, hβpm] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [hfin] with t ht
+    have hint : ∀ γ : C(Grassmannian N n, ℝ), IntegrableOn (fun z : Euclidean N ×
+        Grassmannian N n ↦ γ z.2) (closedBall x t ×ˢ (univ : Set (Grassmannian N n))) V.measure :=
+      fun γ ↦ Measure.integrableOn_of_bounded ht
+        (γ.continuous.comp continuous_snd).aestronglyMeasurable
+        (ae_of_all _ fun z ↦ γ.norm_coe_le_norm z.2)
+    rw [← mul_sub, ← integral_sub (hint βp) (hint βm)]
+    simp only [hβpm]
+  -- Step 9: `β ≡ 1` gives the weight, since
+  -- `∫_{Gₙ(B_t(x))} 1 dV = V(B_t(x) × G(N,n)) = μ_V(B_t(x))`; so `t^{-n} μ_V(B_t(x)) → θ ω_n ≠ 0`.
+  have hden : Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * (V.weight (closedBall x t)).toReal) (𝓝[>] 0)
+      (𝓝 (θ * (unitBallVolume n).toReal)) := by
+    have h1 := Submission.frt_vgm_tba_nonneg_ball_limit N n U V x T θ hT
+      (ContinuousMap.const _ 1) fun _ ↦ zero_le_one
+    simp only [ContinuousMap.const_apply, mul_one] at h1
+    refine h1.congr fun t ↦ ?_
+    rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+      V.weight_apply measurableSet_closedBall]
+  have hne : θ * (unitBallVolume n).toReal ≠ 0 := (mul_pos hT.2.1 hω).ne'
+  -- Step 10: divide.  The factor `t^{-n} ≠ 0` cancels for `t > 0`, and `θ ω_n` cancels in the
+  -- limit.
+  have hratio := hnum.div hden hne
+  rw [mul_div_cancel_left₀ _ hne] at hratio
+  refine hratio.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  rw [Pi.div_apply]
+  exact mul_div_mul_left _ _ (pow_ne_zero n (inv_ne_zero (ne_of_gt ht)))
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
