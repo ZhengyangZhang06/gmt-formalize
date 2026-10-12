@@ -1,0 +1,18 @@
+{
+  "node_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1.graph_mass_pinching-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1919",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "d3edf8fdf1636c1499e4c20040cd28fa9aa686f5",
+  "integrated_commit": "",
+  "proof_base_commit": "6ae2695cefa6a5c5a526aa6eaf7f4035aa27758c",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_higher_regularity-a1.c1_graph_density-a1",
+  "requires": [
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.plane_ball_measure-a1",
+    "root.density_one_higher_regularity-a1.c1_graph_density-a1.c1_first_order-a1"
+  ]
+}
