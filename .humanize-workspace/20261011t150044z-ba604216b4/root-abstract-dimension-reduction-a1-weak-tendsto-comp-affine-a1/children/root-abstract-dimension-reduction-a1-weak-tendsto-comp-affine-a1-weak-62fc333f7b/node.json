@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1.weak_tendsto_moving_tests-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+  "depth": 3,
+  "title": "Weak convergence against uniformly convergent test functions with a common compact support",
+  "statement": "Let P, Q ∈ ℕ, let μ be a measure on ℝ^P, let g_k : ℝ^P → ℝ^Q (k ∈ ℕ) be locally μ-integrable and let g : ℝ^P → ℝ^Q be arbitrary, such that ∫ f g_k dμ → ∫ f g dμ for every continuous compactly supported f : ℝ^P → ℝ. Let K ⊆ ℝ^P be compact and let h_k : ℝ^P → ℝ (k ∈ ℕ) and h : ℝ^P → ℝ be continuous. Assume h = 0 outside K, h_k = 0 outside K for all sufficiently large k, and h_k → h uniformly on ℝ^P. Then ∫ h_k g_k dμ → ∫ h g dμ.",
+  "lean_statement": "∀ (P Q : ℕ) (μ : Measure (Euclid P)) (gs : ℕ → Euclid P → Euclid Q) (g : Euclid P → Euclid Q) (hs : ℕ → Euclid P → ℝ) (h : Euclid P → ℝ) (K : Set (Euclid P)), (∀ k, LocallyIntegrable (gs k) μ) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k x ∂μ) atTop (𝓝 (∫ x, f x • g x ∂μ))) → IsCompact K → (∀ k, Continuous (hs k)) → Continuous h → (∀ᶠ k in atTop, ∀ x ∉ K, hs k x = 0) → (∀ x ∉ K, h x = 0) → TendstoUniformly hs h atTop → Tendsto (fun k => ∫ x, hs k x • gs k x ∂μ) atTop (𝓝 (∫ x, h x • g x ∂μ))",
+  "lean_name": "adr_weak_tendsto_of_tendstoUniformly",
+  "depends_on": [
+    "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1.weak_uniform_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1.weak_uniform_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1-weak-62fc333f7b-a1"
+}
