@@ -359,6 +359,29 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Smooth cutoffs for a compact Lebesgue-null set (Simon Ch. 6, proof of Lemma 2.36, display
+(2)): if `F ⊆ ℝ^N` is compact with `Lᴺ(F) = 0` and `δ > 0`, there is a `C^∞` function
+`b : ℝ^N → [0, 1]` with compact support, `b = 1` on `F` and `Lᴺ(spt b) ≤ δ`.  By outer regularity
+pick an open `G ⊇ F` with `Lᴺ(G) < δ`, then an open `V` with `F ⊆ V ⊆ closure V ⊆ G` and
+`closure V` compact, and a smooth Urysohn function equal to `1` on `F` and to `0` off `V`. -/
+theorem Submission.rpn_null_compact_cutoff : ∀ (N : ℕ) (F : Set (Eucl N)), IsCompact F → (volume : Measure (Eucl N)) F = 0 → ∀ δ : ℝ, 0 < δ → ∃ b : Eucl N → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b ∧ HasCompactSupport b ∧ (∀ y, 0 ≤ b y ∧ b y ≤ 1) ∧ (∀ y ∈ F, b y = 1) ∧ ((volume : Measure (Eucl N)) (tsupport b)).toReal ≤ δ := by
+  intro N F hF hF0 δ hδ
+  -- Step 1: outer regularity of `Lᴺ` gives an open `G ⊇ F` with `Lᴺ(G) < δ`.
+  obtain ⟨G, hFG, hGo, hGδ⟩ := Set.exists_isOpen_lt_of_lt F (ENNReal.ofReal δ)
+    (by rw [hF0]; exact ENNReal.ofReal_pos.mpr hδ)
+  -- Step 2: an open `V` with `F ⊆ V`, `closure V ⊆ G` and `closure V` compact.
+  obtain ⟨V, hVo, hFV, hVG, hVc⟩ := exists_open_between_and_isCompact_closure hF hGo hFG
+  -- Step 3: a smooth Urysohn function `b : ℝ^N → [0, 1]` with `b = 0` off `V` and `b = 1` on `F`.
+  obtain ⟨b, hb0, hb1, hb01⟩ := exists_contMDiffMap_zero_one_of_isClosed
+    (modelWithCornersSelf ℝ (Eucl N)) (n := ⊤) hVo.isClosed_compl hF.isClosed
+    (Set.disjoint_compl_left_iff_subset.mpr hFV)
+  -- Step 4: `spt b ⊆ closure V ⊆ G`, so `spt b` is compact and `Lᴺ(spt b) ≤ Lᴺ(G) < δ`.
+  have hsupp : tsupport b ⊆ closure V :=
+    closure_mono fun x hx => by_contra fun hxV => hx (hb0 hxV)
+  refine ⟨b, contMDiff_iff_contDiff.mp b.contMDiff,
+    hVc.of_isClosed_subset (isClosed_tsupport _) hsupp, fun y => hb01 y, fun y hy => hb1 hy, ?_⟩
+  exact ENNReal.toReal_le_of_le_ofReal hδ.le ((measure_mono (hsupp.trans hVG)).trans hGδ.le)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
