@@ -410,6 +410,38 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- An `n`-plane `T ∈ G(N,n)` is determined by the `H^n`-integrals over it of compactly supported
+continuous functions (the plane half of the step `Θ^n(μ_C, λy) = Θ^n(μ_C, y)` in the proof of
+Simon Ch. 8, 5.7): equal integrals force `H^n ⌞ T' = H^n ⌞ T` (uniqueness in the Riesz
+representation for regular measures), so the supports `T'.plane` and `T.plane` agree, and a point
+of `G(N,n)` is the matrix of the orthogonal projection onto its plane. -/
+theorem Submission.allard_tc_tpd_plane_eq_of_integral_eq :
+    ∀ (N n : ℕ) (T T' : Grassmannian N n), (∀ g : C_c(Euclidean N, ℝ), ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] = ∫ y in (T'.plane : Set (Euclidean N)), g y ∂μHE[n]) → T' = T := by
+  intro N n T T' h
+  -- Steps 1–2: `finrank T.plane = finrank T'.plane = n`, so both restrictions of `H^n` are regular.
+  have : ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N))).Regular :=
+    Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane
+  have : ((μHE[n] : Measure (Euclidean N)).restrict (T'.plane : Set (Euclidean N))).Regular :=
+    Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane
+  -- Step 3: Riesz uniqueness, `H^n ⌞ T'.plane = H^n ⌞ T.plane`.
+  have hμ : (μHE[n] : Measure (Euclidean N)).restrict (T'.plane : Set (Euclidean N)) =
+      (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) :=
+    Measure.ext_of_integral_eq_on_compactlySupported fun g ↦ (h g).symm
+  -- Step 4: the support of `H^n ⌞ P` is `P`, so `T'.plane = T.plane`.
+  have hplane : T'.plane = T.plane := by
+    apply SetLike.coe_injective
+    rw [← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane,
+      ← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane, hμ]
+  -- Step 5: `p_S` is a symmetric idempotent, hence the orthogonal projection onto `S.plane`.
+  have hproj : ∀ S : Grassmannian N n,
+      S.projectionLinearMap = S.plane.starProjection.toLinearMap := fun S ↦
+    (LinearMap.isSymmetricProjection_iff_eq_coe_starProjection_range.mp
+      ⟨S.projectionLinearMap_comp_self, S.projectionLinearMap_isSymmetric⟩).2
+  -- Step 6: compare coordinate matrices.
+  apply Subtype.ext
+  rw [← T'.toMatrix_projectionLinearMap, ← T.toMatrix_projectionLinearMap, hproj T', hproj T,
+    hplane]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
