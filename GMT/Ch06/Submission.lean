@@ -457,6 +457,76 @@ theorem Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt :
     (Eventually.of_forall hlip)
     ((hρc.abs.integrable_of_hasCompactSupport hρs.abs).const_mul _) hderiv).2
 
+/-- Simon Ch. 6, 4.11 ("use `f^{(σ)}` in place of `f`") on a compact `K ⊆ W`: if `f` is
+`L`-Lipschitz on the open set `W` and `‖Df‖ ≤ LW` a.e. on `W`, then some `C^∞` function `g` is
+`δ`-close to `f` on `K` with `‖Dg‖ ≤ LW` on `K`.  Here `g = ρ ⋆ F` mollifies a McShane extension
+`F` of `f|W` with a kernel supported in a ball small enough that `x - y ∈ W` whenever `x ∈ K` and
+`ρ(y) ≠ 0`. -/
+theorem Submission.slicing_mb_smooth_approx :
+    ∀ (P : ℕ) (W : Set (Eucl P)), IsOpen W → ∀ (f : Eucl P → ℝ) (L : ℝ≥0),
+      LipschitzOnWith L f W → ∀ LW : ℝ≥0,
+      (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ δ : ℝ, 0 < δ →
+      ∃ g : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ (∀ x ∈ K, |g x - f x| ≤ δ) ∧
+        (∀ x ∈ K, ‖fderiv ℝ g x‖₊ ≤ LW) := by
+  intro P W hW f L hf LW hLW K hK hKW δ hδ
+  -- The closed `r`-neighbourhood of `K` lies in `W`.
+  obtain ⟨r, hr, hrW⟩ := hK.exists_cthickening_subset_open hW hKW
+  -- McShane extension: `F` is `L`-Lipschitz on `ℝ^P` and `F = f` on `W`.
+  obtain ⟨F, hFL, hfF⟩ := hf.extend_real
+  -- The mollification radius: `σ ≤ r` keeps `x - y` in `W`, and `L σ ≤ δ`.
+  obtain ⟨σ, hσ, hσr, hσδ⟩ : ∃ σ : ℝ, 0 < σ ∧ σ ≤ r ∧ (L : ℝ) * σ ≤ δ := by
+    refine ⟨min r (δ / ((L : ℝ) + 1)), lt_min hr (div_pos hδ (by positivity)), min_le_left _ _, ?_⟩
+    calc (L : ℝ) * min r (δ / ((L : ℝ) + 1)) ≤ (L : ℝ) * (δ / ((L : ℝ) + 1)) :=
+          mul_le_mul_of_nonneg_left (min_le_right _ _) L.coe_nonneg
+      _ ≤ δ := by
+          rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+          nlinarith [L.coe_nonneg]
+  obtain ⟨ρ, hρ, hρc, hρ0, hρσ, hρ1⟩ := Submission.slicing_mb_sa_mollifier_exists P σ hσ
+  have hρi : Integrable ρ (volume : Measure (Eucl P)) :=
+    hρ.continuous.integrable_of_hasCompactSupport hρc
+  refine ⟨fun x => ∫ y, ρ y * F (x - y), ?_, fun x hx => ?_, fun x hx => ?_⟩
+  · -- `g = ρ ⋆ F` is `C^∞`: `ρ` is `C^∞` with compact support and `F` is continuous.
+    have hconv : (fun x => ∫ y, ρ y * F (x - y)) =
+        convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) (volume : Measure (Eucl P)) := by
+      funext x
+      simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+    rw [hconv]
+    exact hρc.contDiff_convolution_left _ hρ hFL.continuous.locallyIntegrable
+  · -- `|g - F| ≤ L σ ≤ δ` everywhere, and `F = f` on `K ⊆ W`.
+    rw [hfF (hKW hx)]
+    exact (Submission.slicing_mb_sa_mollify_lipschitz_close P F L hFL ρ σ hρ.continuous hρc hρ0
+      hρσ hρ1 x).trans hσδ
+  · -- `Dg(x) = ∫ ρ(y) DF(x - y) dy`; for a.e. `y` with `ρ(y) ≠ 0`, `x - y ∈ W` and
+    -- `‖DF(x - y)‖ = ‖Df(x - y)‖ ≤ LW` (`y ↦ x - y` preserves Lebesgue measure).
+    have hDg : fderiv ℝ (fun x => ∫ y, ρ y * F (x - y)) x = ∫ y, ρ y • fderiv ℝ F (x - y) :=
+      (Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt P F L hFL ρ hρ.continuous hρc
+        x).fderiv
+    rw [hDg, ← NNReal.coe_le_coe, coe_nnnorm]
+    have hae : ∀ᵐ y ∂(volume : Measure (Eucl P)),
+        x - y ∈ W → ‖fderiv ℝ f (x - y)‖₊ ≤ LW :=
+      ((volume : Measure (Eucl P)).measurePreserving_sub_left x).quasiMeasurePreserving.ae hLW
+    have hbd : ∀ᵐ y ∂(volume : Measure (Eucl P)),
+        ‖ρ y • fderiv ℝ F (x - y)‖ ≤ ρ y * LW := by
+      filter_upwards [hae] with y hy
+      rw [norm_smul, Real.norm_of_nonneg (hρ0 y)]
+      rcases eq_or_ne (ρ y) 0 with h0 | h0
+      · simp [h0]
+      have hyσ : ‖y‖ < σ := not_le.mp fun h => h0 (hρσ y h)
+      have hxy : x - y ∈ W := hrW (mem_cthickening_of_dist_le _ x r K hx (by
+        rw [dist_eq_norm, sub_sub_cancel_left, norm_neg]
+        exact hyσ.le.trans hσr))
+      have hD : fderiv ℝ F (x - y) = fderiv ℝ f (x - y) :=
+        (hfF.symm.eventuallyEq_of_mem (hW.mem_nhds hxy)).fderiv_eq
+      rw [hD]
+      exact mul_le_mul_of_nonneg_left (by exact_mod_cast hy hxy) (hρ0 y)
+    calc ‖∫ y, ρ y • fderiv ℝ F (x - y)‖ ≤ ∫ y, ‖ρ y • fderiv ℝ F (x - y)‖ :=
+          norm_integral_le_integral_norm _
+      _ ≤ ∫ y, ρ y * (LW : ℝ) :=
+          integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
+            (hρi.mul_const _) hbd
+      _ = LW := by rw [integral_mul_const, hρ1, one_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
