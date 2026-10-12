@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "HasApproximateTangentSpaceAt|blowUpMap|symmDiff|density_zero|approxTangent",
+        "Remark 1.5|1\\.5\\(2\\)|locality|Locality|density zero|zero density",
+        "integrableOn_of_bounded|of_forall_sdiff_eq_zero",
+        "tendsto_toReal|Tendsto.const_mul",
+        "mul_inv |inv_pow|mul_inv_cancel|ofReal_mul",
+        "regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto",
+        "regcomp_atl_pc_blowUp_setIntegral_sub_le",
+        "regcomp_atl_pc_density_rescale_tendsto",
+        "python3 -I /tmp/density-decomposition-audit-9gywp1oo/compile.py Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-c5809c1d90/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-c5809c1d90/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-3aacf7ff2e/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-6b9451c8f1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-9c088428ae/accepted-candidate.json",
+        "/tmp/density-decomposition-audit-9gywp1oo/Challenges.lean",
+        "/tmp/density-decomposition-audit-9gywp1oo/Assembly.lean",
+        "/tmp/density-decomposition-audit-9gywp1oo/compile.py"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT revisions and the relevant definitions and integral/ENNReal APIs. The Ch03 locality search returned no match. Comparator receipts, frozen types and candidate source hashes independently confirm legitimate reuse of all three declarations; there are no conflicting name reservations. Every proposed type elaborates independently as a proposition. The supplied parent assembly, compiled with only the three reused children and the inherited accepted scaling lemma, proves the exact selected frozen type. All five declarations use only propext, Classical.choice and Quot.sound. The split is appropriate: comparisons through A ∩ B, density rescaling and tangent transfer establish precisely this parent equivalence. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match, including arbitrary sets and all compactly supported continuous real tests. Both directions follow by adding or subtracting the zero-limit difference while retaining the identical dimension condition. No integrability assumption is needed for this algebraic argument about the defined integrals. The proof is complete and non-circular. The bare name legitimately reuses candidate 7c29ce33ecc6139efc620ce2e056b377c12a84ff at its identical frozen type."
+    },
+    {
+      "key": "blowup_integral_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the real-valued norm estimate match the exact Lean type. Positive r gives injectivity and Borel images; localized finite measure and boundedness establish integrability before disjoint-union splitting. Vanishing outside the ball justifies localization, and measure monotonicity proves finiteness of the right-hand measure. No additional sign assumptions on R or C are needed. Applying this lemma to A ∩ B ⊆ A and A ∩ B ⊆ B supplies the parent's required bound. The proof is complete and non-circular; the bare name validly reuses candidate 500843c19164e4f1eefe0cf4e6e62ad314e291f6 at the identical type."
+    },
+    {
+      "key": "density_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the standalone ENNReal proposition. R > 0 makes the radius substitution preserve the right-hand neighborhood filter. The proof explicitly establishes the nonzero, finite factors required for cancellation and continuity of multiplication. Its eventual algebraic identity remains valid for n = 0 and infinite values of g. Eventual equality then transfers the limit without circularity or missing assumptions. The bare name legitimately reuses candidate 6c098c2db907a349129e4681beb7c76fbbb4d281 at its identical frozen type."
+    }
+  ],
+  "required_changes": []
+}
