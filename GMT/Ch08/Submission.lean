@@ -1419,6 +1419,51 @@ theorem Submission.frt_tangent_plane_hasDensity :
     (Submission.frt_td_ball_mass_lower_of_blowup N n V.weight x T θ hθ hblow)
     (Submission.frt_td_ball_mass_upper_of_blowup N n V.weight x T θ r₀ hθ hr₀ hμr₀ hblow)
 
+/-- **Simon Ch. 8, Definition 1.1: the tangent space and its multiplicity are unique** (child
+`tangent_unique` of `first_rectifiability`: step (0d) of the parent's proof of 1.2; cf. Ch. 3,
+Remark 1.5(1)).  If `V` has tangent space `T` with multiplicity `θ` and `T'` with multiplicity
+`θ'` at `x`, then `T' = T` and `θ' = θ`.  Both multiplicities are the density `Θ^n(μ_V, x)`; the
+weight blow-ups then give `∫ g dH^n⌞T' = ∫ g dH^n⌞T` for every `g ∈ C_c(ℝ^N)`, so the regular
+measures `H^n⌞T'` and `H^n⌞T` agree, hence so do their supports `T'` and `T`; a projection matrix
+is determined by its range. -/
+theorem Submission.frt_tangent_plane_unique :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N)
+      (T T' : Grassmannian N n) (θ θ' : ℝ),
+      HasTangentPlane V x T θ → HasTangentPlane V x T' θ' → T' = T ∧ θ' = θ := by
+  intro N n U V x T T' θ θ' hT hT'
+  -- Step 1: `θ'` and `θ` are both the limit of the density ratio along `𝓝[>] 0`.
+  have hθ : θ' = θ :=
+    (ENNReal.ofReal_eq_ofReal_iff hT'.2.1.le hT.2.1.le).mp
+      (tendsto_nhds_unique (Submission.frt_tangent_plane_hasDensity N n U V x T' θ' hT')
+        (Submission.frt_tangent_plane_hasDensity N n U V x T θ hT))
+  refine ⟨?_, hθ⟩
+  -- Steps 2–3: `H^n⌞T'` and `H^n⌞T` are regular with the same `C_c` integrals (cancel `θ > 0`).
+  have hmeasure : (μHE[n] : Measure (Euclidean N)).restrict (T'.plane : Set (Euclidean N)) =
+      (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) := by
+    have := Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane
+    have := Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane
+    refine Measure.ext_of_integral_eq_on_compactlySupported fun g ↦ ?_
+    have h := tendsto_nhds_unique (Submission.frt_weight_blowup_tendsto N n U V x T' θ' hT' g)
+      (Submission.frt_weight_blowup_tendsto N n U V x T θ hT g)
+    rw [hθ] at h
+    exact mul_left_cancel₀ hT.2.1.ne' h
+  -- Step 4: the support of `H^n⌞P` is the `n`-plane `P`.
+  have hplane : T'.plane = T.plane := by
+    apply SetLike.ext'
+    rw [← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane,
+      ← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane, hmeasure]
+  -- Step 5: `p_S` is symmetric and idempotent, hence the orthogonal projection onto its range
+  -- `S.plane`, and `S` is the matrix of `p_S`.
+  have hproj : ∀ S : Grassmannian N n,
+      S.projectionLinearMap = S.plane.starProjection.toLinearMap := by
+    intro S
+    obtain ⟨_, hS⟩ := LinearMap.isSymmetricProjection_iff_eq_coe_starProjection_range.mp
+      ⟨S.projectionLinearMap_comp_self, S.projectionLinearMap_isSymmetric⟩
+    exact hS
+  apply Subtype.ext
+  rw [← T'.toMatrix_projectionLinearMap, ← T.toMatrix_projectionLinearMap, hproj T', hproj T,
+    hplane]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
