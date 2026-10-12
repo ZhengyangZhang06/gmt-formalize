@@ -410,6 +410,102 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Simon Ch. 8, proof of Lemma 5.10, printed (6): if `θ ≤ e^{εσ} μ(B_σ(y))/(ω_n σ^n)` for
+`σ ∈ (0,1)` (D) and the cylinder ratios satisfy the comparison (C) with error `Kερ/τ`, then for
+`τ ∈ (0,1/4]` and `σ ∈ (0,1)`, `θ ≤ (e^ε μ(U^{4τ}_σ(y))/σ^n + Kεσ/τ)/ω_n`, where
+`U^t_r(y) = B_r(y) ∩ {z : |q(z - y)| < t}` and `q(v) = v - p_P(v)`.  Since `|q(v)| ≤ |v|`, the
+ball `B_r(y)` lies in `U^t_r(y)` for `r < t`; for `σ ≤ τ` apply (D) at `σ`, and for `τ < σ` apply
+(D) at `τ` and then (C) with parameter `2τ` and radii `τ ≤ σ`, using `e^ε ≤ 2`. -/
+theorem Submission.intcpt_allard_fdsb_density_cylinder_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (y : Euclidean N) (θ : ℝ≥0∞) (ε K : ℝ), 0 ≤ ε → Real.exp ε ≤ 2 → 0 ≤ K → (∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n μ y σ) → (∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ τ σ : ℝ, 0 < τ → τ ≤ 1 / 4 → 0 < σ → σ < 1 → θ ≤ (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) + ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n := by
+  intro N n μ P y θ ε K hε hexp hK hD hC τ σ hτ hτ4 hσ hσ1
+  -- Step 1: `|q(v)| ≤ |v|`, by Pythagoras, as `p = p_P` is symmetric and idempotent.
+  have hq : ∀ v : Euclidean N, ‖v - Grassmannian.project P v‖ ≤ ‖v‖ := by
+    intro v
+    have hpp : inner ℝ (Grassmannian.project P v) (Grassmannian.project P v) =
+        inner ℝ (Grassmannian.project P v) v := by
+      calc inner ℝ (Grassmannian.project P v) (Grassmannian.project P v)
+          = inner ℝ (Grassmannian.project P (Grassmannian.project P v)) v :=
+            (Grassmannian.projectionLinearMap_isSymmetric P _ _).symm
+        _ = inner ℝ (Grassmannian.project P v) v := by rw [Grassmannian.project_project]
+    have h0 : inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) = (0 : ℝ) := by
+      rw [inner_sub_right, hpp, sub_self]
+    have h := norm_add_sq_real (Grassmannian.project P v) (v - Grassmannian.project P v)
+    rw [add_sub_cancel, h0, mul_zero, add_zero] at h
+    nlinarith [norm_nonneg v, norm_nonneg (v - Grassmannian.project P v),
+      sq_nonneg ‖Grassmannian.project P v‖]
+  -- Step 2: `B_r(y) ⊆ U^t_r(y)` whenever `r < t`.
+  have hball : ∀ r t : ℝ, r < t →
+      closedBall y r ⊆ closedBall y r ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < t} := by
+    intro r t hrt z hz
+    refine ⟨hz, ?_⟩
+    show ‖(z - y) - Grassmannian.project P (z - y)‖ < t
+    calc ‖(z - y) - Grassmannian.project P (z - y)‖ ≤ ‖z - y‖ := hq _
+      _ = dist z y := (dist_eq_norm z y).symm
+      _ ≤ r := mem_closedBall.mp hz
+      _ < t := hrt
+  -- Steps 3–4: by (D), `θ ≤ e^ε (μ(B_r(y))/r^n)/ω_n` for `r ∈ (0,1)`.
+  have hθ : ∀ r : ℝ, 0 < r → r < 1 → θ ≤ ENNReal.ofReal (Real.exp ε) *
+      (μ (closedBall y r) / ENNReal.ofReal r ^ n) / unitBallVolume n := by
+    intro r hr hr1
+    have hrn0 : ENNReal.ofReal r ^ n ≠ 0 := pow_ne_zero _ (ENNReal.ofReal_pos.mpr hr).ne'
+    have hrnt : ENNReal.ofReal r ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+    have hdr : densityRatio n μ y r =
+        μ (closedBall y r) / ENNReal.ofReal r ^ n / unitBallVolume n := by
+      rw [densityRatio, div_eq_mul_inv, div_eq_mul_inv, div_eq_mul_inv,
+        ENNReal.mul_inv (Or.inr hrnt) (Or.inr hrn0)]
+      ring
+    have hexp_le : ENNReal.ofReal (Real.exp (ε * r)) ≤ ENNReal.ofReal (Real.exp ε) :=
+      ENNReal.ofReal_le_ofReal (Real.exp_le_exp.mpr (by nlinarith))
+    calc θ ≤ ENNReal.ofReal (Real.exp (ε * r)) * densityRatio n μ y r := hD r hr hr1
+      _ ≤ ENNReal.ofReal (Real.exp ε) * densityRatio n μ y r := by gcongr
+      _ = ENNReal.ofReal (Real.exp ε) * (μ (closedBall y r) / ENNReal.ofReal r ^ n) /
+          unitBallVolume n := by rw [hdr, mul_div_assoc]
+  rcases le_or_gt σ τ with hστ | hτσ
+  · -- Step 5, case `σ ≤ τ`: (D) at `σ`, and `B_σ(y) ⊆ U^{4τ}_σ(y)`.
+    calc θ ≤ ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ) / ENNReal.ofReal σ ^ n) /
+          unitBallVolume n := hθ σ hσ hσ1
+      _ ≤ ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩
+            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) /
+          unitBallVolume n := by
+        gcongr
+        exact hball σ (4 * τ) (by linarith)
+      _ ≤ (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩
+            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) +
+          ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n := by
+        gcongr
+        exact le_self_add
+  · -- Step 6, case `τ < σ`: (D) at `τ`, `B_τ(y) ⊆ U^{2τ}_τ(y)`, and (C) with parameter `2τ` and
+    -- radii `τ ≤ σ`; the error is `e^ε Kεσ/(2τ) ≤ Kεσ/τ` as `e^ε ≤ 2`.
+    have hC' := hC (2 * τ) τ σ (by linarith) (by linarith) hτ hτσ.le hσ1
+    rw [show (2 : ℝ) * (2 * τ) = 4 * τ by ring] at hC'
+    have herr : ENNReal.ofReal (Real.exp ε) * ENNReal.ofReal (K * ε * σ / (2 * τ)) ≤
+        ENNReal.ofReal (K * ε * σ / τ) := by
+      rw [← ENNReal.ofReal_mul (Real.exp_pos ε).le]
+      apply ENNReal.ofReal_le_ofReal
+      have hA : 0 ≤ K * ε * σ / τ := by positivity
+      rw [show K * ε * σ / (2 * τ) = K * ε * σ / τ / 2 by rw [div_div, mul_comm τ 2]]
+      nlinarith
+    calc θ ≤ ENNReal.ofReal (Real.exp ε) * (μ (closedBall y τ) / ENNReal.ofReal τ ^ n) /
+          unitBallVolume n := hθ τ hτ (hτσ.trans hσ1)
+      _ ≤ ENNReal.ofReal (Real.exp ε) * (μ (closedBall y τ ∩
+            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal τ ^ n) /
+          unitBallVolume n := by
+        gcongr
+        exact hball τ (2 * τ) (by linarith)
+      _ ≤ ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩
+            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n +
+          ENNReal.ofReal (K * ε * σ / (2 * τ))) / unitBallVolume n := by
+        gcongr
+      _ = (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩
+            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) +
+          ENNReal.ofReal (Real.exp ε) * ENNReal.ofReal (K * ε * σ / (2 * τ))) /
+          unitBallVolume n := by rw [mul_add]
+      _ ≤ (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩
+            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) +
+          ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n := by
+        gcongr
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08

@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae6, mathlib_commit 25730c7c)",
+        "sha256sum snapshot project/GMT/Ch08/Contract.lean vs workspace GMT/Ch08/Contract.lean and Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+        "rg -n 'intcpt_allard|densityRatio|unitBallVolume' project/GMT/Ch08/Contract.lean",
+        "rg -n 'theorem abs_exp_sub_one_le|theorem mul_inv \\{a b|theorem ofReal_div_of_pos|theorem add_div \\(|theorem norm_add_sq_real|theorem card_eq_one|theorem one_lt_card |theorem mem_offDiag' mathlib/Mathlib",
+        "rg -n 'theorem sum_div|theorem toReal_pos|theorem ofReal_toReal|lemma one_le_pow₀|lemma pow_le_pow_of_le_one|theorem pow_le_pow_left₀|theorem measure_ball_pos|theorem measure_ball_lt_top' mathlib/Mathlib",
+        "rg -n '(theorem|lemma) exists_min_image' mathlib/Mathlib (only Set and Northcott versions; Finset.exists_min_image confirmed by #check from import GMT.Ch08.Submission)",
+        "rg -n 'theorem projectionLinearMap_isSymmetric|theorem project_project' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "lake env lean /tmp/fdsb-decomp-v1/Probe.lean (#check Real.abs_exp_sub_one_le, measure_ball_pos, measure_ball_lt_top, ENNReal.mul_inv, ENNReal.sum_div, Finset.exists_min_image, Grassmannian.projectionLinearMap_isSymmetric, Grassmannian.project_project, tendsto_nhds_unique, one_add_mul_le_pow)",
+        "grep -n '5.10|5.11|(6)' book/chapter-08.txt; sed -n 770,960p book/chapter-08.txt",
+        "python3 over dag.json: frozen lean_statements of good_point_monotonicity, cylinder_monotonicity, cylinder_cluster_bound, fibre_density_sum_bound; decomposition-v1.json of allard_lemma-a1 and cylinder_cluster_bound-a1 (conventions)",
+        "lake env lean /tmp/fdsb-decomp-v1/{Stubs,Assembly,ChildA,ChildB,ChildC,Full}.lean and Comp_*_Challenge.lean",
+        "python3 -I verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py child_modules (contract mode) on the 3 child statements",
+        "grep -rl intcpt_allard_fdsb over the run directory; git grep intcpt_allard_fdsb over every ref of git for-each-ref (0 hits)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Finset/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Finset/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Finite/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a1/decomposition-v1.json",
+        "/tmp/fdsb-decomp-v1/Assembly.lean",
+        "/tmp/fdsb-decomp-v1/ChildA.lean",
+        "/tmp/fdsb-decomp-v1/ChildB.lean",
+        "/tmp/fdsb-decomp-v1/ChildC.lean",
+        "/tmp/fdsb-decomp-v1/Full.lean"
+      ],
+      "conclusion": "The snapshot is project 63436ae6 + Mathlib 25730c7c. Its Contract is byte-identical to the workspace Contract and Submission; densityRatio, HasDensity and unitBallVolume are Contract lines 41–52. The children cite only lemmas in the snapshot or in Submission's import closure: Real.abs_exp_sub_one_le (Analysis/Complex/Exponential.lean:533); ENNReal.mul_inv, ofReal_div_of_pos and add_div (Basic/ENNReal/Inv.lean:245, 960, 505); ENNReal.sum_div (Basic/ENNReal/BigOperators.lean:143); ENNReal.toReal_pos (Real.lean:133); ENNReal.ofReal_toReal (Basic.lean:248); norm_add_sq_real (InnerProductSpace/Basic.lean:411); measure_ball_pos (Measure/OpenPos.lean:212); measure_ball_lt_top (Typeclasses/Finite.lean:373); Finset.card_eq_one and Finset.one_lt_card (Data/Finset/Card.lean:693, 747); Finset.mem_offDiag (Data/Finset/Prod.lean:266); Finset.exists_min_image (#check); one_le_pow₀, pow_le_pow_of_le_one and pow_le_pow_left₀ (Algebra/Order/GroupWithZero/Basic.lean); and SimonGMT Grassmannian.projectionLinearMap_isSymmetric and project_project (Chapter08/Varifold.lean:98, 108). No project declaration states printed (6), the one-point density bound or the separated sum. The related node ccb_one_point_ball_bound, in another branch, concerns the monotone ratio at σ ≤ δ², so it is not reused. All three children are fully proved in scratch using only these lemmas (axioms propext, Classical.choice, Quot.sound). The parent's frozen type follows from them plus the three sibling dependencies."
+    }
+  ],
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1",
+  "child_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1.density_cylinder_bound-a1",
+  "subproblem": {
+    "key": "density_cylinder_bound",
+    "title": "Density bounded by a cylinder ratio (Simon Ch. 8, proof of Lemma 5.10, printed (6))",
+    "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N, P ∈ G(N,n), y ∈ ℝ^N, θ ∈ [0,∞], and ε, K ∈ ℝ with ε ≥ 0, e^ε ≤ 2 and K ≥ 0. Write p := p_P (= Grassmannian.project P), q(v) := v − p(v), U^t_r(y) := B_r(y) ∩ {z : |q(z − y)| < t} with B_r(y) the closed ball, and ω_n := unitBallVolume n. Assume (D) θ ≤ e^{εσ}·densityRatio n μ y σ (= e^{εσ}μ(B_σ(y))/(ω_nσ^n)) for every σ ∈ (0,1), and (C) μ(U^τ_σ(y))/σ^n ≤ μ(U^{2τ}_ρ(y))/ρ^n + Kερ/τ for all τ, σ, ρ with 0 < τ ≤ 1 and 0 < σ ≤ ρ < 1. Then for all τ ∈ (0,1/4] and σ ∈ (0,1): θ ≤ (e^ε·μ(U^{4τ}_σ(y))/σ^n + Kεσ/τ)/ω_n in [0,∞] (real coefficients enter via ofReal, and r^n means ofReal(r)^n).",
+    "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (y : Euclidean N) (θ : ℝ≥0∞) (ε K : ℝ), 0 ≤ ε → Real.exp ε ≤ 2 → 0 ≤ K → (∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n μ y σ) → (∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ τ σ : ℝ, 0 < τ → τ ≤ 1 / 4 → 0 < σ → σ < 1 → θ ≤ (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) + ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n",
+    "lean_name": "intcpt_allard_fdsb_density_cylinder_bound",
+    "depends_on": [],
+    "natural_proof": "Source: step 2 of the parent proof (Simon Ch. 8, proof of Lemma 5.10, printed (6)), with K in place of K_C and the hypotheses of step 1 stated explicitly. The parent's form \"e^ε·μ(U^{4τ}_σ(y))/(ω_nσ^n) + K_Cεσ/(ωτ)\" equals the conclusion here, since ω_n = ofReal(ω) ∈ (0,∞).\nConventions. All quantities lie in [0,∞]; a real a enters as ofReal a, and for r > 0, r^n := ofReal(r)^n ∈ (0,∞). Fix τ ∈ (0,1/4] and σ ∈ (0,1).\n\n1. Projection estimate: |q(v)| ≤ |v| for every v ∈ ℝ^N. The map p is the linear map Grassmannian.projectionLinearMap P (Grassmannian.project P v is by definition projectionLinearMap P v). It is symmetric, ⟨p a, b⟩ = ⟨a, p b⟩ (Grassmannian.projectionLinearMap_isSymmetric), and idempotent, p(p v) = p v (Grassmannian.project_project). Hence ⟨p v, p v⟩ = ⟨p(p v), v⟩ = ⟨p v, v⟩, so ⟨p v, v − p v⟩ = ⟨p v, v⟩ − ⟨p v, p v⟩ = 0. Expanding |p v + (v − p v)|² (norm_add_sq_real) gives |v|² = |p v|² + 2⟨p v, v − p v⟩ + |v − p v|² = |p v|² + |q v|² ≥ |q v|². Since both norms are ≥ 0, |q v| ≤ |v|.\n\n2. Balls inside cylinders: if r < t then B_r(y) ⊆ U^t_r(y). For z ∈ B_r(y), step 1 with v = z − y gives |q(z − y)| ≤ |z − y| = dist(z,y) ≤ r < t.\n\n3. Rewriting the density ratio: for r > 0, densityRatio n μ y r = μ(B_r(y))/(ω_n·r^n) = (μ(B_r(y))/r^n)/ω_n. Writing division as multiplication by the inverse, (ω_n·r^n)^{-1} = ω_n^{-1}·(r^n)^{-1} holds in [0,∞] because r^n ≠ 0 and r^n ≠ ∞ (ENNReal.mul_inv); then commute and reassociate the product. Consequently, by (D), for every r ∈ (0,1): θ ≤ e^{εr}·(μ(B_r(y))/r^n)/ω_n (using a·(b/c) = a·b/c).\n\n4. Exponential factor: for r ≤ 1, e^{εr} ≤ e^ε, because ε ≥ 0 gives εr ≤ ε and exp is monotone; hence ofReal(e^{εr}) ≤ ofReal(e^ε).\n\n5. Case σ ≤ τ. Since τ > 0, σ ≤ τ < 4τ, so by step 2 B_σ(y) ⊆ U^{4τ}_σ(y) and μ(B_σ(y)) ≤ μ(U^{4τ}_σ(y)). By step 3 at r = σ and step 4 (σ < 1), using monotonicity of multiplication and division in [0,∞]:\n θ ≤ e^{εσ}(μ(B_σ(y))/σ^n)/ω_n ≤ e^ε(μ(U^{4τ}_σ(y))/σ^n)/ω_n ≤ (e^ε·μ(U^{4τ}_σ(y))/σ^n + Kεσ/τ)/ω_n,\n the last step adding the term ofReal(Kεσ/τ) ≥ 0 to the numerator.\n\n6. Case τ < σ. Then τ < σ < 1, so step 3 at r = τ and step 4 give θ ≤ e^{ετ}(μ(B_τ(y))/τ^n)/ω_n ≤ e^ε(μ(U^{2τ}_τ(y))/τ^n)/ω_n, using B_τ(y) ⊆ U^{2τ}_τ(y) (step 2, as τ < 2τ). Apply (C) with parameter 2τ (0 < 2τ ≤ 1/2 ≤ 1) and radii τ ≤ σ < 1 (0 < τ): μ(U^{2τ}_τ(y))/τ^n ≤ μ(U^{2·(2τ)}_σ(y))/σ^n + Kεσ/(2τ), and 2·(2τ) = 4τ, so the set on the right is U^{4τ}_σ(y). Hence\n θ ≤ e^ε(μ(U^{4τ}_σ(y))/σ^n + Kεσ/(2τ))/ω_n = (e^ε·μ(U^{4τ}_σ(y))/σ^n + e^ε·(Kεσ/(2τ)))/ω_n.\n Finally ofReal(e^ε)·ofReal(Kεσ/(2τ)) = ofReal(e^ε·Kεσ/(2τ)) (e^ε ≥ 0) and e^ε·Kεσ/(2τ) = (e^ε/2)·(Kεσ/τ) ≤ Kεσ/τ, because Kεσ/τ ≥ 0 (K ≥ 0, ε ≥ 0, σ > 0, τ > 0) and e^ε/2 ≤ 1. By monotonicity of ofReal and of + and /ω_n: θ ≤ (e^ε·μ(U^{4τ}_σ(y))/σ^n + Kεσ/τ)/ω_n.\n\n7. Steps 5 and 6 cover all cases, which proves the claim. ∎",
+    "proof_key_steps": [
+      "|q(v)| ≤ |v| from symmetry and idempotence of p_P (Pythagoras)",
+      "B_r(y) ⊆ U^t_r(y) whenever r < t",
+      "densityRatio n μ y r = (μ(B_r(y))/r^n)/ω_n for r > 0, and e^{εr} ≤ e^ε for r ≤ 1",
+      "Case σ ≤ τ: (D) at σ and B_σ(y) ⊆ U^{4τ}_σ(y)",
+      "Case τ < σ: (D) at τ, B_τ(y) ⊆ U^{2τ}_τ(y), (C) with parameter 2τ and radii τ ≤ σ, 2·(2τ) = 4τ, and e^ε/2 ≤ 1"
+    ]
+  },
+  "audit": {
+    "key": "density_cylinder_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line Lean proposition exactly matches the prose and includes every hypothesis. Projection contraction justifies both ball inclusions. The two radius cases exhaust the possibilities; applying (C) at 2τ gives the required 4τ cylinder, and nonnegativity together with exp ε ≤ 2 bounds the error. The ENNReal rearrangements are valid. The supplied proof is complete, independent and non-circular."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-729fe6787f/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-729fe6787f/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-729fe6787f/parent-supplied-natural-proof.json"
+}
