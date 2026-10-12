@@ -3089,6 +3089,97 @@ theorem Submission.stationary_imp_mean_curvature_zero : ((∀ (n N : ℕ) (r : �
     simpa only [inv_mul_cancel_left₀ hc.ne'] using h
   · exact (mul_eq_zero.1 (neg_eq_zero.1 hdiv.symm)).resolve_left hc.ne'
 
+/-- **Simon Ch. 2, Lemma 5.11 (p. 65), second variation of a stationary submanifold**, from the
+tangent-space facts (TH), the first variation formula 5.3 and the second variation formula 5.4
+(`C³` correction). Let `M` be `C²` and stationary in the open set `U` with `(M̄ \ M) ∩ U = ∅`, and
+let `φ` be admissible of class `C³` for `(U, K)` with initial velocity `X` normal to `M`. Then
+`M ∩ K = K ∩ M̄` is compact with `Hⁿ(M ∩ K) < ∞`, and `H = 0` on `M ∩ U` (5.5(2)), so
+`∫_M div_M Z dHⁿ = -∫_M Z · H dHⁿ = 0` and `X · H = 0` on `M`. By 4.24 for the normal field `X` and
+the symmetry of `B`, the 5.4 integrand is `div_M Z` plus the 5.11 integrand on `M`, and the latter
+is integrable; so 5.4 gives the claim if `U ∩ M ≠ ∅`. If `U ∩ M = ∅`, then `M ∩ K = ∅`, so
+`t ↦ Hⁿ(M_t)` vanishes identically and the 5.11 integrand vanishes on `M`. -/
+theorem Submission.second_variation_stationary_of_variations : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → FirstVariation → SecondVariation → SecondVariationStationary := by
+  intro hTH hFV hSV n ℓ M U K φ hM hU hMU hstat hφ hXn
+  have hKc : IsCompact K := hφ.2.1
+  have hKU : K ⊆ U := hφ.2.2.1
+  -- Step 1: `X` is `C²`, `Z` is `C¹`, and both vanish off `K`.
+  obtain ⟨hX, hZ, hXZ⟩ :=
+    Submission.deformation_velocity_acceleration_regularity.2 (n + ℓ) U K φ hφ
+  -- Step 2: `M ∩ K = K ∩ M̄` is compact, as `(M̄ \ M) ∩ U = ∅` and `K ⊆ U`; `Hⁿ(M ∩ K) < ∞`.
+  have hMK : IsCompact (M ∩ K) := by
+    have hEq : M ∩ K = K ∩ closure M := by
+      ext y
+      refine ⟨fun hy ↦ ⟨hy.2, subset_closure hy.1⟩, fun hy ↦ ⟨?_, hy.1⟩⟩
+      by_contra hyM
+      have hy' : y ∈ (closure M \ M) ∩ U := ⟨⟨hy.2, hyM⟩, hKU hy.1⟩
+      rw [hMU] at hy'
+      exact hy'
+    rw [hEq]
+    exact hKc.inter_right isClosed_closure
+  have hfin : μHE[n] (M ∩ K) < ⊤ := hstat.1 K hKc hKU
+  -- Step 3: `H = 0` on `M ∩ U` (5.5(2)); off `U` we are off `K`, where `X = Z = 0`.
+  have hH := Submission.stationary_imp_mean_curvature_zero hTH hFV n ℓ M U hM hU hstat
+  have hcases : ∀ y ∈ M, meanCurvature M y = 0 ∨
+      (initialVelocity φ y = 0 ∧ initialAcceleration φ y = 0) := fun y hy ↦
+    (em (y ∈ U)).imp (fun hyU ↦ hH y ⟨hy, hyU⟩) fun hyU ↦ hXZ y fun hyK ↦ hyU (hKU hyK)
+  -- Symmetry of `B` (4.26) and `η · D_τ X = -X · B(τ, η)` on `M` for the normal field `X` (4.24).
+  obtain ⟨hB, -, hnormal⟩ :=
+    Submission.second_fundamental_form_symm_normal_continuity hTH n (n + ℓ) M hM
+  have hN : ∀ y ∈ M, ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y,
+      inner ℝ η (fderiv ℝ (initialVelocity φ) y τ) =
+        -inner ℝ (initialVelocity φ y) (secondFundamentalForm M y τ η) := fun y hy ↦
+    hnormal (initialVelocity φ) y hy (hX.differentiable (by norm_num) y) hXn
+  -- Step 4: `∫_M div_M Z dHⁿ = -∫_M Z · H dHⁿ = 0`, since `Z · H = 0` on `M`.
+  obtain ⟨hdivZ, -, hdivZ_eq⟩ := Submission.submanifold_divergence_identity_compact hTH n
+    (n + ℓ) M K (initialAcceleration φ) hM hZ hKc.isClosed (fun x hx ↦ (hXZ x hx).2) hMK
+  have hZH : ∀ y ∈ M, inner ℝ (initialAcceleration φ y) (meanCurvature M y) = 0 := by
+    intro y hy
+    rcases hcases y hy with h | h
+    · rw [h, inner_zero_right]
+    · rw [h.2, inner_zero_left]
+  have hdivZ0 : ∫ y in M, tangentialDivergence M (initialAcceleration φ) y ∂μHE[n] = 0 := by
+    rw [hdivZ_eq, setIntegral_eq_zero_of_forall_eq_zero hZH, neg_zero]
+  -- Step 5: on `M`, the 5.4 integrand is `div_M Z` plus the 5.11 integrand, as `X · H = 0`.
+  have hXH : ∀ y ∈ M, inner ℝ (initialVelocity φ y) (meanCurvature M y) = 0 := by
+    intro y hy
+    rcases hcases y hy with h | h
+    · rw [h, inner_zero_right]
+    · rw [h.1, inner_zero_left]
+  have hpt : ∀ y ∈ M, secondVariationIntegrand M φ y =
+      tangentialDivergence M (initialAcceleration φ) y + stableSecondVariationIntegrand M φ y :=
+    fun y hy ↦ Submission.second_variation_integrand_eq_div_accel_add_stable (n + ℓ) M φ y
+      (fun τ hτ η hη ↦ (hB y hy τ hτ η hη).1) (hN y hy) (hXH y hy)
+  -- Step 6: the 5.11 integrand vanishes on `M \ K` and is integrable on `M`.
+  obtain ⟨hMm, hP⟩ := hTH.2 n (n + ℓ) 2 M hM
+  obtain ⟨hS0, hS⟩ := Submission.stable_second_variation_integrand_integrableOn n (n + ℓ) M K φ
+    hMm hP (hX.of_le (by norm_num)) hKc.isClosed (fun x hx ↦ (hXZ x hx).1) hMK hfin hN
+  -- Step 7: the 5.4 and 5.11 integrals over `M` agree.
+  have hint : ∫ y in M, secondVariationIntegrand M φ y ∂μHE[n] =
+      ∫ y in M, stableSecondVariationIntegrand M φ y ∂μHE[n] := by
+    rw [setIntegral_congr_fun hMm hpt, integral_add hdivZ hS, hdivZ0, zero_add]
+  by_cases hUM : (U ∩ M).Nonempty
+  · -- Step 8: `U ∩ M ≠ ∅`, so 5.4 applies to `M`, which is also a `C¹` submanifold.
+    have hM1 : Chapter02.IsSimonSubmanifold (E := Rn n) 1 M := by
+      refine ⟨le_rfl, fun y hy ↦ ?_⟩
+      obtain ⟨V, W, ψ, hyW, hV, hW, hψ, hinj, himg, hprop, hD⟩ := hM.2 y hy
+      exact ⟨V, W, ψ, hyW, hV, hW, hψ.of_le (by norm_num), hinj, himg, hprop, hD⟩
+    have hfin' : ∀ K', IsCompact K' → K' ⊆ U → μHE[n] (K' ∩ M) < ⊤ := by
+      intro K' hK' hK'U
+      rw [inter_comm]
+      exact hstat.1 K' hK' hK'U
+    obtain ⟨hdiff, hderiv⟩ := hSV n ℓ M U K φ hM1 hU hUM hfin' hφ
+    rw [← hint]
+    exact ⟨hdiff, hderiv⟩
+  · -- Step 9: `U ∩ M = ∅`, so `M ∩ K = ∅`, `Hⁿ(M_t) = 0` and the 5.11 integrand is `0` on `M`.
+    have hMK0 : M ∩ K = ∅ := eq_empty_of_subset_empty fun y hy ↦ hUM ⟨y, hKU hy.2, hy.1⟩
+    have hA : deformedArea n M K φ = fun _ ↦ 0 := by
+      funext t
+      simp [deformedArea, hMK0]
+    have hS00 : ∫ y in M, stableSecondVariationIntegrand M φ y ∂μHE[n] = 0 :=
+      setIntegral_eq_zero_of_forall_eq_zero fun y hy ↦ hS0 y hy fun hyK ↦ hUM ⟨y, hKU hyK, hy⟩
+    rw [hA, hS00, deriv_const']
+    exact ⟨Eventually.of_forall fun t ↦ differentiableAt_const _, hasDerivAt_const _ _⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
