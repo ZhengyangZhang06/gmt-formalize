@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.tau_action-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1",
+  "depth": 4,
+  "title": "Change of variables for the τ-action under the dilation η_{x,r}",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, θ : ℝ^P → ℝ, ξ : ℝ^P → NVector, x ∈ ℝ^P, r > 0 and ω an n-form on ℝ^P. Then tauAction n M θ ξ (y ↦ (rⁿ)⁻¹ ω(r⁻¹(y − x))) = tauAction n η(M) θ′ ξ′ ω, where η(y) = r⁻¹(y − x), θ′(z) = θ(x + r z), ξ′(z) = ξ(x + r z).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (x : Eucl P) (r : ℝ) (ω : DifferentialForm (Eucl P) n), 0 < r → tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) = tauAction n ((fun y => r⁻¹ • (y - x)) '' M) (fun z => θ (x + r • z)) (fun z => ξ (x + r • z)) ω",
+  "lean_name": "ind_rs_tauAction_dilation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1-tau-action-a1-a1"
+}

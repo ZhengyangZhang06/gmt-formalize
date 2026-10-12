@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|restrict_image_emb|integrableOn_image|setIntegral_image_emb|aestronglyMeasurable_map_iff|ae_map_iff|theorem map_apply",
+        "CountablyRectifiable|def blowUpMap|def HasWeightedApproximateTangentSpaceAt",
+        "massAdmissibleOn|def massOn|theorem le_massOn|structure GeometricCurrentOn|def boundary|theorem ext",
+        "rg -n -g '*.json' --no-ignore --hidden '\"lean_name\": \"ind_rs_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes",
+        "git show 8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rescale-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rescale-independent-audit/CheckedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ind-rs-decomp/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1/decomposition-v1.json",
+        "/tmp/rescale-independent-audit/Types.lean",
+        "/tmp/rescale-independent-audit/CheckedProofs.lean",
+        "/tmp/ind-rs-decomp/Assembly.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected ind_rescaled_current contract. The parent constructs one current Y and proves (a), (b), and (d) using the pinned affine-pushforward API; triple_image and tau_action establish (c), and mass_bound establishes (e). The only sibling dependencies are triple_image on dilation_measure and weighted_tangent; they are correctly directed and acyclic. All five names are bare identifiers, with no conflicting reservation in the DAG or another node's decomposition. All five types independently elaborate as propositions in the comparator's frozen scope, without child implementations. Inline scalar actions have the intended vector, covector, and measure instances; no matrix-unit construction occurs. Project sources and build configuration match the snapshot; nine inspected Mathlib files and six SimonGMT modules match their pinned sources. The accepted change-of-variables declaration has the identical frozen type and proof from commit 8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88. Independent Lean replays of the supplied child proofs and parent assembly succeeded, with only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dilation_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type include all parameters and r > 0. The homeomorphism gives the measurable embedding; the preimage identity, translation invariance, and Hausdorff scaling give the stated measure-preserving direction and constant. Positivity correctly justifies invertibility and scalar cancellation. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "weighted_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the pinned definition, including finrank and convergence against every compactly supported continuous test function. The blow-up-set and weight identities reduce the new integrals exactly to the old integrals at r·s. Positive r preserves the right-sided neighborhood filter, so composition proves the required limit. No additional membership, measurability, or integrability hypothesis is needed."
+    },
+    {
+      "key": "triple_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies all seven IsRectifiableTriple fields. Measurable-embedding results justify image and restricted-measure identities for arbitrary sets. The measurable hull handles null-measurability; Lipschitz composition handles rectifiability; compact preimages and finite measure scaling handle local integrability. AE measurability and orientation transfer correctly, using precisely the two declared sibling dependencies. The unchanged orthonormal frame is valid for positive scalar dilation."
+    },
+    {
+      "key": "tau_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly allows arbitrary forms, sets, and coefficient functions. Continuous linearity of each NVector extracts the scalar, and the accepted identical-type change-of-variables lemma gives the required equality without integrability assumptions. The inverse identity matches the transported coefficients pointwise. The supplied fallback independently proves the same integral identity, so it leaves no deferred proof search or undeclared sibling dependency."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both pull-back hypotheses appear explicitly in prose and Lean. Hypothesis A supplies η; rⁿ·η has exactly the composed values, unit coefficient bound, and required support. Hypothesis B and current linearity give the evaluation scaling. Nonnegative ENNReal conversion and the defining supremum yield the bound for every W, without openness or finite-mass assumptions. These hypotheses are established directly by the parent construction, so this obligation is non-circular."
+    }
+  ],
+  "required_changes": []
+}

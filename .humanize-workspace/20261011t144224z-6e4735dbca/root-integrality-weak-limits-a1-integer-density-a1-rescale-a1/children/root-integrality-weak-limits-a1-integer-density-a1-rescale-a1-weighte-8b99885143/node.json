@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.weighted_tangent-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1",
+  "depth": 4,
+  "title": "Weighted approximate tangent spaces transfer under the dilation η_{x,r}",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, θ : ℝ^P → ℝ, x, y ∈ ℝ^P, r > 0 and Q a linear subspace of ℝ^P. If Q is the weighted approximate tangent space of (M, θ) at y (HasWeightedApproximateTangentSpaceAt n M θ y Q), then Q is the weighted approximate tangent space at r⁻¹(y − x) of the image set {r⁻¹(w − x) : w ∈ M} with multiplicity z ↦ θ(x + r z).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x y : Eucl P) (r : ℝ) (Q : Submodule ℝ (Eucl P)), 0 < r → HasWeightedApproximateTangentSpaceAt n M θ y Q → HasWeightedApproximateTangentSpaceAt n ((fun w => r⁻¹ • (w - x)) '' M) (fun z => θ (x + r • z)) (r⁻¹ • (y - x)) Q",
+  "lean_name": "ind_rs_weightedTangent_dilation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1-weighte-8b99885143-a1"
+}

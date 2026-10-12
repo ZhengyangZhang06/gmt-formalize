@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.mass_bound-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1",
+  "depth": 4,
+  "title": "Mass bound for a current defined by pull-back along the dilation η_{x,r}",
+  "statement": "Let P, n ∈ ℕ, X, Y ∈ D_n(ℝ^P), x ∈ ℝ^P and r > 0. Assume (A) for every ω ∈ D^n(ℝ^P) there is η ∈ D^n(ℝ^P) with η(y) = (rⁿ)⁻¹ω(r⁻¹(y − x)) for all y, and (B) Y(ω) = X(η) whenever η(y) = (rⁿ)⁻¹ω(r⁻¹(y − x)) for all y. Then M_W(Y) ≤ ENNReal.ofReal((rⁿ)⁻¹)·M_{{y : r⁻¹(y−x) ∈ W}}(X) for every W ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (X Y : GeometricCurrentOn (univ : Set (Eucl P)) n) (x : Eucl P) (r : ℝ), 0 < r → (∀ ω : TestFormOn (univ : Set (Eucl P)) n, ∃ η : TestFormOn (univ : Set (Eucl P)) n, ∀ y, (η : DifferentialForm (Eucl P) n) y = (r ^ n)⁻¹ • (ω : DifferentialForm (Eucl P) n) (r⁻¹ • (y - x))) → (∀ ω η : TestFormOn (univ : Set (Eucl P)) n, (∀ y, (η : DifferentialForm (Eucl P) n) y = (r ^ n)⁻¹ • (ω : DifferentialForm (Eucl P) n) (r⁻¹ • (y - x))) → Y ω = X η) → ∀ W : Set (Eucl P), Y.massOn W ≤ ENNReal.ofReal ((r ^ n)⁻¹) * X.massOn {y | r⁻¹ • (y - x) ∈ W}",
+  "lean_name": "ind_rs_massOn_dilation_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1-mass-bound-a1-a1"
+}

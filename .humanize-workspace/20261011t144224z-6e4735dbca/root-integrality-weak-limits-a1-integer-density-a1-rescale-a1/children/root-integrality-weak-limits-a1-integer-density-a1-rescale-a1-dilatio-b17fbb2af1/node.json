@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.dilation_measure-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1",
+  "depth": 4,
+  "title": "Hⁿ scaling law for the dilation η_{x,r}: measurable embedding and measure preservation",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, r > 0 and η(y) := r⁻¹(y − x). Then η : ℝ^P → ℝ^P is a measurable embedding, and η is measure preserving from c·Hⁿ to Hⁿ, where Hⁿ = μHE[n] and c = ENNReal.ofReal((rⁿ)⁻¹); equivalently η_*(c·Hⁿ) = Hⁿ, i.e. Hⁿ(η⁻¹(B)) = rⁿ·Hⁿ(B) for every Borel B.",
+  "lean_statement": "∀ (P n : ℕ) (x : Eucl P) (r : ℝ), 0 < r → MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) ∧ MeasurePreserving (fun y : Eucl P => r⁻¹ • (y - x)) (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) (μHE[n] : Measure (Eucl P))",
+  "lean_name": "ind_rs_dilation_measurePreserving",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1-dilatio-b17fbb2af1-a1"
+}

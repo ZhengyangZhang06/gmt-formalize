@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.integer_density-a1.rescale-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.tau_action-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 7(i) (Formula) of the parent proof, with the change of variables (★) of Step 6. Conventions: ℝ^P := Eucl P (EuclideanSpace ℝ (Fin P)); Hⁿ := μHE[n]; η(y) := r⁻¹ • (y − x) (definitionally Poincare.SimonGMT.Chapter03.blowUpMap x r); θ′(z) := θ(x + r • z); ξ′(z) := ξ(x + r • z).
+Definition used: tauAction n S ϑ ζ ω = ∫_{y ∈ S} ϑ(y) · ζ(y)(ω(y)) dHⁿ(y), a Bochner set integral, which is 0 when the integrand is not integrable. No integrability is assumed or needed below.
+1. Left side. ξ(y) ∈ NVector (ℝ^P) n is a continuous ℝ-linear map on covectors (Covector →L[ℝ] ℝ), so ξ(y)((rⁿ)⁻¹ • ω(η y)) = (rⁿ)⁻¹ · ξ(y)(ω(η y)) (map_smul, smul_eq_mul). Hence the integrand of the left side is θ(y) · ((rⁿ)⁻¹ · ξ(y)(ω(η y))) = (rⁿ)⁻¹ · (θ(y) · ξ(y)(ω(η y))). By integral_const_mul (valid without integrability), LHS = (rⁿ)⁻¹ · ∫_{y ∈ M} θ(y) · ξ(y)(ω(η y)) dHⁿ.
+2. Right side, change of variables. Let g(z) := θ(x + r • z) · ξ(x + r • z)(ω(z)). Then RHS = ∫_{z ∈ η(M)} g(z) dHⁿ(z). The function η equals Poincare.SimonGMT.Chapter03.blowUpMap x r definitionally (blowUpMap x r y = r⁻¹ • (y − x)). The accepted declaration Submission.lpf_wtc_blowup_setIntegral_image, applied with Q := P, n, y := x, r, S := M, g and 0 < r, gives ∫_{z ∈ blowUpMap x r '' M} g(z) dHⁿ = (rⁿ)⁻¹ · ∫_{y ∈ M} g(blowUpMap x r y) dHⁿ. So RHS = (rⁿ)⁻¹ · ∫_{y ∈ M} g(η(y)) dHⁿ(y).
+2′. Self-contained derivation of the identity used in step 2 (use it only if Submission.lpf_wtc_blowup_setIntegral_image is unavailable in the working tree; it needs no sibling lemma). Let c := ENNReal.ofReal((rⁿ)⁻¹).
+   (i) η is the homeomorphism (Homeomorph.addRight (−x)).trans (Homeomorph.smulOfNeZero r⁻¹ _) (sub_eq_add_neg), so it is a measurable embedding (Homeomorph.measurableEmbedding).
+   (ii) For every B ⊆ ℝ^P, η⁻¹(B) = (z ↦ x + z) '' ((z ↦ r • z) '' B): if η(y) ∈ B then y = x + r • (r⁻¹ • (y − x)); conversely η(x + r • b) = b. Hence Hⁿ(η⁻¹(B)) = Hⁿ(r • B) = ‖r‖₊ⁿ · Hⁿ(B) (Isometry.euclideanHausdorffMeasure_image with isometry_add_left x; Set.image_smul; Measure.euclideanHausdorffMeasure_smul₀, r ≠ 0).
+   (iii) c · ‖r‖₊ⁿ = ENNReal.ofReal((rⁿ)⁻¹ · rⁿ) = 1 (ENNReal.ofReal_mul, Real.norm_of_nonneg, inv_mul_cancel₀). With Measure.map_apply and Measure.ext, (ii) gives η_*(c·Hⁿ) = Hⁿ, i.e. MeasurePreserving η (c·Hⁿ) Hⁿ.
+   (iv) MeasurePreserving.setIntegral_image_emb (from (i), (iii)) gives ∫_{η(M)} g dHⁿ = ∫_M g ∘ η d(c·Hⁿ). Then (c·Hⁿ)⌞M = c·(Hⁿ⌞M) (Measure.restrict_smul) and integral_smul_measure give ∫_M g ∘ η d(c·Hⁿ) = c.toReal · ∫_M g ∘ η dHⁿ. Finally c.toReal = (rⁿ)⁻¹ (ENNReal.toReal_ofReal, as (rⁿ)⁻¹ ≥ 0). This is the identity of step 2.
+3. Pointwise identity. x + r • η(y) = x + r • r⁻¹ • (y − x) = y (smul_inv_smul₀ with r ≠ 0, add_sub_cancel), so g(η(y)) = θ(y) · ξ(y)(ω(η y)) for every y.
+4. By steps 2 and 3, RHS = (rⁿ)⁻¹ · ∫_{y ∈ M} θ(y) · ξ(y)(ω(η y)) dHⁿ, which equals the LHS by step 1. ∎
+
+## Key steps
+
+1. Linearity of ξ(y) pulls (rⁿ)⁻¹ out of the left integral (map_smul, integral_const_mul).
+2. The accepted Submission.lpf_wtc_blowup_setIntegral_image with g(z) = θ(x+rz)ξ(x+rz)(ω z) rewrites the right integral as (rⁿ)⁻¹∫_M g(η y) dHⁿ.
+3. g(η y) = θ(y)ξ(y)(ω(η y)) because x + r·η(y) = y.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/{Contract,Submission}.lean against the workspace copies (identical; Submission imports Densities, Rectifiable, Mass, FormsDuality, CurrentLocalEquality only)`
+- `grep -rln AffineCurrentPushforward lake-packages-25730c7c/simongmt/Poincare (only SimonGMT.lean and Chapter06/GeometricPointProduct.lean; not in the Submission import closure)`
+- `grep -n '^def\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Currents,Mass,Forms,FormsDuality}.lean`
+- `sed -n 90,140p; 320,360p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, blowUpMap, HasWeightedApproximateTangentSpaceAt)`
+- `python3 -I scan of dag.json lean_name/lean_statement/status (362 nodes): ind_*, fiw_*, lpf_wtc_*, deformation_dilation, iwl_sp_massOn_le_of_compatible; grep -rl 'ind_rs_' over the run dir (no match)`
+- `git show 8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88:GMT/Ch06/Submission.lean (accepted proof of Submission.lpf_wtc_blowup_setIntegral_image)`
+- `grep -rn mathlib/Mathlib for euclideanHausdorffMeasure_smul₀ | Isometry.euclideanHausdorffMeasure_image | euclideanHausdorffMeasure_homothety_image | MeasurePreserving.integrableOn_image | restrict_image_emb | MeasurableEmbedding.map_apply | ae_map_iff | aestronglyMeasurable_map_iff | ae_smul_measure | NullMeasurableSet.congr | toMeasurable_ae_eq | ae_eq_set | map_smul_univ | compContinuousLinearMap_apply | Homeomorph.isProperMap | setIntegral_image_emb | integral_smul_measure`
+- `cmp local-references/197bdd4b88278494/mathlib/Mathlib/<14 cited files> against .lake/packages/mathlib/Mathlib (all identical)`
+- `verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') + verifier/lean_contract.py validate_lean_statement on the 5 child statements`
+- `lake env lean /tmp/ind-rs-decomp/{Stmts,Assembly}.lean and /tmp/ind-rs-decomp/children/{C1,C2,C3,C4,C5,EndToEnd}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ind-rs-decomp/Stmts.lean`
+- `/tmp/ind-rs-decomp/Assembly.lean`
+- `/tmp/ind-rs-decomp/children/EndToEnd.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract and a byte-identical Submission. All 14 cited Mathlib files match the build tree.
+
+Imports and available API:
+- The Submission does not import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward. That module supplies affinePullbackForm/affinePullbackTestOn, TestFormOnConverges.affinePullback, GeometricCurrentOn.affinePushforward(_apply) and boundary_affinePushforward. The parent implementation uses them; child statements avoid them.
+- SimonGMT gives blowUpMap, HasWeightedApproximateTangentSpaceAt (Chapter03), massAdmissibleOn, massOn and le_massOn (Chapter06/Mass), and GeometricCurrentOn.ext and zero_apply (Currents).
+- Mathlib gives Measure.euclideanHausdorffMeasure_smul₀, Isometry.euclideanHausdorffMeasure_image, MeasurePreserving.{integrableOn_image, restrict_image_emb, setIntegral_image_emb}, MeasurableEmbedding.{map_apply, ae_map_iff, aestronglyMeasurable_map_iff}, Measure.ae_smul_measure, NullMeasurableSet.congr, toMeasurable_ae_eq, ae_eq_set, ContinuousAlternatingMap.map_smul_univ and Homeomorph.isProperMap.
+
+Existing declarations (no-match results):
+- No accepted DAG declaration covers dilation measure-preservation, weighted-tangent transfer, rectifiable-triple transfer or the dilation mass bound.
+- deformation_dilation (decomposing, different form ρ^k ω(ρ x)) and iwl_sp_massOn_le_of_compatible (decomposing) are not accepted, so they are not reused.
+- The accepted Submission.lpf_wtc_blowup_setIntegral_image (identical frozen type, PR still open) is reused by tau_action, which also carries a self-contained fallback.
+- No ind_rs_* name exists anywhere in the run.
+
+Lean verification:
+- All five child statements elaborate in the replayed contract scope.
+- Assembly.lean derives the exact frozen ind_rescaled_current type from the triple_image, tau_action and mass_bound types; axioms: propext, Classical.choice, Quot.sound.
+- Scratch proofs of all five children compile with only `import GMT.Ch06.Submission`.
+- EndToEnd.lean proves the children and the parent with standard axioms only.
