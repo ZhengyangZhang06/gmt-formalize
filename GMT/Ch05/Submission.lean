@@ -458,6 +458,83 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Sup bound for the height of `spt V` over a graph plane, from a sup bound for the graph and a
+lower density bound (a step of the proof of Simon Ch. 5, Theorem 4.5, p. 116; the missing-ball
+argument is the one in the proofs of Lemma 2.6 and Corollary 2.7, pp. 112–113).  Let
+`τ = q(0, c)`, `S = q(graph A)`, `λ(x') = c + A x'`, `Γ = q(graph f|B̄ⁿ_R(0))`, and let `b ≥ 0`,
+`κ > 0`, `r + s₀ ≤ a`, `|c| + r + s₀ ≤ R`.  If `|f − λ| ≤ b` on `B̄ⁿ_a(0)`,
+`μ_V(B̄_R(0) ∩ (spt V \ Γ)) ≤ β`, and `μ_V(B̄_s(x)) ≥ κ s` and `dist(x − τ, S) ≤ 2 s₀` for all
+`x ∈ spt V ∩ B̄_r(τ)` and `s ∈ (0, s₀]`, then `dist(x − τ, S) ≤ max{2b, 2β/κ}` on `spt V ∩ B̄_r(τ)`.
+Since `spt V` is `μ_V`-conull, it suffices that if `h = dist(x − τ, S) > 2b`, then the ball
+`B̄_{h/2}(x)` lies in `B̄_R(0)` and misses `Γ`.  A point `y = q(y', f y')` of `Γ` in that ball has
+`|y'| ≤ |y − τ| ≤ s₀ + r ≤ a`, hence `dist(y − τ, S) ≤ |f y' − λ(y')| ≤ b < h/2`.  This contradicts
+`h ≤ dist(y − τ, S) + |x − y|`.  So `κ h/2 ≤ μ_V(B̄_{h/2}(x)) ≤ β`. -/
+theorem tdo_graph_height_sup : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (c : Rn ℓ) (A : Rn n →L[ℝ] Rn ℓ) (R a r s₀ b β κ : ℝ), 0 ≤ b → 0 < κ → r + s₀ ≤ a → ‖c‖ + r + s₀ ≤ R → (∀ x' ∈ closedBall (0 : Rn n) a, ‖f x' - (c + A x')‖ ≤ b) → V.weight (closedBall 0 R ∩ (V.support \ q '' graphOver f (closedBall 0 R))) ≤ ENNReal.ofReal β → (∀ x ∈ V.support ∩ closedBall (q (graphPoint (0 : Rn n) c)) r, ∀ s : ℝ, 0 < s → s ≤ s₀ → ENNReal.ofReal (κ * s) ≤ V.weight (closedBall x s)) → (∀ x ∈ V.support ∩ closedBall (q (graphPoint (0 : Rn n) c)) r, infDist (x - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ 2 * s₀) → ∀ x ∈ V.support ∩ closedBall (q (graphPoint (0 : Rn n) c)) r, infDist (x - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ max (2 * b) (2 * β / κ) := by
+  intro n ℓ U V q f c A R a r s₀ b β κ hb hκ hra hR hf hβ hdens hh x hx
+  -- (iii) `dist(q(x', y) − τ, S) ≤ |y − λ(x')|`, (iv) `|x'| ≤ |q(x', y) − τ|` and (v) `|τ| = |c|`
+  -- from the graph-plane distance estimates, at our `c`
+  obtain ⟨-, -, hiii, hiv, hv⟩ := Submission.tdo_graph_plane_dist n ℓ q A
+  have hiii := fun x' y => hiii x' y c
+  have hiv := fun x' y => hiv x' y c
+  have hv := hv c
+  set τ := q (graphPoint (0 : Rn n) c)
+  set S : Set (Amb n ℓ) :=
+    (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ))
+  set Γ := q '' graphOver f (closedBall (0 : Rn n) R)
+  -- Step 1: `μ_V` is carried by `M ⊆ U` and by `spt μ_V`, so `μ_V((spt V)ᶜ) = 0`
+  have hnull : V.weight V.supportᶜ = 0 := by
+    have hM : (μHE[n] : Measure (Amb n ℓ)).restrict V.carrier V.carrierᶜ = 0 :=
+      ae_iff.1 (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+    have hU : V.weight Uᶜ = 0 := withDensity_absolutelyContinuous _ _
+      (measure_mono_null (compl_subset_compl.2 V.carrier_subset) hM)
+    rw [RectifiableVarifold.support, compl_inter]
+    exact measure_union_null hU Measure.measure_compl_support
+  -- Step 2: we may assume `h = dist(x − τ, S) > 2b`; then `h/2 ∈ (b, s₀]`
+  rcases le_or_gt (infDist (x - τ) S) (2 * b) with hle | hgt
+  · exact le_max_of_le_left hle
+  set h := infDist (x - τ) S
+  have hh2 : h ≤ 2 * s₀ := hh x hx
+  have hs : 0 < h / 2 := by linarith
+  have hss₀ : h / 2 ≤ s₀ := by linarith
+  have hbs : b < h / 2 := by linarith
+  have hxτ : dist x τ ≤ r := mem_closedBall.1 hx.2
+  -- Steps 3–5: `B̄_{h/2}(x) ⊆ B̄_R(0) \ Γ` (step 3, `x ∉ Γ`, is the case `z = x`)
+  have hball : closedBall x (h / 2) ⊆ closedBall 0 R \ Γ := by
+    intro z hz
+    rw [mem_closedBall] at hz
+    refine ⟨?_, ?_⟩
+    · -- `|z| ≤ |z − x| + |x − τ| + |τ| ≤ s₀ + r + |c| ≤ R`
+      have h4 := dist_triangle4 z x τ 0
+      rw [dist_zero_right τ, hv] at h4
+      rw [mem_closedBall]
+      linarith
+    · -- a point `y = q(y', f y')` of `Γ` in the ball would have `dist(y − τ, S) ≤ b < h/2`, while
+      -- `dist(· − τ, S)` is `1`-Lipschitz and `|x − y| ≤ h/2`
+      rintro ⟨w, ⟨y', -, rfl⟩, rfl⟩
+      have hy' : ‖y'‖ ≤ a := by
+        have h1 := hiv y' (f y')
+        rw [← dist_eq_norm] at h1
+        linarith [dist_triangle (q (graphPoint y' (f y'))) x τ]
+      have hL : h ≤ infDist (q (graphPoint y' (f y')) - τ) S +
+          dist (x - τ) (q (graphPoint y' (f y')) - τ) := infDist_le_infDist_add_dist
+      rw [dist_sub_right, dist_comm] at hL
+      linarith [hiii y' (f y'), hf y' (mem_closedBall_zero_iff.2 hy')]
+  -- Step 6: `κ h/2 ≤ μ_V(B̄_{h/2}(x)) ≤ μ_V(B̄_R(0) ∩ (spt V \ Γ)) ≤ β`
+  have hmass : ENNReal.ofReal (κ * (h / 2)) ≤ ENNReal.ofReal β :=
+    calc ENNReal.ofReal (κ * (h / 2)) ≤ V.weight (closedBall x (h / 2)) := hdens x hx _ hs hss₀
+      _ = V.weight (closedBall x (h / 2) ∩ V.support) := (measure_inter_conull hnull).symm
+      _ ≤ V.weight (closedBall 0 R ∩ (V.support \ Γ)) :=
+          measure_mono fun z hz => ⟨(hball hz.1).1, hz.2, (hball hz.1).2⟩
+      _ ≤ ENNReal.ofReal β := hβ
+  have hκβ : κ * (h / 2) ≤ β :=
+    (ENNReal.ofReal_le_ofReal_iff'.1 hmass).resolve_right (not_le.2 (mul_pos hκ hs))
+  refine le_max_of_le_right ((le_div_iff₀ hκ).2 ?_)
+  linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
