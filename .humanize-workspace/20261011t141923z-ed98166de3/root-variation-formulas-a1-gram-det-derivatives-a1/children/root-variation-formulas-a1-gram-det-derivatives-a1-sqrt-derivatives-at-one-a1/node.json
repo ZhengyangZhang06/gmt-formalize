@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.gram_det_derivatives-a1.sqrt_derivatives_at_one-a1",
+  "parent_id": "root.variation_formulas-a1.gram_det_derivatives-a1",
+  "depth": 3,
+  "title": "First and second derivatives of √h(t) at a point where h = 1 (derivative form of √(1 + x) = 1 + x/2 − x²/8 + O(x³))",
+  "statement": "Let h : ℝ → ℝ satisfy h(0) = 1, and suppose h has derivative h₁ at 0. (1) Then t ↦ √h(t) has derivative h₁/2 at 0. (2) Suppose moreover that h is differentiable at every point of some neighbourhood of 0 and that the function deriv h has derivative h₂ at 0. Then the function deriv(t ↦ √h(t)) has derivative h₂/2 − h₁²/4 at 0. Here √ is Real.sqrt.",
+  "lean_statement": "∀ (h : ℝ → ℝ) (h₁ : ℝ), h 0 = 1 → HasDerivAt h h₁ 0 → HasDerivAt (fun t ↦ Real.sqrt (h t)) (h₁ / 2) 0 ∧ ∀ h₂ : ℝ, (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ h t) → HasDerivAt (deriv h) h₂ 0 → HasDerivAt (deriv (fun t ↦ Real.sqrt (h t))) (h₂ / 2 - h₁ ^ 2 / 4) 0",
+  "lean_name": "variation_sqrt_derivatives_at_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-gram-det-derivatives-a1-sqrt-derivatives-at-one-a1-a1"
+}

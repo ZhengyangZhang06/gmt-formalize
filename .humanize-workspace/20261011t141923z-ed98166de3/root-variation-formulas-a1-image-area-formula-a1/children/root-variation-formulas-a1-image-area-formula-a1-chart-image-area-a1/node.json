@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1",
+  "parent_id": "root.variation_formulas-a1.image_area_formula-a1",
+  "depth": 3,
+  "title": "Area formula for an injective map on a Borel subset of a single Simon C¹ chart",
+  "statement": "Let n, N, N′ ∈ ℕ (ℝᵈ = EuclideanSpace ℝ (Fin d)), M ⊆ ℝᴺ, and V ⊆ ℝⁿ, W ⊆ ℝᴺ, ψ : ℝⁿ → ℝᴺ with IsSimonLocalRepresentation 1 M V W ψ. That is: V and W are open; ψ is C¹ on V and injective on V; ψ(V) = W ∩ M; ψ is proper relative to V and W; and Dψ(x) is injective for x ∈ V. Assume tangentSpace M (ψ x) = range Dψ(x) for every x ∈ V. Let B ⊆ W ∩ M be a Borel set. Let f : ℝᴺ → ℝ^{N′} be differentiable at every y ∈ B, with injective derivative Df(y) for every y ∈ B, and injective on B. Then μHE[n](f(B)) = ∫⁻_{y∈B} ofReal(areaJacobian(Df(y) ∘ ι_y)) dμHE[n](y). Here ι_y : tangentSpace M y → ℝᴺ is the inclusion (subtypeL) and areaJacobian(K) = √det(K* ∘ K).",
+  "lean_statement": "∀ (n N N' : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (f : Rn N → Rn N') (B : Set (Rn N)), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → MeasurableSet B → B ⊆ W ∩ M → (∀ y ∈ B, DifferentiableAt ℝ f y) → (∀ y ∈ B, Function.Injective (fderiv ℝ f y)) → InjOn f B → μHE[n] (f '' B) = ∫⁻ y in B, ENNReal.ofReal (areaJacobian ((fderiv ℝ f y).comp (tangentSpace M y).subtypeL)) ∂μHE[n]",
+  "lean_name": "variation_chart_image_area",
+  "depends_on": [
+    "root.variation_formulas-a1.image_area_formula-a1.jacobian_chain_rule-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.variation_formulas-a1.image_area_formula-a1.jacobian_chain_rule-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-image-area-formula-a1-chart-image-area-a1-a1"
+}

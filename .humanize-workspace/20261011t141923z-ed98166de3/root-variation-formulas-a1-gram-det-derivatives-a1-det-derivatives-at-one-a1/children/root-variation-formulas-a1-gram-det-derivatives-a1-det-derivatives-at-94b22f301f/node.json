@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.gram_det_derivatives-a1.det_derivatives_at_one-a1.second_order_at_one-a1",
+  "parent_id": "root.variation_formulas-a1.gram_det_derivatives-a1.det_derivatives_at_one-a1",
+  "depth": 4,
+  "title": "Second-order Leibniz sum at the identity matrix equals (tr B)² − tr(B·B)",
+  "statement": "Let ι be a finite index set with decidable equality and let B be a real ι×ι matrix. Write I for the ι×ι identity matrix, so I_{ab} = δ_{ab}. For m ∈ ι let ι∖{m} be the finite set of indices different from m, and for l ∈ ι∖{m} let (ι∖{m})∖{l} = ι∖{m, l}. Then Σ_{σ∈Perm(ι)} sgn(σ) · Σ_{m∈ι} [Σ_{l∈ι∖{m}} (Π_{j∈(ι∖{m})∖{l}} I_{σ(j) j}) · B_{σ(l) l}] · B_{σ(m) m} = (tr B)² − tr(B·B). Here Perm(ι) is the finite group of permutations of ι, sgn(σ) ∈ {1, −1} is regarded as a real number, tr is the trace and B·B is the matrix product.",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] [DecidableEq ι] (B : Matrix ι ι ℝ), ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∑ l ∈ Finset.univ.erase m, (∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) (σ j) j) * B (σ l) l) * B (σ m) m = B.trace ^ 2 - (B * B).trace",
+  "lean_name": "variation_matrix_det_leibniz_second_order_at_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-gram-det-derivatives-a1-det-derivatives-at-94b22f301f-a1"
+}

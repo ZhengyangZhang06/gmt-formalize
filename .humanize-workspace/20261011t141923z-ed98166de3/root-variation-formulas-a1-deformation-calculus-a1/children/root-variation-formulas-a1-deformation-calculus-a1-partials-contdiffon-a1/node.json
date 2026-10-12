@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.deformation_calculus-a1.partials_contdiffon-a1",
+  "parent_id": "root.variation_formulas-a1.deformation_calculus-a1",
+  "depth": 3,
+  "title": "Spatial and time partial derivatives of a family that is jointly C^n on an open set are C^m there (m + 1 ≤ n)",
+  "statement": "Let N ∈ ℕ, Φ : ℝ → ℝᴺ → ℝᴺ, let O ⊆ ℝ × ℝᴺ be open, and let m, n ∈ WithTop ℕ∞ (smoothness exponents) satisfy m + 1 ≤ n. Suppose (t,x) ↦ Φ t x is C^n on O (ContDiffOn ℝ n). Then the spatial derivative (t,x) ↦ fderiv ℝ (Φ t) x and the time derivative (t,x) ↦ deriv (s ↦ Φ s x) t are both C^m on O.",
+  "lean_statement": "∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (O : Set (ℝ × Rn N)) (m n : WithTop ℕ∞), IsOpen O → ContDiffOn ℝ n (fun p : ℝ × Rn N ↦ Φ p.1 p.2) O → m + 1 ≤ n → ContDiffOn ℝ m (fun p : ℝ × Rn N ↦ fderiv ℝ (Φ p.1) p.2) O ∧ ContDiffOn ℝ m (fun p : ℝ × Rn N ↦ deriv (fun s ↦ Φ s p.2) p.1) O",
+  "lean_name": "variation_deformation_partials_contDiffOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-deformation-calculus-a1-partials-contdiffon-a1-a1"
+}
