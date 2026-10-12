@@ -1519,6 +1519,34 @@ theorem Submission.coareaJacobian_mul_normDet_chart : ∀ (N m k : ℕ) (M : Set
     ← LinearMap.normDet_codRestrict hBT]
   exact key
 
+/-- **Co-area formula on one straightening chart** (Step 3 of the supplied proof of 6.6).
+`Ψ` is an injective `C¹` immersion of the open set `Ω ⊆ ℝᵐ × ℝᵏ` with `f ∘ Ψ = WithLp.fst` and
+`T_{Ψ p} M = range DΨ(p)`; `S ⊆ Ψ(Ω)` and `g` are Borel. Write `j b = toLp(0, b)` and
+`J_v(p) = normDet(DΨ(p) ∘ j)`. The area formula for `Ψ`, together with the pointwise identity
+`J*_f(Ψ p) · normDet DΨ(p) = J_v(p)` (part (2) of `coarea_jacobian_linear_algebra`), gives
+`∫_S g J*_f dHᵐ⁺ᵏ = ∫_{Ω ∩ Ψ⁻¹S} J_v · g ∘ Ψ` (`coarea_chart_area_pullback`). Tonelli and the
+area formula for the fibre maps `b ↦ Ψ(toLp(a, b))` identify the right side with
+`∫_{ℝᵐ} ∫_{S ∩ f⁻¹{y}} g dHᵏ dLᵐ(y)` and show that the inner integral is Borel in `y`
+(`coarea_chart_fiber_disintegration`). -/
+theorem Submission.coarea_formula_on_straightening_chart : ∀ (N m k : ℕ) (M : Set (Rn N))
+    (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N)
+    (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω →
+    (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, DifferentiableAt ℝ f (Ψ p)) →
+    (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) →
+    (∀ p ∈ Ω, tangentSpace M (Ψ p) = LinearMap.range (fderiv ℝ Ψ p).toLinearMap) →
+    MeasurableSet S → S ⊆ Ψ '' Ω → Measurable g →
+    Measurable (fun y ↦ ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧
+      ∫⁻ x in S, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] =
+        ∫⁻ y, ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
+  intro N m k M f Ω Ψ S g hΩ hΨ hΨi hΨd hfd hfΨ hT hS hSΨ hg
+  -- Steps 1–3: pull the left side back to `Ω ∩ Ψ⁻¹S`, using the pointwise Jacobian identity.
+  have hpull := Submission.coarea_chart_area_pullback N m k M f Ω Ψ S g hΩ hΨ hΨi hΨd hfd hfΨ hT
+    hS hSΨ (Submission.coarea_jacobian_linear_algebra.2 N m k M f)
+  -- Steps 4–7: Tonelli and the area formula on the fibres `{toLp(a, ·)} ∩ Ω`.
+  obtain ⟨hmeas, hfib⟩ := Submission.coarea_chart_fiber_disintegration N m k f Ω Ψ S g hΩ hΨ hΨi
+    hΨd hfΨ hS hSΨ hg
+  exact ⟨hmeas, hpull.trans hfib⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
