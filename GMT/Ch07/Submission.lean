@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A dense sequence in the Euclidean unit ball of `n`-covectors.**  There are `bₖ ∈ Λⁿ(ℝᴾ)`
+with `|bₖ|_E ≤ 1` such that every `β` with `|β|_E ≤ 1` lies in the closure of `{bₖ}` (normed
+topology of `Λⁿ`; `|·|_E` is the Euclidean coefficient norm of Simon (6.1.15)).
+
+`Λⁿ` is finite dimensional, since `α ↦ (α(e_{J(0)}, …, e_{J(n−1)}))_J` is linear and injective
+(a multilinear map is determined by its values on basis vectors).  Hence `Λⁿ` is proper, second
+countable and separable, so the ball `B = {|β|_E ≤ 1}` contains a countable `D` with
+`B ⊆ closure D`.  `D` is nonempty as `0 ∈ B`, so `D` is the range of a sequence. -/
+theorem Submission.regcomp_covector_unit_ball_dense_seq : ∀ (P n : ℕ), ∃ b : ℕ → Covector (Euclid P) n, (∀ k, covectorEuclideanNorm (b k) ≤ 1) ∧ ∀ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 → β ∈ closure (Set.range b) := by
+  intro P n
+  -- the standard basis `e` of `ℝᴾ`
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `ev α = (α(e ∘ J))_J`, linear since addition and scaling of covectors are pointwise
+  let ev : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α J => α fun i => e (J i)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  -- `ev` is injective, so `Λⁿ` is finite dimensional
+  have : FiniteDimensional ℝ (Covector (Euclid P) n) :=
+    FiniteDimensional.of_injective ev fun α β h =>
+      ContinuousAlternatingMap.toAlternatingMap_injective <|
+        AlternatingMap.coe_multilinearMap_injective <|
+          Module.Basis.ext_multilinear (fun _ => e) fun J => congr_fun h J
+  -- `Λⁿ` is separable, so `B` has a countable subset `D` with `B ⊆ closure D`
+  obtain ⟨D, hDB, hDc, hBD⟩ := (TopologicalSpace.IsSeparable.of_separableSpace
+    {β : Covector (Euclid P) n | covectorEuclideanNorm β ≤ 1}).exists_countable_dense_subset
+  -- `0 ∈ B ⊆ closure D`, so `D` is nonempty
+  have hD : D.Nonempty := closure_nonempty_iff.1 ⟨0, hBD (by simp)⟩
+  -- enumerate `D = range b`
+  obtain ⟨b, rfl⟩ := hDc.exists_eq_range hD
+  exact ⟨b, fun k => hDB (Set.mem_range_self k), fun β hβ => hBD hβ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
