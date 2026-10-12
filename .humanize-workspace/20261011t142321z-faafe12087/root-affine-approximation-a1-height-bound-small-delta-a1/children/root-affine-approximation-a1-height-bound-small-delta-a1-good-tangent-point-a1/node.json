@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.height_bound_small_delta-a1.good_tangent_point-a1",
+  "parent_id": "root.affine_approximation-a1.height_bound_small_delta-a1",
+  "depth": 3,
+  "title": "Chebyshev selection of a point with an n-plane tangent and small normal parts (book (4)-(5))",
+  "statement": "Let n, l be natural numbers, mu a measure on R^(n+l), and P : R^(n+l) -> L(R^(n+l), R^(n+l)) mu-a.e. strongly measurable. Assume (A): for mu-a.e. x there is an n-dimensional linear subspace T with P(x) = p_T (the orthogonal projection onto T, T.starProjection). Let xi in R^(n+l), let s, R, K, lambda be real with lambda > 0 and s <= R, and let F be a finite subset of R^(n+l). Assume (H1): for each y in F, the Lebesgue integral of ofReal(|(x - y) - P(x)(x - y)|^2) over the closed ball B_R(xi) is <= ofReal(K). Assume (H2): ofReal((#F) K) < ofReal(lambda) mu(B_s(xi)) in [0, infinity]. Then there are x_0 in the closed ball B_s(xi) and an n-dimensional linear subspace T with P(x_0) = p_T and |(x_0 - y) - p_T(x_0 - y)|^2 < lambda for every y in F.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ), AEStronglyMeasurable P μ → (∀ᵐ x ∂μ, ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ P x = T.starProjection) → ∀ (ξ : Amb n ℓ) (s R K lam : ℝ) (F : Finset (Amb n ℓ)), 0 < lam → s ≤ R → (∀ y ∈ F, ∫⁻ x in closedBall ξ R, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤ ENNReal.ofReal K) → ENNReal.ofReal ((F.card : ℝ) * K) < ENNReal.ofReal lam * μ (closedBall ξ s) → ∃ x₀ ∈ closedBall ξ s, ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ P x₀ = T.starProjection ∧ ∀ y ∈ F, ‖(x₀ - y) - T.starProjection (x₀ - y)‖ ^ 2 < lam",
+  "lean_name": "aal_good_tangent_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-height-bound-small-delta-a1-good-tangent-point-a1-a1"
+}

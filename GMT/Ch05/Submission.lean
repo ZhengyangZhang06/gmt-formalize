@@ -458,6 +458,60 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Lemma 2.5 (p. 109): a maximal family of centres in `S` with pairwise
+disjoint closed balls `B_r(z)` is a finite `2r`-net of `S`.  If every `B_r(y)`, `y ∈ S`, lies in `E`
+and has `μ(B_r(y)) ≥ a > 0`, while `μ(E) ≤ b`, then such a family `G` has
+`#G · a ≤ Σ_{z ∈ G} μ(B_r(z)) = μ(⋃_{z ∈ G} B_r(z)) ≤ μ(E) ≤ b`.  Take one, `F`, of maximal
+cardinality; if `dist(y, z) > 2r` for all `z ∈ F`, then `F ∪ {y}` would be a larger such family. -/
+theorem aal_packing_finite_net : ∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [OpensMeasurableSpace X] (μ : Measure X) (S E : Set X) (r a b : ℝ), 0 < r → 0 < a → 0 ≤ b → μ E ≤ ENNReal.ofReal b → (∀ y ∈ S, closedBall y r ⊆ E ∧ ENNReal.ofReal a ≤ μ (closedBall y r)) → ∃ F : Finset X, (↑F : Set X) ⊆ S ∧ (F.card : ℝ) * a ≤ b ∧ ∀ y ∈ S, ∃ z ∈ F, dist y z ≤ 2 * r := by
+  intro X _ _ _ μ S E r a b hr ha hb hE hS
+  classical
+  -- Packing bound: if `G ⊆ S` has pairwise disjoint closed `r`-balls, then `#G · a ≤ b`.
+  have hbound : ∀ G : Finset X, (↑G : Set X) ⊆ S →
+      (↑G : Set X).PairwiseDisjoint (fun z => closedBall z r) → (G.card : ℝ) * a ≤ b := by
+    intro G hGS hGd
+    have key : (G.card : ℝ≥0∞) * ENNReal.ofReal a ≤ ENNReal.ofReal b :=
+      calc (G.card : ℝ≥0∞) * ENNReal.ofReal a = ∑ _z ∈ G, ENNReal.ofReal a := by
+            rw [Finset.sum_const, nsmul_eq_mul]
+        _ ≤ ∑ z ∈ G, μ (closedBall z r) := Finset.sum_le_sum fun z hz => (hS z (hGS hz)).2
+        _ = μ (⋃ z ∈ G, closedBall z r) :=
+            (measure_biUnion_finset hGd fun z _ => measurableSet_closedBall).symm
+        _ ≤ μ E := measure_mono (Set.iUnion₂_subset fun z hz => (hS z (hGS hz)).1)
+        _ ≤ ENNReal.ofReal b := hE
+    rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (Nat.cast_nonneg _)] at key
+    exact (ENNReal.ofReal_le_ofReal_iff hb).1 key
+  -- The cardinalities of admissible sets form a nonempty set of naturals bounded by `⌊b / a⌋`.
+  let C : Set ℕ := {k | ∃ G : Finset X, (↑G : Set X) ⊆ S ∧
+    (↑G : Set X).PairwiseDisjoint (fun z => closedBall z r) ∧ G.card = k}
+  have hCne : C.Nonempty := ⟨0, ∅, by simp, by simp, rfl⟩
+  have hCbdd : BddAbove C := by
+    refine ⟨⌊b / a⌋₊, ?_⟩
+    rintro k ⟨G, hGS, hGd, rfl⟩
+    exact Nat.le_floor ((le_div_iff₀ ha).2 (hbound G hGS hGd))
+  -- An admissible `F` of maximal cardinality.
+  obtain ⟨F, hFS, hFd, hFcard⟩ := Nat.sSup_mem hCne hCbdd
+  refine ⟨F, hFS, hbound F hFS hFd, ?_⟩
+  -- Net property: otherwise `insert y F` would be admissible of larger cardinality.
+  intro y hy
+  by_contra! hfar
+  have hyF : y ∉ F := fun h => by
+    have := hfar y h
+    rw [dist_self] at this
+    linarith
+  have hmem : (insert y F).card ∈ C := by
+    refine ⟨insert y F, ?_, ?_, rfl⟩
+    · rw [Finset.coe_insert]
+      exact Set.insert_subset hy hFS
+    · rw [Finset.coe_insert]
+      exact hFd.insert fun z hz _ => closedBall_disjoint_closedBall (by linarith [hfar z hz])
+  have hle := le_csSup hCbdd hmem
+  rw [Finset.card_insert_of_notMem hyF, hFcard] at hle
+  omega
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
