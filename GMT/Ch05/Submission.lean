@@ -458,6 +458,73 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Dominated convergence for radial cutoff integrals (the cutoff limit in the `Lᵖ` monotonicity
+argument, Simon Ch. 4, 4.1–4.8): if `g` is `μ`-integrable on `B_S(y)`, the continuous cutoffs
+`0 ≤ φ_k ≤ 1` equal `1` on `(-∞, 1]` and `0` on `[T, ∞)`, `φ_k(s) = 0` eventually for each `s > 1`,
+and `T t ≤ S`, then `∫ φ_k(|x - y|/t) g dμ → ∫_{B_t(y)} g dμ`.  The integrands vanish off `B_S(y)`,
+so these are integrals for `ν = μ ⌞ B_S(y)`, dominated by `|g|` and converging pointwise to
+`1_{B_t(y)} g`. -/
+theorem ted_lpm_am_cutoff_integral_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (S T t : ℝ), 0 < t → 1 ≤ T → T * t ≤ S → IntegrableOn g (closedBall y S) μ → (∀ k, Continuous (φ k)) → (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) → (∀ k s, s ≤ 1 → φ k s = 1) → (∀ k s, T ≤ s → φ k s = 0) → (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0) → Tendsto (fun k => ∫ x, φ k (‖x - y‖ / t) * g x ∂μ) atTop (𝓝 (∫ x in closedBall y t, g x ∂μ)) := by
+  intro n ℓ μ g y φ S T t ht hT hTt hg hφc hφ01 hφone hφ0 hφev
+  -- Steps 1–2: `t ≤ T t ≤ S`, and `g` is integrable for `ν := μ ⌞ B_S(y)`.
+  obtain ⟨ν, hν⟩ : ∃ ν : Measure (Amb n ℓ), ν = μ.restrict (closedBall y S) := ⟨_, rfl⟩
+  have hgν : Integrable g ν := by rw [hν]; exact hg
+  have htS : t ≤ S := by nlinarith
+  -- Step 3: off `B_S(y)` we have `|x - y|/t ≥ T`, so every integrand vanishes there and each
+  -- `μ`-integral is the corresponding `ν`-integral.
+  have hout : ∀ k, ∀ x, x ∉ closedBall y S → φ k (‖x - y‖ / t) * g x = 0 := by
+    intro k x hx
+    have hxS : S < ‖x - y‖ := by simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+    have : T ≤ ‖x - y‖ / t := by
+      rw [le_div_iff₀ ht]
+      linarith
+    rw [hφ0 k _ this, zero_mul]
+  have heq : ∀ k, ∫ x, φ k (‖x - y‖ / t) * g x ∂μ = ∫ x, φ k (‖x - y‖ / t) * g x ∂ν := by
+    intro k
+    rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => hout k x hx)]
+  -- Step 4: since `B_t(y) ⊆ B_S(y)`, the limit is the `ν`-integral of `1_{B_t(y)} g`.
+  have hlimeq : ∫ x in closedBall y t, g x ∂μ = ∫ x, (closedBall y t).indicator g x ∂ν := by
+    rw [hν, integral_indicator measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall,
+      inter_eq_left.mpr (closedBall_subset_closedBall htS)]
+  rw [hlimeq]
+  refine (tendsto_congr heq).mpr ?_
+  -- Step 5: dominated convergence for `ν` with bound `|g|`.
+  refine tendsto_integral_of_dominated_convergence (fun x => ‖g x‖) ?_ hgν.norm ?_ ?_
+  · -- (a) `x ↦ φ_k(|x - y|/t)` is continuous and `g` is `ν`-a.e. strongly measurable.
+    intro k
+    exact ((hφc k).comp
+      (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / t)).aestronglyMeasurable.mul
+      hgν.aestronglyMeasurable
+  · -- (b) `|φ_k(|x - y|/t) g(x)| ≤ |g(x)|` since `0 ≤ φ_k ≤ 1`.
+    intro k
+    refine Eventually.of_forall fun x => ?_
+    rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg (hφ01 k _).1]
+    exact mul_le_of_le_one_left (norm_nonneg _) (hφ01 k _).2
+  · -- (c) the sequence is constantly `g x` on `B_t(y)` and eventually `0` off it.
+    refine Eventually.of_forall fun x => ?_
+    by_cases hx : x ∈ closedBall y t
+    · rw [indicator_of_mem hx]
+      have hle : ‖x - y‖ / t ≤ 1 := by
+        rw [div_le_one ht]
+        simpa [mem_closedBall, dist_eq_norm] using hx
+      have : (fun k => φ k (‖x - y‖ / t) * g x) = fun _ => g x := by
+        funext k
+        rw [hφone k _ hle, one_mul]
+      rw [this]
+      exact tendsto_const_nhds
+    · rw [indicator_of_notMem hx]
+      have hlt : 1 < ‖x - y‖ / t := by
+        rw [one_lt_div ht]
+        simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hφev _ hlt] with k hk
+      rw [hk, zero_mul]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
