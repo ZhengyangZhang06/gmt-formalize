@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.line_deriv-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1",
+  "depth": 4,
+  "title": "Ambient directional derivative of a Lipschitz function along a chart differential (Simon Ch. 2, 4.10)",
+  "statement": "Let n, P ∈ ℕ (ℝᵏ = EuclideanSpace ℝ (Fin k)), let f : ℝ^P → ℝ be L-Lipschitz (L ∈ ℝ≥0), and let Φ : ℝⁿ → ℝ^P and w ∈ ℝⁿ be such that Φ is Fréchet differentiable at w and f∘Φ is Fréchet differentiable at w. Then for every u ∈ ℝⁿ the function s ↦ f(Φ(w) + s·DΦ(w)u) (s ∈ ℝ) is differentiable at s = 0 with derivative D(f∘Φ)(w)u, where DΦ(w) = fderiv ℝ Φ w and D(f∘Φ)(w) = fderiv ℝ (f ∘ Φ) w.",
+  "lean_statement": "∀ (n P : ℕ) (f : Eucl P → ℝ) (L : ℝ≥0) (Φ : Eucl n → Eucl P) (w : Eucl n), LipschitzWith L f → DifferentiableAt ℝ Φ w → DifferentiableAt ℝ (f ∘ Φ) w → ∀ u : Eucl n, HasDerivAt (fun s : ℝ => f (Φ w + s • fderiv ℝ Φ w u)) (fderiv ℝ (f ∘ Φ) w u) 0",
+  "lean_name": "slicing_im_tg_line_deriv_of_comp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-5d0f3ce1cd-a1"
+}
