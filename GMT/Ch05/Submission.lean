@@ -458,6 +458,53 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 / Remark 5.3 (re-graphing over a rotated plane): for a linear
+isometry `q` of `ℝ^{n+ℓ}`, `y ∈ ℝ^{n+ℓ}` and `v` `C¹` on the open set `U ⊆ ℝⁿ`, the graph map
+`Ψ(x) = y + q(x, v(x))` is `C¹` on `U` with `DΨ(x) h = q(h, Dv(x) h)`.  With
+`E = EuclideanSpace.finAddEquivProd` we have `graphPoint a b = E⁻¹ (a, b)`, so
+`Ψ = y + L ∘ (id, v)` for the continuous linear map `L = q ∘ E⁻¹`; then apply the product and chain
+rules. -/
+theorem arp_rgr_graph_map_fderiv : ∀ {n ℓ : ℕ} (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ 1 v U → ContDiffOn ℝ 1 (fun x => y + q (graphPoint x (v x))) U ∧ ∀ x ∈ U, ∀ h : Rn n, fderiv ℝ (fun x => y + q (graphPoint x (v x))) x h = q (graphPoint h (fderiv ℝ v x h)) := by
+  intro n ℓ q v y U hU hv
+  -- Step 1: `graphPoint a b = E⁻¹ (a, b)`, checked coordinatewise (`Fin.append_left/right`).
+  have hgp : ∀ (a : Rn n) (b : Rn ℓ), graphPoint a b =
+      (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (a, b) := by
+    intro a b
+    apply (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    ext i <;> simp [graphPoint]
+  -- Step 2: `Ψ(x) = y + L (x, v x)` for the continuous linear map `L = q ∘ E⁻¹`.
+  let L : Rn n × Rn ℓ →L[ℝ] Amb n ℓ :=
+    (q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).comp
+      ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm :
+        Rn n × Rn ℓ →L[ℝ] Amb n ℓ)
+  have hL : ∀ a b, L (a, b) = q (graphPoint a b) := by
+    intro a b
+    simp [L, hgp]
+  have hΨ : (fun x => y + q (graphPoint x (v x))) = fun x => y + L (x, v x) := by
+    funext x
+    rw [hL]
+  refine ⟨?_, ?_⟩
+  · -- Step 3: `x ↦ (x, v x)` is `C¹` on `U`; compose with `L` and add the constant `y`.
+    rw [hΨ]
+    exact contDiffOn_const.add (L.contDiff.comp_contDiffOn (contDiffOn_id.prodMk hv))
+  · -- Step 4: `U` is open, so `v` is differentiable at `x`; then the product and chain rules.
+    intro x hx h
+    have hvx : HasFDerivAt v (fderiv ℝ v x) x :=
+      ((hv.differentiableOn one_ne_zero).differentiableAt (hU.mem_nhds hx)).hasFDerivAt
+    have hpair : HasFDerivAt (fun x' => (x', v x'))
+        ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ v x)) x :=
+      (hasFDerivAt_id x).prodMk hvx
+    have hΨx : HasFDerivAt (fun x' => y + L (x', v x'))
+        (L.comp ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ v x))) x :=
+      (L.hasFDerivAt.comp x hpair).const_add y
+    rw [hΨ, hΨx.fderiv]
+    simp [hL]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
