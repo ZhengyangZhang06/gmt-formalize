@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1.parametric_integral-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+  "depth": 4,
+  "title": "Smoothness of parametric interval integrals with all derivatives under the integral sign",
+  "statement": "Let P ∈ ℕ, E := ℝ^P (Eucl P), V a complete real normed space, G : ℝ × E → V a C^∞ map, a, b ∈ ℝ, and g(x) := ∫_a^b G(t,x) dt (the oriented interval integral). Then: (1) g is C^∞; (2) for every j ∈ ℕ the map (t,x) ↦ ∂_x^jG(t,x) := iteratedFDeriv ℝ j (z ↦ G(t,z)) x is continuous on ℝ × E; (3) for all j ∈ ℕ and x ∈ E, D^jg(x) = ∫_a^b ∂_x^jG(t,x) dt.",
+  "lean_statement": "∀ (P : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (G : ℝ × Eucl P → V) (a b : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x : Eucl P => ∫ t in a..b, G (t, x)) ∧ (∀ j : ℕ, Continuous (fun p : ℝ × Eucl P => iteratedFDeriv ℝ j (fun z : Eucl P => G (p.1, z)) p.2)) ∧ ∀ (j : ℕ) (x : Eucl P), iteratedFDeriv ℝ j (fun y : Eucl P => ∫ t in a..b, G (t, y)) x = ∫ t in a..b, iteratedFDeriv ℝ j (fun z : Eucl P => G (t, z)) x",
+  "lean_name": "iwl_cr_ro_intervalIntegral_contDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-operator-a1-04239efcb3-a1"
+}

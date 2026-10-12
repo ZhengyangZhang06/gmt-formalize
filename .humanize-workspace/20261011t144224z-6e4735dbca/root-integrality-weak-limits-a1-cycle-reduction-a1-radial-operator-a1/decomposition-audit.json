@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "hasFDerivAt_integral_of_dominated_of_fderiv_le|norm_iteratedFDeriv_le_of_bilinear|curryLeftLI|norm_curryLeft|curryLeft_apply_apply|iteratedFDeriv_comp_right|iteratedFDeriv_succ_eq_comp_right|continuous_parametric_intervalIntegral_of_continuous|contDiff_infty|contDiff_succ_iff_fderiv",
+        "contDiff_parametric|ContDiff.*intervalIntegral|contDiff_integral|iteratedFDeriv_integral|integral_iteratedFDeriv|contDiffOn_parametric",
+        "iwl_cr_ro_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radial_operator_audit__x4u9p_s/ParentAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radial_operator_audit__x4u9p_s/InstanceCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/TaylorIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-operator-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-operator-a1/decomposition-v1.json",
+        "/tmp/radial_operator_audit__x4u9p_s/parametric_integral_Proof.lean",
+        "/tmp/radial_operator_audit__x4u9p_s/integrand_derivative_Proof.lean",
+        "/tmp/radial_operator_audit__x4u9p_s/integrand_bound_Proof.lean",
+        "/tmp/radial_operator_audit__x4u9p_s/ParentAssembly.lean",
+        "/tmp/radial_operator_audit__x4u9p_s/InstanceCheck.lean"
+      ],
+      "conclusion": "The snapshot records project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The frozen contract and inspected library files match the compilation inputs. Searches found the required first-order integration, currying and Leibniz lemmas, but no relevant all-order parametric-integral theorem; the TaylorIntegral match concerns a different result. The split appropriately separates three genuine analytic obligations. All dependencies are empty and correctly directed; no proposed name is reserved in the DAG or another branch's decomposition. All names are bare identifiers. Independently generated challenge modules elaborate, and each supplied proof appendix compiles alone with exact-type Submission.X resolution. The complete assembly proves the selected frozen parent type. All three proofs and the assembled parent use only propext, Classical.choice and Quot.sound. Explicit instance checks confirm the intended covector scalar action, Euclidean scaling, completeness and operator norms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "parametric_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including completeness and arbitrary oriented endpoints. The proof establishes the smooth partial derivative, obtains a uniform local bound from compactness of uIcc a b × closedBall x₀ 1, and checks the differentiation-under-integral hypotheses. Induction over all complete codomains legitimately applies to continuous-linear-map-valued integrands; the zero-order identification and currying/integration interchange are justified. All finite orders yield precisely C∞. The proof is complete, independently compiled, and has no circular or sibling dependency."
+    },
+    {
+      "key": "integrand_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches both prose conclusions with all variables and smoothness hypotheses present. The proof constructs contraction through curryLeftLI, establishes joint smoothness by composition and operator evaluation, and applies the chain and product rules. Evaluation produces exactly the required factor t in the first summand and the insertion of w in the second. Covector scalar multiplication and Fin.cons evaluation were independently checked. The supplied proof compiles alone and uses neither the parent nor another child."
+    },
+    {
+      "key": "integrand_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly retains D ≥ 0, every derivative bound through j, t ∈ [0,1], and ball membership. The proof controls composition with t • id, applies the bilinear Leibniz estimate, proves higher identity derivatives vanish, and evaluates the remaining terms to RD + jD. It separately handles j = 0 and uses norm_id_le, so P = 0 is covered. Negative R gives no admissible x. The final scalar estimate is justified, and the complete proof compiles independently without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
