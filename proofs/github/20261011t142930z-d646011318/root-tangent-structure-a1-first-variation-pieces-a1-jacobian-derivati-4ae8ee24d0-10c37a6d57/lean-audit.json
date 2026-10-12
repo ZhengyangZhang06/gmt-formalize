@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2878dee09dbdf920d6845b606b3a21821e383f932c11927577c104f296d41e50",
+  "git_delta": {
+    "base_commit": "c97d312d0a38c8d10578c717cfb24db3c08af20a",
+    "candidate_commit": "f6ace2358728a56beee248c0bb74b355c0269fbd",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_sum_inner_starProjection_eq_trace",
+    "diff_sha256": "582163835b9f7322d7a9ab6f5245dd69bd4e29c46874f028517d04c0f9d34d0b",
+    "source_sha256": "d79fa1b621f421a510148d8e30073bca2a369271e60804a86ccdfa1c3a42b39c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_sum_inner_starProjection_eq_trace",
+      "statement": "∀ (N : ℕ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (L : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N)), ∑ k : Fin N, inner ℝ (L (P.starProjection (EuclideanSpace.single k (1 : ℝ)))) (P.starProjection (EuclideanSpace.single k (1 : ℝ))) = LinearMap.trace ℝ (EuclideanSpace ℝ (Fin N)) (L.toLinearMap ∘ₗ P.starProjection.toLinearMap)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
