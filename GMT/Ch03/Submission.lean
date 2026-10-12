@@ -828,12 +828,6 @@ theorem Submission.tangentMeasure_zero_dim_carrier : ∀ (N : ℕ) (μ : Measure
   obtain ⟨j, rfl⟩ := he hx
   exact Or.inr (mem_iUnion.mpr ⟨j, 0, rfl⟩)
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-! ### Measures with approximate tangent planes (Simon 1.6 "⇐", measure form) -/
 
 /-- **Simon Ch. 3, Theorem 1.6 "⇐" (pp. 72–74) with Remark 1.5(3) (p. 71), measure form.** If
@@ -942,3 +936,8 @@ theorem Submission.rectifiable_of_approx_tangent_measure : (∀ (n ℓ : ℕ) (�
       intro j m i hxE
       obtain ⟨t, ht⟩ := Set.mem_iUnion.mp (hFcov j m i hxE)
       exact hx j m i t ht
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
