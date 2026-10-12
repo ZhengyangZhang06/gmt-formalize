@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "iwl_cr_ce_|iwl_cr_radial_operator|isoperimetric_apply_eq_zero_of_disjoint_support",
+        "norm_iteratedFDeriv_smul_le|support_iteratedFDeriv_subset|HasCompactSupport.iteratedFDeriv|theorem tsupport_eq|one_of_mem_closedBall|theorem hasCompactSupport|continuous_iteratedFDeriv|bounded_above_of_compact_support|hasContDiffBump_of_innerProductSpace|continuous_eval_const|theorem integral_add|theorem integral_const_mul|tendstoUniformlyOn_iff",
+        "theorem exists_isSubordinate|def IsSubordinate|theorem sum_eq_one",
+        "git show 3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone-independent-audit-cq6jpeb7/AcceptedReuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone-independent-audit-cq6jpeb7/ParentImplication.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone-independent-audit-cq6jpeb7/TrialRecheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json",
+        "/tmp/cone-independent-audit-cq6jpeb7/AcceptedReuse.lean",
+        "/tmp/cone-independent-audit-cq6jpeb7/ParentImplication.lean",
+        "/tmp/cone-independent-audit-cq6jpeb7/TrialRecheck.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace byte-for-byte; compiler dependencies match the pinned revisions. The snapshot supplies the partition-of-unity, bump, derivative-support and Leibniz lemmas. No proposed declarations occur in the snapshot's Ch06 sources. DAG and decomposition scans found no conflicting reservations for the three new names; the reused declaration is comparator-accepted with an identical frozen type. All four one-line propositions pass validation and independently generated comparator challenges elaborate without child implementations. Recompiled child proofs use only propext, Classical.choice and Quot.sound. A separate implication from the exact child contracts and frozen radial dependency to the selected parent also compiles with only these axioms. The split is appropriate and acyclic: vanishing supports locality, cutoff continuity supports the radial construction, and these establish C = X ∘ Φ. The radial theorem remains an external obligation, not an assumed completed proof. Smoothness indices, norms and scalar actions match their intended instances; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted frozen type and valid bare name. Compact support lies in the zero region; a finite subordinate smooth partition decomposes the form into pieces annihilated by T. Linearity completes the proof, including empty support and arbitrary U. Reuse compatibility and axioms were independently checked."
+    },
+    {
+      "key": "locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean include every hypothesis. Openness of N gives tsupport(ψ − φ) ⊆ Nᶜ, disjoint from T.support. The declared vanishing dependency and linearity prove equality. The proof is complete and non-circular."
+    },
+    {
+      "key": "cutoff_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all smoothness, compactness, containment, product and convergence hypotheses. K = tsupport ζ supplies common compact support. Bounded cutoff derivatives, simultaneous finite-order smallness and δ = ε/(2(A+1)) make the Leibniz bound strictly less than ε at every order."
+    },
+    {
+      "key": "cutoff_radial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit hypothesis H makes the contract independently usable without implementing the radial sibling. Integral evaluation proves linearity of the chosen forms; the bump gives test forms and the required local formula. Derivatives vanish outside the common input support, so H's bounds establish every cutoff_null hypothesis. The parent discharges H from its frozen dependency and obtains the exact cone relation through locality."
+    }
+  ],
+  "required_changes": []
+}
