@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5faa4cd149c46e15c28632b3a4d85ad1e152011ebabfa140893a913ac565ed9c",
+  "git_delta": {
+    "base_commit": "87c5fa6e5c125affdde2662b3845a029a4f6f835",
+    "candidate_commit": "286a700acd46271355e3e5e5cf795206b1f350b5",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_ccb_affine_combine",
+    "diff_sha256": "ea663ca5e7e7a8b28e7b106e141a6e934c22ad68e7533a7a12bf3bbc8d4dc9c2",
+    "source_sha256": "a2a0f4222b426bbb8e8d7f372f10e37ebf209260dde9d59f3b9b32baa40a2a9b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_ccb_affine_combine",
+      "statement": "∀ (b c c' k δ : ℝ) (X Y M : ℝ≥0∞), 0 ≤ b → 0 ≤ c → 0 ≤ k → δ ^ 2 ≤ 1 → b + c + b * c ≤ c' → (1 + b) * c + k ≤ c' → X ≤ ENNReal.ofReal (1 + b * δ ^ 2) * Y + ENNReal.ofReal (k * δ ^ 2) → Y ≤ ENNReal.ofReal (1 + c * δ ^ 2) * M + ENNReal.ofReal (c * δ ^ 2) → X ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * M + ENNReal.ofReal (c' * δ ^ 2)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
