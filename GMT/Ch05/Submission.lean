@@ -1329,6 +1329,89 @@ theorem ball_weakly_harmonic_local_representative : ∀ n : ℕ, 1 ≤ n → ∀
     refine this.congr (fun j => ?_)
     exact (key x hxm j).symm
   exact tendsto_nhds_unique hlim1 hx
+/-- **Gluing local harmonic representatives on the unit ball** (the patching step of Weyl's lemma).
+If for every `ε ∈ (0, 1/2)` some `v_ε` is harmonic near every point of `B̆_{1-ε}(0)` and agrees with
+`w` almost everywhere on `B̆_{1-2ε}(0)`, then some `u` is harmonic near every point of `B̆₁(0)` and
+agrees with `w` almost everywhere on `B̆₁(0)`.
+Proof: two representatives `v_ε, v_ε'` are continuous and a.e. equal on the open ball
+`B̆_{1-2 max(ε, ε')}(0)`, hence equal there.  So `u(x) = v_{(1-|x|)/4}(x)` coincides with
+`v_{ε₀}`, `ε₀ = (1-|x₀|)/4`, on `B̆_{ε₀}(x₀)` and is harmonic at `x₀`; and `u(x) = v_{1/(m+3)}(x)`
+as soon as `1/(m+3) < (1-|x|)/4`, so `u = w` off a countable union of null sets. -/
+theorem ball_harmonic_patching : ∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, (∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∃ v : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd v (ball (0 : Rn n) (1 - ε)) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))), v x = w x) → ∃ u : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd u (ball (0 : Rn n) 1) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x := by
+  intro n _ w hw
+  -- A representative `v ε` for every `ε` (any function outside `(0, 1/2)`).
+  have hw' : ∀ ε : ℝ, ∃ v : Rn n → ℝ, 0 < ε → ε < 1 / 2 →
+      InnerProductSpace.HarmonicOnNhd v (ball (0 : Rn n) (1 - ε)) ∧
+        ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))), v x = w x := by
+    intro ε
+    by_cases h : 0 < ε ∧ ε < 1 / 2
+    · obtain ⟨v, hv⟩ := hw ε h.1 h.2
+      exact ⟨v, fun _ _ => hv⟩
+    · exact ⟨w, fun h1 h2 => absurd ⟨h1, h2⟩ h⟩
+  choose v hv using hw'
+  -- Compatibility: two representatives agree everywhere on `B̆_{1 - 2 max(ε, ε')}(0)`.
+  have compat : ∀ ε ε' : ℝ, 0 < ε → ε < 1 / 2 → 0 < ε' → ε' < 1 / 2 →
+      ∀ x ∈ ball (0 : Rn n) (1 - 2 * max ε ε'), v ε x = v ε' x := by
+    intro ε ε' hε hε2 hε' hε'2
+    have hU : ball (0 : Rn n) (1 - 2 * max ε ε') ⊆ ball 0 (1 - 2 * ε) :=
+      ball_subset_ball (by linarith [le_max_left ε ε'])
+    have hU' : ball (0 : Rn n) (1 - 2 * max ε ε') ⊆ ball 0 (1 - 2 * ε') :=
+      ball_subset_ball (by linarith [le_max_right ε ε'])
+    have hc : ContinuousOn (v ε) (ball (0 : Rn n) (1 - 2 * max ε ε')) :=
+      (hv ε hε hε2).1.continuousOn.mono (hU.trans (ball_subset_ball (by linarith)))
+    have hc' : ContinuousOn (v ε') (ball (0 : Rn n) (1 - 2 * max ε ε')) :=
+      (hv ε' hε' hε'2).1.continuousOn.mono (hU'.trans (ball_subset_ball (by linarith)))
+    have h1 : v ε =ᵐ[volume.restrict (ball (0 : Rn n) (1 - 2 * max ε ε'))] w :=
+      ae_restrict_of_ae_restrict_of_subset hU (hv ε hε hε2).2
+    have h2 : v ε' =ᵐ[volume.restrict (ball (0 : Rn n) (1 - 2 * max ε ε'))] w :=
+      ae_restrict_of_ae_restrict_of_subset hU' (hv ε' hε' hε'2).2
+    exact fun x hx => Measure.eqOn_open_of_ae_eq (h1.trans h2.symm) isOpen_ball hc hc' hx
+  -- The patched function `u(x) = v_{(1 - |x|)/4}(x)`.
+  refine ⟨fun x => v ((1 - ‖x‖) / 4) x, ?_, ?_⟩
+  · -- Near `x₀`, `u = v_{ε₀}` with `ε₀ = (1 - |x₀|)/4`.
+    intro x₀ hx₀
+    rw [mem_ball_zero_iff] at hx₀
+    obtain ⟨d, hd⟩ : ∃ d : ℝ, d = 1 - ‖x₀‖ := ⟨_, rfl⟩
+    have hε₀ : 0 < d / 4 := by linarith
+    have hε₀' : d / 4 < 1 / 2 := by linarith [norm_nonneg x₀]
+    have heq : (fun x => v ((1 - ‖x‖) / 4) x) =ᶠ[𝓝 x₀] v (d / 4) := by
+      filter_upwards [ball_mem_nhds x₀ hε₀] with x hx
+      rw [mem_ball_iff_norm] at hx
+      have h1 : ‖x‖ - ‖x₀‖ ≤ ‖x - x₀‖ := norm_sub_norm_le x x₀
+      have h2 : ‖x₀‖ - ‖x‖ ≤ ‖x₀ - x‖ := norm_sub_norm_le x₀ x
+      rw [norm_sub_rev] at h2
+      have hex : 0 < (1 - ‖x‖) / 4 := by linarith
+      have hex' : (1 - ‖x‖) / 4 < 1 / 2 := by linarith [norm_nonneg x]
+      refine compat _ _ hex hex' hε₀ hε₀' x ?_
+      rw [mem_ball_zero_iff]
+      have hmax : max ((1 - ‖x‖) / 4) (d / 4) < 5 * d / 16 :=
+        max_lt (by linarith) (by linarith)
+      linarith
+    exact (InnerProductSpace.harmonicAt_congr_nhds heq).2
+      ((hv (d / 4) hε₀ hε₀').1 x₀ (by rw [mem_ball_zero_iff]; linarith))
+  · -- Off the null set where some `v_{1/(m+3)}` differs from `w`, `u = w`.
+    have hmem : ∀ m : ℕ, 0 < 1 / ((m : ℝ) + 3) ∧ 1 / ((m : ℝ) + 3) < 1 / 2 := by
+      intro m
+      have hm : (0 : ℝ) ≤ m := m.cast_nonneg
+      exact ⟨by positivity, one_div_lt_one_div_of_lt (by norm_num) (by linarith)⟩
+    have hall : ∀ᵐ x ∂(volume : Measure (Rn n)), ∀ m : ℕ,
+        x ∈ ball (0 : Rn n) (1 - 2 * (1 / ((m : ℝ) + 3))) → v (1 / ((m : ℝ) + 3)) x = w x := by
+      rw [ae_all_iff]
+      intro m
+      exact (ae_restrict_iff' measurableSet_ball).1 (hv _ (hmem m).1 (hmem m).2).2
+    rw [ae_restrict_iff' measurableSet_ball]
+    filter_upwards [hall] with x hx hxB
+    show v ((1 - ‖x‖) / 4) x = w x
+    rw [mem_ball_zero_iff] at hxB
+    have hex : 0 < (1 - ‖x‖) / 4 := by linarith
+    have hex' : (1 - ‖x‖) / 4 < 1 / 2 := by linarith [norm_nonneg x]
+    obtain ⟨m, hm⟩ := exists_nat_one_div_lt hex
+    have hm0 : (0 : ℝ) ≤ m := m.cast_nonneg
+    have hm3 : 1 / ((m : ℝ) + 3) < (1 - ‖x‖) / 4 :=
+      lt_of_le_of_lt (one_div_le_one_div_of_le (by linarith) (by linarith)) hm
+    rw [compat _ _ hex hex' (hmem m).1 (hmem m).2 x
+      (by rw [mem_ball_zero_iff, max_eq_left hm3.le]; linarith)]
+    exact hx m (by rw [mem_ball_zero_iff]; linarith)
 
 end Submission
 
