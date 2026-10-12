@@ -458,6 +458,104 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Pointwise ray inequality for `C¹` functions** (inequality (2.2) of the smooth annulus
+estimate in the boundary-layer estimate for the Rellich compactness step in the proof of Simon
+Ch. 5, Lemma 3.1, p. 114).  For `φ ∈ C¹(ℝⁿ)`, `|x| ≤ 1` and `τ ≤ 1`,
+`(1 - τ) |φ(x)|² ≤ 2 ∫_τ^1 |φ(t x)|² dt + 2 (1 - τ)² ∫_τ^1 |∇φ(σ x)|² dσ`.
+Proof: for `t ∈ [τ, 1]`, the fundamental theorem of calculus along the ray gives
+`φ(x) - φ(t x) = ∫_t^1 ⟨∇φ(σ x), x⟩ dσ`, so `|x| ≤ 1` and Cauchy–Schwarz on `[τ, 1]` give
+`|φ(x) - φ(t x)|² ≤ (1 - τ) ∫_τ^1 |∇φ(σ x)|² dσ`.  Then `(a + b)² ≤ 2a² + 2b²`, and integrate
+over `t ∈ [τ, 1]`, a set of length `1 - τ`. -/
+theorem ble_sac_ray_sq_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ (x : Rn n), ‖x‖ ≤ 1 → ∀ τ : ℝ, τ ≤ 1 → ENNReal.ofReal (1 - τ) * ‖φ x‖ₑ ^ 2 ≤ 2 * (∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2) + 2 * ENNReal.ofReal ((1 - τ) ^ 2) * ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2 := by
+  intro n φ hφ x hx τ hτ
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  have hdiff : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  -- `d/dσ φ(σ x) = ⟨∇φ(σ x), x⟩`.
+  have hderiv : ∀ σ : ℝ, HasDerivAt (fun σ : ℝ => φ (σ • x)) (inner ℝ (gradient φ (σ • x)) x) σ := by
+    intro σ
+    have h1 : HasFDerivAt φ (fderiv ℝ φ (σ • x)) (σ • x) := (hdiff (σ • x)).hasFDerivAt
+    have h2 : HasDerivAt (fun σ : ℝ => σ • x) x σ := by
+      simpa using (hasDerivAt_id σ).smul_const x
+    have h3 := h1.comp_hasDerivAt σ h2
+    rw [inner_gradient_left]
+    exact h3
+  have hray : Continuous (fun σ : ℝ => σ • x) := continuous_id.smul continuous_const
+  have hcont_inner : Continuous (fun σ : ℝ => inner ℝ (gradient φ (σ • x)) x) :=
+    (hgc.comp hray).inner continuous_const
+  set G : ℝ≥0∞ := ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2 with hG_def
+  set m : ℝ≥0∞ := ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ with hm_def
+  -- Cauchy–Schwarz on `[τ, 1]`: `m² ≤ (1 - τ) G`.
+  have hcs : m ^ 2 ≤ ENNReal.ofReal (1 - τ) * G := by
+    have hmeas : AEMeasurable (fun σ : ℝ => ‖gradient φ (σ • x)‖ₑ) (volume.restrict (Icc τ 1)) :=
+      (hgc.comp hray).enorm.aemeasurable
+    have h := ENNReal.lintegral_mul_le_Lp_mul_Lq (volume.restrict (Icc τ 1))
+      Real.HolderConjugate.two_two (aemeasurable_const (b := (1 : ℝ≥0∞))) hmeas
+    simp only [Pi.mul_apply, one_mul, setLIntegral_const, Real.volume_Icc,
+      ENNReal.rpow_two, one_pow] at h
+    calc m ^ 2 ≤ ((ENNReal.ofReal (1 - τ)) ^ (1 / 2 : ℝ) * G ^ (1 / 2 : ℝ)) ^ 2 := by
+          gcongr
+      _ = ENNReal.ofReal (1 - τ) * G := by
+        rw [mul_pow, ← ENNReal.rpow_natCast, ← ENNReal.rpow_natCast, ← ENNReal.rpow_mul,
+          ← ENNReal.rpow_mul]
+        norm_num
+  -- `(p + q)² ≤ 2p² + 2q²` in `[0, ∞]`.
+  have hsq : ∀ p q : ℝ≥0∞, (p + q) ^ 2 ≤ 2 * p ^ 2 + 2 * q ^ 2 := by
+    intro p q
+    rcases eq_or_ne p ⊤ with hp | hp
+    · simp [hp]
+    rcases eq_or_ne q ⊤ with hq | hq
+    · simp [hq]
+    lift p to ℝ≥0 using hp
+    lift q to ℝ≥0 using hq
+    have h := add_sq_le (a := p) (b := q)
+    rw [mul_add] at h
+    exact_mod_cast h
+  -- Pointwise inequality (2.1) for `t ∈ [τ, 1]`.
+  have hpt : ∀ t ∈ Icc τ 1, ‖φ x‖ₑ ^ 2 ≤ 2 * ‖φ (t • x)‖ₑ ^ 2 + 2 * (ENNReal.ofReal (1 - τ) * G) := by
+    intro t ht
+    have hftc : ∫ σ in t..1, inner ℝ (gradient φ (σ • x)) x = φ x - φ (t • x) := by
+      rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun σ _ => hderiv σ)
+        (hcont_inner.intervalIntegrable t 1)]
+      simp
+    have hb : ‖φ x - φ (t • x)‖ₑ ≤ m := by
+      rw [← hftc, intervalIntegral.integral_of_le ht.2]
+      calc ‖∫ σ in Ioc t 1, inner ℝ (gradient φ (σ • x)) x‖ₑ
+            ≤ ∫⁻ σ in Ioc t 1, ‖inner ℝ (gradient φ (σ • x)) x‖ₑ :=
+              enorm_integral_le_lintegral_enorm _
+        _ ≤ ∫⁻ σ in Ioc t 1, ‖gradient φ (σ • x)‖ₑ := by
+            apply lintegral_mono
+            intro σ
+            rw [enorm_le_iff_norm_le]
+            calc ‖inner ℝ (gradient φ (σ • x)) x‖ ≤ ‖gradient φ (σ • x)‖ * ‖x‖ :=
+                  norm_inner_le_norm _ _
+              _ ≤ ‖gradient φ (σ • x)‖ * 1 := by gcongr
+              _ = _ := mul_one _
+        _ ≤ m := lintegral_mono_set (Ioc_subset_Icc_self.trans (Icc_subset_Icc ht.1 le_rfl))
+    have htri : ‖φ x‖ₑ ≤ ‖φ (t • x)‖ₑ + ‖φ x - φ (t • x)‖ₑ := by
+      calc ‖φ x‖ₑ = ‖φ (t • x) + (φ x - φ (t • x))‖ₑ := by ring_nf
+        _ ≤ _ := enorm_add_le _ _
+    calc ‖φ x‖ₑ ^ 2 ≤ (‖φ (t • x)‖ₑ + ‖φ x - φ (t • x)‖ₑ) ^ 2 := by gcongr
+      _ ≤ 2 * ‖φ (t • x)‖ₑ ^ 2 + 2 * ‖φ x - φ (t • x)‖ₑ ^ 2 := hsq _ _
+      _ ≤ 2 * ‖φ (t • x)‖ₑ ^ 2 + 2 * m ^ 2 := by gcongr
+      _ ≤ _ := by gcongr
+  -- Integrate (2.1) over `t ∈ [τ, 1]`.
+  calc ENNReal.ofReal (1 - τ) * ‖φ x‖ₑ ^ 2 = ∫⁻ t in Icc τ 1, ‖φ x‖ₑ ^ 2 := by
+        rw [setLIntegral_const, Real.volume_Icc, mul_comm]
+    _ ≤ ∫⁻ t in Icc τ 1, (2 * ‖φ (t • x)‖ₑ ^ 2 + 2 * (ENNReal.ofReal (1 - τ) * G)) :=
+        setLIntegral_mono' measurableSet_Icc hpt
+    _ = 2 * (∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2) +
+          2 * (ENNReal.ofReal (1 - τ) * G) * ENNReal.ofReal (1 - τ) := by
+        rw [lintegral_add_right _ measurable_const, lintegral_const_mul' _ _ (by simp),
+          setLIntegral_const, Real.volume_Icc]
+    _ = _ := by
+        rw [ENNReal.ofReal_pow (by linarith)]
+        ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
