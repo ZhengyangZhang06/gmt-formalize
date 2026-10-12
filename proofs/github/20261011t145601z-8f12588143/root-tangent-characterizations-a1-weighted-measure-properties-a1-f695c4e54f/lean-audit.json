@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "44aa380558657cb9a025dd1d5784fcb83492328c4356a1eb043fc43a1a7f5e58",
+  "git_delta": {
+    "base_commit": "f4206e9ea2ce3137071b421d8d709d35c8a12c73",
+    "candidate_commit": "78ecfd38d62ac0d9cc58f44cf0b1800af4cd4cca",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "weightedMeasure_finite_null_tangent",
+    "diff_sha256": "c0647f57e36c065130ebfb45c3f642b088de98e3e5f2090147511089bec16fd4",
+    "source_sha256": "edeb7feaabf15554a96157b1b1924070cda6326cfa701d79c52467b75279e926",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weightedMeasure_finite_null_tangent",
+      "statement": "∀ (n N : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (μ : Measure (Rn N)), NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → μ = ((μHE[n] : Measure (Rn N)).restrict M).withDensity (fun z ↦ ENNReal.ofReal (θ z)) → (∀ K : Set (Rn N), IsCompact K → μ K < ∞) ∧ (∀ S : Set (Rn N), μ S = 0 ↔ μHE[n] (M ∩ S) = 0) ∧ ∀ (x : Rn N) (P : Submodule ℝ (Rn N)), HasWeightedApproximateTangentSpaceAt n M θ x P → HasApproxTangentPlaneWithMultiplicity n μ x P (θ x)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
