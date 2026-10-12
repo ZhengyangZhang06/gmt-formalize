@@ -451,6 +451,66 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.1.2, 6.1.5** (the Euclidean coefficient norm in the standard basis `e`):
+`Σ_{j : Fin n → Fin P} α(e_{j(0)}, …, e_{j(n−1)})² = n! |α|_E²`.  Tuples `j` with a repeated
+index contribute `0` (alternation), and `(I, σ) ↦ I ∘ σ` is a bijection from the strictly
+increasing `I` and the permutations `σ` of `Fin n` onto the injective `j`, with
+`α(e_{I ∘ σ}) = sgn σ · α(e_I)`. -/
+theorem Submission.regcomp_covector_sq_sum_basisFun : ∀ (P n : ℕ) (α : Covector (Euclid P) n), ∑ j : Fin n → Fin P, (α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2 := by
+  intro P n α
+  classical
+  -- `|α|_E² = Σ_I [I strictly increasing] α(e_I)²`, so `n! |α|_E² = Σ_{(I, σ)} α(e_I)²` over
+  -- strictly increasing `I` and `σ ∈ Perm(Fin n)`
+  unfold covectorEuclideanNorm
+  rw [Real.sq_sqrt (Finset.sum_nonneg fun I _ => by positivity), ← Finset.sum_filter,
+    Finset.mul_sum]
+  have hcard : ∀ x : ℝ, (n.factorial : ℝ) * x = ∑ _σ : Equiv.Perm (Fin n), x := fun x => by
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+  simp only [hcard]
+  rw [← Finset.sum_product']
+  -- alternation: non-injective `j` contribute `0`
+  have hzero : ∀ j : Fin n → Fin P, ¬ Injective j →
+      α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k)) = 0 := fun j hj =>
+    α.map_eq_zero_of_not_injective _
+      fun h => hj (Injective.of_comp (f := ⇑(EuclideanSpace.basisFun (Fin P) ℝ)) h)
+  rw [← Finset.sum_filter_of_ne (p := Injective) fun j _ hne => by
+    by_contra hj
+    exact hne (by rw [hzero j hj]; norm_num)]
+  symm
+  -- `(I, σ) ↦ I ∘ σ` is a bijection onto the injective `j`, and `α(e_{I ∘ σ}) = sgn σ · α(e_I)`
+  refine Finset.sum_bij (fun p _ => fun k => p.1 (p.2 k)) ?_ ?_ ?_ ?_
+  · intro p hp
+    simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp ⊢
+    exact hp.injective.comp p.2.injective
+  · -- equal ranges force `I = I'`, and then `σ = σ'` by injectivity of `I`
+    intro p hp q hq hpq
+    simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp hq
+    have hrange : Set.range p.1 = Set.range q.1 := by
+      rw [← EquivLike.range_comp p.1 p.2, ← EquivLike.range_comp q.1 q.2]
+      exact congrArg Set.range hpq
+    have hI : p.1 = q.1 := (StrictMono.range_inj_of_wellFoundedLT hp hq).mp hrange
+    have hσ : p.2 = q.2 := by
+      ext k
+      have := congr_fun hpq k
+      rw [hI] at this
+      exact congrArg Fin.val (hq.injective this)
+    exact Prod.ext hI hσ
+  · -- `j ∘ Tuple.sort j` is monotone and injective, hence strictly increasing
+    intro j hj
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hj
+    refine ⟨(j ∘ Tuple.sort j, (Tuple.sort j)⁻¹), ?_, ?_⟩
+    · simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true]
+      exact (Tuple.monotone_sort j).strictMono_of_injective (hj.comp (Tuple.sort j).injective)
+    · funext k
+      simp
+  · intro p _
+    have hperm : α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 (p.2 k))) =
+        Equiv.Perm.sign p.2 • α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 k)) :=
+      α.toAlternatingMap.map_perm (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 k)) p.2
+    dsimp only
+    rw [hperm]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign p.2) with h | h <;> simp [h]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
