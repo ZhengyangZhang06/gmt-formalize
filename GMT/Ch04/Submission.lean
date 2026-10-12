@@ -7489,6 +7489,23 @@ theorem Submission.mcm_lp_density_of_monotonicity : (∀ (n ℓ : ℕ) (V : Rect
     hF₃.trans h₂⟩
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by
+  -- §1–§2: `T_x V` exists a.e. (1.3, Ch. 3 1.9); `μ_V` is Radon, `dim T_x V = n` a.e. and
+  -- `x ↦ p_{T_x V}` is `μ_V`-measurable (used by every later section); first variation (2.2).
+  obtain ⟨hTangent, hStruct, hFirstVar⟩ := Submission.tangent_structure_first_variation
+  -- §3: stationary monotonicity and density (3.6–3.11).
+  obtain ⟨hStatMono, hStatDensity⟩ := Submission.stationary_monotonicity_density hStruct
+  -- 3.12–3.13 and 4.10(1): the canonical representatives.
+  obtain ⟨hCanonical, hLpSupport⟩ := Submission.canonical_representatives hTangent hStruct
+  -- 3.17, 3.18 and §4: monotonicity in the presence of mean curvature.
+  obtain ⟨hBounded, hLog, hLpMono, hLpDensity⟩ := Submission.mean_curvature_monotonicity hStruct
+  -- 6.1 and 6.2.
+  obtain ⟨hBall, hHull⟩ := Submission.support_in_ball_convex_hull hStruct
+  exact ⟨hTangent, hFirstVar,
+    Submission.stationary_iff_variational_of_first_variation hStruct hFirstVar,
+    hStatMono, hStatDensity, hCanonical, hBounded, hLog, hLpMono, hLpDensity, hLpSupport,
+    Submission.poincare_inequality hTangent hStruct, Submission.sobolev_inequality hTangent hStruct,
+    hBall, hHull, Submission.classical_tangent hTangent hStruct⟩
 
 /-- **Fubini on the annulus** `A = B_ρ(ξ) \ B_σ(ξ)` (the radial integration by parts behind the
 integrating factors of Simon Ch. 4, 3.17 and 4.7). If `μ` is finite on compact sets, `w` is
