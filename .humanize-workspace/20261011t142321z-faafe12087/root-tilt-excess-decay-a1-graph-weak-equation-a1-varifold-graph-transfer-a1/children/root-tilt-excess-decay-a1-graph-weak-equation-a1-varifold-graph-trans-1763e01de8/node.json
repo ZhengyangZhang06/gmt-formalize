@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.varifold_graph_transfer-a1.transfer_consequences-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.varifold_graph_transfer-a1",
+  "depth": 4,
+  "title": "Bochner and null-set transfer from a lintegral transfer identity",
+  "statement": "Let n, l be natural numbers and mu a measure on R^{n+l}. Let S be an arbitrary subset of R^{n+l}, A a Borel subset of R^n (MeasurableSet A), G : R^n -> R^{n+l} a Borel map, and W : R^n -> R a Borel function with W(x) >= 0 for every x.\nAssume the lintegral transfer identity: for every Borel phi : R^{n+l} -> [0, infinity], int_S phi dmu = int_A ofReal(W(x)) phi(G(x)) dL^n(x). These are lower integrals; int_S is against mu restricted to S, and int_A is against Lebesgue measure L^n = volume restricted to A.\nThen:\n(i) for every Borel phi : R^{n+l} -> R, int_S phi dmu = int_A W(x) phi(G(x)) dL^n(x) as Bochner integrals. Lean's convention gives a non-integrable function integral 0, and the identity holds for every Borel phi, integrable or not;\n(ii) for every set Z of R^{n+l} with mu(Z) = 0, for L^n-a.e. x: if x is in A and G(x) is in Z, then W(x) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (S : Set (Amb n ℓ)) (A : Set (Rn n)) (G : Rn n → Amb n ℓ) (W : Rn n → ℝ), MeasurableSet A → Measurable G → Measurable W → (∀ x, 0 ≤ W x) → (∀ φ : Amb n ℓ → ℝ≥0∞, Measurable φ → ∫⁻ y in S, φ y ∂μ = ∫⁻ x in A, ENNReal.ofReal (W x) * φ (G x)) → (∀ φ : Amb n ℓ → ℝ, Measurable φ → ∫ y in S, φ y ∂μ = ∫ x in A, W x * φ (G x)) ∧ ∀ Z : Set (Amb n ℓ), μ Z = 0 → ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ A → G x ∈ Z → W x = 0",
+  "lean_name": "gwe_vgt_transfer_consequences",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-varifold-graph-trans-1763e01de8-a1"
+}
