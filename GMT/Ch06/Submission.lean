@@ -586,6 +586,41 @@ theorem Submission.constancy_riesz_eq_integral_mul_of_indicator_eq : ∀ {α : T
     filter_upwards [hgh] with x hx
     rw [hx]
 
+/-- **Riesz representation `(L¹(μ))* = L^∞(μ)`** for a finite measure `μ`, used without proof in
+Simon Ch. 6, proof of Theorem 2.34 (p. 142; cf. Folland, *Real Analysis*, Thm 6.15).  Put
+`C' = max(C, 0)` and `ν(A) = F(1_A)`.  Since `1_{A ∪ B} = 1_A + 1_B` for disjoint `A, B` and
+`∫ |1_A| dμ = μ(A)`, `ν` is additive with `|ν(A)| ≤ C' μ(A)`.  The bounded density lemma gives a
+measurable `θ` with `|θ| ≤ C'` everywhere and `F(1_A) = ∫_A θ dμ`, and the extension from
+indicators gives `F f = ∫ f θ dμ` for every integrable `f`. -/
+theorem Submission.constancy_riesz_l1_dual_bounded_density : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∃ θ : α → ℝ, Measurable θ ∧ (∃ M : ℝ, ∀ x, |θ x| ≤ M) ∧ ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ := by
+  intro α _ μ hμ F C hadd hsmul hbound
+  -- Indicators of measurable sets are integrable, since `μ` is finite.
+  have hind : ∀ A : Set α, MeasurableSet A → Integrable (A.indicator (1 : α → ℝ)) μ :=
+    fun A hA => (integrable_const (1 : ℝ)).indicator hA
+  -- Step 1: `ν(A) = F(1_A)` is additive, since `1_{A ∪ B} = 1_A + 1_B` for disjoint `A, B`.
+  have hνadd : ∀ A B : Set α, MeasurableSet A → MeasurableSet B → Disjoint A B →
+      F ((A ∪ B).indicator 1) = F (A.indicator 1) + F (B.indicator 1) := by
+    intro A B hA hB hAB
+    rw [Set.indicator_union_of_disjoint hAB]
+    exact hadd _ _ (hind A hA) (hind B hB)
+  -- Step 2: `|ν(A)| ≤ C ∫ |1_A| dμ = C μ(A) ≤ max(C, 0) μ(A)`.
+  have hνdom : ∀ A : Set α, MeasurableSet A → |F (A.indicator 1)| ≤ max C 0 * μ.real A := by
+    intro A hA
+    have h1 : ∫ x, |A.indicator (1 : α → ℝ) x| ∂μ = μ.real A := by
+      rw [← integral_indicator_one hA]
+      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      exact abs_of_nonneg (Set.indicator_nonneg (fun _ _ => zero_le_one) x)
+    calc |F (A.indicator 1)| ≤ C * μ.real A := by
+          rw [← h1]
+          exact hbound _ (hind A hA)
+      _ ≤ max C 0 * μ.real A := mul_le_mul_of_nonneg_right (le_max_left C 0) measureReal_nonneg
+  -- Step 3: a measurable `θ` with `|θ| ≤ max(C, 0)` everywhere and `F(1_A) = ∫_A θ dμ`.
+  obtain ⟨θ, hθ, hθC, hθν⟩ := Submission.constancy_riesz_bounded_density_of_dominated_additive μ hμ
+    (fun A => F (A.indicator 1)) (max C 0) (le_max_right C 0) hνadd hνdom
+  -- Step 4: extension from indicators to every integrable `f`.
+  exact ⟨θ, hθ, ⟨max C 0, hθC⟩, Submission.constancy_riesz_eq_integral_mul_of_indicator_eq μ hμ F C
+    hadd hsmul hbound θ (max C 0) hθ hθC hθν⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
