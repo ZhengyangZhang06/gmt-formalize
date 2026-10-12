@@ -458,6 +458,102 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 3, proof of Theorem 1.6 ("⇒"): the blow-up of a chart.  Let `φ` be continuous on the
+open set `V ⊆ ℝᵐ` and differentiable at `v₀` with derivative `L`, with `B_δ(v₀) ⊆ V`,
+`c‖w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖` for `‖w‖ ≤ δ` and `ε ≤ ‖φ(v) − φ(v₀)‖` for `v ∈ V`, `‖v − v₀‖ ≥ δ`;
+let `J` be continuous on `V` and `f ∈ C_c(ℝ^N)`.  Then, with `U_r = {u | v₀ + ru ∈ V}`,
+`∫_{U_r} J(v₀ + ru) f(r⁻¹(φ(v₀ + ru) − φ(v₀))) dHᵐ(u) → ∫ J(v₀) f(Lu) dHᵐ(u)` as `r ↓ 0`.
+Proof: dominated convergence (`Hᵐ = Lᵐ` on `ℝᵐ`).  If `spt f ⊆ B_R(0)` and `0 < r < ε/R`, the
+integrand vanishes unless `‖ru‖ < δ`, and then `‖u‖ ≤ R/c`; so it is bounded by
+`sup_{B_δ(v₀)} |J| · sup |f| · 1_{B_{R/c}(0)}`.  Pointwise, `v₀ + ru ∈ V` eventually and
+`r⁻¹(φ(v₀ + ru) − φ(v₀)) → Lu` (`HasFDerivAt.lim`). -/
+theorem rsod_c1tan_chart_blowUp_tendsto : ∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (J : Rn m → ℝ) (L : Rn m →L[ℝ] EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (c δ ε : ℝ) (f : EuclideanSpace ℝ (Fin N) → ℝ), IsOpen V → ContinuousOn φ V → ContinuousOn J V → HasFDerivAt φ L v₀ → 0 < c → 0 < δ → 0 < ε → closedBall v₀ δ ⊆ V → (∀ w : Rn m, ‖w‖ ≤ δ → c * ‖w‖ ≤ ‖φ (v₀ + w) - φ v₀‖) → (∀ v ∈ V, δ ≤ ‖v - v₀‖ → ε ≤ ‖φ v - φ v₀‖) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ u in {u : Rn m | v₀ + r • u ∈ V}, J (v₀ + r • u) * f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) ∂(μHE[m] : Measure (Rn m))) (𝓝[>] 0) (𝓝 (∫ u, J v₀ * f (L u) ∂(μHE[m] : Measure (Rn m)))) := by
+  intro m N V φ J L v₀ c δ ε f hV hφ hJ hL hc hδ hε hball ha hb hf hfs
+  -- Step 1: `Hᵐ = Lᵐ` on `ℝᵐ`, and `v₀ ∈ B_δ(v₀) ⊆ V`.
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  have hv₀ : v₀ ∈ V := hball (mem_closedBall_self hδ.le)
+  -- Step 2: `f(y) ≠ 0 ⇒ ‖y‖ ≤ R`, `|f| ≤ M`, and `|J| ≤ Λ` on `B_δ(v₀)`.
+  obtain ⟨R₀, hR₀⟩ := hfs.isCompact.isBounded.subset_closedBall 0
+  have hR : 0 < max R₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hfR : ∀ y, f y ≠ 0 → ‖y‖ ≤ max R₀ 1 := fun y hy =>
+    (mem_closedBall_zero_iff.mp (hR₀ (subset_tsupport f hy))).trans (le_max_left _ _)
+  obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfs
+  obtain ⟨Λ, hΛ⟩ := (isCompact_closedBall v₀ δ).exists_bound_of_continuousOn (hJ.mono hball)
+  have hΛM : 0 ≤ Λ * M := mul_nonneg ((norm_nonneg _).trans (hΛ v₀ (mem_closedBall_self hδ.le)))
+    ((norm_nonneg _).trans (hM 0))
+  -- Step 3: `U_r = {u | v₀ + r u ∈ V}` is open, so `∫_{U_r} g_r = ∫ 1_{U_r} g_r`.
+  have hcont : ∀ r : ℝ, Continuous fun u : Rn m => v₀ + r • u := fun r => by fun_prop
+  have hUo : ∀ r : ℝ, IsOpen {u : Rn m | v₀ + r • u ∈ V} := fun r => hV.preimage (hcont r)
+  have key : Tendsto (fun r : ℝ => ∫ u, {u : Rn m | v₀ + r • u ∈ V}.indicator
+      (fun u => J (v₀ + r • u) * f (r⁻¹ • (φ (v₀ + r • u) - φ v₀))) u) (𝓝[>] 0)
+      (𝓝 (∫ u, J v₀ * f (L u))) := by
+    refine tendsto_integral_filter_of_dominated_convergence
+      ((closedBall (0 : Rn m) (max R₀ 1 / c)).indicator fun _ => Λ * M) ?_ ?_ ?_ ?_
+    · -- Step 4: `g_r` is continuous on the open set `U_r`.
+      refine Eventually.of_forall fun r => ?_
+      rw [aestronglyMeasurable_indicator_iff (hUo r).measurableSet]
+      refine ContinuousOn.aestronglyMeasurable ?_ (hUo r).measurableSet
+      have hmaps : MapsTo (fun u : Rn m => v₀ + r • u) {u | v₀ + r • u ∈ V} V := fun u hu => hu
+      exact (hJ.comp (hcont r).continuousOn hmaps).mul (hf.comp_continuousOn
+        (((hφ.comp (hcont r).continuousOn hmaps).sub continuousOn_const).const_smul r⁻¹))
+    · -- Step 5: for `0 < r < ε/R`, `|1_{U_r} g_r| ≤ ΛM 1_{B_{R/c}(0)}`.
+      filter_upwards [Ioo_mem_nhdsGT (div_pos hε hR)] with r hr
+      refine ae_of_all _ fun u => ?_
+      obtain ⟨hr0, hrε⟩ := hr
+      by_cases hu : u ∈ {u : Rn m | v₀ + r • u ∈ V}
+      · rw [indicator_of_mem hu]
+        by_cases hfz : f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) = 0
+        · rw [hfz, mul_zero, norm_zero]
+          exact indicator_nonneg (fun _ _ => hΛM) _
+        · have hψ := hfR _ hfz
+          rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr0, inv_mul_le_iff₀ hr0] at hψ
+          have hrR : r * max R₀ 1 < ε := (lt_div_iff₀ hR).mp hrε
+          have hsmall : ‖r • u‖ < δ := by
+            by_contra hcon
+            have := hb (v₀ + r • u) hu (by rw [add_sub_cancel_left]; exact not_lt.mp hcon)
+            linarith
+          have hJb : ‖J (v₀ + r • u)‖ ≤ Λ := hΛ _ (by
+            rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left]; exact hsmall.le)
+          have hlow := ha (r • u) hsmall.le
+          rw [norm_smul, Real.norm_eq_abs, abs_of_pos hr0] at hlow
+          have hu_le : ‖u‖ ≤ max R₀ 1 / c := by
+            rw [le_div_iff₀ hc]
+            refine le_of_mul_le_mul_left ?_ hr0
+            calc r * (‖u‖ * c) = c * (r * ‖u‖) := by ring
+              _ ≤ _ := hlow
+              _ ≤ _ := hψ
+          rw [indicator_of_mem (mem_closedBall_zero_iff.mpr hu_le), norm_mul]
+          exact mul_le_mul hJb (hM _) (norm_nonneg _) ((norm_nonneg _).trans hJb)
+      · rw [indicator_of_notMem hu, norm_zero]
+        exact indicator_nonneg (fun _ _ => hΛM) _
+    · -- The bound is integrable: a constant on a closed ball.
+      exact (integrableOn_const measure_closedBall_lt_top.ne).integrable_indicator
+        measurableSet_closedBall
+    · -- Step 6: pointwise convergence.
+      refine ae_of_all _ fun u => ?_
+      have hlin : Tendsto (fun r : ℝ => v₀ + r • u) (𝓝[>] 0) (𝓝 v₀) := by
+        have : Tendsto (fun r : ℝ => v₀ + r • u) (𝓝 0) (𝓝 (v₀ + (0 : ℝ) • u)) :=
+          (continuous_const.add (continuous_id.smul continuous_const)).tendsto 0
+        rw [zero_smul, add_zero] at this
+        exact this.mono_left nhdsWithin_le_nhds
+      have hmem : ∀ᶠ r in 𝓝[>] (0 : ℝ), v₀ + r • u ∈ V := hlin.eventually (hV.mem_nhds hv₀)
+      have hJlim : Tendsto (fun r : ℝ => J (v₀ + r • u)) (𝓝[>] 0) (𝓝 (J v₀)) :=
+        (hJ.continuousAt (hV.mem_nhds hv₀)).tendsto.comp hlin
+      have hnorm : Tendsto (fun r : ℝ => ‖r⁻¹‖) (𝓝[>] 0) atTop :=
+        tendsto_abs_atTop_atTop.comp tendsto_inv_nhdsGT_zero
+      have hψ : Tendsto (fun r : ℝ => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) (𝓝[>] 0) (𝓝 (L u)) := by
+        simpa only [inv_inv] using hL.lim u hnorm
+      refine (hJlim.mul ((hf.tendsto _).comp hψ)).congr' ?_
+      filter_upwards [hmem] with r hr
+      rw [indicator_of_mem (show u ∈ {u : Rn m | v₀ + r • u ∈ V} from hr)]
+      rfl
+  -- Step 7: conclude.
+  exact key.congr fun r => integral_indicator (hUo r).measurableSet
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
