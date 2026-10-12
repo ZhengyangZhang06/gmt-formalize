@@ -451,6 +451,871 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+set_option maxHeartbeats 1000000 in
+/-- Tangential `C¹` deformations (Simon Ch. 2, before 5.8; Ch. 4, 2.5–2.6; step 3 of the proof
+of 7.1.2).  `X = X₀ + Σᵢ χᵢX` by a partition of unity, where `X₀` vanishes on `N` and `χᵢX` is
+supported in the range of a straightening chart `Ψ(a, w) = ψ(vₚ + a) + Jw` of `N` (`J` an isometry
+onto `(range Dψ(vₚ))ᗮ`; inverse function theorem).  `X₀` is deformed by `id + tX₀`; `Y = χᵢX` by
+`Ψ ∘ (b ↦ b + tZ(b)) ∘ Ψ⁻¹`, `Z = DΨ⁻¹ Y ∘ Ψ`, which keeps `N` because `Z` is horizontal along
+`ℝᵈ × {0}` (`TₓN = range Dψ`), and has `Dφ_t = I + tDY + o(t)` uniformly (mean value inequality
+and symmetry of `D²Ψ`).  The composition has `Dφ_t = I + tDX + o(t)` uniformly, so for small `t`
+it is a bijection with injective derivative (`‖Dφ_t - I‖ ≤ 1/2`); `φ_t = id` for large `|t|`. -/
+theorem Submission.tangential_c1_deformation_exists : ∀ (P d : ℕ) (U N : Set (Euclid P)) (X : Euclid P → Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → (∀ x ∈ N ∩ U, X x ∈ tangentSpace N x) → ∃ φ : ℝ → Euclid P → Euclid P, (∀ t, ContDiff ℝ 1 (φ t) ∧ Bijective (φ t) ∧ (∀ x, Injective (fderiv ℝ (φ t) x)) ∧ (∀ x, x ∉ tsupport X → φ t x = x) ∧ MapsTo (φ t) (N ∩ U) (N ∩ U)) ∧ ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤ ε * |t| := by
+  have hchart := Submission.chart_tangentSpace_eq_range_fderiv
+  -- Step 5: a family with the uniform expansion is, for small `t`, a bijection with injective
+  -- derivative (`‖Dφ_t - I‖ ≤ 1/2`); it is replaced by `id` for large `|t|`
+  have gfinal (P : ℕ) (U N : Set (Euclid P)) (X : Euclid P → Euclid P)
+      (hU : IsOpen U) (hX : ContDiff ℝ 1 X) (hXc : HasCompactSupport X) (hXU : tsupport X ⊆ U)
+      (hgood : ∃ φ : ℝ → Euclid P → Euclid P, ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∃ C : ℝ,
+        (∀ t : ℝ, |t| < δ₀ → ContDiff ℝ 1 (φ t) ∧ (∀ x, x ∉ tsupport X → φ t x = x) ∧
+          MapsTo (φ t) N N ∧ ∀ x, ‖φ t x - x‖ ≤ C * |t|) ∧
+        ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x,
+          ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤ ε * |t|) :
+      ∃ φ : ℝ → Euclid P → Euclid P, (∀ t, ContDiff ℝ 1 (φ t) ∧ Bijective (φ t) ∧
+        (∀ x, Injective (fderiv ℝ (φ t) x)) ∧ (∀ x, x ∉ tsupport X → φ t x = x) ∧
+        MapsTo (φ t) (N ∩ U) (N ∩ U)) ∧ ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ →
+        ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤
+          ε * |t| := by
+    obtain ⟨φ, δ₀, hδ₀, C, hφ, hexp⟩ := hgood
+    obtain ⟨MX, hMX⟩ := (hXc.fderiv ℝ).exists_bound_of_continuous (hX.continuous_fderiv one_ne_zero)
+    obtain ⟨δ₁, hδ₁, h1⟩ := hexp 1 one_pos
+    obtain ⟨η, hη, hηU⟩ := hXc.isCompact.exists_cthickening_subset_open hU hXU
+    have hMX0 : 0 ≤ |MX| := abs_nonneg MX
+    set t₁ : ℝ := min (min δ₀ δ₁) (min (1 / (2 * (|MX| + 1))) (η / (|C| + 1))) with ht₁
+    have ht₁pos : 0 < t₁ := by
+      refine lt_min (lt_min hδ₀ hδ₁) (lt_min (by positivity) (by positivity))
+    refine ⟨fun t => if |t| < t₁ then φ t else id, fun t => ?_, fun ε hε => ?_⟩
+    · by_cases ht : |t| < t₁
+      · simp only [ht, ↓reduceIte]
+        have htδ₀ : |t| < δ₀ := lt_of_lt_of_le ht ((min_le_left _ _).trans (min_le_left _ _))
+        have htδ₁ : |t| < δ₁ := lt_of_lt_of_le ht ((min_le_left _ _).trans (min_le_right _ _))
+        have htM : |t| < 1 / (2 * (|MX| + 1)) :=
+          lt_of_lt_of_le ht ((min_le_right _ _).trans (min_le_left _ _))
+        have htη : |t| < η / (|C| + 1) :=
+          lt_of_lt_of_le ht ((min_le_right _ _).trans (min_le_right _ _))
+        obtain ⟨hC1, hid, hmaps, hdisp⟩ := hφ t htδ₀
+        have hdiff : Differentiable ℝ (φ t) := hC1.differentiable one_ne_zero
+        have hD : ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P)‖ ≤ 1 / 2 := by
+          intro x
+          have hx1 := h1 t htδ₁ x
+          have hx2 : ‖t • fderiv ℝ X x‖ ≤ |t| * |MX| := by
+            rw [norm_smul, Real.norm_eq_abs]
+            exact mul_le_mul_of_nonneg_left ((hMX x).trans (le_abs_self MX)) (abs_nonneg t)
+          have hkey : |t| * (|MX| + 1) ≤ 1 / 2 := by
+            have h2 : 0 < 2 * (|MX| + 1) := by positivity
+            rw [lt_div_iff₀ h2] at htM
+            nlinarith
+          calc ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P)‖
+              = ‖(fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x) +
+                  t • fderiv ℝ X x‖ := by congr 1; abel
+            _ ≤ ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ +
+                  ‖t • fderiv ℝ X x‖ := norm_add_le _ _
+            _ ≤ 1 * |t| + |t| * |MX| := add_le_add hx1 hx2
+            _ = |t| * (|MX| + 1) := by ring
+            _ ≤ 1 / 2 := hkey
+        have happrox : ApproximatesLinearOn (φ t)
+            ((ContinuousLinearEquiv.refl ℝ (Euclid P) : Euclid P →L[ℝ] Euclid P)) univ
+            (1 / 2 : NNReal) := by
+          intro x _ y _
+          have := Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le' (f := φ t)
+            (f' := fun z => fderiv ℝ (φ t) z) (φ := ContinuousLinearMap.id ℝ (Euclid P)) (s := univ)
+            (fun z _ => (hdiff z).hasFDerivAt.hasFDerivWithinAt) (fun z _ => hD z) convex_univ
+            (mem_univ y) (mem_univ x)
+          simpa using this
+        have hinj : Injective (φ t) := by
+          intro x y hxy
+          have := happrox x (mem_univ x) y (mem_univ y)
+          rw [hxy, sub_self, zero_sub, norm_neg] at this
+          have h' : ‖x - y‖ ≤ 1 / 2 * ‖x - y‖ := by simpa using this
+          have : ‖x - y‖ = 0 := by linarith [norm_nonneg (x - y)]
+          exact sub_eq_zero.1 (norm_eq_zero.1 this)
+        have hsurj : Surjective (φ t) := by
+          refine happrox.surjective ?_
+          rcases subsingleton_or_nontrivial (Euclid P) with h | h
+          · exact Or.inl h
+          · right
+            simp
+            norm_num
+        refine ⟨hC1, ⟨hinj, hsurj⟩, ?_, hid, ?_⟩
+        · intro x v w hvw
+          have h0 : fderiv ℝ (φ t) x (v - w) = 0 := by rw [map_sub, hvw, sub_self]
+          have hle : ‖v - w‖ ≤ 1 / 2 * ‖v - w‖ := by
+            calc ‖v - w‖ = ‖(fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P)) (v - w)‖ := by
+                  rw [sub_apply, h0, ContinuousLinearMap.id_apply, zero_sub,
+                    norm_neg]
+              _ ≤ ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P)‖ * ‖v - w‖ :=
+                  ContinuousLinearMap.le_opNorm _ _
+              _ ≤ 1 / 2 * ‖v - w‖ := by gcongr; exact hD x
+          have : ‖v - w‖ = 0 := by linarith [norm_nonneg (v - w)]
+          exact sub_eq_zero.1 (norm_eq_zero.1 this)
+        · rintro x ⟨hxN, hxU⟩
+          refine ⟨hmaps hxN, ?_⟩
+          by_cases hxK : x ∈ tsupport X
+          · apply hηU
+            apply Metric.mem_cthickening_of_dist_le _ x _ _ hxK
+            rw [dist_eq_norm]
+            have hC0 : 0 < |C| + 1 := by positivity
+            rw [lt_div_iff₀ hC0] at htη
+            calc ‖φ t x - x‖ ≤ C * |t| := hdisp x
+              _ ≤ |C| * |t| := mul_le_mul_of_nonneg_right (le_abs_self C) (abs_nonneg t)
+              _ ≤ η := by nlinarith [abs_nonneg t, abs_nonneg C]
+          · rw [hid x hxK]; exact hxU
+      · simp only [ht, ↓reduceIte]
+        refine ⟨contDiff_id, bijective_id, fun x => ?_, fun x _ => rfl, fun x hx => hx⟩
+        rw [fderiv_id]
+        exact injective_id
+    · obtain ⟨δ₂, hδ₂, h2⟩ := hexp ε hε
+      refine ⟨min δ₂ t₁, lt_min hδ₂ ht₁pos, fun t ht x => ?_⟩
+      have ht1 : |t| < t₁ := lt_of_lt_of_le ht (min_le_right _ _)
+      simp only [ht1, ↓reduceIte]
+      exact h2 t (lt_of_lt_of_le ht (min_le_left _ _)) x
+  -- Step 4: a field vanishing on `N` is deformed by `id + tA`
+  have gnormal (P : ℕ) (N S : Set (Euclid P)) (A : Euclid P → Euclid P)
+      (hA : ContDiff ℝ 1 A) (hAc : HasCompactSupport A) (hAS : tsupport A ⊆ S)
+      (hAN : ∀ z ∈ N, A z = 0) :
+      ∃ φ : ℝ → Euclid P → Euclid P, ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∃ C : ℝ,
+        (∀ t : ℝ, |t| < δ₀ → ContDiff ℝ 1 (φ t) ∧ (∀ x, x ∉ S → φ t x = x) ∧
+          MapsTo (φ t) N N ∧ ∀ x, ‖φ t x - x‖ ≤ C * |t|) ∧
+        ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x,
+          ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ A x‖ ≤
+            ε * |t| := by
+    obtain ⟨M, hM⟩ := hAc.exists_bound_of_continuous hA.continuous
+    refine ⟨fun t x => x + t • A x, 1, one_pos, M, fun t _ => ⟨?_, ?_, ?_, ?_⟩,
+      fun ε hε => ⟨1, one_pos, fun t _ x => ?_⟩⟩
+    · exact contDiff_id.add (hA.const_smul t)
+    · intro x hx
+      simp [image_eq_zero_of_notMem_tsupport (fun h => hx (hAS h))]
+    · intro z hz
+      simpa [hAN z hz] using hz
+    · intro x
+      simp only [add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+      rw [mul_comm]
+      exact mul_le_mul_of_nonneg_right (hM x) (abs_nonneg t)
+    · have hd : HasFDerivAt (fun x => x + t • A x)
+          (ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ A x) x :=
+        (hasFDerivAt_id x).add ((hA.differentiable one_ne_zero x).hasFDerivAt.const_smul t)
+      rw [hd.fderiv]
+      simp only [add_sub_cancel_left, sub_self, norm_zero]
+      positivity
+  -- Step 5(d): deformations for `A` and `B` compose to one for `A + B`, as `DA` is uniformly
+  -- continuous and the displacement is `O(t)`
+  have gadd (P : ℕ) (N S : Set (Euclid P)) (Good : (Euclid P → Euclid P) → Prop)
+      (hGood : ∀ A, Good A ↔ ∃ φ : ℝ → Euclid P → Euclid P, ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∃ C : ℝ,
+        (∀ t : ℝ, |t| < δ₀ → ContDiff ℝ 1 (φ t) ∧ (∀ x, x ∉ S → φ t x = x) ∧
+          MapsTo (φ t) N N ∧ ∀ x, ‖φ t x - x‖ ≤ C * |t|) ∧
+        ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x,
+          ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ A x‖ ≤ ε * |t|) :
+      ∀ A B : Euclid P → Euclid P, ContDiff ℝ 1 A → HasCompactSupport A → ContDiff ℝ 1 B →
+        HasCompactSupport B → Good A → Good B → Good (A + B) := by
+    intro A B hA hAc hB hBc hGA hGB
+    obtain ⟨φ, δ₁, hδ₁, C₁, hφ, eφ⟩ := (hGood A).1 hGA
+    obtain ⟨ψ, δ₂, hδ₂, C₂, hψ, eψ⟩ := (hGood B).1 hGB
+    refine (hGood (A + B)).2 ⟨fun t => φ t ∘ ψ t, min δ₁ δ₂, lt_min hδ₁ hδ₂, C₁ + C₂,
+      fun t ht => ?_, fun ε hε => ?_⟩
+    · obtain ⟨h1, h2, h3, h4⟩ := hφ t (lt_of_lt_of_le ht (min_le_left _ _))
+      obtain ⟨g1, g2, g3, g4⟩ := hψ t (lt_of_lt_of_le ht (min_le_right _ _))
+      refine ⟨h1.comp g1, fun x hx => ?_, h3.comp g3, fun x => ?_⟩
+      · simp only [Function.comp_apply, g2 x hx, h2 x hx]
+      · calc ‖(φ t ∘ ψ t) x - x‖ = ‖(φ t (ψ t x) - ψ t x) + (ψ t x - x)‖ := by
+              simp only [Function.comp_apply]; congr 1; abel
+          _ ≤ ‖φ t (ψ t x) - ψ t x‖ + ‖ψ t x - x‖ := norm_add_le _ _
+          _ ≤ C₁ * |t| + C₂ * |t| := add_le_add (h4 _) (g4 _)
+          _ = (C₁ + C₂) * |t| := by ring
+    · obtain ⟨MA, hMA⟩ :=
+        (hAc.fderiv ℝ).exists_bound_of_continuous (hA.continuous_fderiv one_ne_zero)
+      obtain ⟨MB, hMB⟩ :=
+        (hBc.fderiv ℝ).exists_bound_of_continuous (hB.continuous_fderiv one_ne_zero)
+      have hMA0 : 0 ≤ MA := (norm_nonneg _).trans (hMA 0)
+      have hMB0 : 0 ≤ MB := (norm_nonneg _).trans (hMB 0)
+      obtain ⟨η, hη, hUCη⟩ := Metric.uniformContinuous_iff.1
+        ((hAc.fderiv ℝ).uniformContinuous_of_continuous (hA.continuous_fderiv one_ne_zero))
+        (ε / 4) (by positivity)
+      obtain ⟨d₁, hd₁, e1⟩ := eφ (ε / 8) (by positivity)
+      obtain ⟨d₂, hd₂, e2⟩ := eψ (ε / 4) (by positivity)
+      have hm : 0 < min 1 (ε / (4 * (MA + 1))) := lt_min one_pos (by positivity)
+      set τ : ℝ := min 1 (ε / (4 * (MA + 1))) / (ε / 4 + MB + 1) with hτ
+      have hτpos : 0 < τ := div_pos hm (by positivity)
+      refine ⟨min (min (min δ₁ δ₂) (min d₁ d₂)) (min τ (η / (|C₂| + 1))),
+        lt_min (lt_min (lt_min hδ₁ hδ₂) (lt_min hd₁ hd₂)) (lt_min hτpos (by positivity)),
+        fun t ht x => ?_⟩
+      simp only [lt_min_iff] at ht
+      obtain ⟨⟨⟨htδ₁, htδ₂⟩, ⟨htd₁, htd₂⟩⟩, ⟨htτ, htη⟩⟩ := ht
+      obtain ⟨h1, -, -, -⟩ := hφ t htδ₁
+      obtain ⟨g1, -, -, g4⟩ := hψ t htδ₂
+      have hcomp : fderiv ℝ (φ t ∘ ψ t) x = (fderiv ℝ (φ t) (ψ t x)).comp (fderiv ℝ (ψ t) x) :=
+        fderiv_comp x ((h1.differentiable one_ne_zero) _) ((g1.differentiable one_ne_zero) _)
+      have hsum : fderiv ℝ (A + B) x = fderiv ℝ A x + fderiv ℝ B x :=
+        ((hA.differentiable one_ne_zero x).hasFDerivAt.add
+          (hB.differentiable one_ne_zero x).hasFDerivAt).fderiv
+      rw [hcomp, hsum]
+      set y := ψ t x with hy
+      set Pm := fderiv ℝ (φ t) y with hPm
+      set Q := fderiv ℝ (ψ t) x with hQ
+      set a := fderiv ℝ A x with ha
+      set a' := fderiv ℝ A y with ha'
+      set b := fderiv ℝ B x with hb
+      set I := ContinuousLinearMap.id ℝ (Euclid P) with hI
+      have eP : ‖Pm - I - t • a'‖ ≤ ε / 8 * |t| := e1 t htd₁ y
+      have eQ : ‖Q - I - t • b‖ ≤ ε / 4 * |t| := e2 t htd₂ x
+      have htb : ‖t • b‖ ≤ |t| * MB := by
+        rw [norm_smul, Real.norm_eq_abs]; exact mul_le_mul_of_nonneg_left (hMB x) (abs_nonneg t)
+      have hQid : ‖Q - I‖ ≤ |t| * (ε / 4 + MB) := by
+        calc ‖Q - I‖ = ‖(Q - I - t • b) + t • b‖ := by congr 1; abel
+          _ ≤ ‖Q - I - t • b‖ + ‖t • b‖ := norm_add_le _ _
+          _ ≤ ε / 4 * |t| + |t| * MB := add_le_add eQ htb
+          _ = |t| * (ε / 4 + MB) := by ring
+      have hτ' : |t| * (ε / 4 + MB) ≤ min 1 (ε / (4 * (MA + 1))) := by
+        have h3 : 0 < ε / 4 + MB + 1 := by positivity
+        have h4 : |t| * (ε / 4 + MB + 1) < min 1 (ε / (4 * (MA + 1))) := by
+          rw [hτ, lt_div_iff₀ h3] at htτ; exact htτ
+        nlinarith [abs_nonneg t]
+      have hQ1 : ‖Q - I‖ ≤ 1 := hQid.trans (hτ'.trans (min_le_left _ _))
+      have hQ2 : ‖Q - I‖ ≤ ε / (4 * (MA + 1)) := hQid.trans (hτ'.trans (min_le_right _ _))
+      have hQn : ‖Q‖ ≤ 2 := by
+        calc ‖Q‖ = ‖(Q - I) + I‖ := by congr 1; abel
+          _ ≤ ‖Q - I‖ + ‖I‖ := norm_add_le _ _
+          _ ≤ 1 + 1 := add_le_add hQ1 ContinuousLinearMap.norm_id_le
+          _ = 2 := by norm_num
+      have hdist : dist y x < η := by
+        rw [dist_eq_norm]
+        have hC0 : 0 < |C₂| + 1 := by positivity
+        rw [lt_div_iff₀ hC0] at htη
+        calc ‖y - x‖ ≤ C₂ * |t| := g4 x
+          _ ≤ |C₂| * |t| := mul_le_mul_of_nonneg_right (le_abs_self C₂) (abs_nonneg t)
+          _ < η := by nlinarith [abs_nonneg t, abs_nonneg C₂]
+      have haa : ‖a' - a‖ ≤ ε / 4 := by
+        have := hUCη hdist
+        rw [dist_eq_norm] at this
+        exact this.le
+      have hMAε : MA * (ε / (4 * (MA + 1))) ≤ ε / 4 := by
+        rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
+        nlinarith
+      have hident : Pm.comp Q - I - t • (a + b) =
+          (Pm - I - t • a').comp Q + (Q - I - t • b) + t • (a'.comp (Q - I)) + t • (a' - a) := by
+        ext v
+        simp only [sub_apply, add_apply,
+          ContinuousLinearMap.comp_apply, smul_apply, hI,
+          ContinuousLinearMap.id_apply, map_sub, smul_sub, smul_add]
+        abel_nf
+      rw [hident]
+      have t1 : ‖(Pm - I - t • a').comp Q‖ ≤ ε / 4 * |t| := by
+        calc ‖(Pm - I - t • a').comp Q‖ ≤ ‖Pm - I - t • a'‖ * ‖Q‖ :=
+              ContinuousLinearMap.opNorm_comp_le _ _
+          _ ≤ ε / 8 * |t| * 2 := mul_le_mul eP hQn (norm_nonneg _) (by positivity)
+          _ = ε / 4 * |t| := by ring
+      have t3 : ‖t • (a'.comp (Q - I))‖ ≤ ε / 4 * |t| := by
+        rw [norm_smul, Real.norm_eq_abs]
+        calc |t| * ‖a'.comp (Q - I)‖ ≤ |t| * (MA * (ε / (4 * (MA + 1)))) := by
+              refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg t)
+              exact (ContinuousLinearMap.opNorm_comp_le _ _).trans
+                (mul_le_mul (hMA y) hQ2 (norm_nonneg _) hMA0)
+          _ ≤ |t| * (ε / 4) := mul_le_mul_of_nonneg_left hMAε (abs_nonneg t)
+          _ = ε / 4 * |t| := by ring
+      have t4 : ‖t • (a' - a)‖ ≤ ε / 4 * |t| := by
+        rw [norm_smul, Real.norm_eq_abs, mul_comm]
+        exact mul_le_mul_of_nonneg_right haa (abs_nonneg t)
+      calc ‖(Pm - I - t • a').comp Q + (Q - I - t • b) + t • (a'.comp (Q - I)) + t • (a' - a)‖
+          ≤ ‖(Pm - I - t • a').comp Q‖ + ‖Q - I - t • b‖ + ‖t • (a'.comp (Q - I))‖ +
+              ‖t • (a' - a)‖ := norm_add₄_le
+        _ ≤ ε / 4 * |t| + ε / 4 * |t| + ε / 4 * |t| + ε / 4 * |t| := by gcongr
+        _ = ε * |t| := by ring
+  have gsum (P : ℕ) (N S : Set (Euclid P)) (Good : (Euclid P → Euclid P) → Prop)
+      (hGood : ∀ A, Good A ↔ ∃ φ : ℝ → Euclid P → Euclid P, ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∃ C : ℝ,
+        (∀ t : ℝ, |t| < δ₀ → ContDiff ℝ 1 (φ t) ∧ (∀ x, x ∉ S → φ t x = x) ∧
+          MapsTo (φ t) N N ∧ ∀ x, ‖φ t x - x‖ ≤ C * |t|) ∧
+        ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x,
+          ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ A x‖ ≤ ε * |t|)
+      (gadd : ∀ A B : Euclid P → Euclid P, ContDiff ℝ 1 A → HasCompactSupport A → ContDiff ℝ 1 B →
+        HasCompactSupport B → Good A → Good B → Good (A + B)) :
+      ∀ (ι : Type) (s : Finset ι) (A : ι → Euclid P → Euclid P),
+        (∀ i ∈ s, ContDiff ℝ 1 (A i) ∧ HasCompactSupport (A i) ∧ Good (A i)) →
+        ContDiff ℝ 1 (∑ i ∈ s, A i) ∧ HasCompactSupport (∑ i ∈ s, A i) ∧ Good (∑ i ∈ s, A i) := by
+    intro ι s A hA
+    classical
+    induction s using Finset.induction_on with
+    | empty =>
+      simp only [Finset.sum_empty]
+      refine ⟨contDiff_const, HasCompactSupport.zero, (hGood 0).2 ⟨fun _ => id, 1, one_pos, 0,
+        fun t _ => ⟨contDiff_id, fun x _ => rfl, mapsTo_id N, fun x => by simp⟩,
+        fun ε hε => ⟨1, one_pos, fun t _ x => ?_⟩⟩⟩
+      simp only [fderiv_id, sub_self, zero_sub]
+      have : fderiv ℝ (0 : Euclid P → Euclid P) x = 0 := fderiv_const_apply (0 : Euclid P)
+      rw [this, norm_neg, norm_smul, norm_zero, mul_zero]
+      positivity
+    | insert a s has ih =>
+      rw [Finset.sum_insert has]
+      obtain ⟨hC, hc, hG⟩ := ih (fun i hi => hA i (Finset.mem_insert_of_mem hi))
+      obtain ⟨hCa, hca, hGa⟩ := hA a (Finset.mem_insert_self a s)
+      exact ⟨hCa.add hC, hca.add hc, gadd _ _ hCa hca hC hc hGa hG⟩
+  -- Steps 2-3: near `p ∈ N`, straighten `N` by `Ψ(a, w) = ψ(vp + a) + Jw` and conjugate
+  -- `b ↦ b + tZ(b)`; a field tangent to `N` is horizontal along the slice `ℝᵈ × {0}`
+  have glocal (P d : ℕ) (N S : Set (Euclid P)) (hN : IsEmbeddedSubmanifold 2 d N)
+      (Good : (Euclid P → Euclid P) → Prop)
+      (hGood : ∀ A, Good A ↔ ∃ φ : ℝ → Euclid P → Euclid P, ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∃ C : ℝ,
+        (∀ t : ℝ, |t| < δ₀ → ContDiff ℝ 1 (φ t) ∧ (∀ x, x ∉ S → φ t x = x) ∧
+          MapsTo (φ t) N N ∧ ∀ x, ‖φ t x - x‖ ≤ C * |t|) ∧
+        ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x,
+          ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ A x‖ ≤ ε * |t|)
+      (p : Euclid P) (hp : p ∈ N) :
+      ∃ O : Set (Euclid P), IsOpen O ∧ p ∈ O ∧ ∀ Y : Euclid P → Euclid P, ContDiff ℝ 1 Y →
+        HasCompactSupport Y → tsupport Y ⊆ O → tsupport Y ⊆ S →
+        (∀ z ∈ N ∩ O, Y z ∈ tangentSpace N z) → Good Y := by
+    classical
+    obtain ⟨V, W, ψ, hV, hW, hpW, hψ, hψinj, hψim, hψprop, hψD⟩ := hN p hp
+    obtain ⟨vp, hvpV, hvp⟩ : p ∈ ψ '' V := by rw [hψim]; exact ⟨hpW, hp⟩
+    have hψ2 : ContDiffOn ℝ 2 ψ V := by simpa using hψ
+    -- the straightening map `Ψ(a, w) = ψ(vp + a) + w`, `w ∈ (range Dψ(vp))ᗮ`
+    set A : Euclid d →L[ℝ] Euclid P := fderiv ℝ ψ vp with hAdef
+    have hAinj : Injective A := hψD vp hvpV
+    -- a complement of `range A`: `J : ℝᵏ → ℝᴾ` injective with range `(range A)ᗮ`
+    obtain ⟨k, J, hJinj, hJrange⟩ : ∃ (k : ℕ) (J : Euclid k →L[ℝ] Euclid P), Injective J ∧
+        LinearMap.range (J : Euclid k →ₗ[ℝ] Euclid P) =
+          (LinearMap.range (A : Euclid d →ₗ[ℝ] Euclid P))ᗮ := by
+      set K := (LinearMap.range (A : Euclid d →ₗ[ℝ] Euclid P))ᗮ with hK
+      let bK := stdOrthonormalBasis ℝ K
+      refine ⟨Module.finrank ℝ K, K.subtypeL.comp
+        (bK.repr.symm.toContinuousLinearEquiv : Euclid (Module.finrank ℝ K) →L[ℝ] K),
+        fun x y hxy => bK.repr.symm.injective (Subtype.ext hxy), ?_⟩
+      ext v
+      constructor
+      · rintro ⟨w, rfl⟩
+        exact (bK.repr.symm w).2
+      · intro hv
+        exact ⟨bK.repr ⟨v, hv⟩, by simp⟩
+    obtain ⟨Ψ, hΨdef⟩ : ∃ Ψ : Euclid d × Euclid k → Euclid P, ∀ b, Ψ b = ψ (vp + b.1) + J b.2 :=
+      ⟨_, fun _ => rfl⟩
+    have hΨfun : Ψ = fun b => ψ (vp + b.1) + J b.2 := funext hΨdef
+    set Ω : Set (Euclid d × Euclid k) := {b | vp + b.1 ∈ V} with hΩdef
+    have hΩ : IsOpen Ω := hV.preimage (continuous_const.add continuous_fst)
+    have h0Ω : (0 : Euclid d × Euclid k) ∈ Ω := by simp [hΩdef, hvpV]
+    have hΨC : ∀ b ∈ Ω, ContDiffAt ℝ 2 Ψ b := by
+      intro b hb
+      have h1 : ContDiffAt ℝ 2 ψ (vp + b.1) := hψ2.contDiffAt (hV.mem_nhds hb)
+      rw [hΨfun]
+      exact (h1.comp b (contDiffAt_const.add contDiffAt_fst)).add
+        ((J.contDiff.comp contDiff_snd).contDiffAt)
+    have hΨD : ∀ b ∈ Ω, HasFDerivAt Ψ ((fderiv ℝ ψ (vp + b.1)).comp
+        (ContinuousLinearMap.fst ℝ (Euclid d) (Euclid k)) +
+        J.comp (ContinuousLinearMap.snd ℝ (Euclid d) (Euclid k))) b := by
+      intro b hb
+      have h1 : HasFDerivAt ψ (fderiv ℝ ψ (vp + b.1)) (vp + b.1) :=
+        ((hψ2.contDiffAt (hV.mem_nhds hb)).differentiableAt (by norm_num)).hasFDerivAt
+      have h2 : HasFDerivAt (fun b : Euclid d × Euclid k => vp + b.1)
+          (ContinuousLinearMap.fst ℝ (Euclid d) (Euclid k)) b := (hasFDerivAt_fst).const_add vp
+      have h3 : HasFDerivAt (fun b : Euclid d × Euclid k => J b.2)
+          (J.comp (ContinuousLinearMap.snd ℝ (Euclid d) (Euclid k))) b :=
+        J.hasFDerivAt.comp b hasFDerivAt_snd
+      rw [hΨfun]
+      exact (h1.comp b h2).add h3
+    -- `DΨ(0)(h, w) = Ah + Jw` is a linear isomorphism
+    set L₀ : Euclid d × Euclid k →L[ℝ] Euclid P :=
+      A.comp (ContinuousLinearMap.fst ℝ (Euclid d) (Euclid k)) +
+        J.comp (ContinuousLinearMap.snd ℝ (Euclid d) (Euclid k)) with hL₀
+    have hL₀inj : Injective L₀ := by
+      rw [injective_iff_map_eq_zero]
+      rintro ⟨h, w⟩ hhw
+      have hhw' : A h + J w = 0 := by simpa [hL₀] using hhw
+      have hk : J w ∈ (LinearMap.range (A : Euclid d →ₗ[ℝ] Euclid P))ᗮ := by
+        rw [← hJrange]; exact LinearMap.mem_range_self _ w
+      have h0 : inner ℝ (A h) (J w) = 0 :=
+        (Submodule.mem_orthogonal _ _).1 hk _ (LinearMap.mem_range_self _ h)
+      have hk' : J w = -A h := eq_neg_of_add_eq_zero_right hhw'
+      have hAh0 : A h = 0 := by
+        rw [hk', inner_neg_right, neg_eq_zero, real_inner_self_eq_norm_sq] at h0
+        exact norm_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 h0)
+      have hw0 : w = 0 := hJinj (by rw [hk', hAh0, neg_zero, map_zero])
+      have hh0 : h = 0 := hAinj (by rw [hAh0, map_zero])
+      rw [hh0, hw0]
+      rfl
+    have hdim : Module.finrank ℝ (Euclid d × Euclid k) = Module.finrank ℝ (Euclid P) := by
+      rw [Module.finrank_prod,
+        ← Submodule.finrank_add_finrank_orthogonal (LinearMap.range (A : Euclid d →ₗ[ℝ] Euclid P)),
+        ← hJrange, LinearMap.finrank_range_of_inj (f := (A : Euclid d →ₗ[ℝ] Euclid P)) hAinj,
+        LinearMap.finrank_range_of_inj (f := (J : Euclid k →ₗ[ℝ] Euclid P)) hJinj]
+    obtain ⟨e₀, he₀⟩ : ∃ e₀ : (Euclid d × Euclid k) ≃L[ℝ] Euclid P,
+        (e₀ : Euclid d × Euclid k →L[ℝ] Euclid P) = L₀ :=
+      ⟨(LinearMap.linearEquivOfInjective (L₀ : Euclid d × Euclid k →ₗ[ℝ] Euclid P) hL₀inj
+        hdim).toContinuousLinearEquiv, ContinuousLinearMap.ext fun b => rfl⟩
+    have hΨD0 : HasFDerivAt Ψ (e₀ : Euclid d × Euclid k →L[ℝ] Euclid P) 0 := by
+      have := hΨD 0 h0Ω
+      simp only [Prod.fst_zero, add_zero] at this
+      rw [he₀]
+      exact this
+    have hstrict : HasStrictFDerivAt Ψ (e₀ : Euclid d × Euclid k →L[ℝ] Euclid P) 0 := by
+      have := (hΨC 0 h0Ω).hasStrictFDerivAt (by norm_num)
+      rwa [hΨD0.fderiv] at this
+    -- inverse function theorem
+    obtain ⟨H, hHcoe, h0H⟩ : ∃ H : OpenPartialHomeomorph (Euclid d × Euclid k) (Euclid P),
+        (H : Euclid d × Euclid k → Euclid P) = Ψ ∧ (0 : Euclid d × Euclid k) ∈ H.source :=
+      ⟨hstrict.toOpenPartialHomeomorph Ψ, hstrict.toOpenPartialHomeomorph_coe,
+        hstrict.mem_toOpenPartialHomeomorph_source⟩
+    have hΨCon : ContDiffOn ℝ 2 Ψ Ω := fun b hb => (hΨC b hb).contDiffWithinAt
+    have hDΨcont : ContinuousOn (fderiv ℝ Ψ) Ω :=
+      hΨCon.continuousOn_fderiv_of_isOpen hΩ (by norm_num)
+    set B : Set (Euclid d × Euclid k) := H.source ∩ (Ω ∩ fderiv ℝ Ψ ⁻¹'
+      range (ContinuousLinearEquiv.toContinuousLinearMap :
+        ((Euclid d × Euclid k) ≃L[ℝ] Euclid P) → (Euclid d × Euclid k →L[ℝ] Euclid P))) with hBdef
+    have hBopen : IsOpen B :=
+      H.open_source.inter (hDΨcont.isOpen_inter_preimage hΩ ContinuousLinearEquiv.isOpen)
+    have h0B : (0 : Euclid d × Euclid k) ∈ B := ⟨h0H, h0Ω, e₀, hΨD0.fderiv.symm⟩
+    have hBΩ : ∀ b ∈ B, b ∈ Ω := fun b hb => hb.2.1
+    obtain ⟨Φ, hΦdef⟩ : ∃ Φ : Euclid P → Euclid d × Euclid k, Φ = H.symm := ⟨_, rfl⟩
+    set O' : Set (Euclid P) := H.target ∩ Φ ⁻¹' B with hO'def
+    have hO'open : IsOpen O' := by rw [hO'def, hΦdef]; exact H.isOpen_inter_preimage_symm hBopen
+    have hΦB : ∀ y ∈ O', Φ y ∈ B := fun y hy => hy.2
+    have hΨΦ : ∀ y ∈ O', Ψ (Φ y) = y := fun y hy => by
+      rw [← hHcoe, hΦdef]; exact H.right_inv hy.1
+    have hΦΨ : ∀ b ∈ B, Φ (Ψ b) = b := fun b hb => by
+      rw [← hHcoe, hΦdef]; exact H.left_inv hb.1
+    have hBO' : ∀ b ∈ B, Ψ b ∈ O' := fun b hb => by
+      refine ⟨?_, ?_⟩
+      · rw [← hHcoe]; exact H.map_source hb.1
+      · show Φ (Ψ b) ∈ B
+        rw [hΦΨ b hb]; exact hb
+    have hΦeq : ∀ y ∈ O', ∃ e : (Euclid d × Euclid k) ≃L[ℝ] Euclid P, fderiv ℝ Ψ (Φ y) = e ∧
+        HasFDerivAt Φ (e.symm : Euclid P →L[ℝ] Euclid d × Euclid k) y ∧ ContDiffAt ℝ 2 Φ y := by
+      intro y hy
+      obtain ⟨-, hbΩ, e, he⟩ := hΦB y hy
+      have hD : HasFDerivAt H (e : Euclid d × Euclid k →L[ℝ] Euclid P) (H.symm y) := by
+        rw [hHcoe, ← hΦdef, he]
+        exact ((hΨC _ hbΩ).differentiableAt (by norm_num)).hasFDerivAt
+      have hC : ContDiffAt ℝ 2 H (H.symm y) := by
+        rw [hHcoe, ← hΦdef]
+        exact hΨC _ hbΩ
+      refine ⟨e, he.symm, ?_, ?_⟩
+      · rw [hΦdef]; exact H.hasFDerivAt_symm hy.1 hD
+      · rw [hΦdef]; exact H.contDiffAt_symm hy.1 hD hC
+    have hΦC2 : ∀ y ∈ O', ContDiffAt ℝ 2 Φ y := fun y hy => (hΦeq y hy).choose_spec.2.2
+    have hΨΦD : ∀ y ∈ O', ∀ v, fderiv ℝ Ψ (Φ y) (fderiv ℝ Φ y v) = v := by
+      intro y hy v
+      obtain ⟨e, he, hΦd, -⟩ := hΦeq y hy
+      rw [he, hΦd.fderiv]
+      exact e.apply_symm_apply v
+    have hΦΨD : ∀ y ∈ O', ∀ u, fderiv ℝ Φ y (fderiv ℝ Ψ (Φ y) u) = u := by
+      intro y hy u
+      obtain ⟨e, he, hΦd, -⟩ := hΦeq y hy
+      rw [he, hΦd.fderiv]
+      exact e.symm_apply_apply u
+    -- the slice `ℝᵈ × {0}` near `0`
+    obtain ⟨r, hr, hrB⟩ := Metric.isOpen_iff.1 hBopen 0 h0B
+    have hslB : ∀ a : Euclid d, ‖a‖ < r → ((a, 0) : Euclid d × Euclid k) ∈ B := by
+      intro a ha
+      apply hrB
+      rw [mem_ball_zero_iff, Prod.norm_def]
+      simp only [norm_zero]
+      exact max_lt ha hr
+    -- `N` near `p` is the image of `ball vp r`
+    obtain ⟨rW, hrW, hrWW⟩ : ∃ rW > 0, closedBall p rW ⊆ W :=
+      Metric.nhds_basis_closedBall.mem_iff.1 (hW.mem_nhds hpW)
+    have hC' : IsCompact ((V ∩ ψ ⁻¹' closedBall p rW) \ ball vp r) :=
+      (hψprop _ hrWW (isCompact_closedBall p rW)).diff isOpen_ball
+    have hψC' : IsCompact (ψ '' ((V ∩ ψ ⁻¹' closedBall p rW) \ ball vp r)) :=
+      hC'.image_of_continuousOn (hψ2.continuousOn.mono (fun x hx => hx.1.1))
+    have hpnot : p ∉ ψ '' ((V ∩ ψ ⁻¹' closedBall p rW) \ ball vp r) := by
+      rintro ⟨c, ⟨⟨hcV, _⟩, hcball⟩, hc⟩
+      have : c = vp := hψinj hcV hvpV (hc.trans hvp.symm)
+      exact hcball (this ▸ mem_ball_self hr)
+    obtain ⟨ρ₀, hρ₀, hρ₀sub⟩ := Metric.isOpen_iff.1 hψC'.isClosed.isOpen_compl p hpnot
+    set ρ : ℝ := min ρ₀ rW with hρdef
+    have hρ : 0 < ρ := lt_min hρ₀ hrW
+    have hslice : ∀ z ∈ N, dist z p < ρ → ∃ a : Euclid d, ‖a‖ < r ∧ ψ (vp + a) = z := by
+      intro z hzN hzp
+      have hzW : z ∈ W := hrWW (mem_closedBall.2 (le_of_lt (lt_of_lt_of_le hzp (min_le_right _ _))))
+      obtain ⟨c, hcV, hcz⟩ : z ∈ ψ '' V := by rw [hψim]; exact ⟨hzW, hzN⟩
+      have hcball : c ∈ ball vp r := by
+        by_contra hcb
+        have hzin : z ∈ ψ '' ((V ∩ ψ ⁻¹' closedBall p rW) \ ball vp r) := by
+          refine ⟨c, ⟨⟨hcV, ?_⟩, hcb⟩, hcz⟩
+          rw [mem_preimage, hcz]
+          exact mem_closedBall.2 (le_of_lt (lt_of_lt_of_le hzp (min_le_right _ _)))
+        exact hρ₀sub (mem_ball.2 (lt_of_lt_of_le hzp (min_le_left _ _))) hzin
+      refine ⟨c - vp, ?_, by rw [add_sub_cancel, hcz]⟩
+      rwa [mem_ball, dist_eq_norm] at hcball
+    have hsl : ∀ z ∈ N, z ∈ O' ∩ ball p ρ →
+        ∃ a : Euclid d, ‖a‖ < r ∧ ψ (vp + a) = z ∧ Φ z = ((a, 0) : Euclid d × Euclid k) := by
+      intro z hzN hz
+      obtain ⟨a, ha, hψa⟩ := hslice z hzN (mem_ball.1 hz.2)
+      refine ⟨a, ha, hψa, ?_⟩
+      have hΨa : Ψ ((a, 0) : Euclid d × Euclid k) = z := by
+        rw [hΨdef]; simp [hψa]
+      rw [← hΨa]
+      exact hΦΨ _ (hslB a ha)
+    refine ⟨O' ∩ ball p ρ, hO'open.inter isOpen_ball, ⟨?_, mem_ball_self hρ⟩, ?_⟩
+    · have : Ψ 0 = p := by rw [hΨdef]; simp [hvp]
+      rw [← this]
+      exact hBO' 0 h0B
+    -- the local deformation of a tangent field `Y` supported in `O' ∩ ball p ρ`
+    intro Y hY hYc hYO hYS hYT
+    have hKY : IsCompact (tsupport Y) := hYc
+    have hKYO' : tsupport Y ⊆ O' := fun y hy => (hYO hy).1
+    obtain ⟨Vf, hVfdef⟩ : ∃ Vf : Euclid P → Euclid d × Euclid k, ∀ y, Vf y = fderiv ℝ Φ y (Y y) :=
+      ⟨_, fun _ => rfl⟩
+    have hVffun : Vf = fun y => fderiv ℝ Φ y (Y y) := funext hVfdef
+    have hΦCon : ContDiffOn ℝ 2 Φ O' := fun y hy => (hΦC2 y hy).contDiffWithinAt
+    have hDΦC1 : ContDiffOn ℝ 1 (fderiv ℝ Φ) O' := hΦCon.fderiv_of_isOpen hO'open (by norm_num)
+    have hVfC1 : ContDiffOn ℝ 1 Vf O' := by
+      rw [hVffun]; exact hDΦC1.clm_apply hY.contDiffOn
+    have hVf0 : ∀ y, y ∉ tsupport Y → Vf y = 0 := by
+      intro y hy
+      rw [hVfdef, image_eq_zero_of_notMem_tsupport hy, map_zero]
+    -- tangency: in the chart, `Vf` is horizontal along the slice
+    have hV2 : ∀ z ∈ N, z ∈ tsupport Y → (Vf z).2 = 0 := by
+      intro z hzN hzK
+      obtain ⟨a, ha, hψa, hΦz⟩ := hsl z hzN (hYO hzK)
+      have hvaV : vp + a ∈ V := hBΩ _ (hslB a ha)
+      have hT : tangentSpace N z = Set.range (fderiv ℝ ψ (vp + a)) := by
+        rw [← hψa]
+        exact hchart P d 2 N W V ψ (vp + a) (by norm_num) hV hW hψ hψinj hψim hψprop hψD hvaV
+      have hYz : Y z ∈ Set.range (fderiv ℝ ψ (vp + a)) := hT ▸ hYT z ⟨hzN, hYO hzK⟩
+      obtain ⟨h, hh⟩ := hYz
+      have hDΨa :
+          fderiv ℝ Ψ ((a, 0) : Euclid d × Euclid k) ((h, 0) : Euclid d × Euclid k) = Y z := by
+        rw [(hΨD _ (hBΩ _ (hslB a ha))).fderiv]
+        simp [hh]
+      have hzO' : z ∈ O' := hKYO' hzK
+      have key := hΦΨD z hzO' ((h, 0) : Euclid d × Euclid k)
+      rw [hΦz, hDΨa] at key
+      rw [hVfdef, key]
+    -- deformations
+    obtain ⟨φ, hφdef⟩ : ∃ φ : ℝ → Euclid P → Euclid P,
+        ∀ t y, φ t y = if y ∈ O' then Ψ (Φ y + t • Vf y) else y := ⟨_, fun _ _ => rfl⟩
+    have hid : ∀ t y, y ∉ tsupport Y → φ t y = y := by
+      intro t y hy
+      rw [hφdef]
+      split_ifs with h
+      · rw [hVf0 y hy, smul_zero, add_zero, hΨΦ y h]
+      · rfl
+    -- bounds
+    obtain ⟨MΦ, hMΦ0, hMΦ⟩ : ∃ M, 0 ≤ M ∧ ∀ y ∈ tsupport Y, ‖fderiv ℝ Φ y‖ ≤ M := by
+      obtain ⟨M, hM⟩ := hKY.exists_bound_of_continuousOn (hDΦC1.continuousOn.mono hKYO')
+      exact ⟨max M 0, le_max_right _ _, fun y hy => (hM y hy).trans (le_max_left _ _)⟩
+    obtain ⟨MV, hMV0, hMV⟩ : ∃ M, 0 ≤ M ∧ ∀ y ∈ tsupport Y, ‖Vf y‖ ≤ M := by
+      obtain ⟨M, hM⟩ := hKY.exists_bound_of_continuousOn (hVfC1.continuousOn.mono hKYO')
+      exact ⟨max M 0, le_max_right _ _, fun y hy => (hM y hy).trans (le_max_left _ _)⟩
+    obtain ⟨MDV, hMDV0, hMDV⟩ : ∃ M, 0 ≤ M ∧ ∀ y ∈ tsupport Y, ‖fderiv ℝ Vf y‖ ≤ M := by
+      obtain ⟨M, hM⟩ := hKY.exists_bound_of_continuousOn
+        ((hVfC1.continuousOn_fderiv_of_isOpen hO'open le_rfl).mono hKYO')
+      exact ⟨max M 0, le_max_right _ _, fun y hy => (hM y hy).trans (le_max_left _ _)⟩
+    have hKB : IsCompact (Φ '' tsupport Y) :=
+      hKY.image_of_continuousOn (hΦdef ▸ H.continuousOn_symm.mono (fun y hy => (hKYO' hy).1))
+    have hKBB : Φ '' tsupport Y ⊆ B := by
+      rintro _ ⟨y, hy, rfl⟩; exact hΦB y (hKYO' hy)
+    obtain ⟨η, hη, hηB⟩ := hKB.exists_cthickening_subset_open hBopen hKBB
+    have hKc : IsCompact (cthickening η (Φ '' tsupport Y)) := hKB.cthickening
+    have hKcΩ : cthickening η (Φ '' tsupport Y) ⊆ Ω := fun b hb => hBΩ b (hηB hb)
+    have hDΨC1 : ContDiffOn ℝ 1 (fderiv ℝ Ψ) Ω := hΨCon.fderiv_of_isOpen hΩ (by norm_num)
+    have hD2cont := hDΨC1.continuousOn_fderiv_of_isOpen hΩ le_rfl
+    obtain ⟨M1, hM10, hM1⟩ : ∃ M, 0 ≤ M ∧
+        ∀ c ∈ cthickening η (Φ '' tsupport Y), ‖fderiv ℝ Ψ c‖ ≤ M := by
+      obtain ⟨M, hM⟩ := hKc.exists_bound_of_continuousOn (hDΨcont.mono hKcΩ)
+      exact ⟨max M 0, le_max_right _ _, fun y hy => (hM y hy).trans (le_max_left _ _)⟩
+    obtain ⟨M2, hM20, hM2⟩ : ∃ M, 0 ≤ M ∧
+        ∀ c ∈ cthickening η (Φ '' tsupport Y), ‖fderiv ℝ (fderiv ℝ Ψ) c‖ ≤ M := by
+      have hb : ∃ M, ∀ c ∈ cthickening η (Φ '' tsupport Y), ‖fderiv ℝ (fderiv ℝ Ψ) c‖ ≤ M := by
+        exact hKc.exists_bound_of_continuousOn (hD2cont.mono hKcΩ)
+      obtain ⟨M, hM⟩ := hb
+      exact ⟨max M 0, le_max_right _ _, fun y hy => (hM y hy).trans (le_max_left _ _)⟩
+    have hUC0 : ∀ ε' > 0, ∃ δ > 0, ∀ x ∈ cthickening η (Φ '' tsupport Y),
+        ∀ y ∈ cthickening η (Φ '' tsupport Y), dist x y < δ →
+          ‖fderiv ℝ (fderiv ℝ Ψ) x - fderiv ℝ (fderiv ℝ Ψ) y‖ < ε' := by
+      intro ε' hε'
+      obtain ⟨δ, hδ, h⟩ := Metric.uniformContinuousOn_iff.1
+        (hKc.uniformContinuousOn_of_continuous (hD2cont.mono hKcΩ)) ε' hε'
+      refine ⟨δ, hδ, fun x hx y hy hxy => ?_⟩
+      calc ‖fderiv ℝ (fderiv ℝ Ψ) x - fderiv ℝ (fderiv ℝ Ψ) y‖
+          = dist (fderiv ℝ (fderiv ℝ Ψ) x) (fderiv ℝ (fderiv ℝ Ψ) y) :=
+            (dist_eq_norm (fderiv ℝ (fderiv ℝ Ψ) x) (fderiv ℝ (fderiv ℝ Ψ) y)).symm
+        _ < ε' := h x hx y hy hxy
+    set δ₀ : ℝ := η / (MV + 1) with hδ₀
+    have hδ₀pos : 0 < δ₀ := by positivity
+    have hseg : ∀ t : ℝ, |t| < δ₀ → ∀ y ∈ tsupport Y, ∀ c ∈ segment ℝ (Φ y) (Φ y + t • Vf y),
+        c ∈ cthickening η (Φ '' tsupport Y) ∧ dist c (Φ y) ≤ |t| * MV := by
+      intro t ht y hy c hc
+      rw [segment_eq_image'] at hc
+      obtain ⟨θ, ⟨hθ0, hθ1⟩, rfl⟩ := hc
+      have hd : dist (Φ y + θ • (Φ y + t • Vf y - Φ y)) (Φ y) ≤ |t| * MV := by
+        rw [dist_eq_norm, add_sub_cancel_left, add_sub_cancel_left, norm_smul, norm_smul,
+          Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hθ0]
+        calc θ * (|t| * ‖Vf y‖) ≤ 1 * (|t| * MV) := by
+              gcongr
+              exact hMV y hy
+          _ = |t| * MV := one_mul _
+      refine ⟨Metric.mem_cthickening_of_dist_le _ (Φ y) _ _ (mem_image_of_mem Φ hy) ?_, hd⟩
+      refine hd.trans ?_
+      have h2 : |t| * (MV + 1) < η := by
+        rw [hδ₀, lt_div_iff₀ (by positivity)] at ht; exact ht
+      exact (mul_le_mul_of_nonneg_left (le_add_of_nonneg_right zero_le_one) (abs_nonneg t)).trans
+        h2.le
+    have hC1 : ∀ t, |t| < δ₀ → ContDiff ℝ 1 (φ t) := by
+      intro t ht
+      rw [contDiff_iff_contDiffAt]
+      intro y
+      by_cases hyK : y ∈ tsupport Y
+      · have hyO' := hKYO' hyK
+        have hev : φ t =ᶠ[𝓝 y] fun y => Ψ (Φ y + t • Vf y) := by
+          filter_upwards [hO'open.mem_nhds hyO'] with y' hy'
+          rw [hφdef, ite_eq_left hy']
+        refine ContDiffAt.congr_of_eventuallyEq ?_ hev
+        have hin : Φ y + t • Vf y ∈ Ω :=
+          hKcΩ (hseg t ht y hyK _ (right_mem_segment ℝ _ _)).1
+        exact ((hΨC _ hin).of_le (by norm_num)).comp y
+          (((hΦC2 y hyO').of_le (by norm_num)).add
+            ((hVfC1.contDiffAt (hO'open.mem_nhds hyO')).const_smul t))
+      · have hev : φ t =ᶠ[𝓝 y] id := by
+          filter_upwards [(isClosed_tsupport Y).isOpen_compl.mem_nhds hyK] with y' hy'
+          exact hid t y' hy'
+        exact contDiffAt_id.congr_of_eventuallyEq hev
+    have hmaps : ∀ t, |t| < δ₀ → MapsTo (φ t) N N := by
+      intro t ht z hz
+      by_cases hzK : z ∈ tsupport Y
+      · obtain ⟨a, ha, hψa, hΦz⟩ := hsl z hz (hYO hzK)
+        have hw2 := hV2 z hz hzK
+        have hzO' := hKYO' hzK
+        have hin : Φ z + t • Vf z ∈ Ω :=
+          hKcΩ (hseg t ht z hzK _ (right_mem_segment ℝ _ _)).1
+        have h2 : (Φ z + t • Vf z).2 = 0 := by
+          rw [Prod.snd_add, Prod.smul_snd, hΦz, hw2, smul_zero, add_zero]
+        rw [hφdef, ite_eq_left hzO', hΨdef, h2, map_zero, add_zero]
+        have hmem : ψ (vp + (Φ z + t • Vf z).1) ∈ ψ '' V := mem_image_of_mem ψ hin
+        rw [hψim] at hmem
+        exact hmem.2
+      · rw [hid t z hzK]; exact hz
+    have hdisp : ∀ t, |t| < δ₀ → ∀ y, ‖φ t y - y‖ ≤ M1 * MV * |t| := by
+      intro t ht y
+      by_cases hyK : y ∈ tsupport Y
+      · have hyO' := hKYO' hyK
+        rw [hφdef, ite_eq_left hyO']
+        have h := Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le (f := Ψ) (f' := fderiv ℝ Ψ)
+          (s := segment ℝ (Φ y) (Φ y + t • Vf y))
+          (fun c hc => ((hΨC c (hKcΩ (hseg t ht y hyK c hc).1)).differentiableAt
+            (by norm_num)).hasFDerivAt.hasFDerivWithinAt)
+          (fun c hc => hM1 c (hseg t ht y hyK c hc).1) (convex_segment _ _)
+          (left_mem_segment ℝ _ _) (right_mem_segment ℝ _ _)
+        rw [hΨΦ y hyO', add_sub_cancel_left, norm_smul, Real.norm_eq_abs] at h
+        calc ‖Ψ (Φ y + t • Vf y) - y‖ ≤ M1 * (|t| * ‖Vf y‖) := h
+          _ ≤ M1 * (|t| * MV) := by gcongr; exact hMV y hyK
+          _ = M1 * MV * |t| := by ring
+      · rw [hid t y hyK, sub_self, norm_zero]; positivity
+    refine (hGood Y).2 ⟨φ, δ₀, hδ₀pos, M1 * MV, fun t ht => ⟨hC1 t ht,
+      fun x hx => hid t x (fun h => hx (hYS h)), hmaps t ht, hdisp t ht⟩, fun ε hε => ?_⟩
+    -- the expansion `Dφ_t = I + t DY + o(t)`
+    obtain ⟨η₂, hη₂, hUC⟩ := hUC0 (ε / (2 * (MV * MΦ + 1))) (by positivity)
+    refine ⟨min δ₀ (min (η₂ / (MV + 1)) (ε / (2 * (M2 * MV * MDV + 1)))),
+      lt_min hδ₀pos (lt_min (by positivity) (by positivity)), fun t ht y => ?_⟩
+    simp only [lt_min_iff] at ht
+    obtain ⟨htδ₀, htη₂, htε⟩ := ht
+    by_cases hyK : y ∈ tsupport Y
+    · have hyO' := hKYO' hyK
+      have hbΩ : Φ y ∈ Ω := hKcΩ (hseg t htδ₀ y hyK _ (left_mem_segment ℝ _ _)).1
+      have hbtw : Φ y + t • Vf y ∈ Ω := hKcΩ (hseg t htδ₀ y hyK _ (right_mem_segment ℝ _ _)).1
+      have hΦd : HasFDerivAt Φ (fderiv ℝ Φ y) y :=
+        ((hΦC2 y hyO').differentiableAt (by norm_num)).hasFDerivAt
+      have hVd : HasFDerivAt Vf (fderiv ℝ Vf y) y :=
+        ((hVfC1.contDiffAt (hO'open.mem_nhds hyO')).differentiableAt one_ne_zero).hasFDerivAt
+      have hΨd : HasFDerivAt Ψ (fderiv ℝ Ψ (Φ y + t • Vf y)) (Φ y + t • Vf y) :=
+        ((hΨC _ hbtw).differentiableAt (by norm_num)).hasFDerivAt
+      have hcompd : HasFDerivAt (fun y => Ψ (Φ y + t • Vf y))
+          ((fderiv ℝ Ψ (Φ y + t • Vf y)).comp (fderiv ℝ Φ y + t • fderiv ℝ Vf y)) y :=
+        hΨd.comp y (hΦd.add (hVd.const_smul t))
+      have hev : φ t =ᶠ[𝓝 y] fun y => Ψ (Φ y + t • Vf y) := by
+        filter_upwards [hO'open.mem_nhds hyO'] with y' hy'
+        rw [hφdef, ite_eq_left hy']
+      have hDφ : fderiv ℝ (φ t) y =
+          (fderiv ℝ Ψ (Φ y + t • Vf y)).comp (fderiv ℝ Φ y + t • fderiv ℝ Vf y) :=
+        (hcompd.congr_of_eventuallyEq hev).fderiv
+      have hDΨd : HasFDerivAt (fderiv ℝ Ψ) (fderiv ℝ (fderiv ℝ Ψ) (Φ y)) (Φ y) :=
+        ((hDΨC1.contDiffAt (hΩ.mem_nhds hbΩ)).differentiableAt one_ne_zero).hasFDerivAt
+      have hYd : HasFDerivAt (fun y => fderiv ℝ Ψ (Φ y) (Vf y))
+          ((fderiv ℝ Ψ (Φ y)).comp (fderiv ℝ Vf y) +
+            ((fderiv ℝ (fderiv ℝ Ψ) (Φ y)).comp (fderiv ℝ Φ y)).flip (Vf y)) y :=
+        (hDΨd.comp y hΦd).clm_apply hVd
+      have hevY : Y =ᶠ[𝓝 y] fun y => fderiv ℝ Ψ (Φ y) (Vf y) := by
+        filter_upwards [hO'open.mem_nhds hyO'] with y' hy'
+        rw [hVfdef, hΨΦD y' hy' (Y y')]
+      have hDY : fderiv ℝ Y y = (fderiv ℝ Ψ (Φ y)).comp (fderiv ℝ Vf y) +
+          ((fderiv ℝ (fderiv ℝ Ψ) (Φ y)).comp (fderiv ℝ Φ y)).flip (Vf y) :=
+        (hYd.congr_of_eventuallyEq hevY).fderiv
+      have hI : ContinuousLinearMap.id ℝ (Euclid P) = (fderiv ℝ Ψ (Φ y)).comp (fderiv ℝ Φ y) := by
+        refine ContinuousLinearMap.ext fun v => ?_
+        rw [ContinuousLinearMap.comp_apply, hΨΦD y hyO' v, ContinuousLinearMap.id_apply]
+      have hsymm : ∀ u v, fderiv ℝ (fderiv ℝ Ψ) (Φ y) u v = fderiv ℝ (fderiv ℝ Ψ) (Φ y) v u :=
+        (hΨC _ hbΩ).isSymmSndFDerivAt (by simp [minSmoothness_of_isRCLikeNormedField])
+      rw [hDφ, hDY, hI]
+      set L1 := fderiv ℝ Ψ (Φ y + t • Vf y) with hL1
+      set L0 := fderiv ℝ Ψ (Φ y) with hL0
+      set D2 := fderiv ℝ (fderiv ℝ Ψ) (Φ y) with hD2
+      set G := fderiv ℝ Φ y with hG
+      set DV := fderiv ℝ Vf y with hDV
+      set w := Vf y with hw
+      have hident : L1.comp (G + t • DV) - L0.comp G - t • (L0.comp DV + (D2.comp G).flip w) =
+          (L1 - L0 - t • D2 w).comp G + t • ((L1 - L0).comp DV) := by
+        refine ContinuousLinearMap.ext fun v => ?_
+        simp only [sub_apply, add_apply, ContinuousLinearMap.comp_apply, smul_apply,
+          ContinuousLinearMap.flip_apply, map_add, map_smul, smul_sub, smul_add]
+        rw [hsymm (G v) w]
+        abel_nf
+      rw [hident]
+      -- mean value estimates on the segment `[Φ y, Φ y + t w]`
+      have hsegy := hseg t htδ₀ y hyK
+      have hderivs : ∀ c ∈ segment ℝ (Φ y) (Φ y + t • w),
+          HasFDerivWithinAt (fderiv ℝ Ψ) (fderiv ℝ (fderiv ℝ Ψ) c)
+            (segment ℝ (Φ y) (Φ y + t • w)) c := fun c hc =>
+        ((hDΨC1.contDiffAt (hΩ.mem_nhds (hKcΩ (hsegy c hc).1))).differentiableAt
+          one_ne_zero).hasFDerivAt.hasFDerivWithinAt
+      have hη₂' : |t| * MV < η₂ := by
+        rw [lt_div_iff₀ (by positivity)] at htη₂
+        exact lt_of_le_of_lt
+          (mul_le_mul_of_nonneg_left (le_add_of_nonneg_right zero_le_one) (abs_nonneg t)) htη₂
+      have hb : Φ y ∈ cthickening η (Φ '' tsupport Y) := (hsegy _ (left_mem_segment ℝ _ _)).1
+      have hm1 : ‖L1 - L0 - t • D2 w‖ ≤ ε / (2 * (MV * MΦ + 1)) * ‖t • w‖ := by
+        have h := Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le' (f := fderiv ℝ Ψ)
+          (f' := fderiv ℝ (fderiv ℝ Ψ)) (φ := D2) hderivs
+          (fun c hc => by
+            have h1 := hsegy c hc
+            exact (hUC c h1.1 (Φ y) hb (lt_of_le_of_lt h1.2 hη₂')).le)
+          (convex_segment _ _) (left_mem_segment ℝ _ _) (right_mem_segment ℝ _ _)
+        rw [add_sub_cancel_left, map_smul] at h
+        exact h
+      have hm2 : ‖L1 - L0‖ ≤ M2 * ‖t • w‖ := by
+        have h := Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le (f := fderiv ℝ Ψ)
+          (f' := fderiv ℝ (fderiv ℝ Ψ)) hderivs (fun c hc => hM2 c (hsegy c hc).1)
+          (convex_segment _ _) (left_mem_segment ℝ _ _) (right_mem_segment ℝ _ _)
+        rw [add_sub_cancel_left] at h
+        exact h
+      have htw : ‖t • w‖ ≤ |t| * MV := by
+        rw [norm_smul, Real.norm_eq_abs]
+        exact mul_le_mul_of_nonneg_left (hMV y hyK) (abs_nonneg t)
+      have hGb : ‖G‖ ≤ MΦ := hMΦ y hyK
+      have hDVb : ‖DV‖ ≤ MDV := hMDV y hyK
+      have ht2 : |t| * (M2 * MV * MDV) ≤ ε / 2 := by
+        have h0 : 0 < 2 * (M2 * MV * MDV + 1) := by positivity
+        rw [lt_div_iff₀ h0] at htε
+        linarith only [htε, abs_nonneg t]
+      have hε1 : ε / (2 * (MV * MΦ + 1)) * (MV * MΦ) ≤ ε / 2 := by
+        have hX : 0 ≤ MV * MΦ := mul_nonneg hMV0 hMΦ0
+        rw [div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
+        linarith only [hε]
+      have hA1 : ‖L1 - L0 - t • D2 w‖ ≤ ε / (2 * (MV * MΦ + 1)) * (|t| * MV) :=
+        hm1.trans (mul_le_mul_of_nonneg_left htw (by positivity))
+      have hA2 : ‖L1 - L0‖ ≤ M2 * (|t| * MV) := hm2.trans (mul_le_mul_of_nonneg_left htw hM20)
+      calc ‖(L1 - L0 - t • D2 w).comp G + t • ((L1 - L0).comp DV)‖
+          ≤ ‖(L1 - L0 - t • D2 w).comp G‖ + ‖t • ((L1 - L0).comp DV)‖ := norm_add_le _ _
+        _ ≤ ‖L1 - L0 - t • D2 w‖ * ‖G‖ + |t| * (‖L1 - L0‖ * ‖DV‖) := by
+            rw [norm_smul, Real.norm_eq_abs]
+            exact add_le_add (ContinuousLinearMap.opNorm_comp_le _ _)
+              (mul_le_mul_of_nonneg_left (ContinuousLinearMap.opNorm_comp_le _ _) (abs_nonneg t))
+        _ ≤ (ε / (2 * (MV * MΦ + 1)) * (|t| * MV)) * MΦ + |t| * ((M2 * (|t| * MV)) * MDV) := by
+            gcongr
+        _ = |t| * (ε / (2 * (MV * MΦ + 1)) * (MV * MΦ)) + |t| * (|t| * (M2 * MV * MDV)) := by
+            ring
+        _ ≤ |t| * (ε / 2) + |t| * (ε / 2) := by gcongr
+        _ = ε * |t| := by ring
+    · have hev : φ t =ᶠ[𝓝 y] id := by
+        filter_upwards [(isClosed_tsupport Y).isOpen_compl.mem_nhds hyK] with y' hy'
+        exact hid t y' hy'
+      rw [hev.fderiv_eq, fderiv_id]
+      have hDY0 : fderiv ℝ Y y = 0 := by
+        by_contra h
+        exact hyK (support_fderiv_subset ℝ (mem_support.2 h))
+      rw [hDY0, sub_self, zero_sub, norm_neg, norm_smul, norm_zero, mul_zero]
+      positivity
+  -- assembly: partition of unity subordinate to straightening charts and `U \ N̄`
+  intro P d U N X hU hN hNU hX hXc hXU hXT
+  obtain ⟨Good, hGood⟩ : ∃ Good : (Euclid P → Euclid P) → Prop, ∀ A, Good A ↔
+      ∃ φ : ℝ → Euclid P → Euclid P, ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∃ C : ℝ,
+        (∀ t : ℝ, |t| < δ₀ → ContDiff ℝ 1 (φ t) ∧ (∀ x, x ∉ tsupport X → φ t x = x) ∧
+          MapsTo (φ t) N N ∧ ∀ x, ‖φ t x - x‖ ≤ C * |t|) ∧
+        ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x,
+          ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ A x‖ ≤ ε * |t| :=
+    ⟨_, fun _ => Iff.rfl⟩
+  have hsum := gsum P N (tsupport X) Good hGood (gadd P N (tsupport X) Good hGood)
+  have hTsub : ∀ z ∈ N, ∃ T : Submodule ℝ (Euclid P), tangentSpace N z = T := by
+    intro z hz
+    obtain ⟨V, W, ψ, hV, hW, hzW, hψ, hψinj, hψim, hψprop, hψD⟩ := hN z hz
+    obtain ⟨v, hv, rfl⟩ : z ∈ ψ '' V := by rw [hψim]; exact ⟨hzW, hz⟩
+    refine ⟨LinearMap.range (fderiv ℝ ψ v : Euclid d →ₗ[ℝ] Euclid P), ?_⟩
+    rw [hchart P d 2 N W V ψ v (by norm_num) hV hW hψ hψinj hψim hψprop hψD hv]
+    ext u
+    simp
+  have hNK : IsCompact (N ∩ tsupport X) := by
+    have h : N ∩ tsupport X = closure N ∩ tsupport X := by
+      ext x
+      refine ⟨fun h => ⟨subset_closure h.1, h.2⟩, fun h => ⟨?_, h.2⟩⟩
+      by_contra hxN
+      have hx : x ∈ (closure N \ N) ∩ U := ⟨⟨h.1, hxN⟩, hXU h.2⟩
+      rw [hNU] at hx
+      exact hx
+    rw [h]
+    exact hXc.isCompact.inter_left isClosed_closure
+  have hloc : ∀ p : ↥(N ∩ tsupport X), ∃ O : Set (Euclid P), IsOpen O ∧ (p : Euclid P) ∈ O ∧
+      ∀ Y : Euclid P → Euclid P, ContDiff ℝ 1 Y → HasCompactSupport Y → tsupport Y ⊆ O →
+        tsupport Y ⊆ tsupport X → (∀ z ∈ N ∩ O, Y z ∈ tangentSpace N z) → Good Y :=
+    fun p => glocal P d N (tsupport X) hN Good hGood p.1 p.2.1
+  choose O hOopen hpO hOgood using hloc
+  obtain ⟨s, hs⟩ := hNK.elim_finite_subcover O hOopen
+    (fun x hx => mem_iUnion.2 ⟨⟨x, hx⟩, hpO ⟨x, hx⟩⟩)
+  obtain ⟨G, hGdef⟩ : ∃ G : Option ↥s → Set (Euclid P),
+      ∀ j, G j = Option.elim j (U \ closure N) (fun i => O i.1) := ⟨_, fun _ => rfl⟩
+  have hGopen : ∀ j, IsOpen (G j) := by
+    rintro (_ | i)
+    · rw [hGdef]; exact hU.sdiff isClosed_closure
+    · rw [hGdef]; exact hOopen _
+  have hGcover : tsupport X ⊆ ⋃ j, G j := by
+    intro x hx
+    by_cases hxN : x ∈ N
+    · obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.1 (hs ⟨hxN, hx⟩)
+      exact mem_iUnion.2 ⟨some ⟨i, hi⟩, by rw [hGdef]; exact hxi⟩
+    · refine mem_iUnion.2 ⟨none, ?_⟩
+      rw [hGdef]
+      refine ⟨hXU hx, fun hxc => ?_⟩
+      have hx' : x ∈ (closure N \ N) ∩ U := ⟨⟨hxc, hxN⟩, hXU hx⟩
+      rw [hNU] at hx'
+      exact hx'
+  obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) (isClosed_tsupport X) G hGopen hGcover
+  have hfC : ∀ j, ContDiff ℝ 1 (f j) := fun j =>
+    (contMDiff_iff_contDiff.1 (f j).contMDiff).of_le (by exact_mod_cast le_top)
+  have hsum1 : ∀ x ∈ tsupport X, ∑ j, f j x = 1 := fun x hx => by
+    rw [← finsum_eq_sum_of_fintype]; exact f.sum_eq_one hx
+  have hdecomp : X = ∑ j, fun x => f j x • X x := by
+    funext x
+    rw [Finset.sum_apply]
+    by_cases hx : x ∈ tsupport X
+    · rw [← Finset.sum_smul, hsum1 x hx, one_smul]
+    · simp [image_eq_zero_of_notMem_tsupport hx]
+  have hpieces : ∀ j ∈ (Finset.univ : Finset (Option ↥s)), ContDiff ℝ 1 (fun x => f j x • X x) ∧
+      HasCompactSupport (fun x => f j x • X x) ∧ Good (fun x => f j x • X x) := by
+    intro j _
+    have hC : ContDiff ℝ 1 (fun x => f j x • X x) := (hfC j).smul hX
+    have hc : HasCompactSupport (fun x => f j x • X x) :=
+      hXc.mono (support_smul_subset_right (f j) X)
+    have hsX : tsupport (fun x => f j x • X x) ⊆ tsupport X := tsupport_smul_subset_right _ _
+    have hsG : tsupport (fun x => f j x • X x) ⊆ G j :=
+      (tsupport_smul_subset_left _ _).trans (hf j)
+    refine ⟨hC, hc, ?_⟩
+    rcases j with _ | i
+    · refine (hGood _).2 (gnormal P N (tsupport X) _ hC hc hsX (fun z hz => ?_))
+      have hz0 : f none z = 0 := by
+        by_contra h0
+        have hzG : z ∈ G none := hf none (subset_tsupport _ (mem_support.2 h0))
+        have hzG' : z ∈ U \ closure N := by rw [hGdef] at hzG; exact hzG
+        exact hzG'.2 (subset_closure hz)
+      simp [hz0]
+    · have hsG' : tsupport (fun x => f (some i) x • X x) ⊆ O i.1 := by
+        rw [hGdef] at hsG; exact hsG
+      refine hOgood i.1 _ hC hc hsG' hsX (fun z hz => ?_)
+      obtain ⟨T, hT⟩ := hTsub z hz.1
+      rw [hT]
+      by_cases hXz : X z = 0
+      · simp only [hXz, smul_zero]; exact T.zero_mem
+      · have hzU : z ∈ U := hXU (subset_tsupport _ (mem_support.2 hXz))
+        have hXzT := hXT z ⟨hz.1, hzU⟩
+        rw [hT] at hXzT
+        exact T.smul_mem _ hXzT
+  obtain ⟨-, -, hGX⟩ := hsum (Option ↥s) Finset.univ (fun j x => f j x • X x) hpieces
+  rw [show (∑ i ∈ Finset.univ, (fun j x => f j x • X x) i) = X from hdecomp.symm] at hGX
+  exact gfinal P U N X hU hX hXc hXU ((hGood X).1 hGX)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
