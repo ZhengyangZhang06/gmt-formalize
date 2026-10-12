@@ -695,6 +695,102 @@ theorem any_radius_gr_pp_graph_param : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
   · -- (D): linearity of `q` and (G2), with `v - v = 0` and `(A - B) v = A v - B v`.
     rw [← map_sub, ← G2, sub_self, sub_apply]
 
+/-- Key inequality between graph slopes and plane projections (plane projections in the graph-rate
+step of the proof of Simon Ch. 5, Remark 5.3).  Let `q` be a linear isometry of `ℝ^{n+ℓ}`,
+`A, B : ℝⁿ → ℝ^ℓ` continuous linear and `P_A`, `P_B` the orthogonal projections onto
+`G_A = q(span{(v, A v)})`, `G_B = q(span{(v, B v)})`.  Then, with `|·|² = hsNormSq` and `‖·‖` the
+operator norm, `2 |A − B|² ≤ (1 + ‖A‖²)(1 + ‖B‖²) |P_A − P_B|²`.
+Proof: for an ordered pair `(C, D)` let `W v = q(v, C v)`, so `‖W‖² ≤ 1 + ‖C‖²` by (W).
+With `y = q(0, (C − D) eᵢ)`, (P1) and (D) of `any_radius_gr_pp_graph_param` give
+`(P_C − P_D) W eᵢ = y − P_D y`, so (P2) gives `|(C − D) eᵢ|² ≤ (1 + ‖D‖²) |(P_C − P_D) W eᵢ|²`.
+As `(P_C − P_D) W = ((P_C − P_D) P_C) W`, (H3) of `any_radius_gr_pp_hs_ideal` yields
+`|C − D|² ≤ (1 + ‖C‖²)(1 + ‖D‖²) |(P_C − P_D) P_C|²`.  Apply this to `(A, B)` and `(B, A)`
+(`|·|` is invariant under negation) and add, using (S2) of `any_radius_gr_pp_hs_proj_split`. -/
+theorem any_radius_gr_pp_key_inequality : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A B : Rn n →L[ℝ] Rn ℓ), 2 * hsNormSq (A - B) ≤ (1 + ‖A‖ ^ 2) * (1 + ‖B‖ ^ 2) * hsNormSq ((Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection - (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v)))).starProjection) := by
+  intro n ℓ q A B
+  -- (P1), (P2), (W), (D) of the graph parametrization, and (H3).
+  obtain ⟨hP1, hP2, hW, hD⟩ := Submission.any_radius_gr_pp_graph_param n ℓ q
+  have H3 := Submission.any_radius_gr_pp_hs_ideal.2.2
+  -- 0(a) `hsNormSq M ≥ 0` and 0(b) `hsNormSq (-M) = hsNormSq M`.
+  have hnn : ∀ {m k : ℕ} (M : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M :=
+    fun M => Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hneg : ∀ {m k : ℕ} (M : Rn m →L[ℝ] Rn k), hsNormSq (-M) = hsNormSq M := by
+    intro m k M
+    unfold hsNormSq
+    simp only [neg_apply, norm_neg]
+  -- Step 1: `|C − D|² ≤ (1 + ‖C‖²)(1 + ‖D‖²) |(P_C − P_D) P_C|²` for every ordered pair `(C, D)`.
+  have one : ∀ C D : Rn n →L[ℝ] Rn ℓ, hsNormSq (C - D) ≤ (1 + ‖C‖ ^ 2) * (1 + ‖D‖ ^ 2) *
+      hsNormSq (((Submodule.map q.toLinearEquiv.toLinearMap
+          (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (C v)))).starProjection -
+        (Submodule.map q.toLinearEquiv.toLinearMap
+          (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (D v)))).starProjection) ∘L
+        (Submodule.map q.toLinearEquiv.toLinearMap
+          (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (C v)))).starProjection) := by
+    intro C D
+    obtain ⟨W, hWv, hWn⟩ := hW C
+    have P1C := hP1 C
+    have P1D := hP1 D
+    have P2D := hP2 D
+    have hCD := hD C D
+    generalize (Submodule.map q.toLinearEquiv.toLinearMap
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (C v)))).starProjection = PC at P1C ⊢
+    generalize (Submodule.map q.toLinearEquiv.toLinearMap
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (D v)))).starProjection = PD
+      at P1D P2D ⊢
+    -- `‖W‖² ≤ 1 + ‖C‖²`.
+    have hWsq : ‖W‖ ^ 2 ≤ 1 + ‖C‖ ^ 2 := by
+      calc ‖W‖ ^ 2 ≤ Real.sqrt (1 + ‖C‖ ^ 2) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hWn 2
+        _ = 1 + ‖C‖ ^ 2 := Real.sq_sqrt (by positivity)
+    -- (i): `(P_C − P_D) (W v) = y − P_D y` with `y = q (graphPoint 0 ((C − D) v))`.
+    have hZW : ∀ v, ((PC - PD) ∘L W) v =
+        q (graphPoint 0 ((C - D) v)) - PD (q (graphPoint 0 ((C - D) v))) := by
+      intro v
+      have e1 : W v = q (graphPoint v (D v)) + q (graphPoint 0 ((C - D) v)) := by
+        rw [hWv, ← hCD v, add_sub_cancel]
+      rw [ContinuousLinearMap.comp_apply, sub_apply, hWv, P1C v, ← hWv, e1, map_add, P1D v]
+      abel
+    -- (ii): `|(C − D) eᵢ|² ≤ (1 + ‖D‖²) |(P_C − P_D) (W eᵢ)|²` by (P2) for `D`; sum over `i`.
+    have hii : hsNormSq (C - D) ≤ (1 + ‖D‖ ^ 2) * hsNormSq ((PC - PD) ∘L W) := by
+      unfold hsNormSq
+      rw [Finset.mul_sum]
+      refine Finset.sum_le_sum fun i _ => ?_
+      have h := P2D ((C - D) (EuclideanSpace.single i 1))
+      rw [← hZW] at h
+      calc ‖(C - D) (EuclideanSpace.single i 1)‖ ^ 2
+          ≤ (Real.sqrt (1 + ‖D‖ ^ 2) * ‖((PC - PD) ∘L W) (EuclideanSpace.single i 1)‖) ^ 2 :=
+            pow_le_pow_left₀ (norm_nonneg _) h 2
+        _ = (1 + ‖D‖ ^ 2) * ‖((PC - PD) ∘L W) (EuclideanSpace.single i 1)‖ ^ 2 := by
+            rw [mul_pow, Real.sq_sqrt (by positivity)]
+    -- (iii): `(P_C − P_D) W = ((P_C − P_D) P_C) W` by (P1) for `C`, then (H3).
+    have hiii : hsNormSq ((PC - PD) ∘L W) ≤ (1 + ‖C‖ ^ 2) * hsNormSq ((PC - PD) ∘L PC) := by
+      have hfac : (PC - PD) ∘L W = ((PC - PD) ∘L PC) ∘L W := by
+        ext1 v
+        rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+          ContinuousLinearMap.comp_apply, hWv, P1C v]
+      rw [hfac]
+      exact (H3 _ _ _ _ W).trans (mul_le_mul_of_nonneg_right hWsq (hnn _))
+    -- (iv): combine (ii) and (iii).
+    calc hsNormSq (C - D) ≤ (1 + ‖D‖ ^ 2) * hsNormSq ((PC - PD) ∘L W) := hii
+      _ ≤ (1 + ‖D‖ ^ 2) * ((1 + ‖C‖ ^ 2) * hsNormSq ((PC - PD) ∘L PC)) :=
+          mul_le_mul_of_nonneg_left hiii (by positivity)
+      _ = (1 + ‖C‖ ^ 2) * (1 + ‖D‖ ^ 2) * hsNormSq ((PC - PD) ∘L PC) := by ring
+  -- 0(b) in the two forms used in step 3.
+  have hswap : ∀ {m k : ℕ} (M N : Rn m →L[ℝ] Rn k), hsNormSq (M - N) = hsNormSq (N - M) := by
+    intro m k M N
+    rw [← neg_sub, hneg]
+  have hswap' : ∀ {m : ℕ} (M N K : Rn m →L[ℝ] Rn m),
+      hsNormSq ((M - N) ∘L K) = hsNormSq ((N - M) ∘L K) := by
+    intro m M N K
+    rw [← neg_sub, ContinuousLinearMap.neg_comp, hneg]
+  -- Step 2: `(C, D) = (A, B)`.
+  have h1 := one A B
+  -- Step 3: `(C, D) = (B, A)`, with `B − A = −(A − B)` and `(P_B − P_A) P_B = −((P_A − P_B) P_B)`.
+  have h2 := one B A
+  rw [hswap B A, hswap'] at h2
+  -- Step 4: (S2) for `K = G_A`, `L = G_B`; add the bounds of steps 2 and 3.
+  rw [Submission.any_radius_gr_pp_hs_proj_split.2 (n + ℓ)]
+  linarith
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
