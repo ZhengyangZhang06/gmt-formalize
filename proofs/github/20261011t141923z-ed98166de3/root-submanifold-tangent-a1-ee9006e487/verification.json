@@ -1,0 +1,21 @@
+{
+  "node_id": "root.submanifold_tangent-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/40",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "93f0ed9252b60f837c812a31d08aa7b3842ee1a1",
+  "integrated_commit": "",
+  "proof_base_commit": "f24d5b426f3fc56b02869001bf9b33f569563d7a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.submanifold_tangent-a1.chart_inverse_continuous-a1",
+    "root.submanifold_tangent-a1.tangent_space_eq_range-a1",
+    "root.submanifold_tangent-a1.range_projection_continuous-a1",
+    "root.submanifold_tangent-a1.submanifold_measurable-a1",
+    "root.submanifold_tangent-a1.tangent_projection_continuous-a1"
+  ]
+}
