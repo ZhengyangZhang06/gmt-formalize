@@ -824,6 +824,72 @@ theorem Submission.br_weightedTangent_congr :
     _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
         (hcut M' θ').symm
 
+/-- **Integrality of the extension (Lemma B of the extension step in the proof of Simon Ch. 6,
+Theorem 7.2).**  Let `U` be open, `K ⊆ U` compact and `Z ∈ 𝒟_q(ℝ^P)` vanish on test forms whose
+support misses `K`.  If `Z|_U = τ(M, θ, ξ)` is integer multiplicity in `U`, then
+`Z = τ(M ∩ K, θ, ξ)` is integer multiplicity in `ℝ^P`.  As `spt Z|_U ⊆ K`
+(`fiw_tb_ext_support_subset`), `H^q(M ∖ K) = 0` (`lpf_rectifiable_support_null`), so
+`(M ∩ K, θ, ξ)` is a rectifiable triple whose tangent spaces are those of `(M, θ)`
+(`br_weightedTangent_congr`).  For `χ ∈ C_c^∞(U)` with `χ = 1` on an open `N ⊇ K`
+(`fiw_tb_ext_cutoff`, `fiw_tb_ext_smul_testForm`, `fiw_tb_ext_apply_eq_of_eqOn`),
+`Z(ω) = Z|_U(χ ω) = ∫_M θ ⟨χ ω, ξ⟩ dH^q = ∫_{M ∩ K} θ ⟨ω, ξ⟩ dH^q`. -/
+theorem Submission.fiw_tb_ext_isIntegerMultiplicity : ∀ (P q : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∀ Z : GeometricCurrentOn (univ : Set (Eucl P)) q, (∀ ω : TestFormOn (univ : Set (Eucl P)) q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → IsIntegerMultiplicity (Z.restrictDomain (subset_univ U)) → IsIntegerMultiplicity Z := by
+  intro P q U K hU hK hKU Z hZ hIM
+  obtain ⟨M, θ, ξ, htri, hθN, hrep⟩ := hIM
+  -- (B1) `Z|_U` vanishes on test forms supported away from `K`, so `spt Z|_U ⊆ K`.
+  have hZUv : ∀ ω : TestFormOn U q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K →
+      (Z.restrictDomain (subset_univ U)) ω = 0 := fun ω hω => hZ _ hω
+  have hsptU : (Z.restrictDomain (subset_univ U)).support ⊆ K :=
+    Submission.fiw_tb_ext_support_subset P q U K _ hU hK.isClosed hZUv
+  -- (B2) `H^q(M ∖ K) = 0`, hence `H^q ⌞ (M ∩ K) = H^q ⌞ M` and `H^q(M ∆ (M ∩ K)) = 0`.
+  have hnull : (μHE[q] : Measure (Eucl P)) (M \ K) = 0 :=
+    measure_mono_null (sdiff_subset_sdiff_right hsptU)
+      (Submission.lpf_rectifiable_support_null P q U _ M θ ξ htri hrep)
+  have hae : (M ∩ K : Set (Eucl P)) =ᵐ[(μHE[q] : Measure (Eucl P))] M := by
+    rw [ae_eq_set]
+    constructor
+    · exact measure_mono_null (fun x hx => (hx.2 hx.1.1).elim) measure_empty
+    · simpa [sdiff_inter_self_eq_sdiff] using hnull
+  have hrestr : (μHE[q] : Measure (Eucl P)).restrict (M ∩ K) =
+      (μHE[q] : Measure (Eucl P)).restrict M := Measure.restrict_congr_set hae
+  have hsymm : (μHE[q] : Measure (Eucl P)) (symmDiff M (M ∩ K) ∩ univ) = 0 := by
+    refine measure_mono_null (fun x hx => ?_) hnull
+    rcases hx.1 with ⟨hxM, hxMK⟩ | ⟨hxMK, hxM⟩
+    · exact ⟨hxM, fun hxK => hxMK ⟨hxM, hxK⟩⟩
+    · exact absurd hxMK.1 hxM
+  -- (B3)–(B4) `(M ∩ K, θ, ξ)` is a rectifiable triple in `ℝ^P`: `θ` is integrable on `M ∩ K`
+  -- as `K ⊆ U` is compact, and the frames `τ` of `(M, θ)` still orient `(M ∩ K, θ)`.
+  have htri' : IsRectifiableTriple (univ : Set (Eucl P)) q (M ∩ K) θ ξ :=
+    { subset := subset_univ _
+      nullMeasurableSet := htri.nullMeasurableSet.inter hK.isClosed.measurableSet.nullMeasurableSet
+      countablyRectifiable := htri.countablyRectifiable.mono inter_subset_left
+      pos := fun x hx => htri.pos x hx.1
+      integrableOn := fun K'' _ _ =>
+        (htri.integrableOn K hK hKU).mono_set inter_subset_left
+      aestronglyMeasurable := by rw [hrestr]; exact htri.aestronglyMeasurable
+      orients := by
+        rw [hrestr]
+        filter_upwards [htri.orients] with x hx
+        obtain ⟨τ, hτ, htan, hξ⟩ := hx
+        exact ⟨τ, hτ, Submission.br_weightedTangent_congr P q M (M ∩ K) θ θ x univ isOpen_univ
+          (mem_univ x) hsymm (ae_of_all _ fun _ => rfl) rfl _ htan, hξ⟩ }
+  refine ⟨M ∩ K, θ, ξ, htri', fun x hx => hθN x hx.1, fun ω => ?_⟩
+  -- (B5) A cutoff `χ ∈ C_c^∞(U)` with `χ = 1` on an open `N ⊇ K`; `Z(ω) = Z(χ ω)` as `χ ω = ω`
+  -- on `N`, and `χ = 1` on `M ∩ K`.
+  obtain ⟨χ, N, hχs, -, -, hχU, hN, hKN, hχN⟩ := Submission.fiw_tb_ext_cutoff P U K hU hK hKU
+  obtain ⟨L, hL⟩ := Submission.fiw_tb_ext_smul_testForm P q (univ : Set (Eucl P)) U χ hχs hχU
+  have h1 : Z ω = Z (testFormOnInclusion (subset_univ U) q (L ω)) :=
+    (Submission.fiw_tb_ext_apply_eq_of_eqOn P q univ K N Z hN hKN hZ ω _ (fun x hx => by
+      change (L ω : DifferentialForm (Eucl P) q) x = _
+      rw [hL, hχN x hx, one_smul])).symm
+  rw [h1, ← GeometricCurrentOn.restrictDomain_apply, hrep]
+  unfold tauAction
+  rw [← hrestr]
+  apply setIntegral_congr_fun₀ htri'.nullMeasurableSet
+  intro x hx
+  change θ x * ξ x ((L ω : DifferentialForm (Eucl P) q) x) = _
+  rw [hL, hχN x (hKN hx.2), one_smul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
