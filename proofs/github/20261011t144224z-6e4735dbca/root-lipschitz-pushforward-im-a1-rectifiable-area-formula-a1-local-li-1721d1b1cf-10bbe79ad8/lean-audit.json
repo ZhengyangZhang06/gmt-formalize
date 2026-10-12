@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "df72b69954429b3664f4883b99a7dd395c576a36b61d686a6328cde7f34b2635",
+  "git_delta": {
+    "base_commit": "74212416720e8c45679df19b7686d8ccd35b4d9e",
+    "candidate_commit": "06f425e14008b0ec76cc33eb257c52f98d73ee48",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_raf_lla_disjoint_lipschitz_pieces",
+    "diff_sha256": "77932530912f73e69775ed7ead33c125996137e85f759a3e352feab13d6dc604",
+    "source_sha256": "ab472be5cfa042eaa0964b10f970aa2a3ea2dd107e3ca9444f6816bd8b761a7b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_raf_lla_disjoint_lipschitz_pieces",
+      "statement": "∀ (n Q : ℕ) (Ω D : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u → D ⊆ Ω → NullMeasurableSet D (volume : Measure (Eucl n)) → ∃ (V B : ℕ → Set (Eucl n)) (K : ℕ → ℝ≥0), (∀ m, IsOpen (V m)) ∧ (∀ m, V m ⊆ Ω) ∧ (∀ m, LipschitzOnWith (K m) u (V m)) ∧ (∀ m, B m ⊆ D ∩ V m) ∧ Pairwise (Function.onFun Disjoint B) ∧ (∀ m, NullMeasurableSet (B m) (volume : Measure (Eucl n))) ∧ D ⊆ ⋃ m, B m",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
