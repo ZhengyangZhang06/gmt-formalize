@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "88492134155a332a10246fd57f11ed0176fbb3a48fcc2810ba663c16021a0a46",
+  "git_delta": {
+    "base_commit": "602c10b14a1f0a879da6cfb5a7f471d9f3583d67",
+    "candidate_commit": "a73432d1b51a94ff5363bdb29149eb36772293eb",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pwb_density_points_of_image_ae",
+    "diff_sha256": "209f4ca46d608921434562c7a48ae412ce4485b6350538367d5aa3ac6f760391",
+    "source_sha256": "78269fe140f7f527915e4647f5102109374c80e068f43c9527208b0bd41fc3a9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pwb_density_points_of_image_ae",
+      "statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), MeasurableSet C → (∃ K : NNReal, LipschitzWith K F) → ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)), ∀ w ∈ C, F w = x → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
