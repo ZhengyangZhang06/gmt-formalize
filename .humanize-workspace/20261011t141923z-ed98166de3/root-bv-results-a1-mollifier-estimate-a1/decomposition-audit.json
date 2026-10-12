@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'setLIntegral_comp_emb|setLIntegral_comp_preimage_emb' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "rg -n 'lintegral_lintegral_swap|AbsolutelyContinuous.prod' mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "rg -n 'convolution_lsmul|convolutionExists_left|def convolution|abbrev ConvolutionExistsAt' mathlib/Mathlib/Analysis/Convolution.lean",
+        "rg -n 'theorem (contDiff_normed|nonneg_normed|support_normed_eq|integral_normed|continuous_normed|hasCompactSupport_normed)' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "rg -n '(theorem|lemma).*([Tt]ranslat|comp_sub_right|comp_add_right).*(lintegral|eLpNorm|Lp)|(theorem|lemma).*lintegral.*fderiv|(theorem|lemma).*fderiv.*lintegral|(theorem|lemma).*convolution.*(lintegral|eLpNorm)|mollif' mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory",
+        "bv_translate_sub_lintegral_le_of_fderiv",
+        "bv_translate_sub_lintegral_le_of_tendsto",
+        "bv_convolution_sub_lintegral_le_of_translate",
+        "python3 /tmp/mollifier-independent-audit-0simn4oz/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-mollifier-estimate-a1/parent-child-handoff.json",
+        "/tmp/mollifier-independent-audit-0simn4oz/checks/ProofA.lean",
+        "/tmp/mollifier-independent-audit-0simn4oz/checks/ProofB.lean",
+        "/tmp/mollifier-independent-audit-0simn4oz/checks/ProofC.lean",
+        "/tmp/mollifier-independent-audit-0simn4oz/checks/Assembly.lean",
+        "/tmp/mollifier-independent-audit-0simn4oz/checks/Instances.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected mollifier estimate. The handoff and DAG agree on its exact frozen type. All three child types independently elaborate as propositions in the replayed contract scope without their implementations. Independently rebuilt proofs, following the supplied arguments, compile under pinned Lean 4.35.0-rc3 with only propext, Classical.choice and Quot.sound. Assembly also compiles from the three exact child types and the two registered sibling types, using the permitted BumpFunction.Normed import. Translation identities and sigma-finiteness of restrictions support arbitrary Q; the operator norm and scalar convolution instances have the intended meanings. All names are bare identifiers, and searches found no reservations in other branches. Dependencies are acyclic and correctly directed. No matching child theorem was found in the searched snapshot. The proposal's broader claim about absence of derivative-integral bounds is overstated: SobolevInequality.lean contains unrelated bounds, which do not discharge these obligations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_translation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose, including arbitrary Q and possibly infinite M. The supplied proof establishes the segment FTC estimate, justifies Tonelli through continuous joint dependence, applies translation invariance for arbitrary sets, and uses volume([0,1]) = 1. It handles z = 0 and M = infinity without cancellation and contains no circular reliance."
+    },
+    {
+      "key": "translation_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely the stated measurability, convergence and uniform-bound hypotheses. The proof correctly establishes measurability under translation and restriction, integrates the three-term triangle inequality, bounds both approximation errors by e_j, and passes from e_j + C + e_j to C in ENNReal, including C = infinity. No integrability or measurability-of-Q hypothesis is missing, and no child or parent theorem is assumed."
+    },
+    {
+      "key": "kernel_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated scalar convolution estimate. Compact support and continuity justify all pointwise Bochner integrals. Quasi-measure-preserving subtraction and absolute continuity of the restricted product measure justify Tonelli for arbitrary Q. The support condition supplies the strict translation bound, and nonnegativity plus unit integral supplies total kernel mass one. The argument covers infinite C and requires no future proof search or circular dependency."
+    }
+  ],
+  "required_changes": []
+}
