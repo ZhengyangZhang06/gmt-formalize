@@ -373,6 +373,162 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §5 (p. 62), mixed partials of a deformation.** The expansion
+`D_τ φ_t = τ + t D_τ X + (t²/2) D_τ Z + O(t³)` "by 5.2" interchanges `∂_t` and `D_x`. Here, for
+`F(s, x) = Φ s x` that is `C²` at `(t, y)`, `s ↦ DΦ_s(y)` has derivative `D(x ↦ ∂_s Φ(t, x))(y)` at
+`t`. Both sides equal `M(t, y) = D²F(t, y)(1, 0) ∘ inr`. For the left side this is the chain rule.
+For the right side, `x ↦ ∂_s Φ(t, x)` is the pointwise limit of the quotients
+`h⁻¹ (Φ (t + h) - Φ t)` as `h → 0`. Their spatial derivatives `h⁻¹ (D_x F(t + h, ·) - D_x F(t, ·))`
+converge to `M(t, ·)` uniformly near `y`, by the mean value theorem and the continuity of `D²F` at
+`(t, y)`. The uniform limit theorem for derivatives then applies. -/
+theorem Submission.variation_deformation_mixed_partial : ∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (t : ℝ) (y : Rn N), ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ Φ p.1 p.2) (t, y) → HasDerivAt (fun s ↦ fderiv ℝ (Φ s) y) (fderiv ℝ (fun x ↦ deriv (fun s ↦ Φ s x) t) y) t := by
+  intro N Φ t y hF
+  -- `F(s, x) = Φ s x`, `e₀ = (1, 0)`, `L = inr`, and `M p = D²F(p) e₀ ∘ L`, the time derivative of
+  -- the spatial derivative `D_x F = DF ∘ L`.
+  set F : ℝ × Rn N → Rn N := fun p ↦ Φ p.1 p.2
+  set e₀ : ℝ × Rn N := (1, 0)
+  set L : Rn N →L[ℝ] ℝ × Rn N := ContinuousLinearMap.inr ℝ ℝ (Rn N)
+  set M : ℝ × Rn N → (Rn N →L[ℝ] Rn N) := fun p ↦ (fderiv ℝ (fderiv ℝ F) p e₀).comp L
+  -- Step 1: `F` is `C²` on a ball `B = B_r(t, y)`. On `B`, `F` and `DF` are differentiable and
+  -- `D²F` is continuous.
+  obtain ⟨u, hu, hFu⟩ := hF.contDiffOn le_rfl (by simp)
+  obtain ⟨r, hr, hru⟩ := Metric.mem_nhds_iff.mp hu
+  have hB : IsOpen (ball (t, y) r) := isOpen_ball
+  have hFB : ContDiffOn ℝ 2 F (ball (t, y) r) := hFu.mono hru
+  have hDF : ContDiffOn ℝ 1 (fderiv ℝ F) (ball (t, y) r) :=
+    hFB.fderiv_of_isOpen hB (by norm_num)
+  have hD2 : ContDiffOn ℝ 0 (fderiv ℝ (fderiv ℝ F)) (ball (t, y) r) :=
+    hDF.fderiv_of_isOpen hB (by norm_num)
+  have hF1 : ∀ p ∈ ball (t, y) r, HasFDerivAt F (fderiv ℝ F p) p := fun p hp ↦
+    ((hFB.differentiableOn (by norm_num)) p hp).differentiableAt (hB.mem_nhds hp) |>.hasFDerivAt
+  have hF2 : ∀ p ∈ ball (t, y) r, HasFDerivAt (fderiv ℝ F) (fderiv ℝ (fderiv ℝ F) p) p :=
+    fun p hp ↦
+      ((hDF.differentiableOn (by norm_num)) p hp).differentiableAt (hB.mem_nhds hp) |>.hasFDerivAt
+  have hmem : ∀ s x, |s - t| < r → dist x y < r → (s, x) ∈ ball (t, y) r := by
+    intro s x hs hx
+    rw [mem_ball, Prod.dist_eq, max_lt_iff, Real.dist_eq]
+    exact ⟨hs, hx⟩
+  have hpath : ∀ (s : ℝ) (x : Rn N), HasDerivAt (fun σ : ℝ ↦ (σ, x)) e₀ s := fun s x ↦
+    (hasDerivAt_id s).prodMk (hasDerivAt_const s x)
+  -- Step 2 (chain rule at points `(s, x)` of `B`): `D(Φ s)(x) = DF(s, x) ∘ L`,
+  -- `∂_s Φ(s, x) = DF(s, x) e₀`, and `σ ↦ DF(σ, x) ∘ L` has derivative `M(s, x)` at `s`.
+  have ha : ∀ s x, (s, x) ∈ ball (t, y) r → HasFDerivAt (Φ s) ((fderiv ℝ F (s, x)).comp L) x :=
+    fun s x hp ↦ (hF1 (s, x) hp).comp x (hasFDerivAt_prodMk_right s x)
+  have hb : ∀ s x, (s, x) ∈ ball (t, y) r →
+      HasDerivAt (fun σ ↦ Φ σ x) (fderiv ℝ F (s, x) e₀) s :=
+    fun s x hp ↦ by
+      have h := (hF1 (s, x) hp).comp_hasDerivAt s (hpath s x)
+      exact h
+  have hc : ∀ s x, (s, x) ∈ ball (t, y) r →
+      HasDerivAt (fun σ ↦ (fderiv ℝ F (σ, x)).comp L) (M (s, x)) s := by
+    intro s x hp
+    have h1 : HasDerivAt (fun σ ↦ fderiv ℝ F (σ, x)) (fderiv ℝ (fderiv ℝ F) (s, x) e₀) s :=
+      (hF2 (s, x) hp).comp_hasDerivAt s (hpath s x)
+    simpa using h1.clm_comp (hasDerivAt_const s L)
+  -- Step 3: `x ↦ ∂_s Φ(t, x)` has derivative `M(t, y)` at `y`. It is the pointwise limit of
+  -- `f h = h⁻¹ (Φ (t + h) - Φ t)` as `h → 0`, `h ≠ 0`, and the derivatives
+  -- `f' h = h⁻¹ (D_x F(t + h, ·) - D_x F(t, ·))` converge to `M(t, ·)` uniformly near `y`.
+  have key : HasFDerivAt (fun x ↦ deriv (fun s ↦ Φ s x) t) (M (t, y)) y := by
+    refine hasFDerivAt_of_tendstoUniformlyOnFilter (l := 𝓝[≠] (0 : ℝ))
+      (f := fun h x ↦ h⁻¹ • (Φ (t + h) x - Φ t x))
+      (f' := fun h x ↦ h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L))
+      (g' := fun x ↦ M (t, x)) ?_ ?_ ?_
+    · -- Uniform convergence of `f'`: given `ε`, take `δ` from the continuity of `M` at `(t, y)`.
+      rw [Metric.tendstoUniformlyOnFilter_iff]
+      intro ε hε
+      have hMc : ContinuousAt M (t, y) :=
+        ((hD2.continuousOn.continuousAt (hB.mem_nhds (mem_ball_self hr))).clm_apply
+          continuousAt_const).clm_comp continuousAt_const
+      obtain ⟨δ, hδ, hδM⟩ := Metric.continuousAt_iff.mp hMc (ε / 2) (half_pos hε)
+      have hδ' : 0 < min δ r := lt_min hδ hr
+      have hev1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < min δ r ∧ h ≠ 0 := by
+        filter_upwards [nhdsWithin_le_nhds (ball_mem_nhds (0 : ℝ) hδ'), self_mem_nhdsWithin]
+          with h h1 h2
+        refine ⟨?_, h2⟩
+        rwa [mem_ball, Real.dist_eq, sub_zero] at h1
+      have hev2 : ∀ᶠ x in 𝓝 y, dist x y < min δ r := ball_mem_nhds y hδ'
+      filter_upwards [hev1.prod_mk hev2]
+      rintro ⟨h, x⟩ ⟨⟨hh, hh0⟩, hx⟩
+      dsimp only
+      have hxδ : dist x y < δ := lt_of_lt_of_le hx (min_le_left _ _)
+      have hxr : dist x y < r := lt_of_lt_of_le hx (min_le_right _ _)
+      have hclose : ∀ σ, |σ - t| < min δ r → dist (M (σ, x)) (M (t, y)) < ε / 2 := by
+        intro σ hσ
+        apply hδM
+        rw [Prod.dist_eq, max_lt_iff, Real.dist_eq]
+        exact ⟨lt_of_lt_of_le hσ (min_le_left _ _), hxδ⟩
+      -- Mean value theorem in time for `σ ↦ D_x F(σ, x) - σ • M(t, y)`, whose derivative
+      -- `M(σ, x) - M(t, y)` has norm `≤ ε / 2` for `|σ - t| < min δ r`.
+      have hmvt : ‖(fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L - h • M (t, y)‖
+          ≤ ε / 2 * |h| := by
+        have hderiv : ∀ σ ∈ ball t (min δ r), HasDerivWithinAt
+            (fun σ ↦ (fderiv ℝ F (σ, x)).comp L - σ • M (t, y)) (M (σ, x) - M (t, y))
+            (ball t (min δ r)) σ := by
+          intro σ hσ
+          rw [mem_ball, Real.dist_eq] at hσ
+          have h1 := hc σ x (hmem σ x (lt_of_lt_of_le hσ (min_le_right _ _)) hxr)
+          have h2 := (hasDerivAt_id' σ).smul_const (M (t, y))
+          have h3 := (h1.sub h2).hasDerivWithinAt (s := ball t (min δ r))
+          rw [one_smul] at h3
+          exact h3
+        have hbound : ∀ σ ∈ ball t (min δ r), ‖M (σ, x) - M (t, y)‖ ≤ ε / 2 := by
+          intro σ hσ
+          rw [mem_ball, Real.dist_eq] at hσ
+          rw [← dist_eq_norm]
+          exact (hclose σ hσ).le
+        have hth : t + h ∈ ball t (min δ r) := by
+          rw [mem_ball, Real.dist_eq, add_sub_cancel_left]
+          exact hh
+        have hlip := (convex_ball t (min δ r)).norm_image_sub_le_of_norm_hasDerivWithin_le
+          hderiv hbound (mem_ball_self hδ') hth
+        simp only [add_sub_cancel_left, Real.norm_eq_abs] at hlip
+        calc _ = ‖(fderiv ℝ F (t + h, x)).comp L - (t + h) • M (t, y)
+              - ((fderiv ℝ F (t, x)).comp L - t • M (t, y))‖ := by
+              congr 1
+              rw [show (t + h) • M (t, y) = t • M (t, y) + h • M (t, y) from add_smul t h (M (t, y))]
+              abel
+          _ ≤ ε / 2 * |h| := hlip
+      -- Hence `‖M(t, y) - f' h x‖ ≤ ε / 2`, and `‖M(t, x) - M(t, y)‖ < ε / 2`.
+      have hfinal : dist (M (t, y))
+          (h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L)) ≤ ε / 2 := by
+        rw [dist_eq_norm]
+        have e2 : M (t, y) - h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L)
+            = -(h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L
+              - h • M (t, y))) := by
+          rw [smul_sub (h⁻¹) _ (h • M (t, y)), smul_smul, inv_mul_cancel₀ hh0, one_smul]; abel
+        rw [e2, norm_neg, norm_smul, norm_inv, Real.norm_eq_abs]
+        have habs : 0 < |h| := abs_pos.mpr hh0
+        calc |h|⁻¹ * ‖_‖ ≤ |h|⁻¹ * (ε / 2 * |h|) := by gcongr
+          _ = ε / 2 := by field_simp
+      calc dist (M (t, x)) (h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L))
+          ≤ dist (M (t, x)) (M (t, y)) + dist (M (t, y))
+              (h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L)) :=
+            dist_triangle _ _ _
+        _ < ε / 2 + ε / 2 := add_lt_add_of_lt_of_le (hclose t (by simpa using hδ')) hfinal
+        _ = ε := add_halves ε
+    · -- `f' h` is the derivative of `f h` near `y`, for small `h`.
+      have h1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < r := by
+        filter_upwards [nhdsWithin_le_nhds (ball_mem_nhds (0 : ℝ) hr)] with h h1
+        rwa [mem_ball, Real.dist_eq, sub_zero] at h1
+      have h2 : ∀ᶠ x in 𝓝 y, dist x y < r := ball_mem_nhds y hr
+      filter_upwards [h1.prod_mk h2]
+      rintro ⟨h, x⟩ ⟨hh, hx⟩
+      have p1 := ha (t + h) x (hmem (t + h) x (by simpa using hh) hx)
+      have p2 := ha t x (hmem t x (by simpa using hr) hx)
+      exact (p1.sub p2).const_smul h⁻¹
+    · -- `f h x → ∂_s Φ(t, x)` for `x` near `y`: the slopes converge to the derivative.
+      filter_upwards [ball_mem_nhds y hr] with x hx
+      have hbx := hb t x (hmem t x (by simpa using hr) hx)
+      show Tendsto (fun h ↦ h⁻¹ • (Φ (t + h) x - Φ t x)) (𝓝[≠] 0) (𝓝 (deriv (fun s ↦ Φ s x) t))
+      rw [hbx.deriv]
+      exact hbx.tendsto_slope_zero
+  -- Step 4: near `t`, `D(Φ s)(y) = D_x F(s, y)`, whose time derivative at `t` is `M(t, y)`.
+  rw [key.fderiv]
+  refine (hc t y (mem_ball_self hr)).congr_of_eventuallyEq ?_
+  filter_upwards [ball_mem_nhds t hr] with s hs
+  rw [mem_ball, Real.dist_eq] at hs
+  exact (ha s y (hmem s y hs (by simpa using hr))).fderiv
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
