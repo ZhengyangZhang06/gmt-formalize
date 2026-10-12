@@ -359,6 +359,38 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of 7.2 (last paragraph, from (5)): if `T_r − T_{r+1} = ∂R_r + S_r`,
+`T_r ⇀ T`, and `X = ∑_k R_{ℓ+k}`, `Y = ∑_k S_{ℓ+k}` pointwise on test forms, then
+`T_ℓ − T = ∂X + Y`.  With `∂Z(ω) = Z(dω)`, telescoping gives
+`T_ℓ(ω) − T_{ℓ+N}(ω) = ∑_{k<N} (R_{ℓ+k}(dω) + S_{ℓ+k}(ω))`; as `N → ∞` the left side tends to
+`T_ℓ(ω) − T(ω)` and the right side to `X(dω) + Y(ω)`, and limits in `ℝ` are unique. -/
+theorem Submission.fiw_fcl_telescope_limit :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (Tr : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n)
+      (R : ℕ → GeometricCurrentOn U (n + 1)) (S : ℕ → GeometricCurrentOn U n)
+      (X : GeometricCurrentOn U (n + 1)) (Y : GeometricCurrentOn U n) (ℓ : ℕ),
+      (∀ r ω, Tr r ω - Tr (r + 1) ω = (R r).boundary ω + S r ω) → WeaklyConvergesOn Tr T →
+      (∀ η, HasSum (fun k => R (ℓ + k) η) (X η)) → (∀ ω, HasSum (fun k => S (ℓ + k) ω) (Y ω)) →
+      ∀ ω, Tr ℓ ω - T ω = X.boundary ω + Y ω := by
+  intro P n U Tr T R S X Y ℓ hstep hweak hX hY ω
+  -- Telescoping: `T_ℓ(ω) − T_{ℓ+N}(ω) = ∑_{k<N} (∂R_{ℓ+k}(ω) + S_{ℓ+k}(ω))`.
+  have htel : ∀ N : ℕ, Tr ℓ ω - Tr (ℓ + N) ω =
+      ∑ k ∈ Finset.range N, ((R (ℓ + k)).boundary ω + S (ℓ + k) ω) := by
+    intro N
+    induction N with
+    | zero => simp
+    | succ N ih =>
+      rw [Finset.sum_range_succ, ← ih, ← hstep (ℓ + N) ω]
+      exact (sub_add_sub_cancel _ _ _).symm
+  -- The left side tends to `T_ℓ(ω) − T(ω)`, since `ℓ + N → ∞`.
+  have hleft : Tendsto (fun N => Tr ℓ ω - Tr (ℓ + N) ω) atTop (𝓝 (Tr ℓ ω - T ω)) :=
+    tendsto_const_nhds.sub
+      ((hweak ω).comp (tendsto_atTop_mono (fun N => Nat.le_add_left N ℓ) tendsto_id))
+  -- The right side tends to `X(dω) + Y(ω) = ∂X(ω) + Y(ω)`.
+  have hright : Tendsto (fun N => ∑ k ∈ Finset.range N, ((R (ℓ + k)).boundary ω + S (ℓ + k) ω))
+      atTop (𝓝 (X.boundary ω + Y ω)) :=
+    ((hX (exteriorDerivativeTestOn U n ω)).add (hY ω)).tendsto_sum_nat
+  exact tendsto_nhds_unique (hleft.congr htel) hright
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
