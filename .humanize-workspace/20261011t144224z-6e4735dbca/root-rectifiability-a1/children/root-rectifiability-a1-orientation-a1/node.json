@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.orientation-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Blow-up orientation: ξ orients the weighted approximate tangent spaces when ∂T has locally finite mass (Simon 6, proof of 8.1, (10)-(13))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, and T ∈ D_n(U) with M_W(∂T) < ∞ for every open W ⊂⊂ U. Let M ⊆ U be Hⁿ-measurable and countably n-rectifiable, θ : ℝ^P → ℝ with θ > 0 on M and θ Hⁿ-integrable on M ∩ K for every compact K ⊆ U, and ξ : ℝ^P → Λ_n(ℝ^P) Hⁿ⌞M-measurable with Euclidean coefficient norm 1 Hⁿ-a.e. on M (Σ_{α∈I(n,P)} ξ(x)(dx^α)² = 1), and suppose T(ω) = ∫_M θ(x) ⟨ω(x), ξ(x)⟩ dHⁿ(x) (= tauAction n M θ ξ ω) for every ω ∈ Dⁿ(U). Then for Hⁿ-a.e. x ∈ M there is an orthonormal n-tuple τ = (τ₁, …, τ_n) in ℝ^P such that span{τ₁, …, τ_n} is the approximate tangent space of M at x with respect to θ and ξ(x) = τ₁∧⋯∧τ_n or ξ(x) = −τ₁∧⋯∧τ_n (simpleNVector τ).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.boundary.massOn W < ∞) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)), M ⊆ U → NullMeasurableSet M (μHE[m + 1] : Measure (Eucl P)) → CountablyRectifiable (m + 1) M → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P))) → AEStronglyMeasurable ξ ((μHE[m + 1] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∑ α : SimonMultiIndex (m + 1) P, (euclideanNVectorCoordinate (ξ x) α) ^ 2 = 1) → (∀ ω : TestFormOn U (m + 1), T ω = tauAction (m + 1) M θ ξ ω) → ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∃ τ : Fin (m + 1) → Eucl P, Orthonormal ℝ τ ∧ HasWeightedApproximateTangentSpaceAt (m + 1) M θ x (Submodule.span ℝ (range τ)) ∧ (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ)",
+  "lean_name": "rectifiability_orientation",
+  "depends_on": [
+    "root.rectifiability-a1.mass_measure_representation-a1",
+    "root.rectifiability-a1.density_comparison-a1",
+    "root.rectifiability-a1.weighted_tangent_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.mass_measure_representation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.density_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.weighted_tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-orientation-a1-a1"
+}

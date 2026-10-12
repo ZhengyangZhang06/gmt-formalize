@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.density_comparison-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Comparison of upper density with Hausdorff measure (Simon 1, Theorem 3.3)",
+  "statement": "For all P, n ∈ ℕ, every Borel measure ν on ℝ^P, every open V ⊆ ℝ^P, every set A ⊆ V (not necessarily measurable) and every t ∈ [0, ∞]: if the upper density Θ*ⁿ(ν, x) := limsup_{r↓0} ν(B̄_r(x))/(ω_n rⁿ) (dimensionalUpperDensity ν n univ x) satisfies Θ*ⁿ(ν, x) ≥ t for every x ∈ A, then t·Hⁿ(A) ≤ ν(V), where Hⁿ(A) = μHE[n](A) is the outer n-dimensional Hausdorff measure.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Eucl P)) (A V : Set (Eucl P)) (t : ℝ≥0∞), IsOpen V → A ⊆ V → (∀ x ∈ A, t ≤ dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x) → t * (μHE[n] : Measure (Eucl P)) A ≤ ν V",
+  "lean_name": "rectifiability_density_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-density-comparison-a1-a1"
+}
