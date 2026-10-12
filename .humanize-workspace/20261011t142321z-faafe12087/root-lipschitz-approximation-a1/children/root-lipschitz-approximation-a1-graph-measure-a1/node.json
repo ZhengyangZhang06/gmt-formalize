@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.graph_measure-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Hausdorff measure of a rotated 1-Lipschitz graph over a ball (fact Gr)",
+  "statement": "For n >= 1, l, a linear isometry q of R^(n+l), f : R^n -> R^l with |f(x) - f(z)| <= |x - z| for all x, z, c in R^n and r >= 0: H^n(q(graph of f over the closed ball B^n_r(c))) <= 2^(n/2) omega_n r^n.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → ∀ (c : Rn n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f (closedBall c r)) ≤ ENNReal.ofReal (2 ^ ((n : ℝ) / 2) * unitBallVolume n * r ^ n)",
+  "lean_name": "lip_approx_graph_measure",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.graph_coordinates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-measure-a1-a1"
+}
