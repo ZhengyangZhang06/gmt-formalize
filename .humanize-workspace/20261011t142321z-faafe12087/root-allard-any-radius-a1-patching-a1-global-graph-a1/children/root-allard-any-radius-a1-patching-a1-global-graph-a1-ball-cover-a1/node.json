@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.global_graph-a1.ball_cover-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1.global_graph-a1",
+  "depth": 4,
+  "title": "A closed set containing the centre and relatively open in an open ball contains the ball",
+  "statement": "Let m be a natural number and R^m := Rn m = EuclideanSpace ℝ (Fin m). Write B°_r(x) for the open ball (Metric.ball). Let D be a subset of R^m, c a point of R^m and R a real number with R > 0. Assume:\n(a) D is closed;\n(b) c ∈ D;\n(c) for every w ∈ D ∩ B°_R(c) there is ε > 0 with B°_ε(w) ∩ B°_R(c) ⊆ D.\nThen B°_R(c) ⊆ D.",
+  "lean_statement": "∀ {m : ℕ} (D : Set (Rn m)) (c : Rn m) (R : ℝ), 0 < R → IsClosed D → c ∈ D → (∀ w ∈ D ∩ ball c R, ∃ ε : ℝ, 0 < ε ∧ ball w ε ∩ ball c R ⊆ D) → ball c R ⊆ D",
+  "lean_name": "arp_ball_subset_of_closed_rel_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-global-graph-a1-ball-cover-a1-a1"
+}
