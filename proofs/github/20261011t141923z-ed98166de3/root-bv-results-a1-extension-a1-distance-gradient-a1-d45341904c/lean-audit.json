@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bfab7954ed0e91b1d8f52153fd785ca390fff8d09eed0f3babaa02fb5fe75926",
+  "git_delta": {
+    "base_commit": "a874a0f7584cf26f1ffe971bc7881ac0b3d1ab97",
+    "candidate_commit": "88c5be9ac44ddcdf6a8bb438aad3450221c3164f",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_ext_norm_fderiv_infDist_eq_one",
+    "diff_sha256": "89d3acc4524888f22306a4ca4f3f7e40115318257b19ac0ea3cc96c808ca9a87",
+    "source_sha256": "a8b207685b595e1f980c7521561bc7b63681302f7a02c1216877ca449476aae3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_ext_norm_fderiv_infDist_eq_one",
+      "statement": "∀ (n : ℕ) (S : Set (Rn n)) (x : Rn n), IsClosed S → S.Nonempty → x ∉ S → DifferentiableAt ℝ (fun y ↦ infDist y S) x → ‖fderiv ℝ (fun y ↦ infDist y S) x‖ = 1",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
