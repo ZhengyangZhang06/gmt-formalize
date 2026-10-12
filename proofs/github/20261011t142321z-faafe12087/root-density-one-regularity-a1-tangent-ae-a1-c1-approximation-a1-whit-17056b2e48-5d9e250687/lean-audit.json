@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f2f079e1451fba1c5dead74d2ea8bedfda2f8ce2215403f7aeaab5977dfebd5",
+  "git_delta": {
+    "base_commit": "cc59bc46c4c1f1391d21197539b68cf37a53888a",
+    "candidate_commit": "fbb29842559f0e05456a7228ed89bb8c3dec727c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tae_whitney_c1_extension",
+    "diff_sha256": "b0973e0ecf6441bffdf5b511d0a3cd7a4ff416e1d279dead50c9a6517320be89",
+    "source_sha256": "0c2380e3f1b0382efc57dee9d9032c7ab93802e1bea2c07eeead588b74074120",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tae_whitney_c1_extension",
+      "statement": "∀ {n : ℕ} (A : Set (Rn n)) (h : Rn n → ℝ) (D : Rn n → (Rn n →L[ℝ] ℝ)), IsClosed A → ContinuousOn h A → ContinuousOn D A → (∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ η : ℝ, 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < ρ → ‖h y - h x - D x (y - x)‖ ≤ η * ‖y - x‖) → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ (∀ a ∈ A, g a = h a) ∧ ∀ a ∈ A, HasFDerivAt g (D a) a",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
