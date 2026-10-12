@@ -335,6 +335,83 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **A narrow cone about `Wᗮ` is covered by the `ℓ` slab cones with aperture enlarged by `√ℓ`**:
+step 3(b) of the cone trichotomy in the proof of Simon Ch. 3, Theorem 3.6 (`chapter-03.txt`
+lines 530–536, which defers the proof to [Fed69]). This is the right inclusion
+`X(0, V, s) ⊆ ⋃_j Z(j, s*)` of M. G. Dall'Alba, *The Besicovitch–Federer Projection Theorem*,
+Lemma 5.5, for `V = Wᗮ` with the frame `(u_j)` and `s* ≤ √ℓ s`, at the point `y = x - a`.
+Since `dim Wᗮ = ℓ`, the `u_k` form an orthonormal basis of `Wᗮ`, so Parseval and Pythagoras give
+`|y|² = |Py|² + Σ_k (y·u_k)²`. For `j` maximizing `(y·u_j)²`,
+`|Py + (y·u_j)u_j|² = |Py|² + (y·u_j)²` and `|Py|² < s²|y|² ≤ ℓ s² |Py + (y·u_j)u_j|²`. -/
+theorem Submission.bf_cone_subset_iUnion_slabCones : ∀ (n ℓ : ℕ), 0 < ℓ → ∀ W : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W = n → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∀ (y : Rn (n + ℓ)) (s : ℝ), ‖W.starProjection y‖ < s * ‖y‖ → ∃ j, ‖W.starProjection y‖ < Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖ := by
+  intro n ℓ hℓ W hW u hu huW y s hys
+  have : Nonempty (Fin ℓ) := ⟨⟨0, hℓ⟩⟩
+  -- Steps 1–2: `dim Wᗮ = ℓ`, so `u`, viewed in `Wᗮ`, is an orthonormal basis `b` of `Wᗮ`.
+  have hdim : finrank ℝ Wᗮ = ℓ := by
+    have h := W.finrank_add_finrank_orthogonal
+    rw [finrank_euclideanSpace_fin, hW] at h
+    omega
+  let v : Fin ℓ → Wᗮ := fun k ↦ ⟨u k, huW k⟩
+  have hv : Orthonormal ℝ v := by
+    refine ⟨fun i ↦ ?_, fun i k hik ↦ ?_⟩
+    · simpa [v] using hu.1 i
+    · simpa [v] using hu.2 hik
+  have hcard : Fintype.card (Fin ℓ) = finrank ℝ Wᗮ := by simp [hdim]
+  let b : OrthonormalBasis (Fin ℓ) ℝ Wᗮ :=
+    OrthonormalBasis.mk hv (hv.linearIndependent.span_eq_top_of_card_eq_finrank hcard).ge
+  have hb : ∀ k, (b k : Rn (n + ℓ)) = u k := fun k ↦ by simp [b, v]
+  -- Step 3: `P y ⊥ u_k`.
+  have hPu : ∀ k, inner ℝ (W.starProjection y) (u k) = (0 : ℝ) := fun k ↦
+    Submodule.inner_right_of_mem_orthogonal (W.starProjection_apply_mem y) (huW k)
+  -- Step 4: Parseval in `Wᗮ` gives `‖y - P y‖² = ∑ₖ (y · u_k)²`.
+  have hpars : ‖y - W.starProjection y‖ ^ 2 = ∑ k, (inner ℝ y (u k)) ^ 2 := by
+    have h := b.sum_sq_inner_right ⟨y - W.starProjection y, W.sub_starProjection_mem_orthogonal y⟩
+    have hn : ‖(⟨y - W.starProjection y, W.sub_starProjection_mem_orthogonal y⟩ : Wᗮ)‖ =
+        ‖y - W.starProjection y‖ := rfl
+    rw [hn] at h
+    rw [← h]
+    refine Finset.sum_congr rfl fun k _ ↦ ?_
+    rw [Submodule.coe_inner, hb k, real_inner_comm, inner_sub_left, hPu, sub_zero]
+  -- Step 5: Pythagoras, `‖y‖² = ‖P y‖² + ∑ₖ (y · u_k)²`.
+  have hpyth : ‖y‖ ^ 2 = ‖W.starProjection y‖ ^ 2 + ∑ k, (inner ℝ y (u k)) ^ 2 := by
+    rw [← hpars]
+    have h := W.norm_sq_eq_add_norm_sq_starProjection y
+    rwa [Submodule.starProjection_orthogonal_val] at h
+  -- Step 6: choose `j` maximizing `(y · u_j)²`, so `∑ₖ (y · u_k)² ≤ ℓ (y · u_j)²`.
+  obtain ⟨j, -, hj⟩ := Finset.exists_max_image Finset.univ (fun k ↦ (inner ℝ y (u k)) ^ 2)
+    Finset.univ_nonempty
+  have hsum : ∑ k, (inner ℝ y (u k)) ^ 2 ≤ ℓ * (inner ℝ y (u j)) ^ 2 := by
+    calc ∑ k, (inner ℝ y (u k)) ^ 2 ≤ ∑ _k : Fin ℓ, (inner ℝ y (u j)) ^ 2 :=
+          Finset.sum_le_sum fun k hk ↦ hj k hk
+      _ = ℓ * (inner ℝ y (u j)) ^ 2 := by simp
+  -- Step 7: `‖P y + (y · u_j) u_j‖² = ‖P y‖² + (y · u_j)²`.
+  have hpj : ‖W.starProjection y + inner ℝ y (u j) • u j‖ ^ 2 =
+      ‖W.starProjection y‖ ^ 2 + (inner ℝ y (u j)) ^ 2 := by
+    rw [norm_add_sq_real, real_inner_smul_right, hPu, norm_smul, hu.1 j, Real.norm_eq_abs, mul_one,
+      sq_abs]
+    ring
+  refine ⟨j, ?_⟩
+  -- Step 8: `s > 0`.
+  have hP0 : 0 ≤ ‖W.starProjection y‖ := norm_nonneg _
+  have hs : 0 < s := by
+    by_contra hs
+    have : s * ‖y‖ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (not_lt.1 hs) (norm_nonneg _)
+    linarith
+  -- Steps 9–10: compare squares, then take square roots.
+  have hℓ1 : (1 : ℝ) ≤ ℓ := by exact_mod_cast hℓ
+  have hsqrt : Real.sqrt (ℓ : ℝ) ^ 2 = ℓ := Real.sq_sqrt (by positivity)
+  have hR : 0 ≤ Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖ := by
+    positivity
+  refine lt_of_pow_lt_pow_left₀ 2 hR ?_
+  calc ‖W.starProjection y‖ ^ 2 < (s * ‖y‖) ^ 2 := pow_lt_pow_left₀ hys hP0 two_ne_zero
+    _ = s ^ 2 * (‖W.starProjection y‖ ^ 2 + ∑ k, (inner ℝ y (u k)) ^ 2) := by rw [mul_pow, hpyth]
+    _ ≤ s ^ 2 * (ℓ * ‖W.starProjection y‖ ^ 2 + ℓ * (inner ℝ y (u j)) ^ 2) := by
+        gcongr
+        nlinarith [sq_nonneg ‖W.starProjection y‖]
+    _ = (Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖) ^ 2 := by
+        rw [mul_pow, mul_pow, hsqrt, hpj]
+        ring
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
