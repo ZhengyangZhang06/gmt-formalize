@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.weighted_gradient-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Weighted cut-off gradient bound r∫|u||Dφ| ≤ R|D|u||(U) + n∫_U|u| (Simon 2.8 (5), C4)",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ open, ξ ∈ ℝⁿ, R > 0 with U ⊆ closedBall(ξ, R), r ∈ ℝ, u ∈ L¹(ℝⁿ), and φ : ℝⁿ → ℝ Lipschitz with 0 ≤ φ ≤ 1, compact support, tsupport φ ⊆ U and r‖Dφ(x)‖ ≤ −Dφ(x)[x − ξ] for Lebesgue-a.e. x (Dφ = fderiv ℝ φ). Then in [0, ∞]: ofReal(r)·∫⁻ ‖u‖ₑ‖Dφ‖ₑ ≤ ofReal(R)·|D|u||(U) + n·∫⁻_U ‖u‖ₑ, where |D|u||(U) := bvVariationOn (x ↦ |u(x)|) U.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (R r : ℝ) (u φ : Rn n → ℝ), IsOpen U → 0 < R → U ⊆ closedBall ξ R → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → (∀ᵐ x ∂volume, r * ‖fderiv ℝ φ x‖ ≤ -fderiv ℝ φ x (x - ξ)) → ENNReal.ofReal r * ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ ≤ ENNReal.ofReal R * Chapter02.bvVariationOn (fun x ↦ |u x|) U + (n : ℝ≥0∞) * ∫⁻ x in U, ‖u x‖ₑ",
+  "lean_name": "bv_ext_lintegral_enorm_mul_fderiv_le",
+  "depends_on": [
+    "root.bv_results-a1.extension-a1.divergence_smul-a1",
+    "root.bv_results-a1.extension-a1.admissible_field-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.extension-a1.divergence_smul-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.extension-a1.admissible_field-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-weighted-gradient-a1-a1"
+}
