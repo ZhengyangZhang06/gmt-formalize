@@ -816,6 +816,71 @@ theorem Submission.chart_coarea_jacobian_identification : ∀ (n N m : ℕ) (M :
   show Γ v = L ⟨A v, hv⟩
   rw [show (⟨A v, hv⟩ : T) = e v from Subtype.ext (he v).symm, hLe]
 
+/-- **`T_x M` and `d^M f_x` exist for `Hⁿ`-a.e. `x ∈ M`** (Simon Ch. 3, 2.1–2.2 with Remark 1.3
+and Lemma 1.2; conclusion (a) of the area and co-area formulas), assuming Lemma 1.2, the `C¹`
+approximation theorem (C1) and the chart lemma (CT). By `rectifiable_c1_chart_pieces`, `M` is
+covered up to an `Hⁿ`-null set by the images `ψⱼ(Eⱼ)`, `Eⱼ ⊆ Dⱼ`, of `C¹` immersions `ψⱼ` of
+open sets `Dⱼ ⊆ ℝⁿ`, Lipschitz on `Dⱼ`. By (CT), off an `Lⁿ`-null set `Dⱼ \ Tⱼ`, every
+`u ∈ Dⱼ` with `ψⱼ(u) ∈ M` has the weighted approximate tangent plane `range Dψⱼ(u)` at `ψⱼ(u)`
+and `D_{Dψⱼ(u) w} f(ψⱼ(u)) = D(f ∘ ψⱼ)(u) w`; there part (ii) of
+`chart_coarea_jacobian_identification` gives `d^M f_x`. The remaining points of `M` lie in
+`(M \ ⋃ⱼ ψⱼ(Eⱼ)) ∪ ⋃ⱼ ψⱼ(Dⱼ \ Tⱼ)`, which is `Hⁿ`-null since `Hⁿ(ψⱼ(Z)) ≤ Kⱼⁿ Lⁿ(Z)`. -/
+theorem Submission.coarea_tangent_existence :
+    SubmanifoldCoverCharacterization →
+    (∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε →
+      ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧
+        volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε) →
+    (∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ))) (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p)
+      (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), NullMeasurableSet M μHE[n] →
+      IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f →
+      IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) →
+      ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
+        HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+            (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧
+          DifferentiableAt ℝ (f ∘ ψ) u ∧
+          ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) →
+    ∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ))) (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p),
+      NullMeasurableSet M μHE[n] → CountablyRectifiable n M →
+      IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f →
+      ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))), x ∈ M →
+        ∃ (P : Submodule ℝ (Rn (n + ℓ))) (L : P →L[ℝ] Rn p),
+          HasWeightedApproximateTangentSpaceAt n M θ x P ∧ HasTangentialDifferentialAt P f x L := by
+  intro hSub hC1 hCT n ℓ p M U θ f hM hrect hθ hU hMU hf
+  -- Step 1 (charts): `Hⁿ(M \ ⋃ⱼ ψⱼ(Eⱼ)) = 0`, `Eⱼ ⊆ Dⱼ`.
+  obtain ⟨D, ψ, G, E, hDo, hψC, -, hψL, hDψ, -, -, hED, -, hcov⟩ :=
+    Submission.rectifiable_c1_chart_pieces hSub hC1 n ℓ p M U f hrect hU hMU hf
+  -- Step 2 (chart lemma): the conclusion of (CT) for `ψⱼ` holds on an `Lⁿ`-conull set `Tⱼ`.
+  choose T hTae hTgood using fun j ↦
+    (hCT n ℓ p M U θ f (D j) (ψ j) hM hθ hU hMU hf (hDo j) (hψC j) (hDψ j)).exists_mem
+  -- Step 4 (null images): `Hⁿ(ψⱼ(Dⱼ \ Tⱼ)) ≤ Kⱼⁿ Lⁿ(Dⱼ \ Tⱼ) = 0`.
+  have hnull : ∀ j, μHE[n] (ψ j '' (D j \ T j)) = 0 := by
+    intro j
+    obtain ⟨K, hK⟩ := hψL j
+    have hvol : volume (D j \ T j) = 0 :=
+      measure_mono_null (fun u hu ↦ hu.2) (mem_ae_iff.1 (hTae j))
+    refine le_antisymm ?_ zero_le
+    calc μHE[n] (ψ j '' (D j \ T j))
+        ≤ (K : ℝ≥0∞) ^ n * μHE[n] (D j \ T j) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hK.mono Set.sdiff_subset)
+      _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hvol, mul_zero]
+  -- Steps 3–4: every `x ∈ M` failing the conclusion lies in the `Hⁿ`-null set
+  -- `(M \ ⋃ⱼ ψⱼ(Eⱼ)) ∪ ⋃ⱼ ψⱼ(Dⱼ \ Tⱼ)`.
+  rw [ae_iff]
+  refine measure_mono_null ?_ (measure_union_null hcov (measure_iUnion_null hnull))
+  intro x hx
+  obtain ⟨hxM, hxbad⟩ := not_imp.1 hx
+  by_cases hxcov : x ∈ ⋃ j, ψ j '' E j
+  · obtain ⟨j, u, hu, rfl⟩ := mem_iUnion.1 hxcov
+    refine Or.inr (mem_iUnion.2 ⟨j, u, ⟨hED j hu, fun huT ↦ hxbad ?_⟩, rfl⟩)
+    -- Step 3: at `x = ψⱼ(u)` with `u ∈ Tⱼ`, identification (ii) gives `L` on `range Dψⱼ(u)`.
+    obtain ⟨hT, -, hline⟩ := hTgood j u huT (hED j hu) hxM
+    obtain ⟨-, ⟨L, hL⟩, -⟩ := Submission.chart_coarea_jacobian_identification n (n + ℓ) p M θ f
+      (ψ j u) (fderiv ℝ (ψ j) u) (fderiv ℝ (f ∘ ψ j) u) (hθ.1 _ hxM).ne' (hDψ j u (hED j hu)) hT
+      hline
+    exact ⟨_, L, hT, hL⟩
+  · exact Or.inl ⟨hxM, hxcov⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
