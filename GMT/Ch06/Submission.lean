@@ -479,6 +479,60 @@ theorem Submission.isoperimetric_apply_eq_zero_of_disjoint_support :
   change T.toCurrent ω = 0
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => hη i
+/-- Compact inner approximation: a `μ`-null-measurable `A ⊆ ℝ^P` with `μ ⌞ A` σ-finite is,
+up to a `μ`-null set, the union of countably many compact subsets of `A`. -/
+theorem Submission.lpf_lli_inner_compact_approx : ∀ (P : ℕ) (μ : Measure (Eucl P)) (A : Set (Eucl P)), NullMeasurableSet A μ → SigmaFinite (μ.restrict A) → ∃ C : ℕ → Set (Eucl P), (∀ k, IsCompact (C k)) ∧ (∀ k, C k ⊆ A) ∧ μ (A \ ⋃ k, C k) = 0 := by
+  intro P μ A hA hσ
+  -- Step 1: a Borel set `A' ⊆ A` with `μ (A \ A') = 0`.
+  obtain ⟨A', hA'A, hA'm, hA'ae⟩ := hA.exists_measurable_subset_ae_eq
+  have hAA' : μ (A \ A') = 0 := (ae_eq_set.1 hA'ae).2
+  -- Step 2: the Borel pieces `B m = A' ∩ S m`, `S = spanningSets (μ ⌞ A)`, have finite measure.
+  set S := spanningSets (μ.restrict A) with hS
+  set B : ℕ → Set (Eucl P) := fun m => A' ∩ S m
+  have hBA : ∀ m, B m ⊆ A := fun m => inter_subset_left.trans hA'A
+  have hBm : ∀ m, MeasurableSet (B m) := fun m => hA'm.inter (measurableSet_spanningSets _ m)
+  have hBfin : ∀ m, μ (B m) ≠ ∞ := by
+    intro m
+    have h : μ.restrict A (B m) = μ (B m) := by
+      rw [Measure.restrict_apply (hBm m), inter_eq_left.2 (hBA m)]
+    rw [← h]
+    exact ((measure_mono inter_subset_right).trans_lt (measure_spanningSets_lt_top _ m)).ne
+  -- Step 3: the finite measure `μ ⌞ B m` on `ℝ^P` is regular, so there are compact
+  -- `K m j ⊆ B m` with `μ (B m \ K m j) < (j + 1)⁻¹`.
+  have hK : ∀ m j : ℕ, ∃ K, K ⊆ B m ∧ IsCompact K ∧ μ (B m \ K) < ((j : ℝ≥0∞) + 1)⁻¹ := by
+    intro m j
+    have : IsFiniteMeasure (μ.restrict (B m)) :=
+      ⟨by rw [Measure.restrict_apply_univ]; exact (hBfin m).lt_top⟩
+    have : (μ.restrict (B m)).Regular :=
+      Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure _
+    obtain ⟨K, hKB, hKc, hKlt⟩ := (hBm m).exists_isCompact_sdiff_lt (μ := μ.restrict (B m))
+      (measure_ne_top _ _) (ε := ((j : ℝ≥0∞) + 1)⁻¹) (by simp)
+    refine ⟨K, hKB, hKc, ?_⟩
+    rwa [Measure.restrict_apply ((hBm m).diff hKc.measurableSet),
+      inter_eq_left.2 sdiff_subset] at hKlt
+  choose K hKB hKc hKlt using hK
+  -- Step 4: `μ (B m \ ⋃ j, K m j) < (j + 1)⁻¹` for every `j`, hence it vanishes.
+  have hnull : ∀ m, μ (B m \ ⋃ j, K m j) = 0 := by
+    intro m
+    by_contra h
+    obtain ⟨n, hn⟩ := ENNReal.exists_inv_nat_lt h
+    have h1 : μ (B m \ ⋃ j, K m j) < ((n : ℝ≥0∞) + 1)⁻¹ :=
+      (measure_mono (sdiff_subset_sdiff_right (subset_iUnion _ n))).trans_lt (hKlt m n)
+    have h2 : ((n : ℝ≥0∞) + 1)⁻¹ ≤ (n : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
+    exact lt_irrefl _ ((h1.trans_le h2).trans hn)
+  -- Steps 5 and 6: re-index `K m j` along `Nat.unpair`; the rest of `A` lies in the null set
+  -- `(A \ A') ∪ ⋃ m, (B m \ ⋃ j, K m j)`.
+  refine ⟨fun k => K (Nat.unpair k).1 (Nat.unpair k).2, fun k => hKc _ _,
+    fun k => (hKB _ _).trans (hBA _), measure_mono_null ?_
+      (measure_union_null hAA' (measure_iUnion_null hnull))⟩
+  rintro x ⟨hxA, hxC⟩
+  by_cases hx : x ∈ A'
+  · have hxS : x ∈ ⋃ m, S m := by rw [hS, iUnion_spanningSets]; exact mem_univ x
+    obtain ⟨m, hm⟩ := mem_iUnion.1 hxS
+    refine Or.inr (mem_iUnion.2 ⟨m, ⟨hx, hm⟩, fun hxK => hxC ?_⟩)
+    obtain ⟨j, hj⟩ := mem_iUnion.1 hxK
+    exact mem_iUnion.2 ⟨Nat.pair m j, by simpa only [Nat.unpair_pair] using hj⟩
+  · exact Or.inl ⟨hxA, hx⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
