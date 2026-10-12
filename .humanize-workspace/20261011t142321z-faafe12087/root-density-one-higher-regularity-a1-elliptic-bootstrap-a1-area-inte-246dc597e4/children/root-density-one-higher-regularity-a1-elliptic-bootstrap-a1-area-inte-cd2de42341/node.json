@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.sqrt_det_second_deriv-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1",
+  "depth": 4,
+  "title": "Second derivative of sqrt(det(I + t^2 S)) at 0 equals tr S",
+  "statement": "For every natural number n and every real n x n matrix S, the function f(t) = sqrt(det(I_n + t^2 S)) (t in R) satisfies deriv (deriv f) 0 = trace S.",
+  "lean_statement": "∀ n : ℕ, ∀ S : Matrix (Fin n) (Fin n) ℝ, deriv (deriv (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + t ^ 2 • S)))) 0 = Matrix.trace S",
+  "lean_name": "dohr_eb_ail_sqrt_det_second_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-cd2de42341-a1"
+}

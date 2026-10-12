@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.line_second_deriv-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1",
+  "depth": 4,
+  "title": "Second derivative of a C^2 function along a line",
+  "statement": "Let E be a real normed space (E : Type with NormedAddCommGroup E and NormedSpace ℝ E) and F : E -> R of class C^2 (ContDiff ℝ 2 F). Then for all x, v in E, the real function g(t) = F(x + t v) satisfies deriv (deriv g) 0 = D^2F(x)[v][v], where D^2F(x)[v][v] = fderiv ℝ (fderiv ℝ F) x v v.",
+  "lean_statement": "∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x v : E, deriv (deriv (fun t : ℝ => F (x + t • v))) 0 = fderiv ℝ (fderiv ℝ F) x v v",
+  "lean_name": "dohr_eb_ail_line_second_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-5f815e0d10-a1"
+}
