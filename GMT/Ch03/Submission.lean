@@ -1455,6 +1455,218 @@ theorem Submission.bf_sphere_ae_slabGood : ∀ (n ℓ : ℕ), 0 < n → ∀ H : 
   obtain ⟨hΨinf, hAx⟩ := not_or.1 hbad
   exact ⟨⟨⟨hθH, hθ1, hAx⟩, fun hα ↦ hΨ0 ((hm θ hθH hθ1).1 hα),
     fun hβ ↦ hΨinf ((hm θ hθH hθ1).2 hβ)⟩, hθH, hθ1⟩
+/-- **Orthogonal projection onto `W ⊕ ℝu`** (used in the proof of the Besicovitch–Federer
+Theorem 3.6 of Simon Ch. 3, `chapter-03.txt` lines 530–536, whose proof the book defers to
+[Fed69]/[Ros84]). For a subspace `W ⊆ ℝᴺ` with orthogonal projection `P` and a unit vector
+`u ∈ Wᗮ`, the orthogonal projection onto `W ⊔ span{u}` is `y ↦ P y + (y · u) u`: the vector
+`z = P y + (y · u) u` lies in `W ⊔ span{u}`, and `y - z` is orthogonal to `W` and to `u`, hence to
+`W ⊔ span{u}`. -/
+theorem Submission.bf_starProjection_sup_span_unit : ∀ (N : ℕ) (W : Submodule ℝ (Rn N)) (u : Rn N), u ∈ Wᗮ → ‖u‖ = 1 → ∀ y : Rn N, (W ⊔ Submodule.span ℝ {u}).starProjection y = W.starProjection y + inner ℝ y u • u := by
+  intro N W u hu hu1 y
+  -- Characterization: `z ∈ H` and `y - z ∈ Hᗮ` give `H.starProjection y = z`.
+  apply Submodule.eq_starProjection_of_mem_orthogonal
+  · -- `z ∈ W ⊔ span{u}`: `P y ∈ W` and `(y · u) u ∈ span{u}`.
+    exact Submodule.add_mem_sup (W.starProjection_apply_mem y)
+      (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self u))
+  · -- `(W ⊔ span{u})ᗮ = Wᗮ ⊓ span{u}ᗮ`.
+    rw [← Submodule.inf_orthogonal]
+    refine ⟨?_, ?_⟩
+    · -- `y - z = (y - P y) - (y · u) u ∈ Wᗮ`.
+      have h : y - (W.starProjection y + inner ℝ y u • u) =
+          (y - W.starProjection y) - inner ℝ y u • u := by abel
+      rw [h]
+      exact Submodule.sub_mem _ (W.sub_starProjection_mem_orthogonal y) (Submodule.smul_mem _ _ hu)
+    · -- `u · (y - z) = u · y - u · P y - (y · u) ‖u‖² = 0`.
+      refine Submodule.mem_orthogonal_singleton_iff_inner_right.2 ?_
+      have hPu : inner ℝ u (W.starProjection y) = (0 : ℝ) :=
+        Submodule.inner_left_of_mem_orthogonal (W.starProjection_apply_mem y) hu
+      rw [inner_sub_right, inner_add_right, real_inner_smul_right, hPu,
+        real_inner_self_eq_norm_sq, hu1, real_inner_comm]
+      ring
+/-- **A narrow cone about `Wᗮ` is covered by the `ℓ` slab cones with aperture enlarged by `√ℓ`**:
+step 3(b) of the cone trichotomy in the proof of Simon Ch. 3, Theorem 3.6 (`chapter-03.txt`
+lines 530–536, which defers the proof to [Fed69]). This is the right inclusion
+`X(0, V, s) ⊆ ⋃_j Z(j, s*)` of M. G. Dall'Alba, *The Besicovitch–Federer Projection Theorem*,
+Lemma 5.5, for `V = Wᗮ` with the frame `(u_j)` and `s* ≤ √ℓ s`, at the point `y = x - a`.
+Since `dim Wᗮ = ℓ`, the `u_k` form an orthonormal basis of `Wᗮ`, so Parseval and Pythagoras give
+`|y|² = |Py|² + Σ_k (y·u_k)²`. For `j` maximizing `(y·u_j)²`,
+`|Py + (y·u_j)u_j|² = |Py|² + (y·u_j)²` and `|Py|² < s²|y|² ≤ ℓ s² |Py + (y·u_j)u_j|²`. -/
+theorem Submission.bf_cone_subset_iUnion_slabCones : ∀ (n ℓ : ℕ), 0 < ℓ → ∀ W : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W = n → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∀ (y : Rn (n + ℓ)) (s : ℝ), ‖W.starProjection y‖ < s * ‖y‖ → ∃ j, ‖W.starProjection y‖ < Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖ := by
+  intro n ℓ hℓ W hW u hu huW y s hys
+  have : Nonempty (Fin ℓ) := ⟨⟨0, hℓ⟩⟩
+  -- Steps 1–2: `dim Wᗮ = ℓ`, so `u`, viewed in `Wᗮ`, is an orthonormal basis `b` of `Wᗮ`.
+  have hdim : finrank ℝ Wᗮ = ℓ := by
+    have h := W.finrank_add_finrank_orthogonal
+    rw [finrank_euclideanSpace_fin, hW] at h
+    omega
+  let v : Fin ℓ → Wᗮ := fun k ↦ ⟨u k, huW k⟩
+  have hv : Orthonormal ℝ v := by
+    refine ⟨fun i ↦ ?_, fun i k hik ↦ ?_⟩
+    · simpa [v] using hu.1 i
+    · simpa [v] using hu.2 hik
+  have hcard : Fintype.card (Fin ℓ) = finrank ℝ Wᗮ := by simp [hdim]
+  let b : OrthonormalBasis (Fin ℓ) ℝ Wᗮ :=
+    OrthonormalBasis.mk hv (hv.linearIndependent.span_eq_top_of_card_eq_finrank hcard).ge
+  have hb : ∀ k, (b k : Rn (n + ℓ)) = u k := fun k ↦ by simp [b, v]
+  -- Step 3: `P y ⊥ u_k`.
+  have hPu : ∀ k, inner ℝ (W.starProjection y) (u k) = (0 : ℝ) := fun k ↦
+    Submodule.inner_right_of_mem_orthogonal (W.starProjection_apply_mem y) (huW k)
+  -- Step 4: Parseval in `Wᗮ` gives `‖y - P y‖² = ∑ₖ (y · u_k)²`.
+  have hpars : ‖y - W.starProjection y‖ ^ 2 = ∑ k, (inner ℝ y (u k)) ^ 2 := by
+    have h := b.sum_sq_inner_right ⟨y - W.starProjection y, W.sub_starProjection_mem_orthogonal y⟩
+    have hn : ‖(⟨y - W.starProjection y, W.sub_starProjection_mem_orthogonal y⟩ : Wᗮ)‖ =
+        ‖y - W.starProjection y‖ := rfl
+    rw [hn] at h
+    rw [← h]
+    refine Finset.sum_congr rfl fun k _ ↦ ?_
+    rw [Submodule.coe_inner, hb k, real_inner_comm, inner_sub_left, hPu, sub_zero]
+  -- Step 5: Pythagoras, `‖y‖² = ‖P y‖² + ∑ₖ (y · u_k)²`.
+  have hpyth : ‖y‖ ^ 2 = ‖W.starProjection y‖ ^ 2 + ∑ k, (inner ℝ y (u k)) ^ 2 := by
+    rw [← hpars]
+    have h := W.norm_sq_eq_add_norm_sq_starProjection y
+    rwa [Submodule.starProjection_orthogonal_val] at h
+  -- Step 6: choose `j` maximizing `(y · u_j)²`, so `∑ₖ (y · u_k)² ≤ ℓ (y · u_j)²`.
+  obtain ⟨j, -, hj⟩ := Finset.exists_max_image Finset.univ (fun k ↦ (inner ℝ y (u k)) ^ 2)
+    Finset.univ_nonempty
+  have hsum : ∑ k, (inner ℝ y (u k)) ^ 2 ≤ ℓ * (inner ℝ y (u j)) ^ 2 := by
+    calc ∑ k, (inner ℝ y (u k)) ^ 2 ≤ ∑ _k : Fin ℓ, (inner ℝ y (u j)) ^ 2 :=
+          Finset.sum_le_sum fun k hk ↦ hj k hk
+      _ = ℓ * (inner ℝ y (u j)) ^ 2 := by simp
+  -- Step 7: `‖P y + (y · u_j) u_j‖² = ‖P y‖² + (y · u_j)²`.
+  have hpj : ‖W.starProjection y + inner ℝ y (u j) • u j‖ ^ 2 =
+      ‖W.starProjection y‖ ^ 2 + (inner ℝ y (u j)) ^ 2 := by
+    rw [norm_add_sq_real, real_inner_smul_right, hPu, norm_smul, hu.1 j, Real.norm_eq_abs, mul_one,
+      sq_abs]
+    ring
+  refine ⟨j, ?_⟩
+  -- Step 8: `s > 0`.
+  have hP0 : 0 ≤ ‖W.starProjection y‖ := norm_nonneg _
+  have hs : 0 < s := by
+    by_contra hs
+    have : s * ‖y‖ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (not_lt.1 hs) (norm_nonneg _)
+    linarith
+  -- Steps 9–10: compare squares, then take square roots.
+  have hℓ1 : (1 : ℝ) ≤ ℓ := by exact_mod_cast hℓ
+  have hsqrt : Real.sqrt (ℓ : ℝ) ^ 2 = ℓ := Real.sq_sqrt (by positivity)
+  have hR : 0 ≤ Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖ := by
+    positivity
+  refine lt_of_pow_lt_pow_left₀ 2 hR ?_
+  calc ‖W.starProjection y‖ ^ 2 < (s * ‖y‖) ^ 2 := pow_lt_pow_left₀ hys hP0 two_ne_zero
+    _ = s ^ 2 * (‖W.starProjection y‖ ^ 2 + ∑ k, (inner ℝ y (u k)) ^ 2) := by rw [mul_pow, hpyth]
+    _ ≤ s ^ 2 * (ℓ * ‖W.starProjection y‖ ^ 2 + ℓ * (inner ℝ y (u j)) ^ 2) := by
+        gcongr
+        nlinarith [sq_nonneg ‖W.starProjection y‖]
+    _ = (Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖) ^ 2 := by
+        rw [mul_pow, mul_pow, hsqrt, hpj]
+        ring
+
+/-- **Transfer of the cone density trichotomy from finitely many comparable cone families**: the
+case analysis in the slab-to-cone step of the proof of the Besicovitch–Federer projection theorem,
+Simon Ch. 3, Theorem 3.6 (`chapter-03.txt` lines 530–536, which defers the proof to [Fed69]; cf.
+M. G. Dall'Alba, *The Besicovitch–Federer Projection Theorem*, Lemma 5.5). Suppose
+`Z_j(s) ⊆ X(s) ⊆ ⋃_j Z_j(κ s)` for `s > 0`, and each `Z_j` has zero cone density `Ψ0_j`,
+infinite cone density `Ψ∞_j`, or an axis point `Ax'_j ⇒ Ax`. Then `X` has zero cone density,
+infinite cone density, or `Ax`. An axis point or an infinite density transfers directly by
+monotonicity. Otherwise, for `c > 0`, put `c' = c / (#ι κⁿ)` and `ε = min_j ε_j(c') / κ`; the
+cover and finite subadditivity bound `X` by `#ι · c' (r κ s)ⁿ = c (r s)ⁿ`. -/
+theorem Submission.bf_coneTrichotomy_of_slabCover : ∀ (N n : ℕ) (ι : Type) [Fintype ι] [Nonempty ι] (μ : Measure (Rn N)) (A : Set (Rn N)) (δ κ : ℝ) (a : Rn N) (X : ℝ → Set (Rn N)) (Z : ι → ℝ → Set (Rn N)) (Ax : Prop) (Ax' : ι → Prop), 0 < κ → (∀ j (s : ℝ), 0 < s → Z j s ⊆ X s) → (∀ s : ℝ, 0 < s → X s ⊆ ⋃ j, Z j (κ * s)) → (∀ j, Ax' j → Ax) → (∀ j, ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μ (A ∩ (Z j s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (Z j s ∩ Metric.ball a r))) ∨ Ax' j)) → ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μ (A ∩ (X s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (X s ∩ Metric.ball a r))) ∨ Ax) := by
+  intro N n ι _ _ μ A δ κ a X Z Ax Ax' hκ hZX hXZ hAx hcases
+  -- Case 1: some `Ax'_j` holds, hence `Ax`.
+  by_cases hax : ∃ j, Ax' j
+  · obtain ⟨j, hj⟩ := hax
+    exact Or.inr (Or.inr (hAx j hj))
+  -- Case 2: some `Ψ∞_j` holds; `Φ∞` follows with the same `s, r`, as `Z_j(s) ⊆ X(s)`.
+  by_cases hinf : ∃ j, ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧
+      r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (Z j s ∩ Metric.ball a r))
+  · obtain ⟨j, hj⟩ := hinf
+    refine Or.inr (Or.inl fun K ε hε ↦ ?_)
+    obtain ⟨s, hs, hsε, r, hr, hrδ, hK⟩ := hj K ε hε
+    exact ⟨s, hs, hsε, r, hr, hrδ, hK.trans (measure_mono
+      (Set.inter_subset_inter_right _ (Set.inter_subset_inter_left _ (hZX j s hs))))⟩
+  -- Case 3: every `Ψ0_j` holds; we prove `Φ0`.
+  have hzero : ∀ j, ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ,
+      0 < r → r < δ → μ (A ∩ (Z j s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n) := by
+    intro j
+    rcases hcases j with h | h | h
+    · exact h
+    · exact absurd ⟨j, h⟩ hinf
+    · exact absurd ⟨j, h⟩ hax
+  refine Or.inl fun c hc ↦ ?_
+  have hM : (0 : ℝ) < Fintype.card ι := Nat.cast_pos.2 Fintype.card_pos
+  have hc' : 0 < c / (Fintype.card ι * κ ^ n) := div_pos hc (mul_pos hM (pow_pos hκ n))
+  -- Choice of `ε`: `ε_j` from `Ψ0_j` for `c'`, `ε₀ = min_j ε_j > 0` and `ε = ε₀ / κ`.
+  choose ε hε hεb using fun j ↦ hzero j _ hc'
+  set ε₀ : ℝ := Finset.univ.inf' Finset.univ_nonempty ε
+  have hε₀ : 0 < ε₀ := (Finset.lt_inf'_iff _).2 fun j _ ↦ hε j
+  refine ⟨ε₀ / κ, div_pos hε₀ hκ, fun s hs hsε r hr hrδ ↦ ?_⟩
+  -- `s' = κ s` satisfies `0 < s' < ε_j` for every `j`.
+  have hs' : 0 < κ * s := mul_pos hκ hs
+  have hs'ε : ∀ j, κ * s < ε j := fun j ↦
+    ((lt_div_iff₀' hκ).1 hsε).trans_le (Finset.inf'_le _ (Finset.mem_univ j))
+  -- Cover by the `Z_j(s')`, finite subadditivity, and `#ι · c' (r κ s)ⁿ = c (r s)ⁿ`.
+  calc μ (A ∩ (X s ∩ Metric.ball a r))
+      ≤ μ (⋃ j, A ∩ (Z j (κ * s) ∩ Metric.ball a r)) := by
+        refine measure_mono fun x ⟨hxA, hxX, hxB⟩ ↦ ?_
+        obtain ⟨j, hj⟩ := Set.mem_iUnion.1 (hXZ s hs hxX)
+        exact Set.mem_iUnion.2 ⟨j, hxA, hj, hxB⟩
+    _ ≤ ∑ j, μ (A ∩ (Z j (κ * s) ∩ Metric.ball a r)) := measure_iUnion_fintype_le μ _
+    _ ≤ ∑ _j : ι, ENNReal.ofReal (c / (Fintype.card ι * κ ^ n) * (r * (κ * s)) ^ n) :=
+        Finset.sum_le_sum fun j _ ↦ hεb j (κ * s) hs' (hs'ε j) r hr hrδ
+    _ = ENNReal.ofReal (c * (r * s) ^ n) := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, ← ENNReal.ofReal_natCast,
+          ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
+        congr 1
+        field_simp
+        ring
+
+/-- **Slab-to-cone step** of the proof of the Besicovitch–Federer projection theorem, Simon Ch. 3,
+Theorem 3.6 (`chapter-03.txt` lines 530–536, which defers the proof to [Fed69]; cf. M. G.
+Dall'Alba, *The Besicovitch–Federer Projection Theorem*, Lemma 5.5, here in codimension `ℓ`). Let
+`P = W.starProjection` for an `n`-plane `W ⊆ ℝ^{n+ℓ}`, `u_1, …, u_ℓ` orthonormal in `Wᗮ` and `p_j`
+the orthogonal projection onto `W ⊔ span{u_j}`. As `p_j y = P y + (y · u_j) u_j`, the slab cones
+`Z_j(s) = {x : |p_j(x - a) - (p_j(x - a) · u_j) u_j| < s |p_j(x - a)|}` are
+`{x : |P(x - a)| < s |p_j(x - a)|}` and `Ax'_j` is `Ax`. Hence `Z_j(s) ⊆ X(s)` as `|p_j y| ≤ |y|`,
+and `X(s) ⊆ ⋃_j Z_j(√ℓ s)` by the cone cover, so the trichotomy of the `Z_j` transfers to the cone
+`X(s) = {x : |P(x - a)| < s |x - a|}` (`bf_coneTrichotomy_of_slabCover` with `κ = √ℓ`). -/
+theorem Submission.bf_slabGood_imp_coneTrichotomy : ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ W : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W = n → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∀ (A : Set (Rn (n + ℓ))) (δ : ℝ) (a : Rn (n + ℓ)), (∀ j, ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖(W ⊔ Submodule.span ℝ {u j}).starProjection (x - a) - inner ℝ ((W ⊔ Submodule.span ℝ {u j}).starProjection (x - a)) (u j) • u j‖ < s * ‖(W ⊔ Submodule.span ℝ {u j}).starProjection (x - a)‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖(W ⊔ Submodule.span ℝ {u j}).starProjection (x - a) - inner ℝ ((W ⊔ Submodule.span ℝ {u j}).starProjection (x - a)) (u j) • u j‖ < s * ‖(W ⊔ Submodule.span ℝ {u j}).starProjection (x - a)‖} ∩ Metric.ball a r))) ∨ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ (W ⊔ Submodule.span ℝ {u j}).starProjection (b - a) - inner ℝ ((W ⊔ Submodule.span ℝ {u j}).starProjection (b - a)) (u j) • u j = 0)) → ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r))) ∨ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ W.starProjection (b - a) = 0) := by
+  intro n ℓ _ hℓ W hWn u hu hW A δ a hslab
+  have : Nonempty (Fin ℓ) := ⟨⟨0, hℓ⟩⟩
+  -- `p_j y = P y + (y · u_j) u_j`.
+  have hp : ∀ j y, (W ⊔ Submodule.span ℝ {u j}).starProjection y =
+      W.starProjection y + inner ℝ y (u j) • u j := fun j y ↦
+    Submission.bf_starProjection_sup_span_unit (n + ℓ) W (u j) (hW j) (hu.1 j) y
+  -- Hence `p_j y - (p_j y · u_j) u_j = P y`, as `P y ⊥ u_j` and `|u_j| = 1`.
+  have hq : ∀ j y, (W ⊔ Submodule.span ℝ {u j}).starProjection y -
+      inner ℝ ((W ⊔ Submodule.span ℝ {u j}).starProjection y) (u j) • u j =
+        W.starProjection y := by
+    intro j y
+    have h0 : inner ℝ (W.starProjection y) (u j) = (0 : ℝ) :=
+      Submodule.inner_right_of_mem_orthogonal (W.starProjection_apply_mem y) (hW j)
+    rw [hp j y, inner_add_left, real_inner_smul_left, h0, real_inner_self_eq_norm_sq, hu.1 j]
+    simp
+  refine Submission.bf_coneTrichotomy_of_slabCover (n + ℓ) n (Fin ℓ) μHE[n] A δ
+    (Real.sqrt (ℓ : ℝ)) a (fun s ↦ {x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖})
+    (fun j s ↦ {x | ‖(W ⊔ Submodule.span ℝ {u j}).starProjection (x - a) -
+      inner ℝ ((W ⊔ Submodule.span ℝ {u j}).starProjection (x - a)) (u j) • u j‖ <
+        s * ‖(W ⊔ Submodule.span ℝ {u j}).starProjection (x - a)‖})
+    (∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ W.starProjection (b - a) = 0)
+    (fun j ↦ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ (W ⊔ Submodule.span ℝ {u j}).starProjection (b - a) -
+      inner ℝ ((W ⊔ Submodule.span ℝ {u j}).starProjection (b - a)) (u j) • u j = 0)
+    (Real.sqrt_pos.2 (Nat.cast_pos.2 hℓ)) ?_ ?_ ?_ hslab
+  · -- `Z_j(s) ⊆ X(s)`, since `|p_j y| ≤ |y|`.
+    intro j s hs x hx
+    simp only [Set.mem_ofPred_eq, hq] at hx ⊢
+    exact hx.trans_le
+      (mul_le_mul_of_nonneg_left (Submodule.norm_starProjection_apply_le _ _) hs.le)
+  · -- `X(s) ⊆ ⋃_j Z_j(√ℓ s)`, by the cone cover and `P y + (y · u_j) u_j = p_j y`.
+    intro s _ x hx
+    obtain ⟨j, hj⟩ := Submission.bf_cone_subset_iUnion_slabCones n ℓ hℓ W hWn u hu hW (x - a) s hx
+    refine Set.mem_iUnion.2 ⟨j, ?_⟩
+    simp only [Set.mem_ofPred_eq, hq]
+    rwa [hp]
+  · -- `Ax'_j ⇒ Ax`.
+    rintro j ⟨b, hbA, hba, hbδ, hb⟩
+    exact ⟨b, hbA, hba, hbδ, (hq j (b - a)).symm.trans hb⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
