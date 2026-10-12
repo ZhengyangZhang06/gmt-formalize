@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eb8d34ab05e7ddca6d2bda8e2efb4b0e03b1f211352a7c948f9dec3594b2ab2d",
+  "git_delta": {
+    "base_commit": "28fd9be0e269b4bccbc98308893373567357b94b",
+    "candidate_commit": "72bec40140acc0ced8498d26bbda18699344171c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_c1_immersion_ball_isC1Submanifold",
+    "diff_sha256": "614603a812c0352f34522bac7491e3c7cfbb068c461be38a55a74914e3983723",
+    "source_sha256": "b13cb3071d92f87e57f4c0a39a3ae9080a4c8620bd606c6ab9215085ec80e642",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_c1_immersion_ball_isC1Submanifold",
+      "statement": "∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ) (a : Rn n), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G a) → ∃ σ : ℝ, 0 < σ ∧ IsC1Submanifold n (G '' ball a σ) ∧ (μHE[n] : Measure (Amb n ℓ)) (G '' ball a σ) < ∞",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
