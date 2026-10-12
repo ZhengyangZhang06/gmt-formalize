@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "29cde4fb7e45575e0a952d93375527846e3d3056b2a886d575b12f8f9703cd05",
+  "git_delta": {
+    "base_commit": "6baf0d58731b789a1f1b8b39116d1d9fc476b737",
+    "candidate_commit": "8ed3c81a5e33303167facba9c7544fbe3d985b39",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "01561dfaa3f83fe2824d3fda35f261a6486c69d3b346935dab317d2ccb9a532e",
+    "source_sha256": "77568d940a700aadc1886ef735dc52fb33216256e670d3381f93890114580c80",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_isC1Submanifold_ball_inter_graph",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (s : ℝ) (S : Set (Amb n ℓ)), 0 < s → ContDiffOn ℝ 1 u (closedBall 0 s) → (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s → IsC1Submanifold n (ball x₀ s ∩ S)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
