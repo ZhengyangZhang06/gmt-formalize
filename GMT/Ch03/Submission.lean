@@ -461,6 +461,96 @@ theorem Submission.bf_orthStabilizer_haar_exists : ∀ (N : ℕ) (U : Submodule 
     · rw [Measure.map_map hr hι.measurable]
       have : (fun g : Rn N →L[ℝ] Rn N ↦ g * k) ∘ ι = ι ∘ (fun h : K ↦ h * k') := rfl
       rw [this, ← Measure.map_map hι.measurable (measurable_mul_const k'), hright k']
+/-- Orbit law under the stabilizer `K = {g : g*g = 1, g = id on V^⊥}`, used when averaging over
+`O(N)` for Simon Ch. 3, Thm. 3.6 (cf. Mattila, *Geometry of Sets and Measures in Euclidean
+Spaces*, Ch. 3 "Invariant measures"). Let `θ` be a probability on `ℝᴺ →L[ℝ] ℝᴺ`
+concentrated on `K` and invariant under `K`, and let `0 < Hⁿ(S(V)) < ∞`, `S(V) = V ∩ ∂B₁(0)`.
+Then `θ{g : gζ ∈ Y} = 0` for `ζ ∈ S(V)` and every Borel `Y` with `Hⁿ(Y ∩ S(V)) = 0`.
+Slice `T = {(g, x) : gx ∈ Y}` under `θ ⊗ Hⁿ⌞S(V)` both ways. Each `g ∈ K` is an isometry
+mapping `S(V)` into itself, so every `g`-slice is `Hⁿ⌞S(V)`-null. The reflection in
+`(ζ - x)^⊥` lies in `K` and maps `ζ` to `x ∈ S(V)`, so by right invariance every such `x`-slice
+has `θ`-measure `θ{g : gζ ∈ Y}`. Hence `θ{g : gζ ∈ Y} · Hⁿ(S(V)) = 0`. -/
+theorem Submission.bf_stabilizerOrbit_null : ∀ (N n : ℕ) (V : Submodule ℝ (Rn N)) (θ : Measure (Rn N →L[ℝ] Rn N)), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ Vᗮ, g x = x) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ Vᗮ, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ) → 0 < μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} → μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} < ∞ → ∀ ζ ∈ V, ‖ζ‖ = 1 → ∀ Y : Set (Rn N), MeasurableSet Y → μHE[n] (Y ∩ {x : Rn N | x ∈ V ∧ ‖x‖ = 1}) = 0 → θ {g | g ζ ∈ Y} = 0 := by
+  intro N n V θ hθP hθK hθinv hpos hfin ζ hζV hζ1 Y hY hYnull
+  set S : Set (Rn N) := {x : Rn N | x ∈ V ∧ ‖x‖ = 1}
+  have hSm : MeasurableSet S :=
+    (V.closed_of_finiteDimensional.inter
+      (isClosed_eq continuous_norm continuous_const)).measurableSet
+  -- `g*g = 1` makes `g` preserve inner products, hence norms.
+  have hinner : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      ∀ x y : Rn N, inner ℝ (g x) (g y) = inner ℝ x y := by
+    intro g hg x y
+    rw [← ContinuousLinearMap.adjoint_inner_right, ← mul_apply_eq_comp, hg, one_apply_eq_self]
+  have hnorm : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      ∀ x : Rn N, ‖g x‖ = ‖x‖ := by
+    intro g hg x
+    have h := hinner g hg x x
+    rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq] at h
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  -- Every `g ∈ K` maps `V = V^⊥⊥` into itself, hence `S` into `S`.
+  have hmaps : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      (∀ x ∈ Vᗮ, g x = x) → ∀ x ∈ S, g x ∈ S := by
+    rintro g hg hfix x ⟨hxV, hx1⟩
+    refine ⟨?_, (hnorm g hg x).trans hx1⟩
+    rw [← Submodule.orthogonal_orthogonal V]
+    intro y hy
+    calc inner ℝ y (g x) = inner ℝ (g y) (g x) := by rw [hfix y hy]
+      _ = inner ℝ y x := hinner g hg y x
+      _ = 0 := Submodule.inner_left_of_mem_orthogonal hxV hy
+  -- `K` is transitive on `S`: the reflection in `(ζ - x)^⊥` lies in `K` and maps `ζ` to `x`.
+  have htrans : ∀ x ∈ S, ∃ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 ∧
+      (∀ z ∈ Vᗮ, k z = z) ∧ k ζ = x := by
+    rintro x ⟨hxV, hx1⟩
+    let r := (ℝ ∙ (ζ - x))ᗮ.reflection
+    let k : Rn N →L[ℝ] Rn N := r.toContinuousLinearEquiv.toContinuousLinearMap
+    have hkr : ∀ z, k z = r z := fun z ↦ rfl
+    refine ⟨k, ?_, fun z hz ↦ ?_, ?_⟩
+    · ext1 z
+      refine ext_inner_right ℝ fun w ↦ ?_
+      rw [mul_apply_eq_comp, ContinuousLinearMap.adjoint_inner_left, one_apply_eq_self, hkr,
+        hkr]
+      exact r.inner_map_map z w
+    · rw [hkr]
+      refine Submodule.reflection_mem_subspace_eq_self ?_
+      rw [Submodule.mem_orthogonal_singleton_iff_inner_right]
+      exact Submodule.inner_right_of_mem_orthogonal (V.sub_mem hζV hxV) hz
+    · rw [hkr]
+      exact Submodule.reflection_sub (hζ1.trans hx1.symm)
+  -- Right invariance: `θ{g : gx ∈ Y} = θ{g : gζ ∈ Y}` for `x ∈ S`.
+  have hev : MeasurableSet {g : Rn N →L[ℝ] Rn N | g ζ ∈ Y} :=
+    (continuous_id.clm_apply continuous_const).measurable hY
+  have horbit : ∀ x ∈ S, θ {g | g x ∈ Y} = θ {g | g ζ ∈ Y} := by
+    intro x hx
+    obtain ⟨k, hk, hkfix, rfl⟩ := htrans x hx
+    calc θ {g | g (k ζ) ∈ Y} = Measure.map (fun g ↦ g * k) θ {g | g ζ ∈ Y} := by
+          rw [Measure.map_apply (measurable_mul_const k) hev]
+          rfl
+      _ = θ {g | g ζ ∈ Y} := by rw [(hθinv k hk hkfix).2]
+  -- Slice `T = {(g, x) : gx ∈ Y}` under `θ ⊗ Hⁿ⌞S` in both orders.
+  have : IsFiniteMeasure ((μHE[n] : Measure (Rn N)).restrict S) :=
+    isFiniteMeasure_restrict.mpr hfin.ne
+  have hT : MeasurableSet {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y} :=
+    (continuous_fst.clm_apply continuous_snd).measurable hY
+  have h1 : θ.prod ((μHE[n] : Measure (Rn N)).restrict S)
+      {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y} = 0 := by
+    rw [Measure.prod_apply hT]
+    refine (lintegral_congr_ae ?_).trans lintegral_zero
+    filter_upwards [hθK] with g hg
+    rw [Measure.restrict_apply (measurable_prodMk_left hT)]
+    refine measure_mono_null (t := ⇑g ⁻¹' (Y ∩ S))
+      (fun x hx ↦ ⟨hx.1, hmaps g hg.1 hg.2 x hx.2⟩) ?_
+    rw [(AddMonoidHomClass.isometry_of_norm g (hnorm g hg.1)).euclideanHausdorffMeasure_preimage]
+    exact measure_mono_null Set.inter_subset_left hYnull
+  have h2 : θ.prod ((μHE[n] : Measure (Rn N)).restrict S)
+      {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y} = θ {g | g ζ ∈ Y} * μHE[n] S := by
+    rw [Measure.prod_apply_symm hT]
+    have hae : (fun x : Rn N ↦ θ ((fun g ↦ (g, x)) ⁻¹'
+        {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y})) =ᵐ[(μHE[n] : Measure (Rn N)).restrict S]
+        fun _ ↦ θ {g | g ζ ∈ Y} := by
+      filter_upwards [ae_restrict_mem hSm] with x hx
+      exact horbit x hx
+    rw [lintegral_congr_ae hae, lintegral_const, Measure.restrict_apply_univ]
+  exact (mul_eq_zero.mp (h2.symm.trans h1)).resolve_right hpos.ne'
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
