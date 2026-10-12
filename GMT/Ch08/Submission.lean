@@ -447,6 +447,57 @@ theorem Submission.allard_tc_dbd_lebesgue_density :
   have hsub : closedBall x ρ ⊆ closedBall q r := closedBall_subset_closedBall' (by linarith [hρ.2])
   rw [Measure.restrict_apply' measurableSet_closedBall,
     Measure.restrict_apply' measurableSet_closedBall, inter_assoc, inter_eq_left.2 hsub]
+/-- Relative density zero at a point of finite density gives `o(ρ^n)` mass (closing steps 8–9 of
+the density blow-up decay for Simon Ch. 8, 5.6(iii)): if `Θ^n(μ, x) = θ < ∞`,
+`μ(A ∩ B_ρ(x)) / μ(B_ρ(x)) → 0` as `ρ ↓ 0` and `μ`-a.e. point of `E` lies in `A`, then
+`μ(B_ρ(x) ∩ E) / ρ^n → 0` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_dbd_relative_decay :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞) (A E : Set (Euclidean N)), HasDensity n μ x θ → θ ≠ ∞ → Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → (∀ᵐ y ∂μ, y ∈ E → y ∈ A) → Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro N n μ x θ A E hθ hθ_ne hκ hAE
+  -- Step 1: `0 < ω_n < ∞`.
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Step 2: `μ(B_ρ) / ρ^n = ω_n · densityRatio ρ → ω_n θ ≠ ∞`.
+  have hf_eq : ∀ ρ : ℝ, μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n =
+      unitBallVolume n * densityRatio n μ x ρ := fun ρ ↦ by
+    rw [densityRatio, ← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop]
+  have hf : Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0)
+      (𝓝 (unitBallVolume n * θ)) := by
+    simp_rw [hf_eq]
+    exact ENNReal.Tendsto.const_mul hθ (Or.inr hωtop)
+  have hωθ : unitBallVolume n * θ ≠ ∞ := ENNReal.mul_ne_top hωtop hθ_ne
+  -- Step 3: `κ(ρ) · μ(B_ρ) / ρ^n → 0 · ω_n θ = 0`.
+  have hprod : Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) *
+      (μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
+    simpa using ENNReal.Tendsto.mul hκ (Or.inr hωθ) hf (Or.inr ENNReal.zero_ne_top)
+  -- Step 4: eventually `μ(B_ρ) / ρ^n < ∞`.
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n < ∞ :=
+    hf.eventually (gt_mem_nhds hωθ.lt_top)
+  -- Step 6: squeeze `0 ≤ μ(B_ρ ∩ E) / ρ^n ≤ κ(ρ) · μ(B_ρ) / ρ^n`, the upper bound holding for
+  -- every `ρ` of step 4.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hprod
+    (Eventually.of_forall fun _ ↦ zero_le) ?_
+  filter_upwards [hev] with ρ hρ
+  -- Step 4, continued: `ρ^n ≠ ∞`, hence `μ(B_ρ) ≠ ∞`.
+  have hP : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have hB : μ (closedBall x ρ) ≠ ∞ := fun h ↦ by
+    rw [h, ENNReal.top_div_of_ne_top hP] at hρ
+    exact lt_irrefl _ hρ
+  -- Step 5(a): `μ(B_ρ ∩ E) ≤ μ(A ∩ B_ρ)`, since `B_ρ ∩ E ⊆ A ∩ B_ρ` up to a `μ`-null set.
+  have ha : μ (closedBall x ρ ∩ E) ≤ μ (A ∩ closedBall x ρ) :=
+    measure_mono_ae (hAE.mono fun y hy hyBE ↦ ⟨hy hyBE.2, hyBE.1⟩)
+  -- Step 5(b): `μ(A ∩ B_ρ) ≤ κ(ρ) · μ(B_ρ)`, the case `μ(B_ρ) = 0` separately.
+  have hb : μ (A ∩ closedBall x ρ) ≤
+      μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) * μ (closedBall x ρ) := by
+    by_cases h0 : μ (closedBall x ρ) = 0
+    · rw [h0, mul_zero]
+      exact (measure_mono inter_subset_right).trans h0.le
+    · exact (ENNReal.div_mul_cancel h0 hB).ge
+  -- Step 5(c): divide by `ρ^n`.
+  calc μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n
+      ≤ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) * μ (closedBall x ρ) /
+          ENNReal.ofReal ρ ^ n := ENNReal.div_le_div_right (ha.trans hb) _
+    _ = _ := mul_div_assoc _ _ _
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
