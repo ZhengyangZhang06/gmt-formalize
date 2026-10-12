@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n 'aal_tangent_structure|lgc_tangent_plane_ae|rsod_tendsto_scaled_mult_integral|rsod_weight_closedBall_eq_ofReal_integral|aal_ts_' '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project' -g '*.lean'",
+        "theorem withDensity_apply|theorem withDensity_absolutelyContinuous|theorem ae_restrict_mem₀|ofReal_integral_eq_lintegral_ofReal|theorem integral_smul_measure|MeasurableEmbedding.integral_map|euclideanHausdorffMeasure_homothety_image|theorem ofReal_div_of_pos|theorem tendsto_ofReal|euclideanHausdorffMeasure_eq_volume|theorem tendsto_order",
+        "sed -n '310,385p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-audit-3o3t30rc/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-audit-3o3t30rc/UnionCheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-tangent-structure-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-tangent-structure-a1/decomposition-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-tangent-plane-ae-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-scaled-mu-4d1307f0f9/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-weight-ba-26a0dc4b42/accepted-candidate.json",
+        "/tmp/tangent-audit-3o3t30rc/Challenge.lean",
+        "/tmp/tangent-audit-3o3t30rc/UnionCheck.lean"
+      ],
+      "conclusion": "The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The project search found none of the proposed declaration names. Inspected definitions and measure-theoretic lemmas support the stated contracts and density conversion. Current DAG entries and comparator acceptance receipts confirm legitimate reuse from commits 55e098f55fa40ca1124a494813544b33457e5b5d, b30ebfa88273b4798c4d063b4dd1110287a8a190, and 02c3706f8b397dd9abf13122f4a7824d7bf445d3, with byte-identical frozen types and unique name ownership. Adding the proposed reuse edges yields an acyclic dependency graph. All three one-line propositions independently elaborate as Prop without child implementations. The combined accepted proofs and exact selected-parent assembly compile successfully with unchanged frozen definitions; each child and the parent depend only on propext, Classical.choice, and Quot.sound. The inherited root sorry is outside their dependencies. The split is appropriate: weighted tangent existence supplies dimension, projection and measurability; the real mass limit and ball-integral identity supply density through eventual positive-radius normalization and ENNReal.ofReal continuity. No ambiguous matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weighted_tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated type agree on all hypotheses and both conclusions. The localized C¹ cover, Lusin compacts, blow-up estimates, positivity-based uniqueness, and Borel patching establish the exact weighted tangent and measurability claims without assuming the parent. The proof provides sufficient formalization detail. The bare name legitimately reuses the identical comparator-accepted declaration."
+    },
+    {
+      "key": "scaled_mass_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including x ∈ U without requiring x ∈ V.carrier. The proof establishes change of variables, plane-ball normalization, integrable cutoff comparisons, nonnegativity of V.mult x, and the order-topology squeeze. These prove the exact real limit without circular dependence. The bare name and frozen type match the accepted declaration."
+    },
+    {
+      "key": "weight_ball_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match for arbitrary natural dimensions, U, and real radius. Compact-ball integrability, carrier positivity almost everywhere, withDensity evaluation, and the Bochner–lintegral conversion prove the identity. No openness or positive-radius hypothesis is silently introduced. The bare name legitimately reuses the identical accepted declaration."
+    }
+  ],
+  "required_changes": []
+}
