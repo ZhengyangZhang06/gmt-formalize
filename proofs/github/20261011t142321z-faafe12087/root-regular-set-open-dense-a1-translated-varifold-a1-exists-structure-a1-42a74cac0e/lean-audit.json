@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1c826aa3321fe4926013d4b9901d739cbac397cdfbc97fbb0565f1f5e58a7692",
+  "git_delta": {
+    "base_commit": "e8359b53bb7bc46effe2f2815350ceac0145cb4b",
+    "candidate_commit": "363c12f633c52b905f82e011314918d6efa3c81b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_tv_exists_structure",
+    "diff_sha256": "1f1cc5481967fd63556636165c856560fa65c64360c065a3d158d256c3b8a51d",
+    "source_sha256": "4f14a0a24301e1b2a200626457315f5ae51edd314ecaeb1213128c9cb973dc3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_tv_exists_structure",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ), ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ ∀ y, W.mult y = V.mult (y + x₀)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
