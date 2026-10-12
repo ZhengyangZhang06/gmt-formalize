@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "35c88adbed73b831dfba98da53e61304e688246a1f92395a32d9291186ab1f65",
+  "git_delta": {
+    "base_commit": "42d234580a194b444eab2416103caef01dc9974f",
+    "candidate_commit": "9eade5d8f5de7bb40a5560a0a560b4dae8064222",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "radon_exists_subseq_tendsto_integral",
+    "diff_sha256": "7a6a46e40b666d6abc418807628636e94298ccdbc1c80e9cb2ec9e3d465b67bf",
+    "source_sha256": "4295575867e26e7af805b19f0c5c28c080905cad0157e899c1b274667fbc1c12",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.radon_exists_subseq_tendsto_integral",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ : ℕ → Measure X), (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : C_c(X, ℝ), ∃ L : ℝ, Tendsto (fun j ↦ ∫ x, f x ∂(μ (φ j))) atTop (𝓝 L)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
