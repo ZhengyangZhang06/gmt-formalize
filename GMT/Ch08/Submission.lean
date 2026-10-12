@@ -552,6 +552,92 @@ theorem Submission.tgc_tilted_cone_inclusion :
   have h3 : L / 16 * ‖w‖ ≤ L / 16 * (2 * ‖v‖) := mul_le_mul_of_nonneg_left step3 (by positivity)
   linarith
 
+/-- Cone/density covering lemma (steps 4–6 of the tangent-graph cover; Simon Ch. 3, Thm 1.6,
+printed (7)–(10), for an arbitrary measure `μ`): if every `x ∈ A` has a plane `T` tilted from `P`
+by at most `L/4`, an eventual lower mass bound `c t^n ≤ μ(B_t(x))` with `c > 0`, and eventual cone
+mass `μ{y ∈ B_t(x) : (L/16)‖y - x‖ ≤ ‖(y - x) - p_T(y - x)‖} ≤ ε t^n` for every `ε > 0`, then `A`
+is covered by countably many closed `L`-Lipschitz graphs over `P`. -/
+theorem Submission.tgc_cone_density_graph_cover :
+    ∀ (N n : ℕ) (L : ℝ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (A : Set (Euclidean N)), 0 < L → L ≤ 1 → (∀ x ∈ A, ∃ T : Grassmannian N n, (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) ∧ (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ {y | y ∈ closedBall x t ∧ L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ A, ∃ i, x ∈ Γ i := by
+  intro N n L μ P A hL0 hL1 hA
+  -- Step 1: with `γ = L/8` and `β = (L/16)^n/2`, class `m` uses the lower constant
+  -- `a_m = 1/(m+1)` and the cone constant `a_m β`, so that `a_m β (2s)^n = a_m (γs)^n / 2`.
+  have hβ : 0 < (L / 16) ^ n / 2 := by positivity
+  -- Step 2: the uniform classes `E m k`: some tilted `T` gives the lower bound `a_m t^n` and the
+  -- cone bound `a_m β t^n` for every `t ∈ (0, 1/(k+1)]`.
+  obtain ⟨E, hE⟩ : ∃ E : ℕ → ℕ → Set (Euclidean N), ∀ m k x, x ∈ E m k ↔
+      ∃ T : Grassmannian N n,
+        (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) ∧
+        ∀ t : ℝ, 0 < t → t ≤ 1 / ((k : ℝ) + 1) →
+          ENNReal.ofReal (1 / ((m : ℝ) + 1) * t ^ n) ≤ μ (closedBall x t) ∧
+          μ {y | y ∈ closedBall x t ∧
+              L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤
+            ENNReal.ofReal (1 / ((m : ℝ) + 1) * ((L / 16) ^ n / 2) * t ^ n) :=
+    ⟨fun m k ↦ {x | _}, fun _ _ _ ↦ Iff.rfl⟩
+  -- Step 3: the classes cover `A`, by uniformizing the eventual bounds (i) and (ii).
+  have hcover : ∀ x ∈ A, ∃ m k : ℕ, x ∈ E m k := by
+    intro x hx
+    obtain ⟨T, htilt, hlow, hcone⟩ := hA x hx
+    obtain ⟨m, k, hmk⟩ := Submission.tgc_eventual_density_bounds_uniform n ((L / 16) ^ n / 2)
+      (fun t ↦ μ (closedBall x t))
+      (fun t ↦ μ {y | y ∈ closedBall x t ∧
+        L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖}) hβ hlow hcone
+    exact ⟨m, k, (hE m k x).2 ⟨T, htilt, hmk⟩⟩
+  -- Step 4 (printed (10)): two points of one class at distance `≤ 1/(2(k+1))` satisfy the
+  -- `L`-graph inequality over `P`.
+  have hgraph : ∀ m k : ℕ, ∀ y ∈ E m k, ∀ z ∈ E m k, ‖y - z‖ ≤ 1 / ((k : ℝ) + 1) / 2 →
+      ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖ := by
+    intro m k y hy z hz hyz
+    by_contra hcon
+    have hcon := not_le.1 hcon
+    obtain ⟨_, -, hy⟩ := (hE m k y).1 hy
+    obtain ⟨T, htilt, hz⟩ := (hE m k z).1 hz
+    -- `s = ‖y - z‖ > 0`: at `y - z = 0` both sides of the graph inequality vanish.
+    have hs : 0 < ‖y - z‖ := by
+      refine norm_pos_iff.2 fun h ↦ ?_
+      have h0 : Grassmannian.project P 0 = 0 := map_zero P.projectionLinearMap
+      rw [h, h0, sub_zero, norm_zero, mul_zero] at hcon
+      exact lt_irrefl 0 hcon
+    -- (a) `B_{γs}(y)` lies in the cone region at `z` of radius `2s`.
+    have hsub : closedBall y (L / 8 * ‖y - z‖) ⊆ {w | w ∈ closedBall z (2 * ‖y - z‖) ∧
+        L / 16 * ‖w - z‖ ≤ ‖(w - z) - Grassmannian.project T (w - z)‖} := by
+      intro w hw
+      rw [mem_closedBall, dist_eq_norm] at hw
+      have hwv : ‖(w - z) - (y - z)‖ ≤ L / 8 * ‖y - z‖ := by
+        rwa [sub_sub_sub_cancel_right]
+      obtain ⟨hwcone, hwnorm⟩ :=
+        Submission.tgc_tilted_cone_inclusion N n L P T (y - z) (w - z) hL0 hL1 htilt hcon hwv
+      exact ⟨by rwa [mem_closedBall, dist_eq_norm], hwcone⟩
+    -- (b) the lower bound at `y` (radius `γs`), monotonicity of `μ` and the cone bound at `z`
+    -- (radius `2s`) give `a_m (γs)^n ≤ a_m β (2s)^n`.
+    have h2s : 2 * ‖y - z‖ ≤ 1 / ((k : ℝ) + 1) := by linarith
+    have hγs : L / 8 * ‖y - z‖ ≤ 1 / ((k : ℝ) + 1) :=
+      (mul_le_mul_of_nonneg_right (by linarith) hs.le).trans h2s
+    have hchain := ((hy (L / 8 * ‖y - z‖) (by positivity) hγs).1.trans
+      (measure_mono (μ := μ) hsub)).trans (hz (2 * ‖y - z‖) (by positivity) h2s).2
+    have hle := (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 hchain
+    -- (c) but `a_m β (2s)^n = a_m (γs)^n / 2` and `a_m (γs)^n > 0`.
+    have h16 : (L / 16) ^ n * (2 * ‖y - z‖) ^ n = (L / 8 * ‖y - z‖) ^ n := by
+      rw [← mul_pow]
+      ring
+    have heq : 1 / ((m : ℝ) + 1) * ((L / 16) ^ n / 2) * (2 * ‖y - z‖) ^ n =
+        1 / ((m : ℝ) + 1) * (L / 8 * ‖y - z‖) ^ n / 2 := by
+      rw [← h16]
+      ring
+    have hpos : 0 < 1 / ((m : ℝ) + 1) * (L / 8 * ‖y - z‖) ^ n := by positivity
+    linarith
+  -- Step 5: each class lies on countably many closed `L`-graphs over `P`.
+  choose Γ hΓclosed hΓgraph hΓcover using fun m k : ℕ ↦
+    Submission.tgc_local_graph_closed_cover N n L (1 / ((k : ℝ) + 1) / 2) P (E m k)
+      (by positivity) (hgraph m k)
+  -- Step 6: enumerate the triples `(m, k, j)` with `Nat.unpair`.
+  refine ⟨fun i ↦ Γ i.unpair.1 i.unpair.2.unpair.1 i.unpair.2.unpair.2, fun i ↦ hΓclosed _ _ _,
+    fun i ↦ hΓgraph _ _ _, fun x hx ↦ ?_⟩
+  obtain ⟨m, k, hmk⟩ := hcover x hx
+  obtain ⟨j, hj⟩ := hΓcover m k x hmk
+  refine ⟨Nat.pair m (Nat.pair k j), ?_⟩
+  simpa only [Nat.unpair_pair] using hj
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
