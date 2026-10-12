@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "50ac2ea45d16f53d84354fef1868abdc0b4157215f8419249c05d9f369390673",
+  "git_delta": {
+    "base_commit": "fdde16fcbe8bbdab6b401f1a0cba409e817c9dc5",
+    "candidate_commit": "5a1eb27d3d58e427af17bfb16df99e8b287b50f2",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "sff_range_starProjection_differentiableAt",
+    "diff_sha256": "bbceef143500e74deec699d1f4063083e67de06f2abf77181f889a2d717931b8",
+    "source_sha256": "85b18cae712b8b971465cc1fd3dc801efb09bbed0d8db0b13491fd519193a4fb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sff_range_starProjection_differentiableAt",
+      "statement": "∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), Function.Injective A → DifferentiableAt ℝ (fun B : Rn n →L[ℝ] Rn N ↦ (LinearMap.range B.toLinearMap).starProjection) A",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
