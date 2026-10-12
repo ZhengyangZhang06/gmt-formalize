@@ -1477,6 +1477,190 @@ theorem Submission.chartTD_biLipschitz_chart_approx_tangent : ∀ (n N : ℕ) (B
     fun_prop
   rw [Submission.chartTD_setIntegral_blowUpMap_image N n (ψ u) r hr (ψ '' B) f,
     Submission.chartTD_injective_area_setIntegral n N B ψ K hB hK hinj _ hg]
+/-- **Upper density theorem for `|w| Hⁿ⌞A`** (Simon Ch. 1, Theorem 3.6 and Remark 3.7(2),
+`chapter-01.txt` lines 700–721, by the covering argument of the proof of Theorem 3.3, lines
+666–698): if `A` is `Hⁿ`-measurable and `w` is `Hⁿ`-integrable on `A ∩ K` for every compact `K`,
+then `ρ⁻ⁿ ∫_{A ∩ B_ρ(x)} |w| dHⁿ → 0` as `ρ ↓ 0` for `Hⁿ`-a.e. `x ∉ A`. Take a Borel `A₀ ⊆ A`
+with `Hⁿ(A ∖ A₀) = 0` and `ν = |w| Hⁿ⌞A₀`, which is finite on compact sets, hence outer regular:
+`ν(U) < ε` for some open `U ⊇ ℝᴺ ∖ A₀` (Simon uses the closed `ℝᴺ ∖ U ⊆ A₀`). The points
+`x ∉ A₀` with `ν(B̄_ρ(x)) ≥ ρⁿ/(k+1)` for arbitrarily small `ρ` are covered finely by such balls
+inside `U`; the 5r-covering lemma gives disjoint ones with `∑ (10ρⱼ)ⁿ ≤ 10ⁿ (k+1) ν(U)`, so this
+set is `Hⁿ`-null (only nullity is needed, so the non-sharp constant `10ⁿ` suffices). Off these
+null sets, `∫_{A ∩ B_ρ(x)} |w| dHⁿ ≤ ν(B̄_ρ(x))`. -/
+theorem Submission.chartTD_upper_density_zero_ae : ∀ (n N : ℕ) (A : Set (Rn N)) (w : Rn N → ℝ), NullMeasurableSet A μHE[n] → (∀ K : Set (Rn N), IsCompact K → IntegrableOn w (A ∩ K) μHE[n]) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∉ A → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in A ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+  intro n N A w hA hw
+  -- A Borel kernel `A₀ ⊆ A` with `Hⁿ(A ∖ A₀) = 0`.
+  obtain ⟨A₀, hA₀A, hA₀, hA₀ae⟩ := hA.exists_measurable_subset_ae_eq
+  -- The weighted measure `ν = |w| Hⁿ⌞A₀`: concentrated on `A₀` and finite on compact sets.
+  set ν : Measure (Rn N) :=
+    ((μHE[n] : Measure (Rn N)).restrict A₀).withDensity (fun z ↦ ‖w z‖ₑ) with hν
+  have hνapp : ∀ s : Set (Rn N), MeasurableSet s →
+      ν s = ∫⁻ z in s ∩ A₀, ‖w z‖ₑ ∂(μHE[n] : Measure (Rn N)) := by
+    intro s hs
+    rw [hν, withDensity_apply _ hs, Measure.restrict_restrict hs]
+  have hνA₀ : ν A₀ᶜ = 0 := by
+    rw [hνapp _ hA₀.compl, compl_inter_self, Measure.restrict_empty, lintegral_zero_measure]
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => by
+    rw [hνapp K hK.isClosed.measurableSet]
+    exact (lintegral_mono_set (s := K ∩ A₀) (t := A ∩ K) fun z hz => ⟨hA₀A hz.2, hz.1⟩).trans_lt
+      (hw K hK).2⟩
+  -- `S k`: the points `x ∉ A₀` with `ν(B̄_ρ(x)) ≥ ρⁿ/(k+1)` for arbitrarily small `ρ > 0`.
+  set S : ℕ → Set (Rn N) := fun k ↦ {x | x ∉ A₀ ∧ ∀ δ > 0, ∃ ρ ∈ Ioo (0 : ℝ) δ,
+    ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ρ ^ n) ≤ ν (Metric.closedBall x ρ)} with hS
+  -- Simon 3.3/3.6: each `S k` is `Hⁿ`-null.
+  have hSH : ∀ k, (μH[(n : ℝ)] : Measure (Rn N)) (S k) = 0 := by
+    intro k
+    refine le_antisymm (ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_) zero_le
+    rw [zero_add]
+    -- An open `U ⊇ ℝᴺ ∖ A₀` with `ν(U) < ε / (10ⁿ (k+1))` (outer regularity, `ν(ℝᴺ ∖ A₀) = 0`).
+    obtain ⟨U, hUA, hUo, hUν⟩ := Set.exists_isOpen_lt_of_lt (μ := ν) A₀ᶜ
+      (ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n))
+      (by rw [hνA₀]; exact ENNReal.ofReal_pos.2 (by positivity))
+    -- At every scale `1/(m+1)`, the 5r-covering lemma applied to the balls `B̄_ρ(x) ⊆ U`,
+    -- `x ∈ S k`, `ρ < 1/(m+1)`, `ν(B̄_ρ(x)) ≥ ρⁿ/(k+1)` gives a countable disjoint
+    -- subfamily whose 5-fold enlargements cover `S k`.
+    have hcov : ∀ m : ℕ, ∃ u : Set (Rn N × ℝ), u.Countable ∧
+        (∀ b ∈ u, 0 < b.2 ∧ b.2 < ((m : ℝ) + 1)⁻¹) ∧
+        S k ⊆ (⋃ b : u, Metric.closedBall b.1.1 (5 * b.1.2)) ∧
+        ∑' b : u, ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n) ≤
+          ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n) := by
+      intro m
+      let B : Set (Rn N × ℝ) := {b | b.1 ∈ S k ∧ 0 < b.2 ∧ b.2 < ((m : ℝ) + 1)⁻¹ ∧
+        Metric.closedBall b.1 b.2 ⊆ U ∧
+        ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.2 ^ n) ≤ ν (Metric.closedBall b.1 b.2)}
+      obtain ⟨u, huB, hudisj, hucov⟩ :=
+        Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall B Prod.fst Prod.snd
+          ((m : ℝ) + 1)⁻¹ (fun b hb => hb.2.2.1.le) 5 (by norm_num)
+      have hucount : u.Countable := hudisj.countable_of_nonempty_interior fun b hb =>
+        ⟨b.1, mem_interior_iff_mem_nhds.2 (Metric.closedBall_mem_nhds _ (huB hb).2.1)⟩
+      refine ⟨u, hucount, fun b hb => ⟨(huB hb).2.1, (huB hb).2.2.1⟩, ?_, ?_⟩
+      · intro x hx
+        obtain ⟨r₀, hr₀, hr₀U⟩ :=
+          Metric.nhds_basis_closedBall.mem_iff.1 (hUo.mem_nhds (hUA hx.1))
+        obtain ⟨ρ, hρ, hρν⟩ := hx.2 (min r₀ ((m : ℝ) + 1)⁻¹) (lt_min hr₀ (by positivity))
+        have hb : (x, ρ) ∈ B := ⟨hx, hρ.1, hρ.2.trans_le (min_le_right _ _),
+          (Metric.closedBall_subset_closedBall (hρ.2.le.trans (min_le_left _ _))).trans hr₀U,
+          hρν⟩
+        obtain ⟨b, hbu, hsub⟩ := hucov (x, ρ) hb
+        exact mem_iUnion.2 ⟨⟨b, hbu⟩, hsub (Metric.mem_closedBall_self hρ.1.le)⟩
+      · calc ∑' b : u, ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n)
+            ≤ ∑' b : u, ν (Metric.closedBall b.1.1 b.1.2) :=
+              ENNReal.tsum_le_tsum fun b => (huB b.2).2.2.2.2
+          _ = ν (⋃ b ∈ u, Metric.closedBall b.1 b.2) :=
+              (measure_biUnion hucount hudisj fun b _ =>
+                Metric.isClosed_closedBall.measurableSet).symm
+          _ ≤ ν U := measure_mono (iUnion₂_subset fun b hb => (huB hb).2.2.2.1)
+          _ ≤ ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n) := hUν.le
+    choose u hucount hur hucov husum using hcov
+    have : ∀ m, Countable (u m) := fun m => (hucount m).to_subtype
+    have hr0 : Tendsto (fun m : ℕ => ENNReal.ofReal (10 * ((m : ℝ) + 1)⁻¹)) atTop (𝓝 0) := by
+      have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (10 : ℝ)
+      simp only [one_div, mul_zero] at h
+      have h' := ENNReal.tendsto_ofReal h
+      rwa [ENNReal.ofReal_zero] at h'
+    -- `diam(B̄_{5r}(c))ⁿ ≤ (10r)ⁿ = 10ⁿ (k+1) · rⁿ/(k+1)`.
+    have hterm : ∀ (r : ℝ) (c : Rn N), 0 < r →
+        Metric.ediam (Metric.closedBall c (5 * r)) ^ (n : ℝ) ≤
+          ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+            ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * r ^ n) := by
+      intro r c hr
+      have hd : Metric.ediam (Metric.closedBall c (5 * r)) ≤ ENNReal.ofReal (10 * r) :=
+        Metric.ediam_le_of_forall_dist_le fun y hy z hz =>
+          (dist_triangle_right y z c).trans (by
+            have := Metric.mem_closedBall.1 hy
+            have := Metric.mem_closedBall.1 hz
+            linarith)
+      calc Metric.ediam (Metric.closedBall c (5 * r)) ^ (n : ℝ)
+          ≤ ENNReal.ofReal (10 * r) ^ (n : ℝ) := ENNReal.rpow_le_rpow hd (Nat.cast_nonneg n)
+        _ = ENNReal.ofReal ((10 * r) ^ n) := by
+            rw [ENNReal.rpow_natCast, ENNReal.ofReal_pow (by positivity)]
+        _ = ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹ * (((k : ℝ) + 1)⁻¹ * r ^ n)) := by
+            congr 1
+            field_simp
+            ring
+        _ = ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+            ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * r ^ n) := ENNReal.ofReal_mul (by positivity)
+    -- Hence `Hⁿ(S k) ≤ ε` by the definition of `Hⁿ` through covers of vanishing diameter.
+    calc (μH[(n : ℝ)] : Measure (Rn N)) (S k)
+        ≤ liminf (fun m => ∑' b : u m,
+            Metric.ediam (Metric.closedBall b.1.1 (5 * b.1.2)) ^ (n : ℝ)) atTop :=
+          Measure.hausdorffMeasure_le_liminf_tsum (β := ℕ) (ι := fun m => ↥(u m)) (n : ℝ) (S k)
+            (l := atTop) (fun m : ℕ => ENNReal.ofReal (10 * ((m : ℝ) + 1)⁻¹)) hr0
+            (fun m b => Metric.closedBall b.1.1 (5 * b.1.2))
+            (Eventually.of_forall fun m b => by
+              obtain ⟨hb0, hb1⟩ := hur m b.1 b.2
+              refine Metric.ediam_le_of_forall_dist_le fun y hy z hz =>
+                (dist_triangle_right y z b.1.1).trans ?_
+              have := Metric.mem_closedBall.1 hy
+              have := Metric.mem_closedBall.1 hz
+              linarith)
+            (Eventually.of_forall hucov)
+      _ ≤ ε := by
+        refine liminf_le_of_frequently_le' (Frequently.of_forall fun m => ?_)
+        calc ∑' b : u m, Metric.ediam (Metric.closedBall b.1.1 (5 * b.1.2)) ^ (n : ℝ)
+            ≤ ∑' b : u m, ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+                ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n) :=
+              ENNReal.tsum_le_tsum fun b => hterm _ _ (hur m b.1 b.2).1
+          _ = ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+                ∑' b : u m, ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n) :=
+              ENNReal.tsum_mul_left
+          _ ≤ ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+                ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n) := by gcongr; exact husum m
+          _ = ε := by
+            rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_coe_nnreal]
+            congr 1
+            field_simp
+  -- `μHE[n]` is a finite multiple of `μH[n]`.
+  have hSμ : ∀ k, (μHE[n] : Measure (Rn N)) (S k) = 0 := by
+    intro k
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hSH k, smul_zero]
+  rw [ae_iff]
+  refine measure_mono_null (fun x hx => ?_) (measure_iUnion_null hSμ)
+  simp only [mem_ofPred_eq, not_imp] at hx
+  obtain ⟨hxA, hxT⟩ := hx
+  by_contra hxS
+  simp only [mem_iUnion, not_exists] at hxS
+  apply hxT
+  -- At `x ∉ A` outside every `S k`: `ν(B̄_ρ(x)) < ρⁿ/(k+1)` for all small `ρ > 0`.
+  have hgood : ∀ k : ℕ, ∃ δ > 0, ∀ ρ ∈ Ioo (0 : ℝ) δ,
+      ν (Metric.closedBall x ρ) < ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ρ ^ n) := by
+    intro k
+    have h := hxS k
+    simp only [hS, mem_ofPred_eq, not_and, not_forall, not_exists, not_le] at h
+    obtain ⟨δ, hδ, h'⟩ := h (fun h₀ => hxA (hA₀A h₀))
+    exact ⟨δ, hδ, h'⟩
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  obtain ⟨k, hk⟩ := exists_nat_one_div_lt hε
+  obtain ⟨δ, hδ, h⟩ := hgood k
+  filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+  have hρn : 0 < ρ ^ n := pow_pos hρ.1 n
+  have hI0 : 0 ≤ ∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N)) :=
+    integral_nonneg fun z => abs_nonneg _
+  -- `∫_{A ∩ B_ρ(x)} |w| dHⁿ ≤ ∫⁻_{A₀ ∩ B_ρ(x)} |w| dHⁿ ≤ ν(B̄_ρ(x)) < ρⁿ/(k+1)`.
+  have hI : ∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N)) <
+      ((k : ℝ) + 1)⁻¹ * ρ ^ n := by
+    have h1 : ENNReal.ofReal (∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N))) ≤
+        ν (Metric.closedBall x ρ) := by
+      calc ENNReal.ofReal (∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N)))
+          = ‖∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N))‖ₑ :=
+            (Real.enorm_of_nonneg hI0).symm
+        _ ≤ ∫⁻ z in A ∩ Metric.ball x ρ, ‖|w z|‖ₑ ∂(μHE[n] : Measure (Rn N)) :=
+            enorm_integral_le_lintegral_enorm _
+        _ = ∫⁻ z in A₀ ∩ Metric.ball x ρ, ‖w z‖ₑ ∂(μHE[n] : Measure (Rn N)) := by
+            simp only [Real.enorm_abs]
+            exact setLIntegral_congr (hA₀ae.symm.inter (EventuallyEq.refl _ _))
+        _ ≤ ∫⁻ z in Metric.closedBall x ρ ∩ A₀, ‖w z‖ₑ ∂(μHE[n] : Measure (Rn N)) :=
+            lintegral_mono_set fun z hz => ⟨Metric.ball_subset_closedBall hz.2, hz.1⟩
+        _ = ν (Metric.closedBall x ρ) :=
+            (hνapp _ Metric.isClosed_closedBall.measurableSet).symm
+    exact (ENNReal.ofReal_lt_ofReal_iff (by positivity)).1 (h1.trans_lt (h ρ hρ))
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg (mul_nonneg (inv_nonneg.2 hρn.le) hI0)]
+  calc (ρ ^ n)⁻¹ * ∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N))
+      ≤ (ρ ^ n)⁻¹ * (((k : ℝ) + 1)⁻¹ * ρ ^ n) :=
+        mul_le_mul_of_nonneg_left hI.le (inv_nonneg.2 hρn.le)
+    _ = ((k : ℝ) + 1)⁻¹ := by field_simp
+    _ < ε := by simpa [one_div] using hk
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
