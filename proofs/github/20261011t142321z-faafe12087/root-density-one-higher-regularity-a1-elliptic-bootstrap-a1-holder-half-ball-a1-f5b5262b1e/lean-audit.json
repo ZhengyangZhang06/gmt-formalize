@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "84d830c6debfa9c6c1ae3017a084a503516280c8495089d5d6fb5c7c81082060",
+  "git_delta": {
+    "base_commit": "f95a5846627bd1bf1c5bed99f08884272959039e",
+    "candidate_commit": "8d5f6f676d87d8b097d8f891a7c20eb69b30bcb8",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_isHolderCk_half_ball",
+    "diff_sha256": "8bc6a4416aeca800853e3f73f90a42353ff6069d4eb3e34c58f866bfcf551c81",
+    "source_sha256": "6f5b1d268c65455f355dec9fbc099c59766213f20c12cdce9f7c6ca7d5416f91",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_isHolderCk_half_ball",
+      "statement": "∀ (m k j : ℕ) (α : ℝ) (u : Rn m → Rn k) (x₀ : Rn m) (r : ℝ), IsLocallyHolderCkα j α u (ball x₀ r) → IsHolderCkα j α u (ball x₀ (r / 2))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
