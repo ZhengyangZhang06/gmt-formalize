@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b97a2d93233ac179d39c09d8a7fd48af7e2a8d6c80beb9c7c976c6dd0d3e1c65",
+  "git_delta": {
+    "base_commit": "a35eecc79b049d45a92147ab5efd3713d06e6985",
+    "candidate_commit": "3575e10ef554fb09b41d85b844a5deb5788c2602",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "arp_rgr_graph_map_fderiv",
+    "diff_sha256": "50b3952e694587248803aa3fdf6e2c35d35ef579006ff3b399f9966def7d836b",
+    "source_sha256": "2ed2d905885a063e4244098bb639450dde1b3a8c1490cc3ce2e5b800e633da43",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_rgr_graph_map_fderiv",
+      "statement": "∀ {n ℓ : ℕ} (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ 1 v U → ContDiffOn ℝ 1 (fun x => y + q (graphPoint x (v x))) U ∧ ∀ x ∈ U, ∀ h : Rn n, fderiv ℝ (fun x => y + q (graphPoint x (v x))) x h = q (graphPoint h (fderiv ℝ v x h))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
