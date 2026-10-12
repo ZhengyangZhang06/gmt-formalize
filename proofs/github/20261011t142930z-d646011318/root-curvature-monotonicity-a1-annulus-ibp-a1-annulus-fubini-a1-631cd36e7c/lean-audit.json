@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fb3aa19cc12f2ce69ad17fc8938d6811aab9cc7623e505520b937817188b0d0d",
+  "git_delta": {
+    "base_commit": "54a524251b73ae5aba24a4312d2f1855aa748523",
+    "candidate_commit": "02a4dd918dd9fd7c78baead0ee8ef5bb2e6a403e",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "mcm_annulus_primitive_fubini",
+    "diff_sha256": "f04bf5204b8f903c3bb991db17cf595fe018218084987b6c048f88bee39e58a2",
+    "source_sha256": "ceb1eb8a08f67ba401eb4f0fa92d31660b145db813170e9de2a622698c3be71c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcm_annulus_primitive_fubini",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (ξ : Ambient n ℓ) (w : Ambient n ℓ → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), IsFiniteMeasureOnCompacts μ → IntegrableOn w (closedBall ξ ρ \\ closedBall ξ σ) μ → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ w x * (F ‖x - ξ‖ - F σ)) (closedBall ξ ρ \\ closedBall ξ σ) μ ∧ IntegrableOn (fun t ↦ F' t * ∫ x in closedBall ξ ρ \\ closedBall ξ t, w x ∂μ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in closedBall ξ ρ \\ closedBall ξ t, w x ∂μ = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, w x * (F ‖x - ξ‖ - F σ) ∂μ",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
