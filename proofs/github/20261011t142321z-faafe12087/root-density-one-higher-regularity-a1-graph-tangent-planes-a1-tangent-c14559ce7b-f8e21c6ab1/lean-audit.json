@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "04d05111d5029c7f6c577c4b29ac814c03288645195aed5372cea810efa46053",
+  "git_delta": {
+    "base_commit": "1d83a9287fc7a6390ad3804c9fc0056fcfa653f2",
+    "candidate_commit": "dc54dd3dfe75d5078bb9d6e783a2c02f9cf2e56c",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "3dac0af20ddf79a28332a08d9879cca0df4898cad1f1bb899aefc65b1b6b54fe",
+    "source_sha256": "58c484fb77c0ea69ed2d24ce18c77a816e3a81e7e605e7312b4fc42afe2496d8",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_projection_continuousOn",
+      "statement": "∀ (n ℓ : ℕ) (R : ℝ) (u : Rn n → Rn ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ContinuousOn (fun x : Rn n => (Submodule.map Q.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection) (ball 0 R)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
