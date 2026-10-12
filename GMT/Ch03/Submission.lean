@@ -538,6 +538,108 @@ theorem Submission.deGiorgiDensSob_gns_contDiff : ∀ (n : ℕ), 0 < n → ∃ c
         ENNReal.rpow_le_rpow main (by positivity)
     _ = ∫⁻ y, ‖fderiv ℝ v y‖ₑ := by
         rw [← ENNReal.rpow_mul, mul_one_div_cancel h1p.ne', ENNReal.rpow_one]
+/-- **One-dimensional endpoint Sobolev inequality** (Simon Ch. 3, proof of Theorem 4.3, Step 7
+"Constants", erratum E6: for `N = 1` the Sobolev inequality is replaced by
+`sup |w| ≤ ½ ∫ |w'|`). Every `C¹` function `v : ℝ¹ → ℝ` with compact support satisfies
+`‖v‖_∞ ≤ ½ ∫ ‖Dv‖ dL¹`. Parametrise `ℝ¹` by the isometric, measure-preserving map
+`ι(t) = t e₀` (`e₀ = EuclideanSpace.single 0 1`) and put `f = v ∘ ι`, so
+`|f'(t)| = |Dv(ι t) e₀| ≤ ‖Dv(ι t)‖`. The fundamental theorem of calculus from both ends gives
+`f(t) = ∫_{(-∞, t]} f' = -∫_{(t, ∞)} f'`, hence `2 |f(t)| ≤ ∫ |f'| ≤ ∫_ℝ ‖Dv(ι t)‖ dt = ∫ ‖Dv‖ dL¹`.
+Since `v(y) = f(y 0)`, the bound `|v| ≤ ½ ∫ ‖Dv‖` holds everywhere, hence for the essential
+supremum. -/
+theorem Submission.deGiorgiDensSob_one_dim_contDiff : ∀ v : Rn 1 → ℝ, ContDiff ℝ 1 v → HasCompactSupport v → eLpNorm v ∞ volume ≤ ENNReal.ofReal (1 / 2 * ∫ y, ‖fderiv ℝ v y‖) := by
+  intro v hv hvs
+  -- Step 1: the isometric parametrisation `ι(t) = t e₀` of `ℝ¹`, with `y = ι(y 0)`.
+  set e₀ : Rn 1 := EuclideanSpace.single 0 1 with he₀
+  have hne₀ : ‖e₀‖ = 1 := by simp [he₀]
+  let ι : ℝ →L[ℝ] Rn 1 := (ContinuousLinearMap.id ℝ ℝ).smulRight e₀
+  have hι : ∀ t, ι t = t • e₀ := fun t ↦ by simp [ι]
+  have hιnorm : ∀ t, ‖ι t‖ = ‖t‖ := fun t ↦ by rw [hι, norm_smul, hne₀, mul_one]
+  have hιce : Topology.IsClosedEmbedding ι :=
+    (AddMonoidHomClass.isometry_of_norm ι hιnorm).isClosedEmbedding
+  have hιsurj : ∀ y : Rn 1, ι (y 0) = y := by
+    intro y
+    ext i
+    fin_cases i
+    simp [hι, he₀]
+  -- Step 2: `ι` agrees with the measure-preserving equivalence
+  -- `toLp 2 ∘ (funUnique (Fin 1) ℝ).symm`, so `∫_ℝ ‖Dv(ι t)‖ dt = ∫_{ℝ¹} ‖Dv‖ dL¹`.
+  let E : ℝ ≃ᵐ Rn 1 :=
+    (MeasurableEquiv.funUnique (Fin 1) ℝ).symm.trans (MeasurableEquiv.toLp 2 (Fin 1 → ℝ))
+  have hE : MeasurePreserving E volume volume :=
+    (PiLp.volume_preserving_toLp (Fin 1)).comp (volume_preserving_funUnique (Fin 1) ℝ).symm
+  have hEι : ∀ t, E t = ι t := by
+    intro t
+    ext i
+    fin_cases i
+    simp [E, hι, he₀]
+  have hchange : ∫ t, ‖fderiv ℝ v (ι t)‖ = ∫ y, ‖fderiv ℝ v y‖ := by
+    rw [← hE.integral_comp' (fun y ↦ ‖fderiv ℝ v y‖)]
+    simp only [hEι]
+  -- Step 3: `f = v ∘ ι` is `C¹` with compact support and `|f'(t)| ≤ ‖Dv(ι t)‖`.
+  set f : ℝ → ℝ := v ∘ ι with hf_def
+  have hf : ContDiff ℝ 1 f := hv.comp ι.contDiff
+  have hfs : HasCompactSupport f := hvs.comp_isClosedEmbedding hιce
+  have hderiv : ∀ t, HasDerivAt f (fderiv ℝ v (ι t) e₀) t := by
+    intro t
+    have h1 : HasDerivAt (ι : ℝ → Rn 1) e₀ t := by
+      have hfun : (ι : ℝ → Rn 1) = fun s ↦ s • e₀ := funext hι
+      rw [hfun]
+      simpa using (hasDerivAt_id t).smul_const e₀
+    exact HasFDerivAt.comp_hasDerivAt (x := t)
+      (hv.differentiable one_ne_zero (ι t)).hasFDerivAt h1
+  have hderiv_eq : ∀ t, deriv f t = fderiv ℝ v (ι t) e₀ := fun t ↦ (hderiv t).deriv
+  have hdbound : ∀ t, ‖deriv f t‖ ≤ ‖fderiv ℝ v (ι t)‖ := by
+    intro t
+    rw [hderiv_eq]
+    calc ‖fderiv ℝ v (ι t) e₀‖ ≤ ‖fderiv ℝ v (ι t)‖ * ‖e₀‖ := ContinuousLinearMap.le_opNorm _ _
+      _ = ‖fderiv ℝ v (ι t)‖ := by rw [hne₀, mul_one]
+  -- Step 4: `f'` and `t ↦ ‖Dv(ι t)‖` are integrable, and `∫ |f'| ≤ ∫ ‖Dv(ι t)‖ dt`.
+  have hdcont : Continuous (deriv f) := hf.continuous_deriv le_rfl
+  have hdint : Integrable (deriv f) := hdcont.integrable_of_hasCompactSupport hfs.deriv
+  have hgint : Integrable (fun t ↦ ‖fderiv ℝ v (ι t)‖) := by
+    have hc : Continuous (fun t ↦ ‖fderiv ℝ v (ι t)‖) :=
+      ((hv.continuous_fderiv one_ne_zero).comp ι.continuous).norm
+    exact hc.integrable_of_hasCompactSupport
+      (((hvs.fderiv ℝ).norm).comp_isClosedEmbedding hιce)
+  have hmono : ∫ s, ‖deriv f s‖ ≤ ∫ s, ‖fderiv ℝ v (ι s)‖ :=
+    integral_mono hdint.norm hgint hdbound
+  -- Step 5: FTC from the left, `∫_{(-∞, t]} f' = f(t)`.
+  have hftc_left : ∀ t, ∫ s in Iic t, deriv f s = f t := fun t ↦
+    hfs.integral_Iic_deriv_eq hf t
+  -- Step 6: FTC from the right, `∫_{(t, ∞)} f' = 0 - f(t)`, as `f → 0` at `+∞`.
+  have hlim_top : Tendsto f atTop (𝓝 0) := by
+    have h := hfs
+    rw [hasCompactSupport_iff_eventuallyEq, Filter.coclosedCompact_eq_cocompact] at h
+    exact (h.filter_mono _root_.atTop_le_cocompact).tendsto
+  have hftc_right : ∀ t, ∫ s in Ioi t, deriv f s = 0 - f t := fun t ↦
+    integral_Ioi_of_hasDerivAt_of_tendsto'
+      (fun s _ ↦ (hf.differentiable one_ne_zero s).hasDerivAt) hdint.integrableOn hlim_top
+  -- Step 7: adding the two bounds, `2 |f(t)| ≤ ∫ |f'| ≤ ∫ ‖Dv‖ dL¹`.
+  have hpt : ∀ t, ‖f t‖ ≤ 1 / 2 * ∫ y, ‖fderiv ℝ v y‖ := by
+    intro t
+    have h1 : ‖f t‖ ≤ ∫ s in Iic t, ‖deriv f s‖ := by
+      rw [← hftc_left t]
+      exact norm_integral_le_integral_norm _
+    have h2 : ‖f t‖ ≤ ∫ s in Ioi t, ‖deriv f s‖ := by
+      have : f t = -∫ s in Ioi t, deriv f s := by rw [hftc_right t]; ring
+      rw [this, norm_neg]
+      exact norm_integral_le_integral_norm _
+    have h3 : (∫ s in Iic t, ‖deriv f s‖) + ∫ s in Ioi t, ‖deriv f s‖ = ∫ s, ‖deriv f s‖ :=
+      intervalIntegral.integral_Iic_add_Ioi hdint.norm.integrableOn hdint.norm.integrableOn
+    calc ‖f t‖ = 1 / 2 * (‖f t‖ + ‖f t‖) := by ring
+      _ ≤ 1 / 2 * ((∫ s in Iic t, ‖deriv f s‖) + ∫ s in Ioi t, ‖deriv f s‖) := by gcongr
+      _ = 1 / 2 * ∫ s, ‖deriv f s‖ := by rw [h3]
+      _ ≤ 1 / 2 * ∫ s, ‖fderiv ℝ v (ι s)‖ := by gcongr
+      _ = 1 / 2 * ∫ y, ‖fderiv ℝ v y‖ := by rw [hchange]
+  -- Step 8: `v(y) = f(y 0)`, so `|v(y)| ≤ ½ ∫ ‖Dv‖ dL¹` for every `y ∈ ℝ¹`.
+  have hall : ∀ y, ‖v y‖ ≤ 1 / 2 * ∫ y, ‖fderiv ℝ v y‖ := by
+    intro y
+    have := hpt (y 0)
+    rwa [hf_def, Function.comp_apply, hιsurj] at this
+  -- Step 9: the everywhere bound bounds the essential supremum `eLpNorm v ∞`.
+  rw [eLpNorm_exponent_top hv.continuous.aestronglyMeasurable]
+  exact eLpNormEssSup_le_of_ae_bound (ae_of_all _ hall)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
