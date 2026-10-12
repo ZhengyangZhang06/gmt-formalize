@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.diagonal_arzela_ascoli-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "depth": 3,
+  "title": "Diagonal Arzelà–Ascoli extraction for mollified indicators",
+  "statement": "Let N ∈ ℕ, let (ρ_m)_{m∈ℕ} be continuous functions ℝ^N → ℝ with compact support, and let (F_k)_{k∈ℕ} be arbitrary subsets of ℝ^N. Then there is a strictly increasing φ : ℕ → ℕ with the following property: for every m ∈ ℕ and every ε > 0 there is k₀ such that |∫_{F_{φ(k)}} ρ_m(y − z) dz − ∫_{F_{φ(l)}} ρ_m(y − z) dz| ≤ ε for all k, l ≥ k₀ and all y ∈ B̄_m(0). Here ∫_S f dz is the integral of f with respect to the restriction L^N⌞S.",
+  "lean_statement": "∀ (N : ℕ) (ρ : ℕ → Rn N → ℝ) (F : ℕ → Set (Rn N)), (∀ m, Continuous (ρ m)) → (∀ m, HasCompactSupport (ρ m)) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ (m : ℕ) (ε : ℝ), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, ∀ y ∈ Metric.closedBall (0 : Rn N) m, |(∫ z in F (φ k), ρ m (y - z)) - ∫ z in F (φ l), ρ m (y - z)| ≤ ε",
+  "lean_name": "indCompact_diagonal_mollified_uniform_cauchy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-diagonal-arzela-ascoli-a1-a1"
+}

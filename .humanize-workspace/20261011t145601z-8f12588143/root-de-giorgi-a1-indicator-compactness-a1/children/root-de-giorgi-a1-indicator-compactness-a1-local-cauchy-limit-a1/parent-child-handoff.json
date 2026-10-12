@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+        "python3 -I (importlib of verifier/gmt-compare.py) contract_scope(Contract.lean, 'GMT.Ch03.main_theorem') + child_modules(...) -> /tmp/indcompact-decomp/challenges/Challenge_*.lean; lake env lean on each of the 5 files",
+        "lake env lean /tmp/indcompact-decomp/Assembly.lean (#print axioms Submission.deGiorgi_indicator_compactness_assembly); lake env lean /tmp/indcompact-decomp/Interface.lean",
+        "python3 -I verifier/lean_contract.py validate_lean_statement on the 5 child types",
+        "python3 -I lean_name collision check against dag.json (141 nodes) and grep -rn indCompact GMT/ .lake/packages/simongmt/Poincare",
+        "grep -n -i 'compactness|arzela|subsequence|mollif|convolution|translation|duality' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/*.lean",
+        "grep -n 'theorem|def |lemma' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean; grep -rn 'ae_convolution_tendsto|ContDiffBump.normed' .lake/packages/simongmt/Poincare/SimonGMT",
+        "grep -rn 'theorem integral_normed|theorem support_normed_eq|theorem nonneg_normed|theorem continuous_normed|theorem hasCompactSupport_normed|theorem integrable_normed|def normed' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/*.lean",
+        "grep -rn 'theorem ae_convolution_tendsto_right_of_locallyIntegrable|theorem arzela_ascoli|theorem IsCompact.tendsto_subseq|theorem extraction_forall_of_eventually' <snapshot>/mathlib/Mathlib",
+        "rg -n -i 'kolmogorov|riesz.?kolmogorov|frechet.?kolmogorov' <snapshot>/mathlib/Mathlib",
+        "rg -n 'contDiff_convolution_left|continuous_convolution_left|theorem restrict_le_self' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'uniformContinuous_of_continuous|trace_smulRight' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem symmDiff_triangle|theorem abs_indicator_symmDiff|theorem integral_indicator_const|theorem toMeasurable_ae_eq|theorem tendsto_integral_of_dominated_convergence|theorem integral_eq_sub_of_hasDerivAt' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'theorem lintegral_lintegral_swap|theorem integral_integral_swap|theorem setIntegral_congr_set|theorem restrict_congr_set|theorem setLIntegral_const|theorem ofReal_integral_eq_lintegral_ofReal' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'FirstCountableTopology (∀ i' <snapshot>/mathlib/Mathlib/Topology/Bases.lean",
+        "grep -n -i 'import' verifier/gmt-compare.py verifier/lean_contract.py; git show <branch>:GMT/Ch03/Submission.lean | grep '^import' over humanize-recursive branches"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Order/WellFounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Order/SymmDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1/parent-supplied-natural-proof.md",
+        "/tmp/indcompact-decomp/Assembly.lean",
+        "/tmp/indcompact-decomp/Interface.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c).\n\nMissing from the libraries, so these become children:\n- Mathlib has no BV or Kolmogorov–Riesz compactness: rg 'kolmogorov' matches only the extension theorem and T0 spaces.\n- SimonGMT Chapter02/BV.lean provides only the closure half and states that 'Extracting a convergent subsequence remains the compactness obligation'.\n- Neither library has an L¹-duality lemma for balls, a BV translation estimate, or a completeness lemma for local symmetric-difference convergence.\n\nLibrary support found for the child proofs:\n- ContDiffBump.normed API (nonneg/continuous/integral/support/hasCompactSupport_normed).\n- ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable. SimonGMT Chapter08 already reuses it in constancyMollifier / ae_constancyMollifier_convolution_tendsto.\n- HasCompactSupport.contDiff_convolution_left and continuous_convolution_left.\n- BoundedContinuousFunction.arzela_ascoli, IsCompact.tendsto_subseq, and the countable-pi FirstCountableTopology instance.\n- HasCompactSupport.uniformContinuous_of_continuous.\n- LinearMap.trace_smulRight, which gives div(ψ(·−th)h) = Dψ(·−th)[h].\n- integral_integral_swap, lintegral_lintegral_swap and intervalIntegral.integral_eq_sub_of_hasDerivAt.\n- symmDiff_triangle, abs_indicator_symmDiff, integral_indicator_const, toMeasurable_ae_eq, Measure.restrict_le_self, Measure.restrict_congr_set, setLIntegral_const and ofReal_integral_eq_lintegral_ofReal.\n- SimonGMT euclideanDivergence_eq_sum_inner, measurable_euclideanDivergence and support_euclideanDivergence_subset.\n\nLean results:\n- All five child types elaborate in the exact NodeChallenge scope and pass lean_contract validation.\n- The parent assembly compiles from the child stubs with only propext, Classical.choice, Quot.sound and the stubs' sorryAx. It needs the Mathlib BumpFunction.Normed and BumpFunction.InnerProduct imports; one existing DAG branch already adds a Submission import.\n- No lean_name collides with dag.json."
+    }
+  ],
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "child_id": "root.de_giorgi-a1.indicator_compactness-a1.local_cauchy_limit-a1",
+  "subproblem": {
+    "key": "local_cauchy_limit",
+    "title": "A locally Cauchy sequence of sets converges locally in measure to a measurable set",
+    "statement": "Let N ∈ ℕ and let (F_k)_{k∈ℕ} be L^N-null-measurable subsets of ℝ^N. Suppose that for every R ∈ ℕ and every ε ∈ (0, ∞] there is k₀ such that L^N(B_R(0) ∩ (F_k Δ F_l)) ≤ ε for all k, l ≥ k₀. Then there is a measurable G ⊆ ℝ^N such that L^N(K ∩ (F_k Δ G)) → 0 as k → ∞ for every compact K ⊆ ℝ^N.",
+    "lean_statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → (∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε) → ∃ G : Set (Rn N), MeasurableSet G ∧ ∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F k) G)) atTop (𝓝 0)",
+    "lean_name": "indCompact_limit_of_local_cauchy",
+    "depends_on": [],
+    "natural_proof": "Source. This is Steps 7–8 of the parent proof: completeness of L¹(B_R(0)), an a.e.-convergent subsequence, identification of the limit a.e. as a characteristic function 1_G with G measurable, and L^N(K ∩ (F_{φ(k)} Δ G)) ≤ ‖χ_{φ(k)} − u‖_{L¹(B_R)} → 0. Here completeness is carried out explicitly for characteristic functions by the Riesz–Fischer fast-Cauchy-subsequence argument. The a.e. limit of the fast subsequence is the indicator of G := liminf_j F_{n_j}, so no Borel representative is needed.\n\nNotation. B_R := B_R(0) for R ∈ ℕ. Note B_R ⊆ B_{R'} whenever R ≤ R'.\n\n1. (WLOG F_k measurable.) Choose measurable F'_k with F'_k = F_k a.e. For all sets X and Y, X ∩ (F_k Δ Y) = X ∩ (F'_k Δ Y) a.e. So replacing F_k by F'_k changes neither the hypothesis nor the conclusion. Assume all F_k are measurable.\n\n2. (Fast subsequence.) For each j ∈ ℕ, the hypothesis with R = j and ε = 2^{−j} gives k₀(j) such that L^N(B_j ∩ (F_k Δ F_l)) ≤ 2^{−j} for all k, l ≥ k₀(j). Define n_0 := k₀(0) and n_{j+1} := max(k₀(j + 1), n_j + 1). Then (n_j) is strictly increasing and n_j ≥ k₀(j). In particular L^N(B_j ∩ (F_{n_j} Δ F_{n_{j+1}})) ≤ 2^{−j}.\n\n3. (Limit set.) Put A_j := F_{n_j} and G := ⋃_{i∈ℕ} ⋂_{j≥i} A_j. G is measurable.\n\n4. (Tail inclusion.) We claim A_i Δ G ⊆ ⋃_{j≥i} (A_j Δ A_{j+1}) for every i. Let y ∉ ⋃_{j≥i} (A_j Δ A_{j+1}). By induction on j ≥ i, y ∈ A_j ⇔ y ∈ A_i.\n- If y ∈ A_i, then y ∈ ⋂_{j≥i} A_j ⊆ G.\n- If y ∈ G, then there is i' with y ∈ A_j for all j ≥ i'. Taking j := max(i, i') gives y ∈ A_j, hence y ∈ A_i.\nHence y ∉ A_i Δ G.\n\n5. (Estimate along the subsequence.) Let R ∈ ℕ and i ≥ R. Since B_R ⊆ B_j for j ≥ i, step 4 gives B_R ∩ (A_i Δ G) ⊆ ⋃_{j≥i} (B_j ∩ (A_j Δ A_{j+1})). By countable subadditivity and step 2, L^N(B_R ∩ (A_i Δ G)) ≤ Σ_{j≥i} 2^{−j} = 2^{1−i}.\n\n6. (Whole sequence.) Let R ∈ ℕ, i ≥ R and k ≥ n_i. We have F_k Δ G ⊆ (F_k Δ A_i) ∪ (A_i Δ G) (symmDiff_triangle) and B_R ⊆ B_i. Since k ≥ n_i ≥ k₀(i), step 2 bounds the first term and step 5 the second:\n L^N(B_R ∩ (F_k Δ G)) ≤ L^N(B_i ∩ (F_k Δ F_{n_i})) + L^N(B_R ∩ (A_i Δ G)) ≤ 2^{−i} + 2^{1−i} = 3·2^{−i}.\n Given ε > 0, choose i ≥ R with 3·2^{−i} ≤ ε. Then L^N(B_R ∩ (F_k Δ G)) ≤ ε for all k ≥ n_i. Hence L^N(B_R ∩ (F_k Δ G)) → 0 as k → ∞, for every R ∈ ℕ.\n\n7. (Compact sets.) A compact K is bounded, so K ⊆ B_R for some R ∈ ℕ. Then 0 ≤ L^N(K ∩ (F_k Δ G)) ≤ L^N(B_R ∩ (F_k Δ G)) → 0. Thus G is measurable and L^N(K ∩ (F_k Δ G)) → 0 for every compact K. ∎",
+    "proof_key_steps": [
+      "WLOG every F_k is measurable (a.e.-equal replacements change neither side).",
+      "Fast subsequence n_j with L^N(B_j ∩ (F_k Δ F_l)) ≤ 2^{−j} for k, l ≥ n_j; G := ⋃_i ⋂_{j≥i} F_{n_j} is measurable.",
+      "F_{n_i} Δ G ⊆ ⋃_{j≥i} (F_{n_j} Δ F_{n_{j+1}}), so L^N(B_R ∩ (F_{n_i} Δ G)) ≤ 2^{1−i} for i ≥ R.",
+      "By the triangle inequality for Δ, L^N(B_R ∩ (F_k Δ G)) ≤ 3·2^{−i} for k ≥ n_i, so it tends to 0; every compact K lies in some B_R."
+    ]
+  },
+  "audit": {
+    "key": "local_cauchy_limit",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The type exactly matches the local completion statement. Measurable replacements, the explicit fast subsequence and its measurable liminf give the tail estimate. The bound 3·2^(−i) applies to the whole original sequence, and compact-set containment gives the required convergence. No parent theorem or unproved completeness obligation is used."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-local-cauchy-limit-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-local-cauchy-limit-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-local-cauchy-limit-a1/parent-supplied-natural-proof.json"
+}
