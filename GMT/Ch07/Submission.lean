@@ -451,6 +451,83 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 5, Remark 4.6 and proof of Theorem 5.2, (6)–(8)** (integrated Hilbert–Schmidt
+triangle inequalities).  Let `eᵢ` be the standard basis of `ℝᴾ`, `d = Σᵢ |A₁eᵢ − A₂eᵢ|²` and
+`f_k(x) = Σᵢ |τ(x)eᵢ − A_keᵢ|²`.  Then, as lower integrals in `[0, ∞]` over an arbitrary set `s`,
+(i) `d μ(s) ≤ 2∫_s f₁ dμ + 2∫_s f₂ dμ` and (ii) `∫_s f₁ dμ ≤ 2∫_s f₂ dμ + 2d μ(s)`.  Both integrate
+`|u − w|² ≤ 2|u − v|² + 2|v − w|²` over `s`.  Additivity of the lower integral in (i) uses the a.e.
+strong measurability of `τ`; in (ii) the second summand is constant. -/
+theorem Submission.dorag_ted_hs_integral_compare : ∀ (P : ℕ) (μ : Measure (Euclid P)) (τ : Euclid P → (Euclid P →L[ℝ] Euclid P)) (A₁ A₂ : Euclid P →L[ℝ] Euclid P) (s : Set (Euclid P)), AEStronglyMeasurable τ μ → ENNReal.ofReal (∑ i : Fin P, ‖A₁ (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * μ s ≤ 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₁ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) + 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) ∧ (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₁ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) ≤ 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) + 2 * ENNReal.ofReal (∑ i : Fin P, ‖A₁ (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * μ s := by
+  intro P μ τ A₁ A₂ s hτ
+  set d : ℝ := ∑ i : Fin P,
+    ‖A₁ (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+  set f : (Euclid P →L[ℝ] Euclid P) → Euclid P → ℝ := fun A x => ∑ i : Fin P,
+    ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+  -- Step 1: `Σᵢ |uᵢ − wᵢ|² ≤ 2Σᵢ |uᵢ − vᵢ|² + 2Σᵢ |vᵢ − wᵢ|²`, by the triangle inequality and
+  -- `(α + β)² ≤ 2α² + 2β²`
+  have key : ∀ u v w : Fin P → Euclid P,
+      ∑ i, ‖u i - w i‖ ^ 2 ≤ 2 * ∑ i, ‖u i - v i‖ ^ 2 + 2 * ∑ i, ‖v i - w i‖ ^ 2 := by
+    intro u v w
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    nlinarith [norm_sub_le_norm_sub_add_norm_sub (u i) (v i) (w i), norm_nonneg (u i - w i),
+      norm_nonneg (u i - v i), norm_nonneg (v i - w i), sq_nonneg (‖u i - v i‖ - ‖v i - w i‖)]
+  -- Step 2: nonnegativity, and `ofReal (2a + 2b) = 2 ofReal a + 2 ofReal b` for `a, b ≥ 0`
+  have hd0 : 0 ≤ d := Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hf0 : ∀ A x, 0 ≤ f A x := fun A x => Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hof : ∀ a b : ℝ, 0 ≤ a → 0 ≤ b →
+      ENNReal.ofReal (2 * a + 2 * b) = 2 * ENNReal.ofReal a + 2 * ENNReal.ofReal b := by
+    intro a b ha hb
+    rw [ENNReal.ofReal_add (by positivity) (by positivity), ENNReal.ofReal_mul zero_le_two,
+      ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+  -- Step 3: `f A = Φ_A ∘ τ` with `Φ_A(L) = Σᵢ |Leᵢ − Aeᵢ|²` continuous, so `ofReal ∘ f A` is a.e.
+  -- measurable for `μ⌞s`
+  have hmeas : ∀ A, AEMeasurable (fun x => ENNReal.ofReal (f A x)) (μ.restrict s) := by
+    intro A
+    have hc : Continuous fun L : Euclid P →L[ℝ] Euclid P => ∑ i : Fin P,
+        ‖L (EuclideanSpace.single i (1 : ℝ)) - A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+      fun_prop
+    exact ENNReal.measurable_ofReal.comp_aemeasurable
+      (hc.comp_aestronglyMeasurable hτ.restrict).aemeasurable
+  constructor
+  · -- Step 4, (i): `ofReal d ≤ 2 ofReal (f₁ x) + 2 ofReal (f₂ x)`; integrate over `s`
+    have hpt : ∀ x,
+        ENNReal.ofReal d ≤ 2 * ENNReal.ofReal (f A₁ x) + 2 * ENNReal.ofReal (f A₂ x) := by
+      intro x
+      have h := key (fun i => A₁ (EuclideanSpace.single i (1 : ℝ)))
+        (fun i => τ x (EuclideanSpace.single i (1 : ℝ)))
+        (fun i => A₂ (EuclideanSpace.single i (1 : ℝ)))
+      simp only [norm_sub_rev (A₁ _) (τ x _)] at h
+      rw [← hof _ _ (hf0 A₁ x) (hf0 A₂ x)]
+      exact ENNReal.ofReal_le_ofReal h
+    calc ENNReal.ofReal d * μ s = ∫⁻ _ in s, ENNReal.ofReal d ∂μ := (setLIntegral_const s _).symm
+      _ ≤ ∫⁻ x in s, (2 * ENNReal.ofReal (f A₁ x) + 2 * ENNReal.ofReal (f A₂ x)) ∂μ :=
+          lintegral_mono hpt
+      _ = (∫⁻ x in s, 2 * ENNReal.ofReal (f A₁ x) ∂μ) +
+            ∫⁻ x in s, 2 * ENNReal.ofReal (f A₂ x) ∂μ :=
+          lintegral_add_left' ((hmeas A₁).const_mul 2) _
+      _ = 2 * (∫⁻ x in s, ENNReal.ofReal (f A₁ x) ∂μ) +
+            2 * ∫⁻ x in s, ENNReal.ofReal (f A₂ x) ∂μ := by
+          rw [lintegral_const_mul' _ _ ENNReal.ofNat_ne_top,
+            lintegral_const_mul' _ _ ENNReal.ofNat_ne_top]
+  · -- Step 5, (ii): `ofReal (f₁ x) ≤ 2 ofReal (f₂ x) + 2 ofReal d`; integrate over `s`
+    have hpt : ∀ x,
+        ENNReal.ofReal (f A₁ x) ≤ 2 * ENNReal.ofReal (f A₂ x) + 2 * ENNReal.ofReal d := by
+      intro x
+      have h := key (fun i => τ x (EuclideanSpace.single i (1 : ℝ)))
+        (fun i => A₂ (EuclideanSpace.single i (1 : ℝ)))
+        (fun i => A₁ (EuclideanSpace.single i (1 : ℝ)))
+      simp only [norm_sub_rev (A₂ _) (A₁ _)] at h
+      rw [← hof _ _ (hf0 A₂ x) hd0]
+      exact ENNReal.ofReal_le_ofReal h
+    calc (∫⁻ x in s, ENNReal.ofReal (f A₁ x) ∂μ)
+        ≤ ∫⁻ x in s, (2 * ENNReal.ofReal (f A₂ x) + 2 * ENNReal.ofReal d) ∂μ :=
+          lintegral_mono hpt
+      _ = (∫⁻ x in s, 2 * ENNReal.ofReal (f A₂ x) ∂μ) + ∫⁻ _ in s, 2 * ENNReal.ofReal d ∂μ :=
+          lintegral_add_right _ measurable_const
+      _ = 2 * (∫⁻ x in s, ENNReal.ofReal (f A₂ x) ∂μ) + 2 * ENNReal.ofReal d * μ s := by
+          rw [lintegral_const_mul' _ _ ENNReal.ofNat_ne_top, setLIntegral_const]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
