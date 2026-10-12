@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "hausdorffMeasure_image_le|euclideanHausdorffMeasure_def|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|norm_image_sub_le_of_norm_hasFDerivWithin_le|continuousOn_fderiv_of_isOpen",
+        "addHaar_ball|lintegral_eq_lintegral_meas_lt|lintegral_image_eq_lintegral_abs_deriv_mul|Gamma_eq_integral|theorem integral_gaussian|finrank_range_of_inj|theorem restrict_apply \\(|theorem tendsto_order ",
+        "dohr_c1_uniform_first_order|dohr_c1_graph_mass_pinching|dohr_ratio_tendsto_one_of_pinching|rsod_planeMeasure_closedBall",
+        "git -C /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/7b984ce372887989aaee/gmt-ch05 show 7881dde5f7e308e54f05a8f95dc7a4b94e277e4c:GMT/Ch05/Submission.lean",
+        "python3 -I /tmp/c1gd-independent-audit-no02r884/run_check.py baseline",
+        "python3 -I /tmp/c1gd-independent-audit-no02r884/run_check.py candidate",
+        "python3 -I /tmp/c1gd-independent-audit-no02r884/run_check.py challenge graph_mass_pinching",
+        "python3 -I /tmp/c1gd-independent-audit-no02r884/run_check.py solution parent"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/JacobianOneDim.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gamma/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gaussian/GaussianIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-plane-bal-a9b18bed1e/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-plane-bal-a9b18bed1e/comparator-v1.log",
+        "/tmp/c1gd-independent-audit-no02r884/run_check.py",
+        "/tmp/c1gd-independent-audit-no02r884/candidate.log",
+        "/tmp/c1gd-independent-audit-no02r884/challenge-graph_mass_pinching.log",
+        "/tmp/c1gd-independent-audit-no02r884/solution-parent.log"
+      ],
+      "conclusion": "Confirmed pinned project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The contract and consulted Mathlib files match the working sources byte-for-byte. The snapshot supports derivative continuity, the convex mean-value estimate, normalized Hausdorff Lipschitz comparisons, Haar scaling, Gaussian/layer-cake normalization, and the order-topology squeeze. No proposed names occur in the searched snapshot Ch05 sources. The final DAG check confirms three unreserved new names and identical-type reuse of the comparator-accepted plane lemma. Independently regenerated challenge modules for all four children and the parent elaborate against the frozen Submission without these implementations. The supplied proofs and exact parent assembly compile; all five solution modules pass with only propext, Classical.choice and Quot.sound. All names are bare identifiers and all statements are standalone one-line propositions. Euclidean and ENNReal constructions have the intended types; no Matrix/IsUnit construction occurs. The split is appropriate, acyclic, and proves the selected frozen contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including n ≥ 1 and s ≥ 0. Isometric transfer, Gaussian integration, layer cake, the exponential substitution and Haar scaling establish the precise normalization, including s = 0. The argument is complete and non-circular. Its frozen type exactly matches the comparator-accepted declaration at commit 7881dde5f7e308e54f05a8f95dc7a4b94e277e4c; reuse is valid."
+    },
+    {
+      "key": "c1_first_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes every hypothesis and exactly expresses the two-point estimate. Openness and C1 regularity supply differentiability and derivative continuity; the half-minimum radius ensures both containment and derivative control. Applying the convex mean-value inequality to u minus its fixed linearization proves the conclusion. No sibling or parent theorem is assumed."
+    },
+    {
+      "key": "graph_mass_pinching",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and both constants match the exact Lean proposition. Localization, the centred ellipsoid inclusions and the two Lipschitz comparisons establish both bounds using precisely the listed dependencies. All divisions have positive denominators; the Hausdorff image inequality requires no omitted measurability hypothesis. The replacement of the area-formula step is fully proved. Its constants tend to one and, with the supplied squeeze assembly, imply the selected parent."
+    },
+    {
+      "key": "ratio_squeeze",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the eventually quantified ENNReal proposition. Eventual positivity makes the denominator nonzero and finite. The proof correctly handles nonpositive lower factors, divides the bounds, and treats every order-neighborhood target, including infinity. It is complete, independent of the geometric children, and applies exactly as specified in the parent assembly."
+    }
+  ],
+  "required_changes": []
+}
