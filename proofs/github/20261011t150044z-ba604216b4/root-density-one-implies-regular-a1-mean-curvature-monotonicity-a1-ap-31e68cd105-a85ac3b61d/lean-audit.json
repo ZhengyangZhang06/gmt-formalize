@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e1f450db9e68bf98f3ce1af2e990cc0ff2a4a2b601e94936f4eaa20ea877fb4e",
+  "git_delta": {
+    "base_commit": "91f1514188f54e7dc7c4ef02e3206cf480922ccc",
+    "candidate_commit": "3402c759cdcba6f71db8e1cd3859610d8ae8390a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_att_mem_range_of_secant_blowUp",
+    "diff_sha256": "d146f36346c73fb9134a54b9f0a9fd9cb4a51385c3a80b0c88e05870bd323550",
+    "source_sha256": "a099f9b94f0ad55503e6f7b8fa98fdc28f0e6c4e43cc4506681712cc87045096",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_att_mem_range_of_secant_blowUp",
+      "statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (x w : Euclid P) (A : Euclid d →L[ℝ] Euclid P), (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y x < δ → ∃ a : Euclid d, ‖y - x - A a‖ ≤ ε * ‖y - x‖) → (∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ N, ‖lam⁻¹ • (y - x) - w‖ < s) → w ∈ Set.range A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
