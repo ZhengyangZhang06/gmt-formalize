@@ -458,6 +458,109 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 3, Theorem 1.9 "⇒"** for `V = v(M, θ)` with `θ ≥ 1` `μ_V`-a.e.: `M` has an
+approximate tangent space with respect to `θ` (Ch. 3, Definition 1.7) at `μ_V`-a.e. point.
+Near each `y ∈ U` replace `M` by a Borel `A ⊆ M ∩ B_{ε/2}(y)` with `Hⁿ((M ∩ B_{ε/2}(y)) \ A) = 0`
+(of finite measure, as `θ ≥ 1` is integrable there) and `θ` by a Borel representative `θ'`.  The
+`C¹` cover of `M` (Lemma 1.2) gives unweighted tangent planes a.e. on closed subsets of `A`
+(Theorem 1.6 "⇒"), Remark 1.8(1) gives the weighted ones for `(A, θ')`, and Definition 1.7 only
+sees the germ at `x` modulo `Hⁿ`-null sets, so they are tangent planes of `(M, θ)` near `y`.
+Second countability makes the exceptional set `Hⁿ`-null, and `μ_V ≪ Hⁿ ⌞ M`. -/
+theorem rsod_ae_exists_approxTangent : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P := by
+  intro n ℓ hn U hU V hθ1
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set M := V.carrier
+  set θ := V.mult
+  have hM : NullMeasurableSet M μ := V.nullMeasurableSet_carrier
+  -- `μ_V ≪ Hⁿ ⌞ M`, and `Hⁿ ⌞ M ≪ μ_V` because `θ > 0` on `M`; so `θ ≥ 1` `Hⁿ`-a.e. on `M`.
+  have hac : V.weight ≪ μ.restrict M := withDensity_absolutelyContinuous _ _
+  have hac' : μ.restrict M ≪ V.weight :=
+    withDensity_absolutelyContinuous' V.aemeasurable_mult.ennreal_ofReal
+      ((ae_restrict_mem₀ hM).mono fun x hx => (ENNReal.ofReal_pos.mpr (V.mult_pos x hx)).ne')
+  have hθ1M : ∀ᵐ x ∂μ.restrict M, 1 ≤ θ x := hac'.ae_le hθ1
+  -- A Borel representative `θ'` of `θ`; the two differ on `M` only in the null set `Z₁`.
+  set θ' := V.aemeasurable_mult.mk θ
+  have hθ'meas : Measurable θ' := V.aemeasurable_mult.measurable_mk
+  have hθθ' : θ =ᵐ[μ.restrict M] θ' := V.aemeasurable_mult.ae_eq_mk
+  set Z₁ := {x | θ x ≠ θ' x} ∩ M with hZ₁def
+  have hZ₁ : μ Z₁ = 0 := by
+    rw [hZ₁def, ← Measure.restrict_apply₀' hM]
+    exact ae_iff.mp hθθ'
+  -- Simon Ch. 3, Lemma 1.2: `M ⊆ N₀ ∪ ⋃ⱼ Nⱼ` with `Hⁿ(N₀) = 0` and `C¹` submanifolds `Nⱼ`.
+  obtain ⟨N₀, N, hN₀, hN, hcover⟩ :=
+    Submission.rsod_rectifiable_subset_c1_cover n ℓ hn M V.countablyRectifiable
+  -- Each `y ∈ U` has an open neighbourhood `O` such that a.e. point of `M ∩ O` is good.
+  have hloc : ∀ y ∈ U, ∃ O : Set (Amb n ℓ), IsOpen O ∧ y ∈ O ∧
+      ∀ᵐ x ∂μ, x ∈ M → x ∈ O → ∃ P : Submodule ℝ (Amb n ℓ),
+        Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P := by
+    intro y hy
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU y hy
+    set L := closedBall y (ε / 2)
+    set O := ball y (ε / 2)
+    have hLU : L ⊆ U := (closedBall_subset_ball (half_lt_self hε)).trans hεU
+    have hOL : O ⊆ L := ball_subset_closedBall
+    -- `Hⁿ(M ∩ L) ≤ ∫_{M ∩ L} θ dHⁿ < ∞`, since `θ ≥ 1` a.e. on `M`.
+    have hint : IntegrableOn θ (M ∩ L) μ :=
+      V.integrableOn_mult L (isCompact_closedBall y (ε / 2)) hLU
+    have hfinML : μ (M ∩ L) < ∞ :=
+      calc μ (M ∩ L) = ∫⁻ _, 1 ∂μ.restrict (M ∩ L) := by
+            rw [lintegral_one, Measure.restrict_apply_univ]
+        _ ≤ ∫⁻ x, ENNReal.ofReal (θ x) ∂μ.restrict (M ∩ L) :=
+          lintegral_mono_ae ((ae_restrict_of_ae_restrict_of_subset inter_subset_left hθ1M).mono
+            fun x hx => ENNReal.one_le_ofReal.mpr hx)
+        _ < ∞ := hint.setLIntegral_lt_top
+    -- A Borel `A ⊆ M ∩ L` with `Hⁿ((M ∩ L) \ A) = 0`; `θ'` is integrable on `A`.
+    obtain ⟨A, hAsub, hAmeas, hAae⟩ :=
+      (hM.inter measurableSet_closedBall.nullMeasurableSet).exists_measurable_subset_ae_eq
+    have hdiff : μ ((M ∩ L) \ A) = 0 := ae_le_set.mp hAae.symm.le
+    have hfinA : μ A < ∞ := (measure_mono hAsub).trans_lt hfinML
+    have hintA : IntegrableOn θ' A μ :=
+      (hint.congr_fun_ae (ae_restrict_of_ae_restrict_of_subset inter_subset_left hθθ')).mono_set
+        hAsub
+    -- Theorem 1.6 "⇒" on every closed `K ⊆ A`, then Remark 1.8(1) for `(A, θ')`.
+    have hWA := Submission.rsod_ae_weightedApproxTangent_of_unweighted n ℓ A θ' hAmeas hfinA
+      hθ'meas hintA fun K hK hKA =>
+        Submission.rsod_ae_approxTangent_of_c1Cover n ℓ hn K N₀ N hK.measurableSet
+          ((measure_mono hKA).trans_lt hfinA) hN₀ hN fun z hz => hcover (hAsub (hKA hz)).1
+    -- Off the null set `Z`, `(A, θ')` and `(M, θ)` agree on `O`.
+    set Z := ((M ∩ L) \ A) ∪ Z₁
+    have hZ : μ Z = 0 := measure_union_null hdiff hZ₁
+    have hmemA : ∀ z, z ∈ M → z ∈ O → z ∉ Z → z ∈ A := fun z hzM hzO hzZ => by
+      by_contra hzA
+      exact hzZ (Or.inl ⟨⟨hzM, hOL hzO⟩, hzA⟩)
+    have heqθ : ∀ z, z ∈ M → z ∉ Z → θ' z = θ z := fun z hzM hzZ => by
+      by_contra hne
+      exact hzZ (Or.inr ⟨fun h => hne h.symm, hzM⟩)
+    have hAM : (A ∩ O) \ Z = (M ∩ O) \ Z := by
+      ext z
+      constructor
+      · rintro ⟨⟨hzA, hzO⟩, hzZ⟩
+        exact ⟨⟨(hAsub hzA).1, hzO⟩, hzZ⟩
+      · rintro ⟨⟨hzM, hzO⟩, hzZ⟩
+        exact ⟨⟨hmemA z hzM hzO hzZ, hzO⟩, hzZ⟩
+    refine ⟨O, isOpen_ball, mem_ball_self (half_pos hε), ?_⟩
+    filter_upwards [hWA, measure_eq_zero_iff_ae_notMem.mp hZ] with x hxW hxZ hxM hxO
+    obtain ⟨P, hP⟩ := hxW (hmemA x hxM hxO hxZ)
+    exact ⟨P, Submission.rsod_weightedApproxTangent_congr n ℓ A M O Z θ' θ x P
+      hAmeas.nullMeasurableSet isOpen_ball hxO hZ hAM
+      (fun z hz => heqθ z (hAsub hz.1.1).1 hz.2) (heqθ x hxM hxZ) hP⟩
+  -- The bad points of `M ⊆ U` are locally `Hⁿ`-null, hence `Hⁿ`-null (second countability).
+  have hbad : μ {x | x ∈ M ∧ ¬∃ P : Submodule ℝ (Amb n ℓ),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P} = 0 := by
+    refine measure_null_of_locally_null _ fun x hx => ?_
+    obtain ⟨O, hO, hxO, hgood⟩ := hloc x (V.carrier_subset hx.1)
+    refine ⟨_, inter_mem_nhdsWithin _ (hO.mem_nhds hxO), measure_mono_null ?_ (ae_iff.mp hgood)⟩
+    rintro z ⟨⟨hzM, hzbad⟩, hzO⟩ hz
+    exact hzbad (hz hzM hzO)
+  -- So a.e. point of `M` is good for `Hⁿ ⌞ M`, hence for `μ_V ≪ Hⁿ ⌞ M`.
+  refine hac.ae_le ((ae_restrict_iff'₀ hM).mpr (ae_iff.mpr (measure_mono_null ?_ hbad)))
+  intro x hx
+  exact not_imp.mp hx
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
