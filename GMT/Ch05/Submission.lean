@@ -579,6 +579,136 @@ with respect to `θ`, provided `Hⁿ((M ∩ O) \ S) = 0`, `θ` is integrable on 
 `dohr_tp_weighted_tangent_of_lebesgue_point`. -/
 theorem dohr_tp_ae_weighted_tangent_of_growth : ∀ (n ℓ : ℕ) (M S O : Set (Amb n ℓ)) (θ : Amb n ℓ → ℝ) (C : ℝ), IsOpen O → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → IntegrableOn θ (M ∩ O) (μHE[n] : Measure (Amb n ℓ)) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ O) \ S) = 0 → (∀ (z : Amb n ℓ) (r : ℝ), 0 < r → (μHE[n] : Measure (Amb n ℓ)) (S ∩ O ∩ closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)) → ∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict M), y ∈ O → ∀ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P := by
   intro n ℓ M S O θ C hO hM hθ hθint hMS hgrowth
+  -- Fixed-scale comparison: if `ψ` is measurable, `|ψ| ≤ K`, `ψ = 0` off the measurable set `B`,
+  -- `Hⁿ((M ∩ B) \ S) = 0` and `Hⁿ(S ∩ B) < ∞`, then
+  -- `|∫_M ψ θ - c ∫_S ψ| ≤ K ∫_{S ∩ B} |1_M θ - c|` when the right side is finite: both integrals
+  -- localize to `S ∩ B`, where the difference is `∫_{S ∩ B} ψ (1_M θ - c)`.
+  have hcmp : ∀ (B : Set (Amb n ℓ)) (ψ : Amb n ℓ → ℝ) (c K : ℝ), MeasurableSet B →
+      (μHE[n] : Measure (Amb n ℓ)) ((M ∩ B) \ S) = 0 → (μHE[n] : Measure (Amb n ℓ)) (S ∩ B) ≠ ⊤ →
+      Measurable ψ → (∀ w, |ψ w| ≤ K) → (∀ w, w ∉ B → ψ w = 0) →
+      ∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ)) ≠ ⊤ →
+      |∫ w in M, ψ w * θ w ∂(μHE[n] : Measure (Amb n ℓ)) -
+          c * ∫ w in S, ψ w ∂(μHE[n] : Measure (Amb n ℓ))| ≤
+        K * (∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ))).toReal := by
+    revert hM hθ
+    generalize (μHE[n] : Measure (Amb n ℓ)) = μ
+    intro hM hθ B ψ c K hB hMBS hSB hψ hψK hψB hΛ
+    have hψK' : ∀ w, ‖ψ w‖ ≤ K := fun w => by rw [Real.norm_eq_abs]; exact hψK w
+    -- The `S`-integral localizes to `S ∩ B`, as `ψ = 0` off `B`.
+    have h1 : ∫ w in S, ψ w ∂μ = ∫ w in S ∩ B, ψ w ∂μ := by
+      rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := μ.restrict S) hψB,
+        Measure.restrict_restrict hB, inter_comm B S]
+    -- The `M`-integral localizes to `M ∩ B =ᵐ M ∩ (S ∩ B)`, i.e. to the integral of `ψ · 1_M θ`
+    -- over `S ∩ B`.
+    have h2 : ∫ w in M, ψ w * θ w ∂μ = ∫ w in S ∩ B, ψ w * M.indicator θ w ∂μ := by
+      have hae : (M ∩ B : Set (Amb n ℓ)) =ᵐ[μ] (M ∩ (S ∩ B) : Set (Amb n ℓ)) := by
+        refine ae_eq_set.mpr ⟨measure_mono_null (fun w hw => ?_) hMBS, ?_⟩
+        · exact ⟨hw.1, fun hS => hw.2 ⟨hw.1.1, hS, hw.1.2⟩⟩
+        · rw [show (M ∩ (S ∩ B)) \ (M ∩ B) = ∅ from
+            eq_empty_of_forall_notMem fun w hw => hw.2 ⟨hw.1.1, hw.1.2.2⟩, measure_empty]
+      have hMν : NullMeasurableSet M (μ.restrict (S ∩ B)) := hM.mono Measure.restrict_le_self
+      rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := μ.restrict M) (s := B)
+          (f := fun w => ψ w * θ w) (fun w hw => by rw [hψB w hw, zero_mul]),
+        Measure.restrict_restrict hB, inter_comm B M, setIntegral_congr_set hae,
+        ← Measure.restrict_restrict₀ hMν, ← integral_indicator₀ hMν]
+      congr 1
+      funext w
+      exact indicator_mul_right M ψ θ
+    -- Integrability on `S ∩ B`, which has finite measure.
+    have : IsFiniteMeasure (μ.restrict (S ∩ B)) := isFiniteMeasure_restrict.mpr hSB
+    have hfB : AEStronglyMeasurable (M.indicator θ) (μ.restrict (S ∩ B)) :=
+      ((aemeasurable_indicator_iff₀ hM).mpr hθ).restrict.aestronglyMeasurable
+    have hfc : Integrable (fun w => M.indicator θ w - c) (μ.restrict (S ∩ B)) :=
+      ⟨hfB.sub aestronglyMeasurable_const, hasFiniteIntegral_iff_enorm.mpr hΛ.lt_top⟩
+    have hfi : Integrable (M.indicator θ) (μ.restrict (S ∩ B)) :=
+      (hfc.add (integrable_const c)).congr (ae_of_all _ fun w => by simp)
+    have hψb : ∀ᵐ w ∂(μ.restrict (S ∩ B)), ‖ψ w‖ ≤ K := ae_of_all _ hψK'
+    have hψi : Integrable ψ (μ.restrict (S ∩ B)) :=
+      (integrable_const K).mono' hψ.aestronglyMeasurable hψb
+    have hψf : Integrable (fun w => ψ w * M.indicator θ w) (μ.restrict (S ∩ B)) :=
+      hfi.bdd_mul hψ.aestronglyMeasurable hψb
+    -- Linearity: the difference is `∫_{S ∩ B} ψ (1_M θ - c)`.
+    have h6 : ∫ w in S ∩ B, ψ w * M.indicator θ w ∂μ - c * ∫ w in S ∩ B, ψ w ∂μ =
+        ∫ w in S ∩ B, ψ w * (M.indicator θ w - c) ∂μ := by
+      rw [← integral_const_mul, ← integral_sub hψf (hψi.const_mul c)]
+      congr 1
+      funext w
+      ring
+    -- `|ψ (1_M θ - c)| ≤ K |1_M θ - c|`, and `∫ |1_M θ - c| = Λ.toReal`.
+    have hle : ‖∫ w in S ∩ B, ψ w * (M.indicator θ w - c) ∂μ‖ ≤
+        ∫ w in S ∩ B, K * ‖M.indicator θ w - c‖ ∂μ :=
+      norm_integral_le_of_norm_le (hfc.norm.const_mul K) (ae_of_all _ fun w => by
+        rw [norm_mul]
+        exact mul_le_mul_of_nonneg_right (hψK' w) (norm_nonneg _))
+    rw [integral_const_mul, integral_norm_eq_lintegral_enorm hfc.aestronglyMeasurable] at hle
+    rw [h2, h1, h6, ← Real.norm_eq_abs]
+    exact hle
+  -- Weighted approximate tangent space at a Lebesgue point (Simon Ch. 3, 1.4 ⇒ 1.7): if
+  -- `Hⁿ((M ∩ B̆_ε(y)) \ S) = 0`, `Hⁿ(S ∩ B̆_ε(y)) < ∞`, `P` is the approximate tangent space of `S`
+  -- at `y` and `r⁻ⁿ ∫_{S ∩ B_r(y)} |1_M θ − θ(y)| dHⁿ → 0`, then `P` is the approximate tangent
+  -- space of `M` with respect to `θ` at `y`.
+  have hPT : ∀ (y : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)) (ε : ℝ), 0 < ε →
+      (μHE[n] : Measure (Amb n ℓ)) ((M ∩ ball y ε) \ S) = 0 →
+      (μHE[n] : Measure (Amb n ℓ)) (S ∩ ball y ε) ≠ ⊤ →
+      Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y P →
+      Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) *
+        ∫⁻ w in S ∩ closedBall y r, ‖M.indicator θ w - θ y‖ₑ ∂(μHE[n] : Measure (Amb n ℓ)))
+        (𝓝[>] 0) (𝓝 0) →
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P := by
+    intro y P ε hε hMSε hSfin hS hleb
+    refine ⟨hS.1, fun φ => ?_⟩
+    -- `φ` vanishes outside `B_ρ(0)` for some `ρ > 0`, and `|φ| ≤ K`.
+    obtain ⟨ρ, hρ, hφρ⟩ := φ.hasCompactSupport.exists_pos_le_norm
+    obtain ⟨K, hK⟩ := (map_continuous φ).bounded_above_of_compact_support φ.hasCompactSupport
+    -- The Lebesgue-point hypothesis along the radii `r ρ`: `L(r ρ) < ∞` and `r⁻ⁿ L(r ρ) → 0`.
+    obtain ⟨hLfin, hLlim⟩ := Submission.dohr_tp_wtlp_rescaled_limit n
+      (fun t => ∫⁻ w in S ∩ closedBall y t, ‖M.indicator θ w - θ y‖ₑ ∂(μHE[n] : Measure (Amb n ℓ)))
+      ρ hρ hleb
+    have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r * ρ < ε :=
+      (((continuous_mul_const ρ).tendsto' 0 0 (zero_mul ρ)).eventually
+        (eventually_lt_nhds hε)).filter_mono nhdsWithin_le_nhds
+    -- `I(r) - θ(y) J(r) → 0` for the weighted and unweighted blow-up integrals `I`, `J`.
+    have key : Tendsto (fun r : ℝ =>
+        (∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' M, φ z * θ (y + r • z)
+            ∂(μHE[n] : Measure (Amb n ℓ))) -
+          θ y * ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' S, φ z
+            ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) := by
+      have hlimK := hLlim.const_mul K
+      rw [mul_zero] at hlimK
+      refine squeeze_zero_norm' ?_ hlimK
+      filter_upwards [self_mem_nhdsWithin, hsmall, hLfin] with r hr hrε hLr
+      have hr' : (0 : ℝ) < r := hr
+      have hBε : closedBall y (r * ρ) ⊆ ball y ε := closedBall_subset_ball hrε
+      -- `ψ = φ ∘ η_{y,r}` is continuous, bounded by `K`, and vanishes off `B_{rρ}(y)`.
+      have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap y r) :=
+        show Continuous fun w : Amb n ℓ => r⁻¹ • (w - y) by fun_prop
+      have hψ0 : ∀ w, w ∉ closedBall y (r * ρ) →
+          φ (Poincare.SimonGMT.Chapter03.blowUpMap y r w) = 0 := by
+        intro w hw
+        apply hφρ
+        rw [mem_closedBall, not_le] at hw
+        rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv,
+          Real.norm_of_nonneg hr'.le, ← dist_eq_norm, le_inv_mul_iff₀ hr']
+        exact hw.le
+      -- The comparison on `B_{rρ}(y)`, using `Hⁿ((M ∩ B) \ S) = 0` and `Hⁿ(S ∩ B) < ∞`.
+      have hcmpr := hcmp (closedBall y (r * ρ))
+        (fun w => φ (Poincare.SimonGMT.Chapter03.blowUpMap y r w)) (θ y) K measurableSet_closedBall
+        (measure_mono_null (sdiff_subset_sdiff_left (inter_subset_inter_right M hBε)) hMSε)
+        (ne_top_of_le_ne_top hSfin (measure_mono (inter_subset_inter_right S hBε)))
+        ((map_continuous φ).comp hηc).measurable
+        (fun w => by rw [← Real.norm_eq_abs]; exact hK _) hψ0 hLr
+      -- Undo the blow-ups: `I(r) = r⁻ⁿ ∫_M ψ θ` and `J(r) = r⁻ⁿ ∫_S ψ`.
+      have hJ := rsod_blowUp_setIntegral_eq n ℓ S φ (fun _ => 1) y r hr'
+      simp only [mul_one] at hJ
+      have hpos : (0 : ℝ) < (r ^ n)⁻¹ := inv_pos.mpr (pow_pos hr' n)
+      rw [rsod_blowUp_setIntegral_eq n ℓ M φ θ y r hr', hJ, Real.norm_eq_abs, mul_left_comm (θ y),
+        ← mul_sub, abs_mul, abs_of_pos hpos, mul_left_comm K]
+      exact mul_le_mul_of_nonneg_left hcmpr hpos.le
+    -- `J(r) → ∫_P φ` by the tangent-space hypothesis on `S`, hence `I(r) → θ(y) ∫_P φ`.
+    have h2 := key.add ((hS.2 φ).const_mul (θ y))
+    rw [zero_add] at h2
+    refine Tendsto.congr (fun r => ?_) h2
+    exact sub_add_cancel _ _
   -- `ν = Hⁿ ⌞ (S ∩ O)` has `n`-dimensional growth and `f = 1_M θ` is `ν`-integrable.
   have hνgrowth : ∀ (z : Amb n ℓ) (r : ℝ), 0 < r →
       ((μHE[n] : Measure (Amb n ℓ)).restrict (S ∩ O)) (closedBall z r) ≤
@@ -609,8 +739,7 @@ theorem dohr_tp_ae_weighted_tangent_of_growth : ∀ (n ℓ : ℕ) (M S O : Set (
     have hSε : (μHE[n] : Measure (Amb n ℓ)) (S ∩ ball y ε) ≠ ⊤ := by
       refine ne_top_of_le_ne_top ENNReal.ofReal_ne_top ((measure_mono ?_).trans (hgrowth y ε hε))
       exact fun x hx => ⟨⟨hx.1, hεO hx.2⟩, ball_subset_closedBall hx.2⟩
-    refine Submission.dohr_tp_weighted_tangent_of_lebesgue_point n ℓ M S θ y P ε hε hM hθ hMε
-      hSε hP (hyLeb.congr' ?_)
+    refine hPT y P ε hε hMε hSε hP (hyLeb.congr' ?_)
     -- For `r < ε`, `B_r(y) ∩ (S ∩ O) = S ∩ B_r(y)`, and `f y = θ y` since `y ∈ M`.
     filter_upwards [Ioo_mem_nhdsGT hε] with r hr
     have hball : closedBall y r ∩ (S ∩ O) = S ∩ closedBall y r := by
