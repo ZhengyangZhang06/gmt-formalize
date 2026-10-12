@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1",
+  "depth": 5,
+  "title": "Mean value property for C² harmonic functions on ℝⁿ (radial kernels and balls)",
+  "statement": "Let n ≥ 1, let U ⊆ ℝⁿ (= Euclid n) be open, and let h : ℝⁿ → ℝ be of class C² on U with Δh(y) := Σ_{i<n} D²h(y)(e_i, e_i) = 0 for every y ∈ U, where D²h(y)(a, b) = iteratedFDeriv ℝ 2 h y ![a, b] and e_i = EuclideanSpace.single i 1. Let x ∈ ℝⁿ and r > 0 with closedBall(x, r) ⊆ U. Then (i) for every continuous g : ℝ → ℝ with g(t) = 0 for all t ≥ r², ∫_{ℝⁿ} h(x − y)·g(|y|²) dy = h(x)·∫_{ℝⁿ} g(|y|²) dy; and (ii) ∫_{B̆_r(x)} h = Lⁿ(B̆_r(x))·h(x), where Lⁿ = volume is Lebesgue measure, B̆_r(x) is the open ball and the measure is taken as a real number (ENNReal.toReal).",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ), 0 < n → IsOpen U → ContDiffOn ℝ 2 h U → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∀ (x : Euclid n) (r : ℝ), 0 < r → closedBall x r ⊆ U → (∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∫ y : Euclid n, h (x - y) * g (‖y‖ ^ 2) = h x * ∫ y : Euclid n, g (‖y‖ ^ 2)) ∧ ∫ y in ball x r, h y = (volume (ball x r)).toReal * h x",
+  "lean_name": "dorag_ha_mean_value",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9f82487345-a1"
+}
