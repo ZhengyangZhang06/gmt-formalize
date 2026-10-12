@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2eebdc6f28539afe0a3a17bdf986e00bae3725aab192699fe12f87cdfe88387d",
+  "git_delta": {
+    "base_commit": "8936aa104d64831e43d5760351269664111efdd3",
+    "candidate_commit": "cf14125e05b996275a413b339603b7d98fd93ba8",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ble_sac_ray_sq_bound",
+    "diff_sha256": "c62359c39dc953198581102b70d3094c62b7efe0f487fc710cf4cc339fa450bc",
+    "source_sha256": "87b3032028523b1bf873a7b599bd5ec040468834697feeddc238b1b3ff6b78c1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ble_sac_ray_sq_bound",
+      "statement": "∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ (x : Rn n), ‖x‖ ≤ 1 → ∀ τ : ℝ, τ ≤ 1 → ENNReal.ofReal (1 - τ) * ‖φ x‖ₑ ^ 2 ≤ 2 * (∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2) + 2 * ENNReal.ofReal ((1 - τ) ^ 2) * ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
