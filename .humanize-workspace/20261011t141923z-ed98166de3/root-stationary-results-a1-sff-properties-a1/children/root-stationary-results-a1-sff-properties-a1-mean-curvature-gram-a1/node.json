@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_properties-a1.mean_curvature_gram-a1",
+  "parent_id": "root.stationary_results-a1.sff_properties-a1",
+  "depth": 3,
+  "title": "Mean curvature as the normal part of the Gram trace of a chart Hessian",
+  "statement": "Let n, N ∈ ℕ, M ⊆ ℝᴺ, y ∈ ℝᴺ, A : ℝⁿ → ℝᴺ an injective continuous linear map and S : ℝⁿ →L[ℝ] ℝⁿ →L[ℝ] ℝᴺ a continuous bilinear map. Suppose tangentSpace M y = range A and secondFundamentalForm M y (A a) (A b) = normalPart M y (S a b) for all a, b ∈ ℝⁿ. Let e_k := EuclideanSpace.single k 1 (k ∈ Fin n) be the standard basis of ℝⁿ, G := A* ∘ A (A* = ContinuousLinearMap.adjoint A) and G⁻¹ := Ring.inverse G its inverse in the ring ℝⁿ →L[ℝ] ℝⁿ (multiplication = composition). Then meanCurvature M y = normalPart M y (Σ_{k,l ∈ Fin n} ⟨e_k, G⁻¹ e_l⟩ • S e_k e_l).",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (S : Rn n →L[ℝ] Rn n →L[ℝ] Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → (∀ a b : Rn n, secondFundamentalForm M y (A a) (A b) = normalPart M y (S a b)) → meanCurvature M y = normalPart M y (∑ k : Fin n, ∑ l : Fin n, inner ℝ (EuclideanSpace.single k (1 : ℝ)) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) (EuclideanSpace.single l (1 : ℝ))) • S (EuclideanSpace.single k (1 : ℝ)) (EuclideanSpace.single l (1 : ℝ)))",
+  "lean_name": "mean_curvature_eq_normalPart_gram_trace",
+  "depends_on": [
+    "root.stationary_results-a1.sff_properties-a1.gram_unit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.sff_properties-a1.gram_unit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-properties-a1-mean-curvature-gram-a1-a1"
+}

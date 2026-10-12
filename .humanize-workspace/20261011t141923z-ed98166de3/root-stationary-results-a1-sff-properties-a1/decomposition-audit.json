@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "sed -n '1,145p' .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "isSymmSndFDerivAt|theorem ContDiffAt.eventually|theorem ContDiffAt.fderiv_right|continuousOn_fderiv_of_isOpen|theorem ContDiffOn.fderiv_of_isOpen|inverse_continuousAt|sum_inner_mul_inner|adjoint_inner_left|adjoint_inner_right|mul_apply_eq_comp",
+        "def toUnit|def ofInjectiveEndo|theorem sub_starProjection_mem_orthogonal|theorem inner_left_of_mem_orthogonal",
+        "fderiv_fderiv_symm_of_contDiffAt|gram_operator_isUnit_of_injective|second_fundamental_form_symm_normal_of_chart_formula|inner_fderiv_normal_field_eq_neg_second_fundamental_form|mean_curvature_eq_normalPart_gram_trace|mean_curvature_comp_chart_continuousOn|simon_submanifold_continuousOn_of_chart_continuousOn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean IndependentProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean ImportClosure.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-properties-a1/parent-child-handoff.json",
+        "/tmp/sff-independent-audit-e0e130xx/IndependentTypes.lean",
+        "/tmp/sff-independent-audit-e0e130xx/IndependentProofs.lean",
+        "/tmp/sff-independent-audit-e0e130xx/ImportClosure.lean"
+      ],
+      "conclusion": "The seven-child split is appropriate and establishes exactly the selected parent contract using its authorized sff_chart dependency. The reachable dependency graph is acyclic and all proof references follow the declared edges. All names are distinct bare identifiers; searches found no conflicting reservations in the DAG or other node records, and no declarations in the reference sources or 180 DAG-associated branches. Snapshot definitions and inspected dependency files match the compiler environment. ContinuousLinearMap multiplication is composition, so the Gram IsUnit and Ring.inverse expressions have the intended semantics. The missing symmetry and chart-topology imports justify the self-contained helpers. Independently elaborated all seven exact propositions without child implementations. Recompiled the supplied child proofs and the exact parent assembly, with the frozen sibling type supplied as an explicit parameter: all use only propext, Classical.choice and Quot.sound, with no sorryAx. Every child also passes the one-theorem source-delta check."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hessian_symm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the quantified C² symmetry statement. The proof derives a uniform derivative remainder, bounds the auxiliary curves, compares symmetric second differences, and sends ε to zero. It handles zero directions and dimensions without extra assumptions or circular symmetry citations."
+    },
+    {
+      "key": "gram_unit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adjoint identity proves trivial kernel; finite dimensionality supplies a continuous linear automorphism and its associated unit. The inferred ring multiplication is demonstrably composition. The proof establishes the exact type, including dimension zero."
+    },
+    {
+      "key": "sff_symm_normal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All submanifold, range and chart-formula hypotheses appear in both prose and Lean. Chart coordinates reduce symmetry to the declared hessian_symm dependency. Orthogonality of the projection remainder proves normality. Both conclusions follow without relying on the parent."
+    },
+    {
+      "key": "normal_field_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The vanishing inner-product function is differentiated only at the chart point, so differentiability of Y at y suffices. The chain/product rules and normality eliminate the tangential Hessian component and give the stated sign and argument order. No undeclared symmetry dependency is needed."
+    },
+    {
+      "key": "mean_curvature_gram",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type precisely states the pointwise algebraic hypotheses. Frame preimages, the Gram inverse and Parseval yield the stated coefficients; bilinear expansion and linearity of normalPart give the trace formula. Neither symmetry of S nor an unstated dimension identification is required."
+    },
+    {
+      "key": "mean_curvature_chart_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies provide the pointwise trace formula and invertibility. C² regularity on the open source gives continuous first and second derivatives; inversion at units and the explicit projection-continuity hypothesis make every term continuous. The conclusion matches the exact Lean proposition."
+    },
+    {
+      "key": "chartwise_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact-preimage argument follows directly from the chart fields. Removing the compact image of K outside U₀ constructs the required ambient neighbourhood. This proves continuity within M for arbitrary topological X, without additional separation assumptions or an unavailable embedding theorem."
+    }
+  ],
+  "required_changes": []
+}
