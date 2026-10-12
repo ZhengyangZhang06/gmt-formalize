@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_mass_bound-a1.slab_cover-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_mass_bound-a1",
+  "depth": 3,
+  "title": "The slab around a cone point is covered by two cones (Mattila 15.14, steps 3–4)",
+  "statement": "Let N ∈ ℕ, P : ℝ^N → ℝ^N a continuous linear map, s > 0, R ∈ ℝ, S ⊆ ℝ^N and x ∈ ℝ^N. Assume some y ∈ S satisfies |P(y − x)| < (s/4)|y − x|, and |y − x| ≤ R for every y ∈ S. Then there exist h ∈ ℝ with 0 < h ≤ R and x′ ∈ S such that S ∩ {z : |P(z − x)| < s·h/4} ⊆ {x} ∪ ({y : |P(y − x)| < s|y − x|} ∩ B(x, 3h)) ∪ ({y : |P(y − x′)| < s|y − x′|} ∩ B(x′, 3h)), where B(v, ρ) is the open ball and |·| the Euclidean norm.",
+  "lean_statement": "∀ (N : ℕ) (P : Rn N →L[ℝ] Rn N) (s R : ℝ) (S : Set (Rn N)) (x : Rn N), 0 < s → (∃ y ∈ S, ‖P (y - x)‖ < s / 4 * ‖y - x‖) → (∀ y ∈ S, ‖y - x‖ ≤ R) → ∃ h : ℝ, 0 < h ∧ h ≤ R ∧ ∃ x' ∈ S, S ∩ {z | ‖P (z - x)‖ < s * h / 4} ⊆ insert x ({y | ‖P (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x (3 * h) ∪ {y | ‖P (y - x')‖ < s * ‖y - x'‖} ∩ Metric.ball x' (3 * h))",
+  "lean_name": "bf_coneMass_slab_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-mass-bound-a1-slab-cover-a1-a1"
+}
