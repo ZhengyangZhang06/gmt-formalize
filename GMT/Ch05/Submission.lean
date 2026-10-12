@@ -487,4 +487,32 @@ end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+/-- **Simon Ch. 5, 7.2** (p. 128): "by definition `reg V` is relatively open in `spt V`".  `O` is
+the union of chosen regular balls `B̆_{ρ_y}(y)`, `y ∈ reg V`; a point `z ∈ B̆_{ρ_y}(y) ∩ spt V` is
+regular with radius `ρ_y − |z − y|`, since `C¹` submanifolds restrict to open sets
+(`rsod_isC1Submanifold_open_inter`). -/
+theorem rsod_regularSet_relOpen : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U),
+    ∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support := by
+  intro n ℓ U V
+  -- Step 1: fix a regular radius `ρ y` at each `y ∈ reg V`; `O` is the union of these balls.
+  have hreg : ∀ y ∈ V.regularSet, ∃ ρ > 0, IsC1Submanifold n (ball y ρ ∩ V.support) :=
+    fun y hy => hy.2
+  choose! ρ hρ hρreg using hreg
+  refine ⟨⋃ y ∈ V.regularSet, ball y (ρ y), isOpen_biUnion fun y _ => isOpen_ball, ?_⟩
+  ext z
+  -- Step 2: `reg V ⊆ O ∩ spt V`, since `z ∈ B̆_{ρ z}(z)`.
+  refine ⟨fun hz => ⟨mem_biUnion hz (mem_ball_self (hρ z hz)), hz.1⟩, ?_⟩
+  -- Step 3: `z ∈ B̆_{ρ y}(y) ∩ spt V` is regular with radius `r = ρ y - dist z y`, because
+  -- `B̆_r(z) ⊆ B̆_{ρ y}(y)` gives `B̆_r(z) ∩ spt V = B̆_r(z) ∩ (B̆_{ρ y}(y) ∩ spt V)`.
+  rintro ⟨hzO, hz⟩
+  obtain ⟨y, hy, hzy⟩ := mem_iUnion₂.1 hzO
+  have hsub : ball z (ρ y - dist z y) ⊆ ball y (ρ y) := ball_subset_ball' (sub_add_cancel _ _).le
+  refine ⟨hz, ρ y - dist z y, sub_pos.2 (mem_ball.1 hzy), ?_⟩
+  rw [← inter_eq_left.2 hsub, inter_assoc]
+  exact Submission.rsod_isC1Submanifold_open_inter _ _ _ _ (hρreg y hy) isOpen_ball
+
+end Submission
+
 end GMT.Ch05
