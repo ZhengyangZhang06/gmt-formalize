@@ -1,0 +1,15 @@
+{
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1.admissible_ae_approx-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1805",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "fd84a900d38b825c1ea95fe7787565d3925a2c96",
+  "integrated_commit": "",
+  "proof_base_commit": "9636c87124608c5d0386e27bfa9a48673cff0b2e",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+  "requires": []
+}
