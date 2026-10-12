@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+  "depth": 3,
+  "title": "From weighted graph estimates to the unweighted energy bound and weak equation (Simon 4.5 (14)-(16))",
+  "statement": "For n >= 1, l, K0 >= 0 and cJ >= 0 there is C > 0 (depending only on n, l, K0, cJ) such that: let sigma > 0, kappa in [0, 1], E >= 0, h >= 0, f : R^n -> R^l 1-Lipschitz on B^n_{sigma/2}(0), and W : R^n -> R Borel with (H1) for a.e. x in B°_{3 sigma/8}(0): W(x) = 0 or 1 <= W(x) <= (1 + kappa)(1 + cJ |Df(x)|^2); (H2) L^n(B°_{3 sigma/8}(0) cap {W = 0}) <= K0 E sigma^n; (H3) int_{B°_{3 sigma/8}(0)} |Df|^2 W dx <= K0 E sigma^n (as a lintegral of ofReal(|Df|^2 W)). Then int_{B°_{3 sigma/8}(0)} |Df|^2 <= C E sigma^n, and for every C^1 compactly supported zeta with tsupport in B°_{sigma/4}(0), every M with |grad zeta| <= M, and every j in Fin l: if |int_{B°_{sigma/4}(0)} <grad f^j, grad zeta> W| <= K0 (E + h) M sigma^n then |int_{B°_{sigma/4}(0)} <grad f^j, grad zeta>| <= C (E + h + kappa sqrt(E)) M sigma^n. Here |Df|^2 = hsNormSq(fderiv R f x) and f^j = (f .)_j.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ K0 cJ : ℝ, 0 ≤ K0 → 0 ≤ cJ → ∃ C : ℝ, 0 < C ∧ ∀ (σ κ E h : ℝ) (f : Rn n → Rn ℓ) (W : Rn n → ℝ), 0 < σ → 0 ≤ κ → κ ≤ 1 → 0 ≤ E → 0 ≤ h → LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → Measurable W → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨ (1 ≤ W x ∧ W x ≤ (1 + κ) * (1 + cJ * hsNormSq (fderiv ℝ f x)))) → volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → ∫⁻ x in ball (0 : Rn n) (3 * σ / 8), ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → (∫ x in ball (0 : Rn n) (3 * σ / 8), hsNormSq (fderiv ℝ f x) ≤ C * E * σ ^ n) ∧ ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x| ≤ K0 * (E + h) * M * σ ^ n → |∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)| ≤ C * (E + h + κ * Real.sqrt E) * M * σ ^ n",
+  "lean_name": "gwe_weighted_energy_weak_equation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-weighted-energy-weak-c7907a608e-a1"
+}

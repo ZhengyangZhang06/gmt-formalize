@@ -1,0 +1,96 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "gwe_|hsNorm_starProjection_trace_identities|lip_approx_graph_coordinates|exists_smooth_cutoff_half_ball_grad_le",
+        "theorem lintegral_withDensity_eq_lintegral_mul_non_measurable₀|theorem integral_withDensity_eq_integral_toReal_smul|theorem integral_map |theorem MeasurableSet.image_of_continuousOn_injOn|theorem norm_fderiv_le_of_lipschitzOn",
+        "measurableSet_of_differentiableAt|theorem measurable_fderiv|ae_differentiableWithinAt_of_mem|theorem extend_real|theorem addHaar_sphere|theorem volume_ball|det_eq_prod_eigenvalues|trace_eq_sum_eigenvalues",
+        "aemeasurable_indicator_iff₀|theorem measure_compl_support|theorem exists_measurable_superset_of_null|integrableOn_compact_subset",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-v2.json",
+        "/tmp/gwe-independent-audit-89y6npab/verification-summary.json"
+      ],
+      "conclusion": "The split is appropriate for the selected ted_graph_weak_equation contract. Every child contributes, and dependencies are acyclic and correctly directed. Snapshot and compiler revisions match; frozen definitions are unchanged. No proposed names occur in the snapshot project sources. The seven new names are unreserved in the DAG and other-node JSON; the three reused names have comparator-accepted, identical frozen types. All names are bare identifiers. All ten exact one-line propositions elaborate as standalone comparator challenges without child implementations. Matrix identity, Gram-matrix addition, and coordinate instances were independently checked. Borel measurability and the stated Bochner conventions match the pinned APIs. Fresh conditional parent, transfer, and tangential assemblies establish the required implications using only propext, Classical.choice, and Quot.sound; the reused proofs and cited area-formula lemmas pass the same axiom checks. All 19 verification checks passed, with the tangential assembly passing a sequential retry after its initial timeout."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "projection_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree and match the accepted declaration. Cauchy–Schwarz, the nearest-point projection identity, and the equal-rank trace calculation prove all three clauses without circularity."
+    },
+    {
+      "key": "graph_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The coordinate calculations establish subtraction, norm splitting, and surjectivity; the orthogonal decomposition establishes the rotated projection formula."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The explicit normalized primitive gives the required values and derivative bound; local constancy at the center resolves radial smoothness, including dimension zero."
+    },
+    {
+      "key": "graph_jacobian_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The matrix expression uses the intended identity and Gram matrix. The spectral determinant/trace argument proves the lower bound, and the exponential estimate gives the stated upper constant. The empty-matrix case is covered."
+    },
+    {
+      "key": "lipschitz_graph_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel-set and arbitrary-integrand quantifiers match Lean and the pinned area theorem. Coordinatewise extension, the derivative Gram calculation, Rademacher, and sphere nullity justify the formula under only closed-ball Lipschitz control."
+    },
+    {
+      "key": "varifold_graph_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses match the prose. The Borel density representative and null-set pullback handle the null-measurable carrier correctly. Density and pushforward identities prove both transfer formulas, including the stated non-integrable Bochner convention."
+    },
+    {
+      "key": "graph_tilt_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes equal graph/horizontal dimensions, row bounds, and graph orthogonality. The projection identity and trace formula then yield both exact inequalities from the declared prerequisites."
+    },
+    {
+      "key": "vertical_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff is admissible in U, and the height bound localizes its nonzero contribution inside the integration ball. The pointwise divergence identity and generalized mean-curvature identity justify the argument without projection measurability; local integrability of H supplies the final estimate."
+    },
+    {
+      "key": "graph_tangential_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses match exactly. Integrability precedes splitting, the area formula removes non-differentiability points, and the tilt comparison controls the graph error. Compact-ball finiteness validates the measure's toReal conversion. The declared dependency implication also compiled."
+    },
+    {
+      "key": "weighted_energy_weak_equation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Quantifiers and constant dependencies match. H1–H3 give the energy bound and integrability; the zero-weight contribution, Jacobian error, and Cauchy–Schwarz term yield the weak estimate from its weighted premise. The explicit constant controls every coefficient without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

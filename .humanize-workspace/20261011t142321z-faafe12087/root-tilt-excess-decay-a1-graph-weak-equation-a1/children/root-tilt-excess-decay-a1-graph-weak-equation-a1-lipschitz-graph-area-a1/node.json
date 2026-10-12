@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.lipschitz_graph_area-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+  "depth": 3,
+  "title": "Area formula for a rotated Lipschitz graph over a Borel subset of a closed ball",
+  "statement": "Let n >= 1 and l be natural numbers, q a linear isometry of R^{n+l}, K >= 0, R real, and f : R^n -> R^l K-Lipschitz on the closed ball B_R(0) (nothing is assumed off the ball). Write F(x) := q(graphPoint x (f x)) and J_f(x) := sqrt(det(I_n + (<Df(x) e_a, Df(x) e_b>)_{a,b})), with Df(x) = fderiv R f x (which is 0 where f is not differentiable) and e_a = EuclideanSpace.single a 1. Then for every Borel set A contained in B_R(0) (MeasurableSet A for Mathlib's measurable structure on R^n = EuclideanSpace R (Fin n), which is the Borel sigma-algebra; Lebesgue-measurable non-Borel sets are not covered) and every function g : R^{n+l} -> [0, infinity] (not necessarily measurable), int_{q(graph_A f)} g dH^n = int_A ofReal(J_f(x)) g(F(x)) dL^n(x), where H^n = muHE[n], L^n = volume on R^n, q(graph_A f) = q '' graphOver f A, and both sides are lower (ENNReal-valued) Lebesgue integrals.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (K : ℝ≥0) (R : ℝ), LipschitzOnWith K f (closedBall 0 R) → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ g : Amb n ℓ → ℝ≥0∞, ∫⁻ y in q '' graphOver f A, g y ∂(μHE[n] : Measure (Amb n ℓ)) = ∫⁻ x in A, ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ)))))) * g (q (graphPoint x (f x)))",
+  "lean_name": "gwe_lipschitz_graph_area_formula",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.graph_coordinates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-coordinates-a1-a1",
+      "result_commit": "e2915745b92c2117161b0d9eaeb226a1f6c30d1b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-lipschitz-graph-area-a1-a1"
+}
