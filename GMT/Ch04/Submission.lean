@@ -745,6 +745,189 @@ theorem Submission.ts_fv_tangential_matrix_estimates : (∀ (N : ℕ) (P : Submo
     exact add_le_add ((inv_mul_le_iff₀ (by positivity)).2 hlow)
       (mul_le_of_le_one_left (sq_nonneg _) (inv_le_one_of_one_le₀ (one_le_pow₀ hb)))
 
+/-- **Derivative of the tangential Jacobian** (Ch. 4, 2.2 with Ch. 2, 5.2–5.3: Jacobi's formula).
+Let `p_P` be the orthogonal projection onto a subspace `P ⊆ ℝ^N`, `q_P = I - p_P`, and let `Λ(t)`
+be a family of linear maps with `Λ(0) = I`, derivative `Λ'(t)`, and `‖Λ(t)‖, ‖Λ'(t)‖ ≤ B`,
+`|v| ≤ B |Λ(t) v|` for `|t| < δ`. Then the tangential Jacobian
+`J(t) = (det [⟨Λ(t) p_P eᵢ, Λ(t) p_P eⱼ⟩ + ⟨q_P eᵢ, q_P eⱼ⟩])^{1/2}` satisfies `0 ≤ J ≤ C`,
+`|J'| ≤ C` on `(-δ, δ)` with `C = C(N, B)`, and `J'(0) = trace (Λ'(0) ∘ p_P)`. -/
+theorem Submission.ts_fv_tangential_jacobian_hasDerivAt : ∀ (N : ℕ) (B : ℝ), ∃ C : ℝ, ∀ (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (Λ Λ' : ℝ → (EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N))) (J : ℝ → ℝ) (δ : ℝ), 0 < δ → Λ 0 = 1 → (∀ t ∈ Ioo (-δ) δ, HasDerivAt Λ (Λ' t) t ∧ ‖Λ t‖ ≤ B ∧ ‖Λ' t‖ ≤ B ∧ ∀ v, ‖v‖ ≤ B * ‖Λ t v‖) → (∀ t, J t = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin N ↦ inner ℝ (Λ t (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (Λ t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))))) → (∀ t ∈ Ioo (-δ) δ, 0 ≤ J t ∧ J t ≤ C ∧ ∃ d : ℝ, HasDerivAt J d t ∧ |d| ≤ C) ∧ HasDerivAt J (LinearMap.trace ℝ (EuclideanSpace ℝ (Fin N)) ((Λ' 0).toLinearMap ∘ₗ P.starProjection.toLinearMap)) 0 := by
+  intro N B
+  -- Step 0: `B₁ = max(B, 1)`, `M₀ = B₁² + 1` and `C = (N! M₀^N)^{1/2} + N! N B₁^{N+2} M₀^{N-1}`.
+  obtain ⟨B₁, hBB₁, hB₁⟩ : ∃ B₁ : ℝ, B ≤ B₁ ∧ 1 ≤ B₁ :=
+    ⟨max B 1, le_max_left _ _, le_max_right _ _⟩
+  have hB₁0 : 0 < B₁ := zero_lt_one.trans_le hB₁
+  obtain ⟨M₀, hM₀⟩ : ∃ M₀ : ℝ, M₀ = B₁ ^ 2 + 1 := ⟨_, rfl⟩
+  have hM₀0 : 0 < M₀ := by rw [hM₀]; positivity
+  refine ⟨Real.sqrt (N.factorial * M₀ ^ N) + N.factorial * N * B₁ ^ (N + 2) * M₀ ^ (N - 1), ?_⟩
+  intro P Λ Λ' J δ hδ hΛ0 hΛ hJ
+  -- `S t` is the matrix under the square root and `S' t` its entrywise derivative (step 4).
+  obtain ⟨S, hS⟩ : ∃ S : ℝ → Matrix (Fin N) (Fin N) ℝ, ∀ t i j, S t i j =
+      inner ℝ (Λ t (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+          (Λ t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) +
+        inner ℝ
+          (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ)))
+          (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ))) :=
+    ⟨fun t ↦ Matrix.of fun i j ↦
+      inner ℝ (Λ t (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+          (Λ t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) +
+        inner ℝ
+          (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ)))
+          (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ))),
+      fun _ _ _ ↦ rfl⟩
+  obtain ⟨S', hS'⟩ : ∃ S' : ℝ → Matrix (Fin N) (Fin N) ℝ, ∀ t i j, S' t i j =
+      inner ℝ (Λ t (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+          (Λ' t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) +
+        inner ℝ (Λ' t (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+          (Λ t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) :=
+    ⟨fun t ↦ Matrix.of fun i j ↦
+      inner ℝ (Λ t (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+          (Λ' t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) +
+        inner ℝ (Λ' t (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+          (Λ t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))),
+      fun _ _ _ ↦ rfl⟩
+  have hJS : ∀ t, J t = Real.sqrt (S t).det := by
+    intro t
+    rw [hJ t]
+    congr 2
+    ext i j
+    rw [Matrix.of_apply, hS]
+  -- On `(-δ, δ)` the hypotheses hold with `B₁` in place of `B`.
+  have hbd : ∀ t ∈ Ioo (-δ) δ, ‖Λ t‖ ≤ B₁ ∧ ‖Λ' t‖ ≤ B₁ ∧ ∀ v, ‖v‖ ≤ B₁ * ‖Λ t v‖ := by
+    intro t ht
+    obtain ⟨-, h1, h2, h3⟩ := hΛ t ht
+    exact ⟨h1.trans hBB₁, h2.trans hBB₁,
+      fun v ↦ (h3 v).trans (mul_le_mul_of_nonneg_right hBB₁ (norm_nonneg _))⟩
+  -- Steps 1 and 2(b): `S t` is symmetric, `|S t i j| ≤ M₀` and `ξᵀ (S t) ξ ≥ B₁⁻² |ξ|²`.
+  have hsymm : ∀ t i j, S t i j = S t j i := by
+    intro t i j
+    rw [hS, hS]
+    congr 1 <;> exact real_inner_comm _ _
+  have hest : ∀ t ∈ Ioo (-δ) δ, (∀ i j, |S t i j| ≤ M₀) ∧
+      ∀ ξ : Fin N → ℝ, (B₁ ^ 2)⁻¹ * ∑ i, ξ i ^ 2 ≤ ∑ i, ∑ j, ξ i * S t i j * ξ j := by
+    intro t ht
+    obtain ⟨h1, -, h3⟩ := hbd t ht
+    obtain ⟨hA, hQ⟩ := Submission.ts_fv_tangential_matrix_estimates N P (Λ t) B₁ hB₁ h1 h3
+    refine ⟨fun i j ↦ ?_, fun ξ ↦ ?_⟩
+    · rw [hS, hM₀]
+      exact hA i j
+    · simp only [hS]
+      exact hQ ξ
+  -- Step 2: `(det S t)^{1/2} ≥ B₁^{-N}` (spectral bound) and `|det S t| ≤ N! M₀^N` (Leibniz).
+  have hdet : ∀ t ∈ Ioo (-δ) δ,
+      (B₁ ^ N)⁻¹ ≤ Real.sqrt (S t).det ∧ |(S t).det| ≤ N.factorial * M₀ ^ N := by
+    intro t ht
+    obtain ⟨hA, hQ⟩ := hest t ht
+    refine ⟨?_, ?_⟩
+    · have hc := Submission.ts_fv_det_ge_pow_of_quadForm_ge N (S t) ((B₁ ^ 2)⁻¹) (by positivity)
+        (hsymm t) hQ
+      refine Real.le_sqrt_of_sq_le ?_
+      calc ((B₁ ^ N)⁻¹) ^ 2 = ((B₁ ^ 2)⁻¹) ^ N := by ring
+        _ ≤ (S t).det := hc
+    · rw [Matrix.det_apply']
+      calc |∑ σ : Equiv.Perm (Fin N), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, S t (σ i) i|
+          ≤ ∑ σ : Equiv.Perm (Fin N), |((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, S t (σ i) i| :=
+            Finset.abs_sum_le_sum_abs _ _
+        _ ≤ ∑ _σ : Equiv.Perm (Fin N), ∏ _i : Fin N, M₀ := by
+            gcongr with σ
+            have hsign : |((Equiv.Perm.sign σ : ℤ) : ℝ)| = 1 := by
+              rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+            rw [abs_mul, hsign, one_mul, Finset.abs_prod]
+            exact Finset.prod_le_prod₀ (fun i _ ↦ abs_nonneg _) (fun i _ ↦ hA _ _)
+        _ = N.factorial * M₀ ^ N := by
+            simp [Finset.prod_const, Finset.sum_const, Fintype.card_perm]
+  -- Steps 4–6: the entries are differentiable, `|S' t i j| ≤ 2 B₁²`, Jacobi's formula and the
+  -- chain rule for the square root.
+  have hderiv : ∀ t ∈ Ioo (-δ) δ, ∀ i j, HasDerivAt (fun s ↦ S s i j) (S' t i j) t := by
+    intro t ht i j
+    have hv : ∀ w, HasDerivAt (fun s ↦ Λ s w) (Λ' t w) t := fun w ↦ by
+      simpa using (hΛ t ht).1.clm_apply (hasDerivAt_const t w)
+    simp only [hS, hS']
+    exact ((hv _).inner ℝ (hv _)).add_const _
+  have hderiv_bd : ∀ t ∈ Ioo (-δ) δ, ∀ i j, |S' t i j| ≤ 2 * B₁ ^ 2 := by
+    intro t ht i j
+    obtain ⟨h1, h2, -⟩ := hbd t ht
+    have hL : ∀ L : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N), ‖L‖ ≤ B₁ →
+        ∀ k, ‖L (P.starProjection (EuclideanSpace.single k (1 : ℝ)))‖ ≤ B₁ := by
+      intro L hL k
+      have hp : ‖P.starProjection (EuclideanSpace.single k (1 : ℝ))‖ ≤ 1 :=
+        (Submodule.norm_starProjection_apply_le (K := P) _).trans (by simp)
+      calc ‖L (P.starProjection (EuclideanSpace.single k (1 : ℝ)))‖
+          ≤ ‖L‖ * ‖P.starProjection (EuclideanSpace.single k (1 : ℝ))‖ := L.le_opNorm _
+        _ ≤ B₁ * 1 := by gcongr
+        _ = B₁ := mul_one _
+    -- Cauchy–Schwarz on both terms of `S' t i j`.
+    have hx := (abs_real_inner_le_norm _ _).trans
+      (mul_le_mul (hL _ h1 i) (hL _ h2 j) (norm_nonneg _) hB₁0.le)
+    have hy := (abs_real_inner_le_norm _ _).trans
+      (mul_le_mul (hL _ h2 i) (hL _ h1 j) (norm_nonneg _) hB₁0.le)
+    rw [hS']
+    rw [abs_le] at hx hy ⊢
+    constructor <;> linarith [hx.1, hx.2, hy.1, hy.2]
+  have hJd : ∀ t ∈ Ioo (-δ) δ, ∃ D : ℝ, HasDerivAt J (D / (2 * Real.sqrt (S t).det)) t ∧
+      |D| ≤ N.factorial * N * (2 * B₁ ^ 2) * M₀ ^ (N - 1) ∧ (S t = 1 → D = (S' t).trace) := by
+    intro t ht
+    obtain ⟨D, hD, hDb, hD1⟩ := Submission.ts_fv_hasDerivAt_det_of_entries N S (S' t) t M₀
+      (2 * B₁ ^ 2) (hderiv t ht) (hest t ht).1 (hderiv_bd t ht)
+    have hpos : 0 < (S t).det :=
+      Real.sqrt_pos.1 ((inv_pos.2 (pow_pos hB₁0 N)).trans_le (hdet t ht).1)
+    refine ⟨D, ?_, hDb, hD1⟩
+    rw [show J = fun s ↦ Real.sqrt (S s).det from funext hJS]
+    exact hD.sqrt hpos.ne'
+  refine ⟨fun t ht ↦ ?_, ?_⟩
+  · -- Steps 3 and 6: `0 ≤ J t ≤ C` and `|J'(t)| ≤ C`.
+    obtain ⟨hlow, hup⟩ := hdet t ht
+    obtain ⟨D, hD, hDb, -⟩ := hJd t ht
+    have hsq : 0 < Real.sqrt (S t).det := (inv_pos.2 (pow_pos hB₁0 N)).trans_le hlow
+    have h2s : 0 < 2 * Real.sqrt (S t).det := mul_pos two_pos hsq
+    have hK : 0 ≤ (N.factorial : ℝ) * N * B₁ ^ (N + 2) * M₀ ^ (N - 1) := by positivity
+    have hpow : B₁ ^ (N + 2) * (B₁ ^ N)⁻¹ = B₁ ^ 2 := by
+      rw [pow_add B₁ N 2, mul_assoc, mul_comm (B₁ ^ 2), ← mul_assoc,
+        mul_inv_cancel₀ (pow_ne_zero _ hB₁0.ne'), one_mul]
+    refine ⟨by rw [hJS t]; exact Real.sqrt_nonneg _, ?_, D / (2 * Real.sqrt (S t).det), hD, ?_⟩
+    · rw [hJS t]
+      calc Real.sqrt (S t).det ≤ Real.sqrt (N.factorial * M₀ ^ N) :=
+            Real.sqrt_le_sqrt ((le_abs_self _).trans hup)
+        _ ≤ _ := le_add_of_nonneg_right hK
+    · rw [abs_div, abs_of_pos h2s, div_le_iff₀ h2s]
+      calc |D| ≤ N.factorial * N * (2 * B₁ ^ 2) * M₀ ^ (N - 1) := hDb
+        _ = N.factorial * N * B₁ ^ (N + 2) * M₀ ^ (N - 1) * (2 * (B₁ ^ N)⁻¹) := by
+            rw [← hpow]
+            ring
+        _ ≤ N.factorial * N * B₁ ^ (N + 2) * M₀ ^ (N - 1) * (2 * Real.sqrt (S t).det) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hlow zero_le_two) hK
+        _ ≤ (Real.sqrt (N.factorial * M₀ ^ N) + N.factorial * N * B₁ ^ (N + 2) * M₀ ^ (N - 1)) *
+              (2 * Real.sqrt (S t).det) :=
+            mul_le_mul_of_nonneg_right (le_add_of_nonneg_left (Real.sqrt_nonneg _)) h2s.le
+  · -- Steps 7 and 8: `S 0 = I`, so `J'(0) = trace (S' 0) / 2 = ∑ₖ ⟨Λ'(0) p eₖ, p eₖ⟩`.
+    have h0 : (0 : ℝ) ∈ Ioo (-δ) δ := ⟨neg_lt_zero.2 hδ, hδ⟩
+    obtain ⟨D, hD, -, hD1⟩ := hJd 0 h0
+    have hS0 : S 0 = 1 := by
+      ext i j
+      rw [hS, hΛ0, one_apply_eq_self, one_apply_eq_self]
+      -- `q eᵢ ⊥ P`, so `⟨p eᵢ, p eⱼ⟩ + ⟨q eᵢ, q eⱼ⟩ = ⟨eᵢ, eⱼ⟩ = δᵢⱼ`.
+      have h1 := Submodule.starProjection_inner_eq_zero (K := P) (EuclideanSpace.single i (1 : ℝ))
+        (P.starProjection (EuclideanSpace.single j (1 : ℝ))) (P.starProjection_apply_mem _)
+      have h2 := Submodule.starProjection_inner_eq_zero (K := P) (EuclideanSpace.single j (1 : ℝ))
+        (P.starProjection (EuclideanSpace.single i (1 : ℝ))) (P.starProjection_apply_mem _)
+      have he : inner ℝ (EuclideanSpace.single i (1 : ℝ)) (EuclideanSpace.single j (1 : ℝ)) =
+          (1 : Matrix (Fin N) (Fin N) ℝ) i j := by
+        simp [EuclideanSpace.inner_single_left, Matrix.one_apply]
+      rw [← he]
+      simp only [inner_sub_left, inner_sub_right] at h1 h2 ⊢
+      linarith [real_inner_comm (P.starProjection (EuclideanSpace.single i (1 : ℝ)))
+          (EuclideanSpace.single j (1 : ℝ)),
+        real_inner_comm (P.starProjection (EuclideanSpace.single i (1 : ℝ)))
+          (P.starProjection (EuclideanSpace.single j (1 : ℝ)))]
+    rw [hS0, Matrix.det_one, Real.sqrt_one, hD1 hS0] at hD
+    refine hD.congr_deriv ?_
+    rw [← Submission.ts_fv_sum_inner_starProjection_eq_trace N P (Λ' 0), Matrix.trace,
+      Finset.sum_div]
+    refine Finset.sum_congr rfl fun k _ ↦ ?_
+    rw [Matrix.diag_apply, hS', hΛ0, one_apply_eq_self,
+      real_inner_comm (P.starProjection (EuclideanSpace.single k (1 : ℝ)))]
+    ring
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
