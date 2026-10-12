@@ -740,6 +740,68 @@ theorem exists_translated_varifold_allardHypotheses : ∀ {n ℓ : ℕ} {U : Set
   · unfold RectifiableVarifold.scaledLpNorm at hLp ⊢
     rw [hweight, hme_sub.restrict_map, hme_sub.lintegral_map, hball_pre]
     simpa using hLp
+/-- In the proof of Simon 7.1 (p. 127), `u ∈ C^{1,1−n/p}` comes from the estimate of Theorem 5.2:
+a finite scaled `C^{1,α}` norm on `B` puts `u` in the Hölder class `C^{1,α}(W)` for every
+`W ⊆ int B`.  On `int B` the derivative within `B` is the derivative, and the operator norm of a
+linear map is at most its Hilbert–Schmidt norm. -/
+theorem isHolderCk_one_of_scaledC1AlphaNorm_ne_top : ∀ {n ℓ : ℕ} (u : Rn n → Rn ℓ) (B W : Set (Rn n)) (α ρ : ℝ), 0 < α → 0 < ρ → ContDiffOn ℝ 1 u B → W ⊆ interior B → scaledC1AlphaNorm u B α ρ ≠ ∞ → IsHolderCkα 1 α u W := by
+  intro n ℓ u B W α ρ hα hρ hu hW hN
+  -- The operator norm is at most the Hilbert–Schmidt norm (Cauchy–Schwarz in the standard basis).
+  have hop : ∀ A : Rn n →L[ℝ] Rn ℓ, ‖A‖ ≤ hsNorm A := by
+    intro A
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  -- The three suprema in the scaled norm are finite, since `ρ⁻¹ > 0` and `ρ ^ α > 0`.
+  rw [scaledC1AlphaNorm, ENNReal.add_ne_top, ENNReal.add_ne_top] at hN
+  obtain ⟨⟨h₀, h₁⟩, h₂⟩ := hN
+  replace h₀ : (⨆ x ∈ B, ‖u x‖ₑ) ≠ ∞ := fun h =>
+    h₀ (ENNReal.mul_eq_top.2 (Or.inl ⟨(ENNReal.ofReal_pos.2 (inv_pos.2 hρ)).ne', h⟩))
+  replace h₂ : (⨆ x ∈ B, ⨆ y ∈ B, ⨆ (_ : x ≠ y),
+      ENNReal.ofReal (hsNorm (fderivWithin ℝ u B x - fderivWithin ℝ u B y) / ‖x - y‖ ^ α)) ≠ ∞ :=
+    fun h => h₂ (ENNReal.mul_eq_top.2
+      (Or.inl ⟨(ENNReal.ofReal_pos.2 (Real.rpow_pos_of_pos hρ α)).ne', h⟩))
+  -- Real bounds on `B` for `|u|`, `|D_B u|` and the Hölder quotients of `D_B u`.
+  obtain ⟨s₀, hb₀⟩ : ∃ s : ℝ, ∀ x ∈ B, ‖u x‖ ≤ s :=
+    ⟨_, fun x hx => (toReal_enorm (u x)).symm.trans_le
+      (ENNReal.toReal_mono h₀ (le_iSup₂_of_le x hx le_rfl))⟩
+  obtain ⟨s₁, hb₁⟩ : ∃ s : ℝ, ∀ x ∈ B, hsNorm (fderivWithin ℝ u B x) ≤ s :=
+    ⟨_, fun x hx => (ENNReal.ofReal_le_iff_le_toReal h₁).1 (le_iSup₂_of_le x hx le_rfl)⟩
+  obtain ⟨s₂, hb₂⟩ : ∃ s : ℝ, ∀ x ∈ B, ∀ y ∈ B, x ≠ y →
+      hsNorm (fderivWithin ℝ u B x - fderivWithin ℝ u B y) ≤ s * ‖x - y‖ ^ α :=
+    ⟨_, fun x hx y hy hxy =>
+      (div_le_iff₀ (Real.rpow_pos_of_pos (norm_pos_iff.2 (sub_ne_zero.2 hxy)) α)).1
+        ((ENNReal.ofReal_le_iff_le_toReal h₂).1
+          (le_iSup₂_of_le x hx (le_iSup₂_of_le y hy (le_iSup_of_le hxy le_rfl))))⟩
+  -- On `W ⊆ int B` the derivative within `B` is the derivative.
+  have hWB : W ⊆ B := hW.trans interior_subset
+  have hD : ∀ x ∈ W, fderivWithin ℝ u B x = fderiv ℝ u x := fun x hx =>
+    fderivWithin_of_mem_nhds (mem_interior_iff_mem_nhds.1 (hW hx))
+  refine ⟨?_, ⟨max s₀ s₁, ?_⟩, ⟨s₂, ?_⟩⟩
+  · exact_mod_cast hu.mono hWB
+  · intro i hi x hx
+    rcases Nat.le_one_iff_eq_zero_or_eq_one.1 hi with rfl | rfl
+    · rw [norm_iteratedFDeriv_zero]
+      exact (hb₀ x (hWB hx)).trans (le_max_left _ _)
+    · rw [norm_iteratedFDeriv_one, ← hD x hx]
+      exact ((hop _).trans (hb₁ x (hWB hx))).trans (le_max_right _ _)
+  · intro x hx y hy
+    rcases eq_or_ne x y with rfl | hxy
+    · simp [Real.zero_rpow hα.ne']
+    · -- The first iterated derivative is the derivative, up to a linear isometry.
+      have hD₁ : iteratedFDeriv ℝ 1 u x - iteratedFDeriv ℝ 1 u y =
+          (continuousMultilinearCurryFin1 ℝ (Rn n) (Rn ℓ)).symm (fderiv ℝ u x - fderiv ℝ u y) := by
+        ext m
+        simp
+      rw [hD₁, LinearIsometryEquiv.norm_map, ← hD x hx, ← hD y hy]
+      exact (hop _).trans (hb₂ x (hWB hx) y (hWB hy) hxy)
 
 end Submission
 
