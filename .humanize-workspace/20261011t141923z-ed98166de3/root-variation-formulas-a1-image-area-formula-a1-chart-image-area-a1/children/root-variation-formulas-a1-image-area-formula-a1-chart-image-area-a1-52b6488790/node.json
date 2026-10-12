@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1.weighted_area_formula-a1",
+  "parent_id": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1",
+  "depth": 4,
+  "title": "Simon 3.5, injective regular case: weighted area formula for an arbitrary nonnegative weight",
+  "statement": "Let n, N ∈ ℕ and ℝᵈ := EuclideanSpace ℝ (Fin d). Let s ⊆ ℝⁿ be a Borel set and Φ : ℝⁿ → ℝᴺ a map such that Φ is differentiable at every x ∈ s, DΦ(x) is injective for every x ∈ s, and Φ is injective on s. Let g : ℝᴺ → [0, ∞] be an arbitrary function; no measurability is assumed. Then ∫⁻_{y∈Φ(s)} g(y) dμHE[n](y) = ∫⁻_{x∈s} ofReal(areaJacobian(DΦ(x)))·g(Φ(x)) dμHE[n](x), where areaJacobian(L) = √det(L* ∘ L).",
+  "lean_statement": "∀ (n N : ℕ) (s : Set (Rn n)) (Φ : Rn n → Rn N) (g : Rn N → ℝ≥0∞), MeasurableSet s → (∀ x ∈ s, DifferentiableAt ℝ Φ x) → (∀ x ∈ s, Function.Injective (fderiv ℝ Φ x)) → InjOn Φ s → ∫⁻ y in Φ '' s, g y ∂μHE[n] = ∫⁻ x in s, ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)) * g (Φ x) ∂μHE[n]",
+  "lean_name": "variation_injective_weighted_area_formula",
+  "depends_on": [
+    "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1.injective_area_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1.injective_area_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-image-area-formula-a1-chart-image-area-a1-52b6488790-a1"
+}

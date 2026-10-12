@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1.injective_area_formula-a1",
+  "parent_id": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1",
+  "depth": 4,
+  "title": "Simon 3.2, injective regular case: area formula for an injective map with injective derivative on a Borel set",
+  "statement": "Let n, N ∈ ℕ and ℝᵈ := EuclideanSpace ℝ (Fin d). Let s ⊆ ℝⁿ be a Borel set and Φ : ℝⁿ → ℝᴺ a map such that Φ is differentiable at every x ∈ s, the derivative DΦ(x) is injective for every x ∈ s, and Φ is injective on s. Then μHE[n](Φ(s)) = ∫⁻_{x∈s} ofReal(areaJacobian(DΦ(x))) dμHE[n](x). Here areaJacobian(L) = √det(L* ∘ L) is the contract's definition. μHE[n] is Mathlib's n-dimensional Euclidean Hausdorff measure: on ℝᴺ for the image, and on ℝⁿ, where it equals Lebesgue measure, for the integral.",
+  "lean_statement": "∀ (n N : ℕ) (s : Set (Rn n)) (Φ : Rn n → Rn N), MeasurableSet s → (∀ x ∈ s, DifferentiableAt ℝ Φ x) → (∀ x ∈ s, Function.Injective (fderiv ℝ Φ x)) → InjOn Φ s → μHE[n] (Φ '' s) = ∫⁻ x in s, ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)) ∂μHE[n]",
+  "lean_name": "variation_injective_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-image-area-formula-a1-chart-image-area-a1-e166d3f9ce-a1"
+}
