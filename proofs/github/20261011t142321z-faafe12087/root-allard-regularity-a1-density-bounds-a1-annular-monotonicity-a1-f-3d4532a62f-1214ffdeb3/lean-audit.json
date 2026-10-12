@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "14795bf65eed3bfc5736fdd78e1b5e77257f1b0fffb52a4b85399bd3c767f185",
+  "git_delta": {
+    "base_commit": "9c720cdcfa008fbae122d86f0d890d2999414373",
+    "candidate_commit": "2bfeb1eb2926e1c3c32db86a24f1dbfe1d05d3a1",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_fc_lp_scale",
+    "diff_sha256": "b2a5d0450bf14296450b78e0aec29c597d47a099b7f0b120d93bcaeb79cb361f",
+    "source_sha256": "3b3c8eeb54497a4600d0d3ab2bcdbeaf309258a35ba470ff4635416fcfb8375e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_fc_lp_scale",
+      "statement": "∀ (n ℓ : ℕ) (p : ℝ), (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (R Λ t : ℝ), 0 < R → 0 < Λ → t ≤ R → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ < ⊤ ∧ (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤ (p - n) / (4 * p) * Λ * R ^ ((n : ℝ) / p - 1)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
