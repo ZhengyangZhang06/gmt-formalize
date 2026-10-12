@@ -513,6 +513,17 @@ theorem Submission.br_restrictDomain_isIntegerMultiplicity :
     rw [inter_comm M W, ← Measure.restrict_restrict hW.measurableSet,
       setIntegral_eq_integral_of_forall_compl_eq_zero h0]
 
+/-- Simon Ch. 6, 2.4, 2.16 and 3.1: the restriction `Y|_W ∈ 𝒟ₖ(W)` of `Y ∈ 𝒟ₖ(U)` to an open
+`W ⊆ U` has `M_W(Y|_W) ≤ M_U(Y)`, since every admissible form for `M_W` is admissible for `M_U`,
+and it is integer multiplicity when `Y` is: `Y|_W = τ(M ∩ W, θ, ξ)` for `Y = τ(M, θ, ξ)`. -/
+theorem Submission.fiw_tb_restrictDomain_mass_im :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W →
+      ∀ Y : GeometricCurrentOn U k, (Y.restrictDomain hWU).mass ≤ Y.mass ∧
+        (IsIntegerMultiplicity Y → IsIntegerMultiplicity (Y.restrictDomain hWU)) := by
+  intro P k U W hWU hW Y
+  exact ⟨Submission.fiw_tb_ri_restrictDomain_mass_le P k U W hWU Y,
+    Submission.br_restrictDomain_isIntegerMultiplicity P k U W hWU hW Y⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
