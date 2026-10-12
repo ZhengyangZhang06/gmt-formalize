@@ -466,6 +466,61 @@ theorem Submission.ind_md_closedBall_weak_subseq : ∀ (P R : ℕ) (μ : ℕ →
     _ ≤ c.measure G := measure_mono hCG
     _ ≤ c.measure F + ε := hGν.le
 
+/-- Diagonal extraction over the closed balls `B̄_R(0)`, `R ∈ ℕ` (Simon Ch. 6, proof of 8.2, steps
+(2b)–(2c) and 3, carrying the closed-set `limsup` bound instead of weak convergence).  Apply
+`ind_md_closedBall_weak_subseq` to the nested subsequences `p₀ = id`, `p_{R+1} = p_R ∘ χ_{R, p_R}`
+and take the diagonal `φ(j) = p_{j+1}(j)`.  For `j ≥ R`, `φ(j) = p_{R+1}(i)` with `i ≥ j`, so the
+bound `limsup_i μ_{p_{R+1}(i)}(F) ≤ ν_R(F)` for closed `F ⊆ B̄_R(0)` passes to `φ`. -/
+theorem Submission.ind_md_diagonal_weak_subseq : ∀ (P : ℕ) (μ : ℕ → Measure (Eucl P)), (⨆ j, μ j univ) < ∞ → ∃ (φ : ℕ → ℕ) (ν : ℕ → Measure (Eucl P)), StrictMono φ ∧ (∀ R, ν R univ < ∞) ∧ ∀ (R : ℕ) (F : Set (Eucl P)), IsClosed F → F ⊆ closedBall 0 (R : ℝ) → limsup (fun j => μ (φ j) F) atTop ≤ ν R F := by
+  intro P μ hμ
+  -- Step 1: the sibling lemma for every radius `R` and every subsequence `(μ_{ψ(i)})_i`.
+  have hb : ∀ ψ : ℕ → ℕ, (⨆ i, μ (ψ i) univ) < ∞ := fun ψ =>
+    lt_of_le_of_lt (iSup_le fun i => le_iSup (fun j => μ j univ) (ψ i)) hμ
+  choose χ ν hχ hνfin hν using fun (R : ℕ) (ψ : ℕ → ℕ) =>
+    Submission.ind_md_closedBall_weak_subseq P R (fun i => μ (ψ i)) (hb ψ)
+  -- Step 2: nested subsequences `p₀ = id`, `p_{R+1} = p_R ∘ χ_{R, p_R}`.
+  obtain ⟨p, hp0, hpS⟩ : ∃ p : ℕ → ℕ → ℕ, p 0 = id ∧ ∀ R, p (R + 1) = p R ∘ χ R (p R) :=
+    ⟨fun R => Nat.rec (motive := fun _ => ℕ → ℕ) id (fun R q => q ∘ χ R q) R, rfl, fun _ => rfl⟩
+  have hp : ∀ R, StrictMono (p R) := by
+    intro R
+    induction R with
+    | zero => rw [hp0]; exact strictMono_id
+    | succ R ih => rw [hpS]; exact ih.comp (hχ R (p R))
+  -- Step 3: tails, `p_{R+1+d} = p_{R+1} ∘ g` with `g` strictly increasing.
+  have htail : ∀ R d, ∃ g : ℕ → ℕ, StrictMono g ∧ p (R + 1 + d) = p (R + 1) ∘ g := by
+    intro R d
+    induction d with
+    | zero => exact ⟨id, strictMono_id, rfl⟩
+    | succ d ih =>
+      obtain ⟨g, hg, hpg⟩ := ih
+      refine ⟨g ∘ χ (R + 1 + d) (p (R + 1 + d)), hg.comp (hχ _ _), ?_⟩
+      rw [← add_assoc, hpS, hpg, Function.comp_assoc]
+  -- Step 4: the diagonal `φ(j) = p_{j+1}(j)` is strictly increasing.
+  have hφ : StrictMono fun j => p (j + 1) j := by
+    refine strictMono_nat_of_lt_succ fun j => ?_
+    show p (j + 1) j < p (j + 1 + 1) (j + 1)
+    rw [hpS (j + 1)]
+    exact hp (j + 1) ((Nat.lt_add_one j).trans_le ((hχ (j + 1) (p (j + 1))).id_le (j + 1)))
+  -- Step 5: for `R ≤ j`, `φ(j) = p_{R+1}(i)` for some `i ≥ j`.
+  have hsub : ∀ R j, R ≤ j → ∃ i, j ≤ i ∧ p (j + 1) j = p (R + 1) i := by
+    intro R j hRj
+    obtain ⟨g, hg, hpg⟩ := htail R (j - R)
+    rw [show R + 1 + (j - R) = j + 1 by omega] at hpg
+    exact ⟨g j, hg.id_le j, congrFun hpg j⟩
+  -- Steps 6–7: compare the limsups via `limsup = ⨅ N, ⨆ j ≥ N`, then apply step 2.
+  refine ⟨fun j => p (j + 1) j, fun R => ν R (p R), hφ, fun R => hνfin R (p R),
+    fun R F hF hFR => ?_⟩
+  calc limsup (fun j => μ (p (j + 1) j) F) atTop
+      ≤ limsup (fun i => μ (p (R + 1) i) F) atTop := by
+        rw [limsup_eq_iInf_iSup_of_nat, limsup_eq_iInf_iSup_of_nat]
+        refine le_iInf fun N => iInf_le_of_le (max N R) (iSup₂_le fun j hj => ?_)
+        obtain ⟨i, hji, hi⟩ := hsub R j (le_of_max_le_right hj)
+        rw [hi]
+        exact le_iSup₂_of_le i ((le_of_max_le_left hj).trans hji) le_rfl
+    _ ≤ ν R (p R) F := by
+        rw [hpS]
+        exact hν R (p R) F hF hFR
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
