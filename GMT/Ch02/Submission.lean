@@ -1583,6 +1583,289 @@ theorem Submission.c1_approximation_theorem : C1Approximation := by
         exact ENNReal.add_lt_add hBC hCA
     _ = ENNReal.ofReal ε := by
         rw [← ENNReal.ofReal_add (half_pos hε).le (half_pos hε).le, add_halves]
+/-- **Simon Ch. 2, Theorem 1.8(i) (pp. 44–45), measure of a Lipschitz image.** For metric spaces
+`X, Y`, real `m ≥ 0`, an arbitrary `E ⊆ X` (no measurability needed) and `f` `K`-Lipschitz on `E`,
+`𝓗ᵐ(f(E)) ≤ Kᵐ 𝓗ᵐ(E)`. The covering argument is Mathlib's
+`LipschitzOnWith.hausdorffMeasure_image_le` for `μH[m]`; multiplying it by the common
+normalization `ω_m / 2^m` of `𝓗ᵐ = (ω_m / 2^m) • μH[m]` gives the bound for `𝓗ᵐ`. -/
+theorem Submission.lipschitzImage_hausdorff_image_le : ∀ (X Y : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] [MetricSpace Y] [MeasurableSpace Y] [BorelSpace Y] (m : ℝ) (E : Set X) (f : X → Y) (K : ℝ≥0), 0 ≤ m → LipschitzOnWith K f E → Chapter01.simonHausdorffMeasureReal m (f '' E) ≤ (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m E := by
+  intro X Y _ _ _ _ _ _ m E f K hm hf
+  -- The covering argument for the unnormalized measure: `μH[m] (f '' E) ≤ Kᵐ μH[m] E`.
+  have h := hf.hausdorffMeasure_image_le hm
+  -- `𝓗ᵐ S = (ω_m / 2^m) * μH[m] S` on `Y` and on `X`; scale `h` by `ω_m / 2^m` and reassociate.
+  simp only [Chapter01.simonHausdorffMeasureReal, Measure.smul_apply, smul_eq_mul]
+  calc Chapter01.realUnitBallVolume m / 2 ^ m * μH[m] (f '' E)
+      ≤ Chapter01.realUnitBallVolume m / 2 ^ m * ((K : ℝ≥0∞) ^ m * μH[m] E) := by gcongr
+    _ = (K : ℝ≥0∞) ^ m * (Chapter01.realUnitBallVolume m / 2 ^ m * μH[m] E) :=
+      mul_left_comm _ _ _
+
+/-- **Simon Ch. 2, Theorem 1.8(i) (pp. 44–45), measurability of a Lipschitz image.** If `X` is a
+σ-compact metric space, `m ≥ 0`, `A ⊆ X` is `𝓗^m`-measurable with `𝓗^m(A) < ∞` and `f` is
+`K`-Lipschitz on `A`, then `f(A)` is `𝓗^m`-measurable. A Borel kernel `B ⊆ A` with
+`𝓗^m(A \ B) = 0` has finite measure, so `𝓗^m ⌞ B` is a finite, hence regular, measure on the
+σ-compact space `X` (Simon's appeal to Ch. 1, 1.15(2)) and gives compact `C j ⊆ B` with
+`𝓗^m(B \ C j) < 1/j`. Then `f(A) = ⋃ j, f(C j) ∪ (f(A) \ ⋃ j, f(C j))`: the first set is a
+countable union of compact sets, and the second lies in the image of the `𝓗^m`-null set
+`A \ ⋃ j, C j`, which is null by the first part (`Submission.lipschitzImage_hausdorff_image_le`). -/
+theorem Submission.lipschitzImage_nullMeasurableSet_image : ∀ (X Y : Type) [MetricSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] [MetricSpace Y] [MeasurableSpace Y] [BorelSpace Y] (m : ℝ) (A : Set X) (f : X → Y) (K : ℝ≥0), 0 ≤ m → NullMeasurableSet A (Chapter01.simonHausdorffMeasureReal m) → Chapter01.simonHausdorffMeasureReal m A < ⊤ → LipschitzOnWith K f A → NullMeasurableSet (f '' A) (Chapter01.simonHausdorffMeasureReal m) := by
+  intro X Y _ _ _ _ _ _ _ m A f K hm hA hAfin hf
+  -- Null subsets of `A` have null images: `𝓗^m(f(E)) ≤ K^m 𝓗^m(E) = 0`.
+  have hnull (E : Set X) (hEA : E ⊆ A) (hE : Chapter01.simonHausdorffMeasureReal m E = 0) :
+      Chapter01.simonHausdorffMeasureReal m (f '' E) = 0 := by
+    have h := Submission.lipschitzImage_hausdorff_image_le X Y m E f K hm (hf.mono hEA)
+    rwa [hE, mul_zero, nonpos_iff_eq_zero] at h
+  -- A Borel kernel `B ⊆ A` with `𝓗^m(A \ B) = 0`; it has finite measure.
+  obtain ⟨B, hBA, hBmeas, hBae⟩ := hA.exists_measurable_subset_ae_eq
+  have hAB : Chapter01.simonHausdorffMeasureReal m (A \ B) = 0 := ae_le_set.mp hBae.symm.le
+  have hBfin : Chapter01.simonHausdorffMeasureReal m B ≠ ⊤ :=
+    ne_top_of_le_ne_top hAfin.ne (measure_mono hBA)
+  -- `ν = 𝓗^m ⌞ B` is a finite Borel measure on the σ-compact metric space `X`, hence regular:
+  -- there are compact `C j ⊆ B` with `ν(B \ C j) < 1/j`.
+  let ν : Measure X := (Chapter01.simonHausdorffMeasureReal m).restrict B
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 hBfin
+  have : ν.Regular := inferInstance
+  choose C hCB hCc hBC using fun j : ℕ ↦
+    hBmeas.exists_isCompact_sdiff_lt (μ := ν) (measure_ne_top ν B)
+      (show ((j : ℝ≥0∞)⁻¹) ≠ 0 by simp)
+  have hCA (j : ℕ) : C j ⊆ A := (hCB j).trans hBA
+  -- The Borel set `B \ ⋃ j, C j ⊆ B` has `𝓗^m`-measure `ν(B \ ⋃ j, C j) ≤ ν(B \ C j) < 1/j`.
+  have hBCmeas : MeasurableSet (B \ ⋃ j, C j) :=
+    hBmeas.diff (MeasurableSet.iUnion fun j ↦ (hCc j).measurableSet)
+  have hBC0 : Chapter01.simonHausdorffMeasureReal m (B \ ⋃ j, C j) = 0 := by
+    have h : ν (B \ ⋃ j, C j) = 0 := by
+      refine le_antisymm (ge_of_tendsto ENNReal.tendsto_inv_nat_nhds_zero ?_) bot_le
+      filter_upwards [] with j
+      exact (measure_mono (show B \ ⋃ i, C i ⊆ B \ C j from
+        fun x hx ↦ ⟨hx.1, fun hxC ↦ hx.2 (mem_iUnion.2 ⟨j, hxC⟩)⟩)).trans (hBC j).le
+    change (Chapter01.simonHausdorffMeasureReal m).restrict B (B \ ⋃ j, C j) = 0 at h
+    rwa [Measure.restrict_apply hBCmeas, inter_eq_left.2 sdiff_subset] at h
+  -- Hence `D = A \ ⋃ j, C j ⊆ (A \ B) ∪ (B \ ⋃ j, C j)` is `𝓗^m`-null.
+  have hD : Chapter01.simonHausdorffMeasureReal m (A \ ⋃ j, C j) = 0 := by
+    refine measure_mono_null (show A \ ⋃ j, C j ⊆ (A \ B) ∪ (B \ ⋃ j, C j) from
+      fun x hx ↦ ?_) (measure_union_null hAB hBC0)
+    by_cases hxB : x ∈ B
+    · exact mem_union_right _ ⟨hxB, hx.2⟩
+    · exact mem_union_left _ ⟨hx.1, hxB⟩
+  -- `G = ⋃ j, f(C j) ⊆ f(A)` is Borel, each `f(C j)` being compact.
+  have hGmeas : MeasurableSet (⋃ j, f '' C j) :=
+    MeasurableSet.iUnion fun j ↦
+      ((hCc j).image_of_continuousOn (hf.mono (hCA j)).continuousOn).measurableSet
+  have hGA : (⋃ j, f '' C j) ⊆ f '' A := iUnion_subset fun j ↦ image_mono (hCA j)
+  -- `f(A) \ G ⊆ f(D)`, which is `𝓗^m`-null.
+  have hrest : f '' A \ ⋃ j, f '' C j ⊆ f '' (A \ ⋃ j, C j) := by
+    rintro y ⟨⟨x, hxA, rfl⟩, hy⟩
+    refine ⟨x, ⟨hxA, fun hxC ↦ ?_⟩, rfl⟩
+    obtain ⟨j, hxj⟩ := mem_iUnion.1 hxC
+    exact hy (mem_iUnion.2 ⟨j, mem_image_of_mem f hxj⟩)
+  rw [← union_sdiff_cancel hGA]
+  exact hGmeas.nullMeasurableSet.union
+    (NullMeasurableSet.of_null (measure_mono_null hrest (hnull _ sdiff_subset hD)))
+/-- **Simon Ch. 2, proof of Theorem 1.8(ii) (p. 45), nested partitions.** A separable metric space
+`X` has countable Borel partitions `(P i j)_j`, `i ∈ ℕ`, into pieces of mesh `< 1/(i+1)`, each
+refining the previous one. For a dense sequence `q`, level `i` uses the disjointed balls
+`Q i l = B(q l, rᵢ) \ ⋃_{l' < l} B(q l', rᵢ)`, `rᵢ = 1/(3(i+1))`; then `P 0 = Q 0` and
+`P (i+1) n = P i u ∩ Q (i+1) v`, where `(u, v) = Nat.unpair n`. -/
+theorem Submission.lipschitzImage_exists_nested_partitions : ∀ (X : Type) [MetricSpace X] [TopologicalSpace.SeparableSpace X] [MeasurableSpace X] [BorelSpace X], ∃ P : ℕ → ℕ → Set X, (∀ i j, MeasurableSet (P i j)) ∧ (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) ∧ (∀ i, ⋃ j, P i j = Set.univ) ∧ (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) ∧ (∀ i j, ∃ k, P (i + 1) j ⊆ P i k) := by
+  intro X _ _ _ _
+  -- Empty `X`: all pieces are empty.
+  rcases isEmpty_or_nonempty X with hX | hX
+  · exact ⟨fun _ _ ↦ ∅, fun _ _ ↦ MeasurableSet.empty, fun _ _ _ _ ↦ empty_disjoint _,
+      fun _ ↦ eq_univ_of_forall isEmptyElim, fun _ _ x ↦ isEmptyElim x, fun _ _ ↦ ⟨0, subset_rfl⟩⟩
+  -- A dense sequence `q`, and the level-`i` pieces `Q i l`: Borel, disjoint, covering, and
+  -- contained in `B(q l, 1/(3(i+1)))`.
+  obtain ⟨q, hq⟩ := TopologicalSpace.exists_dense_seq X
+  obtain ⟨Q, hQmeas, hQdisj, hQcov, hQball⟩ : ∃ Q : ℕ → ℕ → Set X,
+      (∀ i l, MeasurableSet (Q i l)) ∧ (∀ i l l', l ≠ l' → Disjoint (Q i l) (Q i l')) ∧
+      (∀ i (x : X), ∃ l, x ∈ Q i l) ∧ ∀ i l, Q i l ⊆ ball (q l) (1 / ((i : ℝ) + 1) / 3) := by
+    refine ⟨fun i ↦ disjointed fun l ↦ ball (q l) (1 / ((i : ℝ) + 1) / 3),
+      fun i ↦ MeasurableSet.disjointed fun _ ↦ measurableSet_ball,
+      fun i _ _ h ↦ disjoint_disjointed _ h, fun i x ↦ ?_,
+      fun i ↦ disjointed_subset fun l ↦ ball (q l) (1 / ((i : ℝ) + 1) / 3)⟩
+    obtain ⟨l, hl⟩ := hq.exists_dist_lt x (by positivity : (0 : ℝ) < 1 / ((i : ℝ) + 1) / 3)
+    have hx : x ∈ ⋃ l, ball (q l) (1 / ((i : ℝ) + 1) / 3) := mem_iUnion.2 ⟨l, mem_ball.2 hl⟩
+    rw [← iUnion_disjointed] at hx
+    exact mem_iUnion.1 hx
+  -- The refinement: `P 0 = Q 0` and `P (i+1) n = P i (unpair n).1 ∩ Q (i+1) (unpair n).2`.
+  obtain ⟨P, hP0, hPsucc⟩ : ∃ P : ℕ → ℕ → Set X, (∀ n, P 0 n = Q 0 n) ∧
+      ∀ i n, P (i + 1) n = P i (Nat.unpair n).1 ∩ Q (i + 1) (Nat.unpair n).2 :=
+    ⟨fun i ↦ Nat.rec (motive := fun _ ↦ ℕ → Set X) (Q 0)
+      (fun i Pi n ↦ Pi (Nat.unpair n).1 ∩ Q (i + 1) (Nat.unpair n).2) i, fun _ ↦ rfl,
+      fun _ _ ↦ rfl⟩
+  have hPcov : ∀ i (x : X), ∃ j, x ∈ P i j := by
+    intro i x
+    induction i with
+    | zero =>
+      obtain ⟨l, hl⟩ := hQcov 0 x
+      exact ⟨l, (hP0 l).symm ▸ hl⟩
+    | succ i ih =>
+      obtain ⟨j, hj⟩ := ih
+      obtain ⟨l, hl⟩ := hQcov (i + 1) x
+      refine ⟨Nat.pair j l, ?_⟩
+      rw [hPsucc, Nat.unpair_pair]
+      exact ⟨hj, hl⟩
+  refine ⟨P, fun i ↦ ?_, fun i ↦ ?_, fun i ↦ eq_univ_of_forall fun x ↦ mem_iUnion.2 (hPcov i x),
+    fun i n x hx x' hx' ↦ ?_,
+    fun i n ↦ ⟨(Nat.unpair n).1, (hPsucc i n).subset.trans inter_subset_left⟩⟩
+  · -- Borel.
+    induction i with
+    | zero => exact fun n ↦ (hP0 n).symm ▸ hQmeas 0 n
+    | succ i ih => exact fun n ↦ (hPsucc i n).symm ▸ (ih _).inter (hQmeas _ _)
+  · -- Disjoint: distinct `n, n'` have distinct `unpair n, unpair n'`.
+    induction i with
+    | zero => intro j k hjk; rw [hP0, hP0]; exact hQdisj 0 j k hjk
+    | succ i ih =>
+      intro j k hjk
+      rw [hPsucc, hPsucc]
+      by_cases hu : (Nat.unpair j).1 = (Nat.unpair k).1
+      · have hv : (Nat.unpair j).2 ≠ (Nat.unpair k).2 := fun hv ↦
+          hjk (by rw [← Nat.pair_unpair j, ← Nat.pair_unpair k, hu, hv])
+        exact (hQdisj _ _ _ hv).mono inter_subset_right inter_subset_right
+      · exact (ih _ _ hu).mono inter_subset_left inter_subset_left
+  · -- Mesh: `P i n` lies in a ball of radius `1/(3(i+1))`.
+    obtain ⟨l, hl⟩ : ∃ l, P i n ⊆ Q i l := by
+      cases i with
+      | zero => exact ⟨n, (hP0 n).subset⟩
+      | succ i => exact ⟨(Nat.unpair n).2, (hPsucc i n).subset.trans inter_subset_right⟩
+    have h₁ := mem_ball.1 (hQball i l (hl hx))
+    have h₂ := mem_ball.1 (hQball i l (hl hx'))
+    have hi : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
+    linarith [dist_triangle_right x x' (q l)]
+/-- **Simon Ch. 2, Theorem 1.8(ii), counting step (p. 45).** For nested partitions `P i ·` of `X`
+into pieces any two of whose points are at distance `< 1/(i+1)`, the piece counts
+`N_i(y) = ∑ⱼ 1_{f(A ∩ P i j)}(y)` increase pointwise to the multiplicity `N(f, y) = fiberCount A f y`. -/
+theorem Submission.lipschitzImage_iSup_pieceCount_eq_fiberCount : ∀ (X Y : Type) [MetricSpace X] (A : Set X) (f : X → Y) (P : ℕ → ℕ → Set X), (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) → (∀ i, ⋃ j, P i j = Set.univ) → (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) → (∀ i j, ∃ k, P (i + 1) j ⊆ P i k) → ∀ y : Y, Monotone (fun i ↦ ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y) ∧ ⨆ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y = fiberCount A f y := by
+  intro X Y _ A f P hdisj hcov hdiam hnest y
+  -- Every point lies in exactly one piece of each level.
+  have hmem : ∀ i (x : X), ∃ j, x ∈ P i j := fun i x ↦ by
+    have hx : x ∈ ⋃ j, P i j := by rw [hcov i]; exact Set.mem_univ x
+    exact Set.mem_iUnion.1 hx
+  have uniq : ∀ {i j k : ℕ} {x : X}, x ∈ P i j → x ∈ P i k → j = k := by
+    intro i j k x hj hk
+    by_contra hne
+    exact Set.disjoint_left.1 (hdisj i j k hne) hj hk
+  choose p hp using hmem
+  choose q hq using hnest
+  set S := A ∩ f ⁻¹' {y}
+  -- `N_i(y)` is the cardinality of `p i '' S`, the set of `j` with `y ∈ f(A ∩ P i j)`.
+  have hiff : ∀ i j, y ∈ f '' (A ∩ P i j) ↔ j ∈ p i '' S := by
+    intro i j
+    constructor
+    · rintro ⟨x, ⟨hxA, hxP⟩, hfx⟩
+      exact ⟨x, ⟨hxA, hfx⟩, uniq (hp i x) hxP⟩
+    · rintro ⟨x, ⟨hxA, hfx⟩, rfl⟩
+      exact ⟨x, ⟨hxA, hp i x⟩, hfx⟩
+  have hN : ∀ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y =
+      ((p i '' S).encard : ℝ≥0∞) := by
+    intro i
+    have hind : ∀ j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y =
+        (p i '' S).indicator (fun _ ↦ (1 : ℝ≥0∞)) j := by
+      intro j
+      by_cases hj : j ∈ p i '' S
+      · rw [Set.indicator_of_mem hj, Set.indicator_of_mem ((hiff i j).2 hj), Pi.one_apply]
+      · rw [Set.indicator_of_notMem hj, Set.indicator_of_notMem (mt (hiff i j).1 hj)]
+    rw [tsum_congr hind, ← tsum_subtype, ENNReal.tsum_set_one]
+  -- (a) `p i '' S` is the image of `p (i + 1) '' S` under the nesting map `q i`.
+  have hmono : ∀ i, (p i '' S).encard ≤ (p (i + 1) '' S).encard := by
+    intro i
+    have himage : p i '' S = q i '' (p (i + 1) '' S) := by
+      rw [Set.image_image]
+      exact Set.image_congr fun x _ ↦ uniq (hp i x) (hq i (p (i + 1) x) (hp (i + 1) x))
+    rw [himage]
+    exact Set.encard_image_le _ _
+  -- (c) A finite `F ⊆ S` with `n` points meets `n` distinct pieces once `1/(i+1)` is below all
+  -- distances between distinct points of `F`.
+  have hexh : ∀ n : ℕ, (n : ℕ∞) ≤ S.encard → ∃ i, (n : ℕ∞) ≤ (p i '' S).encard := by
+    intro n hn
+    obtain ⟨F, hFS, hFn⟩ := Set.exists_subset_encard_eq hn
+    have hFfin : F.Finite := Set.finite_of_encard_eq_coe hFn
+    have hev : ∀ᶠ i : ℕ in atTop, ∀ z ∈ F ×ˢ F, z.1 ≠ z.2 → 1 / ((i : ℝ) + 1) < dist z.1 z.2 := by
+      rw [Filter.eventually_all_finite (hFfin.prod hFfin)]
+      intro z _
+      by_cases hz : z.1 = z.2
+      · exact Filter.Eventually.of_forall fun _ h ↦ absurd hz h
+      · filter_upwards [tendsto_one_div_add_atTop_nhds_zero_nat.eventually
+          (gt_mem_nhds (dist_pos.2 hz))] with i hi _
+        exact hi
+    obtain ⟨i, hi⟩ := hev.exists
+    have hinj : Set.InjOn (p i) F := by
+      intro x hx x' hx' hxx'
+      by_contra hne
+      have hx'P : x' ∈ P i (p i x) := by rw [hxx']; exact hp i x'
+      exact absurd ((hi (x, x') ⟨hx, hx'⟩ hne).trans (hdiam i (p i x) x (hp i x) x' hx'P))
+        (lt_irrefl _)
+    refine ⟨i, ?_⟩
+    calc (n : ℕ∞) = F.encard := hFn.symm
+      _ = (p i '' F).encard := hinj.encard_image.symm
+      _ ≤ (p i '' S).encard := Set.encard_le_encard (Set.image_mono hFS)
+  simp only [hN]
+  refine ⟨monotone_nat_of_le_succ fun i ↦ ENat.toENNReal_le.2 (hmono i), ?_⟩
+  show ⨆ i, ((p i '' S).encard : ℝ≥0∞) = ((S.encard : ℕ∞) : ℝ≥0∞)
+  -- (b) `N_i(y) ≤ encard S`; the reverse inequality for the supremum follows from (c).
+  refine le_antisymm (iSup_le fun i ↦ ENat.toENNReal_le.2 (Set.encard_image_le _ _)) ?_
+  rcases eq_or_ne S.encard ⊤ with htop | htop
+  · rw [htop, ENat.toENNReal_top]
+    refine top_le_iff.2 (ENNReal.eq_top_of_forall_nnreal_le fun r ↦ ?_)
+    obtain ⟨n, hn⟩ := ENNReal.exists_nat_gt (ENNReal.coe_ne_top : (r : ℝ≥0∞) ≠ ⊤)
+    obtain ⟨i, hi⟩ := hexh n (by rw [htop]; exact le_top)
+    calc (r : ℝ≥0∞) ≤ n := hn.le
+      _ = ((n : ℕ∞) : ℝ≥0∞) := (ENat.toENNReal_coe n).symm
+      _ ≤ ((p i '' S).encard : ℝ≥0∞) := ENat.toENNReal_le.2 hi
+      _ ≤ ⨆ i, ((p i '' S).encard : ℝ≥0∞) := le_iSup (fun i ↦ ((p i '' S).encard : ℝ≥0∞)) i
+  · obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.1 htop
+    obtain ⟨i, hi⟩ := hexh k hk.le
+    calc ((S.encard : ℕ∞) : ℝ≥0∞) = ((k : ℕ∞) : ℝ≥0∞) := by rw [hk]
+      _ ≤ ((p i '' S).encard : ℝ≥0∞) := ENat.toENNReal_le.2 hi
+      _ ≤ ⨆ i, ((p i '' S).encard : ℝ≥0∞) := le_iSup (fun i ↦ ((p i '' S).encard : ℝ≥0∞)) i
+
+/-- **Simon Ch. 2, Theorem 1.8 (p. 44).** (i) is the two image results applied to `A`. (ii): cut `A`
+along nested Borel partitions `P i ·` of `X` of mesh `< 1/(i+1)`. The piece counts
+`N_i(y) = ∑'_j 1_{f(A ∩ P i j)}(y)` are a.e.-measurable (each `f(A ∩ P i j)` is null-measurable by
+(i)) and increase to `fiberCount A f`, so by monotone convergence `∫ N = sup_i ∫ N_i`, where
+`∫ N_i = ∑'_j Hᵐ(f(A ∩ P i j)) ≤ Kᵐ ∑'_j Hᵐ(A ∩ P i j) = Kᵐ Hᵐ(A)`. -/
+theorem Submission.lipschitz_image_hausdorff_theorem : LipschitzImageHausdorff := by
+  intro X Y _ _ _ _ _ _ _ m A f K hm hA hAfin hf
+  refine ⟨⟨Submission.lipschitzImage_nullMeasurableSet_image X Y m A f K hm hA hAfin hf,
+    Submission.lipschitzImage_hausdorff_image_le X Y m A f K hm hf⟩, ?_⟩
+  obtain ⟨P, hPmeas, hPdisj, hPcover, hPdiam, hPnest⟩ :=
+    Submission.lipschitzImage_exists_nested_partitions X
+  have hcount := Submission.lipschitzImage_iSup_pieceCount_eq_fiberCount X Y A f P hPdisj hPcover
+    hPdiam hPnest
+  have hpiece (i j : ℕ) : NullMeasurableSet (A ∩ P i j) (Chapter01.simonHausdorffMeasureReal m) :=
+    hA.inter (hPmeas i j).nullMeasurableSet
+  have himage (i j : ℕ) :
+      NullMeasurableSet (f '' (A ∩ P i j)) (Chapter01.simonHausdorffMeasureReal m) :=
+    Submission.lipschitzImage_nullMeasurableSet_image X Y m (A ∩ P i j) f K hm (hpiece i j)
+      ((measure_mono Set.inter_subset_left).trans_lt hAfin) (hf.mono Set.inter_subset_left)
+  have hind (i j : ℕ) : AEMeasurable ((f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞))
+      (Chapter01.simonHausdorffMeasureReal m) :=
+    aemeasurable_one.indicator₀ (himage i j)
+  have hN (i : ℕ) : AEMeasurable (fun y ↦ ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y)
+      (Chapter01.simonHausdorffMeasureReal m) :=
+    AEMeasurable.tsum (hind i)
+  have hfib : fiberCount A f =
+      fun y ↦ ⨆ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y :=
+    funext fun y ↦ (hcount y).2.symm
+  refine ⟨by rw [hfib]; exact AEMeasurable.iSup hN, ?_⟩
+  calc ∫⁻ y, fiberCount A f y ∂Chapter01.simonHausdorffMeasureReal m
+      = ⨆ i, ∫⁻ y, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y
+          ∂Chapter01.simonHausdorffMeasureReal m := by
+        rw [hfib]
+        exact lintegral_iSup' hN (ae_of_all _ fun y ↦ (hcount y).1)
+    _ ≤ (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m A := by
+        refine iSup_le fun i ↦ ?_
+        calc ∫⁻ y, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y
+              ∂Chapter01.simonHausdorffMeasureReal m
+            = ∑' j, Chapter01.simonHausdorffMeasureReal m (f '' (A ∩ P i j)) := by
+              rw [lintegral_tsum (hind i)]
+              exact tsum_congr fun j ↦ lintegral_indicator_one₀ (himage i j)
+          _ ≤ ∑' j, (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m (A ∩ P i j) :=
+              ENNReal.tsum_le_tsum fun j ↦ Submission.lipschitzImage_hausdorff_image_le X Y m
+                (A ∩ P i j) f K hm (hf.mono Set.inter_subset_left)
+          _ = (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m A := by
+              rw [ENNReal.tsum_mul_left, ← measure_iUnion₀ (f := fun j ↦ A ∩ P i j)
+                (fun j k hjk ↦ ((hPdisj i j k hjk).mono Set.inter_subset_right
+                  Set.inter_subset_right).aedisjoint) (hpiece i), ← Set.inter_iUnion, hPcover i,
+                Set.inter_univ]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry

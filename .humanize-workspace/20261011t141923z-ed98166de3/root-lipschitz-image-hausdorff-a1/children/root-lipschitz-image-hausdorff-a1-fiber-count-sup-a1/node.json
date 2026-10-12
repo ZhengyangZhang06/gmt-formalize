@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_image_hausdorff-a1.fiber_count_sup-a1",
+  "parent_id": "root.lipschitz_image_hausdorff-a1",
+  "depth": 2,
+  "title": "Piece-counting functions increase pointwise to the multiplicity fiberCount (Simon 2.1.8(ii), counting step)",
+  "statement": "Let X be a metric space, Y any type, A ⊆ X, and f : X → Y. Let P : ℕ → ℕ → Set X satisfy:\n- for each i, the sets P i j (j ∈ ℕ) are pairwise disjoint and cover X;\n- any two points of any P i j are at distance < 1/(i+1);\n- each P (i+1) j is contained in some P i k.\nFor y ∈ Y let N_i(y) := Σ'_{j∈ℕ} 1_{f(A ∩ P i j)}(y) ∈ [0,∞]. Then for every y ∈ Y the sequence i ↦ N_i(y) is nondecreasing and sup_i N_i(y) = fiberCount A f y = encard(A ∩ f⁻¹{y}), which is Simon's multiplicity N(f,y) (possibly ∞).",
+  "lean_statement": "∀ (X Y : Type) [MetricSpace X] (A : Set X) (f : X → Y) (P : ℕ → ℕ → Set X), (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) → (∀ i, ⋃ j, P i j = Set.univ) → (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) → (∀ i j, ∃ k, P (i + 1) j ⊆ P i k) → ∀ y : Y, Monotone (fun i ↦ ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y) ∧ ⨆ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y = fiberCount A f y",
+  "lean_name": "lipschitzImage_iSup_pieceCount_eq_fiberCount",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-lipschitz-image-hausdorff-a1-fiber-count-sup-a1-a1"
+}
