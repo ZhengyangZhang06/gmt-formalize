@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1.monotonicity_formula-a1.exp_weighted_density_limit-a1",
+  "parent_id": "root.monotonicity_density-a1.monotonicity_formula-a1",
+  "depth": 3,
+  "title": "Density limit from monotonicity of the exponentially weighted ratio",
+  "statement": "Let P : ℝ → [0,∞] and ρ0, Λ ∈ ℝ with ρ0 > 0. Assume that the function ρ ↦ ofReal(e^{Λρ})·P(ρ) is monotone non-decreasing on the open interval (0, ρ0), and that P(ρ0/2) ≠ ∞. Then there is θ ∈ [0,∞] such that P(t) → θ as t → 0 with t > 0 (along the filter 𝓝[>] 0 of ℝ, in the order topology of [0,∞]), θ ≠ ∞, and θ ≤ ofReal(e^{Λσ})·P(σ) for every σ with 0 < σ < ρ0.",
+  "lean_statement": "∀ (P : ℝ → ℝ≥0∞) (ρ₀ Λ : ℝ), 0 < ρ₀ → MonotoneOn (fun ρ : ℝ ↦ ENNReal.ofReal (Real.exp (Λ * ρ)) * P ρ) (Ioo 0 ρ₀) → P (ρ₀ / 2) ≠ ∞ → ∃ θ : ℝ≥0∞, Tendsto P (𝓝[>] 0) (𝓝 θ) ∧ θ ≠ ∞ ∧ ∀ σ : ℝ, 0 < σ → σ < ρ₀ → θ ≤ ENNReal.ofReal (Real.exp (Λ * σ)) * P σ",
+  "lean_name": "mono833_exp_weighted_density_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-monotonicity-formula-a1-exp-weighted-den-ecee0477ac-a1"
+}
