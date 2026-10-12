@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "58506f79ffb34f82c95a0aa73aa8140c635249dce6cdd8a7fe8c11c12421a7b9",
+  "git_delta": {
+    "base_commit": "e631e41ea45c6c5afd279369ede1cbf7971fc282",
+    "candidate_commit": "87f1a050eb0290df89c8f6aaca2cc6d6181663f8",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tv_exists_translate",
+    "diff_sha256": "448920c23a0afbcd2b7c15b149c0e2bde3faf7eed672dcadf52c999587d106d5",
+    "source_sha256": "5803542656728c8bbe97e66cd09fc78cf0c234c92c4dd9630e7ce19119cf0b49",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tv_exists_translate",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ ∀ y, V'.mult y = V.mult (y + ξ)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
