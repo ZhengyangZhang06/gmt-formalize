@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9ac822ac91f55ef9926fd0e37d79314d34f41d052f30f509785a82792d7d5b32",
+  "git_delta": {
+    "base_commit": "8f949ca32ac46ee87ff45264db41cf9f997bc123",
+    "candidate_commit": "30f56832b3468607004e783588898647e7a4caa4",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_ball_normal_le_deriv",
+    "diff_sha256": "820736a4fd82f251c7b5d04997b2610ee4898f58d93a82f9c11d7067cb5c25a9",
+    "source_sha256": "43a317bb76f3bc661f7c0979f321daad56904f8b17534eb6e3b6f35656440719",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_ball_normal_le_deriv",
+      "statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x w : Rn N) (ρ d : ℝ), 0 < ρ → Metric.closedBall x ρ ⊆ U → ‖w‖ ≤ 1 → HasDerivAt (fun r : ℝ ↦ (volume (G ∩ Metric.ball x r)).toReal) d ρ → ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ ≤ d",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
