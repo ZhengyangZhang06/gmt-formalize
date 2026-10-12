@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8b9cea9d711d7ce7ce1e987716b815b7fc3bbccec83d8f9b5cb979247b5e00e1",
+  "git_delta": {
+    "base_commit": "31005c08e39721b1243f9f24df0a03bd24b658d9",
+    "candidate_commit": "63cedd06de243db97dbfaf8535f49b845e55e2e4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_covector_opNorm_le_of_basis_bound",
+    "diff_sha256": "79a05f7af6d59d7fcbb354c02021825f9b437a50aa82d8bc2bf9c5a43633f89e",
+    "source_sha256": "74596ca100bef67283adb283c1d3520bb27f28d0581cbca036e4cf0c113c661a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covector_opNorm_le_of_basis_bound",
+      "statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (C : ℝ), 0 ≤ C → (∀ j : Fin n → Fin P, |α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k))| ≤ C) → ‖α‖ ≤ (P : ℝ) ^ n * C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
