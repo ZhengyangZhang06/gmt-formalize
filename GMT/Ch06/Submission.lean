@@ -421,6 +421,92 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
 
+/-- Cutoff estimate: if `S = Y ⌞ {φ < s}`, `ω'` vanishes where `φ ≥ s`, and `ω - ω'` is
+supported in `{x ∈ W : a < φ x}` with `|ω - ω'| ≤ c`, then
+`|S(ω) - Y(ω')| ≤ c (M_{W ∩ {φ < s}}(Y) - M_{W ∩ {φ < a}}(Y))`. -/
+theorem Submission.iwl_rl_restriction_cutoff_estimate :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (φ : Eucl P → ℝ) (a s c : ℝ) (Y S : GeometricCurrentOn U k)
+      (μ : Measure (Eucl P)) (ω ω' : TestFormOn U k), IsOpen W → W ⊆ U → ContinuousOn φ U →
+      a < s → IsRestriction Y {x | x ∈ U ∧ φ x < s} S →
+      (∀ (A : Set (Eucl P)) (S' : GeometricCurrentOn U k), IsRestriction Y A S' →
+        ∀ W' : Set (Eucl P), IsOpen W' → W' ⊆ U → S'.massOn W' = μ (W' ∩ A)) →
+      Y.massOn W < ∞ → (∀ x ∈ U, s ≤ φ x → (ω' : DifferentialForm (Eucl P) k) x = 0) →
+      tsupport ((ω : DifferentialForm (Eucl P) k) - (ω' : DifferentialForm (Eucl P) k)) ⊆
+        {x | x ∈ W ∧ a < φ x} →
+      (∀ x, covectorEuclideanNorm
+        ((ω : DifferentialForm (Eucl P) k) x - (ω' : DifferentialForm (Eucl P) k) x) ≤ c) →
+      |S ω - Y ω'| ≤ c * ((Y.massOn {x | x ∈ W ∧ φ x < s}).toReal -
+        (Y.massOn {x | x ∈ W ∧ φ x < a}).toReal) := by
+  intro P k U W φ a s c Y S μ ω ω' hWo hWU hφ has hS hμ hYW hω' hsupp hnorm
+  -- `S = Y ⌞ {φ < s}` through a representation `(μ₀, v₀)` of `Y`.
+  obtain ⟨-, μ₀, v₀, hrep, hSint⟩ := id hS
+  -- `Y` is its own restriction to `univ`, so `M_{W'}(Y) = μ W'` for open `W' ⊆ U`.
+  have hYmass : ∀ W' : Set (Eucl P), IsOpen W' → W' ⊆ U → Y.massOn W' = μ W' := by
+    intro W' hW'o hW'U
+    have hY : IsRestriction Y univ Y :=
+      ⟨MeasurableSet.univ, μ₀, v₀, hrep, fun η => by rw [Measure.restrict_univ]; exact (hrep η).2⟩
+    rw [hμ univ Y hY W' hW'o hW'U, inter_univ]
+  -- `W_t = {x ∈ W : φ x < t}` and `W'' = {x ∈ W : a < φ x}` are open subsets of `U`.
+  have hφW : ContinuousOn φ W := hφ.mono hWU
+  have hWt : ∀ t : ℝ, IsOpen {x | x ∈ W ∧ φ x < t} := fun t =>
+    hφW.isOpen_inter_preimage hWo isOpen_Iio
+  have hWtU : ∀ t : ℝ, {x | x ∈ W ∧ φ x < t} ⊆ U := fun t x hx => hWU hx.1
+  have hW'' : IsOpen {x | x ∈ W ∧ a < φ x} := hφW.isOpen_inter_preimage hWo isOpen_Ioi
+  have hW''U : {x | x ∈ W ∧ a < φ x} ⊆ U := fun x hx => hWU hx.1
+  rw [hYmass _ (hWt s) (hWtU s), hYmass _ (hWt a) (hWtU a)]
+  -- `ω'` vanishes off `{x ∈ U : φ x < s}`, so `S ω' = Y ω'`.
+  have hSY : S ω' = Y ω' := by
+    rw [hSint ω', (hrep ω').2]
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    have hx0 : (ω' : DifferentialForm (Eucl P) k) x = 0 := by
+      by_cases hxU : x ∈ U
+      · exact hω' x hxU (not_lt.mp fun hxs => hx ⟨hxU, hxs⟩)
+      · exact image_eq_zero_of_notMem_tsupport fun hx' => hxU (ω'.2.2 hx')
+    rw [hx0, map_zero]
+  -- `D = W'' ∩ {x ∈ U : φ x < s}` and `W_a` are disjoint subsets of `W_s`.
+  have hdisj : Disjoint ({x | x ∈ W ∧ a < φ x} ∩ {x | x ∈ U ∧ φ x < s})
+      {x | x ∈ W ∧ φ x < a} := by
+    rw [Set.disjoint_left]
+    rintro x ⟨⟨-, hax⟩, -⟩ ⟨-, hxa⟩
+    exact lt_asymm hax hxa
+  have hadd : μ ({x | x ∈ W ∧ a < φ x} ∩ {x | x ∈ U ∧ φ x < s}) + μ {x | x ∈ W ∧ φ x < a} ≤
+      μ {x | x ∈ W ∧ φ x < s} := by
+    rw [← measure_union hdisj (hWt a).measurableSet]
+    refine measure_mono ?_
+    rintro x (⟨⟨hxW, -⟩, -, hxs⟩ | ⟨hxW, hxa⟩)
+    · exact ⟨hxW, hxs⟩
+    · exact ⟨hxW, hxa.trans has⟩
+  -- All three measures are finite, as `M_W(Y) < ∞`.
+  have hfin : ∀ t : ℝ, μ {x | x ∈ W ∧ φ x < t} < ∞ := fun t => by
+    rw [← hYmass _ (hWt t) (hWtU t)]
+    exact (Y.massOn_mono fun x hx => hx.1).trans_lt hYW
+  have hfinD : μ ({x | x ∈ W ∧ a < φ x} ∩ {x | x ∈ U ∧ φ x < s}) < ∞ :=
+    (le_self_add.trans hadd).trans_lt (hfin s)
+  have hreal : (μ ({x | x ∈ W ∧ a < φ x} ∩ {x | x ∈ U ∧ φ x < s})).toReal ≤
+      (μ {x | x ∈ W ∧ φ x < s}).toReal - (μ {x | x ∈ W ∧ φ x < a}).toReal := by
+    have h := ENNReal.toReal_mono (hfin s).ne hadd
+    rw [ENNReal.toReal_add hfinD.ne (hfin a).ne] at h
+    linarith
+  -- `M_{W''}(S) = μ D`.
+  have hSmass : S.massOn {x | x ∈ W ∧ a < φ x} ≤
+      ENNReal.ofReal (μ ({x | x ∈ W ∧ a < φ x} ∩ {x | x ∈ U ∧ φ x < s})).toReal := by
+    rw [hμ _ S hS _ hW'' hW''U, ENNReal.ofReal_toReal hfinD.ne]
+  -- `c ≥ 0`.
+  have hc : 0 ≤ c := (covectorEuclideanNorm_nonneg _).trans (hnorm 0)
+  -- The basic mass estimate for `S` on `W''` applied to `ω - ω'`.
+  have hbound := Submission.cmb_abs_apply_le_of_massOn_le P k U {x | x ∈ W ∧ a < φ x} S
+    (ω - ω') _ c ENNReal.toReal_nonneg hSmass (by simpa using hsupp) (by simpa using hnorm)
+  -- `S ω - Y ω' = S ω - S ω' = S (ω - ω')`.
+  have hlin : S ω - Y ω' = S (ω - ω') := by
+    rw [← hSY]
+    exact (S.toCurrent.map_sub ω ω').symm
+  rw [hlin]
+  calc |S (ω - ω')|
+      ≤ (μ ({x | x ∈ W ∧ a < φ x} ∩ {x | x ∈ U ∧ φ x < s})).toReal * c := hbound
+    _ = c * (μ ({x | x ∈ W ∧ a < φ x} ∩ {x | x ∈ U ∧ φ x < s})).toReal := mul_comm _ _
+    _ ≤ c * ((μ {x | x ∈ W ∧ φ x < s}).toReal - (μ {x | x ∈ W ∧ φ x < a}).toReal) :=
+      mul_le_mul_of_nonneg_left hreal hc
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
