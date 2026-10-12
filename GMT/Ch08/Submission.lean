@@ -410,6 +410,43 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, 2.5–2.6, as used in the proof of 5.10 (printed (7))** (child
+`first_variation_bound` of `allard_lemma`): if `W` has locally bounded first variation, `K ⊆ U` is
+compact and `X` is a `C¹` field with `spt X ⊆ K` and `|X| ≤ B`, then `|δW(X)| ≤ B ‖δW‖(K)`.
+Write `δW(X) = -∫ ν·X d‖δW‖` with `|ν| = 1` `‖δW‖`-a.e. (2.6); the integrand is bounded by `B`
+on `K` and vanishes off `K`. -/
+theorem Submission.intcpt_allard_first_variation_le_sup_mul :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (X : Euclidean N → Euclidean N) (K : Set (Euclidean N)) (B : ℝ), W.HasLocallyBoundedFirstVariation → ContDiff ℝ 1 X → IsCompact K → K ⊆ U → tsupport X ⊆ K → (∀ z, ‖X z‖ ≤ B) → ENNReal.ofReal |W.firstVariation X| ≤ ENNReal.ofReal B * variationMeasure W K := by
+  intro N n U W X K B hW hX hK hKU hXK hXB
+  -- `X` is a test field of `U`: `C¹`, with compact support `spt X ⊆ K ⊆ U`.
+  let T : Varifold.TestVectorField U :=
+    ⟨X, hX, hK.of_isClosed_subset (isClosed_tsupport X) hXK, hXK.trans hKU⟩
+  -- `‖δW‖` is the Riesz measure `μ`, with polar field `ν`, `|ν| = 1` `μ`-a.e. (2.6).
+  have hμ : variationMeasure W = W.firstVariationRieszMeasure hW := by
+    simp only [variationMeasure, dite_eq_left hW]
+  set μ := W.firstVariationRieszMeasure hW
+  set ν := W.firstVariationPolarField hW
+  have hrep : W.IsFirstVariationPolarRepresentation μ ν :=
+    W.isFirstVariationPolarRepresentation_riesz hW
+  have hfv : W.firstVariation X = -∫ x, inner ℝ (ν x) (X x) ∂μ := (hrep.2.2 T).2
+  rw [hμ, hfv, abs_neg, ← Real.enorm_eq_ofReal_abs]
+  calc ‖∫ x, inner ℝ (ν x) (X x) ∂μ‖ₑ ≤ ∫⁻ x, ‖inner ℝ (ν x) (X x)‖ₑ ∂μ :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x, K.indicator (fun _ ↦ ENNReal.ofReal B) x ∂μ := by
+        apply lintegral_mono_ae
+        filter_upwards [hrep.2.1] with x hx
+        by_cases hxK : x ∈ K
+        · -- On `K`: `|ν·X| ≤ |ν| |X| = |X| ≤ B`.
+          rw [indicator_of_mem hxK, Real.enorm_eq_ofReal_abs]
+          apply ENNReal.ofReal_le_ofReal
+          have hb := norm_inner_le_norm (𝕜 := ℝ) (ν x) (X x)
+          rw [Real.norm_eq_abs, hx, one_mul] at hb
+          exact hb.trans (hXB x)
+        · -- Off `K ⊇ spt X` the field vanishes.
+          have hz : X x = 0 := image_eq_zero_of_notMem_tsupport fun h ↦ hxK (hXK h)
+          simp only [hz, inner_zero_right, enorm_zero, indicator_of_notMem hxK, le_refl]
+    _ = ENNReal.ofReal B * μ K := lintegral_indicator_const hK.measurableSet _
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
