@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7ea630a0ae56c14fc92c73f2151e70762641ff65e3ef5480953175716dce5943",
+  "git_delta": {
+    "base_commit": "3b8f5fb8141116718bba2d901aa0cf1401439d71",
+    "candidate_commit": "ef2d0e737761053171e2ea6d15bc6ea5557eef5a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_tfa_smooth_uniform_approx",
+    "diff_sha256": "c2a818df92c710cece673379ad971d3cdb65c9c7b6828bdd7c5d3dbc12daceef",
+    "source_sha256": "89a073ffc54a24fd4566a9c5da569317514f0d5ed284ffd947eda37e8bd0f618",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_tfa_smooth_uniform_approx",
+      "statement": "∀ (P n : ℕ) (g : Euclid P → Covector (Euclid P) n), Continuous g → HasCompactSupport g → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → ∀ δ : ℝ, 0 < δ → ∃ h : Euclid P → Covector (Euclid P) n, ContDiff ℝ (⊤ : ℕ∞) h ∧ (∀ x, covectorEuclideanNorm (h x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (h x - g x) ≤ δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
