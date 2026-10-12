@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1.remainder_modulus-a1",
+  "parent_id": "root.c1_approximation-a1",
+  "depth": 2,
+  "title": "Measurable moduli for first-order remainders of a Lipschitz function",
+  "statement": "For all n ∈ ℕ and K ∈ ℝ≥0, every set C ⊆ ℝⁿ, every K-Lipschitz f : ℝⁿ → ℝ and every Borel map ν : ℝⁿ → ℝⁿ, there are Borel functions η_k : ℝⁿ → ℝ (k ∈ ℕ) with two properties. (i) For all k and all x, y ∈ C with 0 < |y − x| < 1/(k+1), |f(y) − f(x) − ⟨ν(x), y − x⟩| ≤ η_k(x)|y − x|. (ii) If x ∈ C and f is Fréchet differentiable at x with derivative v ↦ ⟨ν(x), v⟩ (HasFDerivAt f (innerSL ℝ (ν x)) x), then η_k(x) → 0 as k → ∞.",
+  "lean_statement": "∀ (n : ℕ) (K : ℝ≥0) (C : Set (Rn n)) (f : Rn n → ℝ) (ν : Rn n → Rn n), LipschitzWith K f → Measurable ν → ∃ η : ℕ → Rn n → ℝ, (∀ k, Measurable (η k)) ∧ (∀ k : ℕ, ∀ x ∈ C, ∀ y ∈ C, 0 < ‖y - x‖ → ‖y - x‖ < 1 / ((k : ℝ) + 1) → |f y - f x - inner ℝ (ν x) (y - x)| ≤ η k x * ‖y - x‖) ∧ ∀ x ∈ C, HasFDerivAt f (innerSL ℝ (ν x)) x → Tendsto (fun k ↦ η k x) atTop (𝓝 0)",
+  "lean_name": "c1approx_measurable_remainder_modulus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-approximation-a1-remainder-modulus-a1-a1"
+}
