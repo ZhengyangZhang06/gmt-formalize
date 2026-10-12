@@ -373,6 +373,184 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Local submersion (rectification) chart** (cf. Spivak, *Calculus on Manifolds*, Thm 2-13).
+If `G` is `C¹` on the open set `V ∋ a` and `DG(a)` is onto, let `π = e ∘ P_K`, where `P_K` is the
+orthogonal projection onto `K = ker DG(a)` and `e : K ≃ ℝᵏ`. Then `Φ(x) = (G x, π(x - a))` has
+invertible derivative at `a`. By the inverse function theorem, `Λ = Φ⁻¹` on
+`Ω = {p ∈ target : Λ p ∈ V₁}` is the chart, where `V₁ ∋ a` is an open subset of `V` on which
+`DΦ` is invertible; `G ∘ Λ = WithLp.fst` because `Φ ∘ Λ = id` on `Ω`. -/
+theorem Submission.coarea_straightening_submersion_chart : ∀ (m k : ℕ) (V : Set (Rn (m + k))) (G : Rn (m + k) → Rn m) (a : Rn (m + k)), IsOpen V → ContDiffOn ℝ 1 G V → a ∈ V → Function.Surjective (fderiv ℝ G a) → ∃ (Ω : Set (WithLp 2 (Rn m × Rn k))) (Λ : WithLp 2 (Rn m × Rn k) → Rn (m + k)), IsOpen Ω ∧ ContDiffOn ℝ 1 Λ Ω ∧ InjOn Λ Ω ∧ IsOpen (Λ '' Ω) ∧ a ∈ Λ '' Ω ∧ Λ '' Ω ⊆ V ∧ (∀ p ∈ Ω, Function.Bijective (fderiv ℝ Λ p)) ∧ ∀ p ∈ Ω, G (Λ p) = WithLp.fst p := by
+  intro m k V G a hV hG ha hsurj
+  -- `K = ker DG(a)` has dimension `k` (rank–nullity).
+  set A : Rn (m + k) →L[ℝ] Rn m := fderiv ℝ G a
+  set K : Submodule ℝ (Rn (m + k)) := LinearMap.ker (A : Rn (m + k) →ₗ[ℝ] Rn m) with hK
+  have hrange : LinearMap.range (A : Rn (m + k) →ₗ[ℝ] Rn m) = ⊤ := LinearMap.range_eq_top.mpr hsurj
+  have hKdim : Module.finrank ℝ K = Module.finrank ℝ (Rn k) := by
+    have h := LinearMap.finrank_range_add_finrank_ker (A : Rn (m + k) →ₗ[ℝ] Rn m)
+    rw [hrange, finrank_top, finrank_euclideanSpace_fin, finrank_euclideanSpace_fin, ← hK] at h
+    rw [finrank_euclideanSpace_fin]
+    omega
+  -- `π = e ∘ P_K : ℝ^{m+k} → ℝᵏ` agrees on `K` with an isomorphism `e : K ≃ ℝᵏ`.
+  let e : K ≃ₗ[ℝ] Rn k := LinearEquiv.ofFinrankEq K (Rn k) hKdim
+  let π : Rn (m + k) →L[ℝ] Rn k :=
+    (e.toContinuousLinearEquiv : K →L[ℝ] Rn k) ∘L K.orthogonalProjectionOnto
+  have hπK : ∀ v : K, π v = e v := by
+    intro v
+    simp [π]
+  -- `Φ(x) = toLp (G x, π(x - a))` is `C¹` on `V` with `DΦ(x) = T ∘ (DG(x), π)`.
+  let T : (Rn m × Rn k) ≃L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm
+  let Φ : Rn (m + k) → WithLp 2 (Rn m × Rn k) := fun x => T (G x, π (x - a))
+  have hπaff : ContDiff ℝ 1 (fun x : Rn (m + k) => π (x - a)) :=
+    π.contDiff.comp (contDiff_id.sub contDiff_const)
+  have hΦC : ContDiffOn ℝ 1 Φ V := T.contDiff.comp_contDiffOn (hG.prodMk hπaff.contDiffOn)
+  have hΦCA : ∀ x ∈ V, ContDiffAt ℝ 1 Φ x := fun x hx => hΦC.contDiffAt (hV.mem_nhds hx)
+  have hπd : ∀ x, HasFDerivAt (fun x : Rn (m + k) => π (x - a)) π x := by
+    intro x
+    have h1 : HasFDerivAt (fun x : Rn (m + k) => x - a) (ContinuousLinearMap.id ℝ (Rn (m + k))) x :=
+      (hasFDerivAt_id x).sub_const a
+    have h2 := (π.hasFDerivAt (x := x - a)).comp x h1
+    rw [ContinuousLinearMap.comp_id] at h2
+    exact h2
+  have hΦd : ∀ x ∈ V, HasFDerivAt Φ
+      ((T : Rn m × Rn k →L[ℝ] WithLp 2 (Rn m × Rn k)).comp ((fderiv ℝ G x).prod π)) x := by
+    intro x hx
+    have hGx : HasFDerivAt G (fderiv ℝ G x) x :=
+      ((hG.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hx)).hasFDerivAt
+    exact T.hasFDerivAt.comp x (hGx.prodMk (hπd x))
+  -- `(DG(a), π)` is injective, hence (equal dimensions) bijective; so `DΦ(a)` is an isomorphism.
+  have hinj : Function.Injective (A.prod π) := by
+    intro v w hvw
+    have h1 : A v = A w := congrArg Prod.fst hvw
+    have h2 : π v = π w := congrArg Prod.snd hvw
+    have hmem : v - w ∈ K := by
+      show A (v - w) = 0
+      rw [map_sub, h1, sub_self]
+    have h3 : e ⟨v - w, hmem⟩ = e 0 := by
+      rw [← hπK, map_zero]
+      show π (v - w) = 0
+      rw [map_sub, h2, sub_self]
+    have := congrArg Subtype.val (e.injective h3)
+    simpa [sub_eq_zero] using this
+  have hdim : Module.finrank ℝ (Rn (m + k)) = Module.finrank ℝ (Rn m × Rn k) := by
+    rw [Module.finrank_prod, finrank_euclideanSpace_fin, finrank_euclideanSpace_fin,
+      finrank_euclideanSpace_fin]
+  have hsurjA : Function.Surjective (A.prod π) :=
+    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).mp hinj
+  let Φ' : Rn (m + k) ≃L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (LinearEquiv.ofBijective ((A.prod π : Rn (m + k) →L[ℝ] Rn m × Rn k) :
+      Rn (m + k) →ₗ[ℝ] Rn m × Rn k) ⟨hinj, hsurjA⟩).toContinuousLinearEquiv.trans T
+  have hΦ'd : HasFDerivAt Φ (Φ' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) a := by
+    have : (Φ' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) =
+        (T : Rn m × Rn k →L[ℝ] WithLp 2 (Rn m × Rn k)).comp (A.prod π) := by ext1 v; rfl
+    rw [this]; exact hΦd a ha
+  -- The set `V'` of points of `V` at which `DΦ` is invertible is open and contains `a`.
+  set V' : Set (Rn (m + k)) := V ∩ (fderiv ℝ Φ) ⁻¹'
+    (range ((↑) : (Rn (m + k) ≃L[ℝ] WithLp 2 (Rn m × Rn k)) →
+      Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)))
+  have hV'o : IsOpen V' :=
+    (hΦC.continuousOn_fderiv_of_isOpen hV le_rfl).isOpen_inter_preimage hV
+      ContinuousLinearEquiv.isOpen
+  have haV' : a ∈ V' := ⟨ha, Φ', hΦ'd.fderiv.symm⟩
+  -- Inverse function theorem: an open partial homeomorphism `h` with `⇑h = Φ` and `a ∈ S`.
+  have hΦs : HasStrictFDerivAt Φ (Φ' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) a :=
+    (hΦCA a ha).hasStrictFDerivAt' hΦ'd one_ne_zero
+  let h := hΦs.toOpenPartialHomeomorph Φ
+  -- `V₁ = S ∩ V'`, `Ω = {p ∈ S' : h⁻¹ p ∈ V₁}` and `Λ = h⁻¹`; then `Λ(Ω) = V₁`.
+  set V₁ : Set (Rn (m + k)) := h.source ∩ V'
+  have hV₁o : IsOpen V₁ := h.open_source.inter hV'o
+  have haV₁ : a ∈ V₁ := ⟨hΦs.mem_toOpenPartialHomeomorph_source, haV'⟩
+  have hV₁V : V₁ ⊆ V := fun x hx => hx.2.1
+  set Ω : Set (WithLp 2 (Rn m × Rn k)) := h.target ∩ h.symm ⁻¹' V₁
+  have himage : h.symm '' Ω = V₁ := by
+    ext x
+    constructor
+    · rintro ⟨p, hp, rfl⟩
+      exact hp.2
+    · intro hx
+      refine ⟨h x, ⟨h.map_source hx.1, ?_⟩, h.left_inv hx.1⟩
+      rw [Set.mem_preimage, h.left_inv hx.1]
+      exact hx
+  -- At `p ∈ Ω`, `Λ` is `C¹` with derivative `(DΦ(Λ p))⁻¹`.
+  have hsymm : ∀ p ∈ Ω, ∃ φ : Rn (m + k) ≃L[ℝ] WithLp 2 (Rn m × Rn k),
+      HasFDerivAt h.symm (φ.symm : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn (m + k)) p ∧
+        ContDiffAt ℝ 1 h.symm p := by
+    intro p hp
+    obtain ⟨φ, hφ⟩ := hp.2.2.2
+    have hxV : h.symm p ∈ V := hp.2.2.1
+    have hd : HasFDerivAt h (φ : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) (h.symm p) := by
+      rw [hφ]; exact ((hΦCA _ hxV).differentiableAt one_ne_zero).hasFDerivAt
+    exact ⟨φ, h.hasFDerivAt_symm hp.1 hd, h.contDiffAt_symm hp.1 hd (hΦCA _ hxV)⟩
+  refine ⟨Ω, h.symm, h.isOpen_inter_preimage_symm hV₁o, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- `Λ` is `C¹` on `Ω`
+    intro p hp
+    obtain ⟨φ, -, hcd⟩ := hsymm p hp
+    exact hcd.contDiffWithinAt
+  · -- `Λ` is injective on `Ω ⊆ S'`
+    exact h.symm.injOn.mono inter_subset_left
+  · rw [himage]; exact hV₁o
+  · rw [himage]; exact haV₁
+  · rw [himage]; exact hV₁V
+  · -- `DΛ(p) = (DΦ(Λ p))⁻¹` is bijective
+    intro p hp
+    obtain ⟨φ, hd, -⟩ := hsymm p hp
+    rw [hd.fderiv]
+    exact φ.symm.bijective
+  · -- `G(Λ p) = (Φ(Λ p))₁ = p₁`
+    intro p hp
+    exact congrArg WithLp.fst (h.right_inv hp.1)
+/-- **Simon Ch. 2, 4.1–4.2 (p. 55), reparametrizing a local representation.** Let `(V, W, ψ)` be
+a `C¹` local representation of `M` with `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`, and let `Λ` be
+`C¹` and injective on the open set `Ω`, with bijective derivative and `Λ(Ω) ⊆ V` open. Then
+`ψ ∘ Λ` is `C¹` and injective on `Ω` with injective derivative, `(ψ ∘ Λ)(Ω) = O ∩ M` for an open
+`O` (4.2: by relative properness, `ψ(V \ Λ(Ω))` is closed relative to `W`), and
+`T_{ψ(Λ(p))} M = range D(ψ ∘ Λ)(p)` for `p ∈ Ω`. -/
+theorem Submission.coarea_straightening_reparametrize_chart : ∀ (N m k : ℕ) (M : Set (Rn N)) (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Λ : WithLp 2 (Rn m × Rn k) → Rn (m + k)), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → IsOpen Ω → ContDiffOn ℝ 1 Λ Ω → InjOn Λ Ω → IsOpen (Λ '' Ω) → Λ '' Ω ⊆ V → (∀ p ∈ Ω, Function.Bijective (fderiv ℝ Λ p)) → ∃ O : Set (Rn N), IsOpen O ∧ (ψ ∘ Λ) '' Ω = O ∩ M ∧ ContDiffOn ℝ 1 (ψ ∘ Λ) Ω ∧ InjOn (ψ ∘ Λ) Ω ∧ (∀ p ∈ Ω, Function.Injective (fderiv ℝ (ψ ∘ Λ) p)) ∧ ∀ p ∈ Ω, tangentSpace M ((ψ ∘ Λ) p) = LinearMap.range (fderiv ℝ (ψ ∘ Λ) p).toLinearMap := by
+  intro N m k M V W ψ Ω Λ hψ hT hΩ hΛC hΛinj hV₁ hV₁V hΛbij
+  obtain ⟨hV, hW, hψC, hψinj, hψimg, hψprop, hψder⟩ := hψ
+  have hΛV : MapsTo Λ Ω V := fun p hp => hV₁V ⟨p, hp, rfl⟩
+  -- Simon 4.2: `ψ(V \ Λ(Ω))` is closed relative to `W`. Near `y ∈ W` it lies in the image of the
+  -- compact set `(V ∩ ψ⁻¹(B̄)) \ Λ(Ω)`, where `B̄ ⊆ W` is a closed ball about `y`.
+  have hrel : ∀ y ∈ W, y ∈ closure (ψ '' (V \ Λ '' Ω)) → y ∈ ψ '' (V \ Λ '' Ω) := by
+    intro y hyW hycl
+    obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hW y hyW
+    have hQW : closedBall y (r / 2) ⊆ W := (closedBall_subset_ball (half_lt_self hr)).trans hball
+    have hK : IsCompact (ψ '' (V ∩ ψ ⁻¹' closedBall y (r / 2) ∩ (Λ '' Ω)ᶜ)) :=
+      ((hψprop _ (isCompact_closedBall y (r / 2)) hQW).inter_right
+        hV₁.isClosed_compl).image_of_continuousOn (hψC.continuousOn.mono fun x hx => hx.1.1)
+    have hsub : ball y (r / 2) ∩ ψ '' (V \ Λ '' Ω) ⊆
+        ψ '' (V ∩ ψ ⁻¹' closedBall y (r / 2) ∩ (Λ '' Ω)ᶜ) := by
+      rintro _ ⟨hyb, x, ⟨hxV, hxV₁⟩, rfl⟩
+      exact ⟨x, ⟨⟨hxV, ball_subset_closedBall hyb⟩, hxV₁⟩, rfl⟩
+    obtain ⟨x, ⟨⟨hxV, -⟩, hxV₁⟩, hxy⟩ := closure_minimal hsub hK.isClosed
+      (isOpen_ball.inter_closure ⟨mem_ball_self (half_pos hr), hycl⟩)
+    exact ⟨x, ⟨hxV, hxV₁⟩, hxy⟩
+  -- Chain rule: `D(ψ ∘ Λ)(p) = Dψ(Λ(p)) ∘ DΛ(p)`.
+  have hD : ∀ p ∈ Ω, fderiv ℝ (ψ ∘ Λ) p = (fderiv ℝ ψ (Λ p)).comp (fderiv ℝ Λ p) := fun p hp =>
+    fderiv_comp p ((hψC.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds (hΛV hp)))
+      ((hΛC.differentiableOn one_ne_zero).differentiableAt (hΩ.mem_nhds hp))
+  refine ⟨W \ closure (ψ '' (V \ Λ '' Ω)), hW.sdiff isClosed_closure, ?_, hψC.comp hΛC hΛV,
+    hψinj.comp hΛinj hΛV, fun p hp => ?_, fun p hp => ?_⟩
+  · rw [image_comp]
+    ext y
+    constructor
+    · rintro ⟨x, hxV₁, rfl⟩
+      have hxM : ψ x ∈ W ∩ M := by rw [← hψimg]; exact ⟨x, hV₁V hxV₁, rfl⟩
+      refine ⟨⟨hxM.1, fun hcl => ?_⟩, hxM.2⟩
+      obtain ⟨x', ⟨hx'V, hx'V₁⟩, hx'⟩ := hrel _ hxM.1 hcl
+      rw [hψinj hx'V (hV₁V hxV₁) hx'] at hx'V₁
+      exact hx'V₁ hxV₁
+    · rintro ⟨⟨hyW, hycl⟩, hyM⟩
+      obtain ⟨x, hxV, rfl⟩ : y ∈ ψ '' V := by rw [hψimg]; exact ⟨hyW, hyM⟩
+      by_cases hx : x ∈ Λ '' Ω
+      · exact ⟨x, hx, rfl⟩
+      · exact (hycl (subset_closure ⟨x, ⟨hxV, hx⟩, rfl⟩)).elim
+  · rw [hD p hp, ContinuousLinearMap.coe_comp]
+    exact (hψder (Λ p) (hΛV hp)).comp (hΛbij p hp).1
+  · -- `DΛ(p)` is onto, so `range D(ψ ∘ Λ)(p) = range Dψ(Λ(p)) = T_{ψ(Λ(p))} M`.
+    rw [Function.comp_apply, hT (Λ p) (hΛV hp), hD p hp, ContinuousLinearMap.toLinearMap_comp,
+      LinearMap.range_comp_of_range_eq_top]
+    exact LinearMap.range_eq_top.mpr (hΛbij p hp).2
 /-- **The co-area Jacobian as a norm determinant** (Simon Ch. 2, §6, p. 66). Let `T = T_x M`, let
 `L = Df(x) ∘ ι_T : T → ℝᵐ` with `ι_T` the inclusion of `T` in `ℝᴺ`, and let `L*` be the adjoint
 of `L`. Then `J*_f(x) = √det(L ∘ L*) = normDet(L*)`. For `g = L*` we have `g* = L`, so
@@ -1080,5 +1258,43 @@ theorem Submission.coarea_critical_fibers_null : ∀ (N m k : ℕ) (M U : Set (R
   intro p hp
   obtain ⟨z, hz, hpz⟩ := mem_iUnion₂.1 (hMI hp.1.1)
   exact mem_iUnion₂.2 ⟨z, hz, hpz, hp⟩
+
+/-- **Simon Ch. 2, §6 (pp. 66–67), straightening charts at regular points of `f` on `M`.** Let `M`
+be an `(m+k)`-dimensional `C¹` submanifold whose local representations `ψ` satisfy
+`T_{ψ(x)} M = range Dψ(x)`, `f` `C¹` on an open `U ⊇ M` and `J*_f(x₀) ≠ 0`. Take a chart `ψ` with
+`ψ(a) = x₀`. Then `D(f ∘ ψ)(a) = Df(x₀) ∘ Dψ(a)` is onto, the local submersion theorem gives `Λ`
+with `f ∘ ψ ∘ Λ = fst`, and `Ψ = ψ ∘ Λ` is the required chart. -/
+theorem Submission.coarea_exists_straightening_chart : ∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m) (x₀ : Rn N), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → x₀ ∈ M → coareaJacobian M f x₀ ≠ 0 → ∃ (Ω : Set (WithLp 2 (Rn m × Rn k))) (O : Set (Rn N)) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N), IsOpen Ω ∧ IsOpen O ∧ x₀ ∈ O ∧ ContDiffOn ℝ 1 Ψ Ω ∧ InjOn Ψ Ω ∧ Ψ '' Ω = O ∩ M ∧ (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) ∧ (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) ∧ ∀ p ∈ Ω, tangentSpace M (Ψ p) = LinearMap.range (fderiv ℝ Ψ p).toLinearMap := by
+  intro N m k M U f x₀ hM hU hMU hf hT hx₀ hJ
+  -- A chart `(V, W, ψ)` of `M` at `x₀ = ψ a`.
+  obtain ⟨V, W, ψ, hx₀W, hψ⟩ := hM.exists_localRepresentation hx₀
+  obtain ⟨a, haV, rfl⟩ : x₀ ∈ ψ '' V := by rw [hψ.image_eq]; exact ⟨hx₀W, hx₀⟩
+  have hψVU : MapsTo ψ V U := fun x hx => by
+    have hx' : ψ x ∈ W ∩ M := by rw [← hψ.image_eq]; exact mem_image_of_mem ψ hx
+    exact hMU hx'.2
+  -- `G = f ∘ ψ` is `C¹` on `V`, and `DG(a) = Df(ψ a) ∘ Dψ(a)` is onto because `J*_f(ψ a) ≠ 0`.
+  have hGC : ContDiffOn ℝ 1 (f ∘ ψ) V := hf.comp hψ.contDiffOn hψVU
+  have hDG : fderiv ℝ (f ∘ ψ) a = (fderiv ℝ f (ψ a)).comp (fderiv ℝ ψ a) :=
+    fderiv_comp a ((hf.differentiableOn one_ne_zero).differentiableAt (hU.mem_nhds (hψVU haV)))
+      ((hψ.contDiffOn.differentiableOn one_ne_zero).differentiableAt
+        (hψ.isOpen_source.mem_nhds haV))
+  have hsurj : Function.Surjective (fderiv ℝ (f ∘ ψ) a) := by
+    rw [hDG]
+    by_contra hns
+    exact hJ (((Submission.coarea_jacobian_linear_algebra).1 N m (m + k) M f (ψ a)
+      (fderiv ℝ ψ a) (hT V W ψ hψ a haV)).2 hns)
+  -- The submersion chart `Λ` of `G` at `a`; then `Ψ = ψ ∘ Λ` is a chart of `M` near `x₀`.
+  obtain ⟨Ω, Λ, hΩ, hΛC, hΛinj, hΛΩ, haΛ, hΛV, hΛder, hGΛ⟩ :=
+    Submission.coarea_straightening_submersion_chart m k V (f ∘ ψ) a hψ.isOpen_source hGC haV
+      hsurj
+  obtain ⟨O, hO, hΨΩ, hΨC, hΨinj, hΨder, hΨT⟩ :=
+    Submission.coarea_straightening_reparametrize_chart N m k M V W ψ Ω Λ hψ (hT V W ψ hψ) hΩ
+      hΛC hΛinj hΛΩ hΛV hΛder
+  refine ⟨Ω, O, ψ ∘ Λ, hΩ, hO, ?_, hΨC, hΨinj, hΨΩ, hΨder, hGΛ, hΨT⟩
+  -- `x₀ = ψ a = Ψ p` for the `p ∈ Ω` with `Λ p = a`, so `x₀ ∈ Ψ(Ω) = O ∩ M`.
+  obtain ⟨p, hp, hpa⟩ := haΛ
+  have hpO : ψ (Λ p) ∈ O ∩ M := by rw [← hΨΩ]; exact ⟨p, hp, rfl⟩
+  rw [hpa] at hpO
+  exact hpO.1
 
 end GMT.Ch02
