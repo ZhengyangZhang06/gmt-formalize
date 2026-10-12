@@ -387,6 +387,7 @@ theorem Submission.coarea_null_slices_of_eilenberg : (∀ (N m k : ℕ), ∃ C :
     obtain ⟨i, hi, hzi⟩ := mem_iUnion₂.1 (hZT hz)
     exact mem_iUnion.2 ⟨⟨i, hi⟩, ⟨hz, hzi⟩, hfz⟩
   · exact measure_iUnion_null fun i => nonpos_iff_eq_zero.1 ((hg i y).trans (hy i).le)
+
 /-- **Slice integrals over a `C¹` chart** (steps 1–3 of the supplied proof of the chart formula
 for the `C¹` parametric co-area formula, Simon Ch. 3, (2.8)–(2.9)). Let `Φ` be an open partial
 homeomorphism from `ℝ^{m+k}` to `ℝᵐ × ℝᵏ` (Euclidean product) whose first component is `G` and
@@ -535,6 +536,7 @@ theorem Submission.pcoarea_chart_integrand_tonelli : ∀ (m k N : ℕ) (ψ : Rn 
   refine ⟨hFp.lintegral_prod_right', ?_⟩
   rw [← hmp.lintegral_comp hFm, Measure.volume_eq_prod]
   exact lintegral_prod _ hFp.aemeasurable
+
 /-- **Change of variables from `ℝⁿ` into `P = WithLp 2 (ℝᵐ × ℝᵏ)`** (`n = m + k`; Simon Ch. 3,
 (2.8)–(2.9), `chapter-03.txt` lines 412–436, via the `C¹` co-area formula Ch. 2 (6.3),
 `chapter-02.txt` lines 1462–1476, whose proof Simon omits; this is the injective
@@ -580,6 +582,7 @@ theorem Submission.pcoarea_chart_change_of_variables : ∀ (m k : ℕ) (f : Rn (
   rw [ContinuousLinearMap.det, ContinuousLinearMap.toLinearMap_comp, ← LinearMap.normDet_eq_abs_det,
     LinearMap.normDet_comp_of_finrank_eq _ _ (by rw [hfin, finrank_euclideanSpace_fin]), hE,
     one_mul]
+
 /-- **Pointwise Jacobian identity on a `C¹` chart** (steps 1 and 7 of the supplied proof of the
 chart formula for the `C¹` parametric co-area formula, Simon Ch. 3, (2.8)–(2.9)). Let `Φ` be an
 open partial homeomorphism from `ℝ^{m+k}` to `ℝᵐ × ℝᵏ` (Euclidean product) such that `Φ` and `Φ⁻¹`
@@ -659,6 +662,7 @@ theorem Submission.pcoarea_chart_pointwise_jacobian : ∀ (m k N : ℕ) (ψ : Rn
   -- Step 8: (FJ) with `A = Dψ(u)`, `Γ = DG(u)`, `T` and `E`.
   rw [hchain]
   exact hFJ (fderiv ℝ ψ u) (fderiv ℝ G u) T E hbij hfstT hE
+
 /-- **Area formula for a `C¹` map that is injective on an open parameter domain** (Simon Ch. 2,
 (3.2) and its weighted form (3.5), cf. (4.13)). Let `V ⊆ ℝᵏ` be open and `χ : ℝᵏ → ℝᴺ` be `C¹`
 and injective on `V`; no rank condition on `Dχ` is assumed. Then for every Borel `S ⊆ V` and
@@ -1218,6 +1222,7 @@ theorem Submission.pcoarea_c1_injOn_area_formula : ∀ (k N : ℕ) (V : Set (Rn 
   refine setLIntegral_congr_fun hS fun z hz => ?_
   simp only [Pi.mul_apply, hueq z hz]
   exact mul_comm _ _
+
 /-- **Block-triangular factorization of `normDet`** (steps 1 and 6 of the flat Jacobian identity
 for the co-area formula, Simon Ch. 3, (2.7)–(2.8)). Let `Γ : ℝ^{m+k} → ℝᵐ` be surjective and
 `S : ℝ^{m+k} → ℝᵏ` linear, let `T : ℝ^{m+k} → WithLp 2 (ℝᵐ × ℝᵏ)` have components `Γ` and `S`,
@@ -1281,6 +1286,7 @@ theorem Submission.pcoarea_flat_normDet_block : ∀ (m k : ℕ) (Γ : Rn (m + k)
     Matrix.det_fromBlocks_zero₁₂, norm_mul,
     ← LinearMap.normDet_eq_norm_det_toMatrix _ β₁ γ₁,
     ← LinearMap.normDet_eq_norm_det_toMatrix _ β₂ γ₂]
+
 /-- **Section identity for the flat co-area Jacobian** (steps (i) and (iv) of the flat-Jacobian
 computation behind Simon Ch. 3, (2.7)–(2.8)). Let `K ⊆ ℝⁿ` be a subspace with `dim K = k`,
 `ι_K : K → ℝⁿ` its inclusion, and `E : ℝᵏ → ℝⁿ` linear with range in `K` and left inverse
@@ -1372,6 +1378,7 @@ theorem Submission.pcoarea_flat_jacobian_identity : ∀ (m k N : ℕ) (A : Rn (m
   -- Step 7: combine.
   rw [hblock, ← hsec, hadj]
   ring
+
 /-- **Critical part of the parametric co-area formula** (parent steps 0(a) and 1). On
 `B ⊆ Crit = {u | DG(u) not surjective}` the Jacobian vanishes: `ker DG(u)* = (range DG(u))ᗮ ≠ 0`,
 so `normDet DG(u)* = 0` and the left side is `0`. On the right, `ψ` is `C¹` on the open set `D`,
@@ -1438,6 +1445,7 @@ theorem Submission.pcoarea_critical_part : ∀ (m k N : ℕ) (D : Set (Rn (m + k
       (measure_mono_null (inter_subset_inter_left _ hBcrit) hy))
   -- Step 4: the inner function is a.e. `0`, so it is a.e.-measurable and both sides are `0`.
   exact ⟨aemeasurable_const.congr hae.symm, by rw [hlhs, lintegral_congr_ae hae, lintegral_zero]⟩
+
 /-- **Implicit-function chart at a regular point** (step 2, L2, of the parametric co-area
 formula): if `G : ℝ^{m+k} → ℝᵐ` is `C¹` and `DG(u₀)` is onto, then `Φ = (G, π)`, restricted to a
 neighbourhood of `u₀` inside the open set `D`, is a `C¹` chart onto an open subset of
@@ -1582,6 +1590,7 @@ theorem Submission.pcoarea_formula_on_chart : ∀ (m k N : ℕ) (ψ : Rn (m + k)
   refine setLIntegral_congr_fun hBm (fun u hu ↦ ?_)
   rw [← hjac u (hB hu), ENNReal.ofReal_mul (LinearMap.normDet_nonneg _), Φ.left_inv (hB hu)]
   ring
+
 /-- **Lindelöf gluing of the parametric co-area identity**: the localization step of the proof of
 the `C¹` co-area formula (Simon Ch. 2, 6.3 and 6.6, whose proof Simon omits; [Fed69, 3.2.12,
 3.2.22]). Let `D ⊆ ℝⁿ` be open, `Z ⊆ ℝⁿ` arbitrary, `ψ : ℝⁿ → ℝᴺ` continuous and injective on `D`,
@@ -1706,6 +1715,7 @@ theorem Submission.pcoarea_gluing : ∀ (n N m k : ℕ) (D Z : Set (Rn n)) (ψ :
       _ = ∫⁻ y, ∑' t, (∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume :=
         (lintegral_tsum fun t ↦ (hPgood t φ hφ).1).symm
       _ = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by rw [hfun]
+
 /-- **Regular level slices of a `C¹` map have countably `k`-rectifiable `C¹` images**
 (Simon Ch. 2, proof of Theorem 6.4, `chapter-02.txt` lines 1476–1496: off the critical set the
 implicit function theorem makes `G⁻¹(y)` a `k`-dimensional `C¹` submanifold). At a point `u₀` of
@@ -1833,6 +1843,7 @@ theorem Submission.c1_regular_level_slice_image_countablyRectifiable : ∀ (m k 
   refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion (hTc.image _) ?_).mono hsub
   rintro _ ⟨i, -, rfl⟩
   exact hrect i
+
 /-- **`C¹` maps on open sets send `Hᵏ`-null sets to `Hᵏ`-null sets**: the critical-part step of
 the slice rectifiability in Simon Ch. 3, Remark 2.10(2) (`chapter-03.txt` lines 437–442). Each
 `u ∈ D` has an open `t u ∋ u` on which `ψ` is `K u`-Lipschitz (mean value inequality); by
@@ -1869,6 +1880,7 @@ theorem Submission.contDiffOn_image_euclideanHausdorff_null : ∀ (n N k : ℕ) 
         Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k
           ((hKt i).mono inter_subset_right)
     _ = 0 := by rw [measure_mono_null inter_subset_left hZ, mul_zero]
+
 /-- **Fine covers with small weighted image volume give `Hᵏ`-null slices** (the Fatou covering
 criterion behind Simon Ch. 2, p. 66, the consequence of (6.3) stated before 6.4,
 `chapter-02.txt` lines 1476–1478). Let `k > 0` and let `S ⊆ ℝⁿ` and `G : ℝⁿ → ℝᵐ` be arbitrary.
@@ -1940,6 +1952,7 @@ theorem Submission.critSlices_ae_slice_null_of_covers : ∀ (n m k : ℕ) (S : S
   have hμH : μH[(k : ℝ)] (S ∩ G ⁻¹' {y}) = 0 := le_antisymm (hH.trans hy.le) zero_le
   -- `μHE[k] = c_k • μH[k]`.
   rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hμH, smul_zero]
+
 /-- **Volume of a slab intersected with a ball**: for a unit vector `ν` of `ℝᵐ`,
 `Lᵐ{w : |⟨w - c, ν⟩| ≤ r, |w - c| ≤ R} ≤ 2r (2R)^{m-1}`. This is the slab estimate in a direct
 covering proof that critical slices are null (Simon Ch. 2, p. 66: the consequence of 6.3 stated
@@ -2089,6 +2102,7 @@ theorem Submission.critSlices_image_volume_le_of_fderiv_near : ∀ (n m : ℕ) (
         measure_mono hsub
     _ ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1)) :=
         Submission.critSlices_slab_volume_le m ν (G u₀) (ε * d) ((Λ + ε) * d) hν
+
 /-- **Subdivision of `[-R, R]ⁿ` into `Mⁿ` subcubes**: for `M > 0` and `R ≥ 0`, with side
 `s = 2R/M`, the closed cubes `Q_α = {u : -R + s αᵢ ≤ uᵢ ≤ -R + s (αᵢ + 1) for all i}`,
 `α : Fin n → Fin M`, are convex, lie in `closedBall 0 (√n R)`, have diameter at most `√n s` and
@@ -2342,6 +2356,7 @@ theorem Submission.c1_critical_slices_null : ∀ (m k : ℕ) (G : Rn (m + k) →
   refine measure_mono_null (fun u hu ↦ ?_) (measure_iUnion_null hy)
   obtain ⟨R, hR⟩ := exists_nat_ge ‖u‖
   exact mem_iUnion.2 ⟨R, ⟨hu.1, mem_closedBall_zero_iff.2 hR⟩, hu.2⟩
+
 /-- **`normDet` of an adjoint** (Simon Ch. 2, §6, co-area formula for linear maps,
 `chapter-02.txt` lines 1424–1461, and Ch. 3 (2.7), `chapter-03.txt` lines 412–419): for a linear
 map `P : X → Y` of finite-dimensional real inner product spaces, if `P` is surjective then
@@ -2390,6 +2405,7 @@ theorem Submission.coarea_normDet_adjoint_eq_horizontal : ∀ {X Y : Type} [Norm
     rw [LinearMap.normDet_eq_zero_iff_ker_ne_bot, ← LinearMap.orthogonal_range, ne_eq,
       Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
     exact hP
+
 /-- **Block-triangular factorization of `normDet`** (step 5 of the parent proof of
 `coarea_normDet_chain_rule`, the block form of `A`). Let `f : V → X` be a linear bijection,
 `K ⊆ V` a subspace and `W = f(K)ᗮ`. In orthonormal bases of `V = K ⊕ Kᗮ` and `X = f(K) ⊕ W`
@@ -2465,6 +2481,7 @@ theorem Submission.coarea_normDet_block_triangular : ∀ {V X : Type} [NormedAdd
       simp [g]
   -- Step 5: `det (fromBlocks M₁₁ M₁₂ 0 M₂₂) = det M₁₁ * det M₂₂`.
   rw [hM, Matrix.det_fromBlocks_zero₂₁]
+
 /-- **Horizontal step of the `normDet` chain rule** (step 6 of the supplied proof of the `normDet`
 chain rule behind the co-area Jacobian, Simon Ch. 3, (2.7)). Let `B : V → X` be bijective,
 `Γ = L ∘ B`, `K = ker Γ` and `W = (ker L)ᗮ`. Since `Wᗮ = ker L`, the restriction of `Γ` to `Kᗮ`
@@ -2647,6 +2664,7 @@ theorem Submission.c1_level_slices_countablyRectifiable : ∀ (m k N : ℕ) (D :
   · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero
       (Submission.contDiffOn_image_euclideanHausdorff_null (m + k) N k D _ ψ hD hψ
         inter_subset_left (measure_mono_null inter_subset_right hy))
+
 /-- **Lipschitz open chart pieces** (Simon Ch. 3, Lemma 1.2 and Remark 1.3, `chapter-03.txt`
 lines 25–73, for the embedded `C¹` submanifolds of Ch. 2, (4.1)). Let `U` be open, `M ⊆ U`, `f`
 locally Lipschitz on `U`, and `M ⊆ N₀ ∪ ⋃ᵢ Sᵢ` with every `Sᵢ` an `n`-dimensional embedded `C¹`
@@ -2742,6 +2760,7 @@ theorem Submission.submanifold_cover_lipschitz_open_charts : ∀ (n N m : ℕ) (
   show ψ i y u ∈ (g α).2 '' (g α).1
   rw [hα]
   exact mem_image_of_mem _ huB
+
 /-- **First-order agreement of a Lipschitz map on an open set with `C¹` maps**, Simon Ch. 3,
 proof of the area formula (2.4) (`chapter-03.txt` lines 376–381), used again for the co-area
 formula (2.8) (lines 426–428). Assume the `C¹` Approximation Theorem (Simon Ch. 2, Thm. 1.5,
@@ -2842,241 +2861,6 @@ theorem Submission.rectifiable_c1_chart_pieces : SubmanifoldCoverCharacterizatio
   refine hxE (mem_iUnion.2 ⟨Nat.pair α i, ?_⟩)
   simp only [Nat.unpair_pair]
   exact mem_image_of_mem _ hi
-/-- **`normDet` of an adjoint** (Simon Ch. 2, §6, co-area formula for linear maps,
-`chapter-02.txt` lines 1424–1461, and Ch. 3 (2.7), `chapter-03.txt` lines 412–419): for a linear
-map `P : X → Y` of finite-dimensional real inner product spaces, if `P` is surjective then
-`normDet P* = normDet (P ∘ ι)` with `ι` the inclusion of `(ker P)ᗮ`, and otherwise
-`normDet P* = 0`. The horizontal map `h = P ∘ ι` is an isomorphism, `P*` corestricts to `h*`
-(as `range P* = (ker P)ᗮ`), and in orthonormal bases with a common index the matrix of `h*` is
-the transpose of that of `h`. If `P` is not surjective, `ker P* = (range P)ᗮ ≠ 0`. -/
-theorem Submission.coarea_normDet_adjoint_eq_horizontal : ∀ {X Y : Type} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (P : X →ₗ[ℝ] Y), (Function.Surjective P → (LinearMap.adjoint P).normDet = (P ∘ₗ (LinearMap.ker P)ᗮ.subtype).normDet) ∧ (¬ Function.Surjective P → (LinearMap.adjoint P).normDet = 0) := by
-  intro X Y _ _ _ _ _ _ P
-  refine ⟨fun hP => ?_, fun hP => ?_⟩
-  · set H := (LinearMap.ker P)ᗮ
-    set h : H →ₗ[ℝ] Y := P ∘ₗ H.subtype with hh
-    -- `h` is injective, as `ker P ⊓ (ker P)ᗮ = ⊥`.
-    have hinj : Function.Injective h := by
-      rw [← LinearMap.ker_eq_bot, eq_bot_iff]
-      intro u hu
-      have hz : (u : X) ∈ LinearMap.ker P ⊓ H := ⟨hu, u.property⟩
-      rw [Submodule.inf_orthogonal_eq_bot] at hz
-      exact (Submodule.mem_bot ℝ).mpr (Subtype.ext ((Submodule.mem_bot ℝ).mp hz))
-    -- `h` is surjective: `P x = h (x - π x)` with `π` the orthogonal projection onto `ker P`.
-    have hsurj : Function.Surjective h := by
-      intro y
-      obtain ⟨x, rfl⟩ := hP y
-      refine ⟨⟨x - (LinearMap.ker P).starProjection x,
-        Submodule.sub_starProjection_mem_orthogonal x⟩, ?_⟩
-      simp [hh, (LinearMap.mem_ker).mp ((LinearMap.ker P).starProjection_apply_mem x)]
-    have hd : finrank ℝ H = finrank ℝ Y := (LinearEquiv.ofBijective h ⟨hinj, hsurj⟩).finrank_eq
-    -- `P*` takes values in `H = (ker P)ᗮ = range P*`, and its corestriction to `H` is `h*`.
-    have hm : ∀ y, LinearMap.adjoint P y ∈ H := by
-      intro y
-      rw [show H = LinearMap.range (LinearMap.adjoint P) from LinearMap.orthogonal_ker P]
-      exact ⟨y, rfl⟩
-    have ha : (LinearMap.adjoint P).codRestrict H hm = LinearMap.adjoint h := by
-      apply (LinearMap.eq_adjoint_iff _ _).mpr
-      intro y u
-      exact LinearMap.adjoint_inner_left P (u : X) y
-    rw [← LinearMap.normDet_codRestrict hm, ha]
-    -- In orthonormal bases indexed by the same `Fin d`, the matrix of `h*` is `Mᴴ = Mᵀ`.
-    classical
-    let bH := stdOrthonormalBasis ℝ H
-    let bY := (stdOrthonormalBasis ℝ Y).reindex (finCongr hd.symm)
-    rw [(LinearMap.adjoint h).normDet_eq_norm_det_toMatrix bY bH,
-      h.normDet_eq_norm_det_toMatrix bH bY, LinearMap.toMatrix_adjoint, Matrix.det_conjTranspose]
-    simp
-  · -- `ker P* = (range P)ᗮ ≠ ⊥`, since `range P ≠ ⊤`.
-    rw [LinearMap.normDet_eq_zero_iff_ker_ne_bot, ← LinearMap.orthogonal_range, ne_eq,
-      Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
-    exact hP
-/-- **Block-triangular factorization of `normDet`** (step 5 of the parent proof of
-`coarea_normDet_chain_rule`, the block form of `A`). Let `f : V → X` be a linear bijection,
-`K ⊆ V` a subspace and `W = f(K)ᗮ`. In orthonormal bases of `V = K ⊕ Kᗮ` and `X = f(K) ⊕ W`
-indexed by `Fin r ⊕ Fin s` (`r = dim K = dim f(K)`, `s = dim Kᗮ = dim W`), the matrix of `f` is
-`fromBlocks M₁₁ M₁₂ 0 M₂₂`: `M₁₁` is the matrix of `f|_K : K → f(K)`, the lower-left block
-vanishes because `W ⊥ f(K)`, and `M₂₂` is the matrix of `p_W ∘ f ∘ ι_{Kᗮ}` because
-`⟪w, x⟫ = ⟪w, p_W x⟫` for `w ∈ W`. Hence `normDet f = |det M₁₁| · |det M₂₂|`, and
-`|det M₁₁| = normDet (f ∘ ι_K)` since corestricting to `f(K)` does not change `normDet`. -/
-theorem Submission.coarea_normDet_block_triangular : ∀ {V X : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] (f : V →ₗ[ℝ] X) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective f → W = (K.map f)ᗮ → f.normDet = (f ∘ₗ K.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype).normDet := by
-  intro V X _ _ _ _ _ _ f K W hf hW
-  classical
-  -- Notation: `F = f(K)`, so `W = Fᗮ`.
-  obtain ⟨F, hF⟩ : ∃ F : Submodule ℝ X, F = K.map f := ⟨_, rfl⟩
-  rw [← hF] at hW
-  -- Step 1: dimensions, `dim F = dim K` and `dim W = dim Kᗮ`.
-  have hr : finrank ℝ F = finrank ℝ K := by
-    rw [hF]; exact (Submodule.equivMapOfInjective f hf.1 K).finrank_eq.symm
-  have hVX : finrank ℝ V = finrank ℝ X := (LinearEquiv.ofBijective f hf).finrank_eq
-  have e1 := Submodule.finrank_add_finrank_orthogonal K
-  have e2 := Submodule.finrank_add_finrank_orthogonal F
-  rw [← hW] at e2
-  have hs : finrank ℝ W = finrank ℝ Kᗮ := by omega
-  -- Steps 2–3: orthonormal bases of `K`, `Kᗮ`, `F`, `W`; adapted bases `β` of `V`, `γ` of `X`.
-  let b₁ := stdOrthonormalBasis ℝ K
-  let b₂ := stdOrthonormalBasis ℝ Kᗮ
-  let c₁ : OrthonormalBasis (Fin (finrank ℝ K)) ℝ F :=
-    (stdOrthonormalBasis ℝ F).reindex (finCongr hr)
-  let c₂ : OrthonormalBasis (Fin (finrank ℝ Kᗮ)) ℝ W :=
-    (stdOrthonormalBasis ℝ W).reindex (finCongr hs)
-  let c₂' : OrthonormalBasis (Fin (finrank ℝ Kᗮ)) ℝ Fᗮ := c₂.map (LinearIsometryEquiv.ofEq _ _ hW)
-  let β := (b₁.prod b₂).map K.orthogonalDecomposition.symm
-  let γ := (c₁.prod c₂').map F.orthogonalDecomposition.symm
-  have hβl : ∀ i, β (Sum.inl i) = (b₁ i : V) := by intro i; simp [β]
-  have hβr : ∀ j, β (Sum.inr j) = (b₂ j : V) := by intro j; simp [β]
-  have hγl : ∀ i, γ (Sum.inl i) = (c₁ i : X) := by intro i; simp [γ]
-  have hγr : ∀ j, γ (Sum.inr j) = (c₂ j : X) := by intro j; simp [γ, c₂']
-  -- The diagonal blocks: `f_K : K → F` and `g = p_W ∘ f ∘ ι_{Kᗮ} : Kᗮ → W`.
-  have hmemF : ∀ k : K, f k ∈ F := fun k => hF ▸ Submodule.mem_map_of_mem k.2
-  let fK : K →ₗ[ℝ] F := (f ∘ₗ K.subtype).codRestrict F (fun k => hmemF k)
-  let g : Kᗮ →ₗ[ℝ] W := (W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype
-  -- Steps 6–7: `normDet = |det|` in square orthonormal bases; `normDet (f ∘ ι_K) = normDet f_K`.
-  have h1 : (f ∘ₗ K.subtype).normDet = fK.normDet := (LinearMap.normDet_codRestrict _).symm
-  rw [h1, LinearMap.normDet_eq_norm_det_toMatrix f β γ,
-    LinearMap.normDet_eq_norm_det_toMatrix fK b₁ c₁, LinearMap.normDet_eq_norm_det_toMatrix g b₂ c₂,
-    ← norm_mul]
-  congr 1
-  -- Step 4: the matrix of `f` in `β`, `γ` is block upper triangular.
-  have hM : LinearMap.toMatrix β.toBasis γ.toBasis f =
-      Matrix.fromBlocks (LinearMap.toMatrix b₁.toBasis c₁.toBasis fK)
-        (Matrix.of fun i j => inner ℝ (c₁ i : X) (f (b₂ j))) 0
-        (LinearMap.toMatrix b₂.toBasis c₂.toBasis g) := by
-    ext a b
-    rcases a with i | i <;> rcases b with j | j
-    · -- (a) the `K → F` block is the matrix of `f_K`.
-      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
-        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₁₁,
-        hβl, hγl]
-      rfl
-    · -- (d) the unconstrained block `M₁₂`.
-      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
-        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₁₂,
-        hβr, hγl, Matrix.of_apply]
-    · -- (b) `W ⊥ F` kills the `K → W` block.
-      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
-        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₂₁,
-        hβl, hγr, Matrix.zero_apply]
-      have hmem : (c₂ i : X) ∈ Fᗮ := hW ▸ (c₂ i).2
-      exact Submodule.inner_left_of_mem_orthogonal (hmemF (b₁ j)) hmem
-    · -- (c) `⟪w, x⟫ = ⟪w, p_W x⟫` for `w ∈ W`: the `Kᗮ → W` block is the matrix of `g`.
-      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
-        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₂₂,
-        hβr, hγr]
-      simp [g]
-  -- Step 5: `det (fromBlocks M₁₁ M₁₂ 0 M₂₂) = det M₁₁ * det M₂₂`.
-  rw [hM, Matrix.det_fromBlocks_zero₂₁]
-/-- **Horizontal step of the `normDet` chain rule** (step 6 of the supplied proof of the `normDet`
-chain rule behind the co-area Jacobian, Simon Ch. 3, (2.7)). Let `B : V → X` be bijective,
-`Γ = L ∘ B`, `K = ker Γ` and `W = (ker L)ᗮ`. Since `Wᗮ = ker L`, the restriction of `Γ` to `Kᗮ`
-factors as `L|_W ∘ (p_W ∘ B|_{Kᗮ})`, and `B(K) = ker L` gives `dim Kᗮ = dim W`; hence
-`normDet (Γ|_{Kᗮ}) = normDet (L|_W) · normDet (p_W ∘ B|_{Kᗮ})`. -/
-theorem Submission.coarea_normDet_horizontal_comp : ∀ {V X Y : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (B : V →ₗ[ℝ] X) (L : X →ₗ[ℝ] Y) (Γ : V →ₗ[ℝ] Y) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective B → (∀ v, Γ v = L (B v)) → K = LinearMap.ker Γ → W = (LinearMap.ker L)ᗮ → (Γ ∘ₗ Kᗮ.subtype).normDet = (L ∘ₗ W.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype).normDet := by
-  intro V X Y _ _ _ _ _ _ _ _ _ B L Γ K W hB hΓ hK hW
-  -- `Wᗮ = (ker L)ᗮᗮ = ker L`.
-  have hWperp : Wᗮ = LinearMap.ker L := by
-    rw [hW, Submodule.orthogonal_orthogonal]
-  -- `Γ ∘ ι_{Kᗮ} = (L ∘ ι_W) ∘ (p_W ∘ B ∘ ι_{Kᗮ})`, since `B u - p_W (B u) ∈ Wᗮ = ker L`.
-  have hcomp : Γ ∘ₗ Kᗮ.subtype =
-      (L ∘ₗ W.subtype) ∘ₗ ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype) := by
-    refine LinearMap.ext fun u ↦ ?_
-    simp only [LinearMap.comp_apply, Submodule.subtype_apply, ContinuousLinearMap.coe_coe]
-    have h : B u - (W.orthogonalProjectionOnto (B u) : X) ∈ Wᗮ :=
-      Submodule.sub_starProjection_mem_orthogonal (K := W) (B u)
-    rw [hWperp, LinearMap.mem_ker, map_sub, sub_eq_zero] at h
-    rw [hΓ]
-    exact h
-  -- `ker L = B(K)`, using that `B` is surjective.
-  have hker : LinearMap.ker L = K.map B := by
-    ext t
-    constructor
-    · intro ht
-      obtain ⟨v, rfl⟩ := hB.2 t
-      refine ⟨v, ?_, rfl⟩
-      rw [SetLike.mem_coe, hK, LinearMap.mem_ker, hΓ]
-      exact LinearMap.mem_ker.mp ht
-    · rintro ⟨v, hv, rfl⟩
-      rw [SetLike.mem_coe, hK, LinearMap.mem_ker, hΓ] at hv
-      exact hv
-  -- `dim Kᗮ = dim V - dim K = dim X - dim (ker L) = dim W`.
-  have hfin : finrank ℝ Kᗮ = finrank ℝ W := by
-    have e1 := Submodule.finrank_add_finrank_orthogonal K
-    have e2 := Submodule.finrank_add_finrank_orthogonal (LinearMap.ker L)
-    rw [← hW] at e2
-    have e3 := (LinearEquiv.ofBijective B hB).finrank_eq
-    have e4 := (Submodule.equivMapOfInjective B hB.1 K).finrank_eq
-    rw [← hker] at e4
-    omega
-  -- Multiplicativity of `normDet` for a composition through an equal-dimensional space.
-  rw [hcomp]
-  exact LinearMap.normDet_comp_of_finrank_eq _ _ hfin
-
-/-- **Chain rule for the co-area factor** (Simon Ch. 3, (2.7)–(2.8), `chapter-03.txt`
-lines 412–428, where `J^{M*}_f` is reduced to the `C¹` case along charts): let `A : ℝⁿ → ℝᴺ` be
-injective with range `T`, `L : T → ℝᵐ` linear and `Γ = L ∘ A`. Then
-`normDet L* · normDet A = normDet (A ∘ ι_{ker Γ}) · normDet Γ*`.
-The corestriction `A' : ℝⁿ → T` of `A` is bijective with the same `normDet`, `Γ = L ∘ A'` and
-`range L = range Γ`. If `Γ` is not surjective, both adjoints have `normDet` zero
-(`Submission.coarea_normDet_adjoint_eq_horizontal`). Otherwise `normDet P* = normDet (P ∘ ι)` for
-the inclusion `ι` of `(ker P)ᗮ`, `P = L, Γ`; `ker L = A'(K)` for `K = ker Γ`, and with
-`W = (ker L)ᗮ`, `g = p_W ∘ A' ∘ ι_{Kᗮ}`:
-`normDet A' = normDet (A' ∘ ι_K) · normDet g` (`Submission.coarea_normDet_block_triangular`) and
-`normDet (Γ ∘ ι_{Kᗮ}) = normDet (L ∘ ι_W) · normDet g`
-(`Submission.coarea_normDet_horizontal_comp`). -/
-theorem Submission.coarea_normDet_chain_rule : ∀ (n N m : ℕ) (T : Submodule ℝ (Rn N))
-    (A : Rn n →ₗ[ℝ] Rn N) (L : T →ₗ[ℝ] Rn m) (Γ : Rn n →ₗ[ℝ] Rn m), Function.Injective A →
-    LinearMap.range A = T → (∀ (v : Rn n) (hv : A v ∈ T), Γ v = L ⟨A v, hv⟩) →
-    (LinearMap.adjoint L).normDet * A.normDet =
-      (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet := by
-  intro n N m T A L Γ hA hT hΓ
-  -- Step 1(i): `A` corestricts to a bijection `A' : ℝⁿ → T` with `Γ = L ∘ A'`; corestricting
-  -- does not change `normDet`.
-  have hmem : ∀ v, A v ∈ T := fun v ↦ hT ▸ LinearMap.mem_range_self A v
-  obtain ⟨A', hA'⟩ : ∃ A' : Rn n →ₗ[ℝ] T, A' = A.codRestrict T hmem := ⟨_, rfl⟩
-  have hA'v : ∀ v, (A' v : Rn N) = A v := fun v ↦ by rw [hA']; rfl
-  have hbij : Function.Bijective A' := by
-    refine ⟨fun v w h ↦ hA (by rw [← hA'v, ← hA'v, h]), ?_⟩
-    rintro ⟨t, ht⟩
-    obtain ⟨v, rfl⟩ : t ∈ LinearMap.range A := hT ▸ ht
-    exact ⟨v, Subtype.ext (hA'v v)⟩
-  have hΓA' : ∀ v, Γ v = L (A' v) := fun v ↦ by
-    rw [hΓ v (hmem v)]
-    exact congrArg L (Subtype.ext (hA'v v).symm)
-  have hnA : A.normDet = A'.normDet := by
-    rw [hA', LinearMap.normDet_codRestrict]
-  obtain ⟨K, hK⟩ : ∃ K : Submodule ℝ (Rn n), K = LinearMap.ker Γ := ⟨_, rfl⟩
-  rw [← hK]
-  have hnAK : (A ∘ₗ K.subtype).normDet = (A' ∘ₗ K.subtype).normDet := by
-    have hKT : ∀ k : K, (A ∘ₗ K.subtype) k ∈ T := fun k ↦ hmem k
-    have h : A' ∘ₗ K.subtype = (A ∘ₗ K.subtype).codRestrict T hKT :=
-      LinearMap.ext fun k ↦ Subtype.ext (hA'v k)
-    rw [h, LinearMap.normDet_codRestrict]
-  -- Step 2: `range L = range Γ`, since `A'` is onto `T`; so `L` is onto iff `Γ` is.
-  by_cases hsurj : Function.Surjective Γ
-  · -- Step 4: `normDet P* = normDet (P ∘ ι_{(ker P)ᗮ})` for `P = L, Γ`, and `ker L = A'(K)`.
-    have hLsurj : Function.Surjective L := fun y ↦ by
-      obtain ⟨v, hv⟩ := hsurj y
-      exact ⟨A' v, (hΓA' v).symm.trans hv⟩
-    rw [(Submission.coarea_normDet_adjoint_eq_horizontal L).1 hLsurj,
-      (Submission.coarea_normDet_adjoint_eq_horizontal Γ).1 hsurj, ← hK]
-    have hker : LinearMap.ker L = K.map A' := by
-      rw [hK, show Γ = L ∘ₗ A' from LinearMap.ext hΓA', LinearMap.ker_comp,
-        Submodule.map_comap_eq_of_surjective hbij.2]
-    obtain ⟨W, hW⟩ : ∃ W : Submodule ℝ T, W = (LinearMap.ker L)ᗮ := ⟨_, rfl⟩
-    rw [← hW]
-    -- Step 5: `A'` is block triangular along `K ⊕ Kᗮ → A'(K) ⊕ W`.
-    have hblock := Submission.coarea_normDet_block_triangular A' K W hbij (by rw [hW, hker])
-    -- Step 6: `Γ ∘ ι_{Kᗮ} = (L ∘ ι_W) ∘ (p_W ∘ A' ∘ ι_{Kᗮ})`.
-    have hstep := Submission.coarea_normDet_horizontal_comp A' L Γ K W hbij hΓA' hK hW
-    -- Step 7.
-    rw [hnA, hblock, hnAK, hstep]
-    ring
-  · -- Step 3: neither `L` nor `Γ` is onto, so both adjoints have `normDet` zero.
-    have hLsurj : ¬ Function.Surjective L := fun hL ↦ hsurj fun y ↦ by
-      obtain ⟨t, ht⟩ := hL y
-      obtain ⟨v, rfl⟩ := hbij.2 t
-      exact ⟨v, (hΓA' v).trans ht⟩
-    rw [(Submission.coarea_normDet_adjoint_eq_horizontal L).2 hLsurj,
-      (Submission.coarea_normDet_adjoint_eq_horizontal Γ).2 hsurj, zero_mul, mul_zero]
 
 /-- **Simon Ch. 3, 2.1–2.2 and (2.7)** (`chapter-03.txt` lines 335–360 and 412–418), along a
 chart: let `A : ℝⁿ → ℝᴺ` be injective with `range A` a weighted approximate tangent plane of `M`
@@ -3127,6 +2911,7 @@ theorem Submission.chart_coarea_jacobian_identification : ∀ (n N m : ℕ) (M :
     hA rfl fun v hv ↦ ?_
   show Γ v = L ⟨A v, hv⟩
   rw [show (⟨A v, hv⟩ : T) = e v from Subtype.ext (he v).symm, hLe]
+
 /-- **Simon Ch. 3, co-area formula (2.9) on one `C¹` chart piece** (`chapter-03.txt` lines
 412–428: (2.8) "follows from the `C¹` case … in a similar manner to the procedure used for the
 discussion of the area formula", lines 377–389). Assume the chart lemma (CT), the frozen
@@ -3148,6 +2933,125 @@ is a measurable embedding (Lusin–Souslin), so `∫_B g dHⁿ = ∫_{B'} Jψ(u)
 `J^{M*}_f(ψ u) Jψ(u) = normDet(Dψ(u) ∘ ι_{ker DG(u)}) normDet(DG(u)*)`, the `C¹` integrand, for
 `Lⁿ`-a.e. `u ∈ B'` (`D(f ∘ ψ)(u) = DG(u)` on `E`). -/
 theorem Submission.chart_piece_coarea_formula : (∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ)))
+    (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)),
+    NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U →
+    LocallyLipschitzOn U f → IsOpen V → ContDiffOn ℝ 1 ψ V →
+    (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
+      HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+          (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧
+        DifferentiableAt ℝ (f ∘ ψ) u ∧
+        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) →
+    ∀ (m k ℓ : ℕ) (M U : Set (Rn (m + k + ℓ))) (θ : Rn (m + k + ℓ) → ℝ)
+      (f : Rn (m + k + ℓ) → Rn m) (D E : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn (m + k + ℓ))
+      (G : Rn (m + k) → Rn m),
+      0 < k → NullMeasurableSet M μHE[m + k] → IsPositiveLocallyIntegrableWeight (m + k) M θ →
+      IsOpen U → M ⊆ U → LocallyLipschitzOn U f → IsOpen D → ContDiffOn ℝ 1 ψ D → InjOn ψ D →
+      (∃ K, LipschitzOnWith K ψ D) → (∀ u ∈ D, Function.Injective (fderiv ℝ ψ u)) →
+      ContDiff ℝ 1 G → MeasurableSet E → E ⊆ D →
+      (∀ u ∈ E, f (ψ u) = G u ∧ HasFDerivAt (f ∘ ψ) (fderiv ℝ G u) u) →
+      ∀ B ⊆ ψ '' E ∩ M, MeasurableSet B → ∀ φ : Rn (m + k + ℓ) → ℝ≥0∞, Measurable φ →
+        AEMeasurable (fun y : Rn m ↦ ∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) volume ∧
+          ∫⁻ x in B, φ x * ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ x) f x)
+              ∂μHE[m + k] =
+            ∫⁻ y, (∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) ∂volume := by
+  intro hCT m k ℓ M U θ f D E ψ G hk hM hθ hU hMU hf hD hψ hψinj _ hψD hG hE hED hEG
+    B hB hBm φ hφ
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · -- `m = 0`: `ℝ⁰` is a point carrying the unit mass, `J^{M*}_f ≡ 1` and every slice is `B`.
+    refine ⟨Subsingleton.measurable.aemeasurable, ?_⟩
+    have hslice : ∀ y : Rn 0, B ∩ f ⁻¹' {y} = B := fun y ↦
+      inter_eq_left.2 fun x _ ↦ Subsingleton.elim (f x) y
+    have hJ : ∀ x, coareaJacobian (approxTangentPlane (0 + k) M θ x) f x = 1 := fun x ↦
+      LinearMap.normDet_of_subsingleton _
+    have hμ : (μHE[0 + k] : Measure (Rn (0 + k + ℓ))) = μHE[k] :=
+      congrArg (fun d ↦ (μHE[d] : Measure (Rn (0 + k + ℓ)))) (Nat.zero_add k)
+    simp only [hslice, hJ, hμ, ENNReal.ofReal_one, mul_one, lintegral_const,
+      volume_euclideanSpace_eq_dirac, measure_univ]
+  -- The Borel parameter set `B' = E ∩ ψ⁻¹(B)`, with `ψ(B') = B`.
+  set B' : Set (Rn (m + k)) := E ∩ ψ ⁻¹' B with hB'
+  have hB'D : B' ⊆ D := inter_subset_left.trans hED
+  have hB'm : MeasurableSet B' := by
+    have h := hE.subtype_image (((hψ.continuousOn.mono hED).domRestrict.measurable) hBm)
+    rwa [domRestrict_eq, preimage_comp, Subtype.image_preimage_coe] at h
+  have himage : ψ '' B' = B := by
+    rw [hB', image_inter_preimage]
+    exact inter_eq_right.2 fun x hx ↦ (hB hx).1
+  -- Slices: `B ∩ f⁻¹(y) = ψ(B' ∩ G⁻¹(y))`, since `f ∘ ψ = G` on `E`.
+  have hslice : ∀ y, ψ '' (B' ∩ G ⁻¹' {y}) = B ∩ f ⁻¹' {y} := by
+    intro y
+    ext x
+    constructor
+    · rintro ⟨u, ⟨⟨huE, hux⟩, huy⟩, rfl⟩
+      refine ⟨hux, ?_⟩
+      rw [mem_preimage, (hEG u huE).1]
+      exact huy
+    · rintro ⟨hxB, hxy⟩
+      obtain ⟨u, huE, rfl⟩ := (hB hxB).1
+      refine ⟨u, ⟨⟨huE, hxB⟩, ?_⟩, rfl⟩
+      rw [mem_preimage, ← (hEG u huE).1]
+      exact hxy
+  -- Right side: the `C¹` parametric co-area formula on `B'`.
+  obtain ⟨hmeas, hc1⟩ := Submission.c1_parametric_coarea_formula m k (m + k + ℓ) D ψ G hm hk hD
+    hψ hψinj hG B' hB'D hB'm φ hφ
+  simp only [hslice] at hmeas hc1
+  refine ⟨hmeas, ?_⟩
+  rw [← hc1]
+  -- Left side: `Hⁿ ⌞ B` is the image of `Jψ Lⁿ ⌞ B'` under the measurable embedding `ψ|_{B'}`
+  -- (Lusin–Souslin), by the `C¹` area formula on the Borel sets `B' ∩ ψ⁻¹(T)`.
+  have hndcont : Continuous fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦ L.toLinearMap.normDet := by
+    have h1 : Continuous (fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦
+        ContinuousLinearMap.adjoint L ∘L L) :=
+      ContinuousLinearMap.adjoint.continuous.clm_comp continuous_id
+    have h2 : Continuous (fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦
+        Real.sqrt (ContinuousLinearMap.adjoint L ∘L L).det) :=
+      Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp h1)
+    refine h2.congr fun L ↦ ?_
+    rw [← ContinuousLinearMap.normDet_sq L]
+    exact Real.sqrt_sq (LinearMap.normDet_nonneg _)
+  have hwm : Measurable fun u ↦ ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet :=
+    ENNReal.measurable_ofReal.comp (hndcont.measurable.comp (measurable_fderiv ℝ ψ))
+  have hemb : MeasurableEmbedding (B'.domRestrict ψ) :=
+    ContinuousOn.measurableEmbedding hB'm (hψ.continuousOn.mono hB'D) (hψinj.mono hB'D)
+  have hmap : Measure.map (B'.domRestrict ψ) (Measure.comap Subtype.val
+      (volume.withDensity fun u ↦ ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet)) =
+      (μHE[m + k] : Measure (Rn (m + k + ℓ))).restrict B := by
+    ext T hT
+    have hS : Subtype.val '' (B'.domRestrict ψ ⁻¹' T) = B' ∩ ψ ⁻¹' T := by
+      rw [domRestrict_eq, preimage_comp, Subtype.image_preimage_coe]
+    have hSm : MeasurableSet (B' ∩ ψ ⁻¹' T) := hS ▸ hB'm.subtype_image (hemb.measurable hT)
+    have hTB : T ∩ B = ψ '' (B' ∩ ψ ⁻¹' T) := by rw [image_inter_preimage, himage, inter_comm]
+    have h := Submission.pcoarea_c1_injOn_area_formula (m + k) (m + k + ℓ) D ψ hD hψ hψinj
+      (B' ∩ ψ ⁻¹' T) (inter_subset_left.trans hB'D) hSm 1 measurable_const
+    simp only [Pi.one_apply, one_mul, setLIntegral_one] at h
+    rw [hemb.map_apply, comap_subtype_coe_apply hB'm, hS, withDensity_apply _ hSm,
+      Measure.restrict_apply hT, hTB, h]
+  -- Hence `∫_B g dHⁿ = ∫_{B'} Jψ (g ∘ ψ) dLⁿ` for the (possibly non-measurable) integrand `g`.
+  have harea : ∫⁻ x in B, φ x * ENNReal.ofReal
+        (coareaJacobian (approxTangentPlane (m + k) M θ x) f x) ∂μHE[m + k] =
+      ∫⁻ u in B', ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet * (φ (ψ u) *
+        ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u))) := by
+    rw [← hmap, hemb.lintegral_map]
+    simp only [domRestrict_apply]
+    rw [lintegral_subtype_comap hB'm (fun u ↦ φ (ψ u) *
+        ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u))),
+      setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable _ hwm _ hB'm
+        (ae_of_all _ fun _ ↦ ENNReal.ofReal_lt_top)]
+    rfl
+  rw [harea]
+  -- Pointwise for a.e. `u ∈ B'`: `J^{M*}_f(ψ u) Jψ(u)` is the integrand of the `C¹` formula.
+  refine setLIntegral_congr_fun_ae hB'm ?_
+  filter_upwards [hCT (m + k) ℓ m M U θ f D ψ hM hθ hU hMU hf hD hψ hψD] with u hu huB'
+  have huM : ψ u ∈ M := (hB huB'.2).2
+  obtain ⟨htan, -, hline⟩ := hu (hB'D huB') huM
+  rw [(hEG u huB'.1).2.fderiv] at hline
+  have hJ := (Submission.chart_coarea_jacobian_identification (m + k) (m + k + ℓ) m M θ f (ψ u)
+    (fderiv ℝ ψ u) (fderiv ℝ G u) (hθ.1 _ huM).ne' (hψD u (hB'D huB')) htan hline).2.2
+  have hJ0 : 0 ≤ coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u) :=
+    LinearMap.normDet_nonneg _
+  rw [← hJ, ENNReal.ofReal_mul hJ0]
+  ring
+
 /-- **Derivative bounds for a `C¹` chart with upper and lower Lipschitz bounds** (Simon Ch. 3, the
 `C¹` charts in the proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 113–143, and Remark 1.5(2)).
 Let `B ⊆ ℝⁿ` be open and `ψ : ℝⁿ → ℝᴺ` be `C¹` and `K`-Lipschitz on `B`, with
@@ -3184,6 +3088,7 @@ theorem Submission.chartTD_chart_fderiv_bounds : ∀ (n N : ℕ) (B : Set (Rn n)
   rw [inv_inv, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 htpos.le)]
   calc c * ‖w‖ = t⁻¹ * (c * (t * ‖w‖)) := by field_simp
     _ ≤ t⁻¹ * ‖ψ (v + t • w) - ψ v‖ := by gcongr
+
 /-- **Operator-norm bound for the area factor** (Simon Ch. 2, linear area formula (3.1),
 `chapter-02.txt` lines 742–758, and the Lipschitz image estimate Thm. 1.8(i), lines 268–275):
 for every linear map `A : ℝⁿ → ℝᴺ`, `normDet A = √det(A* A) ≤ ‖A‖ⁿ`. On the closed unit ball
@@ -3212,6 +3117,7 @@ theorem Submission.chartTD_normDet_le_opNorm_pow : ∀ (n N : ℕ) (A : Rn n →
     rw [ENNReal.ofReal_pow (norm_nonneg _)]
     simpa [ofReal_norm, enorm_eq_nnnorm] using h3
   exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp h4
+
 /-- **Injective area formula on an open Lipschitz domain, in integral form** (Simon Ch. 2, (3.2)
 and (3.5), `chapter-02.txt` lines 743–797). Let `B ⊆ ℝⁿ` be open, `ψ : ℝⁿ → ℝᴺ` `K`-Lipschitz
 and injective on `B`, and `g : ℝᴺ → ℝ` continuous. Then `∫_{ψ(B)} g dHⁿ = ∫_B g(ψ v) Jψ(v) dv`
@@ -4064,6 +3970,7 @@ theorem Submission.chartTD_chart_blowup_integral_tendsto : ∀ (n N : ℕ) (B : 
   refine hDCT.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with r hr
   exact (hsub r hr).symm
+
 /-- **Vanishing normalized density of `|w|` kills the normalized blow-up integrals of `f w`**
 (Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 127–140, with a weight `w` as in
 Remark 1.8(1), lines 298–306): if `w` is `Hⁿ`-integrable on `S ∩ B_ρ(x)` for every `ρ > 0` and
@@ -4126,6 +4033,7 @@ theorem Submission.chartTD_blowup_integral_tendsto_zero : ∀ (n N : ℕ) (S : S
     _ = C * R ^ n * (((R * r) ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n]) := by
         rw [mul_pow]
         field_simp
+
 /-- **Splitting the localized weighted blow-up integral along a comparison set** (the
 decomposition in Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 116–120, in the
 weighted form of Def. 1.7 and Remark 1.8(1), lines 284–306). Let `M`, `Γ` be `Hⁿ`-measurable with
@@ -4189,6 +4097,7 @@ theorem Submission.chartTD_weighted_blowup_integral_split : ∀ (n N : ℕ) (M �
   -- Step 6: substitute and rearrange
   rw [hD, ← hB, ← hA]
   ring
+
 /-- **Change of variables for blow-ups** (Simon Ch. 3, proof of Theorem 1.6 "⇒",
 `chapter-03.txt` lines 113–143, esp. line 133; Def. 1.7, lines 284–295): for `r > 0`, every set
 `A` and every `g`, `∫_{η_{x,r}(A)} g dHⁿ = r⁻ⁿ ∫_A g ∘ η_{x,r} dHⁿ`. The map
@@ -4218,6 +4127,7 @@ theorem Submission.chartTD_setIntegral_blowUpMap_image : ∀ (N n : ℕ) (x : Rn
     rw [← he, ← integral_map_equiv, hres, integral_smul_nnreal_measure, NNReal.smul_def,
       NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg hr.le, smul_eq_mul]
   rw [hint, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero n hr.ne'), one_mul]
+
 /-- **`C¹` immersions are locally bi-Lipschitz**, the localization step behind the local
 representation of `C¹` immersions (Simon Ch. 2, §4): if `ψ` is `C¹` on the open set `V ⊆ ℝⁿ`
 and `Dψ(u)` is injective for every `u ∈ V`, then each `u₀ ∈ V` has a ball `B_r(u₀) ⊆ V` on
@@ -4276,6 +4186,7 @@ theorem Submission.chartTD_immersion_local_biLipschitz : ∀ (n N : ℕ) (V : Se
       calc ‖L (u - u')‖ = ‖(ψ u - ψ u') - (ψ u - ψ u' - L (u - u'))‖ := by congr 1; abel
         _ ≤ ‖ψ u - ψ u'‖ + ‖ψ u - ψ u' - L (u - u')‖ := norm_sub_le _ _
     linarith
+
 /-- **Measure-theoretic facts for a bi-Lipschitz image of a bounded open set** (parent
 `root.chart_tangent_differential-a1`, Step 2, (Σ1)–(Σ3); Simon Ch. 2, Theorem 1.8(i)). Let
 `B ⊆ ℝⁿ` be open and bounded, `ψ : ℝⁿ → ℝᴺ` `K`-Lipschitz on `B` with
@@ -4415,6 +4326,7 @@ theorem Submission.chartTD_biLipschitz_chart_approx_tangent : ∀ (n N : ℕ) (B
     fun_prop
   rw [Submission.chartTD_setIntegral_blowUpMap_image N n (ψ u) r hr (ψ '' B) f,
     Submission.chartTD_injective_area_setIntegral n N B ψ K hB hK hinj _ hg]
+
 /-- **Upper density theorem for `|w| Hⁿ⌞A`** (Simon Ch. 1, Theorem 3.6 and Remark 3.7(2),
 `chapter-01.txt` lines 700–721, by the covering argument of the proof of Theorem 3.3, lines
 666–698): if `A` is `Hⁿ`-measurable and `w` is `Hⁿ`-integrable on `A ∩ K` for every compact `K`,
@@ -4599,6 +4511,7 @@ theorem Submission.chartTD_upper_density_zero_ae : ∀ (n N : ℕ) (A : Set (Rn 
         mul_le_mul_of_nonneg_left hI.le (inv_nonneg.2 hρn.le)
     _ = ((k : ℝ) + 1)⁻¹ := by field_simp
     _ < ε := by simpa [one_div] using hk
+
 /-- **Lebesgue points of `Hⁿ ⌞ S` with the `ρⁿ` normalization** (Simon Ch. 1, Corollary 3.17;
 parent proof step (P3)). Let `Hⁿ(S) < ∞`, `w ∈ L¹(Hⁿ ⌞ S)` and `Hⁿ(S ∩ B̄_ρ(x)) ≤ Cρⁿ` for
 `x ∈ S`, `ρ > 0`. Then for `Hⁿ`-a.e. `x ∈ S`, `ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w - w(x)| dHⁿ → 0` as `ρ ↓ 0`.
@@ -4707,6 +4620,7 @@ theorem Submission.chartTD_weighted_tangent_of_density : ∀ (n N : ℕ) (M Γ :
   simp only [hη]
   rw [Submission.chartTD_weighted_blowup_integral_split n N M Γ θ x f r hr hM hΓ hΓfin hθ]
   ring
+
 /-- **Rademacher's theorem on an open set** (Simon Ch. 2, Theorem 1.4, applied locally as in
 (4.8)): if `g : ℝⁿ → ℝᵖ` is locally Lipschitz on the open set `W ⊆ ℝⁿ`, then `g` is
 differentiable at `Lⁿ`-a.e. point of `W`. Each point `x` of the exceptional set
@@ -4737,6 +4651,7 @@ theorem Submission.chartTD_ae_differentiableAt_of_locallyLipschitzOn : ∀ (n p 
   refine measure_mono_null (fun v hv ↦ ?_) hR
   simp only [mem_inter_iff, mem_ofPred_eq, not_imp] at hv ⊢
   exact ⟨hv.2, fun hd ↦ hv.1.2 (hd.differentiableAt (Metric.isOpen_ball.mem_nhds hv.2))⟩
+
 /-- **Line derivative of a locally Lipschitz map along a chart** (Simon Ch. 2, (4.7) and (4.10)):
 let `f : ℝᴺ → ℝᵖ` be locally Lipschitz on the open set `U ⊆ ℝᴺ`, and let `ψ : ℝⁿ → ℝᴺ` and
 `f ∘ ψ` be differentiable at `u`, with `ψ(u) ∈ U`. Then for every `w ∈ ℝⁿ`, `f` has line
@@ -4831,116 +4746,76 @@ theorem Submission.chart_approx_tangent_and_differential : ∀ (n ℓ p : ℕ) (
       HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
           (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧
         DifferentiableAt ℝ (f ∘ ψ) u ∧
-        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) →
-    ∀ (m k ℓ : ℕ) (M U : Set (Rn (m + k + ℓ))) (θ : Rn (m + k + ℓ) → ℝ)
-      (f : Rn (m + k + ℓ) → Rn m) (D E : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn (m + k + ℓ))
-      (G : Rn (m + k) → Rn m),
-      0 < k → NullMeasurableSet M μHE[m + k] → IsPositiveLocallyIntegrableWeight (m + k) M θ →
-      IsOpen U → M ⊆ U → LocallyLipschitzOn U f → IsOpen D → ContDiffOn ℝ 1 ψ D → InjOn ψ D →
-      (∃ K, LipschitzOnWith K ψ D) → (∀ u ∈ D, Function.Injective (fderiv ℝ ψ u)) →
-      ContDiff ℝ 1 G → MeasurableSet E → E ⊆ D →
-      (∀ u ∈ E, f (ψ u) = G u ∧ HasFDerivAt (f ∘ ψ) (fderiv ℝ G u) u) →
-      ∀ B ⊆ ψ '' E ∩ M, MeasurableSet B → ∀ φ : Rn (m + k + ℓ) → ℝ≥0∞, Measurable φ →
-        AEMeasurable (fun y : Rn m ↦ ∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) volume ∧
-          ∫⁻ x in B, φ x * ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ x) f x)
-              ∂μHE[m + k] =
-            ∫⁻ y, (∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) ∂volume := by
-  intro hCT m k ℓ M U θ f D E ψ G hk hM hθ hU hMU hf hD hψ hψinj _ hψD hG hE hED hEG
-    B hB hBm φ hφ
-  rcases Nat.eq_zero_or_pos m with rfl | hm
-  · -- `m = 0`: `ℝ⁰` is a point carrying the unit mass, `J^{M*}_f ≡ 1` and every slice is `B`.
-    refine ⟨Subsingleton.measurable.aemeasurable, ?_⟩
-    have hslice : ∀ y : Rn 0, B ∩ f ⁻¹' {y} = B := fun y ↦
-      inter_eq_left.2 fun x _ ↦ Subsingleton.elim (f x) y
-    have hJ : ∀ x, coareaJacobian (approxTangentPlane (0 + k) M θ x) f x = 1 := fun x ↦
-      LinearMap.normDet_of_subsingleton _
-    have hμ : (μHE[0 + k] : Measure (Rn (0 + k + ℓ))) = μHE[k] :=
-      congrArg (fun d ↦ (μHE[d] : Measure (Rn (0 + k + ℓ)))) (Nat.zero_add k)
-    simp only [hslice, hJ, hμ, ENNReal.ofReal_one, mul_one, lintegral_const,
-      volume_euclideanSpace_eq_dirac, measure_univ]
-  -- The Borel parameter set `B' = E ∩ ψ⁻¹(B)`, with `ψ(B') = B`.
-  set B' : Set (Rn (m + k)) := E ∩ ψ ⁻¹' B with hB'
-  have hB'D : B' ⊆ D := inter_subset_left.trans hED
-  have hB'm : MeasurableSet B' := by
-    have h := hE.subtype_image (((hψ.continuousOn.mono hED).domRestrict.measurable) hBm)
-    rwa [domRestrict_eq, preimage_comp, Subtype.image_preimage_coe] at h
-  have himage : ψ '' B' = B := by
-    rw [hB', image_inter_preimage]
-    exact inter_eq_right.2 fun x hx ↦ (hB hx).1
-  -- Slices: `B ∩ f⁻¹(y) = ψ(B' ∩ G⁻¹(y))`, since `f ∘ ψ = G` on `E`.
-  have hslice : ∀ y, ψ '' (B' ∩ G ⁻¹' {y}) = B ∩ f ⁻¹' {y} := by
-    intro y
-    ext x
-    constructor
-    · rintro ⟨u, ⟨⟨huE, hux⟩, huy⟩, rfl⟩
-      refine ⟨hux, ?_⟩
-      rw [mem_preimage, (hEG u huE).1]
-      exact huy
-    · rintro ⟨hxB, hxy⟩
-      obtain ⟨u, huE, rfl⟩ := (hB hxB).1
-      refine ⟨u, ⟨⟨huE, hxB⟩, ?_⟩, rfl⟩
-      rw [mem_preimage, ← (hEG u huE).1]
-      exact hxy
-  -- Right side: the `C¹` parametric co-area formula on `B'`.
-  obtain ⟨hmeas, hc1⟩ := Submission.c1_parametric_coarea_formula m k (m + k + ℓ) D ψ G hm hk hD
-    hψ hψinj hG B' hB'D hB'm φ hφ
-  simp only [hslice] at hmeas hc1
-  refine ⟨hmeas, ?_⟩
-  rw [← hc1]
-  -- Left side: `Hⁿ ⌞ B` is the image of `Jψ Lⁿ ⌞ B'` under the measurable embedding `ψ|_{B'}`
-  -- (Lusin–Souslin), by the `C¹` area formula on the Borel sets `B' ∩ ψ⁻¹(T)`.
-  have hndcont : Continuous fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦ L.toLinearMap.normDet := by
-    have h1 : Continuous (fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦
-        ContinuousLinearMap.adjoint L ∘L L) :=
-      ContinuousLinearMap.adjoint.continuous.clm_comp continuous_id
-    have h2 : Continuous (fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦
-        Real.sqrt (ContinuousLinearMap.adjoint L ∘L L).det) :=
-      Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp h1)
-    refine h2.congr fun L ↦ ?_
-    rw [← ContinuousLinearMap.normDet_sq L]
-    exact Real.sqrt_sq (LinearMap.normDet_nonneg _)
-  have hwm : Measurable fun u ↦ ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet :=
-    ENNReal.measurable_ofReal.comp (hndcont.measurable.comp (measurable_fderiv ℝ ψ))
-  have hemb : MeasurableEmbedding (B'.domRestrict ψ) :=
-    ContinuousOn.measurableEmbedding hB'm (hψ.continuousOn.mono hB'D) (hψinj.mono hB'D)
-  have hmap : Measure.map (B'.domRestrict ψ) (Measure.comap Subtype.val
-      (volume.withDensity fun u ↦ ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet)) =
-      (μHE[m + k] : Measure (Rn (m + k + ℓ))).restrict B := by
-    ext T hT
-    have hS : Subtype.val '' (B'.domRestrict ψ ⁻¹' T) = B' ∩ ψ ⁻¹' T := by
-      rw [domRestrict_eq, preimage_comp, Subtype.image_preimage_coe]
-    have hSm : MeasurableSet (B' ∩ ψ ⁻¹' T) := hS ▸ hB'm.subtype_image (hemb.measurable hT)
-    have hTB : T ∩ B = ψ '' (B' ∩ ψ ⁻¹' T) := by rw [image_inter_preimage, himage, inter_comm]
-    have h := Submission.pcoarea_c1_injOn_area_formula (m + k) (m + k + ℓ) D ψ hD hψ hψinj
-      (B' ∩ ψ ⁻¹' T) (inter_subset_left.trans hB'D) hSm 1 measurable_const
-    simp only [Pi.one_apply, one_mul, setLIntegral_one] at h
-    rw [hemb.map_apply, comap_subtype_coe_apply hB'm, hS, withDensity_apply _ hSm,
-      Measure.restrict_apply hT, hTB, h]
-  -- Hence `∫_B g dHⁿ = ∫_{B'} Jψ (g ∘ ψ) dLⁿ` for the (possibly non-measurable) integrand `g`.
-  have harea : ∫⁻ x in B, φ x * ENNReal.ofReal
-        (coareaJacobian (approxTangentPlane (m + k) M θ x) f x) ∂μHE[m + k] =
-      ∫⁻ u in B', ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet * (φ (ψ u) *
-        ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u))) := by
-    rw [← hmap, hemb.lintegral_map]
-    simp only [domRestrict_apply]
-    rw [lintegral_subtype_comap hB'm (fun u ↦ φ (ψ u) *
-        ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u))),
-      setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable _ hwm _ hB'm
-        (ae_of_all _ fun _ ↦ ENNReal.ofReal_lt_top)]
-    rfl
-  rw [harea]
-  -- Pointwise for a.e. `u ∈ B'`: `J^{M*}_f(ψ u) Jψ(u)` is the integrand of the `C¹` formula.
-  refine setLIntegral_congr_fun_ae hB'm ?_
-  filter_upwards [hCT (m + k) ℓ m M U θ f D ψ hM hθ hU hMU hf hD hψ hψD] with u hu huB'
-  have huM : ψ u ∈ M := (hB huB'.2).2
-  obtain ⟨htan, -, hline⟩ := hu (hB'D huB') huM
-  rw [(hEG u huB'.1).2.fderiv] at hline
-  have hJ := (Submission.chart_coarea_jacobian_identification (m + k) (m + k + ℓ) m M θ f (ψ u)
-    (fderiv ℝ ψ u) (fderiv ℝ G u) (hθ.1 _ huM).ne' (hψD u (hB'D huB')) htan hline).2.2
-  have hJ0 : 0 ≤ coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u) :=
-    LinearMap.normDet_nonneg _
-  rw [← hJ, ENNReal.ofReal_mul hJ0]
-  ring
+        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n ℓ p M U θ f V ψ hM hθ hU hMU hf hV hψ hinj
+  -- (B), (C): Rademacher's theorem in the chart and Ch. 2 (4.10), at points with `ψ u ∈ U`.
+  have hBC := Submission.chartTD_comp_differentiable_lineDeriv_ae n (n + ℓ) p U f V ψ hU hf hV hψ
+  -- (A) on a ball `B ⊆ V` around each `u₀ ∈ V` on which `ψ` is bi-Lipschitz.
+  have hloc : ∀ u₀ ∈ V, ∃ r : ℝ, 0 < r ∧ Metric.ball u₀ r ⊆ V ∧
+      ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ Metric.ball u₀ r → ψ u ∈ M →
+        HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+          (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
+    intro u₀ hu₀
+    obtain ⟨r, hr, hrV, K, c, hc, hLip, hlow⟩ :=
+      Submission.chartTD_immersion_local_biLipschitz n (n + ℓ) V ψ hV hψ hinj u₀ hu₀
+    refine ⟨r, hr, hrV, ?_⟩
+    set B := Metric.ball u₀ r
+    -- `Γ = ψ(B)` is `Hⁿ`-measurable and bounded, `Hⁿ(Γ) < ∞`, `Hⁿ(Γ ∩ B̄_ρ(x)) ≤ C ρⁿ`, and
+    -- preimages in `B` of `Hⁿ`-null sets are `Lⁿ`-null.
+    obtain ⟨hΓm, hΓb, hΓfin, ⟨C, hC⟩, hnull⟩ :=
+      Submission.chartTD_biLipschitz_image_measure_facts n (n + ℓ) B ψ K c Metric.isOpen_ball
+        Metric.isBounded_ball hLip hc hlow
+    set Γ := ψ '' B
+    -- (P1): `θ Hⁿ ⌞ (M \ Γ)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
+    have hP1 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (M \ Γ) θ (hM.diff hΓm)
+      fun K hK ↦ (hθ.2.2 K hK).mono_set (inter_subset_inter_left K sdiff_subset)
+    -- (P2): `Hⁿ ⌞ (Γ \ M)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
+    have hP2 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (Γ \ M) (fun _ ↦ (1 : ℝ))
+      (hΓm.diff hM) fun K _ ↦ integrableOn_const
+        ((measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt hΓfin).ne
+    -- (P3): `Hⁿ`-a.e. point of `M ∩ Γ` is a Lebesgue point of `θ`, with the `ρⁿ` normalization.
+    have hP3 := Submission.chartTD_lebesgue_point_ae n (n + ℓ) (M ∩ Γ) θ C (hM.inter hΓm)
+      ((measure_mono inter_subset_right).trans_lt hΓfin)
+      ((hθ.2.2 _ hΓb.isCompact_closure).mono_set (inter_subset_inter_right M subset_closure))
+      fun x hx ρ hρ ↦ (measure_mono (inter_subset_inter_left _ inter_subset_right)).trans
+        (hC x hx.2 ρ hρ)
+    have hgood : ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))), x ∈ M → x ∈ Γ →
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n])
+          (𝓝[>] 0) (𝓝 0) ∧
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \ M) ∩ Metric.ball x ρ)).toReal)
+          (𝓝[>] 0) (𝓝 0) ∧
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n])
+          (𝓝[>] 0) (𝓝 0) := by
+      filter_upwards [hP1, hP2, hP3] with x h1 h2 h3 hxM hxΓ
+      refine ⟨h1 fun h ↦ h.2 hxΓ, ?_, h3 ⟨hxM, hxΓ⟩⟩
+      simpa [setIntegral_const, Measure.real] using h2 fun h ↦ h.2 hxM
+    -- Off the `Lⁿ`-null preimage of the set where (P1)–(P3) fail, the blow-ups of `Γ` at `ψ u`
+    -- converge to `range Dψ(u)` (Remark 1.5(2)), and (P1)–(P3) transfer this to `M` and `θ`.
+    refine ae_iff.2 (measure_mono_null (fun u hu ↦ ?_) (hnull _ (ae_iff.1 hgood)))
+    simp only [mem_ofPred_eq, not_imp] at hu
+    obtain ⟨huB, huM, hnot⟩ := hu
+    refine ⟨huB, ?_⟩
+    simp only [mem_preimage, mem_ofPred_eq, not_imp]
+    refine ⟨huM, mem_image_of_mem ψ huB, ?_⟩
+    rintro ⟨h1, h2, h3⟩
+    exact hnot (Submission.chartTD_weighted_tangent_of_density n (n + ℓ) M Γ θ (ψ u) _ hM hΓm
+      hΓfin hθ (Submission.chartTD_biLipschitz_chart_approx_tangent n (n + ℓ) B ψ K c
+        Metric.isOpen_ball (hψ.mono hrV) hLip hc hlow u huB) h1 h2 h3)
+  -- Countably many of these balls cover `V` (Lindelöf).
+  choose! r hr hrV hae using hloc
+  obtain ⟨T, hTV, hTc, hTcover⟩ := TopologicalSpace.isOpen_biUnion_countable V
+    (fun u ↦ Metric.ball u (r u)) fun u _ ↦ Metric.isOpen_ball
+  have hA : ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
+      HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+        (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
+    filter_upwards [(ae_ball_iff hTc).2 fun i hi ↦ hae i (hTV hi)] with u hu huV huM
+    have hmem : u ∈ ⋃ i ∈ T, Metric.ball i (r i) :=
+      hTcover ▸ mem_biUnion huV (Metric.mem_ball_self (hr u huV))
+    obtain ⟨i, hi, hui⟩ := mem_iUnion₂.1 hmem
+    exact hu i hi hui huM
+  filter_upwards [hA, hBC] with u hAu hBCu huV huM
+  exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
+
 /-- **Gluing local co-area formulas over countably many Borel pieces** (Simon Ch. 3, proof of the
 co-area formula (2.8)–(2.9), pp. 76–77, decomposition and summation steps; with the erratum of
 (2.9): the domain is `A` on both sides). Let `f` be continuous on the open `U ⊇ M`, `w ≥ 0`
@@ -5134,6 +5009,7 @@ theorem Submission.coarea_tangent_existence :
       hline
     exact ⟨_, L, hT, hL⟩
   · exact Or.inl ⟨hxM, hxcov⟩
+
 /-- **Quantitative local injectivity of a `C¹` map with injective derivative** (Simon Ch. 3,
 proof of Lemma 1.2, `chapter-03.txt` lines 61–64: where the Jacobian of `Gᵢⱼ` is non-zero at
 `x`, `Gᵢⱼ(B_σ(x))` is an `n`-dimensional `C¹` submanifold). If `G : ℝⁿ → ℝᵖ` is `C¹` on an open
@@ -5196,6 +5072,7 @@ theorem Submission.c1_injective_fderiv_local_lower_bounds : ∀ (n p : ℕ) (G :
             rw [sub_apply, sub_sub_cancel]
         _ ≤ _ := norm_sub_le _ _
     linarith [hL v]
+
 /-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70)** (`chapter-03.txt` lines 61–64), with the
 submanifold notion of Ch. 2 (4.1): if `G` is `C¹` and injective on `B̄_r(x)` and `DG(z)` is
 injective for `z ∈ B_r(x)`, then `G(B_r(x))` is an embedded `C¹` submanifold, with the single
@@ -5470,6 +5347,7 @@ theorem Submission.c1_range_null_union_submanifolds : ∀ (n p : ℕ) (G : Rn n 
       obtain ⟨k, hk⟩ := hx
       exact Or.inr (mem_iUnion.2 ⟨k, by rw [hk]; exact mem_image_of_mem G hzx⟩)
     · exact Or.inl ⟨z, hz, rfl⟩
+
 /-- **Lusin's theorem for `Lⁿ` with closed sets and finite-dimensional targets** (Simon Ch. 2,
 proof of Theorem 1.5, `chapter-02.txt` lines 248–251: Lusin's theorem "applies to sets of
 infinite measure for `Lⁿ`"; cf. Ch. 1, Theorems 1.15 and 1.17): for a Borel `u : ℝⁿ → F`, `F`
@@ -5564,6 +5442,7 @@ theorem Submission.lusin_closed_subset_continuousOn_volume : ∀ (n : ℕ) (F : 
     _ ≤ volume ((S ∩ Eᶜ) \ C) + volume E := measure_union_le _ _
     _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hCε hEε
     _ = ε := ENNReal.add_halves ε
+
 /-- **Egoroff's theorem on `ℝⁿ` with a closed good set** (Simon Ch. 2, proof of Theorem 1.5,
 `chapter-02.txt` lines 260–265, with closed inner regularity Ch. 1, Theorem 1.15(2)): if Borel
 `ηₖ → g` pointwise on a Borel set `S`, then for every `ε > 0` there is a closed `A ⊆ S` with
@@ -6352,6 +6231,7 @@ theorem Submission.lipschitz_real_c1_approximation : ∀ (n : ℕ) (f : Rn n →
     _ = volume (B \ C) + volume (C \ A) := by rw [hBc, zero_add]
     _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBC hCA
     _ = ε := ENNReal.add_halves ε
+
 /-- **Simon Ch. 2, proof of Theorem 1.9, choice (1)** (`chapter-02.txt` lines 366–370), for
 Mathlib's unnormalized Hausdorff measure: if `μH[d](s) < ∞`, then for every `r > 0` and `ε ≠ 0`
 some countable cover `(tₙ)` of `s` by sets of diameter `≤ r` has `∑ₙ diam(tₙ)^d ≤ μH[d](s) + ε`
@@ -6371,6 +6251,7 @@ theorem Submission.hausdorffMeasure_exists_cover_tsum_le_add : ∀ {X : Type} [E
   simp only [iInf_lt_iff] at hlt
   obtain ⟨t, hst, htr, hsum⟩ := hlt
   exact ⟨t, hst, htr, hsum.le⟩
+
 /-- **Volume–diameter bound**, the step of Simon Ch. 2, proof of Theorem 1.9
 (`chapter-02.txt` lines 401–406) where `Lᵐ(f(C_{ij})) ≤ ωₘ (diam f(C_{ij})/2)ᵐ` is taken from the
 isodiametric inequality 2.10, with the cruder constant of a closed-ball inclusion:
@@ -6570,150 +6451,6 @@ theorem Submission.eilenberg_upper_integral_inequality : ∀ (N m k : ℕ), ∃ 
         _ = C * c (m + k) * L ^ m * μH[((m + k : ℕ) : ℝ)] A := by rw [hCc]; ring
         _ = ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A := by
           rw [hHE, ENNReal.coe_mul, ENNReal.coe_pow]; ring
-        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
-  intro n ℓ p M U θ f V ψ hM hθ hU hMU hf hV hψ hinj
-  -- (B), (C): Rademacher's theorem in the chart and Ch. 2 (4.10), at points with `ψ u ∈ U`.
-  have hBC := Submission.chartTD_comp_differentiable_lineDeriv_ae n (n + ℓ) p U f V ψ hU hf hV hψ
-  -- (A) on a ball `B ⊆ V` around each `u₀ ∈ V` on which `ψ` is bi-Lipschitz.
-  have hloc : ∀ u₀ ∈ V, ∃ r : ℝ, 0 < r ∧ Metric.ball u₀ r ⊆ V ∧
-      ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ Metric.ball u₀ r → ψ u ∈ M →
-        HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
-          (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
-    intro u₀ hu₀
-    obtain ⟨r, hr, hrV, K, c, hc, hLip, hlow⟩ :=
-      Submission.chartTD_immersion_local_biLipschitz n (n + ℓ) V ψ hV hψ hinj u₀ hu₀
-    refine ⟨r, hr, hrV, ?_⟩
-    set B := Metric.ball u₀ r
-    -- `Γ = ψ(B)` is `Hⁿ`-measurable and bounded, `Hⁿ(Γ) < ∞`, `Hⁿ(Γ ∩ B̄_ρ(x)) ≤ C ρⁿ`, and
-    -- preimages in `B` of `Hⁿ`-null sets are `Lⁿ`-null.
-    obtain ⟨hΓm, hΓb, hΓfin, ⟨C, hC⟩, hnull⟩ :=
-      Submission.chartTD_biLipschitz_image_measure_facts n (n + ℓ) B ψ K c Metric.isOpen_ball
-        Metric.isBounded_ball hLip hc hlow
-    set Γ := ψ '' B
-    -- (P1): `θ Hⁿ ⌞ (M \ Γ)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
-    have hP1 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (M \ Γ) θ (hM.diff hΓm)
-      fun K hK ↦ (hθ.2.2 K hK).mono_set (inter_subset_inter_left K sdiff_subset)
-    -- (P2): `Hⁿ ⌞ (Γ \ M)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
-    have hP2 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (Γ \ M) (fun _ ↦ (1 : ℝ))
-      (hΓm.diff hM) fun K _ ↦ integrableOn_const
-        ((measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt hΓfin).ne
-    -- (P3): `Hⁿ`-a.e. point of `M ∩ Γ` is a Lebesgue point of `θ`, with the `ρⁿ` normalization.
-    have hP3 := Submission.chartTD_lebesgue_point_ae n (n + ℓ) (M ∩ Γ) θ C (hM.inter hΓm)
-      ((measure_mono inter_subset_right).trans_lt hΓfin)
-      ((hθ.2.2 _ hΓb.isCompact_closure).mono_set (inter_subset_inter_right M subset_closure))
-      fun x hx ρ hρ ↦ (measure_mono (inter_subset_inter_left _ inter_subset_right)).trans
-        (hC x hx.2 ρ hρ)
-    have hgood : ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))), x ∈ M → x ∈ Γ →
-        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n])
-          (𝓝[>] 0) (𝓝 0) ∧
-        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \ M) ∩ Metric.ball x ρ)).toReal)
-          (𝓝[>] 0) (𝓝 0) ∧
-        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n])
-          (𝓝[>] 0) (𝓝 0) := by
-      filter_upwards [hP1, hP2, hP3] with x h1 h2 h3 hxM hxΓ
-      refine ⟨h1 fun h ↦ h.2 hxΓ, ?_, h3 ⟨hxM, hxΓ⟩⟩
-      simpa [setIntegral_const, Measure.real] using h2 fun h ↦ h.2 hxM
-    -- Off the `Lⁿ`-null preimage of the set where (P1)–(P3) fail, the blow-ups of `Γ` at `ψ u`
-    -- converge to `range Dψ(u)` (Remark 1.5(2)), and (P1)–(P3) transfer this to `M` and `θ`.
-    refine ae_iff.2 (measure_mono_null (fun u hu ↦ ?_) (hnull _ (ae_iff.1 hgood)))
-    simp only [mem_ofPred_eq, not_imp] at hu
-    obtain ⟨huB, huM, hnot⟩ := hu
-    refine ⟨huB, ?_⟩
-    simp only [mem_preimage, mem_ofPred_eq, not_imp]
-    refine ⟨huM, mem_image_of_mem ψ huB, ?_⟩
-    rintro ⟨h1, h2, h3⟩
-    exact hnot (Submission.chartTD_weighted_tangent_of_density n (n + ℓ) M Γ θ (ψ u) _ hM hΓm
-      hΓfin hθ (Submission.chartTD_biLipschitz_chart_approx_tangent n (n + ℓ) B ψ K c
-        Metric.isOpen_ball (hψ.mono hrV) hLip hc hlow u huB) h1 h2 h3)
-  -- Countably many of these balls cover `V` (Lindelöf).
-  choose! r hr hrV hae using hloc
-  obtain ⟨T, hTV, hTc, hTcover⟩ := TopologicalSpace.isOpen_biUnion_countable V
-    (fun u ↦ Metric.ball u (r u)) fun u _ ↦ Metric.isOpen_ball
-  have hA : ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
-      HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
-        (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
-    filter_upwards [(ae_ball_iff hTc).2 fun i hi ↦ hae i (hTV hi)] with u hu huV huM
-    have hmem : u ∈ ⋃ i ∈ T, Metric.ball i (r i) :=
-      hTcover ▸ mem_biUnion huV (Metric.mem_ball_self (hr u huV))
-    obtain ⟨i, hi, hui⟩ := mem_iUnion₂.1 hmem
-    exact hu i hi hui huM
-  filter_upwards [hA, hBC] with u hAu hBCu huV huM
-  exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
-
-/-- **Simon Ch. 3, co-area formula (2.7)–(2.9) and Remark 2.10(2) (p. 77).** Simon derives both
-from the `C¹` case (Ch. 2 §6), the decomposition of Remark 1.3 and the `C¹` Approximation
-Theorem 1.5 of Ch. 2 (`chapter-03.txt` lines 426–428, 439–442). `rectifiable_c1_chart_pieces`
-covers `M`, up to an `Hⁿ`-null set, by pieces `ψ_j(E_j)` of injective `C¹` charts on which
-`f ∘ ψ_j` agrees to first order with a `C¹` map `G_j`. (a) is `coarea_tangent_existence`. For
-(c), intersect the pieces with a Borel `M_b ⊆ M` of full measure (`ψ_j(E_j)` is Borel by
-Lusin–Souslin), apply `chart_piece_coarea_formula` on each piece and glue with
-`coarea_gluing_of_pieces`, null sets having `Hᵏ`-null slices by
-`coarea_null_slices_of_eilenberg`; (b) is (c) with `g ≡ 1`. For the slices, `M ∩ f⁻¹(y)` lies in
-the slice of the uncovered null part together with the sets `ψ_j(D_j ∩ G_j⁻¹(y))`, which are
-countably `k`-rectifiable for a.e. `y` by `c1_level_slices_countablyRectifiable`. -/
-theorem Submission.coareaFormula_and_slices_hold : CoareaFormula ∧ SlicesAreRectifiable := by
-  refine ⟨?_, ?_⟩
-  · intro m k ℓ hk M U θ f hM hrect hθ hU hMU hf
-    -- Chart pieces `ψ j '' E j` covering `M` up to an `Hⁿ`-null set, with `f ∘ ψ j = G j` on `E j`.
-    obtain ⟨D, ψ, G, E, hDo, hψC, hψi, hψL, hψd, hGC, hEm, hED, hfG, hnull⟩ :=
-      Submission.rectifiable_c1_chart_pieces Submission.submanifoldCoverCharacterization_holds
-        Submission.lipschitz_c1_approximation (m + k) ℓ m M U f hrect hU hMU hf
-    -- A Borel `Mb ⊆ M` with `Hⁿ(M \ Mb) = 0`; the Borel pieces are `ψ j '' E j ∩ Mb`.
-    obtain ⟨Mb, hMbM, hMbm, hMbae⟩ := hM.exists_measurable_subset_ae_eq
-    have hS : ∀ j, MeasurableSet (ψ j '' E j ∩ Mb) := fun j =>
-      ((hEm j).image_of_continuousOn_injOn ((hψC j).continuousOn.mono (hED j))
-        ((hψi j).mono (hED j))).inter hMbm
-    have hSnull : μHE[m + k] (M \ ⋃ j, (ψ j '' E j ∩ Mb)) = 0 := by
-      refine measure_mono_null ?_ (measure_union_null hnull (ae_eq_set.1 hMbae).2)
-      rintro x ⟨hxM, hx⟩
-      by_cases hxb : x ∈ Mb
-      · refine Or.inl ⟨hxM, fun hxU => hx ?_⟩
-        obtain ⟨j, hj⟩ := mem_iUnion.1 hxU
-        exact mem_iUnion.2 ⟨j, hj, hxb⟩
-      · exact Or.inr ⟨hxM, hxb⟩
-    -- (c): glue the one-piece formulas; null sets have null slices by Eilenberg's inequality.
-    have hc := Submission.coarea_gluing_of_pieces (m + k + ℓ) (m + k) m k U M f
-      (fun x => ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ x) f x))
-      (fun j => ψ j '' E j ∩ Mb) hU hMU hf.continuousOn
-      (fun Z hZM hZ => Submission.coarea_null_slices_of_eilenberg
-        Submission.eilenberg_upper_integral_inequality (m + k + ℓ) m k U Z f hf (hZM.trans hMU) hZ)
-      hS hSnull
-      (fun j B hB hBm φ hφ => Submission.chart_piece_coarea_formula
-        Submission.chart_approx_tangent_and_differential m k ℓ M U θ f (D j) (E j) (ψ j) (G j)
-        hk hM hθ hU hMU hf (hDo j) (hψC j) (hψi j) (hψL j) (hψd j) (hGC j) (hEm j) (hED j) (hfG j)
-        B (fun x hx => ⟨(hB hx).1, hMbM (hB hx).2⟩) hBm φ hφ)
-    refine ⟨Submission.coarea_tangent_existence Submission.submanifoldCoverCharacterization_holds
-      Submission.lipschitz_c1_approximation Submission.chart_approx_tangent_and_differential
-      (m + k) ℓ m M U θ f hM hrect hθ hU hMU hf, fun A hAM hA => ?_, hc⟩
-    -- (b) is (c) with `g ≡ 1`.
-    simpa only [one_mul, setLIntegral_one] using hc A hAM hA (fun _ => 1) aemeasurable_const
-  · intro m k ℓ hk M U f _ hrect hU hMU hf
-    obtain ⟨D, ψ, G, E, hDo, hψC, -, -, -, hGC, -, hED, hfG, hnull⟩ :=
-      Submission.rectifiable_c1_chart_pieces Submission.submanifoldCoverCharacterization_holds
-        Submission.lipschitz_c1_approximation (m + k) ℓ m M U f hrect hU hMU hf
-    -- The uncovered part of `M` has `Hᵏ`-null slices for a.e. `y`.
-    have hZ := Submission.coarea_null_slices_of_eilenberg
-      Submission.eilenberg_upper_integral_inequality (m + k + ℓ) m k U (M \ ⋃ j, ψ j '' E j) f hf
-      (Set.sdiff_subset.trans hMU) hnull
-    -- For a.e. `y`, every `ψ j '' (D j ∩ G j ⁻¹' {y})` is countably `k`-rectifiable.
-    have hR : ∀ᵐ y ∂(volume : Measure (Rn m)), ∀ j,
-        CountablyRectifiable k (ψ j '' (D j ∩ G j ⁻¹' {y})) :=
-      ae_all_iff.2 fun j => Submission.c1_level_slices_countablyRectifiable m k (m + k + ℓ) (D j)
-        (ψ j) (G j) hk (hDo j) (hψC j) (hGC j)
-    filter_upwards [hZ, hR] with y hy hyR
-    obtain ⟨M₀, hM₀, F, hF, hcov⟩ := Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ hyR
-    refine ⟨M₀ ∪ ((M \ ⋃ j, ψ j '' E j) ∩ f ⁻¹' {y}), measure_union_null hM₀ hy, F, hF, ?_⟩
-    rintro x ⟨hxM, hxy⟩
-    by_cases hx : x ∈ ⋃ j, ψ j '' E j
-    · -- `x = ψ j u` with `u ∈ E j ⊆ D j` and `G j u = f x = y`.
-      obtain ⟨j, u, hu, rfl⟩ := mem_iUnion.1 hx
-      rcases hcov (mem_iUnion.2 ⟨j, u, ⟨hED j hu, (hfG j u hu).1.symm.trans hxy⟩, rfl⟩) with h | h
-      · exact Or.inl (Or.inl h)
-      · exact Or.inr h
-    · exact Or.inl (Or.inr ⟨⟨hxM, hx⟩, hxy⟩)
-
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
 /-- **Simon Ch. 2, Theorem 1.5 (p. 42), `C¹` approximation of Lipschitz maps**, vector-valued
 (`chapter-02.txt` lines 165–168, proof lines 246–266; used in this form in Ch. 3, proof of
@@ -6829,5 +6566,80 @@ theorem Submission.submanifoldCoverCharacterization_holds : SubmanifoldCoverChar
       (fun j ↦ ⟨le_rfl, fun y hy ↦ ?_⟩) hM
     obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himage, hproper, hD⟩ := hN j y hy
     exact ⟨V, W, ψ, hyW, hV, hW, hψ, hinj, himage, hproper, hD⟩
+
+/-- **Simon Ch. 3, co-area formula (2.7)–(2.9) and Remark 2.10(2) (p. 77).** Simon derives both
+from the `C¹` case (Ch. 2 §6), the decomposition of Remark 1.3 and the `C¹` Approximation
+Theorem 1.5 of Ch. 2 (`chapter-03.txt` lines 426–428, 439–442). `rectifiable_c1_chart_pieces`
+covers `M`, up to an `Hⁿ`-null set, by pieces `ψ_j(E_j)` of injective `C¹` charts on which
+`f ∘ ψ_j` agrees to first order with a `C¹` map `G_j`. (a) is `coarea_tangent_existence`. For
+(c), intersect the pieces with a Borel `M_b ⊆ M` of full measure (`ψ_j(E_j)` is Borel by
+Lusin–Souslin), apply `chart_piece_coarea_formula` on each piece and glue with
+`coarea_gluing_of_pieces`, null sets having `Hᵏ`-null slices by
+`coarea_null_slices_of_eilenberg`; (b) is (c) with `g ≡ 1`. For the slices, `M ∩ f⁻¹(y)` lies in
+the slice of the uncovered null part together with the sets `ψ_j(D_j ∩ G_j⁻¹(y))`, which are
+countably `k`-rectifiable for a.e. `y` by `c1_level_slices_countablyRectifiable`. -/
+theorem Submission.coareaFormula_and_slices_hold : CoareaFormula ∧ SlicesAreRectifiable := by
+  refine ⟨?_, ?_⟩
+  · intro m k ℓ hk M U θ f hM hrect hθ hU hMU hf
+    -- Chart pieces `ψ j '' E j` covering `M` up to an `Hⁿ`-null set, with `f ∘ ψ j = G j` on `E j`.
+    obtain ⟨D, ψ, G, E, hDo, hψC, hψi, hψL, hψd, hGC, hEm, hED, hfG, hnull⟩ :=
+      Submission.rectifiable_c1_chart_pieces Submission.submanifoldCoverCharacterization_holds
+        Submission.lipschitz_c1_approximation (m + k) ℓ m M U f hrect hU hMU hf
+    -- A Borel `Mb ⊆ M` with `Hⁿ(M \ Mb) = 0`; the Borel pieces are `ψ j '' E j ∩ Mb`.
+    obtain ⟨Mb, hMbM, hMbm, hMbae⟩ := hM.exists_measurable_subset_ae_eq
+    have hS : ∀ j, MeasurableSet (ψ j '' E j ∩ Mb) := fun j =>
+      ((hEm j).image_of_continuousOn_injOn ((hψC j).continuousOn.mono (hED j))
+        ((hψi j).mono (hED j))).inter hMbm
+    have hSnull : μHE[m + k] (M \ ⋃ j, (ψ j '' E j ∩ Mb)) = 0 := by
+      refine measure_mono_null ?_ (measure_union_null hnull (ae_eq_set.1 hMbae).2)
+      rintro x ⟨hxM, hx⟩
+      by_cases hxb : x ∈ Mb
+      · refine Or.inl ⟨hxM, fun hxU => hx ?_⟩
+        obtain ⟨j, hj⟩ := mem_iUnion.1 hxU
+        exact mem_iUnion.2 ⟨j, hj, hxb⟩
+      · exact Or.inr ⟨hxM, hxb⟩
+    -- (c): glue the one-piece formulas; null sets have null slices by Eilenberg's inequality.
+    have hc := Submission.coarea_gluing_of_pieces (m + k + ℓ) (m + k) m k U M f
+      (fun x => ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ x) f x))
+      (fun j => ψ j '' E j ∩ Mb) hU hMU hf.continuousOn
+      (fun Z hZM hZ => Submission.coarea_null_slices_of_eilenberg
+        Submission.eilenberg_upper_integral_inequality (m + k + ℓ) m k U Z f hf (hZM.trans hMU) hZ)
+      hS hSnull
+      (fun j B hB hBm φ hφ => Submission.chart_piece_coarea_formula
+        Submission.chart_approx_tangent_and_differential m k ℓ M U θ f (D j) (E j) (ψ j) (G j)
+        hk hM hθ hU hMU hf (hDo j) (hψC j) (hψi j) (hψL j) (hψd j) (hGC j) (hEm j) (hED j) (hfG j)
+        B (fun x hx => ⟨(hB hx).1, hMbM (hB hx).2⟩) hBm φ hφ)
+    refine ⟨Submission.coarea_tangent_existence Submission.submanifoldCoverCharacterization_holds
+      Submission.lipschitz_c1_approximation Submission.chart_approx_tangent_and_differential
+      (m + k) ℓ m M U θ f hM hrect hθ hU hMU hf, fun A hAM hA => ?_, hc⟩
+    -- (b) is (c) with `g ≡ 1`.
+    simpa only [one_mul, setLIntegral_one] using hc A hAM hA (fun _ => 1) aemeasurable_const
+  · intro m k ℓ hk M U f _ hrect hU hMU hf
+    obtain ⟨D, ψ, G, E, hDo, hψC, -, -, -, hGC, -, hED, hfG, hnull⟩ :=
+      Submission.rectifiable_c1_chart_pieces Submission.submanifoldCoverCharacterization_holds
+        Submission.lipschitz_c1_approximation (m + k) ℓ m M U f hrect hU hMU hf
+    -- The uncovered part of `M` has `Hᵏ`-null slices for a.e. `y`.
+    have hZ := Submission.coarea_null_slices_of_eilenberg
+      Submission.eilenberg_upper_integral_inequality (m + k + ℓ) m k U (M \ ⋃ j, ψ j '' E j) f hf
+      (Set.sdiff_subset.trans hMU) hnull
+    -- For a.e. `y`, every `ψ j '' (D j ∩ G j ⁻¹' {y})` is countably `k`-rectifiable.
+    have hR : ∀ᵐ y ∂(volume : Measure (Rn m)), ∀ j,
+        CountablyRectifiable k (ψ j '' (D j ∩ G j ⁻¹' {y})) :=
+      ae_all_iff.2 fun j => Submission.c1_level_slices_countablyRectifiable m k (m + k + ℓ) (D j)
+        (ψ j) (G j) hk (hDo j) (hψC j) (hGC j)
+    filter_upwards [hZ, hR] with y hy hyR
+    obtain ⟨M₀, hM₀, F, hF, hcov⟩ := Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ hyR
+    refine ⟨M₀ ∪ ((M \ ⋃ j, ψ j '' E j) ∩ f ⁻¹' {y}), measure_union_null hM₀ hy, F, hF, ?_⟩
+    rintro x ⟨hxM, hxy⟩
+    by_cases hx : x ∈ ⋃ j, ψ j '' E j
+    · -- `x = ψ j u` with `u ∈ E j ⊆ D j` and `G j u = f x = y`.
+      obtain ⟨j, u, hu, rfl⟩ := mem_iUnion.1 hx
+      rcases hcov (mem_iUnion.2 ⟨j, u, ⟨hED j hu, (hfG j u hu).1.symm.trans hxy⟩, rfl⟩) with h | h
+      · exact Or.inl (Or.inl h)
+      · exact Or.inr h
+    · exact Or.inl (Or.inr ⟨⟨hxM, hx⟩, hxy⟩)
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
 end GMT.Ch03
