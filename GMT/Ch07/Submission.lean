@@ -451,6 +451,155 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`Hⁿ` under the blow-up map `η_{x,r}(y) = r⁻¹(y − x)`, `r > 0`**: `Hⁿ(η_{x,r}(S)) = r⁻ⁿ Hⁿ(S)`
+for every `S ⊆ ℝᴾ`, the scaling used in the proof of Simon Ch. 3, Theorem 1.6 "⇒".  `η_{x,r}` is
+the translation `y ↦ y + (−x)`, an isometry, followed by the dilation `z ↦ r⁻¹z`, and
+`Hⁿ(cT) = |c|ⁿ Hⁿ(T)` for `c ≠ 0`. -/
+theorem Submission.rsd_cmr_ir_blowUp_image_measure : ∀ (P n : ℕ) (x : Euclid P) (r : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] S := by
+  intro P n x r S hr
+  -- `η_{x,r}(S) = r⁻¹ • (S + (−x))`: `η_{x,r}(y) = r⁻¹ • (y − x)` and `y − x = y + (−x)`.
+  have hS : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S =
+      (fun z => r⁻¹ • z) '' ((fun y => y + -x) '' S) := by
+    rw [Set.image_image]
+    rfl
+  -- `Hⁿ(r⁻¹ • T) = ‖r⁻¹‖₊ⁿ • Hⁿ(T)`, translation invariance, and `‖r⁻¹‖₊ⁿ = r⁻¹ ^ n` for `r > 0`.
+  rw [hS, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+    (isometry_add_right (-x)).euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul,
+    ← ENNReal.ofReal_coe_nnreal]
+  congr 2
+  simp [abs_of_pos hr]
+
+/-- Deleting from the Borel set `M` a set that is `Hⁿ`-null near `x` keeps the approximate
+tangent space of `M` at `x` (Simon Ch. 3, 1.4): if `M' ⊆ M` and `Hⁿ((M ∖ M') ∩ B_δ(x)) = 0`, then
+`TₓM = Q` gives `TₓM' = Q`.  Choose `R₀ > 0` with `spt f ⊆ B̄_{R₀}(0)`.  For
+`0 < λ < δ/(R₀ + 1)`, a point `z = η_{x,λ}(y)` of `η_{x,λ}(M) ∖ η_{x,λ}(M')` with `f(z) ≠ 0` has
+`y ∈ M ∖ M'` and `|y − x| = λ|z| ≤ λR₀ < δ`, so it lies in `η_{x,λ}((M ∖ M') ∩ B_δ(x))`, which is
+`Hⁿ`-null by `rsd_cmr_ir_blowUp_image_measure`.  Hence `f = 0` a.e. on
+`η_{x,λ}(M) ∖ η_{x,λ}(M')`, and the Borel set `η_{x,λ}(M)` and its subset `η_{x,λ}(M')` carry the
+same integral of `f` for all small `λ` (as in the proof of 1.6 "⇒"). -/
+theorem Submission.rsd_cmr_ir_approxTangent_of_local_null : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → 0 < δ → μHE[n] ((M \ M') ∩ ball x δ) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q := by
+  intro P n M M' x δ Q hM hM'M hδ hnull hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- `spt f ⊆ B̄_{R₀}(0)` with `R₀ > 0`
+  obtain ⟨R₀, hR₀, hfR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall_lt 0 0
+  have hR₀' : (0 : ℝ) < R₀ + 1 := by linarith
+  refine (hT.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR₀')] with r hr
+  have hr0 : r ≠ 0 := hr.1.ne'
+  -- `Z_λ = η_{x,λ}((M ∖ M') ∩ B_δ(x))` is `Hⁿ`-null
+  have hZ : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' ((M \ M') ∩ ball x δ)) = 0 := by
+    rw [Submission.rsd_cmr_ir_blowUp_image_measure P n x r _ hr.1, hnull, mul_zero]
+  -- `η_{x,λ}(y) = λ⁻¹ • (y − x)`
+  have hη : Poincare.SimonGMT.Chapter03.blowUpMap x r = fun y => r⁻¹ • (y - x) := rfl
+  rw [hη] at hZ ⊢
+  -- `η_{x,λ}(M)` is Borel: it is the preimage of `M` under `z ↦ x + λ • z`
+  have hmeas : MeasurableSet ((fun y => r⁻¹ • (y - x)) '' M) := by
+    have himg : (fun y => r⁻¹ • (y - x)) '' M = (fun z => x + r • z) ⁻¹' M := by
+      ext z
+      constructor
+      · rintro ⟨y, hy, rfl⟩
+        simpa [smul_smul, mul_inv_cancel₀ hr0] using hy
+      · intro hz
+        exact ⟨x + r • z, hz, by simp [smul_smul, inv_mul_cancel₀ hr0]⟩
+    rw [himg]
+    exact hM.preimage (by fun_prop)
+  -- `f` vanishes on `η_{x,λ}(M) ∖ η_{x,λ}(M')` off `Z_λ`, hence a.e. there
+  refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hmeas.nullMeasurableSet
+    (image_mono hM'M) ?_
+  filter_upwards [measure_eq_zero_iff_ae_notMem.mp hZ] with z hzZ hz
+  obtain ⟨⟨y, hyM, rfl⟩, hyM'⟩ := hz
+  apply image_eq_zero_of_notMem_tsupport
+  intro hyf
+  apply hzZ
+  refine ⟨y, ⟨⟨hyM, fun h => hyM' ⟨y, h, rfl⟩⟩, ?_⟩, rfl⟩
+  -- `|y − x| = λ|η_{x,λ}(y)| ≤ λR₀ < λ(R₀ + 1) < δ`
+  have h1 : ‖r⁻¹ • (y - x)‖ ≤ R₀ := mem_closedBall_zero_iff.mp (hfR₀ hyf)
+  rw [norm_smul, norm_inv, Real.norm_of_nonneg hr.1.le, inv_mul_le_iff₀ hr.1] at h1
+  have h2 := (lt_div_iff₀ hR₀').mp hr.2
+  rw [mem_ball, dist_eq_norm]
+  linarith [hr.1]
+
+/-- **Restricting an integer multiplicity triple to a locally full-measure subset.**  If
+`R = (M, θ, ξ)` is an integer multiplicity triple in `U` and `A` is Borel, then `(M ∩ A, θ', ξ)` is
+one in `U'` provided `M ∩ A ⊆ U'`, `θ'` is measurable, positive on `M ∩ A` and locally integrable
+on `M ∩ A` in `U'`, and `Hⁿ`-a.e. `x ∈ M ∩ A` has a ball `B_δ(x)` with `Hⁿ((M \ A) ∩ B_δ(x)) = 0`.
+This is used for `(M ∩ B, 1, ξ)`, `B` open, and for `(M_X ∩ K, θ_X, ξ_X)` in the constant
+multiplicity reduction behind Simon 7.4.2 (via Ch. 5, Corollary 7.3).  All fields but the
+orientation pass from `R` to the subset `M ∩ A ⊆ M`; at such `x`, `T_x(M ∩ A) = T_xM`
+(Simon Ch. 3, Definition 1.4, chapter-03.txt lines 77–84) by
+`Submission.rsd_cmr_ir_approxTangent_of_local_null`, since `M \ (M ∩ A) = M \ A`. -/
+theorem Submission.rsd_cmr_imrep_restrict : ∀ (P n : ℕ) (U U' A : Set (Euclid P)) (R : IMRep U n) (θ : Euclid P → ℕ), MeasurableSet A → R.carrier ∩ A ⊆ U' → Measurable θ → (∀ x ∈ R.carrier ∩ A, 0 < θ x) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U' → ∫⁻ x in R.carrier ∩ A ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ A)), ∃ δ : ℝ, 0 < δ ∧ μHE[n] ((R.carrier \ A) ∩ ball x δ) = 0) → ∃ R' : IMRep U' n, R'.carrier = R.carrier ∩ A ∧ R'.mult = θ ∧ R'.orient = R.orient := by
+  intro P n U U' A R θ hA hsub hθ hθpos hθint hlocal
+  refine ⟨{ carrier := R.carrier ∩ A
+            mult := θ
+            orient := R.orient
+            measurableSet_carrier := R.measurableSet_carrier.inter hA
+            carrier_subset := hsub
+            rectifiable := R.rectifiable.mono inter_subset_left
+            measurable_mult := hθ
+            mult_pos := hθpos
+            locallyIntegrable_mult := hθint
+            aestronglyMeasurable_orient :=
+              R.aestronglyMeasurable_orient.mono_set inter_subset_left
+            orients := ?_ }, rfl, rfl, rfl⟩
+  -- `Hⁿ⌞(M ∩ A)`-a.e. `x` has `T_xM = Q` oriented by `ξ(x)` (from `Hⁿ⌞M`-a.e., `M ∩ A ⊆ M`) and
+  -- a ball `B_δ(x)` on which `M \ (M ∩ A) = M \ A` is `Hⁿ`-null, so `T_x(M ∩ A) = Q`.
+  filter_upwards [ae_restrict_of_ae_restrict_of_subset inter_subset_left R.orients, hlocal]
+    with x ⟨Q, hQ, hξ⟩ ⟨δ, hδ, hnull⟩
+  refine ⟨Q, Submission.rsd_cmr_ir_approxTangent_of_local_null P n R.carrier (R.carrier ∩ A) x δ Q
+    R.measurableSet_carrier inter_subset_left hδ ?_ hQ, hξ⟩
+  rwa [Set.sdiff_self_inter]
+
+/-- **Constant multiplicity: the quotient current is integer multiplicity** (Simon Ch. 5, proof of
+Corollary 7.3, chapter-05.txt lines 1389–1394, `Ṽ = v(M, N⁻¹θ)⌞B_ρ(ξ)`; a step of the constant
+multiplicity reduction behind Simon 7.4.2).  Let `T = τ(M, θ, ξ)` in `U`, `V ⊆ U` open, `N₀ ≥ 1`
+with `θ = N₀` `μ_T`-a.e. on `V`, and `T(ω) = N₀ T₀(ω)` for `ω ∈ 𝒟ⁿ(V)`.  Then `(M ∩ V, 1, ξ)`
+represents `T₀`.  Since `μ_T = θHⁿ⌞M` with `θ ≥ 1` on `M`, `θ = N₀` `Hⁿ`-a.e. on `M ∩ V`.
+`Submission.rsd_cmr_imrep_restrict` makes `(M ∩ V, 1, ξ)` a triple in `V` (`1 ≤ θ` gives local
+integrability, and `V` is open).  As `ω = 0` off `V`,
+`N₀ T₀(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ = ∫_{M ∩ V} N₀⟨ω, ξ⟩ dHⁿ`; cancel `N₀ ≠ 0`. -/
+theorem Submission.rsd_cmr_isIntegerMultiplicity_of_const_mult : ∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (R : IMRep U n) (T₀ : GeometricCurrentOn V n) (N₀ : ℕ), IsOpen V → 0 < N₀ → R.Represents T → (∀ᵐ x ∂R.measure, x ∈ V → R.mult x = N₀) → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = (N₀ : ℝ) * T₀ ω) → IsIntegerMultiplicity T₀ := by
+  intro P n U V hVU T R T₀ N₀ hV hN₀ hRT hconst hT₀
+  have hMV : MeasurableSet (R.carrier ∩ V) := R.measurableSet_carrier.inter hV.measurableSet
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
+  -- Step 1: `θ = N₀` `Hⁿ`-a.e. on `M ∩ V`, as `μ_T = θHⁿ⌞M` and `θ ≠ 0` on `M`.
+  have hae : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ V)), R.mult x = N₀ := by
+    have h := (ae_withDensity_iff (μ := μHE[n].restrict R.carrier) hθ).1 hconst
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset
+      (inter_subset_left : R.carrier ∩ V ⊆ R.carrier) h, ae_restrict_mem hMV] with x hx hxMV
+    exact hx (Nat.cast_ne_zero.2 (R.mult_pos x hxMV.1).ne') hxMV.2
+  -- Step 2: `R₀ = (M ∩ V, 1, ξ)` is an integer multiplicity triple in `V`.
+  obtain ⟨R₀, hcar, hmult, horient⟩ := Submission.rsd_cmr_imrep_restrict P n U V V R (fun _ => 1)
+    hV.measurableSet inter_subset_right measurable_const (fun _ _ => Nat.one_pos)
+    -- `∫_{M ∩ V ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞`, as `1 ≤ θ` on `M`.
+    (fun K hK hKV => ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK (hKV.trans hVU))
+      (le_trans (setLIntegral_mono hθ fun x hx => Nat.cast_le.2 (R.mult_pos x hx.1.1))
+        (lintegral_mono_set (inter_subset_inter_left K inter_subset_left))))
+    (by
+      -- A ball `B_δ(x) ⊆ V` about `x ∈ M ∩ V` misses `M \ V`.
+      filter_upwards [ae_restrict_mem hMV] with x hx
+      obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hV x hx.2
+      exact ⟨δ, hδ, measure_mono_null (fun y hy => absurd (hball hy.2) hy.1.2) measure_empty⟩)
+  -- Step 3: `N₀ T₀(ω) = N₀ R₀(ω)`, and `N₀ ≠ 0`.
+  refine ⟨R₀, fun ω => mul_left_cancel₀ (Nat.cast_ne_zero.2 hN₀.ne' : (N₀ : ℝ) ≠ 0) ?_⟩
+  -- `ω = 0` on `M \ V`, as `spt ω ⊆ V`.
+  have hω : ∀ x ∈ R.carrier \ (R.carrier ∩ V), (ω : DifferentialForm (Euclid P) n) x = 0 :=
+    fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx.2 ⟨hx.1, ω.2.2 h⟩
+  calc (N₀ : ℝ) * T₀ ω = T (testFormOnInclusion hVU n ω) := (hT₀ ω).symm
+    _ = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)
+          ∂μHE[n] := hRT _
+    _ = ∫ x in R.carrier ∩ V,
+          (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] :=
+        setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+          inter_subset_left fun x hx => by simp only [hω x hx, map_zero, mul_zero]
+    _ = ∫ x in R.carrier ∩ V,
+          (N₀ : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] :=
+        integral_congr_ae (hae.mono fun x hx => by simp only [hx])
+    _ = (N₀ : ℝ) * R₀.action ω := by
+        rw [integral_const_mul]
+        simp only [IMRep.action, hcar, hmult, horient, Nat.cast_one, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
