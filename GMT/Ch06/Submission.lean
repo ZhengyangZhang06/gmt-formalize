@@ -478,6 +478,195 @@ theorem Submission.polyhedral_approx_pairing_expansion : ∀ (P n : ℕ) (w : NV
         congrArg w hc
     _ = _ := by simp only [map_sum, map_smul, smul_eq_mul]
 
+/-- Integer multiplicity truncation to an open `V ⊂⊂ U` (the step `T ⌞ V` of the proof of
+Simon Ch. 6, 6.2): for `T = τ(M, θ, ξ)` integer multiplicity in `U`, the current
+`X(ω) = ∫_{M ∩ V} θ ⟨ω, ξ⟩ dHⁿ` on `ℝ^P` is integer multiplicity, witnessed by the triple
+`(M ∩ V, θ, ξ)`, and has finite mass `M(X) ≤ c_* ∫_{M ∩ V} θ dHⁿ`,
+`c_* = ∑_I ‖dx^I‖`. -/
+theorem Submission.polyhedral_approx_open_truncation : ∀ (P n : ℕ) (U V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → CompactlyContainedOpen V U → ∃ X : GeometricCurrentOn (univ : Set (Eucl P)) n, IsIntegerMultiplicity X ∧ X.mass < ∞ ∧ ∀ ω : TestFormOn (univ : Set (Eucl P)) n, X ω = tauAction n (M ∩ V) θ ξ ω := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  intro P n U V M θ ξ hT hnat hV
+  obtain ⟨hVo, hVc, hVU⟩ := hV
+  -- Step 1: `θ` is integrable on `M ∩ closure V`, hence on `M' = M ∩ V`.
+  have hθ : IntegrableOn θ (M ∩ V) (μHE[n] : Measure (Eucl P)) :=
+    (hT.integrableOn (closure V) hVc hVU).mono_set (inter_subset_inter_right M subset_closure)
+  have hθ' : Integrable θ ((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)) := hθ
+  have hnm : NullMeasurableSet (M ∩ V) (μHE[n] : Measure (Eucl P)) :=
+    hT.nullMeasurableSet.inter hVo.measurableSet.nullMeasurableSet
+  have hle : (μHE[n] : Measure (Eucl P)).restrict (M ∩ V) ≤
+      (μHE[n] : Measure (Eucl P)).restrict M :=
+    Measure.restrict_mono inter_subset_left le_rfl
+  -- Step 6: weighted tangent planes of `M` at points of the open set `V` are tangent planes
+  -- of `M ∩ V`.  If `f = 0` off `B̄_R(0)` and `B_δ(x) ⊆ V`, then for `0 < r < δ / R` the
+  -- blow-ups satisfy `η_{x,r}(M) ∩ B̄_R(0) = η_{x,r}(M ∩ V) ∩ B̄_R(0)`.
+  have htan : ∀ x ∈ V, ∀ Q : Submodule ℝ (Eucl P),
+      HasWeightedApproximateTangentSpaceAt n M θ x Q →
+        HasWeightedApproximateTangentSpaceAt n (M ∩ V) θ x Q := by
+    intro x hx Q h
+    refine ⟨h.1, fun f => (h.2 f).congr' ?_⟩
+    obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hVo x hx
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r hr
+    obtain ⟨hr0, hrδ⟩ := hr
+    have hcut : ∀ S : Set (Eucl P),
+        ∫ y in S, f y * θ (x + r • y) ∂(μHE[n] : Measure (Eucl P)) =
+          ∫ y in S ∩ closedBall (0 : Eucl P) R, f y * θ (x + r • y)
+            ∂(μHE[n] : Measure (Eucl P)) := by
+      intro S
+      rw [← setIntegral_indicator measurableSet_closedBall]
+      congr 1
+      funext y
+      by_cases hy : y ∈ closedBall (0 : Eucl P) R
+      · rw [indicator_of_mem hy]
+      · rw [indicator_of_notMem hy]
+        rw [mem_closedBall, dist_zero_right, not_le] at hy
+        rw [hfR y hy.le, zero_mul]
+    have hset : blowUpMap x r '' M ∩ closedBall (0 : Eucl P) R =
+        blowUpMap x r '' (M ∩ V) ∩ closedBall (0 : Eucl P) R := by
+      ext y
+      constructor
+      · rintro ⟨⟨z, hzM, rfl⟩, hyB⟩
+        refine ⟨⟨z, ⟨hzM, hball ?_⟩, rfl⟩, hyB⟩
+        rw [mem_closedBall, dist_zero_right] at hyB
+        simp only [blowUpMap, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr0] at hyB
+        rw [inv_mul_le_iff₀ hr0] at hyB
+        rw [mem_ball, dist_eq_norm]
+        calc ‖z - x‖ ≤ r * R := hyB
+          _ < δ / R * R := by gcongr
+          _ = δ := div_mul_cancel₀ δ hR.ne'
+      · rintro ⟨⟨z, ⟨hzM, -⟩, rfl⟩, hyB⟩
+        exact ⟨⟨z, hzM, rfl⟩, hyB⟩
+    rw [hcut (blowUpMap x r '' M), hcut (blowUpMap x r '' (M ∩ V)), hset]
+  -- Step 7: `(M ∩ V, θ, ξ)` is a rectifiable triple in `ℝ^P`.
+  have hT' : IsRectifiableTriple (univ : Set (Eucl P)) n (M ∩ V) θ ξ := by
+    refine ⟨subset_univ _, hnm, hT.countablyRectifiable.mono inter_subset_left,
+      fun x hx => hT.pos x hx.1, fun K _ _ => hθ.mono_set inter_subset_left,
+      hT.aestronglyMeasurable.mono_measure hle, ?_⟩
+    filter_upwards [ae_mono hle hT.orients, ae_restrict_mem₀ hnm] with x hx hxMV
+    obtain ⟨τ, hτ, hQ, hξ⟩ := hx
+    exact ⟨τ, hτ, htan x hxMV.2 _ hQ, hξ⟩
+  -- Step 2: `‖ξ(x)‖ ≤ 1` (`‖±τ₁ ∧ ⋯ ∧ τₙ‖ ≤ ∏ᵢ ‖τᵢ‖ = 1`) and, by the coordinate expansion
+  -- of the pairing, `|⟨α, ξ(x)⟩| ≤ c_* |α|`, for `Hⁿ`-a.e. `x ∈ M ∩ V`.
+  have hunit : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)), ‖ξ x‖ ≤ 1 := by
+    filter_upwards [hT'.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hsimple : ‖simpleNVector τ‖ ≤ 1 := by
+      refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+      rw [simpleNVector_apply, one_mul]
+      simpa [hτ.norm_eq_one] using α.le_opNorm τ
+    rcases hξ with hξ | hξ
+    · rw [hξ]
+      exact hsimple
+    · rw [hξ]
+      exact (norm_neg (simpleNVector τ)).trans_le hsimple
+  set c : ℝ := ∑ I : SimonMultiIndex n P,
+    ‖(wedgeCovectors n (fun j => EuclideanSpace.proj (I j)) : Covector (Eucl P) n)‖ with hc
+  have hc0 : 0 ≤ c := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hbound : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)),
+      ∀ α : Covector (Eucl P) n, |ξ x α| ≤ c * covectorEuclideanNorm α := by
+    filter_upwards [hunit] with x hx α
+    obtain ⟨hexp, hcoord⟩ := Submission.polyhedral_approx_pairing_expansion P n (ξ x) α
+    rw [hexp, hc, Finset.sum_mul]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun I _ => ?_)
+    rw [abs_mul, mul_comm (‖_‖)]
+    refine mul_le_mul (hcoord I) ?_ (abs_nonneg _) (covectorEuclideanNorm_nonneg α)
+    calc |ξ x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j)))|
+        ≤ ‖ξ x‖ * ‖(wedgeCovectors n (fun j => EuclideanSpace.proj (I j)) :
+            Covector (Eucl P) n)‖ := (ξ x).le_opNorm _
+      _ ≤ ‖(wedgeCovectors n (fun j => EuclideanSpace.proj (I j)) : Covector (Eucl P) n)‖ :=
+          mul_le_of_le_one_left (norm_nonneg _) hx
+  have hpt : ∀ ω : DifferentialForm (Eucl P) n,
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)), ‖ξ x (ω x)‖ ≤ ‖ω x‖ := by
+    intro ω
+    filter_upwards [hunit] with x hx
+    exact ((ξ x).le_opNorm _).trans (mul_le_of_le_one_left (norm_nonneg _) hx)
+  -- Step 3: `F_ω = θ ⟨ω, ξ⟩` is `Hⁿ ⌞ (M ∩ V)`-integrable, and `X(ω) = ∫_{M ∩ V} F_ω dHⁿ` is
+  -- linear in `ω`.
+  have hint : ∀ ω : TestFormOn (univ : Set (Eucl P)) n,
+      Integrable (fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) n) x))
+        ((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)) := by
+    intro ω
+    have hcont : Continuous (ω : DifferentialForm (Eucl P) n) := ω.property.1.1.continuous
+    obtain ⟨B, hB⟩ := hcont.bounded_above_of_compact_support ω.property.1.2
+    have hmeas : AEStronglyMeasurable (fun x => ξ x ((ω : DifferentialForm (Eucl P) n) x))
+        ((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)) :=
+      isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+        (hT'.aestronglyMeasurable.prodMk hcont.aestronglyMeasurable)
+    refine hθ'.mul_bdd hmeas (c := B) ?_
+    filter_upwards [hpt (ω : DifferentialForm (Eucl P) n)] with x hx
+    exact hx.trans (hB x)
+  let L : TestFormOn (univ : Set (Eucl P)) n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => tauAction n (M ∩ V) θ ξ ω
+      map_add' := by
+        intro ω η
+        simp only [tauAction]
+        rw [← integral_add (hint ω) (hint η)]
+        congr 1
+        funext x
+        simp only [Submodule.coe_add, Pi.add_apply, map_add, mul_add]
+      map_smul' := by
+        intro a ω
+        simp only [tauAction, Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul,
+          RingHom.id_apply]
+        rw [← integral_const_mul]
+        congr 1
+        funext x
+        ring }
+  -- Step 4: `ω_j → 0` in `𝒟ⁿ(ℝ^P)` gives `sup ‖ω_j‖ → 0`, and
+  -- `|X(ω_j)| ≤ sup ‖ω_j‖ · ∫_{M ∩ V} |θ| dHⁿ`, so `X` is a current.
+  have hcontL : ∀ ωs : ℕ → TestFormOn (univ : Set (Eucl P)) n,
+      TestFormOnConverges ωs 0 → Tendsto (fun j => L (ωs j)) atTop (𝓝 0) := by
+    intro ωs hconv
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+    set Θ : ℝ := ∫ x in M ∩ V, |θ x| ∂(μHE[n] : Measure (Eucl P)) with hΘ
+    have hΘ0 : 0 ≤ Θ := integral_nonneg fun _ => abs_nonneg _
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hε' : 0 < ε / (Θ + 1) := div_pos hε (by linarith)
+    filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hunif 0) _ hε'] with j hj
+    have hsmall : ∀ x, ‖(ωs j : DifferentialForm (Eucl P) n) x‖ ≤ ε / (Θ + 1) := by
+      intro x
+      by_cases hxK : x ∈ K
+      · have h := hj x hxK
+        have h0 : iteratedFDeriv ℝ 0
+            (((0 : TestFormOn (univ : Set (Eucl P)) n)) : DifferentialForm (Eucl P) n) x = 0 := by
+          ext m
+          simp
+        rw [h0, dist_zero_left, norm_iteratedFDeriv_zero] at h
+        exact h.le
+      · rw [image_eq_zero_of_notMem_tsupport fun h' => hxK (hsupp j h'), norm_zero]
+        exact hε'.le
+    have hLj : ‖L (ωs j)‖ ≤ ε / (Θ + 1) * Θ := by
+      change ‖∫ x in M ∩ V, θ x * ξ x ((ωs j : DifferentialForm (Eucl P) n) x)
+        ∂(μHE[n] : Measure (Eucl P))‖ ≤ ε / (Θ + 1) * Θ
+      rw [hΘ, ← integral_const_mul]
+      refine norm_integral_le_of_norm_le (hθ'.abs.const_mul _) ?_
+      filter_upwards [hpt (ωs j : DifferentialForm (Eucl P) n)] with x hx
+      rw [norm_mul, Real.norm_eq_abs, mul_comm]
+      exact mul_le_mul_of_nonneg_right (hx.trans (hsmall x)) (abs_nonneg _)
+    rw [dist_zero_right]
+    refine hLj.trans_lt ?_
+    rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+    nlinarith
+  let X : GeometricCurrentOn (univ : Set (Eucl P)) n := ⟨L, hcontL⟩
+  have hX : ∀ ω : TestFormOn (univ : Set (Eucl P)) n, X ω = tauAction n (M ∩ V) θ ξ ω :=
+    fun ω => rfl
+  -- Step 5: `M(X) ≤ c_* ∫_{M ∩ V} |θ| dHⁿ < ∞`, testing with `|ω| ≤ 1`.
+  have hmass : X.mass ≤ ENNReal.ofReal
+      (c * ∫ x in M ∩ V, |θ x| ∂(μHE[n] : Measure (Eucl P))) := by
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    refine ENNReal.ofReal_le_ofReal ?_
+    rw [hX ω, tauAction, ← integral_const_mul]
+    refine (Real.le_norm_self _).trans (norm_integral_le_of_norm_le (hθ'.abs.const_mul c) ?_)
+    filter_upwards [hbound] with x hx
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, mul_comm c]
+    refine mul_le_mul_of_nonneg_left ((hx _).trans ?_) (abs_nonneg _)
+    exact mul_le_of_le_one_right hc0 (hω.2 x)
+  -- Conclusion: `X = τ(M ∩ V, θ, ξ)` with `θ ∈ ℕ` on `M ∩ V`, and `M(X) < ∞`.
+  exact ⟨X, ⟨M ∩ V, θ, ξ, hT', fun x hx => hnat x hx.1, hX⟩,
+    hmass.trans_lt ENNReal.ofReal_lt_top, hX⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
