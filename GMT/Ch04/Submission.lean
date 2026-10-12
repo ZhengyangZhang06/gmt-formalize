@@ -434,6 +434,78 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- Simon 2.1 (p. 87): first-order regularity of a family as in 2.1. The initial velocity
+`X = ∂φ_t/∂t|_{t=0}` is `C¹` with `DX = 0` off `K`, and each `φ_t` (`|t| < ε`) is `C¹` and
+Lipschitz. -/
+theorem Submission.ts_fv_cv_first_order_regularity : ∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) ∧ (∀ y ∉ K, fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) y = 0) ∧ (∀ t ∈ Ioo (-ε) ε, (∃ L : NNReal, LipschitzWith L (φ t)) ∧ ContDiff ℝ 1 (φ t)) := by
+  intro n ℓ φ ε K hφ
+  -- `Φ(q) = φ q.1 q.2` is `C^∞` on the open set `S = (-ε, ε) × ℝ^{n+ℓ}`; `Kᶜ` is open.
+  have hS : IsOpen (Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ))) := isOpen_Ioo.prod isOpen_univ
+  have hmem : ∀ t ∈ Ioo (-ε) ε, ∀ y : Ambient n ℓ,
+      (t, y) ∈ Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ)) :=
+    fun t ht y ↦ ⟨ht, mem_univ y⟩
+  have h0 : (0 : ℝ) ∈ Ioo (-ε) ε := ⟨neg_lt_zero.mpr hφ.pos, hφ.pos⟩
+  have hKc : IsOpen Kᶜ := hφ.compact.isClosed.isOpen_compl
+  -- Chain rule along `t ↦ (t, y)`: `X(y) = DΦ(0, y)(1, 0)`.
+  have hvel : ∀ y, deriv (fun t ↦ φ t y) 0 =
+      fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) (1, 0) := by
+    intro y
+    have hdiff : DifferentiableAt ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) :=
+      (hφ.smooth.contDiffAt (hS.mem_nhds (hmem 0 h0 y))).differentiableAt (by simp)
+    have hg : HasDerivAt (fun t : ℝ ↦ (t, y)) ((1 : ℝ), (0 : Ambient n ℓ)) 0 :=
+      (hasDerivAt_id (0 : ℝ)).prodMk (hasDerivAt_const (0 : ℝ) y)
+    exact (hdiff.hasFDerivAt.comp_hasDerivAt (0 : ℝ) hg).deriv
+  -- (a) `DΦ` is `C¹` on `S`, so `y ↦ DΦ(0, y)(1, 0)` is `C¹`.
+  have ha : ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
+    have h1 : ContDiffOn ℝ 1 (fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2))
+        (Ioo (-ε) ε ×ˢ univ) :=
+      hφ.smooth.fderiv_of_isOpen hS (WithTop.coe_le_coe.mpr le_top)
+    have h2 : ContDiff ℝ 1
+        (fun y : Ambient n ℓ ↦ fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y)) := by
+      rw [← contDiffOn_univ]
+      exact h1.comp (contDiff_const.prodMk contDiff_id).contDiffOn (fun y _ ↦ hmem 0 h0 y)
+    simp_rw [hvel]
+    exact h2.clm_apply contDiff_const
+  -- Off `K`, `t ↦ φ t y` is constant near `0`, so `X(y) = 0`.
+  have hzero : ∀ y ∉ K, deriv (fun t ↦ φ t y) 0 = 0 := by
+    intro y hy
+    have : (fun t ↦ φ t y) =ᶠ[𝓝 0] fun _ ↦ y := by
+      filter_upwards [Ioo_mem_nhds (neg_lt_zero.mpr hφ.pos) hφ.pos] with t ht
+      exact hφ.fixed t ht y hy
+    rw [this.deriv_eq, deriv_const]
+  refine ⟨ha, fun y hy ↦ ?_, fun t ht ↦ ?_⟩
+  -- (b) `X = 0` on the open neighbourhood `Kᶜ` of `y`, so `DX(y) = 0`.
+  · have : (fun y ↦ deriv (fun t ↦ φ t y) 0) =ᶠ[𝓝 y] fun _ ↦ (0 : Ambient n ℓ) := by
+      filter_upwards [hKc.mem_nhds hy] with z hz
+      exact hzero z hz
+    rw [this.fderiv_eq, fderiv_const_apply]
+  -- (c) `φ t = Φ ∘ (y ↦ (t, y))` is `C^∞`.
+  have hsm : ContDiff ℝ ∞ (φ t) := by
+    rw [contDiff_iff_contDiffAt]
+    intro y
+    exact (hφ.smooth.contDiffAt (hS.mem_nhds (hmem t ht y))).comp y
+      (contDiffAt_const.prodMk contDiffAt_id)
+  have hC1 : ContDiff ℝ 1 (φ t) := hsm.of_le (WithTop.coe_le_coe.mpr le_top)
+  -- `Dφ_t = I` off `K`, so `‖Dφ_t‖ ≤ 1` there.
+  have hout : ∀ y ∉ K, ‖fderiv ℝ (φ t) y‖ ≤ 1 := by
+    intro y hy
+    have : φ t =ᶠ[𝓝 y] id := by
+      filter_upwards [hKc.mem_nhds hy] with z hz
+      exact hφ.fixed t ht z hz
+    rw [this.fderiv_eq, fderiv_id]
+    exact ContinuousLinearMap.norm_id_le
+  -- `Dφ_t` is continuous, hence bounded on the compact set `K`.
+  obtain ⟨L₀, hL₀⟩ :=
+    hφ.compact.exists_bound_of_continuousOn (hC1.continuous_fderiv one_ne_zero).continuousOn
+  -- Mean value inequality with `‖Dφ_t‖ ≤ max L₀ 1`.
+  let L : NNReal := ⟨max L₀ 1, zero_le_one.trans (le_max_right _ _)⟩
+  refine ⟨⟨L, lipschitzWith_of_nnnorm_fderiv_le (hC1.differentiable one_ne_zero) fun y ↦ ?_⟩, hC1⟩
+  rw [← NNReal.coe_le_coe, coe_nnnorm]
+  change ‖fderiv ℝ (φ t) y‖ ≤ max L₀ 1
+  by_cases hy : y ∈ K
+  · exact (hL₀ y hy).trans (le_max_left _ _)
+  · exact (hout y hy).trans (le_max_right _ _)
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
