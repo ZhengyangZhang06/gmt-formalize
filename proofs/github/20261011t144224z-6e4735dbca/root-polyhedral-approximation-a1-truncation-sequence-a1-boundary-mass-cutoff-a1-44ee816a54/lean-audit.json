@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0e2cf940edc258d60560d5949fe403e7b163fba7b0755038370437fe73b34407",
+  "git_delta": {
+    "base_commit": "1889ca0712ea3ae3cc7a2769e15fe26a16460bd4",
+    "candidate_commit": "220d968d8bd7a30812085cf5783ffe269a928709",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_boundary_mass_cutoff",
+    "diff_sha256": "f9501061d92646adbd74af87ac407da3cc38ff91fb74386dae813da151386555",
+    "source_sha256": "a47694b26936637573f83948eb00b1cd1e6c6b5867d101a784eb32f2ae793c88",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_boundary_mass_cutoff",
+      "statement": "∀ (P m : ℕ) (U₁ U₂ W V : Set (Eucl P)) (X : GeometricCurrentOn U₁ (m + 1)) (A : GeometricCurrentOn U₂ (m + 1)), IsOpen W → W ⊆ U₂ → IsCompact (closure V) → closure V ⊆ W → (∀ (η : TestFormOn U₁ (m + 1)) (η' : TestFormOn U₂ (m + 1)), (∀ x ∈ V, (η : DifferentialForm (Eucl P) (m + 1)) x = (η' : DifferentialForm (Eucl P) (m + 1)) x) → X η = A η') → X.boundary.mass ≤ A.boundary.massOn W",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
