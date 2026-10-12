@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.tilt_height_l1-a1",
+  "parent_id": "root.allard_regularity-a1",
+  "depth": 2,
+  "title": "Tilt-excess bounded by height with an L^1 mean-curvature term (Lemma A)",
+  "statement": "For n >= 1 and l >= 0 there is a constant C >= 0 (one may take C = 144) such that: if U is open, V is a rectifiable n-varifold in U with generalized mean curvature H in U, z in R^(n+l), r > 0, h >= 0, B_r(z) contained in U, T an n-dimensional subspace, and dist(x - z, T) <= h for every x in spt V cap B_r(z), then integral_{B_{r/2}(z)} |p_x - p_T|^2 dmu <= C r^-2 integral_{B_r(z)} dist(x - z, T)^2 dmu + C h integral_{B_r(z)} |H| dmu (Bochner integrals with respect to mu = V.weight; |.| Hilbert-Schmidt; p_x = V.tangentProj x; balls closed).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → 0 ≤ h → closedBall z r ⊆ U → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ C * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + C * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight",
+  "lean_name": "allard52_tilt_height_l1",
+  "depends_on": [
+    "root.allard_regularity-a1.tangent_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-tilt-height-l1-a1-a1"
+}
