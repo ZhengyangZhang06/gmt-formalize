@@ -458,6 +458,85 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 1, Theorem 1.17 (Lusin), as used in Ch. 3, Remark 1.8(1)**: a Borel set `A` with
+`Hⁿ(A) < ∞` is, up to an `Hⁿ`-null set, a countable union of closed sets `C i ⊆ A` on each of which
+the Borel function `ϑ` is continuous.  Proof: Lusin's theorem is proved inline (SimonGMT's
+`Chapter01` Lusin theorem is not in the frozen import closure) for the finite, hence weakly regular,
+measure `ν = Hⁿ ⌞ A`: for each rational interval `I_q` take closed `F_q ⊆ A ∩ ϑ⁻¹(I_q)` and
+`F'_q ⊆ A \ ϑ⁻¹(I_q)` with `ν(A \ (F_q ∪ F'_q)) ≤ δ_q`, `∑ δ_q < 1/m`; `ϑ` is continuous on
+`C m = ⋂_q (F_q ∪ F'_q)` and `Hⁿ(A \ C m) < 1/m`, so `Hⁿ(A \ ⋃ C m) = 0`. -/
+theorem rsod_wfu_lusin_closed_exhaustion : ∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Measurable ϑ → ∃ C : ℕ → Set (Amb n ℓ), (∀ i, IsClosed (C i) ∧ C i ⊆ A ∧ ContinuousOn ϑ (C i)) ∧ (μHE[n] : Measure (Amb n ℓ)) (A \ ⋃ i, C i) = 0 := by
+  intro n ℓ A ϑ hA hAfin hϑ
+  -- Lusin's theorem (Simon 1.17) for `ϑ` on `A` and a finite Borel measure.
+  have lusin : ∀ (ν : Measure (Amb n ℓ)), IsFiniteMeasure ν → ∀ ε : ℝ≥0∞, ε ≠ 0 →
+      ∃ C ⊆ A, IsClosed C ∧ ν (A \ C) < ε ∧ ContinuousOn ϑ C := by
+    intro ν hν ε hε
+    have : ν.WeaklyRegular := Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure ν
+    obtain ⟨δ, hδpos, hδsum⟩ := ENNReal.exists_pos_sum_of_countable hε (ℚ × ℚ)
+    -- For each rational interval, closed sets inside the parts of `A` where `ϑ` is in / not in it.
+    have hsplit : ∀ q : ℚ × ℚ, ∃ F ⊆ A ∩ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2, IsClosed F ∧
+        ∃ F' ⊆ A \ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2, IsClosed F' ∧ ν (A \ (F ∪ F')) ≤ δ q := by
+      intro q
+      have hP : MeasurableSet (A ∩ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2) := hA.inter (hϑ measurableSet_Ioo)
+      have hN : MeasurableSet (A \ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2) := hA.diff (hϑ measurableSet_Ioo)
+      have hδ2 : (δ q : ℝ≥0∞) / 2 ≠ 0 :=
+        (ENNReal.half_pos (ENNReal.coe_ne_zero.2 (hδpos q).ne')).ne'
+      obtain ⟨F, hFP, hFc, hF⟩ := hP.exists_isClosed_sdiff_lt (measure_ne_top ν _) hδ2
+      obtain ⟨F', hFN, hF'c, hF'⟩ := hN.exists_isClosed_sdiff_lt (measure_ne_top ν _) hδ2
+      refine ⟨F, hFP, hFc, F', hFN, hF'c, ?_⟩
+      calc ν (A \ (F ∪ F'))
+          ≤ ν ((A ∩ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2) \ F ∪ (A \ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2) \ F') := by
+            refine measure_mono fun x hx => ?_
+            by_cases hϑx : ϑ x ∈ Ioo (q.1 : ℝ) q.2
+            · exact Or.inl ⟨⟨hx.1, hϑx⟩, fun h => hx.2 (Or.inl h)⟩
+            · exact Or.inr ⟨⟨hx.1, hϑx⟩, fun h => hx.2 (Or.inr h)⟩
+        _ ≤ ν ((A ∩ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2) \ F) + ν ((A \ ϑ ⁻¹' Ioo (q.1 : ℝ) q.2) \ F') :=
+            measure_union_le _ _
+        _ ≤ δ q / 2 + δ q / 2 := add_le_add hF.le hF'.le
+        _ = δ q := ENNReal.add_halves _
+    choose F hFP hFc F' hFN hF'c hFF' using hsplit
+    refine ⟨⋂ q, (F q ∪ F' q), fun x hx => ?_, isClosed_iInter fun q => (hFc q).union (hF'c q),
+      ?_, ?_⟩
+    · rcases mem_iInter.1 hx (0, 0) with h | h
+      · exact (hFP _ h).1
+      · exact (hFN _ h).1
+    · rw [sdiff_iInter]
+      calc ν (⋃ q, A \ (F q ∪ F' q)) ≤ ∑' q, ν (A \ (F q ∪ F' q)) := measure_iUnion_le _
+        _ ≤ ∑' q, (δ q : ℝ≥0∞) := ENNReal.tsum_le_tsum hFF'
+        _ < ε := hδsum
+    · rw [Metric.continuousOn_iff]
+      intro x hx e he
+      obtain ⟨a, ha₁, ha₂⟩ := exists_rat_btwn (show ϑ x - e < ϑ x by linarith)
+      obtain ⟨b, hb₁, hb₂⟩ := exists_rat_btwn (show ϑ x < ϑ x + e by linarith)
+      have hxF' : x ∉ F' (a, b) := fun h => (hFN _ h).2 ⟨ha₂, hb₁⟩
+      obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 (hF'c (a, b)).isOpen_compl x hxF'
+      refine ⟨r, hr, fun y hy hyx => ?_⟩
+      have hyF : y ∈ F (a, b) := by
+        rcases mem_iInter.1 hy (a, b) with h | h
+        · exact h
+        · exact absurd h (hball (mem_ball.2 hyx))
+      obtain ⟨hy₁, hy₂⟩ := (hFP _ hyF).2
+      rw [Real.dist_eq, abs_sub_lt_iff]
+      constructor <;> linarith
+  -- Closed `C m ⊆ A` with `ϑ` continuous on `C m` and `Hⁿ(A \ C m) < 1/m`, from `ν = Hⁿ ⌞ A`.
+  have hC : ∀ m : ℕ, ∃ C ⊆ A, IsClosed C ∧
+      (μHE[n] : Measure (Amb n ℓ)) (A \ C) < (m : ℝ≥0∞)⁻¹ ∧ ContinuousOn ϑ C := by
+    intro m
+    obtain ⟨C, hCA, hCc, hCμ, hCf⟩ := lusin ((μHE[n] : Measure (Amb n ℓ)).restrict A)
+      (isFiniteMeasure_restrict.2 hAfin.ne) (m : ℝ≥0∞)⁻¹
+      (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top m))
+    refine ⟨C, hCA, hCc, ?_, hCf⟩
+    rwa [Measure.restrict_apply (hA.diff hCc.measurableSet), inter_eq_left.2 sdiff_subset] at hCμ
+  choose C hCA hCc hCμ hCf using hC
+  refine ⟨C, fun i => ⟨hCc i, hCA i, hCf i⟩, ?_⟩
+  by_contra h
+  obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt h
+  exact lt_asymm hm ((measure_mono (sdiff_subset_sdiff_right (subset_iUnion C m))).trans_lt (hCμ m))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
