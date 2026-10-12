@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hasFDerivAt_convolution_left|contDiff_convolution_left",
+        "convolution_lsmul|continuous_convolution_left|eLpNorm_convolution_integrand_le|enorm_convolution_le|dist_convolution_le",
+        "theorem MemLp.exists_hasCompactSupport_eLpNorm_sub_le",
+        "convolution.*(MemLp|eLpNorm)|(?:MemLp|eLpNorm).*convolution|[Yy]oung.*convolution|convolution.*[Yy]oung|[Ll]p.*approximate.?identity|approximate.?identity.*[Ll]p",
+        "mollifier_l2_contraction|mollifier_l2_tendsto|w12_ball_mollification_gradient",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-approx-independent-audit/ChildTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-approx-independent-audit/ParentAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-approx-independent-audit/AnalyticChecks.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-smooth-approximation-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-smooth-approximation-a1/decomposition-v1.json",
+        "/tmp/sa-decomp-check/Assembly.lean",
+        "/tmp/smooth-approx-independent-audit/ChildTypes.lean",
+        "/tmp/smooth-approx-independent-audit/ParentAssembly.lean",
+        "/tmp/smooth-approx-independent-audit/AnalyticChecks.lean"
+      ],
+      "conclusion": "Independently verified the selected handoff and pinned revisions. The workspace contract and build inputs match the snapshot; 18 relevant Mathlib source files also match. Searches found convolution calculus, density and pointwise bounds, but no matching L2 convolution contraction or approximate-identity theorem. All three literal child propositions elaborate without child declarations, under the frozen imports. Analytic probes, including the reflected-gradient formula and generic Banach-space instances, compile. The inspected parent assembly uses exactly the submitted child types and proves the exact frozen parent type; its axiom report contains only standard axioms and the approximate-identity and mollified-gradient premises, with no sorryAx or ancestor theorem. Checked library lemmas use only standard axioms. The split is appropriate: contraction supports approximate identity, while mollified gradient is independent; together they establish the selected parent. All names are bare identifiers, with no reservations in another branch or previously accepted declarations being reused. Public cross-check: Hunter's Theorems 1.28 and 3.19 corroborate the mollification argument and weak-derivative identity ([PDE notes](https://math.ucdavis.edu/~hunter/pdes/pde_notes.pdf))."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "l2_contraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition matches every prose hypothesis and conclusion. The proof correctly derives kernel integrability from its nonzero integral, establishes the required product measurability, applies extended-real weighted Hölder, and finishes with Tonelli and translation invariance. It explicitly handles non-integrable Bochner integrands and infinite right-hand sides, so no unstated L1 or L2 hypothesis is needed. This is a genuine independent obligation with a complete, non-circular proof."
+    },
+    {
+      "key": "l2_approximate_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the stated Banach-space convergence result. The proof derives positive radii and compact kernel support, justifies convolution integrability and linearity, and tracks strong measurability before identifying the lintegral seminorm with eLpNorm. Uniform convergence on continuous compactly supported approximants, a fixed compact thickening, density and contraction yield the claimed squared-error limit. Its sole child dependency, l2_contraction, is correctly directed; no monotonicity of radii or hidden hypothesis is used."
+    },
+    {
+      "key": "mollified_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses global smoothness and the pointwise interior gradient identity for the zero extensions. The proof supplies finite-measure L2-to-L1 integrability, compact support and derivative bounds, and integrability needed to commute evaluation and inner products with the derivative integral. The reflected kernel has admissible support, its gradient has the correct minus sign, and the weak identity gives the conclusion after a measure-preserving substitution. Nonpositive epsilon and dimension zero cause no gap. No other child or parent theorem is assumed."
+    }
+  ],
+  "required_changes": []
+}
