@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "527c9692387984854a4577d364b2bbacf47a04b9c93066e3cf5fc1ff5cc78789",
+  "git_delta": {
+    "base_commit": "6e2c5d7fcde8ad498d2e237f224889a5baf16811",
+    "candidate_commit": "0a13d795b501c56543245e47854a8749745ec5df",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "weighted_mono_kernel_term_tendsto",
+    "diff_sha256": "b3597debaeb97dbe8554cce2991750c9a3d60f1201337ac5c5d3173b89f0e1a6",
+    "source_sha256": "18f1b45f38054c8124ea53a13aaa00e9a7e223fc54ed2d92416134b6277423ca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weighted_mono_kernel_term_tendsto",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (u q : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ R A C : ℝ) (k : ℕ → ℝ → ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → ρ ≤ R → AEStronglyMeasurable u (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |u x| ≤ A ∧ |q x| ≤ 1) → (∀ m, Measurable (k m)) → (∀ m s, 0 ≤ s → |k m s| ≤ C) → (∀ m s, R < s → k m s = 0) → (∀ s, 0 ≤ s → Tendsto (fun m ↦ k m s) atTop (𝓝 ((Ioc σ ρ).indicator (fun s ↦ (s ^ n)⁻¹) s))) → IntegrableOn (fun x ↦ u x * (q x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \\ closedBall ξ σ) μ ∧ Tendsto (fun m ↦ ∫ x, u x * q x * k m ‖x - ξ‖ ∂μ) atTop (𝓝 (∫ x in closedBall ξ ρ \\ closedBall ξ σ, u x * (q x / ‖x - ξ‖ ^ n) ∂μ))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
