@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.canonical_representation-a1.null_transfer-a1",
+  "parent_id": "root.integral_compactness-a1.canonical_representation-a1",
+  "depth": 3,
+  "title": "μ-null sets of positive upper n-density are H^n-null (via Simon Ch. 1, Thm 3.3)",
+  "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N (Borel σ-algebra), and U ⊆ ℝ^N open with μ(K) < ∞ for every compact K ⊆ U. Let Z ⊆ U be an arbitrary set (not necessarily measurable) with μ(Z) = 0 (outer measure). Suppose limsup_{ρ↓0} densityRatio n μ x ρ > 0 for every x ∈ Z, where densityRatio n μ x ρ = μ(closedBall x ρ)/(unitBallVolume n · ofReal(ρ)^n) ∈ [0,∞] and the limsup is along 𝓝[>] 0. Then H^n(Z) = μHE[n](Z) = 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → (∀ x ∈ Z, 0 < limsup (densityRatio n μ x) (𝓝[>] 0)) → (μHE[n] : Measure (Euclidean N)) Z = 0",
+  "lean_name": "intcpt_canon_hausdorff_null_of_weight_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-canonical-representation-a1-null-transfer-a1-a1"
+}
