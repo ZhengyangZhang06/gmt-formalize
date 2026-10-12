@@ -1,0 +1,20 @@
+{
+  "node_id": "root.plane_disintegration-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/327",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b7235ce00be4a82f8985d34515a104244646606d",
+  "integrated_commit": "",
+  "proof_base_commit": "c0da5d4e53f1a1e1c8f676ede5196978f7099231",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.plane_disintegration-a1.slice_density-a1",
+    "root.plane_disintegration-a1.riesz_limit-a1",
+    "root.plane_disintegration-a1.pointwise_measure-a1",
+    "root.plane_disintegration-a1.identity_of_limits-a1"
+  ]
+}
