@@ -335,6 +335,90 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Divergence-test bound for translated directional derivatives** (a step of the translation
+estimate behind the compactness theorem, Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of
+Thm. 4.3): if `∫_F div g ≤ C` for every `C¹` field `g` with compact support in `B_{R+1}(0)` and
+`|g| ≤ 1`, then `|∫_F Dψ(z - a)[h] dz| ≤ C |h|` for every `C¹` function `ψ` with compact support
+in `B_R(0)` and `|ψ| ≤ 1`, and all `a, h` with `|a| ≤ 1`. For `|c| = |h|⁻¹` the field
+`G = c ψ(· - a) h` is admissible and `div G(z) = c Dψ(z - a)[h]` (the trace of a rank-one map),
+so `c ∫_F Dψ(z - a)[h] dz ≤ C`; take `c = ±|h|⁻¹`. -/
+theorem Submission.indCompact_transEst_abs_setIntegral_fderiv_le : ∀ (N : ℕ) (F : Set (Rn N))
+    (R C : ℝ), (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g →
+      tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) →
+      ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) →
+    ∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) →
+      ∀ a h : Rn N, ‖a‖ ≤ 1 → |∫ z in F, fderiv ℝ ψ (z - a) h| ≤ C * ‖h‖ := by
+  intro N F R C hdiv ψ hψ hψs hψsub hψ1 a h ha
+  -- Step 1. The case `h = 0` is trivial; otherwise `‖h‖ > 0`.
+  rcases eq_or_ne h 0 with rfl | hh
+  · simp
+  have hpos : 0 < ‖h‖ := norm_pos_iff.mpr hh
+  have hdiff : Differentiable ℝ ψ := hψ.differentiable one_ne_zero
+  set I := ∫ z in F, fderiv ℝ ψ (z - a) h with hI
+  -- Step 2. `ψ(· - a)` has compact support, and `tsupport ψ(· - a) ⊆ B_{R+1}(0)`.
+  have hTs : HasCompactSupport (fun y ↦ ψ (y - a)) := by
+    simpa [Function.comp_def] using hψs.comp_homeomorph (Homeomorph.subRight a)
+  have hTsub : tsupport (fun y ↦ ψ (y - a)) ⊆ Metric.ball 0 (R + 1) := by
+    intro y hy
+    have hy' : y - a ∈ tsupport ψ := by
+      have := tsupport_comp_eq_preimage ψ (Homeomorph.subRight a)
+      have hy2 : y ∈ tsupport (ψ ∘ (Homeomorph.subRight a)) := by
+        simpa [Function.comp_def] using hy
+      rw [this] at hy2
+      simpa using hy2
+    have h1 := hψsub hy'
+    rw [mem_ball_zero_iff] at h1 ⊢
+    calc ‖y‖ = ‖(y - a) + a‖ := by rw [sub_add_cancel]
+      _ ≤ ‖y - a‖ + ‖a‖ := norm_add_le _ _
+      _ < R + 1 := by linarith
+  -- Step 3. For `|c| = ‖h‖⁻¹`, testing the hypothesis with `G = c ψ(· - a) h` gives `c I ≤ C`.
+  have key : ∀ c : ℝ, |c| = ‖h‖⁻¹ → c * I ≤ C := by
+    intro c hc
+    set G : Rn N → Rn N := fun y ↦ (c * ψ (y - a)) • h with hG
+    have hGc : ContDiff ℝ 1 G :=
+      (contDiff_const.mul (hψ.comp (contDiff_id.sub contDiff_const))).smul contDiff_const
+    have hGsupp : tsupport G ⊆ tsupport (fun y ↦ ψ (y - a)) := by
+      refine (tsupport_smul_subset_left _ _).trans ?_
+      exact tsupport_mul_subset_right
+    have hGcs : HasCompactSupport G :=
+      hTs.of_isClosed_subset (isClosed_tsupport _) hGsupp
+    have hGb : ∀ y, ‖G y‖ ≤ 1 := by
+      intro y
+      simp only [hG, norm_smul, Real.norm_eq_abs, abs_mul, hc]
+      calc ‖h‖⁻¹ * |ψ (y - a)| * ‖h‖ = |ψ (y - a)| := by field_simp
+        _ ≤ 1 := hψ1 _
+    -- `div G(z) = trace (Dφ(z).smulRight h) = Dφ(z)[h] = c Dψ(z - a)[h]`, `φ = c ψ(· - a)`.
+    have hdivG : ∀ z, Poincare.SimonGMT.Chapter02.euclideanDivergence G z
+        = c * fderiv ℝ ψ (z - a) h := by
+      intro z
+      have hd : DifferentiableAt ℝ (fun y ↦ c * ψ (y - a)) z :=
+        (differentiableAt_const _).mul ((hdiff _).comp z (differentiableAt_id.sub_const a))
+      simp only [Poincare.SimonGMT.Chapter02.euclideanDivergence, hG]
+      rw [fderiv_smul_const hd]
+      have : ((fderiv ℝ (fun y ↦ c * ψ (y - a)) z).smulRight h : Rn N →L[ℝ] Rn N).toLinearMap
+          = (fderiv ℝ (fun y ↦ c * ψ (y - a)) z).toLinearMap.smulRight h := by
+        ext v; simp
+      rw [this, LinearMap.trace_smulRight]
+      have hd' : DifferentiableAt ℝ (fun y ↦ ψ (y - a)) z :=
+        (hdiff (z - a)).comp z (differentiableAt_id.sub_const a)
+      rw [ContinuousLinearMap.coe_coe, fderiv_const_mul hd' c, fderiv_comp_sub]
+      simp
+    have := hdiv G hGc hGcs (hGsupp.trans hTsub) hGb
+    simpa [hdivG, integral_const_mul] using this
+  -- Step 4. `c = ‖h‖⁻¹` gives `I ≤ C ‖h‖`, and `c = -‖h‖⁻¹` gives `-I ≤ C ‖h‖`.
+  have k1 := key ‖h‖⁻¹ (abs_of_pos (inv_pos.mpr hpos))
+  have k2 := key (-‖h‖⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hpos)])
+  have e1 : I ≤ C * ‖h‖ := by
+    have := mul_le_mul_of_nonneg_left k1 hpos.le
+    rw [← mul_assoc, mul_inv_cancel₀ hpos.ne', one_mul] at this
+    linarith
+  have e2 : -I ≤ C * ‖h‖ := by
+    have := mul_le_mul_of_nonneg_left k2 hpos.le
+    rw [← mul_assoc, mul_neg, mul_inv_cancel₀ hpos.ne', neg_one_mul] at this
+    linarith
+  exact abs_le.mpr ⟨by linarith, e1⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
