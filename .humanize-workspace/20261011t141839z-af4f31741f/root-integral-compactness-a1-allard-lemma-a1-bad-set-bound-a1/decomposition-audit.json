@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "no_satelliteConfig|theorem exist_disjoint_covering_families|structure BallPackage",
+        "FiniteDimensional|variable.*NormedSpace",
+        "withDensity_apply|theorem map_apply|theorem prod_univ|countable_of_nonempty_interior|theorem measure_biUnion|theorem measure_iUnion_fintype_le|theorem tsum_mul_left",
+        "intcpt_allard_bsb_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-bsb-audit-xylyhg88/Challenge_besicovitch_cover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-bsb-audit-xylyhg88/Challenge_marginal_measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-bsb-audit-xylyhg88/AssemblyAcceptedSibling.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-bsb-audit-xylyhg88/Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-bad-set-bound-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-bad-set-bound-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-good-point-monotonicity-a1/parent-child-handoff.json",
+        "/tmp/independent-bsb-audit-xylyhg88/AssemblyAcceptedSibling.lean",
+        "/tmp/independent-bsb-audit-xylyhg88/Instances.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, contract identity, relevant library hypotheses, and intended Borel/product instances. Both exact one-line propositions pass validation and elaborate independently of their implementations. Neither proposed bare name is reserved in the DAG or other proposals; searching 586 Git refs found no occurrences in Lean files. Both supplied child proofs and the exact selected parent assembly compile after replacing the sibling stub with its accepted, identical-type proof. Their axiom dependencies are only propext, Classical.choice, and Quot.sound. The split is appropriate: the marginal constructs the tilt measure, and the covering estimate bounds the bad set. The parent's remaining argument supplies the balls and obtains the uniform constant C·(exp(1)·Λ+1). Dependencies are acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "besicovitch_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen proposition agree, including arbitrary A and O, bounded positive witness radii, and extended nonnegative t. Each proof step is justified: Besicovitch supplies finitely many disjoint families covering the centres; nonempty interiors give countability; measurable closed balls permit countable additivity; outer-measure subadditivity and containment yield C·t·ν(O). Infinite values and empty families cause no gap. The proof is complete, non-circular, and ready for formalization. intcpt_allard_bsb_besicovitch_cover is a fresh bare identifier, and the child has no dependencies."
+    },
+    {
+      "key": "marginal_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen proposition match exactly. For arbitrary g, the pinned withDensity_apply requires only measurability of the evaluated set. Thus τ=(m.withDensity g).map Prod.fst has the required values by measurable_fst, map_apply, and Prod.fst⁻¹(A)=A×univ. The inferred measurable spaces agree with W.measure. The supplied proof is complete and independent; its restriction to measurable A suffices for every parent evaluation. intcpt_allard_bsb_marginal_measure is a fresh bare identifier, and the child has no dependencies."
+    }
+  ],
+  "required_changes": []
+}
