@@ -597,6 +597,186 @@ theorem Submission.ts_fv_cv_slice_fderiv_bounds : ∀ (n ℓ : ℕ) (φ : ℝ �
   · rw [hidK t htε x hx]
     exact ⟨ContinuousLinearMap.norm_id_le.trans (le_max_left _ _),
       fun v ↦ le_mul_of_one_le_left (norm_nonneg _) (le_max_left _ _)⟩
+theorem Submission.ts_fv_cv_slice_fderiv_time_deriv : ∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ∃ Λ' : ℝ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), (∀ x, Λ' 0 x = fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) x ∧ ∀ t ∈ Ioo (-ε) ε, HasDerivAt (fun s ↦ fderiv ℝ (φ s) x) (Λ' t x) t) ∧ ∀ δ : ℝ, 0 < δ → δ < ε → ∃ B : ℝ, ∀ x, ∀ t ∈ Ioo (-δ) δ, ‖Λ' t x‖ ≤ B := by
+  intro n ℓ φ ε K hφ
+  obtain ⟨hε, hK, hsm, -, -, hfix⟩ := hφ
+  -- Step 1. `Φ(t, y) = φ t y` is `C^∞` on the open set `U = (-ε, ε) × ℝ^{n+ℓ}`.
+  set Φ : ℝ × Ambient n ℓ → Ambient n ℓ := fun q ↦ φ q.1 q.2
+  set U : Set (ℝ × Ambient n ℓ) := Ioo (-ε) ε ×ˢ univ
+  have hU : IsOpen U := isOpen_Ioo.prod isOpen_univ
+  have hmem : ∀ t ∈ Ioo (-ε) ε, ∀ y : Ambient n ℓ, ((t, y) : ℝ × Ambient n ℓ) ∈ U :=
+    fun t ht y ↦ Set.mk_mem_prod ht (mem_univ y)
+  have h0 : (0 : ℝ) ∈ Ioo (-ε) ε := ⟨by linarith, hε⟩
+  have hD1 : ContDiffOn ℝ ∞ (fderiv ℝ Φ) U := hsm.fderiv_of_isOpen hU (by simp)
+  have hΦd : ∀ q ∈ U, HasFDerivAt Φ (fderiv ℝ Φ q) q := fun q hq ↦
+    ((hsm.contDiffAt (hU.mem_nhds hq)).differentiableAt (by simp)).hasFDerivAt
+  have hD1d : ∀ q ∈ U, HasFDerivAt (fderiv ℝ Φ) (fderiv ℝ (fderiv ℝ Φ) q) q := fun q hq ↦
+    ((hD1.contDiffAt (hU.mem_nhds hq)).differentiableAt (by simp)).hasFDerivAt
+  have hD2c : ContinuousOn (fderiv ℝ (fderiv ℝ Φ)) U :=
+    hD1.continuousOn_fderiv_of_isOpen hU (by simp)
+  -- Step 6(iii). Symmetry of `D²Φ` on `U`, from the mean value inequality and the continuity
+  -- of `D²Φ` (`ContDiffAt.isSymmSndFDerivAt` is not reachable from the frozen imports).
+  have hsymm : ∀ p ∈ U, ∀ a b : ℝ × Ambient n ℓ,
+      fderiv ℝ (fderiv ℝ Φ) p a b = fderiv ℝ (fderiv ℝ Φ) p b a := by
+    intro p hp a b
+    rw [← sub_eq_zero, ← norm_le_zero_iff]
+    refine le_of_forall_pos_le_add fun η hη ↦ ?_
+    rw [zero_add]
+    obtain ⟨η', hη'pos, hη'le⟩ : ∃ η' : ℝ, 0 < η' ∧ 2 * η' * (‖a‖ * ‖b‖) ≤ η := by
+      have hm : 0 < ‖a‖ * ‖b‖ + 1 := by positivity
+      refine ⟨η / 2 / (‖a‖ * ‖b‖ + 1), by positivity, ?_⟩
+      calc 2 * (η / 2 / (‖a‖ * ‖b‖ + 1)) * (‖a‖ * ‖b‖)
+          = η * (‖a‖ * ‖b‖) / (‖a‖ * ‖b‖ + 1) := by ring
+        _ ≤ η := by rw [div_le_iff₀ hm]; nlinarith
+    obtain ⟨r₁, hr₁, hr₁U⟩ := Metric.isOpen_iff.1 hU p hp
+    have hball : ball (fderiv ℝ (fderiv ℝ Φ) p) η' ∈ 𝓝 (fderiv ℝ (fderiv ℝ Φ) p) :=
+      ball_mem_nhds (fderiv ℝ (fderiv ℝ Φ) p) hη'pos
+    obtain ⟨r₂, hr₂, hr₂c⟩ := Metric.mem_nhds_iff.1 (hD2c.continuousAt (hU.mem_nhds hp) hball)
+    obtain ⟨r, hr0, hrU, hrc⟩ : ∃ r : ℝ, 0 < r ∧ ball p r ⊆ U ∧
+        ∀ q ∈ ball p r, ‖fderiv ℝ (fderiv ℝ Φ) q - fderiv ℝ (fderiv ℝ Φ) p‖ ≤ η' := by
+      refine ⟨min r₁ r₂, lt_min hr₁ hr₂, (ball_subset_ball (min_le_left _ _)).trans hr₁U,
+        fun q hq ↦ ?_⟩
+      have hq2 : fderiv ℝ (fderiv ℝ Φ) q ∈ ball (fderiv ℝ (fderiv ℝ Φ) p) η' :=
+        hr₂c (ball_subset_ball (min_le_right _ _) hq)
+      exact ((mem_ball_iff_norm (E := ℝ × Ambient n ℓ →L[ℝ] ℝ × Ambient n ℓ →L[ℝ] Ambient n ℓ)).1
+        hq2).le
+    have hmvt : ∀ y ∈ ball p r, ∀ z ∈ ball p r,
+        ‖fderiv ℝ Φ z - fderiv ℝ Φ y - fderiv ℝ (fderiv ℝ Φ) p (z - y)‖ ≤ η' * ‖z - y‖ :=
+      fun y hy z hz ↦ (convex_ball p r).norm_image_sub_le_of_norm_hasFDerivWithin_le'
+        (fun q hq ↦ (hD1d q (hrU hq)).hasFDerivWithinAt) hrc hy hz
+    -- second differences: `Φ(p+k+l) - Φ(p+k) - Φ(p+l) + Φ(p) = D²Φ(p) l k + O(η' |k| |l|)`
+    have hstep : ∀ k l : ℝ × Ambient n ℓ, ‖k‖ < r / 2 → ‖l‖ < r / 2 →
+        ‖Φ (p + k + l) - Φ (p + k) - (Φ (p + l) - Φ p) - fderiv ℝ (fderiv ℝ Φ) p l k‖ ≤
+          η' * ‖l‖ * ‖k‖ := by
+      intro k l hk hl
+      have hsub : ∀ y ∈ ball p (r / 2), y ∈ ball p r ∧ y + l ∈ ball p r := by
+        intro y hy
+        rw [mem_ball_iff_norm] at hy
+        refine ⟨mem_ball_iff_norm.2 (by linarith), mem_ball_iff_norm.2 ?_⟩
+        calc ‖y + l - p‖ = ‖(y - p) + l‖ := by congr 1; abel
+          _ ≤ ‖y - p‖ + ‖l‖ := norm_add_le _ _
+          _ < r := by linarith
+      have hψ : ∀ y ∈ ball p (r / 2), HasFDerivWithinAt (fun y ↦ Φ (y + l) - Φ y)
+          (fderiv ℝ Φ (y + l) - fderiv ℝ Φ y) (ball p (r / 2)) y := by
+        intro y hy
+        have h1 : HasFDerivAt (fun y ↦ Φ (y + l)) (fderiv ℝ Φ (y + l)) y :=
+          (hasFDerivAt_comp_add_right l).2 (hΦd (y + l) (hrU (hsub y hy).2))
+        exact (h1.sub (hΦd y (hrU (hsub y hy).1))).hasFDerivWithinAt
+      have hbd : ∀ y ∈ ball p (r / 2), ‖fderiv ℝ Φ (y + l) - fderiv ℝ Φ y -
+          fderiv ℝ (fderiv ℝ Φ) p l‖ ≤ η' * ‖l‖ := by
+        intro y hy
+        have h := hmvt y (hsub y hy).1 (y + l) (hsub y hy).2
+        rwa [add_sub_cancel_left] at h
+      have hpk : p + k ∈ ball p (r / 2) := by
+        rw [mem_ball_iff_norm, add_sub_cancel_left]
+        exact hk
+      have h := (convex_ball p (r / 2)).norm_image_sub_le_of_norm_hasFDerivWithin_le' hψ hbd
+        (mem_ball_self (half_pos hr0)) hpk
+      rwa [add_sub_cancel_left] at h
+    -- rescale `a`, `b` into the ball and compare the two orders
+    obtain ⟨c, hcpos, hca, hcb⟩ : ∃ c : ℝ, 0 < c ∧ ‖c • a‖ < r / 2 ∧ ‖c • b‖ < r / 2 := by
+      have hs : 0 < ‖a‖ + ‖b‖ + 1 := by positivity
+      have hc0 : 0 < r / 2 / (‖a‖ + ‖b‖ + 1) := by positivity
+      refine ⟨r / 2 / (‖a‖ + ‖b‖ + 1), hc0, ?_, ?_⟩ <;>
+        rw [norm_smul, Real.norm_of_nonneg hc0.le, div_mul_eq_mul_div, div_lt_iff₀ hs] <;>
+        nlinarith [norm_nonneg a, norm_nonneg b, half_pos hr0]
+    have h1 := hstep (c • a) (c • b) hca hcb
+    have h2 := hstep (c • b) (c • a) hcb hca
+    rw [add_right_comm p (c • b) (c • a)] at h2
+    have hcc : 0 < c * c := mul_pos hcpos hcpos
+    have e1 : fderiv ℝ (fderiv ℝ Φ) p (c • a) (c • b) - fderiv ℝ (fderiv ℝ Φ) p (c • b) (c • a) =
+        (c * c) • (fderiv ℝ (fderiv ℝ Φ) p a b - fderiv ℝ (fderiv ℝ Φ) p b a) := by
+      simp only [map_smul, smul_apply, smul_sub, smul_smul]
+    have e2 : fderiv ℝ (fderiv ℝ Φ) p (c • a) (c • b) - fderiv ℝ (fderiv ℝ Φ) p (c • b) (c • a) =
+        (Φ (p + c • a + c • b) - Φ (p + c • a) - (Φ (p + c • b) - Φ p) -
+            fderiv ℝ (fderiv ℝ Φ) p (c • b) (c • a)) -
+          (Φ (p + c • a + c • b) - Φ (p + c • b) - (Φ (p + c • a) - Φ p) -
+            fderiv ℝ (fderiv ℝ Φ) p (c • a) (c • b)) := by
+      abel
+    have hle : c * c * ‖fderiv ℝ (fderiv ℝ Φ) p a b - fderiv ℝ (fderiv ℝ Φ) p b a‖ ≤
+        c * c * (2 * η' * (‖a‖ * ‖b‖)) :=
+      calc c * c * ‖fderiv ℝ (fderiv ℝ Φ) p a b - fderiv ℝ (fderiv ℝ Φ) p b a‖
+          = ‖fderiv ℝ (fderiv ℝ Φ) p (c • a) (c • b) -
+              fderiv ℝ (fderiv ℝ Φ) p (c • b) (c • a)‖ := by
+            rw [e1, norm_smul, Real.norm_of_nonneg hcc.le]
+        _ ≤ η' * ‖c • b‖ * ‖c • a‖ + η' * ‖c • a‖ * ‖c • b‖ := by
+            rw [e2]
+            exact (norm_sub_le _ _).trans (add_le_add h1 h2)
+        _ = c * c * (2 * η' * (‖a‖ * ‖b‖)) := by
+            rw [norm_smul, norm_smul, Real.norm_of_nonneg hcpos.le]
+            ring
+    exact (le_of_mul_le_mul_left hle hcc).trans hη'le
+  -- Step 3. Time slices: `D(φ s)(y) = DΦ(s, y) ∘ ι₂` for `s ∈ (-ε, ε)`.
+  have hslice : ∀ s ∈ Ioo (-ε) ε, ∀ y : Ambient n ℓ,
+      fderiv ℝ (φ s) y = (fderiv ℝ Φ (s, y)).comp (ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ)) := by
+    intro s hs y
+    have h := (hΦd (s, y) (hmem s hs y)).comp y (hasFDerivAt_prodMk_right s y)
+    exact h.fderiv
+  -- Step 4. `Λ'(t, x) = D²Φ(t, x)(1, 0) ∘ ι₂`, i.e. `DG(t, x)(1, 0)` for `G(q) = DΦ(q) ∘ ι₂`.
+  refine ⟨fun t x ↦ (fderiv ℝ (fderiv ℝ Φ) (t, x) ((1 : ℝ), (0 : Ambient n ℓ))).comp
+      (ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ)), fun x ↦ ⟨?_, fun t ht ↦ ?_⟩, fun δ hδ hδε ↦ ?_⟩
+  · -- Step 6. `Λ'(0, x) = DX(x)`, by the symmetry of `D²Φ(0, x)`.
+    have hX : (fun y ↦ deriv (fun t ↦ φ t y) 0) =
+        fun y ↦ fderiv ℝ Φ ((0 : ℝ), y) ((1 : ℝ), (0 : Ambient n ℓ)) := by
+      funext y
+      have hk : HasDerivAt (fun t : ℝ ↦ (t, y)) ((1 : ℝ), (0 : Ambient n ℓ)) 0 :=
+        (hasDerivAt_id' (0 : ℝ)).prodMk (hasDerivAt_const (0 : ℝ) y)
+      have h := HasFDerivAt.comp_hasDerivAt (l := Φ) (f := fun t : ℝ ↦ (t, y)) (0 : ℝ)
+        (hΦd ((0 : ℝ), y) (hmem 0 h0 y)) hk
+      exact h.deriv
+    have hc : HasFDerivAt (fun y : Ambient n ℓ ↦ fderiv ℝ Φ ((0 : ℝ), y))
+        ((fderiv ℝ (fderiv ℝ Φ) ((0 : ℝ), x)).comp
+          (ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ))) x := by
+      have h := (hD1d ((0 : ℝ), x) (hmem 0 h0 x)).comp x (hasFDerivAt_prodMk_right (0 : ℝ) x)
+      exact h
+    have hXd : HasFDerivAt (fun y ↦ deriv (fun t ↦ φ t y) 0)
+        (((fderiv ℝ (fderiv ℝ Φ) ((0 : ℝ), x)).comp
+          (ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ))).flip ((1 : ℝ), (0 : Ambient n ℓ))) x := by
+      rw [hX]
+      have h := hc.clm_apply (hasFDerivAt_const ((1 : ℝ), (0 : Ambient n ℓ)) x)
+      rw [ContinuousLinearMap.comp_zero, zero_add] at h
+      exact h
+    rw [hXd.fderiv]
+    ext1 v
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
+      ContinuousLinearMap.inr_apply]
+    exact hsymm _ (hmem 0 h0 x) _ _
+  · -- Step 5. `s ↦ D(φ s)(x)` has derivative `Λ'(t, x)` at `t`.
+    have hk : HasDerivAt (fun s : ℝ ↦ (s, x)) ((1 : ℝ), (0 : Ambient n ℓ)) t :=
+      (hasDerivAt_id' t).prodMk (hasDerivAt_const t x)
+    have h1 : HasDerivAt (fun s ↦ fderiv ℝ Φ (s, x))
+        (fderiv ℝ (fderiv ℝ Φ) (t, x) ((1 : ℝ), (0 : Ambient n ℓ))) t := by
+      have h := HasFDerivAt.comp_hasDerivAt (l := fderiv ℝ Φ) (f := fun s : ℝ ↦ (s, x)) t
+        (hD1d (t, x) (hmem t ht x)) hk
+      exact h
+    have h2 := h1.clm_comp (hasDerivAt_const t (ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ)))
+    rw [ContinuousLinearMap.comp_zero, add_zero] at h2
+    refine h2.congr_of_eventuallyEq ?_
+    filter_upwards [Ioo_mem_nhds ht.1 ht.2] with s hs
+    exact hslice s hs x
+  · -- Step 8. Uniform bound: compactness of `[-δ, δ] × K`, and `Λ' = 0` off `K`.
+    have hcont : ContinuousOn (fun q : ℝ × Ambient n ℓ ↦
+        (fderiv ℝ (fderiv ℝ Φ) q ((1 : ℝ), (0 : Ambient n ℓ))).comp
+          (ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ))) U :=
+      (hD2c.clm_apply continuousOn_const).clm_comp continuousOn_const
+    have hQU : Icc (-δ) δ ×ˢ K ⊆ U := fun q hq ↦
+      Set.mem_prod.2 ⟨⟨by linarith [hq.1.1], by linarith [hq.1.2]⟩, mem_univ _⟩
+    obtain ⟨B, hB⟩ := (isCompact_Icc.prod hK).exists_bound_of_continuousOn (hcont.mono hQU)
+    refine ⟨max B 0, fun x t ht ↦ ?_⟩
+    have htε : t ∈ Ioo (-ε) ε := ⟨by linarith [ht.1], by linarith [ht.2]⟩
+    by_cases hx : x ∈ K
+    · exact (hB (t, x) (Set.mk_mem_prod (Ioo_subset_Icc_self ht) hx)).trans (le_max_left _ _)
+    · have hW : IsOpen (Ioo (-ε) ε ×ˢ Kᶜ) := isOpen_Ioo.prod hK.isClosed.isOpen_compl
+      have hev : fderiv ℝ Φ =ᶠ[𝓝 (t, x)] fun _ ↦ ContinuousLinearMap.snd ℝ ℝ (Ambient n ℓ) := by
+        filter_upwards [hW.mem_nhds (Set.mk_mem_prod htε (Set.mem_compl hx))] with q hq
+        have hq' : Φ =ᶠ[𝓝 q] Prod.snd := by
+          filter_upwards [hW.mem_nhds hq] with q' hq'
+          exact hfix q'.1 hq'.1 q'.2 hq'.2
+        rw [hq'.fderiv_eq, fderiv_snd]
+      have hD0 : fderiv ℝ (fderiv ℝ Φ) (t, x) = 0 := by
+        rw [hev.fderiv_eq, fderiv_const_apply]
+      simp only [hD0, zero_apply, ContinuousLinearMap.zero_comp, norm_zero]
+      exact le_max_right _ _
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
