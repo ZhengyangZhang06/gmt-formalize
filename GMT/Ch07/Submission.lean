@@ -1170,6 +1170,84 @@ theorem Submission.adr_tangent_keeps_measure : ∀ (P n Q : ℕ) (F : Set (Eucli
   exact absurd hU (not_lt.2 (Submission.adr_rescaled_content_lower_bound P ℓ A x (ρs (sub k₀)) U
     hℓ (hρ0 _) (hρD _) hcov))
 
+/-- **Simon, proof of Theorem A.4: the induction on the invariance dimension** (step 7 of the
+dimension reduction argument).  If every `L`-invariant `ψ ∈ F` with `sing ψ ≠ ∅` has `dim L ≤ d`,
+then `μH[d + α](sing φ ∩ B₁(0)) = 0` for every `φ ∈ F` and `α > 0`.  Otherwise, with `ℓ = d + α`,
+induction on `j ≤ d + 1` produces `ψⱼ ∈ F`, invariant under a subspace `Sⱼ` of dimension `≥ j`, with
+`μH[ℓ](sing ψⱼ ∩ B₁(0)) > 0`: `adr_tangent_keeps_measure` gives a homogeneous (`{0}`-invariant)
+`ψ₀`, and in the step `dim Sⱼ ≤ d < ℓ` makes `Sⱼ` `μH[ℓ]`-null, so a good point `x ∉ Sⱼ` of
+`adr_tangent_keeps_measure` exists, whose tangent function is `(Sⱼ + ℝx)`-invariant by
+`adr_tangent_invariance`.  Then `ψ_{d+1}` contradicts the bound on `d`. -/
+theorem Submission.adr_dimension_bound : ∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ d : ℕ, (∀ ψ ∈ F, ∀ L : Submodule ℝ (Euclid P), (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → (sing ψ).Nonempty → Module.finrank ℝ L ≤ d) → ∀ φ ∈ F, ∀ α : ℝ, 0 < α → μH[(d : ℝ) + α] (sing φ ∩ ball (0 : Euclid P) 1) = 0 := by
+  intro P n Q F sing hF0 hF1 hA1 hA2 hA3c hA32 hA33 d hd φ hφ α hα
+  suffices h : ∀ ℓ : ℝ, (d : ℝ) < ℓ → μH[ℓ] (sing φ ∩ ball (0 : Euclid P) 1) = 0 from
+    h _ (lt_add_of_pos_right _ hα)
+  intro ℓ hdℓ
+  have hℓ : 0 < ℓ := (Nat.cast_nonneg d).trans_lt hdℓ
+  -- Step 1: a linear subspace of dimension `≤ d` is `μH[ℓ]`-null
+  have hnull : ∀ S : Submodule ℝ (Euclid P), Module.finrank ℝ S ≤ d →
+      μH[ℓ] (S : Set (Euclid P)) = 0 := by
+    intro S hS
+    have hSℓ : (Module.finrank ℝ S : ℝ) < ℓ := lt_of_le_of_lt (by exact_mod_cast hS) hdℓ
+    -- `μH[dim S]` is an additive Haar measure on `S`, finite on balls, so `μH[ℓ]` vanishes there
+    have hball : ∀ r : ℕ, μH[ℓ] (closedBall (0 : S) r) = 0 := fun r =>
+      (Measure.hausdorffMeasure_zero_or_top hSℓ _).resolve_right
+        (isCompact_closedBall (0 : S) r).measure_lt_top.ne
+    have huniv : μH[ℓ] (univ : Set S) = 0 := by
+      refine measure_mono_null (fun y _ => ?_) (measure_iUnion_null hball)
+      obtain ⟨r, hr⟩ := exists_nat_ge ‖y‖
+      exact mem_iUnion.mpr ⟨r, mem_closedBall_zero_iff.mpr hr⟩
+    -- transport along the isometric inclusion `S → ℝᴾ`
+    calc μH[ℓ] (S : Set (Euclid P)) = μH[ℓ] (S.subtypeₗᵢ '' univ) := by simp
+      _ = μH[ℓ] (univ : Set S) := S.subtypeₗᵢ.isometry.hausdorffMeasure_image (Or.inl hℓ.le) _
+      _ = 0 := huniv
+  -- a set of positive measure has a point off a null set `N` with a property `p` failing only on
+  -- a null set
+  have hgood : ∀ (A N : Set (Euclid P)) (p : Euclid P → Prop), 0 < μH[ℓ] A →
+      μH[ℓ] {x | x ∈ A ∧ ¬ p x} = 0 → μH[ℓ] N = 0 → ∃ x ∈ A, x ∉ N ∧ p x := by
+    intro A N p hA hbad hN
+    by_contra hcon
+    refine hA.ne' (measure_mono_null (fun x hx => ?_) (measure_union_null hbad hN))
+    by_cases hxN : x ∈ N
+    · exact Or.inr hxN
+    · exact Or.inl ⟨hx, fun h => hcon ⟨x, hx, hxN, h⟩⟩
+  have hne : ∀ ψ : Euclid P → Euclid Q, 0 < μH[ℓ] (sing ψ ∩ ball (0 : Euclid P) 1) →
+      (sing ψ).Nonempty := fun ψ h => (nonempty_of_measure_ne_zero h.ne').left
+  by_contra h0
+  have hpos : 0 < μH[ℓ] (sing φ ∩ ball (0 : Euclid P) 1) := pos_iff_ne_zero.mpr h0
+  -- Step 2: the claim `C(j)`, with `dim Sⱼ ≥ j`
+  have key : ∀ j : ℕ, ∃ ψ ∈ F, ∃ S : Submodule ℝ (Euclid P), j ≤ Module.finrank ℝ S ∧
+      (∀ y ∈ S, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) ∧
+      0 < μH[ℓ] (sing ψ ∩ ball (0 : Euclid P) 1) := by
+    intro j
+    induction j with
+    | zero =>
+      -- Step 3: a homogeneous tangent function of positive measure; homogeneity is
+      -- `{0}`-invariance
+      obtain ⟨x, -, -, lams, ψ, -, -, -, -, hψF, -, hψhom, hψpos⟩ :=
+        hgood _ ∅ _ hpos (Submission.adr_tangent_keeps_measure P n Q F sing hA1 hA2 hA3c hA32 hA33
+          ℓ hℓ φ hφ) measure_empty
+      refine ⟨ψ, hψF, ⊥, Nat.zero_le _, fun y hy lam hlam z => ?_, hψpos⟩
+      rw [(Submodule.mem_bot ℝ).mp hy, zero_add]
+      exact hψhom lam hlam z
+    | succ j ih =>
+      -- Step 4: blow up `ψⱼ` at a good point `x ∉ Sⱼ`
+      obtain ⟨ψ, hψF, S, hjS, hSinv, hψpos⟩ := ih
+      have hSd : Module.finrank ℝ S ≤ d := hd ψ hψF S hSinv (hne ψ hψpos)
+      obtain ⟨x, -, hxS, lams, ψ', hlam0, hlam1, hlamx, hlim, hψ'F, hconv, hψ'hom, hψ'pos⟩ :=
+        hgood _ _ _ hψpos (Submission.adr_tangent_keeps_measure P n Q F sing hA1 hA2 hA3c hA32
+          hA33 ℓ hℓ ψ hψF) (hnull S hSd)
+      refine ⟨ψ', hψ'F, S ⊔ Submodule.span ℝ {x}, ?_,
+        Submission.adr_tangent_invariance P n Q F hF0 hF1 hA1 ψ hψF S hSinv x lams ψ' hlam0 hlim
+          (fun k => hA1 ψ hψF x (lams k) (hlam0 k) (hlam1 k) (hlamx k)) hψ'F hψ'hom hconv,
+        hψ'pos⟩
+      rw [Submodule.finrank_sup_span_singleton hxS]
+      omega
+  -- Step 5: `C(d + 1)` contradicts the bound on `d`
+  obtain ⟨ψ, hψF, S, hS, hSinv, hψpos⟩ := key (d + 1)
+  have := hd ψ hψF S hSinv (hne ψ hψpos)
+  omega
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
