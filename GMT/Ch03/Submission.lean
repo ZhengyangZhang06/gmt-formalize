@@ -360,6 +360,49 @@ theorem Submission.deGiorgiTM_integral_bound_of_ball : ∀ (N : ℕ) (ν : Measu
   rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero, ← Real.norm_eq_abs]
   exact norm_setIntegral_le_of_norm_le_const hball fun y _ => hnorm y
 
+/-- **Mass bound for the blow-ups** (Step 3 of the proof of
+`Submission.deGiorgiTM_blowUp_tendsto_of_contDiff`: the estimate
+`|r⁻ⁿ ∫ (f - φ)(η_{x,r}(y)) dμ(y)| ≤ δ r⁻ⁿ μ(B_{rR}(x)) ≤ δ C Rⁿ`, with the mass bound of
+Simon Ch. 3, proof of Theorem 4.3, display (6), `chapter-03.txt` line 648, at `ρ = rR`). Let
+`r, R > 0` with `μ(B_{rR}(x)) ≤ C (rR)ⁿ`, and let `h` be continuous with `|h| ≤ M` and `|z| < R`
+whenever `h z ≠ 0`. Then `g = h ∘ η_{x,r}` is continuous, bounded by `M` and vanishes off
+`B_{rR}(x)`, so by `Submission.deGiorgiTM_integral_bound_of_ball` it is `μ`-integrable with
+`|∫ g dμ| ≤ M μ(B_{rR}(x)) ≤ M max(C, 0) (rR)ⁿ` (`C` may be negative); dividing by `rⁿ > 0`
+gives `|r⁻ⁿ ∫ g dμ| ≤ M max(C, 0) Rⁿ`. -/
+theorem Submission.deGiorgiTM_blowUp_integral_bound : ∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (C R r M : ℝ) (h : Rn N → ℝ), 0 < r → 0 < R → μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) → Continuous h → (∀ z, |h z| ≤ M) → (∀ z, h z ≠ 0 → ‖z‖ < R) → Integrable (fun y ↦ h (blowUpMap x r y)) μ ∧ |(r ^ n)⁻¹ * ∫ y, h (blowUpMap x r y) ∂μ| ≤ M * max C 0 * R ^ n := by
+  intro N n μ x C R r M h hr hR hμ hh hM hsupp
+  -- Step 1: `g = h ∘ η_{x,r}` is continuous, as `η_{x,r}(y) = r⁻¹ • (y - x)` is affine.
+  have hη : Continuous (blowUpMap x r) := (continuous_sub_right x).const_smul r⁻¹
+  -- Step 2: `g y ≠ 0` gives `r⁻¹ ‖y - x‖ = ‖η_{x,r}(y)‖ < R`, i.e. `y ∈ B_{rR}(x)`.
+  have hgsupp : ∀ y, h (blowUpMap x r y) ≠ 0 → y ∈ Metric.ball x (r * R) := by
+    intro y hy
+    have hlt := hsupp _ hy
+    rw [blowUpMap, norm_smul_of_nonneg (inv_nonneg.2 hr.le), inv_mul_lt_iff₀ hr] at hlt
+    exact mem_ball_iff_norm.2 hlt
+  -- Step 3: `μ(B_{rR}(x)) ≤ ofReal (C (rR)ⁿ) < ∞`.
+  have hfin : μ (Metric.ball x (r * R)) < ∞ := hμ.trans_lt ENNReal.ofReal_lt_top
+  -- Step 4: the ball bound gives integrability and `|∫ g dμ| ≤ M μ.real(B_{rR}(x))`.
+  obtain ⟨hint, hbound⟩ := Submission.deGiorgiTM_integral_bound_of_ball N μ x (r * R) M
+    (fun y ↦ h (blowUpMap x r y)) hfin (hh.comp hη) (fun _ ↦ hM _) hgsupp
+  refine ⟨hint, ?_⟩
+  -- Step 5: `μ.real(B_{rR}(x)) ≤ max (C (rR)ⁿ) 0 = max C 0 * (rR)ⁿ`, as `(rR)ⁿ ≥ 0`.
+  have hreal : μ.real (Metric.ball x (r * R)) ≤ max C 0 * (r * R) ^ n := by
+    rw [measureReal_def, max_mul_of_nonneg _ _ (pow_nonneg (mul_pos hr hR).le n), zero_mul,
+      ← ENNReal.toReal_ofReal']
+    exact ENNReal.toReal_mono ENNReal.ofReal_ne_top hμ
+  -- Step 6: `M ≥ |h 0| ≥ 0`, so `|∫ g dμ| ≤ M max C 0 (rR)ⁿ = rⁿ (M max C 0 Rⁿ)`.
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  -- Step 7: `(rⁿ)⁻¹ > 0` (also for `n = 0`), and multiplying by it cancels `rⁿ`.
+  have hrn : 0 < r ^ n := pow_pos hr n
+  rw [abs_mul, abs_of_pos (inv_pos.2 hrn)]
+  calc (r ^ n)⁻¹ * |∫ y, h (blowUpMap x r y) ∂μ|
+      ≤ (r ^ n)⁻¹ * (r ^ n * (M * max C 0 * R ^ n)) := by
+        gcongr
+        calc |∫ y, h (blowUpMap x r y) ∂μ| ≤ M * μ.real (Metric.ball x (r * R)) := hbound
+          _ ≤ M * (max C 0 * (r * R) ^ n) := by gcongr
+          _ = r ^ n * (M * max C 0 * R ^ n) := by ring
+    _ = M * max C 0 * R ^ n := inv_mul_cancel_left₀ hrn.ne' _
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
