@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_le_hausdorff-a1.hausdorff_normalization-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_le_hausdorff-a1",
+  "depth": 4,
+  "title": "Normalization ω_n·μH[n] = 2ⁿ·μHE[n] on ℝ^N",
+  "statement": "Let n, N ∈ ℕ and let s ⊆ ℝ^N be an arbitrary set. Then ω_n·μH[n](s) = 2ⁿ·μHE[n](s). Here ω_n := Lⁿ(B_1(0)) is the volume of the open unit ball of ℝⁿ (ω_0 = 1), μH[n] is Mathlib's unnormalized n-dimensional Hausdorff measure, and μHE[n] is Mathlib's Euclidean Hausdorff measure (Simon's Hⁿ). Both sides are outer-measure values in [0, ∞].",
+  "lean_statement": "∀ (n N : ℕ) (s : Set (Rn N)), volume (Metric.ball (0 : Rn n) 1) * μH[(n : ℝ)] s = 2 ^ n * μHE[n] s",
+  "lean_name": "deGiorgiRH_unitBall_mul_hausdorffMeasure_eq_two_pow_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-measure-le-hausdorff-a1-ha-43dacf8d3a-a1"
+}

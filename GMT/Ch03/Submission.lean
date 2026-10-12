@@ -335,6 +335,70 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **A uniform closed-ball bound gives `μ(B) ≤ c μH[n](B)`** (the covering step behind
+`μ_E ≤ Hⁿ ⌞ ∂*E` in Simon Ch. 3, Theorem 4.3; cf. the proof of Ch. 1, Theorem 3.26(2)). Let
+`B ⊆ ℝᴺ` be arbitrary, `0 < c < ∞`, `δ > 0`, and `μ(B̄_ρ(x)) ≤ c ρⁿ` for all `x ∈ B` and
+`0 < ρ < δ`. The outer measure `ν(C) = μ(C ∩ B)` satisfies `ν(C) ≤ c (diam C)ⁿ` whenever
+`diam C ≤ δ / 2`: for `x ∈ C ∩ B` and `ρ ∈ (diam C, δ)` we have `C ∩ B ⊆ B̄_ρ(x)`, and we let
+`ρ ↓ diam C`. Hence `ν ≤ mkMetric (c • tⁿ) = c • μH[n]`, so `μ(B) = ν(B) ≤ c μH[n](B)`. -/
+theorem Submission.deGiorgiRH_measure_le_mul_hausdorffMeasure_of_closedBall_le : ∀ (n N : ℕ) (μ : Measure (Rn N)) (B : Set (Rn N)) (c : ℝ≥0∞) (δ : ℝ), c ≠ 0 → c ≠ ∞ → 0 < δ → (∀ x ∈ B, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ (Metric.closedBall x ρ) ≤ c * ENNReal.ofReal (ρ ^ n)) → μ B ≤ c * μH[(n : ℝ)] B := by
+  intro n N μ B c δ hc0 hctop hδ hball
+  -- Step 1: the outer measure `ν(C) = μ(C ∩ B)`, compared with `mkMetric (c • tⁿ)` at scale `δ / 2`.
+  let ν : OuterMeasure (Rn N) := OuterMeasure.restrict B μ.toOuterMeasure
+  have hle : ν ≤ OuterMeasure.mkMetric (c • fun t : ℝ≥0∞ => t ^ (n : ℝ)) := by
+    refine OuterMeasure.le_mkMetric _ ν (ENNReal.ofReal (δ / 2))
+      (ENNReal.ofReal_pos.mpr (half_pos hδ)) ?_
+    -- Step 2: `ν(C) ≤ c (diam C)ⁿ` whenever `diam C ≤ δ / 2`.
+    intro s hs
+    change μ.toOuterMeasure.restrict B s ≤ _
+    rw [OuterMeasure.restrict_apply, Measure.toOuterMeasure_apply]
+    -- (a) If `C ∩ B = ∅`, then `ν(C) = 0`.
+    rcases (s ∩ B).eq_empty_or_nonempty with hempty | ⟨x, hxs, hxB⟩
+    · simp [hempty]
+    -- (b) Otherwise fix `x ∈ C ∩ B`; `d = diam C` is real with `0 ≤ d ≤ δ / 2 < δ`.
+    have hdfin : Metric.ediam s ≠ ∞ := (hs.trans_lt ENNReal.ofReal_lt_top).ne
+    set d : ℝ := (Metric.ediam s).toReal with hd
+    have hd0 : 0 ≤ d := ENNReal.toReal_nonneg
+    have hdediam : ENNReal.ofReal d = Metric.ediam s := ENNReal.ofReal_toReal hdfin
+    have hdδ : d < δ := by
+      have : d ≤ δ / 2 := ENNReal.toReal_le_of_le_ofReal (by linarith) hs
+      linarith
+    -- (c) `ρ ↦ c ρⁿ` is continuous since `c ≠ ∞`; let `ρ ↓ d` in `ν(C) ≤ μ(B̄_ρ(x)) ≤ c ρⁿ`.
+    have hlim : Tendsto (fun ρ : ℝ => c * ENNReal.ofReal (ρ ^ n)) (𝓝[>] d)
+        (𝓝 (c * ENNReal.ofReal (d ^ n))) := by
+      have : Tendsto (fun ρ : ℝ => ENNReal.ofReal (ρ ^ n)) (𝓝[>] d)
+          (𝓝 (ENNReal.ofReal (d ^ n))) :=
+        ((ENNReal.continuous_ofReal.comp (continuous_pow n)).tendsto d).mono_left
+          nhdsWithin_le_nhds
+      exact ENNReal.Tendsto.const_mul this (Or.inr hctop)
+    have hmass : μ (s ∩ B) ≤ c * ENNReal.ofReal (d ^ n) := by
+      apply ge_of_tendsto hlim
+      filter_upwards [Ioo_mem_nhdsGT hdδ] with ρ hρ
+      have hρ0 : 0 < ρ := hd0.trans_lt hρ.1
+      have hsub : s ∩ B ⊆ Metric.closedBall x ρ := by
+        intro y hy
+        rw [Metric.mem_closedBall]
+        have h1 : edist y x ≤ Metric.ediam s := Metric.edist_le_ediam_of_mem hy.1 hxs
+        have h2 : dist y x ≤ d := by
+          rw [dist_edist]
+          exact ENNReal.toReal_mono hdfin h1
+        linarith [hρ.1]
+      exact (measure_mono hsub).trans (hball x hxB ρ hρ0 hρ.2)
+    calc μ (s ∩ B) ≤ c * ENNReal.ofReal (d ^ n) := hmass
+      _ = (c • fun t : ℝ≥0∞ => t ^ (n : ℝ)) (Metric.ediam s) := by
+        simp only [Pi.smul_apply, smul_eq_mul]
+        rw [← hdediam, ENNReal.ofReal_pow hd0, ENNReal.rpow_natCast]
+  -- Steps 3–4: covers and the infimum over them are packaged in `le_mkMetric`; pull `c` out of
+  -- `mkMetric` (`c ≠ 0`, `c ≠ ∞`) and identify `mkMetric (tⁿ)` with `μH[n]`.
+  have h := hle B
+  change μ.toOuterMeasure.restrict B B ≤ _ at h
+  rw [OuterMeasure.restrict_apply, inter_self, OuterMeasure.mkMetric_smul _ hctop hc0,
+    smul_apply, smul_eq_mul] at h
+  calc μ B ≤ c * OuterMeasure.mkMetric (fun t : ℝ≥0∞ => t ^ (n : ℝ)) B := h
+    _ = c * μH[(n : ℝ)] B := by
+      rw [Measure.hausdorffMeasure, ← Measure.mkMetric_toOuterMeasure]
+      rfl
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
