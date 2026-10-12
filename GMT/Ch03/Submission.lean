@@ -347,7 +347,7 @@ theorem Submission.indCompact_mollCauchy_l1_error : ∀ (N : ℕ) (F : Set (Rn N
   have hρi : Integrable ρ := hρc.integrable_of_hasCompactSupport hρs
   have hρm : Measurable ρ := hρc.measurable
   -- Step 1: replace `F` by its measurable hull `F'`.
-  set F' := toMeasurable volume F with hF'def
+  set F' := toMeasurable volume F
   have hF'm : MeasurableSet F' := measurableSet_toMeasurable _ _
   have hae : F' =ᵐ[volume] F := hF.toMeasurable_ae_eq
   have hind : F'.indicator (fun _ ↦ (1 : ℝ)) =ᵐ[volume] F.indicator (fun _ ↦ (1 : ℝ)) :=
