@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "085031bdce1263c9c23a1611d48035d95acf7f1fbeea961992a8823a5f5d17a3",
+  "git_delta": {
+    "base_commit": "db307e8e109a9f2ed978836e9d95b38f794d2c48",
+    "candidate_commit": "38a84674ea5a8c57d80718109eecc55ae3a37cfb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_c1r_uniform_remainder",
+    "diff_sha256": "fd4e9842097addb2d70ec1a01cbd7ade22d2e6f44dcb1a6abcda08d0072d9229",
+    "source_sha256": "4dce9150a4bb83b7af08017ca870c111bd033a038ff5c9328eb8abaaea03e7b0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_c1r_uniform_remainder",
+      "statement": "∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ C : Set (Eucl n), IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ g x) → ContinuousOn (fderiv ℝ g) C → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Eucl n), IsClosed A ∧ A ⊆ C ∧ (volume : Measure (Eucl n)) (C \\ A) < ε ∧ ∀ L : Set (Eucl n), IsCompact L → L ⊆ A → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ L, ∀ y ∈ A, dist x y < ρ → ‖g y - g x - fderiv ℝ g x (y - x)‖ ≤ δ * ‖y - x‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
