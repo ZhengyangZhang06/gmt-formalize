@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f53b40af36af6e7672bebe28b6c97865b839c76c95aef338282a16e21a90e2b0",
+  "git_delta": {
+    "base_commit": "b66e405fb3f071ec19068322b9ccd21e0844d6b8",
+    "candidate_commit": "584d0c6f96a1815fc99293adbc2541679e2bcf54",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "coarea_normDet_horizontal_comp",
+    "diff_sha256": "c9387ecf04bbd32b577ba3f438af6dcd79995ba155b4e7319ce00e5012c1ae98",
+    "source_sha256": "9867379a29a97ba4e2a1f4be3478b29c12ba806b8b8ffeb864f390d238bd052c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_normDet_horizontal_comp",
+      "statement": "∀ {V X Y : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (B : V →ₗ[ℝ] X) (L : X →ₗ[ℝ] Y) (Γ : V →ₗ[ℝ] Y) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective B → (∀ v, Γ v = L (B v)) → K = LinearMap.ker Γ → W = (LinearMap.ker L)ᗮ → (Γ ∘ₗ Kᗮ.subtype).normDet = (L ∘ₗ W.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype).normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
