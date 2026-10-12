@@ -458,6 +458,89 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Lusin's theorem for Borel maps `ℝⁿ → L(ℝⁿ, ℝ)`** (Simon Ch. 1, Theorem 1.17; used in the
+proof of Ch. 2, Theorem 1.5).  If `F : ℝⁿ → L(ℝⁿ, ℝ)` is Borel, `S ⊆ ℝⁿ` is Borel with
+`Lⁿ(S) < ∞` and `δ > 0`, then there is a closed `C ⊆ S` with `Lⁿ(S \ C) < δ` on which `F` is
+continuous.  Fix a countable basis `𝓑` of `L(ℝⁿ, ℝ)` and tolerances `ε_U > 0` (`U ∈ 𝓑`) with
+`Σ ε_U < δ/4`.  Take a closed `K₀ ⊆ S` with `Lⁿ(S \ K₀) < δ/2` and, for `A_U = S ∩ F⁻¹(U)`, a
+closed `K_U ⊆ A_U` and an open `O_U ⊇ A_U` with `Lⁿ(A_U \ K_U), Lⁿ(O_U \ A_U) < ε_U`.  Then
+`C = K₀ ∩ ⋂_U (O_Uᶜ ∪ K_U)` is closed, `S \ C ⊆ (S \ K₀) ∪ ⋃_U (O_U \ K_U)` has measure `< δ`, and
+`F⁻¹(U) ∩ C = O_U ∩ C` for every `U ∈ 𝓑`, so `F|_C` is continuous. -/
+theorem rsod_c1ab_clm_lusin_closed : ∀ (n : ℕ) (F : Rn n → (Rn n →L[ℝ] ℝ)), Measurable F → ∀ S : Set (Rn n), MeasurableSet S → volume S ≠ ∞ → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ C : Set (Rn n), C ⊆ S ∧ IsClosed C ∧ volume (S \ C) < δ ∧ ContinuousOn F C := by
+  intro n F hF S hS hSfin δ hδ
+  -- A countable basis `𝓑` of the target space `L(ℝⁿ, ℝ)`.
+  set 𝓑 := TopologicalSpace.countableBasis (Rn n →L[ℝ] ℝ)
+  have h𝓑 : TopologicalSpace.IsTopologicalBasis 𝓑 := TopologicalSpace.isBasis_countableBasis _
+  have : Countable 𝓑 := (TopologicalSpace.countable_countableBasis _).to_subtype
+  -- Inner regularity: a closed `K₀ ⊆ S` with `Lⁿ(S \ K₀) < δ/2`.
+  have hδ2 : δ / 2 ≠ 0 := (ENNReal.half_pos hδ).ne'
+  obtain ⟨K₀, hK₀S, hK₀, hK₀μ⟩ := hS.exists_isClosed_sdiff_lt hSfin hδ2
+  -- Tolerances `ε_U > 0` with `Σ_U ε_U < δ/4`.
+  obtain ⟨ε, hε, hεsum⟩ := ENNReal.exists_pos_sum_of_countable' (ENNReal.half_pos hδ2).ne' 𝓑
+  -- `A_U = S ∩ F⁻¹(U)` is Borel of finite measure; approximate it from inside and outside.
+  have hA : ∀ U : 𝓑, MeasurableSet (S ∩ F ⁻¹' (U : Set (Rn n →L[ℝ] ℝ))) := fun U =>
+    hS.inter (hF (h𝓑.isOpen U.2).measurableSet)
+  have hAfin : ∀ U : 𝓑, volume (S ∩ F ⁻¹' (U : Set (Rn n →L[ℝ] ℝ))) ≠ ∞ := fun U =>
+    ne_top_of_le_ne_top hSfin (measure_mono inter_subset_left)
+  choose K hKA hK hKμ using fun U : 𝓑 =>
+    (hA U).exists_isClosed_sdiff_lt (μ := volume) (hAfin U) (hε U).ne'
+  choose O hAO hO _ hOμ using fun U : 𝓑 =>
+    (hA U).exists_isOpen_sdiff_lt (μ := volume) (hAfin U) (hε U).ne'
+  refine ⟨K₀ ∩ ⋂ U : 𝓑, ((O U)ᶜ ∪ K U), inter_subset_left.trans hK₀S,
+    hK₀.inter (isClosed_iInter fun U => (hO U).isClosed_compl.union (hK U)), ?_, ?_⟩
+  · -- `S \ C ⊆ (S \ K₀) ∪ ⋃_U (O_U \ K_U)` and `Lⁿ(O_U \ K_U) ≤ 2 ε_U`.
+    have hsub : S \ (K₀ ∩ ⋂ U : 𝓑, ((O U)ᶜ ∪ K U)) ⊆ (S \ K₀) ∪ ⋃ U : 𝓑, (O U \ K U) := by
+      rintro x ⟨hxS, hxC⟩
+      by_cases hx0 : x ∈ K₀
+      · refine Or.inr (mem_iUnion.2 ?_)
+        by_contra hcon
+        refine hxC ⟨hx0, mem_iInter.2 fun U => ?_⟩
+        by_cases hxO : x ∈ O U
+        · by_contra hxK
+          exact hcon ⟨U, hxO, fun h => hxK (Or.inr h)⟩
+        · exact Or.inl hxO
+      · exact Or.inl ⟨hxS, hx0⟩
+    have hOK : ∀ U : 𝓑, volume (O U \ K U) ≤ ε U + ε U := by
+      intro U
+      calc volume (O U \ K U)
+          ≤ volume ((O U \ (S ∩ F ⁻¹' (U : Set (Rn n →L[ℝ] ℝ)))) ∪
+              ((S ∩ F ⁻¹' (U : Set (Rn n →L[ℝ] ℝ))) \ K U)) := by
+            refine measure_mono fun x hx => ?_
+            by_cases hxA : x ∈ S ∩ F ⁻¹' (U : Set (Rn n →L[ℝ] ℝ))
+            · exact Or.inr ⟨hxA, hx.2⟩
+            · exact Or.inl ⟨hx.1, hxA⟩
+        _ ≤ volume (O U \ (S ∩ F ⁻¹' (U : Set (Rn n →L[ℝ] ℝ)))) +
+              volume ((S ∩ F ⁻¹' (U : Set (Rn n →L[ℝ] ℝ))) \ K U) := measure_union_le _ _
+        _ ≤ ε U + ε U := add_le_add (hOμ U).le (hKμ U).le
+    calc volume (S \ (K₀ ∩ ⋂ U : 𝓑, ((O U)ᶜ ∪ K U)))
+        ≤ volume ((S \ K₀) ∪ ⋃ U : 𝓑, (O U \ K U)) := measure_mono hsub
+      _ ≤ volume (S \ K₀) + volume (⋃ U : 𝓑, (O U \ K U)) := measure_union_le _ _
+      _ ≤ volume (S \ K₀) + ∑' U : 𝓑, volume (O U \ K U) := by
+          gcongr; exact measure_iUnion_le _
+      _ ≤ volume (S \ K₀) + ∑' U : 𝓑, (ε U + ε U) := by
+          gcongr with U; exact hOK U
+      _ = volume (S \ K₀) + (∑' U : 𝓑, ε U + ∑' U : 𝓑, ε U) := by rw [ENNReal.tsum_add]
+      _ < δ / 2 + (δ / 2 / 2 + δ / 2 / 2) :=
+          ENNReal.add_lt_add hK₀μ (ENNReal.add_lt_add hεsum hεsum)
+      _ = δ := by rw [ENNReal.add_halves, ENNReal.add_halves]
+  · -- On `C`, `F⁻¹(U) = O_U` for every basic open `U`, so `F|_C` is continuous.
+    rw [continuousOn_iff_continuous_domRestrict, h𝓑.continuous_iff]
+    intro U hU
+    refine Topology.IsInducing.subtypeVal.isOpen_iff.2 ⟨O ⟨U, hU⟩, hO _, ?_⟩
+    ext ⟨x, hx⟩
+    simp only [mem_preimage, domRestrict_apply]
+    constructor
+    · intro hxO
+      rcases mem_iInter.1 hx.2 ⟨U, hU⟩ with h | h
+      · exact absurd hxO h
+      · exact (hKA _ h).2
+    · intro hxU
+      exact hAO _ ⟨hK₀S hx.1, hxU⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
