@@ -1,0 +1,139 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_graph_corollary-a1.hole_estimate-a1`
+- Child DAG node: `root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the inequality ||A|| <= |A| (operator norm versus Hilbert-Schmidt norm) quoted in the Notation of the parent proof and used in its step 5 in the form |A v|^2 <= |A|^2 |v|^2, together with the continuity and boundedness of A -> |A|^2 that the parent needs to integrate |p_x - P|^2.
+
+Notation. e_i := EuclideanSpace.single i 1 for i in Fin m; these vectors form the standard orthonormal basis of R^m, so |e_i| = 1. For v in R^m, v_i denotes its i-th coordinate. By definition hsNormSq(A) = sum over i < m of |A e_i|^2. ||A|| is the operator norm of A : R^m ->L R^k.
+
+1. Continuity. Fix i. The evaluation map A -> A e_i is linear in A and satisfies |A e_i - B e_i| = |(A - B) e_i| <= ||A - B|| |e_i| = ||A - B||, so it is continuous for the operator-norm topology. Composing with the continuous maps w -> |w| and t -> t^2 gives a continuous real function A -> |A e_i|^2. A finite sum of continuous real functions is continuous, so A -> sum_i |A e_i|^2 = hsNormSq(A) is continuous.
+2. Nonnegativity. Every summand |A e_i|^2 is >= 0, hence hsNormSq(A) >= 0.
+3. Upper bound by the operator norm. For each i, 0 <= |A e_i| <= ||A|| |e_i| = ||A||, so |A e_i|^2 <= ||A||^2. Summing over the m indices gives hsNormSq(A) <= sum_{i<m} ||A||^2 = m ||A||^2.
+4. Coordinates. Every v in R^m satisfies v = sum_i v_i e_i, because the j-th coordinate of the right side is sum_i v_i delta_{ij} = v_j. For the Euclidean norm, |v|^2 = sum_i v_i^2 = sum_i |v_i|^2.
+5. Bound on |A v|. By linearity of A and step 4, A v = sum_i v_i (A e_i). The triangle inequality and homogeneity of the norm give |A v| <= sum_i |v_i (A e_i)| = sum_i |v_i| |A e_i|.
+6. Cauchy-Schwarz. For finite sums of real numbers, (sum_i a_i b_i)^2 <= (sum_i a_i^2)(sum_i b_i^2). With a_i = |v_i| and b_i = |A e_i| and step 4, (sum_i |v_i| |A e_i|)^2 <= (sum_i |v_i|^2)(sum_i |A e_i|^2) = |v|^2 hsNormSq(A).
+7. Conclusion. Since 0 <= |A v| <= sum_i |v_i| |A e_i| (step 5), squaring preserves the inequality, and step 6 gives |A v|^2 <= (sum_i |v_i| |A e_i|)^2 <= hsNormSq(A) |v|^2. If m = 0, all sums are empty and v = 0, so each assertion reads 0 <= 0 and the steps above apply verbatim. QED
+
+Lean notes (Mathlib names that worked under the pinned toolchain; for convenience only):
+- unfold hsNormSq, then fun_prop for continuity (step 1) and positivity for step 2;
+- ContinuousLinearMap.le_opNorm and the norm of EuclideanSpace.single (simp) for step 3;
+- ext with simp [Pi.single_apply] for step 4;
+- map_sum, map_smul, norm_sum_le and norm_smul for step 5;
+- Finset.sum_mul_sq_le_sq_mul_sq and EuclideanSpace.norm_sq_eq for step 6.
+
+Remark (verified Lean realization; not part of the mathematical argument). The declaration below was compiled in this decomposition session (attempt 5, fresh scratch root; Lean v4.35.0-rc3, Mathlib 25730c7c, simongmt 2b366308) inside `namespace GMT.Ch05` / `namespace Submission`, in a module importing a freshly compiled copy of the frozen GMT/Ch05/Submission.lean, with the contract's `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal NNReal` and `open RectifiableVarifold` in effect. The candidate module compiled with no errors. Its only `sorry`s were the two sibling contracts lgc_tangent_plane_ae and lgc_density_monotonicity, which this child does not use. In the contract scope, `theorem _root_.HumanizeNodeComparator.target_<name> : (<frozen type>) := by exact Submission.<name>` type-checks against the compiled module, and `#print axioms` lists only propext, Classical.choice and Quot.sound. The declaration can be pasted into GMT/Ch05/Submission.lean inside `namespace Submission`, before `main_theorem`.
+
+theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ] Rn k => hsNormSq A) ∧ ∀ A : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq A ∧ hsNormSq A ≤ m * ‖A‖ ^ 2 ∧ ∀ v : Rn m, ‖A v‖ ^ 2 ≤ hsNormSq A * ‖v‖ ^ 2 := by
+  intro m k
+  refine ⟨?_, fun A => ⟨?_, ?_, fun v => ?_⟩⟩
+  · unfold hsNormSq
+    fun_prop
+  · unfold hsNormSq
+    positivity
+  · unfold hsNormSq
+    calc ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1:ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = m * ‖A‖ ^ 2 := by simp
+  · unfold hsNormSq
+    set e : Fin m → Rn m := fun i => EuclideanSpace.single i 1 with he
+    have hv : v = ∑ i, v i • e i := by
+      ext j
+      simp [he, Pi.single_apply]
+    have hAv : A v = ∑ i, v i • A (e i) := by
+      conv_lhs => rw [hv]
+      simp [map_sum, map_smul]
+    have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (e i)‖ := by
+      rw [hAv]
+      calc _ ≤ ∑ i, ‖v i • A (e i)‖ := norm_sum_le _ _
+        _ = _ := by simp [norm_smul]
+    have h2 : (∑ i, |v i| * ‖A (e i)‖) ^ 2 ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ‖v‖ ^ 2 = ∑ i, |v i| ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      simp [sq_abs]
+    have h0 : 0 ≤ ‖A v‖ := norm_nonneg _
+    calc ‖A v‖ ^ 2 ≤ (∑ i, |v i| * ‖A (e i)‖) ^ 2 := by gcongr
+      _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
+      _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
+
+## Key steps
+
+1. Continuity: each evaluation A -> A e_i is continuous linear, and hsNormSq is a finite sum of squared norms of such maps
+2. Nonnegativity: hsNormSq A is a sum of squares
+3. |A e_i| <= ||A|| |e_i| = ||A||; summing over i < m gives hsNormSq A <= m ||A||^2
+4. Expand v = sum_i v_i e_i; linearity and the triangle inequality give |A v| <= sum_i |v_i| |A e_i|
+5. Cauchy-Schwarz gives (sum_i |v_i| |A e_i|)^2 <= |v|^2 hsNormSq A; squaring the nonnegative bound gives |A v|^2 <= hsNormSq A |v|^2
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (project ea5607598f3133b40a13241f2e51517a8c6423cd, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean (all c966f51efddb5a68ce15ef2a2a322fd9df0ca69da4626c7acef05b05d1691e12)`
+- `rg -n 'lgc_|hsNormSq_bounds|support_closest_point|rotated_graph_slope|hole_annulus_lower|hole_split_upper' <snapshot>/project (no match)`
+- `rg -n 'hsNormSq' <snapshot>/project (only the contract definition, Submission.lean:47, and its uses)`
+- `rg -n 'lemma isClosed_support|lemma measure_compl_support' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'exists_infDist_eq_dist|theorem infDist_le_infDist_of_subset|theorem infDist_le_dist_of_mem' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `rg -n 'dist_starProjection_eq_infDist|theorem starProjection_norm_le|HasOrthogonalProjection.ofCompleteSpace' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n 'integrableOn_of_bounded' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean; rg -n 'integral_mono_of_nonneg' .../Integral/Bochner/Basic.lean; rg -n 'theorem setIntegral_mono_set|theorem integral_indicator|theorem setIntegral_const' .../Integral/Bochner/Set.lean`
+- `rg -n 'isClosed_range' .../Topology/MetricSpace/Antilipschitz.lean; rg -n 'sum_mul_sq_le_sq_mul_sq' .../Algebra/Order/BigOperators/Ring/Finset.lean; rg -n 'comp_aestronglyMeasurable₂' .../MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `python3: lean_name collision scan of <run>/dag.json for the five names; grep of <run>/nodes/*/decomposition-v*.json (other nodes), .humanize/math-wiki and .swarm-worktrees/*/gmt-ch05/GMT/Ch05/Submission.lean (159 files): no match`
+- `python3: max_nodes in .humanize/swarm-configs/e7e4b943ce8d47d69f960d0598137f28.json (200) and 11abe17eae34407eb92f02a80299a0ca.json (1000); len(dag.json nodes); grep -n 'remaining = self.config.max_nodes' /runtime/flows/gmt-claude-a2c7949d39d0/_recursive_lean/runtime.py`
+- `grep -n '(9)|(10)' and sed -n 470,600p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt (printed proof of Simon 2.6, displays (9)-(10), pp. 112-113)`
+- `lean -o /tmp/lgc-hole-v5-x104/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (fresh byte copy of the frozen Submission)`
+- `lean -o /tmp/lgc-hole-v5-x104/olean/Cand/Cand.olean Cand/Cand.lean (sibling contracts sorry + five children + assembly)`
+- `lean Cand/Types.lean; lean Cand/Exact.lean; lean Cand/Comparator.lean; lean Cand/AsmOnly.lean; lean Cand/Inst.lean (all exit 0)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-hole-estimate-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/e7e4b943ce8d47d69f960d0598137f28.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/11abe17eae34407eb92f02a80299a0ca.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch05/e7e4b943ce8d47d69f960d0598137f28.log`
+- `/runtime/flows/gmt-claude-a2c7949d39d0/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Cand.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Types.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Exact.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Comparator.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/AsmOnly.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Inst.lean`
+
+Snapshot and contract. manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Submission.lean, the workspace Contract.lean and the snapshot Contract.lean are byte-identical (sha256 c966f51e…). The snapshot project contains none of the five proposed names; hsNormSq occurs only as the contract definition and its uses. No existing hsNormSq/operator-norm comparison for continuous linear maps exists to reuse. The accepted wiki theorem hsNorm_starProjection_trace_identities has a different type, so it cannot be reused by exact name.
+Mathlib facts used by the child proofs, all present in the snapshot:
+- isClosed_support and measure_compl_support (Measure/Support.lean:115, 202)
+- IsClosed.exists_infDist_eq_dist, infDist_le_dist_of_mem and infDist_le_infDist_of_subset (HausdorffDistance.lean:615, 500, 505)
+- HasOrthogonalProjection.ofCompleteSpace, dist_starProjection_eq_infDist and starProjection_norm_le (Projection/Basic.lean:53, 234, 386)
+- Measure.integrableOn_of_bounded (IntegrableOn.lean:716) and integral_mono_of_nonneg (Bochner/Basic.lean:676)
+- integral_indicator, setIntegral_const and setIntegral_mono_set (Bochner/Set.lean:185, 524, 737)
+- AntilipschitzWith.isClosed_range (Antilipschitz.lean:175) and Finset.sum_mul_sq_le_sq_mul_sq (Ring/Finset.lean:171)
+- Continuous.comp_aestronglyMeasurable₂ (AEStronglyMeasurable.lean:263)
+The printed proof of Simon 2.6 (chapter-05.txt, displays (9)-(10), pp. 112-113) matches the supplied corrected steps.
+Names and activation. None of the five names is reserved in dag.json, in other nodes' proposals, in the math wiki or in the 159 proof worktrees. The earlier accepted splits were blocked only by max_nodes = 200 in the previous worker's config. The current worker has max_nodes = 1000 and dag.json has fewer than 230 nodes.
+Lean (this session). All six frozen types elaborate. The five child proofs compile with only standard axioms. The assembly proves the exact selected parent type from the five child types and the two sibling contracts.
