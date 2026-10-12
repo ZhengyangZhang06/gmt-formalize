@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1",
+  "depth": 3,
+  "title": "Blow-up of a rectifiable current at almost every point (printed (7))",
+  "statement": "Let P, n ∈ ℕ and let (M, θ, ξ) satisfy IsRectifiableTriple ℝ^P n M θ ξ. Then for Hⁿ⌞M-a.e. x (Hⁿ = μHE[n]) the following holds: for every linear subspace Q ⊆ ℝ^P with HasWeightedApproximateTangentSpaceAt n M θ x Q and every continuous compactly supported ω : ℝ^P → Λⁿ(ℝ^P), τ(M,θ,ξ)(y ↦ r^{−n}·ω(r⁻¹(y − x))) → θ(x)·∫_Q ξ(x)(ω(z)) dHⁿ(z) as r → 0⁺. Here τ(M,θ,ξ)(η) = tauAction n M θ ξ η = ∫_M θ(y) ξ(y)(η(y)) dHⁿ(y).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω → Tendsto (fun r : ℝ => tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))) (𝓝[>] 0) (𝓝 (θ x * ∫ z in (Q : Set (Eucl P)), ξ x (ω z) ∂(μHE[n] : Measure (Eucl P))))",
+  "lean_name": "ind_ae_blowup_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1-a1"
+}
