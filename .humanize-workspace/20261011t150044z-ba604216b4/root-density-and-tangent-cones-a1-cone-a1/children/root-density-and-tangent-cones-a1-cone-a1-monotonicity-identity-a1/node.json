@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.monotonicity_identity-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "depth": 3,
+  "title": "Stationary monotonicity identity (Simon 4.3.6) for the varifold of an IMRep in ℝ^P",
+  "statement": "Let P, n ∈ ℕ and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n), with μ := R.measure = θHⁿ⌞M. For x ∈ ℝ^P let p_x be the orthogonal projection onto approxTangentPlane n M x. Suppose V = v(M, θ) is stationary in ℝ^P in the computed sense: R.firstVariation X = ∫_M θ·trace(p_x∘DX(x)) dHⁿ = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support. Then for every z ∈ ℝ^P and 0 < σ ≤ ρ, with B̄ denoting closed balls and the identity taken in [0, ∞] (written with ENNReal.ofReal),\n μ(B̄_σ(z))/σⁿ + ∫_{B̄_ρ(z)∖B̄_σ(z)} |(x−z) − p_x(x−z)|² / |x−z|^{n+2} dμ(x) = μ(B̄_ρ(z))/ρⁿ.",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → ∀ (z : Euclid P) (σ ρ : ℝ), 0 < σ → σ ≤ ρ → R.measure (closedBall z σ) / ENNReal.ofReal (σ ^ n) + ∫⁻ x in closedBall z ρ \\ closedBall z σ, ENNReal.ofReal (‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 / ‖x - z‖ ^ (n + 2)) ∂R.measure = R.measure (closedBall z ρ) / ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "dtc_cone_monotonicity_identity",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-monotonicity-identity-a1-a1"
+}

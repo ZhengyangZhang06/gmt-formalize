@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "depth": 3,
+  "title": "Cartan's formula for the Euler field X(x) = x",
+  "statement": "Let P, m ∈ ℕ and let β : ℝ^P → Λ^{m+1}(ℝ^P) be an (m+1)-form differentiable at y. Let ι_Xβ be the m-form z ↦ β(z).curryLeft z, the contraction with the Euler field X(z) = z. Then\n d(ι_Xβ)(y) + ι_y(dβ(y)) = (m+1)·β(y) + Dβ(y)[y].\nThis is Cartan's formula L_X = dι_X + ι_X d for X(z) = z, with d the exterior derivative (Mathlib extDeriv), ι_y(dβ(y)) = (dβ(y)).curryLeft y, and Dβ(y) the Fréchet derivative.",
+  "lean_statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (y : Euclid P), DifferentiableAt ℝ β y → exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) z) y + ContinuousAlternatingMap.curryLeft (exteriorDerivative β y) y = ((m : ℝ) + 1) • β y + fderiv ℝ β y y",
+  "lean_name": "dtc_cone_euler_cartan",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1-a1"
+}

@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|def IsLocallyIntegrableMultiplicity|approximateTangentField_ae_eq",
+        "structure RectifiableVarifold|tangentProjection_aemeasurable|def weight|def firstVariation|IsStationaryIn|SatisfiesStationaryMonotonicity|satisfiesStationaryMonotonicity|normalizedBallMass|monotonicityDefect|radialNormalSq_eq|tangentialDivergence_integrable_of_isAdmissible",
+        "curryLeftLI|def curryLeft|curryLeft_same|alternatizeUncurryFin_curryLeft|alternatizeUncurryFin_apply|def extDeriv|hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "rg -n 'Cauchy.Binet|cauchyBinet|CauchyBinet|Binet' Mathlib/LinearAlgebra/Matrix Mathlib/Analysis/InnerProductSpace",
+        "lean_name",
+        "lean_contract.validate_lean_statement(s['lean_statement'])",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-independent-audit-n3sn03nr/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-independent-audit-n3sn03nr/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-independent-audit-n3sn03nr/RemainingChecks.lean",
+        "#print axioms mono_check",
+        "#print axioms euler_cartan_check"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/decomposition-review-retry.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/cone-independent-audit-n3sn03nr/Types.lean",
+        "/tmp/cone-independent-audit-n3sn03nr/Assembly.lean",
+        "/tmp/cone-independent-audit-n3sn03nr/RemainingChecks.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Mono.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Cartan.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected cone theorem. Independently checked the frozen handoff, all six supplied proofs, name reservations, and dependency closure. Dependencies are acyclic and correctly directed; every child contributes to the selected statement. All names are bare identifiers and have no reservation in another branch. All six exact one-line propositions elaborate without child implementations. Conditional assembly using the exact mass_eq_measure dependency and children 3, 4, and 6 proves the exact frozen parent type. Rechecked the monotonicity bridge, radial argument, wedge argument, Euler–Cartan identity, and blow-up evaluation; their axiom reports contain only propext, Classical.choice, and Quot.sound. Consulted sources match the pinned revisions and snapshot. No Cauchy–Binet match appeared in the searched matrix/inner-product directories; the supplied Leibniz expansion provides the needed proof. Inline constructions have the intended types and instances; no matrix-unit ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match for arbitrary U and all n. The proof handles n = 0 explicitly, correctly includes the m! factor in the all-index Gram sum, and constructs a continuous quadratic projection formula. Tangent uniqueness and the supplied orientation measurability then give the exact AEMeasurable conclusion without circular reliance."
+    },
+    {
+      "key": "monotonicity_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the closed-ball ENNReal identity, including all n and 0 < σ ≤ ρ. Integrability follows from child 1 and local multiplicity bounds. The radial cutoff calculation, squeeze, dominated limit, and ENNReal conversion are justified. Independently recompiled the bridge from child 1 to the pinned stationary-monotonicity theorem."
+    },
+    {
+      "key": "radial_tangency",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including the initially unrestricted ENNReal constant. The proof establishes a < ∞ before cancellation, derives closed-ball masses, and uses measurable nonnegative defects to obtain tangency on annuli. Countable exhaustion and linearity at zero complete the argument, including n = 0."
+    },
+    {
+      "key": "wedge_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof transfers orientation data by absolute continuity in the correct direction, identifies the oriented tangent plane, and uses linearity and alternation to obtain vanishing. A single good set works for every covector, matching the quantifier order exactly. The zero-dimensional case is included; no undeclared child dependency is needed."
+    },
+    {
+      "key": "euler_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Pointwise differentiability is sufficient for the stated bilinear product rule. The supplied alternating-sum calculation has the correct signs and coefficient m+1 for Mathlib's exterior derivative. The exact identity independently recompiles with standard axioms and requires neither compact support nor additional smoothness."
+    },
+    {
+      "key": "cone_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are present and correctly used. The proof supplies an open positive-scaling interval, uniform compact support, and an explicit integrable derivative bound. Child 5, vanishing boundary, and the wedge hypothesis force the parameter derivative to vanish. Endpoint constancy and the verified affine-pushforward/currentEval translation establish precisely IsConeCurrent C, without invoking the selected parent theorem."
+    }
+  ],
+  "required_changes": []
+}

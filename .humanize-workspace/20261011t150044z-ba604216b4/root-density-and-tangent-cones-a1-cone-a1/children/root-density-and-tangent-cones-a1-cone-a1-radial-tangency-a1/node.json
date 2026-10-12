@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.radial_tangency-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "depth": 3,
+  "title": "Constant ball-mass ratio forces radial tangency x ∈ T_xM a.e. (Simon 7.3.1 proof)",
+  "statement": "Let P, n ∈ ℕ and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with R.firstVariation X = 0 for every C¹ compactly supported X : ℝ^P → ℝ^P. Suppose there is a ∈ [0, ∞] with μ(B_ρ(0)) = a·ρⁿ (as a * ofReal(ρⁿ)) for every ρ > 0, where μ = R.measure and B_ρ is the open ball. Then p_x(x) = x, i.e. x ∈ approxTangentPlane n M x, for μ-a.e. x ∈ ℝ^P (p_x being the orthogonal projection onto approxTangentPlane n M x).",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (a : ℝ≥0∞), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ ρ : ℝ, 0 < ρ → R.measure (ball 0 ρ) = a * ENNReal.ofReal (ρ ^ n)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x",
+  "lean_name": "dtc_cone_radial_tangency",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1",
+    "root.density_and_tangent_cones-a1.cone-a1.monotonicity_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.monotonicity_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-radial-tangency-a1-a1"
+}

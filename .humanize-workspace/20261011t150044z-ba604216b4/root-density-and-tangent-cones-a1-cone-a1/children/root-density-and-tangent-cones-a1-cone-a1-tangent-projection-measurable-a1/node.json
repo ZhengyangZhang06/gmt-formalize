@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "depth": 3,
+  "title": "Measurability of the approximate-tangent projection of an integer multiplicity triple (Cauchy–Binet)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P arbitrary, and R = (M, θ, ξ) an integer multiplicity triple of dimension n in U (IMRep U n). For x ∈ ℝ^P let T_x := approxTangentPlane n M x: the approximate tangent n-plane of M at x when one exists (it is then unique), and {0} otherwise. Let p_x : ℝ^P → ℝ^P be the orthogonal projection onto T_x (starProjection). Then x ↦ p_x ∈ L(ℝ^P, ℝ^P) is almost-everywhere measurable (AEMeasurable, Borel σ-algebra) with respect to Hⁿ⌞M = μHE[n].restrict M.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier)",
+  "lean_name": "dtc_cone_tangentProjection_aemeasurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-tangent-projection-measurable-a1-a1"
+}
