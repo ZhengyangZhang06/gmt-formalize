@@ -1384,6 +1384,202 @@ theorem ble_lintegral_sq_tendsto_of_l2_tendsto : ∀ {α : Type} [MeasurableSpac
   have := ENNReal.Tendsto.pow (n := 2) hbc
   rw [hsq f hfm]
   exact this.congr fun j => (hsq _ (hφ j)).symm
+/-- **Translating a ball into a larger ball does not increase a lintegral** (translation
+invariance of Lebesgue measure; Evans, *PDE*, §5.8.2 Theorem 3(i), Gilbarg–Trudinger §7.11).
+If `r + ‖w‖ ≤ s`, then `x - w ∈ B̆_s(0)` for every `x ∈ B̆_r(0)`, so for an arbitrary
+`F : ℝⁿ → [0, ∞]` (no measurability needed) `∫⁻_{B̆_r(0)} F(x - w) dx ≤ ∫⁻_{B̆_s(0)} F`.
+
+Both set lintegrals are lintegrals of indicators (open balls are measurable), the integrands
+compare pointwise as `1_{B̆_r}(x) F(x - w) ≤ (1_{B̆_s} F)(x - w)`, and the change of variables
+`x ↦ x - w`, valid for every `[0, ∞]`-valued function, removes the translation. -/
+theorem lintegral_ball_comp_sub_le : ∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (r s : ℝ) (w : Rn n), r + ‖w‖ ≤ s → ∫⁻ x in ball (0 : Rn n) r, F (x - w) ≤ ∫⁻ x in ball (0 : Rn n) s, F x := by
+  intro n F r s w hrs
+  -- Steps 1–2: `x ∈ B̆_r(0)` gives `‖x - w‖ ≤ ‖x‖ + ‖w‖ < r + ‖w‖ ≤ s`, hence the pointwise bound.
+  have hpt : ∀ x, (ball (0 : Rn n) r).indicator (fun y => F (y - w)) x ≤
+      (ball (0 : Rn n) s).indicator F (x - w) := by
+    intro x
+    by_cases hx : x ∈ ball (0 : Rn n) r
+    · have hxw : x - w ∈ ball (0 : Rn n) s :=
+        mem_ball_zero_iff.2 ((norm_sub_le x w).trans_lt (by linarith [mem_ball_zero_iff.1 hx]))
+      rw [indicator_of_mem hx, indicator_of_mem hxw]
+    · rw [indicator_of_notMem hx]
+      exact zero_le
+  -- Steps 3–6: indicator form, monotonicity, and translation invariance of Lebesgue measure.
+  calc ∫⁻ x in ball (0 : Rn n) r, F (x - w)
+      = ∫⁻ x, (ball (0 : Rn n) r).indicator (fun y => F (y - w)) x :=
+        (lintegral_indicator measurableSet_ball _).symm
+    _ ≤ ∫⁻ x, (ball (0 : Rn n) s).indicator F (x - w) := lintegral_mono hpt
+    _ = ∫⁻ x, (ball (0 : Rn n) s).indicator F x :=
+        lintegral_sub_right_eq_self ((ball (0 : Rn n) s).indicator F) w
+    _ = ∫⁻ x in ball (0 : Rn n) s, F x := lintegral_indicator measurableSet_ball F
+/-- Crude `L²` bound for translation differences on balls, used for the translation estimate in
+the proof of Simon Ch. 5, Lemma 3.1 (p. 114): if `r + ‖z‖ ≤ s` and `h` is a.e. strongly measurable
+on `B_s`, then `∫_{B_r} |h(x - z) - h(x)|² ≤ 4 ∫_{B_s} |h|²`.  Pointwise
+`|h(x - z) - h(x)|² ≤ 2 |h(x - z)|² + 2 |h(x)|²`; the translated term is bounded by
+`lintegral_ball_comp_sub_le` and the untranslated one by `B_r ⊆ B_s`. -/
+theorem lintegral_ball_translation_difference_le : ∀ (n : ℕ) (h : Rn n → ℝ) (r s : ℝ) (z : Rn n), r + ‖z‖ ≤ s → AEStronglyMeasurable h (volume.restrict (ball (0 : Rn n) s)) → ∫⁻ x in ball (0 : Rn n) r, ‖h (x - z) - h x‖ₑ ^ 2 ≤ 4 * ∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2 := by
+  intro n h r s z hrs hh
+  -- `B_r ⊆ B_s`, so the untranslated summand is a.e. measurable on `B_r`.
+  have hsub : ball (0 : Rn n) r ⊆ ball 0 s :=
+    ball_subset_ball ((le_add_of_nonneg_right (norm_nonneg z)).trans hrs)
+  have hmeas : AEMeasurable (fun x => 2 * ‖h x‖ₑ ^ 2) (volume.restrict (ball (0 : Rn n) r)) :=
+    ((hh.mono_measure (Measure.restrict_mono hsub le_rfl)).enorm.pow_const 2).const_mul 2
+  -- `(a + b)² ≤ 2a² + 2b²` in `ℝ≥0∞` (the power-mean inequality for `p = 2`).
+  have hsq : ∀ a b : ℝ≥0∞, (a + b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := fun a b => by
+    have h2 := ENNReal.rpow_add_le_mul_rpow_add_rpow a b (p := 2) (by norm_num)
+    norm_num at h2
+    simpa [mul_add] using h2
+  calc ∫⁻ x in ball (0 : Rn n) r, ‖h (x - z) - h x‖ₑ ^ 2
+      ≤ ∫⁻ x in ball (0 : Rn n) r, (2 * ‖h (x - z)‖ₑ ^ 2 + 2 * ‖h x‖ₑ ^ 2) :=
+        lintegral_mono fun x => (pow_le_pow_left' enorm_sub_le 2).trans (hsq _ _)
+    _ = 2 * (∫⁻ x in ball (0 : Rn n) r, ‖h (x - z)‖ₑ ^ 2) +
+          2 * ∫⁻ x in ball (0 : Rn n) r, ‖h x‖ₑ ^ 2 := by
+        rw [lintegral_add_right' _ hmeas, lintegral_const_mul' _ _ (by norm_num),
+          lintegral_const_mul' _ _ (by norm_num)]
+    _ ≤ 2 * (∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2) +
+          2 * ∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2 :=
+        add_le_add
+          (mul_le_mul_right
+            (Submission.lintegral_ball_comp_sub_le n (fun y => ‖h y‖ₑ ^ 2) r s z hrs) 2)
+          (mul_le_mul_right (lintegral_mono_set hsub) 2)
+    _ = 4 * ∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2 := by ring
+
+/-- **Translation estimate for `C¹` functions** (Evans, *PDE*, §5.8.2 Theorem 3(i);
+Gilbarg–Trudinger §7.11): for `φ ∈ C¹(ℝⁿ)`, `r ∈ ℝ` and `z ∈ ℝⁿ`,
+`∫⁻_{B̆_r(0)} |φ(x - z) - φ(x)|² dx ≤ |z|² ∫⁻_{B̆_{r+|z|}(0)} |∇φ|²` in `[0, ∞]`.
+
+The segment bound `poincare_c1_segment_sq_bound` at the pair `(x - z, x)` gives
+`|φ(x - z) - φ(x)|² ≤ |z|² ∫⁻_{[0,1]} |∇φ(x - t z)|² dt` for every `x`.  Integrate over `B̆_r(0)`
+and swap the integrals (Tonelli; the integrand is continuous in `(x, t)`).  For `t ∈ [0, 1]`,
+`|t z| ≤ |z|`, so `lintegral_ball_comp_sub_le` bounds each inner integral by
+`∫⁻_{B̆_{r+|z|}(0)} |∇φ|²`, and `[0, 1]` has measure one. -/
+theorem contDiff_one_ball_translation_estimate : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ (r : ℝ) (z : Rn n), ∫⁻ x in ball (0 : Rn n) r, ‖φ (x - z) - φ x‖ₑ ^ 2 ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ x‖ₑ ^ 2 := by
+  intro n φ hφ r z
+  -- Step 0: `∇φ = toDual⁻¹ ∘ Dφ` is continuous, so the Tonelli integrand is Borel measurable.
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  have hmeas : Measurable (fun p : Rn n × ℝ => ‖gradient φ (p.1 - p.2 • z)‖ₑ ^ 2) :=
+    ((hgc.comp (continuous_fst.sub (continuous_snd.smul continuous_const))).measurable.enorm).pow_const 2
+  -- Steps 1–4: the segment bound at the pair `(x - z, x)`, whose segment is `t ↦ x - t z`.
+  have hpt : ∀ x : Rn n, ‖φ (x - z) - φ x‖ₑ ^ 2 ≤
+      ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 := by
+    intro x
+    have e1 : x - z - x = -z := by abel
+    have e2 : ∀ t : ℝ, (1 - t) • x + t • (x - z) = x - t • z := fun t => by module
+    calc ‖φ (x - z) - φ x‖ₑ ^ 2
+        ≤ ‖x - z - x‖ₑ ^ 2 *
+            ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • x + t • (x - z))‖ₑ ^ 2 :=
+          poincare_c1_segment_sq_bound n φ hφ (x - z) x
+      _ = ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 := by
+          simp only [e1, e2, enorm_neg]
+  -- Steps 5–8: integrate over `B̆_r(0)`, swap the integrals, translate by `t z`, and use
+  -- `|[0, 1]| = 1` and `‖z‖ₑ² = ofReal ‖z‖²`.
+  calc ∫⁻ x in ball (0 : Rn n) r, ‖φ (x - z) - φ x‖ₑ ^ 2
+      ≤ ∫⁻ x in ball (0 : Rn n) r,
+          ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 :=
+        lintegral_mono hpt
+    _ = ‖z‖ₑ ^ 2 * ∫⁻ x in ball (0 : Rn n) r,
+          ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 :=
+        lintegral_const_mul' _ _ (ENNReal.pow_ne_top enorm_ne_top)
+    _ = ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1,
+          ∫⁻ x in ball (0 : Rn n) r, ‖gradient φ (x - t • z)‖ₑ ^ 2 := by
+        rw [lintegral_lintegral_swap hmeas.aemeasurable]
+    _ ≤ ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1,
+          ∫⁻ y in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ y‖ₑ ^ 2 := by
+        refine mul_le_mul_right (setLIntegral_mono measurable_const fun t ht => ?_) _
+        refine lintegral_ball_comp_sub_le n (fun y => ‖gradient φ y‖ₑ ^ 2) r (r + ‖z‖) (t • z) ?_
+        rw [norm_smul, Real.norm_of_nonneg ht.1]
+        have : t * ‖z‖ ≤ ‖z‖ := mul_le_of_le_one_left (norm_nonneg _) ht.2
+        linarith
+    _ = ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ x‖ₑ ^ 2 := by
+        rw [setLIntegral_const, Real.volume_Icc, sub_zero, ENNReal.ofReal_one, mul_one,
+          ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]
+/-- **`L²` approximation preserves a quadratic energy bound** (Minkowski's inequality in `L²`; the
+limit step `j → ∞` in the proof of the translation estimate, Evans §5.8.2 Thm 3(i),
+Gilbarg–Trudinger §7.11).  If `aⱼ → a₀` in `L²(μ)`, `bⱼ → b₀` in `L²(ν)` and
+`∫⁻ ‖aⱼ‖ₑ² dμ ≤ c ∫⁻ ‖bⱼ‖ₑ² dν` for every `j` with `c < ∞`, then `∫⁻ ‖a₀‖ₑ² dμ ≤ c ∫⁻ ‖b₀‖ₑ² dν`.
+
+With `N = eLpNorm · 2` and `γ = c^{1/2}`, Minkowski gives
+`N(a₀) ≤ N(a₀ - aⱼ) + γ (N(bⱼ - b₀) + N(b₀))` for every `j`; the error terms tend to `0`, so
+`N(a₀) ≤ γ N(b₀)`, and squaring gives the claim (infinite integrals included). -/
+theorem lintegral_sq_le_of_l2_approximation : ∀ {α E F : Type} [MeasurableSpace α] [NormedAddCommGroup E] [NormedAddCommGroup F] (μ ν : Measure α) (c : ℝ≥0∞) (a : ℕ → α → E) (a₀ : α → E) (b : ℕ → α → F) (b₀ : α → F), c ≠ ∞ → (∀ j, AEStronglyMeasurable (a j) μ) → AEStronglyMeasurable a₀ μ → (∀ j, AEStronglyMeasurable (b j) ν) → AEStronglyMeasurable b₀ ν → Tendsto (fun j => ∫⁻ x, ‖a j x - a₀ x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖b j x - b₀ x‖ₑ ^ 2 ∂ν) atTop (𝓝 0) → (∀ j, ∫⁻ x, ‖a j x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b j x‖ₑ ^ 2 ∂ν) → ∫⁻ x, ‖a₀ x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b₀ x‖ₑ ^ 2 ∂ν := by
+  intro α E F _ _ _ μ ν c a a₀ b b₀ hc ha ha₀ hb hb₀ hA hB hab
+  -- Step 1: `N(u) = eLpNorm u 2 m` has `N(u) ^ 2 = ∫⁻ ‖u‖ₑ ^ 2 dm` and
+  -- `N(u) = (∫⁻ ‖u‖ₑ ^ 2 dm) ^ (1/2)` (`eLpNorm` is `∞` off a.e.-strongly measurable functions).
+  have hsq : ∀ {G : Type} [NormedAddCommGroup G] {m : Measure α} {u : α → G},
+      AEStronglyMeasurable u m → eLpNorm u 2 m ^ 2 = ∫⁻ x, ‖u x‖ₑ ^ 2 ∂m := by
+    intro G _ m u hu
+    simpa [ENNReal.rpow_two] using eLpNorm_nnreal_pow_eq_lintegral (p := 2) two_ne_zero hu
+  have hroot : ∀ {G : Type} [NormedAddCommGroup G] {m : Measure α} {u : α → G},
+      AEStronglyMeasurable u m → eLpNorm u 2 m = (∫⁻ x, ‖u x‖ₑ ^ 2 ∂m) ^ (1 / 2 : ℝ) := by
+    intro G _ m u hu
+    rw [← hsq hu, ← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
+    norm_num
+  -- Step 2: `γ = c ^ (1/2)` is finite and `γ ^ 2 = c`.
+  obtain ⟨γ, hγ, hγ2⟩ : ∃ γ : ℝ≥0∞, γ ≠ ∞ ∧ γ ^ 2 = c := by
+    refine ⟨c ^ (1 / 2 : ℝ), ENNReal.rpow_ne_top_of_nonneg (by norm_num) hc, ?_⟩
+    rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
+    norm_num
+  -- Steps 3–7: for every `j`, `N(a₀) ≤ N(a₀ - aⱼ) + γ (N(bⱼ - b₀) + N(b₀))`.
+  have hbound : ∀ j, eLpNorm a₀ 2 μ ≤
+      eLpNorm (a₀ - a j) 2 μ + γ * (eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν) := by
+    intro j
+    have h4 : eLpNorm a₀ 2 μ ≤ eLpNorm (a₀ - a j) 2 μ + eLpNorm (a j) 2 μ := by
+      simpa using eLpNorm_add_le (f := a₀ - a j) (g := a j) (μ := μ) one_le_two
+    -- `N(aⱼ)² ≤ c N(bⱼ)² = (γ N(bⱼ))²`, and squaring is order-reflecting on `[0, ∞]`.
+    have h5 : eLpNorm (a j) 2 μ ≤ γ * eLpNorm (b j) 2 ν := by
+      rw [← ENNReal.rpow_le_rpow_iff (z := 2) (by norm_num), ENNReal.rpow_two, ENNReal.rpow_two,
+        mul_pow, hsq (ha j), hsq (hb j), hγ2]
+      exact hab j
+    have h6 : eLpNorm (b j) 2 ν ≤ eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν := by
+      simpa using eLpNorm_add_le (f := b j - b₀) (g := b₀) (μ := ν) one_le_two
+    calc eLpNorm a₀ 2 μ ≤ eLpNorm (a₀ - a j) 2 μ + eLpNorm (a j) 2 μ := h4
+      _ ≤ eLpNorm (a₀ - a j) 2 μ + γ * eLpNorm (b j) 2 ν := by gcongr
+      _ ≤ eLpNorm (a₀ - a j) 2 μ + γ * (eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν) := by gcongr
+  -- Step 8: the error terms tend to `0`, since `t ↦ t ^ (1/2)` is continuous with `0 ^ (1/2) = 0`.
+  have hroot0 : ∀ {f : ℕ → ℝ≥0∞}, Tendsto f atTop (𝓝 0) →
+      Tendsto (fun j => f j ^ (1 / 2 : ℝ)) atTop (𝓝 0) := by
+    intro f hf
+    simpa [Function.comp_def, ENNReal.zero_rpow_of_pos] using
+      ((ENNReal.continuous_rpow_const (y := (1 / 2 : ℝ))).tendsto 0).comp hf
+  have hA' : Tendsto (fun j => eLpNorm (a₀ - a j) 2 μ) atTop (𝓝 0) :=
+    (hroot0 hA).congr fun j =>
+      ((eLpNorm_sub_comm a₀ (a j) 2 μ).trans (hroot ((ha j).sub ha₀))).symm
+  have hB' : Tendsto (fun j => eLpNorm (b j - b₀) 2 ν) atTop (𝓝 0) :=
+    (hroot0 hB).congr fun j => (hroot ((hb j).sub hb₀)).symm
+  -- Step 9: pass to the limit (`γ < ∞`, so `t ↦ γ t` is continuous).
+  have hlim : Tendsto (fun j => eLpNorm (a₀ - a j) 2 μ +
+      γ * (eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν)) atTop (𝓝 (γ * eLpNorm b₀ 2 ν)) := by
+    simpa using hA'.add (ENNReal.Tendsto.const_mul (hB'.add tendsto_const_nhds) (Or.inr hγ))
+  have h9 : eLpNorm a₀ 2 μ ≤ γ * eLpNorm b₀ 2 ν := ge_of_tendsto' hlim hbound
+  -- Step 10: square.
+  calc ∫⁻ x, ‖a₀ x‖ₑ ^ 2 ∂μ = eLpNorm a₀ 2 μ ^ 2 := (hsq ha₀).symm
+    _ ≤ (γ * eLpNorm b₀ 2 ν) ^ 2 := by gcongr
+    _ = c * ∫⁻ x, ‖b₀ x‖ₑ ^ 2 ∂ν := by rw [mul_pow, hγ2, hsq hb₀]
+/-- **Translates of a.e.-strongly measurable functions on balls.**  If `r + ‖z‖ ≤ s` and `h` is
+a.e.-strongly measurable for Lebesgue measure on `B̆_s(0)`, then so is `x ↦ h(x - z)` on `B̆_r(0)`.
+
+The translation `τ(x) = x - z` preserves Lebesgue measure, hence also maps Lebesgue measure on
+`τ⁻¹(B̆_s(0))` to Lebesgue measure on `B̆_s(0)`; a.e.-strong measurability pulls back along such a
+map, and `B̆_r(0) ⊆ τ⁻¹(B̆_s(0))` because `‖x - z‖ ≤ ‖x‖ + ‖z‖ < r + ‖z‖ ≤ s`. -/
+theorem aestronglyMeasurable_ball_comp_sub : ∀ (n : ℕ) (h : Rn n → ℝ) (r s : ℝ) (z : Rn n), r + ‖z‖ ≤ s → AEStronglyMeasurable h (volume.restrict (ball (0 : Rn n) s)) → AEStronglyMeasurable (fun x => h (x - z)) (volume.restrict (ball (0 : Rn n) r)) := by
+  intro n h r s z hrs hh
+  -- Steps 1–2: `τ` is measure preserving, also from the restriction to `τ⁻¹(B̆_s(0))`
+  -- to the restriction to `B̆_s(0)`.
+  have hmp : MeasurePreserving (fun x : Rn n => x - z)
+      (volume.restrict ((fun x : Rn n => x - z) ⁻¹' ball 0 s)) (volume.restrict (ball 0 s)) :=
+    (measurePreserving_sub_right volume z).restrict_preimage measurableSet_ball
+  -- Step 3: compose a strongly measurable representative of `h` with `τ`.
+  have hcomp : AEStronglyMeasurable (fun x => h (x - z))
+      (volume.restrict ((fun x : Rn n => x - z) ⁻¹' ball 0 s)) :=
+    hh.comp_measurePreserving hmp
+  -- Step 4: `B̆_r(0) ⊆ τ⁻¹(B̆_s(0))`.
+  have hsub : ball (0 : Rn n) r ⊆ (fun x : Rn n => x - z) ⁻¹' ball 0 s := by
+    intro x hx
+    rw [mem_preimage, mem_ball_zero_iff]
+    exact (norm_sub_le x z).trans_lt (by linarith [mem_ball_zero_iff.1 hx])
+  -- Step 5: pass to the smaller measure.
+  exact hcomp.mono_measure (Measure.restrict_mono hsub le_rfl)
 /-- **`L²` contraction of mollification** (Young's inequality with exponents `(1, 2; 2)`;
 Gilbarg–Trudinger §7.2, Evans Appendix C).  Convolution with a continuous probability kernel
 `ρ ≥ 0`, `∫ ρ = 1`, does not increase the `L²` energy: `∫⁻ ‖ρ ⋆ H‖ₑ² ≤ ∫⁻ ‖H‖ₑ²`.
@@ -1978,6 +2174,68 @@ theorem w12_ball_boundary_layer_estimate : ∀ n : ℕ, 1 ≤ n → ∃ C : ℝ,
   have hsub : ball (0 : Rn n) (s m) \ ball 0 r ⊆ ball 0 (s m) \ ball 0 (r * s m) :=
     sdiff_subset_sdiff_right (ball_subset_ball (mul_le_of_le_one_right hr0.le (hs_mem m).2.le))
   exact (lintegral_mono_set hsub).trans (hannulus (s m) (hs_mem m).1 (hs_mem m).2)
+/-- Translation (difference-quotient) estimate for `W^{1,2}(B)` (Evans, *PDE*, §5.8.2, Theorem 3(i);
+Gilbarg–Trudinger §7.11), used for Rellich compactness in the proof of Simon Ch. 5, Lemma 3.1
+(p. 114): if `0 < r` and `‖z‖ < 1 - r`, then `∫_{B_r} |f(x - z) - f(x)|² ≤ |z|² ∫_B |g|²`.
+With `s = r + ‖z‖ ∈ (0, 1)`, take smooth `φ_j` with `φ_j → f` and `∇φ_j → g` in `L²(B_s)`.  The
+`C¹` estimate gives `∫_{B_r} |φ_j(x - z) - φ_j(x)|² ≤ |z|² ∫_{B_s} |∇φ_j|²`; the translation
+differences of `φ_j` converge to those of `f` in `L²(B_r)`, with error at most
+`4 ∫_{B_s} |φ_j - f|²`, so the estimate passes to the limit, and `B_s ⊆ B`. -/
+theorem w12_ball_translation_estimate : ∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ (r : ℝ) (z : Rn n), 0 < r → ‖z‖ < 1 - r → ∫⁻ x in ball (0 : Rn n) r, ‖f (x - z) - f x‖ₑ ^ 2 ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+  intro n hn f g hfg r z hr hz
+  -- Step 0: `B_r ⊆ B_s ⊆ B` for `s = r + ‖z‖ ∈ (0, 1)`; `f`, `g`, `f(· - z)` are measurable there.
+  have hs0 : 0 < r + ‖z‖ := add_pos_of_pos_of_nonneg hr (norm_nonneg z)
+  have hs1 : r + ‖z‖ < 1 := by linarith
+  have hBs : ball (0 : Rn n) (r + ‖z‖) ⊆ ball 0 1 := ball_subset_ball hs1.le
+  have hBr : ball (0 : Rn n) r ⊆ ball 0 (r + ‖z‖) :=
+    ball_subset_ball (le_add_of_nonneg_right (norm_nonneg z))
+  have hfs : AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) (r + ‖z‖))) :=
+    hfg.1.aestronglyMeasurable.mono_measure (Measure.restrict_mono hBs le_rfl)
+  have hgs : AEStronglyMeasurable g (volume.restrict (ball (0 : Rn n) (r + ‖z‖))) :=
+    hfg.2.1.aestronglyMeasurable.mono_measure (Measure.restrict_mono hBs le_rfl)
+  have hfr : AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) r)) :=
+    hfs.mono_measure (Measure.restrict_mono hBr le_rfl)
+  have hfzr : AEStronglyMeasurable (fun x => f (x - z)) (volume.restrict (ball (0 : Rn n) r)) :=
+    Submission.aestronglyMeasurable_ball_comp_sub n f r (r + ‖z‖) z le_rfl hfs
+  -- Step 1: smooth `φ_j` with `φ_j → f` and `∇φ_j → g` in `L²(B_s)`.
+  obtain ⟨φ, hφ, hφf, hφg⟩ :=
+    Submission.w12_ball_smooth_approximation n hn f g hfg (r + ‖z‖) hs0 hs1
+  have hφ1 : ∀ j, ContDiff ℝ 1 (φ j) := fun j => (hφ j).of_le (by exact_mod_cast le_top)
+  have hφc : ∀ j, Continuous (φ j) := fun j => (hφ j).continuous
+  have hgradc : ∀ j, Continuous (gradient (φ j)) := fun j =>
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp
+      ((hφ1 j).continuous_fderiv one_ne_zero)
+  -- Step 2: the `C¹` estimate for each `φ_j`.
+  have hsmooth : ∀ j, ∫⁻ x in ball (0 : Rn n) r, ‖φ j (x - z) - φ j x‖ₑ ^ 2 ≤
+      ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient (φ j) x‖ₑ ^ 2 :=
+    fun j => Submission.contDiff_one_ball_translation_estimate n (φ j) (hφ1 j) r z
+  -- Step 3: the translation differences of `φ_j` converge to those of `f` in `L²(B_r)`.
+  have hdiff : ∀ j, ∫⁻ x in ball (0 : Rn n) r,
+      ‖(φ j (x - z) - φ j x) - (f (x - z) - f x)‖ₑ ^ 2 ≤
+        4 * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖φ j x - f x‖ₑ ^ 2 := by
+    intro j
+    calc ∫⁻ x in ball (0 : Rn n) r, ‖(φ j (x - z) - φ j x) - (f (x - z) - f x)‖ₑ ^ 2
+        = ∫⁻ x in ball (0 : Rn n) r, ‖(φ j (x - z) - f (x - z)) - (φ j x - f x)‖ₑ ^ 2 :=
+          lintegral_congr fun x => by rw [sub_sub_sub_comm]
+      _ ≤ 4 * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖φ j x - f x‖ₑ ^ 2 :=
+          Submission.lintegral_ball_translation_difference_le n (fun x => φ j x - f x) r
+            (r + ‖z‖) z le_rfl ((hφc j).aestronglyMeasurable.sub hfs)
+  have hconv : Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r,
+      ‖(φ j (x - z) - φ j x) - (f (x - z) - f x)‖ₑ ^ 2) atTop (𝓝 0) := by
+    have h4 := ENNReal.Tendsto.const_mul (a := 4) hφf (Or.inr (by norm_num))
+    rw [mul_zero] at h4
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h4 (fun _ => zero_le) hdiff
+  -- Step 4: pass to the limit in `L²(B_r)` and `L²(B_s)`, then enlarge `B_s` to `B`.
+  calc ∫⁻ x in ball (0 : Rn n) r, ‖f (x - z) - f x‖ₑ ^ 2
+      ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖g x‖ₑ ^ 2 :=
+        Submission.lintegral_sq_le_of_l2_approximation (volume.restrict (ball (0 : Rn n) r))
+          (volume.restrict (ball (0 : Rn n) (r + ‖z‖))) (ENNReal.ofReal (‖z‖ ^ 2))
+          (fun j x => φ j (x - z) - φ j x) (fun x => f (x - z) - f x)
+          (fun j => gradient (φ j)) g ENNReal.ofReal_ne_top
+          (fun j => (((hφc j).comp (continuous_sub_right z)).sub (hφc j)).aestronglyMeasurable)
+          (hfzr.sub hfr) (fun j => (hgradc j).aestronglyMeasurable) hgs hconv hφg hsmooth
+    _ ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 :=
+        mul_le_mul_right (lintegral_mono_set hBs) _
 
 end Submission
 
