@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b828940177fb626d20fe4df7e436bd08dc9071c481ad445897f3b3901fc74e1e",
+  "git_delta": {
+    "base_commit": "c73fba00e392d39c54fadae3b48c1f67ffaa3e38",
+    "candidate_commit": "3eb69c8921de9fbb284f740fa62bfcdd38032cf7",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_det_tangential_gram_eq",
+    "diff_sha256": "10076159e028c23c5ba2cfdc5aa484e7cbcb035064bb3fb3c6a3aa0d5a10c360",
+    "source_sha256": "9b2edd7966f6a0e8472fff5b6eabecffde506975aa2d261fb37b51d50cb29429",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_det_tangential_gram_eq",
+      "statement": "∀ (N k : ℕ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (b : OrthonormalBasis (Fin k) ℝ P) (Λ : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N)), Matrix.det (Matrix.of fun i j : Fin N ↦ inner ℝ (Λ (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (Λ (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))) = Matrix.det (Matrix.of fun a c : Fin k ↦ inner ℝ (Λ (b a)) (Λ (b c)))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
