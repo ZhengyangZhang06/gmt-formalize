@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.first_variation_integral-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "depth": 3,
+  "title": "The first variation of v(M, θ) as an integral against μ_R",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an IMRep U n, and X : ℝ^P → ℝ^P a C¹ vector field with compact support, spt X ⊆ U. Assume that x ↦ p_x, the orthogonal projection onto approxTangentPlane n M x, is μ_R-AEMeasurable. Then x ↦ div_M X(x) := trace(p_x ∘ DX(x)) (tangentialDivergence n M X x) is μ_R-integrable, and δV(X) = ∫_M θ div_M X dHⁿ (R.firstVariation X) equals ∫ div_M X dμ_R.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (X : Euclid P → Euclid P), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → Integrable (fun x => tangentialDivergence n R.carrier X x) R.measure ∧ R.firstVariation X = ∫ x, tangentialDivergence n R.carrier X x ∂R.measure",
+  "lean_name": "dsmc_firstVariation_eq_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-fi-76e995b6e5-a1"
+}
