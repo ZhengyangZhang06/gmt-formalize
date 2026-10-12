@@ -411,6 +411,67 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- A Borel representative of the `n`-density (Step 1 of the proof of Simon Ch. 8, 1.2): for an
+s-finite `μ` on `ℝ^N`, `g(x) = liminf_k μ(B_{1/(k+1)}(x)) / (ω_n (k+1)^{-n})` is Borel and
+`g(x) = Θ^n(μ, x)` at every `x` where `Θ^n(μ, x)` exists. -/
+theorem Submission.frt_weq_density_borel_representative :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) [SFinite μ], ∃ g : Euclidean N → ℝ≥0∞, Measurable g ∧ ∀ (x : Euclidean N) (t : ℝ≥0∞), HasDensity n μ x t → g x = t := by
+  intro N n μ _
+  -- Step 1: `x ↦ μ(B_r(x))` is Borel, as `B_r(x)` is the section at `x` of the closed set
+  -- `{(x, y) : dist y x ≤ r}`.
+  have hball : ∀ r : ℝ, Measurable fun x : Euclidean N ↦ μ (closedBall x r) := fun r ↦
+    measurable_measure_prodMk_left (ν := μ)
+      (s := {p : Euclidean N × Euclidean N | dist p.2 p.1 ≤ r})
+      (isClosed_le (continuous_snd.dist continuous_fst) continuous_const).measurableSet
+  -- Step 2: hence so is `x ↦ densityRatio n μ x r`, a constant multiple of it.
+  have hratio : ∀ r : ℝ, Measurable fun x ↦ densityRatio n μ x r := fun r ↦
+    (hball r).div_const _
+  -- Step 3: `g(x) = liminf_k densityRatio n μ x (1/(k+1))` is Borel.
+  refine ⟨fun x ↦ liminf (fun k : ℕ ↦ densityRatio n μ x (1 / ((k : ℝ) + 1))) atTop,
+    Measurable.liminf fun k ↦ hratio _, fun x t ht ↦ ?_⟩
+  -- Step 4: `ρ_k = 1/(k+1) → 0⁺`, so the ratios along `ρ_k` tend to `t` and their liminf is `t`.
+  have hρ : Tendsto (fun k : ℕ ↦ 1 / ((k : ℝ) + 1)) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+      Eventually.of_forall fun _ ↦ Set.mem_Ioi.2 Nat.one_div_pos_of_nat⟩
+  have ht' : Tendsto (densityRatio n μ x) (𝓝[>] 0) (𝓝 t) := ht
+  exact (ht'.comp hρ).liminf_eq
+/-- Hypothesis 3.1 of the monotonicity formula holds `μ_V`-a.e. (the remark in the proof of Simon
+Ch. 8, 3.6, p. 211, by the differentiation theorem 2.7): for `μ_V`-a.e. `x` there are `R > 0` with
+`B_R(x) ⊆ U` and `Λ ≥ 0` with `‖δV‖(B_r(x)) ≤ Λ μ_V(B_r(x))` for all `0 < r < R`. -/
+theorem Submission.dea_ae_variationMeasure_ball_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∃ R Λ : ℝ, 0 < R ∧ 0 ≤ Λ ∧ closedBall x R ⊆ U ∧ ∀ r : ℝ, 0 < r → r < R → variationMeasure V (closedBall x r) ≤ ENNReal.ofReal Λ * V.weight (closedBall x r) := by
+  intro N n U V hV
+  -- Step 1: `μ_V` is carried by `U`, since `μ_V(Uᶜ) = V(Uᶜ × G(N,n)) = 0`.
+  have hU : ∀ᵐ x ∂V.weight, x ∈ U := by
+    rw [ae_iff]
+    change V.weight Uᶜ = 0
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  -- Step 2: under `hV`, `‖δV‖` is the Riesz measure `ν`.
+  have hvar : variationMeasure V = V.firstVariationRieszMeasure hV := dite_eq_left hV
+  -- Step 3: by the differentiation theorem (Simon 2.7), for `μ_V`-a.e. `x` the ratio
+  -- `ν(B_r(x)) / μ_V(B_r(x))` tends to a finite `D(x)` as `r ↓ 0`.
+  filter_upwards [(V.firstVariationRiesz_symmetricDensity_spec hV).2, hU] with x hx hxU
+  obtain ⟨ht, hD⟩ := hx
+  -- Step 4: `Λ = D(x) + 1 > 0` satisfies `D(x) < Λ`.
+  set D := V.symmetricFirstVariationDensity (V.firstVariationRieszMeasure hV) x
+  set Λ : ℝ := D.toReal + 1
+  have hΛ : 0 < Λ := by positivity
+  have hlt : D < ENNReal.ofReal Λ := by
+    rw [← ENNReal.ofReal_toReal hD]
+    exact (ENNReal.ofReal_lt_ofReal_iff hΛ).mpr (lt_add_one _)
+  -- Step 5: the ratio is `< Λ` for all `r ∈ (0, r₁)`.
+  obtain ⟨r₁, hr₁, hsmall⟩ :=
+    mem_nhdsGT_iff_exists_Ioo_subset.mp (ht.eventually (gt_mem_nhds hlt))
+  -- Step 7: `B_{r₂}(x) ⊆ U` (open ball), and `R = min r₁ (r₂ / 2)`.
+  obtain ⟨r₂, hr₂, hball⟩ := Metric.isOpen_iff.mp V.isOpen_domain x hxU
+  refine ⟨min r₁ (r₂ / 2), Λ, lt_min hr₁ (half_pos hr₂), hΛ.le, ?_, fun r hr hrR ↦ ?_⟩
+  · exact (closedBall_subset_ball ((min_le_right _ _).trans_lt (half_lt_self hr₂))).trans hball
+  -- Step 6: `ν(B_r(x)) / μ_V(B_r(x)) ≤ Λ` gives `ν(B_r(x)) ≤ Λ μ_V(B_r(x))`, as `Λ ≠ 0, ∞`.
+  · rw [hvar]
+    exact (ENNReal.div_le_iff_le_mul (Or.inr ENNReal.ofReal_ne_top)
+      (Or.inr (ENNReal.ofReal_pos.mpr hΛ).ne')).mp
+      (hsmall ⟨hr, hrR.trans_le (min_le_left _ _)⟩).le
 /-- Layer-cake comparison of radial cutoff integrals (Simon Ch. 8, 3.3, p. 210): if
 `ν(B_r(x)) ≤ Λ μ(B_r(x))` for `0 < r < ρ₀`, and `φ` is continuous and non-increasing with `φ = 1`
 on `(-∞, 1]` and `φ = 0` on `[A², ∞)`, where `A, t > 0` and `t A < ρ₀`, then
@@ -1058,6 +1119,27 @@ theorem Submission.stationary_monotonicity_identity_8_3_4 : StationaryMonotonici
     fun ρ _ _ ↦ ENNReal.Tendsto.const_mul
       (Submission.normalDefect_annulus_tendsto_closedBall N n U V x ρ)
       (Or.inr (ENNReal.inv_ne_top.2 hω₀))
+
+/-- **Simon Ch. 8, 3.6 (Lemma).** If `V` has locally bounded first variation in `U`, then
+`Θ^n(μ_V, x)` exists and is finite for `μ_V`-a.e. `x`, and a Borel `Θ` equals it there: the
+monotonicity formula 3.3 applies at `μ_V`-a.e. `x`, and the Borel representative of the density
+takes the value of every existing density limit. -/
+theorem Submission.density_exists_ae_8_3_6 : DensityExistsAE := by
+  intro N n U V hV
+  -- Step 1: a Borel `Θ` with `Θ x = Θ^n(μ_V, x)` wherever the density exists (`μ_V` is
+  -- σ-finite, hence s-finite).
+  obtain ⟨Θ, hΘ, hΘ_eq⟩ := Submission.frt_weq_density_borel_representative N n V.weight
+  refine ⟨Θ, hΘ, ?_⟩
+  -- Step 2: for `μ_V`-a.e. `x` there are `R > 0`, `Λ ≥ 0` with `B_R(x) ⊆ U` and
+  -- `‖δV‖(B_r(x)) ≤ Λ μ_V(B_r(x))` for `0 < r < R` (hypothesis 3.1 of 3.3).
+  filter_upwards [Submission.dea_ae_variationMeasure_ball_bound N n U V hV]
+    with x ⟨R, Λ, hR, hΛ, hRU, hbound⟩
+  -- Step 3: at such `x`, the monotonicity formula 3.3 with `ρ₀ = R` gives a finite density `θ`.
+  obtain ⟨θ, hθ, hθ_ne_top, -⟩ := (Submission.monotonicity_formula_8_3_3 N n U V x R Λ hV hR
+    (ball_subset_closedBall.trans hRU) hΛ hbound).2
+  -- Step 4: `Θ` takes the value of the density limit, so `Θ x = θ`.
+  rw [hΘ_eq x θ hθ]
+  exact ⟨hθ_ne_top, hθ⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
