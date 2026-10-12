@@ -410,6 +410,77 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Uniform `C¹` approximation by mollification (step 3 of extending the dilation law for varifold
+tangents, Simon Ch. 8, 5.3, from `C¹_c` to `C_c`): a continuous compactly supported `g` on `ℝ^N`
+is the uniform limit of the `C¹` functions `φ_k = ψ_k ⋆ g`, where `ψ_k` is a normalized smooth
+bump supported in `B(0, 1/(k+1))`, and `g` and every `φ_k` vanish off the compact set
+`K = closedBall 0 1 + tsupport g`. -/
+theorem Submission.varifold_tangents_rh_mc_exists_c1_approx :
+    ∀ (N : ℕ) (g : Euclidean N → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclidean N)) (φ : ℕ → Euclidean N → ℝ), IsCompact K ∧ (∀ y ∉ K, g y = 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, ∀ y ∉ K, φ k y = 0) ∧ (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |φ k y - g y| ≤ ε) := by
+  intro N g hg hgc
+  -- Step 1: smooth bumps `b k` at `0` with radii `1 / (2 (k + 1)) < r_k = 1 / (k + 1)`.
+  have hr : ∀ k : ℕ, 0 < 1 / (2 * ((k : ℝ) + 1)) ∧ 1 / (2 * ((k : ℝ) + 1)) < 1 / ((k : ℝ) + 1) :=
+    fun k ↦ ⟨by positivity,
+      one_div_lt_one_div_of_lt (by positivity) (by linarith [k.cast_nonneg (α := ℝ)])⟩
+  obtain ⟨b, hb⟩ : ∃ b : ℕ → ContDiffBump (0 : Euclidean N), ∀ k, (b k).rOut = 1 / ((k : ℝ) + 1) :=
+    ⟨fun k ↦ ⟨_, _, (hr k).1, (hr k).2⟩, fun k ↦ rfl⟩
+  -- The normalizations `ψ k = b k / ∫ b k` (i.e. `(b k).normed volume`): `ψ k ≥ 0`, `∫ ψ k = 1`,
+  -- `support (ψ k) ⊆ B(0, r_k)`, and `ψ k` is `C¹` with compact support.
+  obtain ⟨ψ, hψ0, hψ1, hψs, hψd, hψc⟩ : ∃ ψ : ℕ → Euclidean N → ℝ, (∀ k x, 0 ≤ ψ k x) ∧
+      (∀ k, ∫ x, ψ k x = 1) ∧ (∀ k, Function.support (ψ k) ⊆ ball 0 (1 / ((k : ℝ) + 1))) ∧
+      (∀ k, ContDiff ℝ (1 : ℕ∞) (ψ k)) ∧ (∀ k, HasCompactSupport (ψ k)) := by
+    have hpos : ∀ k, 0 < ∫ y, b k y := fun k ↦ by
+      refine (integral_pos_iff_support_of_nonneg (fun x ↦ (b k).nonneg)
+        ((b k).continuous.integrable_of_hasCompactSupport (b k).hasCompactSupport)).2 ?_
+      rw [(b k).support_eq]
+      exact measure_ball_pos _ _ (b k).rOut_pos
+    have hsupp : ∀ k, Function.support (fun x ↦ b k x / ∫ y, b k y) ⊆ Function.support (b k) :=
+      fun k x hx h ↦ hx (by simp only [h, zero_div])
+    refine ⟨fun k x ↦ b k x / ∫ y, b k y, fun k x ↦ div_nonneg (b k).nonneg (hpos k).le,
+      fun k ↦ ?_, fun k ↦ ?_, fun k ↦ (b k).contDiff.div_const _,
+      fun k ↦ (b k).hasCompactSupport.mono' ((hsupp k).trans (subset_tsupport _))⟩
+    · rw [integral_div, div_self (hpos k).ne']
+    · rw [← hb k, ← (b k).support_eq]
+      exact hsupp k
+  -- Step 2: `K = closedBall 0 1 + tsupport g` is compact; `φ k = ψ k ⋆ g` (Lebesgue convolution).
+  refine ⟨closedBall 0 1 + tsupport g,
+    fun k ↦ convolution (ψ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+    (isCompact_closedBall 0 1).add hgc, ?_, ?_, ?_, ?_⟩
+  -- Step 3: `g` vanishes off `K`, since `y = 0 + y` with `0 ∈ closedBall 0 1`.
+  · intro y hy
+    by_contra h
+    refine hy ?_
+    simpa only [zero_add] using
+      Set.add_mem_add (mem_closedBall_self zero_le_one : (0 : Euclidean N) ∈ closedBall 0 1)
+        (subset_tsupport g h)
+  -- Step 4: each `φ k` is `C¹` (`ψ k` is `C¹` with compact support, `g` is locally integrable).
+  · intro k
+    exact (hψc k).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hψd k)
+      hg.locallyIntegrable
+  -- Step 5: each `φ k` vanishes off `K`: `support (ψ k ⋆ g) ⊆ support (ψ k) + support g ⊆ K`,
+  -- as `support (ψ k) ⊆ B(0, r_k)` and `r_k ≤ 1`.
+  · intro k y hy
+    by_contra h
+    obtain ⟨a, ha, c, hc, rfl⟩ := support_convolution_subset (ContinuousLinearMap.lsmul ℝ ℝ) h
+    refine hy (Set.add_mem_add ?_ (subset_tsupport g hc))
+    refine ball_subset_closedBall (ball_subset_ball ?_ (hψs k ha))
+    rw [div_le_one (by positivity)]
+    linarith [k.cast_nonneg (α := ℝ)]
+  -- Step 6: uniform estimate. `g` is uniformly continuous; for `‖x - y‖ < δ` we have
+  -- `|g x - g y| < ε`, and `r_k ≤ r_{k₀} < δ` for `k ≥ k₀`, so `|φ k y - g y| ≤ ε`, as `ψ k ≥ 0`
+  -- has integral `1` and support in `B(0, r_k)`.
+  · intro ε hε
+    obtain ⟨δ, hδ, hδg⟩ :=
+      Metric.uniformContinuous_iff.1 (hgc.uniformContinuous_of_continuous hg) ε hε
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hδ
+    refine ⟨k₀, fun k hk y ↦ ?_⟩
+    rw [← Real.dist_eq]
+    refine dist_convolution_le hε.le (hψs k) (hψ0 k) (hψ1 k) hg.aestronglyMeasurable
+      fun x hx ↦ (hδg ?_).le
+    calc dist x y < 1 / ((k : ℝ) + 1) := hx
+      _ ≤ 1 / ((k₀ : ℝ) + 1) := by gcongr
+      _ < δ := hk₀
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
