@@ -649,6 +649,105 @@ theorem lgc_support_closest_point : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V :
   have : infDist ζ S ≤ dist ζ x := infDist_le_dist_of_mem hxS
   rw [dist_comm] at hx
   linarith
+/-- **Lower bound at a hole from annular monotonicity** (Simon Ch. 5, proof of Lemma 2.6,
+display (9), and Corollary 2.7).  Let `μ` be a measure on `ℝ^{n+ℓ}` and `p` a `μ`-a.e. strongly
+measurable field of continuous linear maps with `‖p x‖ ≤ 1`.  Let `s > 0`, `ω > 0`, and suppose
+`μ(B_s(ζ)) = 0`, `μ(B_{3s}(ζ)) < ∞`, `|y − ζ| ≤ 2s`, `ω s^n / 2 ≤ μ(B_s(y))`, `c ≤ ω/(4·3^n)` and
+the monotonicity inequality on the annulus `B_{3s}(ζ) \ B_s(ζ)`.  Then
+`s^{n+2} ≤ (4·3^n e²/ω) ∫_{B_{3s}(ζ)} |(x − ζ) − p(x)(x − ζ)|² dμ`.
+Proof: `B_s(y) ⊆ B_{3s}(ζ)` gives `ω/(2·3^n) ≤ (3s)^{-n} μ(B_{3s}(ζ))`, and the hole removes the
+`B_s(ζ)` term.  On the annulus `|x − ζ| > s`, so the annular integral is at most `s^{-(n+2)}`
+times the integral over `B_{3s}(ζ)` of the integrand, which is bounded by `36 s²` and hence
+integrable there.  Absorbing `c ≤ ω/(4·3^n)` gives the claim. -/
+theorem lgc_hole_annulus_lower : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (p : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (ζ y : Amb n ℓ) (s ω c : ℝ), 0 < s → 0 < ω → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → μ (closedBall ζ s) = 0 → μ (closedBall ζ (3 * s)) ≠ ⊤ → dist y ζ ≤ 2 * s → ENNReal.ofReal (ω * s ^ n / 2) ≤ μ (closedBall y s) → c ≤ ω / (4 * 3 ^ n) → ((3 * s) ^ n)⁻¹ * (μ (closedBall ζ (3 * s))).toReal ≤ Real.exp 2 * ((s ^ n)⁻¹ * (μ (closedBall ζ s)).toReal) + c + Real.exp 2 * ∫ x in closedBall ζ (3 * s) \ closedBall ζ s, ‖(x - ζ) - p x (x - ζ)‖ ^ 2 / ‖x - ζ‖ ^ (n + 2) ∂μ → s ^ (n + 2) ≤ 4 * 3 ^ n * Real.exp 2 / ω * ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+  intro n ℓ μ p ζ y s ω c hs hω hp hpb hhole hfin hy hlow hc hmono
+  -- Step 1: `g x = ‖(x - ζ) - p x (x - ζ)‖²` is a.e. strongly measurable, since evaluation
+  -- `(L, v) ↦ L v` is continuous.
+  have hgm : AEStronglyMeasurable (fun x => ‖(x - ζ) - p x (x - ζ)‖ ^ 2) μ := by
+    have h1 : AEStronglyMeasurable (fun x => p x (x - ζ)) μ :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : Amb n ℓ →L[ℝ] Amb n ℓ) (v : Amb n ℓ) => L v)
+        (continuous_fst.clm_apply continuous_snd) hp
+        (continuous_id.sub continuous_const).aestronglyMeasurable
+    exact (((continuous_id.sub continuous_const).aestronglyMeasurable.sub h1).norm.pow 2)
+  -- Step 2: `0 ≤ g ≤ 36 s²` on `B_{3s}(ζ)`, which has finite mass, so `g` is integrable there.
+  have hgb : ∀ x ∈ closedBall ζ (3 * s), ‖‖(x - ζ) - p x (x - ζ)‖ ^ 2‖ ≤ 36 * s ^ 2 := by
+    intro x hx
+    have hxz : ‖x - ζ‖ ≤ 3 * s := by rw [← dist_eq_norm]; exact hx
+    have h1 : ‖(x - ζ) - p x (x - ζ)‖ ≤ 6 * s := by
+      calc ‖(x - ζ) - p x (x - ζ)‖ ≤ ‖x - ζ‖ + ‖p x (x - ζ)‖ := norm_sub_le _ _
+        _ ≤ ‖x - ζ‖ + ‖p x‖ * ‖x - ζ‖ := by gcongr; exact (p x).le_opNorm _
+        _ ≤ 3 * s + 1 * (3 * s) := by gcongr; exact hpb x
+        _ = 6 * s := by ring
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    calc ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ≤ (6 * s) ^ 2 := by gcongr
+      _ = 36 * s ^ 2 := by ring
+  have hgi : IntegrableOn (fun x => ‖(x - ζ) - p x (x - ζ)‖ ^ 2) (closedBall ζ (3 * s)) μ :=
+    Measure.integrableOn_of_bounded hfin hgm
+      (ae_restrict_of_forall_mem measurableSet_closedBall hgb)
+  -- Step 3: on the annulus `|x - ζ| > s`, so the annular integral is `≤ s^{-(n+2)} ∫_{B_{3s}(ζ)} g`.
+  have hAm : MeasurableSet (closedBall ζ (3 * s) \ closedBall ζ s) :=
+    measurableSet_closedBall.diff measurableSet_closedBall
+  have hpos : 0 < s ^ (n + 2) := by positivity
+  have hJ : ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+        ‖(x - ζ) - p x (x - ζ)‖ ^ 2 / ‖x - ζ‖ ^ (n + 2) ∂μ ≤
+      (s ^ (n + 2))⁻¹ * ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+    calc ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+          ‖(x - ζ) - p x (x - ζ)‖ ^ 2 / ‖x - ζ‖ ^ (n + 2) ∂μ
+        ≤ ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+            (s ^ (n + 2))⁻¹ * ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+          apply integral_mono_of_nonneg
+          · exact Eventually.of_forall (fun x => by positivity)
+          · exact (hgi.mono_set sdiff_subset).const_mul _
+          · filter_upwards [ae_restrict_mem hAm] with x hx
+            have hxs : s < ‖x - ζ‖ := by
+              have := hx.2
+              rw [mem_closedBall, not_le, dist_eq_norm] at this
+              exact this
+            have hpow : s ^ (n + 2) ≤ ‖x - ζ‖ ^ (n + 2) := pow_le_pow_left₀ hs.le hxs.le _
+            rw [div_eq_inv_mul]
+            exact mul_le_mul_of_nonneg_right (inv_anti₀ hpos hpow) (by positivity)
+      _ = (s ^ (n + 2))⁻¹ * ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+            ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := integral_const_mul _ _
+      _ ≤ (s ^ (n + 2))⁻¹ * ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          exact setIntegral_mono_set hgi (Eventually.of_forall (fun x => by positivity))
+            (Eventually.of_forall sdiff_subset)
+  -- Step 4: `B_s(y) ⊆ B_{3s}(ζ)`, so `ω s^n / 2 ≤ μ(B_{3s}(ζ))`.
+  have hsub : closedBall y s ⊆ closedBall ζ (3 * s) := by
+    intro x hx
+    rw [mem_closedBall] at hx ⊢
+    calc dist x ζ ≤ dist x y + dist y ζ := dist_triangle _ _ _
+      _ ≤ s + 2 * s := add_le_add hx hy
+      _ = 3 * s := by ring
+  have hmB : ω * s ^ n / 2 ≤ (μ (closedBall ζ (3 * s))).toReal := by
+    have h1 : ENNReal.ofReal (ω * s ^ n / 2) ≤ μ (closedBall ζ (3 * s)) :=
+      hlow.trans (measure_mono hsub)
+    exact (ENNReal.ofReal_le_iff_le_toReal hfin).1 h1
+  -- Step 5: the hole `μ(B_s(ζ)) = 0` removes the first term of the monotonicity inequality.
+  rw [hhole, ENNReal.toReal_zero, mul_zero, mul_zero, zero_add] at hmono
+  have h3n : ((3 * s) ^ n)⁻¹ * (ω * s ^ n / 2) = ω / (2 * 3 ^ n) := by
+    rw [mul_pow]; field_simp
+  have hlow2 : ω / (2 * 3 ^ n) ≤ c + Real.exp 2 * ((s ^ (n + 2))⁻¹ *
+      ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ) := by
+    calc ω / (2 * 3 ^ n) = ((3 * s) ^ n)⁻¹ * (ω * s ^ n / 2) := h3n.symm
+      _ ≤ ((3 * s) ^ n)⁻¹ * (μ (closedBall ζ (3 * s))).toReal :=
+          mul_le_mul_of_nonneg_left hmB (by positivity)
+      _ ≤ _ := hmono
+      _ ≤ _ := by gcongr
+  -- Step 6: absorb `c ≤ ω/(4·3^n)` and multiply by `4·3^n s^{n+2}/ω > 0`.
+  have hkey : ω / (4 * 3 ^ n) ≤ Real.exp 2 * ((s ^ (n + 2))⁻¹ *
+      ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ) := by
+    have : ω / (2 * 3 ^ n) = ω / (4 * 3 ^ n) + ω / (4 * 3 ^ n) := by field_simp; ring
+    linarith
+  have h4 : 0 < 4 * 3 ^ n / ω := by positivity
+  calc s ^ (n + 2) = (4 * 3 ^ n / ω) * (ω / (4 * 3 ^ n)) * s ^ (n + 2) := by field_simp
+    _ ≤ (4 * 3 ^ n / ω) * (Real.exp 2 * ((s ^ (n + 2))⁻¹ *
+          ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ)) * s ^ (n + 2) := by
+        gcongr
+    _ = 4 * 3 ^ n * Real.exp 2 / ω *
+          ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+        field_simp
 
 end Submission
 
