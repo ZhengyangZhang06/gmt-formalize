@@ -1,0 +1,17 @@
+{
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1.single_chart-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3289",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0de2b8a211fbe3f7a32317a5b3424ee2858323b8",
+  "integrated_commit": "",
+  "proof_base_commit": "b5567c51ecc72d33f5aded618bec246e0e76ab86",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1"
+  ]
+}
