@@ -481,6 +481,57 @@ theorem Submission.lpf_tde_mcd_countable_glue :
   · intro x hx
     have hxS : x ∈ S (Nat.find (h x)) := (Nat.find_spec (h x)).resolve_right (not_not.2 hx)
     exact ⟨Nat.find (h x), hxS, piecewise_eq_of_mem _ _ _ hxS⟩
+/-- Moore–Penrose left inverse (Simon Ch. 3 §2, input to 2.1–2.2): `Λ(A) = (A* A)⁻¹ A*` is
+continuous on the injective `A : ℝⁿ → ℝ^P`, `Λ(A) A = id`, and the orthogonal projection
+`A Λ(A)` onto `range A` does not increase norms. -/
+theorem Submission.lpf_tde_continuous_left_inverse :
+    ∀ (n P : ℕ), ∃ Λ : (Eucl n →L[ℝ] Eucl P) → (Eucl P →L[ℝ] Eucl n),
+      ContinuousOn Λ {A : Eucl n →L[ℝ] Eucl P | Function.Injective A} ∧
+      ∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A →
+        (Λ A).comp A = ContinuousLinearMap.id ℝ (Eucl n) ∧ ∀ v : Eucl P, ‖A (Λ A v)‖ ≤ ‖v‖ := by
+  intro n P
+  -- `A* A` is a unit of the endomorphism ring when `A` is injective.
+  have hunit : ∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A →
+      IsUnit ((ContinuousLinearMap.adjoint A).comp A) := by
+    intro A hA
+    have hinj : Function.Injective ((ContinuousLinearMap.adjoint A).comp A) :=
+      (ContinuousLinearMap.adjoint_comp_self_injective_iff A).2 hA
+    exact ContinuousLinearMap.isUnit_iff_bijective.2
+      ⟨hinj, LinearMap.injective_iff_surjective.1 hinj⟩
+  -- `Λ(A) = (A* A)⁻¹ A*`, with `Ring.inverse` (`= 0` off the units).
+  refine ⟨fun A => (Ring.inverse ((ContinuousLinearMap.adjoint A).comp A)).comp
+    (ContinuousLinearMap.adjoint A), ?_, fun A hA => ?_⟩
+  · -- Adjoint, composition and the ring inverse at units are continuous.
+    intro A₀ hA₀
+    have hadj : Continuous fun A : Eucl n →L[ℝ] Eucl P => ContinuousLinearMap.adjoint A :=
+      ContinuousLinearMap.adjoint.continuous
+    have hinv : ContinuousAt (fun A : Eucl n →L[ℝ] Eucl P =>
+        Ring.inverse ((ContinuousLinearMap.adjoint A).comp A)) A₀ := by
+      have h := NormedRing.inverse_continuousAt (hunit A₀ hA₀).unit
+      rw [IsUnit.unit_spec] at h
+      exact h.comp_of_eq (hadj.clm_comp continuous_id).continuousAt rfl
+    exact (hinv.clm_comp hadj.continuousAt).continuousWithinAt
+  have hu := hunit A hA
+  refine ⟨?_, fun v => ?_⟩
+  · -- `Λ(A) A = (A* A)⁻¹ (A* A) = id`.
+    rw [ContinuousLinearMap.comp_assoc, ← ContinuousLinearMap.mul_def,
+      Ring.inverse_mul_cancel _ hu]
+    rfl
+  · -- `p := A Λ(A) v` satisfies `A* p = A* v`, so `v - p ⊥ p`; Pythagoras.
+    beta_reduce
+    set p := A ((Ring.inverse ((ContinuousLinearMap.adjoint A).comp A)).comp
+      (ContinuousLinearMap.adjoint A) v) with hp
+    have hAp : ContinuousLinearMap.adjoint A p = ContinuousLinearMap.adjoint A v := by
+      have h := congrArg (fun T : Eucl n →L[ℝ] Eucl n => T (ContinuousLinearMap.adjoint A v))
+        (Ring.mul_inverse_cancel _ hu)
+      simpa [ContinuousLinearMap.mul_def, hp] using h
+    have horth : inner ℝ (v - p) p = 0 := by
+      rw [hp, ← ContinuousLinearMap.adjoint_inner_left, ← hp, map_sub, hAp, sub_self,
+        inner_zero_left]
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+    rw [sub_add_cancel] at h
+    exact (mul_self_le_mul_self_iff (norm_nonneg p) (norm_nonneg v)).2
+      (by nlinarith [mul_self_nonneg ‖v - p‖])
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
