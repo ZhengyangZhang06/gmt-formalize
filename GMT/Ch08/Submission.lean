@@ -410,6 +410,103 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Simon Ch. 8, proof of 1.2 (the null case of the upper counterpart of the density comparison
+Ch. 1, 3.3): if `H^n(A) = 0` and `μ(B_ρ(x)) ≤ c ρ^n` for all `x ∈ A` and `0 < ρ ≤ δ`, with
+`c < ∞`, then `μ(A) = 0` (outer measure; `A` need not be measurable). -/
+theorem Submission.frt_measure_null_of_hausdorff_null_ball_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (A : Set (Euclidean N)) (c : ℝ≥0∞) (δ : ℝ), c ≠ ∞ → 0 < δ → μHE[n] A = 0 → (∀ x ∈ A, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → μ (closedBall x ρ) ≤ c * ENNReal.ofReal ρ ^ n) → μ A = 0 := by
+  intro N n μ A c δ hc hδ hA hball
+  -- Step 1: `H^n = c_n • μH[n]` with `c_n ≠ 0`, so the unnormalised `μH[n](A)` vanishes.
+  have hH : (μH[(n : ℝ)] : Measure (Euclidean N)) A = 0 := by
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul,
+      mul_eq_zero] at hA
+    rcases hA with h | h
+    · exact absurd (by exact_mod_cast h) (Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n)
+    · exact h
+  -- Step 2: one covering set `t` with `diam t ≤ δ` has `μ(t ∩ A) ≤ c · ⨆_{t ≠ ∅} (diam t)^n`.
+  have hone : ∀ t : Set (Euclidean N), ediam t ≤ ENNReal.ofReal δ →
+      μ (t ∩ A) ≤ c * ⨆ (_ : t.Nonempty), ediam t ^ n := by
+    intro t ht
+    rcases (t ∩ A).eq_empty_or_nonempty with h | ⟨x, hxt, hxA⟩
+    · simp [h]
+    rw [iSup_pos ⟨x, hxt⟩]
+    have hfin : ediam t ≠ ∞ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top ht
+    set d := (ediam t).toReal
+    have hd0 : 0 ≤ d := ENNReal.toReal_nonneg
+    have hdδ : d ≤ δ := ENNReal.toReal_le_of_le_ofReal hδ.le ht
+    have hdeq : ENNReal.ofReal d = ediam t := ENNReal.ofReal_toReal hfin
+    -- `t ⊆ B_r(x)` for every `r ≥ d`, since `x ∈ t`.
+    have hsub : ∀ r : ℝ, d ≤ r → t ∩ A ⊆ closedBall x r := by
+      intro r hr y hy
+      rw [mem_closedBall, dist_edist]
+      exact (ENNReal.toReal_mono hfin (edist_le_ediam_of_mem hy.1 hxt)).trans hr
+    rcases hd0.lt_or_eq with hdpos | hdzero
+    · -- Case `d > 0`: the ball bound at `ρ = d`.
+      calc μ (t ∩ A) ≤ μ (closedBall x d) := measure_mono (hsub d le_rfl)
+        _ ≤ c * ENNReal.ofReal d ^ n := hball x hxA d hdpos hdδ
+        _ = c * ediam t ^ n := by rw [hdeq]
+    · have hdiam0 : ediam t = 0 := by rw [← hdeq, ← hdzero, ENNReal.ofReal_zero]
+      rcases Nat.eq_zero_or_pos n with hn | hn
+      · -- Case `d = 0`, `n = 0`: the ball bound at `ρ = δ`.
+        subst hn
+        calc μ (t ∩ A) ≤ μ (closedBall x δ) := measure_mono (hsub δ (hdzero ▸ hδ.le))
+          _ ≤ c * ENNReal.ofReal δ ^ 0 := hball x hxA δ hδ le_rfl
+          _ = c * ediam t ^ 0 := by simp
+      · -- Case `d = 0`, `n ≥ 1`: let `ρ ↓ 0`; `c ρ^n → 0` because `c ≠ ∞`.
+        rw [hdiam0, zero_pow hn.ne', mul_zero]
+        have h1 : Tendsto (fun ρ : ℝ => ENNReal.ofReal ρ) (𝓝[>] 0) (𝓝 0) := by
+          have := ENNReal.continuous_ofReal.tendsto 0
+          rw [ENNReal.ofReal_zero] at this
+          exact this.mono_left nhdsWithin_le_nhds
+        have h2 : Tendsto (fun ρ : ℝ => ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+          have := ((ENNReal.continuous_pow n).tendsto 0).comp h1
+          simpa [Function.comp_def, zero_pow hn.ne'] using this
+        have h3 : Tendsto (fun ρ : ℝ => c * ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+          simpa using ENNReal.Tendsto.const_mul h2 (Or.inr hc)
+        refine ge_of_tendsto h3 ?_
+        filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+        calc μ (t ∩ A) ≤ μ (closedBall x ρ) := measure_mono (hsub ρ (hdzero ▸ hρ.1.le))
+          _ ≤ c * ENNReal.ofReal ρ ^ n := hball x hxA ρ hρ.1 hρ.2.le
+  -- Step 3: `μH[n](A) = 0` gives, for each `ζ > 0`, a cover of `A` by sets of diameter `≤ δ`
+  -- with `∑_k ⨆_{t_k ≠ ∅} (diam t_k)^n < ζ` (`hausdorffMeasure_apply` at scale `r = δ`).
+  have hcover : ∀ ζ : ℝ≥0∞, 0 < ζ → ∃ t : ℕ → Set (Euclidean N), A ⊆ ⋃ k, t k ∧
+      (∀ k, ediam (t k) ≤ ENNReal.ofReal δ) ∧ ∑' k, ⨆ (_ : (t k).Nonempty), ediam (t k) ^ n < ζ := by
+    intro ζ hζ
+    rw [Measure.hausdorffMeasure_apply] at hH
+    have hle : (⨅ (t : ℕ → Set (Euclidean N)) (_ : A ⊆ ⋃ k, t k)
+        (_ : ∀ k, ediam (t k) ≤ ENNReal.ofReal δ),
+          ∑' k, ⨆ (_ : (t k).Nonempty), ediam (t k) ^ (n : ℝ)) = 0 := by
+      refine nonpos_iff_eq_zero.1 ?_
+      rw [← hH]
+      exact le_iSup₂_of_le (ENNReal.ofReal δ) (ENNReal.ofReal_pos.2 hδ) le_rfl
+    have hlt := hle ▸ hζ
+    obtain ⟨t, ht⟩ := iInf_lt_iff.1 hlt
+    obtain ⟨hcov, ht⟩ := iInf_lt_iff.1 ht
+    obtain ⟨hdiam, hsum⟩ := iInf_lt_iff.1 ht
+    refine ⟨t, hcov, hdiam, ?_⟩
+    simpa only [ENNReal.rpow_natCast] using hsum
+  -- Step 4: countable subadditivity gives `μ(A) ≤ c · ζ` for every `ζ > 0`.
+  have key : ∀ ζ : ℝ≥0∞, 0 < ζ → μ A ≤ c * ζ := by
+    intro ζ hζ
+    obtain ⟨t, hcov, hdiam, hsum⟩ := hcover ζ hζ
+    calc μ A ≤ μ (⋃ k, t k ∩ A) := by
+          refine measure_mono fun y hy => ?_
+          obtain ⟨k, hk⟩ := mem_iUnion.1 (hcov hy)
+          exact mem_iUnion.2 ⟨k, hk, hy⟩
+      _ ≤ ∑' k, μ (t k ∩ A) := measure_iUnion_le _
+      _ ≤ ∑' k, c * ⨆ (_ : (t k).Nonempty), ediam (t k) ^ n :=
+          ENNReal.tsum_le_tsum fun k => hone (t k) (hdiam k)
+      _ = c * ∑' k, ⨆ (_ : (t k).Nonempty), ediam (t k) ^ n := ENNReal.tsum_mul_left
+      _ ≤ c * ζ := by gcongr
+  -- Step 5: `c < ∞`, so `ζ = ε / c` (or `ζ = 1` when `c = 0`) gives `μ(A) = 0`.
+  refine nonpos_iff_eq_zero.1 ?_
+  rcases eq_or_ne c 0 with h0 | h0
+  · simpa [h0] using key 1 one_pos
+  · refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+    have := key (ε / c) (ENNReal.div_pos (by exact_mod_cast hε.ne') hc)
+    rw [ENNReal.mul_div_cancel h0 hc] at this
+    simpa using this
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
