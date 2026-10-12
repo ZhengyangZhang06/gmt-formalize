@@ -12,6 +12,7 @@ import Mathlib.Topology.Algebra.Module.Determinant
 import Poincare.SimonGMT.Chapter01.Hausdorff
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter02.Submanifold
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 2: Some further preliminaries from analysis (pp. 39–68)
@@ -859,6 +860,86 @@ theorem Submission.bv_mollifier_tendsto_L1 : ∀ (n : ℕ) (F : Rn n → ℝ) (�
     _ ≤ δ + (δ + δ) :=
         add_le_add ((hcontr j _ hFg).trans hg_close) (add_le_add hj hg_close)
     _ ≤ ε := hδ
+
+/-- **Simon Ch. 2, Lemma 2.7 (p. 51), Poincaré inequality for BV**, with `C = 2^{n+1}(1 + θ⁻¹)`.
+Exhaust `U` by convex open sets `O j` with margins `σ j → 0`
+(`convex_open_exists_inner_exhaustion`) and mollify: `w j = ρ j * 1_U u` with normalized bump
+kernels `ρ j` supported in `ball 0 (σ j)`. On `O j` the smooth Poincaré inequality, the mollifier
+gradient bound `∫_{O j} |Dw j| ≤ |Du|(U)` and `diam (O j) ≤ diam U ≤ 2R` give
+`∫_{O j} |w j - c_j| ≤ 2ⁿ 2R |Du|(U)` for the means `c_j`. Since `w j → 1_U u = u` in `L¹(O j)`
+(`bv_mollifier_tendsto_L1`), this passes to `∫_U |u - ū| ≤ 2ⁿ 2R |Du|(U)`
+(`mean_oscillation_lintegral_le_of_approx`), and the level-set hypothesis replaces the mean `ū` by
+`β` at the cost of a factor `1 + θ⁻¹` (`poincare_level_set_lintegral_le`). -/
+theorem Submission.bv_poincare_theorem : BVPoincare := by
+  intro n θ δ hθ _ _ _
+  refine ⟨2 ^ (n + 1) * (1 + θ⁻¹), by positivity, ?_⟩
+  intro U R ξ u β hUo hUb hUc hR _ _ hUR hBV hlevel
+  obtain ⟨-, hu, -⟩ := hBV
+  -- B2: convex open sets `O j` increasing to `U`, with margins `σ j → 0`.
+  obtain ⟨O, σ, hOmono, hOU, hσ, hO⟩ :=
+    Submission.convex_open_exists_inner_exhaustion n U hUo hUc
+  have hOsub : ∀ j, O j ⊆ U := fun j ↦ hOU ▸ subset_iUnion O j
+  -- B3: normalized bump kernels `ρ j` supported in `ball 0 (σ j)`.
+  obtain ⟨ρ, hρc, hρd, hρn, hρs, hρi, hρcs⟩ : ∃ ρ : ℕ → Rn n → ℝ, (∀ j, Continuous (ρ j)) ∧
+      (∀ j (m : ℕ∞), ContDiff ℝ m (ρ j)) ∧ (∀ j x, 0 ≤ ρ j x) ∧
+      (∀ j, Function.support (ρ j) ⊆ ball 0 (σ j)) ∧ (∀ j, ∫ x, ρ j x = 1) ∧
+      ∀ j, HasCompactSupport (ρ j) := by
+    let φ : ℕ → ContDiffBump (0 : Rn n) := fun j ↦
+      ⟨σ j / 2, σ j, half_pos (hO j).2.2.1, half_lt_self (hO j).2.2.1⟩
+    exact ⟨fun j ↦ (φ j).normed volume, fun j ↦ (φ j).continuous_normed,
+      fun j _ ↦ (φ j).contDiff_normed, fun j ↦ (φ j).nonneg_normed,
+      fun j ↦ (φ j).support_normed_eq.subset, fun j ↦ (φ j).integral_normed,
+      fun j ↦ (φ j).hasCompactSupport_normed⟩
+  -- The mollified functions `w j = ρ j * 1_U u` are `C¹`, hence integrable on the bounded `O j`.
+  have hF : Integrable (U.indicator u) volume := (integrable_indicator_iff hUo.measurableSet).2 hu
+  set w : ℕ → Rn n → ℝ := fun j ↦
+    convolution (ρ j) (U.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  have hwC : ∀ j, ContDiff ℝ 1 (w j) := fun j ↦
+    (hρcs j).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρd j 1)
+      hF.locallyIntegrable
+  have hwint : ∀ j, IntegrableOn (w j) (O j) volume := fun j ↦
+    ((hwC j).continuous.continuousOn.integrableOn_compact
+      (hUb.subset (hOsub j)).isCompact_closure).mono_set subset_closure
+  -- B4, approximation: `∫⁻_{O j} ‖w j - u‖ₑ ≤ ∫⁻ ‖w j - 1_U u‖ₑ → 0`, as `1_U u = u` on `O j`.
+  have he : Tendsto (fun j ↦ ∫⁻ x in O j, ‖w j x - u x‖ₑ) atTop (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
+      (Submission.bv_mollifier_tendsto_L1 n (U.indicator u) ρ σ hF hρc hρn hρs hρi hσ)
+      (fun j ↦ zero_le) fun j ↦ ?_
+    calc ∫⁻ x in O j, ‖w j x - u x‖ₑ = ∫⁻ x in O j, ‖w j x - U.indicator u x‖ₑ :=
+          setLIntegral_congr_fun (hO j).1.measurableSet fun x hx ↦ by
+            rw [indicator_of_mem (hOsub j hx)]
+      _ ≤ ∫⁻ x, ‖w j x - U.indicator u x‖ₑ := setLIntegral_le_lintegral _ _
+  -- B3, uniform bound: smooth Poincaré on `O j`, `diam (O j) ≤ diam U ≤ 2R`, and the mollifier
+  -- gradient bound `∫⁻_{O j} ‖D w j‖ₑ ≤ |Du|(U)`, valid as `closedBall x (σ j) ⊆ U` for `x ∈ O j`.
+  have hdiam : Metric.diam U ≤ 2 * R :=
+    (Metric.diam_mono hUR isBounded_closedBall).trans (Metric.diam_closedBall hR.le)
+  have hK : ∀ j, ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ ≤
+      ENNReal.ofReal (2 ^ n * (2 * R)) * Chapter02.bvVariationOn u U := by
+    intro j
+    calc ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ
+        ≤ ENNReal.ofReal (2 ^ n * Metric.diam (O j)) * ∫⁻ x in O j, ‖fderiv ℝ (w j) x‖ₑ :=
+          Submission.convex_poincare_smooth_lintegral_le n (O j) (w j) (hO j).1
+            (hUb.subset (hOsub j)) (hO j).2.1 (hwC j)
+      _ ≤ ENNReal.ofReal (2 ^ n * (2 * R)) * Chapter02.bvVariationOn u U := by
+          gcongr
+          · exact (Metric.diam_mono (hOsub j) hUb).trans hdiam
+          · exact Submission.bv_mollifier_fderiv_lintegral_le n U (O j) u (ρ j) (σ j) hUo hu
+              (hρd j 2) (hρn j) (hρs j) (hρi j) (hO j).2.2.2
+  -- B4, limit: `∫⁻_U ‖u - ū‖ₑ ≤ 2ⁿ (2R) |Du|(U)` for the mean `ū` of `u` over `U`.
+  have hmean := Submission.mean_oscillation_lintegral_le_of_approx n U u O w _
+    hUb.measure_lt_top hu (fun j ↦ (hO j).1.measurableSet) hOmono hOU hwint he hK
+  -- B5: from the mean `ū` to `β`.
+  calc ∫⁻ x in U, ‖u x - β‖ₑ
+      ≤ ENNReal.ofReal (1 + θ⁻¹) * ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ :=
+        Submission.poincare_level_set_lintegral_le n U u θ β _ hUo.measurableSet
+          (Integrable.aemeasurable hu) hθ hlevel
+    _ ≤ ENNReal.ofReal (1 + θ⁻¹) *
+          (ENNReal.ofReal (2 ^ n * (2 * R)) * Chapter02.bvVariationOn u U) := by
+        gcongr
+    _ = ENNReal.ofReal (2 ^ (n + 1) * (1 + θ⁻¹) * R) * Chapter02.bvVariationOn u U := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+        congr 2
+        ring
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
