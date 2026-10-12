@@ -461,6 +461,43 @@ theorem Submission.bv_integral_div_le_of_variation_le : ∀ (n : ℕ) (W : Set (
       ring
     rw [h2, inv_mul_le_iff₀ hs] at h1
     linarith
+/-- **Simon Ch. 2, proof of Theorem 2.6: sup and Lipschitz bounds for a mollification.** For `ρ`
+bounded by `A` and `K`-Lipschitz, and `F ∈ L¹(ℝⁿ)`: `|(ρ * F)(x)| ≤ A ∫ |F|` and
+`|(ρ * F)(x) - (ρ * F)(y)| ≤ K |x - y| ∫ |F|` (the uniform bounds behind the Arzelà step). In the
+symmetric form `(ρ * F)(z) = ∫ ρ(z - t) F(t) dt` (translation and reflection invariance of `Lⁿ`),
+both follow by integrating the majorants `A |F|` and `K |x - y| |F|`. -/
+theorem Submission.bv_convolution_bound_and_lipschitz : ∀ (n : ℕ) (ρ F : Rn n → ℝ) (A : ℝ) (K : ℝ≥0), (∀ x, |ρ x| ≤ A) → LipschitzWith K ρ → Integrable F volume → ∀ x y : Rn n, |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x| ≤ A * (∫ t, |F t|) ∧ |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume y| ≤ K * ‖x - y‖ * (∫ t, |F t|) := by
+  intro n ρ F A K hA hK hF x y
+  -- Step 2: `(ρ * F)(z) = ∫ ρ(z - t) F(t) dt`.
+  have hswap : ∀ z, convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume z =
+      ∫ t, ρ (z - t) * F t := fun z ↦ by
+    simp only [convolution_lsmul_swap, smul_eq_mul]
+  -- Step 3: `t ↦ ρ(z - t) F(t)` is integrable: `t ↦ ρ(z - t)` is continuous (`ρ` is Lipschitz)
+  -- and bounded by `A`.
+  have hint : ∀ z, Integrable (fun t ↦ ρ (z - t) * F t) volume := fun z ↦
+    hF.bdd_mul (hK.continuous.comp (continuous_sub_left z)).aestronglyMeasurable
+      (Eventually.of_forall fun t ↦ by rw [Real.norm_eq_abs]; exact hA (z - t))
+  refine ⟨?_, ?_⟩
+  -- Step 4: `|ρ(x - t) F(t)| ≤ A |F(t)|`.
+  · calc |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x|
+        = ‖∫ t, ρ (x - t) * F t‖ := by rw [hswap, Real.norm_eq_abs]
+      _ ≤ ∫ t, A * |F t| := by
+        refine norm_integral_le_of_norm_le (hF.abs.const_mul A) (Eventually.of_forall fun t ↦ ?_)
+        rw [Real.norm_eq_abs, abs_mul]
+        exact mul_le_mul_of_nonneg_right (hA _) (abs_nonneg _)
+      _ = A * ∫ t, |F t| := integral_const_mul A _
+  -- Step 5: `|(ρ(x - t) - ρ(y - t)) F(t)| ≤ K |x - y| |F(t)|`.
+  · calc |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x -
+          convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume y|
+        = ‖∫ t, (ρ (x - t) * F t - ρ (y - t) * F t)‖ := by
+          rw [hswap, hswap, integral_sub (hint x) (hint y), Real.norm_eq_abs]
+      _ ≤ ∫ t, K * ‖x - y‖ * |F t| := by
+        refine norm_integral_le_of_norm_le (hF.abs.const_mul _) (Eventually.of_forall fun t ↦ ?_)
+        rw [Real.norm_eq_abs, ← sub_mul, abs_mul]
+        refine mul_le_mul_of_nonneg_right ?_ (abs_nonneg _)
+        have hLip := hK.dist_le_mul (x - t) (y - t)
+        rwa [Real.dist_eq, dist_eq_norm, sub_sub_sub_cancel_right] at hLip
+      _ = K * ‖x - y‖ * ∫ t, |F t| := integral_const_mul _ _
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
