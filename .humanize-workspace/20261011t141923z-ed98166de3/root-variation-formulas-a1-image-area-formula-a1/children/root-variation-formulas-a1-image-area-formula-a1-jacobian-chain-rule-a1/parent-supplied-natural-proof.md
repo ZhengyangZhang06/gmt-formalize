@@ -1,0 +1,103 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.variation_formulas-a1.image_area_formula-a1`
+- Child DAG node: `root.variation_formulas-a1.image_area_formula-a1.jacobian_chain_rule-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 and the first two bullets of step 7 of the parent proof. This is Simon Ch. 2, 4.11 (J_{f∘ψ}(x) = J_ψ(x)·J^M_f(y)) in linear form. Fix n, N, N′, continuous linear maps L : ℝⁿ → ℝᴺ and A : ℝᴺ → ℝ^{N′}, and a subspace T ⊆ ℝᴺ with T = range L. Throughout, ℝᵈ = EuclideanSpace ℝ (Fin d), and normDet is Mathlib's LinearMap.normDet; for a continuous linear map K, normDet K means normDet of its underlying linear map.
+
+1. areaJacobian equals normDet. Let E, F be finite-dimensional real inner product spaces and K : E →L[ℝ] F.
+   - normDet(K) ≥ 0 (LinearMap.normDet_nonneg).
+   - normDet(K)² = det(K* ∘ K) (ContinuousLinearMap.normDet_sq). For 𝕜 = ℝ the coercion ℝ → 𝕜 there is the identity (RCLike.ofReal_real_eq_id).
+   - Hence areaJacobian(K) = √det(K* ∘ K) = √(normDet(K)²) = normDet(K) (Real.sqrt_sq).
+   - CompleteSpace instances are propositions, so the instance carried by areaJacobian and the one used inside normDet_sq agree.
+   We apply this to three maps: A ∘ L : ℝⁿ → ℝ^{N′}; L : ℝⁿ → ℝᴺ; and A ∘ ι_T : T → ℝ^{N′}, where ι_T = T.subtypeL is the inclusion. The third case is legitimate: T, a subspace of ℝᴺ, is finite-dimensional, hence complete, and it carries the inner product induced from ℝᴺ.
+2. Use the hypothesis T = range L to replace T by range L (in Lean: subst).
+3. The underlying linear map of A ∘ L is A ∘ₗ L, definitionally. Apply Mathlib's LinearMap.normDet_comp with f = L (finite-dimensional source ℝⁿ) and g = A:
+   normDet(A ∘ₗ L) = normDet(A.domRestrict (range L)) · normDet(L).
+4. A.domRestrict (range L) is by definition A ∘ₗ (range L).subtype. This is definitionally the underlying linear map of A.comp (range L).subtypeL = A ∘ ι_T, so the two normDets are equal by rfl.
+5. Combine 1, 3 and 4:
+   areaJacobian(A ∘ L) = normDet(A ∘ₗ L) = normDet(A ∘ ι_T) · normDet(L) = areaJacobian(A ∘ ι_T) · areaJacobian(L). ∎
+
+Remark: L need not be injective. LinearMap.normDet_comp holds unconditionally; if L is not injective, both sides are 0.
+
+Implementation notes (Lean, pinned toolchain).
+- No import beyond the frozen contract's is needed.
+- ContinuousLinearMap.coe_comp rewrites function coercions only. The equation ((A.comp L : Rn n →L[ℝ] Rn N') : Rn n →ₗ[ℝ] Rn N') = (A : Rn N →ₗ[ℝ] Rn N') ∘ₗ (L : Rn n →ₗ[ℝ] Rn N) holds by rfl, and after LinearMap.normDet_comp the remaining domRestrict/subtypeL identification also closes by rfl.
+- Give the step-1 helper a node-specific name (e.g. variation_areaJacobian_chain_rule_normDet) so that merged Submission files cannot clash.
+
+## Key steps
+
+1. For every continuous linear map K between finite-dimensional real inner product spaces, areaJacobian K = normDet K, by LinearMap.normDet_nonneg, ContinuousLinearMap.normDet_sq and Real.sqrt_sq.
+2. Substitute T = range L.
+3. LinearMap.normDet_comp: normDet(A ∘ₗ L) = normDet(A.domRestrict (range L)) · normDet L.
+4. A.domRestrict (range L) is definitionally the linear map of A.comp T.subtypeL; convert each normDet back to areaJacobian.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n '^theorem|^lemma|^noncomputable def|^def' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean; sed -n 40,80p and 260,372p NormDet.lean (normDet, normDet_nonneg, ContinuousLinearMap.normDet_sq, normDet_comp)`
+- `rg -n -A4 'theorem setLIntegral_congr_fun |theorem MeasurableSet.image_of_continuousOn_injOn|theorem lintegral_iUnion |theorem measure_iUnion |theorem IsLindelof.indexed_countable_subcover' mathlib/Mathlib`
+- `rg -n 'HereditarilyLindelofSpace.isLindelof|theorem isOpen_iUnion_countable|theorem disjoint_disjointed|theorem disjointed_subset|theorem iUnion_disjointed|theorem MeasurableSet.disjointed|theorem finrank_euclideanSpace_fin|theorem fderiv_comp ' mathlib/Mathlib`
+- `rg -n 'continuousOn_iff_continuous_restrict|MeasurableEmbedding.subtype_coe|measurableSet_image|InjOn.image_inter|disjoint_image_iff' mathlib/Mathlib`
+- `rg -n 'μHE\[' mathlib/Mathlib (euclideanHausdorffMeasure notation)`
+- `rg -n 'injective_area_formula|weighted_area_formula|areaJacobian' mathlib/Mathlib (no match)`
+- `rg -n 'areaJacobian|subtypeL' project/GMT/Ch02/Contract.lean; cmp project/GMT/Ch02/{Contract,Submission}.lean against the workspace copies (identical)`
+- `cat simongmt/Poincare/SimonGMT/Chapter02/{Submanifold,WeightedArea,Area}.lean; sed -n 230,320p SubmanifoldCalculus.lean; cat AreaSubmanifoldExample.lean`
+- `grep -rn 'isOpen_iUnion_countable|countable_cover|atlas' simongmt/Poincare --include=*.lean`
+- `grep -n '4.11|4.12|Jacobian' book/sources/chapter-02-source.txt; sed -n 740,1000p (Simon 3.1–3.6, 4.1–4.13)`
+- `cat verifier/lean_contract.py; sed -n 330,384p and 425,600p verifier/gmt-compare.py (candidate_inputs, child_contract, contract_scope, child_modules)`
+- `python3 -I scripts/gen_checks.py (verifier child_modules/contract_scope + validate_lean_statement) then lean checks/NodeChallenge_0{0,1,2}_*.lean against scratch olean of frozen GMT.Ch02.Submission (lean -o, LEAN_PATH = lake-packages-25730c7c/*/.lake/build/lib/lean)`
+- `lean checks/FullProof.lean; lean checks/StandInAssembly.lean; lean checks/StandInChart.lean; lean checks/NoImport_Child1.lean; lean checks/NoImport_StandInAssembly.lean; lean checks/InstCheck.lean`
+- `lean -o candout/GMT/Ch02/Submission.olean cand/GMT/Ch02/Submission.lean; lean checks/AxSolution_0{0,1,2}_*.lean (generated exact Submission.X modules + #print axioms)`
+- `python3 -I scan of dag.json lean_name fields and nodes/*/decomposition-v*.json subproblem lean_names; git show <branch>:GMT/Ch02/Submission.lean | grep over all branches (collision check)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/Lindelof.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Function.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaSubmanifoldExample.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-image-area-formula-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-image-area-formula-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-borel-coarea-a1/decomposition-v1.json`
+- `/tmp/imgarea-decomp-bwpafg/scripts/gen_checks.py`
+- `/tmp/imgarea-decomp-bwpafg/scripts/statements.json`
+- `/tmp/imgarea-decomp-bwpafg/checks/NodeChallenge_00_variation_areaJacobian_chain_rule.lean`
+- `/tmp/imgarea-decomp-bwpafg/checks/NodeChallenge_01_variation_chart_image_area.lean`
+- `/tmp/imgarea-decomp-bwpafg/checks/NodeChallenge_02_variation_submanifold_image_area.lean`
+- `/tmp/imgarea-decomp-bwpafg/checks/FullProof.lean`
+- `/tmp/imgarea-decomp-bwpafg/checks/StandInAssembly.lean`
+- `/tmp/imgarea-decomp-bwpafg/checks/StandInChart.lean`
+- `/tmp/imgarea-decomp-bwpafg/checks/InstCheck.lean`
+- `/tmp/imgarea-decomp-bwpafg/checks/AxSolution_00_variation_areaJacobian_chain_rule.lean`
+- `/tmp/imgarea-decomp-bwpafg/cand/GMT/Ch02/Submission.lean`
+
+Pinned Mathlib (25730c7c) has no area formula on submanifolds and no `areaJacobian` (rg: no match). Its NormDet.lean supplies everything the 4.11 child needs: LinearMap.normDet_comp (unconditional, finite-dimensional source), ContinuousLinearMap.normDet_sq and LinearMap.normDet_nonneg. SimonGMT (2b36630) provides the chart tools for child 2: injective_area_formula_areaJacobianAt and IsSimonLocalRepresentation.weighted_area_formula (WeightedArea.lean; the weight need not be measurable), and areaJacobianAt_eq_sqrt_det_adjoint_comp (Area.lean), which identifies areaJacobianAt with the contract's areaJacobian of fderiv. WeightedArea is not imported by the frozen contract, so only the chart child must add that import; the verifier permits extra imports in the Submission. SimonGMT's IsSimonSubmanifold.nonempty_volumeAtlas (AreaSubmanifoldExample.lean) shows the Lindelöf atlas is a few lines, so the gluing stays in the parent. The book (lines 740–1000) confirms the structure: 3.6(2) decomposes a Borel set into chart pieces, 4.11 gives J_{f∘ψ} = J_ψ·J^M_f, and the passage after 4.12 states the area formula for f on M. Lean: both child statements elaborate in contract scope with canonical Submodule instances. Full proofs of both children and of the parent's exact frozen type compile with axioms [propext, Classical.choice, Quot.sound]; the parent also compiles from sorried stand-ins of the children. The generated `exact Submission.X` solution modules compile against a candidate Submission with the same axioms. Neither proposed name collides with any reserved name.
