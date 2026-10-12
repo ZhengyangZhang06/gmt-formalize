@@ -895,6 +895,98 @@ theorem Submission.lower_density_ge_one_of_nearby_mass_bounds :
         hlim.liminf_eq.symm
     _ ≤ liminf (densityRatio n V.weight x) (𝓝[>] 0) := liminf_le_liminf hev
 
+/-- **Simon Ch. 8, 3.7, density part** (child `lower_density_ae` of `density_semicontinuity`;
+printed proof, pp. 212–213, (1)–(5), with the monotonicity formula 3.3): if `V_i → V` as Radon
+measures on `Gₙ(U)`, `liminf_i ‖δV_i‖(W) < ∞` and `Θ^n(μ_{V_i}, ·) ≥ 1` off `B_i` with
+`μ_{V_i}(B_i ∩ W) → 0` for every `W ⊂⊂ U`, then `liminf_{ρ↓0} μ_V(B_ρ(y)) / (ω_n ρ^n) ≥ 1` for
+`μ_V`-a.e. `y`.  Fix `W ⊂⊂ U` and `W̃ = {dist(·, W) < ρ₀} ⊂⊂ U`.  A point of `W ∖ B_q` is good
+for `(q, k)` if `‖δV_q‖ ≤ k μ_q` on its balls of radius `< ρ₀`; Besicovitch bounds the bad set by
+`C k⁻¹ ‖δV_q‖(W̃) + μ_q(B_q ∩ W)` (printed (2)), so the points interior to `⋂_{ℓ ≥ i}` of the bad
+sets for every `k ≥ 1` form a `μ_V`-null set (printed (3), (5)).  Each other `x ∈ W` is a limit of
+good points `y_i` of `V_{q_i}`, where 3.3 with `Λ = k` gives `μ_{q_i}(B_ρ(y_i)) ≥ e^{-kρ} ω_n ρ^n`;
+these bounds pass to `μ_V` at `x` (printed (4)).  Countably many `W ⊂⊂ U` exhaust `U`. -/
+theorem Submission.lower_density_ge_one_ae_of_radonConverges :
+    MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (B : ℕ → Set (Euclidean N)), Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) → (∀ i, ∀ y ∈ U \ B i, ∃ θ : ℝ≥0∞, HasDensity n (Vi i).weight y θ ∧ 1 ≤ θ) → (∀ W, IsRelCompactOpenIn W U → Tendsto (fun i ↦ (Vi i).weight (B i ∩ W)) atTop (𝓝 0)) → ∀ᵐ y ∂V.weight, 1 ≤ liminf (densityRatio n V.weight y) (𝓝[>] 0) := by
+  intro hMF N n U Vi V B hconv hLB hbound hdens hsmall
+  -- The Besicovitch constant `C` of `ℝ^N` and the portmanteau inequality (P1) for `V_i → V`.
+  obtain ⟨C, hC⟩ := Submission.besicovitch_ratio_cover_estimate N
+  have hP1 := (Submission.weight_portmanteau_of_radonConverges N n U Vi V hconv).1
+  have hU : IsOpen U := V.isOpen_domain
+  -- Step 2: `μ_V(Uᶜ) = 0`, so it suffices to prove the bound on each `W ⊂⊂ U` off a null set.
+  have hUc : V.weight Uᶜ = 0 := by
+    rw [V.weight_apply hU.measurableSet.compl]
+    exact V.supported
+  refine Submission.ae_of_forall_relCompactOpen_null_exceptional N U V.weight
+    (fun y ↦ 1 ≤ liminf (densityRatio n V.weight y) (𝓝[>] 0)) hU hUc fun W hW ↦ ?_
+  -- Step 1a: `W̃ = thickening ρ₀ W ⊂⊂ U`, and `B°_{ρ₀}(y) ⊆ W̃ ⊆ U` for every `y ∈ W`.
+  obtain ⟨ρ₀, hρ₀, hWt⟩ := Submission.exists_thickening_isRelCompactOpenIn N U W hU hW
+  have hWU : W ⊆ U := subset_closure.trans hW.2.2
+  have hballU : ∀ y ∈ W, ball y ρ₀ ⊆ U := fun y hy ↦
+    (ball_subset_thickening hy ρ₀).trans (subset_closure.trans hWt.2.2)
+  -- Step 1b (printed (1)): `Bad q k = W ∖ A_{q,k}`, where `A_{q,k}` is the set of `y ∉ B_q` with
+  -- `‖δV_q‖(B_ρ(y)) ≤ k μ_q(B_ρ(y))` for `0 < ρ < ρ₀`.
+  set Bad : ℕ → ℕ → Set (Euclidean N) := fun q k ↦ W \ {y | y ∉ B q ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+    variationMeasure (Vi q) (closedBall y ρ) ≤ ENNReal.ofReal k * (Vi q).weight (closedBall y ρ)}
+  -- Step 1c (printed (2)): `μ_q(Bad q k) ≤ C k⁻¹ ‖δV_q‖(W̃) + μ_q(B_q ∩ W)` for `k ≥ 1`.
+  have hcover : ∀ q k : ℕ, 1 ≤ k → (Vi q).weight (Bad q k) ≤
+      (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * variationMeasure (Vi q) (thickening ρ₀ W) +
+        (Vi q).weight (B q ∩ W) := by
+    intro q k hk
+    have hk0 : (k : ℝ≥0∞) ≠ 0 := Nat.cast_ne_zero.2 (by omega)
+    -- Every `x ∈ Bad q k ∖ B q` centres a ball `B_σ(x)`, `σ < ρ₀`, with
+    -- `μ_q(B_σ(x)) ≤ k⁻¹ ‖δV_q‖(B_σ(x))`.
+    have hratio : ∀ x ∈ Bad q k \ B q, ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧
+        (Vi q).weight (closedBall x σ) ≤
+          (k : ℝ≥0∞)⁻¹ * variationMeasure (Vi q) (closedBall x σ) := by
+      rintro x ⟨⟨-, hxA⟩, hxB⟩
+      obtain ⟨σ, hσ, hσρ₀, hlt⟩ : ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧ ENNReal.ofReal k *
+          (Vi q).weight (closedBall x σ) < variationMeasure (Vi q) (closedBall x σ) := by
+        by_contra hcon
+        push Not at hcon
+        exact hxA ⟨hxB, hcon⟩
+      rw [ENNReal.ofReal_natCast] at hlt
+      exact ⟨σ, hσ, hσρ₀, (ENNReal.mul_le_iff_le_inv hk0 (ENNReal.natCast_ne_top k)).1 hlt.le⟩
+    calc (Vi q).weight (Bad q k)
+        ≤ (Vi q).weight (Bad q k ∩ B q) + (Vi q).weight (Bad q k \ B q) :=
+          measure_le_inter_add_sdiff _ _ _
+      _ ≤ (Vi q).weight (B q ∩ W) +
+            (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * variationMeasure (Vi q) (thickening ρ₀ W) := by
+          gcongr ?_ + ?_
+          · exact measure_mono fun x hx ↦ ⟨hx.2, hx.1.1⟩
+          · refine (hC (Vi q).weight (variationMeasure (Vi q)) (Bad q k \ B q) ρ₀ (k : ℝ≥0∞)⁻¹
+              hratio).trans ?_
+            gcongr
+            exact thickening_subset_of_subset ρ₀ (sdiff_subset.trans sdiff_subset)
+      _ = _ := add_comm _ _
+  -- Steps 1d–1e (printed (3), (5)): `⋂_{k ≥ 1} ⋃_i interior (⋂_{ℓ ≥ i} Bad ℓ k)` is `μ_V`-null.
+  refine ⟨_, Submission.measure_bad_interior_exceptional_eq_zero N V.weight (fun q ↦ (Vi q).weight)
+    W Bad C (fun q ↦ variationMeasure (Vi q) (thickening ρ₀ W)) (fun q ↦ (Vi q).weight (B q ∩ W))
+    (fun O hO hOW ↦ hP1 O hO (hOW.trans hWU)) (fun _ _ ↦ sdiff_subset) (hbound _ hWt) (hsmall W hW)
+    hcover, fun x hxW hxE ↦ ?_⟩
+  -- Step 1f (printed (4)): for some `k ≥ 1`, `x` is interior to no `⋂_{ℓ ≥ i} Bad ℓ k`.
+  obtain ⟨k, -, hxk⟩ : ∃ k : ℕ, 1 ≤ k ∧
+      ∀ i : ℕ, x ∉ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k) := by
+    by_contra hcon
+    push Not at hcon
+    exact hxE (mem_iInter₂.2 fun k hk ↦ mem_iUnion.2 (hcon k hk))
+  -- Good points `y i → x` of `V_{q i}` in `W`, with `q i → ∞`.
+  obtain ⟨q, y, hq, hy, hyq⟩ :=
+    Submission.exists_nearby_points_off_bad_sets N W (fun ℓ ↦ Bad ℓ k) x hW.1 hxW hxk
+  have hgood : ∀ i, y i ∉ B (q i) ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      variationMeasure (Vi (q i)) (closedBall (y i) ρ) ≤
+        ENNReal.ofReal k * (Vi (q i)).weight (closedBall (y i) ρ) := fun i ↦
+    not_not.1 fun h ↦ (hyq i).2 ⟨(hyq i).1, h⟩
+  -- Monotonicity 3.3 with `Λ = k` at `y i`, where `Θ^n(μ_{q i}, y i) ≥ 1`.
+  have hmass : ∀ i, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      ENNReal.ofReal (Real.exp (-((k : ℝ) * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+        (Vi (q i)).weight (closedBall (y i) ρ) := fun i ↦ by
+    obtain ⟨θ, hθ, h1θ⟩ := hdens (q i) (y i) ⟨hWU (hyq i).1, (hgood i).1⟩
+    exact Submission.weight_closedBall_lower_bound_of_density_ge_one hMF N n U (Vi (q i)) (y i) ρ₀
+      k θ (hLB (q i)) hρ₀ (hballU _ (hyq i).1) (Nat.cast_nonneg k) (hgood i).2 hθ h1θ
+  -- The mass bounds pass to `μ_V` at `x = lim y i`.
+  exact (Submission.lower_density_ge_one_of_nearby_mass_bounds N n U Vi V x ρ₀ k q y hconv hρ₀
+    (hballU x hxW) hq hy hmass).2
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
