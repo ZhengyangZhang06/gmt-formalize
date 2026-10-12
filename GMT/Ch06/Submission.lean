@@ -359,6 +359,26 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Currents of degree `n > P` in `ℝ^P` vanish (step 1 of the proof of Simon Ch. 6, 6.2): any `n`
+vectors of `ℝ^P` are linearly dependent, so every `n`-covector is `0`, every test form is `0`, and
+`X(ω) = X(0) = 0`. -/
+theorem Submission.br_la_apply_eq_zero_of_lt_degree :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U n), P < n →
+      ∀ ω : TestFormOn U n, X ω = 0 := by
+  intro P n U X hPn ω
+  -- `ω(x)(v) = 0`: `v` is linearly dependent, since otherwise `n ≤ finrank ℝ^P = P`.
+  have hω : ω = 0 := by
+    apply Subtype.ext
+    funext x
+    ext v
+    refine AlternatingMap.map_linearDependent
+      ((ω : DifferentialForm (Eucl P) n) x).toAlternatingMap v fun hv => ?_
+    have hle := hv.fintype_card_le_finrank
+    rw [Fintype.card_fin, finrank_euclideanSpace_fin] at hle
+    exact absurd hle (Nat.not_le.2 hPn)
+  change X.toCurrent ω = 0
+  rw [hω, map_zero]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
