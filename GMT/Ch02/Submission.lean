@@ -431,6 +431,107 @@ theorem Submission.coarea_normDet_block_triangular : ∀ (E₁ E₂ F₁ F₂ : 
   rw [G.normDet_eq_norm_det_toMatrix bE bF, G₁₁.normDet_eq_norm_det_toMatrix bE₁ bF₁,
     G₂₂.normDet_eq_norm_det_toMatrix bE₂ bF₂, hmat, Matrix.det_fromBlocks_zero₁₂, norm_mul]
 
+/-- **Chart identity for the coarea Jacobian** (Simon Ch. 2, §6, 6.2). If the linear bijection
+`Φ : ℝᵐ × ℝᵏ → T` straightens `L : T → ℝᵐ` (`L ∘ Φ = WithLp.fst`) and `Ψ = Φ ∘ (0, ·)`, then
+`normDet L* · normDet Φ = normDet Ψ`. In the orthogonal coordinates `C = (π_{Qᗮ}, π_Q)`,
+`Q = ker L`, the map `C ∘ Φ` is block lower triangular with diagonal blocks
+`α = π_{Qᗮ} ∘ Φ ∘ (·, 0)` and `Ψ` (corestricted to `Q`). Moreover `λ ∘ α = id` for
+`λ = L|_{Qᗮ}`, and `normDet λ = normDet L*` because `L*` corestricted to `Qᗮ` is `λ*`. -/
+theorem Submission.coarea_normDet_adjoint_mul_normDet_chart : ∀ (m k : ℕ) (T : Type) [NormedAddCommGroup T] [InnerProductSpace ℝ T] [FiniteDimensional ℝ T] (L : T →ₗ[ℝ] Rn m) (Φ : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] T) (Ψ : Rn k →ₗ[ℝ] T), Function.Bijective Φ → (∀ p, L (Φ p) = WithLp.fst p) → (∀ b, Ψ b = Φ (WithLp.toLp 2 (0, b))) → (LinearMap.adjoint L).normDet * Φ.normDet = Ψ.normDet := by
+  intro m k T _ _ _ L Φ Ψ hΦ hL hΨ
+  -- Step 1: `L` is onto.
+  have hsurj : Function.Surjective L := fun a => ⟨Φ (WithLp.toLp 2 (a, 0)), by rw [hL]; rfl⟩
+  -- Step 2: `dim P = dim T = m + k`, `dim Q = k` and `dim Qᗮ = m`, where `Q = ker L`.
+  have hP : Module.finrank ℝ (WithLp 2 (Rn m × Rn k)) = m + k := by
+    rw [(WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).finrank_eq, Module.finrank_prod]
+    simp
+  have hT : Module.finrank ℝ T = m + k := by
+    rw [← (LinearEquiv.ofBijective Φ hΦ).finrank_eq, hP]
+  have hQ : Module.finrank ℝ (LinearMap.ker L) = k := by
+    have h := L.finrank_range_add_finrank_ker
+    rw [LinearMap.range_eq_top.mpr hsurj, finrank_top, hT, finrank_euclideanSpace_fin] at h
+    omega
+  have hQperp : Module.finrank ℝ (LinearMap.ker L)ᗮ = m := by
+    have := (LinearMap.ker L).finrank_add_finrank_orthogonal
+    omega
+  -- Step 3: the isometric coordinates `C t = (π_{Qᗮ} t, π_Q t)`.
+  let C : T ≃ₗᵢ[ℝ] WithLp 2 ((LinearMap.ker L)ᗮ × LinearMap.ker L) :=
+    (LinearMap.ker L).orthogonalDecomposition.trans (LinearIsometryEquiv.withLpProdComm 2 ℝ _ _)
+  have hC : ∀ t, C t = WithLp.toLp 2 ((LinearMap.ker L)ᗮ.orthogonalProjectionOnto t,
+      (LinearMap.ker L).orthogonalProjectionOnto t) := by
+    intro t
+    simp [C, Submodule.orthogonalDecomposition_apply, LinearIsometryEquiv.withLpProdComm_apply]
+  -- Step 4: `G = C ∘ Φ` has `normDet G = normDet C · normDet Φ = normDet Φ`.
+  let G : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] WithLp 2 ((LinearMap.ker L)ᗮ × LinearMap.ker L) :=
+    C.toLinearEquiv.toLinearMap ∘ₗ Φ
+  have hGΦ : G.normDet = Φ.normDet := by
+    rw [LinearMap.normDet_comp_of_finrank_eq _ _ (by rw [hP, hT])]
+    have : (C.toLinearEquiv.toLinearMap).normDet = 1 := C.toLinearIsometry.normDet_eq_one
+    rw [this, one_mul]
+  -- Step 5: `Ψ` maps into `Q`, so the upper-right block of `G` vanishes.
+  have hΨmem : ∀ b, Ψ b ∈ LinearMap.ker L := by
+    intro b; rw [LinearMap.mem_ker, hΨ, hL]; rfl
+  have h0 : ∀ b, WithLp.fst (G (WithLp.toLp 2 (0, b))) = 0 := by
+    intro b
+    simp only [G, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearIsometryEquiv.coe_toLinearEquiv]
+    rw [← hΨ, hC]
+    simp [Submodule.orthogonalProjectionOnto_apply_of_mem_orthogonal
+      ((LinearMap.ker L).le_orthogonal_orthogonal (hΨmem b))]
+  -- Step 6: the diagonal blocks `α = G₁₁` and `Θ = G₂₂`, where `Θ` is `Ψ` corestricted to `Q`.
+  let inl : Rn m →ₗ[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm.toLinearMap ∘ₗ LinearMap.inl ℝ (Rn m) (Rn k)
+  let inr : Rn k →ₗ[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm.toLinearMap ∘ₗ LinearMap.inr ℝ (Rn m) (Rn k)
+  let G₁₁ : Rn m →ₗ[ℝ] (LinearMap.ker L)ᗮ := (WithLp.fstL 2 ℝ _ _).toLinearMap ∘ₗ G ∘ₗ inl
+  let G₂₂ : Rn k →ₗ[ℝ] LinearMap.ker L := (WithLp.sndL 2 ℝ _ _).toLinearMap ∘ₗ G ∘ₗ inr
+  have hG₂₂ : G₂₂ = Ψ.codRestrict (LinearMap.ker L) hΨmem := by
+    refine LinearMap.ext fun b => ?_
+    apply Subtype.ext
+    simp only [G₂₂, G, inr, LinearMap.comp_apply, LinearEquiv.coe_coe,
+      LinearIsometryEquiv.coe_toLinearEquiv, LinearMap.codRestrict_apply]
+    have : (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm (LinearMap.inr ℝ (Rn m) (Rn k) b) =
+        WithLp.toLp 2 (0, b) := rfl
+    rw [this, ← hΨ, hC]
+    simp [Submodule.orthogonalProjectionOnto_mem_subspace_eq_self ⟨Ψ b, hΨmem b⟩]
+  -- Step 7: the block lemma gives `normDet G = normDet α · normDet Θ`.
+  have hG := Submission.coarea_normDet_block_triangular (Rn m) (Rn k) _ _ G G₁₁ G₂₂
+    (by simp [hQperp]) (by simp [hQ]) h0 (fun a => rfl) (fun b => rfl)
+  -- Step 8: `λ = L|_{Qᗮ}` satisfies `λ ∘ α = id`, since `L (π_{Qᗮ} t) = L (t - π_Q t) = L t`.
+  let lam : (LinearMap.ker L)ᗮ →ₗ[ℝ] Rn m := L.domRestrict (LinearMap.ker L)ᗮ
+  have hproj : ∀ t, L ((LinearMap.ker L)ᗮ.orthogonalProjectionOnto t) = L t := by
+    intro t
+    rw [Submodule.coe_orthogonalProjectionOnto_apply, Submodule.starProjection_orthogonal_val,
+      map_sub, LinearMap.mem_ker.mp ((LinearMap.ker L).starProjection_apply_mem t), sub_zero]
+  have hlam : lam ∘ₗ G₁₁ = LinearMap.id := by
+    refine LinearMap.ext fun a => ?_
+    have hα : G₁₁ a = WithLp.fst (C (Φ (WithLp.toLp 2 (a, 0)))) := rfl
+    show L (G₁₁ a : T) = a
+    rw [hα, hC]
+    show L ((LinearMap.ker L)ᗮ.orthogonalProjectionOnto (Φ (WithLp.toLp 2 (a, 0))) : T) = a
+    rw [hproj, hL]
+    rfl
+  have h1 : lam.normDet * G₁₁.normDet = 1 := by
+    rw [← LinearMap.normDet_comp_of_finrank_eq _ _ (by simp [hQperp]), hlam, LinearMap.normDet_id]
+  -- Step 9: `L*` maps onto `range L* = Qᗮ`, and corestricted to `Qᗮ` it is `λ*`. In orthonormal
+  -- bases indexed by `Fin m` the matrix of `λ*` is the transpose of that of `λ`, so
+  -- `normDet L* = normDet λ* = normDet λ`.
+  have hm : ∀ y, (LinearMap.adjoint L) y ∈ (LinearMap.ker L)ᗮ := by
+    intro y
+    rw [LinearMap.orthogonal_ker]
+    exact LinearMap.mem_range_self _ y
+  have ha : (LinearMap.adjoint L).codRestrict (LinearMap.ker L)ᗮ hm = LinearMap.adjoint lam := by
+    refine (LinearMap.eq_adjoint_iff _ _).mpr fun y q => ?_
+    exact LinearMap.adjoint_inner_left L q y
+  have hlamJ : lam.normDet = (LinearMap.adjoint L).normDet := by
+    let bQ := (stdOrthonormalBasis ℝ (LinearMap.ker L)ᗮ).reindex (finCongr hQperp)
+    let bR := EuclideanSpace.basisFun (Fin m) ℝ
+    rw [← LinearMap.normDet_codRestrict hm, ha,
+      (LinearMap.adjoint lam).normDet_eq_norm_det_toMatrix bR bQ,
+      lam.normDet_eq_norm_det_toMatrix bQ bR, LinearMap.toMatrix_adjoint, Matrix.det_conjTranspose]
+    simp
+  -- Step 10: `normDet L* · normDet Φ = (normDet λ · normDet α) · normDet Ψ = normDet Ψ`.
+  rw [← hGΦ, hG, hG₂₂, LinearMap.normDet_codRestrict, ← hlamJ, ← mul_assoc, h1, one_mul]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
