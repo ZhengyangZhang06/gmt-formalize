@@ -458,6 +458,85 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.3–4.8** (the integrating factor `F` and the limit `ε ↓ 0`, for abstract
+sequences).  Let `R > 0`, `β < 1`, `Λ > 0` and `K R^{1−β}/(1 − β) ≤ Λ/4`.  Let `a_k, Q_k : ℝ → ℝ`
+(`k ∈ ℕ`) and `a₀, Q₀ : ℝ → ℝ` satisfy, for `t ∈ (0, R]`: each `a_k` is a.e. strongly measurable on
+`(0, R]`, `|a_k(t)| ≤ M t^{−β}`, `a_k(t) → a₀(t)`, `|a₀(t)| ≤ K t^{−β}` and `Q_k(t) → Q₀(t)`; and
+let `e^{−∫₀ˢ a_k} Q_k(s) ≤ e^{−∫₀ʳ a_k} Q_k(r)` for `0 < s ≤ r ≤ R`.  Then `F(r) = e^{−∫₀ʳ a₀}`
+satisfies `e^{−Λ} ≤ F(r) ≤ e^Λ`, `|F(r) − 1| ≤ ½ e^{Λ/2} Λ (r/R)^{1−β}` and, if `Λ ≤ 1`,
+`|F(r) − 1| ≤ Λ (r/R)^{1−β}` for `0 < r ≤ R` (4.5–4.6), and `F(s) Q₀(s) ≤ F(r) Q₀(r)` for
+`0 < s ≤ r ≤ R` (4.8).
+Proof: `t ↦ C t^{−β}` is integrable on `[0, ρ]` because `−β > −1`.  For `0 < ρ ≤ R`, dominated
+convergence with the majorant `M t^{−β}` gives `∫₀^ρ a_k → ∫₀^ρ a₀`, and
+`|∫₀^ρ a₀| ≤ ∫₀^ρ K t^{−β} dt = K ρ^{1−β}/(1 − β) ≤ (Λ/4)(ρ/R)^{1−β}`.  The bounds on `F(r) = e^u`,
+`u = −∫₀ʳ a₀`, are `ted_lpm_am_exp_perturbation_bounds` with `q = (r/R)^{1−β}`.  The monotonicity
+of `F Q₀` follows by letting `k → ∞` in the monotonicity for each `k`. -/
+theorem ted_lpm_am_integrating_factor_limit : ∀ (R β M K Λ : ℝ) (a : ℕ → ℝ → ℝ) (a₀ : ℝ → ℝ) (Q : ℕ → ℝ → ℝ) (Q₀ : ℝ → ℝ), 0 < R → β < 1 → 0 < Λ → K * R ^ (1 - β) / (1 - β) ≤ Λ / 4 → (∀ k, AEStronglyMeasurable (a k) (volume.restrict (Ioc 0 R))) → (∀ k t, 0 < t → t ≤ R → |a k t| ≤ M * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t))) → (∀ t, 0 < t → t ≤ R → |a₀ t| ≤ K * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => Q k t) atTop (𝓝 (Q₀ t))) → (∀ k s r, 0 < s → s ≤ r → r ≤ R → Real.exp (-∫ t in (0)..s, a k t) * Q k s ≤ Real.exp (-∫ t in (0)..r, a k t) * Q k r) → (∀ r, 0 < r → r ≤ R → Real.exp (-Λ) ≤ Real.exp (-∫ t in (0)..r, a₀ t) ∧ Real.exp (-∫ t in (0)..r, a₀ t) ≤ Real.exp Λ ∧ |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - β) ∧ (Λ ≤ 1 → |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Λ * (r / R) ^ (1 - β))) ∧ (∀ s r, 0 < s → s ≤ r → r ≤ R → Real.exp (-∫ t in (0)..s, a₀ t) * Q₀ s ≤ Real.exp (-∫ t in (0)..r, a₀ t) * Q₀ r) := by
+  intro R β M K Λ a a₀ Q Q₀ hR hβ hΛ hK ha_meas ha_bd ha_lim ha₀_bd hQ_lim hmono
+  have hβ' : 0 < 1 - β := sub_pos.mpr hβ
+  -- Step 1: `t ↦ C t^{−β}` is interval integrable on `[0, ρ]`, since `−β > −1`.
+  have hmaj : ∀ C ρ : ℝ, IntervalIntegrable (fun t => C * t ^ (-β)) volume 0 ρ := fun C ρ =>
+    (intervalIntegral.intervalIntegrable_rpow' (by linarith)).const_mul C
+  -- Step 2: for `0 < ρ ≤ R`, dominated convergence on `(0, ρ] ⊆ (0, R]` with the majorant
+  -- `M t^{−β}` gives `∫₀^ρ a_k → ∫₀^ρ a₀`.
+  have hlim : ∀ ρ, 0 < ρ → ρ ≤ R →
+      Tendsto (fun k => ∫ t in (0)..ρ, a k t) atTop (𝓝 (∫ t in (0)..ρ, a₀ t)) := by
+    intro ρ hρ hρR
+    have hsub : uIoc 0 ρ ⊆ Ioc 0 R := by
+      rw [uIoc_of_le hρ.le]
+      exact Ioc_subset_Ioc_right hρR
+    refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence
+      (fun t => M * t ^ (-β)) (Eventually.of_forall fun k => ?_)
+      (Eventually.of_forall fun k => ae_of_all _ fun t ht => ?_) (hmaj M ρ)
+      (ae_of_all _ fun t ht => ha_lim t (hsub ht).1 (hsub ht).2)
+    · exact (ha_meas k).mono_measure (Measure.restrict_mono hsub le_rfl)
+    · rw [Real.norm_eq_abs]
+      exact ha_bd k t (hsub ht).1 (hsub ht).2
+  -- Step 3: for `0 < ρ ≤ R`, `|∫₀^ρ a₀| ≤ K ρ^{1−β}/(1 − β) ≤ (Λ/4)(ρ/R)^{1−β}`.
+  have hbound : ∀ ρ, 0 < ρ → ρ ≤ R → |∫ t in (0)..ρ, a₀ t| ≤ Λ / 4 * (ρ / R) ^ (1 - β) := by
+    intro ρ hρ hρR
+    have h1 : ‖∫ t in (0)..ρ, a₀ t‖ ≤ ∫ t in (0)..ρ, K * t ^ (-β) :=
+      intervalIntegral.norm_integral_le_of_norm_le hρ.le
+        (ae_of_all _ fun t ht => by
+          rw [Real.norm_eq_abs]
+          exact ha₀_bd t ht.1 (ht.2.trans hρR))
+        (hmaj K ρ)
+    have h2 : ∫ t in (0)..ρ, K * t ^ (-β) = K * ρ ^ (1 - β) / (1 - β) := by
+      rw [intervalIntegral.integral_const_mul, integral_rpow (Or.inl (by linarith)),
+        show -β + 1 = 1 - β by ring, Real.zero_rpow hβ'.ne', sub_zero, mul_div_assoc]
+    have h3 : K * ρ ^ (1 - β) / (1 - β) = K * R ^ (1 - β) / (1 - β) * (ρ / R) ^ (1 - β) := by
+      have hRβ : 0 < R ^ (1 - β) := Real.rpow_pos_of_pos hR _
+      rw [Real.div_rpow hρ.le hR.le]
+      field_simp
+    rw [← Real.norm_eq_abs]
+    calc ‖∫ t in (0)..ρ, a₀ t‖ ≤ K * ρ ^ (1 - β) / (1 - β) := h1.trans_eq h2
+      _ = K * R ^ (1 - β) / (1 - β) * (ρ / R) ^ (1 - β) := h3
+      _ ≤ Λ / 4 * (ρ / R) ^ (1 - β) :=
+        mul_le_mul_of_nonneg_right hK (Real.rpow_nonneg (div_nonneg hρ.le hR.le) _)
+  refine ⟨fun r hr hrR => ?_, fun s r hs hsr hrR => ?_⟩
+  -- Step 4: (i) is `ted_lpm_am_exp_perturbation_bounds` with `q = (r/R)^{1−β} ∈ [0, 1]` and
+  -- `u = −∫₀ʳ a₀`, for which `|u| ≤ (Λ/4) q` by Step 3.
+  · have hq0 : 0 ≤ (r / R) ^ (1 - β) := Real.rpow_nonneg (div_nonneg hr.le hR.le) _
+    have hq1 : (r / R) ^ (1 - β) ≤ 1 :=
+      Real.rpow_le_one (div_nonneg hr.le hR.le) ((div_le_one hR).mpr hrR) hβ'.le
+    have hu : |-∫ t in (0)..r, a₀ t| ≤ Λ / 4 * (r / R) ^ (1 - β) := by
+      rw [abs_neg]
+      exact hbound r hr hrR
+    exact Submission.ted_lpm_am_exp_perturbation_bounds Λ _ _ hΛ hq0 hq1 hu
+  -- Step 5: (ii).  By Step 2, continuity of `exp` and the convergence of `Q_k`,
+  -- `e^{−∫₀^ρ a_k} Q_k(ρ) → F(ρ) Q₀(ρ)` for `ρ ∈ {s, r}`; the inequality for each `k` passes
+  -- to the limit.
+  · have hΨ : ∀ ρ, 0 < ρ → ρ ≤ R →
+        Tendsto (fun k => Real.exp (-∫ t in (0)..ρ, a k t) * Q k ρ) atTop
+          (𝓝 (Real.exp (-∫ t in (0)..ρ, a₀ t) * Q₀ ρ)) := fun ρ hρ hρR =>
+      ((Real.continuous_exp.tendsto _).comp (hlim ρ hρ hρR).neg).mul (hQ_lim ρ hρ hρR)
+    exact le_of_tendsto_of_tendsto' (hΨ s hs (hsr.trans hrR)) (hΨ r (hs.trans_le hsr) hrR)
+      fun k => hmono k s r hs hsr hrR
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
