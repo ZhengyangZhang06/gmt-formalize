@@ -359,6 +359,62 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Difference of two integral flat decompositions (Simon Ch. 6, proof of 7.2): `R := R₁ − R₂` and
+`S := S₁ − S₂` are integer multiplicity (by the linear-combination hypothesis with `a = 1`,
+`b = −1`), `∂R + S = (∂R₁ + S₁) − (∂R₂ + S₂)`, and `M(R) + M(S) ≤ (M(R₁) + M(S₁)) + (M(R₂) + M(S₂))`
+by subadditivity of mass. -/
+theorem Submission.fiw_tb_flat_sub :
+    (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ),
+      IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ →
+      (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) →
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U →
+      ∀ (R₁ R₂ : GeometricCurrentOn U (n + 1)) (S₁ S₂ : GeometricCurrentOn U n),
+      IsIntegerMultiplicity R₁ → IsIntegerMultiplicity R₂ → IsIntegerMultiplicity S₁ →
+      IsIntegerMultiplicity S₂ →
+      ∃ (R : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n),
+        IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+        (∀ ω, R.boundary ω + S ω = (R₁.boundary ω + S₁ ω) - (R₂.boundary ω + S₂ ω)) ∧
+        R.mass + S.mass ≤ (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass) := by
+  intro hLC P n U hU R₁ R₂ S₁ S₂ hR₁ hR₂ hS₁ hS₂
+  -- The difference `Z₁ − Z₂` of two currents is a current (sequential continuity by `Tendsto.sub`).
+  have hdiff : ∀ (k : ℕ) (Z₁ Z₂ : GeometricCurrentOn U k), ∃ Z : GeometricCurrentOn U k,
+      ∀ ω, Z ω = Z₁ ω - Z₂ ω := fun k Z₁ Z₂ =>
+    ⟨{ toCurrent := Z₁.toCurrent - Z₂.toCurrent
+       continuous' := fun ωs h => by
+         simpa using (Z₁.continuous' ωs h).sub (Z₂.continuous' ωs h) }, fun ω => rfl⟩
+  -- `M(Z₁ − Z₂) ≤ M(Z₁) + M(Z₂)`: if `ω` is mass-admissible then so is `−ω`, and `Z₂(−ω) = −Z₂(ω)`.
+  have hmass : ∀ (k : ℕ) (Z₁ Z₂ Z : GeometricCurrentOn U k), (∀ ω, Z ω = Z₁ ω - Z₂ ω) →
+      Z.mass ≤ Z₁.mass + Z₂.mass := by
+    intro k Z₁ Z₂ Z hZ
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    have hneg : -ω ∈ massAdmissibleOn U k U := by
+      refine ⟨(-ω).property.2, fun x => ?_⟩
+      change covectorEuclideanNorm (-(ω : DifferentialForm (Eucl P) k) x) ≤ 1
+      rw [covectorEuclideanNorm_neg]
+      exact hω.2 x
+    have hZ₂ : Z₂ (-ω) = -Z₂ ω := map_neg Z₂.toCurrent ω
+    calc ENNReal.ofReal (Z ω) = ENNReal.ofReal (Z₁ ω + Z₂ (-ω)) := by
+          rw [hZ ω, hZ₂, sub_eq_add_neg]
+      _ ≤ ENNReal.ofReal (Z₁ ω) + ENNReal.ofReal (Z₂ (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ Z₁.mass + Z₂.mass := add_le_add (Z₁.le_massOn hω) (Z₂.le_massOn hneg)
+  obtain ⟨R, hR⟩ := hdiff (n + 1) R₁ R₂
+  obtain ⟨S, hS⟩ := hdiff n S₁ S₂
+  refine ⟨R, S, hLC P (n + 1) U hU R₁ R₂ R 1 (-1) hR₁ hR₂ fun ω => ?_,
+    hLC P n U hU S₁ S₂ S 1 (-1) hS₁ hS₂ fun ω => ?_, fun ω => ?_, ?_⟩
+  · rw [hR ω]
+    push_cast
+    ring
+  · rw [hS ω]
+    push_cast
+    ring
+  · rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply,
+      GeometricCurrentOn.boundary_apply, hR, hS]
+    ring
+  · calc R.mass + S.mass ≤ (R₁.mass + R₂.mass) + (S₁.mass + S₂.mass) :=
+          add_le_add (hmass _ R₁ R₂ R hR) (hmass _ S₁ S₂ S hS)
+      _ = (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass) := add_add_add_comm _ _ _ _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
