@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_projection-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1",
+  "depth": 5,
+  "title": "Slopes of small-slope graphs are controlled by their orthogonal projections (parent step 4)",
+  "statement": "Let n, k, P ∈ ℕ and let ι : ℝⁿ → ℝ^P and ι' : ℝᵏ → ℝ^P be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝᵏ. Let A₁, A₂ : ℝⁿ → ℝᵏ be linear maps with operator norms ‖A₁‖ ≤ 1/4 and ‖A₂‖ ≤ 1/4. For m = 1, 2 let T_m := {ιw + ι'A_m w : w ∈ ℝⁿ} = range(ι + ι'∘A_m) and let P_m be the orthogonal projection of ℝ^P onto T_m. With (e_i)_{i<n} and (ε_j)_{j<P} the standard bases, Σ_i |(A₁ − A₂)e_i|² ≤ 4 Σ_j |P₁ε_j − P₂ε_j|².",
+  "lean_statement": "∀ (n k P : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (A₁ A₂ : Euclid n →L[ℝ] Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ‖A₁‖ ≤ 1 / 4 → ‖A₂‖ ≤ 1 / 4 → ∑ i : Fin n, ‖(A₁ - A₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 4 * ∑ j : Fin P, ‖(LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₁.toLinearMap)).starProjection (EuclideanSpace.single j (1 : ℝ)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₂.toLinearMap)).starProjection (EuclideanSpace.single j (1 : ℝ))‖ ^ 2",
+  "lean_name": "dorag_gc_graph_slope_le_projection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-541bff6b30-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.c1_criterion-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1",
+  "depth": 5,
+  "title": "A Lipschitz map whose a.e. derivative agrees a.e. with a continuous map is C¹ (parent step 7)",
+  "statement": "Let n ≥ 1, k ∈ ℕ, f : ℝⁿ → ℝᵏ Lipschitz (LipschitzWith L f), Ω ⊆ ℝⁿ open and g : ℝⁿ → L(ℝⁿ, ℝᵏ) continuous on Ω, and assume f has Fréchet derivative g(v) at Lⁿ-a.e. v ∈ Ω. Then f is C¹ on Ω (ContDiffOn ℝ 1 f Ω); in fact f has derivative g(x) at every x ∈ Ω.",
+  "lean_statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (L : NNReal) (Ω : Set (Euclid n)) (g : Euclid n → (Euclid n →L[ℝ] Euclid k)), 0 < n → LipschitzWith L f → IsOpen Ω → ContinuousOn g Ω → (∀ᵐ v ∂volume, v ∈ Ω → HasFDerivAt f (g v) v) → ContDiffOn ℝ 1 f Ω",
+  "lean_name": "dorag_gc_contDiffOn_of_ae_hasFDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6629cc830e-a1"
+}

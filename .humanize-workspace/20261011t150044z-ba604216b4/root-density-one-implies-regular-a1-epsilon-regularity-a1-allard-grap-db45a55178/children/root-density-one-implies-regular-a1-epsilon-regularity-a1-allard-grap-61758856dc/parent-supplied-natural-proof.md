@@ -1,0 +1,100 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.decay_plane-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 2 (lower density bound μ(B_s(ξ)) ≥ e^{−κs}ω_nsⁿ from monotonicity) and step 3(iii) together with the identification p_{S_v} = p_{ξ_v} (Lebesgue points of x ↦ p_x by Besicovitch differentiation; averaging |p_ξ − p_S|² ≤ 2|p_x − p_ξ|² + 2|p_x − p_S|²), stated at μ-a.e. point of W. The two hypotheses are the conclusions of the parent's siblings tangent_projection_measurable and monotonicity (second conclusion with the nonnegative integral term dropped). K⁺ := max(K, 0).
+0. Facts. (a) ‖p_x‖ ≤ 1 for all x, so ‖p_y − p_x‖ ≤ 2. (b) If ‖A‖ ≤ 2 then |A|² ≤ P‖A‖² ≤ 2P‖A‖. (c) |a − b|² ≤ 2|c − a|² + 2|c − b|² for vectors; with a = p_xε_i, b = p_Sε_i, c = p_yε_i summed over i: |p_x − p_S|² ≤ 2|p_y − p_x|² + 2|p_y − p_S|² for all y. (d) μ(Γ) = ∫_{M∩Γ} θ dHⁿ < ∞ for compact Γ ⊆ U (IMRep.locallyIntegrable_mult). (e) 0 < ω_n < ∞. (f) μ(ℝ^P ∖ spt μ) = 0.
+1. (Lebesgue points.) Claim: for μ-a.e. x ∈ W, (∫_{B_r(x)} ‖p_y − p_x‖ dμ(y))/μ(B_r(x)) → 0 as r ↓ 0. For x ∈ W choose r_x > 0 with B_{r_x}(x) ⊆ W. By second countability countably many open balls B̆_{r_j/2}(x_j) of this family cover W. Fix j, B_j := B̆_{r_j/2}(x_j), ν_j := μ⌞B_j; ν_j is finite by (d). p is ν_j-a.e. strongly measurable and bounded by 1, hence ν_j-integrable. The Lebesgue differentiation theorem for the Besicovitch Vitali family of ν_j, read along closed balls B_r(x), r ↓ 0, gives the claim for ν_j-a.e. x with ν_j in place of μ. For x ∈ B_j and r < r_j/2 − |x − x_j|, B_r(x) ⊆ B_j, so ν_j = μ on B_r(x) and the quotients agree; thus the claim holds for μ-a.e. x ∈ B_j, and by countable union for μ-a.e. x ∈ W.
+2. (Setting at a good point.) Let x ∈ W ∩ spt μ satisfy the claim of step 1 (μ-a.e. x ∈ W, by step 1 and (f)). Fix S, s₀ > 0, K with the decay bound at x; Δ := |p_x − p_S|² ≥ 0; choose t₀ > 0 with B_{t₀}(x) ⊆ W.
+3. (Scale s.) For 0 < s ≤ min(s₀, t₀): 0 < μ(B_s(x)) < ∞ (x ∈ spt μ; (d)). By (a)–(c), Δ ≤ 4P‖p_y − p_x‖ + 2|p_y − p_S|² for every y; integrating over B_s(x) (y ↦ ‖p_y − p_x‖ is μ-a.e. measurable, so the integral splits) and using the decay bound: μ(B_s(x))·Δ ≤ 4P∫_{B_s(x)}‖p_y − p_x‖dμ + 2·ofReal(Ks^{n+1}). By the lower density bound, ofReal(Ks^{n+1})/μ(B_s(x)) ≤ ofReal(K⁺s^{n+1})·ofReal(e^{κs}/sⁿ)/ω_n = ofReal(K⁺ s e^{κs})/ω_n. Dividing by μ(B_s(x)):
+ (∗) Δ ≤ 4P·(∫_{B_s(x)}‖p_y − p_x‖dμ)/μ(B_s(x)) + 2·ofReal(K⁺ s e^{κs})/ω_n.
+4. (Limit.) As s ↓ 0 the first term → 0 by step 1 and the second → 2·ofReal(0)/ω_n = 0. Hence Δ ≤ 0, i.e. Δ = 0.
+5. (Equality of planes.) Δ = 0 gives p_xε_i = p_Sε_i for all i, so p_x = p_S by linearity (v = Σ_i v_iε_i). For v ∈ ℝ^P: v ∈ S ⟺ p_S v = v ⟺ p_x v = v ⟺ v ∈ approxTangentPlane n M x. Hence S = approxTangentPlane n M x. ∎
+Lean notes: Lindelöf cover by TopologicalSpace.isOpen_iUnion_countable; finiteness isFiniteMeasure_restrict and (d) via withDensity_apply/restrict_restrict; integrability Integrable.of_bound; differentiation (Besicovitch.vitaliFamily ν_j).ae_tendsto_lintegral_enorm_sub_div composed with Besicovitch.tendsto_filterAt; ae_restrict_iff' and ae_ball_iff for the countable union; Measure.measure_compl_support and Measure.mem_support_iff_forall; Submodule.starProjection_norm_le; the limit via ENNReal.Tendsto.const_mul, ENNReal.Tendsto.div_const, ENNReal.tendsto_ofReal, ge_of_tendsto; Submodule.starProjection_eq_self_iff. Prove the scalar/vector inequalities before introducing the large hypotheses to stay within the default heartbeat budget. Reference implementation: a compiled proof of exactly this declaration (single theorem, default maxHeartbeats, no helper declarations or set_option, axioms propext/Classical.choice/Quot.sound, passes the leaf-delta rule) is in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/graph_c1_decomposition/GraphC1Full.lean (git-ignored scratch; same machine).
+
+## Key steps
+
+1. Countable cover of W by open balls with compact closures in W; finite restrictions ν_j of μ.
+2. Besicovitch–Lebesgue differentiation: μ-a.e. x ∈ W is a Lebesgue point of x ↦ p_x along closed balls.
+3. At such x ∈ spt μ: μ(B_s)·|p_x − p_S|² ≤ 4P∫_{B_s}‖p_y − p_x‖dμ + 2·ofReal(Ks^{n+1}).
+4. Lower density μ(B_s) ≥ ω_nsⁿe^{−κs} turns the decay term into 2K⁺se^{κs}/ω_n → 0.
+5. |p_x − p_S|² = 0 ⇒ p_x = p_S ⇒ S = approxTangentPlane n M x.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean  (all three e4148e7f9503aa28930a4e6a30b0aed205977718fd3c4d1938266b009467ef20)`
+- `rg -n -i 'campanato' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory  (no match, exit 1); rg -n 'dorag|graph_slope|campanato' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT  (no match, exit 1)`
+- `rg -n 'theorem hasFDerivAt_of_tendstoLocallyUniformlyOn' Analysis/Calculus/UniformLimitsDeriv.lean; rg -n 'theorem ae_tendsto_lintegral_enorm_sub_div|theorem ae_tendsto_average_norm_sub' MeasureTheory/Covering/Differentiation.lean; rg -n 'theorem tendsto_filterAt' MeasureTheory/Covering/Besicovitch.lean  (snapshot Mathlib)`
+- `rg -n 'theorem measurable_fderiv\b' Analysis/Calculus/FDeriv/Measurable.lean; rg -n 'theorem continuousOn_extendFrom|theorem extendFrom_extends' Topology/ExtendFrom.lean; rg -n 'theorem hasFDerivAt_integral_of_dominated_loc_of_lip\b' Analysis/Calculus/ParametricIntegral.lean  (snapshot Mathlib)`
+- `rg -n 'theorem starProjection_eq_self_iff|theorem inner_starProjection_left_eq_right|theorem starProjection_norm_le' Analysis/InnerProductSpace/Projection/Basic.lean; rg -n 'theorem ae_differentiableAt|theorem LipschitzWith.ae_differentiableAt' Analysis/Calculus/Rademacher.lean; rg -n 'theorem norm_fderiv_le_of_lipschitz\b' Analysis/Calculus/FDeriv/Basic.lean; rg -n 'theorem contDiffOn_succ_iff_fderiv_of_isOpen' Analysis/Calculus/ContDiff/*.lean  (snapshot Mathlib)`
+- `rg -n 'euclideanHausdorffMeasure_eq_volume' MeasureTheory Geometry; rg -n "theorem lintegral_map'" MeasureTheory/Integral/Lebesgue/Map.lean; rg -n 'theorem le_iff\b' MeasureTheory/Measure/*.lean  (snapshot Mathlib); rg -n euclideanHausdorffMeasure_image_le_of_lipschitzOn /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean; grep -n import .../Chapter03/Rectifiable.lean`
+- `python3 -I: lean_name scan of the 7 dorag_gc_* names over workspaces/gmt-ch0*/.humanize/github-theorem-prover/runs/*/dag.json (1616 nodes; no match); comparison of the four sibling stubs in GraphC1Full.lean with the dag.json lean_statement of tangent_projection_measurable, monotonicity, support_null, graph_tangent (all equal)`
+- `python3 -I gmt-compare.child_modules (contract mode) → 8 Challenge_<key>.lean modules (7 children + parent); lean-4.35.0-rc3 with the built workspace LEAN_PATH on each (exit 0, only the sorry warning)`
+- `python3 -I lean_contract.validate_lean_statement on the 7 child types; leaf_verification.check_source_delta for each child inserted alone before main_theorem (all pass)`
+- `source GMT/Scratch/graph_c1_decomposition/env.sh; lean GraphC1Full.lean with #print axioms (exit 0, 120 s)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ExtendFrom.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/graph_c1_decomposition/GraphC1Full.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical (sha256 e4148e7f…) to the workspace Contract and to Submission, which is the compiler context of every child type.
+
+Nothing in the snapshot proves a child, so nothing can be reused: 'campanato' and the dorag/graph_slope names have no match (rg exit 1).
+
+The pinned library supplies every API the child proofs use:
+- hasFDerivAt_of_tendstoLocallyUniformlyOn (UniformLimitsDeriv.lean:396);
+- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (Differentiation.lean:818);
+- Besicovitch.tendsto_filterAt (Besicovitch.lean:1060);
+- measurable_fderiv (FDeriv/Measurable.lean:378);
+- extendFrom_extends and continuousOn_extendFrom (ExtendFrom.lean:55, 61);
+- hasFDerivAt_integral_of_dominated_loc_of_lip (ParametricIntegral.lean:163);
+- Submodule.starProjection_eq_self_iff, starProjection_norm_le and inner_starProjection_left_eq_right (Projection/Basic.lean:290, 386, 652);
+- LipschitzWith.ae_differentiableAt (Rademacher.lean:385);
+- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947);
+- contDiffOn_succ_iff_fderiv_of_isOpen (ContDiff/Defs.lean:891);
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187);
+- lintegral_map' (Lebesgue/Map.lean:36);
+- Measure.le_iff (CompleteLattice.lean:41);
+- SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean:216), in the import closure via Chapter03/Rectifiable.
+
+Lean checks:
+- All 8 comparator-format challenge modules (7 children and the parent) elaborate.
+- The complete development compiles; every child uses only propext, Classical.choice and Quot.sound.
+- The parent assembly proves the exact frozen type from the children and the four sibling stubs, whose types equal the frozen DAG types.
+- No dorag_gc_* name collides with any DAG reservation, so the v1 names are kept with identical types.

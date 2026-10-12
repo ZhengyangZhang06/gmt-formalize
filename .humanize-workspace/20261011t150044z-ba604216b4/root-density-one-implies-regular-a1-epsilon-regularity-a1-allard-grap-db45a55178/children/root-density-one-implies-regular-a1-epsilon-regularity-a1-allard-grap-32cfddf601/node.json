@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_pushforward-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1",
+  "depth": 5,
+  "title": "Lebesgue measure on the parameter domain is dominated by μ on the graph (parent steps 0–1)",
+  "statement": "Let n, k, P ∈ ℕ, U, W ⊆ ℝ^P, R = (M, θ, ξ) an integer multiplicity triple in U of dimension n (IMRep U n) with μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]); ι : ℝⁿ → ℝ^P and ι' : ℝᵏ → ℝ^P linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w; f : ℝⁿ → ℝᵏ continuous; z ∈ ℝ^P; Φ(v) := z + ιv + ι'f(v); A ⊆ ℝⁿ any set. Assume Hⁿ((spt μ ∩ W) ∖ M) = 0 and Φ(v) ∈ spt μ ∩ W for every v ∈ A. Then Φ_#(Lⁿ⌞A) ≤ μ⌞Φ(A) as measures on ℝ^P (Measure.map Φ (volume.restrict A) ≤ R.measure.restrict (Φ '' A)), i.e. Lⁿ(A ∩ Φ⁻¹(Y)) ≤ μ(Y ∩ Φ(A)) for every Borel Y.",
+  "lean_statement": "∀ (n k P : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (f : Euclid n → Euclid k) (z : Euclid P) (A : Set (Euclid n)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → Continuous f → μHE[n] ((R.measure.support ∩ W) \\ R.carrier) = 0 → (∀ v ∈ A, z + ι v + ι' (f v) ∈ R.measure.support ∩ W) → Measure.map (fun v => z + ι v + ι' (f v)) (volume.restrict A) ≤ R.measure.restrict ((fun v => z + ι v + ι' (f v)) '' A)",
+  "lean_name": "dorag_gc_graph_map_volume_le_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-32cfddf601-a1"
+}

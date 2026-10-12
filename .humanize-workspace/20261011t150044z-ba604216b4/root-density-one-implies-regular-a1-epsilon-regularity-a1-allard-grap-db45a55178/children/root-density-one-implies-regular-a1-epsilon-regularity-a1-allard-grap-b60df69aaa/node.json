@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.campanato_continuous-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1",
+  "depth": 5,
+  "title": "Campanato's criterion: the a.e. derivative has a continuous representative (parent step 6 and first part of step 7)",
+  "statement": "Let n ≥ 1, k ∈ ℕ, f : ℝⁿ → ℝᵏ any map, Ω ⊆ ℝⁿ open, C ≥ 0, s₁ > 0, Df := fderiv ℝ f and |A|² := Σ_i |Ae_i|². Assume that for Lⁿ-a.e. v ∈ Ω, f is differentiable at v and ∫_{B̆_s(v)} |Df(w) − Df(v)|² dw ≤ ofReal(Cs^{n+1}) for all s ∈ (0, s₁]. Then there is g : ℝⁿ → L(ℝⁿ, ℝᵏ), continuous on Ω, such that f has Fréchet derivative g(v) at Lⁿ-a.e. v ∈ Ω.",
+  "lean_statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (Ω : Set (Euclid n)) (C s₁ : ℝ), 0 < n → IsOpen Ω → 0 ≤ C → 0 < s₁ → (∀ᵐ v ∂volume, v ∈ Ω → DifferentiableAt ℝ f v ∧ ∀ s : ℝ, 0 < s → s ≤ s₁ → ∫⁻ w in ball v s, ENNReal.ofReal (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤ ENNReal.ofReal (C * s ^ (n + 1))) → ∃ g : Euclid n → (Euclid n →L[ℝ] Euclid k), ContinuousOn g Ω ∧ ∀ᵐ v ∂volume, v ∈ Ω → HasFDerivAt f (g v) v",
+  "lean_name": "dorag_gc_campanato_continuous_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-b60df69aaa-a1"
+}
