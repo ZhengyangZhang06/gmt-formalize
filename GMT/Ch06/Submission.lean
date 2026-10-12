@@ -359,6 +359,61 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Shrinking neighbourhoods (Simon Ch. 6, proof of Lemma 2.36, after (4)): if `K ⊆ U` is
+compact, `μ(W) < ∞` and `μ(W) ≤ C μ(W ∖ K)` for every open `W ⊂⊂ U`, then `μ(K) = 0`.  The
+thickenings `W_q = {dist(·, K) < r₀/(q+1)}` are `⊂⊂ U` and decrease to `K`, so continuity from
+above gives `μ(K) ≤ μ(W_q) ≤ C μ(W_q ∖ K) → 0`. -/
+theorem Submission.rpn_compact_null_of_le_mul_diff : ∀ (P : ℕ) (U K : Set (Eucl P)) (μ : Measure (Eucl P)) (C : ℝ≥0), IsOpen U → IsCompact K → K ⊆ U → (∀ W, CompactlyContainedOpen W U → μ W < ∞) → (∀ W, CompactlyContainedOpen W U → μ W ≤ (C : ℝ≥0∞) * μ (W \ K)) → μ K = 0 := by
+  intro P U K μ C hU hK hKU hfin hle
+  -- Step 1: some closed neighbourhood `cthickening r₀ K`, `r₀ > 0`, lies in `U`.
+  obtain ⟨r₀, hr₀, hsub⟩ := hK.exists_cthickening_subset_open hU hKU
+  -- Step 2: `W_q = thickening (r₀ / (q + 1)) K` is open, `⊂⊂ U`, decreasing in `q`, `K ⊆ W_q`.
+  have hr_pos : ∀ q : ℕ, 0 < r₀ / ((q : ℝ) + 1) := fun q => div_pos hr₀ (Nat.cast_add_one_pos q)
+  have hcc : ∀ q : ℕ, CompactlyContainedOpen (thickening (r₀ / ((q : ℝ) + 1)) K) U := by
+    intro q
+    have hle₀ : r₀ / ((q : ℝ) + 1) ≤ r₀ :=
+      div_le_self hr₀.le (le_add_of_nonneg_left (Nat.cast_nonneg q))
+    refine ⟨isOpen_thickening, ?_, ?_⟩
+    · exact hK.cthickening.of_isClosed_subset isClosed_closure
+        (closure_thickening_subset_cthickening _ K)
+    · exact (closure_thickening_subset_cthickening _ K).trans ((cthickening_mono hle₀ K).trans hsub)
+  have hanti : Antitone fun q : ℕ => thickening (r₀ / ((q : ℝ) + 1)) K := by
+    intro p q hpq
+    refine thickening_mono (div_le_div_of_nonneg_left hr₀.le (Nat.cast_add_one_pos p) ?_) K
+    have hpq' : (p : ℝ) ≤ q := Nat.cast_le.mpr hpq
+    linarith
+  -- Step 3: `⋂_q W_q ⊆ closure K = K`.
+  have hInter : ∀ x, (∀ q : ℕ, x ∈ thickening (r₀ / ((q : ℝ) + 1)) K) → x ∈ K := by
+    intro x hx
+    rw [← hK.isClosed.closure_eq, closure_eq_iInter_thickening, mem_iInter₂]
+    intro δ hδ
+    obtain ⟨q, hq⟩ := exists_nat_gt (r₀ / δ)
+    have hqδ : r₀ / ((q : ℝ) + 1) < δ := by
+      rw [div_lt_iff₀ hδ] at hq
+      rw [div_lt_iff₀ (Nat.cast_add_one_pos q)]
+      nlinarith
+    exact thickening_mono hqδ.le K (hx q)
+  -- Step 4: the Borel sets `W_q ∖ K` decrease to `∅` and `μ(W_0 ∖ K) < ∞`, so
+  -- `μ(W_q ∖ K) → 0` by continuity from above.
+  have hdiff : Tendsto (fun q : ℕ => μ (thickening (r₀ / ((q : ℝ) + 1)) K \ K)) atTop (𝓝 0) := by
+    have h := tendsto_measure_iInter_atTop (μ := μ)
+      (s := fun q : ℕ => thickening (r₀ / ((q : ℝ) + 1)) K \ K)
+      (fun q => (isOpen_thickening.measurableSet.diff hK.isClosed.measurableSet).nullMeasurableSet)
+      (fun p q hpq => sdiff_subset_sdiff_left (hanti hpq))
+      ⟨0, ((measure_mono sdiff_subset).trans_lt (hfin _ (hcc 0))).ne⟩
+    have hempty : ⋂ q : ℕ, (thickening (r₀ / ((q : ℝ) + 1)) K \ K) = ∅ := by
+      refine eq_empty_of_forall_notMem fun x hx => ?_
+      rw [mem_iInter] at hx
+      exact (hx 0).2 (hInter x fun q => (hx q).1)
+    rw [hempty, measure_empty] at h
+    exact h
+  -- Step 5: `μ(K) ≤ μ(W_q) ≤ C μ(W_q ∖ K) → C · 0 = 0`.
+  have hlim : Tendsto (fun q : ℕ => (C : ℝ≥0∞) * μ (thickening (r₀ / ((q : ℝ) + 1)) K \ K))
+      atTop (𝓝 0) := by
+    simpa using ENNReal.Tendsto.const_mul hdiff (Or.inr ENNReal.coe_ne_top)
+  refine le_antisymm (ge_of_tendsto' hlim fun q => ?_) bot_le
+  exact (measure_mono (self_subset_thickening (hr_pos q) K)).trans (hle _ (hcc q))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
