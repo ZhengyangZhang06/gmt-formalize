@@ -578,6 +578,125 @@ theorem mvk_integral_ray_fubini : ∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn
   rw [integral_sub (hint (fun z => h (x₀ + t • z)) (by fun_prop))
     (hint (fun _ => h x₀) continuous_const), integral_mul_const]
   ring
+/-- Green's first identity on `ℝⁿ` against a compactly supported `C¹` function (used for the mean
+value kernel in Weyl's lemma, Simon Ch. 5, proof of Lemma 3.1): if `H` is `C²`, `Ψ` is `C¹` with
+compact support and `w = ∇Ψ`, then `∫ DH(z)[w(z)] dz = -∫ ΔH(z) Ψ(z) dz`.  Each coordinate
+integration by parts reduces to `∫ DG(z)[v] dz = 0` for a compactly supported `C¹` function `G`,
+which holds because `t ↦ ∫ G(z + t v) dz` is constant by translation invariance. -/
+theorem mvk_integral_fderiv_grad_eq_neg_laplacian : ∀ (n : ℕ) (H Ψ : Rn n → ℝ) (w : Rn n → Rn n), ContDiff ℝ 2 H → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → (∀ z v : Rn n, fderiv ℝ Ψ z v = inner ℝ (w z) v) → ∫ z, fderiv ℝ H z (w z) = -∫ z, Laplacian.laplacian H z * Ψ z := by
+  intro n H Ψ w hH hΨ hΨc hw
+  -- For a compactly supported `C¹` function `G` and a direction `v`, `∫ DG(z)[v] dz = 0`:
+  -- `t ↦ ∫ G(z + t v) dz` is constant by translation invariance, and its derivative at `0` is
+  -- `∫ DG(z)[v] dz` by differentiation under the integral sign.
+  have key : ∀ G : Rn n → ℝ, ContDiff ℝ 1 G → HasCompactSupport G → ∀ v : Rn n,
+      ∫ z, fderiv ℝ G z v = 0 := by
+    intro G hG hGc v
+    have hGd : Differentiable ℝ G := hG.differentiable one_ne_zero
+    have hG' : Continuous fun y => fderiv ℝ G y v :=
+      (hG.continuous_fderiv one_ne_zero).clm_apply continuous_const
+    obtain ⟨C, hC⟩ := hG'.bounded_above_of_compact_support (hGc.fderiv_apply ℝ v)
+    obtain ⟨R, -, hR⟩ := (hGc.fderiv_apply ℝ v).exists_pos_le_norm
+    -- For `|t| < 1`, `|DG(z + t v)[v]|` is bounded by `C` times the indicator of `B_{R + |v|}(0)`.
+    have hbound : Integrable ((closedBall (0 : Rn n) (R + ‖v‖)).indicator fun _ => C) :=
+      (integrable_indicator_iff measurableSet_closedBall).2
+        (integrableOn_const measure_closedBall_lt_top.ne)
+    have hb : ∀ z : Rn n, ∀ t ∈ ball (0 : ℝ) 1,
+        ‖fderiv ℝ G (z + t • v) v‖ ≤ (closedBall (0 : Rn n) (R + ‖v‖)).indicator (fun _ => C) z := by
+      intro z t ht
+      by_cases hz : z ∈ closedBall (0 : Rn n) (R + ‖v‖)
+      · rw [indicator_of_mem hz]
+        exact hC _
+      · rw [mem_closedBall, dist_zero_right, not_le] at hz
+        rw [mem_ball, dist_zero_right, Real.norm_eq_abs] at ht
+        have h1 : ‖t • v‖ ≤ ‖v‖ := by
+          rw [norm_smul, Real.norm_eq_abs]
+          exact mul_le_of_le_one_left (norm_nonneg _) ht.le
+        have h2 : ‖z‖ ≤ ‖z + t • v‖ + ‖t • v‖ := by
+          calc ‖z‖ = ‖(z + t • v) - t • v‖ := by rw [add_sub_cancel_right]
+            _ ≤ ‖z + t • v‖ + ‖t • v‖ := norm_sub_le _ _
+        have hRz : R ≤ ‖z + t • v‖ := by linarith
+        rw [hR _ hRz, norm_zero]
+        exact indicator_nonneg (fun _ _ => (norm_nonneg _).trans (hC 0)) _
+    have hdiff : ∀ z : Rn n, ∀ t ∈ ball (0 : ℝ) 1,
+        HasDerivAt (fun t : ℝ => G (z + t • v)) (fderiv ℝ G (z + t • v) v) t := by
+      intro z t _
+      have h1 : HasDerivAt (fun t : ℝ => z + t • v) v t := by
+        simpa using ((hasDerivAt_id t).smul_const v).const_add z
+      exact (hGd (z + t • v)).hasFDerivAt.comp_hasDerivAt t h1
+    have hd : HasDerivAt (fun t : ℝ => ∫ z, G (z + t • v)) (∫ z, fderiv ℝ G (z + (0 : ℝ) • v) v) 0 :=
+      (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+        (F := fun (t : ℝ) (z : Rn n) => G (z + t • v))
+        (F' := fun (t : ℝ) (z : Rn n) => fderiv ℝ G (z + t • v) v)
+        (x₀ := 0) (ball_mem_nhds (0 : ℝ) one_pos)
+        (Eventually.of_forall fun t =>
+          (hG.continuous.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+        (by simpa using hG.continuous.integrable_of_hasCompactSupport hGc)
+        ((hG'.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+        (Eventually.of_forall hb) hbound (Eventually.of_forall hdiff)).2
+    have hd0 : HasDerivAt (fun t : ℝ => ∫ z, G (z + t • v)) 0 0 := by
+      have hconst : (fun t : ℝ => ∫ z, G (z + t • v)) = fun _ => ∫ z, G z :=
+        funext fun t => integral_add_right_eq_self G (t • v)
+      rw [hconst]
+      exact hasDerivAt_const _ _
+    simpa using hd.unique hd0
+  -- Integration by parts in the direction `v` against `Ψ`, applying `key` to `f Ψ`.
+  have hΨd : Differentiable ℝ Ψ := hΨ.differentiable one_ne_zero
+  have ibp : ∀ f : Rn n → ℝ, ContDiff ℝ 1 f → ∀ v : Rn n,
+      Integrable (fun z => fderiv ℝ f z v * Ψ z) ∧ Integrable (fun z => f z * fderiv ℝ Ψ z v) ∧
+        ∫ z, f z * fderiv ℝ Ψ z v = -∫ z, fderiv ℝ f z v * Ψ z := by
+    intro f hf v
+    have hfd : Differentiable ℝ f := hf.differentiable one_ne_zero
+    have h1 : Integrable (fun z => fderiv ℝ f z v * Ψ z) :=
+      (((hf.continuous_fderiv one_ne_zero).clm_apply continuous_const).mul
+        hΨ.continuous).integrable_of_hasCompactSupport hΨc.mul_left
+    have h2 : Integrable (fun z => f z * fderiv ℝ Ψ z v) :=
+      (hf.continuous.mul ((hΨ.continuous_fderiv one_ne_zero).clm_apply
+        continuous_const)).integrable_of_hasCompactSupport (hΨc.fderiv_apply ℝ v).mul_left
+    refine ⟨h1, h2, ?_⟩
+    have h3 := key (fun z => f z * Ψ z) (hf.mul hΨ) hΨc.mul_left v
+    have h4 : ∀ z, fderiv ℝ (fun z => f z * Ψ z) z v =
+        fderiv ℝ f z v * Ψ z + f z * fderiv ℝ Ψ z v := by
+      intro z
+      rw [show (fun z => f z * Ψ z) = f * Ψ from rfl, fderiv_mul (hfd z) (hΨd z)]
+      simp only [add_apply, smul_apply, smul_eq_mul]
+      ring
+    simp only [h4] at h3
+    rw [integral_add h1 h2] at h3
+    linarith
+  -- Second derivatives: `D(DH(·)[v])(z)[v] = D²H(z)[v, v]`.
+  have hH1 : ContDiff ℝ 1 (fderiv ℝ H) := hH.fderiv_right (by norm_num)
+  have hd2 : ∀ v z : Rn n,
+      fderiv ℝ (fun y => fderiv ℝ H y v) z v = iteratedFDeriv ℝ 2 H z ![v, v] := by
+    intro v z
+    rw [iteratedFDeriv_two_apply,
+      fderiv_clm_apply ((hH1.differentiable one_ne_zero) z) (differentiableAt_const v)]
+    simp
+  set e := EuclideanSpace.basisFun (Fin n) ℝ
+  -- `DH(z)[w(z)] = Σᵢ ∂ᵢH(z) ∂ᵢΨ(z)`, expanding `w(z)` in the standard orthonormal basis.
+  have hexp : ∀ z, fderiv ℝ H z (w z) = ∑ i, fderiv ℝ H z (e i) * fderiv ℝ Ψ z (e i) := by
+    intro z
+    conv_lhs => rw [← e.sum_repr' (w z)]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_smul, smul_eq_mul, hw, real_inner_comm (w z) (e i)]
+    ring
+  -- `ΔH(z) = Σᵢ D²H(z)[eᵢ, eᵢ]`.
+  have hlap : ∀ z, Laplacian.laplacian H z * Ψ z =
+      ∑ i, fderiv ℝ (fun y => fderiv ℝ H y (e i)) z (e i) * Ψ z := by
+    intro z
+    simp only [InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis H e, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun i _ => by rw [hd2]
+  have hfC : ∀ i, ContDiff ℝ 1 (fun y => fderiv ℝ H y (e i)) := fun i => hH1.clm_apply contDiff_const
+  calc ∫ z, fderiv ℝ H z (w z) = ∫ z, ∑ i, fderiv ℝ H z (e i) * fderiv ℝ Ψ z (e i) := by
+        simp only [hexp]
+    _ = ∑ i, ∫ z, fderiv ℝ H z (e i) * fderiv ℝ Ψ z (e i) :=
+        integral_finsetSum _ fun i _ => (ibp _ (hfC i) (e i)).2.1
+    _ = ∑ i, -∫ z, fderiv ℝ (fun y => fderiv ℝ H y (e i)) z (e i) * Ψ z :=
+        Finset.sum_congr rfl fun i _ => (ibp _ (hfC i) (e i)).2.2
+    _ = -∫ z, ∑ i, fderiv ℝ (fun y => fderiv ℝ H y (e i)) z (e i) * Ψ z := by
+        rw [integral_finsetSum _ fun i _ => (ibp _ (hfC i) (e i)).1, Finset.sum_neg_distrib]
+    _ = -∫ z, Laplacian.laplacian H z * Ψ z := by
+        simp only [hlap]
 
 end Submission
 
