@@ -410,6 +410,203 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Radon convergence of varifolds gives vague convergence of their weights on `U` (Simon Ch. 8,
+proof of 3.7): if `V_i → V` as Radon measures on `Gₙ(U)` and `g ∈ C_c(ℝ^N)` has `spt g ⊆ U`, then
+`∫ g dμ_{V_i} → ∫ g dμ_V`. -/
+theorem Submission.varifold_weight_integral_tendsto_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(Vi i).weight) atTop (𝓝 (∫ x, g x ∂V.weight)) := by
+  intro N n U Vi V hconv g hg hgc hgU
+  -- Step 1: the lift `F z = g z.1.1` of `g` to Simon's open product `Gₙ(U)`.
+  let Ω := U ×ˢ (univ : Set (Grassmannian N n))
+  -- Step 2: `F` vanishes off the compact set `ι⁻¹(spt g × G(N,n))`, so `F ∈ C_c(Gₙ(U))`.
+  let F : C_c(Ω, ℝ) :=
+    { toFun := fun z ↦ g z.1.1
+      continuous_toFun := hg.comp (continuous_fst.comp continuous_subtype_val)
+      hasCompactSupport' := by
+        have hK : IsCompact ((Subtype.val : Ω → Euclidean N × Grassmannian N n) ⁻¹'
+            (tsupport g ×ˢ (univ : Set (Grassmannian N n)))) :=
+          Topology.IsInducing.subtypeVal.isCompact_preimage' (hgc.isCompact.prod isCompact_univ)
+            (by
+              intro z hz
+              exact ⟨⟨z, hgU hz.1, mem_univ _⟩, rfl⟩)
+        refine HasCompactSupport.intro hK fun z hz ↦ ?_
+        exact image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩ }
+  -- Step 3: `∫ F dX = ∫ g(p.1) dX.measure(p) = ∫ g dμ_X` for every varifold `X` on `U`.
+  have hdom : ∀ X : Varifold N n U, ∫ z, F z ∂X.domainMeasure = ∫ x, g x ∂X.weight := by
+    intro X
+    rw [Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable,
+      ← X.map_domainMeasure, (MeasurableEmbedding.subtype_coe
+        (X.isOpen_domain.measurableSet.prod MeasurableSet.univ)).integral_map]
+    rfl
+  -- Step 4: apply `RadonConverges` to `F` and rewrite both sides with step 3.
+  simpa only [hdom] using hconv F
+/-- Urysohn sandwich (Simon Ch. 8, proof of 3.7): for compact `K` inside open `O` there is one
+continuous `g` with compact support in `O` such that `ν(K) ≤ ∫ g dν ≤ ν(O)` for every measure
+`ν` that is finite on compact subsets of `O`. -/
+theorem Submission.exists_urysohn_integral_sandwich :
+    ∀ (N : ℕ) (K O : Set (Euclidean N)), IsCompact K → IsOpen O → K ⊆ O → ∃ g : Euclidean N → ℝ, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ O ∧ ∀ ν : Measure (Euclidean N), (∀ L : Set (Euclidean N), IsCompact L → L ⊆ O → ν L ≠ ∞) → ν K ≤ ENNReal.ofReal (∫ x, g x ∂ν) ∧ ENNReal.ofReal (∫ x, g x ∂ν) ≤ ν O := by
+  intro N K O hK hO hKO
+  -- Step 1: a compact buffer `L` with `K ⊆ interior L` and `L ⊆ O`.
+  obtain ⟨L, hL, hKL, hLO⟩ := exists_compact_between hK hO hKO
+  -- Step 2: Urysohn's lemma: `g = 1` on `K`, `g = 0` off `interior L`, `0 ≤ g ≤ 1`.
+  obtain ⟨g, hg1, hg0, hgc, hg01⟩ :=
+    exists_continuous_one_zero_of_isCompact hK isOpen_interior.isClosed_compl
+      (disjoint_compl_right_iff_subset.mpr hKL)
+  -- Step 3: `tsupport g ⊆ L ⊆ O`, as `support g ⊆ interior L` and `L` is closed.
+  have hgL : tsupport g ⊆ L := by
+    refine closure_minimal (fun x hx ↦ ?_) hL.isClosed
+    by_contra hxL
+    exact hx (hg0 fun hx' ↦ hxL (interior_subset hx'))
+  refine ⟨g, g.continuous, hgc, hgL.trans hLO, fun ν hν ↦ ?_⟩
+  -- Steps 4–5: `ν L < ∞` and `|g| ≤ 1` with `support g ⊆ L`, so `g` is `ν`-integrable.
+  have hint : Integrable g ν := by
+    rw [← integrableOn_iff_integrable_of_support_subset ((subset_tsupport g).trans hgL)]
+    refine Measure.integrableOn_of_bounded (M := 1) (hν L hL hLO)
+      g.continuous.aestronglyMeasurable (Eventually.of_forall fun x ↦ ?_)
+    rw [Real.norm_eq_abs, abs_le]
+    exact ⟨by linarith [(hg01 x).1], (hg01 x).2⟩
+  -- Step 6: `g ≥ 0`, so `ofReal (∫ g dν) = ∫⁻ ofReal ∘ g dν`.
+  rw [ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun x ↦ (hg01 x).1)]
+  -- Steps 7–8: integrate `1_K ≤ ofReal ∘ g ≤ 1_O` (`K` closed and `O` open are measurable).
+  constructor
+  · rw [← lintegral_indicator_one hK.isClosed.measurableSet]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ K
+    · simp [hx, hg1 hx]
+    · simp [hx]
+  · rw [← lintegral_indicator_one hO.measurableSet]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ O
+    · simpa [hx] using (hg01 x).2
+    · simp [hx, image_eq_zero_of_notMem_tsupport fun h ↦ hx (hLO (hgL h))]
+
+/-- Portmanteau (P1) for vague convergence (Simon Ch. 8, proof of 3.7): if `∫ g dμᵢ → ∫ g dμ` for
+every continuous compactly supported `g` with support in `U`, and all measures are finite on
+compact subsets of `U`, then `μ(O) ≤ liminf μᵢ(O)` for every open `O ⊆ U`. -/
+theorem Submission.measure_open_le_liminf_of_tendsto_integral :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → μ O ≤ liminf (fun i ↦ μs i O) atTop := by
+  intro N U μs μ hμs hμ hlim O hO hOU
+  -- Step 1: closed sets `F m ⊆ O`, increasing in `m`, with union `O`.
+  obtain ⟨F, hFc, hFO, hFU, hFm⟩ := hO.exists_iUnion_isClosed
+  -- Step 2: the compact sets `K m = F m ∩ B_m(0)` are increasing and lie in `O`.
+  let K : ℕ → Set (Euclidean N) := fun m ↦ F m ∩ closedBall 0 m
+  have hKc : ∀ m, IsCompact (K m) := fun m ↦ (isCompact_closedBall 0 m).inter_left (hFc m)
+  have hKO : ∀ m, K m ⊆ O := fun m ↦ inter_subset_left.trans (hFO m)
+  have hKm : Monotone K := fun a b hab ↦
+    inter_subset_inter (hFm hab) (closedBall_subset_closedBall (Nat.cast_le.mpr hab))
+  -- Step 3: `⋃ m, K m = O`.
+  have hKU : ⋃ m, K m = O := by
+    refine Subset.antisymm (iUnion_subset hKO) fun x hx ↦ ?_
+    rw [← hFU] at hx
+    obtain ⟨a, ha⟩ := mem_iUnion.mp hx
+    obtain ⟨b, hb⟩ := exists_nat_ge ‖x‖
+    refine mem_iUnion.mpr ⟨max a b, hFm (le_max_left a b) ha, ?_⟩
+    rw [mem_closedBall, dist_zero_right]
+    exact hb.trans (Nat.cast_le.mpr (le_max_right a b))
+  -- Step 4: `μ(O) = ⨆ m, μ(K m)`, so it suffices to bound each `μ(K m)`.
+  have hμO : μ O = ⨆ m, μ (K m) := by
+    rw [← hKU]
+    exact hKm.measure_iUnion
+  rw [hμO]
+  refine iSup_le fun m ↦ ?_
+  -- Step 5: the Urysohn sandwich function for `K m ⊆ O`; every `μᵢ` and `μ` is admissible.
+  obtain ⟨g, hgc, hgs, hgO, hg⟩ :=
+    Submission.exists_urysohn_integral_sandwich N (K m) O (hKc m) hO (hKO m)
+  -- Step 6: `ofReal (∫ g dμᵢ) → ofReal (∫ g dμ)`.
+  have ht : Tendsto (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop
+      (𝓝 (ENNReal.ofReal (∫ x, g x ∂μ))) :=
+    ENNReal.tendsto_ofReal (hlim g hgc hgs (hgO.trans hOU))
+  -- Step 7: `μ(K m) ≤ ofReal ∫ g dμ = liminf ofReal ∫ g dμᵢ ≤ liminf μᵢ(O)`.
+  calc μ (K m) ≤ ENNReal.ofReal (∫ x, g x ∂μ) :=
+        (hg μ fun L hL hLO ↦ hμ L hL (hLO.trans hOU)).1
+    _ = liminf (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop := ht.liminf_eq.symm
+    _ ≤ liminf (fun i ↦ μs i O) atTop := liminf_le_liminf (Eventually.of_forall fun i ↦
+        (hg (μs i) fun L hL hLO ↦ hμs i L hL (hLO.trans hOU)).2)
+/-- Compact-set half of the portmanteau theorem (Simon Ch. 8, proof of 3.7): if `μ_i` and `μ` are
+finite on compact subsets of the open set `U` and `∫ g dμ_i → ∫ g dμ` for every continuous `g` with
+compact support in `U`, then `limsup_i μ_i(K) ≤ μ(K)` for every compact `K ⊆ U`. -/
+theorem Submission.limsup_measure_compact_le_of_tendsto_integral :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ μs i K) atTop ≤ μ K := by
+  intro N U μs μ hU hμs hμ hconv K hK hKU
+  -- Step 1: a closed thickening `cthickening δ K` of `K` lies in `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  -- Step 2: radii `r m = δ / (m + 1)` and neighbourhoods `O m = thickening (r m) K`.
+  set r : ℕ → ℝ := fun m ↦ δ / (m + 1)
+  have hr_pos : ∀ m, 0 < r m := fun m ↦ div_pos hδ (Nat.cast_add_one_pos m)
+  have hr_le : ∀ m, r m ≤ δ := fun m ↦
+    div_le_self hδ.le (le_add_of_nonneg_left (Nat.cast_nonneg m))
+  have hr_anti : Antitone r := fun m m' hmm' ↦
+    div_le_div_of_nonneg_left hδ.le (Nat.cast_add_one_pos m) (by gcongr)
+  set O : ℕ → Set (Euclidean N) := fun m ↦ thickening (r m) K
+  -- (a) `O m` is open and contains `K`; (b) `O m ⊆ U`; (c) `O` is decreasing.
+  have hO_open : ∀ m, IsOpen (O m) := fun m ↦ isOpen_thickening
+  have hKO : ∀ m, K ⊆ O m := fun m ↦ self_subset_thickening (hr_pos m) K
+  have hOU : ∀ m, O m ⊆ U := fun m ↦
+    (thickening_subset_cthickening_of_le (hr_le m) K).trans hδU
+  have hO_anti : Antitone O := fun m m' h ↦ thickening_mono (hr_anti h) K
+  -- (d) `⋂ m, O m = closure K = K`.
+  have hO_inter : ⋂ m, O m = K := by
+    refine Subset.antisymm (fun x hx ↦ ?_) (subset_iInter hKO)
+    rw [mem_iInter] at hx
+    have hxcl : x ∈ closure K := by
+      rw [closure_eq_iInter_thickening]
+      simp only [mem_iInter]
+      intro ε hε
+      obtain ⟨m, hm⟩ := exists_nat_gt (δ / ε)
+      have hrε : r m < ε := by
+        rw [div_lt_iff₀ hε] at hm
+        show δ / (m + 1) < ε
+        rw [div_lt_iff₀ (Nat.cast_add_one_pos m)]
+        nlinarith
+      exact thickening_mono hrε.le K (hx m)
+    rwa [hK.isClosed.closure_eq] at hxcl
+  -- (e) `μ (O 0) ≤ μ (cthickening δ K) < ∞`, since `cthickening δ K` is a compact subset of `U`.
+  have hO0 : μ (O 0) ≠ ∞ :=
+    ne_top_of_le_ne_top (hμ _ hK.cthickening hδU)
+      (measure_mono (thickening_subset_cthickening_of_le (hr_le 0) K))
+  -- Step 3: continuity from above gives `μ (O m) → μ K`.
+  have htend : Tendsto (fun m ↦ μ (O m)) atTop (𝓝 (μ K)) := by
+    have h := tendsto_measure_iInter_atTop (μ := μ)
+      (fun m ↦ (hO_open m).measurableSet.nullMeasurableSet) hO_anti ⟨0, hO0⟩
+    rwa [hO_inter] at h
+  -- Steps 4–6: `limsup_i μ_i(K) ≤ μ(O m)` for each `m`.
+  have key : ∀ m, limsup (fun i ↦ μs i K) atTop ≤ μ (O m) := by
+    intro m
+    -- Step 4: the sandwich function for `K ⊆ O m`; each `μ_i` and `μ` is admissible as `O m ⊆ U`.
+    obtain ⟨g, hgc, hgcs, hgO, hg⟩ :=
+      Submission.exists_urysohn_integral_sandwich N K (O m) hK (hO_open m) (hKO m)
+    have hfin : ∀ ν : Measure (Euclidean N), (∀ L, IsCompact L → L ⊆ U → ν L ≠ ∞) →
+        ∀ L, IsCompact L → L ⊆ O m → ν L ≠ ∞ :=
+      fun ν hν L hL hLO ↦ hν L hL (hLO.trans (hOU m))
+    -- Step 5: `tsupport g ⊆ O m ⊆ U`, so `ofReal (∫ g dμ_i) → ofReal (∫ g dμ)`.
+    have hlim := ENNReal.tendsto_ofReal (hconv g hgc hgcs (hgO.trans (hOU m)))
+    -- Step 6: `limsup_i μ_i(K) ≤ limsup_i ofReal (∫ g dμ_i) = ofReal (∫ g dμ) ≤ μ(O m)`.
+    calc limsup (fun i ↦ μs i K) atTop
+        ≤ limsup (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop :=
+          limsup_le_limsup (Eventually.of_forall fun i ↦ (hg (μs i) (hfin _ (hμs i))).1)
+      _ = ENNReal.ofReal (∫ x, g x ∂μ) := hlim.limsup_eq
+      _ ≤ μ (O m) := (hg μ (hfin μ hμ)).2
+  -- Step 7: let `m → ∞`.
+  exact ge_of_tendsto' htend key
+
+/-- Portmanteau for varifold weights (Simon Ch. 8, proof of 3.7): if `Vᵢ → V` as Radon measures on
+`Gₙ(U)`, then `μ_V(O) ≤ liminf μ_{Vᵢ}(O)` for every open `O ⊆ U` and
+`limsup μ_{Vᵢ}(K) ≤ μ_V(K)` for every compact `K ⊆ U`. -/
+theorem Submission.weight_portmanteau_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → (∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → V.weight O ≤ liminf (fun i ↦ (Vi i).weight O) atTop) ∧ ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ (Vi i).weight K) atTop ≤ V.weight K := by
+  intro N n U Vi V hconv
+  -- Step 1 (T): `∫ g dμ_{Vᵢ} → ∫ g dμ_V` for every `g ∈ C_c(ℝ^N)` with `spt g ⊆ U`.
+  have hlim := Submission.varifold_weight_integral_tendsto_of_radonConverges N n U Vi V hconv
+  -- Step 2: every weight is finite on compact subsets of `U`.
+  have hfin : ∀ (X : Varifold N n U) (K : Set (Euclidean N)), IsCompact K → K ⊆ U →
+      X.weight K ≠ ∞ := fun X ↦ X.weight_finite_on_compact
+  -- Steps 3–5: (P1) by inner exhaustion of `O`, (P2) by outer approximation of `K` inside the
+  -- open set `U`, both via Urysohn functions and (T).
+  exact ⟨Submission.measure_open_le_liminf_of_tendsto_integral N U (fun i ↦ (Vi i).weight)
+      V.weight (fun i ↦ hfin (Vi i)) (hfin V) hlim,
+    Submission.limsup_measure_compact_le_of_tendsto_integral N U (fun i ↦ (Vi i).weight)
+      V.weight V.isOpen_domain (fun i ↦ hfin (Vi i)) (hfin V) hlim⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
