@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "43736eb8155e1547b82211b2348027c6d085ce367aeb8982d3f5f4c630988985",
+  "git_delta": {
+    "base_commit": "28f83ecb0bd1f31a6b2353924393f514daf6e31f",
+    "candidate_commit": "a598d9a0284cfabbac364935b93a08c209bdedf7",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "tgc_tilted_cone_inclusion",
+    "diff_sha256": "33eae591ee792a94249241f52934a117e49b71112f2318fc0a2a8c8f3bc9481a",
+    "source_sha256": "bad85fcabbde3c68bcd5385ea00c075f7cec012ff322a7d10aeacb7432d17b45",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tgc_tilted_cone_inclusion",
+      "statement": "∀ (N n : ℕ) (L : ℝ) (P T : Grassmannian N n) (v w : Euclidean N), 0 < L → L ≤ 1 → (∀ u : Euclidean N, ‖Grassmannian.project T u - Grassmannian.project P u‖ ≤ L / 4 * ‖u‖) → L * ‖Grassmannian.project P v‖ < ‖v - Grassmannian.project P v‖ → ‖w - v‖ ≤ L / 8 * ‖v‖ → L / 16 * ‖w‖ ≤ ‖w - Grassmannian.project T w‖ ∧ ‖w‖ ≤ 2 * ‖v‖",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
