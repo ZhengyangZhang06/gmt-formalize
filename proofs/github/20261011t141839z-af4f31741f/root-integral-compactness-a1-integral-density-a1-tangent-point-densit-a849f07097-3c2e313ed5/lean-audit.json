@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f6b6b9ff367ca99cdc12de37dc226c31c4f12d221e7e3e5c2ca111399f4c9c92",
+  "git_delta": {
+    "base_commit": "4a5669408ffa9deeddf73aab7f038c6dbddb7cb2",
+    "candidate_commit": "7802807dae881dae97256925a948cd5b450e4a24",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_tpd_setIntegral_blowUpMap_image",
+    "diff_sha256": "f1719717c5c32cddd7bf03d62ca81227ffce908741364b6a0be5de13b4a7c412",
+    "source_sha256": "94708c824084d6a42f26c631faf0af0c61782c8207fd1d420f2eb7d7727ffa17",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_tpd_setIntegral_blowUpMap_image",
+      "statement": "∀ (N n : ℕ) (x : Euclidean N) (r : ℝ) (M : Set (Euclidean N)) (F : Euclidean N → ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, F y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, F (Chapter03.blowUpMap x r z) ∂μHE[n]",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
