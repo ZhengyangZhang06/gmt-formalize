@@ -1,0 +1,24 @@
+{
+  "node_id": "root.chart_tangent_differential-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/24",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "89498ad9dbff4394c989c8a4f0ac0167ec542b82",
+  "integrated_commit": "",
+  "proof_base_commit": "6be94373bf40f79994a2c12d5633d329715b1740",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.chart_tangent_differential-a1.blowup_scaling-a1",
+    "root.chart_tangent_differential-a1.local_bilipschitz-a1",
+    "root.chart_tangent_differential-a1.chart_image_measure-a1",
+    "root.chart_tangent_differential-a1.chart_blowup_tangent-a1",
+    "root.chart_tangent_differential-a1.upper_density_zero-a1",
+    "root.chart_tangent_differential-a1.lebesgue_points-a1",
+    "root.chart_tangent_differential-a1.weighted_tangent_combination-a1",
+    "root.chart_tangent_differential-a1.chart_differential-a1"
+  ]
+}
