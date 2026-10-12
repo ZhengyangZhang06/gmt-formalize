@@ -586,6 +586,40 @@ theorem dohr_tv_support_map_sub : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (
   · -- `τ⁻¹ N` is a neighbourhood of `x` for every neighbourhood `N` of `τ(x)`.
     rintro ⟨x, hx, rfl⟩ N hN
     exact hx _ ((continuous_sub_right ξ).continuousAt.preimage_mem_nhds hN)
+/-- Simon Ch. 5, proof of Theorem 7.1 (the translation `τ(x) = x − ξ` of `V = v(M, θ)`): if
+`V'.carrier = τ(M)` and `V'.mult = θ(· + ξ)`, then `η_{y,r}(τ(M)) = η_{y+ξ,r}(M)` and
+`V'.mult(y + r z) = θ((y + ξ) + r z)`, so the weighted approximate tangent predicates of `V'` at `y`
+and of `V` at `y + ξ` coincide, and hence so do the classically chosen tangent projections. -/
+theorem dohr_tv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ξ : Amb n ℓ), V'.carrier = (fun x => x - ξ) '' V.carrier → (∀ y, V'.mult y = V.mult (y + ξ)) → ∀ y, V'.tangentProj y = V.tangentProj (y + ξ) := by
+  intro n ℓ U U' V V' ξ hM hθ y
+  -- The blow-ups agree: `η_{y,r}(τ(M)) = η_{y+ξ,r}(M)` since `(x − ξ) − y = x − (y + ξ)`.
+  have hblow : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap y r '' V'.carrier =
+      Poincare.SimonGMT.Chapter03.blowUpMap (y + ξ) r '' V.carrier := by
+    intro r
+    rw [hM, Set.image_image]
+    congr 1
+    funext x
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, sub_sub, add_comm ξ y]
+  -- The weights agree: `V'.mult(y + r z) = θ((y + ξ) + r z)`.
+  have hw : ∀ (r : ℝ) (z : Amb n ℓ), V'.mult (y + r • z) = V.mult (y + ξ + r • z) := by
+    intro r z
+    rw [hθ, add_right_comm]
+  -- Hence the weighted approximate tangent predicates of `V'` at `y` and of `V` at `y + ξ` agree.
+  have hP :
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V'.carrier V'.mult y =
+        Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult
+          (y + ξ) := by
+    funext P
+    simp only [Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt, hblow, hw, hθ y]
+  -- `tangentProj` only sees the tangent predicate, so equal predicates give equal projections.
+  have key : ∀ A B : Submodule ℝ (Amb n ℓ) → Prop, A = B →
+      @dite _ (∃ P, A P) (Classical.propDecidable _)
+          (fun h => (Classical.choose h).starProjection) (fun _ => (0 : Amb n ℓ →L[ℝ] Amb n ℓ)) =
+        @dite _ (∃ P, B P) (Classical.propDecidable _)
+          (fun h => (Classical.choose h).starProjection) (fun _ => 0) := by
+    rintro A B rfl
+    rfl
+  exact key _ _ hP
 
 end Submission
 
