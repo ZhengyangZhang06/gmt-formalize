@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a11833563cdc16386205b0434dfc37ba89b0c78067927f8d1b4740e52a4b3c23",
+  "git_delta": {
+    "base_commit": "4fe713a2122bbde5a18950f263aa22293973854e",
+    "candidate_commit": "35333fdd3c689c93412e930e30311658a82644a0",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_dlb_ae_hasDensity_of_restricted",
+    "diff_sha256": "2574bc53d6b900c6dc3762bb23fd1ff80f696f2d5539e2bdd50edee1a9e59d85",
+    "source_sha256": "fb283878e6d7d7099c69977ab2ef910606f4d15b5263d119fe7acee890115945",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_dlb_ae_hasDensity_of_restricted",
+      "statement": "∀ (N n : ℕ) (U Ω : Set (Euclidean N)) (V : Varifold N n U) (W : Varifold N n Ω) (c : ℝ≥0∞), c ≠ 0 → c ≠ ∞ → W.measure = c • V.measure.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → (∀ᵐ y ∂W.weight, ∃ θ : ℝ≥0∞, HasDensity n W.weight y θ ∧ 1 ≤ θ) → ∀ᵐ y ∂V.weight, y ∈ Ω → ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ c⁻¹ ≤ θ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
