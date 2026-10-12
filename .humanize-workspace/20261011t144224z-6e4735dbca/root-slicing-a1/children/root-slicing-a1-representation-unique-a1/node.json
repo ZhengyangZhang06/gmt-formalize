@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.representation_unique-a1",
+  "parent_id": "root.slicing-a1",
+  "depth": 2,
+  "title": "Local uniqueness of measure representations of currents (Simon 6.2.7–2.9, uniqueness)",
+  "statement": "For all P, k ∈ ℕ and every open U ⊆ ℝ^P: let μ₁, μ₂ be Borel measures on ℝ^P and v₁, v₂ : ℝ^P → Λ_k(ℝ^P) be such that x ↦ v_i(x)(ω(x)) is μ_i-integrable for every ω ∈ D^k(U) (i = 1, 2), and let W ⊆ ℝ^P be open with ∫ v₁(x)(ω(x)) dμ₁ = ∫ v₂(x)(ω(x)) dμ₂ for every ω ∈ D^k(U) with tsupport ω ⊆ W. Then ∫_A v₁(x)(ω(x)) dμ₁ = ∫_A v₂(x)(ω(x)) dμ₂ for every Borel set A ⊆ ℝ^P and every ω ∈ D^k(U) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ₁ μ₂ : Measure (Eucl P)) (v₁ v₂ : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v₁ x ((ω : DifferentialForm (Eucl P) k) x)) μ₁) → (∀ ω : TestFormOn U k, Integrable (fun x => v₂ x ((ω : DifferentialForm (Eucl P) k) x)) μ₂) → ∀ W : Set (Eucl P), IsOpen W → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → ∫ x, v₁ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₁ = ∫ x, v₂ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₂) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → ∫ x in A, v₁ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₁ = ∫ x in A, v₂ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₂",
+  "lean_name": "slicing_representation_unique",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-representation-unique-a1-a1"
+}
