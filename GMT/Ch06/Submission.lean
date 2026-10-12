@@ -452,6 +452,36 @@ theorem Submission.lpf_ccr_ae_pullback : ∀ (P n : ℕ) (M : Set (Eucl P)) (Φ 
   have hw' : ¬(w ∈ Ω ∩ Φ ⁻¹' M → p (Φ w)) := hw
   obtain ⟨⟨hwΩ, hwM⟩, hwp⟩ := not_imp.mp hw'
   exact ⟨hwΩ, hwp, hwM, mem_image_of_mem Φ hwΩ⟩
+/-- Rademacher for `f ∘ Φ`: if `f` is locally Lipschitz on an open `U ⊆ ℝ^P` and `Φ : ℝⁿ → ℝ^P`
+is `C¹`, then `f ∘ Φ` is differentiable at `Lⁿ`-a.e. `w` with `Φ w ∈ U`. -/
+theorem Submission.lpf_ccr_ae_differentiableAt_comp : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P), IsOpen U → LocallyLipschitzOn U f → ContDiff ℝ 1 Φ → ∀ᵐ w ∂(volume : Measure (Eucl n)), Φ w ∈ U → DifferentiableAt ℝ (f ∘ Φ) w := by
+  intro P Q n U f Φ hU hf hΦ
+  -- Step 1: `O = Φ⁻¹(U)` is open.
+  have hO : IsOpen (Φ ⁻¹' U) := hU.preimage hΦ.continuous
+  -- Step 2: `f ∘ Φ` is locally Lipschitz on `O`: compose a Lipschitz neighbourhood of `f` at
+  -- `Φ w` (a full neighbourhood, as `U` is open) with one of the `C¹` map `Φ` at `w`.
+  have hloc : LocallyLipschitzOn (Φ ⁻¹' U) (f ∘ Φ) := by
+    intro w hw
+    obtain ⟨K₁, t₁, ht₁, hft₁⟩ := hf hw
+    rw [hU.nhdsWithin_eq hw] at ht₁
+    obtain ⟨K₂, t₂, ht₂, hΦt₂⟩ := hΦ.locallyLipschitz w
+    refine ⟨K₁ * K₂, t₂ ∩ Φ ⁻¹' t₁, mem_nhdsWithin_of_mem_nhds
+      (inter_mem ht₂ (hΦ.continuous.continuousAt.preimage_mem_nhds ht₁)), ?_⟩
+    exact hft₁.comp (hΦt₂.mono inter_subset_left) fun y hy => hy.2
+  -- Step 3: countable Lipschitz cover of `O` (accepted sibling).
+  obtain ⟨O, K, hOo, hcov, hlip⟩ :=
+    Submission.lpf_lli_countable_lipschitz_cover n Q (Φ ⁻¹' U) (f ∘ Φ) hloc
+  -- Step 4: Rademacher on each piece `O i ∩ O`; it is open, so differentiability within it is
+  -- differentiability.
+  have hpiece : ∀ i, ∀ᵐ w ∂(volume : Measure (Eucl n)),
+      w ∈ O i ∩ Φ ⁻¹' U → DifferentiableAt ℝ (f ∘ Φ) w := fun i => by
+    filter_upwards [(hlip i).ae_differentiableWithinAt_of_mem
+      (μ := (volume : Measure (Eucl n)))] with w hw hws
+    exact (hw hws).differentiableAt (((hOo i).inter hO).mem_nhds hws)
+  -- Step 5: countably many null sets; every `w` with `Φ w ∈ U` lies in some piece.
+  filter_upwards [ae_all_iff.2 hpiece] with w hw hwU
+  obtain ⟨i, hi⟩ := mem_iUnion.1 (hcov hwU)
+  exact hw i ⟨hi, hwU⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
