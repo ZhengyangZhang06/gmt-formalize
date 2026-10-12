@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "26c4b8c1ee9854d61f0589ba1b9131473283bd4e54df8ed5980f7e8e971e545a",
+  "git_delta": {
+    "base_commit": "dacd78bf39c097279d4d1b72173b58cf8bef4744",
+    "candidate_commit": "bac46c0c298c4fc998aa82b7f4f0657a363d0e3b",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "3973af05cf58c1851328ec4d7a5082a39da5a978a978cb564492ef8352869c05",
+    "source_sha256": "299ac1d4aeb5799022ddc020ccce6b47c51503e4bfd6444cd45bad6dd0c9063f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pcoarea_flat_jacobian_identity",
+      "statement": "∀ (m k N : ℕ) (A : Rn (m + k) →ₗ[ℝ] Rn N) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) (E : Rn k →ₗ[ℝ] Rn (m + k)), Function.Bijective T → (∀ v, (T v).fst = Γ v) → (∀ z, T (E z) = WithLp.toLp 2 (0, z)) → (A ∘ₗ E).normDet * T.normDet = (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
