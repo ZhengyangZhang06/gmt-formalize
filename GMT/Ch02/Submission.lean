@@ -405,6 +405,43 @@ theorem Submission.bv_integral_convolution_mul_reflect : ∀ (n : ℕ) (F ρ h :
         simp only [convolution_lsmul_swap, smul_eq_mul, neg_sub, ← integral_const_mul]
         refine integral_congr_ae (Eventually.of_forall fun x ↦ ?_)
         ring
+/-- **Simon Ch. 2, proof of Lemma 2.5: divergence commutes with convolution.** For a locally
+integrable kernel `κ` on `ℝⁿ` and a `C¹` vector field `g` with compact support,
+`div(κ * g) = κ * div g` pointwise (the step `φ_σ * div g = div(φ_σ * g)`). By
+`HasCompactSupport.hasFDerivAt_convolution_right`, `D(κ * g)(x) = ∫ κ(t) • Dg(x - t) dt`, whose
+integrand is integrable because `Dg` is continuous with compact support. The trace is a continuous
+linear map on `ℝⁿ →L[ℝ] ℝⁿ`, so it commutes with the integral, and
+`trace (κ(t) • Dg(x - t)) = κ(t) div g(x - t)`. -/
+theorem Submission.bv_euclideanDivergence_convolution : ∀ (n : ℕ) (κ : Rn n → ℝ) (g : Rn n → Rn n), LocallyIntegrable κ volume → ContDiff ℝ 1 g → HasCompactSupport g → ∀ x, Chapter02.euclideanDivergence (convolution κ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x = convolution κ (Chapter02.euclideanDivergence g) (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+  intro n κ g hκ hg hgc x
+  -- Step 1: `Dg = fderiv ℝ g` is continuous with compact support.
+  have hDg : Continuous (fderiv ℝ g) := hg.continuous_fderiv one_ne_zero
+  have hDgc : HasCompactSupport (fderiv ℝ g) := hgc.fderiv ℝ
+  -- Step 2: `D(κ * g)(x) = ∫ L' (κ t) (Dg (x - t)) dt` with `L' = (lsmul ℝ ℝ).precompR ℝⁿ`.
+  have hD := (hgc.hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hκ hg x).fderiv
+  -- Step 3: the integrand `t ↦ L' (κ t) (Dg (x - t))` is integrable.
+  have hI := (hDgc.convolutionExists_right
+    ((ContinuousLinearMap.lsmul ℝ ℝ).precompR (Rn n)) hκ hDg x).integrable
+  -- Step 4: the trace, as a continuous linear map on `ℝⁿ →L[ℝ] ℝⁿ`, commutes with the integral.
+  let T : (Rn n →L[ℝ] Rn n) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+    (LinearMap.trace ℝ (Rn n) ∘ₗ ContinuousLinearMap.coeLM ℝ)
+  have hT : ∀ A : Rn n →L[ℝ] Rn n, T A = LinearMap.trace ℝ (Rn n) A := fun A ↦ rfl
+  calc Chapter02.euclideanDivergence (convolution κ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x
+      = T (∫ t, (ContinuousLinearMap.lsmul ℝ ℝ).precompR (Rn n) (κ t) (fderiv ℝ g (x - t))) := by
+        rw [hT, Chapter02.euclideanDivergence, hD, convolution_def]
+    _ = ∫ t, T ((ContinuousLinearMap.lsmul ℝ ℝ).precompR (Rn n) (κ t) (fderiv ℝ g (x - t))) :=
+        (T.integral_comp_comm hI).symm
+    _ = convolution κ (Chapter02.euclideanDivergence g) (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+        -- Step 5: `L' (κ t) A = κ t • A`, so `trace (L' (κ t) (Dg (x - t))) = κ t * div g (x - t)`.
+        rw [convolution_def]
+        refine integral_congr_ae (Eventually.of_forall fun t ↦ ?_)
+        have hc : ((ContinuousLinearMap.lsmul ℝ ℝ (κ t)).comp (fderiv ℝ g (x - t)) :
+            Rn n →L[ℝ] Rn n) = κ t • fderiv ℝ g (x - t) :=
+          ContinuousLinearMap.ext fun v ↦ by
+            simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.lsmul_apply, smul_apply]
+        simp only [ContinuousLinearMap.precompR_apply, ContinuousLinearMap.compL_apply, hc, hT,
+          ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul,
+          Chapter02.euclideanDivergence, ContinuousLinearMap.lsmul_apply]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
