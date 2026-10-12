@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b3c75c75ab5fbb0389a501aaab7c6a1522abecff1132c321d4ffdf25b2ade6e",
+  "git_delta": {
+    "base_commit": "e631e41ea45c6c5afd279369ede1cbf7971fc282",
+    "candidate_commit": "5a77dc72062d91e20703b4502f9dcd5fe93a1a24",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tv_support_map_sub",
+    "diff_sha256": "85ba327010ae108c35aa6ade7a77807e1585ed4e0567fbeccb63af1ec67034e9",
+    "source_sha256": "d98391c93428b7a36c3f25091c96c5e5f5129291d3827964e21b9fcb539d068e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tv_support_map_sub",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (ξ : Amb n ℓ), (μ.map (fun x => x - ξ)).support = (fun x => x - ξ) '' μ.support",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
