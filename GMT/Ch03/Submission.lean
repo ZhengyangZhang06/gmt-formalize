@@ -335,6 +335,100 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **`L¹_loc` convergence of sets passes to integrals and volumes** (the passage from
+`χ_{ρ_k⁻¹E} → χ_F` in `L¹_loc` to (7) in the proof of Simon Ch. 3, Theorem 4.3). Let `F_k`, `G`
+be `Lᴺ`-measurable subsets of `ℝᴺ` with `Lᴺ(K ∩ (F_k Δ G)) → 0` for every compact `K`. Then
+`∫_{F_k} f → ∫_G f` for every continuous compactly supported `f`, and for every bounded `B`,
+`Lᴺ(F_k ∩ B) → Lᴺ(G ∩ B)` and `Lᴺ(B ∖ F_k) → Lᴺ(B ∖ G)`. -/
+theorem Submission.deGiorgiHS_L1loc_limit_transfer : ∀ (N : ℕ) (F : ℕ → Set (Rn N)) (G : Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → NullMeasurableSet G volume → (∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F k) G)) atTop (𝓝 0)) → (∀ f : Rn N → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k ↦ ∫ y in F k, f y) atTop (𝓝 (∫ y in G, f y))) ∧ ∀ B : Set (Rn N), Bornology.IsBounded B → Tendsto (fun k ↦ volume (F k ∩ B)) atTop (𝓝 (volume (G ∩ B))) ∧ Tendsto (fun k ↦ volume (B \ F k)) atTop (𝓝 (volume (B \ G))) := by
+  intro N F G hF hG hK
+  -- Squeeze in `ℝ≥0∞`: `a - d k ≤ u k ≤ a + d k`, `d k → 0` and `a ≠ ∞` give `u k → a`.
+  have squeeze : ∀ {u d : ℕ → ℝ≥0∞} {a : ℝ≥0∞}, a ≠ ∞ → Tendsto d atTop (𝓝 0) →
+      (∀ k, u k ≤ a + d k) → (∀ k, a ≤ u k + d k) → Tendsto u atTop (𝓝 a) := by
+    intro u d a ha hd h1 h2
+    have hup : Tendsto (fun k ↦ a + d k) atTop (𝓝 a) := by
+      have := (tendsto_const_nhds (x := a)).add hd
+      rwa [add_zero] at this
+    have hlow : Tendsto (fun k ↦ a - d k) atTop (𝓝 a) := by
+      have := ENNReal.Tendsto.sub (tendsto_const_nhds (x := a)) hd (Or.inl ha)
+      rwa [tsub_zero] at this
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le hlow hup
+      (fun k ↦ tsub_le_iff_right.mpr (h2 k)) h1
+  refine ⟨fun f hf hfc ↦ ?_, fun B hB ↦ ?_⟩
+  · -- (i): `|∫_{F k} f - ∫_G f| ≤ Lᴺ(tsupport f ∩ (F k Δ G)) M → 0` with `|f| ≤ M`.
+    obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfc
+    have hfi : Integrable f volume := hf.integrable_of_hasCompactSupport hfc
+    have hbound : ∀ k, ‖(∫ y in F k, f y) - ∫ y in G, f y‖ ≤
+        (volume (tsupport f ∩ symmDiff (F k) G)).toReal * M := by
+      intro k
+      have hS : NullMeasurableSet (tsupport f ∩ symmDiff (F k) G) volume :=
+        (isClosed_tsupport f).measurableSet.nullMeasurableSet.inter ((hF k).symmDiff hG)
+      have hSfin : volume (tsupport f ∩ symmDiff (F k) G) ≠ ∞ :=
+        ((measure_mono inter_subset_left).trans_lt hfc.isCompact.measure_lt_top).ne
+      have hgi : Integrable ((tsupport f ∩ symmDiff (F k) G).indicator fun _ ↦ M) volume :=
+        (integrableOn_const hSfin).integrable_indicator₀ hS
+      -- Pointwise `|(1_{F k} - 1_G) f| ≤ M 1_{tsupport f ∩ (F k Δ G)}`.
+      have hpt : ∀ x, ‖(F k).indicator f x - G.indicator f x‖ ≤
+          (tsupport f ∩ symmDiff (F k) G).indicator (fun _ ↦ M) x := by
+        intro x
+        by_cases hxK : x ∈ tsupport f
+        · have hMx : |f x| ≤ M := by simpa [Real.norm_eq_abs] using hM x
+          by_cases hxF : x ∈ F k <;> by_cases hxG : x ∈ G <;>
+            simp [Set.mem_symmDiff, hxF, hxG, hxK, hMx]
+        · have hfx : f x = 0 := image_eq_zero_of_notMem_tsupport hxK
+          have h1 : (F k).indicator f x = 0 := Set.indicator_apply_eq_zero.mpr fun _ ↦ hfx
+          have h2 : G.indicator f x = 0 := Set.indicator_apply_eq_zero.mpr fun _ ↦ hfx
+          have h3 : (tsupport f ∩ symmDiff (F k) G).indicator (fun _ ↦ M) x = 0 :=
+            Set.indicator_of_notMem (fun h ↦ hxK h.1) _
+          simp [h1, h2, h3]
+      rw [← integral_indicator₀ (hF k), ← integral_indicator₀ hG,
+        ← integral_sub (hfi.indicator₀ (hF k)) (hfi.indicator₀ hG)]
+      calc ‖∫ y, ((F k).indicator f y - G.indicator f y)‖
+          ≤ ∫ y, (tsupport f ∩ symmDiff (F k) G).indicator (fun _ ↦ M) y :=
+            norm_integral_le_of_norm_le hgi (Eventually.of_forall hpt)
+        _ = (volume (tsupport f ∩ symmDiff (F k) G)).toReal * M := by
+            rw [integral_indicator₀ hS, setIntegral_const, smul_eq_mul, measureReal_def]
+    have hd : Tendsto (fun k ↦ (volume (tsupport f ∩ symmDiff (F k) G)).toReal * M) atTop
+        (𝓝 0) := by
+      have h0 := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp (hK (tsupport f) hfc.isCompact)
+      rw [ENNReal.toReal_zero] at h0
+      have := h0.mul_const M
+      rwa [zero_mul] at this
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    exact squeeze_zero (fun k ↦ norm_nonneg _) hbound hd
+  · -- (ii): two-sided inclusions up to `closure B ∩ (F k Δ G)`, `closure B` compact.
+    have hKc : IsCompact (closure B) := hB.isCompact_closure
+    have hd := hK (closure B) hKc
+    have hfin : ∀ S ⊆ closure B, volume S ≠ ∞ := fun S hS ↦
+      ((measure_mono hS).trans_lt hKc.measure_lt_top).ne
+    refine ⟨squeeze (hfin _ (inter_subset_right.trans subset_closure)) hd (fun k ↦ ?_)
+      (fun k ↦ ?_), squeeze (hfin _ (Set.sdiff_subset.trans subset_closure)) hd (fun k ↦ ?_)
+      (fun k ↦ ?_)⟩
+    · have hsub : F k ∩ B ⊆ (G ∩ B) ∪ (closure B ∩ symmDiff (F k) G) := by
+        intro x hx
+        by_cases hxG : x ∈ G
+        · exact Or.inl ⟨hxG, hx.2⟩
+        · exact Or.inr ⟨subset_closure hx.2, Set.mem_symmDiff.mpr (Or.inl ⟨hx.1, hxG⟩)⟩
+      exact (measure_mono hsub).trans (measure_union_le _ _)
+    · have hsub : G ∩ B ⊆ (F k ∩ B) ∪ (closure B ∩ symmDiff (F k) G) := by
+        intro x hx
+        by_cases hxF : x ∈ F k
+        · exact Or.inl ⟨hxF, hx.2⟩
+        · exact Or.inr ⟨subset_closure hx.2, Set.mem_symmDiff.mpr (Or.inr ⟨hx.1, hxF⟩)⟩
+      exact (measure_mono hsub).trans (measure_union_le _ _)
+    · have hsub : B \ F k ⊆ (B \ G) ∪ (closure B ∩ symmDiff (F k) G) := by
+        intro x hx
+        by_cases hxG : x ∈ G
+        · exact Or.inr ⟨subset_closure hx.1, Set.mem_symmDiff.mpr (Or.inr ⟨hxG, hx.2⟩)⟩
+        · exact Or.inl ⟨hx.1, hxG⟩
+      exact (measure_mono hsub).trans (measure_union_le _ _)
+    · have hsub : B \ G ⊆ (B \ F k) ∪ (closure B ∩ symmDiff (F k) G) := by
+        intro x hx
+        by_cases hxF : x ∈ F k
+        · exact Or.inr ⟨subset_closure hx.1, Set.mem_symmDiff.mpr (Or.inl ⟨hxF, hx.2⟩)⟩
+        · exact Or.inl ⟨hx.1, hxF⟩
+      exact (measure_mono hsub).trans (measure_union_le _ _)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
