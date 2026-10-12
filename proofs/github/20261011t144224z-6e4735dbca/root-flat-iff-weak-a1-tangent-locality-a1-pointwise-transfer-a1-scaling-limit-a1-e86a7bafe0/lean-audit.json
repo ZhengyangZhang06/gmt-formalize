@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8fa140cb716c59bda54365faec5eff590f168c6aeb0f27d4de233e9ea5d305f5",
+  "git_delta": {
+    "base_commit": "58aa4d77c90ce1bd10818419a44affcb1e189fb6",
+    "candidate_commit": "0f6aba64e39580a11e84dd0ec1ee635d0cdfdb30",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tl_tr_scaling_limit",
+    "diff_sha256": "cad6b90cb2d2a20ab4bbe6a16ceca93d31d5e2250e36529cbccc5184e1fbcdf9",
+    "source_sha256": "022ba4babd55962a7a2eb9b4e5035f9cf82f1d206a23ff26197526cb4a878c79",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tl_tr_scaling_limit",
+      "statement": "∀ (n : ℕ) (D : ℝ → ℝ) (E G : ℝ → ℝ≥0∞) (R K C : ℝ), 0 < R → (∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), E s ≤ ENNReal.ofReal ε * G s) → (∀ᶠ s in 𝓝[>] (0 : ℝ), G s ≤ ENNReal.ofReal (C * s ^ n)) → (∀ᶠ r in 𝓝[>] (0 : ℝ), ‖D r‖ₑ ≤ ENNReal.ofReal ((r ^ n)⁻¹) * ENNReal.ofReal K * E (R * r)) → Tendsto D (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

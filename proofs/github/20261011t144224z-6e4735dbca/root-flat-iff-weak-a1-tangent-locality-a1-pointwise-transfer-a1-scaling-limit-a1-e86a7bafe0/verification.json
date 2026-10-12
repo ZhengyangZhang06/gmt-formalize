@@ -1,0 +1,15 @@
+{
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1.scaling_limit-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3275",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0f6aba64e39580a11e84dd0ec1ee635d0cdfdb30",
+  "integrated_commit": "",
+  "proof_base_commit": "58aa4d77c90ce1bd10818419a44affcb1e189fb6",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1",
+  "requires": []
+}
