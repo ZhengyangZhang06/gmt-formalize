@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1.height_bounds-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1",
+  "depth": 5,
+  "title": "Height and L² height bounds from a net near an affine plane (Simon Ch. 5, proof of Lemma 2.5, (6) and conclusion)",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P with support spt μ (Lean μ.support), and let S be a linear subspace of ℝ^P with orthogonal projection p_S (Lean S.starProjection). Let F ⊆ ℝ^P be a finite set, ξ, x₀ ∈ ℝ^P, and r, s, L ∈ ℝ. B̄_r(ξ) is the closed ball and ofReal = ENNReal.ofReal. Assume:\n(i) for every x ∈ spt μ ∩ B̄_r(ξ) there is y ∈ F with dist(x, y) ≤ s;\n(ii) |(y − x₀) − p_S(y − x₀)| ≤ L for every y ∈ F;\n(iii) dist(x₀, ξ) ≤ s.\nThen:\n(a) |(x − ξ) − p_S(x − ξ)| ≤ 2s + L for every x ∈ spt μ ∩ B̄_r(ξ);\n(b) ∫_{B̄_r(ξ)} ofReal(|(x − ξ) − p_S(x − ξ)|²) dμ(x) ≤ ofReal((2s + L)²)·μ(B̄_r(ξ)) in [0, ∞], where the integral is a lower Lebesgue integral.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (S : Submodule ℝ (Euclid P)) (F : Finset (Euclid P)) (ξ x₀ : Euclid P) (r s L : ℝ), (∀ x ∈ μ.support ∩ closedBall ξ r, ∃ y ∈ F, dist x y ≤ s) → (∀ y ∈ F, ‖(y - x₀) - S.starProjection (y - x₀)‖ ≤ L) → dist x₀ ξ ≤ s → (∀ x ∈ μ.support ∩ closedBall ξ r, ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ 2 * s + L) ∧ ∫⁻ x in closedBall ξ r, ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂μ ≤ ENNReal.ofReal ((2 * s + L) ^ 2) * μ (closedBall ξ r)",
+  "lean_name": "dorag_aa_height_bounds_of_net",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-609ef45196-a1"
+}

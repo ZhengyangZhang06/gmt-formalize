@@ -589,6 +589,19 @@ theorem Submission.dsmc_firstVariation_eq_integral : ∀ (P n : ℕ) (U : Set (E
   rw [IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
     (ae_of_all _ fun x => ENNReal.natCast_lt_top _), IMRep.firstVariation]
   simp only [ENNReal.toReal_natCast, smul_eq_mul]
+/-- The approximate tangent planes `TₓM` of `R = τ(M, θ, ξ)` are `n`-dimensional for `μ_R`-a.e.
+`x`: by `R.orients`, `Hⁿ⌞M`-a.e. `x` has an approximate tangent plane (Simon Ch. 3, 1.4), which is
+`n`-dimensional by definition, and `μ_R = θ Hⁿ⌞M ≪ Hⁿ⌞M`. -/
+theorem Submission.dorag_aa_ae_finrank_approxTangentPlane : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂R.measure, Module.finrank ℝ (approxTangentPlane n R.carrier x) = n := by
+  intro P n U R
+  -- `μ_R = θ Hⁿ⌞M ≪ Hⁿ⌞M`, and `Hⁿ⌞M`-a.e. `x` has an approximate tangent plane
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  filter_upwards [hac.ae_le R.orients] with x hx
+  obtain ⟨Q, hQ, -⟩ := hx
+  -- `TₓM` is then the chosen approximate tangent plane, whose dimension is `n`
+  have h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+  rw [approxTangentPlane, dite_eq_left h]
+  exact h.choose_spec.finrank_eq
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
