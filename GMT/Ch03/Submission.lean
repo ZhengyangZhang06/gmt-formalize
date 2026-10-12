@@ -430,6 +430,53 @@ theorem Submission.submanifold_cover_lipschitz_open_charts : ∀ (n N m : ℕ) (
   show ψ i y u ∈ (g α).2 '' (g α).1
   rw [hα]
   exact mem_image_of_mem _ huB
+/-- **First-order agreement of a Lipschitz map on an open set with `C¹` maps**, Simon Ch. 3,
+proof of the area formula (2.4) (`chapter-03.txt` lines 376–381), used again for the co-area
+formula (2.8) (lines 426–428). Assume the `C¹` Approximation Theorem (Simon Ch. 2, Thm. 1.5,
+`chapter-02.txt` lines 165–169) for Lipschitz maps `ℝⁿ → ℝᵐ`. If `D ⊆ ℝⁿ` is open and `h` is
+Lipschitz on `D`, then there are `C¹` maps `G i` and Borel sets `E i ⊆ D` such that `h = G i` on
+`E i`, `h` has Fréchet derivative `DG i(u)` at each `u ∈ E i`, and `Lⁿ(D \ ⋃ i, E i) = 0`.
+Extend `h|_D` to a globally Lipschitz `h̃` (Ch. 2, Thm. 1.2), apply the hypothesis to `h̃` with
+`ε = (i + 1)⁻¹`, and let `E i = D ∩ {h̃ differentiable} ∩ {h̃ = G i} ∩ {Dh̃ = DG i}`. As `D` is
+open, `h = h̃` near each `u ∈ D`; and `D \ ⋃ i, E i` lies in the union of the non-differentiability
+set of `h̃` (null by Rademacher, Ch. 2, Thm. 1.4) and `⋂ i, {h̃ ≠ G i ∨ Dh̃ ≠ DG i}`, whose
+measure is `< (i + 1)⁻¹` for every `i`. -/
+theorem Submission.lipschitzOn_open_c1_first_order_agreement : ∀ (n m : ℕ), (∀ (F : Rn n → Rn m) (K : ℝ≥0), LipschitzWith K F → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn m, ContDiff ℝ 1 g ∧ volume {x | F x ≠ g x ∨ fderiv ℝ F x ≠ fderiv ℝ g x} < ε) → ∀ (D : Set (Rn n)) (h : Rn n → Rn m), IsOpen D → (∃ K, LipschitzOnWith K h D) → ∃ (G : ℕ → Rn n → Rn m) (E : ℕ → Set (Rn n)), (∀ i, ContDiff ℝ 1 (G i)) ∧ (∀ i, MeasurableSet (E i)) ∧ (∀ i, E i ⊆ D) ∧ (∀ i, ∀ u ∈ E i, h u = G i u ∧ HasFDerivAt h (fderiv ℝ (G i) u) u) ∧ volume (D \ ⋃ i, E i) = 0 := by
+  intro n m hC1 D h hD ⟨K, hK⟩
+  -- Step 1: a globally Lipschitz extension `ht` of `h|_D`.
+  obtain ⟨ht, htL, hteq⟩ := hK.extend_finite_dimension
+  -- Step 2: `C¹` maps `G i` that agree with `ht` to first order off a set of measure `< (i + 1)⁻¹`.
+  have hε : ∀ i : ℕ, (0 : ℝ≥0∞) < ((i + 1 : ℕ) : ℝ≥0∞)⁻¹ := fun i ↦
+    ENNReal.inv_pos.2 (ENNReal.natCast_ne_top _)
+  choose G hGC hGv using fun i : ℕ ↦ hC1 ht _ htL _ (hε i)
+  -- Step 3: `E i = D ∩ {ht differentiable} ∩ {ht = G i} ∩ {D ht = D (G i)} ⊆ D`.
+  refine ⟨G, fun i ↦ D ∩ {u | DifferentiableAt ℝ ht u} ∩ {u | ht u = G i u} ∩
+    {u | fderiv ℝ ht u = fderiv ℝ (G i) u}, hGC, fun i ↦ ?_, fun i u hu ↦ hu.1.1.1, ?_, ?_⟩
+  · -- Step 4: `E i` is Borel.
+    exact ((hD.measurableSet.inter (measurableSet_of_differentiableAt ℝ ht)).inter
+      (isClosed_eq htL.continuous (hGC i).continuous).measurableSet).inter
+      (measurableSet_eq_fun (measurable_fderiv ℝ ht) (measurable_fderiv ℝ (G i)))
+  · -- Step 5: first-order agreement on `E i`, since `h = ht` on the open neighbourhood `D` of `u`.
+    rintro i u ⟨⟨⟨huD, hud⟩, hueq⟩, hufd⟩
+    refine ⟨(hteq huD).trans hueq, ?_⟩
+    rw [← hufd]
+    exact hud.hasFDerivAt.congr_of_eventuallyEq (eventuallyEq_of_mem (hD.mem_nhds huD) hteq)
+  · -- Steps 6–7: `D \ ⋃ i, E i ⊆ {¬ DifferentiableAt ℝ ht} ∪ ⋂ i, Bad i` with
+    -- `Bad i = {ht ≠ G i ∨ D ht ≠ D (G i)}`; both parts are `Lⁿ`-null.
+    have hdiff : volume {u | ¬ DifferentiableAt ℝ ht u} = 0 :=
+      ae_iff.1 (htL.ae_differentiableAt (μ := volume))
+    have hbad : volume (⋂ i, {x | ht x ≠ G i x ∨ fderiv ℝ ht x ≠ fderiv ℝ (G i) x}) = 0 :=
+      nonpos_iff_eq_zero.1 (ge_of_tendsto'
+        (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1))
+        fun i ↦ (measure_mono (iInter_subset _ i)).trans (hGv i).le)
+    refine measure_mono_null ?_ (measure_union_null hdiff hbad)
+    rintro u ⟨huD, huE⟩
+    by_cases hud : DifferentiableAt ℝ ht u
+    · refine Or.inr (mem_iInter.2 fun i ↦ ?_)
+      by_contra hcon
+      exact huE (mem_iUnion.2 ⟨i, ⟨⟨huD, hud⟩, not_not.1 fun h₁ ↦ hcon (Or.inl h₁)⟩,
+        not_not.1 fun h₂ ↦ hcon (Or.inr h₂)⟩)
+    · exact Or.inl hud
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
