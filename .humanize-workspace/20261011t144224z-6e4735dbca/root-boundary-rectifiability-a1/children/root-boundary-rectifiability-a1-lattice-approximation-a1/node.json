@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+  "parent_id": "root.boundary_rectifiability-a1",
+  "depth": 2,
+  "title": "Integer lattice approximation with bounded boundary masses in every dimension",
+  "statement": "Assume DeformationTheorem (Simon 5.3, frozen statement). Let P, m ∈ ℕ and let X ∈ D_{m+1}(ℝ^P) be integer multiplicity with M(X) < ∞ and M(∂X) < ∞. Then there are ρ_k > 0, β_k : LatticeFaceIndex (m+1) P → ℤ and P_k ∈ D_{m+1}(ℝ^P) with IsLatticeChain ρ_k β_k P_k for all k, P_k ⇀ X weakly, and sup_k M(∂P_k) < ∞.",
+  "lean_statement": "DeformationTheorem → ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) P → ℤ) (Pk : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ k, 0 < ρ k) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pk k)) ∧ WeaklyConvergesOn Pk X ∧ (⨆ k, (Pk k).boundary.mass) < ∞",
+  "lean_name": "br_lattice_approximation",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.top_dim_lattice_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.top_dim_lattice_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-a1"
+}
