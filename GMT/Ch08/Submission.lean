@@ -1552,6 +1552,156 @@ theorem Submission.frt_hausdorff_density_one_of_flat_covers :
   filter_upwards [ae_all_iff.2 hstep] with x hx
   exact tendsto_of_le_liminf_of_limsup_le (le_of_tendsto' hinv fun l ↦ (hx l).1)
     (ge_of_tendsto' hlim fun l ↦ (hx l).2)
+/-- Simon Ch. 8, proof of 1.2 (the null case of the upper counterpart of the density comparison
+Ch. 1, 3.3): if `H^n(A) = 0` and `μ(B_ρ(x)) ≤ c ρ^n` for all `x ∈ A` and `0 < ρ ≤ δ`, with
+`c < ∞`, then `μ(A) = 0` (outer measure; `A` need not be measurable). -/
+theorem Submission.frt_measure_null_of_hausdorff_null_ball_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (A : Set (Euclidean N)) (c : ℝ≥0∞) (δ : ℝ), c ≠ ∞ → 0 < δ → μHE[n] A = 0 → (∀ x ∈ A, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → μ (closedBall x ρ) ≤ c * ENNReal.ofReal ρ ^ n) → μ A = 0 := by
+  intro N n μ A c δ hc hδ hA hball
+  -- Step 1: `H^n = c_n • μH[n]` with `c_n ≠ 0`, so the unnormalised `μH[n](A)` vanishes.
+  have hH : (μH[(n : ℝ)] : Measure (Euclidean N)) A = 0 := by
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul,
+      mul_eq_zero] at hA
+    rcases hA with h | h
+    · exact absurd (by exact_mod_cast h) (Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n)
+    · exact h
+  -- Step 2: one covering set `t` with `diam t ≤ δ` has `μ(t ∩ A) ≤ c · ⨆_{t ≠ ∅} (diam t)^n`.
+  have hone : ∀ t : Set (Euclidean N), ediam t ≤ ENNReal.ofReal δ →
+      μ (t ∩ A) ≤ c * ⨆ (_ : t.Nonempty), ediam t ^ n := by
+    intro t ht
+    rcases (t ∩ A).eq_empty_or_nonempty with h | ⟨x, hxt, hxA⟩
+    · simp [h]
+    rw [iSup_pos ⟨x, hxt⟩]
+    have hfin : ediam t ≠ ∞ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top ht
+    set d := (ediam t).toReal
+    have hd0 : 0 ≤ d := ENNReal.toReal_nonneg
+    have hdδ : d ≤ δ := ENNReal.toReal_le_of_le_ofReal hδ.le ht
+    have hdeq : ENNReal.ofReal d = ediam t := ENNReal.ofReal_toReal hfin
+    -- `t ⊆ B_r(x)` for every `r ≥ d`, since `x ∈ t`.
+    have hsub : ∀ r : ℝ, d ≤ r → t ∩ A ⊆ closedBall x r := by
+      intro r hr y hy
+      rw [mem_closedBall, dist_edist]
+      exact (ENNReal.toReal_mono hfin (edist_le_ediam_of_mem hy.1 hxt)).trans hr
+    rcases hd0.lt_or_eq with hdpos | hdzero
+    · -- Case `d > 0`: the ball bound at `ρ = d`.
+      calc μ (t ∩ A) ≤ μ (closedBall x d) := measure_mono (hsub d le_rfl)
+        _ ≤ c * ENNReal.ofReal d ^ n := hball x hxA d hdpos hdδ
+        _ = c * ediam t ^ n := by rw [hdeq]
+    · have hdiam0 : ediam t = 0 := by rw [← hdeq, ← hdzero, ENNReal.ofReal_zero]
+      rcases Nat.eq_zero_or_pos n with hn | hn
+      · -- Case `d = 0`, `n = 0`: the ball bound at `ρ = δ`.
+        subst hn
+        calc μ (t ∩ A) ≤ μ (closedBall x δ) := measure_mono (hsub δ (hdzero ▸ hδ.le))
+          _ ≤ c * ENNReal.ofReal δ ^ 0 := hball x hxA δ hδ le_rfl
+          _ = c * ediam t ^ 0 := by simp
+      · -- Case `d = 0`, `n ≥ 1`: let `ρ ↓ 0`; `c ρ^n → 0` because `c ≠ ∞`.
+        rw [hdiam0, zero_pow hn.ne', mul_zero]
+        have h1 : Tendsto (fun ρ : ℝ => ENNReal.ofReal ρ) (𝓝[>] 0) (𝓝 0) := by
+          have := ENNReal.continuous_ofReal.tendsto 0
+          rw [ENNReal.ofReal_zero] at this
+          exact this.mono_left nhdsWithin_le_nhds
+        have h2 : Tendsto (fun ρ : ℝ => ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+          have := ((ENNReal.continuous_pow n).tendsto 0).comp h1
+          simpa [Function.comp_def, zero_pow hn.ne'] using this
+        have h3 : Tendsto (fun ρ : ℝ => c * ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+          simpa using ENNReal.Tendsto.const_mul h2 (Or.inr hc)
+        refine ge_of_tendsto h3 ?_
+        filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+        calc μ (t ∩ A) ≤ μ (closedBall x ρ) := measure_mono (hsub ρ (hdzero ▸ hρ.1.le))
+          _ ≤ c * ENNReal.ofReal ρ ^ n := hball x hxA ρ hρ.1 hρ.2.le
+  -- Step 3: `μH[n](A) = 0` gives, for each `ζ > 0`, a cover of `A` by sets of diameter `≤ δ`
+  -- with `∑_k ⨆_{t_k ≠ ∅} (diam t_k)^n < ζ` (`hausdorffMeasure_apply` at scale `r = δ`).
+  have hcover : ∀ ζ : ℝ≥0∞, 0 < ζ → ∃ t : ℕ → Set (Euclidean N), A ⊆ ⋃ k, t k ∧
+      (∀ k, ediam (t k) ≤ ENNReal.ofReal δ) ∧ ∑' k, ⨆ (_ : (t k).Nonempty), ediam (t k) ^ n < ζ := by
+    intro ζ hζ
+    rw [Measure.hausdorffMeasure_apply] at hH
+    have hle : (⨅ (t : ℕ → Set (Euclidean N)) (_ : A ⊆ ⋃ k, t k)
+        (_ : ∀ k, ediam (t k) ≤ ENNReal.ofReal δ),
+          ∑' k, ⨆ (_ : (t k).Nonempty), ediam (t k) ^ (n : ℝ)) = 0 := by
+      refine nonpos_iff_eq_zero.1 ?_
+      rw [← hH]
+      exact le_iSup₂_of_le (ENNReal.ofReal δ) (ENNReal.ofReal_pos.2 hδ) le_rfl
+    have hlt := hle ▸ hζ
+    obtain ⟨t, ht⟩ := iInf_lt_iff.1 hlt
+    obtain ⟨hcov, ht⟩ := iInf_lt_iff.1 ht
+    obtain ⟨hdiam, hsum⟩ := iInf_lt_iff.1 ht
+    refine ⟨t, hcov, hdiam, ?_⟩
+    simpa only [ENNReal.rpow_natCast] using hsum
+  -- Step 4: countable subadditivity gives `μ(A) ≤ c · ζ` for every `ζ > 0`.
+  have key : ∀ ζ : ℝ≥0∞, 0 < ζ → μ A ≤ c * ζ := by
+    intro ζ hζ
+    obtain ⟨t, hcov, hdiam, hsum⟩ := hcover ζ hζ
+    calc μ A ≤ μ (⋃ k, t k ∩ A) := by
+          refine measure_mono fun y hy => ?_
+          obtain ⟨k, hk⟩ := mem_iUnion.1 (hcov hy)
+          exact mem_iUnion.2 ⟨k, hk, hy⟩
+      _ ≤ ∑' k, μ (t k ∩ A) := measure_iUnion_le _
+      _ ≤ ∑' k, c * ⨆ (_ : (t k).Nonempty), ediam (t k) ^ n :=
+          ENNReal.tsum_le_tsum fun k => hone (t k) (hdiam k)
+      _ = c * ∑' k, ⨆ (_ : (t k).Nonempty), ediam (t k) ^ n := ENNReal.tsum_mul_left
+      _ ≤ c * ζ := by gcongr
+  -- Step 5: `c < ∞`, so `ζ = ε / c` (or `ζ = 1` when `c = 0`) gives `μ(A) = 0`.
+  refine nonpos_iff_eq_zero.1 ?_
+  rcases eq_or_ne c 0 with h0 | h0
+  · simpa [h0] using key 1 one_pos
+  · refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+    have := key (ε / c) (ENNReal.div_pos (by exact_mod_cast hε.ne') hc)
+    rw [ENNReal.mul_div_cancel h0 hc] at this
+    simpa using this
+/-- Finite density gives a small-ball mass bound (Simon Ch. 8, proof of 1.2: the decomposition
+`Z = ⋃ Z_{k,j}` at a single point).  If `Θ^n(μ, x) = θ < ∞`, then there are `K, j ∈ ℕ` with
+`μ(B_ρ(x)) ≤ K ρ^n` for all `0 < ρ ≤ 1/(j+1)`: eventually `μ(B_ρ(x))/(ω_n ρ^n) < m` for a natural
+`m > θ`, and `K` is any natural number above `m ω_n`. -/
+theorem Submission.frt_ball_bound_of_finite_density :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), θ ≠ ∞ → HasDensity n μ x θ → ∃ K j : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / ((j : ℝ) + 1) → μ (closedBall x ρ) ≤ (K : ℝ≥0∞) * ENNReal.ofReal ρ ^ n := by
+  intro N n μ x θ hθ hdens
+  -- Step 1: `0 < ω_n < ∞` (`volume` on `ℝ^n` is an additive Haar measure).
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (Metric.measure_ball_pos (volume : Measure (EuclideanSpace ℝ (Fin n))) 0 one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := (volume : Measure (EuclideanSpace ℝ (Fin n))))).ne
+  -- Step 2: a natural number `m > θ`.
+  obtain ⟨m, hm⟩ := ENNReal.exists_nat_gt hθ
+  -- Step 3: `densityRatio n μ x ρ < m` for all `ρ ∈ (0, ε)`.
+  obtain ⟨ε, hε, hεsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 (hdens (Iio_mem_nhds hm))
+  -- Step 4: `1/(j+1) < ε`.
+  obtain ⟨j, hj⟩ := exists_nat_one_div_lt (mem_Ioi.1 hε)
+  -- Step 5: a natural number `K > m ω_n`.
+  obtain ⟨K, hK⟩ := ENNReal.exists_nat_gt (ENNReal.mul_ne_top (ENNReal.natCast_ne_top m) hωtop)
+  refine ⟨K, j, fun ρ hρ hρj ↦ ?_⟩
+  -- Step 6: `ρ ∈ (0, ε)`; clear the denominator `ω_n ρ^n ∈ (0, ∞)`.
+  have hlt : densityRatio n μ x ρ < m := hεsub ⟨hρ, hρj.trans_lt hj⟩
+  have hD0 : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+    mul_ne_zero hω0 (pow_ne_zero n (ENNReal.ofReal_pos.2 hρ).ne')
+  have hDtop : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- Step 7: `μ(B_ρ(x)) < m (ω_n ρ^n) = (m ω_n) ρ^n ≤ K ρ^n`.
+  calc μ (closedBall x ρ) ≤ m * (unitBallVolume n * ENNReal.ofReal ρ ^ n) :=
+        ((ENNReal.div_lt_iff (Or.inl hD0) (Or.inl hDtop)).1 hlt).le
+    _ = m * unitBallVolume n * ENNReal.ofReal ρ ^ n := (mul_assoc _ _ _).symm
+    _ ≤ K * ENNReal.ofReal ρ ^ n := mul_le_mul_left hK.le _
+
+/-- Simon Ch. 8, proof of 1.2, step (3a) (the covering comparison of Ch. 1, 3.2): if `H^n(Z) = 0`
+and `Θ^n(μ, x)` exists and is finite at every `x ∈ Z`, then `μ(Z) = 0`. -/
+theorem Submission.frt_weight_null_of_hausdorff_null :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (Z : Set (Euclidean N)), μHE[n] Z = 0 → (∀ x ∈ Z, ∃ θ : ℝ≥0∞, θ ≠ ∞ ∧ HasDensity n μ x θ) → μ Z = 0 := by
+  intro N n μ Z hZ hdens
+  -- `Z_{K,j}`: the points `x ∈ Z` with `μ(B_ρ(x)) ≤ K ρ^n` for all `0 < ρ ≤ 1/(j+1)`.
+  let Zs : ℕ → ℕ → Set (Euclidean N) := fun K j ↦ {x | x ∈ Z ∧ ∀ ρ : ℝ, 0 < ρ →
+    ρ ≤ 1 / ((j : ℝ) + 1) → μ (closedBall x ρ) ≤ (K : ℝ≥0∞) * ENNReal.ofReal ρ ^ n}
+  -- Step 1: a finite density at `x ∈ Z` puts `x` into some `Z_{K,j}`.
+  have hcover : Z ⊆ ⋃ (K : ℕ) (j : ℕ), Zs K j := fun x hx ↦ by
+    obtain ⟨θ, hθ, hxθ⟩ := hdens x hx
+    obtain ⟨K, j, hKj⟩ := Submission.frt_ball_bound_of_finite_density N n μ x θ hθ hxθ
+    exact mem_iUnion₂.2 ⟨K, j, hx, hKj⟩
+  -- Steps 2–5: `Z_{K,j} ⊆ Z` is `H^n`-null and satisfies the ball bound with the finite constant
+  -- `K` at scales `ρ ≤ 1/(j+1)`, so the covering comparison makes it `μ`-null.
+  have hnull (K j : ℕ) : μ (Zs K j) = 0 :=
+    Submission.frt_measure_null_of_hausdorff_null_ball_bound N n μ (Zs K j) K (1 / ((j : ℝ) + 1))
+      (ENNReal.natCast_ne_top K) Nat.one_div_pos_of_nat (measure_mono_null (fun _ hx ↦ hx.1) hZ)
+      fun _ hx ↦ hx.2
+  -- Countable subadditivity over `(K, j) ∈ ℕ × ℕ`.
+  exact measure_mono_null hcover (measure_iUnion_null fun K ↦ measure_iUnion_null (hnull K))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
