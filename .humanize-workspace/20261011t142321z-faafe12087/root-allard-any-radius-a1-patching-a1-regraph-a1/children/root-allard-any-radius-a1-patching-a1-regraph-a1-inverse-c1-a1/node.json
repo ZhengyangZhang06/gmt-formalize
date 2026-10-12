@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.regraph-a1.inverse_c1-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1.regraph-a1",
+  "depth": 4,
+  "title": "C^1 regularity and derivative bound for a continuous right inverse of a C^1 map",
+  "statement": "Let n be a natural number, Phi, X : R^n -> R^n functions, U, W subsets of R^n and kappa a real number. Assume U and W are open, kappa > 0, Phi is C^1 on U, kappa |h| <= |fderiv Phi x h| for every x in U and h in R^n, X is continuous on W, and for every w in W, X(w) is in U and Phi(X(w)) = w. Then X is C^1 on W and the operator norm of fderiv X w is at most 1/kappa for every w in W.",
+  "lean_statement": "∀ {n : ℕ} (Φ X : Rn n → Rn n) (U W : Set (Rn n)) (κ : ℝ), IsOpen U → IsOpen W → 0 < κ → ContDiffOn ℝ 1 Φ U → (∀ x ∈ U, ∀ h : Rn n, κ * ‖h‖ ≤ ‖fderiv ℝ Φ x h‖) → ContinuousOn X W → (∀ w ∈ W, X w ∈ U ∧ Φ (X w) = w) → ContDiffOn ℝ 1 X W ∧ ∀ w ∈ W, ‖fderiv ℝ X w‖ ≤ κ⁻¹",
+  "lean_name": "arp_rgr_right_inverse_contDiffOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-regraph-a1-inverse-c1-a1-a1"
+}
