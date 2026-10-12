@@ -410,6 +410,32 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Uniform convergence with a common compact support gives convergence of integrals: if `μ` is
+finite on compacts, `K` is compact, `F k = G` off `K` for every `k` and `F k → G` uniformly, then
+`∫ F k dμ → ∫ G dμ` (the limit step of the mollification argument for Simon Ch. 8, 5.3). -/
+theorem Submission.varifold_tangents_rh_mc_tendsto_integral_of_uniform :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (K : Set (Euclidean N)) (F : ℕ → Euclidean N → ℝ) (G : Euclidean N → ℝ), IsFiniteMeasureOnCompacts μ → IsCompact K → (∀ k, Integrable (F k) μ) → Integrable G μ → (∀ k, ∀ y ∉ K, F k y = G y) → (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |F k y - G y| ≤ ε) → Tendsto (fun k => ∫ y, F k y ∂μ) atTop (𝓝 (∫ y, G y ∂μ)) := by
+  intro N μ K F G hμ hK hF hG hV hU
+  -- Step 1: `μ K < ∞`, and `c := μ.real K` satisfies `0 < c + 1`.
+  have hKfin : μ K < ∞ := hμ.lt_top_of_isCompact hK
+  have hc1 : 0 < μ.real K + 1 := by linarith [measureReal_nonneg (μ := μ) (s := K)]
+  -- Step 5: by `Metric.tendsto_atTop` it suffices to find `k₀` for each `ε > 0`.
+  refine Metric.tendsto_atTop.2 fun ε hε ↦ ?_
+  -- Step 3: `η := ε / (c + 1) > 0`, and `k₀` from the uniform hypothesis for `η`.
+  have hη : 0 < ε / (μ.real K + 1) := div_pos hε hc1
+  obtain ⟨k₀, hk₀⟩ := hU _ hη
+  refine ⟨k₀, fun k hk ↦ ?_⟩
+  -- Step 4: `F k - G` vanishes off `K`, so its integral is its integral over `K` (step 2).
+  have hint : ∫ y in K, F k y - G y ∂μ = ∫ y, F k y - G y ∂μ :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy ↦ by rw [hV k y hy, sub_self]
+  -- Step 2: `|F k - G| ≤ η` on `K` and `μ K < ∞`, so `|∫_K (F k - G) dμ| ≤ η c < ε`.
+  rw [Real.dist_eq, ← integral_sub (hF k) hG, ← hint, ← Real.norm_eq_abs]
+  calc ‖∫ y in K, F k y - G y ∂μ‖ ≤ ε / (μ.real K + 1) * μ.real K :=
+        norm_setIntegral_le_of_norm_le_const hKfin fun y _ ↦ by
+          rw [Real.norm_eq_abs]; exact hk₀ k hk y
+    _ < ε / (μ.real K + 1) * (μ.real K + 1) := mul_lt_mul_of_pos_left (lt_add_one _) hη
+    _ = ε := div_mul_cancel₀ ε hc1.ne'
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
