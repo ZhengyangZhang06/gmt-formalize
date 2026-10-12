@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1.c1_first_order-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1",
+  "depth": 3,
+  "title": "Uniform first-order approximation of a C^1 map near a point",
+  "statement": "Let n, l be natural numbers, let U ⊆ R^n = EuclideanSpace R (Fin n) be open, let u : R^n → R^l be of class C^1 on U (ContDiffOn R 1 u U), let x0 ∈ U and ε > 0. Then there is η > 0 such that the closed ball B_η(x0) is contained in U and |u(x) - u(y) - Du(x0)(x - y)| <= ε |x - y| for all x, y ∈ B_η(x0), where Du(x0) = fderiv R u x0 and |·| are the Euclidean norms.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen U → ContDiffOn ℝ 1 u U → ∀ x₀ ∈ U, ∀ ε : ℝ, 0 < ε → ∃ η : ℝ, 0 < η ∧ closedBall x₀ η ⊆ U ∧ ∀ x ∈ closedBall x₀ η, ∀ y ∈ closedBall x₀ η, ‖u x - u y - fderiv ℝ u x₀ (x - y)‖ ≤ ε * ‖x - y‖",
+  "lean_name": "dohr_c1_uniform_first_order",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-c1-graph-density-a1-c1-first-order-a1-a1"
+}

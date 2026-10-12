@@ -583,6 +583,31 @@ theorem rsod_planeMeasure_closedBall : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : S
       ENNReal.ofReal_pow (Real.sqrt_nonneg _)]
   rw [hpre, hvol, Measure.addHaar_closedBall volume (0 : P) hs, hball, hP,
     ← ENNReal.ofReal_mul (pow_nonneg hs n), mul_comm]
+/-- **Uniform first-order approximation of a `C¹` map** (step 2 of the density-one argument for
+`C¹` graphs in Simon 7.1, in two-point form).  If `u` is `C¹` on the open set `U ⊆ ℝⁿ` and
+`x₀ ∈ U`, then for every `ε > 0` there is `η > 0` with `B_η(x₀) ⊆ U` and
+`|u(x) − u(y) − Du(x₀)(x − y)| ≤ ε |x − y|` for all `x, y ∈ B_η(x₀)`: by continuity of `Du` at `x₀`
+choose `η` with `‖Du(z) − Du(x₀)‖ ≤ ε` on `B_η(x₀) ⊆ U`, and apply the mean value inequality on the
+convex ball `B_η(x₀)`. -/
+theorem dohr_c1_uniform_first_order : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen U → ContDiffOn ℝ 1 u U → ∀ x₀ ∈ U, ∀ ε : ℝ, 0 < ε → ∃ η : ℝ, 0 < η ∧ closedBall x₀ η ⊆ U ∧ ∀ x ∈ closedBall x₀ η, ∀ y ∈ closedBall x₀ η, ‖u x - u y - fderiv ℝ u x₀ (x - y)‖ ≤ ε * ‖x - y‖ := by
+  intro n ℓ U u hU hu x₀ hx₀ ε hε
+  -- `u` is differentiable at every point of the open set `U`, and `Du` is continuous at `x₀`.
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ u z := fun z hz =>
+    (hu.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hca : ContinuousAt (fderiv ℝ u) x₀ :=
+    (hu.continuousOn_fderiv_of_isOpen hU le_rfl).continuousAt (hU.mem_nhds hx₀)
+  -- `B̆_{η₁}(x₀) ⊆ U`, `‖Du(z) − Du(x₀)‖ < ε` for `|z − x₀| < η₂`; take `η = min(η₁, η₂)/2`.
+  obtain ⟨η₁, hη₁, hball⟩ := Metric.isOpen_iff.1 hU x₀ hx₀
+  obtain ⟨η₂, hη₂, hclose⟩ := Metric.continuousAt_iff.1 hca ε hε
+  have hη : min η₁ η₂ / 2 < min η₁ η₂ := half_lt_self (lt_min hη₁ hη₂)
+  have hsub : closedBall x₀ (min η₁ η₂ / 2) ⊆ U := fun z hz =>
+    hball (mem_ball.2 ((mem_closedBall.1 hz).trans_lt (hη.trans_le (min_le_left η₁ η₂))))
+  refine ⟨min η₁ η₂ / 2, half_pos (lt_min hη₁ hη₂), hsub, fun x hx y hy => ?_⟩
+  -- Mean value inequality on the convex ball, measured against the fixed linear map `Du(x₀)`.
+  refine (convex_closedBall x₀ _).norm_image_sub_le_of_norm_hasFDerivWithin_le'
+    (fun z hz => (hdiff z (hsub hz)).hasFDerivAt.hasFDerivWithinAt) (fun z hz => ?_) hy hx
+  rw [← dist_eq_norm]
+  exact (hclose ((mem_closedBall.1 hz).trans_lt (hη.trans_le (min_le_right η₁ η₂)))).le
 
 end Submission
 

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1.graph_mass_pinching-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1",
+  "depth": 3,
+  "title": "Two-sided pinching of the H^n-mass of a C^1 graph in small balls",
+  "statement": "Let n >= 1 and l be natural numbers, R ∈ R, u : R^n → R^l of class C^1 on the open ball B°_R(0) of R^n, x ∈ B°_R(0), and 0 < ε < 1. Let Γ = graphOver u (B°_R(0)) = {(z, u(z)) : z ∈ B°_R(0)} ⊆ R^{n+l} and let B_r((x, u(x))) denote the closed ball (with (x, u(x)) = graphPoint x (u x)). Then there is η > 0 such that for every r with 0 < r <= η, in [0, ∞]: ENNReal.ofReal(((1-ε)^n/(1+ε)^n) omega_n r^n) <= H^n(Γ ∩ B_r((x, u(x)))) <= ENNReal.ofReal(((1+ε)^n/(1-ε)^n) omega_n r^n), where H^n = μHE[n] and omega_n = unitBallVolume n.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ∀ x ∈ ball (0 : Rn n) R, ∀ ε : ℝ, 0 < ε → ε < 1 → ∃ η : ℝ, 0 < η ∧ ∀ r : ℝ, 0 < r → r ≤ η → ENNReal.ofReal ((1 - ε) ^ n / (1 + ε) ^ n * (unitBallVolume n * r ^ n)) ≤ (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) ∧ (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) ≤ ENNReal.ofReal ((1 + ε) ^ n / (1 - ε) ^ n * (unitBallVolume n * r ^ n))",
+  "lean_name": "dohr_c1_graph_mass_pinching",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.plane_ball_measure-a1",
+    "root.density_one_higher_regularity-a1.c1_graph_density-a1.c1_first_order-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.plane_ball_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-plane-bal-a9b18bed1e-a1",
+      "result_commit": "7881dde5f7e308e54f05a8f95dc7a4b94e277e4c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1.c1_first_order-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-c1-graph-density-a1-graph-mass-pinching-a1-a1"
+}
