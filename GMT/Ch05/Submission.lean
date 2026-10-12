@@ -578,6 +578,29 @@ theorem aal_good_tangent_point : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P
     _ ≤ ∫⁻ x in closedBall ξ R, ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ :=
         lintegral_mono_set (closedBall_subset_closedBall hsR)
     _ ≤ ENNReal.ofReal ((F.card : ℝ) * K) := hsum
+/-- Simon Ch. 5, proof of Lemma 2.5 (pp. 109–110), (5)–(6): if `|x₀ − ξ| ≤ a`, every net point
+`y ∈ F` has `|p_{T⊥}(x₀ − y)| ≤ b`, and `F` is an `a`-net of `S`, then
+`dist(x − ξ, T) ≤ b + 2a` for every `x ∈ S`. -/
+theorem aal_height_of_net_plane : ∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)) (ξ x₀ : Amb n ℓ) (S : Set (Amb n ℓ)) (F : Finset (Amb n ℓ)) (a b : ℝ), ‖x₀ - ξ‖ ≤ a → (∀ y ∈ F, ‖(x₀ - y) - T.starProjection (x₀ - y)‖ ≤ b) → (∀ x ∈ S, ∃ y ∈ F, dist x y ≤ a) → ∀ x ∈ S, infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ b + 2 * a := by
+  intro n ℓ T ξ x₀ S F a b hx₀ hF hS x hx
+  -- Step 1: a net point `y ∈ F` with `|x − y| ≤ a`.
+  obtain ⟨y, hyF, hxy⟩ := hS x hx
+  -- Step 2: `t = −p_T(x₀ − y) ∈ T`.
+  have ht : -T.starProjection (x₀ - y) ∈ T := T.neg_mem (T.starProjection_apply_mem _)
+  -- Step 3: `(x − ξ) − t = (x − y) + (x₀ − ξ) − ((x₀ − y) − p_T(x₀ − y))`.
+  have hid : (x - ξ) - -T.starProjection (x₀ - y) =
+      (x - y) + (x₀ - ξ) - ((x₀ - y) - T.starProjection (x₀ - y)) := by abel
+  -- Step 5: the triangle inequality and the three hypotheses.
+  have h₁ := norm_sub_le ((x - y) + (x₀ - ξ)) ((x₀ - y) - T.starProjection (x₀ - y))
+  have h₂ := norm_add_le (x - y) (x₀ - ξ)
+  rw [dist_eq_norm] at hxy
+  have h₃ := hF y hyF
+  -- Steps 4 and 6: `dist(x − ξ, T) ≤ |(x − ξ) − t| ≤ a + a + b`.
+  calc infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ dist (x - ξ) (-T.starProjection (x₀ - y)) :=
+        infDist_le_dist_of_mem ht
+    _ = ‖(x - y) + (x₀ - ξ) - ((x₀ - y) - T.starProjection (x₀ - y))‖ := by
+        rw [dist_eq_norm, hid]
+    _ ≤ b + 2 * a := by linarith
 
 end Submission
 
