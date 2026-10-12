@@ -455,6 +455,21 @@ theorem Submission.intcpt_allard_bsb_besicovitch_cover :
           mul_le_mul_right (measure_mono (iUnion₂_subset fun x _ ↦ hsub x)) t
     _ = (C : ℝ≥0∞) * t * ν O := by
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_assoc]
+/-- **Simon Ch. 8, proof of 5.10, p. 221, the Besicovitch step** (child `marginal_measure` of
+`bad_set_bound`): for any measure `m` on `ℝ^N × G(N,n)` and any `g : ℝ^N × G(N,n) → [0,∞]`, the
+functional `A ↦ ∫_{A × G(N,n)} g dm` agrees on Borel sets `A ⊆ ℝ^N` with a measure, namely the
+image of `m ⌞ g` under `(x, S) ↦ x`; so it is monotone and countably additive there. -/
+theorem Submission.intcpt_allard_bsb_marginal_measure :
+    ∀ (N n : ℕ) (m : Measure (Euclidean N × Grassmannian N n))
+      (g : Euclidean N × Grassmannian N n → ℝ≥0∞), ∃ τ : Measure (Euclidean N),
+      ∀ A : Set (Euclidean N), MeasurableSet A →
+        τ A = ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), g z ∂m := by
+  intro N n m g
+  refine ⟨(m.withDensity g).map Prod.fst, fun A hA ↦ ?_⟩
+  -- `τ(A) = (m ⌞ g)(Prod.fst ⁻¹' A) = (m ⌞ g)(A × G(N,n))`; `withDensity_apply` needs only
+  -- `A × G(N,n)` to be measurable, not `g`.
+  rw [Measure.map_apply measurable_fst hA, ← prod_univ,
+    withDensity_apply g (hA.prod MeasurableSet.univ)]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
