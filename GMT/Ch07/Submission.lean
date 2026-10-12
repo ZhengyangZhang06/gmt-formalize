@@ -451,6 +451,58 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Deleting a point other than the base point preserves approximate tangent spaces**
+(Simon Ch. 3, 1.4): if `Q` is an approximate tangent space of the Borel set `M` at `x` and
+`p ≠ x`, then `Q` is an approximate tangent space of `M \ {p}` at `x`.
+
+Let `f ∈ C_c(ℝᴾ)` with `spt f ⊆ B̄_{R₀}(0)` and `0 < r < ‖p − x‖/(max R₀ 1 + 1)`.  Then `η_{x,r}`
+is injective, so `η_{x,r}(M \ {p}) = η_{x,r}(M) \ {η_{x,r}(p)}`; `η_{x,r}(M) = {y | x + ry ∈ M}`
+is Borel; and `‖η_{x,r}(p)‖ = ‖p − x‖/r > R₀`, so `f` vanishes at the deleted point.  Hence the
+blow-up integrals of `f` over `M` and over `M \ {p}` agree for all small `r > 0`, and so do their
+limits. -/
+theorem Submission.dimred_zdv_approxTangent_sdiff_singleton : ∀ (P n : ℕ) (M : Set (Euclid P)) (x p : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → x ≠ p → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n (M \ {p}) x Q := by
+  intro P n M x p Q hM hxp hT
+  refine ⟨hT.1, fun f => (hT.2 f).congr' ?_⟩
+  -- `spt f ⊆ B̄_{R₀}(0)`
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+  have hd : 0 < ‖p - x‖ := norm_pos_iff.2 (sub_ne_zero.2 hxp.symm)
+  have hR₁ : 0 < max R₀ 1 + 1 := by
+    have := le_max_right R₀ 1
+    linarith
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hd hR₁)] with r ⟨hr, hrd⟩
+  -- `η_{x,r}` is injective
+  have hinj : Injective (Poincare.SimonGMT.Chapter03.blowUpMap x r) := fun a b hab =>
+    sub_left_injective (smul_right_injective (Euclid P) (inv_ne_zero hr.ne') hab)
+  -- `η_{x,r}(M) = {y | x + r y ∈ M}` is Borel
+  have hmeas : MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M) := by
+    have himage :
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' M = (fun y => x + r • y) ⁻¹' M := by
+      ext y
+      constructor
+      · rintro ⟨z, hz, rfl⟩
+        simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne'] using hz
+      · intro hy
+        refine ⟨x + r • y, hy, ?_⟩
+        simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, inv_mul_cancel₀ hr.ne']
+    rw [himage]
+    exact hM.preimage (by fun_prop)
+  -- `f` vanishes at `η_{x,r}(p)`, as `‖η_{x,r}(p)‖ = r⁻¹ ‖p − x‖ > R₀`
+  have hfq : f (Poincare.SimonGMT.Chapter03.blowUpMap x r p) = 0 := by
+    refine image_eq_zero_of_notMem_tsupport fun hq => ?_
+    have h1 := mem_closedBall_zero_iff.1 (hR₀ hq)
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul_of_nonneg (inv_nonneg.2 hr.le),
+      inv_mul_le_iff₀ hr] at h1
+    have h2 : r * (max R₀ 1 + 1) < ‖p - x‖ := (lt_div_iff₀ hR₁).1 hrd
+    have h3 : r * R₀ ≤ r * max R₀ 1 := mul_le_mul_of_nonneg_left (le_max_left R₀ 1) hr.le
+    linarith
+  -- deleting `η_{x,r}(p)`, where `f` vanishes, does not change the integral
+  rw [image_sdiff hinj, image_singleton]
+  refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hmeas sdiff_subset fun y hy => ?_
+  obtain rfl : y = Poincare.SimonGMT.Chapter03.blowUpMap x r p := by
+    by_contra hne
+    exact hy.2 ⟨hy.1, hne⟩
+  exact hfq
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
