@@ -359,6 +359,50 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, end of the proof of Lemma 2.36 and Remark 2.37(1), via Ch. 1, 1.15(2): if `U`
+is open, `μ(ℝ^P ∖ U) = 0` and `μ(W) < ∞` for every `W ⊂⊂ U`, then a Borel set `E` whose compact
+subsets inside `U` are all `μ`-null is itself `μ`-null. -/
+theorem Submission.rpn_null_of_compact_null : ∀ (P : ℕ) (U E : Set (Eucl P)) (μ : Measure (Eucl P)), IsOpen U → μ Uᶜ = 0 → (∀ W, CompactlyContainedOpen W U → μ W < ∞) → MeasurableSet E → (∀ K, IsCompact K → K ⊆ E → K ⊆ U → μ K = 0) → μ E = 0 := by
+  intro P U E μ hU hUc hfin hE hK
+  -- Countably many balls `B(x, ε_x / 2) ⊂⊂ U`, `x ∈ S`, cover `U` (Lindelöf).
+  choose ε hε hεU using fun x : U => Metric.isOpen_iff.1 hU x x.2
+  have hcc : ∀ x : U, CompactlyContainedOpen (ball (x : Eucl P) (ε x / 2)) U := fun x =>
+    ⟨isOpen_ball, (isCompact_closedBall _ _).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall,
+      closure_ball_subset_closedBall.trans ((closedBall_subset_ball (half_lt_self (hε x))).trans
+        (hεU x))⟩
+  obtain ⟨S, hS, hSU⟩ :=
+    TopologicalSpace.isOpen_iUnion_countable (fun x : U => ball (x : Eucl P) (ε x / 2))
+      fun _ => isOpen_ball
+  have hcover : U ⊆ ⋃ x ∈ S, ball (x : Eucl P) (ε x / 2) := fun y hy =>
+    hSU.superset (mem_iUnion.2 ⟨⟨y, hy⟩, mem_ball_self (half_pos (hε _))⟩)
+  -- Each `E ∩ V` with `V = B(x, ε_x / 2)` is null: `μ ⌞ V` is finite, hence inner regular by
+  -- closed sets, and a closed `F ⊆ E ∩ V` lies in the compact `closure V ⊆ U`.
+  have hpiece : ∀ x : U, μ (E ∩ ball (x : Eucl P) (ε x / 2)) = 0 := by
+    intro x
+    obtain ⟨hVo, hVc, hVU⟩ := hcc x
+    have : IsFiniteMeasure (μ.restrict (ball (x : Eucl P) (ε x / 2))) :=
+      ⟨(Measure.restrict_apply_univ _).trans_lt (hfin _ (hcc x))⟩
+    have hA : MeasurableSet (E ∩ ball (x : Eucl P) (ε x / 2)) := hE.inter hVo.measurableSet
+    rw [← Measure.restrict_eq_self μ inter_subset_right]
+    by_contra hne
+    obtain ⟨F, hFA, hFc, hF⟩ :=
+      hA.exists_lt_isClosed_of_ne_top (measure_ne_top _ _) (pos_iff_ne_zero.2 hne)
+    have hFV : F ⊆ closure (ball (x : Eucl P) (ε x / 2)) :=
+      (hFA.trans inter_subset_right).trans subset_closure
+    have hF0 : μ F = 0 :=
+      hK F (hVc.of_isClosed_subset hFc hFV) (hFA.trans inter_subset_left) (hFV.trans hVU)
+    exact lt_irrefl _ (hF.trans_le ((Measure.restrict_apply_le _ _).trans hF0.le))
+  -- Countable subadditivity gives `μ(E ∩ U) = 0`, and `μ(E ∖ U) ≤ μ(Uᶜ) = 0`.
+  have hEU : μ (E ∩ U) = 0 := by
+    refine measure_mono_null ?_ ((measure_biUnion_null_iff hS).2 fun x _ => hpiece x)
+    rintro y ⟨hyE, hyU⟩
+    obtain ⟨x, hxS, hyx⟩ := mem_iUnion₂.1 (hcover hyU)
+    exact mem_iUnion₂.2 ⟨x, hxS, hyE, hyx⟩
+  have hEUc : μ (E \ U) = 0 := measure_mono_null (sdiff_subset_compl E U) hUc
+  refine nonpos_iff_eq_zero.1 ((measure_le_inter_add_sdiff μ E U).trans_eq ?_)
+  rw [hEU, hEUc, add_zero]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
