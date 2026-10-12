@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.tangent_ae-a1",
+  "parent_id": "root.allard_regularity-a1",
+  "depth": 2,
+  "title": "Tangent planes exist a.e., are measurable, and density = multiplicity a.e. (Simon Ch. 3, 1.6-1.9)",
+  "statement": "Let n >= 1, l >= 0, U an open subset of R^(n+l), and V a rectifiable n-varifold in U in the sense of the contract (carrier M contained in U, H^n-null-measurable and countably n-rectifiable; multiplicity theta positive on M, H^n-a.e.-measurable on M and H^n-integrable on M cap K for each compact K contained in U), mu := V.weight = theta H^n restricted to M. Then: (i) x -> V.tangentProj x is mu-a.e. strongly measurable; (ii) for mu-a.e. x there is an n-dimensional subspace P with V.tangentProj x = P.starProjection (the approximate tangent space of M with respect to theta, Simon Ch. 3, 1.7, exists at mu-a.e. x); (iii) for mu-a.e. x, V.HasDensity x (V.mult x), i.e. mu(B_r(x))/(omega_n r^n) -> theta(x) as r -> 0+.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ V : RectifiableVarifold n ℓ U, AEStronglyMeasurable V.tangentProj V.weight ∧ (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x))",
+  "lean_name": "allard52_tangent_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-tangent-ae-a1-a1"
+}
