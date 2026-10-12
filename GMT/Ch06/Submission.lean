@@ -447,36 +447,6 @@ theorem Submission.polyhedral_approx_finite_smooth_ext :
   by_cases hxO : x ∈ O
   · rw [sub_eq_zero.mp (hx hxO)]
   · simp [hb x hxO]
-/-- An integrable density is a difference of two finite measures (used for the uniqueness of the
-vector measure in Simon Ch. 6, (2.7)–(2.9), p. 136): `ν^± = μ.withDensity (ofReal ∘ (±g))` are
-finite and `∫ b dν⁺ − ∫ b dν⁻ = ∫ b g dμ` for every bounded Borel `b`. -/
-theorem Submission.polyhedral_approx_density_split :
-    ∀ (P : ℕ) (μ : Measure (Eucl P)) (g : Eucl P → ℝ), Integrable g μ →
-      ∃ νpos νneg : Measure (Eucl P), IsFiniteMeasure νpos ∧ IsFiniteMeasure νneg ∧
-        ∀ b : Eucl P → ℝ, Measurable b → (∃ C : ℝ, ∀ x, |b x| ≤ C) →
-          ∫ x, b x ∂νpos - ∫ x, b x ∂νneg = ∫ x, b x * g x ∂μ := by
-  intro P μ g hg
-  have hg' : Integrable (fun x => -g x) μ := hg.neg
-  refine ⟨μ.withDensity fun x => ENNReal.ofReal (g x),
-    μ.withDensity fun x => ENNReal.ofReal (-g x),
-    isFiniteMeasure_withDensity_ofReal hg.2, isFiniteMeasure_withDensity_ofReal hg'.2, ?_⟩
-  rintro b hb ⟨C, hC⟩
-  -- `∫ b d(μ.withDensity (ofReal ∘ f)) = ∫ f⁺ b dμ`, since `(ofReal r).toReal = r⁺`.
-  have hwd : ∀ f : Eucl P → ℝ, Integrable f μ →
-      ∫ x, b x ∂(μ.withDensity fun x => ENNReal.ofReal (f x)) = ∫ x, max (f x) 0 * b x ∂μ := by
-    intro f hf
-    rw [integral_withDensity_eq_integral_toReal_smul₀ hf.1.aemeasurable.ennreal_ofReal
-      (ae_of_all μ fun _ => ENNReal.ofReal_lt_top)]
-    simp only [ENNReal.toReal_ofReal', smul_eq_mul]
-  -- `f⁺ b` is integrable: `f⁺` is integrable and `b` is measurable and bounded.
-  have hint : ∀ f : Eucl P → ℝ, Integrable f μ → Integrable (fun x => max (f x) 0 * b x) μ :=
-    fun f hf => hf.pos_part.mul_bdd hb.aestronglyMeasurable
-      (ae_of_all μ fun x => (Real.norm_eq_abs (b x)).le.trans (hC x))
-  rw [hwd g hg, hwd (fun x => -g x) hg', ← integral_sub (hint g hg) (hint (fun x => -g x) hg')]
-  -- `g⁺ − (−g)⁺ = g`.
-  congr 1
-  ext x
-  rw [← sub_mul, max_zero_sub_max_neg_zero_eq_self, mul_comm]
 
 /-- Integrable densities `g₁ μ₁`, `g₂ μ₂` that agree on every `C^∞` function with compact support
 in an open set `O` agree on every bounded Borel `b` vanishing outside `O` (the uniqueness behind
