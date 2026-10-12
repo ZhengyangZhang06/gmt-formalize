@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "31fed17959b6a16ac862c9f7e85ec7d03b988e1c4e6543058e52735f71111982",
+  "git_delta": {
+    "base_commit": "c7a37d3d72e550cf37803a37d55dccb4847903f3",
+    "candidate_commit": "e3e235aead79602adc3d05ec85284c70aed458a6",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_convolution_bound_and_lipschitz",
+    "diff_sha256": "4495bfabb9bdf485593f2ada1d273f7efb491e0867109b0a6e9515f10763a54c",
+    "source_sha256": "d09b65791fdedf3d8cc6939781af31e543030d9a088ff72dbf324def0cd2070e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_convolution_bound_and_lipschitz",
+      "statement": "∀ (n : ℕ) (ρ F : Rn n → ℝ) (A : ℝ) (K : ℝ≥0), (∀ x, |ρ x| ≤ A) → LipschitzWith K ρ → Integrable F volume → ∀ x y : Rn n, |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x| ≤ A * (∫ t, |F t|) ∧ |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume y| ≤ K * ‖x - y‖ * (∫ t, |F t|)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
