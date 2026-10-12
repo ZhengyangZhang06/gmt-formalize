@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "257d0d75dfe435835fd47e825f343d2fe38eb4cabfee3940bb65171aeaaa9330",
+  "git_delta": {
+    "base_commit": "2dcd02614975c100d8651de170661e5cb9eb6103",
+    "candidate_commit": "abdc28abc97c8e4613e177c39b8c3b05752c59a2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_l2_subseq",
+    "diff_sha256": "b37a7d96c1c280a7ffec1107f5adc30b1a83483d17f7234ad5246da71b451e0f",
+    "source_sha256": "d5918d16c657873f7a2f0bf5d07c9d3e15262a392687f795ecac6f1cf2398d66",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_l2_subseq",
+      "statement": "∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : ℕ → α → ℝ), (∀ j, MemLp (f j) 2 μ) → (∀ η : ℝ, 0 < η → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∫ x, (f j x - f k x) ^ 2 ∂μ ≤ η) → ∃ (φ : ℕ → ℕ) (W : α → ℝ), StrictMono φ ∧ MemLp W 2 μ ∧ Tendsto (fun j => ∫ x, (f (φ j) x - W x) ^ 2 ∂μ) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
