@@ -2962,6 +2962,158 @@ theorem w12_ball_rellich_compactness : ∀ n : ℕ, 1 ≤ n → ∀ (A : ℝ) (f
   refine lintegral_congr_ae ?_
   filter_upwards [hFae (φ k)] with x hx
   rw [hx]
+/-- **Weak compactness in `L²(B; ℝⁿ)`** (Simon Ch. 5, proof of Lemma 3.1, p. 114: `∇f_{k'} → ∇w`
+weakly in `L²` with `∫_B |∇w|² ≤ 1`).  If `∫_B |G_k|² ≤ 1` for every `k`, then a subsequence
+`G_{φ(k)}` converges weakly in `L²(B; ℝⁿ)` to some `g` with `∫_B |g|² ≤ 1`.
+
+`L²(B; ℝⁿ)` is made a real Hilbert space with `⟪u, v⟫ = ∫_B ⟨u, v⟩`, as in Mathlib's `L2Space`
+(not among the frozen imports).  A diagonal subsequence makes `⟪G_{φ(k)}, G_j⟫` converge for every
+`j`; the uniform bound extends this to the closed span `K` of the `G_j`, and the orthogonal
+projection onto `K` to all of `L²`.  The limit functional has norm `≤ 1`; `g` is its Riesz
+representative. -/
+theorem l2_ball_weak_subsequence : ∀ (n : ℕ) (G : ℕ → Rn n → Rn n), (∀ k, MemLp (G k) 2 (volume.restrict (ball (0 : Rn n) 1))) → (∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖G k x‖ₑ ^ 2 ≤ 1) → ∃ (φ : ℕ → ℕ) (g : Rn n → Rn n), StrictMono φ ∧ MemLp g 2 (volume.restrict (ball (0 : Rn n) 1)) ∧ ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 ≤ 1 ∧ ∀ h : Rn n → Rn n, MemLp h 2 (volume.restrict (ball (0 : Rn n) 1)) → Tendsto (fun k => ∫ x in ball (0 : Rn n) 1, inner ℝ (G (φ k) x) (h x)) atTop (𝓝 (∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (h x))) := by
+  -- Step 1: a bounded sequence in a real Hilbert space has a weakly convergent subsequence
+  -- whose limit lies in the same closed ball.
+  have weak : ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
+      (u : ℕ → H), (∀ k, ‖u k‖ ≤ 1) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ γ : H, ‖γ‖ ≤ 1 ∧
+        ∀ v, Tendsto (fun k => inner ℝ (u (φ k)) v) atTop (𝓝 (inner ℝ γ v)) := by
+    intro H _ _ _ u hu
+    have hbd : ∀ k v, |inner ℝ (u k) v| ≤ ‖v‖ := fun k v =>
+      (abs_real_inner_le_norm _ _).trans (mul_le_of_le_one_left (norm_nonneg _) (hu k))
+    -- Diagonal extraction: `⟪u (φ k), u j⟫` converges for every `j` (Tychonoff).
+    have hmem : ∀ k, (fun j => inner ℝ (u k) (u j)) ∈ Set.pi univ fun _ : ℕ => Icc (-1 : ℝ) 1 :=
+      fun k j _ => abs_le.mp ((hbd k (u j)).trans (hu j))
+    obtain ⟨a, -, φ, hφ, hlim⟩ := (isCompact_univ_pi fun _ => isCompact_Icc).tendsto_subseq hmem
+    have hconv₀ : ∀ j, Tendsto (fun k => inner ℝ (u (φ k)) (u j)) atTop (𝓝 (a j)) :=
+      fun j => tendsto_pi_nhds.mp hlim j
+    -- Convergence against the span of the sequence.
+    have hspan : ∀ v ∈ Submodule.span ℝ (Set.range u),
+        ∃ l, Tendsto (fun k => inner ℝ (u (φ k)) v) atTop (𝓝 l) := by
+      intro v hv
+      induction hv using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨j, rfl⟩ := hx
+        exact ⟨a j, hconv₀ j⟩
+      | zero => exact ⟨0, by simp⟩
+      | add x y _ _ hx hy =>
+        obtain ⟨l₁, h₁⟩ := hx
+        obtain ⟨l₂, h₂⟩ := hy
+        exact ⟨l₁ + l₂, by simpa only [inner_add_right] using h₁.add h₂⟩
+      | smul c x _ hx =>
+        obtain ⟨l, h⟩ := hx
+        exact ⟨c * l, by simpa only [real_inner_smul_right] using h.const_mul c⟩
+    -- Convergence against its closure, by the uniform bound `‖u k‖ ≤ 1`.
+    set K := (Submodule.span ℝ (Set.range u)).topologicalClosure with hK
+    have hclos : ∀ v ∈ K, ∃ l, Tendsto (fun k => inner ℝ (u (φ k)) v) atTop (𝓝 l) := by
+      intro v hv
+      rw [← SetLike.mem_coe, hK, Submodule.topologicalClosure_coe, Metric.mem_closure_iff] at hv
+      apply cauchySeq_tendsto_of_complete
+      rw [Metric.cauchySeq_iff']
+      intro ε hε
+      obtain ⟨w, hw, hvw⟩ := hv (ε / 3) (by positivity)
+      obtain ⟨l, hl⟩ := hspan w hw
+      obtain ⟨N, hN⟩ := Metric.cauchySeq_iff'.mp hl.cauchySeq (ε / 3) (by positivity)
+      refine ⟨N, fun k hk => ?_⟩
+      have e₁ := hbd (φ k) (v - w)
+      have e₂ := hbd (φ N) (v - w)
+      have e₃ := hN k hk
+      rw [Real.dist_eq] at e₃ ⊢
+      rw [dist_eq_norm] at hvw
+      rw [inner_sub_right] at e₁ e₂
+      have := abs_le.mp e₁
+      have := abs_le.mp e₂
+      have := abs_lt.mp e₃
+      rw [abs_lt]
+      constructor <;> linarith
+    -- Convergence against every vector, via the orthogonal projection onto `K`.
+    have hall : ∀ v : H, ∃ l, Tendsto (fun k => inner ℝ (u (φ k)) v) atTop (𝓝 l) := by
+      intro v
+      obtain ⟨l, hl⟩ := hclos (K.starProjection v) (K.starProjection_apply_mem v)
+      refine ⟨l, hl.congr fun k => ?_⟩
+      have hmemK : u (φ k) ∈ K :=
+        Submodule.le_topologicalClosure _ (Submodule.subset_span ⟨φ k, rfl⟩)
+      have h0 :=
+        Submodule.inner_right_of_mem_orthogonal hmemK (K.sub_starProjection_mem_orthogonal v)
+      rw [inner_sub_right] at h0
+      linarith
+    -- The limit functional and its Riesz representative.
+    choose L hL using hall
+    have Ladd : ∀ v w, L (v + w) = L v + L w := fun v w =>
+      tendsto_nhds_unique (hL (v + w)) (by simpa only [inner_add_right] using (hL v).add (hL w))
+    have Lsmul : ∀ (c : ℝ) v, L (c • v) = c * L v := fun c v => tendsto_nhds_unique (hL (c • v))
+      (by simpa only [real_inner_smul_right] using (hL v).const_mul c)
+    have Lbound : ∀ v, ‖L v‖ ≤ 1 * ‖v‖ := fun v => by
+      rw [one_mul, Real.norm_eq_abs]
+      exact le_of_tendsto (hL v).abs (Eventually.of_forall fun k => hbd (φ k) v)
+    let Lc : StrongDual ℝ H := LinearMap.mkContinuous
+      { toFun := L, map_add' := Ladd, map_smul' := fun c v => by simpa using Lsmul c v } 1 Lbound
+    refine ⟨φ, hφ, (InnerProductSpace.toDual ℝ H).symm Lc, ?_, fun v => ?_⟩
+    · rw [LinearIsometryEquiv.norm_map]
+      exact LinearMap.mkContinuous_norm_le _ zero_le_one _
+    · rw [InnerProductSpace.toDual_symm_apply]
+      exact hL v
+  -- Step 2: the Hilbert space `L²(B; ℝⁿ)`.
+  intro n G hG hGb
+  set μ : Measure (Rn n) := volume.restrict (ball (0 : Rn n) 1)
+  have hsq : ∀ f : Rn n → Rn n, AEStronglyMeasurable f μ →
+      eLpNorm f 2 μ ^ 2 = ∫⁻ x, ‖f x‖ₑ ^ 2 ∂μ := fun f hf => by
+    simpa [ENNReal.rpow_two] using eLpNorm_nnreal_pow_eq_lintegral (p := 2) two_ne_zero hf
+  have hint : ∀ f g : Lp (Rn n) 2 μ, Integrable (fun x => inner ℝ (f x) (g x)) μ := by
+    intro f g
+    refine (((Lp.memLp f).integrable_norm_pow two_ne_zero).add
+      ((Lp.memLp g).integrable_norm_pow two_ne_zero)).mono'
+      (continuous_inner.comp_aestronglyMeasurable₂ (Lp.aestronglyMeasurable f)
+        (Lp.aestronglyMeasurable g)) (Eventually.of_forall fun x => ?_)
+    rw [Real.norm_eq_abs, Pi.add_apply]
+    refine (abs_real_inner_le_norm _ _).trans ?_
+    nlinarith [norm_nonneg (f x), norm_nonneg (g x), sq_nonneg (‖f x‖ - ‖g x‖)]
+  have hnorm : ∀ f : Lp (Rn n) 2 μ, ‖f‖ ^ 2 = (∫⁻ x, ‖f x‖ₑ ^ 2 ∂μ).toReal := fun f => by
+    rw [Lp.norm_def, ← ENNReal.toReal_pow, hsq _ (Lp.aestronglyMeasurable f)]
+  have hnorm' : ∀ f : Lp (Rn n) 2 μ, ‖f‖ ^ 2 = ∫ x, inner ℝ (f x) (f x) ∂μ := fun f => by
+    simp_rw [real_inner_self_eq_norm_sq]
+    rw [hnorm, integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun x => sq_nonneg _)
+      ((Lp.aestronglyMeasurable f).norm.pow 2)]
+    congr 1
+    refine lintegral_congr fun x => ?_
+    rw [ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]
+  let _ : Inner ℝ (Lp (Rn n) 2 μ) := ⟨fun f g => ∫ x, inner ℝ (f x) (g x) ∂μ⟩
+  let _ : InnerProductSpace ℝ (Lp (Rn n) 2 μ) :=
+    { norm_sq_eq_re_inner := fun f => by rw [RCLike.re_to_real]; exact hnorm' f
+      conj_inner_symm := fun f g => by
+        rw [conj_trivial]
+        exact integral_congr_ae (Eventually.of_forall fun x => real_inner_comm _ _)
+      add_left := fun f f' g => by
+        change ∫ x, inner ℝ ((f + f') x) (g x) ∂μ =
+          ∫ x, inner ℝ (f x) (g x) ∂μ + ∫ x, inner ℝ (f' x) (g x) ∂μ
+        rw [← integral_add (hint f g) (hint f' g)]
+        refine integral_congr_ae ((Lp.coeFn_add f f').mono fun x hx => ?_)
+        simp only [hx, Pi.add_apply, inner_add_left]
+      smul_left := fun f g r => by
+        change ∫ x, inner ℝ ((r • f) x) (g x) ∂μ =
+          (starRingEnd ℝ) r * ∫ x, inner ℝ (f x) (g x) ∂μ
+        rw [conj_trivial, ← integral_const_mul]
+        refine integral_congr_ae ((Lp.coeFn_smul r f).mono fun x hx => ?_)
+        simp only [hx, Pi.smul_apply, real_inner_smul_left] }
+  -- Step 3: apply Step 1 to the classes of the `G k` and return to functions.
+  have hGn : ∀ k, ‖(hG k).toLp (G k)‖ ≤ 1 := fun k => by
+    have h1 : ‖(hG k).toLp (G k)‖ ^ 2 ≤ 1 := by
+      rw [hnorm, lintegral_congr_ae ((hG k).coeFn_toLp.mono fun x hx => by rw [hx])]
+      exact ENNReal.toReal_le_of_le_ofReal zero_le_one (by simpa using hGb k)
+    nlinarith [norm_nonneg ((hG k).toLp (G k))]
+  obtain ⟨φ, hφ, γ, hγ, hconv⟩ := weak (Lp (Rn n) 2 μ) (fun k => (hG k).toLp (G k)) hGn
+  refine ⟨φ, γ, hφ, Lp.memLp γ, ?_, fun h hh => ?_⟩
+  · have h1 : eLpNorm γ 2 μ ≤ 1 := by
+      rw [← ENNReal.ofReal_toReal (Lp.eLpNorm_ne_top γ), ← Lp.norm_def]
+      exact ENNReal.ofReal_le_one.mpr hγ
+    rw [← hsq _ (Lp.aestronglyMeasurable γ)]
+    exact pow_le_one₀ (by positivity) h1
+  · have key : ∀ f : Lp (Rn n) 2 μ, inner ℝ f (hh.toLp h) = ∫ x, inner ℝ (f x) (h x) ∂μ :=
+      fun f => integral_congr_ae (hh.coeFn_toLp.mono fun x hx => by simp only [hx])
+    have h2 := hconv (hh.toLp h)
+    rw [key] at h2
+    refine h2.congr fun k => ?_
+    rw [key]
+    exact integral_congr_ae ((hG (φ k)).coeFn_toLp.mono fun x hx => by simp only [hx])
 
 end Submission
 
