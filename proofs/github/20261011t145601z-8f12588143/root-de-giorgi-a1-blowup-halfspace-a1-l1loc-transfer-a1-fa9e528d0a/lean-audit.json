@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ada036e734275076321f3160746d6af7763903e145b6e616db54bd454c37ed32",
+  "git_delta": {
+    "base_commit": "2ea17955400a71f5ea4a7d908bf41b43de55a189",
+    "candidate_commit": "02718c2ddc5e1dbcc998ea3349f30e417329d16a",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiHS_L1loc_limit_transfer",
+    "diff_sha256": "986e4d665480afc28ad379a44a3204aa8a92c1d8cc953b78ffcd64d3a48502d5",
+    "source_sha256": "c636bc32142392e902eb7ff320457f5e0f593a2f1b17ecdca24554fee15dbdc1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiHS_L1loc_limit_transfer",
+      "statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)) (G : Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → NullMeasurableSet G volume → (∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F k) G)) atTop (𝓝 0)) → (∀ f : Rn N → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k ↦ ∫ y in F k, f y) atTop (𝓝 (∫ y in G, f y))) ∧ ∀ B : Set (Rn N), Bornology.IsBounded B → Tendsto (fun k ↦ volume (F k ∩ B)) atTop (𝓝 (volume (G ∩ B))) ∧ Tendsto (fun k ↦ volume (B \\ F k)) atTop (𝓝 (volume (B \\ G)))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
