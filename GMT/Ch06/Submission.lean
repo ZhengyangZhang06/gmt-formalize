@@ -467,6 +467,72 @@ theorem Submission.lpf_pic_density_aestronglyMeasurable : ∀ (P Q n : ℕ) (U M
       (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp continuous_fst)
   -- Compose with `x ↦ (L x, ξ x)` and multiply by `θ`.
   exact hθ.smul (hΦ.comp_aestronglyMeasurable (hL.prodMk hT.aestronglyMeasurable))
+/-- **Domination of the push-forward density on a compact preimage (Simon Ch. 6, (3.6)).**  Let
+`(M, θ, ξ)` be a rectifiable triple in `U`, `Z ⊆ U` with `Hⁿ(M \ Z) = 0`, `K' = f⁻¹(K) ∩ Z`
+compact and `‖L x‖ ≤ C` on `M ∩ K'`.  Then `h = 1_{K'} Cⁿ θ` is `Hⁿ ⌞ M`-integrable (`θ` is
+integrable on `M ∩ K'`, as `K' ⊆ U` is compact) and `‖θ(x) L(x)_# ξ(x)‖ ≤ h(x)` for `Hⁿ ⌞ M`-a.e.
+`x` with `f x ∈ K`: a.e. such `x` lies in `M ∩ K'`; `‖A_# v‖ ≤ ‖A‖ⁿ ‖v‖` because `A_# v = v ∘ A^#`
+and `‖A^# β‖ ≤ ‖A‖ⁿ ‖β‖`; and `‖ξ(x)‖ ≤ 1` because `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal. -/
+theorem Submission.lpf_pic_density_dominated : ∀ (P Q n : ℕ) (U Z M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (K : Set (Eucl Q)), IsRectifiableTriple U n M θ ξ → Z ⊆ U → (μHE[n] : Measure (Eucl P)) (M \ Z) = 0 → IsCompact (f ⁻¹' K ∩ Z) → (∃ C : ℝ, ∀ x ∈ M ∩ (f ⁻¹' K ∩ Z), ‖L x‖ ≤ C) → ∃ h : Eucl P → ℝ, Integrable h ((μHE[n] : Measure (Eucl P)).restrict M) ∧ ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), f x ∈ K → ‖θ x • nVectorPushforward n (L x) (ξ x)‖ ≤ h x := by
+  rintro P Q n U Z M θ ξ f L K hR hZU hMZ hK ⟨C, hC⟩
+  -- (1) `‖A_# v‖ ≤ ‖A‖ⁿ ‖v‖`, from `A_# v = v ∘ A^#` and `‖A^# β‖ ≤ ‖A‖ⁿ ‖β‖`.
+  have hpush : ∀ (A : Eucl P →L[ℝ] Eucl Q) (v : NVector (Eucl P) n),
+      ‖nVectorPushforward n A v‖ ≤ ‖A‖ ^ n * ‖v‖ := by
+    intro A v
+    have hA : ‖covectorPullback n A‖ ≤ ‖A‖ ^ n := by
+      refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun β => ?_
+      simpa [covectorPullback, Fintype.card_fin, mul_comm] using
+        ContinuousAlternatingMap.norm_compContinuousLinearMap_le β A
+    calc ‖nVectorPushforward n A v‖ = ‖v.comp (covectorPullback n A)‖ := rfl
+      _ ≤ ‖v‖ * ‖covectorPullback n A‖ := ContinuousLinearMap.opNorm_comp_le _ _
+      _ ≤ ‖v‖ * ‖A‖ ^ n := by gcongr
+      _ = ‖A‖ ^ n * ‖v‖ := mul_comm _ _
+  -- (2) `‖ξ(x)‖ ≤ 1` a.e., since `ξ(x) = ±simpleNVector τ` with `τ` orthonormal.
+  have hξ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ ≤ 1 := by
+    filter_upwards [hR.orients] with x hx
+    obtain ⟨τ, hτ, -, hx⟩ := hx
+    have hs : ‖simpleNVector τ‖ ≤ 1 :=
+      calc ‖simpleNVector τ‖ ≤ ∏ i, ‖τ i‖ :=
+            LinearMap.mkContinuous_norm_le _ (Finset.prod_nonneg fun i _ => norm_nonneg _) _
+        _ = 1 := Finset.prod_eq_one fun i _ => hτ.1 i
+    rcases hx with hx | hx
+    · rw [hx]
+      exact hs
+    · rw [hx, norm_neg (simpleNVector τ)]
+      exact hs
+  -- (3) `Hⁿ ⌞ M`-a.e. point lies in `M ∩ Z`, as `M` is null measurable and `Hⁿ(M \ Z) = 0`.
+  have hM : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ M :=
+    ae_restrict_mem₀ hR.nullMeasurableSet
+  have hZ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ Z := by
+    rw [ae_iff, Measure.restrict_apply₀' hR.nullMeasurableSet]
+    have hset : {a | ¬a ∈ Z} ∩ M = M \ Z := by
+      ext a
+      simp [and_comm]
+    rw [hset, hMZ]
+  -- (4) `h = 1_{K'} Cⁿ θ` is `Hⁿ ⌞ M`-integrable: `K'` is compact (so measurable) and `K' ⊆ U`.
+  have hKm : MeasurableSet (f ⁻¹' K ∩ Z) := hK.isClosed.measurableSet
+  have hθK : IntegrableOn (fun x => C ^ n * θ x) (f ⁻¹' K ∩ Z)
+      ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    rw [IntegrableOn, Measure.restrict_restrict hKm, inter_comm]
+    exact (hR.integrableOn _ hK fun x hx => hZU hx.2).const_mul _
+  refine ⟨(f ⁻¹' K ∩ Z).indicator fun x => C ^ n * θ x, hθK.integrable_indicator hKm, ?_⟩
+  -- (5) For a.e. `x` with `f x ∈ K`: `x ∈ M ∩ K'`, so `‖L x‖ ≤ C`, `0 < θ x` and `‖ξ x‖ ≤ 1`.
+  filter_upwards [hξ, hM, hZ] with x hξx hxM hxZ hfx
+  have hxK : x ∈ f ⁻¹' K ∩ Z := ⟨hfx, hxZ⟩
+  have hLC : ‖L x‖ ≤ C := hC x ⟨hxM, hxK⟩
+  have hθx : 0 < θ x := hR.pos x hxM
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans hLC
+  rw [indicator_of_mem hxK]
+  calc ‖θ x • nVectorPushforward n (L x) (ξ x)‖
+      = ‖θ x‖ * ‖nVectorPushforward n (L x) (ξ x)‖ :=
+        (NormedSpace.toNormSMulClass).norm_smul (θ x) (nVectorPushforward n (L x) (ξ x))
+    _ = θ x * ‖nVectorPushforward n (L x) (ξ x)‖ := by
+        rw [Real.norm_eq_abs, abs_of_pos hθx]
+    _ ≤ θ x * (‖L x‖ ^ n * ‖ξ x‖) := by
+        gcongr
+        exact hpush _ _
+    _ ≤ θ x * (C ^ n * 1) := by gcongr
+    _ = C ^ n * θ x := by ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
