@@ -359,6 +359,57 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Scales for the polyhedral approximation (Simon Ch. 6, 6.2, choice of `ρ_k ↓ 0`): for any real
+sequence `a` there are scales `ρ_k > 0` decreasing to `0` with `ρ_k a_k ≤ 1/(k+1)`. -/
+theorem Submission.polyhedral_approx_scale_seq :
+    ∀ a : ℕ → ℝ, ∃ ρ : ℕ → ℝ, (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧
+      ∀ k, ρ k * a k ≤ 1 / ((k : ℝ) + 1) := by
+  intro a
+  -- Weights `b_k = 1 + |a_k| ≥ 1`.
+  obtain ⟨b, hb⟩ : ∃ b : ℕ → ℝ, ∀ k, b k = 1 + |a k| := ⟨fun k => 1 + |a k|, fun _ => rfl⟩
+  have hb1 : ∀ k, 1 ≤ b k := fun k => by rw [hb]; exact le_add_of_nonneg_right (abs_nonneg _)
+  have hab : ∀ k, |a k| ≤ b k := fun k => by rw [hb]; exact le_add_of_nonneg_left zero_le_one
+  have hbpos : ∀ k, 0 < b k := fun k => one_pos.trans_le (hb1 k)
+  -- Scales `ρ_0 = 1/b_0` and `ρ_{j+1} = min(ρ_j, 1/((j+2) b_{j+1}))`.
+  obtain ⟨ρ, hρ0, hρs⟩ : ∃ ρ : ℕ → ℝ, ρ 0 = 1 / b 0 ∧
+      ∀ j : ℕ, ρ (j + 1) = min (ρ j) (1 / (((j : ℝ) + 2) * b (j + 1))) :=
+    ⟨fun k => Nat.rec (motive := fun _ => ℝ) (1 / b 0)
+      (fun j r => min r (1 / (((j : ℝ) + 2) * b (j + 1)))) k, rfl, fun _ => rfl⟩
+  -- Positivity, by induction.
+  have hpos : ∀ k, 0 < ρ k := by
+    intro k
+    induction k with
+    | zero => rw [hρ0]; exact one_div_pos.mpr (hbpos 0)
+    | succ j ih =>
+      rw [hρs]
+      exact lt_min ih (one_div_pos.mpr (mul_pos (by positivity) (hbpos _)))
+  -- `ρ_k ≤ 1/((k+1) b_k)`.
+  have hup : ∀ k, ρ k ≤ 1 / (((k : ℝ) + 1) * b k) := by
+    intro k
+    cases k with
+    | zero => rw [hρ0]; simp
+    | succ j =>
+      have hcast : ((j + 1 : ℕ) : ℝ) + 1 = (j : ℝ) + 2 := by push_cast; ring
+      rw [hρs, hcast]
+      exact min_le_right _ _
+  -- Hence `ρ_k ≤ 1/(k+1)`, since `b_k ≥ 1`.
+  have hle : ∀ k, ρ k ≤ 1 / ((k : ℝ) + 1) := fun k =>
+    (hup k).trans (one_div_le_one_div_of_le (by positivity)
+      (le_mul_of_one_le_right (by positivity) (hb1 k)))
+  refine ⟨ρ, hpos, antitone_nat_of_succ_le fun j => ?_, ?_, fun k => ?_⟩
+  · rw [hρs]
+    exact min_le_left _ _
+  · exact squeeze_zero (fun k => (hpos k).le) hle tendsto_one_div_add_atTop_nhds_zero_nat
+  · -- `ρ_k a_k ≤ ρ_k |a_k| ≤ |a_k| / ((k+1) b_k) ≤ b_k / ((k+1) b_k) = 1/(k+1)`.
+    have hk : (k : ℝ) + 1 ≠ 0 := by positivity
+    have hkb : 0 < ((k : ℝ) + 1) * b k := mul_pos (by positivity) (hbpos k)
+    calc ρ k * a k ≤ ρ k * |a k| := mul_le_mul_of_nonneg_left (le_abs_self _) (hpos k).le
+      _ ≤ 1 / (((k : ℝ) + 1) * b k) * |a k| :=
+        mul_le_mul_of_nonneg_right (hup k) (abs_nonneg _)
+      _ ≤ 1 / (((k : ℝ) + 1) * b k) * b k :=
+        mul_le_mul_of_nonneg_left (hab k) (one_div_pos.mpr hkb).le
+      _ = 1 / ((k : ℝ) + 1) := by field_simp [hk, (hbpos k).ne']
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
