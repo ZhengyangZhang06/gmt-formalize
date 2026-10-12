@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "kolmogorov|riesz.?kolmogorov|frechet.?kolmogorov|BV.*compact|compact.*BV",
+        "ae_convolution_tendsto_right_of_locallyIntegrable|variable|Nontrivial|finrank",
+        "restrict_le_self|restrict_congr_set|toMeasurable_ae_eq",
+        "contDiff_convolution_left|continuous_convolution_left|trace_smulRight",
+        "indCompact_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/indicator-compactness-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/indicator-compactness-independent-audit/LibraryChecks.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch02/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1/parent-child-handoff.json",
+        "/tmp/indicator-compactness-independent-audit/Assembly.lean",
+        "/tmp/indicator-compactness-independent-audit/Interface.lean",
+        "/tmp/indicator-compactness-independent-audit/LibraryChecks.lean"
+      ],
+      "conclusion": "The pinned revisions and inspected Mathlib sources match the compiler environment. No usable existing BV subsequence-compactness proof was found: SimonGMT supplies closure only, while the Chapter 2 project statement is sorry-backed. All five independently generated comparator challenge types elaborate. The exact selected parent follows in a separately compiled assembly taking the children as hypotheses; this assembly, the duality-to-measure interface, and the checked library facts use only propext, Classical.choice and Quot.sound. Dimension-zero bump/Haar instances and restriction to arbitrary sets were checked. Every proposed name is bare and unreserved in the final 147-node DAG. The split is appropriate, and translation_estimate depending on l1_duality is the sole, correctly directed sibling dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "l1_duality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition exactly matches the prose, including arbitrary real R and M and integrability only on the ball. The zero test, supported mollifications of the sign function, almost-everywhere convergence and dominated convergence establish the bound. The proof also covers empty balls and dimension zero without circular reliance."
+    },
+    {
+      "key": "translation_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the null-measurable, ENNReal-valued contract. Measurable replacement, signed normalization, the rank-one divergence identity, support control, FTC and justified Fubini establish the test bound. The declared l1_duality dependency then gives precisely the measure estimate; degenerate radii and zero translations are handled."
+    },
+    {
+      "key": "mollified_cauchy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All kernel, eventual translation and uniform-Cauchy hypotheses match the Lean type. Tonelli gives the mollification error with max(C,0); choosing m ≥ R and applying the three-term estimate proves the exact local Cauchy conclusion. Measurability, finite ball volume and the infinite-tolerance case are addressed."
+    },
+    {
+      "key": "diagonal_arzela_ascoli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger contract for arbitrary sets is sound because their restricted measures are bounded by volume. Compact support and uniform continuity give uniform bounds and equicontinuity. Arzelà–Ascoli and the explicit diagonal construction prove both strict monotonicity and every required uniform-Cauchy estimate, without an unstated measurability hypothesis."
+    },
+    {
+      "key": "local_cauchy_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the local completion statement. Measurable replacements, the explicit fast subsequence and its measurable liminf give the tail estimate. The bound 3·2^(−i) applies to the whole original sequence, and compact-set containment gives the required convergence. No parent theorem or unproved completeness obligation is used."
+    }
+  ],
+  "required_changes": []
+}

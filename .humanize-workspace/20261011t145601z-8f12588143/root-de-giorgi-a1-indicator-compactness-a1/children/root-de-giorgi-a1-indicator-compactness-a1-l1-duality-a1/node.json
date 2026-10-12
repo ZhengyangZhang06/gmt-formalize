@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "depth": 3,
+  "title": "L¹ norm on a ball by duality with C¹ test functions",
+  "statement": "Let N ∈ ℕ, R, M ∈ ℝ, and let w : ℝ^N → ℝ be integrable (Lebesgue measure L^N) on the open ball B_R(0). Suppose ∫_{ℝ^N} w ψ dL^N ≤ M for every C¹ function ψ : ℝ^N → ℝ that has compact support, satisfies tsupport ψ ⊆ B_R(0), and has |ψ(y)| ≤ 1 for all y. Then ∫_{B_R(0)} |w| dL^N ≤ M.",
+  "lean_statement": "∀ (N : ℕ) (w : Rn N → ℝ) (R M : ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume → (∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ → tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) → ∫ y, w y * ψ y ≤ M) → ∫ y in Metric.ball (0 : Rn N) R, |w y| ≤ M",
+  "lean_name": "indCompact_ball_integral_abs_le_of_test_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-a1"
+}
