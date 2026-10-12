@@ -3621,6 +3621,60 @@ theorem Submission.eilenberg_upper_integral_inequality : ∀ (N m k : ℕ), ∃ 
         _ = ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A := by
           rw [hHE, ENNReal.coe_mul, ENNReal.coe_pow]; ring
 
+/-- **Simon Ch. 3, Theorem 3.6 (p. 80), Besicovitch–Federer projection theorem**
+(`chapter-03.txt` lines 530–536, which refer to [Fed69], [Ros84] for the proof; we follow
+P. Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Ch. 15 and 18, as presented in
+M. G. Dall'Alba, *The Besicovitch–Federer Projection Theorem*, Padova 2020, Thm. 5.1).
+Step 0: for `n = 0` every point of `Q` is the range of a constant map `ℝ⁰ → ℝ^ℓ`, a countably
+`0`-rectifiable set of `H⁰`-measure `1`, so `Q = ∅`; for `ℓ = 0`, `Q ⊆ ℝⁿ = range id` is countably
+`n`-rectifiable, so `Hⁿ(Q) = 0`. For `n, ℓ ≥ 1`, Step 1 (`bf_compact_cover_reduction`) gives
+`Q ⊆ Z ∪ ⋃ᵢ Kᵢ` with `Hⁿ(Z) = 0` and `Kᵢ` compact, purely unrectifiable, of finite measure, and
+Steps 2–10 (`bf_compact_projection_null`, with the Eilenberg inequality) give `Hⁿ(p(Kᵢ)) = 0`
+for almost all `p`. Frame projections are `1`-Lipschitz, so `Hⁿ(p(Z)) = 0` as well. -/
+theorem Submission.besicovitchFedererProjectionTheorem_holds :
+    BesicovitchFedererProjectionTheorem := by
+  intro n ℓ Q hQ hcover
+  -- Frame projections are `1`-Lipschitz, so they map `Hⁿ`-null sets to `Hⁿ`-null sets.
+  have hnull : ∀ (v : Fin n → Rn (n + ℓ)) (S : Set (Rn (n + ℓ))), μHE[n] S = 0 →
+      μHE[n] (frameProjection v '' S) = 0 := by
+    intro v S hS
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+      (A := S) n (Submodule.span ℝ (range v)).lipschitzWith_starProjection.lipschitzOnWith
+    rw [ENNReal.coe_one, one_pow, one_mul] at h
+    exact nonpos_iff_eq_zero.1 (h.trans hS.le)
+  -- Step 0, `n = 0`: a point `x ∈ Q` is the range of a constant map `ℝ⁰ → ℝ^ℓ`, so `{x}` is
+  -- countably `0`-rectifiable with `H⁰({x}) = 1`; hence `Q = ∅`.
+  obtain rfl | hn := Nat.eq_zero_or_pos n
+  · have hQe : Q = ∅ := by
+      refine eq_empty_of_forall_notMem fun x hx ↦ ?_
+      have hx0 := hQ {x} (singleton_subset_iff.2 hx) (by
+        simpa only [range_const] using Poincare.SimonGMT.Chapter03.countablyRectifiable_range
+          (LipschitzWith.const (α := Rn 0) x))
+      simp at hx0
+    exact Eventually.of_forall fun v _ ↦ by simp [hQe]
+  -- Step 0, `ℓ = 0`: `Q ⊆ ℝⁿ = range id` is countably `n`-rectifiable, so `Hⁿ(Q) = 0`.
+  obtain rfl | hℓ := Nat.eq_zero_or_pos ℓ
+  · have hQ0 : μHE[n] Q = 0 := hQ Q Subset.rfl
+      ((Poincare.SimonGMT.Chapter03.countablyRectifiable_range
+        (LipschitzWith.id (α := Rn n))).mono (by simp))
+    exact Eventually.of_forall fun v _ ↦ hnull v Q hQ0
+  -- Step 1: `Q ⊆ Z ∪ ⋃ᵢ Kᵢ` with `Hⁿ(Z) = 0` and `Kᵢ` compact, purely `n`-unrectifiable and
+  -- of finite `Hⁿ`-measure.
+  obtain ⟨Z, K, hZ, hK, hQZK⟩ := Submission.bf_compact_cover_reduction n ℓ Q hQ hcover
+  -- Steps 2–10: for almost all frames `v`, `Hⁿ(p_v(Kᵢ)) = 0` for every `i`.
+  have hKae : ∀ᵐ v : Fin n → Rn (n + ℓ) ∂volume, ∀ i, LinearIndependent ℝ v →
+      μHE[n] (frameProjection v '' K i) = 0 :=
+    ae_all_iff.2 fun i ↦ Submission.bf_compact_projection_null
+      Submission.eilenberg_upper_integral_inequality n ℓ hn hℓ (K i) (hK i).1 (hK i).2.1
+      (hK i).2.2
+  -- Conclusion: `p_v(Q) ⊆ p_v(Z) ∪ ⋃ᵢ p_v(Kᵢ)` is `Hⁿ`-null.
+  show ∀ᵐ v : Fin n → Rn (n + ℓ) ∂volume, LinearIndependent ℝ v →
+    μHE[n] (frameProjection v '' Q) = 0
+  filter_upwards [hKae] with v hv hlin
+  refine measure_mono_null (image_mono hQZK) ?_
+  rw [image_union, image_iUnion]
+  exact measure_union_null (hnull v Z hZ) (measure_iUnion_null fun i ↦ hv i hlin)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
