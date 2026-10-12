@@ -373,7 +373,109 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §6 (pp. 66–67), co-area formula: critical fibres.** Volume of a thin slab in a
+closed ball: if `‖e‖ = 1`, `ε ≥ 0` and `R ≥ 0`, then
+`Lᵐ{v : ‖v - c‖ ≤ R, |⟨e, v - c⟩| ≤ ε} ≤ 2ε (2R)^{m-1}`. Extend `e` to an orthonormal basis `b` with
+`b₀ = e`; the coordinates `v ↦ (⟨bᵢ, v - c⟩)ᵢ` preserve Lebesgue measure and map the set into the box
+`[-ε, ε] × [-R, R]^{m-1}`. (`m ≥ 1`, as `ℝ⁰` contains no unit vector.) -/
+theorem Submission.euclidean_slab_inter_closedBall_volume_le : ∀ (m : ℕ) (e c : Rn m) (ε R : ℝ), ‖e‖ = 1 → 0 ≤ ε → 0 ≤ R → volume {v : Rn m | ‖v - c‖ ≤ R ∧ |inner ℝ e (v - c)| ≤ ε} ≤ ENNReal.ofReal (2 * ε * (2 * R) ^ (m - 1)) := by
+  intro m e c ε R he hε hR
+  -- Step 1: `m = n + 1`, since `ℝ⁰ = {0}` contains no unit vector.
+  obtain ⟨n, rfl⟩ : ∃ n, m = n + 1 := by
+    rcases m with _ | n
+    · rw [Subsingleton.elim e 0, norm_zero] at he
+      exact absurd he zero_ne_one
+    · exact ⟨n, rfl⟩
+  rw [Nat.add_sub_cancel]
+  -- Step 2: an orthonormal basis `b` of `ℝⁿ⁺¹` with `b₀ = e`.
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (𝕜 := ℝ)
+    (E := Rn (n + 1)) (ι := Fin (n + 1)) (by simp) (v := fun _ ↦ e) (s := {0})
+    ⟨fun _ ↦ he, fun i j hij ↦ absurd (Subsingleton.elim i j) hij⟩
+  have hb0 : b 0 = e := hb 0 rfl
+  -- Step 3: the coordinates `Φ v = (⟨bᵢ, v - c⟩)ᵢ` preserve Lebesgue measure.
+  set Φ : Rn (n + 1) → Fin (n + 1) → ℝ := fun v ↦ (b.repr (v - c)).ofLp
+  have hΦ : MeasurePreserving Φ volume volume :=
+    (PiLp.volume_preserving_ofLp _).comp
+      (b.measurePreserving_repr.comp (measurePreserving_sub_right volume c))
+  -- Step 4: `Φ` maps the set into the box `∏ᵢ [-aᵢ, aᵢ]`, `a₀ = ε`, `aᵢ = R` for `i ≠ 0`.
+  set a : Fin (n + 1) → ℝ := Fin.cons ε fun _ ↦ R with ha
+  have hsub : {v : Rn (n + 1) | ‖v - c‖ ≤ R ∧ |inner ℝ e (v - c)| ≤ ε} ⊆ Φ ⁻¹' Icc (-a) a := by
+    rintro v ⟨hvR, hvε⟩
+    have hcoord : ∀ i, |Φ v i| ≤ a i := by
+      intro i
+      refine Fin.cases ?_ (fun j ↦ ?_) i
+      · show |(b.repr (v - c)).ofLp 0| ≤ a 0
+        rw [OrthonormalBasis.repr_apply_apply, hb0, ha, Fin.cons_zero]
+        exact hvε
+      · rw [ha, Fin.cons_succ, ← Real.norm_eq_abs]
+        calc ‖(b.repr (v - c)).ofLp j.succ‖ ≤ ‖b.repr (v - c)‖ := PiLp.norm_apply_le _ _
+          _ = ‖v - c‖ := b.repr.norm_map _
+          _ ≤ R := hvR
+    exact ⟨fun i ↦ neg_le_of_abs_le (hcoord i), fun i ↦ le_of_abs_le (hcoord i)⟩
+  -- Step 5: the box has volume `2ε (2R)ⁿ`.
+  calc volume {v : Rn (n + 1) | ‖v - c‖ ≤ R ∧ |inner ℝ e (v - c)| ≤ ε}
+      ≤ volume (Φ ⁻¹' Icc (-a) a) := measure_mono hsub
+    _ = volume (Icc (-a) a) := hΦ.measure_preimage measurableSet_Icc.nullMeasurableSet
+    _ = ∏ i, ENNReal.ofReal (a i - (-a) i) := Real.volume_Icc_pi
+    _ = ENNReal.ofReal (2 * ε * (2 * R) ^ n) := by
+      rw [Fin.prod_univ_succ, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by positivity)]
+      simp only [ha, Pi.neg_apply, Fin.cons_zero, Fin.cons_succ, Finset.prod_const,
+        Finset.card_univ, Fintype.card_fin]
+      rw [show ε - -ε = 2 * ε by ring, show R - -R = 2 * R by ring]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+/-- **Image of a ball under a map whose derivative is not surjective.** Let `G : ℝⁿ → ℝᵐ` be
+differentiable on `B̄(x, r)`, with `‖DG(z) - DG(x)‖ ≤ η` there, `‖DG(x)‖ ≤ L` and `DG(x)` not
+surjective. Then `Lᵐ(G(B̄(x, r))) ≤ 2(ηr)(2(L + η)r)^{m-1}`. This bounds the images of small balls
+centred at critical points, for the critical fibres in Simon Ch. 2, 6.4 (the same slab argument
+proves Sard's theorem for `C¹` maps between spaces of equal dimension; Spivak, *Calculus on
+Manifolds*, 3-14). The range of `A = DG(x)` is proper, so it has a unit normal `e`
+(`Submodule.orthogonal_eq_bot_iff`). By the mean value inequality,
+`‖G(z) - G(x) - A(z - x)‖ ≤ ηr` on the ball, so `G(B̄(x, r))` lies in the slab
+`{w : ‖w - G(x)‖ ≤ (L + η)r, |⟨e, w - G(x)⟩| ≤ ηr}`, whose volume is bounded by
+`euclidean_slab_inter_closedBall_volume_le`. -/
+theorem Submission.volume_image_closedBall_le_of_fderiv_not_surjective : ∀ (n m : ℕ) (G : Rn n → Rn m) (x : Rn n) (r η L : ℝ), 0 ≤ r → (∀ z ∈ closedBall x r, DifferentiableAt ℝ G z) → (∀ z ∈ closedBall x r, ‖fderiv ℝ G z - fderiv ℝ G x‖ ≤ η) → ‖fderiv ℝ G x‖ ≤ L → ¬ Function.Surjective (fderiv ℝ G x) → volume (G '' closedBall x r) ≤ ENNReal.ofReal (2 * (η * r) * (2 * ((L + η) * r)) ^ (m - 1)) := by
+  intro n m G x r η L hr hdiff hbound hL hns
+  set A := fderiv ℝ G x
+  -- Step 1 (signs): `x ∈ B̄(x, r)`, so `η ≥ ‖A - A‖ ≥ 0`; and `L ≥ ‖A‖ ≥ 0`.
+  have hx : x ∈ closedBall x r := mem_closedBall_self hr
+  have hη : 0 ≤ η := (norm_nonneg _).trans (hbound x hx)
+  have hL0 : 0 ≤ L := (norm_nonneg A).trans hL
+  -- Step 2 (unit normal): `range A ≠ ⊤`, so `(range A)ᗮ ≠ ⊥` contains some `u ≠ 0`, and
+  -- `e = ‖u‖⁻¹ • u` is a unit vector with `⟨e, A w⟩ = 0` for every `w`.
+  obtain ⟨e, he, hAe⟩ : ∃ e : Rn m, ‖e‖ = 1 ∧ ∀ w, inner ℝ e (A w) = 0 := by
+    have hW : (LinearMap.range (A : Rn n →ₗ[ℝ] Rn m))ᗮ ≠ ⊥ := by
+      rw [Ne, Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
+      exact hns
+    obtain ⟨u, hu, hu0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW
+    refine ⟨‖u‖⁻¹ • u, ?_, fun w ↦ ?_⟩
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hu0)]
+    · rw [real_inner_smul_left,
+        (Submodule.mem_orthogonal' _ u).1 hu (A w) (LinearMap.mem_range_self _ w), mul_zero]
+  -- Steps 3–4 (mean value inequality, slab containment): for `z ∈ B̄(x, r)` the remainder
+  -- `d = G z - G x - A (z - x)` has `‖d‖ ≤ η‖z - x‖ ≤ ηr`. Hence
+  -- `‖G z - G x‖ ≤ ‖A‖‖z - x‖ + ηr ≤ (L + η)r` and `|⟨e, G z - G x⟩| = |⟨e, d⟩| ≤ ‖d‖ ≤ ηr`.
+  have hsub : G '' closedBall x r ⊆
+      {v : Rn m | ‖v - G x‖ ≤ (L + η) * r ∧ |inner ℝ e (v - G x)| ≤ η * r} := by
+    rintro _ ⟨z, hz, rfl⟩
+    have hzx : ‖z - x‖ ≤ r := mem_closedBall_iff_norm.1 hz
+    have hd : ‖G z - G x - A (z - x)‖ ≤ η * r :=
+      ((convex_closedBall x r).norm_image_sub_le_of_norm_fderiv_le' hdiff hbound hx hz).trans
+        (mul_le_mul_of_nonneg_left hzx hη)
+    constructor
+    · calc ‖G z - G x‖ = ‖A (z - x) + (G z - G x - A (z - x))‖ := by rw [add_sub_cancel]
+        _ ≤ ‖A‖ * ‖z - x‖ + η * r := (norm_add_le _ _).trans (add_le_add (A.le_opNorm _) hd)
+        _ ≤ L * r + η * r := add_le_add (mul_le_mul hL hzx (norm_nonneg _) hL0) le_rfl
+        _ = (L + η) * r := (add_mul L η r).symm
+    · calc |inner ℝ e (G z - G x)| = |inner ℝ e (G z - G x - A (z - x))| := by
+            rw [inner_sub_right e (G z - G x), hAe, sub_zero]
+        _ ≤ ‖e‖ * ‖G z - G x - A (z - x)‖ := abs_real_inner_le_norm _ _
+        _ ≤ η * r := by rw [he, one_mul]; exact hd
+  -- Step 5 (volume): monotonicity, then the slab bound with `ε = ηr` and `R = (L + η)r`.
+  exact (measure_mono hsub).trans
+    (Submission.euclidean_slab_inter_closedBall_volume_le m e (G x) (η * r) ((L + η) * r) he
+      (mul_nonneg hη hr) (mul_nonneg (add_nonneg hL0 hη) hr))
 
 end GMT.Ch02
