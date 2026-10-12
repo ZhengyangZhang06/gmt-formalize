@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "064b2e83a1aa8d438d304ccacab2dee5ad27985adb9bab2c5e02f5013219717e",
+  "git_delta": {
+    "base_commit": "c36d11c25906697028ef66b85732cab5268c4fa7",
+    "candidate_commit": "36b2d372040645171f355c68541910ce3ab4bab8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "imrep_approxTangent_starProjection_aesm",
+    "diff_sha256": "582d5c692febc89b1edefcf0ba102f49149f774a1dbee1b08c404406501c6289",
+    "source_sha256": "a136e10ccede911332b1bc35d24e10e4984d18fdb340c0640b107cda6d8864e0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_approxTangent_starProjection_aesm",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
