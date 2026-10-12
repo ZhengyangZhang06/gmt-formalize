@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9be1d5c941ac3e5cc4ac79cf9b62f024386a10c2d89af735895fdb7ce744f8a8",
+  "git_delta": {
+    "base_commit": "e16d7ae3d2dc7180de7cab3d68beb3af3adcf1de",
+    "candidate_commit": "8ce39d7860b8a937c8f1f66585d0d4002387404f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_vel_area_integrand_fderiv",
+    "diff_sha256": "5d5e76fa5425f844976bd8f5b621f56edb90967f88a3bf682a35957e597c6da4",
+    "source_sha256": "f127966aa160d861d47ed58eed293743bdb6e23f1a40829de57a894a96c00e1c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_vel_area_integrand_fderiv",
+      "statement": "∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, DifferentiableAt ℝ (fun P' : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P' (EuclideanSpace.single a (1 : ℝ))) (P' (EuclideanSpace.single b (1 : ℝ)))))) P ∧ ∀ Ψ : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun P' : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P' (EuclideanSpace.single a (1 : ℝ))) (P' (EuclideanSpace.single b (1 : ℝ)))))) P Ψ = Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))) * ∑ a : Fin n, ∑ c : Fin n, ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))⁻¹ a c * inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
