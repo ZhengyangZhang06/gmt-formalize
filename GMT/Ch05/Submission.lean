@@ -458,6 +458,33 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+theorem dohr_vel_graph_fderiv : ∀ n ℓ : ℕ, ∀ (u : Rn n → Rn ℓ) (x : Rn n), DifferentiableAt ℝ u x → DifferentiableAt ℝ (fun z : Rn n => graphPoint z (u z)) x ∧ ∀ v : Rn n, fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x v = graphPoint v (fderiv ℝ u x v) := by
+  intro n ℓ u x hu
+  let Γl : (Rn n × Rn ℓ) →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun p => graphPoint p.1 p.2
+      map_add' := by
+        intro p q
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+      map_smul' := by
+        intro c p
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint] }
+  let Γ : (Rn n × Rn ℓ) →L[ℝ] Amb n ℓ := LinearMap.toContinuousLinearMap Γl
+  have h1 : HasFDerivAt (fun z : Rn n => (z, u z))
+      ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ u x)) x :=
+    (hasFDerivAt_id x).prodMk hu.hasFDerivAt
+  have h2 : HasFDerivAt (fun z : Rn n => graphPoint z (u z))
+      (Γ.comp ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ u x))) x :=
+    Γ.hasFDerivAt.comp x h1
+  refine ⟨h2.differentiableAt, fun v => ?_⟩
+  rw [h2.fderiv]
+  rfl
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
