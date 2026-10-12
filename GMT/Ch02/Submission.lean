@@ -611,6 +611,216 @@ theorem Submission.bv_lintegral_finite_net_of_lipschitz_approx : ∀ (n : ℕ) (
           ← ENNReal.ofReal_add (by positivity) (by positivity)]
         ring_nf
     _ < ENNReal.ofReal ε := (ENNReal.ofReal_lt_ofReal_iff hε).2 (by linarith)
+/-- **Simon Ch. 2, proof of Theorem 2.6, compact exhaustion (step 1 of the diagonal extraction).**
+If `U ⊆ ℝⁿ` is open, the sets `Q j = B_{j+1}(0) ∩ {x : 1/(j+1) ≤ infEDist x Uᶜ}` are compact, lie
+in `U` and increase with `j`; indeed `Q j ⊆ interior (Q (j+1))`. Every `x ∈ U` lies in some `Q j`
+since `Uᶜ` is closed, so the increasing open sets `interior (Q (j+1))` cover any compact `K ⊆ U`,
+and one of them already contains `K`. -/
+theorem Submission.bv_isOpen_exists_compact_exhaustion : ∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → ∃ Q : ℕ → Set (Rn n), (∀ j, IsCompact (Q j)) ∧ (∀ j, Q j ⊆ U) ∧ Monotone Q ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j := by
+  intro n U hU
+  -- `Q j = B_{j+1}(0) ∩ {x : 1/(j+1) ≤ infEDist x Uᶜ}`; no case distinction on `U` or `n`.
+  let Q : ℕ → Set (Rn n) := fun j ↦
+    closedBall 0 ((j : ℝ) + 1) ∩ {x | ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ}
+  -- (i) A compact ball cut by a closed superlevel set of the continuous `x ↦ infEDist x Uᶜ`.
+  have hQc (j : ℕ) : IsCompact (Q j) :=
+    (isCompact_closedBall 0 _).inter_right (isClosed_le continuous_const continuous_infEDist)
+  -- (ii) Off `U` the distance `infEDist x Uᶜ` vanishes, while `1/(j+1) > 0`.
+  have hQU (j : ℕ) : Q j ⊆ U := fun x hx ↦ by
+    by_contra hxU
+    have h1 : ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ := hx.2
+    rw [infEDist_zero_of_mem hxU] at h1
+    exact absurd h1 (not_le.2 (ENNReal.ofReal_pos.2 (by positivity)))
+  -- `Q j ⊆ interior (Q (j+1))`: the open set `ball 0 (j+2) ∩ {1/(j+2) < infEDist · Uᶜ}` contains
+  -- `Q j` and lies in `Q (j+1)`.
+  have hQint (j : ℕ) : Q j ⊆ interior (Q (j + 1)) := fun x hx ↦ by
+    have h2 : ((j + 1 : ℕ) : ℝ) + 1 = (j : ℝ) + 2 := by push_cast; ring
+    have h12 : ENNReal.ofReal (1 / ((j : ℝ) + 2)) < ENNReal.ofReal (1 / ((j : ℝ) + 1)) :=
+      (ENNReal.ofReal_lt_ofReal_iff (by positivity)).2
+        (one_div_lt_one_div_of_lt (by positivity) (by linarith))
+    refine mem_interior.2 ⟨ball 0 ((j : ℝ) + 2) ∩
+        {y | ENNReal.ofReal (1 / ((j : ℝ) + 2)) < infEDist y Uᶜ}, ?_,
+      isOpen_ball.inter (isOpen_lt continuous_const continuous_infEDist), ?_⟩
+    · rintro y ⟨hy1, hy2⟩
+      refine ⟨mem_closedBall_zero_iff.2 ?_, ?_⟩
+      · rw [h2]
+        exact (mem_ball_zero_iff.1 hy1).le
+      · show ENNReal.ofReal (1 / (((j + 1 : ℕ) : ℝ) + 1)) ≤ infEDist y Uᶜ
+        rw [h2]
+        exact le_of_lt hy2
+    · have hx1 : ‖x‖ ≤ (j : ℝ) + 1 := mem_closedBall_zero_iff.1 hx.1
+      have hx2 : ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ := hx.2
+      exact ⟨mem_ball_zero_iff.2 (by linarith), lt_of_lt_of_le h12 hx2⟩
+  -- (iii) Monotonicity from `Q j ⊆ interior (Q (j+1)) ⊆ Q (j+1)`.
+  have hQm : Monotone Q := monotone_nat_of_le_succ fun j ↦ (hQint j).trans interior_subset
+  -- Every `x ∈ U` lies in some `Q j`: `infEDist x Uᶜ ≠ 0` because `Uᶜ` is closed.
+  have hQcover (x : Rn n) (hx : x ∈ U) : ∃ j, x ∈ Q j := by
+    have hx0 : infEDist x Uᶜ ≠ 0 := fun h ↦
+      (mem_iff_infEDist_zero_of_closed hU.isClosed_compl).2 h hx
+    obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt hx0
+    obtain ⟨j, hj⟩ := exists_nat_ge (max ‖x‖ (m : ℝ))
+    have hmj : m ≤ j + 1 := by
+      have : (m : ℝ) ≤ j := (le_max_right _ _).trans hj
+      have : m ≤ j := by exact_mod_cast this
+      omega
+    refine ⟨j, mem_closedBall_zero_iff.2 (by linarith [le_max_left ‖x‖ (m : ℝ)]), ?_⟩
+    show ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ
+    calc ENNReal.ofReal (1 / ((j : ℝ) + 1)) = ((j + 1 : ℕ) : ℝ≥0∞)⁻¹ := by
+          rw [one_div, ENNReal.ofReal_inv_of_pos (by positivity : (0 : ℝ) < (j : ℝ) + 1),
+            ← Nat.cast_succ, ENNReal.ofReal_natCast]
+      _ ≤ (m : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 (Nat.cast_le.2 hmj)
+      _ ≤ infEDist x Uᶜ := hm.le
+  -- (iv) The increasing open sets `interior (Q (j+1))` cover a compact `K ⊆ U`, so one of them
+  -- contains `K`.
+  refine ⟨Q, hQc, hQU, hQm, fun K hK hKU ↦ ?_⟩
+  obtain ⟨j, hj⟩ := hK.elim_directed_cover (fun j ↦ interior (Q (j + 1)))
+    (fun _ ↦ isOpen_interior)
+    (fun x hx ↦ by
+      obtain ⟨j, hj⟩ := hQcover x (hKU hx)
+      exact mem_iUnion.2 ⟨j, hQint j hj⟩)
+    (directed_of_isDirected_le fun i j hij ↦ interior_mono (hQm (Nat.succ_le_succ hij)))
+  exact ⟨j + 1, hj.trans interior_subset⟩
+/-- **One subsequence converging in `L¹` on countably many sets** (steps 0 and 2–4 of the diagonal
+extraction in the proof of Simon 2.6). Let `Qⱼ ⊆ ℝⁿ` (`j ∈ ℕ`) be arbitrary sets and let every `u_k`
+be integrable on every `Qⱼ`. Suppose that for every `j` and `ε > 0` finitely many `u_i` form an
+`ε`-net of `{u_k}` for `∫_{Qⱼ} |· - ·|`. Then one strictly increasing `ψ` and functions `Gⱼ`, each
+integrable on `Qⱼ`, satisfy `∫_{Qⱼ} |u_{ψ(k)} - Gⱼ| → 0` for every `j`. The classes
+`[u_k] ∈ L¹(Qⱼ)` form a totally bounded set, so its closure `Cⱼ` is compact in the complete space
+`L¹(Qⱼ)`. By Tychonoff `∏ⱼ Cⱼ` is compact in the first-countable space `∏ⱼ L¹(Qⱼ)`, so the sequence
+`k ↦ ([u_k])ⱼ` has a convergent subsequence; `Gⱼ` is a representative of its `j`-th limit. -/
+theorem Submission.bv_exists_subseq_tendsto_lintegral_of_finite_nets : ∀ (n : ℕ) (Q : ℕ → Set (Rn n)) (u : ℕ → Rn n → ℝ), (∀ j k, IntegrableOn (u k) (Q j) volume) → (∀ j, ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ i ∈ F, (∫⁻ x in Q j, ‖u k x - u i x‖ₑ) < ENNReal.ofReal ε) → ∃ (ψ : ℕ → ℕ) (G : ℕ → Rn n → ℝ), StrictMono ψ ∧ (∀ j, IntegrableOn (G j) (Q j) volume) ∧ ∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖u (ψ k) x - G j x‖ₑ) atTop (𝓝 0) := by
+  intro n Q u hint hnet
+  -- Step 1: `f j k = [u k]` in the complete space `L¹(Q j)`.
+  have hmem : ∀ j k, MemLp (u k) 1 (volume.restrict (Q j)) :=
+    fun j k ↦ memLp_one_iff_integrable.2 (hint j k)
+  let f : (j : ℕ) → ℕ → Lp ℝ 1 (volume.restrict (Q j)) := fun j k ↦ (hmem j k).toLp (u k)
+  -- Step 2: the `L¹(Q j)` distances are the lower integrals of the hypotheses.
+  have hdist : ∀ j k i, edist (f j k) (f j i) = ∫⁻ x in Q j, ‖u k x - u i x‖ₑ := by
+    intro j k i
+    rw [Lp.edist_toLp_toLp, eLpNorm_one_eq_lintegral_enorm
+      ((hint j k).aestronglyMeasurable.sub (hint j i).aestronglyMeasurable)]
+    rfl
+  -- Step 3: the finite nets make `range (f j)` totally bounded, so its closure is compact.
+  have htb : ∀ j, TotallyBounded (range (f j)) := by
+    intro j
+    rw [totallyBounded_iff]
+    intro ε hε
+    obtain ⟨F, hF⟩ := hnet j ε hε
+    refine ⟨f j '' F, F.finite_toSet.image _, ?_⟩
+    rintro _ ⟨k, rfl⟩
+    obtain ⟨i, hiF, hi⟩ := hF k
+    refine mem_iUnion₂.2 ⟨f j i, mem_image_of_mem _ hiF, ?_⟩
+    rw [mem_ball, dist_edist]
+    exact ENNReal.toReal_lt_of_lt_ofReal (by rw [hdist]; exact hi)
+  have hcpt : ∀ j, IsCompact (closure (range (f j))) :=
+    fun j ↦ (htb j).closure.isCompact_of_isClosed isClosed_closure
+  -- Step 4: Tychonoff and sequential compactness in the first-countable product `∏ j, L¹(Q j)`.
+  obtain ⟨a, -, ψ, hψ, hlim⟩ := (isCompact_univ_pi hcpt).tendsto_subseq
+    (x := fun k j ↦ f j k) fun k ↦ mem_univ_pi.2 fun j ↦ subset_closure (mem_range_self k)
+  -- Step 5: `G j = ⇑(a j)` is integrable on `Q j` and `f j (ψ k) → a j` in `L¹(Q j)`.
+  refine ⟨ψ, fun j ↦ ⇑(a j), hψ, fun j ↦ memLp_one_iff_integrable.1 (Lp.memLp (a j)), fun j ↦ ?_⟩
+  have h1 : Tendsto (fun k ↦ edist (f j (ψ k)) (a j)) atTop (𝓝 0) :=
+    tendsto_iff_edist_tendsto_0.1 (tendsto_pi_nhds.1 hlim j)
+  refine h1.congr fun k ↦ ?_
+  rw [Lp.edist_def, eLpNorm_one_eq_lintegral_enorm
+    ((Lp.aestronglyMeasurable _).sub (Lp.aestronglyMeasurable _))]
+  refine lintegral_congr_ae ?_
+  filter_upwards [MemLp.coeFn_toLp (hmem j (ψ k))] with x hx
+  simp only [f, Pi.sub_apply, hx]
+/-- **Gluing compatible `L¹` limits along a compact exhaustion** (steps 5–8 of the diagonal extraction
+in the proof of Simon 2.6). Let `U ⊆ ℝⁿ` be open and `Q₀ ⊆ Q₁ ⊆ ⋯` compact sets such that every
+compact `K ⊆ U` lies in some `Qⱼ`. If every `w_k` is a.e.-strongly measurable on every `Qⱼ`, every
+`Gⱼ` is integrable on `Qⱼ` and `∫_{Qⱼ} |w_k - Gⱼ| → 0` as `k → ∞`, then `w_k → v` in `L¹_loc(U)` for
+some `v` that is locally integrable on `U`. For `i ≤ j` the triangle inequality gives
+`∫_{Qᵢ} |Gᵢ - Gⱼ| ≤ ∫_{Qᵢ} |w_k - Gᵢ| + ∫_{Qⱼ} |w_k - Gⱼ| → 0`, so `Gᵢ = Gⱼ` a.e. on `Qᵢ`. Hence
+`v(x) = G_{j(x)}(x)`, where `j(x)` is the least `j` with `x ∈ Qⱼ` (and `v = 0` off `⋃ⱼ Qⱼ`),
+agrees with `Gⱼ` a.e. on every `Qⱼ`. -/
+theorem Submission.bv_tendstoLocallyInL1On_of_exhaustion_limits : ∀ (n : ℕ) (U : Set (Rn n)) (Q : ℕ → Set (Rn n)) (w G : ℕ → Rn n → ℝ), IsOpen U → (∀ j, IsCompact (Q j)) → Monotone Q → (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j) → (∀ j k, AEStronglyMeasurable (w k) (volume.restrict (Q j))) → (∀ j, IntegrableOn (G j) (Q j) volume) → (∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖w k x - G j x‖ₑ) atTop (𝓝 0)) → ∃ v : Rn n → ℝ, LocallyIntegrableOn v U volume ∧ Chapter02.TendstoLocallyInL1On w v U atTop := by
+  intro n U Q w G hU hQc hQm hcof hw hG hlim
+  -- Step 0: every `Q j` is compact, hence closed and measurable.
+  have hQmeas : ∀ j, MeasurableSet (Q j) := fun j ↦ (hQc j).isClosed.measurableSet
+  -- Step 1: compatibility, `G i = G j` a.e. on `Q i` for `i ≤ j`.
+  have compat : ∀ i j, i ≤ j → G i =ᵐ[volume.restrict (Q i)] G j := by
+    intro i j hij
+    have hsub : Q i ⊆ Q j := hQm hij
+    have hGi : AEStronglyMeasurable (G i) (volume.restrict (Q i)) := (hG i).aestronglyMeasurable
+    have hGj : AEStronglyMeasurable (G j) (volume.restrict (Q i)) :=
+      (hG j).aestronglyMeasurable.mono_measure (Measure.restrict_mono hsub le_rfl)
+    have hbound : ∀ k, ∫⁻ x in Q i, ‖G i x - G j x‖ₑ ≤
+        (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) + ∫⁻ x in Q j, ‖w k x - G j x‖ₑ := by
+      intro k
+      calc ∫⁻ x in Q i, ‖G i x - G j x‖ₑ
+          ≤ ∫⁻ x in Q i, (‖w k x - G i x‖ₑ + ‖w k x - G j x‖ₑ) := by
+            refine lintegral_mono fun x ↦ ?_
+            calc ‖G i x - G j x‖ₑ = ‖(w k x - G j x) - (w k x - G i x)‖ₑ := by congr 1; ring
+              _ ≤ ‖w k x - G j x‖ₑ + ‖w k x - G i x‖ₑ := enorm_sub_le
+              _ = ‖w k x - G i x‖ₑ + ‖w k x - G j x‖ₑ := add_comm _ _
+        _ = (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) + ∫⁻ x in Q i, ‖w k x - G j x‖ₑ :=
+            lintegral_add_left' ((hw i k).sub hGi).enorm _
+        _ ≤ (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) + ∫⁻ x in Q j, ‖w k x - G j x‖ₑ :=
+            add_le_add le_rfl (lintegral_mono_set hsub)
+    have hzero : ∫⁻ x in Q i, ‖G i x - G j x‖ₑ = 0 := by
+      have hT : Tendsto (fun k ↦ (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) +
+          ∫⁻ x in Q j, ‖w k x - G j x‖ₑ) atTop (𝓝 0) := by
+        simpa using (hlim i).add (hlim j)
+      exact le_antisymm (ge_of_tendsto' hT hbound) zero_le
+    filter_upwards [(lintegral_eq_zero_iff' (hGi.sub hGj).enorm).1 hzero] with x hx
+    simpa [sub_eq_zero] using hx
+  -- Step 2: gluing, `v x = G (j x) x` with `j x` the least `j` such that `x ∈ Q j`.
+  classical
+  let v : Rn n → ℝ := fun x ↦ if h : ∃ j, x ∈ Q j then G (Nat.find h) x else 0
+  have hv : ∀ j, v =ᵐ[volume.restrict (Q j)] G j := by
+    intro j
+    have h1 : ∀ i, ∀ᵐ x ∂(volume : Measure (Rn n)), i ≤ j → x ∈ Q i → G i x = G j x := by
+      intro i
+      by_cases hij : i ≤ j
+      · filter_upwards [(ae_restrict_iff' (hQmeas i)).1 (compat i j hij)] with x hx _ hxi
+        exact hx hxi
+      · exact Eventually.of_forall fun x h ↦ absurd h hij
+    rw [EventuallyEq, ae_restrict_iff' (hQmeas j)]
+    filter_upwards [ae_all_iff.2 h1] with x hx hxj
+    have hex : ∃ j, x ∈ Q j := ⟨j, hxj⟩
+    simp only [v, hex, ↓reduceDIte]
+    exact hx _ (Nat.find_min' hex hxj) (Nat.find_spec hex)
+  -- Step 3: `v` is integrable on every `Q j`.
+  have hvint : ∀ j, IntegrableOn v (Q j) volume := fun j ↦ (hG j).congr_fun_ae (hv j).symm
+  refine ⟨v, ?_, ?_⟩
+  · -- Step 5: local integrability on the open set `U`.
+    rw [locallyIntegrableOn_iff hU.isLocallyClosed]
+    intro K hKU hK
+    obtain ⟨j, hj⟩ := hcof K hK hKU
+    exact (hvint j).mono_set hj
+  · -- Step 4: convergence on every compact `K ⊆ U`, squeezed by `∫⁻_{Q j} ‖w k - G j‖ₑ → 0`.
+    intro K hK hKU
+    obtain ⟨j, hj⟩ := hcof K hK hKU
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hlim j)
+      (fun _ ↦ zero_le) fun k ↦ ?_
+    calc ∫⁻ x in K, ‖w k x - v x‖ₑ ≤ ∫⁻ x in Q j, ‖w k x - v x‖ₑ := lintegral_mono_set hj
+      _ = ∫⁻ x in Q j, ‖w k x - G j x‖ₑ := by
+        refine lintegral_congr_ae ?_
+        filter_upwards [hv j] with x hx
+        rw [hx]
+
+/-- **Diagonal extraction in `L¹_loc(U)`** (step A2 of the proof of Simon Ch. 2, Theorem 2.6,
+p. 50). Let `U ⊆ ℝⁿ` be open and every `u_k` locally integrable on `U`. Suppose that for every
+compact `Q ⊆ U` and `ε > 0` finitely many `u_j` form an `ε`-net of `{u_k}` for `∫_Q |· - ·|`. Then a
+subsequence `u_{ψ(k)}` converges in `L¹_loc(U)` to some `v` that is locally integrable on `U`.
+Choose a compact exhaustion `Q₀ ⊆ Q₁ ⊆ ⋯` of `U`; every `u_k` is integrable on every `Qⱼ`, so one
+strictly increasing `ψ` and functions `Gⱼ` satisfy `∫_{Qⱼ} |u_{ψ(k)} - Gⱼ| → 0` for every `j`, and
+the `Gⱼ` glue to the limit `v`. -/
+theorem Submission.bv_exists_subseq_tendstoLocallyInL1On : ∀ (n : ℕ) (U : Set (Rn n)) (u : ℕ → Rn n → ℝ), IsOpen U → (∀ k, LocallyIntegrableOn (u k) U volume) → (∀ Q : Set (Rn n), IsCompact Q → Q ⊆ U → ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ j ∈ F, (∫⁻ x in Q, ‖u k x - u j x‖ₑ) < ENNReal.ofReal ε) → ∃ (ψ : ℕ → ℕ) (v : Rn n → ℝ), StrictMono ψ ∧ LocallyIntegrableOn v U volume ∧ Chapter02.TendstoLocallyInL1On (fun k ↦ u (ψ k)) v U atTop := by
+  intro n U u hU hloc hnet
+  -- Step 1: a compact exhaustion `Q 0 ⊆ Q 1 ⊆ ⋯` of `U`.
+  obtain ⟨Q, hQc, hQU, hQm, hcof⟩ := Submission.bv_isOpen_exists_compact_exhaustion n U hU
+  -- Every `u k` is integrable on every compact `Q j ⊆ U`.
+  have hint : ∀ j k, IntegrableOn (u k) (Q j) volume :=
+    fun j k ↦ (hloc k).integrableOn_compact_subset (hQU j) (hQc j)
+  -- Steps 2–4: the finite nets on each `Q j` give one subsequence converging in every `L¹(Q j)`.
+  obtain ⟨ψ, G, hψ, hG, hlim⟩ := Submission.bv_exists_subseq_tendsto_lintegral_of_finite_nets n Q
+    u hint fun j ε hε ↦ hnet (Q j) (hQc j) (hQU j) ε hε
+  -- Steps 5–8: glue the compatible limits `G j` into `v`.
+  obtain ⟨v, hv, hconv⟩ := Submission.bv_tendstoLocallyInL1On_of_exhaustion_limits n U Q
+    (fun k ↦ u (ψ k)) G hU hQc hQm hcof (fun j k ↦ (hint j (ψ k)).aestronglyMeasurable) hG hlim
+  exact ⟨ψ, v, hψ, hv, hconv⟩
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
