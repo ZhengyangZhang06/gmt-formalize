@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "rg -n -i 'coarea|slab' mathlib/Mathlib project/GMT/Ch03/Contract.lean",
+        "norm_image_sub_le_of_norm_fderiv_le'|reflection_sub|orthogonal_eq_bot_iff",
+        "critSlices_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/CritSlicesSplitFull.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/critslices-independent-audit-49aq22i2/IndependentTypes.lean",
+        "#synth MeasureSpace (Rn n)",
+        "#synth Inner ℝ (Rn m)",
+        "#synth Norm (Rn n →L[ℝ] Rn m)",
+        "#synth MetricSpace (Rn n)",
+        "#synth Pow ℝ≥0∞ ℕ"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Reflection.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-critical-slices-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/CritSlicesSplitFull.lean",
+        "/tmp/critslices-independent-audit-49aq22i2/IndependentTypes.lean",
+        "/tmp/critslices-independent-audit-49aq22i2/PowerInstance.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-checked the contract and key Mathlib sources against the compiler environment. Located the required countable Hausdorff covering bound, measurable-hull equality, Fatou lemma, normalization, mean-value estimate, reflection and volume-preservation results. The coarea/slab search found no relevant Mathlib theorem. All four literal statements independently elaborate as propositions in the comparator's replayed scope without child implementations. Instances are Euclidean L² metric/inner product, inner-product-space volume, continuous-linear-map operator norm, and ordinary ENNReal natural powers; no matrix-unit construction occurs. Independently recompiled all four supplied proofs and the exact frozen parent assembly: every axiom report contains only propext, Classical.choice and Quot.sound. All four names are bare, distinct and unreserved in the 131-node DAG. The sole child dependency, near_degenerate_image depending on slab_volume, is correctly directed and acyclic. The split is appropriate: subdivision and the image estimate establish the fine-cover hypothesis using n=m+k, and countable ball exhaustion yields precisely the selected parent conclusion, including its m=0 case."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fine_cover_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including arbitrary S and G and countable covers. Equal-measure measurable hulls justify the measurable majorants without extra hypotheses. Countable integration and Fatou give zero liminf almost everywhere; shrinking fiber covers, k>0 for empty pieces, and Hausdorff normalization prove the exact conclusion. The proof is complete and non-circular."
+    },
+    {
+      "key": "slab_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the statement with unrestricted real radii. Negative radii give an empty set, and the unit-vector hypothesis excludes m=0. Reflection, translation and the coordinate map preserve the intended volume; containment in the coordinate box gives the stated bound. Zero radii and ν=e₀ are covered without additional assumptions."
+    },
+    {
+      "key": "near_degenerate_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All prose hypotheses occur in the exact type. Nonemptiness supplies ε,d≥0, and the operator-norm bound supplies Λ≥0. Non-surjectivity gives a unit normal; the convex-set mean-value inequality gives the remainder estimate and both slab constraints. Applying the declared slab_volume dependency proves the conclusion without parent reliance."
+    },
+    {
+      "key": "cube_subdivision",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all four asserted family properties and both hypotheses. Explicit coordinate intervals prove convexity, ball containment and the Euclidean distance bound. The clipped-floor construction covers boundary points correctly, with R=0 handled separately and n=0 valid. This is a complete independent obligation."
+    }
+  ],
+  "required_changes": []
+}
