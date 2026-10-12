@@ -13,7 +13,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
-import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -571,41 +570,207 @@ theorem rsod_c1_immersion_ball_isC1Submanifold : ∀ (n ℓ : ℕ) (G : Rn n →
     refine ((hLip.mono hball_sub).hausdorffMeasure_image_le (Nat.cast_nonneg n)).trans_lt ?_
     exact ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg (Nat.cast_nonneg n) ENNReal.coe_ne_top)
       measure_ball_lt_top
-/-- Simon Ch. 3, Lemma 1.2 (last paragraph of the proof): the range of a `C¹` map
+
+/-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70, last paragraph)**: the range of a `C¹` map
 `G : ℝⁿ → ℝ^{n+ℓ}` lies in an `Hⁿ`-null set together with countably many `n`-dimensional `C¹`
-submanifolds of finite `Hⁿ`-measure.  The critical values `G({x | DG(x) not injective})` are
-`Hⁿ`-null (SimonGMT `area_image_criticalSet_eq_zero`); each regular point `a` has a ball
-`B̆_{σ(a)}(a)` whose image is such a submanifold (`rsod_c1_immersion_ball_isC1Submanifold`), and
-by Lindelöf countably many of these balls cover the regular points. -/
-theorem rsod_c1_range_subset_submanifold_cover : ∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ),
-    ContDiff ℝ 1 G → ∃ (N₀ : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)),
-      (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧
-      (∀ q, IsC1Submanifold n (N q) ∧ (μHE[n] : Measure (Amb n ℓ)) (N q) < ∞) ∧
-      range G ⊆ N₀ ∪ ⋃ q, N q := by
+submanifolds of finite `Hⁿ`-measure.
+Proof: the critical values `N₀ = G({x | DG(x) not injective})` are `Hⁿ`-null.  Inside `B_R(0)`,
+split the critical points into countably many disjoint pieces on which `G` is `ε`-close to a
+linear map `A = DG(y)` (`y` critical, so `A u = 0` for a unit `u`, and `‖A‖ ≤ C` on `B_R(0)`).
+For `B = id − (1 − ε) u ⊗ u` (so `det B = ε`, `A ∘ B = A` and `ε|w| ≤ |Bw|`), the map `G ∘ B⁻¹` is
+`(C + 1)`-Lipschitz on the image of a piece under `B`, whence
+`Hⁿ(G(piece)) ≤ (C + 1)ⁿ ε Hⁿ(piece)`; summing over the pieces and letting `ε → 0` gives
+`Hⁿ(G(Crit ∩ B_R(0))) = 0`.  Each regular point `a` has a ball `B̆_{σ(a)}(a)` whose image is a
+submanifold of finite measure (`rsod_c1_immersion_ball_isC1Submanifold`), and by Lindelöf
+countably many of these balls cover the regular points. -/
+theorem rsod_c1_range_subset_submanifold_cover : ∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ), ContDiff ℝ 1 G → ∃ (N₀ : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ q, IsC1Submanifold n (N q) ∧ (μHE[n] : Measure (Amb n ℓ)) (N q) < ∞) ∧ range G ⊆ N₀ ∪ ⋃ q, N q := by
   intro n ℓ G hG
   have hdiff : Differentiable ℝ G := hG.differentiable one_ne_zero
-  -- Critical values: `N₀ = G(Crit)` is `Hⁿ`-null.
+  -- Step 1 (critical values): `N₀ = G(Crit)` is `Hⁿ`-null.
   set Crit : Set (Rn n) := {x | DifferentiableAt ℝ G x ∧ ¬ Function.Injective (fderiv ℝ G x)}
   have hN₀ : (μHE[n] : Measure (Amb n ℓ)) (G '' Crit) = 0 := by
-    simpa only [finrank_euclideanSpace_fin] using
-      Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero G
-  -- Regular points: the image of a small ball around each one is a submanifold patch.
+    -- `μHE[n]` is a constant multiple of `μH[n]`, and `Crit` is a countable union of bounded pieces.
+    suffices h : (μH[(n : ℝ)] : Measure (Amb n ℓ)) (G '' Crit) = 0 by
+      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, h, smul_zero]
+    have hcov : G '' Crit ⊆ ⋃ R : ℕ, G '' (Crit ∩ closedBall 0 R) := by
+      rintro _ ⟨x, hx, rfl⟩
+      obtain ⟨R, hR⟩ := exists_nat_ge ‖x‖
+      exact mem_iUnion.2 ⟨R, x, ⟨hx, mem_closedBall_zero_iff.2 hR⟩, rfl⟩
+    refine measure_mono_null hcov (measure_iUnion_null fun R => ?_)
+    set s : Set (Rn n) := Crit ∩ closedBall 0 R with hs_def
+    -- `‖DG‖ ≤ C` on `B_R(0)`; `K = C + 1` will be the Lipschitz constant.
+    obtain ⟨C, hC⟩ := (isCompact_closedBall (0 : Rn n) R).exists_bound_of_continuousOn
+      (hG.continuous_fderiv one_ne_zero).continuousOn
+    set K : ℝ≥0 := Real.toNNReal (C + 1)
+    have hK : C + 1 ≤ K := Real.le_coe_toNNReal _
+    set D : ℝ≥0∞ := (K : ℝ≥0∞) ^ (n : ℝ) * (μH[(n : ℝ)] : Measure (Rn n)) (closedBall 0 R)
+    -- Main estimate: `Hⁿ(G(s)) ≤ ε Kⁿ Hⁿ(B_R(0))` for every `ε ∈ (0, 1]`.
+    have key : ∀ ε : ℝ≥0, 0 < ε → ε ≤ 1 →
+        (μH[(n : ℝ)] : Measure (Amb n ℓ)) (G '' s) ≤ ε * D := by
+      intro ε hε0 hε1
+      rcases s.eq_empty_or_nonempty with hs | hs
+      · rw [hs, image_empty, measure_empty]; exact zero_le
+      -- Disjoint measurable pieces `s ∩ t k` on which `G` is `ε`-close to `A k = DG(y)`, `y ∈ s`.
+      obtain ⟨t, A, htd, htm, hst, hA, hAy⟩ :=
+        exists_partition_approximatesLinearOn_of_hasFDerivWithinAt G s (fderiv ℝ G)
+          (fun x _ => (hdiff x).hasFDerivAt.hasFDerivWithinAt) (fun _ => ε) (fun _ => hε0.ne')
+      have piece : ∀ k, (μH[(n : ℝ)] : Measure (Amb n ℓ)) (G '' (s ∩ t k)) ≤
+          ε * ((K : ℝ≥0∞) ^ (n : ℝ) * (μH[(n : ℝ)] : Measure (Rn n)) (closedBall 0 R ∩ t k)) := by
+        intro k
+        obtain ⟨y, hy, hAk⟩ := hAy hs k
+        have hAC : ‖A k‖ ≤ C := by rw [hAk]; exact hC y hy.2
+        -- A unit vector `u` in the kernel of `A k = DG(y)`.
+        obtain ⟨v, hv, hv0⟩ : ∃ v, A k v = 0 ∧ v ≠ 0 := by
+          have h := hy.1.2
+          rw [← hAk, injective_iff_map_eq_zero] at h
+          obtain ⟨v, hv⟩ := not_forall.1 h
+          exact ⟨v, not_imp.1 hv⟩
+        set u : Rn n := ‖v‖⁻¹ • v
+        have hu : ‖u‖ = 1 := norm_smul_inv_norm hv0
+        have hAu : A k u = 0 := by simp [u, hv]
+        have huu : inner ℝ u u = 1 := by rw [real_inner_self_eq_norm_sq, hu, one_pow]
+        have hε1' : (ε : ℝ) ≤ 1 := by exact_mod_cast hε1
+        have hε0' : (0 : ℝ) < ε := by exact_mod_cast hε0
+        set c : ℝ := 1 - ε with hc_def
+        have hc0 : 0 ≤ c := sub_nonneg.2 hε1'
+        -- `B w = w − (1 − ε)⟨u, w⟩u` shrinks the kernel direction `u` by the factor `ε`.
+        set B : Rn n →L[ℝ] Rn n :=
+          ContinuousLinearMap.id ℝ (Rn n) - c • InnerProductSpace.rankOne ℝ u u
+        have hB : ∀ w, B w = w - (c * inner ℝ u w) • u := by
+          intro w
+          simp [B, mul_smul]
+        have hBinner : ∀ w, inner ℝ u (B w) = ε * inner ℝ u w := by
+          intro w
+          rw [hB, inner_sub_right, inner_smul_right, huu, hc_def]
+          ring
+        have hAB : ∀ w, A k (B w) = A k w := by
+          intro w
+          rw [hB, map_sub, map_smul, hAu, smul_zero, sub_zero]
+        have hBlow : ∀ w, (ε : ℝ) * ‖w‖ ≤ ‖B w‖ := by
+          intro w
+          have h1 : ‖w‖ ≤ ‖B w‖ + c * |inner ℝ u w| := by
+            have hw : w = B w + (c * inner ℝ u w) • u := by rw [hB]; abel
+            calc ‖w‖ = ‖B w + (c * inner ℝ u w) • u‖ := congrArg norm hw
+              _ ≤ ‖B w‖ + ‖(c * inner ℝ u w) • u‖ := norm_add_le _ _
+              _ = ‖B w‖ + c * |inner ℝ u w| := by
+                rw [norm_smul, hu, mul_one, Real.norm_eq_abs, abs_mul, abs_of_nonneg hc0]
+          have h2 : (ε : ℝ) * |inner ℝ u w| ≤ ‖B w‖ := by
+            have h := abs_real_inner_le_norm u (B w)
+            rwa [hBinner, hu, one_mul, abs_mul, abs_of_pos hε0'] at h
+          have h3 := mul_le_mul_of_nonneg_left h1 hε0'.le
+          have h4 := mul_le_mul_of_nonneg_left h2 hc0
+          nlinarith
+        -- `Φ = G ∘ B⁻¹` is `K`-Lipschitz on `B(s ∩ t k)` and maps it onto `G(s ∩ t k)`.
+        set Φ : Rn n → Amb n ℓ := fun z => G (z + (c / ε * inner ℝ u z) • u)
+        have hΦ : ∀ x, Φ (B x) = G x := by
+          intro x
+          simp only [Φ]
+          congr 1
+          rw [hBinner, hB]
+          have h : c / ε * (ε * inner ℝ u x) = c * inner ℝ u x := by
+            field_simp
+          rw [h, sub_add_cancel]
+        have himage : G '' (s ∩ t k) = Φ '' (B '' (s ∩ t k)) := by
+          rw [image_image]
+          exact image_congr fun x _ => (hΦ x).symm
+        have hLip : LipschitzOnWith K Φ (B '' (s ∩ t k)) := by
+          refine LipschitzOnWith.of_dist_le_mul fun _ hx' _ hy' => ?_
+          obtain ⟨x, hx, rfl⟩ := hx'
+          obtain ⟨y, hy, rfl⟩ := hy'
+          rw [hΦ, hΦ, dist_eq_norm, dist_eq_norm, ← map_sub]
+          have happ : ‖G x - G y - A k (x - y)‖ ≤ ε * ‖x - y‖ := hA k x hx y hy
+          have h1 : ‖G x - G y‖ ≤ ‖A k (x - y)‖ + ε * ‖x - y‖ := by
+            have h := norm_add_le (G x - G y - A k (x - y)) (A k (x - y))
+            rw [sub_add_cancel] at h
+            linarith
+          have h2 : ‖A k (x - y)‖ ≤ C * ‖B (x - y)‖ := by
+            rw [← hAB]
+            exact ((A k).le_opNorm _).trans (mul_le_mul_of_nonneg_right hAC (norm_nonneg _))
+          have h3 := hBlow (x - y)
+          calc ‖G x - G y‖ ≤ (C + 1) * ‖B (x - y)‖ := by linarith
+            _ ≤ K * ‖B (x - y)‖ := mul_le_mul_of_nonneg_right hK (norm_nonneg _)
+        -- `det B = 1 − (1 − ε)|u|² = ε` (matrix determinant lemma in the standard basis).
+        have hdet : LinearMap.det (B : Rn n →ₗ[ℝ] Rn n) = ε := by
+          set b := EuclideanSpace.basisFun (Fin n) ℝ
+          rw [← LinearMap.det_toMatrix b.toBasis]
+          have h1 : LinearMap.toMatrix b.toBasis b.toBasis (B : Rn n →ₗ[ℝ] Rn n) =
+              1 + Matrix.replicateCol Unit (fun i => -c * u i) *
+                Matrix.replicateRow Unit (fun i => u i) := by
+            ext i j
+            rw [LinearMap.toMatrix_apply]
+            simp [B, b, Matrix.one_apply, EuclideanSpace.inner_single_right, Matrix.replicateCol,
+              Matrix.replicateRow, Matrix.mul_apply]
+            ring
+          rw [h1, Matrix.det_one_add_replicateCol_mul_replicateRow]
+          have h2 : ∑ i, u i ^ 2 = 1 := by
+            rw [← EuclideanSpace.real_norm_sq_eq, hu, one_pow]
+          simp only [dotProduct]
+          have h3 : ∑ i, u i * (-c * u i) = -c * ∑ i, u i ^ 2 := by
+            rw [Finset.mul_sum]
+            exact Finset.sum_congr rfl fun i _ => by ring
+          rw [h3, h2, hc_def]
+          ring
+        calc (μH[(n : ℝ)] : Measure (Amb n ℓ)) (G '' (s ∩ t k))
+            = (μH[(n : ℝ)] : Measure (Amb n ℓ)) (Φ '' (B '' (s ∩ t k))) := by rw [himage]
+          _ ≤ (K : ℝ≥0∞) ^ (n : ℝ) * (μH[(n : ℝ)] : Measure (Rn n)) (B '' (s ∩ t k)) :=
+            hLip.hausdorffMeasure_image_le (Nat.cast_nonneg n)
+          _ = (K : ℝ≥0∞) ^ (n : ℝ) * (ε * (μH[(n : ℝ)] : Measure (Rn n)) (s ∩ t k)) := by
+            rw [Measure.addHaar_image_continuousLinearMap, hdet, abs_of_nonneg ε.coe_nonneg,
+              ENNReal.ofReal_coe_nnreal]
+          _ ≤ (K : ℝ≥0∞) ^ (n : ℝ) *
+              (ε * (μH[(n : ℝ)] : Measure (Rn n)) (closedBall 0 R ∩ t k)) := by
+            gcongr
+            exact inter_subset_right
+          _ = ε * ((K : ℝ≥0∞) ^ (n : ℝ) *
+              (μH[(n : ℝ)] : Measure (Rn n)) (closedBall 0 R ∩ t k)) := by
+            ring
+      calc (μH[(n : ℝ)] : Measure (Amb n ℓ)) (G '' s)
+          ≤ (μH[(n : ℝ)] : Measure (Amb n ℓ)) (⋃ k, G '' (s ∩ t k)) := by
+            refine measure_mono ?_
+            rintro _ ⟨x, hx, rfl⟩
+            obtain ⟨k, hk⟩ := mem_iUnion.1 (hst hx)
+            exact mem_iUnion.2 ⟨k, x, ⟨hx, hk⟩, rfl⟩
+        _ ≤ ∑' k, (μH[(n : ℝ)] : Measure (Amb n ℓ)) (G '' (s ∩ t k)) := measure_iUnion_le _
+        _ ≤ ∑' k, ε * ((K : ℝ≥0∞) ^ (n : ℝ) *
+              (μH[(n : ℝ)] : Measure (Rn n)) (closedBall 0 R ∩ t k)) :=
+            ENNReal.tsum_le_tsum piece
+        _ = ε * ((K : ℝ≥0∞) ^ (n : ℝ) *
+              (μH[(n : ℝ)] : Measure (Rn n)) (⋃ k, closedBall 0 R ∩ t k)) := by
+            rw [measure_iUnion (fun i j hij => (htd hij).mono inter_subset_right inter_subset_right)
+              (fun k => measurableSet_closedBall.inter (htm k)), ENNReal.tsum_mul_left,
+              ENNReal.tsum_mul_left]
+        _ ≤ ε * D := by
+            show _ ≤ ε * ((K : ℝ≥0∞) ^ (n : ℝ) * (μH[(n : ℝ)] : Measure (Rn n)) (closedBall 0 R))
+            gcongr
+            exact iUnion_subset fun k => inter_subset_left
+    -- Letting `ε → 0` gives `Hⁿ(G(s)) = 0`, since `D < ∞`.
+    have hD : D ≠ ∞ :=
+      ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg (Nat.cast_nonneg n) ENNReal.coe_ne_top)
+        measure_closedBall_lt_top.ne
+    have hlim : Tendsto (fun ε : ℝ≥0 => (ε : ℝ≥0∞) * D) (𝓝[>] 0) (𝓝 0) := by
+      have h0 : Tendsto (fun ε : ℝ≥0 => (ε : ℝ≥0∞)) (𝓝[>] 0) (𝓝 0) :=
+        (ENNReal.continuous_coe.tendsto' 0 0 ENNReal.coe_zero).mono_left nhdsWithin_le_nhds
+      simpa using ENNReal.Tendsto.mul_const h0 (Or.inr hD)
+    refine le_antisymm (ge_of_tendsto hlim ?_) zero_le
+    filter_upwards [Ioc_mem_nhdsGT zero_lt_one] with ε hε
+    exact key ε hε.1 hε.2
+  -- Step 2 (regular points): the image of a small ball around each one is a submanifold patch.
   set Reg : Set (Rn n) := {x | Function.Injective (fderiv ℝ G x)}
   have hcrit : ∀ x, x ∉ Reg → G x ∈ G '' Crit := fun x hx => ⟨x, ⟨hdiff x, hx⟩, rfl⟩
   choose! σ hσ hσsub hσfin using fun a (ha : a ∈ Reg) =>
     Submission.rsod_c1_immersion_ball_isC1Submanifold n ℓ G a hG ha
-  -- Lindelöf: countably many of the balls `B̆_{σ(a)}(a)`, `a ∈ Reg`, cover `Reg`.
+  -- Step 3 (Lindelöf): countably many of the balls `B̆_{σ(a)}(a)`, `a ∈ Reg`, cover `Reg`.
   obtain ⟨T, hTReg, hTc, hcover⟩ := TopologicalSpace.countable_cover_nhdsWithin
     (f := fun a => ball a (σ a)) (s := Reg)
     fun a ha => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds a (hσ a ha))
   rcases T.eq_empty_or_nonempty with hT | hT
-  · -- No regular points: every value is critical, and the patches are empty.
+  · -- Step 4, no regular points: every value is critical, and the patches are empty.
     refine ⟨G '' Crit, fun _ => ∅, hN₀,
       fun _ => ⟨fun y hy => absurd hy (notMem_empty y), by simp⟩, ?_⟩
     rintro _ ⟨x, rfl⟩
     refine Or.inl (hcrit x fun hx => ?_)
     simpa [hT] using hcover hx
-  · -- Enumerate the patches `G(B̆_{σ(a)}(a))`, `a ∈ T`.
+  · -- Step 4: enumerate the patches `G(B̆_{σ(a)}(a))`, `a ∈ T`; Step 5: they cover `G(Reg)`.
     obtain ⟨e, rfl⟩ := hTc.exists_eq_range hT
     refine ⟨G '' Crit, fun q => G '' ball (e q) (σ (e q)), hN₀,
       fun q => ⟨hσsub _ (hTReg (mem_range_self q)), hσfin _ (hTReg (mem_range_self q))⟩, ?_⟩
