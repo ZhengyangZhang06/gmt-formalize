@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Simon Ch. 5, proof of Theorem 5.2, (3)–(5) (p. 123: "(4) evidently implies that there is
+`S(ξ) = lim S_ℓ` such that (5)"), in a complete metric space: if `dist(v_j, v_{j+1})² ≤ a q^j` with
+`0 ≤ q ≤ 1/4`, then `v_j → w` and `dist(v_j, w)² ≤ 4 a q^j`.  With `h = √q ≤ 1/2` the consecutive
+distances are `≤ √a h^j`, so `(v_j)` is Cauchy and `dist(v_j, w) ≤ √a h^j / (1 − h) ≤ 2 √a h^j`. -/
+theorem Submission.dorag_ted_pl_geometric_limit : ∀ (X : Type) [MetricSpace X] [CompleteSpace X] (v : ℕ → X) (a q : ℝ), 0 ≤ q → q ≤ 1 / 4 → (∀ j : ℕ, dist (v j) (v (j + 1)) ^ 2 ≤ a * q ^ j) → ∃ w : X, Tendsto v atTop (𝓝 w) ∧ ∀ j : ℕ, dist (v j) w ^ 2 ≤ 4 * a * q ^ j := by
+  intro X _ _ v a q hq hq4 hv
+  -- Step 1: `a ≥ 0` (take `j = 0`)
+  have ha : 0 ≤ a := by
+    have hv0 := hv 0
+    rw [pow_zero, mul_one] at hv0
+    exact (sq_nonneg _).trans hv0
+  -- Step 2: `h = √q` has `0 ≤ h ≤ 1/2` and `(√a h^j)² = a q^j`
+  set h := Real.sqrt q
+  have h0 : 0 ≤ h := Real.sqrt_nonneg q
+  have h2 : h ^ 2 = q := Real.sq_sqrt hq
+  have hhalf : h ≤ 1 / 2 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num; linarith)
+  have h1 : h < 1 := by linarith
+  have hC : ∀ j : ℕ, 0 ≤ Real.sqrt a * h ^ j := fun j =>
+    mul_nonneg (Real.sqrt_nonneg a) (pow_nonneg h0 j)
+  have hCsq : ∀ j : ℕ, (Real.sqrt a * h ^ j) ^ 2 = a * q ^ j := fun j => by
+    rw [mul_pow, Real.sq_sqrt ha, ← pow_mul, mul_comm j 2, pow_mul, h2]
+  -- Step 3: `dist(v_j, v_{j+1}) ≤ √a h^j`
+  have hstep : ∀ j : ℕ, dist (v j) (v (j + 1)) ≤ Real.sqrt a * h ^ j := fun j => by
+    rw [← pow_le_pow_iff_left₀ dist_nonneg (hC j) two_ne_zero, hCsq j]
+    exact hv j
+  -- Step 4: `(v_j)` is Cauchy, so it converges in the complete space `X`
+  obtain ⟨w, hw⟩ :=
+    cauchySeq_tendsto_of_complete (cauchySeq_of_le_geometric h (Real.sqrt a) h1 hstep)
+  refine ⟨w, hw, fun j => ?_⟩
+  -- Step 5: `dist(v_j, w) ≤ √a h^j / (1 − h) ≤ 2 √a h^j`
+  have htail : dist (v j) w ≤ 2 * (Real.sqrt a * h ^ j) := by
+    refine (dist_le_of_le_geometric_of_tendsto h (Real.sqrt a) h1 hstep hw j).trans ?_
+    rw [div_le_iff₀ (by linarith)]
+    nlinarith [hC j]
+  -- Step 6: square
+  calc dist (v j) w ^ 2 ≤ (2 * (Real.sqrt a * h ^ j)) ^ 2 := pow_le_pow_left₀ dist_nonneg htail 2
+    _ = 4 * a * q ^ j := by rw [mul_pow, hCsq j]; ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
