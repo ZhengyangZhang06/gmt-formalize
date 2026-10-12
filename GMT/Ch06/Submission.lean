@@ -359,6 +359,151 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Step 1 of the proof of the Constancy Theorem (Simon Ch. 6, Theorem 2.34, pp. 142–143): every
+top-degree form is `ω = a_ω dx¹ ∧ ⋯ ∧ dxⁿ` with `a_ω(x) = ω(x)(e₁, …, eₙ)`, so `T ∈ 𝒟ₙ(U)` acts as
+`T(ω) = u(a_ω)` for `u(b) = T(b dx¹ ∧ ⋯ ∧ dxⁿ)`; `u` is linear on `C^∞` functions with compact
+support in `U` and continuous for `C^∞` convergence with supports in a compact `K ⊆ U`.
+(Book `n = m + 1`.) -/
+theorem Submission.constancy_topForm_scalar_reduction : ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (T : GeometricCurrentOn U (m + 1)), ∃ u : (Eucl (m + 1) → ℝ) → ℝ, (∀ ω : TestFormOn U (m + 1), T ω = u (fun x => (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)))) ∧ (∀ b : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∃ ω : TestFormOn U (m + 1), ∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) = b x) ∧ (∀ a b : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → u (a + b) = u a + u b) ∧ (∀ (c : ℝ) (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → u (c • a) = c * u a) ∧ (∀ (a : ℕ → Eucl (m + 1) → ℝ) (b : Eucl (m + 1) → ℝ) (K : Set (Eucl (m + 1))), IsCompact K → K ⊆ U → (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (a k)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → (∀ k, tsupport (a k) ⊆ K) → tsupport b ⊆ K → (∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (a k) x) (fun x => iteratedFDeriv ℝ q b x) atTop) → Tendsto (fun k => u (a k)) atTop (𝓝 (u b))) := by
+  intro m U T
+  classical
+  -- `dx = dx¹ ∧ ⋯ ∧ dxⁿ`, the determinant of the coordinate matrix, with `dx(e) = 1`.
+  set e : Fin (m + 1) → Eucl (m + 1) := fun i => EuclideanSpace.single i (1 : ℝ)
+  set dx : Covector (Eucl (m + 1)) (m + 1) :=
+    wedgeCovectors (m + 1) (fun i => EuclideanSpace.proj i)
+  have hdx_apply : ∀ v : Fin (m + 1) → Eucl (m + 1),
+      dx v = (Matrix.of fun i j => (v j) i).det := fun v => wedgeCovectors_apply_det _ _ v
+  have hdx_e : dx e = 1 := by
+    have h1 : (Matrix.of fun i j => (e j) i : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) = 1 := by
+      ext i j
+      simp [e, Matrix.one_apply]
+    rw [hdx_apply, h1, Matrix.det_one]
+  -- Every top-degree covector is `α = α(e) • dx` (`AlternatingMap.eq_smul_basis_det`).
+  have hrep : ∀ α : Covector (Eucl (m + 1)) (m + 1), α = α e • dx := by
+    intro α
+    ext v
+    set B := (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis
+    have hB : ⇑B = e := by
+      funext i
+      simp [B, e]
+    have hdet : B.det v = dx v := by
+      rw [Module.Basis.det_apply, hdx_apply]
+      congr 1
+    have h := congrArg (fun f => f v) (AlternatingMap.eq_smul_basis_det B α.toAlternatingMap)
+    simp only [AlternatingMap.smul_apply, ContinuousAlternatingMap.coe_toAlternatingMap, hB,
+      hdet] at h
+    simpa using h
+  -- `Λ t = t • dx`; the lift of a scalar function `b` is the form `[b] = Λ ∘ b`.
+  set Λ : ℝ →L[ℝ] Covector (Eucl (m + 1)) (m + 1) :=
+    (ContinuousLinearMap.id ℝ ℝ).smulRight dx
+  have hΛ_apply : ∀ t, Λ t = t • dx := fun t => rfl
+  have hΛ_e : ∀ t, Λ t e = t := fun t => by
+    rw [hΛ_apply, ContinuousAlternatingMap.smul_apply, hdx_e, smul_eq_mul, mul_one]
+  -- Admissible functions: `C^∞`, compactly supported, with support in `U`.
+  let adm : (Eucl (m + 1) → ℝ) → Prop := fun b =>
+    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b ∧ HasCompactSupport b ∧ tsupport b ⊆ U
+  have hmem : ∀ b, adm b → (fun x => Λ (b x)) ∈ testFormOnSubmodule U (m + 1) := fun b hb =>
+    ⟨⟨Λ.contDiff.comp hb.1, hb.2.1.comp_left (map_zero Λ)⟩,
+      (tsupport_comp_subset (map_zero Λ) b).trans hb.2.2⟩
+  let lift : ∀ b, adm b → TestFormOn U (m + 1) := fun b hb => ⟨fun x => Λ (b x), hmem b hb⟩
+  let u : (Eucl (m + 1) → ℝ) → ℝ := fun b => if h : adm b then T (lift b h) else 0
+  have hu : ∀ b (hb : adm b), u b = T (lift b hb) := fun b hb => dite_eq_left hb
+  have hadm_add : ∀ a b, adm a → adm b → adm (a + b) := fun a b ha hb =>
+    ⟨ha.1.add hb.1, ha.2.1.add hb.2.1, (tsupport_add a b).trans (union_subset ha.2.2 hb.2.2)⟩
+  have hadm_smul : ∀ (c : ℝ) a, adm a → adm (c • a) := fun c a ha =>
+    ⟨ha.1.const_smul c, ha.2.1.smul_left (f := fun _ => c),
+      (tsupport_smul_subset_right (fun _ => c) a).trans ha.2.2⟩
+  refine ⟨u, ?_, ?_, ?_, ?_, ?_⟩
+  · -- (i) `T(ω) = u(a_ω)`, since `[a_ω] = ω`.
+    intro ω
+    have hω := ω.property
+    have ha : adm (fun x => (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e) :=
+      ⟨(ContinuousAlternatingMap.apply ℝ (Eucl (m + 1)) ℝ e).contDiff.comp hω.1.1,
+        hω.1.2.comp_left (g := fun α : Covector (Eucl (m + 1)) (m + 1) => α e) rfl,
+        (tsupport_comp_subset (g := fun α : Covector (Eucl (m + 1)) (m + 1) => α e) rfl
+          _).trans hω.2⟩
+    rw [hu _ ha]
+    congr 1
+    apply Subtype.ext
+    funext x
+    exact hrep ((ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x)
+  · -- (ii) `[b](x)(e) = b(x)`.
+    intro b hb hcb hsb
+    exact ⟨lift b ⟨hb, hcb, hsb⟩, fun x => hΛ_e (b x)⟩
+  · -- (iii) Additivity.
+    intro a b ha hca hsa hb hcb hsb
+    have ha' : adm a := ⟨ha, hca, hsa⟩
+    have hb' : adm b := ⟨hb, hcb, hsb⟩
+    rw [hu _ (hadm_add a b ha' hb'), hu a ha', hu b hb']
+    have : lift (a + b) (hadm_add a b ha' hb') = lift a ha' + lift b hb' := by
+      apply Subtype.ext
+      funext x
+      exact map_add Λ (a x) (b x)
+    rw [this]
+    exact map_add T.toCurrent _ _
+  · -- (iv) Homogeneity.
+    intro c a ha hca hsa
+    have ha' : adm a := ⟨ha, hca, hsa⟩
+    rw [hu _ (hadm_smul c a ha'), hu a ha']
+    have : lift (c • a) (hadm_smul c a ha') = c • lift a ha' := by
+      apply Subtype.ext
+      funext x
+      exact map_smul Λ c (a x)
+    rw [this]
+    exact map_smul T.toCurrent c _
+  · -- (v) Continuity: `ω_k = [a_k] − [b] → 0` in `𝒟ⁿ(U)`.
+    intro a b K hK hKU ha hb hsa hsb hconv
+    have ha' : ∀ k, adm (a k) := fun k =>
+      ⟨ha k, hK.of_isClosed_subset (isClosed_tsupport _) (hsa k), (hsa k).trans hKU⟩
+    have hb' : adm b := ⟨hb, hK.of_isClosed_subset (isClosed_tsupport _) hsb, hsb.trans hKU⟩
+    simp only [hu _ (ha' _), hu b hb']
+    rw [← tendsto_sub_nhds_zero_iff]
+    set ω : ℕ → TestFormOn U (m + 1) := fun k => lift (a k) (ha' k) - lift b hb'
+    have hTω : ∀ k, T (ω k) = T (lift (a k) (ha' k)) - T (lift b hb') := fun k =>
+      map_sub T.toCurrent _ _
+    simp only [← hTω]
+    apply T.continuous'
+    refine ⟨K, hK, hKU, ?_, ?_, ?_⟩
+    · intro k
+      exact (tsupport_sub _ _).trans (union_subset
+        ((tsupport_comp_subset (map_zero Λ) (a k)).trans (hsa k))
+        ((tsupport_comp_subset (map_zero Λ) b).trans hsb))
+    · simp
+    · intro q
+      apply TendstoUniformly.tendstoUniformlyOn
+      rw [Metric.tendstoUniformly_iff]
+      intro ε hε
+      have hΛpos : 0 < ‖Λ‖ + 1 := by positivity
+      have hδ : 0 < ε / (‖Λ‖ + 1) := div_pos hε hΛpos
+      filter_upwards [Metric.tendstoUniformly_iff.mp (hconv q) _ hδ] with k hk x
+      have hD : iteratedFDeriv ℝ q
+          ((ω k : TestFormOn U (m + 1)) : DifferentialForm (Eucl (m + 1)) (m + 1)) x =
+          Λ.compContinuousMultilinearMap
+            (iteratedFDeriv ℝ q (a k) x - iteratedFDeriv ℝ q b x) := by
+        have h1 : ((ω k : TestFormOn U (m + 1)) : DifferentialForm (Eucl (m + 1)) (m + 1)) =
+            Λ ∘ (a k - b) := by
+          funext y
+          exact (map_sub Λ (a k y) (b y)).symm
+        have hsub : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (a k - b) := (ha k).sub hb
+        rw [h1, Λ.iteratedFDeriv_comp_left hsub.contDiffAt
+          (by exact_mod_cast le_top), iteratedFDeriv_sub_apply
+          ((ha k).contDiffAt.of_le (by exact_mod_cast le_top))
+          (hb.contDiffAt.of_le (by exact_mod_cast le_top))]
+      have h0 : iteratedFDeriv ℝ q
+          (((0 : TestFormOn U (m + 1)) : DifferentialForm (Eucl (m + 1)) (m + 1))) x = 0 := by
+        simp
+      rw [hD, h0, dist_zero_left]
+      calc ‖Λ.compContinuousMultilinearMap
+              (iteratedFDeriv ℝ q (a k) x - iteratedFDeriv ℝ q b x)‖
+          ≤ ‖Λ‖ * ‖iteratedFDeriv ℝ q (a k) x - iteratedFDeriv ℝ q b x‖ :=
+            Λ.norm_compContinuousMultilinearMap_le _
+        _ ≤ ‖Λ‖ * (ε / (‖Λ‖ + 1)) := by
+            gcongr
+            rw [← dist_eq_norm, dist_comm]
+            exact (hk x).le
+        _ < (‖Λ‖ + 1) * (ε / (‖Λ‖ + 1)) := mul_lt_mul_of_pos_right (lt_add_one _) hδ
+        _ = ε := by field_simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
