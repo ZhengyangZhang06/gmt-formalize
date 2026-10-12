@@ -359,6 +359,52 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Basis independence of the full coefficient sum (Parseval's identity, one slot at a time): for
+orthonormal bases `u`, `v` of `ℝ^P` and a `k`-covector `φ`,
+`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = ∑_I φ(v_{I 0}, …, v_{I (k-1)})²`, both sums over all index maps
+`I : Fin k → Fin P`.  Induction on `k`: write `I = (i, J)` and `φ(w_I) = (φ.curryLeft w_i)(w_J)`,
+replace `u` by `v` in the last `k` slots by the induction hypothesis for `φ.curryLeft (u i)`, then
+in slot `0` by `OrthonormalBasis.norm_dual` for the functional `z ↦ (φ.curryLeft z)(v_J)`. -/
+theorem Submission.slicing_mb_wn_sq_sum_onb_invariant :
+    ∀ (P k : ℕ) (u v : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
+        ∑ I : Fin k → Fin P, (φ (fun i => v (I i))) ^ 2 := by
+  intro P k u v
+  induction k with
+  | zero =>
+    -- Both families are the empty tuple.
+    intro φ
+    exact Fintype.sum_congr _ _ fun I => by
+      rw [Subsingleton.elim (fun i => u (I i)) (fun i => v (I i))]
+  | succ k ih =>
+    intro φ
+    -- Split `I = Fin.cons i J`; then `φ(w_I) = (φ.curryLeft w_i)(w_J)`.
+    have hsplit : ∀ w : OrthonormalBasis (Fin P) ℝ (Eucl P),
+        ∑ I : Fin (k + 1) → Fin P, (φ (fun i => w (I i))) ^ 2 =
+          ∑ i : Fin P, ∑ J : Fin k → Fin P, (φ.curryLeft (w i) (fun j => w (J j))) ^ 2 := by
+      intro w
+      rw [← Fintype.sum_prod_type', ← (Fin.consEquiv fun _ => Fin P).sum_comp]
+      refine Fintype.sum_congr _ _ fun p => ?_
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      congr 2
+      funext i
+      refine Fin.cases ?_ (fun j => ?_) i <;>
+        simp only [Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ, Matrix.cons_val_zero,
+          Matrix.cons_val_succ]
+    -- Slots `1, …, k`: the induction hypothesis for each `k`-covector `φ.curryLeft (u i)`.
+    rw [hsplit u, hsplit v]
+    simp_rw [ih]
+    -- Slot `0`: for each `J`, Parseval for `ℓ_J z = (φ.curryLeft z)(v_J)` in the bases `u`, `v`.
+    rw [Finset.sum_comm]
+    conv_rhs => rw [Finset.sum_comm]
+    refine Fintype.sum_congr _ _ fun J => ?_
+    let ℓ : StrongDual ℝ (Eucl P) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (fun j => v (J j))).comp φ.curryLeft
+    have hu := u.norm_dual ℓ
+    have hv := v.norm_dual ℓ
+    simp only [ℓ, ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.apply_apply] at hu hv
+    rw [← hu, ← hv]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
