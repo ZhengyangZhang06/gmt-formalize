@@ -451,6 +451,71 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Componentwise affine assembly** (Simon Ch. 5, proof of 4.5, (17)–(19); chapter-05.txt
+lines 928–960).  Let `f : ℝⁿ → ℝᵏ` be continuous and `s > 0`, and suppose every rescaled
+coordinate `s⁻¹fʲ` is `L²`-close on the open ball `B̆ₜ = ball 0 t` to an affine function:
+`|a_j| ≤ A`, `‖b_j‖ ≤ B` and `∫_{B̆ₜ} (s⁻¹fʲ − a_j − b_j)² ≤ Q`.  With
+`eⱼ = EuclideanSpace.single j 1`, the choices `c = Σⱼ s a_j eⱼ` and `Λ = Σⱼ (s b_j)(·) eⱼ` satisfy
+`|c| ≤ k s A` and `‖Λ‖ ≤ k s B` (triangle inequality), and
+`|f − c − Λ·|² = Σⱼ s² (s⁻¹fʲ − a_j − b_j)²` pointwise, so `∫_{B̆ₜ} |f − c − Λ·|² ≤ k s² Q`. -/
+theorem Submission.dorag_tes_componentwise_affine_assembly : ∀ (n k : ℕ) (f : Euclid n → Euclid k) (s A B Q t : ℝ), Continuous f → 0 < s → (∀ j : Fin k, ∃ (a : ℝ) (b : Euclid n →L[ℝ] ℝ), ‖b‖ ≤ B ∧ |a| ≤ A ∧ ∫ v in ball (0 : Euclid n) t, (s⁻¹ * EuclideanSpace.proj j (f v) - a - b v) ^ 2 ≤ Q) → ∃ (c : Euclid k) (Λ : Euclid n →L[ℝ] Euclid k), ‖c‖ ≤ k * s * A ∧ ‖Λ‖ ≤ k * s * B ∧ ∫⁻ v in ball (0 : Euclid n) t, ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2) ≤ ENNReal.ofReal (k * s ^ 2 * Q) := by
+  intro n k f s A B Q t hf hs h
+  choose a b hb ha hQ using h
+  set e : Fin k → Euclid k := fun j => EuclideanSpace.single j (1 : ℝ) with he
+  have hen : ∀ j, ‖e j‖ = 1 := fun j => by simp [he]
+  set c : Euclid k := ∑ j, (s * a j) • e j with hc
+  set Λ : Euclid n →L[ℝ] Euclid k := ∑ j, (s • b j).smulRight (e j) with hΛ
+  refine ⟨c, Λ, ?_, ?_, ?_⟩
+  · -- `|c| ≤ Σⱼ s |a_j| ≤ k s A`.
+    calc ‖c‖ ≤ ∑ j, ‖(s * a j) • e j‖ := norm_sum_le _ _
+      _ ≤ ∑ _j : Fin k, s * A := by
+        refine Finset.sum_le_sum fun j _ => ?_
+        rw [norm_smul, hen, mul_one, Real.norm_eq_abs, abs_mul, abs_of_pos hs]
+        exact mul_le_mul_of_nonneg_left (ha j) hs.le
+      _ = k * s * A := by simp [mul_assoc]
+  · -- `‖Λ‖ ≤ Σⱼ s ‖b_j‖ ≤ k s B`.
+    calc ‖Λ‖ ≤ ∑ j, ‖(s • b j).smulRight (e j)‖ := norm_sum_le _ _
+      _ ≤ ∑ _j : Fin k, s * B := by
+        refine Finset.sum_le_sum fun j _ => ?_
+        rw [ContinuousLinearMap.norm_smulRight_apply, hen, mul_one, norm_smul, Real.norm_eq_abs,
+          abs_of_pos hs]
+        exact mul_le_mul_of_nonneg_left (hb j) hs.le
+      _ = k * s * B := by simp [mul_assoc]
+  · set g : Fin k → Euclid n → ℝ := fun j v => (s⁻¹ * EuclideanSpace.proj j (f v) - a j - b j v) ^ 2
+      with hg
+    -- Pointwise `|f − c − Λ·|² = Σⱼ s² gⱼ`: the `j`-th coordinate is `s (s⁻¹fʲ − a_j − b_j)`.
+    have hpt : ∀ v, ‖f v - c - Λ v‖ ^ 2 = ∑ j, s ^ 2 * g j v := by
+      intro v
+      rw [EuclideanSpace.real_norm_sq_eq]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      have hcoord : (f v - c - Λ v).ofLp j =
+          s * (s⁻¹ * EuclideanSpace.proj j (f v) - a j - b j v) := by
+        simp [hc, hΛ, he, Pi.single_apply]
+        field_simp
+      rw [hcoord, hg, mul_pow]
+    -- Each `gⱼ` is continuous, hence integrable on the bounded ball.
+    have hint : ∀ j, IntegrableOn (g j) (ball (0 : Euclid n) t) := by
+      intro j
+      have hcont : Continuous (g j) := by
+        simp only [hg]
+        fun_prop
+      exact (hcont.continuousOn.integrableOn_compact (isCompact_closedBall 0 t)).mono_set
+        ball_subset_closedBall
+    have hint' : IntegrableOn (fun v => ‖f v - c - Λ v‖ ^ 2) (ball (0 : Euclid n) t) := by
+      simp_rw [hpt]
+      exact integrable_finsetSum _ fun j _ => (hint j).const_mul _
+    -- Pass to the Bochner integral and sum the componentwise bounds.
+    rw [← ofReal_integral_eq_lintegral_ofReal hint' (Eventually.of_forall fun v => sq_nonneg _)]
+    apply ENNReal.ofReal_le_ofReal
+    calc ∫ v in ball (0 : Euclid n) t, ‖f v - c - Λ v‖ ^ 2
+        = ∫ v in ball (0 : Euclid n) t, ∑ j, s ^ 2 * g j v := by simp_rw [hpt]
+      _ = ∑ j, ∫ v in ball (0 : Euclid n) t, s ^ 2 * g j v :=
+        integral_finsetSum _ fun j _ => (hint j).const_mul _
+      _ = ∑ j, s ^ 2 * ∫ v in ball (0 : Euclid n) t, g j v := by simp_rw [integral_const_mul]
+      _ ≤ ∑ _j : Fin k, s ^ 2 * Q :=
+        Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hQ j) (sq_nonneg s)
+      _ = k * s ^ 2 * Q := by simp [mul_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
