@@ -2037,38 +2037,6 @@ theorem Submission.deGiorgiDens_ball_normal_le_deriv : ∀ (N : ℕ) (U G : Set 
   -- Step 6: pass to the limit `s ↑ ρ` in Step 3.
   exact le_of_tendsto_of_tendsto hL hR
     (by filter_upwards [Ioo_mem_nhdsLT hρ] with s hs using hkey s hs.1 hs.2)
-/-- **Sobolev inequality for compactly supported Lipschitz functions** (Simon Ch. 3, proof of
-Theorem 4.3, Step 7 "Constants"): for `N = n + 1` and `p = (n + 1) / n` (so `p = ∞` when `n = 0`)
-there is `c > 0` with `‖u‖_{L^p} ≤ c ∫ ‖Du‖ dLᴺ` for every Lipschitz `u : ℝᴺ → ℝ` with compact
-support. For `C¹` functions with compact support this is the Gagliardo–Nirenberg–Sobolev
-inequality [GT01, Thm 7.10] when `n ≥ 1` and the bound `sup |v| ≤ ½ ∫ |v'|` (erratum E6) when
-`n = 0`. The mollifications `v_j` of `u` are `C¹`, supported in the compact set
-`cthickening 1 (tsupport u)`, with `‖Dv_j‖ ≤ K`, `v_j → u` uniformly and `Dv_j → Du` a.e., so the
-bound passes to the limit by dominated convergence and Fatou's lemma for `eLpNorm`. -/
-theorem Submission.deGiorgiDens_lipschitz_sobolev : ∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (u : Rn (n + 1) → ℝ) (K : ℝ≥0), LipschitzWith K u → HasCompactSupport u → eLpNorm u ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖) := by
-  intro n
-  -- Steps 1–2: the inequality for `C¹` functions with compact support, with `c = ½` if `n = 0`
-  -- (where `p = (0 + 1) / 0 = ∞`) and the Gagliardo–Nirenberg–Sobolev constant if `n ≥ 1`.
-  obtain ⟨c, hc, hsmooth⟩ : ∃ c : ℝ, 0 < c ∧ ∀ v : Rn (n + 1) → ℝ, ContDiff ℝ 1 v →
-      HasCompactSupport v →
-        eLpNorm v ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ v y‖) := by
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · refine ⟨1 / 2, one_half_pos, fun v hv hvs ↦ ?_⟩
-      convert Submission.deGiorgiDensSob_one_dim_contDiff v hv hvs using 2
-      simp
-    · exact Submission.deGiorgiDensSob_gns_contDiff n hn
-  refine ⟨c, hc, fun u K hu hcu ↦ ?_⟩
-  -- Step 3: the `C¹` approximations `v j`, supported in the compact set
-  -- `cthickening (1 / (j + 1)) (tsupport u) ⊆ cthickening 1 (tsupport u)`.
-  obtain ⟨v, hv_cd, hv_cs, hv_tsupp, hbound, hunif, hae⟩ :=
-    Submission.deGiorgiDens_lipschitz_smooth_approx (n + 1) u K hu hcu
-  have hsupp : ∀ j, tsupport (v j) ⊆ Metric.cthickening 1 (tsupport u) := fun j ↦
-    (hv_tsupp j).trans (Metric.cthickening_mono
-      (div_le_one_of_le₀ (le_add_of_nonneg_left (Nat.cast_nonneg j)) (by positivity)) _)
-  -- Steps 4–5: dominated convergence of `∫ ‖Dv_j‖` and Fatou's lemma for `eLpNorm`.
-  exact Submission.deGiorgiDensSob_eLpNorm_le_of_approx (n + 1) _ c K
-    (Metric.cthickening 1 (tsupport u)) u v hcu.isCompact.cthickening hv_cd hsupp hbound
-    (ae_of_all _ hunif.tendsto_at) hae fun j ↦ hsmooth (v j) (hv_cd j) (hv_cs j)
 
 /-- **Sobolev inequality for `ζ χ_G`** (Simon Ch. 3, proof of 4.3, `chapter-03.txt`
 lines 689–712, for a single Gauss–Green pair): there is `c = c(n) > 0` with
