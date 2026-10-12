@@ -584,6 +584,51 @@ theorem rsod_planeMeasure_closedBall : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : S
   rw [hpre, hvol, Measure.addHaar_closedBall volume (0 : P) hs, hball, hP,
     ← ENNReal.ofReal_mul (pow_nonneg hs n), mul_comm]
 
+/-- **A `C¹` graph has `Hⁿ`-density one at each of its points** (Simon p. 128: "graph `u` is a
+`C¹` submanifold so then `Θⁿ(μ_V, x) = 1` at every point of graph `u`").  If `n ≥ 1`, `u` is `C¹`
+on the open ball `B̆_R(0) ⊆ ℝⁿ` and `x ∈ B̆_R(0)`, then
+`Hⁿ(graph u|_{B̆_R(0)} ∩ B_r((x, u(x)))) / (ω_n rⁿ) → 1` as `r ↓ 0`.  Given `δ > 0`, continuity of
+`ε ↦ (1 + ε)ⁿ / (1 − ε)ⁿ` at `0` gives `ε ∈ (0, 1)` with `(1 + ε)ⁿ / (1 − ε)ⁿ < 1 + δ`, hence
+`(1 − ε)ⁿ / (1 + ε)ⁿ ≥ (1 + δ)⁻¹ ≥ 1 − δ`.  For small `r > 0` the graph mass in `B_r((x, u(x)))` lies
+between `(1 − ε)ⁿ / (1 + ε)ⁿ · ω_n rⁿ` and `(1 + ε)ⁿ / (1 − ε)ⁿ · ω_n rⁿ`
+(`dohr_c1_graph_mass_pinching`), so between `(1 ∓ δ) ω_n rⁿ` with `ω_n rⁿ > 0`, and the ratio
+squeeze `dohr_ratio_tendsto_one_of_pinching` gives the limit. -/
+theorem dohr_c1_graph_density_one : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ∀ x ∈ ball (0 : Rn n) R, Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 1) := by
+  intro n ℓ hn R u hu x hx
+  -- `ω_n = π^{n/2} / Γ(n/2 + 1) > 0`.
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  refine Submission.dohr_ratio_tendsto_one_of_pinching
+    (fun r => (μHE[n] : Measure (Amb n ℓ))
+      (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r))
+    (fun r => unitBallVolume n * r ^ n) fun δ hδ => ?_
+  -- Choose `ε ∈ (0, 1)` with `(1 + ε)ⁿ / (1 − ε)ⁿ < 1 + δ`, by continuity at `ε = 0`.
+  have hcont : ContinuousAt (fun ε : ℝ => (1 + ε) ^ n / (1 - ε) ^ n) 0 :=
+    ContinuousAt.div (by fun_prop) (by fun_prop) (by simp)
+  have hev : ∀ᶠ ε in 𝓝[>] (0 : ℝ), (1 + ε) ^ n / (1 - ε) ^ n < 1 + δ ∧ ε < 1 ∧ 0 < ε :=
+    ((hcont.tendsto.eventually (gt_mem_nhds (a := 1 + δ) (by simp [hδ]))).filter_mono
+      nhdsWithin_le_nhds).and (((gt_mem_nhds (by norm_num : (0 : ℝ) < 1)).filter_mono
+      nhdsWithin_le_nhds).and self_mem_nhdsWithin)
+  obtain ⟨ε, hεδ, hε1, hε0⟩ := hev.exists
+  -- `(1 − ε)ⁿ / (1 + ε)ⁿ = ((1 + ε)ⁿ / (1 − ε)ⁿ)⁻¹ ≥ (1 + δ)⁻¹ ≥ 1 − δ`.
+  have hlower : 1 - δ ≤ (1 - ε) ^ n / (1 + ε) ^ n := by
+    have h1e : 0 < 1 - ε := by linarith
+    have h1 : (1 + δ)⁻¹ ≤ (1 - ε) ^ n / (1 + ε) ^ n := by
+      rw [← inv_div]
+      exact inv_anti₀ (by positivity) hεδ.le
+    have h2 : 1 - δ ≤ (1 + δ)⁻¹ := by
+      rw [← one_div, le_div_iff₀ (by linarith)]
+      nlinarith
+    linarith
+  -- The pinching bounds hold for `r ∈ (0, η]`, a right neighbourhood of `0`.
+  obtain ⟨η, hη, hb⟩ := Submission.dohr_c1_graph_mass_pinching n ℓ hn R u hu x hx ε hε0 hε1
+  filter_upwards [Ioc_mem_nhdsGT hη] with r ⟨hr0, hrη⟩
+  have hg : 0 < unitBallVolume n * r ^ n := mul_pos hω (pow_pos hr0 n)
+  obtain ⟨hlo, hhi⟩ := hb r hr0 hrη
+  exact ⟨hg, (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right hlower hg.le)).trans hlo,
+    hhi.trans (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right hεδ.le hg.le))⟩
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
