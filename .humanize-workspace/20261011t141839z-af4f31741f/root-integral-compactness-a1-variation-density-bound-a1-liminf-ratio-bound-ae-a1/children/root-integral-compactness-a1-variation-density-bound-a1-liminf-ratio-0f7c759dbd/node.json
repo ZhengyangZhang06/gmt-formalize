@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1.liminf_bound_ae_of_cover-a1",
+  "parent_id": "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1",
+  "depth": 4,
+  "title": "A.e. bound liminf_i ν_i(B_ρ(x)) ≤ c·μ(B_ρ(x)) on W for ρ < r, from a covering estimate with constant C and sup_i ν_i(thickening(r, W)) < ∞ (parent steps 3–6)",
+  "statement": "Let N, C ∈ ℕ, let μ and ν_i (i ∈ ℕ) be measures on ℝ^N = Euclidean N, let W ⊆ ℝ^N be an arbitrary set and r ∈ ℝ. Assume the covering estimate (H): for every set A ⊆ ℝ^N, every i ∈ ℕ and every t ∈ [0,∞], if every x ∈ A has some σ ∈ ℝ with 0 < σ < r and μ(B_σ(x)) ≤ t·ν_i(B_σ(x)), then μ(A) ≤ C·t·ν_i(thickening(r, A)). Assume also S := sup_i ν_i(thickening(r, W)) < ∞. Then for μ-almost every x (the exceptional set has outer μ-measure 0) the following holds: if x ∈ W, there is c ∈ ℕ with liminf_{i→∞} ν_i(B_ρ(x)) ≤ c·μ(B_ρ(x)) in [0,∞] for every ρ ∈ (0, r). Here B_ρ(x) = closedBall x ρ, μ of an arbitrary set is its outer measure, and thickening(r, E) = {y : infEdist(y, E) < ofReal(r)} (Metric.thickening).",
+  "lean_statement": "∀ (N C : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (r : ℝ), (∀ (A : Set (Euclidean N)) (i : ℕ) (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < r ∧ μ (closedBall x σ) ≤ t * ν i (closedBall x σ)) → μ A ≤ (C : ℝ≥0∞) * t * ν i (thickening r A)) → ⨆ i, ν i (thickening r W) ≠ ∞ → ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ)",
+  "lean_name": "intcpt_vdb_liminf_bound_ae_of_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-variation-density-bound-a1-liminf-ratio-0f7c759dbd-a1"
+}
