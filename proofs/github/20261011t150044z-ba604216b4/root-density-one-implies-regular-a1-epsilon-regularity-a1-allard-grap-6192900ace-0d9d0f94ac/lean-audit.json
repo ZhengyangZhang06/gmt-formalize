@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e34dca04ec62c1d8e81e05cf18860b1fae35bbeb21d5f73a65a17dc6e861e1c2",
+  "git_delta": {
+    "base_commit": "ce0a0fbc1b581ce07c74e412f9a5c008f527c4e5",
+    "candidate_commit": "881b273785bffae1ff0dbf182ff53f8567128dc2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_lsc_interior_energy",
+    "diff_sha256": "10cc3d6404f04435767747b2f2c4dc7c11aa0a2d49e3091dbebb01ed3d6a2cbb",
+    "source_sha256": "a054b0783985fcd243e4cfe09955ea53a57a946e0fc29c834b21884c5c678fef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_lsc_interior_energy",
+      "statement": "∀ (n : ℕ) (R E r : ℝ) (h : Euclid n → ℝ), 0 < r → r < R → 0 ≤ E → ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → (∀ Φ : Fin n → Euclid n → ℝ, (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x ≤ Real.sqrt E * Real.sqrt (∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, Φ i x ^ 2)) → ∫ x in ball (0 : Euclid n) r, ‖fderiv ℝ h x‖ ^ 2 ≤ E",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
