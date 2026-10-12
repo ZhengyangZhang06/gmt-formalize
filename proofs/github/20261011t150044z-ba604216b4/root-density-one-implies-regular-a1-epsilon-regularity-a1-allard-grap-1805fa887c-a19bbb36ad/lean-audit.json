@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "69bc0cb45b4c071cb711ebf49fd8daee05872756ca70b9eadd8058b223cf6f3a",
+  "git_delta": {
+    "base_commit": "e93d29e4ecd2b21b7f0a09fd9bf3c315ea5eefeb",
+    "candidate_commit": "4391f9f8e27ec73c8cd0458090fde5991e44ac5b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_ie_opNorm_sq_mul_volume_le_of_mean_value",
+    "diff_sha256": "88812e3af4cc903abe9a440a01b76b5af56431416ccdc0f52ab6faec42ddee4d",
+    "source_sha256": "456d19591097b41a276669344f5ee87bd7190b054c741227cca0dcc3e0b5d85f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_ie_opNorm_sq_mul_volume_le_of_mean_value",
+      "statement": "∀ (n : ℕ) (g : Euclid n → (Euclid n →L[ℝ] ℝ)) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn g (closedBall y ρ) → (∀ e : Euclid n, ∫ z in ball y ρ, g z e = (volume (ball y ρ)).toReal * g y e) → ‖g y‖ ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, ‖g z‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
