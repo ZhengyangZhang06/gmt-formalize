@@ -458,6 +458,48 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Vitali `5r`-covering estimate for two measures** (Simon Ch. 1, 3.4, followed by the
+summation of Ch. 5, Lemma 2.6).  Let `ν, Ψ` be measures on `ℝ^N`, `S, W ⊆ ℝ^N` and
+`M ∈ [0, ∞]`.  If every `y ∈ S` has a radius `0 < r(y) ≤ R₀` with `B_{r(y)}(y) ⊆ W` and
+`ν(S ∩ B_{5 r(y)}(y)) ≤ M Ψ(B_{r(y)}(y))`, then `ν(S) ≤ M Ψ(W)`.
+
+The `5r`-covering lemma selects `S' ⊆ S` with pairwise disjoint balls `B_{r(b)}(b)`, `b ∈ S'`,
+such that each `B_{r(a)}(a)`, `a ∈ S`, lies in some `B_{5 r(b)}(b)`; `S'` is countable since the
+open balls `B̆_{r(b)}(b)` are disjoint and nonempty in the separable space `ℝ^N`.  Countable
+subadditivity of `ν` and countable additivity of `Ψ` on the disjoint balls inside `W` give
+`ν(S) ≤ ∑_{b ∈ S'} M Ψ(B_{r(b)}(b)) = M Ψ(⋃_{b ∈ S'} B_{r(b)}(b)) ≤ M Ψ(W)`. -/
+theorem lip_approx_vitali_bound : ∀ (N : ℕ) (ν Ψ : Measure (EuclideanSpace ℝ (Fin N))) (S W : Set (EuclideanSpace ℝ (Fin N))) (r : EuclideanSpace ℝ (Fin N) → ℝ) (R₀ : ℝ) (M : ℝ≥0∞), (∀ y ∈ S, 0 < r y ∧ r y ≤ R₀ ∧ closedBall y (r y) ⊆ W ∧ ν (S ∩ closedBall y (5 * r y)) ≤ M * Ψ (closedBall y (r y))) → ν S ≤ M * Ψ W := by
+  intro N ν Ψ S W r R₀ M h
+  -- Steps 1–2: the radii are bounded by `R₀`, so the `5r`-covering lemma (`τ = 5 > 3`) applies.
+  obtain ⟨u, huS, hdisj, hcov⟩ :=
+    Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall S (fun y => y) r R₀
+      (fun y hy => (h y hy).2.1) 5 (by norm_num)
+  -- Step 3: the open balls `B̆_{r(b)}(b)`, `b ∈ S'`, are disjoint and nonempty, so `S'` is countable.
+  have hu : u.Countable :=
+    (hdisj.mono fun _ => ball_subset_closedBall).countable_of_isOpen (fun _ _ => isOpen_ball)
+      fun b hb => nonempty_ball.2 (h b (huS hb)).1
+  -- Step 4: `a ∈ B_{r(a)}(a) ⊆ B_{5 r(b)}(b)` covers `S` by the sets `S ∩ B_{5 r(b)}(b)`.
+  have hcover : S ⊆ ⋃ b ∈ u, S ∩ closedBall b (5 * r b) := by
+    intro a ha
+    obtain ⟨b, hb, hab⟩ := hcov a ha
+    exact mem_biUnion hb ⟨ha, hab (mem_closedBall_self (h a ha).1.le)⟩
+  -- Steps 4–5: countable subadditivity of `ν`, the hypothesis, and additivity of `Ψ`.
+  calc ν S ≤ ν (⋃ b ∈ u, S ∩ closedBall b (5 * r b)) := measure_mono hcover
+    _ ≤ ∑' b : u, ν (S ∩ closedBall (b : EuclideanSpace ℝ (Fin N)) (5 * r b)) :=
+      measure_biUnion_le ν hu _
+    _ ≤ ∑' b : u, M * Ψ (closedBall (b : EuclideanSpace ℝ (Fin N)) (r b)) :=
+      ENNReal.tsum_le_tsum fun b => (h b (huS b.2)).2.2.2
+    _ = M * ∑' b : u, Ψ (closedBall (b : EuclideanSpace ℝ (Fin N)) (r b)) := ENNReal.tsum_mul_left
+    _ = M * Ψ (⋃ b ∈ u, closedBall b (r b)) := by
+      rw [measure_biUnion hu hdisj fun b _ => measurableSet_closedBall]
+    _ ≤ M * Ψ W := by
+      gcongr
+      exact iUnion₂_subset fun b hb => (h b (huS hb)).2.2.1
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
