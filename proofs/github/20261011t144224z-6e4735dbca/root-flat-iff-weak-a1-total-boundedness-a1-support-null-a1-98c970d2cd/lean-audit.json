@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a5e87c91f6945443246462d49cb241236a9ad217af539b9e1541f7b1b0cedb73",
+  "git_delta": {
+    "base_commit": "efee80b597330e34bb158f7a5f250c0f98c1e98d",
+    "candidate_commit": "590fa7737e34dcfeaa485afd4b1eea84c6018ceb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_rectifiable_support_null",
+    "diff_sha256": "2037bbd0f00bf9189e392276fdc0a5ffd6fcac5674d8cb90051da17c13329c3e",
+    "source_sha256": "4a671e1905822131d99cd501826adaa44afc3063a7f0cfa8eaaafaad28d6ae3f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_rectifiable_support_null",
+      "statement": "(∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ W : Set (Eucl P), IsOpen W → T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) → ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \\ T.support) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
