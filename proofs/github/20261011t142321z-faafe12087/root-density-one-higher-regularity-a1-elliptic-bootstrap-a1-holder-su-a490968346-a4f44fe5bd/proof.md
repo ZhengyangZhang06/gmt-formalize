@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1.curry_succ_iff-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 (first half) and 2 of the parent proof of dohr_eb_holder_succ_iff_fderiv, specialized and expanded.
+Notation. R^n = Rn n = EuclideanSpace R (Fin n) with the Euclidean norm. For a map h, D^j h = iteratedFDeriv R j h is Mathlib's global iterated derivative, defined at every point. Df = fderiv R f. Spaces of continuous multilinear maps carry the operator norm, and 'C^j on U' means ContDiffOn R j . U. Call (A) the left side and (B) the right side of the equivalence. No condition on alpha and no sign condition on the constants C is needed.
+1. Currying identity (holds at every x, with no differentiability needed). By iteratedFDeriv_succ_eq_comp_right (Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean:926), for every x in R^n we have D^{m+1}f(x) = Phi(D^m(Df)(x)). Here Phi := (continuousMultilinearCurryRightEquiv' R m (Rn n) E).symm is a linear isometric equivalence from the continuous m-linear maps (R^n)^m -> L(R^n, E) onto the continuous (m+1)-linear maps (R^n)^(m+1) -> E.
+2. Differences have equal norms. Let x, y be in R^n. By step 1, additivity of Phi, and the fact that Phi preserves norms: ||D^{m+1}f(x) - D^{m+1}f(y)|| = ||Phi(D^m(Df)(x)) - Phi(D^m(Df)(y))|| = ||Phi(D^m(Df)(x) - D^m(Df)(y))|| = ||D^m(Df)(x) - D^m(Df)(y)||. (Lean: after rw [iteratedFDeriv_succ_eq_comp_right, iteratedFDeriv_succ_eq_comp_right]; simp only [Function.comp_apply], use rw [<- LinearIsometryEquiv.map_sub, LinearIsometryEquiv.norm_map]. The generic map_sub can fail to find its AddMonoidHomClass instance because the curry equivalence is indexed by Fin m.succ rather than Fin (m + 1).)
+3. The Hoelder clauses coincide. Fix a compact K contained in U and a real C. By step 2, the statement 'for all x, y in K, ||D^{m+1}f(x) - D^{m+1}f(y)|| <= C ||x - y||^alpha' is equivalent to 'for all x, y in K, ||D^m(Df)(x) - D^m(Df)(y)|| <= C ||x - y||^alpha'; just rewrite the left-hand norm by step 2. Hence the Hoelder clause of (A) holds iff that of (B) holds, with the same constant for each K.
+4. Regularity reduction. The smoothness index ((m + 1 : N) : WithTop N-infinity) equals (m : WithTop N-infinity) + 1 (Nat.cast_add, Nat.cast_one, or push_cast). Since U is open, contDiffOn_succ_iff_fderiv_of_isOpen (Mathlib/Analysis/Calculus/ContDiff/Defs.lean:891) says that f is C^{m+1} on U iff three things hold: f is differentiable on U; (m = omega -> f is analytic on U); and Df is C^m on U. The middle clause is always true: (m : WithTop N-infinity) is a finite natural number, so it differs from omega (simp closes it).
+5. (A) => (B), regularity part. Suppose f is C^{m+1} on U. Since 1 <= (m : WithTop N-infinity) + 1 (le_add_self), f is C^1 on U by ContDiffOn.of_le. By step 4, Df is C^m on U.
+6. (B) => (A), regularity part. Suppose f is C^1 on U and Df is C^m on U. A map that is C^1 on U is differentiable on U (ContDiffOn.differentiableOn, using 1 /= 0). The analyticity clause holds by step 4, so step 4 gives that f is C^{m+1} on U.
+7. Conclusion. If (A) holds, then (B) holds by steps 5 and 3: for each compact K in U, the constant given by (A) also works in (B). If (B) holds, then (A) holds by steps 6 and 3. Hence (A) <=> (B). QED
+
+## Key steps
+
+1. iteratedFDeriv_succ_eq_comp_right: D^{m+1}f(x) = Phi(D^m(Df)(x)) for every x, with Phi a linear isometric equivalence
+2. ||D^{m+1}f(x) - D^{m+1}f(y)|| = ||D^m(Df)(x) - D^m(Df)(y)|| (LinearIsometryEquiv.map_sub, norm_map), so the Hoelder clauses coincide with the same constants
+3. contDiffOn_succ_iff_fderiv_of_isOpen with ((m+1 : N) : WithTop N-infinity) = m + 1; the analyticity clause is vacuous for finite m
+4. C^{m+1} => C^1 by ContDiffOn.of_le; C^1 => differentiable; combine regularity and Hoelder parts in both directions
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean; cmp GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Contract.lean`
+- `rg -n -A6 'theorem contDiffOn_succ_iff_fderiv_of_isOpen' <snapshot>/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean; rg -n -A8 'theorem contDiffOn_clm_apply' .../ContDiff/FiniteDimension.lean; rg -n -A6 'theorem iteratedFDeriv_succ_eq_comp_right' .../ContDiff/FTaylorSeries.lean`
+- `rg -n -A8 'theorem ContinuousLinearMap.iteratedFDerivWithin_comp_left|theorem ContinuousLinearMap.iteratedFDeriv_comp_left|theorem ContinuousLinearMap.norm_iteratedFDerivWithin_comp_left|theorem iteratedFDerivWithin_of_isOpen|theorem iteratedFDerivWithin_sum_apply|theorem iteratedFDeriv_sum|theorem iteratedFDerivWithin_sum' <snapshot>/mathlib/Mathlib/Analysis/Calculus/`
+- `rg -n 'def smulRightL|theorem norm_smulRightL|theorem smulRightL_apply|def compContinuousMultilinearMapL|theorem norm_compContinuousMultilinearMap_le|theorem norm_apply_le|theorem basisFun_apply|theorem basisFun_repr|def basisFun|def proj ' over Analysis/Normed/Operator, Analysis/InnerProductSpace/PiL2.lean, Topology/Algebra/Module, Analysis/Normed/Module, Analysis/Normed/Lp`
+- `rg -n 'EuclideanSpace.proj|abbrev proj' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; sed -n 705,720p .../Analysis/Normed/Lp/PiLp.lean; rg -n 'theorem norm_smulRight_apply' .../Analysis/Normed/Operator/*.lean`
+- `python3 scan of dag.json: all lean_name values (prefix dohr_eb, names containing holder/fderiv/partial/component/curry) and exact lean_statement equality with the three proposed child types; rg -l 'dohr_eb_hsif' <run>/dag.json <run>/nodes <snapshot>/project`
+- `rg -n 'iteratedFDeriv_succ_eq_comp_right|compContinuousMultilinearMap|contDiffOn_clm_apply' <snapshot>/project/GMT lake-packages-25730c7c/simongmt/Poincare; grep -c 'Mathlib.Analysis.Calculus.ContDiff.FiniteDimension' <snapshot>/project/GMT/Ch05/Contract.lean`
+- `grep -n 'holder_succ_iff_fderiv' in the speculative parent draft .swarm-worktrees/000e0c36def75b69b337/gmt-ch05/GMT/Ch05/Submission.lean (usage: .1.mpr / .1.mp)`
+- `python3 gmt-compare.py contract_scope/child_modules (contract mode) to generate NodeChallenge/NodeSolution text for the 3 children and the parent`
+- `LEAN_PATH=<shared lake-packages-25730c7c build dirs>:/tmp/hsif-decomp-jzApUd/build lean -o build/GMT/Ch05/Submission.olean src/Submission.lean (frozen file, Lean 4.35.0-rc3)`
+- `lean checks/AllChallenges.lean (3 child types + frozen parent type in replayed scope, sorry bodies): exit 0, only sorry warnings`
+- `lean checks/Assembly.lean (3 child types as axioms in GMT.Ch05.Submission, parent proved, #print axioms): exit 0`
+- `lean checks/Full.lean (3 children proved, parent assembled, exact Submission.X targets, #print axioms): exit 0, 0 errors, no sorry`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-su-d401bf599b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/000e0c36def75b69b337/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/tmp/hsif-decomp-jzApUd/checks/AllChallenges.lean`
+- `/tmp/hsif-decomp-jzApUd/checks/Assembly.lean`
+- `/tmp/hsif-decomp-jzApUd/checks/Full.lean`
+
+Snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Contract.lean and Submission.lean are byte-identical to the snapshot Contract, and HEAD is ea560759.
+
+Pinned Mathlib declarations used by the children all exist:
+- iteratedFDeriv_succ_eq_comp_right (ContDiff/FTaylorSeries.lean:926, with (continuousMultilinearCurryRightEquiv' 𝕜 n E F).symm)
+- contDiffOn_succ_iff_fderiv_of_isOpen (ContDiff/Defs.lean:891, with an analyticity clause that is vacuous for finite m)
+- ContinuousLinearMap.iteratedFDeriv_comp_left (ContDiff/Basic.lean:255, needs only ContDiffAt)
+- iteratedFDeriv_fun_sum_apply (ContDiff/Operations.lean:411) and ContDiffOn.sum (Operations.lean:375)
+- ContDiffOn.clm_apply (ContDiff/Comp.lean:500)
+- ContinuousLinearMap.smulRightL (Normed/Operator/Bilinear.lean:511) and norm_smulRight_apply (Bilinear.lean:449)
+- ContinuousLinearMap.norm_compContinuousMultilinearMap_le (Normed/Module/Multilinear/Basic.lean:919)
+- EuclideanSpace.proj (PiL2.lean:285) and EuclideanSpace.basisFun_apply (PiL2.lean:806)
+- PiLp.norm_apply_le (PiLp.lean:713)
+
+contDiffOn_clm_apply (ContDiff/FiniteDimension.lean:52) exists, but its module is not in the frozen import closure ('Unknown identifier' in the scratch check). The children's proofs therefore use the iota_k reconstruction from the parent proof instead.
+
+The project and simongmt contain no reusable column/currying Hölder lemma; simongmt Chapter06/Currents.lean only uses iteratedFDeriv_succ_eq_comp_right internally. No dohr_eb_hsif_* name exists in dag.json, the node directories or the snapshot, and no DAG node has a lean_statement equal to any proposed child type. The parent draft uses this node via .1.mpr/.1.mp, which is exactly child curry_succ_iff.
+
+Lean checks in the scratch build all passed:
+- AllChallenges: the 3 child types and the parent type elaborate in the replayed scope.
+- Assembly: the parent type follows from the 3 child types as axioms.
+- Full: the 3 children are proved, the parent depends only on propext, Classical.choice and Quot.sound, and the exact Submission.X targets close.
