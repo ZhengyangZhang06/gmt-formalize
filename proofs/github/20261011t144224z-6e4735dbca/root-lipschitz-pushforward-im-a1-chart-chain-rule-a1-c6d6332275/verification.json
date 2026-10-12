@@ -1,0 +1,22 @@
+{
+  "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/735",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "a42b48e8b29b5398bef36299f264f7c1ba3aaa98",
+  "integrated_commit": "",
+  "proof_base_commit": "93f3462dde9fe25fdf74219a3064c1d34e6b724d",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.lipschitz_pushforward_im-a1",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1",
+    "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.countable_lipschitz_cover-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_diff_comp-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.line_deriv_comp-a1"
+  ]
+}
