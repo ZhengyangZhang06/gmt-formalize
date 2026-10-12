@@ -384,6 +384,59 @@ theorem Submission.setIntegral_blowUpMap_image : ∀ (n N : ℕ) (x : Rn N) (r :
   -- Step 6: `(r⁻¹)ⁿ = (rⁿ)⁻¹`.
   rw [← hi, inv_pow]
 
+/-- **The measure `θ Hⁿ ⌞ M`** (Simon Ch. 3, Definition 1.7, Remark 1.8(1) and Theorem 1.9,
+`chapter-03.txt` lines 284–323). Let `M` be `Hⁿ`-measurable, `θ` a positive locally
+`Hⁿ`-integrable weight on `M`, and `μ = (Hⁿ ⌞ M).withDensity (ofReal ∘ θ)`. Then
+(a) `μ(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K`;
+(b) `μ(S) = 0 ↔ Hⁿ({θ ≠ 0} ∩ S ∩ M) = 0 ↔ Hⁿ(M ∩ S) = 0`, since `θ > 0` on `M`;
+(c) a weighted approximate tangent space `P` of `M` at `x` (Def. 1.7) is an approximate tangent
+plane of `μ` at `x` with multiplicity `θ(x)`: for `r > 0` the blow-up change of variables
+`setIntegral_blowUpMap_image` and `x + r η_{x,r}(z) = z` give
+`∫_{η_{x,r}(M)} f(y) θ(x + r y) dHⁿ(y) = (rⁿ)⁻¹ ∫_M f(η_{x,r}(z)) θ(z) dHⁿ(z)
+= (rⁿ)⁻¹ ∫ f(η_{x,r}(y)) dμ(y)`, so both sides have the same limit as `r ↓ 0`. -/
+theorem Submission.weightedMeasure_finite_null_tangent :
+    ∀ (n N : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (μ : Measure (Rn N)), NullMeasurableSet M μHE[n] →
+      IsPositiveLocallyIntegrableWeight n M θ →
+      μ = ((μHE[n] : Measure (Rn N)).restrict M).withDensity (fun z ↦ ENNReal.ofReal (θ z)) →
+      (∀ K : Set (Rn N), IsCompact K → μ K < ∞) ∧ (∀ S : Set (Rn N), μ S = 0 ↔ μHE[n] (M ∩ S) = 0) ∧
+      ∀ (x : Rn N) (P : Submodule ℝ (Rn N)), HasWeightedApproximateTangentSpaceAt n M θ x P →
+        HasApproxTangentPlaneWithMultiplicity n μ x P (θ x) := by
+  intro n N M θ μ hM hθ hμ
+  obtain ⟨hpos, hθmeas, hθint⟩ := hθ
+  subst hμ
+  -- Step 0: the density `w = ofReal ∘ θ` is `Hⁿ ⌞ M`-a.e. measurable.
+  have hw : AEMeasurable (fun z ↦ ENNReal.ofReal (θ z)) ((μHE[n] : Measure (Rn N)).restrict M) :=
+    hθmeas.ennreal_ofReal
+  refine ⟨fun K hK ↦ ?_, fun S ↦ ?_, fun x P hP ↦ ?_⟩
+  · -- (a) `μ(K) = ∫_{M ∩ K} ofReal θ dHⁿ < ∞`, as `θ` is `Hⁿ`-integrable on `M ∩ K`.
+    rw [withDensity_apply _ hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+      inter_comm]
+    exact Integrable.lintegral_lt_top (hθint K hK)
+  · -- (b) `μ(S) = 0 ↔ Hⁿ({w ≠ 0} ∩ S ∩ M) = 0`, and `{w ≠ 0} ∩ S ∩ M = M ∩ S` as `θ > 0` on `M`.
+    have hset : {z | ENNReal.ofReal (θ z) ≠ 0} ∩ S ∩ M = M ∩ S := by
+      ext z
+      exact ⟨fun hz ↦ ⟨hz.2, hz.1.2⟩,
+        fun hz ↦ ⟨⟨(ENNReal.ofReal_pos.2 (hpos z hz.1)).ne', hz.2⟩, hz.1⟩⟩
+    rw [withDensity_apply_eq_zero' hw, Measure.restrict_apply₀' hM, hset]
+  · -- (c) The rank conditions agree, and for `r > 0` the two blow-up integrals agree.
+    refine ⟨hP.1, fun f ↦ (hP.2 f).congr' ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    have hr : 0 < r := hr
+    -- `∫ f ∘ η_{x,r} dμ = ∫_M (f ∘ η_{x,r}) θ dHⁿ`, since `(ofReal θ).toReal = θ` on `M`.
+    have hdens : ∫ y, f (blowUpMap x r y) ∂((μHE[n] : Measure (Rn N)).restrict M).withDensity
+        (fun z ↦ ENNReal.ofReal (θ z)) = ∫ z in M, f (blowUpMap x r z) * θ z ∂μHE[n] := by
+      rw [integral_withDensity_eq_integral_toReal_smul₀ hw
+        (Eventually.of_forall fun _ ↦ ENNReal.ofReal_lt_top)]
+      refine integral_congr_ae ?_
+      filter_upwards [ae_restrict_mem₀ hM] with z hz
+      rw [ENNReal.toReal_ofReal (hpos z hz).le, smul_eq_mul, mul_comm]
+    -- The blow-up change of variables, with `x + r η_{x,r}(z) = z`.
+    have hη : ∀ z, x + r • blowUpMap x r z = z := fun z ↦ by
+      rw [blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+    rw [hdens, Submission.setIntegral_blowUpMap_image n N x r M
+      (fun y ↦ f y * θ (x + r • y)) hr]
+    simp only [hη]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
