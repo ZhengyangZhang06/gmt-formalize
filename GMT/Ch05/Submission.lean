@@ -458,6 +458,188 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Patching the local graphs into one graph over `T₀ = q₀(ℝⁿ × {0})`** (step 6 of the proof of
+Simon's Remark 5.3).  Every `y ∈ S ∩ B_{γa ρ}(0)` carries a local `C¹` graph `q(graph v)` of slope
+`|Dv| ≤ ε ≤ 1/24` at scale `r`, `S ∩ B_{γb ρ}(0)` lies in the cone `dist(·, T₀) ≤ κ|·|` with
+`48 κ ρ ≤ r`, and near `0` the set `S` is the graph of `u₀` over `T₀`.  Testing the cone at the
+local graph points over `B_{r/2}(0)` makes each local plane `ϑ`-close to `T₀` with
+`ϑ = κρ/(r/2) + ε ≤ 1/12` (`arp_tilt_le_of_slab`), so each local graph is re-graphed over the disc
+`B̆_{r/2}(c)` of `T₀` with slope `≤ 1/7` (`arp_regraph_over_rotatedPlane`), and these discs patch to
+one `u` on `B̆_{γh ρ}(0)` (`arp_global_graph_of_local_graphs` with `(R, A, B, s, t, L) =
+(γh ρ, γa ρ, γb ρ, r/2, r, 1/7)`).  Finally `u = u₀` on `B̆_{r₀/2}(0)`: there `|u₀ x| ≤ |x|`, so
+`q₀(x, u₀ x) ∈ S ∩ B_{r₀}(0)` and the uniqueness clause applies; hence `u(0) = 0`, `Du(0) = 0`. -/
+theorem any_radius_patching : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (S : Set (Amb n ℓ)) (ρ γh γa γb r ε κ r₀ : ℝ) (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u₀ : Rn n → Rn ℓ), 0 < ρ → 0 < γh → γh < γa → 0 < r → γa * ρ + r ≤ γb * ρ → γb ≤ 1 → 0 ≤ ε → ε ≤ 1 / 24 → 0 < κ → 48 * κ * ρ ≤ r → γh ≤ (1 - κ) * γa → 0 < r₀ → r₀ ≤ γh * ρ → IsClosed (S ∩ closedBall 0 ρ) → (∀ y ∈ S ∩ closedBall 0 (γa * ρ), ∃ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ), ContDiffOn ℝ 1 v (closedBall 0 r) ∧ v 0 = 0 ∧ (∀ x ∈ closedBall (0 : Rn n) r, hsNorm (fderivWithin ℝ v (closedBall 0 r) x) ≤ ε) ∧ (fun x => y + x) ⁻¹' S ∩ closedBall 0 r = q '' graphOver v (closedBall 0 r) ∩ closedBall 0 r) → (∀ y ∈ S ∩ closedBall 0 (γb * ρ), infDist y (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ κ * ‖y‖) → ContDiffOn ℝ 1 u₀ (closedBall 0 r₀) → u₀ 0 = 0 → fderivWithin ℝ u₀ (closedBall 0 r₀) 0 = 0 → (∀ x ∈ closedBall (0 : Rn n) r₀, ‖fderivWithin ℝ u₀ (closedBall 0 r₀) x‖ ≤ 1) → S ∩ closedBall 0 r₀ = q₀ '' graphOver u₀ (closedBall 0 r₀) ∩ closedBall 0 r₀ → ∃ u : Rn n → Rn ℓ, ContDiffOn ℝ 1 u (ball 0 (γh * ρ)) ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ (∀ x ∈ ball (0 : Rn n) (γh * ρ), ‖fderiv ℝ u x‖ ≤ 1 / 7) ∧ (∀ x ∈ ball (0 : Rn n) (r₀ / 2), u x = u₀ x) ∧ q₀ '' graphOver u (ball 0 (γh * ρ)) ⊆ S ∩ ball 0 (γa * ρ) ∧ S ∩ ball 0 (γh * ρ) ⊆ q₀ '' graphOver u (ball 0 (γh * ρ)) := by
+  intro n ℓ _hn S ρ γh γa γb r ε κ r₀ q₀ u₀ hρ hγh hγha hr hγab hγb hε0 hε hκ hκr hγhκ hr₀ hr₀h
+    hclosed hloc hcone hu₀ hu₀0 hDu₀0 hDu₀ hgraph₀
+  obtain ⟨hgp, hpyth, -⟩ := Submission.arp_rotatedPlane_graphPoint_coords n ℓ
+  -- Step 0(d): the parameters.  `γa ρ ≤ γb ρ ≤ ρ`, `κ < 1`, `γh ρ ≤ (1 - κ) γa ρ` and
+  -- `r/2 + 2κ γa ρ ≤ r` (as `2κρ ≤ r/24`).
+  have hγa : 0 < γa := hγh.trans hγha
+  have hγbρ : γb * ρ ≤ ρ := mul_le_of_le_one_left hρ.le hγb
+  have hγaρ : γa * ρ ≤ ρ := by linarith
+  have hγhγa : γh * ρ ≤ γa * ρ := mul_le_mul_of_nonneg_right hγha.le hρ.le
+  have hκ1 : κ < 1 := by
+    by_contra h
+    have : 1 * γa ≤ κ * γa := mul_le_mul_of_nonneg_right (not_lt.mp h) hγa.le
+    linarith
+  have hRA : γh * ρ ≤ (1 - κ) * (γa * ρ) := by
+    calc γh * ρ ≤ (1 - κ) * γa * ρ := mul_le_mul_of_nonneg_right hγhκ hρ.le
+      _ = (1 - κ) * (γa * ρ) := by ring
+  have hst : r / 2 + 2 * κ * (γa * ρ) ≤ r := by
+    have : 2 * κ * (γa * ρ) ≤ 2 * κ * ρ := mul_le_mul_of_nonneg_left hγaρ (by positivity)
+    linarith
+  -- Step 0(b),(e): `S ∩ B_{γa ρ}(0) = (S ∩ B_ρ(0)) ∩ B_{γa ρ}(0)` is closed, and
+  -- `0 = q₀(0, u₀ 0) ∈ S`.
+  have hKclosed : IsClosed (S ∩ closedBall (0 : Amb n ℓ) (γa * ρ)) := by
+    convert hclosed.inter (isClosed_closedBall (x := (0 : Amb n ℓ)) (ε := γa * ρ)) using 1
+    rw [inter_assoc, inter_eq_right.mpr (closedBall_subset_closedBall hγaρ)]
+  have hgp00 : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    rw [hgp, Prod.mk_zero_zero, map_zero]
+  have h0S : (0 : Amb n ℓ) ∈ S := by
+    have h0 : (0 : Amb n ℓ) ∈ q₀ '' graphOver u₀ (closedBall 0 r₀) ∩ closedBall 0 r₀ := by
+      refine ⟨⟨graphPoint 0 (u₀ 0),
+        mem_image_of_mem (fun x => graphPoint x (u₀ x)) (mem_closedBall_self hr₀.le), ?_⟩,
+        mem_closedBall_self hr₀.le⟩
+      rw [hu₀0, hgp00, map_zero]
+    rw [← hgraph₀] at h0
+    exact h0.1
+  -- Steps 0-2 at a point `y = q₀(c, d)` of `S ∩ B_{γa ρ}(0)`: the local graph of `y` is a graph
+  -- over the disc `B̆_{r/2}(c)` of `T₀`, of slope `≤ 1/7`, unique among points of `S ∩ B_r(y)`.
+  have hlocal : ∀ y ∈ S ∩ closedBall (0 : Amb n ℓ) (γa * ρ), ∀ (c : Rn n) (d : Rn ℓ),
+      y = q₀ (graphPoint c d) → ∃ f : Rn n → Rn ℓ, ContDiffOn ℝ 1 f (ball c (r / 2)) ∧
+        (∀ w ∈ ball c (r / 2), ‖fderiv ℝ f w‖ ≤ 1 / 7) ∧
+        (∀ w ∈ ball c (r / 2), q₀ (graphPoint w (f w)) ∈ S ∩ closedBall y r) ∧
+        (∀ w ∈ ball c (r / 2), ∀ b : Rn ℓ, q₀ (graphPoint w b) ∈ S ∩ closedBall y r → b = f w) := by
+    intro y hy c d hyc
+    obtain ⟨q, v, hvC1, hv0, hvD, hvS⟩ := hloc y hy
+    have hyn : ‖y‖ ≤ γa * ρ := mem_closedBall_zero_iff.mp hy.2
+    -- Step 0(a): `‖Dv‖ ≤ hsNorm Dv ≤ ε`, so `v` is `ε`-Lipschitz on `B_r(0)` and `|v x| ≤ ε|x|`.
+    have hvD' : ∀ x ∈ closedBall (0 : Rn n) r, ‖fderivWithin ℝ v (closedBall 0 r) x‖ ≤ ε :=
+      fun x hx => (Submission.arp_opNorm_le_hsNorm _).trans (hvD x hx)
+    have hvL : ∀ x₁ ∈ closedBall (0 : Rn n) r, ∀ x₂ ∈ closedBall (0 : Rn n) r,
+        ‖v x₁ - v x₂‖ ≤ ε * ‖x₁ - x₂‖ := fun x₁ hx₁ x₂ hx₂ =>
+      Convex.norm_image_sub_le_of_norm_fderivWithin_le (hvC1.differentiableOn one_ne_zero) hvD'
+        (convex_closedBall 0 r) hx₂ hx₁
+    have hvsmall : ∀ x ∈ closedBall (0 : Rn n) r, ‖v x‖ ≤ ε * ‖x‖ := by
+      intro x hx
+      have := hvL x hx 0 (mem_closedBall_self hr.le)
+      rwa [hv0, sub_zero, sub_zero] at this
+    have hhalf : closedBall (0 : Rn n) (r / 2) ⊆ closedBall 0 r :=
+      closedBall_subset_closedBall (by linarith)
+    -- Step 0(b): local graph points within distance `r` of `y` lie in `S`.
+    have hvmem : ∀ x ∈ closedBall (0 : Rn n) r, ‖graphPoint x (v x)‖ ≤ r →
+        y + q (graphPoint x (v x)) ∈ S := by
+      intro x hx hxr
+      have hp : q (graphPoint x (v x)) ∈ (fun z => y + z) ⁻¹' S ∩ closedBall 0 r := by
+        rw [hvS]
+        refine ⟨mem_image_of_mem q (mem_image_of_mem (fun x => graphPoint x (v x)) hx), ?_⟩
+        rw [mem_closedBall_zero_iff, LinearIsometryEquiv.norm_map]
+        exact hxr
+      exact hp.1
+    -- For `|x| ≤ r/2`: `|(x, v x)|² = |x|² + |v x|² ≤ r²/2`.
+    have hgpr : ∀ x ∈ closedBall (0 : Rn n) (r / 2), ‖graphPoint x (v x)‖ ≤ r := by
+      intro x hx
+      have hx' : ‖x‖ ≤ r / 2 := mem_closedBall_zero_iff.mp hx
+      have hvx : ‖v x‖ ≤ r / 2 := by
+        have h1 := hvsmall x (hhalf hx)
+        have h2 : ε * ‖x‖ ≤ ‖x‖ := mul_le_of_le_one_left (norm_nonneg _) (by linarith)
+        linarith
+      have h2 : ‖graphPoint x (v x)‖ ^ 2 ≤ r ^ 2 := by
+        rw [hpyth]
+        linarith [mul_le_mul hx' hx' (norm_nonneg _) (by linarith),
+          mul_le_mul hvx hvx (norm_nonneg _) (by linarith), mul_pos hr hr]
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) hr.le two_ne_zero).mp h2
+    -- Step 1: the slab.  Over `B_{r/2}(0)` the local graph lies in `S ∩ B_{γb ρ}(0)`, so the cone
+    -- puts it within `κ γb ρ ≤ κ ρ` of `T₀`; hence the local plane is `ϑ`-close to `T₀`.
+    have hslab : ∀ x ∈ closedBall (0 : Rn n) (r / 2),
+        infDist (y + q (graphPoint x (v x))) (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ κ * ρ := by
+      intro x hx
+      have hg := hgpr x hx
+      have hzn : ‖y + q (graphPoint x (v x))‖ ≤ γb * ρ := by
+        calc ‖y + q (graphPoint x (v x))‖ ≤ ‖y‖ + ‖q (graphPoint x (v x))‖ := norm_add_le _ _
+          _ = ‖y‖ + ‖graphPoint x (v x)‖ := by rw [LinearIsometryEquiv.norm_map]
+          _ ≤ γa * ρ + r := add_le_add hyn hg
+          _ ≤ γb * ρ := hγab
+      calc infDist (y + q (graphPoint x (v x))) (rotatedPlane q₀ : Set (Amb n ℓ))
+          ≤ κ * ‖y + q (graphPoint x (v x))‖ :=
+            hcone _ ⟨hvmem x (hhalf hx) hg, mem_closedBall_zero_iff.mpr hzn⟩
+        _ ≤ κ * ρ := mul_le_mul_of_nonneg_left (hzn.trans hγbρ) hκ.le
+    have htilt := Submission.arp_tilt_le_of_slab q q₀ v y (r / 2) ε (κ * ρ) (half_pos hr)
+      (fun x₁ hx₁ x₂ hx₂ => hvL x₁ (hhalf hx₁) x₂ (hhalf hx₂)) hslab
+    have hϑ0 : 0 ≤ κ * ρ / (r / 2) + ε := by positivity
+    have hϑ : κ * ρ / (r / 2) + ε ≤ 1 / 12 := by
+      have : κ * ρ / (r / 2) ≤ 1 / 24 := by
+        rw [div_le_iff₀ (half_pos hr)]
+        linarith
+      linarith
+    -- Step 2: re-graph over `T₀`; read clauses (b), (c) through the local-graph identity.
+    obtain ⟨f, hfC1, hfD, hfex, hfuniq⟩ := Submission.arp_regraph_over_rotatedPlane q q₀ v y c d
+      r ε (κ * ρ / (r / 2) + ε) hr hε0 hε hϑ0 hϑ hvC1 hv0 hvD' htilt hyc
+    refine ⟨f, hfC1, hfD, ?_, ?_⟩
+    · intro w hw
+      obtain ⟨x, hx, hxw, hxr⟩ := hfex w (ball_subset_closedBall hw)
+      rw [← hxw]
+      refine ⟨hvmem x hx hxr, ?_⟩
+      rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, LinearIsometryEquiv.norm_map]
+      exact hxr
+    · intro w hw b hb
+      have hz : q₀ (graphPoint w b) - y ∈ (fun z => y + z) ⁻¹' S ∩ closedBall 0 r := by
+        refine ⟨?_, ?_⟩
+        · show y + (q₀ (graphPoint w b) - y) ∈ S
+          rw [add_sub_cancel]
+          exact hb.1
+        · rw [mem_closedBall_zero_iff, ← dist_eq_norm]
+          exact hb.2
+      rw [hvS] at hz
+      obtain ⟨⟨p, hp, hpw⟩, -⟩ := hz
+      obtain ⟨x, hx, rfl⟩ := hp
+      refine hfuniq x hx w b ?_ (ball_subset_closedBall hw)
+      have hxw : q (graphPoint x (v x)) = q₀ (graphPoint w b) - y := hpw
+      rw [hxw, add_sub_cancel]
+  -- Steps 3-6(c): patch the local graphs into one graph `u` over `B̆_{γh ρ}(0)`.
+  obtain ⟨u, huC1, huD, humem, huuniq, husub⟩ := Submission.arp_global_graph_of_local_graphs S q₀
+    (γh * ρ) (γa * ρ) (γb * ρ) (r / 2) r κ (1 / 7) (mul_pos hγh hρ) (half_pos hr) hκ.le hκ1 hRA
+    hγab hst hKclosed h0S hcone hlocal
+  -- Step 6(d): `u = u₀` on `B̆_{r₀/2}(0)`.  There `|u₀ x| ≤ |x|` (mean value inequality), so
+  -- `|q₀(x, u₀ x)|² ≤ 2|x|² < r₀²` and `q₀(x, u₀ x) ∈ S ∩ B_{r₀}(0) ⊆ S ∩ B_{γa ρ}(0)`.
+  have hu₀small : ∀ x ∈ closedBall (0 : Rn n) r₀, ‖u₀ x‖ ≤ ‖x‖ := by
+    intro x hx
+    have := Convex.norm_image_sub_le_of_norm_fderivWithin_le (hu₀.differentiableOn one_ne_zero)
+      hDu₀ (convex_closedBall 0 r₀) (mem_closedBall_self hr₀.le) hx
+    rwa [hu₀0, sub_zero, sub_zero, one_mul] at this
+  have hagree : ∀ x ∈ ball (0 : Rn n) (r₀ / 2), u x = u₀ x := by
+    intro x hx
+    have hx' : ‖x‖ < r₀ / 2 := mem_ball_zero_iff.mp hx
+    have hxr₀ : x ∈ closedBall (0 : Rn n) r₀ := mem_closedBall_zero_iff.mpr (by linarith)
+    have hxR : x ∈ ball (0 : Rn n) (γh * ρ) := mem_ball_zero_iff.mpr (by linarith)
+    have hux := hu₀small x hxr₀
+    have hgn : ‖graphPoint x (u₀ x)‖ ≤ r₀ := by
+      have h2 : ‖graphPoint x (u₀ x)‖ ^ 2 ≤ r₀ ^ 2 := by
+        rw [hpyth]
+        linarith [mul_le_mul hux hux (norm_nonneg _) (norm_nonneg _),
+          mul_le_mul hx'.le hx'.le (norm_nonneg _) (by linarith), mul_pos hr₀ hr₀]
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) hr₀.le two_ne_zero).mp h2
+    have hζ : q₀ (graphPoint x (u₀ x)) ∈ S ∩ closedBall 0 r₀ := by
+      rw [hgraph₀]
+      refine ⟨mem_image_of_mem q₀ (mem_image_of_mem (fun x => graphPoint x (u₀ x)) hxr₀), ?_⟩
+      rw [mem_closedBall_zero_iff, LinearIsometryEquiv.norm_map]
+      exact hgn
+    exact (huuniq x hxR (u₀ x)
+      ⟨hζ.1, closedBall_subset_closedBall (hr₀h.trans hγhγa) hζ.2⟩).symm
+  -- Step 6(e): `u(0) = u₀(0) = 0` and `Du(0) = Du₀(0) = 0`, as `u = u₀` near `0`.
+  have hDu0 : fderiv ℝ u 0 = 0 := by
+    have heq : u =ᶠ[𝓝 (0 : Rn n)] u₀ :=
+      Filter.eventually_of_mem (ball_mem_nhds 0 (half_pos hr₀)) hagree
+    rw [heq.fderiv_eq, ← fderivWithin_of_mem_nhds (closedBall_mem_nhds 0 hr₀), hDu₀0]
+  refine ⟨u, huC1, (hagree 0 (mem_ball_self (half_pos hr₀))).trans hu₀0, hDu0, huD, hagree, ?_,
+    husub⟩
+  rintro _ ⟨p, ⟨x, hx, rfl⟩, rfl⟩
+  exact humem x hx
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
