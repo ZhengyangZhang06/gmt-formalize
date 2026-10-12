@@ -404,6 +404,7 @@ theorem Submission.ltg_tau_congr_on_open :
     _ = ∫ x in M' ∩ V, θ' x * ξ' x (ω x) ∂(μHE[k] : Measure (Eucl P)) :=
         setIntegral_congr_set hset
     _ = tauAction k M' θ' ξ' ω := (hcut M' θ' ξ').symm
+
 /-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), the locality step in the
 proof of Ch. 6, 6.3: the tangent spaces of `(M, θ)` at `x` only depend on `M ∩ V` up to
 `Hᵏ`-null sets and on `θ` up to `Hᵏ ⌞ (M ∩ V)`-null sets, `V ∋ x` open.  If `B_δ(x) ⊆ V` and
@@ -428,62 +429,6 @@ theorem Submission.br_weightedTangent_congr :
       rfl
     rw [himage, Measure.euclideanHausdorffMeasure_smul₀ k (inv_ne_zero hr),
       (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image, hZ, smul_zero]
-/-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), in the quantitative form
-used in the proof of Ch. 6, 8.2.  For `r > 0`, the blow-up `η_{x,r}(z) = r⁻¹(z - x)` pushes
-`(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`, so the blow-up integral of `(M, θ)` against `f` is
-`(rⁿ)⁻¹ ∫ f(η_{x,r} z) 1_M θ(z) dHⁿ(z)` (`M` is `Hⁿ`-null-measurable).  If `f = 0` off
-`B_R(0)` and `|f| ≤ C`, then for `R r ≤ ρ` these integrals exist and those of `(M, θ)` and
-`(M', θ')` differ by at most `C (rⁿ)⁻¹ ∫_{B̄_{R r}(x)} |1_M θ - 1_{M'} θ'| dHⁿ → 0`; as
-`θ x = θ' x`, the two tangent-space conditions are equivalent. -/
-theorem Submission.iwl_weighted_tangent_locality :
-    ∀ (P n : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P),
-      NullMeasurableSet M (μHE[n] : Measure (Eucl P)) →
-      NullMeasurableSet M' (μHE[n] : Measure (Eucl P)) → θ x = θ' x →
-      (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧
-        IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) →
-      (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) *
-        ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
-          ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) →
-      ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q ↔
-        HasWeightedApproximateTangentSpaceAt n M' θ' x Q := by
-  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
-  intro P n M M' θ θ' x hM hM' hθx ⟨ρ, hρ, hθρ, hθ'ρ⟩ hlim Q
-  -- Change of variables under `η_r = blowUpMap x r`: `∫_{η_r(S)} g dHⁿ = (rⁿ)⁻¹ ∫_S g ∘ η_r dHⁿ`.
-  have hcov : ∀ r : ℝ, 0 < r → ∀ (S : Set (Eucl P)) (g : Eucl P → ℝ),
-      ∫ y in blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) =
-        (r ^ n)⁻¹ * ∫ z in S, g (blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P)) := by
-    intro r hr S g
-    let e : Eucl P ≃ₜ Eucl P :=
-      (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
-    have he : (e : Eucl P → Eucl P) = blowUpMap x r := by
-      funext z
-      simp [e, blowUpMap, sub_eq_add_neg]
-    have hemb : MeasurableEmbedding (blowUpMap x r) := he ▸ e.measurableEmbedding
-    -- `η_r` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`: `η_r⁻¹(B) = x + r • B`.
-    have hmp : MeasurePreserving (blowUpMap x r)
-        (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) μHE[n] := by
-      refine ⟨hemb.measurable, ?_⟩
-      ext B hB
-      rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
-      have hpre : blowUpMap x r ⁻¹' B = (fun z => x + z) '' ((fun z => r • z) '' B) := by
-        ext z
-        simp only [mem_preimage, mem_image, blowUpMap]
-        constructor
-        · intro hz
-          exact ⟨r • r⁻¹ • (z - x), ⟨r⁻¹ • (z - x), hz, rfl⟩, by
-            rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
-        · rintro ⟨w, ⟨b, hb, rfl⟩, rfl⟩
-          rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
-      rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
-        Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
-        smul_eq_mul, ← mul_assoc]
-      have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
-        rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
-          coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
-          ENNReal.ofReal_one]
-      rw [hc, one_mul]
-    rw [hmp.setIntegral_image_emb hemb g S, Measure.restrict_smul, integral_smul_measure,
-      ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
   -- `y ↦ x + r • y` inverts `η_r`.
   have hinv : ∀ r : ℝ, r ≠ 0 → ∀ z : Eucl P, x + r • blowUpMap x r z = z := by
     intro r hr z
@@ -562,6 +507,171 @@ theorem Submission.iwl_weighted_tangent_locality :
         rw [Measure.restrict_congr_set hset]
     _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
         (hcut M' θ').symm
+
+/-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), in the quantitative form
+used in the proof of Ch. 6, 8.2.  For `r > 0`, the blow-up `η_{x,r}(z) = r⁻¹(z - x)` pushes
+`(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`, so the blow-up integral of `(M, θ)` against `f` is
+`(rⁿ)⁻¹ ∫ f(η_{x,r} z) 1_M θ(z) dHⁿ(z)` (`M` is `Hⁿ`-null-measurable).  If `f = 0` off
+`B_R(0)` and `|f| ≤ C`, then for `R r ≤ ρ` these integrals exist and those of `(M, θ)` and
+`(M', θ')` differ by at most `C (rⁿ)⁻¹ ∫_{B̄_{R r}(x)} |1_M θ - 1_{M'} θ'| dHⁿ → 0`; as
+`θ x = θ' x`, the two tangent-space conditions are equivalent. -/
+theorem Submission.iwl_weighted_tangent_locality :
+    ∀ (P n : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P),
+      NullMeasurableSet M (μHE[n] : Measure (Eucl P)) →
+      NullMeasurableSet M' (μHE[n] : Measure (Eucl P)) → θ x = θ' x →
+      (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧
+        IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) →
+      (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) *
+        ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
+          ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) →
+      ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q ↔
+        HasWeightedApproximateTangentSpaceAt n M' θ' x Q := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  intro P n M M' θ θ' x hM hM' hθx ⟨ρ, hρ, hθρ, hθ'ρ⟩ hlim Q
+  -- Change of variables under `η_r = blowUpMap x r`: `∫_{η_r(S)} g dHⁿ = (rⁿ)⁻¹ ∫_S g ∘ η_r dHⁿ`.
+  have hcov : ∀ r : ℝ, 0 < r → ∀ (S : Set (Eucl P)) (g : Eucl P → ℝ),
+      ∫ y in blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) =
+        (r ^ n)⁻¹ * ∫ z in S, g (blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P)) := by
+    intro r hr S g
+    let e : Eucl P ≃ₜ Eucl P :=
+      (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+    have he : (e : Eucl P → Eucl P) = blowUpMap x r := by
+      funext z
+      simp [e, blowUpMap, sub_eq_add_neg]
+    have hemb : MeasurableEmbedding (blowUpMap x r) := he ▸ e.measurableEmbedding
+    -- `η_r` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`: `η_r⁻¹(B) = x + r • B`.
+    have hmp : MeasurePreserving (blowUpMap x r)
+        (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) μHE[n] := by
+      refine ⟨hemb.measurable, ?_⟩
+      ext B hB
+      rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
+      have hpre : blowUpMap x r ⁻¹' B = (fun z => x + z) '' ((fun z => r • z) '' B) := by
+        ext z
+        simp only [mem_preimage, mem_image, blowUpMap]
+        constructor
+        · intro hz
+          exact ⟨r • r⁻¹ • (z - x), ⟨r⁻¹ • (z - x), hz, rfl⟩, by
+            rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+        · rintro ⟨w, ⟨b, hb, rfl⟩, rfl⟩
+          rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+      rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
+        Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
+        smul_eq_mul, ← mul_assoc]
+      have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+        rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
+          coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
+          ENNReal.ofReal_one]
+      rw [hc, one_mul]
+    rw [hmp.setIntegral_image_emb hemb g S, Measure.restrict_smul, integral_smul_measure,
+      ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+  -- `y ↦ x + r • y` inverts `η_r`.
+  have hinv : ∀ r : ℝ, r ≠ 0 → ∀ z : Eucl P, x + r • blowUpMap x r z = z := by
+    intro r hr z
+    simp only [blowUpMap, smul_smul, mul_inv_cancel₀ hr, one_smul, add_sub_cancel]
+  -- The blow-up integrals of `(M, θ)` and `(M', θ')` against `f` differ by `o(1)` as `r ↓ 0`.
+  have hkey : ∀ f : CompactlySupportedContinuousMap (Eucl P) ℝ, Tendsto (fun r : ℝ =>
+      (∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Eucl P))) -
+        ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[n] : Measure (Eucl P)))
+      (𝓝[>] 0) (𝓝 0) := by
+    intro f
+    -- `f = 0` off `B_R(0)` and `|f| ≤ C`.
+    obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+    obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+    -- `f ∘ η_r` vanishes off `B̄_{R r}(x)`.
+    have hvan : ∀ r : ℝ, 0 < r → ∀ z : Eucl P, z ∉ closedBall x (R * r) →
+        f (blowUpMap x r z) = 0 := by
+      intro r hr z hz
+      apply hfR
+      rw [mem_closedBall, not_le, dist_eq_norm] at hz
+      rw [blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr, inv_mul_eq_div,
+        le_div_iff₀ hr]
+      exact hz.le
+    -- For `R r ≤ ρ`, `(f ∘ η_r) · 1_S ϑ` is integrable when `ϑ` is integrable on `S ∩ B̄_ρ(x)`.
+    have hint : ∀ r : ℝ, 0 < r → R * r ≤ ρ → ∀ (S : Set (Eucl P)) (ϑ : Eucl P → ℝ),
+        NullMeasurableSet S (μHE[n] : Measure (Eucl P)) →
+        IntegrableOn ϑ (S ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) →
+        Integrable (fun z => f (blowUpMap x r z) * S.indicator ϑ z)
+          (μHE[n] : Measure (Eucl P)) := by
+      intro r hr hRr S ϑ hS hϑ
+      have hcont : Continuous fun z => f (blowUpMap x r z) :=
+        f.continuous.comp ((continuous_const_smul _).comp (continuous_id.sub continuous_const))
+      have h1 : IntegrableOn (fun z => f (blowUpMap x r z) * ϑ z) (S ∩ closedBall x ρ)
+          (μHE[n] : Measure (Eucl P)) :=
+        Integrable.bdd_mul hϑ hcont.aestronglyMeasurable (ae_of_all _ fun z => hC _)
+      have h2 : IntegrableOn (fun z => f (blowUpMap x r z) * ϑ z) S
+          (μHE[n] : Measure (Eucl P)) := by
+        refine h1.of_ae_sdiff_eq_zero hS (ae_of_all _ fun z hz => ?_)
+        have hz' : z ∉ closedBall x (R * r) := fun h =>
+          hz.2 ⟨hz.1, closedBall_subset_closedBall hRr h⟩
+        rw [hvan r hr z hz', zero_mul]
+      refine (h2.integrable_indicator₀ hS).congr (ae_of_all _ fun z => ?_)
+      exact Set.indicator_mul_right S (fun z => f (blowUpMap x r z)) ϑ
+    -- `∫_{η_r(S)} f(y) ϑ(x + r y) dHⁿ(y) = (rⁿ)⁻¹ ∫ f(η_r z) 1_S ϑ(z) dHⁿ(z)`.
+    have hI : ∀ r : ℝ, 0 < r → ∀ (S : Set (Eucl P)) (ϑ : Eucl P → ℝ),
+        NullMeasurableSet S (μHE[n] : Measure (Eucl P)) →
+        ∫ y in blowUpMap x r '' S, f y * ϑ (x + r • y) ∂(μHE[n] : Measure (Eucl P)) =
+          (r ^ n)⁻¹ * ∫ z, f (blowUpMap x r z) * S.indicator ϑ z
+            ∂(μHE[n] : Measure (Eucl P)) := by
+      intro r hr S ϑ hS
+      rw [hcov r hr S]
+      simp only [hinv r hr.ne']
+      rw [← integral_indicator₀ hS]
+      congr 2
+      funext z
+      exact Set.indicator_mul_right S (fun z => f (blowUpMap x r z)) ϑ
+    -- The estimate `|I_{M,θ}(r) - I_{M',θ'}(r)| ≤ C (rⁿ)⁻¹ ∫_{B̄_{R r}(x)} |1_M θ - 1_{M'} θ'|`.
+    have hbound : ∀ r : ℝ, 0 < r → R * r ≤ ρ →
+        ‖(∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Eucl P))) -
+          ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤
+        ENNReal.ofReal C * (ENNReal.ofReal ((r ^ n)⁻¹) *
+          ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
+            ∂(μHE[n] : Measure (Eucl P))) := by
+      intro r hr hRr
+      rw [hI r hr M θ hM, hI r hr M' θ' hM', ← mul_sub,
+        ← integral_sub (hint r hr hRr M θ hM hθρ) (hint r hr hRr M' θ' hM' hθ'ρ), enorm_mul,
+        Real.enorm_of_nonneg (by positivity), mul_left_comm]
+      gcongr
+      calc ‖∫ z, f (blowUpMap x r z) * M.indicator θ z - f (blowUpMap x r z) * M'.indicator θ' z
+              ∂(μHE[n] : Measure (Eucl P))‖ₑ
+          ≤ ∫⁻ z, ‖f (blowUpMap x r z) * M.indicator θ z -
+              f (blowUpMap x r z) * M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P)) :=
+            enorm_integral_le_lintegral_enorm _
+        _ ≤ ∫⁻ z, (closedBall x (R * r)).indicator
+              (fun z => ENNReal.ofReal C * ‖M.indicator θ z - M'.indicator θ' z‖ₑ) z
+              ∂(μHE[n] : Measure (Eucl P)) := by
+            refine lintegral_mono fun z => ?_
+            by_cases hz : z ∈ closedBall x (R * r)
+            · rw [Set.indicator_of_mem hz, ← mul_sub, enorm_mul, ← ofReal_norm]
+              gcongr
+              exact hC _
+            · rw [hvan r hr z hz, zero_mul, zero_mul, sub_zero, enorm_zero]
+              exact zero_le
+        _ = ENNReal.ofReal C * ∫⁻ z in closedBall x (R * r),
+              ‖M.indicator θ z - M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P)) := by
+            rw [lintegral_indicator measurableSet_closedBall,
+              lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    rw [tendsto_zero_iff_enorm_tendsto_zero]
+    have hupper : Tendsto (fun r : ℝ => ENNReal.ofReal C * (ENNReal.ofReal ((r ^ n)⁻¹) *
+        ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
+          ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) := by
+      simpa using ENNReal.Tendsto.const_mul (hlim R hR) (Or.inr ENNReal.ofReal_ne_top)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hupper
+      (Eventually.of_forall fun _ => zero_le) ?_
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hρ hR)] with r hr
+    refine hbound r hr.1 ?_
+    have := hr.2
+    rw [lt_div_iff₀ hR] at this
+    linarith
+  constructor
+  · rintro ⟨hQ, hf⟩
+    refine ⟨hQ, fun f => ?_⟩
+    rw [← hθx]
+    simpa using (hf f).sub (hkey f)
+  · rintro ⟨hQ, hf⟩
+    refine ⟨hQ, fun f => ?_⟩
+    rw [hθx]
+    simpa using (hf f).add (hkey f)
+
 /-- **Coordinate expansion of covectors, Simon Ch. 6, (1.1)–(1.2) (pp. 131–132).**  Every
 `k`-covector `α` on `ℝ^P` is `∑_{β ∈ I(k,P)} α(e_{β(0)}, …, e_{β(k-1)}) dx^β`.  By (1.1),
 `dx^β(e_γ) = δ_{βγ}` for increasing `β, γ` (the determinant of the identity matrix if `β = γ`,
@@ -624,6 +734,7 @@ theorem Submission.slicing_ru_covector_expansion : ∀ (P k : ℕ) (α : Covecto
   simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
     ContinuousAlternatingMap.coe_toAlternatingMap]
   exact h2 v hv
+
 /-- **Simple `n`-vectors (step (P1) of Simon Ch. 6, Lemma 3.9).**  The operator norm of
 `v₁ ∧ ⋯ ∧ vₙ = simpleNVector v` is the square root of the Gram determinant `det (⟪vᵢ, vⱼ⟫)`, and a
 change of frame `τ ↦ Bτ` multiplies `simpleNVector τ` by `det B`.  The second identity is the
@@ -741,336 +852,18 @@ theorem Submission.lpf_simple_nvector_algebra : (∀ (P n : ℕ) (v : Fin n → 
       simp only [inner_sum, inner_smul_right, inner_zero_right] at h
       simpa [Matrix.mulVec, dotProduct, mul_comm] using h
     rw [h0, hdet, sq, mul_zero]
-  -- The blow-up integrals of `(M, θ)` and `(M', θ')` against `f` differ by `o(1)` as `r ↓ 0`.
-  have hkey : ∀ f : CompactlySupportedContinuousMap (Eucl P) ℝ, Tendsto (fun r : ℝ =>
-      (∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Eucl P))) -
-        ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[n] : Measure (Eucl P)))
-      (𝓝[>] 0) (𝓝 0) := by
-    intro f
-    -- `f = 0` off `B_R(0)` and `|f| ≤ C`.
-    obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
-    obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
-    -- `f ∘ η_r` vanishes off `B̄_{R r}(x)`.
-    have hvan : ∀ r : ℝ, 0 < r → ∀ z : Eucl P, z ∉ closedBall x (R * r) →
-        f (blowUpMap x r z) = 0 := by
-      intro r hr z hz
-      apply hfR
-      rw [mem_closedBall, not_le, dist_eq_norm] at hz
-      rw [blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr, inv_mul_eq_div,
-        le_div_iff₀ hr]
-      exact hz.le
-    -- For `R r ≤ ρ`, `(f ∘ η_r) · 1_S ϑ` is integrable when `ϑ` is integrable on `S ∩ B̄_ρ(x)`.
-    have hint : ∀ r : ℝ, 0 < r → R * r ≤ ρ → ∀ (S : Set (Eucl P)) (ϑ : Eucl P → ℝ),
-        NullMeasurableSet S (μHE[n] : Measure (Eucl P)) →
-        IntegrableOn ϑ (S ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) →
-        Integrable (fun z => f (blowUpMap x r z) * S.indicator ϑ z)
-          (μHE[n] : Measure (Eucl P)) := by
-      intro r hr hRr S ϑ hS hϑ
-      have hcont : Continuous fun z => f (blowUpMap x r z) :=
-        f.continuous.comp ((continuous_const_smul _).comp (continuous_id.sub continuous_const))
-      have h1 : IntegrableOn (fun z => f (blowUpMap x r z) * ϑ z) (S ∩ closedBall x ρ)
-          (μHE[n] : Measure (Eucl P)) :=
-        Integrable.bdd_mul hϑ hcont.aestronglyMeasurable (ae_of_all _ fun z => hC _)
-      have h2 : IntegrableOn (fun z => f (blowUpMap x r z) * ϑ z) S
-          (μHE[n] : Measure (Eucl P)) := by
-        refine h1.of_ae_sdiff_eq_zero hS (ae_of_all _ fun z hz => ?_)
-        have hz' : z ∉ closedBall x (R * r) := fun h =>
-          hz.2 ⟨hz.1, closedBall_subset_closedBall hRr h⟩
-        rw [hvan r hr z hz', zero_mul]
-      refine (h2.integrable_indicator₀ hS).congr (ae_of_all _ fun z => ?_)
-      exact Set.indicator_mul_right S (fun z => f (blowUpMap x r z)) ϑ
-    -- `∫_{η_r(S)} f(y) ϑ(x + r y) dHⁿ(y) = (rⁿ)⁻¹ ∫ f(η_r z) 1_S ϑ(z) dHⁿ(z)`.
-    have hI : ∀ r : ℝ, 0 < r → ∀ (S : Set (Eucl P)) (ϑ : Eucl P → ℝ),
-        NullMeasurableSet S (μHE[n] : Measure (Eucl P)) →
-        ∫ y in blowUpMap x r '' S, f y * ϑ (x + r • y) ∂(μHE[n] : Measure (Eucl P)) =
-          (r ^ n)⁻¹ * ∫ z, f (blowUpMap x r z) * S.indicator ϑ z
-            ∂(μHE[n] : Measure (Eucl P)) := by
-      intro r hr S ϑ hS
-      rw [hcov r hr S]
-      simp only [hinv r hr.ne']
-      rw [← integral_indicator₀ hS]
-      congr 2
-      funext z
-      exact Set.indicator_mul_right S (fun z => f (blowUpMap x r z)) ϑ
-    -- The estimate `|I_{M,θ}(r) - I_{M',θ'}(r)| ≤ C (rⁿ)⁻¹ ∫_{B̄_{R r}(x)} |1_M θ - 1_{M'} θ'|`.
-    have hbound : ∀ r : ℝ, 0 < r → R * r ≤ ρ →
-        ‖(∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Eucl P))) -
-          ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤
-        ENNReal.ofReal C * (ENNReal.ofReal ((r ^ n)⁻¹) *
-          ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
-            ∂(μHE[n] : Measure (Eucl P))) := by
-      intro r hr hRr
-      rw [hI r hr M θ hM, hI r hr M' θ' hM', ← mul_sub,
-        ← integral_sub (hint r hr hRr M θ hM hθρ) (hint r hr hRr M' θ' hM' hθ'ρ), enorm_mul,
-        Real.enorm_of_nonneg (by positivity), mul_left_comm]
-      gcongr
-      calc ‖∫ z, f (blowUpMap x r z) * M.indicator θ z - f (blowUpMap x r z) * M'.indicator θ' z
-              ∂(μHE[n] : Measure (Eucl P))‖ₑ
-          ≤ ∫⁻ z, ‖f (blowUpMap x r z) * M.indicator θ z -
-              f (blowUpMap x r z) * M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P)) :=
-            enorm_integral_le_lintegral_enorm _
-        _ ≤ ∫⁻ z, (closedBall x (R * r)).indicator
-              (fun z => ENNReal.ofReal C * ‖M.indicator θ z - M'.indicator θ' z‖ₑ) z
-              ∂(μHE[n] : Measure (Eucl P)) := by
-            refine lintegral_mono fun z => ?_
-            by_cases hz : z ∈ closedBall x (R * r)
-            · rw [Set.indicator_of_mem hz, ← mul_sub, enorm_mul, ← ofReal_norm]
-              gcongr
-              exact hC _
-            · rw [hvan r hr z hz, zero_mul, zero_mul, sub_zero, enorm_zero]
-              exact zero_le
-        _ = ENNReal.ofReal C * ∫⁻ z in closedBall x (R * r),
-              ‖M.indicator θ z - M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P)) := by
-            rw [lintegral_indicator measurableSet_closedBall,
-              lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-    rw [tendsto_zero_iff_enorm_tendsto_zero]
-    have hupper : Tendsto (fun r : ℝ => ENNReal.ofReal C * (ENNReal.ofReal ((r ^ n)⁻¹) *
-        ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
-          ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) := by
-      simpa using ENNReal.Tendsto.const_mul (hlim R hR) (Or.inr ENNReal.ofReal_ne_top)
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hupper
-      (Eventually.of_forall fun _ => zero_le) ?_
-    filter_upwards [Ioo_mem_nhdsGT (div_pos hρ hR)] with r hr
-    refine hbound r hr.1 ?_
-    have := hr.2
-    rw [lt_div_iff₀ hR] at this
-    linarith
-  constructor
-  · rintro ⟨hQ, hf⟩
-    refine ⟨hQ, fun f => ?_⟩
-    rw [← hθx]
-    simpa using (hf f).sub (hkey f)
-  · rintro ⟨hQ, hf⟩
-    refine ⟨hQ, fun f => ?_⟩
-    rw [hθx]
-    simpa using (hf f).add (hkey f)
-/-- Fact (a) of the patching lemma (P4) in the proof of Simon Ch. 6, 8.2: the orientation of a
-rectifiable triple has `‖ξ‖ = 1` `Hᵏ`-a.e. on `M`.  A.e. `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ` orthonormal,
-and `‖τ₁ ∧ ⋯ ∧ τₖ‖² = det (⟪τᵢ, τⱼ⟫) = 1` (`Submission.lpf_simple_nvector_algebra`). -/
-theorem Submission.iwl_im_patching_norm_eq_one {P k : ℕ} {U M : Set (Eucl P)} {θ : Eucl P → ℝ}
-    {ξ : Eucl P → NVector (Eucl P) k} (h : IsRectifiableTriple U k M θ ξ) :
-    ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ M → ‖ξ x‖ = 1 := by
-  rw [← ae_restrict_iff'₀ h.nullMeasurableSet]
-  filter_upwards [h.orients] with x hx
-  obtain ⟨τ, hτ, -, hξ⟩ := hx
-  have hgram : (Matrix.of fun i j => inner ℝ (τ i) (τ j)) = (1 : Matrix (Fin k) (Fin k) ℝ) := by
-    ext i j
-    simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
-  have hsq := Submission.lpf_simple_nvector_algebra.1 P k τ
-  rw [hgram, Matrix.det_one] at hsq
-  have h1 : ‖simpleNVector τ‖ = 1 :=
-    (pow_eq_one_iff_of_nonneg (norm_nonneg (simpleNVector τ)) two_ne_zero).mp hsq
-  rcases hξ with hξ | hξ
-  · rw [hξ, h1]
-  · rw [hξ, ContinuousLinearMap.opNorm_neg, h1]
-/-- `τ(M, θ, ξ)(ω) = ∫ ⟨ω, 1_M θ ξ⟩ dHᵏ` (Simon Ch. 6, 3.1 (‡)) for `Hᵏ`-null-measurable `M`. -/
-theorem Submission.iwl_im_patching_tau_eq_integral {P k : ℕ} {M : Set (Eucl P)}
-    {θ : Eucl P → ℝ} {ξ : Eucl P → NVector (Eucl P) k}
-    (hM : NullMeasurableSet M (μHE[k] : Measure (Eucl P))) (ω : DifferentialForm (Eucl P) k) :
-    tauAction k M θ ξ ω =
-      ∫ x, M.indicator (fun y => θ y • ξ y) x (ω x) ∂(μHE[k] : Measure (Eucl P)) := by
-  rw [tauAction, ← integral_indicator₀ hM]
-  congr 1
-  funext x
-  by_cases hx : x ∈ M <;> simp [hx]
-/-- Fact (b): for a rectifiable triple in `U` and a continuous form `η`, `⟨η, 1_M θ ξ⟩` is
-`Hᵏ`-integrable on each compact `K ⊆ U`, since `|⟨η, θ ξ⟩| ≤ |θ| sup_K ‖η‖` a.e. on `M ∩ K`. -/
-theorem Submission.iwl_im_patching_integrableOn_pairing {P k : ℕ} {U M : Set (Eucl P)}
-    {θ : Eucl P → ℝ} {ξ : Eucl P → NVector (Eucl P) k} (h : IsRectifiableTriple U k M θ ξ)
-    {K : Set (Eucl P)} (hK : IsCompact K) (hKU : K ⊆ U) {η : DifferentialForm (Eucl P) k}
-    (hη : Continuous η) :
-    IntegrableOn (fun x => M.indicator (fun y => θ y • ξ y) x (η x)) K
-      (μHE[k] : Measure (Eucl P)) := by
-  have heq : (fun x => M.indicator (fun y => θ y • ξ y) x (η x)) =
-      M.indicator (fun y => θ y * ξ y (η y)) := by
-    funext x
-    by_cases hx : x ∈ M <;> simp [hx]
-  rw [heq, integrableOn_indicator_iff h.nullMeasurableSet]
-  have hθ := h.integrableOn K hK hKU
-  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hη.continuousOn
-  have hev : Continuous fun p : NVector (Eucl P) k × Covector (Eucl P) k => p.1 p.2 :=
-    isBoundedBilinearMap_apply.continuous
-  have hmeas : AEStronglyMeasurable (fun y => ξ y (η y))
-      ((μHE[k] : Measure (Eucl P)).restrict (M ∩ K)) :=
-    hev.comp_aestronglyMeasurable
-      ((h.aestronglyMeasurable.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)).prodMk
-        hη.aestronglyMeasurable)
-  refine Integrable.mono' (hθ.norm.mul_const C) (hθ.aestronglyMeasurable.mul hmeas) ?_
-  rw [ae_restrict_iff'₀ (h.nullMeasurableSet.inter hK.measurableSet.nullMeasurableSet)]
-  filter_upwards [Submission.iwl_im_patching_norm_eq_one h] with y hy hyMK
-  rw [norm_mul]
-  refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
-  calc ‖ξ y (η y)‖ ≤ ‖ξ y‖ * ‖η y‖ := (ξ y).le_opNorm (η y)
-    _ = ‖η y‖ := by rw [hy hyMK.1, one_mul]
-    _ ≤ C := hC y hyMK.2
-/-- Fact (b) for continuous forms `η` with compact support in `U`: `⟨η, 1_M θ ξ⟩` vanishes off
-`tsupport η`, so it is `Hᵏ`-integrable. -/
-theorem Submission.iwl_im_patching_integrable_pairing {P k : ℕ} {U M : Set (Eucl P)}
-    {θ : Eucl P → ℝ} {ξ : Eucl P → NVector (Eucl P) k} (h : IsRectifiableTriple U k M θ ξ)
-    {η : DifferentialForm (Eucl P) k} (hη : Continuous η) (hηc : HasCompactSupport η)
-    (hηU : tsupport η ⊆ U) :
-    Integrable (fun x => M.indicator (fun y => θ y • ξ y) x (η x))
-      (μHE[k] : Measure (Eucl P)) := by
-  have hsupp : (Function.support fun x => M.indicator (fun y => θ y • ξ y) x (η x)) ⊆
-      tsupport η := by
-    intro x hx
-    by_contra hxη
-    apply hx
-    dsimp only
-    rw [image_eq_zero_of_notMem_tsupport hxη, map_zero]
-  rw [← integrableOn_iff_integrable_of_support_subset hsupp]
-  exact Submission.iwl_im_patching_integrableOn_pairing h hηc hηU hη
-/-- Fact (c), uniqueness of the vector measure `θ ξ Hᵏ ⌞ M`: if `τ(M, θ, ξ)` and `τ(M', θ', ξ')`
-agree on test forms supported in an open `O ⊆ U`, then `1_M θ ξ = 1_{M'} θ' ξ'` `Hᵏ`-a.e. on `O`.
-For a constant covector `α`, testing with `ω = g α` (`g ∈ C_c^∞(O)`) shows that the locally
-integrable function `⟨α, 1_M θ ξ - 1_{M'} θ' ξ'⟩` vanishes as a distribution on `O`, hence a.e. on
-`O`; the coordinate covectors `dx^β` determine an `n`-vector
-(`Submission.slicing_ru_covector_expansion`). -/
-theorem Submission.iwl_im_patching_ae_eq {P k : ℕ} {U O : Set (Eucl P)} (hO : IsOpen O)
-    (hOU : O ⊆ U) {M M' : Set (Eucl P)} {θ θ' : Eucl P → ℝ}
-    {ξ ξ' : Eucl P → NVector (Eucl P) k}
-    (h : IsRectifiableTriple U k M θ ξ) (h' : IsRectifiableTriple U k M' θ' ξ')
-    (heq : ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ O →
-      tauAction k M θ ξ ω = tauAction k M' θ' ξ' ω) :
-    ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
-      M.indicator (fun y => θ y • ξ y) x = M'.indicator (fun y => θ' y • ξ' y) x := by
-  have hcov : ∀ α : Covector (Eucl P) k, ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
-      M.indicator (fun y => θ y • ξ y) x α = M'.indicator (fun y => θ' y • ξ' y) x α := by
-    intro α
-    have hloc : LocallyIntegrableOn (fun x => M.indicator (fun y => θ y • ξ y) x α -
-        M'.indicator (fun y => θ' y • ξ' y) x α) O (μHE[k] : Measure (Eucl P)) := by
-      rw [locallyIntegrableOn_iff hO.isLocallyClosed]
-      intro K hKO hK
-      exact (Submission.iwl_im_patching_integrableOn_pairing h hK (hKO.trans hOU)
-        (η := fun _ => α) continuous_const).sub
-        (Submission.iwl_im_patching_integrableOn_pairing h' hK (hKO.trans hOU)
-          (η := fun _ => α) continuous_const)
-    have key := hO.ae_eq_zero_of_integral_contDiff_smul_eq_zero hloc ?_
-    · filter_upwards [key] with x hx hxO
-      exact sub_eq_zero.mp (hx hxO)
-    intro g hg hgc hgO
-    have hηc : Continuous fun x => g x • α := hg.continuous.smul continuous_const
-    have hηcs : HasCompactSupport fun x => g x • α := hgc.smul_right (f' := fun _ => α)
-    have hηO : tsupport (fun x => g x • α) ⊆ O := (tsupport_smul_subset_left _ _).trans hgO
-    have h1 := Submission.iwl_im_patching_integrable_pairing h hηc hηcs (hηO.trans hOU)
-    have h2 := Submission.iwl_im_patching_integrable_pairing h' hηc hηcs (hηO.trans hOU)
-    have heqα := heq ⟨fun x => g x • α, ⟨hg.smul contDiff_const, hηcs⟩, hηO.trans hOU⟩ hηO
-    rw [Submission.iwl_im_patching_tau_eq_integral h.nullMeasurableSet,
-      Submission.iwl_im_patching_tau_eq_integral h'.nullMeasurableSet] at heqα
-    calc ∫ x, g x • (M.indicator (fun y => θ y • ξ y) x α -
-          M'.indicator (fun y => θ' y • ξ' y) x α) ∂(μHE[k] : Measure (Eucl P))
-        = ∫ x, (M.indicator (fun y => θ y • ξ y) x (g x • α) -
-            M'.indicator (fun y => θ' y • ξ' y) x (g x • α)) ∂(μHE[k] : Measure (Eucl P)) := by
-          congr 1
-          funext x
-          simp only [map_smul, smul_eq_mul, mul_sub]
-      _ = ∫ x, M.indicator (fun y => θ y • ξ y) x (g x • α) ∂(μHE[k] : Measure (Eucl P)) -
-            ∫ x, M'.indicator (fun y => θ' y • ξ' y) x (g x • α)
-              ∂(μHE[k] : Measure (Eucl P)) := integral_sub h1 h2
-      _ = 0 := sub_eq_zero.mpr heqα
-  have hall := ae_all_iff.mpr fun β : SimonMultiIndex k P =>
-    hcov (wedgeCovectors k fun j => EuclideanSpace.proj (β j))
-  filter_upwards [hall] with x hx hxO
-  refine ContinuousLinearMap.ext fun α => ?_
-  rw [Submission.slicing_ru_covector_expansion P k α, map_sum, map_sum]
-  refine Finset.sum_congr rfl fun β _ => ?_
-  rw [map_smul, map_smul, hx β hxO]
-/-- Fact (d): `‖1_M θ ξ‖ = 1_M θ` a.e. (`θ > 0` on `M` and `‖ξ‖ = 1` a.e. on `M`), so the
-multiplicities `1_M θ`, `1_{M'} θ'` agree a.e. wherever the vector densities do. -/
-theorem Submission.iwl_im_patching_indicator_ae_eq {P k : ℕ} {U O : Set (Eucl P)}
-    {M M' : Set (Eucl P)} {θ θ' : Eucl P → ℝ} {ξ ξ' : Eucl P → NVector (Eucl P) k}
-    (h : IsRectifiableTriple U k M θ ξ) (h' : IsRectifiableTriple U k M' θ' ξ')
-    (hF : ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
-      M.indicator (fun y => θ y • ξ y) x = M'.indicator (fun y => θ' y • ξ' y) x) :
-    ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O → M.indicator θ x = M'.indicator θ' x := by
-  have hnorm : ∀ {M : Set (Eucl P)} {θ : Eucl P → ℝ} {ξ : Eucl P → NVector (Eucl P) k},
-      IsRectifiableTriple U k M θ ξ → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)),
-        ‖M.indicator (fun y => θ y • ξ y) x‖ = M.indicator θ x := by
-    intro M θ ξ h
-    filter_upwards [Submission.iwl_im_patching_norm_eq_one h] with x hx
-    by_cases hxM : x ∈ M
-    · rw [indicator_of_mem hxM, indicator_of_mem hxM,
-        @norm_smul ℝ (NVector (Eucl P) k) _ _ _ NormedSpace.toNormSMulClass, hx hxM, mul_one,
-        Real.norm_of_nonneg (h.pos x hxM).le]
-    · rw [indicator_of_notMem hxM, indicator_of_notMem hxM, ContinuousLinearMap.opNorm_zero]
-  filter_upwards [hF, hnorm h, hnorm h'] with x hx h1 h2 hxO
-  rw [← h1, ← h2, hx hxO]
-/-- Step 5 of the patching lemma: if `X(ω) = τ(M, θ, ξ)(ω)` for every test form supported in one
-set of an open cover `(W i)` of `U`, then `X = τ(M, θ, ξ)`.  A smooth partition of unity `(ρᵢ)`
-subordinate to a finite subcover of `tsupport ω` splits `ω = ∑ ρᵢ ω`; `X` is linear and
-`τ(M, θ, ξ)` is additive on the pieces, which are integrable by fact (b). -/
-theorem Submission.iwl_im_patching_globalize {P k : ℕ} {U M : Set (Eucl P)} {θ : Eucl P → ℝ}
-    {ξ : Eucl P → NVector (Eucl P) k} (h : IsRectifiableTriple U k M θ ξ)
-    (X : GeometricCurrentOn U k) (W : ℕ → Set (Eucl P)) (hWo : ∀ i, IsOpen (W i))
-    (hcov : U ⊆ ⋃ i, W i)
-    (hXW : ∀ i (ω : TestFormOn U k), tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W i →
-      X ω = tauAction k M θ ξ ω) (ω : TestFormOn U k) :
-    X ω = tauAction k M θ ξ ω := by
-  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) := ω.2.1.1
-  have hωc : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
-  have hωU : tsupport (ω : DifferentialForm (Eucl P) k) ⊆ U := ω.2.2
-  obtain ⟨t, ht⟩ := hωc.isCompact.elim_finite_subcover W hWo (hωU.trans hcov)
-  obtain ⟨ρ, hρ⟩ := SmoothPartitionOfUnity.exists_isSubordinate (modelWithCornersSelf ℝ (Eucl P))
-    (isClosed_tsupport (ω : DifferentialForm (Eucl P) k)) (fun i : t => W i) (fun i => hWo i)
-    (by
-      intro x hx
-      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp (ht hx)
-      exact mem_iUnion.mpr ⟨⟨i, hi⟩, hxi⟩)
-  have hρs : ∀ i, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ρ i) := fun i =>
-    contMDiff_iff_contDiff.mp (ρ i).contMDiff
-  let ωi : t → TestFormOn U k := fun i =>
-    ⟨fun x => ρ i x • (ω : DifferentialForm (Eucl P) k) x,
-      ⟨(hρs i).smul hωs, IsCompact.of_isClosed_subset hωc (isClosed_tsupport _)
-        (tsupport_smul_subset_right _ _)⟩, (tsupport_smul_subset_right _ _).trans hωU⟩
-  have hsum' : ∀ x, (ω : DifferentialForm (Eucl P) k) x =
-      ∑ i, ρ i x • (ω : DifferentialForm (Eucl P) k) x := by
-    intro x
-    by_cases hx : x ∈ tsupport (ω : DifferentialForm (Eucl P) k)
-    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ρ.sum_eq_one hx, one_smul]
-    · simp [image_eq_zero_of_notMem_tsupport hx]
-  have hsum : ω = ∑ i, ωi i := by
-    apply Subtype.ext
-    funext x
-    rw [hsum' x, Submodule.coe_sum, Finset.sum_apply]
-  have hint : ∀ i, Integrable (fun x => M.indicator (fun y => θ y • ξ y) x
-      ((ωi i : DifferentialForm (Eucl P) k) x)) (μHE[k] : Measure (Eucl P)) := fun i =>
-    Submission.iwl_im_patching_integrable_pairing h (ωi i).2.1.1.continuous (ωi i).2.1.2
-      (ωi i).2.2
-  calc X ω = ∑ i, X (ωi i) := by
-        conv_lhs => rw [hsum]
-        exact map_sum X.toCurrent _ _
-    _ = ∑ i, tauAction k M θ ξ (ωi i) :=
-        Finset.sum_congr rfl fun i _ =>
-          hXW i (ωi i) ((tsupport_smul_subset_left _ _).trans (hρ i))
-    _ = tauAction k M θ ξ ω := by
-        simp only [Submission.iwl_im_patching_tau_eq_integral h.nullMeasurableSet]
-        rw [← integral_finsetSum _ fun i _ => hint i]
-        congr 1
-        funext x
-        rw [hsum' x, map_sum]
-/-- The patching lemma (P4) of the proof of Simon Ch. 6, 8.2 (Remark 8.3(1)), given the
-tangent-locality lemma `htl` (the frozen statement of `Submission.iwl_weighted_tangent_locality`).
+
+/-- **Patching lemma** (P4) of the proof of Simon Ch. 6, 8.2 (Remark 8.3(1)): a current that
+agrees near every point of `U` with an integer multiplicity current is integer multiplicity.
 By Lindelöf, countably many `V (e i)` cover `U`, with `X = Y (e i) = τ(Mᵢ, θᵢ, ξᵢ)` on forms
-supported in `V (e i)`.  By facts (c), (d) the triples agree a.e. on overlaps, so the triple
-`(M, θ, ξ)` glued along `D i = V (e i) \ ⋃_{j < i} V (e j)` agrees a.e. with `(Mᵢ, θᵢ, ξᵢ)` on
-`V (e i)`.  Tangent locality transfers the orientation condition from `(Mᵢ, θᵢ)` to `(M, θ)`, and
-`X = τ(M, θ, ξ)` by a partition of unity. -/
-theorem Submission.iwl_im_patching_of_tangent_locality
-    (htl : ∀ (P n : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P),
-      NullMeasurableSet M (μHE[n] : Measure (Eucl P)) →
-      NullMeasurableSet M' (μHE[n] : Measure (Eucl P)) → θ x = θ' x →
-      (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧
-        IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) →
-      (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) *
-        ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
-          ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) →
-      ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q ↔
-        HasWeightedApproximateTangentSpaceAt n M' θ' x Q) :
-    ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k,
-      (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧
-        ∃ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y ∧
-          ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = Y ω) →
-      IsIntegerMultiplicity X := by
+supported in `V (e i)`.  On overlaps the vector densities `1_{Mᵢ} θᵢ ξᵢ` agree `Hᵏ`-a.e. (test
+with `g dx^β`, `g ∈ C_c^∞`, and expand covectors by `Submission.slicing_ru_covector_expansion`),
+hence so do the multiplicities `1_{Mᵢ} θᵢ`, since `‖ξᵢ‖ = 1` a.e.
+(`Submission.lpf_simple_nvector_algebra`).  The triple `(M, θ, ξ)` glued along
+`D i = V (e i) \ ⋃_{j < i} V (e j)` therefore agrees a.e. with `(Mᵢ, θᵢ, ξᵢ)` on `V (e i)`;
+`Submission.iwl_weighted_tangent_locality` transfers the orientation condition from `(Mᵢ, θᵢ)`
+to `(M, θ)`, and `X = τ(M, θ, ξ)` by a smooth partition of unity. -/
+theorem Submission.iwl_im_patching : ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧ ∃ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = Y ω) → IsIntegerMultiplicity X := by
   intro P k U hU X hloc
   -- Empty domain: `X = 0 = τ(∅, 1, 0)`.
   rcases U.eq_empty_or_nonempty with rfl | hUne
@@ -1086,6 +879,144 @@ theorem Submission.iwl_im_patching_of_tangent_locality
       exact image_eq_zero_of_notMem_tsupport fun hx => notMem_empty x (ω.2.2 hx)
     rw [hω, tauAction, Measure.restrict_empty, integral_zero_measure]
     exact map_zero X.toCurrent
+  -- Fact (a): `‖ξ‖ = 1` `Hᵏ`-a.e. on `M`.  A.e. `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ` orthonormal, and
+  -- `‖τ₁ ∧ ⋯ ∧ τₖ‖² = det (⟪τᵢ, τⱼ⟫) = 1`.
+  have norm_eq_one : ∀ {M : Set (Eucl P)} {θ : Eucl P → ℝ} {ξ : Eucl P → NVector (Eucl P) k},
+      IsRectifiableTriple U k M θ ξ → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ M → ‖ξ x‖ = 1 := by
+    intro M θ ξ h
+    rw [← ae_restrict_iff'₀ h.nullMeasurableSet]
+    filter_upwards [h.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hgram : (Matrix.of fun i j => inner ℝ (τ i) (τ j)) = (1 : Matrix (Fin k) (Fin k) ℝ) := by
+      ext i j
+      simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
+    have hsq := Submission.lpf_simple_nvector_algebra.1 P k τ
+    rw [hgram, Matrix.det_one] at hsq
+    have h1 : ‖simpleNVector τ‖ = 1 :=
+      (pow_eq_one_iff_of_nonneg (norm_nonneg (simpleNVector τ)) two_ne_zero).mp hsq
+    rcases hξ with hξ | hξ
+    · rw [hξ, h1]
+    · rw [hξ, ContinuousLinearMap.opNorm_neg, h1]
+  -- Fact (d): `‖1_M θ ξ‖ = 1_M θ` a.e., as `θ > 0` on `M`.
+  have norm_indicator : ∀ {M : Set (Eucl P)} {θ : Eucl P → ℝ} {ξ : Eucl P → NVector (Eucl P) k},
+      IsRectifiableTriple U k M θ ξ → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)),
+        ‖M.indicator (fun y => θ y • ξ y) x‖ = M.indicator θ x := by
+    intro M θ ξ h
+    filter_upwards [norm_eq_one h] with x hx
+    by_cases hxM : x ∈ M
+    · rw [indicator_of_mem hxM, indicator_of_mem hxM,
+        @norm_smul ℝ (NVector (Eucl P) k) _ _ _ NormedSpace.toNormSMulClass, hx hxM, mul_one,
+        Real.norm_of_nonneg (h.pos x hxM).le]
+    · rw [indicator_of_notMem hxM, indicator_of_notMem hxM, ContinuousLinearMap.opNorm_zero]
+  -- `τ(M, θ, ξ)(ω) = ∫ ⟨ω, 1_M θ ξ⟩ dHᵏ` (Simon Ch. 6, 3.1 (‡)) for `Hᵏ`-null-measurable `M`.
+  have tau_eq_integral : ∀ {M : Set (Eucl P)} {θ : Eucl P → ℝ}
+      {ξ : Eucl P → NVector (Eucl P) k}, NullMeasurableSet M (μHE[k] : Measure (Eucl P)) →
+      ∀ ω : DifferentialForm (Eucl P) k, tauAction k M θ ξ ω =
+        ∫ x, M.indicator (fun y => θ y • ξ y) x (ω x) ∂(μHE[k] : Measure (Eucl P)) := by
+    intro M θ ξ hM ω
+    rw [tauAction, ← integral_indicator₀ hM]
+    congr 1
+    funext x
+    by_cases hx : x ∈ M <;> simp [hx]
+  -- Fact (b): for a continuous form `η`, `⟨η, 1_M θ ξ⟩` is `Hᵏ`-integrable on each compact
+  -- `K ⊆ U`, since `|⟨η, θ ξ⟩| ≤ |θ| sup_K ‖η‖` a.e. on `M ∩ K`.
+  have integrableOn_pairing : ∀ {M : Set (Eucl P)} {θ : Eucl P → ℝ}
+      {ξ : Eucl P → NVector (Eucl P) k}, IsRectifiableTriple U k M θ ξ →
+      ∀ {K : Set (Eucl P)}, IsCompact K → K ⊆ U → ∀ {η : DifferentialForm (Eucl P) k},
+      Continuous η → IntegrableOn (fun x => M.indicator (fun y => θ y • ξ y) x (η x)) K
+        (μHE[k] : Measure (Eucl P)) := by
+    intro M θ ξ h K hK hKU η hη
+    have heq : (fun x => M.indicator (fun y => θ y • ξ y) x (η x)) =
+        M.indicator (fun y => θ y * ξ y (η y)) := by
+      funext x
+      by_cases hx : x ∈ M <;> simp [hx]
+    rw [heq, integrableOn_indicator_iff h.nullMeasurableSet]
+    have hθ := h.integrableOn K hK hKU
+    obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hη.continuousOn
+    have hev : Continuous fun p : NVector (Eucl P) k × Covector (Eucl P) k => p.1 p.2 :=
+      isBoundedBilinearMap_apply.continuous
+    have hmeas : AEStronglyMeasurable (fun y => ξ y (η y))
+        ((μHE[k] : Measure (Eucl P)).restrict (M ∩ K)) :=
+      hev.comp_aestronglyMeasurable
+        ((h.aestronglyMeasurable.mono_measure
+          (Measure.restrict_mono inter_subset_left le_rfl)).prodMk hη.aestronglyMeasurable)
+    refine Integrable.mono' (hθ.norm.mul_const C) (hθ.aestronglyMeasurable.mul hmeas) ?_
+    rw [ae_restrict_iff'₀ (h.nullMeasurableSet.inter hK.measurableSet.nullMeasurableSet)]
+    filter_upwards [norm_eq_one h] with y hy hyMK
+    rw [norm_mul]
+    refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+    calc ‖ξ y (η y)‖ ≤ ‖ξ y‖ * ‖η y‖ := (ξ y).le_opNorm (η y)
+      _ = ‖η y‖ := by rw [hy hyMK.1, one_mul]
+      _ ≤ C := hC y hyMK.2
+  -- Fact (b) for continuous `η` with compact support in `U`: `⟨η, 1_M θ ξ⟩` vanishes off
+  -- `tsupport η`, so it is `Hᵏ`-integrable.
+  have integrable_pairing : ∀ {M : Set (Eucl P)} {θ : Eucl P → ℝ}
+      {ξ : Eucl P → NVector (Eucl P) k}, IsRectifiableTriple U k M θ ξ →
+      ∀ {η : DifferentialForm (Eucl P) k}, Continuous η → HasCompactSupport η →
+      tsupport η ⊆ U → Integrable (fun x => M.indicator (fun y => θ y • ξ y) x (η x))
+        (μHE[k] : Measure (Eucl P)) := by
+    intro M θ ξ h η hη hηc hηU
+    have hsupp : (Function.support fun x => M.indicator (fun y => θ y • ξ y) x (η x)) ⊆
+        tsupport η := by
+      intro x hx
+      by_contra hxη
+      apply hx
+      dsimp only
+      rw [image_eq_zero_of_notMem_tsupport hxη, map_zero]
+    rw [← integrableOn_iff_integrable_of_support_subset hsupp]
+    exact integrableOn_pairing h hηc hηU hη
+  -- Fact (c), uniqueness of the vector measure `θ ξ Hᵏ ⌞ M`: if `τ(M, θ, ξ)` and `τ(M', θ', ξ')`
+  -- agree on test forms supported in an open `O ⊆ U`, then `1_M θ ξ = 1_{M'} θ' ξ'` a.e. on `O`.
+  -- For a constant covector `α`, testing with `ω = g α` (`g ∈ C_c^∞(O)`) shows that the locally
+  -- integrable `⟨α, 1_M θ ξ - 1_{M'} θ' ξ'⟩` vanishes as a distribution on `O`, hence a.e. on
+  -- `O`; the coordinate covectors `dx^β` determine an `n`-vector.
+  have ae_eq : ∀ {O : Set (Eucl P)}, IsOpen O → O ⊆ U → ∀ {M M' : Set (Eucl P)}
+      {θ θ' : Eucl P → ℝ} {ξ ξ' : Eucl P → NVector (Eucl P) k},
+      IsRectifiableTriple U k M θ ξ → IsRectifiableTriple U k M' θ' ξ' →
+      (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ O →
+        tauAction k M θ ξ ω = tauAction k M' θ' ξ' ω) →
+      ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
+        M.indicator (fun y => θ y • ξ y) x = M'.indicator (fun y => θ' y • ξ' y) x := by
+    intro O hO hOU M M' θ θ' ξ ξ' h h' heq
+    have hcoord : ∀ α : Covector (Eucl P) k, ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
+        M.indicator (fun y => θ y • ξ y) x α = M'.indicator (fun y => θ' y • ξ' y) x α := by
+      intro α
+      have hli : LocallyIntegrableOn (fun x => M.indicator (fun y => θ y • ξ y) x α -
+          M'.indicator (fun y => θ' y • ξ' y) x α) O (μHE[k] : Measure (Eucl P)) := by
+        rw [locallyIntegrableOn_iff hO.isLocallyClosed]
+        intro K hKO hK
+        exact (integrableOn_pairing h hK (hKO.trans hOU) (η := fun _ => α)
+          continuous_const).sub
+          (integrableOn_pairing h' hK (hKO.trans hOU) (η := fun _ => α) continuous_const)
+      have key := hO.ae_eq_zero_of_integral_contDiff_smul_eq_zero hli ?_
+      · filter_upwards [key] with x hx hxO
+        exact sub_eq_zero.mp (hx hxO)
+      intro g hg hgc hgO
+      have hηc : Continuous fun x => g x • α := hg.continuous.smul continuous_const
+      have hηcs : HasCompactSupport fun x => g x • α := hgc.smul_right (f' := fun _ => α)
+      have hηO : tsupport (fun x => g x • α) ⊆ O := (tsupport_smul_subset_left _ _).trans hgO
+      have h1 := integrable_pairing h hηc hηcs (hηO.trans hOU)
+      have h2 := integrable_pairing h' hηc hηcs (hηO.trans hOU)
+      have heqα := heq ⟨fun x => g x • α, ⟨hg.smul contDiff_const, hηcs⟩, hηO.trans hOU⟩ hηO
+      rw [tau_eq_integral h.nullMeasurableSet, tau_eq_integral h'.nullMeasurableSet] at heqα
+      calc ∫ x, g x • (M.indicator (fun y => θ y • ξ y) x α -
+            M'.indicator (fun y => θ' y • ξ' y) x α) ∂(μHE[k] : Measure (Eucl P))
+          = ∫ x, (M.indicator (fun y => θ y • ξ y) x (g x • α) -
+              M'.indicator (fun y => θ' y • ξ' y) x (g x • α)) ∂(μHE[k] : Measure (Eucl P)) := by
+            congr 1
+            funext x
+            simp only [map_smul, smul_eq_mul, mul_sub]
+        _ = ∫ x, M.indicator (fun y => θ y • ξ y) x (g x • α) ∂(μHE[k] : Measure (Eucl P)) -
+              ∫ x, M'.indicator (fun y => θ' y • ξ' y) x (g x • α)
+                ∂(μHE[k] : Measure (Eucl P)) := integral_sub h1 h2
+        _ = 0 := sub_eq_zero.mpr heqα
+    have hall := ae_all_iff.mpr fun β : SimonMultiIndex k P =>
+      hcoord (wedgeCovectors k fun j => EuclideanSpace.proj (β j))
+    filter_upwards [hall] with x hx hxO
+    refine ContinuousLinearMap.ext fun α => ?_
+    rw [Submission.slicing_ru_covector_expansion P k α, map_sum, map_sum]
+    refine Finset.sum_congr rfl fun β _ => ?_
+    rw [map_smul, map_smul, hx β hxO]
   -- Step 1 (Lindelöf): countably many `V (e i)` cover `U`.
   have hloc' : ∀ x : U, ∃ V : Set (Eucl P), IsOpen V ∧ (x : Eucl P) ∈ V ∧ V ⊆ U ∧
       ∃ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y ∧
@@ -1117,19 +1048,18 @@ theorem Submission.iwl_im_patching_of_tangent_locality
   have hXW : ∀ i (ω : TestFormOn U k), tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W i →
       X ω = tauAction k (Ms i) (θs i) (ξs i) ω := fun i ω hω =>
     (hXY (e i) ω (by rw [← hW]; exact hω)).trans (hRep i ω)
-  -- Step 2: the local triples agree a.e. on overlaps.
+  -- Step 2: the local triples agree a.e. on overlaps (facts (c), (d)).
   have hcompat : ∀ i j, ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ W i ∩ W j →
       (Ms i).indicator (fun y => θs i y • ξs i y) x =
         (Ms j).indicator (fun y => θs j y • ξs j y) x ∧
       (Ms i).indicator (θs i) x = (Ms j).indicator (θs j) x := by
     intro i j
-    have hF := Submission.iwl_im_patching_ae_eq ((hWo i).inter (hWo j))
-      (inter_subset_left.trans (hWU i)) (hTr i) (hTr j) fun ω hω =>
-        (hXW i ω (hω.trans inter_subset_left)).symm.trans
-          (hXW j ω (hω.trans inter_subset_right))
-    filter_upwards [hF, Submission.iwl_im_patching_indicator_ae_eq (hTr i) (hTr j) hF]
-      with x h1 h2 hx
-    exact ⟨h1 hx, h2 hx⟩
+    have hF := ae_eq ((hWo i).inter (hWo j)) (inter_subset_left.trans (hWU i)) (hTr i) (hTr j)
+      fun ω hω => (hXW i ω (hω.trans inter_subset_left)).symm.trans
+        (hXW j ω (hω.trans inter_subset_right))
+    filter_upwards [hF, norm_indicator (hTr i), norm_indicator (hTr j)] with x h1 h2 h3 hx
+    refine ⟨h1 hx, ?_⟩
+    rw [← h2, ← h3, h1 hx]
   -- Step 3: glue along `D i = {x ∈ U | i is the least index with x ∈ W i}`.
   obtain ⟨idx, hidx⟩ : ∃ idx : Eucl P → ℕ, ∀ x, idx x = sInf {i | x ∈ W i} :=
     ⟨_, fun _ => rfl⟩
@@ -1264,12 +1194,13 @@ theorem Submission.iwl_im_patching_of_tangent_locality
         obtain ⟨τ, hτ, hT, hξx⟩ := hx
         obtain ⟨hxD, -⟩ := hxDM
         refine ⟨τ, hτ, ?_, by rwa [hξD i x hxD]⟩
-        -- transfer the tangent plane from `(Mᵢ, θᵢ)` to `(M, θ)` by tangent locality
+        -- Transfer the tangent plane from `(Mᵢ, θᵢ)` to `(M, θ)` by tangent locality.
         obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.mp (hWo i) x (hDW i hxD)
         have hρ : 0 < ε / 2 := half_pos hε
         have hsub : closedBall x (ε / 2) ⊆ W i :=
           (closedBall_subset_ball (half_lt_self hε)).trans hεW
-        refine (htl P k (Ms i) M (θs i) θ x (hTr i).nullMeasurableSet hMnull (hθD i x hxD).symm
+        refine (Submission.iwl_weighted_tangent_locality P k (Ms i) M (θs i) θ x
+          (hTr i).nullMeasurableSet hMnull (hθD i x hxD).symm
           ⟨ε / 2, hρ, (hTr i).integrableOn _ (isCompact_closedBall x _) (hsub.trans (hWU i)),
             hθint _ (isCompact_closedBall x _) (hsub.trans (hWU i))⟩ ?_ _).mp hT
         intro R hR
@@ -1290,24 +1221,62 @@ theorem Submission.iwl_im_patching_of_tangent_locality
   have hXloc : ∀ i (ω : TestFormOn U k), tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W i →
       X ω = tauAction k M θ ξ ω := by
     intro i ω hω
-    rw [hXW i ω hω, Submission.iwl_im_patching_tau_eq_integral (hTr i).nullMeasurableSet,
-      Submission.iwl_im_patching_tau_eq_integral hMnull]
+    rw [hXW i ω hω, tau_eq_integral (hTr i).nullMeasurableSet, tau_eq_integral hMnull]
     refine integral_congr_ae ?_
     filter_upwards [hagree i] with x hx
     by_cases hxW : x ∈ W i
     · rw [(hx hxW).1]
     · rw [image_eq_zero_of_notMem_tsupport fun h => hxW (hω h), map_zero, map_zero]
-  refine ⟨M, θ, ξ, hTriple, ?_, Submission.iwl_im_patching_globalize hTriple X W hWo
-    (fun x hx => mem_iUnion.mpr (hcov x hx)) hXloc⟩
-  intro x hx
-  rw [hM, mem_iUnion] at hx
-  obtain ⟨i, hxD, hxM⟩ := hx
-  rw [hθD i x hxD]
-  exact hNat i x hxM
-/-- **Patching lemma** (P4) of the proof of Simon Ch. 6, 8.2: a current that agrees near every
-point of `U` with an integer multiplicity current is integer multiplicity. -/
-theorem Submission.iwl_im_patching : ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧ ∃ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = Y ω) → IsIntegerMultiplicity X :=
-  Submission.iwl_im_patching_of_tangent_locality Submission.iwl_weighted_tangent_locality
+  refine ⟨M, θ, ξ, hTriple, ?_, fun ω => ?_⟩
+  · intro x hx
+    rw [hM, mem_iUnion] at hx
+    obtain ⟨i, hxD, hxM⟩ := hx
+    rw [hθD i x hxD]
+    exact hNat i x hxM
+  -- A smooth partition of unity `(ρᵢ)` subordinate to a finite subcover of `tsupport ω` splits
+  -- `ω = ∑ ρᵢ ω`; `X` is linear and `τ(M, θ, ξ)` is additive on the integrable pieces.
+  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) := ω.2.1.1
+  have hωc : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
+  have hωU : tsupport (ω : DifferentialForm (Eucl P) k) ⊆ U := ω.2.2
+  obtain ⟨t, ht⟩ := hωc.isCompact.elim_finite_subcover W hWo
+    (hωU.trans fun x hx => mem_iUnion.mpr (hcov x hx))
+  obtain ⟨ρ, hρ⟩ := SmoothPartitionOfUnity.exists_isSubordinate (modelWithCornersSelf ℝ (Eucl P))
+    (isClosed_tsupport (ω : DifferentialForm (Eucl P) k)) (fun i : t => W i) (fun i => hWo i)
+    (by
+      intro x hx
+      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp (ht hx)
+      exact mem_iUnion.mpr ⟨⟨i, hi⟩, hxi⟩)
+  have hρs : ∀ i, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ρ i) := fun i =>
+    contMDiff_iff_contDiff.mp (ρ i).contMDiff
+  let ωi : t → TestFormOn U k := fun i =>
+    ⟨fun x => ρ i x • (ω : DifferentialForm (Eucl P) k) x,
+      ⟨(hρs i).smul hωs, IsCompact.of_isClosed_subset hωc (isClosed_tsupport _)
+        (tsupport_smul_subset_right _ _)⟩, (tsupport_smul_subset_right _ _).trans hωU⟩
+  have hsum' : ∀ x, (ω : DifferentialForm (Eucl P) k) x =
+      ∑ i, ρ i x • (ω : DifferentialForm (Eucl P) k) x := by
+    intro x
+    by_cases hx : x ∈ tsupport (ω : DifferentialForm (Eucl P) k)
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ρ.sum_eq_one hx, one_smul]
+    · simp [image_eq_zero_of_notMem_tsupport hx]
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [hsum' x, Submodule.coe_sum, Finset.sum_apply]
+  have hint : ∀ i, Integrable (fun x => M.indicator (fun y => θ y • ξ y) x
+      ((ωi i : DifferentialForm (Eucl P) k) x)) (μHE[k] : Measure (Eucl P)) := fun i =>
+    integrable_pairing hTriple (ωi i).2.1.1.continuous (ωi i).2.1.2 (ωi i).2.2
+  calc X ω = ∑ i, X (ωi i) := by
+        conv_lhs => rw [hsum]
+        exact map_sum X.toCurrent _ _
+    _ = ∑ i, tauAction k M θ ξ (ωi i) :=
+        Finset.sum_congr rfl fun i _ =>
+          hXloc i (ωi i) ((tsupport_smul_subset_left _ _).trans (hρ i))
+    _ = tauAction k M θ ξ ω := by
+        simp only [tau_eq_integral hMnull]
+        rw [← integral_finsetSum _ fun i _ => hint i]
+        congr 1
+        funext x
+        rw [hsum' x, map_sum]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
