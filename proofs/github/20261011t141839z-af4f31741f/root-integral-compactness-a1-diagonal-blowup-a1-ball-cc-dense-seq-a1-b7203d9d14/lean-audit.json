@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ccfff2a37c1e5326f392f5287989ef52427f292c601a908dcc9553a5be0debcf",
+  "git_delta": {
+    "base_commit": "edf6403e8f3705cbe1236f62087253a7ffede563",
+    "candidate_commit": "e22ffb6fb00be3394e5a2888e925fa7ca1181287",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_diag_ball_cc_dense_seq",
+    "diff_sha256": "ee1615723948abc98d3d59762b4bed6676cac5fc687fc3b102cbe4c48e127d31",
+    "source_sha256": "12ab516dfeb7cc0cd3b391f2cd2d3449979b6b88794c8ec83b42667ac467fd62",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_diag_ball_cc_dense_seq",
+      "statement": "∀ (N n : ℕ) (R : ℝ), 0 < R → ∃ g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ), (∀ m, tsupport (g m) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧ ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) → ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
