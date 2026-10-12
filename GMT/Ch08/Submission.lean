@@ -457,6 +457,126 @@ theorem Submission.frt_plane_subset_hasDensity_one :
   rw [densityRatio, Measure.restrict_apply measurableSet_closedBall, ← himg y s, hmeas,
     Measure.addHaar_closedBall volume y hs.le, finrank_euclideanSpace_fin, ENNReal.ofReal_pow hs.le,
     unitBallVolume, mul_comm (ENNReal.ofReal s ^ n)]
+/-- Hausdorff-measure comparison between an `L`-graph and its projection (used for the density-one
+property of `H^n` on the carrier in the proof of Simon Ch. 8, 1.2; cf. Ch. 3, 1.6): if
+`|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|` for `y, z ∈ S` and `β = (1 + L²)^{1/2}`, then `p_P` is
+`1`-Lipschitz, and injective on `S` with a `β`-Lipschitz inverse, so for `x ∈ S` and `r ∈ ℝ`
+`H^n(p_P(S) ∩ B_{r/β}(p_P x)) ≤ H^n(S ∩ B_r(x)) ≤ β^n H^n(p_P(S) ∩ B_r(p_P x))`, and
+`H^n(S ∩ p_P⁻¹(Y)) ≤ β^n H^n(Y)` for every `Y ⊆ ℝ^N`. -/
+theorem Submission.frt_lipschitz_graph_hausdorff_compare :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (S : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ S, ∀ z ∈ S, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → (∀ x ∈ S, ∀ r : ℝ, (μHE[n] : Measure (Euclidean N)) ((Grassmannian.project P '' S) ∩ closedBall (Grassmannian.project P x) (r / Real.sqrt (1 + L ^ 2))) ≤ (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) ∧ (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) ((Grassmannian.project P '' S) ∩ closedBall (Grassmannian.project P x) r)) ∧ ∀ Y : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) (S ∩ Grassmannian.project P ⁻¹' Y) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) Y := by
+  intro N n P L S hL hgraph
+  -- Step 1: `β = √(1 + L²)` satisfies `β ≥ 1 > 0`.
+  have hβ0 : 0 < Real.sqrt (1 + L ^ 2) :=
+    one_pos.trans_le (Real.one_le_sqrt.mpr (le_add_of_nonneg_right (sq_nonneg L)))
+  -- Step 2: `p_P` is linear.
+  have hsub : ∀ u v : Euclidean N,
+      Grassmannian.project P (u - v) = Grassmannian.project P u - Grassmannian.project P v :=
+    fun u v ↦ map_sub P.projectionLinearMap u v
+  -- Step 3: `p_P` is symmetric and idempotent, so `|v|² = |p_P v|² + |v - p_P v|²`; hence
+  -- `|p_P v| ≤ |v|` and `p_P` is `1`-Lipschitz.
+  have hpyth : ∀ v : Euclidean N,
+      ‖v‖ ^ 2 = ‖Grassmannian.project P v‖ ^ 2 + ‖v - Grassmannian.project P v‖ ^ 2 := by
+    intro v
+    have hker : Grassmannian.project P (v - Grassmannian.project P v) = 0 := by
+      rw [hsub, Grassmannian.project_project, sub_self]
+    have horth : inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) = 0 := by
+      rw [show inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) =
+          inner ℝ v (Grassmannian.project P (v - Grassmannian.project P v)) from
+        P.projectionLinearMap_isSymmetric v (v - Grassmannian.project P v), hker, inner_zero_right]
+    have h := norm_add_sq_real (Grassmannian.project P v) (v - Grassmannian.project P v)
+    rw [horth, add_sub_cancel] at h
+    linarith
+  have hnorm : ∀ v : Euclidean N, ‖Grassmannian.project P v‖ ≤ ‖v‖ := by
+    intro v
+    have h := hpyth v
+    nlinarith [norm_nonneg v, norm_nonneg (Grassmannian.project P v),
+      sq_nonneg ‖v - Grassmannian.project P v‖]
+  have hlip : ∀ A : Set (Euclidean N), LipschitzOnWith 1 (Grassmannian.project P) A := by
+    refine fun A ↦ LipschitzOnWith.mk_one fun u _ v _ ↦ ?_
+    rw [dist_eq_norm, dist_eq_norm, ← hsub]
+    exact hnorm (u - v)
+  -- Step 4: on `S`, `|y - z|² ≤ (1 + L²) |p_P(y - z)|²`, i.e. `|y - z| ≤ β |p_P y - p_P z|`.
+  have hkey : ∀ y ∈ S, ∀ z ∈ S, ‖y - z‖ ≤
+      Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P y - Grassmannian.project P z‖ := by
+    intro y hy z hz
+    rw [← hsub]
+    have h1 := hpyth (y - z)
+    have h2 := hgraph y hy z hz
+    have h3 : ‖(y - z) - Grassmannian.project P (y - z)‖ ^ 2 ≤
+        (L * ‖Grassmannian.project P (y - z)‖) ^ 2 := by
+      gcongr
+    have h4 : ‖y - z‖ ^ 2 ≤ (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2 := by
+      nlinarith
+    calc ‖y - z‖ = Real.sqrt (‖y - z‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+      _ ≤ Real.sqrt ((1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2) := Real.sqrt_le_sqrt h4
+      _ = Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ := by
+        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+  -- Step 5: `p_P` is injective on `S`, and `h = invFunOn p_P S` is `β`-Lipschitz on `p_P(S)` with
+  -- `h (p_P y) = y` for `y ∈ S`.
+  have hinj : InjOn (Grassmannian.project P) S := by
+    intro y hy z hz hyz
+    have h := hkey y hy z hz
+    rw [hyz, sub_self, norm_zero, mul_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  have hleft : ∀ y ∈ S,
+      Function.invFunOn (Grassmannian.project P) S (Grassmannian.project P y) = y :=
+    fun y hy ↦ hinj.leftInvOn_invFunOn hy
+  have hinv : LipschitzOnWith (Real.toNNReal (Real.sqrt (1 + L ^ 2)))
+      (Function.invFunOn (Grassmannian.project P) S) (Grassmannian.project P '' S) := by
+    refine LipschitzOnWith.of_dist_le' ?_
+    rintro _ ⟨y, hy, rfl⟩ _ ⟨z, hz, rfl⟩
+    rw [hleft y hy, hleft z hz, dist_eq_norm, dist_eq_norm]
+    exact hkey y hy z hz
+  -- Steps 6–7 (b): `S ∩ p_P⁻¹(Y) = h(p_P(S ∩ p_P⁻¹(Y)))` and `p_P(S ∩ p_P⁻¹(Y)) ⊆ Y`, so the
+  -- Lipschitz image bound for `h` gives `H^n(S ∩ p_P⁻¹(Y)) ≤ β^n H^n(Y)`.
+  have hb : ∀ Y : Set (Euclidean N), (μHE[n] : Measure (Euclidean N))
+      (S ∩ Grassmannian.project P ⁻¹' Y) ≤
+        ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) Y := by
+    intro Y
+    calc (μHE[n] : Measure (Euclidean N)) (S ∩ Grassmannian.project P ⁻¹' Y)
+        = (μHE[n] : Measure (Euclidean N)) (Function.invFunOn (Grassmannian.project P) S ''
+            (Grassmannian.project P '' (S ∩ Grassmannian.project P ⁻¹' Y))) := by
+          rw [hinj.invFunOn_image inter_subset_left]
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N))
+            (Grassmannian.project P '' (S ∩ Grassmannian.project P ⁻¹' Y)) :=
+          Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hinv.mono (image_mono inter_subset_left))
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) Y := by
+          gcongr
+          exact (image_mono inter_subset_right).trans (image_preimage_subset _ _)
+  refine ⟨fun x hx r ↦ ⟨?_, ?_⟩, hb⟩
+  · -- Step 8: `p_P(S) ∩ B_{r/β}(p_P x) ⊆ p_P(S ∩ B_r(x))`, then the `1`-Lipschitz bound for `p_P`.
+    have hsubset : Grassmannian.project P '' S ∩
+        closedBall (Grassmannian.project P x) (r / Real.sqrt (1 + L ^ 2)) ⊆
+          Grassmannian.project P '' (S ∩ closedBall x r) := by
+      rintro _ ⟨⟨z, hz, rfl⟩, hzr⟩
+      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
+      rw [mem_closedBall, dist_eq_norm] at hzr ⊢
+      calc ‖z - x‖
+          ≤ Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P z - Grassmannian.project P x‖ :=
+            hkey z hz x hx
+        _ ≤ Real.sqrt (1 + L ^ 2) * (r / Real.sqrt (1 + L ^ 2)) :=
+            mul_le_mul_of_nonneg_left hzr hβ0.le
+        _ = r := mul_div_cancel₀ r hβ0.ne'
+    calc (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' S ∩
+          closedBall (Grassmannian.project P x) (r / Real.sqrt (1 + L ^ 2)))
+        ≤ (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' (S ∩ closedBall x r)) :=
+          measure_mono hsubset
+      _ ≤ ((1 : NNReal) : ℝ≥0∞) ^ n * (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) :=
+          Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n (hlip _)
+      _ = (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) := by
+          rw [ENNReal.coe_one, one_pow, one_mul]
+  · -- Step 9: `S ∩ B_r(x) ⊆ S ∩ p_P⁻¹(p_P(S) ∩ B_r(p_P x))`, as `|p_P z - p_P x| ≤ |z - x|`;
+    -- then (b).
+    have hsubset : S ∩ closedBall x r ⊆ S ∩ Grassmannian.project P ⁻¹'
+        (Grassmannian.project P '' S ∩ closedBall (Grassmannian.project P x) r) := by
+      rintro z ⟨hz, hzr⟩
+      refine ⟨hz, mem_image_of_mem _ hz, ?_⟩
+      rw [mem_closedBall, dist_eq_norm] at hzr ⊢
+      rw [← hsub]
+      exact (hnorm (z - x)).trans hzr
+    exact (measure_mono hsubset).trans (hb _)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
