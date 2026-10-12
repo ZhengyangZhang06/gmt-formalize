@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6cc7d7c0131002da010bfcf4adf41e5e712521cef3c5583ddb4c42b29d57f0e4",
+  "git_delta": {
+    "base_commit": "3789990938428229293635f13e5c174dca095826",
+    "candidate_commit": "6c95c30c9b06d19ba3a0a48291a91fb21016fd62",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "4bfe362be6dcc88da5108a596016abb63e4d09ec838d25609940ac797f78be47",
+    "source_sha256": "4c3115ea8e5ccdf6355c44fbda0d814f1719549a0294ec6d9d5959527ff83702",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_tangent_structure",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight ∧ (∀ (T : Submodule ℝ (Amb n ℓ)) (K : Set (Amb n ℓ)), IsCompact K → K ⊆ U → IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) K V.weight) ∧ ∀ᵐ x ∂V.weight, (∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ V.tangentProj x = T.starProjection) ∧ V.HasDensity x (V.mult x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
