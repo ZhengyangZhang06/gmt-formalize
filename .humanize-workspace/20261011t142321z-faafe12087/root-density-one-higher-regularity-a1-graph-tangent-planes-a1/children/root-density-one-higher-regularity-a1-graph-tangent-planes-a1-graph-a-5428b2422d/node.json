@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "depth": 3,
+  "title": "The classical tangent plane of a C^1 graph is its approximate tangent space",
+  "statement": "Let n >= 1, l >= 0, R real, and u : R^n -> R^l C^1 on the open ball Bo_R(0) of R^n. Put G(z) := graphPoint z (u z) = (z, u(z)) in R^(n+l) and Gamma := graphOver u (Bo_R(0)) = G(Bo_R(0)). For every x in Bo_R(0), the subspace tau := range DG(x) (DG(x) = fderiv R G x) is the approximate tangent space of Gamma at G(x) in the sense of Simon Ch. 3, Definition 1.4 (SimonGMT Chapter03.HasApproximateTangentSpaceAt n Gamma (G x) tau): finrank tau = n, and for every phi in C_c(R^(n+l), R) the integral of phi over blowUpMap (G x) lam '' Gamma with respect to H^n = muHE[n] tends to the integral of phi over tau as lam -> 0+, where blowUpMap p lam w = lam^{-1} (w - p).",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ∀ x ∈ ball (0 : Rn n) R, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (graphOver u (ball 0 R)) (graphPoint x (u x)) (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)",
+  "lean_name": "dohr_tp_graph_approx_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-5428b2422d-a1"
+}
