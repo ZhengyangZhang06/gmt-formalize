@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e62175d2f7a3b8d406156b1bcc5c1e362e1f5a8488fdaf85970ebc15d2f41aa2",
+  "git_delta": {
+    "base_commit": "f296c0321ec8fb5cadd574e2b526bfd9b7f3ed69",
+    "candidate_commit": "dd2cb23f15bfdb7d472feffe8b95612663b551ea",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_compact_projection_null",
+    "diff_sha256": "b0bb1f6c5db0cfdc625d7272cf9330542cd9488a78e683b8e7632bea6f8f0f12",
+    "source_sha256": "c443a44dfc0d773d5ac102798150e64c9683f5f7dde5d625046792ca55d3e1df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_compact_projection_null",
+      "statement": "(∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) → ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ A : Set (Rn (n + ℓ)), IsCompact A → PurelyUnrectifiable n A → μHE[n] A < ∞ → ForAlmostAllProjections (n + ℓ) n (fun p ↦ μHE[n] (p '' A) = 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
