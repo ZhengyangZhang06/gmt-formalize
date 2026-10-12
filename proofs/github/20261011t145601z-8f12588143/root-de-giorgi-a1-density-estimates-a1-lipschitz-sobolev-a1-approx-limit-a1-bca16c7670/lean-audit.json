@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d6504d9577c2b448a0ecb6eccb3f1c2a7ea481661b4eea1e065421e71b31526d",
+  "git_delta": {
+    "base_commit": "e5b565d0635d8a79d69b519640d43f288e7ce049",
+    "candidate_commit": "06f889c0032f8d790a076c7e9668815f454eec03",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDensSob_eLpNorm_le_of_approx",
+    "diff_sha256": "f1a30b8b05721bd65d0ac314682c9b32456ef95c33de1b40bfff44e83884f5d7",
+    "source_sha256": "373bd7aebd845e4daa60b15b825bc44e0977cf921e9c839926a9eb2541e1607a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDensSob_eLpNorm_le_of_approx",
+      "statement": "∀ (N : ℕ) (p : ℝ≥0∞) (c : ℝ) (K : ℝ≥0) (S : Set (Rn N)) (u : Rn N → ℝ) (v : ℕ → Rn N → ℝ), IsCompact S → (∀ j, ContDiff ℝ 1 (v j)) → (∀ j, tsupport (v j) ⊆ S) → (∀ j y, ‖fderiv ℝ (v j) y‖ ≤ K) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ v j y) atTop (𝓝 (u y))) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ fderiv ℝ (v j) y) atTop (𝓝 (fderiv ℝ u y))) → (∀ j, eLpNorm (v j) p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ (v j) y‖)) → eLpNorm u p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

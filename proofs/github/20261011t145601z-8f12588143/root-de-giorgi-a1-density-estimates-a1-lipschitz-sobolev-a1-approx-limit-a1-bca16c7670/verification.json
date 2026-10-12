@@ -1,0 +1,15 @@
+{
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1.approx_limit-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1933",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "06f889c0032f8d790a076c7e9668815f454eec03",
+  "integrated_commit": "",
+  "proof_base_commit": "e5b565d0635d8a79d69b519640d43f288e7ce049",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1",
+  "requires": []
+}
