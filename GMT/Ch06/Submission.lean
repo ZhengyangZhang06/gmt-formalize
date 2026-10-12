@@ -395,6 +395,48 @@ theorem Submission.polyhedral_approx_rt_integrableOn_apply : ∀ (P n : ℕ) (U 
   -- Step 6: `χ = 1` on the closed, hence measurable, set `K`.
   refine (h5.integrableOn (s := K)).congr_fun (fun x hx => ?_) hK.isClosed.measurableSet
   simp [hχ1 hx]
+/-- **Local integrability of `θ ⟨c, ξ⟩` for `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  If
+`(M, θ, ξ)` is a rectifiable triple in `U`, then `x ↦ θ(x) ⟨c, ξ(x)⟩` is `Hⁿ⌞M`-integrable on
+every compact `K ⊆ U`, for every `n`-covector `c`.  For orthonormal `τ`,
+`‖±τ₁ ∧ ⋯ ∧ τₙ‖ ≤ ∏ᵢ ‖τᵢ‖ = 1`, so `|⟨c, ξ⟩| ≤ ‖c‖` `Hⁿ⌞M`-a.e.; `(Hⁿ⌞M)⌞K = Hⁿ⌞(M ∩ K)`, on
+which `θ` is integrable, and an integrable function times an a.e.-bounded one is integrable. -/
+theorem Submission.polyhedral_approx_rt_tau_integrableOn : ∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∀ c : Covector (Eucl P) n, IntegrableOn (fun x => θ x * ξ x c) K ((μHE[n] : Measure (Eucl P)).restrict M) := by
+  intro P n U M θ ξ hT K hK hKU c
+  -- Step 1: `‖simpleNVector τ‖ ≤ ∏ᵢ ‖τᵢ‖ = 1` for orthonormal `τ` (the `mkContinuous` bound).
+  have hunit : ∀ τ : Fin n → Eucl P, Orthonormal ℝ τ → ‖simpleNVector τ‖ ≤ 1 := by
+    intro τ hτ
+    have h1 : ‖simpleNVector τ‖ ≤ ∏ i, ‖τ i‖ :=
+      LinearMap.mkContinuous_norm_le _ (Finset.prod_nonneg fun i _ => norm_nonneg _) _
+    simpa [hτ.norm_eq_one] using h1
+  -- Step 2: `ξ = ±simpleNVector τ` gives `|ξ(x)(c)| ≤ ‖c‖` for `Hⁿ⌞M`-a.e. `x`.
+  have hbound : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x c‖ ≤ ‖c‖ := by
+    filter_upwards [hT.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hs : ‖simpleNVector τ c‖ ≤ ‖c‖ :=
+      calc ‖simpleNVector τ c‖ ≤ ‖simpleNVector τ‖ * ‖c‖ := (simpleNVector τ).le_opNorm c
+        _ ≤ 1 * ‖c‖ := by gcongr; exact hunit τ hτ
+        _ = ‖c‖ := one_mul _
+    rcases hξ with h | h
+    · rw [h]; exact hs
+    · rw [h, neg_apply, norm_neg]; exact hs
+  -- Step 3: `K` is closed, so `(Hⁿ⌞M)⌞K = Hⁿ⌞(M ∩ K) ≤ Hⁿ⌞M`.
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  rw [IntegrableOn, Measure.restrict_restrict hKm, Set.inter_comm]
+  have hle : (μHE[n] : Measure (Eucl P)).restrict (M ∩ K) ≤
+      (μHE[n] : Measure (Eucl P)).restrict M :=
+    Measure.restrict_mono Set.inter_subset_left le_rfl
+  -- Step 4: `θ` is `Hⁿ⌞(M ∩ K)`-integrable (the `integrableOn` field).
+  have hθ : Integrable θ ((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    hT.integrableOn K hK hKU
+  -- Step 5: `ξ(·)(c)` is a.e.-strongly measurable and a.e. bounded by `‖c‖` for `Hⁿ⌞(M ∩ K)`.
+  have hmeas : AEStronglyMeasurable (fun x => ξ x c)
+      ((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    ((ContinuousLinearMap.apply ℝ ℝ c).continuous.comp_aestronglyMeasurable
+      hT.aestronglyMeasurable).mono_measure hle
+  have hbd : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)), ‖ξ x c‖ ≤ ‖c‖ :=
+    ae_mono hle hbound
+  -- Step 6: integrable times a.e.-bounded is integrable.
+  exact hθ.mul_bdd hmeas hbd
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
