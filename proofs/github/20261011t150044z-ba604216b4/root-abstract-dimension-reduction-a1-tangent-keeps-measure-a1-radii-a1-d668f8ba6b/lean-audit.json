@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "90a21c1acaad87367a9ae0c4030854ce32034141cb0ad47a1ecff7d97c67b64f",
+  "git_delta": {
+    "base_commit": "db9f39016b650770856906e1d80f94e749036188",
+    "candidate_commit": "c91663bc6ef705b658a7dd802f46810224e41367",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_exists_strictAnti_radii",
+    "diff_sha256": "e9a94ad3bcdd7da04cd46d6a9ce43182f82a9a0b8c75b0dace0c685a7f417d89",
+    "source_sha256": "5bbcf31fdfdc94e403b3fd6de124930cbc9c67f20ee01f22166a7520e46252ed",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_exists_strictAnti_radii",
+      "statement": "∀ (Q : ℝ → Prop) (δ₀ : ℝ), 0 < δ₀ → (∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ Q ρ) → ∃ ρs : ℕ → ℝ, (∀ k, 0 < ρs k) ∧ (∀ k, ρs k < δ₀) ∧ StrictAnti ρs ∧ Tendsto ρs atTop (𝓝 0) ∧ ∀ k, Q (ρs k)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
