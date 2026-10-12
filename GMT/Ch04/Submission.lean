@@ -900,6 +900,96 @@ theorem Submission.weighted_mono_cutoff_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Mea
   obtain ⟨hint', hderiv⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le hNnhds hF_meas
     hF_int hF'_meas h_bound (hind _) h_diff
   exact ⟨hF_int, hint', hderiv⟩
+/-- **Kernel bounds for the monotonicity identity** (Simon Ch. 4, 3.5, with the corrected
+prefactors). For `φ` `C¹` and nonincreasing with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[1 + ε, ∞)`,
+`g τ = φ (s / τ)` has `g' τ = -(s / τ ^ 2) φ' (s / τ) ≥ 0` and `∫_{(σ,ρ]} g' = φ (s / ρ) - φ (s / σ)`;
+where `φ' (s / τ) ≠ 0` we have `τ ≤ s ≤ (1 + ε) τ`, so `s⁻ⁿ ≤ τ⁻ⁿ ≤ (1 + ε)ⁿ s⁻ⁿ`, and integrating
+`g'` against this squeeze over `(σ, ρ]` gives both bounds. -/
+theorem Submission.weighted_mono_kernel_bounds : ∀ (n : ℕ) (φ : ℝ → ℝ) (ε σ ρ s : ℝ), ContDiff ℝ 1 φ → Antitone φ → (∀ t, t ≤ 1 → φ t = 1) → (∀ t, 1 + ε ≤ t → φ t = 0) → 0 < ε → 0 < σ → σ ≤ ρ → 0 < s → (φ (s / ρ) - φ (s / σ)) / s ^ n ≤ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ∧ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ≤ (1 + ε) ^ n * ((φ (s / ρ) - φ (s / σ)) / s ^ n) := by
+  intro n φ ε σ ρ s hφ hanti hφ1 hφ0 hε hσ hσρ hs
+  -- `φ'` is continuous, `φ' ≤ 0`, and `φ'` vanishes off `[1, 1 + ε]`
+  have hφd : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  have hφc : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hφn : ∀ t, deriv φ t ≤ 0 := fun t ↦ hanti.deriv_nonpos
+  have hlt : ∀ t, t < 1 → deriv φ t = 0 := by
+    intro t ht
+    have h : φ =ᶠ[𝓝 t] fun _ ↦ (1 : ℝ) := by
+      filter_upwards [Iio_mem_nhds ht] with u hu using hφ1 u hu.le
+    rw [h.deriv_eq, deriv_const]
+  have hgt : ∀ t, 1 + ε < t → deriv φ t = 0 := by
+    intro t ht
+    have h : φ =ᶠ[𝓝 t] fun _ ↦ (0 : ℝ) := by
+      filter_upwards [Ioi_mem_nhds ht] with u hu using hφ0 u hu.le
+    rw [h.deriv_eq, deriv_const]
+  -- `g τ = φ (s / τ)` has derivative `g' τ = -(s / τ ^ 2) * φ' (s / τ)` for `τ > 0`
+  have hderiv : ∀ τ : ℝ, 0 < τ →
+      HasDerivAt (fun τ ↦ φ (s / τ)) (-(s / τ ^ 2) * deriv φ (s / τ)) τ := by
+    intro τ hτ
+    have h1 : HasDerivAt (fun y : ℝ ↦ s / y) (-(s / τ ^ 2)) τ := by
+      have h := (hasDerivAt_inv hτ.ne').const_mul s
+      simp only [← div_eq_mul_inv] at h
+      convert h using 1
+      ring
+    exact ((hφd (s / τ)).hasDerivAt.comp τ h1).congr_deriv (mul_comm _ _)
+  -- continuity of the integrands on `[σ, ρ]`
+  have hne : ∀ τ ∈ Icc σ ρ, τ ≠ 0 := fun τ hτ ↦ (hσ.trans_le hτ.1).ne'
+  have hg'c : ContinuousOn (fun τ : ℝ ↦ -(s / τ ^ 2) * deriv φ (s / τ)) (Icc σ ρ) :=
+    ((continuousOn_const.div (continuousOn_id.pow 2) fun τ hτ ↦ pow_ne_zero 2 (hne τ hτ)).neg).mul
+      (hφc.comp_continuousOn (continuousOn_const.div continuousOn_id hne))
+  have hkc : ContinuousOn (fun τ : ℝ ↦ -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n) (Icc σ ρ) :=
+    hg'c.div (continuousOn_id.pow n) fun τ hτ ↦ pow_ne_zero n (hne τ hτ)
+  have hg'i : IntegrableOn (fun τ : ℝ ↦ -(s / τ ^ 2) * deriv φ (s / τ)) (Ioc σ ρ) :=
+    hg'c.integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  have hki : IntegrableOn (fun τ : ℝ ↦ -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n) (Ioc σ ρ) :=
+    hkc.integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  -- fundamental theorem of calculus
+  have hFTC : ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) = φ (s / ρ) - φ (s / σ) := by
+    rw [← intervalIntegral.integral_of_le hσρ]
+    refine intervalIntegral.integral_eq_sub_of_hasDerivAt (f := fun τ ↦ φ (s / τ))
+      (f' := fun τ ↦ -(s / τ ^ 2) * deriv φ (s / τ)) (fun τ hτ ↦ ?_) ?_
+    · rw [uIcc_of_le hσρ] at hτ
+      exact hderiv τ (hσ.trans_le hτ.1)
+    · exact ContinuousOn.intervalIntegrable (by rwa [uIcc_of_le hσρ])
+  -- pointwise bounds: where `φ' (s / τ) ≠ 0`, `τ ≤ s ≤ (1 + ε) τ`
+  have hpt : ∀ τ ∈ Ioc σ ρ,
+      -(s / τ ^ 2) * deriv φ (s / τ) / s ^ n ≤ -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ∧
+      -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ≤
+        (1 + ε) ^ n * (-(s / τ ^ 2) * deriv φ (s / τ) / s ^ n) := by
+    intro τ hτ
+    have hτ0 : 0 < τ := hσ.trans hτ.1
+    have hg0 : 0 ≤ -(s / τ ^ 2) * deriv φ (s / τ) :=
+      mul_nonneg_of_nonpos_of_nonpos (neg_nonpos.2 (div_pos hs (pow_pos hτ0 2)).le) (hφn _)
+    by_cases hd : deriv φ (s / τ) = 0
+    · simp [hd]
+    have ha : 1 ≤ s / τ := not_lt.1 fun h ↦ hd (hlt _ h)
+    have hb : s / τ ≤ 1 + ε := not_lt.1 fun h ↦ hd (hgt _ h)
+    rw [le_div_iff₀ hτ0, one_mul] at ha
+    rw [div_le_iff₀ hτ0] at hb
+    have hτn : 0 < τ ^ n := pow_pos hτ0 n
+    have hsn : 0 < s ^ n := pow_pos hs n
+    have hA : τ ^ n ≤ s ^ n := pow_le_pow_left₀ hτ0.le ha n
+    have hB : s ^ n ≤ (1 + ε) ^ n * τ ^ n := by
+      rw [← mul_pow]
+      exact pow_le_pow_left₀ hs.le hb n
+    refine ⟨div_le_div_of_nonneg_left hg0 hτn hA, ?_⟩
+    rw [← mul_div_assoc, div_le_div_iff₀ hτn hsn]
+    calc -(s / τ ^ 2) * deriv φ (s / τ) * s ^ n
+        ≤ -(s / τ ^ 2) * deriv φ (s / τ) * ((1 + ε) ^ n * τ ^ n) :=
+          mul_le_mul_of_nonneg_left hB hg0
+      _ = (1 + ε) ^ n * (-(s / τ ^ 2) * deriv φ (s / τ)) * τ ^ n := by ring
+  -- integrate the pointwise squeeze over `(σ, ρ]`
+  refine ⟨?_, ?_⟩
+  · calc (φ (s / ρ) - φ (s / σ)) / s ^ n
+        = ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / s ^ n := by
+          rw [integral_div, hFTC]
+      _ ≤ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n :=
+          setIntegral_mono_on (hg'i.div_const _) hki measurableSet_Ioc fun τ hτ ↦ (hpt τ hτ).1
+  · calc ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n
+        ≤ ∫ τ in Ioc σ ρ, (1 + ε) ^ n * (-(s / τ ^ 2) * deriv φ (s / τ) / s ^ n) :=
+          setIntegral_mono_on hki ((hg'i.div_const _).const_mul _) measurableSet_Ioc
+            fun τ hτ ↦ (hpt τ hτ).2
+      _ = (1 + ε) ^ n * ((φ (s / ρ) - φ (s / σ)) / s ^ n) := by
+          rw [integral_const_mul, integral_div, hFTC]
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
