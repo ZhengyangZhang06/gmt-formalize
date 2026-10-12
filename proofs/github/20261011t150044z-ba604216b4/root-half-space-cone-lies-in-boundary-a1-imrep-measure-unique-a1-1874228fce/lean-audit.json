@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "80760ff6203ee5547dc6f306a02f0542b51839fec3e1809f945f040130e340ab",
+  "git_delta": {
+    "base_commit": "8d9c06374e1eeb134feec7b1c11b5ec47d1fa427",
+    "candidate_commit": "6907c2cb07a30284981f3f56aad0d3daf62d6314",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "f8fcf16e2bad00a7bf7506686fa2c113ee3df64296bdbfb1abbef028d939096a",
+    "source_sha256": "832f567f35d86c28665364e1b4fb9a5007bafafb39eb2a5a1cacad6704f9eafb",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_measure_eq_of_represents_same_current",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → R₁.measure = R₂.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
