@@ -458,6 +458,95 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, end of the proof of Theorem 5.2 (p. 124: a Lipschitz `f` whose a.e. derivative
+is continuous is `C¹`).  The integral mean-value formula
+`f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for `x, y` in an open convex `U`, when `f` is
+Lipschitz on `U`, `g` is continuous on `U` and `Df = g` a.e. in `U`.  Put
+`F(w) = f(y + w) − f(x + w) − I(x + w, y + w)` with `I` the segment integral.  If the line
+`t ↦ x + w + t(y − x)` meets the null set where `Df = g` fails in an `L¹`-null set, the Lipschitz
+fundamental theorem of calculus along it gives `F(w) = 0`; by Fubini this holds for a.e. `w` near
+`0`, and `F` is continuous there, so `F(0) = 0`. -/
+theorem allard52_lad_line_integral_rep : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (K : ℝ≥0), IsOpen U → Convex ℝ U → LipschitzOnWith K f U → ContinuousOn g U → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ U → HasFDerivAt f (g x) x) → ∀ x ∈ U, ∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x) := by
+  intro n ℓ f g U K hU hUc hf hg hae x hx y hy
+  -- The bad set `N₀ = {p ∈ U : Df(p) ≠ g(p)}` is Lebesgue-null.
+  let N₀ : Set (Rn n) := {p | ¬(p ∈ U → HasFDerivAt f (g p) p)}
+  have hN₀ : volume N₀ = 0 := ae_iff.mp hae
+  -- A ball `B̆_ρ(0)` of translations `w` with `x + w, y + w ∈ U`.
+  obtain ⟨ρ₁, hρ₁, hxU⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨ρ₂, hρ₂, hyU⟩ := Metric.isOpen_iff.mp hU y hy
+  have hρ : 0 < min ρ₁ ρ₂ := lt_min hρ₁ hρ₂
+  have hxw : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂), x + w ∈ U := fun w hw =>
+    hxU (by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
+      exact (mem_ball_zero_iff.mp hw).trans_le (min_le_left _ _))
+  have hyw : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂), y + w ∈ U := fun w hw =>
+    hyU (by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
+      exact (mem_ball_zero_iff.mp hw).trans_le (min_le_right _ _))
+  -- `F(w) = f(y + w) − f(x + w) − I(x + w, y + w)`; the claim is `F(0) = 0`.
+  let I : Rn n × Rn n → Rn ℓ := fun p =>
+    ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)
+  let F : Rn n → Rn ℓ := fun w => f (y + w) - f (x + w) - I (x + w, y + w)
+  -- `F(w) = 0` if `w ∈ B̆_ρ(0)` and the line `t ↦ x + w + t(y − x)` meets `N₀` in a null set.
+  have hgood : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂),
+      volume {t : ℝ | x + w + t • (y - x) ∈ N₀} = 0 → F w = 0 := by
+    intro w hw hnull
+    have hseg : ∀ t ∈ Icc (0:ℝ) 1, x + w + t • (y - x) ∈ U := fun t ht => by
+      simpa only [add_sub_add_right_eq_sub] using hUc.add_smul_sub_mem (hxw w hw) (hyw w hw) ht
+    let φ : ℝ → Rn ℓ := fun t => f (x + w + t • (y - x))
+    let k : ℝ → Rn ℓ := fun t => g (x + w + t • (y - x)) (y - x)
+    -- `φ` is `K‖y − x‖`-Lipschitz on `[0, 1]`.
+    have hφ : LipschitzOnWith (K * ‖y - x‖₊) φ (Icc 0 1) := by
+      refine LipschitzOnWith.of_dist_le_mul fun t ht t' ht' => ?_
+      calc dist (φ t) (φ t')
+          ≤ K * dist (x + w + t • (y - x)) (x + w + t' • (y - x)) :=
+            hf.dist_le_mul _ (hseg t ht) _ (hseg t' ht')
+        _ = ↑(K * ‖y - x‖₊) * dist t t' := by
+            rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, Real.dist_eq,
+              Real.norm_eq_abs, NNReal.coe_mul, coe_nnnorm]
+            ring
+    -- `k` is continuous on `[0, 1]`.
+    have hk : ContinuousOn k (Icc 0 1) :=
+      (hg.comp (by fun_prop : Continuous fun t : ℝ => x + w + t • (y - x)).continuousOn
+        fun t ht => hseg t ht).clm_apply continuousOn_const
+    -- For a.e. `t ∈ (0, 1)`, `φ'(t) = k(t)` by the chain rule.
+    have hderiv : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo (0:ℝ) 1 → HasDerivAt φ (k t) t := by
+      filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with t ht htI
+      have hfd : HasFDerivAt f (g (x + w + t • (y - x))) (x + w + t • (y - x)) :=
+        not_not.mp ht (hseg t (Ioo_subset_Icc_self htI))
+      have hσ : HasDerivAt (fun t : ℝ => x + w + t • (y - x)) (y - x) t := by
+        simpa only [one_smul] using ((hasDerivAt_id' t).smul_const (y - x)).const_add (x + w)
+      exact hfd.comp_hasDerivAt t hσ
+    -- The Lipschitz fundamental theorem of calculus for `φ` on `[0, 1]`.
+    have hftc := Submission.allard52_lad_lipschitz_ftc ℓ φ k 0 1 (K * ‖y - x‖₊) zero_le_one hφ
+      hk hderiv
+    have hyx : x + w + (y - x) = y + w := by abel
+    simp only [φ, k, zero_smul, add_zero, one_smul, hyx] at hftc
+    show f (y + w) - f (x + w) - I (x + w, y + w) = 0
+    simp only [I, add_sub_add_right_eq_sub, ← hftc, sub_self]
+  -- By Fubini (`segment_null`), `F = 0` a.e. on `B̆_ρ(0)`.
+  have hFae : F =ᵐ[volume.restrict (ball (0 : Rn n) (min ρ₁ ρ₂))] 0 := by
+    refine (ae_restrict_iff' measurableSet_ball).mpr ?_
+    filter_upwards [Submission.allard52_lad_segment_null n N₀ hN₀ x (y - x)] with w hw hwB
+    exact hgood w hwB hw
+  -- `F` is continuous on `B̆_ρ(0)`: `f` is Lipschitz and `I` is continuous on `U × U`.
+  have hFc : ContinuousOn F (ball (0 : Rn n) (min ρ₁ ρ₂)) := by
+    have hfU : ContinuousOn f U := hf.continuousOn
+    have hIc : ContinuousOn I (U ×ˢ U) :=
+      Submission.allard52_lad_segment_integral_continuousOn n ℓ g U hU hUc hg
+    exact ((hfU.comp (by fun_prop : Continuous fun w : Rn n => y + w).continuousOn hyw).sub
+      (hfU.comp (by fun_prop : Continuous fun w : Rn n => x + w).continuousOn hxw)).sub
+      (hIc.comp (by fun_prop : Continuous fun w : Rn n => (x + w, y + w)).continuousOn
+        fun w hw => ⟨hxw w hw, hyw w hw⟩)
+  -- A continuous function vanishing a.e. on an open set vanishes there; evaluate at `w = 0`.
+  have hF0 : F 0 = 0 :=
+    Measure.eqOn_open_of_ae_eq hFae isOpen_ball hFc continuousOn_const (mem_ball_self hρ)
+  simpa only [F, I, add_zero, sub_eq_zero] using hF0
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
