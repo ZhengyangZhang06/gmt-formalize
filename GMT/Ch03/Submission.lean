@@ -1554,58 +1554,6 @@ theorem Submission.lipschitz_real_c1_approximation : ∀ (n : ℕ) (f : Rn n →
     _ = volume (B \ C) + volume (C \ A) := by rw [hBc, zero_add]
     _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBC hCA
     _ = ε := ENNReal.add_halves ε
-/-- **Simon Ch. 3, Lemma 1.2 (pp. 69–70)** (`chapter-03.txt` lines 25–65).
-"If": SimonGMT's `countablyRectifiable_of_submanifold_cover`, since `IsC1Submanifold n` is
-`Chapter02.IsSimonSubmanifold 1` with the conditions reordered. "Only if": `C¹` approximation
-(Ch. 2, 1.5) gives `C¹` maps `Gⱼᵢ` with `Lⁿ{Fⱼ ≠ Gⱼᵢ} < 1/i`; with `Zⱼ = ℝⁿ ∖ ⋃ᵢ {Fⱼ = Gⱼᵢ}`,
-`Fⱼ(ℝⁿ) ⊆ Fⱼ(Zⱼ) ∪ ⋃ᵢ Gⱼᵢ(ℝⁿ)` (erratum: (1) is printed as `graph Fⱼ ⊂ Eⱼ ∩ …`) and
-`Hⁿ(Fⱼ(Zⱼ)) = 0`; each `Gⱼᵢ(ℝⁿ)` is an `Hⁿ`-null set plus countably many embedded `C¹`
-submanifolds. The case `n = 0` needs no separate treatment. -/
-theorem Submission.submanifoldCoverCharacterization_holds : SubmanifoldCoverCharacterization := by
-  intro n ℓ M
-  constructor
-  · rintro ⟨M₀, hM₀, F, hF, hM⟩
-    choose K hK using hF
-    choose G hG hGF using fun j (i : ℕ) ↦ Submission.lipschitz_c1_approximation n (n + ℓ) (F j)
-      (K j) (hK j) (i : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i))
-    -- `Zⱼ` has measure `< 1/i` for every `i`, so `Lⁿ(Zⱼ) = 0` and `Hⁿ(Fⱼ(Zⱼ)) = 0`.
-    have hZ : ∀ j, volume {x | ∀ i, F j x ≠ G j i x} = 0 := fun j ↦ by
-      by_contra h
-      obtain ⟨i, hi⟩ := ENNReal.exists_inv_nat_lt h
-      have hsub : {x | ∀ i, F j x ≠ G j i x} ⊆
-          {x | F j x ≠ G j i x ∨ fderiv ℝ (F j) x ≠ fderiv ℝ (G j i) x} :=
-        fun x hx ↦ Or.inl (hx i)
-      exact lt_irrefl _ (((measure_mono hsub).trans_lt (hGF j i)).trans hi)
-    have hE : ∀ j, μHE[n] (F j '' {x | ∀ i, F j x ≠ G j i x}) = 0 := fun j ↦ by
-      refine le_antisymm ?_ zero_le
-      calc _ ≤ (K j : ℝ≥0∞) ^ n * μHE[n] {x | ∀ i, F j x ≠ G j i x} :=
-            Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
-              (hK j).lipschitzOnWith
-        _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hZ j, mul_zero]
-    -- Each `Gⱼᵢ(ℝⁿ)` is covered by an `Hⁿ`-null set `Cⱼᵢ` and submanifolds `Sⱼᵢₖ`.
-    choose C S hC hS hGS using fun j i ↦
-      Submission.c1_range_null_union_submanifolds n (n + ℓ) (G j i) (hG j i)
-    refine ⟨M₀ ∪ (⋃ j, F j '' {x | ∀ i, F j x ≠ G j i x}) ∪ ⋃ j, ⋃ i, C j i,
-      fun k ↦ S k.unpair.1 k.unpair.2.unpair.1 k.unpair.2.unpair.2,
-      measure_union_null (measure_union_null hM₀ (measure_iUnion_null hE))
-        (measure_iUnion_null fun j ↦ measure_iUnion_null (hC j)),
-      fun k ↦ hS _ _ _, fun y hy ↦ ?_⟩
-    rcases hM hy with hy | hy
-    · exact Or.inl (Or.inl (Or.inl hy))
-    obtain ⟨j, z, rfl⟩ := mem_iUnion.1 hy
-    rcases em (∃ i, F j z = G j i z) with ⟨i, hi⟩ | hz
-    · rw [hi]
-      rcases hGS j i (mem_range_self z) with h | h
-      · exact Or.inl (Or.inr (mem_iUnion₂.2 ⟨j, i, h⟩))
-      obtain ⟨k, hk⟩ := mem_iUnion.1 h
-      exact Or.inr (mem_iUnion.2
-        ⟨Nat.pair j (Nat.pair i k), by simpa only [Nat.unpair_pair] using hk⟩)
-    · exact Or.inl (Or.inl (Or.inr (mem_iUnion.2 ⟨j, z, fun i hi ↦ hz ⟨i, hi⟩, rfl⟩)))
-  · rintro ⟨N₀, N, hN₀, hN, hM⟩
-    refine Poincare.SimonGMT.Chapter03.countablyRectifiable_of_submanifold_cover hN₀
-      (fun j ↦ ⟨le_rfl, fun y hy ↦ ?_⟩) hM
-    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himage, hproper, hD⟩ := hN j y hy
-    exact ⟨V, W, ψ, hyW, hV, hW, hψ, hinj, himage, hproper, hD⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
@@ -1671,5 +1619,58 @@ theorem Submission.lipschitz_c1_approximation : ∀ (n p : ℕ) (f : Rn n → Rn
             _ = p * (ε / p) := by
               rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
             _ ≤ ε := ENNReal.mul_div_le
+
+/-- **Simon Ch. 3, Lemma 1.2 (pp. 69–70)** (`chapter-03.txt` lines 25–65).
+"If": SimonGMT's `countablyRectifiable_of_submanifold_cover`, since `IsC1Submanifold n` is
+`Chapter02.IsSimonSubmanifold 1` with the conditions reordered. "Only if": `C¹` approximation
+(Ch. 2, 1.5) gives `C¹` maps `Gⱼᵢ` with `Lⁿ{Fⱼ ≠ Gⱼᵢ} < 1/i`; with `Zⱼ = ℝⁿ ∖ ⋃ᵢ {Fⱼ = Gⱼᵢ}`,
+`Fⱼ(ℝⁿ) ⊆ Fⱼ(Zⱼ) ∪ ⋃ᵢ Gⱼᵢ(ℝⁿ)` (erratum: (1) is printed as `graph Fⱼ ⊂ Eⱼ ∩ …`) and
+`Hⁿ(Fⱼ(Zⱼ)) = 0`; each `Gⱼᵢ(ℝⁿ)` is an `Hⁿ`-null set plus countably many embedded `C¹`
+submanifolds. The case `n = 0` needs no separate treatment. -/
+theorem Submission.submanifoldCoverCharacterization_holds : SubmanifoldCoverCharacterization := by
+  intro n ℓ M
+  constructor
+  · rintro ⟨M₀, hM₀, F, hF, hM⟩
+    choose K hK using hF
+    choose G hG hGF using fun j (i : ℕ) ↦ Submission.lipschitz_c1_approximation n (n + ℓ) (F j)
+      (K j) (hK j) (i : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i))
+    -- `Zⱼ` has measure `< 1/i` for every `i`, so `Lⁿ(Zⱼ) = 0` and `Hⁿ(Fⱼ(Zⱼ)) = 0`.
+    have hZ : ∀ j, volume {x | ∀ i, F j x ≠ G j i x} = 0 := fun j ↦ by
+      by_contra h
+      obtain ⟨i, hi⟩ := ENNReal.exists_inv_nat_lt h
+      have hsub : {x | ∀ i, F j x ≠ G j i x} ⊆
+          {x | F j x ≠ G j i x ∨ fderiv ℝ (F j) x ≠ fderiv ℝ (G j i) x} :=
+        fun x hx ↦ Or.inl (hx i)
+      exact lt_irrefl _ (((measure_mono hsub).trans_lt (hGF j i)).trans hi)
+    have hE : ∀ j, μHE[n] (F j '' {x | ∀ i, F j x ≠ G j i x}) = 0 := fun j ↦ by
+      refine le_antisymm ?_ zero_le
+      calc _ ≤ (K j : ℝ≥0∞) ^ n * μHE[n] {x | ∀ i, F j x ≠ G j i x} :=
+            Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+              (hK j).lipschitzOnWith
+        _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hZ j, mul_zero]
+    -- Each `Gⱼᵢ(ℝⁿ)` is covered by an `Hⁿ`-null set `Cⱼᵢ` and submanifolds `Sⱼᵢₖ`.
+    choose C S hC hS hGS using fun j i ↦
+      Submission.c1_range_null_union_submanifolds n (n + ℓ) (G j i) (hG j i)
+    refine ⟨M₀ ∪ (⋃ j, F j '' {x | ∀ i, F j x ≠ G j i x}) ∪ ⋃ j, ⋃ i, C j i,
+      fun k ↦ S k.unpair.1 k.unpair.2.unpair.1 k.unpair.2.unpair.2,
+      measure_union_null (measure_union_null hM₀ (measure_iUnion_null hE))
+        (measure_iUnion_null fun j ↦ measure_iUnion_null (hC j)),
+      fun k ↦ hS _ _ _, fun y hy ↦ ?_⟩
+    rcases hM hy with hy | hy
+    · exact Or.inl (Or.inl (Or.inl hy))
+    obtain ⟨j, z, rfl⟩ := mem_iUnion.1 hy
+    rcases em (∃ i, F j z = G j i z) with ⟨i, hi⟩ | hz
+    · rw [hi]
+      rcases hGS j i (mem_range_self z) with h | h
+      · exact Or.inl (Or.inr (mem_iUnion₂.2 ⟨j, i, h⟩))
+      obtain ⟨k, hk⟩ := mem_iUnion.1 h
+      exact Or.inr (mem_iUnion.2
+        ⟨Nat.pair j (Nat.pair i k), by simpa only [Nat.unpair_pair] using hk⟩)
+    · exact Or.inl (Or.inl (Or.inr (mem_iUnion.2 ⟨j, z, fun i hi ↦ hz ⟨i, hi⟩, rfl⟩)))
+  · rintro ⟨N₀, N, hN₀, hN, hM⟩
+    refine Poincare.SimonGMT.Chapter03.countablyRectifiable_of_submanifold_cover hN₀
+      (fun j ↦ ⟨le_rfl, fun y hy ↦ ?_⟩) hM
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himage, hproper, hD⟩ := hN j y hy
+    exact ⟨V, W, ψ, hyW, hV, hW, hψ, hinj, himage, hproper, hD⟩
 
 end GMT.Ch03
