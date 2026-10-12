@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "Restricting an integer multiplicity triple to a locally full-measure subset",
+  "statement": "Let P, n ∈ ℕ and U, U', A ⊆ ℝ^P with A Borel. Let R = (M, θ, ξ) be an IMRep in U (contract structure: M ⊆ U Borel and countably n-rectifiable, θ measurable ℕ-valued and positive on M, ∫_{M∩K} θ dHⁿ < ∞ for compact K ⊆ U, ξ Hⁿ⌞M-a.e. strongly measurable and Hⁿ⌞M-a.e. a unit orientation of an approximate tangent space of M), and let θ' : ℝ^P → ℕ be measurable. Assume M ∩ A ⊆ U'; θ'(x) > 0 for every x ∈ M ∩ A; ∫_{M∩A∩K} θ' dHⁿ < ∞ for every compact K ⊆ U'; and for Hⁿ⌞(M ∩ A)-a.e. x there is δ > 0 with Hⁿ((M ∖ A) ∩ B_δ(x)) = 0. Then there is an IMRep R' in U' with carrier M ∩ A, multiplicity θ' and orientation ξ. Here Hⁿ = μHE[n] and B_δ(x) is the open ball.",
+  "lean_statement": "∀ (P n : ℕ) (U U' A : Set (Euclid P)) (R : IMRep U n) (θ : Euclid P → ℕ), MeasurableSet A → R.carrier ∩ A ⊆ U' → Measurable θ → (∀ x ∈ R.carrier ∩ A, 0 < θ x) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U' → ∫⁻ x in R.carrier ∩ A ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ A)), ∃ δ : ℝ, 0 < δ ∧ μHE[n] ((R.carrier \\ A) ∩ ball x δ) = 0) → ∃ R' : IMRep U' n, R'.carrier = R.carrier ∩ A ∧ R'.mult = θ ∧ R'.orient = R.orient",
+  "lean_name": "rsd_cmr_imrep_restrict",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-restrict-a1-a1"
+}

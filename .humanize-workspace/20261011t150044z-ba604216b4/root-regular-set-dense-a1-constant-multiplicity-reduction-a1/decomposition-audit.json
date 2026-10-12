@@ -1,0 +1,96 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsUnitOrientationOf|regularSet|IsMinimizingIn",
+        "structure GeometricCurrentOn|def TestFormOnConverges|def TestFormConverges|def restrictDomain|testFormOnInclusion|def zeroRegion|def support|def VanishesOn|def massAdmissibleOn|def massOn|continuity estimate|action|HasApproximateTangentSpaceAt|blowUpMap|CountablyRectifiable.mono",
+        "setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|norm_iteratedFDeriv_zero|exists_contDiff_support_eq_eq_one_iff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-cmr-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-cmr-independent-audit/Axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-cmr-decomp/build/FinalLeaves.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-cmr-decomp/build/FinalSiblings.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-cmr-decomp/build/FinalAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1/parent-child-handoff.json",
+        "/tmp/rsd-cmr-independent-audit/Types.lean",
+        "/tmp/rsd-cmr-independent-audit/Axioms.lean",
+        "/tmp/rsd-cmr-decomp/build/FinalLeaves.lean",
+        "/tmp/rsd-cmr-decomp/build/FinalSiblings.lean",
+        "/tmp/rsd-cmr-decomp/build/FinalAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected constant-multiplicity reduction. The pinned contract matches both workspace contract files, and dependency revisions match their pins. The inspected library supplies current restriction, support and mass definitions, but lacks the required IMRep current construction and tangent-locality result. All nine exact types independently elaborate in comparator scope without child implementations; their names are bare, distinct and unreserved. The augmented dependency graph is acyclic. The five leaf proofs, two conditional sibling proofs and conditional assembly of the exact frozen parent all recompiled successfully with only propext, Classical.choice and Quot.sound. Assembly assumptions exactly match the proposed children and the three frozen external dependencies. The two analytic natural proofs were independently checked against the definitions and supporting library results."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated domains, nonnegative scale and evaluation identity. The support-preserving bijection of admissible forms identifies the evaluation sets, and ENNReal.mul_sSup yields the conclusion, including c = 0."
+    },
+    {
+      "key": "support_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both zero-region implications using compactly contained neighborhoods. Openness of V permits shrinking, and c ≠ 0 permits cancellation. No openness assumption on U is missing."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All IMRep fields and additional hypotheses are accounted for. Lemma A proves eventual equality of blow-up integrals using bounded test support and preservation of Hausdorff-null sets under nonzero homotheties. This transfers approximate tangents and orientations almost everywhere without circular reliance."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact represented-current existence statement: unit orientations give the operator-norm bound, measurability and compact-support domination give integrability, and linearity follows. Uniform convergence of zeroth derivatives on a common compact set proves the required sequential continuity, including degree zero."
+    },
+    {
+      "key": "constant_mult_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive multiplicity correctly converts weighted almost-everywhere constancy to Hausdorff almost-everywhere constancy. The declared imrep_restrict dependency constructs the multiplicity-one representation; support localization and cancellation of positive N₀ prove that it represents T₀."
+    },
+    {
+      "key": "zero_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Second countability converts the local null-ball hypothesis into nullity off K; positive multiplicity then gives Hausdorff-null carrier loss. The two declared dependencies construct the extended represented current. Almost-everywhere equality of carriers proves extension, and disjoint topological support proves vanishing."
+    },
+    {
+      "key": "cutoff_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compactly supported smooth cutoff equals one on an open neighborhood of K. Every test form splits into a form in B and a remainder whose topological support misses K, so the two hypotheses and linearity prove the exact conclusion. The empty-K case is covered."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Relatively compact balls in U minus K exclude every such point from the support. The identity F.support = K minus F.zeroRegion then proves compactness using the open zero region. All required openness and compactness hypotheses appear in the type."
+    },
+    {
+      "key": "regular_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof preserves the regularity witness's radius, submanifold, orientation and local finiteness, replacing m by the nonzero integer c*m. Reinterpreting supported forms transfers the representation identity; the explicit support hypothesis completes every clause of regularSet."
+    }
+  ],
+  "required_changes": []
+}
