@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e2d017d17214c242eb0ec41becf8ca5c801919a452cc2dc55c5de5a94c866a5e",
+  "git_delta": {
+    "base_commit": "2ff188363719c5b352384a890161b169a16190bb",
+    "candidate_commit": "f1a3dd4009ac0d2418c1512faa22ae10b8bd62d8",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "lower_density_ge_one_of_nearby_mass_bounds",
+    "diff_sha256": "8782df5aa33ee7b4d9248a7a41151a1159bcb273bfc2eb354aeec856f8418c5a",
+    "source_sha256": "91af0e0b6e85505c72c23ea197831291e0fec1ce3c6f764e778791e9a83ed38e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lower_density_ge_one_of_nearby_mass_bounds",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (x : Euclidean N) (ρ₀ Λ : ℝ) (q : ℕ → ℕ) (y : ℕ → Euclidean N), Varifold.RadonConverges Vi V → 0 < ρ₀ → ball x ρ₀ ⊆ U → Tendsto q atTop atTop → Tendsto y atTop (𝓝 x) → (∀ i, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤ (Vi (q i)).weight (closedBall (y i) ρ)) → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤ V.weight (closedBall x ρ)) ∧ 1 ≤ liminf (densityRatio n V.weight x) (𝓝[>] 0)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

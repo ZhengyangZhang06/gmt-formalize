@@ -1,0 +1,17 @@
+{
+  "node_id": "root.density_semicontinuity-a1.limit_mass_lower_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/544",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "f1a3dd4009ac0d2418c1512faa22ae10b8bd62d8",
+  "integrated_commit": "",
+  "proof_base_commit": "54295e6c79ed665caddb17eb13d33a48b75e033b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_semicontinuity-a1",
+  "requires": [
+    "root.density_semicontinuity-a1.weight_portmanteau-a1"
+  ]
+}
