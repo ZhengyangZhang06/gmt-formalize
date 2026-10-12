@@ -359,6 +359,67 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Small cutoff (step of Simon Ch. 6, 2.7–2.9, pp. 136–137).**  If `μ` is finite on compact
+subsets of `U`, `C` is compact and `W ⊆ U` is open with `C ⊆ W`, then for every `ε > 0` there is
+a continuous compactly supported `ψ : ℝ^P → [0, 1]` with `tsupport ψ ⊆ W`, `ψ = 1` on `C` and
+`μ(support ψ ∖ C) < ε`.  Choose `r > 0` with the compact `cthickening r C ⊆ W`; the open
+thickenings `O j = thickening (r / (j + 1)) C` decrease to `C`, so by continuity from above
+`μ(O j ∖ C) < ε` for some `j`, and Urysohn's lemma for `C` and `(O j)ᶜ` gives `ψ`. -/
+theorem Submission.smr_ufd_small_cutoff : ∀ (P : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → ∀ C W : Set (Eucl P), IsCompact C → IsOpen W → C ⊆ W → W ⊆ U → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ ψ : Eucl P → ℝ, Continuous ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ W ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x ∈ C, ψ x = 1) ∧ μ (Function.support ψ \ C) < ε := by
+  intro P U μ hfin C W hC hW hCW hWU ε hε
+  -- Step 1: a compact closed thickening `cthickening r C ⊆ W ⊆ U`, of finite measure.
+  obtain ⟨r, hr, hrW⟩ := hC.exists_cthickening_subset_open hW hCW
+  have hKfin : μ (cthickening r C) < ∞ := hfin _ hC.cthickening (hrW.trans hWU)
+  -- Step 2: the open thickenings `O j = thickening (r / (j + 1)) C` contain `C`, decrease, lie in
+  -- `cthickening r C`, and `⋂ j, O j ⊆ C`.
+  set δ : ℕ → ℝ := fun j => r / ((j : ℝ) + 1) with hδ_def
+  set O : ℕ → Set (Eucl P) := fun j => thickening (δ j) C with hO_def
+  have hδ_pos : ∀ j, 0 < δ j := fun j => div_pos hr (by positivity)
+  have hδ_le : ∀ j, δ j ≤ r := fun j =>
+    div_le_self hr.le (le_add_of_nonneg_left (Nat.cast_nonneg j))
+  have hCO : ∀ j, C ⊆ O j := fun j => self_subset_thickening (hδ_pos j) C
+  have hOK : ∀ j, closure (O j) ⊆ cthickening r C := fun j =>
+    (closure_thickening_subset_cthickening _ _).trans (cthickening_mono (hδ_le j) C)
+  have hO_anti : Antitone O := fun i j hij =>
+    thickening_mono (div_le_div_of_nonneg_left hr.le (by positivity)
+      (by exact_mod_cast Nat.succ_le_succ hij)) C
+  have hO_inter : (⋂ j, O j) ⊆ C := by
+    intro x hx
+    rw [← hC.isClosed.closure_eq, closure_eq_iInter_thickening, mem_iInter₂]
+    intro t ht
+    obtain ⟨j, hj⟩ := exists_nat_one_div_lt (div_pos ht hr)
+    have hjt : δ j ≤ t := by
+      have h1 : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+      rw [one_div, inv_lt_iff_one_lt_mul₀ h1, div_mul_eq_mul_div, one_lt_div hr] at hj
+      rw [hδ_def, div_le_iff₀ h1]
+      exact hj.le
+    exact thickening_mono hjt C (mem_iInter.1 hx j)
+  -- Step 3: continuity from above on the halos `O j ∖ C` (open minus closed, decreasing, the
+  -- first of finite measure, empty intersection) gives `j` with `μ (O j ∖ C) < ε`.
+  have hD_meas : ∀ j, NullMeasurableSet (O j \ C) μ := fun j =>
+    (isOpen_thickening.measurableSet.diff hC.isClosed.measurableSet).nullMeasurableSet
+  have hD_anti : Antitone fun j => O j \ C := fun i j hij => sdiff_subset_sdiff_left (hO_anti hij)
+  have hD_fin : ∃ j, μ (O j \ C) ≠ ∞ :=
+    ⟨0, ((measure_mono (sdiff_subset.trans (subset_closure.trans (hOK 0)))).trans_lt hKfin).ne⟩
+  have hD_empty : (⋂ j, O j \ C) = ∅ := by
+    refine eq_empty_iff_forall_notMem.2 fun x hx => ?_
+    rw [mem_iInter] at hx
+    exact (hx 0).2 (hO_inter (mem_iInter.2 fun j => (hx j).1))
+  have hT := tendsto_measure_iInter_atTop hD_meas hD_anti hD_fin
+  rw [hD_empty, measure_empty] at hT
+  obtain ⟨j, hj⟩ := (hT.eventually (gt_mem_nhds (pos_iff_ne_zero.2 hε))).exists
+  -- Step 4: Urysohn's lemma for the compact `C` and the closed `(O j)ᶜ`, disjoint as `C ⊆ O j`.
+  obtain ⟨f, hf1, hf0, hfc, hf01⟩ := exists_continuous_one_zero_of_isCompact hC
+    isOpen_thickening.isClosed_compl (disjoint_compl_right_iff_subset.2 (hCO j))
+  -- Step 5: `support f ⊆ O j`, so `tsupport f ⊆ closure (O j) ⊆ cthickening r C ⊆ W` and
+  -- `μ (support f ∖ C) ≤ μ (O j ∖ C) < ε`.
+  have hsupp : Function.support f ⊆ O j := fun x hx => by
+    by_contra h
+    exact hx (hf0 h)
+  refine ⟨f, f.continuous, hfc, (closure_mono hsupp).trans ((hOK j).trans hrW),
+    fun x => hf01 x, fun x hx => hf1 hx, ?_⟩
+  exact (measure_mono (sdiff_subset_sdiff_left hsupp)).trans_lt hj
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
