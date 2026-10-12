@@ -359,6 +359,37 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Sign lemma for wedges of one-covectors: moving the factor `l j` to the front costs
+`(-1)^j`, while putting another factor `l i` (`i ≠ j`) in front repeats a factor. -/
+theorem Submission.rpn_pfd_wedge_cons_succAbove_sign :
+    ∀ (P m : ℕ) (l : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) (j : Fin (m + 1)),
+      wedgeCovectors (m + 1) (Fin.cons (l j) (fun k => l (j.succAbove k)) :
+          Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = ((-1 : ℝ) ^ (j : ℕ)) • wedgeCovectors (m + 1) l ∧
+        ∀ i : Fin (m + 1), i ≠ j → wedgeCovectors (m + 1) (Fin.cons (l i)
+          (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = 0 := by
+  intro P m l j
+  refine ⟨?_, fun i hij => ?_⟩
+  · -- `Fin.cons (l j) (l ∘ j.succAbove) = l ∘ σ` with `σ = (cycleRange j)⁻¹`, so its value
+    -- matrix is that of `l` with rows permuted by `σ`.
+    have hσ : (Fin.cons (l j) (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) =
+        fun a => l (j.cycleRange.symm a) := by
+      funext a
+      cases a using Fin.cases <;> simp
+    ext v
+    have h := Matrix.det_permute j.cycleRange.symm (Matrix.of fun a b => l a (v b))
+    rw [Equiv.Perm.sign_symm, Fin.sign_cycleRange] at h
+    push_cast at h
+    rw [hσ, ContinuousAlternatingMap.smul_apply, wedgeCovectors_apply_det,
+      wedgeCovectors_apply_det, smul_eq_mul, ← h]
+    rfl
+  · -- `i = j.succAbove k` for some `k`, so rows `0` and `k.succ` of the value matrix coincide.
+    obtain ⟨k, hk⟩ := Fin.exists_succAbove_eq hij
+    ext v
+    rw [wedgeCovectors_apply_det, ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+    refine Matrix.det_zero_of_row_eq (Fin.succ_ne_zero k).symm ?_
+    funext b
+    simp [hk]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
