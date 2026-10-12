@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "36b553220999209f7a1afc165fe90de40132511046faea296cc867e78ef1027f",
+  "git_delta": {
+    "base_commit": "eab10a7e1c53a358ffc637956797ce1a9ebccd21",
+    "candidate_commit": "0ed8513009571c3acccff57c0692bd1057d20949",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ble_lintegral_sq_tendsto_of_l2_tendsto",
+    "diff_sha256": "fb6c74cf09a09356b8e934247bdd85eca811f9bc144b576d44cf6677bb2c33d2",
+    "source_sha256": "dfe6d43c3ed6e7586f577972cdcd6e3002bfd4a00d09ab607abfd1354e035b47",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ble_lintegral_sq_tendsto_of_l2_tendsto",
+      "statement": "∀ {α : Type} [MeasurableSpace α] {E : Type} [NormedAddCommGroup E] (μ : Measure α) (f : α → E) (φ : ℕ → α → E), MemLp f 2 μ → (∀ j, AEStronglyMeasurable (φ j) μ) → Tendsto (fun j => ∫⁻ x, ‖φ j x - f x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖φ j x‖ₑ ^ 2 ∂μ) atTop (𝓝 (∫⁻ x, ‖f x‖ₑ ^ 2 ∂μ))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
