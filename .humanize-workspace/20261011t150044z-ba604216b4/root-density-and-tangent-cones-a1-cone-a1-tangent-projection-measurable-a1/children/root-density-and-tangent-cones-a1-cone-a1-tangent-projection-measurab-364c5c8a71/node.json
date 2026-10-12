@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1.opspace_aemeasurable_of_aesm-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1",
+  "depth": 4,
+  "title": "A.e. strongly measurable maps into L(ℝ^P, ℝ^P) are a.e. measurable for its Borel σ-algebra",
+  "statement": "Let P ∈ ℕ and let μ be any measure on ℝ^P (Borel σ-algebra). Let f : ℝ^P → L(ℝ^P, ℝ^P) be a map into the space of continuous linear endomorphisms of ℝ^P, equipped with the operator-norm topology and its Borel σ-algebra (Mathlib's ContinuousLinearMap.instMeasurableSpace, which is borel). If f is almost-everywhere strongly measurable with respect to μ (AEStronglyMeasurable f μ), then f is almost-everywhere measurable with respect to μ (AEMeasurable f μ).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable f μ → AEMeasurable f μ",
+  "lean_name": "dtc_cone_opEuclid_aemeasurable_of_aesm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-tangent-projection-measurab-364c5c8a71-a1"
+}
