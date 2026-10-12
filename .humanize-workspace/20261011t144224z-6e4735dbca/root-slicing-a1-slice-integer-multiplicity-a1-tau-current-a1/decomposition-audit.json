@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IsRectifiableTriple|^def tauAction|orients :|integrableOn :|pos :|nullMeasurableSet :|aestronglyMeasurable :|open |namespace",
+        "slicing_im_tau_current|ltg_tau_integrable|fiw_ims_tt_unit_bound|br_loc_tauAction_current",
+        "theorem le_opNorm |theorem IntegrableOn.of_ae_sdiff_eq_zero|theorem Integrable.bdd_mul|theorem Integrable.mul_bdd|theorem Continuous.bounded_above_of_compact_support|theorem norm_iteratedFDeriv_zero|theorem norm_integral_le_of_norm_le|theorem Continuous.clm_apply",
+        "git show 1d327e46e1cf94e149261ae6958c7053533007af:GMT/Ch06/Submission.lean",
+        "git show 27af9b191b732eae73e3d693d8903e52f89962ce:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/Audit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tau-current-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-integrable-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-unit-bound-a1/accepted-candidate.json",
+        "/tmp/tau_current_independent_audit_1z6sm_xn/Scratch/Audit.lean",
+        "/tmp/tau_current_independent_audit_1z6sm_xn/Scratch/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and relevant definitions. The four searched DAG declaration names have no matches in the snapshot project. Both proposed names uniquely identify comparator-accepted declarations with byte-identical frozen types; accepted source and artifact hashes also match. Both reused nodes have no dependencies, so the proposed dependency edges are acyclic. The reuse split is appropriate: integrability supplies integral linearity, and the unit bound supplies the compact-support continuity estimate. Independently executed Lean checks in the exact comparator scope: all frozen propositions elaborate before the child declarations; both accepted proofs and the exact selected parent comparator pass; a separate assembly proves the parent using only the two child contracts as hypotheses. All checked proofs depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tau_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches both prose conclusions and all hypotheses. Independently checking each step confirms the orientation bound, continuous evaluation and restricted a.e. strong measurability, bounded multiplication with locally integrable θ, and extension by zero using null-measurability of M. No global integrability, openness, or circular theorem use is assumed. Part (b) establishes the selected parent's integrability step; retaining unused part (a) preserves the accepted frozen contract. The bare name is valid identical-type accepted reuse."
+    },
+    {
+      "key": "unit_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the orthonormal-frame and signed-simple-vector hypotheses. The proof correctly combines unit frame norms, simpleNVector evaluation, the alternating operator-norm inequality, and invariance of absolute value under negation, including degree zero. The relevant evaluation and norm instances were checked against the pinned definitions and by Lean. Applied to the orientation field, this supplies the selected parent's continuity estimate. The bare name is valid identical-type accepted reuse, with no circular dependency."
+    }
+  ],
+  "required_changes": []
+}
