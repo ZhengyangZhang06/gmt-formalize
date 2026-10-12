@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_local_antilipschitz-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+  "depth": 3,
+  "title": "A C¹ map with injective derivative at w is antilipschitz on a ball around w",
+  "statement": "Let n, Q ∈ ℕ, let G : ℝⁿ → ℝ^Q be C¹ (ℝᵐ = EuclideanSpace ℝ (Fin m)), and let w ∈ ℝⁿ be such that the derivative DG(w) is injective. Then there are r > 0 and c > 0 such that c|z − z′| ≤ |G(z) − G(z′)| for all z, z′ in the open ball B_r(w).",
+  "lean_statement": "∀ (n Q : ℕ) (G : Eucl n → Eucl Q) (w : Eucl n), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G w) → ∃ r : ℝ, 0 < r ∧ ∃ c : ℝ, 0 < c ∧ ∀ z ∈ ball w r, ∀ z' ∈ ball w r, c * ‖z - z'‖ ≤ ‖G z - G z'‖",
+  "lean_name": "lpf_c1_local_antilipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-fa0007faad-a1"
+}

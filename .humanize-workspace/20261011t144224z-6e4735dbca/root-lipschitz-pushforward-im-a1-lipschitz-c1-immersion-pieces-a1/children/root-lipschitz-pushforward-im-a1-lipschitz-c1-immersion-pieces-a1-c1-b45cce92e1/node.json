@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+  "depth": 3,
+  "title": "C¹ Approximation Theorem for real Lipschitz functions (Simon Ch. 2, Theorem 1.5)",
+  "statement": "Let n ∈ ℕ, let g : ℝⁿ → ℝ be Lipschitz with constant K ≥ 0 (ℝⁿ = EuclideanSpace ℝ (Fin n)), and let ε ∈ (0, ∞]. Then there exist a closed set A ⊆ ℝⁿ with Lⁿ(ℝⁿ ∖ A) < ε (Lⁿ = volume, Lebesgue measure) and a C¹ function h : ℝⁿ → ℝ such that for every x ∈ A: g(x) = h(x), and g is Fréchet differentiable at x with derivative Dh(x) (so ∇g(x) = ∇h(x)).",
+  "lean_statement": "∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ ε : ℝ≥0∞, 0 < ε → ∃ (A : Set (Eucl n)) (h : Eucl n → ℝ), IsClosed A ∧ (volume : Measure (Eucl n)) Aᶜ < ε ∧ ContDiff ℝ 1 h ∧ ∀ x ∈ A, g x = h x ∧ HasFDerivAt g (fderiv ℝ h x) x",
+  "lean_name": "lpf_c1_approximation_real",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-b45cce92e1-a1"
+}
