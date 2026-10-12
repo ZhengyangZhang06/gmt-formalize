@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_unique_on_open-a1",
+  "parent_id": "root.boundary_rectifiability-a1.local_to_global_im-a1",
+  "depth": 3,
+  "title": "Uniqueness of rectifiable representations on an open set",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P, and O ⊆ U open. For i = 1, 2 let (M_i, θ_i, ξ_i) satisfy IsRectifiableTriple U k M_i θ_i ξ_i. Suppose τ(M₁,θ₁,ξ₁)(ω) = τ(M₂,θ₂,ξ₂)(ω) for every ω ∈ Dᵏ(U) (TestFormOn U k) with tsupport ω ⊆ O, where τ(M,θ,ξ)(ω) = tauAction k M θ ξ ω = ∫_M θ(x)·ξ(x)(ω(x)) dHᵏ. Then:\n- Hᵏ((M₁ Δ M₂) ∩ O) = 0, and\n- θ₁ = θ₂ and ξ₁ = ξ₂ hold Hᵏ⌞(M₁ ∩ O)-almost everywhere.",
+  "lean_statement": "∀ (P k : ℕ) (U O : Set (Eucl P)), IsOpen O → O ⊆ U → ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (ξ₁ ξ₂ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M₁ θ₁ ξ₁ → IsRectifiableTriple U k M₂ θ₂ ξ₂ → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ O → tauAction k M₁ θ₁ ξ₁ ω = tauAction k M₂ θ₂ ξ₂ ω) → (μHE[k] : Measure (Eucl P)) (symmDiff M₁ M₂ ∩ O) = 0 ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M₁ ∩ O)), θ₁ x = θ₂ x ∧ ξ₁ x = ξ₂ x",
+  "lean_name": "ltg_tau_unique_on_open",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1",
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.covector_separating-a1",
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.simple_unit_rigidity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.covector_separating-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.simple_unit_rigidity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-unique-on-open-a1-a1"
+}

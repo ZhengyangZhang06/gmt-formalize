@@ -359,6 +359,173 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Integrability of the integrands of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
+rectifiable triple `(M, θ, ξ)` in `U`: (a) `x ↦ θ(x) ⟨b, ξ(x)⟩` is `Hᵏ`-integrable on `M ∩ K` for
+every compact `K ⊆ U` and `k`-covector `b`; (b) `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`
+for every continuous compactly supported `ω` with `spt ω ⊆ U`.  Since `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ`
+orthonormal, `|⟨α, ξ⟩| ≤ ‖α‖` `Hᵏ⌞M`-a.e.; `θ` is integrable on `M ∩ K`, and the integrand of
+(b) vanishes on `M \ spt ω`. -/
+theorem Submission.ltg_tau_integrable : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ (K : Set (Eucl P)) (b : Covector (Eucl P) k), IsCompact K → K ⊆ U → IntegrableOn (fun x => θ x * ξ x b) (M ∩ K) (μHE[k] : Measure (Eucl P))) ∧ ∀ ω : Eucl P → Covector (Eucl P) k, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → IntegrableOn (fun x => θ x * ξ x (ω x)) M (μHE[k] : Measure (Eucl P)) := by
+  intro P k U M θ ξ hT
+  -- Step 1: for `Hᵏ⌞M`-a.e. `x`, `|ξ(x)(α)| ≤ ‖α‖` for every covector `α`
+  -- (`|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`; the empty product for `k = 0`).
+  have hunit : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) k, ‖ξ x α‖ ≤ ‖α‖ := by
+    filter_upwards [hT.orients] with x hx α
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hs : ‖simpleNVector τ α‖ ≤ ‖α‖ :=
+      calc ‖simpleNVector τ α‖ = ‖α τ‖ := rfl
+        _ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+        _ = ‖α‖ := by simp [hτ.norm_eq_one]
+    rcases hξ with h | h
+    · rw [h]; exact hs
+    · rw [h, neg_apply, norm_neg]; exact hs
+  -- Step 2: `x ↦ ξ(x)(ω(x))` is a.e.-strongly measurable for `Hᵏ⌞M` whenever `ω` is
+  -- (continuous evaluation `(w, α) ↦ w(α)` composed with `(ξ, ω)`).
+  have hmeas : ∀ ω : Eucl P → Covector (Eucl P) k,
+      AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      AEStronglyMeasurable (fun x => ξ x (ω x)) ((μHE[k] : Measure (Eucl P)).restrict M) := by
+    intro ω hω
+    have hev : Continuous fun p : NVector (Eucl P) k × Covector (Eucl P) k => p.1 p.2 :=
+      continuous_fst.clm_apply continuous_snd
+    exact hev.comp_aestronglyMeasurable (hT.aestronglyMeasurable.prodMk hω)
+  -- Steps 3–4: for compact `K ⊆ U` and `‖ω‖ ≤ C`, `θ` is integrable on `M ∩ K` and
+  -- `ξ(·)(ω(·))` is measurable and a.e. bounded by `C` there, so the product is integrable.
+  have hK : ∀ (K : Set (Eucl P)) (ω : Eucl P → Covector (Eucl P) k) (C : ℝ), IsCompact K →
+      K ⊆ U → AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      (∀ x, ‖ω x‖ ≤ C) →
+      IntegrableOn (fun x => θ x * ξ x (ω x)) (M ∩ K) (μHE[k] : Measure (Eucl P)) := by
+    intro K ω C hKc hKU hω hC
+    have hle : (μHE[k] : Measure (Eucl P)).restrict (M ∩ K) ≤
+        (μHE[k] : Measure (Eucl P)).restrict M :=
+      Measure.restrict_mono Set.inter_subset_left le_rfl
+    have hθ : Integrable θ ((μHE[k] : Measure (Eucl P)).restrict (M ∩ K)) :=
+      hT.integrableOn K hKc hKU
+    refine hθ.mul_bdd (c := C) ((hmeas ω hω).mono_measure hle) ?_
+    filter_upwards [ae_mono hle hunit] with x hx
+    exact (hx (ω x)).trans (hC x)
+  -- Part (a): the constant field `b`, bounded by `‖b‖`.
+  refine ⟨fun K b hKc hKU => hK K (fun _ => b) ‖b‖ hKc hKU aestronglyMeasurable_const
+    (fun _ => le_rfl), ?_⟩
+  -- Part (b): integrable on `M ∩ spt ω` (Step 4) and zero on `M \ spt ω` (Step 5), with `M`
+  -- null-measurable.
+  intro ω hωc hωs hωU
+  obtain ⟨C, hC⟩ := hωc.bounded_above_of_compact_support hωs
+  refine (hK (tsupport ω) ω C hωs hωU hωc.aestronglyMeasurable hC).of_ae_sdiff_eq_zero
+    hT.nullMeasurableSet (Filter.Eventually.of_forall fun x hx => ?_)
+  have hx' : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, h⟩
+  rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
+/-- **Unit bound for the orientation `±τ₁ ∧ ⋯ ∧ τₙ` (Simon Ch. 6, 3.1).**  If `τ` is an
+orthonormal family in `ℝ^P` and `w = ±simpleNVector τ`, then `|w(α)| ≤ ‖α‖` for every
+`n`-covector `α`: `simpleNVector τ α = α(τ₁, …, τₙ)` and `‖α(τ)‖ ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+(`ContinuousAlternatingMap.le_opNorm`, each `τᵢ` a unit vector). -/
+theorem Submission.fiw_ims_tt_unit_bound : ∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∀ α : Covector (Eucl P) n, |w α| ≤ ‖α‖ := by
+  intro P n τ w hτ hw α
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`.
+  have h1 : |simpleNVector τ α| ≤ ‖α‖ := by
+    rw [simpleNVector_apply, ← Real.norm_eq_abs]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+      _ = ‖α‖ := by simp [hτ.1]
+  -- `w = ±simpleNVector τ`, and `|-a| = |a|`.
+  rcases hw with rfl | rfl
+  · exact h1
+  · simpa [abs_neg] using h1
+
+/-- **`τ(M, θ, ξ)` is a current (Simon Ch. 6, 3.1, p. 146).**  For a rectifiable triple `(M, θ, ξ)`
+in `V` (`V` need not be open), `ω ↦ τ(M, θ, ξ)(ω) = ∫_M θ(x) ⟨ω(x), ξ(x)⟩ dHⁿ(x)` is a current
+`X ∈ 𝒟ₙ(V)`.  It is linear since the integrands are `Hⁿ`-integrable on `M` (`ltg_tau_integrable`).
+It is sequentially continuous: if `ω_j → 0` in `𝒟ⁿ(V)`, all supports lie in one compact `K ⊆ V`
+and `sup_K ‖ω_j‖ → 0`; as `|⟨α, ξ(x)⟩| ≤ ‖α‖` for `Hⁿ⌞M`-a.e. `x` (`fiw_ims_tt_unit_bound`) and
+`θ > 0` on `M`, `|τ(ω_j)| ≤ (sup_K ‖ω_j‖) ∫_{M ∩ K} θ dHⁿ → 0`. -/
+theorem Submission.br_loc_tauAction_current : ∀ (P n : ℕ) (V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple V n M θ ξ → ∃ X : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, X ω = tauAction n M θ ξ ω := by
+  intro P n V M θ ξ hTr
+  -- Step 1: for every test form `ω` (smooth, hence continuous, with compact support in `V`),
+  -- `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hⁿ`-integrable on `M`.
+  have hint : ∀ ω : TestFormOn V n, IntegrableOn
+      (fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) n) x)) M (μHE[n] : Measure (Eucl P)) :=
+    fun ω => (Submission.ltg_tau_integrable P n V M θ ξ hTr).2 _
+      ω.property.1.1.continuous ω.property.1.2 ω.property.2
+  -- Step 2: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so `|⟨α, ξ(x)⟩| ≤ ‖α‖` for every
+  -- covector `α`, for `Hⁿ⌞M`-a.e. `x`.
+  have hub : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) n, |ξ x α| ≤ ‖α‖ := by
+    filter_upwards [hTr.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    exact Submission.fiw_ims_tt_unit_bound P n τ (ξ x) hτ hξ
+  -- Step 3: `ω ↦ τ(M, θ, ξ)(ω)` is linear (additivity of the integral of integrable functions;
+  -- constants factor out of the integral).
+  let L : CurrentOn V n :=
+    { toFun := fun ω => tauAction n M θ ξ ω
+      map_add' := by
+        intro ω η
+        simp only [tauAction]
+        rw [← integral_add (hint ω) (hint η)]
+        refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
+        simp only [Submodule.coe_add, Pi.add_apply, map_add, mul_add]
+      map_smul' := by
+        intro c ω
+        simp only [tauAction, RingHom.id_apply, smul_eq_mul]
+        rw [← integral_const_mul]
+        refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
+        simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul]
+        ring }
+  refine ⟨⟨L, ?_⟩, fun ω => rfl⟩
+  -- Sequential continuity: let `ω_j → 0` in `𝒟ⁿ(V)`, all supported in the compact `K ⊆ V`.
+  intro ωs hconv
+  obtain ⟨K, hK, hKV, hsupp, -, hderiv⟩ := hconv
+  -- Step 4: `sup_K ‖ω_j‖ → 0` (uniform convergence of order `0`, `‖D⁰ω(x)‖ = ‖ω(x)‖`).
+  have hsmall : ∀ δ > 0, ∀ᶠ j in atTop, ∀ x ∈ K,
+      ‖(ωs j : DifferentialForm (Eucl P) n) x‖ < δ := by
+    intro δ hδ
+    have h0 := (Metric.tendstoUniformlyOn_iff.mp (hderiv 0)) δ hδ
+    filter_upwards [h0] with j hj x hx
+    have := hj x hx
+    rw [dist_comm, dist_eq_norm] at this
+    simpa [norm_iteratedFDeriv_zero] using this
+  -- Step 5: the majorant `1_K θ` is `Hⁿ⌞M`-integrable, with integral `C = ∫_{M ∩ K} θ dHⁿ`.
+  have hIK : IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P)) :=
+    hTr.integrableOn K hK hKV
+  set C : ℝ := ∫ x in M ∩ K, θ x ∂(μHE[n] : Measure (Eucl P))
+  have hgint : Integrable (K.indicator θ) ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    rw [integrable_indicator_iff hK.measurableSet, IntegrableOn,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact hIK
+  have hgC : ∫ x, K.indicator θ x ∂((μHE[n] : Measure (Eucl P)).restrict M) = C := by
+    rw [integral_indicator hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+      inter_comm]
+  -- Step 6: with `δ = ε / (|C| + 1)` and `j` large, `|θ ⟨ω_j, ξ⟩| ≤ δ 1_K θ` `Hⁿ⌞M`-a.e. (on `K`
+  -- by Steps 2 and 4 and `θ > 0` on `M`; off `K` since `ω_j = 0` there), so
+  -- `|τ(ω_j)| ≤ δ C ≤ δ |C| < ε`.
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (|C| + 1) := by positivity
+  filter_upwards [hsmall _ hδ] with j hj
+  rw [Real.dist_eq, sub_zero]
+  have hbound : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M),
+      ‖θ x * ξ x ((ωs j : DifferentialForm (Eucl P) n) x)‖ ≤
+        (ε / (|C| + 1)) * K.indicator θ x := by
+    filter_upwards [hub, ae_restrict_mem₀ hTr.nullMeasurableSet] with x hx hxM
+    have hθ := hTr.pos x hxM
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, Real.norm_eq_abs, abs_mul, abs_of_pos hθ]
+      calc θ x * |ξ x ((ωs j : DifferentialForm (Eucl P) n) x)|
+          ≤ θ x * ‖(ωs j : DifferentialForm (Eucl P) n) x‖ :=
+            mul_le_mul_of_nonneg_left (hx _) hθ.le
+        _ ≤ θ x * (ε / (|C| + 1)) := mul_le_mul_of_nonneg_left (hj x hxK).le hθ.le
+        _ = ε / (|C| + 1) * θ x := mul_comm _ _
+    · have hz : (ωs j : DifferentialForm (Eucl P) n) x = 0 :=
+        image_eq_zero_of_notMem_tsupport (fun h => hxK (hsupp j h))
+      rw [indicator_of_notMem hxK, hz, map_zero, mul_zero, norm_zero, mul_zero]
+  have hle := norm_integral_le_of_norm_le (hgint.const_mul (ε / (|C| + 1))) hbound
+  rw [integral_const_mul, hgC, Real.norm_eq_abs] at hle
+  change |∫ x in M, θ x * ξ x ((ωs j : DifferentialForm (Eucl P) n) x)
+    ∂(μHE[n] : Measure (Eucl P))| < ε
+  calc _ ≤ ε / (|C| + 1) * C := hle
+    _ ≤ ε / (|C| + 1) * |C| := mul_le_mul_of_nonneg_left (le_abs_self C) hδ.le
+    _ < ε := by
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith [abs_nonneg C]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
