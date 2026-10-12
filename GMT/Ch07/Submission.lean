@@ -650,6 +650,112 @@ theorem Submission.dtc_approxTangent_dilation : ∀ (P n : ℕ) (M : Set (Euclid
       exact mul_pos hlam hr
   exact (hT.2 f).comp hlim
 
+/-- **Simon Ch. 6, 3.3–3.9 for the similarity `η = η_{x,λ}`** (used in the proof of 7.3.1(2)):
+if `R = (M, θ, ξ)` represents `T` in `U`, then `R' = (η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` represents
+`η_{x,λ#}T` in `η(U)` and `μ_{R'}(B) = λ⁻ⁿ μ_R(η⁻¹(B))` for Borel `B`.  The Jacobian of `η` is
+the constant `λ⁻ⁿ`, so the area formula reduces to `Hⁿ⌞η(s) = λ⁻ⁿ η_#(Hⁿ⌞s)`
+(`dtc_hausdorff_dilation`); `η(M)` is rectifiable as `η` is Lipschitz, `ξ ∘ η⁻¹` orients
+`T_{η(y)}η(M) = T_yM` (`dtc_approxTangent_dilation`), and `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η)`
+(`dtc_blowUp_testForm_corr`). -/
+theorem Submission.dtc_blowUp_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s) := by
+  intro P n U T x lam hlam R hR
+  obtain ⟨hpull, -, hblow⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  obtain ⟨himage, hmap⟩ := Submission.dtc_hausdorff_dilation P n x lam hlam
+  have htan : ∀ (y : Euclid P) (Q : Submodule ℝ (Euclid P)),
+      HasApproximateTangentSpaceAt n R.carrier y Q →
+        HasApproximateTangentSpaceAt n (dilation x lam '' R.carrier) (dilation x lam y) Q :=
+    fun y Q => Submission.dtc_approxTangent_dilation P n R.carrier x y lam Q hlam
+  -- `η = dilation x λ` is an affine homeomorphism with inverse `z ↦ x + λ • z`
+  have hηc : (((Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+      (Homeomorph.addLeft (-(lam⁻¹ • x)))) : Euclid P → Euclid P) = dilation x lam := by
+    funext y
+    simp [dilation, dilationCLM]
+  have hme : MeasurableEmbedding (dilation x lam) := by
+    rw [← hηc]
+    exact Homeomorph.measurableEmbedding _
+  have hιη : ∀ y, x + lam • dilation x lam y = y := fun y => by
+    simp [dilation, dilationCLM, smul_add, smul_smul, mul_inv_cancel₀ hlam.ne']
+  have hc0 : 0 ≤ lam⁻¹ ^ n := by positivity
+  set c : ℝ≥0∞ := ENNReal.ofReal (lam⁻¹ ^ n) with hc
+  -- `Hⁿ⌞η(s) = c • η_#(Hⁿ⌞s)`, hence change of variables along `η`
+  have hkey : ∀ s : Set (Euclid P),
+      μHE[n].restrict (dilation x lam '' s) = c • (μHE[n].restrict s).map (dilation x lam) := by
+    intro s
+    have h1 : (μHE[n].restrict s).map (dilation x lam) =
+        ENNReal.ofReal (lam ^ n) • μHE[n].restrict (dilation x lam '' s) := by
+      rw [← hme.injective.preimage_image s, ← hme.restrict_map, hmap, Measure.restrict_smul,
+        hme.injective.preimage_image]
+    rw [h1, smul_smul, hc, ← ENNReal.ofReal_mul hc0, ← mul_pow, inv_mul_cancel₀ hlam.ne',
+      one_pow, ENNReal.ofReal_one, one_smul]
+  have hlint : ∀ (s : Set (Euclid P)) (g : Euclid P → ℝ≥0∞),
+      ∫⁻ z in dilation x lam '' s, g z ∂μHE[n] = c * ∫⁻ y in s, g (dilation x lam y) ∂μHE[n] := by
+    intro s g
+    rw [hkey s, lintegral_smul_measure, hme.lintegral_map, smul_eq_mul]
+  have hint : ∀ (s : Set (Euclid P)) (g : Euclid P → ℝ),
+      ∫ z in dilation x lam '' s, g z ∂μHE[n] =
+        lam⁻¹ ^ n * ∫ y in s, g (dilation x lam y) ∂μHE[n] := by
+    intro s g
+    rw [hkey s, integral_smul_measure, hme.integral_map, hc, ENNReal.toReal_ofReal hc0,
+      smul_eq_mul]
+  refine ⟨{ carrier := dilation x lam '' R.carrier
+            mult := fun z => R.mult (x + lam • z)
+            orient := fun z => R.orient (x + lam • z)
+            measurableSet_carrier := hme.measurableSet_image.mpr R.measurableSet_carrier
+            carrier_subset := image_mono R.carrier_subset
+            rectifiable := ?_
+            measurable_mult := R.measurable_mult.comp (by fun_prop)
+            mult_pos := ?_
+            locallyIntegrable_mult := ?_
+            aestronglyMeasurable_orient := ?_
+            orients := ?_ }, ?_, ?_⟩
+  · -- `η(M) ⊆ η(M₀) ∪ ⋃ⱼ range (η ∘ Fⱼ)` with `Hⁿ(η(M₀)) = 0` and `η ∘ Fⱼ` Lipschitz
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := R.rectifiable
+    refine ⟨dilation x lam '' M₀, by rw [himage, hM₀, mul_zero], fun j => dilation x lam ∘ F j,
+      fun j => ?_, ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨_, ((isometry_add_left (-(lam⁻¹ • x))).lipschitzWith.comp
+        (dilationCLM P lam).lipschitzWith).comp hK⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      rcases hcover hy with h0 | h1
+      · exact Or.inl ⟨y, h0, rfl⟩
+      · obtain ⟨j, v, rfl⟩ := mem_iUnion.mp h1
+        exact Or.inr (mem_iUnion.mpr ⟨j, v, rfl⟩)
+  · rintro _ ⟨y, hy, rfl⟩
+    show 0 < R.mult (x + lam • dilation x lam y)
+    rw [hιη]
+    exact R.mult_pos y hy
+  · -- `η(M) ∩ K = η(M ∩ η⁻¹(K))`, and `η⁻¹(K)` is a compact subset of `U`
+    intro K hK hKU
+    rw [← image_inter_preimage, hlint]
+    simp only [hιη]
+    refine ENNReal.mul_ne_top ENNReal.ofReal_ne_top (R.locallyIntegrable_mult _ ?_ ?_)
+    · rw [← hηc]
+      exact (Homeomorph.isCompact_preimage _).mpr hK
+    · rw [← hme.injective.preimage_image U]
+      exact preimage_mono hKU
+  · rw [hkey]
+    refine (hme.aestronglyMeasurable_map_iff.mpr ?_).smul_measure c
+    simpa [Function.comp_def, hιη] using R.aestronglyMeasurable_orient
+  · rw [hkey]
+    refine Measure.ae_smul_measure (hme.ae_map_iff.mpr (R.orients.mono fun y hy => ?_)) c
+    obtain ⟨Q, hQ, hξ⟩ := hy
+    exact ⟨Q, htan y Q hQ, by simpa [hιη] using hξ⟩
+  · -- `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η) = λ⁻ⁿ ∫_M θ ⟨ω ∘ η, ξ⟩ dHⁿ = ∫_{η(M)} θ' ⟨ω, ξ'⟩ dHⁿ`
+    intro ω
+    obtain ⟨ω', hω'⟩ := hpull ω
+    rw [hblow T ω ω' hω', hR ω']
+    simp only [IMRep.action]
+    rw [hint]
+    congr 1
+    refine setIntegral_congr_fun R.measurableSet_carrier fun y _ => ?_
+    simp [hιη, hω']
+  · -- `μ_{R'}(B) = c ∫_{η⁻¹(B)} θ d(Hⁿ⌞M) = c μ_R(η⁻¹(B))`
+    intro s hs
+    simp only [IMRep.measure]
+    rw [withDensity_apply _ hs, withDensity_apply _ (hme.measurable hs), hkey,
+      Measure.restrict_smul, hme.restrict_map, lintegral_smul_measure, hme.lintegral_map]
+    simp [hιη]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
