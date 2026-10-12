@@ -482,6 +482,53 @@ theorem Submission.lpf_ccr_ae_differentiableAt_comp : ∀ (P Q n : ℕ) (U : Set
   filter_upwards [ae_all_iff.2 hpiece] with w hw hwU
   obtain ⟨i, hi⟩ := mem_iUnion.1 (hcov hwU)
   exact hw i ⟨hi, hwU⟩
+/-- Simon Ch. 2, 4.7/4.10 (used for Ch. 6, 3.9): if `f` is `K`-Lipschitz on a neighbourhood `V`
+of `Φ(w)` and both `Φ` and `f ∘ Φ` are differentiable at `w`, then `t ↦ f(Φ(w) + t DΦ(w)s)` has
+derivative `D(f∘Φ)(w)s` at `0`.  For small `t` it differs from `t ↦ f(Φ(w + ts))` by at most
+`K ‖Φ(w + ts) - Φ(w) - t DΦ(w)s‖ = o(t)`, and the latter map has derivative `D(f∘Φ)(w)s`. -/
+theorem Submission.lpf_ccr_hasDerivAt_line_of_comp : ∀ (n P Q : ℕ) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (w : Eucl n), (∃ K : ℝ≥0, ∃ V ∈ 𝓝 (Φ w), LipschitzOnWith K f V) → DifferentiableAt ℝ Φ w → DifferentiableAt ℝ (f ∘ Φ) w → ∀ s : Eucl n, HasDerivAt (fun t : ℝ => f (Φ w + t • fderiv ℝ Φ w s)) (fderiv ℝ (f ∘ Φ) w s) 0 := by
+  rintro n P Q f Φ w ⟨K, V, hV, hfV⟩ hΦ hfΦ s
+  -- The line `ℓ(t) = w + t s` has derivative `s` at `0`.
+  have hℓ : HasDerivAt (fun t : ℝ => w + t • s) s 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const s).const_add w
+  have hℓ0 : w = w + (0 : ℝ) • s := by simp
+  -- Chain rule along `ℓ`: `t ↦ Φ(w + t s)` has derivative `DΦ(w)s` and `t ↦ f(Φ(w + t s))` has
+  -- derivative `D(f∘Φ)(w)s` at `0`.
+  have hφ : HasDerivAt (fun t : ℝ => Φ (w + t • s)) (fderiv ℝ Φ w s) 0 :=
+    hΦ.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hℓ hℓ0
+  have hg : HasDerivAt (fun t : ℝ => f (Φ (w + t • s))) (fderiv ℝ (f ∘ Φ) w s) 0 :=
+    hfΦ.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hℓ hℓ0
+  -- `Φ(w + t s) - Φ(w) - t DΦ(w)s = o(t)`.
+  have hrem : (fun t : ℝ => Φ (w + t • s) - Φ w - t • fderiv ℝ Φ w s) =o[𝓝 0] fun t : ℝ => t := by
+    simpa using hφ.isLittleO
+  -- For `t` near `0`, both `Φ(w) + t DΦ(w)s` and `Φ(w + t s)` lie in `V`.
+  have h₁ : ∀ᶠ t : ℝ in 𝓝 0, Φ w + t • fderiv ℝ Φ w s ∈ V := by
+    have hc : Continuous fun t : ℝ => Φ w + t • fderiv ℝ Φ w s := by fun_prop
+    have : Tendsto (fun t : ℝ => Φ w + t • fderiv ℝ Φ w s) (𝓝 0) (𝓝 (Φ w)) := by
+      simpa using hc.tendsto 0
+    exact this.eventually_mem hV
+  have h₂ : ∀ᶠ t : ℝ in 𝓝 0, Φ (w + t • s) ∈ V := by
+    have : Tendsto (fun t : ℝ => Φ (w + t • s)) (𝓝 0) (𝓝 (Φ w)) := by
+      simpa using hφ.continuousAt.tendsto
+    exact this.eventually_mem hV
+  -- Hence `h(t) := f(Φ(w) + t DΦ(w)s) - f(Φ(w + t s)) = O(Φ(w + t s) - Φ(w) - t DΦ(w)s) = o(t)`.
+  have hO : (fun t : ℝ => f (Φ w + t • fderiv ℝ Φ w s) - f (Φ (w + t • s))) =O[𝓝 0]
+      fun t : ℝ => Φ (w + t • s) - Φ w - t • fderiv ℝ Φ w s := by
+    refine Asymptotics.IsBigO.of_bound K ?_
+    filter_upwards [h₁, h₂] with t ht₁ ht₂
+    have hK := hfV.dist_le_mul _ ht₁ _ ht₂
+    rw [dist_eq_norm, dist_eq_norm] at hK
+    rw [sub_sub, norm_sub_rev (Φ (w + t • s))]
+    exact hK
+  -- `h(0) = 0`, so `h` has derivative `0` at `0`.
+  have hh : HasDerivAt (fun t : ℝ => f (Φ w + t • fderiv ℝ Φ w s) - f (Φ (w + t • s))) 0 0 := by
+    rw [hasDerivAt_iff_isLittleO]
+    simpa using hO.trans_isLittleO hrem
+  -- `f(Φ(w) + t DΦ(w)s) = f(Φ(w + t s)) + h(t)`.
+  have hsum := hg.add hh
+  rw [add_zero] at hsum
+  refine hsum.congr_of_eventuallyEq (Filter.Eventually.of_forall fun t => ?_)
+  simp
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
