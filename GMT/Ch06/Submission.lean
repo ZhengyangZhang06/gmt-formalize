@@ -449,6 +449,97 @@ theorem Submission.fiw_ims_orientation_sign :
     | exact Or.inr rfl
     | exact Or.inl (hnn _).symm
     | exact Or.inr (hnn _).symm
+/-- Local finiteness for an integer series of currents `∑ c_r τ(M_r, θ_r, ξ_r)` (Simon Ch. 6, 3.13,
+used for `R^(ℓ)`, `S^(ℓ)` in the proof of 7.2): with `Θ = ∑' r, |c_r| 1_{M_r} θ_r` and
+`∑' r, |c_r| ∫_{M_r ∩ W} θ_r dHⁿ < ∞` for each `W ⊂⊂ U`, `Θ` is locally `Hⁿ`-integrable in `U`
+and `Hⁿ`-a.e. `x` lies in `M_r` for only finitely many `r` with `c_r ≠ 0`.  Termwise integration
+(`lintegral_tsum`) gives `∫_W Θ dHⁿ < ∞` on each `W ⊂⊂ U`, so `Θ < ∞` a.e. near each point of
+`U`, hence a.e. on `U` (`ℝ^P` is second countable); at such `x` each such `r` adds at least `1`
+to `Θ(x)`, and off `U` no `M_r` contains `x`. -/
+theorem Submission.fiw_ims_overlap_finite :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U →
+      ∀ (M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (c : ℕ → ℤ), (∀ r, M r ⊆ U) →
+        (∀ r, NullMeasurableSet (M r) (μHE[n] : Measure (Eucl P))) →
+        (∀ r, ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+          IntegrableOn (θ r) (M r ∩ K) (μHE[n] : Measure (Eucl P))) →
+        (∀ r, ∀ x ∈ M r, 1 ≤ θ r x) →
+        (∀ W, CompactlyContainedOpen W U →
+          (∑' r, ((c r).natAbs : ℝ≥0∞) *
+            ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞) →
+        (∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+          (∫⁻ x in K, ∑' r, ((c r).natAbs : ℝ≥0∞) *
+            (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x
+              ∂(μHE[n] : Measure (Eucl P))) < ∞) ∧
+        ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), {r | c r ≠ 0 ∧ x ∈ M r}.Finite := by
+  intro P n U hU M θ c hMU hMnull hint hθ1 hsum
+  set H : Measure (Eucl P) := (μHE[n] : Measure (Eucl P))
+  -- `g r = |c_r| 1_{M_r} θ_r` and `Θ = ∑' r, g r`.
+  set g : ℕ → Eucl P → ℝ≥0∞ := fun r x =>
+    ((c r).natAbs : ℝ≥0∞) * (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x with hg
+  set Θ : Eucl P → ℝ≥0∞ := fun x => ∑' r, g r x with hΘ
+  -- Steps 1–2: on `W ⊂⊂ U` every `g r` is a.e.-measurable (`θ_r` is integrable on
+  -- `M_r ∩ closure W`), so `∫_W Θ = ∑' r, |c_r| ∫_{M_r ∩ W} θ_r < ∞`.
+  have hW : ∀ W, CompactlyContainedOpen W U →
+      AEMeasurable Θ (H.restrict W) ∧ ∫⁻ x in W, Θ x ∂H < ∞ := by
+    intro W hWcc
+    obtain ⟨hWo, hWc, hWU⟩ := hWcc
+    have hnull : ∀ r, NullMeasurableSet (M r) (H.restrict W) := fun r =>
+      (hMnull r).mono Measure.restrict_le_self
+    have hterm : ∀ r, AEMeasurable (g r) (H.restrict W) := by
+      intro r
+      have hi : IntegrableOn (θ r) (M r ∩ W) H :=
+        (hint r _ hWc hWU).mono_set (inter_subset_inter_right _ subset_closure)
+      have hmeas : AEMeasurable (fun y => ENNReal.ofReal (θ r y))
+          ((H.restrict W).restrict (M r)) := by
+        rw [Measure.restrict_restrict' hWo.measurableSet]
+        exact hi.aestronglyMeasurable.aemeasurable.ennreal_ofReal
+      exact ((aemeasurable_indicator_iff₀ (hnull r)).2 hmeas).const_mul _
+    refine ⟨AEMeasurable.tsum hterm, ?_⟩
+    have hEq : ∫⁻ x in W, Θ x ∂H =
+        ∑' r, ((c r).natAbs : ℝ≥0∞) * ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂H := by
+      rw [hΘ, lintegral_tsum hterm]
+      refine tsum_congr fun r => ?_
+      rw [hg, lintegral_const_mul' _ _ (ENNReal.natCast_ne_top _), lintegral_indicator₀ (hnull r),
+        Measure.restrict_restrict' hWo.measurableSet]
+    rw [hEq]
+    exact hsum W ⟨hWo, hWc, hWU⟩
+  -- Every compact `K ⊆ U` lies in some `W ⊂⊂ U`.
+  have hcover : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+      ∃ W, CompactlyContainedOpen W U ∧ K ⊆ W := by
+    intro K hK hKU
+    obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
+    exact ⟨W, ⟨hWo, hWc, hWU⟩, hKW⟩
+  -- Step 3: conclusion (a), as `∫_K Θ ≤ ∫_W Θ` for `K ⊆ W ⊂⊂ U`.
+  refine ⟨fun K hK hKU => ?_, ?_⟩
+  · obtain ⟨W, hWcc, hKW⟩ := hcover K hK hKU
+    exact (lintegral_mono_set hKW).trans_lt (hW W hWcc).2
+  -- Step 4: `N = {x ∈ U | Θ x = ∞}` is null: each `x ∈ U` has a neighbourhood `W ⊂⊂ U` on which
+  -- `Θ < ∞` a.e., and `ℝ^P` is second countable.
+  set N : Set (Eucl P) := {x | x ∈ U ∧ Θ x = ∞}
+  have hN0 : H N = 0 := by
+    refine measure_null_of_locally_null N fun x hx => ?_
+    obtain ⟨W, hWcc, hxW⟩ := hcover {x} isCompact_singleton (singleton_subset_iff.2 hx.1)
+    obtain ⟨hmeas, hfin⟩ := hW W hWcc
+    have hae : ∀ᵐ y ∂H, y ∈ W → Θ y < ∞ :=
+      (ae_restrict_iff' hWcc.1.measurableSet).1 (ae_lt_top' hmeas hfin.ne)
+    refine ⟨N ∩ W, inter_mem_nhdsWithin N (hWcc.1.mem_nhds (hxW rfl)), ?_⟩
+    refine measure_mono_null (fun y hy => ?_) (ae_iff.1 hae)
+    simp only [mem_ofPred_eq, not_imp, not_lt, top_le_iff]
+    exact ⟨hy.2, hy.1.2⟩
+  -- Step 5: conclusion (b).  For `x ∈ U \ N`, every `r` with `c_r ≠ 0` and `x ∈ M_r` has
+  -- `g r x ≥ 1` while `∑' r, g r x < ∞`; for `x ∉ U` no `M_r` contains `x`.
+  filter_upwards [measure_eq_zero_iff_ae_notMem.1 hN0] with x hxN
+  by_cases hxU : x ∈ U
+  · have hΘx : Θ x ≠ ∞ := fun h => hxN ⟨hxU, h⟩
+    refine (ENNReal.finite_const_le_of_tsum_ne_top hΘx one_ne_zero).subset ?_
+    rintro r ⟨hc, hxM⟩
+    have h1 : (1 : ℝ≥0∞) ≤ ((c r).natAbs : ℝ≥0∞) := by
+      exact_mod_cast Int.natAbs_pos.2 hc
+    have h2 : (1 : ℝ≥0∞) ≤ (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x := by
+      rw [indicator_of_mem hxM]
+      simpa using ENNReal.ofReal_le_ofReal (hθ1 r x hxM)
+    simpa [hg] using mul_le_mul' h1 h2
+  · exact finite_empty.subset fun r hr => hxU (hMU r hr.2)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
