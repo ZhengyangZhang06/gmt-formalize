@@ -1434,6 +1434,46 @@ theorem Submission.lpf_c1_approximation_eucl :
       exact Finset.sum_congr rfl fun l _ => by rw [(hAh l x (hx l)).1]
     · rw [hG.fderiv]
       exact hu'
+/-- Simon Ch. 3, proof of Lemma 1.2 (p. 70), as used for Ch. 6, Lemma 3.9 (p. 148): the
+inverse-function-theorem estimate.  If `G : ℝⁿ → ℝ^Q` is `C¹` and `DG(w)` is injective, then
+`c |z − z'| ≤ |G z − G z'|` for all `z, z'` in some ball `B_r(w)`, with `c > 0`. -/
+theorem Submission.lpf_c1_local_antilipschitz :
+    ∀ (n Q : ℕ) (G : Eucl n → Eucl Q) (w : Eucl n), ContDiff ℝ 1 G →
+      Function.Injective (fderiv ℝ G w) →
+      ∃ r : ℝ, 0 < r ∧ ∃ c : ℝ, 0 < c ∧ ∀ z ∈ ball w r, ∀ z' ∈ ball w r,
+        c * ‖z - z'‖ ≤ ‖G z - G z'‖ := by
+  intro n Q G w hG hinj
+  set A : Eucl n →L[ℝ] Eucl Q := fderiv ℝ G w
+  -- `A` is injective on the finite-dimensional `ℝⁿ`, hence antilipschitz: `|v| ≤ K |A v|`,
+  -- i.e. `|A v| ≥ m |v|` with `m = K⁻¹ > 0`.
+  obtain ⟨K, hKpos, hK⟩ :=
+    (LinearMap.injective_iff_antilipschitz (A : Eucl n →ₗ[ℝ] Eucl Q)).mp hinj
+  have hK0 : (0 : ℝ) < K := hKpos
+  have hm : ∀ v : Eucl n, (K : ℝ)⁻¹ * ‖v‖ ≤ ‖A v‖ := by
+    intro v
+    rw [inv_mul_le_iff₀ hK0]
+    exact ZeroHomClass.bound_of_antilipschitz (A : Eucl n →ₗ[ℝ] Eucl Q) hK v
+  -- `c = m / 2`.  `A` is the strict derivative of `G` at `w`, so `G` approximates `A` with
+  -- constant `c` on a neighbourhood of `w`, which contains a ball `B_r(w)`.
+  set c : ℝ≥0 := K⁻¹ / 2 with hc
+  have hc0 : 0 < c := by
+    rw [hc]
+    exact div_pos (inv_pos.mpr hKpos) two_pos
+  have hcK : (c : ℝ) = (K : ℝ)⁻¹ / 2 := by
+    rw [hc, NNReal.coe_div, NNReal.coe_inv, NNReal.coe_two]
+  have hstrict : HasStrictFDerivAt G A w := hG.hasStrictFDerivAt one_ne_zero
+  obtain ⟨s, hs, happrox⟩ := hstrict.approximates_deriv_on_nhds (c := c) (Or.inr hc0)
+  obtain ⟨r, hr, hrs⟩ := Metric.mem_nhds_iff.mp hs
+  refine ⟨r, hr, c, hc0, fun z hz z' hz' => ?_⟩
+  -- On `B_r(w)`, `|G z − G z' − A (z − z')| ≤ c |z − z'|`; with the triangle inequality,
+  -- `m |z − z'| ≤ |A (z − z')| ≤ |G z − G z'| + c |z − z'|`, and `m − c = c`.
+  have h1 : ‖G z - G z' - A (z - z')‖ ≤ c * ‖z - z'‖ := happrox z (hrs hz) z' (hrs hz')
+  have h2 := hm (z - z')
+  have h3 : ‖A (z - z')‖ ≤ ‖G z - G z'‖ + ‖G z - G z' - A (z - z')‖ := by
+    calc ‖A (z - z')‖ = ‖(G z - G z') - (G z - G z' - A (z - z'))‖ := by rw [sub_sub_cancel]
+      _ ≤ ‖G z - G z'‖ + ‖G z - G z' - A (z - z')‖ := norm_sub_le _ _
+  rw [hcK] at h1 ⊢
+  linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
