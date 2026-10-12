@@ -373,6 +373,133 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Local submersion (rectification) chart** (cf. Spivak, *Calculus on Manifolds*, Thm 2-13).
+If `G` is `C¹` on the open set `V ∋ a` and `DG(a)` is onto, let `π = e ∘ P_K`, where `P_K` is the
+orthogonal projection onto `K = ker DG(a)` and `e : K ≃ ℝᵏ`. Then `Φ(x) = (G x, π(x - a))` has
+invertible derivative at `a`. By the inverse function theorem, `Λ = Φ⁻¹` on
+`Ω = {p ∈ target : Λ p ∈ V₁}` is the chart, where `V₁ ∋ a` is an open subset of `V` on which
+`DΦ` is invertible; `G ∘ Λ = WithLp.fst` because `Φ ∘ Λ = id` on `Ω`. -/
+theorem Submission.coarea_straightening_submersion_chart : ∀ (m k : ℕ) (V : Set (Rn (m + k))) (G : Rn (m + k) → Rn m) (a : Rn (m + k)), IsOpen V → ContDiffOn ℝ 1 G V → a ∈ V → Function.Surjective (fderiv ℝ G a) → ∃ (Ω : Set (WithLp 2 (Rn m × Rn k))) (Λ : WithLp 2 (Rn m × Rn k) → Rn (m + k)), IsOpen Ω ∧ ContDiffOn ℝ 1 Λ Ω ∧ InjOn Λ Ω ∧ IsOpen (Λ '' Ω) ∧ a ∈ Λ '' Ω ∧ Λ '' Ω ⊆ V ∧ (∀ p ∈ Ω, Function.Bijective (fderiv ℝ Λ p)) ∧ ∀ p ∈ Ω, G (Λ p) = WithLp.fst p := by
+  intro m k V G a hV hG ha hsurj
+  -- `K = ker DG(a)` has dimension `k` (rank–nullity).
+  set A : Rn (m + k) →L[ℝ] Rn m := fderiv ℝ G a
+  set K : Submodule ℝ (Rn (m + k)) := LinearMap.ker (A : Rn (m + k) →ₗ[ℝ] Rn m) with hK
+  have hrange : LinearMap.range (A : Rn (m + k) →ₗ[ℝ] Rn m) = ⊤ := LinearMap.range_eq_top.mpr hsurj
+  have hKdim : Module.finrank ℝ K = Module.finrank ℝ (Rn k) := by
+    have h := LinearMap.finrank_range_add_finrank_ker (A : Rn (m + k) →ₗ[ℝ] Rn m)
+    rw [hrange, finrank_top, finrank_euclideanSpace_fin, finrank_euclideanSpace_fin, ← hK] at h
+    rw [finrank_euclideanSpace_fin]
+    omega
+  -- `π = e ∘ P_K : ℝ^{m+k} → ℝᵏ` agrees on `K` with an isomorphism `e : K ≃ ℝᵏ`.
+  let e : K ≃ₗ[ℝ] Rn k := LinearEquiv.ofFinrankEq K (Rn k) hKdim
+  let π : Rn (m + k) →L[ℝ] Rn k :=
+    (e.toContinuousLinearEquiv : K →L[ℝ] Rn k) ∘L K.orthogonalProjectionOnto
+  have hπK : ∀ v : K, π v = e v := by
+    intro v
+    simp [π]
+  -- `Φ(x) = toLp (G x, π(x - a))` is `C¹` on `V` with `DΦ(x) = T ∘ (DG(x), π)`.
+  let T : (Rn m × Rn k) ≃L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm
+  let Φ : Rn (m + k) → WithLp 2 (Rn m × Rn k) := fun x => T (G x, π (x - a))
+  have hπaff : ContDiff ℝ 1 (fun x : Rn (m + k) => π (x - a)) :=
+    π.contDiff.comp (contDiff_id.sub contDiff_const)
+  have hΦC : ContDiffOn ℝ 1 Φ V := T.contDiff.comp_contDiffOn (hG.prodMk hπaff.contDiffOn)
+  have hΦCA : ∀ x ∈ V, ContDiffAt ℝ 1 Φ x := fun x hx => hΦC.contDiffAt (hV.mem_nhds hx)
+  have hπd : ∀ x, HasFDerivAt (fun x : Rn (m + k) => π (x - a)) π x := by
+    intro x
+    have h1 : HasFDerivAt (fun x : Rn (m + k) => x - a) (ContinuousLinearMap.id ℝ (Rn (m + k))) x :=
+      (hasFDerivAt_id x).sub_const a
+    have h2 := (π.hasFDerivAt (x := x - a)).comp x h1
+    rw [ContinuousLinearMap.comp_id] at h2
+    exact h2
+  have hΦd : ∀ x ∈ V, HasFDerivAt Φ
+      ((T : Rn m × Rn k →L[ℝ] WithLp 2 (Rn m × Rn k)).comp ((fderiv ℝ G x).prod π)) x := by
+    intro x hx
+    have hGx : HasFDerivAt G (fderiv ℝ G x) x :=
+      ((hG.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hx)).hasFDerivAt
+    exact T.hasFDerivAt.comp x (hGx.prodMk (hπd x))
+  -- `(DG(a), π)` is injective, hence (equal dimensions) bijective; so `DΦ(a)` is an isomorphism.
+  have hinj : Function.Injective (A.prod π) := by
+    intro v w hvw
+    have h1 : A v = A w := congrArg Prod.fst hvw
+    have h2 : π v = π w := congrArg Prod.snd hvw
+    have hmem : v - w ∈ K := by
+      show A (v - w) = 0
+      rw [map_sub, h1, sub_self]
+    have h3 : e ⟨v - w, hmem⟩ = e 0 := by
+      rw [← hπK, map_zero]
+      show π (v - w) = 0
+      rw [map_sub, h2, sub_self]
+    have := congrArg Subtype.val (e.injective h3)
+    simpa [sub_eq_zero] using this
+  have hdim : Module.finrank ℝ (Rn (m + k)) = Module.finrank ℝ (Rn m × Rn k) := by
+    rw [Module.finrank_prod, finrank_euclideanSpace_fin, finrank_euclideanSpace_fin,
+      finrank_euclideanSpace_fin]
+  have hsurjA : Function.Surjective (A.prod π) :=
+    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).mp hinj
+  let Φ' : Rn (m + k) ≃L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (LinearEquiv.ofBijective ((A.prod π : Rn (m + k) →L[ℝ] Rn m × Rn k) :
+      Rn (m + k) →ₗ[ℝ] Rn m × Rn k) ⟨hinj, hsurjA⟩).toContinuousLinearEquiv.trans T
+  have hΦ'd : HasFDerivAt Φ (Φ' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) a := by
+    have : (Φ' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) =
+        (T : Rn m × Rn k →L[ℝ] WithLp 2 (Rn m × Rn k)).comp (A.prod π) := by ext1 v; rfl
+    rw [this]; exact hΦd a ha
+  -- The set `V'` of points of `V` at which `DΦ` is invertible is open and contains `a`.
+  set V' : Set (Rn (m + k)) := V ∩ (fderiv ℝ Φ) ⁻¹'
+    (range ((↑) : (Rn (m + k) ≃L[ℝ] WithLp 2 (Rn m × Rn k)) →
+      Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)))
+  have hV'o : IsOpen V' :=
+    (hΦC.continuousOn_fderiv_of_isOpen hV le_rfl).isOpen_inter_preimage hV
+      ContinuousLinearEquiv.isOpen
+  have haV' : a ∈ V' := ⟨ha, Φ', hΦ'd.fderiv.symm⟩
+  -- Inverse function theorem: an open partial homeomorphism `h` with `⇑h = Φ` and `a ∈ S`.
+  have hΦs : HasStrictFDerivAt Φ (Φ' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) a :=
+    (hΦCA a ha).hasStrictFDerivAt' hΦ'd one_ne_zero
+  let h := hΦs.toOpenPartialHomeomorph Φ
+  -- `V₁ = S ∩ V'`, `Ω = {p ∈ S' : h⁻¹ p ∈ V₁}` and `Λ = h⁻¹`; then `Λ(Ω) = V₁`.
+  set V₁ : Set (Rn (m + k)) := h.source ∩ V'
+  have hV₁o : IsOpen V₁ := h.open_source.inter hV'o
+  have haV₁ : a ∈ V₁ := ⟨hΦs.mem_toOpenPartialHomeomorph_source, haV'⟩
+  have hV₁V : V₁ ⊆ V := fun x hx => hx.2.1
+  set Ω : Set (WithLp 2 (Rn m × Rn k)) := h.target ∩ h.symm ⁻¹' V₁
+  have himage : h.symm '' Ω = V₁ := by
+    ext x
+    constructor
+    · rintro ⟨p, hp, rfl⟩
+      exact hp.2
+    · intro hx
+      refine ⟨h x, ⟨h.map_source hx.1, ?_⟩, h.left_inv hx.1⟩
+      rw [Set.mem_preimage, h.left_inv hx.1]
+      exact hx
+  -- At `p ∈ Ω`, `Λ` is `C¹` with derivative `(DΦ(Λ p))⁻¹`.
+  have hsymm : ∀ p ∈ Ω, ∃ φ : Rn (m + k) ≃L[ℝ] WithLp 2 (Rn m × Rn k),
+      HasFDerivAt h.symm (φ.symm : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn (m + k)) p ∧
+        ContDiffAt ℝ 1 h.symm p := by
+    intro p hp
+    obtain ⟨φ, hφ⟩ := hp.2.2.2
+    have hxV : h.symm p ∈ V := hp.2.2.1
+    have hd : HasFDerivAt h (φ : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) (h.symm p) := by
+      rw [hφ]; exact ((hΦCA _ hxV).differentiableAt one_ne_zero).hasFDerivAt
+    exact ⟨φ, h.hasFDerivAt_symm hp.1 hd, h.contDiffAt_symm hp.1 hd (hΦCA _ hxV)⟩
+  refine ⟨Ω, h.symm, h.isOpen_inter_preimage_symm hV₁o, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- `Λ` is `C¹` on `Ω`
+    intro p hp
+    obtain ⟨φ, -, hcd⟩ := hsymm p hp
+    exact hcd.contDiffWithinAt
+  · -- `Λ` is injective on `Ω ⊆ S'`
+    exact h.symm.injOn.mono inter_subset_left
+  · rw [himage]; exact hV₁o
+  · rw [himage]; exact haV₁
+  · rw [himage]; exact hV₁V
+  · -- `DΛ(p) = (DΦ(Λ p))⁻¹` is bijective
+    intro p hp
+    obtain ⟨φ, hd, -⟩ := hsymm p hp
+    rw [hd.fderiv]
+    exact φ.symm.bijective
+  · -- `G(Λ p) = (Φ(Λ p))₁ = p₁`
+    intro p hp
+    exact congrArg WithLp.fst (h.right_inv hp.1)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 

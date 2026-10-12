@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Rn|def tangentSpace|def coareaJacobian|^import|^open|^namespace|^noncomputable",
+        "IsSimonLocalRepresentation|IsSimonSubmanifold|IsProper|exists_open_image_eq_inter",
+        "theorem isOpen|isOpen_inter_preimage_symm|prodContinuousLinearEquiv|toLp_fst|range_comp_of_range_eq_top",
+        "exists_leftInverse_of_injective|ofFinrankEq|injective_iff_surjective_of_finrank_eq_finrank",
+        "implicitToOpenPartialHomeomorph|ker f",
+        "coarea_straightening_submersion_chart",
+        "coarea_straightening_reparametrize_chart",
+        "python3 /tmp/straight-review-92xvtknc/check.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Manifold/Submersion.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-straightening-chart-a1/parent-child-handoff.json",
+        "/tmp/straight-review-92xvtknc/check.py",
+        "/tmp/straight-review-92xvtknc/src/Assembly.lean",
+        "/tmp/straight-review-92xvtknc/results.json"
+      ],
+      "conclusion": "The split appropriately separates Euclidean rectification from Simon-chart reparametrization. The pinned sources supply the inverse-function, inverse-regularity, and open-image results used by the proofs; Submersion.lean still lists deriving a normal form from a surjective derivative as future work. Neither proposed name is reserved in the DAG, and the dependency graph is acyclic. Both statements passed validation unchanged and independently elaborated against a clean copy of the frozen contract without either child implementation. All eight fresh Lean checks passed: both challenges, both supplied child proofs, both comparator-style exact applications, the WithLp typeclass checks, and the parent assembly. The proofs and assembly use only propext, Classical.choice, and Quot.sound. The assembly proves the exact selected parent type using the exact frozen linear-algebra dependency as an explicit hypothesis. No ancestor theorem or additional assumption is used."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "submersion_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. Rank–nullity and the kernel retraction produce the completed map with invertible derivative. Restriction to the open invertibility locus, the partial-homeomorphism inverse, and pointwise inverse regularity establish every claimed chart property, including the open image containing a. Zero-dimensional cases require no additional assumption. The proof is complete and non-circular; the bare name is unreserved. The parent supplies its hypotheses using G = f ∘ ψ and the declared linear-algebra dependency."
+    },
+    {
+      "key": "chart_reparametrization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including relative properness through IsSimonLocalRepresentation. Simon's open-image lemma gives O; composition and the chain rule give regularity and injectivity; surjectivity of DΛ transfers the tangent-range identity. Step 7's intermediate symbol P is an evident notation slip for Rn (m + k), without a missing argument: the stated range-composition identity and cited lemma are correct. The proof is complete and independent of either planned theorem. The bare name is unreserved. Combined with the first child, a ∈ Λ(Ω) supplies x₀ ∈ O and G ∘ Λ = fst supplies the remaining parent identity."
+    }
+  ],
+  "required_changes": []
+}
