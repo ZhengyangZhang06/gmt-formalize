@@ -434,6 +434,85 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lusin compact cover (Simon Ch. 1, 1.17).** If `A ⊆ ℝ^{n+ℓ}` is `μ`-measurable with
+`μ(A) < ∞` and `g` is `μ ⌞ A`-measurable, then `A` is covered up to a `μ`-null set by countably
+many compact sets `K_k ⊆ A` on each of which `g` is continuous. -/
+theorem Submission.ts_pwb_lusin_compact_cover : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (A : Set (Ambient n ℓ)) (g : Ambient n ℓ → ℝ), NullMeasurableSet A μ → μ A ≠ ⊤ → AEStronglyMeasurable g (μ.restrict A) → ∃ K : ℕ → Set (Ambient n ℓ), (∀ k, IsCompact (K k) ∧ K k ⊆ A ∧ ContinuousOn g (K k)) ∧ μ (A \ ⋃ k, K k) = 0 := by
+  intro n ℓ μ A g hA hAfin hg
+  -- Borel `A' ⊆ A` with `μ(A \ A') = 0`, and Borel `g'` with `g = g'` `μ ⌞ A`-a.e.
+  obtain ⟨A', hA'A, hA'm, hA'eq⟩ := hA.exists_measurable_subset_ae_eq
+  have hAA' : μ (A \ A') = 0 := (ae_eq_set.1 hA'eq).2
+  obtain ⟨g', hg'm, hgg'⟩ := hg.aemeasurable
+  -- Borel `S ⊇ {g ≠ g'}` with `μ(S ∩ A) = 0`; on the good set `A'' = A' \ S` we have `g = g'`.
+  obtain ⟨S, hgS, hSm, hS0⟩ := exists_measurable_superset_of_null (ae_iff.1 hgg')
+  have hSA : μ (S ∩ A) = 0 := by rwa [Measure.restrict_apply hSm] at hS0
+  set A'' := A' \ S
+  have hA''m : MeasurableSet A'' := hA'm.diff hSm
+  have hA''A : A'' ⊆ A := sdiff_subset.trans hA'A
+  have hgA'' : ∀ y ∈ A'', g y = g' y := fun y hy ↦ by
+    by_contra h
+    exact hy.2 (hgS h)
+  have hAA'' : μ (A \ A'') = 0 := by
+    refine measure_mono_null (fun y ⟨hyA, hy⟩ ↦ ?_) (measure_union_null hAA' hSA)
+    by_cases h : y ∈ A'
+    · exact Or.inr ⟨by_contra fun hS ↦ hy ⟨h, hS⟩, hyA⟩
+    · exact Or.inl ⟨hyA, h⟩
+  -- Lusin for the finite measure `ν = μ ⌞ A''`: a compact `K ⊆ A''` with `μ(A'' \ K) < ε` on
+  -- which `g'` is continuous.
+  set ν := μ.restrict A''
+  have : IsFiniteMeasure ν :=
+    isFiniteMeasure_restrict.2 (ne_top_of_le_ne_top hAfin (measure_mono hA''A))
+  have hb := TopologicalSpace.isBasis_countableBasis ℝ
+  have : Countable (TopologicalSpace.countableBasis ℝ) :=
+    (TopologicalSpace.countable_countableBasis ℝ).to_subtype
+  have key : ∀ ε : ℝ≥0∞, ε ≠ 0 →
+      ∃ K, IsCompact K ∧ K ⊆ A'' ∧ ContinuousOn g' K ∧ μ (A'' \ K) < ε := by
+    intro ε hε
+    obtain ⟨δ, hδ, hδε⟩ := ENNReal.exists_pos_sum_of_countable (ENNReal.half_pos hε).ne'
+      (TopologicalSpace.countableBasis ℝ)
+    -- Open `O_U ⊇ g'⁻¹(U)` with `ν(O_U \ g'⁻¹(U)) < δ_U` for each basic open `U`.
+    choose O hgO hO _ hOδ using fun U : TopologicalSpace.countableBasis ℝ ↦
+      (hg'm (hb.isOpen U.2).measurableSet).exists_isOpen_sdiff_lt (μ := ν)
+        (measure_ne_top _ _) (ENNReal.coe_ne_zero.2 (hδ U).ne')
+    -- The bad set `B = ⋃_U (O_U \ g'⁻¹(U))` has `ν(B) < ε/2`.
+    set B := ⋃ U, (O U \ g' ⁻¹' U)
+    have hBm : MeasurableSet B :=
+      MeasurableSet.iUnion fun U ↦ (hO U).measurableSet.diff (hg'm (hb.isOpen U.2).measurableSet)
+    have hνB : ν B < ε / 2 :=
+      calc ν B ≤ ∑' U, ν (O U \ g' ⁻¹' U) := measure_iUnion_le _
+        _ ≤ ∑' U, (δ U : ℝ≥0∞) := ENNReal.tsum_le_tsum fun U ↦ (hOδ U).le
+        _ < ε / 2 := hδε
+    -- Inner regularity: compact `K ⊆ A'' \ B` with `ν((A'' \ B) \ K) < ε/2`.
+    obtain ⟨K, hKAB, hK, hKε⟩ := (hA''m.diff hBm).exists_isCompact_sdiff_lt (μ := ν)
+      (measure_ne_top _ _) (ENNReal.half_pos hε).ne'
+    refine ⟨K, hK, hKAB.trans sdiff_subset, fun x _ ↦ ?_, ?_⟩
+    · -- On `K`, `g'⁻¹(U) ∩ K = O_U ∩ K` is relatively open, so `g'` is continuous on `K`.
+      refine hb.nhds_hasBasis.tendsto_right_iff.2 fun U ⟨hUb, hxU⟩ ↦
+        mem_nhdsWithin.2 ⟨O ⟨U, hUb⟩, hO _, hgO _ hxU, fun y ⟨hyO, hyK⟩ ↦ ?_⟩
+      by_contra hyU
+      exact (hKAB hyK).2 (mem_iUnion.2 ⟨⟨U, hUb⟩, hyO, hyU⟩)
+    · calc μ (A'' \ K) = ν (A'' \ K) := (Measure.restrict_eq_self μ sdiff_subset).symm
+        _ ≤ ν B + ν ((A'' \ B) \ K) :=
+            (measure_mono (show A'' \ K ⊆ B ∪ ((A'' \ B) \ K) from fun y ⟨hyA, hyK⟩ ↦ by
+              by_cases hyB : y ∈ B
+              · exact Or.inl hyB
+              · exact Or.inr ⟨⟨hyA, hyB⟩, hyK⟩)).trans (measure_union_le _ _)
+        _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hνB hKε
+        _ = ε := ENNReal.add_halves ε
+  -- Exhaustion: `K_k` with `μ(A'' \ K_k) < 1/k`, so `μ(A \ ⋃ K_k) ≤ μ(A \ A'') + 0 = 0`.
+  choose K hK hKA hKg hKε using fun k : ℕ ↦
+    key (k : ℝ≥0∞)⁻¹ (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top k))
+  refine ⟨K, fun k ↦ ⟨hK k, (hKA k).trans hA''A, (hKg k).congr fun y hy ↦ hgA'' y (hKA k hy)⟩, ?_⟩
+  have hA''K : μ (A'' \ ⋃ k, K k) = 0 := by
+    by_contra h
+    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt h
+    exact lt_asymm hk
+      ((measure_mono (sdiff_subset_sdiff_right (subset_iUnion K k))).trans_lt (hKε k))
+  refine measure_mono_null (fun y ⟨hyA, hyK⟩ ↦ ?_) (measure_union_null hAA'' hA''K)
+  by_cases h : y ∈ A''
+  · exact Or.inr ⟨h, hyK⟩
+  · exact Or.inl ⟨hyA, h⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
