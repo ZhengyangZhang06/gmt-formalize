@@ -359,6 +359,60 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Helly selection with a countable exceptional set** (the selection step in the proof of
+Simon Ch. 6, 8.2 and Remark 8.3(1), p. 176: "an argument like that in 6.7(2) of Ch. 2").
+Nondecreasing `F j : ℝ → ℝ` with `|F j t| ≤ C` have a subsequence `F (ψ j)` converging at every
+rational to a nondecreasing `g` (Tychonoff for `∏_{q ∈ ℚ} [-C, C]`).  The left envelope
+`F⁻(t) = sup_{q < t} g(q)` is nondecreasing, so its discontinuity set `E` is countable; for
+`s ∉ E`, rationals `a < s < b` near `s` give `g(b) - g(a) < ε`, hence
+`F (ψ j) b - F (ψ j) a < ε` for all large `j`. -/
+theorem Submission.iwl_rl_monotone_helly_selection : ∀ (F : ℕ → ℝ → ℝ) (C : ℝ), (∀ j, Monotone (F j)) → (∀ j t, |F j t| ≤ C) → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ ε : ℝ, 0 < ε → ∃ a b : ℝ, a < s ∧ s < b ∧ ∀ᶠ j in atTop, F (ψ j) b - F (ψ j) a < ε := by
+  intro F C hmono hbound
+  -- Tychonoff: the restrictions `q ↦ F j q` lie in the compact box `∏_{q ∈ ℚ} [-C, C]`, and
+  -- `ℚ → ℝ` is first countable, so some subsequence converges pointwise on `ℚ` to `g`.
+  have hK : IsCompact (univ.pi fun _ : ℚ => Icc (-C) C) := isCompact_univ_pi fun _ => isCompact_Icc
+  obtain ⟨g, hgK, ψ, hψ, hlim⟩ := hK.tendsto_subseq (x := fun j (q : ℚ) => F j q)
+    fun j => mem_univ_pi.mpr fun q => abs_le.mp (hbound j q)
+  have hconv : ∀ q : ℚ, Tendsto (fun j => F (ψ j) q) atTop (𝓝 (g q)) :=
+    fun q => tendsto_pi_nhds.mp hlim q
+  have hgC : ∀ q, g q ≤ C := fun q => (mem_univ_pi.mp hgK q).2
+  -- `g` is nondecreasing on `ℚ`, as a pointwise limit of nondecreasing functions.
+  have hgmono : Monotone g := fun q q' h =>
+    le_of_tendsto_of_tendsto' (hconv q) (hconv q') fun j => hmono (ψ j) (Rat.cast_le.mpr h)
+  -- The left envelope `F⁻(t) = sup_{q < t} g(q)`: `g(q) ≤ F⁻(t)` for `q < t` and
+  -- `F⁻(t) ≤ g(q)` for `t ≤ q`.
+  obtain ⟨Fm, hFa, hFb⟩ : ∃ Fm : ℝ → ℝ, (∀ (q : ℚ) (t : ℝ), (q : ℝ) < t → g q ≤ Fm t) ∧
+      ∀ (q : ℚ) (t : ℝ), t ≤ q → Fm t ≤ g q := by
+    refine ⟨fun t => ⨆ q : {q : ℚ // (q : ℝ) < t}, g q, fun q t h => ?_, fun q t h => ?_⟩
+    · exact le_ciSup (f := fun q : {q : ℚ // (q : ℝ) < t} => g q)
+        ⟨C, by rintro _ ⟨q', rfl⟩; exact hgC q'⟩ ⟨q, h⟩
+    · obtain ⟨q₀, hq₀⟩ := exists_rat_lt t
+      have : Nonempty {q : ℚ // (q : ℝ) < t} := ⟨⟨q₀, hq₀⟩⟩
+      exact ciSup_le fun q' => hgmono (Rat.cast_le.mp (q'.2.le.trans h))
+  -- `F⁻` is nondecreasing: compare both sides with `g(q)` for a rational `t < q < t'`.
+  have hFm : Monotone Fm := by
+    intro t t' h
+    rcases h.lt_or_eq with h | rfl
+    · obtain ⟨q, hq, hq'⟩ := exists_rat_btwn h
+      exact (hFb q t hq.le).trans (hFa q t' hq')
+    · exact le_rfl
+  -- The exceptional set is the countable set of discontinuity points of `F⁻`.
+  refine ⟨ψ, {s | ¬ContinuousAt Fm s}, hψ, hFm.countable_not_continuousAt, fun s hs ε hε => ?_⟩
+  have hcont : ContinuousAt Fm s := not_not.mp hs
+  obtain ⟨δ, hδ, hδs⟩ := Metric.continuousAt_iff.mp hcont (ε / 4) (by linarith)
+  -- Rationals `s - δ < a < s < b < s + δ / 2` give `g(b) - g(a) ≤ F⁻(s + δ / 2) - F⁻(a) < ε / 2`.
+  obtain ⟨a, ha, ha'⟩ := exists_rat_btwn (show s - δ < s by linarith)
+  obtain ⟨b, hb, hb'⟩ := exists_rat_btwn (show s < s + δ / 2 by linarith)
+  refine ⟨a, b, ha', hb, ?_⟩
+  have h1 : g b ≤ Fm (s + δ / 2) := hFa b _ hb'
+  have h2 : Fm a ≤ g a := hFb a a le_rfl
+  have h3 := @hδs (s + δ / 2) (by rw [Real.dist_eq, abs_lt]; constructor <;> linarith)
+  have h4 := @hδs a (by rw [Real.dist_eq, abs_lt]; constructor <;> linarith)
+  rw [Real.dist_eq, abs_lt] at h3 h4
+  have hgab : g b - g a < ε := by linarith [h3.2, h4.1]
+  -- Pointwise convergence at `a` and `b` along `ψ`.
+  exact ((hconv b).sub (hconv a)).eventually (gt_mem_nhds hgab)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
