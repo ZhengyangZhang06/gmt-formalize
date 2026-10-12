@@ -719,6 +719,70 @@ theorem Submission.imrep_weighted_orient_indicator_ae_eq : ∀ (P n : ℕ) (U : 
       hscal R₂ h₂ subset_union_right α, sub_self]
     rfl
 
+/-- **Simon Ch. 6, 3.2(3)** (chapter-06.txt lines 763–768): the weight `θHⁿ⌞M` of an integer
+multiplicity current does not depend on the representation `T = τ(M, θ, ξ)`.  By the fundamental
+lemma, `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂` `Hⁿ`-a.e. on `M₁ ∪ M₂`.  A unit orientation is nonzero, so
+`Hⁿ(M₁ ∖ M₂) = Hⁿ(M₂ ∖ M₁) = 0`; then `M₁`, `M₂` have the same approximate tangent planes, and
+evaluating at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂` a.e. on `M₁ ∩ M₂`. -/
+theorem Submission.imrep_measure_eq_of_represents_same_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → R₁.measure = R₂.measure := by
+  intro P n U T R₁ R₂ hU h₁ h₂
+  -- (★) `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂`, `Hⁿ`-a.e. on `M₁ ∪ M₂`
+  have hstar := Submission.imrep_weighted_orient_indicator_ae_eq P n U T R₁ R₂ hU h₁ h₂
+  -- `Hⁿ(M ∖ M') = 0`: for a.e. `x ∈ M ∖ M'`, (★) reads `θ(x)ξ(x) = 0`, but `θ(x) ≥ 1` and
+  -- `|ξ(x)(α)| = 1` for some `α` (the common covector of `ξ(x)` with itself)
+  have hnull : ∀ R R' : IMRep U n,
+      (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∪ R'.carrier)),
+        R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x =
+          R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x) →
+      μHE[n] (R.carrier \ R'.carrier) = 0 := by
+    intro R R' h
+    have hmem : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ R'.carrier := by
+      filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left h, R.orients,
+        ae_restrict_mem R.measurableSet_carrier] with x hx hxo hxM
+      by_contra hxM'
+      obtain ⟨Q, -, hQ⟩ := hxo
+      obtain ⟨α, hα, -⟩ :=
+        Submission.unit_orientations_common_unit_covector P n Q (R.orient x) (R.orient x) hQ hQ
+      rw [indicator_of_mem hxM, indicator_of_notMem hxM'] at hx
+      have hev := congrArg (fun L : MultiVector P n => |L α|) hx
+      simp only [smul_apply, zero_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα, mul_one,
+        abs_zero, Nat.cast_eq_zero] at hev
+      exact (R.mult_pos x hxM).ne' hev
+    rw [ae_restrict_iff' R.measurableSet_carrier, ae_iff] at hmem
+    have hsub : R.carrier \ R'.carrier ⊆ {x | ¬(x ∈ R.carrier → x ∈ R'.carrier)} :=
+      fun x hx h => hx.2 (h hx.1)
+    exact measure_mono_null hsub hmem
+  have h12 := hnull R₁ R₂ hstar
+  have h21 := hnull R₂ R₁ (by
+    rw [union_comm]
+    filter_upwards [hstar] with x hx using hx.symm)
+  -- hence `Hⁿ⌞M₁ = Hⁿ⌞M₂`
+  have hrestr : μHE[n].restrict R₁.carrier = μHE[n].restrict R₂.carrier :=
+    Measure.restrict_congr_set (ae_eq_set.2 ⟨h12, h21⟩)
+  -- `θ₁ = θ₂` a.e. on `M₁`: the approximate tangent planes `Q₁` of `M₁` and `Q₂` of `M₂` agree,
+  -- and (★) evaluated at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂`
+  have hmult : ∀ᵐ x ∂(μHE[n].restrict R₁.carrier), (R₁.mult x : ℝ≥0∞) = R₂.mult x := by
+    have hor₂ := R₂.orients
+    have hmem₂ := ae_restrict_mem (μ := μHE[n]) R₂.measurableSet_carrier
+    rw [← hrestr] at hor₂ hmem₂
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left hstar, R₁.orients, hor₂,
+      ae_restrict_mem R₁.measurableSet_carrier, hmem₂] with x hx ho₁ ho₂ hx₁ hx₂
+    obtain ⟨Q₁, hT₁, hQ₁⟩ := ho₁
+    obtain ⟨Q₂, hT₂, hQ₂⟩ := ho₂
+    have hQ : Q₁ = Q₂ :=
+      ((Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff P n R₁.carrier R₂.carrier x Q₁
+        h12 h21).1 hT₁).unique hT₂
+    subst hQ
+    obtain ⟨α, hα₁, hα₂⟩ :=
+      Submission.unit_orientations_common_unit_covector P n Q₁ (R₁.orient x) (R₂.orient x) hQ₁ hQ₂
+    rw [indicator_of_mem hx₁, indicator_of_mem hx₂] at hx
+    have hev := congrArg (fun L : MultiVector P n => |L α|) hx
+    simp only [smul_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα₁, hα₂, mul_one] at hev
+    exact_mod_cast hev
+  -- `θ₁Hⁿ⌞M₁ = θ₂Hⁿ⌞M₁ = θ₂Hⁿ⌞M₂`
+  unfold IMRep.measure
+  rw [withDensity_congr_ae hmult, hrestr]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
