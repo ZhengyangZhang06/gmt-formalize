@@ -475,6 +475,66 @@ theorem Submission.hausdorffMeasure_image_null_of_locallyLipschitzOn : ∀ (n N 
   -- Step 5: countable subadditivity.
   exact measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 hpiece)
 
+/-- **Chartwise a.e. transfer** (Simon Ch. 3, Remark 1.3 and the localisation to the `C¹`
+submanifolds `N_j` in the proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 67–72 and 113–143):
+let `M ⊆ N₀ ∪ ⋃ⱼ Sⱼ` with `Hⁿ(N₀) = 0` and each `Sⱼ` an `n`-dimensional embedded `C¹`
+submanifold. If, for every `ψ` that is `C¹` with injective derivative on an open `V ⊆ ℝⁿ`,
+`Q(ψ(u))` holds for `Lⁿ`-a.e. `u ∈ V` with `ψ(u) ∈ M`, then `Q` holds `Hⁿ`-a.e. on `M`. By
+Lindelöf, countably many charts `ψ_{j,y} : V_{j,y} → W_{j,y} ∩ Sⱼ` cover each `Sⱼ`. The bad
+parameters `Z_{j,y} = {u ∈ V_{j,y} : ψ_{j,y}(u) ∈ M, ¬Q(ψ_{j,y}(u))}` are `Lⁿ`-null, so their
+images are `Hⁿ`-null (`ψ_{j,y}` is locally Lipschitz on `V_{j,y}`), and `{x ∈ M : ¬Q(x)}` lies in
+the `Hⁿ`-null set `N₀ ∪ ⋃_{j,y} ψ_{j,y}(Z_{j,y})`. -/
+theorem Submission.ae_of_ae_on_submanifold_charts : ∀ (n N : ℕ) (M N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (Q : Rn N → Prop), μHE[n] N₀ = 0 → (∀ j, IsC1Submanifold n (S j)) → M ⊆ N₀ ∪ ⋃ j, S j → (∀ (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M → Q (ψ u)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ M → Q x := by
+  intro n N M N₀ S Q hN₀ hS hM hQ
+  -- Step 1: a chart `ψ j y : V j y → W j y ∩ S j` for every `y ∈ S j` (the empty chart otherwise).
+  have hchart : ∀ (j : ℕ) (y : Rn N), ∃ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N),
+      IsOpen V ∧ IsOpen W ∧ (y ∈ S j → y ∈ W) ∧ ContDiffOn ℝ 1 ψ V ∧ W ∩ S j ⊆ ψ '' V ∧
+        ∀ u ∈ V, Function.Injective (fderiv ℝ ψ u) := by
+    intro j y
+    by_cases hy : y ∈ S j
+    · obtain ⟨V, W, ψ, hV, hW, hyW, hψ, -, himg, -, hD⟩ := hS j y hy
+      exact ⟨V, W, ψ, hV, hW, fun _ ↦ hyW, hψ, himg.symm.subset, hD⟩
+    · exact ⟨∅, ∅, 0, isOpen_empty, isOpen_empty, fun h ↦ absurd h hy, contDiffOn_empty,
+        by simp, by simp⟩
+  choose V W ψ hV hW hyW hψ himg hD using hchart
+  -- Step 2: countably many of the open sets `W j y` cover `S j` (Lindelöf).
+  have hcover : ∀ j, ∃ T : Set (Rn N), T.Countable ∧ S j ⊆ ⋃ y ∈ T, W j y := by
+    intro j
+    obtain ⟨T, -, hTc, hTW⟩ :=
+      TopologicalSpace.isOpen_biUnion_countable (S j) (W j) fun y _ ↦ hW j y
+    exact ⟨T, hTc, fun x hx ↦ hTW ▸ mem_biUnion hx (hyW j x hx)⟩
+  choose T hTc hTS using hcover
+  -- Step 3: the bad parameters `Z j y` of each chart form an `Lⁿ`-null set.
+  let Z : ℕ → Rn N → Set (Rn n) := fun j y ↦ {u | u ∈ V j y ∧ ψ j y u ∈ M ∧ ¬Q (ψ j y u)}
+  have hZ : ∀ j y, volume (Z j y) = 0 := by
+    intro j y
+    refine measure_mono_null ?_ (ae_iff.1 (hQ (V j y) (ψ j y) (hV j y) (hψ j y) (hD j y)))
+    rintro u ⟨hu, huM, huQ⟩ h
+    exact huQ (h hu huM)
+  -- Step 4: `C¹` on an open set is locally Lipschitz, so the images `ψ j y '' Z j y` are
+  -- `Hⁿ`-null.
+  have hψZ : ∀ j y, μHE[n] (ψ j y '' Z j y) = 0 := by
+    intro j y
+    refine Submission.hausdorffMeasure_image_null_of_locallyLipschitzOn n N (V j y) (Z j y)
+      (ψ j y) (hV j y) ?_ (fun u hu ↦ hu.1) (hZ j y)
+    intro u hu
+    obtain ⟨K, t, ht, hK⟩ := ((hψ j y).contDiffAt ((hV j y).mem_nhds hu)).exists_lipschitzOnWith
+    exact ⟨K, t, mem_nhdsWithin_of_mem_nhds ht, hK⟩
+  -- Step 5: the exceptional set `N₀ ∪ ⋃ⱼ ⋃_{y ∈ T j} ψ j y '' Z j y` is `Hⁿ`-null.
+  have hE : μHE[n] (N₀ ∪ ⋃ j, ⋃ y ∈ T j, ψ j y '' Z j y) = 0 :=
+    measure_union_null hN₀ <| measure_iUnion_null fun j ↦
+      (measure_biUnion_null_iff (hTc j)).2 fun y _ ↦ hψZ j y
+  -- Steps 6–7: every `x ∈ M` with `¬Q x` lies in the exceptional set.
+  refine ae_iff.2 (measure_mono_null ?_ hE)
+  intro x hx
+  obtain ⟨hxM, hxQ⟩ := not_imp.1 hx
+  rcases hM hxM with hx₀ | hxS
+  · exact mem_union_left _ hx₀
+  · obtain ⟨j, hj⟩ := mem_iUnion.1 hxS
+    obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.1 (hTS j hj)
+    obtain ⟨u, hu, rfl⟩ := himg j y ⟨hxy, hj⟩
+    exact mem_union_right _ (mem_iUnion.2 ⟨j, mem_biUnion hy ⟨u, ⟨hu, hxM, hxQ⟩, rfl⟩⟩)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
