@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2aa4b2402e48e0a479dd6c3c1d515dee04b9188c972431559b66ed4d03608f65",
+  "git_delta": {
+    "base_commit": "5d7b7716b11af0164776ba1a265155823669571e",
+    "candidate_commit": "e5a53250740b058ca50ccad5f7117be099eba1e1",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_restricted_radon_converges",
+    "diff_sha256": "2e97bfb80dc35bf7ff65f6f79fa735c2e8efe6bbeb9a692948df7ba37c1d45bd",
+    "source_sha256": "fc8ba3b864605ee7e1d147f4f6927e9666298d06afca98e341688ee564266cbc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_restricted_radon_converges",
+      "statement": "∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N × Grassmannian N n)) (μ : Measure (Euclidean N × Grassmannian N n)) (Ws : ℕ → Varifold N n Ω) (W : Varifold N n Ω) (c : ℝ≥0∞), VagueConverges μs μ → c ≠ ∞ → (∀ i, (Ws i).measure = c • (μs i).restrict (Ω ×ˢ (univ : Set (Grassmannian N n)))) → W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → Varifold.RadonConverges Ws W",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
