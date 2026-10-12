@@ -1208,6 +1208,64 @@ theorem Submission.bf_sphereCap_measure_bounds : ∀ (n ℓ : ℕ), 0 < n → �
           -- `2ⁿ (ω + σ) ρⁿ - σ = ω (2ρ)ⁿ + σ ((2ρ)ⁿ - 1) ≥ 0`
           nlinarith [mul_nonneg hσ0 (sub_nonneg.2 h1), mul_nonneg hω.le (zero_le_one.trans h1)]
 
+/-- **Almost every unit direction of `H` is good** (the sphere lemma of the Besicovitch–Federer
+argument, Simon Ch. 3, Theorem 3.6; Dall'Alba, Theorem 4.16; Mattila Ch. 18). Let `n ≥ 1`,
+`H ⊆ ℝ^{n+ℓ}` a subspace of dimension `n + 1` with orthogonal projection `p_H`, `A ⊆ ℝ^{n+ℓ}`
+compact with `Hⁿ(A) < ∞`, `δ > 0` and `a ∈ ℝ^{n+ℓ}`. For `Hⁿ`-a.e. unit vector `θ ∈ H`, the slab
+cones `Z_θ(s) = {x : |p_H(x - a) - (p_H(x - a) · θ) θ| < s |p_H(x - a)|}` with vertex `a` satisfy
+`Hⁿ(A ∩ Z_θ(s) ∩ B_r(a)) = o((rs)ⁿ)` as `s ↓ 0`, uniformly in `r ∈ (0, δ)` (`Ψ0`), or the ratios
+`Hⁿ(A ∩ Z_θ(s) ∩ B_r(a)) / (rs)ⁿ`, `r ∈ (0, δ)`, are unbounded as `s ↓ 0` (`Ψ∞`), or the axis of `θ`
+meets `A ∖ {a}` within distance `δ` after projecting to `H` (`Ax′`). With `σ_H = Hⁿ ⌞ S(H)` (finite,
+with cap bounds `c₁ρⁿ ≤ σ_H(B_ρ(ζ)) ≤ C₁ρⁿ`) and the double-cone outer measure `m` on directions,
+the axis-free directions form a Borel `m`-null set `F ⊆ S(H)`; by the density dichotomy, `σ_H`-a.e.
+`θ ∈ F` has vanishing or infinite upper `m`-density of caps, which gives `Ψ0` or `Ψ∞` at `θ`. -/
+theorem Submission.bf_sphere_ae_slabGood : ∀ (n ℓ : ℕ), 0 < n → ∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 → ∀ A : Set (Rn (n + ℓ)), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → ∀ a : Rn (n + ℓ), μHE[n] {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r))) ∨ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0)} = 0 := by
+  intro n ℓ hn H hH A hA _ δ hδ a
+  -- Step 0: the unit sphere `S(H)` of `H` is closed; `σ_H = Hⁿ ⌞ S(H)`.
+  let S : Set (Rn (n + ℓ)) := {θ | θ ∈ H ∧ ‖θ‖ = 1}
+  have hSmeas : MeasurableSet S :=
+    (H.closed_of_finiteDimensional.inter
+      (isClosed_eq continuous_norm continuous_const)).measurableSet
+  have hσ : ∀ (ζ : Rn (n + ℓ)) (ρ : ℝ),
+      (μHE[n] : Measure (Rn (n + ℓ))).restrict S (Metric.ball ζ ρ) =
+        μHE[n] (S ∩ Metric.ball ζ ρ) := fun ζ ρ ↦ by
+    rw [Measure.restrict_apply' hSmeas, inter_comm]
+  -- The cap bounds `c₁ρⁿ ≤ σ_H(B_ρ(ζ)) ≤ C₁ρⁿ` (sibling `sphere_cap_bounds`).
+  obtain ⟨c₁, C₁, hc₁, hcap⟩ := Submission.bf_sphereCap_measure_bounds n ℓ hn H hH
+  -- `σ_H` is finite: `S(H) ⊆ B₃(ζ₀)` for any `ζ₀ ∈ S(H)`.
+  have hSfin : μHE[n] S < ∞ := by
+    rcases S.eq_empty_or_nonempty with hS0 | ⟨ζ₀, hζ₀⟩
+    · rw [hS0, measure_empty]
+      exact ENNReal.zero_lt_top
+    · have hsub : S ⊆ S ∩ Metric.ball ζ₀ 3 := fun θ hθ ↦ ⟨hθ, by
+        rw [Metric.mem_ball, dist_eq_norm]
+        linarith [norm_sub_le θ ζ₀, hθ.2, hζ₀.2]⟩
+      calc μHE[n] S ≤ μHE[n] (S ∩ Metric.ball ζ₀ 3) := measure_mono hsub
+        _ ≤ ENNReal.ofReal (C₁ * 3 ^ n) := (hcap ζ₀ hζ₀.1 hζ₀.2 3 (by norm_num)).2
+        _ < ∞ := ENNReal.ofReal_lt_top
+  have hσfin : IsFiniteMeasure ((μHE[n] : Measure (Rn (n + ℓ))).restrict S) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hSfin⟩
+  -- Steps 1–3: the double-cone outer measure `m` on directions; it vanishes on the Borel set
+  -- `F = S(H) ∖ C` of axis-free directions, and its cap densities control `Ψ0` and `Ψ∞`.
+  obtain ⟨m, hmF, hm⟩ :=
+    Submission.bf_sphereGood_doubleCone_outerMeasure (n + ℓ) n H A δ hδ a
+  -- Step 4: the density dichotomy for `σ_H` and `m` on `F`.
+  have hnull := Submission.bf_sphereGood_densityDichotomy (n + ℓ) n
+    ((μHE[n] : Measure (Rn (n + ℓ))).restrict S) hσfin S c₁ C₁ hc₁
+    (fun ζ hζ ρ hρ hρ2 ↦ by rw [hσ]; exact (hcap ζ hζ.1 hζ.2 ρ hρ).1 hρ2)
+    (fun ζ hζ ρ hρ ↦ by rw [hσ]; exact (hcap ζ hζ.1 hζ.2 ρ hρ).2) m _
+    (Submission.bf_sphereGood_axisFree_measurableSet (n + ℓ) H A hA δ a)
+    (fun θ hθ ↦ ⟨hθ.1, hθ.2.1⟩) hmF
+  rw [Measure.restrict_apply' hSmeas] at hnull
+  -- Step 5: a non-good direction is axis-free and has neither vanishing nor infinite upper cap
+  -- density, so it lies in the `σ_H`-null exceptional set of the dichotomy.
+  refine measure_mono_null ?_ hnull
+  rintro θ ⟨hθH, hθ1, hbad⟩
+  obtain ⟨hΨ0, hbad⟩ := not_or.1 hbad
+  obtain ⟨hΨinf, hAx⟩ := not_or.1 hbad
+  exact ⟨⟨⟨hθH, hθ1, hAx⟩, fun hα ↦ hΨ0 ((hm θ hθH hθ1).1 hα),
+    fun hβ ↦ hΨinf ((hm θ hθH hθ1).2 hβ)⟩, hθH, hθ1⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
