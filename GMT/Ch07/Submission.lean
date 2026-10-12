@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The mean-curvature term of a radial cutoff** (Simon Ch. 4, 3.16): if `φ ≥ 0` vanishes on
+`[A, ∞)`, `τ > 0` and `‖H‖ ≤ κ`, then
+`|∫ φ(|x − y|/τ) ⟨x − y, H x⟩ dμ| ≤ A κ τ ∫ φ(|x − y|/τ) dμ`.  Where `φ(|x − y|/τ) ≠ 0`,
+`|x − y| < Aτ`, so Cauchy–Schwarz bounds the integrand by the integrable `Aκτ φ(|x − y|/τ)`. -/
+theorem Submission.doragm_sab_curvature_term_le : ∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (H : Euclid P → Euclid P) (φ : ℝ → ℝ) (κ A τ : ℝ), 0 < τ → (∀ u, 0 ≤ φ u) → (∀ u, A ≤ u → φ u = 0) → (∀ x, ‖H x‖ ≤ κ) → Integrable (fun x => φ (‖x - y‖ / τ)) μ → |∫ x, φ (‖x - y‖ / τ) * inner ℝ (x - y) (H x) ∂μ| ≤ A * κ * τ * ∫ x, φ (‖x - y‖ / τ) ∂μ := by
+  intro P μ y H φ κ A τ hτ hφ hφA hH hint
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hH 0)
+  rw [← integral_const_mul, ← Real.norm_eq_abs]
+  refine norm_integral_le_of_norm_le (hint.const_mul (A * κ * τ)) (ae_of_all μ fun x => ?_)
+  rw [norm_mul, Real.norm_of_nonneg (hφ _)]
+  by_cases h0 : φ (‖x - y‖ / τ) = 0
+  · simp [h0]
+  have hr : ‖x - y‖ ≤ A * τ :=
+    ((div_lt_iff₀ hτ).mp (lt_of_not_ge fun hA => h0 (hφA _ hA))).le
+  calc φ (‖x - y‖ / τ) * ‖inner ℝ (x - y) (H x)‖
+      ≤ φ (‖x - y‖ / τ) * (‖x - y‖ * κ) :=
+        mul_le_mul_of_nonneg_left ((norm_inner_le_norm _ _).trans
+          (mul_le_mul_of_nonneg_left (hH x) (norm_nonneg _))) (hφ _)
+    _ ≤ φ (‖x - y‖ / τ) * (A * τ * κ) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hr hκ) (hφ _)
+    _ = A * κ * τ * φ (‖x - y‖ / τ) := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

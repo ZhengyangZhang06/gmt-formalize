@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c8ff137ba0189869fdf5c08886c4b5c4dddc0d13e7faeccaf4d3d3fd656d30f5",
+  "git_delta": {
+    "base_commit": "e88fee6174604f898351508c1134f4b44b67ab27",
+    "candidate_commit": "d57d65ad0f54fe9ed6dcba8bd27746713fa4ddc3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doragm_sab_curvature_term_le",
+    "diff_sha256": "9a61834fef40ac438c4c883cc5885a884318e482908831cef1ec611a895426a3",
+    "source_sha256": "624d04b46db055eca7d2ad49b5be44f9ef2b2a787486cab7d5487e7c4778a55c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doragm_sab_curvature_term_le",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (H : Euclid P → Euclid P) (φ : ℝ → ℝ) (κ A τ : ℝ), 0 < τ → (∀ u, 0 ≤ φ u) → (∀ u, A ≤ u → φ u = 0) → (∀ x, ‖H x‖ ≤ κ) → Integrable (fun x => φ (‖x - y‖ / τ)) μ → |∫ x, φ (‖x - y‖ / τ) * inner ℝ (x - y) (H x) ∂μ| ≤ A * κ * τ * ∫ x, φ (‖x - y‖ / τ) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
