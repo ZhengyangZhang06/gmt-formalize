@@ -432,6 +432,49 @@ theorem Submission.c1_sard_coarea_jacobian_continuousOn : ∀ (N m : ℕ) (M U :
     ((hJ x hxM).mono hSM).mem_closure hxS fun z hz ↦ hz.2
   rw [closure_singleton] at hfx hJx
   exact ⟨⟨hxM, hfx⟩, hJx⟩
+/-- **Simon Ch. 2, §6 (p. 66), consequence of 6.3.** Given the co-area formula, the critical set
+`C = {x ∈ M : J*_f(x) = 0}` meets `Lᵐ`-a.e. fiber `f⁻¹(y)` in an `Hᵏ`-null set: use 6.3 with
+`g = 1_C`, for which the integrand `1_C J*_f` vanishes identically. `C` is measurable because `M`
+is measurable and `J*_f` is continuous on `M`. -/
+theorem Submission.c1_sard_critical_fibers_null : CoareaFormula → ∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), 0 < k → Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → MeasurableSet M → ContinuousOn (coareaJacobian M f) M → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}) = 0 := by
+  intro hco N m k M U f hk hM hU hMU hf hMmeas hJ
+  -- `C = M ∩ {J*_f = 0}` is relatively closed in the measurable set `M`.
+  obtain ⟨F₀, hF₀, h₀⟩ := continuousOn_iff_isClosed.mp hJ {0} isClosed_singleton
+  set C : Set (Rn N) := M ∩ {x | coareaJacobian M f x = 0}
+  have hC : C = M ∩ F₀ := by
+    ext x; constructor
+    · rintro ⟨hxM, hx⟩
+      have : x ∈ F₀ ∩ M := h₀ ▸ ⟨hx, hxM⟩
+      exact ⟨hxM, this.1⟩
+    · rintro ⟨hxM, hx⟩
+      have : x ∈ coareaJacobian M f ⁻¹' {0} ∩ M := h₀.symm ▸ ⟨hx, hxM⟩
+      exact ⟨hxM, this.1⟩
+  have hCmeas : MeasurableSet C := hC ▸ hMmeas.inter hF₀.measurableSet
+  -- Co-area formula with `g = 1_C`: the left side is `0`, so the fiber integrals vanish a.e.
+  set g : Rn N → ℝ≥0∞ := C.indicator 1
+  have hgm : AEMeasurable g (μHE[m + k].restrict M) :=
+    (measurable_one.indicator hCmeas).aemeasurable
+  obtain ⟨hAEM, hEq⟩ := hco N m k M U f g hk hM hU hMU hf hgm
+  have hLHS : (fun x => g x * ENNReal.ofReal (coareaJacobian M f x)) = 0 := by
+    funext x
+    by_cases hx : x ∈ C
+    · have hx2 : coareaJacobian M f x = 0 := hx.2
+      simp [hx2]
+    · simp [g, hx]
+  rw [hLHS] at hEq
+  have hEq0 : ∫⁻ y, ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂(volume : Measure (Rn m)) = 0 := by
+    rw [← hEq]; exact lintegral_zero
+  have hae := (lintegral_eq_zero_iff' hAEM).mp hEq0
+  -- The fiber integral of `1_C` is the `Hᵏ`-measure of the critical part of the fiber.
+  filter_upwards [hae] with y hy
+  have hinner : ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] =
+      μHE[k] (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}) := by
+    rw [lintegral_indicator_one hCmeas, Measure.restrict_apply hCmeas]
+    congr 1
+    ext x; constructor
+    · rintro ⟨⟨hxM, hxZ⟩, hxM', hxy⟩; exact ⟨⟨hxM, hxy⟩, hxZ⟩
+    · rintro ⟨⟨hxM, hxy⟩, hxZ⟩; exact ⟨⟨hxM, hxZ⟩, hxM, hxy⟩
+  rw [← hinner]; exact hy
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
