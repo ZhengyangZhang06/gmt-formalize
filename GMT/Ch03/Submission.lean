@@ -1308,6 +1308,87 @@ theorem Submission.bf_frameProjection_continuousOn : ∀ (N n : ℕ), Continuous
     hM.continuousAt.clm_comp (hinv.clm_comp hMadj.continuousAt)
   exact hcont.continuousWithinAt.congr (fun v hv ↦ (hR v hv).symm) (hR v₀ hv₀).symm
 
+/-- **Averaging over `O(N)` and transfer to Lebesgue-a.e. frames** (Steps 0.2, 4 and 5 of the
+supplied proof of the Besicovitch–Federer theorem, Simon Ch. 3, Theorem 3.6; Dall'Alba,
+Lemma 5.6). Let `θ_N` be the bi-invariant Haar probability on `O(N) = {g : g* g = 1}` and `P₀`
+the projection onto an `n`-plane `W₀`. For every `a`, (h1), (h2) and `0 < Hⁿ(S(H)) < ∞` for the
+unit spheres `S(H)` of the `(n+1)`-planes `H` give `θ_N{g : (a, g P₀ g*) ∈ Exc} = 0`. Tonelli
+over `μ ⊗ θ_N` then gives `μ(Exc^{g P₀ g*}) = 0` for `θ_N`-a.e. `g`, and this transfers from
+`θ_N` to Lebesgue-a.e. frames. -/
+theorem Submission.bf_frameAveraging_null : ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ μ : Measure (Rn (n + ℓ)), IsFiniteMeasure μ → ∀ (Exc : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)))) (Bad : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) × Rn (n + ℓ))), MeasurableSet Exc → MeasurableSet Bad → (∀ (a : Rn (n + ℓ)) (H : Submodule ℝ (Rn (n + ℓ))), finrank ℝ H = n + 1 → μHE[n] {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ (a, H.starProjection, θ) ∈ Bad} = 0) → (∀ (a : Rn (n + ℓ)) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → (a, W.starProjection) ∈ Exc → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∃ j, (a, (W ⊔ Submodule.span ℝ {u j}).starProjection, u j) ∈ Bad) → ForAlmostAllProjections (n + ℓ) n (fun p ↦ μ {a | (a, p) ∈ Exc} = 0) := by
+  intro n ℓ hn _hℓ μ _hμ Exc Bad hExc hBad h1 h2
+  -- Step 4: `0 < Hⁿ(S(H)) < ∞` for every `(n+1)`-plane `H`, from the cap bounds around a unit
+  -- vector `ζ ∈ H` at radius `2`, and at radius `3` since `S(H) ⊆ B(ζ, 3)`.
+  have hS : ∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 →
+      0 < μHE[n] {x : Rn (n + ℓ) | x ∈ H ∧ ‖x‖ = 1} ∧
+        μHE[n] {x : Rn (n + ℓ) | x ∈ H ∧ ‖x‖ = 1} < ∞ := by
+    intro H hH
+    obtain ⟨c, C, hc, hcap⟩ := Submission.bf_sphereCap_measure_bounds n ℓ hn H hH
+    obtain ⟨ζ, hζH, hζ⟩ : ∃ ζ ∈ H, ‖ζ‖ = 1 := by
+      have hH0 : H ≠ ⊥ := by
+        rintro rfl
+        rw [finrank_bot] at hH
+        omega
+      obtain ⟨x, hxH, hx⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hH0
+      exact ⟨(‖x‖⁻¹ : ℝ) • x, H.smul_mem _ hxH, norm_smul_inv_norm hx⟩
+    refine ⟨?_, ?_⟩
+    · calc (0 : ℝ≥0∞) < ENNReal.ofReal (c * 2 ^ n) := ENNReal.ofReal_pos.2 (by positivity)
+        _ ≤ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ 2) :=
+          (hcap ζ hζH hζ 2 two_pos).1 le_rfl
+        _ ≤ μHE[n] {x : Rn (n + ℓ) | x ∈ H ∧ ‖x‖ = 1} := measure_mono inter_subset_left
+    · have hsub : {x : Rn (n + ℓ) | x ∈ H ∧ ‖x‖ = 1} ⊆
+          {θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ 3 := by
+        intro x hx
+        refine ⟨hx, ?_⟩
+        rw [Metric.mem_ball, dist_eq_norm]
+        calc ‖x - ζ‖ ≤ ‖x‖ + ‖ζ‖ := norm_sub_le x ζ
+          _ < 3 := by rw [hx.2, hζ]; norm_num
+      exact (measure_mono hsub).trans_lt
+        ((hcap ζ hζH hζ 3 three_pos).2.trans_lt ENNReal.ofReal_lt_top)
+  -- Step 1: the bi-invariant Haar probability `θ_N` on `O(N)`, the stabilizer of `U = 0`.
+  obtain ⟨θ, hθ, hθO, hθinv⟩ := Submission.bf_orthStabilizer_haar_exists (n + ℓ) ⊥
+  have hθO' : ∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 := hθO.mono fun _ hg ↦ hg.1
+  have hθR : ∀ k : Rn (n + ℓ) →L[ℝ] Rn (n + ℓ), ContinuousLinearMap.adjoint k * k = 1 →
+      Measure.map (fun g ↦ g * k) θ = θ := fun k hk ↦
+    (hθinv k hk fun x hx ↦ by rw [(Submodule.mem_bot ℝ).1 hx, map_zero]).2
+  -- `W₀ = span{e_1, …, e_n}`, an `n`-plane.
+  obtain ⟨W₀, hW₀⟩ : ∃ W₀ : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W₀ = n := by
+    have hv : LinearIndependent ℝ fun i : Fin n ↦
+        EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ (Fin.castAdd ℓ i) :=
+      (EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ).orthonormal.linearIndependent.comp _
+        (Fin.castAdd_injective n ℓ)
+    exact ⟨_, (finrank_span_eq_card hv).trans (Fintype.card_fin n)⟩
+  -- Steps 2–6: for every `a`, `θ_N{g : (a, g P₀ g*) ∈ Exc} = 0`.
+  have hpt : ∀ a : Rn (n + ℓ),
+      θ {g | (a, g * W₀.starProjection * ContinuousLinearMap.adjoint g) ∈ Exc} = 0 := fun a ↦
+    Submission.bf_haar_excPointwise_null n ℓ Exc Bad hBad hS a (h1 a) (h2 a) θ hθ hθO' hθR W₀ hW₀
+  -- Step 7: Tonelli over `μ ⊗ θ_N`. The set `Q` of the `p` with `μ(Exc^p) ≠ 0` is Borel, and
+  -- `g P₀ g* ∉ Q` for `θ_N`-a.e. `g`.
+  set Q : Set (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) := {p | μ {a | (a, p) ∈ Exc} ≠ 0} with hQ
+  have hμExc : Measurable fun p : Rn (n + ℓ) →L[ℝ] Rn (n + ℓ) ↦ μ {a | (a, p) ∈ Exc} :=
+    measurable_measure_prodMk_right hExc
+  have hQm : MeasurableSet Q := hμExc (measurableSet_singleton 0).compl
+  have hconj : Continuous fun g : Rn (n + ℓ) →L[ℝ] Rn (n + ℓ) ↦
+      g * W₀.starProjection * ContinuousLinearMap.adjoint g :=
+    (continuous_id.mul continuous_const).mul
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn (n + ℓ)) (F := Rn (n + ℓ))).continuous
+  have hgood : MeasurableSet {q : Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) |
+      (q.1, q.2 * W₀.starProjection * ContinuousLinearMap.adjoint q.2) ∉ Exc} :=
+    (measurable_fst.prodMk (hconj.measurable.comp measurable_snd) hExc).compl
+  have hae : ∀ᵐ a ∂μ, ∀ᵐ g ∂θ,
+      (a, g * W₀.starProjection * ContinuousLinearMap.adjoint g) ∉ Exc :=
+    Eventually.of_forall fun a ↦ measure_eq_zero_iff_ae_notMem.1 (hpt a)
+  have hQnull : θ {g | g * W₀.starProjection * ContinuousLinearMap.adjoint g ∈ Q} = 0 := by
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [(Measure.ae_ae_comm (p := fun a g ↦
+      (a, g * W₀.starProjection * ContinuousLinearMap.adjoint g) ∉ Exc) hgood).1 hae] with g hg
+    simp only [hQ, mem_ofPred_eq, ne_eq, not_not]
+    exact measure_eq_zero_iff_ae_notMem.2 hg
+  -- Steps 8–10: transfer from `θ_N` to Lebesgue-a.e. frames.
+  exact (Submission.bf_haar_null_to_frames (n + ℓ) n
+    (Submission.bf_frameProjection_continuousOn (n + ℓ) n) θ hθ hθO' hθR W₀ hW₀ Q hQm
+    hQnull).mono fun v hv hlin ↦ not_not.1 (hv hlin)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
