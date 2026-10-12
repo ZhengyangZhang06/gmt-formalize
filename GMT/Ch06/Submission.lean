@@ -359,6 +359,131 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Signed form of a fibre-sum area identity.  If `∫⁻_A h J dμ = ∫⁻ ∑'_{x ∈ A, f x = y} h x dν(y)`
+for every `μ⌞A`-a.e. measurable `h : X → [0, ∞]`, and `g : X → ℝ` is `μ⌞A`-a.e. strongly measurable
+with `∫⁻_A ‖g‖ₑ J dμ < ∞`, then for `ν`-a.e. `y` the fibre family of `g` over `y` is summable, the
+fibre sum of `g` is `ν`-integrable and `∫_A g J dμ = ∫ ∑'_{x ∈ A, f x = y} g x dν(y)`.  Apply the
+identity to `ofReal ∘ g` and `ofReal ∘ (-g)`: both sides equal the difference of the two finite
+lintegrals, the source side because `g = 0` a.e. where `J = ∞`. -/
+theorem Submission.lpf_pi_signed_fibre_sum :
+    ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y)
+      (f : X → Y) (A : Set X) (J : X → ℝ≥0∞), AEMeasurable J (μ.restrict A) →
+      (∀ h : X → ℝ≥0∞, AEMeasurable h (μ.restrict A) →
+        AEMeasurable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, h x) ν ∧
+          ∫⁻ x in A, h x * J x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, h x ∂ν) →
+      ∀ g : X → ℝ, AEStronglyMeasurable g (μ.restrict A) → ∫⁻ x in A, ‖g x‖ₑ * J x ∂μ < ∞ →
+        (∀ᵐ y ∂ν, Summable (fun x : {x : X // x ∈ A ∧ f x = y} => g x)) ∧
+          Integrable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, g x) ν ∧
+          ∫ x in A, g x * (J x).toReal ∂μ = ∫ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, g x ∂ν := by
+  intro X Y _ _ μ ν f A J hJ harea g hg hfin
+  -- The area identity for the parts `ofReal ∘ g` and `ofReal ∘ (-g)`, both bounded by `‖g‖ₑ`.
+  have hp_meas : AEMeasurable (fun x => ENNReal.ofReal (g x)) (μ.restrict A) :=
+    hg.aemeasurable.ennreal_ofReal
+  have hm_meas : AEMeasurable (fun x => ENNReal.ofReal (-g x)) (μ.restrict A) :=
+    hg.aemeasurable.neg.ennreal_ofReal
+  obtain ⟨hNp_meas, hNp_eq⟩ := harea _ hp_meas
+  obtain ⟨hNm_meas, hNm_eq⟩ := harea _ hm_meas
+  have hp_le : ∀ x, ENNReal.ofReal (g x) ≤ ‖g x‖ₑ := fun x => by
+    rw [Real.enorm_eq_ofReal_abs]; exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+  have hm_le : ∀ x, ENNReal.ofReal (-g x) ≤ ‖g x‖ₑ := fun x => by
+    rw [Real.enorm_eq_ofReal_abs]; exact ENNReal.ofReal_le_ofReal (neg_le_abs _)
+  -- Both fibre sums have finite `ν`-lintegral, hence are finite `ν`-a.e.
+  have hIp_lt : ∫⁻ x in A, ENNReal.ofReal (g x) * J x ∂μ < ∞ :=
+    lt_of_le_of_lt (lintegral_mono fun x => mul_le_mul' (hp_le x) le_rfl) hfin
+  have hIm_lt : ∫⁻ x in A, ENNReal.ofReal (-g x) * J x ∂μ < ∞ :=
+    lt_of_le_of_lt (lintegral_mono fun x => mul_le_mul' (hm_le x) le_rfl) hfin
+  have hNp_fin : ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (g x) ∂ν ≠ ∞ := by
+    rw [← hNp_eq]; exact hIp_lt.ne
+  have hNm_fin : ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (-g x) ∂ν ≠ ∞ := by
+    rw [← hNm_eq]; exact hIm_lt.ne
+  have hNp_ae : ∀ᵐ y ∂ν, ∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (g x) < ∞ :=
+    ae_lt_top' hNp_meas hNp_fin
+  have hNm_ae : ∀ᵐ y ∂ν, ∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (-g x) < ∞ :=
+    ae_lt_top' hNm_meas hNm_fin
+  -- On a fibre where both sums are finite, `g = (ofReal ∘ g).toReal - (ofReal ∘ (-g)).toReal` is
+  -- a difference of summable families, so it is summable with the difference of the sums.
+  have hg_eq : ∀ x, g x = (ENNReal.ofReal (g x)).toReal - (ENNReal.ofReal (-g x)).toReal :=
+    fun x => by
+      rw [ENNReal.toReal_ofReal', ENNReal.toReal_ofReal']
+      exact (max_zero_sub_max_neg_zero_eq_self (g x)).symm
+  have hfib : ∀ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (g x) < ∞ →
+      ∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (-g x) < ∞ →
+      Summable (fun x : {x : X // x ∈ A ∧ f x = y} => g x) ∧
+      ∑' x : {x : X // x ∈ A ∧ f x = y}, g x =
+        (∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (g x)).toReal -
+          (∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (-g x)).toReal := by
+    intro y hy1 hy2
+    have hs1 : Summable (fun x : {x : X // x ∈ A ∧ f x = y} => (ENNReal.ofReal (g x)).toReal) :=
+      ENNReal.summable_toReal hy1.ne
+    have hs2 : Summable
+        (fun x : {x : X // x ∈ A ∧ f x = y} => (ENNReal.ofReal (-g x)).toReal) :=
+      ENNReal.summable_toReal hy2.ne
+    refine ⟨(hs1.sub hs2).congr (fun x => (hg_eq x).symm), ?_⟩
+    rw [tsum_congr (fun x : {x : X // x ∈ A ∧ f x = y} => hg_eq x), hs1.tsum_sub hs2,
+      ENNReal.tsum_toReal_eq (f := fun x : {x : X // x ∈ A ∧ f x = y} => ENNReal.ofReal (g x))
+        (fun _ => ENNReal.ofReal_ne_top),
+      ENNReal.tsum_toReal_eq (f := fun x : {x : X // x ∈ A ∧ f x = y} => ENNReal.ofReal (-g x))
+        (fun _ => ENNReal.ofReal_ne_top)]
+  -- Target side: the fibre sum of `g` is `ν`-a.e. the difference of the two real fibre sums, so
+  -- it is integrable, with integral
+  -- `(∫⁻_A (ofReal ∘ g) J).toReal - (∫⁻_A (ofReal ∘ (-g)) J).toReal`.
+  have hae_eq : (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, g x) =ᵐ[ν]
+      fun y => (∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (g x)).toReal -
+        (∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (-g x)).toReal := by
+    filter_upwards [hNp_ae, hNm_ae] with y hy1 hy2
+    exact (hfib y hy1 hy2).2
+  have hintp : Integrable
+      (fun y => (∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (g x)).toReal) ν :=
+    integrable_toReal_of_lintegral_ne_top hNp_meas hNp_fin
+  have hintm : Integrable
+      (fun y => (∑' x : {x : X // x ∈ A ∧ f x = y}, ENNReal.ofReal (-g x)).toReal) ν :=
+    integrable_toReal_of_lintegral_ne_top hNm_meas hNm_fin
+  have hint : Integrable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, g x) ν :=
+    (hintp.sub' hintm).congr hae_eq.symm
+  refine ⟨?_, hint, ?_⟩
+  · filter_upwards [hNp_ae, hNm_ae] with y hy1 hy2
+    exact (hfib y hy1 hy2).1
+  have htarget : ∫ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, g x ∂ν =
+      (∫⁻ x in A, ENNReal.ofReal (g x) * J x ∂μ).toReal -
+        (∫⁻ x in A, ENNReal.ofReal (-g x) * J x ∂μ).toReal := by
+    rw [integral_congr_ae hae_eq, integral_sub hintp hintm, integral_toReal hNp_meas hNp_ae,
+      integral_toReal hNm_meas hNm_ae, ← hNp_eq, ← hNm_eq]
+  -- Source side: `‖g‖ₑ J < ∞` a.e. on `A`, so `g = 0` a.e. where `J = ∞`; hence `g J.toReal` is
+  -- integrable, and its positive and negative parts are a.e. `(ofReal ∘ g) J` and
+  -- `(ofReal ∘ (-g)) J`, giving the same difference of lintegrals.
+  have hgJ_meas : AEMeasurable (fun x => ‖g x‖ₑ * J x) (μ.restrict A) := hg.enorm.mul hJ
+  have hgJ_fin : ∀ᵐ x ∂(μ.restrict A), ‖g x‖ₑ * J x < ∞ := ae_lt_top' hgJ_meas hfin.ne
+  have hG_int : Integrable (fun x => g x * (J x).toReal) (μ.restrict A) := by
+    refine ⟨hg.mul hJ.ennreal_toReal.aestronglyMeasurable, ?_⟩
+    show ∫⁻ x, ‖g x * (J x).toReal‖ₑ ∂(μ.restrict A) < ∞
+    refine lt_of_le_of_lt (lintegral_mono fun x => ?_) hfin
+    rw [enorm_mul, Real.enorm_eq_ofReal_abs ((J x).toReal), abs_of_nonneg ENNReal.toReal_nonneg]
+    exact mul_le_mul' le_rfl ENNReal.ofReal_toReal_le
+  have hg0 : ∀ᵐ x ∂(μ.restrict A), J x = ∞ → g x = 0 := by
+    filter_upwards [hgJ_fin] with x hx hJx
+    by_contra hne
+    have h1 : ‖g x‖ₑ ≠ 0 := enorm_ne_zero.mpr hne
+    rw [hJx, ENNReal.mul_top h1] at hx
+    exact lt_irrefl _ hx
+  have hpos : ∀ᵐ x ∂(μ.restrict A),
+      ENNReal.ofReal (g x * (J x).toReal) = ENNReal.ofReal (g x) * J x := by
+    filter_upwards [hg0] with x hx
+    by_cases hJx : J x = ∞
+    · simp [hx hJx]
+    · rw [ENNReal.ofReal_mul' ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hJx]
+  have hneg : ∀ᵐ x ∂(μ.restrict A),
+      ENNReal.ofReal (-(g x * (J x).toReal)) = ENNReal.ofReal (-g x) * J x := by
+    filter_upwards [hg0] with x hx
+    by_cases hJx : J x = ∞
+    · simp [hx hJx]
+    · rw [← neg_mul, ENNReal.ofReal_mul' ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hJx]
+  have hsource : ∫ x in A, g x * (J x).toReal ∂μ =
+      (∫⁻ x in A, ENNReal.ofReal (g x) * J x ∂μ).toReal -
+        (∫⁻ x in A, ENNReal.ofReal (-g x) * J x ∂μ).toReal := by
+    rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hG_int, lintegral_congr_ae hpos,
+      lintegral_congr_ae hneg]
+  rw [hsource, htarget]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
