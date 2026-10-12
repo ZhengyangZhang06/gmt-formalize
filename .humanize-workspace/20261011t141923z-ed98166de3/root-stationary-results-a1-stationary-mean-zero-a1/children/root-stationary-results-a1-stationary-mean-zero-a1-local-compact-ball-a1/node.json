@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.stationary_mean_zero-a1.local_compact_ball-a1",
+  "parent_id": "root.stationary_results-a1.stationary_mean_zero-a1",
+  "depth": 3,
+  "title": "Simon submanifolds are locally compact in closed-ball form",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞ and M ⊆ ℝᴺ (ℝᵈ := EuclideanSpace ℝ (Fin d)) an n-dimensional C^r Simon submanifold, i.e. Chapter02.IsSimonSubmanifold (E := ℝⁿ) r M. Then for every y ∈ M and every open O ⊆ ℝᴺ with y ∈ O there is a real ρ > 0 such that the closed ball B̄(y, ρ) (Metric.closedBall y ρ) is contained in O and M ∩ B̄(y, ρ) is compact.",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)",
+  "lean_name": "simon_submanifold_exists_closedBall_isCompact_inter",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1-a1"
+}

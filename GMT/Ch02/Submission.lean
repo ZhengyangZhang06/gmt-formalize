@@ -373,6 +373,43 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Local compactness of a Simon submanifold, closed-ball form.** If `M ⊆ ℝᴺ` is an
+`n`-dimensional `C^r` Simon submanifold (Simon 4.1), `y ∈ M` and `O ∋ y` is open, then there is
+`ρ > 0` with `B̄(y, ρ) ⊆ O` and `M ∩ B̄(y, ρ)` compact. Take a chart `(V, W, ψ)` with `y ∈ W` and
+`ρ = ε/2` for an open ball `B(y, ε) ⊆ O ∩ W`. Since `B̄(y, ρ) ⊆ W` and `ψ(V) = W ∩ M`,
+`M ∩ B̄(y, ρ) = ψ(V ∩ ψ⁻¹(B̄(y, ρ)))`; relative properness makes `V ∩ ψ⁻¹(B̄(y, ρ))` compact, and
+`ψ` is continuous on `V`. -/
+theorem Submission.simon_submanifold_exists_closedBall_isCompact_inter : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ) := by
+  intro n N r M hM y hy O hO hyO
+  -- Step 1: a chart `(V, W, ψ)` of `M` with `y ∈ W` (second conjunct of `IsSimonSubmanifold`).
+  obtain ⟨V, W, ψ, hyW, hψ⟩ := hM.2 y hy
+  -- Step 2: `B̄(y, ε/2) ⊆ B(y, ε) ⊆ O ∩ W`.
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 (hO.inter hψ.isOpen_target) y ⟨hyO, hyW⟩
+  have hsub : closedBall y (ε / 2) ⊆ O ∩ W :=
+    (Metric.closedBall_subset_ball (half_lt_self hε)).trans hball
+  refine ⟨ε / 2, half_pos hε, hsub.trans inter_subset_left, ?_⟩
+  -- Step 3: `M ∩ B̄(y, ε/2) = ψ(V ∩ ψ⁻¹(B̄(y, ε/2)))`, as `B̄(y, ε/2) ⊆ W` and `ψ(V) = W ∩ M`.
+  have himage : M ∩ closedBall y (ε / 2) = ψ '' (V ∩ ψ ⁻¹' closedBall y (ε / 2)) := by
+    ext z
+    constructor
+    · rintro ⟨hzM, hzB⟩
+      have hz : z ∈ ψ '' V := by
+        rw [hψ.image_eq]
+        exact ⟨(hsub hzB).2, hzM⟩
+      obtain ⟨x, hxV, rfl⟩ := hz
+      exact ⟨x, ⟨hxV, hzB⟩, rfl⟩
+    · rintro ⟨x, ⟨hxV, hxB⟩, rfl⟩
+      have hx : ψ x ∈ W ∩ M := by
+        rw [← hψ.image_eq]
+        exact mem_image_of_mem ψ hxV
+      exact ⟨hx.2, hxB⟩
+  -- Steps 4–5: `B̄(y, ε/2)` is a compact subset of `W`, so relative properness makes
+  -- `V ∩ ψ⁻¹(B̄(y, ε/2))` compact; its image under `ψ`, continuous on `V`, is compact.
+  rw [himage]
+  exact (hψ.isCompact_source_inter_preimage _ (isCompact_closedBall y (ε / 2))
+    (hsub.trans inter_subset_right)).image_of_continuousOn
+    (hψ.contDiffOn.continuousOn.mono inter_subset_left)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
