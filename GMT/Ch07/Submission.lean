@@ -655,6 +655,36 @@ theorem Submission.dorag_th_trace_proj_comp_compl : ∀ (P : ℕ) (T S : Submodu
     LinearMap.sub_comp, hpp, hss, map_sub, map_sub, map_sub, map_sub,
     LinearMap.trace_comp_comm' p.toLinearMap s.toLinearMap, hp, hs, hTS]
   ring
+/-- **Operator norm ≤ Hilbert–Schmidt norm** (step 3 of the tilt-excess estimate, Simon 5.2.1: the
+bound `‖p_x − p_S‖ ≤ |p_x − p_S|` used for the cross term).  For every linear map `A` of `ℝᴾ` and
+every `v ∈ ℝᴾ`, `|Av|² ≤ (Σᵢ |A eᵢ|²) |v|²`, where `eᵢ` is the standard basis.  Expanding
+`v = Σᵢ vᵢ eᵢ` gives `Av = Σᵢ vᵢ A eᵢ`, so `|Av| ≤ Σᵢ |vᵢ| |A eᵢ|` by the triangle inequality;
+squaring and Cauchy–Schwarz give `|Av|² ≤ (Σᵢ vᵢ²)(Σᵢ |A eᵢ|²)`, and `Σᵢ vᵢ² = |v|²`. -/
+theorem Submission.dorag_th_norm_apply_sq_le_hs : ∀ (P : ℕ) (A : Euclid P →L[ℝ] Euclid P) (v : Euclid P), ‖A v‖ ^ 2 ≤ (∑ i : Fin P, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖v‖ ^ 2 := by
+  intro P A v
+  -- Step 1: `v = Σᵢ vᵢ eᵢ` in the orthonormal basis `EuclideanSpace.basisFun`
+  have hv : v = ∑ i : Fin P, v i • EuclideanSpace.single i (1 : ℝ) := by
+    simpa using ((EuclideanSpace.basisFun (Fin P) ℝ).sum_repr v).symm
+  -- Step 2: `Av = Σᵢ vᵢ A eᵢ`, so `|Av| ≤ Σᵢ |vᵢ| |A eᵢ|`
+  have hAv : A v = ∑ i : Fin P, v i • A (EuclideanSpace.single i (1 : ℝ)) := by
+    conv_lhs => rw [hv]
+    simp [map_sum, map_smul]
+  have h1 : ‖A v‖ ≤ ∑ i : Fin P, |v i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖ := by
+    rw [hAv]
+    refine (norm_sum_le _ _).trans (le_of_eq ?_)
+    simp [norm_smul]
+  -- Step 3: Cauchy–Schwarz for finite sums, and `Σᵢ |vᵢ|² = |v|²`
+  have h2 : (∑ i : Fin P, |v i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 ≤
+      (∑ i : Fin P, |v i| ^ 2) * ∑ i : Fin P, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+    Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+  have h3 : ∑ i : Fin P, |v i| ^ 2 = ‖v‖ ^ 2 := by
+    rw [EuclideanSpace.norm_sq_eq]
+    simp [sq_abs]
+  -- Step 4: both sides of step 2 are nonnegative, so square it and combine with step 3
+  calc ‖A v‖ ^ 2 ≤ (∑ i : Fin P, |v i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) h1 2
+    _ ≤ _ := h2
+    _ = _ := by rw [h3, mul_comm]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
