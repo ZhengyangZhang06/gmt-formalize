@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'lpf_tde_' GMT .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/issue-workers.json",
+        "^theorem (measurable_fderiv |ae_differentiableWithinAt_of_mem |EuclideanSpace.euclideanHausdorffMeasure_eq_volume)|^def LocallyLipschitzOn|exists_lipschitzOnWith_of_compact",
+        "theorem inverse_continuousAt|adjoint_comp_self_injective_iff|^theorem MeasurableSet.image_of_continuousOn_injOn|^theorem Measurable.find|^theorem hasDerivAt_iff_isLittleO|^theorem HasDerivAt.le_of_lip",
+        "theorem HasWeightedApproximateTangentSpaceAt.unique|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake build GMT.Ch06.Submission",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tde-independent-audit-ruie7km3/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tde-decomp/FinalCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tde-independent-audit-ruie7km3/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/tmp/tde-decomp/FinalCheck.lean",
+        "/tmp/tde-independent-audit-ruie7km3/Types.lean",
+        "/tmp/tde-independent-audit-ruie7km3/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the inspected library sources. All five exact one-line propositions pass validation and independently elaborate in the comparator scope before any child implementation exists. All names are bare identifiers; searches found no reservations or identical frozen types in the current DAG. The five-way split is appropriate: its only internal dependency is measurable_chart_differential → continuous_left_inverse, and the existing dependency branches introduce no cycle. Independently checked assembly derives the exact selected parent type from explicit child and existing-dependency hypotheses, including the pointwise compact bound. The supplied five Lean proofs and this assembly compile with only propext, Classical.choice, and Quot.sound. The library hypotheses for Rademacher, arbitrary-function measurable_fderiv, inverse continuity, Borel gluing, Hausdorff image bounds, and tangent uniqueness agree with their uses."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_directional_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including the positive radius and both specified Fréchet derivatives. The chain rule, eventual ball membership, and Lipschitz comparison establish the required little-o remainder. The difference-quotient bound proves the norm inequality. This is a complete, non-circular proof."
+    },
+    {
+      "key": "uniform_lipschitz_near_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. The proof handles the empty compact set, obtains doubled Lipschitz balls using openness, and takes a finite subcover. The minimum radius and maximum constant give both conclusions uniformly. The alternative thickening argument also satisfies the pinned library hypotheses."
+    },
+    {
+      "key": "chart_nondiff_image_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact exceptional set, including Φ(w) ∈ U, matches the prose. Local composition estimates and a countable open cover justify Rademacher; openness converts within-differentiability to differentiability. Hausdorff–volume normalization and the Lipschitz image estimate then prove the stated nullity without an extra measurability assumption."
+    },
+    {
+      "key": "continuous_left_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes invertibility of A* A, the left-inverse identity, continuity at injective maps, and the projection bound by orthogonality. The inferred endomorphism-ring multiplication was independently checked to be composition. Degenerate dimensions are covered. The formula also agrees with the [Caltech handout](https://robotics.caltech.edu/~jwb/courses/ME115/handouts/pseudo.pdf)."
+    },
+    {
+      "key": "measurable_chart_differential",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and both chart identities with the same witnesses, exactly as in Lean. The proof supplies injectivity, Borel chart images, continuous inverse charts, injective derivatives, measurable pieces, and measurable first-chart selection. Arbitrary f is permitted by measurable_fderiv. Its sole child dependency is correctly declared, and its identities suffice for both parent estimates."
+    }
+  ],
+  "required_changes": []
+}
