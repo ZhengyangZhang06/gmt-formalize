@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1.gns_smooth-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1",
+  "depth": 4,
+  "title": "Gagliardo–Nirenberg–Sobolev inequality for C¹ compactly supported functions on ℝ^(n+1), n ≥ 1, with the L¹ norm of the derivative as a Bochner integral",
+  "statement": "Let n ∈ ℕ with n ≥ 1, N := n + 1, and p := (n + 1)/n computed in ℝ≥0∞. There is a real c > 0 such that every C¹ function v : ℝ^N → ℝ with compact support satisfies eLpNorm(v, p, L^N) ≤ ENNReal.ofReal(c ∫ ‖Dv(y)‖ dL^N(y)), where Dv(y) = fderiv ℝ v y, ‖·‖ is the operator norm and L^N = volume on ℝ^N = EuclideanSpace ℝ (Fin N).",
+  "lean_statement": "∀ (n : ℕ), 0 < n → ∃ c : ℝ, 0 < c ∧ ∀ v : Rn (n + 1) → ℝ, ContDiff ℝ 1 v → HasCompactSupport v → eLpNorm v ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ v y‖)",
+  "lean_name": "deGiorgiDensSob_gns_contDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-lipschitz-sobolev-a1-gns-smooth-a1-a1"
+}
