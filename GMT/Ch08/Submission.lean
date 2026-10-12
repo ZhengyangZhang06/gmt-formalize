@@ -410,6 +410,149 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Weighted radial first-variation inequality at a fixed radius (Simon Ch. 8, 3.5, with the sign
+of `δV(X)` corrected): for `X_t(z) = h(z) φ(|z - y|²/t²) (z - y)`,
+`n Ĩ(t) - t J(t) + G(t) ≤ δW(X_t)`, because the dropped normal term is nonnegative (`h ≥ 0`,
+`φ' ≤ 0` and `⟨w, p_S w⟩ ≤ |w|²`).  The divergence of `X_t` is supplied by hypothesis (Div). -/
+theorem Submission.intcpt_allard_wrm_first_variation_lower_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℝ → ℝ) (A t : ℝ), (∀ (a : Euclidean N → ℝ) (c z : Euclidean N) (S : Grassmannian N n), DifferentiableAt ℝ a z → Varifold.tangentialDivergence (fun w ↦ a w • (w - c)) z S = n * a z + fderiv ℝ a z (Grassmannian.project S (z - c))) → ContDiff ℝ 1 h → (∀ z, 0 ≤ h z) → ContDiff ℝ 1 φ → Antitone φ → 0 < A → (∀ s, A ^ 2 ≤ s → φ s = 0) → 0 < t → closedBall y (t * A) ⊆ U → (n : ℝ) * (∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight) - t * (∫ z, deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z ∂W.weight) + (∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure) ≤ W.firstVariation (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) := by
+  intro N n U W y h φ A t hDiv hh hh0 hφ hφa hA hcut ht hU
+  -- Step 1: with `s(z) = ‖z - y‖²/t²`, `φ(s(z)) = φ'(s(z)) = 0` off `K = B_{tA}(y)`.
+  have hKc : IsCompact (closedBall y (t * A)) := isCompact_closedBall y (t * A)
+  have hout : ∀ z : Euclidean N, z ∉ closedBall y (t * A) → A ^ 2 < ‖z - y‖ ^ 2 / t ^ 2 := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm, not_le] at hz
+    rw [lt_div_iff₀ (by positivity)]
+    nlinarith [mul_pos ht hA]
+  have hφ0 : ∀ z : Euclidean N, z ∉ closedBall y (t * A) → φ (‖z - y‖ ^ 2 / t ^ 2) = 0 :=
+    fun z hz ↦ hcut _ (hout z hz).le
+  have hdφ0 : ∀ z : Euclidean N, z ∉ closedBall y (t * A) →
+      deriv φ (‖z - y‖ ^ 2 / t ^ 2) = 0 := by
+    intro z hz
+    have hev : φ =ᶠ[𝓝 (‖z - y‖ ^ 2 / t ^ 2)] fun _ ↦ 0 :=
+      (eventually_gt_nhds (hout z hz)).mono fun s hs ↦ hcut s hs.le
+    rw [hev.deriv_eq, deriv_const]
+  -- Step 2: `s`, `a = h · (φ ∘ s)` and `X_t = a · (· - y)` are `C¹`.
+  have hs : ContDiff ℝ 1 (fun z : Euclidean N ↦ ‖z - y‖ ^ 2 / t ^ 2) :=
+    ((contDiff_id.sub contDiff_const).norm_sq ℝ).div_const _
+  have ha : ContDiff ℝ 1 (fun z ↦ h z * φ (‖z - y‖ ^ 2 / t ^ 2)) := hh.mul (hφ.comp hs)
+  have hX : ContDiff ℝ 1 (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) :=
+    ha.smul (contDiff_id.sub contDiff_const)
+  -- Step 3: `tsupport X_t ⊆ K ⊆ U`, so `div_S X_t` is `W`-integrable (step 7a).
+  have hXK : tsupport (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) ⊆
+      closedBall y (t * A) := by
+    refine closure_minimal (fun z hz ↦ ?_) isClosed_closedBall
+    by_contra hzK
+    exact hz (by simp only [hφ0 z hzK, mul_zero, zero_smul])
+  have hdiv := W.integrable_tangentialDivergence _ hX
+    (hKc.of_isClosed_subset (isClosed_tsupport _) hXK) (hXK.trans hU)
+  -- Step 7: a continuous integrand vanishing off `K × G` is `W`-integrable, as `W(K × G) < ∞`.
+  have hint : ∀ F : Euclidean N × Grassmannian N n → ℝ, Continuous F →
+      (∀ p : Euclidean N × Grassmannian N n, p.1 ∉ closedBall y (t * A) → F p = 0) →
+      Integrable F W.measure := by
+    intro F hF hF0
+    have hKG : IsCompact (closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))) :=
+      hKc.prod isCompact_univ
+    obtain ⟨C, hC⟩ := hKG.exists_bound_of_continuousOn hF.continuousOn
+    have hOn : IntegrableOn F (closedBall y (t * A) ×ˢ univ) W.measure :=
+      Measure.integrableOn_of_bounded (W.finite_on_compact _ hKc hU) hF.aestronglyMeasurable
+        ((ae_restrict_iff' (isClosed_closedBall.measurableSet.prod MeasurableSet.univ)).mpr
+          (Eventually.of_forall hC))
+    exact hOn.integrable_of_forall_notMem_eq_zero fun p hp ↦ hF0 p fun h1 ↦ hp ⟨h1, mem_univ _⟩
+  have hhc : Continuous h := hh.continuous
+  have hφs : Continuous (fun z : Euclidean N ↦ φ (‖z - y‖ ^ 2 / t ^ 2)) :=
+    hφ.continuous.comp hs.continuous
+  have hdφ : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hf1 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) W.measure :=
+    hint _ ((hφs.mul hhc).comp continuous_fst) fun p hp ↦ by rw [hφ0 p.1 hp, zero_mul]
+  have hf2 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1) W.measure :=
+    hint _ (by fun_prop) fun p hp ↦ by rw [hdφ0 p.1 hp, zero_mul, zero_mul]
+  -- (Div) with `a = h` writes the gradient term through the continuous `div_S (h · (· - y))`.
+  have hG : ∀ p : Euclidean N × Grassmannian N n,
+      fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) =
+        Varifold.tangentialDivergence (fun w ↦ h w • (w - y)) p.1 p.2 - n * h p.1 := fun p ↦ by
+    rw [hDiv h y p.1 p.2 (hh.differentiable_one p.1)]
+    ring
+  have hf3 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)))
+      W.measure := by
+    refine hint _ ?_ fun p hp ↦ by rw [hφ0 p.1 hp, zero_mul]
+    simp_rw [hG]
+    exact (hφs.comp continuous_fst).mul
+      ((Varifold.continuous_tangentialDivergence (hh.smul (contDiff_id.sub contDiff_const))).sub
+        (continuous_const.mul (hhc.comp continuous_fst)))
+  -- Steps 4–6: the pointwise inequality `E ≤ div_S X_t`.
+  have hpt : ∀ p : Euclidean N × Grassmannian N n,
+      (n : ℝ) * (φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) -
+          t * (deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1) +
+          φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ≤
+        Varifold.tangentialDivergence (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y))
+          p.1 p.2 := by
+    rintro ⟨z, S⟩
+    dsimp only
+    -- Step 2: `Da(z) = h(z) φ'(s) (2/t²) ⟨z - y, ·⟩ + φ(s) Dh(z)`; then (Div) with `c = y`.
+    have hg : HasFDerivAt (fun x : Euclidean N ↦ ‖x - y‖ ^ 2)
+        (2 • (innerSL ℝ (z - y)).comp (ContinuousLinearMap.id ℝ (Euclidean N))) z :=
+      ((hasFDerivAt_id z).sub_const y).norm_sq
+    have hη : HasDerivAt (fun r : ℝ ↦ φ (r / t ^ 2))
+        (deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (1 / t ^ 2)) (‖z - y‖ ^ 2) :=
+      HasDerivAt.comp (h₂ := φ) (h := fun r : ℝ ↦ r / t ^ 2) (‖z - y‖ ^ 2)
+        (hφ.differentiable_one _).hasDerivAt ((hasDerivAt_id' _).div_const _)
+    have hcomp : HasFDerivAt ((fun r : ℝ ↦ φ (r / t ^ 2)) ∘ fun x : Euclidean N ↦ ‖x - y‖ ^ 2)
+        ((deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (1 / t ^ 2)) •
+          (2 • (innerSL ℝ (z - y)).comp (ContinuousLinearMap.id ℝ (Euclidean N)))) z :=
+      hη.comp_hasFDerivAt z hg
+    have hfd : HasFDerivAt (fun x ↦ h x * φ (‖x - y‖ ^ 2 / t ^ 2))
+        (h z • ((deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (1 / t ^ 2)) •
+          (2 • (innerSL ℝ (z - y)).comp (ContinuousLinearMap.id ℝ (Euclidean N)))) +
+          φ (‖z - y‖ ^ 2 / t ^ 2) • fderiv ℝ h z) z :=
+      (hh.differentiable_one z).hasFDerivAt.fun_mul hcomp
+    rw [hDiv _ y z S (ha.differentiable_one z), hfd.fderiv]
+    -- Step 5: `⟨w, p_S w⟩ = ‖p_S w‖² ≤ ‖w‖²` (`p_S` is symmetric and idempotent).
+    have hP : inner ℝ (S.project (z - y)) (S.project (z - y)) =
+        inner ℝ (z - y) (S.project (z - y)) := by
+      rw [show inner ℝ (S.project (z - y)) (S.project (z - y)) =
+          inner ℝ (z - y) (S.project (S.project (z - y))) from
+        Grassmannian.projectionLinearMap_isSymmetric S (z - y) (S.projectionLinearMap (z - y)),
+        Grassmannian.project_project]
+    have hip : inner ℝ (z - y) (S.project (z - y)) ≤ ‖z - y‖ ^ 2 := by
+      linarith [norm_sub_sq_real (z - y) (S.project (z - y)),
+        real_inner_self_eq_norm_sq (S.project (z - y)), sq_nonneg ‖z - y - S.project (z - y)‖]
+    -- Step 6: `div_S X_t - E = (2/t²) h(z) (-φ'(s)) (‖w‖² - ⟨w, p_S w⟩) ≥ 0`.
+    have hnn : 0 ≤ h z * -deriv φ (‖z - y‖ ^ 2 / t ^ 2) *
+        (‖z - y‖ ^ 2 - inner ℝ (z - y) (S.project (z - y))) / t ^ 2 :=
+      div_nonneg (mul_nonneg (mul_nonneg (hh0 z) (neg_nonneg.mpr hφa.deriv_nonpos))
+        (sub_nonneg.mpr hip)) (by positivity)
+    have ht3 : t * (deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z) =
+        deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 2) * h z := by
+      field_simp
+    simp only [add_apply, smul_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.id_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat]
+    rw [ht3, ← sub_nonneg]
+    convert mul_nonneg zero_le_two hnn using 1
+    ring
+  -- Steps 8–9: integrate (`μ_W = π_# W` for the first two integrals) and use `integral_mono`.
+  have hw1 : ∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight =
+      ∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1 ∂W.measure :=
+    integral_map measurable_fst.aemeasurable (hφs.mul hhc).aestronglyMeasurable
+  have hw2 : ∫ z, deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z ∂W.weight =
+      ∫ p, deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1 ∂W.measure :=
+    integral_map measurable_fst.aemeasurable (by fun_prop : Continuous fun z : Euclidean N ↦
+      deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z).aestronglyMeasurable
+  have hf12 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      (n : ℝ) * (φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) -
+        t * (deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1)) W.measure :=
+    (hf1.const_mul _).sub (hf2.const_mul _)
+  calc _ = ∫ p, ((n : ℝ) * (φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) -
+          t * (deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1) +
+          φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)))
+          ∂W.measure := by
+        rw [integral_add hf12 hf3, integral_sub (hf1.const_mul _) (hf2.const_mul _),
+          integral_const_mul, integral_const_mul, hw1, hw2]
+    _ ≤ _ := integral_mono (hf12.add hf3) hdiv hpt
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
