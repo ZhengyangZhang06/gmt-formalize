@@ -537,6 +537,33 @@ theorem Submission.adr_null_open_cover : ∀ (P : ℕ) (ℓ : ℝ) (E : Set (Euc
     _ < ε / 2 + ε / 2 := ENNReal.add_lt_add ht hδsum
     _ = ε := ENNReal.add_halves ε
 
+/-- **A small-cost cover of a null closed set eventually covers nearby sets in `B_{1/2}(0)`**:
+Simon's "`K ≡ B̄₁(0) \ ∪ⱼ B_{ρⱼ}(xⱼ)` is a compact set with positive distance from `sing ψ`.
+Hence by assumption A.3(3) we have `sing φ_{x,λₖ'} ∩ B₁(0) ⊆ ∪ⱼ B_{ρⱼ}(xⱼ)` for all sufficiently
+large `k`" in the proof of A.4 (chapter-A.txt lines 97–101), for `S ∩ B̄_{1/2}(0)` only.
+`adr_null_open_cover` covers the null set `E = S ∩ B̄_{1/2}(0)` by open `Uⱼ`.  The compact
+`K = B̄_{1/2}(0) \ ⋃ⱼ Uⱼ` misses the closed `S`, so some thickening `thickening η K` misses `S`;
+the hypothesis at this `η` puts `B_{1/2}(0) ∩ Tₖ` (`k ≥ k₀`) within `η` of `S`, hence off `K`. -/
+theorem Submission.adr_eventually_subset_small_cover : ∀ (P : ℕ) (ℓ : ℝ) (S : Set (Euclid P)) (Ts : ℕ → Set (Euclid P)) (ε : ℝ≥0∞), 0 < ℓ → IsClosed S → μH[ℓ] (S ∩ ball (0 : Euclid P) 1) = 0 → 0 < ε → (∀ η : ℝ, 0 < η → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ Ts k ⊆ {x | ∃ z ∈ S, dist x z < η}) → ∃ (U : ℕ → Set (Euclid P)) (k₀ : ℕ), ∑' j, Metric.ediam (U j) ^ ℓ < ε ∧ ∀ k ≥ k₀, ball (0 : Euclid P) (1 / 2) ∩ Ts k ⊆ ⋃ j, U j := by
+  intro P ℓ S Ts ε hℓ hS hS1 hε hT
+  -- `E = S ∩ B̄_{1/2}(0) ⊆ S ∩ B₁(0)` is `μH[ℓ]`-null, so it has an open cover of cost `< ε`
+  have hE : μH[ℓ] (S ∩ closedBall (0 : Euclid P) (1 / 2)) = 0 :=
+    measure_mono_null (inter_subset_inter_right S (closedBall_subset_ball (by norm_num))) hS1
+  obtain ⟨U, hUo, hEU, hU⟩ := Submission.adr_null_open_cover P ℓ _ ε hℓ hE hε
+  -- `K = B̄_{1/2}(0) \ ⋃ⱼ Uⱼ` is compact and misses the closed set `S`
+  have hK : IsCompact (closedBall (0 : Euclid P) (1 / 2) \ ⋃ j, U j) :=
+    (isCompact_closedBall _ _).diff (isOpen_iUnion hUo)
+  have hKS : closedBall (0 : Euclid P) (1 / 2) \ ⋃ j, U j ⊆ Sᶜ := fun w hw hwS =>
+    hw.2 (hEU ⟨hwS, hw.1⟩)
+  -- a uniform gap: `thickening η K` misses `S`
+  obtain ⟨η, hη, hηK⟩ := hK.exists_thickening_subset_open hS.isOpen_compl hKS
+  obtain ⟨k₀, hk₀⟩ := hT η hη
+  refine ⟨U, k₀, hU, fun k hk w hw => ?_⟩
+  by_contra hwU
+  obtain ⟨z, hzS, hwz⟩ := hk₀ k hk ⟨ball_subset_ball (by norm_num) hw.1, hw.2⟩
+  exact hηK (mem_thickening_iff.mpr ⟨w, ⟨ball_subset_closedBall hw.1, hwU⟩, by rwa [dist_comm]⟩)
+    hzS
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
