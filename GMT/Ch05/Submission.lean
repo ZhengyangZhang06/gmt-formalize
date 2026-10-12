@@ -526,7 +526,7 @@ theorem rsod_c1ab_utr_remainder_sup_control : ∀ (n : ℕ) (f : Rn n → ℝ) (
     rw [Metric.tendsto_atTop]
     intro ε hε
     obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.1
-      ((hdiff x hx).hasFDerivAt.isLittleO.def (half_pos hε))
+      ((hdiff x hx).hasFDerivAt.isLittleO.bound (half_pos hε))
     obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hr
     refine ⟨k₀, fun k hk => ?_⟩
     have hle : (⨆ q : Q, ψ k q x) ≤ ε / 2 := by
