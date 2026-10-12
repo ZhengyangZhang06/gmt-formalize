@@ -673,6 +673,121 @@ theorem Submission.slicing_ru_covector_expansion : ∀ (P k : ℕ) (α : Covecto
     ContinuousAlternatingMap.coe_toAlternatingMap]
   exact h2 v hv
 
+/-- Simon Ch. 6, 2.7–2.9 (uniqueness of the vector measure `v μ` of a representation (2.7)),
+localized to an open `W`: if two representations agree on the test forms supported in `W`, their
+restrictions to every Borel set `A` agree on those forms. -/
+theorem Submission.slicing_representation_unique :
+    ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ₁ μ₂ : Measure (Eucl P))
+      (v₁ v₂ : Eucl P → NVector (Eucl P) k),
+      (∀ ω : TestFormOn U k,
+        Integrable (fun x => v₁ x ((ω : DifferentialForm (Eucl P) k) x)) μ₁) →
+      (∀ ω : TestFormOn U k,
+        Integrable (fun x => v₂ x ((ω : DifferentialForm (Eucl P) k) x)) μ₂) →
+      ∀ W : Set (Eucl P), IsOpen W →
+      (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W →
+        ∫ x, v₁ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₁ =
+          ∫ x, v₂ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₂) →
+      ∀ A : Set (Eucl P), MeasurableSet A → ∀ ω : TestFormOn U k,
+        tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W →
+        ∫ x in A, v₁ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₁ =
+          ∫ x in A, v₂ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₂ := by
+  intro P k U hU μ₁ μ₂ v₁ v₂ hint₁ hint₂ W hW heq A hA ω hωW
+  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) :=
+    ω.property.1.1
+  have hωc : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.property.1.2
+  -- Step 1: an open `O ⊇ tsupport ω` whose closure is a compact subset of `U ∩ W`.
+  obtain ⟨O, hO, hωO, hOUW, hOc⟩ := exists_open_between_and_isCompact_closure hωc.isCompact
+    (hU.inter hW) (subset_inter ω.property.2 hωW)
+  have hOU : closure O ⊆ U := hOUW.trans inter_subset_left
+  have hOW : closure O ⊆ W := hOUW.trans inter_subset_right
+  have hOm : MeasurableSet (closure O) := isClosed_closure.measurableSet
+  have hωz : ∀ x, x ∉ O → (ω : DifferentialForm (Eucl P) k) x = 0 :=
+    fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωO h)
+  -- `dx β = dx^{β₁} ∧ ⋯ ∧ dx^{βₖ}` and `g v β = 1_{closure O} · v(dx β)`.
+  let dx : SimonMultiIndex k P → Covector (Eucl P) k :=
+    fun β => wedgeCovectors k fun j => EuclideanSpace.proj (β j)
+  let g : (Eucl P → NVector (Eucl P) k) → SimonMultiIndex k P → Eucl P → ℝ :=
+    fun v β => (closure O).indicator fun x => v x (dx β)
+  -- Step 2: `g v β` is integrable, as `v(dx β)` is integrable on the compact `closure O ⊆ U`.
+  have hg : ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k),
+      (∀ ω : TestFormOn U k,
+        Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) →
+      ∀ β, Integrable (g v β) μ := fun μ v hv β =>
+    (Submission.slicing_ru_integrableOn_apply P k U hU μ v hv (closure O) hOc hOU
+      (dx β)).integrable_indicator hOm
+  -- Step 3: agreement against smooth `φ` supported in `O`, testing with the form `φ dx β`.
+  have hsmooth : ∀ β, ∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ O →
+      ∫ x, φ x * g v₁ β x ∂μ₁ = ∫ x, φ x * g v₂ β x ∂μ₂ := by
+    intro β φ hφ hφc hφO
+    have hφs : tsupport (fun x => φ x • dx β) ⊆ closure O :=
+      (tsupport_smul_subset_left φ fun _ => dx β).trans (hφO.trans subset_closure)
+    let η : TestFormOn U k := ⟨fun x => φ x • dx β,
+      ⟨⟨hφ.smul contDiff_const, hφc.smul_right⟩, hφs.trans hOU⟩⟩
+    have hη : ∀ (v : Eucl P → NVector (Eucl P) k) (x : Eucl P),
+        v x ((η : DifferentialForm (Eucl P) k) x) = φ x * g v β x := by
+      intro v x
+      change v x (φ x • dx β) = φ x * (closure O).indicator (fun x => v x (dx β)) x
+      rw [map_smul, smul_eq_mul]
+      by_cases hx : x ∈ closure O
+      · rw [indicator_of_mem hx]
+      · rw [indicator_of_notMem hx,
+          image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hφO h)), zero_mul,
+          mul_zero]
+    simp_rw [← hη]
+    exact heq η (hφs.trans hOW)
+  -- Steps 4–6: continuous `φ`, then bounded Borel `h` vanishing off `O` (π–λ uniqueness).
+  have hbdd : ∀ β, ∀ h : Eucl P → ℝ, Measurable h → (∃ C : ℝ, ∀ x, |h x| ≤ C) →
+      (∀ x, x ∉ O → h x = 0) → ∫ x, h x * g v₁ β x ∂μ₁ = ∫ x, h x * g v₂ β x ∂μ₂ :=
+    fun β => Submission.slicing_ru_continuous_to_bounded P μ₁ μ₂ _ _ (hg μ₁ v₁ hint₁ β)
+      (hg μ₂ v₂ hint₂ β) O hO
+      (Submission.slicing_ru_smooth_to_continuous P μ₁ μ₂ _ _ (hg μ₁ v₁ hint₁ β)
+        (hg μ₂ v₂ hint₂ β) O hO (hsmooth β))
+  -- Step 7: the bounded Borel coefficients `a β = 1_A ω(e_β)`, which vanish off `O`.
+  let a : SimonMultiIndex k P → Eucl P → ℝ := fun β =>
+    A.indicator fun x => euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) k) x) β
+  have hac : ∀ β, Continuous fun x =>
+      euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) k) x) β := fun β =>
+    hωs.continuous.eval_const _
+  have ham : ∀ β, Measurable (a β) := fun β => (hac β).measurable.indicator hA
+  have hab : ∀ β, ∃ C : ℝ, ∀ x, ‖a β x‖ ≤ C := by
+    intro β
+    obtain ⟨C, hC⟩ := (hac β).bounded_above_of_compact_support
+      (hωc.comp_left (g := fun α => euclideanCovectorCoordinate α β) rfl)
+    exact ⟨C, fun x => (norm_indicator_le_norm_self _ x).trans (hC x)⟩
+  have ha0 : ∀ β x, x ∉ O → a β x = 0 := by
+    intro β x hx
+    simp [a, euclideanCovectorCoordinate, hωz x hx]
+  -- `1_A v(ω) = ∑_β a β · g v β` pointwise, by the expansion `ω = ∑_β ω(e_β) dx β`.
+  have hpt : ∀ (v : Eucl P → NVector (Eucl P) k) (x : Eucl P),
+      A.indicator (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) x =
+        ∑ β, a β x * g v β x := by
+    intro v x
+    by_cases hxO : x ∈ closure O
+    · by_cases hxA : x ∈ A
+      · simp only [a, g, indicator_of_mem hxA, indicator_of_mem hxO]
+        conv_lhs => rw [Submission.slicing_ru_covector_expansion P k
+          ((ω : DifferentialForm (Eucl P) k) x)]
+        simp only [map_sum, map_smul, smul_eq_mul, dx]
+      · simp [a, indicator_of_notMem hxA]
+    · simp [g, hxO, hωz x fun h => hxO (subset_closure h)]
+  have hsum : ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k),
+      (∀ ω : TestFormOn U k,
+        Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) →
+      ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ =
+        ∑ β, ∫ x, a β x * g v β x ∂μ := by
+    intro μ v hv
+    rw [← integral_indicator hA]
+    calc ∫ x, A.indicator (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) x ∂μ
+        = ∫ x, ∑ β, a β x * g v β x ∂μ := integral_congr_ae (Eventually.of_forall (hpt v))
+      _ = ∑ β, ∫ x, a β x * g v β x ∂μ := integral_finsetSum _ fun β _ => by
+          obtain ⟨C, hC⟩ := hab β
+          exact (hg μ v hv β).bdd_mul (ham β).aestronglyMeasurable (Eventually.of_forall hC)
+  rw [hsum μ₁ v₁ hint₁, hsum μ₂ v₂ hint₂]
+  refine Finset.sum_congr rfl fun β _ => hbdd β (a β) (ham β) ?_ (ha0 β)
+  obtain ⟨C, hC⟩ := hab β
+  exact ⟨C, fun x => (Real.norm_eq_abs (a β x)).symm.le.trans (hC x)⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
