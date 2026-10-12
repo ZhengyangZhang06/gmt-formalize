@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "(^noncomputable def extDeriv |alternatizeUncurryFinCLM_apply|alternatizeUncurryFin_add|alternatizeUncurryFin_smul|theorem sign_cycleRange|theorem cycleRange_symm_zero|theorem cycleRange_symm_succ|theorem sign_symm |theorem det_permute |theorem det_zero_of_row_eq|lemma exists_succAbove_eq)",
+        "(HasFDerivAt\\.(fun_sum|sum|smul_const|mul|const_mul)|abbrev EuclideanSpace.proj|theorem basisFun_(apply|repr))",
+        "structure IsLinearMap|def IsLinearMap|def mk\\x27|sum_repr|def smulRight|theorem smulRight_apply|lemma smulRight_apply",
+        "rg -n 'def wedgeCovectors' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "rg -n 'wedgeCovectors|Covector|exteriorDerivative' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pfd_independent_audit_ysm789be/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pfd_independent_audit_ysm789be/Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/GroupTheory/Perm/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/GroupTheory/Perm/Sign.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/SuccPred.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Module/LinearMap/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a1/decomposition-v1.json",
+        "/tmp/pfd_independent_audit_ysm789be/Challenge.lean",
+        "/tmp/pfd_independent_audit_ysm789be/Proofs.lean"
+      ],
+      "conclusion": "The four-child split is appropriate for this selected contract: it separates wedge linearity, determinant signs, finite-sum differentiation, and coordinate contraction. The dependencies are correctly directed and acyclic. The supplied assembly proves the exact frozen parent type, which matches the handoff and DAG.\n\nVerified snapshot revisions d8d46c95/25730c7c and byte compatibility of the inspected Mathlib files. The snapshot confirms extDeriv = alternatizeUncurryFin ∘ fderiv, linearity of alternatization, the stated permutation signs, repeated-row vanishing, differentiation rules, and coordinate expansion. No wedgeCovectors definition occurs in the snapshot's project subtree; the imported SimonGMT FormsDuality.lean supplies its recursive definition at line 115 and determinant formula at line 127. Its inspected files match pinned revision 2b366308.\n\nAll four names are bare identifiers with no collision in the recursive reservation scan. No accepted DAG declaration has an identical child type. Each frozen type is a standalone one-line proposition and elaborates in a separate comparator challenge file without child implementations. A separate sorry-free harness rechecked the supplied witnesses and exact parent assembly; every proof uses only propext, Classical.choice, and Quot.sound. The inferred real module actions agree with the intended covector operations; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "wedge_cons_linear",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type state exactly additivity and real homogeneity for arbitrary P, m, and β. Unfolding wedgeCovectors, proving smulRight linear by evaluation, and applying alternatization's linearity establishes both IsLinearMap fields. The proof is complete, independent of the parent and siblings, and includes m = 0."
+    },
+    {
+      "key": "wedge_cons_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches both prose conclusions. The inverse cycleRange permutation produces the stated omitted-index ordering and sign (-1)^j. For i ≠ j, succAbove supplies the repeated factor at a distinct row, so the determinant vanishes. Both arguments are complete and non-circular, including the boundary case m = 0."
+    },
+    {
+      "key": "extderiv_sum_wedge",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite index type, constant covector families, and pointwise differentiability hypotheses match the Lean proposition. Differentiating each scalar multiple, summing derivatives, applying linear alternatization, and unfolding the successor wedge definition proves the exact identity. No neighborhood smoothness or additional hypothesis is needed; empty index types are covered."
+    },
+    {
+      "key": "divergence_term",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate expansion of ℓ.comp L is justified by the standard orthonormal basis and linearity. The two declared dependencies then expand the wedge and eliminate every index except j, giving exactly the stated sign and coefficient. These are precisely its sibling dependencies. Substituting ℓ = Dψ_j(Lx), together with the other children and the supplied product/chain-rule assembly, establishes the selected parent without circularity."
+    }
+  ],
+  "required_changes": []
+}

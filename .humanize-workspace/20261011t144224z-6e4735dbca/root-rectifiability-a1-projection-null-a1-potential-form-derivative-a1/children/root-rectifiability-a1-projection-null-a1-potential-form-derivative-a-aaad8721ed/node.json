@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.divergence_term-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+  "depth": 4,
+  "title": "Divergence identity: (ℓ∘L)∧λ_0∧⋯λ̂_j⋯∧λ_m = (−1)^j ℓ(e_j)·λ_0∧⋯∧λ_m",
+  "statement": "Let P, m ∈ ℕ, let L : ℝ^P → ℝ^{m+1} be a continuous linear map, let ℓ : ℝ^{m+1} → ℝ be a continuous linear functional, and let j ∈ Fin (m+1). For i ∈ Fin (m+1) let λ_i := y^i∘L, where y^i = EuclideanSpace.proj i is the i-th coordinate function, and let e_j := EuclideanSpace.single j 1. Then\nwedgeCovectors (m+1) (Fin.cons (ℓ∘L) (λ∘j.succAbove)) = ((−1)^j·ℓ(e_j)) • wedgeCovectors (m+1) λ,\nthat is, (ℓ∘L)∧λ_0∧⋯∧λ̂_j∧⋯∧λ_m = (−1)^j ℓ(e_j)·λ_0∧⋯∧λ_m.",
+  "lean_statement": "∀ (P m : ℕ) (L : Eucl P →L[ℝ] Eucl (m + 1)) (ℓ : Eucl (m + 1) →L[ℝ] ℝ) (j : Fin (m + 1)), wedgeCovectors (m + 1) (Fin.cons (ℓ.comp L) (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = ((-1 : ℝ) ^ (j : ℕ) * ℓ (EuclideanSpace.single j (1 : ℝ))) • wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)",
+  "lean_name": "rpn_pfd_wedge_cons_comp_succAbove",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.wedge_cons_linear-a1",
+    "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.wedge_cons_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.wedge_cons_linear-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.wedge_cons_sign-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a-aaad8721ed-a1"
+}
