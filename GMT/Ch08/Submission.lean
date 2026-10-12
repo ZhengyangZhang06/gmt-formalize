@@ -1144,6 +1144,73 @@ theorem Submission.allard_tc_tangent_plane_dilation :
   -- Step 5: an `n`-plane is determined by these integrals.
   exact ⟨Submission.allard_tc_tpd_plane_eq_of_integral_eq N n T T' hplane, hθ⟩
 
+/-- **Rectifiable tangent cones are invariant under dilations** (child `cone_rescaling_invariance`
+of `allard_tangent_cones`; Simon Ch. 8, 5.7, last sentence of the proof).  If `C = v(M, θ)` has
+tangent plane `T_x` with multiplicity `θ(x)` at every `x ∈ M`, is represented by these planes and
+`μ_C(s A) = s^n μ_C(A)`, then `η_{0,s #} C = C` for `s > 0`: on `G = {w ∈ M : s w ∈ M}` the sibling
+`tangent_plane_dilation` gives `θ(s w) = θ(w)` and the same planes, child
+`carrier_dilation_null` makes `G` of full `H^n`-measure in both representing sets, and children
+`rescaled_representation` and `setLIntegral_congr_off_null` compare the two integrals. -/
+theorem Submission.allard_tc_cone_rescaling_invariance :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ → (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) → (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n]) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → ∀ s : ℝ, 0 < s → rescaledMeasure C 0 s = C.measure := by
+  intro N n C M θ hC htan hrep hhom s hs
+  obtain ⟨-, hM, -, hθ, hint, -⟩ := hC
+  -- Step 1: `μ_C(B) = ∫⁻_{M ∩ B} ofReal θ dH^n` for Borel `B`, since every `x ∈ M` has a plane.
+  have hweight : ∀ B : Set (Euclidean N), MeasurableSet B →
+      C.weight B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N)) := by
+    intro B hB
+    rw [C.weight_apply hB, hrep _ (hB.prod MeasurableSet.univ)]
+    congr 2
+    ext x
+    simp only [mem_ofPred_eq, mem_inter_iff, mem_prod, mem_univ, and_true]
+    exact ⟨fun ⟨hxM, _, _, hxB⟩ ↦ ⟨hxM, hxB⟩,
+      fun ⟨hxM, hxB⟩ ↦ ⟨hxM, (htan x hxM).choose, (htan x hxM).choose_spec, hxB⟩⟩
+  -- Step 2: child `carrier_dilation_null` for `μ = μ_C`: `M ∖ s⁻¹ M` and `s⁻¹ M ∖ M` are null.
+  obtain ⟨hnull₁, hnull₂⟩ := Submission.allard_tc_cri_carrier_dilation_null N n C.weight M θ hM
+    hθ (fun K hK ↦ hint K hK (subset_univ K)) hweight hhom s hs
+  -- Step 3: for `w ∈ M` with `s w ∈ M`, the sibling `tangent_plane_dilation` (at `s`, in both
+  -- directions) gives `θ(s w) = θ(w)` and the same tangent planes at `w` and `s w`.
+  have hdil : ∀ w ∈ M, s • w ∈ M → θ (s • w) = θ w ∧ ∀ S : Grassmannian N n,
+      (HasTangentPlane C (s • w) S (θ (s • w)) ↔ HasTangentPlane C w S (θ w)) := by
+    intro w hwM hswM
+    obtain ⟨Tw, hTw⟩ := htan w hwM
+    obtain ⟨Tsw, hTsw⟩ := htan (s • w) hswM
+    refine ⟨(Submission.allard_tc_tangent_plane_dilation N n C s w Tw Tsw (θ w) (θ (s • w)) hs
+      (hhom s · hs) hTw hTsw).2, fun S ↦ ⟨fun hS ↦ ?_, fun hS ↦ ?_⟩⟩
+    · obtain ⟨rfl, -⟩ := Submission.allard_tc_tangent_plane_dilation N n C s w Tw S (θ w)
+        (θ (s • w)) hs (hhom s · hs) hTw hS
+      exact hTw
+    · obtain ⟨rfl, -⟩ := Submission.allard_tc_tangent_plane_dilation N n C s w S Tsw (θ w)
+        (θ (s • w)) hs (hhom s · hs) hS hTsw
+      exact hTsw
+  -- Step 4: on a Borel `A`, child `rescaled_representation` (with `P x T = HasTangentPlane C x T
+  -- (θ x)` and `g = ofReal ∘ θ`) and the representation of `C` turn the claim into an equality of
+  -- set-lintegrals, closed by child `setLIntegral_congr_off_null` at `G = {w ∈ M : s w ∈ M}`.
+  ext A hA
+  rw [Submission.allard_tc_cri_rescaled_representation N n C M
+      (fun x T ↦ HasTangentPlane C x T (θ x)) (fun x ↦ ENNReal.ofReal (θ x)) hrep s hs A hA,
+    hrep A hA]
+  refine Submission.allard_tc_cri_setLIntegral_congr_off_null N (μHE[n] : Measure (Euclidean N))
+    {w | w ∈ M ∧ s • w ∈ M} _ _ _ _ ?_ ?_ ?_ ?_ ?_
+  -- (a) `G` is null-measurable: `G ⊆ M` and `M ∖ G ⊆ M ∖ s⁻¹ M` is null.
+  · refine hM.congr (ae_eq_set.2 ⟨measure_mono_null ?_ hnull₁, measure_mono_null ?_ measure_empty⟩)
+    · exact fun w ⟨hwM, hwG⟩ ↦ ⟨hwM, fun hswM ↦ hwG ⟨hwM, hswM⟩⟩
+    · exact fun w ⟨hwG, hwM⟩ ↦ hwM hwG.1
+  -- (b) the rescaled representing set lies in `G ∪ (s⁻¹ M ∖ M)`.
+  · refine measure_mono_null ?_ hnull₂
+    exact fun w ⟨⟨hswM, _⟩, hwG⟩ ↦ ⟨hswM, fun hwM ↦ hwG ⟨hwM, hswM⟩⟩
+  -- (c) the representing set of `C` lies in `G ∪ (M ∖ s⁻¹ M)`.
+  · refine measure_mono_null ?_ hnull₁
+    exact fun w ⟨⟨hwM, _⟩, hwG⟩ ↦ ⟨hwM, fun hswM ↦ hwG ⟨hwM, hswM⟩⟩
+  -- (d) on `G` the two representing sets agree, by step 3.
+  · rintro w ⟨hwM, hswM⟩
+    have hiff := (hdil w hwM hswM).2
+    exact ⟨fun ⟨_, S, hS, hwS⟩ ↦ ⟨hwM, S, (hiff S).1 hS, hwS⟩,
+      fun ⟨_, S, hS, hwS⟩ ↦ ⟨hswM, S, (hiff S).2 hS, hwS⟩⟩
+  -- (e) on `G` the integrands agree, as `θ(s w) = θ(w)` by step 3.
+  · rintro w ⟨hwM, hswM⟩
+    rw [(hdil w hwM hswM).1]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
