@@ -373,6 +373,28 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 4.11 (p. 58), linear form of `J_{f∘ψ} = J_ψ · J^M_f`.** For continuous linear
+`L : ℝⁿ → ℝᴺ`, `A : ℝᴺ → ℝ^{N'}` and `T = range L ⊆ ℝᴺ` (with the induced inner product and the
+inclusion `ι_T`), `J(A ∘ L) = J(A ∘ ι_T) · J(L)`. Each area Jacobian `√det(K* ∘ K)` equals Mathlib's
+`LinearMap.normDet K` (`ContinuousLinearMap.normDet_sq`, `LinearMap.normDet_nonneg`), and
+`LinearMap.normDet_comp` factors `normDet (A ∘ₗ L)` through `range L`. `L` need not be injective. -/
+theorem Submission.variation_areaJacobian_chain_rule : ∀ (n N N' : ℕ) (L : Rn n →L[ℝ] Rn N) (A : Rn N →L[ℝ] Rn N') (T : Submodule ℝ (Rn N)), T = LinearMap.range L.toLinearMap → areaJacobian (A.comp L) = areaJacobian (A.comp T.subtypeL) * areaJacobian L := by
+  intro n N N' L A T hT
+  -- Step 2: replace `T` by `range L`.
+  subst hT
+  -- Step 1: `areaJacobian K = √(normDet K ^ 2) = normDet K` for `K` with finite-dimensional source.
+  have hJ : ∀ {E F : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+      [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+      (K : E →L[ℝ] F), areaJacobian K = (K : E →ₗ[ℝ] F).normDet := by
+    intro E F _ _ _ _ _ _ _ K
+    have h := K.normDet_sq
+    simp only [RCLike.ofReal_real_eq_id, id] at h
+    rw [areaJacobian, ← h, Real.sqrt_sq (LinearMap.normDet_nonneg _)]
+  -- Steps 3–5: `normDet (A ∘ₗ L) = normDet (A.domRestrict (range L)) * normDet L`, and
+  -- `A.domRestrict (range L)` is by definition the linear map underlying `A ∘ ι_T`.
+  rw [hJ, hJ, hJ]
+  exact LinearMap.normDet_comp (L : Rn n →ₗ[ℝ] Rn N) (A : Rn N →ₗ[ℝ] Rn N')
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
