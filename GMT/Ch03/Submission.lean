@@ -1716,6 +1716,86 @@ theorem Submission.deGiorgiRH_measure_eq_of_density : ∀ (n N : ℕ) (μ σ : M
       rw [Measure.singularPart_eq_zero_of_ac hac, zero_add, withDensity_congr_ae hD,
         withDensity_one]
 
+/-- **Simon Ch. 3, Theorem 4.3 (p. 81), first part, global case**: `∂*E` is countably
+`n`-rectifiable and `μ_E = Hⁿ⌞∂*E` (`chapter-03.txt` lines 588–589). The printed proof of this
+part is the sketch "By 1.6 and 3.6 of Ch. 1" (line 604); it is completed by Steps 3–8 of the
+parent node with `U = ℝ^{n+ℓ}`, using (RT), the measure form of Theorem 1.6 "⇐", and (AT),
+Theorem 1.6. Let `μ` be finite on compact sets and carried by the measurable set `S`, with an
+approximate tangent plane of multiplicity `1` at every point of `S`, and put `σ = Hⁿ⌞S`.
+Step 3: `μ(B̄_ρ(x))/ρⁿ → ωₙ` at every `x ∈ S` (`deGiorgiRH_measure_density_of_tangentPlane`).
+Steps 4, 6: hence `Hⁿ(A) ≤ μ(A) ≤ 2ⁿ Hⁿ(A)` for every `A ⊆ S` (`deGiorgiRH_hausdorff_le_of_density`,
+`deGiorgiRH_measure_le_two_pow_mul_hausdorff`).
+Step 5: (RT) gives a countably `n`-rectifiable `R` with `μ(Rᶜ) = 0`; `S \ R` is `μ`-null, hence
+`Hⁿ`-null, so `S ⊆ R ∪ (S \ R)` is countably `n`-rectifiable.
+Step 8 (preliminaries): `σ` is finite on compact sets and `μ ≪ σ`.
+Step 7: by (AT) "⇒", `S` has an approximate tangent space at `Hⁿ`-a.e. point, and there
+`σ(B̄_ρ(x))/ρⁿ → ωₙ` (`deGiorgiRH_hausdorff_density_of_approxTangent`).
+Step 8: the density comparison `deGiorgiRH_measure_eq_of_density` gives `μ = σ`. -/
+theorem Submission.deGiorgiRH_locallyFinite_case : (∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0) → ApproximateTangentCharacterization → ∀ (n ℓ : ℕ) (S : Set (Rn (n + ℓ))) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → MeasurableSet S → μ Sᶜ = 0 → (∀ x ∈ S, ∃ P : Submodule ℝ (Rn (n + ℓ)), HasApproxTangentPlaneWithMultiplicity n μ x P 1) → CountablyRectifiable n S ∧ μ = (μHE[n] : Measure (Rn (n + ℓ))).restrict S := by
+  intro RT AT n ℓ S μ hμK hS hμS htan
+  -- Step 3: `μ` has density `ωₙ` at every point of `S`.
+  have hdens : ∀ x ∈ S, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n))
+      (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) := fun x hx ↦ by
+    obtain ⟨P, hP⟩ := htan x hx
+    exact Submission.deGiorgiRH_measure_density_of_tangentPlane n (n + ℓ) μ x P
+      ⟨1, one_pos, hμK _ (isCompact_closedBall x 1)⟩ hP
+  -- Steps 4 and 6: `Hⁿ(A) ≤ μ(A) ≤ 2ⁿ Hⁿ(A)` for every `A ⊆ S`.
+  have hHle : ∀ A ⊆ S, μHE[n] A ≤ μ A := fun A hA ↦
+    Submission.deGiorgiRH_hausdorff_le_of_density n (n + ℓ) μ A hμK fun x hx ↦ hdens x (hA hx)
+  have hμle : ∀ A ⊆ S, μ A ≤ 2 ^ n * μHE[n] A := fun A hA ↦
+    Submission.deGiorgiRH_measure_le_two_pow_mul_hausdorff n (n + ℓ) μ A
+      fun x hx ↦ hdens x (hA hx)
+  -- Step 5: (RT) gives a rectifiable `R` carrying `μ`; `S \ R` is `μ`-null, hence `Hⁿ`-null.
+  have hCR : CountablyRectifiable n S := by
+    have hae : ∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧
+        HasApproxTangentPlaneWithMultiplicity n μ x P θ := by
+      filter_upwards [mem_ae_iff.2 hμS] with x hx
+      obtain ⟨P, hP⟩ := htan x hx
+      exact ⟨P, 1, one_pos, hP⟩
+    obtain ⟨R, -, hR, hμR⟩ := RT n ℓ μ hμK hae
+    have hSR : μHE[n] (S \ R) = 0 := nonpos_iff_eq_zero.1 <|
+      (hHle _ sdiff_subset).trans (measure_mono_null (sdiff_subset_compl S R) hμR).le
+    have hU : CountablyRectifiable n (⋃ i : ℕ, if i = 0 then R else S \ R) :=
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun i ↦ by
+        split_ifs
+        · exact hR
+        · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero hSR
+    refine hU.mono fun y hy ↦ mem_iUnion.2 ?_
+    by_cases hyR : y ∈ R
+    · exact ⟨0, by simpa using hyR⟩
+    · exact ⟨1, by simpa using And.intro hy hyR⟩
+  -- Step 8 (preliminaries): `σ = Hⁿ⌞S` is finite on compact sets and `μ ≪ σ`.
+  have hHK : ∀ K : Set (Rn (n + ℓ)), IsCompact K → μHE[n] (S ∩ K) < ∞ := fun K hK ↦
+    ((hHle _ inter_subset_left).trans (measure_mono inter_subset_right)).trans_lt (hμK K hK)
+  have hσK : ∀ K : Set (Rn (n + ℓ)), IsCompact K →
+      (μHE[n] : Measure (Rn (n + ℓ))).restrict S K < ∞ := fun K hK ↦ by
+    rw [Measure.restrict_apply' hS, inter_comm]
+    exact hHK K hK
+  have hac : μ ≪ (μHE[n] : Measure (Rn (n + ℓ))).restrict S := by
+    refine Measure.AbsolutelyContinuous.mk fun s hs hσs ↦ ?_
+    rw [Measure.restrict_apply hs] at hσs
+    have h₁ : μ (s ∩ S) = 0 := nonpos_iff_eq_zero.1 <|
+      (hμle _ inter_subset_right).trans_eq (by rw [hσs, mul_zero])
+    have h₂ : μ (s \ S) = 0 := measure_mono_null (sdiff_subset_compl s S) hμS
+    exact nonpos_iff_eq_zero.1 <|
+      (measure_le_inter_add_sdiff μ s S).trans_eq (by rw [h₁, h₂, add_zero])
+  -- Step 7: by (AT) "⇒", `S` has an approximate tangent space at `Hⁿ`-a.e. point; there `σ` has
+  -- density `ωₙ`, and so has `μ` (Step 3).
+  have hT := (AT n ℓ S hS.nullMeasurableSet hHK).1 hCR
+  have hσdens : ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))).restrict S,
+      Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0)
+          (𝓝 (volume (Metric.ball (0 : Rn n) 1))) ∧
+        Tendsto (fun ρ : ℝ ↦ (μHE[n] : Measure (Rn (n + ℓ))).restrict S (Metric.closedBall x ρ) /
+          ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) := by
+    rw [ae_restrict_iff' hS]
+    filter_upwards [hT] with x hx hxS
+    obtain ⟨P, hP⟩ := hx hxS
+    refine ⟨hdens x hxS, (Submission.deGiorgiRH_hausdorff_density_of_approxTangent n (n + ℓ) S x
+      P ⟨1, one_pos, hHK _ (isCompact_closedBall x 1)⟩ hP).congr fun ρ ↦ ?_⟩
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+  -- Step 8: density comparison of `μ` and `σ`.
+  exact ⟨hCR, Submission.deGiorgiRH_measure_eq_of_density n (n + ℓ) μ _ hμK hσK hac hσdens⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
