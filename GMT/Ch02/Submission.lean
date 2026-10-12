@@ -595,6 +595,56 @@ theorem Submission.variation_deformation_mixed_partial : ∀ (N : ℕ) (Φ : ℝ
   rw [mem_ball, Real.dist_eq] at hs
   exact (ha s y (hmem s y hs (by simpa using hr))).fderiv
 
+/-- **Calculus of an admissible deformation** (Simon Ch. 2, 5.1–5.4). Write `X`, `Z` for the
+initial velocity and acceleration, `A(t,x) = fderiv ℝ (φ t) x` and `O = (-1,1) × U` (open).
+(V) `X`, `Z`, `DX`, `DZ` vanish off `K`: `K` is compact, hence closed, and `φ t = id` off `K`.
+(C2) `A` is `C¹` on `O` (`m = 1`, `n = 2` in `partials_contDiffOn`); `A(0,y) = I` since
+`φ 0 = id` near `y ∈ U`; and the interchange `mixed_partial` at `(0,y)` gives `∂ₜA(0,y) = DX(y)`,
+because `x ↦ deriv (s ↦ φ s x) 0` is `X` by definition.
+(C3) (Erratum: `C³`, not `C²`.) `A` and `Ψ(t,x) = deriv (s ↦ φ s x) t` are `C²` on `O`.
+`mixed_partial` at every `(t,y)`, `|t| < 1`, makes `s ↦ A(s,y)` differentiable near `0` with
+`∂ₜA(t,y) = D(Ψ t)(y)`; `mixed_partial` for `Ψ` at `(0,y)` differentiates this at `0`, and
+`x ↦ deriv (s ↦ Ψ s x) 0` is `Z` by definition. -/
+theorem Submission.variation_deformation_calculus : ∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), (∀ r : ℕ∞, IsAdmissibleDeformation r U K φ → ∀ x, x ∉ K → initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 ∧ fderiv ℝ (initialVelocity φ) x = 0 ∧ fderiv ℝ (initialAcceleration φ) x = 0) ∧ (IsAdmissibleDeformation 2 U K φ → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x ∈ U, ContDiffAt ℝ 1 (fun p : ℝ × Rn N ↦ fderiv ℝ (φ p.1) p.2) (t, x)) ∧ ∀ y ∈ U, fderiv ℝ (φ 0) y = 1 ∧ HasDerivAt (fun t ↦ fderiv ℝ (φ t) y) (fderiv ℝ (initialVelocity φ) y) 0) ∧ (IsAdmissibleDeformation 3 U K φ → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x ∈ U, ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ fderiv ℝ (φ p.1) p.2) (t, x)) ∧ ∀ y ∈ U, (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ (fun s ↦ fderiv ℝ (φ s) y) t) ∧ HasDerivAt (deriv (fun s ↦ fderiv ℝ (φ s) y)) (fderiv ℝ (initialAcceleration φ) y) 0) := by
+  intro N U K φ
+  have h0 : (0 : ℝ) ∈ Ioo (-1 : ℝ) 1 := by norm_num
+  have hI : Ioo (-1 : ℝ) 1 ∈ 𝓝 0 := isOpen_Ioo.mem_nhds h0
+  refine ⟨?_, ?_, ?_⟩
+  · -- (V), items 1–2.
+    rintro r ⟨-, hK, -, -, -, hfix, -⟩
+    exact Submission.variation_deformation_vanish_off_closed N K φ hK.isClosed hfix
+  · -- (C2).
+    rintro ⟨hU, -, -, hC, hid, -, -⟩
+    have hO : IsOpen (Ioo (-1 : ℝ) 1 ×ˢ U) := isOpen_Ioo.prod hU
+    -- Items 3–4: `A` is `C¹` on `O`.
+    have hA := (Submission.variation_deformation_partials_contDiffOn N φ _ 1 _ hO hC
+      (by norm_num)).1
+    refine ⟨fun t ht x hx ↦ hA.contDiffAt (hO.mem_nhds ⟨ht, hx⟩), fun y hy ↦ ⟨?_, ?_⟩⟩
+    · -- Item 5: `φ 0 = id` on the neighbourhood `U` of `y`.
+      have hid' : φ 0 =ᶠ[𝓝 y] id := Filter.eventually_of_mem (hU.mem_nhds hy) hid
+      rw [hid'.fderiv_eq, fderiv_id]
+      rfl
+    · -- Items 6–7: interchange at `(0,y)`.
+      exact Submission.variation_deformation_mixed_partial N φ 0 y
+        (hC.contDiffAt (hO.mem_nhds ⟨h0, hy⟩))
+  · -- (C3).
+    rintro ⟨hU, -, -, hC, -, -, -⟩
+    have hO : IsOpen (Ioo (-1 : ℝ) 1 ×ˢ U) := isOpen_Ioo.prod hU
+    -- Items 8–10: `A` and `Ψ` are `C²` on `O`.
+    obtain ⟨hA, hΨ⟩ := Submission.variation_deformation_partials_contDiffOn N φ _ 2 _ hO hC
+      (by norm_num)
+    refine ⟨fun t ht x hx ↦ hA.contDiffAt (hO.mem_nhds ⟨ht, hx⟩), fun y hy ↦ ?_⟩
+    -- Item 9: interchange at every `(t,y)` with `|t| < 1`.
+    have hM : ∀ t ∈ Ioo (-1 : ℝ) 1, HasDerivAt (fun s ↦ fderiv ℝ (φ s) y)
+        (fderiv ℝ (fun x ↦ deriv (fun s ↦ φ s x) t) y) t := fun t ht ↦
+      Submission.variation_deformation_mixed_partial N φ t y
+        ((hC.contDiffAt (hO.mem_nhds ⟨ht, hy⟩)).of_le (by norm_num))
+    refine ⟨Filter.eventually_of_mem hI fun t ht ↦ (hM t ht).differentiableAt, ?_⟩
+    -- Item 11: interchange for `Ψ` at `(0,y)`, transported along `∂ₜA(t,y) = D(Ψ t)(y)` near `0`.
+    exact (Submission.variation_deformation_mixed_partial N (fun t x ↦ deriv (fun s ↦ φ s x) t)
+      0 y (hΨ.contDiffAt (hO.mem_nhds ⟨h0, hy⟩))).congr_of_eventuallyEq
+      (Filter.eventually_of_mem hI fun t ht ↦ (hM t ht).deriv)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
