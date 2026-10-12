@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "89e6253119bea33e55593f7b79b3e28ab3b80f986f581b9e493e57889a2549ea",
+  "git_delta": {
+    "base_commit": "f655c2c741000d831c4a15244568a5aff87abd80",
+    "candidate_commit": "9ccedd5d1653cf3d58b96988e2faad111f62ce55",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "tgc_eventual_density_bounds_uniform",
+    "diff_sha256": "53fae1946c534584700c36b86fb7a724ee841357fa451090658c4affd47281c1",
+    "source_sha256": "773226c9c57e5ddb7ffbe71c294c2af9179e38c0d3300fe243ba5c4fa3d97e95",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tgc_eventual_density_bounds_uniform",
+      "statement": "∀ (n : ℕ) (β : ℝ) (F G : ℝ → ℝ≥0∞), 0 < β → (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ F t) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), G t ≤ ε * ENNReal.ofReal t ^ n) → ∃ m k : ℕ, ∀ t : ℝ, 0 < t → t ≤ 1 / ((k : ℝ) + 1) → ENNReal.ofReal (1 / ((m : ℝ) + 1) * t ^ n) ≤ F t ∧ G t ≤ ENNReal.ofReal (1 / ((m : ℝ) + 1) * β * t ^ n)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
