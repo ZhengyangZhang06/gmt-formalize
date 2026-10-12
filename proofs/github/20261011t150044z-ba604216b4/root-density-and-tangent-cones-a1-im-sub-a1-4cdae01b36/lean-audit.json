@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "34f128a0f19ae0ea102e9e0f52c9d882ee69a4472c8e643b9c3e2dda4f0528cc",
+  "git_delta": {
+    "base_commit": "a8d73291a302573218a53cbf5e1a26481ca64b1f",
+    "candidate_commit": "77fcc7d4ea0775d769a22372d84889a582415f8b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c641aed1af7e73dbd2b9a507e497b205927d37887dfefc509a5d1035313da35a",
+    "source_sha256": "f304d9294971c4e8c46f3e3410334c4f24f4f964035fd7ca247f92a042f10ca7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_isIntegerMultiplicity_sub",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), IsOpen U → 0 < n → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsIntegerMultiplicity (S - T)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
