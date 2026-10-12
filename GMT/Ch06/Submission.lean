@@ -424,6 +424,71 @@ theorem Submission.lpf_pi_jacobian_local_bound :
         exact hbound i
     _ = (Λ : ℝ) ^ n := by simp
 
+/-- **Local finiteness of the pushed-forward weight (Step 4(b) of the integrality of `f_# T`,
+Simon Ch. 6, Lemma 3.9).**  Let `T = τ(M, θ, ξ)` in the open `U`, `f` locally Lipschitz on `U`
+with `f⁻¹(K) ∩ spt T` compact for every compact `K ⊆ V`, and `L` given by the derivative clause.
+Then `∫_{M ∩ f⁻¹(K)} θ ‖L_# ξ‖ dHⁿ < ∞` for compact `K ⊆ V`.  Off the `Hⁿ`-null set
+`M \ spt T` (hypothesis (RSN), the statement of `lpf_rectifiable_support_null`), `M ∩ f⁻¹(K)`
+lies in the compact `K' = f⁻¹(K) ∩ spt T ⊆ U`.  There `‖L_# ξ‖ ≤ C` a.e.
+(`lpf_pi_jacobian_local_bound`) and `θ` is integrable (`IsRectifiableTriple.integrableOn`). -/
+theorem Submission.lpf_pi_local_finite_weight : (∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \ T.support) = 0) → ∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → LocallyLipschitzOn U f → (∀ K, IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ T.support)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → ∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∫⁻ x in M ∩ f ⁻¹' K, ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ ∂(μHE[n] : Measure (Eucl P)) < ∞ := by
+  intro hRSN P Q n U V T M θ ξ f L hU htri hT hf hprop hderiv K hK hKV
+  -- `K' = f⁻¹(K) ∩ spt T` is compact and lies in `U`, as `spt T ⊆ U`.
+  have hK'c : IsCompact (f ⁻¹' K ∩ T.support) := hprop K hK hKV
+  have hK'U : f ⁻¹' K ∩ T.support ⊆ U := fun x hx => T.support_subset_domain hx.2
+  -- `‖L_# ξ‖ ≤ C` holds `Hⁿ`-a.e. on `M ∩ K'`, and `M \ spt T` is `Hⁿ`-null.
+  obtain ⟨C, hC⟩ :=
+    Submission.lpf_pi_jacobian_local_bound P Q n U M θ ξ f L hU htri hf hderiv _ hK'c hK'U
+  have hnull : (μHE[n] : Measure (Eucl P)) (M \ T.support) = 0 := hRSN P n U T M θ ξ htri hT
+  have hK'meas : MeasurableSet (f ⁻¹' K ∩ T.support) := hK'c.isClosed.measurableSet
+  have hsub : M ∩ f ⁻¹' K ⊆ (M ∩ (f ⁻¹' K ∩ T.support)) ∪ (M \ T.support) := by
+    intro x hx
+    by_cases hxT : x ∈ T.support
+    · exact Or.inl ⟨hx.1, hx.2, hxT⟩
+    · exact Or.inr ⟨hx.1, hxT⟩
+  -- `θ` is integrable on `M ∩ K'`.
+  have hint : IntegrableOn θ (M ∩ (f ⁻¹' K ∩ T.support)) (μHE[n] : Measure (Eucl P)) :=
+    htri.integrableOn _ hK'c hK'U
+  have hθfin : ∫⁻ x in M ∩ (f ⁻¹' K ∩ T.support), ENNReal.ofReal (θ x)
+      ∂(μHE[n] : Measure (Eucl P)) < ∞ :=
+    hint.setLIntegral_lt_top
+  -- On `M ∩ K'` the integrand is at most `θ · max C 0` almost everywhere.
+  have hbound : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ (f ⁻¹' K ∩ T.support))),
+      ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ ≤
+        ENNReal.ofReal (θ x) * ENNReal.ofReal (max C 0) := by
+    have h1 : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ (f ⁻¹' K ∩ T.support))),
+        x ∈ f ⁻¹' K ∩ T.support → ‖nVectorPushforward n (L x) (ξ x)‖ ≤ C :=
+      ae_restrict_of_ae_restrict_of_subset inter_subset_left hC
+    have h2 : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ (f ⁻¹' K ∩ T.support))),
+        x ∈ M ∩ (f ⁻¹' K ∩ T.support) :=
+      ae_restrict_mem₀ (htri.nullMeasurableSet.inter hK'meas.nullMeasurableSet)
+    filter_upwards [h1, h2] with x hx1 hx2
+    have h3 : ‖nVectorPushforward n (L x) (ξ x)‖ₑ ≤ ENNReal.ofReal (max C 0) := by
+      rw [← ofReal_norm (nVectorPushforward n (L x) (ξ x))]
+      exact ENNReal.ofReal_le_ofReal ((hx1 hx2.2).trans (le_max_left _ _))
+    exact mul_le_mul' le_rfl h3
+  -- Split off the null part `M \ spt T`, then bound by `max C 0 · ∫_{M ∩ K'} θ < ∞`.
+  calc ∫⁻ x in M ∩ f ⁻¹' K, ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ
+        ∂(μHE[n] : Measure (Eucl P))
+      ≤ ∫⁻ x in (M ∩ (f ⁻¹' K ∩ T.support)) ∪ (M \ T.support),
+          ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ
+          ∂(μHE[n] : Measure (Eucl P)) := lintegral_mono_set hsub
+    _ ≤ ∫⁻ x in M ∩ (f ⁻¹' K ∩ T.support),
+          ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ
+          ∂(μHE[n] : Measure (Eucl P)) +
+        ∫⁻ x in M \ T.support, ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ
+          ∂(μHE[n] : Measure (Eucl P)) := lintegral_union_le _ _ _
+    _ = ∫⁻ x in M ∩ (f ⁻¹' K ∩ T.support),
+          ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ
+          ∂(μHE[n] : Measure (Eucl P)) := by
+        rw [setLIntegral_measure_zero _ _ hnull, add_zero]
+    _ ≤ ∫⁻ x in M ∩ (f ⁻¹' K ∩ T.support), ENNReal.ofReal (θ x) * ENNReal.ofReal (max C 0)
+          ∂(μHE[n] : Measure (Eucl P)) := lintegral_mono_ae hbound
+    _ = (∫⁻ x in M ∩ (f ⁻¹' K ∩ T.support), ENNReal.ofReal (θ x)
+          ∂(μHE[n] : Measure (Eucl P))) * ENNReal.ofReal (max C 0) :=
+        lintegral_mul_const' _ _ ENNReal.ofReal_ne_top
+    _ < ∞ := ENNReal.mul_lt_top hθfin ENNReal.ofReal_lt_top
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
