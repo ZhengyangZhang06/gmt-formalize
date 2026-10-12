@@ -1891,6 +1891,150 @@ theorem aetp_c1_piece_approxTangent : ∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ)
       _ = |∫ y, f y ∂μ₁ - ∫ y, f y ∂μ₂| + |∫ y, f (Φ y) ∂μ₃ - ∫ y, f y ∂μ₃| := by
           rw [hmap]
       _ < ε := by linarith only [hE1, hE2, hfin1, hfin2]
+/-- **Simon Ch. 1, Upper Density Theorem 3.6** (cited fact (H2) of the a.e. tangent-plane proof),
+in Mathlib's normalization `Hⁿ = μHE[n]`: if `A ⊆ ℝ^{n+ℓ}` is Borel and `ν(A) < ∞`, then
+`ν(A ∩ B_r(x)) / rⁿ → 0` as `r ↓ 0` for `Hⁿ`-a.e. `x ∉ A`.
+
+Simon's proof, inline (SimonGMT's `Chapter01.ae_dimensionalUpperDensity_eq_zero_outside` is outside
+the frozen import closure).  Fix `k` and let `Bad k` be the set of `x ∉ A` with
+`ν(A ∩ B_r(x)) / rⁿ > k⁻¹` for arbitrarily small `r > 0`.  Given a closed `F ⊆ A` (closed inner
+regularity of the finite measure `ν ⌞ A`) and a scale `ρ > 0`, each `x ∈ Bad k` has a radius
+`r_x ∈ (0, ρ]` with `B_{r_x}(x) ∩ F = ∅` and `r_xⁿ ≤ k ν((A \ F) ∩ B_{r_x}(x))`.  The Vitali
+covering lemma gives a disjoint, hence countable, subfamily `{B_{r_b}(b)}_{b ∈ u}` with
+`Bad k ⊆ ⋃_{b ∈ u} B_{5 r_b}(b)`, so `Σ_b diam(B_{5 r_b}(b))ⁿ ≤ 10ⁿ k ν(A \ F)`.  Letting
+`ρ → 0` and `ν(A \ F) → 0` gives `μH[n](Bad k) = 0`, hence `Hⁿ(Bad k) = 0`, and outside
+`⋃_k Bad k` the quotient tends to `0`. -/
+theorem aetp_upper_density_zero_ae : ∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), MeasurableSet A → ν A < ⊤ → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ A → Tendsto (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ ν A hA hνA
+  -- `Bad k`: points outside `A` whose density quotient exceeds `k⁻¹` at arbitrarily small radii.
+  set Bad : ℕ → Set (Amb n ℓ) := fun k => {x | x ∉ A ∧ ∃ᶠ r in 𝓝[>] (0 : ℝ),
+    (k : ℝ≥0∞)⁻¹ < ν (A ∩ closedBall x r) / ENNReal.ofReal (r ^ n)}
+  -- Closed inner regularity of the finite measure `ν ⌞ A`.
+  have : IsFiniteMeasure (ν.restrict A) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+  have hF : ∀ j : ℕ, ∃ F ⊆ A, IsClosed F ∧ ν (A \ F) < (j : ℝ≥0∞)⁻¹ := by
+    intro j
+    obtain ⟨F, hFA, hFc, hFlt⟩ := hA.exists_isClosed_sdiff_lt (μ := ν.restrict A)
+      (measure_ne_top _ _) (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top j))
+    refine ⟨F, hFA, hFc, ?_⟩
+    rwa [Measure.restrict_apply (hA.diff hFc.measurableSet), inter_eq_left.2 sdiff_subset] at hFlt
+  choose F hFA hFc hFν using hF
+  -- Vitali covering of `Bad k` at scale `ρ`, avoiding a closed `G ⊆ A`.
+  have hcover : ∀ (k : ℕ) (G : Set (Amb n ℓ)), G ⊆ A → IsClosed G → ∀ ρ : ℝ, 0 < ρ →
+      ∃ (u : Set (Amb n ℓ)) (r : Amb n ℓ → ℝ), u.Countable ∧ (∀ b ∈ u, 0 < r b ∧ r b ≤ ρ) ∧
+        Bad k ⊆ ⋃ b ∈ u, closedBall b (5 * r b) ∧
+        ∑' b : u, ENNReal.ofReal (r b) ^ n ≤ k * ν (A \ G) := by
+    intro k G hGA hGc ρ hρ
+    have hpick : ∀ x ∈ Bad k, ∃ r : ℝ, 0 < r ∧ r ≤ ρ ∧
+        ENNReal.ofReal r ^ n ≤ k * ν ((A \ G) ∩ closedBall x r) := by
+      rintro x ⟨hxA, hfreq⟩
+      have hxG : x ∈ Gᶜ := fun hx => hxA (hGA hx)
+      obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hGc.isOpen_compl x hxG
+      obtain ⟨r, hlt, hr⟩ := (hfreq.and_eventually (Ioo_mem_nhdsGT (lt_min hδ hρ))).exists
+      refine ⟨r, hr.1, (hr.2.trans_le (min_le_right _ _)).le, ?_⟩
+      have hsub : A ∩ closedBall x r = (A \ G) ∩ closedBall x r := by
+        ext y
+        constructor
+        · rintro ⟨hyA, hyr⟩
+          exact ⟨⟨hyA, fun hyG =>
+            hball (closedBall_subset_ball (hr.2.trans_le (min_le_left _ _)) hyr) hyG⟩, hyr⟩
+        · rintro ⟨⟨hyA, -⟩, hyr⟩
+          exact ⟨hyA, hyr⟩
+      rw [hsub] at hlt
+      have hpos : ENNReal.ofReal (r ^ n) ≠ 0 := by
+        rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+        exact pow_pos hr.1 n
+      rw [ENNReal.lt_div_iff_mul_lt (Or.inl hpos) (Or.inl ENNReal.ofReal_ne_top)] at hlt
+      rw [← ENNReal.ofReal_pow hr.1.le]
+      rcases Nat.eq_zero_or_pos k with rfl | hk
+      · rw [Nat.cast_zero, ENNReal.inv_zero, ENNReal.top_mul hpos] at hlt
+        exact absurd hlt not_top_lt
+      · have hk0 : (k : ℝ≥0∞) ≠ 0 := by exact_mod_cast hk.ne'
+        calc ENNReal.ofReal (r ^ n) = k * ((k : ℝ≥0∞)⁻¹ * ENNReal.ofReal (r ^ n)) := by
+              rw [← mul_assoc, ENNReal.mul_inv_cancel hk0 (ENNReal.natCast_ne_top k), one_mul]
+          _ ≤ k * ν ((A \ G) ∩ closedBall x r) := mul_le_mul_right hlt.le _
+    choose! r hr0 hrρ hrν using hpick
+    obtain ⟨u, huB, hudisj, hucov⟩ :=
+      Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall (Bad k) (fun x => x) r ρ
+        hrρ 5 (by norm_num)
+    have hucount : u.Countable := hudisj.countable_of_nonempty_interior fun b hb =>
+      ⟨b, Metric.ball_subset_interior_closedBall (mem_ball_self (hr0 b (huB hb)))⟩
+    refine ⟨u, r, hucount, fun b hb => ⟨hr0 b (huB hb), hrρ b (huB hb)⟩, ?_, ?_⟩
+    · intro a ha
+      obtain ⟨b, hbu, hab⟩ := hucov a ha
+      exact mem_biUnion hbu (hab (mem_closedBall_self (hr0 a ha).le))
+    · calc ∑' b : u, ENNReal.ofReal (r b) ^ n
+          ≤ ∑' b : u, (k : ℝ≥0∞) * ν ((A \ G) ∩ closedBall (b : Amb n ℓ) (r b)) :=
+            ENNReal.tsum_le_tsum fun b => hrν b (huB b.2)
+        _ = k * ∑' b : u, ν ((A \ G) ∩ closedBall (b : Amb n ℓ) (r b)) := ENNReal.tsum_mul_left
+        _ = k * ν (⋃ b ∈ u, (A \ G) ∩ closedBall b (r b)) := by
+            rw [measure_biUnion hucount (hudisj.mono fun b => inter_subset_right)
+              fun b _ => (hA.diff hGc.measurableSet).inter measurableSet_closedBall]
+        _ ≤ k * ν (A \ G) :=
+            mul_le_mul_right (measure_mono (iUnion₂_subset fun b _ => inter_subset_left)) _
+  -- `μH[n] (Bad k) = 0`: covers at scales `1/(j+1)` avoiding `F j`.
+  have hnull : ∀ k : ℕ, (μH[n] : Measure (Amb n ℓ)) (Bad k) = 0 := by
+    intro k
+    choose u r hucount hur hcov hsum using fun j : ℕ =>
+      hcover k (F j) (hFA j) (hFc j) (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
+    have hle := Measure.hausdorffMeasure_le_liminf_tsum (n : ℝ) (Bad k) (l := atTop)
+      (fun j : ℕ => ENNReal.ofReal (10 * (1 / ((j : ℝ) + 1)))) ?_
+      (fun j (b : u j) => closedBall (b : Amb n ℓ) (5 * r j b)) ?_ ?_
+    · have h1 : Tendsto (fun j : ℕ => (k : ℝ≥0∞) * (j : ℝ≥0∞)⁻¹) atTop (𝓝 0) := by
+        have := ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+          (Or.inr (ENNReal.natCast_ne_top k))
+        rwa [mul_zero] at this
+      have h2 : Tendsto (fun j : ℕ => (10 : ℝ≥0∞) ^ n * ((k : ℝ≥0∞) * (j : ℝ≥0∞)⁻¹)) atTop
+          (𝓝 0) := by
+        have h10 : (10 : ℝ≥0∞) ^ n ≠ ⊤ := ENNReal.pow_ne_top (by norm_num)
+        have := ENNReal.Tendsto.const_mul h1 (Or.inr h10)
+        rwa [mul_zero] at this
+      refine nonpos_iff_eq_zero.1 (hle.trans ((liminf_le_liminf
+        (Eventually.of_forall fun j => ?_)).trans h2.liminf_eq.le))
+      calc ∑' b : u j, ediam (closedBall (b : Amb n ℓ) (5 * r j b)) ^ (n : ℝ)
+          ≤ ∑' b : u j, (10 : ℝ≥0∞) ^ n * ENNReal.ofReal (r j b) ^ n := by
+            refine ENNReal.tsum_le_tsum fun b => ?_
+            calc ediam (closedBall (b : Amb n ℓ) (5 * r j b)) ^ (n : ℝ)
+                ≤ ENNReal.ofReal (10 * r j b) ^ (n : ℝ) := by
+                  refine ENNReal.rpow_le_rpow
+                    (Metric.ediam_le_of_forall_dist_le fun x hx y hy => ?_) (Nat.cast_nonneg n)
+                  have := dist_triangle_right x y b
+                  rw [mem_closedBall] at hx hy
+                  linarith
+              _ = (10 : ℝ≥0∞) ^ n * ENNReal.ofReal (r j b) ^ n := by
+                  rw [ENNReal.rpow_natCast, ENNReal.ofReal_mul (by norm_num), mul_pow,
+                    ENNReal.ofReal_ofNat]
+        _ = (10 : ℝ≥0∞) ^ n * ∑' b : u j, ENNReal.ofReal (r j b) ^ n := ENNReal.tsum_mul_left
+        _ ≤ (10 : ℝ≥0∞) ^ n * ((k : ℝ≥0∞) * (j : ℝ≥0∞)⁻¹) := by
+            gcongr
+            exact (hsum j).trans (mul_le_mul_right (hFν j).le _)
+    · have h0 := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul 10
+      rw [mul_zero] at h0
+      have h1 := ENNReal.tendsto_ofReal h0
+      rwa [ENNReal.ofReal_zero] at h1
+    · refine Eventually.of_forall fun j b => Metric.ediam_le_of_forall_dist_le fun x hx y hy => ?_
+      have := dist_triangle_right x y b
+      have hb := (hur j b b.2).2
+      rw [mem_closedBall] at hx hy
+      linarith
+    · refine Eventually.of_forall fun j x hx => ?_
+      obtain ⟨b, hb, hxb⟩ := mem_iUnion₂.1 (hcov j hx)
+      exact mem_iUnion.2 ⟨⟨b, hb⟩, hxb⟩
+  -- `μHE[n] = c • μH[n]`, so `μH[n]`-null sets are `Hⁿ`-null.
+  have hHE : ∀ s : Set (Amb n ℓ), (μH[n] : Measure (Amb n ℓ)) s = 0 →
+      (μHE[n] : Measure (Amb n ℓ)) s = 0 := by
+    intro s hs
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hs, smul_zero]
+  rw [ae_iff]
+  refine hHE _ (measure_mono_null ?_ (measure_iUnion_null hnull))
+  intro x hx
+  simp only [mem_ofPred_eq, not_imp] at hx
+  obtain ⟨hxA, hnt⟩ := hx
+  rw [ENNReal.tendsto_nhds_zero] at hnt
+  push Not at hnt
+  obtain ⟨ε, hε, hfreq⟩ := hnt
+  obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
+  exact mem_iUnion.2 ⟨k, hxA, hfreq.mono fun r hr => hk.trans hr⟩
 
 end Submission
 
