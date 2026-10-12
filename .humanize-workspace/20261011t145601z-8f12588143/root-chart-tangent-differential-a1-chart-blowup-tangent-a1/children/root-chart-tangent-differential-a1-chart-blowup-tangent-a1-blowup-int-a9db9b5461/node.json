@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.blowup_integral_limit-a1",
+  "parent_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1",
+  "depth": 3,
+  "title": "Blow-up limit of the pulled-back chart integral (substitution and dominated convergence)",
+  "statement": "Let n, N ∈ ℕ, B ⊆ ℝⁿ open, ψ : ℝⁿ → ℝᴺ of class C¹ on B and K-Lipschitz on B (K ∈ ℝ≥0), and c > 0 with c|u − u'| ≤ |ψ(u) − ψ(u')| for all u, u' ∈ B. Let u ∈ B and f ∈ C_c(ℝᴺ, ℝ). Writing Jψ(v) := normDet(Dψ(v)) (Dψ(v) = fderiv ℝ ψ v) and η_{x,r}(z) := r⁻¹(z − x) (SimonGMT blowUpMap), we have r⁻ⁿ ∫_B f(η_{ψ(u),r}(ψ(v)))·Jψ(v) dv → Jψ(u)·∫_{ℝⁿ} f(Dψ(u) y) dy as r → 0⁺ (Lebesgue measure on ℝⁿ; Bochner integrals).",
+  "lean_statement": "∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B → LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) → ∀ u ∈ B, ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ v in B, f (blowUpMap (ψ u) r (ψ v)) * (fderiv ℝ ψ v).toLinearMap.normDet) (𝓝[>] 0) (𝓝 ((fderiv ℝ ψ u).toLinearMap.normDet * ∫ y, f (fderiv ℝ ψ u y)))",
+  "lean_name": "chartTD_chart_blowup_integral_tendsto",
+  "depends_on": [
+    "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.fderiv_bounds-a1",
+    "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.normdet_le_opnorm_pow-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.fderiv_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.normdet_le_opnorm_pow-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-blowup-tangent-a1-blowup-int-a9db9b5461-a1"
+}
