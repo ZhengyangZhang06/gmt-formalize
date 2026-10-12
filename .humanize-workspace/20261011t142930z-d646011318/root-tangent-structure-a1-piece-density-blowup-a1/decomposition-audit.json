@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "euclideanHausdorffMeasure_image_eq_normDet_mul_volume|normDet_nonneg",
+        "integral_map\\b|integral_smul_measure\\b|integral_withDensity_eq_integral_toReal_smul\\b",
+        "exists_antilipschitzWith|integrableOn_compact|uniformContinuous",
+        "sed -n '1,160p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "rg -n 'ts_pdb_' .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "python3 /tmp/pdb-independent-audit-ldethjuc/run_checks.py F1_frozen.lean Axioms.lean",
+        "python3 /tmp/pdb-independent-audit-ldethjuc/run_checks.py F2_full.lean",
+        "python3 /tmp/pdb-independent-audit-ldethjuc/run_checks.py Axioms.lean",
+        "python3 /tmp/pdb-independent-audit-ldethjuc/run_checks.py TypesFrozen.lean TypesFull.lean",
+        "python3 /tmp/pdb-independent-audit-ldethjuc/run_checks.py Challenge_image_ball_bound.lean Challenge_piece_area_formula.lean Challenge_linear_range_integral.lean Challenge_density_complement.lean Challenge_rescaled_limit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/tmp/pdb-independent-audit-ldethjuc/F1_frozen.lean",
+        "/tmp/pdb-independent-audit-ldethjuc/F2_full.lean",
+        "/tmp/pdb-independent-audit-ldethjuc/Axioms.lean",
+        "/tmp/pdb-independent-audit-ldethjuc/TypesFrozen.lean.types",
+        "/tmp/pdb-independent-audit-ldethjuc/TypesFull.lean.types"
+      ],
+      "conclusion": "The split appropriately separates the selected theorem's image bound, area transport, linear-range integral, density complement estimate, and rescaled convergence. The handoff and DAG agree on the exact selected contract. Relevant snapshot files match the pinned dependencies. All five one-line propositions pass lexical validation and independently elaborate as comparator challenges using the frozen imports; none depends on its implementation. Their pp.all outputs agree across import sets. All names are bare identifiers and remain unreserved in the current 89-node DAG. The sole sibling dependency, rescaled_limit on density_complement, is correctly directed and acyclic. No matrix-unit construction occurs. Fresh compilation confirms the supplied assembly proves the exact parent from the children, and the supplied full proofs of all five children and parent use only propext, Classical.choice, and Quot.sound. Cited library axiom checks also pass."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "image_ball_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match all hypotheses and the closed-ball bound. The inclusion, Lipschitz image estimate, Hausdorff–volume identification, and nonnegative ENNReal arithmetic prove the exact conclusion without measurability of C or membership of w in C. The argument also covers n = 0."
+    },
+    {
+      "key": "piece_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and three conclusions match exactly. Choosing J = normDet ∘ fderiv establishes continuity, nonnegativity, and the area factor. The Borel-set pushforward argument and unconditional Bochner transport identities justify the integral equality without additional integrability or everywhere-differentiability assumptions. The proof is complete and non-circular."
+    },
+    {
+      "key": "linear_range_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The all-subset area-factor hypothesis gives the asserted pushforward measure identity directly. Integral transport and measure scaling prove the exact formula, including j = 0 and nonintegrable compositions. Injectivity is genuinely unnecessary; the prose and Lean type agree."
+    },
+    {
+      "key": "density_complement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly specifies ENNReal convergence and closed balls. Positive finite ball measures justify the complementary-ratio identity; affine rescaling gives the stated fixed-radius complement measure, whose finite constant multiplier yields convergence to zero. All hypotheses are accounted for, including the permitted n = 0 case."
+    },
+    {
+      "key": "rescaled_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including a possibly signed weight J. The proof establishes integrability and support localization, derives the uniform estimate from differentiability and continuity on C, and uses precisely density_complement to control the missing-domain contribution. The final epsilon argument proves the exact limit without circular reliance or an additional planning obligation."
+    }
+  ],
+  "required_changes": []
+}
