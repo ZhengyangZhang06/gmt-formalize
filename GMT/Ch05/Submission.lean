@@ -458,6 +458,66 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, 7.1 (second assertion, local multiplicity one): carrier versus graph on
+`B̆_ρ(0)`.  Put `τ z = z − ξ`; `Q ∘ τ` is an isometry.  If `Q(τ(S)) ∩ B̆_R(0)` is the graph of `u`
+over `B̆ⁿ_R(0)` (inside `B̆_R(0)`), `s ≤ R` and `Hⁿ((M ∩ B̆_s(ξ)) ∆ (S ∩ B̆_s(ξ))) = 0`, then for
+`ρ ∈ (0, s]` the set `Q(τ(M)) ∩ B̆_ρ(0)` agrees `Hⁿ`-a.e. with the graph of `u` over
+`{x ∈ B̆ⁿ_ρ(0) : |(x, u(x))| < ρ}`: by `|x| ≤ |(x, u(x))|`, their symmetric difference lies in
+`Q(τ((M ∩ B̆_s(ξ)) ∆ (S ∩ B̆_s(ξ))))`, which is `Hⁿ`-null. -/
+theorem dohr_lmo_carrier_graph_symmDiff : ∀ n ℓ : ℕ, ∀ (M S : Set (Amb n ℓ)) (ξ : Amb n ℓ) (R s : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), s ≤ R → Q '' ((fun x => x - ξ) '' S) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (M ∩ ball ξ s) (S ∩ ball ξ s)) = 0 → ∀ ρ : ℝ, 0 < ρ → ρ ≤ s → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (Q '' ((fun x => x - ξ) '' M) ∩ ball 0 ρ) (graphOver u {x | x ∈ ball (0 : Rn n) ρ ∧ ‖graphPoint x (u x)‖ < ρ})) = 0 := by
+  intro n ℓ M S ξ R s Q u hsR hgraph hnull ρ hρ hρs
+  -- `‖x‖ ≤ ‖(x, y)‖`, since `‖(x, y)‖² = ‖x‖² + ‖y‖²`.
+  have hnorm : ∀ (x : Rn n) (y : Rn ℓ), ‖x‖ ≤ ‖graphPoint x y‖ := by
+    intro x y
+    rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
+    refine Real.sqrt_le_sqrt ?_
+    rw [Fin.sum_univ_add]
+    simp only [graphPoint, PiLp.toLp_apply, Fin.append_left, Fin.append_right]
+    exact le_add_of_nonneg_right (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+  -- `‖Q (z - ξ)‖ = ‖z - ξ‖`.
+  have hQ : ∀ z : Amb n ℓ, ‖Q (z - ξ)‖ = ‖z - ξ‖ := fun z => Q.norm_map _
+  -- The set in the claim lies in `Q (τ (Z))`, `Z = (M ∩ B̆_s(ξ)) ∆ (S ∩ B̆_s(ξ))`, `τ z = z - ξ`.
+  have hsub : symmDiff (Q '' ((fun x => x - ξ) '' M) ∩ ball 0 ρ)
+      (graphOver u {x | x ∈ ball (0 : Rn n) ρ ∧ ‖graphPoint x (u x)‖ < ρ}) ⊆
+      Q '' ((fun x => x - ξ) '' symmDiff (M ∩ ball ξ s) (S ∩ ball ξ s)) := by
+    intro w hw
+    rcases mem_symmDiff.mp hw with ⟨⟨⟨_, ⟨z, hzM, rfl⟩, rfl⟩, hwρ⟩, hwG⟩ | ⟨⟨x, hxW, rfl⟩, hwM⟩
+    · -- `w = Q (z - ξ)` with `z ∈ M`, `‖z - ξ‖ < ρ`, and `w` off the graph part.
+      rw [mem_ball_zero_iff, hQ] at hwρ
+      refine ⟨z - ξ, ⟨z, mem_symmDiff.mpr (Or.inl ⟨⟨hzM, ?_⟩, ?_⟩), rfl⟩, rfl⟩
+      · exact mem_ball_iff_norm.mpr (hwρ.trans_le hρs)
+      · rintro ⟨hzS, -⟩
+        have hw : Q (z - ξ) ∈ Q '' ((fun x => x - ξ) '' S) ∩ ball 0 R :=
+          ⟨⟨z - ξ, ⟨z, hzS, rfl⟩, rfl⟩,
+            mem_ball_zero_iff.mpr ((hQ z).trans_lt (hwρ.trans_le (hρs.trans hsR)))⟩
+        rw [hgraph] at hw
+        obtain ⟨⟨x, -, hx⟩, -⟩ := hw
+        have hxρ : ‖graphPoint x (u x)‖ < ρ := by
+          rw [show graphPoint x (u x) = Q (z - ξ) from hx, hQ]; exact hwρ
+        exact hwG ⟨x, ⟨mem_ball_zero_iff.mpr ((hnorm x (u x)).trans_lt hxρ), hxρ⟩, hx⟩
+    · -- `w = (x, u x)` with `‖x‖ < ρ`, `‖(x, u x)‖ < ρ`, and `w` off the carrier part.
+      obtain ⟨hxρ, hGρ⟩ := hxW
+      have hw : graphPoint x (u x) ∈ graphOver u (ball 0 R) ∩ ball 0 R :=
+        ⟨⟨x, mem_ball_zero_iff.mpr ((mem_ball_zero_iff.mp hxρ).trans_le (hρs.trans hsR)), rfl⟩,
+          mem_ball_zero_iff.mpr (hGρ.trans_le (hρs.trans hsR))⟩
+      rw [← hgraph] at hw
+      obtain ⟨⟨_, ⟨z, hzS, rfl⟩, hz⟩, -⟩ := hw
+      have hzρ : ‖z - ξ‖ < ρ := by rw [← hQ, hz]; exact hGρ
+      refine ⟨z - ξ, ⟨z, mem_symmDiff.mpr (Or.inr ⟨⟨hzS, ?_⟩, ?_⟩), rfl⟩, hz⟩
+      · exact mem_ball_iff_norm.mpr (hzρ.trans_le hρs)
+      · rintro ⟨hzM, -⟩
+        exact hwM ⟨⟨z - ξ, ⟨z, hzM, rfl⟩, hz⟩, mem_ball_zero_iff.mpr hGρ⟩
+  -- `Q` and `τ` are isometries, so `Hⁿ(Q (τ (Z))) = Hⁿ(Z) = 0`.
+  have hτ : Isometry (fun x : Amb n ℓ => x - ξ) :=
+    Isometry.of_dist_eq fun a b => dist_sub_right a b ξ
+  refine measure_mono_null hsub ?_
+  rw [Q.isometry.euclideanHausdorffMeasure_image, hτ.euclideanHausdorffMeasure_image]
+  exact hnull
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
