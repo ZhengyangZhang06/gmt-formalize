@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.center_density-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1",
+  "depth": 4,
+  "title": "Density at the centre from the monotone corrected mass ratio",
+  "statement": "Let n and l be natural numbers, mu a measure on R^(n+l), y in R^(n+l), F : R -> R, and R, Lambda, alpha real with R > 0, alpha > 0 and mu(B_R(y)) < infinity (closed ball). Write Phi(r) := F(r) (r^n)^(-1) mu(B_r(y)).toReal + F(r) - 1 and omega_n := unitBallVolume n. Assume:\n(H1) for every r in (0, R): exp(-Lambda) <= F(r) <= exp(Lambda) and |F(r) - 1| <= Lambda (r/R)^alpha;\n(H2) Phi(s) <= Phi(r) whenever 0 < s <= r < R.\nThen there is a real t >= 0 such that mu(B_r(y))/ofReal(omega_n r^n) -> ofReal(t) as r -> 0+, and omega_n t <= Phi(r) for every r in (0, R).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (F : ℝ → ℝ) (R Λ α : ℝ), 0 < R → 0 < α → μ (closedBall y R) < ⊤ → (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ * (r / R) ^ α) → (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) → ∃ t : ℝ, 0 ≤ t ∧ Tendsto (fun r : ℝ => μ (closedBall y r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal t)) ∧ ∀ r ∈ Ioo 0 R, unitBallVolume n * t ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1",
+  "lean_name": "allard52_am_center_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-92b0baeadd-a1"
+}

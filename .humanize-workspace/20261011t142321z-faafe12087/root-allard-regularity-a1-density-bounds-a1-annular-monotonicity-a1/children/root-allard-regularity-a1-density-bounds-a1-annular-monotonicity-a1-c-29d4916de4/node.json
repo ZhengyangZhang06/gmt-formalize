@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_calculus-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1",
+  "depth": 4,
+  "title": "Continuity and differentiability in the scale of radial cutoff integrals",
+  "statement": "Let n and l be natural numbers, mu a measure on R^(n+l), y in R^(n+l), and f : R^(n+l) -> R integrable on the closed ball B_S(y). Let phi : R -> R be C^1 with phi(u) = 0 for all u >= T, where T > 0, and let t > 0 with T t < S. Write r_x := |x - y| and phi' := deriv phi; all integrals are Bochner integrals over R^(n+l). Then:\n(a) s -> integral phi(r_x/s) f(x) dmu is continuous at t;\n(b) s -> integral (r_x/s) phi'(r_x/s) f(x) dmu is continuous at t;\n(c) s -> integral phi(r_x/s) f(x) dmu has derivative -(integral (r_x/t) phi'(r_x/t) f(x) dmu)/t at t.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (φ : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → ContDiff ℝ 1 φ → 0 < T → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) t ∧ ContinuousAt (fun s => ∫ x, ‖x - y‖ / s * deriv φ (‖x - y‖ / s) * f x ∂μ) t ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t) t",
+  "lean_name": "allard52_am_cutoff_integral_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-29d4916de4-a1"
+}
