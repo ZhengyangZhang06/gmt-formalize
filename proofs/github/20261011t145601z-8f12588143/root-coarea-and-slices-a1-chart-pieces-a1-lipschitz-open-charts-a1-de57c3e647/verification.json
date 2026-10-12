@@ -1,0 +1,15 @@
+{
+  "node_id": "root.coarea_and_slices-a1.chart_pieces-a1.lipschitz_open_charts-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/413",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "f228710ea5d20ab55aef8edf27bac067393887c7",
+  "integrated_commit": "",
+  "proof_base_commit": "092b2618702cd2a48c460b4d9dce2e2cf4625a57",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.coarea_and_slices-a1.chart_pieces-a1",
+  "requires": []
+}

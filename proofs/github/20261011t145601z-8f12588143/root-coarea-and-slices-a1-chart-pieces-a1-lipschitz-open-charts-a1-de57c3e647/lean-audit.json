@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cb8436ea447a3938e4437072575dbbb57fc3f8cc37b21f3a6ed011830cc694a5",
+  "git_delta": {
+    "base_commit": "092b2618702cd2a48c460b4d9dce2e2cf4625a57",
+    "candidate_commit": "f228710ea5d20ab55aef8edf27bac067393887c7",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "submanifold_cover_lipschitz_open_charts",
+    "diff_sha256": "64c4fd9e38944f1a363fa9efffead28a671b26b52da1e9ff7450f31e19ae0e7b",
+    "source_sha256": "6f5aea530ed4843bb2dfa50826c70887857fc4993ee5cdb5ae7e2d927a1c8307",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.submanifold_cover_lipschitz_open_charts",
+      "statement": "∀ (n N m : ℕ) (M U N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (f : Rn N → Rn m), IsOpen U → M ⊆ U → LocallyLipschitzOn U f → (∀ i, IsC1Submanifold n (S i)) → M ⊆ N₀ ∪ ⋃ i, S i → ∃ (D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn N), (∀ α, IsOpen (D α)) ∧ (∀ α, ContDiffOn ℝ 1 (ψ α) (D α)) ∧ (∀ α, InjOn (ψ α) (D α)) ∧ (∀ α, ∃ K, LipschitzOnWith K (ψ α) (D α)) ∧ (∀ α, ∀ u ∈ D α, Function.Injective (fderiv ℝ (ψ α) u)) ∧ (∀ α, ∃ K, LipschitzOnWith K (f ∘ ψ α) (D α)) ∧ M ⊆ N₀ ∪ ⋃ α, ψ α '' D α",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
