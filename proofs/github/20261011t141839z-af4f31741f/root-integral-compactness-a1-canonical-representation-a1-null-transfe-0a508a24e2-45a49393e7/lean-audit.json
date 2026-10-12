@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "399a03ace033fc9252d4133685b67c10a1a8bc17daff6267d5cde3393927e86a",
+  "git_delta": {
+    "base_commit": "df1e1470bd9dbf21ba6fd77f8c4e10735d4c208b",
+    "candidate_commit": "ac0e4c0499075ab8acc91fbfff06a1e4cda69fc3",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_canon_nt_exists_open_subset_measure_lt",
+    "diff_sha256": "afeba1bb6253a235551b3abe8bbbd572f12bcf19ffda7396e915e627ed5816c1",
+    "source_sha256": "7d3570fdb374f091adba6f963aab480c1164872f59ecc3ff19d7fc82533745ba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_canon_nt_exists_open_subset_measure_lt",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (ε : ℝ≥0∞), IsOpen W → μ W ≠ ∞ → A ⊆ W → μ A < ε → ∃ O : Set (Euclidean N), IsOpen O ∧ A ⊆ O ∧ O ⊆ W ∧ μ O < ε",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
