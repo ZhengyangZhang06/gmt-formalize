@@ -458,6 +458,69 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Coefficient bound** (step 3 of the proof of `ted_lpm_abstract_monotonicity`, with
+`β = n / p`).  Put `b = I / tⁿ ≥ 0`, so `I = b tⁿ` and
+`I ^ (1 - 1 / p) = b ^ (1 - 1 / p) t ^ (n (1 - 1 / p))`.  As `0 ≤ 1 - 1 / p ≤ 1`,
+`b ^ (1 - 1 / p) ≤ 1 + b`, hence
+`|L| ≤ K (1 + b) (t t ^ (n (1 - 1 / p))) = K t ^ (-(n / p)) (t ^ (n + 1) (1 + b))`; divide by
+`t ^ (n + 1) (1 + b) > 0`. -/
+theorem ted_lpm_am_coefficient_bound : ∀ (n : ℕ) (p t K I L : ℝ), 1 < p → 0 < t → 0 ≤ K → 0 ≤ I → |L| ≤ t * K * I ^ (1 - 1 / p) → |L / t ^ (n + 1) / (1 + I / t ^ n)| ≤ K * t ^ (-((n : ℝ) / p)) := by
+  intro n p t K I L hp ht hK hI hL
+  -- Step 4: `b ^ e ≤ 1 + b` for `b ≥ 0` and `0 ≤ e ≤ 1` (cases `b ≤ 1` and `b ≥ 1`).
+  have hrpow_le : ∀ b e : ℝ, 0 ≤ b → 0 ≤ e → e ≤ 1 → b ^ e ≤ 1 + b := by
+    intro b e hb he0 he1
+    rcases le_total b 1 with h | h
+    · have := Real.rpow_le_one hb h he0
+      linarith
+    · have := Real.rpow_le_rpow_of_exponent_le h he1
+      rw [Real.rpow_one] at this
+      linarith
+  have hp0 : 0 < p := by linarith
+  have htn : 0 < t ^ n := pow_pos ht n
+  -- Step 2: `b = I / tⁿ ≥ 0` and `I = b tⁿ`.
+  set b := I / t ^ n with hbdef
+  have hb : 0 ≤ b := div_nonneg hI htn.le
+  have hIb : I = b * t ^ n := by
+    rw [hbdef, div_mul_cancel₀ _ htn.ne']
+  -- Step 1: `0 ≤ 1 - 1 / p ≤ 1`.
+  have he0 : 0 ≤ 1 - 1 / p := by
+    have : 1 / p < 1 := by rw [div_lt_one hp0]; exact hp
+    linarith
+  have he1 : 1 - 1 / p ≤ 1 := by
+    have : 0 < 1 / p := by positivity
+    linarith
+  -- Step 3: `I ^ (1 - 1 / p) = b ^ (1 - 1 / p) t ^ (n (1 - 1 / p))`.
+  have hpow : I ^ (1 - 1 / p) = b ^ (1 - 1 / p) * t ^ ((n : ℝ) * (1 - 1 / p)) := by
+    rw [hIb, Real.mul_rpow hb htn.le, ← Real.rpow_natCast, ← Real.rpow_mul ht.le]
+  have hbe := hrpow_le b (1 - 1 / p) hb he0 he1
+  have hden : 0 < 1 + b := by linarith
+  -- Step 5: `|L| ≤ K (1 + b) (t t ^ (n (1 - 1 / p)))`.
+  have hL' : |L| ≤ K * (1 + b) * (t * t ^ ((n : ℝ) * (1 - 1 / p))) := by
+    calc |L| ≤ t * K * I ^ (1 - 1 / p) := hL
+      _ = t * K * (b ^ (1 - 1 / p) * t ^ ((n : ℝ) * (1 - 1 / p))) := by rw [hpow]
+      _ ≤ t * K * ((1 + b) * t ^ ((n : ℝ) * (1 - 1 / p))) := by
+          gcongr
+      _ = K * (1 + b) * (t * t ^ ((n : ℝ) * (1 - 1 / p))) := by ring
+  -- Step 6: `t t ^ (n (1 - 1 / p)) = t ^ (-(n / p)) t ^ (n + 1)`.
+  have hexp : t * t ^ ((n : ℝ) * (1 - 1 / p)) = t ^ (-((n : ℝ) / p)) * t ^ (n + 1) := by
+    rw [← Real.rpow_natCast t (n + 1), ← Real.rpow_add ht]
+    have h1 : t * t ^ ((n : ℝ) * (1 - 1 / p)) = t ^ ((1 : ℝ) + (n : ℝ) * (1 - 1 / p)) := by
+      rw [Real.rpow_add ht, Real.rpow_one]
+    rw [h1]
+    congr 1
+    push_cast
+    field_simp
+    ring
+  -- Step 7: divide by `t ^ (n + 1) (1 + b) > 0`.
+  rw [abs_div, abs_div, abs_of_pos (pow_pos ht (n + 1)), abs_of_pos hden, div_div,
+    div_le_iff₀ (mul_pos (pow_pos ht (n + 1)) hden)]
+  calc |L| ≤ K * (1 + b) * (t * t ^ ((n : ℝ) * (1 - 1 / p))) := hL'
+    _ = K * t ^ (-((n : ℝ) / p)) * (t ^ (n + 1) * (1 + b)) := by rw [hexp]; ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
