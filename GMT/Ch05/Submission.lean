@@ -571,6 +571,22 @@ theorem tdo_slb_lintegral_rpow_le_scaledLpNorm : ∀ (n ℓ : ℕ) (U : Set (Amb
     _ = ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q := by
         rw [ENNReal.ofReal_mul (Real.rpow_nonneg hm _), mul_assoc, hkey,
           ← ENNReal.ofReal_rpow_of_nonneg hm hb, mul_comm]
+/-- **Scaling and Hölder bounds for the scaled `Lᵖ` norm** (used in the proof of Simon Ch. 5,
+Theorem 4.5, pp. 117–121; part (b) generalizes the Hölder step of Remark 2.2, p. 107).  Write
+`K(y, r) = (r^{p−n} ∫_{B_r(y)} |H|ᵖ dμ_V)^{1/p} ∈ [0, ∞]` (`V.scaledLpNorm`, closed balls, lower
+integrals, `H` arbitrary).
+(a) If `p > 0`, `0 < s ≤ t` and `B_s(z) ⊆ B_t(w)`, then `K(z, s) ≤ (s/t)^{(p−n)/p} K(w, t)`.
+(b) If `0 < q ≤ p`, `t > 0`, `m ≥ 0`, `B_s(z) ⊆ B_t(w)` and `μ_V(B_s(z)) ≤ m`, then
+`∫_{B_s(z)} |H|^q dμ_V ≤ m^{1−q/p} t^{q(n−p)/p} K(w, t)^q`.
+
+Part (a) is `tdo_slb_scaledLpNorm_le_of_subset`: monotonicity of the `p`-integral in the ball and
+`s^{p−n} = (s/t)^{p−n} t^{p−n}`, followed by taking `1/p`-th powers.  Part (b) is
+`tdo_slb_lintegral_rpow_le_scaledLpNorm`: Hölder's inequality on `B_s(z)` for the possibly
+non-measurable `|H|` (`tdo_slb_setLIntegral_rpow_le_holder`), the bounds
+`∫_{B_s(z)} |H|ᵖ ≤ ∫_{B_t(w)} |H|ᵖ` and `μ_V(B_s(z)) ≤ m`, and the identity
+`(∫_{B_t(w)} |H|ᵖ dμ_V)^{q/p} = t^{q(n−p)/p} K(w, t)^q`. -/
+theorem tdo_scaledLpNorm_bounds : (∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z w : Amb n ℓ) (s t : ℝ), 0 < p → 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → V.scaledLpNorm H p z s ≤ ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * V.scaledLpNorm H p w t) ∧ (∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q) :=
+  ⟨Submission.tdo_slb_scaledLpNorm_le_of_subset, Submission.tdo_slb_lintegral_rpow_le_scaledLpNorm⟩
 
 end Submission
 
