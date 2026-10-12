@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "The approximate tangent plane field of an integer multiplicity triple is measurable",
+  "statement": "For every integer multiplicity triple R = (M, θ, ξ) in a set U ⊆ ℝ^P (IMRep U n), the map x ↦ p_{T_xM}, the orthogonal projection onto approxTangentPlane n M x (the approximate tangent plane T_xM where it exists, {0} otherwise), is H^n⌞M-almost everywhere strongly measurable.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier)",
+  "lean_name": "imrep_approxTangent_starProjection_aesm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1-a1"
+}
