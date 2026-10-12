@@ -575,6 +575,97 @@ theorem Submission.isoperimetric_lattice_face_cutoff :
     rw [h1] at h3
     rcases hzi with h | h <;> nlinarith
 
+/-- A mass-admissible test form isolating one lattice face: for `ρ > 0`, `0 < δ < 1/4` and the
+face `F₀ = ρ(z + F_α)`, the form `ω = φ dx^α` (`φ` the cut-off of `F₀`) has `[[F]](ω) = 0` for every
+other face `F` (`dx^α` kills the faces of other directions, `φ` those of direction `α`), and
+`[[F₀]](ω) = ∫_{F₀} φ dHⁿ ≥ Hⁿ(K) = (ρ(1 − 2δ))^n`, `K` the shrunken face where `φ = 1`. -/
+theorem Submission.isoperimetric_lattice_face_isolating_form :
+    ∀ (n N : ℕ) (ρ δ : ℝ) (F₀ : LatticeFaceIndex n N), 0 < ρ → 0 < δ → δ < 1 / 4 →
+      ∃ ω : TestFormOn (univ : Set (Eucl N)) n, ω ∈ massAdmissibleOn (univ : Set (Eucl N)) n univ ∧
+        (∀ F : LatticeFaceIndex n N, F ≠ F₀ →
+          latticeFaceAction ρ F (ω : DifferentialForm (Eucl N) n) = 0) ∧
+        (ρ * (1 - 2 * δ)) ^ n ≤ latticeFaceAction ρ F₀ (ω : DifferentialForm (Eucl N) n) := by
+  intro n N ρ δ F₀ hρ hδ hδ'
+  obtain ⟨z, α⟩ := F₀
+  -- Step 1: the coordinate covector `η = dx^α` and the cut-off `φ` of the face `(z, α)`.
+  obtain ⟨hηα, hηne, hηnorm⟩ := Submission.isoperimetric_coord_covector_eval n N α
+  set η : Covector (Eucl N) n := wedgeCovectors n (fun i => EuclideanSpace.proj (α i))
+  obtain ⟨φ, hφs, hφc, hφ01, hφ1, hφ0⟩ :=
+    Submission.isoperimetric_lattice_face_cutoff n N ρ δ z α hρ hδ
+  -- Step 2: the test form `ω = φ • η`, smooth with compact support.
+  obtain ⟨ω, hωx⟩ : ∃ ω : TestFormOn (univ : Set (Eucl N)) n,
+      ∀ x, (ω : DifferentialForm (Eucl N) n) x = φ x • η :=
+    ⟨⟨fun x => φ x • η, ⟨hφs.smul contDiff_const, hφc.smul_right (f' := fun _ => η)⟩,
+      subset_univ _⟩, fun _ => rfl⟩
+  have hωv : ∀ x (v : Fin n → Eucl N), (ω : DifferentialForm (Eucl N) n) x v = φ x * η v :=
+    fun x v => by rw [hωx, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+  refine ⟨ω, ⟨subset_univ _, fun x => ?_⟩, ?_, ?_⟩
+  -- Step 3: admissibility, `|ω(x)| = |φ(x)| ≤ 1`.
+  · rw [hωx, hηnorm, abs_of_nonneg (hφ01 x).1]
+    exact (hφ01 x).2
+  -- Step 4: every other face contributes `0`.
+  · rintro ⟨z', α'⟩ hF
+    rw [latticeFaceAction]
+    by_cases hα : α' = α
+    · -- same direction: `z' ≠ z`, and `φ = 0` on the face `(z', α)`.
+      have hz : z' ≠ z := fun h => hF (by rw [h, hα])
+      refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+      rw [hωv, hφ0 z' hz x (by rwa [hα] at hx), zero_mul]
+    · -- other direction: `η(e_{α'}) = 0`.
+      simp only [hωv, hηne α' hα, mul_zero, integral_zero]
+  -- Steps 5–8: the face `F₀`.
+  · set K : Set (Eucl N) := {x | ∀ i : Fin N,
+      (i ∈ range α → ρ * ((z i : ℝ) + δ) ≤ x i ∧ x i ≤ ρ * ((z i : ℝ) + 1 - δ)) ∧
+      (i ∉ range α → x i = ρ * (z i : ℝ))} with hK
+    -- Step 6: both `F₀` and `K` are coordinate boxes with base point `c_i = ρ z_i`.
+    have hFmeas : (μHE[n] : Measure (Eucl N)) (latticeFace ρ ((z, α) : LatticeFaceIndex n N)) =
+        ENNReal.ofReal (ρ ^ n) := by
+      convert Submission.isoperimetric_coord_box_measure n N α (fun i => ρ * (z i : ℝ)) 0 ρ
+        hρ.le using 2
+      · ext x
+        simp only [latticeFace, mem_ofPred_eq, add_zero, mul_add, mul_one]
+      · rw [sub_zero]
+    have hKmeas : (μHE[n] : Measure (Eucl N)) K = ENNReal.ofReal ((ρ * (1 - 2 * δ)) ^ n) := by
+      convert Submission.isoperimetric_coord_box_measure n N α (fun i => ρ * (z i : ℝ)) (ρ * δ)
+        (ρ * (1 - δ)) (by nlinarith) using 2
+      · ext x
+        simp only [hK, mem_ofPred_eq, mul_add, mul_sub, mul_one, add_sub_assoc]
+      · ring
+    -- Step 7: `K ⊆ F₀`, `K` is closed, and `φ` is integrable on `F₀`.
+    have hKsub : K ⊆ latticeFace ρ ((z, α) : LatticeFaceIndex n N) := by
+      intro x hx i
+      refine ⟨fun hi => ?_, (hx i).2⟩
+      obtain ⟨h1, h2⟩ := (hx i).1 hi
+      constructor <;> nlinarith
+    have hc : ∀ i : Fin N, Continuous fun x : Eucl N => x i := fun i => PiLp.continuous_apply 2 _ i
+    have hKc : IsClosed K := by
+      rw [hK, ofPred_forall]
+      refine isClosed_iInter fun i => ?_
+      by_cases hi : i ∈ range α
+      · simp only [hi, not_true_eq_false, IsEmpty.forall_iff, and_true, forall_const]
+        exact (isClosed_le continuous_const (hc i)).inter (isClosed_le (hc i) continuous_const)
+      · simp only [hi, IsEmpty.forall_iff, not_false_eq_true, forall_const, true_and]
+        exact isClosed_eq (hc i) continuous_const
+    have hint : IntegrableOn φ (latticeFace ρ ((z, α) : LatticeFaceIndex n N))
+        (μHE[n] : Measure (Eucl N)) :=
+      Measure.integrableOn_of_bounded (M := 1) (by rw [hFmeas]; exact ENNReal.ofReal_ne_top)
+        hφs.continuous.aestronglyMeasurable
+        (ae_of_all _ fun x => by rw [Real.norm_eq_abs, abs_of_nonneg (hφ01 x).1]; exact (hφ01 x).2)
+    -- Step 8: `(ρ(1 − 2δ))^n = Hⁿ(K) = ∫_K φ ≤ ∫_{F₀} φ = [[F₀]](ω)`.
+    calc (ρ * (1 - 2 * δ)) ^ n
+        = ((μHE[n] : Measure (Eucl N)) K).toReal := by
+          rw [hKmeas, ENNReal.toReal_ofReal (pow_nonneg (mul_nonneg hρ.le (by linarith)) n)]
+      _ = ∫ _ in K, (1 : ℝ) ∂(μHE[n] : Measure (Eucl N)) := by
+          rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def]
+      _ = ∫ x in K, φ x ∂(μHE[n] : Measure (Eucl N)) :=
+          setIntegral_congr_fun hKc.measurableSet fun x hx => (hφ1 x hx).symm
+      _ ≤ ∫ x in latticeFace ρ ((z, α) : LatticeFaceIndex n N), φ x ∂(μHE[n] : Measure (Eucl N)) :=
+          setIntegral_mono_set hint (ae_of_all _ fun x => (hφ01 x).1)
+            (Filter.EventuallySubset.of_subset hKsub)
+      _ = latticeFaceAction ρ ((z, α) : LatticeFaceIndex n N)
+            (ω : DifferentialForm (Eucl N) n) := by
+          simp only [latticeFaceAction, hωv, hηα, mul_one]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
