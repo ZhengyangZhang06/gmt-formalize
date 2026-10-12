@@ -359,6 +359,69 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Difference of two top-dimensional density currents.**  On `ℝⁿ` (`n = m + 1`) let
+`X(ω) = ∫ u ω_e dLⁿ` and `Pc(ω) = ∫ v ω_e dLⁿ` with `u, v ∈ L¹`, where
+`ω_e(x) = ⟨ω(x), e₁ ∧ ⋯ ∧ eₙ⟩`.  Then `X − Pc` is a current `S` with `M(S) ≤ ∫ |u − v| dLⁿ`.
+In top degree the Euclidean coefficient norm (Simon Ch. 6, 1.15 and Remark 2.6) of `ω(x)` is
+`|ω_e(x)|`, so every form admissible for the mass (2.4) has `|ω_e| ≤ 1` and
+`S(ω) = ∫ (u − v) ω_e dLⁿ ≤ ∫ |u − v| dLⁿ`. -/
+theorem Submission.fiw_tb_tda_sub_mass : ∀ (m : ℕ) (X Pc : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (u v : Eucl (m + 1) → ℝ), Integrable u → Integrable v → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = ∫ x, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), Pc ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → ∃ S : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), (∀ ω, X ω - Pc ω = S ω) ∧ S.mass ≤ ∫⁻ x, ENNReal.ofReal |u x - v x| := by
+  intro m X Pc u v hu hv hX hPc
+  classical
+  -- Top degree: the only strictly monotone `I : Fin n → Fin n` is the identity, so the
+  -- Euclidean coefficient norm of `α` is `|α(e₁, …, eₙ)|`.
+  have hnorm : ∀ α : Covector (Eucl (m + 1)) (m + 1),
+      covectorEuclideanNorm α = |α (fun i => EuclideanSpace.single i (1 : ℝ))| := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [Finset.sum_eq_single (id : Fin (m + 1) → Fin (m + 1))]
+    · rw [ite_eq_left strictMono_id]
+      simp only [id, EuclideanSpace.basisFun_apply]
+      exact Real.sqrt_sq_eq_abs _
+    · intro I _ hI
+      rw [ite_eq_right]
+      intro h
+      exact hI h.eq_id
+    · intro h
+      exact absurd (Finset.mem_univ _) h
+  -- `S = X − Pc`; its continuity is the difference of the continuity fields of `X` and `Pc`.
+  refine ⟨⟨X.toCurrent - Pc.toCurrent, fun ωs h => by
+    simpa using (X.continuous' ωs h).sub (Pc.continuous' ωs h)⟩, fun ω => rfl, ?_⟩
+  unfold GeometricCurrentOn.mass GeometricCurrentOn.massOn
+  refine sSup_le ?_
+  rintro b ⟨ω, hω, rfl⟩
+  -- For admissible `ω`, `ω_e` is continuous and `|ω_e| ≤ 1`.
+  set e : Fin (m + 1) → Eucl (m + 1) := fun i => EuclideanSpace.single i (1 : ℝ) with he
+  set f : Eucl (m + 1) → ℝ := fun x => (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e with hf
+  have hbd : ∀ x, |f x| ≤ 1 := fun x => by
+    have := hω.2 x
+    rwa [hnorm] at this
+  have hωc : Continuous (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) :=
+    ω.property.1.1.continuous
+  have hfc : Continuous f := hωc.eval_const e
+  have hfm : AEStronglyMeasurable f volume := hfc.aestronglyMeasurable
+  have hbd' : ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ‖f x‖ ≤ 1 :=
+    Eventually.of_forall (fun x => by simpa [Real.norm_eq_abs] using hbd x)
+  have hu' : Integrable (fun x => u x * f x) := hu.mul_bdd hfm hbd'
+  have hv' : Integrable (fun x => v x * f x) := hv.mul_bdd hfm hbd'
+  have huv : Integrable (fun x => |u x - v x|) := (hu.sub hv).abs
+  -- `S(ω) = ∫ (u − v) ω_e ≤ ∫ |u − v| |ω_e| ≤ ∫ |u − v|`.
+  have key : (X.toCurrent - Pc.toCurrent) ω ≤ ∫ x, |u x - v x| := by
+    rw [LinearMap.sub_apply]
+    change X ω - Pc ω ≤ _
+    rw [hX ω, hPc ω, ← integral_sub hu' hv']
+    apply integral_mono (hu'.sub hv') huv
+    intro x
+    calc u x * f x - v x * f x = (u x - v x) * f x := by ring
+      _ ≤ |(u x - v x) * f x| := le_abs_self _
+      _ = |u x - v x| * |f x| := abs_mul _ _
+      _ ≤ |u x - v x| * 1 := mul_le_mul_of_nonneg_left (hbd x) (abs_nonneg _)
+      _ = |u x - v x| := mul_one _
+  calc ENNReal.ofReal ((X.toCurrent - Pc.toCurrent) ω)
+      ≤ ENNReal.ofReal (∫ x, |u x - v x|) := ENNReal.ofReal_le_ofReal key
+    _ = ∫⁻ x, ENNReal.ofReal |u x - v x| :=
+      ofReal_integral_eq_lintegral_ofReal huv (Eventually.of_forall (fun x => abs_nonneg _))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
