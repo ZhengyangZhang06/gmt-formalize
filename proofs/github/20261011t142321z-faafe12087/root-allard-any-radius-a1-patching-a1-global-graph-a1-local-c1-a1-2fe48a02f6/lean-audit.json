@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "164cd1bc37fa3fbf4b5dbbff33e2fd0f51c68ba0abd3831b3467307092052adf",
+  "git_delta": {
+    "base_commit": "7492018686039fd7060c6417b4dc30754f0f3f16",
+    "candidate_commit": "b5cc4d7a73df26ca752bc31de2af69e2da120830",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "arp_contDiffOn_of_local_C1_reps",
+    "diff_sha256": "e071ba2c369a8a1a4e71ee53606a47f6e81567204f01d61109f269640d5acb79",
+    "source_sha256": "1d89340cc83f189dd9be64b01a317dc9cea66e2b4776af5aeacc3fa8ade5a8ed",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_contDiffOn_of_local_C1_reps",
+      "statement": "∀ {m k : ℕ} (u : Rn m → Rn k) (Ω : Set (Rn m)) (L : ℝ), IsOpen Ω → (∀ x₀ ∈ Ω, ∃ (ε : ℝ) (f : Rn m → Rn k), 0 < ε ∧ ContDiffOn ℝ 1 f (ball x₀ ε) ∧ ‖fderiv ℝ f x₀‖ ≤ L ∧ ∀ w ∈ ball x₀ ε ∩ Ω, u w = f w) → ContDiffOn ℝ 1 u Ω ∧ ∀ x ∈ Ω, ‖fderiv ℝ u x‖ ≤ L",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
