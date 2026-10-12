@@ -1207,6 +1207,110 @@ theorem Submission.dorag_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
     ).congr hae.symm
 
+/-- **Tilt-excess is controlled by height** (Simon Ch. 5, Lemma 2.1, with `|H| ≤ κ`).  With
+`p_S^⊥ = I − p_S` and `C = 146`,
+`∫_{B_{r/2}(ξ)} |p_{TₓM} − p_S|² dμ ≤ C (r⁻² ∫_{B_r(ξ)} |p_S^⊥(x − ξ)|² dμ + κ²r² μ(B_r(ξ)))`.
+Take the radial cut-off `ζ` (`ζ = 1` on `B_{r/2}(ξ)`, `tsupport ζ ⊆ B_r(ξ)`, `|Dζ| ≤ 3/r`); the
+energy inequality for the test field `ζ² p_S^⊥(x − ξ)` gives
+`∫ ζ² |p_{TₓM} − p_S|² dμ ≤ 16 ∫ |Dζ|² |p_S^⊥(x − ξ)|² dμ + 4 ∫ κ ζ² |p_S^⊥(x − ξ)| dμ`.
+As `ζ = 1` on `B_{r/2}(ξ)`, the left side bounds the tilt over the half ball.  Off `B_r(ξ)` both
+`ζ` and `Dζ` vanish, while on `B_r(ξ)`, `16 |Dζ|² ≤ 144/r²` and, as `0 ≤ ζ ≤ 1` and `κ ≥ 0`,
+`4 κ ζ² t ≤ 4 κ t ≤ 2 t²/r² + 2 κ² r²` for `t = |p_S^⊥(x − ξ)|`.  Finally `144 + 2 = 146` and
+`2 ≤ 146`. -/
+theorem Submission.dorag_tilt_height_estimate : ∀ (n k : ℕ), ∃ C : ℝ, 0 < C ∧ ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ) (ξ : Euclid (n + k)) (r : ℝ) (S : Submodule ℝ (Euclid (n + k))), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → 0 < r → closedBall ξ r ⊆ W → Module.finrank ℝ S = n → ∫⁻ x in closedBall ξ (r / 2), ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal C * (ENNReal.ofReal (1 / r ^ 2) * ∫⁻ x in closedBall ξ r, ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂R.measure + ENNReal.ofReal (κ ^ 2 * r ^ 2) * R.measure (closedBall ξ r)) := by
+  intro n k
+  refine ⟨146, by norm_num, ?_⟩
+  intro U W R H κ ξ r S _hW hWU hH hHκ hMC hr hball hS
+  -- `κ ≥ 0`, since `‖H 0‖ ≤ κ`
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+  -- the radial cut-off `ζ`; its support is compact and lies in `B_r(ξ) ⊆ W`
+  obtain ⟨ζ, hζC, hζ01, hζ1, hζsupp, hζD⟩ := Submission.dorag_th_radial_cutoff (n + k) ξ r hr
+  have hζcpt : HasCompactSupport ζ :=
+    (isCompact_closedBall ξ r).of_isClosed_subset (isClosed_tsupport ζ) hζsupp
+  -- the energy inequality for the test field `ζ² p_S^⊥(x − ξ)`
+  have hE := Submission.dorag_th_tilt_energy_inequality (n + k) n U W R H κ S ξ ζ hWU
+    (Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R) hH hHκ hMC hS hζC hζcpt
+    (hζsupp.trans hball)
+  -- the left side: `ζ = 1` on `B_{r/2}(ξ)`
+  have h1 : ∫⁻ x in closedBall ξ (r / 2), ENNReal.ofReal (∑ i : Fin (n + k),
+        ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤
+      ∫⁻ x, ENNReal.ofReal (ζ x ^ 2 * ∑ i : Fin (n + k),
+        ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure := by
+    rw [← lintegral_indicator measurableSet_closedBall]
+    refine lintegral_mono fun x => ?_
+    by_cases hx : x ∈ closedBall ξ (r / 2)
+    · simp only [indicator_of_mem hx, hζ1 x hx, one_pow, one_mul, le_refl]
+    · simp only [indicator_of_notMem hx, zero_le]
+  -- the gradient term: `Dζ = 0` off `B_r(ξ)`, and `16 |Dζ|² ≤ 144/r²`
+  have h2 : ENNReal.ofReal 16 * ∫⁻ x, ENNReal.ofReal (‖fderiv ℝ ζ x‖ ^ 2 *
+        ‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂R.measure ≤
+      ENNReal.ofReal 144 * (ENNReal.ofReal (1 / r ^ 2) * ∫⁻ x in closedBall ξ r,
+        ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂R.measure) := by
+    rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+      ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+      ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+      ← lintegral_indicator measurableSet_closedBall]
+    refine lintegral_mono fun x => ?_
+    by_cases hx : x ∈ closedBall ξ r
+    · simp only [indicator_of_mem hx]
+      rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+        ← ENNReal.ofReal_mul (by positivity)]
+      refine ENNReal.ofReal_le_ofReal ?_
+      have hD : ‖fderiv ℝ ζ x‖ ^ 2 ≤ (3 / r) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) (hζD x) 2
+      calc 16 * (‖fderiv ℝ ζ x‖ ^ 2 * ‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2)
+          ≤ 16 * ((3 / r) ^ 2 * ‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) := by gcongr
+        _ = 144 * (1 / r ^ 2 * ‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) := by ring
+    · simp [indicator_of_notMem hx, fderiv_of_notMem_tsupport ℝ fun h => hx (hζsupp h)]
+  -- the mean-curvature term: `ζ = 0` off `B_r(ξ)`, and `4 κ ζ² t ≤ 2 t²/r² + 2 κ²r²`
+  have h3 : ENNReal.ofReal 4 * ∫⁻ x, ENNReal.ofReal (κ * ζ x ^ 2 *
+        ‖(x - ξ) - S.starProjection (x - ξ)‖) ∂R.measure ≤
+      ENNReal.ofReal 2 * (ENNReal.ofReal (1 / r ^ 2) * ∫⁻ x in closedBall ξ r,
+        ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂R.measure) +
+      ENNReal.ofReal 2 * (ENNReal.ofReal (κ ^ 2 * r ^ 2) * R.measure (closedBall ξ r)) := by
+    rw [← mul_assoc (ENNReal.ofReal 2) (ENNReal.ofReal (κ ^ 2 * r ^ 2)), ← setLIntegral_const,
+      ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+      ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+      ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
+      ← lintegral_add_right _ measurable_const, ← lintegral_indicator measurableSet_closedBall]
+    refine lintegral_mono fun x => ?_
+    by_cases hx : x ∈ closedBall ξ r
+    · simp only [indicator_of_mem hx]
+      rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+        ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+        ← ENNReal.ofReal_add (by positivity) (by positivity)]
+      refine ENNReal.ofReal_le_ofReal ?_
+      have ht : 0 ≤ ‖(x - ξ) - S.starProjection (x - ξ)‖ := norm_nonneg _
+      have hz2 : ζ x ^ 2 ≤ 1 := pow_le_one₀ (hζ01 x).1 (hζ01 x).2
+      have hκt : κ * ζ x ^ 2 * ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤
+          κ * ‖(x - ξ) - S.starProjection (x - ξ)‖ := by
+        calc κ * ζ x ^ 2 * ‖(x - ξ) - S.starProjection (x - ξ)‖
+            = κ * ‖(x - ξ) - S.starProjection (x - ξ)‖ * ζ x ^ 2 := by ring
+          _ ≤ κ * ‖(x - ξ) - S.starProjection (x - ξ)‖ * 1 :=
+            mul_le_mul_of_nonneg_left hz2 (mul_nonneg hκ ht)
+          _ = κ * ‖(x - ξ) - S.starProjection (x - ξ)‖ := mul_one _
+      -- `2ab ≤ a² + b²` with `a = t/r`, `b = κr`, where `t = |p_S^⊥(x − ξ)|`
+      have hab := two_mul_le_add_sq (‖(x - ξ) - S.starProjection (x - ξ)‖ / r) (κ * r)
+      have e1 : 2 * (‖(x - ξ) - S.starProjection (x - ξ)‖ / r) * (κ * r) =
+          2 * (κ * ‖(x - ξ) - S.starProjection (x - ξ)‖) := by
+        rw [show 2 * (‖(x - ξ) - S.starProjection (x - ξ)‖ / r) * (κ * r) =
+            2 * (κ * ‖(x - ξ) - S.starProjection (x - ξ)‖) * (r / r) by ring,
+          div_self hr.ne', mul_one]
+      have e2 : (‖(x - ξ) - S.starProjection (x - ξ)‖ / r) ^ 2 + (κ * r) ^ 2 =
+          1 / r ^ 2 * ‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2 + κ ^ 2 * r ^ 2 := by ring
+      linarith
+    · simp [indicator_of_notMem hx, image_eq_zero_of_notMem_tsupport fun h => hx (hζsupp h)]
+  -- combine: `144 + 2 = 146` and `2 ≤ 146`
+  have arith : ∀ X Y : ℝ≥0∞,
+      ENNReal.ofReal 144 * X + (ENNReal.ofReal 2 * X + ENNReal.ofReal 2 * Y) ≤
+        ENNReal.ofReal 146 * (X + Y) := by
+    intro X Y
+    simp only [ENNReal.ofReal_ofNat]
+    calc 144 * X + (2 * X + 2 * Y) ≤ 144 * X + (2 * X + 2 * Y) + 144 * Y := le_self_add
+      _ = 146 * (X + Y) := by ring
+  exact h1.trans (hE.trans ((add_le_add h2 h3).trans (arith _ _)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
