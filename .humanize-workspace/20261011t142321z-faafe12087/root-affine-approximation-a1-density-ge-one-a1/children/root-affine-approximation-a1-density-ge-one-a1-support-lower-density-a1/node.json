@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.density_ge_one-a1.support_lower_density-a1",
+  "parent_id": "root.affine_approximation-a1.density_ge_one-a1",
+  "depth": 3,
+  "title": "Lower density bound at support points from a.e. uniform estimates (Simon Ch. 4, 3.11 and 4.10(1))",
+  "statement": "Let n, l be natural numbers, mu a measure on R^(n+l), and y in spt mu (Measure.support). Let omega > 0 and r > 0, and let c : R -> R satisfy c(t) >= 0 for t in (0, r] and c(t) -> 0 as t -> 0+. Assume mu(B_(2r)(y)) < infinity. Assume also that for mu-a.e. x, if |x - y| < r then omega <= (1 + c(t)) (toReal(mu(B_t(x)))/t^n) + c(t) for every t in (0, r] (B denotes closed balls). Then for every epsilon > 0 there is s_0 > 0 with ofReal((1 - epsilon)(omega s^n)) <= mu(B_s(y)) for all s in (0, s_0), i.e. eventually as s -> 0+.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (ω r : ℝ) (c : ℝ → ℝ), 0 < ω → 0 < r → y ∈ μ.support → μ (closedBall y (2 * r)) < ⊤ → (∀ t : ℝ, 0 < t → t ≤ r → 0 ≤ c t) → Tendsto c (𝓝[>] 0) (𝓝 0) → (∀ᵐ x ∂μ, x ∈ ball y r → ∀ t : ℝ, 0 < t → t ≤ r → ω ≤ (1 + c t) * ((μ (closedBall x t)).toReal / t ^ n) + c t) → ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - ε) * (ω * s ^ n)) ≤ μ (closedBall y s)",
+  "lean_name": "aal_dge1_support_density_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-density-ge-one-a1-support-lower-density-a1-a1"
+}
