@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1.det_lower_bound-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1",
+  "depth": 4,
+  "title": "Determinant lower bound for a symmetric matrix with a coercive quadratic form (spectral theorem)",
+  "statement": "Let N ∈ ℕ, let S = (S_ij)_{i,j ∈ Fin N} be a real N×N matrix and let c ∈ ℝ with c ≥ 0. Assume S is symmetric (S_ij = S_ji for all i, j) and c·Σ_i ξ_i² ≤ Σ_i Σ_j ξ_i S_ij ξ_j for every ξ ∈ ℝ^{Fin N}. Then c^N ≤ det S.",
+  "lean_statement": "∀ (N : ℕ) (S : Matrix (Fin N) (Fin N) ℝ) (c : ℝ), 0 ≤ c → (∀ i j, S i j = S j i) → (∀ ξ : Fin N → ℝ, c * ∑ i, ξ i ^ 2 ≤ ∑ i, ∑ j, ξ i * S i j * ξ j) → c ^ N ≤ S.det",
+  "lean_name": "ts_fv_det_ge_pow_of_quadForm_ge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivati-ff844f2cab-a1"
+}
