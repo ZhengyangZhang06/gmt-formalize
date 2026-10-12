@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1.integrating_factor-a1",
+  "parent_id": "root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1",
+  "depth": 4,
+  "title": "Integrating factor for the normalized cutoff mass (Simon Ch. 4, (4.3)-(4.4))",
+  "statement": "Let n >= 0 be an integer, let I, L, a, P, Q : R -> R, and let R, M, beta be reals with beta < 1. Suppose that for every t with 0 < t < R:\n (i) I is differentiable at t with I'(t) = P(t);\n (ii) L is continuous at t;\n (iii) I(t) >= 0;\n (iv) n I(t) - t P(t) + t Q(t) = -L(t);\n (v) a(t) = (L(t)/t^(n+1))/(1 + I(t)/t^n);\n (vi) |a(t)| <= M t^(-beta) (real power).\nWrite int_0^s f for the interval integral of f from 0 to s with respect to Lebesgue measure. Then:\n (A) for every t with 0 < t < R, the function Psi(s) := exp(-int_0^s a)(1 + I(s)/s^n) is differentiable at t with derivative exp(-int_0^t a) Q(t)/t^n;\n (B) for all t, rho with 0 < t <= rho < R: exp(-int_0^rho |a|) <= exp(-int_0^t a) <= exp(int_0^rho |a|).",
+  "lean_statement": "∀ (n : ℕ) (I L a P Q : ℝ → ℝ) (R M β : ℝ), β < 1 → (∀ t : ℝ, 0 < t → t < R → HasDerivAt I (P t) t) → (∀ t : ℝ, 0 < t → t < R → ContinuousAt L t) → (∀ t : ℝ, 0 < t → t < R → 0 ≤ I t) → (∀ t : ℝ, 0 < t → t < R → (n : ℝ) * I t - t * P t + t * Q t = -L t) → (∀ t : ℝ, 0 < t → t < R → a t = L t / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → t < R → |a t| ≤ M * t ^ (-β)) → (∀ t : ℝ, 0 < t → t < R → HasDerivAt (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n)) (Real.exp (-∫ u in (0)..t, a u) * (Q t / t ^ n)) t) ∧ (∀ t ρ : ℝ, 0 < t → t ≤ ρ → ρ < R → Real.exp (-∫ u in (0)..ρ, |a u|) ≤ Real.exp (-∫ u in (0)..t, a u) ∧ Real.exp (-∫ u in (0)..t, a u) ≤ Real.exp (∫ u in (0)..ρ, |a u|))",
+  "lean_name": "aal_cfs_integrating_factor_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-lp-monotonicity-a1-cutoff-squeeze-a1-int-85dadbafe4-a1"
+}

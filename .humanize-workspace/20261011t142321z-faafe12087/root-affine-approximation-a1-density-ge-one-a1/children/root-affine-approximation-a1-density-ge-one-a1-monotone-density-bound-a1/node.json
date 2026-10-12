@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.density_ge_one-a1.monotone_density_bound-a1",
+  "parent_id": "root.affine_approximation-a1.density_ge_one-a1",
+  "depth": 3,
+  "title": "Density bound from a monotone corrected mass ratio (Simon Ch. 4, 3.9-3.10 and 4.5-4.9)",
+  "statement": "Let n, l be natural numbers, mu a measure on R^(n+l), x in R^(n+l), and let omega, R, A, beta, theta_0 be reals with omega > 0, R > 0, beta > 0 and theta_0 >= 0. Let F : R -> R. Write m(s) := toReal(mu(B_s(x))) for the closed balls B_s(x), with toReal(infinity) = 0. Assume: (a) |F(t) - 1| <= A (t/R)^beta for all t in (0, R]; (b) F(s)(m(s)/s^n) + (F(s) - 1) <= F(t)(m(t)/t^n) + (F(t) - 1) whenever 0 < s <= t <= R; (c) mu(B_r(x)) / ofReal(omega r^n) -> ofReal(theta_0) in [0, infinity] as r -> 0+. Then for every t in (0, R]: omega theta_0 <= (1 + A (t/R)^beta)(m(t)/t^n) + A (t/R)^beta.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (x : Amb n ℓ) (ω R A β θ₀ : ℝ) (F : ℝ → ℝ), 0 < ω → 0 < R → 0 < β → 0 ≤ θ₀ → (∀ t : ℝ, 0 < t → t ≤ R → |F t - 1| ≤ A * (t / R) ^ β) → (∀ s t : ℝ, 0 < s → s ≤ t → t ≤ R → F s * ((μ (closedBall x s)).toReal / s ^ n) + (F s - 1) ≤ F t * ((μ (closedBall x t)).toReal / t ^ n) + (F t - 1)) → Tendsto (fun r : ℝ => μ (closedBall x r) / ENNReal.ofReal (ω * r ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ₀)) → ∀ t : ℝ, 0 < t → t ≤ R → ω * θ₀ ≤ (1 + A * (t / R) ^ β) * ((μ (closedBall x t)).toReal / t ^ n) + A * (t / R) ^ β",
+  "lean_name": "aal_dge1_density_le_monotone_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-density-ge-one-a1-monotone-density-bound-a1-a1"
+}
