@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.boundary_full_measure-a1.open_ball_differentiation-a1",
+  "parent_id": "root.de_giorgi-a1.boundary_full_measure-a1",
+  "depth": 3,
+  "title": "Lebesgue–Besicovitch differentiation along open balls for a finite Borel measure on ℝ^N (normalAverage μ f x → f(x) μ-a.e.)",
+  "statement": "Let N ∈ ℕ, let μ be a finite Borel measure on ℝ^N = EuclideanSpace ℝ (Fin N) (μ(ℝ^N) < ∞), and let f : ℝ^N → ℝ^N be μ-integrable. Then for μ-almost every x ∈ ℝ^N, normalAverage μ f x ρ := μ(B_ρ(x)).toReal⁻¹ • ∫_{B_ρ(x)} f dμ converges to f(x) as ρ ↓ 0. Here B_ρ(x) is the open ball, t.toReal is the real value of t ∈ [0, ∞], and 0⁻¹ = 0, so the average is 0 when μ(B_ρ(x)) = 0.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (f : Rn N → Rn N), IsFiniteMeasure μ → Integrable f μ → ∀ᵐ x ∂μ, Tendsto (normalAverage μ f x) (𝓝[>] 0) (𝓝 (f x))",
+  "lean_name": "deGiorgiBFM_normalAverage_tendsto_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1-a1"
+}

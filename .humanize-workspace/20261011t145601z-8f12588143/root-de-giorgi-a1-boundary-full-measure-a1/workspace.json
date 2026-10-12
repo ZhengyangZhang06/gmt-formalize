@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T145601Z-8f12588143",
+  "parent_id": "root.de_giorgi-a1.boundary_full_measure-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch03/20261011t145601z-8f12588143/dispatch/root-de-giorgi-a1-boundary-full-measure-a1",
+  "source_commit": "d09bc8a18ce60face651f042976e8465f21f0f68",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch03/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.de_giorgi-a1.boundary_full_measure-a1.open_ball_differentiation-a1",
+      "key": "open_ball_differentiation",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean ; diff GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean",
+              "grep -n 'normalAverage|reducedBoundary|reducedNormal|IsGaussGreenPair|DeGiorgiTheorem|^namespace|^open' GMT/Ch03/Contract.lean",
+              "grep -rn 'theorem ae_tendsto_average|theorem ae_tendsto_average_norm_sub|theorem tendsto_filterAt|protected def vitaliFamily|theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/",
+              "grep -rn \"lemma Integrable.of_bound|theorem setAverage_eq |theorem tendsto_setIntegral_of_monotone|theorem tendsto_measure_iUnion_atTop|theorem ae_restrict_iff'|theorem ae_all_iff|theorem measure_eq_zero_iff_ae_notMem|theorem exists_inv_nat_lt|theorem ae_eventually_measure_pos|instance.*HasBesicovitchCovering|isCompact_closedBall\" <snapshot>/mathlib/Mathlib",
+              "grep -rn 'def infEDist|theorem infEDist_zero_of_mem|theorem continuous_infEDist|theorem mem_closure_iff_infEDist_zero' <snapshot>/mathlib/Mathlib  (EMetric.infEdist is gone; it is now Metric.infEDist)",
+              "grep -rn 'deGiorgiBFM|normalAverage_tendsto|open_exhaustion' .lake/packages/simongmt/Poincare",
+              "git show humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-lebesgue-points-a1-a1:GMT/Ch03/Submission.lean (accepted chartTD_lebesgue_point_ae)",
+              "python3 -I lean_name collision check against dag.json (141 nodes); git grep 'deGiorgiBFM|bfm_normalAverage|bfm_exists_open' <every ref> -- GMT/Ch03/Submission.lean",
+              "grep -n '3.23|3.17|Lebesgue|differentiation|B_|open ball|Symmetric Vitali' book/chapter-01.txt; sed -n 266,280p / 795,840p / 905,985p / 1040,1075p book/chapter-01.txt; sed -n 575,592p book/chapter-03.txt",
+              "python3 -I importlib verifier/gmt-compare.py: contract_scope(Contract.lean, 'GMT.Ch03.main_theorem') + child_modules(mode='contract') -> NodeChallenge_{A,B}.lean / NodeSolution; verifier/lean_contract.py validate_lean_statement on both child types",
+              "lake env lean /tmp/bfm-decomp/{Challenges,Assembly,ChildA1,ChildA2,ChildB,Final,NodeChallenge_A,NodeChallenge_B,SolutionCheck}.lean and GMT/Scratch/DeGiorgiBFMSplitCheck.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DeGiorgiBFMSplitCheck.lean",
+              "/tmp/bfm-decomp/Final.lean",
+              "/tmp/bfm-decomp/Assembly.lean",
+              "/tmp/bfm-decomp/NodeChallenge_A.lean",
+              "/tmp/bfm-decomp/NodeChallenge_B.lean",
+              "/tmp/bfm-decomp/SolutionCheck.lean"
+            ],
+            "conclusion": "The snapshot contract is byte-identical to the workspace contract and to the current Submission (project d09bc8a, Mathlib 25730c7c).\n\nNeither Mathlib nor the pinned SimonGMT has an open-ball differentiation theorem for normalAverage or a ready-made open exhaustion of a Radon measure's domain. SimonGMT has no matches.\n\nMathlib does provide what the children need:\n- Besicovitch differentiation along closed balls: Besicovitch.vitaliFamily (needs SFinite), VitaliFamily.ae_tendsto_average (needs IsLocallyFiniteMeasure), Besicovitch.tendsto_filterAt, and the instHasBesicovitchCovering instance for finite-dimensional spaces.\n- The closed-to-open passage: setAverage_eq/measureReal_def, tendsto_measure_iUnion_atTop, tendsto_setIntegral_of_monotone.\n- The exhaustion: Metric.infEDist (renamed from EMetric.infEdist), continuous_infEDist, mem_closure_iff_infEDist_zero, isCompact_closedBall, ENNReal.exists_inv_nat_lt.\n- The assembly: Integrable.of_bound, ae_restrict_iff', ae_all_iff, measure_eq_zero_iff_ae_notMem.\n\nThe accepted node chartTD_lebesgue_point_ae uses the same Besicovitch API.\n\nSimon Ch. 1 Cor. 3.17 is stated for closed balls (line 591 reserves a separate symbol for open balls), so the open-ball normalAverage of Ch. 3 (4.2) needs the extra passage inside child A.\n\nBoth child types elaborate in the exact NodeChallenge scope and pass validate_lean_statement. Full Lean proofs of both children and of the parent from them compile with only propext, Classical.choice and Quot.sound, and the generated `exact Submission.X` solutions close both frozen types.\n\nNo name collision was found in dag.json or on any branch."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.boundary_full_measure-a1",
+        "child_id": "root.de_giorgi-a1.boundary_full_measure-a1.open_ball_differentiation-a1",
+        "subproblem": {
+          "key": "open_ball_differentiation",
+          "title": "Lebesgue–Besicovitch differentiation along open balls for a finite Borel measure on ℝ^N (normalAverage μ f x → f(x) μ-a.e.)",
+          "statement": "Let N ∈ ℕ, let μ be a finite Borel measure on ℝ^N = EuclideanSpace ℝ (Fin N) (μ(ℝ^N) < ∞), and let f : ℝ^N → ℝ^N be μ-integrable. Then for μ-almost every x ∈ ℝ^N, normalAverage μ f x ρ := μ(B_ρ(x)).toReal⁻¹ • ∫_{B_ρ(x)} f dμ converges to f(x) as ρ ↓ 0. Here B_ρ(x) is the open ball, t.toReal is the real value of t ∈ [0, ∞], and 0⁻¹ = 0, so the average is 0 when μ(B_ρ(x)) = 0.",
+          "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (f : Rn N → Rn N), IsFiniteMeasure μ → Integrable f μ → ∀ᵐ x ∂μ, Tendsto (normalAverage μ f x) (𝓝[>] 0) (𝓝 (f x))",
+          "lean_name": "deGiorgiBFM_normalAverage_tendsto_ae",
+          "depends_on": [],
+          "natural_proof": "Source. Steps 2–3 of the parent proof.\n- The differentiation result is Simon Ch. 1, Corollary 3.17 (Lebesgue differentiation theorem; chapter-01.txt lines 927–969).\n- It applies to every Radon measure on ℝ^N, because such measures have the Symmetric Vitali Property (Remark 3.11(3), via the Besicovitch Covering Lemma 3.12; chapter-01.txt lines 800–850).\n- This is the result Simon Ch. 3 invokes at chapter-03.txt line 584 (\"by virtue of Theorem 3.23 of Ch. 1 we have μ_E(U ∖ ∂*E) = 0\").\n- Simon's Ch. 1 balls B_ρ(x) are closed: line 591 reserves a separate symbol for open balls. In contrast, normalAverage and the reduced boundary (Ch. 3 (4.2), contract) use open balls. Steps 2–4 below carry out the parent's closed-to-open passage.\n- Mathlib: Besicovitch.vitaliFamily, VitaliFamily.ae_tendsto_average, Besicovitch.tendsto_filterAt, setAverage_eq, measureReal_def, tendsto_measure_iUnion_atTop, tendsto_setIntegral_of_monotone.\n\nNotation.\n- B_r(x) is the open ball and B̄_r(x) the closed ball.\n- For a Borel set A ⊆ ℝ^N, avg(A) := μ(A).toReal⁻¹ • ∫_A f dμ. Here t.toReal ∈ [0, ∞) is the real value of t ∈ [0, ∞] (with ∞.toReal = 0), and 0⁻¹ := 0.\n- Thus normalAverage μ f x ρ = avg(B_ρ(x)). Put c_x(r) := avg(B̄_r(x)).\n- If μ(A) = 0 then avg(A) = 0⁻¹ • ∫_A f dμ = 0.\n\n1. Lebesgue–Besicovitch differentiation along closed balls.\n   - ℝ^N = EuclideanSpace ℝ (Fin N) is a finite-dimensional normed space. Hence it is a second-countable metric space with the Borel σ-algebra and has the Besicovitch covering property.\n   - μ is finite, hence s-finite and locally finite. f ∈ L¹(μ) is locally integrable.\n   - Therefore the closed balls {B̄_r(x) : r > 0} form a Vitali family for μ (Besicovitch.vitaliFamily μ).\n   - The Lebesgue differentiation theorem for Vitali families (VitaliFamily.ae_tendsto_average) gives a μ-null set Z such that, for every x ∉ Z, the averages avg(a) = ⨍_a f dμ converge to f(x) as a shrinks to x along this family.\n   - As r ↓ 0, B̄_r(x) shrinks to x along the family (Besicovitch.tendsto_filterAt). So for every x ∉ Z, c_x(r) → f(x) as r ↓ 0.\n   - Fix x ∉ Z. Steps 2–5 are deterministic.\n\n2. Let ε > 0. By Step 1, choose δ > 0 such that ‖c_x(r) − f(x)‖ ≤ ε/2 for all r ∈ (0, δ). Fix ρ ∈ (0, δ). Steps 3–4 show that ‖avg(B_ρ(x)) − f(x)‖ ≤ ε/2.\n\n3. Case μ(B_ρ(x)) = 0.\n   - Then avg(B_ρ(x)) = 0.\n   - Since B̄_{ρ/2}(x) ⊆ B_ρ(x), also μ(B̄_{ρ/2}(x)) = 0, so c_x(ρ/2) = 0.\n   - As ρ/2 ∈ (0, δ), ‖avg(B_ρ(x)) − f(x)‖ = ‖0 − f(x)‖ = ‖c_x(ρ/2) − f(x)‖ ≤ ε/2.\n\n4. Case μ(B_ρ(x)) > 0.\n   For n ∈ ℕ put r_n := ρ − ρ/(n + 2).\n   - Since n + 2 ≥ 2, ρ/2 ≤ r_n < ρ.\n   - (r_n) is nondecreasing. So (B̄_{r_n}(x))_n is a nondecreasing sequence of closed (hence Borel) sets, each contained in B_ρ(x).\n   - Its union is B_ρ(x). Indeed, if |y − x| < ρ, choose n ∈ ℕ with n > ρ/(ρ − |y − x|). Then n + 2 > ρ/(ρ − |y − x|), so ρ/(n + 2) < ρ − |y − x|, i.e. |y − x| < r_n.\n   (a) Measures. By continuity of measure from below, μ(B̄_{r_n}(x)) → μ(B_ρ(x)) in [0, ∞].\n       - Since μ is finite, μ(B_ρ(x)) ∈ (0, ∞).\n       - toReal is continuous at finite values, so μ(B̄_{r_n}(x)).toReal → μ(B_ρ(x)).toReal ≠ 0.\n       - t ↦ t⁻¹ is continuous at every t ≠ 0, so μ(B̄_{r_n}(x)).toReal⁻¹ → μ(B_ρ(x)).toReal⁻¹.\n   (b) Integrals. f is μ-integrable on B_ρ(x) = ⋃_n B̄_{r_n}(x). The functions 1_{B̄_{r_n}(x)} f converge pointwise to 1_{B_ρ(x)} f and are dominated by |f| ∈ L¹(μ). By dominated convergence, ∫_{B̄_{r_n}(x)} f dμ → ∫_{B_ρ(x)} f dμ.\n   (c) Passing to the limit.\n       - Scalar multiplication ℝ × ℝ^N → ℝ^N is continuous, so by (a) and (b), c_x(r_n) → avg(B_ρ(x)) as n → ∞.\n       - Every r_n lies in (0, δ), since 0 < ρ/2 ≤ r_n < ρ < δ. Hence ‖c_x(r_n) − f(x)‖ ≤ ε/2 for all n.\n       - The set {w : ‖w − f(x)‖ ≤ ε/2} is closed, so it contains the limit: ‖avg(B_ρ(x)) − f(x)‖ ≤ ε/2.\n\n5. Conclusion. By Steps 2–4, for every ε > 0 there is δ > 0 with ‖normalAverage μ f x ρ − f(x)‖ ≤ ε/2 < ε for all ρ ∈ (0, δ). That is, normalAverage μ f x ρ → f(x) as ρ ↓ 0: Tendsto (normalAverage μ f x) (𝓝[>] 0) (𝓝 (f x)). This holds for every x outside the μ-null set Z, which is the claim (∀ᵐ x ∂μ). ∎",
+          "proof_key_steps": [
+            "Lebesgue–Besicovitch differentiation (VitaliFamily.ae_tendsto_average for Besicovitch.vitaliFamily μ, composed with Besicovitch.tendsto_filterAt): for μ-a.e. x, the closed-ball averages c_x(r) = μ(B̄_r(x)).toReal⁻¹ • ∫_{B̄_r(x)} f dμ tend to f(x) as r ↓ 0.",
+            "Fix such an x and ε > 0; choose δ with ‖c_x(r) − f(x)‖ ≤ ε/2 on (0, δ); fix ρ ∈ (0, δ).",
+            "If μ(B_ρ(x)) = 0, the open-ball average and c_x(ρ/2) both vanish, so the bound transfers.",
+            "If μ(B_ρ(x)) > 0, the closed balls of radii r_n = ρ − ρ/(n+2) increase to B_ρ(x). Continuity from below, toReal/inverse continuity and dominated convergence give c_x(r_n) → normalAverage μ f x ρ, and the closed bound ≤ ε/2 passes to the limit.",
+            "Hence Tendsto (normalAverage μ f x) (𝓝[>] 0) (𝓝 (f x)) for μ-a.e. x."
+          ]
+        },
+        "audit": {
+          "key": "open_ball_differentiation",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact Lean proposition agree, including finite measure, integrability, and the right-hand radius limit. Finite measure supplies the differentiation theorem's measure assumptions. The zero-measure case correctly uses the smaller closed ball; the positive-measure case justifies exhaustion, integral convergence, and inversion at a finite nonzero limit. The epsilon argument proves the full stated conclusion, including N = 0. The supplied proof is complete, non-circular, and directly applicable to the parent's finite restrictions."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.de_giorgi-a1.boundary_full_measure-a1.open_exhaustion-a1",
+      "key": "open_exhaustion",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean ; diff GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean",
+              "grep -n 'normalAverage|reducedBoundary|reducedNormal|IsGaussGreenPair|DeGiorgiTheorem|^namespace|^open' GMT/Ch03/Contract.lean",
+              "grep -rn 'theorem ae_tendsto_average|theorem ae_tendsto_average_norm_sub|theorem tendsto_filterAt|protected def vitaliFamily|theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/",
+              "grep -rn \"lemma Integrable.of_bound|theorem setAverage_eq |theorem tendsto_setIntegral_of_monotone|theorem tendsto_measure_iUnion_atTop|theorem ae_restrict_iff'|theorem ae_all_iff|theorem measure_eq_zero_iff_ae_notMem|theorem exists_inv_nat_lt|theorem ae_eventually_measure_pos|instance.*HasBesicovitchCovering|isCompact_closedBall\" <snapshot>/mathlib/Mathlib",
+              "grep -rn 'def infEDist|theorem infEDist_zero_of_mem|theorem continuous_infEDist|theorem mem_closure_iff_infEDist_zero' <snapshot>/mathlib/Mathlib  (EMetric.infEdist is gone; it is now Metric.infEDist)",
+              "grep -rn 'deGiorgiBFM|normalAverage_tendsto|open_exhaustion' .lake/packages/simongmt/Poincare",
+              "git show humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-lebesgue-points-a1-a1:GMT/Ch03/Submission.lean (accepted chartTD_lebesgue_point_ae)",
+              "python3 -I lean_name collision check against dag.json (141 nodes); git grep 'deGiorgiBFM|bfm_normalAverage|bfm_exists_open' <every ref> -- GMT/Ch03/Submission.lean",
+              "grep -n '3.23|3.17|Lebesgue|differentiation|B_|open ball|Symmetric Vitali' book/chapter-01.txt; sed -n 266,280p / 795,840p / 905,985p / 1040,1075p book/chapter-01.txt; sed -n 575,592p book/chapter-03.txt",
+              "python3 -I importlib verifier/gmt-compare.py: contract_scope(Contract.lean, 'GMT.Ch03.main_theorem') + child_modules(mode='contract') -> NodeChallenge_{A,B}.lean / NodeSolution; verifier/lean_contract.py validate_lean_statement on both child types",
+              "lake env lean /tmp/bfm-decomp/{Challenges,Assembly,ChildA1,ChildA2,ChildB,Final,NodeChallenge_A,NodeChallenge_B,SolutionCheck}.lean and GMT/Scratch/DeGiorgiBFMSplitCheck.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DeGiorgiBFMSplitCheck.lean",
+              "/tmp/bfm-decomp/Final.lean",
+              "/tmp/bfm-decomp/Assembly.lean",
+              "/tmp/bfm-decomp/NodeChallenge_A.lean",
+              "/tmp/bfm-decomp/NodeChallenge_B.lean",
+              "/tmp/bfm-decomp/SolutionCheck.lean"
+            ],
+            "conclusion": "The snapshot contract is byte-identical to the workspace contract and to the current Submission (project d09bc8a, Mathlib 25730c7c).\n\nNeither Mathlib nor the pinned SimonGMT has an open-ball differentiation theorem for normalAverage or a ready-made open exhaustion of a Radon measure's domain. SimonGMT has no matches.\n\nMathlib does provide what the children need:\n- Besicovitch differentiation along closed balls: Besicovitch.vitaliFamily (needs SFinite), VitaliFamily.ae_tendsto_average (needs IsLocallyFiniteMeasure), Besicovitch.tendsto_filterAt, and the instHasBesicovitchCovering instance for finite-dimensional spaces.\n- The closed-to-open passage: setAverage_eq/measureReal_def, tendsto_measure_iUnion_atTop, tendsto_setIntegral_of_monotone.\n- The exhaustion: Metric.infEDist (renamed from EMetric.infEdist), continuous_infEDist, mem_closure_iff_infEDist_zero, isCompact_closedBall, ENNReal.exists_inv_nat_lt.\n- The assembly: Integrable.of_bound, ae_restrict_iff', ae_all_iff, measure_eq_zero_iff_ae_notMem.\n\nThe accepted node chartTD_lebesgue_point_ae uses the same Besicovitch API.\n\nSimon Ch. 1 Cor. 3.17 is stated for closed balls (line 591 reserves a separate symbol for open balls), so the open-ball normalAverage of Ch. 3 (4.2) needs the extra passage inside child A.\n\nBoth child types elaborate in the exact NodeChallenge scope and pass validate_lean_statement. Full Lean proofs of both children and of the parent from them compile with only propext, Classical.choice and Quot.sound, and the generated `exact Submission.X` solutions close both frozen types.\n\nNo name collision was found in dag.json or on any branch."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.boundary_full_measure-a1",
+        "child_id": "root.de_giorgi-a1.boundary_full_measure-a1.open_exhaustion-a1",
+        "subproblem": {
+          "key": "open_exhaustion",
+          "title": "Exhaustion of an open U ⊆ ℝ^N by countably many open sets of finite μ-measure (μ finite on compact subsets of U)",
+          "statement": "Let N ∈ ℕ, let U ⊆ ℝ^N be open, and let μ be a (Borel) measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ U. Then there are open sets W_0, W_1, W_2, … ⊆ ℝ^N such that μ(W_i) < ∞ for every i ∈ ℕ and ⋃_{i ∈ ℕ} W_i = U.",
+          "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → ∃ W : ℕ → Set (Rn N), (∀ i, IsOpen (W i)) ∧ (∀ i, μ (W i) < ∞) ∧ ⋃ i, W i = U",
+          "lean_name": "deGiorgiBFM_exists_open_exhaustion",
+          "depends_on": [],
+          "natural_proof": "Source.\n- Step 1 (localization) of the parent proof, re-indexed by i ∈ ℕ: our W_i is the parent's W_{i+1}.\n- Simon Ch. 1, Definition 1.14 (\"open σ-finite\": X = ⋃_j V_j with V_j open and μ(V_j) < ∞; chapter-01.txt lines 268–272) and the remark following it, as used in the proof of Ch. 1, Theorem 3.16 (\"Since X = ∪_j V_j with V_j open and μ(V_j) < ∞ …\").\n- Mathlib: Metric.infEDist, Metric.continuous_infEDist, Metric.infEDist_zero_of_mem, Metric.mem_closure_iff_infEDist_zero, isCompact_closedBall, ENNReal.exists_inv_nat_lt, ENNReal.inv_le_inv.\n\nNotation. For y ∈ ℝ^N and S ⊆ ℝ^N, let d(y, S) := inf_{z ∈ S} |y − z| ∈ [0, ∞]; so d(y, ∅) = ∞. Two standard facts are used:\n(i) y ↦ d(y, S) is a continuous map ℝ^N → [0, ∞] (it is 1-Lipschitz);\n(ii) d(y, S) = 0 iff y ∈ closure(S); in particular d(y, S) = 0 for y ∈ S.\n\n1. Definitions. For i ∈ ℕ let c_i := (i + 1)⁻¹ ∈ [0, ∞]; c_i > 0 because i + 1 ≠ ∞. Define\n   W_i := B_{i+1}(0) ∩ {y : c_i < d(y, Uᶜ)},\n   K_i := B̄_{i+1}(0) ∩ {y : c_i ≤ d(y, Uᶜ)}.\n\n2. If c_i ≤ d(y, Uᶜ), then y ∈ U. Otherwise y ∈ Uᶜ, so d(y, Uᶜ) = 0 by (ii), whence c_i ≤ 0, contradicting c_i > 0.\n\n3. W_i is open.\n   - B_{i+1}(0) is open.\n   - {y : c_i < d(y, Uᶜ)} is the preimage of the open set (c_i, ∞] under the continuous map y ↦ d(y, Uᶜ), by (i).\n   - An intersection of two open sets is open.\n\n4. μ(W_i) < ∞.\n   - The closed ball B̄_{i+1}(0) is compact (Heine–Borel; ℝ^N is a proper space).\n   - {y : c_i ≤ d(y, Uᶜ)} is closed, being the preimage of the closed set [c_i, ∞] under a continuous map. So K_i, a closed subset of a compact set, is compact.\n   - By Step 2, K_i ⊆ U.\n   - B_{i+1}(0) ⊆ B̄_{i+1}(0), and c_i < d(y, Uᶜ) implies c_i ≤ d(y, Uᶜ). So W_i ⊆ K_i.\n   - By monotonicity of μ and the hypothesis on compact subsets of U, μ(W_i) ≤ μ(K_i) < ∞.\n\n5. ⋃_i W_i ⊆ U: every y ∈ W_i satisfies c_i ≤ d(y, Uᶜ), so y ∈ U by Step 2.\n\n6. U ⊆ ⋃_i W_i. Let y ∈ U.\n   - U is open, so Uᶜ is closed and closure(Uᶜ) = Uᶜ, which does not contain y. By (ii), d(y, Uᶜ) ≠ 0.\n   - Since n⁻¹ → 0 in [0, ∞], there is n ∈ ℕ with n⁻¹ < d(y, Uᶜ) (ENNReal.exists_inv_nat_lt).\n   - Choose m ∈ ℕ with m > |y| (Archimedean property) and set i := max(n, m).\n   - Then |y| < m ≤ i < i + 1, so y ∈ B_{i+1}(0).\n   - Also n ≤ i ≤ i + 1, and inversion is antitone on [0, ∞], so c_i = (i + 1)⁻¹ ≤ n⁻¹ < d(y, Uᶜ).\n   - Hence y ∈ W_i.\n\n7. By Steps 3–6, the W_i (i ∈ ℕ) are open sets with μ(W_i) < ∞ and ⋃_i W_i = U, which is the claim. ∎",
+          "proof_key_steps": [
+            "Define W_i = B_{i+1}(0) ∩ {y : d(y, Uᶜ) > (i+1)⁻¹} and K_i = B̄_{i+1}(0) ∩ {y : d(y, Uᶜ) ≥ (i+1)⁻¹}, with d the extended distance to Uᶜ.",
+            "d(y, Uᶜ) ≥ (i+1)⁻¹ > 0 forces y ∈ U, so K_i ⊆ U.",
+            "W_i is open (continuity of d(·, Uᶜ)), K_i is compact (closed and bounded), and W_i ⊆ K_i, so μ(W_i) ≤ μ(K_i) < ∞.",
+            "Every y ∈ U has d(y, Uᶜ) > 0 because Uᶜ is closed, so y ∈ W_i for i = max(n, m) with n⁻¹ < d(y, Uᶜ) and m > |y|. Hence ⋃_i W_i = U."
+          ]
+        },
+        "audit": {
+          "key": "open_exhaustion",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact Lean proposition agree with all hypotheses stated. The positive extended-distance threshold places each compact K_i inside U; continuity gives openness and closedness, properness gives compactness, and measure monotonicity gives finite measure. The explicit index choice covers every point of U, including the empty-complement case. Union equality also ensures W_i ⊆ U. The proof is complete and independent of the other child; its conclusion supplies precisely the parent's localization."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/task.md": "e75273998f7c4f95ebf065f0fad2d086525ca06c562b9d468f9786e0824e1b5d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/problem.md": "d450b947d5616531ac8cc4a99158db188c875f9e857bfcaf8b809a207631a989",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/problem.json": "8a4e29f58fc3cd9ec56e6ed45bec4c9008d5eb705e95bd016943fc957faf50db",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/reference-manifest.json": "b6a97248df40c5dc702e39c00119a850911686a21d507e00b0849f87a8d3d512",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/decomposition.json": "1d501e60043df77fb5ba85cc40e5d2fd53b01371e8a14dc3af56c654f441e1ec",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/decomposition-audit.json": "b67afbfa013ac8afc00894e538a4002655e5d3b22685c4ba8c6c24d84eb5f467",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/controller-contract.json": "31d3ac7a976c9c9beab4104bf5eed7a165f1f72155288ca9c3600d33f425a627",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/parent-child-handoff.json": "b8c8b6db712eb1c193e7fe8cea97f4781840ecf600e37a2c680bf09bb530a39d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/parent-supplied-plan.md": "c5481b9a5b425be727954387eea428d371aeb5f2f5413ac1db690010db20ca53",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/parent-supplied-natural-proof.md": "3057940b4aba33191134a1948ef5ae56120864e83d1c6924682cffc8a0aa5026",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/parent-supplied-natural-proof.json": "5ca3cf60bd2a8aacd71ccf47e3f4c81599b4226310658d605d6fd51de976a29b",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-ball-differentiation-a1/node.json": "ba73a6d7d4767579af39e1ce61b32d53f086a97a88bdacbcadcf6df5d42ff212",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/parent-child-handoff.json": "76fd6548dbc145fa87721ff79f4d798f51cab8ce3606ac95722cafdc4158d426",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/parent-supplied-plan.md": "ec6d509f654b06a676e587796ef06f3a199a3a7f532f01b742fad31649a50f03",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/parent-supplied-natural-proof.md": "1bb00e8f0a779e868c54c44ffe25fbdb39260f2cca0666ee403fcdf1734b2091",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/parent-supplied-natural-proof.json": "684d4ea922d06748a55b17451ae96d2c5ee250c6bc563c43657bf373ca208f79",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-full-measure-a1/children/root-de-giorgi-a1-boundary-full-measure-a1-open-exhaustion-a1/node.json": "cb957b7ad8a219388f1f505d7edf2f239233b42728d87b3093a76068b4fbf50c"
+  }
+}
