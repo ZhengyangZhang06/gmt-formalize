@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9d38f2b69c600d5582979d55cd324ef9758e30b326d6c01e4ff5323d15182bca",
+  "git_delta": {
+    "base_commit": "2093263984b2a1afe3a6e92b13da48e63e0e93f8",
+    "candidate_commit": "21abad67dc046d94e3b04b2823df9013fde55757",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ufd_cl_inner_compact",
+    "diff_sha256": "0a70d9d2f52c28ed3aaa5232da257672b69976503e2720ebbdb12355bf3c9d32",
+    "source_sha256": "19b1a4483b802fc8949a6a748b00160f0db7bc4fa1482159d90ad8b2ff73c579",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ufd_cl_inner_compact",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → ∀ E : Set (Eucl P), MeasurableSet E → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < μ (W ∩ E) → ∃ K : Set (Eucl P), IsCompact K ∧ K ⊆ W ∩ E ∧ c < μ K",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
