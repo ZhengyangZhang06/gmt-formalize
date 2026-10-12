@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "rg -n 'structure Varifold|isOpen_domain|weight_apply|weight_finite_on_compact|instSigmaFinite|domainWeight' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "sed -n '1,160p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+        "ae_tendsto_rnDeriv|rnDeriv_lt_top|withDensity_rnDeriv_eq|support_mem_ae|instSeparableSpace|integral_rieszMeasure",
+        "theorem integral_smul_measure|theorem integral_map|theorem setLIntegral_congr_fun_ae|theorem ofReal_integral_eq_lintegral_ofReal",
+        "rg -n 'plane_disint_|plane_disintegration|IsUnit|Matrix.of' GMT .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project",
+        "sed -n '60,175p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/plane_disint_audit_upkt302m/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/plane_disint_audit_upkt302m/CheckedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/plane_disint_audit_upkt302m/Library.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+        "/tmp/pdis_scratch/Full.lean",
+        "/tmp/plane_disint_audit_upkt302m/Contracts.lean",
+        "/tmp/plane_disint_audit_upkt302m/CheckedProofs.lean",
+        "/tmp/plane_disint_audit_upkt302m/Library.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility: Contract and Submission match the snapshot, the eight consulted Mathlib sources match the compiler package, and SimonGMT is the pinned clean revision. FirstVariationDensity.lean:60 provides differentiation on U without assuming ambient local finiteness. The RN, Riesz, support, separability, integral-scaling and a.e.-congruence results support the supplied arguments. All four exact one-line propositions independently elaborate in comparator scope before child implementation; the supplied proofs and exact parent assembly recompile with only propext, Classical.choice and Quot.sound. Required instances synthesize, including separability with the stated extra import. All names are bare identifiers, absent from the imported environment and unreserved in the active DAG; the project-name search returned no matches. No problematic inline matrix-unit construction occurs. The split is appropriate and acyclic: slice_density and riesz_limit establish pointwise_measure; slice_density establishes identity_of_limits. Choosing pointwise witnesses, using zero elsewhere, then applying identity_of_limits proves precisely the selected frozen parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including Borel measurability and arbitrary Borel A; openness is carried by Varifold. Domination establishes support, local finiteness on U, absolute continuity and sigma-finiteness. Domain differentiation, finite-point toReal continuity, local Bochner integrability and RN reconstruction prove both conclusions. The proof is complete and non-circular."
+    },
+    {
+      "key": "riesz_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all filter, density and eventual-probability hypotheses. The sup-norm estimate yields a Cauchy image filter; completeness and NeBot give limits and uniqueness. Eventual integral identities establish a positive normalized linear functional, and compact-space Riesz representation gives the required probability measure. No additional obligation or circular reliance is hidden."
+    },
+    {
+      "key": "pointwise_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The a.e.-exists-forall quantifier order matches the prose. The countable conull intersection, support positivity and compact-ball finiteness justify eventual probability normalization. The normalized-slice integral identity is valid even at exceptional radii under Lean's integral conventions. The two declared dependencies supply precisely the remaining steps; the argument also handles empty Grassmannians vacuously."
+    },
+    {
+      "key": "identity_of_limits",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conditional contract exactly matches the prose and uses only slice_density. For each fixed nonnegative continuous test, uniqueness of right-hand limits identifies its RN density with the eta integral almost everywhere. Probability-measure integrability converts this to the inner lintegral, and a.e. congruence proves the identity for every Borel A without requiring measurability of the chosen eta field."
+    }
+  ],
+  "required_changes": []
+}
