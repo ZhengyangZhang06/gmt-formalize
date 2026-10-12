@@ -458,6 +458,62 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"): Fréchet differentiability from the integral mean-value formula.  If `g` is
+continuous on an open `U ∋ x` and `f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for all `y ∈ U`,
+then `Df(x) = g(x)`.  Given `ε > 0`, pick `η > 0` with `B̆_η(x) ⊆ U` and `‖g(z) − g(x)‖ < ε` on
+`B̆_η(x)`; for `‖h‖ < η` the segment `[x, x + h]` lies in `B̆_η(x)`, so the remainder
+`f(x + h) − f(x) − g(x)h = ∫₀¹ (g(x + τh) − g(x))h dτ` has norm at most `ε‖h‖`. -/
+theorem allard52_lad_hasFDerivAt_of_line_integral : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (x : Rn n), IsOpen U → x ∈ U → ContinuousOn g U → (∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x)) → HasFDerivAt f (g x) x := by
+  intro n ℓ f g U x hU hx hg hf
+  -- Little-o criterion: for each `ε > 0`, eventually `‖f(x + h) − f(x) − g(x)h‖ ≤ ε‖h‖`.
+  rw [hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_iff]
+  intro ε hε
+  -- Choose `η > 0` with `B̆_η(x) ⊆ U` and `‖g(z) − g(x)‖ < ε` for `z ∈ B̆_η(x)`.
+  obtain ⟨η₁, hη₁, hη₁U⟩ := Metric.isOpen_iff.1 hU x hx
+  obtain ⟨η₂, hη₂, hη₂g⟩ := Metric.continuousAt_iff.1 (hg.continuousAt (hU.mem_nhds hx)) ε hε
+  obtain ⟨η, hη, hηη₁, hηη₂⟩ : ∃ η : ℝ, 0 < η ∧ η ≤ η₁ ∧ η ≤ η₂ :=
+    ⟨min η₁ η₂, lt_min hη₁ hη₂, min_le_left _ _, min_le_right _ _⟩
+  filter_upwards [ball_mem_nhds (0 : Rn n) hη] with h hh
+  rw [mem_ball_zero_iff] at hh
+  -- For `‖h‖ < η` the segment `x + τh`, `τ ∈ [0, 1]`, lies in `B̆_η(x) ⊆ U`.
+  have hseg : ∀ τ ∈ Icc (0 : ℝ) 1, dist (x + τ • h) x < η := by
+    intro τ hτ
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hτ.1]
+    calc τ * ‖h‖ ≤ 1 * ‖h‖ := mul_le_mul_of_nonneg_right hτ.2 (norm_nonneg h)
+      _ < η := by rwa [one_mul]
+  have hsegU : MapsTo (fun τ : ℝ => x + τ • h) (Icc 0 1) U := fun τ hτ =>
+    hη₁U (mem_ball.2 ((hseg τ hτ).trans_le hηη₁))
+  have hfh := hf (x + h) (by simpa using hsegU ⟨zero_le_one, le_rfl⟩)
+  rw [add_sub_cancel_left] at hfh
+  -- The remainder is `∫₀¹ (g(x + τh)h − g(x)h) dτ`.
+  have hint : IntervalIntegrable (fun τ : ℝ => g (x + τ • h) h) volume 0 1 := by
+    refine ContinuousOn.intervalIntegrable ?_
+    rw [uIcc_of_le zero_le_one]
+    exact (hg.comp (by fun_prop) hsegU).clm_apply continuousOn_const
+  have hrem : f (x + h) - f x - g x h = ∫ τ in (0:ℝ)..1, (g (x + τ • h) h - g x h) := by
+    rw [intervalIntegral.integral_sub hint intervalIntegrable_const, hfh,
+      intervalIntegral.integral_const, sub_zero, one_smul]
+  -- On `uIoc 0 1` the integrand has norm `‖(g(x + τh) − g(x))h‖ ≤ ε‖h‖`.
+  have hbound : ∀ τ ∈ uIoc (0 : ℝ) 1, ‖g (x + τ • h) h - g x h‖ ≤ ε * ‖h‖ := by
+    intro τ hτ
+    rw [uIoc_of_le zero_le_one] at hτ
+    have hgτ : dist (g (x + τ • h)) (g x) < ε :=
+      hη₂g ((hseg τ (Ioc_subset_Icc_self hτ)).trans_le hηη₂)
+    rw [dist_eq_norm] at hgτ
+    calc ‖g (x + τ • h) h - g x h‖ = ‖(g (x + τ • h) - g x) h‖ := by
+          rw [sub_apply]
+      _ ≤ ‖g (x + τ • h) - g x‖ * ‖h‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ ε * ‖h‖ := mul_le_mul_of_nonneg_right hgτ.le (norm_nonneg h)
+  rw [hrem]
+  calc ‖∫ τ in (0:ℝ)..1, (g (x + τ • h) h - g x h)‖ ≤ ε * ‖h‖ * |(1 : ℝ) - 0| :=
+        intervalIntegral.norm_integral_le_of_norm_le_const hbound
+    _ = ε * ‖h‖ := by rw [sub_zero, abs_one, mul_one]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
