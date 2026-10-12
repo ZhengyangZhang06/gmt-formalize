@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_graph_corollary-a1`
+- Child DAG node: `root.lipschitz_graph_corollary-a1.cone_graph_extension-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the end of step 2 and step 3 of the parent proof (Simon 2.6: 'G is contained in the graph of a Lipschitz function', (5) via the Lipschitz extension theorem Ch. 2, 1.2 applied componentwise, and the truncation (7)); the truncation is implemented by the nearest-point retraction, and the sqrt(l) loss of the componentwise extension is kept explicit.
+
+Notation. graphPoint a b = (a, b) in R^n x R^l = R^(n+l) (first n coordinates a, last l coordinates b); horizontalPlane = R^n x {0} = {graphPoint a 0}; T_0 = q(R^n x {0}).
+
+1. Coordinates. For w in R^(n+l) let a(w) in R^n and b(w) in R^l be the first n and the last l coordinates of q^-1 w, so q^-1 w = graphPoint (a(w)) (b(w)); a and b are linear and |a(w)|^2 + |b(w)|^2 = |q^-1 w|^2 = |w|^2 (q is a linear isometry and the Euclidean norm splits over the coordinate blocks). In particular |a(w)| <= |w|. Since q^-1 is an isometry mapping T_0 onto R^n x {0}, dist(w, T_0) = dist(q^-1 w, R^n x {0}); the point of R^n x {0} nearest to (a, b) is (a, 0), so dist(w, T_0) = |b(w)|. By linearity dist(y - z, T_0) = |b(y) - b(z)| for all y, z.
+2. Lipschitz estimate on S. Let y, z in S and u := a(y) - a(z), v := b(y) - b(z). Then |v| = dist(y - z, T_0) <= eps |y - z| = eps (|u|^2 + |v|^2)^(1/2) <= eps (|u| + |v|), hence (1 - eps)|v| <= eps |u|; since 1 - eps >= 1/2, |b(y) - b(z)| <= 2 eps |a(y) - a(z)|. In particular a is injective on S: a(y) = a(z) forces b(y) = b(z), hence q^-1 y = q^-1 z and y = z.
+3. The function on a(S). Define g : a(S) -> R^l by g(a(y)) := b(y) (well defined by step 2). By step 2, |g(u) - g(u')| <= 2 eps |u - u'| for u, u' in a(S), and |g(a(y))| = |b(y)| = dist(y, T_0) <= R_0 for y in S.
+4. Componentwise McShane extension (Simon Ch. 2, 1.2; Mathlib LipschitzOnWith.extend_real). If S is empty let f_1 := 0. Otherwise, for each j = 1, ..., l the component g^j is 2 eps-Lipschitz on a(S) (|g^j(u) - g^j(u')| <= |g(u) - g(u')|), so F^j(x) := inf over u in a(S) of (g^j(u) + 2 eps |x - u|) is a real-valued 2 eps-Lipschitz function on R^n with F^j = g^j on a(S). Put f_1 := (F^1, ..., F^l) : R^n -> R^l. Then |f_1(x) - f_1(x')|^2 = sum_j |F^j(x) - F^j(x')|^2 <= l (2 eps)^2 |x - x'|^2, so f_1 is (2 sqrt(l) eps)-Lipschitz on R^n, and f_1 = g on a(S).
+5. Retraction. Let pi : R^l -> R^l be the nearest-point retraction onto the closed ball B_{R_0}(0) (pi(v) = v if |v| <= R_0, pi(v) = R_0 v/|v| otherwise). pi is 1-Lipschitz (nearest-point projection onto a nonempty closed convex set), |pi(v)| <= R_0, and pi(v) = v whenever |v| <= R_0. Put f := pi o f_1. Then f is (2 sqrt(l) eps)-Lipschitz on R^n, |f(x)| <= R_0 for every x, and f = g on a(S) because |g| <= R_0 there (step 3).
+6. Graph property. Let y in S and x := a(y). Then |x| <= |y| (step 1) and f(x) = g(a(y)) = b(y) (step 5), so graphPoint x (f x) = graphPoint (a(y)) (b(y)) = q^-1 y and q(graphPoint x (f x)) = y. QED
+
+## Key steps
+
+1. Coordinates q^-1 w = (a(w), b(w)): |a|^2 + |b|^2 = |w|^2, dist(w, T_0) = |b(w)|, dist(y - z, T_0) = |b(y) - b(z)|
+2. Cone condition with eps <= 1/2 gives |b(y) - b(z)| <= 2 eps |a(y) - a(z)| on S, so a is injective on S
+3. g(a(y)) := b(y) is 2 eps-Lipschitz on a(S) with |g| <= R_0
+4. Componentwise McShane extension gives a (2 sqrt(l) eps)-Lipschitz f_1 on R^n extending g
+5. Composing with the 1-Lipschitz radial retraction onto B_{R_0}(0) gives f with |f| <= R_0 and f = g on a(S)
+6. Every y in S equals q(graphPoint (a y) (f (a y))) with |a(y)| <= |y|
+
+## Reference use
+
+### local-project
+
+Queries:
+- `diff <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean (identical); diff GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean (identical)`
+- `grep -o '"lgc_[a-z_]*"' <run>/dag.json (no match); python3 listing of every dag.json node id, status and lean_name, plus the lean_statements of aal_lp_monotonicity, aal_tangent_structure, aal_density_ge_one, aal_pinched_density_bounds and rectifiableVarifold_ae_tangentProj_starProjection`
+- `grep -n 'theorem HasGeneralizedMeanCurvatureIn.cutoffMass_deriv_identity\|theorem HasGeneralizedMeanCurvatureIn.hasDerivAt_normalizedCutoffMass\b\|Corrected Simon (4.3.16)\|^def cutoffCancellationFactor\|theorem HasGeneralizedMeanCurvatureIn.hasDerivAt_cancelledCutoffMass\|theorem HasGeneralizedMeanCurvatureIn.exists_cancellationFactor_squeeze_of_lt\|structure LpAnnularCorrection\|theorem HasGeneralizedMeanCurvatureIn.cancelledCutoffMass_squeeze\|def lpMeanCurvatureKappa\|def monotonicityCutoff\|theorem integral_lpCurvatureCoefficientBound\|theorem tendsto_cutoffDefect_difference\|theorem tendsto_cutoffMass' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/*.lean`
+- `grep -rn sorry .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Lp*.lean | wc -l (0)`
+- `sed -n 240,330p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean; sed -n 1,330p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean; sed -n 1,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean; sed -n 395,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `grep -n 'structure RectifiableVarifold' -A 40 .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `sed -n 1,120p and sed -n 280,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'theorem hausdorff_blowUp_image\|theorem .*blowUp' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `rg -n 'μHE\[' <snapshot>/mathlib/Mathlib (timed out after 120 s; replaced by the targeted greps below)`
+- `grep -n 'theorem\|lemma\|notation\|def ' .lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; diff -q against <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (identical)`
+- `timeout 100 grep -rn 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le\b\|theorem tendsto_integral_of_dominated_convergence\b\|theorem integral_integral_swap\b\|theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume\|theorem euclideanHausdorffMeasure_coe_image\|lemma measure_compl_support' on ParametricIntegral.lean, DominatedConvergence.lean, Integral/Prod.lean, Geometry/Euclidean/Volume/Measure.lean, Measure/Support.lean`
+- `timeout 100 grep -rn 'theorem integral_hasDerivAt_right\b\|theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image\|theorem lintegral_mul_le_Lp_mul_Lq \|theorem lintegral_lintegral_swap \|theorem add_one_le_exp \|lemma mem_support_iff_forall\|lemma one_add_mul_le_pow\|theorem volume_closedBall\|tendsto_measure_iInter_atTop' on the corresponding <snapshot>/mathlib/Mathlib files; grep -rln 'theorem tendsto_measure_iInter_atTop' <snapshot>/mathlib/Mathlib/MeasureTheory/`
+- `timeout 60 grep -rn 'theorem integral_withDensity_eq_integral_toReal_smul\b\|theorem integral_withDensity_eq_integral_toReal_smul₀\|theorem ae_restrict_mem₀\|theorem LocallyIntegrableOn.integrableOn_compact_subset\|theorem Monotone.measurable\|theorem restrict_map\b' on Bochner/ContinuousLinearMap.lean, Function/LocallyIntegrable.lean, Measure/Restrict.lean, BorelSpace/Order.lean`
+- `grep -n '^3\.[0-9]' and sed -n 250,560p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `lake env lean -o /tmp/lgc-v2-check/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean`
+- `LEAN_PATH=/tmp/lgc-v2-check/olean:$(lake env printenv LEAN_PATH) lean /tmp/lgc-v2-check/src/Types.lean`
+- `LEAN_PATH=/tmp/lgc-v2-check/olean:$(lake env printenv LEAN_PATH) lean /tmp/lgc-v2-check/src/Asm.lean (with #print axioms GMT.Ch05.Submission.lipschitz_graph_corollary)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/lgc-v2-check/src/Types.lean`
+- `/tmp/lgc-v2-check/src/Asm.lean`
+- `/tmp/lgc-v2-scripts/density_monotonicity_proof.txt`
+
+Snapshot and names. manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean equals the workspace Contract.lean, and Submission.lean equals Contract.lean. No lgc_ name occurs in the snapshot or in dag.json. Related nodes in other branches (aal_lp_monotonicity, aal_tangent_structure, aal_pinched_density_bounds, rectifiableVarifold_ae_tangentProj_starProjection) carry different names and types.
+
+Book versus library. The printed text (chapter-04.txt) has 4.1 with a minus curvature term and the integrating factor exp(+integral F_0) in 4.3-4.4. The pinned SimonGMT corrects this:
+- cutoffMass_deriv_identity (Chapter04/MeanCurvature.lean:251) gives n I - rho I' = -rho J' - C.
+- hasDerivAt_normalizedCutoffMass (MeanCurvature.lean:283-286) is documented as 'Corrected Simon (4.3.16) ... plus'.
+- cutoffCancellationFactor (LpCancellation.lean:162) is exp(-integral).
+- cancelledCutoffMass_squeeze (LpCancellation.lean:400) and exists_cancellationFactor_squeeze_of_lt (LpAnnular.lean:47) are the squeeze-and-limit route.
+- lpMeanCurvatureKappa = (p-n)/(4p) (LpMeanCurvature.lean:76).
+- Chapter04/Lp*.lean contains no sorry.
+These results are stated for Chapter04.RectifiableVarifold, which has a measurable carrier, a stored tangent field and a globally locally finite weight (Basic.lean:53-72). They are therefore used only as cross-checks, and the corrected child proof re-derives (M) for the contract's varifold. hausdorff_blowUp_image (TangentDensity.lean:31) models the blow-up scaling.
+
+Mathlib items used by the corrected proof, all present in the snapshot:
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (ParametricIntegral.lean:286)
+- tendsto_integral_of_dominated_convergence (DominatedConvergence.lean:57)
+- integral_hasDerivAt_right (FundThmCalculus.lean:725)
+- ENNReal.lintegral_mul_le_Lp_mul_Lq (MeanInequalities.lean:202)
+- lintegral_lintegral_swap (Measure/Prod.lean:1071)
+- integral_withDensity_eq_integral_toReal_smul₀ (Bochner/ContinuousLinearMap.lean:311)
+- ae_restrict_mem₀ and MeasurableEquiv.restrict_map (Restrict.lean:637, 910)
+- LocallyIntegrableOn.integrableOn_compact_subset (LocallyIntegrable.lean:122)
+- Monotone.measurable (BorelSpace/Order.lean:790)
+- mem_support_iff_forall and measure_compl_support (Support.lean:75, 202)
+- tendsto_measure_iInter_atTop (Measure/Continuity.lean:220)
+- one_add_mul_le_pow (Ring/Pow.lean:99) and add_one_le_exp (Complex/Exponential.lean:632)
+- the notation μHE[d], Isometry.euclideanHausdorffMeasure_image, MeasureTheory.euclideanHausdorffMeasure_homothety_image, InnerProductSpace.euclideanHausdorffMeasure_eq_volume and euclideanHausdorffMeasure_coe_image (Geometry/Euclidean/Volume/Measure.lean:72, 131, 164, 191, 226)
+- volume_closedBall (VolumeOfBalls.lean:324, 354)
+A whole-tree rg for μHE[ timed out, so the targeted greps above were used instead.
+
+Lean (lean-4.35.0-rc3). The five child types elaborate after importing GMT.Ch05.Submission. The parent assembly compiles to GMT.Ch05.Submission.lipschitz_graph_corollary : GMT.Ch05.LipschitzGraphCorollary, with axioms propext, sorryAx, Classical.choice and Quot.sound; sorry occurs only in the five children and the sibling placeholder.
