@@ -522,6 +522,63 @@ theorem Submission.frt_weight_blowup_tendsto :
     Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
   rfl
 
+/-- Tangent planes of `V` are the approximate tangent planes of its carrier (Simon Ch. 8, proof of
+1.2, with Ch. 3, Definition 1.7): if `μ_V(B) = ∫_{B ∩ M} θ dH^n` for Borel `B` and `V` has tangent
+plane `T` with multiplicity `θ(x)` at `x`, then `T` is the unique `n`-plane that is an approximate
+tangent space of `M` at `x` with respect to `θ`. -/
+theorem Submission.frt_weighted_approx_tangent :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (T : Grassmannian N n), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ y in B ∩ M, ENNReal.ofReal (θ y) ∂μHE[n]) → HasTangentPlane V x T (θ x) → ∀ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T := by
+  intro N n U V M θ x T hM hθ hint hweight hT
+  -- Steps 1, 4 and 5: `T.plane` is an approximate tangent space of `M` at `x` w.r.t. `θ`.
+  have hTM : Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x T.plane := by
+    refine ⟨T.finrank_plane, fun f ↦ ?_⟩
+    -- Radii `0 < r < ε / R` with `B_ε(x) ⊆ U` and `spt f ⊆ B_R(0)`, so that `B_{rR}(x) ⊆ U`.
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hT.1
+    obtain ⟨R₀, hR₀⟩ :=
+      f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Euclidean N)
+    have hR : (0 : ℝ) < max R₀ 1 := lt_max_of_lt_right one_pos
+    refine (Submission.frt_weight_blowup_tendsto N n U V x T (θ x) hT f).congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hε hR)] with r hr
+    have hr0 : 0 < r := hr.1
+    have hKU : closedBall x (r * max R₀ 1) ⊆ U :=
+      (closedBall_subset_ball ((lt_div_iff₀ hR).1 hr.2)).trans hεU
+    -- `z ↦ f(r⁻¹(z - x))` vanishes off the compact set `B_{rR}(x) ⊆ U`.
+    have hvanish : ∀ z, z ∉ closedBall x (r * max R₀ 1) → f (r⁻¹ • (z - x)) = 0 := by
+      intro z hz
+      by_contra hfz
+      have hmem := hR₀ (subset_tsupport _ hfz)
+      rw [mem_closedBall_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le] at hmem
+      refine hz (mem_closedBall_iff_norm.2 ?_)
+      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by
+            rw [← mul_assoc, mul_inv_cancel₀ hr0.ne', one_mul]
+        _ ≤ r * max R₀ 1 := mul_le_mul_of_nonneg_left (hmem.trans (le_max_left _ _)) hr0.le
+    -- Step 2: `∫ f(r⁻¹(z - x)) dμ_V(z) = ∫_M f(r⁻¹(z - x)) θ(z) dH^n(z)`.
+    have h₁ : ∫ z, f (r⁻¹ • (z - x)) ∂V.weight =
+        ∫ z in M, f (r⁻¹ • (z - x)) * θ z ∂μHE[n] :=
+      Submission.frt_wat_integral_eq_setIntegral_mul N n V.weight M
+        (closedBall x (r * max R₀ 1)) θ (fun z ↦ f (r⁻¹ • (z - x))) hM hθ
+        measurableSet_closedBall (hint _ (isCompact_closedBall x _) hKU) hweight hvanish
+    -- Step 3: the homothety change of variables `y = η_{x,r}(z)`, with `x + r η_{x,r}(z) = z`.
+    have h₂ : ∫ y in Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂μHE[n] =
+        r⁻¹ ^ n * ∫ z in M, f (Chapter03.blowUpMap x r z) *
+          θ (x + r • Chapter03.blowUpMap x r z) ∂μHE[n] :=
+      Submission.frt_wat_setIntegral_blowUpMap_image N n x r M (fun y ↦ f y * θ (x + r • y)) hr0
+    have h₃ : ∀ z, f (Chapter03.blowUpMap x r z) * θ (x + r • Chapter03.blowUpMap x r z) =
+        f (r⁻¹ • (z - x)) * θ z := fun z ↦ by
+      rw [Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul, add_sub_cancel]
+    simp only [h₃] at h₂
+    rw [h₁, h₂]
+  -- Step 6: weighted approximate tangent planes are unique as `θ(x) ≠ 0`, and a point of
+  -- `G(N,n)` is determined by its plane.
+  intro S
+  refine ⟨fun hS ↦ ?_, fun hST ↦ hST ▸ hTM⟩
+  have hplane : S.plane = T.plane :=
+    Chapter03.HasWeightedApproximateTangentSpaceAt.unique hT.2.1.ne' hS hTM
+  calc S = Grassmannian.ofSubmodule S.plane S.finrank_plane :=
+        (Grassmannian.ofSubmodule_plane S).symm
+    _ = Grassmannian.ofSubmodule T.plane T.finrank_plane := by simp only [hplane]
+    _ = T := Grassmannian.ofSubmodule_plane T
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
