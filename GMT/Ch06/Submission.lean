@@ -359,6 +359,35 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Local integrability from test forms (Simon Ch. 6, (2.7), p. 136).**  If `⟨ω, v⟩` is
+`μ`-integrable for every test form `ω ∈ 𝒟ᵏ(U)`, then `⟨c, v⟩` is `μ`-integrable on every compact
+`L ⊆ U`, for every constant `k`-covector `c`.  Some closed thickening `cthickening δ L` lies in
+`U`; the smooth Urysohn lemma gives a smooth `χ` with values in `[0, 1]`, `support χ =
+thickening δ L` and `χ = 1` exactly on `L`.  Then `ω = χ c` is a test form on `U`, so
+`χ ⟨c, v⟩ = ⟨ω, v⟩` is `μ`-integrable, and it agrees with `⟨c, v⟩` on the closed set `L`. -/
+theorem Submission.slicing_ru_integrableOn_apply : ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → ∀ L : Set (Eucl P), IsCompact L → L ⊆ U → ∀ c : Covector (Eucl P) k, IntegrableOn (fun x => v x c) L μ := by
+  intro P k U hU μ v hv L hL hLU c
+  -- Step 1: room around `L`, `cthickening δ L ⊆ U`.
+  obtain ⟨δ, hδ, hδU⟩ := hL.exists_cthickening_subset_open hU hLU
+  -- Step 2: a smooth cutoff `χ` with `support χ = thickening δ L` and `χ = 1` exactly on `L`.
+  obtain ⟨χ, hχ, -, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞))
+    (isOpen_thickening (δ := δ) (E := L)) hL.isClosed (self_subset_thickening hδ L)
+  have hχt : tsupport χ ⊆ cthickening δ L := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening δ L
+  -- Step 3: `ω = χ c` is a test form on `U`.
+  let ω : DifferentialForm (Eucl P) k := fun x => χ x • c
+  have hωt : tsupport ω ⊆ tsupport χ := tsupport_smul_subset_left χ fun _ => c
+  have hω : ω ∈ TestFormOn U k := by
+    refine ⟨⟨hχ.smul contDiff_const, ?_⟩, hωt.trans (hχt.trans hδU)⟩
+    exact hL.cthickening.of_isClosed_subset (isClosed_tsupport _) (hωt.trans hχt)
+  -- Step 4: by linearity of `v x`, `x ↦ χ x * v x c` is `μ`-integrable.
+  have h4 : Integrable (fun x => χ x * v x c) μ := by
+    simpa [ω, map_smul, smul_eq_mul] using hv ⟨ω, hω⟩
+  -- Step 5: `χ = 1` on the closed set `L`.
+  refine (h4.integrableOn (s := L)).congr_fun (fun x hx => ?_) hL.isClosed.measurableSet
+  simp [(hχ1 x).1 hx]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
