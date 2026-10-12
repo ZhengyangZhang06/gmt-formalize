@@ -666,6 +666,54 @@ theorem Submission.isoperimetric_lattice_face_isolating_form :
             (ω : DifferentialForm (Eucl N) n) := by
           simp only [latticeFaceAction, hωv, hηα, mul_one]
 
+/-- Simon Ch. 6, proof of 6.1, (1) (p. 169): a lattice chain `Pc = ∑_F β_F [[F]]` in `ℝ^N` has
+mass at least `|β_F| ρ^{m+1}` for every face `F` (`H^{m+1}(F) = ρ^{m+1}`).  For `0 < δ < 1/4`
+the isolating form `ω` of `F` kills every other face, so testing `Pc` with `±ω` gives
+`M(Pc) ≥ |β_F| [[F]](ω) ≥ |β_F| (ρ (1 - 2δ))^{m+1}`; then let `δ → 0⁺`. -/
+theorem Submission.isoperimetric_lattice_chain_mass_ge :
+    ∀ (m N : ℕ) (ρ : ℝ) (β : LatticeFaceIndex (m + 1) N → ℝ)
+      (Pc : GeometricCurrentOn (univ : Set (Eucl N)) (m + 1)), 0 < ρ → IsLatticeChain ρ β Pc →
+      ∀ F : LatticeFaceIndex (m + 1) N, ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ Pc.mass := by
+  intro m N ρ β Pc hρ hPc F₀
+  -- Step 1: for `0 < δ < 1/4`, the bound with `ρ` replaced by `ρ (1 - 2δ)`.
+  have hδ_bound : ∀ δ : ℝ, 0 < δ → δ < 1 / 4 →
+      ENNReal.ofReal (|β F₀| * (ρ * (1 - 2 * δ)) ^ (m + 1)) ≤ Pc.mass := by
+    intro δ hδ hδ'
+    obtain ⟨ω, hadm, hoff, hlb⟩ :=
+      Submission.isoperimetric_lattice_face_isolating_form (m + 1) N ρ δ F₀ hρ hδ hδ'
+    -- Only `F₀` contributes to the lattice sum.
+    have hPcω :
+        Pc ω = β F₀ * latticeFaceAction ρ F₀ (ω : DifferentialForm (Eucl N) (m + 1)) := by
+      rw [hPc ω, tsum_eq_single F₀ fun F hF => by rw [hoff F hF, mul_zero]]
+    -- `-ω` is admissible as well, and `Pc(-ω) = -Pc(ω)`.
+    have hadm' : -ω ∈ massAdmissibleOn (univ : Set (Eucl N)) (m + 1) univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hadm.2 x
+    have hPcneg : Pc (-ω) = -Pc ω := map_neg Pc.toCurrent ω
+    -- Test with `ω` if `β F₀ ≥ 0` and with `-ω` otherwise.
+    rcases le_or_gt 0 (β F₀) with hβ | hβ
+    · calc ENNReal.ofReal (|β F₀| * (ρ * (1 - 2 * δ)) ^ (m + 1))
+          ≤ ENNReal.ofReal (Pc ω) := by
+            apply ENNReal.ofReal_le_ofReal
+            rw [hPcω, abs_of_nonneg hβ]
+            exact mul_le_mul_of_nonneg_left hlb hβ
+        _ ≤ Pc.mass := Pc.le_massOn hadm
+    · calc ENNReal.ofReal (|β F₀| * (ρ * (1 - 2 * δ)) ^ (m + 1))
+          ≤ ENNReal.ofReal (Pc (-ω)) := by
+            apply ENNReal.ofReal_le_ofReal
+            rw [hPcneg, hPcω, abs_of_neg hβ, ← neg_mul]
+            exact mul_le_mul_of_nonneg_left hlb (neg_nonneg.2 hβ.le)
+        _ ≤ Pc.mass := Pc.le_massOn hadm'
+  -- Step 2: let `δ → 0⁺`; the left-hand side is continuous in `δ`.
+  have hc : Continuous fun δ : ℝ => ENNReal.ofReal (|β F₀| * (ρ * (1 - 2 * δ)) ^ (m + 1)) :=
+    ENNReal.continuous_ofReal.comp (by fun_prop)
+  have hlim : Tendsto (fun δ : ℝ => ENNReal.ofReal (|β F₀| * (ρ * (1 - 2 * δ)) ^ (m + 1)))
+      (𝓝[>] 0) (𝓝 (ENNReal.ofReal (|β F₀| * ρ ^ (m + 1)))) := by
+    simpa using (hc.tendsto 0).mono_left nhdsWithin_le_nhds
+  exact le_of_tendsto hlim (eventually_of_mem (Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1 / 4))
+    fun δ hδ => hδ_bound δ hδ.1 hδ.2)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
