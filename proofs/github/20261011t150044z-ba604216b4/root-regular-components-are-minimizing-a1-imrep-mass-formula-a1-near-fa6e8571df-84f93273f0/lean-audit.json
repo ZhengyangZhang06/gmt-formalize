@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "39fa4cf6564672106a7a6d1b03a06be7c4c89f341e47232d6766250acfecda14",
+  "git_delta": {
+    "base_commit": "ef6df7a6fed6b59543b255605296af56ac30e0bb",
+    "candidate_commit": "dbc03fecb91548d8d4b646b6144c1c1fe0b46986",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "6398d0e47432bd987c45b785ad29c80bbc3a6541acd874ba98a9c94c96e330e4",
+    "source_sha256": "72becc628d87494b28dc32ad7b7331ae0a6a991e726d7a739904b4da54f4012b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covector_field_near_maximizer",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (η : ℝ), 0 < η → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ x β = 1) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∀ᵐ x ∂μ, 1 - η ≤ ξ x (g x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
