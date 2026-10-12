@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.weighted_integral_derivative-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1",
+  "depth": 3,
+  "title": "Differentiation under the integral sign for θ-weighted Jacobian integrals over M ∩ K (Simon Ch. 4, 2.2)",
+  "statement": "Let n, ℓ ∈ ℕ, a = (M, θ) an admissible pair in E = ℝ^{n+ℓ}, V = v(M, θ) with weight μ_V, K ⊆ E compact, δ > 0, B ∈ ℝ, m: ℝ → [0, ∞], J, J': ℝ → E → ℝ and g: E → ℝ. Assume: for every t ∈ (−δ, δ), m(t) = ∫⁻_{M∩K} ofReal(θ(x)J(t, x)) dHⁿ(x) and J(t, ·) is Hⁿ⌞M-a.e. strongly measurable; g is Hⁿ⌞M-a.e. strongly measurable and g = 0 outside K; and for Hⁿ⌞M-a.e. x ∈ K: J'(0, x) = g(x) and, for all t ∈ (−δ, δ), 0 ≤ J(t, x) ≤ B, s ↦ J(s, x) has derivative J'(t, x) at t, and |J'(t, x)| ≤ B. Then t ↦ (m(t)).toReal has derivative ∫ g dμ_V at t = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (K : Set (Ambient n ℓ)) (m : ℝ → ℝ≥0∞) (J J' : ℝ → Ambient n ℓ → ℝ) (g : Ambient n ℓ → ℝ) (δ B : ℝ), 0 < δ → IsCompact K → (∀ t ∈ Ioo (-δ) δ, m t = ∫⁻ x in a.M ∩ K, ENNReal.ofReal (a.θ x * J t x) ∂μHE[n]) → (∀ t ∈ Ioo (-δ) δ, AEStronglyMeasurable (J t) ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M)) → AEStronglyMeasurable g ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) → (∀ x ∉ K, g x = 0) → (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, x ∈ K → J' 0 x = g x ∧ ∀ t ∈ Ioo (-δ) δ, 0 ≤ J t x ∧ J t x ≤ B ∧ HasDerivAt (fun s ↦ J s x) (J' t x) t ∧ |J' t x| ≤ B) → HasDerivAt (fun t ↦ (m t).toReal) (∫ x, g x ∂(mk a).weight) 0",
+  "lean_name": "ts_fv_hasDerivAt_of_weighted_jacobian",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-weighted-integral-2ea392d1ea-a1"
+}

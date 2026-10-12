@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_tangent_field-a1.piece_projection_continuity-a1",
+  "parent_id": "root.tangent_structure-a1.piece_tangent_field-a1",
+  "depth": 3,
+  "title": "Continuity of the tangent projection field of one bi-Lipschitz piece on its image",
+  "statement": "Let n, ℓ ∈ ℕ, C ⊆ ℝⁿ, F: ℝⁿ → ℝ^{n+ℓ} and c ∈ ℝ with c > 0 and c|v − w| ≤ |F(v) − F(w)| for all v, w ∈ C. Suppose DF(w) = fderiv ℝ F w is injective for every w ∈ C and w ↦ DF(w) is continuous on C. Then there is G: ℝ^{n+ℓ} → L(ℝ^{n+ℓ}, ℝ^{n+ℓ}) that is continuous on F(C) and satisfies G(F(w)) = orthogonal projection onto DF(w)(ℝⁿ) for every w ∈ C.",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (c : ℝ), 0 < c → (∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → (∀ w ∈ C, Function.Injective (fderiv ℝ F w)) → ContinuousOn (fderiv ℝ F) C → ∃ G : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), ContinuousOn G (F '' C) ∧ ∀ w ∈ C, G (F w) = (LinearMap.range (fderiv ℝ F w).toLinearMap).starProjection",
+  "lean_name": "ts_piece_projection_continuousOn_image",
+  "depends_on": [
+    "root.tangent_structure-a1.piece_tangent_field-a1.projection_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_structure-a1.piece_tangent_field-a1.projection_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-tangent-field-a1-piece-projection-continuity-a1-a1"
+}

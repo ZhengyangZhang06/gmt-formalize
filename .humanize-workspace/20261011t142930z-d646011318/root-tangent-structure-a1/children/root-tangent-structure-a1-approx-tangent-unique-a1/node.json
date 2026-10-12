@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.approx_tangent_unique-a1",
+  "parent_id": "root.tangent_structure-a1",
+  "depth": 2,
+  "title": "Uniqueness of the approximate tangent plane of a rectifiable varifold",
+  "statement": "For all n, ℓ, every rectifiable n-varifold V in ℝ^{n+ℓ}, every x ∈ ℝ^{n+ℓ} and all linear subspaces P, Q: if V.IsApproxTangentAt x P and V.IsApproxTangentAt x Q (each: the subspace is n-dimensional and, for some constant c > 0, t⁻ⁿ∫ f(t⁻¹(y − x)) dμ_V(y) → c∫ f dHⁿ over the subspace as t ↓ 0 for every f ∈ C_c), then P = Q.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (x : Ambient n ℓ) (P Q : Submodule ℝ (Ambient n ℓ)), V.IsApproxTangentAt x P → V.IsApproxTangentAt x Q → P = Q",
+  "lean_name": "ts_approx_tangent_plane_unique",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-approx-tangent-unique-a1-a1"
+}

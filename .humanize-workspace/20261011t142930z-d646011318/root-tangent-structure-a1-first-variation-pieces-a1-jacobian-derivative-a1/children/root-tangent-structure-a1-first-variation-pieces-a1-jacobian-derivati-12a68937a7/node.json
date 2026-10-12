@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1.tangential_estimates-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1",
+  "depth": 4,
+  "title": "Entry bound and uniform ellipticity of the tangential matrix S_P(L)",
+  "statement": "Let N ∈ ℕ, E := EuclideanSpace ℝ (Fin N), e_i := EuclideanSpace.single i 1, P ⊆ E a linear subspace with orthogonal projection p := P.starProjection, L : E → E a continuous linear map and b ∈ ℝ with 1 ≤ b, ‖L‖ ≤ b and ‖v‖ ≤ b‖L v‖ for every v ∈ E. For i, j ∈ Fin N put S_ij := ⟨L(p e_i), L(p e_j)⟩ + ⟨e_i − p e_i, e_j − p e_j⟩. Then (a) |S_ij| ≤ b² + 1 for all i, j ∈ Fin N, and (b) (b²)⁻¹·Σ_i ξ_i² ≤ Σ_i Σ_j ξ_i S_ij ξ_j for every ξ ∈ ℝ^{Fin N}.",
+  "lean_statement": "∀ (N : ℕ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (L : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N)) (b : ℝ), 1 ≤ b → ‖L‖ ≤ b → (∀ v, ‖v‖ ≤ b * ‖L v‖) → (∀ i j : Fin N, |inner ℝ (L (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (L (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))| ≤ b ^ 2 + 1) ∧ ∀ ξ : Fin N → ℝ, (b ^ 2)⁻¹ * ∑ i, ξ i ^ 2 ≤ ∑ i, ∑ j, ξ i * (inner ℝ (L (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (L (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))) * ξ j",
+  "lean_name": "ts_fv_tangential_matrix_estimates",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivati-12a68937a7-a1"
+}

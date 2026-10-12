@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "theorem (.*euclideanHausdorffMeasure.*|addHaar_closedBall.*|.*integrable_of_hasCompactSupport|.*integral_indicator_one)",
+        "HasCompactSupport.comp_homeomorph|theorem HasCompactSupport.intro|theorem measure_ball_lt_top|theorem measure_ball_pos|def stdOrthonormalBasis|def OrthonormalBasis.reindex|theorem tendsto_order|IsFiniteMeasureOnCompacts",
+        "\"lean_name\":\\s*\"(ts_plane_closedBall_measure|ts_blowup_cutoff_closedBall_bounds|ts_unit_ball_plane_cutoff_approx)\"",
+        "python3 /tmp/tsbd-independent-audit-dtzdv8r1/check.py gen/NodeChallenge_ts_plane_closedBall_measure.lean gen/NodeChallenge_ts_blowup_cutoff_closedBall_bounds.lean gen/NodeChallenge_ts_unit_ball_plane_cutoff_approx.lean",
+        "python3 /tmp/tsbd-independent-audit-dtzdv8r1/check.py Full.lean",
+        "python3 /tmp/tsbd-independent-audit-dtzdv8r1/check.py Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/CompactlySupported.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-blowup-density-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-blowup-density-a1/decomposition-v1.json",
+        "/tmp/tsbd-independent-audit-dtzdv8r1/Full.lean",
+        "/tmp/tsbd-independent-audit-dtzdv8r1/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected contract ts_blowup_closedBall_density. The three distinct obligations supply plane-ball normalization, blow-up integral bounds, and cutoff approximation. The sole child dependency is plane_cutoff_approx on plane_ball_measure; it is correctly directed and acyclic. The supplied parent assembly uses these conclusions, the assumed integral convergence, c > 0, and omega n > 0 to establish precisely the frozen density limit. All names are bare identifiers and unreserved by other DAG branches. The frozen contract and inspected Mathlib sources match the pinned copies. All three types pass validation and independently elaborate as comparator challenges against a freshly rebuilt original Submission without child implementations. The complete child and selected-parent proofs also compile independently, with only propext, Classical.choice, and Quot.sound. The separate parent assembly compiles with exactly its three child proof placeholders. Euclidean, measure, scalar-action, and cutoff constructions have the intended types; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches the prose and includes the rank and nonnegative-radius hypotheses. The proof correctly transfers restricted Hausdorff measure through the subtype inclusion and an orthonormal-coordinate isometry, identifies Euclidean Hausdorff measure with volume, applies Haar scaling, and converts the finite unit-ball measure through toReal/ofReal. The cited scaling theorem requires no Nontrivial instance, so n = 0 and s = 0 are covered. No circular dependency or missing argument remains."
+    },
+    {
+      "key": "cutoff_ball_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly expresses both conditional inequalities, including compact support, finiteness on compacts, t > 0, and μ.real. The proof establishes integrability of the composition using the blow-up homeomorphism and integrability of the closed-ball indicator using compactness. Positive t gives the stated norm-membership equivalence; the two pointwise comparisons then yield both conclusions by integral monotonicity. No additional sign hypothesis on the lower cutoff is needed, and the proof is independent of the parent and other children."
+    },
+    {
+      "key": "plane_cutoff_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches both quantified approximation claims and includes the plane-dimension hypothesis. Using only the declared plane_ball_measure dependency, the proof establishes finiteness on compacts and all required integrability. Continuity supplies δ ∈ (0,1), and the explicit min/max cutoffs satisfy the asserted support and pointwise bounds, including boundary cases. Integrating their indicator comparisons proves the strict lower and upper integral bounds. The proof covers n = 0 and requires no further planning or circular reliance."
+    }
+  ],
+  "required_changes": []
+}

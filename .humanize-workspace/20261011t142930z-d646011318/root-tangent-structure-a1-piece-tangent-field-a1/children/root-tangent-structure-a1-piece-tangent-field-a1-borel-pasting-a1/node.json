@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_tangent_field-a1.borel_pasting-a1",
+  "parent_id": "root.tangent_structure-a1.piece_tangent_field-a1",
+  "depth": 3,
+  "title": "Strongly measurable pasting of countably many relatively continuous operator fields",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ}, let (N_i)_{i∈ℕ} be measurable (Borel) subsets of E and let G_i: E → L(E, E) be continuous on N_i for each i. Then there is a strongly measurable g: E → L(E, E) such that g(y) = G_i(y) whenever i ∈ ℕ, y ∈ N_i and y ∉ N_j for all j < i.",
+  "lean_statement": "∀ (n ℓ : ℕ) (N : ℕ → Set (Ambient n ℓ)) (G : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ)), (∀ i, MeasurableSet (N i)) → (∀ i, ContinuousOn (G i) (N i)) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ y ∈ N i, (∀ j < i, y ∉ N j) → g y = G i y",
+  "lean_name": "ts_stronglyMeasurable_paste_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-tangent-field-a1-borel-pasting-a1-a1"
+}

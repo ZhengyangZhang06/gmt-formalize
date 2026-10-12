@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "parent_id": "root.tangent_structure-a1",
+  "depth": 2,
+  "title": "Blow-up of a Lipschitz piece at a Lebesgue density point, with a uniform upper n-density bound",
+  "statement": "Let n ≥ 1, ℓ ≥ 0, E = ℝ^{n+ℓ} (Ambient n ℓ), ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, and Hⁿ = μHE[n]. Let C ⊆ ℝⁿ be compact and F: ℝⁿ → E Lipschitz such that F is differentiable at every w ∈ C with injective derivative DF(w), w ↦ DF(w) is continuous on C, and c|v − w| ≤ |F(v) − F(w)| for all v, w ∈ C, for some c > 0. Then (3b) there is Γ ∈ ℝ with Hⁿ(F(C) ∩ B_ρ(x)) ≤ Γρⁿ for all x ∈ F(C) and ρ > 0 (closed balls); and (3a) for every w ∈ C with Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 as r ↓ 0 and every f ∈ C_c(E, ℝ), t⁻ⁿ∫_{F(C)} f(t⁻¹(y − F(w))) dHⁿ(y) → ∫_{DF(w)(ℝⁿ)} f dHⁿ as t ↓ 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), 0 < n → (IsCompact C ∧ (∃ K : NNReal, LipschitzWith K F) ∧ (∀ w ∈ C, DifferentiableAt ℝ F w ∧ Function.Injective (fderiv ℝ F w)) ∧ ContinuousOn (fderiv ℝ F) C ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → (∃ Γ : ℝ, ∀ x ∈ F '' C, ∀ ρ : ℝ, 0 < ρ → (μHE[n] : Measure (Ambient n ℓ)) (F '' C ∩ closedBall x ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) ∧ ∀ w ∈ C, Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y in F '' C, f (t⁻¹ • (y - F w)) ∂μHE[n]) (𝓝[>] 0) (𝓝 (∫ y in (LinearMap.range (fderiv ℝ F w).toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n]))",
+  "lean_name": "ts_piece_density_blowup",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-a1"
+}

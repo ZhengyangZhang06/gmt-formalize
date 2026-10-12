@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_weighted_blowup-a1.pair_weight_integral-a1",
+  "parent_id": "root.tangent_structure-a1.piece_weighted_blowup-a1",
+  "depth": 3,
+  "title": "Weight of v(M, θ): finite on compact sets and ∫ g dμ_V = ∫_M θ g dHⁿ",
+  "statement": "Let n, ℓ ∈ ℕ, E := Ambient n ℓ = ℝ^{n+ℓ}, Hⁿ := μHE[n], and let a = (M, θ) be an admissible pair (a : RectifiablePair n ℓ: M is countably n-rectifiable and Hⁿ-null-measurable, θ(y) > 0 for y ∈ M, and θ is Hⁿ-integrable on M ∩ K for every compact K ⊆ E). Let μ := (mk a).weight be the weight of V = v(M, θ). Then (i) μ(K) < ∞ for every compact K ⊆ E (IsFiniteMeasureOnCompacts μ), and (ii) for every function g : E → ℝ, ∫ g dμ = ∫_M θ(y)·g(y) dHⁿ(y) (Bochner integrals, a non-integrable function having integral 0; the identity holds for all g).",
+  "lean_statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ), IsFiniteMeasureOnCompacts (mk a).weight ∧ ∀ g : Ambient n ℓ → ℝ, ∫ y, g y ∂(mk a).weight = ∫ y in a.M, a.θ y * g y ∂μHE[n]",
+  "lean_name": "ts_pwb_pair_weight_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-weighted-blowup-a1-pair-weight-integral-a1-a1"
+}

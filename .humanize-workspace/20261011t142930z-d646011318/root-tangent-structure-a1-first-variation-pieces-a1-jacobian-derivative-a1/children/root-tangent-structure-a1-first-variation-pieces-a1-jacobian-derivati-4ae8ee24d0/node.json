@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1.projection_trace-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1",
+  "depth": 4,
+  "title": "Trace of L ∘ p as a sum over the standard basis",
+  "statement": "Let N ∈ ℕ, E := EuclideanSpace ℝ (Fin N) with standard basis vectors e_k := EuclideanSpace.single k 1, P ⊆ E a linear subspace with orthogonal projection p := P.starProjection, and L : E → E a continuous linear map. Then Σ_{k ∈ Fin N} ⟨L(p e_k), p e_k⟩ = trace(L ∘ p), where the trace is LinearMap.trace ℝ E of the linear map L ∘ p.",
+  "lean_statement": "∀ (N : ℕ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (L : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N)), ∑ k : Fin N, inner ℝ (L (P.starProjection (EuclideanSpace.single k (1 : ℝ)))) (P.starProjection (EuclideanSpace.single k (1 : ℝ))) = LinearMap.trace ℝ (EuclideanSpace ℝ (Fin N)) (L.toLinearMap ∘ₗ P.starProjection.toLinearMap)",
+  "lean_name": "ts_fv_sum_inner_starProjection_eq_trace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivati-4ae8ee24d0-a1"
+}

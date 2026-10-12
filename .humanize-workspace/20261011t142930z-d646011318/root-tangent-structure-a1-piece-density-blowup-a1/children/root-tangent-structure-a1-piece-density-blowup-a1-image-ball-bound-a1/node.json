@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.image_ball_bound-a1",
+  "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "depth": 3,
+  "title": "Upper n-density bound for the image of a set with a lower Lipschitz bound at a point",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ = ℝ^{n+ℓ}, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, Hⁿ = μHE[n] on E, and ω_n = omega n = (Lⁿ(ball 0 1)).toReal. Let C ⊆ ℝⁿ be any set, F: ℝⁿ → E a K-Lipschitz map (K ∈ ℝ≥0), c > 0 and w ∈ ℝⁿ such that c|v − w| ≤ |F(v) − F(w)| for every v ∈ C. Then for every ρ > 0, Hⁿ(F(C) ∩ B_ρ(F(w))) ≤ ofReal(Kⁿ·ω_n/cⁿ·ρⁿ), where B_ρ denotes the closed ball.",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (K : NNReal) (c : ℝ) (w : EuclideanSpace ℝ (Fin n)), LipschitzWith K F → 0 < c → (∀ v ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → ∀ ρ : ℝ, 0 < ρ → (μHE[n] : Measure (Ambient n ℓ)) (F '' C ∩ closedBall (F w) ρ) ≤ ENNReal.ofReal ((K : ℝ) ^ n * omega n / c ^ n * ρ ^ n)",
+  "lean_name": "ts_pdb_image_closedBall_measure_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1-a1"
+}
