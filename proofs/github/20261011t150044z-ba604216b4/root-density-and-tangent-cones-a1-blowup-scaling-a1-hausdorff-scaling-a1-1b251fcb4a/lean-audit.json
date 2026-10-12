@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea16ab563da391b0409e70c05c261e3cbadc87a338a211a56921276e378c50e5",
+  "git_delta": {
+    "base_commit": "1d413761d4920fe295b13967cf42a7906180c1a2",
+    "candidate_commit": "8d70b3ea227291cb887ab3333a9ac3315b713e3f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_hausdorff_dilation",
+    "diff_sha256": "eb2887f5f46d42faf193f34226c403e6338681b6dcd28236d3d742efafaf979e",
+    "source_sha256": "f7476c56fc1f52095c8473260e9b47bd08d8c0ee22038a96a269e3d7718b7e5d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_hausdorff_dilation",
+      "statement": "∀ (P n : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ s : Set (Euclid P), μHE[n] (dilation x lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s) ∧ Measure.map (dilation x lam) (μHE[n] : Measure (Euclid P)) = ENNReal.ofReal (lam ^ n) • (μHE[n] : Measure (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
