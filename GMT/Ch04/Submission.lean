@@ -2439,6 +2439,191 @@ theorem Submission.ts_piece_weighted_blowup_ae : ∀ (n ℓ : ℕ) (a : Rectifia
   rw [hFw] at hL
   exact Submission.ts_pwb_blowup_at_good_point n ℓ a (F '' C) (K k) x f Γ _ hNm hNfin (hK k).1
     (hK k).2.1 hk ((hK k).2.2 x hk) (hΓ x hxN) (hxA k fun h ↦ h hk) (hxB k fun h ↦ h hk) hL
+/-- **Continuity of the projection onto the range** (used for the tangent field of a `C¹` piece,
+Ch. 4, 1.3). On injective `A ∈ L(ℝⁿ, ℝ^{n+ℓ})`, `A ↦ p_{A(ℝⁿ)}` is continuous: there
+`p_{A(ℝⁿ)} = A (A*A)⁻¹ A*`, with `A*A` invertible, and inversion is continuous at units. -/
+theorem Submission.ts_starProjection_range_continuousOn_injective : ∀ (n ℓ : ℕ), ContinuousOn (fun (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) ↦ (LinearMap.range A.toLinearMap).starProjection) {A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ | Function.Injective A} := by
+  intro n ℓ
+  -- Riesz construction of the adjoint `A ↦ A*` (Mathlib's `adjointAux`, rebuilt from
+  -- `toDual` and `toSesqForm`, which the frozen imports provide).
+  set adj : (EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) →L⋆[ℝ]
+      (Ambient n ℓ →L[ℝ] EuclideanSpace ℝ (Fin n)) :=
+    (ContinuousLinearMap.compSL _ _ _ _ _
+      ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm :
+        StrongDual ℝ (EuclideanSpace ℝ (Fin n)) →L⋆[ℝ] EuclideanSpace ℝ (Fin n))).comp
+      (ContinuousLinearMap.toSesqForm :
+        (EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) →L[ℝ]
+          Ambient n ℓ →L⋆[ℝ] StrongDual ℝ (EuclideanSpace ℝ (Fin n))) with hadj
+  have hadj_inner : ∀ (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (y : Ambient n ℓ)
+      (x : EuclideanSpace ℝ (Fin n)), inner ℝ (adj A y) x = inner ℝ y (A x) := by
+    intro A y x
+    change inner ℝ ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm
+      (ContinuousLinearMap.toSesqForm A y)) x = _
+    rw [InnerProductSpace.toDual_symm_apply, ContinuousLinearMap.toSesqForm_apply_coe]
+    rfl
+  -- `Φ(A) = A ∘ (A*A)⁻¹ ∘ A*`
+  set Φ : (EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) → (Ambient n ℓ →L[ℝ] Ambient n ℓ) :=
+    fun A ↦ A ∘L (Ring.inverse (adj A ∘L A) ∘L adj A) with hΦ
+  -- `A*A` is a unit for injective `A`: `⟪A*Av, v⟫ = ‖Av‖²`, and injective means bijective in
+  -- finite dimension
+  have hunit : ∀ A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ, Function.Injective A →
+      IsUnit (adj A ∘L A) := by
+    intro A hA
+    have hinj : Function.Injective (adj A ∘L A) := by
+      intro v w hvw
+      have h0 : (adj A ∘L A) (v - w) = 0 := by
+        rw [map_sub, hvw, sub_self]
+      have h1 : ‖A (v - w)‖ ^ 2 = 0 := by
+        rw [← real_inner_self_eq_norm_sq, ← hadj_inner]
+        simp only [ContinuousLinearMap.comp_apply] at h0
+        rw [h0, inner_zero_left]
+      have h2 : A (v - w) = 0 := by
+        simpa using h1
+      have h3 : v - w = 0 := hA (by rw [h2, map_zero])
+      exact sub_eq_zero.mp h3
+    refine ContinuousLinearMap.isUnit_iff_bijective.mpr ⟨hinj, ?_⟩
+    exact (LinearMap.injective_iff_surjective (f := (adj A ∘L A).toLinearMap)).mp hinj
+  -- the projection formula `p_{A(ℝⁿ)} = Φ(A)`: `Φ(A)z ∈ A(ℝⁿ)` and `z - Φ(A)z ⊥ A(ℝⁿ)`
+  have hformula : ∀ A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ, Function.Injective A →
+      (LinearMap.range A.toLinearMap).starProjection = Φ A := by
+    intro A hA
+    ext1 z
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact ⟨_, rfl⟩
+    · rintro _ ⟨v, rfl⟩
+      rw [ContinuousLinearMap.coe_coe, ← hadj_inner, map_sub]
+      have hcancel : adj A (Φ A z) = adj A z := by
+        have := Ring.mul_inverse_cancel _ (hunit A hA)
+        calc adj A (Φ A z)
+            = ((adj A ∘L A) * Ring.inverse (adj A ∘L A)) (adj A z) := by
+              simp only [hΦ, ContinuousLinearMap.comp_apply, mul_apply_eq_comp]
+          _ = adj A z := by rw [this, one_apply_eq_self]
+      rw [hcancel, sub_self, inner_zero_left]
+  -- continuity of `Φ` at injective maps: `A ↦ A*` is continuous, `Ring.inverse` is continuous
+  -- at units, and composition is continuous
+  have hcont : ∀ A₀ : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ, Function.Injective A₀ →
+      ContinuousAt Φ A₀ := by
+    intro A₀ hA₀
+    have hadjc : Continuous fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦ adj A :=
+      adj.continuous
+    have hgram : Continuous fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦
+        adj A ∘L A := hadjc.clm_comp continuous_id
+    have hinv : ContinuousAt (fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦
+        Ring.inverse (adj A ∘L A)) A₀ := by
+      have := NormedRing.inverse_continuousAt (hunit A₀ hA₀).unit
+      exact ContinuousAt.comp (f := fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦
+        adj A ∘L A) (by simpa using this) hgram.continuousAt
+    exact continuousAt_id.clm_comp (hinv.clm_comp hadjc.continuousAt)
+  -- `p_{A(ℝⁿ)}` agrees with `Φ` on the injective maps, so it is continuous there
+  intro A₀ hA₀
+  exact ((hcont A₀ hA₀).continuousWithinAt).congr (fun A hA ↦ hformula A hA) (hformula A₀ hA₀)
+
+/-- **The tangent projection of a `C¹` piece, as a function on its image** (Ch. 4, 1.3). If
+`c‖v - w‖ ≤ ‖F v - F w‖` on `C` with `c > 0`, and `DF` is injective and continuous on `C`, then
+`y ↦ p_{DF(ψ y)(ℝⁿ)}` is continuous on `F(C)`, where `ψ` inverts `F` on `C` and is
+`c⁻¹`-Lipschitz on `F(C)`. -/
+theorem Submission.ts_piece_projection_continuousOn_image : ∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (c : ℝ), 0 < c → (∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → (∀ w ∈ C, Function.Injective (fderiv ℝ F w)) → ContinuousOn (fderiv ℝ F) C → ∃ G : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), ContinuousOn G (F '' C) ∧ ∀ w ∈ C, G (F w) = (LinearMap.range (fderiv ℝ F w).toLinearMap).starProjection := by
+  intro n ℓ C F c hc hlow hinj hcont
+  classical
+  -- `F` is injective on `C`: `F v = F w` forces `c‖v - w‖ ≤ 0`
+  have hInjOn : Set.InjOn F C := by
+    intro v hv w hw hvw
+    have h := hlow v hv w hw
+    rw [hvw, sub_self, norm_zero] at h
+    have h' : ‖v - w‖ ≤ 0 := by
+      by_contra hpos
+      exact absurd h (not_le.mpr (mul_pos hc (lt_of_not_ge hpos)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h')
+  -- the inverse `ψ` of `F` on `C`
+  set ψ : Ambient n ℓ → EuclideanSpace ℝ (Fin n) := Function.invFunOn F C with hψ
+  have hψmaps : Set.MapsTo ψ (F '' C) C := fun y hy ↦ Function.invFunOn_mem hy
+  have hFψ : ∀ y ∈ F '' C, F (ψ y) = y := fun y hy ↦ Function.invFunOn_eq hy
+  have hψF : ∀ w ∈ C, ψ (F w) = w := fun w hw ↦ hInjOn.leftInvOn_invFunOn hw
+  -- `ψ` is `c⁻¹`-Lipschitz, hence continuous, on `F(C)`
+  have hψcont : ContinuousOn ψ (F '' C) := by
+    refine (LipschitzOnWith.of_dist_le_mul (K := Real.toNNReal c⁻¹) fun y hy y' hy' ↦ ?_).continuousOn
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (inv_nonneg.mpr hc.le)]
+    have h := hlow (ψ y) (hψmaps hy) (ψ y') (hψmaps hy')
+    rw [hFψ y hy, hFψ y' hy'] at h
+    rw [inv_mul_eq_div, le_div_iff₀ hc, mul_comm]
+    exact h
+  -- `G = p ∘ DF ∘ ψ`: `ψ` maps `F(C)` into `C`, where `DF` is continuous with injective values,
+  -- and `A ↦ p_{A(ℝⁿ)}` is continuous on the injective maps
+  refine ⟨fun y ↦ (LinearMap.range (fderiv ℝ F (ψ y)).toLinearMap).starProjection, ?_, ?_⟩
+  · exact (Submission.ts_starProjection_range_continuousOn_injective n ℓ).comp
+      (hcont.comp hψcont hψmaps) (fun y hy ↦ hinj (ψ y) (hψmaps hy))
+  · intro w hw
+    simp only [hψF w hw]
+/-- **Borel pasting of relatively continuous operator fields** (the field on the disjointified
+pieces `N_i \ ⋃_{j<i} N_j`). If every `N_i ⊆ ℝ^{n+ℓ}` is measurable and every
+`G_i : ℝ^{n+ℓ} → L(ℝ^{n+ℓ}, ℝ^{n+ℓ})` is continuous on `N_i`, then some strongly measurable `g`
+equals `G_i` on `N_i \ ⋃_{j<i} N_j` for every `i`: `g y = G_{i(y)} y` for the least `i(y)` with
+`y ∈ N_{i(y)}`, and `g = 0` off `⋃_i N_i`. -/
+theorem Submission.ts_stronglyMeasurable_paste_continuousOn : ∀ (n ℓ : ℕ) (N : ℕ → Set (Ambient n ℓ)) (G : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ)), (∀ i, MeasurableSet (N i)) → (∀ i, ContinuousOn (G i) (N i)) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ y ∈ N i, (∀ j < i, y ∉ N j) → g y = G i y := by
+  intro n ℓ N G hN hG
+  classical
+  -- `G' i` extends `G i` by `0` off `N i`; it is Borel as `G i` is continuous on the Borel `N i`.
+  set G' : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ) :=
+    fun i ↦ (N i).piecewise (G i) 0 with hG'
+  have hG'meas : ∀ i, Measurable (G' i) := fun i ↦
+    (hG i).measurable_piecewise continuousOn_const (hN i)
+  -- The index `i` is admissible at `y` if `y ∈ N i` or `y` lies in no piece.
+  set p : ℕ → Ambient n ℓ → Prop := fun i y ↦ y ∈ N i ∨ y ∉ ⋃ j, N j
+  have hpex : ∀ y, ∃ i, p i y := by
+    intro y
+    by_cases hy : y ∈ ⋃ j, N j
+    · obtain ⟨j, hj⟩ := mem_iUnion.mp hy
+      exact ⟨j, Or.inl hj⟩
+    · exact ⟨0, Or.inr hy⟩
+  have hpmeas : ∀ i, MeasurableSet {y | p i y} := fun i ↦
+    (hN i).union (MeasurableSet.iUnion hN).compl
+  -- `g y = G' i y` for the least admissible `i` is Borel (`Measurable.find`), hence strongly
+  -- measurable since `L(ℝ^{n+ℓ}, ℝ^{n+ℓ})` is finite-dimensional.
+  refine ⟨fun y ↦ G' (Nat.find (hpex y)) y, ?_, ?_⟩
+  · exact (Measurable.find hG'meas hpmeas hpex).stronglyMeasurable
+  · -- On `N i \ ⋃_{j<i} N j` the least admissible index is `i`.
+    intro i y hy hfirst
+    have hfind : Nat.find (hpex y) = i := by
+      rw [Nat.find_eq_iff]
+      refine ⟨Or.inl hy, fun j hj ↦ ?_⟩
+      rintro (hjy | hnot)
+      · exact hfirst j hj hjy
+      · exact hnot (mem_iUnion.mpr ⟨i, hy⟩)
+    simp only [hfind, hG', Set.piecewise_eq_of_mem _ _ _ hy]
+
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+/-- **Tangent projection field of a sequence of Lipschitz pieces** (measurability of
+`x ↦ p_{T_x V}`, Ch. 4, 1.3). Let `C_i ⊆ ℝⁿ` be compact and `F_i : ℝⁿ → ℝ^{n+ℓ}` Lipschitz,
+differentiable on `C_i` with injective `DF_i` continuous on `C_i`, and
+`c_i|v - w| ≤ |F_i(v) - F_i(w)|` on `C_i` with `c_i > 0`. Then some strongly measurable
+`g : ℝ^{n+ℓ} → L(ℝ^{n+ℓ}, ℝ^{n+ℓ})` is the orthogonal projection onto `DF_i(w)(ℝⁿ)` at `F_i(w)`
+whenever `F_i(w) ∉ F_j(C_j)` for all `j < i`: the projection field of each piece is continuous
+on the compact image `F_i(C_i)` (`ts_piece_projection_continuousOn_image`), and these fields are
+pasted along `F_i(C_i) \ ⋃_{j<i} F_j(C_j)` (`ts_stronglyMeasurable_paste_continuousOn`). -/
+theorem Submission.ts_piece_tangent_projection_field : ∀ (n ℓ : ℕ) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ), (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ w ∈ C i, (∀ j < i, F i w ∉ F j '' C j) → g (F i w) = (LinearMap.range (fderiv ℝ (F i) w).toLinearMap).starProjection := by
+  intro n ℓ C F hpiece
+  -- Step 3: on each piece `N_i = F_i(C_i)` the projection field `G_i` is continuous, with
+  -- `G_i(F_i(w)) = p_{DF_i(w)(ℝⁿ)}` for `w ∈ C_i`.
+  have hG : ∀ i, ∃ G : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ),
+      ContinuousOn G (F i '' C i) ∧
+        ∀ w ∈ C i, G (F i w) = (LinearMap.range (fderiv ℝ (F i) w).toLinearMap).starProjection := by
+    intro i
+    obtain ⟨-, -, hdiff, hcont, c, hc, hlow⟩ := hpiece i
+    exact Submission.ts_piece_projection_continuousOn_image n ℓ (C i) (F i) c hc hlow
+      (fun w hw ↦ (hdiff w hw).2) hcont
+  choose G hGcont hGval using hG
+  -- Step 4: `N_i` is compact, as the image of the compact `C_i` under the Lipschitz `F_i`, hence
+  -- Borel.
+  have hN : ∀ i, MeasurableSet (F i '' C i) := fun i ↦ by
+    obtain ⟨hC, ⟨K, hK⟩, -⟩ := hpiece i
+    exact (hC.image hK.continuous).measurableSet
+  -- Step 5: paste the `G_i` along the disjointified pieces `N_i \ ⋃_{j<i} N_j`.
+  obtain ⟨g, hgmeas, hg⟩ :=
+    Submission.ts_stronglyMeasurable_paste_continuousOn n ℓ (fun i ↦ F i '' C i) G hN hGcont
+  -- Step 6: at `F_i(w)` outside the earlier pieces, `g = G_i = p_{DF_i(w)(ℝⁿ)}`.
+  refine ⟨g, hgmeas, fun i w hw hfirst ↦ ?_⟩
+  rw [hg i (F i w) (mem_image_of_mem (F i) hw) hfirst, hGval i w hw]
 
 end
 

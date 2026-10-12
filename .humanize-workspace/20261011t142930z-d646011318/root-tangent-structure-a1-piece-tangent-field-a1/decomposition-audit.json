@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "theorem inverse_continuousAt|theorem eq_starProjection_of_mem_of_inner_eq_zero|theorem continuousOn_iff'|theorem _root_.Measurable.stronglyMeasurable|theorem Measurable.find|theorem ContinuousOn.measurable_piecewise|theorem isUnit_iff_bijective|toDual_symm_apply|toSesqForm_apply_coe|def adjointAux|def adjoint ",
+        "starProjection.*[Cc]ontinu|[Cc]ontinu.*starProjection|isOpen_injective",
+        "rg -l -F -e ts_starProjection_range_continuousOn_injective -e ts_piece_projection_continuousOn_image -e ts_stronglyMeasurable_paste_continuousOn .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes -g '*.json' -g '*.lean'",
+        "python3 /tmp/ch04-ptf-independent-audit/prepare.py",
+        "python3 /tmp/ch04-ptf-independent-audit/check.py baseline build",
+        "python3 /tmp/ch04-ptf-independent-audit/check.py baseline challenge",
+        "python3 /tmp/ch04-ptf-independent-audit/check.py proved build",
+        "python3 /tmp/ch04-ptf-independent-audit/check.py proved solution",
+        "python3 /tmp/ch04-ptf-independent-audit/check.py baseline instance_only"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-tangent-field-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-tangent-field-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Data/Set/Function.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/tmp/ch04-ptf-independent-audit/prepare.py",
+        "/tmp/ch04-ptf-independent-audit/check.py",
+        "/tmp/ch04-ptf-independent-audit/proved/GMT/Ch04/Submission.lean",
+        "/tmp/ch04-ptf-independent-audit/Instances.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace contract and Submission; package revisions match the pins. Relevant projection, inverse, inverse-parametrization and measurability declarations were inspected. The search found no ready-made range-projection continuity theorem. All three frozen types independently elaborate in comparator-generated challenge modules against the untouched baseline. Fresh compilation of the supplied appendices and exact selected-parent assembly succeeds without added imports; every solution has only propext, Classical.choice and Quot.sound as axioms. Instance checks confirm operator-norm topology, Borel measurable spaces, second countability, metrizability and orthogonal projections; endomorphism multiplication is definitionally composition. All names are bare and unreserved. The split is appropriate: projection_continuity supports piece_projection_continuity, while borel_pasting is independent. Compact Lipschitz images supply the measurable sets needed to assemble exactly the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose. The Riesz construction supplies a continuous adjoint; injectivity makes the Gram endomorphism a unit; the orthogonality argument proves the projection formula. Inverse continuity and agreement on the injective set establish precisely ContinuousOn. The proof includes n = 0, uses no parent or child conclusion circularly, and supplies a complete formalization route."
+    },
+    {
+      "key": "piece_projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type contain the same hypotheses. The positive lower bound proves injectivity on C and makes invFunOn a continuous inverse on the image. Composing this inverse, the continuous fderiv field and the declared projection_continuity dependency proves continuity and the required values. Empty C is covered; compactness, an upper Lipschitz bound and separate differentiability are not silently assumed. The dependency is correctly directed and non-circular."
+    },
+    {
+      "key": "borel_pasting",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the Borel-piece statement. The proof establishes measurable disjointification, defines the least-index field including its value outside the union, and verifies the requested identities. Relative continuity makes each restricted open preimage measurable; countable pasting gives measurability, and the finite-dimensional operator space gives strong measurability. The equivalent supplied Lean construction is complete and independent of both other children and the parent."
+    }
+  ],
+  "required_changes": []
+}
