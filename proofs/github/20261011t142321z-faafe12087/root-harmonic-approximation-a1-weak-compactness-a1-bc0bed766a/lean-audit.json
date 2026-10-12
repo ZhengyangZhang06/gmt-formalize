@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e26bdb4e1ba038ab4fd76f92552d4f7d9b2b477be90392b3850f3f0656cab3c3",
+  "git_delta": {
+    "base_commit": "fe48da63284a1ab19459fc440bdb8825d1feccf7",
+    "candidate_commit": "304fc73ea7cdb3cf0a9c4da3929450205569c7b8",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "l2_ball_weak_subsequence",
+    "diff_sha256": "9181578c5e48bf376c6eb1947a6726e72e90ffd38f36bb17f5b084a63872f6ce",
+    "source_sha256": "caa16905fc92ded324a737c74acc2e6baa531c1457af175e0198377cd008a952",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.l2_ball_weak_subsequence",
+      "statement": "∀ (n : ℕ) (G : ℕ → Rn n → Rn n), (∀ k, MemLp (G k) 2 (volume.restrict (ball (0 : Rn n) 1))) → (∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖G k x‖ₑ ^ 2 ≤ 1) → ∃ (φ : ℕ → ℕ) (g : Rn n → Rn n), StrictMono φ ∧ MemLp g 2 (volume.restrict (ball (0 : Rn n) 1)) ∧ ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 ≤ 1 ∧ ∀ h : Rn n → Rn n, MemLp h 2 (volume.restrict (ball (0 : Rn n) 1)) → Tendsto (fun k => ∫ x in ball (0 : Rn n) 1, inner ℝ (G (φ k) x) (h x)) atTop (𝓝 (∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (h x)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
