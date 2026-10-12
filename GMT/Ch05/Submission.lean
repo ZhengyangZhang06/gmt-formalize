@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.WeightedArea
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -828,6 +829,363 @@ theorem rsod_isC1Submanifold_measurableSet : ∀ (m N : ℕ) (S : Set (Euclidean
   -- Step 5: `O` is open and `closure S` is closed, so `S = O ∩ closure S` is Borel.
   rw [hSO]
   exact (isOpen_biUnion hWo).measurableSet.inter isClosed_closure.measurableSet
+/-- Linear lower bound for a `C¹` chart near a point where its derivative is injective (used for
+the `C¹` submanifold charts of Simon Ch. 2 §4).  If `V ⊆ ℝᵐ` is open, `φ` is `C¹` on `V`, `v₀ ∈ V`
+and `Dφ(v₀)` is injective, then there are `c, δ > 0` with `B_δ(v₀) ⊆ V` and
+`c ‖w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖` whenever `‖w‖ ≤ δ`.  With `L = Dφ(v₀)` and `‖u‖ ≤ K ‖L u‖`, take
+`c = 1/(2K)` and `δ` so small that `‖Dφ(v) − L‖ ≤ c` on `B_δ(v₀) ⊆ V`; the mean value inequality
+gives `‖φ(v₀ + w) − φ(v₀) − L w‖ ≤ c ‖w‖`, and `2c ‖w‖ ≤ ‖L w‖` finishes. -/
+theorem rsod_c1tan_chart_lower_bound : ∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m), IsOpen V → ContDiffOn ℝ 1 φ V → v₀ ∈ V → Function.Injective (fderiv ℝ φ v₀) → ∃ c : ℝ, 0 < c ∧ ∃ δ : ℝ, 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ ∀ w : Rn m, ‖w‖ ≤ δ → c * ‖w‖ ≤ ‖φ (v₀ + w) - φ v₀‖ := by
+  intro m N V φ v₀ hV hφ hv₀ hinj
+  set L := fderiv ℝ φ v₀ with hL
+  -- Step 1: `‖u‖ ≤ K ‖L u‖` for some `K > 0`; put `c = 1/(2K)`, so `c K = 1/2`.
+  obtain ⟨K, hK0, hK⟩ := (L : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N)).exists_antilipschitzWith
+    (LinearMap.ker_eq_bot.mpr hinj)
+  have hK0' : (0 : ℝ) < K := hK0
+  have hLlow : ∀ u : Rn m, ‖u‖ ≤ K * ‖L u‖ := fun u => hK.le_mul_norm (map_zero _) u
+  set c : ℝ := 1 / (2 * K) with hc
+  have hc0 : 0 < c := by positivity
+  have hcK : c * K = 1 / 2 := by
+    rw [hc]
+    field_simp
+  -- Step 2: `Dφ` is continuous at `v₀`; choose `δ < δ₁, δ₂` with `‖Dφ(v) − L‖ < c` for
+  -- `dist(v, v₀) < δ₁` and `B̆_{δ₂}(v₀) ⊆ V`.
+  have hcont : ContinuousAt (fderiv ℝ φ) v₀ :=
+    (hφ.continuousOn_fderiv_of_isOpen hV le_rfl).continuousAt (hV.mem_nhds hv₀)
+  obtain ⟨δ₁, hδ₁, hδ₁'⟩ := Metric.continuousAt_iff.mp hcont c hc0
+  obtain ⟨δ₂, hδ₂, hδ₂'⟩ := Metric.isOpen_iff.mp hV v₀ hv₀
+  set δ : ℝ := min δ₁ δ₂ / 2 with hδ
+  have hδ0 : 0 < δ := by positivity
+  have hδlt₁ : δ < δ₁ := by
+    have := min_le_left δ₁ δ₂
+    rw [hδ]
+    linarith
+  have hδlt₂ : δ < δ₂ := by
+    have := min_le_right δ₁ δ₂
+    rw [hδ]
+    linarith
+  have hball : closedBall v₀ δ ⊆ V := (closedBall_subset_ball hδlt₂).trans hδ₂'
+  refine ⟨c, hc0, δ, hδ0, hball, fun w hw => ?_⟩
+  -- Step 3: on `B_δ(v₀)`, `φ` is differentiable and `‖Dφ(v) − L‖ ≤ c`.
+  have hdiff : ∀ v ∈ closedBall v₀ δ, DifferentiableAt ℝ φ v := fun v hv =>
+    (hφ.differentiableOn one_ne_zero v (hball hv)).differentiableAt (hV.mem_nhds (hball hv))
+  have hbound : ∀ v ∈ closedBall v₀ δ, ‖fderiv ℝ φ v - L‖ ≤ c := fun v hv => by
+    have h := hδ₁' (lt_of_le_of_lt (mem_closedBall.mp hv) hδlt₁)
+    rw [dist_eq_norm] at h
+    exact h.le
+  -- Step 4: mean value inequality on the convex ball: `‖φ(v₀ + w) − φ(v₀) − L w‖ ≤ c ‖w‖`.
+  have hmem : v₀ + w ∈ closedBall v₀ δ := by
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left]
+    exact hw
+  have hmvt := (convex_closedBall v₀ δ).norm_image_sub_le_of_norm_fderiv_le' hdiff hbound
+    (mem_closedBall_self hδ0.le) hmem
+  rw [add_sub_cancel_left] at hmvt
+  -- Step 5: `2c ‖w‖ ≤ ‖L w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖ + c ‖w‖`.
+  have h1 : c * ‖w‖ ≤ ‖L w‖ / 2 := by
+    calc c * ‖w‖ ≤ c * (K * ‖L w‖) := mul_le_mul_of_nonneg_left (hLlow w) hc0.le
+      _ = ‖L w‖ / 2 := by rw [← mul_assoc, hcK]; ring
+  have h2 : ‖L w‖ ≤ ‖φ (v₀ + w) - φ v₀‖ + ‖φ (v₀ + w) - φ v₀ - L w‖ := by
+    have := norm_sub_le (φ (v₀ + w) - φ v₀) (φ (v₀ + w) - φ v₀ - L w)
+    rwa [sub_sub_cancel] at this
+  linarith
+/-- Separation of remote chart parameters by properness and injectivity: if `φ` is continuous and
+injective on `V`, `φ v₀ ∈ W` with `W` open, and `V ∩ φ⁻¹(K)` is compact for every compact `K ⊆ W`,
+then for each `δ > 0` some `ε > 0` has `ε ≤ ‖φ v - φ v₀‖` whenever `v ∈ V`, `δ ≤ ‖v - v₀‖`.
+Pick a closed ball `K₀ = B_{ε₀}(φ v₀) ⊆ W`; by properness `Q = (V ∩ φ⁻¹(K₀)) ∩ {δ ≤ ‖v - v₀‖}` is
+compact, and `‖φ v - φ v₀‖ > 0` on `Q` by injectivity.  If `Q = ∅` take `ε = ε₀`; otherwise take
+`ε = min(ε₀, min_Q ‖φ v - φ v₀‖)` (`IsCompact.exists_isMinOn`).  Points with `φ v ∉ K₀` are farther
+than `ε₀` from `φ v₀`. -/
+theorem rsod_c1tan_chart_separation : ∀ (m N : ℕ) (V : Set (Rn m)) (W : Set (EuclideanSpace ℝ (Fin N))) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m), IsOpen W → ContinuousOn φ V → InjOn φ V → v₀ ∈ V → φ v₀ ∈ W → (∀ K : Set (EuclideanSpace ℝ (Fin N)), IsCompact K → K ⊆ W → IsCompact (V ∩ φ ⁻¹' K)) → ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ∀ v ∈ V, δ ≤ ‖v - v₀‖ → ε ≤ ‖φ v - φ v₀‖ := by
+  intro m N V W φ v₀ hW hφ hinj hv₀ hφv₀ hprop δ hδ
+  -- Step 1: a compact closed ball `K₀ = B_{ε₀}(φ v₀) ⊆ W`, with `ε₀ = ε₁ / 2`.
+  obtain ⟨ε₁, hε₁, hball⟩ := Metric.isOpen_iff.mp hW (φ v₀) hφv₀
+  have hε₀ : 0 < ε₁ / 2 := half_pos hε₁
+  have hK₀W : closedBall (φ v₀) (ε₁ / 2) ⊆ W :=
+    (closedBall_subset_ball (half_lt_self hε₁)).trans hball
+  -- Step 2: `Q = (V ∩ φ⁻¹(K₀)) ∩ {v | δ ≤ ‖v - v₀‖}` is compact, and `‖φ v - φ v₀‖` is continuous
+  -- on `Q ⊆ V` and positive there by injectivity.
+  have hQ : IsCompact ((V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖}) :=
+    (hprop _ (isCompact_closedBall _ _) hK₀W).inter_right
+      (isClosed_le continuous_const (continuous_id.sub continuous_const).norm)
+  have hcont : ContinuousOn (fun v => ‖φ v - φ v₀‖)
+      ((V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖}) :=
+    ((hφ.mono fun v hv => hv.1.1).sub continuousOn_const).norm
+  have hpos : ∀ q ∈ (V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖},
+      0 < ‖φ q - φ v₀‖ := by
+    intro q hq
+    refine norm_pos_iff.mpr (sub_ne_zero.mpr fun hEq => ?_)
+    have hqv : q = v₀ := hinj hq.1.1 hv₀ hEq
+    have hδq : δ ≤ ‖q - v₀‖ := hq.2
+    rw [hqv, sub_self, norm_zero] at hδq
+    exact absurd hδq (not_le.mpr hδ)
+  rcases ((V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖}).eq_empty_or_nonempty
+    with hQe | hQne
+  · -- Step 4: `Q = ∅`; take `ε = ε₀`.
+    refine ⟨ε₁ / 2, hε₀, fun v hv hvδ => ?_⟩
+    by_contra hlt
+    have hvK : φ v ∈ closedBall (φ v₀) (ε₁ / 2) := by
+      rw [mem_closedBall, dist_eq_norm]
+      exact (not_le.mp hlt).le
+    have hvQ : v ∈ (V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖} :=
+      ⟨⟨hv, hvK⟩, hvδ⟩
+    rw [hQe] at hvQ
+    exact hvQ
+  · -- Step 3: `Q ≠ ∅`; take `ε = min ε₀ ‖φ q - φ v₀‖` for a minimizer `q ∈ Q`.
+    obtain ⟨q, hqQ, hqmin⟩ := hQ.exists_isMinOn hQne hcont
+    refine ⟨min (ε₁ / 2) ‖φ q - φ v₀‖, lt_min hε₀ (hpos q hqQ), fun v hv hvδ => ?_⟩
+    by_cases hvK : φ v ∈ closedBall (φ v₀) (ε₁ / 2)
+    · exact (min_le_right _ _).trans (hqmin ⟨⟨hv, hvK⟩, hvδ⟩)
+    · rw [mem_closedBall, dist_eq_norm, not_le] at hvK
+      exact (min_le_left _ _).trans hvK.le
+/-- The rescaled chart `ψ_r(u) = r⁻¹(φ(v₀ + ru) − φ(v₀))` on `U_r = {u | v₀ + ru ∈ V}` is an
+injective parametrization of the blow-up `η_{φ(v₀),r}(φ(V))` (`Chapter03.blowUpMap`) of the chart
+image, with the same derivative `Dψ_r(u) = Dφ(v₀ + ru)`, for any `r ≠ 0` and any `v₀`. -/
+theorem rsod_c1tan_blowUp_chart_reparam : ∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (r : ℝ), IsOpen V → DifferentiableOn ℝ φ V → InjOn φ V → r ≠ 0 → IsOpen {u : Rn m | v₀ + r • u ∈ V} ∧ InjOn (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) {u : Rn m | v₀ + r • u ∈ V} ∧ (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) '' {u : Rn m | v₀ + r • u ∈ V} = Poincare.SimonGMT.Chapter03.blowUpMap (φ v₀) r '' (φ '' V) ∧ ∀ u ∈ {u : Rn m | v₀ + r • u ∈ V}, HasFDerivAt (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) (fderiv ℝ φ (v₀ + r • u)) u := by
+  intro m N V φ v₀ r hV hφ hinj hr
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- `U_r` is the preimage of `V` under the continuous affine map `u ↦ v₀ + r • u`.
+    exact hV.preimage (continuous_const.add (continuous_const_smul r))
+  · -- Injectivity: cancel `r⁻¹`, then use `InjOn φ V`, then cancel `v₀` and `r`.
+    intro u₁ hu₁ u₂ hu₂ h
+    have h₁ : φ (v₀ + r • u₁) = φ (v₀ + r • u₂) :=
+      sub_left_injective (smul_right_injective _ (inv_ne_zero hr) h)
+    exact smul_right_injective _ hr (add_left_cancel (hinj hu₁ hu₂ h₁))
+  · -- `u ↦ v₀ + r • u` maps `U_r` onto `V`, with inverse `v ↦ r⁻¹ • (v - v₀)`.
+    ext y
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      exact ⟨φ (v₀ + r • u), ⟨v₀ + r • u, hu, rfl⟩, rfl⟩
+    · rintro ⟨z, ⟨v, hv, rfl⟩, rfl⟩
+      have hv' : v₀ + r • r⁻¹ • (v - v₀) = v := by
+        rw [smul_smul, mul_inv_cancel₀ hr, one_smul, add_sub_cancel]
+      refine ⟨r⁻¹ • (v - v₀), ?_, ?_⟩
+      · show v₀ + r • r⁻¹ • (v - v₀) ∈ V
+        rw [hv']
+        exact hv
+      · show r⁻¹ • (φ (v₀ + r • r⁻¹ • (v - v₀)) - φ v₀) = r⁻¹ • (φ v - φ v₀)
+        rw [hv']
+  · -- Chain rule: `Dψ_r(u) = r⁻¹ • (Dφ(v₀ + r • u) ∘ (r • id)) = Dφ(v₀ + r • u)`.
+    intro u hu
+    have hd : HasFDerivAt φ (fderiv ℝ φ (v₀ + r • u)) (v₀ + r • u) :=
+      ((hφ _ hu).differentiableAt (hV.mem_nhds hu)).hasFDerivAt
+    have ha : HasFDerivAt (fun u : Rn m => v₀ + r • u) (r • ContinuousLinearMap.id ℝ (Rn m)) u :=
+      ((hasFDerivAt_id u).const_smul r).const_add v₀
+    have hL : r⁻¹ • (fderiv ℝ φ (v₀ + r • u)).comp (r • ContinuousLinearMap.id ℝ (Rn m)) =
+        fderiv ℝ φ (v₀ + r • u) := by
+      refine ContinuousLinearMap.ext fun w => ?_
+      rw [smul_apply, ContinuousLinearMap.comp_apply,
+        smul_apply, ContinuousLinearMap.id_apply, map_smul,
+        inv_smul_smul₀ hr]
+    exact (((hd.comp u ha).sub_const (φ v₀)).const_smul r⁻¹).congr_fderiv hL
+/-- Simon Ch. 3, proof of Theorem 1.6 ("⇒"): the blow-up of a chart.  Let `φ` be continuous on the
+open set `V ⊆ ℝᵐ` and differentiable at `v₀` with derivative `L`, with `B_δ(v₀) ⊆ V`,
+`c‖w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖` for `‖w‖ ≤ δ` and `ε ≤ ‖φ(v) − φ(v₀)‖` for `v ∈ V`, `‖v − v₀‖ ≥ δ`;
+let `J` be continuous on `V` and `f ∈ C_c(ℝ^N)`.  Then, with `U_r = {u | v₀ + ru ∈ V}`,
+`∫_{U_r} J(v₀ + ru) f(r⁻¹(φ(v₀ + ru) − φ(v₀))) dHᵐ(u) → ∫ J(v₀) f(Lu) dHᵐ(u)` as `r ↓ 0`.
+Proof: dominated convergence (`Hᵐ = Lᵐ` on `ℝᵐ`).  If `spt f ⊆ B_R(0)` and `0 < r < ε/R`, the
+integrand vanishes unless `‖ru‖ < δ`, and then `‖u‖ ≤ R/c`; so it is bounded by
+`sup_{B_δ(v₀)} |J| · sup |f| · 1_{B_{R/c}(0)}`.  Pointwise, `v₀ + ru ∈ V` eventually and
+`r⁻¹(φ(v₀ + ru) − φ(v₀)) → Lu` (`HasFDerivAt.lim`). -/
+theorem rsod_c1tan_chart_blowUp_tendsto : ∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (J : Rn m → ℝ) (L : Rn m →L[ℝ] EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (c δ ε : ℝ) (f : EuclideanSpace ℝ (Fin N) → ℝ), IsOpen V → ContinuousOn φ V → ContinuousOn J V → HasFDerivAt φ L v₀ → 0 < c → 0 < δ → 0 < ε → closedBall v₀ δ ⊆ V → (∀ w : Rn m, ‖w‖ ≤ δ → c * ‖w‖ ≤ ‖φ (v₀ + w) - φ v₀‖) → (∀ v ∈ V, δ ≤ ‖v - v₀‖ → ε ≤ ‖φ v - φ v₀‖) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ u in {u : Rn m | v₀ + r • u ∈ V}, J (v₀ + r • u) * f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) ∂(μHE[m] : Measure (Rn m))) (𝓝[>] 0) (𝓝 (∫ u, J v₀ * f (L u) ∂(μHE[m] : Measure (Rn m)))) := by
+  intro m N V φ J L v₀ c δ ε f hV hφ hJ hL hc hδ hε hball ha hb hf hfs
+  -- Step 1: `Hᵐ = Lᵐ` on `ℝᵐ`, and `v₀ ∈ B_δ(v₀) ⊆ V`.
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  have hv₀ : v₀ ∈ V := hball (mem_closedBall_self hδ.le)
+  -- Step 2: `f(y) ≠ 0 ⇒ ‖y‖ ≤ R`, `|f| ≤ M`, and `|J| ≤ Λ` on `B_δ(v₀)`.
+  obtain ⟨R₀, hR₀⟩ := hfs.isCompact.isBounded.subset_closedBall 0
+  have hR : 0 < max R₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hfR : ∀ y, f y ≠ 0 → ‖y‖ ≤ max R₀ 1 := fun y hy =>
+    (mem_closedBall_zero_iff.mp (hR₀ (subset_tsupport f hy))).trans (le_max_left _ _)
+  obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfs
+  obtain ⟨Λ, hΛ⟩ := (isCompact_closedBall v₀ δ).exists_bound_of_continuousOn (hJ.mono hball)
+  have hΛM : 0 ≤ Λ * M := mul_nonneg ((norm_nonneg _).trans (hΛ v₀ (mem_closedBall_self hδ.le)))
+    ((norm_nonneg _).trans (hM 0))
+  -- Step 3: `U_r = {u | v₀ + r u ∈ V}` is open, so `∫_{U_r} g_r = ∫ 1_{U_r} g_r`.
+  have hcont : ∀ r : ℝ, Continuous fun u : Rn m => v₀ + r • u := fun r => by fun_prop
+  have hUo : ∀ r : ℝ, IsOpen {u : Rn m | v₀ + r • u ∈ V} := fun r => hV.preimage (hcont r)
+  have key : Tendsto (fun r : ℝ => ∫ u, {u : Rn m | v₀ + r • u ∈ V}.indicator
+      (fun u => J (v₀ + r • u) * f (r⁻¹ • (φ (v₀ + r • u) - φ v₀))) u) (𝓝[>] 0)
+      (𝓝 (∫ u, J v₀ * f (L u))) := by
+    refine tendsto_integral_filter_of_dominated_convergence
+      ((closedBall (0 : Rn m) (max R₀ 1 / c)).indicator fun _ => Λ * M) ?_ ?_ ?_ ?_
+    · -- Step 4: `g_r` is continuous on the open set `U_r`.
+      refine Eventually.of_forall fun r => ?_
+      rw [aestronglyMeasurable_indicator_iff (hUo r).measurableSet]
+      refine ContinuousOn.aestronglyMeasurable ?_ (hUo r).measurableSet
+      have hmaps : MapsTo (fun u : Rn m => v₀ + r • u) {u | v₀ + r • u ∈ V} V := fun u hu => hu
+      exact (hJ.comp (hcont r).continuousOn hmaps).mul (hf.comp_continuousOn
+        (((hφ.comp (hcont r).continuousOn hmaps).sub continuousOn_const).const_smul r⁻¹))
+    · -- Step 5: for `0 < r < ε/R`, `|1_{U_r} g_r| ≤ ΛM 1_{B_{R/c}(0)}`.
+      filter_upwards [Ioo_mem_nhdsGT (div_pos hε hR)] with r hr
+      refine ae_of_all _ fun u => ?_
+      obtain ⟨hr0, hrε⟩ := hr
+      by_cases hu : u ∈ {u : Rn m | v₀ + r • u ∈ V}
+      · rw [indicator_of_mem hu]
+        by_cases hfz : f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) = 0
+        · rw [hfz, mul_zero, norm_zero]
+          exact indicator_nonneg (fun _ _ => hΛM) _
+        · have hψ := hfR _ hfz
+          rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr0, inv_mul_le_iff₀ hr0] at hψ
+          have hrR : r * max R₀ 1 < ε := (lt_div_iff₀ hR).mp hrε
+          have hsmall : ‖r • u‖ < δ := by
+            by_contra hcon
+            have := hb (v₀ + r • u) hu (by rw [add_sub_cancel_left]; exact not_lt.mp hcon)
+            linarith
+          have hJb : ‖J (v₀ + r • u)‖ ≤ Λ := hΛ _ (by
+            rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left]; exact hsmall.le)
+          have hlow := ha (r • u) hsmall.le
+          rw [norm_smul, Real.norm_eq_abs, abs_of_pos hr0] at hlow
+          have hu_le : ‖u‖ ≤ max R₀ 1 / c := by
+            rw [le_div_iff₀ hc]
+            refine le_of_mul_le_mul_left ?_ hr0
+            calc r * (‖u‖ * c) = c * (r * ‖u‖) := by ring
+              _ ≤ _ := hlow
+              _ ≤ _ := hψ
+          rw [indicator_of_mem (mem_closedBall_zero_iff.mpr hu_le), norm_mul]
+          exact mul_le_mul hJb (hM _) (norm_nonneg _) ((norm_nonneg _).trans hJb)
+      · rw [indicator_of_notMem hu, norm_zero]
+        exact indicator_nonneg (fun _ _ => hΛM) _
+    · -- The bound is integrable: a constant on a closed ball.
+      exact (integrableOn_const measure_closedBall_lt_top.ne).integrable_indicator
+        measurableSet_closedBall
+    · -- Step 6: pointwise convergence.
+      refine ae_of_all _ fun u => ?_
+      have hlin : Tendsto (fun r : ℝ => v₀ + r • u) (𝓝[>] 0) (𝓝 v₀) := by
+        have : Tendsto (fun r : ℝ => v₀ + r • u) (𝓝 0) (𝓝 (v₀ + (0 : ℝ) • u)) :=
+          (continuous_const.add (continuous_id.smul continuous_const)).tendsto 0
+        rw [zero_smul, add_zero] at this
+        exact this.mono_left nhdsWithin_le_nhds
+      have hmem : ∀ᶠ r in 𝓝[>] (0 : ℝ), v₀ + r • u ∈ V := hlin.eventually (hV.mem_nhds hv₀)
+      have hJlim : Tendsto (fun r : ℝ => J (v₀ + r • u)) (𝓝[>] 0) (𝓝 (J v₀)) :=
+        (hJ.continuousAt (hV.mem_nhds hv₀)).tendsto.comp hlin
+      have hnorm : Tendsto (fun r : ℝ => ‖r⁻¹‖) (𝓝[>] 0) atTop :=
+        tendsto_abs_atTop_atTop.comp tendsto_inv_nhdsGT_zero
+      have hψ : Tendsto (fun r : ℝ => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) (𝓝[>] 0) (𝓝 (L u)) := by
+        simpa only [inv_inv] using hL.lim u hnorm
+      refine (hJlim.mul ((hf.tendsto _).comp hψ)).congr' ?_
+      filter_upwards [hmem] with r hr
+      rw [indicator_of_mem (show u ∈ {u : Rn m | v₀ + r • u ∈ V} from hr)]
+      rfl
+  -- Step 7: conclude.
+  exact key.congr fun r => integral_indicator (hUo r).measurableSet
+/-- Simon Ch. 3, Definition 1.4 is local: if `S ∩ B̆_ε(x) = T ∩ B̆_ε(x)` for some `ε > 0`, then an
+approximate tangent space of `T` at `x` is also one of `S` at `x`.  Proof: a test function
+`f ∈ C_c(ℝ^N)` vanishes off `B = B_R(0)` for some `R > 0`, so
+`∫_{η_{x,r}(A)} f = ∫_{η_{x,r}(A) ∩ B} f` for every set `A`; for `0 < r < ε/R`, `r⁻¹(z − x) ∈ B`
+forces `|z − x| ≤ rR < ε`, hence `η_{x,r}(S) ∩ B = η_{x,r}(T) ∩ B`, and the blow-up integrals of
+`S` and `T` agree eventually as `r ↓ 0`. -/
+theorem rsod_c1tan_approxTangent_of_local_eq : ∀ (m N : ℕ) (S T : Set (EuclideanSpace ℝ (Fin N))) (x : EuclideanSpace ℝ (Fin N)) (ε : ℝ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))), 0 < ε → S ∩ ball x ε = T ∩ ball x ε → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m T x P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P := by
+  intro m N S T x ε P hε hST hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- Support radius: `f` vanishes off `B = B_R(0)` with `R = max R₀ 1 > 0`.
+  obtain ⟨R₀, hR₀⟩ := (isBounded_iff_subset_closedBall (0 : EuclideanSpace ℝ (Fin N))).1
+    f.hasCompactSupport.isBounded
+  have hR : 0 < max R₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hsupp : Function.support f ⊆ closedBall 0 (max R₀ 1) :=
+    (subset_tsupport f).trans (hR₀.trans (closedBall_subset_closedBall (le_max_left _ _)))
+  -- Cutting off: `∫_A f = ∫_{A ∩ B} f` for every set `A` (only `B` needs to be measurable).
+  have hcut : ∀ A : Set (EuclideanSpace ℝ (Fin N)),
+      ∫ y in A, f y ∂μHE[m] = ∫ y in A ∩ closedBall 0 (max R₀ 1), f y ∂μHE[m] := by
+    intro A
+    rw [← setIntegral_indicator measurableSet_closedBall, Set.indicator_eq_self.2 hsupp]
+  -- For `0 < r < ε / R`: `η_{x,r}(A) ∩ B ⊆ η_{x,r}(A') ∩ B` whenever `A ∩ B̆_ε(x) ⊆ A'`.
+  have hmono : ∀ A A' : Set (EuclideanSpace ℝ (Fin N)), A ∩ ball x ε ⊆ A' →
+      ∀ r ∈ Ioo 0 (ε / max R₀ 1),
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' A ∩ closedBall 0 (max R₀ 1) ⊆
+          Poincare.SimonGMT.Chapter03.blowUpMap x r '' A' ∩ closedBall 0 (max R₀ 1) := by
+    rintro A A' hAA' r ⟨hr, hrR⟩ y ⟨⟨z, hz, rfl⟩, hy⟩
+    refine ⟨⟨z, hAA' ⟨hz, ?_⟩, rfl⟩, hy⟩
+    rw [mem_closedBall_zero_iff, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv,
+      Real.norm_of_nonneg hr.le] at hy
+    rw [mem_ball, dist_eq_norm]
+    calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
+      _ ≤ r * max R₀ 1 := mul_le_mul_of_nonneg_left hy hr.le
+      _ < ε := (lt_div_iff₀ hR).1 hrR
+  -- Hence the blow-up integrals of `T` and `S` agree for `0 < r < ε / R`; the limit transfers.
+  refine (hT.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hε hR)] with r hr
+  rw [hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T),
+    hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S),
+    (hmono T S (hST.symm.subset.trans inter_subset_left) r hr).antisymm
+      (hmono S T (hST.subset.trans inter_subset_left) r hr)]
+/-- **`C¹` submanifolds have approximate tangent spaces** (Simon Ch. 3, proof of Theorem 1.6 "⇒":
+"`N_j` is a `C¹` submanifold, so `lim ∫_{η_{x,r}(N_j)} f dHⁿ = ∫_{T_x N_j} f dHⁿ`").  If `S` is an
+`m`-dimensional `C¹` submanifold and `φ` is a chart of `S` with `φ(v₀) = x`, then `Dφ(v₀)(ℝᵐ)` is
+the approximate tangent space of `S` at `x`.  Proof: the area formula for the rescaled chart
+`ψ_r(u) = r⁻¹(φ(v₀ + ru) − x)` on `U_r = {u | v₀ + ru ∈ V}`, dominated convergence, the area
+formula for `Dφ(v₀)`, and locality of Definition 1.4 (`S ∩ B̆_ε(x) = φ(V) ∩ B̆_ε(x)`). -/
+theorem rsod_isC1Submanifold_approxTangent : ∀ (m N : ℕ), 1 ≤ m → ∀ (S : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → ∀ x ∈ S, ∃ P : Submodule ℝ (EuclideanSpace ℝ (Fin N)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P := by
+  intro m N _ S hS x hx
+  obtain ⟨V, W, φ, hV, hW, hxW, hφ, hinj, himg, hprop, hder⟩ := hS x hx
+  have hxV : x ∈ φ '' V := by
+    rw [himg]
+    exact ⟨hxW, hx⟩
+  obtain ⟨v₀, hv₀, rfl⟩ := hxV
+  have hdiff : DifferentiableOn ℝ φ V := hφ.differentiableOn one_ne_zero
+  have hL : HasFDerivAt φ (fderiv ℝ φ v₀) v₀ :=
+    (hdiff.differentiableAt (hV.mem_nhds hv₀)).hasFDerivAt
+  -- `J_φ(v) = (Dφ(v)).normDet` (Simon (3.3)) is continuous on `V`.
+  have hJ : ContinuousOn (Poincare.SimonGMT.Chapter02.areaJacobianAt φ) V :=
+    (Poincare.SimonGMT.Chapter02.continuous_normDet.comp_continuousOn
+      (hφ.continuousOn_fderiv_of_isOpen hV le_rfl)).congr fun v _ =>
+        Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet φ v
+  -- (a) `c‖w‖ ≤ ‖φ(v₀ + w) − x‖` for `‖w‖ ≤ δ`, and (b) `ε ≤ ‖φ(v) − x‖` for `v ∈ V` with
+  -- `‖v − v₀‖ ≥ δ`.
+  obtain ⟨c, hc, δ, hδ, hball, hlow⟩ :=
+    Submission.rsod_c1tan_chart_lower_bound m N V φ v₀ hV hφ hv₀ (hder v₀ hv₀)
+  obtain ⟨ε, hε, hsep⟩ := Submission.rsod_c1tan_chart_separation m N V W φ v₀ hW
+    hφ.continuousOn hinj hv₀ hxW hprop δ hδ
+  have hT : Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m (φ '' V) (φ v₀)
+      (LinearMap.range (fderiv ℝ φ v₀ : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N))) := by
+    refine ⟨?_, fun f => ?_⟩
+    · rw [LinearMap.finrank_range_of_inj
+        (f := (fderiv ℝ φ v₀ : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N))) (hder v₀ hv₀),
+        finrank_euclideanSpace_fin]
+    -- For `r > 0`, the area formula for `ψ_r(u) = r⁻¹(φ(v₀ + ru) − x)` on
+    -- `U_r = {u | v₀ + ru ∈ V}` gives `∫_{η_{x,r}(φ(V))} f = ∫_{U_r} J_φ(v₀ + ru) f(ψ_r(u))`.
+    have hblow : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+        (∫ u in {u : Rn m | v₀ + r • u ∈ V},
+          Poincare.SimonGMT.Chapter02.areaJacobianAt φ (v₀ + r • u) *
+            f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) ∂(μHE[m] : Measure (Rn m))) =
+          ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap (φ v₀) r '' (φ '' V), f y ∂μHE[m] := by
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      obtain ⟨hU, hψinj, hψimg, hψ⟩ :=
+        Submission.rsod_c1tan_blowUp_chart_reparam m N V φ v₀ r hV hdiff hinj (ne_of_gt hr)
+      have harea := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative
+        hU.measurableSet (fun u hu => (hψ u hu).differentiableAt)
+        (fun u hu => by rw [(hψ u hu).fderiv]; exact hder (v₀ + r • u) hu) hψinj ⇑f
+      rw [finrank_euclideanSpace_fin] at harea
+      rw [← hψimg, harea]
+      refine setIntegral_congr_fun hU.measurableSet fun u hu => ?_
+      simp only [smul_eq_mul, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+        (hψ u hu).fderiv]
+    -- The area formula for `L = Dφ(v₀)` on `ℝᵐ`: `∫ J_L f(Lu) du = ∫_{L(ℝᵐ)} f`.
+    have hlin : ∫ u, Poincare.SimonGMT.Chapter02.areaJacobianAt φ v₀ * f (fderiv ℝ φ v₀ u)
+          ∂(μHE[m] : Measure (Rn m)) =
+        ∫ y in (LinearMap.range (fderiv ℝ φ v₀ : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N)) :
+          Set (EuclideanSpace ℝ (Fin N))), f y ∂μHE[m] := by
+      have harea := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative
+        (s := univ) (f := ⇑(fderiv ℝ φ v₀)) MeasurableSet.univ
+        (fun u _ => (fderiv ℝ φ v₀).differentiableAt)
+        (fun u _ => by rw [ContinuousLinearMap.fderiv]; exact hder v₀ hv₀)
+        (hder v₀ hv₀).injOn ⇑f
+      rw [finrank_euclideanSpace_fin, image_univ, setIntegral_univ] at harea
+      rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe, harea]
+      refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+      simp only [smul_eq_mul, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+        ContinuousLinearMap.fderiv]
+    rw [← hlin]
+    exact (Submission.rsod_c1tan_chart_blowUp_tendsto m N V φ
+      (Poincare.SimonGMT.Chapter02.areaJacobianAt φ) (fderiv ℝ φ v₀) v₀ c δ ε f hV
+      hφ.continuousOn hJ hL hc hδ hε hball hlow hsep f.continuous
+      f.hasCompactSupport).congr' hblow
+  -- `S` and `φ(V) = W ∩ S` agree on a ball `B̆_{ε₀}(x) ⊆ W`.
+  obtain ⟨ε₀, hε₀, hε₀W⟩ := Metric.isOpen_iff.1 hW (φ v₀) hxW
+  refine ⟨_, Submission.rsod_c1tan_approxTangent_of_local_eq m N S (φ '' V) (φ v₀) ε₀ _ hε₀
+    ?_ hT⟩
+  rw [himg]
+  ext y
+  exact ⟨fun h => ⟨⟨hε₀W h.2, h.1⟩, h.2⟩, fun h => ⟨h.1.2, h.2⟩⟩
 
 end Submission
 

@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open|abbrev Rn|def IsC1Submanifold)|rsod_c1tan_|WeightedArea|AreaLipschitz|NormDet",
+        "exists_antilipschitzWith|theorem HasFDerivAt.lim|theorem tendsto_integral_filter_of_dominated_convergence|continuousOn_fderiv_of_isOpen|norm_image_sub_le_of_norm_fderiv_le|euclideanHausdorffMeasure_eq_volume|def normDet",
+        "theorem setIntegral_indicator|aestronglyMeasurable_indicator_iff|ContinuousOn.aestronglyMeasurable",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|integral_area_formula_of_injective_derivative|theorem continuous_normDet|def areaJacobianAt|areaJacobianAt_eq_normDet|^import",
+        "rsod_c1tan_",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1tan-independent-audit-eyrm7mmr/PropChecks.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1tan-independent-audit-eyrm7mmr/BaselineLeaves.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1tan-independent-audit-eyrm7mmr/FullAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-3373b6823b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-3373b6823b/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/parent_verification.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/c1tan-independent-audit-eyrm7mmr/PropChecks.lean",
+        "/tmp/c1tan-independent-audit-eyrm7mmr/BaselineLeaves.lean",
+        "/tmp/c1tan-independent-audit-eyrm7mmr/FullAssembly.lean",
+        "/tmp/c1tan-independent-audit-eyrm7mmr/ImportProbe.lean"
+      ],
+      "conclusion": "Confirmed the pinned project/mathlib revisions and simongmt revision 2b3663083f3fe399b6296fb8eaee52169170e197; workspace frozen sources equal the snapshot. All five child types independently elaborate as propositions in the comparator's frozen scope. Their supplied proof implementations compile using the original leaf imports, pass the single-declaration delta checks, and use only propext, Classical.choice and Quot.sound. The full assembly proves the exact selected parent type with the same permitted axioms. The split is appropriate: the parent supplies lower-bound and separation witnesses to the convergence child, then applies the area formula twice and locality. Empty sibling dependencies are therefore correct and acyclic. Independently confirmed the area-formula/normDet tools require the additional parent import permitted by the parent gate. All names are bare identifiers; no conflicting reservation occurs in the 319-node DAG or other branch records, and no matching declaration occurs in the searched reference Lean sources. Related accepted declarations have different types and are not reused. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. The positive antilipschitz constant, derivative-continuity radius, and mean-value estimate yield the claimed bound on the closed ball. The proof covers all natural dimensions and uses no child or parent theorem."
+    },
+    {
+      "key": "chart_separation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the type. Properness makes the remote-parameter set compact; injectivity makes its minimum distance positive. Both empty and nonempty cases are proved, without assuming V is open."
+    },
+    {
+      "key": "blowup_chart_reparam",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes all four conjuncts for arbitrary v₀ and every nonzero r. The affine inverse proves image equality, and the chain rule gives the exact continuous linear derivative through scalar cancellation. No unstated derivative-injectivity hypothesis is used."
+    },
+    {
+      "key": "chart_blowup_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The signed-J generalization is valid because domination bounds |J|. The proof derives v₀ ∈ V, establishes restricted measurability, constructs an integrable fixed bound, and proves pointwise convergence using HasFDerivAt.lim. Filter dominated convergence yields precisely the stated limit; the two geometric estimates are explicit hypotheses."
+    },
+    {
+      "key": "approx_tangent_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree without additional membership or measurability assumptions. Cutting off by a measurable support ball is valid for arbitrary sets. Local equality gives eventual equality of the blow-up integrals, transferring the limit and inherited dimension condition without circularity."
+    }
+  ],
+  "required_changes": []
+}
