@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_tangent_cones-a1`
+- Child DAG node: `root.allard_tangent_cones-a1.cone_rescaling_invariance-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps B4–B6 of the supplied proof. This is the last sentence of the printed proof of Simon 8.5.7: "we can write C = v(M,θ) with η_{0,λ}(M) = M and θ(λy) = θ(y) … and hence η_{0,λ#}C = C". Uses the sibling child tangent_plane_dilation (Lean: Submission.allard_tc_tangent_plane_dilation).
+
+Notation. μ := C.weight. H := μHE[n]. G := Grassmannian N n. For Borel A ⊆ ℝ^N × G put D_A := {x ∈ M : ∃ T, HasTangentPlane C x T (θ x) ∧ (x,T) ∈ A}, so (★) reads C(A) = ∫⁻_{D_A} ofReal θ dH. Fix s > 0. Let σ(w) := s•w, the measurable equivalence MeasurableEquiv.smul₀ s (s ≠ 0), with inverse w ↦ s⁻¹•w. Put M_s := M ∩ σ⁻¹(M) = {w ∈ M : s•w ∈ M}.
+
+1. Step B4: scale invariance on M_s. Let w ∈ M_s. By hypothesis there are T_w with HasTangentPlane C w T_w (θ w) and T_sw with HasTangentPlane C (s•w) T_sw (θ(s•w)).
+ - tangent_plane_dilation (with the homogeneity at s) gives T_sw = T_w and θ(s•w) = θ(w).
+ - tangent_plane_dilation with s = 1 (uniqueness) shows: any S with HasTangentPlane C w S (θ w) equals T_w, and any S with HasTangentPlane C (s•w) S (θ(s•w)) equals T_sw = T_w.
+ Hence for w ∈ M_s and Borel A:
+ (∃ S, HasTangentPlane C (s•w) S (θ(s•w)) ∧ (w,S) ∈ A) ⟺ (w, T_w) ∈ A ⟺ (∃ S, HasTangentPlane C w S (θ w) ∧ (w,S) ∈ A).
+
+2. Weight on M. For Borel B, D_{B×G} = M ∩ B, because every x ∈ M has some tangent plane. So (★) gives μ(B) = ∫⁻_{M ∩ B} ofReal θ dH.
+ M is H-null-measurable, so choose a Borel M0 ⊆ M with H(M ∖ M0) = 0 (NullMeasurableSet.exists_measurable_subset_ae_eq). Then μ(M0ᶜ) = ∫⁻_{M ∖ M0} ofReal θ dH = 0, since restricting H to an H-null set gives 0. So μ(Mᶜ) ≤ μ(M0ᶜ) = 0.
+
+3. μ-null Borel subsets of M0 are H-null. Let E ⊆ M0 be Borel with μ(E) = 0, and let k ∈ ℕ.
+ - 0 = μ(E ∩ B_k(0)) = ∫⁻_{E ∩ B_k(0)} ofReal θ dH (step 2, E ⊆ M).
+ - θ is a.e.-strongly measurable for H⌞(M ∩ B_k(0)), because IntegrableOn θ (M ∩ B_k(0)) H by IsVarifoldOf (B_k(0) is compact). So lintegral_eq_zero_iff' gives ofReal θ = 0 H-a.e. on the measurable set E ∩ B_k(0).
+ - But θ > 0 on E ⊆ M. So H⌞(E ∩ B_k(0)) is the zero measure (ae_restrict_mem), i.e. H(E ∩ B_k(0)) = 0.
+ Taking the union over k, H(E) = 0.
+
+4. Step B5: H(M ∖ M_s) = 0 and H(σ⁻¹(M) ∖ M) = 0.
+ (4a) For any s' > 0: H(M ∖ {w ∈ M : s'•w ∈ M}) = 0. Let E := {w ∈ M0 : s'•w ∉ M0} = M0 ∩ (s')⁻¹ • M0ᶜ, a Borel subset of M0. Homogeneity with (s')⁻¹ > 0 gives μ(E) ≤ μ((s')⁻¹ • M0ᶜ) = ofReal((s')⁻¹)^n·μ(M0ᶜ) = 0. Here {w : s'•w ∈ X} = (s')⁻¹ • X. By step 3, H(E) = 0. If w ∈ M0 and s'•w ∉ M, then s'•w ∉ M0, so w ∈ E. Hence M ∖ {w ∈ M : s'•w ∈ M} ⊆ (M ∖ M0) ∪ E is H-null.
+ (4b) With s' = s: H(M ∖ M_s) = 0.
+ (4c) With s' = s⁻¹: H(M ∖ {y ∈ M : s⁻¹•y ∈ M}) = 0. Now σ⁻¹(M) ∖ M = {w : s•w ∈ M, w ∉ M} = s⁻¹ • (M ∖ {y ∈ M : s⁻¹•y ∈ M}), via y = s•w. Since H(s⁻¹ • E') = s^{-n}·H(E') for every E' (Measure.euclideanHausdorffMeasure_smul₀), H(σ⁻¹(M) ∖ M) = 0.
+
+5. Step B6: change of variables. Fix Borel A ⊆ ℝ^N × G. Φ(z,S) := (s⁻¹•(z − 0), S) is continuous, so A' := Φ⁻¹(A) = {(z,S) : (s⁻¹•z, S) ∈ A} is Borel. By Measure.smul_apply and Measure.map_apply, rescaledMeasure C 0 s A = ofReal(s⁻¹^n)·C.measure(A'). By (★), C.measure(A') = ∫⁻_{D_{A'}} ofReal θ dH with D_{A'} = {z ∈ M : ∃ S, HasTangentPlane C z S (θ z) ∧ (s⁻¹•z, S) ∈ A}.
+ For every set E, H(σ⁻¹(E)) = H(s⁻¹ • E) = s^{-n}·H(E). So H.map σ = ofReal(s⁻¹)^n • H, i.e. H = ofReal(s)^n • H.map σ.
+ MeasurableEquiv.restrict_map holds for arbitrary sets, so H.restrict D = ofReal(s)^n • (H.restrict(σ⁻¹ D)).map σ. Then lintegral_map_equiv gives
+ ∫⁻_{D_{A'}} ofReal θ dH = ofReal(s)^n·∫⁻_{D'_A} ofReal θ(s•w) dH(w),
+ where D'_A := σ⁻¹(D_{A'}) = {w : s•w ∈ M ∧ ∃ S, HasTangentPlane C (s•w) S (θ(s•w)) ∧ (w,S) ∈ A}, because s⁻¹•(s•w) = w. Since ofReal(s⁻¹^n)·ofReal(s)^n = 1,
+ (5a) rescaledMeasure C 0 s A = ∫⁻_{D'_A} ofReal θ(s•w) dH(w).
+
+6. Comparison with C(A) = ∫⁻_{D_A} ofReal θ dH.
+ (6a) D'_A ∩ M_s = D_A ∩ M_s, by step 1.
+ (6b) D'_A ∖ M_s ⊆ σ⁻¹(M) ∖ M and D_A ∖ M_s ⊆ M ∖ M_s are H-null (step 4). So D'_A and D_A are both H-a.e. equal to D_A ∩ M_s. Measure.restrict_congr_set holds for arbitrary sets, so H.restrict D'_A = H.restrict(D_A ∩ M_s) = H.restrict D_A =: ρ.
+ (6c) The integrands agree ρ-a.e. M_s is H-null-measurable: M_s ⊆ M and H(M ∖ M_s) = 0 (step 4b), so M_s =ᵐ[H] M, and NullMeasurableSet.congr transfers null-measurability from M. So there is a Borel Z ⊆ M_s with H(M_s ∖ Z) = 0 (NullMeasurableSet.exists_measurable_subset_ae_eq). Then ρ(Zᶜ) = H(Zᶜ ∩ D_A ∩ M_s) ≤ H(M_s ∖ Z) = 0, by Measure.restrict_apply since Zᶜ is measurable. On Z ⊆ M_s, θ(s•w) = θ(w) by step 1. So ofReal θ(s•·) =ᵐ[ρ] ofReal θ, and lintegral_congr_ae gives equal integrals.
+ Therefore rescaledMeasure C 0 s A = ∫⁻ ofReal θ dρ = ∫⁻_{D_A} ofReal θ dH = C.measure A.
+
+7. The two measures agree on all Borel sets, so rescaledMeasure C 0 s = C.measure (Measure.ext). ∎
+
+## Key steps
+
+1. B4: on M_s = M ∩ s⁻¹M, tangent_plane_dilation gives θ(sw) = θ(w) and equal tangent planes, so the defining conditions of the two representing sets agree there.
+2. From (★): μ_C = θH^n⌞M on Borel sets, μ_C(Mᶜ) = 0, and μ_C-null Borel subsets of M are H^n-null (θ > 0 on M).
+3. B5: weight homogeneity gives H^n(M ∖ M_s) = 0 and H^n(s⁻¹M ∖ M) = 0, so M is a cone up to H^n-null sets.
+4. B6: rescaledMeasure C 0 s A = s^{-n}C(Φ⁻¹A); change variables z = s·w for H^n (H^n(s·E) = s^nH^n(E)) to get ∫ over s⁻¹D' of θ(s·).
+5. Replace s⁻¹D' and D_A by D_A ∩ M_s (H^n-null differences, restrict_congr_set) and θ(s·) by θ a.e. on the null-measurable M_s; conclude by Measure.ext.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); git rev-parse HEAD in .lake/packages/simongmt (2b3663083f3fe399b6296fb8eaee52169170e197)`
+- `sed -n 480,700p book/chapter-08.txt (printed 5.1-5.9, proofs of 5.5 and 5.7)`
+- `python3 dag.json dump of node ids, lean_names, lean_statements (siblings varifold_tangent_theorems, plane_disintegration, first_rectifiability_theorem, monotonicity_and_density_theorems, constancy_theorem, first_variation_theorems)`
+- `contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') and validate_lean_statement from verifier/gmt-compare.py and verifier/lean_contract.py`
+- `grep -n '^def|^structure|^theorem' Chapter08/Varifold.lean; grep 'def Stationary|Stationary.hasLocallyBoundedFirstVariation|instCompactSpace'`
+- `grep 'def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable|HasWeightedApproximateTangentSpaceAt.unique|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule' Chapter03/Rectifiable.lean`
+- `grep '^theorem' Chapter08/TangentRadialRigidity.lean Chapter08/TangentRescaling.lean Chapter08/ConstancyTangentGraph.lean Chapter08/TangentScalingCounterexample.lean`
+- `grep 'simon_theorem_3_3|simon_theorem_3_6|dimensionalUpperDensity|realUnitBallVolume_nat_eq|volume_euclidean_ball_eq|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_toOuterMeasure|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|eq_of_plane_eq|continuous_normalProject|ae_exists_ballFirstVariationBound_inside|IsSimonSubmanifold' (SimonGMT Chapter01/02/08)`
+- `grep 'theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep 'theorem' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_smul0, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)`
+- `grep 'restrict_congr_set|restrict_apply0'|restrict_restrict_of_subset|MeasurableEquiv.restrict_map|lintegral_map_equiv|ext_of_integral_eq_on_compactlySupported|addHaar_closedBall|measure_toMeasurable_inter_of_sFinite|hausdorffMeasure_image_le|smul_closedBall|ofReal_div_of_pos|tendsto_measure_iInter_atTop' mathlib/Mathlib`
+- `grep -rl allard_tc_ over the run directory, GMT/ and .swarm-worktrees (no matches); dag.json lean_name collision check (45 nodes, none)`
+- `lake env lean GMT/Ch08/Submission.lean -o /tmp/allard-a1-decomp/olean/GMT/Ch08/Submission.olean`
+- `lean /tmp/allard-a1-decomp/scratch/Final.lean (import GMT.Ch08.Submission + replayed contract scope, autoImplicit false: 10 child statements, 6 verbatim sibling statements, parent assembly, comparator target)`
+- `lean /tmp/allard-a1-decomp/scratch/Skel2.lean (sorry-free Part B glue from children 8-9; Part A glue skeleton; s = 1 uniqueness and dilation interface checks)`
+- `lean /tmp/allard-a1-decomp/scratch/Axioms2.lean (#print axioms for 13 cited SimonGMT lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRadialRigidity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangentGraph.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/BallVariationBound.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/tmp/allard-a1-decomp/scratch/Final.lean`
+- `/tmp/allard-a1-decomp/scratch/Skel2.lean`
+- `/tmp/allard-a1-decomp/scratch/Axioms2.lean`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c. Its project/GMT/Ch08/Contract.lean is byte-identical to the workspace Contract and Submission, and the pinned SimonGMT is 2b366308. Mathlib has no varifold theory, so the Ch. 8 facts enter the children only as explicit hypotheses copied verbatim from the frozen sibling statements in dag.json, or as the contract's named Props. SimonGMT supplies the needed library lemmas: Varifold.weight_support_eq_fst_image_support, Stationary.hasLocallyBoundedFirstVariation, Grassmannian.eq_of_plane_eq, Grassmannian.continuous_normalProject, Chapter03.HasWeightedApproximateTangentSpaceAt (no r^{-n} factor) with .unique, support/regular_euclideanHausdorffMeasure_restrict_submodule, Chapter01.simon_theorem_3_3, measure_toOuterMeasure_isBorelRegular, realUnitBallVolume_nat_eq, volume_euclidean_ball_eq, simonHausdorffMeasureReal_toOuterMeasure, Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure and ae_exists_ballFirstVariationBound_inside. #print axioms for all 13 shows only propext, Classical.choice and Quot.sound. Several of them need extra imports in Submission: Chapter08.{RadialFirstVariation,ConstancyTangent,ConstancyTangentGraph}, Chapter01.{DensityComparison,EuclideanHausdorffUpper} and Chapter02.AreaLiteral. Mathlib supplies Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet, Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.euclideanHausdorffMeasure_smul₀, Measure.ext_of_integral_eq_on_compactlySupported, Measure.restrict_congr_set and restrict_apply₀' (both for arbitrary sets), MeasurableEquiv.restrict_map, lintegral_map_equiv, Measure.measure_toMeasurable_inter_of_sFinite and LipschitzWith.hausdorffMeasure_image_le. Grassmannian N n has a CompactSpace instance but no MetricSpace instance, so plane uniqueness uses matrix-entry test functions. All 10 child lean_statements pass validate_lean_statement and elaborate after import GMT.Ch08.Submission in the comparator's replayed scope, also with autoImplicit false. The parent term, built from the 6 verbatim sibling interfaces and the 10 children, checks against AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones and adds no sorry of its own. The names allard_tc_* occur nowhere else in the run, GMT/ or dag.json (45 nodes).

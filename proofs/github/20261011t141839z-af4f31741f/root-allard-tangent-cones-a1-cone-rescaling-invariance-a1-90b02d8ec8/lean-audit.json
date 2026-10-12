@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "19233d8668569a1550f17eedf0b49b87c8529d5cf063c60add50ae09d7dce23a",
+  "git_delta": {
+    "base_commit": "6ccff814f6eb75eb4da7810452dc4bf9aed1f9f8",
+    "candidate_commit": "a236bd3b9834c10087b26154f14dbdb7cb985b4c",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "20b3be536c2999cd3ad6fd3a90129d8659a211fb7ad476e93391a79666633784",
+    "source_sha256": "48c31989c4b05d11e0400c37dd84a060fb5781db2c3e56c376ffe03600c3552e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_cone_rescaling_invariance",
+      "statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ → (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) → (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n]) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → ∀ s : ℝ, 0 < s → rescaledMeasure C 0 s = C.measure",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
