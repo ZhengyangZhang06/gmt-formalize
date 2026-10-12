@@ -3271,6 +3271,12 @@ theorem Submission.bv_poincare_theorem : BVPoincare := by
         congr 2
         ring
 
+/-- **Simon Ch. 2, Theorem 2.6, Lemma 2.7 and Lemma 2.8.** Compactness for `BV_loc`, the BV
+Poincaré inequality on convex sets and the BV extension estimate. -/
+theorem Submission.bv_compactness_poincare_extension : BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate :=
+  ⟨Submission.bv_compactness_theorem, Submission.bv_poincare_theorem,
+    Submission.bv_extension_estimate_theorem⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
