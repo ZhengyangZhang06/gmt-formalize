@@ -605,6 +605,30 @@ theorem aetp_upper_density_zero_ae : ∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)
   obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
   exact mem_iUnion.2 ⟨k, hxA, hfreq.mono fun r hr => hk.trans hr⟩
 
+/-- **Simon Ch. 3, Remark 1.5(2)** (locality of approximate tangent spaces, from the proof of
+Theorem 1.6 "⇒"): if `A, N ⊆ ℝ^{n+ℓ}` are Borel with `Hⁿ(A), Hⁿ(N) < ∞` and `P(x) = T_x N` for
+every `x ∈ N`, then `P(x) = T_x A` for `Hⁿ`-a.e. `x ∈ A ∩ N`.
+
+The Upper Density Theorem (`aetp_upper_density_zero_ae` with `ν = Hⁿ`) applied to `A \ N` and to
+`N \ A` gives `Hⁿ((A \ N) ∩ B_r(x)) / rⁿ → 0` and `Hⁿ((N \ A) ∩ B_r(x)) / rⁿ → 0` as `r ↓ 0` for
+`Hⁿ`-a.e. `x` outside the respective set, hence for `Hⁿ`-a.e. `x ∈ A ∩ N`.  At such `x` the blow-ups
+`η_{x,r}(A)` and `η_{x,r}(N)` differ by the images of these two sets, whose integrals vanish in the
+limit, so `T_x A = T_x N = P(x)` (`aetp_approxTangent_of_density_zero_symmDiff`). -/
+theorem aetp_approxTangent_ae_of_inter : ∀ (n ℓ : ℕ) (A N : Set (Amb n ℓ)) (P : Amb n ℓ → Submodule ℝ (Amb n ℓ)), MeasurableSet A → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) A < ⊤ → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → (∀ x ∈ N, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x (P x)) → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)).restrict (A ∩ N), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n A x (P x) := by
+  intro n ℓ A N P hA hN hAfin hNfin hP
+  -- Upper density zero for `A \ N` and `N \ A` (Borel, of finite `Hⁿ` measure), with `ν = Hⁿ`.
+  have hAN := Submission.aetp_upper_density_zero_ae n ℓ (μHE[n]) (A \ N) (hA.diff hN)
+    ((measure_mono sdiff_subset).trans_lt hAfin)
+  have hNA := Submission.aetp_upper_density_zero_ae n ℓ (μHE[n]) (N \ A) (hN.diff hA)
+    ((measure_mono sdiff_subset).trans_lt hNfin)
+  -- A point of `A ∩ N` lies in neither `A \ N` nor `N \ A`, so both limits hold
+  -- `Hⁿ ⌞ (A ∩ N)`-a.e.
+  filter_upwards [ae_restrict_mem (hA.inter hN), ae_restrict_of_ae hAN, ae_restrict_of_ae hNA]
+    with x hx hxAN hxNA
+  -- At such `x ∈ N`, `T_x N = P(x)` transfers to `A`.
+  exact Submission.aetp_approxTangent_of_density_zero_symmDiff n ℓ A N x (P x) hA hN hAfin hNfin
+    (hxAN fun h => h.2 hx.2) (hxNA fun h => h.2 hx.1) (hP x hx.2)
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
