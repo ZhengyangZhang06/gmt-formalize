@@ -410,6 +410,66 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Cluster selection (Simon Ch. 8, proof of 5.10 (8)): if two distinct points of a finite set `s`
+with `#s ≥ 2` are at distance `≤ d`, there are centres `Z ⊆ s` with `#Z < #s` and a radius
+`0 ≤ S ≤ (10 #s)^{#s} d` such that every `y ∈ s` is within `S` of `Z` and distinct centres are at
+least `2d + 4S` apart.  Greedy merging: take an admissible pair (`Z ⊆ s` nonempty, `#Z < #s`,
+`S`-covering, `S ≤ d (5^{#s - #Z} - 1) / 2`) with `#Z` minimal; two centres closer than `2d + 4S`
+would give the admissible pair `(Z ∖ {z'}, 2d + 5S)`. -/
+theorem Submission.intcpt_allard_cluster_selection :
+    ∀ (N : ℕ) (s : Finset (Euclidean N)) (d : ℝ), 2 ≤ s.card → 0 < d → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖) → (∃ y ∈ s, ∃ y' ∈ s, y ≠ y' ∧ ‖y - y'‖ ≤ d) → ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ s ∧ Z.card < s.card ∧ 0 ≤ S ∧ S ≤ (10 * (s.card : ℝ)) ^ s.card * d ∧ (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧ ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖ := by
+  intro N s d hk hd _ hclose
+  classical
+  -- Step 1: admissible pairs `(Z, S)` with `#Z = m`.
+  let Adm : ℕ → Prop := fun m ↦ ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ s ∧ Z.Nonempty ∧
+    Z.card = m ∧ m < s.card ∧ 0 ≤ S ∧ (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧
+    S ≤ d * ((5 : ℝ) ^ (s.card - m) - 1) / 2
+  -- Step 2: `(s ∖ {y₁}, d)` is admissible.
+  obtain ⟨y₀, hy₀, y₁, hy₁, hne, hdist⟩ := hclose
+  have hstart : Adm (s.card - 1) := by
+    refine ⟨s.erase y₁, d, Finset.erase_subset _ _, ⟨y₀, Finset.mem_erase.2 ⟨hne, hy₀⟩⟩,
+      Finset.card_erase_of_mem hy₁, by omega, hd.le, fun y hy ↦ ?_, ?_⟩
+    · by_cases hyy : y = y₁
+      · rw [hyy]
+        exact ⟨y₀, Finset.mem_erase.2 ⟨hne, hy₀⟩, by rw [norm_sub_rev]; exact hdist⟩
+      · exact ⟨y, Finset.mem_erase.2 ⟨hyy, hy⟩, by simpa using hd.le⟩
+    · rw [show s.card - (s.card - 1) = 1 by omega]
+      linarith
+  have hex : ∃ m, Adm m := ⟨_, hstart⟩
+  -- Step 3: an admissible pair with `#Z` minimal.
+  obtain ⟨Z, S, hZs, ⟨z₀, hz₀⟩, hZcard, hmk, hS0, hcov, hSb⟩ := Nat.find_spec hex
+  have hm1 : 1 ≤ Nat.find hex := hZcard ▸ Finset.card_pos.2 ⟨z₀, hz₀⟩
+  -- Step 4: separation, since otherwise `(Z ∖ {z'}, 2d + 5S)` is admissible with `#Z - 1` points.
+  have hsep : ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖ := by
+    intro z hz z' hz' hzz'
+    refine le_of_not_gt fun hlt ↦ ?_
+    have hadm : Adm (Nat.find hex - 1) := by
+      refine ⟨Z.erase z', 2 * d + 5 * S, (Finset.erase_subset _ _).trans hZs,
+        ⟨z, Finset.mem_erase.2 ⟨hzz', hz⟩⟩, by rw [Finset.card_erase_of_mem hz', hZcard],
+        by omega, by linarith, fun y hy ↦ ?_, ?_⟩
+      · obtain ⟨z'', hz'', hyz''⟩ := hcov y hy
+        by_cases h : z'' = z'
+        · rw [h] at hyz''
+          refine ⟨z, Finset.mem_erase.2 ⟨hzz', hz⟩, ?_⟩
+          calc ‖y - z‖ = ‖(y - z') + (z' - z)‖ := by rw [sub_add_sub_cancel]
+            _ ≤ ‖y - z'‖ + ‖z' - z‖ := norm_add_le _ _
+            _ ≤ 2 * d + 5 * S := by rw [norm_sub_rev z' z]; linarith
+        · exact ⟨z'', Finset.mem_erase.2 ⟨h, hz''⟩, by linarith⟩
+      · rw [show s.card - (Nat.find hex - 1) = (s.card - Nat.find hex) + 1 by omega, pow_succ]
+        linarith
+    have := Nat.find_min' hex hadm
+    omega
+  -- Step 5: conclusion, with `S ≤ d (5^{#s - #Z} - 1) / 2 ≤ 5^{#s} d ≤ (10 #s)^{#s} d`.
+  refine ⟨Z, S, hZs, hZcard ▸ hmk, hS0, ?_, hcov, hsep⟩
+  have h5 : (5 : ℝ) ^ (s.card - Nat.find hex) ≤ 5 ^ s.card :=
+    pow_le_pow_right₀ (by norm_num) (Nat.sub_le _ _)
+  have h10 : (5 : ℝ) ^ s.card ≤ (10 * (s.card : ℝ)) ^ s.card := by
+    refine pow_le_pow_left₀ (by norm_num) ?_ _
+    have : (2 : ℝ) ≤ s.card := by exact_mod_cast hk
+    linarith
+  have hpos : (0 : ℝ) ≤ 5 ^ s.card := by positivity
+  nlinarith
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
