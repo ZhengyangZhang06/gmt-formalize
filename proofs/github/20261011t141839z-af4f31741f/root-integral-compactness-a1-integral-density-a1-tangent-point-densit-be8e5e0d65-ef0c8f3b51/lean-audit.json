@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7bb3efca6c719d0c27573620ece790786b99a10a0720d75cad5b23282976e7ba",
+  "git_delta": {
+    "base_commit": "57d2a2139521d04329afb24ecd80be53b12ce280",
+    "candidate_commit": "dcb730858980f533b4a385eec6b9b7794adac360",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_tpd_ball_mass_upper",
+    "diff_sha256": "b11e8fa6dd83300a5e0146695d46c388a86d82895376d8bb8863aa34324ebae6",
+    "source_sha256": "5ceb973b2a3bc61bb556dca07f21489084737443c6ec9dd78924e363c6a8205a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_tpd_ball_mass_upper",
+      "statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (P : Submodule ℝ (Euclidean N)) (r₀ : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → x ∈ M → 0 < r₀ → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P → ∀ c : ℝ≥0∞, ENNReal.ofReal (θ x) * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x t) ≤ c * ENNReal.ofReal t ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
