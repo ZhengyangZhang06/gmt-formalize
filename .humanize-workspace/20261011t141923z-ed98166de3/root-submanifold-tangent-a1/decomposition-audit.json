@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^def tangentSpace|^def tangentProjection|^abbrev Rn' project/GMT/Ch02/Contract.lean",
+        "rg -n 'IsLocallyClosed\\.measurableSet|IsLocallyClosed\\.nullMeasurableSet' mathlib/Mathlib/Topology/LocallyClosed.lean mathlib/Mathlib/MeasureTheory",
+        "rg -n 'simon_submanifold_(chart_inverse_continuousOn|tangentSpace_eq_range|range_starProjection_continuousOn|measurableSet|tangentProjection_continuousOn)' mathlib/Mathlib project/GMT",
+        "sed -n '1,200p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "sed -n '1,225p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "python3 /tmp/gmt-subtangent-audit-3yjqxexe/audit_contracts.py",
+        "python3 /tmp/gmt-subtangent-audit-3yjqxexe/run_lean.py FrozenTypes.lean",
+        "python3 /tmp/gmt-subtangent-audit-3yjqxexe/run_lean.py Assembly.lean",
+        "python3 /tmp/gmt-subtangent-audit-3yjqxexe/run_lean.py ProofArtifacts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Function.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-submanifold-tangent-a1/parent-child-handoff.json",
+        "/tmp/gmt-subtangent-audit-3yjqxexe/audit_contracts.py",
+        "/tmp/gmt-subtangent-audit-3yjqxexe/FrozenTypes.lean",
+        "/tmp/gmt-subtangent-audit-3yjqxexe/Assembly.lean",
+        "/tmp/gmt-subtangent-audit-3yjqxexe/ProofArtifacts.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected simon_submanifold_tangent_basics contract. All five children contribute, dependencies are correctly directed and acyclic, and the terminal conclusions imply the exact frozen parent type. All five statements independently elaborate as Prop in the comparator's replayed scope without child implementations. Names are distinct bare identifiers, with no collisions in the 54-node DAG, other decompositions, or searched libraries. Mathlib and SimonGMT revisions match the snapshot pins. The projection instances and continuous-linear-map multiplication were checked; no matrix-lambda unit construction occurs. Auxiliary proof replay and parent assembly pass with only propext, Classical.choice and Quot.sound; the tangent equality is an explicit premise in these formal checks, and its supplied natural proof was independently reviewed. No IsLocallyClosed.measurableSet or IsLocallyClosed.nullMeasurableSet match was found; the supplied countable-union proof establishes measurability directly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_inverse_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including unrestricted r. The invFunOn identities, compact-preimage argument and subsequence criterion prove continuity of the specified inverse. No tangent theorem or additional regularity is assumed."
+    },
+    {
+      "key": "tangent_space_eq_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly the parent's first conjunct. Rescaled chart curves prove one inclusion; inverse continuity, the injective derivative's lower bound, bounded lifted quotients and the vanishing remainder prove the other. The zero-dimensional case is covered. Only the declared inverse-continuity sibling is used, without assuming a differentiable inverse."
+    },
+    {
+      "key": "range_projection_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bundled operator type and inferred starProjection instance match the prose. The proof establishes invertibility of A*A, identifies A(A*A)⁻¹A* by orthogonality, and proves continuity using inversion at units. No pointwise matrix multiplication is selected. The formula also agrees with [Eremenko, equation (5)](https://www.math.purdue.edu/~eremenko/dvi/511/lect10.pdf)."
+    },
+    {
+      "key": "submanifold_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are captured by IsSimonSubmanifold. Relative properness proves local closedness, and second countability supplies the countable union of open–closed intersections. The argument handles the empty set and never assumes measurability of M."
+    },
+    {
+      "key": "tangent_projection_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated relative operator-norm continuity. The three declared siblings and continuity of fderiv give the local projection formula and its continuity; the open chart neighbourhood transfers this to continuity within M. The dependencies are sufficient and non-circular."
+    }
+  ],
+  "required_changes": []
+}
