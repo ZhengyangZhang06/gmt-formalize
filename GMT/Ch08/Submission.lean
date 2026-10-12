@@ -505,6 +505,81 @@ theorem Submission.intcpt_allard_fdsb_density_cylinder_bound :
             {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) +
           ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n := by
         gcongr
+/-- Simon Ch. 8, proof of Lemma 5.10 (one-point case of Remark 5.11 (∗)): if
+`θ ≤ e^{εσ} μ(B_σ(y))/(ω_n σ^n)` for every `σ ∈ (0,1)`, where `0 < δ ≤ 1/2`, `2^{n+2} δ ≤ 1`,
+`0 < ε ≤ δ⁴` and `|y - x| < ε`, then `θ ≤ (1 + δ) μ(B_1(x))/ω_n`.  Take `σ = 1 - ε`, so that
+`B_σ(y) ⊆ B_1(x)`; then `e^{ε(1-ε)} ≤ e^ε ≤ 1 + 2ε`, `(1 - ε)^{-n} ≤ (1 + 2ε)^n ≤ 1 + (2^n - 1)2ε`,
+and `e^{ε(1-ε)} (1 - ε)^{-n} ≤ 1 + 2^{n+2}ε ≤ 1 + 2^{n+2}δ² ≤ 1 + δ`. -/
+theorem Submission.intcpt_allard_fdsb_one_point_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x y : Euclidean N) (θ : ℝ≥0∞) (δ ε : ℝ), 0 < δ → δ ≤ 1 / 2 → 2 ^ (n + 2) * δ ≤ 1 → 0 < ε → ε ≤ δ ^ 4 → ‖y - x‖ < ε → (∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n μ y σ) → θ ≤ ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n := by
+  intro N n μ x y θ δ ε hδ hδ2 hnδ hε hε4 hyx hD
+  -- Step 1: `ε ≤ δ⁴ ≤ δ² ≤ 1/4`.
+  have hδsq : δ ^ 2 ≤ 1 / 4 := by nlinarith
+  have hεδ : ε ≤ δ ^ 2 := hε4.trans (by nlinarith [pow_pos hδ 2])
+  have hε14 : ε ≤ 1 / 4 := hεδ.trans hδsq
+  -- Step 2: `σ = 1 - ε ∈ (0,1)` and `B_{1-ε}(y) ⊆ B_1(x)`.
+  have hσ : 0 < 1 - ε := by linarith
+  have hball : closedBall y (1 - ε) ⊆ closedBall x 1 :=
+    closedBall_subset_closedBall' (by rw [dist_eq_norm]; linarith)
+  -- Step 3: `e^{ε(1-ε)} ≤ e^ε ≤ 1 + 2ε`, by `|e^t - 1| ≤ 2|t|` for `|t| ≤ 1`.
+  have hexp : Real.exp (ε * (1 - ε)) ≤ 1 + 2 * ε := by
+    have h1 : Real.exp (ε * (1 - ε)) ≤ Real.exp ε := Real.exp_le_exp.mpr (by nlinarith)
+    have h2 := Real.abs_exp_sub_one_le (x := ε) (by rw [abs_of_pos hε]; linarith)
+    rw [abs_of_pos hε] at h2
+    linarith [le_abs_self (Real.exp ε - 1)]
+  -- Step 4: `(1 - ε)⁻¹ ≤ 1 + 2ε`, as `(1 - ε)(1 + 2ε) = 1 + ε(1 - 2ε) ≥ 1`.
+  have hinv : (1 - ε)⁻¹ ≤ 1 + 2 * ε := by
+    rw [inv_eq_one_div, div_le_iff₀ hσ]
+    nlinarith [mul_nonneg hε.le (by linarith : (0 : ℝ) ≤ 1 - 2 * ε)]
+  -- Step 5: `(1 + u)^m ≤ 1 + (2^m - 1)u` for `u = 2ε ∈ [0,1]`, by induction on `m`.
+  have hbern : ∀ m : ℕ, (1 + 2 * ε) ^ m ≤ 1 + (2 ^ m - 1) * (2 * ε) := by
+    intro m
+    induction m with
+    | zero => simp
+    | succ k ih =>
+      have h2k : (1 : ℝ) ≤ 2 ^ k := one_le_pow₀ (by norm_num)
+      calc (1 + 2 * ε) ^ (k + 1) = (1 + 2 * ε) ^ k * (1 + 2 * ε) := pow_succ _ _
+        _ ≤ (1 + (2 ^ k - 1) * (2 * ε)) * (1 + 2 * ε) :=
+          mul_le_mul_of_nonneg_right ih (by linarith)
+        _ ≤ 1 + (2 ^ (k + 1) - 1) * (2 * ε) := by
+          rw [pow_succ]
+          nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.mpr h2k) hε.le)
+            (by linarith : (0 : ℝ) ≤ 1 - 2 * ε)]
+  -- Step 6: `((1 - ε)^n)⁻¹ = ((1 - ε)⁻¹)^n ≤ (1 + 2ε)^n ≤ 1 + (2^n - 1)2ε`.
+  have hpowinv : ((1 - ε) ^ n)⁻¹ ≤ 1 + (2 ^ n - 1) * (2 * ε) := by
+    rw [← inv_pow]
+    exact (pow_le_pow_left₀ (inv_nonneg.mpr hσ.le) hinv n).trans (hbern n)
+  -- Step 7: `e^{ε(1-ε)}/(1 - ε)^n ≤ 1 + 2^{n+2}ε ≤ 1 + 2^{n+2}δ² ≤ 1 + δ`.
+  have h2n : (1 : ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
+  rw [show (2 : ℝ) ^ (n + 2) = 4 * 2 ^ n by ring] at hnδ
+  have hreal : Real.exp (ε * (1 - ε)) / (1 - ε) ^ n ≤ 1 + δ := by
+    rw [div_eq_mul_inv]
+    calc Real.exp (ε * (1 - ε)) * ((1 - ε) ^ n)⁻¹
+        ≤ (1 + 2 * ε) * (1 + (2 ^ n - 1) * (2 * ε)) :=
+          mul_le_mul hexp hpowinv (inv_nonneg.mpr (pow_nonneg hσ.le n)) (by linarith)
+      _ ≤ 1 + 4 * 2 ^ n * ε := by
+          nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 2 ^ n) hε.le)
+            (by linarith : (0 : ℝ) ≤ 1 - 2 * ε)]
+      _ ≤ 1 + δ := by
+          nlinarith [mul_le_mul_of_nonneg_left hεδ (by linarith : (0 : ℝ) ≤ 4 * 2 ^ n)]
+  -- Step 8: the density bound at `σ = 1 - ε`, rearranged in `[0,∞]`: `densityRatio` is
+  -- `μ(B_σ(y)) ω_n⁻¹ (σ^n)⁻¹` as `σ^n ∈ (0,∞)`, and `e^{εσ}/σ^n` is a single `ofReal`.
+  have hRn0 : ENNReal.ofReal (1 - ε) ^ n ≠ 0 := pow_ne_zero _ (ENNReal.ofReal_pos.mpr hσ).ne'
+  have hRnt : ENNReal.ofReal (1 - ε) ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have hfac : ENNReal.ofReal (Real.exp (ε * (1 - ε))) * (ENNReal.ofReal (1 - ε) ^ n)⁻¹ =
+      ENNReal.ofReal (Real.exp (ε * (1 - ε)) / (1 - ε) ^ n) := by
+    rw [ENNReal.ofReal_div_of_pos (pow_pos hσ n), ENNReal.ofReal_pow hσ.le, div_eq_mul_inv]
+  calc θ ≤ ENNReal.ofReal (Real.exp (ε * (1 - ε))) * densityRatio n μ y (1 - ε) :=
+        hD (1 - ε) hσ (by linarith)
+    _ = ENNReal.ofReal (Real.exp (ε * (1 - ε))) * (ENNReal.ofReal (1 - ε) ^ n)⁻¹ *
+          μ (closedBall y (1 - ε)) / unitBallVolume n := by
+      simp only [densityRatio, div_eq_mul_inv]
+      rw [ENNReal.mul_inv (Or.inr hRnt) (Or.inr hRn0)]
+      ring
+    _ = ENNReal.ofReal (Real.exp (ε * (1 - ε)) / (1 - ε) ^ n) * μ (closedBall y (1 - ε)) /
+          unitBallVolume n := by rw [hfac]
+    _ ≤ ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n := by
+      gcongr
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
