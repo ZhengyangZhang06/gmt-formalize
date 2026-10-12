@@ -1,0 +1,15 @@
+{
+  "node_id": "root.compactness_mass_bounds-a1.repr_bound-a1.coord_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1771",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "bc4ced0777075cca0b2e8f7beba5ba914fae595c",
+  "integrated_commit": "",
+  "proof_base_commit": "cf556face01e9ac477ed0393778bbdc527e9722f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.compactness_mass_bounds-a1.repr_bound-a1",
+  "requires": []
+}
