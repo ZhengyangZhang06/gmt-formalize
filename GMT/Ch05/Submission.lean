@@ -505,6 +505,111 @@ theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ
     calc ‖A v‖ ^ 2 ≤ (∑ i, |v i| * ‖A (e i)‖) ^ 2 := by gcongr
       _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
       _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
+/-- Simon Ch. 5, proof of Lemma 2.6 (p. 112) and of Corollary 2.7 (p. 113): a Lipschitz graph is
+close to its base plane. For a linear isometry `q` of `ℝ^{n+ℓ}` and `f : ℝⁿ → ℝ^ℓ` with
+`Lip f ≤ ε`, the rotated graph `F̂ = q(graph f)` is closed, and every chord of `F̂` is `ε`-close to
+`T₀ = q(ℝⁿ × {0})`: `|p_{T₀^⊥}(x − z)| = |(x − z) − p_{T₀}(x − z)| ≤ ε |x − z|` for `x, z ∈ F̂`
+(the book's `|p_{(ℝⁿ×{0})^⊥}(x − ζ)| ≤ Cβ |x − ζ|` on `F`).
+The map `u ↦ (u, f u)` is antilipschitz and Lipschitz, so its range `graph f` is closed, and `q` is a
+homeomorphism. For `x = q(u, f u)` and `z = q(v, f v)`, the point `q(u − v, 0)` lies in `T₀`, so
+`dist(x − z, T₀) ≤ |q(0, f u − f v)| = |f u − f v| ≤ ε |u − v| ≤ ε |(u − v, f u − f v)| = ε |x − z|`. -/
+theorem lgc_rotated_graph_slope : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → LipschitzWith (Real.toNNReal ε) f → IsClosed (q '' graphOver f univ) ∧ ∀ x ∈ q '' graphOver f univ, ∀ z ∈ q '' graphOver f univ, ‖(x - z) - (rotatedPlane q).starProjection (x - z)‖ ≤ ε * ‖x - z‖ := by
+  intro n ℓ q f ε hε hf
+  -- coordinates of `(a, b) = graphPoint a b`: differences, `|(a, b)|² = |a|² + |b|²`, and
+  -- `(a, 0) = Σᵢ aᵢ e_{castAdd ℓ i} ∈ ℝⁿ × {0}`
+  have gsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext i
+    refine Fin.addCases (fun i => ?_) (fun i => ?_) i <;> simp [graphPoint]
+  have gnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp [graphPoint]
+  have gmem : ∀ a : Rn n, graphPoint a (0 : Rn ℓ) ∈ horizontalPlane n ℓ := by
+    intro a
+    have : graphPoint a (0 : Rn ℓ) =
+        ∑ i : Fin n, a i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+      ext j
+      refine Fin.addCases (fun j => ?_) (fun j => ?_) j
+      · simp [graphPoint, Pi.single_apply]
+      · simp only [graphPoint]
+        simp only [Fin.append_right, PiLp.zero_apply, WithLp.ofLp_sum, WithLp.ofLp_smul,
+          PiLp.ofLp_single, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+        symm
+        refine Finset.sum_eq_zero fun x _ => ?_
+        have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ x := by
+          intro h
+          have := congrArg Fin.val h
+          simp at this
+          omega
+        rw [Pi.single_eq_of_ne hne, mul_zero]
+    rw [this]
+    refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ ?_
+    exact Submodule.subset_span ⟨i, rfl⟩
+  have gnorm_le : ∀ (a : Rn n) (b : Rn ℓ), ‖a‖ ≤ ‖graphPoint a b‖ := by
+    intro a b
+    have h := gnorm a b
+    have := sq_nonneg ‖b‖
+    nlinarith [norm_nonneg a, norm_nonneg (graphPoint a b)]
+  have gnorm0 : ∀ b : Rn ℓ, ‖graphPoint (0 : Rn n) b‖ = ‖b‖ := by
+    intro b
+    have h := gnorm 0 b
+    rw [norm_zero] at h
+    have h' : ‖graphPoint (0 : Rn n) b‖ ^ 2 = ‖b‖ ^ 2 := by rw [h]; ring
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h'
+  have hfl : ∀ u v : Rn n, ‖f u - f v‖ ≤ ε * ‖u - v‖ := by
+    intro u v
+    have := hf.dist_le_mul u v
+    rwa [Real.coe_toNNReal ε hε, dist_eq_norm, dist_eq_norm] at this
+  constructor
+  · -- `u ↦ (u, f u)` is antilipschitz and Lipschitz, so `graph f` is closed; `q` is a homeomorphism
+    have hanti : AntilipschitzWith 1 (fun u : Rn n => graphPoint u (f u)) := by
+      refine AntilipschitzWith.of_le_mul_dist fun u v => ?_
+      simp only [NNReal.coe_one, one_mul]
+      rw [dist_eq_norm, dist_eq_norm, gsub]
+      exact gnorm_le _ _
+    have hlip : LipschitzWith (1 + Real.toNNReal ε) (fun u : Rn n => graphPoint u (f u)) := by
+      refine LipschitzWith.of_dist_le_mul fun u v => ?_
+      rw [dist_eq_norm, dist_eq_norm, gsub]
+      have h1 : ‖graphPoint (u - v) (f u - f v)‖ ≤ ‖u - v‖ + ‖f u - f v‖ := by
+        have h := gnorm (u - v) (f u - f v)
+        have hsq : ‖graphPoint (u - v) (f u - f v)‖ ^ 2 ≤ (‖u - v‖ + ‖f u - f v‖) ^ 2 := by
+          rw [h]; nlinarith [norm_nonneg (u - v), norm_nonneg (f u - f v)]
+        exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 hsq
+      push_cast
+      rw [Real.coe_toNNReal ε hε]
+      nlinarith [hfl u v]
+    have hclosed : IsClosed (graphOver f univ) := by
+      rw [graphOver, image_univ]
+      exact hanti.isClosed_range hlip.uniformContinuous
+    have := q.toHomeomorph.isClosedMap _ hclosed
+    simpa [LinearIsometryEquiv.coe_toHomeomorph] using this
+  · -- `x = q(u, f u)`, `z = q(v, f v)`; compare `x - z` with `q(u - v, 0) ∈ T₀`
+    rintro x ⟨_, ⟨u, -, rfl⟩, rfl⟩ z ⟨_, ⟨v, -, rfl⟩, rfl⟩
+    have hw : q (graphPoint (u - v) (0 : Rn ℓ)) ∈ rotatedPlane q :=
+      Submodule.mem_map_of_mem (gmem (u - v))
+    have hxz : q (graphPoint u (f u)) - q (graphPoint v (f v)) =
+        q (graphPoint (u - v) (f u - f v)) := by
+      rw [← map_sub, gsub]
+    have hsplit : q (graphPoint u (f u)) - q (graphPoint v (f v)) - q (graphPoint (u - v) 0) =
+        q (graphPoint 0 (f u - f v)) := by
+      rw [hxz, ← map_sub, gsub]
+      simp
+    calc ‖(q (graphPoint u (f u)) - q (graphPoint v (f v))) -
+          (rotatedPlane q).starProjection (q (graphPoint u (f u)) - q (graphPoint v (f v)))‖
+        = infDist (q (graphPoint u (f u)) - q (graphPoint v (f v)))
+            (rotatedPlane q : Set (Amb n ℓ)) := by
+          rw [← dist_eq_norm, Submodule.dist_starProjection_eq_infDist]
+      _ ≤ dist (q (graphPoint u (f u)) - q (graphPoint v (f v))) (q (graphPoint (u - v) 0)) :=
+          infDist_le_dist_of_mem hw
+      _ = ‖f u - f v‖ := by
+          rw [dist_eq_norm, hsplit, LinearIsometryEquiv.norm_map, gnorm0]
+      _ ≤ ε * ‖u - v‖ := hfl u v
+      _ ≤ ε * ‖graphPoint (u - v) (f u - f v)‖ := mul_le_mul_of_nonneg_left (gnorm_le _ _) hε
+      _ = ε * ‖q (graphPoint u (f u)) - q (graphPoint v (f v))‖ := by
+          rw [hxz, LinearIsometryEquiv.norm_map]
 
 end Submission
 
