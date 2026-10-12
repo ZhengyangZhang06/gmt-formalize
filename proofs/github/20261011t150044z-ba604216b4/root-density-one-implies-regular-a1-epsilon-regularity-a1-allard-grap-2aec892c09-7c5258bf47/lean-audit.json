@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c16c46f3d324596511476b7247702d7c2181d12200c39ad342f3c5b1b0f9af5e",
+  "git_delta": {
+    "base_commit": "b1d3f73cf0a852feff1c96e2394aa9c15e8d5b1e",
+    "candidate_commit": "70d66951029b8a2ab93e44594da55ac1a8a7d3d2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doraggt_graph_blowup_rescaling",
+    "diff_sha256": "8852379d9268f6d2d556ac20d887682818d09c04613fb90b98a865132725bcd9",
+    "source_sha256": "2e7532ce103b6e9eea3cbc3408da02bc556e9569d0528d5390eb2dc55110615a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doraggt_graph_blowup_rescaling",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (a : Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (r : ℝ), r ≠ 0 → Poincare.SimonGMT.Chapter03.blowUpMap (a + ι v + ι' (f v)) r '' Set.range (fun u => a + ι u + ι' (f u)) = Set.range (fun w => ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) ∧ ∀ w : Euclid n, fderiv ℝ (fun w' => r⁻¹ • (f (v + r • w') - f v)) w = fderiv ℝ f (v + r • w)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
