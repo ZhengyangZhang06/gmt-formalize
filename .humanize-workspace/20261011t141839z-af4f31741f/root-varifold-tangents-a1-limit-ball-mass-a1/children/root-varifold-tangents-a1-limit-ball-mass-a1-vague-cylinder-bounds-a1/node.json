@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.limit_ball_mass-a1.vague_cylinder_bounds-a1",
+  "parent_id": "root.varifold_tangents-a1.limit_ball_mass-a1",
+  "depth": 3,
+  "title": "Vague limits versus closed-ball cylinder masses: μ(K_a) ≤ lim μ_j(K_b) and lim μ_j(K_a) ≤ μ(K_b) for a < b",
+  "statement": "Let N, n ∈ ℕ, G := Grassmannian N n and K_r := closedBall (0 : ℝ^N) r ×ˢ univ ⊆ ℝ^N × G. Let μs : ℕ → Measure(ℝ^N × G), and let μ be a measure on ℝ^N × G with VagueConverges μs μ: for every f ∈ C_c(ℝ^N × G, ℝ), ∫ f dμs_j → ∫ f dμ in ℝ as j → ∞. (∫ is the Bochner integral, which is 0 for non-integrable integrands, as in Lean.) Let a < b be real and La, Lb ∈ [0, ∞]. Assume μ(K_b) ≠ ∞, μs_j(K_a) → La and μs_j(K_b) → Lb in [0, ∞] as j → ∞, and Lb ≠ ∞. Then μ(K_a) ≤ Lb and La ≤ μ(K_b).",
+  "lean_statement": "∀ (N n : ℕ) (μs : ℕ → Measure (Euclidean N × Grassmannian N n)) (μ : Measure (Euclidean N × Grassmannian N n)) (a b : ℝ) (La Lb : ℝ≥0∞), VagueConverges μs μ → a < b → μ (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ → Tendsto (fun j ↦ μs j (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 La) → Tendsto (fun j ↦ μs j (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 Lb) → Lb ≠ ∞ → μ (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))) ≤ Lb ∧ La ≤ μ (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)))",
+  "lean_name": "varifold_tangents_lbm_vague_cylinder_bounds",
+  "depends_on": [
+    "root.varifold_tangents-a1.limit_ball_mass-a1.cylinder_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.varifold_tangents-a1.limit_ball_mass-a1.cylinder_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-limit-ball-mass-a1-vague-cylinder-bounds-a1-a1"
+}

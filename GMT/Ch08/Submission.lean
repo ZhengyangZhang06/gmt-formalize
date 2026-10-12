@@ -410,6 +410,75 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, 5.2, the cylinder cut-off** (child `cylinder_cutoff` of `limit_ball_mass`):
+for `a < b` one `F ∈ C_c(ℝ^N × G(N,n), ℝ)`, chosen before the measure, satisfies
+`ν(B_a(0) × G(N,n)) ≤ ∫ F dν ≤ ν(B_b(0) × G(N,n))` for every `ν` with `ν(B_b(0) × G(N,n)) < ∞`.
+Take the ramp `F(y, S) = min 1 (max 0 ((b - |y|) / (b - a)))`: it is continuous, `0 ≤ F ≤ 1`,
+`F = 1` on `B_a(0) × G(N,n)` and `F = 0` off the compact `B_b(0) × G(N,n)`.  Then
+`|F| ≤ 1_{B_b(0) × G(N,n)}` gives integrability, so `ofReal (∫ F dν) = ∫⁻ ofReal ∘ F dν`, and
+`1_{B_a(0) × G(N,n)} ≤ ofReal ∘ F ≤ 1_{B_b(0) × G(N,n)}` gives both bounds. -/
+theorem Submission.varifold_tangents_lbm_exists_cylinder_cutoff :
+    ∀ (N n : ℕ) (a b : ℝ), a < b → ∃ F : C_c(Euclidean N × Grassmannian N n, ℝ), ∀ ν : Measure (Euclidean N × Grassmannian N n), ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ → ν (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))) ≤ ENNReal.ofReal (∫ z, F z ∂ν) ∧ ENNReal.ofReal (∫ z, F z ∂ν) ≤ ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) := by
+  intro N n a b hab
+  have hd : 0 < b - a := sub_pos.2 hab
+  set Ka := closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))
+  set Kb := closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)) with hKb
+  -- The ramp `h(y, S) = min 1 (max 0 ((b - ‖y‖) / (b - a)))`: `0 ≤ h ≤ 1`, `h = 1` on `Ka`,
+  -- `h = 0` off `Kb`.
+  set h : Euclidean N × Grassmannian N n → ℝ := fun z ↦ min 1 (max 0 ((b - ‖z.1‖) / (b - a)))
+  have hcont : Continuous h :=
+    continuous_const.min (continuous_const.max
+      ((continuous_const.sub (continuous_norm.comp continuous_fst)).div_const _))
+  have h_nonneg : ∀ z, 0 ≤ h z := fun z ↦ le_min zero_le_one (le_max_left _ _)
+  have h_le_one : ∀ z, h z ≤ 1 := fun z ↦ min_le_left _ _
+  have h_one : ∀ z ∈ Ka, h z = 1 := by
+    rintro ⟨y, S⟩ ⟨hy, -⟩
+    rw [mem_closedBall, dist_zero_right] at hy
+    have h1 : 1 ≤ (b - ‖y‖) / (b - a) := by
+      rw [le_div_iff₀ hd]
+      linarith
+    show min 1 (max 0 ((b - ‖y‖) / (b - a))) = 1
+    rw [max_eq_right (zero_le_one.trans h1), min_eq_left h1]
+  have h_zero : ∀ z ∉ Kb, h z = 0 := by
+    rintro ⟨y, S⟩ hz
+    have hy : b < ‖y‖ := by
+      simpa [hKb, mem_prod, mem_closedBall, dist_zero_right] using hz
+    have h0 : (b - ‖y‖) / (b - a) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hd.le
+    show min 1 (max 0 ((b - ‖y‖) / (b - a))) = 0
+    rw [max_eq_left h0, min_eq_right zero_le_one]
+  -- `Kb` is compact (`ℝ^N` is proper and `G(N,n)` is compact), so `h ∈ C_c`.
+  have hKb_cpt : IsCompact Kb := (isCompact_closedBall 0 b).prod isCompact_univ
+  refine ⟨⟨⟨h, hcont⟩, HasCompactSupport.intro hKb_cpt h_zero⟩, fun ν hν ↦ ?_⟩
+  have hFz : ∀ z, (⟨⟨h, hcont⟩, HasCompactSupport.intro hKb_cpt h_zero⟩ :
+      C_c(Euclidean N × Grassmannian N n, ℝ)) z = h z := fun z ↦ rfl
+  simp only [hFz]
+  have hmeasA : MeasurableSet Ka := measurableSet_closedBall.prod MeasurableSet.univ
+  have hmeasB : MeasurableSet Kb := measurableSet_closedBall.prod MeasurableSet.univ
+  -- `|h| ≤ 1_{Kb}` and `ν(Kb) < ∞`, so `h` is `ν`-integrable.
+  have hint : Integrable h ν := by
+    refine Integrable.mono' ((integrable_indicator_iff hmeasB).2
+      (integrableOn_const (C := (1 : ℝ)) hν)) hcont.aestronglyMeasurable
+      (Eventually.of_forall fun z ↦ ?_)
+    by_cases hz : z ∈ Kb
+    · rw [indicator_of_mem hz, Real.norm_eq_abs, abs_of_nonneg (h_nonneg z)]
+      exact h_le_one z
+    · rw [indicator_of_notMem hz, h_zero z hz, norm_zero]
+  -- `ofReal (∫ h dν) = ∫⁻ ofReal ∘ h dν`, and `1_{Ka} ≤ ofReal ∘ h ≤ 1_{Kb}` pointwise.
+  rw [ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall h_nonneg)]
+  constructor
+  · calc ν Ka = ∫⁻ z, Ka.indicator 1 z ∂ν := (lintegral_indicator_one hmeasA).symm
+      _ ≤ ∫⁻ z, ENNReal.ofReal (h z) ∂ν := lintegral_mono fun z ↦ by
+        by_cases hz : z ∈ Ka
+        · rw [indicator_of_mem hz, Pi.one_apply, h_one z hz, ENNReal.ofReal_one]
+        · rw [indicator_of_notMem hz]
+          exact zero_le
+  · calc ∫⁻ z, ENNReal.ofReal (h z) ∂ν ≤ ∫⁻ z, Kb.indicator 1 z ∂ν := lintegral_mono fun z ↦ by
+          by_cases hz : z ∈ Kb
+          · rw [indicator_of_mem hz, Pi.one_apply]
+            exact ENNReal.ofReal_le_one.2 (h_le_one z)
+          · rw [indicator_of_notMem hz, h_zero z hz, ENNReal.ofReal_zero]
+      _ = ν Kb := lintegral_indicator_one hmeasB
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
