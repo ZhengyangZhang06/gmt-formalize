@@ -458,6 +458,382 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The Euclidean Hausdorff measure under the similarity `ψ(x) = c + R x` (`R > 0`):
+`ψ_# Hⁿ = R⁻ⁿ Hⁿ`.  `ψ⁻¹B` is the preimage of `τ⁻¹B`, `τ(z) = c + z`, under the homothety
+`x ↦ R • x`, and preimages under that homothety scale `Hⁿ` by `‖R‖₊⁻¹ ^ n = R⁻ⁿ`; the isometry
+`τ` preserves `Hⁿ`. -/
+theorem any_radius_rv_map_hausdorff : ∀ (n ℓ : ℕ) (c : Amb n ℓ) (R : ℝ), 0 < R → (μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x) = (ENNReal.ofReal (R ^ n))⁻¹ • (μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ c R hR
+  -- The constant: `(ofReal Rⁿ)⁻¹ = ‖R‖₊⁻¹ ^ n` since `R > 0`.
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ = ((‖R‖₊⁻¹ ^ n : ℝ≥0) : ℝ≥0∞) := by
+    rw [← ENNReal.ofReal_inv_of_pos (pow_pos hR n), ← ENNReal.ofReal_coe_nnreal]
+    congr 1
+    push_cast
+    rw [Real.norm_of_nonneg hR.le, inv_pow]
+  -- The translation `τ(z) = c + z` is an isometric equivalence, so it preserves `Hⁿ`.
+  have hτ : MeasurePreserving (fun z : Amb n ℓ => c + z) μHE[n] μHE[n] :=
+    (IsometryEquiv.addLeft c).measurePreserving_euclideanHausdorffMeasure n
+  ext B hB
+  -- `ψ⁻¹B` is the preimage of `τ⁻¹B` under the homothety `x ↦ R • x` (center `0`).
+  have hpre : (fun x : Amb n ℓ => c + R • x) ⁻¹' B =
+      AffineMap.homothety (0 : Amb n ℓ) R ⁻¹' ((fun z => c + z) ⁻¹' B) := by
+    ext x
+    simp [AffineMap.homothety_apply]
+  rw [Measure.map_apply (by fun_prop) hB, Measure.smul_apply, hκ, hpre,
+    euclideanHausdorffMeasure_homothety_preimage n 0 hR.ne',
+    hτ.measure_preimage hB.nullMeasurableSet, ENNReal.smul_def]
+/-- Rescaling a rectifiable varifold (used for the rescaled varifold in Simon Ch. 5, Remark 5.3):
+for `ψ(x) = c + R x` with `R > 0`, `v(ψ⁻¹M, θ ∘ ψ)` is a rectifiable `n`-varifold in `ψ⁻¹U`.  `ψ` is
+a homeomorphism (a dilation followed by a translation), hence a measurable embedding, and
+`ψ_# Hⁿ = R⁻ⁿ Hⁿ` (`any_radius_rv_map_hausdorff`), so `ψ` is quasi-measure-preserving and pulls
+`Hⁿ`-null sets back to `Hⁿ`-null sets.  Null-measurability, countable rectifiability (via `ψ⁻¹M₀`
+and the Lipschitz maps `R⁻¹(F_j − c)`), a.e.-measurability of `θ ∘ ψ` on `ψ⁻¹M` and its
+integrability on `ψ⁻¹M ∩ K` (through the compact set `ψ(K) ⊆ U`) all transfer. -/
+theorem any_radius_rv_exists_structure : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∃ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.carrier = (fun x => c + R • x) ⁻¹' V.carrier ∧ ∀ x, W.mult x = V.mult (c + R • x) := by
+  intro n ℓ U V c R hR
+  -- `ψ(x) = c + R • x` is the homeomorphism `x ↦ R • x` followed by `z ↦ c + z`, hence a
+  -- continuous measurable embedding.
+  have hψ : Continuous (fun x : Amb n ℓ => c + R • x) :=
+    ((Homeomorph.smulOfNeZero R hR.ne').trans (Homeomorph.addLeft c)).continuous
+  have hψe : MeasurableEmbedding (fun x : Amb n ℓ => c + R • x) :=
+    ((Homeomorph.smulOfNeZero R hR.ne').trans (Homeomorph.addLeft c)).measurableEmbedding
+  -- `ψ_# Hⁿ = κ • Hⁿ` with `κ = R⁻ⁿ ≠ ∞`.
+  have hmap : (μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x) =
+      (ENNReal.ofReal (R ^ n))⁻¹ • (μHE[n] : Measure (Amb n ℓ)) :=
+    Submission.any_radius_rv_map_hausdorff n ℓ c R hR
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ ∞ :=
+    ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne'
+  -- Hence `ψ` is quasi-measure-preserving and `ψ⁻¹` maps `Hⁿ`-null sets to `Hⁿ`-null sets.
+  have hqmp : Measure.QuasiMeasurePreserving (fun x : Amb n ℓ => c + R • x) μHE[n] μHE[n] :=
+    ⟨hψe.measurable, by rw [hmap]; exact Measure.smul_absolutelyContinuous⟩
+  have hnull : ∀ B : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) B = 0 →
+      (μHE[n] : Measure (Amb n ℓ)) ((fun x => c + R • x) ⁻¹' B) = 0 := fun B hB => by
+    rw [← hψe.map_apply, hmap, Measure.smul_apply, hB, smul_zero]
+  refine ⟨{
+    carrier := (fun x => c + R • x) ⁻¹' V.carrier
+    mult := fun x => V.mult (c + R • x)
+    carrier_subset := preimage_mono V.carrier_subset
+    nullMeasurableSet_carrier := V.nullMeasurableSet_carrier.preimage hqmp
+    countablyRectifiable := ?_
+    mult_pos := fun x hx => V.mult_pos (c + R • x) hx
+    aemeasurable_mult := ?_
+    integrableOn_mult := ?_ }, rfl, fun x => rfl⟩
+  · -- Pull back the null set `M₀` and compose the Lipschitz pieces `F j` with `ψ⁻¹`.
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := V.countablyRectifiable
+    refine ⟨(fun x => c + R • x) ⁻¹' M₀, hnull M₀ hM₀, fun j z => R⁻¹ • (F j z - c),
+      fun j => ?_, fun x hx => ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖R⁻¹‖₊ * (K + 0), (lipschitzWith_smul R⁻¹).comp (hK.sub (LipschitzWith.const c))⟩
+    · rcases hcover hx with h | h
+      · exact Or.inl h
+      · obtain ⟨j, z, hz⟩ := mem_iUnion.1 h
+        refine Or.inr (mem_iUnion.2 ⟨j, z, ?_⟩)
+        simp only [hz, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR.ne', one_smul]
+  · -- `ψ` maps `Hⁿ⌞ψ⁻¹M` to `κ • Hⁿ⌞M`, for which `θ` is a.e.-measurable.
+    have h : AEMeasurable V.mult
+        (((μHE[n] : Measure (Amb n ℓ)).restrict ((fun x => c + R • x) ⁻¹' V.carrier)).map
+          (fun x => c + R • x)) := by
+      rw [← hψe.restrict_map, hmap, Measure.restrict_smul]
+      exact V.aemeasurable_mult.smul_measure _
+    exact h.comp_measurable hψe.measurable
+  · -- `ψ(K)` is a compact subset of `U`, and `ψ⁻¹(M ∩ ψ(K)) = ψ⁻¹M ∩ K`.
+    intro K hK hKU
+    have h : IntegrableOn V.mult (V.carrier ∩ (fun x => c + R • x) '' K)
+        ((μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x)) := by
+      rw [hmap, IntegrableOn, Measure.restrict_smul]
+      exact (V.integrableOn_mult _ (hK.image hψ)
+        (by rintro _ ⟨k, hk, rfl⟩; exact hKU hk)).smul_measure hκ
+    have h' := hψe.integrableOn_map_iff.1 h
+    rwa [preimage_inter, hψe.injective.preimage_image] at h'
+/-- Weight of the rescaled varifold (the rescaling `ψ(x) = c + R x` behind Simon Ch. 5, Remark 5.3):
+if `W = v(ψ⁻¹M, θ ∘ ψ)`, then `μ_W = R⁻ⁿ φ_# μ_V` with `φ(y) = R⁻¹(y − c)`.  On a measurable set
+`A`, `A ∩ ψ⁻¹M = ψ⁻¹(φ⁻¹A ∩ M)` because `φ ∘ ψ = id`, so `μ_W(A) = ∫_{ψ⁻¹(φ⁻¹A ∩ M)} θ ∘ ψ dHⁿ`;
+the change of variables `∫_{ψ⁻¹S} g ∘ ψ dHⁿ = R⁻ⁿ ∫_S g dHⁿ`, from `ψ_# Hⁿ = R⁻ⁿ Hⁿ`
+(`any_radius_rv_map_hausdorff`), turns this into `R⁻ⁿ μ_V(φ⁻¹A)`. -/
+theorem any_radius_rv_weight_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (c : Amb n ℓ) (R : ℝ), 0 < R → W.carrier = (fun x => c + R • x) ⁻¹' V.carrier → (∀ x, W.mult x = V.mult (c + R • x)) → W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) := by
+  intro n ℓ U U' V W c R hR hW hθ
+  -- `ψ(x) = c + R x` is a measurable embedding, `φ(y) = R⁻¹(y − c)` is measurable, `φ ∘ ψ = id`.
+  have hψ : MeasurableEmbedding (fun x : Amb n ℓ => c + R • x) :=
+    (measurableEmbedding_addLeft c).comp (measurableEmbedding_const_smul₀ hR.ne')
+  have hφ : Measurable (fun y : Amb n ℓ => R⁻¹ • (y - c)) :=
+    ((continuous_id.sub continuous_const).const_smul R⁻¹).measurable
+  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • (c + R • x - c) = x := fun x => by
+    rw [add_sub_cancel_left, inv_smul_smul₀ hR.ne']
+  -- Change of variables: `∫_{ψ⁻¹S} g ∘ ψ dHⁿ = R⁻ⁿ ∫_S g dHⁿ`, from `ψ_# Hⁿ = R⁻ⁿ Hⁿ`.
+  have hcv : ∀ (S : Set (Amb n ℓ)) (g : Amb n ℓ → ℝ≥0∞),
+      ∫⁻ x in (fun x => c + R • x) ⁻¹' S, g (c + R • x) ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (ENNReal.ofReal (R ^ n))⁻¹ * ∫⁻ y in S, g y ∂(μHE[n] : Measure (Amb n ℓ)) := by
+    intro S g
+    have h := hψ.lintegral_map (μ := (μHE[n] : Measure (Amb n ℓ)).restrict
+      ((fun x => c + R • x) ⁻¹' S)) g
+    rw [← hψ.restrict_map, Submission.any_radius_rv_map_hausdorff n ℓ c R hR,
+      Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul] at h
+    exact h.symm
+  -- Compare both measures on a measurable set `A`.
+  ext A hA
+  rw [Measure.smul_apply, Measure.map_apply hφ hA, smul_eq_mul, RectifiableVarifold.weight,
+    RectifiableVarifold.weight, withDensity_apply _ hA, withDensity_apply _ (hφ hA),
+    Measure.restrict_restrict hA, Measure.restrict_restrict (hφ hA)]
+  -- `A ∩ ψ⁻¹M = ψ⁻¹(φ⁻¹A ∩ M)` (as `φ ∘ ψ = id`) and `θ_W = θ ∘ ψ`.
+  have hA' : A ∩ W.carrier =
+      (fun x => c + R • x) ⁻¹' ((fun y => R⁻¹ • (y - c)) ⁻¹' A ∩ V.carrier) := by
+    rw [hW, preimage_inter]
+    congr 1
+    ext x
+    simp only [mem_preimage, hφψ]
+  rw [hA']
+  simp only [hθ]
+  exact hcv _ fun y => ENNReal.ofReal (V.mult y)
+/-- Support of a rescaled varifold (the rescaling `ψ(x) = c + R x` behind Simon Ch. 5, Remark 5.3):
+if `μ_W = R⁻ⁿ φ_# μ_V` with `φ(y) = R⁻¹(y − c)`, then `spt W = ψ⁻¹(spt V)`.  `φ` is the inverse of
+the homeomorphism `ψ`, so `μ_W(G) = R⁻ⁿ μ_V(φ⁻¹G)` for every set `G`; neighbourhoods of `x` and of
+`ψ(x)` correspond under `ψ⁻¹` and `φ⁻¹`, and the factor `R⁻ⁿ ∈ (0, ∞)` does not change positivity. -/
+theorem any_radius_rv_support_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → W.support = (fun x => c + R • x) ⁻¹' V.support := by
+  intro n ℓ U V c R hR W hW
+  have hR0 : R ≠ 0 := hR.ne'
+  -- `κ = (Rⁿ)⁻¹ ≠ 0` in `[0, ∞]`, since `Rⁿ < ∞`.
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ 0 := ENNReal.inv_ne_zero.2 ENNReal.ofReal_ne_top
+  -- `ψ(x) = c + R x` and `φ(y) = R⁻¹ (y − c)` are mutually inverse homeomorphisms.
+  have hψφ : ∀ y : Amb n ℓ, c + R • (R⁻¹ • (y - c)) = y := fun y => by
+    rw [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
+  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • ((c + R • x) - c) = x := fun x => by
+    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR0, one_smul]
+  have hψc : Continuous fun x : Amb n ℓ => c + R • x := by fun_prop
+  have hφc : Continuous fun y : Amb n ℓ => R⁻¹ • (y - c) := by fun_prop
+  let e : Amb n ℓ ≃ₜ Amb n ℓ :=
+    { toFun := fun y => R⁻¹ • (y - c)
+      invFun := fun x => c + R • x
+      left_inv := hψφ
+      right_inv := hφψ
+      continuous_toFun := hφc
+      continuous_invFun := hψc }
+  -- Hence `φ` is a measurable embedding and `μ_W(G) = κ μ_V(φ⁻¹G)` for every set `G`.
+  have hφe : MeasurableEmbedding fun y : Amb n ℓ => R⁻¹ • (y - c) := e.measurableEmbedding
+  have hWG : ∀ G : Set (Amb n ℓ),
+      W.weight G = (ENNReal.ofReal (R ^ n))⁻¹ * V.weight ((fun y => R⁻¹ • (y - c)) ⁻¹' G) := by
+    intro G
+    rw [hW, Measure.smul_apply, hφe.map_apply, smul_eq_mul]
+  -- `x ∈ spt μ_W ↔ ψ(x) ∈ spt μ_V`.
+  have key : ∀ x : Amb n ℓ, x ∈ W.weight.support ↔ c + R • x ∈ V.weight.support := by
+    intro x
+    rw [Measure.mem_support_iff_forall, Measure.mem_support_iff_forall]
+    constructor
+    · -- `ψ⁻¹G` is a neighbourhood of `x`, and `φ⁻¹(ψ⁻¹G) = G`.
+      intro h G hG
+      have hpos := h _ (hψc.continuousAt.preimage_mem_nhds hG)
+      have hpre : (fun y => R⁻¹ • (y - c)) ⁻¹' ((fun x => c + R • x) ⁻¹' G) = G := by
+        ext y
+        simp only [mem_preimage, hψφ]
+      rw [hWG, hpre] at hpos
+      exact (ENNReal.mul_pos_iff.1 hpos).2
+    · -- `φ⁻¹G` is a neighbourhood of `ψ(x)`, since `φ(ψ(x)) = x`.
+      intro h G hG
+      rw [hWG]
+      refine ENNReal.mul_pos hκ (h _ ?_).ne'
+      refine hφc.continuousAt.preimage_mem_nhds ?_
+      rw [hφψ]
+      exact hG
+  -- `spt W = ψ⁻¹U ∩ spt μ_W = ψ⁻¹U ∩ ψ⁻¹(spt μ_V) = ψ⁻¹(spt V)`.
+  ext x
+  simp only [RectifiableVarifold.support, mem_inter_iff, mem_preimage, key]
+/-- Scaling invariance of tangent planes (Simon Ch. 3, 1.7; Ch. 4, 1.3): if
+`W = v(ψ⁻¹ M, θ ∘ ψ)` with `ψ(x) = c + R x`, `R > 0`, then `η_{x,r}(ψ⁻¹ M) = η_{ψ x,R r}(M)` and
+the blown-up multiplicities agree, and `r ↦ R r` preserves `𝓝[>] 0` (with inverse `s ↦ R⁻¹ s`), so
+the weighted approximate tangent planes of `W` at `x` are those of `V` at `ψ x`, and `W`, `V` choose
+the same tangent projection there. -/
+theorem any_radius_rv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (c : Amb n ℓ) (R : ℝ),
+    0 < R → W.carrier = (fun x => c + R • x) ⁻¹' V.carrier →
+    (∀ x, W.mult x = V.mult (c + R • x)) → ∀ x, W.tangentProj x = V.tangentProj (c + R • x) := by
+  intro n ℓ U U' V W c R hR hc hm x
+  have hR0 : R ≠ 0 := hR.ne'
+  -- `η_{x,r}(ψ⁻¹ M) = η_{ψ x,R r}(M)`, since `ψ z - ψ x = R (z - x)` and `(R r)⁻¹ R = r⁻¹`.
+  have himg : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap x r '' W.carrier =
+      Poincare.SimonGMT.Chapter03.blowUpMap (c + R • x) (R * r) '' V.carrier := by
+    intro r
+    rw [hc]
+    ext w
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨c + R • z, hz, ?_⟩
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+      rw [show c + R • z - (c + R • x) = R • (z - x) by rw [smul_sub]; abel, smul_smul,
+        mul_inv_rev, mul_assoc, inv_mul_cancel₀ hR0, mul_one]
+    · rintro ⟨m, hm', rfl⟩
+      refine ⟨R⁻¹ • (m - c), ?_, ?_⟩
+      · show c + R • R⁻¹ • (m - c) ∈ V.carrier
+        rwa [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
+      · simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+        rw [show R⁻¹ • (m - c) - x = R⁻¹ • (m - (c + R • x)) by
+            rw [smul_sub, smul_sub, smul_add, smul_smul, inv_mul_cancel₀ hR0, one_smul]; abel,
+          smul_smul, mul_inv_rev]
+  -- `θ_W(x + r y) = θ(ψ x + (R r) y)`.
+  have hmult : ∀ (r : ℝ) (y : Amb n ℓ), W.mult (x + r • y) = V.mult (c + R • x + (R * r) • y) := by
+    intro r y
+    rw [hm, smul_add, mul_smul, add_assoc]
+  -- `r ↦ a r` maps `𝓝[>] 0` to `𝓝[>] 0` for `a > 0`.
+  have hfil : ∀ a : ℝ, 0 < a → Tendsto (fun r : ℝ => a * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    intro a ha
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h0 : Tendsto (fun r : ℝ => a * r) (𝓝 0) (𝓝 (a * 0)) :=
+        (continuous_const.mul continuous_id).tendsto 0
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos ha hr
+  -- Hence the limits along `r` and along `R r` agree, and the two predicates coincide.
+  have key : ∀ P : Submodule ℝ (Amb n ℓ),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult x P ↔
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult
+        (c + R • x) P := by
+    intro P
+    simp only [Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt]
+    refine and_congr_right fun _ => forall_congr' fun f => ?_
+    simp only [himg, hmult]
+    rw [hm x]
+    constructor
+    · intro h
+      refine (h.comp (hfil R⁻¹ (inv_pos.2 hR))).congr fun s => ?_
+      simp only [Function.comp_apply, mul_inv_cancel_left₀ hR0]
+    · intro h
+      exact h.comp (hfil R hR)
+  -- So `W` at `x` and `V` at `ψ x` choose the same tangent plane.
+  have hchoose : ∀ (p q : Submodule ℝ (Amb n ℓ) → Prop) (h₁ : ∃ P, p P) (h₂ : ∃ P, q P),
+      p = q → Classical.choose h₁ = Classical.choose h₂ := by
+    rintro p q h₁ h₂ rfl
+    rfl
+  unfold RectifiableVarifold.tangentProj
+  by_cases h₁ : ∃ P,
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult x P
+  · have h₂ := (exists_congr key).1 h₁
+    rw [dite_eq_left h₁, dite_eq_left h₂]
+    congr 1
+    exact hchoose _ _ h₁ h₂ (funext fun P => propext (key P))
+  · have h₂ : ¬∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
+        V.mult (c + R • x) P := fun h => h₁ ((exists_congr key).2 h)
+    rw [dite_eq_right h₁, dite_eq_right h₂]
+/-- **Generalized mean curvature of a rescaled varifold** (Simon Ch. 4, Definition 3.14; used for
+the rescalings behind Ch. 5, Remark 5.3).  Let `ψ(x) = c + R x` and `φ(y) = R⁻¹ (y − c)`, `R > 0`.
+If `μ_W = R⁻ⁿ φ_# μ_V` and `p_{T_x W} = p_{T_{ψ x} V}`, then `W` has generalized mean curvature
+`R H ∘ ψ` in `ψ⁻¹ U`: neighbourhoods `t ∈ 𝓝[U] (ψ x)` pull back to `ψ⁻¹ t ∈ 𝓝[ψ⁻¹ U] x`, and for
+`X ∈ C¹_c(ψ⁻¹ U)` the field `X̃ = R X ∘ φ ∈ C¹_c(U)` has `DX̃ = DX ∘ φ`, so `div_W X ∘ φ = div_V X̃`
+and `X ∘ φ · R H = X̃ · H`; changing variables along `φ` turns the first variation of `W` at `X`
+into `R⁻ⁿ` times that of `V` at `X̃`. -/
+theorem any_radius_rv_meanCurvature : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → (∀ x, W.tangentProj x = V.tangentProj (c + R • x)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x)) := by
+  intro n ℓ U V c R hR W hw hT H hH
+  obtain ⟨hHloc, hHfv⟩ := hH
+  have hR0 : R ≠ 0 := hR.ne'
+  -- `κ = R⁻ⁿ` is finite.
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ ∞ :=
+    ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne'
+  -- `ψ (φ y) = y` and `φ (ψ x) = x`.
+  have hψφ : ∀ y : Amb n ℓ, c + R • R⁻¹ • (y - c) = y := fun y => by
+    rw [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
+  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • (c + R • x - c) = x := fun x => by
+    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR0, one_smul]
+  have hψc : Continuous (fun x : Amb n ℓ => c + R • x) :=
+    continuous_const.add (continuous_const_smul R)
+  -- `φ` is a homeomorphism with inverse `ψ`; as a measurable equivalence, `μ_W = κ • φ_# μ_V`.
+  let φ : Amb n ℓ ≃ₜ Amb n ℓ :=
+    { toFun := fun y => R⁻¹ • (y - c)
+      invFun := fun x => c + R • x
+      left_inv := hψφ
+      right_inv := hφψ
+      continuous_toFun := (continuous_sub_right c).const_smul R⁻¹
+      continuous_invFun := hψc }
+  have hw' : W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map φ.toMeasurableEquiv := hw
+  refine ⟨?_, ?_⟩
+  · -- Local integrability: transport `t ∈ 𝓝[U] (ψ x)` to `ψ⁻¹ t ∈ 𝓝[ψ⁻¹ U] x`.
+    intro x hx
+    obtain ⟨t, ht, hti⟩ := hHloc (c + R • x) hx
+    refine ⟨(fun x => c + R • x) ⁻¹' t, ?_, ?_⟩
+    · exact (hψc.continuousWithinAt.tendsto_nhdsWithin (mapsTo_preimage _ _)) ht
+    · -- `(κ • ν)⌞s = κ • ν⌞s` with `κ ≠ ∞`, and
+      -- `IntegrableOn (R H ∘ ψ) (ψ⁻¹ t) (φ_# μ_V) ↔ IntegrableOn (R H) t μ_V`.
+      rw [hw', IntegrableOn, Measure.restrict_smul]
+      refine Integrable.smul_measure ?_ hκ
+      change IntegrableOn _ _ (V.weight.map φ.toMeasurableEquiv)
+      rw [integrableOn_map_equiv]
+      have h1 : (fun x => R • H (c + R • x)) ∘ φ.toMeasurableEquiv = R • H := by
+        funext y
+        show R • H (c + R • R⁻¹ • (y - c)) = R • H y
+        rw [hψφ]
+      have h2 : φ.toMeasurableEquiv ⁻¹' ((fun x => c + R • x) ⁻¹' t) = t := by
+        ext y
+        show c + R • R⁻¹ • (y - c) ∈ t ↔ y ∈ t
+        rw [hψφ]
+      rw [h1, h2]
+      exact Integrable.smul R hti
+  · -- First variation: test `V` with the transported field `X̃(y) = R X(φ y)`.
+    intro X hX hXc hXs
+    have hXd : Differentiable ℝ X := hX.differentiable one_ne_zero
+    have hX'c : ContDiff ℝ 1 (fun y => R • X (R⁻¹ • (y - c))) :=
+      (hX.comp ((contDiff_id.sub contDiff_const).const_smul R⁻¹)).const_smul R
+    have hX'cs : HasCompactSupport (fun y => R • X (R⁻¹ • (y - c))) :=
+      (hXc.comp_homeomorph φ).comp_left (g := fun v : Amb n ℓ => R • v) (smul_zero R)
+    -- `y ∈ tsupport X̃` gives `φ y ∈ tsupport X ⊆ ψ⁻¹ U`, i.e. `y = ψ (φ y) ∈ U`.
+    have hX's : tsupport (fun y => R • X (R⁻¹ • (y - c))) ⊆ U := by
+      intro y hy
+      have h1 := tsupport_smul_subset_right (fun _ => R) (fun y => X (R⁻¹ • (y - c))) hy
+      have h2 := hXs (tsupport_comp_subset_preimage X φ.continuous h1)
+      have h3 : c + R • R⁻¹ • (y - c) ∈ U := h2
+      rwa [hψφ] at h3
+    have key := hHfv _ hX'c hX'cs hX's
+    -- `DX̃(y) = R • (DX(φ y) ∘ R⁻¹ • id) = DX(φ y)`.
+    have hder : ∀ y, fderiv ℝ (fun y => R • X (R⁻¹ • (y - c))) y =
+        fderiv ℝ X (R⁻¹ • (y - c)) := by
+      intro y
+      have h1 : HasFDerivAt (fun y : Amb n ℓ => R⁻¹ • (y - c))
+          (R⁻¹ • ContinuousLinearMap.id ℝ (Amb n ℓ)) y :=
+        ((hasFDerivAt_id y).sub_const c).const_smul R⁻¹
+      have h2 : HasFDerivAt (fun y => R • X (R⁻¹ • (y - c)))
+          (R • ((fderiv ℝ X (R⁻¹ • (y - c))).comp (R⁻¹ • ContinuousLinearMap.id ℝ (Amb n ℓ)))) y :=
+        ((hXd (R⁻¹ • (y - c))).hasFDerivAt.comp y h1).const_smul R
+      rw [h2.fderiv]
+      refine ContinuousLinearMap.ext fun v => ?_
+      rw [smul_apply, ContinuousLinearMap.comp_apply, smul_apply, ContinuousLinearMap.id_apply,
+        ContinuousLinearMap.map_smul, smul_smul, mul_inv_cancel₀ hR0, one_smul]
+    -- `div_W X (φ y) = div_V X̃ (y)`, by the tangent hypothesis and `ψ (φ y) = y`.
+    have hdiv : ∀ y, W.divM X (R⁻¹ • (y - c)) = V.divM (fun y => R • X (R⁻¹ • (y - c))) y := by
+      intro y
+      simp only [RectifiableVarifold.divM, hT, hψφ, hder]
+    -- `X (φ y) · R H (ψ (φ y)) = X̃ (y) · H (y)`.
+    have hpair : ∀ y, inner ℝ (X (R⁻¹ • (y - c))) (R • H (c + R • R⁻¹ • (y - c))) =
+        inner ℝ (R • X (R⁻¹ • (y - c))) (H y) := by
+      intro y
+      rw [hψφ, real_inner_smul_right, real_inner_smul_left]
+    -- `∫ g dμ_W = κ.toReal • ∫ g ∘ φ dμ_V` on both sides, then the first variation of `V` at `X̃`.
+    rw [hw', integral_smul_measure, integral_smul_measure, integral_map_equiv, integral_map_equiv]
+    show (ENNReal.ofReal (R ^ n))⁻¹.toReal • ∫ y, W.divM X (R⁻¹ • (y - c)) ∂V.weight =
+      -((ENNReal.ofReal (R ^ n))⁻¹.toReal •
+        ∫ y, inner ℝ (X (R⁻¹ • (y - c))) (R • H (c + R • R⁻¹ • (y - c))) ∂V.weight)
+    simp only [hdiv, hpair, key, smul_neg]
+/-- **Translation and dilation of rectifiable varifolds** (fact (Inv) for Simon 5.3).  For
+`ψ(x) = c + R x` with `R > 0`, there is a varifold `V' = v(ψ⁻¹M, θ ∘ ψ)` in `U' = ψ⁻¹(U)` with
+weight `R⁻ⁿ φ_# μ_V` (`φ(y) = R⁻¹(y − c)`), support `ψ⁻¹(spt V)` and tangent projections
+`p_{T_x M'} = p_{T_{ψ(x)} M}`; if `V` has generalized mean curvature `H` in `U`, then `V'` has
+generalized mean curvature `R H ∘ ψ` in `U'`.
+Proof: `any_radius_rv_exists_structure` gives `V'` with carrier `ψ⁻¹M` and multiplicity `θ ∘ ψ`.
+These two identities give the weight (`any_radius_rv_weight_eq`) and the tangent projections
+(`any_radius_rv_tangentProj_eq`), and the weight and tangent projections in turn give the support
+(`any_radius_rv_support_eq`) and the mean curvature (`any_radius_rv_meanCurvature`). -/
+theorem any_radius_rescaled_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∃ V' : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), V'.carrier = (fun x => c + R • x) ⁻¹' V.carrier ∧ (∀ x, V'.mult x = V.mult (c + R • x)) ∧ V'.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) ∧ V'.support = (fun x => c + R • x) ⁻¹' V.support ∧ (∀ x, V'.tangentProj x = V.tangentProj (c + R • x)) ∧ ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x)) := by
+  intro n ℓ U _ V c R hR
+  -- Steps 1–2: `V' = v(ψ⁻¹M, θ ∘ ψ)` is a rectifiable varifold in `ψ⁻¹(U)`.
+  obtain ⟨V', hcarrier, hmult⟩ := Submission.any_radius_rv_exists_structure n ℓ U V c R hR
+  -- Step 3: `μ_{V'} = R⁻ⁿ φ_# μ_V`, by change of variables.
+  have hweight := Submission.any_radius_rv_weight_eq n ℓ U _ V V' c R hR hcarrier hmult
+  -- Step 5: the blow-ups of `(ψ⁻¹M, θ ∘ ψ)` at `x` are those of `(M, θ)` at `ψ(x)`.
+  have htangent := Submission.any_radius_rv_tangentProj_eq n ℓ U _ V V' c R hR hcarrier hmult
+  -- Steps 4 and 6: support and first variation depend only on the weight and tangent planes.
+  exact ⟨V', hcarrier, hmult, hweight,
+    Submission.any_radius_rv_support_eq n ℓ U V c R hR V' hweight, htangent,
+    fun H hH => Submission.any_radius_rv_meanCurvature n ℓ U V c R hR V' hweight htangent H hH⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
