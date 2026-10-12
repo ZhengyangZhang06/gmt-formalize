@@ -621,6 +621,158 @@ theorem Submission.ltg_tau_unique_on_open :
   · rw [ae_restrict_iff'₀ (hT₁.nullMeasurableSet.inter hO.measurableSet.nullMeasurableSet)]
     filter_upwards [hpt] with x hx hxMO
     exact (hx hxMO.2).2 hxMO.1
+/-- Gluing compatible integer multiplicity triples along a countable open cover (Simon Ch. 6,
+6.3): if `U ⊆ ⋃ᵢ Vᵢ` with `Vᵢ` open, `(Mᵢ, θᵢ, ξᵢ)` are triples in `U` with `θᵢ ∈ ℕ` on `Mᵢ`, and any
+two agree `Hᵏ`-a.e. on `Vᵢ ∩ Vⱼ`, then one triple `(M₀, θ₀, ξ₀)` with `θ₀ ∈ ℕ` on `M₀` agrees with
+each `(Mᵢ, θᵢ, ξᵢ)` `Hᵏ`-a.e. on `Vᵢ`.  The hypothesis (TL) is locality of weighted approximate
+tangent spaces.  `M₀ = ⋃ᵢ Mᵢ ∩ Dᵢ` with `Dᵢ = Vᵢ \ ⋃_{j<i} Vⱼ`, and on `Dᵢ` the triple is
+`(Mᵢ, θᵢ, ξᵢ)`. -/
+theorem Submission.ltg_glue_triples :
+    ∀ (P k : ℕ) (U : Set (Eucl P)), (∀ (A A' : Set (Eucl P)) (ϑ ϑ' : Eucl P → ℝ) (x : Eucl P) (W : Set (Eucl P)), IsOpen W → x ∈ W → (μHE[k] : Measure (Eucl P)) (symmDiff A A' ∩ W) = 0 → (∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (A ∩ W)), ϑ y = ϑ' y) → ϑ x = ϑ' x → ∀ L : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k A ϑ x L → HasWeightedApproximateTangentSpaceAt k A' ϑ' x L) → ∀ (V M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (ξ : ℕ → Eucl P → NVector (Eucl P) k), (∀ i, IsOpen (V i)) → U ⊆ ⋃ i, V i → (∀ i, IsRectifiableTriple U k (M i) (θ i) (ξ i)) → (∀ i, ∀ x ∈ M i, ∃ n : ℕ, θ i x = n) → (∀ i j, (μHE[k] : Measure (Eucl P)) (symmDiff (M i) (M j) ∩ (V i ∩ V j)) = 0 ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M i ∩ (V i ∩ V j))), θ i x = θ j x ∧ ξ i x = ξ j x) → ∃ (M₀ : Set (Eucl P)) (θ₀ : Eucl P → ℝ) (ξ₀ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M₀ θ₀ ξ₀ ∧ (∀ x ∈ M₀, ∃ n : ℕ, θ₀ x = n) ∧ ∀ i, (μHE[k] : Measure (Eucl P)) (symmDiff (M i) M₀ ∩ V i) = 0 ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M i ∩ V i)), θ i x = θ₀ x ∧ ξ i x = ξ₀ x := by
+  classical
+  intro P k U TL V M θ ξ hV hUV hM hint hcompat
+  -- Step 1: disjointification `D i = V i \ ⋃_{j<i} V j`.
+  set D : ℕ → Set (Eucl P) := fun i => V i ∩ ⋂ j, ⋂ (_ : j < i), (V j)ᶜ with hD_def
+  have hD_mem : ∀ x i, x ∈ D i ↔ x ∈ V i ∧ ∀ j < i, x ∉ V j := by
+    intro x i
+    simp only [hD_def, mem_inter_iff, mem_iInter, mem_compl_iff]
+  have hD_meas : ∀ i, MeasurableSet (D i) := fun i =>
+    (hV i).measurableSet.inter
+      (MeasurableSet.iInter fun j => MeasurableSet.iInter fun _ => (hV j).measurableSet.compl)
+  have hDV : ∀ i, D i ⊆ V i := fun i x hx => ((hD_mem x i).1 hx).1
+  -- Step 2: the least index `ι x` of a set `V j` containing `x`.
+  let ι : Eucl P → ℕ := fun x => if h : ∃ j, x ∈ V j then Nat.find h else 0
+  have hι_V : ∀ x i, x ∈ V i → x ∈ D (ι x) ∧ ι x ≤ i := by
+    intro x i hx
+    have h : ∃ j, x ∈ V j := ⟨i, hx⟩
+    have hιx : ι x = Nat.find h := dite_eq_left h
+    rw [hιx]
+    exact ⟨(hD_mem x _).2 ⟨Nat.find_spec h, fun j hj => Nat.find_min h hj⟩, Nat.find_min' h hx⟩
+  have hι_D : ∀ x i, x ∈ D i → ι x = i := by
+    intro x i hx
+    obtain ⟨hxV, hlt⟩ := (hD_mem x i).1 hx
+    obtain ⟨hxD, hle⟩ := hι_V x i hxV
+    rcases lt_or_eq_of_le hle with h | h
+    · exact absurd ((hD_mem x _).1 hxD).1 (hlt _ h)
+    · exact h
+  -- Step 3: the glued triple.
+  set M₀ : Set (Eucl P) := ⋃ i, M i ∩ D i with hM₀_def
+  set θ₀ : Eucl P → ℝ := fun x => θ (ι x) x with hθ₀_def
+  set ξ₀ : Eucl P → NVector (Eucl P) k := fun x => ξ (ι x) x with hξ₀_def
+  have hθ₀_D : ∀ x i, x ∈ D i → θ₀ x = θ i x := by
+    intro x i hx
+    simp only [hθ₀_def, hι_D x i hx]
+  have hξ₀_D : ∀ x i, x ∈ D i → ξ₀ x = ξ i x := by
+    intro x i hx
+    simp only [hξ₀_def, hι_D x i hx]
+  have hM₀_D : ∀ x i, x ∈ D i → (x ∈ M₀ ↔ x ∈ M i) := by
+    intro x i hx
+    constructor
+    · intro h
+      obtain ⟨j, hjM, hjD⟩ := mem_iUnion.1 h
+      rw [← hι_D x i hx, hι_D x j hjD]
+      exact hjM
+    · intro h
+      exact mem_iUnion.2 ⟨i, h, hx⟩
+  have hM₀_mem : ∀ x ∈ M₀, ∃ i, x ∈ M i ∧ x ∈ D i := by
+    intro x hx
+    obtain ⟨i, hiM, hiD⟩ := mem_iUnion.1 hx
+    exact ⟨i, hiM, hiD⟩
+  -- Step 4: agreement of the carriers on each `V i`.
+  have hagree_set : ∀ i, (μHE[k] : Measure (Eucl P)) (symmDiff (M i) M₀ ∩ V i) = 0 := by
+    intro i
+    refine measure_mono_null ?_ (measure_iUnion_null fun j => (hcompat i j).1)
+    rintro x ⟨hxs, hxV⟩
+    obtain ⟨hxD, -⟩ := hι_V x i hxV
+    have hiff := hM₀_D x (ι x) hxD
+    refine mem_iUnion.2 ⟨ι x, ?_, hxV, hDV _ hxD⟩
+    rw [mem_symmDiff] at hxs ⊢
+    rcases hxs with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · exact Or.inl ⟨h1, fun h => h2 (hiff.2 h)⟩
+    · exact Or.inr ⟨hiff.1 h1, h2⟩
+  -- Step 5: agreement of weights and orientations on each `M i ∩ V i`.
+  have hnm : ∀ i, NullMeasurableSet (M i) (μHE[k] : Measure (Eucl P)) :=
+    fun i => (hM i).nullMeasurableSet
+  have hagree_fun : ∀ i, ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M i ∩ V i)),
+      θ i x = θ₀ x ∧ ξ i x = ξ₀ x := by
+    intro i
+    have hall : ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), ∀ j, x ∈ M i ∩ (V i ∩ V j) →
+        θ i x = θ j x ∧ ξ i x = ξ j x := by
+      rw [ae_all_iff]
+      intro j
+      exact (ae_restrict_iff'₀ ((hnm i).inter
+        ((hV i).measurableSet.inter (hV j).measurableSet).nullMeasurableSet)).1 (hcompat i j).2
+    rw [ae_restrict_iff'₀ ((hnm i).inter (hV i).measurableSet.nullMeasurableSet)]
+    filter_upwards [hall] with x hx hxMV
+    obtain ⟨hxD, -⟩ := hι_V x i hxMV.2
+    obtain ⟨h1, h2⟩ := hx (ι x) ⟨hxMV.1, hxMV.2, hDV _ hxD⟩
+    exact ⟨h1.trans (hθ₀_D x _ hxD).symm, h2.trans (hξ₀_D x _ hxD).symm⟩
+  -- Steps 6–10: the triple conditions.
+  have hpiece_nm : ∀ i, NullMeasurableSet (M i ∩ D i) (μHE[k] : Measure (Eucl P)) :=
+    fun i => (hnm i).inter (hD_meas i).nullMeasurableSet
+  -- Not found by instance search; the topologies agree definitionally.
+  have : TopologicalSpace.PseudoMetrizableSpace (NVector (Eucl P) k) :=
+    @PseudoEMetricSpace.pseudoMetrizableSpace (NVector (Eucl P) k) _
+  refine ⟨M₀, θ₀, ξ₀, ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_, fun i => ⟨hagree_set i, hagree_fun i⟩⟩
+  · -- subset
+    intro x hx
+    obtain ⟨i, hiM, -⟩ := hM₀_mem x hx
+    exact (hM i).subset hiM
+  · -- nullMeasurableSet
+    exact NullMeasurableSet.iUnion hpiece_nm
+  · -- countablyRectifiable
+    exact (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion M
+      (fun i => (hM i).countablyRectifiable)).mono (iUnion_mono fun i => inter_subset_left)
+  · -- pos
+    intro x hx
+    obtain ⟨i, hiM, hiD⟩ := hM₀_mem x hx
+    rw [hθ₀_D x i hiD]
+    exact (hM i).pos x hiM
+  · -- integrableOn: a compact `K ⊆ U` meets only `D 0, …, D N`
+    intro K hK hKU
+    obtain ⟨t, ht⟩ := hK.elim_finite_subcover V hV (hKU.trans hUV)
+    set N : ℕ := t.sup id with hN
+    have hsub : M₀ ∩ K ⊆ ⋃ j ∈ Finset.range (N + 1), M j ∩ K ∩ D j := by
+      rintro x ⟨hxM, hxK⟩
+      obtain ⟨i, hiM, hiD⟩ := hM₀_mem x hxM
+      obtain ⟨l, hlt, hxl⟩ := mem_iUnion₂.1 (ht hxK)
+      have hil : i ≤ l := by
+        rw [← hι_D x i hiD]
+        exact (hι_V x l hxl).2
+      have hlN : l ≤ N := Finset.le_sup (f := id) hlt
+      exact mem_iUnion₂.2 ⟨i, Finset.mem_range.2 (Nat.lt_succ_of_le (hil.trans hlN)),
+        ⟨hiM, hxK⟩, hiD⟩
+    refine IntegrableOn.mono_set ?_ hsub
+    refine integrableOn_finset_iUnion.2 fun j _ => ?_
+    have hj : IntegrableOn (θ j) (M j ∩ K ∩ D j) (μHE[k] : Measure (Eucl P)) :=
+      ((hM j).integrableOn K hK hKU).mono_set inter_subset_left
+    refine hj.congr_fun_ae ?_
+    filter_upwards [ae_restrict_mem₀ (((hnm j).inter hK.measurableSet.nullMeasurableSet).inter
+      (hD_meas j).nullMeasurableSet)] with x hx
+    exact (hθ₀_D x j hx.2).symm
+  · -- aestronglyMeasurable
+    rw [hM₀_def, aestronglyMeasurable_iUnion_iff]
+    intro i
+    refine ((hM i).aestronglyMeasurable.mono_measure
+      (Measure.restrict_mono inter_subset_left le_rfl)).congr ?_
+    filter_upwards [ae_restrict_mem₀ (hpiece_nm i)] with x hx
+    exact (hξ₀_D x i hx.2).symm
+  · -- orients: transfer the tangent space from `(M i, θ i)` by (TL) with `W = V i`
+    rw [hM₀_def, ae_restrict_iUnion_iff]
+    intro i
+    filter_upwards [ae_restrict_mem₀ (hpiece_nm i),
+      ae_restrict_of_ae_restrict_of_subset inter_subset_left (hM i).orients]
+      with x hx ⟨τ, hτ, htan, hsign⟩
+    refine ⟨τ, hτ, ?_, ?_⟩
+    · exact TL (M i) M₀ (θ i) θ₀ x (V i) (hV i) (hDV i hx.2) (hagree_set i)
+        ((hagree_fun i).mono fun y hy => hy.1) (hθ₀_D x i hx.2).symm _ htan
+    · rw [hξ₀_D x i hx.2]
+      exact hsign
+  · -- integrality
+    intro x hx
+    obtain ⟨i, hiM, hiD⟩ := hM₀_mem x hx
+    rw [hθ₀_D x i hiD]
+    exact hint i x hiM
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
