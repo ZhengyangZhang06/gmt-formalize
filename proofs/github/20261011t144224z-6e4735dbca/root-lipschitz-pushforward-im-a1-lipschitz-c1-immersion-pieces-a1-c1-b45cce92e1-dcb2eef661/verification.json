@@ -1,0 +1,20 @@
+{
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1146",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "f7a35d70d995337ed144dac4f6ad64b3dd527871",
+  "integrated_commit": "",
+  "proof_base_commit": "9533ddc31cda57d289b623b7afb9ee63941b57f7",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.lusin_closed-a1",
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.egoroff_closed-a1",
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.uniform_remainder-a1",
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.whitney_extension-a1"
+  ]
+}
