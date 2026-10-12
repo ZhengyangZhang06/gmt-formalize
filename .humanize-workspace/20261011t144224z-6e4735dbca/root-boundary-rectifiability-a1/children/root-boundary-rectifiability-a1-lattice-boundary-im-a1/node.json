@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_boundary_im-a1",
+  "parent_id": "root.boundary_rectifiability-a1",
+  "depth": 2,
+  "title": "Boundaries of integer lattice chains are integer multiplicity",
+  "statement": "Let P, m ∈ ℕ, ρ > 0, β : LatticeFaceIndex (m+1) P → ℤ, and Pc ∈ D_{m+1}(ℝ^P) with Pc(ω) = Σ'_F β(F)·latticeFaceAction ρ F ω for every ω ∈ D^{m+1}(ℝ^P) (IsLatticeChain ρ β Pc). Then ∂Pc ∈ D_m(ℝ^P) is an integer multiplicity current.",
+  "lean_statement": "∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (β : LatticeFaceIndex (m + 1) P → ℤ) (Pc : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsLatticeChain ρ (fun F => (β F : ℝ)) Pc → IsIntegerMultiplicity Pc.boundary",
+  "lean_name": "br_lattice_chain_boundary_isIntegerMultiplicity",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.lattice_face_stokes-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_face_stokes-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-boundary-im-a1-a1"
+}
