@@ -359,6 +359,72 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of 7.2 (p. 171, "only finitely many currents `P` as in (2)"): for `ρ > 0`,
+a bounded `Y ⊆ ℝ^N` and `A ∈ ℝ`, only finitely many integer coefficient families `β` have the
+face `F` inside `Y` and `|β_F| ≤ A` whenever `β_F ≠ 0`. -/
+theorem Submission.fiw_tb_lattice_coeff_finite :
+    ∀ (n N : ℕ) (ρ : ℝ), 0 < ρ → ∀ (Y : Set (Eucl N)), Bornology.IsBounded Y → ∀ A : ℝ,
+      {β : LatticeFaceIndex n N → ℝ | (∀ F, ∃ k : ℤ, β F = k) ∧
+        ∀ F, β F ≠ 0 → latticeFace ρ F ⊆ Y ∧ |β F| ≤ A}.Finite := by
+  intro n N ρ hρ Y hY A
+  -- Faces inside `Y`: the vertex `ρ z` of the face `(z, α)` lies in `Y ⊆ closedBall 0 R`, so
+  -- `z` lies in a finite box, and `α` ranges over a finite type.
+  obtain ⟨R, hR⟩ := hY.subset_closedBall 0
+  have hS : {F : LatticeFaceIndex n N | latticeFace ρ F ⊆ Y}.Finite := by
+    refine ((Set.Finite.pi fun _ : Fin N => Set.finite_Icc (-⌈R / ρ⌉) ⌈R / ρ⌉).prod
+      Set.finite_univ).subset ?_
+    rintro ⟨z, α⟩ hF
+    refine ⟨fun i _ => ?_, Set.mem_univ _⟩
+    have hv : (WithLp.toLp 2 fun i => ρ * (z i : ℝ) : Eucl N) ∈ latticeFace ρ (z, α) :=
+      fun j => ⟨fun _ => ⟨le_rfl, mul_le_mul_of_nonneg_left (by linarith) hρ.le⟩, fun _ => rfl⟩
+    have hi := (PiLp.norm_apply_le _ i).trans (mem_closedBall_zero_iff.mp (hR (hF hv)))
+    rw [PiLp.toLp_apply, Real.norm_eq_abs, abs_mul, abs_of_pos hρ] at hi
+    have hz : |(z i : ℝ)| ≤ R / ρ := by
+      rw [le_div_iff₀ hρ]
+      linarith
+    have hc := Int.le_ceil (R / ρ)
+    obtain ⟨h1, h2⟩ := abs_le.mp hz
+    constructor
+    · have : ((-⌈R / ρ⌉ : ℤ) : ℝ) ≤ z i := by push_cast; linarith
+      exact_mod_cast this
+    · have : (z i : ℝ) ≤ ((⌈R / ρ⌉ : ℤ) : ℝ) := by linarith
+      exact_mod_cast this
+  -- Admissible values: integers of absolute value at most `|A|` (this includes `0`).
+  have hV : {x : ℝ | (∃ k : ℤ, x = k) ∧ |x| ≤ |A|}.Finite := by
+    refine ((Set.finite_Icc (-⌈|A|⌉) ⌈|A|⌉).image fun k : ℤ => (k : ℝ)).subset ?_
+    rintro x ⟨⟨k, rfl⟩, hx⟩
+    have hc := Int.le_ceil |A|
+    obtain ⟨h1, h2⟩ := abs_le.mp hx
+    refine ⟨k, ⟨?_, ?_⟩, rfl⟩
+    · have : ((-⌈|A|⌉ : ℤ) : ℝ) ≤ k := by push_cast; linarith
+      exact_mod_cast this
+    · have : (k : ℝ) ≤ ((⌈|A|⌉ : ℤ) : ℝ) := by linarith
+      exact_mod_cast this
+  -- Restriction to the faces inside `Y` maps the set into the finite set of maps into the
+  -- admissible values, and is injective on it since every `β` in it vanishes off these faces.
+  have := hS.to_subtype
+  refine Set.Finite.of_finite_image
+    (f := fun β (F : {F : LatticeFaceIndex n N | latticeFace ρ F ⊆ Y}) => β F) ?_ ?_
+  · refine (Set.Finite.pi' fun _ => hV).subset ?_
+    rintro _ ⟨β, ⟨hint, hsupp⟩, rfl⟩ F
+    dsimp only
+    refine ⟨hint F, ?_⟩
+    by_cases h : β F = 0
+    · rw [h, abs_zero]
+      exact abs_nonneg A
+    · exact (hsupp F h).2.trans (le_abs_self A)
+  · rintro β ⟨-, hsupp⟩ β' ⟨-, hsupp'⟩ h
+    funext F
+    by_cases hF : latticeFace ρ F ⊆ Y
+    · exact congrFun h ⟨F, hF⟩
+    · have h0 : β F = 0 := by
+        by_contra h'
+        exact hF (hsupp F h').1
+      have h0' : β' F = 0 := by
+        by_contra h'
+        exact hF (hsupp' F h').1
+      rw [h0, h0']
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
