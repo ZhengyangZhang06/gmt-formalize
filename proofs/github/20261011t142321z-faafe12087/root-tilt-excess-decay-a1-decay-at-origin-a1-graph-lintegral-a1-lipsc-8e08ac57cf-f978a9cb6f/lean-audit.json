@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a7cd49276a0b05b2c9e26c0b7c15eb9e1fb24d1267eb2eec079c3d82bd0fb952",
+  "git_delta": {
+    "base_commit": "9c39286827f024569cb6e852673fe9b70e2c7956",
+    "candidate_commit": "c6d8a0b77aea04642664a26b3fd59c4fd6b63576",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_gl_lintegral_image_le",
+    "diff_sha256": "fd54a26535226b921877d634b878f5ffdba8fb277591608ee00f3257553d1cca",
+    "source_sha256": "8c88392ff6ec708cd2374dabbb0cadc7d3da201cf83cfc57088b5f7eaa984802",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_gl_lintegral_image_le",
+      "statement": "∀ (n N : ℕ) (F : Rn n → EuclideanSpace ℝ (Fin N)) (D : Set (Rn n)) (K : ℝ≥0), MeasurableSet D → LipschitzOnWith K F D → ∀ g : EuclideanSpace ℝ (Fin N) → ℝ≥0∞, Measurable g → ∫⁻ x in F '' D, g x ∂(μHE[n] : Measure (EuclideanSpace ℝ (Fin N))) ≤ (K : ℝ≥0∞) ^ n * ∫⁻ x' in D, g (F x')",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,15 @@
+{
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1.lipschitz_image_lintegral-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3068",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "c6d8a0b77aea04642664a26b3fd59c4fd6b63576",
+  "integrated_commit": "",
+  "proof_base_commit": "9c39286827f024569cb6e852673fe9b70e2c7956",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1",
+  "requires": []
+}
