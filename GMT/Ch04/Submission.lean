@@ -434,6 +434,154 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Upper density theorem (Simon Ch. 1, 3.6, localized as in Remark 3.7(2)).** If `ν` is finite
+on compact sets and `A ⊆ ℝ^{n+ℓ}` is Borel, then for `Hⁿ`-a.e. `x ∉ A`, `ν(A ∩ B_r(x)) / rⁿ → 0`
+as `r ↓ 0`. -/
+theorem Submission.ts_pwb_upper_density_vanish_ae : ∀ (n ℓ : ℕ) (ν : Measure (Ambient n ℓ)) (A : Set (Ambient n ℓ)), IsFiniteMeasureOnCompacts ν → MeasurableSet A → ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)), x ∉ A → Tendsto (fun r : ℝ ↦ ν.real (A ∩ closedBall x r) / r ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ ν A hν hA
+  -- `T k m`: the points `x ∉ A` with `‖x‖ < m` such that `rⁿ ≤ k ν(A ∩ B_r(x))` for arbitrarily
+  -- small `r > 0`.
+  set T : ℕ → ℕ → Set (Ambient n ℓ) := fun k m ↦ {x | x ∉ A ∧ ‖x‖ < m ∧
+    ∃ᶠ r in 𝓝[>] (0 : ℝ), r ^ n ≤ k * ν.real (A ∩ closedBall x r)}
+  -- Each `T k m` is `μH[n]`-null.
+  have hTnull : ∀ k m : ℕ, (μH[n] : Measure (Ambient n ℓ)) (T k m) = 0 := by
+    intro k m
+    set A' : Set (Ambient n ℓ) := A ∩ ball 0 ((m : ℝ) + 1)
+    have hA'meas : MeasurableSet A' := hA.inter measurableSet_ball
+    have hA'fin : ν A' ≠ ⊤ :=
+      ((measure_mono (inter_subset_right.trans ball_subset_closedBall)).trans_lt
+        (isCompact_closedBall _ _).measure_lt_top).ne
+    -- Covering estimate: `μH[n](T k m) ≤ 8ⁿ k ν(A' \ F)` for every closed `F ⊆ A'`.
+    have hcov : ∀ F : Set (Ambient n ℓ), IsClosed F → F ⊆ A' →
+        (μH[n] : Measure (Ambient n ℓ)) (T k m) ≤ 8 ^ n * ((k : ℝ≥0∞) * ν (A' \ F)) := by
+      intro F hF hFA'
+      set S := A' \ F
+      have hSmeas : MeasurableSet S := hA'meas.diff hF.measurableSet
+      -- Every point of `T k m` is the center of arbitrarily small balls `B_r` with
+      -- `rⁿ ≤ k ν(S ∩ B_r)`.
+      have hfine : ∀ x ∈ T k m, ∀ δ : ℝ, 0 < δ → ∃ r : ℝ, 0 < r ∧ r ≤ δ ∧
+          ENNReal.ofReal r ^ n ≤ (k : ℝ≥0∞) * ν (S ∩ closedBall x r) := by
+        rintro x ⟨hxA, hxm, hfreq⟩ δ hδ
+        have hxF : x ∉ F := fun h ↦ hxA (hFA' h).1
+        obtain ⟨ρ, hρ, hρF⟩ := Metric.isOpen_iff.1 hF.isOpen_compl x hxF
+        obtain ⟨r, hrle, hr⟩ :=
+          (hfreq.and_eventually (Ioo_mem_nhdsGT (lt_min hρ (lt_min one_pos hδ)))).exists
+        have hr0 : 0 < r := hr.1
+        have hrρ : r < ρ := hr.2.trans_le (min_le_left _ _)
+        have hr1 : r < 1 := hr.2.trans_le ((min_le_right _ _).trans (min_le_left _ _))
+        have hrδ : r ≤ δ := hr.2.le.trans ((min_le_right _ _).trans (min_le_right _ _))
+        have hsub : A ∩ closedBall x r ⊆ S ∩ closedBall x r := by
+          rintro y ⟨hyA, hyr⟩
+          rw [mem_closedBall] at hyr
+          refine ⟨⟨⟨hyA, ?_⟩, ?_⟩, hyr⟩
+          · rw [mem_ball, dist_zero_right]
+            have h1 := norm_le_insert' y x
+            rw [← dist_eq_norm] at h1
+            linarith
+          · exact hρF (mem_ball.2 (hyr.trans_lt hrρ))
+        refine ⟨r, hr0, hrδ, ?_⟩
+        calc ENNReal.ofReal r ^ n = ENNReal.ofReal (r ^ n) := (ENNReal.ofReal_pow hr0.le n).symm
+          _ ≤ ENNReal.ofReal (k * ν.real (A ∩ closedBall x r)) := ENNReal.ofReal_le_ofReal hrle
+          _ = (k : ℝ≥0∞) * ν (A ∩ closedBall x r) := by
+            rw [ENNReal.ofReal_mul (Nat.cast_nonneg k), ENNReal.ofReal_natCast,
+              ofReal_measureReal ((measure_mono inter_subset_right).trans_lt
+                (isCompact_closedBall x r).measure_lt_top).ne]
+          _ ≤ (k : ℝ≥0∞) * ν (S ∩ closedBall x r) := mul_le_mul_right (measure_mono hsub) _
+      -- Vitali covering at scale `δ`: a countable disjoint family of good balls whose
+      -- 4-fold enlargements cover `T k m`.
+      have hvit : ∀ δ : ℝ, 0 < δ → ∃ u : Set (Ambient n ℓ × ℝ), u.Countable ∧
+          (∀ p ∈ u, 0 < p.2 ∧ p.2 ≤ δ) ∧ T k m ⊆ ⋃ p : u, closedBall p.1.1 (4 * p.1.2) ∧
+          ∑' p : u, ENNReal.ofReal p.1.2 ^ n ≤ (k : ℝ≥0∞) * ν S := by
+        intro δ hδ
+        obtain ⟨u, hut, hudisj, hucov⟩ :=
+          Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall
+            {p : Ambient n ℓ × ℝ | 0 < p.2 ∧ p.2 ≤ δ ∧
+              ENNReal.ofReal p.2 ^ n ≤ (k : ℝ≥0∞) * ν (S ∩ closedBall p.1 p.2)}
+            Prod.fst Prod.snd δ (fun p hp ↦ hp.2.1) 4 (by norm_num)
+        have hucount : u.Countable := hudisj.countable_of_nonempty_interior fun p hp ↦
+          ⟨p.1, interior_mono ball_subset_closedBall
+            (by rw [isOpen_ball.interior_eq]; exact mem_ball_self (hut hp).1)⟩
+        refine ⟨u, hucount, fun p hp ↦ ⟨(hut hp).1, (hut hp).2.1⟩, ?_, ?_⟩
+        · intro x hx
+          obtain ⟨r, hr0, hrδ, hrν⟩ := hfine x hx δ hδ
+          obtain ⟨b, hbu, hb⟩ := hucov (x, r) ⟨hr0, hrδ, hrν⟩
+          exact mem_iUnion.2 ⟨⟨b, hbu⟩, hb (mem_closedBall_self hr0.le)⟩
+        · calc ∑' p : u, ENNReal.ofReal p.1.2 ^ n
+              ≤ ∑' p : u, (k : ℝ≥0∞) * ν (S ∩ closedBall p.1.1 p.1.2) :=
+                ENNReal.tsum_le_tsum fun p ↦ (hut p.2).2.2
+            _ = (k : ℝ≥0∞) * ν (⋃ p ∈ u, S ∩ closedBall p.1 p.2) := by
+                rw [ENNReal.tsum_mul_left, measure_biUnion hucount
+                  (hudisj.mono fun p ↦ inter_subset_right)
+                  fun p _ ↦ hSmeas.inter measurableSet_closedBall]
+            _ ≤ (k : ℝ≥0∞) * ν S :=
+                mul_le_mul_right (measure_mono (iUnion₂_subset fun p _ ↦ inter_subset_left)) _
+      choose u hucount hurad hucov hsum using
+        fun j : ℕ ↦ hvit (1 / ((j : ℝ) + 1)) (by positivity)
+      have : ∀ j, Countable ↥(u j) := fun j ↦ (hucount j).to_subtype
+      have hlim : Tendsto (fun j : ℕ ↦ ENNReal.ofReal (8 * (1 / ((j : ℝ) + 1)))) atTop (𝓝 0) := by
+        have h := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul (8 : ℝ)
+        rw [mul_zero] at h
+        simpa using ENNReal.tendsto_ofReal h
+      -- The Hausdorff measure is bounded by the `liminf` of the covering sums.
+      have hH := Measure.hausdorffMeasure_le_liminf_tsum (ι := fun j ↦ ↥(u j)) (n : ℝ) (T k m)
+        _ hlim (fun j p ↦ closedBall p.1.1 (4 * p.1.2))
+        (Eventually.of_forall fun j p ↦ ?_) (Eventually.of_forall fun j ↦ hucov j)
+      · refine hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall fun j ↦ ?_))
+        calc ∑' p : ↥(u j), Metric.ediam (closedBall p.1.1 (4 * p.1.2)) ^ (n : ℝ)
+            ≤ ∑' p : ↥(u j), 8 ^ n * ENNReal.ofReal p.1.2 ^ n := by
+              refine ENNReal.tsum_le_tsum fun p ↦ ?_
+              rw [ENNReal.rpow_natCast, ← mul_pow]
+              gcongr
+              calc Metric.ediam (closedBall p.1.1 (4 * p.1.2)) ≤ ENNReal.ofReal (8 * p.1.2) := by
+                    refine Metric.ediam_le_of_forall_dist_le fun y hy z hz ↦ ?_
+                    have := dist_triangle_right y z p.1.1
+                    rw [mem_closedBall] at hy hz
+                    linarith
+                _ = 8 * ENNReal.ofReal p.1.2 := by
+                    rw [ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_ofNat]
+          _ = 8 ^ n * ∑' p : ↥(u j), ENNReal.ofReal p.1.2 ^ n := ENNReal.tsum_mul_left
+          _ ≤ 8 ^ n * ((k : ℝ≥0∞) * ν S) := mul_le_mul_right (hsum j) _
+      · have hp := hurad j p.1 p.2
+        refine (Metric.ediam_le_of_forall_dist_le fun y hy z hz ↦ ?_).trans
+          (ENNReal.ofReal_le_ofReal (show 8 * p.1.2 ≤ 8 * (1 / ((j : ℝ) + 1)) by linarith))
+        have := dist_triangle_right y z p.1.1
+        rw [mem_closedBall] at hy hz
+        linarith
+    -- Inner regularity of `ν` makes `ν(A' \ F)` arbitrarily small.
+    refine le_antisymm (ENNReal.le_of_forall_pos_le_add fun η hη _ ↦ ?_) bot_le
+    rw [zero_add]
+    have hKtop : (8 : ℝ≥0∞) ^ n * (k : ℝ≥0∞) ≠ ⊤ :=
+      ENNReal.mul_ne_top (ENNReal.pow_ne_top (by norm_num)) (ENNReal.natCast_ne_top k)
+    obtain ⟨F, hFA', hFc, hFν⟩ := hA'meas.exists_isClosed_sdiff_lt hA'fin
+      (ε := (η : ℝ≥0∞) / (8 ^ n * k)) (ENNReal.div_pos_iff.2 ⟨by exact_mod_cast hη.ne', hKtop⟩).ne'
+    calc (μH[n] : Measure (Ambient n ℓ)) (T k m) ≤ 8 ^ n * ((k : ℝ≥0∞) * ν (A' \ F)) :=
+          hcov F hFc hFA'
+      _ = 8 ^ n * k * ν (A' \ F) := (mul_assoc _ _ _).symm
+      _ ≤ 8 ^ n * k * ((η : ℝ≥0∞) / (8 ^ n * k)) := mul_le_mul_right hFν.le _
+      _ ≤ η := ENNReal.mul_div_le
+  -- Every `x ∉ A` at which the ratio does not tend to `0` lies in some `T k m`.
+  rw [ae_iff]
+  refine measure_mono_null (t := ⋃ k : ℕ, ⋃ m : ℕ, T k m) ?_
+    (measure_iUnion_null fun k ↦ measure_iUnion_null fun m ↦ ?_)
+  · intro x hx
+    simp only [mem_ofPred_eq, not_imp] at hx
+    obtain ⟨hxA, hnt⟩ := hx
+    simp only [Metric.tendsto_nhds, not_forall, not_eventually, not_lt, exists_prop] at hnt
+    obtain ⟨ε, hε, hfreq⟩ := hnt
+    obtain ⟨k, hk⟩ := exists_nat_ge ε⁻¹
+    obtain ⟨m, hm⟩ := exists_nat_gt ‖x‖
+    refine mem_iUnion.2 ⟨k, mem_iUnion.2 ⟨m, hxA, hm, ?_⟩⟩
+    refine (hfreq.and_eventually self_mem_nhdsWithin).mono fun r hr ↦ ?_
+    obtain ⟨hr, hr0⟩ := hr
+    have hr0' : (0 : ℝ) < r := hr0
+    have hpos : 0 < r ^ n := pow_pos hr0' n
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (div_nonneg measureReal_nonneg hpos.le),
+      le_div_iff₀ hpos] at hr
+    calc r ^ n = ε⁻¹ * (ε * r ^ n) := by field_simp
+      _ ≤ ε⁻¹ * ν.real (A ∩ closedBall x r) := by gcongr
+      _ ≤ k * ν.real (A ∩ closedBall x r) := by gcongr
+  · rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hTnull k m, smul_zero]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
