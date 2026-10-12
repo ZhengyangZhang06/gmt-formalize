@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_cover-a1.regular_ball_submanifold-a1.ball_image_submanifold-a1",
+  "parent_id": "root.submanifold_cover-a1.regular_ball_submanifold-a1",
+  "depth": 3,
+  "title": "A C¹ map injective on a closed ball with injective derivative maps the open ball onto an embedded C¹ submanifold",
+  "statement": "For all n, p ∈ ℕ (ℝᵈ := EuclideanSpace ℝ (Fin d)), every map G : ℝⁿ → ℝᵖ, every x ∈ ℝⁿ and every r ∈ ℝ, assume three things: G is of class C¹ on the closed ball B̄_r(x) = Metric.closedBall x r (ContDiffOn ℝ 1 G (B̄_r(x))); G is injective on B̄_r(x); and the Fréchet derivative DG(z) = fderiv ℝ G z is injective for every z in the open ball B_r(x) = Metric.ball x r. Then G(B_r(x)) is an n-dimensional embedded C¹ submanifold of ℝᵖ in the sense of IsC1Submanifold n. That is, for every y ∈ G(B_r(x)) there are an open V ⊆ ℝⁿ, an open W ⊆ ℝᵖ with y ∈ W, and ψ : ℝⁿ → ℝᵖ such that: ψ is C¹ and injective on V; ψ(V) = W ∩ G(B_r(x)); V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W; and fderiv ℝ ψ z is injective for every z ∈ V.",
+  "lean_statement": "∀ (n p : ℕ) (G : Rn n → Rn p) (x : Rn n) (r : ℝ), ContDiffOn ℝ 1 G (Metric.closedBall x r) → Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective (fderiv ℝ G z)) → IsC1Submanifold n (G '' Metric.ball x r)",
+  "lean_name": "isC1Submanifold_image_ball_of_injOn_closedBall",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-submanifold-cover-a1-regular-ball-submanifold-a1-ball-image-submanifold-a1-a1"
+}
