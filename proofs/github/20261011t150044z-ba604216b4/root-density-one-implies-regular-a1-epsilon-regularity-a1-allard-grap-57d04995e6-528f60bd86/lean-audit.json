@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "77ad8c9efbd9d862a6cae0fc6099b2a9ba4c17084a5b795c6cbbbd108a826993",
+  "git_delta": {
+    "base_commit": "b1d3f73cf0a852feff1c96e2394aa9c15e8d5b1e",
+    "candidate_commit": "af5e0757872c880e8c3a4db59798d42750f91a87",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doraggt_ae_rescaled_lebesgue_point",
+    "diff_sha256": "c4a955a8984751515a3f1cc8238c7123ecce9421b59470eb6ce6698231793e31",
+    "source_sha256": "355c4a8e18dbf28d19004e359f381ca7bd4843c7eb38f49309d4d8fefd111ae1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doraggt_ae_rescaled_lebesgue_point",
+      "statement": "∀ (n : ℕ) (g : Euclid n → ℝ), LocallyIntegrable g volume → ∀ᵐ v ∂(volume : Measure (Euclid n)), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |g (v + r • w) - g v|) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

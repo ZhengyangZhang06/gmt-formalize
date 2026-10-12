@@ -451,6 +451,60 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lebesgue points, rescaled** (Simon Ch. 1, Corollary 3.17, in the Lebesgue-point form of
+Mathlib's `IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub`): if `g : ℝⁿ → ℝ` is locally
+`Lⁿ`-integrable, then for `Lⁿ`-a.e. `v` and every `R > 0`, `∫_{B_R(0)} |g(v + rw) − g(v)| dw → 0`
+as `r ↓ 0`.  The substitutions `u = rw`, `y = v + u` and `Lⁿ(B_{rR}(v)) = rⁿ Lⁿ(B_R(0))` give
+`∫_{B_R(0)} |g(v + rw) − g(v)| dw = Lⁿ(B_R(0)) ⨍_{B_{rR}(v)} |g − g(v)|`, and these averages tend
+to `0` at every Lebesgue point `v` of `g`. -/
+theorem Submission.doraggt_ae_rescaled_lebesgue_point : ∀ (n : ℕ) (g : Euclid n → ℝ), LocallyIntegrable g volume → ∀ᵐ v ∂(volume : Measure (Euclid n)), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |g (v + r • w) - g v|) (𝓝[>] 0) (𝓝 0) := by
+  intro n g hg
+  filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub
+    (volume : Measure (Euclid n)) hg 1] with v hv R hR
+  -- Lebesgue point: the averages over `closedBall v (r * R)` tend to `0` as `r ↓ 0`
+  have hδ : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h : Tendsto (fun r : ℝ => r * R) (𝓝 0) (𝓝 (0 * R)) := tendsto_id.mul_const R
+      rw [zero_mul] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+      exact mul_pos hr hR
+  have hA : Tendsto (fun r : ℝ => ⨍ y in closedBall v (r * R), |g y - g v|) (𝓝[>] 0) (𝓝 0) := by
+    have h := hv (fun _ => v) (fun r : ℝ => r * R) hδ (by
+      filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+      rw [one_mul]
+      exact mem_closedBall_self (mul_pos hr hR).le)
+    simpa only [Real.norm_eq_abs] using h
+  -- change of variables `u = r • w` (dilation), `y = v + u` (translation)
+  have key : ∀ r : ℝ, 0 < r → ∫ w in closedBall (0 : Euclid n) R, |g (v + r • w) - g v| =
+      volume.real (closedBall (0 : Euclid n) R) * ⨍ y in closedBall v (r * R), |g y - g v| := by
+    intro r hr
+    have h1 : ∫ w in closedBall (0 : Euclid n) R, |g (v + r • w) - g v| =
+        (r ^ n)⁻¹ • ∫ u in closedBall (0 : Euclid n) (r * R), |g (v + u) - g v| := by
+      rw [Measure.setIntegral_comp_smul_of_pos (volume : Measure (Euclid n))
+        (fun u => |g (v + u) - g v|) _ hr, _root_.smul_closedBall _ _ hR.le, smul_zero,
+        Real.norm_of_nonneg hr.le, finrank_euclideanSpace_fin]
+    have h2 : ∫ u in closedBall (0 : Euclid n) (r * R), |g (v + u) - g v| =
+        ∫ y in closedBall v (r * R), |g y - g v| := by
+      have h := MeasurePreserving.setIntegral_preimage_emb
+        (measurePreserving_add_left (volume : Measure (Euclid n)) v)
+        (measurableEmbedding_addLeft v) (fun y => |g y - g v|) (closedBall v (r * R))
+      simpa using h
+    -- `∫_{B_{rR}(v)} = Lⁿ(B_{rR}(v)) ⨍_{B_{rR}(v)}` and `Lⁿ(B_{rR}(v)) = rⁿ Lⁿ(B_R(0))`
+    have h3 := measure_smul_setAverage (μ := (volume : Measure (Euclid n)))
+      (fun y => |g y - g v|) (s := closedBall v (r * R)) measure_closedBall_lt_top.ne
+    rw [h1, h2, ← h3, smul_eq_mul, smul_eq_mul,
+      Measure.addHaar_real_closedBall _ _ (mul_pos hr hR).le,
+      Measure.addHaar_real_closedBall _ _ hR.le, finrank_euclideanSpace_fin, mul_pow]
+    have hrn : r ^ n ≠ 0 := pow_ne_zero _ hr.ne'
+    field_simp
+  have hlim : Tendsto (fun r : ℝ => volume.real (closedBall (0 : Euclid n) R) *
+      ⨍ y in closedBall v (r * R), |g y - g v|) (𝓝[>] 0) (𝓝 0) := by
+    simpa using hA.const_mul (volume.real (closedBall (0 : Euclid n) R))
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  exact (key r hr).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
