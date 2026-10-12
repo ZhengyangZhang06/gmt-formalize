@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "78eff81a623497b191a0f73d05c04f9daa7cf4c55cd2940e1df84c35e7fcd6ec",
+  "git_delta": {
+    "base_commit": "33ea4ebe7c7d3430e125055f6e9012813a4e351c",
+    "candidate_commit": "008733191a803544080be8ff63c3f6527ee408fc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_cone_opEuclid_aemeasurable_of_aesm",
+    "diff_sha256": "cc17ad4379c33925e1a6b80129fa355e7247c086e9342e9f370b3fcbd59f03e7",
+    "source_sha256": "84c8abcf92b362ff812b020048a1ebb0aa79340b1314e59b08f42ce06e3773b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cone_opEuclid_aemeasurable_of_aesm",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable f μ → AEMeasurable f μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,15 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A.e. strongly measurable maps into `L(ℝᴾ, ℝᴾ)` are a.e. measurable.**  With the operator
+norm, `Euclid P →L[ℝ] Euclid P` is a metric space whose measurable structure is its Borel
+σ-algebra (`ContinuousLinearMap.instBorelSpace`).  A strongly measurable representative `g` of `f`
+is a pointwise limit of simple functions `gₖ`; for open `O ≠ L`, `dist(gₖ, Oᶜ) → dist(g, Oᶜ)`, so
+`g⁻¹(O) = {dist(g, Oᶜ) > 0}` is measurable.  Hence `g` is Borel measurable and `f = g` a.e. -/
+theorem Submission.dtc_cone_opEuclid_aemeasurable_of_aesm : ∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable f μ → AEMeasurable f μ := by
+  intro P μ f hf
+  exact hf.aemeasurable
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
