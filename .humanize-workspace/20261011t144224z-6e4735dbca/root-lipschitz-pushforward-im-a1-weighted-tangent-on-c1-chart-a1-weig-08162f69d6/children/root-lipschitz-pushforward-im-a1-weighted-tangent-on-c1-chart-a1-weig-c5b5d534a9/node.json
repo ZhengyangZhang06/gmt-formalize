@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.blowup_integral_split-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1",
+  "depth": 4,
+  "title": "Eventual three-term splitting of the localized weighted blow-up integral along C ⊆ M (parent Step 4)",
+  "statement": "Let Q, n ∈ ℕ. Let M, C ⊆ ℝ^Q be Hⁿ-null-measurable (Hⁿ = μHE[n] on ℝ^Q) with C ⊆ M. Let θ : ℝ^Q → ℝ, y ∈ ℝ^Q and φ ∈ C_c(ℝ^Q, ℝ), and write η_t(x) = blowUpMap y t x = t⁻¹(x − y). Suppose there is r > 0 with Hⁿ(C ∩ B̄_r(y)) < ∞ and θ Hⁿ-integrable on M ∩ B̄_r(y). Then for all sufficiently small t > 0 (eventually in 𝓝[>] 0):\n ∫_M φ(η_t(x)) θ(x) dHⁿ(x) = θ(y) · ∫_C φ(η_t(x)) dHⁿ(x) + ∫_C φ(η_t(x)) (θ(x) − θ(y)) dHⁿ(x) + ∫_{M∖C} φ(η_t(x)) θ(x) dHⁿ(x)\n(Bochner set integrals).",
+  "lean_statement": "∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (φ : CompactlySupportedContinuousMap (Eucl Q) ℝ), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∫ x in M, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * θ x ∂(μHE[n] : Measure (Eucl Q)) = θ y * ∫ x in C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) ∂(μHE[n] : Measure (Eucl Q)) + ∫ x in C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * (θ x - θ y) ∂(μHE[n] : Measure (Eucl Q)) + ∫ x in M \\ C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * θ x ∂(μHE[n] : Measure (Eucl Q))",
+  "lean_name": "lpf_wtc_wtt_blowup_integral_split",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-c5b5d534a9-a1"
+}
