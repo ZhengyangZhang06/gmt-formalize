@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d46c194c3f4e734277a0cf40b8ed20aa484f1db3e7d440b49130a039af7ebbe",
+  "git_delta": {
+    "base_commit": "a09b7665ee796dc53ecb3f4ce7ce9840cbbdf089",
+    "candidate_commit": "3757a9ca7367a1f2fd1b5a657b1a88e83b3b89ac",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_lip_bad_set_measure_bound",
+    "diff_sha256": "470e42c91e04da11797316a1008f371fc277842607b1bee8753903220f2e9cb3",
+    "source_sha256": "d21b7d9a4d07b2d259c40b4c8de4c7052a7d8814fbf6a3f73225b6610eb7b73d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_lip_bad_set_measure_bound",
+      "statement": "∀ (n k : ℕ) (μ : Measure (Euclid (n + k))) (e : Euclid (n + k) → ℝ) (ξ : Euclid (n + k)) (σ₀ a : ℝ), 0 < σ₀ → 0 < a → (∀ y ∈ closedBall ξ (3 * σ₀ / 4), ∀ t : ℝ, 0 < t → t ≤ 5 * σ₀ / 4 → μ (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) → μ (closedBall ξ (3 * σ₀ / 4) \\ {y | y ∈ μ.support ∧ ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 → ∫⁻ x in closedBall y (t / 2), ENNReal.ofReal (e x) ∂μ ≤ ENNReal.ofReal (a * t ^ n)}) ≤ ENNReal.ofReal (2 * (5 / 2) ^ n / a) * unitBallVolume n * ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (e x) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

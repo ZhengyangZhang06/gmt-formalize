@@ -451,6 +451,119 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Two-measure five-times covering bound**: the summation step after the 5-times Covering
+Lemma (Simon Ch. 1, 3.4, chapter-01.txt lines 612–622) in the proof of the Lipschitz
+approximation lemma (Simon Ch. 5, proof of 2.6, chapter-05.txt lines 413–425 and 536–548).
+If each `y ∈ A` has `0 < r(y) ≤ R₀`, `B_{r(y)}(y) ⊆ B` and `μ(A ∩ B_{5r(y)}(y)) ≤ c ν(B_{r(y)}(y))`,
+then `μ(A) ≤ c ν(B)`.  Vitali's lemma (factor `5 > 3`) gives `u ⊆ A` with the balls
+`B_{r(b)}(b)`, `b ∈ u`, pairwise disjoint, hence countable in the separable `ℝᴾ`, and
+`A ⊆ ⋃_{b ∈ u} B_{5r(b)}(b)`; so `μ(A) ≤ Σ_b μ(A ∩ B_{5r(b)}(b)) ≤ c Σ_b ν(B_{r(b)}(b))
+= c ν(⋃_b B_{r(b)}(b)) ≤ c ν(B)`. -/
+theorem Submission.dorag_lip_vitali_two_measure_bound : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (A B : Set (Euclid P)) (r : Euclid P → ℝ) (R₀ : ℝ) (c : ℝ≥0∞), (∀ y ∈ A, 0 < r y ∧ r y ≤ R₀ ∧ closedBall y (r y) ⊆ B ∧ μ (A ∩ closedBall y (5 * r y)) ≤ c * ν (closedBall y (r y))) → μ A ≤ c * ν B := by
+  intro P μ ν A B r R₀ c h
+  -- Vitali selection with enlargement factor `5 > 3`.
+  obtain ⟨u, huA, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall
+    A id r R₀ (fun a ha => (h a ha).2.1) 5 (by norm_num)
+  simp only [id] at hdisj hcov
+  -- Disjoint balls with nonempty interior in the separable `ℝᴾ` are countably many.
+  have hu : u.Countable := hdisj.countable_of_nonempty_interior fun a ha => by
+    have hr := (h a (huA ha)).1
+    exact ⟨a, interior_mono ball_subset_closedBall
+      (by rw [isOpen_ball.interior_eq]; exact mem_ball_self hr)⟩
+  -- `a ∈ B_{r(a)}(a) ⊆ B_{5r(b)}(b)`.
+  have hAsub : A ⊆ ⋃ b ∈ u, A ∩ closedBall b (5 * r b) := by
+    intro a ha
+    obtain ⟨b, hb, hab⟩ := hcov a ha
+    exact mem_iUnion₂.2 ⟨b, hb, ha, hab (mem_closedBall_self (h a ha).1.le)⟩
+  calc μ A ≤ μ (⋃ b ∈ u, A ∩ closedBall b (5 * r b)) := measure_mono hAsub
+    _ ≤ ∑' b : u, μ (A ∩ closedBall b (5 * r b)) := measure_biUnion_le μ hu _
+    _ ≤ ∑' b : u, c * ν (closedBall b (r b)) :=
+        ENNReal.tsum_le_tsum fun b => (h b (huA b.2)).2.2.2
+    _ = c * ∑' b : u, ν (closedBall b (r b)) := ENNReal.tsum_mul_left
+    _ = c * ν (⋃ b ∈ u, closedBall b (r b)) := by
+        rw [measure_biUnion hu hdisj fun b _ => measurableSet_closedBall]
+    _ ≤ c * ν B := by
+        gcongr
+        exact iUnion₂_subset fun b hb => (h b (huA hb)).2.2.1
+
+/-- **Measure of the bad set** (Simon Ch. 5, proof of Lemma 2.6, (2) and (6)).  If
+`μ(B_t(y)) ≤ 2ωₙtⁿ` for `y ∈ B_{3σ₀/4}(ξ)`, `t ∈ (0, 5σ₀/4]`, and
+`G' = {y ∈ spt μ : ∫_{B_{t/2}(y)} e⁺ dμ ≤ a tⁿ for all t ∈ (0, σ₀/2]}`, then
+`μ(B_{3σ₀/4}(ξ) \ G') ≤ (2(5/2)ⁿ/a) ωₙ ∫_{B_{σ₀}(ξ)} e⁺ dμ`.
+
+Since `μ(ℝ^{n+k} \ spt μ) = 0`, only `A' = (B_{3σ₀/4}(ξ) \ G') ∩ spt μ` counts.  Each `y ∈ A'` has
+a bad radius `t_y ∈ (0, σ₀/2]` with `a t_yⁿ < ∫_{B_{t_y/2}(y)} e⁺ dμ` (Simon's (2)), so
+`μ(A' ∩ B_{5t_y/2}(y)) ≤ 2ωₙ(5t_y/2)ⁿ ≤ (2(5/2)ⁿ/a) ωₙ (μ ⌞ e⁺)(B_{t_y/2}(y))`.  The five-times
+covering bound `dorag_lip_vitali_two_measure_bound`, with radii `t_y/2 ≤ σ₀/4` and
+`B_{t_y/2}(y) ⊆ B_{σ₀}(ξ)`, gives the claim. -/
+theorem Submission.dorag_lip_bad_set_measure_bound : ∀ (n k : ℕ) (μ : Measure (Euclid (n + k))) (e : Euclid (n + k) → ℝ) (ξ : Euclid (n + k)) (σ₀ a : ℝ), 0 < σ₀ → 0 < a → (∀ y ∈ closedBall ξ (3 * σ₀ / 4), ∀ t : ℝ, 0 < t → t ≤ 5 * σ₀ / 4 → μ (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) → μ (closedBall ξ (3 * σ₀ / 4) \ {y | y ∈ μ.support ∧ ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 → ∫⁻ x in closedBall y (t / 2), ENNReal.ofReal (e x) ∂μ ≤ ENNReal.ofReal (a * t ^ n)}) ≤ ENNReal.ofReal (2 * (5 / 2) ^ n / a) * unitBallVolume n * ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (e x) ∂μ := by
+  intro n k μ e ξ σ₀ a hσ₀ ha hdens
+  classical
+  set Gs := {y | y ∈ μ.support ∧ ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 →
+    ∫⁻ x in closedBall y (t / 2), ENNReal.ofReal (e x) ∂μ ≤ ENNReal.ofReal (a * t ^ n)} with hGs
+  set A' := (closedBall ξ (3 * σ₀ / 4) \ Gs) ∩ μ.support with hA'
+  -- Step 1: the complement of `spt μ` is `μ`-null.
+  have hsplit : μ (closedBall ξ (3 * σ₀ / 4) \ Gs) ≤ μ A' := by
+    calc μ (closedBall ξ (3 * σ₀ / 4) \ Gs) ≤ μ (A' ∪ μ.supportᶜ) := by
+          apply measure_mono
+          intro x hx
+          by_cases h : x ∈ μ.support
+          · exact Or.inl ⟨hx, h⟩
+          · exact Or.inr h
+      _ ≤ μ A' + μ μ.supportᶜ := measure_union_le _ _
+      _ = μ A' := by rw [Measure.measure_compl_support, add_zero]
+  -- Step 2: every point of `A'` has a bad radius `T y ∈ (0, σ₀/2]`.
+  have hbad : ∀ y ∈ A', ∃ t : ℝ, 0 < t ∧ t ≤ σ₀ / 2 ∧
+      ENNReal.ofReal (a * t ^ n) < ∫⁻ x in closedBall y (t / 2), ENNReal.ofReal (e x) ∂μ := by
+    intro y hy
+    have hyG : y ∉ Gs := hy.1.2
+    simp only [hGs, Set.mem_ofPred_eq, not_and, not_forall, not_le] at hyG
+    obtain ⟨t, ht, ht', hlt⟩ := hyG hy.2
+    exact ⟨t, ht, ht', hlt⟩
+  choose! T hT0 hTσ hTlt using hbad
+  set c : ℝ≥0∞ := ENNReal.ofReal (2 * (5 / 2) ^ n / a) * unitBallVolume n with hc
+  -- Step 3: the five-times covering bound for `μ` and `ν = μ ⌞ e⁺` with radii `T y / 2`.
+  have key := Submission.dorag_lip_vitali_two_measure_bound (n + k) μ
+    (μ.withDensity (fun x => ENNReal.ofReal (e x))) A' (closedBall ξ σ₀)
+    (fun y => T y / 2) (σ₀ / 4) c (by
+    intro y hy
+    have hT0y := hT0 y hy
+    have hTσy := hTσ y hy
+    refine ⟨by linarith, by linarith, ?_, ?_⟩
+    · intro x hx
+      rw [mem_closedBall] at hx ⊢
+      have := dist_triangle x y ξ
+      have hyξ := mem_closedBall.1 hy.1.1
+      linarith
+    · calc μ (A' ∩ closedBall y (5 * (T y / 2))) ≤ μ (closedBall y (5 * (T y / 2))) :=
+            measure_mono inter_subset_right
+        _ ≤ 2 * unitBallVolume n * ENNReal.ofReal ((5 * (T y / 2)) ^ n) :=
+            hdens y hy.1.1 _ (by linarith) (by linarith)
+        _ = c * ENNReal.ofReal (a * T y ^ n) := by
+            have hreal : 2 * (5 / 2) ^ n / a * (a * T y ^ n) = 2 * (5 * (T y / 2)) ^ n := by
+              field_simp
+              ring
+            have h2 : ENNReal.ofReal (2 * (5 / 2) ^ n / a) * ENNReal.ofReal (a * T y ^ n) =
+                2 * ENNReal.ofReal ((5 * (T y / 2)) ^ n) := by
+              rw [← ENNReal.ofReal_mul (by positivity), hreal, ENNReal.ofReal_mul (by norm_num),
+                ENNReal.ofReal_ofNat]
+            rw [hc]
+            calc 2 * unitBallVolume n * ENNReal.ofReal ((5 * (T y / 2)) ^ n)
+                = unitBallVolume n * (2 * ENNReal.ofReal ((5 * (T y / 2)) ^ n)) := by ring
+              _ = unitBallVolume n * (ENNReal.ofReal (2 * (5 / 2) ^ n / a) *
+                    ENNReal.ofReal (a * T y ^ n)) := by rw [h2]
+              _ = ENNReal.ofReal (2 * (5 / 2) ^ n / a) * unitBallVolume n *
+                    ENNReal.ofReal (a * T y ^ n) := by ring
+        _ ≤ c * ∫⁻ x in closedBall y (T y / 2), ENNReal.ofReal (e x) ∂μ := by
+            gcongr
+            exact (hTlt y hy).le
+        _ = c * (μ.withDensity fun x => ENNReal.ofReal (e x)) (closedBall y (T y / 2)) := by
+            rw [withDensity_apply _ measurableSet_closedBall])
+  -- Step 4: `ν(B_{σ₀}(ξ)) = ∫_{B_{σ₀}(ξ)} e⁺ dμ`.
+  calc μ (closedBall ξ (3 * σ₀ / 4) \ Gs) ≤ μ A' := hsplit
+    _ ≤ c * (μ.withDensity fun x => ENNReal.ofReal (e x)) (closedBall ξ σ₀) := key
+    _ = _ := by rw [withDensity_apply _ measurableSet_closedBall]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
