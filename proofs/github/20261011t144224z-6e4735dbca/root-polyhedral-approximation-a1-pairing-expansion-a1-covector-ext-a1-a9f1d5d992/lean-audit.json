@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "612106d5ef71a2c789fd99c8c36e67101d532bee1ef904842e63fdd559224f81",
+  "git_delta": {
+    "base_commit": "7f2e25c990e68cbdfc2412c455f026374a1d072b",
+    "candidate_commit": "564fb5ea9012e3b250bcb7d0276359f8cc67649e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_pairing_covector_ext",
+    "diff_sha256": "813d653aef2ae2021594626efc08358415d91e41ab047d179f665ad24445a313",
+    "source_sha256": "93ecf5afc0ae00faacce76f41d5abb95c7d2565b24657d55fe893ca65f13c82b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_pairing_covector_ext",
+      "statement": "∀ (P n : ℕ) (α β : Covector (Eucl P) n), (∀ I : SimonMultiIndex n P, euclideanCovectorCoordinate α I = euclideanCovectorCoordinate β I) → α = β",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
