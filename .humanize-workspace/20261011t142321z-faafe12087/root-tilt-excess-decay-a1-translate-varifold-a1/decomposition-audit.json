@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|def blowUpMap",
+        "theorem setIntegral_map_equiv|theorem integral_map_equiv|theorem lintegral_map_equiv|theorem integrableOn_map_equiv|setLIntegral_comp_preimage_emb|measurePreserving_euclideanHausdorffMeasure|mem_support_iff_forall",
+        "theorem integrableOn_comp_preimage|measure_preimage_emb|theorem NullMeasurableSet.preimage|theorem AEMeasurable.comp_measurable|fderiv_comp_sub|class HasOrthogonalProjection",
+        "ted_translate_varifold|rsod_tv_|exists_translated_varifold",
+        "rg -l -i varifold .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "git diff -U2 e8359b53 363c12f6 -- GMT/Ch05/Submission.lean",
+        "git diff -U2 e8359b53 4501f4a9 -- GMT/Ch05/Submission.lean",
+        "git diff -U2 e8359b53 833e4323 -- GMT/Ch05/Submission.lean",
+        "git diff -U2 e8359b53 e9dece5c -- GMT/Ch05/Submission.lean",
+        "git diff -U2 e8359b53 1abb410e -- GMT/Ch05/Submission.lean",
+        "python3 /tmp/translate-audit-independent-_i5_ucco/run_check.py AcceptedProofs.lean",
+        "python3 /tmp/translate-audit-independent-_i5_ucco/run_check.py Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-translate-varifold-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-translate-varifold-a1/decomposition-v2.json",
+        "/tmp/translate-audit-independent-_i5_ucco/AcceptedProofs.lean",
+        "/tmp/translate-audit-independent-_i5_ucco/AcceptedProofs.lean.log",
+        "/tmp/translate-audit-independent-_i5_ucco/Assembly.lean",
+        "/tmp/translate-audit-independent-_i5_ucco/Assembly.lean.log"
+      ],
+      "conclusion": "Independently consulted the snapshot pinning project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The contract matches the workspace definitions, and the installed dependency revisions match their pins. Searches found no proposed translation declarations in the project snapshot and no varifold match in snapshot Mathlib. The inspected library lemmas support transport for arbitrary sets and integrands without unlisted measurability or integrability assumptions.\n\nAll five supplied proofs were independently checked step by step. Their bare names are unique in the DAG snapshot updated at 2026-10-12T11:38:25Z; all five are accepted leaves with candidate commits and byte-identical frozen types. Their comparator records report success. Empty dependency lists are justified because the necessary identities are explicit hypotheses, subsequently supplied by the parent.\n\nIndependent Lean checks passed using the frozen definitions without main_theorem. All six frozen propositions elaborated before any child implementation, and all comparator-shaped type checks passed. The accepted child proofs and supplied parent proof use only propext, Classical.choice and Quot.sound. A separate assembly check assumes exactly the five frozen child types and proves the selected parent contract. Thus the split is appropriate and establishes every selected conjunct, including the carrier image equality and both integral identities for unrestricted parameters."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exists_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose for arbitrary U and all dimensions. The proof constructs W and verifies every structure field, including null-measurability, the translated Lipschitz covering, a.e.-measurability and integrability on compact subsets. It is complete and independent of the parent and other children."
+    },
+    {
+      "key": "weight_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type include both required carrier and all-point multiplicity identities. Measure extensionality, withDensity evaluation and change of variables prove the exact pushforward equality. The proof does not assume carrier measurability beyond the contract or any relationship between U and U'."
+    },
+    {
+      "key": "support_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes the translated ambient domain and weight hypothesis. Both directions of the neighbourhood argument establish the measure-support identity; intersecting with the ambient domain gives the stated varifold-support equality. No openness, finiteness or circular reliance is introduced."
+    },
+    {
+      "key": "tangent_proj_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact all-point conclusion follows from equality of blow-up sets and shifted multiplicities, hence equality of the complete weighted tangent predicates. The proof correctly handles both existence branches and Classical.choose congruence. HasOrthogonalProjection is proposition-valued, validating the proof-irrelevance step without assuming tangent uniqueness."
+    },
+    {
+      "key": "mean_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type match, including both transport hypotheses and V's mean-curvature assumption. The proof transfers integrability through neighbourhoods within arbitrary U, verifies the translated test field's regularity and support, derives the divergence identity, and transports both first-variation integrals. Every required step is supplied without circularity."
+    }
+  ],
+  "required_changes": []
+}
