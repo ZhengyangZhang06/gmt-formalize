@@ -1,0 +1,17 @@
+{
+  "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.small_cover-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1163",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "8742c152de2e02ee719aef5b96eabd75e6386fbf",
+  "integrated_commit": "",
+  "proof_base_commit": "db9f39016b650770856906e1d80f94e749036188",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+  "requires": [
+    "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.null_open_cover-a1"
+  ]
+}

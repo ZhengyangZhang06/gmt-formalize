@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ceea2c421d891dea538fb663488afae17775a48808ac0b0fa23decf4c7828b76",
+  "git_delta": {
+    "base_commit": "e3236dfca830fc8bbd089f9402922fc5e3704de0",
+    "candidate_commit": "8742c152de2e02ee719aef5b96eabd75e6386fbf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_eventually_subset_small_cover",
+    "diff_sha256": "408ea4297e14979539a9298744771afb696ce82589555d190e4e231ef8e23237",
+    "source_sha256": "5fba57298aa6bbbdf9374d4213a16a6719713b6e9d7c659a9aa1d74d94fa0bd8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_eventually_subset_small_cover",
+      "statement": "∀ (P : ℕ) (ℓ : ℝ) (S : Set (Euclid P)) (Ts : ℕ → Set (Euclid P)) (ε : ℝ≥0∞), 0 < ℓ → IsClosed S → μH[ℓ] (S ∩ ball (0 : Euclid P) 1) = 0 → 0 < ε → (∀ η : ℝ, 0 < η → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ Ts k ⊆ {x | ∃ z ∈ S, dist x z < η}) → ∃ (U : ℕ → Set (Euclid P)) (k₀ : ℕ), ∑' j, Metric.ediam (U j) ^ ℓ < ε ∧ ∀ k ≥ k₀, ball (0 : Euclid P) (1 / 2) ∩ Ts k ⊆ ⋃ j, U j",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
