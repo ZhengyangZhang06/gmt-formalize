@@ -599,6 +599,254 @@ theorem Submission.deGiorgiSobInd_mul_lipschitz_fderiv_bound : ∀ (N : ℕ) (ζ
   calc ∫ y, ‖fderiv ℝ (fun y ↦ ζ y * u y) y‖
       ≤ ∫ y, (ζ y * ‖fderiv ℝ u y‖ + u y * ‖fderiv ℝ ζ y‖) := integral_mono_ae hi1 (hi2.add hi3) hpt
     _ = (∫ y, ζ y * ‖fderiv ℝ u y‖) + ∫ y, u y * ‖fderiv ℝ ζ y‖ := integral_add hi2 hi3
+/-- Differentiation under the integral sign for a mollified set integral (Simon Ch. 2, §2,
+mollification and Lemma 2.5, with `χ_G` in place of `u` and a general `C¹` kernel `ρ`; used in
+Ch. 3, proof of Theorem 4.3): for `G ⊆ ℝᴺ` and `ρ ∈ C¹_c(ℝᴺ)`, `u(x) = ∫_G ρ(x - z) dz` satisfies
+`Du(x) w = ∫_G Dρ(x - z) w dz`. The derivative is computed directly for `Lᴺ ⌞ G` by
+`hasFDerivAt_integral_of_dominated_of_fderiv_le`, with the bound `C · χ_{B̄_{R+1}(x)}` on
+`B_1(x)`, where `‖Dρ‖ ≤ C` and `tsupport ρ ⊆ B̄_R(0)`; the measurability of `G` is not used. -/
+theorem Submission.deGiorgiSobIndMFL_fderiv_setIntegral_apply : ∀ (N : ℕ) (G : Set (Rn N)) (ρ : Rn N → ℝ), NullMeasurableSet G volume → ContDiff ℝ 1 ρ → HasCompactSupport ρ → ∀ x w : Rn N, fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) x w = ∫ z in G, fderiv ℝ ρ (x - z) w := by
+  intro N G ρ _hG hρ hρc x₀ w
+  -- Step 1: `Dρ` is continuous, compactly supported and bounded by `C`; `tsupport ρ ⊆ B̄_R(0)`.
+  have hρd : Differentiable ℝ ρ := hρ.differentiable one_ne_zero
+  have hρ'c : Continuous (fderiv ℝ ρ) := hρ.continuous_fderiv one_ne_zero
+  have hρ'cs : HasCompactSupport (fderiv ℝ ρ) := hρc.fderiv ℝ
+  obtain ⟨C, hC⟩ := hρ'c.bounded_above_of_compact_support hρ'cs
+  obtain ⟨R, hR⟩ : ∃ R, tsupport ρ ⊆ Metric.closedBall (0 : Rn N) R :=
+    hρc.isCompact.isBounded.subset_closedBall 0
+  -- Step 2: `z ↦ f (a - z)` is continuous with compact support, hence integrable on `G`.
+  have hrefl : ∀ {E : Type} [NormedAddCommGroup E] (f : Rn N → E) (a : Rn N), Continuous f →
+      HasCompactSupport f → Continuous (fun z ↦ f (a - z)) ∧ IntegrableOn (fun z ↦ f (a - z)) G :=
+    fun f a hf hfc ↦ ⟨hf.comp (continuous_const.sub continuous_id),
+      ((hf.comp (continuous_const.sub continuous_id)).integrable_of_hasCompactSupport
+        (hfc.comp_homeomorph (Homeomorph.subLeft a))).integrableOn⟩
+  -- Step 3: by the chain rule, `x ↦ ρ (x - z)` has derivative `Dρ (x - z)` at every `x`.
+  have hderiv : ∀ z x, HasFDerivAt (fun x ↦ ρ (x - z)) (fderiv ℝ ρ (x - z)) x := fun z x ↦
+    ((hρd (x - z)).hasFDerivAt.comp x (hasFDerivAt_sub_const z)).congr_fderiv
+      (ContinuousLinearMap.comp_id _)
+  -- Step 4: for `x ∈ B_1(x₀)`, `‖Dρ (x - z)‖ ≤ C · χ_{B̄_{R+1}(x₀)}(z)`.
+  have hbound : ∀ z, ∀ x ∈ Metric.ball x₀ 1,
+      ‖fderiv ℝ ρ (x - z)‖ ≤ (Metric.closedBall x₀ (R + 1)).indicator (fun _ ↦ C) z := by
+    intro z x hx
+    by_cases hz : z ∈ Metric.closedBall x₀ (R + 1)
+    · simpa [hz] using hC (x - z)
+    · have hxz : x - z ∉ tsupport ρ := by
+        intro h
+        apply hz
+        have h2 := hR h
+        rw [Metric.mem_closedBall, dist_zero_right] at h2
+        rw [Metric.mem_ball] at hx
+        rw [Metric.mem_closedBall]
+        calc dist z x₀ ≤ dist z x + dist x x₀ := dist_triangle _ _ _
+          _ = ‖x - z‖ + dist x x₀ := by rw [dist_eq_norm, norm_sub_rev]
+          _ ≤ R + 1 := by linarith
+      simp [hz, fderiv_of_notMem_tsupport ℝ hxz]
+  -- Step 5: differentiation under the integral sign for `Lᴺ ⌞ G`.
+  have hkey : HasFDerivAt (fun x ↦ ∫ z in G, ρ (x - z)) (∫ z in G, fderiv ℝ ρ (x₀ - z)) x₀ :=
+    hasFDerivAt_integral_of_dominated_of_fderiv_le (Metric.ball_mem_nhds x₀ one_pos)
+      (Eventually.of_forall fun x ↦ (hrefl ρ x hρ.continuous hρc).1.aestronglyMeasurable)
+      (hrefl ρ x₀ hρ.continuous hρc).2 (hrefl (fderiv ℝ ρ) x₀ hρ'c hρ'cs).1.aestronglyMeasurable
+      (Eventually.of_forall hbound)
+      ((integrable_indicator_iff measurableSet_closedBall).2
+        (integrableOn_const (isCompact_closedBall x₀ (R + 1)).measure_lt_top.ne))
+      (Eventually.of_forall fun z x _ ↦ hderiv z x)
+  -- Step 6: evaluation at `w` commutes with the Bochner integral.
+  rw [hkey.fderiv, ContinuousLinearMap.integral_apply (hrefl (fderiv ℝ ρ) x₀ hρ'c hρ'cs).2]
+/-- **Gauss–Green identity for a translated reflected kernel** (the pointwise form of the
+identity `∫ g · ∇u_σ = -∫ u div(φ_σ ⋆ g)` in the proof of Simon Ch. 2, Lemma 2.5,
+`chapter-02.txt` lines 543–596, tested against the single field `ρ(y - ·) w`). Let `(μ, ν)` be a
+Gauss–Green pair for `(U, G)`, `ρ` a `C¹` function with `tsupport ρ ⊆ B̄_r(0)`, and
+`B̄_r(y) ⊆ U`. Then `∫_G Dρ(y - z) w dz = ∫ ρ(y - z) ⟨w, ν(z)⟩ dμ(z)`. The field
+`h(z) = ρ(y - z) w` is `C¹` with `tsupport h ⊆ B̄_r(y) ⊆ U`, and
+`div h(z) = trace((-Dρ(y - z)).smulRight w) = -Dρ(y - z) w`, so the Gauss–Green identity of the
+pair gives the claim over `G ∩ U`; the integrand vanishes off `B̄_r(y) ⊆ U`, so `∫_G = ∫_{G ∩ U}`. -/
+theorem Submission.deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq : ∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y w : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ∫ z in G, fderiv ℝ ρ (y - z) w = ∫ z, ρ (y - z) * inner ℝ w (ν z) ∂μ := by
+  intro N U G μ ν hU hGG ρ r y w hρ hρc hρr hyU
+  have hρd : Differentiable ℝ ρ := hρ.differentiable one_ne_zero
+  -- Step 1: `y - z ∈ tsupport ρ` forces `z ∈ B̄_r(y)`; hence `tsupport ρ(y - ·) ⊆ B̄_r(y)`.
+  have hball : ∀ z, y - z ∈ tsupport ρ → z ∈ Metric.closedBall y r := by
+    intro z hz
+    have h := hρr hz
+    rw [Metric.mem_closedBall, dist_zero_right] at h
+    rw [Metric.mem_closedBall, dist_eq_norm, norm_sub_rev]
+    exact h
+  have hφsupp : tsupport (fun z ↦ ρ (y - z)) ⊆ Metric.closedBall y r :=
+    closure_minimal (fun z hz ↦ hball z (subset_tsupport _ hz)) Metric.isClosed_closedBall
+  -- Step 2: chain rule, `D(ρ(y - ·))(z) = -Dρ(y - z)`.
+  have hφd : ∀ z, HasFDerivAt (fun z ↦ ρ (y - z)) (-(fderiv ℝ ρ (y - z))) z := by
+    intro z
+    have h1 : HasFDerivAt (fun z : Rn N ↦ y - z) (-(ContinuousLinearMap.id ℝ (Rn N))) z :=
+      (hasFDerivAt_id z).const_sub y
+    exact ((hρd (y - z)).hasFDerivAt.comp z h1).congr_fderiv (by ext v; simp)
+  -- Step 3: the test field `h z = ρ (y - z) • w` is `C¹` with compact support in `B̄_r(y) ⊆ U`.
+  have hhC : ContDiff ℝ 1 (fun z ↦ ρ (y - z) • w) :=
+    (hρ.comp (contDiff_const.sub contDiff_id)).smul contDiff_const
+  have hhsupp : tsupport (fun z ↦ ρ (y - z) • w) ⊆ Metric.closedBall y r :=
+    (tsupport_smul_subset_left (fun z ↦ ρ (y - z)) (fun _ ↦ w)).trans hφsupp
+  have hhc : HasCompactSupport (fun z ↦ ρ (y - z) • w) :=
+    (isCompact_closedBall y r).of_isClosed_subset (isClosed_tsupport _) hhsupp
+  have hGGh := hGG.2.2.2.2 (fun z ↦ ρ (y - z) • w) hhC hhc (hhsupp.trans hyU)
+  -- Step 4: `div h(z) = trace((-Dρ(y - z)).smulRight w) = -Dρ(y - z) w`.
+  have hdiv : ∀ z, Poincare.SimonGMT.Chapter02.euclideanDivergence (fun z ↦ ρ (y - z) • w) z =
+      -(fderiv ℝ ρ (y - z) w) := by
+    intro z
+    have hfd : fderiv ℝ (fun z ↦ ρ (y - z) • w) z = (-(fderiv ℝ ρ (y - z))).smulRight w :=
+      ((hφd z).smul_const w).fderiv
+    unfold Poincare.SimonGMT.Chapter02.euclideanDivergence
+    rw [hfd, ContinuousLinearMap.coe_smulRight, LinearMap.trace_smulRight]
+    simp
+  -- Step 5: Gauss–Green for `h`, with the signs cancelled.
+  have hL : ∫ z in G ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence
+      (fun z ↦ ρ (y - z) • w) z = -∫ z in G ∩ U, fderiv ℝ ρ (y - z) w := by
+    rw [← integral_neg]
+    exact integral_congr_ae (Eventually.of_forall hdiv)
+  have hR : ∫ z, inner ℝ ((fun z ↦ ρ (y - z) • w) z) (ν z) ∂μ =
+      ∫ z, ρ (y - z) * inner ℝ w (ν z) ∂μ :=
+    integral_congr_ae (Eventually.of_forall fun z ↦ real_inner_smul_left w (ν z) (ρ (y - z)))
+  rw [hL, hR] at hGGh
+  -- Step 6: the integrand vanishes off `B̄_r(y) ⊆ U`, so `∫_G = ∫_{G ∩ U}`.
+  have hvan : ∀ z, z ∉ U → fderiv ℝ ρ (y - z) w = 0 := by
+    intro z hz
+    have hz' : y - z ∉ tsupport ρ := fun h ↦ hz (hyU (hball z h))
+    rw [fderiv_of_notMem_tsupport ℝ hz']
+    simp
+  have hrestr : ∫ z in G, fderiv ℝ ρ (y - z) w = ∫ z in G ∩ U, fderiv ℝ ρ (y - z) w := by
+    rw [← setIntegral_indicator hU.measurableSet]
+    refine integral_congr_ae (Eventually.of_forall fun z ↦ ?_)
+    by_cases hz : z ∈ U
+    · simp [hz]
+    · simp [hz, hvan z hz]
+  rw [hrestr]
+  exact neg_inj.mp hGGh
+
+/-- **Pointwise bound for the derivative of a mollified indicator** (the pointwise form of the
+estimate `|φ_σ ⋆ g| ≤ φ_σ ⋆ f` in the proof of Simon Ch. 2, Lemma 2.5, `chapter-02.txt`
+lines 543–596). Let `(μ, ν)` be a Gauss–Green pair for `(U, G)`, `ρ ≥ 0` a `C¹_c` function with
+`tsupport ρ ⊆ B̄_r(0)`, and `B̄_r(y) ⊆ U`. Then `u(x) = ∫_G ρ(x - z) dz` satisfies
+`‖Du(y)‖ ≤ ∫ ρ(y - z) dμ(z)`. By the two preceding lemmas,
+`Du(y) w = ∫_G Dρ(y - z) w dz = ∫ ρ(y - z) ⟨w, ν(z)⟩ dμ(z)`; the kernel `ρ(y - ·)` is continuous,
+bounded and vanishes off the compact `B̄_r(y) ⊆ U`, so it is `μ`-integrable, and since `|ν| = 1`
+`μ`-a.e., Cauchy–Schwarz gives `|Du(y) w| ≤ |w| ∫ ρ(y - z) dμ(z)`. -/
+theorem Submission.deGiorgiSobIndMFL_norm_fderiv_le : ∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ x, 0 ≤ ρ x) → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) y‖ ≤ ∫ z, ρ (y - z) ∂μ := by
+  intro N U G μ ν hU hG hGG ρ r y hρ hρc hρ0 hρr hyU
+  -- Step 1: `μ(B̄_r(y)) < ∞`, since `B̄_r(y)` is a compact subset of `U`.
+  have hfin : μ (Metric.closedBall y r) < ∞ := hGG.2.1 _ (isCompact_closedBall y r) hyU
+  -- Step 2: `ρ(y - ·)` is continuous, bounded by `M` and supported in `B̄_r(y)`, hence
+  -- `μ`-integrable.
+  have hφc : Continuous (fun z ↦ ρ (y - z)) :=
+    hρ.continuous.comp (continuous_const.sub continuous_id)
+  obtain ⟨M, hM⟩ := hρ.continuous.bounded_above_of_compact_support hρc
+  have hsupp : Function.support (fun z ↦ ρ (y - z)) ⊆ Metric.closedBall y r := by
+    intro z hz
+    have h2 := hρr (subset_tsupport _ hz)
+    rw [Metric.mem_closedBall, dist_zero_right] at h2
+    rw [Metric.mem_closedBall, dist_eq_norm, norm_sub_rev]
+    exact h2
+  have hint : Integrable (fun z ↦ ρ (y - z)) μ := by
+    refine (integrableOn_iff_integrable_of_support_subset hsupp).1 ?_
+    exact Measure.integrableOn_of_bounded hfin.ne hφc.aestronglyMeasurable (M := M)
+      (Eventually.of_forall fun z ↦ hM _)
+  -- Step 3: by the operator-norm criterion it suffices that `|Du(y) w| ≤ A |w|`,
+  -- `A = ∫ ρ(y - z) dμ(z) ≥ 0`.
+  refine ContinuousLinearMap.opNorm_le_bound _ (integral_nonneg fun z ↦ hρ0 _) fun w ↦ ?_
+  -- Step 4: `Du(y) w = ∫_G Dρ(y - z) w dz = ∫ ρ(y - z) ⟨w, ν(z)⟩ dμ(z)`.
+  rw [deGiorgiSobIndMFL_fderiv_setIntegral_apply N G ρ hG hρ hρc y w,
+    deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq N U G μ ν hU hGG ρ r y w hρ hρc hρr hyU,
+    ← integral_mul_const]
+  -- Step 5: `ρ ≥ 0`, `|ν| = 1` `μ`-a.e. and Cauchy–Schwarz give the integrable majorant
+  -- `ρ(y - ·) |w|`.
+  refine norm_integral_le_of_norm_le (hint.mul_const _) ?_
+  filter_upwards [hGG.2.2.2.1] with z hz
+  rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg (hρ0 _)]
+  refine mul_le_mul_of_nonneg_left ?_ (hρ0 _)
+  calc ‖inner ℝ w (ν z)‖ ≤ ‖w‖ * ‖ν z‖ := by
+        rw [Real.norm_eq_abs]; exact abs_real_inner_le_norm _ _
+    _ = ‖w‖ := by rw [hz, mul_one]
+/-- Fubini swap for the mollified weight: the last step of the bound on the derivative of a
+mollified indicator used with Simon Ch. 2, Lemma 2.5 (p. 49, `chapter-02.txt` lines 543–596) in
+the proof of Ch. 3, Theorem 4.3. Let `ζ, ρ` be continuous with compact support,
+`tsupport ρ ⊆ B̄_r(0)`, and `μ(K') < ∞` for `K' = cthickening r (tsupport ζ)`. Then
+`y ↦ ζ(y) ∫ ρ(y - z) dμ(z)` is `Lᴺ`-integrable and
+`∫ ζ(y) (∫ ρ(y - z) dμ(z)) dy = ∫ (∫ ζ(y) ρ(y - z) dy) dμ(z)`. The integrand
+`F(y, z) = ζ(y) ρ(y - z)` vanishes unless `y ∈ tsupport ζ` and `z ∈ K'`. It is bounded and
+continuous with support in `tsupport ζ × ℝᴺ`, hence integrable for `Lᴺ ⊗ μ⌞K'`; `μ⌞K'` is
+finite, so `μ` need not be s-finite. Fubini's theorem for `Lᴺ` and `μ⌞K'` gives the identity once
+`μ⌞K'` is replaced by `μ` in the inner and outer integrals, whose integrands vanish off `K'`. -/
+theorem Submission.deGiorgiSobIndMFL_integral_mul_swap : ∀ (N : ℕ) (μ : Measure (Rn N)) (ζ ρ : Rn N → ℝ) (r : ℝ), Continuous ζ → HasCompactSupport ζ → Continuous ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → μ (Metric.cthickening r (tsupport ζ)) < ∞ → Integrable (fun y ↦ ζ y * (∫ z, ρ (y - z) ∂μ)) ∧ ∫ y, ζ y * (∫ z, ρ (y - z) ∂μ) = ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ := by
+  intro N μ ζ ρ r hζ hζc hρ hρc hρr hfin
+  set K' := Metric.cthickening r (tsupport ζ)
+  -- Step 1: `F(y, z) = ζ y * ρ (y - z)` vanishes unless `y ∈ tsupport ζ` and `z ∈ K'`.
+  have hvan : ∀ y z, z ∉ K' → ζ y * ρ (y - z) = 0 := by
+    intro y z hz
+    by_contra hne
+    have hy : y ∈ tsupport ζ := subset_tsupport _ (left_ne_zero_of_mul hne)
+    have hyz := hρr (subset_tsupport _ (right_ne_zero_of_mul hne))
+    rw [Metric.mem_closedBall, dist_zero_right] at hyz
+    exact hz (Metric.mem_cthickening_of_dist_le z y r _ hy
+      (by rw [dist_eq_norm, norm_sub_rev]; exact hyz))
+  -- Step 2: `μ' = μ⌞K'` is a finite measure.
+  have : IsFiniteMeasure (μ.restrict K') := isFiniteMeasure_restrict.2 hfin.ne
+  -- Step 3: `F` is continuous, bounded by `Mζ * Mρ` and supported in `tsupport ζ × ℝᴺ`, a set of
+  -- finite `Lᴺ ⊗ μ'` measure, so it is `Lᴺ ⊗ μ'`-integrable.
+  have hFc : Continuous (Function.uncurry fun y z : Rn N ↦ ζ y * ρ (y - z)) :=
+    (hζ.comp continuous_fst).mul (hρ.comp (continuous_fst.sub continuous_snd))
+  obtain ⟨Mζ, hMζ⟩ := hζ.bounded_above_of_compact_support hζc
+  obtain ⟨Mρ, hMρ⟩ := hρ.bounded_above_of_compact_support hρc
+  have hFint : Integrable (Function.uncurry fun y z : Rn N ↦ ζ y * ρ (y - z))
+      ((volume : Measure (Rn N)).prod (μ.restrict K')) := by
+    have hsupp : Function.support (Function.uncurry fun y z : Rn N ↦ ζ y * ρ (y - z)) ⊆
+        tsupport ζ ×ˢ univ := fun p hp ↦ ⟨subset_tsupport _ (left_ne_zero_of_mul hp), trivial⟩
+    refine (integrableOn_iff_integrable_of_support_subset hsupp).1 ?_
+    refine Measure.integrableOn_of_bounded ?_ hFc.aestronglyMeasurable (M := Mζ * Mρ)
+      (Eventually.of_forall fun p ↦ ?_)
+    · rw [Measure.prod_prod]
+      exact ENNReal.mul_ne_top hζc.isCompact.measure_lt_top.ne (measure_ne_top _ _)
+    · simp only [Function.uncurry, norm_mul]
+      exact mul_le_mul (hMζ _) (hMρ _) (norm_nonneg _) ((norm_nonneg _).trans (hMζ p.1))
+  -- Step 5: `∫ F(y, z) dμ'(z) = ∫ F(y, z) dμ(z) = ζ y * ∫ ρ (y - z) dμ(z)`.
+  have hin : ∀ y, ∫ z in K', ζ y * ρ (y - z) ∂μ = ζ y * ∫ z, ρ (y - z) ∂μ := by
+    intro y
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz ↦ hvan y z hz,
+      integral_const_mul]
+  -- Step 6: `H z = ∫ F(y, z) dy` vanishes off `K'`, so `∫ H dμ' = ∫ H dμ`.
+  have hout : ∫ z in K', (∫ y, ζ y * ρ (y - z)) ∂μ = ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz ↦ ?_
+    simp [hvan _ z hz]
+  -- Steps 4 and 7: Fubini for `Lᴺ` and `μ'` (with integrability of the inner integral), then
+  -- Steps 5 and 6.
+  refine ⟨hFint.integral_prod_left.congr (Eventually.of_forall fun y ↦ hin y), ?_⟩
+  rw [← hout, ← integral_integral_swap hFint]
+  exact integral_congr_ae (Eventually.of_forall fun y ↦ (hin y).symm)
+
+/-- Weighted bound on the derivative of a mollified indicator: Simon Ch. 2, Lemma 2.5 (3)
+(p. 49, `chapter-02.txt` lines 543–596), as used in the proof of Ch. 3, Theorem 4.3
+(`chapter-03.txt` lines 689–705), for a general `C¹` kernel `ρ` and a Gauss–Green pair `(μ, ν)`
+of `G` in `U`. Let `ζ ≥ 0` be continuous with compact support, `ρ ≥ 0` be `C¹` with compact
+support and `tsupport ρ ⊆ B̄_r(0)`, and `K' = cthickening r (tsupport ζ) ⊆ U`. Then
+`u(x) = ∫_G ρ(x - z) dz` satisfies `∫ ζ |Du| dLᴺ ≤ ∫ (∫ ζ(y) ρ(y - z) dy) dμ(z)`.
+`K'` is a compact subset of `U`, so `μ(K') < ∞`. For `y ∈ tsupport ζ`, `B̄_r(y) ⊆ K' ⊆ U`, hence
+`|Du(y)| ≤ ∫ ρ(y - z) dμ(z)` (`deGiorgiSobIndMFL_norm_fderiv_le`); off `tsupport ζ` both sides
+vanish. Integrating against `ζ` and swapping the integrals (`deGiorgiSobIndMFL_integral_mul_swap`)
+gives the bound. -/
+theorem Submission.deGiorgiSobInd_mollified_fderiv_le : ∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ ρ : Rn N → ℝ) (r : ℝ), Continuous ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.cthickening r (tsupport ζ) ⊆ U → ∫ y, ζ y * ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) y‖ ≤ ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ := by
+  intro N U G μ ν hU hG hGG ζ ρ r hζ hζc hζ0 hρ hρc hρ0 hρr hK
+  -- (a) `K' = cthickening r (tsupport ζ)` is a compact subset of `U`, so `μ K' < ∞`.
+  have hK'fin : μ (Metric.cthickening r (tsupport ζ)) < ∞ :=
+    hGG.2.1 _ hζc.isCompact.cthickening hK
+  -- (b) Fubini: `y ↦ ζ y * ∫ ρ (y - z) dμ` is integrable, and its integral is the right-hand side.
+  obtain ⟨hint, hswap⟩ :=
+    Submission.deGiorgiSobIndMFL_integral_mul_swap N μ ζ ρ r hζ hζc hρ.continuous hρc hρr hK'fin
+  rw [← hswap]
+  -- (c) Pointwise comparison of the nonnegative integrands, then (d) monotonicity of the integral.
+  refine integral_mono_of_nonneg
+    (Eventually.of_forall fun y ↦ mul_nonneg (hζ0 y) (norm_nonneg _)) hint
+    (Eventually.of_forall fun y ↦ ?_)
+  by_cases hy : y ∈ tsupport ζ
+  · -- `B̄_r(y) ⊆ K' ⊆ U`, so the pointwise bound applies at `y`.
+    exact mul_le_mul_of_nonneg_left
+      (Submission.deGiorgiSobIndMFL_norm_fderiv_le N U G μ ν hU hG hGG ρ r y hρ hρc hρ0 hρr
+        ((Metric.closedBall_subset_cthickening hy r).trans hK)) (hζ0 y)
+  · simp [image_eq_zero_of_notMem_tsupport hy]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
