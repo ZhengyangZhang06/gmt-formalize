@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.poincare-a1.inner_exhaustion-a1",
+  "parent_id": "root.bv_results-a1.poincare-a1",
+  "depth": 3,
+  "title": "Exhaustion of an open convex set by convex inner parallel sets with margins",
+  "statement": "For every n ∈ ℕ and every open convex U ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n)) there are sets O_j ⊆ ℝⁿ and reals σ_j (j ∈ ℕ) such that: j ↦ O_j is increasing (Monotone); ⋃_j O_j = U; σ_j → 0; and for every j, O_j is open and convex, σ_j > 0, and the closed ball closedBall(x, σ_j) ⊆ U for every x ∈ O_j.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ∃ (O : ℕ → Set (Rn n)) (σ : ℕ → ℝ), Monotone O ∧ ⋃ j, O j = U ∧ Tendsto σ atTop (𝓝 0) ∧ ∀ j, IsOpen (O j) ∧ Convex ℝ (O j) ∧ 0 < σ j ∧ ∀ x ∈ O j, closedBall x (σ j) ⊆ U",
+  "lean_name": "convex_open_exists_inner_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-poincare-a1-inner-exhaustion-a1-a1"
+}
