@@ -1,0 +1,17 @@
+{
+  "node_id": "root.first_rectifiability-a1.tangent_density-a1.lower_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1099",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "a7c673c512c23548caf72ca6d56aec156e37439d",
+  "integrated_commit": "",
+  "proof_base_commit": "b48dfb265eca4edbd6144e5e368d570ef3a19bdb",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.first_rectifiability-a1.tangent_density-a1",
+  "requires": [
+    "root.first_rectifiability-a1.tangent_density-a1.plane_ball-a1"
+  ]
+}
