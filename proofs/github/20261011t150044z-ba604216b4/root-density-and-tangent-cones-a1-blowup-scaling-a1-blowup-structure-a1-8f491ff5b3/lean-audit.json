@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a0875fc703a3585c070edf82c7185db5350464233225aeb2db04dfd776a95491",
+  "git_delta": {
+    "base_commit": "943cca9967b29ee594be499279a4cda56f50f3ad",
+    "candidate_commit": "f64597f33dbddb264b249a7f03156a1073cce7da",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_blowUp_algebra",
+    "diff_sha256": "6652f47bf0058778cc1ff90521a9d51377d835bed47a8074205ee1efcac725b9",
+    "source_sha256": "6f6adf894550b45f9bebb40664190889fa1c6063da1c355e4ac01ebeced865d7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_blowUp_algebra",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp (S - T) x lam hlam.ne' = blowUp S x lam hlam.ne' - blowUp T x lam hlam.ne') ∧ (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp S x lam hlam.ne' = blowUp T x lam hlam.ne' → S = T) ∧ (∀ (n : ℕ) (T : GeometricCurrentOn U n), (blowUp T x lam hlam.ne').support = dilation x lam '' T.support) ∧ ∀ (m : ℕ) (T : GeometricCurrentOn U (m + 1)), (blowUp T x lam hlam.ne').boundary = blowUp T.boundary x lam hlam.ne'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
