@@ -562,6 +562,92 @@ theorem Submission.intcpt_ri_weightedApproxTangent_similarity_iff :
   simp only [Function.comp_apply]
   rw [hset r]
   simp only [smul_add, smul_smul, add_assoc]
+/-- Rescaled restrictions of integral varifolds are integral (Simon Ch. 8, 5.9): if `V = v(M, θ)` is
+an integral `n`-varifold on `U`, `t > 0`, the similarity `σ(y) = ξ + t y` maps `O` into `U`, and `W`
+is `η_{ξ,t #} V` restricted to `Gₙ(O)`, then `W = v(O ∩ σ⁻¹(M), θ ∘ σ)` is integral. -/
+theorem Submission.intcpt_rescaled_restriction_integral :
+    ∀ (N n : ℕ) (U O : Set (Euclidean N)) (V : Varifold N n U) (W : Varifold N n O) (ξ : Euclidean N) (t : ℝ), 0 < t → (∀ y ∈ O, ξ + t • y ∈ U) → IsIntegral V → W.measure = (rescaledMeasure V ξ t).restrict (O ×ˢ (univ : Set (Grassmannian N n))) → IsIntegral W := by
+  intro N n U O V W ξ t ht hσU hV hW
+  have ht0 : t ≠ 0 := ht.ne'
+  obtain ⟨M, θ, ⟨-, hMmeas, hMrect, hθpos, hθint, hVrep⟩, hθnat⟩ := hV
+  -- Step 1: `σ(y) = ξ + t y` is a homeomorphism with inverse `x ↦ t⁻¹ (x - ξ)`, hence a measurable
+  -- embedding, and `H^n ⌞ σ(A) = t^n σ_# (H^n ⌞ A)` for every set `A`.
+  have hη : ∀ y : Euclidean N, t⁻¹ • (ξ + t • y - ξ) = y := fun y ↦ by
+    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ ht0, one_smul]
+  have hσsurj : Function.Surjective (fun y : Euclidean N ↦ ξ + t • y) := fun x ↦
+    ⟨t⁻¹ • (x - ξ), by simp only [smul_smul, mul_inv_cancel₀ ht0, one_smul, add_sub_cancel]⟩
+  have hσemb : MeasurableEmbedding (fun y : Euclidean N ↦ ξ + t • y) :=
+    ((Homeomorph.smulOfNeZero t ht0).trans (Homeomorph.addLeft ξ)).measurableEmbedding
+  have hc0 : ENNReal.ofReal (t ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos ht n)).ne'
+  have hrestr := Submission.intcpt_ri_restrict_similarity_image N n ξ t
+  -- Step 2: `σ` is quasi-measure-preserving for `H^n`, as `H^n = t^n σ_# H^n`.
+  have hqmp : Measure.QuasiMeasurePreserving (fun y : Euclidean N ↦ ξ + t • y)
+      (μHE[n] : Measure (Euclidean N)) μHE[n] := by
+    have h := hrestr univ ht
+    rw [image_univ_of_surjective hσsurj, Measure.restrict_univ] at h
+    have hac := Measure.absolutelyContinuous_smul (μ := (μHE[n] : Measure (Euclidean N)).map
+      (fun y : Euclidean N ↦ ξ + t • y)) hc0
+    rw [← h] at hac
+    exact ⟨hσemb.measurable, hac⟩
+  -- Step 3: approximate tangent planes of `O ∩ σ⁻¹(M)` at `y ∈ O` are those of `M` at `σ(y)`.
+  have htan : ∀ y ∈ O, ∀ P : Submodule ℝ (Euclidean N),
+      Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ (fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M)
+          (fun w : Euclidean N ↦ θ (ξ + t • w)) y P ↔
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ (ξ + t • y) P := fun y hy P ↦
+    (Submission.intcpt_ri_weightedApproxTangent_inter_open_iff N n O _ _ y P W.isOpen_domain
+      hy).trans (Submission.intcpt_ri_weightedApproxTangent_similarity_iff N n M θ ξ y t P ht)
+  -- Step 4: change of variables `∫_E θ ∘ σ dH^n = t^{-n} ∫_{σ(E)} θ dH^n`.
+  have hchange : ∀ E : Set (Euclidean N),
+      ∫⁻ y in E, ENNReal.ofReal (θ (ξ + t • y)) ∂μHE[n] =
+        ENNReal.ofReal (t⁻¹ ^ n) *
+          ∫⁻ x in (fun y : Euclidean N ↦ ξ + t • y) '' E, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    intro E
+    rw [hrestr E ht, lintegral_smul_measure, hσemb.lintegral_map, smul_eq_mul, ← mul_assoc,
+      ← ENNReal.ofReal_mul (pow_nonneg (inv_nonneg.2 ht.le) n), ← mul_pow, inv_mul_cancel₀ ht0,
+      one_pow, ENNReal.ofReal_one, one_mul]
+  refine ⟨O ∩ (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M, fun y ↦ θ (ξ + t • y),
+    ⟨inter_subset_left, W.isOpen_domain.measurableSet.nullMeasurableSet.inter
+      (hMmeas.preimage hqmp),
+      (Submission.intcpt_ri_countablyRectifiable_similarity_preimage N n ξ t M ht hMrect).mono
+        inter_subset_right,
+      fun y hy ↦ hθpos _ hy.2, ?_, ?_⟩, ?_⟩
+  · -- Step 5: local integrability, from `θ ∈ L¹(H^n ⌞ M ∩ σ(K))` with `σ(K) ⊆ U` compact.
+    intro K hK hKO
+    have hσK : (fun y : Euclidean N ↦ ξ + t • y) '' K ⊆ U := by
+      rintro _ ⟨y, hy, rfl⟩
+      exact hσU y (hKO hy)
+    have hθK := hθint _ (hK.image (show Continuous (fun y : Euclidean N ↦ ξ + t • y) by fun_prop))
+      hσK
+    rw [← image_preimage_inter, IntegrableOn, hrestr _ ht,
+      integrable_smul_measure hc0 ENNReal.ofReal_ne_top, hσemb.integrable_map_iff] at hθK
+    have hset : (O ∩ (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M) ∩ K =
+        (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M ∩ K :=
+      Subset.antisymm (fun y hy ↦ ⟨hy.1.2, hy.2⟩) (fun y hy ↦ ⟨⟨hKO hy.2, hy.1⟩, hy.2⟩)
+    rw [hset]
+    exact hθK
+  · -- Step 6: `W(A) = t^{-n} V(Φ⁻¹(A ∩ Gₙ(O)))`, `Φ(x, S) = (t⁻¹ (x - ξ), S)`, and the carrier of
+    -- `V` there is the `σ`-image of the carrier of `W` in `A`.
+    intro A hA
+    have hOA : MeasurableSet (A ∩ O ×ˢ (univ : Set (Grassmannian N n))) :=
+      hA.inter (W.isOpen_domain.measurableSet.prod MeasurableSet.univ)
+    have hΦ : Measurable (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) := by
+      fun_prop
+    rw [hW, Measure.restrict_apply hA, rescaledMeasure, Measure.smul_apply,
+      Measure.map_apply hΦ hOA, smul_eq_mul, hVrep _ (hΦ hOA), hchange]
+    refine congrArg (fun s ↦ ENNReal.ofReal (t⁻¹ ^ n) * ∫⁻ x in s, ENNReal.ofReal (θ x) ∂μHE[n])
+      ((image_preimage_eq _ hσsurj).symm.trans (congrArg _ ?_))
+    ext y
+    simp only [mem_preimage, mem_ofPred_eq, mem_inter_iff, mem_prod, mem_univ, and_true, hη]
+    constructor
+    · rintro ⟨hyM, S, hS, hyA, hyO⟩
+      exact ⟨⟨hyO, hyM⟩, S, (htan y hyO _).2 hS, hyA⟩
+    · rintro ⟨⟨hyO, hyM⟩, S, hS, hyA⟩
+      exact ⟨hyM, S, (htan y hyO _).1 hS, hyA, hyO⟩
+  · -- Step 7: `θ ∘ σ ∈ ℕ` a.e. on `σ⁻¹(M) ⊇ O ∩ σ⁻¹(M)`, since `H^n ⌞ M = t^n σ_# (H^n ⌞ σ⁻¹(M))`.
+    have h := hrestr ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M) ht
+    rw [image_preimage_eq M hσsurj] at h
+    rw [h, Measure.ae_ennreal_smul_measure_iff hc0, hσemb.ae_map_iff] at hθnat
+    exact ae_restrict_of_ae_restrict_of_subset inter_subset_right hθnat
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
