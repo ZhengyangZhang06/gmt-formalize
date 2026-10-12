@@ -450,13 +450,13 @@ theorem Submission.sobolev_level_energy_tonelli : ∀ (n ℓ : ℕ) (μ : Measur
   have hMm : ∀ t : ℝ, MeasurableSet {x | t < h x} := fun t ↦
     measurableSet_lt measurable_const hhc.measurable
   -- the truncation `K' = 1_{K₀} K` is integrable, nonnegative, and `h K' = h K`
-  set K' : Ambient n ℓ → ℝ := (tsupport h).indicator K with hK'def
+  set K' : Ambient n ℓ → ℝ := (tsupport h).indicator K with hK'eq
   have hK'i : Integrable K' μ := (integrable_indicator_iff hK₀m).2 hKi
   have hK'0 : ∀ x, 0 ≤ K' x := fun x ↦ Set.indicator_nonneg (fun y _ ↦ hK0 y) x
   have hhK' : ∀ x, h x * K' x = h x * K x := by
     intro x
     by_cases hx : x ∈ tsupport h
-    · rw [hK'def, Set.indicator_of_mem hx]
+    · rw [hK'eq, Set.indicator_of_mem hx]
     · rw [hoff x hx, zero_mul, zero_mul]
   -- `γ'` is continuous, nonnegative, and vanishes on `(-∞, 0)`
   have hγ'c : Continuous (deriv γ) := hγ.continuous_deriv le_rfl
@@ -551,7 +551,7 @@ theorem Submission.sobolev_level_energy_tonelli : ∀ (n ℓ : ℕ) (μ : Measur
     · refine lintegral_congr fun x ↦ ?_
       by_cases htx : t < h x
       · rw [Set.indicator_of_mem (show x ∈ {x | t < h x} from htx),
-          Set.indicator_of_mem (show (t, x) ∈ S from htx), hK'def,
+          Set.indicator_of_mem (show (t, x) ∈ S from htx), hK'eq,
           Set.indicator_of_mem (hMsub t ht0.le htx)]
         simp
       · rw [Set.indicator_of_notMem (show x ∉ {x | t < h x} from htx),
