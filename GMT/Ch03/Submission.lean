@@ -335,6 +335,73 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Gauss–Green identity for a translated reflected kernel** (the pointwise form of the
+identity `∫ g · ∇u_σ = -∫ u div(φ_σ ⋆ g)` in the proof of Simon Ch. 2, Lemma 2.5,
+`chapter-02.txt` lines 543–596, tested against the single field `ρ(y - ·) w`). Let `(μ, ν)` be a
+Gauss–Green pair for `(U, G)`, `ρ` a `C¹` function with `tsupport ρ ⊆ B̄_r(0)`, and
+`B̄_r(y) ⊆ U`. Then `∫_G Dρ(y - z) w dz = ∫ ρ(y - z) ⟨w, ν(z)⟩ dμ(z)`. The field
+`h(z) = ρ(y - z) w` is `C¹` with `tsupport h ⊆ B̄_r(y) ⊆ U`, and
+`div h(z) = trace((-Dρ(y - z)).smulRight w) = -Dρ(y - z) w`, so the Gauss–Green identity of the
+pair gives the claim over `G ∩ U`; the integrand vanishes off `B̄_r(y) ⊆ U`, so `∫_G = ∫_{G ∩ U}`. -/
+theorem Submission.deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq : ∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y w : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ∫ z in G, fderiv ℝ ρ (y - z) w = ∫ z, ρ (y - z) * inner ℝ w (ν z) ∂μ := by
+  intro N U G μ ν hU hGG ρ r y w hρ hρc hρr hyU
+  have hρd : Differentiable ℝ ρ := hρ.differentiable one_ne_zero
+  -- Step 1: `y - z ∈ tsupport ρ` forces `z ∈ B̄_r(y)`; hence `tsupport ρ(y - ·) ⊆ B̄_r(y)`.
+  have hball : ∀ z, y - z ∈ tsupport ρ → z ∈ Metric.closedBall y r := by
+    intro z hz
+    have h := hρr hz
+    rw [Metric.mem_closedBall, dist_zero_right] at h
+    rw [Metric.mem_closedBall, dist_eq_norm, norm_sub_rev]
+    exact h
+  have hφsupp : tsupport (fun z ↦ ρ (y - z)) ⊆ Metric.closedBall y r :=
+    closure_minimal (fun z hz ↦ hball z (subset_tsupport _ hz)) Metric.isClosed_closedBall
+  -- Step 2: chain rule, `D(ρ(y - ·))(z) = -Dρ(y - z)`.
+  have hφd : ∀ z, HasFDerivAt (fun z ↦ ρ (y - z)) (-(fderiv ℝ ρ (y - z))) z := by
+    intro z
+    have h1 : HasFDerivAt (fun z : Rn N ↦ y - z) (-(ContinuousLinearMap.id ℝ (Rn N))) z :=
+      (hasFDerivAt_id z).const_sub y
+    exact ((hρd (y - z)).hasFDerivAt.comp z h1).congr_fderiv (by ext v; simp)
+  -- Step 3: the test field `h z = ρ (y - z) • w` is `C¹` with compact support in `B̄_r(y) ⊆ U`.
+  have hhC : ContDiff ℝ 1 (fun z ↦ ρ (y - z) • w) :=
+    (hρ.comp (contDiff_const.sub contDiff_id)).smul contDiff_const
+  have hhsupp : tsupport (fun z ↦ ρ (y - z) • w) ⊆ Metric.closedBall y r :=
+    (tsupport_smul_subset_left (fun z ↦ ρ (y - z)) (fun _ ↦ w)).trans hφsupp
+  have hhc : HasCompactSupport (fun z ↦ ρ (y - z) • w) :=
+    (isCompact_closedBall y r).of_isClosed_subset (isClosed_tsupport _) hhsupp
+  have hGGh := hGG.2.2.2.2 (fun z ↦ ρ (y - z) • w) hhC hhc (hhsupp.trans hyU)
+  -- Step 4: `div h(z) = trace((-Dρ(y - z)).smulRight w) = -Dρ(y - z) w`.
+  have hdiv : ∀ z, Poincare.SimonGMT.Chapter02.euclideanDivergence (fun z ↦ ρ (y - z) • w) z =
+      -(fderiv ℝ ρ (y - z) w) := by
+    intro z
+    have hfd : fderiv ℝ (fun z ↦ ρ (y - z) • w) z = (-(fderiv ℝ ρ (y - z))).smulRight w :=
+      ((hφd z).smul_const w).fderiv
+    unfold Poincare.SimonGMT.Chapter02.euclideanDivergence
+    rw [hfd, ContinuousLinearMap.coe_smulRight, LinearMap.trace_smulRight]
+    simp
+  -- Step 5: Gauss–Green for `h`, with the signs cancelled.
+  have hL : ∫ z in G ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence
+      (fun z ↦ ρ (y - z) • w) z = -∫ z in G ∩ U, fderiv ℝ ρ (y - z) w := by
+    rw [← integral_neg]
+    exact integral_congr_ae (Eventually.of_forall hdiv)
+  have hR : ∫ z, inner ℝ ((fun z ↦ ρ (y - z) • w) z) (ν z) ∂μ =
+      ∫ z, ρ (y - z) * inner ℝ w (ν z) ∂μ :=
+    integral_congr_ae (Eventually.of_forall fun z ↦ real_inner_smul_left w (ν z) (ρ (y - z)))
+  rw [hL, hR] at hGGh
+  -- Step 6: the integrand vanishes off `B̄_r(y) ⊆ U`, so `∫_G = ∫_{G ∩ U}`.
+  have hvan : ∀ z, z ∉ U → fderiv ℝ ρ (y - z) w = 0 := by
+    intro z hz
+    have hz' : y - z ∉ tsupport ρ := fun h ↦ hz (hyU (hball z h))
+    rw [fderiv_of_notMem_tsupport ℝ hz']
+    simp
+  have hrestr : ∫ z in G, fderiv ℝ ρ (y - z) w = ∫ z in G ∩ U, fderiv ℝ ρ (y - z) w := by
+    rw [← setIntegral_indicator hU.measurableSet]
+    refine integral_congr_ae (Eventually.of_forall fun z ↦ ?_)
+    by_cases hz : z ∈ U
+    · simp [hz]
+    · simp [hz, hvan z hz]
+  rw [hrestr]
+  exact neg_inj.mp hGGh
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
