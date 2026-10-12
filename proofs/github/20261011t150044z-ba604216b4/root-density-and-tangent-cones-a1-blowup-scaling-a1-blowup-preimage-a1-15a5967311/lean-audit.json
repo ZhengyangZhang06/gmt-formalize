@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d56bd6c78676c93e6f58d3438a09590803ef2f41e002d5f30258e8e95fd44c9f",
+  "git_delta": {
+    "base_commit": "507d971436ccf3b8688b86a277370e20941d8bfc",
+    "candidate_commit": "047b3402ecebcae7b968f8ca435cbbb0b9ed036f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_blowUp_preimage",
+    "diff_sha256": "447b7d1552e956c40ea15b37b1df533eceb627b3a7c02b6627e9f637f7cb5919",
+    "source_sha256": "deb8195fab7cd7d440fabb4d34cbe3e04dba386f81c1599511a5ff470ebfc4eb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_blowUp_preimage",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (S' : GeometricCurrentOn (dilation x lam '' U) n), ∃ S'' : GeometricCurrentOn U n, blowUp S'' x lam hlam.ne' = S' ∧ (IsIntegerMultiplicity S' → IsIntegerMultiplicity S'')",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
