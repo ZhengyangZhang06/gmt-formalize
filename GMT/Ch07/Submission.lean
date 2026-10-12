@@ -451,6 +451,61 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Order-2 Taylor bound along a segment** (Simon Ch. 5, 3.4, p. 115: "an order 2 Taylor series
+expansion for `u`").  If `h` is `C²` on `B_R(0)`, `‖v‖ < R` and `|D²h(τv)(v, v)| ≤ S` for
+`τ ∈ [0, 1]`, then `|h(v) − h(0) − Dh(0)v| ≤ S/2`: with `φ(τ) = h(τv)` and `φ₁(τ) = Dh(τv)v`, the
+mean value inequality gives `|φ₁(τ) − φ₁(0)| ≤ Sτ`, and comparing `ψ(τ) = φ(τ) − φ(0) − τφ₁(0)`
+with `Sτ²/2` gives `|ψ(1)| ≤ S/2`. -/
+theorem Submission.dorag_ha_ie_taylor_two_le : ∀ (n : ℕ) (h : Euclid n → ℝ) (R S : ℝ) (v : Euclid n), ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → ‖v‖ < R → (∀ τ ∈ Icc (0 : ℝ) 1, |iteratedFDeriv ℝ 2 h (τ • v) ![v, v]| ≤ S) → |h v - h 0 - fderiv ℝ h 0 v| ≤ S / 2 := by
+  intro n h R S v hh hv hS
+  -- Step 1: the segment `τ ↦ τ • v`, `τ ∈ [0, 1]`, lies in the open ball
+  have hmem : ∀ τ ∈ Icc (0 : ℝ) 1, τ • v ∈ ball (0 : Euclid n) R := by
+    intro τ hτ
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_of_nonneg hτ.1]
+    exact (mul_le_of_le_one_left (norm_nonneg v) hτ.2).trans_lt hv
+  -- Step 2: `h` and `Dh` are differentiable on the open ball
+  have hD1 : ∀ p ∈ ball (0 : Euclid n) R, HasFDerivAt h (fderiv ℝ h p) p := fun p hp =>
+    ((hh.differentiableOn two_ne_zero).differentiableAt (isOpen_ball.mem_nhds hp)).hasFDerivAt
+  have hD2 : ∀ p ∈ ball (0 : Euclid n) R,
+      HasFDerivAt (fderiv ℝ h) (fderiv ℝ (fderiv ℝ h) p) p := fun p hp =>
+    (((hh.fderiv_of_isOpen isOpen_ball (by norm_num : (1 : WithTop ℕ∞) + 1 ≤ 2)).differentiableOn
+      one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hp)).hasFDerivAt
+  -- Step 3: `φ τ = h (τ • v)` has derivative `φ₁ τ = Dh (τ • v) v`, and `φ₁` has derivative
+  -- `D²h (τ • v) (v, v)`
+  have hline : ∀ τ : ℝ, HasDerivAt (fun t : ℝ => t • v) v τ := fun τ => by
+    simpa using (hasDerivAt_id τ).smul_const v
+  have hφ : ∀ τ ∈ Icc (0 : ℝ) 1,
+      HasDerivAt (fun t : ℝ => h (t • v)) (fderiv ℝ h (τ • v) v) τ := fun τ hτ =>
+    (hD1 _ (hmem τ hτ)).comp_hasDerivAt τ (hline τ)
+  have hφ₁ : ∀ τ ∈ Icc (0 : ℝ) 1, HasDerivAt (fun t : ℝ => fderiv ℝ h (t • v) v)
+      (iteratedFDeriv ℝ 2 h (τ • v) ![v, v]) τ := fun τ hτ => by
+    have h1 : HasDerivAt (fderiv ℝ h ∘ fun t : ℝ => t • v)
+        (fderiv ℝ (fderiv ℝ h) (τ • v) v) τ :=
+      (hD2 _ (hmem τ hτ)).comp_hasDerivAt τ (hline τ)
+    rw [iteratedFDeriv_two_apply]
+    exact (ContinuousLinearMap.apply ℝ ℝ v).hasFDerivAt.comp_hasDerivAt τ h1
+  -- Step 4: mean value inequality, `|φ₁ τ - φ₁ 0| ≤ S τ` on `[0, 1]`
+  have hmvt : ∀ τ ∈ Icc (0 : ℝ) 1, ‖fderiv ℝ h (τ • v) v - fderiv ℝ h 0 v‖ ≤ S * τ := by
+    have := norm_image_sub_le_of_norm_deriv_le_segment'
+      (fun τ hτ => (hφ₁ τ hτ).hasDerivWithinAt) (fun τ hτ => hS τ (Ico_subset_Icc_self hτ))
+    simpa using this
+  -- Step 5: compare `ψ τ = φ τ - φ 0 - τ φ₁ 0` with `S τ² / 2`
+  have hψ : ∀ τ ∈ Icc (0 : ℝ) 1,
+      HasDerivAt (fun t : ℝ => h (t • v) - h 0 - t * fderiv ℝ h 0 v)
+        (fderiv ℝ h (τ • v) v - fderiv ℝ h 0 v) τ := fun τ hτ => by
+    simpa using
+      ((hφ τ hτ).sub_const (h 0)).fun_sub ((hasDerivAt_id τ).mul_const (fderiv ℝ h 0 v))
+  have hB : ∀ x : ℝ, HasDerivAt (fun t : ℝ => S * t ^ 2 / 2) (S * x) x := fun x => by
+    convert ((hasDerivAt_pow 2 x).const_mul S).div_const 2 using 1
+    ring
+  have hcmp := image_norm_le_of_norm_deriv_right_le_deriv_boundary
+    (fun τ hτ => (hψ τ hτ).continuousAt.continuousWithinAt)
+    (fun τ hτ => (hψ τ (Ico_subset_Icc_self hτ)).hasDerivWithinAt)
+    (by simp) hB (fun τ hτ => hmvt τ (Ico_subset_Icc_self hτ))
+    (right_mem_Icc.2 zero_le_one)
+  -- Step 6: at `τ = 1`, `ψ 1 = h v - h 0 - Dh 0 v`
+  simpa using hcmp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
