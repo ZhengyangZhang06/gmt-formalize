@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "84d446cca6dcde762334edac1d41f225bb13b82f1c77df015f0c02638583d25f",
+  "git_delta": {
+    "base_commit": "ad0b959554ea648f0f24bf0bde4f12b9a617c2a0",
+    "candidate_commit": "bd9c4fe8fb73a5cdf577695da751493cb6612006",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_scf_zero_defect_mem_plane",
+    "diff_sha256": "f43d0251b1d8c31490847e8c1427a12adba0bb8227f5353fb3d07c708bf1e919",
+    "source_sha256": "9c862159a821f9d4c8d4563fc4af4e95f801f200b4e551d6f219a8dd6d2f7523",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_scf_zero_defect_mem_plane",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (y : Euclidean N), (∀ ρ : ℝ, 0 < ρ → normalDefect V y (closedBall y ρ) = 0) → ∀ z ∈ V.measure.support, z.1 - y ∈ z.2.plane",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
