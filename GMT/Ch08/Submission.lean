@@ -427,6 +427,49 @@ theorem Submission.exists_thickening_isRelCompactOpenIn :
     exact closure_thickening_subset_cthickening δ W
   exact ⟨δ, hδ, isOpen_thickening, hWc.cthickening.of_isClosed_subset isClosed_closure hcl,
     hcl.trans hδU⟩
+/-- **Simon Ch. 8, proof of 3.7, p. 213, final step** (child `relcompact_exhaustion_ae` of
+`lower_density_ae`): the book proves the density bound on one `W ⊂⊂ U` off a `μ`-null set ((4),
+(5)); this passes to `μ`-a.e. point.  If `μ(ℝ^N ∖ U) = 0` and `P` holds on each `W ⊂⊂ U` off a
+`μ`-null set, then `P` holds `μ`-a.e.: each `x ∈ U` has a ball `W_x = B°_{r_x}(x) ⊂⊂ U`, countably
+many `W_x` cover `U` (`ℝ^N` is second countable), and `{¬P} ⊆ Uᶜ ∪ ⋃_{x ∈ T} E_x` is `μ`-null.
+No measurability of `P` or of the exceptional sets is used. -/
+theorem Submission.ae_of_forall_relCompactOpen_null_exceptional :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)) (P : Euclidean N → Prop),
+      IsOpen U → μ Uᶜ = 0 →
+      (∀ W : Set (Euclidean N), IsRelCompactOpenIn W U →
+        ∃ E : Set (Euclidean N), μ E = 0 ∧ ∀ x ∈ W, x ∉ E → P x) →
+      ∀ᵐ x ∂μ, P x := by
+  intro N U μ P hU hUc hP
+  -- Step 1: each `x ∈ U` has a radius `r x > 0` with `B_{r x}(x) ⊆ U`.
+  have hr : ∀ x : U, ∃ r : ℝ, 0 < r ∧ closedBall (x : Euclidean N) r ⊆ U := by
+    intro x
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x x.2
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hεU⟩
+  choose r hr0 hrU using hr
+  -- Step 2: `W_x = B°_{r x}(x) ⊂⊂ U`, since `closure W_x ⊆ B_{r x}(x) ⊆ U` and closed balls are
+  -- compact.
+  have hW : ∀ x : U, IsRelCompactOpenIn (ball (x : Euclidean N) (r x)) U := fun x ↦
+    ⟨isOpen_ball, (isCompact_closedBall _ _).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, closure_ball_subset_closedBall.trans (hrU x)⟩
+  -- Step 3: countably many `W_x` (`x ∈ T`) have the same union as all of them, which contains `U`.
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun x : U ↦ ball (x : Euclidean N) (r x)) fun _ ↦ isOpen_ball
+  -- Step 4: a `μ`-null exceptional set `E x` for each `W_x`.
+  choose E hE0 hEP using fun x : U ↦ hP _ (hW x)
+  -- Steps 5–7: `{¬P} ⊆ Uᶜ ∪ ⋃_{x ∈ T} E x`, which is `μ`-null.
+  rw [ae_iff]
+  refine measure_mono_null (t := Uᶜ ∪ ⋃ x ∈ T, E x) ?_
+    (measure_union_null hUc ((measure_biUnion_null_iff hTc).2 fun x _ ↦ hE0 x))
+  intro y hy
+  by_cases hyU : y ∈ U
+  · have hyT : y ∈ ⋃ x ∈ T, ball (x : Euclidean N) (r x) := by
+      rw [hTU]
+      exact mem_iUnion.2 ⟨⟨y, hyU⟩, mem_ball_self (hr0 _)⟩
+    obtain ⟨x, hxT, hyx⟩ := mem_iUnion₂.1 hyT
+    refine Or.inr (mem_iUnion₂.2 ⟨x, hxT, ?_⟩)
+    by_contra hyE
+    exact hy (hEP x y hyx hyE)
+  · exact Or.inl hyU
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
