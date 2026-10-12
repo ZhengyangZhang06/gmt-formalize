@@ -586,6 +586,58 @@ theorem any_radius_rv_weight_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V 
   rw [hA']
   simp only [hθ]
   exact hcv _ fun y => ENNReal.ofReal (V.mult y)
+/-- Support of a rescaled varifold (the rescaling `ψ(x) = c + R x` behind Simon Ch. 5, Remark 5.3):
+if `μ_W = R⁻ⁿ φ_# μ_V` with `φ(y) = R⁻¹(y − c)`, then `spt W = ψ⁻¹(spt V)`.  `φ` is the inverse of
+the homeomorphism `ψ`, so `μ_W(G) = R⁻ⁿ μ_V(φ⁻¹G)` for every set `G`; neighbourhoods of `x` and of
+`ψ(x)` correspond under `ψ⁻¹` and `φ⁻¹`, and the factor `R⁻ⁿ ∈ (0, ∞)` does not change positivity. -/
+theorem any_radius_rv_support_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → W.support = (fun x => c + R • x) ⁻¹' V.support := by
+  intro n ℓ U V c R hR W hW
+  have hR0 : R ≠ 0 := hR.ne'
+  -- `κ = (Rⁿ)⁻¹ ≠ 0` in `[0, ∞]`, since `Rⁿ < ∞`.
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ 0 := ENNReal.inv_ne_zero.2 ENNReal.ofReal_ne_top
+  -- `ψ(x) = c + R x` and `φ(y) = R⁻¹ (y − c)` are mutually inverse homeomorphisms.
+  have hψφ : ∀ y : Amb n ℓ, c + R • (R⁻¹ • (y - c)) = y := fun y => by
+    rw [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
+  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • ((c + R • x) - c) = x := fun x => by
+    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR0, one_smul]
+  have hψc : Continuous fun x : Amb n ℓ => c + R • x := by fun_prop
+  have hφc : Continuous fun y : Amb n ℓ => R⁻¹ • (y - c) := by fun_prop
+  let e : Amb n ℓ ≃ₜ Amb n ℓ :=
+    { toFun := fun y => R⁻¹ • (y - c)
+      invFun := fun x => c + R • x
+      left_inv := hψφ
+      right_inv := hφψ
+      continuous_toFun := hφc
+      continuous_invFun := hψc }
+  -- Hence `φ` is a measurable embedding and `μ_W(G) = κ μ_V(φ⁻¹G)` for every set `G`.
+  have hφe : MeasurableEmbedding fun y : Amb n ℓ => R⁻¹ • (y - c) := e.measurableEmbedding
+  have hWG : ∀ G : Set (Amb n ℓ),
+      W.weight G = (ENNReal.ofReal (R ^ n))⁻¹ * V.weight ((fun y => R⁻¹ • (y - c)) ⁻¹' G) := by
+    intro G
+    rw [hW, Measure.smul_apply, hφe.map_apply, smul_eq_mul]
+  -- `x ∈ spt μ_W ↔ ψ(x) ∈ spt μ_V`.
+  have key : ∀ x : Amb n ℓ, x ∈ W.weight.support ↔ c + R • x ∈ V.weight.support := by
+    intro x
+    rw [Measure.mem_support_iff_forall, Measure.mem_support_iff_forall]
+    constructor
+    · -- `ψ⁻¹G` is a neighbourhood of `x`, and `φ⁻¹(ψ⁻¹G) = G`.
+      intro h G hG
+      have hpos := h _ (hψc.continuousAt.preimage_mem_nhds hG)
+      have hpre : (fun y => R⁻¹ • (y - c)) ⁻¹' ((fun x => c + R • x) ⁻¹' G) = G := by
+        ext y
+        simp only [mem_preimage, hψφ]
+      rw [hWG, hpre] at hpos
+      exact (ENNReal.mul_pos_iff.1 hpos).2
+    · -- `φ⁻¹G` is a neighbourhood of `ψ(x)`, since `φ(ψ(x)) = x`.
+      intro h G hG
+      rw [hWG]
+      refine ENNReal.mul_pos hκ (h _ ?_).ne'
+      refine hφc.continuousAt.preimage_mem_nhds ?_
+      rw [hφψ]
+      exact hG
+  -- `spt W = ψ⁻¹U ∩ spt μ_W = ψ⁻¹U ∩ ψ⁻¹(spt μ_V) = ψ⁻¹(spt V)`.
+  ext x
+  simp only [RectifiableVarifold.support, mem_inter_iff, mem_preimage, key]
 
 end Submission
 
