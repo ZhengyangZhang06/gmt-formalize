@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "94cbed43fdc54708274cabb39d19ddc575b18cd81b41f5e1a0002b83231049a0",
+  "git_delta": {
+    "base_commit": "1d774635cb2ed74004d461512df52a826158d84e",
+    "candidate_commit": "1a9783d244887835801878ef469a79230d2a3e8d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "divM_height_test_field_eq",
+    "diff_sha256": "31260ca708452dfae1b1b1993cf698e16473d16b0397663e9421e5ac20229719",
+    "source_sha256": "a3b35ace4a0c2e61cd16bbe6894851c8a24dc155f5282db8f93c24510b097ec5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.divM_height_test_field_eq",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ζ : Amb n ℓ → ℝ) (ξ x : Amb n ℓ) (P T : Submodule ℝ (Amb n ℓ)), DifferentiableAt ℝ ζ x → Module.finrank ℝ P = n → Module.finrank ℝ T = n → V.tangentProj x = P.starProjection → V.divM (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - ξ)) x = ζ x ^ 2 * (hsNormSq (P.starProjection - T.starProjection) / 2) + 2 * ζ x * fderiv ℝ ζ x ((P.starProjection - T.starProjection) (Tᗮ.starProjection (x - ξ)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
