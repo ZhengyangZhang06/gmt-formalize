@@ -359,6 +359,94 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Vitali covering estimate off a `ψ`-null closed set, a covering step for the Mickle–Radó
+density theorem (Mickle–Radó, Proc. Amer. Math. Soc. 9 (1958), 433–439).  If `K` is closed,
+`ψ K = 0` and `ψ(B(z,τ)) ≤ C τᵏ` for `z ∈ K`, `0 < τ < r` (`k = m + 1`), then
+`ψ(B(c₀,t)) · Lᵏ(B(0,1)) ≤ C 6ᵏ Lᵏ(B(c₀,2t) ∖ K)` for `c₀ ∈ K`, `0 < t`, `6t ≤ r`.  The balls
+`B(z, d z)`, `d z = dist(z,K)`, `z ∈ B(c₀,t) ∖ K`, miss `K` and lie in `B(c₀,2t)`.  A disjoint
+(hence countable) Vitali subfamily has `5`-fold enlargements covering `B(c₀,t) ∖ K`, and
+`B(b, 5 d b) ⊆ B(z'_b, 6 d b)` for a nearest point `z'_b ∈ K` of `b`, where `6 d b < 6t ≤ r`. -/
+theorem Submission.rectifiability_mickle_rado_vitali_bound : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ c₀ ∈ K, ∀ t : ℝ, 0 < t → 6 * t ≤ r → ψ (ball c₀ t) * (volume : Measure (Eucl (m + 1))) (ball 0 1) ≤ C * 6 ^ (m + 1) * (volume : Measure (Eucl (m + 1))) (ball c₀ (2 * t) \ K) := by
+  intro m ψ K C r hK hψK hbound c₀ hc₀ t ht htr
+  set μ : Measure (Eucl (m + 1)) := volume with hμ
+  set ω := μ (ball 0 1) with hω
+  have hfin : Module.finrank ℝ (Eucl (m + 1)) = m + 1 := finrank_euclideanSpace_fin
+  have hKne : K.Nonempty := ⟨c₀, hc₀⟩
+  -- step 1: `ψ(B(c₀,t)) ≤ ψ(B(c₀,t) ∖ K) + ψ(K) = ψ(B(c₀,t) ∖ K)`
+  have h1 : ψ (ball c₀ t) ≤ ψ (ball c₀ t \ K) := by
+    calc ψ (ball c₀ t) ≤ ψ ((ball c₀ t \ K) ∪ K) := measure_mono (fun x hx => by
+          by_cases h : x ∈ K
+          · exact Or.inr h
+          · exact Or.inl ⟨hx, h⟩)
+      _ ≤ ψ (ball c₀ t \ K) + ψ K := measure_union_le _ _
+      _ = ψ (ball c₀ t \ K) := by rw [hψK, add_zero]
+  set T := ball c₀ t \ K with hT
+  -- step 2: on `T`, the radius `d z = dist(z, K)` satisfies `0 < d z ≤ dist(z, c₀) < t`
+  set d : Eucl (m + 1) → ℝ := fun z => infDist z K with hd
+  have hd_pos : ∀ z ∈ T, 0 < d z := fun z hz => (hK.notMem_iff_infDist_pos hKne).1 hz.2
+  have hd_lt : ∀ z ∈ T, d z < t := fun z hz =>
+    (infDist_le_dist_of_mem hc₀).trans_lt (mem_ball.1 hz.1)
+  -- steps 3–4: a disjoint, hence countable, Vitali subfamily `u ⊆ T` with enlargement factor `5`
+  obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_ball
+    T (fun z => z) d t (fun z hz => (hd_lt z hz).le) 5 (by norm_num)
+  have hu_count : u.Countable := hdisj.countable_of_isOpen (fun _ _ => isOpen_ball)
+    (fun z hz => ⟨z, mem_ball_self (hd_pos z (huT hz))⟩)
+  -- step 5: recentre at nearest points `z' b ∈ K`, so that `T ⊆ ⋃_{b ∈ u} B(z' b, 6 d b)`
+  have hnear : ∀ z, ∃ y ∈ K, infDist z K = dist z y := fun z => hK.exists_infDist_eq_dist hKne z
+  choose z' hz'K hz'd using hnear
+  have hcover : T ⊆ ⋃ b ∈ u, ball (z' b) (6 * d b) := by
+    intro a ha
+    obtain ⟨b, hbu, hab⟩ := hcov a ha
+    have hab' : a ∈ ball b (5 * d b) := hab (mem_ball_self (hd_pos a ha))
+    refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
+    rw [mem_ball] at hab' ⊢
+    have hbz : dist b (z' b) = d b := (hz'd b).symm
+    calc dist a (z' b) ≤ dist a b + dist b (z' b) := dist_triangle _ _ _
+      _ < 5 * d b + d b := by rw [hbz]; linarith
+      _ = 6 * d b := by ring
+  -- steps 6–7: as `0 < 6 d b < 6t ≤ r`, `ψ(T) ≤ ∑_{b ∈ u} C 6ᵏ (d b)ᵏ`
+  have h2 : ψ T ≤ ∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+    calc ψ T ≤ ψ (⋃ b ∈ u, ball (z' b) (6 * d b)) := measure_mono hcover
+      _ ≤ ∑' b : u, ψ (ball (z' b) (6 * d b)) := measure_biUnion_le ψ hu_count _
+      _ ≤ ∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+        refine ENNReal.tsum_le_tsum fun b => ?_
+        have hb : (b : Eucl (m + 1)) ∈ T := huT b.2
+        have hpos := hd_pos b hb
+        have hlt := hd_lt b hb
+        calc ψ (ball (z' b) (6 * d b)) ≤ C * ENNReal.ofReal ((6 * d b) ^ (m + 1)) :=
+              hbound (z' b) (hz'K b) (6 * d b) ⟨by linarith, by linarith⟩
+          _ = C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+            rw [mul_pow, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by norm_num)]
+            simp [mul_assoc]
+  -- step 8: for the disjoint balls `B(b, d b) ⊆ B(c₀,2t) ∖ K`,
+  -- `∑_{b ∈ u} (d b)ᵏ ω = Lᵏ(⋃_{b ∈ u} B(b, d b)) ≤ Lᵏ(B(c₀,2t) ∖ K)`
+  have h3 : ∑' b : u, ENNReal.ofReal ((d b) ^ (m + 1)) * ω ≤ μ (ball c₀ (2 * t) \ K) := by
+    have heq : ∀ b : u,
+        ENNReal.ofReal ((d b) ^ (m + 1)) * ω = μ (ball (b : Eucl (m + 1)) (d b)) := by
+      intro b
+      rw [Measure.addHaar_ball μ _ (hd_pos b (huT b.2)).le, hfin]
+    simp_rw [heq]
+    rw [← measure_biUnion hu_count hdisj (fun _ _ => measurableSet_ball)]
+    apply measure_mono
+    intro y hy
+    obtain ⟨b, hbu, hyb⟩ := mem_iUnion₂.1 hy
+    have hbT := huT hbu
+    refine ⟨?_, ?_⟩
+    · rw [mem_ball] at hyb ⊢
+      have hbc := mem_ball.1 hbT.1
+      have := hd_lt b hbT
+      calc dist y c₀ ≤ dist y b + dist b c₀ := dist_triangle _ _ _
+        _ < 2 * t := by linarith
+    · intro hyK
+      exact Set.disjoint_left.1 (disjoint_ball_infDist (x := b) (s := K)) hyb hyK
+  -- step 9: combine, pulling the constants out of the sums
+  calc ψ (ball c₀ t) * ω
+      ≤ (∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1))) * ω := by
+        gcongr; exact h1.trans h2
+    _ = C * 6 ^ (m + 1) * ∑' b : u, ENNReal.ofReal ((d b) ^ (m + 1)) * ω := by
+        rw [ENNReal.tsum_mul_left, ENNReal.tsum_mul_right, mul_assoc]
+    _ ≤ C * 6 ^ (m + 1) * μ (ball c₀ (2 * t) \ K) := by gcongr
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
