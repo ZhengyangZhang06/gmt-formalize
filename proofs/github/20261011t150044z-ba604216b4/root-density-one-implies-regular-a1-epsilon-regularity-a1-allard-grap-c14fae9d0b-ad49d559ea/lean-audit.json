@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3f640a88cd8ee3e4fe80d97cbc8352aa2ffea2caced4c0524faf522ddd2adfcf",
+  "git_delta": {
+    "base_commit": "2dcd02614975c100d8651de170661e5cb9eb6103",
+    "candidate_commit": "cfda04e7a38c692d886cc3a02de4dd8ddb411bda",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_line_ftc",
+    "diff_sha256": "09092e4e860aef183b116a7372305e389203507a9412dadf11e5f120dd6a40a9",
+    "source_sha256": "448b5949554422db34a1d8b77fd3f6dca1ba79780f4786d87a889e85f47c2ee6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_line_ftc",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (p v : Euclid n) (a b : ℝ), LipschitzWith L u → (∀ᵐ τ : ℝ, τ ∈ Set.uIcc a b → DifferentiableAt ℝ u (p + τ • v)) → u (p + b • v) - u (p + a • v) = ∫ τ in a..b, fderiv ℝ u (p + τ • v) v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
