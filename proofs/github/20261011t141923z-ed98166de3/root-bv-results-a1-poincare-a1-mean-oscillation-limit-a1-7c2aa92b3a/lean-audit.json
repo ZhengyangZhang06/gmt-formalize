@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2ed138e6b32756a2044f1a2c7265f43e9ad33b4d50147be88d7f6f755bddc464",
+  "git_delta": {
+    "base_commit": "bf997ba43f0eb2ea823348c4c34cb970bf63574d",
+    "candidate_commit": "159842825a91b2a879cc8d4bcf6107b01d09fec9",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "mean_oscillation_lintegral_le_of_approx",
+    "diff_sha256": "92ac55ac70ea0f26d522da13bc968a0629ee44557fc00d3454d55f65bf1700f4",
+    "source_sha256": "4781f8669b04fea7860f9a1c4e5623791d42822310f1ea5206c08c844aacf662",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mean_oscillation_lintegral_le_of_approx",
+      "statement": "∀ (n : ℕ) (U : Set (Rn n)) (u : Rn n → ℝ) (O : ℕ → Set (Rn n)) (w : ℕ → Rn n → ℝ) (K : ℝ≥0∞), volume U < ⊤ → IntegrableOn u U volume → (∀ j, MeasurableSet (O j)) → Monotone O → ⋃ j, O j = U → (∀ j, IntegrableOn (w j) (O j) volume) → Tendsto (fun j ↦ ∫⁻ x in O j, ‖w j x - u x‖ₑ) atTop (𝓝 0) → (∀ j, ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ ≤ K) → ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤ K",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
