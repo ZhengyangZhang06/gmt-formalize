@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a63384af3874403c7a5a2411d273c8128c1e302a4af08458a9fbd20e6ca96b5a",
+  "git_delta": {
+    "base_commit": "ca5860f12b697185af0a323b0da4b3d43087b84f",
+    "candidate_commit": "e7922f0d164c9e872c27348b554f640ecee8bd90",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_hausdorff_null_of_weight_null",
+    "diff_sha256": "752621fac6d6d4bce3c50dfcca07449ee5e802dee0911f7617482fd9b6338248",
+    "source_sha256": "439a962f898d446306873a38de4912c49760e2acf9ce6af6fea6542065adc51d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_hausdorff_null_of_weight_null",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (A : Set (Amb n ℓ)), A ⊆ V.carrier → V.weight A = 0 → (μHE[n] : Measure (Amb n ℓ)) A = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
