@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- If `f` is continuous on `closedBall y ρ` and equals its own ball mean at `y`,
+`∫_{B_ρ(y)} f = V f(y)` with `V = Lⁿ(B_ρ(y))`, then `f(y)² V ≤ ∫_{B_ρ(y)} f²` (Simon Ch. 5, 3.2
+with `q = 0`): `0 ≤ ∫_{B_ρ(y)} (f − f(y))² = ∫_{B_ρ(y)} f² − 2f(y) ∫_{B_ρ(y)} f + f(y)² V
+= ∫_{B_ρ(y)} f² − f(y)² V`. -/
+theorem Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value : ∀ (n : ℕ) (f : Euclid n → ℝ) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn f (closedBall y ρ) → ∫ z in ball y ρ, f z = (volume (ball y ρ)).toReal * f y → f y ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, f z ^ 2 := by
+  intro n f y ρ _ hf hmean
+  -- `f` and `f²` are continuous on the compact closed ball, hence integrable on the ball
+  have hfi : IntegrableOn f (ball y ρ) :=
+    (hf.integrableOn_compact (isCompact_closedBall y ρ)).mono_set ball_subset_closedBall
+  have hf2i : IntegrableOn (fun z => f z ^ 2) (ball y ρ) :=
+    ((hf.pow 2).integrableOn_compact (isCompact_closedBall y ρ)).mono_set ball_subset_closedBall
+  have hci : IntegrableOn (fun _ => f y ^ 2) (ball y ρ) := integrableOn_const measure_ball_lt_top.ne
+  have hnonneg : 0 ≤ ∫ z in ball y ρ, (f z - f y) ^ 2 :=
+    setIntegral_nonneg measurableSet_ball fun z _ => sq_nonneg _
+  -- expand the square: `∫ (f − f(y))² = ∫ f² − 2f(y) ∫ f + f(y)² V`
+  have hexp : ∫ z in ball y ρ, (f z - f y) ^ 2 = (∫ z in ball y ρ, f z ^ 2) -
+      2 * f y * (∫ z in ball y ρ, f z) + f y ^ 2 * (volume (ball y ρ)).toReal := by
+    have hi : IntegrableOn (fun z => f z ^ 2 - 2 * f y * f z) (ball y ρ) :=
+      hf2i.sub (hfi.const_mul _)
+    calc ∫ z in ball y ρ, (f z - f y) ^ 2
+        = ∫ z in ball y ρ, ((f z ^ 2 - 2 * f y * f z) + f y ^ 2) := by
+          congr 1; funext z; ring
+      _ = (∫ z in ball y ρ, f z ^ 2) - 2 * f y * (∫ z in ball y ρ, f z) +
+            f y ^ 2 * (volume (ball y ρ)).toReal := by
+          rw [integral_add hi hci, integral_sub hf2i (hfi.const_mul _), integral_const_mul,
+            setIntegral_const, smul_eq_mul, measureReal_def, mul_comm (volume (ball y ρ)).toReal]
+  -- insert `∫ f = V f(y)`
+  rw [hexp, hmean] at hnonneg
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
