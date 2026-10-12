@@ -451,6 +451,73 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+namespace Submission
+
+/-- Exhaustion of `B_R(0)` by concentric balls: if `f ≥ 0` is continuous on `B_R(0)` and
+`∫_{B_r(0)} f ≤ E` for every `0 < r < R`, then `f` is integrable on `B_R(0)` and
+`∫_{B_R(0)} f ≤ E`.  Monotone convergence along the radii `r_k = R (k + 1) / (k + 2) ↑ R`
+bounds `∫⁻_{B_R(0)} f` by `E`. -/
+theorem dorag_ha_lsc_exhaustion : ∀ (n : ℕ) (R E : ℝ) (f : Euclid n → ℝ), 0 < R → ContinuousOn f (ball (0 : Euclid n) R) → (∀ x ∈ ball (0 : Euclid n) R, 0 ≤ f x) → (∀ r, 0 < r → r < R → ∫ x in ball (0 : Euclid n) r, f x ≤ E) → IntegrableOn f (ball (0 : Euclid n) R) ∧ ∫ x in ball (0 : Euclid n) R, f x ≤ E := by
+  intro n R E f hR hf hf0 hbd
+  -- integrability on interior balls
+  have hint : ∀ r, 0 < r → r < R → IntegrableOn f (ball (0 : Euclid n) r) := by
+    intro r _ hrR
+    exact ((hf.mono (closedBall_subset_ball hrR)).integrableOn_compact
+      (isCompact_closedBall 0 r)).mono_set ball_subset_closedBall
+  have hnn : ∀ r, r ≤ R → 0 ≤ᵐ[volume.restrict (ball (0 : Euclid n) r)] f := by
+    intro r hrR
+    exact (ae_restrict_iff' measurableSet_ball).2
+      (Eventually.of_forall fun x hx => hf0 x (ball_subset_ball hrR hx))
+  have hE0 : 0 ≤ E := (setIntegral_nonneg measurableSet_ball fun x hx =>
+      hf0 x (ball_subset_ball (half_le_self hR.le) hx)).trans (hbd (R / 2) (half_pos hR) (half_lt_self hR))
+  -- exhausting sequence of radii
+  set r : ℕ → ℝ := fun k => R * ((k + 1) / (k + 2)) with hr
+  have hr_pos : ∀ k, 0 < r k := fun k => by positivity
+  have hr_lt : ∀ k, r k < R := fun k => by
+    have : ((k:ℝ) + 1) / (k + 2) < 1 := by rw [div_lt_one (by positivity)]; linarith
+    calc r k = R * ((k + 1) / (k + 2)) := rfl
+      _ < R * 1 := by gcongr
+      _ = R := mul_one R
+  have hr_mono : Monotone r := by
+    intro k l hkl
+    have hkl' : (k:ℝ) ≤ l := by exact_mod_cast hkl
+    have hfrac : ((k:ℝ) + 1) / (k + 2) ≤ ((l:ℝ) + 1) / (l + 2) := by
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    exact mul_le_mul_of_nonneg_left hfrac hR.le
+  have hunion : (⋃ k, ball (0 : Euclid n) (r k)) = ball (0 : Euclid n) R := by
+    apply Subset.antisymm
+    · exact iUnion_subset fun k => ball_subset_ball (hr_lt k).le
+    · intro x hx
+      rw [mem_ball_zero_iff] at hx
+      obtain ⟨k, hk⟩ := exists_nat_gt (R / (R - ‖x‖))
+      refine mem_iUnion.2 ⟨k, mem_ball_zero_iff.2 ?_⟩
+      have hpos : 0 < R - ‖x‖ := by linarith
+      have hk2 : R < (k + 2) * (R - ‖x‖) := by
+        rw [div_lt_iff₀ hpos] at hk; nlinarith
+      show ‖x‖ < R * ((k + 1) / (k + 2))
+      rw [mul_div_assoc', lt_div_iff₀ (by positivity)]
+      nlinarith
+  have hdir : Directed (· ⊆ ·) fun k => ball (0 : Euclid n) (r k) :=
+    Monotone.directed_le fun a b hab => ball_subset_ball (hr_mono hab)
+  -- lintegral bound
+  have hlin : ∫⁻ x in ball (0 : Euclid n) R, ENNReal.ofReal (f x) ≤ ENNReal.ofReal E := by
+    rw [← hunion, setLIntegral_iUnion_of_directed _ hdir]
+    refine iSup_le fun k => ?_
+    rw [← ofReal_integral_eq_lintegral_ofReal (hint _ (hr_pos k) (hr_lt k)) (hnn _ (hr_lt k).le)]
+    exact ENNReal.ofReal_le_ofReal (hbd _ (hr_pos k) (hr_lt k))
+  have hmeas : AEStronglyMeasurable f (volume.restrict (ball (0 : Euclid n) R)) :=
+    hf.aestronglyMeasurable measurableSet_ball
+  have hI : IntegrableOn f (ball (0 : Euclid n) R) := by
+    refine ⟨hmeas, ?_⟩
+    rw [hasFiniteIntegral_iff_ofReal (hnn R le_rfl)]
+    exact hlin.trans_lt ENNReal.ofReal_lt_top
+  refine ⟨hI, ?_⟩
+  have := (ofReal_integral_eq_lintegral_ofReal hI (hnn R le_rfl)).trans_le hlin
+  exact (ENNReal.ofReal_le_ofReal_iff hE0).1 this
+
+end Submission
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
