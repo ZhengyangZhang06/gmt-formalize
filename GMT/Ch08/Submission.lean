@@ -438,6 +438,34 @@ theorem Submission.allard_tc_cri_hausdorff_dilation_lintegral :
   -- Step 7: `σ⁻¹ D = {w | s • w ∈ D}` and `σ w = s • w` definitionally.
   rfl
 
+/-- **Dilation of a varifold given by a fibrewise `H^n`-representation** (child
+`rescaled_representation` of `cone_rescaling_invariance`; Simon Ch. 8, 5.3 and 5.7).  If
+`C(A) = ∫_{x ∈ M, ∃ T, P x T ∧ (x, T) ∈ A} g dH^n` for Borel `A`, then for `s > 0`
+`η_{0,s #} C (A) = ∫_{s w ∈ M, ∃ T, P (s w) T ∧ (w, T) ∈ A} g (s w) dH^n(w)`: pull `A` back by
+`Φ(z, S) = (s⁻¹ (z - 0), S)`, apply the representation, change variables `x = s w` with child
+`hausdorff_dilation_lintegral`, and cancel `s^{-n} s^n = 1`. -/
+theorem Submission.allard_tc_cri_rescaled_representation :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (P : Euclidean N → Grassmannian N n → Prop) (g : Euclidean N → ℝ≥0∞), (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, P x T ∧ (x, T) ∈ A}, g x ∂(μHE[n] : Measure (Euclidean N))) → ∀ s : ℝ, 0 < s → ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → rescaledMeasure C 0 s A = ∫⁻ w in {w : Euclidean N | s • w ∈ M ∧ ∃ T : Grassmannian N n, P (s • w) T ∧ (w, T) ∈ A}, g (s • w) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro N n C M P g hrep s hs A hA
+  -- Step 1: `Φ(z, S) = (s⁻¹ • (z - 0), S)` is measurable, so `A' = Φ⁻¹ A` is measurable.
+  have hΦ : Measurable fun z : Euclidean N × Grassmannian N n ↦ (s⁻¹ • (z.1 - 0), z.2) := by
+    fun_prop
+  -- Step 6: `ofReal (s⁻¹ ^ n) * ofReal s ^ n = 1`.
+  have hconst : ENNReal.ofReal (s⁻¹ ^ n) * ENNReal.ofReal s ^ n = 1 := by
+    rw [ENNReal.ofReal_pow (inv_nonneg.2 hs.le), ← mul_pow,
+      ← ENNReal.ofReal_mul (inv_nonneg.2 hs.le), inv_mul_cancel₀ hs.ne', ENNReal.ofReal_one,
+      one_pow]
+  -- Step 2: `rescaledMeasure C 0 s A = ofReal (s⁻¹ ^ n) * C(A')`.
+  rw [rescaledMeasure, Measure.smul_apply, smul_eq_mul, Measure.map_apply hΦ hA]
+  -- Steps 3–4: the representation at `A'`, then child `hausdorff_dilation_lintegral` at
+  -- `D₁ = {x ∈ M | ∃ T, P x T ∧ (x, T) ∈ A'}`; Step 7: the constants cancel.
+  rw [hrep _ (hΦ hA), Submission.allard_tc_cri_hausdorff_dilation_lintegral N n s _ g hs,
+    ← mul_assoc, hconst, one_mul]
+  -- Step 5: `{w | s • w ∈ D₁}` is the claimed set, as `s⁻¹ • (s • w - 0) = w`.
+  congr 2
+  ext w
+  simp only [mem_ofPred_eq, mem_preimage, sub_zero, inv_smul_smul₀ hs.ne']
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
