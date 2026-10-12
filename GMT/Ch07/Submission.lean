@@ -451,6 +451,75 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Slice bound on the unit ball.**  For measurable `g ≥ 0` and `t ∈ [0, 1]`,
+`∫_B ∫_B g((1 − t)y + tx) dy dx ≤ 2ⁿ Lⁿ(B) ∫_B g`, `B = B₁(0) ⊂ ℝⁿ`.  If `s ≥ 1/2` and
+`c + sB ⊆ B`, the Haar scaling `v ↦ sv` and translation invariance give
+`∫_B g(c + sv) dv ≤ ∫ (1_B g)(c + sv) dv = s⁻ⁿ ∫_B g ≤ 2ⁿ ∫_B g`.  By convexity of `B`, this applies
+in `y` (`c = tx`, `s = 1 − t`) when `t ≤ 1/2`, and in `x` after Tonelli (`c = (1 − t)y`, `s = t`)
+when `t ≥ 1/2`; integrating the constant bound over `B` gives the claim. -/
+theorem Submission.dorag_ha_pb_slice_bound : ∀ (n : ℕ) (g : Euclid n → ℝ≥0∞), Measurable g → ∀ t ∈ Icc (0 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x) ≤ 2 ^ n * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+  intro n g hg t ht
+  obtain ⟨ht0, ht1⟩ := ht
+  -- One-variable bound: if `s ≥ 1/2` and `c + s • B ⊆ B`, then `∫_B g(c + s v) dv ≤ 2ⁿ ∫_B g`.
+  have key : ∀ (c : Euclid n) (s : ℝ), 1 / 2 ≤ s →
+      (∀ v ∈ ball (0 : Euclid n) 1, c + s • v ∈ ball (0 : Euclid n) 1) →
+      ∫⁻ v in ball (0 : Euclid n) 1, g (c + s • v) ≤ 2 ^ n * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+    intro c s hs hcs
+    have hs0 : 0 < s := by linarith
+    obtain ⟨F, hFdef⟩ : ∃ F : Euclid n → ℝ≥0∞, F = (ball (0 : Euclid n) 1).indicator g := ⟨_, rfl⟩
+    have hF : Measurable F := hFdef ▸ hg.indicator measurableSet_ball
+    -- change of variables `v ↦ s • v` (Haar scaling) followed by translation invariance
+    have hcv : ∫⁻ v, F (c + s • v) = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z, F z := by
+      have h1 : ∫⁻ w, F (c + w) ∂(Measure.map (fun v : Euclid n => s • v) volume)
+          = ∫⁻ v, F (c + s • v) :=
+        lintegral_map (hF.comp (measurable_const_add c)) (measurable_const_smul s)
+      rw [← h1, Measure.map_addHaar_smul volume hs0.ne', lintegral_smul_measure,
+        lintegral_add_left_eq_self F c, finrank_euclideanSpace_fin, smul_eq_mul]
+    have hs2 : s⁻¹ ≤ 2 := by
+      rw [inv_le_comm₀ hs0 two_pos]
+      linarith
+    calc ∫⁻ v in ball (0 : Euclid n) 1, g (c + s • v)
+        = ∫⁻ v in ball (0 : Euclid n) 1, F (c + s • v) := by
+          refine setLIntegral_congr_fun measurableSet_ball fun v hv => ?_
+          rw [hFdef, Set.indicator_of_mem (hcs v hv)]
+      _ ≤ ∫⁻ v, F (c + s • v) := setLIntegral_le_lintegral _ _
+      _ = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          rw [hcv, hFdef, lintegral_indicator measurableSet_ball]
+      _ ≤ 2 ^ n * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          gcongr
+          calc ENNReal.ofReal |(s ^ n)⁻¹| = ENNReal.ofReal s⁻¹ ^ n := by
+                rw [abs_of_pos (by positivity), ← inv_pow, ENNReal.ofReal_pow (by positivity)]
+            _ ≤ ENNReal.ofReal 2 ^ n := by gcongr
+            _ = 2 ^ n := by rw [ENNReal.ofReal_ofNat]
+  -- the integrand is jointly measurable
+  have hmeas : Measurable (fun p : Euclid n × Euclid n => g ((1 - t) • p.2 + t • p.1)) :=
+    hg.comp (by fun_prop)
+  rcases le_total (1 / 2 : ℝ) t with h | h
+  · -- `t ≥ 1/2`: Tonelli, then change variables in `x` with `c = (1 - t) • y`, `s = t`
+    rw [lintegral_lintegral_swap (f := fun x y => g ((1 - t) • y + t • x)) hmeas.aemeasurable]
+    calc ∫⁻ y in ball (0 : Euclid n) 1, ∫⁻ x in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x)
+        ≤ ∫⁻ _ in ball (0 : Euclid n) 1, 2 ^ n * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          refine setLIntegral_mono' measurableSet_ball fun y hy => ?_
+          refine key ((1 - t) • y) t h fun v hv => ?_
+          exact convex_ball (0 : Euclid n) 1 hy hv (by linarith) ht0 (by ring)
+      _ = 2 ^ n * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          rw [setLIntegral_const]
+          ring
+  · -- `t ≤ 1/2`: change variables in `y` with `c = t • x`, `s = 1 - t`
+    calc ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x)
+        ≤ ∫⁻ _ in ball (0 : Euclid n) 1, 2 ^ n * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          refine setLIntegral_mono' measurableSet_ball fun x hx => ?_
+          calc ∫⁻ y in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x)
+              = ∫⁻ y in ball (0 : Euclid n) 1, g (t • x + (1 - t) • y) :=
+                lintegral_congr fun y => by rw [add_comm]
+            _ ≤ 2 ^ n * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+                refine key (t • x) (1 - t) (by linarith) fun v hv => ?_
+                rw [add_comm]
+                exact convex_ball (0 : Euclid n) 1 hv hx (by linarith) ht0 (by ring)
+      _ = 2 ^ n * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          rw [setLIntegral_const]
+          ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
