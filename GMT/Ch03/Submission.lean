@@ -1490,6 +1490,98 @@ theorem Submission.deGiorgiDens_lipschitz_sobolev : ∀ (n : ℕ), ∃ c : ℝ, 
     (Metric.cthickening 1 (tsupport u)) u v hcu.isCompact.cthickening hv_cd hsupp hbound
     (ae_of_all _ hunif.tendsto_at) hae fun j ↦ hsmooth (v j) (hv_cd j) (hv_cs j)
 
+/-- **Sobolev inequality for `ζ χ_G`** (Simon Ch. 3, proof of 4.3, `chapter-03.txt`
+lines 689–712, for a single Gauss–Green pair): there is `c = c(n) > 0` with
+`‖ζ χ_G‖_{L^{(n+1)/n}} ≤ c (∫ ζ dμ + ∫_G |Dζ| dL^{n+1})` (`L^∞` for `n = 0`) for every
+Gauss–Green pair `(μ, ν)` of `(U, G)` and every non-negative Lipschitz `ζ` with compact support
+in `U`. Take `δ > 0` with `cthickening δ (spt ζ) ⊆ U`, mollifiers `ρ_j` supported in
+`B̄_{δ/(j+1)}(0)`, `u_j(y) = ∫_G ρ_j(y - z) dz` and `w_j = ζ u_j`. The Lipschitz Sobolev
+inequality, the product rule and the Gauss–Green duality estimate `∫ ζ |Du_j| ≤ ∫ ζ̃_j dμ`,
+`ζ̃_j(z) = ∫ ζ(y) ρ_j(y - z) dy` (Simon Ch. 2, Lemma 2.5, `chapter-02.txt` lines 543–596) give
+`‖w_j‖_p ≤ c (∫ ζ̃_j dμ + ∫ u_j |Dζ|)`. The right side tends to `c (∫ ζ dμ + ∫_G |Dζ|)` and
+`w_j → ζ χ_G` a.e., so Fatou's lemma for `eLpNorm` (valid also for `p = ∞`) concludes. -/
+theorem Submission.deGiorgiDens_sobolev_indicator : ∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧
+    ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)),
+      IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν →
+      ∀ (ζ : Rn (n + 1) → ℝ) (K : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ →
+        tsupport ζ ⊆ U → (∀ y, 0 ≤ ζ y) →
+        eLpNorm (G.indicator ζ) ((n + 1 : ℝ≥0∞) / n) volume ≤
+          ENNReal.ofReal (c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖)) := by
+  intro n
+  -- Step 0: the constant of the Lipschitz Sobolev inequality.
+  obtain ⟨c, hc, hsob⟩ := Submission.deGiorgiDens_lipschitz_sobolev n
+  refine ⟨c, hc, ?_⟩
+  intro U G μ ν hU hG hGG ζ K hζ hζc hζU hζ0
+  -- `cthickening δ (tsupport ζ) ⊆ U` is compact, so it has finite `μ`-measure.
+  obtain ⟨δ, hδ, hδU⟩ := hζc.isCompact.exists_cthickening_subset_open hU hζU
+  have hδμ : μ (Metric.cthickening δ (tsupport ζ)) < ∞ :=
+    hGG.2.1 _ hζc.isCompact.cthickening hδU
+  -- Step 1: mollifiers `ρ j` supported in `B̄_{δ/(j+1)}(0)` and the mollified indicators
+  -- `u j = ∫_G ρ j (· - z) dz`, which are Lipschitz with values in `[0, 1]`.
+  obtain ⟨ρ, hρC, hρc, hρ0, hρ1, hρs, hρG⟩ :=
+    Submission.deGiorgiSobInd_mollifier_seq (n + 1) δ hδ
+  obtain ⟨hLip, hbd, hae, hweak⟩ := hρG G hG
+  have hr : ∀ j : ℕ, δ / ((j : ℝ) + 1) ≤ δ := fun j ↦
+    div_le_self hδ.le (le_add_of_nonneg_left (Nat.cast_nonneg j))
+  have hr0 : Tendsto (fun j : ℕ ↦ δ / ((j : ℝ) + 1)) atTop (𝓝 0) := by
+    simpa only [mul_one_div, mul_zero] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul δ
+  -- `w j = ζ u j` is Lipschitz with compact support and `∫ |D w j| ≤ ∫ ζ |D u j| + ∫ u j |Dζ|`.
+  have hw : ∀ j : ℕ, (∃ K' : ℝ≥0, LipschitzWith K' (fun y ↦ ζ y * ∫ z in G, ρ j (y - z))) ∧
+      HasCompactSupport (fun y ↦ ζ y * ∫ z in G, ρ j (y - z)) ∧
+      ∫ y, ‖fderiv ℝ (fun y ↦ ζ y * ∫ z in G, ρ j (y - z)) y‖ ≤
+        (∫ y, ζ y * ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ j (x - z)) y‖) +
+          ∫ y, (∫ z in G, ρ j (y - z)) * ‖fderiv ℝ ζ y‖ := fun j ↦ by
+    obtain ⟨L, hL⟩ := hLip j
+    exact Submission.deGiorgiSobInd_mul_lipschitz_fderiv_bound (n + 1) ζ
+      (fun x ↦ ∫ z in G, ρ j (x - z)) K L hζ hζc hζ0 hL (hbd j)
+  -- Step 2 (Gauss–Green duality): `∫ ζ |D u j| ≤ ∫ (∫ ζ(y) ρ j (y - z) dy) dμ(z)`.
+  have hkey : ∀ j : ℕ, ∫ y, ζ y * ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ j (x - z)) y‖ ≤
+      ∫ z, (∫ y, ζ y * ρ j (y - z)) ∂μ := fun j ↦
+    Submission.deGiorgiSobInd_mollified_fderiv_le (n + 1) U G μ ν hU hG hGG ζ (ρ j)
+      (δ / ((j : ℝ) + 1)) hζ.continuous hζc hζ0 (hρC j) (hρc j) (hρ0 j) (hρs j)
+      ((Metric.cthickening_mono (hr j) _).trans hδU)
+  -- Step 3: the bounds tend to `∫ ζ dμ + ∫_G |Dζ|`; `|Dζ| ≤ K` vanishes off `tsupport ζ`.
+  have hμlim := Submission.deGiorgiSobInd_mollified_integral_tendsto (n + 1) μ ζ ρ
+    (fun j : ℕ ↦ δ / ((j : ℝ) + 1)) δ hζ.continuous hζc hδμ (fun j ↦ (hρC j).continuous)
+    hρ0 hρ1 hρs hr hr0
+  have hDζ : Integrable (fun y ↦ ‖fderiv ℝ ζ y‖) := by
+    have hsupp : Function.support (fun y ↦ ‖fderiv ℝ ζ y‖) ⊆ tsupport ζ := by
+      intro y hy
+      by_contra h
+      exact hy (by simp [fderiv_of_notMem_tsupport ℝ h])
+    refine (integrableOn_iff_integrable_of_support_subset hsupp).1 ?_
+    exact Measure.integrableOn_of_bounded (M := K) hζc.isCompact.measure_lt_top.ne
+      (measurable_fderiv ℝ ζ).norm.aestronglyMeasurable
+      (Eventually.of_forall fun y ↦ by simpa using norm_fderiv_le_of_lipschitz ℝ hζ)
+  have hlim := hμlim.add (hweak (fun y ↦ ‖fderiv ℝ ζ y‖) hDζ)
+  -- Step 4: the Sobolev inequality for each `w j`, `w j → ζ χ_G` a.e., and Fatou's lemma.
+  have hbound : ∀ j : ℕ, eLpNorm (fun y ↦ ζ y * ∫ z in G, ρ j (y - z)) ((n + 1 : ℝ≥0∞) / n)
+      volume ≤ ENNReal.ofReal (c * ((∫ z, (∫ y, ζ y * ρ j (y - z)) ∂μ) +
+        ∫ y, (∫ z in G, ρ j (y - z)) * ‖fderiv ℝ ζ y‖)) := by
+    intro j
+    obtain ⟨⟨K', hK'⟩, hcs, hgrad⟩ := hw j
+    refine (hsob _ K' hK' hcs).trans (ENNReal.ofReal_le_ofReal ?_)
+    exact mul_le_mul_of_nonneg_left (hgrad.trans (by linarith [hkey j])) hc.le
+  have hwlim : ∀ᵐ y ∂(volume : Measure (Rn (n + 1))),
+      Tendsto (fun j : ℕ ↦ ζ y * ∫ z in G, ρ j (y - z)) atTop (𝓝 (G.indicator ζ y)) := by
+    filter_upwards [hae] with y hy
+    have hy' : G.indicator ζ y = ζ y * G.indicator (fun _ ↦ (1 : ℝ)) y := by
+      by_cases hyG : y ∈ G <;> simp [hyG]
+    rw [hy']
+    exact hy.const_mul (ζ y)
+  calc eLpNorm (G.indicator ζ) ((n + 1 : ℝ≥0∞) / n) volume
+      ≤ atTop.liminf fun j : ℕ ↦
+          eLpNorm (fun y ↦ ζ y * ∫ z in G, ρ j (y - z)) ((n + 1 : ℝ≥0∞) / n) volume :=
+        Lp.eLpNorm_lim_le_liminf_eLpNorm
+          (fun j ↦ (hw j).1.choose_spec.continuous.aestronglyMeasurable) _
+          (hζ.continuous.aestronglyMeasurable.indicator₀ hG) hwlim
+    _ ≤ atTop.liminf fun j : ℕ ↦ ENNReal.ofReal (c * ((∫ z, (∫ y, ζ y * ρ j (y - z)) ∂μ) +
+          ∫ y, (∫ z in G, ρ j (y - z)) * ‖fderiv ℝ ζ y‖)) :=
+        liminf_le_liminf (Eventually.of_forall hbound)
+    _ = ENNReal.ofReal (c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖)) :=
+        ((ENNReal.continuous_ofReal.tendsto _).comp (hlim.const_mul c)).liminf_eq
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
