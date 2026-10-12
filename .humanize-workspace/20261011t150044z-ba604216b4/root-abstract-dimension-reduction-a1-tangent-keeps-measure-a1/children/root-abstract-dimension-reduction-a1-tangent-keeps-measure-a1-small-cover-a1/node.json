@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.small_cover-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+  "depth": 3,
+  "title": "Steps 5–6: a cover of small ℓ-cost of a null closed set eventually covers nearby sets inside B_{1/2}(0)",
+  "statement": "Let P ∈ ℕ and ℓ > 0. Let S ⊆ ℝ^P be closed with μH[ℓ](S ∩ B_1(0)) = 0, let T_k ⊆ ℝ^P (k ∈ ℕ) be arbitrary sets, and let ε ∈ (0, ∞]. Assume that for every η > 0 there is k₀ ∈ ℕ with B_1(0) ∩ T_k ⊆ {x : ∃ z ∈ S, |x − z| < η} for all k ≥ k₀. Then there are sets U_j ⊆ ℝ^P (j ∈ ℕ) and an index k₀ ∈ ℕ such that Σ_j (diam U_j)^ℓ < ε and B_{1/2}(0) ∩ T_k ⊆ ∪_j U_j for every k ≥ k₀. Here μH[ℓ] is Mathlib's ℓ-dimensional Hausdorff measure on Euclidean ℝ^P, |·| is the Euclidean norm, B_r(0) = {w : |w| < r} is the open ball, diam is the Euclidean diameter with values in [0, ∞] and diam ∅ = 0, sums are in [0, ∞], and 0^ℓ = 0.",
+  "lean_statement": "∀ (P : ℕ) (ℓ : ℝ) (S : Set (Euclid P)) (Ts : ℕ → Set (Euclid P)) (ε : ℝ≥0∞), 0 < ℓ → IsClosed S → μH[ℓ] (S ∩ ball (0 : Euclid P) 1) = 0 → 0 < ε → (∀ η : ℝ, 0 < η → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ Ts k ⊆ {x | ∃ z ∈ S, dist x z < η}) → ∃ (U : ℕ → Set (Euclid P)) (k₀ : ℕ), ∑' j, Metric.ediam (U j) ^ ℓ < ε ∧ ∀ k ≥ k₀, ball (0 : Euclid P) (1 / 2) ∩ Ts k ⊆ ⋃ j, U j",
+  "lean_name": "adr_eventually_subset_small_cover",
+  "depends_on": [
+    "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.null_open_cover-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.null_open_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-small-cover-a1-a1"
+}

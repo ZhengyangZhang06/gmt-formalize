@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.null_open_cover-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+  "depth": 3,
+  "title": "Step 5: an H^ℓ-null set has open covers of arbitrarily small ℓ-dimensional cost",
+  "statement": "Let P ∈ ℕ, ℓ > 0 and E ⊆ ℝ^P with μH[ℓ](E) = 0, where μH[ℓ] is Mathlib's ℓ-dimensional Hausdorff measure on ℝ^P with the Euclidean metric. Let ε ∈ (0, ∞]. Then there are open sets U_j ⊆ ℝ^P (j ∈ ℕ) with E ⊆ ∪_j U_j and Σ_j (diam U_j)^ℓ < ε. Here diam is the Euclidean diameter with values in [0, ∞] and diam ∅ = 0, 0^ℓ = 0, and the sum is taken in [0, ∞].",
+  "lean_statement": "∀ (P : ℕ) (ℓ : ℝ) (E : Set (Euclid P)) (ε : ℝ≥0∞), 0 < ℓ → μH[ℓ] E = 0 → 0 < ε → ∃ U : ℕ → Set (Euclid P), (∀ j, IsOpen (U j)) ∧ E ⊆ ⋃ j, U j ∧ ∑' j, Metric.ediam (U j) ^ ℓ < ε",
+  "lean_name": "adr_null_open_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-null-open-cover-a1-a1"
+}
