@@ -3183,6 +3183,295 @@ theorem aal_tangent_structure : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb
     ← ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hr.1 n))]
   congr 1
   ring
+/-- Simon Ch. 5, proof of Lemma 2.1 (pp. 107–108), kept in `L¹` form (Lemma A in the proof of the
+Affine Approximation Lemma 2.5): if `dist(x − z, T) ≤ h` for every `x ∈ spt V ∩ B_r(z)`, then
+`∫_{B_{r/2}(z)} |p_{T_x M} − p_T|² dμ_V
+   ≤ 144 r⁻² ∫_{B_r(z)} dist(x − z, T)² dμ_V + 4 h ∫_{B_r(z)} |H| dμ_V`.
+Test the first variation with `X = ζ² x'`, `x' = p_{T⊥}(x − z)`, `ζ` the cutoff of
+`aal_l1th_exists_cutoff`; absorb the gradient term by `2ab ≤ a²/4 + 4b²`, and bound the
+mean-curvature term by `|x'| ≤ h` instead of Cauchy–Schwarz (so neither `|H|²` nor a lower bound on
+`θ` is needed). -/
+theorem aal_l1_tilt_height : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → closedBall z r ⊆ U → 0 ≤ h → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ 144 * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+  intro n ℓ hn U hU V H hH z r h hr hBU hh T hT hheight
+  -- Step 0: `p_x` is a rank-`n` orthogonal projection `μ`-a.e., and `x ↦ p_x` is measurable.
+  obtain ⟨hae, hmeas, -⟩ := Submission.aal_tangent_structure n ℓ hn U hU V
+  -- Step 1: the cutoff: `ζ = 1` on `B_{r/2}(z)`, `ζ = 0` where `|x - z| ≥ r`, `|Dζ| ≤ 3/r`.
+  obtain ⟨ζ, hζC1, hζ01, hζ1, hζ0, hζd⟩ : ∃ ζ : Amb n ℓ → ℝ, ContDiff ℝ 1 ζ ∧
+      (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ closedBall z (r / 2), ζ x = 1) ∧
+      (∀ x, r ≤ dist x z → ζ x = 0) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / r :=
+    Submission.aal_l1th_exists_cutoff (n + ℓ) z r hr
+  -- Step 0: `μ(B_r(z)) < ∞` since `θ` is locally integrable, and `μ`-a.e. point lies in `spt V`.
+  have hμB : V.weight (closedBall z r) < ∞ := by
+    have hint := V.integrableOn_mult _ (isCompact_closedBall z r) hBU
+    rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact hint.lintegral_lt_top
+  have : IsFiniteMeasure (V.weight.restrict (closedBall z r)) :=
+    isFiniteMeasure_restrict.2 hμB.ne
+  have hsupp : ∀ᵐ x ∂V.weight, x ∈ V.support := by
+    have hUc : V.weight Uᶜ = 0 := by
+      rw [RectifiableVarifold.weight, withDensity_apply _ hU.isClosed_compl.measurableSet,
+        Measure.restrict_restrict hU.isClosed_compl.measurableSet]
+      have hempty : Uᶜ ∩ V.carrier = ∅ := by
+        ext x
+        simp only [mem_inter_iff, mem_compl_iff, mem_empty_iff_false, iff_false, not_and]
+        exact fun hxU hxM => hxU (V.carrier_subset hxM)
+      rw [hempty, Measure.restrict_empty, lintegral_zero_measure]
+    have hUae : ∀ᵐ x ∂V.weight, x ∈ U := by
+      rw [ae_iff]
+      simpa [compl_def] using hUc
+    filter_upwards [hUae, Measure.support_mem_ae (μ := V.weight)] with x hx1 hx2
+    exact ⟨hx1, hx2⟩
+  -- Linear algebra: `‖A‖ ≤ |A|` (child `aal_l1th_projection_algebra`), `|p_{T⊥} v| = dist(v, T)`.
+  have hopHS : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, ‖A‖ ≤ hsNorm A := fun A =>
+    Submission.aal_l1th_projection_algebra.1 (n + ℓ) (n + ℓ) A
+  have hperp : ∀ v : Amb n ℓ, ‖Tᗮ.starProjection v‖ = infDist v (T : Set (Amb n ℓ)) := by
+    intro v
+    rw [Submodule.starProjection_orthogonal_val, ← dist_eq_norm,
+      Submodule.dist_starProjection_eq_infDist]
+  -- Notation: `g = |p_x - p_T|² = 2s`, `w = x' = p_{T⊥}(x - z)`, the gradient term `b`, and the
+  -- test field `X = ζ² x'`.
+  obtain ⟨g, hg⟩ : ∃ g : Amb n ℓ → ℝ, ∀ x, g x = hsNormSq (V.tangentProj x - T.starProjection) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨w, hw⟩ : ∃ w : Amb n ℓ → Amb n ℓ, ∀ x, w x = Tᗮ.starProjection (x - z) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b : Amb n ℓ → ℝ,
+      ∀ x, b x = 2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨X, hX⟩ : ∃ X : Amb n ℓ → Amb n ℓ, ∀ x, X x = ζ x ^ 2 • w x := ⟨_, fun _ => rfl⟩
+  have hXeq : X = fun y => ζ y ^ 2 • Tᗮ.starProjection (y - z) := funext fun y => by rw [hX, hw]
+  -- Pointwise bounds: `0 ≤ ζ² ≤ 1`, `|x'| ≤ r` on `B_r(z)`, `‖p_x - p_T‖ ≤ 2`, `0 ≤ g ≤ 4(n + ℓ)`.
+  have hζcont : Continuous ζ := hζC1.continuous
+  have hDζcont : Continuous (fderiv ℝ ζ) := hζC1.continuous_fderiv one_ne_zero
+  have hwcont : Continuous w := by
+    rw [show w = fun x => Tᗮ.starProjection (x - z) from funext hw]
+    fun_prop
+  have hXcont : Continuous X := by
+    rw [show X = fun x => ζ x ^ 2 • w x from funext hX]
+    exact (hζcont.pow 2).smul hwcont
+  have hζout : ∀ x, x ∉ closedBall z r → ζ x = 0 := fun x hx =>
+    hζ0 x (not_le.1 fun h' => hx (mem_closedBall.2 h')).le
+  have hζsq : ∀ x, ζ x ^ 2 ≤ 1 := fun x => by
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    nlinarith
+  have hw_le : ∀ x, ‖w x‖ ≤ ‖x - z‖ := by
+    intro x
+    rw [hw]
+    calc ‖Tᗮ.starProjection (x - z)‖ ≤ ‖Tᗮ.starProjection‖ * ‖x - z‖ :=
+          ContinuousLinearMap.le_opNorm _ _
+      _ ≤ 1 * ‖x - z‖ := by gcongr; exact Submodule.starProjection_norm_le _
+      _ = ‖x - z‖ := one_mul _
+  have hwB : ∀ x ∈ closedBall z r, ‖w x‖ ≤ r := fun x hx =>
+    (hw_le x).trans (by rw [← dist_eq_norm]; exact mem_closedBall.1 hx)
+  have hPnorm : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+    intro x
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  have hA2 : ∀ x, ‖V.tangentProj x - T.starProjection‖ ≤ 2 := fun x =>
+    (norm_sub_le _ _).trans (by linarith [hPnorm x, Submodule.starProjection_norm_le T])
+  have hhs0 : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, 0 ≤ hsNormSq A := fun A => by
+    unfold hsNormSq
+    positivity
+  have hhs_le : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq A ≤ (n + ℓ : ℕ) * ‖A‖ ^ 2 := by
+    intro A
+    unfold hsNormSq
+    calc ∑ i : Fin (n + ℓ), ‖A (EuclideanSpace.single i 1)‖ ^ 2
+        ≤ ∑ _i : Fin (n + ℓ), ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = (n + ℓ : ℕ) * ‖A‖ ^ 2 := by simp
+  have hg0 : ∀ x, 0 ≤ g x := fun x => by rw [hg]; exact hhs0 _
+  have hgle : ∀ x, g x ≤ (n + ℓ : ℕ) * 4 := fun x => by
+    rw [hg]
+    refine (hhs_le _).trans ?_
+    gcongr
+    nlinarith [hA2 x, norm_nonneg (V.tangentProj x - T.starProjection)]
+  -- Measurability on `B_r(z)`, from the a.e. strong measurability of `x ↦ p_x`.
+  have hPm : AEStronglyMeasurable (fun x => V.tangentProj x - T.starProjection)
+      (V.weight.restrict (closedBall z r)) :=
+    hmeas.restrict.sub aestronglyMeasurable_const
+  have hgm : AEStronglyMeasurable g (V.weight.restrict (closedBall z r)) := by
+    rw [show g = fun x => hsNormSq (V.tangentProj x - T.starProjection) from funext hg]
+    have hcont : Continuous fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq A := by
+      unfold hsNormSq
+      exact continuous_finsetSum _ fun i _ =>
+        ((continuous_id.clm_apply continuous_const).norm).pow 2
+    exact hcont.comp_aestronglyMeasurable hPm
+  have hbm : AEStronglyMeasurable b (V.weight.restrict (closedBall z r)) := by
+    rw [show b = fun x => 2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))
+      from funext hb]
+    have happ : Continuous (Function.uncurry
+        fun (A : Amb n ℓ →L[ℝ] Amb n ℓ) (v : Amb n ℓ) => A v) :=
+      continuous_fst.clm_apply continuous_snd
+    have happ' : Continuous (Function.uncurry
+        fun (L : Amb n ℓ →L[ℝ] ℝ) (v : Amb n ℓ) => L v) :=
+      continuous_fst.clm_apply continuous_snd
+    exact (continuous_const.mul hζcont).aestronglyMeasurable.mul
+      (happ'.comp_aestronglyMeasurable₂ hDζcont.aestronglyMeasurable
+        (happ.comp_aestronglyMeasurable₂ hPm hwcont.aestronglyMeasurable))
+  -- Step 3: integrability on the finite-measure ball `B_r(z)`.
+  have hHint : Integrable H (V.weight.restrict (closedBall z r)) :=
+    hH.1.integrableOn_compact_subset hBU (isCompact_closedBall z r)
+  have hzg : Integrable (fun x => ζ x ^ 2 * g x) (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.of_bound ((hζcont.pow 2).aestronglyMeasurable.mul hgm) ((n + ℓ : ℕ) * 4)
+      (ae_of_all _ fun x => ?_)
+    rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (hg0 x))]
+    calc ζ x ^ 2 * g x ≤ 1 * ((n + ℓ : ℕ) * 4) :=
+          mul_le_mul (hζsq x) (hgle x) (hg0 x) zero_le_one
+      _ = (n + ℓ : ℕ) * 4 := one_mul _
+  have hbi : Integrable b (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.of_bound hbm 12
+      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    have hD : ‖fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))‖ ≤ 3 / r * (2 * r) := by
+      refine (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul (hζd x) ?_ (norm_nonneg _) (by positivity))
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul (hA2 x) (hwB x hx) (norm_nonneg _) zero_le_two)
+    rw [hb, norm_mul, norm_mul, Real.norm_of_nonneg hz0, Real.norm_of_nonneg zero_le_two]
+    calc 2 * ζ x * ‖fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))‖
+        ≤ 2 * 1 * (3 / r * (2 * r)) := by gcongr
+      _ = 12 := by field_simp; norm_num
+  have hw2 : Integrable (fun x => ‖w x‖ ^ 2) (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.of_bound (hwcont.norm.pow 2).aestronglyMeasurable (r ^ 2)
+      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
+    rw [Real.norm_of_nonneg (sq_nonneg _)]
+    exact pow_le_pow_left₀ (norm_nonneg _) (hwB x hx) 2
+  have hXH : Integrable (fun x => inner ℝ (X x) (H x)) (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.mono' (hHint.norm.const_mul r)
+      (continuous_inner.comp_aestronglyMeasurable
+        (hXcont.aestronglyMeasurable.prodMk hHint.aestronglyMeasurable))
+      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
+    rw [Real.norm_eq_abs]
+    refine (abs_real_inner_le_norm _ _).trans ?_
+    gcongr
+    rw [hX, norm_smul, Real.norm_of_nonneg (sq_nonneg _)]
+    calc ζ x ^ 2 * ‖w x‖ ≤ 1 * r := mul_le_mul (hζsq x) (hwB x hx) (norm_nonneg _) zero_le_one
+      _ = r := one_mul _
+  -- Step 1: `X = ζ² x'` is `C¹` with compact support in `B_r(z) ⊆ U`, so it is admissible.
+  have hX1 : ContDiff ℝ 1 X := by
+    rw [hXeq]
+    exact (hζC1.pow 2).smul ((Tᗮ.starProjection).contDiff.comp (contDiff_id.sub contDiff_const))
+  have hXout : ∀ x, x ∉ closedBall z r → X x = 0 := fun x hx => by
+    rw [hX, hζout x hx]
+    simp
+  have hXcs : HasCompactSupport X := HasCompactSupport.intro (isCompact_closedBall z r) hXout
+  have hXts : tsupport X ⊆ U := by
+    refine (closure_minimal (fun x hx => ?_) isClosed_closedBall).trans hBU
+    by_contra h'
+    exact hx (hXout x h')
+  -- Step 2: `div_M X = ζ² s + 2ζ Dζ((p_x - p_T) x')` with `s = g/2`, at `μ`-a.e. point
+  -- (child `aal_l1th_test_field_divergence`, where `p_x = p_P` with `dim P = n`).
+  have hdiv : ∀ᵐ x ∂V.weight, V.divM X x = 1 / 2 * (ζ x ^ 2 * g x) + b x := by
+    filter_upwards [hae] with x hx
+    obtain ⟨P, hP, hPx⟩ := hx
+    rw [hXeq, Submission.aal_l1th_test_field_divergence n ℓ U V ζ z x P T
+      (hζC1.differentiable one_ne_zero x) hP hT hPx, hg, hb, hw]
+    ring
+  -- Step 3: the first variation identity `∫ div_M X dμ = -∫ X · H dμ`, localized to `B_r(z)`.
+  have hFV := hH.2 X hX1 hXcs hXts
+  have hL : ∫ x, V.divM X x ∂V.weight =
+      ∫ x in closedBall z r, (1 / 2 * (ζ x ^ 2 * g x) + b x) ∂V.weight := by
+    rw [integral_congr_ae hdiv]
+    refine (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_).symm
+    rw [hb, hζout x hx]
+    ring
+  have hR : ∫ x, inner ℝ (X x) (H x) ∂V.weight =
+      ∫ x in closedBall z r, inner ℝ (X x) (H x) ∂V.weight :=
+    (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hXout x hx, inner_zero_left]).symm
+  -- Step 4: absorption, `|b| ≤ 2ζ (3/r) |p_x - p_T| |x'| ≤ ζ² g/4 + 36 r⁻² |x'|²`.
+  have hb_bd : ∀ x, -b x ≤ 1 / 4 * (ζ x ^ 2 * g x) + 36 / r ^ 2 * ‖w x‖ ^ 2 := by
+    intro x
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    have hsq : Real.sqrt (g x) ^ 2 = g x := Real.sq_sqrt (hg0 x)
+    have hD : |fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))| ≤
+        3 / r * (Real.sqrt (g x) * ‖w x‖) := by
+      rw [← Real.norm_eq_abs]
+      refine (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul (hζd x) ?_ (norm_nonneg _) (by positivity))
+      refine (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right ?_ (norm_nonneg _))
+      rw [hg]
+      exact hopHS _
+    have h1 : -b x ≤ 2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) := by
+      rw [hb]
+      calc -(2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)))
+          = 2 * ζ x * -fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)) := by ring
+        _ ≤ 2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) :=
+          mul_le_mul_of_nonneg_left ((neg_le_abs _).trans hD) (by positivity)
+    have e : 1 / 4 * (ζ x ^ 2 * g x) + 36 / r ^ 2 * ‖w x‖ ^ 2 -
+        2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) =
+        (ζ x * Real.sqrt (g x) / 2 - 6 / r * ‖w x‖) ^ 2 := by
+      linear_combination (-(1 / 4) * ζ x ^ 2) * hsq
+    linarith [sq_nonneg (ζ x * Real.sqrt (g x) / 2 - 6 / r * ‖w x‖)]
+  -- Step 5: the mean-curvature term, using `|x'| ≤ h` at `μ`-a.e. point of `B_r(z)` (such points
+  -- lie in `spt V ∩ B_r(z)`).
+  have hXH_bd : ∀ᵐ x ∂(V.weight.restrict (closedBall z r)),
+      -inner ℝ (X x) (H x) ≤ h * ‖H x‖ := by
+    filter_upwards [ae_restrict_of_ae hsupp, ae_restrict_mem measurableSet_closedBall]
+      with x hxs hxB
+    have hz2 := hζsq x
+    have hwx : ‖w x‖ ≤ h := by
+      rw [hw, hperp]
+      exact hheight x ⟨hxs, hxB⟩
+    refine (neg_le_abs _).trans ((abs_real_inner_le_norm _ _).trans ?_)
+    rw [hX, norm_smul, Real.norm_of_nonneg (sq_nonneg _)]
+    calc ζ x ^ 2 * ‖w x‖ * ‖H x‖ ≤ 1 * h * ‖H x‖ := by gcongr
+      _ = h * ‖H x‖ := by ring
+  have e1 : ∫ x in closedBall z r, (1 / 2 * (ζ x ^ 2 * g x) + b x) ∂V.weight =
+      1 / 2 * ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight +
+        ∫ x in closedBall z r, b x ∂V.weight := by
+    rw [integral_add (hzg.const_mul _) hbi, integral_const_mul]
+  have e2 : -∫ x in closedBall z r, b x ∂V.weight ≤
+      1 / 4 * ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight +
+        36 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight := by
+    have h' := integral_mono hbi.neg ((hzg.const_mul (1 / 4)).add (hw2.const_mul (36 / r ^ 2)))
+      hb_bd
+    simp only [Pi.neg_apply, Pi.add_apply] at h'
+    rwa [integral_neg, integral_add (hzg.const_mul _) (hw2.const_mul _), integral_const_mul,
+      integral_const_mul] at h'
+  have e3 : -∫ x in closedBall z r, inner ℝ (X x) (H x) ∂V.weight ≤
+      h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+    rw [← integral_neg, ← integral_const_mul]
+    exact integral_mono_ae hXH.neg (hHint.norm.const_mul h) hXH_bd
+  -- `∫ ζ² g/2 = -∫ b - ∫ X · H ≤ ∫ ζ² g/4 + 36 r⁻² ∫ |x'|² + h ∫ |H|`, and `∫ ζ² g < ∞`.
+  have key : ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight ≤
+      144 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight +
+        4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+    have hid := hFV
+    rw [hL, hR, e1] at hid
+    have r1 : 144 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight =
+        4 * (36 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight) := by ring
+    have r2 : 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight =
+        4 * (h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight) := by ring
+    linarith
+  -- `ζ = 1` on `B_{r/2}(z)` and `ζ² g ≥ 0`.
+  have hB2 : ∫ x in closedBall z (r / 2), g x ∂V.weight ≤
+      ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight := by
+    calc ∫ x in closedBall z (r / 2), g x ∂V.weight
+        = ∫ x in closedBall z (r / 2), ζ x ^ 2 * g x ∂V.weight :=
+          setIntegral_congr_fun measurableSet_closedBall fun x hx => by rw [hζ1 x hx]; ring
+      _ ≤ ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight :=
+          setIntegral_mono_set hzg (ae_of_all _ fun x => mul_nonneg (sq_nonneg _) (hg0 x))
+            (closedBall_subset_closedBall (by linarith)).eventuallyLE
+  have hId : ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight =
+      ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight := by
+    congr 1
+    funext x
+    rw [hw, hperp]
+  calc ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight
+      = ∫ x in closedBall z (r / 2), g x ∂V.weight := by simp_rw [hg]
+    _ ≤ ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight := hB2
+    _ ≤ 144 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight +
+          4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := key
+    _ = 144 * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight +
+          4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+      rw [hId, div_eq_mul_inv]
 
 end Submission
 
