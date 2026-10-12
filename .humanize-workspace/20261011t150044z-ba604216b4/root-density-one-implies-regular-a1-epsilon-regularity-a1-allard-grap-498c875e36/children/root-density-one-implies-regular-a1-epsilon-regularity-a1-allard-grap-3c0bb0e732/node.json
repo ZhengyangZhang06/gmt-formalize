@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.lower_density_mult-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+  "depth": 5,
+  "title": "Lower density of the weight is at least the multiplicity",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, U ⊆ ℝ^P an arbitrary set, and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) with weight μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n], M = R.carrier, θ = R.mult). Let W ⊆ U be open. Then for Hⁿ⌞M-almost every x: if x ∈ W, then for every real c < θ(x) there is t₀ > 0 with c·ω_n·tⁿ ≤ μ(B_t(x)) for all t ∈ (0, t₀). Here ω_n = unitBallVolume n, B_t(x) is the closed ball, and c and tⁿ are entered via ENNReal.ofReal.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n), 0 < n → IsOpen W → W ⊆ U → ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ W → ∀ c : ℝ, c < R.mult x → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ R.measure (closedBall x t)",
+  "lean_name": "dorag_dbs_lower_density_ge_mult",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.tangent_lower_density-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.localized_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.tangent_lower_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.localized_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-3c0bb0e732-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.tangent_lower_density-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+  "depth": 5,
+  "title": "Lower density of Hⁿ⌞M at an approximate tangent point",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, M ⊆ ℝ^P an arbitrary set, x ∈ ℝ^P and Q a linear subspace of ℝ^P. Assume Q is an approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4, as formalized by HasApproximateTangentSpaceAt n M x Q: dim Q = n, and ∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^P, ℝ). Here η_{x,r}(y) = r⁻¹(y − x) (blowUpMap), and the integrals are Bochner integrals for Hⁿ = μHE[n] restricted to the indicated sets. Then for every real c < 1 there is t₀ > 0 with c·ω_n·tⁿ ≤ Hⁿ(M ∩ B_t(x)) for all t ∈ (0, t₀). Here ω_n = unitBallVolume n, B_t(x) is the closed ball, and the inequality is in [0, ∞] with c and tⁿ entered via ENNReal.ofReal.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < n → HasApproximateTangentSpaceAt n M x Q → ∀ c : ℝ, c < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ μHE[n] (M ∩ closedBall x t)",
+  "lean_name": "dorag_dbs_approxTangent_lower_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8667b3d11a-a1"
+}
