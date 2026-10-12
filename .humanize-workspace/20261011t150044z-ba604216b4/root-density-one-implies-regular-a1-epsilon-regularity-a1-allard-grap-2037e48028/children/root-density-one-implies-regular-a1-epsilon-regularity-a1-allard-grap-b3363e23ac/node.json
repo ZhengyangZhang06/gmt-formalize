@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.vertical_field_variation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+  "depth": 6,
+  "title": "First variation of a vertical field ζ·e",
+  "statement": "Let m, n ∈ ℕ, U ⊆ ℝᵐ, R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n) with μ := R.measure = θHⁿ⌞M, let ζ : ℝᵐ → ℝ be differentiable at every point, and e ∈ ℝᵐ. Let p_x be the orthogonal projection onto approxTangentPlane n M x. Then R.firstVariation (x ↦ ζ(x)e) = ∫ Dζ(x)(p_x e) dμ(x), both sides being Bochner integrals (no integrability assumption).",
+  "lean_statement": "∀ (m n : ℕ) (U : Set (Euclid m)) (R : IMRep U n) (ζ : Euclid m → ℝ) (e : Euclid m), Differentiable ℝ ζ → R.firstVariation (fun x => ζ x • e) = ∫ x, fderiv ℝ ζ x ((approxTangentPlane n R.carrier x).starProjection e) ∂R.measure",
+  "lean_name": "dorag_tes_gv_vertical_field_first_variation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-b3363e23ac-a1"
+}
