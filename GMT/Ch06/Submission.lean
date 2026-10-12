@@ -390,6 +390,25 @@ theorem Submission.fiw_ims_sc_covectorNorm_le_opNorm :
     _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
         rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
 
+/-- **Test forms have bounded Euclidean coefficient norm**: Simon's
+`|ω| = sup_x √⟨ω(x), ω(x)⟩` (Ch. 6, 1.15, p. 134) is finite, with a positive bound.
+A test form is smooth, hence continuous, and has compact support, so `‖ω(x)‖ ≤ B` for its
+operator norm; `|α| ≤ √(Pⁿ) ‖α‖` (`fiw_ims_sc_covectorNorm_le_opNorm`) then gives the bound
+`C = √(Pⁿ) B + 1 > 0`. -/
+theorem Submission.fiw_ims_sc_testForm_bounded : ∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C := by
+  intro P n U ω
+  -- `ω` is smooth, hence continuous, and has compact support, so `‖ω(x)‖ ≤ B` for all `x`.
+  have hω : Continuous (ω : DifferentialForm (Eucl P) n) := ω.property.1.1.continuous
+  obtain ⟨B, hB⟩ := ω.property.1.2.exists_bound_of_continuous hω
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+  have hD0 : 0 ≤ Real.sqrt ((P : ℝ) ^ n) := Real.sqrt_nonneg _
+  refine ⟨Real.sqrt ((P : ℝ) ^ n) * B + 1, by positivity, fun x => ?_⟩
+  calc covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)
+      ≤ Real.sqrt ((P : ℝ) ^ n) * ‖(ω : DifferentialForm (Eucl P) n) x‖ :=
+        Submission.fiw_ims_sc_covectorNorm_le_opNorm P n _
+    _ ≤ Real.sqrt ((P : ℝ) ^ n) * B := mul_le_mul_of_nonneg_left (hB x) hD0
+    _ ≤ Real.sqrt ((P : ℝ) ^ n) * B + 1 := by linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
