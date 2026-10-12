@@ -1,0 +1,110 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1`
+- Child DAG node: `root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1.besicovitch_cover_estimate-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1–2 of the parent proof, i.e. the application of the Besicovitch Covering Lemma (Simon Ch. 1, 3.12) in the printed proof of estimate (1) of Simon 8.5.9, p. 219 ("By the Besicovitch Covering Lemma we then have μ_V(A_i) ≤ c j⁻¹ ‖δV_ℓ‖(W)"). The set E of parent step 2 is the arbitrary set A here, the single measure ν plays the role of ν_k, and the enlarged set is thickening(ρ₀, A). Statement and argument coincide with the accepted node root.density_semicontinuity-a1.besicovitch_ratio_cover-a1 (Submission.besicovitch_ratio_cover_estimate, commit b70dd9d5 on origin branch humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-besicovitch-ratio-cover-a1-a1), restated here under a fresh name (that node is accepted but not yet integrated, and its declaration is not present in this workspace).
+
+Notation: B_σ(x) := closedBall x σ and B°_σ(x) := ball x σ. All quantities lie in [0,∞]. For an arbitrary set E ⊆ ℝ^N, μ(E) is the outer measure; Mathlib measures are monotone and countably subadditive on all sets. Closed balls are closed, hence Borel (measurableSet_closedBall), so ν is countably additive on countable pairwise disjoint families of closed balls.
+
+1. Choice of C. ℝ^N = Euclidean N is a finite-dimensional real normed space, so it has the Besicovitch covering property (Mathlib instance Besicovitch.instHasBesicovitchCovering; Simon Ch. 1, 3.12). The class field HasBesicovitchCovering.no_satelliteConfig gives C ∈ ℕ and τ ∈ ℝ with 1 < τ such that there is no satellite configuration of C + 1 points with parameter τ: IsEmpty (Besicovitch.SatelliteConfig (Euclidean N) C τ). This C depends only on N. Fix it. Now let μ, ν, A, ρ₀ and t satisfy the hypothesis.
+
+2. Radii. For each x ∈ A choose σ_x with 0 < σ_x < ρ₀ and μ(B_{σ_x}(x)) ≤ t·ν(B_{σ_x}(x)). Put B_x := B_{σ_x}(x).
+
+3. Disjoint subfamilies. Index by the points of A, with centre x and radius σ_x for x ∈ A. Since 0 < σ_x and σ_x ≤ ρ₀, these data form a Besicovitch.BallPackage with common radius bound ρ₀. Apply Besicovitch.exist_disjoint_covering_families to it, using 1 < τ and the emptiness of satellite configurations from step 1. This gives sets s_1, …, s_C ⊆ A (indexed by Fin C) with two properties:
+(i) for each l, the closed balls B_x, x ∈ s_l, are pairwise disjoint;
+(ii) every centre lies in ⋃_l ⋃_{x∈s_l} B°_{σ_x}(x).
+Every point of A is a centre, and B°_{σ_x}(x) ⊆ B_x (ball_subset_closedBall). Hence A ⊆ ⋃_l ⋃_{x∈s_l} B_x.
+
+4. Countability. Each s_l is countable. Its balls B_x are pairwise disjoint by 3(i). Each B_x has nonempty interior: the interior contains the open ball B°_{σ_x}(x) (ball_subset_interior_closedBall), which contains x because σ_x > 0 (mem_ball_self). Euclidean N is a separable space, so Set.PairwiseDisjoint.countable_of_nonempty_interior applies.
+
+5. The balls lie in the thickening. Let x ∈ A and y ∈ B_x. Then dist(y, x) ≤ σ_x < ρ₀, so y ∈ B°_{ρ₀}(x) (closedBall_subset_ball). Since x ∈ A, B°_{ρ₀}(x) ⊆ thickening(ρ₀, A) (Metric.ball_subset_thickening). Hence B_x ⊆ thickening(ρ₀, A) for every x ∈ A.
+
+6. Estimate. In [0,∞],
+μ(A) ≤ μ(⋃_l ⋃_{x∈s_l} B_x)
+≤ Σ_{l=1}^{C} μ(⋃_{x∈s_l} B_x)
+≤ Σ_l Σ_{x∈s_l} μ(B_x)
+≤ Σ_l Σ_{x∈s_l} t·ν(B_x)
+= Σ_l t·ν(⋃_{x∈s_l} B_x)
+≤ Σ_l t·ν(thickening(ρ₀, A))
+= C·t·ν(thickening(ρ₀, A)).
+The steps are justified, in order, as follows:
+- the first is step 3 and monotonicity of μ (measure_mono);
+- the second is finite subadditivity of μ over l ∈ Fin C (measure_iUnion_fintype_le);
+- the third is countable subadditivity of μ over the countable set s_l of step 4 (measure_biUnion_le);
+- the fourth is the ball inequality of step 2, term by term (ENNReal.tsum_le_tsum);
+- the equality pulls t out of the sum (ENNReal.tsum_mul_left) and uses countable additivity of ν on the countable (step 4), pairwise disjoint (3(i)), measurable family of closed balls (measure_biUnion);
+- the next inequality is step 5 with monotonicity of ν, multiplied by t;
+- the last equality sums C equal terms.
+This is the claim. If A = ∅ (which the hypothesis forces when ρ₀ ≤ 0, since then no σ with 0 < σ < ρ₀ exists), the claim is immediate from μ(∅) = 0, and the argument above also applies verbatim with every s_l empty. ∎
+
+Formalization note (not a step of the argument): the accepted Lean proof of the identical type, Submission.besicovitch_ratio_cover_estimate in commit b70dd9d5 (`git show b70dd9d5 -- GMT/Ch08/Submission.lean`), follows steps 1–6 exactly and may be transplanted verbatim as the single theorem Submission.intcpt_vdb_besicovitch_cover_estimate. Do not declare the name Submission.besicovitch_ratio_cover_estimate in this subtree.
+
+## Key steps
+
+1. C and τ > 1 come from HasBesicovitchCovering.no_satelliteConfig for Euclidean N (instance Besicovitch.instHasBesicovitchCovering), so C depends only on N.
+2. Choose σ_x ∈ (0, ρ₀) with μ(B_{σ_x}(x)) ≤ t·ν(B_{σ_x}(x)); these balls form a Besicovitch.BallPackage indexed by A with radius bound ρ₀.
+3. Besicovitch.exist_disjoint_covering_families gives s_1, …, s_C ⊆ A, each with pairwise disjoint closed balls, whose balls cover A.
+4. Each s_l is countable (pairwise disjoint sets with nonempty interior in a separable space), and every ball B_x lies in thickening(ρ₀, A).
+5. Subadditivity of μ, the ball ratio bound, additivity of ν on the disjoint closed balls and monotonicity give μ(A) ≤ C·t·ν(thickening(ρ₀, A)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (mode local-project; project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg -n 'theorem _root_.Monotone.measure_iUnion|theorem eventually_lt_of_lt_liminf|theorem tendsto_inv_nat_nhds_zero|theorem thickening_subset_of_subset|theorem thickening_mono|theorem exist_disjoint_covering_families|theorem countable_of_nonempty_interior|theorem measure_iUnion_fintype_le|theorem measure_biUnion_le|theorem measure_biUnion ' <snapshot>/mathlib/Mathlib`
+- `sed -n 60,85p MeasureTheory/Measure/Continuity.lean; sed -n 600,615p Order/LiminfLimsup.lean; sed -n 88,100p Topology/MetricSpace/Thickening.lean; sed -n 440,475p MeasureTheory/Covering/Besicovitch.lean; sed -n 354,363p Topology/Instances/ENNReal/Lemmas.lean (all under <snapshot>/mathlib/Mathlib)`
+- `rg -n 'instance instHasBesicovitchCovering|no_satelliteConfig :' MeasureTheory/Covering/ (Besicovitch.lean:156 class field); grep -n HasBesicovitchCovering MeasureTheory/Covering/BesicovitchVectorSpace.lean (instance at line 499)`
+- `rg -n countable_of_nonempty_interior Topology/Bases.lean (line 493); rg -n 'theorem ball_subset_thickening' Topology/MetricSpace/Thickening.lean (line 153); rg -n 'protected theorem Tendsto.const_mul|protected theorem Tendsto.mul_const' Topology/Instances/ENNReal/Lemmas.lean (lines 354, 359); rg -n 'theorem ae_iff ' MeasureTheory/OuterMeasure/AE.lean (line 134)`
+- `grep -rn exists_besicovitchCovering_families --include=*.lean .lake/packages/simongmt/Poincare (Chapter01/Densities.lean:631)`
+- `git diff 63436ae b70dd9d5 -- GMT/Ch08/Submission.lean (accepted 45-line proof of Submission.besicovitch_ratio_cover_estimate); git log --oneline 63436ae..b70dd9d5 (54295e6 dispatch, b70dd9d proof)`
+- `python3 dag.json scans: records of the selected node, its parent, its siblings and root.density_semicontinuity-a1.besicovitch_ratio_cover-a1; lean_name collision scan for intcpt_vdb_besicovitch_cover_estimate and intcpt_vdb_liminf_bound_ae_of_cover over the dag.json of every chapter run ch01–ch08; cross-branch reuse scan (children whose parent field differs) over all chapters; identical-type check intcpt_canon_weight_blowup_tendsto vs frt_weight_blowup_tendsto`
+- `git grep -l 'intcpt_vdb_besicovitch_cover_estimate\|intcpt_vdb_liminf_bound_ae_of_cover' over all refs/heads and refs/remotes; grep -rl of the same names over the run directory (no match)`
+- `python3 -I: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') -> ['open Set Filter MeasureTheory Metric', 'open scoped Topology ENNReal CompactlySupported Pointwise', 'namespace GMT.Ch08', 'open Poincare.SimonGMT', 'open Poincare.SimonGMT.Chapter08', 'section Definitions', 'end Definitions']; verifier/lean_contract.py validate_lean_statement on both child statements (pass)`
+- `lake env lean /tmp/lrb-split-check/Split.lean, Challenge.lean, Solution.lean, Names.lean, Names2.lean (from the workspace root)`
+- `sed -n 680,760p book/chapter-08.txt (Simon 8.5.9, printed estimate (1) and its proof); grep -n -i 'errat|correction' book/sources/* (no match)`
+- `grep -n 'def check_source_delta|def _existing_lean_name_problem|def _overlay_accepted_children|test_cross_branch_accepted_same_type_is_reused' in /runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/{leaf_verification,runtime}.py and tests/test_worktrees.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-variation-density-bound-a1-liminf-ratio-bound-ae-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/tests/test_worktrees.py`
+- `/tmp/lrb-split-check/Split.lean`
+- `/tmp/lrb-split-check/Challenge.lean`
+- `/tmp/lrb-split-check/Solution.lean`
+- `/tmp/lrb-split-check/Names.lean`
+
+The snapshot is project 63436ae6 plus Mathlib 25730c7c. The workspace Contract and Submission are byte-identical (sha256 2e5cd5b3…).
+
+Every Mathlib name cited in the two child proofs exists in the snapshot with the stated hypotheses: Besicovitch.instHasBesicovitchCovering, HasBesicovitchCovering.no_satelliteConfig, Besicovitch.exist_disjoint_covering_families (no nonemptiness needed), Set.PairwiseDisjoint.countable_of_nonempty_interior, Metric.ball_subset_thickening, Metric.thickening_subset_of_subset, measure_iUnion_fintype_le, measure_biUnion_le, measure_biUnion, ae_iff, Filter.eventually_lt_of_lt_liminf, Monotone.measure_iUnion (no measurability assumption), ENNReal.tendsto_inv_nat_nhds_zero, ENNReal.Tendsto.const_mul (side condition b ≠ 0 ∨ a ≠ ∞), ENNReal.Tendsto.mul_const (side condition a ≠ 0 ∨ b ≠ ∞) and ENNReal.inv_mul_cancel. A #check file confirms all of them.
+
+The accepted Submission.besicovitch_ratio_cover_estimate (commit b70dd9d5, another branch, not in this workspace) has exactly child A's type. Child A takes the fresh name intcpt_vdb_besicovitch_cover_estimate, following the parent handoff's note. The same pattern already occurs in this run: the accepted intcpt_canon_weight_blowup_tendsto has the same type as the accepted frt_weight_blowup_tendsto. SimonGMT's exists_besicovitchCovering_families (Chapter01/Densities.lean:631) is an alternative route to step 3 of child A.
+
+The leaf gate (check_source_delta) admits exactly one theorem per leaf, so the Besicovitch lemma cannot be a helper declaration of an atomic node.
+
+In the comparator's replayed contract scope, both child lean_statements elaborate and pass validate_lean_statement. Complete scratch proofs of both children, plus the selected frozen type assembled from them, compile using only propext, Classical.choice and Quot.sound. The names are unused in every chapter's dag.json, the run directory and all git refs. The printed proof of Simon 8.5.9 (1) matches the supplied steps, and book/sources records no Ch. 8 errata.

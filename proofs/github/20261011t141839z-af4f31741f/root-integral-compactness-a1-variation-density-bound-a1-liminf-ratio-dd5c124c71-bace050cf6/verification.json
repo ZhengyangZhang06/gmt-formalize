@@ -1,0 +1,15 @@
+{
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1.besicovitch_cover_estimate-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2311",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "16c6bb837777baf0df3d94b5a37ea2bb41be90b7",
+  "integrated_commit": "",
+  "proof_base_commit": "0f5903f8cff8e52d5f25bfb439b9f74d813037f1",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1",
+  "requires": []
+}
