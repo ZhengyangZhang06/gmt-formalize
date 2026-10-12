@@ -831,6 +831,54 @@ theorem Submission.dorag_dbs_lower_density_ge_mult : ∀ (P n : ℕ) (U W : Set 
         gcongr
     _ ≤ R.measure (closedBall x t) := hmeas
 
+/-- **Unit multiplicity where the mass ratio stays below `2`** (Simon Ch. 5, 2.3–2.4; the step
+`θ = 1` a.e. of the density bounds for Allard's graph theorem).  If `S ⊆ W` and every `x ∈ S` has
+`μ_V(B_t(x)) ≤ c₀ ωₙ tⁿ` for small `t > 0`, with `c₀ < 2`, then `θ = 1` `μ_V`-a.e. on `S`.  At a
+`μ_V`-typical `x ∈ S ∩ M`, `dorag_dbs_lower_density_ge_mult` gives `c ωₙ tⁿ ≤ μ_V(B_t(x))` for small
+`t` and every `c < θ(x)`; if `θ(x) ≥ 2`, then `c = (max c₀ 0 + 2) / 2` contradicts the upper bound
+after cancelling `0 < ωₙ tⁿ < ∞`. -/
+theorem Submission.dorag_dbs_mult_eq_one_of_density_lt_two : ∀ (P n : ℕ) (U W S : Set (Euclid P)) (R : IMRep U n) (c₀ : ℝ), 0 < n → IsOpen W → W ⊆ U → S ⊆ W → c₀ < 2 → (∀ x ∈ S, ∀ᶠ t in 𝓝[>] (0 : ℝ), R.measure (closedBall x t) ≤ ENNReal.ofReal c₀ * unitBallVolume n * ENNReal.ofReal (t ^ n)) → ∀ᵐ x ∂R.measure, x ∈ S → R.mult x = 1 := by
+  intro P n U W S R c₀ hn hW hWU hSW hc₀ hup
+  -- Step 1: `μ_V ≪ Hⁿ⌞M`, so the lower density bound holds and `x ∈ M` for `μ_V`-a.e. `x`
+  have h5 := Submission.dorag_dbs_lower_density_ge_mult P n U W R hn hW hWU
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have h5' := hac.ae_le h5
+  have hmem : ∀ᵐ x ∂R.measure, x ∈ R.carrier :=
+    hac.ae_le (ae_restrict_mem R.measurableSet_carrier)
+  filter_upwards [h5', hmem] with x hx hxM hxS
+  -- Step 2: if `θ(x) ≠ 1` then `θ(x) ≥ 2 > c > max c₀ 0` for `c = (max c₀ 0 + 2) / 2`
+  have hxW := hSW hxS
+  have hpos := R.mult_pos x hxM
+  by_contra hne
+  have h2 : 2 ≤ R.mult x := by omega
+  have hc₁ : max c₀ 0 < 2 := max_lt hc₀ (by norm_num)
+  have h2' : (2 : ℝ) ≤ R.mult x := by exact_mod_cast h2
+  have hcm : (max c₀ 0 + 2) / 2 < (R.mult x : ℝ) := by linarith
+  -- Step 3: some `t > 0` has `c ωₙ tⁿ ≤ μ_V(B_t(x)) ≤ c₀ ωₙ tⁿ`
+  have hlow := hx hxW ((max c₀ 0 + 2) / 2) hcm
+  obtain ⟨t, ht1, ht2, htpos⟩ := (hlow.and ((hup x hxS).and self_mem_nhdsWithin)).exists
+  -- Step 4: cancel `0 < ωₙ tⁿ < ∞`, giving `c ≤ c₀` or `c ≤ 0`, both false
+  have hω0 : unitBallVolume n ≠ 0 := by
+    unfold unitBallVolume
+    exact (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume
+    exact measure_ball_lt_top.ne
+  have htn0 : ENNReal.ofReal (t ^ n) ≠ 0 := by
+    rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+    exact pow_pos htpos n
+  have hcomb := ht1.trans ht2
+  rw [mul_assoc, mul_assoc] at hcomb
+  have hle : ENNReal.ofReal ((max c₀ 0 + 2) / 2) ≤ ENNReal.ofReal c₀ :=
+    (ENNReal.mul_le_mul_iff_left (mul_ne_zero hω0 htn0)
+      (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top)).mp hcomb
+  rw [ENNReal.ofReal_le_ofReal_iff'] at hle
+  rcases hle with h | h
+  · have := le_max_left c₀ 0
+    linarith
+  · have := le_max_right c₀ 0
+    linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
