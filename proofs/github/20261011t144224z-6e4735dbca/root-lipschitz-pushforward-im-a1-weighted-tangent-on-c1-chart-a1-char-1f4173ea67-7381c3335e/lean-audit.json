@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1469cf0b59f1865192bf85b311e411ccbf4ddb1806572f3a0a9d7920a3a896be",
+  "git_delta": {
+    "base_commit": "74948dd60fbbdc812505b76f92c9f03579701d82",
+    "candidate_commit": "a2f705665fe483ac44e370236b60a11df82f61af",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_chart_image_measurable_locally_finite",
+    "diff_sha256": "3c97bba050e378c0a5a64e78ae6eab68b83a3570a39ce8b74acde9fd01d3e607",
+    "source_sha256": "5720fbb7a9b7a548c96867769f8387d17126324c0e1cb8f3a7ec358e5220ed9e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_chart_image_measurable_locally_finite",
+      "statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → MeasurableSet (Φ '' Ω) ∧ ∀ K : Set (Eucl Q), IsCompact K → (μHE[n] : Measure (Eucl Q)) (Φ '' Ω ∩ K) < ∞",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
