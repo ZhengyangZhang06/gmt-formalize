@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.subspace_tangent-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "The classical tangent space of a linear subspace at any of its points is the subspace itself",
+  "statement": "For every linear subspace P of ℝ^N and every y ∈ P, classicalTangentSpace P y = P. Here classicalTangentSpace P y is the set of ξ such that some γ : ℝ → ℝ^N is C¹ on (−1,1), maps (−1,1) into P, satisfies γ(0) = y, and has derivative ξ at 0.",
+  "lean_statement": "∀ (N : ℕ) (P : Submodule ℝ (Euclidean N)) (y : Euclidean N), y ∈ P → classicalTangentSpace (P : Set (Euclidean N)) y = (P : Set (Euclidean N))",
+  "lean_name": "allard_tc_scf_subspace_classical_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-subspace-tangent-a1-a1"
+}

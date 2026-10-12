@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.ratio_upper_bound-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "Density ratios are bounded by the ball-mass constant about 0 (printed 5.5(2))",
+  "statement": "Let μ be a measure on ℝ^N, n ∈ ℕ and a ∈ [0,∞]. Write R(y,ρ) := densityRatio n μ y ρ = μ(B_ρ(y))/(ω·ofReal(ρ)^n), with B_ρ the closed ball and ω = unitBallVolume n. Suppose (i) for every y ∈ ℝ^N, ρ ↦ R(y,ρ) is non-decreasing on (0,∞), and (ii) μ(B_ρ(0)) = a·ω·ofReal(ρ)^n for every ρ > 0. Then R(y,ρ) ≤ a for every y ∈ ℝ^N and every ρ > 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ ρ : ℝ, 0 < ρ → μ (closedBall 0 ρ) = a * unitBallVolume n * ENNReal.ofReal ρ ^ n) → ∀ (y : Euclidean N) (ρ : ℝ), 0 < ρ → densityRatio n μ y ρ ≤ a",
+  "lean_name": "allard_tc_scf_ratio_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-ratio-upper-bound-a1-a1"
+}
