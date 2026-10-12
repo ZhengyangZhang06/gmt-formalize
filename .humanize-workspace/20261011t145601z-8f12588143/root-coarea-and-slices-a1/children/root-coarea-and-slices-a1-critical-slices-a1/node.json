@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.critical_slices-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "C¹ critical slices are Hᵏ-null for Lᵐ-a.e. y (Simon Ch. 2, consequence of (6.3))",
+  "statement": "Let m, k ∈ ℕ with k > 0, n := m + k, and G : ℝⁿ → ℝᵐ of class C¹ (ContDiff ℝ 1). Let C := {u ∈ ℝⁿ : DG(u) is not surjective}. Then Hᵏ(C ∩ G⁻¹{y}) = 0 for Lᵐ-a.e. y ∈ ℝᵐ. Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "∀ (m k : ℕ) (G : Rn (m + k) → Rn m), 0 < k → ContDiff ℝ 1 G → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] ({u | ¬ Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}) = 0",
+  "lean_name": "c1_critical_slices_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-critical-slices-a1-a1"
+}

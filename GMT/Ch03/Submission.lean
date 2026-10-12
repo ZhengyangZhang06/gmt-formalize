@@ -335,6 +335,58 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Null sets have null slices**, Simon Ch. 3, p. 77 (the null parts in the proof of the
+co-area formula (2.8)), from Eilenberg's inequality, Simon Ch. 2, Theorem 1.9, taken as the
+hypothesis `(E)`. If `f` is locally Lipschitz on `U ⊇ Z` and `H^{m+k}(Z) = 0`, then
+`Hᵏ(Z ∩ f⁻¹(y)) = 0` for `Lᵐ`-a.e. `y`. Each `x ∈ Z` has a neighbourhood `V_x` with `f`
+Lipschitz on `V_x ∩ U`; countably many `V_x` cover `Z` (Lindelöf). On each piece `f` extends to a
+globally Lipschitz `F_x` (`LipschitzOnWith.extend_finite_dimension`), which has the same slices on
+`Z ∩ V_x ⊆ U`, and `(E)` gives a Borel majorant `g_x` of `y ↦ Hᵏ(Z ∩ V_x ∩ f⁻¹(y))` with
+`∫ g_x ≤ C L_xᵐ H^{m+k}(Z ∩ V_x) = 0`, so `g_x = 0` a.e.; conclude by countable subadditivity. -/
+theorem Submission.coarea_null_slices_of_eilenberg : (∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) → ∀ (N m k : ℕ) (U Z : Set (Rn N)) (f : Rn N → Rn m), LocallyLipschitzOn U f → Z ⊆ U → μHE[m + k] Z = 0 → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (Z ∩ f ⁻¹' {y}) = 0 := by
+  intro hE N m k U Z f hf hZU hZ
+  obtain ⟨C, hC⟩ := hE N m k
+  -- Every `x ∈ Z` has a neighbourhood `V x` such that `f` is Lipschitz on `V x ∩ U`.
+  have hloc : ∀ x ∈ Z, ∃ V ∈ 𝓝 x, ∃ K : ℝ≥0, LipschitzOnWith K f (V ∩ U) := by
+    intro x hx
+    obtain ⟨K, t, ht, hft⟩ := hf (hZU hx)
+    obtain ⟨V, hV, hVt⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.1 ht
+    exact ⟨V, hV, K, hft.mono hVt⟩
+  choose V hV K hK using hloc
+  -- Lindelöf: countably many of these neighbourhoods cover `Z`.
+  obtain ⟨T, hTc, hZT⟩ := (HereditarilyLindelofSpace.isLindelof Z).elim_nhds_subcover' V hV
+  have : Countable T := hTc.to_subtype
+  -- On each piece, extend `f` to a globally Lipschitz map and apply `(E)`.
+  have hpiece : ∀ i : T, ∃ g : Rn m → ℝ≥0∞,
+      (∀ y, μHE[k] (Z ∩ V i.1.1 i.1.2 ∩ f ⁻¹' {y}) ≤ g y) ∧ ∀ᵐ y ∂(volume : Measure (Rn m)), g y = 0 := by
+    intro i
+    obtain ⟨F, hFL, hfF⟩ := (hK i.1.1 i.1.2).extend_finite_dimension
+    obtain ⟨g, hgm, hg, hgi⟩ := hC (Z ∩ V i.1.1 i.1.2) F _ hFL
+    refine ⟨g, fun y => ?_, ?_⟩
+    · -- `F = f` on `V ∩ U ⊇ Z ∩ V`, so the slices agree.
+      have hslice : Z ∩ V i.1.1 i.1.2 ∩ f ⁻¹' {y} = Z ∩ V i.1.1 i.1.2 ∩ F ⁻¹' {y} := by
+        ext z
+        simp only [mem_inter_iff, mem_preimage, mem_singleton_iff]
+        constructor
+        · rintro ⟨⟨hz, hzV⟩, hfz⟩
+          exact ⟨⟨hz, hzV⟩, (hfF ⟨hzV, hZU hz⟩).symm.trans hfz⟩
+        · rintro ⟨⟨hz, hzV⟩, hFz⟩
+          exact ⟨⟨hz, hzV⟩, (hfF ⟨hzV, hZU hz⟩).trans hFz⟩
+      rw [hslice]
+      exact hg y
+    · -- `∫ g ≤ C Lᵐ H^{m+k}(Z ∩ V) = 0`, hence `g = 0` a.e.
+      have h0 : μHE[m + k] (Z ∩ V i.1.1 i.1.2) = 0 := measure_mono_null inter_subset_left hZ
+      rw [h0, mul_zero, nonpos_iff_eq_zero] at hgi
+      exact (lintegral_eq_zero_iff hgm).1 hgi
+  choose g hg hg0 using hpiece
+  -- Countable subadditivity over the pieces.
+  filter_upwards [ae_all_iff.2 hg0] with y hy
+  refine measure_mono_null (t := ⋃ i : T, Z ∩ V i.1.1 i.1.2 ∩ f ⁻¹' {y}) ?_ ?_
+  · rintro z ⟨hz, hfz⟩
+    obtain ⟨i, hi, hzi⟩ := mem_iUnion₂.1 (hZT hz)
+    exact mem_iUnion.2 ⟨⟨i, hi⟩, ⟨hz, hzi⟩, hfz⟩
+  · exact measure_iUnion_null fun i => nonpos_iff_eq_zero.1 ((hg i y).trans (hy i).le)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 

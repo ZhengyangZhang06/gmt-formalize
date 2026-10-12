@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.tangent_existence-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "Existence of T_xM and d^Mf_x for Hⁿ-a.e. x ∈ M (conclusion (a))",
+  "statement": "Assume SubmanifoldCoverCharacterization, the C¹ approximation theorem (C1) in the frozen form of lipschitz_c1_approximation, and the chart lemma (CT) in the frozen form of chart_approx_tangent_and_differential. Let n, ℓ, p ∈ ℕ, M ⊆ ℝ^{n+ℓ} Hⁿ-measurable and countably n-rectifiable, θ a positive locally Hⁿ-integrable weight on M, U ⊇ M open and f : ℝ^{n+ℓ} → ℝᵖ locally Lipschitz on U. Then for Hⁿ-a.e. x ∈ M there are a subspace P and a continuous linear L : P → ℝᵖ with HasWeightedApproximateTangentSpaceAt n M θ x P and HasTangentialDifferentialAt P f x L. Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "SubmanifoldCoverCharacterization → (∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε) → (∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ))) (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M → HasWeightedApproximateTangentSpaceAt n M θ (ψ u) (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧ DifferentiableAt ℝ (f ∘ ψ) u ∧ ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) → ∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ))) (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p), NullMeasurableSet M μHE[n] → CountablyRectifiable n M → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))), x ∈ M → ∃ (P : Submodule ℝ (Rn (n + ℓ))) (L : P →L[ℝ] Rn p), HasWeightedApproximateTangentSpaceAt n M θ x P ∧ HasTangentialDifferentialAt P f x L",
+  "lean_name": "coarea_tangent_existence",
+  "depends_on": [
+    "root.coarea_and_slices-a1.chart_pieces-a1",
+    "root.coarea_and_slices-a1.jacobian_identification-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_and_slices-a1.chart_pieces-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.coarea_and_slices-a1.jacobian_identification-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-tangent-existence-a1-a1"
+}

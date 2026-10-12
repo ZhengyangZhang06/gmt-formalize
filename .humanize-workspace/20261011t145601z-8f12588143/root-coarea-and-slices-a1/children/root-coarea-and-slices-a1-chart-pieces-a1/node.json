@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.chart_pieces-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "Countably many C¹ chart pieces on which f agrees to first order with C¹ maps (Simon Ch. 3, Lemma 1.2, Remark 1.3 and Ch. 2, Thm 1.5)",
+  "statement": "Assume Lemma 1.2 in the frozen form SubmanifoldCoverCharacterization and the C¹ approximation theorem in exactly the frozen form of the root-level sibling lipschitz_c1_approximation: (C1) for all n, p, every K-Lipschitz F : ℝⁿ → ℝᵖ and every ε > 0 there is g : ℝⁿ → ℝᵖ of class C¹ with Lⁿ({x : F(x) ≠ g(x) or DF(x) ≠ Dg(x)}) < ε. Let n, ℓ, m ∈ ℕ, M ⊆ ℝ^{n+ℓ} countably n-rectifiable, U ⊇ M open and f : ℝ^{n+ℓ} → ℝᵐ locally Lipschitz on U. Then there are sequences (j ∈ ℕ) D_j ⊆ ℝⁿ, ψ_j : ℝⁿ → ℝ^{n+ℓ}, G_j : ℝⁿ → ℝᵐ and E_j ⊆ ℝⁿ such that: D_j is open; ψ_j is C¹ on D_j, injective on D_j and Lipschitz on D_j, with Dψ_j(u) injective for every u ∈ D_j; G_j is C¹ on ℝⁿ; E_j is Borel and E_j ⊆ D_j; for every u ∈ E_j, f(ψ_j(u)) = G_j(u) and f ∘ ψ_j has Fréchet derivative DG_j(u) at u; and Hⁿ(M \\ ⋃_j ψ_j(E_j)) = 0. Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "SubmanifoldCoverCharacterization → (∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε) → ∀ (n ℓ m : ℕ) (M U : Set (Rn (n + ℓ))) (f : Rn (n + ℓ) → Rn m), CountablyRectifiable n M → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → ∃ (D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn (n + ℓ)) (G : ℕ → Rn n → Rn m) (E : ℕ → Set (Rn n)), (∀ j, IsOpen (D j)) ∧ (∀ j, ContDiffOn ℝ 1 (ψ j) (D j)) ∧ (∀ j, InjOn (ψ j) (D j)) ∧ (∀ j, ∃ K, LipschitzOnWith K (ψ j) (D j)) ∧ (∀ j, ∀ u ∈ D j, Function.Injective (fderiv ℝ (ψ j) u)) ∧ (∀ j, ContDiff ℝ 1 (G j)) ∧ (∀ j, MeasurableSet (E j)) ∧ (∀ j, E j ⊆ D j) ∧ (∀ j, ∀ u ∈ E j, f (ψ j u) = G j u ∧ HasFDerivAt (f ∘ ψ j) (fderiv ℝ (G j) u) u) ∧ μHE[n] (M \\ ⋃ j, ψ j '' E j) = 0",
+  "lean_name": "rectifiable_c1_chart_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-chart-pieces-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.gluing-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "Gluing local co-area formulas over countably many Borel pieces (parent 1.4, 1.6)",
+  "statement": "Let N, n, m, k ∈ ℕ, U ⊆ ℝ^N open, M ⊆ U, f : ℝ^N → ℝᵐ continuous on U, w : ℝ^N → [0, ∞] arbitrary and S_j ⊆ ℝ^N (j ∈ ℕ) Borel. Assume (NS) for every Z ⊆ M with Hⁿ(Z) = 0, Hᵏ(Z ∩ f⁻¹{y}) = 0 for Lᵐ-a.e. y; (Cov) Hⁿ(M \\ ⋃_j S_j) = 0; (Loc) for every j, every Borel B ⊆ S_j and every Borel φ : ℝ^N → [0, ∞], y ↦ ∫_{B∩f⁻¹{y}} φ dHᵏ is Lᵐ-a.e. measurable and ∫_B φ·w dHⁿ = ∫_{ℝᵐ}∫_{B∩f⁻¹{y}} φ dHᵏ dLᵐ(y). Then for every Hⁿ-null-measurable A ⊆ M and every g : ℝ^N → [0, ∞] that is a.e.-measurable for Hⁿ⌞A: ∫_A g·w dHⁿ = ∫_{ℝᵐ}∫_{A∩f⁻¹{y}} g dHᵏ dLᵐ(y). Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "∀ (N n m k : ℕ) (U M : Set (Rn N)) (f : Rn N → Rn m) (w : Rn N → ℝ≥0∞) (S : ℕ → Set (Rn N)), IsOpen U → M ⊆ U → ContinuousOn f U → (∀ Z ⊆ M, μHE[n] Z = 0 → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (Z ∩ f ⁻¹' {y}) = 0) → (∀ j, MeasurableSet (S j)) → μHE[n] (M \\ ⋃ j, S j) = 0 → (∀ j, ∀ B ⊆ S j, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) volume ∧ ∫⁻ x in B, φ x * w x ∂μHE[n] = ∫⁻ y, (∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) ∂volume) → ∀ A ⊆ M, NullMeasurableSet A μHE[n] → ∀ g : Rn N → ℝ≥0∞, AEMeasurable g ((μHE[n] : Measure (Rn N)).restrict A) → ∫⁻ x in A, g x * w x ∂μHE[n] = ∫⁻ y, (∫⁻ x in A ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∂volume",
+  "lean_name": "coarea_gluing_of_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-gluing-a1-a1"
+}
