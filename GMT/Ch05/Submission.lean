@@ -502,6 +502,94 @@ theorem any_radius_gr_la_graphPoint_algebra : ∀ (n ℓ : ℕ), (∀ (a : Rn n)
   · intro a a' b b'
     rw [PiLp.inner_apply, PiLp.inner_apply, PiLp.inner_apply, Fin.sum_univ_add]
     simp only [hC1, hC2]
+/-- The rotated plane `T₀ = q(ℝⁿ × {0})` of Simon Ch. 5, Lemma 2.6 (p. 110), in the graph estimates
+behind Remark 5.3 (p. 122): for a linear isometry `q` of `ℝ^{n+ℓ}`, (L5) `p_{T₀}(q(a, b)) = q(a, 0)`,
+(L6) `dist(q(a, b), T₀) = |b|` and (L7) `dim T₀ = n`.
+Since `e_{castAdd ℓ i} = (eᵢ, 0)` and `c ↦ (c, 0)` is linear, `ℝⁿ × {0} = {(c, 0) : c ∈ ℝⁿ}`, which
+is orthogonal to `(0, b)`; as `q` preserves inner products, `q(a, 0) ∈ T₀` and
+`q(a, b) − q(a, 0) = q(0, b) ⊥ T₀` characterize the projection, and the distance to `T₀` is attained
+at the projection.  The `e_{castAdd ℓ i}` are independent and `q` preserves dimension. -/
+theorem any_radius_gr_la_rotatedPlane_facts : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ))) ∧ (∀ (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖) ∧ Module.finrank ℝ (rotatedPlane q) = n := by
+  intro n ℓ q
+  -- (C1), (C2), (L1)–(L4) and (IP) for `graphPoint`
+  obtain ⟨hC1, hC2, hadd, hsub, hsmul, hnorm, hinner⟩ :=
+    Submission.any_radius_gr_la_graphPoint_algebra n ℓ
+  -- Step 1: `e_{castAdd ℓ i} = (eᵢ, 0)`; compare the coordinates at `castAdd ℓ i'` and `natAdd n j`
+  have hbasis : ∀ i : Fin n, EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) =
+      graphPoint (EuclideanSpace.single i (1 : ℝ)) (0 : Rn ℓ) := by
+    intro i
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j => ?_) k
+    · rw [hC1]
+      simp only [PiLp.single_apply, (Fin.castAdd_injective n ℓ).eq_iff]
+    · rw [hC2]
+      have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ i := by
+        intro h
+        have hval := congrArg Fin.val h
+        simp at hval
+        omega
+      simp [hne]
+  -- Step 2: `G c = (c, 0)` is linear, by (L1) and (L3)
+  let G : Rn n →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun c => graphPoint c (0 : Rn ℓ)
+      map_add' := fun c c' => by simpa using hadd c c' (0 : Rn ℓ) (0 : Rn ℓ)
+      map_smul' := fun t c => by simpa using hsmul t c (0 : Rn ℓ) }
+  -- Step 3: `ℝⁿ × {0} = {(c, 0) : c ∈ ℝⁿ}`, the image under `G` of the span of the `eᵢ`
+  have hhor : horizontalPlane n ℓ = LinearMap.range G := by
+    have hfun : (fun i : Fin n => EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) =
+        G ∘ fun i : Fin n => EuclideanSpace.single i (1 : ℝ) := by
+      funext i
+      exact hbasis i
+    have hspan :
+        Submodule.span ℝ (Set.range fun i : Fin n => EuclideanSpace.single i (1 : ℝ)) = ⊤ := by
+      have hb : ⇑(EuclideanSpace.basisFun (Fin n) ℝ) = fun i => EuclideanSpace.single i (1 : ℝ) :=
+        funext (EuclideanSpace.basisFun_apply (Fin n) ℝ)
+      have := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.span_eq
+      rwa [OrthonormalBasis.coe_toBasis, hb] at this
+    rw [horizontalPlane, hfun, Set.range_comp, Submodule.span_image, hspan,
+      LinearMap.range_eq_map]
+  -- Step 4: `(0, b)` is orthogonal to `ℝⁿ × {0}`, by (IP)
+  have horth : ∀ (b : Rn ℓ), ∀ h ∈ horizontalPlane n ℓ,
+      inner ℝ (graphPoint (0 : Rn n) b) h = 0 := by
+    intro b h hh
+    rw [hhor] at hh
+    obtain ⟨c, rfl⟩ := hh
+    show inner ℝ (graphPoint 0 b) (graphPoint c 0) = 0
+    rw [hinner]
+    simp
+  -- Step 6(ii): `q(a, b) − q(a, 0) = q(0, b)`, by (L2)
+  have hdiff : ∀ (a : Rn n) (b : Rn ℓ),
+      q (graphPoint a b) - q (graphPoint a 0) = q (graphPoint 0 b) := by
+    intro a b
+    rw [← map_sub, ← hsub]
+    simp
+  -- Step 6, (L5): `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) ⊥ T₀`, as `q` preserves inner products
+  have hproj : ∀ (a : Rn n) (b : Rn ℓ),
+      (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ)) := by
+    intro a b
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact Submodule.mem_map_of_mem (by rw [hhor]; exact ⟨a, rfl⟩)
+    · intro w hw
+      obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
+      rw [hdiff]
+      simp only [LinearEquiv.coe_coe, LinearIsometryEquiv.coe_toLinearEquiv]
+      rw [LinearIsometryEquiv.inner_map_map]
+      exact horth b h hh
+  refine ⟨hproj, ?_, ?_⟩
+  -- Step 8, (L6): `dist(v, T₀) = |v − p_{T₀} v| = |q(0, b)| = |(0, b)| = |b|`, by (L5) and (L4)
+  · intro a b
+    rw [← Submodule.dist_starProjection_eq_infDist, hproj, dist_eq_norm, hdiff,
+      LinearIsometryEquiv.norm_map]
+    have h := hnorm 0 b
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  -- Step 9, (L7): the `e_{castAdd ℓ i}` are independent, and `q` preserves `finrank`
+  · have hli : LinearIndependent ℝ
+        (fun i : Fin n => EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) :=
+      (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin (n + ℓ))).linearIndependent.comp _
+        (Fin.castAdd_injective n ℓ)
+    rw [rotatedPlane, LinearEquiv.finrank_map_eq, horizontalPlane, finrank_span_eq_card hli,
+      Fintype.card_fin]
 
 end Submission
 
