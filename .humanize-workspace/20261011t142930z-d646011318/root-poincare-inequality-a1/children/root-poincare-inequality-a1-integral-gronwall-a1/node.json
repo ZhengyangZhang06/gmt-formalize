@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.poincare_inequality-a1.integral_gronwall-a1",
+  "parent_id": "root.poincare_inequality-a1",
+  "depth": 2,
+  "title": "Backward integral Gronwall inequality on [a, b]",
+  "statement": "Let a ≤ b, Λ ≥ 0 and C be real numbers and let f : ℝ → ℝ be Lebesgue integrable on [a, b]. Assume that f(s) ≤ C + Λ ∫_{(s,b]} f(τ) dτ for every s ∈ [a, b]. Then f(s) ≤ C e^{Λ(b − s)} for every s ∈ [a, b]. (No sign condition on C or on f is needed.)",
+  "lean_statement": "∀ (a b Λ C : ℝ) (f : ℝ → ℝ), a ≤ b → 0 ≤ Λ → IntegrableOn f (Icc a b) → (∀ s ∈ Icc a b, f s ≤ C + Λ * ∫ τ in Ioc s b, f τ) → ∀ s ∈ Icc a b, f s ≤ C * Real.exp (Λ * (b - s))",
+  "lean_name": "backward_integral_gronwall_Ioc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-poincare-inequality-a1-integral-gronwall-a1-a1"
+}

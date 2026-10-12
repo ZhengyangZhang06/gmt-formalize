@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1",
+  "parent_id": "root.sobolev_inequality-a1",
+  "depth": 2,
+  "title": "From the superlevel inequality (4.1) to the Sobolev inequality (truncation, layer cake, ε ↓ 0)",
+  "statement": "Let n ≥ 2, ℓ ∈ ℕ, V a rectifiable n-varifold in E = ℝ^{n+ℓ} with μ = μ_V finite on compact sets and x ↦ p_{T_xV} μ-a.e. strongly measurable, U ⊆ E open, H: E → E locally μ-integrable on U, and C ≥ 0. Suppose that every g ∈ C¹(U), g ≥ 0, with compact support and tsupport g ⊆ U satisfies ∫_{{g≥1}} g dμ ≤ C(∫g dμ)^{1/n}∫(|∇^M g| + g|H|) dμ. Then every h ∈ C¹(U), h ≥ 0, with compact support and tsupport h ⊆ U satisfies (∫h^{n/(n−1)} dμ)^{(n−1)/n} ≤ (n/(n − 1))·C·∫(|∇^M h| + h|H|) dμ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (C : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → LocallyIntegrableOn H U V.weight → 0 ≤ C → (∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ C * (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ * ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) → ContDiffOn ℝ 1 h U → HasCompactSupport h → tsupport h ⊆ U → (∀ x, 0 ≤ h x) → (∫ x, h x ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂V.weight) ^ (((n : ℝ) - 1) / n) ≤ (n : ℝ) / ((n : ℝ) - 1) * C * ∫ x, (‖V.tangentialGradient h x‖ + h x * ‖H x‖) ∂V.weight",
+  "lean_name": "sobolev_of_superlevel_inequality",
+  "depends_on": [
+    "root.sobolev_inequality-a1.energy_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.sobolev_inequality-a1.energy_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-truncation-layer-cake-a1-a1"
+}

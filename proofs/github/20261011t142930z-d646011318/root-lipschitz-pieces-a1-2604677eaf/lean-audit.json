@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "64640cbe92757b94d62f0e135638f03ea771df39c99863fae6a136f7fd50c739",
+  "git_delta": {
+    "base_commit": "4fb6a6dba227c5dcf2002bd975b7d85d6a1e93ef",
+    "candidate_commit": "aa3f50a00fcf7b2bb048c9c0416723493b960d4c",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "ccdf6e693e3096452be74d8345f671c23d982c6ffe6655d8bdcf4f34bfca546f",
+    "source_sha256": "327d26fcb0838b9836b6bdedea91242ed9291b586b367a5d6615744d80f7f9da",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiable_lipschitz_piece_cover",
+      "statement": "∀ (n ℓ : ℕ) (M : Set (Ambient n ℓ)), 0 < n → Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ), MeasurableSet N₀ ∧ (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 ∧ M ⊆ N₀ ∪ ⋃ i, F i '' C i ∧ ∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a632ea0a97fba12b7c10c0d18d7d7e3ce97665ec5e1e8718c0eb9b06109e7c74",
+  "git_delta": {
+    "base_commit": "5994e5650bbf59e0224ca2a2dbc8c11f04f88fbf",
+    "candidate_commit": "e49b0f4e5a67eeb9066ee4ea89a1b772d0b29dfa",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "exists_radial_cutoff_test_field",
+    "diff_sha256": "f169a5c4439c4889026bbae471fab3ae994115b5758ce3fa85c01e0b05b02045",
+    "source_sha256": "ffd87238345c46202f7bc7932bf5ad65460c5c3fd893603b19b4c43e815b6e5d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_radial_cutoff_test_field",
+      "statement": "∀ (n ℓ : ℕ) (K : Set (Ambient n ℓ)) (ξ : Ambient n ℓ) (R ε : ℝ), IsCompact K → 0 ≤ R → 0 < ε → ∃ (ζ : Ambient n ℓ → ℝ) (γ : ℝ → ℝ), ContDiff ℝ 1 ζ ∧ (∀ x ∈ K, ζ x = 1 ∧ gradient ζ x = 0) ∧ ContDiff ℝ 1 γ ∧ (∀ t : ℝ, 0 ≤ t → 0 ≤ γ t ∧ 0 ≤ deriv γ t) ∧ (∀ t : ℝ, 0 ≤ t → t ≤ R + ε → γ t = 0) ∧ (∀ t : ℝ, R + ε < t → 0 < γ t) ∧ IsTestField (closedBall ξ R)ᶜ (fun x ↦ (ζ x * γ ‖x - ξ‖) • (x - ξ))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

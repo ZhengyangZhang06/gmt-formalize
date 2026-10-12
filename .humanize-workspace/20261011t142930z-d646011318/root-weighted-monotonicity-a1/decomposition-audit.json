@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "integral_integral_swap",
+        "tendsto_integral_filter_of_dominated_convergence",
+        "starProjection_orthogonal.|norm_starProjection_apply_le",
+        "sigmaFinite_of_isFiniteMeasureOnCompacts|IsFiniteMeasureOnCompacts.*SigmaFinite|SigmaFinite.*IsFiniteMeasureOnCompacts",
+        "weighted_mono_(radial_test_field|cutoff_first_variation|cutoff_hasDerivAt|kernel_bounds|smoothed_identity|cutoff_limit)",
+        "python3 /tmp/wm-a1-independent-audit/check.py proofs"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1/decomposition-v1.json",
+        "/tmp/wm-a1-independent-audit/ProofCheck.lean",
+        "/tmp/wm-a1-independent-audit/ProofCheck.log"
+      ],
+      "conclusion": "The six-way split appropriately establishes the selected weighted_monotonicity_identity. The pinned contract and workspace Contract/Submission are byte-identical; compiler dependency revisions match the manifest, and inspected Mathlib sources match the snapshot. The required differentiation, FTC, Fubini, projection, cutoff and convergence results are available. Compact-finiteness supplies σ-finiteness on Ambient. No proposed child name occurs in the searched snapshot roots or conflicts with the current DAG. All names are bare identifiers; dependencies are correctly directed and remain acyclic after inserting the children. All six frozen types passed lexical validation and elaborated in comparator scope before any child implementation. The independent combined compilation exited successfully: the supplied child proofs and assembly parameterized by the exact frozen radial_first_variation contract use only propext, Classical.choice and Quot.sound. The assembly proves the exact selected parent type. No child-dependent alias or problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_test_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition include matching hypotheses. Compact localization establishes support and compactness; local vanishing handles points outside K, and the constant profile near the center removes the norm singularity. The supplied proof establishes global C¹ regularity and every IsTestField conjunct without circular reliance."
+    },
+    {
+      "key": "cutoff_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all stated assumptions and conclusions. The proof supplies room, projection measurability and bounds, localized H-integrability, and integrability before splitting integrals. RFV is an explicit hypothesis discharged by the parent's declared dependency using FV2. The sole child dependency constructs the test field, and regrouping gives the correct curvature sign."
+    },
+    {
+      "key": "cutoff_integral_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and standalone Lean type agree. The explicit neighborhood preserves positive scales and support inside B_R; the proof supplies measurable integrands and a uniform integrable derivative bound. Dominated differentiation gives precisely the stated derivative and both integrability conclusions, without requiring information about f outside B_R."
+    },
+    {
+      "key": "kernel_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses the corrected two-sided bounds. Antitonicity gives the derivative sign, its support gives τ ≤ s ≤ (1+ε)τ, and FTC evaluates its integral. Integrating the resulting reciprocal-power bounds proves both inequalities, including σ = ρ and n = 0."
+    },
+    {
+      "key": "smoothed_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All prose hypotheses appear in the exact Lean type. The derivative child and ODE yield the correctly signed derivative of I(t)/tⁿ. Dominated continuity justifies FTC; joint measurability and the finite-product integrable bound justify Fubini. The proof establishes the stated kernel identity using only its declared child dependency."
+    },
+    {
+      "key": "cutoff_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof constructs admissible cutoffs and widths explicitly. Kernel bounds yield uniform domination and the exact indicator σ < r ≤ ρ; the dominated-convergence arguments establish the identity, while measurability and bounds establish both integrability conjuncts. Signed u and σ = ρ are covered. S_φ is a genuine intermediate hypothesis supplied by smoothed_identity in the parent assembly, with no circularity."
+    }
+  ],
+  "required_changes": []
+}

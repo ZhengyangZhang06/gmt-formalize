@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.density_complement-a1",
+  "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "depth": 3,
+  "title": "Rescaled complement of a set at a Lebesgue density point has vanishing measure",
+  "statement": "Let n ∈ ℕ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, C ⊆ ℝⁿ Borel, w ∈ ℝⁿ and R > 0, and suppose Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 in [0, ∞] as r ↓ 0 (closed balls). Then Lⁿ({u ∈ B_R(0) : w + tu ∉ C}) → 0 in [0, ∞] as t ↓ 0.",
+  "lean_statement": "∀ (n : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)) (R : ℝ), MeasurableSet C → 0 < R → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun t : ℝ ↦ volume {u : EuclideanSpace ℝ (Fin n) | u ∈ closedBall 0 R ∧ w + t • u ∉ C}) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "ts_pdb_density_complement_vanish",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1-a1"
+}

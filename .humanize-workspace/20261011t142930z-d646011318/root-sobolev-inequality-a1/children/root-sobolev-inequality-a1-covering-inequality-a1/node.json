@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.covering_inequality-a1",
+  "parent_id": "root.sobolev_inequality-a1",
+  "depth": 2,
+  "title": "Good balls and 5-times covering: ∫_{g≥1} g ≤ 5ⁿω_n^{−1/n}(∫g)^{1/n}∫φ (Simon 5.7(1))",
+  "statement": "Let n ≥ 2, ℓ ∈ ℕ, μ a Borel measure on E = ℝ^{n+ℓ} finite on compact sets, g: E → ℝ continuous, nonnegative and compactly supported, φ: E → ℝ nonnegative and μ-integrable. Assume (i) for all ζ ∈ E and 0 < s ≤ r: s^{−n}∫_{B_s(ζ)} g dμ ≤ r^{−n}∫_{B_r(ζ)} g dμ + ∫_{(s,r]} τ^{−n}(∫_{B_τ(ζ)} φ dμ) dτ; and (ii) for μ-a.e. ζ with g(ζ) ≥ 1 there is t ≥ 1 with μ(B_ρ(ζ))/(ω_nρⁿ) → t as ρ ↓ 0. Then ∫_{{g ≥ 1}} g dμ ≤ 5ⁿ ω_n^{−1/n} (∫ g dμ)^{1/n} ∫ φ dμ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (g φ : Ambient n ℓ → ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → (∀ x, 0 ≤ φ x) → Integrable φ μ → (∀ (ζ : Ambient n ℓ) (s r : ℝ), 0 < s → s ≤ r → (∫ x in closedBall ζ s, g x ∂μ) / s ^ n ≤ (∫ x in closedBall ζ r, g x ∂μ) / r ^ n + ∫ τ in Ioc s r, (∫ x in closedBall ζ τ, φ x ∂μ) / τ ^ n) → (∀ᵐ ζ ∂μ, 1 ≤ g ζ → ∃ t : ℝ, 1 ≤ t ∧ Tendsto (fun ρ ↦ μ.real (closedBall ζ ρ) / (omega n * ρ ^ n)) (𝓝[>] 0) (𝓝 t)) → ∫ x in {x | 1 ≤ g x}, g x ∂μ ≤ 5 ^ n * omega n ^ (-(n : ℝ)⁻¹) * (∫ x, g x ∂μ) ^ (n : ℝ)⁻¹ * ∫ x, φ x ∂μ",
+  "lean_name": "sobolev_covering_inequality",
+  "depends_on": [
+    "root.sobolev_inequality-a1.good_radius_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.sobolev_inequality-a1.good_radius_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-covering-inequality-a1-a1"
+}

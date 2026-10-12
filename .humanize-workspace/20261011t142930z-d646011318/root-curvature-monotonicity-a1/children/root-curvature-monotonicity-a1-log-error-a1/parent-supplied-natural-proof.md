@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.curvature_monotonicity-a1`
+- Child DAG node: `root.curvature_monotonicity-a1.log_error-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Assume (UI). Fix n > 0, ℓ, V, open U, H with V.HasMeanCurvatureIn U H, ξ, σ, ρ, δ with B_ρ(ξ) ⊆ U, 0 < σ < ρ and τ^{1−n}∫_{B_τ(ξ)}|H|dμ ≤ δ for τ ∈ [σ, ρ], where μ := μ_V. Write a(τ) := μ(B_τ(ξ))/τⁿ, e(τ) := τ^{-(n+1)}∫_{B_τ(ξ)}⟨x−ξ, H(x)⟩dμ and D := ∫_{B_ρ(ξ)∖B_σ(ξ)}q_ξ/|x−ξ|ⁿ dμ.
+1. (UI) with (σ, ρ) (σ ≤ ρ) shows that e is integrable on (σ, ρ] and a(ρ) − a(σ) = D + ∫_{(σ,ρ]}e; hence a(ρ) − a(σ) − D = ∫_{(σ,ρ]}e.
+2. Fix τ ∈ (σ, ρ]. B_τ(ξ) is compact and contained in B_ρ(ξ) ⊆ U; since H is locally μ-integrable on U (first part of HasMeanCurvatureIn), H and |H| are μ-integrable on B_τ(ξ). For x ∈ B_τ(ξ), |⟨x−ξ, H(x)⟩| ≤ |x−ξ||H(x)| ≤ τ|H(x)|; so x ↦ ⟨x−ξ, H(x)⟩ is integrable on B_τ(ξ) and |∫_{B_τ(ξ)}⟨x−ξ, H⟩dμ| ≤ ∫_{B_τ(ξ)}|⟨x−ξ, H⟩|dμ ≤ τ∫_{B_τ(ξ)}|H|dμ. Therefore |e(τ)| ≤ τ^{-n}∫_{B_τ(ξ)}|H|dμ = τ^{-1}·(τ^{1−n}∫_{B_τ(ξ)}|H|dμ) ≤ δ/τ, using τ^{1−n} = τ·τ^{-n} for τ > 0 and the hypothesis at τ ∈ [σ, ρ].
+3. τ ↦ δ/τ is continuous on [σ, ρ] (σ > 0), hence integrable on (σ, ρ], and ∫_{(σ,ρ]}δ/τ dτ = δ(log ρ − log σ) = δ log(ρ/σ).
+4. By 1–3, |a(ρ) − a(σ) − D| = |∫_{(σ,ρ]}e| ≤ ∫_{(σ,ρ]}δ/τ dτ = δ log(ρ/σ). ∎
+
+## Key steps
+
+1. (UI) gives a(ρ) − a(σ) − D = ∫_{(σ,ρ]} e
+2. Local integrability of H on the compact B_τ(ξ) ⊆ U and |⟨x−ξ, H⟩| ≤ τ|H| give |e(τ)| ≤ τ^{-1}·τ^{1−n}∫_{B_τ}|H| ≤ δ/τ
+3. ∫_{(σ,ρ]} δ/τ dτ = δ log(ρ/σ)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `python3 -I: dag.json lean_statement of root.weighted_monotonicity-a1 / root.curvature_monotonicity-a1 and the lean_name list of every DAG node (collision check)`
+- `python3 -I: ch03 nodes/root-section3-consequences-a1/decomposition-v1.json rationale and dag.json child types (outer-sibling results enter nested children as explicit hypotheses)`
+- `sed -n 365,570p book/sources/chapter-04-source.txt (Simon 3.14–4.10)`
+- `rg -n 'AbsolutelyContinuousOnInterval|absolutelyContinuousOnInterval' <snapshot>/mathlib/Mathlib -l`
+- `rg -n 'theorem .*integral_deriv_eq_sub|theorem integral_eq_sub_of_hasDeriv' <snapshot>/mathlib/Mathlib`
+- `grep -n '^theorem|^lemma|^def' AbsolutelyContinuousFun.lean Function/AbsolutelyContinuous.lean IntervalIntegral/DerivIntegrable.lean`
+- `rg -n 'theorem integral_mul_le_Lp_mul_Lq_of_nonneg|theorem integral_inv_of_pos|theorem integral_integral_swap |theorem tendsto_measure_biInter_gt|theorem norm_setIntegral_le_of_norm_le_const|theorem MemLp.integrable_norm_rpow|theorem Monotone.measurable|theorem gradient_const|theorem setIntegral_mono_set|theorem intervalIntegrable_rpow|theorem integral_rpow' <snapshot>/mathlib/Mathlib`
+- `rg -n 'tendsto_nhdsWithin_Ioo|tendsto_nhdsGT|ae_hasDerivAt_integral|Tendsto.limUnder_eq' <snapshot>/mathlib/Mathlib`
+- `rg -n 'aestronglyMeasurable_iUnion_iff|integrableOn_of_bounded|setIntegral_mono_on|measureReal_mono|comp_aestronglyMeasurable|AEStronglyMeasurable.inner' <snapshot>/mathlib/Mathlib`
+- `grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter04/{MeanCurvature,LogarithmicError,LpMeanCurvature,LpCancellation,LpDensity,Density,Basic}.lean; git -C lake-packages-25730c7c/simongmt rev-parse HEAD`
+- `python3 -I gmt-compare.py contract_scope(Contract.lean, GMT.Ch04.main_theorem); lean_contract.validate_lean_statement on all nine child types`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-curvmono-decomp/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/ch04-curvmono-decomp/olean lean /tmp/ch04-curvmono-decomp/lean/Challenge_<key>.lean (nine NodeChallenge-shaped files)`
+- `LEAN_PATH=... lean /tmp/ch04-curvmono-decomp/lean/Assembly.lean (parent assembly from sorry'd children and a sorry'd weighted_monotonicity_identity stub)`
+- `LEAN_PATH=... lean /tmp/ch04-curvmono-decomp/lean/Inspect.lean (rfl checks of rpow / ℕ-power / measureReal / volume / 𝓝[>] elaboration)`
+- `LEAN_PATH=... lean /tmp/ch04-curvmono-decomp/lean/{ProveC1,ProveC6,ProveC5,ProveC9}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-04-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/LebesgueDifferentiationThm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LogarithmicError.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LpDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Density.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/tmp/ch04-curvmono-decomp/lean/Assembly.lean`
+- `/tmp/ch04-curvmono-decomp/lean/Inspect.lean`
+- `/tmp/ch04-curvmono-decomp/lean/ProveC1.lean`
+- `/tmp/ch04-curvmono-decomp/lean/ProveC5.lean`
+- `/tmp/ch04-curvmono-decomp/lean/ProveC6.lean`
+- `/tmp/ch04-curvmono-decomp/lean/ProveC9.lean`
+
+Snapshot (project ff75f52a, Mathlib 25730c7c) Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b); simongmt is pinned at 2b3663083f3fe399b6296fb8eaee52169170e197. Mathlib supplies every tool the child proofs cite: FTC for absolutely continuous functions (AbsolutelyContinuousOnInterval.integral_deriv_eq_sub, IntervalIntegrable.absolutelyContinuousOnInterval_intervalIntegral, LipschitzOnWith.comp_absolutelyContinuousOnInterval, IntervalIntegrable.ae_hasDerivAt_integral), Fubini (integral_integral_swap), Hölder (integral_mul_le_Lp_mul_Lq_of_nonneg), continuity from above (tendsto_measure_biInter_gt), monotone limits (MonotoneOn.tendsto_nhdsWithin_Ioo_right / Monotone.tendsto_nhdsGT), Tendsto.limUnder_eq, integral_inv_of_pos, integral_rpow, intervalIntegrable_rpow', norm_setIntegral_le_of_norm_le_const(_ae'), setIntegral_mono_on/_set, aestronglyMeasurable_iUnion_iff, Monotone.measurable, measureReal_mono, gradient_const; AEStronglyMeasurable.inner lives in StronglyMeasurable/Inner.lean, which the contract does not import, so the compiled test proof uses continuous_inner.comp_aestronglyMeasurable instead. SimonGMT Chapter04 (MeanCurvature, LogarithmicError, LpMeanCurvature, LpCancellation, LpDensity, Density) proves ε-cutoff versions of 3.16–3.18 and 4.1–4.9 only for its own Chapter04.RectifiableVarifold structure, which (per the root audit) cannot be instantiated for general contract pairs, and its reusable helpers (integral_mul_cutoff_le, abs_exp_sub_one_le_exp_abs_mul_abs) are private; no lemma there applies to the contract varifold, so they serve only as proof templates and no SimonGMT lemma is cited. The ch03 run's accepted split of root.section3_consequences-a1 confirms the convention that nested children may depend only on siblings of the same split, outer results entering as explicit hypotheses; unit_identity, bounded_curvature, log_error, lp_monotonicity and lp_density follow it. With GMT.Ch04.Submission compiled to an olean, all nine child types elaborate in the exact gmt-compare contract_scope, the elaborated typeclass-sensitive pieces pass rfl checks, and the parent assembly typechecks with exactly the frozen parent type. mcm_unit_weight_identity and mcm_log_error_of_identity compile with a complete proof (axioms propext, Classical.choice, Quot.sound); mcm_bounded_curvature_of_identity and mcm_lp_density_of_monotonicity compile from sorry'd stubs of only their declared siblings. No lean_name collides with dag.json.

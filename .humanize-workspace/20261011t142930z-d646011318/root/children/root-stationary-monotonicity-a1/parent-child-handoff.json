@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+        "rg -n 'def C1Approximation|def WhitneyExtension|def Rademacher' <snapshot>/project/GMT",
+        "rg -n 'theorem .*[Ll]usin' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem ae_tendsto_measure_inter_div|theorem exists_measurable_superset_of_null|theorem measurableSet_of_differentiableAt |theorem measurable_fderiv |euclideanHausdorffMeasure_eq_volume' <snapshot>/mathlib/Mathlib",
+        "rg -n 'exists_disjoint_subfamily_covering_enlargement_closedBall|geometric_hahn_banach_point_closed|lintegral_eq_lintegral_meas_lt|eq_pos_convex_span_of_mem_convexHull|isCompact_convexHull|measure_compl_support|normDet_comp|exists_isClosed_diff_lt|ext_of_integral_eq_on_compactlySupported' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' <snapshot>/mathlib/Mathlib",
+        "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter02/{Lipschitz,AreaLipschitz,AreaCritical,WhitneyExtension}.lean Chapter01/{Lusin,DensityComparison}.lean Chapter03/Rectifiable.lean",
+        "grep -n 'Whitney' simongmt/Poincare/SimonGMT.lean; test -f simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02/WhitneyExtension.olean",
+        "git -C lake-packages-25730c7c/simongmt rev-parse HEAD",
+        "lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-v2-audit/olean/GMT/Ch04/Submission.olean",
+        "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/ch04-v2-audit/olean lean /tmp/ch04-v2-audit/ChildTypes.lean",
+        "LEAN_PATH=... lean /tmp/ch04-v2-audit/Inspect.lean (rfl check of the elaborated piece-cover type; #print axioms of Mathlib lemmas)",
+        "lake env lean /tmp/ch04-v2-audit/Axioms.lean (#print axioms of the cited SimonGMT lemmas)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/LocallyConvex/Separation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/Caratheodory.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root/decomposition-audit-v1.json",
+        "/tmp/ch04-v2-audit/ChildTypes.lean",
+        "/tmp/ch04-v2-audit/Axioms.lean"
+      ],
+      "conclusion": "The snapshot contract (sha256 6e58e5dd…0f4770b) is byte-identical to the workspace Contract.lean and Submission.lean; the pinned SimonGMT revision is 2b3663083f3fe399b6296fb8eaee52169170e197 as in project/lake-manifest.json. No axiom-checked C¹ approximation or Whitney extension is available: project/GMT/Ch02/Contract.lean has C1Approximation and WhitneyExtension only as Props inside the sorry'd Ch. 2 main theorem, SimonGMT's Chapter02/WhitneyExtension.lean is not imported by Poincare/SimonGMT.lean and has no built olean, and the snapshot Mathlib has no Lusin-type C¹ approximation (no 'theorem …Lusin' match). The v2 split therefore replaces that step by the new child rectifiable_lipschitz_piece_cover, whose cited inputs exist and depend only on propext, Classical.choice and Quot.sound (#print axioms): SimonGMT Chapter02.rademacher_ae_differentiableAt, euclideanHausdorffMeasure_image_le_of_lipschitzOn, measurableSet_areaRegularSet, area_image_compl_regularSet_eq_zero, weighted_area_formula_lipschitz_injOn, Chapter01.exists_isClosed_continuousOn_of_measurable, ae_dimensionalUpperDensity_eq_zero_outside, simon_theorem_3_3, Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, Chapter03.support_euclideanHausdorffMeasure_restrict_submodule; Mathlib Besicovitch.ae_tendsto_measure_inter_div, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, measurable_fderiv, Measure.ext_of_integral_eq_on_compactlySupported. Also present: Mathlib LinearMap.normDet_comp, MeasurableSet.exists_isClosed_sdiff_lt, Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall, geometric_hahn_banach_point_closed, eq_pos_convex_span_of_mem_convexHull, lintegral_eq_lintegral_meas_lt, Measure.measure_compl_support; SimonGMT Chapter01.measure_toOuterMeasure_isBorelRegular, Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule, Chapter02.areaJacobian_comp_eq_parametrization_mul_tangential. No compact-convex-hull-of-compact-set lemma was found (only Set.Finite.isCompact_convexHull), so support_convex_hull proves compactness of conv K via Carathéodory. With GMT.Ch04.Submission compiled to an olean, all twelve child types elaborate after `import GMT.Ch04.Submission` inside `namespace GMT.Ch04` with the contract's opens and `open RectifiableVarifold`, the elaborated piece-cover type is checked by rfl against a fully explicit form (μHE[n] on Ambient n ℓ, fderiv on EuclideanSpace ℝ (Fin n)), and the parent assembly from the twelve sorry'd children typechecks with exactly the type of GMT.Ch04.main_theorem; the only diagnostics are the expected sorry warnings."
+    }
+  ],
+  "parent_id": "root",
+  "child_id": "root.stationary_monotonicity-a1",
+  "subproblem": {
+    "key": "stationary_monotonicity",
+    "title": "Stationary monotonicity identity, existence and upper semicontinuity of the density (Simon 3.6–3.11)",
+    "statement": "Assume (GF). Then StationaryMonotonicity holds (for V stationary in open U and B_R(ξ) ⊆ U: ρ^{-n}μ_V(B_ρ) − σ^{-n}μ_V(B_σ) = ∫_{B_ρ∖B_σ} q_ξ|x − ξ|^{-n}dμ_V for 0 < σ ≤ ρ < R; ρ ↦ ρ^{-n}μ_V(B_ρ) is nondecreasing on (0, R); and for 0 < ρ < R the integrand is μ_V-integrable on B_ρ with (ω_nρⁿ)^{-1}μ_V(B_ρ) − Θⁿ(μ_V, ξ) = ω_n^{-1}∫_{B_ρ} q_ξ|x − ξ|^{-n}dμ_V), and StationaryDensity holds (Θⁿ(μ_V, ·) exists at every point of U and is upper semicontinuous on U).",
+    "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → StationaryMonotonicity ∧ StationaryDensity",
+    "lean_name": "stationary_monotonicity_density",
+    "depends_on": [
+      "weighted_monotonicity"
+    ],
+    "natural_proof": "Conventions (used throughout). n ≥ 1 and ℓ ≥ 0 are integers, E = Ambient n ℓ = ℝ^{n+ℓ}, Hⁿ = μHE[n] (equal to Simon's Hⁿ), B_ρ(ξ) = closedBall ξ ρ (closed ball), ω_n = omega n ∈ (0, ∞), and Hⁿ(P ∩ B_s(0)) = ω_n sⁿ for every n-dimensional subspace P. For a rectifiable n-varifold V: μ = μ_V = V.weight; T_x = V.tangentSpace x; p_x and p_x^⊥ are the orthogonal projections onto T_x and T_x^⊥; div_M X(x) = V.tangentialDiv X x = trace(DX(x)∘p_x); ∇^M h(x) = V.tangentialGradient h x = p_x(∇h(x)); r = |x − ξ|; q_ξ(x) = V.normalRadialSq ξ x = |p_x^⊥(x − ξ)|²/|x − ξ|² ∈ [0, 1] (q_ξ(ξ) = 0 because division by 0 is 0); w_ξ(x) = q_ξ(x)/|x − ξ|ⁿ (w_ξ(ξ) = 0); a_ξ(ρ) = μ(B_ρ(ξ))/ρⁿ (a real number); Θ(ξ) = V.density ξ. A test field in U is a C¹ map X: E → E with compact support and tsupport X ⊆ U (IsTestField). 'V has mean curvature H in U' (HasMeanCurvatureIn) means H ∈ L¹_loc(U, μ) and ∫div_M X dμ = −∫⟨X, H⟩dμ for every test field X in U; 'stationary in U' means ∫div_M X dμ = 0 for every test field X in U. (FV) for V means: (FV1) μ(K) < ∞ for every compact K; (FV2) dim T_x = n for μ-a.e. x; (FV3) x ↦ p_x is μ-a.e. strongly measurable. (GF) is the statement that (FV) holds for every n ≥ 1, every ℓ and every V : RectifiableVarifold n ℓ (exactly the second conjunct of the sibling tangent_structure_first_variation); (AT) is the contract Prop ApproxTangentAE. Under (FV): q_ξ, w_ξ, ∇^M h (for h ∈ C¹(U), on U) and div_M X (for X ∈ C¹) are μ-a.e. strongly measurable, being continuous functions of p_x and of continuous data; |div_M X| ≤ (n+ℓ)‖DX‖ and div_M X = 0 off tsupport X, so div_M X is μ-integrable for every test field X; μ is a locally finite, hence outer regular, Borel measure, and μ(E ∖ spt μ) = 0 (spt V = spt μ).\n\nSource: Simon Ch. 4, 3.1–3.11. The identity 3.6 is the case h ≡ 1, H ≡ 0 of the sibling theorem weighted_monotonicity_identity (which contains the printed steps 3.2–3.5, with the corrected 3.5 prefactors); 3.8–3.11 then follow as printed.\n\nAssume (GF). Fix n ≥ 1, ℓ, V, an open U with V stationary in U, and write μ = μ_V, a = a_ξ, w = w_ξ.\n\n1. V has mean curvature 0 in U: the zero field is locally integrable, and ∫ div_M X dμ = 0 = −∫⟨X, 0⟩ dμ for every test field X in U.\n\n2. (3.6) Let B_R(ξ) ⊆ U and 0 < σ ≤ ρ < R. Apply weighted_monotonicity_identity with H ≡ 0 and h ≡ 1 (C¹ on U, and tsupport h ∩ B_ρ(ξ) ⊆ B_ρ(ξ) ⊆ B_R(ξ) ⊆ U), with (FV1)–(FV3) supplied by (GF). Since ∫_{B_τ}1 dμ = μ(B_τ), ∇^M 1 = p_x(∇1) = p_x(0) = 0 and 1·0 = 0, the τ-integral vanishes, and we get a(ρ) − a(σ) = ∫_{B_ρ∖B_σ} w dμ (that is, μ(B_ρ)/ρⁿ − μ(B_σ)/σⁿ = ∫_{B_ρ∖B_σ} q_ξ/|x − ξ|ⁿ dμ), with w μ-integrable on B_ρ ∖ B_σ. This is the first conjunct of StationaryMonotonicity.\n\n3. (3.8) Since w ≥ 0, a is nondecreasing on (0, R): the MonotoneOn conjunct.\n\n4. (3.9, 3.10) Let 0 < ρ < R. a ≥ 0 is nondecreasing on (0, ρ], so L := lim_{s↓0} a(s) = inf_{(0,ρ]} a exists and L ≥ 0. Then μ(B_s(ξ))/(ω_n sⁿ) = a(s)/ω_n → L/ω_n (ω_n > 0), i.e. V.HasDensityAt ξ (L/ω_n), and V.density ξ = L/ω_n (limUnder of a function converging along the non-trivial filter 𝓝[>]0). For s_k := ρ/(k + 1) the sets B_ρ ∖ B_{s_k} increase to B_ρ ∖ {ξ}; by monotone convergence and step 2, ∫_{B_ρ∖{ξ}} w dμ = lim_k (a(ρ) − a(s_k)) = a(ρ) − L < ∞. As w(ξ) = 0, w is μ-integrable on B_ρ (IntegrableOn) and ∫_{B_ρ} w dμ = a(ρ) − L; dividing by ω_n gives μ(B_ρ)/(ω_nρⁿ) − Θ(ξ) = ω_n^{-1}∫_{B_ρ} q_ξ/|x − ξ|ⁿ dμ. This completes StationaryMonotonicity.\n\n5. (Existence of the density.) For ξ ∈ U there is R > 0 with B_R(ξ) ⊆ U (U open), and step 4 gives V.HasDensityAt ξ (V.density ξ). Moreover, by monotonicity, ω_nΘ(ξ) = inf_{(0,R)} a_ξ ≤ a_ξ(ρ) for all 0 < ρ < R.\n\n6. (3.11, upper semicontinuity.) Let ξ ∈ U and t > Θ(ξ). Choose R > 0 with B_{2R}(ξ) ⊆ U, then ρ ∈ (0, R/2) with μ(B_ρ(ξ))/(ω_nρⁿ) < t (the quotient tends to Θ(ξ)), then δ ∈ (0, R/2) with μ(B_{ρ+δ}(ξ))/(ω_nρⁿ) < t (μ(B_{ρ+δ}(ξ)) ↓ μ(B_ρ(ξ)) as δ ↓ 0, since B_ρ(ξ) = ⋂_δ B_{ρ+δ}(ξ) and μ(B_{2R}(ξ)) < ∞). If |η − ξ| < δ, then B_R(η) ⊆ B_{2R}(ξ) ⊆ U and B_ρ(η) ⊆ B_{ρ+δ}(ξ), so step 5 at η (with radius R > ρ) gives Θ(η) ≤ μ(B_ρ(η))/(ω_nρⁿ) ≤ μ(B_{ρ+δ}(ξ))/(ω_nρⁿ) < t. Hence Θ is upper semicontinuous at every ξ ∈ U (within U), i.e. UpperSemicontinuousOn V.density U. With step 5 this is StationaryDensity.",
+    "proof_key_steps": [
+      "Stationary means mean curvature 0",
+      "weighted_monotonicity_identity with h ≡ 1, H ≡ 0 gives 3.6 for 0 < σ ≤ ρ < R",
+      "w ≥ 0 gives monotonicity 3.8",
+      "Monotone limit gives existence of Θ(ξ) = lim a(s)/ω_n; monotone convergence gives integrability of w on B_ρ and 3.10",
+      "Θ(η) ≤ μ(B_ρ(η))/(ω_nρⁿ) ≤ μ(B_{ρ+δ}(ξ))/(ω_nρⁿ) for η near ξ gives upper semicontinuity 3.11"
+    ]
+  },
+  "audit": {
+    "key": "stationary_monotonicity",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The weighted identity with h=1 and H=0 gives monotonicity. The monotone limit and monotone convergence prove density existence, defect integrability and the full-ball identity. Continuity from above for closed balls supplies upper semicontinuity. Both frozen propositions are proved."
+  },
+  "resolved_dependencies": [
+    "root.weighted_monotonicity-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-stationary-monotonicity-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-stationary-monotonicity-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-stationary-monotonicity-a1/parent-supplied-natural-proof.json"
+}

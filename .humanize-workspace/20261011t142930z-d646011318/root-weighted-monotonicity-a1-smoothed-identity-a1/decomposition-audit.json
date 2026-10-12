@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "continuousOn_of_dominated|integral_integral_swap|AEStronglyMeasurable.comp_snd|Integrable.comp_snd|quasiMeasurePreserving_fst|of_isFiniteMeasureOnCompacts|integral_eq_sub_of_hasDerivAt\\b|intervalIntegrable_of_Icc|aestronglyMeasurable_indicator_iff|exists_bound_of_continuousOn",
+        "continuous_deriv|theorem HasDerivAt.div\\b|theorem hasDerivAt_pow\\b|EventuallyEq.deriv_eq",
+        "rg -n 'wm_smoothed_scale_integral_continuousOn|wm_smoothed_kernel_fubini|wm_smoothed_scaled_ftc' project mathlib/Mathlib --glob '*.lean' --files-with-matches",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/smoothed-identity-audit-62zkjk4c/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/smoothed-identity-audit-62zkjk4c/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/smoothed-identity-audit-62zkjk4c/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-smoothed-identity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-smoothed-identity-a1/decomposition-v1.json",
+        "/tmp/smoothed-identity-audit-62zkjk4c/Contracts.lean",
+        "/tmp/smoothed-identity-audit-62zkjk4c/Children.lean",
+        "/tmp/smoothed-identity-audit-62zkjk4c/Assembly.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace, and all 13 inspected mathlib files match the snapshot byte-for-byte. The required dominated-continuity, indicator, product-integrability, Fubini and FTC lemmas have the stated hypotheses. Independent Lean checks confirmed the Borel, sigma-compactness, sigma-finiteness and restricted-volume finiteness instances. All three frozen one-line propositions elaborate without their implementations and pass the contract validator. Their bare names have no collisions in the DAG, other node proposals, snapshot Lean sources or 197 Git refs. The supplied child proofs compile with only propext, Classical.choice and Quot.sound. The assembly also compiles with only those axioms when the existing derivative sibling is an explicit assumption at its exact frozen type. The three-way split is appropriate: its independent, acyclic obligations establish continuity, the kernel interchange and integrated ODE for precisely the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "scale_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree on every hypothesis and conclusion. Support vanishing justifies truncating g; the compact cutoff bound gives an integrable majorant; measurability and parameter continuity satisfy dominated continuity. No finite-measure assumption is silently introduced. Omitting σ ≤ ρ is valid because a reversed interval is empty. The complete, non-circular proof supplies the parent’s L continuity and, with ψ(s)=sφ′(s), J₁ continuity."
+    },
+    {
+      "key": "kernel_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact Lean type matches the stated measures, kernel, exponent and local hypotheses. The proof correctly truncates w, obtains product measurability using sigma-finiteness, and establishes the finite-product integrable bound before applying Fubini. Constant extraction and both iterated-integral rewrites are justified. Empty intervals and k=0 cause no gap. This self-contained obligation yields exactly the parent’s kernel term with w=uq and χ=φ′."
+    },
+    {
+      "key": "scaled_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly expresses the prose derivative data, ODE, continuity assumptions and two Ioc integrals. The quotient-rule calculation has the correct sign; both n=0 and the stated τ^(3m+3) factor for n=m+1 check out. Continuity supplies the required integrability, and FTC orientation and integral splitting are justified, including σ=ρ. The proof is complete and independent of the parent and other children."
+    }
+  ],
+  "required_changes": []
+}

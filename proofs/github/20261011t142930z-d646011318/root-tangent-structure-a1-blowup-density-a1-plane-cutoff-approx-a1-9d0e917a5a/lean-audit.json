@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b227ffc450bc20b610de57f215d4e7f50ee77fffc0819b3e46e32f608cf1def3",
+  "git_delta": {
+    "base_commit": "91c1154d08ab7621cbb5c749a273eeeb94f47538",
+    "candidate_commit": "076f9af3f0642dc357d7356855b55ec87d7925e6",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_unit_ball_plane_cutoff_approx",
+    "diff_sha256": "b5d7d620096e3e9efff53b9051aa2fecd3193ea334d854e5c875cc6c5b1b6b1a",
+    "source_sha256": "0f41186718753c67a5c5259976c5b6db2d4974a2c7aea937c9d9cb0e769f1361",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_unit_ball_plane_cutoff_approx",
+      "statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)), Module.finrank ℝ P = n → (∀ a : ℝ, a < omega n → ∃ g : C_c(Ambient n ℓ, ℝ), (∀ y : Ambient n ℓ, g y ≤ 1) ∧ (∀ y : Ambient n ℓ, 1 < ‖y‖ → g y ≤ 0) ∧ a < ∫ y in (P : Set (Ambient n ℓ)), g y ∂μHE[n]) ∧ (∀ b : ℝ, omega n < b → ∃ h : C_c(Ambient n ℓ, ℝ), (∀ y : Ambient n ℓ, 0 ≤ h y) ∧ (∀ y : Ambient n ℓ, ‖y‖ ≤ 1 → 1 ≤ h y) ∧ ∫ y in (P : Set (Ambient n ℓ)), h y ∂μHE[n] < b)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

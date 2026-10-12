@@ -1,0 +1,80 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.weighted_monotonicity-a1`
+- Child DAG node: `root.weighted_monotonicity-a1.smoothed_identity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) = ℝ^{n+ℓ} with its Borel σ-algebra; B_s(ξ) := closedBall ξ s is the CLOSED ball; r = r(x) := |x − ξ|; λ is Lebesgue measure on ℝ and ∫_{(a,b]} means the integral over Ioc a b; φ' := deriv φ. This is Steps 3 (second half) and 4 of the parent proof for one cutoff φ. Put B := B_R(ξ) and, for t > 0, I(t) := ∫uφ(r/t)dμ, I₁(t) := ∫u·(−(r/t²)φ'(r/t))dμ, J₁(t) := ∫uq·(−(r/t²)φ'(r/t))dμ, L(t) := ∫φ(r/t)G dμ.
+0. (Preliminaries.) R > (1 + ε)ρ > 0, ξ ∈ B, A ≥ 0, μ(B) < ∞. For τ ∈ [σ, ρ]: τ ≥ σ > 0 and (1 + ε)τ ≤ (1 + ε)ρ < R. uq is μ⌞B-a.e. strongly measurable with |uq| ≤ A on B. φ'(t) = 0 for t > 1 + ε. For τ ∈ [σ, ρ] and x ∉ B, r > R > (1 + ε)τ, so φ(r/τ) = φ'(r/τ) = 0; for x ∈ B, r/τ ∈ [0, R/σ]. Let M₀, M₁ be the maxima of |φ|, |φ'| on [0, R/σ].
+1. (Derivatives.) For τ ∈ [σ, ρ] apply the sibling lemma weighted_mono_cutoff_hasDerivAt with c := 1 + ε, the bound A, and f := u, resp. f := uq. It gives: I has derivative I₁(τ) at τ; t ↦ ∫uqφ(r/t)dμ has derivative J₁(τ) at τ; and x ↦ u(−(r/τ²)φ'(r/τ)), x ↦ uq(−(r/τ²)φ'(r/τ)) are μ-integrable.
+2. (ODE in derivative form.) For τ ∈ [σ, ρ], τ·(r/τ²) = r/τ, so pointwise u(1 − q)·((r/τ)φ'(r/τ)) = (−τ)·[u(−(r/τ²)φ'(r/τ))] + τ·[uq(−(r/τ²)φ'(r/τ))]. Both brackets are integrable by 1, so ∫u(1 − q)((r/τ)φ'(r/τ))dμ = −τI₁(τ) + τJ₁(τ), and (ODE_τ) becomes nI(τ) − τI₁(τ) + τJ₁(τ) + L(τ) = 0.
+3. (Derivative of F(t) := I(t)/tⁿ.) For τ ∈ [σ, ρ], τⁿ ≠ 0 and (tⁿ)' = ntⁿ⁻¹, so by the quotient rule F has derivative (I₁(τ)τⁿ − I(τ)nτⁿ⁻¹)/τ²ⁿ at τ. Using nτⁿ⁻¹·τ = nτⁿ (also for n = 0) this equals (τI₁(τ) − nI(τ))/τⁿ⁺¹, which by 2 equals (τJ₁(τ) + L(τ))/τⁿ⁺¹ = J₁(τ)/τⁿ + L(τ)/τⁿ⁺¹ =: F'(τ).
+4. (Continuity of F' on [σ, ρ].) J₁ is continuous on [σ, ρ] by continuity of parameter-dependent integrals (continuousOn_of_dominated): for τ ∈ [σ, ρ] the integrand uq(−(r/τ²)φ'(r/τ)) is μ-a.e. strongly measurable (step 1), vanishes off B and is bounded on B by A·(R/σ²)·M₁, which times 1_B is integrable; and for every x it is continuous in τ > 0 (φ' continuous). Likewise L is continuous on [σ, ρ]: the integrand φ(r/τ)G(x) equals 1_B·φ(r/τ)G(x) (step 0), is μ-a.e. strongly measurable (G is μ⌞B-a.e. strongly measurable, being integrable on B), is dominated by M₀|G|1_B ∈ L¹(μ), and is continuous in τ. Since τ ≥ σ > 0 on [σ, ρ], F' is continuous there.
+5. (Fundamental theorem of calculus.) By 3, F has derivative F'(τ) at every τ ∈ [σ, ρ], and F' is continuous, hence interval integrable, on [σ, ρ] (step 4). So F(ρ) − F(σ) = ∫_σ^ρ F'(τ)dτ = ∫_{(σ,ρ]} J₁(τ)/τⁿdτ + ∫_{(σ,ρ]} L(τ)/τⁿ⁺¹dτ (intervalIntegral.integral_eq_sub_of_hasDerivAt, intervalIntegral.integral_of_le; both summands are continuous on [σ, ρ] and hence integrable on (σ, ρ]).
+6. (Fubini for the J₁-term.) J₁(τ)/τⁿ = ∫f(τ, x)dμ(x) with f(τ, x) := u(x)q(x)(−(r/τ²)φ'(r/τ))/τⁿ. Let w := 1_B·uq (μ-a.e. strongly measurable) and κ(τ, x) := (−(r/τ²)φ'(r/τ))/τⁿ, a Borel function on ℝ × E. For τ ∈ (σ, ρ] we have f(τ, x) = w(x)κ(τ, x) for all x (if x ∉ B, φ'(r/τ) = 0). The set {(τ, x): τ ∈ (σ, ρ]} has full measure for the product of λ⌞(σ,ρ] with μ, so f = w(x)κ(τ, x) a.e. for that product measure; hence f is a.e. strongly measurable for it (w∘snd is: AEStronglyMeasurable.comp_snd; κ is Borel). For τ ∈ (σ, ρ], |f(τ, x)| ≤ A(R/σ²)M₁/σⁿ·1_B(x), and (τ, x) ↦ 1_B(x) is integrable for the product (λ⌞(σ,ρ] is finite, μ(B) < ∞). So f is integrable for the product measure, and Fubini (integral_integral_swap) gives ∫_{(σ,ρ]}∫f dμ dτ = ∫∫_{(σ,ρ]} f dτ dμ = ∫u(x)q(x)·k(r(x))dμ(x), pulling the factor u(x)q(x) out of the τ-integral.
+7. (Conclusion.) Combining 5 and 6 with F(ρ) = (∫uφ(r/ρ)dμ)/ρⁿ and F(σ) = (∫uφ(r/σ)dμ)/σⁿ yields the asserted identity.
+
+## Key steps
+
+1. For τ ∈ [σ, ρ] the sibling cutoff_integral_deriv (c = 1+ε, f = u and f = uq) gives I' = I₁, J' = J₁ and integrability
+2. (ODE_τ) becomes nI − τI₁ + τJ₁ + L = 0
+3. (I/tⁿ)' = J₁/τⁿ + L/τⁿ⁺¹ on [σ, ρ] (quotient rule)
+4. J₁ and L are continuous on [σ, ρ] by dominated continuity of parameter integrals
+5. FTC on [σ, ρ]: ρ^{-n}I(ρ) − σ^{-n}I(σ) = ∫J₁/τⁿ + ∫L/τⁿ⁺¹
+6. Fubini (integrable on λ⌞(σ,ρ] ⊗ μ, supported in B_R(ξ)): ∫_{(σ,ρ]}J₁/τⁿ = ∫uq k(r) dμ
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'def weight|def tangentialGradient|def normalRadialSq|def IsTestField|def HasMeanCurvatureIn' <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem integral_integral_swap|theorem continuousOn_of_dominated|theorem tendsto_integral_filter_of_dominated_convergence|theorem _root_.aestronglyMeasurable_of_tendsto_ae|theorem _root_.IsCompact.exists_cthickening_subset_open|theorem cthickening_closedBall|theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem integral_eq_sub_of_hasDerivAt|theorem MeasureTheory.AEStronglyMeasurable.comp_snd|theorem norm_starProjection_apply_le|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem _root_.Continuous.comp_aestronglyMeasurable₂|theorem isBoundedBilinearMap_apply|theorem contDiffAt_norm|theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem fderiv_of_notMem_tsupport' <snapshot>/mathlib/Mathlib`
+- `rg -n "starProjection_orthogonal'|Antitone.deriv_nonpos|StronglyMeasurable.integral_prod_right" <snapshot>/mathlib/Mathlib`
+- `rg -n 'zero_of_nonpos|one_of_one_le|protected theorem monotone' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `grep -n -E '^(theorem|lemma|def|private theorem)' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/{FirstVariation,WeightedFirstVariation,WeightedCutoff,WeightedRadiusIntegration,WeightedBallIntegration,MeanCurvature,LogarithmicError}.lean`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/wm-a1-decomp/olean/GMT/Ch04/Submission.olean`
+- `python3 -I /tmp/wm-a1-decomp/scripts/gen.py (verifier/gmt-compare.py contract_scope + child_modules; verifier/lean_contract.validate_lean_statement)`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/wm-a1-decomp/olean lean /tmp/wm-a1-decomp/gen/Challenge_*.lean`
+- `LEAN_PATH=... lean /tmp/wm-a1-decomp/probe/Parse.lean (set_option pp.notation false)`
+- `LEAN_PATH=... lean /tmp/wm-a1-decomp/probe/Assembly.lean (sorry'd children + radial_first_variation, parent glue)`
+- `LEAN_PATH=... lean /tmp/wm-a1-decomp/val/Full.lean (sorry-free proofs of all six children, glue, exact-Submission targets, #print axioms)`
+- `lake env lean /tmp/wm-a1-decomp/probe/SimonAx.lean (#print axioms of SimonGMT monotonicityCutoff lemmas, contDiff_smul_of_tsupport_subset, exists_larger_closedBall_subset)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedCutoff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LogarithmicError.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/tmp/wm-a1-decomp/val/Full.lean`
+- `/tmp/wm-a1-decomp/probe/Assembly.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b, project commit ff75f52a, mathlib 25730c7c). The definitions used here (weight, tangentialGradient = p_x(gradient h), normalRadialSq, IsTestField, HasMeanCurvatureIn with its L¹_loc conjunct) are at project/GMT/Ch04/Contract.lean lines 103–166. Every analytic tool the children need is in the snapshot Mathlib: hasDerivAt_integral_of_dominated_loc_of_deriv_le (Calculus/ParametricIntegral.lean:286); integral_integral_swap and AEStronglyMeasurable.comp_snd (Integral/Prod.lean:478, 135); StronglyMeasurable.integral_prod_right (Integral/Prod.lean:67); continuousOn_of_dominated (Integral/Bochner/Basic.lean:467); tendsto_integral_filter_of_dominated_convergence (Integral/DominatedConvergence.lean:67); integral_eq_sub_of_hasDerivAt (FundThmCalculus.lean:1148); setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486); LocallyIntegrableOn.integrableOn_compact_subset (LocallyIntegrable.lean:122); aestronglyMeasurable_of_tendsto_ae and Continuous.comp_aestronglyMeasurable₂ (AEStronglyMeasurable.lean:696, 263); IsCompact.exists_cthickening_subset_open (Thickening.lean:426) with cthickening_closedBall (Ball/Pointwise.lean:318); starProjection_orthogonal' and norm_starProjection_apply_le (Projection/Basic.lean:223, 411); isBoundedBilinearMap_apply; contDiffAt_norm; ContDiffOn.continuousOn_fderiv_of_isOpen; fderiv_of_notMem_tsupport; Antitone.deriv_nonpos; and Real.smoothTransition with zero_of_nonpos, one_of_one_le and monotone. SimonGMT's Chapter04 monotonicity chain (FirstVariation.lean cutoff_squeeze, stationaryMonotonicity_real, hasDerivAt_integral_mul_of_compact; WeightedCutoff.lean; LogarithmicError.lean) is stated for SimonGMT's own Chapter04.RectifiableVarifold structure, not for the contract's quotient type, so it cannot be applied to V. Its V-independent helpers (monotonicityCutoff lemmas, contDiff_smul_of_tsupport_subset, exists_larger_closedBall_subset) depend only on propext, Classical.choice and Quot.sound, and they match the constructions used here. All six child types elaborate in the comparator's contract scope, and all six have complete sorry-free Lean proofs with only standard axioms. The selected frozen theorem compiles from them plus a sorry'd radial_first_variation at its frozen dag.json type, and exact-Submission NodeSolution targets compile for every child and for the selected node.

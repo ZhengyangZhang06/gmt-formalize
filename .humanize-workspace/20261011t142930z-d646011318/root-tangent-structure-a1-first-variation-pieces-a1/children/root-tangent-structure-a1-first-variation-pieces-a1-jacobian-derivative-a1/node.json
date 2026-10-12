@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1",
+  "depth": 3,
+  "title": "Derivative of the tangential Jacobian along a C¹ family of linear maps (Jacobi's formula; Simon Ch. 2, 5.2–5.3)",
+  "statement": "For all N ∈ ℕ and B ∈ ℝ there is C ∈ ℝ with the following property. Let E = EuclideanSpace ℝ (Fin N) with standard basis e_i = EuclideanSpace.single i 1, P ⊆ E a linear subspace with orthogonal projection p = P.starProjection and q = I − p, δ > 0, and Λ, Λ' : ℝ → L(E, E) with Λ(0) = I such that for every t ∈ (−δ, δ): Λ has derivative Λ'(t) at t, ‖Λ(t)‖ ≤ B, ‖Λ'(t)‖ ≤ B, and ‖v‖ ≤ B‖Λ(t)v‖ for all v ∈ E. Let J: ℝ → ℝ with J(t) = (det[⟨Λ(t)pe_i, Λ(t)pe_j⟩ + ⟨qe_i, qe_j⟩]_{i,j})^{1/2} for all t. Then for every t ∈ (−δ, δ): 0 ≤ J(t) ≤ C and J is differentiable at t with |J'(t)| ≤ C; and J has derivative trace(Λ'(0) ∘ p) at 0.",
+  "lean_statement": "∀ (N : ℕ) (B : ℝ), ∃ C : ℝ, ∀ (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (Λ Λ' : ℝ → (EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N))) (J : ℝ → ℝ) (δ : ℝ), 0 < δ → Λ 0 = 1 → (∀ t ∈ Ioo (-δ) δ, HasDerivAt Λ (Λ' t) t ∧ ‖Λ t‖ ≤ B ∧ ‖Λ' t‖ ≤ B ∧ ∀ v, ‖v‖ ≤ B * ‖Λ t v‖) → (∀ t, J t = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin N ↦ inner ℝ (Λ t (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (Λ t (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))))) → (∀ t ∈ Ioo (-δ) δ, 0 ≤ J t ∧ J t ≤ C ∧ ∃ d : ℝ, HasDerivAt J d t ∧ |d| ≤ C) ∧ HasDerivAt J (LinearMap.trace ℝ (EuclideanSpace ℝ (Fin N)) ((Λ' 0).toLinearMap ∘ₗ P.starProjection.toLinearMap)) 0",
+  "lean_name": "ts_fv_tangential_jacobian_hasDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivative-a1-a1"
+}

@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "support_in_ball_of_radial_first_variation|convex_hull_property_of_support_in_ball",
+        "support_mem_ae|subset_compl_support_of_isOpen|variable|namespace",
+        "theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem integral_eq_zero_iff_of_nonneg_ae",
+        "starProjection_orthogonal|norm_starProjection_apply_le",
+        "theorem geometric_hahn_banach_(point_closed|closed_point)|theorem eq_pos_convex_span_of_mem_convexHull|card_le_finrank_succ|isCompact_stdSimplex|theorem Convex.sum_mem",
+        "IsCompact.convexHull|isCompact_convexHull|isCompact_convexHull_of_isCompact|exists_closedBall_separating_of_compact_convex",
+        "python3 /tmp/independent-support-convex-audit-m4aey5di/run_lean.py /tmp/independent-support-convex-audit-m4aey5di/support_in_ballChallenge.lean",
+        "python3 /tmp/independent-support-convex-audit-m4aey5di/run_lean.py /tmp/independent-support-convex-audit-m4aey5di/convex_hull_from_ballChallenge.lean",
+        "python3 /tmp/independent-support-convex-audit-m4aey5di/run_lean.py /tmp/independent-support-convex-audit-m4aey5di/Assembly.lean",
+        "python3 /tmp/independent-support-convex-audit-m4aey5di/run_lean.py /tmp/independent-support-convex-audit-m4aey5di/AxiomsGeometry.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/README.md",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/Caratheodory.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/LocallyConvex/Separation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactConvexHull.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-support-convex-hull-a1/parent-child-handoff.json",
+        "/tmp/independent-support-convex-audit-m4aey5di/support_in_ballChallenge.lean",
+        "/tmp/independent-support-convex-audit-m4aey5di/convex_hull_from_ballChallenge.lean",
+        "/tmp/independent-support-convex-audit-m4aey5di/Assembly.lean",
+        "/tmp/independent-support-convex-audit-m4aey5di/AxiomsGeometry.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace byte-for-byte. Relevant mathlib sources match the pinned build. Both child propositions elaborate independently in comparator scope, before either child declaration exists. Lean accepts their assembly into the exact selected parent type using its existing RFV prerequisite. The cited SimonGMT geometry lemmas apply to Ambient n ℓ and have only propext, Classical.choice and Quot.sound; their reuse does not involve SimonGMT's different varifold structure. The mathlib compact-convex-hull search found finite-set results, while pinned SimonGMT supplies the required general compact-set result. Neither proposed name occurs in existing declarations or other branch reservations. Dependencies remain acyclic. Splitting the analytic support theorem from the geometric implication is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_in_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact one-line Lean proposition. RFV and GF match the frozen prerequisite and parent hypothesis verbatim. The proof correctly constructs the test field, removes the cutoff almost everywhere, establishes measurability and integrability on a compact subset of U, uses the strict curvature bound to force vanishing, and passes from null open sets to support containment. Projection terms have the intended continuous-linear-map types. The proof is complete and non-circular; RFV is an explicit hypothesis, so no child dependency is missing. The bare name is unreserved."
+    },
+    {
+      "key": "convex_hull_from_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SupportInBall → ConvexHullProperty exactly matches the prose and is independently usable as a comparator proposition. The supplied proof handles empty K using positive ambient dimension, proves compactness of the nonempty convex hull, and constructs a separating closed ball with the correct inequalities. Stationarity restricts in the correct direction and supplies locally integrable zero mean curvature, allowing the assumed SupportInBall to exclude every point outside conv K. No GF hypothesis or sibling declaration is needed. The proof is complete, non-circular, and directly establishes the parent's second conjunct. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

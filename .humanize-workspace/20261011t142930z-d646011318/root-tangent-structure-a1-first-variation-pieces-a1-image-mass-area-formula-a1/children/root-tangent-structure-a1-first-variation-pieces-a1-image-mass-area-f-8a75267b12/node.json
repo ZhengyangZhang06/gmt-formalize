@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1.piece_image_area_formula-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1",
+  "depth": 4,
+  "title": "Area formula for the image of a Borel subset of one injective Lipschitz piece under an injective Lipschitz map (parent steps 3(b)–(e))",
+  "statement": "Let n, ℓ ∈ ℕ, E := Ambient n ℓ = ℝ^{n+ℓ} with standard orthonormal basis e_i := EuclideanSpace.single i 1 (i ∈ Fin (n+ℓ)), ℝⁿ := EuclideanSpace ℝ (Fin n), Hⁿ := μHE[n] on E. Let C ⊆ ℝⁿ be Borel, F: ℝⁿ → E Lipschitz, differentiable at every point of C and injective on C; f: E → E Lipschitz; A ⊆ E Borel with A ⊆ F(C), f injective on A and differentiable at every point of A; P: E → {linear subspaces of E} any map with P(F(v)) = DF(v)(ℝⁿ) = range (fderiv ℝ F v) whenever v ∈ C and F(v) ∈ A; and w: E → [0, ∞] an arbitrary (not necessarily measurable) function. Then ∫⁻_{f(A)} w dHⁿ = ∫⁻_A ofReal(jac(Df(y), P(y)))·w(f(y)) dHⁿ(y), where for Λ ∈ L(E, E) and a subspace Q with orthogonal projection p = Q.starProjection, jac(Λ, Q) := (det[⟨Λpe_i, Λpe_j⟩ + ⟨e_i − pe_i, e_j − pe_j⟩]_{i,j ∈ Fin (n+ℓ)})^{1/2} (Real.sqrt).",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (f : Ambient n ℓ → Ambient n ℓ) (A : Set (Ambient n ℓ)) (P : Ambient n ℓ → Submodule ℝ (Ambient n ℓ)) (w : Ambient n ℓ → ℝ≥0∞), MeasurableSet C → (∃ L : NNReal, LipschitzWith L F) → (∀ v ∈ C, DifferentiableAt ℝ F v) → Set.InjOn F C → (∃ L : NNReal, LipschitzWith L f) → Set.InjOn f A → (∀ y ∈ A, DifferentiableAt ℝ f y) → MeasurableSet A → A ⊆ F '' C → (∀ v ∈ C, F v ∈ A → P (F v) = LinearMap.range (fderiv ℝ F v).toLinearMap) → ∫⁻ y in f '' A, w y ∂μHE[n] = ∫⁻ y in A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + ℓ) ↦ inner ℝ (fderiv ℝ f y ((P y).starProjection (EuclideanSpace.single i (1 : ℝ)))) (fderiv ℝ f y ((P y).starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - (P y).starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - (P y).starProjection (EuclideanSpace.single j (1 : ℝ)))))) * w (f y) ∂μHE[n]",
+  "lean_name": "ts_fv_piece_image_area_formula",
+  "depends_on": [
+    "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1.det_tangential_gram-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1.det_tangential_gram-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-f-8a75267b12-a1"
+}

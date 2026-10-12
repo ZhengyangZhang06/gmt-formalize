@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1.annulus_fubini-a1",
+  "parent_id": "root.curvature_monotonicity-a1.annulus_ibp-a1",
+  "depth": 3,
+  "title": "Fubini on the annulus: ∫_{(σ,ρ]} F′(t)(∫_{B_ρ∖B_t} w dμ)dt = ∫_A w(F(|x−ξ|) − F(σ))dμ (parent Step 8)",
+  "statement": "Let n, ℓ ∈ ℕ, μ a measure on E = ℝ^{n+ℓ} (Borel σ-algebra, Euclidean norm) that is finite on compact sets, ξ ∈ E, w: E → ℝ, F, F′: ℝ → ℝ and σ, ρ ∈ ℝ. Write B_t := {x ∈ E : |x − ξ| ≤ t} for the closed ball and A := B_ρ∖B_σ. Assume w is μ-integrable on A, F′ is Lebesgue integrable on (σ, ρ], and F(t) = F(σ) + ∫_{(σ,t]} F′(τ)dτ for every t ∈ [σ, ρ]. Then (a) x ↦ w(x)(F(|x − ξ|) − F(σ)) is μ-integrable on A; (b) t ↦ F′(t)·∫_{B_ρ∖B_t} w dμ is Lebesgue integrable on (σ, ρ]; and (c) ∫_{(σ,ρ]} F′(t)(∫_{B_ρ∖B_t} w dμ)dt = ∫_A w(x)(F(|x − ξ|) − F(σ))dμ(x).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (ξ : Ambient n ℓ) (w : Ambient n ℓ → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), IsFiniteMeasureOnCompacts μ → IntegrableOn w (closedBall ξ ρ \\ closedBall ξ σ) μ → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ w x * (F ‖x - ξ‖ - F σ)) (closedBall ξ ρ \\ closedBall ξ σ) μ ∧ IntegrableOn (fun t ↦ F' t * ∫ x in closedBall ξ ρ \\ closedBall ξ t, w x ∂μ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in closedBall ξ ρ \\ closedBall ξ t, w x ∂μ = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, w x * (F ‖x - ξ‖ - F σ) ∂μ",
+  "lean_name": "mcm_annulus_primitive_fubini",
+  "depends_on": [
+    "root.curvature_monotonicity-a1.annulus_ibp-a1.primitive_fubini-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1.primitive_fubini-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-annulus-ibp-a1-annulus-fubini-a1-a1"
+}

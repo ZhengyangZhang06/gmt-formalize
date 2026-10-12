@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.kernel_bounds-a1",
+  "parent_id": "root.weighted_monotonicity-a1",
+  "depth": 2,
+  "title": "Two-sided bounds for the monotonicity kernel (corrected Simon 3.5)",
+  "statement": "Let n ∈ ℕ, ε > 0, φ: ℝ → ℝ of class C¹ and nonincreasing with φ(t) = 1 for t ≤ 1 and φ(t) = 0 for t ≥ 1 + ε, 0 < σ ≤ ρ and s > 0. Put k(s) := ∫_{(σ,ρ]} −(s/τ²)·φ'(s/τ)/τⁿ dτ. Then (φ(s/ρ) − φ(s/σ))/sⁿ ≤ k(s) ≤ (1 + ε)ⁿ·((φ(s/ρ) − φ(s/σ))/sⁿ).",
+  "lean_statement": "∀ (n : ℕ) (φ : ℝ → ℝ) (ε σ ρ s : ℝ), ContDiff ℝ 1 φ → Antitone φ → (∀ t, t ≤ 1 → φ t = 1) → (∀ t, 1 + ε ≤ t → φ t = 0) → 0 < ε → 0 < σ → σ ≤ ρ → 0 < s → (φ (s / ρ) - φ (s / σ)) / s ^ n ≤ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ∧ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ≤ (1 + ε) ^ n * ((φ (s / ρ) - φ (s / σ)) / s ^ n)",
+  "lean_name": "weighted_mono_kernel_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-kernel-bounds-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e441123963b1c04c7decd863cfc71777da1e19766b5a4ba5062af03ce969a096",
+  "git_delta": {
+    "base_commit": "50a54ecd27fcd5e4e66b6a98bddf92307aba0dd7",
+    "candidate_commit": "b2a2c5d9b02698514fd0cc46405af91f7a29d695",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "6270759e3763916cece605c28fc0f1788452a1bc9cb46e80ea01d41d41fde70e",
+    "source_sha256": "ce8c69bc52a63eadabdfb063a7e4624ea1c999e2711941ad5ead004597f57046",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_piece_density_blowup",
+      "statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), 0 < n → (IsCompact C ∧ (∃ K : NNReal, LipschitzWith K F) ∧ (∀ w ∈ C, DifferentiableAt ℝ F w ∧ Function.Injective (fderiv ℝ F w)) ∧ ContinuousOn (fderiv ℝ F) C ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → (∃ Γ : ℝ, ∀ x ∈ F '' C, ∀ ρ : ℝ, 0 < ρ → (μHE[n] : Measure (Ambient n ℓ)) (F '' C ∩ closedBall x ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) ∧ ∀ w ∈ C, Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y in F '' C, f (t⁻¹ • (y - F w)) ∂μHE[n]) (𝓝[>] 0) (𝓝 (∫ y in (LinearMap.range (fderiv ℝ F w).toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n]))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

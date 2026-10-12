@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.piece_area_formula-a1",
+  "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "depth": 3,
+  "title": "Area formula on an injective Lipschitz piece with a Jacobian continuous on the piece",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, Hⁿ = μHE[n] on E. Let C ⊆ ℝⁿ be Borel, F: ℝⁿ → E K-Lipschitz and injective on C, and suppose v ↦ DF(v) := fderiv ℝ F v is continuous on C. Then there is J: ℝⁿ → ℝ such that (i) J is continuous on C; (ii) for every v ∈ C, J(v) ≥ 0 and Hⁿ(DF(v)(S)) = ofReal(J(v))·Lⁿ(S) for every S ⊆ ℝⁿ; and (iii) for every continuous g: E → ℝ, ∫_{F(C)} g dHⁿ = ∫_C J(v)·g(F(v)) dLⁿ(v) (Bochner integrals).",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (K : NNReal), MeasurableSet C → LipschitzWith K F → Set.InjOn F C → ContinuousOn (fderiv ℝ F) C → ∃ J : EuclideanSpace ℝ (Fin n) → ℝ, ContinuousOn J C ∧ (∀ v ∈ C, 0 ≤ J v ∧ ∀ S : Set (EuclideanSpace ℝ (Fin n)), (μHE[n] : Measure (Ambient n ℓ)) (fderiv ℝ F v '' S) = ENNReal.ofReal (J v) * volume S) ∧ ∀ g : Ambient n ℓ → ℝ, Continuous g → ∫ y in F '' C, g y ∂μHE[n] = ∫ v in C, J v * g (F v)",
+  "lean_name": "ts_pdb_piece_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1-a1"
+}

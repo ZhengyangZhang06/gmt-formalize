@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3fb570a20c53507562f5c7b8b71653ca64375fb123fd051142e39711060c7674",
+  "git_delta": {
+    "base_commit": "572b89ba951337627a042d201ea519a6496a45e9",
+    "candidate_commit": "041bee10ba2b895a04bd1ac95fafc3d195af2a7e",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_hasDerivAt_of_weighted_jacobian",
+    "diff_sha256": "575b4cbf07288f00df92e9708b92875aad43191d49e887c768ef0e54a89dc53f",
+    "source_sha256": "7b7ac5fe92db4a615ac0342e1a196b8d422b7243304f4aebc3b8c1be90aaa0db",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_hasDerivAt_of_weighted_jacobian",
+      "statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (K : Set (Ambient n ℓ)) (m : ℝ → ℝ≥0∞) (J J' : ℝ → Ambient n ℓ → ℝ) (g : Ambient n ℓ → ℝ) (δ B : ℝ), 0 < δ → IsCompact K → (∀ t ∈ Ioo (-δ) δ, m t = ∫⁻ x in a.M ∩ K, ENNReal.ofReal (a.θ x * J t x) ∂μHE[n]) → (∀ t ∈ Ioo (-δ) δ, AEStronglyMeasurable (J t) ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M)) → AEStronglyMeasurable g ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) → (∀ x ∉ K, g x = 0) → (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, x ∈ K → J' 0 x = g x ∧ ∀ t ∈ Ioo (-δ) δ, 0 ≤ J t x ∧ J t x ≤ B ∧ HasDerivAt (fun s ↦ J s x) (J' t x) t ∧ |J' t x| ≤ B) → HasDerivAt (fun t ↦ (m t).toReal) (∫ x, g x ∂(mk a).weight) 0",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

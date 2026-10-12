@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "rg -n \"theorem LinearMap.exists_antilipschitzWith|theorem exists_antilipschitzWith\" $S/mathlib/Mathlib; rg -n bound_of_antilipschitz; rg -n \"theorem hasFDerivAt_iff_isLittleO_nhds_zero\"; rg -n \"theorem exists_dense_seq|theorem DenseRange.exists_dist_lt\" (whole-snapshot rg timed out after 120 s on the network filesystem; replaced by the targeted greps below)",
+        "grep -n antilipschitz $S/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "grep -rn bound_of_antilipschitz $S/mathlib/Mathlib/Analysis/Normed/Group/ $S/mathlib/Mathlib/Topology/EMetricSpace/",
+        "grep -n \"theorem hasFDerivAt_iff_isLittleO_nhds_zero\" -A4 $S/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "grep -n \"theorem exists_dense_seq\" -A3 $S/mathlib/Mathlib/Topology/Bases.lean",
+        "grep -rn \"DenseRange.exists_dist_lt\\|theorem exists_dist_lt\\b\" $S/mathlib/Mathlib/Topology/MetricSpace/ $S/mathlib/Mathlib/Topology/",
+        "grep -n \"theorem measurableSet_of_differentiableAt\\b\\|theorem measurable_fderiv\\b\" -A3 $S/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "grep exists_nat_one_div_lt (Algebra/Order/Archimedean/Basic.lean), unpair_pair (Data/Nat/Pairing.lean), isBounded_closedBall (Topology/MetricSpace/Bounded.lean), IsLittleO.def (Analysis/Asymptotics/Defs.lean), eventually_nhds_iff (Topology/MetricSpace/Pseudo/Defs.lean), isClosed_biInter (Topology/Basic.lean), isClosed_le (Topology/Order/OrderClosed.lean)",
+        "sed -n 1,80p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "grep -o \"injective_fderiv_local_lower_bound\\|lower_lipschitz_cover_of_local_bound\" dag.json problem.json issue-workers.json; grep -rln (same names) nodes website; grep -rn (same names) lake-packages-25730c7c/simongmt/Poincare --include=*.lean",
+        "lake env lean GMT/Ch04/Submission.lean -o /tmp/rsc-decomp-a1/olean/GMT/Ch04/Submission.olean",
+        "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/rsc-decomp-a1/olean lean /tmp/rsc-decomp-a1/src/ChildTypes.lean",
+        "LEAN_PATH=... lean --root=/tmp/rsc-decomp-a1/src /tmp/rsc-decomp-a1/src/RscDecomp/Full.lean -o /tmp/rsc-decomp-a1/olean/RscDecomp/Full.olean (both children + parent assembly + #print axioms)",
+        "LEAN_PATH=... lean /tmp/rsc-decomp-a1/src2/ChildOnly.lean (children with only import GMT.Ch04.Submission)",
+        "python3 -I: verifier/lean_contract.py validate_lean_statement on both child types",
+        "HUMANIZE_RUN_DIR=/tmp/rsc-decomp-a1/fakerun python3 verifier/gmt-compare.py --lean-target GMT/Ch04/Submission.lean --verifier-dir <abs>/verifier --packages <abs>/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef --dry-run <child-node>",
+        "LEAN_PATH=... lean /tmp/rsc-decomp-a1/gen/{NodeChallenge,NodeSolution}{A,B}.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Asymptotics/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Data/Nat/Pairing.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/DAG.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1-regular-set-cover-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1-regular-set-cover-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/rsc-decomp-a1/src/ChildTypes.lean",
+        "/tmp/rsc-decomp-a1/src/RscDecomp/Full.lean",
+        "/tmp/rsc-decomp-a1/src2/ChildOnly.lean",
+        "/tmp/rsc-decomp-a1/gen/NodeChallengeA.lean",
+        "/tmp/rsc-decomp-a1/gen/NodeSolutionA.lean",
+        "/tmp/rsc-decomp-a1/gen/NodeChallengeB.lean",
+        "/tmp/rsc-decomp-a1/gen/NodeSolutionB.lean"
+      ],
+      "conclusion": "The snapshot manifest pins project ff75f52a4c9d and Mathlib 25730c7c759d. SimonGMT is the pinned lake package at 2b3663083f3f.\n\nFound, with exact signatures inspected:\n- LinearMap.exists_antilipschitzWith [FiniteDimensional 𝕜 E] (f : E →ₗ[𝕜] F) (hf : ker f = ⊥) : ∃ K > 0, AntilipschitzWith K f (FiniteDimension.lean:231).\n- ZeroHomClass.bound_of_antilipschitz, to_additive of OneHomClass.bound_of_antilipschitz : ‖x‖ ≤ K * ‖f x‖ (Normed/Group/Uniform.lean:170).\n- hasFDerivAt_iff_isLittleO_nhds_zero (FDeriv/Basic.lean:815) and Asymptotics.IsLittleO.def (Asymptotics/Defs.lean:187).\n- Metric.eventually_nhds_iff (Pseudo/Defs.lean:779) and DenseRange.exists_dist_lt (Pseudo/Defs.lean:930).\n- TopologicalSpace.exists_dense_seq (Bases.lean:364).\n- exists_nat_one_div_lt (Archimedean/Basic.lean:211) and Nat.unpair_pair (Pairing.lean:60).\n- Metric.isBounded_closedBall (Bounded.lean:73), isClosed_biInter (Topology/Basic.lean:162), isClosed_le (OrderClosed.lean:447).\n- measurableSet_of_differentiableAt and measurable_fderiv (FDeriv/Measurable.lean:372, 378).\n- SimonGMT Chapter02.areaRegularSet f = {x | DifferentiableAt ℝ f x ∧ Injective (fderiv ℝ f x)} and measurableSet_areaRegularSet (AreaLipschitz.lean:31, 34). These are stated for finite-dimensional inner-product Borel spaces, so they apply to EuclideanSpace; this covers parent Step 1.\n\nNo match: neither proposed name (injective_fderiv_local_lower_bound, lower_lipschitz_cover_of_local_bound) occurs in dag.json, problem.json, issue-workers.json, the node or website directories, or SimonGMT. Mathlib has no ready-made lemma of either child's shape; the closest are the anti-Lipschitz and little-o lemmas above, which the children combine. A whole-snapshot rg timed out on the network filesystem and was replaced by targeted greps.\n\nLean checks:\n- Both child types elaborate in the comparator contract scope and pass validate_lean_statement.\n- Sorry-free proofs of both children compile with only import GMT.Ch04.Submission.\n- The parent assembly, which also imports Poincare.SimonGMT.Chapter02.AreaLipschitz, proves the exact frozen parent type.\n- #print axioms gives [propext, Classical.choice, Quot.sound] for both children, the assembly, and the comparator-style parent target.\n- The gmt-compare.py dry runs accept both child contracts.\n- The generated NodeChallenge and NodeSolution modules (exact Submission.X) compile."
+    }
+  ],
+  "proof": "Conventions. |·| denotes the norms of ℝⁿ = EuclideanSpace ℝ (Fin n) and of F, and dist(u, 0) = |u|. Put L := Df(w) = fderiv ℝ f w, a continuous ℝ-linear map ℝⁿ → F; by hypothesis L is injective. (This is Steps 3–4 of the parent proof, with the radius and the lower-bound constant merged into one number c.)\n\n1. (Lower bound for the injective linear map L.) Because L is injective, its underlying linear map has trivial kernel (Mathlib LinearMap.ker_eq_bot). Since ℝⁿ is finite-dimensional, Mathlib LinearMap.exists_antilipschitzWith gives K ∈ ℝ≥0 with K > 0 such that L is K-anti-Lipschitz. ZeroHomClass.bound_of_antilipschitz turns this into |u| ≤ K·|Lu| for all u ∈ ℝⁿ. [Direct argument: if n = 0, every u equals 0 and any K > 0 works. If n ≥ 1, the unit sphere of ℝⁿ is compact and nonempty, and e ↦ |Le| is continuous and, by injectivity, strictly positive on it. So it attains a minimum μ > 0, and K := 1/μ works by homogeneity of the norms and linearity of L.] Put m := K⁻¹ > 0. Multiplying |u| ≤ K·|Lu| by m > 0 and using m·K = 1 gives\n   (1) m·|u| ≤ |Lu| for all u ∈ ℝⁿ.\n\n2. (Differentiability as a little-o estimate.) Since f is differentiable at w, it has Fréchet derivative L at w (DifferentiableAt.hasFDerivAt). By Mathlib hasFDerivAt_iff_isLittleO_nhds_zero, this means that u ↦ f(w + u) − f(w) − Lu is o(u) as u → 0. Applying the definition of o(·) with the positive constant m/2 (Asymptotics.IsLittleO.def) shows that |f(w + u) − f(w) − Lu| ≤ (m/2)·|u| for all u in a neighbourhood of 0. By Metric.eventually_nhds_iff there is r > 0 such that\n   (2) |f(w + u) − f(w) − Lu| ≤ (m/2)·|u| for all u ∈ ℝⁿ with |u| = dist(u, 0) < r.\n\n3. (Lower bound for increments near w.) Let u ∈ ℝⁿ with |u| < r. Since Lu = (f(w + u) − f(w)) − (f(w + u) − f(w) − Lu), the triangle inequality (norm_sub_le together with sub_sub_cancel) gives |Lu| ≤ |f(w + u) − f(w)| + |f(w + u) − f(w) − Lu|. Combining this with (1) and (2):\n   (3) |f(w + u) − f(w)| ≥ |Lu| − |f(w + u) − f(w) − Lu| ≥ m·|u| − (m/2)·|u| = (m/2)·|u|.\n\n4. (Choice of c.) Put c := min(m/2, r/2). Then c > 0 because m > 0 and r > 0. Let u ∈ ℝⁿ with |u| ≤ c. Then |u| ≤ r/2 < r, so (3) applies. Since c ≤ m/2 and |u| ≥ 0, we get c·|u| ≤ (m/2)·|u| ≤ |f(w + u) − f(w)|. Thus c > 0 and c·|u| ≤ |f(w + u) − f(w)| for every u ∈ ℝⁿ with |u| ≤ c, which is the assertion.",
+  "key_steps": [
+    "Injectivity of L = fderiv ℝ f w on finite-dimensional ℝⁿ gives K > 0 with |u| ≤ K|Lu| (LinearMap.exists_antilipschitzWith with LinearMap.ker_eq_bot, then ZeroHomClass.bound_of_antilipschitz); with m := 1/K > 0 this gives m|u| ≤ |Lu| for all u",
+    "Differentiability at w (hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.IsLittleO.def with constant m/2, Metric.eventually_nhds_iff) gives r > 0 with |f(w+u) − f(w) − Lu| ≤ (m/2)|u| for |u| < r",
+    "Triangle inequality: |f(w+u) − f(w)| ≥ |Lu| − |f(w+u) − f(w) − Lu| ≥ (m/2)|u| for |u| < r",
+    "With c := min(m/2, r/2) > 0, every u with |u| ≤ c has |u| < r, so c|u| ≤ (m/2)|u| ≤ |f(w+u) − f(w)|"
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

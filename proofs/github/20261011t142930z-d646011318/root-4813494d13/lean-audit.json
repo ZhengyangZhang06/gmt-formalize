@@ -1,0 +1,28 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5913cb2b8742c5d41ed862b32985a3a713210dcf43e8308c3e7b9dd43e1593cf",
+  "git_delta": {
+    "base_commit": "c0be3931d7f1619d56db0fe8b1fb7d0eae8688df",
+    "candidate_commit": "2156da71dbcdc1db5f91fcb6a3bc0c8aff99897b",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean",
+      "proofs/github/20261011t142930z-d646011318/root-final-proof.md"
+    ],
+    "diff_sha256": "6a38584f0063588cfec191cf6a7029037024693492d7949bf6e730e75dbac02c",
+    "source_sha256": "0c7c9e70d89068b988578764887632c17d769ebc39d25d654fc3ff98ec3146d0",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "GMT.Ch04.main_theorem",
+      "statement": "ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": true,
+  "publication_proof_blob": "98d2c22e8b314d0085562a9ad4c154c41ca27e94"
+}

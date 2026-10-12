@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0e240c6399437e3b9fa7781ddd88cf9088f410b51511bb7a24c8ac1e7200eace",
+  "git_delta": {
+    "base_commit": "d7f5808dc5175e6aa940bcc56eedfeaefec69bc8",
+    "candidate_commit": "0d8f23fc25fdd098735ebbd571128f818fb93ccf",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pdb_density_complement_vanish",
+    "diff_sha256": "ffcc74d1573b6468e82a8f30211d5ee8ab06ba48f81bafcdfe0395fe467ed641",
+    "source_sha256": "78f6f52d766d176e9e78d419eb84f58e7db898b2451613ad1102266bac2055fe",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pdb_density_complement_vanish",
+      "statement": "∀ (n : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)) (R : ℝ), MeasurableSet C → 0 < R → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun t : ℝ ↦ volume {u : EuclideanSpace ℝ (Fin n) | u ∈ closedBall 0 R ∧ w + t • u ∉ C}) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

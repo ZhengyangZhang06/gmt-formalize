@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.shift_limit-a1",
+  "parent_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1",
+  "depth": 3,
+  "title": "Letting the level shift ε ↓ 0 and absorbing the moment factor",
+  "statement": "Let n ≥ 2 and ℓ ∈ ℕ, and let μ be a measure on E = ℝ^{n+ℓ} (Borel σ-algebra) that is finite on compact sets. Let h: E → ℝ be continuous, nonnegative and compactly supported, and let C ≥ 0 and J ≥ 0. Put p := n/(n − 1) and M_s := {x : h(x) > s}. Suppose that for every ε ∈ (0, 1], ((n − 1)/n)·∫_{M_ε}(h^p − ε^p) dμ ≤ C·(∫_{M_0}(h + ε)^p dμ)^{1/n}·J. Then (∫h^p dμ)^{(n−1)/n} ≤ (n/(n − 1))·C·J.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (C J : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 ≤ C → 0 ≤ J → (∀ ε : ℝ, 0 < ε → ε ≤ 1 → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * J) → (∫ x, h x ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (((n : ℝ) - 1) / n) ≤ (n : ℝ) / ((n : ℝ) - 1) * C * J",
+  "lean_name": "sobolev_of_level_integral_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-truncation-layer-cake-a1-shift-limit-a1-a1"
+}

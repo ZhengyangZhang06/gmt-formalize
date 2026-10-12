@@ -1,0 +1,121 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.weighted_monotonicity-a1.smoothed_identity-a1`
+- Child DAG node: `root.weighted_monotonicity-a1.smoothed_identity-a1.scaled_ftc-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. λ is Lebesgue measure on ℝ. ∫_{(σ,ρ]} denotes the integral over Ioc σ ρ, and ∫_σ^ρ denotes the interval integral. Put F(t) := I(t)/tⁿ and D(τ) := J₁(τ)/τⁿ + L(τ)/τⁿ⁺¹.
+
+1. (Positivity.) Every τ ∈ [σ, ρ] satisfies τ ≥ σ > 0, so τ^m ≠ 0 for every m ∈ ℕ.
+
+2. (Quotient rule.) Fix τ ∈ [σ, ρ]. I has derivative I₁(τ) at τ, the map t ↦ tⁿ has derivative n·τⁿ⁻¹ at τ (hasDerivAt_pow), and τⁿ ≠ 0 by step 1. By the quotient rule (HasDerivAt.div), F has derivative (I₁(τ)·τⁿ − I(τ)·(n·τⁿ⁻¹))/(τⁿ)² at τ.
+
+3. (Identifying the derivative.) We show (I₁τⁿ − I·nτⁿ⁻¹)/(τⁿ)² = D(τ), writing I, I₁, J₁, L for their values at τ. The hypothesis at τ reads nI − τI₁ + τJ₁ + L = 0.
+   (a) Case n = 0. The left side is I₁, because τ⁰ = 1 and the term with factor n vanishes. The hypothesis gives τI₁ = τJ₁ + L, so I₁ = J₁ + L/τ = J₁/τ⁰ + L/τ¹ = D(τ), using τ ≠ 0.
+   (b) Case n = m + 1. Then nτⁿ⁻¹ = (m+1)·τ^m, and D(τ) = (J₁·τ^{m+2} + τ^{m+1}·L)/(τ^{m+1}·τ^{m+2}). All denominators are nonzero by step 1, so cross-multiplying turns the claim into (J₁τ^{m+2} + τ^{m+1}L)·(τ^{m+1})² = (I₁τ^{m+1} − I·(m+1)τ^m)·(τ^{m+1}·τ^{m+2}). The left minus the right side equals τ^{3m+3}·((m+1)I − τI₁ + τJ₁ + L), which is 0 by the hypothesis.
+   Hence F has derivative D(τ) at every τ ∈ [σ, ρ].
+
+4. (Continuity and integrability.) On [σ, ρ], J₁ and L are continuous, and t ↦ tⁿ and t ↦ tⁿ⁺¹ are continuous and nonvanishing by step 1. So τ ↦ J₁(τ)/τⁿ, τ ↦ L(τ)/τⁿ⁺¹ and their sum D are continuous on [σ, ρ]. Consequently:
+   - D is interval integrable on [σ, ρ] (ContinuousOn.intervalIntegrable_of_Icc).
+   - J₁(τ)/τⁿ and L(τ)/τⁿ⁺¹ are integrable on the compact interval [σ, ρ] (ContinuousOn.integrableOn_Icc), hence on its subset (σ, ρ].
+
+5. (Fundamental theorem of calculus.) Since σ ≤ ρ, [σ, ρ] = uIcc σ ρ. F has derivative D at every point of uIcc σ ρ by step 3, and D is interval integrable by step 4, so ∫_σ^ρ D(τ) dτ = F(ρ) − F(σ) (intervalIntegral.integral_eq_sub_of_hasDerivAt). Because σ ≤ ρ, ∫_σ^ρ D = ∫_{(σ,ρ]} D (intervalIntegral.integral_of_le).
+
+6. (Splitting.) By step 4 both summands of D are integrable on (σ, ρ], so ∫_{(σ,ρ]} D = ∫_{(σ,ρ]} J₁(τ)/τⁿ dτ + ∫_{(σ,ρ]} L(τ)/τⁿ⁺¹ dτ (integral_add). Combining this with step 5: I(ρ)/ρⁿ − I(σ)/σⁿ = F(ρ) − F(σ) = ∫_{(σ,ρ]} J₁(τ)/τⁿ dτ + ∫_{(σ,ρ]} L(τ)/τⁿ⁺¹ dτ. ∎
+
+## Key steps
+
+1. Quotient rule: F(t) = I(t)/tⁿ has derivative (I₁τⁿ − I·nτⁿ⁻¹)/(τⁿ)² at each τ ∈ [σ, ρ]
+2. The ODE nI − τI₁ + τJ₁ + L = 0 identifies this with J₁/τⁿ + L/τⁿ⁺¹ (cases n = 0 and n = m+1, cross-multiplication)
+3. J₁/τⁿ + L/τⁿ⁺¹ is continuous on [σ, ρ], hence interval integrable, and each summand is integrable on (σ, ρ]
+4. FTC (intervalIntegral.integral_eq_sub_of_hasDerivAt) and intervalIntegral.integral_of_le
+5. Split the Ioc integral with integral_add
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean`
+- `rg -n "theorem continuousOn_of_dominated|theorem continuous_of_dominated|theorem integral_integral_swap\b|theorem integral_eq_sub_of_hasDerivAt\b|theorem integral_eq_sub_of_hasDerivAt_of_le|theorem integral_of_le\b|theorem AEStronglyMeasurable.comp_snd|theorem Integrable.mono'|theorem integrable_prod_iff|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem ContinuousOn.intervalIntegrable\b|theorem ContinuousOn.integrableOn_Icc|theorem integral_const_mul\b|theorem integral_div\b" <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem integrableOn_of_bounded|sigmaFinite_of_isFiniteMeasureOnCompacts|theorem aestronglyMeasurable_indicator_iff|theorem ContDiff.continuous_deriv\b|theorem IsCompact.exists_bound_of_continuousOn\b|theorem continuousOn_inv₀|theorem ContinuousOn.intervalIntegrable_of_Icc|theorem Filter.EventuallyEq.deriv_eq|theorem HasDerivAt.div\b|theorem hasDerivAt_pow\b|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|theorem IntegrableOn.integrable_indicator|lemma Integrable.of_bound" <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem .*Integrable.*(prod|comp_snd|comp_fst)" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `rg -n "quasiMeasurePreserving_fst|theorem ae \(|setIntegral_congr_fun|setIntegral_eq_zero_of_forall_eq_zero|div_le_div_of_nonneg_left|div_le_div_of_nonneg_right" <snapshot>/mathlib/Mathlib`
+- `rg -n "integral_integral_swap|continuousOn_of_dominated|integral_eq_sub_of_hasDerivAt|intervalIntegral_integral_swap" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04`
+- `grep -n "3\.3|3\.4|3\.5" book/sources/chapter-04-source.txt`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/si-decomp/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/si-decomp/olean lean /tmp/si-decomp/probe/Assembly.lean (sorry'd children + sibling, parent glue)`
+- `LEAN_PATH=... lean /tmp/si-decomp/val/{Cont,Fub,Ftc,Full}.lean (sorry-free child proofs, glue, exact-Submission targets, #print axioms)`
+- `python3 -I /tmp/si-decomp/scripts/gen.py (gmt-compare.py child_modules contract scope + lean_contract.validate_lean_statement)`
+- `LEAN_PATH=... lean /tmp/si-decomp/gen/Challenge_*.lean`
+- `LEAN_PATH=... lean /tmp/si-decomp/probe/Parse.lean (set_option pp.notation false)`
+- `grep -rl <proposed lean_name> <run dir>; git grep -l <proposed lean_name> over all refs (collision check)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Pow.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/GroupWithZero.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedRadiusIntegration.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-04-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-smoothed-identity-a1/parent-child-handoff.json`
+- `/tmp/si-decomp/val/Full.lean`
+- `/tmp/si-decomp/val/Cont.lean`
+- `/tmp/si-decomp/val/Fub.lean`
+- `/tmp/si-decomp/val/Ftc.lean`
+- `/tmp/si-decomp/probe/Assembly.lean`
+- `/tmp/si-decomp/probe/Parse.lean`
+
+Snapshot and project match: the snapshot Contract.lean, the workspace Contract.lean and Submission.lean all have sha256 6e58e5dd…0f4770b (project ff75f52a, mathlib 25730c7c).
+
+Every tool the children need exists in the snapshot Mathlib:
+- continuousOn_of_dominated (Integral/Bochner/Basic.lean:467)
+- integral_integral_swap (Integral/Prod.lean:478)
+- AEStronglyMeasurable.comp_snd (Integral/Prod.lean:135)
+- Integrable.comp_snd (Integral/Prod.lean:285)
+- SigmaFinite.of_isFiniteMeasureOnCompacts (Typeclasses/SFinite.lean:701)
+- Measure.quasiMeasurePreserving_fst (Measure/Prod.lean:463) with QuasiMeasurePreserving.ae (QuasiMeasurePreserving.lean:108)
+- aestronglyMeasurable_indicator_iff (AEStronglyMeasurable.lean:545)
+- IntegrableOn.integrable_indicator and IntegrableOn.of_bound (IntegrableOn.lean:348, 175)
+- setIntegral_congr_fun and setIntegral_eq_zero_of_forall_eq_zero (Bochner/Set.lean:73, 357)
+- integral_div and integral_const_mul (Bochner/Basic.lean:297, 290)
+- intervalIntegral.integral_eq_sub_of_hasDerivAt (FundThmCalculus.lean:1148)
+- intervalIntegral.integral_of_le and ContinuousOn.intervalIntegrable_of_Icc (IntervalIntegral/Basic.lean:677, 507)
+- ContinuousOn.integrableOn_Icc (LocallyIntegrable.lean:596)
+- HasDerivAt.div (Deriv/Inv.lean:173), hasDerivAt_pow (Deriv/Pow.lean:137)
+- ContDiff.continuous_deriv (ContDiff/Deriv.lean:108), Filter.EventuallyEq.deriv_eq (Deriv/Basic.lean:638)
+- continuousOn_inv₀ (Topology/Algebra/GroupWithZero.lean:101)
+- div_le_div_of_nonneg_left/right (GroupWithZero/Basic.lean:1269, 1193)
+
+SimonGMT has an analogous lemma, continuousOn_integral_scaledRadialCutoff_mul (WeightedRadiusIntegration.lean:69). It confirms the indicator-truncation plus continuousOn_of_dominated method, but it cannot be reused directly: it is stated for SimonGMT's own varifold weight and squared-radius cutoffs with range in [0,1]. The snapshot has no lemma matching any of the three child statements.
+
+The book source (chapter-04-source.txt, 3.3–3.5, p. 90) is Simon's derivation of this step.
+
+Results in /tmp/si-decomp:
+- All three child types elaborate in the comparator's contract scope and pass validate_lean_statement.
+- All three children have sorry-free proofs depending only on propext, Classical.choice and Quot.sound.
+- The selected frozen theorem, byte-identical to dag.json, compiles from the children plus the sibling weighted_mono_cutoff_hasDerivAt stubbed with sorry at its byte-identical dag.json type.
+- exact Submission.X targets compile for every child and for the selected node.
+- The proposed names appear nowhere in the run directory or in any git ref.

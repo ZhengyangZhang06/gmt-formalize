@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "76e19d3e16ca323c2e95a9cf9129ecb4e52bfcd66b88bdfb8cc36e155515631c",
+  "git_delta": {
+    "base_commit": "f23b0f76c478ee3f4d481d539fc32b2e9efac39e",
+    "candidate_commit": "0b644841a0508e988968fb511d2887cb9830865d",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "layer_cake_tonelli_truncation_bound",
+    "diff_sha256": "c6b51513980ee5c75534c95194599a928f2abec85c375048a0cee49882401238",
+    "source_sha256": "bab03571aa5833487b8800f7a9633e9566d979716848287099ab7a66b479657e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.layer_cake_tonelli_truncation_bound",
+      "statement": "∀ {X : Type} [MeasurableSpace X] (μ : Measure X) [SFinite μ] (A B : Set X) (h : X → ℝ) (φ : ℝ → X → ℝ≥0∞) (G : X → ℝ≥0∞) (k : X → X → ℝ≥0∞) (κ L : ℝ≥0∞) (ε : ℝ), MeasurableSet A → MeasurableSet B → Measurable h → Measurable (Function.uncurry φ) → Measurable G → Measurable (Function.uncurry k) → (∀ x ∈ B, ∫⁻ t in Ioi 0, φ t x ≤ 1) → (∀ x ∈ B, ∫⁻ ζ in A, k x ζ ∂μ ≤ L) → (∀ t : ℝ, 0 < t → ∀ᵐ ζ ∂μ, ζ ∈ A → t + ε < h ζ → κ ≤ ∫⁻ x in B, φ t x * G x * k x ζ ∂μ) → κ * ∫⁻ ζ in A, ENNReal.ofReal (h ζ - ε) ∂μ ≤ L * ∫⁻ x in B, G x ∂μ",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

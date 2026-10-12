@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "021dac1dab80d14c5850f19111cc99238435dd65d1628faf3bcdf17505503a30",
+  "git_delta": {
+    "base_commit": "602c10b14a1f0a879da6cfb5a7f471d9f3583d67",
+    "candidate_commit": "7c8dfce887de181188ee5c9b463b540b1d2d6429",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pwb_lusin_compact_cover",
+    "diff_sha256": "a77849b98ccc01f546571fb91722bb4843de26daf06518faad33e221fcc4832a",
+    "source_sha256": "64690a698ff9313fba2d02390ba18a123d3106b3ca46dcc0446b311f76bba5f8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pwb_lusin_compact_cover",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (A : Set (Ambient n ℓ)) (g : Ambient n ℓ → ℝ), NullMeasurableSet A μ → μ A ≠ ⊤ → AEStronglyMeasurable g (μ.restrict A) → ∃ K : ℕ → Set (Ambient n ℓ), (∀ k, IsCompact (K k) ∧ K k ⊆ A ∧ ContinuousOn g (K k)) ∧ μ (A \\ ⋃ k, K k) = 0",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

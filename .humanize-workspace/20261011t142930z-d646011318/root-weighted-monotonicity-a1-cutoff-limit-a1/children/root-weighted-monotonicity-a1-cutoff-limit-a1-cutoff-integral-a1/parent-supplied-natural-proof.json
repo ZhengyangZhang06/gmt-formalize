@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+        "grep -n '^theorem\\|^protected theorem' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "rg -n 'theorem tendsto_integral_filter_of_dominated_convergence|theorem continuousOn_of_dominated|theorem _root_.aestronglyMeasurable_of_tendsto_ae|theorem StronglyMeasurable.integral_prod_right|theorem measurable_deriv|lemma IntegrableOn.of_bound|theorem integrableOn_const |theorem integral_indicator |theorem integrable_indicator_iff|theorem tendsto_of_tendsto_of_tendsto_of_le_of_le'|theorem norm_integral_le_of_norm_le |theorem measure_closedBall_lt_top|theorem div₀|theorem ContinuousOn.aestronglyMeasurable|theorem tendsto_nhds_unique ' <snapshot>/mathlib/Mathlib",
+        "rg -n 'aestronglyMeasurable_indicator_iff|const_div_atTop' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'monotonicityCutoff' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04",
+        "rg/grep/git grep 'weighted_mono_cutoff_seq_exists|weighted_mono_cutoff_integral_tendsto|weighted_mono_kernel_limit|weighted_mono_kernel_term_tendsto|weighted_mono_curvature_term_tendsto' over <snapshot>, dag.json, nodes/, GMT/Ch04/Submission.lean and all local branches",
+        "python3 -I: verifier/lean_contract.validate_lean_statement and verifier/gmt-compare.py child_modules (contract mode) for each child",
+        "lake env lean GMT/Ch04/Submission.lean -o /tmp/cutoff-limit-decomp/olean/GMT/Ch04/Submission.olean",
+        "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/cutoff-limit-decomp/olean lean /tmp/cutoff-limit-decomp/work/{Assembly,C1,C2,C3,C4,C5,Full}.lean (#print axioms)",
+        "LEAN_PATH=... lean /tmp/cutoff-limit-decomp/gen/<key>_NodeChallenge.lean for all five children"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Separation/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Order/Field.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-cutoff-limit-a1/parent-child-handoff.json",
+        "/tmp/cutoff-limit-decomp/work/Assembly.lean",
+        "/tmp/cutoff-limit-decomp/work/Full.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b; project ff75f52a, mathlib 25730c7c).\n\nEvery tool the children use exists in the snapshot Mathlib:\n- Real.smoothTransition.{contDiff, monotone, zero_of_nonpos, one_of_one_le, nonneg, le_one}: SmoothTransition.lean:161–222.\n- tendsto_integral_filter_of_dominated_convergence: DominatedConvergence.lean:67.\n- continuousOn_of_dominated and norm_integral_le_of_norm_le: Bochner/Basic.lean:467, 985.\n- integral_indicator: Bochner/Set.lean:185.\n- integrableOn_const, IntegrableOn.of_bound, integrable_indicator_iff, ContinuousOn.aestronglyMeasurable: IntegrableOn.lean:119, 174, 340, 791.\n- AEStronglyMeasurable.div₀, aestronglyMeasurable_indicator_iff, aestronglyMeasurable_of_tendsto_ae: AEStronglyMeasurable.lean:332, 545, 696.\n- MeasureTheory.StronglyMeasurable.integral_prod_right: Integral/Prod.lean:67.\n- measurable_deriv: FDeriv/Measurable.lean:398.\n- measure_closedBall_lt_top: Typeclasses/Finite.lean:364.\n- tendsto_of_tendsto_of_tendsto_of_le_of_le': Topology/Order/Basic.lean:220.\n- tendsto_nhds_unique: Separation/Hausdorff.lean:180.\n- Filter.Tendsto.const_div_atTop: Topology/Algebra/Order/Field.lean:222.\n\nSimonGMT's monotonicityCutoff (Chapter04/FirstVariation.lean:825–885) is the same construction as cutoff_seq. GMT.Ch04.Submission does not import that module, so the child uses Real.smoothTransition directly.\n\nNo-match result: none of the five proposed lean_names occurs in the snapshot, dag.json, nodes/, GMT/, or any local branch.\n\nAll five child types elaborate in the comparator contract scope, and each has a sorry-free Lean proof using only standard axioms. The selected frozen theorem compiles from the five children plus the frozen weighted_mono_kernel_bounds type."
+    }
+  ],
+  "proof": "Conventions. E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) = ℝ^{n+ℓ} with its Borel σ-algebra; B_s(ξ) := closedBall ξ s is the CLOSED ball, so x ∈ B_s(ξ) ⟺ |x − ξ| ≤ s (dist x ξ = |x − ξ|); r = r(x) := |x − ξ| ≥ 0; λ is Lebesgue measure on ℝ and ∫_{(a,b]} means the integral over Ioc a b; 1_S is the indicator function of S. Put B := B_R(ξ) and F_m(x) := φ_m(r(x)/t)·f(x). (Context only: Steps 3–5 of the parent proof, for a general integrable f and a general radius t; no positivity of ε_m is needed.)\n1. (Vanishing off B.) Let x ∉ B, i.e. r(x) > R. For every m, (1 + ε_m)t ≤ R < r(x); dividing by t > 0 gives r(x)/t > 1 + ε_m, in particular r(x)/t ≥ 1 + ε_m, so φ_m(r(x)/t) = 0 and F_m(x) = 0.\n2. (Measurability.) By 1, F_m = 1_B·F_m. The map x ↦ φ_m(r(x)/t) is Borel measurable (φ_m is measurable and x ↦ |x − ξ|/t is continuous), and f is a.e. strongly measurable for μ⌞B because f is μ-integrable on B; hence the product F_m is a.e. strongly measurable for μ⌞B. Since B is a closed, hence measurable, set, 1_B·F_m is a.e. strongly measurable for μ (aestronglyMeasurable_indicator_iff); that is, F_m is a.e. strongly measurable for μ, for every m.\n3. (Domination.) Put g := 1_B·|f|. For x ∈ B, |F_m(x)| = φ_m(r(x)/t)·|f(x)| ≤ |f(x)| = g(x) because 0 ≤ φ_m ≤ 1; for x ∉ B, |F_m(x)| = 0 = g(x) by 1. So |F_m| ≤ g on E for every m. Since |f| is μ-integrable on B, g is μ-integrable (integrable_indicator_iff).\n4. (Pointwise limit.) Fix x ∈ E. If x ∈ B_t(ξ) then r(x) ≤ t, so r(x)/t ≤ 1 (t > 0) and φ_m(r(x)/t) = 1 for every m; thus F_m(x) = f(x) for every m and F_m(x) → f(x) = 1_{B_t(ξ)}(x)f(x). If x ∉ B_t(ξ) then r(x) > t, so δ := r(x)/t − 1 > 0; since ε_m → 0 there is m₀ with ε_m < δ for all m ≥ m₀, i.e. r(x)/t > 1 + ε_m, hence φ_m(r(x)/t) = 0 and F_m(x) = 0 for m ≥ m₀; thus F_m(x) → 0 = 1_{B_t(ξ)}(x)f(x). Hence F_m → 1_{B_t(ξ)}·f pointwise on E.\n5. (Dominated convergence.) By 2, 3 and 4, the dominated convergence theorem (tendsto_integral_filter_of_dominated_convergence with bound g and the filter atTop on ℕ) gives ∫F_m dμ → ∫1_{B_t(ξ)}·f dμ. Since B_t(ξ) is measurable, ∫1_{B_t(ξ)}·f dμ = ∫_{B_t(ξ)} f dμ (integral_indicator). This is the claim.",
+  "key_steps": [
+    "φ_m(r/t) = 0 off B_R(ξ) because (1+ε_m)t ≤ R and t > 0",
+    "F_m = 1_{B_R} F_m is μ-a.e. strongly measurable",
+    "|F_m| ≤ 1_{B_R}|f|, which is μ-integrable",
+    "F_m → 1_{B_t(ξ)} f pointwise, using ε_m → 0 off B_t(ξ)",
+    "Dominated convergence and ∫1_{B_t}f dμ = ∫_{B_t}f dμ"
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

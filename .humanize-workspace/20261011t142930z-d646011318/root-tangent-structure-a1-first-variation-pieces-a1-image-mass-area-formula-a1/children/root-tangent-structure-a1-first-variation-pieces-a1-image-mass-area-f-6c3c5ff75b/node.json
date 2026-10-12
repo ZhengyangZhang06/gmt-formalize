@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1.det_tangential_gram-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1",
+  "depth": 4,
+  "title": "The explicit tangential-Jacobian matrix has the Gram determinant of Λ on an orthonormal basis of P (parent step 0)",
+  "statement": "Let N, k ∈ ℕ, E := EuclideanSpace ℝ (Fin N) = ℝ^N with its standard orthonormal basis e_i := EuclideanSpace.single i 1 (i ∈ Fin N), P ⊆ E a linear subspace with orthogonal projection p := P.starProjection, b = (b_a)_{a ∈ Fin k} an orthonormal basis of P, and Λ: E → E a continuous linear map. Then det[⟨Λpe_i, Λpe_j⟩ + ⟨e_i − pe_i, e_j − pe_j⟩]_{i,j ∈ Fin N} = det[⟨Λb_a, Λb_c⟩]_{a,c ∈ Fin k}. In words: the explicit N×N matrix whose square-rooted determinant is the tangential Jacobian jac(Λ, P) used throughout this branch has the same determinant as the k×k Gram matrix of Λ on any orthonormal basis of P.",
+  "lean_statement": "∀ (N k : ℕ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (b : OrthonormalBasis (Fin k) ℝ P) (Λ : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N)), Matrix.det (Matrix.of fun i j : Fin N ↦ inner ℝ (Λ (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (Λ (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))) = Matrix.det (Matrix.of fun a c : Fin k ↦ inner ℝ (Λ (b a)) (Λ (b c)))",
+  "lean_name": "ts_fv_det_tangential_gram_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-f-6c3c5ff75b-a1"
+}

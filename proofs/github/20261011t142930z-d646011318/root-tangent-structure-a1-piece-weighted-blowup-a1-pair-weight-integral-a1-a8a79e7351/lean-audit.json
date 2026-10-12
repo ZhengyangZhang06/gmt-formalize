@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "83b745eb5499128376fd381946d503a77895523eaefe3c4c86e0d598f2ba85a3",
+  "git_delta": {
+    "base_commit": "602c10b14a1f0a879da6cfb5a7f471d9f3583d67",
+    "candidate_commit": "5e870551da358a57757bc8c3872cea1f33f66480",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pwb_pair_weight_integral",
+    "diff_sha256": "7f46287925f4ec5f052898e851d09f4dddd58bc527044b227ca0237736a6b88d",
+    "source_sha256": "64d6ff8c734c110be31f3796f4ff4f357aaa9152450e8d88806ade863daea617",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pwb_pair_weight_integral",
+      "statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ), IsFiniteMeasureOnCompacts (mk a).weight ∧ ∀ g : Ambient n ℓ → ℝ, ∫ y, g y ∂(mk a).weight = ∫ y in a.M, a.θ y * g y ∂μHE[n]",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

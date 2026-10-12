@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7fafa4ab0d752a0f2566883718f12e23f7b0920333beb9753b1f3d5dc9df89b1",
+  "git_delta": {
+    "base_commit": "5582f7721a31ba95b47c0dfa49ec7df9ae99aecb",
+    "candidate_commit": "b4d7687642d2dc1116f9d3ef8d57bdfe01fe27bf",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "mcm_density_usc_of_monotone",
+    "diff_sha256": "325ca60f79e189af58a7b72abf1be0e41ea841b0ffe41a387abb22de76749b06",
+    "source_sha256": "a397aa1b9d1355be8600742684a5a8229170d8e0145bc2e0eafd1539a571288d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcm_density_usc_of_monotone",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ c : ℝ → ℝ, Tendsto c (𝓝[>] 0) (𝓝 0) ∧ ∀ η ∈ ball ξ r, ∃ F E : ℝ → ℝ, (∀ ρ ∈ Ioo 0 r, F ρ ∈ Icc (Real.exp (-c ρ)) (Real.exp (c ρ)) ∧ |E ρ| ≤ c ρ) ∧ MonotoneOn (fun ρ ↦ F ρ * (V.weight.real (closedBall η ρ) / ρ ^ n) + E ρ) (Ioo 0 r)) → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) ∧ UpperSemicontinuousOn V.density U",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

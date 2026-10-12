@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.density_usc-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Existence and upper semicontinuity of the density from uniformly almost-monotone density ratios",
+  "statement": "Let n, ℓ ∈ ℕ, V a rectifiable n-varifold in E = ℝ^{n+ℓ} whose weight μ = μ_V is finite on compact sets, and U ⊆ E any set. For η ∈ E and ρ > 0 write a_η(ρ) := μ(B_ρ(η))/ρⁿ (closed balls, real-valued measure). Suppose that for every ξ ∈ U there exist r > 0 and c: ℝ → ℝ with c(ρ) → 0 as ρ ↓ 0 such that for every η with |η − ξ| < r there are F, E: ℝ → ℝ with e^{−c(ρ)} ≤ F(ρ) ≤ e^{c(ρ)} and |E(ρ)| ≤ c(ρ) for all ρ ∈ (0, r), and with ρ ↦ F(ρ)a_η(ρ) + E(ρ) nondecreasing on (0, r). Then for every ξ ∈ U the quotient μ(B_ρ(ξ))/(ω_nρⁿ) converges to V.density ξ as ρ ↓ 0 (V.HasDensityAt ξ (V.density ξ)), and V.density is upper semicontinuous on U.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ c : ℝ → ℝ, Tendsto c (𝓝[>] 0) (𝓝 0) ∧ ∀ η ∈ ball ξ r, ∃ F E : ℝ → ℝ, (∀ ρ ∈ Ioo 0 r, F ρ ∈ Icc (Real.exp (-c ρ)) (Real.exp (c ρ)) ∧ |E ρ| ≤ c ρ) ∧ MonotoneOn (fun ρ ↦ F ρ * (V.weight.real (closedBall η ρ) / ρ ^ n) + E ρ) (Ioo 0 r)) → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) ∧ UpperSemicontinuousOn V.density U",
+  "lean_name": "mcm_density_usc_of_monotone",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-density-usc-a1-a1"
+}

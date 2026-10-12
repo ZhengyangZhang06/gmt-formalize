@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "41a4c9e6ec0179b0f247dedbf5227543ff3f8a0abf83a9b232e9b8fb52de5150",
+  "git_delta": {
+    "base_commit": "712e6024112f83501b8b23201a2edba7d4d4fa42",
+    "candidate_commit": "621a86908128d73af3a35151daedd823b490c7b3",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_density_ge_one_ae",
+    "diff_sha256": "b7f446b6532370582d02da28f1c22ef40ee2fc78817c1e49793d35feb78b340a",
+    "source_sha256": "6f1cf9e593f1221ac0bf27f62226ae9fc0fad1f65ef55bd724568b9831ef0c4e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_density_ge_one_ae",
+      "statement": "ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → V.MultiplicityGE 1 U → ∀ᵐ x ∂V.weight, x ∈ U → V.HasDensityAt x (V.density x) ∧ 1 ≤ V.density x",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

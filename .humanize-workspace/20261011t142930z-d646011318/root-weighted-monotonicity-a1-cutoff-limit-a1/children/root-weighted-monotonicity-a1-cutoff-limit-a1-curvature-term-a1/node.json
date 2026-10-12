@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.cutoff_limit-a1.curvature_term-a1",
+  "parent_id": "root.weighted_monotonicity-a1.cutoff_limit-a1",
+  "depth": 3,
+  "title": "Curvature term: integrability of τ^{-n-1}∫_{B_τ}G and convergence of the smoothed τ-integrals (parent Steps 8 and 10)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), μ a measure on E, G: E → ℝ μ-integrable on the closed ball B_R(ξ), ξ ∈ E, and σ, ρ, R ∈ ℝ with 0 < σ ≤ ρ. Let φ_m: ℝ → ℝ (m ∈ ℕ) be continuous and ε_m ∈ ℝ with ε_m → 0, ε_m > 0, (1 + ε_m)ρ ≤ R, 0 ≤ φ_m(s) ≤ 1 for all s, φ_m(s) = 1 for s ≤ 1 and φ_m(s) = 0 for s ≥ 1 + ε_m. Then τ ↦ (∫_{B_τ(ξ)} G dμ)/τⁿ⁺¹ is integrable on (σ, ρ], and ∫_{(σ,ρ]} (∫ φ_m(|x − ξ|/τ)·G(x) dμ(x))/τⁿ⁺¹ dτ → ∫_{(σ,ρ]} (∫_{B_τ(ξ)} G dμ)/τⁿ⁺¹ dτ as m → ∞.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (G : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ R : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < σ → σ ≤ ρ → IntegrableOn G (closedBall ξ R) μ → Tendsto ε atTop (𝓝 0) → (∀ m, 0 < ε m) → (∀ m, (1 + ε m) * ρ ≤ R) → (∀ m, Continuous (φ m)) → (∀ m s, 0 ≤ φ m s ∧ φ m s ≤ 1) → (∀ m s, s ≤ 1 → φ m s = 1) → (∀ m s, 1 + ε m ≤ s → φ m s = 0) → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1)) (Ioc σ ρ) ∧ Tendsto (fun m ↦ ∫ τ in Ioc σ ρ, (∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1)) atTop (𝓝 (∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1)))",
+  "lean_name": "weighted_mono_curvature_term_tendsto",
+  "depends_on": [
+    "root.weighted_monotonicity-a1.cutoff_limit-a1.cutoff_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.weighted_monotonicity-a1.cutoff_limit-a1.cutoff_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-cutoff-limit-a1-curvature-term-a1-a1"
+}

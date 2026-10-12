@@ -1,0 +1,19 @@
+{
+  "node_id": "root.weighted_monotonicity-a1.cutoff_first_variation-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/284",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1725",
+  "candidate_commit": "4d257b39394616e18e25afa776bdfb042969a3db",
+  "integrated_commit": "",
+  "proof_base_commit": "367df48fe3f1c6e9bd8a815a9cd15bd0c93f9745",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.weighted_monotonicity-a1",
+  "requires": [
+    "root.weighted_monotonicity-a1.radial_test_field-a1",
+    "root.weighted_monotonicity-a1.cutoff_first_variation-a1.local_data-a1",
+    "root.weighted_monotonicity-a1.cutoff_first_variation-a1.cutoff_identity-a1"
+  ]
+}

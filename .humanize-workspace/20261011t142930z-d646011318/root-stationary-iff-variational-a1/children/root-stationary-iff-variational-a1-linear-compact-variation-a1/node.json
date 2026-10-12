@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_iff_variational-a1.linear_compact_variation-a1",
+  "parent_id": "root.stationary_iff_variational-a1",
+  "depth": 2,
+  "title": "y + t·X(y) is a compact variation with initial velocity X (smooth compactly supported X)",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ = ℝ^{n+ℓ}, and let X : E → E be C^∞ with compact support. Then there is ε ∈ ℝ (for instance ε = 1/(L+1) with L = sup‖DX‖) such that φ(t, y) := y + t•X(y) satisfies IsCompactVariation φ ε (tsupport X): ε > 0; tsupport X is compact; φ is C^∞ on (−ε, ε) × E; for |t| < ε, φ_t is bijective with C^∞ Function.invFun φ_t; φ_0 = id; and φ_t(y) = y for y ∉ tsupport X. Moreover the initial velocity is X: deriv (t ↦ y + t•X(y)) 0 = X(y) for every y.",
+  "lean_statement": "∀ (n ℓ : ℕ) (X : Ambient n ℓ → Ambient n ℓ), ContDiff ℝ ∞ X → HasCompactSupport X → ∃ ε : ℝ, IsCompactVariation (fun t y ↦ y + t • X y) ε (tsupport X) ∧ (fun y ↦ deriv (fun t : ℝ ↦ y + t • X y) 0) = X",
+  "lean_name": "exists_isCompactVariation_add_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-iff-variational-a1-linear-compact-variation-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_weighted_blowup-a1.density_point_image-a1",
+  "parent_id": "root.tangent_structure-a1.piece_weighted_blowup-a1",
+  "depth": 3,
+  "title": "Hⁿ-a.e. point of a Lipschitz image has only Lebesgue-density-point preimages",
+  "statement": "Let n, ℓ ∈ ℕ, ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ (volume), E := Ambient n ℓ = ℝ^{n+ℓ}, Hⁿ := μHE[n] on E, let C ⊆ ℝⁿ be a Borel set and F : ℝⁿ → E a Lipschitz map. Then for Hⁿ-a.e. x ∈ E, every w ∈ C with F(w) = x is a Lebesgue density point of C: Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 as r ↓ 0 (closed balls, quotient in [0, ∞]).",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), MeasurableSet C → (∃ K : NNReal, LipschitzWith K F) → ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)), ∀ w ∈ C, F w = x → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1)",
+  "lean_name": "ts_pwb_density_points_of_image_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-weighted-blowup-a1-density-point-image-a1-a1"
+}

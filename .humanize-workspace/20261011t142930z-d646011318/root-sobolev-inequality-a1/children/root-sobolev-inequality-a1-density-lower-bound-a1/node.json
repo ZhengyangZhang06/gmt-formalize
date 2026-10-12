@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.density_lower_bound-a1",
+  "parent_id": "root.sobolev_inequality-a1",
+  "depth": 2,
+  "title": "Θ ≥ 1 μ_V-a.e. in U from θ ≥ 1 and ApproxTangentAE (statement (1.1))",
+  "statement": "Assume ApproxTangentAE. Let n ≥ 1, ℓ ∈ ℕ, V a rectifiable n-varifold in E = ℝ^{n+ℓ}, U ⊆ E open, and suppose θ ≥ 1 μ_V-a.e. in U (V.MultiplicityGE 1 U). Then for μ_V-a.e. x ∈ U the density Θ(x) = lim_{ρ↓0} μ_V(B_ρ(x))/(ω_nρⁿ) exists (V.HasDensityAt x (V.density x)) and Θ(x) ≥ 1.",
+  "lean_statement": "ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → V.MultiplicityGE 1 U → ∀ᵐ x ∂V.weight, x ∈ U → V.HasDensityAt x (V.density x) ∧ 1 ≤ V.density x",
+  "lean_name": "sobolev_density_ge_one_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-density-lower-bound-a1-a1"
+}

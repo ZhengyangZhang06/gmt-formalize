@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean",
+        "git show 572b89ba951337627a042d201ea519a6496a45e9:GMT/Ch04/Submission.lean | grep -n '^import\\|^theorem'",
+        "grep -n 'theorem\\|lemma\\|def' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "grep -n 'theorem det_one_add_mul_comm' <snapshot>/mathlib/Mathlib/LinearAlgebra/Matrix/SchurComplement.lean",
+        "grep -n 'starProjection_eq_sum_rankOne\\|sum_inner_mul_inner' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n '^def gram' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        "grep -rn 'theorem lintegral_iUnion₀\\|theorem setLIntegral_congr\\|theorem MeasurableSet.image_of_continuousOn_injOn' <snapshot>/mathlib/Mathlib/MeasureTheory",
+        "grep -rn 'theorem weighted_area_formula_lipschitz_injOn\\|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn\\|def areaJacobianAt\\|areaJacobianAt_eq_normDet\\|nullMeasurableSet_image_of_lipschitzOn' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02",
+        "grep -n import Chapter02/{Lipschitz,Area,AreaLipschitz}.lean Chapter03/Rectifiable.lean (frozen import closure)",
+        "lean Probe.lean (#check of MeasurableSet.image_of_continuousOn_injOn, NullMeasurableSet.exists_measurable_{subset,superset}_ae_eq, setLIntegral_congr, ae_restrict_mem₀, ae_restrict_of_ae_restrict_of_subset, Function.invFunOn_{mem,eq}, InjOn.leftInvOn_invFunOn, leftInverse_invFun, lintegral_iUnion₀, euclideanHausdorffMeasure_image_le_of_lipschitzOn, Disjoint.image, finrank_euclideanSpace_fin, fderiv_comp, ENNReal.ofReal_mul in the frozen scope)",
+        "python3 -I scripts/gen.py (verifier gmt-compare.child_modules mode contract + lean_contract.validate_lean_statement); lean gen/Challenge_*.lean",
+        "lean asm/AProof.lean; lean asm/BfromA.lean; lean asm/Assembly.lean; lean asm/Full.lean (#print axioms)",
+        "build candidate Submission with the four proofs; lean gen2/Solution_*.lean (exact Submission.X for 3 children + parent dag.json type)",
+        "python3 -I scripts/numcheck.py (3000 random instances of det S_P(Λ) = det Gram)",
+        "grep dag.json, pinned packages and git grep over all 364 refs for ts_fv_det_tangential_gram_eq|ts_fv_piece_image_area_formula|ts_fv_lintegral_image_eq_of_pieces",
+        "python3 scan of dag.json nodes (ts_fv_* siblings, ts_pdb_piece_area_formula, ts_pdb_linear_range_integral, ts_pdb_image_closedBall_measure_le) and parent decomposition-v1.json",
+        "git show <branch>:GMT/Ch04/Submission.lean | grep 'import Poincare.SimonGMT.Chapter02.AreaLipschitz' over lipschitz-pieces branches"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Matrix/SchurComplement.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-formula-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/ch04-imaf/gen/Challenge_ts_fv_det_tangential_gram_eq.lean",
+        "/tmp/ch04-imaf/gen/Challenge_ts_fv_piece_image_area_formula.lean",
+        "/tmp/ch04-imaf/gen/Challenge_ts_fv_lintegral_image_eq_of_pieces.lean",
+        "/tmp/ch04-imaf/asm/AProof.lean",
+        "/tmp/ch04-imaf/asm/BfromA.lean",
+        "/tmp/ch04-imaf/asm/Assembly.lean",
+        "/tmp/ch04-imaf/asm/Full.lean",
+        "/tmp/ch04-imaf/gen2/Solution_ts_fv_image_mass_area_formula.lean",
+        "/tmp/ch04-imaf/scripts/numcheck.py"
+      ],
+      "conclusion": "Pinned state:\n- The snapshot Contract.lean, the workspace Contract.lean and the workspace Submission.lean are byte-identical (sha256 prefix 6e58e5dddd9625cc).\n- The proof base 572b89b adds no helper lemmas.\n- Mathlib is at 25730c7c and SimonGMT at 2b366308.\n\nFrozen import closure:\n- Chapter03.Rectifiable imports Chapter02.Lipschitz, so euclideanHausdorffMeasure_image_le_of_lipschitzOn is available.\n- Chapter02.Area (areaJacobianAt) and Mathlib NormDet are not available, so no child type mentions normDet, adjoint or Matrix.gram.\n\nCited results, each found with the stated meaning:\n- Mathlib snapshot:\n  - NormDet.lean: normDet_nonneg (l.75), normDet_sq_eq_det_gram (l.303), normDet_comp (l.324).\n  - SchurComplement.lean: Matrix.det_one_add_mul_comm (l.400).\n  - PiL2.lean: OrthonormalBasis.starProjection_eq_sum_rankOne (l.572), OrthonormalBasis.sum_inner_mul_inner (l.506).\n  - GramMatrix.lean: Matrix.gram := of fun i j ↦ ⟪v i, v j⟫ (l.39).\n  - Lebesgue/Basic.lean: lintegral_iUnion₀ (l.592), setLIntegral_congr (l.281).\n  - Polish/Basic.lean: MeasurableSet.image_of_continuousOn_injOn (l.821).\n- SimonGMT Chapter02:\n  - weighted_area_formula_lipschitz_injOn: global LipschitzWith, MeasurableSet source, InjOn, arbitrary non-measurable weight; target measure μHE[finrank].\n  - euclideanHausdorffMeasure_image_le_of_lipschitzOn.\n  - areaJacobianAt and areaJacobianAt_eq_normDet.\n\nNo-match results:\n- No existing declaration proves the Gram-determinant identity, the one-piece image area formula, or the image-integral gluing.\n- The related ts_pdb_* nodes are unaccepted and have different statements, so nothing is reused.\n- None of the three proposed names occurs in dag.json, the pinned packages, the snapshot, or any of the 364 refs.\n\nLean checks:\n- The three child types validate and compile as comparator NodeChallenge files.\n- A is proved in the frozen scope.\n- B is proved from A with the AreaLipschitz import, which accepted branches of this run already use.\n- C is proved.\n- The parent's exact frozen type is proved from B and C.\n- All four declarations compile together with axioms [propext, Classical.choice, Quot.sound].\n- NodeSolution checks pass for the 3 children and for the parent.\n- A numeric check of A on 3000 random instances gives max relative error 1.4e-9.\n- Independent adversarial review: ACCEPT."
+    }
+  ],
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1",
+  "child_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1.image_lintegral_gluing-a1",
+  "subproblem": {
+    "key": "image_lintegral_gluing",
+    "title": "Countable gluing of an image-integral identity over a disjoint measurable partition (parent steps 2 and 5)",
+    "statement": "Let X be a type with a σ-algebra and μ a measure on X. Let f: X → X be injective, mapping μ-null sets to μ-null sets and μ-null-measurable sets to μ-null-measurable sets. Let Z ⊆ X be μ-null-measurable, (D_i)_{i∈ℕ} pairwise disjoint measurable sets with μ(Z ∖ ⋃_i D_i) = 0, and u, g: X → [0, ∞] arbitrary functions such that ∫⁻_{f(Z ∩ D_i)} u dμ = ∫⁻_{Z ∩ D_i} g dμ for every i. Then ∫⁻_{f(Z)} u dμ = ∫⁻_Z g dμ.",
+    "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (f : X → X) (Z : Set X) (D : ℕ → Set X) (u g : X → ℝ≥0∞), Function.Injective f → (∀ Y : Set X, μ Y = 0 → μ (f '' Y) = 0) → (∀ Y : Set X, NullMeasurableSet Y μ → NullMeasurableSet (f '' Y) μ) → NullMeasurableSet Z μ → (∀ i, MeasurableSet (D i)) → Pairwise (fun i j ↦ Disjoint (D i) (D j)) → μ (Z \\ ⋃ i, D i) = 0 → (∀ i, ∫⁻ y in f '' (Z ∩ D i), u y ∂μ = ∫⁻ x in Z ∩ D i, g x ∂μ) → ∫⁻ y in f '' Z, u y ∂μ = ∫⁻ x in Z, g x ∂μ",
+    "lean_name": "ts_fv_lintegral_image_eq_of_pieces",
+    "depends_on": [],
+    "natural_proof": "Source: the summation argument of steps 2 and 5 of the parent proof (disjoint decomposition of M ∩ K into the pieces M_i = M ∩ K ∩ D_i up to the null set M ∩ K ∩ N₀, and of f(M ∩ K) into the f(M_i) up to a null set, followed by lintegral_iUnion₀ on both sides), stated for an abstract measure space. No errata apply.\n\n1. The source side. Let R := Z ∖ ⋃_i D_i; by hypothesis μ(R) = 0. Then Z = R ∪ ⋃_i (Z ∩ D_i): a point of Z either lies in no D_i, in which case it lies in R, or it lies in some D_i, in which case it lies in Z ∩ D_i. Hence Z ∖ ⋃_i (Z ∩ D_i) ⊆ R is μ-null, while ⋃_i (Z ∩ D_i) ∖ Z = ∅. Therefore Z =ᵐ[μ] ⋃_i (Z ∩ D_i) (ae_eq_set).\n\n2. The image side. Images commute with unions, so step 1 gives f(Z) = f(R) ∪ ⋃_i f(Z ∩ D_i), and μ(f(R)) = 0 because f maps null sets to null sets. Hence f(Z) ∖ ⋃_i f(Z ∩ D_i) ⊆ f(R) is μ-null. Also ⋃_i f(Z ∩ D_i) = f(⋃_i (Z ∩ D_i)) ⊆ f(Z), so the reverse difference is empty. Therefore f(Z) =ᵐ[μ] ⋃_i f(Z ∩ D_i).\n\n3. Disjointness and measurability.\n- Each Z ∩ D_i is μ-null-measurable, as the intersection of the null-measurable Z with the measurable D_i.\n- The sets Z ∩ D_i (i ∈ ℕ) are pairwise disjoint, because the D_i are.\n- f is injective, so the images f(Z ∩ D_i) are pairwise disjoint as well (Disjoint.image with f injective on X).\n- Each f(Z ∩ D_i) is μ-null-measurable by the hypothesis on f.\nDisjoint sets are in particular μ-a.e. disjoint.\n\n4. Summation. Set-lintegrals over μ-a.e. equal sets coincide (setLIntegral_congr). The lintegral over a countable union of pairwise a.e.-disjoint null-measurable sets is the sum of the lintegrals (lintegral_iUnion₀). Neither fact needs measurability of the integrand. Hence\n∫⁻_{f(Z)} u dμ\n = ∫⁻_{⋃_i f(Z∩D_i)} u dμ (step 2)\n = Σ_i ∫⁻_{f(Z∩D_i)} u dμ (step 3, lintegral_iUnion₀)\n = Σ_i ∫⁻_{Z∩D_i} g dμ (hypothesis, termwise)\n = ∫⁻_{⋃_i (Z∩D_i)} g dμ (step 3, lintegral_iUnion₀)\n = ∫⁻_Z g dμ (step 1).\n\n5. Degenerate cases. No step uses Z ≠ ∅, finiteness of μ or measurability of u or g, so the argument covers these cases verbatim. For example, if Z = ∅ both sides are 0. ∎",
+    "proof_key_steps": [
+      "Z = (Z ∖ ⋃ D_i) ∪ ⋃ (Z ∩ D_i) with μ-null remainder, so Z =ᵐ ⋃ (Z ∩ D_i)",
+      "f(Z) = f(remainder) ∪ ⋃ f(Z ∩ D_i) with f(remainder) null, so f(Z) =ᵐ ⋃ f(Z ∩ D_i)",
+      "Z ∩ D_i and f(Z ∩ D_i) are pairwise disjoint (f injective) and null-measurable (hypotheses)",
+      "setLIntegral_congr and lintegral_iUnion₀ on both sides, then sum the piecewise identities"
+    ]
+  },
+  "audit": {
+    "key": "image_lintegral_gluing",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The abstract measure-space prose matches the exact Lean proposition. Null preservation gives the image remainder equality almost everywhere; injectivity and null-measurability preservation justify disjoint measurable summation on the image side. Applying setLIntegral_congr and lintegral_iUnion₀ on both sides proves the conclusion for arbitrary weights. The proof is complete and independent of the other children and parent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-f-a5f97e29ab/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-f-a5f97e29ab/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-f-a5f97e29ab/parent-supplied-natural-proof.json"
+}

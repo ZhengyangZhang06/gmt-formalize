@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "424c9795c865bc41005930d5204703165cf025a68eb004d89cc7541643d36bfe",
+  "git_delta": {
+    "base_commit": "36bd58788e9ef49369eca0a26ef26a5ce8152b67",
+    "candidate_commit": "27b95db5efd43722f0cfef24843f17ddd5bf85c8",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "wm_smoothed_scaled_ftc",
+    "diff_sha256": "e4568a87f4faa4c95bf15da97a9abb0d49ba015bbb04e22474f063bb1b7a11de",
+    "source_sha256": "9a4f46484c16bc30783279202826b5448c9614f506b362f16189beaf2b9db01a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.wm_smoothed_scaled_ftc",
+      "statement": "∀ (n : ℕ) (I I₁ J₁ L : ℝ → ℝ) (σ ρ : ℝ), 0 < σ → σ ≤ ρ → (∀ τ ∈ Icc σ ρ, HasDerivAt I (I₁ τ) τ) → (∀ τ ∈ Icc σ ρ, (n : ℝ) * I τ - τ * I₁ τ + τ * J₁ τ + L τ = 0) → ContinuousOn J₁ (Icc σ ρ) → ContinuousOn L (Icc σ ρ) → I ρ / ρ ^ n - I σ / σ ^ n = (∫ τ in Ioc σ ρ, J₁ τ / τ ^ n) + ∫ τ in Ioc σ ρ, L τ / τ ^ (n + 1)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

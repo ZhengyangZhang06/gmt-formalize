@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c3c131395d508f2f5af10da96db60e26770f71d69e636104b1823884ccbbae3c",
+  "git_delta": {
+    "base_commit": "63800e8dc3a8fcb544eb316cd887a7322ddfe0b5",
+    "candidate_commit": "de287a620f8625484795bf2e9b1f718b1445b383",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "lipschitz_range_piece_cover",
+    "diff_sha256": "a042a4029ce0d2ac0d86fa2afe5000f31ceb91500a0603ddd81778ead2751070",
+    "source_sha256": "e0c818d6e0f97fcceb0879199f19e9443f8abd6e281883d6363c3f22e761ce38",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitz_range_piece_cover",
+      "statement": "∀ (n ℓ : ℕ) (K : NNReal) (f : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), LipschitzWith K f → ∃ (Y : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))), (μHE[n] : Measure (Ambient n ℓ)) Y = 0 ∧ Set.range f ⊆ Y ∪ ⋃ i, f '' C i ∧ ∀ i, IsCompact (C i) ∧ (∀ w ∈ C i, DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)) ∧ ContinuousOn (fderiv ℝ f) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖f v - f w‖",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

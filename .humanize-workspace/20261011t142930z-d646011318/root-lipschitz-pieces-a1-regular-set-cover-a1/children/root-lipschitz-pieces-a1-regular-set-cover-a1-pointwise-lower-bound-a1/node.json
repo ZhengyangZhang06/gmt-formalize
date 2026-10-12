@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pieces-a1.regular_set_cover-a1.pointwise_lower_bound-a1",
+  "parent_id": "root.lipschitz_pieces-a1.regular_set_cover-a1",
+  "depth": 3,
+  "title": "Local lower bound at a point of differentiability with injective derivative (parent Steps 3–4)",
+  "statement": "Let n ∈ ℕ, let ℝⁿ := EuclideanSpace ℝ (Fin n) with its Euclidean norm |·|, and let F be a real normed vector space (F : Type with NormedAddCommGroup F and NormedSpace ℝ F) with norm |·|. Let f : ℝⁿ → F and w ∈ ℝⁿ. Suppose f is (Fréchet) differentiable at w and its derivative Df(w) = fderiv ℝ f w : ℝⁿ → F is injective. Then there exists c > 0 such that c·|u| ≤ |f(w + u) − f(w)| for every u ∈ ℝⁿ with |u| ≤ c.",
+  "lean_statement": "∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (f : EuclideanSpace ℝ (Fin n) → F) (w : EuclideanSpace ℝ (Fin n)), DifferentiableAt ℝ f w → Function.Injective (fderiv ℝ f w) → ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖",
+  "lean_name": "injective_fderiv_local_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-lipschitz-pieces-a1-regular-set-cover-a1-pointwise-lower-bound-a1-a1"
+}

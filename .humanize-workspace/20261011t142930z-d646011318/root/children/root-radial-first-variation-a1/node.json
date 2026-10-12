@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radial_first_variation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "First variation of the radial fields h·γ(|x−ξ|)(x−ξ) (Simon 3.2–3.3 and 5.1)",
+  "statement": "Let V be a rectifiable n-varifold in ℝ^{n+ℓ} with dim T_xV = n for μ_V-a.e. x, U open, H a generalized mean curvature of V in U, h ∈ C¹(U) real-valued, γ ∈ C¹(ℝ), ξ ∈ ℝ^{n+ℓ}, and suppose X(x) := h(x)γ(|x − ξ|)(x − ξ) is C¹ on ℝ^{n+ℓ} with compact support contained in U. Then, with r = |x − ξ| and q_ξ = |p_{T_x}^⊥(x − ξ)|²/r²,\n∫_U [h(nγ(r) + rγ'(r)(1 − q_ξ)) + γ(r)⟨x − ξ, ∇^M h⟩] dμ_V = −∫_U hγ(r)⟨x − ξ, H⟩ dμ_V.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ), (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) → ∫ x in U, (h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)) ∂V.weight = -∫ x in U, h x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight",
+  "lean_name": "radial_first_variation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-radial-first-variation-a1-a1"
+}

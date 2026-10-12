@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c8ae1dadda8f4d8e106dab3e41aac763d561d04241d044052254d53d83273b55",
+  "git_delta": {
+    "base_commit": "07c97b1cab9a7c273cd66939114527800d4f0b11",
+    "candidate_commit": "78c684426aa98d0b18e03a42fee4e070a18e85fa",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "e4447b2c60f45143f972bafb0e42f96269fb2ccd50c62a4e84244cf7ac913bb4",
+    "source_sha256": "7132c03905b7b4e01a068c91a06749d8db711658f276c069161df4794751b481",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_level_integral_bound",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h D K : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → (∀ x, 0 ≤ D x) → Integrable D μ → (∀ x, 0 ≤ K x) → IntegrableOn K (tsupport h) μ → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 ≤ C → 0 < ε → (∀ t : ℝ, 0 ≤ t → μ.real {x | t + ε < h x} ≤ C * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ)) → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * ∫ x, (D x + h x * K x) ∂μ",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

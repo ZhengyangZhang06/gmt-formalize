@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "002d899d1a598ce43ca25df5ed83a2f231f62573b9e115390405a3b37d5858a6",
+  "git_delta": {
+    "base_commit": "dc7bd0cac08457574771b1372d7758052d615565",
+    "candidate_commit": "0446644898c5edb1c704bed825f2ea94fc46919d",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv",
+    "diff_sha256": "2ee95a4fe048e6ea80207812cdac5292ce2276be8c12885a46df0a492c64fb25",
+    "source_sha256": "93e9910c8d4328d75fb9edb85d141ba3651e1f646deb2e3831a1ca7ffc1ef6dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (K : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsCompact K → ContDiff ℝ 1 X → tsupport X ⊆ K → (∀ k, ContDiff ℝ 1 (Y k) ∧ tsupport (Y k) ⊆ K) → TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop → Tendsto (fun k ↦ ∫ x, V.tangentialDiv (Y k) x ∂V.weight) atTop (𝓝 (∫ x, V.tangentialDiv X x ∂V.weight))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

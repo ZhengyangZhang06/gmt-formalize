@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.variation_bounds-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1",
+  "depth": 3,
+  "title": "Regularity and uniform bounds for a compact variation (Simon Ch. 4, 2.1)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), and let (φ, ε, K) be a compact variation as in Simon Ch. 4, 2.1 (IsCompactVariation φ ε K): ε > 0; K ⊆ E compact; (t, y) ↦ φ(t, y) is C^∞ on (−ε, ε) × E; for t ∈ (−ε, ε), φ_t := φ(t, ·) is bijective with C^∞ inverse Function.invFun φ_t; φ_0 = id; and φ_t(y) = y for t ∈ (−ε, ε), y ∉ K. Let X(y) := ∂_tφ(t, y)|_{t=0} (Lean: deriv (fun t ↦ φ t y) 0). Then: (a) X is C¹; (b) DX(y) = 0 for every y ∉ K; (c) for every t ∈ (−ε, ε), φ_t is Lipschitz and C¹; (d) there are δ with 0 < δ < ε, B ∈ ℝ and Λ' : ℝ → E → L(E, E) such that for every x ∈ E: Λ'(0, x) = DX(x), and for every t ∈ (−δ, δ): s ↦ Dφ_s(x) has derivative Λ'(t, x) at s = t, ‖Dφ_t(x)‖ ≤ B, ‖Λ'(t, x)‖ ≤ B, and ‖v‖ ≤ B‖Dφ_t(x)v‖ for all v ∈ E.",
+  "lean_statement": "∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) ∧ (∀ y ∉ K, fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) y = 0) ∧ (∀ t ∈ Ioo (-ε) ε, (∃ L : NNReal, LipschitzWith L (φ t)) ∧ ContDiff ℝ 1 (φ t)) ∧ ∃ δ B : ℝ, 0 < δ ∧ δ < ε ∧ ∃ Λ' : ℝ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), ∀ x, Λ' 0 x = fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) x ∧ ∀ t ∈ Ioo (-δ) δ, HasDerivAt (fun s ↦ fderiv ℝ (φ s) x) (Λ' t x) t ∧ ‖fderiv ℝ (φ t) x‖ ≤ B ∧ ‖Λ' t x‖ ≤ B ∧ ∀ v, ‖v‖ ≤ B * ‖fderiv ℝ (φ t) x v‖",
+  "lean_name": "ts_fv_compact_variation_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-variation-bounds-a1-a1"
+}

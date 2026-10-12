@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasWeightedApproximateTangentSpaceAt|regular_euclideanHausdorffMeasure_restrict_submodule|support_euclideanHausdorffMeasure_restrict_submodule",
+        "weighted_area_formula_lipschitz_injOn|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "exists_isClosed_continuousOn_of_measurable|ae_dimensionalUpperDensity_eq_zero_outside|measure_toOuterMeasure_isBorelRegular",
+        "integral_withDensity_eq_integral_toReal_smul₀|hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem normDet_comp|def normDet|normDet_sq_eq_det_gram",
+        "theorem .*([Ll]usin)|exists_isClosed_continuousOn_of_measurable",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/tmp/ch04-ts-independent-audit/Assembly.lean",
+        "/tmp/ch04-ts-independent-audit/Axioms.log",
+        "/tmp/ch04-ts-independent-audit/InstanceCompatibility.lean",
+        "/tmp/ch04-ts-independent-audit/InstanceCompatibility.log"
+      ],
+      "conclusion": "The seven-way split is appropriate for the selected tangent_structure_first_variation contract. Snapshot and installed revisions agree; the contract and Submission are byte-identical. Relevant declarations have the required hypotheses, and independent axiom checks report only propext, Classical.choice and Quot.sound. No Lusin theorem matched in the searched Mathlib Function and Measure directories; the pinned SimonGMT Lusin theorem supplies the required result. All seven one-line propositions independently elaborate as comparator challenges and remain definitionally identical after adding proof imports. Continuous-linear-endomorphism multiplication was checked to be composition; no Matrix/IsUnit construction occurs in the frozen types. All names are bare, distinct and unreserved. The sole internal dependency, piece_weighted_blowup depending on piece_density_blowup, is correctly directed and acyclic. A regenerated, sorry-free assembly proves exactly the selected parent from the exact child contracts and the authorized Lipschitz-cover dependency, using only standard axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "piece_density_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree on all piece and density-point hypotheses. The proof establishes both conclusions through the Lipschitz image bound, area formula and rescaling, explicitly controlling integrability, the missing-domain contribution and the uniform approximation error."
+    },
+    {
+      "key": "piece_weighted_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sole child dependency is used correctly. Lusin compacts, null images of non-density points and the two upper-density estimates justify the four-term comparison on a common exceptional-set complement for every test function. Points outside M and outside the piece are handled correctly."
+    },
+    {
+      "key": "approx_tangent_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly allows all n and ℓ. Uniqueness of limits equates compactly supported continuous integrals of the positive weighted plane measures; regular-measure uniqueness and equality of supports then give P = Q without assuming tangent existence or the parent theorem."
+    },
+    {
+      "key": "blowup_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-on-compacts hypothesis justifies the real integrals and μ.real. The explicit cutoff sandwich and plane-ball normalization prove precisely the closed-ball density limit with omega n."
+    },
+    {
+      "key": "blowup_weighted_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact similarity change-of-variables identity converts the assumed weighted-measure limit into the defined Simon weighted-tangent limit. The argument needs neither n > 0 nor x ∈ M, matching the full stated contract."
+    },
+    {
+      "key": "piece_tangent_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The injective-derivative projection formula, continuity of the inverse parametrizations and countable Borel pasting establish the required strongly measurable field. Its values agree with the specified projections at precisely the least-index piece points, without using any tangent-existence theorem."
+    },
+    {
+      "key": "first_variation_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All covering, tangent-identification, measurability and variation assumptions are explicit and match the Lean type. The proof derives area transport, the Jacobian derivative and a uniform integrable derivative bound, then verifies differentiation under the integral and the toReal conversion. It proves the exact derivative without circular reliance on ApproxTangentAE or FirstVariationFormula."
+    }
+  ],
+  "required_changes": []
+}

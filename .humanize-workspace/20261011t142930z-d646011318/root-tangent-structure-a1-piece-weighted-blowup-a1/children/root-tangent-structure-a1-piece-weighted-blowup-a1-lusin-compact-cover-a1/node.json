@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_weighted_blowup-a1.lusin_compact_cover-a1",
+  "parent_id": "root.tangent_structure-a1.piece_weighted_blowup-a1",
+  "depth": 3,
+  "title": "Lusin compact exhaustion of a finite-measure set in ℝ^{n+ℓ}",
+  "statement": "Let n, ℓ ∈ ℕ, E := Ambient n ℓ = ℝ^{n+ℓ} with its Borel σ-algebra, μ any measure on E, A ⊆ E a μ-null-measurable set with μ(A) < ∞, and g : E → ℝ a function that is a.e.-strongly measurable with respect to μ⌞A. Then there are compact sets K_k ⊆ A (k ∈ ℕ) such that g restricted to each K_k is continuous (ContinuousOn g K_k) and μ(A ∖ ⋃_k K_k) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (A : Set (Ambient n ℓ)) (g : Ambient n ℓ → ℝ), NullMeasurableSet A μ → μ A ≠ ⊤ → AEStronglyMeasurable g (μ.restrict A) → ∃ K : ℕ → Set (Ambient n ℓ), (∀ k, IsCompact (K k) ∧ K k ⊆ A ∧ ContinuousOn g (K k)) ∧ μ (A \\ ⋃ k, K k) = 0",
+  "lean_name": "ts_pwb_lusin_compact_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-weighted-blowup-a1-lusin-compact-cover-a1-a1"
+}

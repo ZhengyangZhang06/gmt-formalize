@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pieces-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Covering a countably n-rectifiable set by Lipschitz pieces with continuous injective derivative (replaces Simon Ch. 3, Lemma 1.2 and the C¹ approximation step)",
+  "statement": "Let n ≥ 1, ℓ ≥ 0, E = Ambient n ℓ = ℝ^{n+ℓ}, and let M ⊆ E be countably n-rectifiable in the sense of Simon Ch. 3, 1.1 (Poincare.SimonGMT.Chapter03.CountablyRectifiable n M: M ⊆ M_0 ∪ ⋃_j F_j(ℝⁿ) with Hⁿ(M_0) = 0 and F_j: ℝⁿ → E Lipschitz, ℝⁿ = EuclideanSpace ℝ (Fin n)). Then there are a Borel set N_0 ⊆ E with Hⁿ(N_0) = 0, compact sets C_i ⊆ ℝⁿ and Lipschitz maps F_i: ℝⁿ → E (i ∈ ℕ) such that M ⊆ N_0 ∪ ⋃_i F_i(C_i) and, for every i: F_i is differentiable at every w ∈ C_i with injective derivative DF_i(w); w ↦ DF_i(w) is continuous on C_i; and there is c_i > 0 with c_i|v − w| ≤ |F_i(v) − F_i(w)| for all v, w ∈ C_i.",
+  "lean_statement": "∀ (n ℓ : ℕ) (M : Set (Ambient n ℓ)), 0 < n → Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ), MeasurableSet N₀ ∧ (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 ∧ M ⊆ N₀ ∪ ⋃ i, F i '' C i ∧ ∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖",
+  "lean_name": "rectifiable_lipschitz_piece_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-lipschitz-pieces-a1-a1"
+}

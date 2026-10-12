@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_monotonicity-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Stationary monotonicity identity, existence and upper semicontinuity of the density (Simon 3.6–3.11)",
+  "statement": "Assume (GF). Then StationaryMonotonicity holds (for V stationary in open U and B_R(ξ) ⊆ U: ρ^{-n}μ_V(B_ρ) − σ^{-n}μ_V(B_σ) = ∫_{B_ρ∖B_σ} q_ξ|x − ξ|^{-n}dμ_V for 0 < σ ≤ ρ < R; ρ ↦ ρ^{-n}μ_V(B_ρ) is nondecreasing on (0, R); and for 0 < ρ < R the integrand is μ_V-integrable on B_ρ with (ω_nρⁿ)^{-1}μ_V(B_ρ) − Θⁿ(μ_V, ξ) = ω_n^{-1}∫_{B_ρ} q_ξ|x − ξ|^{-n}dμ_V), and StationaryDensity holds (Θⁿ(μ_V, ·) exists at every point of U and is upper semicontinuous on U).",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → StationaryMonotonicity ∧ StationaryDensity",
+  "lean_name": "stationary_monotonicity_density",
+  "depends_on": [
+    "root.weighted_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.weighted_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-monotonicity-a1-a1"
+}

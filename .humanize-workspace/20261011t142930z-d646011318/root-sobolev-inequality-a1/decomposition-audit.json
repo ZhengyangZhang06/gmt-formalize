@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "ApproxTangentAE|SobolevInequality|MultiplicityGE|tangentialGradient|HasMeanCurvatureIn|HasDensityAt|def density|def omega|^import|axiom|sorry|namespace|^open",
+        "exists_disjoint_subfamily_covering_enlargement_closedBall|countable_of_nonempty_interior|lintegral_rpow_eq_lintegral_meas_lt_mul|lintegral_comp_eq_lintegral_meas_lt_mul|smoothTransition",
+        "lintegral_smooth_truncation_energy_le|lintegral_le_of_ae_exists_good_radius|exists_smooth_superlevel_cutoff|contDiff_of_tsupport_subset|intervalIntegrable_radiusQuotient_of_monotoneOn",
+        "sobolev_energy_integrable|sobolev_density_ge_one_ae|sobolev_good_radius_calculus|sobolev_monotonicity_inequality|sobolev_covering_inequality|sobolev_of_superlevel_inequality",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "#print axioms independent_assembly",
+        "#print axioms Poincare.SimonGMT.Chapter04.lintegral_le_of_ae_exists_good_radius",
+        "#print axioms Poincare.SimonGMT.Chapter04.lintegral_smooth_truncation_energy_le",
+        "#print axioms Submodule.norm_starProjection_apply_le"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactWeighted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/GoodRadius.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevCovering.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevTruncation.lean",
+        "/tmp/sobolev-independent-review-20261011/lean/Assembly.lean",
+        "/tmp/sobolev-independent-review-20261011/lean/Inspect.lean",
+        "/tmp/sobolev-independent-review-20261011/lean/Axioms.lean"
+      ],
+      "conclusion": "The six-child split is appropriate for the selected Sobolev contract. The handoff and DAG types agree; the weighted-monotonicity antecedent is byte-identical to the declared parent dependency. Dependency and parent-to-child proof edges are acyclic. All six names are bare identifiers, with no existing declaration or competing branch reservation found. All six frozen types pass lexical validation and independently elaborate as comparator challenges without child implementations. Explicit Iff.rfl checks confirm natural powers, Real.rpow, Measure.real and right-sided filters. A fresh assembly taking the children and weighted monotonicity as explicit hypotheses proves the exact selected parent type with c = 5^(n+1)ω_n^(-1/n); its axioms are only propext, Classical.choice and Quot.sound. Snapshot/compiler sources and pinned revisions agree. The checked generic library lemmas have compatible types and only those standard axioms; no incompatible SimonGMT varifold-specific Sobolev theorem is reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "energy_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the hypotheses and four conclusions. The proof establishes global C¹ regularity, vanishing gradients off the compact support, measurable projection evaluation, and both integrability claims. It correctly permits signed g and requires no positive-dimension hypothesis."
+    },
+    {
+      "key": "density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen definitions support every step: MultiplicityGE supplies the representative, withDensity transfers almost-everywhere statements, openness justifies restriction to U, and ApproxTangentAE plus limUnder uniqueness identifies the density. No structural or parent conclusion is assumed."
+    },
+    {
+      "key": "good_radius_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully expresses the frequent small-radius lower bound and arbitrary upper bound F. The proof checks positive-interval integrability and derives F > 0, the stated strict radius bound, and the exact constant. The contradiction S > 2/3 versus S ≤ 7/12 is valid for every n ≥ 2."
+    },
+    {
+      "key": "monotonicity_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit weighted-identity antecedent matches the frozen dependency. The energy child supplies integrability; the support condition permits every radius. Annulus nonnegativity, the radial inner-product bound, integrability of the majorant, and rearrangement give precisely the stated inequality."
+    },
+    {
+      "key": "covering_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract measure contract matches its prose. The proof verifies every calculus-child hypothesis, removes a measurable null exceptional set, obtains a countable disjoint five-times covering, and sums finite weighted measures with the correct constant. The empty good-set case is covered."
+    },
+    {
+      "key": "truncation_layer_cake",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The superlevel premise is explicit and non-circular. The proof establishes admissible truncations and their gradients, the moment estimate, Tonelli identities, compact-support domination, and the ε-limit. Restriction to the compact support supplies the needed measurability of H. Both Q = 0 and Q > 0 yield the exact exponent and constant."
+    }
+  ],
+  "required_changes": []
+}

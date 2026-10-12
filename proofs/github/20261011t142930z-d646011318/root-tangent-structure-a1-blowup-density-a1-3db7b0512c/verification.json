@@ -1,0 +1,19 @@
+{
+  "node_id": "root.tangent_structure-a1.blowup_density-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/295",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1849",
+  "candidate_commit": "a26cd30ec8ae0419bd3e37ff0ea0f8723aad4628",
+  "integrated_commit": "",
+  "proof_base_commit": "2cce809724fc09db16dc21873e5f9cd1ee6e2dfa",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.tangent_structure-a1",
+  "requires": [
+    "root.tangent_structure-a1.blowup_density-a1.plane_ball_measure-a1",
+    "root.tangent_structure-a1.blowup_density-a1.cutoff_ball_bounds-a1",
+    "root.tangent_structure-a1.blowup_density-a1.plane_cutoff_approx-a1"
+  ]
+}

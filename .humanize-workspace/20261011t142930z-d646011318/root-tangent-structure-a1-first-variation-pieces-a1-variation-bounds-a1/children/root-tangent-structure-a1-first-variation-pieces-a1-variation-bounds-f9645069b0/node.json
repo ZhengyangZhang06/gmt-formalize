@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.variation_bounds-a1.first_order_regularity-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.variation_bounds-a1",
+  "depth": 4,
+  "title": "First-order regularity of a compact variation: the velocity field and the time slices",
+  "statement": "Let n, ℓ ∈ ℕ, E := Ambient n ℓ = ℝ^{n+ℓ} (EuclideanSpace ℝ (Fin (n+ℓ)), Euclidean norm), φ : ℝ → E → E, ε ∈ ℝ and K ⊆ E, and assume IsCompactVariation φ ε K (Simon Ch. 4, 2.1), i.e. (H1) ε > 0; (H2) K is compact; (H3) (t, y) ↦ φ t y is C^∞ on (−ε, ε) × E; (H4) for every t ∈ (−ε, ε), φ t is bijective and Function.invFun (φ t) is C^∞ on E; (H5) φ 0 y = y for all y; (H6) φ t y = y for all t ∈ (−ε, ε) and y ∉ K. Let X(y) := deriv (t ↦ φ t y) 0. Then (a) X is C¹ on E (ContDiff ℝ 1 X); (b) fderiv ℝ X y = 0 for every y ∉ K; (c) for every t ∈ (−ε, ε) there is L ∈ ℝ≥0 such that φ t is L-Lipschitz, and φ t is C¹ on E.",
+  "lean_statement": "∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) ∧ (∀ y ∉ K, fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) y = 0) ∧ (∀ t ∈ Ioo (-ε) ε, (∃ L : NNReal, LipschitzWith L (φ t)) ∧ ContDiff ℝ 1 (φ t))",
+  "lean_name": "ts_fv_cv_first_order_regularity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-variation-bounds-f9645069b0-a1"
+}

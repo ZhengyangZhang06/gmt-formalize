@@ -1,0 +1,20 @@
+{
+  "node_id": "root.stationary_iff_variational-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/56",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/725",
+  "candidate_commit": "4f0a6ece26115ffbd0b96a0ab508d7c5b11c884d",
+  "integrated_commit": "",
+  "proof_base_commit": "6fed1833a6e78666587b47e7b2a3612089e8acef",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.stationary_iff_variational-a1.variation_velocity_test_field-a1",
+    "root.stationary_iff_variational-a1.linear_compact_variation-a1",
+    "root.stationary_iff_variational-a1.smooth_c1_approximation-a1",
+    "root.stationary_iff_variational-a1.first_variation_continuity-a1"
+  ]
+}

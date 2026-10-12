@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "eigenvectorBasis|eigenvalues_eq|det_eq_prod_eigenvalues",
+        "det_le|trace_comp_comm.|fun_finsetProd|fun_sum|prod_le_prod₀|det_apply.|starProjection_apply_mem|starProjection_inner_eq_zero|isIdempotentElem_starProjection|norm_starProjection_apply_le|inner_starProjection_left_eq_right|theorem norm_eq|basisFun_apply",
+        "ts_fv_det_ge_pow_of_quadForm_ge|ts_fv_hasDerivAt_det_of_entries|ts_fv_sum_inner_starProjection_eq_trace|ts_fv_tangential_matrix_estimates",
+        "python3 -I /tmp/jd-independent-audit/prepare.py",
+        "/tmp/jd-independent-audit/runlean.sh /tmp/jd-independent-audit/Challenge_det_lower_bound.lean",
+        "/tmp/jd-independent-audit/runlean.sh /tmp/jd-independent-audit/Challenge_jacobi_formula.lean",
+        "/tmp/jd-independent-audit/runlean.sh /tmp/jd-independent-audit/Challenge_projection_trace.lean",
+        "/tmp/jd-independent-audit/runlean.sh /tmp/jd-independent-audit/Challenge_tangential_estimates.lean",
+        "/tmp/jd-independent-audit/runlean.sh /tmp/jd-independent-audit/Typechecks.lean",
+        "/tmp/jd-independent-audit/runlean.sh /tmp/jd-independent-audit/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivative-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivative-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/tmp/jd-decomp/Full.lean",
+        "/tmp/jd-independent-audit/prepare.py",
+        "/tmp/jd-independent-audit/Typechecks.lean",
+        "/tmp/jd-independent-audit/Full.lean"
+      ],
+      "conclusion": "The four-way split is appropriate: the children independently supply determinant coercivity, determinant differentiation, trace identification and tangential estimates, and together establish the exact selected parent. The pinned spectral, calculus, projection and trace lemmas support the supplied proofs. All four one-line propositions independently elaborate as comparator challenges against a freshly compiled frozen Submission; none depends on its implementation. Their types match the supplied proof declarations exactly. Matrix identity, operator identity, real coercions and natural-number exponents were independently checked. All names are bare identifiers; no reservations were found in dag.json, DAG.md or GMT, and other decomposition files showed no collisions. Empty sibling dependencies are correct and acyclic. Recompilation of the complete children-plus-parent proof succeeded with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Symmetry supplies Hermitian spectral data; applying coercivity to each unit eigenvector gives c ≤ λ, and c ≥ 0 permits multiplying these inequalities. The proof covers c = 0 and N = 0, is non-circular, and supplies the parent's determinant lower bound."
+    },
+    {
+      "key": "jacobi_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit differentiated Leibniz sum proves the derivative, bound and identity clause. Nonidentity permutations have two distinct moved indices, so every omitted-factor product vanishes at the identity. Required nonnegativity follows from the entry bounds whenever an index exists; N = 0 gives D = 0 without additional assumptions. The exact type matches the prose, including natural subtraction and the verified matrix identity instance."
+    },
+    {
+      "key": "projection_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all stated data. Projection idempotence, trace cyclicity, the standard orthonormal-basis trace formula and self-adjointness prove precisely the claimed sum. The proof is complete and independent, including the zero-dimensional case, and identifies the parent's derivative at zero."
+    },
+    {
+      "key": "tangential_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts and every hypothesis match the prose. Pythagoras and Cauchy–Schwarz prove the entry bound. The explicit bilinear expansion identifies the quadratic form, and applying the lower hypothesis to p v proves coercivity; b ≥ 1 justifies positivity and the inverse-square comparison. No additional hypothesis, sibling result or circular reliance is needed."
+    }
+  ],
+  "required_changes": []
+}

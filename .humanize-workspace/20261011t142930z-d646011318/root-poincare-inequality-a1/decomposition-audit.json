@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "theorem .*gronwall|lemma .*gronwall|integral.*Gronwall|Gronwall.*integral",
+        "theorem lintegral_eq_lintegral_meas_lt|theorem lintegral_lintegral_swap|theorem measurable_fderiv|theorem integral_Ioi_rpow_of_lt|theorem integrableOn_Ioi_rpow_of_lt",
+        "contDiff|monotone|zero_of_nonpos|one_of_one_le|nonneg|le_one",
+        "def gradient|gradient_eq|fderiv",
+        "support_mem_ae|norm_starProjection_apply_le|continuousOn_primitive_interval_left",
+        "/tmp/ch04-poincare-split/tc/bin/lean /tmp/ch04-poincare-independent-audit-acssfrd6/Types.lean",
+        "/tmp/ch04-poincare-split/tc/bin/lean -o /tmp/ch04-poincare-independent-audit-acssfrd6/Children.olean /tmp/ch04-poincare-independent-audit-acssfrd6/Children.lean",
+        "/tmp/ch04-poincare-split/tc/bin/lean /tmp/ch04-poincare-independent-audit-acssfrd6/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/ODE/Gronwall.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-poincare-inequality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-poincare-inequality-a1/decomposition-v1.json",
+        "/tmp/ch04-poincare-independent-audit-acssfrd6/Types.lean",
+        "/tmp/ch04-poincare-independent-audit-acssfrd6/Children.lean",
+        "/tmp/ch04-poincare-independent-audit-acssfrd6/Assembly.lean",
+        "/tmp/ch04-poincare-independent-audit-acssfrd6/children.log",
+        "/tmp/ch04-poincare-independent-audit-acssfrd6/assembly.log"
+      ],
+      "conclusion": "The split is appropriate for the selected Poincare contract. The snapshot contract matches the workspace, and dependency revisions match the pins. The searched ODE files contain differential/discrete Gronwall results, but no matching backward integral formulation. The other cited analytic ingredients are present. Independently validated all seven one-line propositions and elaborated them before implementing any child. All names are bare and unreserved in the inspected DAG and other decomposition proposals. Declared dependencies match the supplied proofs and are acyclic; both WMI hypotheses are byte-identical to the frozen sibling type. Independently compiled every supplied child proof and the parent assembly, passing the three exact sibling contracts as explicit hypotheses. All depend only on propext, Classical.choice and Quot.sound. The assembly establishes the selected frozen conclusion with constants chosen before ℓ. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integral_gronwall",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose, including unrestricted signs of C and f. The successive continuous majorants justify FTC without differentiating the merely integrable f. The integrating-factor argument also covers Λ = 0 and a = b. Complete and non-circular."
+    },
+    {
+      "key": "smooth_truncation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The scaled smooth transition supplies every stated property. Compact support of its continuous derivative gives boundedness; splitting at max(a,0), substitution and FTC prove the lower-integral bound for every real a. No additional positivity assumption on a is used."
+    },
+    {
+      "key": "kernel_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract and proof correctly handle K < 0, n = 1, and the totalized real-power value at the center. For n ≥ 2, the level-set inclusion and improper-integral computation give exactly nKs. No unstated finiteness or atomlessness hypothesis is needed."
+    },
+    {
+      "key": "layer_cake_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All measurability and s-finiteness requirements are explicit. Positive-part layer cake handles arbitrary h and ε; both Tonelli applications and multiplication by possibly infinite constants are valid. The level-dependent almost-everywhere hypotheses suffice without a common exceptional set."
+    },
+    {
+      "key": "ball_average_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the full WMI hypothesis and kernel-integrability assumption. The proof establishes spatial and radial integrability, obtains the correctly signed WMI inequality, applies only the declared Gronwall child, and bounds the radial error by Tonelli. The parent discharges the added integrability hypothesis without circularity."
+    },
+    {
+      "key": "mean_value_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The density hypothesis matches HasDensityAt with the frozen normalization. Continuity at ζ and boundedness of the density quotient rigorously control the averaging error. Passing the ball-average estimate to the limit and using θ₀ ≥ 1 proves the exact conclusion. Its dependency is correctly directed."
+    },
+    {
+      "key": "gradient_chain_rule",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both pointwise differentiability hypotheses are explicit. The Fréchet chain rule followed by the real-linear inverse Riesz map and orthogonal projection proves the stated scalar-multiplication identity. No tangent measurability, density, or dimension-positivity assumption is required."
+    }
+  ],
+  "required_changes": []
+}

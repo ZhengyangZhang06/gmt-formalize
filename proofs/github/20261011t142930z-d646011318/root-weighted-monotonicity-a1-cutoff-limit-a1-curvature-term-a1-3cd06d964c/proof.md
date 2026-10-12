@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.weighted_monotonicity-a1.cutoff_limit-a1`
+- Child DAG node: `root.weighted_monotonicity-a1.cutoff_limit-a1.curvature_term-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) = ℝ^{n+ℓ} with its Borel σ-algebra; B_s(ξ) := closedBall ξ s is the CLOSED ball, so x ∈ B_s(ξ) ⟺ |x − ξ| ≤ s (dist x ξ = |x − ξ|); r = r(x) := |x − ξ| ≥ 0; λ is Lebesgue measure on ℝ and ∫_{(a,b]} means the integral over Ioc a b; 1_S is the indicator function of S. Put B := B_R(ξ), L_m(τ) := ∫φ_m(r(x)/τ)·G(x) dμ(x), L(τ) := ∫_{B_τ(ξ)} G dμ, h_m(τ) := L_m(τ)/τⁿ⁺¹, h(τ) := L(τ)/τⁿ⁺¹ and ν := λ⌞(σ,ρ]. (Context: Steps 8 and 10 of the parent proof.) Note ρ ≥ σ > 0 and 1 + ε_m > 0.
+1. (Vanishing off B.) Let 0 < τ ≤ ρ and x ∉ B, i.e. r(x) > R. Then (1 + ε_m)τ ≤ (1 + ε_m)ρ ≤ R < r(x), so dividing by τ > 0, r(x)/τ ≥ 1 + ε_m and φ_m(r(x)/τ) = 0.
+2. (Measurability and domination in x.) Let g := 1_B·|G|, which is μ-integrable since G is μ-integrable on B. For 0 < τ ≤ ρ put F_τ(x) := φ_m(r(x)/τ)·G(x). By 1, F_τ = 1_B·F_τ; on B, F_τ is the product of the Borel function x ↦ φ_m(r(x)/τ) (φ_m continuous) and of G, which is a.e. strongly measurable for μ⌞B; so F_τ is a.e. strongly measurable for μ⌞B, and hence (aestronglyMeasurable_indicator_iff, B closed) F_τ = 1_B·F_τ is a.e. strongly measurable for μ. Moreover |F_τ(x)| ≤ g(x) for all x: on B because 0 ≤ φ_m ≤ 1, and off B because F_τ(x) = 0 by 1.
+3. (Uniform bound for L_m.) Put C_G := ∫g dμ ≥ 0. For 0 < τ ≤ ρ, |L_m(τ)| ≤ C_G by 2 (norm_integral_le_of_norm_le).
+4. (Continuity of L_m.) L_m is continuous on [σ, ρ] by continuity of parameter integrals under domination (continuousOn_of_dominated with bound g): for τ ∈ [σ, ρ] we have 0 < τ ≤ ρ, so by 2 F_τ is a.e. strongly measurable and |F_τ| ≤ g with g integrable; and for every x the map τ ↦ φ_m(r(x)/τ)·G(x) is continuous on [σ, ρ] because τ ↦ r(x)/τ is continuous on [σ, ρ] (τ ≠ 0 there) and φ_m is continuous.
+5. (Measurability of h_m.) τ ↦ τⁿ⁺¹ is continuous and nonzero on [σ, ρ], so h_m is continuous on [σ, ρ] ⊇ (σ, ρ], hence a.e. strongly measurable for ν (ContinuousOn.aestronglyMeasurable, (σ, ρ] measurable).
+6. (Pointwise convergence.) Let τ ∈ (σ, ρ]. Then τ > 0 and (1 + ε_m)τ ≤ (1 + ε_m)ρ ≤ R for every m, and each φ_m is measurable (being continuous). The sibling lemma weighted_mono_cutoff_integral_tendsto, applied with f := G, t := τ and the same R, φ_m, ε_m (its hypotheses: τ > 0; G is μ-integrable on B_R(ξ); ε_m → 0; (1 + ε_m)τ ≤ R; φ_m measurable; 0 ≤ φ_m ≤ 1; φ_m(s) = 1 for s ≤ 1; φ_m(s) = 0 for s ≥ 1 + ε_m), gives L_m(τ) → L(τ). Dividing by the constant τⁿ⁺¹ ≠ 0, h_m(τ) → h(τ).
+7. (Uniform bound for h_m.) For τ ∈ (σ, ρ]: |h_m(τ)| = |L_m(τ)|/τⁿ⁺¹ ≤ C_G/τⁿ⁺¹ ≤ C_G/σⁿ⁺¹, by 3, τⁿ⁺¹ ≥ σⁿ⁺¹ > 0 and C_G ≥ 0.
+8. (First conclusion: integrability.) By 5 and 6, h is the ν-a.e. pointwise limit (indeed the limit at every point of (σ, ρ]) of the ν-a.e. strongly measurable functions h_m, so h is ν-a.e. strongly measurable (aestronglyMeasurable_of_tendsto_ae). For τ ∈ (σ, ρ], |h(τ)| = lim |h_m(τ)| ≤ C_G/σⁿ⁺¹ by 6 and 7 (le_of_tendsto). Since λ((σ, ρ]) = ρ − σ < ∞, h is integrable on (σ, ρ] (IntegrableOn.of_bound).
+9. (Second conclusion: convergence.) The constant function C_G/σⁿ⁺¹ is ν-integrable because ν is finite. By 5 (measurability), 7 (domination ν-a.e.) and 6 (convergence ν-a.e.), dominated convergence (tendsto_integral_filter_of_dominated_convergence) gives ∫_{(σ,ρ]} h_m dλ → ∫_{(σ,ρ]} h dλ, which is the claim.
+
+## Key steps
+
+1. φ_m(r/τ) = 0 off B_R(ξ) for 0 < τ ≤ ρ; the x-integrand is μ-a.e. strongly measurable and dominated by 1_{B_R}|G|
+2. |L_m(τ)| ≤ ∫_{B_R}|G| and L_m is continuous on [σ,ρ] (continuousOn_of_dominated), so h_m is a.e. strongly measurable
+3. For τ ∈ (σ,ρ], L_m(τ) → ∫_{B_τ}G by the sibling cutoff_integral lemma
+4. The limit τ^{-n-1}∫_{B_τ}G is a.e. strongly measurable and bounded by C_G/σⁿ⁺¹, hence integrable on (σ,ρ]
+5. Dominated convergence on (σ,ρ] with the constant bound C_G/σⁿ⁺¹
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `grep -n '^theorem\|^protected theorem' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `rg -n 'theorem tendsto_integral_filter_of_dominated_convergence|theorem continuousOn_of_dominated|theorem _root_.aestronglyMeasurable_of_tendsto_ae|theorem StronglyMeasurable.integral_prod_right|theorem measurable_deriv|lemma IntegrableOn.of_bound|theorem integrableOn_const |theorem integral_indicator |theorem integrable_indicator_iff|theorem tendsto_of_tendsto_of_tendsto_of_le_of_le'|theorem norm_integral_le_of_norm_le |theorem measure_closedBall_lt_top|theorem div₀|theorem ContinuousOn.aestronglyMeasurable|theorem tendsto_nhds_unique ' <snapshot>/mathlib/Mathlib`
+- `rg -n 'aestronglyMeasurable_indicator_iff|const_div_atTop' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'monotonicityCutoff' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04`
+- `rg/grep/git grep 'weighted_mono_cutoff_seq_exists|weighted_mono_cutoff_integral_tendsto|weighted_mono_kernel_limit|weighted_mono_kernel_term_tendsto|weighted_mono_curvature_term_tendsto' over <snapshot>, dag.json, nodes/, GMT/Ch04/Submission.lean and all local branches`
+- `python3 -I: verifier/lean_contract.validate_lean_statement and verifier/gmt-compare.py child_modules (contract mode) for each child`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/cutoff-limit-decomp/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/cutoff-limit-decomp/olean lean /tmp/cutoff-limit-decomp/work/{Assembly,C1,C2,C3,C4,C5,Full}.lean (#print axioms)`
+- `LEAN_PATH=... lean /tmp/cutoff-limit-decomp/gen/<key>_NodeChallenge.lean for all five children`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Order/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-cutoff-limit-a1/parent-child-handoff.json`
+- `/tmp/cutoff-limit-decomp/work/Assembly.lean`
+- `/tmp/cutoff-limit-decomp/work/Full.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b; project ff75f52a, mathlib 25730c7c).
+
+Every tool the children use exists in the snapshot Mathlib:
+- Real.smoothTransition.{contDiff, monotone, zero_of_nonpos, one_of_one_le, nonneg, le_one}: SmoothTransition.lean:161–222.
+- tendsto_integral_filter_of_dominated_convergence: DominatedConvergence.lean:67.
+- continuousOn_of_dominated and norm_integral_le_of_norm_le: Bochner/Basic.lean:467, 985.
+- integral_indicator: Bochner/Set.lean:185.
+- integrableOn_const, IntegrableOn.of_bound, integrable_indicator_iff, ContinuousOn.aestronglyMeasurable: IntegrableOn.lean:119, 174, 340, 791.
+- AEStronglyMeasurable.div₀, aestronglyMeasurable_indicator_iff, aestronglyMeasurable_of_tendsto_ae: AEStronglyMeasurable.lean:332, 545, 696.
+- MeasureTheory.StronglyMeasurable.integral_prod_right: Integral/Prod.lean:67.
+- measurable_deriv: FDeriv/Measurable.lean:398.
+- measure_closedBall_lt_top: Typeclasses/Finite.lean:364.
+- tendsto_of_tendsto_of_tendsto_of_le_of_le': Topology/Order/Basic.lean:220.
+- tendsto_nhds_unique: Separation/Hausdorff.lean:180.
+- Filter.Tendsto.const_div_atTop: Topology/Algebra/Order/Field.lean:222.
+
+SimonGMT's monotonicityCutoff (Chapter04/FirstVariation.lean:825–885) is the same construction as cutoff_seq. GMT.Ch04.Submission does not import that module, so the child uses Real.smoothTransition directly.
+
+No-match result: none of the five proposed lean_names occurs in the snapshot, dag.json, nodes/, GMT/, or any local branch.
+
+All five child types elaborate in the comparator contract scope, and each has a sorry-free Lean proof using only standard axioms. The selected frozen theorem compiles from the five children plus the frozen weighted_mono_kernel_bounds type.

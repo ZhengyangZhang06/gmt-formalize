@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.support_convex_hull-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Support in a ball and the convex hull property (Simon 6.1–6.2)",
+  "statement": "Assume (GF). Then SupportInBall holds (if n ≥ 1, R ≥ 0, V has L¹_loc generalized mean curvature H in U = ℝ^{n+ℓ} ∖ B_R(ξ) with n^{-1}|H(x)·(x − ξ)| < 1 for μ_V-a.e. x ∈ U, and spt V is compact, then spt V ⊆ B_R(ξ)), and ConvexHullProperty holds (if n ≥ 1, K is compact, spt V is compact and V is stationary in ℝ^{n+ℓ} ∖ K, then spt V ⊆ conv K).",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SupportInBall ∧ ConvexHullProperty",
+  "lean_name": "support_in_ball_convex_hull",
+  "depends_on": [
+    "root.radial_first_variation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.radial_first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-support-convex-hull-a1-a1"
+}

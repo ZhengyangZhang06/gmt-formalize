@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.linear_range_integral-a1",
+  "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "depth": 3,
+  "title": "Integral over the range of a linear map with a given area factor",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, Hⁿ = μHE[n] on E. Let A: ℝⁿ → E be a continuous linear map and j ≥ 0 such that Hⁿ(A(S)) = ofReal(j)·Lⁿ(S) for every S ⊆ ℝⁿ. Then for every f ∈ C_c(E, ℝ), ∫_{A(ℝⁿ)} f dHⁿ = j·∫_{ℝⁿ} f(A(u)) dLⁿ(u).",
+  "lean_statement": "∀ (n ℓ : ℕ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (j : ℝ), 0 ≤ j → (∀ S : Set (EuclideanSpace ℝ (Fin n)), (μHE[n] : Measure (Ambient n ℓ)) (A '' S) = ENNReal.ofReal j * volume S) → ∀ f : C_c(Ambient n ℓ, ℝ), ∫ y in (LinearMap.range A.toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n] = j * ∫ u, f (A u)",
+  "lean_name": "ts_pdb_linear_range_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1-a1"
+}

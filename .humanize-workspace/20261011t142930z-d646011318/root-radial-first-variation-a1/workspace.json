@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T142930Z-d646011318",
+  "parent_id": "root.radial_first_variation-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch04/20261011t142930z-d646011318/dispatch/root-radial-first-variation-a1",
+  "source_commit": "ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch04/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.radial_first_variation-a1.projection_trace-a1",
+      "key": "projection_trace",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-radial-first-variation-a1-projection-trace-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-projection-trace-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+              "rg -n \"theorem trace_smulRight|theorem trace_eq_rank|IsProj.*trace|trace.*starProjection|trace_orthogonalProjection|theorem trace_comp_comm|theorem trace_id\\b|theorem trace_one\" <snapshot>/mathlib/Mathlib",
+              "rg -n \"IsProj|isProj\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/ ; rg -n \"starProjection_eq_self_iff|starProjection_inner_eq_zero|inner_starProjection_left_eq_right|norm_sq_eq_add_norm_sq_projection|starProjection_add_starProjection_orthogonal|starProjection_orthogonal_val\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/*.lean",
+              "rg -n \"theorem HasFDerivAt.norm|theorem hasStrictFDerivAt_norm|theorem DifferentiableAt.norm |HasFDerivAt.sqrt|‖⁻¹ • innerSL\" <snapshot>/mathlib/Mathlib ; rg -n \"^theorem|^lemma\" <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+              "rg -n \"theorem support_fderiv_subset|theorem fderiv_of_notMem_tsupport|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem HasFDerivAt.smul |toDual_symm_apply|theorem setIntegral_congr_ae |theorem hasFDerivAt_iff_isLittleO_nhds_zero|theorem IsLittleO.smul_isBigO|theorem isLittleO_one_iff|theorem HasDerivAt.comp_hasFDerivAt |theorem ContDiff.differentiable |theorem image_eq_one_of_notMem_mulTSupport|theorem real_inner_smul_left\" <snapshot>/mathlib/Mathlib",
+              "rg -n \"trace|starProjection|radial|hasFDerivAt.*norm|tangentialDiv\" lake-packages-25730c7c/simongmt/Poincare ; rg -n \"RadialVectorField|tangentialDivergence_smul|trace_radialEndomorphism\" simongmt/Poincare/SimonGMT/Chapter04",
+              "lake env lean /tmp/radial-fv-decomp/test/SimonAx.lean (#check and #print axioms of Poincare.SimonGMT.Chapter04.RectifiableVarifold.trace_radialEndomorphism, trace_starProjection, hasFDerivAt_squaredRadialVectorField)",
+              "rg -n \"radial_vector_field_hasFDerivAt|trace_scalar_add_rankOne_comp_starProjection|tangentialDiv_weighted_radial_field\" <run dir> simongmt/Poincare <snapshot>/mathlib/Mathlib (and dag.json lean_name listing)",
+              "grep -n \"3.2|5.1|divM\" book/chapter-04.txt",
+              "python3 -I scope.py (verifier/gmt-compare.py contract_scope for GMT.Ch04.main_theorem) ; python3 -I validate.py (verifier/lean_contract.py validate_lean_statement on all four statements)",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/radial-fv-decomp/olean/GMT/Ch04/Submission.olean",
+              "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/radial-fv-decomp/olean lean /tmp/radial-fv-decomp/final/Sim.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Projection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Asymptotics/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/tmp/radial-fv-decomp/final/Sim.lean"
+            ],
+            "conclusion": "Snapshot contract sha256 6e58e5dd…0f4770b is byte-identical to the workspace Contract.lean/Submission.lean (project ff75f52a, Mathlib 25730c7c). Every step of the split exists in the snapshot Mathlib: LinearMap.trace_smulRight, LinearMap.IsProj.trace, LinearMap.trace_id (LinearAlgebra/Trace.lean); Submodule.starProjection_apply_mem, starProjection_eq_self_iff, inner_starProjection_left_eq_right, norm_sq_eq_add_norm_sq_starProjection (InnerProductSpace/Projection/Basic.lean); HasFDerivAt.norm_sq, HasFDerivAt.sqrt, HasDerivAt.comp_hasFDerivAt, HasFDerivAt.fun_smul, hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_one_iff, IsLittleO.smul_isBigO; InnerProductSpace.toDual_symm_apply (gradient); fderiv_of_notMem_tsupport, image_eq_zero_of_notMem_tsupport, setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_congr_ae, real_inner_smul_left. Mathlib has no HasFDerivAt lemma for the norm at a nonzero point (FDeriv/Norm.lean only has scaling lemmas), so child 1 goes through √(|y−ξ|²); SimonGMT Chapter04/FirstVariation.lean avoids the centre by using a squared-radius field (hasFDerivAt_squaredRadialVectorField), so the radius-r derivative at x = ξ is genuinely new (child 1), while its trace_radialEndomorphism (axioms propext, Classical.choice, Quot.sound) is child 2 with b = 1 (it is not imported by the contract). The three child names have no match in the run directory, dag.json, SimonGMT or Mathlib. The four statements pass verifier/lean_contract.py, and in the replayed contract scope (open MeasureTheory Metric Set Filter Topology; open scoped ENNReal ContDiff CompactlySupported; namespace GMT.Ch04; noncomputable section; open RectifiableVarifold) /tmp/radial-fv-decomp/final/Sim.lean declares Submission.radial_vector_field_hasFDerivAt, Submission.trace_scalar_add_rankOne_comp_starProjection, Submission.tangentialDiv_weighted_radial_field and the parent Submission.radial_first_variation (parent proved from child 3 only) with exactly these types, plus comparator-style `exact Submission.X` targets; lean exits 0 with no errors, only deprecation warnings, and #print axioms gives [propext, Classical.choice, Quot.sound] for all four. An independent reviewer rebuilt the olean, re-ran Sim.lean and confirmed it."
+          }
+        ],
+        "parent_id": "root.radial_first_variation-a1",
+        "child_id": "root.radial_first_variation-a1.projection_trace-a1",
+        "subproblem": {
+          "key": "projection_trace",
+          "title": "Trace of (cI + F(·)v) ∘ p_P equals c·dim P + F(p_P v)",
+          "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), P ⊆ E any linear subspace with orthogonal projection p = p_P (P.starProjection), c ∈ ℝ, F : E → ℝ a continuous linear functional and v ∈ E. Then the endomorphism A = c·I + F(·)v, A(u) = c·u + F(u)·v, satisfies trace(A ∘ p) = c·dim P + F(p v).",
+          "lean_statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ) (F : Ambient n ℓ →L[ℝ] ℝ) (v : Ambient n ℓ), LinearMap.trace ℝ (Ambient n ℓ) ((c • ContinuousLinearMap.id ℝ (Ambient n ℓ) + F.smulRight v).toLinearMap ∘ₗ P.starProjection.toLinearMap) = c * (Module.finrank ℝ P : ℝ) + F (P.starProjection v)",
+          "lean_name": "trace_scalar_add_rankOne_comp_starProjection",
+          "depends_on": [],
+          "natural_proof": "Conventions. n, ℓ ∈ ℕ; E = Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) = ℝ^{n+ℓ}, a finite-dimensional real inner product space with inner product ⟨·,·⟩ = inner ℝ and norm |·| = ‖·‖. Real division by 0 is 0 (Lean convention: a/0 = 0 for every a ∈ ℝ). N = n + ℓ = dim E. P is an arbitrary linear subspace of E, k = dim P = Module.finrank ℝ P, and p = P.starProjection is the orthogonal projection of E onto P (p u ∈ P and u − p u ⊥ P for all u; hence p u = u for u ∈ P and p u = 0 for u ∈ P^⊥). F : E → ℝ is a continuous linear functional, c ∈ ℝ, v ∈ E, and A = c • ContinuousLinearMap.id + F.smulRight v, i.e. A(u) = c·u + F(u)·v. trace = LinearMap.trace ℝ E, and A ∘ p is the composite u ↦ A(p u) (as a linear map).\n\n1. Choose an orthonormal basis τ_1, …, τ_k of P and an orthonormal basis τ_{k+1}, …, τ_N of P^⊥. Since E is finite-dimensional, E = P ⊕ P^⊥ is an orthogonal direct sum, so τ_1, …, τ_N is an orthonormal basis of E.\n2. For every linear map B : E → E, trace B = Σ_{j=1}^{N} ⟨Bτ_j, τ_j⟩, because ⟨Bτ_j, τ_j⟩ is the j-th diagonal entry of the matrix of B in the orthonormal basis (τ_j).\n3. pτ_j = τ_j for j ≤ k (as τ_j ∈ P) and pτ_j = 0 for j > k (as τ_j ∈ P^⊥). Applying step 2 to B = A ∘ p gives trace(A ∘ p) = Σ_{j=1}^{k} ⟨Aτ_j, τ_j⟩.\n4. For each j ≤ k, ⟨Aτ_j, τ_j⟩ = c⟨τ_j, τ_j⟩ + F(τ_j)⟨v, τ_j⟩ = c + F(τ_j)⟨v, τ_j⟩, since |τ_j| = 1.\n5. Summing over j ≤ k and using linearity of F: trace(A ∘ p) = ck + Σ_{j≤k} ⟨v, τ_j⟩F(τ_j) = ck + F(Σ_{j≤k} ⟨v, τ_j⟩τ_j) = ck + F(p v), because the orthogonal projection onto P has the expansion p v = Σ_{j≤k} ⟨v, τ_j⟩τ_j in the orthonormal basis τ_1, …, τ_k of P. Since k = dim P, this is the claim trace(A ∘ p) = c·dim P + F(p v).\nRemark (the same computation without bases, matching Mathlib): A ∘ p = c·p + G(·)v with G = F ∘ p linear; by linearity of the trace, trace(A ∘ p) = c·trace(p) + trace(u ↦ G(u)v); trace(p) = k because p maps E onto P and fixes P (Mathlib LinearMap.IsProj.trace), and the rank-one map u ↦ G(u)v has trace G(v) = F(p v) (Mathlib LinearMap.trace_smulRight). The pinned SimonGMT library contains this identity with an extra scalar b (Poincare.SimonGMT.Chapter04.RectifiableVarifold.trace_radialEndomorphism, take b = 1).",
+          "proof_key_steps": [
+            "Orthonormal basis τ_1..τ_N of E with τ_1..τ_k a basis of P and τ_{k+1}..τ_N a basis of P^⊥",
+            "trace B = Σ_j ⟨Bτ_j, τ_j⟩; since pτ_j = τ_j (j ≤ k) and pτ_j = 0 (j > k), trace(A∘p) = Σ_{j≤k} ⟨Aτ_j, τ_j⟩",
+            "⟨Aτ_j, τ_j⟩ = c + F(τ_j)⟨v, τ_j⟩",
+            "Sum: ck + F(Σ_{j≤k}⟨v, τ_j⟩τ_j) = c·dim P + F(p v)"
+          ]
+        },
+        "audit": {
+          "key": "projection_trace",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and standalone Lean type agree. Ambient finite dimensionality supplies the projection and trace instances. The adapted orthonormal-basis computation proves both the scalar contribution and F(p v), including zero-dimensional subspaces; the supplied basis-free route is also supported by the pinned trace lemmas. No additional hypotheses or child dependencies are needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.radial_first_variation-a1.radial_derivative-a1",
+      "key": "radial_derivative",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-radial-first-variation-a1-radial-derivative-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-radial-derivative-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+              "rg -n \"theorem trace_smulRight|theorem trace_eq_rank|IsProj.*trace|trace.*starProjection|trace_orthogonalProjection|theorem trace_comp_comm|theorem trace_id\\b|theorem trace_one\" <snapshot>/mathlib/Mathlib",
+              "rg -n \"IsProj|isProj\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/ ; rg -n \"starProjection_eq_self_iff|starProjection_inner_eq_zero|inner_starProjection_left_eq_right|norm_sq_eq_add_norm_sq_projection|starProjection_add_starProjection_orthogonal|starProjection_orthogonal_val\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/*.lean",
+              "rg -n \"theorem HasFDerivAt.norm|theorem hasStrictFDerivAt_norm|theorem DifferentiableAt.norm |HasFDerivAt.sqrt|‖⁻¹ • innerSL\" <snapshot>/mathlib/Mathlib ; rg -n \"^theorem|^lemma\" <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+              "rg -n \"theorem support_fderiv_subset|theorem fderiv_of_notMem_tsupport|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem HasFDerivAt.smul |toDual_symm_apply|theorem setIntegral_congr_ae |theorem hasFDerivAt_iff_isLittleO_nhds_zero|theorem IsLittleO.smul_isBigO|theorem isLittleO_one_iff|theorem HasDerivAt.comp_hasFDerivAt |theorem ContDiff.differentiable |theorem image_eq_one_of_notMem_mulTSupport|theorem real_inner_smul_left\" <snapshot>/mathlib/Mathlib",
+              "rg -n \"trace|starProjection|radial|hasFDerivAt.*norm|tangentialDiv\" lake-packages-25730c7c/simongmt/Poincare ; rg -n \"RadialVectorField|tangentialDivergence_smul|trace_radialEndomorphism\" simongmt/Poincare/SimonGMT/Chapter04",
+              "lake env lean /tmp/radial-fv-decomp/test/SimonAx.lean (#check and #print axioms of Poincare.SimonGMT.Chapter04.RectifiableVarifold.trace_radialEndomorphism, trace_starProjection, hasFDerivAt_squaredRadialVectorField)",
+              "rg -n \"radial_vector_field_hasFDerivAt|trace_scalar_add_rankOne_comp_starProjection|tangentialDiv_weighted_radial_field\" <run dir> simongmt/Poincare <snapshot>/mathlib/Mathlib (and dag.json lean_name listing)",
+              "grep -n \"3.2|5.1|divM\" book/chapter-04.txt",
+              "python3 -I scope.py (verifier/gmt-compare.py contract_scope for GMT.Ch04.main_theorem) ; python3 -I validate.py (verifier/lean_contract.py validate_lean_statement on all four statements)",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/radial-fv-decomp/olean/GMT/Ch04/Submission.olean",
+              "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/radial-fv-decomp/olean lean /tmp/radial-fv-decomp/final/Sim.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Projection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Asymptotics/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/tmp/radial-fv-decomp/final/Sim.lean"
+            ],
+            "conclusion": "Snapshot contract sha256 6e58e5dd…0f4770b is byte-identical to the workspace Contract.lean/Submission.lean (project ff75f52a, Mathlib 25730c7c). Every step of the split exists in the snapshot Mathlib: LinearMap.trace_smulRight, LinearMap.IsProj.trace, LinearMap.trace_id (LinearAlgebra/Trace.lean); Submodule.starProjection_apply_mem, starProjection_eq_self_iff, inner_starProjection_left_eq_right, norm_sq_eq_add_norm_sq_starProjection (InnerProductSpace/Projection/Basic.lean); HasFDerivAt.norm_sq, HasFDerivAt.sqrt, HasDerivAt.comp_hasFDerivAt, HasFDerivAt.fun_smul, hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_one_iff, IsLittleO.smul_isBigO; InnerProductSpace.toDual_symm_apply (gradient); fderiv_of_notMem_tsupport, image_eq_zero_of_notMem_tsupport, setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_congr_ae, real_inner_smul_left. Mathlib has no HasFDerivAt lemma for the norm at a nonzero point (FDeriv/Norm.lean only has scaling lemmas), so child 1 goes through √(|y−ξ|²); SimonGMT Chapter04/FirstVariation.lean avoids the centre by using a squared-radius field (hasFDerivAt_squaredRadialVectorField), so the radius-r derivative at x = ξ is genuinely new (child 1), while its trace_radialEndomorphism (axioms propext, Classical.choice, Quot.sound) is child 2 with b = 1 (it is not imported by the contract). The three child names have no match in the run directory, dag.json, SimonGMT or Mathlib. The four statements pass verifier/lean_contract.py, and in the replayed contract scope (open MeasureTheory Metric Set Filter Topology; open scoped ENNReal ContDiff CompactlySupported; namespace GMT.Ch04; noncomputable section; open RectifiableVarifold) /tmp/radial-fv-decomp/final/Sim.lean declares Submission.radial_vector_field_hasFDerivAt, Submission.trace_scalar_add_rankOne_comp_starProjection, Submission.tangentialDiv_weighted_radial_field and the parent Submission.radial_first_variation (parent proved from child 3 only) with exactly these types, plus comparator-style `exact Submission.X` targets; lean exits 0 with no errors, only deprecation warnings, and #print axioms gives [propext, Classical.choice, Quot.sound] for all four. An independent reviewer rebuilt the olean, re-ran Sim.lean and confirmed it."
+          }
+        ],
+        "parent_id": "root.radial_first_variation-a1",
+        "child_id": "root.radial_first_variation-a1.radial_derivative-a1",
+        "subproblem": {
+          "key": "radial_derivative",
+          "title": "Derivative of the radial field γ(|y−ξ|)(y−ξ), including the centre (Simon Ch. 4, 3.2)",
+          "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ, Euclidean inner product ⟨·,·⟩ and norm |·|), γ : ℝ → ℝ of class C¹, and ξ, x ∈ E; put r = |x − ξ|. Then the vector field g(y) = γ(|y − ξ|)(y − ξ) is Fréchet differentiable at x with derivative Dg(x)v = γ(r)v + (γ'(r)/r)⟨x − ξ, v⟩(x − ξ) for v ∈ E, where γ'(r)/r is read as 0 when r = 0 (Lean's a/0 = 0); in particular Dg(ξ) = γ(0)·I.",
+          "lean_statement": "∀ (n ℓ : ℕ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), ContDiff ℝ 1 γ → HasFDerivAt (fun y : Ambient n ℓ ↦ γ ‖y - ξ‖ • (y - ξ)) (γ ‖x - ξ‖ • ContinuousLinearMap.id ℝ (Ambient n ℓ) + (deriv γ ‖x - ξ‖ / ‖x - ξ‖) • (innerSL ℝ (x - ξ)).smulRight (x - ξ)) x",
+          "lean_name": "radial_vector_field_hasFDerivAt",
+          "depends_on": [],
+          "natural_proof": "Conventions. n, ℓ ∈ ℕ; E = Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) = ℝ^{n+ℓ}, a finite-dimensional real inner product space with inner product ⟨·,·⟩ = inner ℝ and norm |·| = ‖·‖. Real division by 0 is 0 (Lean convention: a/0 = 0 for every a ∈ ℝ). γ'(t) denotes deriv γ t. innerSL ℝ w is the linear functional u ↦ ⟨w, u⟩; for a functional L and a vector w, L.smulRight w is the map u ↦ L(u)w; ContinuousLinearMap.id ℝ E is the identity I. HasFDerivAt g L x means g(x + v) = g(x) + L v + o(|v|) as v → 0 (Fréchet differentiability of g at x with derivative L). Notation: r = |x − ξ|, g(y) = γ(|y − ξ|)(y − ξ), and the claimed derivative is L_x(v) = γ(r)v + (γ'(r)/r)⟨x − ξ, v⟩(x − ξ).\n\n1. Case x = ξ. Then r = 0 and x − ξ = 0. The coefficient γ'(0)/0 equals 0 and the vector x − ξ is 0, so the claimed derivative is L_ξ(v) = γ(0)v, i.e. L_ξ = γ(0)I. For v ∈ E we have g(ξ) = γ(0)·0 = 0 and g(ξ + v) = γ(|v|)v, hence g(ξ + v) − g(ξ) − γ(0)v = (γ(|v|) − γ(0))v.\n2. γ is C¹, hence continuous, and |v| → 0 as v → 0; therefore ε(v) := γ(|v|) − γ(0) → 0 as v → 0. Consequently |g(ξ + v) − g(ξ) − γ(0)v| = |ε(v)|·|v| = o(|v|) as v → 0, which says exactly that g is Fréchet differentiable at ξ with derivative γ(0)I = L_ξ. This proves the claim when x = ξ.\n3. Case x ≠ ξ, so r > 0. The map y ↦ y − ξ is differentiable at x with derivative I. The map y ↦ |y − ξ|² = ⟨y − ξ, y − ξ⟩ is differentiable at x with derivative v ↦ 2⟨x − ξ, v⟩ (product rule for the inner product). Since |x − ξ|² = r² > 0 and t ↦ √t is differentiable at every t > 0 with derivative 1/(2√t), the chain rule shows that y ↦ |y − ξ| = √(|y − ξ|²) is differentiable at x with derivative v ↦ (1/(2r))·2⟨x − ξ, v⟩ = r⁻¹⟨x − ξ, v⟩.\n4. γ is C¹, so it is differentiable at r with derivative γ'(r) = deriv γ r. By the chain rule, φ(y) := γ(|y − ξ|) is differentiable at x with Dφ(x)v = γ'(r)·r⁻¹⟨x − ξ, v⟩.\n5. By the product rule for a real-valued function times a vector-valued function, g(y) = φ(y)·(y − ξ) is differentiable at x with Dg(x)v = φ(x)·v + (Dφ(x)v)·(x − ξ) = γ(r)v + (γ'(r)/r)⟨x − ξ, v⟩(x − ξ) = L_x(v), using φ(x) = γ(r) and γ'(r)·r⁻¹ = γ'(r)/r. This proves the claim when x ≠ ξ, and with step 2 the lemma is proved.",
+          "proof_key_steps": [
+            "At x = ξ the claimed derivative is γ(0)I because γ'(0)/0 = 0 and x − ξ = 0",
+            "g(ξ + v) − g(ξ) − γ(0)v = (γ(|v|) − γ(0))v = o(|v|) by continuity of γ at 0",
+            "For x ≠ ξ: y ↦ |y − ξ| = √(|y − ξ|²) has derivative r⁻¹⟨x − ξ, ·⟩ (chain rule with √ at r² > 0)",
+            "Chain rule: D[γ(|y − ξ|)](x) = γ'(r) r⁻¹⟨x − ξ, ·⟩",
+            "Product rule with y ↦ y − ξ (derivative I) gives Dg(x)v = γ(r)v + (γ'(r)/r)⟨x − ξ, v⟩(x − ξ)"
+          ]
+        },
+        "audit": {
+          "key": "radial_derivative",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line Lean proposition exactly matches the stated derivative and hypotheses. At the centre, continuity gives the required little-o remainder; away from the centre, differentiating the squared norm through sqrt and applying the chain and product rules gives the displayed continuous linear map. The proof covers dimension zero and contains no circular reliance or deferred proof construction."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-radial-derivative-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-radial-derivative-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-radial-derivative-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.radial_first_variation-a1.pointwise_divergence-a1",
+      "key": "pointwise_divergence",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-radial-first-variation-a1-pointwise-divergence-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-pointwise-divergence-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+              "rg -n \"theorem trace_smulRight|theorem trace_eq_rank|IsProj.*trace|trace.*starProjection|trace_orthogonalProjection|theorem trace_comp_comm|theorem trace_id\\b|theorem trace_one\" <snapshot>/mathlib/Mathlib",
+              "rg -n \"IsProj|isProj\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/ ; rg -n \"starProjection_eq_self_iff|starProjection_inner_eq_zero|inner_starProjection_left_eq_right|norm_sq_eq_add_norm_sq_projection|starProjection_add_starProjection_orthogonal|starProjection_orthogonal_val\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/*.lean",
+              "rg -n \"theorem HasFDerivAt.norm|theorem hasStrictFDerivAt_norm|theorem DifferentiableAt.norm |HasFDerivAt.sqrt|‖⁻¹ • innerSL\" <snapshot>/mathlib/Mathlib ; rg -n \"^theorem|^lemma\" <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+              "rg -n \"theorem support_fderiv_subset|theorem fderiv_of_notMem_tsupport|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem HasFDerivAt.smul |toDual_symm_apply|theorem setIntegral_congr_ae |theorem hasFDerivAt_iff_isLittleO_nhds_zero|theorem IsLittleO.smul_isBigO|theorem isLittleO_one_iff|theorem HasDerivAt.comp_hasFDerivAt |theorem ContDiff.differentiable |theorem image_eq_one_of_notMem_mulTSupport|theorem real_inner_smul_left\" <snapshot>/mathlib/Mathlib",
+              "rg -n \"trace|starProjection|radial|hasFDerivAt.*norm|tangentialDiv\" lake-packages-25730c7c/simongmt/Poincare ; rg -n \"RadialVectorField|tangentialDivergence_smul|trace_radialEndomorphism\" simongmt/Poincare/SimonGMT/Chapter04",
+              "lake env lean /tmp/radial-fv-decomp/test/SimonAx.lean (#check and #print axioms of Poincare.SimonGMT.Chapter04.RectifiableVarifold.trace_radialEndomorphism, trace_starProjection, hasFDerivAt_squaredRadialVectorField)",
+              "rg -n \"radial_vector_field_hasFDerivAt|trace_scalar_add_rankOne_comp_starProjection|tangentialDiv_weighted_radial_field\" <run dir> simongmt/Poincare <snapshot>/mathlib/Mathlib (and dag.json lean_name listing)",
+              "grep -n \"3.2|5.1|divM\" book/chapter-04.txt",
+              "python3 -I scope.py (verifier/gmt-compare.py contract_scope for GMT.Ch04.main_theorem) ; python3 -I validate.py (verifier/lean_contract.py validate_lean_statement on all four statements)",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/radial-fv-decomp/olean/GMT/Ch04/Submission.olean",
+              "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/radial-fv-decomp/olean lean /tmp/radial-fv-decomp/final/Sim.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Projection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Asymptotics/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/tmp/radial-fv-decomp/final/Sim.lean"
+            ],
+            "conclusion": "Snapshot contract sha256 6e58e5dd…0f4770b is byte-identical to the workspace Contract.lean/Submission.lean (project ff75f52a, Mathlib 25730c7c). Every step of the split exists in the snapshot Mathlib: LinearMap.trace_smulRight, LinearMap.IsProj.trace, LinearMap.trace_id (LinearAlgebra/Trace.lean); Submodule.starProjection_apply_mem, starProjection_eq_self_iff, inner_starProjection_left_eq_right, norm_sq_eq_add_norm_sq_starProjection (InnerProductSpace/Projection/Basic.lean); HasFDerivAt.norm_sq, HasFDerivAt.sqrt, HasDerivAt.comp_hasFDerivAt, HasFDerivAt.fun_smul, hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_one_iff, IsLittleO.smul_isBigO; InnerProductSpace.toDual_symm_apply (gradient); fderiv_of_notMem_tsupport, image_eq_zero_of_notMem_tsupport, setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_congr_ae, real_inner_smul_left. Mathlib has no HasFDerivAt lemma for the norm at a nonzero point (FDeriv/Norm.lean only has scaling lemmas), so child 1 goes through √(|y−ξ|²); SimonGMT Chapter04/FirstVariation.lean avoids the centre by using a squared-radius field (hasFDerivAt_squaredRadialVectorField), so the radius-r derivative at x = ξ is genuinely new (child 1), while its trace_radialEndomorphism (axioms propext, Classical.choice, Quot.sound) is child 2 with b = 1 (it is not imported by the contract). The three child names have no match in the run directory, dag.json, SimonGMT or Mathlib. The four statements pass verifier/lean_contract.py, and in the replayed contract scope (open MeasureTheory Metric Set Filter Topology; open scoped ENNReal ContDiff CompactlySupported; namespace GMT.Ch04; noncomputable section; open RectifiableVarifold) /tmp/radial-fv-decomp/final/Sim.lean declares Submission.radial_vector_field_hasFDerivAt, Submission.trace_scalar_add_rankOne_comp_starProjection, Submission.tangentialDiv_weighted_radial_field and the parent Submission.radial_first_variation (parent proved from child 3 only) with exactly these types, plus comparator-style `exact Submission.X` targets; lean exits 0 with no errors, only deprecation warnings, and #print axioms gives [propext, Classical.choice, Quot.sound] for all four. An independent reviewer rebuilt the olean, re-ran Sim.lean and confirmed it."
+          }
+        ],
+        "parent_id": "root.radial_first_variation-a1",
+        "child_id": "root.radial_first_variation-a1.pointwise_divergence-a1",
+        "subproblem": {
+          "key": "pointwise_divergence",
+          "title": "Pointwise tangential divergence of h·γ(|x−ξ|)(x−ξ) (Simon Ch. 4, 3.2 and 5.1)",
+          "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), V any rectifiable n-varifold in E (V : RectifiableVarifold n ℓ), h : E → ℝ, γ : ℝ → ℝ of class C¹, and ξ, x ∈ E, and suppose dim T_xV = n and h is differentiable at x. Let X(y) = (h(y)γ(|y − ξ|))(y − ξ) and r = |x − ξ|. Then div_M X(x) = h(x)(nγ(r) + rγ'(r)(1 − q_ξ(x))) + γ(r)⟨x − ξ, ∇^M h(x)⟩, where div_M X(x) = trace(DX(x) ∘ p_{T_xV}) (V.tangentialDiv X x), ∇^M h(x) = p_{T_xV}(∇h(x)) (V.tangentialGradient h x) and q_ξ(x) = |p_{T_xV}^⊥(x − ξ)|²/r² (V.normalRadialSq ξ x, equal to 0 when r = 0).",
+          "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), Module.finrank ℝ (V.tangentSpace x) = n → DifferentiableAt ℝ h x → ContDiff ℝ 1 γ → V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x = h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)",
+          "lean_name": "tangentialDiv_weighted_radial_field",
+          "depends_on": [
+            "radial_derivative",
+            "projection_trace"
+          ],
+          "natural_proof": "Conventions. n, ℓ ∈ ℕ; E = Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) = ℝ^{n+ℓ}, a finite-dimensional real inner product space with inner product ⟨·,·⟩ = inner ℝ and norm |·| = ‖·‖. Real division by 0 is 0 (Lean convention: a/0 = 0 for every a ∈ ℝ). For V : RectifiableVarifold n ℓ and x ∈ E: T_xV = V.tangentSpace x is a linear subspace of E; p_x = (T_xV).starProjection is the orthogonal projection onto T_xV and p_x^⊥ = (T_xV)ᗮ.starProjection the orthogonal projection onto its orthogonal complement (p_x^⊥ = I − p_x); both are self-adjoint and idempotent. For X : E → E, div_M X(x) = V.tangentialDiv X x := trace(fderiv ℝ X x ∘ p_x), where fderiv ℝ X x is the Fréchet derivative DX(x) whenever X is differentiable at x. For h : E → ℝ, ∇h(x) = gradient h x is the Riesz representative of Dh(x) = fderiv ℝ h x, i.e. ⟨∇h(x), u⟩ = Dh(x)u for all u, and ∇^M h(x) = V.tangentialGradient h x := p_x(∇h(x)). q_ξ(x) = V.normalRadialSq ξ x := |p_x^⊥(x − ξ)|²/|x − ξ|² (= 0 when x = ξ). γ'(t) = deriv γ t. This proof uses the sibling lemmas radial_vector_field_hasFDerivAt (for γ ∈ C¹ and all ξ, x: y ↦ γ(|y − ξ|)(y − ξ) is differentiable at x with derivative u ↦ γ(r)u + (γ'(r)/r)⟨x − ξ, u⟩(x − ξ), r = |x − ξ|, γ'(r)/r = 0 when r = 0) and trace_scalar_add_rankOne_comp_starProjection (for every subspace P with projection p, c ∈ ℝ, linear F : E → ℝ and v ∈ E: trace((cI + F(·)v) ∘ p) = c·dim P + F(p v)).\n\n1. Write P = T_xV, p = p_x, p^⊥ = p_x^⊥, w = x − ξ (so r = |w|), and g(y) = γ(|y − ξ|)(y − ξ). Then X(y) = (h(y)γ(|y − ξ|))(y − ξ) = h(y)·g(y) for every y, since (ab)u = a(bu).\n2. By radial_vector_field_hasFDerivAt, g is differentiable at x with Dg(x)u = γ(r)u + (γ'(r)/r)⟨w, u⟩w, where γ'(r)/r = 0 if r = 0.\n3. By hypothesis h is differentiable at x, with derivative Dh(x) satisfying Dh(x)u = ⟨∇h(x), u⟩. By the product rule, X = h·g is differentiable at x with DX(x)u = h(x)·Dg(x)u + (Dh(x)u)·g(x).\n4. Since g(x) = γ(r)w, step 2 gives DX(x)u = (h(x)γ(r))u + F(u)w for all u, where F(u) := h(x)(γ'(r)/r)⟨w, u⟩ + γ(r)Dh(x)u is a continuous linear functional. Thus DX(x) = cI + F(·)w with c = h(x)γ(r).\n5. As X is differentiable at x, fderiv ℝ X x = DX(x) (uniqueness of the Fréchet derivative), so div_M X(x) = trace(DX(x) ∘ p) by definition. By trace_scalar_add_rankOne_comp_starProjection (with this P, c, F and v = w) and the hypothesis dim P = n: div_M X(x) = c·n + F(p w) = n·h(x)γ(r) + h(x)(γ'(r)/r)⟨w, p w⟩ + γ(r)Dh(x)(p w).\n6. Gradient term: Dh(x)(p w) = ⟨∇h(x), p w⟩ = ⟨p∇h(x), w⟩ (p is self-adjoint) = ⟨w, ∇^M h(x)⟩.\n7. Projection term: p w ∈ P, so p(p w) = p w; with self-adjointness, ⟨w, p w⟩ = ⟨w, p(p w)⟩ = ⟨p w, p w⟩ = |p w|². By Pythagoras (w = p w + p^⊥w with p w ⊥ p^⊥w), r² = |p w|² + |p^⊥w|², hence ⟨w, p w⟩ = r² − |p^⊥w|².\n8. If r ≠ 0: (γ'(r)/r)(r² − |p^⊥w|²) = rγ'(r)(1 − |p^⊥w|²/r²) = rγ'(r)(1 − q_ξ(x)). If r = 0: then w = 0, so (γ'(r)/r)⟨w, p w⟩ = 0 and rγ'(r)(1 − q_ξ(x)) = 0. Hence in both cases h(x)(γ'(r)/r)⟨w, p w⟩ = h(x)·rγ'(r)(1 − q_ξ(x)).\n9. Substituting steps 6–8 into step 5: div_M X(x) = h(x)nγ(r) + h(x)rγ'(r)(1 − q_ξ(x)) + γ(r)⟨w, ∇^M h(x)⟩ = h(x)(nγ(r) + rγ'(r)(1 − q_ξ(x))) + γ(r)⟨x − ξ, ∇^M h(x)⟩, which is the claim.",
+          "proof_key_steps": [
+            "X = h·g with g(y) = γ(|y−ξ|)(y−ξ); Dg(x) from radial_vector_field_hasFDerivAt",
+            "Product rule: DX(x) = h(x)γ(r)I + F(·)(x−ξ) with F = h(x)(γ'(r)/r)⟨x−ξ,·⟩ + γ(r)Dh(x)",
+            "fderiv ℝ X x = DX(x); trace_scalar_add_rankOne_comp_starProjection with dim T_xV = n gives n h(x)γ(r) + F(p_x(x−ξ))",
+            "Dh(x)(p_x(x−ξ)) = ⟨x−ξ, ∇^M h(x)⟩ by self-adjointness of p_x",
+            "⟨x−ξ, p_x(x−ξ)⟩ = |p_x(x−ξ)|² = r² − |p_x^⊥(x−ξ)|² (idempotence, Pythagoras)",
+            "Case r ≠ 0: (γ'(r)/r)(r² − |p^⊥(x−ξ)|²) = rγ'(r)(1 − q_ξ(x)); case r = 0: both terms vanish; combine"
+          ]
+        },
+        "audit": {
+          "key": "pointwise_divergence",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact type includes all stated hypotheses. The proof correctly applies the two declared dependencies, identifies fderiv by derivative uniqueness, and obtains the gradient term using self-adjointness. Pythagoras and the explicit zero/nonzero-radius cases justify the normalRadialSq expression without division gaps. This pointwise identity supplies exactly the parent's almost-everywhere integrand equality; no ancestor theorem is used."
+        },
+        "resolved_dependencies": [
+          "root.radial_first_variation-a1.radial_derivative-a1",
+          "root.radial_first_variation-a1.projection_trace-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-pointwise-divergence-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-pointwise-divergence-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-pointwise-divergence-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/task.md": "9f7855a9e9144b5c9af086a80a7bf19a461cd2927a5cc3b9da87f59ced97fe49",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/problem.md": "9996a036930b24733a81424df4c9f7d8ca02f2f2afb4c18b241234cd9b90afa1",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/problem.json": "8e582afb1167aec1a6e3c5cdc9cace19064beca256c8cc8fe9e45070f57e9726",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/reference-manifest.json": "f812e0e4460f34215f132dbc78bbdb04e4e1ebd5986042e5eb5db66d79026db9",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/decomposition.json": "efb9d8bf4076593de13ed3f0ec87cdeeff03b4b234dfdaef9fb359eb3645d57c",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/decomposition-audit.json": "f489458585cc03b3c4b82ee42f6f6862c96d8e936d1ce7620bf30c23edf27007",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/controller-contract.json": "990c02f3a78726cb824b12cfbee4f53f58897a728cb839e8283efada77dfc280",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-projection-trace-a1/parent-child-handoff.json": "208f99c0e715146edc6023fc75d80a56a65bb0187f9ebe4c5a800daaffd0c2e5",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-plan.md": "5a3a15a35eb4bde18e9df88b36ebe959e1e700c06bf8979eef60406a37d51390",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-natural-proof.md": "51acb862b2381890e39e50c9f111d6f7d17089f56cce9e6827cb990df36d288a",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-natural-proof.json": "4a0eac4fc99aab6f01cb7fd452dfbad243a9820dfe1e41f0be0dde277479d50b",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-projection-trace-a1/node.json": "8296d0f4f35bf7cb0b6dda4ec207ff5254337765205327839520215b1a27dcc0",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-radial-derivative-a1/parent-child-handoff.json": "ff6efdd9bf719bc0c6dc7d20b65f7fbd05e282f6f34f1ce0e5676895bbdbbf45",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-radial-derivative-a1/parent-supplied-plan.md": "6c5fceb79767ecd7338564b04938242c35937c92e5c59d5b918e7d7770417ba3",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-radial-derivative-a1/parent-supplied-natural-proof.md": "e83fe0d4bcd1e92b966e5caaf6f18508671aac7f5239c13b656fe3c445111ce3",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-radial-derivative-a1/parent-supplied-natural-proof.json": "e0f0fafdf22d37f7067e6740c852ed783f1d4101d7d72738e5c2935adff65092",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-radial-derivative-a1/node.json": "dd158ef489c3197cb85264fdbcb23f68724098bde083a8e0af52f003e772a039",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-pointwise-divergence-a1/parent-child-handoff.json": "7615901d6ae22bf8ca1cc9e761247fe4a2149f6659e5c2ce86b439b6e88e11e8",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-pointwise-divergence-a1/parent-supplied-plan.md": "0af9ea1eb047c7d647471e14cec933b121723a461d8fd799373c97f175473c70",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-pointwise-divergence-a1/parent-supplied-natural-proof.md": "0436e2e8d0a222c5f9526a42e44112f27cdcfda76c409cc10f1c8c994a49102a",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-pointwise-divergence-a1/parent-supplied-natural-proof.json": "ee61d492a1f99e929e917c1290e520849958bac51690240bacbc31ca0786c90f",
+    ".humanize-workspace/20261011t142930z-d646011318/root-radial-first-variation-a1/children/root-radial-first-variation-a1-pointwise-divergence-a1/node.json": "fbf02e38945d62d1b7482f7537fe31d0dddcd3ff5ed91bdec5ac44feee638729"
+  }
+}

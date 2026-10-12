@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "531d7b897cebfd005a07a3168118e037f43fb5224eb65c86b6e9d1142ee345ce",
+  "git_delta": {
+    "base_commit": "36bd58788e9ef49369eca0a26ef26a5ce8152b67",
+    "candidate_commit": "b4f2ba18a4e0252f05987bfabfe961e95f0321fb",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "wm_smoothed_kernel_fubini",
+    "diff_sha256": "9ada0db60aae812d9a1d1a0b3d8ba3055d7b0fa4192a83657aa3bec3ebfb9823",
+    "source_sha256": "73c6558f78db00d8a15508b28e7bdbb544a83c4272607deec0e4c9f9b762df36",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.wm_smoothed_kernel_fubini",
+      "statement": "∀ (n ℓ k : ℕ) (μ : Measure (Ambient n ℓ)) (w : Ambient n ℓ → ℝ) (χ : ℝ → ℝ) (ξ : Ambient n ℓ) (c σ ρ R A : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → 0 < c → c * ρ < R → AEStronglyMeasurable w (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |w x| ≤ A) → Continuous χ → (∀ t, c < t → χ t = 0) → ∫ τ in Ioc σ ρ, (∫ x, w x * (-(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ)) ∂μ) / τ ^ k = ∫ x, w x * (∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k) ∂μ",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

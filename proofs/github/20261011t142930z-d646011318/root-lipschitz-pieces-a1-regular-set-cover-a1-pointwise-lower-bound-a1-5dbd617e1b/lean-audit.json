@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3800cd622601b083f68c5feb90e432f6de57c1ace0b3ff1ad32fa707177ebd2d",
+  "git_delta": {
+    "base_commit": "0da38dc8d60122b1d06aff3448785bb337204c3e",
+    "candidate_commit": "ad1260d93fdffc919a8ee0153aad6da540dffe4b",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "injective_fderiv_local_lower_bound",
+    "diff_sha256": "ae4c0566a26f871218ab66e0225ddf8855628159953bc456207175c3cdd863d4",
+    "source_sha256": "3fd107c79a5336be18c65758b80b69f561e4ec11942aaa1254de2547790bd154",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.injective_fderiv_local_lower_bound",
+      "statement": "∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (f : EuclideanSpace ℝ (Fin n) → F) (w : EuclideanSpace ℝ (Fin n)), DifferentiableAt ℝ f w → Function.Injective (fderiv ℝ f w) → ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

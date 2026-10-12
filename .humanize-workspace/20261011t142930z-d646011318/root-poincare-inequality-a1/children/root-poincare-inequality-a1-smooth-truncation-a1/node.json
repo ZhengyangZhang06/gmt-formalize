@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.poincare_inequality-a1.smooth_truncation-a1",
+  "parent_id": "root.poincare_inequality-a1",
+  "depth": 2,
+  "title": "C¹ step function ψ_ε for the truncations h_t = ψ(h − t)",
+  "statement": "For every ε > 0 there is a function ψ : ℝ → ℝ of class C¹ such that 0 ≤ ψ ≤ 1, ψ(x) = 0 for x ≤ 0, ψ(x) = 1 for x ≥ ε, ψ'(x) ≥ 0 for all x, ψ' is bounded above by some real M, and for every a ∈ ℝ the Lebesgue (lower) integral ∫_{(0,∞)} ψ'(a − t) dt (of the [0, ∞]-valued function ENNReal.ofReal(ψ'(a − t))) is at most 1.",
+  "lean_statement": "∀ ε : ℝ, 0 < ε → ∃ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x, x ≤ 0 → ψ x = 0) ∧ (∀ x, ε ≤ x → ψ x = 1) ∧ (∀ x, 0 ≤ deriv ψ x) ∧ (∃ M : ℝ, ∀ x, deriv ψ x ≤ M) ∧ ∀ a : ℝ, ∫⁻ t in Ioi 0, ENNReal.ofReal (deriv ψ (a - t)) ≤ 1",
+  "lean_name": "smooth_step_truncation_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-poincare-inequality-a1-smooth-truncation-a1-a1"
+}

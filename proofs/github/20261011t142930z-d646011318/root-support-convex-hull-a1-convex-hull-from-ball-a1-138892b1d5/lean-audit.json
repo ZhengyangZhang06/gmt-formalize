@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "86f192b3e4e4a72b0de2459789bfa13149e2e5fe41584038ca9abc15b338b82a",
+  "git_delta": {
+    "base_commit": "eb0971c80526ccc2130d57cbea11b9e365aaa7e7",
+    "candidate_commit": "e4e29d78cc0a91ed4bfeab1907f352ba97a71a00",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "convex_hull_property_of_support_in_ball",
+    "diff_sha256": "a28f824b589c3b16917ae864ab78ebd8d2d0f7e79a3f0c27f1eb93a1192ea0a9",
+    "source_sha256": "fb3fa839b06f71ae8c30006d9fb40e8b388976644af3b9df1f957eb9c847e744",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.convex_hull_property_of_support_in_ball",
+      "statement": "SupportInBall → ConvexHullProperty",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

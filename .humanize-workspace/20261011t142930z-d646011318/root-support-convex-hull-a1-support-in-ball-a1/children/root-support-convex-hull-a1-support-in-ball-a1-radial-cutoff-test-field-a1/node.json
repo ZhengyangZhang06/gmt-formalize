@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.support_convex_hull-a1.support_in_ball-a1.radial_cutoff_test_field-a1",
+  "parent_id": "root.support_convex_hull-a1.support_in_ball-a1",
+  "depth": 3,
+  "title": "Cutoff, radial profile and radial test field outside a ball (Simon 6.1, steps 2–4)",
+  "statement": "Let n, ℓ ∈ ℕ and E = Ambient n ℓ = ℝ^{n+ℓ} (Euclidean). Let K ⊆ E be compact, ξ ∈ E, R ≥ 0 and ε > 0. Then there exist ζ: E → ℝ and γ: ℝ → ℝ such that: (i) ζ ∈ C¹(E); (ii) ζ(x) = 1 and ∇ζ(x) = 0 (Mathlib gradient) for every x ∈ K; (iii) γ ∈ C¹(ℝ); (iv) γ(t) ≥ 0 and γ'(t) ≥ 0 for every t ≥ 0, where γ' = deriv γ; (v) γ(t) = 0 for 0 ≤ t ≤ R + ε; (vi) γ(t) > 0 for every t > R + ε; (vii) X(x) := (ζ(x)γ(|x − ξ|))(x − ξ) is a test field in U := E ∖ B_R(ξ) (B_R(ξ) = closedBall ξ R): X is C¹, has compact support, and tsupport X ⊆ U (IsTestField (closedBall ξ R)ᶜ X).",
+  "lean_statement": "∀ (n ℓ : ℕ) (K : Set (Ambient n ℓ)) (ξ : Ambient n ℓ) (R ε : ℝ), IsCompact K → 0 ≤ R → 0 < ε → ∃ (ζ : Ambient n ℓ → ℝ) (γ : ℝ → ℝ), ContDiff ℝ 1 ζ ∧ (∀ x ∈ K, ζ x = 1 ∧ gradient ζ x = 0) ∧ ContDiff ℝ 1 γ ∧ (∀ t : ℝ, 0 ≤ t → 0 ≤ γ t ∧ 0 ≤ deriv γ t) ∧ (∀ t : ℝ, 0 ≤ t → t ≤ R + ε → γ t = 0) ∧ (∀ t : ℝ, R + ε < t → 0 < γ t) ∧ IsTestField (closedBall ξ R)ᶜ (fun x ↦ (ζ x * γ ‖x - ξ‖) • (x - ξ))",
+  "lean_name": "exists_radial_cutoff_test_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-support-convex-hull-a1-support-in-ball-a1-radial-cutoff-test-field-a1-a1"
+}

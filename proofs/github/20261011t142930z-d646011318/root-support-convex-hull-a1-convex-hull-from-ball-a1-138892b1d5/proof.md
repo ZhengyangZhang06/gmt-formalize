@@ -1,0 +1,100 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.support_convex_hull-a1`
+- Child DAG node: `root.support_convex_hull-a1.convex_hull_from_ball-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. n ≥ 1 and ℓ ≥ 0 are integers, E = Ambient n ℓ = ℝ^{n+ℓ} with inner product ⟨·,·⟩ and norm |·|, N := n + ℓ = dim E ≥ 1; B_ρ(c) = closedBall c ρ is the closed ball; conv K = convexHull ℝ K. For a rectifiable n-varifold V: μ = μ_V = V.weight and spt V = V.support = spt μ. A test field in U is a C¹ map X: E → E with compact support and tsupport X ⊆ U (IsTestField). 'V is stationary in U' (IsStationaryIn) means ∫ div_M X dμ = 0 for every test field X in U; 'V has mean curvature H in U' (HasMeanCurvatureIn) means H ∈ L¹_loc(U, μ) (LocallyIntegrableOn H U μ) and ∫ div_M X dμ = −∫⟨X, H⟩ dμ for every test field X in U. The hypothesis of the theorem is SupportInBall: for all n ≥ 1, ℓ, V, H: E → E, ξ ∈ E and R ≥ 0, if V has mean curvature H in E ∖ B_R(ξ), n^{-1}|⟨H(x), x − ξ⟩| < 1 for μ_V-a.e. x ∈ E ∖ B_R(ξ), and spt V is compact, then spt V ⊆ B_R(ξ).
+
+Source: Simon Ch. 4, 6.2 (p. 101): "The convex hull of K can be written as the intersection of all balls B_R(ξ) with K ⊆ B_R(ξ). Hence the result follows immediately from 6.1." Steps 1–4 below are the parent proof's step 7 (the reduction to 6.1); steps 5–8 prove the needed description of conv K by balls (the parent proof's step 8).
+
+1. Setup. Fix n ≥ 1, ℓ, V and a compact set K ⊆ E such that spt V is compact and V is stationary in E ∖ K; we must show spt V ⊆ conv K. Let y ∈ spt V and suppose, for a contradiction, that y ∉ conv K.
+
+2. By the Ball Lemma (steps 5–8; it uses n ≥ 1, K compact and y ∉ conv K) there are c ∈ E and R' ≥ 0 with K ⊆ B_{R'}(c) and y ∉ B_{R'}(c).
+
+3. V has mean curvature 0 in U' := E ∖ B_{R'}(c). (i) The zero field is locally integrable on U' (it is integrable on every set). (ii) Let X be a test field in U'. Since K ⊆ B_{R'}(c), we have U' ⊆ E ∖ K, so tsupport X ⊆ U' ⊆ E ∖ K and X is also a test field in E ∖ K; stationarity of V in E ∖ K gives ∫ div_M X dμ = 0, and −∫⟨X(x), 0⟩ dμ = −∫ 0 dμ = 0. Hence ∫ div_M X dμ = −∫⟨X, 0⟩ dμ for every test field X in U'.
+
+4. For every x, n^{-1}|⟨0, x − c⟩| = 0 < 1, so the curvature hypothesis of SupportInBall holds (everywhere, in particular μ-a.e. in U'). Since n ≥ 1, R' ≥ 0 and spt V is compact, SupportInBall applied with H := 0, ξ := c and R := R' gives spt V ⊆ B_{R'}(c). As y ∈ spt V, y ∈ B_{R'}(c), contradicting step 2. Hence y ∈ conv K; since y ∈ spt V was arbitrary, spt V ⊆ conv K, which is ConvexHullProperty.
+
+Ball Lemma. If n ≥ 1, K ⊆ E is compact and y ∈ E ∖ conv K, then there are c ∈ E and R' ≥ 0 with K ⊆ B_{R'}(c) and y ∉ B_{R'}(c).
+
+5. Case K = ∅. Since N = n + ℓ ≥ 1, E contains a vector v ≠ 0, e.g. the first standard basis vector v := EuclideanSpace.single (⟨0, h⟩ : Fin (n + ℓ)) 1 with h : 0 < n + ℓ obtained from n ≥ 1 (its 0-th coordinate is 1). Put c := y + v and R' := 0. Then K = ∅ ⊆ B_0(c) = {c}, and y ∉ {c} because c − y = v ≠ 0.
+
+6. Case K ≠ ∅: conv K is compact. Let Δ := {λ ∈ ℝ^{N+1} : λ_i ≥ 0 for all i, Σ_i λ_i = 1}, which is closed and bounded, hence compact, and let Φ: ℝ^{N+1} × E^{N+1} → E, Φ(λ, x_0, …, x_N) := Σ_{i=0}^{N} λ_i x_i, which is continuous. The set Δ × K^{N+1} is compact (a finite product of compact sets), so Φ(Δ × K^{N+1}) is compact. We show Φ(Δ × K^{N+1}) = conv K.
+(⊆) If λ ∈ Δ and x_0, …, x_N ∈ K ⊆ conv K, then Σ λ_i x_i is a convex combination of points of the convex set conv K, hence lies in conv K (Mathlib Convex.sum_mem).
+(⊇) Let x ∈ conv K. By Carathéodory's theorem (Mathlib eq_pos_convex_span_of_mem_convexHull, in Mathlib.Analysis.Convex.Caratheodory, which is not among the contract's imports and must be imported) there are a finite index set I, points z_i ∈ K (i ∈ I) forming an affinely independent family, and weights w_i > 0 with Σ_{i∈I} w_i = 1 and Σ_{i∈I} w_i z_i = x. An affinely independent family (z_i)_{i∈I} in E has at most dim(vectorSpan of the family) + 1 ≤ dim E + 1 = N + 1 members (Mathlib AffineIndependent.card_le_finrank_succ gives |I| ≤ finrank ℝ (vectorSpan ℝ (range z)) + 1, Submodule.finrank_le bounds this finrank by finrank ℝ E, and finrank ℝ E = n + ℓ = N by finrank_euclideanSpace_fin), so there is an injection j: I → {0, …, N}. Fix z_* ∈ K (K ≠ ∅) and define λ_{j(i)} := w_i and x_{j(i)} := z_i for i ∈ I, and λ_k := 0, x_k := z_* for k ∉ j(I). Then λ ∈ Δ, every x_k ∈ K, and Φ(λ, x_0, …, x_N) = Σ_{i∈I} w_i z_i = x.
+Hence conv K is compact, in particular closed; it is convex, and nonempty because K ⊆ conv K. (The pinned SimonGMT lemma Poincare.SimonGMT.Chapter04.isCompact_convexHull_of_isCompact states exactly this compactness, by the same Carathéodory argument.)
+
+7. Separation. Since conv K is closed, convex and nonempty and y ∉ conv K, the Hahn–Banach separation theorem for a closed convex set and a point (Mathlib geometric_hahn_banach_closed_point) gives a continuous linear functional f on E and u ∈ ℝ with f(x) < u for all x ∈ conv K and u < f(y). By the Riesz representation theorem on the finite-dimensional inner product space E, f = ⟨w, ·⟩ for some w ∈ E, and w ≠ 0 because f(x₀) < u < f(y) for any x₀ ∈ conv K. Put e := w/|w| (so |e| = 1), m := u/|w| and η := ⟨e, y⟩ − m. Then ⟨e, x⟩ < m for every x ∈ conv K, and η > 0. (Equivalently, one may take the nearest point z₀ ∈ conv K to y, e := (y − z₀)/|y − z₀|, m := ⟨e, z₀⟩ and η := |y − z₀| > 0, using the variational inequality ⟨y − z₀, x − z₀⟩ ≤ 0 for x ∈ conv K.)
+
+8. Large ball. Let z := y − ηe, so ⟨e, z⟩ = ⟨e, y⟩ − η = m. Let D := max_{x∈K} |x − z| (a maximum of a continuous function on the nonempty compact set K; D ≥ 0), L := D²/(2η) + 1 > 0, c := z − Le and R' := (L² + D²)^{1/2} ≥ 0.
+For x ∈ K: x − c = (x − z) + Le, so |x − c|² = |x − z|² + 2L⟨e, x − z⟩ + L²|e|² ≤ D² + L² = R'², because |x − z| ≤ D, |e| = 1, L > 0 and ⟨e, x − z⟩ = ⟨e, x⟩ − m < 0 (x ∈ K ⊆ conv K). Hence K ⊆ B_{R'}(c).
+For y: y − c = ηe + Le = (η + L)e, so |y − c|² = (η + L)² = η² + 2ηL + L² > D² + L² = R'², because 2ηL = D² + 2η > D². Hence y ∉ B_{R'}(c). This proves the Ball Lemma.
+(The pinned SimonGMT lemma Poincare.SimonGMT.Chapter04.exists_closedBall_separating_of_compact_convex, applied to the nonempty compact convex set conv K, gives steps 7–8 at once; it and isCompact_convexHull_of_isCompact live in Poincare.SimonGMT.Chapter04.CompactConvexHull (built olean in the pinned package; it imports only Mathlib, including Mathlib.Analysis.Convex.Caratheodory), must be imported to be used, apply to E = Ambient n ℓ, and depend only on propext, Classical.choice and Quot.sound.) ∎
+
+## Key steps
+
+1. Take y ∈ spt V with y ∉ conv K and obtain, by the Ball Lemma, a closed ball B_{R'}(c) ⊇ K with R' ≥ 0 and y ∉ B_{R'}(c)
+2. Every test field in E ∖ B_{R'}(c) is one in E ∖ K, so stationarity gives mean curvature 0 in E ∖ B_{R'}(c); the bound n^{-1}|⟨0, x − c⟩| = 0 < 1 is trivial
+3. SupportInBall gives spt V ⊆ B_{R'}(c), contradicting y ∉ B_{R'}(c); hence spt V ⊆ conv K
+4. Ball Lemma, K = ∅: R' = 0 and c = y + v with v ≠ 0 (dim E = n + ℓ ≥ 1)
+5. Ball Lemma, K ≠ ∅: conv K = Φ(Δ_N × K^{N+1}) is compact by Carathéodory (affinely independent families have ≤ N + 1 members)
+6. Hahn–Banach separation and Riesz give a unit e, m and η > 0 with ⟨e, x⟩ < m on conv K and ⟨e, y⟩ = m + η
+7. With z = y − ηe, D = max_K |x − z|, L = D²/(2η) + 1: c = z − Le, R' = (L² + D²)^{1/2} satisfy K ⊆ B_{R'}(c) and |y − c| = η + L > R'
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'theorem (IsCompact\.)?(isCompact_)?convexHull|IsCompact.convexHull|isCompact_convexHull|convexHull.*IsCompact|IsCompact \(convexHull' <snapshot>/mathlib/Mathlib`
+- `rg -n 'IsCompact \(convexHull|IsCompact \(closedConvexHull|isClosed_convexHull|IsClosed \(convexHull' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem geometric_hahn_banach_(point_closed|closed_point)' -A6 <snapshot>/mathlib/Mathlib/Analysis/LocallyConvex/Separation.lean`
+- `sed -n 140,200p <snapshot>/mathlib/Mathlib/Analysis/Convex/Caratheodory.lean; rg -n 'isCompact_stdSimplex' <snapshot>/mathlib/Mathlib`
+- `rg -n 'card_le_finrank_succ|theorem LocallyIntegrableOn.integrableOn_compact_subset' <snapshot>/mathlib/Mathlib`
+- `rg -n '^(theorem|lemma|def|protected def)' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'structure ContDiffBump' -A8 <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `rg -n 'theorem Convex.sum_mem|starProjection_orthogonal' <snapshot>/mathlib/Mathlib/Analysis/Convex/*.lean <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/*.lean`
+- `git -C lake-packages-25730c7c/simongmt rev-parse HEAD; rg -n 'convexHull' -t lean simongmt; rg -n 'SupportInBall|ConvexHull|convex_hull|support_in_ball' -t lean simongmt`
+- `cat simongmt/Poincare/SimonGMT/Chapter04/{CompactConvexHull,ConvexHullProperty,CompactSupportMaximum}.lean; ls simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter04/`
+- `sed -n 860,905p book/chapter-04.txt (Simon 6.1, 6.2 printed proofs)`
+- `rg -l 'support_in_ball_of_radial_first_variation|convex_hull_property_of_support_in_ball' <run-dir> GMT <snapshot>/project simongmt/Poincare`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/sch-a1-decomp/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/sch-a1-decomp/olean lean /tmp/sch-a1-decomp/check/{ChildTypes,ChildC,ChildC2,Axioms,Final}.lean`
+- `python3 -I (verifier/gmt-compare.py contract_scope; verifier/lean_contract.py validate_lean_statement on both child statements)`
+- `LEAN_PATH=... lean /tmp/sch-a1-decomp/check/{Probe1,Probe2}.lean (#check of Measure.support_mem_ae, Measure.subset_compl_support_of_isOpen, LocallyIntegrableOn.integrableOn_compact_subset, integral_eq_zero_iff_of_nonneg_ae, Submodule.starProjection_orthogonal', expNegInvGlue.*, Monotone.deriv_nonneg, AffineIndependent.card_le_finrank_succ, Convex.sum_mem, geometric_hahn_banach_closed_point, finrank_euclideanSpace_fin, Submodule.finrank_le; eq_pos_convex_span_of_mem_convexHull is not reachable from the contract imports)`
+- `python3 -I (re-read dag.json: 22 nodes, depth-2 lean_names of other branches)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/Caratheodory.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/Combination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/StdSimplex.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/LocallyConvex/Separation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/AffineSpace/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactConvexHull.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/ConvexHullProperty.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactSupportMaximum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-support-convex-hull-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/sch-a1-decomp/check/Final.lean`
+- `/tmp/sch-a1-decomp/check/ChildC2.lean`
+- `/tmp/sch-a1-decomp/check/Axioms.lean`
+
+Snapshot (project ff75f52, mathlib 25730c7c): the snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b). Mathlib has Carathéodory (convexHull_eq_union, eq_pos_convex_span_of_mem_convexHull), AffineIndependent.card_le_finrank_succ, isCompact_stdSimplex, Convex.sum_mem, geometric_hahn_banach_closed_point/point_closed, Measure.support_mem_ae, Measure.subset_compl_support_of_isOpen, LocallyIntegrableOn.integrableOn_compact_subset, ContDiffBump and Submodule.starProjection_orthogonal', but no compact-convex-hull lemma for compact (non-finite) sets (only Set.Finite.isCompact_convexHull / isClosed_convexHull). The pinned SimonGMT (rev 2b3663083f3fe399b6296fb8eaee52169170e197, oleans built) has Poincare.SimonGMT.Chapter04.isCompact_convexHull_of_isCompact and exists_closedBall_separating_of_compact_convex in Chapter04/CompactConvexHull.lean (imports only Mathlib; #print axioms: propext, Classical.choice, Quot.sound; they apply to Ambient n ℓ), which make the 6.2 child short; its 6.1/6.2 theorems (CompactSupportMaximum.lean, ConvexHullProperty.lean) are proved only for SimonGMT's strengthened Chapter04.RectifiableVarifold, which the contract does not use (README), so 6.1 must be re-proved from radial_first_variation, with CompactSupportMaximum.lean as a pattern only. Both child types elaborate in the comparator scope, the parent assembly has exactly the frozen parent type, the 6.2 child was fully proved in Lean with standard axioms, and the new names collide with nothing.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.level_integral_bound-a1.moment_factor-a1",
+  "parent_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.level_integral_bound-a1",
+  "depth": 4,
+  "title": "Moment factor: (t+ε)^{1/(n−1)} μ(M_t)^{1/n} ≤ (∫_{M_0}(h+ε)^{n/(n−1)} dμ)^{1/n}",
+  "statement": "Let n ≥ 2 and ℓ ∈ ℕ, and let μ be a measure on E = ℝ^{n+ℓ} (Borel σ-algebra) that is finite on compact sets. Let h: E → ℝ be continuous, nonnegative and compactly supported, and let ε > 0 and t ≥ 0. Put p := n/(n − 1) and M_s := {x : h(x) > s}, and write μ(M_t) for the real measure μ.real(M_t). Then (t + ε)^{1/(n−1)} · μ(M_t)^{1/n} ≤ (∫_{M_0} (h + ε)^p dμ)^{1/n}. All powers are real powers (Real.rpow) of nonnegative bases, and ∫_{M_0} is the Bochner set integral.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε t : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → 0 ≤ t → (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ ≤ (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹",
+  "lean_name": "sobolev_level_moment_factor",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-truncation-layer-cake-a1-level-integral-bo-b0faa9c73e-a1"
+}

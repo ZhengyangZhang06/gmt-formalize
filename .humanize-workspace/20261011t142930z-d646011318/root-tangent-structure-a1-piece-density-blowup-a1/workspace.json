@@ -1,0 +1,502 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T142930Z-d646011318",
+  "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch04/20261011t142930z-d646011318/dispatch/root-tangent-structure-a1-piece-density-blowup-a1",
+  "source_commit": "ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch04/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.density_complement-a1",
+      "key": "density_complement",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean",
+              "sed -n 1,30p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (frozen import closure: only Chapter02.Lipschitz)",
+              "grep -rn 'theorem weighted_area_formula_lipschitz_injOn|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem continuous_normDet|theorem measurable_areaJacobianAt|def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n 'theorem|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "rg -n 'theorem euclideanHausdorffMeasure_eq_volume|theorem volume_closedBall|theorem addHaar_closedBall\\b|theorem finrank_euclideanSpace_fin|theorem integral_comp_smul\\b|exists_antilipschitzWith|theorem integral_map\\b|theorem integral_smul_measure|theorem integral_withDensity_eq_integral_toReal_smul' <snapshot>/mathlib/Mathlib",
+              "rg -n 'integral_mul_left_eq_self|setIntegral_comp_smul|addHaar_preimage_smul|addHaar_smul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "rg -n 'uniformContinuous' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "rg -n 'theorem Integrable.comp_smul\\b|theorem Integrable.comp_mul_left\\b|theorem hasFDerivAt_iff_isLittleO_nhds_zero|bounded_above_of_compact_support|exists_bound_of_continuousOn|theorem integral_indicator_one|theorem norm_integral_le_of_norm_le\\b|theorem integrable_indicator_iff|ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib",
+              "rg -n 'theorem measure_sdiff |alias measure_diff :=' mathlib/Mathlib/MeasureTheory",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/pdb-decomp/olean/GMT/Ch04/Submission.olean",
+              "python3 gen.py (gmt-compare.child_modules contract mode) then lean /tmp/pdb-decomp/final/challenges/Challenge_*.lean",
+              "lean /tmp/pdb-decomp/final/F1_frozen.lean (parent from 5 sorry'd children, frozen imports only)",
+              "lean /tmp/pdb-decomp/final/F2_full.lean (all 5 children + parent fully proved; #print axioms)",
+              "lean P1.lean / P2.lean with set_option pp.all true; cmp of #check outputs across import sets",
+              "python3 lean_contract.validate_lean_statement on each child type; dag.json lean_name collision check"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json",
+              "/tmp/pdb-decomp/final/F1_frozen.lean",
+              "/tmp/pdb-decomp/final/F2_full.lean"
+            ],
+            "conclusion": "Contract and pins:\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean (single sha256).\n- Submission.lean is the frozen copy. The manifest pins the project at ff75f52 and Mathlib at 25730c7c; SimonGMT is at 2b36630.\n\nFrozen statement scope:\n- Chapter03.Rectifiable imports only Chapter02.Lipschitz, so LinearMap.normDet and Chapter02.areaJacobianAt cannot appear in child types.\n- The children therefore carry the Jacobian as an existential J with the area-factor identity Hⁿ(DF(v)(S)) = ofReal(J v)·Lⁿ(S).\n\nCited library results (all exist with the stated meaning):\n- SimonGMT Chapter02: euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz (AreaLipschitz.lean:101 ff.), continuous_normDet and measurable_areaJacobianAt (AreaApproximation.lean:28, 44), areaJacobianAt_eq_normDet (Area.lean).\n- Mathlib NormDet and volume: LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume and normDet_nonneg; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Measure.addHaar_closedBall; Measure.addHaar_preimage_smul; Measure.integral_comp_smul; integral_add_left_eq_self (the to_additive form of integral_mul_left_eq_self).\n- Mathlib integration: integral_map; integral_smul_measure; integral_withDensity_eq_integral_toReal_smul; Integrable.comp_smul; integrable_indicator_iff; ContinuousOn.integrableOn_compact; norm_integral_le_of_norm_le.\n- Mathlib analysis: LinearMap.exists_antilipschitzWith; CompactlySupportedContinuousMapClass.uniformContinuous; hasFDerivAt_iff_isLittleO_nhds_zero; measure_sdiff (measure_diff is a deprecated alias).\n\nLean checks:\n- All five child types are valid one-line statements and compile as comparator challenge files in the frozen scope.\n- The parent's exact frozen type is proved from them (F1).\n- All five children and the parent are fully proved with the extra imports (F2). Axioms are only propext, Classical.choice and Quot.sound.\n- The pp.all types are identical across the two import sets.\n- No lean_name collides with any of the 79 DAG nodes."
+          }
+        ],
+        "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+        "child_id": "root.tangent_structure-a1.piece_density_blowup-a1.density_complement-a1",
+        "subproblem": {
+          "key": "density_complement",
+          "title": "Rescaled complement of a set at a Lebesgue density point has vanishing measure",
+          "statement": "Let n ∈ ℕ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, C ⊆ ℝⁿ Borel, w ∈ ℝⁿ and R > 0, and suppose Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 in [0, ∞] as r ↓ 0 (closed balls). Then Lⁿ({u ∈ B_R(0) : w + tu ∉ C}) → 0 in [0, ∞] as t ↓ 0.",
+          "lean_statement": "∀ (n : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)) (R : ℝ), MeasurableSet C → 0 < R → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun t : ℝ ↦ volume {u : EuclideanSpace ℝ (Fin n) | u ∈ closedBall 0 R ∧ w + t • u ∉ C}) (𝓝[>] 0) (𝓝 0)",
+          "lean_name": "ts_pdb_density_complement_vanish",
+          "depends_on": [],
+          "natural_proof": "Source: the parent proof, step 7(a) (the estimate of D_t'': t⁻ⁿLⁿ(B_{tR'}(w) ∖ C) = R'ⁿω_n·[Lⁿ(B_{tR'}(w) ∖ C)/Lⁿ(B_{tR'}(w))] → 0 at a density point), stated for an arbitrary radius R > 0 in the rescaled form Lⁿ({u ∈ B_R(0) : w + tu ∉ C}) used there. No errata apply.\n\nConventions. n, ℓ ∈ ℕ; E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)); ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Hⁿ := μHE[n] (on E, and also on ℝⁿ, where μHE[n] = volume by Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin); B_ρ(z) := closedBall z ρ; ω_n := omega n = (Lⁿ(ball 0 1)).toReal, and Lⁿ(ball 0 1) = ofReal(ω_n) because Lⁿ(ball 0 1) < ∞ (ENNReal.ofReal_toReal). Hypotheses: (H1) C ⊆ ℝⁿ Borel; (H2) R > 0; (H3) q(r) := Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 in [0, ∞] as r ↓ 0 (r > 0). Put S_t := {u ∈ ℝⁿ : u ∈ B_R(0) and w + tu ∉ C}, V := Lⁿ(ball 0 1) < ∞.\n\nProof.\n1. Complementary ratio. Truncated subtraction on [0, ∞] is continuous at (1, 1) because 1 ≠ ∞ (ENNReal.Tendsto.sub), so (H3) gives 1 − q(r) → 1 − 1 = 0 as r ↓ 0.\n2. Fix t > 0 and put r := tR > 0 and B := B_r(w). Then 0 < Lⁿ(B) < ∞ (measure_closedBall_pos, measure_closedBall_lt_top), and by Measure.addHaar_closedBall with finrank ℝ ℝⁿ = n, Lⁿ(B) = ofReal(rⁿ)·V.\n3. Complement measure. B ∖ C = B ∖ (C ∩ B), and C ∩ B ⊆ B is Borel with finite measure, so Lⁿ(B ∖ C) = Lⁿ(B) − Lⁿ(C ∩ B) (measure_sdiff; deprecated alias measure_diff). Because 0 < Lⁿ(B) < ∞, Lⁿ(B)·(Lⁿ(C ∩ B)/Lⁿ(B)) = Lⁿ(C ∩ B) (ENNReal.mul_div_cancel) and multiplication by the finite Lⁿ(B) distributes over truncated subtraction (ENNReal.mul_sub); hence Lⁿ(B ∖ C) = Lⁿ(B)·(1 − q(r)).\n4. Rescaling. For u ∈ ℝⁿ, |u| ≤ R ⟺ |(w + tu) − w| = t|u| ≤ tR, so S_t = Φ⁻¹(B ∖ C) where Φ(u) := w + tu, and Φ⁻¹(X) = (u ↦ tu)⁻¹((x ↦ w + x)⁻¹(X)). Lebesgue measure is translation invariant (measure_preimage_add) and Lⁿ((u ↦ tu)⁻¹(Y)) = ofReal(|t⁻ⁿ|)·Lⁿ(Y) for t ≠ 0 (Measure.addHaar_preimage_smul, finrank = n). Therefore Lⁿ(S_t) = ofReal(t⁻ⁿ)·Lⁿ(B ∖ C) = ofReal(t⁻ⁿ)·ofReal((tR)ⁿ)·V·(1 − q(tR)) = ofReal(Rⁿ)·V·(1 − q(tR)), using t⁻ⁿ(tR)ⁿ = Rⁿ.\n5. Limit. The map t ↦ tR sends t ↓ 0 (t > 0) to r ↓ 0 with r > 0 (it tends to 0·R = 0 and tR > 0 for t > 0), so by step 1, 1 − q(tR) → 0 as t ↓ 0. Multiplication by the finite constant ofReal(Rⁿ)·V is continuous at 0 on [0, ∞] (ENNReal.Tendsto.const_mul), hence ofReal(Rⁿ)·V·(1 − q(tR)) → 0. By step 4 the two functions of t agree for all t > 0, i.e. eventually along t ↓ 0, so Lⁿ(S_t) → 0 as t ↓ 0. ∎",
+          "proof_key_steps": [
+            "1 − q(r) → 0 as r ↓ 0, where q(r) = Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w))",
+            "Lⁿ(B_r(w) ∖ C) = Lⁿ(B_r(w))·(1 − q(r)) for r > 0 (measure_sdiff, finite positive ball measure)",
+            "{u ∈ B_R(0) : w + tu ∉ C} is the preimage of B_{tR}(w) ∖ C under u ↦ w + tu, so its measure is t⁻ⁿLⁿ(B_{tR}(w) ∖ C) = Rⁿ V (1 − q(tR))",
+            "tR ↓ 0 as t ↓ 0, so the measure tends to Rⁿ V · 0 = 0"
+          ]
+        },
+        "audit": {
+          "key": "density_complement",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The statement correctly specifies ENNReal convergence and closed balls. Positive finite ball measures justify the complementary-ratio identity; affine rescaling gives the stated fixed-radius complement measure, whose finite constant multiplier yields convergence to zero. All hypotheses are accounted for, including the permitted n = 0 case."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.image_ball_bound-a1",
+      "key": "image_ball_bound",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean",
+              "sed -n 1,30p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (frozen import closure: only Chapter02.Lipschitz)",
+              "grep -rn 'theorem weighted_area_formula_lipschitz_injOn|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem continuous_normDet|theorem measurable_areaJacobianAt|def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n 'theorem|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "rg -n 'theorem euclideanHausdorffMeasure_eq_volume|theorem volume_closedBall|theorem addHaar_closedBall\\b|theorem finrank_euclideanSpace_fin|theorem integral_comp_smul\\b|exists_antilipschitzWith|theorem integral_map\\b|theorem integral_smul_measure|theorem integral_withDensity_eq_integral_toReal_smul' <snapshot>/mathlib/Mathlib",
+              "rg -n 'integral_mul_left_eq_self|setIntegral_comp_smul|addHaar_preimage_smul|addHaar_smul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "rg -n 'uniformContinuous' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "rg -n 'theorem Integrable.comp_smul\\b|theorem Integrable.comp_mul_left\\b|theorem hasFDerivAt_iff_isLittleO_nhds_zero|bounded_above_of_compact_support|exists_bound_of_continuousOn|theorem integral_indicator_one|theorem norm_integral_le_of_norm_le\\b|theorem integrable_indicator_iff|ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib",
+              "rg -n 'theorem measure_sdiff |alias measure_diff :=' mathlib/Mathlib/MeasureTheory",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/pdb-decomp/olean/GMT/Ch04/Submission.olean",
+              "python3 gen.py (gmt-compare.child_modules contract mode) then lean /tmp/pdb-decomp/final/challenges/Challenge_*.lean",
+              "lean /tmp/pdb-decomp/final/F1_frozen.lean (parent from 5 sorry'd children, frozen imports only)",
+              "lean /tmp/pdb-decomp/final/F2_full.lean (all 5 children + parent fully proved; #print axioms)",
+              "lean P1.lean / P2.lean with set_option pp.all true; cmp of #check outputs across import sets",
+              "python3 lean_contract.validate_lean_statement on each child type; dag.json lean_name collision check"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json",
+              "/tmp/pdb-decomp/final/F1_frozen.lean",
+              "/tmp/pdb-decomp/final/F2_full.lean"
+            ],
+            "conclusion": "Contract and pins:\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean (single sha256).\n- Submission.lean is the frozen copy. The manifest pins the project at ff75f52 and Mathlib at 25730c7c; SimonGMT is at 2b36630.\n\nFrozen statement scope:\n- Chapter03.Rectifiable imports only Chapter02.Lipschitz, so LinearMap.normDet and Chapter02.areaJacobianAt cannot appear in child types.\n- The children therefore carry the Jacobian as an existential J with the area-factor identity Hⁿ(DF(v)(S)) = ofReal(J v)·Lⁿ(S).\n\nCited library results (all exist with the stated meaning):\n- SimonGMT Chapter02: euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz (AreaLipschitz.lean:101 ff.), continuous_normDet and measurable_areaJacobianAt (AreaApproximation.lean:28, 44), areaJacobianAt_eq_normDet (Area.lean).\n- Mathlib NormDet and volume: LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume and normDet_nonneg; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Measure.addHaar_closedBall; Measure.addHaar_preimage_smul; Measure.integral_comp_smul; integral_add_left_eq_self (the to_additive form of integral_mul_left_eq_self).\n- Mathlib integration: integral_map; integral_smul_measure; integral_withDensity_eq_integral_toReal_smul; Integrable.comp_smul; integrable_indicator_iff; ContinuousOn.integrableOn_compact; norm_integral_le_of_norm_le.\n- Mathlib analysis: LinearMap.exists_antilipschitzWith; CompactlySupportedContinuousMapClass.uniformContinuous; hasFDerivAt_iff_isLittleO_nhds_zero; measure_sdiff (measure_diff is a deprecated alias).\n\nLean checks:\n- All five child types are valid one-line statements and compile as comparator challenge files in the frozen scope.\n- The parent's exact frozen type is proved from them (F1).\n- All five children and the parent are fully proved with the extra imports (F2). Axioms are only propext, Classical.choice and Quot.sound.\n- The pp.all types are identical across the two import sets.\n- No lean_name collides with any of the 79 DAG nodes."
+          }
+        ],
+        "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+        "child_id": "root.tangent_structure-a1.piece_density_blowup-a1.image_ball_bound-a1",
+        "subproblem": {
+          "key": "image_ball_bound",
+          "title": "Upper n-density bound for the image of a set with a lower Lipschitz bound at a point",
+          "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ = ℝ^{n+ℓ}, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, Hⁿ = μHE[n] on E, and ω_n = omega n = (Lⁿ(ball 0 1)).toReal. Let C ⊆ ℝⁿ be any set, F: ℝⁿ → E a K-Lipschitz map (K ∈ ℝ≥0), c > 0 and w ∈ ℝⁿ such that c|v − w| ≤ |F(v) − F(w)| for every v ∈ C. Then for every ρ > 0, Hⁿ(F(C) ∩ B_ρ(F(w))) ≤ ofReal(Kⁿ·ω_n/cⁿ·ρⁿ), where B_ρ denotes the closed ball.",
+          "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (K : NNReal) (c : ℝ) (w : EuclideanSpace ℝ (Fin n)), LipschitzWith K F → 0 < c → (∀ v ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → ∀ ρ : ℝ, 0 < ρ → (μHE[n] : Measure (Ambient n ℓ)) (F '' C ∩ closedBall (F w) ρ) ≤ ENNReal.ofReal ((K : ℝ) ^ n * omega n / c ^ n * ρ ^ n)",
+          "lean_name": "ts_pdb_image_closedBall_measure_le",
+          "depends_on": [],
+          "natural_proof": "Source: the parent proof, step 2 (claim (3b)), specialised to a single centre F(w); only the lower Lipschitz bound at the fixed point w is used, and no compactness or measurability of C is needed. No errata apply.\n\nConventions. n, ℓ ∈ ℕ; E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)); ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Hⁿ := μHE[n] (on E, and also on ℝⁿ, where μHE[n] = volume by Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin); B_ρ(z) := closedBall z ρ; ω_n := omega n = (Lⁿ(ball 0 1)).toReal, and Lⁿ(ball 0 1) = ofReal(ω_n) because Lⁿ(ball 0 1) < ∞ (ENNReal.ofReal_toReal). Hypotheses: (H1) F: ℝⁿ → E is K-Lipschitz, K ∈ ℝ≥0; (H2) c > 0; (H3) c|v − w| ≤ |F(v) − F(w)| for all v ∈ C; ρ > 0.\nLibrary: (R2b) SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn: if G is K-Lipschitz on a set S (any S, between metric spaces with Borel σ-algebras) then μHE[n](G(S)) ≤ Kⁿ·μHE[n](S).\n\nProof.\n1. Inclusion. Let y ∈ F(C) ∩ B_ρ(F(w)) and write y = F(v) with v ∈ C. By (H3), c|v − w| ≤ |F(v) − F(w)| = |y − F(w)| ≤ ρ, and since c > 0 this gives |v − w| ≤ ρ/c. Hence v ∈ S := C ∩ B_{ρ/c}(w) and y ∈ F(S). So F(C) ∩ B_ρ(F(w)) ⊆ F(S), and by monotonicity Hⁿ(F(C) ∩ B_ρ(F(w))) ≤ Hⁿ(F(S)).\n2. Lipschitz image bound. F is K-Lipschitz on S (restriction of (H1)), so (R2b) gives Hⁿ(F(S)) ≤ (K:ℝ≥0∞)ⁿ·μHE[n](S), where μHE[n] is taken on ℝⁿ.\n3. Hausdorff = Lebesgue on ℝⁿ. μHE[n] = Lⁿ on ℝⁿ, and S ⊆ B_{ρ/c}(w), so μHE[n](S) ≤ Lⁿ(B_{ρ/c}(w)).\n4. Ball volume. Since ρ/c ≥ 0 and finrank ℝ ℝⁿ = n, Mathlib Measure.addHaar_closedBall gives Lⁿ(B_{ρ/c}(w)) = ofReal((ρ/c)ⁿ)·Lⁿ(ball 0 1) = ofReal((ρ/c)ⁿ)·ofReal(ω_n).\n5. Arithmetic. Combining 1–4, Hⁿ(F(C) ∩ B_ρ(F(w))) ≤ (K:ℝ≥0∞)ⁿ·ofReal((ρ/c)ⁿ)·ofReal(ω_n). All three factors are ofReal of nonnegative reals ((K:ℝ≥0∞) = ofReal(K), ofReal_pow, ofReal_mul, ω_n ≥ 0), so the right side equals ofReal(Kⁿ·(ρ/c)ⁿ·ω_n). Finally Kⁿ·(ρ/c)ⁿ·ω_n = Kⁿ·ω_n/cⁿ·ρⁿ because (ρ/c)ⁿ = ρⁿ/cⁿ and c ≠ 0. This is the claimed bound Hⁿ(F(C) ∩ B_ρ(F(w))) ≤ ofReal(Kⁿ·ω_n/cⁿ·ρⁿ). ∎",
+          "proof_key_steps": [
+            "F(C) ∩ B_ρ(F(w)) ⊆ F(C ∩ B_{ρ/c}(w)) by the lower bound c|v − w| ≤ |F(v) − F(w)| at w",
+            "Lipschitz image bound Hⁿ(F(S)) ≤ Kⁿ·Hⁿ(S) (euclideanHausdorffMeasure_image_le_of_lipschitzOn), with Hⁿ = Lⁿ on ℝⁿ",
+            "Lⁿ(B_{ρ/c}(w)) = (ρ/c)ⁿ·Lⁿ(ball 0 1) = ofReal((ρ/c)ⁿ ω_n) (addHaar_closedBall)",
+            "ENNReal arithmetic: Kⁿ·(ρ/c)ⁿ·ω_n = Kⁿ ω_n / cⁿ · ρⁿ"
+          ]
+        },
+        "audit": {
+          "key": "image_ball_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean proposition match all hypotheses and the closed-ball bound. The inclusion, Lipschitz image estimate, Hausdorff–volume identification, and nonnegative ENNReal arithmetic prove the exact conclusion without measurability of C or membership of w in C. The argument also covers n = 0."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.linear_range_integral-a1",
+      "key": "linear_range_integral",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean",
+              "sed -n 1,30p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (frozen import closure: only Chapter02.Lipschitz)",
+              "grep -rn 'theorem weighted_area_formula_lipschitz_injOn|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem continuous_normDet|theorem measurable_areaJacobianAt|def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n 'theorem|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "rg -n 'theorem euclideanHausdorffMeasure_eq_volume|theorem volume_closedBall|theorem addHaar_closedBall\\b|theorem finrank_euclideanSpace_fin|theorem integral_comp_smul\\b|exists_antilipschitzWith|theorem integral_map\\b|theorem integral_smul_measure|theorem integral_withDensity_eq_integral_toReal_smul' <snapshot>/mathlib/Mathlib",
+              "rg -n 'integral_mul_left_eq_self|setIntegral_comp_smul|addHaar_preimage_smul|addHaar_smul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "rg -n 'uniformContinuous' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "rg -n 'theorem Integrable.comp_smul\\b|theorem Integrable.comp_mul_left\\b|theorem hasFDerivAt_iff_isLittleO_nhds_zero|bounded_above_of_compact_support|exists_bound_of_continuousOn|theorem integral_indicator_one|theorem norm_integral_le_of_norm_le\\b|theorem integrable_indicator_iff|ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib",
+              "rg -n 'theorem measure_sdiff |alias measure_diff :=' mathlib/Mathlib/MeasureTheory",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/pdb-decomp/olean/GMT/Ch04/Submission.olean",
+              "python3 gen.py (gmt-compare.child_modules contract mode) then lean /tmp/pdb-decomp/final/challenges/Challenge_*.lean",
+              "lean /tmp/pdb-decomp/final/F1_frozen.lean (parent from 5 sorry'd children, frozen imports only)",
+              "lean /tmp/pdb-decomp/final/F2_full.lean (all 5 children + parent fully proved; #print axioms)",
+              "lean P1.lean / P2.lean with set_option pp.all true; cmp of #check outputs across import sets",
+              "python3 lean_contract.validate_lean_statement on each child type; dag.json lean_name collision check"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json",
+              "/tmp/pdb-decomp/final/F1_frozen.lean",
+              "/tmp/pdb-decomp/final/F2_full.lean"
+            ],
+            "conclusion": "Contract and pins:\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean (single sha256).\n- Submission.lean is the frozen copy. The manifest pins the project at ff75f52 and Mathlib at 25730c7c; SimonGMT is at 2b36630.\n\nFrozen statement scope:\n- Chapter03.Rectifiable imports only Chapter02.Lipschitz, so LinearMap.normDet and Chapter02.areaJacobianAt cannot appear in child types.\n- The children therefore carry the Jacobian as an existential J with the area-factor identity Hⁿ(DF(v)(S)) = ofReal(J v)·Lⁿ(S).\n\nCited library results (all exist with the stated meaning):\n- SimonGMT Chapter02: euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz (AreaLipschitz.lean:101 ff.), continuous_normDet and measurable_areaJacobianAt (AreaApproximation.lean:28, 44), areaJacobianAt_eq_normDet (Area.lean).\n- Mathlib NormDet and volume: LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume and normDet_nonneg; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Measure.addHaar_closedBall; Measure.addHaar_preimage_smul; Measure.integral_comp_smul; integral_add_left_eq_self (the to_additive form of integral_mul_left_eq_self).\n- Mathlib integration: integral_map; integral_smul_measure; integral_withDensity_eq_integral_toReal_smul; Integrable.comp_smul; integrable_indicator_iff; ContinuousOn.integrableOn_compact; norm_integral_le_of_norm_le.\n- Mathlib analysis: LinearMap.exists_antilipschitzWith; CompactlySupportedContinuousMapClass.uniformContinuous; hasFDerivAt_iff_isLittleO_nhds_zero; measure_sdiff (measure_diff is a deprecated alias).\n\nLean checks:\n- All five child types are valid one-line statements and compile as comparator challenge files in the frozen scope.\n- The parent's exact frozen type is proved from them (F1).\n- All five children and the parent are fully proved with the extra imports (F2). Axioms are only propext, Classical.choice and Quot.sound.\n- The pp.all types are identical across the two import sets.\n- No lean_name collides with any of the 79 DAG nodes."
+          }
+        ],
+        "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+        "child_id": "root.tangent_structure-a1.piece_density_blowup-a1.linear_range_integral-a1",
+        "subproblem": {
+          "key": "linear_range_integral",
+          "title": "Integral over the range of a linear map with a given area factor",
+          "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, Hⁿ = μHE[n] on E. Let A: ℝⁿ → E be a continuous linear map and j ≥ 0 such that Hⁿ(A(S)) = ofReal(j)·Lⁿ(S) for every S ⊆ ℝⁿ. Then for every f ∈ C_c(E, ℝ), ∫_{A(ℝⁿ)} f dHⁿ = j·∫_{ℝⁿ} f(A(u)) dLⁿ(u).",
+          "lean_statement": "∀ (n ℓ : ℕ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (j : ℝ), 0 ≤ j → (∀ S : Set (EuclideanSpace ℝ (Fin n)), (μHE[n] : Measure (Ambient n ℓ)) (A '' S) = ENNReal.ofReal j * volume S) → ∀ f : C_c(Ambient n ℓ, ℝ), ∫ y in (LinearMap.range A.toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n] = j * ∫ u, f (A u)",
+          "lean_name": "ts_pdb_linear_range_integral",
+          "depends_on": [],
+          "natural_proof": "Source: the parent proof, step 6, in its stated alternative form 'from (R2c): Hⁿ⌞T is the image under A of normDet(A)·Lⁿ', with the area factor normDet(A) abstracted to any j ≥ 0 satisfying the image identity. No errata apply.\n\nConventions. n, ℓ ∈ ℕ; E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)); ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Hⁿ := μHE[n] (on E, and also on ℝⁿ, where μHE[n] = volume by Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin); B_ρ(z) := closedBall z ρ; ω_n := omega n = (Lⁿ(ball 0 1)).toReal, and Lⁿ(ball 0 1) = ofReal(ω_n) because Lⁿ(ball 0 1) < ∞ (ENNReal.ofReal_toReal). Hypotheses: A: ℝⁿ → E is a continuous linear map (injectivity is not needed); j ≥ 0; (H) Hⁿ(A(S)) = ofReal(j)·Lⁿ(S) for every S ⊆ ℝⁿ; f ∈ C_c(E, ℝ). Write range A = A(ℝⁿ) (as a set, the carrier of LinearMap.range A).\n\nProof.\n1. Measure identity. We show Hⁿ⌞(range A) = A_#(ofReal(j)·Lⁿ) as measures on E. A is continuous, hence Borel measurable. Let T ⊆ E be Borel. Then (Hⁿ⌞range A)(T) = Hⁿ(T ∩ range A) (Measure.restrict_apply). Elementarily T ∩ range A = A(A⁻¹(T)): if y = A(u) ∈ T then u ∈ A⁻¹(T); conversely A(A⁻¹(T)) ⊆ T ∩ range A. By (H) with S := A⁻¹(T), Hⁿ(A(A⁻¹(T))) = ofReal(j)·Lⁿ(A⁻¹(T)) = (ofReal(j)·Lⁿ)(A⁻¹(T)) = (A_#(ofReal(j)·Lⁿ))(T) (Measure.smul_apply, Measure.map_apply). As this holds for all Borel T, the measures are equal (Measure.ext).\n2. Integral. By step 1, ∫_{range A} f dHⁿ = ∫ f d(A_#(ofReal(j)·Lⁿ)). Since A is measurable and f is continuous (hence a.e. strongly measurable), MeasureTheory.integral_map gives ∫ f d(A_#(ofReal(j)·Lⁿ)) = ∫ f(A(u)) d(ofReal(j)·Lⁿ)(u), and integral_smul_measure gives this equals (ofReal(j)).toReal·∫ f(A(u)) dLⁿ(u). Since j ≥ 0, (ofReal(j)).toReal = j. Hence ∫_{range A} f dHⁿ = j·∫_{ℝⁿ} f(A(u)) dLⁿ(u). These are unconditional identities of Bochner integrals (equalities of measures), so no integrability assumption is needed. ∎",
+          "proof_key_steps": [
+            "T ∩ range A = A(A⁻¹T) for every T ⊆ E",
+            "Hence Hⁿ⌞range A = A_#(ofReal(j)·Lⁿ) by the area-factor hypothesis applied to S = A⁻¹T and Measure.ext",
+            "integral_map and integral_smul_measure give ∫_{range A} f dHⁿ = j·∫ f(Au) du"
+          ]
+        },
+        "audit": {
+          "key": "linear_range_integral",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The all-subset area-factor hypothesis gives the asserted pushforward measure identity directly. Integral transport and measure scaling prove the exact formula, including j = 0 and nonintegrable compositions. Injectivity is genuinely unnecessary; the prose and Lean type agree."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.piece_area_formula-a1",
+      "key": "piece_area_formula",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean",
+              "sed -n 1,30p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (frozen import closure: only Chapter02.Lipschitz)",
+              "grep -rn 'theorem weighted_area_formula_lipschitz_injOn|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem continuous_normDet|theorem measurable_areaJacobianAt|def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n 'theorem|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "rg -n 'theorem euclideanHausdorffMeasure_eq_volume|theorem volume_closedBall|theorem addHaar_closedBall\\b|theorem finrank_euclideanSpace_fin|theorem integral_comp_smul\\b|exists_antilipschitzWith|theorem integral_map\\b|theorem integral_smul_measure|theorem integral_withDensity_eq_integral_toReal_smul' <snapshot>/mathlib/Mathlib",
+              "rg -n 'integral_mul_left_eq_self|setIntegral_comp_smul|addHaar_preimage_smul|addHaar_smul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "rg -n 'uniformContinuous' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "rg -n 'theorem Integrable.comp_smul\\b|theorem Integrable.comp_mul_left\\b|theorem hasFDerivAt_iff_isLittleO_nhds_zero|bounded_above_of_compact_support|exists_bound_of_continuousOn|theorem integral_indicator_one|theorem norm_integral_le_of_norm_le\\b|theorem integrable_indicator_iff|ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib",
+              "rg -n 'theorem measure_sdiff |alias measure_diff :=' mathlib/Mathlib/MeasureTheory",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/pdb-decomp/olean/GMT/Ch04/Submission.olean",
+              "python3 gen.py (gmt-compare.child_modules contract mode) then lean /tmp/pdb-decomp/final/challenges/Challenge_*.lean",
+              "lean /tmp/pdb-decomp/final/F1_frozen.lean (parent from 5 sorry'd children, frozen imports only)",
+              "lean /tmp/pdb-decomp/final/F2_full.lean (all 5 children + parent fully proved; #print axioms)",
+              "lean P1.lean / P2.lean with set_option pp.all true; cmp of #check outputs across import sets",
+              "python3 lean_contract.validate_lean_statement on each child type; dag.json lean_name collision check"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json",
+              "/tmp/pdb-decomp/final/F1_frozen.lean",
+              "/tmp/pdb-decomp/final/F2_full.lean"
+            ],
+            "conclusion": "Contract and pins:\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean (single sha256).\n- Submission.lean is the frozen copy. The manifest pins the project at ff75f52 and Mathlib at 25730c7c; SimonGMT is at 2b36630.\n\nFrozen statement scope:\n- Chapter03.Rectifiable imports only Chapter02.Lipschitz, so LinearMap.normDet and Chapter02.areaJacobianAt cannot appear in child types.\n- The children therefore carry the Jacobian as an existential J with the area-factor identity Hⁿ(DF(v)(S)) = ofReal(J v)·Lⁿ(S).\n\nCited library results (all exist with the stated meaning):\n- SimonGMT Chapter02: euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz (AreaLipschitz.lean:101 ff.), continuous_normDet and measurable_areaJacobianAt (AreaApproximation.lean:28, 44), areaJacobianAt_eq_normDet (Area.lean).\n- Mathlib NormDet and volume: LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume and normDet_nonneg; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Measure.addHaar_closedBall; Measure.addHaar_preimage_smul; Measure.integral_comp_smul; integral_add_left_eq_self (the to_additive form of integral_mul_left_eq_self).\n- Mathlib integration: integral_map; integral_smul_measure; integral_withDensity_eq_integral_toReal_smul; Integrable.comp_smul; integrable_indicator_iff; ContinuousOn.integrableOn_compact; norm_integral_le_of_norm_le.\n- Mathlib analysis: LinearMap.exists_antilipschitzWith; CompactlySupportedContinuousMapClass.uniformContinuous; hasFDerivAt_iff_isLittleO_nhds_zero; measure_sdiff (measure_diff is a deprecated alias).\n\nLean checks:\n- All five child types are valid one-line statements and compile as comparator challenge files in the frozen scope.\n- The parent's exact frozen type is proved from them (F1).\n- All five children and the parent are fully proved with the extra imports (F2). Axioms are only propext, Classical.choice and Quot.sound.\n- The pp.all types are identical across the two import sets.\n- No lean_name collides with any of the 79 DAG nodes."
+          }
+        ],
+        "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+        "child_id": "root.tangent_structure-a1.piece_density_blowup-a1.piece_area_formula-a1",
+        "subproblem": {
+          "key": "piece_area_formula",
+          "title": "Area formula on an injective Lipschitz piece with a Jacobian continuous on the piece",
+          "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, Hⁿ = μHE[n] on E. Let C ⊆ ℝⁿ be Borel, F: ℝⁿ → E K-Lipschitz and injective on C, and suppose v ↦ DF(v) := fderiv ℝ F v is continuous on C. Then there is J: ℝⁿ → ℝ such that (i) J is continuous on C; (ii) for every v ∈ C, J(v) ≥ 0 and Hⁿ(DF(v)(S)) = ofReal(J(v))·Lⁿ(S) for every S ⊆ ℝⁿ; and (iii) for every continuous g: E → ℝ, ∫_{F(C)} g dHⁿ = ∫_C J(v)·g(F(v)) dLⁿ(v) (Bochner integrals).",
+          "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (K : NNReal), MeasurableSet C → LipschitzWith K F → Set.InjOn F C → ContinuousOn (fderiv ℝ F) C → ∃ J : EuclideanSpace ℝ (Fin n) → ℝ, ContinuousOn J C ∧ (∀ v ∈ C, 0 ≤ J v ∧ ∀ S : Set (EuclideanSpace ℝ (Fin n)), (μHE[n] : Measure (Ambient n ℓ)) (fderiv ℝ F v '' S) = ENNReal.ofReal (J v) * volume S) ∧ ∀ g : Ambient n ℓ → ℝ, Continuous g → ∫ y in F '' C, g y ∂μHE[n] = ∫ v in C, J v * g (F v)",
+          "lean_name": "ts_pdb_piece_area_formula",
+          "depends_on": [],
+          "natural_proof": "Source: the parent proof, steps 1(c) and 4 (area formula on the piece, in the pushforward form recorded there as 'Equivalently: Hⁿ⌞N is the image under F of the finite measure JF·Lⁿ⌞C, by (R2a) applied to indicators; then use MeasureTheory.integral_map'), together with the identity (R2c) used in step 6. No errata apply.\n\nConventions. n, ℓ ∈ ℕ; E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)); ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Hⁿ := μHE[n] (on E, and also on ℝⁿ, where μHE[n] = volume by Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin); B_ρ(z) := closedBall z ρ; ω_n := omega n = (Lⁿ(ball 0 1)).toReal, and Lⁿ(ball 0 1) = ofReal(ω_n) because Lⁿ(ball 0 1) < ∞ (ENNReal.ofReal_toReal). DF(v) := fderiv ℝ F v (Mathlib's derivative; it is 0 where F is not differentiable). For a linear map L: ℝⁿ → E, normDet(L) := Mathlib LinearMap.normDet L ≥ 0. Hypotheses: (H1) C ⊆ ℝⁿ is Borel; (H2) F is K-Lipschitz; (H3) F is injective on C; (H4) v ↦ DF(v) is continuous on C (into the normed space L(ℝⁿ, E)).\nLibrary: (R2a) SimonGMT Chapter02.injective_area_formula_lipschitz (the case u ≡ 1 of weighted_area_formula_lipschitz_injOn): for G Lipschitz, s Borel and G injective on s, μHE[finrank ℝ ℝⁿ](G(s)) = ∫⁻_s ofReal(areaJacobianAt G v) dLⁿ(v), where areaJacobianAt G v = normDet(DG(v)) (areaJacobianAt_eq_normDet). (R2c) Mathlib LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume: for linear L: ℝⁿ → E and every S ⊆ ℝⁿ, μHE[finrank ℝ ℝⁿ](L(S)) = ofReal(normDet L)·Lⁿ(S). (R2d) SimonGMT Chapter02.continuous_normDet: L ↦ normDet L is continuous on L(ℝⁿ, E); Mathlib measurable_fderiv: v ↦ DF(v) is Borel.\n\nProof.\n1. Choice of J. Put J(v) := normDet(DF(v)) for v ∈ ℝⁿ. Then J(v) ≥ 0 for all v (LinearMap.normDet_nonneg), and J is Borel measurable, being the composition of the continuous map normDet (R2d) with the Borel map v ↦ DF(v).\n2. Continuity on C. By (H4) and (R2d), J = normDet ∘ DF is continuous on C (composition of a continuous map with a map continuous on C).\n3. Area factor. Let v ∈ C and S ⊆ ℝⁿ. Applying (R2c) to the linear map DF(v) and rewriting finrank ℝ ℝⁿ = n gives Hⁿ(DF(v)(S)) = ofReal(normDet DF(v))·Lⁿ(S) = ofReal(J(v))·Lⁿ(S). Together with step 1 this proves 0 ≤ J(v) and the area-factor identity for every v ∈ C.\n4. Measure identity. Let ν := (Lⁿ⌞C).withDensity(v ↦ ofReal(J(v))), a measure on ℝⁿ, and let F_#ν be its pushforward under F (F is continuous by (H2), hence Borel measurable). We show Hⁿ⌞F(C) = F_#ν as measures on E. Let T ⊆ E be Borel. Then (Hⁿ⌞F(C))(T) = Hⁿ(T ∩ F(C)) (Measure.restrict_apply; only T needs to be measurable). Elementarily T ∩ F(C) = F(s) with s := F⁻¹(T) ∩ C: if y = F(v) ∈ T with v ∈ C then v ∈ s; conversely F(s) ⊆ T ∩ F(C). The set s is Borel by (H1) and the measurability of F, and F is injective on s by (H3). So (R2a), with finrank ℝ ℝⁿ = n, gives Hⁿ(F(s)) = ∫⁻_s ofReal(J) dLⁿ. On the other side, (F_#ν)(T) = ν(F⁻¹(T)) = ∫⁻_{F⁻¹(T)} ofReal(J) d(Lⁿ⌞C) = ∫⁻_{F⁻¹(T) ∩ C} ofReal(J) dLⁿ (Measure.map_apply, withDensity_apply, Measure.restrict_restrict). The two values coincide for every Borel T, so Hⁿ⌞F(C) = F_#ν (Measure.ext).\n5. Integral identity. Let g: E → ℝ be continuous; it is strongly measurable. By step 4 and the change of variables for pushforward measures (MeasureTheory.integral_map, applicable since F is measurable and g is a.e. strongly measurable), ∫_{F(C)} g dHⁿ = ∫ g d(F_#ν) = ∫ g(F(v)) dν(v). The density v ↦ ofReal(J(v)) is measurable (step 1) and finite everywhere, so integral_withDensity_eq_integral_toReal_smul gives ∫ g∘F dν = ∫_C (ofReal(J(v))).toReal·g(F(v)) dLⁿ(v), and (ofReal(J(v))).toReal = J(v) because J(v) ≥ 0. Hence ∫_{F(C)} g dHⁿ = ∫_C J(v)·g(F(v)) dLⁿ(v). No integrability hypothesis is needed: each step is either an equality of measures or one of the cited Bochner identities, which hold unconditionally (both sides are 0 when the integrand is not integrable).\n6. Steps 2, 3 and 5 are the three asserted properties of J. ∎",
+          "proof_key_steps": [
+            "Take J := normDet ∘ DF (= SimonGMT areaJacobianAt F); J ≥ 0 and J is Borel",
+            "J is continuous on C: continuous_normDet composed with v ↦ DF(v), continuous on C",
+            "Area factor Hⁿ(DF(v)(S)) = ofReal(J(v))·Lⁿ(S) from LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume",
+            "Hⁿ⌞F(C) = F_#((Lⁿ⌞C).withDensity(ofReal ∘ J)) on Borel sets, by T ∩ F(C) = F(F⁻¹T ∩ C) and the injective Lipschitz area formula",
+            "integral_map and integral_withDensity_eq_integral_toReal_smul give ∫_{F(C)} g dHⁿ = ∫_C J(v) g(F(v)) dv for continuous g"
+          ]
+        },
+        "audit": {
+          "key": "piece_area_formula",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The hypotheses and three conclusions match exactly. Choosing J = normDet ∘ fderiv establishes continuity, nonnegativity, and the area factor. The Borel-set pushforward argument and unconditional Bochner transport identities justify the integral equality without additional integrability or everywhere-differentiability assumptions. The proof is complete and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.rescaled_limit-a1",
+      "key": "rescaled_limit",
+      "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean",
+              "sed -n 1,30p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (frozen import closure: only Chapter02.Lipschitz)",
+              "grep -rn 'theorem weighted_area_formula_lipschitz_injOn|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem continuous_normDet|theorem measurable_areaJacobianAt|def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n 'theorem|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "rg -n 'theorem euclideanHausdorffMeasure_eq_volume|theorem volume_closedBall|theorem addHaar_closedBall\\b|theorem finrank_euclideanSpace_fin|theorem integral_comp_smul\\b|exists_antilipschitzWith|theorem integral_map\\b|theorem integral_smul_measure|theorem integral_withDensity_eq_integral_toReal_smul' <snapshot>/mathlib/Mathlib",
+              "rg -n 'integral_mul_left_eq_self|setIntegral_comp_smul|addHaar_preimage_smul|addHaar_smul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "rg -n 'uniformContinuous' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "rg -n 'theorem Integrable.comp_smul\\b|theorem Integrable.comp_mul_left\\b|theorem hasFDerivAt_iff_isLittleO_nhds_zero|bounded_above_of_compact_support|exists_bound_of_continuousOn|theorem integral_indicator_one|theorem norm_integral_le_of_norm_le\\b|theorem integrable_indicator_iff|ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib",
+              "rg -n 'theorem measure_sdiff |alias measure_diff :=' mathlib/Mathlib/MeasureTheory",
+              "lake env lean GMT/Ch04/Submission.lean -o /tmp/pdb-decomp/olean/GMT/Ch04/Submission.olean",
+              "python3 gen.py (gmt-compare.child_modules contract mode) then lean /tmp/pdb-decomp/final/challenges/Challenge_*.lean",
+              "lean /tmp/pdb-decomp/final/F1_frozen.lean (parent from 5 sorry'd children, frozen imports only)",
+              "lean /tmp/pdb-decomp/final/F2_full.lean (all 5 children + parent fully proved; #print axioms)",
+              "lean P1.lean / P2.lean with set_option pp.all true; cmp of #check outputs across import sets",
+              "python3 lean_contract.validate_lean_statement on each child type; dag.json lean_name collision check"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json",
+              "/tmp/pdb-decomp/final/F1_frozen.lean",
+              "/tmp/pdb-decomp/final/F2_full.lean"
+            ],
+            "conclusion": "Contract and pins:\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean (single sha256).\n- Submission.lean is the frozen copy. The manifest pins the project at ff75f52 and Mathlib at 25730c7c; SimonGMT is at 2b36630.\n\nFrozen statement scope:\n- Chapter03.Rectifiable imports only Chapter02.Lipschitz, so LinearMap.normDet and Chapter02.areaJacobianAt cannot appear in child types.\n- The children therefore carry the Jacobian as an existential J with the area-factor identity Hⁿ(DF(v)(S)) = ofReal(J v)·Lⁿ(S).\n\nCited library results (all exist with the stated meaning):\n- SimonGMT Chapter02: euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz (AreaLipschitz.lean:101 ff.), continuous_normDet and measurable_areaJacobianAt (AreaApproximation.lean:28, 44), areaJacobianAt_eq_normDet (Area.lean).\n- Mathlib NormDet and volume: LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume and normDet_nonneg; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Measure.addHaar_closedBall; Measure.addHaar_preimage_smul; Measure.integral_comp_smul; integral_add_left_eq_self (the to_additive form of integral_mul_left_eq_self).\n- Mathlib integration: integral_map; integral_smul_measure; integral_withDensity_eq_integral_toReal_smul; Integrable.comp_smul; integrable_indicator_iff; ContinuousOn.integrableOn_compact; norm_integral_le_of_norm_le.\n- Mathlib analysis: LinearMap.exists_antilipschitzWith; CompactlySupportedContinuousMapClass.uniformContinuous; hasFDerivAt_iff_isLittleO_nhds_zero; measure_sdiff (measure_diff is a deprecated alias).\n\nLean checks:\n- All five child types are valid one-line statements and compile as comparator challenge files in the frozen scope.\n- The parent's exact frozen type is proved from them (F1).\n- All five children and the parent are fully proved with the extra imports (F2). Axioms are only propext, Classical.choice and Quot.sound.\n- The pp.all types are identical across the two import sets.\n- No lean_name collides with any of the 79 DAG nodes."
+          }
+        ],
+        "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+        "child_id": "root.tangent_structure-a1.piece_density_blowup-a1.rescaled_limit-a1",
+        "subproblem": {
+          "key": "rescaled_limit",
+          "title": "Blow-up of a Jacobian-weighted Lebesgue integral at a density point",
+          "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ. Let C ⊆ ℝⁿ be compact, F: ℝⁿ → E continuous, J: ℝⁿ → ℝ continuous on C, w ∈ C, and A: ℝⁿ → E an injective continuous linear map with F differentiable at w with derivative A. Suppose c > 0 and c|v − w| ≤ |F(v) − F(w)| for all v ∈ C, and Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 in [0, ∞] as r ↓ 0 (closed balls). Then for every f ∈ C_c(E, ℝ), (tⁿ)⁻¹∫_C J(v)·f(t⁻¹(F(v) − F(w))) dLⁿ(v) → J(w)·∫_{ℝⁿ} f(A(u)) dLⁿ(u) as t ↓ 0.",
+          "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (J : EuclideanSpace ℝ (Fin n) → ℝ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (w : EuclideanSpace ℝ (Fin n)) (c : ℝ), IsCompact C → Continuous F → ContinuousOn J C → w ∈ C → HasFDerivAt F A w → Function.Injective A → 0 < c → (∀ v ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ v in C, J v * f (t⁻¹ • (F v - F w))) (𝓝[>] 0) (𝓝 (J w * ∫ u, f (A u)))",
+          "lean_name": "ts_pdb_density_point_rescaled_limit",
+          "depends_on": [
+            "density_complement"
+          ],
+          "natural_proof": "Source: the parent proof, steps 3, 5, 6 (vanishing of f(Au) for |u| > R') and 7, with the Jacobian JF and the tangent-plane integral abstracted: the weight is any J continuous on C and the limit is J(w)·∫ f(Au) du. The estimates D_t' (step 7(b)) and D_t'' (step 7(a)) are combined below into one pointwise bound. No errata apply.\n\nConventions. n, ℓ ∈ ℕ; E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)); ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Hⁿ := μHE[n] (on E, and also on ℝⁿ, where μHE[n] = volume by Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin); B_ρ(z) := closedBall z ρ; ω_n := omega n = (Lⁿ(ball 0 1)).toReal, and Lⁿ(ball 0 1) = ofReal(ω_n) because Lⁿ(ball 0 1) < ∞ (ENNReal.ofReal_toReal). Hypotheses: (H1) C ⊆ ℝⁿ compact; (H2) F: ℝⁿ → E continuous; (H3) J: ℝⁿ → ℝ continuous on C; (H4) w ∈ C; (H5) F has Fréchet derivative A at w (HasFDerivAt F A w), A: ℝⁿ → E continuous linear; (H6) A injective; (H7) c > 0 and c|v − w| ≤ |F(v) − F(w)| for all v ∈ C; (H8) Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 as r ↓ 0; f ∈ C_c(E, ℝ). Sibling lemma used: (D) ts_pdb_density_complement_vanish: for C Borel, R > 0 and (H8), Lⁿ({u : u ∈ B_R(0) ∧ w + tu ∉ C}) → 0 in [0, ∞] as t ↓ 0.\n\nProof.\n1. Constants. C is closed (compact in a Hausdorff space), hence Borel. tsupport f is compact, hence bounded: tsupport f ⊆ B_{R₀}(0) for some R₀; put R := max(R₀, 1) > 0, so f(z) = 0 whenever |z| > R. f is bounded: |f(z)| ≤ M_f for all z, with M_f ≥ 0 (continuous with compact support). J is bounded on the compact set C by (H3): |J(v)| ≤ M_J for v ∈ C, and M_J ≥ |J(w)| ≥ 0 by (H4). An injective linear map on the finite-dimensional ℝⁿ is antilipschitz (LinearMap.exists_antilipschitzWith with ker A = ⊥): there is K_A > 0 with |u| ≤ K_A|Au| for all u. Put R' := R(c⁻¹ + K_A) > 0; then cR' = R + cRK_A ≥ R and K_A R ≤ R'. Finally f is uniformly continuous (CompactlySupportedContinuousMapClass.uniformContinuous).\n2. Notation. For t > 0 and u, v ∈ ℝⁿ let φ_t(v) := J(v)·f(t⁻¹(F(v) − F(w))), G_t(u) := 1_C(w + tu)·φ_t(w + tu), Q_t(u) := t⁻¹(F(w + tu) − F(w)) and H(u) := J(w)·f(Au); so G_t(u) = J(w + tu)·f(Q_t(u)) if w + tu ∈ C and G_t(u) = 0 otherwise.\n3. Rescaling (parent step 5). Let t > 0. ∫_C φ_t dLⁿ = ∫ 1_Cφ_t dLⁿ (integral_indicator, C Borel). By Measure.integral_comp_smul (finrank = n), ∫ (1_Cφ_t)(w + tu) du = |(tⁿ)⁻¹|·∫ (1_Cφ_t)(w + x) dx, and by translation invariance (integral_add_left_eq_self) ∫ (1_Cφ_t)(w + x) dx = ∫ 1_Cφ_t. Since |(tⁿ)⁻¹| = (tⁿ)⁻¹ for t > 0, we get (tⁿ)⁻¹·∫_C J(v) f(t⁻¹(F(v) − F(w))) dv = ∫ G_t(u) du.\n4. Integrability. For each t, φ_t is continuous on the compact set C ((H2), (H3), continuity of f), hence integrable on C (ContinuousOn.integrableOn_compact); so 1_Cφ_t is integrable (integrable_indicator_iff), and for t > 0 so is G_t (Integrable.comp_add_left, then Integrable.comp_smul with t ≠ 0). H is continuous and, by step 5(b), vanishes outside the compact ball B_{R'}(0); so H has compact support and is integrable.\n5. Vanishing outside B_{R'}(0). Let t > 0 and |u| > R'. (a) If w + tu ∈ C, then by (H7) applied to v := w + tu, |Q_t(u)| = t⁻¹|F(w + tu) − F(w)| ≥ t⁻¹·c·|tu| = c|u| > cR' ≥ R, so f(Q_t(u)) = 0 and G_t(u) = 0; if w + tu ∉ C then G_t(u) = 0 by definition. (b) |u| ≤ K_A|Au| gives K_A|Au| > R' ≥ K_A R, so |Au| > R, f(Au) = 0 and H(u) = 0.\n6. Uniform estimate on the good set (parent step 7(b)). Let ε > 0 and put ε₁ := ε/(2(M_J + 1)), ε₂ := ε/(2(M_f + 1)). Choose δ_f > 0 with |f(z) − f(z')| < ε₁ whenever |z − z'| < δ_f (uniform continuity); δ_J > 0 with |J(v) − J(w)| < ε₂ whenever v ∈ C and |v − w| < δ_J ((H3) at w ∈ C); put η := δ_f/(2(R' + 1)) > 0 and, by (H5) in the form (h ↦ F(w + h) − F(w) − Ah) = o(h) as h → 0 (hasFDerivAt_iff_isLittleO_nhds_zero), δ_d > 0 with |F(w + h) − F(w) − Ah| ≤ η|h| whenever |h| < δ_d. Put t₀ := min(δ_J, δ_d)/(R' + 1) > 0. Let 0 < t < t₀, |u| ≤ R' and v := w + tu ∈ C. Then |tu| = t|u| ≤ tR' < t₀(R' + 1) ≤ min(δ_J, δ_d). Hence |J(v) − J(w)| < ε₂, and, using A(tu) = tAu, |Q_t(u) − Au| = t⁻¹|F(w + tu) − F(w) − A(tu)| ≤ t⁻¹·η·t|u| = η|u| ≤ ηR' < δ_f, so |f(Q_t(u)) − f(Au)| < ε₁. Therefore |G_t(u) − H(u)| = |J(v)(f(Q_t(u)) − f(Au)) + f(Au)(J(v) − J(w))| ≤ |J(v)|·|f(Q_t(u)) − f(Au)| + |f(Au)|·|J(v) − J(w)| ≤ M_Jε₁ + M_fε₂ ≤ ε/2 + ε/2 = ε (as M_J/(M_J + 1) ≤ 1 and M_f/(M_f + 1) ≤ 1).\n7. Pointwise bound (parent steps 7(a), 7(b) combined). Let B := B_{R'}(0), S_t := {u : u ∈ B ∧ w + tu ∉ C} and M := |J(w)|·M_f ≥ 0. For 0 < t < t₀ and every u ∈ ℝⁿ: |G_t(u) − H(u)| ≤ ε·1_B(u) + M·1_{S_t}(u). Indeed: (i) if |u| > R', both G_t(u) and H(u) vanish (step 5) and the right side is ≥ 0; (ii) if |u| ≤ R' and w + tu ∈ C, then u ∈ B ∖ S_t and the left side is ≤ ε by step 6; (iii) if |u| ≤ R' and w + tu ∉ C, then u ∈ S_t, G_t(u) = 0 and the left side is |J(w)|·|f(Au)| ≤ M ≤ ε + M.\n8. Integral bound. S_t = B ∩ Φ_t⁻¹(ℝⁿ ∖ C) with Φ_t(u) = w + tu continuous, so S_t is Borel; B and S_t ⊆ B have finite measure, so ε·1_B + M·1_{S_t} is integrable with integral ε·Lⁿ(B) + M·Lⁿ(S_t) (real parts of the measures). For 0 < t < t₀, using step 4 (integral_sub) and step 7 (norm_integral_le_of_norm_le): |∫G_t − ∫H| = |∫(G_t − H)| ≤ ε·Lⁿ(B) + M·Lⁿ(S_t).\n9. Conclusion. By (D) (C Borel, R' > 0, (H8)), Lⁿ(S_t) → 0 in [0, ∞] as t ↓ 0; since toReal is continuous at 0, the real numbers Lⁿ(S_t) → 0 and M·Lⁿ(S_t) → 0. Let δ > 0 and take ε := δ/(2(Lⁿ(B) + 1)) in steps 6–8, so that ε·Lⁿ(B) < δ/2. Eventually as t ↓ 0 we have both M·Lⁿ(S_t) < δ/2 and 0 < t < t₀, hence |∫G_t − ∫H| < δ. Thus ∫G_t → ∫H = J(w)·∫ f(Au) du (integral_const_mul). By step 3 the function t ↦ (tⁿ)⁻¹∫_C J(v) f(t⁻¹(F(v) − F(w))) dv coincides with t ↦ ∫G_t for all t > 0, so it has the same limit along t ↓ 0: (tⁿ)⁻¹∫_C J(v) f(t⁻¹(F(v) − F(w))) dv → J(w)·∫_{ℝⁿ} f(Au) du. ∎",
+          "proof_key_steps": [
+            "Constants: R with f = 0 off B_R(0), bounds M_f and M_J, antilipschitz constant K_A of A, R' := R(c⁻¹ + K_A), uniform continuity of f",
+            "Rescaling v = w + tu: (tⁿ)⁻¹∫_C J(v) f(t⁻¹(F(v) − F(w))) dv = ∫ G_t(u) du with G_t(u) = 1_C(w + tu) J(w + tu) f(Q_t(u))",
+            "G_t and H(u) = J(w) f(Au) vanish for |u| > R' (lower Lipschitz bound at w, antilipschitz A)",
+            "For t small, |G_t(u) − H(u)| ≤ ε on {|u| ≤ R', w + tu ∈ C} by differentiability at w, continuity of J on C at w and uniform continuity of f",
+            "Pointwise |G_t − H| ≤ ε·1_{B_{R'}} + |J(w)| M_f·1_{S_t}, so |∫G_t − ∫H| ≤ ε Lⁿ(B_{R'}) + |J(w)| M_f Lⁿ(S_t)",
+            "Lⁿ(S_t) → 0 by ts_pdb_density_complement_vanish; ε arbitrary gives ∫G_t → J(w)∫ f(Au) du"
+          ]
+        },
+        "audit": {
+          "key": "rescaled_limit",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and type match, including a possibly signed weight J. The proof establishes integrability and support localization, derives the uniform estimate from differentiability and continuity on C, and uses precisely density_complement to control the missing-domain contribution. The final epsilon argument proves the exact limit without circular reliance or an additional planning obligation."
+        },
+        "resolved_dependencies": [
+          "root.tangent_structure-a1.piece_density_blowup-a1.density_complement-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/task.md": "9f7855a9e9144b5c9af086a80a7bf19a461cd2927a5cc3b9da87f59ced97fe49",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/problem.md": "9996a036930b24733a81424df4c9f7d8ca02f2f2afb4c18b241234cd9b90afa1",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/problem.json": "8e582afb1167aec1a6e3c5cdc9cace19064beca256c8cc8fe9e45070f57e9726",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/reference-manifest.json": "f812e0e4460f34215f132dbc78bbdb04e4e1ebd5986042e5eb5db66d79026db9",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/decomposition.json": "867809606782bc64d88645dbc0e6fe90d28be0573f85b5f4698a944226e47b69",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/decomposition-audit.json": "f639c733905665ab3a9a2728b4f76be123b5680bdd39f2c2bab907c8364496f8",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/controller-contract.json": "990c02f3a78726cb824b12cfbee4f53f58897a728cb839e8283efada77dfc280",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-child-handoff.json": "3d3d5e2003a770c175877a5cbc706235edbcbfc5346aefdf601f7d3239c2ce63",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-plan.md": "7bb8e42a0ba7f2f84867659446a43e40a922ec452c815d8e5d4aec314cee4cd2",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-natural-proof.md": "9d78f20e7fc13c132ddbeaa6e02c801cfc7b5889090b202a2e7f591ed30bb162",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-natural-proof.json": "a21622ab1cffeb01d2ee7386b09712534feda6ee785f48809af5322060b8e892",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/node.json": "355b4848803c34dcd155b647b4280fcb75c1b16c93c441ba4580dbb80ddbe3f6",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/parent-child-handoff.json": "4282cb8b61b51f1cca1ee1cee70ab40479da1690158299d5174744c9a521bf77",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/parent-supplied-plan.md": "1c71908172db685dd925f6150a8d46ba075eaa8662ec76e8fc1a28edbffb9d2e",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/parent-supplied-natural-proof.md": "0e489c029de9772c5b6d3cbf4fed4828c53a04fe687cf39e06020c8244055bfb",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/parent-supplied-natural-proof.json": "c159926b6d6382e6648d4caf386f9808c85ff4d332ad52410e661024590517d2",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-image-ball-bound-a1/node.json": "7895f9722a09128a669afd3f799f958f0a4320111d4d7fea198a29d08bd9128a",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/parent-child-handoff.json": "0905eb6526f710fcb7c26e9a1e04706989762c1e804b00295a5ec80e86514656",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/parent-supplied-plan.md": "888a9b0ec3e8c632236b7362190b21d05f4163f9d1113d3be51d95c6cffcadc7",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/parent-supplied-natural-proof.md": "0a76f70203c51f0da2f17dab45cdd524fbb20cab03d196ad4c8f74e86a80360a",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/parent-supplied-natural-proof.json": "3fc846c8ae31ee97e7e5a143fac3f1e68179c3d3a03fc54b475de4b72f470f0f",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-linear-range-integral-a1/node.json": "559a4eb4008e5f5e3d2890237f3d3dcb4a7913a5a6644532eb868b538743b71c",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/parent-child-handoff.json": "dfd610c001409e421f678f1bcb140bec9228fc99b1c7f3a1e72b722e985d0e3c",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/parent-supplied-plan.md": "15009cf41c9a3d8d3e2ec1161b477fb490766e1ad100855d542862595be9381c",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/parent-supplied-natural-proof.md": "0c45b37a35ba4449cbcc8d455baf6033a892e35a8c8534907840481171244478",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/parent-supplied-natural-proof.json": "f8e0218bfc43ee6d3be1c6ccbcaa1389c62f5b37233029a7b584c14a4b66840a",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-piece-area-formula-a1/node.json": "db9bde0655624e80c6c8dbe3221fff2b490f72d7d3d2668a356759ea39e18716",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/parent-child-handoff.json": "c9e448ab4f1e7bd9f90018978b4e7889e027fe044a27a205e622d15543553fda",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/parent-supplied-plan.md": "b465721a077672777863f4bd01b4e7063ede02a9b39a82d1c121715081f1c4f7",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/parent-supplied-natural-proof.md": "5adc0544dd165b9ecd4337cab78f02886addaf39cf3261d5e213e098590e753b",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/parent-supplied-natural-proof.json": "6f2a5077cadccd72ff47c53a044f638c3948f0cfd050c7eae5647be64895d89b",
+    ".humanize-workspace/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1/children/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1/node.json": "3799e0ab1998190601be38d51d87a126c8232fb5169d5bf129fc1f989ab2730c"
+  }
+}

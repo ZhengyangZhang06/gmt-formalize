@@ -1,0 +1,18 @@
+{
+  "node_id": "root.radial_first_variation-a1.pointwise_divergence-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/218",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/907",
+  "candidate_commit": "10c2566b0453ba9674ebeb65c446ab1cf2818086",
+  "integrated_commit": "",
+  "proof_base_commit": "752c3f61510399ed2a0f72eccf81ceef5b553e52",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.radial_first_variation-a1",
+  "requires": [
+    "root.radial_first_variation-a1.radial_derivative-a1",
+    "root.radial_first_variation-a1.projection_trace-a1"
+  ]
+}

@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.sobolev_inequality-a1`
+- Child DAG node: `root.sobolev_inequality-a1.monotonicity_inequality-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. E = Ambient n ℓ = ℝ^{n+ℓ} with its Borel σ-algebra; B_ρ(ξ) = closedBall ξ ρ (closed ball); ω_n = omega n ∈ (0, ∞) for n ≥ 1 (Lebesgue measure of the open unit ball of ℝⁿ, which is open, nonempty and bounded); μ = μ_V = V.weight; p_x = (V.tangentSpace x).starProjection, the orthogonal projection onto T_xV, a continuous linear map with |p_x v| ≤ |v| (Mathlib Submodule.norm_starProjection_apply_le); ∇g(x) = gradient g x (0 where g is not differentiable); ∇^M g(x) = V.tangentialGradient g x = p_x(∇g(x)). All integrals ∫ are Bochner integrals (value 0 for non-integrable integrands), so integrability is checked wherever integrals are compared or split; ∫_{(a,b]} denotes the Lebesgue integral over the interval Ioc a b. Source: Step 1, inequality (5.5), of the parent proof (Simon Ch. 4, 5.1–5.5; because g has compact support in U, 5.5 holds for all radii). Write (W) for the assumed weighted monotonicity identity (the exact frozen statement of the sibling weighted_monotonicity_identity of the parent node), and put φ := |∇^M g| + g|H|, I(ρ) := ∫_{B_ρ(ζ)} g dμ, Φ(τ) := ∫_{B_τ(ζ)} φ dμ, L(τ) := ∫_{B_τ(ζ)} ⟨x − ζ, ∇^M g(x) + g(x)H(x)⟩ dμ(x), A := ∫_{B_r(ζ)∖B_s(ζ)} g(x)·(q_ζ(x)/|x − ζ|ⁿ) dμ(x), where q_ζ(x) = V.normalRadialSq ζ x = |p_x^⊥(x − ζ)|²/|x − ζ|².
+
+1. (Integrability of φ.) HasMeanCurvatureIn U H includes local μ-integrability of H on U. By the sibling sobolev_energy_integrable (hypotheses: μ finite on compacts, x ↦ p_x a.e. strongly measurable, U open, H locally integrable on U, g ∈ C¹(U) with compact support and tsupport g ⊆ U), |∇^M g| and g|H| are μ-integrable; hence φ is μ-integrable, and φ ≥ 0 since g ≥ 0. Consequently Φ is nondecreasing on (0, ∞) (B_τ(ζ) ⊆ B_{τ'}(ζ) for τ ≤ τ', φ ≥ 0 integrable) and 0 ≤ Φ ≤ ∫φ dμ.
+2. (Apply (W).) The hypotheses of (W) hold for (n, ℓ, V, U, H, h := g, ξ := ζ, σ := s, ρ := r): 0 < n, the three structural hypotheses on V, U open, V has mean curvature H in U, g ∈ C¹(U), tsupport g ∩ B_r(ζ) ⊆ tsupport g ⊆ U, and 0 < s ≤ r. Its conclusion gives: τ ↦ L(τ)/τ^{n+1} is integrable on (s, r]; and r^{−n}I(r) − s^{−n}I(s) = A + ∫_{(s,r]} L(τ)/τ^{n+1} dτ.
+3. (A ≥ 0.) The integrand of A is pointwise ≥ 0: g ≥ 0, q_ζ ≥ 0 (a quotient of squares, with value 0 when the denominator vanishes) and |x − ζ|ⁿ ≥ 0. Hence A ≥ 0.
+4. (Pointwise bound.) Let τ ∈ (s, r], so τ > 0. For x ∈ B_τ(ζ), by Cauchy–Schwarz, the triangle inequality and g ≥ 0: |⟨x − ζ, ∇^M g(x) + g(x)H(x)⟩| ≤ |x − ζ|(|∇^M g(x)| + g(x)|H(x)|) ≤ τφ(x). Since τφ is integrable on B_τ(ζ), |L(τ)| ≤ ∫_{B_τ(ζ)} |⟨x − ζ, ∇^M g + gH⟩| dμ ≤ ∫_{B_τ(ζ)} τφ dμ = τΦ(τ). Therefore −L(τ)/τ^{n+1} ≤ |L(τ)|/τ^{n+1} ≤ Φ(τ)/τⁿ.
+5. (Integrability of the majorant.) τ ↦ Φ(τ)/τⁿ is integrable on (s, r]: Φ is nondecreasing, hence measurable, and bounded by ∫φ dμ; τ^{−n} ≤ s^{−n} on (s, r]; and (s, r] has finite length.
+6. By steps 2, 4, 5 (both integrands integrable on (s, r]): −∫_{(s,r]} L(τ)/τ^{n+1} dτ = ∫_{(s,r]} (−L(τ)/τ^{n+1}) dτ ≤ ∫_{(s,r]} Φ(τ)/τⁿ dτ.
+7. From steps 2, 3, 6: s^{−n}I(s) = r^{−n}I(r) − A − ∫_{(s,r]} L(τ)/τ^{n+1} dτ ≤ r^{−n}I(r) + ∫_{(s,r]} Φ(τ)/τⁿ dτ, which is the asserted inequality (I(s)/sⁿ ≤ I(r)/rⁿ + ∫_{(s,r]} Φ(τ)/τⁿ dτ). ∎
+
+## Key steps
+
+1. φ = |∇^M g| + g|H| is integrable (sibling energy_integrable), so Φ(τ) = ∫_{B_τ}φ is monotone and bounded
+2. (W) applies at every radius because tsupport g ∩ B_r(ζ) ⊆ U: it gives the identity and integrability of L(τ)/τ^{n+1}
+3. The annulus term is ≥ 0 and |L(τ)| ≤ τΦ(τ) by Cauchy–Schwarz, so −L(τ)/τ^{n+1} ≤ Φ(τ)/τⁿ
+4. Integrate on (s, r] (both sides integrable) and rearrange the identity
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'theorem exists_disjoint_subfamily_covering_enlargement_closedBall' -A 12 <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `rg -n 'theorem lintegral_comp_eq_lintegral_meas_lt_mul|theorem lintegral_eq_lintegral_meas_lt|theorem lintegral_comp_eq_lintegral_meas_le_mul|theorem lintegral_rpow_eq_lintegral_meas_lt_mul' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `rg -n 'countable_of_nonempty_interior|countable_of_isOpen' <snapshot>/mathlib/Mathlib`
+- `rg -n '^theorem|^lemma|^def|^protected theorem' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `sed -n 586,880p book/chapter-04.txt (Simon 5.1-5.9 printed text)`
+- `grep -rn 'theorem contDiff_of_tsupport_subset|theorem exists_fiveTimesCovering|theorem integrableOn_norm_tangentialGradient' lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `cat simongmt/Poincare/SimonGMT/Chapter04/{SobolevCovering,GoodRadius,SobolevGoodRadius,SobolevTruncation,SobolevLayerCake,Sobolev,CompactWeighted}.lean Chapter01/DensityCovering.lean`
+- `git -C lake-packages-25730c7c/simongmt rev-parse HEAD`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/sobolev-a1-audit/olean/GMT/Ch04/Submission.olean`
+- `python3 -I gen_challenges.py: verifier/lean_contract.validate_lean_statement + gmt-compare.child_modules(mode=contract) for each child; LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/sobolev-a1-audit/olean lean Challenge_<name>.lean`
+- `LEAN_PATH=... lean /tmp/sobolev-a1-audit/lean/Assembly.lean (parent frozen type proved from the uncle and six sorry'd children; #print axioms)`
+- `LEAN_PATH=... lean /tmp/sobolev-a1-audit/lean/Inspect.lean (Iff.rfl against explicit @HPow.hPow ℝ ℕ ℝ / Real.rpow / Measure toReal forms)`
+- `lake env lean /tmp/sobolev-a1-audit/lean/Axioms.lean (#print axioms of cited SimonGMT and Mathlib lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/GoodRadius.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevGoodRadius.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevTruncation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevLayerCake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Sobolev.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactWeighted.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/sobolev-a1-audit/children.json`
+- `/tmp/sobolev-a1-audit/lean/Assembly.lean`
+- `/tmp/sobolev-a1-audit/lean/Inspect.lean`
+- `/tmp/sobolev-a1-audit/lean/Axioms.lean`
+
+Contract provenance. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b). The manifest pins project ff75f52 and Mathlib 25730c7c. The SimonGMT package is at the pinned revision 2b3663083f3fe399b6296fb8eaee52169170e197.
+
+Mathlib lemmas available in the snapshot, each depending only on propext, Classical.choice and Quot.sound:
+- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall (requires τ > 3; used with τ = 5)
+- Set.PairwiseDisjoint.countable_of_nonempty_interior
+- the Layercake lemmas lintegral_comp_eq_lintegral_meas_lt_mul and lintegral_rpow_eq_lintegral_meas_lt_mul
+- Real.smoothTransition (smooth, monotone, values in [0,1], 0 on (−∞,0], 1 on [1,∞))
+- withDensity_absolutelyContinuous, exists_measurable_superset_of_null, Tendsto.limUnder_eq
+- LocallyIntegrableOn.integrableOn_compact_subset, Continuous.integrable_of_hasCompactSupport
+- intervalIntegral.integral_comp_mul_left, MonotoneOn.intervalIntegrable, Real.rpow_inv_natCast_pow
+- Submodule.norm_starProjection_apply_le
+
+Pinned SimonGMT. It contains a kernel-checked Sobolev proof for its own Chapter04.RectifiableVarifold. That structure differs from the contract's, so its varifold-specific lemmas cannot be applied. Its general lemmas are reusable as tools, each with the same three axioms only:
+- Chapter04.lintegral_le_of_ae_exists_good_radius (5-times covering plus summation)
+- exists_smooth_superlevel_cutoff
+- lintegral_smooth_truncation_energy_le
+- lintegral_superlevel_le_of_positive_shifts
+- rpow_one_sub_le_of_le_rpow_mul
+- intervalIntegrable_radiusQuotient_of_monotoneOn
+- RectifiableVarifold.contDiff_of_tsupport_subset (fully general despite the namespace)
+- Chapter01.exists_fiveTimesCovering
+Its calculus lemma exists_goodRadius_of_local_radius_inequality has a weaker constant (4·5ⁿM^{1/n}, r ≤ R). The corrected Lemma 5.8 child therefore keeps the parent's sharp constant and is proved directly.
+
+Child type checks. With GMT.Ch04.Submission compiled to an olean:
+- All six child types pass validate_lean_statement and elaborate in comparator-generated NodeChallenge files (contract scope: the opens, namespace GMT.Ch04, noncomputable section, open RectifiableVarifold); the only diagnostics are the expected sorry warnings.
+- Iff.rfl confirms ℕ-powers and Real.rpow where intended.
+- The parent's frozen type is proved, with no sorry in its body, from the uncle weighted_monotonicity_identity (frozen type copied byte-identically) and the six children. #print axioms shows sorryAx only through the stubs.

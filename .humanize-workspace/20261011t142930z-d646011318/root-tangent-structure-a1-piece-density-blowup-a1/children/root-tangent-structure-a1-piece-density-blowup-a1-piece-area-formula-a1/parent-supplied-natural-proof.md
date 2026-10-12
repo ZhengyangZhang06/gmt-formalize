@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tangent_structure-a1.piece_density_blowup-a1`
+- Child DAG node: `root.tangent_structure-a1.piece_density_blowup-a1.piece_area_formula-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the parent proof, steps 1(c) and 4 (area formula on the piece, in the pushforward form recorded there as 'Equivalently: Hⁿ⌞N is the image under F of the finite measure JF·Lⁿ⌞C, by (R2a) applied to indicators; then use MeasureTheory.integral_map'), together with the identity (R2c) used in step 6. No errata apply.
+
+Conventions. n, ℓ ∈ ℕ; E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)); ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Hⁿ := μHE[n] (on E, and also on ℝⁿ, where μHE[n] = volume by Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin); B_ρ(z) := closedBall z ρ; ω_n := omega n = (Lⁿ(ball 0 1)).toReal, and Lⁿ(ball 0 1) = ofReal(ω_n) because Lⁿ(ball 0 1) < ∞ (ENNReal.ofReal_toReal). DF(v) := fderiv ℝ F v (Mathlib's derivative; it is 0 where F is not differentiable). For a linear map L: ℝⁿ → E, normDet(L) := Mathlib LinearMap.normDet L ≥ 0. Hypotheses: (H1) C ⊆ ℝⁿ is Borel; (H2) F is K-Lipschitz; (H3) F is injective on C; (H4) v ↦ DF(v) is continuous on C (into the normed space L(ℝⁿ, E)).
+Library: (R2a) SimonGMT Chapter02.injective_area_formula_lipschitz (the case u ≡ 1 of weighted_area_formula_lipschitz_injOn): for G Lipschitz, s Borel and G injective on s, μHE[finrank ℝ ℝⁿ](G(s)) = ∫⁻_s ofReal(areaJacobianAt G v) dLⁿ(v), where areaJacobianAt G v = normDet(DG(v)) (areaJacobianAt_eq_normDet). (R2c) Mathlib LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume: for linear L: ℝⁿ → E and every S ⊆ ℝⁿ, μHE[finrank ℝ ℝⁿ](L(S)) = ofReal(normDet L)·Lⁿ(S). (R2d) SimonGMT Chapter02.continuous_normDet: L ↦ normDet L is continuous on L(ℝⁿ, E); Mathlib measurable_fderiv: v ↦ DF(v) is Borel.
+
+Proof.
+1. Choice of J. Put J(v) := normDet(DF(v)) for v ∈ ℝⁿ. Then J(v) ≥ 0 for all v (LinearMap.normDet_nonneg), and J is Borel measurable, being the composition of the continuous map normDet (R2d) with the Borel map v ↦ DF(v).
+2. Continuity on C. By (H4) and (R2d), J = normDet ∘ DF is continuous on C (composition of a continuous map with a map continuous on C).
+3. Area factor. Let v ∈ C and S ⊆ ℝⁿ. Applying (R2c) to the linear map DF(v) and rewriting finrank ℝ ℝⁿ = n gives Hⁿ(DF(v)(S)) = ofReal(normDet DF(v))·Lⁿ(S) = ofReal(J(v))·Lⁿ(S). Together with step 1 this proves 0 ≤ J(v) and the area-factor identity for every v ∈ C.
+4. Measure identity. Let ν := (Lⁿ⌞C).withDensity(v ↦ ofReal(J(v))), a measure on ℝⁿ, and let F_#ν be its pushforward under F (F is continuous by (H2), hence Borel measurable). We show Hⁿ⌞F(C) = F_#ν as measures on E. Let T ⊆ E be Borel. Then (Hⁿ⌞F(C))(T) = Hⁿ(T ∩ F(C)) (Measure.restrict_apply; only T needs to be measurable). Elementarily T ∩ F(C) = F(s) with s := F⁻¹(T) ∩ C: if y = F(v) ∈ T with v ∈ C then v ∈ s; conversely F(s) ⊆ T ∩ F(C). The set s is Borel by (H1) and the measurability of F, and F is injective on s by (H3). So (R2a), with finrank ℝ ℝⁿ = n, gives Hⁿ(F(s)) = ∫⁻_s ofReal(J) dLⁿ. On the other side, (F_#ν)(T) = ν(F⁻¹(T)) = ∫⁻_{F⁻¹(T)} ofReal(J) d(Lⁿ⌞C) = ∫⁻_{F⁻¹(T) ∩ C} ofReal(J) dLⁿ (Measure.map_apply, withDensity_apply, Measure.restrict_restrict). The two values coincide for every Borel T, so Hⁿ⌞F(C) = F_#ν (Measure.ext).
+5. Integral identity. Let g: E → ℝ be continuous; it is strongly measurable. By step 4 and the change of variables for pushforward measures (MeasureTheory.integral_map, applicable since F is measurable and g is a.e. strongly measurable), ∫_{F(C)} g dHⁿ = ∫ g d(F_#ν) = ∫ g(F(v)) dν(v). The density v ↦ ofReal(J(v)) is measurable (step 1) and finite everywhere, so integral_withDensity_eq_integral_toReal_smul gives ∫ g∘F dν = ∫_C (ofReal(J(v))).toReal·g(F(v)) dLⁿ(v), and (ofReal(J(v))).toReal = J(v) because J(v) ≥ 0. Hence ∫_{F(C)} g dHⁿ = ∫_C J(v)·g(F(v)) dLⁿ(v). No integrability hypothesis is needed: each step is either an equality of measures or one of the cited Bochner identities, which hold unconditionally (both sides are 0 when the integrand is not integrable).
+6. Steps 2, 3 and 5 are the three asserted properties of J. ∎
+
+## Key steps
+
+1. Take J := normDet ∘ DF (= SimonGMT areaJacobianAt F); J ≥ 0 and J is Borel
+2. J is continuous on C: continuous_normDet composed with v ↦ DF(v), continuous on C
+3. Area factor Hⁿ(DF(v)(S)) = ofReal(J(v))·Lⁿ(S) from LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume
+4. Hⁿ⌞F(C) = F_#((Lⁿ⌞C).withDensity(ofReal ∘ J)) on Borel sets, by T ∩ F(C) = F(F⁻¹T ∩ C) and the injective Lipschitz area formula
+5. integral_map and integral_withDensity_eq_integral_toReal_smul give ∫_{F(C)} g dHⁿ = ∫_C J(v) g(F(v)) dv for continuous g
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean`
+- `sed -n 1,30p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (frozen import closure: only Chapter02.Lipschitz)`
+- `grep -rn 'theorem weighted_area_formula_lipschitz_injOn|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem continuous_normDet|theorem measurable_areaJacobianAt|def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/`
+- `grep -n 'theorem|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `rg -n 'theorem euclideanHausdorffMeasure_eq_volume|theorem volume_closedBall|theorem addHaar_closedBall\b|theorem finrank_euclideanSpace_fin|theorem integral_comp_smul\b|exists_antilipschitzWith|theorem integral_map\b|theorem integral_smul_measure|theorem integral_withDensity_eq_integral_toReal_smul' <snapshot>/mathlib/Mathlib`
+- `rg -n 'integral_mul_left_eq_self|setIntegral_comp_smul|addHaar_preimage_smul|addHaar_smul' <snapshot>/mathlib/Mathlib/MeasureTheory`
+- `rg -n 'uniformContinuous' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `rg -n 'theorem Integrable.comp_smul\b|theorem Integrable.comp_mul_left\b|theorem hasFDerivAt_iff_isLittleO_nhds_zero|bounded_above_of_compact_support|exists_bound_of_continuousOn|theorem integral_indicator_one|theorem norm_integral_le_of_norm_le\b|theorem integrable_indicator_iff|ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem measure_sdiff |alias measure_diff :=' mathlib/Mathlib/MeasureTheory`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/pdb-decomp/olean/GMT/Ch04/Submission.olean`
+- `python3 gen.py (gmt-compare.child_modules contract mode) then lean /tmp/pdb-decomp/final/challenges/Challenge_*.lean`
+- `lean /tmp/pdb-decomp/final/F1_frozen.lean (parent from 5 sorry'd children, frozen imports only)`
+- `lean /tmp/pdb-decomp/final/F2_full.lean (all 5 children + parent fully proved; #print axioms)`
+- `lean P1.lean / P2.lean with set_option pp.all true; cmp of #check outputs across import sets`
+- `python3 lean_contract.validate_lean_statement on each child type; dag.json lean_name collision check`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json`
+- `/tmp/pdb-decomp/final/F1_frozen.lean`
+- `/tmp/pdb-decomp/final/F2_full.lean`
+
+Contract and pins:
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean (single sha256).
+- Submission.lean is the frozen copy. The manifest pins the project at ff75f52 and Mathlib at 25730c7c; SimonGMT is at 2b36630.
+
+Frozen statement scope:
+- Chapter03.Rectifiable imports only Chapter02.Lipschitz, so LinearMap.normDet and Chapter02.areaJacobianAt cannot appear in child types.
+- The children therefore carry the Jacobian as an existential J with the area-factor identity Hⁿ(DF(v)(S)) = ofReal(J v)·Lⁿ(S).
+
+Cited library results (all exist with the stated meaning):
+- SimonGMT Chapter02: euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz (AreaLipschitz.lean:101 ff.), continuous_normDet and measurable_areaJacobianAt (AreaApproximation.lean:28, 44), areaJacobianAt_eq_normDet (Area.lean).
+- Mathlib NormDet and volume: LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume and normDet_nonneg; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Measure.addHaar_closedBall; Measure.addHaar_preimage_smul; Measure.integral_comp_smul; integral_add_left_eq_self (the to_additive form of integral_mul_left_eq_self).
+- Mathlib integration: integral_map; integral_smul_measure; integral_withDensity_eq_integral_toReal_smul; Integrable.comp_smul; integrable_indicator_iff; ContinuousOn.integrableOn_compact; norm_integral_le_of_norm_le.
+- Mathlib analysis: LinearMap.exists_antilipschitzWith; CompactlySupportedContinuousMapClass.uniformContinuous; hasFDerivAt_iff_isLittleO_nhds_zero; measure_sdiff (measure_diff is a deprecated alias).
+
+Lean checks:
+- All five child types are valid one-line statements and compile as comparator challenge files in the frozen scope.
+- The parent's exact frozen type is proved from them (F1).
+- All five children and the parent are fully proved with the extra imports (F2). Axioms are only propext, Classical.choice and Quot.sound.
+- The pp.all types are identical across the two import sets.
+- No lean_name collides with any of the 79 DAG nodes.
