@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "04e137e8924650e9d430ff71d4858a52f96ac7a1d38ff990142c54871280d1aa",
+  "git_delta": {
+    "base_commit": "daa0a560854607fc9cc6011bb468009fe56464d3",
+    "candidate_commit": "330306fa1342764a921834e0fe5da06c335d7801",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "variation_injective_area_formula",
+    "diff_sha256": "7551e3bbd31f5cea7979501faeeec8042353c2297000bb236439a6179ba39836",
+    "source_sha256": "c39298af6e265ea20783d720a8a1ebae1f2c8134819b9e253613c71401bcc80e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.variation_injective_area_formula",
+      "statement": "∀ (n N : ℕ) (s : Set (Rn n)) (Φ : Rn n → Rn N), MeasurableSet s → (∀ x ∈ s, DifferentiableAt ℝ Φ x) → (∀ x ∈ s, Function.Injective (fderiv ℝ Φ x)) → InjOn Φ s → μHE[n] (Φ '' s) = ∫⁻ x in s, ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)) ∂μHE[n]",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
