@@ -722,6 +722,85 @@ theorem Submission.allard_tc_scf_plane_ball_mass :
   -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
   rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
     finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+/-- **Simon Ch. 8, proof of 5.5, pp. 216–217: a stationary cone with density `≥ θ₀` a.e. is
+`θ₀ v(T)`.** Let `C` be a stationary `n`-varifold on `ℝ^N` with `μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for every
+`ρ > 0` (printed (1)) and `Θ^n(μ_C, y) ≥ θ₀` for `μ_C`-a.e. `y` (printed (7)). By 3.4 at every
+centre, `R(y, ρ) = μ_C(B_ρ(y))/(ω_n ρ^n) ≤ θ₀` for all `y` (printed (2)) and `R(y, ρ) ≥ θ₀` for
+`y ∈ spt μ_C`, so `Θ^n(μ_C, y) = θ₀` and the normal defect about `y` vanishes; hence `x - y ∈ S` for
+`y ∈ spt μ_C` and `(x, S) ∈ spt C` (printed (8)). As `0 ∈ spt μ_C = π(spt C)`, some `(0, T)` lies in
+`spt C`, so `spt μ_C ⊆ T`; Constancy 4.1 gives `C = θ v(T)`, and the mass of `B_1(0)` gives
+`θ = θ₀`. -/
+theorem Submission.allard_tc_stationary_cone_flat :
+    StationaryMonotonicityIdentity → ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (θ₀ : ℝ), 0 < θ₀ → C.Stationary → (∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n) → (∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal θ₀ ≤ θ) → ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T := by
+  intro hSMI hconst N n C θ₀ hθ₀ hC hball hae
+  -- Step 0: `θ₀` and `ω_n` lie in `(0, ∞)`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have ha0 : ENNReal.ofReal θ₀ ≠ 0 := (ENNReal.ofReal_pos.2 hθ₀).ne'
+  -- Step 1: the monotonicity identity 3.4 at every centre; density ratios are non-decreasing.
+  have hMI := Submission.allard_tc_scf_monotonicity_identity hSMI N n C hC
+  have hmono : ∀ y, MonotoneOn (densityRatio n C.weight y) (Ioi 0) := fun y ↦ (hMI y).2
+  -- Step 2: `R(y, ρ) ≤ θ₀` everywhere (printed (2)) and `θ₀ ≤ R(y, ρ)` on `spt μ_C` (by (7)).
+  have hle := Submission.allard_tc_scf_ratio_le N n C.weight (ENNReal.ofReal θ₀) hmono hball
+  have hge := Submission.allard_tc_scf_ratio_ge_on_support N n C.weight (ENNReal.ofReal θ₀)
+    (fun y ρ ↦ C.weight_finite_on_compact _ (isCompact_closedBall y ρ) (subset_univ _)) hmono hae
+  -- Step 3: at `y ∈ spt μ_C`, `R(y, ·) ≡ θ₀`, so `Θ^n(μ_C, y) = θ₀` and 3.4 reads
+  -- `θ₀ + ω_n⁻¹ D_y(ρ) = θ₀`; as `θ₀ < ∞` and `ω_n⁻¹ ≠ 0`, the normal defect `D_y(ρ)` vanishes.
+  have hdefect : ∀ y ∈ C.weight.support, ∀ ρ : ℝ, 0 < ρ →
+      normalDefect C y (closedBall y ρ) = 0 := by
+    intro y hy ρ hρ
+    obtain ⟨θ, hθ, hid⟩ := (hMI y).1
+    have hR : ∀ r : ℝ, 0 < r → densityRatio n C.weight y r = ENNReal.ofReal θ₀ := fun r hr ↦
+      le_antisymm (hle y r hr) (hge y hy r hr)
+    have hθa : θ = ENNReal.ofReal θ₀ := by
+      refine tendsto_nhds_unique hθ (tendsto_const_nhds.congr' ?_)
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      exact (hR r hr).symm
+    have h := hid ρ hρ
+    rw [hθa, hR ρ hρ, ← add_zero (ENNReal.ofReal θ₀), add_assoc, zero_add,
+      ENNReal.add_right_inj ENNReal.ofReal_ne_top] at h
+    exact (mul_eq_zero.1 h).resolve_left (ENNReal.inv_ne_zero.2 hωt)
+  -- Step 4: printed (8), `x - y ∈ S` for `y ∈ spt μ_C` and `(x, S) ∈ spt C`.
+  have h8 : ∀ y ∈ C.weight.support, ∀ z ∈ C.measure.support, z.1 - y ∈ z.2.plane :=
+    fun y hy ↦ Submission.allard_tc_scf_zero_defect_mem_plane N n univ C y (hdefect y hy)
+  -- Step 5: `0 ∈ spt μ_C`, since every ball about `0` has mass `θ₀ ω_n ρ^n > 0`.
+  have h0 : (0 : Euclidean N) ∈ C.weight.support := by
+    rw [Measure.mem_support_iff_forall]
+    intro s hs
+    obtain ⟨ε, hε, hεs⟩ := Metric.mem_nhds_iff.1 hs
+    refine lt_of_lt_of_le ?_ (measure_mono ((closedBall_subset_ball (half_lt_self hε)).trans hεs))
+    rw [hball _ (half_pos hε)]
+    exact pos_iff_ne_zero.2 (mul_ne_zero (mul_ne_zero ha0 hω0)
+      (pow_ne_zero _ (ENNReal.ofReal_pos.2 (half_pos hε)).ne'))
+  -- Step 6: `spt μ_C ⊆ π(spt C)`, as `π(spt C)` is closed (`G(N,n)` is compact) and `μ_C`-conull;
+  -- so some `(0, T)` lies in `spt C`.
+  obtain ⟨T, hT⟩ : ∃ T : Grassmannian N n, ((0 : Euclidean N), T) ∈ C.measure.support := by
+    have hc : IsClosed (Prod.fst '' C.measure.support) :=
+      isClosedMap_fst_of_compactSpace _ C.measure.isClosed_support
+    have hsub : C.weight.support ⊆ Prod.fst '' C.measure.support := by
+      refine Measure.support_subset_of_isClosed hc ?_
+      change ∀ᵐ x ∂C.measure.map Prod.fst, x ∈ Prod.fst '' C.measure.support
+      refine (ae_map_iff measurable_fst.aemeasurable hc.measurableSet).2 ?_
+      filter_upwards [C.measure.support_mem_ae] with z hz
+      exact mem_image_of_mem Prod.fst hz
+    obtain ⟨⟨x, S⟩, hS, hx⟩ := hsub h0
+    obtain rfl : x = 0 := hx
+    exact ⟨S, hS⟩
+  -- Step 7: `spt μ_C ⊆ T`, since (8) at `(x, S) = (0, T)` gives `-y ∈ T`.
+  have hspt : C.weight.support ⊆ (T.plane : Set (Euclidean N)) := by
+    intro y hy
+    have h : (0 : Euclidean N) - y ∈ T.plane := h8 y hy ((0 : Euclidean N), T) hT
+    rw [zero_sub] at h
+    simpa using T.plane.neg_mem h
+  -- Step 8: Constancy 4.1 gives `C = θ v(T)` with `θ ≥ 0`.
+  obtain ⟨θ, -, hCθ⟩ := Submission.allard_tc_scf_constancy_plane hconst N n C T hC hspt
+  -- Step 9: `μ_C(B_1(0)) = θ ω_n = θ₀ ω_n` and `ω_n ∈ (0, ∞)`, so `θ = θ₀`.
+  have h1 := hball 1 one_pos
+  rw [C.weight_apply measurableSet_closedBall, hCθ, Measure.smul_apply, smul_eq_mul,
+    Submission.allard_tc_scf_plane_ball_mass N n T 1 one_pos, ENNReal.ofReal_one, one_pow,
+    mul_one, mul_one, ENNReal.mul_left_inj hω0 hωt] at h1
+  exact ⟨T, by rw [hCθ, h1]⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
