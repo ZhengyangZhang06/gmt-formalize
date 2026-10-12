@@ -563,6 +563,74 @@ theorem Submission.adr_eventually_subset_small_cover : ∀ (P : ℕ) (ℓ : ℝ)
   obtain ⟨z, hzS, hwz⟩ := hk₀ k hk ⟨ball_subset_ball (by norm_num) hw.1, hw.2⟩
   exact hηK (mem_thickening_iff.mpr ⟨w, ⟨ball_subset_closedBall hw.1, hwU⟩, by rwa [dist_comm]⟩)
     hzS
+/-- **Simon A.4** (proof of (1), the rescaling step, with blow-up scale `λ = 2ρ`): if every cover
+`{Cⱼ}` of `A ∩ B_ρ(x)` has `ρ^ℓ ≤ 2 Σⱼ (diam Cⱼ)^ℓ` and the `Uⱼ` cover every `z` with `|z| < 1/2`
+and `x + 2ρz ∈ A`, then `Σⱼ (diam Uⱼ)^ℓ ≥ 2^{−ℓ}/8`.  The sets `Cⱼ = x + 2ρ·Uⱼ` cover
+`A ∩ B_ρ(x)` and have `diam Cⱼ = 2ρ diam Uⱼ`, so a smaller sum would give
+`ρ^ℓ ≤ 2·2^ℓρ^ℓ Σⱼ (diam Uⱼ)^ℓ < ρ^ℓ/4`. -/
+theorem Submission.adr_rescaled_content_lower_bound : ∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)) (x : Euclid P) (ρ : ℝ) (U : ℕ → Set (Euclid P)), 0 < ℓ → 0 < ρ → (∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ) → (∀ z : Euclid P, x + (2 * ρ) • z ∈ A → ‖z‖ < 1 / 2 → z ∈ ⋃ j, U j) → (2 : ℝ≥0∞) ^ (-ℓ) / 8 ≤ ∑' j, Metric.ediam (U j) ^ ℓ := by
+  intro P ℓ A x ρ U hℓ hρ hD hU
+  have hlam : 0 < 2 * ρ := by positivity
+  -- `Cⱼ = g(Uⱼ)` with `g(z) = x + 2ρz` cover `A ∩ B_ρ(x)`: `w = g(z)` for `z = (2ρ)⁻¹(w − x)`,
+  -- and `|z| = |w − x|/(2ρ) < 1/2`
+  have hcover : A ∩ ball x ρ ⊆ ⋃ j, (fun z => x + (2 * ρ) • z) '' U j := by
+    rintro w ⟨hwA, hwB⟩
+    have hgz : x + (2 * ρ) • ((2 * ρ)⁻¹ • (w - x)) = w := by
+      rw [smul_smul, mul_inv_cancel₀ hlam.ne', one_smul, add_sub_cancel]
+    have hzn : ‖(2 * ρ)⁻¹ • (w - x)‖ < 1 / 2 := by
+      rw [mem_ball, dist_eq_norm] at hwB
+      rw [norm_smul, norm_inv, Real.norm_of_nonneg hlam.le, inv_mul_lt_iff₀ hlam]
+      linarith
+    obtain ⟨j, hj⟩ := mem_iUnion.mp (hU _ (by rw [hgz]; exact hwA) hzn)
+    exact mem_iUnion.mpr ⟨j, _, hj, hgz⟩
+  -- `diam Cⱼ = 2ρ diam Uⱼ`: `g` is the dilation by `2ρ` followed by a translation
+  have hdiam : ∀ j, Metric.ediam ((fun z => x + (2 * ρ) • z) '' U j) =
+      ENNReal.ofReal (2 * ρ) * Metric.ediam (U j) := by
+    intro j
+    rw [show (fun z => x + (2 * ρ) • z) '' U j = (fun y => x + y) '' ((fun z => (2 * ρ) • z) '' U j)
+        from (Set.image_image (fun y => x + y) (fun z => (2 * ρ) • z) (U j)).symm,
+      (isometry_add_left x).ediam_image, Set.image_smul, ediam_smul₀, ENNReal.smul_def, smul_eq_mul,
+      ← enorm_eq_nnnorm, Real.enorm_eq_ofReal hlam.le]
+  -- hence `Σⱼ (diam Cⱼ)^ℓ = 2^ℓ ρ^ℓ Σⱼ (diam Uⱼ)^ℓ`
+  have hsum : ∑' j, Metric.ediam ((fun z => x + (2 * ρ) • z) '' U j) ^ ℓ =
+      2 ^ ℓ * ENNReal.ofReal ρ ^ ℓ * ∑' j, Metric.ediam (U j) ^ ℓ := by
+    rw [← ENNReal.tsum_mul_left]
+    refine tsum_congr fun j => ?_
+    rw [hdiam j, ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat,
+      ENNReal.mul_rpow_of_nonneg _ _ hℓ.le, ENNReal.mul_rpow_of_nonneg _ _ hℓ.le]
+  have key :
+      ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam ((fun z => x + (2 * ρ) • z) '' U j) ^ ℓ :=
+    hD _ hcover
+  rw [hsum] at key
+  -- if `σ < 2^{−ℓ}/8` then `r ≤ 2·2^ℓ r σ < 2·2^ℓ r 2^{−ℓ}/8 = r/4 ≤ r`, where `r = ρ^ℓ ∈ (0, ∞)`
+  rw [ENNReal.rpow_neg]
+  refine not_lt.mp fun hlt => ?_
+  set σ := ∑' j, Metric.ediam (U j) ^ ℓ
+  set r := ENNReal.ofReal ρ ^ ℓ
+  set t := (2 : ℝ≥0∞) ^ ℓ
+  have hr0 : r ≠ 0 := (ENNReal.rpow_pos (ENNReal.ofReal_pos.mpr hρ) ENNReal.ofReal_ne_top).ne'
+  have hrT : r ≠ ⊤ := ENNReal.rpow_ne_top_of_nonneg hℓ.le ENNReal.ofReal_ne_top
+  have ht0 : t ≠ 0 := (ENNReal.rpow_pos (by norm_num) (by norm_num)).ne'
+  have htT : t ≠ ⊤ := ENNReal.rpow_ne_top_of_nonneg hℓ.le (by norm_num)
+  have hcalc : 2 * t * r * (t⁻¹ / 8) = r / 4 := by
+    have h8 : (8 : ℝ≥0∞)⁻¹ = 2⁻¹ * 4⁻¹ := by
+      rw [← ENNReal.mul_inv (by norm_num) (by norm_num)]
+      norm_num
+    rw [div_eq_mul_inv, div_eq_mul_inv, h8]
+    calc 2 * t * r * (t⁻¹ * (2⁻¹ * 4⁻¹))
+        = (2 * 2⁻¹) * (t * t⁻¹) * (r * 4⁻¹) := by ring
+      _ = r * 4⁻¹ := by
+        rw [ENNReal.mul_inv_cancel (by norm_num) (by norm_num), ENNReal.mul_inv_cancel ht0 htT,
+          one_mul, one_mul]
+  have hfac0 : 2 * t * r ≠ 0 := mul_ne_zero (mul_ne_zero (by norm_num) ht0) hr0
+  have hfacT : 2 * t * r ≠ ⊤ := ENNReal.mul_ne_top (ENNReal.mul_ne_top (by norm_num) htT) hrT
+  have hrr : r < r :=
+    calc r ≤ 2 * (t * r * σ) := key
+      _ = 2 * t * r * σ := by ring
+      _ < 2 * t * r * (t⁻¹ / 8) := ENNReal.mul_lt_mul_right hfac0 hfacT hlt
+      _ = r / 4 := hcalc
+      _ ≤ r := ENNReal.div_le_of_le_mul (le_mul_of_one_le_right' (by norm_num))
+  exact lt_irrefl r hrr
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
