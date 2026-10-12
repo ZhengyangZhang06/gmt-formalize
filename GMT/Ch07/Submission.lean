@@ -451,6 +451,30 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §4, (4.3)**: if `Φ` is `C¹` on `D = B_s(0) ⊆ ℝᵈ` and `x ↦ L(x − z)` is a left
+inverse of `Φ` on `D`, then `T_{Φ(v)}Φ(D) ⊆ DΦ(v)(ℝᵈ)` for every `v ∈ D`.  If `γ` witnesses
+`w ∈ T_{Φ(v)}Φ(D)`, the curve `c(t) = L(γ(t) − z)` has `c(0) = v`, `c'(0) = L w` and
+`γ = Φ ∘ c` on `(−1, 1)`, so the chain rule and uniqueness of derivatives give
+`w = DΦ(v)(L w)`. -/
+theorem Submission.dgce_left_inverse_tangentSpace_subset_range : ∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → ∀ v ∈ ball (0 : Euclid d) s, tangentSpace (Φ '' ball (0 : Euclid d) s) (Φ v) ⊆ (LinearMap.range (fderiv ℝ Φ v : Euclid d →ₗ[ℝ] Euclid P) : Set (Euclid P)) := by
+  rintro d P Φ L z s hΦ hL v₀ hv₀ w ⟨γ, -, hγ, hγ0, hγw⟩
+  -- `Φ` is `C¹` on the open ball, hence differentiable at `v₀`
+  have hΦv₀ : HasFDerivAt Φ (fderiv ℝ Φ v₀) v₀ :=
+    (hΦ.differentiableOn_one.differentiableAt (isOpen_ball.mem_nhds hv₀)).hasFDerivAt
+  -- `c(t) = L(γ(t) − z)` has `c'(0) = L w` and `c(0) = L(Φ(v₀) − z) = v₀`
+  have hc : HasDerivAt (fun t => L (γ t - z)) (L w) 0 :=
+    L.hasFDerivAt.comp_hasDerivAt 0 (hγw.sub_const z)
+  have hc0 : v₀ = L (γ 0 - z) := by rw [hγ0, hL v₀ hv₀]
+  -- `γ = Φ ∘ c` on the neighbourhood `(−1, 1)` of `0`: `γ(t) = Φ(u)` with `u ∈ D`, so `c(t) = u`
+  have hγc : γ =ᶠ[𝓝 0] Φ ∘ fun t => L (γ t - z) := by
+    filter_upwards [Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) one_pos] with t ht
+    obtain ⟨u, hu, hut⟩ := hγ ht
+    rw [Function.comp_apply, ← hut, hL u hu]
+  -- chain rule, then uniqueness of derivatives: `w = DΦ(v₀)(L w)`
+  have hw : w = fderiv ℝ Φ v₀ (L w) :=
+    hγw.unique ((hΦv₀.comp_hasDerivAt_of_eq 0 hc hc0).congr_of_eventuallyEq hγc)
+  exact ⟨L w, hw.symm⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
