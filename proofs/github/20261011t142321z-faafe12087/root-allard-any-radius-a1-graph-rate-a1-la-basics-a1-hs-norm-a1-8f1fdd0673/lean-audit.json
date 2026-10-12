@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b3b941c085c0696266d391f4fabb02ff85a182b6539c65e6a088ff6856cf1ec3",
+  "git_delta": {
+    "base_commit": "7faef9b9f2abcc1cf4041e5ee610c6bb30a1969d",
+    "candidate_commit": "2d554da557411fa6ad40f9a7a4a713fd87835097",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_la_hsNorm_facts",
+    "diff_sha256": "e020d40bf7bdea3745350b02225ce70eda223f3fe86308ccc189171942a086eb",
+    "source_sha256": "3831676797b13c3ce5c76bf54e4875ea75bf1e1f26a40d1c056a3b327c2b059a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_la_hsNorm_facts",
+      "statement": "(∀ (m k : ℕ) (M N : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M ∧ hsNorm M ^ 2 = hsNormSq M ∧ hsNormSq (M + N) ≤ 2 * hsNormSq M + 2 * hsNormSq N ∧ hsNormSq (-M) = hsNormSq M ∧ (hsNormSq M = 0 → M = 0) ∧ ‖M‖ ≤ hsNorm M ∧ hsNorm M ≤ Real.sqrt m * ‖M‖) ∧ ∀ (m : ℕ) (K : Submodule ℝ (Rn m)), hsNormSq K.starProjection ≤ m",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
