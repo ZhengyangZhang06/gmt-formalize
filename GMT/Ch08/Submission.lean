@@ -745,6 +745,69 @@ theorem Submission.allard_tc_tpr_weighted_approx_tangent_iff :
       _ = T := Grassmannian.ofSubmodule_plane T
   · rintro rfl
     exact hTM
+/-- Weight blow-ups at a tangent point (Simon Ch. 8, Definition 1.1 tested with `f(y,S) = g(y)`):
+if `V` has tangent plane `T` with multiplicity `θ` at `x`, then for every `g ∈ C_c(ℝ^N)`,
+`t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z) → θ ∫_T g dH^n` as `t ↓ 0`. -/
+theorem Submission.frt_weight_blowup_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂V.weight) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n])) := by
+  intro N n U V x T θ hT g
+  -- Step 1: the test function `f(y, S) = g(y)` is compactly supported, `G(N,n)` being compact.
+  have hf : HasCompactSupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1) :=
+    HasCompactSupport.intro (g.hasCompactSupport.isCompact.prod isCompact_univ) fun z hz ↦
+      image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+    ⟨⟨fun z ↦ g z.1, (map_continuous g).comp continuous_fst⟩, hf⟩
+  have hfc : Continuous (f : Euclidean N × Grassmannian N n → ℝ) := map_continuous f
+  -- Step 2: the convergence clause of Definition 1.1 applied to `f`.
+  have hlim := hT.2.2 f
+  -- Step 3: plane side, `∫ f dv(T) = ∫_T g dH^n`.
+  have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+      ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] := by
+    rw [planeVarifoldMeasure, integral_map (φ := fun y : Euclidean N ↦ (y, T)) (by fun_prop)
+      hfc.aestronglyMeasurable]
+    rfl
+  rw [hplane] at hlim
+  -- Steps 4–5: for `t > 0`, `∫ f dV_{x,t} = t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z)`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  have ht' : (0 : ℝ) ≤ t⁻¹ ^ n := pow_nonneg (inv_nonneg.2 (le_of_lt ht)) n
+  have hg : Continuous fun y : Euclidean N ↦ g (t⁻¹ • (y - x)) := by fun_prop
+  rw [rescaledMeasure, integral_smul_measure,
+    integral_map (φ := fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2))
+      (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal ht', smul_eq_mul,
+    Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
+  rfl
+/-- An `n`-plane `T ∈ G(N,n)` is determined by the `H^n`-integrals over it of compactly supported
+continuous functions (the plane half of the step `Θ^n(μ_C, λy) = Θ^n(μ_C, y)` in the proof of
+Simon Ch. 8, 5.7): equal integrals force `H^n ⌞ T' = H^n ⌞ T` (uniqueness in the Riesz
+representation for regular measures), so the supports `T'.plane` and `T.plane` agree, and a point
+of `G(N,n)` is the matrix of the orthogonal projection onto its plane. -/
+theorem Submission.allard_tc_tpd_plane_eq_of_integral_eq :
+    ∀ (N n : ℕ) (T T' : Grassmannian N n), (∀ g : C_c(Euclidean N, ℝ), ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] = ∫ y in (T'.plane : Set (Euclidean N)), g y ∂μHE[n]) → T' = T := by
+  intro N n T T' h
+  -- Steps 1–2: `finrank T.plane = finrank T'.plane = n`, so both restrictions of `H^n` are regular.
+  have : ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N))).Regular :=
+    Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane
+  have : ((μHE[n] : Measure (Euclidean N)).restrict (T'.plane : Set (Euclidean N))).Regular :=
+    Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane
+  -- Step 3: Riesz uniqueness, `H^n ⌞ T'.plane = H^n ⌞ T.plane`.
+  have hμ : (μHE[n] : Measure (Euclidean N)).restrict (T'.plane : Set (Euclidean N)) =
+      (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) :=
+    Measure.ext_of_integral_eq_on_compactlySupported fun g ↦ (h g).symm
+  -- Step 4: the support of `H^n ⌞ P` is `P`, so `T'.plane = T.plane`.
+  have hplane : T'.plane = T.plane := by
+    apply SetLike.coe_injective
+    rw [← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane,
+      ← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane, hμ]
+  -- Step 5: `p_S` is a symmetric idempotent, hence the orthogonal projection onto `S.plane`.
+  have hproj : ∀ S : Grassmannian N n,
+      S.projectionLinearMap = S.plane.starProjection.toLinearMap := fun S ↦
+    (LinearMap.isSymmetricProjection_iff_eq_coe_starProjection_range.mp
+      ⟨S.projectionLinearMap_comp_self, S.projectionLinearMap_isSymmetric⟩).2
+  -- Step 6: compare coordinate matrices.
+  apply Subtype.ext
+  rw [← T'.toMatrix_projectionLinearMap, ← T.toMatrix_projectionLinearMap, hproj T', hproj T,
+    hplane]
 /-- The `n`-dimensional Hausdorff measure of the closed and open balls `B_r(0)` of an `n`-plane
 `T ∈ G(N,n)` is `ω_n r^n` (step 6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5):
 `H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
@@ -1182,6 +1245,83 @@ theorem Submission.allard_tc_tangent_plane_density :
     rw [ENNReal.ofReal_mul hω.le, ENNReal.ofReal_pow hρ.1.le, ENNReal.ofReal_toReal hωtop]
   rw [densityRatio, hden, div_div, mul_comm (ρ ^ n),
     ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hρ.1 n)), ENNReal.ofReal_toReal hfin]
+
+/-- **Tangent planes of a homogeneous varifold are dilation invariant** (the step
+`Θ^n(μ_C, λy) = Θ^n(μ_C, y)` "by 5.3" in the proof of Simon Ch. 8, 5.7, with 5.3 in its corrected
+form `μ_C(sA) = s^n μ_C(A)`).  If `C` has tangent plane `T` with multiplicity `θ` at `y` and `T'`
+with multiplicity `θ'` at `s y`, then `T' = T` and `θ' = θ`: the density ratio and the weight
+blow-ups of `C` at `s y` and scale `s t` are those at `y` and scale `t`.  With `s = 1` this is the
+uniqueness of the tangent plane and multiplicity at a point. -/
+theorem Submission.allard_tc_tangent_plane_dilation :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (s : ℝ) (y : Euclidean N) (T T' : Grassmannian N n) (θ θ' : ℝ), 0 < s → (∀ A : Set (Euclidean N), C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → HasTangentPlane C y T θ → HasTangentPlane C (s • y) T' θ' → T' = T ∧ θ' = θ := by
+  intro N n C s y T T' θ θ' hs hhom hT hT'
+  have hs0 : s ≠ 0 := hs.ne'
+  -- The dilation `t ↦ s t` maps `𝓝[>] 0` into itself.
+  have hscale : Tendsto (fun t : ℝ ↦ s * t) (𝓝[>] 0) (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      (((by fun_prop : Continuous fun t : ℝ ↦ s * t).tendsto' 0 0 (mul_zero s)).mono_left
+        nhdsWithin_le_nhds)
+      (by filter_upwards [self_mem_nhdsWithin] with t ht using mul_pos hs ht)
+  -- Step 1: `θ' = θ`.  By homogeneity and `s B_r(y) = B_{sr}(s y)`, the density ratio at `s y` and
+  -- radius `s r` is the one at `y` and radius `r`; both multiplicities are densities.
+  have hratio : ∀ r : ℝ, 0 < r →
+      densityRatio n C.weight (s • y) (s * r) = densityRatio n C.weight y r := by
+    intro r hr
+    have hball : closedBall (s • y) (s * r) = s • closedBall y r := by
+      rw [smul_closedBall s y hr.le, Real.norm_of_nonneg hs.le]
+    simp only [densityRatio]
+    rw [hball, hhom, ENNReal.ofReal_mul hs.le, mul_pow, mul_left_comm (unitBallVolume n),
+      ENNReal.mul_div_mul_left _ _ (pow_ne_zero n (ENNReal.ofReal_pos.2 hs).ne')
+        (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)]
+  have hθ : θ' = θ := by
+    have hy : Tendsto (densityRatio n C.weight y) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) :=
+      Submission.allard_tc_tangent_plane_density N n univ C y T θ hT
+    have hsy : Tendsto (densityRatio n C.weight (s • y)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ')) :=
+      Submission.allard_tc_tangent_plane_density N n univ C (s • y) T' θ' hT'
+    have hy' : Tendsto (densityRatio n C.weight y) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ')) :=
+      (hsy.comp hscale).congr'
+        (by filter_upwards [self_mem_nhdsWithin] with r hr using hratio r hr)
+    exact (ENNReal.ofReal_eq_ofReal_iff hT'.2.1.le hT.2.1.le).1 (tendsto_nhds_unique hy' hy)
+  -- Step 3: by homogeneity, `μ_C` pushed forward by `z ↦ s⁻¹ z` is `s^n μ_C`, so the weight
+  -- blow-up of `C` at `s y` and scale `s t` is the one at `y` and scale `t`.
+  have hmap : C.weight.map (fun z : Euclidean N ↦ s⁻¹ • z) = ENNReal.ofReal s ^ n • C.weight := by
+    ext A hA
+    rw [Measure.map_apply (measurable_const_smul s⁻¹) hA, Set.preimage_smul_inv₀ hs0, hhom,
+      Measure.smul_apply, smul_eq_mul]
+  have hblow : ∀ (g : C_c(Euclidean N, ℝ)) (t : ℝ),
+      (s * t)⁻¹ ^ n * ∫ z, g ((s * t)⁻¹ • (z - s • y)) ∂C.weight =
+        t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - y)) ∂C.weight := by
+    intro g t
+    have hG : Continuous fun w : Euclidean N ↦ g (t⁻¹ • (w - y)) := by fun_prop
+    have hpt : ∀ z : Euclidean N, (s * t)⁻¹ • (z - s • y) = t⁻¹ • (s⁻¹ • z - y) := fun z ↦ by
+      rw [mul_inv, mul_comm s⁻¹, mul_smul, smul_sub, inv_smul_smul₀ hs0]
+    have hint : ∫ z, g (t⁻¹ • (s⁻¹ • z - y)) ∂C.weight =
+        s ^ n * ∫ z, g (t⁻¹ • (z - y)) ∂C.weight := by
+      have h := integral_map (μ := C.weight) (φ := fun z : Euclidean N ↦ s⁻¹ • z)
+        (measurable_const_smul s⁻¹).aemeasurable hG.aestronglyMeasurable
+      rw [hmap, integral_smul_measure, ENNReal.toReal_pow, ENNReal.toReal_ofReal hs.le,
+        smul_eq_mul] at h
+      exact h.symm
+    have hc : (s * t)⁻¹ ^ n * s ^ n = t⁻¹ ^ n := by
+      rw [mul_inv, mul_pow, mul_right_comm, ← mul_pow, inv_mul_cancel₀ hs0, one_pow, one_mul]
+    simp_rw [hpt]
+    rw [hint, ← mul_assoc, hc]
+  -- Steps 2 and 4: the weight blow-ups at `y` tend to `θ ∫_T g dH^n` and, through `t ↦ s t`,
+  -- to `θ' ∫_{T'} g dH^n`; as `θ' = θ > 0`, the `H^n`-integrals over `T` and `T'` agree.
+  have hplane : ∀ g : C_c(Euclidean N, ℝ),
+      ∫ x in (T.plane : Set (Euclidean N)), g x ∂μHE[n] =
+        ∫ x in (T'.plane : Set (Euclidean N)), g x ∂μHE[n] := by
+    intro g
+    have hy := Submission.frt_weight_blowup_tendsto N n univ C y T θ hT g
+    have hy' : Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - y)) ∂C.weight) (𝓝[>] 0)
+        (𝓝 (θ' * ∫ x in (T'.plane : Set (Euclidean N)), g x ∂μHE[n])) :=
+      ((Submission.frt_weight_blowup_tendsto N n univ C (s • y) T' θ' hT' g).comp hscale).congr'
+        (Eventually.of_forall fun t ↦ hblow g t)
+    have h := tendsto_nhds_unique hy' hy
+    rw [hθ] at h
+    exact (mul_left_cancel₀ hT.2.1.ne' h).symm
+  -- Step 5: an `n`-plane is determined by these integrals.
+  exact ⟨Submission.allard_tc_tpd_plane_eq_of_integral_eq N n T T' hplane, hθ⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
