@@ -458,6 +458,109 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, 2.4, steps 1–2 of the two-sided mass bounds, with `ω > 0` and `κ > 0` arbitrary:
+for `C = max(1, C₊, C₋)` and `δP = min(1/8, κ, 1/(2C))`, where `A = 1 + n 2ⁿ⁺⁴`,
+`C₊ = A + (9e²2ⁿ/4 + 2e/ω)/κ` and `C₋ = (1 + 1/ω)/κ`, every `t ∈ (0, δP]` satisfies, with
+`Λ = t/κ`, `e^{2Λ} ((1 + t)/(1 − 4t)ⁿ) ω + 2e^{Λ} Λ ≤ (1 + C t) ω` and
+`(1 − C t) ω ≤ e^{−Λ} (ω − Λ)` (convexity of `exp`, `1 − Λ ≤ e^{−Λ}` and Bernoulli). -/
+theorem ted_adb_constants : ∀ (n : ℕ) (κ ω : ℝ), 0 < κ → 0 < ω → ∃ C δP : ℝ, 1 ≤ C ∧ 0 < δP ∧ δP ≤ 1 / 8 ∧ δP ≤ κ ∧ C * δP ≤ 1 / 2 ∧ ∀ t : ℝ, 0 < t → t ≤ δP → Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 4 * t) ^ n * ω) + 2 * Real.exp (t / κ) * (t / κ) ≤ (1 + C * t) * ω ∧ (1 - C * t) * ω ≤ Real.exp (-(t / κ)) * (ω - t / κ) := by
+  intro n κ ω hκ hω
+  -- Step 1: the constants `e`, `A`, `C₊`, `C₋` and `C = max(1, C₊, C₋)`.
+  obtain ⟨e, he⟩ : ∃ e : ℝ, e = Real.exp 1 := ⟨_, rfl⟩
+  obtain ⟨A, hA⟩ : ∃ A : ℝ, A = 1 + (n : ℝ) * 2 ^ (n + 4) := ⟨_, rfl⟩
+  obtain ⟨Cp, hCp⟩ : ∃ Cp : ℝ, Cp = A + (9 * e ^ 2 * 2 ^ n / 4 + 2 * e / ω) / κ := ⟨_, rfl⟩
+  obtain ⟨Cm, hCm⟩ : ∃ Cm : ℝ, Cm = (1 + 1 / ω) / κ := ⟨_, rfl⟩
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, C = max 1 (max Cp Cm) := ⟨_, rfl⟩
+  have hC1 : 1 ≤ C := hC ▸ le_max_left _ _
+  have hCpC : Cp ≤ C := hC ▸ (le_max_left _ _).trans (le_max_right _ _)
+  have hCmC : Cm ≤ C := hC ▸ (le_max_right _ _).trans (le_max_right _ _)
+  have hC0 : 0 < C := one_pos.trans_le hC1
+  -- Step 2: `δP = min(1/8, κ, 1/(2C))` satisfies the side conditions.
+  refine ⟨C, min (1 / 8) (min κ (1 / (2 * C))), hC1,
+    lt_min (by norm_num) (lt_min hκ (by positivity)), min_le_left _ _,
+    (min_le_right _ _).trans (min_le_left _ _), ?_, ?_⟩
+  · calc C * min (1 / 8) (min κ (1 / (2 * C))) ≤ C * (1 / (2 * C)) :=
+          mul_le_mul_of_nonneg_left ((min_le_right _ _).trans (min_le_right _ _)) hC0.le
+      _ = 1 / 2 := by field_simp
+  intro t ht htδ
+  -- Step 3: `t ≤ 1/8` (so `1 − 4t ≥ 1/2`), `Λ = t/κ ∈ (0, 1]` and `q = (1 − 4t)ⁿ > 0`.
+  have ht8 : t ≤ 1 / 8 := htδ.trans (min_le_left _ _)
+  have htκ : t ≤ κ := htδ.trans ((min_le_right _ _).trans (min_le_left _ _))
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℝ, Λ = t / κ := ⟨_, rfl⟩
+  obtain ⟨q, hq⟩ : ∃ q : ℝ, q = (1 - 4 * t) ^ n := ⟨_, rfl⟩
+  rw [← hΛ, ← hq]
+  have hΛ0 : 0 < Λ := hΛ ▸ div_pos ht hκ
+  have hΛ1 : Λ ≤ 1 := hΛ ▸ (div_le_one hκ).2 htκ
+  have hq0 : 0 < q := hq ▸ pow_pos (by linarith) n
+  -- Step 4 (E1): `e^{2Λ} ≤ 1 + 2e²Λ` (convexity of `exp`), `e^{Λ} ≤ e` and `1 − Λ ≤ e^{−Λ} ≤ 1`.
+  have hexp2 : Real.exp (2 * Λ) ≤ 1 + 2 * e ^ 2 * Λ := by
+    have h := convexOn_exp.2 (Set.mem_univ (0 : ℝ)) (Set.mem_univ (2 : ℝ))
+      (sub_nonneg.2 hΛ1) hΛ0.le (sub_add_cancel 1 Λ)
+    have he2 : Real.exp 2 = e ^ 2 := by rw [he, sq, ← Real.exp_add]; norm_num
+    simp only [smul_eq_mul, mul_zero, zero_add, Real.exp_zero, mul_one, he2] at h
+    rw [mul_comm Λ 2] at h
+    linarith [mul_nonneg hΛ0.le (sq_nonneg e)]
+  have hexp1 : Real.exp Λ ≤ e := he ▸ Real.exp_le_exp.2 hΛ1
+  have hexpm : 1 - Λ ≤ Real.exp (-Λ) := Real.one_sub_le_exp_neg Λ
+  have hexpm1 : Real.exp (-Λ) ≤ 1 := Real.exp_le_one_iff.2 (by linarith)
+  -- Step 5 (E2): Bernoulli gives `q ≥ 1 − 4nt`; also `2ⁿ q = (2(1 − 4t))ⁿ ≥ 1`.
+  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hbern : 1 - 4 * n * t ≤ q := by
+    have h := one_add_mul_le_pow (show (-2 : ℝ) ≤ -4 * t by linarith) n
+    calc 1 - 4 * n * t = 1 + n * (-4 * t) := by ring
+      _ ≤ (1 + -4 * t) ^ n := h
+      _ = q := by rw [hq]; ring
+  have h2q : 1 ≤ 2 ^ n * q := by
+    rw [hq, ← mul_pow]
+    exact one_le_pow₀ (by linarith)
+  -- `(1 + t)/q ≤ 1 + A t`, as `(1 + A t) q = (1 + t) q + 16nt (2ⁿ q) ≥ (1 + t)(1 − 4nt) + 16nt`.
+  have ha1 : (1 + t) / q ≤ 1 + A * t := by
+    rw [div_le_iff₀ hq0]
+    have hAt : A * t = t + 16 * n * t * 2 ^ n := by rw [hA, pow_add]; ring
+    calc 1 + t ≤ (1 + t) * (1 - 4 * n * t) + 16 * n * t := by
+          linarith [mul_nonneg (mul_nonneg hn0 ht.le) (by linarith : (0 : ℝ) ≤ 3 - t)]
+      _ ≤ (1 + t) * q + 16 * n * t * (2 ^ n * q) :=
+          add_le_add (mul_le_mul_of_nonneg_left hbern (by linarith))
+            (le_mul_of_one_le_right (by positivity) h2q)
+      _ = (1 + A * t) * q := by rw [hAt]; ring
+  -- `(1 + t)/q ≤ (9/8) 2ⁿ`, as `1 + t ≤ 9/8 ≤ (9/8) 2ⁿ q`.
+  have ha2 : (1 + t) / q ≤ 9 / 8 * 2 ^ n := by
+    rw [div_le_iff₀ hq0]
+    linarith
+  have hB0 : 0 ≤ (1 + t) / q * ω := by positivity
+  constructor
+  · -- Step 6 (P): the left side is at most `(1 + C₊ t) ω ≤ (1 + C t) ω`.
+    have hP1 : Real.exp (2 * Λ) * ((1 + t) / q * ω) ≤
+        (1 + t) / q * ω + 2 * e ^ 2 * Λ * ((1 + t) / q * ω) := by
+      linarith [mul_le_mul_of_nonneg_right hexp2 hB0]
+    have hP2 : (1 + t) / q * ω ≤ (1 + A * t) * ω := mul_le_mul_of_nonneg_right ha1 hω.le
+    have hP3 : 2 * e ^ 2 * Λ * ((1 + t) / q * ω) ≤ 2 * e ^ 2 * Λ * (9 / 8 * 2 ^ n * ω) :=
+      mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right ha2 hω.le) (by positivity)
+    have hP4 : 2 * Real.exp Λ * Λ ≤ 2 * e * Λ := by
+      linarith [mul_le_mul_of_nonneg_right hexp1 hΛ0.le]
+    have hP5 : (1 + A * t) * ω + 2 * e ^ 2 * Λ * (9 / 8 * 2 ^ n * ω) + 2 * e * Λ =
+        (1 + Cp * t) * ω := by
+      rw [hCp, hΛ]
+      field_simp
+      ring
+    have hP6 : (1 + Cp * t) * ω ≤ (1 + C * t) * ω :=
+      mul_le_mul_of_nonneg_right (by linarith [mul_le_mul_of_nonneg_right hCpC ht.le]) hω.le
+    linarith
+  · -- Step 7 (M): `(1 − C t) ω ≤ (1 − C₋ t) ω = ω − Λ − Λω ≤ e^{−Λ} (ω − Λ)`.
+    have hM1 : (1 - C * t) * ω ≤ ω - Λ - Λ * ω := by
+      have hCmt : Cm * t * ω = Λ + Λ * ω := by
+        rw [hCm, hΛ]
+        field_simp
+        ring
+      linarith [mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCmC ht.le) hω.le]
+    rcases le_or_gt 0 (ω - Λ) with h | h
+    · linarith [mul_le_mul_of_nonneg_right hexpm h, sq_nonneg Λ]
+    · linarith [mul_le_mul_of_nonpos_right hexpm1 h.le, mul_pos hΛ0 hω]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
