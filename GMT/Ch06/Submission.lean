@@ -359,6 +359,23 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Local mass along increasing unions of open sets** (continuity from below of `W ↦ M_W(T)`
+on open sets, used in the selection argument of Simon Ch. 6, Remark 8.3(1), p. 176).  If
+`O₀ ⊆ O₁ ⊆ ⋯` are open, then `M_{⋃ᵢ Oᵢ}(T) = supᵢ M_{Oᵢ}(T)` in `[0, ∞]`.  `≥` is monotonicity
+of `M`.  For `≤`, a form admissible for `⋃ᵢ Oᵢ` has compact support, which the increasing open
+cover `(Oᵢ)` covers by a single `Oᵢ`; the form is then admissible for that `Oᵢ`. -/
+theorem Submission.iwl_rl_massOn_iUnion_monotone : ∀ (P k : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U k) (O : ℕ → Set (Eucl P)), (∀ i, IsOpen (O i)) → Monotone O → T.massOn (⋃ i, O i) = ⨆ i, T.massOn (O i) := by
+  intro P k U T O hO hmono
+  -- `≥`: each `Oᵢ ⊆ ⋃ᵢ Oᵢ`, and `M` is monotone in the support region.
+  refine le_antisymm ?_ (iSup_le fun i => T.massOn_mono (subset_iUnion O i))
+  -- `≤`: it suffices to bound `ofReal (T ω)` for every `ω` admissible for `⋃ᵢ Oᵢ`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  -- `tsupport ω` is compact and lies in the directed open union, hence in a single `Oᵢ`.
+  obtain ⟨i, hi⟩ := IsCompact.elim_directed_cover ω.property.1.2 O hO hω.1 hmono.directed_le
+  -- So `ω` is admissible for `Oᵢ`: `ofReal (T ω) ≤ M_{Oᵢ}(T) ≤ supᵢ M_{Oᵢ}(T)`.
+  exact le_iSup_of_le i (T.le_massOn ⟨hi, hω.2⟩)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
