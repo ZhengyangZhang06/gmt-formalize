@@ -492,6 +492,168 @@ theorem Submission.sobolev_density_ge_one_ae : ApproxTangentAE → ∀ (n ℓ : 
   have hd : (mk a).density x = a.θ x := hT.2.2.limUnder_eq
   rw [hd]
   exact ⟨hT.2.2, hx hxU⟩
+/-- **Corrected Simon Lemma 5.8 (good radius), `n ≥ 2`.** Let `f, k` be nondecreasing on `(0, ∞)`
+with `0 ≤ f ≤ F` and `0 ≤ k`, such that `s⁻ⁿf(s) ≤ r⁻ⁿf(r) + ∫_{(s,r]} τ⁻ⁿk(τ) dτ` for
+`0 < s ≤ r` and `limsup_{s↓0} s⁻ⁿf(s) ≥ 1`. Then `F > 0` and some `r ∈ (0, 2F^{1/n})` satisfies
+`f(5r) ≤ 5ⁿF^{1/n}k(r)`. Otherwise, with `r₀ = 2F^{1/n}`, `S = sup_{[s,r₀]} τ⁻ⁿf(τ)` for a small
+`s` with `s⁻ⁿf(s) > 2/3`, the substitution `u = 5τ` gives `S ≤ (7/5)2⁻ⁿ + (2/5)S`, so
+`S ≤ 7/12`. (The printed lemma's lower bound `1 ≤ σ⁻ⁿf(σ)` for all `σ` contradicts `f ≤ F`.) -/
+theorem Submission.sobolev_good_radius_calculus : ∀ (n : ℕ) (f k : ℝ → ℝ) (F : ℝ), 2 ≤ n →
+    MonotoneOn f (Ioi 0) → MonotoneOn k (Ioi 0) → (∀ τ : ℝ, 0 < τ → 0 ≤ f τ ∧ f τ ≤ F) →
+    (∀ τ : ℝ, 0 < τ → 0 ≤ k τ) →
+    (∀ s r : ℝ, 0 < s → s ≤ r → f s / s ^ n ≤ f r / r ^ n + ∫ τ in Ioc s r, k τ / τ ^ n) →
+    (∀ η : ℝ, η < 1 → ∃ᶠ s in 𝓝[>] (0 : ℝ), η < f s / s ^ n) →
+    0 < F ∧ ∃ r : ℝ, 0 < r ∧ r < 2 * F ^ (n : ℝ)⁻¹ ∧ f (5 * r) ≤ 5 ^ n * F ^ (n : ℝ)⁻¹ * k r := by
+  intro n f k F hn hf hk hfb hk0 ha hb
+  -- Step 1: `F > 0`, from a radius `s₀ > 0` with `f(s₀)/s₀ⁿ > 0`.
+  have hF : 0 < F := by
+    obtain ⟨s₀, hpos, hs₀⟩ := ((hb 0 (by norm_num)).and_eventually self_mem_nhdsWithin).exists
+    have hs₀' : (0 : ℝ) < s₀ := hs₀
+    have h1 : 0 < f s₀ := (div_pos_iff_of_pos_right (pow_pos hs₀' n)).mp hpos
+    linarith [(hfb s₀ hs₀').2]
+  refine ⟨hF, ?_⟩
+  -- Step 2: `r₀ = 2F^{1/n}`, so `r₀ⁿ = 2ⁿF` and `P = F/r₀ⁿ = 2⁻ⁿ ≤ 1/4`.
+  obtain ⟨r₀, hr₀⟩ : ∃ r₀ : ℝ, r₀ = 2 * F ^ (n : ℝ)⁻¹ := ⟨_, rfl⟩
+  have hFr : F ^ (n : ℝ)⁻¹ = r₀ / 2 := by rw [hr₀]; ring
+  have hr₀pos : 0 < r₀ := by rw [hr₀]; positivity
+  have hr₀n : r₀ ^ n = 2 ^ n * F := by
+    rw [hr₀, mul_pow, Real.rpow_inv_natCast_pow hF.le (by omega)]
+  obtain ⟨P, hP⟩ : ∃ P : ℝ, P = F / r₀ ^ n := ⟨_, rfl⟩
+  have hP0 : 0 ≤ P := by rw [hP]; positivity
+  have hP4 : P ≤ 1 / 4 := by
+    have h4 : (4 : ℝ) ≤ 2 ^ n := by
+      calc (4 : ℝ) = 2 ^ 2 := by norm_num
+        _ ≤ 2 ^ n := pow_le_pow_right₀ (by norm_num) hn
+    have hPe : P = 1 / 2 ^ n := by rw [hP, hr₀n]; field_simp
+    rw [hPe]
+    exact one_div_le_one_div_of_le (by norm_num) h4
+  rw [hFr]
+  -- Step 4: suppose no radius in `(0, r₀)` is good.
+  by_contra hcon
+  have hbad : ∀ τ : ℝ, 0 < τ → τ < r₀ → 5 ^ n * (r₀ / 2) * k τ < f (5 * τ) := by
+    intro τ hτ hτr
+    by_contra hle
+    exact hcon ⟨τ, hτ, by linarith, not_lt.mp hle⟩
+  obtain ⟨g, hg⟩ : ∃ g : ℝ → ℝ, g = fun u ↦ f u / u ^ n := ⟨_, rfl⟩
+  have hgv : ∀ u, g u = f u / u ^ n := fun u ↦ by rw [hg]
+  have hg0 : ∀ u, 0 < u → 0 ≤ g u := fun u hu ↦ by
+    rw [hgv]; exact div_nonneg (hfb u hu).1 (pow_pos hu n).le
+  -- So `τ⁻ⁿk(τ) ≤ (2/r₀) g(5τ)` on `(0, r₀)`.
+  have hkey : ∀ τ : ℝ, 0 < τ → τ < r₀ → k τ / τ ^ n ≤ 2 / r₀ * g (5 * τ) := by
+    intro τ hτ hτr
+    have h := hbad τ hτ hτr
+    have hτn : 0 < τ ^ n := pow_pos hτ n
+    rw [hgv, mul_pow, div_le_iff₀ hτn]
+    have e : 2 / r₀ * (f (5 * τ) / (5 ^ n * τ ^ n)) * τ ^ n = 2 * f (5 * τ) / (r₀ * 5 ^ n) := by
+      field_simp
+    rw [e, le_div_iff₀ (by positivity)]
+    have e2 : k τ * (r₀ * 5 ^ n) = 2 * (5 ^ n * (r₀ / 2) * k τ) := by ring
+    linarith
+  -- Step 3: integrability on compact subintervals of `(0, ∞)`.
+  have hint : ∀ φ : ℝ → ℝ, MonotoneOn φ (Ioi 0) → ∀ a b : ℝ, 0 < a → 0 < b →
+      IntervalIntegrable (fun τ ↦ φ τ / τ ^ n) volume a b := by
+    intro φ hφ a b ha hb
+    have hsub : uIcc a b ⊆ Ioi 0 := by
+      intro x hx
+      rcases mem_uIcc.mp hx with h | h
+      · exact lt_of_lt_of_le ha h.1
+      · exact lt_of_lt_of_le hb h.1
+    have h1 : IntervalIntegrable φ volume a b := (hφ.mono hsub).intervalIntegrable
+    have h2 : ContinuousOn (fun τ : ℝ ↦ (τ ^ n)⁻¹) (uIcc a b) :=
+      (continuous_pow n).continuousOn.inv₀ fun x hx ↦ pow_ne_zero n (ne_of_gt (hsub hx))
+    simpa only [div_eq_mul_inv] using h1.mul_continuousOn h2
+  have hgint : ∀ a b : ℝ, 0 < a → 0 < b → IntervalIntegrable g volume a b := by
+    intro a b ha hb; rw [hg]; exact hint f hf a b ha hb
+  -- Step 5: a radius `s ∈ (0, r₀)` with `f(s)/sⁿ > 2/3`.
+  obtain ⟨s, hs2, hs⟩ :=
+    ((hb (2 / 3) (by norm_num)).and_eventually (Ioo_mem_nhdsGT hr₀pos)).exists
+  have hs0 : 0 < s := hs.1
+  -- Step 6: `S = sup_{[s, r₀]} g`.
+  have hbdd : BddAbove (g '' Icc s r₀) := by
+    refine ⟨F / s ^ n, ?_⟩
+    rintro _ ⟨τ, hτ, rfl⟩
+    have hτ0 : 0 < τ := lt_of_lt_of_le hs.1 hτ.1
+    rw [hgv]
+    calc f τ / τ ^ n ≤ F / τ ^ n := by gcongr; exact (hfb τ hτ0).2
+      _ ≤ F / s ^ n := by gcongr; exact hτ.1
+  obtain ⟨S, hS⟩ : ∃ S : ℝ, S = sSup (g '' Icc s r₀) := ⟨_, rfl⟩
+  have hgS : ∀ τ ∈ Icc s r₀, g τ ≤ S := fun τ hτ ↦ hS ▸ le_csSup hbdd (mem_image_of_mem g hτ)
+  have hS23 : 2 / 3 < S := lt_of_lt_of_le (by rw [hgv]; exact hs2) (hgS s ⟨le_rfl, hs.2.le⟩)
+  -- Step 10: `∫_s^{r₀} g ≤ r₀S` and `∫_{r₀}^{5r₀} g ≤ F r₀^{1-n} = r₀P`.
+  have hJ1 : ∫ u in s..r₀, g u ≤ r₀ * S := by
+    calc ∫ u in s..r₀, g u ≤ ∫ _ in s..r₀, S :=
+          intervalIntegral.integral_mono_on hs.2.le (hgint s r₀ hs.1 hr₀pos)
+            intervalIntegrable_const hgS
+      _ = (r₀ - s) * S := by rw [intervalIntegral.integral_const, smul_eq_mul]
+      _ ≤ r₀ * S := by nlinarith [hs.1]
+  have hJ2 : ∫ u in r₀..5 * r₀, g u ≤ r₀ * P := by
+    have hFint : IntervalIntegrable (fun u ↦ F / u ^ n) volume r₀ (5 * r₀) :=
+      hint (fun _ ↦ F) monotoneOn_const r₀ (5 * r₀) hr₀pos (by positivity)
+    have hfun : (fun u : ℝ ↦ F / u ^ n) = fun u ↦ F * u ^ (-(n : ℤ)) := by
+      funext u; rw [zpow_neg, zpow_natCast, div_eq_mul_inv]
+    have hA : r₀ ^ (-(n : ℤ) + 1) = r₀ / r₀ ^ n := by
+      rw [zpow_add₀ hr₀pos.ne', zpow_neg, zpow_natCast, zpow_one]; ring
+    have hB : 0 < (5 * r₀) ^ (-(n : ℤ) + 1) := zpow_pos (by positivity) _
+    have hD : ((-(n : ℤ) : ℤ) : ℝ) + 1 ≤ -1 := by
+      have : (2 : ℝ) ≤ n := by exact_mod_cast hn
+      push_cast; linarith
+    have hq : ((5 * r₀) ^ (-(n : ℤ) + 1) - r₀ / r₀ ^ n) / (((-(n : ℤ) : ℤ) : ℝ) + 1) ≤
+        r₀ / r₀ ^ n := by
+      rw [div_le_iff_of_neg (by linarith)]
+      have : 0 < r₀ / r₀ ^ n := by positivity
+      nlinarith
+    calc ∫ u in r₀..5 * r₀, g u ≤ ∫ u in r₀..5 * r₀, F / u ^ n := by
+          refine intervalIntegral.integral_mono_on (by linarith)
+            (hgint r₀ (5 * r₀) hr₀pos (by positivity)) hFint fun u hu ↦ ?_
+          have hu0 : 0 < u := lt_of_lt_of_le hr₀pos hu.1
+          rw [hgv]; gcongr; exact (hfb u hu0).2
+      _ = F * ∫ u in r₀..5 * r₀, u ^ (-(n : ℤ)) := by
+          rw [hfun, intervalIntegral.integral_const_mul]
+      _ = F * (((5 * r₀) ^ (-(n : ℤ) + 1) - r₀ ^ (-(n : ℤ) + 1)) / (((-(n : ℤ) : ℤ) : ℝ) + 1)) := by
+          rw [integral_zpow (Or.inr ⟨by omega, notMem_uIcc_of_lt hr₀pos (by positivity)⟩)]
+      _ ≤ F * (r₀ / r₀ ^ n) := by rw [hA]; gcongr
+      _ = r₀ * P := by rw [hP]; ring
+  -- Steps 7–11: for every `s' ∈ [s, r₀]`, `g(s') ≤ (7/5)P + (2/5)S`.
+  have hstep : ∀ s' ∈ Icc s r₀, g s' ≤ 7 / 5 * P + 2 / 5 * S := by
+    intro s' hs'
+    have hs'pos : 0 < s' := lt_of_lt_of_le hs.1 hs'.1
+    have h1 := ha s' r₀ hs'pos hs'.2
+    rw [← intervalIntegral.integral_of_le hs'.2] at h1
+    have h2 : f r₀ / r₀ ^ n ≤ P := by rw [hP]; gcongr; exact (hfb r₀ hr₀pos).2
+    have h3 : ∫ τ in s'..r₀, k τ / τ ^ n ≤ ∫ τ in s'..r₀, 2 / r₀ * g (5 * τ) := by
+      refine intervalIntegral.integral_mono_on_of_le_Ioo hs'.2 (hint k hk s' r₀ hs'pos hr₀pos)
+        ?_ fun τ hτ ↦ hkey τ (hs'pos.trans hτ.1) hτ.2
+      have h := (hgint (5 * s') (5 * r₀) (by positivity) (by positivity)).comp_mul_left (c := 5)
+      rw [mul_div_cancel_left₀ _ (by norm_num : (5 : ℝ) ≠ 0),
+        mul_div_cancel_left₀ _ (by norm_num : (5 : ℝ) ≠ 0)] at h
+      exact h.const_mul (2 / r₀)
+    have h4 : ∫ τ in s'..r₀, 2 / r₀ * g (5 * τ) =
+        2 / r₀ * (5⁻¹ * ∫ u in 5 * s'..5 * r₀, g u) := by
+      rw [intervalIntegral.integral_const_mul,
+        intervalIntegral.integral_comp_mul_left g (by norm_num : (5 : ℝ) ≠ 0), smul_eq_mul]
+    have h5 : ∫ u in 5 * s'..5 * r₀, g u ≤ r₀ * S + r₀ * P := by
+      have e1 := intervalIntegral.integral_add_adjacent_intervals
+        (hgint s (5 * s') hs.1 (by positivity)) (hgint (5 * s') (5 * r₀) (by positivity) (by positivity))
+      have e2 := intervalIntegral.integral_add_adjacent_intervals
+        (hgint s r₀ hs.1 hr₀pos) (hgint r₀ (5 * r₀) hr₀pos (by positivity))
+      have e3 : 0 ≤ ∫ u in s..5 * s', g u :=
+        intervalIntegral.integral_nonneg (by linarith [hs'.1])
+          fun u hu ↦ hg0 u (lt_of_lt_of_le hs.1 hu.1)
+      linarith
+    have h6 : 2 / r₀ * (5⁻¹ * ∫ u in 5 * s'..5 * r₀, g u) ≤ 2 / 5 * (S + P) := by
+      calc 2 / r₀ * (5⁻¹ * ∫ u in 5 * s'..5 * r₀, g u) ≤ 2 / r₀ * (5⁻¹ * (r₀ * S + r₀ * P)) := by
+            gcongr
+        _ = 2 / 5 * (S + P) := by field_simp
+    rw [hgv]
+    linarith
+  -- Step 12: `S ≤ (7/5)P + (2/5)S`, so `S ≤ (7/3)P ≤ 7/12 < 2/3`.
+  have hSle : S ≤ 7 / 5 * P + 2 / 5 * S := by
+    rw [hS]
+    refine csSup_le ⟨g s, mem_image_of_mem g ⟨le_rfl, hs.2.le⟩⟩ ?_
+    rintro _ ⟨τ, hτ, rfl⟩
+    rw [← hS]
+    exact hstep τ hτ
+  linarith
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
