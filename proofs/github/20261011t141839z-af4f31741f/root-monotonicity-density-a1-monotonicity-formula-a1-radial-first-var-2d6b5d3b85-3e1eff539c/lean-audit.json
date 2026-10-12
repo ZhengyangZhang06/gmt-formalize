@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5a2d251bfab3dd2d44a0a36565973c2ee4fe304d586919fa6887a9bf807ffca8",
+  "git_delta": {
+    "base_commit": "8b919f099d659d764ae9e74eb5751458110768ab",
+    "candidate_commit": "9e362000bbb5f6b722e98c86c4db325bda44b215",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "mono833_radial_first_variation_bound",
+    "diff_sha256": "32f7f1cb33cc7c3bb0c44407a7a506867b76856e9809cabcf98864ffc4d481a1",
+    "source_sha256": "e8d31dfc91c18505e051875173a2b7acfb6452d021e6f58ed4ada0935d9355f2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mono833_radial_first_variation_bound",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ₀ Λ A t : ℝ) (φ : ℝ → ℝ), V.HasLocallyBoundedFirstVariation → ball x ρ₀ ⊆ U → 0 ≤ Λ → (∀ r : ℝ, 0 < r → r < ρ₀ → variationMeasure V (closedBall x r) ≤ ENNReal.ofReal Λ * V.weight (closedBall x r)) → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, A ^ 2 ≤ s → φ s = 0) → 0 < A → 0 < t → t * A < ρ₀ → |V.firstVariation (fun y ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x))| ≤ A * Λ * t * ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂V.weight",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
