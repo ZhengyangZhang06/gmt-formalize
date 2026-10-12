@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "98ebe974d6b39f4b83b1a79b8ae2e11159b69662f639bef217b67c340daf9954",
+  "git_delta": {
+    "base_commit": "fb5be2a6d3c0f58e6babc90b2ef30b136897831f",
+    "candidate_commit": "9203aee8c87c605e11f3d998f09f86c7bd83187d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_cone_wedge_vanishes",
+    "diff_sha256": "b72c06d305f4345f05fbc36c4bae44724ea1576227441fa5bca3a4433dcc5c96",
+    "source_sha256": "3f789aef81b1b89e9721e9fa92e07f0176ffb3f7329728c574c606f889c4bd7f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cone_wedge_vanishes",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → ∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β x) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
