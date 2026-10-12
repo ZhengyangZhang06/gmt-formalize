@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.chart_coarea-a1.chart_area_pullback-a1",
+  "parent_id": "root.coarea_formula-a1.chart_coarea-a1",
+  "depth": 3,
+  "title": "Pull-back of the co-area integral to the straightening chart",
+  "statement": "Let N, m, k ∈ ℕ, M ⊆ ℝᴺ, f : ℝᴺ → ℝᵐ, and P := WithLp 2 (ℝᵐ × ℝᵏ) with its Lebesgue measure (volume) dp. Let j : ℝᵏ → P be the continuous linear map (WithLp.prodContinuousLinearEquiv 2 ℝ ℝᵐ ℝᵏ).symm ∘L inr, so j(b) = toLp(0,b). Let Ω ⊆ P be open and let Ψ : P → ℝᴺ be C¹ on Ω and injective on Ω, with DΨ(p) injective for every p ∈ Ω. Assume that for every p ∈ Ω: f is differentiable at Ψ(p), f(Ψ p) = WithLp.fst p, and tangentSpace M (Ψ p) = range DΨ(p). Let S ⊆ Ψ(Ω) be a Borel set and g : ℝᴺ → [0,∞] any function. Assume (hLA): for every x ∈ ℝᴺ and all continuous linear maps A : P → ℝᴺ, B : ℝᵏ → ℝᴺ such that A is injective, tangentSpace M x = range A, Df(x)(A q) = WithLp.fst q for all q ∈ P, and B b = A(toLp(0,b)) for all b ∈ ℝᵏ, one has coareaJacobian M f x · normDet(A) = normDet(B), where normDet is Mathlib's LinearMap.normDet. Then ∫_S g·ofReal(coareaJacobian M f) dμHE[m+k] = ∫_{Ω∩Ψ⁻¹(S)} ofReal(normDet(DΨ(p)∘j))·g(Ψ p) dp.",
+  "lean_statement": "∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N) (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω → (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, DifferentiableAt ℝ f (Ψ p)) → (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) → (∀ p ∈ Ω, tangentSpace M (Ψ p) = LinearMap.range (fderiv ℝ Ψ p).toLinearMap) → MeasurableSet S → S ⊆ Ψ '' Ω → (∀ (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N), Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap → (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) → coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet) → ∫⁻ x in S, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] = ∫⁻ p in Ω ∩ Ψ ⁻¹' S, ENNReal.ofReal (((fderiv ℝ Ψ p).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet) * g (Ψ p)",
+  "lean_name": "coarea_chart_area_pullback",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-chart-coarea-a1-chart-area-pullback-a1-a1"
+}
