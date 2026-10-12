@@ -359,6 +359,73 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of Theorem 2.34 (p. 143): mollifications of a test function converge to it
+in the test-function topology.  For a nonnegative approximate identity `ψ k` (`∫ ψ k = 1`,
+`spt ψ k ⊆ B̄_{r k}(0)`, `r k → 0`) and `b` smooth with compact support, every derivative
+`D^q (ψ k ∗ b)` converges to `D^q b` uniformly on `ℝⁿ`.  The derivatives fall on `b`,
+`D^q (ψ ∗ b) = ψ ∗ D^q b` (induction on `q` with `hasFDerivAt_convolution_right`; the currying
+isometries commute with the integral), and `D^q b` is uniformly continuous, so
+`dist_convolution_le` gives the uniform estimate. -/
+theorem Submission.constancy_approx_identity_iteratedFDeriv_tendstoUniformly :
+    ∀ (n : ℕ) (b : Eucl n → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b →
+      ∀ (ψ : ℕ → Eucl n → ℝ) (r : ℕ → ℝ), (∀ k, Continuous (ψ k)) → (∀ k x, 0 ≤ ψ k x) →
+      (∀ k, ∫ x, ψ k x ∂volume = 1) → (∀ k, tsupport (ψ k) ⊆ closedBall 0 (r k)) →
+      Tendsto r atTop (𝓝 0) → ∀ q : ℕ,
+      TendstoUniformly (fun k x => iteratedFDeriv ℝ q
+        (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) x)
+        (fun x => iteratedFDeriv ℝ q b x) atTop := by
+  intro n b hb hbc ψ r hψc hψn hψi hψs hr q
+  -- A linear isometry equivalence commutes with the Bochner integral.
+  have hcomm : ∀ {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F]
+      [NormedSpace ℝ F] (e : E ≃ₗᵢ[ℝ] F) (u : Eucl n → E),
+      ∫ t, e (u t) ∂volume = e (∫ t, u t ∂volume) := fun e u =>
+    ContinuousLinearEquiv.integral_comp_comm e.toContinuousLinearEquiv u
+  -- The derivatives fall on `b`: `D^m (φ ∗ b) = φ ∗ D^m b`.
+  have key : ∀ φ : Eucl n → ℝ, LocallyIntegrable φ volume → ∀ m : ℕ,
+      iteratedFDeriv ℝ m (convolution φ b (ContinuousLinearMap.lsmul ℝ ℝ) volume) =
+        convolution φ (iteratedFDeriv ℝ m b) (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    intro φ hφ m
+    induction m with
+    | zero =>
+      funext x
+      simp only [iteratedFDeriv_zero_eq_comp, Function.comp_apply, convolution_def,
+        ContinuousLinearMap.lsmul_apply]
+      refine (hcomm (continuousMultilinearCurryFin0 ℝ (Eucl n) ℝ).symm _).symm.trans
+        (integral_congr_ae (Eventually.of_forall fun t => ?_))
+      exact map_smul _ _ _
+    | succ m ih =>
+      funext x
+      have hd := (hbc.iteratedFDeriv m).hasFDerivAt_convolution_right
+        (ContinuousLinearMap.lsmul ℝ ℝ) hφ (hb.iteratedFDeriv_right (by exact_mod_cast le_top)) x
+      rw [iteratedFDeriv_succ_eq_comp_left, iteratedFDeriv_succ_eq_comp_left, ih,
+        Function.comp_apply, hd.fderiv]
+      simp only [convolution_def, Function.comp_apply, ContinuousLinearMap.lsmul_apply]
+      refine (hcomm (E := Eucl n →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : Fin m => Eucl n) ℝ)
+        (F := ContinuousMultilinearMap ℝ (fun _ : Fin (m + 1) => Eucl n) ℝ)
+        (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (m + 1) => Eucl n) ℝ).symm _).symm.trans
+        (integral_congr_ae (Eventually.of_forall fun t => ?_))
+      dsimp only
+      rw [ContinuousLinearMap.precompR_apply, ContinuousLinearMap.compL_apply]
+      have : (ContinuousLinearMap.lsmul ℝ ℝ (φ t)).comp (fderiv ℝ (iteratedFDeriv ℝ m b) (x - t)) =
+          φ t • fderiv ℝ (iteratedFDeriv ℝ m b) (x - t) := by
+        ext v
+        simp
+      rw [this, map_smul]
+  -- `D^q b` is uniformly continuous.
+  have hΨc : Continuous (iteratedFDeriv ℝ q b) :=
+    hb.continuous_iteratedFDeriv (by exact_mod_cast le_top)
+  have hΨ : UniformContinuous (iteratedFDeriv ℝ q b) :=
+    (hbc.iteratedFDeriv q).uniformContinuous_of_continuous hΨc
+  -- The uniform estimate.
+  rw [Metric.tendstoUniformly_iff]
+  intro ε hε
+  obtain ⟨s, hs, hsΨ⟩ := Metric.uniformContinuous_iff.mp hΨ (ε / 2) (half_pos hε)
+  filter_upwards [hr.eventually (gt_mem_nhds hs)] with k hk x
+  rw [key (ψ k) (hψc k).locallyIntegrable q, dist_comm]
+  refine lt_of_le_of_lt (dist_convolution_le (half_pos hε).le ?_ (hψn k) (hψi k)
+    hΨc.aestronglyMeasurable fun y hy => (hsΨ hy).le) (half_lt_self hε)
+  exact (subset_tsupport _).trans ((hψs k).trans (closedBall_subset_ball hk))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
