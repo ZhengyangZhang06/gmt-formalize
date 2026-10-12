@@ -418,6 +418,91 @@ theorem Submission.lpf_pi_simple_unit_facts :
     rw [key, h]
     exact neg_one_smul ℝ (simpleNVector σ)
 
+/-- The orientation induced by a linear map (Simon Ch. 6, 3.4–3.5, p. 147, at a single point):
+if `τ` is orthonormal, `w = ±τ₁ ∧ ⋯ ∧ τₙ` and `A_# w ≠ 0`, then `Aτ₁, …, Aτₙ` are linearly
+independent, and for their Gram–Schmidt orthonormalization `σ` (same span)
+`A_# w = ±|A_# w| σ₁ ∧ ⋯ ∧ σₙ`.  Writing `Aτᵢ = ∑ⱼ Bᵢⱼ σⱼ`, the determinant identity of the
+hypothesis gives `A_# w = ±det B σ₁ ∧ ⋯ ∧ σₙ`, and `|σ₁ ∧ ⋯ ∧ σₙ| = 1`
+(`Submission.lpf_pi_simple_unit_facts`), so `|A_# w| = |det B|`. -/
+theorem Submission.lpf_pi_induced_orientation :
+    ((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 =
+        (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧
+      ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
+        simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) →
+    ∀ (P Q n : ℕ) (τ : Fin n → Eucl P) (A : Eucl P →L[ℝ] Eucl Q) (w : NVector (Eucl P) n),
+      Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) →
+      nVectorPushforward n A w ≠ 0 →
+      LinearIndependent ℝ (fun i => A (τ i)) ∧ ∃ σ : Fin n → Eucl Q, Orthonormal ℝ σ ∧
+        Submodule.span ℝ (range σ) = Submodule.span ℝ (range (fun i => A (τ i))) ∧
+        (nVectorPushforward n A w = ‖nVectorPushforward n A w‖ • simpleNVector σ ∨
+          nVectorPushforward n A w = -(‖nVectorPushforward n A w‖ • simpleNVector σ)) := by
+  intro hsna P Q n τ A w _hτ hw hne
+  -- `‖c • s‖ = |c| ‖s‖` for the operator norm on `n`-vectors (`NormSMulClass` is not inferred).
+  have hnorm_smul : ∀ (c : ℝ) (s : NVector (Eucl Q) n), ‖c • s‖ = |c| * ‖s‖ := by
+    intro c s
+    apply le_antisymm
+    · simpa [Real.norm_eq_abs] using ContinuousLinearMap.opNorm_smul_le c s
+    · rcases eq_or_ne c 0 with rfl | hc
+      · simp only [abs_zero, zero_mul]
+        exact ContinuousLinearMap.opNorm_nonneg _
+      · have h := ContinuousLinearMap.opNorm_smul_le c⁻¹ (c • s)
+        rw [smul_smul, inv_mul_cancel₀ hc, one_smul, norm_inv, Real.norm_eq_abs] at h
+        have hc' : 0 < |c| := abs_pos.mpr hc
+        calc |c| * ‖s‖ ≤ |c| * (|c|⁻¹ * ‖c • s‖) := by gcongr
+          _ = ‖c • s‖ := by rw [← mul_assoc, mul_inv_cancel₀ hc'.ne', one_mul]
+  set v : Fin n → Eucl Q := fun i => A (τ i)
+  -- `A_# w = ε • (Aτ₁ ∧ ⋯ ∧ Aτₙ)` with `ε = ±1`.
+  have hsimple : nVectorPushforward n A (simpleNVector τ) = simpleNVector v :=
+    nVectorPushforward_simple A τ
+  obtain ⟨ε, hpush⟩ : ∃ ε : ℝ, nVectorPushforward n A w = ε • simpleNVector v := by
+    rcases hw with rfl | rfl
+    · exact ⟨1, by rw [hsimple, one_smul]⟩
+    · refine ⟨-1, ?_⟩
+      ext α
+      show -(α (fun i => A (τ i))) = (-1 : ℝ) * α (fun i => A (τ i))
+      ring
+  -- (i): covectors vanish on linearly dependent families, so `Aτ₁ ∧ ⋯ ∧ Aτₙ` would be `0`.
+  have hli : LinearIndependent ℝ v := by
+    by_contra h
+    apply hne
+    have h0 : simpleNVector v = 0 := by
+      ext α
+      simp only [simpleNVector_apply]
+      exact α.toAlternatingMap.map_linearDependent v h
+    rw [hpush, h0, smul_zero]
+  refine ⟨hli, ?_⟩
+  -- (ii): the Gram–Schmidt orthonormalization `σ` of `Aτ` spans the same space.
+  set σ := InnerProductSpace.gramSchmidtNormed ℝ v
+  have hσ : Orthonormal ℝ σ := InnerProductSpace.gramSchmidtNormed_orthonormal hli
+  have hspan : Submodule.span ℝ (range σ) = Submodule.span ℝ (range v) :=
+    (InnerProductSpace.span_gramSchmidtNormed_range v).trans
+      (InnerProductSpace.span_gramSchmidt ℝ v)
+  refine ⟨σ, hσ, hspan, ?_⟩
+  -- `Aτᵢ = ∑ⱼ Bᵢⱼ σⱼ`, so `Aτ₁ ∧ ⋯ ∧ Aτₙ = det B • σ₁ ∧ ⋯ ∧ σₙ`.
+  have hmem : ∀ i, v i ∈ Submodule.span ℝ (range σ) := by
+    intro i
+    rw [hspan]
+    exact Submodule.subset_span ⟨i, rfl⟩
+  obtain ⟨B, hB⟩ : ∃ B : Matrix (Fin n) (Fin n) ℝ, ∀ i, ∑ j, B i j • σ j = v i := by
+    choose B hB using fun i => (Submodule.mem_span_range_iff_exists_fun ℝ).mp (hmem i)
+    exact ⟨B, hB⟩
+  have hdet := hsna.2 Q n B σ
+  rw [show (fun i => ∑ j, B i j • σ j) = v from funext hB] at hdet
+  have hpush' : nVectorPushforward n A w = (ε * B.det) • simpleNVector σ := by
+    rw [hpush, hdet, smul_smul]
+  -- `‖σ₁ ∧ ⋯ ∧ σₙ‖ = 1`, so `‖A_# w‖ = |ε det B|`; the sign of `ε det B` decides the case.
+  have hnorm : ‖nVectorPushforward n A w‖ = |ε * B.det| := by
+    rw [hpush', hnorm_smul, (Submission.lpf_pi_simple_unit_facts hsna).1 Q n σ hσ, mul_one]
+  rcases le_or_gt 0 (ε * B.det) with h | h
+  · left
+    rw [hnorm, abs_of_nonneg h]
+    exact hpush'
+  · right
+    rw [hnorm, abs_of_neg h, hpush']
+    ext α
+    show (ε * B.det) * simpleNVector σ α = -(-(ε * B.det) * simpleNVector σ α)
+    ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
