@@ -373,6 +373,31 @@ theorem Submission.cmb_rb_abs_euclideanCovectorCoordinate_le :
   · simp only [euclideanCovectorCoordinate, β.strictMono, ↓reduceIte,
       EuclideanSpace.basisFun_apply]
   · exact ite_nonneg (sq_nonneg _) le_rfl
+/-- The triangle inequality for the Euclidean coefficient norm of covectors (Simon Ch. 6, 1.15):
+`|α + γ| ≤ |α| + |γ|`.  `|a|` is the Euclidean norm of the coefficient vector
+`c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})` in `ℝ^(Fin n → Fin P)`, and `c` is
+additive, so this is `norm_add_le` in that Euclidean space. -/
+theorem Submission.cmb_rb_covectorEuclideanNorm_add_le :
+    ∀ (P n : ℕ) (α γ : Covector (Eucl P) n),
+      covectorEuclideanNorm (α + γ) ≤ covectorEuclideanNorm α + covectorEuclideanNorm γ := by
+  intro P n α γ
+  -- The coefficient vector `c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})`.
+  let c : Covector (Eucl P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun a =>
+    WithLp.toLp 2 fun I =>
+      if StrictMono I then a (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) else 0
+  have hc : ∀ a, covectorEuclideanNorm a = ‖c a‖ := by
+    intro a
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    simp only [c, Real.norm_eq_abs, sq_abs]
+    split_ifs <;> simp
+  have hadd : c (α + γ) = c α + c γ := by
+    ext I
+    simp only [c, PiLp.add_apply, ContinuousAlternatingMap.add_apply]
+    split_ifs <;> simp
+  rw [hc, hc, hc, hadd]
+  exact norm_add_le _ _
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
