@@ -483,6 +483,34 @@ theorem Submission.lpf_pi_signed_fibre_sum :
     rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hG_int, lintegral_congr_ae hpos,
       lintegral_congr_ae hneg]
   rw [hsource, htarget]
+/-- The space of `n`-covectors on `ℝ^Q` is finite-dimensional: `α ↦ (α(e_{r(1)}, …, e_{r(n)}))_r`
+(`r : Fin n → Fin Q`) is a linear injection into the finite coordinate space
+`(Fin n → Fin Q) → ℝ`. -/
+theorem Submission.lpf_pi_covector_finiteDimensional :
+    ∀ (Q n : ℕ), FiniteDimensional ℝ (Covector (Eucl Q) n) := by
+  intro Q n
+  classical
+  let e : Fin Q → Eucl Q := fun j => EuclideanSpace.single j 1
+  -- `F α r = α(e_{r(1)}, …, e_{r(n)})`: the values of `α` on tuples of basis vectors.
+  let F : Covector (Eucl Q) n →ₗ[ℝ] ((Fin n → Fin Q) → ℝ) :=
+    { toFun := fun α r => α (fun i => e (r i))
+      map_add' := by intro a b; ext r; simp
+      map_smul' := by intro c a; ext r; simp }
+  refine Module.Finite.of_injective F ?_
+  intro a b hab
+  ext v
+  -- Expand each `v i` in the standard basis and use multilinearity.
+  have hv : v = fun i => ∑ j, v i j • e j := by
+    funext i
+    exact ((EuclideanSpace.basisFun (Fin Q) ℝ).sum_repr (v i)).symm.trans (by simp [e])
+  have key : ∀ c : Covector (Eucl Q) n, c (fun i => ∑ j, v i j • e j) =
+      ∑ r : Fin n → Fin Q, c (fun i => v i (r i) • e (r i)) :=
+    fun c => c.toMultilinearMap.map_sum (fun i j => v i j • e j)
+  rw [hv, key a, key b]
+  refine Finset.sum_congr rfl fun r _ => ?_
+  have h1 := congrFun hab r
+  simp only [F, LinearMap.coe_mk, AddHom.coe_mk] at h1
+  rw [a.map_smul_univ, b.map_smul_univ, h1]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
