@@ -410,6 +410,58 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Measurable selection of entrywise limits in `G(N,n)` (the Borel version of `x ↦ T_x` in Simon
+Ch. 8, proof of 1.2, p. 208): if every entry `x ↦ a_k(x)_{ij}` is measurable, there is a measurable
+`τ : X → G(N,n)` with `τ x = T` whenever `a_k(x)_{ij} → T_{ij}` as `k → ∞` for all `i, j`. -/
+theorem Submission.frt_vgm_mps_limit_selection :
+    ∀ (X : Type) [MeasurableSpace X] (N n : ℕ), Nonempty (Grassmannian N n) → ∀ (a : ℕ → X → Fin N → Fin N → ℝ), (∀ (k : ℕ) (i j : Fin N), Measurable (fun x ↦ a k x i j)) → ∃ τ : X → Grassmannian N n, Measurable τ ∧ ∀ (x : X) (T : Grassmannian N n), (∀ i j : Fin N, Tendsto (fun k ↦ a k x i j) atTop (𝓝 (T.1 i j))) → τ x = T := by
+  intro X _ N n hne a ha
+  classical
+  -- Step 1: a base point `S₀`; the projection set `𝒢` is closed, hence measurable.
+  obtain ⟨S₀⟩ := hne
+  have hG : MeasurableSet
+      {P : Matrix (Fin N) (Fin N) ℝ | P.IsSymm ∧ P * P = P ∧ P.trace = (n : ℝ)} :=
+    Grassmannian.isClosed_projectionSet.measurableSet
+  -- Step 2: the convergence sets `C^{ij}` are measurable.
+  have hC : ∀ i j : Fin N, MeasurableSet {x | ∃ c, Tendsto (fun k ↦ a k x i j) atTop (𝓝 c)} :=
+    fun i j ↦ measurableSet_exists_tendsto fun k ↦ ha k i j
+  -- Step 3: the entrywise limits `L^{ij}` are measurable.
+  have hL : ∀ i j : Fin N, Measurable fun x ↦ limUnder atTop fun k ↦ a k x i j :=
+    fun i j ↦ (StronglyMeasurable.limUnder fun k ↦ (ha k i j).stronglyMeasurable).measurable
+  -- Step 4: the limit matrix `M` is measurable.
+  obtain ⟨M, hM_def⟩ : ∃ M : X → Matrix (Fin N) (Fin N) ℝ,
+      M = fun x ↦ Matrix.of fun i j ↦ limUnder atTop fun k ↦ a k x i j := ⟨_, rfl⟩
+  have hM : Measurable M := Measurable.of_eval_matrix M fun i j ↦ by simpa [hM_def] using hL i j
+  -- Step 5: the good set `Y` is measurable.
+  obtain ⟨Y, hY_def⟩ : ∃ Y : Set X, Y = (⋂ i, ⋂ j, {x | ∃ c, Tendsto (fun k ↦ a k x i j) atTop (𝓝 c)}) ∩
+      M ⁻¹' {P | P.IsSymm ∧ P * P = P ∧ P.trace = (n : ℝ)} := ⟨_, rfl⟩
+  have hY : MeasurableSet Y := hY_def ▸
+    (MeasurableSet.iInter fun i ↦ MeasurableSet.iInter fun j ↦ hC i j).inter (hM hG)
+  -- Step 6: `τ x := ⟨Y.piecewise M (fun _ ↦ S₀.1) x, _⟩` is a measurable `G(N,n)`-valued map.
+  have hmem : ∀ x, Y.piecewise M (fun _ ↦ S₀.1) x ∈
+      {P : Matrix (Fin N) (Fin N) ℝ | P.IsSymm ∧ P * P = P ∧ P.trace = (n : ℝ)} := by
+    intro x
+    by_cases hx : x ∈ Y
+    · rw [Set.piecewise_eq_of_mem _ _ _ hx]
+      rw [hY_def] at hx
+      exact hx.2
+    · rw [Set.piecewise_eq_of_notMem _ _ _ hx]
+      exact S₀.2
+  refine ⟨fun x ↦ ⟨Y.piecewise M (fun _ ↦ S₀.1) x, hmem x⟩,
+    (Measurable.piecewise hY hM measurable_const).subtype_mk, ?_⟩
+  -- Step 7: if every entry converges to that of `T`, then `M x = T`, `x ∈ Y` and `τ x = T`.
+  intro x T hT
+  have hMx : M x = T.1 := by
+    ext i j
+    rw [hM_def]
+    exact (hT i j).limUnder_eq
+  have hxY : x ∈ Y := by
+    rw [hY_def]
+    refine ⟨Set.mem_iInter.2 fun i ↦ Set.mem_iInter.2 fun j ↦ ⟨T.1 i j, hT i j⟩, ?_⟩
+    rw [Set.mem_preimage, hMx]
+    exact T.2
+  exact Subtype.ext ((Set.piecewise_eq_of_mem Y M (fun _ ↦ S₀.1) hxY).trans hMx)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
