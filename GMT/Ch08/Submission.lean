@@ -512,6 +512,56 @@ theorem Submission.intcpt_ri_weightedApproxTangent_inter_open_iff :
     rw [mem_ball, dist_eq_norm]
     exact lt_of_le_of_lt hvB hrR
   rw [hcut (Chapter03.blowUpMap y r '' (O ∩ M)), hcut (Chapter03.blowUpMap y r '' M), hset]
+/-- Weighted approximate tangent planes (Simon Ch. 3, 1.7) are invariant under the similarity
+`σ(w) = ξ + t w`, `t > 0`: `σ⁻¹(M)` has weighted approximate tangent space `P` at `y` with respect
+to `θ ∘ σ` if and only if `M` has weighted approximate tangent space `P` at `σ(y)` with respect
+to `θ`. -/
+theorem Submission.intcpt_ri_weightedApproxTangent_similarity_iff :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (ξ y : Euclidean N) (t : ℝ)
+      (P : Submodule ℝ (Euclidean N)), 0 < t →
+      (Chapter03.HasWeightedApproximateTangentSpaceAt n ((fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M)
+          (fun w : Euclidean N ↦ θ (ξ + t • w)) y P ↔
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ (ξ + t • y) P) := by
+  intro N n M θ ξ y t P ht
+  have ht0 : t ≠ 0 := ht.ne'
+  -- Blow-up sets: `η_{y,r}(σ⁻¹ M) = η_{σ(y),tr}(M)` for every `r` (also `r = 0`, as `0⁻¹ = 0`).
+  have hset : ∀ r : ℝ, Chapter03.blowUpMap y r '' ((fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M) =
+      Chapter03.blowUpMap (ξ + t • y) (t * r) '' M := by
+    intro r
+    ext v
+    simp only [mem_image, mem_preimage, Chapter03.blowUpMap]
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      refine ⟨ξ + t • w, hw, ?_⟩
+      rw [add_sub_add_left_eq_sub, ← smul_sub, smul_smul, mul_inv, mul_comm t⁻¹ r⁻¹, mul_assoc,
+        inv_mul_cancel₀ ht0, mul_one]
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨t⁻¹ • (z - ξ), ?_, ?_⟩
+      · rwa [smul_smul, mul_inv_cancel₀ ht0, one_smul, add_sub_cancel]
+      · have hw : t⁻¹ • (z - ξ) - y = t⁻¹ • (z - (ξ + t • y)) := by
+          rw [sub_add_eq_sub_sub, smul_sub t⁻¹ (z - ξ) (t • y), smul_smul, inv_mul_cancel₀ ht0,
+            one_smul]
+        rw [hw, smul_smul, mul_inv, mul_comm t⁻¹ r⁻¹]
+  -- `r ↦ t r` maps `𝓝[>] 0` onto itself, so it does not change limits along `𝓝[>] 0`.
+  have hmap : map (fun r : ℝ ↦ t * r) (𝓝[>] (0 : ℝ)) = 𝓝[>] 0 := by
+    have hsurj : Function.Surjective (fun r : ℝ ↦ t * r) := fun s ↦
+      ⟨t⁻¹ * s, by simp only [← mul_assoc, mul_inv_cancel₀ ht0, one_mul]⟩
+    conv_lhs => rw [← comap_mulLeft_nhdsGT_zero ht]
+    exact map_comap_of_surjective hsurj _
+  have key : ∀ (G : ℝ → ℝ) (L : Filter ℝ),
+      Tendsto (G ∘ fun r : ℝ ↦ t * r) (𝓝[>] 0) L ↔ Tendsto G (𝓝[>] 0) L := by
+    intro G L
+    rw [← tendsto_map'_iff, hmap]
+  -- With `σ(y + r v) = σ(y) + (t r) v`, the blow-up integral for `σ⁻¹(M)` at scale `r` is the one
+  -- for `M` at scale `t r`; the limits `θ(σ(y)) ∫_P f` agree.
+  unfold Chapter03.HasWeightedApproximateTangentSpaceAt
+  refine and_congr Iff.rfl (forall_congr' fun f ↦ ?_)
+  refine Iff.trans ?_ (key (fun s : ℝ ↦ ∫ v in Chapter03.blowUpMap (ξ + t • y) s '' M,
+    f v * θ (ξ + t • y + s • v) ∂μHE[n]) _)
+  refine Filter.tendsto_congr fun r ↦ ?_
+  simp only [Function.comp_apply]
+  rw [hset r]
+  simp only [smul_add, smul_smul, add_assoc]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
