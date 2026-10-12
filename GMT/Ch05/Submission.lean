@@ -473,6 +473,17 @@ theorem rsod_graphPoint_eq_finAddEquivProd_symm : ∀ {n ℓ : ℕ} (x : Rn n) (
   refine Fin.addCases (fun j => ?_) (fun k => ?_) i
   · simp [graphPoint]
   · simp [graphPoint]
+/-- Pythagorean identity for graph points: `|(x, y)|² = |x|² + |y|²` for the point
+`(x, y) ∈ ℝⁿ × ℝ^ℓ = ℝ^{n+ℓ}`.  Expand the three squared Euclidean norms as sums of squared
+coordinates (`EuclideanSpace.real_norm_sq_eq`), split the sum over `Fin (n + ℓ)` into the indices
+`Fin.castAdd ℓ j` and `Fin.natAdd n k` (`Fin.sum_univ_add`), and read off the coordinates `x j`,
+resp. `y k`, of `graphPoint x y` there (`Fin.append_left`/`Fin.append_right`). -/
+theorem rsod_norm_graphPoint_sq : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+  intro n ℓ x y
+  rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+    EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+  simp [graphPoint]
 
 end Submission
 
