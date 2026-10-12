@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4d1ddca6724136925807245bb07d404a2820f055350ecf3099bb1786ca5d941",
+  "git_delta": {
+    "base_commit": "949117079b001523313f6f59fdbf32d0e767b7f6",
+    "candidate_commit": "f2d8d6a3c340e42a9d2bc5da5bcdc9e6e604907e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mvk_integral_rescale_reflect",
+    "diff_sha256": "b5ace6f30ab3427b1e771b10b28450e5d3dcd47a265fd0f486776478ec8dc761",
+    "source_sha256": "310e0de59b4eab02fa9d8f85514fd75b485a86218226fea6540ac29ace024512",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mvk_integral_rescale_reflect",
+      "statement": "∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 < t → (∀ z : Rn n, ρ (-z) = ρ z) → ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y) = ∫ z, ρ z * h (x₀ + t • z)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
