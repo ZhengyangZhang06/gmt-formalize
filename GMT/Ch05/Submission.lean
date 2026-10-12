@@ -458,6 +458,86 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 / Remark 5.3 (re-graphing over a rotated plane): regularity
+of a continuous right inverse.  Let `U, W ⊆ ℝⁿ` be open, `κ > 0`, `Φ` `C¹` on `U` with
+`κ |h| ≤ |DΦ(x) h|` for `x ∈ U`, and `X` continuous on `W` with `X(w) ∈ U` and `Φ(X(w)) = w` for
+`w ∈ W`.  Then `X` is `C¹` on `W` and `‖DX(w)‖ ≤ κ⁻¹`.  Each `DΦ(x)` is injective, hence (finite
+dimension) invertible with `‖DΦ(x)⁻¹‖ ≤ κ⁻¹`; the local-left-inverse rule gives
+`DX(w) = DΦ(X(w))⁻¹ = Ring.inverse (DΦ(X(w)))`, which is continuous in `w` because `X`, `DΦ` and
+`Ring.inverse` (at units of the complete normed ring of endomorphisms) are. -/
+theorem arp_rgr_right_inverse_contDiffOn : ∀ {n : ℕ} (Φ X : Rn n → Rn n) (U W : Set (Rn n)) (κ : ℝ), IsOpen U → IsOpen W → 0 < κ → ContDiffOn ℝ 1 Φ U → (∀ x ∈ U, ∀ h : Rn n, κ * ‖h‖ ≤ ‖fderiv ℝ Φ x h‖) → ContinuousOn X W → (∀ w ∈ W, X w ∈ U ∧ Φ (X w) = w) → ContDiffOn ℝ 1 X W ∧ ∀ w ∈ W, ‖fderiv ℝ X w‖ ≤ κ⁻¹ := by
+  intro n Φ X U W κ hU hW hκ hΦ hlow hX hXW
+  -- Step 1: for `x ∈ U`, `DΦ(x)` is a continuous linear equivalence `E x` with `‖(E x)⁻¹‖ ≤ κ⁻¹`.
+  have hequiv : ∀ x ∈ U, ∃ L : Rn n ≃L[ℝ] Rn n, (L : Rn n →L[ℝ] Rn n) = fderiv ℝ Φ x ∧
+      ‖(L.symm : Rn n →L[ℝ] Rn n)‖ ≤ κ⁻¹ := by
+    intro x hx
+    -- `κ |a − b| ≤ |DΦ(x)(a − b)|`, so `DΦ(x)` is injective, hence bijective (finite dimension).
+    have hinj : Function.Injective (fderiv ℝ Φ x) := by
+      intro a b hab
+      have h1 := hlow x hx (a - b)
+      rw [map_sub, hab, sub_self, norm_zero] at h1
+      have h2 : ‖a - b‖ ≤ 0 := by nlinarith [norm_nonneg (a - b)]
+      exact sub_eq_zero.1 (norm_le_zero_iff.1 h2)
+    let L : Rn n ≃L[ℝ] Rn n :=
+      (LinearEquiv.ofInjectiveEndo (fderiv ℝ Φ x).toLinearMap hinj).toContinuousLinearEquiv
+    refine ⟨L, ContinuousLinearMap.ext fun v => rfl, ?_⟩
+    -- `κ |L⁻¹ k| ≤ |L (L⁻¹ k)| = |k|`.
+    refine ContinuousLinearMap.opNorm_le_bound _ (inv_nonneg.2 hκ.le) fun k => ?_
+    rw [le_inv_mul_iff₀ hκ]
+    have h1 := hlow x hx (L.symm k)
+    have h2 : fderiv ℝ Φ x (L.symm k) = k := L.apply_symm_apply k
+    rw [h2] at h1
+    exact h1
+  choose! E hE hEn using hequiv
+  -- Step 2: `Φ` has derivative `E x` at each `x ∈ U`, and `DΦ` is continuous on `U`.
+  have hΦd : ∀ x ∈ U, HasFDerivAt Φ (E x : Rn n →L[ℝ] Rn n) x := by
+    intro x hx
+    rw [hE x hx]
+    exact ((hΦ.differentiableOn one_ne_zero x hx).differentiableAt (hU.mem_nhds hx)).hasFDerivAt
+  have hΦc : ContinuousOn (fderiv ℝ Φ) U := hΦ.continuousOn_fderiv_of_isOpen hU le_rfl
+  -- Step 3: by the local-left-inverse rule, `X` has derivative `(E (X w))⁻¹` at `w ∈ W`.
+  have hXd : ∀ w ∈ W, HasFDerivAt X ((E (X w)).symm : Rn n →L[ℝ] Rn n) w := by
+    intro w hw
+    have hfg : ∀ᶠ y in 𝓝 w, Φ (X y) = y :=
+      Filter.eventually_of_mem (hW.mem_nhds hw) fun y hy => (hXW y hy).2
+    exact HasFDerivAt.of_local_left_inverse (hX.continuousAt (hW.mem_nhds hw))
+      (hΦd (X w) (hXW w hw).1) hfg
+  have hXfd : ∀ w ∈ W, fderiv ℝ X w = ((E (X w)).symm : Rn n →L[ℝ] Rn n) :=
+    fun w hw => (hXd w hw).fderiv
+  -- Step 4: `DX(w) = Ring.inverse (DΦ(X w))`, the inverse of the unit `(E (X w)).toUnit`.
+  have hXinv : ∀ w ∈ W, fderiv ℝ X w = Ring.inverse (fderiv ℝ Φ (X w)) := by
+    intro w hw
+    rw [hXfd w hw, ← hE (X w) (hXW w hw).1]
+    have : ((E (X w)).toUnit : Rn n →L[ℝ] Rn n) = (E (X w) : Rn n →L[ℝ] Rn n) := rfl
+    rw [← this, Ring.inverse_unit]
+    rfl
+  -- Step 5: `DX` is continuous on `W`: `X`, `DΦ` and `Ring.inverse` (at units) are continuous.
+  have hcont : ContinuousOn (fderiv ℝ X) W := by
+    intro w hw
+    have hxU := (hXW w hw).1
+    have h1 : ContinuousAt (fun w' => fderiv ℝ Φ (X w')) w :=
+      (hΦc.continuousAt (hU.mem_nhds hxU)).comp (hX.continuousAt (hW.mem_nhds hw))
+    have h2 : ContinuousAt Ring.inverse (fderiv ℝ Φ (X w)) := by
+      rw [← hE (X w) hxU]
+      exact NormedRing.inverse_continuousAt (E (X w)).toUnit
+    have h3 : ContinuousAt (fun w' => Ring.inverse (fderiv ℝ Φ (X w'))) w :=
+      ContinuousAt.comp (f := fun w' => fderiv ℝ Φ (X w')) h2 h1
+    have h4 : (fun w' => Ring.inverse (fderiv ℝ Φ (X w'))) =ᶠ[𝓝 w] fderiv ℝ X :=
+      Filter.eventually_of_mem (hW.mem_nhds hw) fun y hy => (hXinv y hy).symm
+    exact (h3.congr h4).continuousWithinAt
+  refine ⟨?_, fun w hw => ?_⟩
+  · -- Step 6: differentiable with continuous derivative on the open set `W`, so `C¹` on `W`.
+    rw [show (1 : WithTop ℕ∞) = 0 + 1 from (zero_add 1).symm,
+      contDiffOn_succ_iff_fderiv_of_isOpen hW]
+    exact ⟨fun w hw => (hXd w hw).differentiableAt.differentiableWithinAt, by simp,
+      contDiffOn_zero.2 hcont⟩
+  · rw [hXfd w hw]
+    exact hEn (X w) (hXW w hw).1
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
