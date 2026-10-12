@@ -458,6 +458,125 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
+`ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
+`ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
+(i) `(a, b) − (a', b') = (a − a', b − b')`; (ii) `|(a, b)|² = |a|² + |b|²`; (iii) every
+`z ∈ ℝ^{n+ℓ}` is some `(a, b)`; (iv) `p_{T₀}(q(a, b)) = q(a, 0)`.
+The coordinate of `(a, b)` at `castAdd ℓ i` is `a_i` and at `natAdd n j` is `b_j`, and every index
+of `Fin (n + ℓ)` has one of these forms (`Fin.addCases`); this gives (i) and (iii), and (ii) by
+splitting `Σ_k z_k²` with `Fin.sum_univ_add`. For (iv), `(a, 0) = Σ_i a_i e_{castAdd ℓ i}` lies in
+`ℝⁿ × {0}`, `(0, b)` is orthogonal to every `e_{castAdd ℓ i}` and hence to `ℝⁿ × {0}`, and `q`
+preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, b) ⊥ T₀`, which
+characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
+theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
+  intro n ℓ q
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- (i): subtraction is coordinatewise
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hl]
+    · simp only [PiLp.sub_apply, hr]
+  refine ⟨hsub, ?_, ?_, ?_⟩
+  -- (ii): split `‖z‖² = Σ_k ‖z_k‖²` over the two blocks of indices
+  · intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hl, hr]
+  -- (iii): read off `a` and `b` from the two blocks of coordinates of `z`
+  · intro z
+    refine ⟨WithLp.toLp 2 (fun i => z (Fin.castAdd ℓ i)),
+      WithLp.toLp 2 (fun j => z (Fin.natAdd n j)), ?_⟩
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · rw [hl]
+    · rw [hr]
+  -- (iv)
+  · intro a b
+    -- `graphPoint a 0 = Σ_i a_i e_{castAdd ℓ i}` lies in `ℝⁿ × {0}`
+    have hmem : graphPoint a 0 ∈ horizontalPlane n ℓ := by
+      have e : graphPoint a 0 =
+          ∑ i : Fin n, a i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+        ext k
+        refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+        · rw [hl]
+          simp only [WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single, Finset.sum_apply,
+            Pi.smul_apply, Pi.single_apply, Fin.castAdd_inj, smul_eq_mul, mul_ite, mul_one,
+            mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
+        · rw [hr]
+          simp only [PiLp.zero_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single,
+            Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+          refine (Finset.sum_eq_zero fun x _ => ?_).symm
+          have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ x := by
+            intro h
+            have h' := congrArg Fin.val h
+            simp only [Fin.val_natAdd, Fin.val_castAdd] at h'
+            have := x.isLt
+            omega
+          rw [Pi.single_eq_of_ne hne, mul_zero]
+      rw [e]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    -- `graphPoint 0 b` is orthogonal to every `e_{castAdd ℓ i}`, hence to `ℝⁿ × {0}`
+    have horth : ∀ h ∈ horizontalPlane n ℓ, inner ℝ (graphPoint 0 b) h = 0 := by
+      have hle : horizontalPlane n ℓ ≤ (ℝ ∙ graphPoint 0 b)ᗮ := by
+        refine Submodule.span_le.mpr ?_
+        rintro _ ⟨i, rfl⟩
+        rw [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right,
+          EuclideanSpace.inner_single_right, hl]
+        simp
+      intro h hh
+      exact Submodule.mem_orthogonal_singleton_iff_inner_right.mp (hle hh)
+    -- `q(a, 0) ∈ T₀`, and `q(a, b) - q(a, 0) = q(0, b)` is orthogonal to `T₀ = q(ℝⁿ × {0})`
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (Submodule.mem_map_of_mem hmem) ?_
+    intro w hw
+    obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
+    rw [← map_sub, hsub, sub_self, sub_zero]
+    exact (q.inner_map_map _ _).trans (horth h hh)
+
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11): for `f` `1`-Lipschitz on `D ⊆ ℝⁿ` and a linear
+isometry `q` of `ℝ^{n+ℓ}`, the graph map `F(x) = q(x, f(x))` is `√2`-Lipschitz on `D`, and
+`|F(x)| ≤ √2 |x|` on `D` when `f(0) = 0` and `0 ∈ D`. By the graph coordinates
+(`lip_approx_graph_coordinates` (i), (ii)) and since `q` is a linear isometry,
+`|F(x) − F(x')|² = |x − x'|² + |f(x) − f(x')|² ≤ 2 |x − x'|²`; and `F(0) = q(0, 0) = 0`. -/
+theorem allard52_cft_graph_map_sqrt_two : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)), LipschitzOnWith 1 f D → (∀ x ∈ D, ∀ x' ∈ D, ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖) ∧ (f 0 = 0 → (0 : Rn n) ∈ D → ∀ x ∈ D, ‖q (graphPoint x (f x))‖ ≤ Real.sqrt 2 * ‖x‖) := by
+  intro n ℓ q f D hf
+  obtain ⟨hsub, hnorm, -, -⟩ := lip_approx_graph_coordinates n ℓ q
+  have hlip : ∀ x ∈ D, ∀ x' ∈ D,
+      ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖ := by
+    intro x hx x' hx'
+    -- `|f(x) − f(x')| ≤ |x − x'|`
+    have hf' : ‖f x - f x'‖ ≤ ‖x - x'‖ := by
+      have h := hf.dist_le_mul x hx x' hx'
+      rwa [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at h
+    -- `|F(x) − F(x')| = |(x − x', f(x) − f(x'))|`, whose square is at most `2 |x − x'|²`
+    rw [← map_sub, q.norm_map, hsub]
+    have hsq : ‖graphPoint (x - x') (f x - f x')‖ ^ 2 ≤ (Real.sqrt 2 * ‖x - x'‖) ^ 2 := by
+      rw [hnorm, mul_pow, Real.sq_sqrt zero_le_two, two_mul]
+      exact add_le_add le_rfl (pow_le_pow_left₀ (norm_nonneg _) hf' 2)
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _)
+      (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) two_ne_zero).mp hsq
+  refine ⟨hlip, fun hf0 h0 x hx => ?_⟩
+  -- `(0, 0) = (0, 0) − (0, 0) = 0`, so `F(0) = 0`; compare `F(x)` with `F(0)`
+  have hzero : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    have h := hsub 0 0 0 0
+    rw [sub_self, sub_self, sub_self] at h
+    exact h.symm
+  have h := hlip x hx 0 h0
+  rwa [hf0, hzero, map_zero, sub_zero, sub_zero] at h
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

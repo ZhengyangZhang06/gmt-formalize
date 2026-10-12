@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1.graph_sqrt_two-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1",
+  "depth": 4,
+  "title": "The graph map of a 1-Lipschitz function is sqrt(2)-Lipschitz",
+  "statement": "Let n, ℓ ∈ ℕ, q a linear isometry of ℝ^{n+ℓ}, f : ℝ^n → ℝ^ℓ and D ⊆ ℝ^n, and assume f is 1-Lipschitz on D. Write F(x) := q(graphPoint x (f x)). Then (a) ‖F(x) − F(x')‖ ≤ √2 ‖x − x'‖ for all x, x' ∈ D; and (b) if f(0) = 0 and 0 ∈ D, then ‖F(x)‖ ≤ √2 ‖x‖ for every x ∈ D.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)), LipschitzOnWith 1 f D → (∀ x ∈ D, ∀ x' ∈ D, ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖) ∧ (f 0 = 0 → (0 : Rn n) ∈ D → ∀ x ∈ D, ‖q (graphPoint x (f x))‖ ≤ Real.sqrt 2 * ‖x‖)",
+  "lean_name": "allard52_cft_graph_map_sqrt_two",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.graph_coordinates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-coordinates-a1-a1",
+      "result_commit": "e2915745b92c2117161b0d9eaeb226a1f6c30d1b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1-g-ee44f55667-a1"
+}
