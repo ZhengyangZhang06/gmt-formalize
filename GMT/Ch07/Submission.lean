@@ -482,6 +482,46 @@ theorem Submission.regcomp_covector_unit_ball_dense_seq : ∀ (P n : ℕ), ∃ b
   -- enumerate `D = range b`
   obtain ⟨b, rfl⟩ := hDc.exists_eq_range hD
   exact ⟨b, fun k => hDB (Set.mem_range_self k), fun β hβ => hBD hβ⟩
+/-- **First-hit selection** (step 4 of the proof of the near-maximizer lemma for Simon 7.5.11):
+for Borel sets `A k ⊆ ℝᴾ` and covectors `b k` there is a strongly measurable `g` with
+`g = b k` on `A k \ ⋃_{i<k} A i` and `g = 0` off `⋃ₖ A k`.  With `C 0 = (⋃ₖ A k)ᶜ`,
+`C (k + 1) = A k`, the first-hit index `N(x) = min {N | x ∈ C N}` is measurable
+(`measurable_find`), and `g = b' ∘ N` for `b' 0 = 0`, `b' (k + 1) = b k`. -/
+theorem Submission.regcomp_covector_first_hit_selection : ∀ (P n : ℕ) (A : ℕ → Set (Euclid P)) (b : ℕ → Covector (Euclid P) n), (∀ k, MeasurableSet (A k)) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ ∀ x, (g x = 0 ∧ ∀ k, x ∉ A k) ∨ ∃ k, x ∈ A k ∧ g x = b k := by
+  intro P n A b hA
+  classical
+  -- the augmented measurable family `C 0 = (⋃ₖ A k)ᶜ`, `C (k + 1) = A k` covers `ℝᴾ`
+  obtain ⟨C, hC0, hCs⟩ : ∃ C : ℕ → Set (Euclid P), C 0 = (⋃ k, A k)ᶜ ∧ ∀ k, C (k + 1) = A k :=
+    ⟨fun N => Nat.rec (motive := fun _ => Set (Euclid P)) (⋃ k, A k)ᶜ (fun k _ => A k) N, rfl,
+      fun _ => rfl⟩
+  have hCm : ∀ N, MeasurableSet (C N) := by
+    intro N
+    cases N with
+    | zero => rw [hC0]; exact (MeasurableSet.iUnion hA).compl
+    | succ k => rw [hCs]; exact hA k
+  have hcov : ∀ x, ∃ N, x ∈ C N := by
+    intro x
+    by_cases hx : ∃ k, x ∈ A k
+    · obtain ⟨k, hk⟩ := hx
+      exact ⟨k + 1, by rw [hCs]; exact hk⟩
+    · exact ⟨0, by rw [hC0, mem_compl_iff, mem_iUnion]; exact hx⟩
+  -- the first-hit index is measurable, and `g = b' ∘ N` with `b' 0 = 0`, `b' (k + 1) = b k`
+  have hNm : Measurable fun x => Nat.find (hcov x) := measurable_find hcov hCm
+  obtain ⟨b', hb'0, hb's⟩ : ∃ b' : ℕ → Covector (Euclid P) n, b' 0 = 0 ∧ ∀ k, b' (k + 1) = b k :=
+    ⟨fun N => Nat.rec (motive := fun _ => Covector (Euclid P) n) 0 (fun k _ => b k) N, rfl,
+      fun _ => rfl⟩
+  refine ⟨fun x => b' (Nat.find (hcov x)),
+    (StronglyMeasurable.of_discrete (f := b')).comp_measurable hNm, fun x => ?_⟩
+  have hspec := Nat.find_spec (hcov x)
+  show (b' (Nat.find (hcov x)) = 0 ∧ ∀ k, x ∉ A k) ∨ ∃ k, x ∈ A k ∧ b' (Nat.find (hcov x)) = b k
+  generalize Nat.find (hcov x) = N at hspec ⊢
+  cases N with
+  | zero =>
+    rw [hC0, mem_compl_iff, mem_iUnion] at hspec
+    exact Or.inl ⟨hb'0, fun k hk => hspec ⟨k, hk⟩⟩
+  | succ k =>
+    rw [hCs] at hspec
+    exact Or.inr ⟨k, hspec, hb's k⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
