@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1.reduction_step-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1",
+  "depth": 4,
+  "title": "One reduction step of the cluster induction: from s to fewer cluster points at a larger scale (Simon 8.5.10, proof of (8), steps (a)–(d))",
+  "statement": "Let N, n ∈ ℕ, K ∈ ℝ, m ∈ ℕ and a := 4(10(m+1))^{m+1}. Assume (CS), the exact frozen statement of the parent's dependency cluster_selection for this N: for every finite t ⊆ ℝ^N and d ∈ ℝ with #t ≥ 2, d > 0, d ≤ ‖y − y'‖ for all distinct y, y' ∈ t and ‖y − y'‖ ≤ d for some distinct y, y' ∈ t, there are a finite Z ⊆ t and S ∈ ℝ with #Z < #t, 0 ≤ S ≤ (10·#t)^{#t}·d, every y ∈ t within distance S of some z ∈ Z, and 2d + 4S ≤ ‖z − z'‖ for all distinct z, z' ∈ Z. Let K ≥ 0, 0 < δ ≤ 1/a and 0 < ε ≤ δ⁴. Let μ be a measure on ℝ^N = Euclidean N, P ∈ G(N,n), x ∈ ℝ^N, and s ⊆ ℝ^N finite with 2 ≤ #s ≤ m + 1. Write p := Grassmannian.project P and U^t_r(w) := closedBall w r ∩ {z : ‖(z − w) − p(z − w)‖ < t}. Assume every y ∈ s satisfies p(y) = x, ‖y − p(y)‖ < ε and (C_y): μ(U^τ_σ(y))/ofReal(σ)^n ≤ μ(U^{2τ}_ρ(y))/ofReal(ρ)^n + ofReal(Kερ/τ) for all 0 < τ ≤ 1 and 0 < σ ≤ ρ < 1. Let σ, τ ∈ ℝ with 0 < σ ≤ δ², 2δ²σ ≤ τ, and 4τ ≤ ‖y − y'‖ for all distinct y, y' ∈ s. Then there are a finite Z ⊆ s with #Z ≤ m and σ', τ' ∈ ℝ with 0 < σ' ≤ δ², 2δ²σ' ≤ τ', 4τ' ≤ ‖z − z'‖ for all distinct z, z' ∈ Z, and, in [0,∞], Σ_{y∈s} μ(U^τ_σ(y))/ofReal(σ)^n ≤ ofReal(1 + (2^n − 1)·a·δ²)·Σ_{z∈Z} μ(U^{τ'}_{σ'}(z))/ofReal(σ')^n + ofReal((m + 1)·K·δ²).",
+  "lean_statement": "∀ (N n : ℕ) (K : ℝ) (m : ℕ), (∀ (t : Finset (Euclidean N)) (d : ℝ), 2 ≤ t.card → 0 < d → (∀ y ∈ t, ∀ y' ∈ t, y ≠ y' → d ≤ ‖y - y'‖) → (∃ y ∈ t, ∃ y' ∈ t, y ≠ y' ∧ ‖y - y'‖ ≤ d) → ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ t ∧ Z.card < t.card ∧ 0 ≤ S ∧ S ≤ (10 * (t.card : ℝ)) ^ t.card * d ∧ (∀ y ∈ t, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧ ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖) → 0 ≤ K → ∀ δ ε : ℝ, 0 < δ → δ ≤ 1 / (4 * (10 * ((m : ℝ) + 1)) ^ (m + 1)) → 0 < ε → ε ≤ δ ^ 4 → ∀ (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s : Finset (Euclidean N)), 2 ≤ s.card → s.card ≤ m + 1 → (∀ y ∈ s, Grassmannian.project P y = x ∧ ‖y - Grassmannian.project P y‖ < ε ∧ ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ σ τ : ℝ, 0 < σ → σ ≤ δ ^ 2 → 2 * δ ^ 2 * σ ≤ τ → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * τ ≤ ‖y - y'‖) → ∃ (Z : Finset (Euclidean N)) (σ' τ' : ℝ), Z ⊆ s ∧ Z.card ≤ m ∧ 0 < σ' ∧ σ' ≤ δ ^ 2 ∧ 2 * δ ^ 2 * σ' ≤ τ' ∧ (∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 4 * τ' ≤ ‖z - z'‖) ∧ ∑ y ∈ s, μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + (2 ^ n - 1) * (4 * (10 * ((m : ℝ) + 1)) ^ (m + 1)) * δ ^ 2) * ∑ y ∈ Z, μ (closedBall y σ' ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ'}) / ENNReal.ofReal σ' ^ n + ENNReal.ofReal (((m : ℝ) + 1) * K * δ ^ 2)",
+  "lean_name": "intcpt_allard_ccb_reduction_step",
+  "depends_on": [
+    "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1.cylinder_grouping-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1.cylinder_grouping-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a-8ca69ae3c3-a1"
+}
