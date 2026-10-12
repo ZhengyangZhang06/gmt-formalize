@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0bd5b77e3a97c33244c9d681aae8d7e90fd647987ac1e0a31d52d76c554887e5",
+  "git_delta": {
+    "base_commit": "9533ddc31cda57d289b623b7afb9ee63941b57f7",
+    "candidate_commit": "e9f440ddea2172e2ced743f4a9aedd1a92694f2b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_lipschitz_localization",
+    "diff_sha256": "1bd2a715b4cc950d79f8b948e876c8cbb45424a3990329a4a6024547b692b3da",
+    "source_sha256": "2289427d193c6876b5e64d09e0ebb4fe66f5caedfa2033b7f54f4c09fe6d5100",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_lipschitz_localization",
+      "statement": "∀ (n Q : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u → ∃ (B : ℕ → Set (Eucl n)) (v : ℕ → Eucl n → Eucl Q), (∀ m, IsOpen (B m)) ∧ (∀ m, B m ⊆ Ω) ∧ Ω ⊆ ⋃ m, B m ∧ (∀ m, ∃ K : ℝ≥0, LipschitzWith K (v m)) ∧ ∀ m, EqOn u (v m) (B m)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
