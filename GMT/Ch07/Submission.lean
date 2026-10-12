@@ -558,6 +558,56 @@ theorem Submission.adr_sing_mem_of_tendsto : ∀ (P n Q : ℕ) (F : Set (Euclid 
     exact hk₁ (max k₀ k₁) (le_max_right _ _)
   exact ⟨v, hv, (dist_triangle z (zs (max k₀ k₁)) v).trans_lt
     ((add_lt_add hz' hzv).trans_eq (add_halves ε))⟩
+/-- **Simon, proof of A.4** (the uses of A.3(2)): a closed `S ⊆ ℝᴾ` with `{x : y + λx ∈ S} = S`
+whenever `y ∈ L`, `0 < λ < 1`, `|y| ≤ 1 − λ` satisfies `y + λz ∈ S ⇔ z ∈ S` for all `y ∈ L`,
+`λ > 0`, and contains `L` if it is nonempty.  The admissible maps `z ↦ y + λz` give every
+dilation `z ↦ cz` (`c > 1` by inverting `c⁻¹`), hence every short translation `z ↦ a + z`,
+`|a| ≤ 1/2` (composing `z ↦ a + z/2` with `z ↦ 2z`), hence every translation along `L`
+(conjugating a short one by a dilation); letting `λ ↓ 0` in `y + λz ∈ S` gives `y ∈ S̄ = S`. -/
+theorem Submission.adr_affine_invariant_closed_set : ∀ (P : ℕ) (S : Set (Euclid P)) (L : Submodule ℝ (Euclid P)), IsClosed S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => y + lam • x) ⁻¹' S = S) → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ z, y + lam • z ∈ S ↔ z ∈ S) ∧ (S.Nonempty → (L : Set (Euclid P)) ⊆ S) := by
+  intro P S L hS hinv
+  -- the hypothesis, pointwise
+  have hG : ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam →
+      ∀ z, y + lam • z ∈ S ↔ z ∈ S := fun y hy lam h0 h1 hy' z =>
+    Set.ext_iff.mp (hinv y hy lam h0 h1 hy') z
+  -- every dilation `z ↦ c z`, `c > 0`
+  have hD : ∀ c : ℝ, 0 < c → ∀ z : Euclid P, c • z ∈ S ↔ z ∈ S := by
+    have hD0 : ∀ c : ℝ, 0 < c → c < 1 → ∀ z : Euclid P, c • z ∈ S ↔ z ∈ S := by
+      intro c hc hc1 z
+      have h := hG 0 L.zero_mem c hc hc1 (by rw [norm_zero]; linarith) z
+      rwa [zero_add] at h
+    intro c hc z
+    rcases lt_trichotomy c 1 with hc1 | rfl | hc1
+    · exact hD0 c hc hc1 z
+    · rw [one_smul]
+    · have h := hD0 c⁻¹ (inv_pos.mpr hc) (inv_lt_one_of_one_lt₀ hc1) (c • z)
+      rw [inv_smul_smul₀ hc.ne'] at h
+      exact h.symm
+  -- short translations `z ↦ a + z`, `a ∈ L`, `‖a‖ ≤ 1/2`
+  have hT0 : ∀ a ∈ L, ‖a‖ ≤ 1 / 2 → ∀ z : Euclid P, a + z ∈ S ↔ z ∈ S := by
+    intro a ha ha' z
+    have h := hG a ha (1 / 2) (by norm_num) (by norm_num) (by linarith) ((2 : ℝ) • z)
+    rw [smul_smul, show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul] at h
+    exact h.trans (hD 2 two_pos z)
+  -- every translation along `L`: a short one conjugated by a dilation
+  have hT : ∀ y ∈ L, ∀ z : Euclid P, y + z ∈ S ↔ z ∈ S := by
+    intro y hy z
+    have hc : (0 : ℝ) < (2 * ‖y‖ + 1)⁻¹ := by positivity
+    have hcy : ‖(2 * ‖y‖ + 1)⁻¹ • y‖ ≤ 1 / 2 := by
+      rw [norm_smul, Real.norm_of_nonneg hc.le, ← div_eq_inv_mul, div_le_iff₀ (by positivity)]
+      linarith
+    rw [← hD _ hc (y + z), smul_add, hT0 _ (L.smul_mem _ hy) hcy, hD _ hc z]
+  -- part (i)
+  have hi : ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ z, y + lam • z ∈ S ↔ z ∈ S :=
+    fun y hy lam hlam z => (hT y hy (lam • z)).trans (hD lam hlam z)
+  refine ⟨hi, ?_⟩
+  -- part (ii): let `λ ↓ 0` in `y + λ z ∈ S`
+  rintro ⟨z, hz⟩ y hy
+  have hcont : Continuous fun lam : ℝ => y + lam • z := by fun_prop
+  have hlim : Tendsto (fun lam : ℝ => y + lam • z) (𝓝[>] 0) (𝓝 y) :=
+    (hcont.tendsto' 0 y (by simp)).mono_left nhdsWithin_le_nhds
+  exact hS.mem_of_tendsto hlim
+    (eventually_nhdsWithin_of_forall fun lam hlam => (hi y hy lam hlam z).mpr hz)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
