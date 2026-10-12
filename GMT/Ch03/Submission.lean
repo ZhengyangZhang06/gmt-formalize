@@ -683,6 +683,27 @@ theorem Submission.gaussGreenRep_c1_uniform_approx : ∀ (N : ℕ) (g : Rn N →
     exact dist_convolution_le (μ := volume) (z₀ := g x) Nat.one_div_pos_of_nat.le (hφb k)
       (hφn k) (hφi k) hg.aestronglyMeasurable fun y hy => (hεg k y x hy).le
 
+/-- **Simon Ch. 2, the remark after (2.1) (p. 48), for `u = χ_E` (Ch. 3, §4, p. 80).** If `E` has
+locally finite perimeter in the open set `U`, the functional `g ↦ ∫_{E ∩ U} div g` on `C¹` fields
+with compact support in `U` extends to a functional `Λ` on continuous fields with compact support
+in `U` that is additive, homogeneous and, for each compact `K ⊆ U`, bounded above on the fields
+supported in `K` with `|g| ≤ 1`. `Λ₀ g = ∫_{E ∩ U} div g` is linear on `C¹` fields and satisfies
+`|Λ₀ g| ≤ C(K) sup |g|` for `g` supported in `K`; every continuous compactly supported field in
+`U` is a uniform limit of `C¹` fields supported in one compact subset of `U`, and `Λ g` is the
+limit of `Λ₀` along such approximations. -/
+theorem Submission.gaussGreenRep_bv_functional_extension : ∀ (N : ℕ) (U E : Set (Rn N)), IsOpen U → NullMeasurableSet E volume → HasLocallyFinitePerimeter U E → ∃ Λ : (Rn N → Rn N) → ℝ, (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) ∧ (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) ∧ ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ U → Λ g = ∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x := by
+  intro N U E hU hE hBV
+  -- Step 1: `Λ₀ g = ∫_{E ∩ U} div g` is additive and homogeneous on `C¹` fields.
+  obtain ⟨hadd, hsmul⟩ := Submission.gaussGreenRep_setIntegral_divergence_linear N (E ∩ U)
+  -- Steps 4–10: extend `Λ₀` along uniform `C¹` approximations supported in a fixed compact subset
+  -- of `U` (step 4), using the two-sided bound `|Λ₀ g| ≤ C(K) sup |g|` (steps 0, 2, 3); the last
+  -- conjunct, `Λ = Λ₀` on `C¹` fields, is (d).
+  exact Submission.gaussGreenRep_extend_C1_functional N U
+    (fun g ↦ ∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x) hU
+    (Submission.gaussGreenRep_c1_uniform_approx N)
+    (fun g h hg hgc _ hh hhc _ ↦ hadd g h hg hgc hh hhc) (fun c g hg _ _ ↦ hsmul c g hg)
+    (Submission.gaussGreenRep_divergence_integral_local_bound N U E hU hE hBV)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
