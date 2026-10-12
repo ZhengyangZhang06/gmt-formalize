@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.setintegral_localize-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1",
+  "depth": 4,
+  "title": "Set integrals of a function vanishing off B agree on sets that agree inside B",
+  "statement": "Let n, ℓ ∈ ℕ, let μ be a measure on ℝ^{n+ℓ} (Amb n ℓ), φ : ℝ^{n+ℓ} → ℝ, and S, T, B ⊆ ℝ^{n+ℓ} with B measurable, φ(w) = 0 for every w ∉ B, S ∩ B ⊆ T and T ⊆ S. Then ∫_S φ dμ = ∫_T φ dμ (Bochner set integrals; no integrability of φ and no measurability of S or T is assumed).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (φ : Amb n ℓ → ℝ) (S T B : Set (Amb n ℓ)), MeasurableSet B → (∀ w, w ∉ B → φ w = 0) → S ∩ B ⊆ T → T ⊆ S → ∫ w in S, φ w ∂μ = ∫ w in T, φ w ∂μ",
+  "lean_name": "dohr_tp_gat_setIntegral_eq_of_inter",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-d998993c20-a1"
+}
