@@ -451,6 +451,77 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Localized Besicovitch density theorem** (Simon Ch. 1, 3.16 with Remark 3.7(2)): if `ν` is
+finite on compact subsets of the open set `W` and `s` is measurable, then `ν⌞s`-a.e. `x ∈ W` has
+`a · ν(B_t(x)) ≤ ν(s ∩ B_t(x))` for every `a < 1` and all small `t > 0`.  `W` is covered by
+countably many open balls `B̆_{rᵢ}(i)` with `B_{2rᵢ}(i) ⊆ W` compact; on each, Mathlib's
+`Besicovitch.ae_tendsto_measure_inter_div` for the finite measure `ν⌞B_{2rᵢ}(i)` gives
+`ν(s ∩ B_t(x)) / ν(B_t(x)) → 1` for `ν⌞s`-a.e. `x ∈ B̆_{rᵢ}(i)`, and the countable union
+(`ae_ball_iff`) gives the claim. -/
+theorem Submission.dorag_dbs_localized_density_point : ∀ (P : ℕ) (W s : Set (Euclid P)) (ν : Measure (Euclid P)), IsOpen W → MeasurableSet s → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → ν K ≠ ∞) → ∀ᵐ x ∂ν.restrict s, x ∈ W → ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t) := by
+  intro P W s ν hW hs hfin
+  -- radii: closedBall x (2 r) ⊆ W
+  have hr : ∀ x : W, ∃ r : ℝ, 0 < r ∧ closedBall (x : Euclid P) (2 * r) ⊆ W := by
+    intro x
+    obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.mp hW x x.2
+    exact ⟨ε / 3, by positivity, (closedBall_subset_ball (by linarith)).trans hεW⟩
+  choose r hr0 hrW using hr
+  -- countable subcover of W by the balls ball x (r x)
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun x : W => ball (x : Euclid P) (r x)) (fun _ => isOpen_ball)
+  have hcover : ∀ x ∈ W, ∃ i ∈ T, x ∈ ball (i : Euclid P) (r i) := by
+    intro x hx
+    have hmem : x ∈ ⋃ i : W, ball (i : Euclid P) (r i) :=
+      mem_iUnion.mpr ⟨⟨x, hx⟩, mem_ball_self (hr0 _)⟩
+    rw [← hTU] at hmem
+    simpa only [mem_iUnion, exists_prop] using hmem
+  -- the local statement on each ball
+  have hloc : ∀ i : W, ∀ᵐ x ∂ν.restrict s, x ∈ ball (i : Euclid P) (r i) →
+      ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t) := by
+    intro i
+    have hKm : MeasurableSet (closedBall (i : Euclid P) (2 * r i)) := measurableSet_closedBall
+    have hKfin : ν (closedBall (i : Euclid P) (2 * r i)) ≠ ∞ :=
+      hfin _ (isCompact_closedBall _ _) (hrW i)
+    have : IsFiniteMeasure (ν.restrict (closedBall (i : Euclid P) (2 * r i))) :=
+      isFiniteMeasure_restrict.mpr hKfin
+    have hB := Besicovitch.ae_tendsto_measure_inter_div
+      (ν.restrict (closedBall (i : Euclid P) (2 * r i))) s
+    have heq : (ν.restrict (closedBall (i : Euclid P) (2 * r i))).restrict s =
+        (ν.restrict s).restrict (closedBall (i : Euclid P) (2 * r i)) := by
+      rw [Measure.restrict_restrict hs, Measure.restrict_restrict hKm, inter_comm]
+    rw [heq, ae_restrict_iff' hKm] at hB
+    filter_upwards [hB] with x hx hxV a ha
+    have hxd : dist x i < r i := mem_ball.mp hxV
+    have hxK : x ∈ closedBall (i : Euclid P) (2 * r i) := by
+      rw [mem_closedBall]; linarith [hr0 i]
+    have hlim := hx hxK
+    by_cases ha0 : a ≤ 0
+    · filter_upwards with t
+      simp [ENNReal.ofReal_of_nonpos ha0]
+    have hlt : ENNReal.ofReal a < 1 := ENNReal.ofReal_lt_one.mpr ha
+    have ht0 : (0 : ℝ) < r i - dist x i := by linarith
+    filter_upwards [hlim.eventually (lt_mem_nhds hlt), Ioo_mem_nhdsGT ht0] with t ht hti
+    have hBK : closedBall x t ⊆ closedBall (i : Euclid P) (2 * r i) := by
+      intro p hp
+      rw [mem_closedBall] at hp ⊢
+      calc dist p i ≤ dist p x + dist x i := dist_triangle _ _ _
+        _ ≤ 2 * r i := by linarith [hti.2, hr0 i]
+    rw [Measure.restrict_apply' hKm, Measure.restrict_apply' hKm,
+      inter_eq_left.mpr hBK, inter_eq_left.mpr (inter_subset_right.trans hBK)] at ht
+    by_cases hB0 : ν (closedBall x t) = 0
+    · simp [hB0]
+    have hBtop : ν (closedBall x t) ≠ ∞ := ne_top_of_le_ne_top hKfin (measure_mono hBK)
+    exact ((ENNReal.lt_div_iff_mul_lt (Or.inl hB0) (Or.inl hBtop)).mp ht).le
+  -- countably many balls
+  have hall : ∀ᵐ x ∂ν.restrict s, ∀ i ∈ T, x ∈ ball (i : Euclid P) (r i) →
+      ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t) :=
+    (ae_ball_iff hTc).mpr (fun i _ => hloc i)
+  filter_upwards [hall] with x hx hxW
+  obtain ⟨i, hiT, hxi⟩ := hcover x hxW
+  exact hx i hiT hxi
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
