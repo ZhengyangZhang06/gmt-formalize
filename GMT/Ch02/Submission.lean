@@ -468,4 +468,41 @@ theorem Submission.simon_lift_velocity_mem_range_fderiv : ∀ (n N : ℕ) (ψ : 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
+/-- **Simon Ch. 2, 4.3 (p. 55), `T_{ψ(x)} M ⊆ range Dψ(x)`.** If `(V, W, ψ)` is a `C^r` local
+representation of `M`, `r ≥ 1`, and `ψ⁻¹ = invFunOn ψ V` is continuous on `W ∩ M`, then
+`T_{ψ(x)} M ⊆ range Dψ(x)` for `x ∈ V`. A `C¹` curve `γ` in `M` through `ψ(x)` stays in `W ∩ M`
+near `0`, so `γ = ψ ∘ c` there with `c = ψ⁻¹ ∘ γ → x`, and `simon_lift_velocity_mem_range_fderiv`
+puts `γ'(0)` in `range Dψ(x)`. -/
+theorem Submission.simon_chart_tangentSpace_le_range_fderiv : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (Function.invFunOn ψ V) (W ∩ M) → ∀ x ∈ V, tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap := by
+  intro n N r M V W ψ hr hψ hcont x₀ hx₀
+  obtain ⟨hV, hW, hψC, hψinj, hψimg, -, hψder⟩ := hψ
+  have hdiff : DifferentiableAt ℝ ψ x₀ :=
+    ((hψC.of_le (by exact_mod_cast hr)).differentiableOn_one x₀ hx₀).differentiableAt
+      (hV.mem_nhds hx₀)
+  have hy₀ : ψ x₀ ∈ W ∩ M := by rw [← hψimg]; exact mem_image_of_mem ψ hx₀
+  -- It suffices to treat a generator `v = γ'(0)` of `T_{ψ(x₀)} M`.
+  rw [tangentSpace, Submodule.span_le]
+  rintro v ⟨γ, -, hγM, hγ0, hγv⟩
+  -- `γ(t) ∈ W ∩ M` for `t` near `0`.
+  have hγWM : ∀ᶠ t in 𝓝 (0 : ℝ), γ t ∈ W ∩ M := by
+    have hγ0W : γ 0 ∈ W := by rw [hγ0]; exact hy₀.1
+    filter_upwards [hγv.continuousAt.preimage_mem_nhds (hW.mem_nhds hγ0W),
+      Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num) one_pos] with t htW htI
+    exact ⟨htW, hγM htI⟩
+  -- The lift `c = ψ⁻¹ ∘ γ` satisfies `γ = ψ ∘ c` near `0` and `c(t) → ψ⁻¹(ψ x₀) = x₀`.
+  have hfac : ∀ᶠ t in 𝓝 (0 : ℝ), γ t = ψ (Function.invFunOn ψ V (γ t)) := by
+    filter_upwards [hγWM] with t ht
+    rw [← hψimg] at ht
+    exact (Function.invFunOn_eq ht).symm
+  have hc : Tendsto (fun t ↦ Function.invFunOn ψ V (γ t)) (𝓝 (0 : ℝ)) (𝓝 x₀) := by
+    have hγt : Tendsto γ (𝓝 (0 : ℝ)) (𝓝[W ∩ M] (ψ x₀)) := by
+      refine tendsto_nhdsWithin_iff.mpr ⟨?_, hγWM⟩
+      rw [← hγ0]
+      exact hγv.continuousAt.tendsto
+    have hg := (hcont (ψ x₀) hy₀).tendsto
+    rw [hψinj.leftInvOn_invFunOn hx₀] at hg
+    exact hg.comp hγt
+  exact Submission.simon_lift_velocity_mem_range_fderiv n N ψ x₀
+    (fun t ↦ Function.invFunOn ψ V (γ t)) γ v hdiff (hψder x₀ hx₀) hc hfac hγv
+
 end GMT.Ch02
