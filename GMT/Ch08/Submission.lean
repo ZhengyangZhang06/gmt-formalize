@@ -410,6 +410,48 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Uniqueness of measures on `X × Y` from rectangles with `μ`-finite base (Step 5 of the proof
+that a varifold is determined by its graph measure): if `μ` is σ-finite, `ρ₁` is finite on the
+cylinders `A × Y` with `μ(A) < ∞`, and `ρ₁`, `ρ₂` agree on the rectangles `A × B` with
+`μ(A) < ∞`, then `ρ₁ = ρ₂` (Dynkin's π-λ theorem, `Measure.ext_of_generateFrom_of_iUnion`). -/
+theorem Submission.frt_vgm_ext_prod_of_finite_rectangles :
+    ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ρ₁ ρ₂ : Measure (X × Y)), SigmaFinite μ → (∀ A : Set X, MeasurableSet A → μ A ≠ ∞ → ρ₁ (A ×ˢ (univ : Set Y)) ≠ ∞) → (∀ (A : Set X) (B : Set Y), MeasurableSet A → MeasurableSet B → μ A ≠ ∞ → ρ₁ (A ×ˢ B) = ρ₂ (A ×ˢ B)) → ρ₁ = ρ₂ := by
+  intro X Y _ _ μ ρ₁ ρ₂ hμ hfin hrect
+  -- Step 1: the spanning sets `E m` of `μ` are measurable, of finite measure, and cover `X`.
+  have hE : ∀ m, MeasurableSet (spanningSets μ m) ∧ μ (spanningSets μ m) ≠ ∞ :=
+    fun m ↦ ⟨measurableSet_spanningSets μ m, (measure_spanningSets_lt_top μ m).ne⟩
+  -- Step 2: `C` is the class of rectangles `A ×ˢ B` with `A, B` measurable and `μ A ≠ ∞`.
+  refine Measure.ext_of_generateFrom_of_iUnion
+    (image2 (· ×ˢ ·) {A : Set X | MeasurableSet A ∧ μ A ≠ ∞} {B : Set Y | MeasurableSet B})
+    (fun m ↦ spanningSets μ m ×ˢ univ) ?_ ?_ ?_ ?_ ?_ ?_
+  · -- Step 4: `C` generates the product σ-algebra.
+    refine le_antisymm (generateFrom_prod.symm.le.trans (MeasurableSpace.generateFrom_le ?_))
+      (MeasurableSpace.generateFrom_le ?_)
+    · rintro _ ⟨A, hA, B, hB, rfl⟩
+      have hAB : A ×ˢ B = ⋃ m, (A ∩ spanningSets μ m) ×ˢ B := by
+        rw [← iUnion_prod_const, ← inter_iUnion, iUnion_spanningSets, inter_univ]
+      dsimp only
+      rw [hAB]
+      exact MeasurableSet.iUnion fun m ↦ MeasurableSpace.measurableSet_generateFrom
+        ⟨A ∩ spanningSets μ m, ⟨hA.inter (hE m).1,
+          ne_top_of_le_ne_top (hE m).2 (measure_mono inter_subset_right)⟩, B, hB, rfl⟩
+    · rintro _ ⟨A, ⟨hA, -⟩, B, hB, rfl⟩
+      exact hA.prod hB
+  · -- Step 3: `C` is a π-system.
+    rintro _ ⟨A, ⟨hA, hμA⟩, B, hB, rfl⟩ _ ⟨A', ⟨hA', -⟩, B', hB', rfl⟩ -
+    rw [prod_inter_prod]
+    exact ⟨A ∩ A', ⟨hA.inter hA', ne_top_of_le_ne_top hμA (measure_mono inter_subset_left)⟩,
+      B ∩ B', hB.inter hB', rfl⟩
+  · -- Step 5: the cylinders `E m ×ˢ univ` cover `X × Y` ...
+    rw [← iUnion_prod_const, iUnion_spanningSets, univ_prod_univ]
+  · -- ... lie in `C` ...
+    exact fun m ↦ ⟨spanningSets μ m, hE m, univ, MeasurableSet.univ, rfl⟩
+  · -- ... and have finite `ρ₁`-measure.
+    exact fun m ↦ hfin _ (hE m).1 (hE m).2
+  · -- Step 6: `ρ₁` and `ρ₂` agree on `C`.
+    rintro _ ⟨A, ⟨hA, hμA⟩, B, hB, rfl⟩
+    exact hrect A B hA hB hμA
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
