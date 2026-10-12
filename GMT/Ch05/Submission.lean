@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -457,6 +458,63 @@ def RegularSetOpenDense : Prop :=
     (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) →
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
+
+namespace Submission
+
+/-- Hilbert–Schmidt splitting along orthogonal projections, with `|A|² = Σᵢ |A eᵢ|²` (`hsNormSq`).
+(S1) For `X : ℝᵐ → ℝᵏ` and a subspace `K`, `|X|² = |X p_K|² + |X p_{K⊥}|²`.
+(S2) For subspaces `K, L`, with `P = p_K` and `Q = p_L`, `|P − Q|² = |(P − Q) P|² + |(P − Q) Q|²`.
+Proof: (S1) Let `X*` be the adjoint of `X`.  As `p_W` is self-adjoint, `p_W X*` is an adjoint of
+`X p_W`, so adjoint invariance of `|·|` (first conjunct of `any_radius_gr_pp_hs_ideal`) gives
+`|X p_W|² = |p_W X*|²` and `|X|² = |X*|²`; summing Pythagoras
+`|X* f_j|² = |p_K X* f_j|² + |p_{K⊥} X* f_j|²` over the standard basis `(f_j)` of `ℝᵏ` gives (S1).
+(S2) By (S1) for `X = P − Q`, it remains to show `|(P − Q) p_{K⊥}|² = |(P − Q) Q|²`.  Since
+`p_{K⊥} = 1 − P`, `P² = P`, `Q² = Q` and `P, Q` are self-adjoint, `(P − Q) Q` is an adjoint of
+`(P − Q) p_{K⊥}`; apply adjoint invariance again. -/
+theorem any_radius_gr_pp_hs_proj_split : (∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (K : Submodule ℝ (Rn m)), hsNormSq X = hsNormSq (X ∘L K.starProjection) + hsNormSq (X ∘L Kᗮ.starProjection)) ∧ ∀ (m : ℕ) (K L : Submodule ℝ (Rn m)), hsNormSq (K.starProjection - L.starProjection) = hsNormSq ((K.starProjection - L.starProjection) ∘L K.starProjection) + hsNormSq ((K.starProjection - L.starProjection) ∘L L.starProjection) := by
+  -- (H1): an adjoint pair `X, Y` has `hsNormSq Y = hsNormSq X`.
+  have H1 := Submission.any_radius_gr_pp_hs_ideal.1
+  have S1 : ∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (K : Submodule ℝ (Rn m)),
+      hsNormSq X = hsNormSq (X ∘L K.starProjection) + hsNormSq (X ∘L Kᗮ.starProjection) := by
+    intro m k X K
+    obtain ⟨Xa, hXa⟩ : ∃ Xa : Rn k →L[ℝ] Rn m, ∀ (u : Rn m) (v : Rn k),
+        inner ℝ (X u) v = inner ℝ u (Xa v) :=
+      ⟨ContinuousLinearMap.adjoint X, fun u v => (ContinuousLinearMap.adjoint_inner_right X u v).symm⟩
+    have hX : hsNormSq Xa = hsNormSq X := H1 m k X Xa hXa
+    -- `p_W X*` is an adjoint of `X p_W`.
+    have hW : ∀ (W : Submodule ℝ (Rn m)) [W.HasOrthogonalProjection],
+        hsNormSq (W.starProjection ∘L Xa) = hsNormSq (X ∘L W.starProjection) := by
+      intro W _
+      refine H1 m k (X ∘L W.starProjection) (W.starProjection ∘L Xa) fun u v => ?_
+      rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hXa,
+        Submodule.inner_starProjection_left_eq_right]
+    -- Pythagoras on each column `X* f_j`.
+    rw [← hW K, ← hW Kᗮ, ← hX]
+    unfold hsNormSq
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
+    exact Submodule.norm_sq_eq_add_norm_sq_starProjection _ K
+  refine ⟨S1, fun m K L => ?_⟩
+  rw [S1 m m (K.starProjection - L.starProjection) K]
+  congr 1
+  -- `(P − Q) Q` is an adjoint of `(P − Q) p_{K⊥}`.
+  refine (H1 m m ((K.starProjection - L.starProjection) ∘L Kᗮ.starProjection)
+    ((K.starProjection - L.starProjection) ∘L L.starProjection) fun u v => ?_).symm
+  have hP : K.starProjection (K.starProjection u) = K.starProjection u :=
+    Submodule.starProjection_eq_self_iff.mpr (K.starProjection_apply_mem u)
+  have hQ : L.starProjection (L.starProjection v) = L.starProjection v :=
+    Submodule.starProjection_eq_self_iff.mpr (L.starProjection_apply_mem v)
+  have hQu : inner ℝ (L.starProjection u) v = inner ℝ u (L.starProjection v) :=
+    L.inner_starProjection_left_eq_right u v
+  have hQPu : inner ℝ (L.starProjection (K.starProjection u)) v =
+      inner ℝ u (K.starProjection (L.starProjection v)) := by
+    rw [L.inner_starProjection_left_eq_right, K.inner_starProjection_left_eq_right]
+  simp only [ContinuousLinearMap.comp_apply, sub_apply, Submodule.starProjection_orthogonal_val,
+    map_sub, inner_sub_left, inner_sub_right, hP, hQ, hQu, hQPu]
+  ring
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
