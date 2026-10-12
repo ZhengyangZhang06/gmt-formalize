@@ -533,6 +533,51 @@ theorem aal_normal_sq_lintegral_le_conical : ∀ (n ℓ : ℕ) (μ : Measure (Am
       _ ≤ s ^ (n + 2) * (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) :=
           mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hd.le hds _)
             (div_nonneg (sq_nonneg _) hpow.le)
+/-- Simon Ch. 5, proof of Lemma 2.5 (p. 109), (4)–(5): Chebyshev selection of a good point.  If
+`∫_{B_R(ξ)} |p_x^⊥(x - y)|² dμ ≤ K` for every `y ∈ F` and `#F · K < λ μ(B_s(ξ))` with `s ≤ R`,
+then some `x₀ ∈ B_s(ξ)` at which `P x₀ = p_T` for an `n`-plane `T` has `|p_T^⊥(x₀ - y)|² < λ` for
+all `y ∈ F`.  Otherwise `Σ_{y ∈ F} |p_x^⊥(x - y)|² ≥ λ` `μ`-a.e. on `B_s(ξ)`, and integrating gives
+`λ μ(B_s(ξ)) ≤ #F · K`. -/
+theorem aal_good_tangent_point : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ), AEStronglyMeasurable P μ → (∀ᵐ x ∂μ, ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ P x = T.starProjection) → ∀ (ξ : Amb n ℓ) (s R K lam : ℝ) (F : Finset (Amb n ℓ)), 0 < lam → s ≤ R → (∀ y ∈ F, ∫⁻ x in closedBall ξ R, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤ ENNReal.ofReal K) → ENNReal.ofReal ((F.card : ℝ) * K) < ENNReal.ofReal lam * μ (closedBall ξ s) → ∃ x₀ ∈ closedBall ξ s, ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ P x₀ = T.starProjection ∧ ∀ y ∈ F, ‖(x₀ - y) - T.starProjection (x₀ - y)‖ ^ 2 < lam := by
+  intro n ℓ μ P hP hT ξ s R K lam F hlam hsR hK hlt
+  by_contra! hcon
+  -- `h y x = ofReal |(x - y) - P(x)(x - y)|²`, a.e. measurable since evaluation is bilinear.
+  have hmeas : ∀ y : Amb n ℓ,
+      AEMeasurable (fun x => ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2)) μ := by
+    intro y
+    have hPy : AEStronglyMeasurable (fun x => P x (x - y)) μ :=
+      (ContinuousLinearMap.id ℝ (Amb n ℓ →L[ℝ] Amb n ℓ)).aestronglyMeasurable_comp₂ hP
+        (continuous_id.sub continuous_const).aestronglyMeasurable
+    exact ENNReal.measurable_ofReal.comp_aemeasurable
+      (((continuous_id.sub continuous_const).aestronglyMeasurable.sub hPy).norm.aemeasurable.pow_const 2)
+  -- `∫_{B_R(ξ)} Σ_y h_y dμ = Σ_y ∫_{B_R(ξ)} h_y dμ ≤ #F · K`.
+  have hsum : ∫⁻ x in closedBall ξ R, ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤
+      ENNReal.ofReal ((F.card : ℝ) * K) := by
+    rw [lintegral_finsetSum' F fun y _ => (hmeas y).restrict,
+      ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast]
+    calc ∑ y ∈ F, ∫⁻ x in closedBall ξ R, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ
+        ≤ ∑ _y ∈ F, ENNReal.ofReal K := Finset.sum_le_sum hK
+      _ = F.card * ENNReal.ofReal K := by rw [Finset.sum_const, nsmul_eq_mul]
+  -- If no good point exists, then `Σ_y h_y ≥ λ` a.e. on `B_s(ξ)`.
+  have hae : ∀ᵐ x ∂μ.restrict (closedBall ξ s),
+      ENNReal.ofReal lam ≤ ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) := by
+    filter_upwards [ae_restrict_of_ae hT, ae_restrict_mem measurableSet_closedBall]
+      with x ⟨T, hTn, hPT⟩ hx
+    obtain ⟨y, hyF, hy⟩ := hcon x hx T hTn hPT
+    calc ENNReal.ofReal lam ≤ ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) := by
+          rw [hPT]; exact ENNReal.ofReal_le_ofReal hy
+      _ ≤ ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) :=
+          Finset.single_le_sum (f := fun y => ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2))
+            (fun _ _ => zero_le) hyF
+  -- Chebyshev: `λ μ(B_s(ξ)) ≤ ∫_{B_s(ξ)} Σ_y h_y ≤ ∫_{B_R(ξ)} Σ_y h_y ≤ #F · K`, contradicting (H2).
+  refine absurd hlt (not_lt.mpr ?_)
+  calc ENNReal.ofReal lam * μ (closedBall ξ s)
+      = ∫⁻ _ in closedBall ξ s, ENNReal.ofReal lam ∂μ := (setLIntegral_const _ _).symm
+    _ ≤ ∫⁻ x in closedBall ξ s, ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ :=
+        lintegral_mono_ae hae
+    _ ≤ ∫⁻ x in closedBall ξ R, ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ :=
+        lintegral_mono_set (closedBall_subset_closedBall hsR)
+    _ ≤ ENNReal.ofReal ((F.card : ℝ) * K) := hsum
 
 end Submission
 
