@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.graph_fderiv_left_inverse-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1",
+  "depth": 5,
+  "title": "Graph chart: ι* is a left inverse of ι + ι′ and of DΦ(v), and DΦ is continuous on the ball",
+  "statement": "Let n, k ∈ ℕ, ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, u : ℝⁿ → ℝ^k of class C¹ on the open ball D := B_s(0) ⊆ ℝⁿ (s ∈ ℝ arbitrary), z ∈ ℝ^{n+k}, Φ(v) := z + ιv + ι'u(v), and ι* := adjoint of ι regarded as a continuous linear map (ι.toContinuousLinearMap.adjoint : ℝ^{n+k} → ℝⁿ). Then (i) ι*(ιv + ι'w) = v for all v ∈ ℝⁿ, w ∈ ℝ^k; (ii) v ↦ DΦ(v) = fderiv ℝ Φ v is continuous on D; (iii) ι*(DΦ(v)w) = w for all v ∈ D and w ∈ ℝⁿ.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → (∀ (v : Euclid n) (w : Euclid k), ι.toContinuousLinearMap.adjoint (ι v + ι' w) = v) ∧ ContinuousOn (fderiv ℝ (fun v => z + ι v + ι' (u v))) (ball (0 : Euclid n) s) ∧ ∀ v ∈ ball (0 : Euclid n) s, ∀ w : Euclid n, ι.toContinuousLinearMap.adjoint (fderiv ℝ (fun v => z + ι v + ι' (u v)) v w) = w",
+  "lean_name": "dgoj_graph_fderiv_left_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-bec3ec4edd-a1"
+}
