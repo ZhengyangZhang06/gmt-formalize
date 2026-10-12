@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1.ball_integral_measurable-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1",
+  "depth": 4,
+  "title": "The ball integral x ↦ ∫_{B_r(x) × G(N,n)} β(S) dν is Borel",
+  "statement": "Let N, n ∈ ℕ, let G(N,n) = Grassmannian N n (projection matrices with the subspace topology and Borel σ-algebra), and let ν be an s-finite measure on ℝ^N × G(N,n) (product σ-algebra). Then for every r ∈ ℝ and every continuous β : G(N,n) → ℝ, the map ℝ^N → ℝ, x ↦ ∫_{B_r(x) × G(N,n)} β(S) dν(y, S), is Borel measurable. Here B_r(x) = closedBall x r and the integral is the Bochner set integral, which is 0 when the integrand is not ν-integrable on B_r(x) × G(N,n).",
+  "lean_statement": "∀ (N n : ℕ) (ν : Measure (Euclidean N × Grassmannian N n)), SFinite ν → ∀ (r : ℝ) (β : C(Grassmannian N n, ℝ)), Measurable (fun x : Euclidean N ↦ ∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂ν)",
+  "lean_name": "frt_vgm_mps_ball_integral_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-measurable-pla-7b6c1c4c4a-a1"
+}
