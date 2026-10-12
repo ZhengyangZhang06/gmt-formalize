@@ -335,6 +335,30 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **The measure of a symmetric difference in a ball is the `L¹` distance of the indicators**
+(used in the BV translation estimate for the compactness of sets of locally bounded perimeter,
+Simon Ch. 2, Thm. 2.6). For `Lᴺ`-measurable `A, F ⊆ ℝᴺ` and the open ball `B = B_R(0)`,
+`Lᴺ(B ∩ (A Δ F)) = ∫_B |1_A - 1_F| dLᴺ`: pointwise `|1_A - 1_F| = 1_{A Δ F}`, and
+`∫_B 1_{A Δ F} dLᴺ = Lᴺ(A Δ F ∩ B)`, which is finite since `Lᴺ(B) < ∞`. -/
+theorem Submission.indCompact_transEst_volume_symmDiff_eq_integral : ∀ (N : ℕ) (A F : Set (Rn N)) (R : ℝ), NullMeasurableSet A volume → NullMeasurableSet F volume → volume (Metric.ball (0 : Rn N) R ∩ symmDiff A F) = ENNReal.ofReal (∫ y in Metric.ball (0 : Rn N) R, |A.indicator (1 : Rn N → ℝ) y - F.indicator (1 : Rn N → ℝ) y|) := by
+  intro N A F R hA hF
+  -- Step 1: `|1_A - 1_F| = 1_{A Δ F}` pointwise.
+  have h1 : ∀ y, |A.indicator (1 : Rn N → ℝ) y - F.indicator (1 : Rn N → ℝ) y| =
+      (symmDiff A F).indicator (fun _ ↦ (1 : ℝ)) y := by
+    intro y
+    rw [← abs_indicator_symmDiff]
+    by_cases hy : y ∈ symmDiff A F <;> simp [hy]
+  simp_rw [h1]
+  -- Step 2: `A Δ F` is null-measurable for `Lᴺ`, hence for `Lᴺ ⌞ B ≤ Lᴺ`.
+  have hS : NullMeasurableSet (symmDiff A F) (volume.restrict (Metric.ball (0 : Rn N) R)) :=
+    (hA.symmDiff hF).mono_ac (Measure.absolutelyContinuous_of_le Measure.restrict_le_self)
+  -- Step 5: `Lᴺ(A Δ F ∩ B) ≤ Lᴺ(B) < ∞`.
+  have hfin : volume (symmDiff A F ∩ Metric.ball (0 : Rn N) R) ≠ ∞ :=
+    ((measure_mono Set.inter_subset_right).trans_lt measure_ball_lt_top).ne
+  -- Steps 3, 4 and 6: `∫_B 1_{A Δ F} dLᴺ = (Lᴺ ⌞ B)(A Δ F) = Lᴺ(A Δ F ∩ B)`, `B` being open.
+  rw [integral_indicator₀ hS, setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+    Measure.restrict_apply' measurableSet_ball, ENNReal.ofReal_toReal hfin, Set.inter_comm]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
