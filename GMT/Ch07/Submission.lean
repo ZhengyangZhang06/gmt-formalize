@@ -451,6 +451,275 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, 2.2 and 4.1.1**: for `R = (M, θ, ξ)` and `X ∈ C¹_c(U; ℝᴾ)` with `x ↦ p_{TₓM}`
+`μ_R`-measurable, `div_M X` is `μ_R`-integrable and `δV(X) = ∫_M θ div_M X dHⁿ = ∫ div_M X dμ_R`,
+`μ_R = θ Hⁿ⌞M`.  `div_M X(x) = tr(p_{TₓM} ∘ DX(x))` is bounded by `‖tr‖ ‖DX(x)‖`, and it vanishes
+off the compact `spt X ⊆ U`, which has finite `μ_R`-measure. -/
+theorem Submission.dsmc_firstVariation_eq_integral : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (X : Euclid P → Euclid P), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → Integrable (fun x => tangentialDivergence n R.carrier X x) R.measure ∧ R.firstVariation X = ∫ x, tangentialDivergence n R.carrier X x ∂R.measure := by
+  intro P n U R X hX hcpt hU hp
+  -- the trace is a continuous linear functional on `L(ℝᴾ, ℝᴾ)`, and `div_M X(x) = tr(p_x ∘ DX(x))`
+  let tr : (Euclid P →L[ℝ] Euclid P) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+    ((LinearMap.trace ℝ (Euclid P)).comp (ContinuousLinearMap.coeLM ℝ))
+  have hdiv : ∀ x, tangentialDivergence n R.carrier X x =
+      tr ((approxTangentPlane n R.carrier x).starProjection ∘L fderiv ℝ X x) := fun x => rfl
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  have hD : Continuous (fderiv ℝ X) := hX.continuous_fderiv one_ne_zero
+  -- `div_M X` is `μ_R`-a.e. strongly measurable
+  have hmeas : AEStronglyMeasurable (fun x => tangentialDivergence n R.carrier X x) R.measure :=
+    (tr.continuous.comp isBoundedBilinearMap_comp.continuous).comp_aestronglyMeasurable₂
+      (g := fun p D : Euclid P →L[ℝ] Euclid P => tr (p ∘L D)) hp.aestronglyMeasurable
+      hD.aestronglyMeasurable
+  -- `|div_M X(x)| ≤ ‖tr‖ C 1_K(x)`, `K = spt X`, `C = sup ‖DX‖`
+  obtain ⟨C, hC⟩ := hD.bounded_above_of_compact_support (hcpt.fderiv ℝ)
+  have hKm : MeasurableSet (tsupport X) := (isClosed_tsupport X).measurableSet
+  have hbound : ∀ x, ‖tangentialDivergence n R.carrier X x‖ ≤
+      (tsupport X).indicator (fun _ => ‖tr‖ * C) x := by
+    intro x
+    rw [hdiv]
+    by_cases hxK : x ∈ tsupport X
+    · rw [Set.indicator_of_mem hxK]
+      refine (tr.le_opNorm _).trans (mul_le_mul_of_nonneg_left ?_ (norm_nonneg tr))
+      refine (ContinuousLinearMap.opNorm_comp_le _ _).trans ?_
+      simpa using mul_le_mul (Submodule.starProjection_norm_le _) (hC x) (norm_nonneg _) zero_le_one
+    · rw [Set.indicator_of_notMem hxK, fderiv_of_notMem_tsupport ℝ hxK,
+        ContinuousLinearMap.comp_zero, map_zero, norm_zero]
+  -- `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
+  have hKfin : R.measure (tsupport X) ≠ ∞ := by
+    rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm,
+      Set.inter_comm (tsupport X) R.carrier]
+    exact R.locallyIntegrable_mult _ hcpt hU
+  have hint : Integrable (fun x => tangentialDivergence n R.carrier X x) R.measure :=
+    ((integrable_indicator_iff hKm).2 (integrableOn_const hKfin)).mono' hmeas (ae_of_all _ hbound)
+  refine ⟨hint, ?_⟩
+  -- `∫ g d(θ Hⁿ⌞M) = ∫_M θ g dHⁿ`
+  rw [IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
+    (ae_of_all _ fun x => ENNReal.natCast_lt_top _), IMRep.firstVariation]
+  simp only [ENNReal.toReal_natCast, smul_eq_mul]
+
+/-- **First variation of a varifold stationary in `U ∩ N`** (Simon Ch. 4, 2.5–2.7; Ch. 2,
+5.9–5.10).  Let `Pt` be a `C¹` field of self-adjoint operators on `B_{3r}(y₀)` such that, at
+`q ∈ N`, `Pt(q)` maps into `T_qN` and fixes `T_qN`, with `‖DPt‖ ≤ β` on `B_{2r}(y₀)`.  If
+`V = v(M, θ)` is stationary in `U ∩ N` and `TₓM ⊆ TₓN` for `μ_V`-a.e. `x`, then
+`H(x) = Σₐ (DPt(x)(pₓeₐ))eₐ = Σᵢ (DPt(x)τᵢ)τᵢ` (`τ` an orthonormal basis of `TₓM`) on `B_{2r}(y₀)`,
+`H = 0` elsewhere, has `‖H‖ ≤ nβ` and `δV(X) = −∫ X · H dμ_V` for `X ∈ C¹_c(B_{2r}(y₀); ℝᴾ)`:
+`Xᵀ = Pt·X` is tangent to `N`, so `δV(Xᵀ) = 0`, and `div_M (X − Xᵀ) = −X · H` a.e. by the product
+rule, `Pt(x)τᵢ = τᵢ` and the self-adjointness of `Pt(x)` and of `DPt(x)u`. -/
+theorem Submission.dsmc_firstVariation_eq_neg_meanCurvature : ∀ (P n : ℕ) (U N : Set (Euclid P)) (R : IMRep U n) (Pt : Euclid P → (Euclid P →L[ℝ] Euclid P)) (y₀ : Euclid P) (r β : ℝ), 0 ≤ β → ball y₀ (3 * r) ⊆ U → ContDiffOn ℝ 1 Pt (ball y₀ (3 * r)) → (∀ y ∈ ball y₀ (3 * r), ∀ u w : Euclid P, inner ℝ (Pt y u) w = inner ℝ u (Pt y w)) → (∀ y ∈ ball y₀ (2 * r), ‖fderiv ℝ Pt y‖ ≤ β) → (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u : Euclid P, Pt q u ∈ tangentSpace N q) → (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u ∈ tangentSpace N q, Pt q u = u) → (∀ᵐ x ∂R.measure, x ∈ N) → (∀ᵐ x ∂R.measure, x ∈ ball y₀ (3 * r) → (approxTangentPlane n R.carrier x : Set (Euclid P)) ⊆ tangentSpace N x) → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → R.IsStationaryAlong N → ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ (n : ℝ) * β) ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball y₀ (2 * r) → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure := by
+  intro P n U N R Pt y₀ r β hβ hball hPt hsym hDPt hPtT hPtfix hN hTN hpm hstat
+  -- notation: `e` is the standard orthonormal basis of `ℝᴾ` and `Φ(B, p) = Σₐ (B (p eₐ)) eₐ`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  let Φ : (Euclid P →L[ℝ] (Euclid P →L[ℝ] Euclid P)) → (Euclid P →L[ℝ] Euclid P) → Euclid P :=
+    fun B p => ∑ a, B (p (e a)) (e a)
+  -- Step 1(a): `dim TₓM ≤ n`, `TₓM` being an approximate tangent space or `{0}`
+  have hrank : ∀ x, Module.finrank ℝ (approxTangentPlane n R.carrier x) ≤ n := by
+    intro x
+    by_cases h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q
+    · have hT : approxTangentPlane n R.carrier x = h.choose := by
+        unfold approxTangentPlane
+        rw [dite_eq_left h]
+      rw [hT]
+      exact h.choose_spec.finrank_eq.le
+    · have hT : approxTangentPlane n R.carrier x = ⊥ := by
+        unfold approxTangentPlane
+        rw [dite_eq_right h]
+      rw [hT]
+      simp
+  -- Step 1(b): `trace(p_K ∘ D) = Σᵢ ⟨τᵢ, Dτᵢ⟩` for an orthonormal basis `τ` of `K`
+  have htr : ∀ (K : Submodule ℝ (Euclid P)) (m : ℕ) (τ : OrthonormalBasis (Fin m) ℝ K)
+      (D : Euclid P →L[ℝ] Euclid P),
+      LinearMap.trace ℝ (Euclid P) (K.starProjection.toLinearMap ∘ₗ D.toLinearMap) =
+        ∑ i, inner ℝ (τ i : Euclid P) (D (τ i)) := by
+    intro K m τ D
+    rw [Submodule.starProjection, ContinuousLinearMap.toLinearMap_comp, LinearMap.comp_assoc,
+      LinearMap.trace_comp_comm', LinearMap.trace_eq_sum_inner _ τ]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp
+  -- Step 1(c): `Φ(B, p_K) = Σᵢ (Bτᵢ)τᵢ` for an orthonormal basis `τ` of `K`
+  have hcontr : ∀ (K : Submodule ℝ (Euclid P)) (m : ℕ) (τ : OrthonormalBasis (Fin m) ℝ K)
+      (B : Euclid P →L[ℝ] (Euclid P →L[ℝ] Euclid P)),
+      Φ B K.starProjection = ∑ i, B (τ i : Euclid P) (τ i : Euclid P) := by
+    intro K m τ B
+    have hp : ∀ v, K.starProjection v = ∑ i, inner ℝ (τ i : Euclid P) v • (τ i : Euclid P) := by
+      intro v
+      rw [Submodule.starProjection_apply, τ.orthogonalProjectionOnto_apply_eq_sum]
+      simp
+    have he : ∀ i, ∑ a, inner ℝ (τ i : Euclid P) (e a) • e a = (τ i : Euclid P) := by
+      intro i
+      simpa [real_inner_comm] using e.sum_repr' (τ i : Euclid P)
+    simp only [Φ, hp, map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
+      Pi.smul_apply]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    calc ∑ a, inner ℝ (τ i : Euclid P) (e a) • B (τ i : Euclid P) (e a)
+        = B (τ i : Euclid P) (∑ a, inner ℝ (τ i : Euclid P) (e a) • e a) := by
+          rw [map_sum]
+          simp [map_smul]
+      _ = B (τ i : Euclid P) (τ i : Euclid P) := by rw [he i]
+  -- `B_{2r}(y₀) ⊆ B_{3r}(y₀)` for every `r` (both are empty if `r ≤ 0`)
+  have h23 : ball y₀ (2 * r) ⊆ ball y₀ (3 * r) := by
+    rcases le_or_gt r 0 with hr | hr
+    · rw [ball_eq_empty.mpr (by linarith)]
+      exact empty_subset _
+    · exact ball_subset_ball (by linarith)
+  -- `Pt` is differentiable on the open ball `B_{3r}(y₀)`
+  have hPtd : ∀ x ∈ ball y₀ (3 * r), DifferentiableAt ℝ Pt x := fun x hx =>
+    (hPt.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hx)
+  -- Step 1(d): `DPt(x)u` is self-adjoint for `x ∈ B_{3r}(y₀)`: differentiate
+  -- `y ↦ ⟨b, Pt(y)a⟩ − ⟨a, Pt(y)b⟩`, which vanishes near `x`
+  have hDsym : ∀ x ∈ ball y₀ (3 * r), ∀ u a b : Euclid P,
+      inner ℝ (fderiv ℝ Pt x u a) b = inner ℝ a (fderiv ℝ Pt x u b) := by
+    intro x hx u a b
+    let ℓ : (Euclid P →L[ℝ] Euclid P) →L[ℝ] ℝ :=
+      (innerSL ℝ b).comp (ContinuousLinearMap.apply ℝ (Euclid P) a) -
+        (innerSL ℝ a).comp (ContinuousLinearMap.apply ℝ (Euclid P) b)
+    have hℓ : ∀ L : Euclid P →L[ℝ] Euclid P, ℓ L = inner ℝ b (L a) - inner ℝ a (L b) := by
+      intro L; rfl
+    have hev : (fun y => ℓ (Pt y)) =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+      filter_upwards [isOpen_ball.mem_nhds hx] with y hy
+      rw [hℓ, real_inner_comm, hsym y hy, sub_self]
+    have h1 : HasFDerivAt (fun y => ℓ (Pt y)) (ℓ.comp (fderiv ℝ Pt x)) x :=
+      ℓ.hasFDerivAt.comp x (hPtd x hx).hasFDerivAt
+    have h2 : HasFDerivAt (fun y => ℓ (Pt y)) (0 : Euclid P →L[ℝ] ℝ) x :=
+      (hasFDerivAt_const (0 : ℝ) x).congr_of_eventuallyEq hev
+    have h3 := congrArg (fun L => L u) (h1.unique h2)
+    simp only [ContinuousLinearMap.comp_apply, zero_apply, hℓ] at h3
+    rw [real_inner_comm]
+    linarith
+  -- Step 2: `H = 1_{B_{2r}(y₀)} · Φ(DPt(x), pₓ)`
+  refine ⟨(ball y₀ (2 * r)).indicator
+    (fun x => Φ (fderiv ℝ Pt x) (approxTangentPlane n R.carrier x).starProjection), ?_, ?_, ?_⟩
+  · -- Step 2(b): `x ↦ DPt(x)` is Borel, `x ↦ pₓ` is `μ_V`-measurable and `Φ` is continuous
+    have hΦc : Continuous (fun q : (Euclid P →L[ℝ] (Euclid P →L[ℝ] Euclid P)) ×
+        (Euclid P →L[ℝ] Euclid P) => Φ q.1 q.2) := by
+      simp only [Φ]
+      fun_prop
+    have h1 : AEMeasurable
+        (fun x => Φ (fderiv ℝ Pt x) (approxTangentPlane n R.carrier x).starProjection) R.measure :=
+      hΦc.aemeasurable2 (measurable_fderiv ℝ Pt).aemeasurable hpm
+    exact (h1.indicator measurableSet_ball).aestronglyMeasurable
+  · -- Step 2(a): `‖H(x)‖ ≤ Σᵢ ‖DPt(x)‖ |τᵢ|² ≤ nβ`
+    intro x
+    by_cases hx : x ∈ ball y₀ (2 * r)
+    · set τ := stdOrthonormalBasis ℝ (approxTangentPlane n R.carrier x)
+      rw [indicator_of_mem hx, hcontr _ _ τ]
+      have hτ : ∀ i, ‖(τ i : Euclid P)‖ = 1 := fun i => by
+        rw [Submodule.norm_coe]
+        exact τ.orthonormal.norm_eq_one i
+      calc ‖∑ i, fderiv ℝ Pt x (τ i : Euclid P) (τ i : Euclid P)‖
+          ≤ ∑ i, ‖fderiv ℝ Pt x (τ i : Euclid P) (τ i : Euclid P)‖ := norm_sum_le _ _
+        _ ≤ ∑ _i, ‖fderiv ℝ Pt x‖ := by
+            gcongr with i
+            calc ‖fderiv ℝ Pt x (τ i : Euclid P) (τ i : Euclid P)‖
+                ≤ ‖fderiv ℝ Pt x (τ i : Euclid P)‖ * ‖(τ i : Euclid P)‖ :=
+                  ContinuousLinearMap.le_opNorm _ _
+              _ ≤ ‖fderiv ℝ Pt x‖ * ‖(τ i : Euclid P)‖ * ‖(τ i : Euclid P)‖ := by
+                  gcongr
+                  exact ContinuousLinearMap.le_opNorm _ _
+              _ = ‖fderiv ℝ Pt x‖ := by rw [hτ, mul_one, mul_one]
+        _ = (Module.finrank ℝ (approxTangentPlane n R.carrier x) : ℝ) * ‖fderiv ℝ Pt x‖ := by
+            simp
+        _ ≤ (n : ℝ) * β := by
+            gcongr
+            · exact_mod_cast hrank x
+            · exact hDPt x hx
+    · rw [indicator_of_notMem hx, norm_zero]
+      positivity
+  -- Steps 3–6, for a fixed `X ∈ C¹_c(B_{2r}(y₀); ℝᴾ)`
+  intro X hX hXc hXs
+  have hXzero : ∀ x, x ∉ tsupport X → X =ᶠ[𝓝 x] 0 := fun x hx =>
+    notMem_tsupport_iff_eventuallyEq.mp hx
+  -- Step 3(a): `Xᵀ = Pt·X` is `C¹`: on `B_{3r}(y₀)` by the product rule, elsewhere it vanishes
+  -- near the point
+  have hXTc : ContDiff ℝ 1 (fun x => Pt x (X x)) := by
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    by_cases hx : x ∈ ball y₀ (3 * r)
+    · exact (hPt.contDiffAt (isOpen_ball.mem_nhds hx)).clm_apply hX.contDiffAt
+    · have hxK : x ∉ tsupport X := fun h => hx (h23 (hXs h))
+      have hev : (fun x => Pt x (X x)) =ᶠ[𝓝 x] fun _ => 0 := by
+        filter_upwards [hXzero x hxK] with y hy
+        simp [hy]
+      exact contDiffAt_const.congr_of_eventuallyEq hev
+  -- Step 3(b): `spt Xᵀ ⊆ spt X`, a compact subset of `U`
+  have hXTsupp : tsupport (fun x => Pt x (X x)) ⊆ tsupport X := by
+    apply closure_mono
+    intro x hx
+    by_contra h
+    apply hx
+    simp [Function.notMem_support.mp h]
+  have hXTc' : HasCompactSupport (fun x => Pt x (X x)) :=
+    hXc.mono' ((subset_tsupport _).trans hXTsupp)
+  have hXsU : tsupport X ⊆ U := hXs.trans (h23.trans hball)
+  have hXTsU : tsupport (fun x => Pt x (X x)) ⊆ U := hXTsupp.trans hXsU
+  -- Step 3(c): `Xᵀ(x) ∈ TₓN` on `N ∩ U` (off `B_{3r}(y₀)`, `Xᵀ(x) = 0`, the velocity of a
+  -- constant curve)
+  have hXTtan : ∀ x ∈ N ∩ U, (fun x => Pt x (X x)) x ∈ tangentSpace N x := by
+    rintro x ⟨hxN, -⟩
+    by_cases hx : x ∈ ball y₀ (3 * r)
+    · exact hPtT x ⟨hxN, hx⟩ (X x)
+    · have hxK : x ∉ tsupport X := fun h => hx (h23 (hXs h))
+      have hX0 : X x = 0 := image_eq_zero_of_notMem_tsupport hxK
+      simp only [hX0, map_zero]
+      exact ⟨fun _ => x, contDiffOn_const, fun _ _ => hxN, rfl, hasDerivAt_const _ _⟩
+  -- Step 3(d): stationarity in `U ∩ N` gives `δV(Xᵀ) = 0`
+  have hδXT : R.firstVariation (fun x => Pt x (X x)) = 0 := hstat _ hXTc hXTc' hXTsU hXTtan
+  -- Step 4: integral form of `δV(X)` and `δV(Xᵀ)` (sibling `first_variation_integral`), and
+  -- `div_M X = div_M Xᵀ + div_M Y` with `Y = X − Xᵀ`
+  obtain ⟨hiX, hδX⟩ := Submission.dsmc_firstVariation_eq_integral P n U R X hX hXc hXsU hpm
+  obtain ⟨hiXT, hδXT'⟩ :=
+    Submission.dsmc_firstVariation_eq_integral P n U R _ hXTc hXTc' hXTsU hpm
+  have hdivY : ∀ x, tangentialDivergence n R.carrier (fun y => X y - Pt y (X y)) x =
+      tangentialDivergence n R.carrier X x -
+        tangentialDivergence n R.carrier (fun x => Pt x (X x)) x := by
+    intro x
+    have hD : fderiv ℝ (fun y => X y - Pt y (X y)) x =
+        fderiv ℝ X x - fderiv ℝ (fun x => Pt x (X x)) x :=
+      fderiv_sub (hX.differentiable one_ne_zero x) (hXTc.differentiable one_ne_zero x)
+    simp only [tangentialDivergence, hD, ContinuousLinearMap.toLinearMap_sub, LinearMap.comp_sub,
+      map_sub]
+  -- Step 5: `div_M Y = −⟨X, H⟩` at `μ_V`-a.e. `x`
+  have hae : (fun x => tangentialDivergence n R.carrier (fun y => X y - Pt y (X y)) x)
+      =ᵐ[R.measure] fun x => -inner ℝ (X x) ((ball y₀ (2 * r)).indicator
+        (fun x => Φ (fderiv ℝ Pt x) (approxTangentPlane n R.carrier x).starProjection) x) := by
+    filter_upwards [hN, hTN] with x hxN hxT
+    by_cases hxK : x ∈ tsupport X
+    · -- Step 5(b)–(d): `DY(x)u = DX(x)u − Pt(x)DX(x)u − (DPt(x)u)X(x)`, and for an orthonormal
+      -- basis `τ` of `TₓM ⊆ TₓN`: `⟨τᵢ, Pt(x)DX(x)τᵢ⟩ = ⟨τᵢ, DX(x)τᵢ⟩` and
+      -- `⟨τᵢ, (DPt(x)τᵢ)X(x)⟩ = ⟨(DPt(x)τᵢ)τᵢ, X(x)⟩`
+      have hx2 : x ∈ ball y₀ (2 * r) := hXs hxK
+      have hx3 : x ∈ ball y₀ (3 * r) := h23 hx2
+      set τ := stdOrthonormalBasis ℝ (approxTangentPlane n R.carrier x)
+      have hfix : ∀ v ∈ approxTangentPlane n R.carrier x, Pt x v = v := fun v hv =>
+        hPtfix x ⟨hxN, hx3⟩ v (hxT hx3 hv)
+      have hXd : DifferentiableAt ℝ X x := hX.differentiable one_ne_zero x
+      have hXTd : DifferentiableAt ℝ (fun y => Pt y (X y)) x := (hPtd x hx3).clm_apply hXd
+      have hD : fderiv ℝ (fun y => X y - Pt y (X y)) x =
+          fderiv ℝ X x - ((Pt x).comp (fderiv ℝ X x) + (fderiv ℝ Pt x).flip (X x)) := by
+        rw [fderiv_fun_sub hXd hXTd, fderiv_clm_apply (hPtd x hx3) hXd]
+      rw [indicator_of_mem hx2, hcontr _ _ τ]
+      simp only [tangentialDivergence]
+      rw [htr _ _ τ, hD, inner_sum, ← Finset.sum_neg_distrib]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      have hfixi : Pt x (τ i : Euclid P) = τ i := hfix _ (τ i).2
+      simp only [sub_apply, add_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.flip_apply, inner_sub_right, inner_add_right]
+      rw [← hsym x hx3, hfixi, ← hDsym x hx3, real_inner_comm (X x)]
+      ring
+    · -- Step 5(a): off `spt X`, `Y` vanishes near `x`
+      have hev : (fun y => X y - Pt y (X y)) =ᶠ[𝓝 x] fun _ => 0 := by
+        filter_upwards [hXzero x hxK] with y hy
+        simp [hy]
+      have hX0 : X x = 0 := image_eq_zero_of_notMem_tsupport hxK
+      simp only [tangentialDivergence, hev.fderiv_eq, hX0, inner_zero_left, neg_zero]
+      simp
+  -- Step 6: `δV(X) = ∫ div_M Xᵀ + ∫ div_M Y = ∫ div_M Y = −∫ ⟨X, H⟩`
+  calc R.firstVariation X = ∫ x, tangentialDivergence n R.carrier X x ∂R.measure := hδX
+    _ = ∫ x, tangentialDivergence n R.carrier (fun y => X y - Pt y (X y)) x ∂R.measure := by
+        simp_rw [hdivY]
+        rw [integral_sub hiX hiXT, ← hδXT', hδXT, sub_zero]
+    _ = _ := integral_congr_ae hae
+    _ = _ := integral_neg _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
