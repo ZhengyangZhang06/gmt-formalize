@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d00cb097f4e0b9b140e330fc8d143651563465b27cacb51030b91bc25e07d65e",
+  "git_delta": {
+    "base_commit": "9a8a03041411292a5b3c1e46effb42b6a8a0e80b",
+    "candidate_commit": "c2e79dfc132d96291ff1478c604f748dfce565d6",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ail_hessian_local_unif",
+    "diff_sha256": "1a73569306e978b54a757b013dff8d9c3303d43e8536eb70ee606be9d95f8e2f",
+    "source_sha256": "73b5f05b596625b34763d5db362ead9adf11efa85bfdddc7c83cfb1d40dd6ec2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ail_hessian_local_unif",
+      "statement": "∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x₀ : E, ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ∀ x : E, ‖x - x₀‖ ≤ ε → ∀ Q Q' : E, |fderiv ℝ (fderiv ℝ F) x Q Q' - fderiv ℝ (fderiv ℝ F) x₀ Q Q'| ≤ δ * (‖Q‖ * ‖Q'‖)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
