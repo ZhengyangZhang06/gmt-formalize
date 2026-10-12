@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollifier_seq-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+  "depth": 4,
+  "title": "Mollifier sequence: C¹ kernels ρ_j supported in B̄_{r/(j+1)}(0) whose mollified indicators ∫_G ρ_j(y − z)dz are Lipschitz, [0,1]-valued and converge to χ_G a.e. and weakly (parent Steps 1 and 3)",
+  "statement": "Let N ∈ ℕ and r > 0. There are functions ρ_j : ℝ^N → ℝ (j ∈ ℕ) such that each ρ_j is C¹, has compact support, satisfies ρ_j ≥ 0, ∫ ρ_j dL^N = 1 and tsupport ρ_j ⊆ B̄_{r/(j+1)}(0) (closed ball), and such that for every Lebesgue null-measurable G ⊆ ℝ^N the mollified indicators u_j(y) := ∫_G ρ_j(y − z) dL^N(z) satisfy: (i) each u_j is Lipschitz (with some constant L_j ∈ ℝ≥0); (ii) 0 ≤ u_j(y) ≤ 1 for all j and y; (iii) u_j(y) → χ_G(y) as j → ∞ for L^N-a.e. y, where χ_G = G.indicator 1; (iv) ∫ u_j h dL^N → ∫_G h dL^N as j → ∞ for every L^N-integrable h : ℝ^N → ℝ.",
+  "lean_statement": "∀ (N : ℕ) (r : ℝ), 0 < r → ∃ ρ : ℕ → Rn N → ℝ, (∀ j, ContDiff ℝ 1 (ρ j)) ∧ (∀ j, HasCompactSupport (ρ j)) ∧ (∀ j y, 0 ≤ ρ j y) ∧ (∀ j, ∫ y, ρ j y = 1) ∧ (∀ j, tsupport (ρ j) ⊆ Metric.closedBall (0 : Rn N) (r / ((j : ℝ) + 1))) ∧ ∀ G : Set (Rn N), NullMeasurableSet G volume → (∀ j, ∃ L : ℝ≥0, LipschitzWith L (fun y ↦ ∫ z in G, ρ j (y - z))) ∧ (∀ j y, 0 ≤ (∫ z in G, ρ j (y - z)) ∧ (∫ z in G, ρ j (y - z)) ≤ 1) ∧ (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ∫ z in G, ρ j (y - z)) atTop (𝓝 (G.indicator (fun _ ↦ (1 : ℝ)) y))) ∧ ∀ h : Rn N → ℝ, Integrable h → Tendsto (fun j ↦ ∫ y, (∫ z in G, ρ j (y - z)) * h y) atTop (𝓝 (∫ y in G, h y))",
+  "lean_name": "deGiorgiSobInd_mollifier_seq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollifier-seq-a1-a1"
+}
