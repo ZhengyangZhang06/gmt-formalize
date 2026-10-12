@@ -3851,6 +3851,146 @@ theorem lgc_density_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (
       (div_le_div_of_nonneg_left hD0 (half_pos ht) hτ0.le)) hx (abs_nonneg _)
       (div_nonneg hD0 (half_pos ht).le)
 
+/-- **Hole estimate** (Simon Ch. 5, proof of Lemma 2.6, displays (9)–(10) in corrected form, as
+used in the proof of Corollary 2.7, pp. 112–113).  There are `δ₂, ε₂, C₂ > 0` depending only on
+`n, ℓ, p` such that, under 2.3 with `δ ≤ δ₂`, for a linear isometry `q`, `f : ℝⁿ → ℝ^ℓ` with
+`Lip f ≤ ε ≤ ε₂` and `ζ ∈ F̂ = q(graph f)` with `|ζ| ≤ 2δρ` and `0 < d = dist(ζ, spt V) ≤ δρ`, some
+`y ∈ spt V` has `|y − ζ| = d` and, with `s = d/2` and `T₀ = q(ℝⁿ × {0})`,
+`sⁿ ≤ C₂ (μ_V(B_{3s}(ζ) \ F̂) + ∫_{B_{3s}(ζ)} |p_{T_x M} − p_{T₀}|² dμ_V)`.
+Proof: the nearest point `y` empties `B_s(ζ)` (`lgc_support_closest_point`).  Annular monotonicity
+at `ζ` and the lower density bound at `y` (`lgc_density_monotonicity`) give
+`s^{n+2} ≤ 4·3ⁿ e² ω_n⁻¹ I` with `I = ∫_{B_{3s}(ζ)} |(x − ζ) − p_x(x − ζ)|² dμ_V`
+(`lgc_hole_annulus_lower`).  The slope of `F̂` relative to `T₀` (`lgc_rotated_graph_slope`) and the
+splitting `p_x^⊥ = p_{T₀}^⊥ + (p_{T₀} − p_x)` (`lgc_hole_split_upper`), with the upper density bound
+`μ_V(B_{3s}(ζ)) ≤ 2 ω_n 3ⁿ sⁿ`, give `I ≤ 18 s² (2 ω_n 3ⁿ ε² sⁿ + μ_V(B_{3s}(ζ) \ F̂) + tilt)`.
+With `δ₂ = min(δ₀, ω_n/(4·3ⁿ(C₀ + 1)))`, `ε₂ = (288·15ⁿ e²)^{-1/2}` and `C₂ = 144·3ⁿ e²/ω_n`, the
+`ε²` term is at most `sⁿ/2` and is absorbed. -/
+theorem lgc_hole_estimate : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₂ ε₂ C₂ : ℝ, 0 < δ₂ ∧ 0 < ε₂ ∧ 0 < C₂ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₂ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → ε ≤ ε₂ → LipschitzWith (Real.toNNReal ε) f → ∀ ζ ∈ q '' graphOver f univ, ‖ζ‖ ≤ 2 * (δ * ρ) → 0 < infDist ζ V.support → infDist ζ V.support ≤ δ * ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ (infDist ζ V.support / 2) ^ n ≤ C₂ * ((V.weight (closedBall ζ (3 * (infDist ζ V.support / 2)) \ q '' graphOver f univ)).toReal + ∫ x in closedBall ζ (3 * (infDist ζ V.support / 2)), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight) := by
+  intro n ℓ hn p hp
+  -- Step 1: constants.  `(D)` is the density/monotonicity package `lgc_density_monotonicity`.
+  obtain ⟨δ₀, C₀, hδ₀, hδ₀8, hC₀, hD⟩ := lgc_density_monotonicity n ℓ hn p hp
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    apply div_pos
+    · exact Real.rpow_pos_of_pos Real.pi_pos _
+    · exact Real.Gamma_pos_of_pos (by positivity)
+  set ω := unitBallVolume n with hω_def
+  have hK : 0 < Real.exp 2 := Real.exp_pos 2
+  set K := Real.exp 2 with hK_def
+  have hX : 0 < 288 * 15 ^ n * K := by positivity
+  -- `δ₂ = min(δ₀, ω/(4·3ⁿ(C₀+1)))`, `ε₂ = (288·15ⁿ e²)^{-1/2}`, `C₂ = 144·3ⁿ e²/ω`.
+  refine ⟨min δ₀ (ω / (4 * 3 ^ n * (C₀ + 1))), (Real.sqrt (288 * 15 ^ n * K))⁻¹,
+    144 * 3 ^ n * K / ω, ?_, ?_, ?_, ?_⟩
+  · exact lt_min hδ₀ (by positivity)
+  · have : 0 < Real.sqrt (288 * 15 ^ n * K) := Real.sqrt_pos.2 hX
+    positivity
+  · positivity
+  intro U hU V H δ ρ hδ hδ₂ hAH q f ε hε hε₂ hf ζ hζF hζn hd0 hdle
+  have hδ₀' : δ ≤ δ₀ := hδ₂.trans (min_le_left _ _)
+  have hδc : δ ≤ ω / (4 * 3 ^ n * (C₀ + 1)) := hδ₂.trans (min_le_right _ _)
+  obtain ⟨hDi, hDii, hDiii⟩ := hD U hU V H δ ρ hδ hδ₀' hAH
+  obtain ⟨hρ, -, -, h0, hBall, -, -⟩ := hAH
+  -- Step 2: the nearest point `y ∈ spt V` and the empty ball `B_s(ζ)`, `s = d/2`.
+  set d := infDist ζ V.support with hd_def
+  set s := d / 2 with hs_def
+  have hs : 0 < s := by positivity
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hδ8 : δ ≤ 1 / 8 := hδ₀'.trans hδ₀8
+  have hρδ : δ * ρ ≤ ρ / 8 := by nlinarith
+  have hsum : ‖ζ‖ + d ≤ ρ := by linarith
+  obtain ⟨y, hyV, hyd, hball0⟩ := lgc_support_closest_point n ℓ U V ρ ζ h0 hBall hsum
+  have hhole : V.weight (closedBall ζ s) = 0 :=
+    measure_mono_null (closedBall_subset_ball (by linarith)) hball0
+  have hζ3 : ‖ζ‖ ≤ 3 * δ * ρ := by linarith
+  have hy3 : ‖y‖ ≤ 3 * δ * ρ := by
+    have h1 : ‖y‖ ≤ ‖ζ‖ + dist y ζ := by
+      rw [dist_eq_norm]
+      calc ‖y‖ = ‖ζ + (y - ζ)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖ζ‖ + ‖y - ζ‖ := norm_add_le _ _
+    linarith
+  have hs_le : s ≤ ρ / 2 := by linarith
+  have h3s_le : 3 * s ≤ ρ / 2 := by linarith
+  have hfin : V.weight (closedBall ζ (3 * s)) ≠ ⊤ :=
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top (hDi ζ hζ3 (3 * s) (by positivity) h3s_le)
+  -- Steps 3–4: annular monotonicity at `ζ` and the lower density bound at `y`.
+  have hlow := hDii y hyV hy3 s hs hs_le
+  have hmono := hDiii ζ hζ3 s (3 * s) hs (by linarith) h3s_le
+  have hmeas := (lgc_tangent_plane_ae n ℓ hn U hU V).1
+  have hpb : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+    intro x
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  have hc : C₀ * δ ≤ ω / (4 * 3 ^ n) := by
+    have h4 : (0:ℝ) < 4 * 3 ^ n := by positivity
+    have hC1 : 0 < C₀ + 1 := by linarith
+    calc C₀ * δ ≤ C₀ * (ω / (4 * 3 ^ n * (C₀ + 1))) := mul_le_mul_of_nonneg_left hδc hC₀
+      _ = ω / (4 * 3 ^ n) * (C₀ / (C₀ + 1)) := by field_simp
+      _ ≤ ω / (4 * 3 ^ n) * 1 := by
+          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          rw [div_le_one hC1]; linarith
+      _ = ω / (4 * 3 ^ n) := mul_one _
+  have hL := lgc_hole_annulus_lower n ℓ V.weight V.tangentProj ζ y s ω (C₀ * δ) hs hω hmeas hpb
+    hhole hfin (by rw [hyd]; linarith) hlow hc hmono
+  -- Step 5: split the normal part on `B_{3s}(ζ)` using the slope of `F̂ = q(graph f)`.
+  obtain ⟨hFcl, hslope⟩ := lgc_rotated_graph_slope n ℓ q f ε hε hf
+  have hU2 := lgc_hole_split_upper n ℓ V.weight V.tangentProj (rotatedPlane q)
+    (q '' graphOver f univ) ζ s ε hs hmeas hpb hFcl.measurableSet hfin
+    (fun x hx => hslope x hx ζ hζF)
+  have hm3 : (V.weight (closedBall ζ (3 * s))).toReal ≤ 2 * ω * (3 * s) ^ n :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) (hDi ζ hζ3 (3 * s) (by positivity) h3s_le)
+  refine ⟨y, hyV, hyd, ?_⟩
+  -- Step 6: combine and absorb the `ε²` term using `ε ≤ ε₂`.
+  set m3 := (V.weight (closedBall ζ (3 * s))).toReal with hm3_def
+  set I := ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - V.tangentProj x (x - ζ)‖ ^ 2 ∂V.weight
+    with hI_def
+  set A := (V.weight (closedBall ζ (3 * s) \ q '' graphOver f univ)).toReal with hA_def
+  set B := ∫ x in closedBall ζ (3 * s),
+    hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight with hB_def
+  have hε2 : ε ^ 2 ≤ 1 / (288 * 15 ^ n * K) := by
+    have := pow_le_pow_left₀ hε hε₂ 2
+    rwa [inv_pow, Real.sq_sqrt hX.le, ← one_div] at this
+  have hK1 : 0 ≤ 4 * 3 ^ n * K / ω := by positivity
+  have h1 : s ^ n * s ^ 2 ≤ 4 * 3 ^ n * K / ω * (18 * s ^ 2 * (ε ^ 2 * m3 + A + B)) := by
+    calc s ^ n * s ^ 2 = s ^ (n + 2) := (pow_add s n 2).symm
+      _ ≤ 4 * 3 ^ n * K / ω * I := hL
+      _ ≤ _ := mul_le_mul_of_nonneg_left hU2 hK1
+  have hs2 : 0 < s ^ 2 := by positivity
+  have h2 : s ^ n ≤ 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3 + A + B) := by
+    have : s ^ n * s ^ 2 ≤ (4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3 + A + B)) * s ^ 2 := by
+      calc s ^ n * s ^ 2 ≤ _ := h1
+        _ = _ := by ring
+    exact le_of_mul_le_mul_right this hs2
+  have h3 : ε ^ 2 * m3 ≤ ε ^ 2 * (2 * ω * 3 ^ n * s ^ n) := by
+    apply mul_le_mul_of_nonneg_left _ (sq_nonneg ε)
+    calc m3 ≤ 2 * ω * (3 * s) ^ n := hm3
+      _ = 2 * ω * 3 ^ n * s ^ n := by rw [mul_pow]; ring
+  have h4 : 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * (2 * ω * 3 ^ n * s ^ n)) =
+      144 * 9 ^ n * K * ε ^ 2 * s ^ n := by
+    rw [show (9:ℝ) ^ n = 3 ^ n * 3 ^ n by rw [← mul_pow]; norm_num]
+    field_simp
+    ring
+  have h5 : 144 * 9 ^ n * K * ε ^ 2 * s ^ n ≤ s ^ n / 2 := by
+    have h9 : (9:ℝ) ^ n ≤ 15 ^ n := pow_le_pow_left₀ (by norm_num) (by norm_num) n
+    have h' : 144 * 9 ^ n * K * ε ^ 2 ≤ 1 / 2 := by
+      calc 144 * 9 ^ n * K * ε ^ 2 ≤ 144 * 15 ^ n * K * ε ^ 2 := by gcongr
+        _ ≤ 144 * 15 ^ n * K * (1 / (288 * 15 ^ n * K)) := by gcongr
+        _ = 1 / 2 := by field_simp; ring
+    calc 144 * 9 ^ n * K * ε ^ 2 * s ^ n ≤ 1 / 2 * s ^ n :=
+          mul_le_mul_of_nonneg_right h' (by positivity)
+      _ = s ^ n / 2 := by ring
+  have h6 : s ^ n ≤ s ^ n / 2 + 72 * 3 ^ n * K / ω * (A + B) := by
+    calc s ^ n ≤ 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3 + A + B) := h2
+      _ = 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3) + 72 * 3 ^ n * K / ω * (A + B) := by ring
+      _ ≤ 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * (2 * ω * 3 ^ n * s ^ n)) +
+            72 * 3 ^ n * K / ω * (A + B) := by gcongr
+      _ = 144 * 9 ^ n * K * ε ^ 2 * s ^ n + 72 * 3 ^ n * K / ω * (A + B) := by rw [h4]
+      _ ≤ s ^ n / 2 + 72 * 3 ^ n * K / ω * (A + B) := by gcongr
+  have e : 144 * 3 ^ n * K / ω * (A + B) = 2 * (72 * 3 ^ n * K / ω * (A + B)) := by ring
+  rw [e]
+  linarith
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
