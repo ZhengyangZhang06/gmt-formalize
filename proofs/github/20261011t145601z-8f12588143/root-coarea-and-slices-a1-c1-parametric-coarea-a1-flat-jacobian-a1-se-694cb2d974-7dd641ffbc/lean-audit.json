@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "432edc94dee61c4b8a3bd83bbc92a59c0cdc09579f681f39c87b14ca536a0dd6",
+  "git_delta": {
+    "base_commit": "e6534ec5aba13f15955c507ad1bf3e11485f19c4",
+    "candidate_commit": "f85a06483386ddfe3ba4d63720a55e70527cbd31",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "pcoarea_flat_normDet_section",
+    "diff_sha256": "a2ff7f1a2d63b79f25dfc92abf1ade70b6eaf5bd58cd146ad45d5954993682d6",
+    "source_sha256": "9b450624f3bf9d0b01211946567681bc38b7f476525f3d2f4bf4ac532404b910",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pcoarea_flat_normDet_section",
+      "statement": "∀ (n k N : ℕ) (A : Rn n →ₗ[ℝ] Rn N) (K : Submodule ℝ (Rn n)) (S : Rn n →ₗ[ℝ] Rn k) (E : Rn k →ₗ[ℝ] Rn n), Module.finrank ℝ K = k → (∀ z, E z ∈ K) → (∀ z, S (E z) = z) → (A ∘ₗ E).normDet * (S ∘ₗ K.subtype).normDet = (A ∘ₗ K.subtype).normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
