@@ -590,6 +590,117 @@ theorem Submission.smooth_step_truncation_exists : ∀ ε : ℝ, 0 < ε → ∃ 
     have : a - T ≤ 0 := by have := le_max_left a 0; linarith
     rw [sub_zero, hψ0 _ this, sub_zero]
     exact ENNReal.ofReal_le_one.2 (Real.smoothTransition.le_one _)
+/-- **Kernel bound** (Simon Ch. 4, 4.10(2) for full balls, via 4.11; used in 5.6). If
+`μ(B_s(y)) ≤ K sⁿ` for `0 < s ≤ ρ`, then `∫_{B_s(y)} |x - y|^{1-n} dμ ≤ n K s` for `0 < s ≤ ρ`.
+By the layer-cake formula, the levels `t ≤ s^{1-n}` contribute at most `μ(B_s(y)) s^{1-n} ≤ K s`;
+for `t > s^{1-n}` the superlevel set lies in `B_{t^{1/(1-n)}}(y)`, so these levels contribute at
+most `K ∫_{s^{1-n}}^∞ t^{n/(1-n)} dt = (n - 1) K s`. -/
+theorem Submission.closedBall_rpow_kernel_lintegral_le_of_growth : ∀ {X : Type} [NormedAddCommGroup X] [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (n : ℕ) (y : X) (ρ K : ℝ), 0 < n → (∀ s : ℝ, 0 < s → s ≤ ρ → μ (closedBall y s) ≤ ENNReal.ofReal (K * s ^ n)) → ∀ s : ℝ, 0 < s → s ≤ ρ → ∫⁻ x in closedBall y s, ENNReal.ofReal (‖x - y‖ ^ (1 - (n : ℝ))) ∂μ ≤ ENNReal.ofReal (n * K * s) := by
+  intro X _ _ _ μ n y ρ K hn hgrowth s hs hsρ
+  -- `K < 0`: then `μ(B_s(y)) = 0`
+  rcases lt_or_ge K 0 with hK | hK
+  · have h0 : μ (closedBall y s) = 0 := by
+      have := hgrowth s hs hsρ
+      rw [ENNReal.ofReal_of_nonpos (mul_nonpos_of_nonpos_of_nonneg hK.le (pow_pos hs n).le)] at this
+      exact le_antisymm this bot_le
+    rw [Measure.restrict_eq_zero.2 h0, lintegral_zero_measure]
+    exact bot_le
+  -- `n = 1`: the integrand is `1` and the bound is the growth hypothesis
+  rcases Nat.lt_or_ge n 2 with hn2 | hn2
+  · have hn1 : n = 1 := by omega
+    subst hn1
+    simp only [Nat.cast_one, sub_self, Real.rpow_zero, ENNReal.ofReal_one, lintegral_const,
+      Measure.restrict_apply MeasurableSet.univ, univ_inter, one_mul]
+    simpa using hgrowth s hs hsρ
+  -- `n ≥ 2`: layer cake for `F = ‖· - y‖^z`, `z = 1 - n < 0`, on `μ ⌞ B_s(y)`
+  set z : ℝ := 1 - (n : ℝ) with hz
+  have hn2' : (2 : ℝ) ≤ n := by exact_mod_cast hn2
+  have hz0 : z < 0 := by linarith
+  set F : X → ℝ := fun x => ‖x - y‖ ^ z with hF
+  have hFmeas : Measurable F := (measurable_id.sub_const y).norm.pow_const z
+  have hF0 : ∀ x, 0 ≤ F x := fun x => Real.rpow_nonneg (norm_nonneg _) _
+  have hLC := lintegral_eq_lintegral_meas_lt (μ.restrict (closedBall y s))
+    (Eventually.of_forall hF0) hFmeas.aemeasurable
+  rw [hLC]
+  set T : ℝ := s ^ z with hT
+  have hTpos : 0 < T := Real.rpow_pos_of_pos hs z
+  -- every level set has measure at most `μ(B_s(y)) ≤ K sⁿ`
+  have hlev1 : ∀ t : ℝ, (μ.restrict (closedBall y s)) {x | t < F x} ≤
+      ENNReal.ofReal (K * s ^ n) := by
+    intro t
+    calc (μ.restrict (closedBall y s)) {x | t < F x} ≤ (μ.restrict (closedBall y s)) univ :=
+          measure_mono (subset_univ _)
+      _ = μ (closedBall y s) := by rw [Measure.restrict_apply_univ]
+      _ ≤ _ := hgrowth s hs hsρ
+  -- for `t > T = s^z`, `{F > t} ⊆ B_{t^{1/z}}(y)` with `0 < t^{1/z} < s`
+  have hlev2 : ∀ t : ℝ, T < t →
+      (μ.restrict (closedBall y s)) {x | t < F x} ≤ ENNReal.ofReal (K * t ^ ((n : ℝ) / z)) := by
+    intro t ht
+    have htpos : 0 < t := hTpos.trans ht
+    have hr : t ^ z⁻¹ < s := (Real.rpow_inv_lt_iff_of_neg htpos hs hz0).2 ht
+    have hrpos : 0 < t ^ z⁻¹ := Real.rpow_pos_of_pos htpos _
+    have hpow : (t ^ z⁻¹) ^ n = t ^ ((n : ℝ) / z) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul htpos.le, inv_mul_eq_div]
+    calc (μ.restrict (closedBall y s)) {x | t < F x} ≤ μ {x | t < F x} :=
+          Measure.restrict_le_self _
+      _ ≤ μ (closedBall y (t ^ z⁻¹)) := by
+          apply measure_mono
+          intro x hx
+          simp only [Set.mem_ofPred_eq, hF] at hx
+          rw [mem_closedBall, dist_eq_norm]
+          by_cases hxy : ‖x - y‖ = 0
+          · rw [hxy, Real.zero_rpow hz0.ne] at hx; linarith
+          · have hpos : 0 < ‖x - y‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hxy)
+            exact ((Real.lt_rpow_inv_iff_of_neg hpos htpos hz0).2 hx).le
+      _ ≤ ENNReal.ofReal (K * (t ^ z⁻¹) ^ n) := hgrowth _ hrpos (hr.le.trans hsρ)
+      _ = ENNReal.ofReal (K * t ^ ((n : ℝ) / z)) := by rw [hpow]
+  -- split `(0, ∞) = (0, T] ∪ (T, ∞)`
+  have hsplit : Ioi (0 : ℝ) = Ioc 0 T ∪ Ioi T := (Ioc_union_Ioi_eq_Ioi hTpos.le).symm
+  rw [hsplit, lintegral_union measurableSet_Ioi (Ioc_disjoint_Ioi le_rfl)]
+  -- `(0, T]`: at most `K sⁿ · s^{1-n} = K s`
+  have hI1 : ∫⁻ t in Ioc 0 T, (μ.restrict (closedBall y s)) {x | t < F x} ≤
+      ENNReal.ofReal (K * s) := by
+    calc ∫⁻ t in Ioc 0 T, (μ.restrict (closedBall y s)) {x | t < F x}
+        ≤ ∫⁻ t in Ioc 0 T, ENNReal.ofReal (K * s ^ n) :=
+          setLIntegral_mono' measurableSet_Ioc fun t _ => hlev1 t
+      _ = ENNReal.ofReal (K * s ^ n) * ENNReal.ofReal T := by
+          rw [setLIntegral_const, Real.volume_Ioc, sub_zero]
+      _ = ENNReal.ofReal (K * s) := by
+          rw [← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          rw [hT, hz, mul_assoc, ← Real.rpow_natCast, ← Real.rpow_add hs]
+          norm_num
+  -- `n/z + 1 = 1/z < 0`
+  have h1 : (n : ℝ) / z + 1 = z⁻¹ := by
+    have hzne : (1 : ℝ) - n ≠ 0 := by linarith
+    rw [hz]; field_simp; ring
+  have hexp : (n : ℝ) / z < -1 := by
+    have h2 : z⁻¹ < 0 := inv_lt_zero.2 hz0
+    linarith
+  -- `(T, ∞)`: at most `K ∫_T^∞ t^{n/z} dt = K (n - 1) s`
+  have hI2 : ∫⁻ t in Ioi T, (μ.restrict (closedBall y s)) {x | t < F x} ≤
+      ENNReal.ofReal (K * ((n : ℝ) - 1) * s) := by
+    calc ∫⁻ t in Ioi T, (μ.restrict (closedBall y s)) {x | t < F x}
+        ≤ ∫⁻ t in Ioi T, ENNReal.ofReal (K * t ^ ((n : ℝ) / z)) :=
+          setLIntegral_mono' measurableSet_Ioi fun t ht => hlev2 t ht
+      _ = ENNReal.ofReal (∫ t in Ioi T, K * t ^ ((n : ℝ) / z)) := by
+          rw [ofReal_integral_eq_lintegral_ofReal]
+          · exact (integrableOn_Ioi_rpow_of_lt hexp hTpos).const_mul K
+          · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+            exact mul_nonneg hK (Real.rpow_nonneg (hTpos.trans ht).le _)
+      _ = ENNReal.ofReal (K * ((n : ℝ) - 1) * s) := by
+          congr 1
+          rw [integral_const_mul, integral_Ioi_rpow_of_lt hexp hTpos, h1, hT,
+            Real.rpow_rpow_inv hs.le hz0.ne, hz]
+          field_simp
+          ring
+  -- total: `K s + K (n - 1) s = n K s`
+  calc _ ≤ ENNReal.ofReal (K * s) + ENNReal.ofReal (K * ((n : ℝ) - 1) * s) := add_le_add hI1 hI2
+    _ = ENNReal.ofReal (n * K * s) := by
+        have hn1 : (0 : ℝ) ≤ (n : ℝ) - 1 := by linarith
+        rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
+        congr 1
+        ring
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
