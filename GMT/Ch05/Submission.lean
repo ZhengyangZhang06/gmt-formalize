@@ -460,4 +460,547 @@ def RegularSetOpenDense : Prop :=
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+theorem allard52_radial_height : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (α M A : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → Rn ℓ) (R δ : ℝ), 0 < R → 0 < δ → δ ≤ 1 → f 0 = 0 → ContDiffOn ℝ 1 f (ball 0 R) → LipschitzOnWith 1 f (ball 0 R) → (∀ x ∈ ball (0 : Rn n) R, hsNorm (fderiv ℝ f x) ≤ M * (‖x‖ / R) ^ α) → ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (‖f x - fderiv ℝ f x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ≤ ENNReal.ofReal (A * δ) → ∀ x ∈ ball (0 : Rn n) R, ‖f x‖ ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) * ‖x‖ := by
+  have rayCS : ∀ (ℓ : ℕ) (φ φ' : ℝ → Rn ℓ) (a b : ℝ), 0 < a → a ≤ b → (∀ t ∈ Icc a b, HasDerivAt φ (φ' t) t) → ContinuousOn φ' (Icc a b) → ENNReal.ofReal (‖φ b - φ a‖ ^ 2) ≤ ENNReal.ofReal (Real.log (b / a)) * ∫⁻ t in Ioo a b, ENNReal.ofReal (t * ‖φ' t‖ ^ 2) := by
+    intro ℓ φ φ' a b ha hab hderiv hcont
+    rcases hab.eq_or_lt with rfl | hab'
+    · simp
+    have hb : 0 < b := ha.trans hab'
+    have hU : uIcc a b = Icc a b := uIcc_of_le hab
+    have hpos : ∀ t ∈ Icc a b, 0 < t := fun t ht => ha.trans_le ht.1
+    have hcN : ContinuousOn (fun t => ‖φ' t‖) (Icc a b) := hcont.norm
+    have hcI : ContinuousOn (fun t => t * ‖φ' t‖ ^ 2) (Icc a b) := continuousOn_id.mul (hcN.pow 2)
+    have hcInv : ContinuousOn (fun t : ℝ => t⁻¹) (Icc a b) :=
+      continuousOn_inv₀.mono fun t ht => (hpos t ht).ne'
+    have hint' : IntervalIntegrable φ' volume a b := (hU ▸ hcont).intervalIntegrable
+    have hFTC : ∫ t in a..b, φ' t = φ b - φ a :=
+      intervalIntegral.integral_eq_sub_of_hasDerivAt (by rwa [hU]) hint'
+    set J := ∫ t in a..b, ‖φ' t‖ with hJdef
+    set I := ∫ t in a..b, t * ‖φ' t‖ ^ 2 with hIdef
+    set L := Real.log (b / a) with hLdef
+    have hJ : ‖φ b - φ a‖ ≤ J := by
+      rw [← hFTC]; exact intervalIntegral.norm_integral_le_integral_norm hab
+    have hL : ∫ t in a..b, t⁻¹ = L := integral_inv_of_pos ha hb
+    have hJ0 : 0 ≤ J := intervalIntegral.integral_nonneg hab (fun t _ => norm_nonneg _)
+    have hI0 : 0 ≤ I := intervalIntegral.integral_nonneg hab (fun t ht =>
+      mul_nonneg (hpos t ht).le (sq_nonneg _))
+    have hLpos : 0 < L := Real.log_pos ((one_lt_div ha).mpr hab')
+    have hlam : ∀ lam : ℝ, 0 < lam → 2 * lam * J ≤ lam ^ 2 * I + L := by
+      intro lam hlampos
+      have hmono : ∫ t in a..b, 2 * lam * ‖φ' t‖ ≤ ∫ t in a..b, (lam ^ 2 * (t * ‖φ' t‖ ^ 2) + t⁻¹) := by
+        apply intervalIntegral.integral_mono_on hab
+        · exact (hU ▸ (hcN.const_smul (2 * lam))).intervalIntegrable
+        · exact (hU ▸ ((hcI.const_smul (lam ^ 2)).add hcInv)).intervalIntegrable
+        · intro t ht
+          have ht0 := hpos t ht
+          have e : lam ^ 2 * (t * ‖φ' t‖ ^ 2) + t⁻¹ - 2 * lam * ‖φ' t‖ = (lam * t * ‖φ' t‖ - 1) ^ 2 / t := by
+            field_simp; ring
+          have : 0 ≤ lam ^ 2 * (t * ‖φ' t‖ ^ 2) + t⁻¹ - 2 * lam * ‖φ' t‖ := by
+            rw [e]; exact div_nonneg (sq_nonneg _) ht0.le
+          exact sub_nonneg.mp this
+      rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_add, intervalIntegral.integral_const_mul, hL] at hmono
+      · exact hmono
+      · exact (hU ▸ (hcI.const_smul (lam ^ 2))).intervalIntegrable
+      · exact (hU ▸ hcInv).intervalIntegrable
+    have hJ2 : J ^ 2 ≤ L * I := by
+      rcases hI0.eq_or_lt with hI | hI
+      · have hJz : J ≤ 0 := by
+          by_contra h
+          push Not at h
+          have := hlam (L / J) (div_pos hLpos h)
+          rw [← hI, mul_zero, zero_add] at this
+          have e : 2 * (L / J) * J = 2 * L := by field_simp
+          rw [e] at this
+          linarith only [this, hLpos]
+        have : J = 0 := le_antisymm hJz hJ0
+        rw [this, ← hI]; simp
+      · rcases hJ0.eq_or_lt with hJz | hJpos
+        · rw [← hJz, sq, zero_mul]
+          exact mul_nonneg hLpos.le hI.le
+        obtain ⟨u, hu0, hu⟩ : ∃ u, 0 < u ∧ J = u * I :=
+          ⟨J / I, div_pos hJpos hI, (div_mul_cancel₀ J hI.ne').symm⟩
+        have h := hlam u hu0
+        rw [hu] at h ⊢
+        have h' : u ^ 2 * I ≤ L := by linarith only [h]
+        calc (u * I) ^ 2 = u ^ 2 * I * I := by ring
+          _ ≤ L * I := mul_le_mul_of_nonneg_right h' hI.le
+    have hIlint : ENNReal.ofReal I = ∫⁻ t in Ioo a b, ENNReal.ofReal (t * ‖φ' t‖ ^ 2) := by
+      rw [hIdef, intervalIntegral.integral_of_le hab, integral_Ioc_eq_integral_Ioo,
+        ofReal_integral_eq_lintegral_ofReal]
+      · exact (hcI.integrableOn_Icc).mono_set Ioo_subset_Icc_self
+      · filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
+        have : 0 < t := ha.trans ht.1
+        positivity
+    calc ENNReal.ofReal (‖φ b - φ a‖ ^ 2) ≤ ENNReal.ofReal (L * I) := by
+          apply ENNReal.ofReal_le_ofReal
+          calc ‖φ b - φ a‖ ^ 2 ≤ J ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hJ 2
+            _ ≤ L * I := hJ2
+      _ = ENNReal.ofReal L * ENNReal.ofReal I := ENNReal.ofReal_mul hLpos.le
+      _ = _ := by rw [hIlint]
+  have scale : ∀ (n : ℕ) (g : Rn n → ℝ≥0∞), Measurable g → ∀ t : ℝ, 0 < t →
+    ∫⁻ y, g (t • y) = ENNReal.ofReal ((t ^ n)⁻¹) * ∫⁻ z, g z := by
+    intro n g hg t ht
+    have hmap := Measure.map_addHaar_smul (volume : Measure (Rn n)) ht.ne'
+    rw [finrank_euclideanSpace_fin] at hmap
+    rw [← lintegral_map hg (measurable_const_smul t), hmap, lintegral_smul_measure,
+      abs_of_pos (by positivity)]
+    rfl
+  have core : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (f : Rn n → Rn ℓ) (R r lam : ℝ) (Q : Set (Rn n)),
+    0 < lam → lam ≤ 1 → 0 < r → r < R → ContDiffOn ℝ 1 f (ball 0 R) → MeasurableSet Q →
+    (∀ y ∈ Q, y ≠ 0 ∧ ‖y‖ ≤ r) →
+    ∫⁻ y in Q, ENNReal.ofReal (‖f y - lam⁻¹ • f (lam • y)‖ ^ 2) ≤
+    ENNReal.ofReal (Real.log (1 / lam)) * (ENNReal.ofReal (Real.log (1 / lam)) *
+    (ENNReal.ofReal (r ^ (n + 2)) *
+    ∫⁻ z in ball (0 : Rn n) R, ENNReal.ofReal (‖f z - fderiv ℝ f z z‖ ^ 2 / ‖z‖ ^ (n + 2)))) := by
+    intro n ℓ hn f R r lam Q hlam hlam1 hr hrR hfC hQ hQy
+    set G : Rn n → ℝ := fun y => ‖f y - fderiv ℝ f y y‖ ^ 2 / ‖y‖ ^ (n + 2) with hG
+    set g : Rn n → ℝ≥0∞ := (ball (0 : Rn n) R).indicator (fun y => ENNReal.ofReal (G y)) with hg
+    have hfc : ContinuousOn f (ball 0 R) := hfC.continuousOn
+    have hDc : ContinuousOn (fderiv ℝ f) (ball 0 R) := hfC.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+    have hGc : ContinuousOn (fun y => ENNReal.ofReal (G y)) (ball (0 : Rn n) R \ {0}) := by
+      apply ENNReal.continuous_ofReal.comp_continuousOn
+      apply ContinuousOn.div
+      · exact ((hfc.mono sdiff_subset).sub ((hDc.mono sdiff_subset).clm_apply continuousOn_id)).norm.pow 2
+      · exact (continuous_norm.pow _).continuousOn
+      · intro y hy; exact pow_ne_zero _ (norm_ne_zero_iff.mpr hy.2)
+    have hG0 : G 0 = 0 := by simp [hG]
+    have hgm : Measurable g := by
+      classical
+      have : g = (ball (0 : Rn n) R \ {0}).piecewise (fun y => ENNReal.ofReal (G y)) 0 := by
+        ext y
+        by_cases hy : y ∈ ball (0 : Rn n) R
+        · by_cases hy0 : y = 0
+          · subst hy0; simp [hg, hy, hG0]
+          · simp [hg, hy, hy0, Set.piecewise]
+        · simp [hg, hy, Set.piecewise]
+      rw [this]
+      exact hGc.measurable_piecewise continuousOn_const (measurableSet_ball.diff (measurableSet_singleton 0))
+    have hL0 : 0 ≤ Real.log (1 / lam) := Real.log_nonneg (one_le_one_div hlam hlam1)
+    have hray : ∀ y ∈ Q, ENNReal.ofReal (‖f y - lam⁻¹ • f (lam • y)‖ ^ 2) ≤
+        ENNReal.ofReal (Real.log (1 / lam)) *
+          ∫⁻ t in Ioo lam 1, ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * g (t • y) := by
+      intro y hy
+      obtain ⟨hy0, hyr⟩ := hQy y hy
+      have hypos : 0 < ‖y‖ := norm_pos_iff.mpr hy0
+      have hmem : ∀ t : ℝ, 0 < t → t ≤ 1 → t • y ∈ ball (0 : Rn n) R := by
+        intro t ht ht1
+        rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_of_pos ht]
+        exact (mul_le_of_le_one_left (norm_nonneg y) ht1).trans_lt (hyr.trans_lt hrR)
+      set φ : ℝ → Rn ℓ := fun t => t⁻¹ • f (t • y) with hφ
+      set φ' : ℝ → Rn ℓ := fun t => t⁻¹ • (fderiv ℝ f (t • y)) y - (t ^ 2)⁻¹ • f (t • y) with hφ'
+      have hderiv : ∀ t ∈ Icc lam 1, HasDerivAt φ (φ' t) t := by
+        intro t ht
+        have ht0 : 0 < t := hlam.trans_le ht.1
+        have hfd : HasFDerivAt f (fderiv ℝ f (t • y)) (t • y) :=
+          ((hfC.differentiableOn one_ne_zero).differentiableAt
+            (isOpen_ball.mem_nhds (hmem t ht0 ht.2))).hasFDerivAt
+        have hline : HasDerivAt (fun s : ℝ => s • y) y t := by
+          simpa using (hasDerivAt_id t).smul_const y
+        have hcomp : HasDerivAt (fun s => f (s • y)) (fderiv ℝ f (t • y) y) t :=
+          hfd.comp_hasDerivAt t hline
+        have hinv : HasDerivAt (fun s : ℝ => s⁻¹) (-(t ^ 2)⁻¹) t := hasDerivAt_inv ht0.ne'
+        have h := hinv.smul hcomp
+        convert h using 1
+        simp only [hφ', neg_smul, sub_eq_add_neg]
+      have hcont' : ContinuousOn φ' (Icc lam 1) := by
+        have hpos : ∀ t ∈ Icc lam 1, t ≠ 0 := fun t ht => (hlam.trans_le ht.1).ne'
+        have hin : MapsTo (fun t : ℝ => t • y) (Icc lam 1) (ball (0 : Rn n) R) :=
+          fun t ht => hmem t (hlam.trans_le ht.1) ht.2
+        have hlin : ContinuousOn (fun t : ℝ => t • y) (Icc lam 1) :=
+          (continuous_id.smul continuous_const).continuousOn
+        have hf' : ContinuousOn (fun t : ℝ => f (t • y)) (Icc lam 1) := hfc.comp hlin hin
+        have hD' : ContinuousOn (fun t : ℝ => (fderiv ℝ f (t • y)) y) (Icc lam 1) :=
+          (hDc.comp hlin hin).clm_apply continuousOn_const
+        apply ContinuousOn.sub
+        · exact (continuousOn_inv₀.mono fun t ht => hpos t ht).smul hD'
+        · exact ((continuousOn_inv₀.comp (continuous_pow 2).continuousOn
+            (fun t ht => pow_ne_zero 2 (hpos t ht))).smul hf')
+      have hCS := rayCS ℓ φ φ' lam 1 hlam hlam1 hderiv hcont'
+      have hend : φ 1 - φ lam = f y - lam⁻¹ • f (lam • y) := by simp [hφ]
+      rw [hend] at hCS
+      have hid : ∀ t ∈ Ioo lam 1, ENNReal.ofReal (t * ‖φ' t‖ ^ 2) ≤
+          ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * g (t • y) := by
+        intro t ht
+        have ht0 : 0 < t := hlam.trans ht.1
+        have hnorm : ‖t • y‖ = t * ‖y‖ := by rw [norm_smul, Real.norm_eq_abs, abs_of_pos ht0]
+        rw [hg, indicator_of_mem (hmem t ht0 ht.2.le), ← ENNReal.ofReal_mul (by positivity)]
+        apply ENNReal.ofReal_le_ofReal
+        simp only [hG, hnorm]
+        set L := fderiv ℝ f (t • y)
+        have hL : L (t • y) = t • L y := L.map_smul t y
+        have hφt : φ' t = (t ^ 2)⁻¹ • (L (t • y) - f (t • y)) := by
+          simp only [hφ', hL, smul_sub, smul_smul]
+          congr 1
+          congr 1
+          field_simp
+        rw [hφt, norm_smul, norm_inv, norm_pow, Real.norm_eq_abs, abs_of_pos ht0, norm_sub_rev]
+        set E := ‖f (t • y) - L (t • y)‖ with hE
+        obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
+        simp only [Nat.add_sub_cancel]
+        have h1 : (t * ‖y‖) ^ (k + 1 + 2) ≤ (t * r) ^ (k + 1 + 2) :=
+          pow_le_pow_left₀ (by positivity) (by gcongr) _
+        have h2 : 0 < (t * ‖y‖) ^ (k + 1 + 2) := by positivity
+        have hE0 : 0 ≤ E ^ 2 := sq_nonneg E
+        calc t * ((t ^ 2)⁻¹ * E) ^ 2 = E ^ 2 * (t ^ k * r ^ (k + 1 + 2)) / (t * r) ^ (k + 1 + 2) := by
+              field_simp
+              ring
+          _ ≤ E ^ 2 * (t ^ k * r ^ (k + 1 + 2)) / (t * ‖y‖) ^ (k + 1 + 2) :=
+              div_le_div_of_nonneg_left (by positivity) h2 h1
+          _ = t ^ k * r ^ (k + 1 + 2) * (E ^ 2 / (t * ‖y‖) ^ (k + 1 + 2)) := by ring
+      calc ENNReal.ofReal (‖f y - lam⁻¹ • f (lam • y)‖ ^ 2)
+          ≤ ENNReal.ofReal (Real.log (1 / lam)) * ∫⁻ t in Ioo lam 1, ENNReal.ofReal (t * ‖φ' t‖ ^ 2) := by
+            simpa using hCS
+        _ ≤ ENNReal.ofReal (Real.log (1 / lam)) *
+              ∫⁻ t in Ioo lam 1, ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * g (t • y) := by
+            gcongr _ * ?_
+            exact setLIntegral_mono' measurableSet_Ioo hid
+    have hFm : Measurable (Function.uncurry fun (y : Rn n) (t : ℝ) =>
+        ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * g (t • y)) := by
+      have : Measurable fun p : Rn n × ℝ => p.2 • p.1 := by fun_prop
+      exact (ENNReal.measurable_ofReal.comp (by fun_prop)).mul (hgm.comp this)
+    have hlogI : ∫⁻ t in Ioo lam 1, ENNReal.ofReal t⁻¹ = ENNReal.ofReal (Real.log (1 / lam)) := by
+      rw [← ofReal_integral_eq_lintegral_ofReal]
+      · congr 1
+        rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hlam1,
+          integral_inv_of_pos hlam one_pos]
+      · exact ((continuousOn_inv₀.mono fun t ht => (hlam.trans_le ht.1).ne').integrableOn_Icc).mono_set
+          Ioo_subset_Icc_self
+      · filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
+        exact inv_nonneg.mpr (hlam.trans ht.1).le
+    calc ∫⁻ y in Q, ENNReal.ofReal (‖f y - lam⁻¹ • f (lam • y)‖ ^ 2)
+        ≤ ∫⁻ y in Q, ENNReal.ofReal (Real.log (1 / lam)) *
+            ∫⁻ t in Ioo lam 1, ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * g (t • y) :=
+          setLIntegral_mono' hQ hray
+      _ = ENNReal.ofReal (Real.log (1 / lam)) * ∫⁻ y in Q,
+            ∫⁻ t in Ioo lam 1, ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * g (t • y) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ = ENNReal.ofReal (Real.log (1 / lam)) * ∫⁻ t in Ioo lam 1,
+            ∫⁻ y in Q, ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * g (t • y) := by
+          rw [lintegral_lintegral_swap hFm.aemeasurable]
+      _ ≤ ENNReal.ofReal (Real.log (1 / lam)) * ∫⁻ t in Ioo lam 1,
+            ENNReal.ofReal t⁻¹ * (ENNReal.ofReal (r ^ (n + 2)) * ∫⁻ z, g z) := by
+          gcongr _ * ?_
+          apply setLIntegral_mono' measurableSet_Ioo
+          intro t ht
+          have ht0 : 0 < t := hlam.trans ht.1
+          rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+          calc ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * ∫⁻ y in Q, g (t • y)
+              ≤ ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * ∫⁻ y, g (t • y) := by
+                gcongr; exact Measure.restrict_le_self
+            _ = ENNReal.ofReal (t ^ (n - 1) * r ^ (n + 2)) * (ENNReal.ofReal ((t ^ n)⁻¹) * ∫⁻ z, g z) := by
+                rw [scale n g hgm t ht0]
+            _ = ENNReal.ofReal t⁻¹ * (ENNReal.ofReal (r ^ (n + 2)) * ∫⁻ z, g z) := by
+                rw [← mul_assoc, ← mul_assoc, ← ENNReal.ofReal_mul (by positivity),
+                  ← ENNReal.ofReal_mul (by positivity)]
+                congr 2
+                obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
+                simp only [Nat.add_sub_cancel]
+                field_simp
+                ring
+      _ = ENNReal.ofReal (Real.log (1 / lam)) * (ENNReal.ofReal (Real.log (1 / lam)) *
+            (ENNReal.ofReal (r ^ (n + 2)) * ∫⁻ z, g z)) := by
+          rw [lintegral_mul_const _ (by fun_prop), hlogI]
+      _ = _ := by rw [hg, lintegral_indicator measurableSet_ball]
+  have opHS : ∀ {m k : ℕ} (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A := by
+    intro m k A
+    have hS : 0 ≤ hsNormSq A := Finset.sum_nonneg fun i _ => sq_nonneg _
+    refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _) fun v => ?_
+    have hv : v = ∑ i, v i • EuclideanSpace.single i (1 : ℝ) := by
+      ext j; simp [Pi.single_apply]
+    have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖ := by
+      conv_lhs => rw [hv]
+      rw [map_sum]
+      refine (norm_sum_le _ _).trans (le_of_eq ?_)
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [map_smul, norm_smul, Real.norm_eq_abs]
+    have h2 : ∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖ ≤
+        Real.sqrt (∑ i, |v i| ^ 2) * Real.sqrt (∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+      Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+    have h3 : Real.sqrt (∑ i, |v i| ^ 2) = ‖v‖ := by
+      rw [EuclideanSpace.norm_eq]; simp [sq_abs]
+    calc ‖A v‖ ≤ _ := h1
+      _ ≤ _ := h2
+      _ = hsNorm A * ‖v‖ := by rw [h3, mul_comm]; rfl
+  have small : ∀ (n ℓ : ℕ) (α M R : ℝ) (f : Rn n → Rn ℓ), 0 < α → 0 ≤ M → 0 < R → f 0 = 0 → ContDiffOn ℝ 1 f (ball 0 R) → (∀ x ∈ ball (0 : Rn n) R, hsNorm (fderiv ℝ f x) ≤ M * (‖x‖ / R) ^ α) → ∀ x ∈ ball (0 : Rn n) R, ‖f x‖ ≤ M * (‖x‖ / R) ^ α * ‖x‖ := by
+    intro n ℓ α M R f hα hM hR hf0 hfC hDf x hx
+    have hxR : ‖x‖ < R := by simpa using hx
+    have hK : closedBall (0 : Rn n) ‖x‖ ⊆ ball (0 : Rn n) R := closedBall_subset_ball hxR
+    have hdiff : ∀ y ∈ closedBall (0 : Rn n) ‖x‖, DifferentiableAt ℝ f y := by
+      intro y hy
+      exact (hfC.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds (hK hy))
+    have hbound : ∀ y ∈ closedBall (0 : Rn n) ‖x‖, ‖fderiv ℝ f y‖ ≤ M * (‖x‖ / R) ^ α := by
+      intro y hy
+      have hy' : ‖y‖ ≤ ‖x‖ := by simpa using hy
+      calc ‖fderiv ℝ f y‖ ≤ hsNorm (fderiv ℝ f y) := opHS _
+        _ ≤ M * (‖y‖ / R) ^ α := hDf y (hK hy)
+        _ ≤ M * (‖x‖ / R) ^ α := by
+            gcongr
+    have hxK : x ∈ closedBall (0 : Rn n) ‖x‖ := mem_closedBall_zero_iff.mpr le_rfl
+    have h := (convex_closedBall (0 : Rn n) ‖x‖).norm_image_sub_le_of_norm_fderiv_le hdiff hbound
+      (mem_closedBall_self (norm_nonneg x)) hxK
+    simpa [hf0] using h
+  have logrem : ∀ (n : ℕ), 1 ≤ n → ∀ δ : ℝ, 0 < δ → δ ≤ 1 →
+    (δ * Real.log (1 / δ) ^ 2) ^ (1 / ((n : ℝ) + 2)) ≤ 64 * δ ^ (1 / (2 * (n : ℝ) + 2)) := by
+    intro n hn δ hδ hδ1
+    have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    have hL0 : 0 ≤ Real.log (1 / δ) := Real.log_nonneg (one_le_one_div hδ hδ1)
+    have hq : 0 < δ ^ (-(1 / 8) : ℝ) := Real.rpow_pos_of_pos hδ _
+    have hL8 : Real.log (1 / δ) ≤ 8 * δ ^ (-(1 / 8) : ℝ) := by
+      have h := Real.log_le_sub_one_of_pos hq
+      rw [Real.log_rpow hδ, one_div, Real.log_inv] at *
+      linarith
+    have hsq : Real.log (1 / δ) ^ 2 ≤ 64 * δ ^ (-(1 / 4) : ℝ) := by
+      have e : δ ^ (-(1 / 4) : ℝ) = (δ ^ (-(1 / 8) : ℝ)) ^ 2 := by
+        rw [← Real.rpow_natCast, ← Real.rpow_mul hδ.le]; norm_num
+      rw [e]
+      calc Real.log (1 / δ) ^ 2 ≤ (8 * δ ^ (-(1 / 8) : ℝ)) ^ 2 := pow_le_pow_left₀ hL0 hL8 2
+        _ = 64 * (δ ^ (-(1 / 8) : ℝ)) ^ 2 := by ring
+    have hprod : δ * Real.log (1 / δ) ^ 2 ≤ 64 * δ ^ (3 / 4 : ℝ) := by
+      have e : δ ^ (3 / 4 : ℝ) = δ * δ ^ (-(1 / 4) : ℝ) := by
+        rw [← Real.rpow_one_add' hδ.le (by norm_num)]; norm_num
+      rw [e]
+      calc δ * Real.log (1 / δ) ^ 2 ≤ δ * (64 * δ ^ (-(1 / 4) : ℝ)) :=
+            mul_le_mul_of_nonneg_left hsq hδ.le
+        _ = 64 * (δ * δ ^ (-(1 / 4) : ℝ)) := by ring
+    have hp : (0 : ℝ) < 1 / ((n : ℝ) + 2) := by positivity
+    calc (δ * Real.log (1 / δ) ^ 2) ^ (1 / ((n : ℝ) + 2))
+        ≤ (64 * δ ^ (3 / 4 : ℝ)) ^ (1 / ((n : ℝ) + 2)) :=
+          Real.rpow_le_rpow (by positivity) hprod hp.le
+      _ = 64 ^ (1 / ((n : ℝ) + 2)) * δ ^ ((3 / 4 : ℝ) * (1 / ((n : ℝ) + 2))) := by
+          rw [Real.mul_rpow (by norm_num) (by positivity), ← Real.rpow_mul hδ.le]
+      _ ≤ 64 * δ ^ (1 / (2 * (n : ℝ) + 2)) := by
+          have h64 : (64 : ℝ) ^ (1 / ((n : ℝ) + 2)) ≤ 64 := by
+            calc (64 : ℝ) ^ (1 / ((n : ℝ) + 2)) ≤ 64 ^ (1 : ℝ) :=
+                  Real.rpow_le_rpow_of_exponent_le (by norm_num)
+                    (by rw [div_le_one (by positivity)]; linarith)
+              _ = 64 := Real.rpow_one 64
+          have hexp : 1 / (2 * (n : ℝ) + 2) ≤ (3 / 4 : ℝ) * (1 / ((n : ℝ) + 2)) := by
+            rw [div_le_iff₀ (by positivity)]
+            field_simp
+            linarith
+          have hd : δ ^ ((3 / 4 : ℝ) * (1 / ((n : ℝ) + 2))) ≤ δ ^ (1 / (2 * (n : ℝ) + 2)) :=
+            Real.rpow_le_rpow_of_exponent_ge hδ hδ1 hexp
+          exact mul_le_mul h64 hd (by positivity) (by norm_num)
+  have arith : ∀ (n : ℕ), 1 ≤ n → ∀ (m r V α A δ L : ℝ), 0 < m → 0 < r → 0 < V → 0 < α → 0 ≤ A → 0 < δ → δ ≤ 1 → 0 ≤ L → L ≤ (1 / α) * Real.log (1 / δ) → m ^ 2 / 4 * ((m / 8) ^ n * V) ≤ L * (L * (r ^ (n + 2) * (A * δ))) → m ≤ 64 * (4 * 8 ^ n * A / (V * α ^ 2)) ^ (1 / ((n : ℝ) + 2)) * δ ^ (1 / (2 * (n : ℝ) + 2)) * r := by
+    intro n hn m r V α A δ L hm hr hV hα hA hδ hδ1 hL0 hLle hreal
+    have hlog0 : 0 ≤ Real.log (1 / δ) := Real.log_nonneg (one_le_one_div hδ hδ1)
+    have hL2 : L * L ≤ ((1 / α) * Real.log (1 / δ)) * ((1 / α) * Real.log (1 / δ)) :=
+      mul_le_mul hLle hLle hL0 (le_trans hL0 hLle)
+    have hc : 0 < V / (4 * 8 ^ n) := by positivity
+    have h3 : m ^ (n + 2) * (V / (4 * 8 ^ n)) ≤
+        ((1 / α) * Real.log (1 / δ)) * ((1 / α) * Real.log (1 / δ)) * (r ^ (n + 2) * (A * δ)) := by
+      have e1 : m ^ 2 / 4 * ((m / 8) ^ n * V) = m ^ (n + 2) * (V / (4 * 8 ^ n)) := by
+        rw [div_pow, pow_add]; ring
+      rw [← e1]
+      calc m ^ 2 / 4 * ((m / 8) ^ n * V) ≤ L * (L * (r ^ (n + 2) * (A * δ))) := hreal
+        _ = (L * L) * (r ^ (n + 2) * (A * δ)) := by ring
+        _ ≤ _ := by gcongr
+    have hB0 : 0 ≤ 4 * 8 ^ n * A / (V * α ^ 2) := by positivity
+    have hX0 : 0 ≤ δ * Real.log (1 / δ) ^ 2 := by positivity
+    have hmpow : m ^ (n + 2) ≤ (4 * 8 ^ n * A / (V * α ^ 2)) * (δ * Real.log (1 / δ) ^ 2) * r ^ (n + 2) := by
+      have h4 := (le_div_iff₀ hc).mpr h3
+      calc m ^ (n + 2) ≤ _ := h4
+        _ = _ := by field_simp
+    have hn2 : (0 : ℝ) < (n : ℝ) + 2 := by positivity
+    have hroot : ∀ z : ℝ, 0 ≤ z → z = (z ^ (n + 2)) ^ (1 / ((n : ℝ) + 2)) := by
+      intro z hz
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hz]
+      push_cast
+      rw [mul_one_div_cancel hn2.ne', Real.rpow_one]
+    have hmle : m ≤ (4 * 8 ^ n * A / (V * α ^ 2)) ^ (1 / ((n : ℝ) + 2)) *
+        (δ * Real.log (1 / δ) ^ 2) ^ (1 / ((n : ℝ) + 2)) * r := by
+      rw [hroot m hm.le, hroot r hr.le, ← Real.mul_rpow hB0 hX0,
+        ← Real.mul_rpow (mul_nonneg hB0 hX0) (pow_nonneg hr.le _)]
+      exact Real.rpow_le_rpow (pow_nonneg hm.le _) hmpow (one_div_pos.mpr hn2).le
+    have hK0 : 0 ≤ (4 * 8 ^ n * A / (V * α ^ 2)) ^ (1 / ((n : ℝ) + 2)) := Real.rpow_nonneg hB0 _
+    calc m ≤ _ := hmle
+      _ ≤ (4 * 8 ^ n * A / (V * α ^ 2)) ^ (1 / ((n : ℝ) + 2)) *
+            (64 * δ ^ (1 / (2 * (n : ℝ) + 2))) * r := by
+          gcongr; exact logrem n hn δ hδ hδ1
+      _ = _ := by ring
+  have ballgeom : ∀ (n : ℕ) (x : Rn n) (τ : ℝ), 0 < τ → τ ≤ ‖x‖ / 2 → ∀ y ∈ ball ((1 - τ / (2 * ‖x‖)) • x) (τ / 2), y ≠ 0 ∧ ‖y‖ ≤ ‖x‖ ∧ ‖y - x‖ < τ := by
+    intro n x τ hτ hτr y hy
+    have hr0 : 0 < ‖x‖ := by linarith only [hτ, hτr]
+    have hcoef : 0 ≤ 1 - τ / (2 * ‖x‖) := by
+      rw [sub_nonneg, div_le_one (mul_pos two_pos hr0)]; linarith only [hτr, hr0]
+    have hcn : ‖(1 - τ / (2 * ‖x‖)) • x‖ = ‖x‖ - τ / 2 := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hcoef]; field_simp
+    have hcx : ‖(1 - τ / (2 * ‖x‖)) • x - x‖ = τ / 2 := by
+      have hdiff : (1 - τ / (2 * ‖x‖)) • x - x = (-(τ / (2 * ‖x‖))) • x := by
+        rw [sub_smul, one_smul, neg_smul]; abel
+      rw [hdiff, norm_smul, Real.norm_eq_abs, abs_neg, abs_of_pos (by positivity)]; field_simp
+    rw [mem_ball, dist_eq_norm] at hy
+    set c := (1 - τ / (2 * ‖x‖)) • x with hc
+    have h1 : ‖y‖ ≤ ‖c‖ + ‖y - c‖ := by
+      calc ‖y‖ = ‖c + (y - c)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖c‖ + ‖y - c‖ := norm_add_le _ _
+    have h2 : ‖c‖ ≤ ‖y‖ + ‖y - c‖ := by
+      calc ‖c‖ = ‖y - (y - c)‖ := by rw [sub_sub_cancel]
+        _ ≤ ‖y‖ + ‖y - c‖ := norm_sub_le _ _
+    have h3 : ‖y - x‖ ≤ ‖y - c‖ + ‖c - x‖ := by
+      calc ‖y - x‖ = ‖(y - c) + (c - x)‖ := by rw [sub_add_sub_cancel]
+        _ ≤ ‖y - c‖ + ‖c - x‖ := norm_add_le _ _
+    have hypos : 0 < ‖y‖ := by linarith only [h2, hcn, hy, hτr, hτ]
+    exact ⟨norm_pos_iff.mp hypos, by linarith only [h1, hcn, hy], by linarith only [h3, hy, hcx]⟩
+  have lip : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (R lam : ℝ), LipschitzOnWith 1 f (ball 0 R) → 0 < lam → lam ≤ 1 → ∀ y ∈ ball (0 : Rn n) R, ∀ y' ∈ ball (0 : Rn n) R, ‖(f y - lam⁻¹ • f (lam • y)) - (f y' - lam⁻¹ • f (lam • y'))‖ ≤ 2 * ‖y - y'‖ := by
+    intro n ℓ f R lam hfL hlam0 hlam1 y hy y' hy'
+    have hlamball : ∀ z ∈ ball (0 : Rn n) R, lam • z ∈ ball (0 : Rn n) R := by
+      intro z hz
+      rw [mem_ball_zero_iff] at hz ⊢
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos hlam0]
+      exact (mul_le_of_le_one_left (norm_nonneg z) hlam1).trans_lt hz
+    have e1 : ‖f y - f y'‖ ≤ ‖y - y'‖ := by
+      have := hfL.dist_le_mul y hy y' hy'
+      simpa [dist_eq_norm] using this
+    have e2 : ‖f (lam • y) - f (lam • y')‖ ≤ lam * ‖y - y'‖ := by
+      have := hfL.dist_le_mul _ (hlamball y hy) _ (hlamball y' hy')
+      rw [dist_eq_norm, dist_eq_norm, ← smul_sub, norm_smul, Real.norm_eq_abs,
+        abs_of_pos hlam0] at this
+      simpa using this
+    have hsplit : (f y - lam⁻¹ • f (lam • y)) - (f y' - lam⁻¹ • f (lam • y')) =
+        (f y - f y') - lam⁻¹ • (f (lam • y) - f (lam • y')) := by
+      rw [smul_sub]; abel
+    rw [hsplit]
+    calc ‖(f y - f y') - lam⁻¹ • (f (lam • y) - f (lam • y'))‖
+        ≤ ‖f y - f y'‖ + ‖lam⁻¹ • (f (lam • y) - f (lam • y'))‖ := norm_sub_le _ _
+      _ = ‖f y - f y'‖ + lam⁻¹ * ‖f (lam • y) - f (lam • y')‖ := by
+          rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hlam0]
+      _ ≤ ‖y - y'‖ + lam⁻¹ * (lam * ‖y - y'‖) := by gcongr
+      _ = 2 * ‖y - y'‖ := by field_simp; ring
+  intro n ℓ hn α M A hα hα1 hM hA
+  have hnt : Nontrivial (Rn n) := by
+    rw [← Module.finrank_pos_iff (R := ℝ), finrank_euclideanSpace_fin]; omega
+  set V : ℝ := (volume (ball (0 : Rn n) 1)).toReal with hV
+  have hVtop : volume (ball (0 : Rn n) 1) ≠ ⊤ := measure_ball_lt_top.ne
+  have hVpos : 0 < V := ENNReal.toReal_pos (measure_ball_pos volume (0 : Rn n) one_pos).ne' hVtop
+  set K : ℝ := (4 * 8 ^ n * A / (V * α ^ 2)) ^ (1 / ((n : ℝ) + 2)) with hK
+  have hK0 : 0 ≤ K := Real.rpow_nonneg (div_nonneg (mul_nonneg (mul_nonneg (by norm_num)
+    (pow_nonneg (by norm_num) n)) hA) (mul_nonneg hVpos.le (sq_nonneg α))) _
+  refine ⟨M + 64 * K, add_nonneg hM (mul_nonneg (by norm_num) hK0), ?_⟩
+  intro f R δ hR hδ hδ1 hf0 hfC hfL hDf hI x hx
+  set e : ℝ := 1 / (2 * (n : ℝ) + 2) with he
+  have hδe : δ ≤ δ ^ e := by
+    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    calc δ = δ ^ (1 : ℝ) := (Real.rpow_one δ).symm
+      _ ≤ δ ^ e := Real.rpow_le_rpow_of_exponent_ge hδ hδ1
+          (div_le_one_of_le₀ (by linarith only [hn0]) (by linarith only [hn0]))
+  have hδe0 : 0 ≤ δ ^ e := Real.rpow_nonneg hδ.le _
+  have hsmall := small n ℓ α M R f hα hM hR hf0 hfC hDf
+  have hlin : ∀ y ∈ ball (0 : Rn n) R, ‖f y‖ ≤ ‖y‖ := by
+    intro y hy
+    have := hfL.dist_le_mul y hy 0 (mem_ball_self hR)
+    simpa [hf0, dist_eq_norm] using this
+  by_cases hx0 : x = 0
+  · subst hx0; simp [hf0]
+  have hr0 : 0 < ‖x‖ := norm_pos_iff.mpr hx0
+  have hrR : ‖x‖ < R := mem_ball_zero_iff.mp hx
+  set r₁ : ℝ := δ ^ (1 / α) * R with hr₁
+  have hr₁0 : 0 < r₁ := mul_pos (Real.rpow_pos_of_pos hδ _) hR
+  have hr₁R' : (r₁ / R) ^ α = δ := by
+    rw [hr₁, mul_div_assoc, div_self hR.ne', mul_one, ← Real.rpow_mul hδ.le, one_div,
+      inv_mul_cancel₀ hα.ne', Real.rpow_one]
+  by_cases hcase : ‖x‖ ≤ r₁
+  · have h2 : (‖x‖ / R) ^ α ≤ δ := by
+      rw [← hr₁R']
+      exact Real.rpow_le_rpow (by positivity) (div_le_div_of_nonneg_right hcase hR.le) hα.le
+    calc ‖f x‖ ≤ M * (‖x‖ / R) ^ α * ‖x‖ := hsmall x hx
+      _ ≤ M * δ ^ e * ‖x‖ :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (h2.trans hδe) hM) (norm_nonneg x)
+      _ ≤ (M + 64 * K) * δ ^ e * ‖x‖ :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+            (le_add_of_nonneg_right (mul_nonneg (by norm_num) hK0)) hδe0) (norm_nonneg x)
+  push Not at hcase
+  set lam : ℝ := r₁ / ‖x‖ with hlam
+  have hlam0 : 0 < lam := div_pos hr₁0 hr0
+  have hlam1 : lam ≤ 1 := by rw [hlam, div_le_one hr0]; exact hcase.le
+  have hlamn : ‖lam • x‖ = r₁ := by
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos hlam0, hlam, div_mul_cancel₀ _ hr0.ne']
+  have hlamx : lam • x ∈ ball (0 : Rn n) R := by
+    rw [mem_ball_zero_iff, hlamn]; exact hcase.trans hrR
+  have hW : ‖lam⁻¹ • f (lam • x)‖ ≤ M * δ * ‖x‖ := by
+    have h := hsmall (lam • x) hlamx
+    rw [hlamn, hr₁R'] at h
+    rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hlam0]
+    calc lam⁻¹ * ‖f (lam • x)‖ ≤ lam⁻¹ * (M * δ * r₁) := by gcongr
+      _ = M * δ * ‖x‖ := by rw [hlam]; field_simp
+  have hW1 : ‖lam⁻¹ • f (lam • x)‖ ≤ ‖x‖ := by
+    rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hlam0]
+    calc lam⁻¹ * ‖f (lam • x)‖ ≤ lam⁻¹ * ‖lam • x‖ := by gcongr; exact hlin _ hlamx
+      _ = ‖x‖ := by rw [hlamn, hlam]; field_simp
+  set m : ℝ := ‖f x - lam⁻¹ • f (lam • x)‖ with hm
+  have hfx : ‖f x‖ ≤ m + M * δ * ‖x‖ := by
+    calc ‖f x‖ = ‖(f x - lam⁻¹ • f (lam • x)) + lam⁻¹ • f (lam • x)‖ := by rw [sub_add_cancel]
+      _ ≤ m + ‖lam⁻¹ • f (lam • x)‖ := norm_add_le _ _
+      _ ≤ m + M * δ * ‖x‖ := add_le_add le_rfl hW
+  have hmain : m ≤ 64 * K * δ ^ e * ‖x‖ := by
+    rcases (norm_nonneg (f x - lam⁻¹ • f (lam • x))).eq_or_lt with hmz | hmpos
+    · rw [hm, ← hmz]
+      exact mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hK0) hδe0) (norm_nonneg x)
+    rw [← hm] at hmpos
+    have hm2 : m ≤ 2 * ‖x‖ := by
+      calc m ≤ ‖f x‖ + ‖lam⁻¹ • f (lam • x)‖ := norm_sub_le _ _
+        _ ≤ ‖x‖ + ‖x‖ := add_le_add (hlin x hx) hW1
+        _ = 2 * ‖x‖ := by ring
+    set Q : Set (Rn n) := ball ((1 - m / 4 / (2 * ‖x‖)) • x) (m / 4 / 2) with hQ
+    have hQy := ballgeom n x (m / 4) (div_pos hmpos (by norm_num)) (by linarith only [hm2])
+    have hQR : ∀ y ∈ Q, y ∈ ball (0 : Rn n) R := by
+      intro y hy
+      rw [mem_ball_zero_iff]
+      exact (hQy y hy).2.1.trans_lt hrR
+    have hlow : ∀ y ∈ Q, ENNReal.ofReal (m ^ 2 / 4) ≤
+        ENNReal.ofReal (‖f y - lam⁻¹ • f (lam • y)‖ ^ 2) := by
+      intro y hy
+      have hL := lip n ℓ f R lam hfL hlam0 hlam1 x hx y (hQR y hy)
+      have hrev := norm_sub_norm_le (f x - lam⁻¹ • f (lam • x)) (f y - lam⁻¹ • f (lam • y))
+      have hyx : ‖x - y‖ < m / 4 := by rw [norm_sub_rev]; exact (hQy y hy).2.2
+      have h1 : m / 2 ≤ ‖f y - lam⁻¹ • f (lam • y)‖ := by rw [hm]; linarith
+      apply ENNReal.ofReal_le_ofReal
+      calc m ^ 2 / 4 = (m / 2) ^ 2 := by ring
+        _ ≤ ‖f y - lam⁻¹ • f (lam • y)‖ ^ 2 := pow_le_pow_left₀ (by positivity) h1 2
+    have hvolQ : volume Q = ENNReal.ofReal ((m / 8) ^ n) * volume (ball (0 : Rn n) 1) := by
+      rw [hQ, Measure.addHaar_ball volume _ (div_nonneg (div_nonneg hmpos.le (by norm_num))
+          (by norm_num) : (0 : ℝ) ≤ m / 4 / 2), finrank_euclideanSpace_fin]
+      congr 2; ring
+    have hup := core n ℓ hn f R ‖x‖ lam Q hlam0 hlam1 hr0 hrR hfC measurableSet_ball
+      (fun y hy => ⟨(hQy y hy).1, (hQy y hy).2.1⟩)
+    have hL0 : 0 ≤ Real.log (1 / lam) := Real.log_nonneg (one_le_one_div hlam0 hlam1)
+    have hLle : Real.log (1 / lam) ≤ (1 / α) * Real.log (1 / δ) := by
+      have h1 : Real.log (1 / lam) ≤ Real.log (R / r₁) := by
+        apply Real.log_le_log (one_div_pos.mpr hlam0)
+        rw [hlam, one_div_div]
+        exact div_le_div_of_nonneg_right hrR.le hr₁0.le
+      have h2 : R / r₁ = (1 / δ) ^ (1 / α) := by
+        rw [hr₁, Real.div_rpow zero_le_one hδ.le, Real.one_rpow]
+        field_simp
+      rw [h2, Real.log_rpow (one_div_pos.mpr hδ)] at h1
+      exact h1
+    have hchain : ENNReal.ofReal (m ^ 2 / 4 * ((m / 8) ^ n * V)) ≤
+        ENNReal.ofReal (Real.log (1 / lam) * (Real.log (1 / lam) * (‖x‖ ^ (n + 2) * (A * δ)))) := by
+      calc ENNReal.ofReal (m ^ 2 / 4 * ((m / 8) ^ n * V))
+          = ENNReal.ofReal (m ^ 2 / 4) * volume Q := by
+            rw [hvolQ, ENNReal.ofReal_mul (div_nonneg (sq_nonneg m) (by norm_num)),
+              ENNReal.ofReal_mul (pow_nonneg (div_nonneg hmpos.le (by norm_num)) n), hV,
+              ENNReal.ofReal_toReal hVtop]
+        _ = ∫⁻ y in Q, ENNReal.ofReal (m ^ 2 / 4) := by rw [setLIntegral_const, mul_comm]
+        _ ≤ ∫⁻ y in Q, ENNReal.ofReal (‖f y - lam⁻¹ • f (lam • y)‖ ^ 2) :=
+            setLIntegral_mono' measurableSet_ball hlow
+        _ ≤ _ := hup
+        _ ≤ ENNReal.ofReal (Real.log (1 / lam)) * (ENNReal.ofReal (Real.log (1 / lam)) *
+              (ENNReal.ofReal (‖x‖ ^ (n + 2)) * ENNReal.ofReal (A * δ))) := by gcongr
+        _ = _ := by
+            rw [← ENNReal.ofReal_mul (pow_nonneg (norm_nonneg x) _), ← ENNReal.ofReal_mul hL0,
+              ← ENNReal.ofReal_mul hL0]
+    have hreal := (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hL0 (mul_nonneg hL0
+      (mul_nonneg (pow_nonneg (norm_nonneg x) _) (mul_nonneg hA hδ.le))))).mp hchain
+    have := arith n hn m ‖x‖ V α A δ (Real.log (1 / lam)) hmpos hr0 hVpos hα hA hδ hδ1 hL0 hLle hreal
+    exact this
+  calc ‖f x‖ ≤ m + M * δ * ‖x‖ := hfx
+    _ ≤ 64 * K * δ ^ e * ‖x‖ + M * δ ^ e * ‖x‖ :=
+        add_le_add hmain (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hδe hM) (norm_nonneg x))
+    _ = (M + 64 * K) * δ ^ e * ‖x‖ := by ring
+
+end Submission
+
 end GMT.Ch05
