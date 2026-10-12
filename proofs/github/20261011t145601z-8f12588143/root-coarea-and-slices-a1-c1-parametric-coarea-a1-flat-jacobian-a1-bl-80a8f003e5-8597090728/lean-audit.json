@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d9506f3c09e7b660ca1e324287022b7bafae291c7b37644dde9b2dad04d49e35",
+  "git_delta": {
+    "base_commit": "e6534ec5aba13f15955c507ad1bf3e11485f19c4",
+    "candidate_commit": "c2e8b49575f298bb72879246a58527dde88e175c",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "pcoarea_flat_normDet_block",
+    "diff_sha256": "31d4f8d7e64772acfa23ced74417ea106451c7366fd55746b5c924eb2fe40182",
+    "source_sha256": "caaf9210acbd43af8e70e22b4409a04a8e9fcff659207c1fc40bb4989bdecd4b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pcoarea_flat_normDet_block",
+      "statement": "∀ (m k : ℕ) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (S : Rn (m + k) →ₗ[ℝ] Rn k) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)), Function.Surjective Γ → (∀ v, (T v).fst = Γ v) → (∀ v, (T v).snd = S v) → T.normDet = (Γ.domRestrict (LinearMap.ker Γ)ᗮ).normDet * (S ∘ₗ (LinearMap.ker Γ).subtype).normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
