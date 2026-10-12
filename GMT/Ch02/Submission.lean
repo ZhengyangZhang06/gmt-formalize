@@ -389,6 +389,47 @@ theorem Submission.coareaJacobian_eq_normDet_adjoint : ∀ (N m : ℕ) (M : Set 
   -- `ContinuousLinearMap.det` is `LinearMap.det` of the underlying map and the underlying map of
   -- the continuous adjoint is `LinearMap.adjoint`.
   exact congrArg Real.sqrt hsq.symm
+/-- **Norm determinant of a block lower-triangular map** (Simon Ch. 2, §6, p. 66: the block
+computation behind the co-area Jacobian `J*_f`). Let `E₁, E₂, F₁, F₂` be finite-dimensional real
+inner product spaces with `dim E₁ = dim F₁` and `dim E₂ = dim F₂`, and let
+`G : E₁ × E₂ → F₁ × F₂` be linear between the `L²` products, with `(G (0, b))₁ = 0` for all `b`.
+If `G₁₁ a = (G (a, 0))₁` and `G₂₂ b = (G (0, b))₂`, then `normDet G = normDet G₁₁ · normDet G₂₂`.
+In product orthonormal bases the matrix of `G` is block lower-triangular, `[[G₁₁, 0], [*, G₂₂]]`,
+and its determinant is the product of the determinants of the diagonal blocks. -/
+theorem Submission.coarea_normDet_block_triangular : ∀ (E₁ E₂ F₁ F₂ : Type) [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁] [FiniteDimensional ℝ E₁] [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] [FiniteDimensional ℝ E₂] [NormedAddCommGroup F₁] [InnerProductSpace ℝ F₁] [FiniteDimensional ℝ F₁] [NormedAddCommGroup F₂] [InnerProductSpace ℝ F₂] [FiniteDimensional ℝ F₂] (G : WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (F₁ × F₂)) (G₁₁ : E₁ →ₗ[ℝ] F₁) (G₂₂ : E₂ →ₗ[ℝ] F₂), Module.finrank ℝ E₁ = Module.finrank ℝ F₁ → Module.finrank ℝ E₂ = Module.finrank ℝ F₂ → (∀ b : E₂, WithLp.fst (G (WithLp.toLp 2 (0, b))) = 0) → (∀ a : E₁, G₁₁ a = WithLp.fst (G (WithLp.toLp 2 (a, 0)))) → (∀ b : E₂, G₂₂ b = WithLp.snd (G (WithLp.toLp 2 (0, b)))) → G.normDet = G₁₁.normDet * G₂₂.normDet := by
+  intro E₁ E₂ F₁ F₂ _ _ _ _ _ _ _ _ _ _ _ _ G G₁₁ G₂₂ h₁ h₂ h0 hG₁₁ hG₂₂
+  classical
+  -- Step 1: orthonormal bases indexed by `Fin d₁` (`E₁`, `F₁`) and `Fin d₂` (`E₂`, `F₂`).
+  let bE₁ := stdOrthonormalBasis ℝ E₁
+  let bE₂ := stdOrthonormalBasis ℝ E₂
+  let bF₁ := (stdOrthonormalBasis ℝ F₁).reindex (finCongr h₁.symm)
+  let bF₂ := (stdOrthonormalBasis ℝ F₂).reindex (finCongr h₂.symm)
+  -- Step 2: the product orthonormal bases of the `L²` products, indexed by `Fin d₁ ⊕ Fin d₂`.
+  let bE := bE₁.prod bE₂
+  let bF := bF₁.prod bF₂
+  -- Step 3: the `bF`-coordinates of `w` are the `bF₁`-coordinates of `w₁` and the
+  -- `bF₂`-coordinates of `w₂`.
+  have hrepr₁ : ∀ (v : WithLp 2 (F₁ × F₂)) i, bF.repr v (Sum.inl i) = bF₁.repr (WithLp.fst v) i := by
+    intro v i
+    simp [bF, OrthonormalBasis.repr_apply_apply]
+  have hrepr₂ : ∀ (v : WithLp 2 (F₁ × F₂)) i, bF.repr v (Sum.inr i) = bF₂.repr (WithLp.snd v) i := by
+    intro v i
+    simp [bF, OrthonormalBasis.repr_apply_apply]
+  -- Step 4: the matrix of `G` is block lower-triangular, with the matrices of `G₁₁` and `G₂₂` on
+  -- the diagonal and a zero upper-right block.
+  have hmat : LinearMap.toMatrix bE.toBasis bF.toBasis G =
+      Matrix.fromBlocks (LinearMap.toMatrix bE₁.toBasis bF₁.toBasis G₁₁) 0
+        (Matrix.of fun i j => bF₂.repr (WithLp.snd (G (WithLp.toLp 2 (bE₁ j, 0)))) i)
+        (LinearMap.toMatrix bE₂.toBasis bF₂.toBasis G₂₂) := by
+    ext (i | i) (j | j)
+    · simp [LinearMap.toMatrix_apply, hrepr₁, bE, hG₁₁]
+    · simp [LinearMap.toMatrix_apply, hrepr₁, bE, h0]
+    · simp [LinearMap.toMatrix_apply, hrepr₂, bE]
+    · simp [LinearMap.toMatrix_apply, hrepr₂, bE, hG₂₂]
+  -- Steps 5–6: `normDet` is `‖det‖` of the matrix in orthonormal bases with a common index type,
+  -- and `det (fromBlocks A 0 C D) = det A * det D`.
+  rw [G.normDet_eq_norm_det_toMatrix bE bF, G₁₁.normDet_eq_norm_det_toMatrix bE₁ bF₁,
+    G₂₂.normDet_eq_norm_det_toMatrix bE₂ bF₂, hmat, Matrix.det_fromBlocks_zero₁₂, norm_mul]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
