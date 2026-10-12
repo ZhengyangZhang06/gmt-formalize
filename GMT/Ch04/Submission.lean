@@ -434,6 +434,74 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Fubini exchange for a primitive along a measurable radius** (common core of the annulus
+integration by parts in Simon Ch. 4, 3.17 and 4.4/4.7). Put `μ = λ ⌞ (σ, ρ]`, `ν_S = ν ⌞ S` and
+`Φ (t, x) = 1_{t < r x} F' t g x`; then `Φ` is `μ ⊗ ν_S`-integrable (`Integrable.mul_prod`, the
+set `{t < r x}` is product-measurable). Its `t`-sections integrate to
+`F' t ∫_{S ∩ {t < r}} g dν`, and for `x ∈ S` (where `(σ, ρ] ∩ (-∞, r x) = (σ, r x)`) its
+`x`-sections integrate to `g x ∫_{(σ, r x]} F' = g x (F (r x) - F σ)`; Fubini
+(`integral_integral_swap`, valid for s-finite factors) gives all three claims. -/
+theorem Submission.mcm_primitive_radial_fubini : ∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (S : Set X) (r g : X → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), SFinite ν → MeasurableSet S → Measurable r → (∀ x ∈ S, r x ∈ Ioc σ ρ) → IntegrableOn g S ν → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ g x * (F (r x) - F σ)) S ν ∧ IntegrableOn (fun t ↦ F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν = ∫ x in S, g x * (F (r x) - F σ) ∂ν := by
+  intro X _ ν S r g F F' σ ρ hν hS hr hrS hg hF' hF
+  -- the product integrand `Φ (t, x) = 1_{t < r x} F' t g x` on `(σ, ρ] × S`
+  obtain ⟨Φ, hΦ_def⟩ : ∃ Φ : ℝ × X → ℝ,
+      Φ = {z : ℝ × X | z.1 < r z.2}.indicator fun z ↦ F' z.1 * g z.2 := ⟨_, rfl⟩
+  have hT : MeasurableSet {z : ℝ × X | z.1 < r z.2} :=
+    measurableSet_lt measurable_fst (hr.comp measurable_snd)
+  have hΦ : Integrable Φ ((volume.restrict (Ioc σ ρ)).prod (ν.restrict S)) := by
+    rw [hΦ_def]
+    exact (Integrable.mul_prod hF' hg).indicator hT
+  -- sections at fixed `t`
+  have ht : ∀ t : ℝ,
+      ∫ x, Φ (t, x) ∂ν.restrict S = F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν := by
+    intro t
+    have h : ∀ x, Φ (t, x) = F' t * {x | t < r x}.indicator g x := by
+      intro x
+      rw [hΦ_def]
+      by_cases htx : t < r x
+      · simp [htx]
+      · simp [htx]
+    simp_rw [h]
+    rw [integral_const_mul, setIntegral_indicator (measurableSet_lt measurable_const hr)]
+  -- sections at fixed `x ∈ S`
+  have hx : ∀ x ∈ S,
+      ∫ t, Φ (t, x) ∂volume.restrict (Ioc σ ρ) = g x * (F (r x) - F σ) := by
+    intro x hxS
+    obtain ⟨h1, h2⟩ := hrS x hxS
+    have h : ∀ t, Φ (t, x) = (Iio (r x)).indicator F' t * g x := by
+      intro t
+      rw [hΦ_def]
+      by_cases htx : t < r x
+      · simp [htx]
+      · simp [htx]
+    simp_rw [h]
+    have hset : Ioc σ ρ ∩ Iio (r x) = Ioo σ (r x) := by
+      ext t
+      simp only [mem_inter_iff, mem_Ioc, mem_Iio, mem_Ioo]
+      constructor
+      · rintro ⟨⟨h3, -⟩, h4⟩
+        exact ⟨h3, h4⟩
+      · rintro ⟨h3, h4⟩
+        exact ⟨⟨h3, (h4.trans_le h2).le⟩, h4⟩
+    rw [integral_mul_const, setIntegral_indicator measurableSet_Iio, hset,
+      ← integral_Ioc_eq_integral_Ioo, hF (r x) ⟨h1.le, h2⟩]
+    ring
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a): the `x`-integrals are `ν ⌞ S`-integrable and agree with the integrand on `S`
+    refine hΦ.integral_prod_right.congr ?_
+    filter_upwards [ae_restrict_mem hS] with x hxS
+    exact hx x hxS
+  · -- (b): the `t`-integrals are `λ ⌞ (σ, ρ]`-integrable
+    have h := hΦ.integral_prod_left
+    simp only [ht] at h
+    exact h
+  · -- (c): Fubini
+    calc ∫ t in Ioc σ ρ, F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν
+        = ∫ t in Ioc σ ρ, ∫ x in S, Φ (t, x) ∂ν := by simp only [ht]
+      _ = ∫ x in S, (∫ t in Ioc σ ρ, Φ (t, x)) ∂ν :=
+          integral_integral_swap (f := fun t x ↦ Φ (t, x)) hΦ
+      _ = ∫ x in S, g x * (F (r x) - F σ) ∂ν := setIntegral_congr_fun hS hx
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
