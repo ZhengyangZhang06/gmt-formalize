@@ -373,6 +373,33 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Invertibility of the Gram operator.** For an injective continuous linear map
+`A : ℝⁿ → ℝᴺ`, the Gram operator `G = A* ∘ A` is a unit of the ring `ℝⁿ →L[ℝ] ℝⁿ`, whose
+multiplication is composition. If `G w = 0` then `⟪A w, A w⟫ = ⟪w, A* (A w)⟫ = ⟪w, G w⟫ = 0`, so
+`A w = 0` and `w = 0` by injectivity of `A`; thus `G` is an injective endomorphism of the
+finite-dimensional `ℝⁿ`, i.e. a linear automorphism (`LinearEquiv.ofInjectiveEndo`), which is
+continuous with continuous inverse (`LinearEquiv.toContinuousLinearEquiv`), and its unit
+(`ContinuousLinearEquiv.toUnit`) has underlying map `G`. -/
+theorem Submission.gram_operator_isUnit_of_injective : ∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), Function.Injective A → IsUnit (ContinuousLinearMap.adjoint A ∘L A) := by
+  intro n N A hA
+  -- Step 1: `G` has trivial kernel, since `⟪A w, A w⟫ = ⟪w, A* (A w)⟫ = ⟪w, G w⟫`.
+  have hker : ∀ w : Rn n, (ContinuousLinearMap.adjoint A ∘L A) w = 0 → w = 0 := by
+    intro w hw
+    have h : inner ℝ (A w) (A w) = 0 := by
+      rw [← ContinuousLinearMap.adjoint_inner_right]
+      exact (congrArg (inner ℝ w) hw).trans (inner_zero_right w)
+    exact hA ((inner_self_eq_zero.mp h).trans (map_zero A).symm)
+  -- Step 2: `G` is injective, by linearity.
+  have hinj : Function.Injective (ContinuousLinearMap.adjoint A ∘L A) := fun u v huv ↦
+    sub_eq_zero.mp (hker _ (by rw [map_sub, huv, sub_self]))
+  -- Step 3: an injective endomorphism of the finite-dimensional `ℝⁿ` is a continuous linear
+  -- automorphism `e`, with `e v = G v` by construction.
+  let e : Rn n ≃L[ℝ] Rn n :=
+    (LinearEquiv.ofInjectiveEndo (ContinuousLinearMap.adjoint A ∘L A : Rn n →ₗ[ℝ] Rn n)
+      hinj).toContinuousLinearEquiv
+  -- Step 4: the unit `e.toUnit` of `ℝⁿ →L[ℝ] ℝⁿ` has underlying map `G`.
+  exact ⟨e.toUnit, ContinuousLinearMap.ext fun v ↦ rfl⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
