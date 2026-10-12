@@ -434,6 +434,33 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Measurability and unit bounds of `|D^⊥r|²` (Simon Ch. 4, 6.1, step 7(b); cf. 3.2–3.3).**
+If `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly measurable, then so is
+`q(x) = |p_{(T_x V)^⊥}(x - ξ)|² / |x - ξ|²` (`q(ξ) = 0 / 0 = 0`), and `0 ≤ q ≤ 1` everywhere. -/
+theorem Submission.aestronglyMeasurable_normalRadialSq_and_bounds : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (ξ : Ambient n ℓ), AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → AEStronglyMeasurable (fun x ↦ V.normalRadialSq ξ x) V.weight ∧ ∀ x, 0 ≤ V.normalRadialSq ξ x ∧ V.normalRadialSq ξ x ≤ 1) := by
+  intro n ℓ V ξ hP
+  -- `p_{(T_x V)^⊥} = 1 - p_{T_x V}`, so `x ↦ p_{(T_x V)^⊥}` is a.e. strongly measurable.
+  have hQ : AEStronglyMeasurable (fun x ↦ (V.tangentSpace x)ᗮ.starProjection) V.weight := by
+    simp_rw [Submodule.starProjection_orthogonal']
+    exact aestronglyMeasurable_const.sub hP
+  -- Evaluation `(L, v) ↦ L v` is continuous bilinear, and `x ↦ x - ξ` is continuous.
+  have hQv : AEStronglyMeasurable (fun x ↦ (V.tangentSpace x)ᗮ.starProjection (x - ξ)) V.weight :=
+    (ContinuousLinearMap.id ℝ (Ambient n ℓ →L[ℝ] Ambient n ℓ)).aestronglyMeasurable_comp₂
+      (f := fun x ↦ (V.tangentSpace x)ᗮ.starProjection) (g := fun x ↦ x - ξ) hQ
+      (continuous_id.sub continuous_const).aestronglyMeasurable
+  -- `x ↦ (|x - ξ|²)⁻¹` is Borel measurable, and `ℝ` is second countable.
+  have hden : AEStronglyMeasurable (fun x : Ambient n ℓ ↦ (‖x - ξ‖ ^ 2)⁻¹) V.weight :=
+    ((continuous_id.sub continuous_const).norm.pow 2).measurable.inv.aestronglyMeasurable
+  refine ⟨?_, fun x ↦ ⟨?_, ?_⟩⟩
+  · -- `a / b = a * b⁻¹` for all real `a, b` (also for `b = 0`).
+    simp only [RectifiableVarifold.normalRadialSq, div_eq_mul_inv]
+    exact (hQv.norm.pow 2).mul hden
+  · exact div_nonneg (sq_nonneg _) (sq_nonneg _)
+  · -- `|p_{(T_x V)^⊥} v| ≤ |v|`; `a / b ≤ 1` needs only `a ≤ b` and `0 ≤ b`.
+    exact div_le_one_of_le₀
+      (pow_le_pow_left₀ (norm_nonneg _) (Submodule.norm_starProjection_apply_le _ _) 2)
+      (sq_nonneg _)
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
