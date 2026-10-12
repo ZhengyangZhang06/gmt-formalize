@@ -359,6 +359,23 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Uniform Lipschitz constant and radius near a compact set (Step 6 of the tangential
+differential construction for Simon Ch. 6, Lemma 3.9).  If `f` is locally Lipschitz on the open
+set `U ⊆ ℝ^P` and `K ⊆ U` is compact, there are `C ≥ 0` and `ρ > 0` such that for every
+`x ∈ K` the ball `B_ρ(x)` lies in `U` and `f` is `C`-Lipschitz on it. -/
+theorem Submission.lpf_tde_uniform_lipschitz_near_compact : ∀ (P Q : ℕ) (U K : Set (Eucl P)) (f : Eucl P → Eucl Q), IsOpen U → LocallyLipschitzOn U f → IsCompact K → K ⊆ U → ∃ (C : ℝ≥0) (ρ : ℝ), 0 < ρ ∧ ∀ x ∈ K, ball x ρ ⊆ U ∧ LipschitzOnWith C f (ball x ρ) := by
+  intro P Q U K f hU hf hK hKU
+  -- A closed `δ`-thickening `K_δ` of `K` lies in `U`; it is compact, so `f` is `C`-Lipschitz
+  -- on `K_δ`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  obtain ⟨C, hC⟩ :=
+    LocallyLipschitzOn.exists_lipschitzOnWith_of_compact hK.cthickening (hf.mono hδU)
+  -- For `x ∈ K`, `B_δ(x) ⊆ closedBall x δ ⊆ K_δ ⊆ U`.
+  refine ⟨C, δ, hδ, fun x hx => ?_⟩
+  have hball : ball x δ ⊆ cthickening δ K :=
+    ball_subset_closedBall.trans (closedBall_subset_cthickening hx δ)
+  exact ⟨hball.trans hδU, hC.mono hball⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
