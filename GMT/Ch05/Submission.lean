@@ -535,6 +535,34 @@ theorem poincare_c1_segment_sq_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDi
     _ ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
         gcongr
         exact Ioc_subset_Icc_self
+/-- **Translating a ball into a larger ball does not increase a lintegral** (translation
+invariance of Lebesgue measure; Evans, *PDE*, §5.8.2 Theorem 3(i), Gilbarg–Trudinger §7.11).
+If `r + ‖w‖ ≤ s`, then `x - w ∈ B̆_s(0)` for every `x ∈ B̆_r(0)`, so for an arbitrary
+`F : ℝⁿ → [0, ∞]` (no measurability needed) `∫⁻_{B̆_r(0)} F(x - w) dx ≤ ∫⁻_{B̆_s(0)} F`.
+
+Both set lintegrals are lintegrals of indicators (open balls are measurable), the integrands
+compare pointwise as `1_{B̆_r}(x) F(x - w) ≤ (1_{B̆_s} F)(x - w)`, and the change of variables
+`x ↦ x - w`, valid for every `[0, ∞]`-valued function, removes the translation. -/
+theorem lintegral_ball_comp_sub_le : ∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (r s : ℝ) (w : Rn n), r + ‖w‖ ≤ s → ∫⁻ x in ball (0 : Rn n) r, F (x - w) ≤ ∫⁻ x in ball (0 : Rn n) s, F x := by
+  intro n F r s w hrs
+  -- Steps 1–2: `x ∈ B̆_r(0)` gives `‖x - w‖ ≤ ‖x‖ + ‖w‖ < r + ‖w‖ ≤ s`, hence the pointwise bound.
+  have hpt : ∀ x, (ball (0 : Rn n) r).indicator (fun y => F (y - w)) x ≤
+      (ball (0 : Rn n) s).indicator F (x - w) := by
+    intro x
+    by_cases hx : x ∈ ball (0 : Rn n) r
+    · have hxw : x - w ∈ ball (0 : Rn n) s :=
+        mem_ball_zero_iff.2 ((norm_sub_le x w).trans_lt (by linarith [mem_ball_zero_iff.1 hx]))
+      rw [indicator_of_mem hx, indicator_of_mem hxw]
+    · rw [indicator_of_notMem hx]
+      exact zero_le
+  -- Steps 3–6: indicator form, monotonicity, and translation invariance of Lebesgue measure.
+  calc ∫⁻ x in ball (0 : Rn n) r, F (x - w)
+      = ∫⁻ x, (ball (0 : Rn n) r).indicator (fun y => F (y - w)) x :=
+        (lintegral_indicator measurableSet_ball _).symm
+    _ ≤ ∫⁻ x, (ball (0 : Rn n) s).indicator F (x - w) := lintegral_mono hpt
+    _ = ∫⁻ x, (ball (0 : Rn n) s).indicator F x :=
+        lintegral_sub_right_eq_self ((ball (0 : Rn n) s).indicator F) w
+    _ = ∫⁻ x in ball (0 : Rn n) s, F x := lintegral_indicator measurableSet_ball F
 
 end Submission
 
