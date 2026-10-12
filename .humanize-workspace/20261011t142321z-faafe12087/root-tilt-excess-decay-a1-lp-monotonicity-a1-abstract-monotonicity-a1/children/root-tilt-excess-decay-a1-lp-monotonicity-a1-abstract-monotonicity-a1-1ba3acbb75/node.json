@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.exp_perturbation_bounds-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1",
+  "depth": 4,
+  "title": "Exponential bounds for a perturbation |u| <= (Lambda/4) q (parent step 11 (a)-(d))",
+  "statement": "Let Lambda, q, u be real numbers with Lambda > 0, 0 <= q <= 1 and |u| <= (Lambda/4) q. Then e^(-Lambda) <= e^u, e^u <= e^Lambda, |e^u - 1| <= (e^(Lambda/2)/2) Lambda q, and, if Lambda <= 1, |e^u - 1| <= Lambda q.",
+  "lean_statement": "∀ (Λ q u : ℝ), 0 < Λ → 0 ≤ q → q ≤ 1 → |u| ≤ Λ / 4 * q → Real.exp (-Λ) ≤ Real.exp u ∧ Real.exp u ≤ Real.exp Λ ∧ |Real.exp u - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * q ∧ (Λ ≤ 1 → |Real.exp u - 1| ≤ Λ * q)",
+  "lean_name": "ted_lpm_am_exp_perturbation_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1-1ba3acbb75-a1"
+}
