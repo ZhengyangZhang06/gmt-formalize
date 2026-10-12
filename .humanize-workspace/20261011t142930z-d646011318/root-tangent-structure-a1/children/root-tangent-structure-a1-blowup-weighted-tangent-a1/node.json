@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.blowup_weighted_tangent-a1",
+  "parent_id": "root.tangent_structure-a1",
+  "depth": 2,
+  "title": "The weighted blow-up of μ_V is Simon's weighted approximate tangent (Ch. 3, 1.7)",
+  "statement": "For all n, ℓ, every admissible pair a = (M, θ) in E = ℝ^{n+ℓ}, every x ∈ E and every n-dimensional subspace P: if t⁻ⁿ∫ f(t⁻¹(y − x)) dμ_{v(M,θ)}(y) → θ(x)∫_P f dHⁿ as t ↓ 0 for every f ∈ C_c(E, ℝ), then HasWeightedApproximateTangentSpaceAt n M θ x P (Simon Ch. 3, 1.7), i.e. ∫_{η_{x,r}(M)} f(y)θ(x + ry) dHⁿ(y) → θ(x)∫_P f dHⁿ as r ↓ 0 for every f ∈ C_c(E, ℝ), where η_{x,r}(y) = r⁻¹(y − x).",
+  "lean_statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)), Module.finrank ℝ P = n → (∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂(mk a).weight) (𝓝[>] 0) (𝓝 (a.θ x * ∫ y in (P : Set (Ambient n ℓ)), f y ∂μHE[n]))) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n a.M a.θ x P",
+  "lean_name": "ts_blowup_weighted_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-blowup-weighted-tangent-a1-a1"
+}

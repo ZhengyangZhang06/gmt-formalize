@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_tangent_field-a1",
+  "parent_id": "root.tangent_structure-a1",
+  "depth": 2,
+  "title": "Strongly measurable projection field agreeing with the piece tangent planes on the disjointified pieces",
+  "statement": "For all n, ℓ and every sequence (C_i, F_i)_{i∈ℕ} of Lipschitz pieces into E = ℝ^{n+ℓ} (C_i ⊆ ℝⁿ compact, F_i Lipschitz, differentiable at each w ∈ C_i with injective DF_i(w), DF_i continuous on C_i, c_i|v − w| ≤ |F_i(v) − F_i(w)| on C_i with c_i > 0), there is a strongly measurable g: E → L(E, E) such that g(F_i(w)) is the orthogonal projection onto DF_i(w)(ℝⁿ) whenever i ∈ ℕ, w ∈ C_i and F_i(w) ∉ F_j(C_j) for all j < i.",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ), (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ w ∈ C i, (∀ j < i, F i w ∉ F j '' C j) → g (F i w) = (LinearMap.range (fderiv ℝ (F i) w).toLinearMap).starProjection",
+  "lean_name": "ts_piece_tangent_projection_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-tangent-field-a1-a1"
+}

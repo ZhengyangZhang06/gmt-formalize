@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1",
+  "parent_id": "root.tangent_structure-a1",
+  "depth": 2,
+  "title": "First variation formula given the Lipschitz-piece cover and the a.e. tangent-plane identification (Ch. 4, 2.2)",
+  "statement": "Let n ≥ 1, ℓ ≥ 0, a = (M, θ) an admissible pair in E = ℝ^{n+ℓ}, V = v(M, θ) with weight μ_V and tangent spaces T_x = V.tangentSpace x. Assume: N₀ ⊆ E is Borel with Hⁿ(N₀) = 0; (C_i, F_i)_{i∈ℕ} are Lipschitz pieces (C_i ⊆ ℝⁿ compact, F_i Lipschitz, differentiable on C_i with injective DF_i, DF_i continuous on C_i, c_i|v − w| ≤ |F_i(v) − F_i(w)| on C_i with c_i > 0) with M ⊆ N₀ ∪ ⋃_i F_i(C_i); for Hⁿ-a.e. x ∈ M, T_x = DF_i(w)(ℝⁿ) for every i and every w ∈ C_i with F_i(w) = x; and x ↦ p_{T_x} is a.e. strongly measurable for Hⁿ⌞M. Then for every compact variation (φ, ε, K) as in Ch. 4, 2.1 (IsCompactVariation φ ε K), the function t ↦ (imageMass a (φ t) K).toReal = M(φ_t#(V⌞K)) has derivative ∫ div_M X dμ_V at t = 0, where X(y) = ∂_tφ(t, y)|_{t=0} and div_M X = V.tangentialDiv X.",
+  "lean_statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), 0 < n → MeasurableSet N₀ → (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 → a.M ⊆ N₀ ∪ ⋃ i, F i '' C i → (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, ∀ i, ∀ w ∈ C i, F i w = x → (mk a).tangentSpace x = LinearMap.range (fderiv ℝ (F i) w).toLinearMap) → AEStronglyMeasurable (fun x ↦ ((mk a).tangentSpace x).starProjection) ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) → IsCompactVariation φ ε K → HasDerivAt (fun t ↦ (imageMass a (φ t) K).toReal) (∫ x, (mk a).tangentialDiv (fun y ↦ deriv (fun t ↦ φ t y) 0) x ∂(mk a).weight) 0",
+  "lean_name": "ts_first_variation_of_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-a1"
+}

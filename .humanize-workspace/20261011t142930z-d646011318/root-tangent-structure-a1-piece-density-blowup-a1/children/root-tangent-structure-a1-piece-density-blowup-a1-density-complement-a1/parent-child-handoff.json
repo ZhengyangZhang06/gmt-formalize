@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json; sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean",
+        "sed -n 1,30p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (frozen import closure: only Chapter02.Lipschitz)",
+        "grep -rn 'theorem weighted_area_formula_lipschitz_injOn|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem continuous_normDet|theorem measurable_areaJacobianAt|def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/",
+        "grep -n 'theorem|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "rg -n 'theorem euclideanHausdorffMeasure_eq_volume|theorem volume_closedBall|theorem addHaar_closedBall\\b|theorem finrank_euclideanSpace_fin|theorem integral_comp_smul\\b|exists_antilipschitzWith|theorem integral_map\\b|theorem integral_smul_measure|theorem integral_withDensity_eq_integral_toReal_smul' <snapshot>/mathlib/Mathlib",
+        "rg -n 'integral_mul_left_eq_self|setIntegral_comp_smul|addHaar_preimage_smul|addHaar_smul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'uniformContinuous' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        "rg -n 'theorem Integrable.comp_smul\\b|theorem Integrable.comp_mul_left\\b|theorem hasFDerivAt_iff_isLittleO_nhds_zero|bounded_above_of_compact_support|exists_bound_of_continuousOn|theorem integral_indicator_one|theorem norm_integral_le_of_norm_le\\b|theorem integrable_indicator_iff|ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem measure_sdiff |alias measure_diff :=' mathlib/Mathlib/MeasureTheory",
+        "lake env lean GMT/Ch04/Submission.lean -o /tmp/pdb-decomp/olean/GMT/Ch04/Submission.olean",
+        "python3 gen.py (gmt-compare.child_modules contract mode) then lean /tmp/pdb-decomp/final/challenges/Challenge_*.lean",
+        "lean /tmp/pdb-decomp/final/F1_frozen.lean (parent from 5 sorry'd children, frozen imports only)",
+        "lean /tmp/pdb-decomp/final/F2_full.lean (all 5 children + parent fully proved; #print axioms)",
+        "lean P1.lean / P2.lean with set_option pp.all true; cmp of #check outputs across import sets",
+        "python3 lean_contract.validate_lean_statement on each child type; dag.json lean_name collision check"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json",
+        "/tmp/pdb-decomp/final/F1_frozen.lean",
+        "/tmp/pdb-decomp/final/F2_full.lean"
+      ],
+      "conclusion": "Contract and pins:\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean (single sha256).\n- Submission.lean is the frozen copy. The manifest pins the project at ff75f52 and Mathlib at 25730c7c; SimonGMT is at 2b36630.\n\nFrozen statement scope:\n- Chapter03.Rectifiable imports only Chapter02.Lipschitz, so LinearMap.normDet and Chapter02.areaJacobianAt cannot appear in child types.\n- The children therefore carry the Jacobian as an existential J with the area-factor identity Hⁿ(DF(v)(S)) = ofReal(J v)·Lⁿ(S).\n\nCited library results (all exist with the stated meaning):\n- SimonGMT Chapter02: euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz (AreaLipschitz.lean:101 ff.), continuous_normDet and measurable_areaJacobianAt (AreaApproximation.lean:28, 44), areaJacobianAt_eq_normDet (Area.lean).\n- Mathlib NormDet and volume: LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume and normDet_nonneg; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Measure.addHaar_closedBall; Measure.addHaar_preimage_smul; Measure.integral_comp_smul; integral_add_left_eq_self (the to_additive form of integral_mul_left_eq_self).\n- Mathlib integration: integral_map; integral_smul_measure; integral_withDensity_eq_integral_toReal_smul; Integrable.comp_smul; integrable_indicator_iff; ContinuousOn.integrableOn_compact; norm_integral_le_of_norm_le.\n- Mathlib analysis: LinearMap.exists_antilipschitzWith; CompactlySupportedContinuousMapClass.uniformContinuous; hasFDerivAt_iff_isLittleO_nhds_zero; measure_sdiff (measure_diff is a deprecated alias).\n\nLean checks:\n- All five child types are valid one-line statements and compile as comparator challenge files in the frozen scope.\n- The parent's exact frozen type is proved from them (F1).\n- All five children and the parent are fully proved with the extra imports (F2). Axioms are only propext, Classical.choice and Quot.sound.\n- The pp.all types are identical across the two import sets.\n- No lean_name collides with any of the 79 DAG nodes."
+    }
+  ],
+  "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "child_id": "root.tangent_structure-a1.piece_density_blowup-a1.density_complement-a1",
+  "subproblem": {
+    "key": "density_complement",
+    "title": "Rescaled complement of a set at a Lebesgue density point has vanishing measure",
+    "statement": "Let n ∈ ℕ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ, C ⊆ ℝⁿ Borel, w ∈ ℝⁿ and R > 0, and suppose Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 in [0, ∞] as r ↓ 0 (closed balls). Then Lⁿ({u ∈ B_R(0) : w + tu ∉ C}) → 0 in [0, ∞] as t ↓ 0.",
+    "lean_statement": "∀ (n : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)) (R : ℝ), MeasurableSet C → 0 < R → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun t : ℝ ↦ volume {u : EuclideanSpace ℝ (Fin n) | u ∈ closedBall 0 R ∧ w + t • u ∉ C}) (𝓝[>] 0) (𝓝 0)",
+    "lean_name": "ts_pdb_density_complement_vanish",
+    "depends_on": [],
+    "natural_proof": "Source: the parent proof, step 7(a) (the estimate of D_t'': t⁻ⁿLⁿ(B_{tR'}(w) ∖ C) = R'ⁿω_n·[Lⁿ(B_{tR'}(w) ∖ C)/Lⁿ(B_{tR'}(w))] → 0 at a density point), stated for an arbitrary radius R > 0 in the rescaled form Lⁿ({u ∈ B_R(0) : w + tu ∉ C}) used there. No errata apply.\n\nConventions. n, ℓ ∈ ℕ; E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)); ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Hⁿ := μHE[n] (on E, and also on ℝⁿ, where μHE[n] = volume by Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin); B_ρ(z) := closedBall z ρ; ω_n := omega n = (Lⁿ(ball 0 1)).toReal, and Lⁿ(ball 0 1) = ofReal(ω_n) because Lⁿ(ball 0 1) < ∞ (ENNReal.ofReal_toReal). Hypotheses: (H1) C ⊆ ℝⁿ Borel; (H2) R > 0; (H3) q(r) := Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 in [0, ∞] as r ↓ 0 (r > 0). Put S_t := {u ∈ ℝⁿ : u ∈ B_R(0) and w + tu ∉ C}, V := Lⁿ(ball 0 1) < ∞.\n\nProof.\n1. Complementary ratio. Truncated subtraction on [0, ∞] is continuous at (1, 1) because 1 ≠ ∞ (ENNReal.Tendsto.sub), so (H3) gives 1 − q(r) → 1 − 1 = 0 as r ↓ 0.\n2. Fix t > 0 and put r := tR > 0 and B := B_r(w). Then 0 < Lⁿ(B) < ∞ (measure_closedBall_pos, measure_closedBall_lt_top), and by Measure.addHaar_closedBall with finrank ℝ ℝⁿ = n, Lⁿ(B) = ofReal(rⁿ)·V.\n3. Complement measure. B ∖ C = B ∖ (C ∩ B), and C ∩ B ⊆ B is Borel with finite measure, so Lⁿ(B ∖ C) = Lⁿ(B) − Lⁿ(C ∩ B) (measure_sdiff; deprecated alias measure_diff). Because 0 < Lⁿ(B) < ∞, Lⁿ(B)·(Lⁿ(C ∩ B)/Lⁿ(B)) = Lⁿ(C ∩ B) (ENNReal.mul_div_cancel) and multiplication by the finite Lⁿ(B) distributes over truncated subtraction (ENNReal.mul_sub); hence Lⁿ(B ∖ C) = Lⁿ(B)·(1 − q(r)).\n4. Rescaling. For u ∈ ℝⁿ, |u| ≤ R ⟺ |(w + tu) − w| = t|u| ≤ tR, so S_t = Φ⁻¹(B ∖ C) where Φ(u) := w + tu, and Φ⁻¹(X) = (u ↦ tu)⁻¹((x ↦ w + x)⁻¹(X)). Lebesgue measure is translation invariant (measure_preimage_add) and Lⁿ((u ↦ tu)⁻¹(Y)) = ofReal(|t⁻ⁿ|)·Lⁿ(Y) for t ≠ 0 (Measure.addHaar_preimage_smul, finrank = n). Therefore Lⁿ(S_t) = ofReal(t⁻ⁿ)·Lⁿ(B ∖ C) = ofReal(t⁻ⁿ)·ofReal((tR)ⁿ)·V·(1 − q(tR)) = ofReal(Rⁿ)·V·(1 − q(tR)), using t⁻ⁿ(tR)ⁿ = Rⁿ.\n5. Limit. The map t ↦ tR sends t ↓ 0 (t > 0) to r ↓ 0 with r > 0 (it tends to 0·R = 0 and tR > 0 for t > 0), so by step 1, 1 − q(tR) → 0 as t ↓ 0. Multiplication by the finite constant ofReal(Rⁿ)·V is continuous at 0 on [0, ∞] (ENNReal.Tendsto.const_mul), hence ofReal(Rⁿ)·V·(1 − q(tR)) → 0. By step 4 the two functions of t agree for all t > 0, i.e. eventually along t ↓ 0, so Lⁿ(S_t) → 0 as t ↓ 0. ∎",
+    "proof_key_steps": [
+      "1 − q(r) → 0 as r ↓ 0, where q(r) = Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w))",
+      "Lⁿ(B_r(w) ∖ C) = Lⁿ(B_r(w))·(1 − q(r)) for r > 0 (measure_sdiff, finite positive ball measure)",
+      "{u ∈ B_R(0) : w + tu ∉ C} is the preimage of B_{tR}(w) ∖ C under u ↦ w + tu, so its measure is t⁻ⁿLⁿ(B_{tR}(w) ∖ C) = Rⁿ V (1 − q(tR))",
+      "tR ↓ 0 as t ↓ 0, so the measure tends to Rⁿ V · 0 = 0"
+    ]
+  },
+  "audit": {
+    "key": "density_complement",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The statement correctly specifies ENNReal convergence and closed balls. Positive finite ball measures justify the complementary-ratio identity; affine rescaling gives the stated fixed-radius complement measure, whose finite constant multiplier yields convergence to zero. All hypotheses are accounted for, including the permitted n = 0 case."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1-density-complement-a1/parent-supplied-natural-proof.json"
+}

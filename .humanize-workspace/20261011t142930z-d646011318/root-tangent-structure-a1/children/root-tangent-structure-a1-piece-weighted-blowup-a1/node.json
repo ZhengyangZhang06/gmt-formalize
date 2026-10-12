@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_weighted_blowup-a1",
+  "parent_id": "root.tangent_structure-a1",
+  "depth": 2,
+  "title": "Weighted blow-up of μ_V at Hⁿ-a.e. point of M lying on one Lipschitz piece",
+  "statement": "Let n ≥ 1, ℓ ≥ 0, let a = (M, θ) be an admissible pair in E = ℝ^{n+ℓ} (M countably n-rectifiable and Hⁿ-null-measurable, θ > 0 on M, θ ∈ L¹(Hⁿ⌞(M ∩ K)) for every compact K) with weight μ = μ_{v(M,θ)} = Hⁿ⌞θ, and let (C, F) be a Lipschitz piece: C ⊆ ℝⁿ compact, F: ℝⁿ → E Lipschitz, differentiable at every w ∈ C with injective DF(w), DF continuous on C, and c|v − w| ≤ |F(v) − F(w)| on C with c > 0. Then for Hⁿ-a.e. x ∈ M: for every w ∈ C with F(w) = x and every f ∈ C_c(E, ℝ), t⁻ⁿ∫ f(t⁻¹(y − x)) dμ(y) → θ(x)∫_{DF(w)(ℝⁿ)} f dHⁿ as t ↓ 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), 0 < n → (IsCompact C ∧ (∃ K : NNReal, LipschitzWith K F) ∧ (∀ w ∈ C, DifferentiableAt ℝ F w ∧ Function.Injective (fderiv ℝ F w)) ∧ ContinuousOn (fderiv ℝ F) C ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, ∀ w ∈ C, F w = x → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂(mk a).weight) (𝓝[>] 0) (𝓝 (a.θ x * ∫ y in (LinearMap.range (fderiv ℝ F w).toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n]))",
+  "lean_name": "ts_piece_weighted_blowup_ae",
+  "depends_on": [
+    "root.tangent_structure-a1.piece_density_blowup-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-weighted-blowup-a1-a1"
+}
