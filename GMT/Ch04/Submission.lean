@@ -627,6 +627,59 @@ theorem Submission.support_subset_closedBall_of_radial_identity : ∀ (n ℓ : �
   rw [mem_closedBall, dist_eq_norm]
   exact not_lt.1 hxO
 
+/-- **Ch. 4, 6.1 (p. 100) from the radial first variation.** Assume the radial first variation
+identity (3.2–3.3, 3.14) for `X(x) = h(x)γ(|x - ξ|)(x - ξ)`, and that for `n ≥ 1` the weight `μ_V`
+is finite on compact sets, `dim T_x V = n` `μ_V`-a.e. and `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly
+measurable. Then `SupportInBall`: for `ε > 0`, the identity with `h = ζ`, `ζ = 1` and `∇ζ = 0` on
+`spt V`, and `γ = 0` on `[0, R + ε]`, `γ > 0` beyond, reads
+`n ∫_U γ(r) dμ_V + ∫_U rγ'(r)(1 - |D^⊥r|²) dμ_V = -∫_U γ(r)(x - ξ)·H dμ_V`, and with
+`|H·(x - ξ)| < n` it forces `spt V ⊆ B_{R+ε}(ξ)`. -/
+theorem Submission.support_in_ball_of_radial_first_variation : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ), (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) → ∫ x in U, (h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)) ∂V.weight = -∫ x in U, h x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight) → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SupportInBall := by
+  intro hRFV hGF n ℓ V H ξ R hn hR hH hcurv hcpt
+  obtain ⟨hfin, hdim, hproj⟩ := hGF n ℓ V hn
+  -- `|H(x)·(x - ξ)| < n` for `μ_V`-a.e. `x ∈ U = ℝ^{n+ℓ} \ B_R(ξ)`.
+  have hC : ∀ᵐ x ∂V.weight, x ∈ (closedBall ξ R)ᶜ → |inner ℝ (H x) (x - ξ)| < (n : ℝ) := by
+    filter_upwards [hcurv] with x hx hxU
+    have h := (inv_mul_lt_iff₀ (Nat.cast_pos.mpr hn : (0 : ℝ) < n)).1 (hx hxU)
+    rwa [mul_one] at h
+  -- `|D^⊥r|²` is `μ_V`-a.e. strongly measurable with values in `[0, 1]`.
+  obtain ⟨hqm, hq⟩ := Submission.aestronglyMeasurable_normalRadialSq_and_bounds n ℓ V ξ hproj
+  have hball : ∀ ε : ℝ, 0 < ε → V.support ⊆ closedBall ξ (R + ε) := by
+    intro ε hε
+    -- `X(x) = ζ(x)γ(|x - ξ|)(x - ξ)` is a test field in `U`, with `ζ = 1`, `∇ζ = 0` on `spt V`,
+    -- so (RFV) applies with `h = ζ`.
+    obtain ⟨ζ, γ, hζ, hζK, hγ, hγnn, hγ0, hγpos, hX⟩ :=
+      Submission.exists_radial_cutoff_test_field n ℓ V.support ξ R ε hcpt hR hε
+    have hstar := hRFV n ℓ V (closedBall ξ R)ᶜ H ζ γ ξ hdim isClosed_closedBall.isOpen_compl hH
+      hζ.contDiffOn hγ hX
+    -- `μ_V`-a.e. `x` lies in `spt V`, where `ζ = 1` and `∇^M ζ = p_{T_x V}(∇ζ) = 0`, so `ζ` drops
+    -- out of both sides of (RFV).
+    have hae : ∀ᵐ x ∂V.weight.restrict (closedBall ξ R)ᶜ, ζ x = 1 ∧ gradient ζ x = 0 := by
+      refine ae_restrict_of_ae ?_
+      filter_upwards [V.weight.support_mem_ae] with x hx using hζK x hx
+    have hL : ∫ x in (closedBall ξ R)ᶜ, (ζ x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ *
+          (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient ζ x))
+          ∂V.weight =
+        ∫ x in (closedBall ξ R)ᶜ, ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ *
+          (1 - V.normalRadialSq ξ x)) ∂V.weight := by
+      refine integral_congr_ae ?_
+      filter_upwards [hae] with x hx
+      simp only [RectifiableVarifold.tangentialGradient, hx.1, hx.2, map_zero, inner_zero_right,
+        mul_zero, add_zero, one_mul]
+    have hR' : ∫ x in (closedBall ξ R)ᶜ, ζ x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight =
+        ∫ x in (closedBall ξ R)ᶜ, γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight := by
+      refine integral_congr_ae ?_
+      filter_upwards [hae] with x hx
+      simp only [hx.1, one_mul]
+    rw [hL, hR'] at hstar
+    -- The identity and `|H·(x - ξ)| < n` force `γ(|x - ξ|) = 0` `μ_V`-a.e. on `U`.
+    exact Submission.support_subset_closedBall_of_radial_identity n ℓ V.weight H
+      (V.normalRadialSq ξ) γ ξ R ε hn hR hε hfin hcpt hH.1 hqm hq hγ hγnn hγ0 hγpos hC hstar
+  -- `spt V ⊆ ⋂_{ε > 0} B_{R+ε}(ξ) = B_R(ξ)`.
+  intro x hx
+  rw [mem_closedBall]
+  exact le_of_forall_pos_le_add fun ε hε ↦ mem_closedBall.1 (hball ε hε hx)
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
