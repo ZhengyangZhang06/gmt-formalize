@@ -335,6 +335,35 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Orthogonal projection onto `W ⊕ ℝu`** (used in the proof of the Besicovitch–Federer
+Theorem 3.6 of Simon Ch. 3, `chapter-03.txt` lines 530–536, whose proof the book defers to
+[Fed69]/[Ros84]). For a subspace `W ⊆ ℝᴺ` with orthogonal projection `P` and a unit vector
+`u ∈ Wᗮ`, the orthogonal projection onto `W ⊔ span{u}` is `y ↦ P y + (y · u) u`: the vector
+`z = P y + (y · u) u` lies in `W ⊔ span{u}`, and `y - z` is orthogonal to `W` and to `u`, hence to
+`W ⊔ span{u}`. -/
+theorem Submission.bf_starProjection_sup_span_unit : ∀ (N : ℕ) (W : Submodule ℝ (Rn N)) (u : Rn N), u ∈ Wᗮ → ‖u‖ = 1 → ∀ y : Rn N, (W ⊔ Submodule.span ℝ {u}).starProjection y = W.starProjection y + inner ℝ y u • u := by
+  intro N W u hu hu1 y
+  -- Characterization: `z ∈ H` and `y - z ∈ Hᗮ` give `H.starProjection y = z`.
+  apply Submodule.eq_starProjection_of_mem_orthogonal
+  · -- `z ∈ W ⊔ span{u}`: `P y ∈ W` and `(y · u) u ∈ span{u}`.
+    exact Submodule.add_mem_sup (W.starProjection_apply_mem y)
+      (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self u))
+  · -- `(W ⊔ span{u})ᗮ = Wᗮ ⊓ span{u}ᗮ`.
+    rw [← Submodule.inf_orthogonal]
+    refine ⟨?_, ?_⟩
+    · -- `y - z = (y - P y) - (y · u) u ∈ Wᗮ`.
+      have h : y - (W.starProjection y + inner ℝ y u • u) =
+          (y - W.starProjection y) - inner ℝ y u • u := by abel
+      rw [h]
+      exact Submodule.sub_mem _ (W.sub_starProjection_mem_orthogonal y) (Submodule.smul_mem _ _ hu)
+    · -- `u · (y - z) = u · y - u · P y - (y · u) ‖u‖² = 0`.
+      refine Submodule.mem_orthogonal_singleton_iff_inner_right.2 ?_
+      have hPu : inner ℝ u (W.starProjection y) = (0 : ℝ) :=
+        Submodule.inner_left_of_mem_orthogonal (W.starProjection_apply_mem y) hu
+      rw [inner_sub_right, inner_add_right, real_inner_smul_right, hPu,
+        real_inner_self_eq_norm_sq, hu1, real_inner_comm]
+      ring
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
