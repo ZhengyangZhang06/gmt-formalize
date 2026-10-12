@@ -1253,6 +1253,59 @@ theorem Submission.gaussGreenRep_riesz_on_open : ∀ (N : ℕ) (U : Set (Rn N)) 
     _ = ∫ y, inner ℝ (g ↑y) (ν₀ y) ∂μ₀ := by simp only [hf]
     _ = ∫ x, inner ℝ (g x) (ν x) ∂μ := (hint g).symm
 
+/-- **Simon Ch. 3, (4.1): two Gauss–Green pairs pair equally with continuous fields**
+(`chapter-03.txt` lines 551–567, with Ch. 2, §2, `chapter-02.txt` line 489: `∫ u div g`
+"extends uniquely" from `C¹_c` to continuous compactly supported fields). By (4.1) for both pairs,
+`∫ h · ν dμ = -∫_{E ∩ U} div h = ∫ h · ν' dμ'` for every `C¹` field `h` with compact support in
+`U`. For continuous `g` with compact support in `U`, `gaussGreenRep_c1_uniform_approx` gives such
+`h_k → g` uniformly, all supported in one compact `K ⊆ U`. Eventually `|h_k| ≤ sup |g| + 1`, and
+`h_k = 0` off `K`; as `|ν| = 1` `μ`-a.e. and `μ(K) < ∞`, dominated convergence with the bound
+`(sup |g| + 1) 1_K` gives `∫ h_k · ν dμ → ∫ g · ν dμ`, and likewise for `(μ', ν')`. -/
+theorem Submission.gaussGreenRep_pairing_eq_continuous : ∀ (N : ℕ) (U E : Set (Rn N))
+    (μ μ' : Measure (Rn N)) (ν ν' : Rn N → Rn N), IsOpen U → IsGaussGreenPair U E μ ν →
+    IsGaussGreenPair U E μ' ν' → ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g →
+    tsupport g ⊆ U → ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ x, inner ℝ (g x) (ν' x) ∂μ' := by
+  rintro N U E μ μ' ν ν' hU ⟨-, hμK, hνm, hν, hGG⟩ ⟨-, hμK', hνm', hν', hGG'⟩ g hg hgc hgU
+  -- Step 1: by (4.1) for both pairs, the pairings agree on `C¹` fields supported in `U`.
+  have hC1 : ∀ h : Rn N → Rn N, ContDiff ℝ 1 h → HasCompactSupport h → tsupport h ⊆ U →
+      ∫ x, inner ℝ (h x) (ν x) ∂μ = ∫ x, inner ℝ (h x) (ν' x) ∂μ' := fun h h1 hc hU' ↦
+    neg_inj.1 ((hGG h h1 hc hU').symm.trans (hGG' h h1 hc hU'))
+  -- Step 2: `C¹` fields `h k → g` uniformly, all supported in one compact `K ⊆ U`.
+  obtain ⟨K, hK, -, hKU, h, hh, hlim⟩ :=
+    Submission.gaussGreenRep_c1_uniform_approx N g U hg hgc hU hgU
+  -- `|g| ≤ C`, and eventually `|h k - g| < 1` everywhere.
+  obtain ⟨C, hC⟩ := hg.bounded_above_of_compact_support hgc
+  have hev : ∀ᶠ k in atTop, ∀ x, dist (g x) (h k x) < 1 :=
+    Metric.tendstoUniformly_iff.1 hlim 1 one_pos
+  -- Steps 3–4: dominated convergence with the bound `(C + 1) 1_K`, for any measure `m` with
+  -- `m K < ∞` and any `m`-measurable `n` with `|n| = 1` `m`-a.e.
+  have hlimit : ∀ (m : Measure (Rn N)) (n : Rn N → Rn N), m K < ∞ → AEStronglyMeasurable n m →
+      (∀ᵐ x ∂m, ‖n x‖ = 1) → Tendsto (fun k ↦ ∫ x, inner ℝ (h k x) (n x) ∂m) atTop
+        (𝓝 (∫ x, inner ℝ (g x) (n x) ∂m)) := by
+    intro m n hmK hnm hn
+    refine tendsto_integral_filter_of_dominated_convergence (K.indicator fun _ ↦ C + 1)
+      (Eventually.of_forall fun k ↦ ?_) ?_ ?_ (Eventually.of_forall fun x ↦ ?_)
+    · exact continuous_inner.comp_aestronglyMeasurable
+        ((hh k).1.continuous.aestronglyMeasurable.prodMk hnm)
+    · filter_upwards [hev] with k hk
+      filter_upwards [hn] with x hx
+      by_cases hxK : x ∈ K
+      · rw [indicator_of_mem hxK]
+        calc ‖inner ℝ (h k x) (n x)‖ ≤ ‖h k x‖ * ‖n x‖ := norm_inner_le_norm _ _
+          _ ≤ C + 1 := by
+            rw [hx, mul_one]
+            linarith [hC x, hk x, norm_sub_norm_le (h k x) (g x), dist_eq_norm (g x) (h k x),
+              norm_sub_rev (h k x) (g x)]
+      · have h0 : h k x = 0 := image_eq_zero_of_notMem_tsupport fun hx' ↦ hxK ((hh k).2.2 hx')
+        rw [indicator_of_notMem hxK, h0, inner_zero_left, norm_zero]
+    · exact (integrable_indicator_iff hK.measurableSet).2 (integrableOn_const hmK.ne)
+    · exact (hlim.tendsto_at x).inner tendsto_const_nhds
+  -- Step 5: by Step 1 the two sequences agree termwise, so their limits agree.
+  exact tendsto_nhds_unique
+    ((hlimit μ ν (hμK K hK hKU) hνm hν).congr fun k ↦
+      hC1 (h k) (hh k).1 (hh k).2.1 ((hh k).2.2.trans hKU))
+    (hlimit μ' ν' (hμK' K hK hKU) hνm' hν')
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
