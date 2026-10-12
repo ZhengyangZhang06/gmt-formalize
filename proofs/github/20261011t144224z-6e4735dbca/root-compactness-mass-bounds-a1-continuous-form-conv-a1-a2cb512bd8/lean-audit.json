@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2a2c6f04f42e7fce158912f696456fb9f205056d5f2b733cbf2fae947e3588ac",
+  "git_delta": {
+    "base_commit": "69cad1473e0e3319c20d929e23633c637c29b968",
+    "candidate_commit": "7fe585673d4ec29848034af63ac0c8777f9d637d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_tendsto_integral_of_weaklyConvergesOn",
+    "diff_sha256": "5cb82e2ea49dae2f018a3c7faf6bd37bd1b023f6cd6ab622c07705b860fcf530",
+    "source_sha256": "8f50b026e2ad5e1c16bc0fa14bf9cae50209e4a217b1d2166684e7ea61a7bb2f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_tendsto_integral_of_weaklyConvergesOn",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (S : ℕ → GeometricCurrentOn U n) (S₀ : GeometricCurrentOn U n), (∀ W, CompactlyContainedOpen W U → (⨆ q, (S q).massOn W) < ∞) → WeaklyConvergesOn S S₀ → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → ∀ (μ : ℕ → Measure (Eucl P)) (v : ℕ → Eucl P → NVector (Eucl P) n) (μ₀ : Measure (Eucl P)) (v₀ : Eucl P → NVector (Eucl P) n), (∀ q, IsMeasureRepresentation (S q) (μ q) (v q)) → IsMeasureRepresentation S₀ μ₀ v₀ → Tendsto (fun q => ∫ x, v q x (ω x) ∂(μ q)) atTop (𝓝 (∫ x, v₀ x (ω x) ∂μ₀))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
