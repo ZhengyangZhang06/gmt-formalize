@@ -3651,6 +3651,27 @@ theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞
   exact .biUnion hTc fun y hy ↦
     (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
+/-- **Simon Ch. 2, Theorem 6.4 (p. 67), `C¹` Sard-type theorem**, assembled from its children.
+`simon_submanifold_tangent_basics` makes `M` Borel with `x ↦ P_x` continuous on `M` and identifies
+`T_{ψ x} M` with the range of `Dψ(x)` in every chart `ψ`. Then `J*f` is continuous on `M` and the
+critical part of each fiber is relatively closed (`c1_sard_coarea_jacobian_continuousOn`);
+`J*f(x) = 0` iff `rank df_x < m` (`c1_sard_coarea_jacobian_eq_zero_iff`); the co-area formula with
+`g = 1_{M ∩ {J*f = 0}}` makes almost every critical fiber `Hᵏ`-null
+(`c1_sard_critical_fibers_null`); and the implicit function theorem in charts makes the regular part
+of every fiber a `k`-dimensional `C¹` submanifold (`c1_sard_regular_fiber_submanifold`). -/
+theorem Submission.c1_sard_theorem : C1Sard := by
+  intro N m k M U f hk hM hU hMU hf
+  obtain ⟨htan, hbasic⟩ := Submission.simon_submanifold_tangent_basics
+  obtain ⟨hMmeas, hP⟩ := hbasic (m + k) N 1 M hM
+  obtain ⟨hJ, hclosed⟩ :=
+    Submission.c1_sard_coarea_jacobian_continuousOn N m M U f hU hMU hf hP
+  refine ⟨?_, ?_, fun y ↦ ⟨hclosed y, ?_⟩⟩
+  · exact sep_ext_iff.mpr fun x _ ↦ Submission.c1_sard_coarea_jacobian_eq_zero_iff N m M f x
+  · exact Submission.c1_sard_critical_fibers_null Submission.coarea_formula_theorem N m k M U f
+      hk hM hU hMU hf hMmeas hJ
+  · exact Submission.c1_sard_regular_fiber_submanifold N m k M U f hM hU hMU hf
+      (fun V W ψ hψ x hx ↦ htan (m + k) N 1 M V W ψ le_rfl hψ x hx) hJ y
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
