@@ -359,6 +359,85 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Tietze extension into the closed unit ball of `ℝ^N`: if `u` is continuous on a closed set
+`C ⊆ ℝ^P` with `‖u‖ ≤ 1` on `C`, there is a continuous `w : ℝ^P → ℝ^N` with `‖w‖ ≤ 1` and
+`w = u` on `C`.  Off `C`, `w` is a continuous selection (partition of unity) of the convex hulls
+of the values of `u` on `C ∩ B(y, 3 d(y, C))`, as in Dugundji's extension theorem. -/
+theorem Submission.smr_ufd_ball_tietze :
+    ∀ (P N : ℕ) (C : Set (Eucl P)) (u : Eucl P → EuclideanSpace ℝ (Fin N)), IsClosed C →
+      ContinuousOn u C → (∀ x ∈ C, ‖u x‖ ≤ 1) →
+      ∃ w : Eucl P → EuclideanSpace ℝ (Fin N), Continuous w ∧ (∀ x, ‖w x‖ ≤ 1) ∧
+        ∀ x ∈ C, w x = u x := by
+  intro P N C u hC hu hu1
+  -- Empty `C`: take `w = 0`.
+  rcases C.eq_empty_or_nonempty with rfl | hne
+  · exact ⟨0, continuous_const, fun x => by simp, fun x hx => hx.elim⟩
+  -- For `y ∉ C`, `t y` is the convex hull of `u (C ∩ B(y, 3 d(y, C)))`.
+  set t : (Cᶜ : Set (Eucl P)) → Set (EuclideanSpace ℝ (Fin N)) := fun y =>
+    convexHull ℝ (u '' (C ∩ ball (y : Eucl P) (3 * infDist (y : Eucl P) C)))
+  have htc : ∀ y, Convex ℝ (t y) := fun y => convex_convexHull ℝ _
+  have hpos : ∀ y : (Cᶜ : Set (Eucl P)), 0 < infDist (y : Eucl P) C := fun y =>
+    (hC.notMem_iff_infDist_pos hne).1 y.2
+  -- Locally constant selections: `u c` for a point `c ∈ C` with `|y - c| < 2 d(y, C)`.
+  have hloc : ∀ y : (Cᶜ : Set (Eucl P)), ∃ v, ∀ᶠ z in 𝓝 y, v ∈ t z := by
+    intro y
+    obtain ⟨c, hcC, hc⟩ := (infDist_lt_iff hne).1
+      (by linarith [hpos y] : infDist (y : Eucl P) C < 2 * infDist (y : Eucl P) C)
+    refine ⟨u c, ?_⟩
+    have h1 : ContinuousAt (fun z : (Cᶜ : Set (Eucl P)) => dist (z : Eucl P) c) y :=
+      (continuous_subtype_val.dist continuous_const).continuousAt
+    have h2 : ContinuousAt (fun z : (Cᶜ : Set (Eucl P)) => 3 * infDist (z : Eucl P) C) y :=
+      (continuous_const.mul ((continuous_infDist_pt C).comp continuous_subtype_val)).continuousAt
+    filter_upwards [h1.eventually_lt h2 (by linarith [hpos y])] with z hz
+    exact subset_convexHull ℝ _ ⟨c, ⟨hcC, by rw [mem_ball, dist_comm]; exact hz⟩, rfl⟩
+  obtain ⟨g, hg⟩ := exists_continuous_forall_mem_convex_of_local_const htc hloc
+  -- Every `t y` lies in the closed unit ball.
+  have htB : ∀ y, t y ⊆ closedBall (0 : EuclideanSpace ℝ (Fin N)) 1 := fun y =>
+    convexHull_min (by rintro _ ⟨c, hc, rfl⟩; simpa using hu1 c hc.1) (convex_closedBall 0 1)
+  classical
+  refine ⟨fun x => if hx : x ∈ C then u x else g ⟨x, hx⟩, ?_, ?_, ?_⟩
+  · rw [continuous_iff_continuousAt]
+    intro x
+    by_cases hx : x ∈ C
+    · -- At `x ∈ C`: nearby values of `u` on `C` are close to `u x`, and so are their hulls.
+      rw [ContinuousAt, Metric.tendsto_nhds]
+      intro ε hε
+      obtain ⟨δ, hδ, hδu⟩ := Metric.continuousOn_iff.1 hu x hx (ε / 2) (half_pos hε)
+      filter_upwards [ball_mem_nhds x (by positivity : 0 < δ / 4)] with y hy
+      have hyx : dist y x < δ / 4 := mem_ball.1 hy
+      rw [dite_eq_left hx]
+      by_cases hyC : y ∈ C
+      · rw [dite_eq_left hyC]
+        exact (hδu y hyC (by linarith)).trans (half_lt_self hε)
+      · rw [dite_eq_right hyC]
+        have hsub : t ⟨y, hyC⟩ ⊆ closedBall (u x) (ε / 2) := by
+          refine convexHull_min ?_ (convex_closedBall _ _)
+          rintro _ ⟨c, ⟨hcC, hcy⟩, rfl⟩
+          have hcy' : dist c y < 3 * infDist y C := mem_ball.1 hcy
+          have hinf : infDist y C ≤ dist y x := infDist_le_dist_of_mem hx
+          have hcx : dist c x < δ := by
+            calc dist c x ≤ dist c y + dist y x := dist_triangle _ _ _
+              _ < δ := by linarith
+          exact mem_closedBall.2 (hδu c hcC hcx).le
+        exact lt_of_le_of_lt (mem_closedBall.1 (hsub (hg ⟨y, hyC⟩))) (half_lt_self hε)
+    · -- Off `C` the glued map is `g` on the open set `Cᶜ`.
+      have hcont : ContinuousOn (fun x => if hx : x ∈ C then u x else g ⟨x, hx⟩) Cᶜ := by
+        rw [continuousOn_iff_continuous_domRestrict]
+        convert g.continuous using 1
+        funext y
+        have hy : (y : Eucl P) ∉ C := y.2
+        simp [hy]
+      exact hcont.continuousAt (hC.isOpen_compl.mem_nhds hx)
+  · intro x
+    dsimp only
+    by_cases hx : x ∈ C
+    · rw [dite_eq_left hx]
+      exact hu1 x hx
+    · rw [dite_eq_right hx]
+      simpa using htB _ (hg ⟨x, hx⟩)
+  · intro x hx
+    exact dite_eq_left hx
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
