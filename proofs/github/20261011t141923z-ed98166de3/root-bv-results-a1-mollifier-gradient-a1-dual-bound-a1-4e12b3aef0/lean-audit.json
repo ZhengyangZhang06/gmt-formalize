@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4ba2119ead68c8147d718fe8112fdb1fca012adf82382fabe0664c4e1925a492",
+  "git_delta": {
+    "base_commit": "b601bb6b6e09c88b21f321064f3d4a45847feb31",
+    "candidate_commit": "5aedde8f7a705cbda05373ad863999dbea12bafb",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_mollifier_integral_mul_div_le",
+    "diff_sha256": "fa3593fb4cb6dc161b8ad3169f70c6d91d90f688d4212b85f0ca256a9c7ef93e",
+    "source_sha256": "a14e1562fb3eacfa35b28551f5ba807dc3086164e91de0a3fbedfef2d6115aec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_mollifier_integral_mul_div_le",
+      "statement": "∀ (n : ℕ) (W : Set (Rn n)) (u ρ : Rn n → ℝ) (σ : ℝ) (g : Rn n → Rn n), IsOpen W → IntegrableOn u W volume → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, ‖g x‖ ≤ 1) → (∀ y ∈ tsupport g, closedBall y σ ⊆ W) → ENNReal.ofReal (∫ x, convolution ρ (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume x * Chapter02.euclideanDivergence g x) ≤ Chapter02.bvVariationOn u W",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
