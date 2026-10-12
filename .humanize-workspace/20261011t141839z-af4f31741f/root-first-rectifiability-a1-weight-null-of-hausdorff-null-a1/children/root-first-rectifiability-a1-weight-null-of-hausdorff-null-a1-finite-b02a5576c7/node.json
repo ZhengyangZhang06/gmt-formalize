@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1.finite_density_ball_bound-a1",
+  "parent_id": "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1",
+  "depth": 3,
+  "title": "Finite density gives a natural-number small-ball mass bound",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N = Euclidean N, x ∈ ℝ^N and θ ∈ [0, ∞) with HasDensity n μ x θ. That is, densityRatio n μ x ρ = μ(B_ρ(x)) / (ω_n · ENNReal.ofReal(ρ)^n) → θ as ρ ↓ 0, with ω_n = unitBallVolume n, ENNReal division and B_ρ(x) the closed ball. Then there are K, j ∈ ℕ such that μ(B_ρ(x)) ≤ K · ENNReal.ofReal(ρ)^n for every real ρ with 0 < ρ ≤ 1/(j+1).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), θ ≠ ∞ → HasDensity n μ x θ → ∃ K j : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / ((j : ℝ) + 1) → μ (closedBall x ρ) ≤ (K : ℝ≥0∞) * ENNReal.ofReal ρ ^ n",
+  "lean_name": "frt_ball_bound_of_finite_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-null-of-hausdorff-null-a1-finite-b02a5576c7-a1"
+}
