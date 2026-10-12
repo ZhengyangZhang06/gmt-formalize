@@ -359,6 +359,46 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Mass bound for a current `Y` obtained from `X` by pull-back along the dilation
+`φ(y) = r⁻¹(y − x)`, `r > 0`: if every test form `ω` has a test form `η = (rⁿ)⁻¹ ω ∘ φ` and
+`Y ω = X η` for all such pairs, then `M_W(Y) ≤ (rⁿ)⁻¹ M_{φ⁻¹(W)}(X)` for every `W`, since
+`rⁿ η = ω ∘ φ` is admissible for `M_{φ⁻¹(W)}(X)` whenever `ω` is admissible for `M_W(Y)`. -/
+theorem Submission.ind_rs_massOn_dilation_le :
+    ∀ (P n : ℕ) (X Y : GeometricCurrentOn (univ : Set (Eucl P)) n) (x : Eucl P) (r : ℝ), 0 < r →
+      (∀ ω : TestFormOn (univ : Set (Eucl P)) n, ∃ η : TestFormOn (univ : Set (Eucl P)) n,
+        ∀ y, (η : DifferentialForm (Eucl P) n) y =
+          (r ^ n)⁻¹ • (ω : DifferentialForm (Eucl P) n) (r⁻¹ • (y - x))) →
+      (∀ ω η : TestFormOn (univ : Set (Eucl P)) n,
+        (∀ y, (η : DifferentialForm (Eucl P) n) y =
+          (r ^ n)⁻¹ • (ω : DifferentialForm (Eucl P) n) (r⁻¹ • (y - x))) → Y ω = X η) →
+      ∀ W : Set (Eucl P),
+        Y.massOn W ≤ ENNReal.ofReal ((r ^ n)⁻¹) * X.massOn {y | r⁻¹ • (y - x) ∈ W} := by
+  intro P n X Y x r hr hA hB W
+  have hrn : r ^ n ≠ 0 := pow_ne_zero n hr.ne'
+  apply sSup_le
+  rintro _ ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (Y ω) ≤ _
+  obtain ⟨η, hη⟩ := hA ω
+  -- `rⁿ η = ω ∘ φ` with `φ y = r⁻¹ • (y - x)`.
+  have hcomp : (((r ^ n) • η : TestFormOn (univ : Set (Eucl P)) n) :
+      DifferentialForm (Eucl P) n) =
+        (ω : DifferentialForm (Eucl P) n) ∘ fun y : Eucl P => r⁻¹ • (y - x) := by
+    funext y
+    rw [Submodule.coe_smul, Pi.smul_apply, hη y, smul_smul, mul_inv_cancel₀ hrn, one_smul,
+      Function.comp_apply]
+  -- `rⁿ η` is admissible for `M_{φ⁻¹(W)}(X)`.
+  have hadm : (r ^ n) • η ∈ massAdmissibleOn univ n {y | r⁻¹ • (y - x) ∈ W} := by
+    refine ⟨?_, fun y => ?_⟩
+    · rw [hcomp]
+      exact (tsupport_comp_subset_preimage _ (by fun_prop)).trans (preimage_mono hω.1)
+    · rw [hcomp]
+      exact hω.2 _
+  -- `Y ω = X η = (rⁿ)⁻¹ X (rⁿ η)`.
+  have hY : Y ω = (r ^ n)⁻¹ * X ((r ^ n) • η) := by
+    rw [hB ω η hη, map_smul, smul_eq_mul, ← mul_assoc, inv_mul_cancel₀ hrn, one_mul]
+  rw [hY, ENNReal.ofReal_mul (inv_nonneg.mpr (pow_nonneg hr.le n))]
+  exact mul_le_mul_right (X.le_massOn hadm) _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
