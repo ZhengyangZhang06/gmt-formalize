@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Affine change of variables for `μH[n]`-integrals** (Simon's rescalings
+`φ_{x,λ}(z) = φ(x + λz)`, Appendix A).  For `c > 0` the map `x ↦ c • x` pushes `μH[n]` forward to
+`c⁻ⁿ μH[n]` (Hausdorff scaling law) and `μH[n]` is translation invariant, so
+`∫ h(y + c x) dμH[n](x) = c⁻ⁿ ∫ h dμH[n]` for every `h`; both sides vanish when `h` is not
+integrable. -/
+theorem Submission.adr_hausdorff_integral_comp_affine : ∀ (P n Q : ℕ) (h : Euclid P → Euclid Q) (y : Euclid P) (c : ℝ), 0 < c → ∫ x, h (y + c • x) ∂μH[(n : ℝ)] = (c ^ n)⁻¹ • ∫ x, h x ∂μH[(n : ℝ)] := by
+  intro P n Q h y c hc
+  -- `x ↦ c • x` is a homeomorphism, hence a measurable embedding
+  have hemb : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    (Homeomorph.smulOfNeZero c hc.ne').measurableEmbedding
+  -- push-forward of `μH[n]` under `x ↦ c • x` (the homothety with centre `0` and ratio `c`)
+  have hmap : Measure.map (fun x : Euclid P => c • x) μH[(n : ℝ)] =
+      ‖c‖₊⁻¹ ^ (n : ℝ) • μH[(n : ℝ)] := by
+    have := map_homothety_hausdorffMeasure (Nat.cast_nonneg n) (0 : Euclid P) hc.ne'
+    convert this using 2
+    funext x
+    simp [AffineMap.homothety_apply]
+  calc ∫ x, h (y + c • x) ∂μH[(n : ℝ)]
+      = ∫ w, h (y + w) ∂(Measure.map (fun x : Euclid P => c • x) μH[(n : ℝ)]) :=
+        (hemb.integral_map (fun w => h (y + w))).symm
+    _ = (‖c‖₊⁻¹ ^ (n : ℝ)) • ∫ w, h (y + w) ∂μH[(n : ℝ)] := by
+        rw [hmap, integral_smul_nnreal_measure]
+    _ = (‖c‖₊⁻¹ ^ (n : ℝ)) • ∫ w, h w ∂μH[(n : ℝ)] := by
+        rw [integral_add_left_eq_self]
+    _ = (c ^ n)⁻¹ • ∫ x, h x ∂μH[(n : ℝ)] := by
+        rw [NNReal.smul_def]
+        congr 1
+        simp [Real.norm_of_nonneg hc.le, inv_pow]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
