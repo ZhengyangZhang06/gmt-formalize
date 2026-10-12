@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "rg -l -i varifold .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib",
+        "restrict_restrict_of_subset|restrict_toMeasurable_of_sFinite|measure_toMeasurable_inter_of_sFinite|le_restrict_apply|sigmaFinite_of_countable|measurable_measure_prodMk_left",
+        "euclideanHausdorffMeasure_homothety_image|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "simon_theorem_3_6|def dimensionalUpperDensity|measurable_dimensionalUpperDensity|measurable_dimensionalLowerDensity|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_toOuterMeasure|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|volume_closedBall_eq_densityNormalization|def realUnitBallVolume",
+        "structure Varifold|def weight|theorem weight_apply|instSigmaFinite|def HasWeightedApproximateTangentSpaceAt|def blowUpMap|def CountablyRectifiable",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin LEAN_NUM_THREADS=2 lake env lean /tmp/intdens-audit-a6b48b3e/Assembly.lean > /tmp/intdens-audit-a6b48b3e/Assembly.log 2>&1",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin LEAN_NUM_THREADS=2 lake env lean /tmp/intdens-audit-a6b48b3e/Conversions.lean > /tmp/intdens-audit-a6b48b3e/Conversions.log 2>&1",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin LEAN_NUM_THREADS=2 lake env lean /tmp/intdens-audit-a6b48b3e/LibraryAxioms.lean > /tmp/intdens-audit-a6b48b3e/LibraryAxioms.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1/parent-child-handoff.json",
+        "/tmp/intdens-audit-a6b48b3e/restrict_sigma_finite.lean",
+        "/tmp/intdens-audit-a6b48b3e/weight_hull.lean",
+        "/tmp/intdens-audit-a6b48b3e/tangent_point_density.lean",
+        "/tmp/intdens-audit-a6b48b3e/zero_density_off_set.lean",
+        "/tmp/intdens-audit-a6b48b3e/measurable_densities.lean",
+        "/tmp/intdens-audit-a6b48b3e/Assembly.lean",
+        "/tmp/intdens-audit-a6b48b3e/Conversions.lean",
+        "/tmp/intdens-audit-a6b48b3e/LibraryAxioms.lean"
+      ],
+      "conclusion": "Confirmed the pinned project, Mathlib and SimonGMT revisions; the snapshot Contract and workspace Contract/Submission are byte-identical. No varifold match was found in snapshot Mathlib. The relevant restriction, measurable-hull, scaling, product-section and Simon density results have the required hypotheses. All five exact one-line child types independently elaborate in comparator challenge scope without child implementations; their inferred measure constructions and instance hypotheses match the prose. A separate, sorry-free theorem taking the five contracts as hypotheses proves the selected frozen parent type. Normalization, Hausdorff-measure conversion and s-finite section-measurability checks also compile. Checked proofs use only propext, Classical.choice and Quot.sound. All five names are bare identifiers and unreserved; no accepted declaration is reused. The split is appropriate: its only dependency, weight_hull on restrict_sigma_finite, is correctly directed, and every child contributes to this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restrict_sigma_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary μ and possibly nonmeasurable M. The countable compact-ball cover, Borel representatives, positivity argument and Markov bounds establish a countable cover of finite restricted measure. No σ-finiteness or measurability hypothesis is assumed circularly."
+    },
+    {
+      "key": "weight_hull",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose. Evaluating the varifold identity on B × G gives the integral formula. The declared σ-finiteness dependency justifies the measurable hull, and the cited restriction identities establish μ_V = ν⌞T without assuming the tangent-point set measurable."
+    },
+    {
+      "key": "tangent_point_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both formulations and are sufficient. The proof supplies the change of variables, explicit compact cutoffs, local integrability and Bochner/lintegral comparison, plane-volume computation and limiting squeeze. Null measurability justifies restricted almost-everywhere nonnegativity; dimension zero is covered. No new mathematical planning is needed."
+    },
+    {
+      "key": "zero_density_off_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Localization on compact doubled balls verifies Simon 3.6's finite-measure hypotheses. The Hausdorff-measure and denominator conversions are valid, including dimension zero. Zero limsup forces convergence to zero, and the countable cover produces precisely the asserted exceptional null set."
+    },
+    {
+      "key": "measurable_densities",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type explicitly includes SFinite μ and exactly states all three conclusions. The s-finite product-section theorem proves fixed-radius measurability. The one-sided rational-radius comparisons remain valid with infinite ball masses; countable lattice operations then give measurable upper/lower densities and every density level set, including c = ∞."
+    }
+  ],
+  "required_changes": []
+}
