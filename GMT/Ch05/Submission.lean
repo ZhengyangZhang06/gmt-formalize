@@ -458,6 +458,79 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, between 4.2 and 4.3** (the Hölder absorption in the monotonicity estimate).  Let
+`1 ≤ n < p`, `R > 0`, `t > 0`, `I ≥ 0`, `N ≥ 0` and `0 < ε ≤ 1`, and write `κ = (p − n)/(4p)`.  If
+`N ≤ κ Λ R^{n/p − 1}` and `|E| ≤ (1 + ε) t N I^{1 − 1/p}`, then
+`|E / tⁿ⁺¹ / (1 + I/tⁿ)| ≤ 2 κ Λ R⁻¹ (t/R)^{−n/p}`.
+Proof: with `A = I/tⁿ`, `I^{1 − 1/p} = A^{1 − 1/p} t^{n − n/p}` and `A^{1 − 1/p} ≤ 1 + A` (split at
+`A = 1`, using `0 ≤ 1 − 1/p ≤ 1`).  With `1 + ε ≤ 2` this gives `|E| ≤ 2 N t^{−n/p} tⁿ⁺¹ (1 + A)`;
+then insert the bound on `N` and use `R^{n/p − 1} t^{−n/p} = R⁻¹ (t/R)^{−n/p}`. -/
+theorem allard52_am_fc_a_bound : ∀ (n : ℕ), 1 ≤ n → ∀ (p R Λ ε t I E N : ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < ε → ε ≤ 1 → 0 < t → 0 ≤ I → 0 ≤ N → N ≤ (p - n) / (4 * p) * Λ * R ^ ((n : ℝ) / p - 1) → |E| ≤ (1 + ε) * t * N * I ^ (1 - 1 / p) → |E / t ^ (n + 1) / (1 + I / t ^ n)| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (t / R) ^ (-((n : ℝ) / p)) := by
+  intro n hn p R Λ ε t I E N hnp hR hΛ hε hε1 ht hI hN hNb hE
+  -- Step 0: `p > 1`, so `γ = 1 - 1/p` satisfies `0 ≤ γ ≤ 1`; and `tⁿ > 0`.
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp0 : 0 < p := by linarith
+  have hγ0 : 0 ≤ 1 - 1 / p := by
+    rw [sub_nonneg, div_le_one hp0]
+    linarith
+  have hγ1 : 1 - 1 / p ≤ 1 := by
+    have : 0 ≤ 1 / p := by positivity
+    linarith
+  have htn : 0 < t ^ n := pow_pos ht n
+  -- Step 1: with `A = I/tⁿ ≥ 0`, `I^γ = A^γ (tⁿ)^γ = A^γ t^(n - n/p)`.
+  set A := I / t ^ n with hA
+  have hA0 : 0 ≤ A := div_nonneg hI htn.le
+  have hIγ : I ^ (1 - 1 / p) = A ^ (1 - 1 / p) * t ^ ((n : ℝ) - n / p) := by
+    have hIA : I = A * t ^ n := by rw [hA, div_mul_cancel₀ _ htn.ne']
+    rw [hIA, Real.mul_rpow hA0 htn.le, ← Real.rpow_natCast, ← Real.rpow_mul ht.le]
+    congr 2
+    ring
+  -- Step 2: absorption `A^γ ≤ 1 + A`, splitting into `A ≤ 1` and `A ≥ 1`.
+  have habs : A ^ (1 - 1 / p) ≤ 1 + A := by
+    rcases le_total A 1 with h | h
+    · calc A ^ (1 - 1 / p) ≤ 1 := Real.rpow_le_one hA0 h hγ0
+        _ ≤ 1 + A := by linarith
+    · calc A ^ (1 - 1 / p) ≤ A ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le h hγ1
+        _ = A := Real.rpow_one A
+        _ ≤ 1 + A := by linarith
+  -- Step 3: `t t^(n - n/p) = t^(-n/p) tⁿ⁺¹`; with `1 + ε ≤ 2`,
+  -- `|E| ≤ 2 N t^(-n/p) (tⁿ⁺¹ (1 + A))`, so `|E/tⁿ⁺¹/(1 + A)| ≤ 2 N t^(-n/p)`.
+  have hpow : t * t ^ ((n : ℝ) - n / p) = t ^ (-((n : ℝ) / p)) * t ^ (n + 1) := by
+    rw [← Real.rpow_natCast t (n + 1), ← Real.rpow_add ht, mul_comm t,
+      ← Real.rpow_add_one ht.ne']
+    congr 1
+    push_cast
+    ring
+  have hE2 : |E| ≤ 2 * N * t ^ (-((n : ℝ) / p)) * (t ^ (n + 1) * (1 + A)) :=
+    calc |E| ≤ (1 + ε) * t * N * I ^ (1 - 1 / p) := hE
+      _ = (1 + ε) * (N * (t * t ^ ((n : ℝ) - n / p))) * A ^ (1 - 1 / p) := by
+          rw [hIγ]
+          ring
+      _ ≤ 2 * (N * (t * t ^ ((n : ℝ) - n / p))) * (1 + A) := by
+          gcongr
+          linarith
+      _ = 2 * N * t ^ (-((n : ℝ) / p)) * (t ^ (n + 1) * (1 + A)) := by
+          rw [hpow]
+          ring
+  have hden : 0 < t ^ (n + 1) * (1 + A) := by positivity
+  -- Steps 4–5: insert `N ≤ κ Λ R^(n/p - 1)` and rewrite
+  -- `R^(n/p - 1) t^(-n/p) = R^(n/p) t^(-n/p) / R = R⁻¹ (t/R)^(-n/p)`.
+  calc |E / t ^ (n + 1) / (1 + A)| = |E| / (t ^ (n + 1) * (1 + A)) := by
+        rw [div_div, abs_div, abs_of_pos hden]
+    _ ≤ 2 * N * t ^ (-((n : ℝ) / p)) := by
+        rw [div_le_iff₀ hden]
+        exact hE2
+    _ ≤ 2 * ((p - n) / (4 * p) * Λ * R ^ ((n : ℝ) / p - 1)) * t ^ (-((n : ℝ) / p)) := by
+        gcongr
+    _ = 2 * ((p - n) / (4 * p)) * Λ / R * (t / R) ^ (-((n : ℝ) / p)) := by
+        rw [Real.div_rpow ht.le hR.le, Real.rpow_sub_one hR.ne', Real.rpow_neg hR.le,
+          div_inv_eq_mul]
+        ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
