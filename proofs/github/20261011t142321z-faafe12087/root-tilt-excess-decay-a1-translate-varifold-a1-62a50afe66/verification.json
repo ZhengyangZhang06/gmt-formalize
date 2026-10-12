@@ -1,0 +1,21 @@
+{
+  "node_id": "root.tilt_excess_decay-a1.translate_varifold-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/754",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "96ee445bc38155bccd017666f0544509a183e91b",
+  "integrated_commit": "",
+  "proof_base_commit": "054588c52cc0aad01fe5982bf70784e2d80bbe13",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.tilt_excess_decay-a1",
+  "requires": [
+    "root.regular_set_open_dense-a1.translated_varifold-a1.exists_structure-a1",
+    "root.regular_set_open_dense-a1.translated_varifold-a1.weight_eq-a1",
+    "root.regular_set_open_dense-a1.translated_varifold-a1.support_eq-a1",
+    "root.regular_set_open_dense-a1.translated_varifold-a1.tangent_proj_eq-a1",
+    "root.regular_set_open_dense-a1.translated_varifold-a1.mean_curvature-a1"
+  ]
+}

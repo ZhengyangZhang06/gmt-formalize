@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ae94d23b5e2a5ca628d0610f4131f04a9d432efbbfc61090f2a560d74e078449",
+  "git_delta": {
+    "base_commit": "e8c79ac8e2bbf33336979073419b869eecd5f9cc",
+    "candidate_commit": "96ee445bc38155bccd017666f0544509a183e91b",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "7227fd204b78de6422b408a10bad5e15ebbfe73c708f01518c50ee9063aff81f",
+    "source_sha256": "43f5a8bb9cb8285bff966cece32df585319ed42f82789fa2fa8577204c220870",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_translate_varifold",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x + ξ) ⁻¹' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ (∀ x, V'.mult x = V.mult (x + ξ)) ∧ (∀ x, V'.tangentProj x = V.tangentProj (x + ξ)) ∧ (∀ x, x ∈ V'.support ↔ x + ξ ∈ V.support) ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => H (x + ξ))) ∧ (∀ (z : Amb n ℓ) (s : ℝ) (S : Submodule ℝ (Amb n ℓ)), V'.tiltExcess z s S = V.tiltExcess (z + ξ) s S) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z : Amb n ℓ) (s : ℝ), V'.scaledLpNorm (fun x => H (x + ξ)) p z s = V.scaledLpNorm H p (z + ξ) s)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
