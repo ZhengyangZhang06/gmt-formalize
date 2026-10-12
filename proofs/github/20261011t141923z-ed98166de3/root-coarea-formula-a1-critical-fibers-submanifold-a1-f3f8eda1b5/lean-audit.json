@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a9da33f5d924f8c4406784ab006431717384bc647bca0cf1af55832177aaa4b2",
+  "git_delta": {
+    "base_commit": "c7460b2e4ea1e13a4e325cd5eb1bcc98542027f9",
+    "candidate_commit": "56344428b37071d8d3148720d270ec78eb8135d8",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "coarea_critical_fibers_null",
+    "diff_sha256": "8a9abcaad03b5acaa322d721be9972d715d509c8b037d267dde17345721cbfb4",
+    "source_sha256": "20227ed1a4a6ceece7514dd3ccf39c04580bfb966579d69a52223f76a1c12573",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_critical_fibers_null",
+      "statement": "∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}) = 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
