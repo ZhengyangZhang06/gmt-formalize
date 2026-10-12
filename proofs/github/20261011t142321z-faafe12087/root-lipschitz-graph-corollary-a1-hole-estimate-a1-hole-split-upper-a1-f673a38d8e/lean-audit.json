@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ce830401df8104c20a88bef8a86d45fdb59237da8c06451a4e2fc0e89b50be3e",
+  "git_delta": {
+    "base_commit": "7c9adf8dc1c3419ffa33c1c766802ac1c39f4176",
+    "candidate_commit": "f442929784e2dfa9c3cb9360f7981ab9760e673b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lgc_hole_split_upper",
+    "diff_sha256": "2bda07b4f7d291a4505154e23bf44419f815c4ebf45f74f92819102cca685726",
+    "source_sha256": "69dc4cade84c00e0635ae995f8a61c92df3fe84f0efbfd5cdf99230648e0e130",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lgc_hole_split_upper",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (p : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (T : Submodule ℝ (Amb n ℓ)) (F : Set (Amb n ℓ)) (ζ : Amb n ℓ) (s ε : ℝ), 0 < s → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → MeasurableSet F → μ (closedBall ζ (3 * s)) ≠ ⊤ → (∀ x ∈ F, ‖(x - ζ) - T.starProjection (x - ζ)‖ ≤ ε * ‖x - ζ‖) → ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ ≤ 18 * s ^ 2 * (ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal + (μ (closedBall ζ (3 * s) \\ F)).toReal + ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
