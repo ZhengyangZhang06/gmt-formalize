@@ -401,6 +401,66 @@ theorem Submission.bv_compactness_uniform_bounds : ∀ (n : ℕ) (W : Set (Rn n)
     refine ⟨le_add_right (le_self_add.trans (hk k)), le_add_left ?_⟩
     rw [ENNReal.le_div_iff_mul_le (Or.inl h0) (Or.inl hfin)]
     exact le_add_self.trans (hk k)
+/-- **Simon Ch. 2, proof of Theorem 2.6 (step A4): a variation bound gives the bound (2.1).** If
+`|Du|(W) ≤ c` (`Chapter02.bvVariationOn`, Simon 2.4) and `g` is a compactly supported `C¹` field
+with `spt g ⊆ W`, then `∫_W u div g ≤ c sup |g|`. With `s = sup |g|`: if `s = 0` then `g = 0` and
+both sides vanish; otherwise `h = s⁻¹ g` is an admissible Lipschitz field in (2.4) with
+`sup |h| ≤ 1` and `div h = s⁻¹ div g`, so `s⁻¹ ∫_W u div g = ∫_W u div h ≤ |Du|(W) ≤ c`. -/
+theorem Submission.bv_integral_div_le_of_variation_le : ∀ (n : ℕ) (W : Set (Rn n)) (u : Rn n → ℝ) (c : ℝ), 0 ≤ c → Chapter02.bvVariationOn u W ≤ ENNReal.ofReal c → ∀ g : CompactlySupportedContinuousMap (Rn n) (Rn n), Chapter02.IsC1TestField g → tsupport g ⊆ W → (∫ x in W, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ c * Chapter02.compactlySupportedSupNorm g := by
+  intro n W u c hc hvar g hg hsupp
+  set s := Chapter02.compactlySupportedSupNorm g
+  -- Step 1: `g` is bounded, so `‖g x‖ ≤ s` for every `x`, and `0 ≤ s`.
+  have hbdd : BddAbove (range fun x ↦ ‖g x‖) := by
+    obtain ⟨C, hC⟩ := (map_continuous g).bounded_above_of_compact_support g.hasCompactSupport
+    exact ⟨C, by rintro _ ⟨x, rfl⟩; exact hC x⟩
+  have hle : ∀ x, ‖g x‖ ≤ s := fun x ↦ le_csSup hbdd ⟨x, rfl⟩
+  have hs0 : 0 ≤ s := (norm_nonneg _).trans (hle 0)
+  rcases hs0.eq_or_lt with hs | hs
+  · -- Step 2: `s = 0`, so `g = 0`, `div g = 0` and both sides vanish.
+    have hg0 : (g : Rn n → Rn n) = 0 := funext fun x ↦ norm_le_zero_iff.mp (hs ▸ hle x)
+    have hdiv0 : ∀ x, Chapter02.euclideanDivergence (g : Rn n → Rn n) x = 0 := fun x ↦ by
+      simp [Chapter02.euclideanDivergence, hg0]
+    simp [hdiv0, ← hs]
+  · -- Step 3: `s > 0`; normalize to `h := s⁻¹ • g`.
+    set h : CompactlySupportedContinuousMap (Rn n) (Rn n) := s⁻¹ • g
+    have hcoe : (h : Rn n → Rn n) = s⁻¹ • (g : Rn n → Rn n) :=
+      CompactlySupportedContinuousMap.coe_smul _ _
+    -- (a) `h` is `C¹`, hence an admissible Lipschitz test field.
+    have hC1 : Chapter02.IsC1TestField h := by
+      unfold Chapter02.IsC1TestField
+      rw [hcoe]
+      exact hg.const_smul s⁻¹
+    -- (b) `tsupport h ⊆ tsupport g ⊆ W`.
+    have hsupp' : tsupport h ⊆ W := by
+      rw [hcoe]
+      exact (tsupport_smul_subset_right (fun _ ↦ s⁻¹) g).trans hsupp
+    -- (c) `sup |h| = s⁻¹ s ≤ 1`.
+    have hnorm : Chapter02.compactlySupportedSupNorm h ≤ 1 := by
+      refine csSup_le (range_nonempty _) ?_
+      rintro _ ⟨x, rfl⟩
+      simp only [hcoe, Pi.smul_apply, norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hs.le)]
+      calc s⁻¹ * ‖g x‖ ≤ s⁻¹ * s := mul_le_mul_of_nonneg_left (hle x) (inv_nonneg.mpr hs.le)
+        _ = 1 := inv_mul_cancel₀ hs.ne'
+    -- (d) `div h = s⁻¹ div g`, since `D h = s⁻¹ D g` and the trace is linear.
+    have hdiv : ∀ x, Chapter02.euclideanDivergence (h : Rn n → Rn n) x =
+        s⁻¹ * Chapter02.euclideanDivergence (g : Rn n → Rn n) x := fun x ↦ by
+      have hd : DifferentiableAt ℝ (g : Rn n → Rn n) x := hg.differentiable one_ne_zero x
+      simp only [Chapter02.euclideanDivergence, hcoe, fderiv_const_smul hd,
+        ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul]
+    -- Step 4: `h` is admissible in `bvVariationOn u W`, so `∫_W u div h ≤ c`.
+    have h1 : (∫ x in W, u x * Chapter02.euclideanDivergence (h : Rn n → Rn n) x) ≤ c :=
+      (ENNReal.ofReal_le_ofReal_iff hc).mp
+        ((Chapter02.ofReal_integral_le_bvVariationOn u W h hC1.isLipschitzTestField hsupp'
+          hnorm).trans hvar)
+    -- Step 5: `∫_W u div h = s⁻¹ ∫_W u div g`; multiply by `s > 0`.
+    have h2 : (∫ x in W, u x * Chapter02.euclideanDivergence (h : Rn n → Rn n) x) =
+        s⁻¹ * ∫ x in W, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x := by
+      rw [← integral_const_mul]
+      refine integral_congr_ae (Eventually.of_forall fun x ↦ ?_)
+      simp only [hdiv x]
+      ring
+    rw [h2, inv_mul_le_iff₀ hs] at h1
+    linarith
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
