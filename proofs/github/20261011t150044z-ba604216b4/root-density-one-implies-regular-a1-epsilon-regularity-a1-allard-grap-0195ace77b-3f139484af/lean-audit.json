@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "86b0c8ee0327bb93ae48bdb49fe82b4907545be18e6174273c6de90775797cd3",
+  "git_delta": {
+    "base_commit": "f35e461d0fa69554358f59598aa8e8c97a3ddfee",
+    "candidate_commit": "a2ce318a1a7560991c72308834d52fdc5ad77dcd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_pb_variance_bound",
+    "diff_sha256": "814a22ae3bc1f9491299418449c5badb8d4e270048826d65f7f0d8a9d5f1acb7",
+    "source_sha256": "c8445943949131074f8ce2920ab2bc1c09d49624a2b704075ef0a8d2c7e77225",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_pb_variance_bound",
+      "statement": "∀ (n : ℕ) (s : Set (Euclid n)) (f : Euclid n → ℝ), volume s ≠ ∞ → MemLp f 2 (volume.restrict s) → ∫ x in s, (f x - (∫ y in s, f y) / (volume s).toReal) ^ 2 ≤ ((volume s).toReal)⁻¹ * ∫ x in s, ∫ y in s, (f x - f y) ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
