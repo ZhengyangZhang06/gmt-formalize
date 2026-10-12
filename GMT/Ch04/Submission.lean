@@ -2907,6 +2907,63 @@ theorem Submission.weighted_monotonicity_identity : ∀ (n ℓ : ℕ) (V : Recti
         hσρ hε hεR hu hq hbd hG hφ h0 fun τ hτ ↦
           hode ε φ hε hεR hφ h1 h0 τ (hσ.trans_le hτ.1) hτ.2
 
+/-- **Michael–Simon Sobolev inequality (Simon 5.7–5.9, corrected Lemma 5.8, `n ≥ 2`).** Under
+`ApproxTangentAE` and the structural facts (FV1)–(FV3) for every varifold, `SobolevInequality`
+holds with the dimension-only constant `c = 5^{n+1} ωₙ^{-1/n}`. Simon 5.5 at all radii
+(`sobolev_monotonicity_inequality`), `Θ ≥ 1` `μ_V`-a.e. in `U` (`sobolev_density_ge_one_ae`)
+and the good-ball covering (`sobolev_covering_inequality`) give the superlevel estimate (4.1)
+`∫_{g ≥ 1} g ≤ 5ⁿ ωₙ^{-1/n} (∫ g)^{1/n} ∫ (|∇^M g| + g|H|)` for every admissible `g`; truncation
+and the layer-cake formula (`sobolev_of_superlevel_inequality`) turn (4.1) into the Sobolev
+inequality with constant `n/(n-1) · 5ⁿ ωₙ^{-1/n} ≤ 5^{n+1} ωₙ^{-1/n}`. -/
+theorem Submission.sobolev_inequality : ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SobolevInequality := by
+  intro hAT hGF n hn
+  have hn0 : 0 < n := by omega
+  -- `ωₙ > 0`: the open unit ball of `ℝⁿ` has positive, finite Lebesgue measure.
+  have hω : 0 < omega n :=
+    ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  have hK : 0 ≤ (5 : ℝ) ^ n * omega n ^ (-(n : ℝ)⁻¹) :=
+    mul_nonneg (pow_nonneg (by norm_num) n) (Real.rpow_nonneg hω.le _)
+  refine ⟨5 ^ (n + 1) * omega n ^ (-(n : ℝ)⁻¹),
+    mul_pos (pow_pos (by norm_num) _) (Real.rpow_pos_of_pos hω _), ?_⟩
+  intro ℓ V U H h hU hH hθ hh hhc hhU hh0
+  obtain ⟨hfin, hdim, hmeas⟩ := hGF n ℓ V hn0
+  -- (1.1): `Θ` exists and `Θ ≥ 1` at `μ_V`-a.e. point of `U`.
+  have hdens := Submission.sobolev_density_ge_one_ae hAT n ℓ V U hn0 hU hθ
+  -- (4.1) for every admissible `g`, with the constant `K = 5ⁿ ωₙ^{-1/n}`.
+  have hsuper : ∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g →
+      tsupport g ⊆ U → (∀ x, 0 ≤ g x) →
+      ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ 5 ^ n * omega n ^ (-(n : ℝ)⁻¹) *
+        (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ *
+          ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight := by
+    intro g hg hgc hgU hg0
+    obtain ⟨hgC1, -, hgrad, hgH⟩ :=
+      Submission.sobolev_energy_integrable n ℓ V U H g hfin hmeas hU hH.1 hg hgc hgU
+    refine Submission.sobolev_covering_inequality n ℓ V.weight g
+      (fun x ↦ ‖V.tangentialGradient g x‖ + g x * ‖H x‖) hn hfin hgC1.continuous hgc hg0
+      (fun x ↦ add_nonneg (norm_nonneg _) (mul_nonneg (hg0 x) (norm_nonneg _)))
+      (hgrad.add hgH) (fun ζ s r hs hsr ↦ ?_) ?_
+    · -- Simon 5.5 at every radius, from the weighted monotonicity identity.
+      exact Submission.sobolev_monotonicity_inequality Submission.weighted_monotonicity_identity
+        n ℓ V U H g ζ s r hn0 hfin hdim hmeas hU hH hg hgc hgU hg0 hs hsr
+    · -- `{g ≥ 1} ⊆ tsupport g ⊆ U`, where the density exists and is `≥ 1` a.e.
+      filter_upwards [hdens] with ζ hζ hgζ
+      obtain ⟨hD, h1⟩ :=
+        hζ (hgU (subset_tsupport g (Function.mem_support.2 (zero_lt_one.trans_le hgζ).ne')))
+      exact ⟨V.density ζ, h1, hD⟩
+  -- Truncation and layer cake give the constant `n/(n-1) · K`, and `n/(n-1) ≤ 5`.
+  refine (Submission.sobolev_of_superlevel_inequality n ℓ V U H h _ hn hfin hmeas hU hH.1 hK
+    hsuper hh hhc hhU hh0).trans ?_
+  have hJ : 0 ≤ ∫ x, (‖V.tangentialGradient h x‖ + h x * ‖H x‖) ∂V.weight :=
+    integral_nonneg fun x ↦ add_nonneg (norm_nonneg _) (mul_nonneg (hh0 x) (norm_nonneg _))
+  have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hq : (n : ℝ) / ((n : ℝ) - 1) ≤ 5 := by
+    rw [div_le_iff₀ (by linarith)]
+    linarith
+  calc _ ≤ 5 * (5 ^ n * omega n ^ (-(n : ℝ)⁻¹)) *
+        ∫ x, (‖V.tangentialGradient h x‖ + h x * ‖H x‖) ∂V.weight :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hq hK) hJ
+    _ = _ := by ring
+
 end
 
 end GMT.Ch04
