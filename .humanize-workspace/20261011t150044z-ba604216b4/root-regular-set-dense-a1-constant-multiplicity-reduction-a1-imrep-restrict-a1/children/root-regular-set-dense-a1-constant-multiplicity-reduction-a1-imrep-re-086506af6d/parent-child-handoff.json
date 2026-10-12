@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "python3 over dag.json: id/lean_name/status/depth of all 212 nodes; lean_statement of dtc_approxTangent_of_null_diff, hasApproximateTangentSpaceAt_iff_of_null_sdiff, dtc_approxTangent_sdiff_singleton, dtc_hausdorff_dilation, regcomp_atl_blowUp_measure_scaling, rsdic_ae_tangent_iff_of_subset, rsdic_imrep_ae_tangent_orient_of_subset, regcomp_approx_tangent_locality, rsd_cmr_imrep_restrict",
+        "rg -o --no-filename 'rsd_cmr_[A-Za-z0-9_']+' dag.json nodes/ GMT/ (collision check for rsd_cmr_ir_*)",
+        "rg -n 'HasApproximateTangentSpaceAt|blowUpMap' -t lean local-references/123e8435b4a2469b",
+        "rg -n '^(theorem|lemma) [A-Za-z_.']*([Aa]pproximateTangent|approxTangent|blowUp)' lake-packages-25730c7c/simongmt/Poincare",
+        "sed -n 1,160p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable.mono, blowUpMap, HasApproximateTangentSpaceAt); sed -n 1,80p Chapter04/TangentDensity.lean (hausdorff_blowUp_image)",
+        "grep in local-references/123e8435b4a2469b/mathlib: euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image, Measure.euclideanHausdorffMeasure_smul₀, setIntegral_eq_of_subset_of_ae_sdiff_eq_zero, isometry_mul_right/isometry_add_right",
+        "git show <accepted branches>:GMT/Ch07/Submission.lean for Submission.dtc_approxTangent_sdiff_singleton and Submission.dtc_hausdorff_dilation; import survey over 196 humanize-recursive branches",
+        "python3 contract_scope (verifier/gmt-compare.py) on Contract.lean; validate_lean_statement (verifier/lean_contract.py) on both child types and the parent type",
+        "lake env lean /tmp/rsd-cmr-ir-decomp/{Children,NodeChallenge1,NodeChallenge2,SolutionSim,ImportCheck}.lean (#print axioms)",
+        "book/chapter-03.txt lines 75-145 (Definition 1.4, proof of Theorem 1.6 =>)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-restrict-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-restrict-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/rsd-cmr-ir-decomp/Children.lean",
+        "/tmp/rsd-cmr-ir-decomp/NodeChallenge1.lean",
+        "/tmp/rsd-cmr-ir-decomp/NodeChallenge2.lean",
+        "/tmp/rsd-cmr-ir-decomp/SolutionSim.lean",
+        "/tmp/rsd-cmr-ir-decomp/ImportCheck.lean"
+      ],
+      "conclusion": "Contract and imports:\n- The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.\n- The comparator child scope is: namespace GMT.Ch07 with the contract's opens. Only CountablyRectifiable and HasApproximateTangentSpaceAt are opened from Chapter03, so blowUpMap is written fully qualified.\n\nNo reachable library proof of either child:\n- In the snapshot and in SimonGMT Chapter03, HasApproximateTangentSpaceAt has only finrank_eq, the plane model, and uniqueness. There is no null-set or locality lemma.\n- SimonGMT Chapter04/TangentDensity.lean proves hausdorff_blowUp_image, which is the A4 scaling. It is not imported by GMT.Ch07.Submission (ImportCheck: unknown identifier), and 195 of 196 branches keep the contract imports. So child 1 must be proved locally.\n\nOther DAG nodes:\n- The other-branch node dtc_approxTangent_of_null_diff is a Lemma A variant with a different type (open V, no measurability). It is still decomposing, so it cannot be reused.\n- The accepted dtc_approxTangent_sdiff_singleton and dtc_hausdorff_dilation have different types. Their proofs (about 45 and 12 lines) served only as templates.\n- No rsd_cmr_ir_* name exists in dag.json, the node directories, or GMT/.\n\nMathlib tools used in the compiled proofs: Measure.euclideanHausdorffMeasure_smul₀, isometry_add_right, Isometry.euclideanHausdorffMeasure_image, setIntegral_eq_of_subset_of_ae_sdiff_eq_zero, Bornology.IsBounded.subset_closedBall_lt, Ioo_mem_nhdsGT, Tendsto.congr', measure_eq_zero_iff_ae_notMem, CountablyRectifiable.mono, AEStronglyMeasurable.mono_measure, ae_restrict_of_ae_restrict_of_subset, Set.sdiff_self_inter.\n\nBook: Simon Ch. 3, Definition 1.4 and the proof of Theorem 1.6 \"=>\" (chapter-03.txt lines 77-143) confirm the cited splitting and the scaling Hⁿ(η_{x,λ}(Z)) = λ^{-n}Hⁿ(Z).\n\nLean checks:\n- Both child types elaborate in exact NodeChallenge form.\n- Both children are fully proved, and the frozen parent type is proved from child 2, which uses child 1.\n- All `exact Submission.X` targets depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+  "child_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.approx_tangent_local_null-a1",
+  "subproblem": {
+    "key": "approx_tangent_local_null",
+    "title": "Approximate tangent spaces survive removal of a locally null set",
+    "statement": "Let P, n ∈ ℕ. Let M, M' ⊆ ℝ^P with M Borel and M' ⊆ M (M' is otherwise arbitrary). Let x ∈ ℝ^P and δ > 0 with Hⁿ((M ∖ M') ∩ B_δ(x)) = 0, where Hⁿ = μHE[n] and B_δ(x) is the open ball. Let Q be a linear subspace of ℝ^P. Suppose Q is the approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4: HasApproximateTangentSpaceAt n M x Q, meaning finrank Q = n and ∫_{η_{x,λ}(M)} f dHⁿ → ∫_Q f dHⁿ as λ ↓ 0 for all f ∈ C_c(ℝ^P, ℝ), where η_{x,λ}(y) = λ⁻¹(y − x). Then Q is the approximate tangent space of M' at x: HasApproximateTangentSpaceAt n M' x Q.",
+    "lean_statement": "∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → 0 < δ → μHE[n] ((M \\ M') ∩ ball x δ) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q",
+    "lean_name": "rsd_cmr_ir_approxTangent_of_local_null",
+    "depends_on": [
+      "blowup_image_measure"
+    ],
+    "natural_proof": "Source: parent proof, Lemma A, steps A1–A6. It is specialized by dropping the measurability of M', which is never used. Step A4 is supplied by the sibling theorem blowup_image_measure (Submission.rsd_cmr_ir_blowUp_image_measure). The splitting of ∫_{η_{x,λ}(M)} f dHⁿ follows Simon Ch. 3, proof of Theorem 1.6 “⇒”; the approximate tangent space is Simon Ch. 3, Definition 1.4.\n\nNotation:\n- Hⁿ = μHE[n].\n- η_λ := η_{x,λ}, with η_λ(y) = λ⁻¹(y − x) (blowUpMap x λ).\n- ∫_E f dHⁿ is the Bochner integral of f for Hⁿ restricted to E; it equals 0 when f is not integrable there.\n- By definition, HasApproximateTangentSpaceAt n E x Q means: finrank Q = n, and for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_λ(E)} f dHⁿ → ∫_Q f dHⁿ as λ → 0 along 𝓝[>] 0.\n\n1. (A1) The condition finrank Q = n is the first component of the hypothesis HasApproximateTangentSpaceAt n M x Q, and it is literally the same condition for M'. It remains to prove the limit statement for M' and an arbitrary f.\n\n2. (A2) Fix f ∈ C_c(ℝ^P, ℝ). Its topological support tsupport f is compact, hence bounded, so there is R₀ ≥ 0 with tsupport f ⊆ B̄_{R₀}(0). Since {z : f(z) ≠ 0} ⊆ tsupport f, f(z) ≠ 0 implies |z| ≤ R₀.\n\n3. Fix λ with 0 < λ < δ/(R₀ + 1). The interval (0, δ/(R₀ + 1)) belongs to 𝓝[>] 0 because δ/(R₀ + 1) > 0.\n(a) η_λ(M) is Borel. η_λ is a bijection of ℝ^P with inverse z ↦ x + λz, so η_λ(M) = {z : x + λz ∈ M} is the preimage of the Borel set M under the continuous map z ↦ x + λz.\n(b) η_λ(M') ⊆ η_λ(M) because M' ⊆ M.\n(c) (A4) Put Z_λ := η_λ((M ∖ M') ∩ B_δ(x)). Apply the sibling theorem blowup_image_measure with r = λ > 0 and S = (M ∖ M') ∩ B_δ(x): Hⁿ(Z_λ) = ENNReal.ofReal (λ⁻¹ ^ n) · Hⁿ((M ∖ M') ∩ B_δ(x)) = ENNReal.ofReal (λ⁻¹ ^ n) · 0 = 0.\n(d) (A3) Claim: if z ∈ η_λ(M) ∖ η_λ(M') and f(z) ≠ 0, then z ∈ Z_λ.\n- Write z = η_λ(y) with y ∈ M. If y ∈ M', then z ∈ η_λ(M'), which is false; so y ∈ M ∖ M'.\n- From f(z) ≠ 0 and step 2, |z| ≤ R₀.\n- Since z = λ⁻¹(y − x), we have y − x = λz, so |y − x| = λ|z| ≤ λR₀ ≤ λ(R₀ + 1) < δ.\n- Thus y ∈ (M ∖ M') ∩ B_δ(x) and z = η_λ(y) ∈ Z_λ.\n(e) (A5) By (c) and (d), for every z outside the Hⁿ-null set Z_λ (hence for Hⁿ-a.e. z ∈ ℝ^P), z ∈ η_λ(M) ∖ η_λ(M') implies f(z) = 0. Let t := η_λ(M), measurable by (a), and s := η_λ(M') ⊆ t by (b). Mathlib's setIntegral_eq_of_subset_of_ae_sdiff_eq_zero (hypotheses: t null-measurable, s ⊆ t, f = 0 a.e. on t ∖ s) gives ∫_{η_λ(M)} f dHⁿ = ∫_{η_λ(M')} f dHⁿ. No integrability is needed:\n- If f is integrable on t, then ∫_t f = ∫_s f + ∫_{t∖s} f, and ∫_{t∖s} f = 0 because f = 0 a.e. on t ∖ s.\n- If f is not integrable on t, it is not integrable on s either: integrability on s, together with f = 0 a.e. on t ∖ s and the measurability of t, would give integrability on t (IntegrableOn.of_ae_sdiff_eq_zero). So both Bochner integrals are 0.\n\n4. (A6) By step 3, φ(λ) := ∫_{η_λ(M)} f dHⁿ and ψ(λ) := ∫_{η_λ(M')} f dHⁿ coincide for every λ ∈ (0, δ/(R₀ + 1)), a set in 𝓝[>] 0. So φ = ψ eventually along 𝓝[>] 0. The hypothesis gives φ(λ) → ∫_Q f dHⁿ along 𝓝[>] 0, hence ψ(λ) → ∫_Q f dHⁿ along 𝓝[>] 0 (Tendsto.congr').\n\n5. As f ∈ C_c(ℝ^P, ℝ) was arbitrary, steps 1 and 4 prove HasApproximateTangentSpaceAt n M' x Q. ∎",
+    "proof_key_steps": [
+      "finrank Q = n carries over unchanged; fix f ∈ C_c(ℝ^P, ℝ) and R₀ ≥ 0 with f = 0 outside B̄_{R₀}(0).",
+      "For 0 < λ < δ/(R₀ + 1): η_{x,λ}(M) is Borel (preimage of M under z ↦ x + λz), and η_{x,λ}(M') ⊆ η_{x,λ}(M).",
+      "Every z ∈ η_{x,λ}(M) ∖ η_{x,λ}(M') with f(z) ≠ 0 lies in Z_λ = η_{x,λ}((M ∖ M') ∩ B_δ(x)), which is Hⁿ-null by blowup_image_measure.",
+      "setIntegral_eq_of_subset_of_ae_sdiff_eq_zero: the blow-up integrals of f over η_{x,λ}(M) and η_{x,λ}(M') coincide for all such λ.",
+      "Tendsto.congr' along 𝓝[>] 0 transfers the limit ∫_Q f dHⁿ from M to M', for every f."
+    ]
+  },
+  "audit": {
+    "key": "approx_tangent_local_null",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and one-line Lean type agree on every hypothesis, including measurability only of M. Each proof step is justified: compact support bounds the relevant preimages, positivity gives a right-neighbourhood of zero, the declared sibling makes the exceptional image null, and the pinned integral lemma requires neither measurability of M' nor integrability. Eventual equality transfers the defining limit while preserving finrank. Applying this child to M' = R.carrier ∩ A, with sdiff_self_inter and restricted a.e. orientation data, establishes the exact selected parent through its supplied field-by-field construction."
+  },
+  "resolved_dependencies": [
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-086506af6d/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-086506af6d/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-086506af6d/parent-supplied-natural-proof.json"
+}
