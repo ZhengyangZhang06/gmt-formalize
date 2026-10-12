@@ -451,6 +451,30 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.4.1** (`reg T`, chapter-07.txt lines 590–594) under `T = c T₀` in `V`: the
+regularity transfer of the reduction to multiplicity one behind 7.4.2 (lines 605–610), as in the
+proof of Ch. 5, 7.3 (chapter-05.txt lines 1388–1395).  If `V ⊆ U`, `c ∈ ℤ \ {0}`,
+`T(ι ω) = c T₀(ω)` for every `ω ∈ 𝒟ⁿ(V)`, `y ∈ spt T` and `y ∈ reg T₀`, then `y ∈ reg T`: the
+`ρ`, `M` and `ξ` with `T₀ = m[[M]]` in `B_ρ(y) ⊆ V` give `T = (c m)[[M]]` in `B_ρ(y)`, because a
+form in `U` supported in `B_ρ(y)` is `ι` of a form in `V`. -/
+theorem Submission.rsd_cmr_regularSet_transfer : ∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℤ) (y : Euclid P), c ≠ 0 → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = (c : ℝ) * T₀ ω) → y ∈ T.support → y ∈ regularSet T₀ → y ∈ regularSet T := by
+  intro P n U V hVU T T₀ c y hc hT hyT hy
+  -- Step 1: `ρ, m, M, ξ` with `T₀ = m[[M]]` in `B_ρ(y) ⊆ V` (the clause `y ∈ spt T₀` is unused).
+  obtain ⟨-, ρ, hρ, hball, m, M, ξ, hm, hyM, hM, hξ, hfin, hrep⟩ := hy
+  -- Steps 2 and 4: the same `ρ, M, ξ`, multiplicity `c m ≠ 0`, and `B_ρ(y) ⊆ V ⊆ U`.
+  refine ⟨hyT, ρ, hρ, hball.trans hVU, c * m, M, ξ, mul_ne_zero hc hm, hyM, hM, hξ, hfin, ?_⟩
+  -- Step 3: `ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ B_ρ(y) ⊆ V` is `ι ω'` for `ω' ∈ 𝒟ⁿ(V)`, the same form.
+  intro ω hω
+  have hωV : (ω : DifferentialForm (Euclid P) n) ∈ testFormOnSubmodule V n :=
+    ⟨ω.property.1, hω.trans hball⟩
+  calc T ω = T (testFormOnInclusion hVU n ⟨ω, hωV⟩) := rfl
+    _ = (c : ℝ) * T₀ ⟨ω, hωV⟩ := hT _
+    _ = (c : ℝ) * (m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) := by
+      rw [hrep ⟨ω, hωV⟩ hω]
+    _ = ((c * m : ℤ) : ℝ) * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] := by
+      push_cast
+      ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

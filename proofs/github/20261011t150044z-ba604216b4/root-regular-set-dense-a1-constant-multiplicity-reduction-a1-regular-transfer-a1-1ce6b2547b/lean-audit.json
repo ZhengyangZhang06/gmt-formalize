@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "24d6bdcd67ff712fa4a03db17313318ef3b5b4e12dc34a4bfe980e83737b2c28",
+  "git_delta": {
+    "base_commit": "d3ea2e1c191b161a95169c907a576bb52a804fed",
+    "candidate_commit": "494c30fb2c48416217d50375aff5e6adfb54a17c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_regularSet_transfer",
+    "diff_sha256": "a99d433a7e116f0af79cce9c22492d6d9ea1780edc6652bdf4a291ee81b96819",
+    "source_sha256": "b060a6b081fab89eecdba27c9f857f1e9237e27651e462d65b0fa6bb32855111",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_regularSet_transfer",
+      "statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℤ) (y : Euclid P), c ≠ 0 → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = (c : ℝ) * T₀ ω) → y ∈ T.support → y ∈ regularSet T₀ → y ∈ regularSet T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
