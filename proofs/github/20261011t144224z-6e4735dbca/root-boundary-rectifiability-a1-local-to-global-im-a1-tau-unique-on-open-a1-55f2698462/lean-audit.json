@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "186952f00801bc58aa99ea092d5baf7f3dca4c70d2cc9636fe67e3f2e4019f1f",
+  "git_delta": {
+    "base_commit": "828e99342c32053f4761089114a14ecffd0942bf",
+    "candidate_commit": "6e7472481f3b90f914d148cf727a1fcce402798a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ltg_tau_unique_on_open",
+    "diff_sha256": "6cf2bec655b02f1f49c1498cdc2b8c6b421db877bc04c10ff5057e43491f4eae",
+    "source_sha256": "92d3994614e61d2283b5d379190b116fbc1671ce9533d95a7afd4e4cc3f2e7f9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ltg_tau_unique_on_open",
+      "statement": "∀ (P k : ℕ) (U O : Set (Eucl P)), IsOpen O → O ⊆ U → ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (ξ₁ ξ₂ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M₁ θ₁ ξ₁ → IsRectifiableTriple U k M₂ θ₂ ξ₂ → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ O → tauAction k M₁ θ₁ ξ₁ ω = tauAction k M₂ θ₂ ξ₂ ω) → (μHE[k] : Measure (Eucl P)) (symmDiff M₁ M₂ ∩ O) = 0 ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M₁ ∩ O)), θ₁ x = θ₂ x ∧ ξ₁ x = ξ₂ x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
