@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1d0a48e756b52da7b1040498eebd5aa2b24022f3620b3c8e0f6c8dcb6c2280d",
+  "git_delta": {
+    "base_commit": "05a21c9db43afbe93a656c3bcd4d2981ad216899",
+    "candidate_commit": "05a7e8aa1a290b923505ed84f8b84b57e986352b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_weyl_conv_laplacian",
+    "diff_sha256": "353a8a197b07ed6070f5ffff3ee206cb0aa405ea2e3cbda818a5d1233795715b",
+    "source_sha256": "1a67545db18f410415b9cb024b8504daedb2782f657426d573328a34bc532b2c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_weyl_conv_laplacian",
+      "statement": "∀ (n : ℕ) (f φ : Euclid n → ℝ), LocallyIntegrable f → (∀ m : ℕ, ContDiff ℝ m φ) → HasCompactSupport φ → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, f y * φ (x - y))) ∧ ∀ x : Euclid n, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, f y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = ∫ y, f y * ∑ i : Fin n, iteratedFDeriv ℝ 2 φ (x - y) ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
