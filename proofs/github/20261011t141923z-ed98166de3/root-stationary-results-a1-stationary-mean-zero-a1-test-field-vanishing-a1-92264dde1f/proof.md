@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.stationary_results-a1.stationary_mean_zero-a1`
+- Child DAG node: `root.stationary_results-a1.stationary_mean_zero-a1.test_field_vanishing-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation: ⟨·,·⟩ is the Euclidean inner product on ℝᴺ = EuclideanSpace ℝ (Fin N). B(y, r) is the open ball and B̄(y, r) = Metric.closedBall y r the closed ball. Hypotheses (P), (L), (T) are as in the statement.
+This is the localization/positivity argument of the parent proof (steps 1-2, 4, 8-9), with F in place of the mean curvature H and the orthogonality relation (T) in place of steps 5-7. The radii ρ, 2ρ there become ρ/2, ρ here. Positivity is concluded from the support criterion, so no finiteness of μ(M ∩ B) is needed.
+
+1. Fix y₀ ∈ M ∩ U. Suppose, for a contradiction, that e := F(y₀) ≠ 0, so ‖e‖ > 0.
+2. (Continuity.) F is continuous on M and y₀ ∈ M. By Metric.continuousOn_iff with tolerance ‖e‖/2 > 0, there is δ > 0 such that ‖F(y) − e‖ < ‖e‖/2 for every y ∈ M with dist(y, y₀) < δ.
+3. (Localization.) O := U ∩ B(y₀, δ) is open and contains y₀, since y₀ ∈ U and δ > 0. By (L) there is ρ > 0 with B̄(y₀, ρ) ⊆ U ∩ B(y₀, δ) and M ∩ B̄(y₀, ρ) compact.
+4. (Key estimate.) For every y ∈ M with dist(y, y₀) ≤ ρ we have ⟨e, F(y)⟩ > ‖e‖²/2 > 0.
+   Indeed y ∈ B̄(y₀, ρ) ⊆ B(y₀, δ), so ‖F(y) − e‖ < ‖e‖/2 by step 2. By inner_sub_right and real_inner_self_eq_norm_sq, ⟨e, F(y)⟩ = ‖e‖² + ⟨e, F(y) − e⟩. By Cauchy–Schwarz (abs_real_inner_le_norm), ⟨e, F(y) − e⟩ ≥ −‖e‖·‖F(y) − e‖ > −‖e‖·‖e‖/2, using ‖e‖ > 0. Hence ⟨e, F(y)⟩ > ‖e‖² − ‖e‖²/2 = ‖e‖²/2.
+5. (Bump function.) Let ζ be Mathlib's smooth bump function ContDiffBump y₀ with rIn = ρ/2 and rOut = ρ. Here 0 < ρ/2 < ρ, and ℝᴺ is an inner product space, so it has HasContDiffBump. Then:
+   - ζ is C^∞ (ContDiffBump.contDiff);
+   - 0 ≤ ζ ≤ 1;
+   - ζ(x) = 1 for x ∈ B̄(y₀, ρ/2) (one_of_mem_closedBall);
+   - ζ(x) = 0 whenever ρ ≤ dist(x, y₀) (zero_of_le_dist);
+   - tsupport ζ = B̄(y₀, ρ) (tsupport_eq);
+   - ζ has compact support (ContDiffBump.hasCompactSupport).
+6. (Test field.) Define Y(x) := ζ(x)·e.
+   - Y is C² (indeed C^∞), being a smooth scalar function times a constant vector (ContDiff.smul with contDiff_const).
+   - Y has compact support (HasCompactSupport.smul_right).
+   - tsupport Y ⊆ tsupport ζ = B̄(y₀, ρ) (tsupport_smul_subset_left), so tsupport Y ⊆ B̄(y₀, ρ) ⊆ U by step 3.
+   - Because tsupport Y ⊆ B̄(y₀, ρ), M ∩ tsupport Y = (M ∩ B̄(y₀, ρ)) ∩ tsupport Y. This is the intersection of the compact set M ∩ B̄(y₀, ρ) (step 3) with the closed set tsupport Y (isClosed_tsupport), hence compact (IsCompact.inter_right).
+7. (Apply (T).) By step 6, (T) applies to Y. So f(y) := ⟨Y(y), F(y)⟩ is μ-integrable on M and ∫_M f dμ = 0. By real_inner_smul_left, f(y) = ζ(y)·⟨e, F(y)⟩ for all y.
+8. (f ≥ 0 on M.) Let y ∈ M. If dist(y, y₀) ≤ ρ, then ζ(y) ≥ 0 and ⟨e, F(y)⟩ > 0 by step 4, so f(y) ≥ 0. If dist(y, y₀) > ρ, then ζ(y) = 0 by step 5, so f(y) = 0. Since M is measurable, f ≥ 0 holds μ⌊M-almost everywhere (ae_restrict_of_forall_mem).
+9. (f > 0 near y₀.) Let y ∈ M ∩ B(y₀, ρ/2). Then dist(y, y₀) < ρ/2, so ζ(y) = 1 (as y ∈ B̄(y₀, ρ/2)). Also dist(y, y₀) ≤ ρ, so f(y) = ⟨e, F(y)⟩ > 0 by step 4. Hence M ∩ B(y₀, ρ/2) ⊆ {f ≠ 0} ∩ M. The open ball B(y₀, ρ/2) contains y₀ ∈ M, so by (P), μ(M ∩ B(y₀, ρ/2)) > 0. By monotonicity of μ, μ({f ≠ 0} ∩ M) > 0.
+10. (Contradiction.) Let f be integrable on M and nonnegative μ⌊M-a.e. Then ∫_M f dμ > 0 if and only if μ(support f ∩ M) > 0 (setIntegral_pos_iff_support_of_nonneg_ae). By steps 7-9 the hypotheses hold and the right side is true, so ∫_M f dμ > 0. This contradicts ∫_M f dμ = 0 from step 7. Therefore F(y₀) = 0, and since y₀ ∈ M ∩ U was arbitrary, F(y) = 0 for every y ∈ M ∩ U. ∎
+
+## Key steps
+
+1. Assume F(y₀) = e ≠ 0 at some y₀ ∈ M ∩ U. Continuity of F on M gives δ > 0 with ‖F(y) − e‖ < ‖e‖/2 on M ∩ B(y₀, δ).
+2. By (L), pick ρ > 0 with B̄(y₀, ρ) ⊆ U ∩ B(y₀, δ) and M ∩ B̄(y₀, ρ) compact. Cauchy–Schwarz then gives ⟨e, F(y)⟩ > ‖e‖²/2 on M ∩ B̄(y₀, ρ).
+3. With the ContDiffBump ζ (rIn = ρ/2, rOut = ρ), Y = ζ·e is a C² compactly supported field with tsupport Y ⊆ U and M ∩ tsupport Y compact. So (T) gives integrability of f = ζ⟨e, F⟩ on M and ∫_M f dμ = 0.
+4. f ≥ 0 on M, and f > 0 on M ∩ B(y₀, ρ/2), which has positive μ-measure by (P). By setIntegral_pos_iff_support_of_nonneg_ae, ∫_M f dμ > 0, a contradiction.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat -n GMT/Ch02/Contract.lean (definitions of tangentialDivergence, meanCurvature, IsAdmissibleDeformation, initialVelocity, deformedArea, IsStationaryIn, FirstVariation); diff -q snapshot project/GMT/Ch02/Contract.lean against the workspace contract`
+- `python3 -I dag.json dump of root.stationary_results-a1.* frozen lean_statements and depends_on; read nodes/root-stationary-results-a1/decomposition-v1.json, decomposition-audit-v1.json and this node's parent-child-handoff.json`
+- `cat -n simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean (IsSimonLocalRepresentation, IsProperOnInto, IsSimonSubmanifold); sed SubmanifoldTopology.lean; rg 'IsCompact \(M ∩|LocallyCompact|locallyCompact' Chapter02/ (no match)`
+- `rg 'theorem setIntegral_pos_iff_support_of_nonneg_ae|one_of_mem_closedBall|zero_of_le_dist|tsupport_eq|hasCompactSupport|protected theorem contDiff|HasCompactSupport.smul_right|tsupport_smul_subset_left|image_eq_zero_of_notMem_tsupport|ae_restrict_of_forall_mem|HasDerivAt.unique|IsCompact.image_of_continuousOn|continuousOn_iff|real_inner_smul_left|integral_const_mul' snapshot mathlib/Mathlib`
+- `rg 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' snapshot mathlib/Mathlib (only the a.e., scalar-test-function version on ambient open sets)`
+- `grep -rl simon_submanifold_exists_closedBall_isCompact_inter / vector_field_eq_zero_of_integral_inner_test_fields over the run dir, GMT/, SimonGMT and git grep over every branch (no match)`
+- `python3 -I gmt-compare.py contract_scope + child_modules and lean_contract.validate_lean_statement on both lean_statements; lake build GMT.Ch02.Submission; lake env lean NodeChallenge_{0,1}, NodeSolution_{0,1}, ChildA, ChildC, Assembly, ParentCheck with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1/decomposition-v1.json`
+- `/tmp/smz-decomp-1791753836/Scratch/ChildA.lean`
+- `/tmp/smz-decomp-1791753836/Scratch/ChildC.lean`
+- `/tmp/smz-decomp-1791753836/Scratch/ParentCheck.lean`
+- `/tmp/smz-decomp-1791753836/Scratch/NodeSolution_0.lean`
+- `/tmp/smz-decomp-1791753836/Scratch/NodeSolution_1.lean`
+
+Contract and library basis:
+- The snapshot contract is byte-identical to the workspace contract.
+- SimonGMT's IsSimonLocalRepresentation provides open V and W, ContDiffOn, ψ(V) = W ∩ M and IsProperOnInto. That is exactly what child A needs, but SimonGMT has no closed-ball local-compactness lemma (no rg match).
+- Mathlib 25730c7c supplies ContDiffBump (one_of_mem_closedBall, zero_of_le_dist, tsupport_eq, hasCompactSupport, contDiff), HasCompactSupport.smul_right, tsupport_smul_subset_left, image_eq_zero_of_notMem_tsupport, ae_restrict_of_forall_mem, setIntegral_pos_iff_support_of_nonneg_ae, IsCompact.image_of_continuousOn, Metric.continuousOn_iff, HasDerivAt.unique, real_inner_smul_left and integral_const_mul.
+- Mathlib's fundamental lemma (IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero) is only an a.e., scalar-test-function, ambient-open-set statement, so child C is a genuine new obligation.
+
+Name collisions: neither proposed name collides with any DAG node, decomposition file, branch, project or SimonGMT declaration.
+
+Compile checks:
+- Both lean_statements pass the workflow validator unchanged and elaborate in the comparator-replayed contract scope.
+- The comparator-generated NodeChallenge/NodeSolution modules compile; NodeSolution_0/1 use only propext, Classical.choice and Quot.sound, given the complete child proofs in Submission.
+- ParentCheck.lean proves the exact frozen parent type from the two children and the four sibling stubs generated verbatim from dag.json. Its only sorryAx comes from those sibling stubs.

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5cfaa11ff31d463701a32240bd1a7fd3d4385058dca8db7f95922b5e1c0b654e",
+  "git_delta": {
+    "base_commit": "248ae58165dc2ba3f7a07d67f8b26e019d681309",
+    "candidate_commit": "5b8b55d049678068d819cc27bfdc5e534551d9dd",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "vector_field_eq_zero_of_integral_inner_test_fields",
+    "diff_sha256": "2049988d36291646f344ef44619267a525bbd5cbece23a942090c9e42943ba10",
+    "source_sha256": "29b57c3a064bae5fb100743f0a7cca8b5ab1fa62831bf80d80b400df983c0614",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.vector_field_eq_zero_of_integral_inner_test_fields",
+      "statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (M U : Set (Rn N)) (F : Rn N → Rn N), MeasurableSet M → IsOpen U → ContinuousOn F M → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μ (M ∩ O)) → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)) → (∀ Y : Rn N → Rn N, ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → IsCompact (M ∩ tsupport Y) → IntegrableOn (fun y ↦ inner ℝ (Y y) (F y)) M μ ∧ ∫ y in M, inner ℝ (Y y) (F y) ∂μ = 0) → ∀ y ∈ M ∩ U, F y = 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
