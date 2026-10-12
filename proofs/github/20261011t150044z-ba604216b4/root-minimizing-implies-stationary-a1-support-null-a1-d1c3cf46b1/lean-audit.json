@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "817dbe1d07a7ec795c10adef1828960a49d3cda7de048f871a724210be4c99ca",
+  "git_delta": {
+    "base_commit": "47c683eb8835e897d7f38c23a508fe9bb4bc5211",
+    "candidate_commit": "d15b5cf486116871dce9295932632b12f0af96e0",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "68bfd130f0faa9caf2fbebef067c6bb3578e648d14f224e503d187ea9ade7958",
+    "source_sha256": "0352f1ccb08dc44ae70a79e1c4bac7bce3c3ec0fb068cacd21278e35447ad96f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_carrier_sdiff_support_null",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → μHE[n] (R.carrier \\ T.support) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
