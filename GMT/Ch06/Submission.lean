@@ -359,6 +359,46 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- `Hⁿ` scaling law for the dilation `η(y) = r⁻¹(y − x)`, `r > 0`: `η` is a measurable
+embedding and pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`, i.e. `Hⁿ(η⁻¹(B)) = rⁿ Hⁿ(B)`. -/
+theorem Submission.ind_rs_dilation_measurePreserving :
+    ∀ (P n : ℕ) (x : Eucl P) (r : ℝ), 0 < r →
+      MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) ∧
+        MeasurePreserving (fun y : Eucl P => r⁻¹ • (y - x))
+          (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P)))
+          (μHE[n] : Measure (Eucl P)) := by
+  intro P n x r hr
+  -- `η` is a homeomorphism of `ℝ^P`: translation by `-x`, then dilation by `r⁻¹`.
+  let e : Eucl P ≃ₜ Eucl P :=
+    (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : (e : Eucl P → Eucl P) = fun y : Eucl P => r⁻¹ • (y - x) := by
+    funext y
+    simp [e, sub_eq_add_neg]
+  have hemb : MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) :=
+    he ▸ e.measurableEmbedding
+  refine ⟨hemb, hemb.measurable, ?_⟩
+  -- `η⁻¹(B) = x + r • B`, and `Hⁿ(x + r • B) = ‖r‖₊ⁿ Hⁿ(B)`.
+  ext B hB
+  rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
+  have hpre : (fun y : Eucl P => r⁻¹ • (y - x)) ⁻¹' B =
+      (fun z => x + z) '' ((fun z => r • z) '' B) := by
+    ext y
+    simp only [mem_preimage, mem_image]
+    constructor
+    · intro hy
+      exact ⟨r • r⁻¹ • (y - x), ⟨r⁻¹ • (y - x), hy, rfl⟩, by
+        rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+    · rintro ⟨z, ⟨b, hb, rfl⟩, rfl⟩
+      rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+  rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
+    Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
+    smul_eq_mul, ← mul_assoc]
+  have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
+      coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
+      ENNReal.ofReal_one]
+  rw [hc, one_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
