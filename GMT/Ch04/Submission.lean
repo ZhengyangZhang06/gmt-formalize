@@ -434,7 +434,199 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Fubini exchange for a primitive along a measurable radius** (common core of the annulus
+integration by parts in Simon Ch. 4, 3.17 and 4.4/4.7). Put `μ = λ ⌞ (σ, ρ]`, `ν_S = ν ⌞ S` and
+`Φ (t, x) = 1_{t < r x} F' t g x`; then `Φ` is `μ ⊗ ν_S`-integrable (`Integrable.mul_prod`, the
+set `{t < r x}` is product-measurable). Its `t`-sections integrate to
+`F' t ∫_{S ∩ {t < r}} g dν`, and for `x ∈ S` (where `(σ, ρ] ∩ (-∞, r x) = (σ, r x)`) its
+`x`-sections integrate to `g x ∫_{(σ, r x]} F' = g x (F (r x) - F σ)`; Fubini
+(`integral_integral_swap`, valid for s-finite factors) gives all three claims. -/
+theorem Submission.mcm_primitive_radial_fubini : ∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (S : Set X) (r g : X → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), SFinite ν → MeasurableSet S → Measurable r → (∀ x ∈ S, r x ∈ Ioc σ ρ) → IntegrableOn g S ν → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ g x * (F (r x) - F σ)) S ν ∧ IntegrableOn (fun t ↦ F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν = ∫ x in S, g x * (F (r x) - F σ) ∂ν := by
+  intro X _ ν S r g F F' σ ρ hν hS hr hrS hg hF' hF
+  -- the product integrand `Φ (t, x) = 1_{t < r x} F' t g x` on `(σ, ρ] × S`
+  obtain ⟨Φ, hΦ_def⟩ : ∃ Φ : ℝ × X → ℝ,
+      Φ = {z : ℝ × X | z.1 < r z.2}.indicator fun z ↦ F' z.1 * g z.2 := ⟨_, rfl⟩
+  have hT : MeasurableSet {z : ℝ × X | z.1 < r z.2} :=
+    measurableSet_lt measurable_fst (hr.comp measurable_snd)
+  have hΦ : Integrable Φ ((volume.restrict (Ioc σ ρ)).prod (ν.restrict S)) := by
+    rw [hΦ_def]
+    exact (Integrable.mul_prod hF' hg).indicator hT
+  -- sections at fixed `t`
+  have ht : ∀ t : ℝ,
+      ∫ x, Φ (t, x) ∂ν.restrict S = F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν := by
+    intro t
+    have h : ∀ x, Φ (t, x) = F' t * {x | t < r x}.indicator g x := by
+      intro x
+      rw [hΦ_def]
+      by_cases htx : t < r x
+      · simp [htx]
+      · simp [htx]
+    simp_rw [h]
+    rw [integral_const_mul, setIntegral_indicator (measurableSet_lt measurable_const hr)]
+  -- sections at fixed `x ∈ S`
+  have hx : ∀ x ∈ S,
+      ∫ t, Φ (t, x) ∂volume.restrict (Ioc σ ρ) = g x * (F (r x) - F σ) := by
+    intro x hxS
+    obtain ⟨h1, h2⟩ := hrS x hxS
+    have h : ∀ t, Φ (t, x) = (Iio (r x)).indicator F' t * g x := by
+      intro t
+      rw [hΦ_def]
+      by_cases htx : t < r x
+      · simp [htx]
+      · simp [htx]
+    simp_rw [h]
+    have hset : Ioc σ ρ ∩ Iio (r x) = Ioo σ (r x) := by
+      ext t
+      simp only [mem_inter_iff, mem_Ioc, mem_Iio, mem_Ioo]
+      constructor
+      · rintro ⟨⟨h3, -⟩, h4⟩
+        exact ⟨h3, h4⟩
+      · rintro ⟨h3, h4⟩
+        exact ⟨⟨h3, (h4.trans_le h2).le⟩, h4⟩
+    rw [integral_mul_const, setIntegral_indicator measurableSet_Iio, hset,
+      ← integral_Ioc_eq_integral_Ioo, hF (r x) ⟨h1.le, h2⟩]
+    ring
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a): the `x`-integrals are `ν ⌞ S`-integrable and agree with the integrand on `S`
+    refine hΦ.integral_prod_right.congr ?_
+    filter_upwards [ae_restrict_mem hS] with x hxS
+    exact hx x hxS
+  · -- (b): the `t`-integrals are `λ ⌞ (σ, ρ]`-integrable
+    have h := hΦ.integral_prod_left
+    simp only [ht] at h
+    exact h
+  · -- (c): Fubini
+    calc ∫ t in Ioc σ ρ, F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν
+        = ∫ t in Ioc σ ρ, ∫ x in S, Φ (t, x) ∂ν := by simp only [ht]
+      _ = ∫ x in S, (∫ t in Ioc σ ρ, Φ (t, x)) ∂ν :=
+          integral_integral_swap (f := fun t x ↦ Φ (t, x)) hΦ
+      _ = ∫ x in S, g x * (F (r x) - F σ) ∂ν := setIntegral_congr_fun hS hx
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+/-- **Fubini on the annulus** `A = B_ρ(ξ) \ B_σ(ξ)` (the radial integration by parts behind the
+integrating factors of Simon Ch. 4, 3.17 and 4.7). If `μ` is finite on compact sets, `w` is
+`μ`-integrable on `A`, `F'` is integrable on `(σ, ρ]` and `F(t) = F(σ) + ∫_{(σ,t]} F'` for
+`t ∈ [σ, ρ]`, then `w (F(|x - ξ|) - F(σ))` is `μ`-integrable on `A`,
+`t ↦ F'(t) ∫_{B_ρ(ξ) \ B_t(ξ)} w dμ` is integrable on `(σ, ρ]`, and
+`∫_{(σ,ρ]} F'(t) ∫_{B_ρ(ξ) \ B_t(ξ)} w dμ dt = ∫_A w (F(|x - ξ|) - F(σ)) dμ`. This is
+`mcm_primitive_radial_fubini` for `S = A` and `r = |· - ξ|`, since
+`A ∩ {x | t < r x} = B_ρ(ξ) \ B_t(ξ)` for `t ∈ (σ, ρ]`. -/
+theorem Submission.mcm_annulus_primitive_fubini : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (ξ : Ambient n ℓ) (w : Ambient n ℓ → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), IsFiniteMeasureOnCompacts μ → IntegrableOn w (closedBall ξ ρ \ closedBall ξ σ) μ → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ w x * (F ‖x - ξ‖ - F σ)) (closedBall ξ ρ \ closedBall ξ σ) μ ∧ IntegrableOn (fun t ↦ F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ = ∫ x in closedBall ξ ρ \ closedBall ξ σ, w x * (F ‖x - ξ‖ - F σ) ∂μ := by
+  intro n ℓ μ ξ w F F' σ ρ hμ hw hF' hF
+  -- `ℝ^{n+ℓ}` is σ-compact and `μ` is finite on compact sets: `μ` is σ-finite, hence s-finite
+  have hμs : SFinite μ := inferInstance
+  -- `A` is Borel and the radius `r = |· - ξ|` is continuous, hence Borel measurable
+  have hA : MeasurableSet (closedBall ξ ρ \ closedBall ξ σ) :=
+    measurableSet_closedBall.diff measurableSet_closedBall
+  have hr : Measurable fun x : Ambient n ℓ ↦ ‖x - ξ‖ :=
+    (continuous_id.sub continuous_const).norm.measurable
+  -- `r` maps `A` into `(σ, ρ]`
+  have hrA : ∀ x ∈ closedBall ξ ρ \ closedBall ξ σ, ‖x - ξ‖ ∈ Ioc σ ρ := by
+    rintro x ⟨hxρ, hxσ⟩
+    rw [mem_closedBall_iff_norm] at hxρ hxσ
+    exact ⟨not_le.1 hxσ, hxρ⟩
+  obtain ⟨ha, hb, hc⟩ := Submission.mcm_primitive_radial_fubini (Ambient n ℓ) μ
+    (closedBall ξ ρ \ closedBall ξ σ) (fun x ↦ ‖x - ξ‖) w F F' σ ρ hμs hA hr hrA hw hF' hF
+  -- for `t ∈ (σ, ρ]`: `A ∩ {x | t < r x} = B_ρ(ξ) \ B_t(ξ)`, as `t < r x` forces `σ < r x`
+  have hAt : ∀ t ∈ Ioc σ ρ, (closedBall ξ ρ \ closedBall ξ σ) ∩ {x | t < ‖x - ξ‖} =
+      closedBall ξ ρ \ closedBall ξ t := by
+    intro t ht
+    ext x
+    simp only [mem_inter_iff, Set.mem_sdiff, mem_closedBall_iff_norm, mem_ofPred_eq, not_le]
+    exact ⟨fun h ↦ ⟨h.1.1, h.2⟩, fun h ↦ ⟨⟨h.1, ht.1.trans h.2⟩, h.2⟩⟩
+  -- so the two `t`-integrands agree on `(σ, ρ]`, which carries over integrability and integral
+  have hEq : EqOn
+      (fun t ↦ F' t * ∫ x in (closedBall ξ ρ \ closedBall ξ σ) ∩ {x | t < ‖x - ξ‖}, w x ∂μ)
+      (fun t ↦ F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ) (Ioc σ ρ) :=
+    fun t ht ↦ by simp only [hAt t ht]
+  exact ⟨ha, hb.congr_fun hEq measurableSet_Ioc,
+    (setIntegral_congr_fun measurableSet_Ioc hEq).symm.trans hc⟩
+/-- **Fubini on the triangle `σ < t < s ≤ ρ`** (the `e`-part of the annulus integration by parts
+behind Simon Ch. 4, 3.17 and 4.7). If `e` and `F'` are integrable on `(σ, ρ]` and
+`F(t) = F(σ) + ∫_{(σ,t]} F'` for `t ∈ [σ, ρ]`, then `s ↦ e(s)(F(s) - F(σ))` and
+`t ↦ F'(t) ∫_{(t,ρ]} e` are integrable on `(σ, ρ]` and
+`∫_{(σ,ρ]} F'(t) ∫_{(t,ρ]} e(τ) dτ dt = ∫_{(σ,ρ]} e(s)(F(s) - F(σ)) ds`. -/
+theorem Submission.mcm_interval_primitive_fubini : ∀ (e F F' : ℝ → ℝ) (σ ρ : ℝ), IntegrableOn e (Ioc σ ρ) → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun s ↦ e s * (F s - F σ)) (Ioc σ ρ) ∧ IntegrableOn (fun t ↦ F' t * ∫ τ in Ioc t ρ, e τ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ τ in Ioc t ρ, e τ = ∫ s in Ioc σ ρ, e s * (F s - F σ) := by
+  intro e F F' σ ρ he hF' hF
+  -- Steps 1–2: apply `mcm_primitive_radial_fubini` to `(X, ν, S, r, g) = (ℝ, λ, (σ, ρ], id, e)`.
+  -- Lebesgue measure is s-finite, `(σ, ρ]` is Borel, and `id` is measurable and maps `S` into
+  -- `(σ, ρ]`. Part (a) is then verbatim (`id s` is `s`).
+  obtain ⟨ha, hb, hc⟩ := Submission.mcm_primitive_radial_fubini ℝ volume (Ioc σ ρ) id e F F' σ ρ
+    inferInstance measurableSet_Ioc measurable_id (fun _ hs ↦ hs) he hF' hF
+  -- Step 3: `(σ, ρ] ∩ {s : t < s} = (max σ t, ρ] = (t, ρ]` for `t ∈ (σ, ρ]`.
+  have hset : ∀ t ∈ Ioc σ ρ, Ioc σ ρ ∩ {s | t < id s} = Ioc t ρ := fun t ht ↦ by
+    rw [show {s | t < id s} = Ioi t from rfl, Ioc_inter_Ioi, sup_eq_right.2 ht.1.le]
+  -- Step 4: the `t`-integrands of (b′), (c′) and of (b), (c) agree on the Borel set `(σ, ρ]`.
+  have heq : EqOn (fun t ↦ F' t * ∫ s in Ioc σ ρ ∩ {s | t < id s}, e s)
+      (fun t ↦ F' t * ∫ τ in Ioc t ρ, e τ) (Ioc σ ρ) := fun t ht ↦ by
+    simp only [hset t ht]
+  exact ⟨ha, hb.congr_fun heq measurableSet_Ioc,
+    (setIntegral_congr_fun measurableSet_Ioc heq).symm.trans hc⟩
+
+/-- **Integration by parts on the annulus** `A = B_ρ(ξ) \ B_σ(ξ)` (the integrating-factor step of
+Simon Ch. 4, 3.17 and 4.7). If `μ` is finite on compact sets, `w` is `μ`-integrable on `A`, `e`
+and `F'` are integrable on `(σ, ρ]`, `a(t) - a(s) = ∫_{B_t(ξ) \ B_s(ξ)} w dμ + ∫_{(s,t]} e` for
+`σ ≤ s ≤ t ≤ ρ` and `F(t) = F(σ) + ∫_{(σ,t]} F'` for `t ∈ [σ, ρ]`, then `F(|x - ξ|) w(x)` is
+`μ`-integrable on `A` and
+`F(ρ)a(ρ) - F(σ)a(σ) = ∫_A F(|x - ξ|) w(x) dμ + ∫_{(σ,ρ]} (F e + F' a)`.
+With `D(t) = ∫_{B_ρ(ξ) \ B_t(ξ)} w dμ` and `P(t) = ∫_{(t,ρ]} e` we have `a = a(ρ) - D - P` on
+`(σ, ρ]`; `mcm_annulus_primitive_fubini` and `mcm_interval_primitive_fubini` evaluate `∫ F' D`
+and `∫ F' P`, and the `F(σ)`-terms cancel. -/
+theorem Submission.mcm_annulus_integration_by_parts : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (ξ : Ambient n ℓ) (w : Ambient n ℓ → ℝ) (a e F F' : ℝ → ℝ) (σ ρ : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → σ ≤ ρ → (∀ x, 0 ≤ w x) → IntegrableOn w (closedBall ξ ρ \ closedBall ξ σ) μ → IntegrableOn e (Ioc σ ρ) → (∀ s t : ℝ, σ ≤ s → s ≤ t → t ≤ ρ → a t - a s = ∫ x in closedBall ξ t \ closedBall ξ s, w x ∂μ + ∫ τ in Ioc s t, e τ) → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ F ‖x - ξ‖ * w x) (closedBall ξ ρ \ closedBall ξ σ) μ ∧ F ρ * a ρ - F σ * a σ = ∫ x in closedBall ξ ρ \ closedBall ξ σ, F ‖x - ξ‖ * w x ∂μ + ∫ τ in Ioc σ ρ, (F τ * e τ + F' τ * a τ) := by
+  intro n ℓ μ ξ w a e F F' σ ρ hμ _ hσρ _ hw he ha hF' hF
+  -- Step 8: Fubini on `(σ, ρ] × A`, i.e. `∫ F' D = ∫_A w (F(|x - ξ|) - F(σ)) dμ`
+  obtain ⟨hwF, hF'D, hD⟩ :=
+    Submission.mcm_annulus_primitive_fubini n ℓ μ ξ w F F' σ ρ hμ hw hF' hF
+  -- Step 9: Fubini on the triangle `σ < t < s ≤ ρ`, i.e. `∫ F' P = ∫ e (F - F(σ))`
+  obtain ⟨heF, hF'P, hP⟩ := Submission.mcm_interval_primitive_fubini e F F' σ ρ he hF' hF
+  -- Step 2: `a t = a ρ - D t - P t` for `t ∈ (σ, ρ]` (the hypothesis on `a` at `(t, ρ)`)
+  have haDP : ∀ t ∈ Ioc σ ρ, F' t * a ρ - F' t * (∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ) -
+      F' t * (∫ τ in Ioc t ρ, e τ) = F' t * a t := fun t ht ↦ by
+    linear_combination F' t * ha t ρ ht.1.le ht.2 le_rfl
+  -- Step 4: integrability, from `F(|x - ξ|) w = w (F(|x - ξ|) - F(σ)) + F(σ) w` on `A`, and
+  -- `F e = e (F - F(σ)) + F(σ) e`, `F' a = F' a(ρ) - F' D - F' P` on `(σ, ρ]`
+  have hFw : IntegrableOn (fun x ↦ F ‖x - ξ‖ * w x) (closedBall ξ ρ \ closedBall ξ σ) μ := by
+    have h : (fun x ↦ F ‖x - ξ‖ * w x) = fun x ↦ w x * (F ‖x - ξ‖ - F σ) + F σ * w x := by
+      funext x
+      ring
+    rw [h]
+    exact hwF.add (hw.const_mul (F σ))
+  have hFe : IntegrableOn (fun τ ↦ F τ * e τ) (Ioc σ ρ) := by
+    have h : (fun τ ↦ F τ * e τ) = fun τ ↦ e τ * (F τ - F σ) + F σ * e τ := by
+      funext τ
+      ring
+    rw [h]
+    exact heF.add (he.const_mul (F σ))
+  have hF'aD : IntegrableOn
+      (fun t ↦ F' t * a ρ - F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ) (Ioc σ ρ) :=
+    (hF'.mul_const (a ρ)).sub hF'D
+  have hF'a : IntegrableOn (fun τ ↦ F' τ * a τ) (Ioc σ ρ) :=
+    (hF'aD.sub hF'P).congr_fun haDP measurableSet_Ioc
+  refine ⟨hFw, ?_⟩
+  -- Steps 5–9 as identities between the integrals
+  have h1 : ∫ x in closedBall ξ ρ \ closedBall ξ σ, F ‖x - ξ‖ * w x ∂μ =
+      (∫ x in closedBall ξ ρ \ closedBall ξ σ, w x * (F ‖x - ξ‖ - F σ) ∂μ) +
+        F σ * ∫ x in closedBall ξ ρ \ closedBall ξ σ, w x ∂μ := by
+    rw [← integral_const_mul, ← integral_add hwF (hw.const_mul (F σ))]
+    congr 1 with x
+    ring
+  have h2 : ∫ τ in Ioc σ ρ, F τ * e τ =
+      (∫ s in Ioc σ ρ, e s * (F s - F σ)) + F σ * ∫ τ in Ioc σ ρ, e τ := by
+    rw [← integral_const_mul, ← integral_add heF (he.const_mul (F σ))]
+    congr 1 with τ
+    ring
+  have h3 : ∫ τ in Ioc σ ρ, F' τ * a τ =
+      (∫ τ in Ioc σ ρ, F' τ) * a ρ -
+        (∫ t in Ioc σ ρ, F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ) -
+          ∫ t in Ioc σ ρ, F' t * ∫ τ in Ioc t ρ, e τ := by
+    rw [← setIntegral_congr_fun measurableSet_Ioc haDP, integral_sub hF'aD hF'P,
+      integral_sub (hF'.mul_const (a ρ)) hF'D, integral_mul_const]
+  -- Step 10: add up with `a(ρ) - a(σ) = ∫_A w dμ + ∫ e` and `F(ρ) = F(σ) + ∫ F'`; the
+  -- `F(σ)`-terms cancel
+  rw [integral_add hFe hF'a]
+  linear_combination -h1 - h2 - h3 + hD + hP + F σ * ha σ ρ le_rfl hσρ le_rfl +
+    a ρ * hF ρ ⟨hσρ, le_rfl⟩
 
 end
 
