@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0500edf0bc9dec8613fbe92b6d4a8851da82d14ede31f53e290f91a73ac2f050",
+  "git_delta": {
+    "base_commit": "7692c471e48ae7e29a182c53a149e0ffa80c4544",
+    "candidate_commit": "5e4b215846243d699169f3e42b95b8e007ea2d70",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_chart_inverse_continuity",
+    "diff_sha256": "3ad5b50c8f0f68f322a1c9476f1c038446bc15724c43323c2aca07c83aa8f2c8",
+    "source_sha256": "05c8fe6beda71bff94932f20447662d5ede5a50df7b333bbfb8cf9fcba9010b9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_chart_inverse_continuity",
+      "statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P), ContinuousOn ψ V → InjOn ψ V → ψ '' V ⊆ W → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → ∀ v ∈ V, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
