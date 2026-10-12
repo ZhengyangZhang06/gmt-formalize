@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.gram_projection-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+  "depth": 4,
+  "title": "Orthogonal projection onto a graph plane via the Gram operator",
+  "statement": "Let n, l be natural numbers, A : R^n -> R^l, J : R^n -> R^(n+l) and T : R^(n+l) -> R^n continuous linear maps such that J v = graphPoint v (A v) for every v in R^n and <T w, v> = <w, J v> for all w in R^(n+l), v in R^n. Then T o J is a unit of the ring L(R^n, R^n) of continuous linear endomorphisms (multiplication = composition), and the orthogonal projection (starProjection) of R^(n+l) onto Gamma_A = span{graphPoint v (A v) : v in R^n} equals J o (Ring.inverse(T o J) o T).",
+  "lean_statement": "∀ (n ℓ : ℕ) (A : Rn n →L[ℝ] Rn ℓ) (J : Rn n →L[ℝ] Amb n ℓ) (T : Amb n ℓ →L[ℝ] Rn n), (∀ v : Rn n, J v = graphPoint v (A v)) → (∀ (w : Amb n ℓ) (v : Rn n), inner ℝ (T w) v = inner ℝ w (J v)) → IsUnit (T ∘L J) ∧ (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection = J ∘L Ring.inverse (T ∘L J) ∘L T",
+  "lean_name": "allard52_gps_starProjection_eq_gram",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-3979db1103-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_contdiff-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+  "depth": 4,
+  "title": "The graph-plane projection map is C^2",
+  "statement": "For all natural numbers n, l, the map Pi : L(R^n, R^l) -> L(R^(n+l), R^(n+l)), A |-> starProjection of Gamma_A = span{graphPoint v (A v) : v in R^n}, is C^2 (ContDiff R 2), both spaces carrying the operator norm.",
+  "lean_statement": "∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection)",
+  "lean_name": "allard52_gps_contDiff",
+  "depends_on": [
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.transpose_clm-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.gram_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.transpose_clm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.gram_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-dcc7722a41-a1"
+}

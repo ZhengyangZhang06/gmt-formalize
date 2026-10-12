@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+  "depth": 4,
+  "title": "Derivative of the graph-plane projection at A = 0",
+  "statement": "For natural numbers n, l, H in L(R^n, R^l), x in R^n and y in R^l, with Pi(A) = starProjection of span{graphPoint v (A v) : v in R^n} and DPi(0) = fderiv R Pi 0: DPi(0)[H](graphPoint x y) = graphPoint (sum_{i<n} <H e_i, y> e_i) (H x), where e_i = EuclideanSpace.single i 1 in R^n. (In block form with respect to R^n x R^l, DPi(0)[H] = [[0, H^T],[H, 0]].)",
+  "lean_statement": "∀ (n ℓ : ℕ) (H : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 H (graphPoint x y) = graphPoint (∑ i : Fin n, inner ℝ (H (EuclideanSpace.single i 1)) y • EuclideanSpace.single i 1) (H x)",
+  "lean_name": "allard52_gps_fderiv_zero_apply",
+  "depends_on": [
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.transpose_clm-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.gram_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.transpose_clm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.gram_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-29d2ac9c30-a1"
+}
