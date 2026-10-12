@@ -458,6 +458,291 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-! ### Corollary 2.7 (`LipschitzGraphCorollary`), assembled from its child lemmas -/
+
+/-- `|(x, y)| ≤ |x| + |y|` for the point `(x, y) ∈ ℝⁿ × ℝ^ℓ = ℝ^{n+ℓ}`. -/
+theorem lgc_asm_norm_graphPoint_le {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ) :
+    ‖graphPoint x y‖ ≤ ‖x‖ + ‖y‖ := by
+  have h : ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+    simp only [graphPoint, EuclideanSpace.norm_sq_eq, Fin.sum_univ_add, Fin.append_left,
+      Fin.append_right]
+  nlinarith [norm_nonneg x, norm_nonneg y, norm_nonneg (graphPoint x y),
+    mul_nonneg (norm_nonneg x) (norm_nonneg y)]
+
+/-- `t ↦ (g t, h t) ∈ ℝ^{n+ℓ}` is continuous when `g` and `h` are. -/
+theorem lgc_asm_continuous_graphPoint {n ℓ : ℕ} {X : Type*} [TopologicalSpace X]
+    {g : X → Rn n} {h : X → Rn ℓ} (hg : Continuous g) (hh : Continuous h) :
+    Continuous fun t => graphPoint (g t) (h t) := by
+  unfold graphPoint
+  refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+  induction i using Fin.addCases with
+  | left j =>
+    simp only [Fin.append_left]
+    exact (continuous_apply j).comp ((PiLp.continuous_ofLp 2 _).comp hg)
+  | right j =>
+    simp only [Fin.append_right]
+    exact (continuous_apply j).comp ((PiLp.continuous_ofLp 2 _).comp hh)
+
+/-- `p_{T_x M}` is an orthogonal projection or `0`, so its operator norm is at most `1`. -/
+theorem lgc_asm_norm_tangentProj_le {n ℓ : ℕ} {U : Set (Amb n ℓ)}
+    (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) : ‖V.tangentProj x‖ ≤ 1 := by
+  rw [RectifiableVarifold.tangentProj]
+  split_ifs
+  · exact Submodule.starProjection_norm_le _
+  · simp
+
+theorem lgc_asm_hsNormSq_nonneg {m k : ℕ} (A : Rn m →L[ℝ] Rn k) : 0 ≤ hsNormSq A :=
+  Finset.sum_nonneg fun _ _ => sq_nonneg _
+
+/-- `|A|² ≤ m ‖A‖²` (Hilbert–Schmidt versus operator norm). -/
+theorem lgc_asm_hsNormSq_le {m k : ℕ} (A : Rn m →L[ℝ] Rn k) : hsNormSq A ≤ m * ‖A‖ ^ 2 := by
+  calc hsNormSq A ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+        refine Finset.sum_le_sum fun i _ => ?_
+        have h := A.le_opNorm (EuclideanSpace.single i (1 : ℝ))
+        have h1 : ‖EuclideanSpace.single i (1 : ℝ)‖ = 1 := by simp
+        rw [h1, mul_one] at h
+        exact pow_le_pow_left₀ (norm_nonneg _) h 2
+    _ = m * ‖A‖ ^ 2 := by simp
+
+theorem lgc_asm_continuous_hsNormSq {m k : ℕ} :
+    Continuous fun A : Rn m →L[ℝ] Rn k => hsNormSq A := by
+  unfold hsNormSq
+  exact continuous_finsetSum _ fun i _ =>
+    ((continuous_id.clm_apply continuous_const).norm).pow 2
+
+/-- By `lgc_tangent_plane_ae`, the tilt integrand `|p_{T_x M} − p_T|²` is `μ_V`-integrable on
+every set of finite `μ_V`-measure (it is bounded by `4(n + ℓ)`). -/
+theorem lgc_asm_integrableOn_tilt {n ℓ : ℕ} (hn : 1 ≤ n) {U : Set (Amb n ℓ)} (hU : IsOpen U)
+    (V : RectifiableVarifold n ℓ U) (T : Submodule ℝ (Amb n ℓ)) {B : Set (Amb n ℓ)}
+    (hB : V.weight B ≠ ⊤) :
+    IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) B V.weight := by
+  refine Measure.integrableOn_of_bounded (M := ((n + ℓ : ℕ) : ℝ) * 2 ^ 2) hB
+    (lgc_asm_continuous_hsNormSq.comp_aestronglyMeasurable
+      ((Submission.lgc_tangent_plane_ae n ℓ hn U hU V).1.sub aestronglyMeasurable_const))
+    (Filter.Eventually.of_forall fun x => ?_)
+  rw [Real.norm_of_nonneg (lgc_asm_hsNormSq_nonneg _)]
+  refine (lgc_asm_hsNormSq_le _).trans ?_
+  gcongr
+  calc ‖V.tangentProj x - T.starProjection‖ ≤ ‖V.tangentProj x‖ + ‖T.starProjection‖ :=
+        norm_sub_le _ _
+    _ ≤ 1 + 1 := add_le_add (lgc_asm_norm_tangentProj_le V x) T.starProjection_norm_le
+    _ = 2 := by norm_num
+
+/-- **Simon Ch. 5, Corollary 2.7** (`LipschitzGraphCorollary`).  Steps 1–3 of the proof are the
+children `lgc_height_cone` (with the sibling `affine_approximation_lemma` and `τ = βL`) and
+`lgc_cone_graph_extension` (with `S = spt V ∩ B_{σ₀/2}(0)`, `ε = C₁βL`,
+`R₀ = min{Kδ^{1/(2n+2)}σ₀, C₁βLσ₀}`); the forward inclusion is immediate, and a point of the graph
+over `Bⁿ_{σ₀/4}(0)` off `spt V` is moved along the graph (intermediate value theorem) to a point at
+distance `d ∈ (0, σ₀/64]` from `spt V`, where the hole estimate `lgc_hole_estimate` contradicts the
+tilt hypothesis on `B_{5d/2}(y)`. -/
+theorem lipschitz_graph_corollary : LipschitzGraphCorollary := by
+  intro n ℓ hn p hp
+  obtain ⟨δ₁, C₁, hδ₁, hC₁, hHC⟩ :=
+    Submission.lgc_height_cone Submission.affine_approximation_lemma n ℓ hn p hp
+  obtain ⟨δ₂, ε₂, C₂, hδ₂, hε₂, hC₂, hHE⟩ := Submission.lgc_hole_estimate n ℓ hn p hp
+  -- Step 7: the choice of `β`.
+  obtain ⟨β, hβpos, hβ4, hβδ₁, hβδ₂, hβC₁, hβA, hβD⟩ : ∃ β : ℝ, 0 < β ∧ β ≤ 1 / 4 ∧
+      β ≤ δ₁ ∧ β ≤ δ₂ ∧ β ≤ 1 / (64 * C₁) ∧ β ≤ min 1 ε₂ / (2 * Real.sqrt ℓ * C₁ + 1) ∧
+      β ≤ 1 / (C₂ * 5 ^ n + 1) := by
+    refine ⟨min (1 / 4) (min δ₁ (min δ₂ (min (1 / (64 * C₁))
+      (min (min 1 ε₂ / (2 * Real.sqrt ℓ * C₁ + 1)) (1 / (C₂ * 5 ^ n + 1)))))), by positivity,
+      ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> simp only [min_le_iff, le_refl, true_or, or_true]
+  rw [le_div_iff₀ (by positivity)] at hβC₁ hβA hβD
+  refine ⟨β, hβpos, hβ4, ?_⟩
+  intro L K hL hL1 hK U hU V H δ ρ hδ hδβ hAH q hheight htilt
+  obtain ⟨hρ, -, -, h0, hBU, hmass, -⟩ := id hAH
+  have hσ₀ : 0 < δ * ρ := mul_pos hδ hρ
+  -- `δ ≤ (βL)^{2n+2} ≤ βL ≤ β ≤ 1/4`, and `δ^{1/(2n+2)} ≤ βL`.
+  have hβL : β * L ≤ β := mul_le_of_le_one_right hβpos.le hL1
+  have hδβL : δ ≤ β * L :=
+    hδβ.trans (pow_le_of_le_one (by positivity) (by linarith) (by omega))
+  have hδβ' : δ ≤ β := hδβL.trans hβL
+  have hσρ : δ * ρ ≤ ρ / 4 := by nlinarith
+  have hτ : δ ^ (1 / (2 * (n : ℝ) + 2)) ≤ β * L := by
+    have hα : (1 / (2 * (n : ℝ) + 2)) = ((2 * n + 2 : ℕ) : ℝ)⁻¹ := by push_cast; ring
+    rw [hα]
+    calc δ ^ ((2 * n + 2 : ℕ) : ℝ)⁻¹ ≤ ((β * L) ^ (2 * n + 2)) ^ ((2 * n + 2 : ℕ) : ℝ)⁻¹ :=
+          Real.rpow_le_rpow hδ.le hδβ (by positivity)
+      _ = β * L := Real.pow_rpow_inv_natCast (by positivity) (by omega)
+  -- Steps 1–2 (`lgc_height_cone` with `τ = βL`): height bound and cone condition.
+  have htilt' : ∀ ξ ∈ V.support ∩ closedBall 0 (δ * ρ / 2), ∀ σ : ℝ, 0 < σ →
+      σ ≤ δ * ρ / 2 → V.tiltExcess ξ σ (rotatedPlane q) ≤ (β * L) ^ 2 := by
+    intro ξ hξ σ hσ hσle
+    rw [mul_pow]
+    exact htilt ξ hξ σ hσ hσle
+  obtain ⟨hH1, hH2⟩ := hHC U hU V H δ ρ hδ (hδβ'.trans hβδ₁) hAH q (β * L) hτ htilt'
+  -- Step 3 (`lgc_cone_graph_extension`): the Lipschitz graph through `spt V ∩ B_{σ₀/2}(0)`.
+  have hC₁βL : C₁ * (β * L) ≤ 1 / 64 := by
+    have h : C₁ * (β * L) ≤ C₁ * β := mul_le_mul_of_nonneg_left hβL hC₁.le
+    linarith
+  have hSh : ∀ y ∈ V.support ∩ closedBall 0 (δ * ρ / 2),
+      infDist y (rotatedPlane q : Set (Amb n ℓ)) ≤
+        min (K * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ)) (C₁ * (β * L) * (δ * ρ)) := by
+    intro y hy
+    have hy0 : ‖y‖ ≤ δ * ρ / 2 := mem_closedBall_zero_iff.1 hy.2
+    exact le_min (hheight y ⟨hy.1, mem_closedBall_zero_iff.2 (by linarith)⟩)
+      (hH1 y ⟨hy.1, mem_closedBall_zero_iff.2 (by linarith)⟩)
+  obtain ⟨f, hfLip, hfR, hfS⟩ := Submission.lgc_cone_graph_extension n ℓ q
+    (V.support ∩ closedBall 0 (δ * ρ / 2)) (C₁ * (β * L))
+    (min (K * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ)) (C₁ * (β * L) * (δ * ρ)))
+    (by positivity) (by linarith) (le_min (by positivity) (by positivity)) hH2 hSh
+  have hsq : 2 * Real.sqrt ℓ * C₁ * β ≤ 1 - β := by
+    have := min_le_left 1 ε₂
+    linarith
+  have hsqε : 2 * Real.sqrt ℓ * C₁ * β ≤ ε₂ := by
+    have := min_le_right 1 ε₂
+    linarith
+  have hLipL : 2 * Real.sqrt ℓ * (C₁ * (β * L)) ≤ L := by
+    have h := mul_le_mul_of_nonneg_right hsq hL.le
+    have hβL0 : 0 < β * L := mul_pos hβpos hL
+    nlinarith
+  have hLipε : 2 * Real.sqrt ℓ * (C₁ * (β * L)) ≤ ε₂ := by
+    have h : 2 * Real.sqrt ℓ * C₁ * β * L ≤ 2 * Real.sqrt ℓ * C₁ * β :=
+      mul_le_of_le_one_right (by positivity) hL1
+    nlinarith
+  have hf64 : ∀ x, ‖f x‖ ≤ δ * ρ / 64 := fun x => by
+    have h := (hfR x).trans (min_le_right _ _)
+    have h' : C₁ * (β * L) * (δ * ρ) ≤ 1 / 64 * (δ * ρ) :=
+      mul_le_mul_of_nonneg_right hC₁βL hσ₀.le
+    linarith
+  refine ⟨f, (hfLip.weaken (Real.toNNReal_le_toNNReal hLipL)).lipschitzOnWith,
+    fun x _ => (hfR x).trans (min_le_left _ _), Set.Subset.antisymm ?_ ?_⟩
+  · -- Step 4: `spt V ∩ B_{σ₀/4}(0) ⊆ q(graph f) ∩ B_{σ₀/4}(0)`.
+    rintro y ⟨hyV, hyB⟩
+    have hy0 : ‖y‖ ≤ δ * ρ / 4 := mem_closedBall_zero_iff.1 hyB
+    obtain ⟨x, hxy, hqx⟩ := hfS y ⟨hyV, mem_closedBall_zero_iff.2 (by linarith)⟩
+    exact ⟨⟨graphPoint x (f x), ⟨x, mem_closedBall_zero_iff.2 (hxy.trans hy0), rfl⟩, hqx⟩, hyB⟩
+  · -- Step 6: a graph point over `Bⁿ_{σ₀/4}(0)` in `B_{σ₀/4}(0)` lies in `spt V`.
+    rintro ζ ⟨⟨g, ⟨xz, hxz, rfl⟩, rfl⟩, hζB⟩
+    refine ⟨?_, hζB⟩
+    by_contra hζV
+    have hxz0 : ‖xz‖ ≤ δ * ρ / 4 := mem_closedBall_zero_iff.1 hxz
+    have hζ0 : ‖q (graphPoint xz (f xz))‖ ≤ δ * ρ / 4 := mem_closedBall_zero_iff.1 hζB
+    have hζU : q (graphPoint xz (f xz)) ∈ U :=
+      hBU (mem_closedBall_zero_iff.2 (by linarith))
+    have hsuppV : V.support ⊆ V.weight.support := fun x hx => hx.2
+    have hζpos : 0 < infDist (q (graphPoint xz (f xz))) V.support :=
+      lt_of_lt_of_le ((Measure.isClosed_support.notMem_iff_infDist_pos ⟨0, hsuppV h0⟩).1
+        fun h => hζV ⟨hζU, h⟩) (infDist_le_infDist_of_subset hsuppV ⟨0, h0⟩)
+    -- Move along `t ↦ q(t x_ζ, f(t x_ζ))` to a graph point at distance `≤ σ₀/64` from `spt V`.
+    obtain ⟨ζ', hζ'mem, hζ'norm, hdpos, hdle⟩ : ∃ ζ' ∈ q '' graphOver f univ,
+        ‖ζ'‖ ≤ δ * ρ / 4 + δ * ρ / 64 ∧ 0 < infDist ζ' V.support ∧
+          infDist ζ' V.support ≤ δ * ρ / 64 := by
+      have hγc : Continuous fun t : ℝ => q (graphPoint (t • xz) (f (t • xz))) :=
+        q.continuous.comp (lgc_asm_continuous_graphPoint (continuous_id.smul continuous_const)
+          (hfLip.continuous.comp (continuous_id.smul continuous_const)))
+      have hφc : Continuous fun t : ℝ =>
+          infDist (q (graphPoint (t • xz) (f (t • xz)))) V.support :=
+        (continuous_infDist_pt _).comp hγc
+      have hφ0 : infDist (q (graphPoint ((0 : ℝ) • xz) (f ((0 : ℝ) • xz)))) V.support ≤
+          δ * ρ / 64 := by
+        calc infDist (q (graphPoint ((0 : ℝ) • xz) (f ((0 : ℝ) • xz)))) V.support
+            ≤ dist (q (graphPoint ((0 : ℝ) • xz) (f ((0 : ℝ) • xz)))) 0 :=
+              infDist_le_dist_of_mem h0
+          _ = ‖graphPoint (0 : Rn n) (f 0)‖ := by
+              rw [dist_zero_right, LinearIsometryEquiv.norm_map, zero_smul]
+          _ ≤ ‖(0 : Rn n)‖ + ‖f 0‖ := lgc_asm_norm_graphPoint_le _ _
+          _ ≤ δ * ρ / 64 := by rw [norm_zero, zero_add]; exact hf64 0
+      have hpt : ∀ t ∈ Icc (0 : ℝ) 1,
+          q (graphPoint (t • xz) (f (t • xz))) ∈ q '' graphOver f univ ∧
+            ‖q (graphPoint (t • xz) (f (t • xz)))‖ ≤ δ * ρ / 4 + δ * ρ / 64 := by
+        intro t ht
+        refine ⟨⟨_, ⟨t • xz, mem_univ _, rfl⟩, rfl⟩, ?_⟩
+        rw [LinearIsometryEquiv.norm_map]
+        have htx : ‖t • xz‖ ≤ δ * ρ / 4 := by
+          rw [norm_smul, Real.norm_of_nonneg ht.1]
+          calc t * ‖xz‖ ≤ 1 * ‖xz‖ := mul_le_mul_of_nonneg_right ht.2 (norm_nonneg _)
+            _ ≤ δ * ρ / 4 := by rw [one_mul]; exact hxz0
+        calc ‖graphPoint (t • xz) (f (t • xz))‖ ≤ ‖t • xz‖ + ‖f (t • xz)‖ :=
+              lgc_asm_norm_graphPoint_le _ _
+          _ ≤ δ * ρ / 4 + δ * ρ / 64 := add_le_add htx (hf64 _)
+      by_cases h1 : infDist (q (graphPoint xz (f xz))) V.support ≤ δ * ρ / 64
+      · obtain ⟨hm, hm'⟩ := hpt 1 ⟨zero_le_one, le_rfl⟩
+        rw [one_smul] at hm hm'
+        exact ⟨_, hm, hm', hζpos, h1⟩
+      · rw [not_le] at h1
+        obtain ⟨t, ht, hteq⟩ := intermediate_value_Icc zero_le_one hφc.continuousOn
+          ⟨hφ0, by simpa only [one_smul] using h1.le⟩
+        have hteq' : infDist (q (graphPoint (t • xz) (f (t • xz)))) V.support = δ * ρ / 64 :=
+          hteq
+        obtain ⟨hm, hm'⟩ := hpt t ht
+        exact ⟨_, hm, hm', by rw [hteq']; positivity, hteq'.le⟩
+    -- Step 5 (`lgc_hole_estimate`) at `ζ'`, with `d = dist(ζ', spt V)` and `s = d/2`.
+    obtain ⟨y, hyV, hyd, hineq⟩ := hHE U hU V H δ ρ hδ (hδβ'.trans hβδ₂) hAH q f
+      (2 * Real.sqrt ℓ * (C₁ * (β * L))) (by positivity) hLipε hfLip ζ' hζ'mem (by linarith)
+      hdpos (by linarith)
+    set d := infDist ζ' V.support
+    -- `spt V ∩ B_{3s}(ζ') ⊆ spt V ∩ B_{σ₀/2}(0)` lies on the graph, hence
+    -- `μ(B_{3s}(ζ') \ q(graph f)) = 0`.
+    have hnull : V.weight (closedBall ζ' (3 * (d / 2)) \ q '' graphOver f univ) = 0 := by
+      refine measure_mono_null (fun x hx => ?_) (Measure.measure_compl_support (μ := V.weight))
+      obtain ⟨hxB, hxF⟩ := hx
+      rw [Set.mem_compl_iff]
+      intro hxμ
+      apply hxF
+      have hxζ : dist x ζ' ≤ 3 * (d / 2) := mem_closedBall.1 hxB
+      have hx0 : ‖x‖ ≤ δ * ρ / 2 := by
+        have h := norm_sub_norm_le x ζ'
+        rw [← dist_eq_norm] at h
+        linarith
+      have hxU : x ∈ U := hBU (mem_closedBall_zero_iff.2 (by linarith))
+      obtain ⟨x', -, hx'⟩ := hfS x ⟨⟨hxU, hxμ⟩, mem_closedBall_zero_iff.2 hx0⟩
+      exact ⟨graphPoint x' (f x'), ⟨x', mem_univ _, rfl⟩, hx'⟩
+    rw [hnull, ENNReal.toReal_zero, zero_add] at hineq
+    -- Compare with the tilt hypothesis on `B_{5s}(y) ⊇ B_{3s}(ζ')`.
+    have hy0 : ‖y‖ ≤ δ * ρ / 2 := by
+      have h := norm_sub_norm_le y ζ'
+      rw [← dist_eq_norm, hyd] at h
+      linarith
+    have hsub : closedBall ζ' (3 * (d / 2)) ⊆ closedBall y (5 * (d / 2)) := by
+      intro x hx
+      rw [mem_closedBall] at hx ⊢
+      calc dist x y ≤ dist x ζ' + dist ζ' y := dist_triangle _ _ _
+        _ ≤ 3 * (d / 2) + d := by rw [dist_comm ζ' y, hyd]; linarith
+        _ = 5 * (d / 2) := by ring
+    have hfin : V.weight (closedBall y (5 * (d / 2))) ≠ ⊤ := by
+      refine ne_top_of_le_ne_top (ne_top_of_le_ne_top ENNReal.ofReal_ne_top hmass)
+        (measure_mono (closedBall_subset_closedBall' ?_))
+      rw [dist_zero_right]
+      linarith
+    have hmono : ∫ x in closedBall ζ' (3 * (d / 2)),
+          hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤
+        ∫ x in closedBall y (5 * (d / 2)),
+          hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight :=
+      setIntegral_mono_set (lgc_asm_integrableOn_tilt hn hU V (rotatedPlane q) hfin)
+        (Filter.Eventually.of_forall fun x => lgc_asm_hsNormSq_nonneg _)
+        (Filter.Eventually.of_forall fun x hx => hsub hx)
+    have h5s : 0 < 5 * (d / 2) := by positivity
+    have htiltY : ((5 * (d / 2)) ^ n)⁻¹ * ∫ x in closedBall y (5 * (d / 2)),
+          hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤
+        β ^ 2 * L ^ 2 :=
+      htilt y ⟨hyV, mem_closedBall_zero_iff.2 hy0⟩ (5 * (d / 2)) h5s (by linarith)
+    rw [inv_mul_le_iff₀ (by positivity)] at htiltY
+    -- `sⁿ ≤ C₂ 5ⁿ β² L² sⁿ < sⁿ`, a contradiction.
+    have hs : 0 < (d / 2) ^ n := by positivity
+    have hβ2 : β ^ 2 * L ^ 2 ≤ β := by
+      have hL2 : L ^ 2 ≤ 1 := pow_le_one₀ hL.le hL1
+      calc β ^ 2 * L ^ 2 ≤ β ^ 2 * 1 := mul_le_mul_of_nonneg_left hL2 (by positivity)
+        _ = β * β := by ring
+        _ ≤ β * 1 := mul_le_mul_of_nonneg_left (by linarith) hβpos.le
+        _ = β := mul_one β
+    have hlt : C₂ * 5 ^ n * β < 1 := by linarith
+    have hkey : C₂ * ((5 * (d / 2)) ^ n * (β ^ 2 * L ^ 2)) ≤
+        (C₂ * 5 ^ n * β) * (d / 2) ^ n := by
+      rw [mul_pow]
+      calc C₂ * (5 ^ n * (d / 2) ^ n * (β ^ 2 * L ^ 2)) ≤ C₂ * (5 ^ n * (d / 2) ^ n * β) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hβ2 (by positivity)) hC₂.le
+        _ = (C₂ * 5 ^ n * β) * (d / 2) ^ n := by ring
+    have hfinal : (C₂ * 5 ^ n * β) * (d / 2) ^ n < (d / 2) ^ n := by
+      calc (C₂ * 5 ^ n * β) * (d / 2) ^ n < 1 * (d / 2) ^ n := mul_lt_mul_of_pos_right hlt hs
+        _ = (d / 2) ^ n := one_mul _
+    have hchain := mul_le_mul_of_nonneg_left (hmono.trans htiltY) hC₂.le
+    linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
