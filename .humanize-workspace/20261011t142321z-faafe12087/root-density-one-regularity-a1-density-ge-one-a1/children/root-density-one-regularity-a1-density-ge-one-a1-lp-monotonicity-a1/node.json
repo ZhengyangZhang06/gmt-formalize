@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.density_ge_one-a1.lp_monotonicity-a1",
+  "parent_id": "root.density_one_regularity-a1.density_ge_one-a1",
+  "depth": 3,
+  "title": "L^p monotonicity with explicit factor exp((Lambda/2)(sigma/R)^(1-n/p)) (Simon Ch. 4, 4.1-4.8, corrected kappa; parent steps 0, 2d-5)",
+  "statement": "Let n >= 1, l a natural number, U a subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U with weight mu, H : R^(n+l) -> R^(n+l) such that V has generalized mean curvature H in U, p > n real, and assume (G2) x -> P_x := tangentProj_V(x) is mu-a.e. strongly measurable and (G1) for mu-a.e. x, P_x is the orthogonal projection onto an n-dimensional subspace. Let xi in R^(n+l), R > 0 and Lambda >= 0 with the closed ball B_R(xi) contained in U and (R^(p-n) int_{B_R(xi)} |H|^p dmu)^(1/p) <= kappa Lambda in [0, infinity], where kappa = (p-n)/(4p). Then sigma -> exp((Lambda/2)(sigma/R)^(1-n/p)) (sigma^(-n) mu(B_sigma(xi)) + 1) is nondecreasing on (0, R] (closed balls; mu(B_sigma(xi)) is finite and is used as a real number).",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), 1 ≤ n → (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (ξ : Amb n ℓ) (R Λ : ℝ), 0 < R → 0 ≤ Λ → closedBall ξ R ⊆ U → V.scaledLpNorm H p ξ R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → MonotoneOn (fun σ : ℝ => Real.exp (Λ / 2 * (σ / R) ^ (1 - (n : ℝ) / p)) * ((V.weight (closedBall ξ σ)).toReal / σ ^ n + 1)) (Ioc 0 R)",
+  "lean_name": "lp_corrected_mass_ratio_monotoneOn",
+  "depends_on": [
+    "root.density_one_regularity-a1.density_ge_one-a1.radial_first_variation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_regularity-a1.density_ge_one-a1.radial_first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-density-ge-one-a1-lp-monotonicity-a1-a1"
+}
