@@ -1826,6 +1826,36 @@ theorem Submission.radial_first_variation : ∀ (n ℓ : ℕ) (V : RectifiableVa
         · simp_rw [real_inner_smul_left]
         · rw [hX0 x hxU, inner_zero_left]
 
+/-- **Ch. 4, 3.3–3.6, 3.16, 4.1 and 5.1 (pp. 89–96), weighted monotonicity identity.** Let `V`
+satisfy (FV) (`μ_V` finite on compact sets, `dim T_x V = n` `μ_V`-a.e., `x ↦ p_{T_x V}`
+`μ_V`-a.e. strongly measurable), let `H` be a generalized mean curvature of `V` in the open set
+`U`, `h ∈ C¹(U)` and `tsupport h ∩ B_ρ(ξ) ⊆ U`. Then for `0 < σ ≤ ρ`, with `r = |x - ξ|`,
+`ρ⁻ⁿ ∫_{B_ρ(ξ)} h dμ_V - σ⁻ⁿ ∫_{B_σ(ξ)} h dμ_V = ∫_{B_ρ(ξ) \ B_σ(ξ)} h |D^⊥r|² / rⁿ dμ_V`
+`+ ∫_{(σ,ρ]} τ⁻ⁿ⁻¹ ∫_{B_τ(ξ)} (x - ξ)·(∇^M h + hH) dμ_V dτ`,
+and both integrands on the right are integrable. This is the printed route: the first variation of
+`X = h φ(r/τ)(x - ξ)` gives the differentiated cutoff identity (3.3, 5.1), which is integrated over
+`τ ∈ [σ, ρ]` (3.4) before the cutoff `φ` is removed (corrected 3.5, then 3.6). With the sign
+convention 3.14(‡) the curvature term enters with a `+` sign (3.16, 4.1). -/
+theorem Submission.weighted_monotonicity_identity : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1) := by
+  intro n ℓ V U H h ξ σ ρ _hn hfin hdim hmeas hU hH hh hsupp hσ hσρ
+  have hρ : 0 < ρ := hσ.trans_le hσρ
+  -- The room `R > ρ`, the data of `h`, `q_ξ = |D^⊥r|²` and `G = (x - ξ)·(∇^M h + hH)` on
+  -- `B_R(ξ)`, and for every cutoff `φ` and `0 < τ ≤ ρ` the differentiated identity
+  -- `n ∫ h φ(r/τ) + ∫ h (1 - q_ξ) (r/τ) φ'(r/τ) + ∫ φ(r/τ) G = 0`; the first variation of the
+  -- radial test fields is `radial_first_variation`.
+  obtain ⟨R, A, hρR, hu, hq, hbd, hG, hode⟩ :=
+    Submission.weighted_mono_cutoff_first_variation n ℓ V U H h ξ ρ hfin hmeas hU hH hh hsupp hρ
+      fun γ hγ hX ↦ Submission.radial_first_variation n ℓ V U H h γ ξ hdim hU hH hh hγ hX
+  -- Integrate `(τ⁻ⁿ I)' = τ⁻ⁿ J' + τ⁻ⁿ⁻¹ L_φ` over `[σ, ρ]` for each admissible cutoff `φ`, then
+  -- let `φ` decrease to the indicator of `(-∞, 1]`.
+  exact Submission.weighted_mono_cutoff_limit n ℓ V.weight h (V.normalRadialSq ξ)
+    (fun x ↦ inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x)) ξ σ ρ R A hfin hσ hσρ hρR
+    hu hq hbd hG fun ε φ hε hεR hφ _ h1 h0 ↦
+      Submission.weighted_mono_smoothed_identity n ℓ V.weight h (V.normalRadialSq ξ)
+        (fun x ↦ inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x)) φ ξ ε σ ρ R A hfin hσ
+        hσρ hε hεR hu hq hbd hG hφ h0 fun τ hτ ↦
+          hode ε φ hε hεR hφ h1 h0 τ (hσ.trans_le hτ.1) hτ.2
+
 end
 
 end GMT.Ch04
