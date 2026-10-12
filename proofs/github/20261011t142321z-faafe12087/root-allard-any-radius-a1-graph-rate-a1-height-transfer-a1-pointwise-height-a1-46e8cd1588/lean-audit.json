@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d8dd8a384b703ac7a6b70d0597bad80cb60d857c99e4985f2c1ef5dfe86987cf",
+  "git_delta": {
+    "base_commit": "a35d0b572a274fdbb2ef86c8d271d7d050688e2e",
+    "candidate_commit": "9f835ea3d479290d4f5e591a8643c70503aa779c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_ht_pointwise_height",
+    "diff_sha256": "7646c150150395205f309cbf788abdff6e4f2f57b6965724eb6c89e11ec75834",
+    "source_sha256": "898066b3f85f88c8e1552e6cc99a96ed6a3ef970cb6f43db107cf61bcc5c7fec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_ht_pointwise_height",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (P : Amb n ℓ →L[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (b : Rn ℓ), ‖A‖ ≤ 1 / 7 → ‖b‖ ≤ ‖x‖ / 7 → P (q (graphPoint x (A x))) = q (graphPoint x (A x)) → (∀ w : Rn ℓ, ‖w‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2) * ‖q (graphPoint (0 : Rn n) w) - P (q (graphPoint (0 : Rn n) w))‖) → ‖b - A x‖ ^ 2 / ‖x‖ ^ (n + 2) ≤ 2 ^ (n + 4) * (‖q (graphPoint x b) - P (q (graphPoint x b))‖ ^ 2 / ‖q (graphPoint x b)‖ ^ (n + 2))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
