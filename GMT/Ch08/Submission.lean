@@ -525,6 +525,22 @@ theorem Submission.intcpt_vdb_liminf_bound_ae_of_cover :
     rwa [mul_zero, zero_mul] at h'
   exact nonpos_iff_eq_zero.1 (ge_of_tendsto' hlim key)
 
+/-- **Simon Ch. 8, proof of 5.9, printed estimate (1)** (child `liminf_ratio_bound_ae` of
+`variation_density_bound`): if `sup_i ν_i(thickening(r, W)) < ∞`, then for `μ`-a.e. `x ∈ W` some
+`c ∈ ℕ` satisfies `liminf_i ν_i(B_ρ(x)) ≤ c μ(B_ρ(x))` for every `ρ ∈ (0, r)`.  The Besicovitch
+covering estimate (Ch. 1, 3.12), with its constant `C = C(N)` and `ρ₀ = r`, is exactly the covering
+hypothesis of the a.e. argument for each `ν_i`. -/
+theorem Submission.intcpt_vdb_liminf_ratio_bound_ae :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N))
+      (r : ℝ), ⨆ i, ν i (thickening r W) ≠ ∞ → ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ →
+        ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) := by
+  intro N μ ν W r hS
+  -- Steps 1–2: the Besicovitch number `C` of `ℝ^N` and the covering estimate it gives.
+  obtain ⟨C, hC⟩ := Submission.intcpt_vdb_besicovitch_cover_estimate N
+  -- Steps 3–6: applied to `ν i` with `ρ₀ = r`, it makes the exceptional set `μ`-null.
+  exact Submission.intcpt_vdb_liminf_bound_ae_of_cover N C μ ν W r
+    (fun A i t h ↦ hC μ (ν i) A r t h) hS
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
