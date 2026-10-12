@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Monotonicity inequality with L^p mean curvature for contract varifolds (Simon Ch. 4, 4.1-4.8)",
+  "statement": "Let n >= 1, l >= 0, p > n, U open in R^{n+l}, and V a contract rectifiable n-varifold in U with generalized mean curvature H in U; mu := V.weight, kappa := (p-n)/(4p), alpha := 1 - n/p. Let y in R^{n+l}, 0 < R < S and Lambda > 0 with B_S(y) contained in U, integral_{B_S(y)} |H|^p dmu < infinity (lower integral) and (R^{p-n} integral_{B_R(y)} |H|^p dmu)^{1/p} <= kappa Lambda (V.scaledLpNorm H p y R <= ofReal(kappa Lambda)). Then there is F : R -> R such that (i) for 0 < r <= R: e^{-Lambda} <= F(r) <= e^Lambda, |F(r) - 1| <= (1/2) e^{Lambda/2} Lambda (r/R)^alpha, and |F(r) - 1| <= Lambda (r/R)^alpha if Lambda <= 1; (ii) Phi(t) := F(t) t^{-n} mu(B_t(y)) + F(t) - 1 is nondecreasing on (0, R]: Phi(s) <= Phi(r) whenever 0 < s <= r <= R (closed balls B_t(y); mu(B_t(y)) < infinity is used as a real number).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R S Λ : ℝ), 0 < R → R < S → 0 < Λ → closedBall y S ⊆ U → ∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂V.weight < ⊤ → V.scaledLpNorm H p y R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ F : ℝ → ℝ, (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - (n : ℝ) / p) ∧ (Λ ≤ 1 → |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p))) ∧ ∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R → F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1) ≤ F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1)",
+  "lean_name": "ted_lp_monotonicity",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.tangent_plane_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-a1"
+}

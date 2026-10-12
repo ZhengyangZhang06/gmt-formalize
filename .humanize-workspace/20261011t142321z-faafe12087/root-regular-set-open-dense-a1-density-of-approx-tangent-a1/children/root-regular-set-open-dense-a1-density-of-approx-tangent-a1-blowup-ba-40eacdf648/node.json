@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_ball_mass_bounds-a1",
+  "parent_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+  "depth": 3,
+  "title": "Blow-up test integrals versus normalized ball mass",
+  "statement": "Let n, ℓ ∈ ℕ and U ⊆ ℝ^{n+ℓ}. Let V = v(M, θ) be a RectifiableVarifold n ℓ U, x ∈ ℝ^{n+ℓ}, r > 0 and R ≥ 1 with closed ball B_{rR}(x) ⊆ U. Let φ : ℝ^{n+ℓ} → ℝ be Borel measurable with 0 ≤ φ ≤ 1 everywhere and φ = 0 off the closed ball B_R(0). Put η := η_{x,r} (Chapter03.blowUpMap x r), Hⁿ := μHE[n], I := ∫_{η(M)} φ(y)·θ(x + r y) dHⁿ(y) and J := r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ. Then (a) 0 ≤ I; (b) if φ = 1 on B_1(0) then J ≤ I; (c) if φ = 0 off B_1(0) then I ≤ J.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r R : ℝ) (φ : Amb n ℓ → ℝ), 0 < r → 1 ≤ R → closedBall x (r * R) ⊆ U → Measurable φ → (∀ y, 0 ≤ φ y ∧ φ y ≤ 1) → (∀ y, y ∉ closedBall (0 : Amb n ℓ) R → φ y = 0) → 0 ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier, φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ∧ ((∀ y ∈ closedBall (0 : Amb n ℓ) 1, φ y = 1) → (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)) ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier, φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) ∧ ((∀ y, y ∉ closedBall (0 : Amb n ℓ) 1 → φ y = 0) → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier, φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ≤ (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)))",
+  "lean_name": "rsod_blowUp_integral_ballMass_bounds",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ba-40eacdf648-a1"
+}

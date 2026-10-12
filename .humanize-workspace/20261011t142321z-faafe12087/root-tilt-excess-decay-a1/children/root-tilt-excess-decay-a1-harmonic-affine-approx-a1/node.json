@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.harmonic_affine_approx-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Affine approximation of almost-harmonic Lipschitz maps (Simon 4.5, steps (17)-(19))",
+  "statement": "Assume HarmonicApproximationLemma (Simon 3.1). For n >= 1 and l there is C > 0 such that for every eps in (0,1) there is delta_eps > 0 with the property: whenever r > 0, E > 0, h >= 0, L >= 0 and f : R^n -> R^l is L-Lipschitz on the closed ball B_r(0), |f| <= h on the open ball B°_r(0), int_{B°_r(0)} |Df|^2 <= E r^n (Hilbert-Schmidt norm of fderiv) and |int_{B°_r(0)} grad f^j . grad zeta| <= delta_eps sqrt(E) M r^n for every j, every C^infinity compactly supported zeta with tsupport in B°_r(0) and every M >= sup |grad zeta|, there are a in R^l and a linear A : R^n -> R^l with hsNorm A <= C sqrt(E), |a| <= C (h + r sqrt(eps E)) and int_{B°_{e r}(0)} |f(x) - (a + A x)|^2 dx <= C (eps + e^{n+4}) E r^{n+2} for every e in (0, 1/4].",
+  "lean_statement": "HarmonicApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ε < 1 → ∃ δε : ℝ, 0 < δε ∧ ∀ (r E h : ℝ) (f : Rn n → Rn ℓ) (L : ℝ≥0), 0 < r → 0 < E → 0 ≤ h → LipschitzOnWith L f (closedBall 0 r) → (∀ x ∈ ball (0 : Rn n) r, ‖f x‖ ≤ h) → ∫ x in ball (0 : Rn n) r, hsNormSq (fderiv ℝ f x) ≤ E * r ^ n → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 r → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in ball (0 : Rn n) r, inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)| ≤ δε * Real.sqrt E * M * r ^ n) → ∃ (a : Rn ℓ) (A : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ C * Real.sqrt E ∧ ‖a‖ ≤ C * (h + r * Real.sqrt (ε * E)) ∧ ∀ e : ℝ, 0 < e → e ≤ 1 / 4 → ∫ x in ball (0 : Rn n) (e * r), ‖f x - (a + A x)‖ ^ 2 ≤ C * (ε + e ^ (n + 4)) * E * r ^ (n + 2)",
+  "lean_name": "ted_harmonic_affine_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-harmonic-affine-approx-a1-a1"
+}

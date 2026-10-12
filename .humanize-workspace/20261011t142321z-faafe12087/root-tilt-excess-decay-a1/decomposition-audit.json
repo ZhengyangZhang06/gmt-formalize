@@ -1,0 +1,104 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ted_translate_varifold|ted_tangent_plane_facts|ted_lp_monotonicity|ted_density_ge_one|ted_allard_density_bounds|ted_harmonic_affine_approx|ted_graph_weak_equation|ted_lemma_a_tilt_height|ted_decay_at_origin",
+        "simon_theorem_3_6|def dimensionalUpperDensity|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_toOuterMeasure|injective_area_formula_lipschitz_simon|area_formula_lipschitzOn_multiplicity",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        ". /tmp/ted-independent-audit/env.sh\nlean /tmp/ted-independent-audit/Types.lean",
+        ". /tmp/ted-independent-audit/env.sh\nlean /tmp/ted-independent-audit/Assembly.lean",
+        ". /tmp/ted-independent-audit/env.sh\nlean /tmp/ted-independent-audit/Wiring.lean",
+        ". /tmp/ted-independent-audit/env.sh\nlean /tmp/ted-independent-audit/WiringUD.lean",
+        ". /tmp/ted-independent-audit/env.sh\nlean /tmp/ted-independent-audit/Axioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/tmp/ted-independent-audit/Types.lean",
+        "/tmp/ted-independent-audit/Assembly.lean",
+        "/tmp/ted-independent-audit/Wiring.lean",
+        "/tmp/ted-independent-audit/WiringUD.lean",
+        "/tmp/ted-independent-audit/Axioms.lean"
+      ],
+      "conclusion": "Verified the selected contract tilt_excess_decay_theorem : TiltExcessDecayTheorem against the immutable handoff and pinned Contract.lean. The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the installed Mathlib and SimonGMT revisions match the project pins. No proposed ted_ declaration occurs in the searched snapshot or another branch's checked declaration reservations. All nine names are bare identifiers, and all nine one-line propositions independently elaborate without implementing any child. No matrix-unit construction occurs. The dependency graph, including external sibling dependencies, is acyclic and every child contributes to this selected parent. Independently reran the assembly with literal frozen child types as hypotheses: it establishes TiltExcessDecayTheorem. Assembly, interface checks, and checked reference declarations report only propext, Classical.choice and Quot.sound. The upper-density interface respects the Hausdorff normalization. The C¹-cover theorem used in tangent_plane_facts is explicitly a mathematical citation, not an existing declaration in SubmanifoldCover.lean; its statement was checked against [Simon, Chapter 3, Lemma 1.2](https://web.stanford.edu/class/math285/ts-gmt). The split is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translate_varifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type include the carrier equality and all seven further invariances. The construction verifies the structure fields; equality of weighted tangent predicates justifies pointwise equality of the chosen projections, including the fallback branch. Measure transport proves the remaining conclusions without circularity."
+    },
+    {
+      "key": "tangent_plane_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all five conclusions. The graph blow-up argument controls both complement terms and the multiplicity error; the cited C¹ cover then supplies existence and a measurable projection representative. Tangent uniqueness and cutoff squeezing establish the graph identification and density conclusion."
+    },
+    {
+      "key": "lp_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses include the surrounding ball and finite curvature integral needed for cutoff differentiation and dominated convergence. The radial inequality has the correct sign; the integrating factor is monotone, and kappa/alpha = 1/4 gives sufficient bounds. The cutoff limit proves the stated closed-ball inequality, including r = R."
+    },
+    {
+      "key": "density_ge_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the absence of a positivity assumption on delta. The chosen positive Lambda handles that case. Local monotonicity yields a finite density and upper semicontinuity; density equals multiplicity almost everywhere, so the open null set where density is below one misses the support."
+    },
+    {
+      "key": "allard_density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conclusions match the type. The explicit constants satisfy the required bounds, and R = (1-4 delta)rho < S = (1-3 delta)rho verifies the monotonicity interface. The mass estimates imply the multiplicity bound; the finite Borel carrier subset and upper-density theorem establish the carrier-null conclusion."
+    },
+    {
+      "key": "harmonic_affine_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conditional statement exactly matches the frozen proposition. Component rescaling verifies the Sobolev, energy and weak-equation hypotheses of harmonic approximation. Interior harmonic estimates give the stated affine coefficients and error with the correct powers of r and e, uniformly in the Lipschitz constant."
+    },
+    {
+      "key": "graph_weak_equation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The required measurability, graph-tangent, multiplicity, carrier and error hypotheses are explicit in both forms. Localization makes the first-variation test admissible. Projection identities, bad-set control and the dimension-dependent Jacobian bound justify both parameter-domain estimates with the supplied constants."
+    },
+    {
+      "key": "lemma_a_tilt_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree. Compact-set integrability justifies the first-variation identity and absorption. The rank-n projection identity and Young inequality give precisely the constants 144 and 4; the support hypothesis supplies the almost-everywhere height bound."
+    },
+    {
+      "key": "decay_at_origin",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is a genuine natural-scale tilt estimate, not a circular invocation of the selected parent. Every child and external sibling application has its hypotheses supplied. The two curvature regimes, including the one-dimensional sup-height argument, yield the stated uniform C t² estimate. Recentring, comparison of star-excess parameters and curvature scaling then establish the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
