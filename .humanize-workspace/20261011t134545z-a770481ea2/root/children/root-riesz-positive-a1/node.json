@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.riesz_positive-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Riesz representation for non-negative functionals (Simon 4.12, with 4.1–4.5, 4.8)",
+  "statement": "For every locally compact Hausdorff space X and every additive, positively homogeneous Λ : C_c(X, [0, ∞)) → [0, ∞) (an ℝ≥0-linear map C_c(X, ℝ≥0) → ℝ≥0), there is a Radon outer measure μ on X (Borel regular, finite on compacts, outer regular, inner regular by compacts on open sets) with Λ(f) = ∫_X f dμ for all f.",
+  "lean_statement": "RieszPositive",
+  "lean_name": "riesz_positive",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-riesz-positive-a1-a1"
+}

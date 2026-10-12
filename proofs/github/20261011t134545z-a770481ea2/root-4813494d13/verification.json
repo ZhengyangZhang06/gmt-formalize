@@ -1,0 +1,28 @@
+{
+  "node_id": "root",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "7c20d5520b0534d1e9c8a32be04a5b829082ce20",
+  "integrated_commit": "7c20d5520b0534d1e9c8a32be04a5b829082ce20",
+  "proof_base_commit": "ec1c322fab7585cea8deb6a95d4dae2d97d09d8e",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ec1c322fab7585cea8deb6a95d4dae2d97d09d8e {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": null,
+  "requires": [
+    "root.caratheodory_criterion-a1",
+    "root.borel_regular_approximation-a1",
+    "root.lusin_theorem-a1",
+    "root.lebesgue_eq_hausdorff_and_isodiametric-a1",
+    "root.upper_density_comparison_and_theorem-a1",
+    "root.besicovitch_covering-a1",
+    "root.general_density_and_differentiation-a1",
+    "root.radon_nikodym_theorem-a1",
+    "root.hausdorff_density_bounds-a1",
+    "root.riesz_positive-a1",
+    "root.riesz_vector-a1",
+    "root.radon_compactness-a1"
+  ]
+}

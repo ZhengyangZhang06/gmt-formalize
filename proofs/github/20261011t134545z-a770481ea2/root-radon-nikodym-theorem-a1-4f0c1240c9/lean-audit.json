@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d941e66b63dde4b459bf8a74df6eab5c133337219322ccab4e257f88941d1cdd",
+  "git_delta": {
+    "base_commit": "9f06c1fc5fce1685cc1cabc752c3d05af84bc7e0",
+    "candidate_commit": "ca1e2195c9cb0e217bd091f1847577b8e01624d9",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "radon_nikodym_theorem",
+    "diff_sha256": "9e99c0edbe9af78a26920029c512a685c8ef0a064899971ca77d3c9e94ba59a7",
+    "source_sha256": "74fca658bbbc8dc797231070d36a9d0b331f830d050c2045504810caefac3618",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.radon_nikodym_theorem",
+      "statement": "RadonNikodymTheorem",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

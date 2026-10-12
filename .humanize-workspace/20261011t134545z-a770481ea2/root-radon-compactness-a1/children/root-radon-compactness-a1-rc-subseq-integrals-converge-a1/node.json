@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.rc_subseq_integrals_converge-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "One subsequence along which all test-function integrals converge",
+  "statement": "Let X be a locally compact Hausdorff, second countable topological space (universe u). Let (μ_k)_{k∈ℕ} be Radon outer measures on X (Simon Def. 4.6) with sup_k μ_k(K) < ∞ for every compact K ⊆ X, and write μ̄_k := caratheodoryMeasure μ_k. Then there is a strictly increasing φ : ℕ → ℕ such that for every f ∈ C_c(X, ℝ) the real sequence (∫_X f dμ̄_{φ(k)})_{k∈ℕ} converges to some l ∈ ℝ.",
+  "lean_statement": "∀ (X : Type u) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] (μ : ℕ → OuterMeasure X), (∀ k, IsRadonOuterMeasure (μ k)) → (∀ K : Set X, IsCompact K → ⨆ k, μ k K < ∞) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : C_c(X, ℝ), ∃ l : ℝ, Tendsto (fun k => ∫ x, f x ∂caratheodoryMeasure (μ (φ k))) atTop (𝓝 l)",
+  "lean_name": "rc_subseq_integrals_converge",
+  "depends_on": [
+    "root.radon_compactness-a1.rc_cc_integrable-a1",
+    "root.radon_compactness-a1.rc_cc_integral_abs_le-a1",
+    "root.radon_compactness-a1.rc_diagonal_subseq-a1",
+    "root.radon_compactness-a1.rc_cc_countable_dense-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.radon_compactness-a1.rc_cc_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.radon_compactness-a1.rc_cc_integral_abs_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.radon_compactness-a1.rc_diagonal_subseq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.radon_compactness-a1.rc_cc_countable_dense-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-compactness-a1-rc-subseq-integrals-converge-a1-a1"
+}

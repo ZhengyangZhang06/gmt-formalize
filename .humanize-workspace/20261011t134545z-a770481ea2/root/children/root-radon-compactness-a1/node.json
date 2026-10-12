@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Compactness theorem for Radon measures, corrected (Simon 4.16 with erratum)",
+  "statement": "For every second countable locally compact Hausdorff space X and every sequence of Radon outer measures μ_k on X with sup_k μ_k(K) < ∞ for each compact K, there are a strictly increasing φ : ℕ → ℕ and a Radon outer measure μ on X with ∫ f dμ_{φ(k)} → ∫ f dμ for every continuous compactly supported f : X → ℝ.",
+  "lean_statement": "RadonCompactness",
+  "lean_name": "radon_compactness",
+  "depends_on": [
+    "root.riesz_positive-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.riesz_positive-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-compactness-a1-a1"
+}

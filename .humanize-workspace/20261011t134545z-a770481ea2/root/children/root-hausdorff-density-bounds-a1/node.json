@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.hausdorff_density_bounds-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Density bounds for Hausdorff measure (Simon 3.26, with 2.4–2.6)",
+  "statement": "For every metric space X, real n ≥ 0 and Hⁿ-measurable A ⊆ X: (1) if Hⁿ(A) < ∞ then Θ^{*n}(Hⁿ, A, x) ≤ 1 for Hⁿ-a.e. x ∈ A; (2) if Hⁿ_δ(A) < ∞ for every real δ > 0 then Θ^{*n}(Hⁿ_∞, A, x) ≥ 2^{−n} for Hⁿ-a.e. x ∈ A.",
+  "lean_statement": "HausdorffDensityBounds",
+  "lean_name": "hausdorff_density_bounds",
+  "depends_on": [
+    "root.caratheodory_criterion-a1",
+    "root.borel_regular_approximation-a1",
+    "root.upper_density_comparison_and_theorem-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.caratheodory_criterion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.borel_regular_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.upper_density_comparison_and_theorem-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-hausdorff-density-bounds-a1-a1"
+}

@@ -1,0 +1,28 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "59f74c20a039b706fe14aee514a393941614d0374f1c67d7538a885f3426a214",
+  "git_delta": {
+    "base_commit": "f2fa55f7f55db7482bf68efa46c01668a5e52ec8",
+    "candidate_commit": "7c20d5520b0534d1e9c8a32be04a5b829082ce20",
+    "target": "GMT/Ch01/Submission.lean",
+    "changed_files": [
+      "GMT/Ch01/Submission.lean",
+      "proofs/github/20261011t134545z-a770481ea2/root-final-proof.md"
+    ],
+    "diff_sha256": "7d0760363689a6e2a34ff90586547f0b78e0ae43f4057f40c0b38086934ecb65",
+    "source_sha256": "518ee03c00e7332a9fc79d2d640a80bb59c528ff903e137a76e81e2ae3db48bf",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "GMT.Ch01.main_theorem",
+      "statement": "CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": true,
+  "publication_proof_blob": "b2b0425276de85eccf44923acf097d51129eda1f"
+}

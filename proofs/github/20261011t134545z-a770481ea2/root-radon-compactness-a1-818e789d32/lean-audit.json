@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "93da3a8e7c16dfb40395b7bf78ee5bee6a869ef4e7136cea392bc928752373fb",
+  "git_delta": {
+    "base_commit": "3156ec31541621501015640ffb931a0db3183314",
+    "candidate_commit": "c044daff7109fd6435a8ba8eea6ecc86cb206287",
+    "target": "GMT/Ch01/Submission.lean",
+    "changed_files": [
+      "GMT/Ch01/Submission.lean"
+    ],
+    "diff_sha256": "48408a5c37e8325c41ec28e8249b104200b463f1dc45db1f2e30dd979cce263c",
+    "source_sha256": "8b37ceb96b1abed135ab8eef63d33a4a06988199754a480530795a18d1c41f42",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.radon_compactness",
+      "statement": "RadonCompactness",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

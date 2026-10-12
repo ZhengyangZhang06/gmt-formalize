@@ -1,0 +1,15 @@
+{
+  "node_id": "root.radon_compactness-a1.rc_cc_integral_abs_le-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/81",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/211",
+  "candidate_commit": "5c3fda1e6d8aa687baae36e12d3bd7a092a4200c",
+  "integrated_commit": "",
+  "proof_base_commit": "c05f4d56d1d56eae2ddcd29b725580d4cd2ea204",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ec1c322fab7585cea8deb6a95d4dae2d97d09d8e {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.radon_compactness-a1",
+  "requires": []
+}

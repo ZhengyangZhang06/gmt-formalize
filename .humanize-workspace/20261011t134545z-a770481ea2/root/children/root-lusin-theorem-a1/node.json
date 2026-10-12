@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lusin_theorem-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lusin's theorem (Simon 1.17)",
+  "statement": "For every topological space X in which every closed set is a countable intersection of open sets, every Borel regular outer measure μ on X, every μ-measurable A ⊆ X with μ(A) < ∞, every f : A → ℝ measurable for the trace on A of the σ-algebra of μ-measurable sets, and every real ε > 0, there is a closed C ⊆ X with C ⊆ A, μ(A ∖ C) < ε, and f restricted to C continuous.",
+  "lean_statement": "LusinTheorem",
+  "lean_name": "lusin_theorem",
+  "depends_on": [
+    "root.borel_regular_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.borel_regular_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-lusin-theorem-a1-a1"
+}
