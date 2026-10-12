@@ -731,6 +731,95 @@ theorem Submission.deGiorgiDens_lipschitz_smooth_approx : ∀ (N : ℕ) (u : Rn 
       exact hφ_le j _ x₀
   exact ⟨v, hv_cd, hv_cs, hv_tsupp, hbound, hunif, hae⟩
 
+/-- **Gauss–Green identity for a Lipschitz test function times a constant vector** (Simon Ch. 3,
+proof of 4.3, (3) and its use for Lipschitz cut-offs in (4)–(5), pp. 81–82, `chapter-03.txt`
+lines 622–643): for `ζ` Lipschitz with compact support in `U` and `w ∈ ℝᴺ`,
+`∫_{G ∩ U} Dζ(y) w dLᴺ(y) = -∫ ζ ⟨w, ν⟩ dμ`. Take `C¹` functions `v_j → ζ` uniformly with
+`|Dv_j| ≤ K`, `Dv_j → Dζ` `Lᴺ`-a.e. and `tsupport v_j` in the closed `1/(j+1)`-neighbourhood of
+`tsupport ζ` (`deGiorgiDens_lipschitz_smooth_approx`). The field `v_j w` has divergence
+`Dv_j(·) w`, so (4.1) gives the identity for `v_j` once `tsupport v_j ⊆ U`; dominated convergence
+(bounds `K |w| 1_{K₁}` for `Lᴺ` and `(sup |ζ| + 1) |w| 1_{K_δ}` for `μ`, `K_ρ` the closed
+`ρ`-neighbourhood of `tsupport ζ`, `K_δ ⊆ U`) passes to the limit on both sides. -/
+theorem Submission.deGiorgiDens_lipschitz_gaussGreen : ∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ : Rn N → ℝ) (K : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∀ w : Rn N, ∫ y in G ∩ U, fderiv ℝ ζ y w = -∫ y, ζ y * inner ℝ w (ν y) ∂μ := by
+  intro N U G μ ν hU _hG hpair ζ K hζ hζc hζU w
+  obtain ⟨-, hμK, hν, hν1, hGG⟩ := hpair
+  -- Step 1: a closed `δ`-neighbourhood of `tsupport ζ` inside `U`; it and the closed
+  -- `1`-neighbourhood of `tsupport ζ` are compact.
+  obtain ⟨δ, hδ, hδU⟩ := hζc.isCompact.exists_cthickening_subset_open hU hζU
+  have hK₁ : IsCompact (Metric.cthickening 1 (tsupport ζ)) := hζc.isCompact.cthickening
+  have hKδ : IsCompact (Metric.cthickening δ (tsupport ζ)) := hζc.isCompact.cthickening
+  -- Step 2: the `C¹` approximations; their supports lie in `K₁`, and in `K_δ` for large `j`.
+  obtain ⟨v, hvC1, hvc, hvsupp, hvD, hvunif, hvae⟩ :=
+    Submission.deGiorgiDens_lipschitz_smooth_approx N ζ K hζ hζc
+  have hv₁ : ∀ j : ℕ, tsupport (v j) ⊆ Metric.cthickening 1 (tsupport ζ) := fun j =>
+    (hvsupp j).trans (Metric.cthickening_mono
+      ((Nat.one_div_le_one_div (Nat.zero_le j)).trans (by norm_num)) _)
+  have hvδ : ∀ᶠ j : ℕ in atTop, tsupport (v j) ⊆ Metric.cthickening δ (tsupport ζ) := by
+    obtain ⟨j₀, hj₀⟩ := exists_nat_one_div_lt hδ
+    filter_upwards [eventually_ge_atTop j₀] with j hj
+    exact (hvsupp j).trans (Metric.cthickening_mono ((Nat.one_div_le_one_div hj).trans hj₀.le) _)
+  -- Step 3: (4.1) for the `C¹` fields `v_j w`, whose divergence is the trace `Dv_j(·) w` of the
+  -- rank-one map `h ↦ (Dv_j(·) h) w`.
+  have hGGj : ∀ᶠ j : ℕ in atTop,
+      -∫ y, v j y * inner ℝ w (ν y) ∂μ = ∫ y in G ∩ U, fderiv ℝ (v j) y w := by
+    filter_upwards [hvδ] with j hj
+    have h := hGG (fun y => v j y • w) ((hvC1 j).smul contDiff_const)
+      ((hvc j).smul_right (f' := fun _ => w))
+      ((tsupport_smul_subset_left _ _).trans (hj.trans hδU))
+    have hdiv : ∀ y, Poincare.SimonGMT.Chapter02.euclideanDivergence (fun y => v j y • w) y =
+        fderiv ℝ (v j) y w := by
+      intro y
+      rw [Poincare.SimonGMT.Chapter02.euclideanDivergence,
+        fderiv_smul_const ((hvC1 j).differentiable one_ne_zero y)]
+      exact LinearMap.trace_smulRight _ _
+    simp only [hdiv, real_inner_smul_left] at h
+    exact h.symm
+  -- Step 4: dominated convergence on the left, with bound `K |w| 1_{K₁}`.
+  have hL : Tendsto (fun j => ∫ y in G ∩ U, fderiv ℝ (v j) y w) atTop
+      (𝓝 (∫ y in G ∩ U, fderiv ℝ ζ y w)) := by
+    refine tendsto_integral_of_dominated_convergence
+      ((Metric.cthickening 1 (tsupport ζ)).indicator fun _ => (K : ℝ) * ‖w‖) (fun j => ?_) ?_
+      (fun j => ae_of_all _ fun y => ?_) ?_
+    · exact (((hvC1 j).continuous_fderiv one_ne_zero).clm_apply
+        continuous_const).aestronglyMeasurable
+    · refine (integrable_indicator_iff Metric.isClosed_cthickening.measurableSet).2
+        (integrableOn_const ?_)
+      exact ((Measure.restrict_apply_le _ _).trans_lt hK₁.measure_lt_top).ne
+    · by_cases hy : y ∈ Metric.cthickening 1 (tsupport ζ)
+      · rw [indicator_of_mem hy]
+        exact ((fderiv ℝ (v j) y).le_opNorm w).trans
+          (mul_le_mul_of_nonneg_right (hvD j y) (norm_nonneg w))
+      · rw [indicator_of_notMem hy, fderiv_of_notMem_tsupport ℝ (fun h => hy (hv₁ j h)),
+          zero_apply, norm_zero]
+    · filter_upwards [ae_restrict_of_ae hvae] with y hy
+      exact hy.eval_const w
+  -- Step 5: dominated convergence on the right, with bound `(sup |ζ| + 1) |w| 1_{K_δ}`.
+  obtain ⟨M, hM⟩ := hζ.continuous.bounded_above_of_compact_support hζc
+  have hR : Tendsto (fun j => ∫ y, v j y * inner ℝ w (ν y) ∂μ) atTop
+      (𝓝 (∫ y, ζ y * inner ℝ w (ν y) ∂μ)) := by
+    have hνw : AEStronglyMeasurable (fun y => inner ℝ w (ν y)) μ :=
+      (continuous_const.inner continuous_id).comp_aestronglyMeasurable hν
+    refine tendsto_integral_filter_of_dominated_convergence
+      ((Metric.cthickening δ (tsupport ζ)).indicator fun _ => (M + 1) * ‖w‖)
+      (Eventually.of_forall fun j => (hvC1 j).continuous.aestronglyMeasurable.mul hνw) ?_ ?_ ?_
+    · filter_upwards [hvδ, Metric.tendstoUniformly_iff.1 hvunif 1 one_pos] with j hj hj1
+      filter_upwards [hν1] with y hy
+      by_cases hyδ : y ∈ Metric.cthickening δ (tsupport ζ)
+      · rw [indicator_of_mem hyδ, norm_mul]
+        have h1 := hj1 y
+        rw [dist_eq_norm] at h1
+        have h2 : ‖v j y‖ ≤ M + 1 := by
+          linarith [norm_sub_norm_le (v j y) (ζ y), norm_sub_rev (ζ y) (v j y), hM y]
+        exact mul_le_mul h2 ((norm_inner_le_norm w (ν y)).trans (by rw [hy, mul_one]))
+          (norm_nonneg _) ((norm_nonneg _).trans h2)
+      · rw [indicator_of_notMem hyδ, image_eq_zero_of_notMem_tsupport (fun h => hyδ (hj h)),
+          zero_mul, norm_zero]
+    · exact (integrable_indicator_iff Metric.isClosed_cthickening.measurableSet).2
+        (integrableOn_const (hμK _ hKδ hδU).ne)
+    · exact ae_of_all _ fun y => (hvunif.tendsto_at y).mul_const _
+  -- Step 6: both sides of the identity for `v_j` converge, so the limits agree.
+  exact tendsto_nhds_unique hL (hR.neg.congr' hGGj)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
