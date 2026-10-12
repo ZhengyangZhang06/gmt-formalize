@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1.set_lintegral_congr_off_null-a1",
+  "parent_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1",
+  "depth": 3,
+  "title": "Set-lintegrals agree when sets and integrands agree on a null-measurable set off which both sets are null",
+  "statement": "Let N ∈ ℕ and let μ be a measure on ℝ^N = Euclidean N; μ need not be σ-finite. Let G ⊆ ℝ^N be μ-null-measurable, and let D, D' ⊆ ℝ^N be arbitrary sets with μ(D ∖ G) = 0 and μ(D' ∖ G) = 0. Suppose that for every x ∈ G, x ∈ D ⟺ x ∈ D'. Let f, g : ℝ^N → [0,∞] be arbitrary functions with f(x) = g(x) for every x ∈ G. Then ∫⁻_D f dμ = ∫⁻_{D'} g dμ.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (G D D' : Set (Euclidean N)) (f g : Euclidean N → ℝ≥0∞), NullMeasurableSet G μ → μ (D \\ G) = 0 → μ (D' \\ G) = 0 → (∀ x ∈ G, x ∈ D ↔ x ∈ D') → (∀ x ∈ G, f x = g x) → ∫⁻ x in D, f x ∂μ = ∫⁻ x in D', g x ∂μ",
+  "lean_name": "allard_tc_cri_setLIntegral_congr_off_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1-set-lintegr-764f4c8b36-a1"
+}

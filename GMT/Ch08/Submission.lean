@@ -745,6 +745,162 @@ theorem Submission.allard_tc_tpr_weighted_approx_tangent_iff :
       _ = T := Grassmannian.ofSubmodule_plane T
   · rintro rfl
     exact hTM
+/-- Change of variables for `H^n` under a dilation (used for the rescaling invariance of
+tangent cones, Simon Ch. 8, 5.3 and 5.7): for `s > 0`, an arbitrary set `D` and an arbitrary
+`f : ℝ^N → [0,∞]`, `∫_D f dH^n = s^n ∫_{s⁻¹ D} f(s w) dH^n(w)`. -/
+theorem Submission.allard_tc_cri_hausdorff_dilation_lintegral :
+    ∀ (N n : ℕ) (s : ℝ) (D : Set (Euclidean N)) (f : Euclidean N → ℝ≥0∞), 0 < s → ∫⁻ x in D, f x ∂(μHE[n] : Measure (Euclidean N)) = ENNReal.ofReal s ^ n * ∫⁻ w in {w : Euclidean N | s • w ∈ D}, f (s • w) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro N n s D f hs
+  -- Step 1: the dilation `σ w = s • w` is a measurable equivalence of `ℝ^N`.
+  let σ : Euclidean N ≃ᵐ Euclidean N := MeasurableEquiv.smul₀ s hs.ne'
+  -- Step 2: `H^n.map σ = ofReal (s⁻¹) ^ n • H^n`, since `σ⁻¹ E = s⁻¹ • E`.
+  have hmap : (μHE[n] : Measure (Euclidean N)).map σ =
+      ENNReal.ofReal s⁻¹ ^ n • (μHE[n] : Measure (Euclidean N)) := by
+    ext E hE
+    rw [Measure.map_apply σ.measurable hE, Measure.smul_apply, smul_eq_mul,
+      show (σ : Euclidean N → Euclidean N) ⁻¹' E = s⁻¹ • E from Set.preimage_smul₀ hs.ne' E,
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hs.ne'), ENNReal.smul_def,
+      smul_eq_mul, ENNReal.coe_pow, ← enorm_eq_nnnorm, Real.enorm_eq_ofReal (inv_nonneg.2 hs.le)]
+  -- Step 3: hence `H^n = ofReal s ^ n • H^n.map σ`.
+  have hH : (μHE[n] : Measure (Euclidean N)) =
+      ENNReal.ofReal s ^ n • (μHE[n] : Measure (Euclidean N)).map σ := by
+    rw [hmap, smul_smul, ← mul_pow, ← ENNReal.ofReal_mul hs.le, mul_inv_cancel₀ hs.ne',
+      ENNReal.ofReal_one, one_pow, one_smul]
+  -- Steps 4–6: pull out the constant, commute restriction with `σ`, change variables.
+  conv_lhs => rw [hH]
+  rw [Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul, MeasurableEquiv.restrict_map,
+    lintegral_map_equiv]
+  -- Step 7: `σ⁻¹ D = {w | s • w ∈ D}` and `σ w = s • w` definitionally.
+  rfl
+
+/-- **Dilation of a varifold given by a fibrewise `H^n`-representation** (child
+`rescaled_representation` of `cone_rescaling_invariance`; Simon Ch. 8, 5.3 and 5.7).  If
+`C(A) = ∫_{x ∈ M, ∃ T, P x T ∧ (x, T) ∈ A} g dH^n` for Borel `A`, then for `s > 0`
+`η_{0,s #} C (A) = ∫_{s w ∈ M, ∃ T, P (s w) T ∧ (w, T) ∈ A} g (s w) dH^n(w)`: pull `A` back by
+`Φ(z, S) = (s⁻¹ (z - 0), S)`, apply the representation, change variables `x = s w` with child
+`hausdorff_dilation_lintegral`, and cancel `s^{-n} s^n = 1`. -/
+theorem Submission.allard_tc_cri_rescaled_representation :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (P : Euclidean N → Grassmannian N n → Prop) (g : Euclidean N → ℝ≥0∞), (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, P x T ∧ (x, T) ∈ A}, g x ∂(μHE[n] : Measure (Euclidean N))) → ∀ s : ℝ, 0 < s → ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → rescaledMeasure C 0 s A = ∫⁻ w in {w : Euclidean N | s • w ∈ M ∧ ∃ T : Grassmannian N n, P (s • w) T ∧ (w, T) ∈ A}, g (s • w) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro N n C M P g hrep s hs A hA
+  -- Step 1: `Φ(z, S) = (s⁻¹ • (z - 0), S)` is measurable, so `A' = Φ⁻¹ A` is measurable.
+  have hΦ : Measurable fun z : Euclidean N × Grassmannian N n ↦ (s⁻¹ • (z.1 - 0), z.2) := by
+    fun_prop
+  -- Step 6: `ofReal (s⁻¹ ^ n) * ofReal s ^ n = 1`.
+  have hconst : ENNReal.ofReal (s⁻¹ ^ n) * ENNReal.ofReal s ^ n = 1 := by
+    rw [ENNReal.ofReal_pow (inv_nonneg.2 hs.le), ← mul_pow,
+      ← ENNReal.ofReal_mul (inv_nonneg.2 hs.le), inv_mul_cancel₀ hs.ne', ENNReal.ofReal_one,
+      one_pow]
+  -- Step 2: `rescaledMeasure C 0 s A = ofReal (s⁻¹ ^ n) * C(A')`.
+  rw [rescaledMeasure, Measure.smul_apply, smul_eq_mul, Measure.map_apply hΦ hA]
+  -- Steps 3–4: the representation at `A'`, then child `hausdorff_dilation_lintegral` at
+  -- `D₁ = {x ∈ M | ∃ T, P x T ∧ (x, T) ∈ A'}`; Step 7: the constants cancel.
+  rw [hrep _ (hΦ hA), Submission.allard_tc_cri_hausdorff_dilation_lintegral N n s _ g hs,
+    ← mul_assoc, hconst, one_mul]
+  -- Step 5: `{w | s • w ∈ D₁}` is the claimed set, as `s⁻¹ • (s • w - 0) = w`.
+  congr 2
+  ext w
+  simp only [mem_ofPred_eq, mem_preimage, sub_zero, inv_smul_smul₀ hs.ne']
+/-- The carrier of a dilation-homogeneous measure `θ H^n ⌞ M` is dilation-invariant up to
+`H^n`-null sets (used for the rescaling invariance of tangent cones, Simon Ch. 8, 5.3 and 5.7):
+if `M` is `H^n`-measurable, `θ > 0` on `M` is locally `H^n`-integrable,
+`μ(B) = ∫_{M ∩ B} θ dH^n` for Borel `B` and `μ(s A) = s^n μ(A)` for `s > 0`, then for every
+`s > 0` the sets `{w ∈ M : s w ∉ M}` and `{w ∉ M : s w ∈ M}` are `H^n`-null. -/
+theorem Submission.allard_tc_cri_carrier_dilation_null :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Euclidean N))) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N))) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → μ (s • A) = ENNReal.ofReal s ^ n * μ A) → ∀ s : ℝ, 0 < s → (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | w ∈ M ∧ s • w ∉ M} = 0 ∧ (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | s • w ∈ M ∧ w ∉ M} = 0 := by
+  intro N n μ M θ hM hθ hint hμ hhom s hs
+  -- Step 1: a measurable kernel `M₀ ⊆ M` with `H^n (M \ M₀) = 0`.
+  obtain ⟨M₀, hM₀M, hM₀, hM₀ae⟩ := hM.exists_measurable_subset_ae_eq
+  have hdiff : (μHE[n] : Measure (Euclidean N)) (M \ M₀) = 0 := (ae_eq_set.1 hM₀ae).2
+  -- Step 2: `μ (M₀ᶜ) = ∫⁻_{M \ M₀} ofReal θ dH^n = 0`.
+  have hμc : μ M₀ᶜ = 0 := by
+    rw [hμ _ hM₀.compl, ← Set.sdiff_eq]
+    exact setLIntegral_measure_zero _ _ hdiff
+  -- Step 3: a measurable `μ`-null subset `E` of `M₀` is `H^n`-null.
+  have hnull : ∀ E : Set (Euclidean N), MeasurableSet E → E ⊆ M₀ → μ E = 0 →
+      (μHE[n] : Measure (Euclidean N)) E = 0 := by
+    intro E hE hEM₀ hμE
+    have hEM : E ⊆ M := hEM₀.trans hM₀M
+    have hk : ∀ k : ℕ, (μHE[n] : Measure (Euclidean N)) (E ∩ closedBall 0 k) = 0 := by
+      intro k
+      have hEk : MeasurableSet (E ∩ closedBall (0 : Euclidean N) k) :=
+        hE.inter measurableSet_closedBall
+      -- (a) `∫⁻_{E ∩ B_k} ofReal θ dH^n = μ (E ∩ B_k) = 0`, as `E ∩ B_k ⊆ M`.
+      have h0 : ∫⁻ x in E ∩ closedBall (0 : Euclidean N) k, ENNReal.ofReal (θ x)
+          ∂(μHE[n] : Measure (Euclidean N)) = 0 := by
+        rw [← Set.inter_eq_right.2 (inter_subset_left.trans hEM), ← hμ _ hEk]
+        exact measure_mono_null inter_subset_left hμE
+      -- (b) `ofReal ∘ θ` is a.e.-measurable on `E ∩ B_k ⊆ M ∩ B_k` (local integrability).
+      have hθk : AEMeasurable (fun x ↦ ENNReal.ofReal (θ x))
+          ((μHE[n] : Measure (Euclidean N)).restrict (E ∩ closedBall 0 k)) :=
+        ((hint _ (isCompact_closedBall (0 : Euclidean N) k)).mono_set
+          (inter_subset_inter_left _ hEM)).aemeasurable.ennreal_ofReal
+      -- (c) `ofReal θ = 0` a.e. on `E ∩ B_k ⊆ M`, where `θ > 0`; so `H^n (E ∩ B_k) = 0`.
+      rw [lintegral_eq_zero_iff' hθk] at h0
+      have hfalse : ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict (E ∩ closedBall 0 k),
+          False := by
+        filter_upwards [h0, ae_restrict_mem hEk] with x hx hxE
+        exact absurd (ENNReal.ofReal_eq_zero.1 hx) (not_le.2 (hθ x (hEM hxE.1)))
+      rwa [eventually_false_iff_eq_bot, ae_eq_bot, Measure.restrict_eq_zero] at hfalse
+    -- (d) `E ⊆ ⋃ k, E ∩ B_k`.
+    refine measure_mono_null (fun x hx ↦ ?_) (measure_iUnion_null hk)
+    obtain ⟨k, hxk⟩ := exists_nat_ge ‖x‖
+    exact mem_iUnion.2 ⟨k, hx, mem_closedBall_zero_iff.2 hxk⟩
+  -- Step 4: for `t > 0`, `{w ∈ M : t • w ∉ M} ⊆ (M \ M₀) ∪ (M₀ ∩ t⁻¹ • M₀ᶜ)` is `H^n`-null.
+  have hkey : ∀ t : ℝ, 0 < t →
+      (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | w ∈ M ∧ t • w ∉ M} = 0 := by
+    intro t ht
+    have hEm : MeasurableSet (M₀ ∩ (fun w : Euclidean N ↦ t • w) ⁻¹' M₀ᶜ) :=
+      hM₀.inter (hM₀.compl.preimage (measurable_const_smul t))
+    have hμE : μ (M₀ ∩ (fun w : Euclidean N ↦ t • w) ⁻¹' M₀ᶜ) = 0 := by
+      refine measure_mono_null inter_subset_right ?_
+      rw [Set.preimage_smul₀ ht.ne', hhom _ _ (inv_pos.2 ht), hμc, mul_zero]
+    refine measure_mono_null ?_ (measure_union_null hdiff (hnull _ hEm inter_subset_left hμE))
+    rintro w ⟨hwM, hwt⟩
+    by_cases hw : w ∈ M₀
+    · exact Or.inr ⟨hw, fun h ↦ hwt (hM₀M h)⟩
+    · exact Or.inl ⟨hwM, hw⟩
+  -- Step 5: the first conjunct is step 4 with `t = s`.
+  refine ⟨hkey s hs, ?_⟩
+  -- Step 6: `{w : s • w ∈ M ∧ w ∉ M} = s⁻¹ • {y ∈ M : s⁻¹ • y ∉ M}`; apply step 4 with `t = s⁻¹`.
+  have hset : {w : Euclidean N | s • w ∈ M ∧ w ∉ M} =
+      s⁻¹ • {y : Euclidean N | y ∈ M ∧ s⁻¹ • y ∉ M} := by
+    ext w
+    rw [Set.mem_inv_smul_set_iff₀ hs.ne']
+    show s • w ∈ M ∧ w ∉ M ↔ s • w ∈ M ∧ s⁻¹ • s • w ∉ M
+    rw [inv_smul_smul₀ hs.ne']
+  rw [hset, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hs.ne'),
+    hkey _ (inv_pos.2 hs), smul_zero]
+/-- Set-lintegrals agree when the sets and the integrands agree on a null-measurable set `G`
+off which both sets are null (used for the rescaling invariance of tangent cones, Simon Ch. 8,
+5.3 and 5.7): if `μ (D \ G) = μ (D' \ G) = 0`, `x ∈ D ↔ x ∈ D'` and `f x = g x` for `x ∈ G`,
+then `∫⁻_D f dμ = ∫⁻_{D'} g dμ`.  `D`, `D'`, `f`, `g` are arbitrary and `μ` need not be
+σ-finite. -/
+theorem Submission.allard_tc_cri_setLIntegral_congr_off_null :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (G D D' : Set (Euclidean N)) (f g : Euclidean N → ℝ≥0∞), NullMeasurableSet G μ → μ (D \ G) = 0 → μ (D' \ G) = 0 → (∀ x ∈ G, x ∈ D ↔ x ∈ D') → (∀ x ∈ G, f x = g x) → ∫⁻ x in D, f x ∂μ = ∫⁻ x in D', g x ∂μ := by
+  intro N μ G D D' f g hG hD hD' hDD' hfg
+  -- Step 1: `D \ D' ⊆ D \ G` and `D' \ D ⊆ D' \ G`, so `D =ᵐ[μ] D'`.
+  have hDeq : D =ᵐ[μ] D' := by
+    refine ae_eq_set.2 ⟨measure_mono_null ?_ hD, measure_mono_null ?_ hD'⟩
+    · rintro x ⟨hxD, hxD'⟩
+      exact ⟨hxD, fun hxG ↦ hxD' ((hDD' x hxG).1 hxD)⟩
+    · rintro x ⟨hxD', hxD⟩
+      exact ⟨hxD', fun hxG ↦ hxD ((hDD' x hxG).2 hxD')⟩
+  -- Step 2: a measurable kernel `Z ⊆ G` with `μ (G \ Z) = 0`.
+  obtain ⟨Z, hZG, hZ, hZae⟩ := hG.exists_measurable_subset_ae_eq
+  have hGZ : μ (G \ Z) = 0 := (ae_eq_set.1 hZae).2
+  -- Step 3: `(μ.restrict D) Zᶜ = μ (Zᶜ ∩ D) = 0`, as `Zᶜ ∩ D ⊆ (D \ G) ∪ (G \ Z)`.
+  have hZc : μ.restrict D Zᶜ = 0 := by
+    rw [Measure.restrict_apply hZ.compl]
+    refine measure_mono_null ?_ (measure_union_null hD hGZ)
+    rintro x ⟨hxZ, hxD⟩
+    by_cases hxG : x ∈ G
+    · exact Or.inr ⟨hxG, hxZ⟩
+    · exact Or.inl ⟨hxD, hxG⟩
+  -- Step 4: `{x | f x ≠ g x} ⊆ Zᶜ`, so `f = g` `(μ.restrict D)`-a.e.
+  have hfg_ae : f =ᵐ[μ.restrict D] g :=
+    ae_iff.2 (measure_mono_null (fun x hx hxZ ↦ hx (hfg x (hZG hxZ))) hZc)
+  -- Step 5: `lintegral_congr_ae`, then `μ.restrict D = μ.restrict D'` (`setLIntegral_congr`).
+  exact (lintegral_congr_ae hfg_ae).trans (setLIntegral_congr hDeq)
 /-- Weight blow-ups at a tangent point (Simon Ch. 8, Definition 1.1 tested with `f(y,S) = g(y)`):
 if `V` has tangent plane `T` with multiplicity `θ` at `x`, then for every `g ∈ C_c(ℝ^N)`,
 `t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z) → θ ∫_T g dH^n` as `t ↓ 0`. -/
@@ -1350,6 +1506,20 @@ theorem Submission.allard_tc_tangent_point_representation :
       C.weight B = ∫⁻ x in E ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
     refine ⟨{x | x ∈ M ∧ ∃ S : Grassmannian N n,
       Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane}, fun x hx ↦ hx.1, ?_⟩
+/-- **Rectifiable tangent cones are invariant under dilations** (child `cone_rescaling_invariance`
+of `allard_tangent_cones`; Simon Ch. 8, 5.7, last sentence of the proof).  If `C = v(M, θ)` has
+tangent plane `T_x` with multiplicity `θ(x)` at every `x ∈ M`, is represented by these planes and
+`μ_C(s A) = s^n μ_C(A)`, then `η_{0,s #} C = C` for `s > 0`: on `G = {w ∈ M : s w ∈ M}` the sibling
+`tangent_plane_dilation` gives `θ(s w) = θ(w)` and the same planes, child
+`carrier_dilation_null` makes `G` of full `H^n`-measure in both representing sets, and children
+`rescaled_representation` and `setLIntegral_congr_off_null` compare the two integrals. -/
+theorem Submission.allard_tc_cone_rescaling_invariance :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ → (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) → (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n]) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → ∀ s : ℝ, 0 < s → rescaledMeasure C 0 s = C.measure := by
+  intro N n C M θ hC htan hrep hhom s hs
+  obtain ⟨-, hM, -, hθ, hint, -⟩ := hC
+  -- Step 1: `μ_C(B) = ∫⁻_{M ∩ B} ofReal θ dH^n` for Borel `B`, since every `x ∈ M` has a plane.
+  have hweight : ∀ B : Set (Euclidean N), MeasurableSet B →
+      C.weight B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N)) := by
     intro B hB
     rw [C.weight_apply hB, hrep _ (hB.prod MeasurableSet.univ)]
     congr 2
@@ -1389,6 +1559,53 @@ theorem Submission.allard_tc_tangent_point_representation :
     exact hTx
   · rintro ⟨hx, T, hTx, hxT⟩
     exact ⟨hx, T, (hiff x T hTx T).2 rfl, hxT⟩
+    exact ⟨fun ⟨hxM, _, _, hxB⟩ ↦ ⟨hxM, hxB⟩,
+      fun ⟨hxM, hxB⟩ ↦ ⟨hxM, (htan x hxM).choose, (htan x hxM).choose_spec, hxB⟩⟩
+  -- Step 2: child `carrier_dilation_null` for `μ = μ_C`: `M ∖ s⁻¹ M` and `s⁻¹ M ∖ M` are null.
+  obtain ⟨hnull₁, hnull₂⟩ := Submission.allard_tc_cri_carrier_dilation_null N n C.weight M θ hM
+    hθ (fun K hK ↦ hint K hK (subset_univ K)) hweight hhom s hs
+  -- Step 3: for `w ∈ M` with `s w ∈ M`, the sibling `tangent_plane_dilation` (at `s`, in both
+  -- directions) gives `θ(s w) = θ(w)` and the same tangent planes at `w` and `s w`.
+  have hdil : ∀ w ∈ M, s • w ∈ M → θ (s • w) = θ w ∧ ∀ S : Grassmannian N n,
+      (HasTangentPlane C (s • w) S (θ (s • w)) ↔ HasTangentPlane C w S (θ w)) := by
+    intro w hwM hswM
+    obtain ⟨Tw, hTw⟩ := htan w hwM
+    obtain ⟨Tsw, hTsw⟩ := htan (s • w) hswM
+    refine ⟨(Submission.allard_tc_tangent_plane_dilation N n C s w Tw Tsw (θ w) (θ (s • w)) hs
+      (hhom s · hs) hTw hTsw).2, fun S ↦ ⟨fun hS ↦ ?_, fun hS ↦ ?_⟩⟩
+    · obtain ⟨rfl, -⟩ := Submission.allard_tc_tangent_plane_dilation N n C s w Tw S (θ w)
+        (θ (s • w)) hs (hhom s · hs) hTw hS
+      exact hTw
+    · obtain ⟨rfl, -⟩ := Submission.allard_tc_tangent_plane_dilation N n C s w S Tsw (θ w)
+        (θ (s • w)) hs (hhom s · hs) hS hTsw
+      exact hTsw
+  -- Step 4: on a Borel `A`, child `rescaled_representation` (with `P x T = HasTangentPlane C x T
+  -- (θ x)` and `g = ofReal ∘ θ`) and the representation of `C` turn the claim into an equality of
+  -- set-lintegrals, closed by child `setLIntegral_congr_off_null` at `G = {w ∈ M : s w ∈ M}`.
+  ext A hA
+  rw [Submission.allard_tc_cri_rescaled_representation N n C M
+      (fun x T ↦ HasTangentPlane C x T (θ x)) (fun x ↦ ENNReal.ofReal (θ x)) hrep s hs A hA,
+    hrep A hA]
+  refine Submission.allard_tc_cri_setLIntegral_congr_off_null N (μHE[n] : Measure (Euclidean N))
+    {w | w ∈ M ∧ s • w ∈ M} _ _ _ _ ?_ ?_ ?_ ?_ ?_
+  -- (a) `G` is null-measurable: `G ⊆ M` and `M ∖ G ⊆ M ∖ s⁻¹ M` is null.
+  · refine hM.congr (ae_eq_set.2 ⟨measure_mono_null ?_ hnull₁, measure_mono_null ?_ measure_empty⟩)
+    · exact fun w ⟨hwM, hwG⟩ ↦ ⟨hwM, fun hswM ↦ hwG ⟨hwM, hswM⟩⟩
+    · exact fun w ⟨hwG, hwM⟩ ↦ hwM hwG.1
+  -- (b) the rescaled representing set lies in `G ∪ (s⁻¹ M ∖ M)`.
+  · refine measure_mono_null ?_ hnull₂
+    exact fun w ⟨⟨hswM, _⟩, hwG⟩ ↦ ⟨hswM, fun hwM ↦ hwG ⟨hwM, hswM⟩⟩
+  -- (c) the representing set of `C` lies in `G ∪ (M ∖ s⁻¹ M)`.
+  · refine measure_mono_null ?_ hnull₁
+    exact fun w ⟨⟨hwM, _⟩, hwG⟩ ↦ ⟨hwM, fun hswM ↦ hwG ⟨hwM, hswM⟩⟩
+  -- (d) on `G` the two representing sets agree, by step 3.
+  · rintro w ⟨hwM, hswM⟩
+    have hiff := (hdil w hwM hswM).2
+    exact ⟨fun ⟨_, S, hS, hwS⟩ ↦ ⟨hwM, S, (hiff S).1 hS, hwS⟩,
+      fun ⟨_, S, hS, hwS⟩ ↦ ⟨hswM, S, (hiff S).2 hS, hwS⟩⟩
+  -- (e) on `G` the integrands agree, as `θ(s w) = θ(w)` by step 3.
+  · rintro w ⟨hwM, hswM⟩
+    rw [(hdil w hwM hswM).1]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
