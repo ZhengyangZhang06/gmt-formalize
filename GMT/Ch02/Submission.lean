@@ -416,6 +416,59 @@ theorem Submission.bv_ext_infDist_compl_concaveOn : ∀ (n : ℕ) (U : Set (Rn n
           abel
       _ = p := by rw [hcoef, one_smul, hh, add_sub_cancel]
   exact hp (hp' ▸ hU (hshift x hx) (hshift y hy) ha hb hab)
+/-- **Unit gradient of the distance function off a closed set** (Simon 2.8 proof, C1(c), with `S`
+in place of `Uᶜ`). If `S ⊆ ℝⁿ` is closed and nonempty, `x ∉ S` and `d = infDist · S` is
+differentiable at `x`, then `‖Dd(x)‖ = 1`. Since `d` is 1-Lipschitz, `‖Dd(x)‖ ≤ 1`
+(`norm_fderiv_le_of_lipschitz`). Conversely, take a nearest point `a ∈ S`
+(`IsClosed.exists_infDist_eq_dist`), `ρ = d(x) > 0` and the unit vector `e = ρ⁻¹ • (a - x)`. Then
+`d(x + t • e) ≤ ρ - t` for `0 ≤ t ≤ ρ`, so the right difference quotients of `t ↦ d(x + t • e)` at
+`0` give `Dd(x) e ≤ -1`, and `‖Dd(x)‖ ≥ |Dd(x) e| ≥ 1`. -/
+theorem Submission.bv_ext_norm_fderiv_infDist_eq_one : ∀ (n : ℕ) (S : Set (Rn n)) (x : Rn n), IsClosed S → S.Nonempty → x ∉ S → DifferentiableAt ℝ (fun y ↦ infDist y S) x → ‖fderiv ℝ (fun y ↦ infDist y S) x‖ = 1 := by
+  intro n S x hS hne hx hd
+  set L := fderiv ℝ (fun y ↦ infDist y S) x with hL
+  -- Step 1: `infDist · S` is 1-Lipschitz, so `‖L‖ ≤ 1`.
+  have hup : ‖L‖ ≤ 1 := by
+    simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := x) (lipschitz_infDist_pt S)
+  -- Step 2: a nearest point `a ∈ S`, with `ρ = infDist x S = ‖a - x‖ > 0`.
+  obtain ⟨a, haS, hda⟩ := hS.exists_infDist_eq_dist hne x
+  have hρ : 0 < infDist x S := (hS.notMem_iff_infDist_pos hne).1 hx
+  set ρ := infDist x S with hρdef
+  have hax : ‖a - x‖ = ρ := by rw [hda, dist_comm, dist_eq_norm]
+  -- Step 3: along the unit vector `e` towards `a`, `infDist (x + t • e) S ≤ ρ - t` on `[0, ρ]`.
+  set e : Rn n := ρ⁻¹ • (a - x) with he
+  have he1 : ‖e‖ = 1 := by
+    rw [he, norm_smul, hax, Real.norm_eq_abs, abs_inv, abs_of_pos hρ, inv_mul_cancel₀ hρ.ne']
+  have hdec : ∀ t : ℝ, 0 ≤ t → t ≤ ρ → infDist (x + t • e) S ≤ ρ - t := by
+    intro t ht0 htρ
+    have hvec : a - (x + t • e) = (1 - t / ρ) • (a - x) := by
+      rw [he, smul_smul, sub_smul, one_smul, div_eq_mul_inv]; abel
+    have hcoef : 0 ≤ 1 - t / ρ := by rw [sub_nonneg, div_le_one hρ]; exact htρ
+    calc infDist (x + t • e) S ≤ dist (x + t • e) a := infDist_le_dist_of_mem haS
+      _ = ρ - t := by
+        rw [dist_comm, dist_eq_norm, hvec, norm_smul, hax, Real.norm_eq_abs, abs_of_nonneg hcoef]
+        field_simp
+  -- Step 4: `t ↦ infDist (x + t • e) S` has derivative `L e` at `0`; its right difference
+  -- quotients are `≤ -1` on `(0, ρ]`, hence `L e ≤ -1`.
+  have hderiv : HasDerivAt (fun t : ℝ ↦ infDist (x + t • e) S) (L e) 0 := by
+    have hline : HasDerivAt (fun t : ℝ ↦ x + t • e) e 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const e).const_add x
+    have hdx : HasFDerivAt (fun y ↦ infDist y S) L (x + (0 : ℝ) • e) := by
+      simpa using hd.hasFDerivAt
+    exact hdx.comp_hasDerivAt (0 : ℝ) hline
+  have hLe : L e ≤ -1 := by
+    refine le_of_tendsto hderiv.tendsto_slope_zero_right ?_
+    filter_upwards [Ioc_mem_nhdsGT hρ] with t ht
+    have h3 := hdec t ht.1.le ht.2
+    simp only [zero_add, zero_smul, add_zero, smul_eq_mul]
+    rw [inv_mul_le_iff₀ ht.1]
+    linarith
+  -- Step 5: `1 ≤ -L e = ‖L e‖ ≤ ‖L‖ * ‖e‖ = ‖L‖`.
+  have hlow : 1 ≤ ‖L‖ := by
+    have h := L.le_opNorm e
+    rw [he1, mul_one, Real.norm_eq_abs, abs_of_neg (by linarith)] at h
+    linarith
+  -- Step 6: combine the two bounds.
+  exact le_antisymm hup hlow
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
