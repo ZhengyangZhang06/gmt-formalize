@@ -486,12 +486,6 @@ theorem Submission.eilenberg_hausdorff_upper_integral_of_ne_top :
           liminf_le_liminf (Eventually.of_forall hint)
       _ = ω * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A := hlim.liminf_eq
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **Eilenberg's inequality, Simon Ch. 2, Theorem 1.9 and Remark 1.10 (pp. 45–46)**
 (`chapter-02.txt` lines 335–411; `k = 0` is Theorem 1.8(ii)), in upper-integral form for an
 arbitrary `A`: a Borel `g ≥ Hᵏ(A ∩ f⁻¹{y})` with `∫ g dLᵐ ≤ C Lᵐ H^{m+k}(A)`. Writing
@@ -559,3 +553,8 @@ theorem Submission.eilenberg_upper_integral_inequality : ∀ (N m k : ℕ), ∃ 
         _ = C * c (m + k) * L ^ m * μH[((m + k : ℕ) : ℝ)] A := by rw [hCc]; ring
         _ = ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A := by
           rw [hHE, ENNReal.coe_mul, ENNReal.coe_pow]; ring
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
