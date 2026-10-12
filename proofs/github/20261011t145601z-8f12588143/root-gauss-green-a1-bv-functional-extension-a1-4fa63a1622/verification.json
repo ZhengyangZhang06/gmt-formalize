@@ -1,0 +1,20 @@
+{
+  "node_id": "root.gauss_green-a1.bv_functional_extension-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/122",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "fcb8609563c58b89c50a9d673e9ef83ef28db170",
+  "integrated_commit": "",
+  "proof_base_commit": "cbae100144d4035b0d67385126d76792b9ddc1b3",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.gauss_green-a1",
+  "requires": [
+    "root.gauss_green-a1.c1_uniform_approx-a1",
+    "root.gauss_green-a1.bv_functional_extension-a1.divergence_integral_linear-a1",
+    "root.gauss_green-a1.bv_functional_extension-a1.bv_divergence_bound-a1",
+    "root.gauss_green-a1.bv_functional_extension-a1.c1_functional_extension-a1"
+  ]
+}
