@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f13fe734a619bb20b177b672d714002b7a7f8024c16477118cfdf814bec16143",
+  "git_delta": {
+    "base_commit": "b4c2c536bf731c3fe70e322978e29c114f5396ce",
+    "candidate_commit": "cdb88b48925591849cbb90579af1307d72e56810",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_cft_graph_map_sqrt_two",
+    "diff_sha256": "04bf1e9dcbc92812ebf68cbd751aba800b0348c7da8bc661d28b953dd9366eac",
+    "source_sha256": "0eda20b428b8085dc0f0d8ea1ba413f45948bcf5b359af091299296bf75a5452",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_cft_graph_map_sqrt_two",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)), LipschitzOnWith 1 f D → (∀ x ∈ D, ∀ x' ∈ D, ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖) ∧ (f 0 = 0 → (0 : Rn n) ∈ D → ∀ x ∈ D, ‖q (graphPoint x (f x))‖ ≤ Real.sqrt 2 * ‖x‖)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
