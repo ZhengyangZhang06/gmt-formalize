@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1.approx_tangent_le_flat-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1",
+  "depth": 5,
+  "title": "Approximate tangent planes lie in any direction along which the set is almost everywhere flat",
+  "statement": "Let P, n ∈ ℕ, S, A ⊆ ℝ^P (ℝ^P = Euclid P), x ∈ ℝ^P, r > 0, and let Q, T be linear subspaces of ℝ^P. Suppose Hⁿ((A ∩ B_r(x)) ∖ S) = 0, where Hⁿ = μHE[n] and B_r(x) is the open ball. Suppose also that S is flat at x along T: for every ε > 0 there is ρ > 0 such that every y ∈ S with dist(y, x) < ρ admits some t ∈ T with ‖y − x − t‖ ≤ ε‖y − x‖. If A has approximate tangent space Q at x (HasApproximateTangentSpaceAt n A x Q, Simon Ch. 3, 1.4), then Q ⊆ T. Here HasApproximateTangentSpaceAt n A x Q means: finrank Q = n and, for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,λ}(A)} f dHⁿ → ∫_Q f dHⁿ as λ → 0⁺, with η_{x,λ}(a) = λ⁻¹(a − x).",
+  "lean_statement": "∀ (P n : ℕ) (S A : Set (Euclid P)) (x : Euclid P) (r : ℝ) (Q T : Submodule ℝ (Euclid P)), 0 < r → μHE[n] ((A ∩ ball x r) \\ S) = 0 → (∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ y ∈ S, dist y x < ρ → ∃ t ∈ T, ‖y - x - t‖ ≤ ε * ‖y - x‖) → HasApproximateTangentSpaceAt n A x Q → Q ≤ T",
+  "lean_name": "dgcr_atg_approxTangent_le_of_flat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-2f14b99baf-a1"
+}

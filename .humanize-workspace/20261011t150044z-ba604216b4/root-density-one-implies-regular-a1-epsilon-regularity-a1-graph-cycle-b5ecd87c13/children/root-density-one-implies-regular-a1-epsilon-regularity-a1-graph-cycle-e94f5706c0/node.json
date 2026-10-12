@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1.graph_image_flat-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1",
+  "depth": 5,
+  "title": "The image of an orthogonal graph map is flat along its tangent plane",
+  "statement": "Let n, k ∈ ℕ, and let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝ^k. Let u : ℝⁿ → ℝ^k, z ∈ ℝ^{n+k}, D ⊆ ℝⁿ an arbitrary set, and v₀ ∈ ℝⁿ with u differentiable at v₀. Put Φ(v) := z + ιv + ι'u(v). Then for every ε > 0 there is ρ > 0 such that every y ∈ Φ(D) with dist(y, Φ(v₀)) < ρ admits some t ∈ range DΦ(v₀) with ‖y − Φ(v₀) − t‖ ≤ ε‖y − Φ(v₀)‖. Here DΦ(v₀) = fderiv ℝ Φ v₀, viewed as a linear map.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (D : Set (Euclid n)) (v₀ : Euclid n), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ u v₀ → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ y ∈ (fun v => z + ι v + ι' (u v)) '' D, dist y (z + ι v₀ + ι' (u v₀)) < ρ → ∃ t ∈ LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k)), ‖y - (z + ι v₀ + ι' (u v₀)) - t‖ ≤ ε * ‖y - (z + ι v₀ + ι' (u v₀))‖",
+  "lean_name": "dgcr_atg_graph_image_flat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-e94f5706c0-a1"
+}
