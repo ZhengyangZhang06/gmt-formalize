@@ -671,6 +671,112 @@ theorem poincare_c1_ball_double_integral_bound : ∀ (n : ℕ) (φ : Rn n → �
             = (2 : ℝ≥0∞) ^ (n + 2) * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2 := by
               rw [pow_add]; ring
           _ ≤ _ := by gcongr
+/-- **Double-integral Poincaré bound for `L²` limits of `C¹` functions on `B_r`** (the passage to
+the limit in the Poincaré inequality on balls behind Simon Ch. 5, Lemma 3.1; cf. Gilbarg–Trudinger,
+Lemma 7.16 and (7.45), Evans §5.8.1).  Let `0 < r ≤ 1`, let `f`, `g` be a.e.-strongly measurable on
+`B_r = B̆_r(0)`, and let `φⱼ ∈ C¹` with `φⱼ → f` and `∇φⱼ → g` in `L²(B_r)`.  Then
+`∫_{B_r} ∫_{B_r} |f(x) − f(y)|² dy dx ≤ 2^{n+2} |B̆₁(0)| ∫_{B_r} |g|²` (in `[0, ∞]`).
+
+Pass to a subsequence `φ_{ns i} → f` a.e. on `B_r`, apply Fatou's lemma in `y` and then in `x`,
+bound each `φ_{ns i}` by the `C¹` estimate `poincare_c1_ball_double_integral_bound`, and use
+Minkowski `‖∇φ_{ns i}‖₂ ≤ ‖g‖₂ + ‖∇φ_{ns i} − g‖₂`, whose last term tends to `0`. -/
+theorem poincare_approx_ball_double_integral_bound : ∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n) (φ : ℕ → Rn n → ℝ) (r : ℝ), 0 < r → r ≤ 1 → AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) r)) → AEStronglyMeasurable g (volume.restrict (ball (0 : Rn n) r)) → (∀ j, ContDiff ℝ 1 (φ j)) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖φ j x - f x‖ₑ ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖gradient (φ j) x - g x‖ₑ ^ 2) atTop (𝓝 0) → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in ball (0 : Rn n) r, ‖g x‖ₑ ^ 2 := by
+  intro n f g φ r hr0 hr1 hf hg hφ h1 h2
+  set B := ball (0 : Rn n) r with hB
+  set μ : Measure (Rn n) := volume.restrict B with hμ
+  set C : ℝ≥0∞ := (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) with hC
+  have hCtop : C ≠ ∞ := ENNReal.mul_ne_top (by simp) measure_ball_lt_top.ne
+  -- `L²` bookkeeping: `eLpNorm u 2 μ = (∫⁻ ‖u‖ₑ ^ 2 dμ) ^ (1/2)` for a.e.-strongly measurable `u`.
+  have eL2 : ∀ {E : Type} [NormedAddCommGroup E] {u : Rn n → E}, AEStronglyMeasurable u μ →
+      eLpNorm u 2 μ = (∫⁻ x, ‖u x‖ₑ ^ 2 ∂μ) ^ (1 / 2 : ℝ) := by
+    intro E _ u hu
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top hu]
+    simp
+  have eL2sq : ∀ {E : Type} [NormedAddCommGroup E] {u : Rn n → E}, AEStronglyMeasurable u μ →
+      eLpNorm u 2 μ ^ 2 = ∫⁻ x, ‖u x‖ₑ ^ 2 ∂μ := by
+    intro E _ u hu
+    rw [eL2 hu, ← ENNReal.rpow_mul_natCast]
+    norm_num
+  have tL2 : ∀ {E : Type} [NormedAddCommGroup E] {u : ℕ → Rn n → E},
+      (∀ j, AEStronglyMeasurable (u j) μ) → Tendsto (fun j => ∫⁻ x, ‖u j x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) →
+      Tendsto (fun j => eLpNorm (u j) 2 μ) atTop (𝓝 0) := by
+    intro E _ u hu h
+    simp_rw [eL2 (hu _)]
+    have := ((ENNReal.continuous_rpow_const (y := (1 / 2 : ℝ))).tendsto 0).comp h
+    rwa [ENNReal.zero_rpow_of_pos (by norm_num)] at this
+  -- Step 0: replace `f` by a strongly measurable representative `f'`; nothing changes.
+  have hff' := hf.ae_eq_mk
+  have hfm : StronglyMeasurable (hf.mk f) := hf.stronglyMeasurable_mk
+  set f' := hf.mk f
+  have hdbl : ∫⁻ x in B, ∫⁻ y in B, ‖f x - f y‖ₑ ^ 2 =
+      ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2 := by
+    have hin : ∀ x, ∫⁻ y in B, ‖f x - f y‖ₑ ^ 2 = ∫⁻ y in B, ‖f x - f' y‖ₑ ^ 2 := fun x =>
+      lintegral_congr_ae (hff'.mono fun y hy => by simp [hy])
+    simp_rw [hin]
+    exact lintegral_congr_ae (hff'.mono fun x hx => by simp [hx])
+  rw [hdbl]
+  have h1' : Tendsto (fun j => ∫⁻ x in B, ‖φ j x - f' x‖ₑ ^ 2) atTop (𝓝 0) := by
+    refine h1.congr fun j => ?_
+    exact lintegral_congr_ae (hff'.mono fun x hx => by simp only [hx])
+  -- Step 1: `φⱼ` and `∇φⱼ = (toDual)⁻¹ ∘ Dφⱼ` are continuous.
+  have hφc : ∀ j, Continuous (φ j) := fun j => (hφ j).continuous
+  have hgc : ∀ j, Continuous (gradient (φ j)) := fun j =>
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp ((hφ j).continuous_fderiv one_ne_zero)
+  -- Step 2: `φⱼ → f'` in `L²(μ)`, hence in measure, so a subsequence converges `μ`-a.e.
+  have hconv : Tendsto (fun j => eLpNorm (φ j - f') 2 μ) atTop (𝓝 0) :=
+    tL2 (fun j => (hφc j).aestronglyMeasurable.sub hfm.aestronglyMeasurable) h1'
+  obtain ⟨ns, hns, hae⟩ :=
+    (tendstoInMeasure_of_tendsto_eLpNorm two_ne_zero hconv).exists_seq_tendsto_ae
+  -- Steps 3–4: Fatou's lemma, first in `y` (for `μ`-a.e. `x`) and then in `x`.
+  have hsqc : Continuous (fun p : ℝ × ℝ => ‖p.1 - p.2‖ₑ ^ 2) :=
+    (ENNReal.continuous_pow 2).comp (continuous_enorm.comp (continuous_fst.sub continuous_snd))
+  have hFatou : ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2 ≤
+      liminf (fun i => ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := by
+    have hpt : ∀ᵐ x ∂μ, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2 ≤
+        liminf (fun i => ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := by
+      filter_upwards [hae] with x hx
+      calc ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2
+          = ∫⁻ y in B, liminf (fun i => ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := by
+            refine lintegral_congr_ae ?_
+            filter_upwards [hae] with y hy
+            exact (((hsqc.tendsto _).comp (hx.prodMk_nhds hy)).liminf_eq).symm
+        _ ≤ liminf (fun i => ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop :=
+            lintegral_liminf_le fun i =>
+              ((measurable_const.sub (hφc _).measurable).enorm.pow_const 2)
+    calc ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2
+        ≤ ∫⁻ x in B, liminf (fun i => ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop :=
+          lintegral_mono_ae hpt
+      _ ≤ liminf (fun i => ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop :=
+          lintegral_liminf_le fun i =>
+            ((((hφc _).measurable.comp measurable_fst).sub
+              ((hφc _).measurable.comp measurable_snd)).enorm.pow_const 2).lintegral_prod_right'
+  -- Step 5: the `C¹` estimate for `φ_{ns i}` and Minkowski's inequality in `L²(μ)`.
+  have hbound : ∀ i, ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2 ≤
+      C * (eLpNorm g 2 μ + eLpNorm (gradient (φ (ns i)) - g) 2 μ) ^ 2 := by
+    intro i
+    refine (Submission.poincare_c1_ball_double_integral_bound n (φ (ns i)) (hφ _) r hr0
+      hr1).trans ?_
+    gcongr
+    rw [← eL2sq (hgc _).aestronglyMeasurable]
+    gcongr
+    calc eLpNorm (gradient (φ (ns i))) 2 μ
+        = eLpNorm (g + (gradient (φ (ns i)) - g)) 2 μ := by rw [add_sub_cancel]
+      _ ≤ _ := eLpNorm_add_le one_le_two
+  -- Step 6: `‖∇φ_{ns i} − g‖₂ → 0`, so the bounds tend to `C ‖g‖₂²` (`C < ∞`).
+  have hε : Tendsto (fun j => eLpNorm (gradient (φ j) - g) 2 μ) atTop (𝓝 0) :=
+    tL2 (fun j => (hgc j).aestronglyMeasurable.sub hg) h2
+  have hlim : Tendsto (fun i => C * (eLpNorm g 2 μ + eLpNorm (gradient (φ (ns i)) - g) 2 μ) ^ 2)
+      atTop (𝓝 (C * (eLpNorm g 2 μ + 0) ^ 2)) := by
+    refine ENNReal.Tendsto.const_mul ?_ (Or.inr hCtop)
+    exact ((ENNReal.continuous_pow 2).tendsto _).comp
+      (tendsto_const_nhds.add (hε.comp hns.tendsto_atTop))
+  -- Step 7: conclusion.
+  calc ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2
+      ≤ liminf (fun i => ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := hFatou
+    _ ≤ liminf (fun i => C * (eLpNorm g 2 μ + eLpNorm (gradient (φ (ns i)) - g) 2 μ) ^ 2) atTop :=
+        liminf_le_liminf (Eventually.of_forall hbound)
+    _ = C * (eLpNorm g 2 μ + 0) ^ 2 := hlim.liminf_eq
+    _ = C * ∫⁻ x in B, ‖g x‖ₑ ^ 2 := by rw [add_zero, eL2sq hg]
 
 end Submission
 
