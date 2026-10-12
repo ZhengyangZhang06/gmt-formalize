@@ -1,0 +1,15 @@
+{
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_integral_tendsto-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1938",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b5b278f9078f983e4c093b4bace2ac0630aa5778",
+  "integrated_commit": "",
+  "proof_base_commit": "4d2a75a7a1638c19f49ce4eaede3b2a836e1c1dd",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+  "requires": []
+}
