@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Topology.EMetricSpace.Lipschitz
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter01.RadonPolarRepresentation
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 3 "Countably n-Rectifiable Sets" (pp. 69–84): contract
@@ -385,6 +386,51 @@ theorem Submission.gaussGreenRep_riesz_caratheodory_borel_version : ∀ (X : Typ
   -- hence a.e.-strongly measurable; its strongly measurable representative is the version.
   have hsm := hν₀.aemeasurable.aestronglyMeasurable
   exact ⟨hsm.mk ν, hsm.stronglyMeasurable_mk, hsm.ae_eq_mk⟩
+/-- **Riesz representation with a Borel unit field on a σ-compact locally compact Hausdorff
+space**: Simon Ch. 1, Theorem 4.14 (`chapter-01.txt` lines 1654–1663) with `H = ℝᴺ`, as used
+for (4.1). SimonGMT `simon_theorem_4_14_caratheodory` gives the regular Borel measure
+`μ₀ = vectorFunctionalEnvelopeMeasure L` and a unit field `ν₁`, measurable for the Carathéodory
+σ-algebra of `μ₀`, with `L f = ∫ ⟨f, ν₁⟩ dμ̄₀` for the Carathéodory extension `μ̄₀` of `μ₀`.
+`gaussGreenRep_riesz_caratheodory_borel_version` gives a Borel `ν₂` with `ν₁ = ν₂` `μ₀`-a.e.
+Since `μ̄₀` and `μ₀` agree on all sets, they have the same null sets, so `|ν₂| = 1` `μ₀`-a.e.,
+and the integrals of the Borel integrand `⟨f, ν₂⟩` agree (`integral_radonCaratheodoryMeasure`). -/
+theorem Submission.gaussGreenRep_riesz_sigmaCompact_borel : ∀ (X : Type) [TopologicalSpace X]
+    [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X]
+    (N : ℕ) (L : C_c(X, Rn N) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ C : ℝ,
+      ∀ f : C_c(X, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) →
+    ∃ (μ : Measure X) (ν : X → Rn N), (∀ K : Set X, IsCompact K → μ K < ∞) ∧
+      StronglyMeasurable ν ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧
+      ∀ f : C_c(X, Rn N), L f = ∫ x, inner ℝ (f x) (ν x) ∂μ := by
+  intro X _ _ _ _ _ _ N L hbound
+  -- Step 1: the local bound is the hypothesis of Simon 4.14.
+  have hL : Poincare.SimonGMT.Chapter01.IsLocallyBoundedCcFunctional L := by
+    intro K hK
+    obtain ⟨C, hC⟩ := hbound K hK
+    exact ⟨C, by rintro _ ⟨f, ⟨hf1, hfK⟩, rfl⟩; exact hC f hf1 hfK⟩
+  -- Step 2: Simon 4.14 for `μ₀ = vectorFunctionalEnvelopeMeasure L` and its extension `μ̄₀`.
+  obtain ⟨ν₁, hν₁, hunit, hrep⟩ :=
+    Poincare.SimonGMT.Chapter01.simon_theorem_4_14_caratheodory L hL
+  -- Step 3: `μ₀` is regular, hence finite on compact sets.
+  have hfin : ∀ K : Set X, IsCompact K →
+      Poincare.SimonGMT.Chapter01.vectorFunctionalEnvelopeMeasure L hL K < ∞ :=
+    fun K hK ↦ hK.measure_lt_top
+  -- Step 4: a Borel version `ν₂` of the Carathéodory-measurable `ν₁`.
+  obtain ⟨ν₂, hν₂, hae⟩ := Submission.gaussGreenRep_riesz_caratheodory_borel_version X
+    (Poincare.SimonGMT.Chapter01.vectorFunctionalEnvelopeMeasure L hL) N ν₁ hfin hν₁.measurable
+  refine ⟨Poincare.SimonGMT.Chapter01.vectorFunctionalEnvelopeMeasure L hL, ν₂, hfin, hν₂, ?_,
+    fun f ↦ ?_⟩
+  -- Step 5: `μ̄₀` and `μ₀` have the same null sets.
+  · filter_upwards [(Poincare.SimonGMT.Chapter01.ae_radonCaratheodoryMeasure_iff _).mp hunit, hae]
+      with x hx hνx
+    rwa [← hνx]
+  -- Step 6: `∫ ⟨f, ν₁⟩ dμ̄₀ = ∫ ⟨f, ν₂⟩ dμ̄₀ = ∫ ⟨f, ν₂⟩ dμ₀`, the last integrand being Borel.
+  · rw [hrep f, ← Poincare.SimonGMT.Chapter01.integral_radonCaratheodoryMeasure
+      (Poincare.SimonGMT.Chapter01.vectorFunctionalEnvelopeMeasure L hL)
+      ((f.continuous.stronglyMeasurable_of_hasCompactSupport f.hasCompactSupport).inner hν₂)]
+    apply integral_congr_ae
+    filter_upwards [(Poincare.SimonGMT.Chapter01.ae_radonCaratheodoryMeasure_iff _).mpr hae]
+      with x hx
+    rw [hx]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
