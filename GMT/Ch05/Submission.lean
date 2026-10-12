@@ -458,6 +458,48 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 7.1, second assertion (p. 127): a function that is `C^{j,α}`
+locally in the open ball `B̆_r(x₀)` is `C^{j,α}`, with global constants, on `B̆_{r/2}(x₀)`.  For
+`r ≤ 0` the half ball is empty.  Otherwise the closed half ball `B_{r/2}(x₀)` is a compact subset of
+`B̆_r(x₀)`, on which each `D^i u`, `i ≤ j`, is continuous, hence bounded, and `D^j u` is `α`-Hölder
+by the local hypothesis. -/
+theorem dohr_eb_isHolderCk_half_ball : ∀ (m k j : ℕ) (α : ℝ) (u : Rn m → Rn k) (x₀ : Rn m) (r : ℝ), IsLocallyHolderCkα j α u (ball x₀ r) → IsHolderCkα j α u (ball x₀ (r / 2)) := by
+  intro m k j α u x₀ r hu
+  -- For `r ≤ 0` the half ball is empty and all three conditions hold vacuously.
+  rcases le_or_gt r 0 with hr | hr
+  · have hempty : ball x₀ (r / 2) = ∅ := ball_eq_empty.2 (by linarith)
+    rw [hempty]
+    exact ⟨contDiffOn_empty, ⟨0, fun _ _ x hx => hx.elim⟩, ⟨0, fun x hx => hx.elim⟩⟩
+  -- The closed half ball is a compact subset of the open ball.
+  have hK : closedBall x₀ (r / 2) ⊆ ball x₀ r := closedBall_subset_ball (by linarith)
+  have hKc : IsCompact (closedBall x₀ (r / 2)) := isCompact_closedBall x₀ (r / 2)
+  have hsub : ball x₀ (r / 2) ⊆ closedBall x₀ (r / 2) := ball_subset_closedBall
+  refine ⟨hu.1.mono (hsub.trans hK), ?_, ?_⟩
+  · -- Each `D^i u`, `i ≤ j`, is continuous on the open ball, hence bounded on the closed half ball.
+    have hbd : ∀ i, ∃ B : ℝ, i ≤ j → ∀ x ∈ closedBall x₀ (r / 2), ‖iteratedFDeriv ℝ i u x‖ ≤ B := by
+      intro i
+      by_cases hi : i ≤ j
+      · have hcont : ContinuousOn (iteratedFDeriv ℝ i u) (ball x₀ r) :=
+          (hu.1.continuousOn_iteratedFDerivWithin (by exact_mod_cast hi)
+            isOpen_ball.uniqueDiffOn).congr (iteratedFDerivWithin_of_isOpen i isOpen_ball).symm
+        obtain ⟨B, hB⟩ := hKc.exists_bound_of_continuousOn (hcont.mono hK)
+        exact ⟨B, fun _ => hB⟩
+      · exact ⟨0, fun h => absurd h hi⟩
+    choose B hB using hbd
+    refine ⟨∑ i ∈ Finset.range (j + 1), |B i|, fun i hi x hx => ?_⟩
+    calc ‖iteratedFDeriv ℝ i u x‖ ≤ B i := hB i hi x (hsub hx)
+      _ ≤ |B i| := le_abs_self _
+      _ ≤ ∑ i ∈ Finset.range (j + 1), |B i| :=
+          Finset.single_le_sum (fun i _ => abs_nonneg (B i))
+            (Finset.mem_range.2 (Nat.lt_succ_of_le hi))
+  · -- The Hölder constant on the compact closed half ball serves on the open half ball.
+    obtain ⟨C, hC⟩ := hu.2 _ hKc hK
+    exact ⟨C, fun x hx y hy => hC x (hsub hx) y (hsub hy)⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
