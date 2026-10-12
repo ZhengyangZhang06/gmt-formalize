@@ -2349,6 +2349,75 @@ theorem Submission.ts_fv_hasDerivAt_of_weighted_jacobian : ∀ (n ℓ : ℕ) (a 
   rw [← hval]
   exact hD.congr_of_eventuallyEq (Filter.eventually_of_mem hs hmt)
 
+/-- **Ch. 4, 2.1–2.2 (pp. 87–88), first variation via Lipschitz pieces** (with the area formula of
+Ch. 3, 2.4–2.5 and the Jacobian computation of Ch. 2, 5.2–5.3). Let `M ⊆ N₀ ∪ ⋃ᵢ Fᵢ(Cᵢ)` with
+`Hⁿ(N₀) = 0`, where the Lipschitz pieces `(Cᵢ, Fᵢ)` compute the tangent spaces
+(`T_x V = DFᵢ(w)(ℝⁿ)` whenever `Fᵢ(w) = x`, for `Hⁿ`-a.e. `x ∈ M`), and let `x ↦ p_{T_x V}` be
+`Hⁿ ⌞ M`-a.e. strongly measurable. Then for every compact variation `(φ, ε, K)` the mass
+`t ↦ M(φ_t#(V ⌞ K))` has derivative `∫ div_M X dμ_V` at `t = 0`, where `X = ∂φ_t/∂t|_{t=0}`. -/
+theorem Submission.ts_first_variation_of_pieces : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), 0 < n → MeasurableSet N₀ → (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 → a.M ⊆ N₀ ∪ ⋃ i, F i '' C i → (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, ∀ i, ∀ w ∈ C i, F i w = x → (mk a).tangentSpace x = LinearMap.range (fderiv ℝ (F i) w).toLinearMap) → AEStronglyMeasurable (fun x ↦ ((mk a).tangentSpace x).starProjection) ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) → IsCompactVariation φ ε K → HasDerivAt (fun t ↦ (imageMass a (φ t) K).toReal) (∫ x, (mk a).tangentialDiv (fun y ↦ deriv (fun t ↦ φ t y) 0) x ∂(mk a).weight) 0 := by
+  intro n ℓ a N₀ C F φ ε K hn hN₀ hN₀0 hcover hpieces htan hproj hV
+  -- The variation: `X` is `C¹` with `DX = 0` off `K`, each `φ_t` is Lipschitz and `C¹`, and near
+  -- `t = 0` the map `t ↦ Dφ_t(x)` is differentiable with `∂_t Dφ_t(x)|_{t=0} = DX(x)` and with
+  -- uniform bounds on `Dφ_t(x)`, `∂_t Dφ_t(x)` and `Dφ_t(x)⁻¹`.
+  obtain ⟨hX, hDX, hφ, δ, B, hδ, hδε, Λ', hΛ'⟩ :=
+    Submission.ts_fv_compact_variation_bounds n ℓ φ ε K hV
+  -- Jacobi's formula with a constant uniform in `x` and in the plane `T_x V`.
+  obtain ⟨A, hA⟩ := Submission.ts_fv_tangential_jacobian_hasDerivAt (n + ℓ) B
+  have hφ0 : ∀ x, fderiv ℝ (φ 0) x = 1 := fun x ↦ by
+    rw [show φ 0 = fun y ↦ y from funext hV.init, fderiv_fun_id]
+    rfl
+  have hε : ∀ t ∈ Ioo (-δ) δ, t ∈ Ioo (-ε) ε := fun t ht ↦
+    ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  -- `J^P(L) = (det (P L* L P + I - P))^{1/2}`, with the matrix taken in the standard basis; it is
+  -- continuous in `(L, P)`.
+  let G : (Ambient n ℓ →L[ℝ] Ambient n ℓ) → (Ambient n ℓ →L[ℝ] Ambient n ℓ) → ℝ := fun L P ↦
+    Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + ℓ) ↦
+      inner ℝ (L (P (EuclideanSpace.single i (1 : ℝ)))) (L (P (EuclideanSpace.single j (1 : ℝ)))) +
+        inner ℝ (EuclideanSpace.single i (1 : ℝ) - P (EuclideanSpace.single i (1 : ℝ)))
+          (EuclideanSpace.single j (1 : ℝ) - P (EuclideanSpace.single j (1 : ℝ)))))
+  have hG : Continuous (Function.uncurry G) := by
+    refine Real.continuous_sqrt.comp (Continuous.matrix_det (continuous_matrix fun i j ↦ ?_))
+    simp only [Matrix.of_apply]
+    fun_prop
+  -- `trace (L ∘ P)` is continuous in `(L, P)`; at `(DX(x), p_{T_x V})` it is `div_M X(x)`.
+  have hT : Continuous (Function.uncurry fun L P : Ambient n ℓ →L[ℝ] Ambient n ℓ ↦
+      LinearMap.trace ℝ (Ambient n ℓ) (L.toLinearMap ∘ₗ P.toLinearMap)) :=
+    ((LinearMap.trace ℝ (Ambient n ℓ)).comp
+      (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional.comp
+        (continuous_fst.clm_comp continuous_snd)
+  -- The tangential Jacobian `J_t(x) = J^{T_x V}(Dφ_t(x))` and its `t`-derivative.
+  let J : ℝ → Ambient n ℓ → ℝ := fun t x ↦
+    G (fderiv ℝ (φ t) x) ((mk a).tangentSpace x).starProjection
+  let J' : ℝ → Ambient n ℓ → ℝ := fun t x ↦ deriv (fun s ↦ J s x) t
+  -- Differentiation under the integral sign, dominated by `A θ` on `M ∩ K`.
+  refine Submission.ts_fv_hasDerivAt_of_weighted_jacobian n ℓ a K
+    (fun t ↦ imageMass a (φ t) K) J J'
+    (fun x ↦ (mk a).tangentialDiv (fun y ↦ deriv (fun t ↦ φ t y) 0) x) δ A hδ hV.compact
+    (fun t ht ↦ ?_) (fun t ht ↦ ?_) ?_ (fun x hx ↦ ?_) (ae_of_all _ fun x _ ↦ ?_)
+  · -- the area formula for the injective Lipschitz map `φ_t` on `M ∩ K`
+    exact Submission.ts_fv_image_mass_area_formula n ℓ a N₀ C F (φ t) K hn hN₀ hN₀0 hcover
+      hpieces htan (hV.diffeo t (hε t ht)).1.injective (hφ t (hε t ht)).1
+      ((hφ t (hε t ht)).2.differentiable one_ne_zero) hV.compact.isClosed.measurableSet
+  · exact hG.comp_aestronglyMeasurable₂
+      (((hφ t (hε t ht)).2.continuous_fderiv one_ne_zero).aestronglyMeasurable) hproj
+  · exact hT.comp_aestronglyMeasurable₂ ((hX.continuous_fderiv one_ne_zero).aestronglyMeasurable)
+      hproj
+  · show LinearMap.trace ℝ (Ambient n ℓ) ((fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) x).toLinearMap
+      ∘ₗ ((mk a).tangentSpace x).starProjection.toLinearMap) = 0
+    rw [hDX x hx, ContinuousLinearMap.toLinearMap_zero, LinearMap.zero_comp, map_zero]
+  · -- Jacobi's formula along `t ↦ Dφ_t(x)` in the plane `T_x V`, for every `x`
+    obtain ⟨hbd, hd0⟩ := hA ((mk a).tangentSpace x) (fun s ↦ fderiv ℝ (φ s) x) (fun s ↦ Λ' s x)
+      (fun s ↦ J s x) δ hδ (hφ0 x) (fun t ht ↦ (hΛ' x).2 t ht) fun t ↦ rfl
+    refine ⟨?_, fun t ht ↦ ?_⟩
+    · rw [show J' 0 x = _ from hd0.deriv]
+      beta_reduce
+      rw [(hΛ' x).1]
+      rfl
+    · obtain ⟨hJ0, hJA, d, hd, hdA⟩ := hbd t ht
+      have hJ' : J' t x = d := hd.deriv
+      exact ⟨hJ0, hJA, hJ' ▸ hd, hJ' ▸ hdA⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
