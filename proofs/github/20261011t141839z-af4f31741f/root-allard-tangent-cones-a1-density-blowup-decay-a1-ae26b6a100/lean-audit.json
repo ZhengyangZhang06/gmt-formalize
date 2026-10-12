@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4bfa0b1f8ae267a0271702b2849be304d25aa0dad087d9504aca1e51f4388f6a",
+  "git_delta": {
+    "base_commit": "0b87d9e5a70c80eeab1256dbcac329587d5c1d6a",
+    "candidate_commit": "d8ca2a737a3082eb26c70f03f654b3a7af5c1e9d",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "c115bd6065ec9dd175b07ccfa27a7b36c94af10d3d36439d5f7445418107b0c3",
+    "source_sha256": "a6e969541464d8d979211f82dc8b5f444fae3e53991475bf5171253be123096d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_density_blowup_decay",
+      "statement": "DensityExistsAE → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∀ θ₀ τ : ℝ, HasDensity n V.weight x (ENNReal.ofReal θ₀) → τ < θ₀ → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
