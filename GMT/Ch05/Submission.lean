@@ -684,6 +684,39 @@ theorem allard52_amt_fubini_lintegral : ∀ (n ℓ : ℕ) (μ : Measure (Amb n �
     intervalIntegral.integral_congr hRHS, hswap]
   congr 1
   exact integral_congr_ae (Eventually.of_forall fun x => (hinner x).symm)
+/-- **Simon Ch. 4, 3.4–3.5 and 4.7** (the Tonelli step for one fixed cutoff `φ`).  Let `ε > 0`,
+`μ(B_R(y)) < ∞`, `w` a.e.-strongly measurable on `B̆_R(y)` with `0 ≤ w ≤ 1` `μ`-a.e. there, and `φ`
+a nonincreasing `C¹` function with `φ = 1` on `(−∞, 1]` and `φ = 0` on `[1 + ε, ∞)`.  If
+`0 < s ≤ r` and `(1 + ε) r < R`, then with `r_x = |x − y|` and
+`Q(t) = −t⁻¹ ∫ (r_x/t) φ'(r_x/t) w(x) dμ`,
+`∫_{B_r(y) \ B̆_{(1+ε)s}(y)} w r_x⁻ⁿ dμ ≤ ∫ₛʳ Q(t) t⁻ⁿ dt`.
+Proof: for `x` in the annulus, `c = r_x ∈ [(1 + ε) s, r]`, so the kernel bound
+`c⁻ⁿ ≤ h(c) = ∫ₛʳ −(c/t φ'(c/t))/t/tⁿ dt` and `w(x) ≥ 0` give `w r_x⁻ⁿ ≤ w h(r_x)`; enlarging the
+domain to `ℝ^{n+ℓ}` and Tonelli, `∫ w h(r_x) dμ = ∫ₛʳ Q(t)/tⁿ dt`, conclude. -/
+theorem allard52_am_annular_tonelli : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (R ε s r : ℝ), 0 < ε → μ (closedBall y R) < ⊤ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → 0 < s → s ≤ r → (1 + ε) * r < R → ∫⁻ x in closedBall y r \ ball y ((1 + ε) * s), ENNReal.ofReal (w x / ‖x - y‖ ^ n) ∂μ ≤ ENNReal.ofReal (∫ t in s..r, -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t / t ^ n) := by
+  intro n ℓ μ w y φ R ε s r hε hμ hw hw01 hφ hanti hφ1 hφ0 hs hsr hrR
+  -- Step 1: `r < (1 + ε) r < R`, so the annulus `A = B_r(y) \ B̆_{(1+ε)s}(y)` lies in `B̆_R(y)`.
+  have hrR' : r < R := by nlinarith [mul_pos hε (hs.trans_le hsr)]
+  calc ∫⁻ x in closedBall y r \ ball y ((1 + ε) * s), ENNReal.ofReal (w x / ‖x - y‖ ^ n) ∂μ
+      ≤ ∫⁻ x in closedBall y r \ ball y ((1 + ε) * s), ENNReal.ofReal
+          (w x * ∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n) ∂μ := by
+        -- Step 2: on `A`, `w ≥ 0` a.e. and `r_x⁻ⁿ ≤ h(r_x)` (kernel bound with `c = r_x`).
+        refine setLIntegral_mono_ae' (measurableSet_closedBall.diff measurableSet_ball) ?_
+        filter_upwards [hw01] with x hx hxA
+        have hxr : ‖x - y‖ ≤ r := mem_closedBall_iff_norm.1 hxA.1
+        have hxs : (1 + ε) * s ≤ ‖x - y‖ := not_lt.1 fun h => hxA.2 (mem_ball_iff_norm.2 h)
+        have hw0 : 0 ≤ w x := (hx (mem_ball_iff_norm.2 (hxr.trans_lt hrR'))).1
+        refine ENNReal.ofReal_le_ofReal ((div_eq_mul_one_div _ _).trans_le ?_)
+        exact mul_le_mul_of_nonneg_left (Submission.allard52_amt_kernel_lower_bound n φ ε s r
+          ‖x - y‖ hε hφ hanti hφ1 hφ0 hs hxs hxr) hw0
+    _ ≤ ∫⁻ x, ENNReal.ofReal
+          (w x * ∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n) ∂μ :=
+        setLIntegral_le_lintegral _ _
+    -- Step 3: Tonelli, `∫ w h(r_x) dμ = ∫ₛʳ Q(t)/tⁿ dt`.
+    _ = ENNReal.ofReal
+          (∫ t in s..r, -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t / t ^ n) :=
+        Submission.allard52_amt_fubini_lintegral n ℓ μ w y φ R ε s r hε hμ hw hw01 hφ hanti hφ0
+          hs hsr hrR
 
 end Submission
 
