@@ -505,6 +505,37 @@ theorem Submission.stable_second_variation_integrand_integrableOn : ∀ (n N : �
     rwa [IntegrableOn, Measure.restrict_restrict hKm] at h
   -- Step 9: `S = 0` on `M \ K`, so integrability extends to `M`.
   exact hint.of_forall_sdiff_eq_zero hM fun y hy => hS0 y hy.1 fun hyK => hy.2 ⟨hyK, hy.1⟩
+/-- **Simon Ch. 2, Lemma 5.11 (p. 65), pointwise integrand identity.** With `X`, `Z` the initial
+velocity and acceleration of `φ`, `τᵢ` the orthonormal frame of `T_y M`, `B_y` the second
+fundamental form and `H` the mean curvature: if `B_y` is symmetric on `T_y M`,
+`η · D_τ X(y) = -X(y) · B_y(τ, η)` for `τ, η ∈ T_y M` (4.24 with `X` normal), and `X(y) · H(y) = 0`
+(5.5(2)), then the 5.4 integrand at `y` is `div_M Z(y)` plus the 5.11 integrand. Indeed
+`div_M X = -X · H = 0` and `(τᵢ · D_{τⱼ}X)(τⱼ · D_{τᵢ}X) = (X · B(τᵢ, τⱼ))²`. -/
+theorem Submission.second_variation_integrand_eq_div_accel_add_stable : ∀ (N : ℕ) (M : Set (Rn N)) (φ : ℝ → Rn N → Rn N) (y : Rn N), (∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, secondFundamentalForm M y τ η = secondFundamentalForm M y η τ) → (∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ (initialVelocity φ) y τ) = -inner ℝ (initialVelocity φ y) (secondFundamentalForm M y τ η)) → inner ℝ (initialVelocity φ y) (meanCurvature M y) = 0 → secondVariationIntegrand M φ y = tangentialDivergence M (initialAcceleration φ) y + stableSecondVariationIntegrand M φ y := by
+  intro N M φ y hS hN hH
+  -- Step 1: each frame vector `τᵢ` lies in `T_y M`.
+  have hmem : ∀ i, tangentFrame M y i ∈ tangentSpace M y := fun i ↦
+    ((stdOrthonormalBasis ℝ (tangentSpace M y)) i).2
+  -- Step 2: `div_M X(y) = ∑ᵢ τᵢ · D_{τᵢ}X(y) = -X(y) · ∑ᵢ B_y(τᵢ, τᵢ) = -X(y) · H(y) = 0`.
+  have hdiv : tangentialDivergence M (initialVelocity φ) y = 0 := by
+    have h : tangentialDivergence M (initialVelocity φ) y =
+        -inner ℝ (initialVelocity φ y) (meanCurvature M y) := by
+      rw [tangentialDivergence, meanCurvature, inner_sum, ← Finset.sum_neg_distrib]
+      exact Finset.sum_congr rfl fun i _ ↦ hN _ (hmem i) _ (hmem i)
+    rw [h, hH, neg_zero]
+  -- Step 3: `(τᵢ · D_{τⱼ}X)(τⱼ · D_{τᵢ}X) = (-X · B(τᵢ, τⱼ))² = (X · B(τᵢ, τⱼ))²`, by the normal
+  -- identity applied twice and the symmetry of `B_y`.
+  have hcross : ∀ i j,
+      inner ℝ (tangentFrame M y i) (fderiv ℝ (initialVelocity φ) y (tangentFrame M y j)) *
+        inner ℝ (tangentFrame M y j) (fderiv ℝ (initialVelocity φ) y (tangentFrame M y i)) =
+      inner ℝ (initialVelocity φ y)
+        (secondFundamentalForm M y (tangentFrame M y i) (tangentFrame M y j)) ^ 2 := by
+    intro i j
+    rw [hN _ (hmem j) _ (hmem i), hN _ (hmem i) _ (hmem j), hS _ (hmem j) _ (hmem i)]
+    ring
+  -- Step 4: substitute both identities into the 5.4 integrand and regroup.
+  simp only [secondVariationIntegrand, stableSecondVariationIntegrand, hdiv, hcross]
+  ring
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
