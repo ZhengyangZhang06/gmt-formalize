@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.section3_consequences-a1.chart_projection_positive-a1",
+  "parent_id": "root.section3_consequences-a1",
+  "depth": 2,
+  "title": "Positive-measure chart pieces have a coordinate projection of positive measure",
+  "statement": "Let n, ℓ ∈ ℕ, let V ⊆ ℝⁿ be open, and let ψ : ℝⁿ → ℝ^{n+ℓ} be C¹ on V with Dψ(u) injective for every u ∈ V. If T ⊆ V has Lebesgue outer measure Lⁿ(T) > 0, then there is J ⊆ Fin(n+ℓ) with exactly n elements such that Hⁿ(coordinateProjection J (ψ(T))) > 0. Here Hⁿ = μHE[n] (outer measure), and coordinateProjection J is the orthogonal projection onto span{e_j : j ∈ J}.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V T : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → T ⊆ V → 0 < volume T → ∃ J : Finset (Fin (n + ℓ)), J.card = n ∧ 0 < μHE[n] (coordinateProjection J '' (ψ '' T))",
+  "lean_name": "section3_chart_coordinateProjection_pos",
+  "depends_on": [
+    "root.section3_consequences-a1.coordinate_projection_injective-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.section3_consequences-a1.coordinate_projection_injective-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-chart-projection-positive-a1-a1"
+}

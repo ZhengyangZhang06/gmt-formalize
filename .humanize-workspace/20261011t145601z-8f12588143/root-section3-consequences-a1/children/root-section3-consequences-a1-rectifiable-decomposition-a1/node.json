@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.section3_consequences-a1.rectifiable_decomposition-a1",
+  "parent_id": "root.section3_consequences-a1",
+  "depth": 2,
+  "title": "Lemma 3.2: rectifiable / purely unrectifiable decomposition",
+  "statement": "For all n, ℓ ∈ ℕ and every A ⊆ ℝ^{n+ℓ}, suppose there are A_j ⊆ ℝ^{n+ℓ} (j ∈ ℕ) with A = ⋃_j A_j and Hⁿ(A_j) < ∞ for every j. Then:\n(i) there are R, P ⊆ ℝ^{n+ℓ} with A = R ∪ P, R ∩ P = ∅, R countably n-rectifiable and P purely n-unrectifiable;\n(ii) if moreover A is Hⁿ-measurable (NullMeasurableSet A μHE[n]), then there are such R, P with R in addition a Borel set.\nHere Hⁿ = μHE[n] is applied as an outer measure.",
+  "lean_statement": "RectifiableDecomposition",
+  "lean_name": "section3_rectifiableDecomposition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-rectifiable-decomposition-a1-a1"
+}

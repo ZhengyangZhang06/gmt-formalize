@@ -1,0 +1,576 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T145601Z-8f12588143",
+  "parent_id": "root.section3_consequences-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch03/20261011t145601z-8f12588143/dispatch/root-section3-consequences-a1",
+  "source_commit": "d09bc8a18ce60face651f042976e8465f21f0f68",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch03/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.section3_consequences-a1.c1_image_null-a1",
+      "key": "c1_image_null",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-c1-image-null-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-c1-image-null-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "rg -n \"^def (coordinateProjection|IsC1Submanifold|RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|ForAlmostAllProjections)|^noncomputable def coordinateProjection\" project/GMT/Ch03/Contract.lean",
+              "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+              "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "rg -n \"theorem comap_apply\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n \"theorem (MeasureTheory.Measure.euclideanHausdorffMeasure_def|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith\" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "rg -n \"theorem approximates_deriv_on_nhds\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "rg -n \"theorem ContDiffAt.hasStrictFDerivAt |theorem HasStrictFDerivAt.exists_lipschitzOnWith \" mathlib/Mathlib/Analysis/Calculus",
+              "rg -n \"theorem eq_starProjection_of_mem_of_inner_eq_zero\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "rg -n \"theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)\" mathlib/Mathlib/LinearAlgebra",
+              "rg -n \"theorem LinearMap.finrank_range_of_inj\" mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "rg -n \"theorem isOpen_iUnion_countable\" mathlib/Mathlib/Topology/Bases.lean",
+              "grep -n of_le_mul_dist mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "rg -n -i \"coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable\" mathlib/Mathlib (no match)",
+              "rg -n \"theorem (simon_lemma_3_2|countablyRectifiable_of_measure_zero|exists_bijective_selectedCoordinateMap|countablyRectifiable_of_submanifold_cover|PurelyUnrectifiable.mono)\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03",
+              "rg -n \"exists_ae_subset_biUnion_countable\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "rg -n -i \"besicovitch.?federer|structure theorem|null.?projection\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)",
+              "ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter03/ | grep CoordinateProjection (no match: module not built)",
+              "lake env lean /tmp/s3c-decomp/final/Challenge{0..5}.lean and /tmp/s3c-decomp/final/EndToEnd.lean (elaboration of exact frozen statements and full child/parent proofs)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot (project d09bc8a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace. It fixes coordinateProjection as the starProjection onto span{e_j : j ∈ J}, IsC1Submanifold, ForAlmostAllProjections, and the three conjunct Props.\n\nAvailable and used:\n- SimonGMT simon_lemma_3_2, imported by the contract via Chapter03/Rectifiable.lean: closes Lemma 3.2 directly. Its proof uses Measure.exists_ae_subset_biUnion_countable.\n- SimonGMT countablyRectifiable_of_measure_zero.\n- Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure and measure_null_of_locally_null, plus OuterMeasure.comap_apply.\n- Mathlib LipschitzOnWith.hausdorffMeasure_image_le, AntilipschitzWith.le_hausdorffMeasure_image and Isometry.hausdorffMeasure_image.\n- Mathlib euclideanHausdorffMeasure_def (μHE[n] = c_n·μH[n], c_n ∈ ℝ≥0) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\n- Mathlib LinearMap.exists_antilipschitzWith, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffAt.hasStrictFDerivAt and HasStrictFDerivAt.exists_lipschitzOnWith.\n- Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.span_eq_top_of_ne_zero, Submodule.exists_fun_fin_finrank_span_eq, LinearMap.finrank_range_of_inj and TopologicalSpace.isOpen_iUnion_countable.\n\nNo match:\n- Mathlib has no coordinateProjection, CountablyRectifiable, PurelyUnrectifiable or Besicovitch–Federer theorem.\n- SimonGMT has no Besicovitch–Federer theorem, so it is consumed as a hypothesis.\n- SimonGMT's exists_bijective_selectedCoordinateMap (Chapter03/CoordinateProjection.lean) is not built in the pinned package (no CoordinateProjection.olean) and not imported, so the child reproduces it. A full reproduction compiles with only import GMT.Ch03.Submission.\n\nWith these, all six child statements were fully proved in Lean using only the standard axioms."
+          }
+        ],
+        "parent_id": "root.section3_consequences-a1",
+        "child_id": "root.section3_consequences-a1.c1_image_null-a1",
+        "subproblem": {
+          "key": "c1_image_null",
+          "title": "C¹ maps on open sets send Lebesgue-null sets to Hⁿ-null sets",
+          "statement": "Let n, N ∈ ℕ, let V ⊆ ℝⁿ be open, and let ψ : ℝⁿ → ℝᴺ be C¹ on V. If T ⊆ V has Lebesgue outer measure Lⁿ(T) = 0, then Hⁿ(ψ(T)) = 0, where Hⁿ = μHE[n] is applied as an outer measure.",
+          "lean_statement": "∀ (n N : ℕ) (V T : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → T ⊆ V → volume T = 0 → μHE[n] (ψ '' T) = 0",
+          "lean_name": "section3_contDiffOn_image_null_of_volume_null",
+          "depends_on": [],
+          "natural_proof": "Source. Parent proof Part 2, step 4 (\"Lⁿ(T′) > 0 since Hⁿ(ψ(T′)) ≤ Lip(ψ|D)ⁿ Lⁿ(T′)\"). This makes explicit the measure step that is implicit in Simon's proof of Lemma 3.3 (chapter-03.txt lines 490-492).\n\nNotation. ℝ^d = Rn d. Hⁿ = μHE[n]. Lⁿ = volume on ℝⁿ. All measures are applied to arbitrary sets as outer measures.\n\nStatement. Let n, N ∈ ℕ, V ⊆ ℝⁿ open, ψ : ℝⁿ → ℝᴺ C¹ on V (ContDiffOn ℝ 1 ψ V), and T ⊆ V with Lⁿ(T) = 0. Then Hⁿ(ψ(T)) = 0.\n\nProof.\n\n1. Facts about Hⁿ.\n(a) μHE[n] = c_n · μH[n], where c_n := addHaarScalarFactor(volume on ℝⁿ, μH[n]) is a fixed element of ℝ≥0 (in particular finite) that does not depend on the ambient space (Mathlib MeasureTheory.Measure.euclideanHausdorffMeasure_def).\n(b) If f is K-Lipschitz on a subset s of a metric space, then μH[n](f(s)) ≤ K^n μH[n](s) (LipschitzOnWith.hausdorffMeasure_image_le). Multiplying by c_n gives Hⁿ(f(s)) ≤ K^n Hⁿ(s).\n(c) On ℝⁿ itself, Hⁿ = Lⁿ (EuclideanSpace.euclideanHausdorffMeasure_eq_volume).\n\n2. Local Lipschitz property. Let u ∈ T. Since u ∈ V and V is open, ψ is C¹ on a neighbourhood of u, so ψ is strictly differentiable at u (ContDiffAt.hasStrictFDerivAt). Hence ψ is Lipschitz on some neighbourhood t_u of u (HasStrictFDerivAt.exists_lipschitzOnWith; classically, apply the mean value inequality on a ball around u on which ‖Dψ‖ ≤ ‖Dψ(u)‖ + 1). That is, there is K_u ≥ 0 with |ψ(a) − ψ(b)| ≤ K_u |a − b| for all a, b ∈ t_u.\n\n3. Local nullity. By 1(b) applied to the set T ∩ t_u ⊆ t_u, and 1(c):\nHⁿ(ψ(T ∩ t_u)) ≤ K_u^n Hⁿ(T ∩ t_u) = K_u^n Lⁿ(T ∩ t_u) ≤ K_u^n Lⁿ(T) = 0.\n\n4. Countable cover. ℝⁿ is second countable, so (Lindelöf) a countable subfamily of the relative neighbourhoods T ∩ t_u (u ∈ T) covers T, say T ∩ t_{u_k} for k ∈ ℕ. Then ψ(T) = ⋃_k ψ(T ∩ t_{u_k}). By countable subadditivity of the outer measure Hⁿ, Hⁿ(ψ(T)) ≤ Σ_k Hⁿ(ψ(T ∩ t_{u_k})) = 0.\nIn Lean: apply measure_null_of_locally_null to the outer measure B ↦ μHE[n](ψ(B)) on ℝⁿ (OuterMeasure.comap ψ μHE[n], with comap_apply), using T ∩ t_u ∈ 𝓝[T] u. ∎\n\nRemark. The case n = 0 is included: the argument applies verbatim, although Lⁿ(T) = 0 then already forces T = ∅. Measurability of T is never used.",
+          "proof_key_steps": [
+            "Hⁿ = c_n·μH[n] with c_n a fixed finite constant; Hⁿ = Lⁿ on ℝⁿ; a K-Lipschitz map increases Hⁿ by at most a factor Kⁿ.",
+            "Each u ∈ T has a neighbourhood t_u on which ψ is Lipschitz, since C¹ near u implies strictly differentiable at u.",
+            "Hⁿ(ψ(T ∩ t_u)) ≤ K_uⁿ Lⁿ(T ∩ t_u) = 0.",
+            "By second countability, countably many t_u cover T; countable subadditivity gives Hⁿ(ψ(T)) = 0."
+          ]
+        },
+        "audit": {
+          "key": "c1_image_null",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All hypotheses match. C¹ regularity on the open domain gives local Lipschitz bounds; Hausdorff normalization and its equality with domain volume give local image nullity. Second countability and OuterMeasure.comap give global nullity without assuming T measurable, including dimension zero."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-c1-image-null-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-c1-image-null-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-c1-image-null-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.section3_consequences-a1.coordinate_projection_injective-a1",
+      "key": "coordinate_projection_injective",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-coordinate-projection-injective-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-injective-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "rg -n \"^def (coordinateProjection|IsC1Submanifold|RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|ForAlmostAllProjections)|^noncomputable def coordinateProjection\" project/GMT/Ch03/Contract.lean",
+              "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+              "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "rg -n \"theorem comap_apply\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n \"theorem (MeasureTheory.Measure.euclideanHausdorffMeasure_def|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith\" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "rg -n \"theorem approximates_deriv_on_nhds\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "rg -n \"theorem ContDiffAt.hasStrictFDerivAt |theorem HasStrictFDerivAt.exists_lipschitzOnWith \" mathlib/Mathlib/Analysis/Calculus",
+              "rg -n \"theorem eq_starProjection_of_mem_of_inner_eq_zero\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "rg -n \"theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)\" mathlib/Mathlib/LinearAlgebra",
+              "rg -n \"theorem LinearMap.finrank_range_of_inj\" mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "rg -n \"theorem isOpen_iUnion_countable\" mathlib/Mathlib/Topology/Bases.lean",
+              "grep -n of_le_mul_dist mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "rg -n -i \"coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable\" mathlib/Mathlib (no match)",
+              "rg -n \"theorem (simon_lemma_3_2|countablyRectifiable_of_measure_zero|exists_bijective_selectedCoordinateMap|countablyRectifiable_of_submanifold_cover|PurelyUnrectifiable.mono)\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03",
+              "rg -n \"exists_ae_subset_biUnion_countable\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "rg -n -i \"besicovitch.?federer|structure theorem|null.?projection\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)",
+              "ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter03/ | grep CoordinateProjection (no match: module not built)",
+              "lake env lean /tmp/s3c-decomp/final/Challenge{0..5}.lean and /tmp/s3c-decomp/final/EndToEnd.lean (elaboration of exact frozen statements and full child/parent proofs)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot (project d09bc8a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace. It fixes coordinateProjection as the starProjection onto span{e_j : j ∈ J}, IsC1Submanifold, ForAlmostAllProjections, and the three conjunct Props.\n\nAvailable and used:\n- SimonGMT simon_lemma_3_2, imported by the contract via Chapter03/Rectifiable.lean: closes Lemma 3.2 directly. Its proof uses Measure.exists_ae_subset_biUnion_countable.\n- SimonGMT countablyRectifiable_of_measure_zero.\n- Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure and measure_null_of_locally_null, plus OuterMeasure.comap_apply.\n- Mathlib LipschitzOnWith.hausdorffMeasure_image_le, AntilipschitzWith.le_hausdorffMeasure_image and Isometry.hausdorffMeasure_image.\n- Mathlib euclideanHausdorffMeasure_def (μHE[n] = c_n·μH[n], c_n ∈ ℝ≥0) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\n- Mathlib LinearMap.exists_antilipschitzWith, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffAt.hasStrictFDerivAt and HasStrictFDerivAt.exists_lipschitzOnWith.\n- Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.span_eq_top_of_ne_zero, Submodule.exists_fun_fin_finrank_span_eq, LinearMap.finrank_range_of_inj and TopologicalSpace.isOpen_iUnion_countable.\n\nNo match:\n- Mathlib has no coordinateProjection, CountablyRectifiable, PurelyUnrectifiable or Besicovitch–Federer theorem.\n- SimonGMT has no Besicovitch–Federer theorem, so it is consumed as a hypothesis.\n- SimonGMT's exists_bijective_selectedCoordinateMap (Chapter03/CoordinateProjection.lean) is not built in the pinned package (no CoordinateProjection.olean) and not imported, so the child reproduces it. A full reproduction compiles with only import GMT.Ch03.Submission.\n\nWith these, all six child statements were fully proved in Lean using only the standard axioms."
+          }
+        ],
+        "parent_id": "root.section3_consequences-a1",
+        "child_id": "root.section3_consequences-a1.coordinate_projection_injective-a1",
+        "subproblem": {
+          "key": "coordinate_projection_injective",
+          "title": "Some coordinate projection is injective on a given n-plane",
+          "statement": "For all N, n ∈ ℕ and every linear subspace L ⊆ ℝᴺ = EuclideanSpace ℝ (Fin N) with dim L = n, there is a set J ⊆ Fin N with exactly n elements such that coordinateProjection J is injective on L. Here coordinateProjection J is the orthogonal projection of ℝᴺ onto span{e_j : j ∈ J}.",
+          "lean_statement": "∀ (N n : ℕ) (L : Submodule ℝ (Rn N)), finrank ℝ L = n → ∃ J : Finset (Fin N), J.card = n ∧ Set.InjOn (coordinateProjection J) (L : Set (Rn N))",
+          "lean_name": "section3_exists_coordinateProjection_injOn",
+          "depends_on": [],
+          "natural_proof": "Source. Simon, Ch. 3, proof of Lemma 3.3, first claim (chapter-03.txt lines 482-489, printed pp. 78-79); parent proof Part 2, step 3.\n\nNotation.\n- ℝᴺ = Rn N = EuclideanSpace ℝ (Fin N), with standard basis vectors e_j and j-th coordinate x_j of x.\n- K_J := span{e_j : j ∈ J}.\n- p_J := coordinateProjection J, by definition the orthogonal projection (Submodule.starProjection) of ℝᴺ onto K_J.\n\nStatement. For all N, n and every subspace L ⊆ ℝᴺ with dim L = n, there is J ⊆ Fin N with #J = n such that p_J is injective on L.\n\nProof.\n\n1. Coordinate formula. Let J ⊆ Fin N and x ∈ ℝᴺ, and put y := Σ_{j∈J} x_j e_j. So y_i = x_i for i ∈ J and y_i = 0 for i ∉ J.\nEach e_j with j ∈ J lies in K_J, hence y ∈ K_J. For j ∈ J, ⟨x − y, e_j⟩ = x_j − y_j = 0. Every w ∈ K_J is a finite linear combination of such e_j, so ⟨x − y, w⟩ = 0 for all w ∈ K_J (induction on the span).\nThe orthogonal projection onto K_J is the unique v ∈ K_J with x − v ⊥ K_J (Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero). Hence p_J x = y, that is:\n(p_J x)_i = x_i if i ∈ J, and (p_J x)_i = 0 if i ∉ J.\n\n2. The coordinate functionals span L*. For j ∈ Fin N, let φ_j ∈ L* be φ_j(x) := x_j for x ∈ L.\nIf x ∈ L and x ≠ 0, some coordinate x_j ≠ 0, i.e. φ_j(x) ≠ 0.\nIn a finite-dimensional space, a set of linear functionals that detects every nonzero vector spans the dual (Mathlib Submodule.span_eq_top_of_ne_zero). Indeed, suppose W := span{φ_j} ≠ L*. Then some nonzero functional on L* vanishes on W. Since L → L** is an isomorphism, that functional is evaluation at some x ∈ L with x ≠ 0, and φ_j(x) = 0 for all j — a contradiction.\nSo span{φ_j : j ∈ Fin N} = L*.\n\n3. A basis of L* made of coordinate functionals. We have dim L* = dim L = n (Subspace.dual_finrank_eq). A spanning set of an n-dimensional space contains n linearly independent elements that span it (Mathlib Submodule.exists_fun_fin_finrank_span_eq, reindexed along finrank(span{φ_j}) = finrank L* = n by finCongr).\nSo there are j(1), …, j(n) ∈ Fin N such that φ_{j(1)}, …, φ_{j(n)} are linearly independent and span L*.\nThe indices are pairwise distinct: if j(a) = j(b), then φ_{j(a)} = φ_{j(b)}, and a linearly independent family is injective, so a = b.\n\n4. The selected coordinates determine elements of L. Let z ∈ L with z_{j(i)} = 0 for i = 1, …, n. The functionals f ∈ L* with f(z) = 0 form a subspace containing every φ_{j(i)}, hence all of span{φ_{j(i)}} = L*. Since evaluation L → L** is injective, z = 0.\n\n5. Put J := {j(1), …, j(n)}; by step 3, #J = n. Let x, x' ∈ L with p_J x = p_J x'. By step 1, x_{j(i)} = (p_J x)_{j(i)} = (p_J x')_{j(i)} = x'_{j(i)} for every i. Then z := x − x' ∈ L has z_{j(i)} = 0 for all i, so z = 0 by step 4, i.e. x = x'. Hence p_J is injective on L. ∎\n\nRemarks.\n(a) For n = 0 the argument works as written: L = 0, the family in step 3 is empty, and J = ∅.\n(b) Simon's printed version: a matrix whose rows form a basis v_1, …, v_n of L has n linearly independent columns j₁ < ⋯ < jₙ (a nonsingular n × n minor), so p_J(v_1), …, p_J(v_n) are independent. Steps 2-4 are the dual form of this rank statement, as in the parent proof.\n(c) SimonGMT Chapter03/CoordinateProjection.lean (exists_bijective_selectedCoordinateMap) contains steps 2-4. That module is not built in the pinned package and not imported by the contract, so the argument must be reproduced. It compiles with only import GMT.Ch03.Submission.",
+          "proof_key_steps": [
+            "Coordinate formula: (p_J x)_i = x_i for i ∈ J and 0 otherwise, by the characterization of orthogonal projection.",
+            "The restricted coordinate functionals φ_j span L*, because a nonzero vector has a nonzero coordinate.",
+            "Extract coordinate functionals φ_{j(1)}, …, φ_{j(n)} forming a basis of L*; the indices j(i) are distinct.",
+            "A vector of L whose selected coordinates all vanish is 0.",
+            "J := {j(1), …, j(n)} has #J = n, and p_J is injective on L."
+          ]
+        },
+        "audit": {
+          "key": "coordinate_projection_injective",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type includes precisely the stated dimension hypothesis. The projection formula, dual spanning argument and basis extraction produce n distinct coordinates and prove injectivity on L. The argument includes n = 0 and requires no undeclared dependency."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.section3_consequences-a1.rectifiable_decomposition-a1",
+      "key": "rectifiable_decomposition",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-rectifiable-decomposition-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiable-decomposition-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "rg -n \"^def (coordinateProjection|IsC1Submanifold|RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|ForAlmostAllProjections)|^noncomputable def coordinateProjection\" project/GMT/Ch03/Contract.lean",
+              "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+              "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "rg -n \"theorem comap_apply\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n \"theorem (MeasureTheory.Measure.euclideanHausdorffMeasure_def|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith\" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "rg -n \"theorem approximates_deriv_on_nhds\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "rg -n \"theorem ContDiffAt.hasStrictFDerivAt |theorem HasStrictFDerivAt.exists_lipschitzOnWith \" mathlib/Mathlib/Analysis/Calculus",
+              "rg -n \"theorem eq_starProjection_of_mem_of_inner_eq_zero\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "rg -n \"theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)\" mathlib/Mathlib/LinearAlgebra",
+              "rg -n \"theorem LinearMap.finrank_range_of_inj\" mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "rg -n \"theorem isOpen_iUnion_countable\" mathlib/Mathlib/Topology/Bases.lean",
+              "grep -n of_le_mul_dist mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "rg -n -i \"coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable\" mathlib/Mathlib (no match)",
+              "rg -n \"theorem (simon_lemma_3_2|countablyRectifiable_of_measure_zero|exists_bijective_selectedCoordinateMap|countablyRectifiable_of_submanifold_cover|PurelyUnrectifiable.mono)\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03",
+              "rg -n \"exists_ae_subset_biUnion_countable\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "rg -n -i \"besicovitch.?federer|structure theorem|null.?projection\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)",
+              "ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter03/ | grep CoordinateProjection (no match: module not built)",
+              "lake env lean /tmp/s3c-decomp/final/Challenge{0..5}.lean and /tmp/s3c-decomp/final/EndToEnd.lean (elaboration of exact frozen statements and full child/parent proofs)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot (project d09bc8a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace. It fixes coordinateProjection as the starProjection onto span{e_j : j ∈ J}, IsC1Submanifold, ForAlmostAllProjections, and the three conjunct Props.\n\nAvailable and used:\n- SimonGMT simon_lemma_3_2, imported by the contract via Chapter03/Rectifiable.lean: closes Lemma 3.2 directly. Its proof uses Measure.exists_ae_subset_biUnion_countable.\n- SimonGMT countablyRectifiable_of_measure_zero.\n- Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure and measure_null_of_locally_null, plus OuterMeasure.comap_apply.\n- Mathlib LipschitzOnWith.hausdorffMeasure_image_le, AntilipschitzWith.le_hausdorffMeasure_image and Isometry.hausdorffMeasure_image.\n- Mathlib euclideanHausdorffMeasure_def (μHE[n] = c_n·μH[n], c_n ∈ ℝ≥0) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\n- Mathlib LinearMap.exists_antilipschitzWith, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffAt.hasStrictFDerivAt and HasStrictFDerivAt.exists_lipschitzOnWith.\n- Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.span_eq_top_of_ne_zero, Submodule.exists_fun_fin_finrank_span_eq, LinearMap.finrank_range_of_inj and TopologicalSpace.isOpen_iUnion_countable.\n\nNo match:\n- Mathlib has no coordinateProjection, CountablyRectifiable, PurelyUnrectifiable or Besicovitch–Federer theorem.\n- SimonGMT has no Besicovitch–Federer theorem, so it is consumed as a hypothesis.\n- SimonGMT's exists_bijective_selectedCoordinateMap (Chapter03/CoordinateProjection.lean) is not built in the pinned package (no CoordinateProjection.olean) and not imported, so the child reproduces it. A full reproduction compiles with only import GMT.Ch03.Submission.\n\nWith these, all six child statements were fully proved in Lean using only the standard axioms."
+          }
+        ],
+        "parent_id": "root.section3_consequences-a1",
+        "child_id": "root.section3_consequences-a1.rectifiable_decomposition-a1",
+        "subproblem": {
+          "key": "rectifiable_decomposition",
+          "title": "Lemma 3.2: rectifiable / purely unrectifiable decomposition",
+          "statement": "For all n, ℓ ∈ ℕ and every A ⊆ ℝ^{n+ℓ}, suppose there are A_j ⊆ ℝ^{n+ℓ} (j ∈ ℕ) with A = ⋃_j A_j and Hⁿ(A_j) < ∞ for every j. Then:\n(i) there are R, P ⊆ ℝ^{n+ℓ} with A = R ∪ P, R ∩ P = ∅, R countably n-rectifiable and P purely n-unrectifiable;\n(ii) if moreover A is Hⁿ-measurable (NullMeasurableSet A μHE[n]), then there are such R, P with R in addition a Borel set.\nHere Hⁿ = μHE[n] is applied as an outer measure.",
+          "lean_statement": "RectifiableDecomposition",
+          "lean_name": "section3_rectifiableDecomposition",
+          "depends_on": [],
+          "natural_proof": "Source. Simon, Ch. 3, Lemma 3.2 and its proof (chapter-03.txt lines 449-469, printed p. 78); parent proof Part 1, step 1.\n\nNotation. ℝ^d = Rn d = EuclideanSpace ℝ (Fin d). Hⁿ = μHE[n], applied to arbitrary sets as an outer measure. CountablyRectifiable and PurelyUnrectifiable are the SimonGMT predicates opened by the contract.\n\nStatement to prove (RectifiableDecomposition). For all n, ℓ and A ⊆ ℝ^{n+ℓ}, assume there are A_j (j ∈ ℕ) with A = ⋃_j A_j and Hⁿ(A_j) < ∞ for all j. Then:\n(i) ∃ R P, A = R ∪ P ∧ Disjoint R P ∧ CountablyRectifiable n R ∧ PurelyUnrectifiable n P;\n(ii) if NullMeasurableSet A μHE[n], then ∃ R P, A = R ∪ P ∧ Disjoint R P ∧ MeasurableSet R ∧ CountablyRectifiable n R ∧ PurelyUnrectifiable n P.\n\nProof.\n\n1. Fix n, ℓ, A and (A_j) as in the hypothesis. From A = ⋃_j A_j we get the cover A ⊆ ⋃_j A_j, and Hⁿ(A_j) < ∞ for every j.\n\n2. Apply the kernel-checked theorem Poincare.SimonGMT.Chapter03.simon_lemma_3_2 (Chapter03/Rectifiable.lean; this module is imported by the contract) with:\n- E := ℝ^{n+ℓ}, the given n and the set A;\n- the cover S := (A_j)_{j∈ℕ};\n- hcover : A ⊆ ⋃_j A_j and hfinite : ∀ j, μHE[n] (A_j) < ∞.\nIts first component is literally conclusion (i).\nIts second component states: if NullMeasurableSet A μHE[n], then ∃ R P, A = R ∪ P ∧ Disjoint R P ∧ MeasurableSet R ∧ NullMeasurableSet P μHE[n] ∧ CountablyRectifiable n R ∧ PurelyUnrectifiable n P. Discarding the conjunct NullMeasurableSet P gives conclusion (ii).\nThe library lemma and the contract use the same objects CountablyRectifiable, PurelyUnrectifiable and μHE[n], so no translation is needed. This proves RectifiableDecomposition.\n\n3. For completeness, here is the mathematics of the library proof. It is Simon lines 455-469, with Simon's α_j-supremum selection of closed sets R_ij replaced by an equivalent σ-finite exhaustion.\n(a) σ-finiteness. Let B_j ⊇ A_j be Borel with Hⁿ(B_j) = Hⁿ(A_j) < ∞ (measurable hulls). Then A ⊆ ⋃_j B_j, so μ := Hⁿ⌞A is σ-finite.\n(b) Exhaustion. Let C be the class of Borel, countably n-rectifiable subsets of ℝ^{n+ℓ}. C is closed under countable unions: interleave the countable families of Lipschitz maps via a pairing ℕ×ℕ → ℕ, and take the union of the Hⁿ-null exceptional sets. Since μ is σ-finite, there is a countable D ⊆ C such that μ(S ∖ ⋃D) = 0 for every S ∈ C (Mathlib Measure.exists_ae_subset_biUnion_countable). Put M := ⋃D; M is Borel and countably n-rectifiable.\n(c) A ∖ M is purely n-unrectifiable. Let S ⊆ A ∖ M be countably n-rectifiable, say S ⊆ M₀ ∪ ⋃_k F_k(ℝⁿ) with Hⁿ(M₀) = 0 and F_k Lipschitz. Let B be the union of a Borel Hⁿ-null hull of M₀ with the sets F_k(ℝⁿ); these are σ-compact, hence Borel. Then B ∈ C and S ⊆ B. So μ(B ∖ M) = Hⁿ((B ∖ M) ∩ A) = 0, and S ⊆ (B ∖ M) ∩ A gives Hⁿ(S) = 0.\n(d) For (i), take R := A ∩ M (countably rectifiable, being a subset of M) and P := A ∖ M.\n(e) For (ii), suppose A is Hⁿ-measurable; then so is A ∩ M. Choose a Borel R ⊆ A ∩ M with Hⁿ((A ∩ M) ∖ R) = 0, and put P := A ∖ R. Then A = R ∪ P disjointly, R is Borel and countably rectifiable, and P ⊆ (A ∖ M) ∪ ((A ∩ M) ∖ R). Any countably rectifiable R' ⊆ P splits as R' ∩ (A ∖ M), which is Hⁿ-null by (c), and R' ∩ ((A ∩ M) ∖ R), which is Hⁿ-null. Hence P is purely n-unrectifiable. ∎",
+          "proof_key_steps": [
+            "A = ⋃_j A_j gives the cover A ⊆ ⋃_j A_j with Hⁿ(A_j) < ∞.",
+            "SimonGMT simon_lemma_3_2 with S := (A_j) gives conclusion (i) directly. Its measurable part gives (ii) after dropping NullMeasurableSet P.",
+            "The library argument: σ-finite exhaustion by Borel countably rectifiable sets gives M; A ∖ M is purely unrectifiable; take R := A ∩ M, or a Borel inner approximation of it when A is Hⁿ-measurable."
+          ]
+        },
+        "audit": {
+          "key": "rectifiable_decomposition",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose matches RectifiableDecomposition exactly. The finite-measure union supplies the cover required by simon_lemma_3_2; dropping only NullMeasurableSet P yields the requested Borel-choice conclusion. Library compatibility and permitted axioms were checked. The supplied explanatory argument is sound."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-rectifiable-decomposition-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-rectifiable-decomposition-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-rectifiable-decomposition-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.section3_consequences-a1.chart_projection_positive-a1",
+      "key": "chart_projection_positive",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-chart-projection-positive-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-chart-projection-positive-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "rg -n \"^def (coordinateProjection|IsC1Submanifold|RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|ForAlmostAllProjections)|^noncomputable def coordinateProjection\" project/GMT/Ch03/Contract.lean",
+              "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+              "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "rg -n \"theorem comap_apply\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n \"theorem (MeasureTheory.Measure.euclideanHausdorffMeasure_def|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith\" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "rg -n \"theorem approximates_deriv_on_nhds\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "rg -n \"theorem ContDiffAt.hasStrictFDerivAt |theorem HasStrictFDerivAt.exists_lipschitzOnWith \" mathlib/Mathlib/Analysis/Calculus",
+              "rg -n \"theorem eq_starProjection_of_mem_of_inner_eq_zero\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "rg -n \"theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)\" mathlib/Mathlib/LinearAlgebra",
+              "rg -n \"theorem LinearMap.finrank_range_of_inj\" mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "rg -n \"theorem isOpen_iUnion_countable\" mathlib/Mathlib/Topology/Bases.lean",
+              "grep -n of_le_mul_dist mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "rg -n -i \"coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable\" mathlib/Mathlib (no match)",
+              "rg -n \"theorem (simon_lemma_3_2|countablyRectifiable_of_measure_zero|exists_bijective_selectedCoordinateMap|countablyRectifiable_of_submanifold_cover|PurelyUnrectifiable.mono)\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03",
+              "rg -n \"exists_ae_subset_biUnion_countable\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "rg -n -i \"besicovitch.?federer|structure theorem|null.?projection\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)",
+              "ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter03/ | grep CoordinateProjection (no match: module not built)",
+              "lake env lean /tmp/s3c-decomp/final/Challenge{0..5}.lean and /tmp/s3c-decomp/final/EndToEnd.lean (elaboration of exact frozen statements and full child/parent proofs)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot (project d09bc8a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace. It fixes coordinateProjection as the starProjection onto span{e_j : j ∈ J}, IsC1Submanifold, ForAlmostAllProjections, and the three conjunct Props.\n\nAvailable and used:\n- SimonGMT simon_lemma_3_2, imported by the contract via Chapter03/Rectifiable.lean: closes Lemma 3.2 directly. Its proof uses Measure.exists_ae_subset_biUnion_countable.\n- SimonGMT countablyRectifiable_of_measure_zero.\n- Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure and measure_null_of_locally_null, plus OuterMeasure.comap_apply.\n- Mathlib LipschitzOnWith.hausdorffMeasure_image_le, AntilipschitzWith.le_hausdorffMeasure_image and Isometry.hausdorffMeasure_image.\n- Mathlib euclideanHausdorffMeasure_def (μHE[n] = c_n·μH[n], c_n ∈ ℝ≥0) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\n- Mathlib LinearMap.exists_antilipschitzWith, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffAt.hasStrictFDerivAt and HasStrictFDerivAt.exists_lipschitzOnWith.\n- Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.span_eq_top_of_ne_zero, Submodule.exists_fun_fin_finrank_span_eq, LinearMap.finrank_range_of_inj and TopologicalSpace.isOpen_iUnion_countable.\n\nNo match:\n- Mathlib has no coordinateProjection, CountablyRectifiable, PurelyUnrectifiable or Besicovitch–Federer theorem.\n- SimonGMT has no Besicovitch–Federer theorem, so it is consumed as a hypothesis.\n- SimonGMT's exists_bijective_selectedCoordinateMap (Chapter03/CoordinateProjection.lean) is not built in the pinned package (no CoordinateProjection.olean) and not imported, so the child reproduces it. A full reproduction compiles with only import GMT.Ch03.Submission.\n\nWith these, all six child statements were fully proved in Lean using only the standard axioms."
+          }
+        ],
+        "parent_id": "root.section3_consequences-a1",
+        "child_id": "root.section3_consequences-a1.chart_projection_positive-a1",
+        "subproblem": {
+          "key": "chart_projection_positive",
+          "title": "Positive-measure chart pieces have a coordinate projection of positive measure",
+          "statement": "Let n, ℓ ∈ ℕ, let V ⊆ ℝⁿ be open, and let ψ : ℝⁿ → ℝ^{n+ℓ} be C¹ on V with Dψ(u) injective for every u ∈ V. If T ⊆ V has Lebesgue outer measure Lⁿ(T) > 0, then there is J ⊆ Fin(n+ℓ) with exactly n elements such that Hⁿ(coordinateProjection J (ψ(T))) > 0. Here Hⁿ = μHE[n] (outer measure), and coordinateProjection J is the orthogonal projection onto span{e_j : j ∈ J}.",
+          "lean_statement": "∀ (n ℓ : ℕ) (V T : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → T ⊆ V → 0 < volume T → ∃ J : Finset (Fin (n + ℓ)), J.card = n ∧ 0 < μHE[n] (coordinateProjection J '' (ψ '' T))",
+          "lean_name": "section3_chart_coordinateProjection_pos",
+          "depends_on": [
+            "coordinate_projection_injective"
+          ],
+          "natural_proof": "Source. Simon, Ch. 3, proof of Lemma 3.3 (chapter-03.txt lines 492-496, printed p. 79, via Ch. 2, Remark 4.4); parent proof Part 2, steps 4-5 (density point and local bi-Lipschitz estimate).\n\nNotation. ℝ^d = Rn d. Hⁿ = μHE[n] and Lⁿ = volume on ℝⁿ, both outer measures. p_J := coordinateProjection J. Dψ(u) := fderiv ℝ ψ u.\n\nStatement. Let n, ℓ ∈ ℕ, V ⊆ ℝⁿ open, ψ C¹ on V with Dψ(u) injective for every u ∈ V, and T ⊆ V with Lⁿ(T) > 0. Then there is J ⊆ Fin(n+ℓ) with #J = n and Hⁿ(p_J(ψ(T))) > 0.\n\nProof.\n\n1. Facts.\n(a) μHE[n] = c_n·μH[n] with a fixed constant c_n ∈ ℝ≥0 (euclideanHausdorffMeasure_def).\n(b) Hⁿ = Lⁿ on ℝⁿ (EuclideanSpace.euclideanHausdorffMeasure_eq_volume).\n(c) If g : X → Y between metric spaces satisfies dist(x, y) ≤ K·dist(g(x), g(y)) for all x, y, then μH[n](s) ≤ K^n μH[n](g(s)) for every s ⊆ X (AntilipschitzWith.le_hausdorffMeasure_image).\n(d) Hausdorff measure is intrinsic: for t ⊆ s ⊆ Z, μH[n](t) is the same whether computed in the metric subspace s or in Z (Isometry.hausdorffMeasure_image for the inclusion of s).\n\n2. Density point (Simon line 492). There is u₀ ∈ T such that Lⁿ(T ∩ U) > 0 for every neighbourhood U of u₀. Otherwise every u ∈ T has a neighbourhood U_u with Lⁿ(T ∩ U_u) = 0. Since ℝⁿ is second countable, countably many U_u cover T, and countable subadditivity gives Lⁿ(T) = 0, a contradiction (Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure).\n\n3. Choice of J (sibling coordinate_projection_injective). Since u₀ ∈ T ⊆ V, D := Dψ(u₀) : ℝⁿ → ℝ^{n+ℓ} is injective, so L := D(ℝⁿ) has dim L = n (LinearMap.finrank_range_of_inj and dim ℝⁿ = n). The sibling, applied with N := n + ℓ and this L, gives J ⊆ Fin(n+ℓ) with #J = n such that p_J is injective on L.\nThen A := p_J ∘ D : ℝⁿ → ℝ^{n+ℓ} is injective: if A v = A w, then p_J(Dv) = p_J(Dw) with Dv, Dw ∈ L, so Dv = Dw and v = w.\n\n4. Lower bound for A. A is an injective linear map on the finite-dimensional space ℝⁿ, so there is K > 0 with |v| ≤ K|Av| for all v ∈ ℝⁿ. For n ≥ 1 take K := 1/min_{|v|=1}|Av|, which is positive by compactness of the unit sphere and injectivity; for n = 0 any K > 0 works (Mathlib LinearMap.exists_antilipschitzWith with ker A = 0).\n\n5. Strict differentiability. This replaces the inverse function theorem in Simon's \"C¹ diffeomorphism\" step.\nPut Φ := p_J ∘ ψ : ℝⁿ → ℝ^{n+ℓ}. Since V is open, ψ is C¹ near u₀, hence strictly differentiable at u₀ with derivative D (ContDiffAt.hasStrictFDerivAt). Since p_J is continuous linear, Φ is strictly differentiable at u₀ with derivative A (chain rule).\nTherefore there is a neighbourhood s of u₀ with |Φ(x) − Φ(y) − A(x − y)| ≤ (2K)⁻¹|x − y| for all x, y ∈ s (HasStrictFDerivAt.approximates_deriv_on_nhds with constant (2K)⁻¹ > 0).\n\n6. Φ is anti-Lipschitz on s. For x, y ∈ s, by steps 4 and 5:\n|x − y| ≤ K|A(x − y)| ≤ K(|Φ(x) − Φ(y)| + |Φ(x) − Φ(y) − A(x − y)|) ≤ K|Φ(x) − Φ(y)| + |x − y|/2.\nHence |x − y| ≤ 2K|Φ(x) − Φ(y)|.\n\n7. Measure estimate. Let T' := T ∩ s. Since s is a neighbourhood of u₀, step 2 gives Lⁿ(T') > 0.\nApply fact (c) to the restriction g := Φ|_s : s → ℝ^{n+ℓ}, where s carries the induced metric and, by step 6, g satisfies the hypothesis with constant 2K. Apply it to T' ⊆ s, and use fact (d) to evaluate μH[n](T') in ℝⁿ. This gives μH[n](T') ≤ (2K)^n μH[n](Φ(T')). Multiplying by c_n: Hⁿ(T') ≤ (2K)^n Hⁿ(Φ(T')).\nSince Hⁿ(T') = Lⁿ(T') > 0 by fact (b), and (2K)^n < ∞, we get Hⁿ(Φ(T')) > 0.\nEquivalently, as in the parent proof: Φ|_s is injective with a 2K-Lipschitz inverse on Φ(s). The parent's further composition with the isometry ι_J⁻¹ : span{e_j : j ∈ J} → ℝⁿ changes no Hausdorff measure, so it is omitted.\n\n8. Conclusion. Φ(T') = p_J(ψ(T')) ⊆ p_J(ψ(T)), so Hⁿ(p_J(ψ(T))) ≥ Hⁿ(Φ(T')) > 0, and #J = n. ∎\n\nRemark. For n = 0 every step remains valid: T = {0}, L = 0, J = ∅, p_∅ = 0, and H⁰ is counting measure. Measurability of T is never used.",
+          "proof_key_steps": [
+            "There is a density-type point u₀ ∈ T: every neighbourhood of u₀ meets T in positive Lebesgue outer measure.",
+            "The sibling coordinate_projection_injective, applied to L = range Dψ(u₀), gives J with #J = n such that A = p_J ∘ Dψ(u₀) is injective.",
+            "Injectivity gives |v| ≤ K|Av|. Strict differentiability of Φ = p_J ∘ ψ at u₀ gives |Φx − Φy − A(x−y)| ≤ |x−y|/(2K) on a neighbourhood s.",
+            "Hence |x − y| ≤ 2K|Φx − Φy| on s.",
+            "The anti-Lipschitz bound gives Hⁿ(T ∩ s) ≤ (2K)ⁿ Hⁿ(Φ(T ∩ s)). Since Hⁿ(T ∩ s) = Lⁿ(T ∩ s) > 0 and Φ(T ∩ s) ⊆ p_J(ψ(T)), the projection has positive measure."
+          ]
+        },
+        "audit": {
+          "key": "chart_projection_positive",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proof uses its declared coordinate-injectivity dependency correctly. Positive outer measure supplies a point with positive measure in every relative neighborhood. The injective projected derivative and strict differentiability yield the stated anti-Lipschitz bound, whose Hausdorff estimate forces positive projected measure. No measurability or global chart injectivity is missing; n = 0 is covered."
+        },
+        "resolved_dependencies": [
+          "root.section3_consequences-a1.coordinate_projection_injective-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.section3_consequences-a1.rectifiability_theorem-a1",
+      "key": "rectifiability_theorem",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-rectifiability-theorem-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiability-theorem-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "rg -n \"^def (coordinateProjection|IsC1Submanifold|RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|ForAlmostAllProjections)|^noncomputable def coordinateProjection\" project/GMT/Ch03/Contract.lean",
+              "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+              "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "rg -n \"theorem comap_apply\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n \"theorem (MeasureTheory.Measure.euclideanHausdorffMeasure_def|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith\" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "rg -n \"theorem approximates_deriv_on_nhds\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "rg -n \"theorem ContDiffAt.hasStrictFDerivAt |theorem HasStrictFDerivAt.exists_lipschitzOnWith \" mathlib/Mathlib/Analysis/Calculus",
+              "rg -n \"theorem eq_starProjection_of_mem_of_inner_eq_zero\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "rg -n \"theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)\" mathlib/Mathlib/LinearAlgebra",
+              "rg -n \"theorem LinearMap.finrank_range_of_inj\" mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "rg -n \"theorem isOpen_iUnion_countable\" mathlib/Mathlib/Topology/Bases.lean",
+              "grep -n of_le_mul_dist mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "rg -n -i \"coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable\" mathlib/Mathlib (no match)",
+              "rg -n \"theorem (simon_lemma_3_2|countablyRectifiable_of_measure_zero|exists_bijective_selectedCoordinateMap|countablyRectifiable_of_submanifold_cover|PurelyUnrectifiable.mono)\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03",
+              "rg -n \"exists_ae_subset_biUnion_countable\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "rg -n -i \"besicovitch.?federer|structure theorem|null.?projection\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)",
+              "ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter03/ | grep CoordinateProjection (no match: module not built)",
+              "lake env lean /tmp/s3c-decomp/final/Challenge{0..5}.lean and /tmp/s3c-decomp/final/EndToEnd.lean (elaboration of exact frozen statements and full child/parent proofs)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot (project d09bc8a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace. It fixes coordinateProjection as the starProjection onto span{e_j : j ∈ J}, IsC1Submanifold, ForAlmostAllProjections, and the three conjunct Props.\n\nAvailable and used:\n- SimonGMT simon_lemma_3_2, imported by the contract via Chapter03/Rectifiable.lean: closes Lemma 3.2 directly. Its proof uses Measure.exists_ae_subset_biUnion_countable.\n- SimonGMT countablyRectifiable_of_measure_zero.\n- Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure and measure_null_of_locally_null, plus OuterMeasure.comap_apply.\n- Mathlib LipschitzOnWith.hausdorffMeasure_image_le, AntilipschitzWith.le_hausdorffMeasure_image and Isometry.hausdorffMeasure_image.\n- Mathlib euclideanHausdorffMeasure_def (μHE[n] = c_n·μH[n], c_n ∈ ℝ≥0) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\n- Mathlib LinearMap.exists_antilipschitzWith, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffAt.hasStrictFDerivAt and HasStrictFDerivAt.exists_lipschitzOnWith.\n- Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.span_eq_top_of_ne_zero, Submodule.exists_fun_fin_finrank_span_eq, LinearMap.finrank_range_of_inj and TopologicalSpace.isOpen_iUnion_countable.\n\nNo match:\n- Mathlib has no coordinateProjection, CountablyRectifiable, PurelyUnrectifiable or Besicovitch–Federer theorem.\n- SimonGMT has no Besicovitch–Federer theorem, so it is consumed as a hypothesis.\n- SimonGMT's exists_bijective_selectedCoordinateMap (Chapter03/CoordinateProjection.lean) is not built in the pinned package (no CoordinateProjection.olean) and not imported, so the child reproduces it. A full reproduction compiles with only import GMT.Ch03.Submission.\n\nWith these, all six child statements were fully proved in Lean using only the standard axioms."
+          }
+        ],
+        "parent_id": "root.section3_consequences-a1",
+        "child_id": "root.section3_consequences-a1.rectifiability_theorem-a1",
+        "subproblem": {
+          "key": "rectifiability_theorem",
+          "title": "Theorem 3.8 (rectifiability theorem for sets), given Theorem 3.6",
+          "statement": "Assume Simon Ch. 3, Theorem 3.6 in the form BesicovitchFedererProjectionTheorem: for all n, ℓ and every purely n-unrectifiable Q ⊆ ℝ^{n+ℓ} with Q = ⋃_j Q_j and Hⁿ(Q_j) < ∞, ForAlmostAllProjections (n+ℓ) n (p ↦ Hⁿ(p(Q)) = 0). Then Theorem 3.8 (RectifiabilityTheoremForSets) holds. That is, let n, ℓ ∈ ℕ and A ⊆ ℝ^{n+ℓ} with A = ⋃_j A_j and Hⁿ(A_j) < ∞, and suppose every B ⊆ A with Hⁿ(B) > 0 satisfies ¬ForAlmostAllProjections (n+ℓ) n (p ↦ Hⁿ(p(B)) = 0). Then A is countably n-rectifiable.",
+          "lean_statement": "BesicovitchFedererProjectionTheorem → RectifiabilityTheoremForSets",
+          "lean_name": "section3_rectifiabilityTheorem_of_besicovitchFederer",
+          "depends_on": [
+            "rectifiable_decomposition"
+          ],
+          "natural_proof": "Source. Simon, Ch. 3, Theorem 3.8 and the sentence preceding it (chapter-03.txt lines 535-548, printed p. 80); parent proof Part 3, step 6.\nErratum: line 540 \"by combining 3.2 and 3.7\" should read \"by combining 3.2 and 3.6\". Remark 3.7 is the converse direction, while the argument uses the null-projection Theorem 3.6, which is the hypothesis BesicovitchFedererProjectionTheorem here.\n\nNotation. ℝ^d = Rn d. Hⁿ = μHE[n], an outer measure.\n\nStatement. Assume BesicovitchFedererProjectionTheorem. Then RectifiabilityTheoremForSets holds.\n\nProof. Assume Theorem 3.6. Fix n, ℓ, A and (A_j) with A = ⋃_j A_j and Hⁿ(A_j) < ∞, together with the hypothesis\n(P): for every B ⊆ A with 0 < Hⁿ(B), ¬ForAlmostAllProjections (n+ℓ) n (p ↦ Hⁿ(p(B)) = 0).\n\n1. Apply the sibling rectifiable_decomposition (Lemma 3.2, first conclusion) to A with the same A_j. This gives A = R ∪ P with R countably n-rectifiable and P purely n-unrectifiable; disjointness is not needed.\n\n2. P ⊆ R ∪ P = A. For j ∈ ℕ put P_j := P ∩ A_j. Since P ⊆ A = ⋃_j A_j, we have P = ⋃_j P_j, and Hⁿ(P_j) ≤ Hⁿ(A_j) < ∞ by monotonicity.\n\n3. Theorem 3.6 applied to Q := P (purely n-unrectifiable) with Q_j := P_j gives ForAlmostAllProjections (n+ℓ) n (p ↦ Hⁿ(p(P)) = 0).\n\n4. If Hⁿ(P) > 0, then (P) with B := P (allowed since P ⊆ A) gives ¬ForAlmostAllProjections (n+ℓ) n (p ↦ Hⁿ(p(P)) = 0), contradicting step 3. Hence Hⁿ(P) = 0.\n\n5. Since R is countably n-rectifiable, there are M₀ with Hⁿ(M₀) = 0 and Lipschitz maps F_k : ℝⁿ → ℝ^{n+ℓ} (k ∈ ℕ) with R ⊆ M₀ ∪ ⋃_k F_k(ℝⁿ). Then A = R ∪ P ⊆ (M₀ ∪ P) ∪ ⋃_k F_k(ℝⁿ), and Hⁿ(M₀ ∪ P) ≤ Hⁿ(M₀) + Hⁿ(P) = 0. This is exactly Definition 1.1 for A, with exceptional set M₀ ∪ P and the same maps F_k. So A is countably n-rectifiable. ∎\n\nRemark. In the parent node, the hypothesis is discharged by the declared dependency Submission.besicovitchFedererProjectionTheorem_holds (node root.besicovitch_federer-a1).",
+          "proof_key_steps": [
+            "Lemma 3.2 (sibling rectifiable_decomposition) gives A = R ∪ P with R countably rectifiable and P purely unrectifiable.",
+            "P = ⋃_j (P ∩ A_j) with Hⁿ(P ∩ A_j) < ∞, so Theorem 3.6 (the hypothesis) gives null projections of P for almost all projections.",
+            "The hypothesis on positive-measure subsets of A, applied with B := P, forces Hⁿ(P) = 0.",
+            "Absorb P into the null exceptional set of R's Lipschitz cover; hence A is countably n-rectifiable."
+          ]
+        },
+        "audit": {
+          "key": "rectifiability_theorem",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The explicit BesicovitchFedererProjectionTheorem antecedent matches the prose. The decomposition child supplies P; intersections with the finite-measure cover give its required sigma-finiteness. Applying the subset hypothesis to P forces it null, and absorbing P into the exceptional set proves countable rectifiability. No circular reliance occurs."
+        },
+        "resolved_dependencies": [
+          "root.section3_consequences-a1.rectifiable_decomposition-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-rectifiability-theorem-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-rectifiability-theorem-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-rectifiability-theorem-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.section3_consequences-a1.coordinate_projection_criterion-a1",
+      "key": "coordinate_projection_criterion",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-coordinate-projection-criterion-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-criterion-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "rg -n \"^def (coordinateProjection|IsC1Submanifold|RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|ForAlmostAllProjections)|^noncomputable def coordinateProjection\" project/GMT/Ch03/Contract.lean",
+              "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+              "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "rg -n \"theorem comap_apply\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n \"theorem (MeasureTheory.Measure.euclideanHausdorffMeasure_def|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith\" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "rg -n \"theorem approximates_deriv_on_nhds\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "rg -n \"theorem ContDiffAt.hasStrictFDerivAt |theorem HasStrictFDerivAt.exists_lipschitzOnWith \" mathlib/Mathlib/Analysis/Calculus",
+              "rg -n \"theorem eq_starProjection_of_mem_of_inner_eq_zero\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "rg -n \"theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)\" mathlib/Mathlib/LinearAlgebra",
+              "rg -n \"theorem LinearMap.finrank_range_of_inj\" mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "rg -n \"theorem isOpen_iUnion_countable\" mathlib/Mathlib/Topology/Bases.lean",
+              "grep -n of_le_mul_dist mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "rg -n -i \"coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable\" mathlib/Mathlib (no match)",
+              "rg -n \"theorem (simon_lemma_3_2|countablyRectifiable_of_measure_zero|exists_bijective_selectedCoordinateMap|countablyRectifiable_of_submanifold_cover|PurelyUnrectifiable.mono)\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03",
+              "rg -n \"exists_ae_subset_biUnion_countable\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "rg -n -i \"besicovitch.?federer|structure theorem|null.?projection\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)",
+              "ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter03/ | grep CoordinateProjection (no match: module not built)",
+              "lake env lean /tmp/s3c-decomp/final/Challenge{0..5}.lean and /tmp/s3c-decomp/final/EndToEnd.lean (elaboration of exact frozen statements and full child/parent proofs)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot (project d09bc8a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace. It fixes coordinateProjection as the starProjection onto span{e_j : j ∈ J}, IsC1Submanifold, ForAlmostAllProjections, and the three conjunct Props.\n\nAvailable and used:\n- SimonGMT simon_lemma_3_2, imported by the contract via Chapter03/Rectifiable.lean: closes Lemma 3.2 directly. Its proof uses Measure.exists_ae_subset_biUnion_countable.\n- SimonGMT countablyRectifiable_of_measure_zero.\n- Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure and measure_null_of_locally_null, plus OuterMeasure.comap_apply.\n- Mathlib LipschitzOnWith.hausdorffMeasure_image_le, AntilipschitzWith.le_hausdorffMeasure_image and Isometry.hausdorffMeasure_image.\n- Mathlib euclideanHausdorffMeasure_def (μHE[n] = c_n·μH[n], c_n ∈ ℝ≥0) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\n- Mathlib LinearMap.exists_antilipschitzWith, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffAt.hasStrictFDerivAt and HasStrictFDerivAt.exists_lipschitzOnWith.\n- Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.span_eq_top_of_ne_zero, Submodule.exists_fun_fin_finrank_span_eq, LinearMap.finrank_range_of_inj and TopologicalSpace.isOpen_iUnion_countable.\n\nNo match:\n- Mathlib has no coordinateProjection, CountablyRectifiable, PurelyUnrectifiable or Besicovitch–Federer theorem.\n- SimonGMT has no Besicovitch–Federer theorem, so it is consumed as a hypothesis.\n- SimonGMT's exists_bijective_selectedCoordinateMap (Chapter03/CoordinateProjection.lean) is not built in the pinned package (no CoordinateProjection.olean) and not imported, so the child reproduces it. A full reproduction compiles with only import GMT.Ch03.Submission.\n\nWith these, all six child statements were fully proved in Lean using only the standard axioms."
+          }
+        ],
+        "parent_id": "root.section3_consequences-a1",
+        "child_id": "root.section3_consequences-a1.coordinate_projection_criterion-a1",
+        "subproblem": {
+          "key": "coordinate_projection_criterion",
+          "title": "Lemma 3.3 (coordinate projection criterion), given Lemma 1.2",
+          "statement": "Assume Simon Ch. 3, Lemma 1.2 in the form SubmanifoldCoverCharacterization: for all n, ℓ and M ⊆ ℝ^{n+ℓ}, M is countably n-rectifiable iff M ⊆ N₀ ∪ ⋃_j N_j with Hⁿ(N₀) = 0 and each N_j an n-dimensional embedded C¹ submanifold (IsC1Submanifold n). Then Lemma 3.3 (CoordinateProjectionCriterion) holds: for all n, ℓ ∈ ℕ and S ⊆ ℝ^{n+ℓ}, if Hⁿ(coordinateProjection J (S)) = 0 for every J ⊆ Fin(n+ℓ) with exactly n elements, then S is purely n-unrectifiable.",
+          "lean_statement": "SubmanifoldCoverCharacterization → CoordinateProjectionCriterion",
+          "lean_name": "section3_coordinateProjectionCriterion_of_submanifoldCover",
+          "depends_on": [
+            "c1_image_null",
+            "chart_projection_positive"
+          ],
+          "natural_proof": "Source. Simon, Ch. 3, Lemma 3.3 and its proof (chapter-03.txt lines 476-496, printed pp. 78-79); parent proof Part 2, steps 2 and 4.\nErratum: Def. 3.1 (line 446) \"if P contains\" should read \"if S contains\". This is how the definition is encoded: PurelyUnrectifiable n S := ∀ R ⊆ S, CountablyRectifiable n R → Hⁿ(R) = 0.\n\nNotation. ℝ^d = Rn d. Hⁿ = μHE[n] and Lⁿ = volume, both outer measures. p_J := coordinateProjection J.\n\nStatement. Assume SubmanifoldCoverCharacterization (Lemma 1.2). Then for all n, ℓ and S ⊆ ℝ^{n+ℓ} with Hⁿ(p_J(S)) = 0 for every J with #J = n, S is purely n-unrectifiable.\n\nProof. Assume Lemma 1.2. Fix n, ℓ and S with the projection hypothesis\n(H): Hⁿ(p_J(S)) = 0 whenever J ⊆ Fin(n+ℓ) and #J = n.\nLet R ⊆ S be countably n-rectifiable; we show Hⁿ(R) = 0. Suppose instead that Hⁿ(R) ≠ 0.\n\n1. Lemma 1.2, direction \"⇒\" (Simon line 490). Apply the assumed characterization to M := R. This gives N₀ ⊆ ℝ^{n+ℓ} with Hⁿ(N₀) = 0 and sets N_j (j ∈ ℕ), each with IsC1Submanifold n N_j, such that R ⊆ N₀ ∪ ⋃_j N_j.\n\n2. Choice of a submanifold (Simon line 491). R ⊆ N₀ ∪ ⋃_j (R ∩ N_j), so by countable subadditivity Hⁿ(R) ≤ Hⁿ(N₀) + Σ_j Hⁿ(R ∩ N_j) = Σ_j Hⁿ(R ∩ N_j). Since Hⁿ(R) ≠ 0, some j has Hⁿ(R ∩ N_j) ≠ 0. Fix it and write N := N_j.\n\n3. Charts. By IsC1Submanifold n N, each y ∈ N has:\n- an open set V_y ⊆ ℝⁿ;\n- an open set W_y ⊆ ℝ^{n+ℓ} with y ∈ W_y;\n- a map ψ_y : ℝⁿ → ℝ^{n+ℓ}, C¹ on V_y, with Dψ_y(u) injective for all u ∈ V_y and ψ_y(V_y) = W_y ∩ N.\nInjectivity and properness of ψ_y are not needed.\nThe open sets W_y (y ∈ N) cover N. Since ℝ^{n+ℓ} is second countable, there is a countable I ⊆ N with ⋃_{y∈I} W_y = ⋃_{y∈N} W_y ⊇ N (Lindelöf; Mathlib TopologicalSpace.isOpen_iUnion_countable).\n\n4. Choice of a chart. R ∩ N ⊆ ⋃_{y∈I} (R ∩ N ∩ W_y), so countable subadditivity gives y ∈ I with Hⁿ(R ∩ N ∩ W_y) ≠ 0. Write V := V_y and ψ := ψ_y.\n\n5. Let T := V ∩ ψ⁻¹(R) ⊆ V. Then ψ(T) = ψ(V) ∩ R = W_y ∩ N ∩ R, so Hⁿ(ψ(T)) ≠ 0.\n\n6. Apply the sibling c1_image_null with N := n + ℓ, V, T and ψ (V is open, ψ is C¹ on V, T ⊆ V). If Lⁿ(T) = 0, it would give Hⁿ(ψ(T)) = 0. Hence Lⁿ(T) > 0.\n\n7. Apply the sibling chart_projection_positive to n, ℓ, V, T and ψ (Dψ(u) is injective for u ∈ V). It gives J ⊆ Fin(n+ℓ) with #J = n and Hⁿ(p_J(ψ(T))) > 0. This is Simon lines 492-496: near a density point the coordinate projection is bi-Lipschitz on the chart image, so the projection of S ∩ N has positive measure.\n\n8. Since ψ(T) ⊆ R ⊆ S, we have p_J(ψ(T)) ⊆ p_J(S). So Hⁿ(p_J(S)) ≥ Hⁿ(p_J(ψ(T))) > 0, contradicting (H) for this J. Therefore Hⁿ(R) = 0. As R ⊆ S was an arbitrary countably n-rectifiable set, S is purely n-unrectifiable. ∎\n\nRemarks.\n- Only the forward direction of Lemma 1.2 is used.\n- No measurability of S or R is needed; all estimates use outer measure.\n- The argument is uniform in n. For n = 0 one can also argue directly, as in the parent proof: J = ∅ gives p_∅(S) = {0}, of H⁰-measure 1 unless S = ∅.",
+          "proof_key_steps": [
+            "Suppose R ⊆ S is countably rectifiable with Hⁿ(R) ≠ 0. Lemma 1.2 (⇒) covers R by a null set N₀ and C¹ submanifolds N_j.",
+            "Countable subadditivity gives j with Hⁿ(R ∩ N_j) ≠ 0. Lindelöf on the chart domains W_y then gives a chart (V, W, ψ) with Hⁿ(R ∩ N_j ∩ W) ≠ 0.",
+            "T := V ∩ ψ⁻¹(R) satisfies ψ(T) = R ∩ N_j ∩ W, so Lⁿ(T) > 0 by the sibling c1_image_null.",
+            "The sibling chart_projection_positive gives J with #J = n and Hⁿ(p_J(ψ(T))) > 0. But p_J(ψ(T)) ⊆ p_J(S), which is Hⁿ-null — a contradiction."
+          ]
+        },
+        "audit": {
+          "key": "coordinate_projection_criterion",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The explicit SubmanifoldCoverCharacterization antecedent matches the prose. Countable subadditivity and the chart cover select a positive-measure chart piece. The two declared children establish positive parameter measure and then positive coordinate-projection measure, contradicting the hypothesis. The proof is complete for arbitrary S."
+        },
+        "resolved_dependencies": [
+          "root.section3_consequences-a1.c1_image_null-a1",
+          "root.section3_consequences-a1.chart_projection_positive-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-criterion-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-criterion-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-criterion-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/task.md": "e75273998f7c4f95ebf065f0fad2d086525ca06c562b9d468f9786e0824e1b5d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/problem.md": "d450b947d5616531ac8cc4a99158db188c875f9e857bfcaf8b809a207631a989",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/problem.json": "8a4e29f58fc3cd9ec56e6ed45bec4c9008d5eb705e95bd016943fc957faf50db",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/reference-manifest.json": "b6a97248df40c5dc702e39c00119a850911686a21d507e00b0849f87a8d3d512",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/decomposition.json": "b1a5beb71ad4c6c67bc289d1e08011df585c5f73991ba5f7b9c058af4d95fb57",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/decomposition-audit.json": "b3456aef2ad548787af5916e5a54f44ca854033a6337aa460a1338915299fbf1",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/controller-contract.json": "31d3ac7a976c9c9beab4104bf5eed7a165f1f72155288ca9c3600d33f425a627",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-c1-image-null-a1/parent-child-handoff.json": "0ca568ed0a1af1f806dfbae061c89ed703c6d2e8fe3553fc753c5b1072695ea7",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-c1-image-null-a1/parent-supplied-plan.md": "dcdd7f4cf09b0ba425e924a1c37ec72ce62d786e18849dd551601cc72c220609",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-c1-image-null-a1/parent-supplied-natural-proof.md": "e4e92360fdbe59fa4f625aeddff16d20c73d5eb4d6520c9d5bdb0d1dee6748eb",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-c1-image-null-a1/parent-supplied-natural-proof.json": "6302afc38427a58649fc73b258e2f3db5a4b2f18b4f77a081ae6f997228b8b8e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-c1-image-null-a1/node.json": "3be5fccca66f74e7b60a272fdcae3d5f73f80ee2cafa3be3a18584241b4fee73",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-child-handoff.json": "cf198d6f33df085acf506f1efa591d67eeb917bf16465cda5189d13421f391f1",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-plan.md": "434371eec758acea45c8b5f8b6b6632b67ea020ff13db788f807cf497676ae20",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-natural-proof.md": "f75ab2c3d33393ad34734e024fc638cf36b932b227793c212bf841d501a46096",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-natural-proof.json": "1e152b6e70d03b3fd3f41452d60784d2f0d46b253dcf0019f703703f31c476c3",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-injective-a1/node.json": "d1482e3e88d4c4807ac949fd8a6cf7fecc8466c9f09ed1ef211068274700c847",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiable-decomposition-a1/parent-child-handoff.json": "8c2ed44d196f6baa39cbd58d93703eb7b184afd09b589a4db632cae8869009f2",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiable-decomposition-a1/parent-supplied-plan.md": "4edf92cd4b5841159e69e767a64cb6398bc5112ad3297fbc164f68d467ef09c6",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiable-decomposition-a1/parent-supplied-natural-proof.md": "f024ea56ad5e4e4a4990200ee9eaa5ab0a2b68db854c8a3a80244bfa7264a7d3",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiable-decomposition-a1/parent-supplied-natural-proof.json": "ffe8fdbb25a5a2a18ee95c3bdccf8d543ed3b61f620470f492fbd44642bd1e6b",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiable-decomposition-a1/node.json": "039097437291f0889dd9cbc09f2ca17e1a23b299a087aca7f51f6ca3bd661e90",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-chart-projection-positive-a1/parent-child-handoff.json": "b952b0ae15256d0e14f53d8e7ec72e5aaab5bae875747b8c95cc589449a64fc5",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-chart-projection-positive-a1/parent-supplied-plan.md": "4c1b2a7d83236d4cd88dec97901f90b367fc9bd00b23c307a726cd4be8f9921f",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-chart-projection-positive-a1/parent-supplied-natural-proof.md": "6e88f9b4d5ac45ce4630a40ce2b5d1cd53bcbe1a5e7db9fc6d10eb5136ea4e0c",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-chart-projection-positive-a1/parent-supplied-natural-proof.json": "42c19bec9ca5c81848edc95f6b0b8e36f338aa7765ca7144a7fedb069a4aa162",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-chart-projection-positive-a1/node.json": "e1609f14e7e0ab466aab8458bc122c413008514c47d0be0180318ea04b9fc7c7",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiability-theorem-a1/parent-child-handoff.json": "03e1fc27462562d97d57b79538a845d4b5109205589b9466f9754e766596aa57",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiability-theorem-a1/parent-supplied-plan.md": "2c7a758c6a96d65ad5d0f1b1c32b3d617daad1723a403665c260d716a42cb555",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiability-theorem-a1/parent-supplied-natural-proof.md": "fe77d52a8550d5883c4928d078220aff0f112801505b524340fc7895e78b6cbe",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiability-theorem-a1/parent-supplied-natural-proof.json": "ff835e107e70a1e98fb58b772d420cac518583db4f649f178856696e95b559ee",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-rectifiability-theorem-a1/node.json": "572b16d7e63c15d4fcb8309b093c90496b24e6157476c65df01f23f2e3aae5c1",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-criterion-a1/parent-child-handoff.json": "727d059e08cdf1998b4767c7e459ac03d0ea30ba8fd8bfdd9445c9c6cb62a4e4",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-criterion-a1/parent-supplied-plan.md": "7aae04ded082920ef450ce1a97b9839233b54c14b5df9c532f3404a90298653e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-criterion-a1/parent-supplied-natural-proof.md": "2c83cf5e305492fa9b0d5ca50333c4f069029ad863930e1133be8e81865d6c85",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-criterion-a1/parent-supplied-natural-proof.json": "710635a674548817ed6bae8d93652d2fcafe2a482f46781e4654b63dc5032fcc",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-section3-consequences-a1/children/root-section3-consequences-a1-coordinate-projection-criterion-a1/node.json": "2cb9358b179a08ae0a4dcc547415c4af9b06e4015869e7b90c5c6ae13e841881"
+  }
+}

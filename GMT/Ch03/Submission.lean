@@ -335,6 +335,17 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Simon Ch. 3, Lemma 3.2 (p. 78)** (`chapter-03.txt` lines 449–469). The pieces `Aⱼ` of
+`A = ⋃ⱼ Aⱼ` cover `A` with `Hⁿ(Aⱼ) < ∞`, so SimonGMT's `simon_lemma_3_2` applies with `S := Aj`.
+Its first part is the decomposition; its Borel-choice part also gives `NullMeasurableSet P`,
+which is dropped. -/
+theorem Submission.section3_rectifiableDecomposition : RectifiableDecomposition := by
+  rintro n ℓ A ⟨Aj, hA, hfin⟩
+  obtain ⟨hdecomp, hborel⟩ := Poincare.SimonGMT.Chapter03.simon_lemma_3_2 Aj hA.subset hfin
+  refine ⟨hdecomp, fun hAmeas ↦ ?_⟩
+  obtain ⟨R, P, hRP, hdisj, hR, -, hRrect, hPpure⟩ := hborel hAmeas
+  exact ⟨R, P, hRP, hdisj, hR, hRrect, hPpure⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
