@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ebd51d8080ab7bbb06320bed38695a7a6dcfb1a0a9b0d5c096d0041dc7e32532",
+  "git_delta": {
+    "base_commit": "c945379e02def02467361ecb59eb13f87bad2151",
+    "candidate_commit": "34701a1b0859c2a787ce725298862f37904aa7e4",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_cm_cutoff_integral_tendsto",
+    "diff_sha256": "1a52721d91cb3acf9f04e224d2e51ea17c386b823d4f19aefd28c4a0320c86a3",
+    "source_sha256": "7c54e61b94b9c595f79d1d470cfee7a87310ed6bc0cbbc21074c5bf2d221b92d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_cm_cutoff_integral_tendsto",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℕ → ℝ → ℝ) (A : ℕ → ℝ) (t R : ℝ), Measurable h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ j, Measurable (φ j)) → (∀ j s, 0 ≤ φ j s ∧ φ j s ≤ 1) → (∀ j s, s ≤ 1 → φ j s = 1) → (∀ j s, A j ^ 2 ≤ s → φ j s = 0) → (∀ j, 0 < A j) → Tendsto A atTop (𝓝 1) → 0 < t → (∀ j, t * A j ≤ R) → μ (closedBall y R) ≠ ∞ → Tendsto (fun j ↦ ∫ z, φ j (‖z - y‖ ^ 2 / t ^ 2) * h z ∂μ) atTop (𝓝 (∫ z in closedBall y t, h z ∂μ))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,15 @@
+{
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1.cutoff_integral_tendsto-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2531",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "34701a1b0859c2a787ce725298862f37904aa7e4",
+  "integrated_commit": "",
+  "proof_base_commit": "c945379e02def02467361ecb59eb13f87bad2151",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+  "requires": []
+}
