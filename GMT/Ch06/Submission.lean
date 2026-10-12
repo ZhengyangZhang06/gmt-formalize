@@ -359,6 +359,65 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The exhaustion function of Simon Ch. 6, 6.2 (p. 169, proof): for open `U ⊆ ℝ^P` there is a
+1-Lipschitz `φ` whose superlevel sets `{φ ≥ t}`, `t > 0`, are compact subsets of `U`, and which has
+a positive lower bound on every compact `K ⊆ U`.  With `g(x) = 1/(1 + |x|)`, take `φ = g` if
+`U = ℝ^P` and `φ = min(dist(·, ℝ^P ∖ U), g)` otherwise. -/
+theorem Submission.polyhedral_approx_exhaustion_function : ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ φ : Eucl P → ℝ, LipschitzWith 1 φ ∧ (∀ t : ℝ, 0 < t → IsCompact {x | t ≤ φ x} ∧ {x | t ≤ φ x} ⊆ U) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ K, δ ≤ φ x := by
+  intro P U hU
+  -- Step 1: `g(x) = 1/(1 + |x|)` is positive and 1-Lipschitz, and `{g ≥ t} ⊆ B̄(0, 1/t)`.
+  let g : Eucl P → ℝ := fun x => 1 / (1 + ‖x‖)
+  have hg_pos : ∀ x, 0 < g x := fun x => by positivity
+  have hg_lip : LipschitzWith 1 g := by
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    have hx : 0 < 1 + ‖x‖ := by positivity
+    have hy : 0 < 1 + ‖y‖ := by positivity
+    rw [Real.dist_eq, NNReal.coe_one, one_mul, dist_eq_norm,
+      div_sub_div _ _ hx.ne' hy.ne', abs_div, abs_of_pos (mul_pos hx hy), div_le_iff₀ (mul_pos hx hy)]
+    calc |1 * (1 + ‖y‖) - (1 + ‖x‖) * 1| = |‖y‖ - ‖x‖| := by ring_nf
+      _ ≤ ‖y - x‖ := abs_norm_sub_norm_le y x
+      _ = ‖x - y‖ := norm_sub_rev y x
+      _ ≤ ‖x - y‖ * ((1 + ‖x‖) * (1 + ‖y‖)) :=
+        le_mul_of_one_le_right (norm_nonneg _) (by nlinarith [norm_nonneg x, norm_nonneg y])
+  have hg_ball : ∀ t : ℝ, 0 < t → ∀ x, t ≤ g x → x ∈ closedBall (0 : Eucl P) (1 / t) := by
+    intro t ht x hx
+    have h1 : 0 < 1 + ‖x‖ := by positivity
+    have h2 : t * (1 + ‖x‖) ≤ 1 := (le_div_iff₀ h1).mp hx
+    rw [mem_closedBall, dist_zero_right, le_div_iff₀ ht]
+    nlinarith
+  -- Steps 2–3 share one argument: a 1-Lipschitz `φ ≤ g`, positive on `U` and `≤ 0` off `U`,
+  -- has compact superlevel sets `{φ ≥ t} ⊆ U` and a positive minimum on compact `K ⊆ U`.
+  suffices key : ∀ φ : Eucl P → ℝ, LipschitzWith 1 φ → (∀ x, φ x ≤ g x) → (∀ x ∈ U, 0 < φ x) →
+      (∀ x, x ∉ U → φ x ≤ 0) → LipschitzWith 1 φ ∧
+        (∀ t : ℝ, 0 < t → IsCompact {x | t ≤ φ x} ∧ {x | t ≤ φ x} ⊆ U) ∧
+        ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ K, δ ≤ φ x by
+    by_cases hUc : U = univ
+    · -- Step 2: `U = ℝ^P`, `φ = g`.
+      exact ⟨g, key g hg_lip (fun x => le_rfl) (fun x _ => hg_pos x)
+        (fun x hx => absurd (hUc ▸ mem_univ x) hx)⟩
+    · -- Step 3: `F = ℝ^P ∖ U` is closed and nonempty, `φ = min(dist(·, F), g)`.
+      have hne : (Uᶜ).Nonempty := nonempty_compl.mpr hUc
+      have hcl : IsClosed Uᶜ := hU.isClosed_compl
+      refine ⟨fun x => min (infDist x Uᶜ) (g x), key _ ?_ (fun x => min_le_right _ _)
+        (fun x hx => ?_) (fun x hx => ?_)⟩
+      · have h := (lipschitz_infDist_pt Uᶜ).min hg_lip
+        rwa [max_self] at h
+      · exact lt_min ((hcl.notMem_iff_infDist_pos hne).mp fun h => h hx) (hg_pos x)
+      · exact (min_le_left _ _).trans (infDist_zero_of_mem hx).le
+  intro φ hφ hφg hφpos hφneg
+  refine ⟨hφ, fun t ht => ⟨?_, fun x hx => ?_⟩, fun K hK hKU => ?_⟩
+  · -- `{φ ≥ t}` is closed and lies in `B̄(0, 1/t)`.
+    exact (isCompact_closedBall (0 : Eucl P) (1 / t)).of_isClosed_subset
+      (isClosed_le continuous_const hφ.continuous) fun x hx => hg_ball t ht x (hx.trans (hφg x))
+  · -- `φ ≤ 0 < t` off `U`.
+    by_contra hxU
+    exact absurd (ht.trans_le hx) (not_lt.mpr (hφneg x hxU))
+  · -- A positive minimum on `K` (`δ = 1` if `K = ∅`).
+    rcases K.eq_empty_or_nonempty with rfl | hKne
+    · exact ⟨1, one_pos, fun x hx => absurd hx (notMem_empty x)⟩
+    · obtain ⟨x₀, hx₀K, hmin⟩ := hK.exists_isMinOn hKne hφ.continuous.continuousOn
+      exact ⟨φ x₀, hφpos x₀ (hKU hx₀K), fun x hx => hmin hx⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
