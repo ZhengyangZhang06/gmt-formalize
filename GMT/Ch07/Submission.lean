@@ -451,6 +451,65 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 1.4**: approximate tangent planes are local and do not see `Hⁿ`-null
+modifications.  If `M' ⊆ M`, `V` is open, `x ∈ V` and `Hⁿ((M \ M') ∩ V) = 0`, then an
+approximate tangent plane of `M` at `x` is one of `M'`.  Given `f ∈ C_c(ℝᴾ)`, take
+`B_s(x) ⊆ V` and `spt f ⊆ B_L(0)`.  For `0 < r < s / L` the parts of `η_{x,r}(M)` and
+`η_{x,r}(M')` in `B_L(0)` differ inside `η_{x,r}((M \ M') ∩ V)`, which is `Hⁿ`-null because
+`η_{x,r}` is Lipschitz.  So the blow-up integrals agree for small `r` and have the same limit. -/
+theorem Submission.dtc_approxTangent_of_null_diff : ∀ (P n : ℕ) (M M' V : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), M' ⊆ M → IsOpen V → x ∈ V → μHE[n] ((M \ M') ∩ V) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q := by
+  intro P n M M' V x Q hMM' hV hxV hnull hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- `B_s(x) ⊆ V` and `spt f ⊆ B_L(0)`
+  obtain ⟨s, hs, hsV⟩ := Metric.isOpen_iff.mp hV x hxV
+  obtain ⟨L, hL, hfL⟩ := f.hasCompactSupport.isCompact.isBounded.subset_ball_lt 0 0
+  -- the blow-up integrals of `M` and `M'` agree for `0 < r < s / L`, so they have the same limit
+  refine (hT.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hs hL)] with r hr
+  have hr0 : 0 < r := hr.1
+  have hη : Poincare.SimonGMT.Chapter03.blowUpMap x r = fun y => r⁻¹ • (y - x) := rfl
+  rw [hη]
+  -- `f` vanishes off `B_L(0)`, so every set integral may be cut to `B_L(0)`
+  have hfB : ∀ y, y ∉ ball (0 : Euclid P) L → f y = 0 := fun y hy =>
+    image_eq_zero_of_notMem_tsupport fun h => hy (hfL h)
+  have hcut : ∀ S : Set (Euclid P),
+      ∫ y in S, f y ∂μHE[n] = ∫ y in ball (0 : Euclid P) L ∩ S, f y ∂μHE[n] := by
+    intro S
+    rw [← Measure.restrict_restrict measurableSet_ball]
+    exact (setIntegral_eq_integral_of_forall_compl_eq_zero hfB).symm
+  -- `η_{x,r}` is `r⁻¹`-Lipschitz, so it maps the `Hⁿ`-null set `(M \ M') ∩ V` to a null set
+  have hnullimg : μHE[n] ((fun y : Euclid P => r⁻¹ • (y - x)) '' ((M \ M') ∩ V)) = 0 := by
+    have hlip : LipschitzWith ‖r⁻¹‖₊ (fun y : Euclid P => r⁻¹ • (y - x)) :=
+      LipschitzWith.of_dist_le_mul fun a b =>
+        le_of_eq (by rw [dist_smul₀, dist_sub_right, coe_nnnorm])
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+      smul_eq_mul] at hnull ⊢
+    have hH : μH[(n : ℝ)] ((M \ M') ∩ V) = 0 := by
+      simpa [Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n] using hnull
+    have hle := hlip.hausdorffMeasure_image_le (Nat.cast_nonneg n) ((M \ M') ∩ V)
+    rw [hH, mul_zero, nonpos_iff_eq_zero] at hle
+    rw [hle, mul_zero]
+  -- in `B_L(0)`, `η_{x,r}(M)` and `η_{x,r}(M')` differ inside `η_{x,r}((M \ M') ∩ V)`
+  have hsub : (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M) \
+      (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M') ⊆
+      (fun y : Euclid P => r⁻¹ • (y - x)) '' ((M \ M') ∩ V) := by
+    rintro y ⟨⟨hyB, ⟨z, hz, rfl⟩⟩, hy'⟩
+    refine ⟨z, ⟨⟨hz, fun hz' => hy' ⟨hyB, z, hz', rfl⟩⟩, hsV ?_⟩, rfl⟩
+    rw [mem_ball_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le,
+      inv_mul_lt_iff₀ hr0] at hyB
+    have hrL := (lt_div_iff₀ hL).mp hr.2
+    rw [mem_ball, dist_eq_norm]
+    linarith
+  -- hence the two parts are `Hⁿ`-a.e. equal (`M' ⊆ M` gives the other inclusion)
+  have hae : (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M' : Set (Euclid P))
+      =ᵐ[μHE[n]] (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M) := by
+    rw [ae_eq_set]
+    constructor
+    · rw [sdiff_eq_empty.mpr (inter_subset_inter_right _ (image_mono hMM'))]
+      exact measure_empty
+    · exact measure_mono_null hsub hnullimg
+  rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' M'), Measure.restrict_congr_set hae]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
