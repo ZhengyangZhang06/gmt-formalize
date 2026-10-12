@@ -451,6 +451,104 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The cut-off `ζ` in the proof of **Simon 7.5.11** (chapter-07.txt lines 1006–1011), with the
+correction `ζ = ∏ⱼ (1 - φⱼ)`; the book prints `ζ = ∏ φⱼ`.  Here `φⱼ(x) = φ₀(σⱼ⁻¹ (x - pⱼ))`, where
+the smooth bump `φ₀` equals `1` on `B̄(0, 1)` and has support `B(0, 3/2)`, and `c₀` is a Lipschitz
+constant of `φ₀`.  Then `1 - ζ ≤ Σⱼ φⱼ ≤ Σⱼ 1_{B(pⱼ, 2σⱼ)}` and
+`‖Dζ‖ ≤ Σⱼ ‖Dφⱼ‖ ≤ Σⱼ (c₀/σⱼ) 1_{B(pⱼ, 2σⱼ)}`. -/
+theorem Submission.regcomp_smooth_cutoff_product : ∀ (P : ℕ), ∃ c₀ : ℝ, 0 ≤ c₀ ∧ ∀ (J : ℕ) (p : Fin J → Euclid P) (σ : Fin J → ℝ), (∀ j, 0 < σ j) → ∃ ζ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ j, ∀ x ∈ ball (p j) (σ j), ζ x = 0) ∧ (∀ x, 1 - ζ x ≤ ∑ j, (ball (p j) (2 * σ j)).indicator (fun _ => (1 : ℝ)) x) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ ∑ j, (ball (p j) (2 * σ j)).indicator (fun _ => c₀ / σ j) x := by
+  intro P
+  -- Step 1: the model bump `φ₀` (`rIn = 1`, `rOut = 3/2`) and a Lipschitz constant `c₀ = L`
+  let φ₀ : ContDiffBump (0 : Euclid P) := ⟨1, 3 / 2, one_pos, by norm_num⟩
+  have hφ₀s : ContDiff ℝ (⊤ : ℕ∞) φ₀ := φ₀.contDiff
+  obtain ⟨L, hL⟩ := ContDiff.lipschitzWith_of_hasCompactSupport φ₀.hasCompactSupport hφ₀s
+    (by simp)
+  refine ⟨L, L.coe_nonneg, fun J p σ hσ => ?_⟩
+  -- Step 2: the rescaled bumps `φⱼ(x) = φ₀(σⱼ⁻¹ (x - pⱼ))`
+  have hbump : ∀ j, ∃ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ ∧ (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) ∧
+      (∀ x ∈ ball (p j) (σ j), φ x = 1) ∧
+      (∀ x, φ x ≤ (ball (p j) (2 * σ j)).indicator (fun _ => (1 : ℝ)) x) ∧
+      ∀ x, ‖fderiv ℝ φ x‖ ≤ (ball (p j) (2 * σ j)).indicator (fun _ => (L : ℝ) / σ j) x := by
+    intro j
+    have hs := hσ j
+    -- (c) `φⱼ(y) = 0` once `dist(y, pⱼ) > (3/2) σⱼ`
+    have hφ0 : ∀ y : Euclid P, 3 / 2 * σ j < dist y (p j) → φ₀ ((σ j)⁻¹ • (y - p j)) = 0 := by
+      intro y hy
+      apply notMem_support.1
+      rw [φ₀.support_eq, mem_ball, dist_zero_right, norm_smul,
+        Real.norm_of_nonneg (inv_nonneg.2 hs.le), not_lt]
+      change 3 / 2 ≤ (σ j)⁻¹ * ‖y - p j‖
+      rw [← dist_eq_norm, le_inv_mul_iff₀ hs]
+      linarith
+    -- (d) `φⱼ` is `(c₀/σⱼ)`-Lipschitz
+    have hlip : LipschitzWith (L * (Real.toNNReal (σ j))⁻¹)
+        fun y : Euclid P => φ₀ ((σ j)⁻¹ • (y - p j)) := by
+      refine hL.comp (LipschitzWith.of_dist_le_mul fun y z => ?_)
+      rw [dist_eq_norm, dist_eq_norm, ← smul_sub, sub_sub_sub_cancel_right, norm_smul,
+        Real.norm_of_nonneg (inv_nonneg.2 hs.le), NNReal.coe_inv, Real.coe_toNNReal _ hs.le]
+    refine ⟨fun x => φ₀ ((σ j)⁻¹ • (x - p j)),
+      hφ₀s.comp ((contDiff_id.sub contDiff_const).const_smul _),
+      fun x => ⟨φ₀.nonneg, φ₀.le_one⟩, fun x hx => ?_, fun x => ?_, fun x => ?_⟩
+    · -- (b) `φⱼ = 1` on `B(pⱼ, σⱼ)`
+      apply φ₀.one_of_mem_closedBall
+      rw [mem_closedBall, dist_zero_right, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hs.le)]
+      change (σ j)⁻¹ * ‖x - p j‖ ≤ 1
+      rw [mem_ball, dist_eq_norm] at hx
+      rw [inv_mul_le_iff₀ hs]
+      linarith
+    · -- `φⱼ ≤ 1_{B(pⱼ, 2σⱼ)}`
+      by_cases hx : x ∈ ball (p j) (2 * σ j)
+      · rw [indicator_of_mem hx]
+        exact φ₀.le_one
+      · rw [indicator_of_notMem hx]
+        rw [mem_ball, not_lt] at hx
+        exact (hφ0 x (by linarith)).le
+    · -- `‖Dφⱼ‖ ≤ (c₀/σⱼ) 1_{B(pⱼ, 2σⱼ)}`: `φⱼ` vanishes near every `x ∉ B(pⱼ, 2σⱼ)`
+      by_cases hx : x ∈ ball (p j) (2 * σ j)
+      · rw [indicator_of_mem hx]
+        refine (norm_fderiv_le_of_lipschitz ℝ hlip).trans_eq ?_
+        rw [NNReal.coe_mul, NNReal.coe_inv, Real.coe_toNNReal _ hs.le, div_eq_mul_inv]
+      · rw [indicator_of_notMem hx]
+        rw [mem_ball, not_lt] at hx
+        have hev : (fun y : Euclid P => φ₀ ((σ j)⁻¹ • (y - p j))) =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+          have hopen : IsOpen {y : Euclid P | 3 / 2 * σ j < dist y (p j)} :=
+            isOpen_lt continuous_const (continuous_id.dist continuous_const)
+          filter_upwards [hopen.mem_nhds (show 3 / 2 * σ j < dist x (p j) by linarith)]
+            with y hy
+          exact hφ0 y hy
+        rw [hev.fderiv_eq, fderiv_const_apply, norm_zero]
+  choose φ hφs hφ01 hφ1 hφind hφd using hbump
+  -- the factors `1 - φⱼ` are smooth with values in `[0, 1]`
+  have hfs : ∀ j, ContDiff ℝ (⊤ : ℕ∞) (fun y => 1 - φ j y) := fun j => contDiff_const.sub (hφs j)
+  have hf01 : ∀ j x, 0 ≤ 1 - φ j x ∧ 1 - φ j x ≤ 1 := fun j x =>
+    ⟨sub_nonneg.2 (hφ01 j x).2, sub_le_self _ (hφ01 j x).1⟩
+  -- Step 3: `ζ = ∏ⱼ (1 - φⱼ)`
+  refine ⟨fun x => ∏ j, (1 - φ j x), contDiff_prod fun j _ => hfs j,
+    fun x => ⟨Finset.prod_nonneg fun j _ => (hf01 j x).1,
+      Finset.prod_le_one₀ (fun j _ => (hf01 j x).1) fun j _ => (hf01 j x).2⟩,
+    fun j x hx => Finset.prod_eq_zero (Finset.mem_univ j) (by rw [hφ1 j x hx, sub_self]),
+    fun x => ?_, fun x => ?_⟩
+  · -- Step 4: `1 - ∏ (1 - aᵢ) ≤ Σ aᵢ` for `aᵢ ∈ [0, 1]`, by induction over finite index sets
+    have key : ∀ s : Finset (Fin J), 1 - ∏ j ∈ s, (1 - φ j x) ≤ ∑ j ∈ s, φ j x := by
+      intro s
+      induction s using Finset.induction_on with
+      | empty => simp
+      | insert k s hk ih =>
+        rw [Finset.prod_insert hk, Finset.sum_insert hk]
+        have hP0 : 0 ≤ ∏ j ∈ s, (1 - φ j x) := Finset.prod_nonneg fun j _ => (hf01 j x).1
+        have hP1 : ∏ j ∈ s, (1 - φ j x) ≤ 1 :=
+          Finset.prod_le_one₀ (fun j _ => (hf01 j x).1) fun j _ => (hf01 j x).2
+        nlinarith [(hφ01 k x).1, (hφ01 k x).2]
+    exact (key Finset.univ).trans (Finset.sum_le_sum fun j _ => hφind j x)
+  · -- Step 5: product rule, `‖Dζ‖ ≤ Σⱼ ‖D(1 - φⱼ)‖ = Σⱼ ‖Dφⱼ‖`
+    rw [fderiv_finsetProd fun j _ => ((hfs j).differentiable (by simp)) x]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
+    rw [norm_smul, fderiv_const_sub, norm_neg]
+    have h1 : ‖∏ i ∈ Finset.univ.erase j, (1 - φ i x)‖ ≤ 1 := by
+      rw [Real.norm_of_nonneg (Finset.prod_nonneg fun i _ => (hf01 i x).1)]
+      exact Finset.prod_le_one₀ (fun i _ => (hf01 i x).1) fun i _ => (hf01 i x).2
+    exact (mul_le_of_le_one_left (norm_nonneg _) h1).trans (hφd j x)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
