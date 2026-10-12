@@ -609,6 +609,55 @@ theorem mvk_laplacian_comp_add_smul : ∀ (n : ℕ) (h : Rn n → ℝ) (x₀ : R
   -- Step 4: `D²h₀(σ z) = D²h(x₀ + σ z)`.
   rw [iteratedFDeriv_comp_add_left]
   simp [L]
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), mean value step of Weyl's lemma: integration by parts
+of the radial derivative against the kernel potential.  If `h` is `C²`, `σ ≠ 0`, and the `C¹`
+function `Ψ` vanishes for `‖z‖ ≥ 1` and has `DΨ(z)[v] = ρ(z) ⟨z, v⟩`, then
+`∫ ρ(z) Dh(x₀ + σ z)[z] dz = -σ ∫ Δh(x₀ + σ z) Ψ(z) dz`.  For `H(y) = h(x₀ + σ y)` the chain rule
+gives `ρ(z) Dh(x₀ + σ z)[z] = σ⁻¹ DH(z)[ρ(z) z]`.  Green's first identity
+(`mvk_integral_fderiv_grad_eq_neg_laplacian`, applied to the compactly supported `Ψ` with
+gradient `ρ(z) z`) gives `∫ DH(z)[ρ(z) z] dz = -∫ ΔH(z) Ψ(z) dz`, and
+`ΔH(z) = σ² Δh(x₀ + σ z)` (`mvk_laplacian_comp_add_smul`). -/
+theorem mvk_integral_radial_fderiv_eq_neg_laplacian : ∀ (n : ℕ) (ρ Ψ h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), σ ≠ 0 → ContDiff ℝ 2 h → ContDiff ℝ 1 Ψ → (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) → (∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v) → ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = -σ * ∫ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z := by
+  intro n ρ Ψ h x₀ σ hσ hh hΨ hΨ1 hdΨ
+  -- Step 1: `H(y) = h(x₀ + σ y)` is `C²`, with `DH(z)[v] = σ Dh(x₀ + σ z)[v]`.
+  have hH : ContDiff ℝ 2 (fun y : Rn n => h (x₀ + σ • y)) :=
+    hh.comp (contDiff_const.add (contDiff_id.const_smul σ))
+  have hdH : ∀ z v : Rn n,
+      fderiv ℝ (fun y => h (x₀ + σ • y)) z v = σ * fderiv ℝ h (x₀ + σ • z) v := by
+    intro z v
+    have hA : HasFDerivAt (fun y : Rn n => x₀ + σ • y) (σ • ContinuousLinearMap.id ℝ (Rn n)) z :=
+      ((hasFDerivAt_id z).const_smul σ).const_add x₀
+    have hc : HasFDerivAt (fun y => h (x₀ + σ • y))
+        ((fderiv ℝ h (x₀ + σ • z)).comp (σ • ContinuousLinearMap.id ℝ (Rn n))) z :=
+      (hh.differentiable (by norm_num) (x₀ + σ • z)).hasFDerivAt.comp z hA
+    rw [hc.fderiv]
+    simp
+  -- Step 2: `Ψ` vanishes off the closed unit ball, so it has compact support.
+  have hΨc : HasCompactSupport Ψ :=
+    HasCompactSupport.intro (isCompact_closedBall 0 1) fun z hz =>
+      hΨ1 z (le_of_lt (by simpa using hz))
+  -- Step 3: `w(z) = ρ(z) z` is the gradient of `Ψ`.
+  have hw : ∀ z v : Rn n, fderiv ℝ Ψ z v = inner ℝ (ρ z • z) v := fun z v => by
+    rw [hdΨ, real_inner_smul_left]
+  -- Step 4: `ρ(z) Dh(x₀ + σ z)[z] = σ⁻¹ DH(z)[w(z)]`.
+  have hpt : ∀ z, ρ z * fderiv ℝ h (x₀ + σ • z) z =
+      σ⁻¹ * fderiv ℝ (fun y => h (x₀ + σ • y)) z (ρ z • z) := fun z => by
+    rw [hdH, map_smul, smul_eq_mul, inv_mul_cancel_left₀ hσ]
+  -- Steps 5–6: Green's first identity for `H`, `Ψ`, `w`, and `ΔH(z) = σ² Δh(x₀ + σ z)`.
+  have hG := Submission.mvk_integral_fderiv_grad_eq_neg_laplacian n
+    (fun y => h (x₀ + σ • y)) Ψ (fun z => ρ z • z) hH hΨ hΨc hw
+  have hL := Submission.mvk_laplacian_comp_add_smul n h x₀ σ hh
+  -- Step 7: pull out the constants.
+  calc ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z
+      = ∫ z, σ⁻¹ * fderiv ℝ (fun y => h (x₀ + σ • y)) z (ρ z • z) :=
+        integral_congr_ae (Eventually.of_forall hpt)
+    _ = σ⁻¹ * -∫ z, Laplacian.laplacian (fun y => h (x₀ + σ • y)) z * Ψ z := by
+        rw [integral_const_mul, hG]
+    _ = σ⁻¹ * -∫ z, σ ^ 2 * (Laplacian.laplacian h (x₀ + σ • z) * Ψ z) := by
+        simp only [hL, mul_assoc]
+    _ = -σ * ∫ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z := by
+        rw [integral_const_mul]
+        field_simp
 
 end Submission
 
