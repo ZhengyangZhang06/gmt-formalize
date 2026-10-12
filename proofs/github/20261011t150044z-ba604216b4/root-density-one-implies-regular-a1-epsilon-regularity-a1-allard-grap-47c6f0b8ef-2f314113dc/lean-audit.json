@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "82547fc2300a6f1f639cc821ec597000fedcd6788438219a7d3753a62d0b6d79",
+  "git_delta": {
+    "base_commit": "e4c3f11b52d8e5d8c241bd78caa2e9cdadab917b",
+    "candidate_commit": "48b19e16ee66029e3c4766af01248c899df4e869",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_pb_segment_null",
+    "diff_sha256": "0f61ed147f25d080fff218d26d5ea195edfaba244e7754c91808ffd3a2b0dd6e",
+    "source_sha256": "3ee64d1cefcd71dfa0893a7b662cf7cb4370bb0164737c62cf58fc6a7fc590e1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_pb_segment_null",
+      "statement": "∀ (n : ℕ) (N : Set (Euclid n)), MeasurableSet N → volume N = 0 → ∀ᵐ p : Euclid n × Euclid n, ∀ᵐ t ∂(volume.restrict (Icc (0 : ℝ) 1)), (1 - t) • p.2 + t • p.1 ∉ N",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
