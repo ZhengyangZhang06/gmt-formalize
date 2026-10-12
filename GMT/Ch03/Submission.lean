@@ -356,6 +356,91 @@ theorem Submission.deGiorgiNAB_reducedBoundary_basic : ∀ (N : ℕ) (U : Set (R
       ENNReal.toReal_zero, inv_zero, zero_smul]
   have hv0 : v = 0 := tendsto_nhds_unique_of_eventuallyEq hv tendsto_const_nhds hA
   simp [hv0] at hv1
+/-- **Cauchy–Schwarz bound for the normal excess on a set of finite measure** (Simon Ch. 3, proof
+of Theorem 4.3, display (2)). Let `ν` be `μ`-a.e. strongly measurable with `|ν| = 1` `μ`-a.e., let
+`|e| = 1`, and let `S ⊆ ℝᴺ` be any set with `μ(S) < ∞`; put `m = μ(S)` and `I = ∫_S ⟨ν, e⟩ dμ`.
+Then `∫_S |ν − e| dμ ≤ m √(2(1 − m⁻¹ I))`. A.e. on `S`, `|ν − e|² = 2 − 2⟨ν, e⟩`, so
+`∫_S |ν − e|² dμ = 2(m − I)`; with `J = ∫_S |ν − e| dμ`, expanding `0 ≤ ∫_S (|ν − e| − J/m)² dμ`
+gives `J² ≤ 2m(m − I)` (Cauchy–Schwarz), and `√(2m(m − I)) = m √(2(1 − m⁻¹ I))` for `m > 0`. For
+`m = 0` both sides vanish. -/
+theorem Submission.deGiorgiNAB_excess_le_sqrt : ∀ (N : ℕ) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (e : Rn N) (S : Set (Rn N)), μ S < ∞ → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → ∫ y in S, ‖ν y - e‖ ∂μ ≤ (μ S).toReal * Real.sqrt (2 * (1 - (μ S).toReal⁻¹ * ∫ y in S, inner ℝ (ν y) e ∂μ)) := by
+  intro N μ ν e S hS hν hν1 he
+  -- Step 1: `μ ⌞ S` is a finite measure, for which `ν` is a.e. strongly measurable with `|ν| = 1`.
+  have : IsFiniteMeasure (μ.restrict S) := isFiniteMeasure_restrict.mpr hS.ne
+  have hνS : ∀ᵐ y ∂(μ.restrict S), ‖ν y‖ = 1 := ae_restrict_of_ae hν1
+  have hνm : AEStronglyMeasurable ν (μ.restrict S) := hν.restrict
+  -- Step 2: `|ν − e| ≤ 2`, `|ν − e|² ≤ 4` and `|⟨ν, e⟩| ≤ 1` a.e., so all three are integrable.
+  have hf_meas : AEStronglyMeasurable (fun y ↦ ‖ν y - e‖) (μ.restrict S) :=
+    (hνm.sub aestronglyMeasurable_const).norm
+  have hf_bd : ∀ᵐ y ∂(μ.restrict S), ‖ν y - e‖ ≤ 2 := by
+    filter_upwards [hνS] with y hy
+    calc ‖ν y - e‖ ≤ ‖ν y‖ + ‖e‖ := norm_sub_le _ _
+      _ = 2 := by rw [hy, he]; norm_num
+  have hf_int : Integrable (fun y ↦ ‖ν y - e‖) (μ.restrict S) := by
+    refine Integrable.of_bound hf_meas 2 ?_
+    filter_upwards [hf_bd] with y hy
+    rwa [Real.norm_of_nonneg (norm_nonneg _)]
+  have hf2_int : Integrable (fun y ↦ ‖ν y - e‖ ^ 2) (μ.restrict S) := by
+    refine Integrable.of_bound (hf_meas.pow 2) 4 ?_
+    filter_upwards [hf_bd] with y hy
+    rw [Real.norm_of_nonneg (by positivity)]
+    nlinarith [norm_nonneg (ν y - e)]
+  have hg_int : Integrable (fun y ↦ inner ℝ (ν y) e) (μ.restrict S) := by
+    refine Integrable.of_bound ((continuous_id.inner continuous_const).comp_aestronglyMeasurable
+      (g := fun v : Rn N ↦ inner ℝ v e) hνm) 1 ?_
+    filter_upwards [hνS] with y hy
+    calc ‖inner ℝ (ν y) e‖ ≤ ‖ν y‖ * ‖e‖ := norm_inner_le_norm _ _
+      _ = 1 := by rw [hy, he]; norm_num
+  set m := (μ S).toReal
+  set I := ∫ y in S, inner ℝ (ν y) e ∂μ
+  set J := ∫ y in S, ‖ν y - e‖ ∂μ
+  have hreal : (μ.restrict S).real univ = m := by
+    simp [measureReal_def, m]
+  -- Step 3: a.e. `|ν − e|² = 2 − 2⟨ν, e⟩`, hence `∫_S |ν − e|² dμ = 2(m − I)`.
+  have hK : ∫ y in S, ‖ν y - e‖ ^ 2 ∂μ = 2 * (m - I) := by
+    have hae : (fun y ↦ ‖ν y - e‖ ^ 2) =ᵐ[μ.restrict S] fun y ↦ 2 - 2 * inner ℝ (ν y) e := by
+      filter_upwards [hνS] with y hy
+      rw [norm_sub_sq_real, hy, he]; ring
+    rw [integral_congr_ae hae, integral_sub (integrable_const _) (hg_int.const_mul 2),
+      integral_const_mul, integral_const, hreal, smul_eq_mul]
+    ring
+  have hJnn : 0 ≤ J := integral_nonneg fun y ↦ norm_nonneg _
+  by_cases hm0 : m = 0
+  · -- Step 4: `m = 0` forces `μ(S) = 0`, so `J = 0` and the right-hand side is `0`.
+    have hS0 : μ S = 0 := by
+      rcases (ENNReal.toReal_eq_zero_iff _).mp hm0 with h | h
+      · exact h
+      · exact absurd h hS.ne
+    have hres : μ.restrict S = 0 := Measure.restrict_eq_zero.mpr hS0
+    have hJ0 : J = 0 := by simp [J, hres]
+    rw [hJ0, hm0, zero_mul]
+  · have hmpos : 0 < m := lt_of_le_of_ne ENNReal.toReal_nonneg (Ne.symm hm0)
+    -- Step 5: `0 ≤ ∫_S (|ν − e| − J/m)² dμ = 2(m − I) − J²/m`, i.e. `J² ≤ m · 2(m − I)`.
+    have hCS : J ^ 2 ≤ m * (2 * (m - I)) := by
+      have h0 : 0 ≤ ∫ y in S, (‖ν y - e‖ - J / m) ^ 2 ∂μ := integral_nonneg fun y ↦ sq_nonneg _
+      have hexp : ∫ y in S, (‖ν y - e‖ - J / m) ^ 2 ∂μ =
+          2 * (m - I) - 2 * (J / m) * J + (J / m) ^ 2 * m := by
+        have hfun : (fun y ↦ (‖ν y - e‖ - J / m) ^ 2) =
+            fun y ↦ (‖ν y - e‖ ^ 2 - 2 * (J / m) * ‖ν y - e‖) + (J / m) ^ 2 := by
+          ext y; ring
+        have h1 : Integrable (fun y ↦ ‖ν y - e‖ ^ 2 - 2 * (J / m) * ‖ν y - e‖) (μ.restrict S) :=
+          hf2_int.sub (hf_int.const_mul _)
+        rw [hfun, integral_add h1 (integrable_const _),
+          integral_sub hf2_int (hf_int.const_mul _), integral_const_mul, integral_const, hreal,
+          hK, smul_eq_mul]
+        ring
+      rw [hexp] at h0
+      have hJm : (J / m) ^ 2 * m = J ^ 2 / m := by field_simp
+      have h2 : 2 * (J / m) * J = 2 * (J ^ 2 / m) := by field_simp
+      rw [hJm, h2] at h0
+      have h3 : J ^ 2 / m ≤ 2 * (m - I) := by linarith
+      rwa [div_le_iff₀ hmpos, mul_comm] at h3
+    -- Step 6: `J = √(J²) ≤ √(m² · 2(1 − m⁻¹ I)) = m √(2(1 − m⁻¹ I))`.
+    calc J = Real.sqrt (J ^ 2) := (Real.sqrt_sq hJnn).symm
+      _ ≤ Real.sqrt (m * (2 * (m - I))) := Real.sqrt_le_sqrt hCS
+      _ = m * Real.sqrt (2 * (1 - m⁻¹ * I)) := by
+        rw [show m * (2 * (m - I)) = m ^ 2 * (2 * (1 - m⁻¹ * I)) by field_simp,
+          Real.sqrt_mul (sq_nonneg m), Real.sqrt_sq hmpos.le]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
