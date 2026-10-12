@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1.pointwise_estimate-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1",
+  "depth": 4,
+  "title": "Relative L¹ estimate at a point from the Lebesgue-point and density limits",
+  "statement": "Let P, n ∈ ℕ and H := μHE[n] on ℝ^P. Let M₁, M₂ ⊆ ℝ^P be H-null-measurable, let θ₁, θ₂ : ℝ^P → ℝ with θ_i > 0 on M_i, and let x ∈ M₁ ∩ M₂. Assume there is ρ > 0 such that θ_i is H-integrable on M_i ∩ B̄_ρ(x) (i = 1, 2). Put A := M₁ ∩ M₂, g := 1_A·(θ₂/θ₁) and c := θ₂(x)/θ₁(x). Assume that as s → 0⁺ (quotients in [0, ∞]):\n(L) (∫⁻_{M₁∩B̄_s(x)} ofReal(θ₁)·‖g − c‖ₑ dH) / (∫⁻_{M₁∩B̄_s(x)} ofReal(θ₁) dH) → 0;\n(D) (∫⁻_{A∩B̄_s(x)} ofReal(θ₂) dH) / (∫⁻_{M₂∩B̄_s(x)} ofReal(θ₂) dH) → 1.\nThen for every ε > 0 and all sufficiently small s > 0, ∫⁻_{B̄_s(x)} ‖1_{M₂}θ₂ − c·1_{M₁}θ₁‖ₑ dH ≤ ofReal(ε)·∫⁻_{M₁∩B̄_s(x)} ofReal(θ₁) dH.",
+  "lean_statement": "∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (x : Eucl P), NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ z ∈ M₁, 0 < θ₁ z) → (∀ z ∈ M₂, 0 < θ₂ z) → x ∈ M₁ ∩ M₂ → (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧ IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) → Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) * ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - θ₂ x / θ₁ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) → Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z) ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ z in M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 1) → ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - θ₂ x / θ₁ x * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal ε * ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P))",
+  "lean_name": "fiw_tl_ald_pointwise_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1-pointwise-estimate-a1-a1"
+}

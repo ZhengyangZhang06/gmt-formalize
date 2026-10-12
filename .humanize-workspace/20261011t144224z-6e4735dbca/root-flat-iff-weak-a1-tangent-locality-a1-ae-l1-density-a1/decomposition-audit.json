@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "protected def vitaliFamily|theorem tendsto_filterAt|theorem ae_tendsto_measure_inter_div",
+        "theorem lt_div_iff_mul_lt|theorem div_lt_iff",
+        "aestronglyMeasurable_indicator_iff₀|setLIntegral_indicator₀|AbsolutelyContinuous.restrict|AbsolutelyContinuous.ae_le",
+        "fiw_tl_ald_|ae_l1_density|closedBall_lebesgue_point",
+        "python3 run_lean.py Cmp/fiw_tl_ald_ball_reduction_Challenge.lean Cmp/fiw_tl_ald_closedBall_lebesgue_point_Challenge.lean",
+        "python3 run_lean.py Cmp/fiw_tl_ald_local_differentiation_Challenge.lean Cmp/fiw_tl_ald_pointwise_estimate_Challenge.lean Cmp/fiw_tl_ae_l1_density_Challenge.lean",
+        "python3 run_lean.py Audit/Instances.lean Audit/Assembly.lean",
+        "python3 run_lean.py Audit/ExactChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1/decomposition-v1.json",
+        "/tmp/ald_independent_audit_x16aess0/Audit/Instances.lean",
+        "/tmp/ald_independent_audit_x16aess0/Audit/Assembly.lean",
+        "/tmp/ald_independent_audit_x16aess0/Audit/ExactChecks.lean"
+      ],
+      "conclusion": "Independently confirmed project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The pinned sources support the cited differentiation, restriction, weighted-integral and ENNReal division steps with the required hypotheses. No proposed-name matches occurred in the searched project/SimonGMT sources. Scanning the 360-node DAG and run JSON contracts found no reservation by another branch; all four names are bare identifiers, and no accepted declaration is reused. In a fresh frozen-commit scratch build, independently generated comparator challenges for all four children and the selected parent elaborate without child implementations. Instance checks, the supplied complete proofs, and assembly compile successfully; proof axiom dependencies are only propext, Classical.choice and Quot.sound. The split is appropriate: localization, closed-ball differentiation, weighted-measure transfer and the deterministic estimate are genuine obligations. The sole sibling dependency is local_differentiation on closed_ball_lebesgue_point. The other three conclusions assemble the exact selected parent, using ρ = r − dist(x,y) to supply pointwise local integrability."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including arbitrary μ and Φ and no measurability assumption on A. The proof constructs a countable ball cover, proves the required union identity, and applies ae_restrict_biUnion_iff, which requires no measurability. It is complete and non-circular."
+    },
+    {
+      "key": "closed_ball_lebesgue_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches finite Borel measures through the canonical Euclidean measurable structure and IsFiniteMeasure binder. The required Borel, Besicovitch, second-countability, local-finiteness and s-finiteness instances were checked. Integrability supplies local integrability, and composing Vitali differentiation with tendsto_filterAt proves exactly the stated ENNReal limit."
+    },
+    {
+      "key": "local_differentiation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both limits match the Lean proposition. The proof establishes finite weighted measures, reverse absolute continuity from positivity, and integrability of g by indicator measurability and weight cancellation. Almost-everywhere transfer has the correct direction. On sufficiently small closed balls, the justified restriction identities produce exactly the stated H-integral ratios. Its only sibling reliance is the declared closed_ball_lebesgue_point dependency; no parent reliance or missing planning remains."
+    },
+    {
+      "key": "pointwise_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes exactly the prose hypotheses, including the positive local radius and both limits. The proof checks the ENNReal division side conditions, handles I = 0 separately, justifies splitting integrals using null measurability and the measurable summand, and establishes finiteness before passing to real parts. The indicator cases and δ arithmetic yield the exact estimate for every ε > 0. The argument is complete and independent of the parent and siblings."
+    }
+  ],
+  "required_changes": []
+}

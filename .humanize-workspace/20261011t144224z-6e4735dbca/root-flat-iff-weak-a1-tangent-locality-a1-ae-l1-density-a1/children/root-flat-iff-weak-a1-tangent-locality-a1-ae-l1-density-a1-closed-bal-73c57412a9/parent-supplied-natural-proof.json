@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "grep -n -A8 'theorem ae_tendsto_measure_inter_div|protected def vitaliFamily|theorem tendsto_filterAt' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "grep -n 'ae_tendsto_lintegral_enorm_sub_div' mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean (plus sed of lines 730-870)",
+        "grep -rn 'theorem ae_restrict_biUnion_iff|theorem ae_restrict_biUnion_eq|theorem ae_restrict_iUnion_eq|theorem isOpen_iUnion_countable' mathlib/Mathlib",
+        "grep -rn for withDensity_absolutelyContinuous', withDensity_apply₀, withDensity_apply, setLIntegral_withDensity_eq_lintegral_mul₀, lintegral_withDensity_eq_lintegral_mul₀, restrict_restrict₀, restrict_inter_add_sdiff₀, AbsolutelyContinuous.restrict, AbsolutelyContinuous.ae_le, ae_restrict_mem₀, aestronglyMeasurable_indicator_iff₀, aemeasurable_indicator_iff₀, lintegral_indicator₀, lintegral_add_left', lintegral_add_right', lintegral_const_mul', lintegral_mono_set, lintegral_mono_ae, measure_inter_add_sdiff₀, closedBall_subset_closedBall', Integrable.locallyIntegrable, IsFiniteMeasure.toIsLocallyFiniteMeasure, instHasBesicovitchCovering, enorm_eq_ofReal_abs, ofReal_le_enorm, Ioo_mem_nhdsGT, ENNReal lt_div_iff_mul_lt and div_lt_iff, isFiniteMeasure_withDensity_ofReal in mathlib/Mathlib",
+        "grep -n 'μHE\\[' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure definition and scoped notation)",
+        "python3 -I scan of dag.json (354 nodes) for lean names containing fiw; grep -rl fiw_tl_ald over the whole run directory; git grep -E fiw_tl_ald_ over 1096 refs; grep over simongmt sources (all no match)",
+        "git archive d8d46c9587747dee0751a1f780fcafdba16a3886 | tar -x -C /tmp/ald_split_nUri8m; LEAN_PATH=... lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean (exit 0)",
+        "python3 -I /tmp/ald_scripts/gen.py: lean_contract.validate_lean_statement and gmt-compare.py child_modules(mode=contract) for the 4 child types and the frozen parent; lean Cmp/*_Challenge.lean (5 files, exit 0)",
+        "lean Audit/Assembly.lean, Audit/C1C2.lean, Proofs/C3.lean, Proofs/C4.lean, Audit/Combined.lean (all exit 0; #print axioms: propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1/parent-child-handoff.json",
+        "/tmp/ald_split_nUri8m/Cmp/fiw_tl_ald_ball_reduction_Challenge.lean",
+        "/tmp/ald_split_nUri8m/Cmp/fiw_tl_ald_closedBall_lebesgue_point_Challenge.lean",
+        "/tmp/ald_split_nUri8m/Cmp/fiw_tl_ald_local_differentiation_Challenge.lean",
+        "/tmp/ald_split_nUri8m/Cmp/fiw_tl_ald_pointwise_estimate_Challenge.lean",
+        "/tmp/ald_split_nUri8m/Cmp/fiw_tl_ae_l1_density_Challenge.lean",
+        "/tmp/ald_split_nUri8m/Audit/Assembly.lean",
+        "/tmp/ald_split_nUri8m/Audit/C1C2.lean",
+        "/tmp/ald_split_nUri8m/Proofs/C3.lean",
+        "/tmp/ald_split_nUri8m/Proofs/C4.lean",
+        "/tmp/ald_split_nUri8m/Audit/Combined.lean"
+      ],
+      "conclusion": "The snapshot is project d8d46c9587747dee0751a1f780fcafdba16a3886 with Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot's Contract.lean is byte-identical to the frozen commit's.\n\nMathlib supplies every tool the children use, with the cited signatures:\n- Besicovitch.ae_tendsto_measure_inter_div (arbitrary set, IsLocallyFiniteMeasure; Besicovitch.lean:1105), Besicovitch.vitaliFamily [SFinite] (:1021) and Besicovitch.tendsto_filterAt (:1060);\n- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (LocallyIntegrable; Differentiation.lean:818);\n- TopologicalSpace.isOpen_iUnion_countable (Topology/Bases.lean:932) and ae_restrict_biUnion_iff (no measurability needed; Measure/Restrict.lean:571);\n- withDensity_absolutelyContinuous' (WithDensity.lean:576), withDensity_apply₀ (:152), lintegral_withDensity_eq_lintegral_mul₀ (:458) and setLIntegral_withDensity_eq_lintegral_mul₀ (:463);\n- Measure.restrict_restrict₀ (Restrict.lean:198) and Measure.restrict_inter_add_sdiff₀ (Restrict.lean:255; restrict_inter_add_diff₀ is now a deprecated alias);\n- ENNReal.lt_div_iff_mul_lt and ENNReal.div_lt_iff (Basic/ENNReal/Inv.lean:388 and :421);\n- Real.enorm_eq_ofReal_abs and Real.ofReal_le_enorm (Analysis/Normed/Group/Real.lean:110 and :118);\n- instHasBesicovitchCovering (BesicovitchVectorSpace.lean:499), IsFiniteMeasure.toIsLocallyFiniteMeasure (Typeclasses/Finite.lean:298) and isFiniteMeasure_withDensity_ofReal (HasFiniteIntegral.lean:310).\n\nNo accepted project or SimonGMT declaration can be reused for these children. The names fiw_tl_ald_* are reserved nowhere: not in dag.json, the run files, the 1096 git refs or simongmt.\n\nIn a fresh build of the frozen commit, all four child types and the frozen parent type elaborate in the comparator's exact challenge layout. The byte-exact frozen parent type is derived from the C1, C3 and C4 types (Assembly.lean). With the complete sorry-free child proofs it is also derived with no hypotheses (Combined.lean), using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "proof": "Source: step 4(b) of the parent-supplied proof (Lebesgue differentiation theorem along closed balls).\n\n1. ℝ^P = EuclideanSpace ℝ (Fin P) is a finite-dimensional real normed space. It is therefore a second-countable metric space carrying its Borel σ-algebra, and it has the Besicovitch covering property (instance instHasBesicovitchCovering in MeasureTheory/Covering/BesicovitchVectorSpace.lean). The finite measure ν is s-finite and locally finite (IsFiniteMeasure.toIsLocallyFiniteMeasure).\n2. Consequently Besicovitch.vitaliFamily ν is a Vitali family for ν; its sets at x are the closed balls B̄_s(x) with s > 0. Besicovitch.tendsto_filterAt ν x states that s ↦ B̄_s(x) tends to the filter (Besicovitch.vitaliFamily ν).filterAt x as s → 0⁺ (along 𝓝[>] 0).\n3. Since g is ν-integrable, it is locally integrable (Integrable.locallyIntegrable). Apply the Lebesgue differentiation theorem along a Vitali family, VitaliFamily.ae_tendsto_lintegral_enorm_sub_div, to Besicovitch.vitaliFamily ν. It gives, for ν-a.e. x, (∫⁻_a ‖g(z) − g(x)‖ₑ dν(z)) / ν(a) → 0 as a shrinks to x along filterAt x.\n4. For each such x, compose the convergence of step 3 with the convergence of step 2 (Tendsto.comp). This gives (∫⁻_{B̄_s(x)} ‖g(z) − g(x)‖ₑ dν(z)) / ν(B̄_s(x)) → 0 as s → 0⁺. This holds for ν-a.e. x (filter_upwards), which is the claim. ∎",
+  "key_steps": [
+    "ℝ^P has the Besicovitch covering property, and the finite measure ν is s-finite and locally finite, so Besicovitch.vitaliFamily ν (closed balls) is a Vitali family.",
+    "Lebesgue differentiation along the Vitali family (VitaliFamily.ae_tendsto_lintegral_enorm_sub_div) applies to the locally integrable g.",
+    "Compose with Besicovitch.tendsto_filterAt ν x (s ↦ B̄_s(x) as s → 0⁺) to get the closed-ball limit ν-a.e."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

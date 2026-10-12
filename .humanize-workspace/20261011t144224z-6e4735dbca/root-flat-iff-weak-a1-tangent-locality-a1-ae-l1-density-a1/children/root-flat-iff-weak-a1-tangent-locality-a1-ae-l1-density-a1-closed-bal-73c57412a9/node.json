@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1.closed_ball_lebesgue_point-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1",
+  "depth": 4,
+  "title": "Lebesgue differentiation along closed balls for finite measures on ℝ^P",
+  "statement": "Let P ∈ ℕ, let ν be a finite Borel measure on ℝ^P, and let g : ℝ^P → ℝ be ν-integrable. Then for ν-almost every x, (∫⁻_{B̄_s(x)} ‖g(z) − g(x)‖ₑ dν(z)) / ν(B̄_s(x)) → 0 in [0, ∞] as s → 0⁺.",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Eucl P)) [IsFiniteMeasure ν] (g : Eucl P → ℝ), Integrable g ν → ∀ᵐ x ∂ν, Tendsto (fun s : ℝ => (∫⁻ z in closedBall x s, ‖g z - g x‖ₑ ∂ν) / ν (closedBall x s)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "fiw_tl_ald_closedBall_lebesgue_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1-closed-bal-73c57412a9-a1"
+}
