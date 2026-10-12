@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "abbrev Eucl|^namespace|^open|polyhedral_approx_pairing_wedge_kronecker|polyhedral_approx_pairing_covector_ext|rpn_covector_rotated_expansion",
+        "sed -n '1,240p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "theorem Module.Basis.ext_alternating|theorem map_perm",
+        "def sort|theorem monotone_sort",
+        "range_inj_of_wellFoundedLT",
+        "theorem eq_of_subset_of_ncard_le|theorem ncard_range_of_injective",
+        "theorem det_one|theorem det_eq_zero_of_row_eq_zero",
+        "git diff 7f2e25c990e68cbdfc2412c455f026374a1d072b 4f8cb90675e599236a81c02b079ab48e84f7a9be -- GMT/Ch06/Submission.lean",
+        "git diff 7f2e25c990e68cbdfc2412c455f026374a1d072b 564fb5ea9012e3b250bcb7d0276359f8cc67649e -- GMT/Ch06/Submission.lean",
+        "rg -n 'polyhedral_approx_pairing_wedge_kronecker|polyhedral_approx_pairing_covector_ext|rpn_covector_rotated_expansion' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rce_independent_audit_7ubim99d/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Card.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-covector-rotated-expansion-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-covector-rotated-expansion-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-pairing-expansion-a1-wedge-kronecker-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-pairing-expansion-a1-wedge-kronecker-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-pairing-expansion-a1-covector-ext-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-pairing-expansion-a1-covector-ext-a1/isolated-comparator-result.json",
+        "/tmp/rce_independent_audit_7ubim99d/Audit.lean"
+      ],
+      "conclusion": "Verified the pinned project d8d46c95, Mathlib 25730c7c and compatible SimonGMT 2b366308 definitions. The determinant, sorting, basis-extensionality and pullback lemmas have the required meanings. No selected or child declaration occurs in the frozen Submission. Both proposed names uniquely identify comparator-accepted leaves; their frozen types and candidate-source hashes match the acceptance receipts. Both have empty dependencies and children, so reuse creates no cycle or conflicting reservation. The split appropriately isolates two substantive steps of the selected proof. A fresh Lean check under the comparator scope elaborated all literal propositions before introducing either child, recompiled both accepted proofs, and verified the supplied assembly from exactly the two child hypotheses to the frozen parent type. All checked proofs use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "wedge_kronecker",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The single-line proposition exactly matches the prose, including both conjuncts and all dimension and multi-index hypotheses. Independently checked each proof step: coordinate evaluation gives the stated determinant; injectivity gives the identity matrix; equal finite range sizes and uniqueness of increasing enumeration give a missing row index when J ≠ I; the zero row gives determinant zero. Degree zero and n > P are covered. Matrix.of ensures the intended matrix construction. The proof is complete and non-circular. The bare name validly reuses the identical comparator-accepted type, with no dependencies."
+    },
+    {
+      "key": "covector_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The single-line proposition exactly expresses equality of continuous alternating maps from equality of every increasing-basis coordinate. The proof correctly reduces to injective basis tuples, sorts v using I = v ∘ σ, establishes e_v = e_I ∘ σ⁻¹, and applies the permutation-sign rule to both maps before using the coordinate hypothesis. Basis extensionality completes the argument, including empty and overdimensioned cases. It uses neither the parent expansion nor the Kronecker child, so empty dependencies are correct. The bare name reuses an identical comparator-accepted type. Together the children establish the standard expansion used by the supplied pullback argument."
+    }
+  ],
+  "required_changes": []
+}
