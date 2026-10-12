@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1.density_exists_ae-a1.ae_ball_variation_bound-a1",
+  "parent_id": "root.monotonicity_density-a1.density_exists_ae-a1",
+  "depth": 3,
+  "title": "Hypothesis 3.1 of the monotonicity formula holds μ_V-a.e. (remark in Simon Lemma 8.3.6)",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, and let V be an n-varifold on U (SimonGMT Varifold N n U; U is open) with locally bounded first variation in U. Then for μ_V-a.e. x ∈ ℝ^N there are real numbers R > 0 and Λ ≥ 0 with closedBall x R ⊆ U and ‖δV‖(B_r(x)) ≤ ofReal(Λ)·μ_V(B_r(x)) for every 0 < r < R. Here B_r(x) = closedBall x r, μ_V = V.weight and ‖δV‖ = variationMeasure V.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∃ R Λ : ℝ, 0 < R ∧ 0 ≤ Λ ∧ closedBall x R ⊆ U ∧ ∀ r : ℝ, 0 < r → r < R → variationMeasure V (closedBall x r) ≤ ENNReal.ofReal Λ * V.weight (closedBall x r)",
+  "lean_name": "dea_ae_variationMeasure_ball_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-density-exists-ae-a1-ae-ball-variation-bound-a1-a1"
+}
