@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_(homothety_image|smul₀)|Isometry.euclideanHausdorffMeasure_image",
+        "det_to_matrix_orthonormalBasis_real|theorem AlternatingMap.eq_smul_basis_det|theorem le_opNorm |measurableSet_eq_fun|theorem Integrable.mono\\x27",
+        "rsdic_unitOrientation_eq_or_eq_neg|rsdic_imrep_action_int_combination|regcomp_atl_blowUp_measure_scaling|dtc_isIntegerMultiplicity_sub",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|HasApproximateTangentSpaceAt.unique|CountablyRectifiable.mono|countablyRectifiable_iUnion",
+        "git show fe95347baaed6a2cf2ecde4455e2b32f361fde51:GMT/Ch07/Submission.lean",
+        "git show faacb9cb5caf6ce728ef10ab3b0f5bdd7a47b04d:GMT/Ch07/Submission.lean",
+        "git show 0591fd7c22a234ab017bc833decdcebac31fa572:GMT/Ch07/Submission.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/decomposition-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-combination-action-a1/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-c8e28598f4/lean-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/tmp/dtcims3-work-oE5ZJ3/parent_proof.lean",
+        "/tmp/dtcims3-work-oE5ZJ3/Verify.lean",
+        "/tmp/dtcims3-work-oE5ZJ3/Verify.lean.out",
+        "/tmp/dtcims3-work-oE5ZJ3/Baseline.lean.out",
+        "/tmp/dtcims3-work-oE5ZJ3/Full.lean.out",
+        "/tmp/independent-dtcims-audit-oatwf_om/verification-status.json"
+      ],
+      "conclusion": "The pinned definitions and library lemmas support all three contracts and supplied proofs. The declaration-name search found no matches in the frozen project/GMT snapshot. Each proposed name instead uniquely identifies a comparator-accepted DAG node with a byte-identical frozen type; candidate source hashes, comparator identities, frozen context and package revisions agree. All three nodes have empty dependency and child lists, so reuse introduces no cycle or active-name collision. The split is appropriate: the children discharge orientation comparison, blow-up scaling and integration, while the supplied parent assembly constructs the IMRep and proves the exact selected subtraction statement. DensityComparison is outside the original import closure; the parent import policy permits its addition. Retained axiom reports contain only propext, Classical.choice and Quot.sound for the children and selected parent, and retained context reports agree on all 103 frozen constants. My fresh Lean attempt stalled reading a core toolchain file and was terminated without a verdict; no fresh parent compiler or comparator pass is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose. The proof constructs orthonormal bases of Q, obtains a determinant of ±1, applies the alternating determinant identity uniformly in the covector, and concludes by extensionality. It also covers n = 0. No dimension hypothesis is missing: the spanning orthonormal families supply it. This independently proves the orientation step without using subtraction closure. The bare name and frozen type match the accepted declaration."
+    },
+    {
+      "key": "action_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses through IMRep, the whole-space a.e. identity and TestFormOn. The proof establishes measurability and integrability using the orientation norm bound and compactly supported multiplicity bound, then evaluates and integrates the identity. It requires neither openness nor positive degree. Assuming an already constructed R is non-circular; specializing to 1 and −1 supplies the parent's representation identity. Indicators, negation and scalar actions have the intended continuous-linear-map types. The one-line type and bare name exactly match the accepted declaration."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary S and arbitrary real R. The proof establishes the image/intersection identity and applies translation invariance and homothety scaling to arbitrary sets, so no measurability hypothesis is missing. Positivity of r justifies inversion and both inequality directions; nonpositive radii and n = 0 are covered. The coefficient uses ordinary ENNReal arithmetic. This supplies the scaling step in tangent-space transfer. The bare name and frozen type match the accepted declaration."
+    }
+  ],
+  "required_changes": []
+}
