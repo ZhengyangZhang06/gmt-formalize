@@ -1,0 +1,18 @@
+{
+  "node_id": "root.besicovitch_federer-a1.infinite_fibres-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/108",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "a479f69d78ee0b2d3d8fffc19b0af32cc6243781",
+  "integrated_commit": "",
+  "proof_base_commit": "e1117ce32893a64c88fdbafb77ade2448556bedb",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.besicovitch_federer-a1",
+  "requires": [
+    "root.besicovitch_federer-a1.infinite_fibres-a1.hausdorff_zero_counting-a1",
+    "root.besicovitch_federer-a1.infinite_fibres-a1.projection_isometric_chart-a1"
+  ]
+}
