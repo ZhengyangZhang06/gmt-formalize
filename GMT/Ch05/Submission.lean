@@ -730,6 +730,55 @@ theorem rsod_isC1Submanifold_measurableSet : ∀ (m N : ℕ) (S : Set (Euclidean
   -- Step 5: `O` is open and `closure S` is closed, so `S = O ∩ closure S` is Borel.
   rw [hSO]
   exact (isOpen_biUnion hWo).measurableSet.inter isClosed_closure.measurableSet
+/-- **Approximate tangent spaces a.e. on a set covered by `C¹` submanifolds** (Simon Ch. 3,
+Remark 1.3 and the proof of Theorem 1.6 "⇒", which also gives Remark 1.5(2)).  Let `n ≥ 1`, `C`
+Borel with `Hⁿ(C) < ∞`, `Hⁿ(Z) = 0`, and `C ⊆ Z ∪ ⋃_k N_k` with each `N_k` an `n`-dimensional `C¹`
+submanifold with `Hⁿ(N_k) < ∞`.  Then `T_x C` exists for `Hⁿ`-a.e. `x ∈ C`.
+(1) (1.3) Each `N_k` is Borel, so `C_k := (C ∩ N_k) \ ⋃_{i<k} N_i ⊆ C ∩ N_k` is Borel, and each
+`x ∈ C \ Z` lies in `C_k` for the least `k` with `x ∈ N_k`.
+(2) (Upper Density Theorem, Ch. 1, 3.6) Off an `Hⁿ`-null set `E_k`, every `x ∈ C_k` has
+`ρ⁻ⁿ Hⁿ((C \ C_k) ∩ B_ρ(x)) → 0` and `ρ⁻ⁿ Hⁿ((N_k \ C_k) ∩ B_ρ(x)) → 0` as `ρ ↓ 0`.
+(3) At such `x`, `T_x N_k = P` exists as `N_k` is a `C¹` submanifold, and `T_x C = P` since `C` and
+`N_k` differ from `C_k` by sets of zero `n`-density at `x`.  The exceptional set lies in
+`Z ∪ ⋃_k E_k`, which is `Hⁿ`-null. -/
+theorem rsod_ae_approxTangent_of_c1Cover : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (C Z : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), MeasurableSet C → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → (μHE[n] : Measure (Amb n ℓ)) Z = 0 → (∀ k, IsC1Submanifold n (N k) ∧ (μHE[n] : Measure (Amb n ℓ)) (N k) < ∞) → C ⊆ Z ∪ ⋃ k, N k → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ C → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P := by
+  intro n ℓ hn C Z N hC hCfin hZ hN hcov
+  -- Step 1 (Remark 1.3): the Borel pieces `C_k = (C ∩ N_k) \ ⋃_{i<k} N_i`.
+  have hNm : ∀ k, MeasurableSet (N k) := fun k =>
+    Submission.rsod_isC1Submanifold_measurableSet n (n + ℓ) (N k) (hN k).1
+  set D : ℕ → Set (Amb n ℓ) := fun k => (C ∩ N k) \ ⋃ i < k, N i
+  have hDm : ∀ k, MeasurableSet (D k) := fun k =>
+    (hC.inter (hNm k)).diff (MeasurableSet.iUnion fun i => MeasurableSet.iUnion fun _ => hNm i)
+  -- Step 2 (Upper Density Theorem): `C \ C_k` and `N_k \ C_k` have zero `n`-density at
+  -- `Hⁿ`-a.e. point outside them.
+  have hdC : ∀ k, ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ C \ D k →
+      Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ *
+        (μHE[n] : Measure (Amb n ℓ)).real ((C \ D k) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) :=
+    fun k => Submission.rsod_ae_tendsto_density_zero_outside n ℓ (μHE[n] : Measure (Amb n ℓ))
+      (C \ D k) (hC.diff (hDm k)) ((measure_mono sdiff_subset).trans_lt hCfin)
+  have hdN : ∀ k, ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ N k \ D k →
+      Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ *
+        (μHE[n] : Measure (Amb n ℓ)).real ((N k \ D k) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) :=
+    fun k => Submission.rsod_ae_tendsto_density_zero_outside n ℓ (μHE[n] : Measure (Amb n ℓ))
+      (N k \ D k) ((hNm k).diff (hDm k)) ((measure_mono sdiff_subset).trans_lt (hN k).2)
+  -- Step 3: off `Z ∪ ⋃_k E_k`, each `x ∈ C` lies in `C_k` for the least `k` with `x ∈ N_k`.
+  filter_upwards [ae_all_iff.2 hdC, ae_all_iff.2 hdN, measure_eq_zero_iff_ae_notMem.1 hZ]
+    with x hxC' hxN' hxZ hxC
+  have hex : ∃ k, x ∈ N k := by
+    rcases hcov hxC with h | h
+    · exact absurd h hxZ
+    · exact mem_iUnion.1 h
+  classical
+  obtain ⟨k, hxk, hmin⟩ : ∃ k, x ∈ N k ∧ ∀ i < k, x ∉ N i :=
+    ⟨Nat.find hex, Nat.find_spec hex, fun i hi => Nat.find_min hex hi⟩
+  have hxD : x ∈ D k := ⟨⟨hxC, hxk⟩, fun h => by
+    obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.1 h
+    exact hmin i hi hxi⟩
+  -- Step 4: `T_x N_k = P` (a `C¹` submanifold) transfers to `T_x C = P` (Remark 1.5(2)).
+  obtain ⟨P, hP⟩ := Submission.rsod_isC1Submanifold_approxTangent n (n + ℓ) hn (N k) (hN k).1 x hxk
+  exact ⟨P, Submission.rsod_approxTangent_transfer n ℓ C (N k) (D k) x P (hDm k)
+    (fun y hy => hy.1.1) (fun y hy => hy.1.2) hCfin (hN k).2 (hxC' k fun h => h.2 hxD)
+    (hxN' k fun h => h.2 hxD) hP⟩
 
 end Submission
 
