@@ -481,6 +481,26 @@ theorem Submission.slicing_mb_wn_sq_sum_onb_invariant :
     simp only [ℓ, ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.apply_apply] at hu hv
     rw [← hu, ← hv]
 
+/-- The Euclidean coefficient norm of a `k`-covector can be computed in any orthonormal basis
+`u` of `ℝ^P` (Simon Ch. 6, 1.5–1.6 and Remark 2.6): `|φ|² = ∑_{I increasing} φ(u_I)²`.
+With `e` the standard basis used by `covectorEuclideanNorm` and `N_w(φ) = ∑_{all I} φ(w_I)²`,
+`k! |φ|² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`, and `k! ≠ 0`. -/
+theorem Submission.slicing_mb_wn_norm_sq_eq_onb_sum :
+    ∀ (P k : ℕ) (u : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      covectorEuclideanNorm φ ^ 2 =
+        ∑ I : Fin k → Fin P, if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P k u φ
+  -- `k! ∑_{I increasing} φ(e_I)² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`.
+  have key := (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) φ).symm.trans
+    ((Submission.slicing_mb_wn_sq_sum_onb_invariant P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) u φ).trans
+        (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k u φ))
+  -- `|φ|² = ∑_{I increasing} φ(e_I)²`: the radicand is a sum of squares and zeros.
+  rw [covectorEuclideanNorm, Real.sq_sqrt]
+  · exact mul_left_cancel₀ (Nat.cast_ne_zero.mpr k.factorial_ne_zero) key
+  · exact Finset.sum_nonneg fun I _ => by split_ifs <;> positivity
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
