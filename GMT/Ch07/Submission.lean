@@ -613,6 +613,56 @@ theorem Submission.continuous_blowUp_image_setIntegral : ∀ (P n : ℕ) (M : Se
   exact (continuous_const.mul
     (Submission.continuous_integral_comp_blowUpMap P _ hμ f hf hfs r hr)).congr fun x =>
       (Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul P n M x r hr f).symm
+/-- A field of orthogonal projections `p_x = (K x).starProjection` is a.e.-measurable (Borel
+σ-algebra of the operator-norm topology) when each quadratic form `x ↦ |p_x u|²` is.  As `p_x` is
+self-adjoint and idempotent, `⟪p_x u, w⟫ = (|p_x(u + w)|² − |p_x(u − w)|²)/4`, so the matrix
+coefficients `⟪p_x e_a, e_b⟫` are a.e.-measurable, and `p_x = Σ_{a,b} ⟪p_x e_a, e_b⟫ ⟪e_a, ·⟫ e_b`
+is a continuous linear function of them. -/
+theorem Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq : ∀ (P : ℕ) (μ : Measure (Euclid P)) (K : Euclid P → Submodule ℝ (Euclid P)), (∀ u : Euclid P, AEMeasurable (fun x => ‖(K x).starProjection u‖ ^ 2) μ) → AEMeasurable (fun x => (K x).starProjection) μ := by
+  intro P μ K h
+  -- by polarization every coefficient `x ↦ ⟪p_x u, w⟫` is a.e.-measurable
+  have hcoef : ∀ u w : Euclid P,
+      AEMeasurable (fun x => inner ℝ ((K x).starProjection u) w) μ := by
+    intro u w
+    have key : ∀ x, inner ℝ ((K x).starProjection u) w =
+        (‖(K x).starProjection (u + w)‖ ^ 2 - ‖(K x).starProjection (u - w)‖ ^ 2) / 4 := by
+      intro x
+      have hsym : inner ℝ ((K x).starProjection u) w =
+          inner ℝ ((K x).starProjection u) ((K x).starProjection w) := by
+        rw [Submodule.inner_starProjection_left_eq_right,
+          Submodule.inner_starProjection_left_eq_right,
+          Submodule.starProjection_eq_self_iff.2 ((K x).starProjection_apply_mem w)]
+      rw [hsym, map_add, map_sub, norm_add_sq_real, norm_sub_sq_real]
+      ring
+    simp_rw [key]
+    exact ((h (u + w)).sub (h (u - w))).div_const 4
+  -- `p_x = Λ (g x)`, `Λ m = ∑ m_{ab} ⟪e_a, ·⟫ e_b`, `g x = (⟪p_x e_a, e_b⟫)_{ab}`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  let Λ : (Fin P × Fin P → ℝ) → (Euclid P →L[ℝ] Euclid P) := fun m =>
+    ∑ ab, m ab • (innerSL ℝ (e ab.1)).smulRight (e ab.2)
+  have heq : (fun x => (K x).starProjection) =
+      fun x => Λ fun ab => inner ℝ ((K x).starProjection (e ab.1)) (e ab.2) := by
+    funext x
+    refine ContinuousLinearMap.ext fun v => ?_
+    simp only [Λ, FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
+      Pi.smul_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
+      Fintype.sum_prod_type]
+    calc (K x).starProjection v = (K x).starProjection (∑ a, inner ℝ (e a) v • e a) := by
+          rw [e.sum_repr']
+      _ = ∑ a, inner ℝ (e a) v • (K x).starProjection (e a) := by
+          simp only [map_sum, map_smul]
+      _ = ∑ a, inner ℝ (e a) v • ∑ b, inner ℝ (e b) ((K x).starProjection (e a)) • e b := by
+          simp only [e.sum_repr']
+      _ = _ := by
+          refine Finset.sum_congr rfl fun a _ => ?_
+          rw [Finset.smul_sum]
+          refine Finset.sum_congr rfl fun b _ => ?_
+          rw [real_inner_comm (e b), smul_smul, smul_smul, mul_comm]
+  -- `Λ` is continuous and `g` is a.e.-measurable coordinatewise
+  have hΛ : Continuous Λ :=
+    continuous_finsetSum _ fun ab _ => (continuous_apply ab).smul continuous_const
+  rw [heq]
+  exact hΛ.measurable.comp_aemeasurable (AEMeasurable.of_eval fun ab => hcoef _ _)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
