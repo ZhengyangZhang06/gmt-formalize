@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.whitney_extension-a1.whitney_partition-a1",
+  "parent_id": "root.whitney_extension-a1",
+  "depth": 2,
+  "title": "Whitney partition of unity on the complement of a closed set",
+  "statement": "For every n ∈ ℕ and every closed nonempty A ⊆ ℝⁿ = EuclideanSpace ℝ (Fin n), writing d(x) := dist(x, A) (Metric.infDist x A), there exist a type ι, functions φ_i : ℝⁿ → ℝ and points p_i ∈ ℝⁿ (i ∈ ι), and real numbers C ≥ 0, M ≥ 0 such that: (P1) p_i ∈ A for every i; (P2) every φ_i is C¹ at every point x ∉ A; (P3) φ_i(x) ≥ 0 for every i and every x ∉ A; (P4) every x ∉ A has a neighbourhood V and a finite set s ⊆ ι with φ_i(y) = 0 for all i ∉ s and y ∈ V; (P5) Σᶠ_i φ_i(x) = 1 for every x ∉ A; (P6) for x ∉ A, φ_i(x) ≠ 0 implies |x − p_i| ≤ C·d(x); (P7) for x ∉ A with d(x) ≤ 1, Σᶠ_i ‖Dφ_i(x)‖ ≤ M/d(x).",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Rn n)), IsClosed A → A.Nonempty → ∃ (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (C M : ℝ), 0 ≤ C ∧ 0 ≤ M ∧ (∀ i, p i ∈ A) ∧ (∀ i, ∀ x ∉ A, ContDiffAt ℝ 1 (φ i) x) ∧ (∀ i, ∀ x ∉ A, 0 ≤ φ i x) ∧ (∀ x ∉ A, ∃ s : Finset ι, ∃ V ∈ 𝓝 x, ∀ i ∉ s, ∀ y ∈ V, φ i y = 0) ∧ (∀ x ∉ A, ∑ᶠ i, φ i x = 1) ∧ (∀ i, ∀ x ∉ A, φ i x ≠ 0 → ‖x - p i‖ ≤ C * Metric.infDist x A) ∧ (∀ x ∉ A, Metric.infDist x A ≤ 1 → ∑ᶠ i, ‖fderiv ℝ (φ i) x‖ ≤ M / Metric.infDist x A)",
+  "lean_name": "whitney_smooth_partition_of_unity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-whitney-extension-a1-whitney-partition-a1-a1"
+}
