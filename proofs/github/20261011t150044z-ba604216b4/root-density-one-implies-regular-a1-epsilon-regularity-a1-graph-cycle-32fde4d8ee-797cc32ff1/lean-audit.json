@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b6a4598d303386b62a7a3e0d15d8046942b0b8a53640fcdb1eb0bcef5eb709a3",
+  "git_delta": {
+    "base_commit": "6aa625ae4f1d4caf4e3050182ddee48c1bd98202",
+    "candidate_commit": "5458d79a51143c2d2fa50cf032daf08b635eaa4e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgce_graph_contDiffOn_left_inverse",
+    "diff_sha256": "fd290d26baa51f95c35b762bc6275807ab5a830d77985f3c25fca7ecb0a28e3b",
+    "source_sha256": "cb7f797e0aef7d113a8140a16a0565f6d639b0ddd790756fa9f7cbbb1426fe06",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgce_graph_contDiffOn_left_inverse",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → ContDiffOn ℝ 1 (fun v => z + ι v + ι' (u v)) (ball (0 : Euclid n) s) ∧ ∃ L : Euclid (n + k) →L[ℝ] Euclid n, ∀ v, L (z + ι v + ι' (u v) - z) = v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
