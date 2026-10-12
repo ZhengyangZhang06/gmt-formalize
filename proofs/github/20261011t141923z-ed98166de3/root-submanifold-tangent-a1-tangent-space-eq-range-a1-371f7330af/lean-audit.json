@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6edd484de9ad3b09e502b3bfd6111195c121c363d040118d8318f9ea2991cc5b",
+  "git_delta": {
+    "base_commit": "eb27444cc879b800e68b891c7fa76cad958d1e30",
+    "candidate_commit": "2b9d80436c034d4f47ba3d81d8570d779b2fffd3",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "015f9bf66d58c3d63f43999e885b06124ea145d4caada254f319df05527f1c6e",
+    "source_sha256": "f29c5319824b3843982af4a54ef3406b22abfa6bacd7f3f3694e766a686a5f15",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_submanifold_tangentSpace_eq_range",
+      "statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
