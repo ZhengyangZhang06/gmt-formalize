@@ -373,6 +373,30 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Monotonicity of `bvVariationOn` in the domain.** For every `u : ℝⁿ → ℝ` and all sets
+`W ⊆ O ⊆ ℝⁿ`, `bvVariationOn u W ≤ bvVariationOn u O`; no openness, measurability or integrability is
+assumed. A field `g` admissible for `W` is admissible for `O`, as `tsupport g ⊆ W ⊆ O`. Since `div g`
+vanishes off `tsupport g` (SimonGMT `support_euclideanDivergence_subset`), both pairings
+`∫_W u div g` and `∫_O u div g` equal `∫ u div g` (`setIntegral_eq_integral_of_forall_compl_eq_zero`,
+which needs no measurability of the set). -/
+theorem Submission.bv_abs_variation_mono_set : ∀ (n : ℕ) (u : Rn n → ℝ) (W O : Set (Rn n)), W ⊆ O → Chapter02.bvVariationOn u W ≤ Chapter02.bvVariationOn u O := by
+  intro n u W O hWO
+  -- Step 2: it suffices to bound the pairing of a single field `g` admissible for `W`.
+  refine iSup_le fun g ↦ iSup_le fun hg ↦ iSup_le fun hs ↦ iSup_le fun hn ↦ ?_
+  -- Step 3: `g` is admissible for `O`.
+  have hO : tsupport g ⊆ O := hs.trans hWO
+  -- Step 1: `u · div g` vanishes off every `T ⊇ tsupport g`, because `div g` does.
+  have hvan : ∀ T : Set (Rn n), tsupport g ⊆ T → ∀ x ∉ T,
+      u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x = 0 := fun T hT x hx ↦ by
+    rw [Function.notMem_support.mp fun h ↦ hx (hT (Chapter02.support_euclideanDivergence_subset _ h)),
+      mul_zero]
+  -- Steps 4–5: both set pairings equal the whole-space pairing, and `g` is admissible for `O`.
+  calc ENNReal.ofReal (∫ x in W, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      = ENNReal.ofReal (∫ x in O, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) := by
+        rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hvan W hs),
+          setIntegral_eq_integral_of_forall_compl_eq_zero (hvan O hO)]
+    _ ≤ Chapter02.bvVariationOn u O := Chapter02.ofReal_integral_le_bvVariationOn u O g hg hO hn
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
