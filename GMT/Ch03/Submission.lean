@@ -384,12 +384,6 @@ theorem Submission.setIntegral_blowUpMap_image : ∀ (n N : ℕ) (x : Rn N) (r :
   -- Step 6: `(r⁻¹)ⁿ = (rⁿ)⁻¹`.
   rw [← hi, inv_pow]
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **The measure `θ Hⁿ ⌞ M`** (Simon Ch. 3, Definition 1.7, Remark 1.8(1) and Theorem 1.9,
 `chapter-03.txt` lines 284–323). Let `M` be `Hⁿ`-measurable, `θ` a positive locally
 `Hⁿ`-integrable weight on `M`, and `μ = (Hⁿ ⌞ M).withDensity (ofReal ∘ θ)`. Then
@@ -442,3 +436,8 @@ theorem Submission.weightedMeasure_finite_null_tangent :
     rw [hdens, Submission.setIntegral_blowUpMap_image n N x r M
       (fun y ↦ f y * θ (x + r • y)) hr]
     simp only [hη]
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
