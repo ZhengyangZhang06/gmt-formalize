@@ -579,6 +579,36 @@ theorem mvk_integral_fderiv_grad_eq_neg_laplacian : ∀ (n : ℕ) (H Ψ : Rn n �
         rw [integral_finsetSum _ fun i _ => (ibp _ (hfC i) (e i)).1, Finset.sum_neg_distrib]
     _ = -∫ z, Laplacian.laplacian H z * Ψ z := by
         simp only [hlap]
+/-- **Laplacian of an affinely rescaled `C²` function** (scaling step in the mean value property
+behind Weyl's lemma, used for Simon Ch. 5, Lemma 3.1, p. 114).  If `h : ℝⁿ → ℝ` is `C²`, then
+`Δ(y ↦ h(x₀ + σ y))(z) = σ² Δh(x₀ + σ z)` for all `x₀, z ∈ ℝⁿ` and `σ ∈ ℝ`.
+Proof: `y ↦ h(x₀ + σ y) = h₀ ∘ L` with `h₀ = h(x₀ + ·)` of class `C²` and `L = σ • id`.  Expanding
+both Laplacians in the standard orthonormal basis `(eᵢ)`, it suffices that
+`D²(h₀ ∘ L)(z)[eᵢ, eᵢ] = D²h₀(σ z)[σ eᵢ, σ eᵢ] = σ² D²h₀(σ z)[eᵢ, eᵢ]` (composition with a linear
+map on the right, then multilinearity) and `D²h₀(σ z) = D²h(x₀ + σ z)` (translation). -/
+theorem mvk_laplacian_comp_add_smul : ∀ (n : ℕ) (h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), ContDiff ℝ 2 h → ∀ z : Rn n, Laplacian.laplacian (fun y => h (x₀ + σ • y)) z = σ ^ 2 * Laplacian.laplacian h (x₀ + σ • z) := by
+  intro n h x₀ σ hh z
+  -- Step 1: `y ↦ h (x₀ + σ • y) = h₀ ∘ L`, where `h₀ y = h (x₀ + y)` is `C²` and `L = σ • id`.
+  have h₀ : ContDiff ℝ 2 (fun y : Rn n => h (x₀ + y)) := hh.comp (contDiff_const.add contDiff_id)
+  set L : Rn n →L[ℝ] Rn n := σ • ContinuousLinearMap.id ℝ (Rn n)
+  have hcomp : (fun y => h (x₀ + σ • y)) = (fun y => h (x₀ + y)) ∘ L := by
+    ext y
+    simp [L]
+  -- Step 2: expand both Laplacians in the standard orthonormal basis `eᵢ`.
+  set e := EuclideanSpace.basisFun (Fin n) ℝ
+  rw [InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis _ e,
+    InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis _ e, Finset.mul_sum, hcomp]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  -- Step 3: `D²(h₀ ∘ L)(z)[eᵢ, eᵢ] = D²h₀(σ z)[σ eᵢ, σ eᵢ] = σ² D²h₀(σ z)[eᵢ, eᵢ]`.
+  rw [L.iteratedFDeriv_comp_right h₀ z le_rfl, ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  have hsmul : (fun j => L (![e i, e i] j)) = fun j => σ • ![e i, e i] j := by
+    ext1 j
+    simp [L]
+  rw [hsmul, ContinuousMultilinearMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+    Fintype.card_fin, smul_eq_mul]
+  -- Step 4: `D²h₀(σ z) = D²h(x₀ + σ z)`.
+  rw [iteratedFDeriv_comp_add_left]
+  simp [L]
 
 end Submission
 
