@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.projection_continuity-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "depth": 3,
+  "title": "Continuity of the orthogonal projection onto the range of an injective linear map",
+  "statement": "Let n, ℓ ≥ 0. The map sending a continuous linear map L : ℝⁿ → ℝ^{n+ℓ} (ℝⁿ = Rn n, ℝ^{n+ℓ} = Amb n ℓ) to the orthogonal projection of ℝ^{n+ℓ} onto its range L(ℝⁿ) (Submodule.starProjection of LinearMap.range L) is continuous on the set of injective L, for the operator-norm topologies.",
+  "lean_statement": "∀ (n ℓ : ℕ), ContinuousOn (fun L : Rn n →L[ℝ] Amb n ℓ => (LinearMap.range L.toLinearMap).starProjection) {L : Rn n →L[ℝ] Amb n ℓ | Function.Injective L}",
+  "lean_name": "aetp_starProjection_range_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-projection-c-ed781ad605-a1"
+}
