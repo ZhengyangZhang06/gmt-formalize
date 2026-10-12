@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7a4c02e133418e12f9354d56eac34fec926b19b7d3d4063c707d238e7bc583b6",
+  "git_delta": {
+    "base_commit": "0aea0f46e24e109f406ca970d45047332ad72f7e",
+    "candidate_commit": "cfec0688754671ca1b5207c66bd4ae6dc83dd2e6",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "ad911e0eaa308dd1a185efb5199c6a941d15c9f72db755f4b514c715d90ad9b6",
+    "source_sha256": "8784a368513fbab64f11a71d3421873d70df5780a0aa4de5be90b884978f0efd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_smooth_cutoff_half_ball_grad_le",
+      "statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ), 0 < ρ → ∃ ζ : Rn m → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ Metric.closedBall ξ (ρ / 2), ζ x = 1) ∧ (∀ x, ρ ≤ dist x ξ → ζ x = 0) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / ρ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
