@@ -359,6 +359,36 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Products with a cutoff (Simon Ch. 6, §2): if `χ` is `C^∞` with `tsupport χ ⊆ W`, then
+`ω ↦ χ ω` is a linear map `𝒟^q(V) → 𝒟^q(W)`, acting pointwise on the underlying forms. -/
+theorem Submission.fiw_tb_ext_smul_testForm :
+    ∀ (P q : ℕ) (V W : Set (Eucl P)) (χ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ →
+      tsupport χ ⊆ W → ∃ L : TestFormOn V q →ₗ[ℝ] TestFormOn W q, ∀ (ω : TestFormOn V q)
+        (x : Eucl P), (L ω : DifferentialForm (Eucl P) q) x =
+          χ x • (ω : DifferentialForm (Eucl P) q) x := by
+  intro P q V W χ hχ hχW
+  -- `χ ω` is smooth, its support lies in the compact `tsupport ω` and in `tsupport χ ⊆ W`.
+  have hmem : ∀ ω : TestFormOn V q,
+      (fun x => χ x • (ω : DifferentialForm (Eucl P) q) x) ∈ TestFormOn W q := by
+    intro ω
+    obtain ⟨⟨hs, hc⟩, -⟩ := ω.property
+    refine ⟨⟨hχ.smul hs, ?_⟩, (tsupport_smul_subset_left _ _).trans hχW⟩
+    exact hc.of_isClosed_subset (isClosed_tsupport _) (tsupport_smul_subset_right _ _)
+  -- Additivity and homogeneity hold pointwise on the underlying forms.
+  refine ⟨{ toFun := fun ω => ⟨_, hmem ω⟩, map_add' := ?_, map_smul' := ?_ }, fun ω x => rfl⟩
+  · intro a b
+    apply Subtype.ext
+    funext x
+    change χ x • ((a : DifferentialForm (Eucl P) q) x + (b : DifferentialForm (Eucl P) q) x) = _
+    rw [smul_add]
+    rfl
+  · intro c a
+    apply Subtype.ext
+    funext x
+    change χ x • (c • (a : DifferentialForm (Eucl P) q) x) =
+      c • (χ x • (a : DifferentialForm (Eucl P) q) x)
+    rw [smul_comm]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
