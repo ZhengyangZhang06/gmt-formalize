@@ -1,0 +1,113 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.imrep_mass_formula-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_norming-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1(b) of the parent node's supplied proof of the mass formula M_W(T) = R.measure W (Simon Ch. 6, Remark 3.2(3); the determinant formula (6.1.1) for wedges). Notation (shared with the parent proof): ℝ^P = Euclid P = EuclideanSpace ℝ (Fin P) with standard orthonormal basis e_i = EuclideanSpace.basisFun (Fin P) ℝ i; Λ^n = Covector (Euclid P) n, the continuous alternating n-linear forms on ℝ^P; for a family b : Fin P → ℝ^P and j : Fin n → Fin P write b∘j := (b_{j(0)}, …, b_{j(n−1)}); |α|_E := covectorEuclideanNorm α = √(Σ_{I : Fin n → Fin P} [I strictly increasing] α(e∘I)²) (SimonGMT Chapter06/Mass.lean). Uses the sibling lemma regcomp_covector_sq_sum_orthonormalBasis: Σ_{j : Fin n → Fin P} α(f∘j)² = n!·|α|_E² for every orthonormal basis f of ℝ^P indexed by Fin P. Implementation note: wedgeCovectors and wedgeCovectors_apply_det live in Poincare.SimonGMT.Chapter06.FormsDuality, which is not in the import closure of GMT.Ch07.Submission; import it (and Mathlib.LinearAlgebra.Matrix.Permutation if Matrix.det_permutation is used) in the implementation's helper module.
+
+1. (Definition of β.) Let β := wedgeCovectors n (fun i ↦ innerSL ℝ (τ i)) ∈ Covector (Euclid P) n, the wedge of the 1-covectors ⟨τ_i, ·⟩. By SimonGMT Chapter06.wedgeCovectors_apply_det, for every v : Fin n → ℝ^P, β(v) = det M(v) with M(v) := Matrix.of (fun i k ↦ ⟨τ_i, v_k⟩).
+
+2. (β(τ) = 1.) By orthonormality ⟨τ_i, τ_k⟩ = (if i = k then 1 else 0) (orthonormal_iff_ite), so M(τ) = 1 and β(τ) = det 1 = 1.
+
+3. (n ≤ P and an orthonormal basis extending τ.) τ is orthonormal, hence linearly independent, so n = card(Fin n) ≤ finrank ℝ ℝ^P = P (Orthonormal.linearIndependent, LinearIndependent.fintype_card_le_finrank, finrank_euclideanSpace_fin). Let ι : Fin n → Fin P, ι(k) := Fin.castLE (n ≤ P) k (injective). Define v : Fin P → ℝ^P by v(i) := τ(⟨i, h⟩) if h : i.val < n and v(i) := 0 otherwise, and s := {i : Fin P | i.val < n}. The restriction of v to s is τ composed with the bijection s ≃ Fin n, hence orthonormal. Since finrank ℝ ℝ^P = P = card(Fin P), Orthonormal.exists_orthonormalBasis_extension_of_card_eq gives an orthonormal basis f : OrthonormalBasis (Fin P) ℝ ℝ^P with f(i) = v(i) for all i ∈ s; in particular f(ι(k)) = τ(k) for every k ∈ Fin n.
+
+4. (Values on basis tuples.) Fix j : Fin n → Fin P and put M := M(f∘j). Since f is orthonormal and τ_i = f_{ι(i)}, M_{ik} = ⟨f_{ι(i)}, f_{j(k)}⟩ = (if ι(i) = j(k) then 1 else 0).
+ (a) If j = ι∘π for some π ∈ Perm(Fin n), then f∘j = (f∘ι)∘π = τ∘π, so β(f∘j) = β(τ∘π) = sign(π)·β(τ) = sign(π) = ±1 (AlternatingMap.map_perm applied to β.toAlternatingMap, and step 2); hence β(f∘j)² = 1. (Equivalently, M is a permutation matrix and Matrix.det_permutation applies.)
+ (b) Otherwise β(f∘j) = 0. If some j(k) ∉ range ι, column k of M is zero and det M = 0 (Matrix.det_eq_zero_of_column_eq_zero). If range j ⊆ range ι, then j = ι∘ρ where ρ(k) is the unique preimage of j(k) under ι; ρ : Fin n → Fin n is not a permutation (else we are in case (a)), so ρ is not injective (an injective self-map of a finite type is bijective, Finite.injective_iff_bijective); then j and f∘j are not injective and β(f∘j) = 0 because β is alternating (ContinuousAlternatingMap.map_eq_zero_of_not_injective).
+ (c) π ↦ ι∘π is injective, so exactly n! = |Perm(Fin n)| tuples fall under (a). Hence Σ_{j : Fin n → Fin P} β(f∘j)² = n!.
+
+5. (Norm.) By regcomp_covector_sq_sum_orthonormalBasis applied to P, n, β, f: n! = n!·|β|_E². As n! > 0, |β|_E² = 1, and as |β|_E ≥ 0 (covectorEuclideanNorm_nonneg), |β|_E = 1.
+
+6. (Conclusion.) By steps 2 and 5, covectorEuclideanNorm β = 1 and β τ = 1. ∎
+
+## Key steps
+
+1. β := wedge of the covectors ⟨τ_i, ·⟩, so β(v) = det(⟨τ_i, v_k⟩) and β(τ) = det 1 = 1.
+2. For an orthonormal basis f extending τ, β(f∘j) = ±1 when j = ι∘π for a permutation π and 0 otherwise, so Σ_j β(f∘j)² = n!.
+3. The sibling identity gives n! = n!·|β|_E², hence |β|_E = 1.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `python3 -I scan of dag.json (132 nodes) for lean_name collisions with the eight proposed regcomp_ names (none) and for related nodes (dtc_mass_eq_measure, rsd_massOn_eq_measure, dor_imrep_massOn_eq_measure_and_support, imrep_represents_massOn_eq_measure, covectorEuclideanNorm_gram_bounds: all still decomposing, with different types)`
+- `git worktree list; grep -nE '^(theorem|lemma|def) ' .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no regcomp_ declarations)`
+- `grep -n 'covectorEuclideanNorm|massAdmissibleOn|GeometricCurrentOn.massOn|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `grep -n 'wedgeCovectors|wedgeCovectors_apply_det|euclideanCovectorCoordinate' simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `grep -n 'IsTestForm|testFormOnSubmodule|TestFormOn|GeometricCurrentOn' simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Currents.lean`
+- `grep -rn 'exists_orthonormalBasis_extension_of_card_eq|sum_sq_inner_right|sum_inner_mul_inner' Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `grep -rn 'Integrable.exists_hasCompactSupport_lintegral_sub_le|MemLp.exists_hasCompactSupport_eLpNorm_sub_le|MemLp.exist_eLpNorm_sub_le' Mathlib`
+- `grep -rn 'dist_normed_convolution_le|contDiff_convolution_left|support_convolution_subset|convolution_def|Continuous.exists_contDiff_approx|UniformContinuous.exists_contDiff_dist_le' Mathlib`
+- `grep -n 'Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure' Mathlib/MeasureTheory/Measure/Regular.lean`
+- `grep -rn 'map_eq_zero_of_not_injective|theorem map_perm|theorem Module.Basis.ext_multilinear|theorem det_permutation|def sort|monotone_sort' Mathlib`
+- `grep -rn 'IsSeparable.exists_countable_dense_subset|IsSeparable.mono|exists_compact_between|IsOpen.exists_iUnion_isClosed|exists_cthickening_subset_open|exists_continuous_one_zero_of_isCompact|uniformContinuous_of_continuous' Mathlib`
+- `grep -rn 'enorm_integral_le_lintegral_enorm|theorem withDensity_apply|lintegral_withDensity_eq_lintegral_mul₀' Mathlib/MeasureTheory`
+- `lake env lean /tmp/imrep-mass-split/Inst.lean and Inst2.lean (#synth FiniteDimensional ℝ (Covector (Euclid P) n): fails; SeparableSpace: fails; CompleteSpace: found; ν.Regular for finite ν: found; signatures of the cited lemmas)`
+- `lake env lean /tmp/imrep-mass-split/CheckFinal2.lean (eight frozen child types + le_antisymm parent assembly; #print axioms)`
+- `lake env lean /tmp/imrep-mass-split/Check2.lean, Check3.lean, Check4.lean (unit_orientation_pairing from stubs; full proof of mass_le_measure; skeleton of measure_le_mass)`
+- `python3 -I /tmp/imrep-mass-split/scripts/numcheck2.py (numeric check of the three covector facts for (P,n) in {(4,2),(5,3),(3,3),(4,1),(3,0),(2,3)})`
+- `sed -n 755,770p book/chapter-06.txt (Remark 3.2(3))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Permutation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/imrep-mass-split/CheckFinal2.lean`
+- `/tmp/imrep-mass-split/Check2.lean`
+- `/tmp/imrep-mass-split/Check3.lean`
+- `/tmp/imrep-mass-split/Check4.lean`
+- `/tmp/imrep-mass-split/Inst.lean`
+- `/tmp/imrep-mass-split/Inst2.lean`
+- `/tmp/imrep-mass-split/scripts/numcheck2.py`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Submission.lean. None of the eight proposed regcomp_ names occurs in dag.json or in any speculative Submission. No comparator-accepted declaration with an identical type exists to reuse: the related nodes dtc_mass_eq_measure, rsd_massOn_eq_measure, dor_imrep_massOn_eq_measure_and_support, imrep_represents_massOn_eq_measure and covectorEuclideanNorm_gram_bounds are all still decomposing and have different types.
+
+SimonGMT Chapter06 provides covectorEuclideanNorm (with _zero, _neg, _nonneg), massAdmissibleOn, GeometricCurrentOn.massOn and le_massOn (Mass.lean), and wedgeCovectors with wedgeCovectors_apply_det (FormsDuality.lean). FormsDuality is not in the import closure of GMT.Ch07.Submission; the covector_norming child carries an import note.
+
+Mathlib supplies: orthonormal-basis extension and Parseval (PiL2); C_c-density in L¹ for regular measures (ContinuousMapDense, not imported by the contract); regularity of finite Borel measures on Euclid P (Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure, which resolves); bump-function convolution (contDiff_convolution_left, dist_normed_convolution_le, support_convolution_subset); Continuous.exists_contDiff_approx; alternating-map lemmas (map_perm, map_eq_zero_of_not_injective, Basis.ext_multilinear/ext_alternating); Tuple.sort; Matrix.det_permutation; separability and exhaustion lemmas; and enorm_integral_le_lintegral_enorm, withDensity_apply, lintegral_withDensity_eq_lintegral_mul₀.
+
+Mathlib has no FiniteDimensional or SeparableSpace instance for Covector (Euclid P) n (#synth fails), so near_maximizer proves finite-dimensionality locally; CompleteSpace and NormedSpace are found.
+
+Verification:
+- All eight frozen child types elaborate after import GMT.Ch07.Submission in the contract's namespace and opens.
+- The le_antisymm assembly of regcomp_imrep_mass_formula compiles, using only propext, Classical.choice and Quot.sound, plus sorryAx from the child stubs.
+- unit_orientation_pairing was proved from stubs of its two dependencies, and mass_le_measure was proved completely from unit_orientation_pairing.
+- A skeleton of measure_le_mass applying near_maximizer and smooth_form_approx typechecks.
+- A pure-Python check confirmed covector_sq_sum, covector_eval_le and covector_norming numerically, including n = 0, n = P and n > P.
+- An independent reviewer subagent re-ran these checks and accepted the split.
