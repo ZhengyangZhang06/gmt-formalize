@@ -388,6 +388,71 @@ theorem Submission.indCompact_transEst_integral_indicator_shift_mul : ∀ (N : �
           integral_indicator₀ hF, integral_indicator₀ hF]
     _ = ∫ z in F, (ψ (z - h) - ψ z) :=
         (integral_sub hψh.integrableOn hψ.integrableOn).symm
+/-- **Translation difference of a `C¹_c` function as a parametric integral of directional
+derivatives** (steps 5(b) and 5(d) of the BV translation estimate behind the Compactness
+Theorem 2.6 of Simon Ch. 2, `chapter-02.txt` lines 598–620, [GT01, Thm. 7.22], as used in the
+proof of Ch. 3, Thm. 4.3, `chapter-03.txt` line 653). For an arbitrary `F ⊆ ℝᴺ`, `ψ ∈ C¹_c(ℝᴺ)`
+and `h ∈ ℝᴺ`: `∫_F (ψ(z - h) - ψ(z)) dz = -∫₀¹ ∫_F Dψ(z - th)[h] dz dt`. For fixed `z`, the
+fundamental theorem of calculus along `t ↦ ψ(z - th)` gives
+`ψ(z - h) - ψ(z) = -∫₀¹ Dψ(z - th)[h] dt`. The integrand `f(z, t) = Dψ(z - th)[h]` is continuous
+and, for `t ∈ [0, 1]`, vanishes unless `z` lies in the compact `K = tsupport ψ + [0, 1] h`; so it
+is integrable on `ℝᴺ × [0, 1] ⊇ F × (0, 1]`, and Fubini for `Lᴺ ⌞ F ⊗ L¹ ⌞ (0, 1]` swaps the
+integrals. -/
+theorem Submission.indCompact_transEst_setIntegral_shift_sub_ftc : ∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ z in F, (ψ (z - h) - ψ z) = -∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h := by
+  intro N F ψ h hψ hψs
+  -- Step 1: `ψ` is differentiable and `f(z, t) = Dψ(z - th)[h]` is continuous on `ℝᴺ × ℝ`.
+  have hdiff : Differentiable ℝ ψ := hψ.differentiable one_ne_zero
+  have hcont : Continuous (fderiv ℝ ψ) := hψ.continuous_fderiv one_ne_zero
+  set f : Rn N → ℝ → ℝ := fun z t ↦ fderiv ℝ ψ (z - t • h) h
+  have hfc : Continuous (Function.uncurry f) :=
+    (hcont.comp (continuous_fst.sub (continuous_snd.smul continuous_const))).clm_apply
+      continuous_const
+  -- Step 2 (FTC along `t ↦ ψ(z - th)`, whose derivative is `-f(z, t)`):
+  -- `ψ(z - h) - ψ(z) = -∫₀¹ f(z, t) dt`.
+  have hftc : ∀ z, ψ (z - h) - ψ z = -∫ t in (0 : ℝ)..1, f z t := by
+    intro z
+    have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+        HasDerivAt (fun t : ℝ ↦ ψ (z - t • h)) (-(f z t)) t := by
+      intro t _
+      have h1 : HasDerivAt (fun t : ℝ ↦ z - t • h) (-h) t := by
+        simpa using ((hasDerivAt_id t).smul_const h).const_sub z
+      have h2 : HasDerivAt (fun t : ℝ ↦ ψ (z - t • h)) (fderiv ℝ ψ (z - t • h) (-h)) t :=
+        (hdiff (z - t • h)).hasFDerivAt.comp_hasDerivAt t h1
+      simpa [f, map_neg] using h2
+    have hint : IntervalIntegrable (fun t ↦ -(f z t)) volume 0 1 :=
+      ((hfc.comp (continuous_const.prodMk continuous_id)).neg).intervalIntegrable 0 1
+    have := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+    simp only [one_smul, zero_smul, sub_zero, intervalIntegral.integral_neg] at this
+    linarith
+  -- Step 3: integrate over `F`, write `∫₀¹` as `∫_{(0, 1]}`, and reduce to Fubini for
+  -- `Lᴺ ⌞ F ⊗ L¹ ⌞ (0, 1]`.
+  rw [integral_congr_ae (Eventually.of_forall hftc), integral_neg]
+  congr 1
+  simp_rw [intervalIntegral.integral_of_le zero_le_one]
+  apply integral_integral_swap
+  -- Step 4: integrability. With `K = {x + s h : x ∈ tsupport ψ, s ∈ [0, 1]}` compact, `f` is
+  -- integrable on `K × [0, 1]` and vanishes on `(ℝᴺ × [0, 1]) \ (K × [0, 1])`.
+  set K : Set (Rn N) := (fun p : Rn N × ℝ ↦ p.1 + p.2 • h) '' (tsupport ψ ×ˢ Icc (0 : ℝ) 1)
+  have hK : IsCompact K := (hψs.isCompact.prod isCompact_Icc).image (by fun_prop)
+  rw [Measure.prod_restrict]
+  have h1 : IntegrableOn (Function.uncurry f) (K ×ˢ Icc (0 : ℝ) 1) (volume.prod volume) :=
+    hfc.continuousOn.integrableOn_compact (hK.prod isCompact_Icc)
+  have h2 : IntegrableOn (Function.uncurry f) (univ ×ˢ Icc (0 : ℝ) 1) (volume.prod volume) := by
+    refine h1.of_forall_sdiff_eq_zero (MeasurableSet.univ.prod measurableSet_Icc) ?_
+    rintro ⟨z, t⟩ ⟨⟨-, ht⟩, hnot⟩
+    simp only [Function.uncurry_apply_pair, f]
+    by_contra hne
+    apply hnot
+    refine ⟨?_, ht⟩
+    -- `Dψ = 0` off `tsupport ψ`, so `z - th ∈ tsupport ψ` and `z = (z - th) + th ∈ K`.
+    have hmem : z - t • h ∈ tsupport ψ := by
+      by_contra hns
+      apply hne
+      rw [fderiv_of_notMem_tsupport ℝ hns]
+      simp
+    exact ⟨(z - t • h, t), ⟨hmem, ht⟩, by simp⟩
+  -- Step 5: `F × (0, 1] ⊆ ℝᴺ × [0, 1]`.
+  exact h2.mono_set (prod_mono (subset_univ _) Ioc_subset_Icc_self)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
