@@ -538,6 +538,175 @@ theorem rsod_c1ab_clm_lusin_closed : ∀ (n : ℕ) (F : Rn n → (Rn n →L[ℝ]
       · exact (hKA _ h).2
     · intro hxU
       exact hAO _ ⟨hK₀S hx.1, hxU⟩
+/-- Simon Ch. 2, proof of Theorem 1.5 (p. 44): **Egoroff's theorem with a closed good set** in `ℝⁿ`.
+If `g_k : ℝⁿ → ℝ` are Borel measurable and `g_k → 0` pointwise on a measurable `C` with `Lⁿ(C) < ∞`,
+then for every `δ > 0` there is a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` on which `g_k → 0` uniformly:
+Egoroff's theorem on `C` with tolerance `δ'/2`, then a closed subset of the good set by inner
+regularity of `Lⁿ` with tolerance `δ'/2`, where `δ' = min δ 1`. -/
+theorem rsod_c1ab_utr_closed_egoroff : ∀ (n : ℕ) (g : ℕ → Rn n → ℝ), (∀ k, Measurable (g k)) → ∀ C : Set (Rn n), MeasurableSet C → volume C ≠ ∞ → (∀ x ∈ C, Tendsto (fun k => g k x) atTop (𝓝 0)) → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \ A) < δ ∧ TendstoUniformlyOn g (fun _ => 0) atTop A := by
+  intro n g hg C hC hCfin hconv δ hδ
+  -- Step 1: the finite tolerance `δ' = min δ 1`, so `0 < δ'/2 < ∞` and `δ'/2 + δ'/2 = δ' ≤ δ`.
+  set δ' : ℝ≥0∞ := min δ 1
+  have hδ'0 : δ' ≠ 0 := (lt_min (pos_iff_ne_zero.2 hδ) one_pos).ne'
+  have hδ'top : δ' ≠ ∞ := ne_top_of_le_ne_top ENNReal.one_ne_top (min_le_right δ 1)
+  have hhalf : 0 < δ' / 2 := ENNReal.half_pos hδ'0
+  -- Step 2 (Egoroff): a measurable `t ⊆ C` with `Lⁿ(t) ≤ δ'/2` and `g_k → 0` uniformly on `C \ t`.
+  obtain ⟨t, htC, htm, ht, hunif⟩ := tendstoUniformlyOn_of_ae_tendsto (μ := volume)
+    (fun k => (hg k).stronglyMeasurable) stronglyMeasurable_const hC hCfin
+    (ae_of_all _ fun x hx => hconv x hx) hhalf
+  -- Step 3 (inner regularity): a closed `A ⊆ C \ t` with `Lⁿ((C \ t) \ A) < δ'/2`.
+  obtain ⟨A, hAsub, hAcl, hA⟩ := (hC.diff htm).exists_isClosed_sdiff_lt
+    (ne_top_of_le_ne_top hCfin (measure_mono sdiff_subset)) hhalf.ne'
+  -- Step 4: `A` is closed, `A ⊆ C \ t ⊆ C`, and the uniform convergence restricts to `A`.
+  refine ⟨A, hAsub.trans sdiff_subset, hAcl, ?_, hunif.mono hAsub⟩
+  -- Step 5: `C \ A ⊆ t ∪ ((C \ t) \ A)`, so `Lⁿ(C \ A) < δ'/2 + δ'/2 = δ' ≤ δ`.
+  have hsub : C \ A ⊆ t ∪ ((C \ t) \ A) := by
+    rintro x ⟨hxC, hxA⟩
+    by_cases hxt : x ∈ t
+    · exact Or.inl hxt
+    · exact Or.inr ⟨⟨hxC, hxt⟩, hxA⟩
+  calc volume (C \ A) ≤ volume (t ∪ ((C \ t) \ A)) := measure_mono hsub
+    _ ≤ volume t + volume ((C \ t) \ A) := measure_union_le _ _
+    _ < δ' / 2 + δ' / 2 := ENNReal.add_lt_add_of_le_of_lt
+      (ne_top_of_le_ne_top (ENNReal.div_ne_top hδ'top two_ne_zero) ht) ht hA
+    _ = δ' := ENNReal.add_halves δ'
+    _ ≤ δ := min_le_left δ 1
+/-- Simon Ch. 2, proof of Theorem 1.5 (p. 44): **sup-control of the Taylor remainder**.  For a
+`K`-Lipschitz `f : ℝⁿ → ℝ` differentiable at every point of a closed `C`, with
+`R(x, y) = f y - f x - Df(x)(y - x)`, the functions
+`η_k(x) = 1_C(x) · sup {|R(x, q)|/|q - x| : q ∈ Q, 0 < |q - x| < 1/(k+1)}` (`Q ⊆ C` countable dense)
+are Borel, tend to `0` on `C`, and satisfy `|R(x, y)| ≤ η_k(x)|y - x|` for `x, y ∈ C` with
+`0 < |y - x| < 1/(k+1)`: by differentiability at `x` for the limit, and by continuity of
+`q ↦ |R(x, q)|/|q - x|` at `y` along `Q` for the bound. -/
+theorem rsod_c1ab_utr_remainder_sup_control : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ f x) → ∃ η : ℕ → Rn n → ℝ, (∀ k, Measurable (η k)) ∧ (∀ x ∈ C, Tendsto (fun k => η k x) atTop (𝓝 0)) ∧ ∀ k : ℕ, ∀ x ∈ C, ∀ y ∈ C, 0 < ‖y - x‖ → ‖y - x‖ < 1 / ((k : ℝ) + 1) → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η k x * ‖y - x‖ := by
+  intro n f K hf C hC hdiff
+  -- Step 1: `|f y - f x - Df(x)(y - x)| ≤ 2K|y - x|`, from the Lipschitz bound and `‖Df(x)‖ ≤ K`.
+  have hrem : ∀ x y : Rn n, ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ 2 * (K : ℝ) * ‖y - x‖ := by
+    intro x y
+    have h1 : ‖f y - f x‖ ≤ K * ‖y - x‖ := hf.norm_sub_le y x
+    have h2 : ‖fderiv ℝ f x (y - x)‖ ≤ K * ‖y - x‖ :=
+      ((fderiv ℝ f x).le_opNorm (y - x)).trans
+        (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hf) (norm_nonneg _))
+    calc ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ ‖f y - f x‖ + ‖fderiv ℝ f x (y - x)‖ :=
+          norm_sub_le _ _
+      _ ≤ K * ‖y - x‖ + K * ‖y - x‖ := add_le_add h1 h2
+      _ = 2 * (K : ℝ) * ‖y - x‖ := by ring
+  -- Step 2: a countable `Q ⊆ C` with `C ⊆ closure Q`.
+  obtain ⟨Q, hQC, hQc, hCQ⟩ :=
+    (TopologicalSpace.IsSeparable.of_separableSpace C).exists_countable_dense_subset
+  have : Countable Q := hQc.to_subtype
+  -- Step 3: `ψ_{k,q}(x) = |R(x, q)|/|q - x|` on the window `0 < |q - x| < 1/(k+1)`, else `0`.
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : ℕ → Rn n → Rn n → ℝ, ∀ k q x, ψ k q x =
+      if 0 < ‖q - x‖ ∧ ‖q - x‖ < 1 / ((k : ℝ) + 1) then
+        ‖f q - f x - fderiv ℝ f x (q - x)‖ / ‖q - x‖ else 0 := ⟨_, fun _ _ _ => rfl⟩
+  -- Step 4: `0 ≤ ψ_{k,q} ≤ 2K`, so the family `(ψ_{k,q}(x))_{q ∈ Q}` is bounded above.
+  have hψ_nonneg : ∀ k q x, 0 ≤ ψ k q x := by
+    intro k q x
+    rw [hψ]
+    split_ifs
+    · positivity
+    · exact le_rfl
+  have hψ_le : ∀ k q x, ψ k q x ≤ 2 * (K : ℝ) := by
+    intro k q x
+    rw [hψ]
+    split_ifs with h
+    · rw [div_le_iff₀ h.1]
+      exact hrem x q
+    · positivity
+  have hbdd : ∀ k x, BddAbove (Set.range fun q : Q => ψ k q x) := fun k x =>
+    ⟨2 * (K : ℝ), by rintro _ ⟨q, rfl⟩; exact hψ_le k q x⟩
+  -- `η_k = 1_C · sup_{q ∈ Q} ψ_{k,q}`.
+  refine ⟨fun k => C.indicator (fun x => ⨆ q : Q, ψ k q x), ?_, ?_, ?_⟩
+  · -- Step 5: each `η_k` is Borel.
+    intro k
+    refine Measurable.indicator (Measurable.iSup fun q => ?_) hC.measurableSet
+    have hD : Measurable fun x => fderiv ℝ f x ((q : Rn n) - x) :=
+      ContinuousLinearMap.measurable_apply₂.comp
+        ((measurable_fderiv ℝ f).prodMk (measurable_const.sub measurable_id))
+    have hU : IsOpen {x : Rn n | 0 < ‖(q : Rn n) - x‖ ∧ ‖(q : Rn n) - x‖ < 1 / ((k : ℝ) + 1)} :=
+      (isOpen_lt continuous_const (continuous_const.sub continuous_id).norm).inter
+        (isOpen_lt (continuous_const.sub continuous_id).norm continuous_const)
+    show Measurable fun x => ψ k q x
+    simp only [hψ]
+    exact Measurable.ite hU.measurableSet
+      (((measurable_const.sub hf.continuous.measurable).sub hD).norm.div
+        (measurable_const.sub measurable_id).norm) measurable_const
+  · -- Step 6: `η_k(x) → 0` for `x ∈ C`.
+    intro x hx
+    dsimp only
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.1
+      ((hdiff x hx).hasFDerivAt.isLittleO.bound (half_pos hε))
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hr
+    refine ⟨k₀, fun k hk => ?_⟩
+    have hle : (⨆ q : Q, ψ k q x) ≤ ε / 2 := by
+      refine Real.iSup_le (fun q => ?_) (half_pos hε).le
+      rw [hψ]
+      split_ifs with h
+      · rw [div_le_iff₀ h.1]
+        have hlt : dist (q : Rn n) x < r := by
+          rw [dist_eq_norm]
+          calc ‖(q : Rn n) - x‖ < 1 / ((k : ℝ) + 1) := h.2
+            _ ≤ 1 / ((k₀ : ℝ) + 1) := by gcongr
+            _ < r := hk₀
+        exact hball hlt
+      · exact (half_pos hε).le
+    have hnn : 0 ≤ ⨆ q : Q, ψ k q x := Real.iSup_nonneg fun q => hψ_nonneg k q x
+    rw [Set.indicator_of_mem hx, Real.dist_eq, sub_zero, abs_of_nonneg hnn]
+    linarith
+  · -- Step 7: `|R(x, y)| ≤ η_k(x)|y - x|` for `x, y ∈ C` with `0 < |y - x| < 1/(k+1)`.
+    intro k x hx y hy hpos hlt
+    dsimp only
+    have hφ : ContinuousAt (fun q : Rn n => ‖f q - f x - fderiv ℝ f x (q - x)‖ / ‖q - x‖) y :=
+      (((hf.continuous.sub continuous_const).sub ((fderiv ℝ f x).continuous.comp
+        (continuous_id.sub continuous_const))).norm.continuousAt).div
+        (continuous_id.sub continuous_const).norm.continuousAt hpos.ne'
+    have hW : IsOpen {q : Rn n | 0 < ‖q - x‖ ∧ ‖q - x‖ < 1 / ((k : ℝ) + 1)} :=
+      (isOpen_lt continuous_const (continuous_id.sub continuous_const).norm).inter
+        (isOpen_lt (continuous_id.sub continuous_const).norm continuous_const)
+    have : (𝓝[Q] y).NeBot := mem_closure_iff_nhdsWithin_neBot.1 (hCQ hy)
+    have hle : ‖f y - f x - fderiv ℝ f x (y - x)‖ / ‖y - x‖ ≤ ⨆ q : Q, ψ k q x := by
+      refine le_of_tendsto (x := 𝓝[Q] y) (hφ.tendsto.mono_left nhdsWithin_le_nhds) ?_
+      filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds (hW.mem_nhds ⟨hpos, hlt⟩)]
+        with q hqQ hqW
+      calc ‖f q - f x - fderiv ℝ f x (q - x)‖ / ‖q - x‖ = ψ k q x := by rw [hψ, ite_eq_left hqW]
+        _ ≤ ⨆ q' : Q, ψ k q' x := le_ciSup (hbdd k x) ⟨q, hqQ⟩
+    rw [Set.indicator_of_mem hx]
+    rwa [div_le_iff₀ hpos] at hle
+/-- Simon Ch. 2, proof of Theorem 1.5 (p. 44), the uniform first-order Taylor estimate.  Let `f` be
+`K`-Lipschitz on `ℝⁿ` and differentiable at every point of the closed set `C`, with `Lⁿ(C) < ∞`, and
+let `δ > 0`.  Then there is a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` such that for every `τ > 0` some
+`ρ > 0` gives `|f(y) − f(x) − Df(x)(y − x)| ≤ τ |y − x|` for all `x, y ∈ A` with `|x − y| < ρ`.
+Proof: the Borel majorants `η_k` of the normalised remainder tend to `0` pointwise on `C`
+(`rsod_c1ab_utr_remainder_sup_control`).  Egoroff's theorem with inner regularity makes the
+convergence uniform on a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` (`rsod_c1ab_utr_closed_egoroff`).
+Given `τ > 0`, take `k` with `η_k < τ` on `A` and put `ρ = 1/(k+1)`. -/
+theorem rsod_c1ab_uniform_taylor_remainder : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → volume C ≠ ∞ → (∀ x ∈ C, DifferentiableAt ℝ f x) → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \ A) < δ ∧ ∀ τ : ℝ, 0 < τ → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ A, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ τ * ‖y - x‖ := by
+  intro n f K hf C hC hCfin hdiff δ hδ
+  -- Step 1: Borel `η_k` with `η_k → 0` pointwise on `C` and
+  -- `|f(y) − f(x) − Df(x)(y − x)| ≤ η_k(x) |y − x|` for `x, y ∈ C`, `0 < |y − x| < 1/(k+1)`.
+  obtain ⟨η, hηm, hηlim, hηbd⟩ :=
+    Submission.rsod_c1ab_utr_remainder_sup_control n f K hf C hC hdiff
+  -- Step 2: a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` and `η_k → 0` uniformly on `A`.
+  obtain ⟨A, hAC, hAcl, hCA, hunif⟩ :=
+    Submission.rsod_c1ab_utr_closed_egoroff n η hηm C hC.measurableSet hCfin hηlim δ hδ
+  refine ⟨A, hAC, hAcl, hCA, fun τ hτ => ?_⟩
+  -- Step 3: uniform convergence gives `k` with `|η_k| < τ` on `A`; take `ρ = 1/(k+1)`.
+  obtain ⟨k, hk⟩ := (Metric.tendstoUniformlyOn_iff.1 hunif τ hτ).exists
+  refine ⟨1 / ((k : ℝ) + 1), by positivity, fun x hx y hy hxy => ?_⟩
+  -- Step 4: for `y = x` both sides vanish.
+  rcases eq_or_ne y x with rfl | hyx
+  · simp
+  -- Step 5: for `y ≠ x`, `0 < |y − x| < 1/(k+1)`, so the bound of step 1 applies with `η_k(x) < τ`.
+  have hηk : η k x < τ := by
+    have h := hk x hx
+    rw [dist_comm, Real.dist_0_eq_abs] at h
+    exact (le_abs_self _).trans_lt h
+  rw [dist_comm, dist_eq_norm] at hxy
+  calc ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η k x * ‖y - x‖ :=
+        hηbd k x (hAC hx) y (hAC hy) (norm_pos_iff.2 (sub_ne_zero.2 hyx)) hxy
+    _ ≤ τ * ‖y - x‖ := mul_le_mul_of_nonneg_right hηk.le (norm_nonneg _)
 
 end Submission
 
