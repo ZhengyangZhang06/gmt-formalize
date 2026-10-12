@@ -359,6 +359,139 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Step 3 of the proof of Simon Ch. 6, Theorem 2.34 (Constancy Theorem, pp. 142–143).**  Let
+`B = B_ρ(x₀)` with `B̄_{ρ+ε}(x₀) ⊆ U` and let `φ` be `C^∞` with `spt φ ⊆ B̄_ε(0)` and the derivative
+bounds `‖D^q(φ ∗ g)‖ ≤ C_q ∫ |g|`.  Then `F(f) = u(φ ∗ 1_B f)` is linear and `L¹(B)`-bounded.  Each
+`φ ∗ 1_B f` is `C^∞` with support in the compact set `K = B̄_{ρ+ε}(x₀) ⊆ U`, so linearity follows
+from that of `u`.  If no bound held, there would be `f_k` with `|F(f_k)| > (k + 1) ∫_B |f_k|`; then
+`g_k = F(f_k)⁻¹ f_k` has `F(g_k) = 1` and `∫_B |g_k| ≤ 1 / (k + 1)`, so all derivatives of
+`φ ∗ 1_B g_k` tend to `0` uniformly and continuity of `u` gives `1 = F(g_k) → u 0 = 0`. -/
+theorem Submission.constancy_mollified_functional_l1_bounded : ∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ), (∀ a b : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → u (a + b) = u a + u b) → (∀ (c : ℝ) (a : Eucl n → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → u (c • a) = c * u a) → (∀ (a : ℕ → Eucl n → ℝ) (b : Eucl n → ℝ) (K : Set (Eucl n)), IsCompact K → K ⊆ U → (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (a k)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → (∀ k, tsupport (a k) ⊆ K) → tsupport b ⊆ K → (∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (a k) x) (fun x => iteratedFDeriv ℝ q b x) atTop) → Tendsto (fun k => u (a k)) atTop (𝓝 (u b))) → ∀ (x₀ : Eucl n) (ρ ε : ℝ), 0 < ρ → 0 < ε → closedBall x₀ (ρ + ε) ⊆ U → ∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ closedBall 0 ε → (∀ q : ℕ, ∃ C : ℝ, ∀ g : Eucl n → ℝ, Integrable g volume → ∀ x : Eucl n, ‖iteratedFDeriv ℝ q (convolution φ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖ ≤ C * ∫ y, |g y| ∂volume) → (∀ f g : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → IntegrableOn g (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator (f + g)) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) + u (convolution φ ((ball x₀ ρ).indicator g) (ContinuousLinearMap.lsmul ℝ ℝ) volume)) ∧ (∀ (c : ℝ) (f : Eucl n → ℝ), IntegrableOn f (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator (c • f)) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = c * u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume)) ∧ ∃ C : ℝ, ∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → |u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume)| ≤ C * ∫ x in ball x₀ ρ, |f x| ∂volume := by
+  intro n U u hadd hsmul hcont x₀ ρ ε hρ hε hU φ hφ hφc hφs hBd
+  -- `K = B̄_{ρ+ε}(x₀)` is a compact subset of `U`.
+  have hKc : IsCompact (closedBall x₀ (ρ + ε)) := isCompact_closedBall x₀ (ρ + ε)
+  -- Step 1: for `f` integrable on `B`, `φ ∗ 1_B f` exists everywhere, is `C^∞` and has support
+  -- in `K`, hence compact support.
+  have hint : ∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume →
+      Integrable ((ball x₀ ρ).indicator f) volume :=
+    fun f hf => hf.integrable_indicator measurableSet_ball
+  have hsmooth : ∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume →
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    fun f hf => hφc.contDiff_convolution_left _ hφ (hint f hf).locallyIntegrable
+  have hexists : ∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume →
+      ConvolutionExists φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
+    fun f hf => hφc.convolutionExists_left _ hφ.continuous (hint f hf).locallyIntegrable
+  have hsupp : ∀ f : Eucl n → ℝ,
+      tsupport (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume)
+        ⊆ closedBall x₀ (ρ + ε) := by
+    intro f
+    refine closure_minimal (fun x hx => ?_) isClosed_closedBall
+    obtain ⟨s, hs, t, ht, rfl⟩ := Set.mem_add.mp (support_convolution_subset _ hx)
+    have hs' : ‖s‖ ≤ ε := mem_closedBall_zero_iff.mp (hφs (subset_tsupport _ hs))
+    have ht' : t ∈ ball x₀ ρ := Set.support_indicator_subset ht
+    rw [mem_ball, dist_eq_norm] at ht'
+    rw [mem_closedBall, dist_eq_norm, add_sub_assoc]
+    exact (norm_add_le _ _).trans (by linarith)
+  have hcs : ∀ f : Eucl n → ℝ,
+      HasCompactSupport
+        (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    fun f => hKc.of_isClosed_subset (isClosed_tsupport _) (hsupp f)
+  -- Step 2: `F(f) = u(φ ∗ 1_B f)` is additive and homogeneous.
+  have hFadd : ∀ f g : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume →
+      IntegrableOn g (ball x₀ ρ) volume →
+      u (convolution φ ((ball x₀ ρ).indicator (f + g)) (ContinuousLinearMap.lsmul ℝ ℝ) volume) =
+        u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) +
+          u (convolution φ ((ball x₀ ρ).indicator g) (ContinuousLinearMap.lsmul ℝ ℝ) volume) := by
+    intro f g hf hg
+    rw [Set.indicator_add', (hexists f hf).distrib_add (hexists g hg)]
+    exact hadd _ _ (hsmooth f hf) (hcs f) ((hsupp f).trans hU) (hsmooth g hg) (hcs g)
+      ((hsupp g).trans hU)
+  have hFsmul : ∀ (c : ℝ) (f : Eucl n → ℝ), IntegrableOn f (ball x₀ ρ) volume →
+      u (convolution φ ((ball x₀ ρ).indicator (c • f)) (ContinuousLinearMap.lsmul ℝ ℝ) volume) =
+        c * u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) := by
+    intro c f hf
+    have hind : (ball x₀ ρ).indicator (c • f) = c • (ball x₀ ρ).indicator f :=
+      Set.indicator_const_smul (ball x₀ ρ) c f
+    rw [hind, convolution_smul]
+    exact hsmul c _ (hsmooth f hf) (hcs f) ((hsupp f).trans hU)
+  -- Step 3: `u 0 = 0`, by homogeneity with `c = 0`.
+  have hu0 : u 0 = 0 := by
+    have h := hsmul 0 0 contDiff_zero_fun HasCompactSupport.zero (by simp)
+    rwa [zero_smul, zero_mul] at h
+  refine ⟨hFadd, hFsmul, ?_⟩
+  -- Step 4: boundedness, by contradiction.  Otherwise pick `f_k` with
+  -- `|F(f_k)| > (k + 1) ∫_B |f_k|`.
+  by_contra hcon
+  push Not at hcon
+  choose f hfint hfbig using fun k : ℕ => hcon ((k : ℝ) + 1)
+  set F : ℕ → ℝ := fun k =>
+    u (convolution φ ((ball x₀ ρ).indicator (f k)) (ContinuousLinearMap.lsmul ℝ ℝ) volume)
+  have hL1nn : ∀ h : Eucl n → ℝ, 0 ≤ ∫ x in ball x₀ ρ, |h x| :=
+    fun h => integral_nonneg fun _ => abs_nonneg _
+  have hFne : ∀ k, F k ≠ 0 := by
+    intro k hk
+    have h1 := hfbig k
+    have h2 : 0 ≤ ((k : ℝ) + 1) * ∫ x in ball x₀ ρ, |f k x| :=
+      mul_nonneg (by positivity) (hL1nn _)
+    change _ < |F k| at h1
+    rw [hk, abs_zero] at h1
+    linarith
+  -- Normalize: `g_k = F(f_k)⁻¹ f_k` has `F(g_k) = 1` and `∫_B |g_k| ≤ 1 / (k + 1)`.
+  set g : ℕ → Eucl n → ℝ := fun k => (F k)⁻¹ • f k with hgdef
+  have hgint : ∀ k, IntegrableOn (g k) (ball x₀ ρ) volume := fun k => (hfint k).smul _
+  have hFg : ∀ k,
+      u (convolution φ ((ball x₀ ρ).indicator (g k)) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = 1 :=
+    fun k => by rw [hFsmul _ _ (hfint k)]; exact inv_mul_cancel₀ (hFne k)
+  have hgL1 : ∀ k : ℕ, ∫ x in ball x₀ ρ, |g k x| ≤ 1 / ((k : ℝ) + 1) := by
+    intro k
+    have heq : ∫ x in ball x₀ ρ, |g k x| = |F k|⁻¹ * ∫ x in ball x₀ ρ, |f k x| := by
+      simp only [hgdef, Pi.smul_apply, smul_eq_mul, abs_mul, abs_inv]
+      exact integral_const_mul _ _
+    have hpos : 0 < |F k| := abs_pos.mpr (hFne k)
+    have hk1 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+    rw [heq, inv_mul_le_iff₀ hpos, mul_one_div, le_div_iff₀ hk1]
+    have := hfbig k
+    change _ < |F k| at this
+    linarith
+  -- By (Bd), every derivative of `b_k = φ ∗ 1_B g_k` tends to `0` uniformly.
+  have hunif : ∀ q : ℕ, TendstoUniformly
+      (fun k x => iteratedFDeriv ℝ q
+        (convolution φ ((ball x₀ ρ).indicator (g k)) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x)
+      (fun x => iteratedFDeriv ℝ q (0 : Eucl n → ℝ) x) atTop := by
+    intro q
+    obtain ⟨C, hC⟩ := hBd q
+    rw [Metric.tendstoUniformly_iff]
+    intro δ hδ
+    have hlim : Tendsto (fun k : ℕ => max C 0 * (1 / ((k : ℝ) + 1))) atTop (𝓝 0) := by
+      simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul (max C 0)
+    filter_upwards [hlim.eventually (gt_mem_nhds hδ)] with k hk x
+    have hzero : iteratedFDeriv ℝ q (0 : Eucl n → ℝ) x = 0 := by
+      simp
+    rw [hzero, dist_zero_left]
+    have habs : ∫ y, |(ball x₀ ρ).indicator (g k) y| = ∫ y in ball x₀ ρ, |g k y| := by
+      have hpt : (fun y => |(ball x₀ ρ).indicator (g k) y|) =
+          (ball x₀ ρ).indicator (fun y => |g k y|) := by
+        ext y
+        by_cases hy : y ∈ ball x₀ ρ <;> simp [hy]
+      rw [hpt, integral_indicator measurableSet_ball]
+    calc ‖iteratedFDeriv ℝ q
+          (convolution φ ((ball x₀ ρ).indicator (g k)) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖
+        ≤ C * ∫ y, |(ball x₀ ρ).indicator (g k) y| := hC _ (hint _ (hgint k)) x
+      _ = C * ∫ y in ball x₀ ρ, |g k y| := by rw [habs]
+      _ ≤ max C 0 * ∫ y in ball x₀ ρ, |g k y| :=
+        mul_le_mul_of_nonneg_right (le_max_left _ _) (hL1nn _)
+      _ ≤ max C 0 * (1 / ((k : ℝ) + 1)) :=
+        mul_le_mul_of_nonneg_left (hgL1 k) (le_max_right _ _)
+      _ < δ := hk
+  -- The continuity hypothesis gives `1 = F(g_k) → u 0 = 0`, a contradiction.
+  have hlim := hcont
+    (fun k => convolution φ ((ball x₀ ρ).indicator (g k)) (ContinuousLinearMap.lsmul ℝ ℝ) volume)
+    0 (closedBall x₀ (ρ + ε)) hKc hU (fun k => hsmooth _ (hgint k)) contDiff_zero_fun
+    (fun k => hsupp _) (by simp) hunif
+  simp only [hFg, hu0] at hlim
+  exact one_ne_zero (tendsto_nhds_unique tendsto_const_nhds hlim)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
