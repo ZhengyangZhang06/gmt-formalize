@@ -639,6 +639,45 @@ theorem Submission.lipschitz_range_piece_cover : ∀ (n ℓ : ℕ) (K : NNReal)
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
+/-- **Lipschitz pieces of a countably `n`-rectifiable set** (Ch. 3, 1.1, with Rademacher, the
+area formula and Lusin in place of the `C¹` cover of Ch. 3, 1.2). Up to a Borel `Hⁿ`-null set
+`N₀`, `M` is covered by countably many images `F_i(C_i)` of compact sets under Lipschitz maps
+that are differentiable on `C_i` with injective, continuous derivative and satisfy a lower
+Lipschitz bound there. Each parametrization of 1.1 is split by `lipschitz_range_piece_cover`;
+the pieces are re-indexed by `Nat.pair`. -/
+theorem Submission.rectifiable_lipschitz_piece_cover : ∀ (n ℓ : ℕ) (M : Set (Ambient n ℓ)),
+    0 < n → Poincare.SimonGMT.Chapter03.CountablyRectifiable n M →
+    ∃ (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n)))
+      (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ),
+      MeasurableSet N₀ ∧ (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 ∧ M ⊆ N₀ ∪ ⋃ i, F i '' C i ∧
+      ∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧
+        (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧
+        ContinuousOn (fderiv ℝ (F i)) (C i) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖ := by
+  intro n ℓ M _hn hM
+  -- 1.1: `M ⊆ M₀ ∪ ⋃_j G_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and `G_j` Lipschitz with constant `K_j`.
+  obtain ⟨M₀, hM₀, G, hG, hMcover⟩ := hM
+  choose K hK using hG
+  -- Every `G_j(ℝⁿ)` lies in `Y_j ∪ ⋃_q G_j(D_{j,q})` with `Hⁿ(Y_j) = 0`.
+  choose Y D hY hrange hD using fun j ↦
+    Submission.lipschitz_range_piece_cover n ℓ (K j) (G j) (hK j)
+  -- A Borel `Hⁿ`-null hull `N₀` of `M₀ ∪ ⋃_j Y_j`.
+  obtain ⟨N₀, hN₀sub, hN₀meas, hN₀null⟩ :=
+    exists_measurable_superset_of_null (measure_union_null hM₀ (measure_iUnion_null hY))
+  refine ⟨N₀, fun i ↦ D (Nat.unpair i).1 (Nat.unpair i).2, fun i ↦ G (Nat.unpair i).1,
+    hN₀meas, hN₀null, ?_, fun i ↦ ?_⟩
+  · intro x hx
+    rcases hMcover hx with hx₀ | hx
+    · exact mem_union_left _ (hN₀sub (mem_union_left _ hx₀))
+    obtain ⟨j, hj⟩ := mem_iUnion.mp hx
+    rcases hrange j hj with hxY | hxD
+    · exact mem_union_left _ (hN₀sub (mem_union_right _ (mem_iUnion.2 ⟨j, hxY⟩)))
+    obtain ⟨q, hq⟩ := mem_iUnion.mp hxD
+    refine mem_union_right _ (mem_iUnion.2 ⟨Nat.pair j q, ?_⟩)
+    simpa only [Nat.unpair_pair] using hq
+  · obtain ⟨hcpt, hdiff, hcont, hlower⟩ := hD (Nat.unpair i).1 (Nat.unpair i).2
+    exact ⟨hcpt, ⟨K _, hK _⟩, hdiff, hcont, hlower⟩
+
 end
 
 end GMT.Ch04
