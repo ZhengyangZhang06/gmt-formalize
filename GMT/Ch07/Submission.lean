@@ -613,6 +613,49 @@ theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euc
   -- Step 4: conclusion
   rw [hset, hscale]
 
+/-- Locality of approximate tangent spaces (Simon 3.1.5(2), from the proof of 3.1.6 "⇒"): if
+`A ⊆ B` are Borel, `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞` and `Hⁿ((B \ A) ∩ B̄_ρ(x))/ρⁿ → 0` as `ρ ↓ 0`, then
+`B` and `A` have the same approximate tangent spaces at `x`.  For `f ∈ C_c(ℝᴾ)` with `|f| ≤ C`
+and `f = 0` off `B̄_R(0)`, and `0 < r < r₀/R`, the integrals of `f` over `η_{x,r}(B)` and
+`η_{x,r}(A)` differ by at most `C Hⁿ(η_{x,r}(B \ A) ∩ B̄_R(0)) = C r⁻ⁿ Hⁿ((B \ A) ∩ B̄_{rR}(x))`,
+which tends to `0` as `r ↓ 0`. -/
+theorem Submission.regcomp_atl_tangent_iff_of_density_zero : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((B \ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q := by
+  intro P n A B x r₀ hA hB hAB hr₀ hfin hdens
+  refine Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto P n B A x fun f => ?_
+  -- `‖f‖ ≤ C` everywhere, and `f = 0` off `B̄_R(0)` with `R > 0`
+  obtain ⟨C, hC⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R₁, hR₁⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  set R := max R₁ 1
+  have hR : 0 < R := lt_of_lt_of_le one_pos (le_max_right R₁ 1)
+  have hf0 : ∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0 := by
+    intro y hy
+    by_contra hne
+    exact hy (closedBall_subset_closedBall (le_max_left R₁ 1) (hR₁ (subset_tsupport f hne)))
+  -- the bound `C r⁻ⁿ Hⁿ((B \ A) ∩ B̄_{rR}(x))` tends to `0` as `r ↓ 0`
+  have hlim : Tendsto (fun r : ℝ => C * ((ENNReal.ofReal r)⁻¹ ^ n *
+      μHE[n] ((B \ A) ∩ closedBall x (r * R))).toReal) (𝓝[>] 0) (𝓝 0) := by
+    have h := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp
+      (Submission.regcomp_atl_pc_density_rescale_tendsto n
+        (fun ρ : ℝ => μHE[n] ((B \ A) ∩ closedBall x ρ)) R hR hdens)
+    rw [ENNReal.toReal_zero] at h
+    have h' := h.const_mul C
+    rw [mul_zero] at h'
+    exact h'
+  refine squeeze_zero_norm' ?_ hlim
+  -- for `0 < r < r₀ / R` the fixed-scale comparison applies, and the scaling identity rewrites
+  -- its bound
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hr₀ hR)] with r hr
+  have hrR : r * R ≤ r₀ := ((lt_div_iff₀ hR).1 hr.2).le
+  have hBfin : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ := by
+    rw [Submission.regcomp_atl_blowUp_measure_scaling P n x r R B hr.1]
+    exact ENNReal.mul_ne_top
+      (ENNReal.pow_ne_top (ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 hr.1).ne'))
+      (ne_top_of_le_ne_top hfin
+        (measure_mono (inter_subset_inter_right B (closedBall_subset_closedBall hrR))))
+  have key := Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le P n A B x r R C f
+    (map_continuous f) hA hB hAB hr.1 hBfin hC hf0
+  rwa [Submission.regcomp_atl_blowUp_measure_scaling P n x r R (B \ A) hr.1] at key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
