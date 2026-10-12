@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "315f9b422ce5e2e2ec352670a99159eb6e38183bbb12abb6b2d002f0d5ff6ac1",
+  "git_delta": {
+    "base_commit": "8d7a704ad4011b3946b47b56e89c3d98dbd9a755",
+    "candidate_commit": "66b929ec8db43e0637ba3b129c5172f9f5f87a69",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "ba9b3b896b6d1a2af48eb4cf721ffd6644183001f7822ab25aa3bd27404bd188",
+    "source_sha256": "4e2cbc8cad1d7f6c679f758c01791e97e55b5275cc1e35caec9431661ab507d1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_zero_dim_weak_limit_isIntegerMultiplicity",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U 0) (X : GeometricCurrentOn U 0), (∀ j, IsIntegerMultiplicity (Xj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, (Xj j).massOn W) < ∞) → WeaklyConvergesOn Xj X → IsIntegerMultiplicity X",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
