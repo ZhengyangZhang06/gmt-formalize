@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1.dirac_repr-a1",
+  "parent_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1",
+  "depth": 3,
+  "title": "Integer multiplicity 0-currents are locally finite integer Dirac sums",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P = Eucl P (any subset), and Y ∈ D_0(U) (GeometricCurrentOn U 0) an integer multiplicity current (IsIntegerMultiplicity Y). Then there are a set N ⊆ U and c : ℝ^P → ℤ with: (i) N ∩ K finite for every compact K ⊆ U; (ii) c(x) ≠ 0 for every x ∈ N; (iii) Y(ω) = ∑ᶠ_{x∈N} c(x)·ω(x)(![]) for every test 0-form ω ∈ D⁰(U) (TestFormOn U 0). Here ω(x)(![]) is the value of the 0-covector ω(x) at the empty family ![] : Fin 0 → ℝ^P, and ∑ᶠ is Mathlib's finsum over x ∈ N.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U 0), IsIntegerMultiplicity Y → ∃ (N : Set (Eucl P)) (c : Eucl P → ℤ), N ⊆ U ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (N ∩ K).Finite) ∧ (∀ x ∈ N, c x ≠ 0) ∧ ∀ ω : TestFormOn U 0, Y ω = ∑ᶠ x ∈ N, (c x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]",
+  "lean_name": "br_zd_im_dirac_repr",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-zero-dim-weak-limit-a1-dirac-repr-a1-a1"
+}
