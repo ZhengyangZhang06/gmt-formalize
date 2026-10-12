@@ -541,6 +541,149 @@ theorem allard52_amt_kernel_lower_bound : ∀ (n : ℕ) (φ : ℝ → ℝ) (ε s
   refine hmono.trans_eq (intervalIntegral.integral_congr fun t _ => ?_)
   simp only [hk]
   ring
+/-- **Tonelli identity for the cutoff kernel** (the cutoff form of Simon Ch. 4, 4.7: steps 1–5 and
+8 of the proof of `allard52_am_annular_tonelli`).  Let `μ(B_R(y)) < ∞`, let `w` be a.e. strongly
+measurable for `μ ⌞ B̆_R(y)` with `0 ≤ w ≤ 1` `μ`-a.e. on `B̆_R(y)`, let `φ` be `C¹` and
+nonincreasing with `φ = 0` on `[1 + ε, ∞)`, and let `0 < s ≤ r`, `(1 + ε)r < R`.  With
+`r_x = |x − y|` and `H(x) = ∫ₛʳ −((r_x/t) φ'(r_x/t))/t · t⁻ⁿ dt`, the lower integral of `w H`
+against `μ` is `∫ₛʳ −(∫ (r_x/t) φ'(r_x/t) w dμ)/t · t⁻ⁿ dt`.
+Proof: for `t ∈ [s, r]` the kernel vanishes off `B = B_{(1+ε)r}(y) ⊆ B̆_R(y)`, so both sides only
+see the finite measure `ν = μ ⌞ B`, and `H ≥ 0` since `φ' ≤ 0`.  The integrand
+`−((r_x/t) φ'(r_x/t))/t · t⁻ⁿ · w(x)` is a.e. strongly measurable and bounded on `[s, r] × B`, hence
+integrable for `𝓛¹ ⌞ (s, r] × ν`; Fubini swaps the integrals, and `w H ≥ 0` `ν`-a.e. turns the
+Bochner integral into the lower integral. -/
+theorem allard52_amt_fubini_lintegral : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (R ε s r : ℝ), 0 < ε → μ (closedBall y R) < ⊤ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → 0 < s → s ≤ r → (1 + ε) * r < R → ∫⁻ x, ENNReal.ofReal (w x * (∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n)) ∂μ = ENNReal.ofReal (∫ t in s..r, -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t / t ^ n) := by
+  intro n ℓ μ w y φ R ε s r hε hμR hw hw01 hφ hφanti hφzero hs hsr hR
+  -- step 1: `B = B_{(1+ε)r}(y) ⊆ B̆_R(y)`, `ν = μ ⌞ B` and `𝓛¹ ⌞ (s, r]` are finite; facts on `φ'`
+  have hBball : closedBall y ((1 + ε) * r) ⊆ ball y R := closedBall_subset_ball hR
+  have hBmeas : MeasurableSet (closedBall y ((1 + ε) * r)) := isClosed_closedBall.measurableSet
+  have : IsFiniteMeasure (μ.restrict (closedBall y ((1 + ε) * r))) :=
+    isFiniteMeasure_restrict.mpr
+      ((measure_mono (hBball.trans ball_subset_closedBall)).trans_lt hμR).ne
+  have : IsFiniteMeasure (volume.restrict (uIoc s r)) := isFiniteMeasure_restrict.mpr (by
+    rw [uIoc_of_le hsr, Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)
+  have hdcont : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hdnonpos : ∀ u, deriv φ u ≤ 0 := fun u => hφanti.deriv_nonpos
+  have hdzero : ∀ u, 1 + ε < u → deriv φ u = 0 := by
+    intro u hu
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hu) fun v hv => hφzero v (le_of_lt hv)
+    rw [h.deriv_eq, deriv_const]
+  -- step 2: the kernel `a(t, x) = (r_x/t) φ'(r_x/t)` vanishes for `t ∈ [s, r]` and `x ∉ B`
+  have hvan : ∀ t ∈ Icc s r, ∀ x ∉ closedBall y ((1 + ε) * r),
+      ‖x - y‖ / t * deriv φ (‖x - y‖ / t) = 0 := by
+    intro t ht x hx
+    have ht0 : 0 < t := hs.trans_le ht.1
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    have h1 : (1 + ε) * t < ‖x - y‖ :=
+      lt_of_le_of_lt (mul_le_mul_of_nonneg_left ht.2 (by linarith)) hx
+    rw [hdzero _ ((lt_div_iff₀ ht0).mpr h1), mul_zero]
+  -- step 3: `H(x) ≥ 0`
+  have hHnn : ∀ x, 0 ≤ ∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n := by
+    intro x
+    refine intervalIntegral.integral_nonneg hsr fun t ht => ?_
+    have ht0 : 0 < t := hs.trans_le ht.1
+    exact div_nonneg (div_nonneg (neg_nonneg.mpr (mul_nonpos_of_nonneg_of_nonpos
+      (div_nonneg (norm_nonneg _) ht0.le) (hdnonpos _))) ht0.le) (pow_pos ht0 n).le
+  -- step 4: the left side only sees `B`, since `H = 0` off `B`
+  have hLHS : ∫⁻ x, ENNReal.ofReal (w x * (∫ t in s..r,
+        -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n)) ∂μ
+      = ∫⁻ x in closedBall y ((1 + ε) * r), ENNReal.ofReal (w x * (∫ t in s..r,
+        -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n)) ∂μ := by
+    refine (setLIntegral_eq_of_support_subset
+      (Function.support_subset_iff'.mpr fun x hx => ?_)).symm
+    have h0 : EqOn (fun t => -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n)
+        (fun _ => (0 : ℝ)) (uIcc s r) := by
+      intro t ht
+      rw [uIcc_of_le hsr] at ht
+      simp only [hvan t ht x hx, neg_zero, zero_div]
+    rw [intervalIntegral.integral_congr h0]
+    simp
+  -- step 5: each inner `μ`-integral is the `ν`-integral of `F(t, x) = −a(t, x)/t · t⁻ⁿ · w(x)`
+  have hRHS : EqOn (fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t / t ^ n)
+      (fun t => ∫ x, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n * w x
+        ∂(μ.restrict (closedBall y ((1 + ε) * r)))) (uIcc s r) := by
+    intro t ht
+    rw [uIcc_of_le hsr] at ht
+    have h1 : ∀ x, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n * w x
+        = (-1 / t / t ^ n) * (‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x) := fun x => by ring
+    simp only [h1, integral_const_mul]
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hvan t ht x hx, zero_mul]]
+    ring
+  -- step 6: `F` is integrable for `𝓛¹ ⌞ (s, r] × ν`: measurable kernel times `w ∘ snd`, bounded
+  have hKmeas : Measurable fun p : ℝ × Amb n ℓ =>
+      -(‖p.2 - y‖ / p.1 * deriv φ (‖p.2 - y‖ / p.1)) / p.1 / p.1 ^ n := by
+    have hu : Measurable fun p : ℝ × Amb n ℓ => ‖p.2 - y‖ / p.1 :=
+      (measurable_snd.sub_const y).norm.div measurable_fst
+    exact ((hu.mul ((measurable_deriv φ).comp hu)).neg.div measurable_fst).div
+      (measurable_fst.pow_const n)
+  have hwν : AEStronglyMeasurable w (μ.restrict (closedBall y ((1 + ε) * r))) :=
+    hw.mono_measure (Measure.restrict_mono hBball le_rfl)
+  have hKcont : ContinuousOn (fun p : ℝ × Amb n ℓ =>
+      -(‖p.2 - y‖ / p.1 * deriv φ (‖p.2 - y‖ / p.1)) / p.1 / p.1 ^ n)
+      (Icc s r ×ˢ closedBall y ((1 + ε) * r)) := by
+    have h1 : ∀ p ∈ Icc s r ×ˢ closedBall y ((1 + ε) * r), p.1 ≠ 0 :=
+      fun p hp => (hs.trans_le hp.1.1).ne'
+    have hu : ContinuousOn (fun p : ℝ × Amb n ℓ => ‖p.2 - y‖ / p.1)
+        (Icc s r ×ˢ closedBall y ((1 + ε) * r)) :=
+      ContinuousOn.div (by fun_prop) continuousOn_fst h1
+    exact ((hu.mul (hdcont.comp_continuousOn hu)).neg.div continuousOn_fst h1).div
+      (continuousOn_fst.pow n) fun p hp => pow_ne_zero n (h1 p hp)
+  obtain ⟨C, hC⟩ := (isCompact_Icc.prod
+    (isCompact_closedBall y ((1 + ε) * r))).exists_bound_of_continuousOn hKcont
+  have hae1 : ∀ᵐ p ∂((volume.restrict (uIoc s r)).prod
+      (μ.restrict (closedBall y ((1 + ε) * r)))), p.1 ∈ Ioc s r := by
+    have h : ∀ᵐ t ∂(volume.restrict (uIoc s r)), t ∈ Ioc s r := by
+      rw [uIoc_of_le hsr]; exact ae_restrict_mem measurableSet_Ioc
+    exact Measure.quasiMeasurePreserving_fst.ae h
+  have hae2 : ∀ᵐ p ∂((volume.restrict (uIoc s r)).prod
+      (μ.restrict (closedBall y ((1 + ε) * r)))),
+      p.2 ∈ closedBall y ((1 + ε) * r) ∧ (p.2 ∈ ball y R → 0 ≤ w p.2 ∧ w p.2 ≤ 1) := by
+    have h : ∀ᵐ x ∂(μ.restrict (closedBall y ((1 + ε) * r))),
+        x ∈ closedBall y ((1 + ε) * r) ∧ (x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) :=
+      (ae_restrict_mem hBmeas).and (ae_restrict_of_ae hw01)
+    exact Measure.quasiMeasurePreserving_snd.ae h
+  have hFint : Integrable (Function.uncurry fun t x =>
+      -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n * w x)
+      ((volume.restrict (uIoc s r)).prod (μ.restrict (closedBall y ((1 + ε) * r)))) := by
+    refine Integrable.mono' (integrable_const C)
+      (hKmeas.aestronglyMeasurable.mul hwν.comp_snd) ?_
+    filter_upwards [hae1, hae2] with p hp1 hp2
+    have hpK := hC p ⟨Ioc_subset_Icc_self hp1, hp2.1⟩
+    have hw1 := hp2.2 (hBball hp2.1)
+    show ‖-(‖p.2 - y‖ / p.1 * deriv φ (‖p.2 - y‖ / p.1)) / p.1 / p.1 ^ n * w p.2‖ ≤ C
+    rw [norm_mul]
+    have hwn : ‖w p.2‖ ≤ 1 := by
+      rw [Real.norm_eq_abs, abs_le]; constructor <;> linarith [hw1.1, hw1.2]
+    calc _ ≤ ‖-(‖p.2 - y‖ / p.1 * deriv φ (‖p.2 - y‖ / p.1)) / p.1 / p.1 ^ n‖ * 1 :=
+          mul_le_mul_of_nonneg_left hwn (norm_nonneg _)
+      _ ≤ C := by rw [mul_one]; exact hpK
+  -- step 7: Fubini; the inner `t`-integral of `F(·, x)` is `w(x) H(x)`, which is `ν`-integrable
+  have hswap := intervalIntegral_integral_swap hFint
+  have hinner : ∀ x, (∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n * w x)
+      = w x * ∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n := by
+    intro x
+    rw [← intervalIntegral.integral_const_mul]
+    congr 1
+    ext t
+    ring
+  have hint : Integrable
+      (fun x => w x * ∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n)
+      (μ.restrict (closedBall y ((1 + ε) * r))) := by
+    refine hFint.integral_prod_right.congr (Eventually.of_forall fun x => ?_)
+    simp only [Function.uncurry_apply_pair]
+    rw [← hinner x, intervalIntegral.integral_of_le hsr, uIoc_of_le hsr]
+  -- step 8: `w H ≥ 0` `ν`-a.e.
+  have hnn : 0 ≤ᵐ[μ.restrict (closedBall y ((1 + ε) * r))]
+      fun x => w x * ∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n := by
+    filter_upwards [ae_restrict_mem hBmeas, ae_restrict_of_ae hw01] with x hxB hx
+    exact mul_nonneg (hx (hBball hxB)).1 (hHnn x)
+  -- step 9: assemble
+  rw [hLHS, ← ofReal_integral_eq_lintegral_ofReal hint hnn,
+    intervalIntegral.integral_congr hRHS, hswap]
+  congr 1
+  exact integral_congr_ae (Eventually.of_forall fun x => (hinner x).symm)
 
 end Submission
 
