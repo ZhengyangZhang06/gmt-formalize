@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.poincare-a1.smooth_convex_poincare-a1",
+  "parent_id": "root.bv_results-a1.poincare-a1",
+  "depth": 3,
+  "title": "L¹ Poincaré inequality for C¹ functions on bounded open convex sets, constant 2ⁿ·diam",
+  "statement": "For every n ∈ ℕ, every open, bounded, convex O ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n), μ = volume) and every w : ℝⁿ → ℝ of class C¹ (ContDiff ℝ 1 w): ∫⁻_O ‖w(x) − w̄‖ₑ dx ≤ ofReal(2ⁿ·diam O)·∫⁻_O ‖Dw(x)‖ₑ dx in [0,∞]. Here w̄ := μ(O).toReal⁻¹·∫_O w (Bochner integral), diam = Metric.diam, and Dw = fderiv ℝ w with the operator norm. No positivity of μ(O) is assumed (for O = ∅ the left side is 0).",
+  "lean_statement": "∀ (n : ℕ) (O : Set (Rn n)) (w : Rn n → ℝ), IsOpen O → Bornology.IsBounded O → Convex ℝ O → ContDiff ℝ 1 w → ∫⁻ x in O, ‖w x - (volume O).toReal⁻¹ * ∫ y in O, w y‖ₑ ≤ ENNReal.ofReal (2 ^ n * Metric.diam O) * ∫⁻ x in O, ‖fderiv ℝ w x‖ₑ",
+  "lean_name": "convex_poincare_smooth_lintegral_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-poincare-a1-smooth-convex-poincare-a1-a1"
+}

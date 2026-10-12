@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 -I: read nodes/root-bv-results-a1-poincare-a1/parent-child-handoff.json; list lean_name/lean_statement/status/depends_on of every dag.json node and of nodes/root-bv-results-a1/decomposition-v1.json subproblems",
+        "grep -n 'BV\\|bvVariation\\|IsBVOn\\|namespace\\|^open\\|^import' GMT/Ch02/Contract.lean; sed -n 230,280p GMT/Ch02/Contract.lean; grep -n '2.7\\|Poincar\\|errat' GMT/Ch02/README.md; sed -n 620,662p book/chapter-02.txt",
+        "rg -n \"theorem (tendsto_setIntegral_of_monotone|tendsto_setLIntegral_zero|mul_meas_ge_le_lintegral₀|le_restrict_apply|restrict_apply'|enorm_integral_le_lintegral_enorm|tendsto_measure_iUnion_atTop|setLIntegral_const|lintegral_inter_add_diff)\" mathlib/Mathlib",
+        "rg -n 'lintegral_comp_smul|lintegral_add_left_eq_self|lintegral_add_right_eq_self|map_addHaar_smul|addHaar_smul|integral_comp_smul' mathlib/Mathlib",
+        "rg -n 'theorem (le_infDist|infDist_le_dist_of_mem|infDist_zero_of_mem|continuous_infDist_pt|lipschitz_infDist_pt)|notMem_iff_infDist_pos|infDist_pos' mathlib/Mathlib/Topology/MetricSpace",
+        "rg -n 'theorem diam_mono|theorem diam_closedBall|theorem dist_le_diam_of_mem|IsBounded.measure_lt_top' mathlib/Mathlib",
+        "rg -n \"theorem (setLIntegral_iUnion_of_directed|setLIntegral_mono'|lintegral_const_mul'|lintegral_lintegral_swap|le_opENorm_of_le|setIntegral_const|finrank_euclideanSpace_fin)|lintegral_prod_right'\" mathlib/Mathlib",
+        "rg -n 'theorem (integral_normed|nonneg_normed|support_normed_eq|hasCompactSupport_normed|contDiff_normed|continuous_normed)' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean; rg -n 'contDiff_convolution_left|hasContDiffBump_of_innerProductSpace' mathlib/Mathlib",
+        "python3 -I gen_checks.py (verifier gmt-compare.py contract_scope/child_modules + lean_contract.validate_lean_statement), then lean NodeChallenge_00..03.lean against a scratch olean of the frozen GMT.Ch02.Submission",
+        "lean ChildA.lean ChildB.lean ChildC.lean ChildL.lean AssemblyCheck.lean PoincareKids.lean PoincareKidsOneImport.lean NodeSolution_00..04.lean CitedNames.lean (#check of all 56 cited names) with #print axioms",
+        "leaf-shape check: _recursive_lean/leaf_verification.check_source_delta on four single-theorem Submission candidates; lean -o each candidate, then NodeSolution (exact Submission.X) against it",
+        "grep -rl for poincare_level_set_lintegral_le, convex_poincare_smooth_lintegral_le, convex_open_exists_inner_exhaustion, mean_oscillation_lintegral_le_of_approx in the run directory, simongmt/Poincare and mathlib/Mathlib",
+        "cmp of the 18 cited snapshot mathlib files with lake-packages-25730c7c/mathlib (git HEAD 25730c7c759d108ef87ab70af2342a196760f79d); cmp workspace GMT/Ch02/Contract.lean with snapshot project/GMT/Ch02/Contract.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Operator/NNNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/leaf_verification.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-poincare-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1/decomposition-v1.json",
+        "/tmp/poincare-decomp-8oly3q/checks/NodeChallenge_00.lean",
+        "/tmp/poincare-decomp-8oly3q/checks/NodeChallenge_03.lean",
+        "/tmp/poincare-decomp-8oly3q/checks/PoincareKids.lean",
+        "/tmp/poincare-decomp-8oly3q/checks/PoincareKidsOneImport.lean",
+        "/tmp/poincare-decomp-8oly3q/checks/NodeSolution_04.lean",
+        "/tmp/poincare-decomp-8oly3q/checks/CitedNames.lean",
+        "/tmp/poincare-decomp-8oly3q/leafcheck/L1/src/GMT/Ch02/Submission.lean"
+      ],
+      "conclusion": "Snapshot and frozen sources:\n- The snapshot Contract.lean is byte-identical to the workspace contract. IsBVOn (line 76) bundles IsOpen U, IntegrableOn u U volume and bvVariationOn u U < ⊤, and BVPoincare (line 258) is the selected type.\n- README line 94 ('u ∈ BV(U) includes u ∈ L¹(U)') is the only 2.7 reading.\n- book/chapter-02.txt lines 627–661 contain the printed proof. Its 'usual Poincaré inequality for smooth functions [GT01]' is the child convex_poincare_smooth_lintegral_le.\n- All 18 cited snapshot Mathlib files are identical to the build package at 25730c7c.\n\nMathlib supplies every lemma the children use:\n- mul_meas_ge_le_lintegral₀;\n- Measure.restrict_apply' (valid for any second set);\n- map_addHaar_smul, lintegral_map, lintegral_smul_measure and lintegral_add_left_eq_self;\n- intervalIntegral.integral_eq_sub_of_hasDerivAt;\n- lintegral_lintegral_swap and Measurable.lintegral_prod_right';\n- tendsto_measure_iUnion_atTop and tendsto_setIntegral_of_monotone;\n- setLIntegral_iUnion_of_directed (no measurability needed);\n- Metric.le_infDist, IsClosed.notMem_iff_infDist_pos, dist_le_diam_of_mem, diam_mono and diam_closedBall.\n\nWhat Mathlib lacks:\n- There is no lintegral_comp_smul. The dilation identity is derived from map_addHaar_smul.\n- There is no Poincaré, level-set or convex-exhaustion lemma, so the four children are genuine new obligations.\n\nImport closure:\n- All 56 cited names resolve after importing only GMT.Ch02.Submission.\n- ContDiffBump.normed, which only the parent needs, requires import Mathlib.Analysis.Calculus.BumpFunction.Normed. With that single extra import the parent assembly compiles.\n\nVerification:\n- The four statements pass validate_lean_statement and the contract_scope replay, and the generated NodeChallenge modules compile.\n- Complete proofs of all four children compile in a combined module, and also as single-theorem leaves that pass check_source_delta. `exact Submission.X` depends only on propext, Classical.choice and Quot.sound.\n- BVPoincare assembles from the four children and the exact DAG types of bv_mollifier_tendsto_L1 and bv_mollifier_fderiv_lintegral_le. Its axioms are the standard ones plus sorryAx, and sorryAx comes only from those two placeholders.\n\nNames: none of the four names occurs in dag.json, any decomposition, the run directory, SimonGMT or Mathlib."
+    }
+  ],
+  "parent_id": "root.bv_results-a1.poincare-a1",
+  "child_id": "root.bv_results-a1.poincare-a1.inner_exhaustion-a1",
+  "subproblem": {
+    "key": "inner_exhaustion",
+    "title": "Exhaustion of an open convex set by convex inner parallel sets with margins",
+    "statement": "For every n ∈ ℕ and every open convex U ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n)) there are sets O_j ⊆ ℝⁿ and reals σ_j (j ∈ ℕ) such that: j ↦ O_j is increasing (Monotone); ⋃_j O_j = U; σ_j → 0; and for every j, O_j is open and convex, σ_j > 0, and the closed ball closedBall(x, σ_j) ⊆ U for every x ∈ O_j.",
+    "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ∃ (O : ℕ → Set (Rn n)) (σ : ℕ → ℝ), Monotone O ∧ ⋃ j, O j = U ∧ Tendsto σ atTop (𝓝 0) ∧ ∀ j, IsOpen (O j) ∧ Convex ℝ (O j) ∧ 0 < σ j ∧ ∀ x ∈ O j, closedBall x (σ j) ⊆ U",
+    "lean_name": "convex_open_exists_inner_exhaustion",
+    "depends_on": [],
+    "natural_proof": "Source: this is step B2 of the parent's complete argument (Section B of the supplied proof of Simon 2.7), corresponding to the printed remark \"we may take W = {x ∈ U : dist(x, ∂U) > σ} with σ small\". The case U = ℝⁿ, where the distance function is useless, is added so that the statement holds for every open convex U, in particular for n = 0.\n\n1. Put σ_j := 1/(j + 1) for j ∈ ℕ. Then σ_j > 0, σ_j is decreasing in j, and σ_j → 0 (tendsto_one_div_add_atTop_nhds_zero_nat).\n2. Case U = ℝⁿ (Set.univ). Take O_j := ℝⁿ for every j. The sequence is constant, hence monotone. Its union is ℝⁿ = U, ℝⁿ is open and convex, and closedBall(x, σ_j) ⊆ ℝⁿ = U trivially. All properties hold.\n3. Case U ≠ ℝⁿ. Then Uᶜ is nonempty, and it is closed because U is open. Let d(x) := infDist(x, Uᶜ) = inf{dist(x, p) : p ∈ Uᶜ} (Metric.infDist) and O_j := {x : σ_j < d(x)}.\n   (a) Key fact: if dist(x, z) < d(x), then z ∈ U. Otherwise z ∈ Uᶜ, and d(x) ≤ dist(x, z) (infDist_le_dist_of_mem), a contradiction.\n   (b) Monotone. If i ≤ j, then σ_j ≤ σ_i, so σ_i < d(x) implies σ_j < d(x). Hence O_i ⊆ O_j.\n   (c) Open. d is continuous (continuous_infDist_pt), so O_j = d⁻¹((σ_j, ∞)) is open.\n   (d) Margin. Let x ∈ O_j and p ∈ closedBall(x, σ_j). Then dist(x, p) ≤ σ_j < d(x), so p ∈ U by (a).\n   (e) Union. If x ∈ O_j, then x ∈ closedBall(x, σ_j) ⊆ U by (d) (σ_j > 0). Conversely, let x ∈ U. Then x ∉ Uᶜ, and since Uᶜ is closed and nonempty, d(x) > 0 (IsClosed.notMem_iff_infDist_pos). Choose j with 1/(j + 1) < d(x) (exists_nat_one_div_lt); then x ∈ O_j. Hence ⋃_j O_j = U.\n   (f) Convex. Let x, y ∈ O_j, a, b ≥ 0 with a + b = 1, z := a·x + b·y and s := min(d(x), d(y)) > σ_j. We show s ≤ d(z). Since Uᶜ ≠ ∅, it suffices (Metric.le_infDist) to show s ≤ dist(z, p) for every p ∈ Uᶜ. Suppose dist(z, p) < s for some p ∈ Uᶜ, and put v := p − z, so ‖v‖ < s. Then dist(x, x + v) = ‖v‖ < s ≤ d(x), so x + v ∈ U by (a), and likewise y + v ∈ U. By convexity of U, a·(x + v) + b·(y + v) = z + (a + b)·v = z + v = p lies in U, contradicting p ∈ Uᶜ. Hence σ_j < s ≤ d(z), that is, z ∈ O_j.\n   (g) σ_j > 0 and σ_j → 0 by step 1.\n   Steps (b)–(g) are exactly the required properties. ∎\n\nFormalization note: every Mathlib fact cited above is in the import closure of the frozen GMT.Ch02.Submission; the whole argument was checked in Lean as a single appended theorem with no added imports.",
+    "proof_key_steps": [
+      "σ_j := 1/(j+1): positive, decreasing, → 0.",
+      "If U = univ, take O_j := univ.",
+      "Otherwise Uᶜ is closed and nonempty. Let d = infDist(·, Uᶜ) and O_j := {d > σ_j}. O_j is open (d continuous) and increasing, closedBall(x, σ_j) ⊆ U for x ∈ O_j, and ⋃_j O_j = U because d > 0 exactly on U.",
+      "Convexity: if ‖v‖ < min(d(x), d(y)) then x+v, y+v ∈ U, so a(x+v) + b(y+v) = z+v ∈ U. Hence d(ax+by) ≥ min(d(x), d(y)) > σ_j."
+    ]
+  },
+  "audit": {
+    "key": "inner_exhaustion",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and type agree. The univ case correctly avoids infDist to an empty complement. Otherwise the closed nonempty complement gives openness, exhaustion and closed-ball margins; the common-translation argument proves convexity. The explicit radii establish positivity, monotonicity of the sets and convergence. No boundedness or positive-dimension hypothesis is silently used."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-poincare-a1-inner-exhaustion-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-poincare-a1-inner-exhaustion-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-poincare-a1-inner-exhaustion-a1/parent-supplied-natural-proof.json"
+}
