@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.tangent_structure-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Approximate tangent planes of a contract rectifiable varifold: measurability, integrability, a.e. existence and density (fact F1)",
+  "statement": "Let n >= 1, l in N, U open in R^(n+l), V = v(M, theta) a contract RectifiableVarifold in U, mu = V.weight and p_x = V.tangentProj x. Then (a) x -> p_x is mu-a.e. strongly measurable; (b) for every linear subspace T and every compact K contained in U, x -> hsNormSq(p_x - p_T) is mu-integrable on K; (c) for mu-a.e. x, p_x is the orthogonal projection onto some n-dimensional subspace, and mu(B_r(x))/(omega_n r^n) -> theta(x) as r -> 0+ (V.HasDensity x (V.mult x)).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight ∧ (∀ (T : Submodule ℝ (Amb n ℓ)) (K : Set (Amb n ℓ)), IsCompact K → K ⊆ U → IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) K V.weight) ∧ ∀ᵐ x ∂V.weight, (∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ V.tangentProj x = T.starProjection) ∧ V.HasDensity x (V.mult x)",
+  "lean_name": "lip_approx_tangent_structure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-tangent-structure-a1-a1"
+}
