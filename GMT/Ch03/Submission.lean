@@ -1894,6 +1894,109 @@ theorem Submission.chartTD_weighted_tangent_of_density : ∀ (n N : ℕ) (M Γ :
   simp only [hη]
   rw [Submission.chartTD_weighted_blowup_integral_split n N M Γ θ x f r hr hM hΓ hΓfin hθ]
   ring
+/-- **Rademacher's theorem on an open set** (Simon Ch. 2, Theorem 1.4, applied locally as in
+(4.8)): if `g : ℝⁿ → ℝᵖ` is locally Lipschitz on the open set `W ⊆ ℝⁿ`, then `g` is
+differentiable at `Lⁿ`-a.e. point of `W`. Each point `x` of the exceptional set
+`Z = {u ∈ W : g is not differentiable at u}` has a ball `B_r(x)` on which `g` is Lipschitz;
+Rademacher for maps Lipschitz on a set (`LipschitzOnWith.ae_differentiableWithinAt_of_mem`) and
+openness of the ball give `Lⁿ(Z ∩ B_r(x)) = 0`, and second countability
+(`measure_null_of_locally_null`) gives `Lⁿ(Z) = 0`. -/
+theorem Submission.chartTD_ae_differentiableAt_of_locallyLipschitzOn : ∀ (n p : ℕ)
+    (W : Set (Rn n)) (g : Rn n → Rn p), IsOpen W → LocallyLipschitzOn W g →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ W → DifferentiableAt ℝ g u := by
+  intro n p W g hW hg
+  -- Step 1: the claim says that `Z = {u | ¬(u ∈ W → DifferentiableAt ℝ g u)}` is `Lⁿ`-null.
+  rw [ae_iff]
+  -- Step 6: by second countability, it suffices that each `x ∈ Z` has a null neighbourhood
+  -- within `Z`.
+  refine measure_null_of_locally_null _ fun x hx ↦ ?_
+  simp only [mem_ofPred_eq, not_imp] at hx
+  -- Step 2: `g` is `K`-Lipschitz on a ball `B_r(x)`, since `𝓝[W] x = 𝓝 x` for the open `W`.
+  obtain ⟨K, T, hT, hgT⟩ := hg hx.1
+  rw [hW.nhdsWithin_eq hx.1] at hT
+  obtain ⟨r, hr, hrT⟩ := Metric.mem_nhds_iff.1 hT
+  -- Step 5: `Z ∩ B_r(x)` is a neighbourhood of `x` within `Z`.
+  refine ⟨_, inter_mem_nhdsWithin _ (Metric.ball_mem_nhds x hr), ?_⟩
+  -- Step 3: Rademacher on `B_r(x)`: `g` is differentiable within the ball at a.e. point of it.
+  have hR := ae_iff.1 ((hgT.mono hrT).ae_differentiableWithinAt_of_mem
+    (μ := (volume : Measure (Rn n))))
+  -- Step 4: `Z ∩ B_r(x)` lies in the Rademacher exceptional set, because the ball is open.
+  refine measure_mono_null (fun v hv ↦ ?_) hR
+  simp only [mem_inter_iff, mem_ofPred_eq, not_imp] at hv ⊢
+  exact ⟨hv.2, fun hd ↦ hv.1.2 (hd.differentiableAt (Metric.isOpen_ball.mem_nhds hv.2))⟩
+/-- **Line derivative of a locally Lipschitz map along a chart** (Simon Ch. 2, (4.7) and (4.10)):
+let `f : ℝᴺ → ℝᵖ` be locally Lipschitz on the open set `U ⊆ ℝᴺ`, and let `ψ : ℝⁿ → ℝᴺ` and
+`f ∘ ψ` be differentiable at `u`, with `ψ(u) ∈ U`. Then for every `w ∈ ℝⁿ`, `f` has line
+derivative `D(f ∘ ψ)(u) w` at `ψ(u)` in the direction `Dψ(u) w`. The chart curve
+`t ↦ ψ(u + t w)` and the line `t ↦ ψ(u) + t Dψ(u) w` agree to first order at `t = 0`, so the
+Lipschitz bound of `f` near `ψ(u)` makes the values of `f` along them differ by `o(t)`. -/
+theorem Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt : ∀ (n N p : ℕ)
+    (U : Set (Rn N)) (f : Rn N → Rn p) (ψ : Rn n → Rn N) (u : Rn n), IsOpen U →
+    LocallyLipschitzOn U f → ψ u ∈ U → DifferentiableAt ℝ ψ u → DifferentiableAt ℝ (f ∘ ψ) u →
+    ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n N p U f ψ u hU hf hu hψ hfψ w
+  -- Step 2: `f` is `L`-Lipschitz on a neighbourhood `T` of `ψ u`, since `𝓝[U] (ψ u) = 𝓝 (ψ u)`.
+  obtain ⟨L, T, hT, hfT⟩ := hf hu
+  rw [hU.nhdsWithin_eq hu] at hT
+  -- Step 3: the line derivatives of `ψ` and of `f ∘ ψ` at `u` in the direction `w`.
+  have ha := hψ.hasFDerivAt.hasLineDerivAt w
+  have hb := hfψ.hasFDerivAt.hasLineDerivAt w
+  -- Step 1: write the two hypotheses and the goal as `o(t)` statements as `t → 0`.
+  rw [hasLineDerivAt_iff_isLittleO_nhds_zero] at ha hb ⊢
+  -- Step 4: for `t` near `0`, both `ψ (u + t • w)` and `ψ u + t • Dψ(u) w` lie in `T`.
+  have hγ : ∀ᶠ t in 𝓝 (0 : ℝ), ψ (u + t • w) ∈ T :=
+    hψ.continuousAt.tendsto.comp
+      ((by fun_prop : Continuous fun t : ℝ ↦ u + t • w).tendsto' 0 u (by simp)) hT
+  have hα : ∀ᶠ t in 𝓝 (0 : ℝ), ψ u + t • fderiv ℝ ψ u w ∈ T :=
+    (by fun_prop : Continuous fun t : ℝ ↦ ψ u + t • fderiv ℝ ψ u w).tendsto' 0 (ψ u) (by simp) hT
+  -- Step 5 (Simon (4.7)): the Lipschitz bound compares `f` along the line and along the chart
+  -- curve, and the difference of the two curves is `o(t)`.
+  have hO : (fun t : ℝ ↦ f (ψ u + t • fderiv ℝ ψ u w) - f (ψ (u + t • w))) =O[𝓝 0]
+      fun t : ℝ ↦ ψ (u + t • w) - ψ u - t • fderiv ℝ ψ u w := by
+    refine Asymptotics.IsBigO.of_bound L ?_
+    filter_upwards [hγ, hα] with t hγt hαt
+    rw [← sub_add_eq_sub_sub, norm_sub_rev (ψ (u + t • w))]
+    exact hfT.norm_sub_le hαt hγt
+  -- Step 6: the two `o(t)` terms add up to the claim.
+  refine ((hO.trans_isLittleO ha).add hb).congr_left fun t ↦ ?_
+  simp only [Function.comp_apply]
+  abel
+
+/-- **Simon Ch. 2, Theorem 1.4 and (4.8)–(4.10)** (`chapter-02.txt` lines 59–72, 925–957), in one
+`C¹` chart `ψ` on an open `V ⊆ ℝⁿ` (injectivity of `Dψ` is not needed). Let `f` be locally
+Lipschitz on an open `U ⊆ ℝᴺ`. For `Lⁿ`-a.e. `u ∈ V` with `ψ(u) ∈ U`, `f ∘ ψ` is differentiable
+at `u` (Rademacher) and `D(f ∘ ψ)(u) w = d/dt f(ψ(u) + t Dψ(u) w)|_{t=0}` for every `w` ((4.10)).
+On the open set `W = V ∩ ψ⁻¹(U)` the map `f ∘ ψ` is locally Lipschitz, so Rademacher's theorem
+applies on `W`. At each point of differentiability, the curve `t ↦ ψ(u + t w)` is compared with
+the line `t ↦ ψ(u) + t Dψ(u) w` as in (4.7). -/
+theorem Submission.chartTD_comp_differentiable_lineDeriv_ae : ∀ (n N p : ℕ) (U : Set (Rn N))
+    (f : Rn N → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen U → LocallyLipschitzOn U f →
+    IsOpen V → ContDiffOn ℝ 1 ψ V →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ U →
+      DifferentiableAt ℝ (f ∘ ψ) u ∧
+        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n N p U f V ψ hU hf hV hψ
+  -- Step 1: `W = V ∩ ψ⁻¹(U)` is open, since `ψ` is continuous on the open set `V`.
+  have hW : IsOpen (V ∩ ψ ⁻¹' U) := hψ.continuousOn.isOpen_inter_preimage hV hU
+  -- Step 2: `f ∘ ψ` is locally Lipschitz on `W`: `ψ` is Lipschitz near `u` (it is `C¹` there),
+  -- `f` is Lipschitz near `ψ(u)` (`U` is open), and `ψ` maps a neighbourhood of `u` into the
+  -- latter.
+  have hfψ : LocallyLipschitzOn (V ∩ ψ ⁻¹' U) (f ∘ ψ) := by
+    rintro u ⟨huV, huU⟩
+    have hψu : ContDiffAt ℝ 1 ψ u := hψ.contDiffAt (hV.mem_nhds huV)
+    obtain ⟨Kψ, s, hs, hψs⟩ := hψu.exists_lipschitzOnWith
+    obtain ⟨Kf, t, ht, hft⟩ := hf huU
+    rw [hU.nhdsWithin_eq huU] at ht
+    exact ⟨Kf * Kψ, s ∩ ψ ⁻¹' t,
+      mem_nhdsWithin_of_mem_nhds (inter_mem hs (hψu.continuousAt.preimage_mem_nhds ht)),
+      hft.comp (hψs.mono inter_subset_left) fun _ hx ↦ hx.2⟩
+  -- Steps 3–4: Rademacher's theorem on `W` (via the countable cover in the accepted child).
+  filter_upwards [Submission.chartTD_ae_differentiableAt_of_locallyLipschitzOn n p _ _ hW hfψ]
+    with u hu huV huU
+  have hdiff : DifferentiableAt ℝ (f ∘ ψ) u := hu ⟨huV, huU⟩
+  -- Step 5 (Simon (4.10)): the line derivative at every point of differentiability.
+  exact ⟨hdiff, Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt n N p U f ψ u hU hf
+    huU ((hψ.contDiffAt (hV.mem_nhds huV)).differentiableAt one_ne_zero) hdiff⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
