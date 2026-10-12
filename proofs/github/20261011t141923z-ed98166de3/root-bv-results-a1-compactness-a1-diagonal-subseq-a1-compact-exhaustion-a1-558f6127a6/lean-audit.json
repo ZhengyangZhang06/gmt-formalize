@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "52bdc95f86d1c967deaa2ac3f11e8fd560f24953436c001a0660b46e786a5d35",
+  "git_delta": {
+    "base_commit": "11df9271e5439739a1968805f9658f314e6f6667",
+    "candidate_commit": "1a51de8325710df1c14178a70b48a31b861571c2",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_isOpen_exists_compact_exhaustion",
+    "diff_sha256": "333f30be38abc2bf2b1deb9bc11101ffafe570ccc214cebe18cc98bec8340c1e",
+    "source_sha256": "d8eecfa64c59f4fdd32fe8a79fe67608aa9fa7a44a278cd8c821835dea9df16b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_isOpen_exists_compact_exhaustion",
+      "statement": "∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → ∃ Q : ℕ → Set (Rn n), (∀ j, IsCompact (Q j)) ∧ (∀ j, Q j ⊆ U) ∧ Monotone Q ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
