@@ -3119,6 +3119,46 @@ theorem hsNorm_starProjection_trace_identities : (∀ (m k : ℕ) (A : Rn m →L
     simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
     rw [Finset.sum_congr rfl fun i _ => hterm (EuclideanSpace.single i 1), Finset.sum_sub_distrib,
       Finset.sum_add_distrib, hdim, add_sub_cancel_right]
+/-- Simon Ch. 5, proof of Lemma 2.1, (1)–(3) (p. 107): if `T_x V = P` and `P`, `T` are
+`n`-dimensional, the height test field `X(y) = ζ(y)² p_{T⊥}(y − ξ)` has tangential divergence
+`div_M X(x) = ζ(x)² |p_P − p_T|²/2 + 2ζ(x) Dζ(x)((p_P − p_T) p_{T⊥}(x − ξ))`
+(`|·|` the Hilbert–Schmidt norm). -/
+theorem divM_height_test_field_eq (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U)
+    (ζ : Amb n ℓ → ℝ) (ξ x : Amb n ℓ) (P T : Submodule ℝ (Amb n ℓ))
+    (hζ : DifferentiableAt ℝ ζ x) (hP : Module.finrank ℝ P = n) (hT : Module.finrank ℝ T = n)
+    (hV : V.tangentProj x = P.starProjection) :
+    V.divM (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - ξ)) x =
+      ζ x ^ 2 * (hsNormSq (P.starProjection - T.starProjection) / 2) +
+        2 * ζ x * fderiv ℝ ζ x
+          ((P.starProjection - T.starProjection) (Tᗮ.starProjection (x - ξ))) := by
+  -- `DX(x) = ζ(x)² p_{T⊥} + (2ζ(x) Dζ(x)).smulRight x'` with `x' = p_{T⊥}(x − ξ)`.
+  have hsq : HasFDerivAt (fun y => ζ y ^ 2) ((2 * ζ x) • fderiv ℝ ζ x) x := by
+    simpa using hζ.hasFDerivAt.pow 2
+  have hlin : HasFDerivAt (fun y => Tᗮ.starProjection (y - ξ)) Tᗮ.starProjection x :=
+    (Tᗮ.starProjection.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const ξ)).congr_fderiv
+      (ContinuousLinearMap.comp_id _)
+  have hX := hsq.fun_smul hlin
+  -- `x' ∈ T⊥`, so `p_T x' = 0`.
+  have hx' : T.starProjection (Tᗮ.starProjection (x - ξ)) = 0 :=
+    (T.starProjection_apply_eq_zero_iff).mpr (Tᗮ.starProjection_apply_mem _)
+  -- Projection algebra (iii), as `dim P = dim T`: `trace(p_{T⊥} ∘ p_P) = |p_P − p_T|²/2`.
+  have htr : LinearMap.trace ℝ (Amb n ℓ)
+      (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) =
+        hsNormSq (P.starProjection - T.starProjection) / 2 :=
+    Submission.hsNorm_starProjection_trace_identities.2.2 (n + ℓ) P T (hP.trans hT.symm)
+  -- The rank-one part: `(φ.smulRight x') ∘ p_P = (φ ∘ p_P).smulRight x'`.
+  have hrk : (((2 * ζ x) • fderiv ℝ ζ x).smulRight (Tᗮ.starProjection (x - ξ))).toLinearMap ∘ₗ
+      P.starProjection.toLinearMap =
+        (((2 * ζ x) • fderiv ℝ ζ x).toLinearMap ∘ₗ P.starProjection.toLinearMap).smulRight
+          (Tᗮ.starProjection (x - ξ)) := by
+    ext v
+    simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe,
+      ContinuousLinearMap.smulRight_apply, LinearMap.smulRight_apply]
+  rw [RectifiableVarifold.divM, hX.fderiv, hV, ContinuousLinearMap.toLinearMap_add,
+    ContinuousLinearMap.toLinearMap_smul, LinearMap.add_comp, LinearMap.smul_comp, hrk, map_add,
+    map_smul, htr, LinearMap.trace_smulRight]
+  simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe, smul_apply,
+    smul_eq_mul, sub_apply, hx', sub_zero]
 
 end Submission
 
