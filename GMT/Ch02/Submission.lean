@@ -373,6 +373,31 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §6 (p. 66), toward Theorem 6.4.** `J*_f(x) = 0` precisely when `df_x` has rank
+`< m`: with `L = Df(x) ∘ ι : T_x M → ℝᵐ`, `L L*` is positive semidefinite, so `√det(L L*) = 0` iff
+`L L*` is singular, iff `ker L* = (range L)ᗮ ≠ 0`, iff `range L ≠ ℝᵐ`. No hypothesis on `M`, `f` or
+`x` is needed. -/
+theorem Submission.c1_sard_coarea_jacobian_eq_zero_iff : ∀ (N m : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N), coareaJacobian M f x = 0 ↔ Module.finrank ℝ (LinearMap.range ((fderiv ℝ f x).toLinearMap ∘ₗ (tangentSpace M x).subtype)) < m := by
+  intro N m M f x
+  -- `L = Df(x) ∘ ι : T_x M → ℝᵐ`; by definition `J*_f(x) = √det(L L*)`.
+  set L : tangentSpace M x →ₗ[ℝ] Rn m := (fderiv ℝ f x).toLinearMap ∘ₗ (tangentSpace M x).subtype
+  have hJ : coareaJacobian M f x = Real.sqrt (L ∘ₗ L.adjoint).det := rfl
+  -- Step 1: `det(L L*) = (normDet L*)² ≥ 0`, as `L** = L`.
+  have hdet : 0 ≤ (L ∘ₗ L.adjoint).det := by
+    have hsq : L.adjoint.normDet ^ 2 = (L ∘ₗ L.adjoint).det := by
+      simpa using L.adjoint.normDet_sq
+    exact hsq ▸ sq_nonneg _
+  -- Steps 2–4: `√det(L L*) = 0 ↔ det(L L*) = 0 ↔ ker(L L*) ≠ 0`, and `ker(L L*) = ker L*`.
+  rw [hJ, Real.sqrt_eq_zero hdet, LinearMap.det_eq_zero_iff_ker_ne_bot,
+    LinearMap.ker_self_comp_adjoint]
+  -- Step 5: `ker L* = (range L)ᗮ`, which is `0` iff `range L = ℝᵐ`.
+  rw [← LinearMap.orthogonal_range, ne_eq, Submodule.orthogonal_eq_bot_iff]
+  -- Step 6: a subspace of `ℝᵐ` is proper iff its dimension is `< m = dim ℝᵐ`.
+  have hm : Module.finrank ℝ (Rn m) = m := finrank_euclideanSpace_fin
+  refine ⟨fun h ↦ (Submodule.finrank_lt h).trans_eq hm, fun h htop ↦ ?_⟩
+  rw [htop, finrank_top, hm] at h
+  exact lt_irrefl m h
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
