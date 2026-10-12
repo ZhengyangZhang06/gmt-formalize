@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.ae_transfer-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1",
+  "depth": 4,
+  "title": "Null transfer to slices: Hⁿ-a.e. properties on M hold H^m-a.e. on almost every slice M ∩ f⁻¹{t}",
+  "statement": "Let P, m ∈ ℕ, M ⊆ ℝ^P, f : ℝ^P → ℝ and G : ℝ^P → ℝ^P be arbitrary, and write Hᵏ := μHE[k]. Assume the co-area identity for (M, f, G): for every Borel g : ℝ^P → [0, ∞], the function t ↦ ∫_{M∩f⁻¹{t}} g dH^m (lower Lebesgue integral of g for H^m restricted to M ∩ f⁻¹{t}) is L¹-a.e.-measurable on ℝ and ∫_ℝ (∫_{M∩f⁻¹{t}} g dH^m) dt = ∫_M |G| g dH^{m+1}. Then for every predicate p on ℝ^P that holds for H^{m+1}-a.e. x ∈ M (∀ᵐ x ∂(H^{m+1} restricted to M), p x), for L¹-a.e. t ∈ ℝ the predicate p holds for H^m-a.e. x ∈ M ∩ f⁻¹{t} (∀ᵐ x ∂(H^m restricted to M ∩ f⁻¹{t}), p x).",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Eucl P)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P), (∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))) → ∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x",
+  "lean_name": "slicing_im_st_ae_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-ae-transfer-a1-a1"
+}

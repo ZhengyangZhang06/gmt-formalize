@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.ae_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^k = Eucl k = EuclideanSpace ℝ (Fin k). Hᵏ := μHE[k] (Mathlib's Euclidean Hausdorff measure on ℝ^P). L¹ := volume on ℝ. For a measure μ and a set S, μ⌞S := μ.restrict S. (CA) denotes the co-area hypothesis of the statement: for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹{t}} g dH^m is L¹-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹{t}} g dH^m dt = ∫_M |G|ₑ g dH^{m+1}. It is verbatim the conclusion of slicing_im_coarea, the sibling on which the parent node slicing_im_slice_triple depends; it enters here as a hypothesis because children may depend only on their own siblings.
+This is Step 1 (null transfer, NT) of the parent proof (slicing_im_slice_triple), stated for an arbitrary predicate.
+1. (Measurable null hull.) Let N := {x ∈ ℝ^P : ¬p(x)}. The hypothesis ∀ᵐ x ∂(H^{m+1}⌞M), p x says (H^{m+1}⌞M)(N) = 0 (ae_iff). Let Z := toMeasurable (H^{m+1}⌞M) N. Then Z is a measurable set, N ⊆ Z (subset_toMeasurable) and (H^{m+1}⌞M)(Z) = (H^{m+1}⌞M)(N) = 0 (measure_toMeasurable).
+2. (Co-area with an indicator.) The indicator g := 1_Z = Z.indicator 1 : ℝ^P → [0, ∞] is measurable (Z is measurable). By (CA), F(t) := ∫_{M∩f⁻¹{t}} 1_Z dH^m is L¹-a.e.-measurable and ∫_ℝ F(t) dt = ∫_M |G(x)|ₑ·1_Z(x) dH^{m+1}(x).
+3. (The right side vanishes.) The integrand x ↦ |G(x)|ₑ·1_Z(x) is 0 at every x ∉ Z. Since (H^{m+1}⌞M)(Z) = 0, it vanishes (H^{m+1}⌞M)-a.e., so its integral with respect to H^{m+1}⌞M is 0 (lintegral_congr_ae, lintegral_zero). Hence ∫_ℝ F(t) dt = 0.
+4. (F = 0 a.e.) F is a.e.-measurable, nonnegative, and has integral 0, so F(t) = 0 for L¹-a.e. t (lintegral_eq_zero_iff').
+5. (Conclusion.) Fix t with F(t) = 0. As Z is measurable, F(t) = ∫ 1_Z d(H^m⌞(M ∩ f⁻¹{t})) = (H^m⌞(M ∩ f⁻¹{t}))(Z) (lintegral_indicator_one). By monotonicity (N ⊆ Z), (H^m⌞(M ∩ f⁻¹{t}))(N) ≤ (H^m⌞(M ∩ f⁻¹{t}))(Z) = 0, i.e. ∀ᵐ x ∂(H^m⌞(M ∩ f⁻¹{t})), p x (ae_iff). This holds for L¹-a.e. t, which is the claim. ∎
+(No measurability of M, f, G and no bound on G is used. Downstream, p then also holds H^m-a.e. on every subset of M ∩ f⁻¹{t}, in particular on M_t (ae_restrict_of_ae_restrict_of_subset), and countably many such conclusions combine by ae_all_iff.)
+
+## Key steps
+
+1. Replace the exceptional set N = {¬p} by its measurable hull Z for H^{m+1}⌞M, which is still null.
+2. Apply the co-area hypothesis to g = 1_Z: ∫_ℝ (H^m⌞(M∩f⁻¹{t}))(Z) dt = ∫_M |G|·1_Z dH^{m+1} = 0.
+3. An a.e.-measurable nonnegative function with zero integral vanishes a.e., so (H^m⌞(M∩f⁻¹{t}))(Z) = 0 for a.e. t.
+4. Monotonicity N ⊆ Z gives ∀ᵐ x ∂H^m⌞(M∩f⁻¹{t}), p x for a.e. t.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical); read IsRectifiableTriple in the contract`
+- `read nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/{parent-child-handoff.json,parent-supplied-natural-proof.md,parent-supplied-plan.md}`
+- `python3 over dag.json: lean_name/status/lean_statement of all 361 nodes (slicing_im_coarea frozen type; accepted fiw_ims_frame_sign, lpf_c1_local_antilipschitz, lpf_wtc_*; speculative-ready lpf_weighted_tangent_on_c1_chart, lpf_countably_rectifiable_c1_cover, lpf_c1_approximation_real)`
+- `grep -c 'slicing_im_st_' dag.json DAG.md issue-workers.json; grep -rl 'slicing_im_st_' nodes/ (no match)`
+- `read decomposition-v1.json of root-slicing-a1-slice-integer-multiplicity-a1, root-lipschitz-pushforward-im-a1-chart-chain-rule-a1, root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1 (uncle-results-as-hypotheses and reuse-child conventions)`
+- `read parent-supplied-natural-proof.md of lpf weighted_tangent_on_c1_chart, countably_rectifiable_c1_cover, lipschitz_c1_immersion_pieces, c1_local_antilipschitz and fiw_ims frame_sign`
+- `grep SimonGMT: def CountablyRectifiable, countablyRectifiable_of_measure_zero/_iUnion/.mono, blowUpMap, HasWeightedApproximateTangentSpaceAt(.unique), simpleNVector(_apply), area_image_compl_regularSet_eq_zero, simon_theorem_3_6, euclideanHausdorffMeasure_image_le_of_lipschitzOn, injective_area_formula_lipschitzOn, rademacher_ae_differentiableAt`
+- `grep Mathlib snapshot: alternatizeUncurryFin_apply/alternatizeUncurryFinCLM, LipschitzOnWith.extend_finite_dimension/extend_real, ContDiffAt.implicitFunction (+ eventually_apply_eq_iff_implicitFunction, contDiffAt_implicitFunction, implicitFunction_apply_self), restrict_apply₀', le_restrict_apply, ae_restrict_of_ae_restrict_of_subset, ae_restrict_union_iff, exists_measurable_subset_ae_eq, lintegral_eq_zero_iff', ae_lt_top', lintegral_indicator_one, aestronglyMeasurable_iUnion_iff, MeasurableSet.image_of_continuousOn_injOn, isOpen_iUnion_countable, mem_orthogonal_singleton_iff_inner_right, Fin.removeNth_last, Fin.init_snoc, euclideanHausdorffMeasure_zero, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hausdorffMeasure_image_le`
+- `sed book/chapter-06.txt 1145-1240 (4.1-4.4); chapter-03.txt 1-470 (1.1-2.10); chapter-02.txt 160-190 and 895-975 (1.5, 1.6, 4.5-4.10)`
+- `python3 -I scripts/gen.py (contract_scope from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all child strings)`
+- `lean Stmts.lean / Final.lean (8 child types + parent + coarea + instance sanity checks; 0 errors)`
+- `lean Assembly.lean (parent from coarea + ae_transfer + measure_fields + slice_geometry + interior_product; axioms propext, Classical.choice, Quot.sound)`
+- `lean K6.lean (slice_geometry from its 5 sibling types; standard axioms)`
+- `lean ProbeAE.lean (full proof of the ae_transfer type), SignCheck.lean (interior-product sign computation), Probe7.lean (strong measurability of ξ̃_t via a Lipschitz bound on ι)`
+- `independent reviewer subagent: re-ran all Lean files, verdict ACCEPT-WITH-FIXES (fixes applied)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-countably-rectifiable-c1-cover-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-frame-sign-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ImplicitContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/st-split-19917/Stmts.lean`
+- `/tmp/st-split-19917/Final.lean`
+- `/tmp/st-split-19917/Assembly.lean`
+- `/tmp/st-split-19917/K6.lean`
+- `/tmp/st-split-19917/ProbeAE.lean`
+- `/tmp/st-split-19917/SignCheck.lean`
+- `/tmp/st-split-19917/Probe7.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract; Submission is byte-identical to it. Child types may therefore use only contract, SimonGMT and Mathlib names. SimonGMT provides CountablyRectifiable with mono/iUnion/null lemmas, blowUpMap, HasWeightedApproximateTangentSpaceAt with uniqueness at θ ≠ 0, simpleNVector, the upper density theorem, area_image_compl_regularSet_eq_zero and Lipschitz image bounds. Mathlib provides alternatizeUncurryFin(_apply), ContDiffAt.implicitFunction with C¹ regularity, LipschitzOnWith.extend_finite_dimension, Lusin–Souslin images and the a.e./restriction API cited in the child proofs. Neither library has slicing, a rectifiable co-area formula, or tangent identification on C¹ charts. The co-area formula comes from the sibling slicing_im_coarea, passed as a hypothesis. Tangent identification is the new child weighted_tangent_chart. Its type equals that of the pending, not-accepted lpf_weighted_tangent_on_c1_chart, hence the fresh name. The only accepted declaration reused is fiw_ims_frame_sign, with identical type. All 8 child types elaborate in the comparator scope. The parent type follows from coarea plus 4 children, and slice_geometry from its 5 siblings, with standard axioms only. ae_transfer is fully proved in Lean. None of the names slicing_im_st_* occurs in the DAG or the snapshot. These checks do not certify the analytic proofs of the remaining children.

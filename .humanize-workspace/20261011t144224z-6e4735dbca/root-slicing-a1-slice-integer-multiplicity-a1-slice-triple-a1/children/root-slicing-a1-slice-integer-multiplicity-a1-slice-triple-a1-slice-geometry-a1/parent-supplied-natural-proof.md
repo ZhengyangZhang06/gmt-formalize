@@ -1,0 +1,111 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.slice_geometry-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^k = Eucl k = EuclideanSpace ℝ (Fin k), with inner product ⟨·,·⟩ and norm |·|. Hᵏ := μHE[k] (Mathlib's Euclidean Hausdorff measure on ℝ^P; on ℝᵏ it equals Lebesgue measure Lᵏ = volume, and H⁰ is counting measure). L¹ := volume on ℝ. For a measure μ and a set S, μ⌞S := μ.restrict S, and 'p holds μ-a.e. on S' means ∀ᵐ x ∂(μ⌞S), p x. n := m + 1. M_t := {x ∈ M : f(x) = t, G(x) ≠ 0}. For v ∈ ℝ^P, ι(v) := (alternatizeUncurryFinCLM ℝ ℝ^P ℝ) ∘L (smulRightL ℝ ℝ^P Λ^m (innerSL ℝ v)) : Λ^m → Λ^{m+1}; by `rfl` ι(v)α = alternatizeUncurryFin((innerSL ℝ v).smulRight α) =: v♭∧α, and by `alternatizeUncurryFin_apply` (v♭∧α)(v₀,…,v_m) = Σ_{i=0}^{m} (−1)^i ⟨v, v_i⟩ α(v₀,…,v̂_i,…,v_m). ξ_t(x) := ξ(x) ∘L ι(|G(x)|⁻¹G(x)). (CA) denotes the co-area hypothesis for (M, f, G): for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹{t}} g dH^m is L¹-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹{t}} g dH^m dt = ∫_M |G|ₑ g dHⁿ; it is verbatim the conclusion of slicing_im_coarea, the sibling on which the parent node slicing_im_slice_triple depends, and enters here as a hypothesis because children may depend only on their own siblings. TG(f, G) denotes the tangential-gradient property: for Hⁿ-a.e. x ∈ M and every subspace Q with HasWeightedApproximateTangentSpaceAt n M θ x Q, G(x) ∈ Q and s ↦ f(x + su) has derivative ⟨G(x), u⟩ at s = 0 for every u ∈ Q.
+This is Steps 8 and 9 of the parent proof (Simon Ch. 6, 4.1(1),(2), resting on Ch. 3, 2.10(2) and 1.6). It is assembled from the siblings ae_transfer, measure_fields, weighted_tangent_chart, chart_data and level_set_charts; this assembly has been kernel-checked in the comparator scope from the five frozen sibling types.
+1. (Chart data.) Apply chart_data (slicing_im_st_chart_data) to (P, m, U, M, θ, ξ, f, L, G), using U open, the triple, f L-Lipschitz and TG(f, G). It gives, for j ∈ ℕ, Ω_j, Φ_j, A_j, h_j such that:
+   - Ω_j is open, Φ_j is C¹ and c_j-antilipschitz on Ω_j (c_j > 0), A_j ⊆ Ω_j, and h_j is C¹;
+   - f(Φ_j(w)) = h_j(w) for w ∈ A_j, and Hⁿ(M ∖ ⋃_j Φ_j(A_j)) = 0;
+   - the predicate P_ch(x) holds Hⁿ⌞M-a.e., where P_ch(x) says: for all j and w ∈ A_j with Φ_j(w) = x, range DΦ_j(w) is a weighted approximate tangent plane of (M, θ) at x, G(x) ∈ range DΦ_j(w), and ⟨G(x), DΦ_j(w)u⟩ = Dh_j(w)u for all u.
+2. (Good points; null sets.) Let p(x) :⟺ x ∈ ⋃_j Φ_j(A_j) ∧ P_ch(x). Then p holds Hⁿ⌞M-a.e., since (Hⁿ⌞M){x ∉ ⋃_j Φ_j(A_j)} = Hⁿ(M ∖ ⋃_j Φ_j(A_j)) = 0 (Measure.restrict_apply₀'; M is null-measurable).
+   - By ae_transfer (slicing_im_st_ae_transfer) and (CA), for L¹-a.e. t, p holds H^m⌞(M ∩ f⁻¹{t})-a.e.
+   - By measure_fields (slicing_im_st_measure_fields), applied with f measurable (f is continuous), G measurable, |G| ≤ L and (CA): for L¹-a.e. t, M_t is H^m-null-measurable and θ is H^m-integrable on M_t ∩ K for every compact K ⊆ U.
+   Fix t with both properties. Since M_t ⊆ M ∩ f⁻¹{t}, p holds H^m⌞M_t-a.e. (ae_restrict_of_ae_restrict_of_subset). As M_t is null-measurable, N_t := {x ∈ M_t : ¬p(x)} satisfies H^m(N_t) = 0 (Measure.restrict_apply₀').
+3. (Level-set charts.) For each j apply level_set_charts (slicing_im_st_level_set_charts) to (P, m, Φ_j, Ω_j, h_j, t). It gives C¹ maps Ψ_{j,i} : ℝ^m → ℝ^P and open sets V_{j,i} ⊆ ℝ^m (i ∈ ℕ), with Ψ_{j,i} Lipschitz and antilipschitz on V_{j,i}, such that:
+   - every Φ_j(w) with w ∈ Ω_j, h_j(w) = t and Dh_j(w) ≠ 0 lies in some Ψ_{j,i}(V_{j,i});
+   - for every v ∈ V_{j,i} there is w′ ∈ Ω_j with h_j(w′) = t, Ψ_{j,i}(v) = Φ_j(w′) and range DΨ_{j,i}(v) = DΦ_j(w′)(ker Dh_j(w′)).
+4. (Key pointwise lemma.) Let x ∈ M_t with p(x). Then there are j, w ∈ A_j with Φ_j(w) = x, and i, v ∈ V_{j,i} with Ψ_{j,i}(v) = x, such that range DΨ_{j,i}(v) = Q ∩ G(x)^⊥ for every weighted approximate tangent plane Q of (M, θ) at x. Here Q ∩ G(x)^⊥ = Q ⊓ (ℝ∙G(x))ᗮ, and y ∈ (ℝ∙G(x))ᗮ ⟺ ⟨G(x), y⟩ = 0 (Submodule.mem_orthogonal_singleton_iff_inner_right).
+   Proof. By p(x), x = Φ_j(w) for some j and w ∈ A_j. With T := range DΦ_j(w): T is a weighted approximate tangent plane of (M, θ) at x, G(x) ∈ T, and ⟨G(x), DΦ_j(w)u⟩ = Dh_j(w)u for all u.
+   (a) h_j(w) = f(Φ_j(w)) = f(x) = t.
+   (b) Dh_j(w) ≠ 0: write G(x) = DΦ_j(w)u₀; then Dh_j(w)u₀ = ⟨G(x), G(x)⟩ = |G(x)|², which is nonzero because G(x) ≠ 0 (x ∈ M_t).
+   (c) As w ∈ A_j ⊆ Ω_j, step 3 gives i and v ∈ V_{j,i} with Ψ_{j,i}(v) = Φ_j(w) = x.
+   (d) Step 3 also gives w′ ∈ Ω_j with Φ_j(w′) = Ψ_{j,i}(v) = x = Φ_j(w) and range DΨ_{j,i}(v) = DΦ_j(w′)(ker Dh_j(w′)). Since Φ_j is c_j-antilipschitz on Ω_j, c_j|w′ − w| ≤ 0, so w′ = w.
+   (e) If Q is a weighted approximate tangent plane of (M, θ) at x, then Q = T, by uniqueness (HasWeightedApproximateTangentSpaceAt.unique; θ(x) > 0 because x ∈ M).
+   (f) DΦ_j(w)(ker Dh_j(w)) = T ∩ G(x)^⊥. If y = DΦ_j(w)u with Dh_j(w)u = 0, then y ∈ T and ⟨G(x), y⟩ = Dh_j(w)u = 0. Conversely, if y = DΦ_j(w)u ∈ T and ⟨G(x), y⟩ = 0, then Dh_j(w)u = 0.
+   By (d)–(f), range DΨ_{j,i}(v) = Q ∩ G(x)^⊥. □
+5. (Countable rectifiability; parent Step 8, Simon Ch. 3, 2.10(2).) Each Ψ_{j,i} is Lipschitz on V_{j,i}, so it has a Lipschitz extension F_{j,i} : ℝ^m → ℝ^P with F_{j,i} = Ψ_{j,i} on V_{j,i} (LipschitzOnWith.extend_finite_dimension). By step 4, every x ∈ M_t with p(x) lies in some Ψ_{j,i}(V_{j,i}) ⊆ range F_{j,i}; the other points of M_t lie in N_t. Hence M_t ⊆ N_t ∪ ⋃_k range F_k, where F_k := F_{unpair k} and H^m(N_t) = 0 (step 2). This is Definition 1.1, i.e. CountablyRectifiable m M_t.
+6. (Tangent identification on the level-set charts; parent Step 9.) For each (j, i), apply weighted_tangent_chart (slicing_im_st_weighted_tangent_on_c1_chart) with Q := P, dimension m, V := U, the set M_t, the weight θ, Φ := Ψ_{j,i} and Ω := V_{j,i}. Its hypotheses hold:
+   - U is open and M_t ⊆ M ⊆ U;
+   - M_t is H^m-null-measurable and θ is H^m-integrable on M_t ∩ K for compact K ⊆ U (step 2), and θ > 0 on M_t ⊆ M;
+   - V_{j,i} is open, and Ψ_{j,i} is C¹ and antilipschitz on V_{j,i}.
+   It yields: for H^m-a.e. y ∈ M_t ∩ Ψ_{j,i}(V_{j,i}) and all v ∈ V_{j,i} with Ψ_{j,i}(v) = y, range DΨ_{j,i}(v) is a weighted approximate tangent plane of (M_t, θ) at y. Ψ_{j,i}(V_{j,i}) is measurable by Lusin–Souslin (Ψ_{j,i} is continuous and injective on the open set V_{j,i}; MeasurableSet.image_of_continuousOn_injOn), and the statement is vacuous off Ψ_{j,i}(V_{j,i}). So it holds H^m⌞M_t-a.e. (Measure.restrict_restrict, ae_restrict_iff'). By ae_all_iff, it holds for all (j, i) simultaneously at H^m-a.e. x ∈ M_t.
+7. (Conclusion.) For H^m-a.e. x ∈ M_t: x ∈ M_t, p(x) holds (step 2), and the conclusion of step 6 holds for all (j, i). Let Q be a weighted approximate tangent plane of (M, θ) at such an x. Step 4 gives (j, i, v) with Ψ_{j,i}(v) = x and range DΨ_{j,i}(v) = Q ⊓ (ℝ∙G(x))ᗮ, and step 6 says that range DΨ_{j,i}(v) is a weighted approximate tangent plane of (M_t, θ) at x. So HasWeightedApproximateTangentSpaceAt m M_t θ x (Q ⊓ (ℝ∙G(x))ᗮ). With step 5, both conclusions hold for every t in a set of full L¹-measure. ∎
+(The case m = 0 needs no separate argument. ℝ⁰ is a point, the level-set charts are constant maps, and weighted_tangent_chart covers dimension 0. There H⁰ is counting measure, and its proof reduces to the direct counting-measure computation of the parent's Step 9 for m = 0.)
+
+## Key steps
+
+1. chart_data gives C¹ antilipschitz charts Φ_j and C¹ h_j = f∘Φ_j on A_j, with range DΦ_j(w) = T_xM, G(x) ∈ T_xM and ⟨G(x), DΦ_j(w)u⟩ = Dh_j(w)u for Hⁿ-a.e. x ∈ M.
+2. ae_transfer and measure_fields: for a.e. t these chart facts hold H^m-a.e. on M_t, M_t is H^m-null-measurable, and θ is locally H^m-integrable on M_t.
+3. level_set_charts applied to (Φ_j, Ω_j, h_j, t): countably many C¹ bi-Lipschitz m-charts Ψ_{j,i} with range DΨ_{j,i} = DΦ_j(ker Dh_j).
+4. At a good x ∈ M_t: Dh_j(w) ≠ 0 because G(x) ≠ 0, x lies on some chart Ψ_{j,i}(V_{j,i}), and injectivity of Φ_j plus ⟨G, DΦ_j u⟩ = Dh_j u give range DΨ_{j,i}(v) = T_xM ∩ G(x)^⊥.
+5. McShane extensions of the Ψ_{j,i} give countable m-rectifiability, and weighted_tangent_chart in dimension m makes T_xM ∩ G(x)^⊥ a weighted tangent plane of (M_t, θ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical); read IsRectifiableTriple in the contract`
+- `read nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/{parent-child-handoff.json,parent-supplied-natural-proof.md,parent-supplied-plan.md}`
+- `python3 over dag.json: lean_name/status/lean_statement of all 361 nodes (slicing_im_coarea frozen type; accepted fiw_ims_frame_sign, lpf_c1_local_antilipschitz, lpf_wtc_*; speculative-ready lpf_weighted_tangent_on_c1_chart, lpf_countably_rectifiable_c1_cover, lpf_c1_approximation_real)`
+- `grep -c 'slicing_im_st_' dag.json DAG.md issue-workers.json; grep -rl 'slicing_im_st_' nodes/ (no match)`
+- `read decomposition-v1.json of root-slicing-a1-slice-integer-multiplicity-a1, root-lipschitz-pushforward-im-a1-chart-chain-rule-a1, root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1 (uncle-results-as-hypotheses and reuse-child conventions)`
+- `read parent-supplied-natural-proof.md of lpf weighted_tangent_on_c1_chart, countably_rectifiable_c1_cover, lipschitz_c1_immersion_pieces, c1_local_antilipschitz and fiw_ims frame_sign`
+- `grep SimonGMT: def CountablyRectifiable, countablyRectifiable_of_measure_zero/_iUnion/.mono, blowUpMap, HasWeightedApproximateTangentSpaceAt(.unique), simpleNVector(_apply), area_image_compl_regularSet_eq_zero, simon_theorem_3_6, euclideanHausdorffMeasure_image_le_of_lipschitzOn, injective_area_formula_lipschitzOn, rademacher_ae_differentiableAt`
+- `grep Mathlib snapshot: alternatizeUncurryFin_apply/alternatizeUncurryFinCLM, LipschitzOnWith.extend_finite_dimension/extend_real, ContDiffAt.implicitFunction (+ eventually_apply_eq_iff_implicitFunction, contDiffAt_implicitFunction, implicitFunction_apply_self), restrict_apply₀', le_restrict_apply, ae_restrict_of_ae_restrict_of_subset, ae_restrict_union_iff, exists_measurable_subset_ae_eq, lintegral_eq_zero_iff', ae_lt_top', lintegral_indicator_one, aestronglyMeasurable_iUnion_iff, MeasurableSet.image_of_continuousOn_injOn, isOpen_iUnion_countable, mem_orthogonal_singleton_iff_inner_right, Fin.removeNth_last, Fin.init_snoc, euclideanHausdorffMeasure_zero, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hausdorffMeasure_image_le`
+- `sed book/chapter-06.txt 1145-1240 (4.1-4.4); chapter-03.txt 1-470 (1.1-2.10); chapter-02.txt 160-190 and 895-975 (1.5, 1.6, 4.5-4.10)`
+- `python3 -I scripts/gen.py (contract_scope from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all child strings)`
+- `lean Stmts.lean / Final.lean (8 child types + parent + coarea + instance sanity checks; 0 errors)`
+- `lean Assembly.lean (parent from coarea + ae_transfer + measure_fields + slice_geometry + interior_product; axioms propext, Classical.choice, Quot.sound)`
+- `lean K6.lean (slice_geometry from its 5 sibling types; standard axioms)`
+- `lean ProbeAE.lean (full proof of the ae_transfer type), SignCheck.lean (interior-product sign computation), Probe7.lean (strong measurability of ξ̃_t via a Lipschitz bound on ι)`
+- `independent reviewer subagent: re-ran all Lean files, verdict ACCEPT-WITH-FIXES (fixes applied)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-countably-rectifiable-c1-cover-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-frame-sign-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ImplicitContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/st-split-19917/Stmts.lean`
+- `/tmp/st-split-19917/Final.lean`
+- `/tmp/st-split-19917/Assembly.lean`
+- `/tmp/st-split-19917/K6.lean`
+- `/tmp/st-split-19917/ProbeAE.lean`
+- `/tmp/st-split-19917/SignCheck.lean`
+- `/tmp/st-split-19917/Probe7.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract; Submission is byte-identical to it. Child types may therefore use only contract, SimonGMT and Mathlib names. SimonGMT provides CountablyRectifiable with mono/iUnion/null lemmas, blowUpMap, HasWeightedApproximateTangentSpaceAt with uniqueness at θ ≠ 0, simpleNVector, the upper density theorem, area_image_compl_regularSet_eq_zero and Lipschitz image bounds. Mathlib provides alternatizeUncurryFin(_apply), ContDiffAt.implicitFunction with C¹ regularity, LipschitzOnWith.extend_finite_dimension, Lusin–Souslin images and the a.e./restriction API cited in the child proofs. Neither library has slicing, a rectifiable co-area formula, or tangent identification on C¹ charts. The co-area formula comes from the sibling slicing_im_coarea, passed as a hypothesis. Tangent identification is the new child weighted_tangent_chart. Its type equals that of the pending, not-accepted lpf_weighted_tangent_on_c1_chart, hence the fresh name. The only accepted declaration reused is fiw_ims_frame_sign, with identical type. All 8 child types elaborate in the comparator scope. The parent type follows from coarea plus 4 children, and slice_geometry from its 5 siblings, with standard axioms only. ae_transfer is fully proved in Lean. None of the names slicing_im_st_* occurs in the DAG or the snapshot. These checks do not certify the analytic proofs of the remaining children.

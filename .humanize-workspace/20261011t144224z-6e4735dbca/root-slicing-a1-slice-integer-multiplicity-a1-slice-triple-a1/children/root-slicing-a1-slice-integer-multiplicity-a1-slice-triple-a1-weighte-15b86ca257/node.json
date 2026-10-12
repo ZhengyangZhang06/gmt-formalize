@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.weighted_tangent_chart-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1",
+  "depth": 4,
+  "title": "Weighted approximate tangent planes on a C¹ antilipschitz chart (Simon Ch. 3, 1.6 '⇒' and Remark 1.8(1))",
+  "statement": "Let Q, n ∈ ℕ, V ⊆ ℝ^Q open, M ⊆ V Hⁿ-null-measurable (Hⁿ := μHE[n] on ℝ^Q), and θ : ℝ^Q → ℝ with θ > 0 on M and θ Hⁿ-integrable on M ∩ K for every compact K ⊆ V. Let Ω ⊆ ℝⁿ be open, Φ : ℝⁿ → ℝ^Q of class C¹, and c > 0 with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω. Then for Hⁿ-a.e. y ∈ M ∩ Φ(Ω) and every w ∈ Ω with Φ(w) = y, the subspace DΦ(w)(ℝⁿ) (LinearMap.range of fderiv ℝ Φ w) is a weighted approximate tangent space of (M, θ) at y in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt n M θ y).",
+  "lean_statement": "∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict (M ∩ Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → HasWeightedApproximateTangentSpaceAt n M θ y (LinearMap.range (fderiv ℝ Φ w).toLinearMap)",
+  "lean_name": "slicing_im_st_weighted_tangent_on_c1_chart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-weighte-15b86ca257-a1"
+}
