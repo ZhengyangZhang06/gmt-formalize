@@ -581,6 +581,56 @@ theorem Submission.rsd_cmr_ic_action_abs_le : ∀ (P n : ℕ) (U : Set (Euclid P
   have h := norm_integral_le_of_norm_le (hint.const_mul ε) hpt
   rwa [integral_const_mul, hval, Real.norm_eq_abs] at h
 
+/-- **Simon Ch. 6, 3.1 (‡)**: an integer multiplicity triple `(M, θ, ξ)` in `U` defines a current
+`τ(M, θ, ξ) ∈ 𝒟ₙ(U)`, `τ(M, θ, ξ)(ω) = ∫_M ⟨ω(x), ξ(x)⟩ θ(x) dHⁿ(x)`.  The integrand is
+`Hⁿ⌞M`-integrable, so `ω ↦ τ(M, θ, ξ)(ω)` is linear.  If `ωⱼ → 0` in `𝒟ⁿ(U)`, then
+`spt ωⱼ ⊆ K` for one compact `K ⊆ U` and `ωⱼ → 0` uniformly on `K`; for `ε > 0` and `j` large,
+`‖ωⱼ‖ ≤ δ = ε / (I + 1)`, `I = ∫_{M ∩ K} θ dHⁿ`, so `|τ(M, θ, ξ)(ωⱼ)| ≤ δ I < ε`. -/
+theorem Submission.rsd_cmr_imrep_represents_exists : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∃ T : GeometricCurrentOn U n, R.Represents T := by
+  intro P n U R
+  refine ⟨{ toCurrent :=
+              { toFun := fun ω => R.action (ω : DifferentialForm (Euclid P) n)
+                map_add' := fun ω η => ?_
+                map_smul' := fun c ω => ?_ }
+            continuous' := fun ωs hωs => ?_ }, fun ω => rfl⟩
+  · -- `θ ⟨ω + η, ξ⟩ = θ ⟨ω, ξ⟩ + θ ⟨η, ξ⟩`, both integrable
+    simp only [IMRep.action, Submodule.coe_add, Pi.add_apply, map_add, mul_add]
+    exact integral_add (Submission.rsd_cmr_ic_action_integrable P n U R ω)
+      (Submission.rsd_cmr_ic_action_integrable P n U R η)
+  · -- `θ ⟨c ω, ξ⟩ = c θ ⟨ω, ξ⟩`
+    simp only [IMRep.action, Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul,
+      RingHom.id_apply]
+    rw [← integral_const_mul]
+    congr 1
+    funext x
+    ring
+  · -- `spt ωⱼ ⊆ K` for a compact `K ⊆ U`, and the `0`-th derivatives `ωⱼ → 0` uniformly on `K`
+    obtain ⟨K, hK, hKU, hsupp, -, hconv⟩ := hωs
+    change Tendsto (fun j => R.action (ωs j : DifferentialForm (Euclid P) n)) atTop (𝓝 0)
+    set I := (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal
+    have hI : 0 ≤ I := ENNReal.toReal_nonneg
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    have hδ : 0 < ε / (I + 1) := div_pos hε (by linarith)
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (Metric.tendstoUniformlyOn_iff.1 (hconv 0) _ hδ)
+    refine ⟨N, fun j hj => ?_⟩
+    -- `‖ωⱼ(x)‖ ≤ δ` everywhere: on `K` by uniform convergence, off `K` since `ωⱼ = 0` there
+    have hbound : ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε / (I + 1) := fun x => by
+      by_cases hx : x ∈ K
+      · have h := hN j hj x hx
+        rw [iteratedFDeriv_zero_eq_comp, iteratedFDeriv_zero_eq_comp, comp_apply, comp_apply,
+          LinearIsometryEquiv.dist_map, Submodule.coe_zero, Pi.zero_apply, dist_zero_left] at h
+        exact h.le
+      · rw [image_eq_zero_of_notMem_tsupport fun h => hx (hsupp j h), norm_zero]
+        exact hδ.le
+    -- `|τ(M, θ, ξ)(ωⱼ)| ≤ δ I < ε`
+    have h := Submission.rsd_cmr_ic_action_abs_le P n U R K (ωs j) _ hK hKU (hsupp j) hbound
+    rw [Real.dist_eq, sub_zero]
+    calc |R.action (ωs j : DifferentialForm (Euclid P) n)| ≤ ε / (I + 1) * I := h
+      _ < ε := by
+        rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+        nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
