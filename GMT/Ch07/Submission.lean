@@ -451,6 +451,40 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A continuous linear image of an a.e. unit-bounded measurable `n`-vector field is integrable:
+if `ν` is finite, `ξ` is `ν`-a.e. strongly measurable with `‖ξ x‖ ≤ 1` for `ν`-a.e. `x`, and
+`J : MultiVector P n →L[ℝ] Covector (Euclid P) n`, then `x ↦ J (ξ x)` is `ν`-integrable.
+Continuity of `J` at `0` gives `δ > 0` with `‖J w‖ < 1` whenever `‖w‖ < δ`; applied to
+`(δ / 2) • w`, homogeneity gives `‖J w‖ ≤ 2 / δ` on the closed unit ball.  Hence `J ∘ ξ` is
+a.e. strongly measurable and a.e. dominated by the constant `2 / δ`, which is `ν`-integrable as
+`ν` is finite. -/
+theorem Submission.rsd_mw_wlm_integrable_clm_comp : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (J : MultiVector P n →L[ℝ] Covector (Euclid P) n), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → (∀ᵐ x ∂ν, ‖ξ x‖ ≤ 1) → Integrable (fun x => J (ξ x)) ν := by
+  intro P n ν ξ J hν hξ hξ1
+  obtain ⟨δ, hδ, hJδ⟩ : ∃ δ > 0, ∀ w : MultiVector P n, ‖w‖ < δ → ‖J w‖ < 1 := by
+    have hJc : @Continuous (MultiVector P n) (Covector (Euclid P) n)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace J := J.continuous
+    obtain ⟨δ, hδ, h⟩ := Metric.continuous_iff.1 hJc 0 1 one_pos
+    refine ⟨δ, hδ, fun w hw => ?_⟩
+    have h' := h w (by convert hw using 1; exact dist_zero_right w)
+    convert h' using 1
+    rw [map_zero]
+    exact (dist_zero_right _).symm
+  have hbound : ∀ w : MultiVector P n, ‖w‖ ≤ 1 → ‖J w‖ ≤ 2 / δ := by
+    intro w hw
+    have h2 : ‖(δ / 2) • w‖ < δ := by
+      calc ‖(δ / 2) • w‖ ≤ ‖δ / 2‖ * ‖w‖ := ContinuousLinearMap.opNorm_smul_le _ _
+        _ ≤ δ / 2 * 1 := by
+          rw [Real.norm_of_nonneg (by positivity)]
+          exact mul_le_mul_of_nonneg_left hw (by positivity)
+        _ < δ := by linarith
+    have := hJδ _ h2
+    rw [map_smul, norm_smul, Real.norm_of_nonneg (by positivity)] at this
+    rw [le_div_iff₀ hδ]
+    nlinarith
+  refine Integrable.mono' (integrable_const (2 / δ)) (J.continuous.comp_aestronglyMeasurable hξ) ?_
+  filter_upwards [hξ1] with x hx using hbound _ hx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
