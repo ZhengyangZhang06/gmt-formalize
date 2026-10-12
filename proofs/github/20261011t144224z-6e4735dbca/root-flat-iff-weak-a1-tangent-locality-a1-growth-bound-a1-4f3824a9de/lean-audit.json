@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "35c4a96153e8dbf6cb48663fecbabb06298593bd8ae969d4724051abc0c41a56",
+  "git_delta": {
+    "base_commit": "9770cf2f6390fe180814e7f1b2fc7e6ecba6268c",
+    "candidate_commit": "2a9dc935192011b4c39a9b6b9d6cfcf7e4b52e78",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tl_growth_bound",
+    "diff_sha256": "87a7822cd96f9357b352fb667fcbe56dc66d193ed17ae7087ada15f1b36ab7bd",
+    "source_sha256": "3d0b52cb175d40ae4904f86173c612ddf02974699778dbf516f290a48cfd1b9a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tl_growth_bound",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (ρ : ℝ) (Q : Submodule ℝ (Eucl P)), 0 < ρ → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M, 0 ≤ θ y) → IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → HasWeightedApproximateTangentSpaceAt n M θ x Q → ∃ C : ℝ, ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal (C * s ^ n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
