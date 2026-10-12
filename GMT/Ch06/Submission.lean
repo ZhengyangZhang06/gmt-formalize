@@ -411,6 +411,48 @@ theorem Submission.rpn_pfd_wedge_cons_succAbove_sign :
     funext b
     simp [hk]
 
+/-- One term of the divergence identity of Simon Ch. 6, 2.35 (`dω = div a dx¹ ∧ ⋯ ∧ dxⁿ`),
+pulled back by a linear `L : ℝ^P → ℝ^{m+1}`: for `λᵢ = yⁱ ∘ L` and `ℓ ∈ (ℝ^{m+1})*`,
+`(ℓ ∘ L) ∧ λ₀ ∧ ⋯ ∧ λ̂ⱼ ∧ ⋯ ∧ λₘ = (-1)ʲ ℓ(eⱼ) λ₀ ∧ ⋯ ∧ λₘ`.  Expand `ℓ ∘ L = ∑ᵢ ℓ(eᵢ) λᵢ`; the
+wedge is linear in its first factor, and by the sign lemma only the term `i = j` survives. -/
+theorem Submission.rpn_pfd_wedge_cons_comp_succAbove :
+    ∀ (P m : ℕ) (L : Eucl P →L[ℝ] Eucl (m + 1)) (ℓ : Eucl (m + 1) →L[ℝ] ℝ) (j : Fin (m + 1)),
+      wedgeCovectors (m + 1) (Fin.cons (ℓ.comp L)
+          (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L) :
+          Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) =
+        ((-1 : ℝ) ^ (j : ℕ) * ℓ (EuclideanSpace.single j (1 : ℝ))) •
+          wedgeCovectors (m + 1)
+            (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L) := by
+  intro P m L ℓ j
+  -- `λᵢ = yⁱ ∘ L`; `Λ γ = γ ∧ λ_{j.succAbove 0} ∧ ⋯ ∧ λ_{j.succAbove (m - 1)}` is linear in `γ`.
+  let lam : Fin (m + 1) → (Eucl P →L[ℝ] ℝ) := fun i =>
+    (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L
+  let Λ := IsLinearMap.mk' _
+    (Submission.rpn_pfd_wedge_cons_isLinearMap P m fun k => lam (j.succAbove k))
+  have hΛ : ∀ γ, Λ γ = wedgeCovectors (m + 1)
+      (Fin.cons γ fun k => lam (j.succAbove k) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) :=
+    fun _ => rfl
+  -- `ℓ ∘ L = ∑ᵢ ℓ(eᵢ) λᵢ`: expand `L v` in the standard basis of `ℝ^{m+1}`.
+  have hexp : ℓ.comp L = ∑ i, ℓ (EuclideanSpace.single i (1 : ℝ)) • lam i := by
+    ext v
+    have hv := (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).sum_repr (L v)
+    simp only [EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply] at hv
+    conv_lhs => rw [ContinuousLinearMap.comp_apply, ← hv]
+    simp [lam, mul_comm]
+  -- Sign lemma for `l = λ`: the term `i = j` is `(-1)ʲ λ₀ ∧ ⋯ ∧ λₘ`, the others vanish.
+  obtain ⟨hj, hne⟩ := Submission.rpn_pfd_wedge_cons_succAbove_sign P m lam j
+  calc wedgeCovectors (m + 1)
+        (Fin.cons (ℓ.comp L) fun k => lam (j.succAbove k) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))
+      = Λ (∑ i, ℓ (EuclideanSpace.single i (1 : ℝ)) • lam i) := by rw [hΛ, hexp]
+    _ = ∑ i, ℓ (EuclideanSpace.single i (1 : ℝ)) • Λ (lam i) := by
+        simp only [map_sum, map_smul]
+    _ = ℓ (EuclideanSpace.single j (1 : ℝ)) • Λ (lam j) := by
+        refine Finset.sum_eq_single j (fun i _ hij => ?_) (fun h => absurd (Finset.mem_univ j) h)
+        rw [hΛ, hne i hij, smul_zero]
+    _ = ((-1 : ℝ) ^ (j : ℕ) * ℓ (EuclideanSpace.single j (1 : ℝ))) •
+          wedgeCovectors (m + 1) lam := by
+        rw [hΛ, hj, smul_smul, mul_comm]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
