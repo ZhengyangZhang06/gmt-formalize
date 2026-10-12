@@ -539,6 +539,81 @@ theorem aetp_blowUp_integral_tendsto_zero_of_density_zero : ∀ (n ℓ : ℕ) (x
       (𝓝[>] 0) (𝓝 0) := by
     simpa using ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hg).const_mul C
   exact squeeze_zero_norm' hbound hlim
+/-- **Simon Ch. 3, Remark 1.5(2) / proof of Theorem 1.6 "⇒" at a single point** (locality of the
+approximate tangent space): let `A, N ⊆ ℝ^{n+ℓ}` be Borel with `Hⁿ(A), Hⁿ(N) < ∞`, such that
+`A \ N` and `N \ A` both have `n`-density `0` at `x`.  If `Q` is the approximate tangent space of
+`N` at `x`, then it is also the approximate tangent space of `A` at `x`.
+
+Simon's proof, with `M ↦ A`, `N_j ↦ N`, `M_j ↦ A ∩ N`.  For `r > 0` the blow-up `η_{x,r}` is a
+homeomorphism with inverse `z ↦ x + r • z` that scales `Hⁿ` by `r⁻ⁿ`.  So every `f ∈ C_c` is
+integrable on the images of `A ∩ N`, `A \ N` and `N \ A`, and additivity gives
+`∫_{η_r(A)} f = ∫_{η_r(N)} f - ∫_{η_r(N \ A)} f + ∫_{η_r(A \ N)} f`.  As `r ↓ 0` the first term
+tends to `∫_Q f` by hypothesis, and the two error terms tend to `0` by
+`aetp_blowUp_integral_tendsto_zero_of_density_zero`. -/
+theorem aetp_approxTangent_of_density_zero_symmDiff : ∀ (n ℓ : ℕ) (A N : Set (Amb n ℓ)) (x : Amb n ℓ) (Q : Submodule ℝ (Amb n ℓ)), MeasurableSet A → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) A < ⊤ → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((A \ N) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((N \ A) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x Q → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n A x Q := by
+  intro n ℓ A N x Q hA hN hAμ hNμ hAN hNA hNQ
+  -- Step 1: `finrank Q = n` is part of the hypothesis on `N`; fix a test function `f`.
+  refine ⟨hNQ.1, fun f => ?_⟩
+  -- Step 2: `∫_{η_r(N)} f - ∫_{η_r(N \ A)} f + ∫_{η_r(A \ N)} f → ∫_Q f - 0 + 0`.
+  have hlim := ((hNQ.2 f).sub
+    (Submission.aetp_blowUp_integral_tendsto_zero_of_density_zero n ℓ x (N \ A) hNA f)).add
+    (Submission.aetp_blowUp_integral_tendsto_zero_of_density_zero n ℓ x (A \ N) hAN f)
+  rw [sub_zero, add_zero] at hlim
+  -- Step 3: it suffices to prove the decomposition identity `(∗)` for each fixed `r > 0`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- Step 4: `η_r` has the continuous inverse `g z = x + r • z`, so `η_r(S) = g⁻¹(S)`: images of
+  -- Borel sets are Borel, and unions and disjointness pass to images.
+  set g : Amb n ℓ → Amb n ℓ := fun z => x + r • z
+  have hg : Continuous g := continuous_const.add (continuous_const_smul r)
+  have himg : ∀ S : Set (Amb n ℓ), Poincare.SimonGMT.Chapter03.blowUpMap x r '' S = g ⁻¹' S := by
+    intro S
+    refine congrFun (image_eq_preimage_of_inverse (fun y => ?_) (fun z => ?_)) S
+    · simp [g, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr.ne']
+    · simp [g, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr.ne']
+  -- Step 5: `Hⁿ(η_r(T)) = r⁻ⁿ Hⁿ(T)` (an isometric translation followed by a homothety), so
+  -- `η_r` preserves finiteness of `Hⁿ`.
+  have hshift : Isometry fun y : Amb n ℓ => y - x := by
+    apply Isometry.of_dist_eq
+    intro y z
+    simp only [dist_eq_norm]
+    congr 1
+    abel
+  have hfin : ∀ T : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) T < ⊤ →
+      (μHE[n] : Measure (Amb n ℓ)) (g ⁻¹' T) < ⊤ := by
+    intro T hT
+    have himage : g ⁻¹' T =
+        AffineMap.homothety (0 : Amb n ℓ) r⁻¹ '' ((fun y : Amb n ℓ => y - x) '' T) := by
+      rw [← himg, ← image_comp]
+      congr 1
+      funext y
+      simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Amb n ℓ) (inv_ne_zero hr.ne'),
+      hshift.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul]
+    exact ENNReal.mul_lt_top ENNReal.coe_lt_top hT
+  -- Step 6: `f` is bounded, hence integrable on every set of finite measure.
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  have hint : ∀ T : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) T < ⊤ →
+      IntegrableOn f (g ⁻¹' T) (μHE[n] : Measure (Amb n ℓ)) := fun T hT =>
+    Measure.integrableOn_of_bounded (hfin T hT).ne f.continuous.aestronglyMeasurable
+      (ae_of_all _ hC)
+  have hANμ : (μHE[n] : Measure (Amb n ℓ)) (A ∩ N) < ⊤ :=
+    (measure_mono inter_subset_left).trans_lt hAμ
+  have hAdNμ : (μHE[n] : Measure (Amb n ℓ)) (A \ N) < ⊤ := (measure_mono sdiff_subset).trans_lt hAμ
+  have hNdAμ : (μHE[n] : Measure (Amb n ℓ)) (N \ A) < ⊤ := (measure_mono sdiff_subset).trans_lt hNμ
+  -- Step 7: additivity over `A = (A ∩ N) ∪ (A \ N)` and `N = (A ∩ N) ∪ (N \ A)`; eliminating
+  -- `∫_{η_r(A ∩ N)} f` gives `(∗)`.
+  have hAsplit : g ⁻¹' A = g ⁻¹' (A ∩ N) ∪ g ⁻¹' (A \ N) := by
+    rw [← preimage_union, inter_union_sdiff]
+  have hNsplit : g ⁻¹' N = g ⁻¹' (A ∩ N) ∪ g ⁻¹' (N \ A) := by
+    rw [← preimage_union, inter_comm A N, inter_union_sdiff]
+  simp only [himg]
+  rw [hAsplit, hNsplit,
+    setIntegral_union ((disjoint_sdiff_right.mono_left inter_subset_right).preimage g)
+      (hg.measurable (hA.diff hN)) (hint _ hANμ) (hint _ hAdNμ),
+    setIntegral_union ((disjoint_sdiff_right.mono_left inter_subset_left).preimage g)
+      (hg.measurable (hN.diff hA)) (hint _ hANμ) (hint _ hNdAμ)]
+  ring
 
 end Submission
 
