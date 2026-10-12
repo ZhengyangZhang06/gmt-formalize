@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "cmp snapshot mathlib/Mathlib/{MeasureTheory/Measure/Hausdorff.lean,Topology/MetricSpace/Thickening.lean,Topology/EMetricSpace/Diam.lean,Analysis/Normed/Module/Ball/Pointwise.lean,Analysis/SpecificLimits/Basic.lean,Order/Monotone/Basic.lean,Basic/ENNReal/Operations.lean} against .lake/packages/mathlib",
+        "rg -n 'theorem hausdorffMeasure_apply|theorem hausdorffMeasure_mono' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n 'exists_thickening_subset_open \\(|theorem ediam_thickening_le|theorem self_subset_thickening|theorem isOpen_thickening|theorem mem_thickening_iff ' mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "rg -n 'theorem ediam_smul₀' mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean; rg -n 'theorem isometry_mul_left' mathlib/Mathlib; rg -n 'theorem ediam_image' mathlib/Mathlib/Topology/MetricSpace/Isometry.lean",
+        "rg -n \"theorem exists_pos_sum_of_countable'|theorem tendsto_one_div_add_atTop_nhds_zero_nat\" mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean; rg -n 'theorem strictAnti_nat_of_succ_lt' mathlib/Mathlib/Order/Monotone/Basic.lean",
+        "rg -n 'protected theorem mul_lt_mul_right' mathlib/Mathlib/Basic/ENNReal/Operations.lean; rg -n 'theorem div_le_of_le_mul ' mathlib/Mathlib/Basic/ENNReal/Inv.lean; rg -n 'protected theorem tsum_add|protected theorem tsum_le_tsum|protected theorem tsum_mul_left' mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "rg -n 'adr_exists_strictAnti_radii|adr_null_open_cover|adr_eventually_subset_small_cover|adr_rescaled_content_lower_bound' project mathlib -g '*.lean' (no match)",
+        "rg -n 'HausdorffOpenCovers|exists_isOpen_superset_ediam_rpow_lt' project -g '*.lean' (no match); rg -n '^import' project/GMT/Ch07/Contract.lean",
+        "grep -rn 'exists_isOpen_superset_ediam_rpow_lt|simon_theorem_3_26_ii_of_totallyBounded' lake-packages-25730c7c/simongmt/Poincare; #check Poincare.SimonGMT.Chapter01.exists_isOpen_superset_ediam_rpow_lt after import GMT.Ch07.Submission (Unknown identifier)",
+        "sed -n 58,112p book/chapter-A.txt (Simon, proof of A.4 implication (1))",
+        "python3 scan of dag.json lean_name values (111 nodes); git grep over all 98 refs for the four proposed names (no match)",
+        "python3 verifier/lean_contract.py validate_lean_statement on the four child types",
+        "lake env lean /tmp/tkm-decomp/Check.lean (verbatim parent type proved from sorry-stubs of the four children and of the sibling adr_content_density)",
+        "lake env lean /tmp/tkm-decomp/Child1.lean, Child2.lean, Child3.lean, Child4.lean (full child proofs, #print axioms)",
+        "lake env lean /tmp/tkm-decomp/All.lean (real child proofs + comparator-style wrappers + parent assembly, #print axioms)",
+        "lake env lean /tmp/tkm-decomp/Inst.lean (set_option pp.explicit true: instances of smul, norm, ball, μH[ℓ], ENNReal rpow)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-content-density-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Monotone/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/tkm-decomp/Check.lean",
+        "/tmp/tkm-decomp/Child1.lean",
+        "/tmp/tkm-decomp/Child2.lean",
+        "/tmp/tkm-decomp/Child3.lean",
+        "/tmp/tkm-decomp/Child4.lean",
+        "/tmp/tkm-decomp/All.lean",
+        "/tmp/tkm-decomp/Inst.lean"
+      ],
+      "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to .lake/packages/mathlib.\n\nMathlib supplies everything the four children need:\n- Hausdorff.lean:546 hausdorffMeasure_apply (cover formula for μH);\n- Thickening.lean:74 isOpen_thickening, :143 mem_thickening_iff, :309 self_subset_thickening, :354 ediam_thickening_le, :439 IsCompact.exists_thickening_subset_open;\n- Ball/Pointwise.lean:41 ediam_smul₀, plus isometry_add_left (to_additive of IsometricSMul.lean:83 isometry_mul_left) with Isometry.lean:162 Isometry.ediam_image;\n- SpecificLimits/Basic.lean:649 ENNReal.exists_pos_sum_of_countable' and :70 tendsto_one_div_add_atTop_nhds_zero_nat;\n- Order/Monotone/Basic.lean:572 strictAnti_nat_of_succ_lt;\n- ENNReal Operations.lean:58 mul_lt_mul_right, Inv.lean:392 div_le_of_le_mul, and InfiniteSum/ENNReal.lean:108/116/180 tsum_add, tsum_le_tsum, tsum_mul_left.\n\nThe simongmt open-enlargement lemma Poincare.SimonGMT.Chapter01.exists_isOpen_superset_ediam_rpow_lt (HausdorffOpenCovers.lean:29), cited in the supplied step 5, is NOT in the import closure of GMT.Ch07.Submission: #check reports Unknown identifier. So null_open_cover reproves it inline from Mathlib's thickening lemmas. No snapshot file defines any of the four proposed names; rg finds no match.\n\nCompiled in the verifier's exact child scope (import GMT.Ch07.Submission, then the replayed opens and namespace at GMT.Ch07.main_theorem):\n- the verbatim parent type compiles from stubs of the four children and of the sibling adr_content_density, whose stub uses the verbatim DAG type;\n- all four children are fully proved using only propext, Classical.choice and Quot.sound;\n- the comparator-style wrappers `exact Submission.X` elaborate;\n- the parent's only sorryAx comes from the adr_content_density stub, which belongs to another branch;\n- pp.explicit shows the same instances as the parent type: PiLp.instNorm, WithLp.instSMul, PiLp.instDist and PiLp.instEMetricSpace, WithLp.measurableSpace, and ENNReal.instPowReal.\n\nlean_contract.validate_lean_statement accepts all four types. The four names are absent from dag.json (111 nodes) and from all 98 git refs. The nearest existing node, regcomp_null_compact_ball_cover, has a different type (compact Z, integer dimension, finite ball covers), so nothing can be reused."
+    }
+  ],
+  "parent_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+  "child_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.rescaled_bound-a1",
+  "subproblem": {
+    "key": "rescaled_bound",
+    "title": "Steps 7–8: the density lower bound at radius ρ bounds the cost of covers of the blow-up at scale 2ρ",
+    "statement": "Let P ∈ ℕ, ℓ > 0, A ⊆ ℝ^P, x ∈ ℝ^P and ρ > 0, and let U_j ⊆ ℝ^P (j ∈ ℕ) be arbitrary sets. Assume (i) every countable cover {C_j}_{j∈ℕ} of A ∩ B_ρ(x) satisfies ρ^ℓ ≤ 2Σ_j (diam C_j)^ℓ; and (ii) every z ∈ ℝ^P with x + 2ρ·z ∈ A and |z| < 1/2 lies in ∪_j U_j. Then Σ_j (diam U_j)^ℓ ≥ 2^{−ℓ}/8. Here |·| is the Euclidean norm, B_ρ(x) = {w ∈ ℝ^P : |w − x| < ρ} is the open ball, diam is the Euclidean diameter with values in [0, ∞] and diam ∅ = 0, sums are in [0, ∞], and 0^ℓ = 0.",
+    "lean_statement": "∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)) (x : Euclid P) (ρ : ℝ) (U : ℕ → Set (Euclid P)), 0 < ℓ → 0 < ρ → (∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ) → (∀ z : Euclid P, x + (2 * ρ) • z ∈ A → ‖z‖ < 1 / 2 → z ∈ ⋃ j, U j) → (2 : ℝ≥0∞) ^ (-ℓ) / 8 ≤ ∑' j, Metric.ediam (U j) ^ ℓ",
+    "lean_name": "adr_rescaled_content_lower_bound",
+    "depends_on": [],
+    "natural_proof": "Source: steps 7–8 of the parent-supplied proof. This is Simon's \"Thus since λ_k^{−1}(sing φ − x) = sing φ_{x,λ_k} (by A.3(2)) we have λ_{k'}^{−ℓ} H^ℓ_∞(sing φ ∩ B_{λ_{k'}}(x)) < ε … thus a contradiction\" (chapter-A.txt lines 106–112). As in the parent's remark, the density radius is ρ and the blow-up scale is λ = 2ρ.\nThe parent applies the statement with A = sing φ ∩ B_1(0), ρ = ρ_{sub(k₀)}, so that λ_{k₀} = 2ρ, and with the U_j of step 5. Hypothesis (i) is then property (D) at radius ρ. Hypothesis (ii) follows from A.3(2) and step 6. All quantities are in [0, ∞].\n1. Notation. Let λ := 2ρ > 0 and g(z) := x + λz. Let C_j := g(U_j) = {x + λu : u ∈ U_j}.\n2. The C_j cover A ∩ B_ρ(x). Let w ∈ A ∩ B_ρ(x) and put z := λ^{−1}(w − x).\n(a) g(z) = x + (w − x) = w ∈ A.\n(b) Since B_ρ(x) is the open ball, |w − x| < ρ, so |z| = |w − x|/λ < ρ/(2ρ) = 1/2.\n(c) By (ii), z ∈ U_j for some j, so w = g(z) ∈ C_j.\n3. Diameters scale. For z, z' ∈ ℝ^P, |g(z) − g(z')| = |λ(z − z')| = λ|z − z'|. Taking suprema over z, z' ∈ U_j gives diam C_j = λ·diam U_j. This also holds when U_j = ∅ (both sides are 0) and when diam U_j = ∞. In Mathlib, g(U_j) is the translate by x of λ·U_j; use ediam_smul₀ and the fact that translation is an isometry (isometry_add_left with Isometry.ediam_image). Since ℓ ≥ 0, it follows that (diam C_j)^ℓ = λ^ℓ (diam U_j)^ℓ and Σ_j (diam C_j)^ℓ = λ^ℓ Σ_j (diam U_j)^ℓ. Moreover λ^ℓ = 2^ℓ ρ^ℓ.\n4. Contradiction. Write σ := Σ_j (diam U_j)^ℓ and r := ρ^ℓ. Since 0 < ρ < ∞, 0 < r < ∞. Likewise 0 < 2^ℓ < ∞ and 2^ℓ·2^{−ℓ} = 1. Suppose σ < 2^{−ℓ}/8. Apply (i) to the cover of step 2 and use step 3:\nr ≤ 2Σ_j (diam C_j)^ℓ = 2·2^ℓ r·σ < 2·2^ℓ r·2^{−ℓ}/8 = r/4.\nThe strict inequality holds because the factor 2·2^ℓ r lies in (0, ∞). But r/4 ≤ r, so r < r, which is impossible.\n5. Hence σ = Σ_j (diam U_j)^ℓ ≥ 2^{−ℓ}/8. ∎",
+    "proof_key_steps": [
+      "the sets C_j := x + 2ρ·U_j cover A ∩ B_ρ(x): for w there, z = (w − x)/(2ρ) has |z| < 1/2 and x + 2ρz = w ∈ A, so z ∈ ∪_j U_j by (ii)",
+      "diam C_j = 2ρ·diam U_j, so Σ_j (diam C_j)^ℓ = 2^ℓ ρ^ℓ Σ_j (diam U_j)^ℓ",
+      "if Σ_j (diam U_j)^ℓ < 2^{−ℓ}/8, then (i) gives ρ^ℓ ≤ 2·2^ℓ ρ^ℓ Σ_j (diam U_j)^ℓ < ρ^ℓ/4 with 0 < ρ^ℓ < ∞, a contradiction"
+    ]
+  },
+  "audit": {
+    "key": "rescaled_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The inverse affine map proves the required covering, and extended diameters scale correctly even for empty or unbounded cover members. Positivity and finiteness of ρ^ℓ and 2^ℓ justify the strict multiplication step. Assuming cost below 2^(−ℓ)/8 yields ρ^ℓ < ρ^ℓ/4 ≤ ρ^ℓ. The exact threshold and hypotheses match both the prose and the parent's final contradiction."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-rescaled-bound-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-rescaled-bound-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-rescaled-bound-a1/parent-supplied-natural-proof.json"
+}

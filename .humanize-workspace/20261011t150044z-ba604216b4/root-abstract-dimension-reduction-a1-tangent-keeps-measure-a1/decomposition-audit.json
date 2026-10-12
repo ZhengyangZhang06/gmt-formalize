@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hausdorffMeasure_apply|hausdorffMeasure_mono",
+        "exists_thickening_subset_open|ediam_thickening_le|self_subset_thickening|isOpen_thickening|mem_thickening_iff",
+        "abbrev EuclideanSpace|def EuclideanSpace|norm_eq|instNorm",
+        "adr_exists_strictAnti_radii|adr_null_open_cover|adr_eventually_subset_small_cover|adr_rescaled_content_lower_bound",
+        "sed -n '1,230p' /tmp/tkm-decomp/All.lean",
+        "sed -n '230,370p' /tmp/tkm-decomp/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tkm-decomp/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tkm-independent-audit/StandaloneTypes.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/decomposition-v1.json",
+        "GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        "/tmp/tkm-decomp/All.lean",
+        "/tmp/tkm-independent-audit/StandaloneTypes.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected tangent-measure theorem. The snapshot supplies the Hausdorff cover formula, open-thickening bounds, compact separation, and diameter scaling used in the proofs. The frozen Contract and checked Mathlib sources match the build sources. No proposed name occurs in the searched snapshot, another DAG branch, or the 110 inspected Git refs; all four names are bare identifiers. The dependency closure is acyclic: small_cover requires null_open_cover, and the parent retains its existing content_density dependency. Independently generated checks elaborate every frozen child type as Prop without any child implementation. Explicit instance output confirms the Euclidean PiLp 2 metric and norm, real scalar multiplication, Hausdorff measure, and ENNReal real powers. Recompiling All.lean succeeds, including exact-type wrappers; every child uses only propext, Classical.choice, and Quot.sound. The assembly has the exact selected parent type and its sole sorry is the existing adr_content_density dependency stub, whose type matches the DAG verbatim."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radii",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition match exactly. Choice on positive radii makes the recursion well-defined; successive strict inequalities establish StrictAnti and the uniform upper bound. The reciprocal squeeze and index shift prove convergence to zero. Every chosen radius satisfies Q. No circular reliance or missing obligation."
+    },
+    {
+      "key": "null_open_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact contract for arbitrary E and positive ENNReal ε, including ε = ∞. The scale-1 Hausdorff formula supplies a cheap bounded-diameter cover; summable slack and continuity permit open thickenings. Empty sets and zero diameters are handled using ℓ > 0. Summing the two finite strict bounds gives the required strict cost inequality without an additional lemma obligation."
+    },
+    {
+      "key": "small_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and ball radii match the Lean type. The declared null_open_cover dependency covers the null closed-half-ball piece. Its compact remainder is uniformly separated from closed S, with empty cases explicitly handled. Applying the proximity hypothesis at that separation forces eventual inclusion in the cover. The dependency is correctly directed and non-circular."
+    },
+    {
+      "key": "rescaled_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse affine map proves the required covering, and extended diameters scale correctly even for empty or unbounded cover members. Positivity and finiteness of ρ^ℓ and 2^ℓ justify the strict multiplication step. Assuming cost below 2^(−ℓ)/8 yields ρ^ℓ < ρ^ℓ/4 ≤ ρ^ℓ. The exact threshold and hypotheses match both the prose and the parent's final contradiction."
+    }
+  ],
+  "required_changes": []
+}

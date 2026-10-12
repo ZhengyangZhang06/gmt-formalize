@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.rescaled_bound-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+  "depth": 3,
+  "title": "Steps 7–8: the density lower bound at radius ρ bounds the cost of covers of the blow-up at scale 2ρ",
+  "statement": "Let P ∈ ℕ, ℓ > 0, A ⊆ ℝ^P, x ∈ ℝ^P and ρ > 0, and let U_j ⊆ ℝ^P (j ∈ ℕ) be arbitrary sets. Assume (i) every countable cover {C_j}_{j∈ℕ} of A ∩ B_ρ(x) satisfies ρ^ℓ ≤ 2Σ_j (diam C_j)^ℓ; and (ii) every z ∈ ℝ^P with x + 2ρ·z ∈ A and |z| < 1/2 lies in ∪_j U_j. Then Σ_j (diam U_j)^ℓ ≥ 2^{−ℓ}/8. Here |·| is the Euclidean norm, B_ρ(x) = {w ∈ ℝ^P : |w − x| < ρ} is the open ball, diam is the Euclidean diameter with values in [0, ∞] and diam ∅ = 0, sums are in [0, ∞], and 0^ℓ = 0.",
+  "lean_statement": "∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)) (x : Euclid P) (ρ : ℝ) (U : ℕ → Set (Euclid P)), 0 < ℓ → 0 < ρ → (∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ) → (∀ z : Euclid P, x + (2 * ρ) • z ∈ A → ‖z‖ < 1 / 2 → z ∈ ⋃ j, U j) → (2 : ℝ≥0∞) ^ (-ℓ) / 8 ≤ ∑' j, Metric.ediam (U j) ^ ℓ",
+  "lean_name": "adr_rescaled_content_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-rescaled-bound-a1-a1"
+}
