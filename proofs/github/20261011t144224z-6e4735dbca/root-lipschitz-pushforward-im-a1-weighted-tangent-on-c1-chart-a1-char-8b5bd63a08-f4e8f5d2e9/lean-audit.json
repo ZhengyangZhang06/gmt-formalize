@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4493f1d4e639a14b97b92e050d0bd0cce95ae250cc41ba8fdf0974e763d6d014",
+  "git_delta": {
+    "base_commit": "1b2e8c530e5f6dd89d9f412a7fac8199171f4e2d",
+    "candidate_commit": "f2f1db7607fa3d57bf5216c879f13781489cdeb3",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_cat_rescaled_integral_tendsto",
+    "diff_sha256": "58eef8d2ef868a79f47de24d04128d015ccdc454107499d1f5860fdd4c595353",
+    "source_sha256": "16e198ce120499fe9f79eb838739105368b752cbaa07f3b86dd27d845838dcfd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_cat_rescaled_integral_tendsto",
+      "statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (J : Eucl n → ℝ) (φ : Eucl Q → ℝ) (w : Eucl n), IsOpen Ω → w ∈ Ω → Continuous Φ → DifferentiableAt ℝ Φ w → (∃ c : ℝ, 0 < c ∧ ∀ v ∈ Ω, ∀ v' ∈ Ω, c * ‖v - v'‖ ≤ ‖Φ v - Φ v'‖) → Continuous J → Continuous φ → HasCompactSupport φ → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ v in Ω, J v * φ (r⁻¹ • (Φ v - Φ w))) (𝓝[>] 0) (𝓝 (∫ s, J w * φ (fderiv ℝ Φ w s)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
