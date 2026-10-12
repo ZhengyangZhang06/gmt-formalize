@@ -1807,6 +1807,53 @@ theorem Submission.gaussGreenRep_normal_ae_eq_of_pairing : ∀ (N : ℕ) (U : Se
   filter_upwards [h0, mem_ae_iff.2 hUc] with x hx hxU
   exact sub_eq_zero.1 (hx hxU)
 
+/-- **Simon Ch. 3, (4.1) (p. 80)** (`chapter-03.txt` lines 555–573, with Ch. 2 (2.1)–(2.4),
+`chapter-02.txt` lines 477–530): `E` has locally finite perimeter in `U` iff it has a Gauss–Green
+pair `(μ, ν)`, and the pair is unique. "⇐" is `gaussGreenRep_isLocallyBV_of_pair`. "⇒": the BV
+bound extends `g ↦ ∫_{E ∩ U} div g` to a locally bounded linear functional `Λ` on continuous fields
+compactly supported in `U` (`gaussGreenRep_bv_functional_extension`), and the Riesz representation
+theorem on `U` (`gaussGreenRep_riesz_on_open`) gives `Λ g = ∫ g · ν₀ dμ`; because of the minus sign
+in (4.1) the pair is `(μ, -ν₀)`. Uniqueness: two pairs have the same pairings `∫ g · ν dμ` for all
+continuous `g` compactly supported in `U` (`gaussGreenRep_pairing_eq_continuous`), so by the
+variation formula (2.4) (`gaussGreenRep_measure_eq_iSup_pairing`) the measures agree on open
+subsets of `U`, hence everywhere (`gaussGreenRep_measure_eq_of_open_eq`), and then the normals
+agree `μ`-a.e. (`gaussGreenRep_normal_ae_eq_of_pairing`). -/
+theorem Submission.gaussGreenRepresentation_holds : GaussGreenRepresentation := by
+  intro n U E hU hE
+  refine ⟨⟨fun hBV ↦ ?_, fun ⟨μ, ν, h⟩ ↦
+    Submission.gaussGreenRep_isLocallyBV_of_pair (n + 1) U E μ ν hU hE h⟩, ?_⟩
+  · -- "⇒": represent the extension of `g ↦ ∫_{E ∩ U} div g` to continuous fields; by the
+    -- minus sign in (4.1) the normal of the pair is `-ν`.
+    obtain ⟨Λ, hadd, hsmul, hbdd, hΛ⟩ :=
+      Submission.gaussGreenRep_bv_functional_extension (n + 1) U E hU hE hBV
+    obtain ⟨μ, ν, hμU, hμK, hν, hν1, hrep⟩ :=
+      Submission.gaussGreenRep_riesz_on_open (n + 1) U Λ hU hadd hsmul hbdd
+    refine ⟨μ, -ν, hμU, hμK, hν.neg, ?_, fun g hg hgc hgU ↦ ?_⟩
+    · filter_upwards [hν1] with x hx
+      rwa [Pi.neg_apply, norm_neg]
+    · rw [← hΛ g hg hgc hgU, hrep g hg.continuous hgc hgU]
+      simp only [Pi.neg_apply, inner_neg_right, integral_neg, neg_neg]
+  · -- Uniqueness: both pairs have the same pairings with continuous fields.
+    intro μ μ' ν ν' h h'
+    have hpair := Submission.gaussGreenRep_pairing_eq_continuous (n + 1) U E μ μ' ν ν' hU h h'
+    obtain ⟨hμU, hμK, hν, hν1, -⟩ := h
+    obtain ⟨hμU', hμK', hν', hν1', -⟩ := h'
+    -- By the variation formula both measures are the supremum of the same pairings on open
+    -- subsets of `U`.
+    have hopen : ∀ O : Set (Rn (n + 1)), IsOpen O → O ⊆ U → μ O = μ' O := by
+      intro O hO hOU
+      rw [Submission.gaussGreenRep_measure_eq_iSup_pairing (n + 1) O μ ν hO
+          (fun K hK hKO ↦ hμK K hK (hKO.trans hOU)) hν hν1,
+        Submission.gaussGreenRep_measure_eq_iSup_pairing (n + 1) O μ' ν' hO
+          (fun K hK hKO ↦ hμK' K hK (hKO.trans hOU)) hν' hν1']
+      refine iSup_congr fun g ↦ iSup_congr fun hg ↦ iSup_congr fun hgc ↦ iSup_congr fun hgO ↦ ?_
+      rw [hpair g hg hgc (hgO.trans hOU)]
+    have hμμ' : μ = μ' :=
+      Submission.gaussGreenRep_measure_eq_of_open_eq (n + 1) U μ μ' hU hμU hμU' hμK hopen
+    subst hμμ'
+    exact ⟨rfl, Submission.gaussGreenRep_normal_ae_eq_of_pairing (n + 1) U _ ν ν' hU hμU hμK hν
+      hν' (hν1.mono fun _ hx ↦ hx.le) (hν1'.mono fun _ hx ↦ hx.le) hpair⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
