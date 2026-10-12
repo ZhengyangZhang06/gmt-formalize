@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e781d78eca7263293941182b80d77489d977798f40750446b580ffa381bf04bb",
+  "git_delta": {
+    "base_commit": "3ead40d6dbe8307bbaa9668fe07c5ee021fa686d",
+    "candidate_commit": "e2915745b92c2117161b0d9eaeb226a1f6c30d1b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_graph_coordinates",
+    "diff_sha256": "5c07a51411661fdec2a3b55d27a91855a404386944fdd7b0a80d9af5a59991d2",
+    "source_sha256": "906532ea1e9bf2fe2e52d4699c0a6c274834b215596ccd048c3954668c890a63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_graph_coordinates",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
