@@ -359,6 +359,38 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Fundamental lemma of the calculus of variations with a positive weight** (a step of the
+proof that a rectifiable representation `T = τ(M, θ, ξ)` has `Hⁿ(M ∖ spt T) = 0`, used for the
+smooth push-forward in Simon Ch. 6, 8.2).  If `θ > 0` on `M`, `θ` is `μ`-integrable on `M ∩ W`
+with `W` open, `g` is a.e.-strongly measurable and a.e. bounded for `μ ⌞ M`, and
+`∫_M θ φ g dμ = 0` for every smooth compactly supported `φ` with `tsupport φ ⊆ W`, then `g = 0`
+`μ ⌞ M`-a.e. on `W`.  Mathlib's fundamental lemma applied to `θ g`, which is integrable on `W`
+for `μ ⌞ M`, gives `θ g = 0` there; divide by `θ`. -/
+theorem Submission.iwl_sp_sn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0 := by
+  intro P μ M W θ g C hW hM hpos hθ hg hgC hint
+  -- Step 1: `θ g` is integrable on `W` for `μ ⌞ M`, as `(μ ⌞ M) ⌞ W = μ ⌞ (M ∩ W)`.
+  have hfint : IntegrableOn (fun x => θ x * g x) W (μ.restrict M) := by
+    rw [IntegrableOn, Measure.restrict_restrict hW.measurableSet, Set.inter_comm]
+    have hθ' : Integrable θ (μ.restrict (M ∩ W)) := hθ
+    have hg' : AEStronglyMeasurable g (μ.restrict (M ∩ W)) :=
+      hg.mono_measure (Measure.restrict_mono Set.inter_subset_left le_rfl)
+    have hgC' : ∀ᵐ x ∂(μ.restrict (M ∩ W)), ‖g x‖ ≤ C := by
+      filter_upwards [ae_restrict_of_ae_restrict_of_subset Set.inter_subset_left hgC] with x hx
+      simpa [Real.norm_eq_abs] using hx
+    exact hθ'.mul_bdd hg' hgC'
+  -- Steps 2–3: the tests `∫ φ • (θ g) d(μ ⌞ M)` vanish, so `θ g = 0` `μ ⌞ M`-a.e. on `W`.
+  have hzero := hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hfint.locallyIntegrableOn
+    (fun φ hφ hφc hφW => by
+      rw [← hint φ hφ hφc hφW]
+      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      simp only [smul_eq_mul]
+      ring)
+  -- Step 4: `μ ⌞ M`-a.e. point lies in `M`, where `θ > 0`; divide by `θ`.
+  filter_upwards [hzero, ae_restrict_mem₀ hM] with x hx hxM hxW
+  rcases mul_eq_zero.mp (hx hxW) with h | h
+  · exact absurd h (hpos x hxM).ne'
+  · exact h
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
