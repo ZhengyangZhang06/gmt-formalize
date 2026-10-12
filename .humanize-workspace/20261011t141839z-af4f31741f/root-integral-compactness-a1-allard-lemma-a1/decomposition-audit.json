@@ -1,0 +1,102 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "MonotonicityFormula|def variationMeasure|def densityRatio|def HasDensity|def unitBallVolume|import |namespace|^open ",
+        "exist_disjoint_covering_families|no_satelliteConfig|class HasBesicovitchCovering",
+        "smoothTransition|deriv_nonpos|hasDerivAt_integral_of_dominated_loc_of_deriv_le|countable_of_nonempty_interior",
+        "isFirstVariationPolarRepresentation_riesz|def IsFirstVariationPolarRepresentation",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "rg -l --hidden --no-ignore -F -f /tmp/allard-independent-audit-thawm6b4/names.txt .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/allard-independent-audit-thawm6b4/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/allard-independent-audit-thawm6b4/References.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/allard-decomp-v1/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/allard-decomp-v1/C1proof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/allard-decomp-v1/C3aproof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/allard-decomp-v1/DivProof.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1/decomposition-v1.json",
+        "/tmp/allard-independent-audit-thawm6b4/Contracts.lean",
+        "/tmp/allard-independent-audit-thawm6b4/References.lean",
+        "/tmp/allard-decomp-v1/Assembly.lean",
+        "/tmp/allard-decomp-v1/C1proof.lean",
+        "/tmp/allard-decomp-v1/C3aproof.lean",
+        "/tmp/allard-decomp-v1/DivProof.lean"
+      ],
+      "conclusion": "Confirmed the pinned project/mathlib revisions and compatible SimonGMT revision. The snapshot Contract and workspace Contract/Submission are byte-identical. All nine statements pass lexical validation and independently elaborate as propositions without child implementations. Their names are bare, distinct and unreserved by other DAG branches; dependencies are correctly directed and acyclic. The continuous-linear-map norms select operator norms, and no inline matrix-unit construction occurs. Eighteen checked reference declarations and the three complete child proofs use only propext, Classical.choice and Quot.sound. WeightedRadialIdentity and SimpleGraph connectivity are absent from the actual import closure; the supplied direct derivation and greedy construction avoid those dependencies. The exact frozen parent assembly compiles using child stubs, confirming sufficiency rather than proving the stubbed obligations. Independent review of every supplied natural proof supports acceptance. The split appropriately separates this selected Allard lemma's analytic and clustering obligations, leaving the finite-cardinality argument to the parent, consistent with [Simon, Chapter 8, Lemma 5.10 and Remark 5.11](https://web.stanford.edu/class/math285/ts-gmt#page=114)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "good_point_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type match. Specializing MonotonicityFormula supplies monotonicity and finite density; the limit as ρ approaches 1 proves the mass bound, including the permitted negative-Λ case. The exact supplied Lean proof also compiles with permitted axioms."
+    },
+    {
+      "key": "bad_set_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both failure cases yield the stated ball estimate. Besicovitch supplies finitely many disjoint, countable families, and outer-measure subadditivity handles potentially nonmeasurable E. The constant is uniform, all hypotheses match, and the only child dependency is used correctly."
+    },
+    {
+      "key": "first_variation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support inside U makes X an admissible test field. The Riesz polar representation and indicator bound prove the exact ENNReal inequality. No additional sign assumption on B is needed. The supplied Lean proof compiles with permitted axioms."
+    },
+    {
+      "key": "radial_field_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The product derivative, projection composition and rank-one trace computation give precisely the frozen equality under differentiability at z. Matrix multiplication and the real coercion of n are correct. The supplied Lean proof compiles with permitted axioms."
+    },
+    {
+      "key": "weighted_radial_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact domination justifies the integrals and differentiation. The identity tĨ′−nĨ = G−δW(X_t)+Q has Q ≥ 0, and the two declared dependencies give the required divergence and variation estimates. The error constant and interval argument prove the exact statement without assuming the parent or an unavailable weighted-radial theorem."
+    },
+    {
+      "key": "cylinder_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit smooth cutoffs satisfy the support, range and derivative requirements. The gradient estimate, fixed-cutoff inequality and dominated convergence include closed-ball boundary points correctly. The cylinder comparisons and finite-measure ENNReal conversion establish the uniform stated constant."
+    },
+    {
+      "key": "cluster_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The initial admissible pair exists, and deleting a close centre preserves covering with S′ = 2d + 5S and the stated exponential bound. Minimal cardinality therefore forces the required separation. This is a complete finite construction with no circular dependence."
+    },
+    {
+      "key": "cylinder_cluster_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The recursive constants control both coefficients. Disjointness, representative grouping and cluster_selection reduce cardinality, while the enlarged radius remains below δ², so the induction hypothesis applies exactly. The argument handles empty and singleton sets and does not require finite μ(B_1(x))."
+    },
+    {
+      "key": "fibre_density_sum_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three dependencies supply the precise per-point assumptions. Density uniqueness, the two cylinder cases, the chosen separation scales and absorption by Aδ ≤ 1 prove the bound uniformly for card(s) ≤ M. With M = m0, the parent's cardinality argument establishes its unrestricted finite-fibre conclusion; bad_set_bound supplies its other conjunct."
+    }
+  ],
+  "required_changes": []
+}
