@@ -853,6 +853,68 @@ theorem Submission.dsmc_em_cutoff_first_variation_le : ∀ (P n : ℕ) (U : Set 
     _ ≤ _ := e3
     _ = _ := e4
     _ ≤ _ := e5
+/-- **Radial cutoffs for the monotonicity formula** (Simon Ch. 4, 3.1–3.4).  With
+`g = Real.smoothTransition` and `ηⱼ(u) = g((j + 2)(1 − u))`, every `ηⱼ` is `C¹`, nonnegative and
+nonincreasing, vanishes for `u ≥ 1`, and `ηⱼ(|x − z|²/s²)` increases to the indicator of the
+open ball `B_s(z)`; by dominated convergence `∫ ηⱼ(|x − z|²/s²) dμ → μ(B_s(z))` whenever
+`μ(B_s(z)) < ∞`. -/
+theorem Submission.dsmc_em_cutoff_tendsto_ball : ∃ η : ℕ → ℝ → ℝ, (∀ j, ContDiff ℝ 1 (η j)) ∧ (∀ j u, 0 ≤ η j u) ∧ (∀ j u, deriv (η j) u ≤ 0) ∧ (∀ j u, 1 ≤ u → η j u = 0) ∧ ∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (s : ℝ), 0 < s → μ (ball z s) < ∞ → Tendsto (fun j => ∫ x, η j (‖x - z‖ ^ 2 / s ^ 2) ∂μ) atTop (𝓝 (μ.real (ball z s))) := by
+  -- Steps 1–5: `ηⱼ(u) = g((j + 2)(1 − u))` is `C¹`, `≥ 0`, antitone, and `0` for `u ≥ 1`.
+  have hanti : ∀ j : ℕ, Antitone fun u : ℝ => Real.smoothTransition (((j : ℝ) + 2) * (1 - u)) := by
+    intro j a b hab
+    apply Real.smoothTransition.monotone
+    have hj : (0 : ℝ) ≤ (j : ℝ) + 2 := by positivity
+    nlinarith
+  have hzero : ∀ (j : ℕ) (u : ℝ), 1 ≤ u →
+      Real.smoothTransition (((j : ℝ) + 2) * (1 - u)) = 0 := by
+    intro j u hu
+    apply Real.smoothTransition.zero_of_nonpos
+    have hj : (0 : ℝ) ≤ (j : ℝ) + 2 := by positivity
+    nlinarith
+  refine ⟨fun j u => Real.smoothTransition (((j : ℝ) + 2) * (1 - u)), fun j => ?_,
+    fun j u => Real.smoothTransition.nonneg _, fun j u => (hanti j).deriv_nonpos, hzero, ?_⟩
+  · exact Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_const.sub contDiff_id))
+  -- Step 6: dominated convergence with the bound `1_{B_s(z)}`.
+  intro P μ z s hs hμ
+  have hs2 : 0 < s ^ 2 := by positivity
+  -- `|x − z|²/s² < 1` exactly on the open ball
+  have hlt : ∀ x : Euclid P, x ∈ ball z s → ‖x - z‖ ^ 2 / s ^ 2 < 1 := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [div_lt_one hs2]
+    exact pow_lt_pow_left₀ hx (norm_nonneg _) two_ne_zero
+  have hge : ∀ x : Euclid P, x ∉ ball z s → 1 ≤ ‖x - z‖ ^ 2 / s ^ 2 := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm, not_lt] at hx
+    rw [one_le_div hs2]
+    exact pow_le_pow_left₀ hs.le hx 2
+  have hint : Integrable ((ball z s).indicator (1 : Euclid P → ℝ)) μ :=
+    (integrable_indicator_iff measurableSet_ball).2 (integrableOn_const hμ.ne)
+  rw [← integral_indicator_one measurableSet_ball]
+  refine tendsto_integral_of_dominated_convergence ((ball z s).indicator 1)
+    (F := fun (j : ℕ) (x : Euclid P) =>
+      Real.smoothTransition (((j : ℝ) + 2) * (1 - ‖x - z‖ ^ 2 / s ^ 2)))
+    (fun j => ?_) hint (fun j => ae_of_all _ fun x => ?_) (ae_of_all _ fun x => ?_)
+  · -- (a) each integrand is continuous
+    exact (Real.smoothTransition.continuous.comp (by fun_prop)).aestronglyMeasurable
+  · -- (a) `|ηⱼ(u(x))| ≤ 1_{B_s(z)}(x)`
+    by_cases hx : x ∈ ball z s
+    · rw [indicator_of_mem hx, Pi.one_apply, Real.norm_eq_abs,
+        abs_of_nonneg (Real.smoothTransition.nonneg _)]
+      exact Real.smoothTransition.le_one _
+    · rw [indicator_of_notMem hx, hzero j _ (hge x hx), norm_zero]
+  · -- (b) pointwise convergence to `1_{B_s(z)}(x)`
+    by_cases hx : x ∈ ball z s
+    · rw [indicator_of_mem hx, Pi.one_apply]
+      have hpos : 0 < 1 - ‖x - z‖ ^ 2 / s ^ 2 := sub_pos.2 (hlt x hx)
+      obtain ⟨N, hN⟩ := exists_nat_ge (1 / (1 - ‖x - z‖ ^ 2 / s ^ 2))
+      rw [div_le_iff₀ hpos] at hN
+      refine tendsto_const_nhds.congr' (eventually_atTop.2 ⟨N, fun j hj => ?_⟩)
+      have hj : (N : ℝ) ≤ j := by exact_mod_cast hj
+      refine (Real.smoothTransition.one_of_one_le ?_).symm
+      nlinarith
+    · rw [indicator_of_notMem hx]
+      exact tendsto_const_nhds.congr fun j => (hzero j _ (hge x hx)).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
