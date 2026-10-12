@@ -1705,6 +1705,64 @@ theorem Submission.lpf_wtc_weighted_tangent_transfer :
   rw [hsplit]
   ring
 
+/-- For `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is the approximate
+tangent space of `M` with multiplicity `θ` at `y` (Simon Ch. 3, proof of 1.6 and Remark 1.8(1),
+for one `C¹` chart `Φ` that is antilipschitz on the open set `Ω`). -/
+theorem Submission.lpf_weighted_tangent_on_c1_chart :
+    ∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)),
+      IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) →
+      (∀ y ∈ M, 0 < θ y) →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V →
+        IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) →
+      IsOpen Ω → ContDiff ℝ 1 Φ →
+      (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) →
+      ∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict (M ∩ Φ '' Ω)), ∀ w ∈ Ω, Φ w = y →
+        HasWeightedApproximateTangentSpaceAt n M θ y
+          (LinearMap.range (fderiv ℝ Φ w).toLinearMap) := by
+  intro Q n V M θ Φ Ω hV hMV hM hθ hθK hΩ hΦ hanti
+  -- `N := Φ(Ω)` is Borel and locally `Hⁿ`-finite.
+  obtain ⟨hN, hNK⟩ :=
+    Submission.lpf_wtc_chart_image_measurable_locally_finite Q n Φ Ω hΩ hΦ hanti
+  -- Compact pieces `C k ⊆ M`, `θ|C k` continuous, `Hⁿ(C k) < ∞`, covering `M` up to a null set.
+  obtain ⟨C, hCc, hCM, hθC, hCfin, hMC⟩ :=
+    Submission.lpf_wtc_lusin_compact_pieces Q n V M θ hV hMV hM hθ hθK
+  have hCm : ∀ k, MeasurableSet (C k) := fun k => (hCc k).isClosed.measurableSet
+  -- Zero `n`-density of `Hⁿ ⌞ (C k ∖ N)`, `Hⁿ ⌞ (N ∖ C k)` and `θ Hⁿ ⌞ (M ∖ C k)` off these sets.
+  have h₁ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n univ (C k \ Φ '' Ω)
+    (fun _ => 1) isOpen_univ ((hCm k).diff hN).nullMeasurableSet fun K _ _ => by
+      simp only [setLIntegral_one]
+      exact (measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt (hCfin k)
+  have h₂ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n univ (Φ '' Ω \ C k)
+    (fun _ => 1) isOpen_univ (hN.diff (hCm k)).nullMeasurableSet fun K hK _ => by
+      simp only [setLIntegral_one]
+      exact (measure_mono (inter_subset_inter_left K sdiff_subset)).trans_lt (hNK K hK)
+  have h₃ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n V (M \ C k)
+    (fun x => ENNReal.ofReal (θ x)) hV (hM.diff (hCm k).nullMeasurableSet) fun K hK hKV =>
+      (lintegral_mono_set (inter_subset_inter_left K sdiff_subset)).trans_lt
+        (hθK K hK hKV).setLIntegral_lt_top
+  have hall := ae_all_iff.2 fun k => (h₁ k).and ((h₂ k).and (h₃ k))
+  rw [ae_restrict_iff'₀ (hM.inter hN.nullMeasurableSet)]
+  filter_upwards [hall, measure_eq_zero_iff_ae_notMem.1 hMC] with y hy hyC hyMN w hw hwy
+  subst hwy
+  obtain ⟨k, hyk⟩ : ∃ k, Φ w ∈ C k := by
+    by_contra h
+    exact hyC ⟨hyMN.1, fun h' => h (mem_iUnion.1 h')⟩
+  obtain ⟨hy₁, hy₂, hy₃⟩ := hy k
+  -- `N` has approximate tangent space `T = DΦ(w)(ℝⁿ)` at `Φ w`, and so does `C k`.
+  have hCT := Submission.lpf_wtc_tangent_transfer Q n (C k) (Φ '' Ω) (Φ w) _
+    (hCm k).nullMeasurableSet hN.nullMeasurableSet
+    (Submission.lpf_wtc_chart_approx_tangent Q n Φ Ω hΩ hΦ hanti w hw)
+    ⟨1, one_pos, hNK _ (isCompact_closedBall _ _)⟩
+    (by simpa only [setLIntegral_one] using hy₁ (mem_univ _) fun h => h.2 hyMN.2)
+    (by simpa only [setLIntegral_one] using hy₂ (mem_univ _) fun h => h.2 hyk)
+  -- Transfer to `(M, θ)` on a closed ball about `Φ w` inside `V`.
+  obtain ⟨ε, hε, hεV⟩ := Metric.isOpen_iff.1 hV _ (hMV hyMN.1)
+  exact Submission.lpf_wtc_weighted_tangent_transfer Q n M (C k) θ (Φ w) _ hM
+    (hCm k).nullMeasurableSet (hCM k) hyk (fun x hx => (hθ x hx).le) hCT
+    ⟨ε / 2, half_pos hε, (measure_mono inter_subset_left).trans_lt (hCfin k),
+      hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
+    ((hθC k).continuousWithinAt hyk) (hy₃ (hMV hyMN.1) fun h => h.2 hyk)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
