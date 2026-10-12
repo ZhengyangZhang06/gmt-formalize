@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mollifier_harmonic-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 3,
+  "title": "Mollifications of a distributionally harmonic L^1(B) function are smooth and harmonic on B_{1-eps}",
+  "statement": "Let n >= 1, B the open unit ball of R^n, and w : R^n -> R integrable on B with int_B w Laplacian(zeta) = 0 for every zeta in C^infinity(R^n) with compact support and tsupport zeta in B. Let kappa : R^n -> R be C^infinity and eps a real number with kappa(z) = 0 whenever |z| >= eps. Then v(x) := int_B kappa(x - y) w(y) dy is C^infinity on R^n and Laplacian(v)(x) = 0 for every x with |x| < 1 - eps.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, IntegrableOn w (ball (0 : Rn n) 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0) → ∀ (κ : Rn n → ℝ) (ε : ℝ), ContDiff ℝ (⊤ : ℕ∞) κ → (∀ z : Rn n, ε ≤ ‖z‖ → κ z = 0) → ContDiff ℝ (⊤ : ℕ∞) (fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y) ∧ ∀ x ∈ ball (0 : Rn n) (1 - ε), Laplacian.laplacian (fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y) x = 0",
+  "lean_name": "ball_convolution_contDiff_laplacian_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-mollifier-harmonic-a1-a1"
+}

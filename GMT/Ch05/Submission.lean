@@ -458,6 +458,121 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Weak harmonicity in Laplacian form** (step 1 of the proof of Weyl's lemma).  If
+`w ∈ W^{1,2}(B)`, `B = B̆₁(0)`, has weak gradient `g` with `∫_B ⟨g, ∇ζ⟩ = 0` for every
+`ζ ∈ C^∞_c(B)`, then `∫_B w Δζ = 0` for every such `ζ`.
+Proof: each partial derivative `ζᵢ = Dζ(·)[eᵢ]` is again a test function, and pairing the
+weak-gradient identity for `ζᵢ` with `eᵢ` gives `∫_B w D²ζ[eᵢ, eᵢ] = -∫_B ζᵢ ⟨g, eᵢ⟩`.  Summing
+over `i`, with `Δζ = Σᵢ D²ζ[eᵢ, eᵢ]` and `⟨g, ∇ζ⟩ = Σᵢ ζᵢ ⟨g, eᵢ⟩`, gives
+`∫_B w Δζ = -∫_B ⟨g, ∇ζ⟩ = 0`. -/
+theorem w12_ball_weak_laplacian_eq_zero : ∀ n : ℕ, 1 ≤ n → ∀ (w : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) = 0) → ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0 := by
+  intro n _ w g hw hharm ζ hζ hζc hζB
+  obtain ⟨hwL, hgL, hweak⟩ := hw
+  -- `w` and `g` are integrable on the ball, which has finite measure.
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hwi : Integrable w (volume.restrict (ball (0 : Rn n) 1)) := hwL.integrable one_le_two
+  have hgi : Integrable g (volume.restrict (ball (0 : Rn n) 1)) := hgL.integrable one_le_two
+  -- Their products with continuous compactly supported (hence bounded) functions are integrable.
+  have hint_w : ∀ φ : Rn n → ℝ, Continuous φ → HasCompactSupport φ →
+      Integrable (fun x => w x * φ x) (volume.restrict (ball (0 : Rn n) 1)) := by
+    intro φ hφ hφc
+    obtain ⟨C, hC⟩ := hφ.bounded_above_of_compact_support hφc
+    exact hwi.mul_bdd hφ.aestronglyMeasurable (Eventually.of_forall hC)
+  have hint_g : ∀ (φ : Rn n → ℝ) (c : Rn n), Continuous φ → HasCompactSupport φ →
+      Integrable (fun x => φ x * inner ℝ (g x) c) (volume.restrict (ball (0 : Rn n) 1)) := by
+    intro φ c hφ hφc
+    obtain ⟨C, hC⟩ := hφ.bounded_above_of_compact_support hφc
+    have hgc : Integrable (fun x => inner ℝ (g x) c) (volume.restrict (ball (0 : Rn n) 1)) := by
+      have := (innerSL ℝ c).integrable_comp hgi
+      refine this.congr (Eventually.of_forall fun x => ?_)
+      simp [real_inner_comm]
+    exact hgc.bdd_mul hφ.aestronglyMeasurable (Eventually.of_forall hC)
+  -- The partial derivatives `ζᵢ = Dζ(·)[eᵢ]` are test functions.
+  set b := EuclideanSpace.basisFun (Fin n) ℝ
+  have hDζ : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ ζ) := (contDiff_infty_iff_fderiv.1 hζ).2
+  set ζ' : Fin n → Rn n → ℝ := fun i x => fderiv ℝ ζ x (b i) with hζ'
+  have hζ's : ∀ i, ContDiff ℝ (⊤ : ℕ∞) (ζ' i) := fun i => hDζ.clm_apply contDiff_const
+  have hζ'c : ∀ i, HasCompactSupport (ζ' i) := fun i => hζc.fderiv_apply ℝ (b i)
+  have hζ'B : ∀ i, tsupport (ζ' i) ⊆ ball 0 1 := fun i =>
+    (tsupport_fderiv_apply_subset ℝ (b i)).trans hζB
+  -- The `i`-th coordinate of the weak-gradient identity for `ζᵢ`:
+  -- `∫_B w Dζᵢ[eᵢ] = -∫_B ζᵢ ⟨g, eᵢ⟩`.
+  have hcoord : ∀ i, ∫ x in ball (0 : Rn n) 1, w x * fderiv ℝ (ζ' i) x (b i) =
+      -∫ x in ball (0 : Rn n) 1, ζ' i x * inner ℝ (g x) (b i) := by
+    intro i
+    have h := hweak (ζ' i) (hζ's i) (hζ'c i) (hζ'B i)
+    have hgrad : Continuous (gradient (ζ' i)) :=
+      (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp
+        ((hζ's i).continuous_fderiv (by simp))
+    have hgradc : HasCompactSupport (gradient (ζ' i)) := by
+      refine (hζ'c i).mono' fun x hx => ?_
+      by_contra h'
+      exact hx (by rw [gradient, fderiv_of_notMem_tsupport ℝ h', map_zero])
+    have hA : Integrable (fun x => w x • gradient (ζ' i) x)
+        (volume.restrict (ball (0 : Rn n) 1)) := by
+      obtain ⟨C, hC⟩ := hgrad.bounded_above_of_compact_support hgradc
+      exact hwi.smul_bdd C hgrad.aestronglyMeasurable (Eventually.of_forall hC)
+    have hB : Integrable (fun x => ζ' i x • g x) (volume.restrict (ball (0 : Rn n) 1)) := by
+      obtain ⟨C, hC⟩ := (hζ's i).continuous.bounded_above_of_compact_support (hζ'c i)
+      exact hgi.bdd_smul C (hζ's i).continuous.aestronglyMeasurable (Eventually.of_forall hC)
+    have h1 := (innerSL ℝ (b i)).integral_comp_comm hA
+    have h2 := (innerSL ℝ (b i)).integral_comp_comm hB
+    calc ∫ x in ball (0 : Rn n) 1, w x * fderiv ℝ (ζ' i) x (b i)
+        = ∫ x in ball (0 : Rn n) 1, innerSL ℝ (b i) (w x • gradient (ζ' i) x) := by
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          simp
+      _ = innerSL ℝ (b i) (∫ x in ball (0 : Rn n) 1, w x • gradient (ζ' i) x) := h1
+      _ = innerSL ℝ (b i) (-∫ x in ball (0 : Rn n) 1, ζ' i x • g x) := by rw [h]
+      _ = -innerSL ℝ (b i) (∫ x in ball (0 : Rn n) 1, ζ' i x • g x) := map_neg _ _
+      _ = -∫ x in ball (0 : Rn n) 1, innerSL ℝ (b i) (ζ' i x • g x) := by rw [h2]
+      _ = -∫ x in ball (0 : Rn n) 1, ζ' i x * inner ℝ (g x) (b i) := by
+          congr 1
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          simp [real_inner_comm]
+  -- `Dζᵢ(x)[eᵢ] = D²ζ(x)[eᵢ, eᵢ]`.
+  have hD2 : ∀ i x, fderiv ℝ (ζ' i) x (b i) = fderiv ℝ (fderiv ℝ ζ) x (b i) (b i) := by
+    intro i x
+    have hd : DifferentiableAt ℝ (fderiv ℝ ζ) x := (hDζ.differentiable (by simp)) x
+    rw [hζ', fderiv_clm_apply hd (differentiableAt_const _)]
+    simp
+  -- `Δζ = Σᵢ D²ζ[eᵢ, eᵢ]` and `⟨g, ∇ζ⟩ = Σᵢ ζᵢ ⟨g, eᵢ⟩`.
+  have hlap : ∀ x, Laplacian.laplacian ζ x = ∑ i, fderiv ℝ (fderiv ℝ ζ) x (b i) (b i) := by
+    intro x
+    rw [InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis ζ b]
+    simp [iteratedFDeriv_two_apply]
+  have hpars : ∀ x, inner ℝ (g x) (gradient ζ x) = ∑ i, ζ' i x * inner ℝ (g x) (b i) := by
+    intro x
+    rw [← b.sum_inner_mul_inner (g x) (gradient ζ x)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [inner_gradient_right]
+    simp [hζ', mul_comm]
+  -- Summing over `i`: `∫_B w Δζ = -∫_B ⟨g, ∇ζ⟩ = 0`.
+  have hcont2 : ∀ i, Continuous (fun x => fderiv ℝ (ζ' i) x (b i)) := fun i =>
+    ((hζ's i).continuous_fderiv (by simp)).clm_apply continuous_const
+  have hcomp2 : ∀ i, HasCompactSupport (fun x => fderiv ℝ (ζ' i) x (b i)) := fun i =>
+    (hζ'c i).fderiv_apply ℝ (b i)
+  calc ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x
+      = ∫ x in ball (0 : Rn n) 1, ∑ i, w x * fderiv ℝ (ζ' i) x (b i) := by
+        refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+        simp only [hlap, Finset.mul_sum, hD2]
+    _ = ∑ i, ∫ x in ball (0 : Rn n) 1, w x * fderiv ℝ (ζ' i) x (b i) :=
+        integral_finsetSum _ (fun i _ => hint_w _ (hcont2 i) (hcomp2 i))
+    _ = ∑ i, -∫ x in ball (0 : Rn n) 1, ζ' i x * inner ℝ (g x) (b i) :=
+        Finset.sum_congr rfl fun i _ => hcoord i
+    _ = -∫ x in ball (0 : Rn n) 1, ∑ i, ζ' i x * inner ℝ (g x) (b i) := by
+        rw [integral_finsetSum _ (fun i _ => hint_g _ _ (hζ's i).continuous (hζ'c i)),
+          Finset.sum_neg_distrib]
+    _ = -∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) := by
+        congr 1
+        refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+        exact (hpars x).symm
+    _ = 0 := by rw [hharm ζ hζ hζc hζB, neg_zero]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

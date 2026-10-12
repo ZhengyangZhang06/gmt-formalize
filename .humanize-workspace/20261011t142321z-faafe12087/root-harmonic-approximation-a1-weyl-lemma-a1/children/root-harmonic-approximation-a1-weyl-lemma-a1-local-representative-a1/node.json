@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.local_representative-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 3,
+  "title": "Local harmonic representatives of a distributionally harmonic L^1(B) function",
+  "statement": "Let n >= 1, B the open unit ball of R^n, and w : R^n -> R integrable on B with int_B w Laplacian(zeta) = 0 for every zeta in C^infinity(R^n) with compact support and tsupport zeta in B. Then for every eps with 0 < eps < 1/2 there is v : R^n -> R that is harmonic near every point of ball(0, 1 - eps) (InnerProductSpace.HarmonicOnNhd) and satisfies v = w almost everywhere on ball(0, 1 - 2 eps).",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, IntegrableOn w (ball (0 : Rn n) 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0) → ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∃ v : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd v (ball (0 : Rn n) (1 - ε)) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))), v x = w x",
+  "lean_name": "ball_weakly_harmonic_local_representative",
+  "depends_on": [
+    "root.harmonic_approximation-a1.weyl_lemma-a1.mollifier_harmonic-a1",
+    "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mollifier_harmonic-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-local-representative-a1-a1"
+}
