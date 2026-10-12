@@ -530,6 +530,43 @@ theorem aal_l1th_projection_algebra : (∀ (m k : ℕ) (A : Rn m →L[ℝ] Rn k)
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum,
       hdim P, hdim T, hPT]
     ring
+/-- Simon Ch. 5, proof of Lemma 2.1, displays (1)–(3) (p. 107): at a point `x` with tangent plane
+`p_{T_x M} = p_P` (`dim P = dim T = n`), the test field `X(y) = ζ(y)² p_{T⊥}(y − z)` has
+`div_M X(x) = ζ(x)² |p_P − p_T|²/2 + 2ζ(x) Dζ(x)((p_P − p_T) x')`, where `x' = p_{T⊥}(x − z)`. -/
+theorem aal_l1th_test_field_divergence : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ζ : Amb n ℓ → ℝ) (z x : Amb n ℓ) (P T : Submodule ℝ (Amb n ℓ)), DifferentiableAt ℝ ζ x → Module.finrank ℝ P = n → Module.finrank ℝ T = n → V.tangentProj x = P.starProjection → V.divM (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - z)) x = ζ x ^ 2 * (hsNormSq (V.tangentProj x - T.starProjection) / 2) + 2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (Tᗮ.starProjection (x - z))) := by
+  intro n ℓ U V ζ z x P T hζ hP hT hV
+  -- `DX(x) = ζ(x)² p_{T⊥} + (2ζ(x) Dζ(x)).smulRight x'` by the product and chain rules.
+  have hsq : HasFDerivAt (fun y => ζ y ^ 2) ((2 * ζ x) • fderiv ℝ ζ x) x := by
+    simpa using hζ.hasFDerivAt.pow 2
+  have hlin : HasFDerivAt (fun y => Tᗮ.starProjection (y - z)) Tᗮ.starProjection x :=
+    (Tᗮ.starProjection.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const z)).congr_fderiv
+      (ContinuousLinearMap.comp_id _)
+  have hX : HasFDerivAt (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - z))
+      (ζ x ^ 2 • Tᗮ.starProjection +
+        ((2 * ζ x) • fderiv ℝ ζ x).smulRight (Tᗮ.starProjection (x - z))) x :=
+    hsq.fun_smul hlin
+  -- `(λ.smulRight x') ∘ p_P = (λ ∘ p_P).smulRight x'`, a rank-one map with trace `λ(p_P x')`.
+  have hrk : (((2 * ζ x) • fderiv ℝ ζ x).smulRight (Tᗮ.starProjection (x - z))).toLinearMap ∘ₗ
+      P.starProjection.toLinearMap =
+        (((2 * ζ x) • fderiv ℝ ζ x).toLinearMap ∘ₗ P.starProjection.toLinearMap).smulRight
+          (Tᗮ.starProjection (x - z)) :=
+    LinearMap.ext fun v => by
+      simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe,
+        ContinuousLinearMap.smulRight_apply, LinearMap.smulRight_apply]
+  -- `x' ∈ T⊥`, so `p_T x' = 0` and `p_P x' = (p_P − p_T) x'`.
+  have hx' : T.starProjection (Tᗮ.starProjection (x - z)) = 0 :=
+    T.starProjection_apply_eq_zero_iff.mpr (Tᗮ.starProjection_apply_mem _)
+  -- `trace(p_{T⊥} ∘ p_P) = |p_P − p_T|²/2` as `dim P = dim T` (sibling `projection_algebra`).
+  have htr : LinearMap.trace ℝ (Amb n ℓ)
+      (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) =
+        hsNormSq (P.starProjection - T.starProjection) / 2 :=
+    Submission.aal_l1th_projection_algebra.2 (n + ℓ) P T (hP.trans hT.symm)
+  -- Linearity of the trace, then substitute the three identities above.
+  rw [RectifiableVarifold.divM, hX.fderiv, hV, ContinuousLinearMap.toLinearMap_add,
+    ContinuousLinearMap.toLinearMap_smul, LinearMap.add_comp, LinearMap.smul_comp, hrk, map_add,
+    map_smul, htr, LinearMap.trace_smulRight]
+  simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe, smul_apply,
+    smul_eq_mul, sub_apply, hx', sub_zero]
 
 end Submission
 
