@@ -500,6 +500,91 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
+/-- **Simon Ch. 6, Remark 3.2(1)** (the representation step): if `1_M θ ξ = p₁ 1_{M₁} θ₁ ξ₁ +
+p₂ 1_{M₂} θ₂ ξ₂` holds `Hⁿ`-a.e., then `τ(M, θ, ξ)(ω) = p₁ τ(M₁, θ₁, ξ₁)(ω) + p₂ τ(M₂, θ₂, ξ₂)(ω)`
+for every `ω ∈ 𝒟ⁿ(U)`.  A unit orientation has `|⟨α, ξ⟩| ≤ ‖α‖`, so on each carrier `θ⟨ω, ξ⟩` is
+dominated by `sup ‖ω‖ · θ 1_{spt ω}`, integrable by local integrability of `θ`.  Thus each action
+is `∫ ⟨ω, 1_M θ ξ⟩ dHⁿ` with an integrable integrand, and the identity integrates linearly. -/
+theorem Submission.rsdic_imrep_action_int_combination : ∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (p₁ p₂ : ℤ), (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → ∀ ω : TestFormOn U n, R.action (ω : DifferentialForm (Euclid P) n) = (p₁ : ℝ) * R₁.action (ω : DifferentialForm (Euclid P) n) + (p₂ : ℝ) * R₂.action (ω : DifferentialForm (Euclid P) n) := by
+  intro P n U R₁ R₂ R p₁ p₂ hF ω
+  -- `ω` is continuous, bounded by `W`, and supported in the compact `K = spt ω ⊆ U`
+  obtain ⟨⟨hsmooth, hcpt⟩, hωU⟩ := ω.2
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ContDiff.continuous hsmooth
+  obtain ⟨W, hW⟩ := hωc.bounded_above_of_compact_support hcpt
+  -- Step 1: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` has `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+  have hunit : ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q →
+      ∀ α : Covector (Euclid P) n, ‖ξ α‖ ≤ ‖α‖ := by
+    rintro ξ Q ⟨τ, hτ, -, hξ⟩ α
+    have h : ‖α τ‖ ≤ ‖α‖ := by
+      calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+        _ = ‖α‖ := by simp [hτ.norm_eq_one]
+    rcases hξ with h' | h'
+    · rw [h' α]; exact h
+    · rw [h' α, norm_neg]; exact h
+  -- Steps 2–3: for every `R' = (M', θ', ξ')`, `x ↦ (1_{M'} θ' ξ')(x)(ω(x))` is integrable with
+  -- integral `τ(R')(ω)`
+  have key : ∀ R' : IMRep U n,
+      Integrable (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x
+        ((ω : DifferentialForm (Euclid P) n) x)) μHE[n] ∧
+      ∫ x, R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x
+        ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] =
+        R'.action (ω : DifferentialForm (Euclid P) n) := by
+    intro R'
+    have hfun : (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x
+        ((ω : DifferentialForm (Euclid P) n) x)) = R'.carrier.indicator
+          (fun y => (R'.mult y : ℝ) * R'.orient y ((ω : DifferentialForm (Euclid P) n) y)) := by
+      funext x
+      by_cases hx : x ∈ R'.carrier
+      · simp [Set.indicator_of_mem hx]
+      · simp [Set.indicator_of_notMem hx]
+    rw [hfun, integrable_indicator_iff R'.measurableSet_carrier,
+      integral_indicator R'.measurableSet_carrier]
+    refine ⟨?_, rfl⟩
+    -- `θ'⟨ω, ξ'⟩` is a.e. strongly measurable: `(L, α) ↦ L(α)` is continuous
+    have hmult : Measurable fun y => (R'.mult y : ℝ) := measurable_from_nat.comp R'.measurable_mult
+    have hev : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+      continuous_fst.clm_apply continuous_snd
+    have hmeas : AEStronglyMeasurable
+        (fun y => (R'.mult y : ℝ) * R'.orient y ((ω : DifferentialForm (Euclid P) n) y))
+        (μHE[n].restrict R'.carrier) :=
+      hmult.aestronglyMeasurable.mul (hev.comp_aestronglyMeasurable
+        (R'.aestronglyMeasurable_orient.prodMk hωc.aestronglyMeasurable))
+    -- the dominating function `W θ' 1_K` is integrable on `M'`, as `∫_{M' ∩ K} θ' dHⁿ < ∞`
+    have hKm : MeasurableSet (tsupport (ω : DifferentialForm (Euclid P) n)) :=
+      (isClosed_tsupport _).measurableSet
+    have hint : Integrable (fun y => W * (tsupport (ω : DifferentialForm (Euclid P) n)).indicator
+        (fun y => (R'.mult y : ℝ)) y) (μHE[n].restrict R'.carrier) := by
+      refine Integrable.const_mul ?_ W
+      rw [integrable_indicator_iff hKm, IntegrableOn, Measure.restrict_restrict hKm]
+      have h := integrable_toReal_of_lintegral_ne_top
+        (μ := μHE[n].restrict (tsupport (ω : DifferentialForm (Euclid P) n) ∩ R'.carrier))
+        (f := fun y => (R'.mult y : ℝ≥0∞))
+        (measurable_from_nat.comp R'.measurable_mult).aemeasurable
+        (by rw [Set.inter_comm]; exact R'.locallyIntegrable_mult _ hcpt hωU)
+      simpa using h
+    refine hint.mono' hmeas ?_
+    filter_upwards [R'.orients] with y hyQ
+    obtain ⟨Q, -, hQ⟩ := hyQ
+    by_cases hy : y ∈ tsupport (ω : DifferentialForm (Euclid P) n)
+    · rw [Set.indicator_of_mem hy]
+      calc ‖(R'.mult y : ℝ) * R'.orient y ((ω : DifferentialForm (Euclid P) n) y)‖
+          = (R'.mult y : ℝ) * ‖R'.orient y ((ω : DifferentialForm (Euclid P) n) y)‖ := by
+            rw [norm_mul, Real.norm_natCast]
+        _ ≤ (R'.mult y : ℝ) * ‖(ω : DifferentialForm (Euclid P) n) y‖ :=
+            mul_le_mul_of_nonneg_left (hunit _ _ hQ _) (Nat.cast_nonneg _)
+        _ ≤ (R'.mult y : ℝ) * W := mul_le_mul_of_nonneg_left (hW y) (Nat.cast_nonneg _)
+        _ = W * (R'.mult y : ℝ) := mul_comm _ _
+    · rw [Set.indicator_of_notMem hy, image_eq_zero_of_notMem_tsupport hy, map_zero, mul_zero,
+        norm_zero, mul_zero]
+  -- Step 4: integrate the a.e. identity evaluated at `ω(x)`, using linearity of the integral
+  obtain ⟨-, he⟩ := key R
+  obtain ⟨hi₁, he₁⟩ := key R₁
+  obtain ⟨hi₂, he₂⟩ := key R₂
+  rw [← he, ← he₁, ← he₂, ← integral_const_mul, ← integral_const_mul,
+    ← integral_add (hi₁.const_mul _) (hi₂.const_mul _)]
+  refine integral_congr_ae ?_
+  filter_upwards [hF] with x hx
+  rw [hx, add_apply, smul_apply, smul_apply, smul_eq_mul, smul_eq_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
