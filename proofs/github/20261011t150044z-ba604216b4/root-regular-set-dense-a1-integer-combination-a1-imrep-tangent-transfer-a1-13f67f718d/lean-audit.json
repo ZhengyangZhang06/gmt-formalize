@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c4ecd333d9dae48eb258919347b3a3b017689181f91870e29dc6732b85260626",
+  "git_delta": {
+    "base_commit": "c2004dd736bace349813493228e40cfb4a5640db",
+    "candidate_commit": "a02fee1b895fd5361bd0d6d2865e4b0d85f5d08a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsdic_imrep_ae_tangent_orient_of_subset",
+    "diff_sha256": "5eee1e33e7a9e0cfeb883591547318bafd2142e86730af959c382e48630fd222",
+    "source_sha256": "c78b0c187b9523c0fd8885909ba27f21c688670166e504e3c7d562ad81537e2c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsdic_imrep_ae_tangent_orient_of_subset",
+      "statement": "∀ (P n : ℕ) (U B C : Set (Euclid P)) (R : IMRep U n), IsOpen U → MeasurableSet B → MeasurableSet C → B ⊆ R.carrier → B ⊆ C → C ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (C ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict B), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n C x Q ∧ IsUnitOrientationOf (R.orient x) Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
