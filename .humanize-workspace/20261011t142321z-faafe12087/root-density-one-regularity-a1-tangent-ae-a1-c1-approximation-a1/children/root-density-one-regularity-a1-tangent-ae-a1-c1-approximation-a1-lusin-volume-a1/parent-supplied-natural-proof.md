@@ -1,0 +1,127 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1`
+- Child DAG node: `root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1.lusin_volume-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof, filling in the measure-theoretic details. The parent proof is Simon, Ch. 2, proof of Theorem 1.5, p. 44: 'By Lusin's theorem (which applies to sets of infinite measure for L^n) there is a closed set C ⊆ B such that ∇f|C is continuous'. Here it is stated for an arbitrary Borel map F and Borel set S; the parent applies it with F = Df = fderiv R f and S = B = {x : f is differentiable at x}.
+
+Notation: L^n = volume on R^n = EuclideanSpace R (Fin n); |.| is the Euclidean norm; e_1, ..., e_n are the standard basis vectors (EuclideanSpace.single q 1); L(R^n,R) is the finite-dimensional normed space of continuous linear maps R^n -> R, with its Borel sigma-algebra. For k >= 1 let S_k := {x : k - 1 <= |x| < k}. The S_k are Borel and pairwise disjoint, S_k ⊆ closedBall(0, k), and their union is R^n.
+
+1. (Tolerances.) Since δ > 0, there are real numbers δ_k > 0 (k >= 1) with sum_{k>=1} δ_k < δ. For example, take δ_k := m 2^{-k-1} with m := min(δ, 1); their sum is m/2 < m <= δ (Mathlib ENNReal.exists_pos_sum_of_countable).
+
+2. (Inner regularity.) L^n is a locally finite Borel measure on the separable metric space R^n, hence weakly regular (Mathlib instance Measure.WeaklyRegular.of_pseudoMetrizableSpace_secondCountable_of_locallyFinite). So for every Borel E with L^n(E) < ∞ and every τ > 0 there is a closed F ⊆ E with L^n(E \ F) < τ (Mathlib MeasurableSet.exists_isClosed_sdiff_lt). This is exactly the hypothesis hreg of Lusin's theorem SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable for the measure ν = L^n.
+
+3. (Pieces.) For k >= 1 put A_k := S ∩ S_k. Each A_k is Borel and A_k ⊆ closedBall(0, k), so L^n(A_k) < ∞. The A_k are pairwise disjoint and their union is S.
+
+4. (Coordinates.) For q = 1, ..., n the function F_q(x) := F(x)(e_q) is a Borel real function: it is F followed by the continuous linear evaluation map L ↦ L(e_q).
+
+5. (Lusin on one piece.) Fix k >= 1 and let τ_k := δ_k/(n+1).
+- By step 2, choose a closed C_k^0 ⊆ A_k with L^n(A_k \ C_k^0) < τ_k.
+- For q = 1, ..., n, apply Lusin's theorem for finite measures (Simon Ch. 1, 1.17; SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable) with ν = L^n, hreg from step 2, the Borel set A_k of finite measure, the Borel function F_q and the tolerance τ_k. This gives a closed C_k^q ⊆ A_k with L^n(A_k \ C_k^q) < τ_k such that F_q restricted to C_k^q is continuous.
+- Put C_k := C_k^0 ∩ C_k^1 ∩ ... ∩ C_k^n. Then C_k is closed and C_k ⊆ A_k.
+- Since A_k \ C_k = union_{q=0..n} (A_k \ C_k^q), we get L^n(A_k \ C_k) <= sum_{q=0}^{n} L^n(A_k \ C_k^q) < (n+1) τ_k = δ_k.
+
+6. (Continuity on one piece.) Each F_q is continuous on C_k, because C_k ⊆ C_k^q. For L in L(R^n,R) and v = sum_q v_q e_q in R^n we have L(v) = sum_q v_q L(e_q). Hence for every fixed v, the function x ↦ F(x)(v) = sum_q v_q F_q(x) is continuous on C_k. Since R^n is finite-dimensional, a map into L(R^n,R) is continuous on a set as soon as x ↦ F(x)(v) is continuous on it for every v (Mathlib continuousOn_clm_apply). Hence F restricted to C_k is continuous. For n = 0 there are no coordinates, L(R^0,R) = {0}, C_k = C_k^0, and continuity is trivial.
+
+7. (Local finiteness.) Let x ∈ R^n. If the open ball B(x,1) contains a point z of S_k, then k - 1 <= |z| < |x| + 1 and |x| - 1 < |z| < k, so |x| - 1 < k < |x| + 2. Only finitely many integers k satisfy this. Since C_k ⊆ A_k ⊆ S_k, every point has a neighbourhood meeting only finitely many C_k; that is, the family (C_k)_{k>=1} is locally finite.
+
+8. (Gluing.) Let C := union_{k>=1} C_k.
+- The union of a locally finite family of closed sets is closed (Mathlib LocallyFinite.isClosed_iUnion), so C is closed.
+- A map that is continuous on each member of a locally finite family of closed sets is continuous on their union (pasting lemma, Mathlib LocallyFinite.continuousOn_iUnion). So F restricted to C is continuous by step 6.
+- Direct argument: a point x ∈ C lies in C_{k0} for the unique k0 with x ∈ S_{k0}. The finitely many other C_k meeting B(x,1) are closed and do not contain x, so some neighbourhood W of x satisfies C ∩ W ⊆ C_{k0}. Continuity of F|C at x then follows from continuity of F|C_{k0}.
+
+9. (Measure.) C ⊆ union_k A_k = S. If x ∈ S \ C, then x ∈ A_k for some k and x ∉ C_k; so S \ C ⊆ union_k (A_k \ C_k). By countable subadditivity and steps 5 and 1, L^n(S \ C) <= sum_k L^n(A_k \ C_k) <= sum_k δ_k < δ. Thus C ⊆ S is closed, L^n(S \ C) < δ, and F|C is continuous.
+
+Formalization remark (not needed for the argument):
+(a) Poincare.SimonGMT.Chapter01.Lusin is built in the pinned package tree and may be imported. For ν = volume, the hypothesis hreg is fun S hS hS' τ hτ => hS.exists_isClosed_sdiff_lt hS' hτ.
+(b) Steps 7-8 may equivalently be replaced by a variant that avoids local finiteness. Apply steps 3-6 to T_k := S ∩ B(0,k) instead of A_k, obtaining closed C'_k ⊆ T_k with L^n(T_k \ C'_k) < δ_k and F|C'_k continuous. Put C := intersection_{k>=1} (C'_k ∪ (R^n \ B(0,k))). Then:
+- C is closed, as an intersection of closed sets;
+- C ⊆ S: for x ∈ C take k > |x|; then x ∈ C'_k;
+- F|C is continuous: for x ∈ C and k > |x|, B(0,k) is a neighbourhood of x with C ∩ B(0,k) ⊆ C'_k;
+- S \ C ⊆ union_k (T_k \ C'_k), so L^n(S \ C) <= sum_k δ_k < δ.
+
+## Key steps
+
+1. Choose tolerances δ_k > 0 with sum δ_k < δ, and split S into the bounded Borel pieces A_k = S ∩ {k-1 <= |x| < k}, each of finite L^n-measure.
+2. On each piece: weak regularity of L^n gives a closed C_k^0, and SimonGMT's finite-measure Lusin theorem applied to each coordinate F(.)(e_q) gives a closed C_k^q. Then C_k = intersection of the C_k^q is closed, L^n(A_k \ C_k) < δ_k, and F|C_k is continuous (continuousOn_clm_apply).
+3. The family (C_k) is locally finite because C_k ⊆ S_k. So C = union of the C_k is closed, and F|C is continuous by the pasting lemma.
+4. S \ C ⊆ union_k (A_k \ C_k), hence L^n(S \ C) <= sum δ_k < δ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md,parent-supplied-natural-proof.json}`
+- `sed -n 140,300p book/chapter-02.txt (Simon Thm 1.5 printed proof p.44, Thm 1.6 Whitney, Remark 1.7)`
+- `python3 import-closure scan of Poincare.SimonGMT.Chapter03.Rectifiable over .lake/packages/simongmt (closure: Chapter01.Basic, Chapter01.Hausdorff, Chapter01.MetricCriterion, Chapter02.Lipschitz, Chapter03.Rectifiable)`
+- `comm -23 <(ls Chapter02/*.lean basenames) <(ls .lake/packages/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02/*.olean basenames) -> MISSING: WhitneyExtension; ls Chapter01 build | grep Lusin (Lusin.olean present)`
+- `grep -n 'theorem|def |structure' and sed -n on SimonGMT Chapter02/{WhitneyJet,WhitneyCover,WhitneyPartition,WhitneyExtension}.lean and Chapter01/Lusin.lean`
+- `python3 scan of lean_name fields in dag.json and nodes/**/*.json for whitney|lusin|egorov|remainder; grep -rl and git grep over all refs for tae_c1_lusin_clm_volume|tae_c1_uniform_remainder|tae_whitney_c1_extension (no match)`
+- `git show 4d18f1d:GMT/Ch05/Submission.lean (accepted Submission.aetp_lipschitz_c1_approximation)`
+- `git for-each-ref ... ; git show <branch>:GMT/Ch05/Submission.lean | grep ^import (accepted branches add imports)`
+- `sed -n 330,420p verifier/gmt-compare.py (candidate_inputs: new Lean files only under GMT/Ch05/)`
+- `rg -n -e 'theorem continuousOn_clm_apply' -e 'isClosed_iUnion' -e 'continuousOn_iUnion' -e 'exists_isOpen_lt_of_lt' -e 'exists_countable_dense_subset' -e 'theorem Measurable.iSup' -e 'MeasurableSet.exists_isClosed_sdiff_lt' -e 'tendstoUniformlyOn_of_ae_tendsto' -e 'exists_disjoint_subfamily_covering_enlargement_ball' -e 'LowerSemicontinuous.measurable' -e 'lowerSemicontinuous_iSup' -e 'exists_infDist_eq_dist' -e 'contDiff_one_iff_fderiv' -e 'of_pseudoMetrizableSpace_secondCountable_of_locallyFinite' <snapshot>/mathlib/Mathlib/{Topology,MeasureTheory,Analysis/Normed,Analysis/Calculus/ContDiff}`
+- `cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean (identical)`
+- `lake env lean /tmp/tae-c1a-dec-q8m3/Check1.lean and Check1b.lean (contract lines 1-460 + the three frozen child types as sorry + instance/lemma #checks)`
+- `lake env lean /tmp/tae-c1a-dec-q8m3/WhitneyExtensionCopy.lean (0 errors); lake env lean Check4.lean / Check5.lean (SimonGMT Whitney pasted into fresh namespace, child 3 proved, parent assembly, exact-type examples, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/github-workflow.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/lakefile.toml`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/tae-c1a-dec-q8m3/Check1b.lean`
+- `/tmp/tae-c1a-dec-q8m3/Check5.lean`
+- `/tmp/tae-c1a-dec-q8m3/WhitneyExtensionCopy.lean`
+
+The snapshot pins project ea56075 and Mathlib 25730c7c; the snapshot `Contract.lean` is byte-identical to the workspace copy. SimonGMT is at rev 2b36630.
+
+The contract's import closure contains only the SimonGMT modules Chapter01.{Basic,Hausdorff,MetricCriterion}, Chapter02.Lipschitz and Chapter03.Rectifiable.
+
+In the shared build tree:
+- `Chapter02/WhitneyExtension` (the home of `exists_contDiff_one_extension_of_whitney`, cited in supplied step 7) is the only Chapter02 module with no `.olean`. It cannot be imported.
+- Its dependencies WhitneyJet (`HasWhitneyC1Compatibility`, `exists_local_uniform_estimate`), WhitneyCover and WhitneyPartition are built.
+- `Chapter01/Lusin` (`exists_isClosed_continuousOn_of_measurable`, for real-valued functions on finite-measure sets) is built.
+
+Accepted branches already add extra imports to `Submission.lean`. The verifier allows new Lean files only under `GMT/Ch05/`.
+
+All Mathlib lemmas cited in the child proofs exist in the snapshot: `continuousOn_clm_apply`, `LocallyFinite.isClosed_iUnion`/`continuousOn_iUnion`, `Set.exists_isOpen_lt_of_lt`, `IsSeparable.exists_countable_dense_subset`, `Measurable.iSup`, `MeasurableSet.exists_isClosed_sdiff_lt`, the WeaklyRegular instance for volume, `tendstoUniformlyOn_of_ae_tendsto`, `Vitali.exists_disjoint_subfamily_covering_enlargement_ball`, `LowerSemicontinuous.measurable`, `IsClosed.exists_infDist_eq_dist`, `contDiff_one_iff_fderiv`. `measurable_fderiv`, `measurableSet_of_differentiableAt` and `LipschitzWith.ae_differentiableAt` are already in scope.
+
+No searched source contains a σ-finite Lusin theorem for volume, or the C¹ approximation theorem with derivative agreement. The closest is the accepted `Submission.aetp_lipschitz_c1_approximation` (commit 4d18f1d): it requires 1 ≤ n, has no derivative conclusion, and proves Whitney inline.
+
+Lean results:
+- The three proposed frozen types elaborate in the contract scope with the contract imports only.
+- The parent assembly compiles to the exact frozen type, with `sorryAx` only from children 1 and 2.
+- Child 3 is proved from the SimonGMT copy with only propext, Classical.choice and Quot.sound.
+- No name collisions.
