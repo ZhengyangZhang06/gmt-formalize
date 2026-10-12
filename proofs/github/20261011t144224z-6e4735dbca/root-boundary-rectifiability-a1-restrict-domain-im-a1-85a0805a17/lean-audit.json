@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4b7aa940ce028b818b6c2929f983f3a26f1152c590c176c73b8a51a78f53e478",
+  "git_delta": {
+    "base_commit": "2dcea6fa16861213b394e5da495ef454466d05ec",
+    "candidate_commit": "03443db0c607754737d538401692c78a08383ee0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_restrictDomain_isIntegerMultiplicity",
+    "diff_sha256": "e3a44bd428ffee03a9cd64b3c355cdbb54ec94e21f9a07ba25980f3ec5d3057e",
+    "source_sha256": "7e4cb8c9cec83349112bc4caaf5fd4c73f0a64afb6617572900df9a326acae39",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_restrictDomain_isIntegerMultiplicity",
+      "statement": "∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W → ∀ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y → IsIntegerMultiplicity (Y.restrictDomain hWU)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
