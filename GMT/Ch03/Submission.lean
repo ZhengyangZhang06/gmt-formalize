@@ -448,6 +448,23 @@ theorem Submission.indCompact_mollCauchy_l1_error : ∀ (N : ℕ) (F : Set (Rn N
     _ = ENNReal.ofReal (σ * C) := by
         rw [← ofReal_integral_eq_lintegral_ofReal hρi (ae_of_all _ hρ0), hρ1, ENNReal.ofReal_one,
           one_mul]
+/-- **Continuity of the mollified set integral** (Step 1 of the supplied proof that translation
+estimates and uniformly Cauchy mollifications give local Cauchy in measure, part of the
+compactness of indicators used for De Giorgi's theorem, Simon Ch. 3, Theorem 4.3; cf. the
+mollification argument in the proof of Simon Ch. 2, Theorem 2.6). For an arbitrary `F ⊆ ℝᴺ` and a
+continuous, compactly supported `ρ`, the map `y ↦ ∫_F ρ(y - z) dz` is continuous: it is the
+convolution of `1` with `ρ` for the locally finite measure `Lᴺ ⌞ F`. -/
+theorem Submission.indCompact_mollCauchy_setIntegral_continuous : ∀ (N : ℕ) (F : Set (Rn N)) (ρ : Rn N → ℝ), Continuous ρ → HasCompactSupport ρ → Continuous (fun y : Rn N ↦ ∫ z in F, ρ (y - z)) := by
+  intro N F ρ hρ hρc
+  -- `y ↦ ∫_F ρ(y - z) dz` is the convolution of `1` with `ρ` for the measure `volume.restrict F`.
+  have hconv : (fun y : Rn N ↦ ∫ z in F, ρ (y - z)) =
+      convolution (fun _ ↦ (1 : ℝ)) ρ (ContinuousLinearMap.lsmul ℝ ℝ) (volume.restrict F) := by
+    ext y
+    simp only [convolution_def, ContinuousLinearMap.lsmul_apply, one_smul]
+  rw [hconv]
+  -- `volume.restrict F` is locally finite for every `F`, so the constant `1` is locally
+  -- integrable; convolving with the continuous, compactly supported `ρ` gives a continuous map.
+  exact hρc.continuous_convolution_right _ (locallyIntegrable_const 1) hρ
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
