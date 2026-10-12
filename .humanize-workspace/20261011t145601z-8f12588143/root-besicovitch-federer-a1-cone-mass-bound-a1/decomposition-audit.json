@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "rg -n -i 'cone|packing|vitali|slab' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03",
+        "theorem exists_disjoint_subfamily_covering_enlargement",
+        "euclideanHausdorffMeasure_image|isAddHaarMeasure_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume",
+        "theorem addHaar_ball_of_pos|theorem addHaar_ball\\b",
+        "countable_of_isOpen",
+        "nullSingletonClass_hausdorff",
+        "norm_starProjection_apply_le|starProjection_apply_mem|def starProjection",
+        "^theorem measure_biUnion |^theorem measure_biUnion_le |theorem tsum_mul_left|theorem tsum_mul_right",
+        "^def PurelyUnrectifiable|^def CountablyRectifiable",
+        "bf_coneMass_slab_cover|bf_coneMass_subspace_ball_packing",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_mass_independent_audit_y7mgov5n/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_mass_independent_audit_y7mgov5n/ProofAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-mass-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-mass-bound-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ConeMassCombinedCheck2.lean",
+        "/tmp/cone_mass_independent_audit_y7mgov5n/Contracts.lean",
+        "/tmp/cone_mass_independent_audit_y7mgov5n/ProofAudit.lean"
+      ],
+      "conclusion": "Confirmed the pinned revisions and byte identity of the snapshot contract with workspace Submission.lean; inspected Mathlib sources also match the loaded revision. No cone, slab, Vitali or packing lemma occurs in snapshot project/GMT/Ch03. The referenced library results support the stated covering, Haar scaling, isometric transfer, singleton nullity and summation arguments. Both exact child propositions elaborate independently without their implementations. Independently compiled the supplied child proofs and the parent assembly, replacing all three dependencies with explicit premises of their exact frozen types. Both children and this conditional assembly use only propext, Classical.choice and Quot.sound, with no sorryAx. The split is appropriate: two substantive independent obligations, together with the declared cone-free sibling and retained parent steps, establish precisely bf_coneMass_ball_le with constant 2·15^n. Dependencies are acyclic; neither proposed name is reserved elsewhere. Public provenance is corroborated by [Hovila et al., Lemma 2.2](https://arxiv.org/html/1104.3453v2), which cites Mattila 15.13–15.14. The Dall’Alba PDF fetch timed out and was not relied upon."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slab_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line proposition. The proof correctly establishes a nonempty bounded distance set, a positive supremum h ≤ R, and a cone point beyond 3h/4. Supremum maximality and the two triangle-inequality arguments prove the exact slab inclusion, including both vertices and strict open-ball bounds. It assumes neither x ∈ S nor any projection-specific property. The proof is complete, non-circular and sufficient for formalization. bf_coneMass_slab_cover is an available bare identifier, and its declared empty dependency list is correct."
+    },
+    {
+      "key": "ball_packing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches every quantifier, hypothesis and the ENNReal subtype-indexed sum. The proof handles T = ∅ and derives R > 0 otherwise; positive-radius Haar scaling also covers n = 0. Isometric transfer, closedness of W, disjoint Borel additivity and cancellation of a positive finite factor prove the exact inequality without hidden measurability or summability assumptions. Euclidean metrics, set disjointness and subtype coercions elaborate as intended. The proof is complete and independent of the parent and other child. bf_coneMass_subspace_ball_packing is an available bare identifier."
+    }
+  ],
+  "required_changes": []
+}
