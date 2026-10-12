@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c0a0c0d36d56107140020ce6d1a6279c1dafc8d84229c767baebc7538213144b",
+  "git_delta": {
+    "base_commit": "bc36366ba824bd71ed97dbade16d53539bc96303",
+    "candidate_commit": "fdd02fa7b4d1c1e02be7bb7abeb775cc89465327",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_starProjection_range_continuousOn_injective",
+    "diff_sha256": "80e26a03f173cdd37cdd0d39d104aeaadda9277a256234664d8c9b60239274c7",
+    "source_sha256": "5a4be9c89bddca5db1244168a867924991557c2abcdffd6c8be3655709f0a2c9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_starProjection_range_continuousOn_injective",
+      "statement": "∀ (n ℓ : ℕ), ContinuousOn (fun (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) ↦ (LinearMap.range A.toLinearMap).starProjection) {A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ | Function.Injective A}",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
