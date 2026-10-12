@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Approximate tangent spaces under dilation** (Simon Ch. 3, 1.4).  For `c > 0` the blow-ups
+of `c⁻¹M = {x : cx ∈ M}` at `z` are blow-ups of `M` at `cz`: `η_{z,r}(c⁻¹M) = η_{cz,cr}(M)`, as
+`(cr)⁻¹(m − cz) = r⁻¹(c⁻¹m − z)`.  Since `cr ↓ 0` as `r ↓ 0`, the limits defining `Q` as the
+approximate tangent space of `M` at `cz` give the limits for `c⁻¹M` at `z`. -/
+theorem Submission.approx_tangent_space_smul_preimage : ∀ (P n : ℕ) (M : Set (Euclid P)) (c : ℝ) (z : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < c → HasApproximateTangentSpaceAt n M (c • z) Q → HasApproximateTangentSpaceAt n ((fun x => c • x) ⁻¹' M) z Q := by
+  intro P n M c z Q hc hT
+  have hc0 : c ≠ 0 := hc.ne'
+  -- `η_{cz,cr}(m) = (cr)⁻¹(m − cz) = r⁻¹(c⁻¹m − z) = η_{z,r}(c⁻¹m)`
+  have hη : ∀ (r : ℝ) (m : Euclid P), Poincare.SimonGMT.Chapter03.blowUpMap (c • z) (c * r) m =
+      Poincare.SimonGMT.Chapter03.blowUpMap z r (c⁻¹ • m) := by
+    intro r m
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, Poincare.SimonGMT.Chapter03.blowUpMap, mul_inv_rev,
+      ← smul_smul, smul_sub c⁻¹, inv_smul_smul₀ hc0]
+  -- `η_{z,r}(c⁻¹M) = η_{cz,cr}(M)` for every `r`
+  have hset : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap z r '' ((fun x => c • x) ⁻¹' M) =
+      Poincare.SimonGMT.Chapter03.blowUpMap (c • z) (c * r) '' M := by
+    intro r
+    ext y
+    constructor
+    · rintro ⟨m', hm', rfl⟩
+      exact ⟨c • m', hm', by rw [hη, inv_smul_smul₀ hc0]⟩
+    · rintro ⟨m, hm, rfl⟩
+      refine ⟨c⁻¹ • m, ?_, (hη r m).symm⟩
+      show c • c⁻¹ • m ∈ M
+      rwa [smul_inv_smul₀ hc0]
+  -- `r ↦ cr` tends to `0` within `(0, ∞)`: it is continuous, vanishes at `0` and is positive
+  -- for `r > 0`
+  have hφ : Tendsto (fun r : ℝ => c * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h : Tendsto (fun r : ℝ => c * r) (𝓝 0) (𝓝 (c * 0)) := (continuous_const_mul c).tendsto 0
+      rw [mul_zero] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hc hr
+  -- the limit at `cz` along `cr ↓ 0` is the limit at `z` along `r ↓ 0`
+  refine ⟨hT.1, fun f => ((hT.2 f).comp hφ).congr fun r => ?_⟩
+  rw [Function.comp_apply, hset r]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
