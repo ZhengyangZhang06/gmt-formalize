@@ -417,6 +417,64 @@ theorem Submission.polyhedral_approx_exhaustion_function : ∀ (P : ℕ) (U : Se
     · exact ⟨1, one_pos, fun x hx => absurd hx (notMem_empty x)⟩
     · obtain ⟨x₀, hx₀K, hmin⟩ := hK.exists_isMinOn hKne hφ.continuous.continuousOn
       exact ⟨φ x₀, hφpos x₀ (hKU hx₀K), fun x hx => hmin hx⟩
+/-- Boundary mass transfer through a smooth cut-off (Simon Ch. 6, 6.2, proof): if `X` and `A`
+agree on any two test forms that coincide on `V`, where `closure V` is a compact subset of the
+open set `W ⊆ U₂`, then `M(∂X) ≤ M_W(∂A)`.  For `ψ` admissible for `M(∂X)` and a smooth cut-off
+`χ`, `0 ≤ χ ≤ 1`, `χ = 1` near `closure V` with compact support in `W`, the form `χψ` is
+admissible for `M_W(∂A)`, and `d(χψ) = dψ` on `V` gives `∂X(ψ) = X(dψ) = A(d(χψ)) = ∂A(χψ)`. -/
+theorem Submission.polyhedral_approx_boundary_mass_cutoff : ∀ (P m : ℕ) (U₁ U₂ W V : Set (Eucl P)) (X : GeometricCurrentOn U₁ (m + 1)) (A : GeometricCurrentOn U₂ (m + 1)), IsOpen W → W ⊆ U₂ → IsCompact (closure V) → closure V ⊆ W → (∀ (η : TestFormOn U₁ (m + 1)) (η' : TestFormOn U₂ (m + 1)), (∀ x ∈ V, (η : DifferentialForm (Eucl P) (m + 1)) x = (η' : DifferentialForm (Eucl P) (m + 1)) x) → X η = A η') → X.boundary.mass ≤ A.boundary.massOn W := by
+  intro P m U₁ U₂ W V X A hW hWU hV hVW hXA
+  -- Step 1: a compact `C = cthickening δ (closure V) ⊆ W` with `closure V ⊆ interior C`.
+  obtain ⟨δ, hδ, hCW⟩ := hV.exists_cthickening_subset_open hW hVW
+  have hCc : IsCompact (cthickening δ (closure V)) := hV.cthickening
+  have hVC : closure V ⊆ interior (cthickening δ (closure V)) :=
+    (self_subset_thickening hδ _).trans
+      (interior_maximal (thickening_subset_cthickening δ _) isOpen_thickening)
+  -- Step 2: smooth Urysohn: `0 ≤ χ ≤ 1`, `χ = 1` near `closure V`, `χ = 0` off `C`.
+  obtain ⟨χ, hχ1, hχ0, hχI⟩ := exists_contMDiffMap_one_nhds_of_subset_interior
+    (modelWithCornersSelf ℝ (Eucl P)) (n := ⊤) isClosed_closure hVC
+  have hχs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (χ : Eucl P → ℝ) :=
+    contMDiff_iff_contDiff.mp χ.contMDiff
+  -- Step 3: homogeneity of the Euclidean coefficient norm.
+  have hhom : ∀ (c : ℝ) (α : Covector (Eucl P) m),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs <;> simp [mul_pow]
+  -- Step 7: it suffices to bound each admissible evaluation of `∂X`.
+  refine sSup_le ?_
+  rintro _ ⟨ψ, hψ, rfl⟩
+  -- Step 4: the cut-off form `ψ' = χψ` is admissible for `M_W(∂A)`.
+  set ψf : DifferentialForm (Eucl P) m := (ψ : DifferentialForm (Eucl P) m)
+  let ψ'f : DifferentialForm (Eucl P) m := fun x => χ x • ψf x
+  have hψ'0 : ∀ x ∉ cthickening δ (closure V), ψ'f x = 0 := fun x hx => by
+    simp only [ψ'f, hχ0 x hx, zero_smul]
+  have hψ'C : tsupport ψ'f ⊆ cthickening δ (closure V) :=
+    closure_minimal (Function.support_subset_iff'.mpr hψ'0) isClosed_cthickening
+  let ψ' : TestFormOn U₂ m :=
+    ⟨ψ'f, ⟨⟨hχs.smul ψ.property.1.1, HasCompactSupport.intro hCc hψ'0⟩, hψ'C.trans (hCW.trans hWU)⟩⟩
+  have hψ'adm : ψ' ∈ massAdmissibleOn U₂ m W := by
+    refine ⟨hψ'C.trans hCW, fun x => ?_⟩
+    change covectorEuclideanNorm (χ x • ψf x) ≤ 1
+    rw [hhom, abs_of_nonneg (hχI x).1]
+    calc χ x * covectorEuclideanNorm (ψf x) ≤ 1 * 1 :=
+          mul_le_mul (hχI x).2 (hψ.2 x) (covectorEuclideanNorm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  -- Step 5: `dψ' = dψ` on `V`, since `ψ' = ψ` near every point of `closure V`.
+  have hloc : ∀ x ∈ V, extDeriv ψf x = extDeriv ψ'f x := by
+    intro x hx
+    apply Filter.EventuallyEq.extDeriv_eq
+    filter_upwards [nhds_le_nhdsSet (subset_closure hx) hχ1] with y hy
+    simp only [ψ'f, hy, one_smul]
+  -- Step 6: `∂X(ψ) = X(dψ) = A(dψ') = ∂A(ψ') ≤ M_W(∂A)`.
+  have key : X.boundary ψ = A.boundary ψ' := by
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply]
+    exact hXA _ _ hloc
+  calc ENNReal.ofReal (X.boundary ψ) = ENNReal.ofReal (A.boundary ψ') := by rw [key]
+    _ ≤ A.boundary.massOn W := A.boundary.le_massOn hψ'adm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
