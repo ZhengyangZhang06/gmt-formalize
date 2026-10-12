@@ -387,6 +387,34 @@ theorem Submission.lpf_lli_countable_lipschitz_cover : ∀ (P Q : ℕ) (U : Set 
     obtain ⟨y, ⟨i, rfl⟩, hxy⟩ := mem_iUnion₂.1 (hUT hx)
     exact mem_iUnion.2 ⟨i, hxy⟩
 
+/-- Disjoint Lipschitz pieces: if `u` is locally Lipschitz on an open `Ω ⊆ ℝⁿ` and `D ⊆ Ω` is
+`Lⁿ`-null-measurable, then `D` is covered by pairwise disjoint null-measurable `B m ⊆ D ∩ V m`,
+where the `V m ⊆ Ω` are open and `u` is `K m`-Lipschitz on `V m`. -/
+theorem Submission.lpf_raf_lla_disjoint_lipschitz_pieces : ∀ (n Q : ℕ) (Ω D : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u → D ⊆ Ω → NullMeasurableSet D (volume : Measure (Eucl n)) → ∃ (V B : ℕ → Set (Eucl n)) (K : ℕ → ℝ≥0), (∀ m, IsOpen (V m)) ∧ (∀ m, V m ⊆ Ω) ∧ (∀ m, LipschitzOnWith (K m) u (V m)) ∧ (∀ m, B m ⊆ D ∩ V m) ∧ Pairwise (Function.onFun Disjoint B) ∧ (∀ m, NullMeasurableSet (B m) (volume : Measure (Eucl n))) ∧ D ⊆ ⋃ m, B m := by
+  intro n Q Ω D u hΩ hu hDΩ hD
+  -- Step 1: countable Lipschitz cover: open `O m` cover `Ω`, `u` is `K m`-Lipschitz on `O m ∩ Ω`.
+  obtain ⟨O, K, hO, hΩO, hK⟩ := Submission.lpf_lli_countable_lipschitz_cover n Q Ω u hu
+  -- Step 2: the open pieces `V m = O m ∩ Ω` lie in `Ω` and cover `Ω`.
+  have hVo : ∀ m, IsOpen (O m ∩ Ω) := fun m => (hO m).inter hΩ
+  have hΩV : Ω ⊆ ⋃ m, O m ∩ Ω := fun x hx => by
+    obtain ⟨m, hm⟩ := mem_iUnion.1 (hΩO hx)
+    exact mem_iUnion.2 ⟨m, hm, hx⟩
+  -- Steps 3–4: `W m = disjointed V m` and `B m = D ∩ W m`.
+  refine ⟨fun m => O m ∩ Ω, fun m => D ∩ disjointed (fun m => O m ∩ Ω) m, K, hVo,
+    fun m => inter_subset_right, hK,
+    fun m => inter_subset_inter_right D (disjointed_subset (fun m => O m ∩ Ω) m),
+    fun i j hij => Disjoint.mono inter_subset_right inter_subset_right
+      (disjoint_disjointed (fun m => O m ∩ Ω) hij),
+    fun m => hD.inter
+      (MeasurableSet.disjointed (fun m => (hVo m).measurableSet) m).nullMeasurableSet,
+    fun x hx => ?_⟩
+  -- Step 4(d): `x ∈ D ⊆ Ω ⊆ ⋃ V m = ⋃ W m`, so `x ∈ D ∩ W m = B m` for some `m`.
+  have hxW : x ∈ ⋃ m, disjointed (fun m => O m ∩ Ω) m := by
+    rw [iUnion_disjointed]
+    exact hΩV (hDΩ hx)
+  obtain ⟨m, hm⟩ := mem_iUnion.1 hxW
+  exact mem_iUnion.2 ⟨m, hx, hm⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
