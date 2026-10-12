@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a50e7ee21fc6e806f71ce4bff07f41912b329fa62f734b5b68c861791d39639a",
+  "git_delta": {
+    "base_commit": "bfc799fe30bfad88e6e8b250d05a376c15a511ec",
+    "candidate_commit": "360df6808c71cfed86f2a7a1baf2d251e8369210",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_zd_finite_dirac_im",
+    "diff_sha256": "2a75b66b8128abdcc65fe2488ca79de72a97117fcfe8f9f2e822a8bdbf0e3990",
+    "source_sha256": "4ceb1540043f26d7c61dc8b8688049217a95cf40fe57266e110603536d2d551d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_zd_finite_dirac_im",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)) (D : Finset (Eucl P)) (a : Eucl P → ℤ), (↑D : Set (Eucl P)) ⊆ U → ∃ Y : GeometricCurrentOn U 0, IsIntegerMultiplicity Y ∧ ∀ ω : TestFormOn U 0, Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
