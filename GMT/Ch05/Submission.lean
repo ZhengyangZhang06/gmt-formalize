@@ -458,6 +458,71 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Continuous extension from a dense set with the same Hölder modulus, used for the `C^{1,α}`
+conclusion in the proof of Simon Ch. 5, Theorem 5.2 (pp. 121–123).  Let `F : ℝⁿ → L(ℝᵐ, ℝᵏ)`
+satisfy `|F(x) − F(y)| ≤ M (‖x − y‖/R)^α` on `Z` (Hilbert–Schmidt norm, `α > 0`), and let
+`S ⊆ closure Z`.  Then `g = extendFrom Z F`, the limit of `F` along `Z`, is continuous on `S`,
+agrees with `F` on `Z`, and satisfies the same bound on `S`.  Since `‖·‖ ≤ |·|` and
+`κ(t) = M (t/R)^α` is continuous with `κ(0) = 0`, the image of `𝓝[Z] x` under `F` is Cauchy, so
+it converges in the complete space `L(ℝᵐ, ℝᵏ)`; the bound passes to the limit along
+`𝓝[Z] x ×ˢ 𝓝[Z] y` because `|·|` is continuous. -/
+theorem allard52_c1h_holder_extension : ∀ (n m k : ℕ) (F : Rn n → (Rn m →L[ℝ] Rn k)) (S Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → S ⊆ closure Z → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (F x - F y) ≤ M * (‖x - y‖ / R) ^ α) → ∃ g : Rn n → (Rn m →L[ℝ] Rn k), ContinuousOn g S ∧ (∀ x ∈ Z, g x = F x) ∧ ∀ x ∈ S, ∀ y ∈ S, hsNorm (g x - g y) ≤ M * (‖x - y‖ / R) ^ α := by
+  intro n m k F S Z M R α _hM _hR hα hSZ hF
+  obtain ⟨hop, hcont⟩ := Submission.allard52_c1h_opNorm_le_hsNorm_continuous m k
+  -- The modulus `κ(t) = M (t/R)^α` is continuous, and `κ(0) = 0` since `α ≠ 0`.
+  have hκc : Continuous fun t : ℝ => M * (t / R) ^ α :=
+    continuous_const.mul ((Real.continuous_rpow_const hα.le).comp (continuous_id.div_const R))
+  have hκ0 : M * ((0 : ℝ) / R) ^ α = 0 := by rw [zero_div, Real.zero_rpow hα.ne', mul_zero]
+  -- `κ(‖p₁ − p₂‖) → κ(‖x − y‖)` along `𝓝[Z] x ×ˢ 𝓝[Z] y = 𝓝[Z ×ˢ Z] (x, y)`.
+  have hmod : ∀ x y : Rn n, Tendsto (fun p : Rn n × Rn n => M * (‖p.1 - p.2‖ / R) ^ α)
+      (𝓝[Z] x ×ˢ 𝓝[Z] y) (𝓝 (M * (‖x - y‖ / R) ^ α)) := by
+    intro x y
+    rw [← nhdsWithin_prod_eq]
+    exact ((hκc.comp (continuous_fst.sub continuous_snd).norm).tendsto (x, y)).mono_left
+      nhdsWithin_le_nhds
+  -- The hypothesis holds eventually along `𝓝[Z] x ×ˢ 𝓝[Z] y`, as `Z ×ˢ Z` belongs to it.
+  have hZ : ∀ x y : Rn n, ∀ᶠ p in 𝓝[Z] x ×ˢ 𝓝[Z] y,
+      hsNorm (F p.1 - F p.2) ≤ M * (‖p.1 - p.2‖ / R) ^ α := by
+    intro x y
+    filter_upwards [prod_mem_prod self_mem_nhdsWithin self_mem_nhdsWithin] with p hp
+    exact hF p.1 hp.1 p.2 hp.2
+  -- At `x ∈ closure Z`, `dist (F p₁) (F p₂) ≤ |F p₁ − F p₂| ≤ κ(‖p₁ − p₂‖) → κ(0) = 0` along
+  -- `𝓝[Z] x ×ˢ 𝓝[Z] x`, so `map F (𝓝[Z] x)` is Cauchy and converges.
+  have hlim : ∀ x ∈ closure Z, ∃ A, Tendsto F (𝓝[Z] x) (𝓝 A) := by
+    intro x hx
+    have := mem_closure_iff_nhdsWithin_neBot.1 hx
+    refine cauchy_map_iff_exists_tendsto.1 (cauchy_map_iff.2 ⟨inferInstance, ?_⟩)
+    have h0 := hmod x x
+    rw [sub_self, norm_zero, hκ0] at h0
+    refine tendsto_uniformity_iff_dist_tendsto_zero.2
+      (squeeze_zero' (Eventually.of_forall fun _ => dist_nonneg) ?_ h0)
+    filter_upwards [hZ x x] with p hp
+    exact (dist_eq_norm _ _).trans_le ((hop _).trans hp)
+  have hg : ∀ x ∈ closure Z, Tendsto F (𝓝[Z] x) (𝓝 (extendFrom Z F x)) := fun x hx =>
+    tendsto_extendFrom (hlim x hx)
+  refine ⟨extendFrom Z F, continuousOn_extendFrom hSZ fun x hx => hlim x (hSZ hx),
+    fun x hx => ?_, fun x hx y hy => ?_⟩
+  · -- On `Z`, `‖F z − F x‖ ≤ κ(‖z − x‖) → 0`, so `F → F x` along `𝓝[Z] x`.
+    refine extendFrom_eq (subset_closure hx) (tendsto_iff_norm_sub_tendsto_zero.2 ?_)
+    have h0 : Tendsto (fun z : Rn n => M * (‖z - x‖ / R) ^ α) (𝓝[Z] x)
+        (𝓝 (M * (‖x - x‖ / R) ^ α)) :=
+      ((hκc.comp (continuous_id.sub continuous_const).norm).tendsto x).mono_left
+        nhdsWithin_le_nhds
+    rw [sub_self, norm_zero, hκ0] at h0
+    refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ h0
+    filter_upwards [self_mem_nhdsWithin] with z hz
+    exact (hop _).trans (hF z hz x hx)
+  · -- Pass to the limit in `|F p₁ − F p₂| ≤ κ(‖p₁ − p₂‖)` along `𝓝[Z] x ×ˢ 𝓝[Z] y`.
+    have := mem_closure_iff_nhdsWithin_neBot.1 (hSZ hx)
+    have := mem_closure_iff_nhdsWithin_neBot.1 (hSZ hy)
+    exact le_of_tendsto_of_tendsto ((hcont.tendsto _).comp
+      (((hg x (hSZ hx)).comp tendsto_fst).sub ((hg y (hSZ hy)).comp tendsto_snd)))
+      (hmod x y) (hZ x y)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
