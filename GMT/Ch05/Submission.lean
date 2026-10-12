@@ -5193,7 +5193,7 @@ theorem any_radius_monotonicity_bounds : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : 
     hLp hdens hθ1 h0supp.2
     ⟨EuclideanSpace.single ⟨0, by omega⟩ 1, by rw [PiLp.norm_single, norm_one]⟩
   exact ⟨k1, fun y hy => k2 y hy.2, k3⟩
-set_option maxHeartbeats 1000000 in
+
 /-- **Mass-ratio pinching at a fixed scale** (node `root.allard_any_radius-a1.pinching-a1`;
 Simon Ch. 5, Theorem 6.1 used for Remark 5.3).  Assuming Theorem 6.1, for `γ ∈ (0, 1)` and
 `ε ∈ (0, 1/4]` there are `δP > 0` and `cs ∈ (0, (1 - γ)/16]` such that 2.3 with `δ ≤ δP` gives
@@ -5206,48 +5206,50 @@ with outer radius `(1 - κ₀) ρ` gives the bound.  Otherwise put `R = |y|/(1 -
 `ξ = y/R`, `ρ = θ₀`, `τ = 2λ`.  (M1) and the centre bounds control the comparison ball
 `B_{2λθ₀R}(2λ y)`, and (M1) moves the pinching from `B_{(1-δ̃^{1/4})θ₀R}(y)` down to `B_{cs ρ}(y)`.
 Every smallness condition on `δ` is a limit as `δ → 0⁺`; the `δ̃^{1/4} |log λ|` term uses
-`tendsto_log_mul_rpow_nhdsGT_zero`. -/
+`tendsto_log_mul_rpow_nhdsGT_zero`.  The elementary inequalities are closed by explicit order
+lemmas (or `linarith only`), which keeps the proof within the default heartbeat budget. -/
 theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ γ ε : ℝ, 0 < γ → γ < 1 → 0 < ε → ε ≤ 1 / 4 → ∃ δP cs : ℝ, 0 < δP ∧ 0 < cs ∧ cs ≤ (1 - γ) / 16 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → ∀ y ∈ V.support ∩ closedBall 0 ((1 + γ) / 2 * ρ), V.weight (closedBall y (cs * ρ)) ≤ ENNReal.ofReal ((1 + ε) * (unitBallVolume n * (cs * ρ) ^ n)) := by
   intro h61 n ℓ hn p hp γ ε hγ0 hγ1 hε0 hε4
-  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
-  have hp0 : 0 < p := by linarith
-  have hp1 : 1 < p := by linarith
-  have hpn : 0 < p - n := by linarith
+  have hn1 : (1 : ℝ) ≤ n := Nat.one_le_cast.mpr hn
+  have hp1 : 1 < p := hn1.trans_lt hp
+  have hp0 : 0 < p := zero_lt_one.trans hp1
+  have hpn : 0 < p - n := sub_pos.mpr hp
   /- `ω = ω_n > 0`. -/
   have hω0' : 0 < unitBallVolume n := by
     unfold unitBallVolume
     exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
   obtain ⟨ω, hω⟩ : ∃ ω : ℝ, unitBallVolume n = ω := ⟨_, rfl⟩
   have hω0 : 0 < ω := hω ▸ hω0'
+  have h2ω : 0 < 2 * ω := mul_pos two_pos hω0
   rw [hω]
   /- The constant `C₉ = C(n, ℓ, 2ω_n)` of Theorem 6.1. -/
-  obtain ⟨C₉, hC₉⟩ := h61 n ℓ hn (2 * ω) (by positivity)
+  obtain ⟨C₉, hC₉⟩ := h61 n ℓ hn (2 * ω) h2ω
   rw [hω] at hC₉
   /- `θ₀ = (1 - γ)/8`. -/
   obtain ⟨θ₀, hθ₀⟩ : ∃ θ₀ : ℝ, θ₀ = (1 - γ) / 8 := ⟨_, rfl⟩
-  have hθ₀0 : 0 < θ₀ := by rw [hθ₀]; linarith
-  have hθ₀8 : θ₀ < 1 / 8 := by rw [hθ₀]; linarith
+  have hθ₀0 : 0 < θ₀ := by rw [hθ₀]; exact div_pos (sub_pos.mpr hγ1) (by norm_num)
+  have hθ₀8 : θ₀ < 1 / 8 := by rw [hθ₀]; linarith only [hγ0]
   /- `κ₀ ∈ (0, 1/4]` with `(1 - κ₀)⁻ⁿ < 1 + ε`. -/
   obtain ⟨κ₀, hκ₀0, hκ₀4, hκ₀ε⟩ : ∃ κ₀ : ℝ, 0 < κ₀ ∧ κ₀ ≤ 1 / 4 ∧ ((1 - κ₀) ^ n)⁻¹ < 1 + ε := by
     have h1 : Tendsto (fun k : ℝ => ((1 - k) ^ n)⁻¹) (𝓝[>] 0) (𝓝 1) := by
       have h : Tendsto (fun k : ℝ => ((1 - k) ^ n)⁻¹) (𝓝 0) (𝓝 (((1 - 0) ^ n)⁻¹)) :=
-        ((tendsto_const_nhds.sub tendsto_id).pow n).inv₀ (by simp)
-      refine (h.mono_left nhdsWithin_le_nhds).mono_right (le_of_eq ?_)
-      congr 1
-      simp
-    have h2 := h1.eventually_lt_const (by linarith : (1 : ℝ) < 1 + ε)
+        ((tendsto_const_nhds.sub tendsto_id).pow n).inv₀ (by rw [sub_zero, one_pow]; exact one_ne_zero)
+      rw [sub_zero, one_pow, inv_one] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    have h2 := h1.eventually_lt_const (lt_add_of_pos_right 1 hε0)
     have h3 : ∀ᶠ k in 𝓝[>] (0 : ℝ), k < 1 / 4 :=
       (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id).eventually_lt_const (by norm_num)
     obtain ⟨k, hk1, hk2, hk3⟩ := (h2.and (h3.and eventually_mem_nhdsWithin)).exists
     exact ⟨k, hk3, hk2.le, hk1⟩
+  have hκ1 : 0 < 1 - κ₀ := by linarith only [hκ₀4]
   /- `cs = κ₀ θ₀ / 2`. -/
   obtain ⟨cs, hcs⟩ : ∃ cs : ℝ, cs = κ₀ * θ₀ / 2 := ⟨_, rfl⟩
-  have hcs0 : 0 < cs := by rw [hcs]; positivity
+  have hcs0 : 0 < cs := by rw [hcs]; exact half_pos (mul_pos hκ₀0 hθ₀0)
   have hcs16 : cs ≤ (1 - γ) / 16 := by
+    have h1 : κ₀ * θ₀ ≤ 1 / 4 * θ₀ := mul_le_mul_of_nonneg_right hκ₀4 hθ₀0.le
     rw [hcs]
-    have : κ₀ * θ₀ ≤ 1 / 4 * θ₀ := mul_le_mul_of_nonneg_right hκ₀4 hθ₀0.le
-    rw [hθ₀] at this ⊢
-    linarith
+    rw [hθ₀] at h1 ⊢
+    linarith only [h1, hγ1]
   /- The quantities depending on `δ`: `Λ = 4pδ/(p - n) = δ/κ`, the monotonicity constants
   `e^{2Λ}` and `2e^Λ Λ`, the two-sided density bounds `Up`, `Lo` at the centre, the Hölder constant
   `KH = (2ω_n)^{1 - 1/p}`, and `lam = Up - Lo + KH δ` (used both as `λ` and as `δ` in 6.1). -/
@@ -5258,36 +5260,34 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
   obtain ⟨Lo, hLo⟩ : ∃ Lo : ℝ → ℝ, ∀ d, Lo d = Real.exp (-Lam d) * (ω - Lam d) / ω :=
     ⟨_, fun _ => rfl⟩
   obtain ⟨KH, hKH⟩ : ∃ KH : ℝ, KH = (2 * ω) ^ (1 - 1 / p) := ⟨_, rfl⟩
-  have hKH0 : 0 < KH := by rw [hKH]; positivity
+  have hKH0 : 0 < KH := by rw [hKH]; exact Real.rpow_pos_of_pos h2ω _
   obtain ⟨lam, hlam⟩ : ∃ lam : ℝ → ℝ, ∀ d, lam d = Up d - Lo d + KH * d := ⟨_, fun _ => rfl⟩
   obtain ⟨qq, hqq⟩ : ∃ qq : ℝ → ℝ, ∀ d, qq d = lam d ^ (1 / 4 : ℝ) := ⟨_, fun _ => rfl⟩
   /- Elementary bounds for `d ≥ 0`. -/
-  have hLam0 : ∀ d, 0 ≤ d → 0 ≤ Lam d := fun d hd => by rw [hLam]; positivity
+  have hLam0 : ∀ d, 0 ≤ d → 0 ≤ Lam d := fun d hd => by
+    rw [hLam]; exact div_nonneg (mul_nonneg (mul_nonneg zero_le_four hp0.le) hd) hpn.le
   have hea1 : ∀ d, 0 ≤ d → 1 ≤ ea d := fun d hd => by
-    rw [hea]; exact Real.one_le_exp (by linarith [hLam0 d hd])
+    rw [hea]; exact Real.one_le_exp (mul_nonneg zero_le_two (hLam0 d hd))
   have heb0 : ∀ d, 0 ≤ d → 0 ≤ eb d := fun d hd => by
-    rw [heb]; have := hLam0 d hd; positivity
+    rw [heb]; exact mul_nonneg (mul_nonneg zero_le_two (Real.exp_pos _).le) (hLam0 d hd)
   have hUp1 : ∀ d, 0 ≤ d → 1 ≤ Up d := fun d hd => by
     rw [hUp]
-    have h1 := hea1 d hd
-    have h2 : 0 ≤ eb d / ω := div_nonneg (heb0 d hd) hω0.le
-    have h3 : ea d ≤ ea d * (1 + d) := le_mul_of_one_le_right (by linarith) (by linarith)
-    linarith
+    exact le_add_of_le_of_nonneg ((hea1 d hd).trans (le_mul_of_one_le_right
+      (zero_le_one.trans (hea1 d hd)) (le_add_of_nonneg_right hd))) (div_nonneg (heb0 d hd) hω0.le)
   have hLo1 : ∀ d, 0 ≤ d → Lo d ≤ 1 := fun d hd => by
     rw [hLo, div_le_one hω0]
     have h1 := hLam0 d hd
-    have h2 : Real.exp (-Lam d) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-    have h3 := Real.exp_pos (-Lam d)
     calc Real.exp (-Lam d) * (ω - Lam d) ≤ Real.exp (-Lam d) * ω :=
-          mul_le_mul_of_nonneg_left (by linarith) h3.le
-      _ ≤ 1 * ω := mul_le_mul_of_nonneg_right h2 hω0.le
+          mul_le_mul_of_nonneg_left (sub_le_self ω h1) (Real.exp_pos _).le
+      _ ≤ 1 * ω :=
+          mul_le_mul_of_nonneg_right (Real.exp_le_one_iff.mpr (neg_nonpos.mpr h1)) hω0.le
       _ = ω := one_mul ω
   have hlam_pos : ∀ d, 0 < d → 0 < lam d := fun d hd => by
     rw [hlam]
-    have := hUp1 d hd.le
-    have := hLo1 d hd.le
-    have : 0 < KH * d := mul_pos hKH0 hd
-    linarith
+    have h1 := hUp1 d hd.le
+    have h2 := hLo1 d hd.le
+    have h3 : 0 < KH * d := mul_pos hKH0 hd
+    linarith only [h1, h2, h3]
   /- Limits as `d → 0⁺`. -/
   have tid : Tendsto (fun d : ℝ => d) (𝓝[>] 0) (𝓝 0) :=
     tendsto_nhdsWithin_of_tendsto_nhds tendsto_id
@@ -5335,17 +5335,15 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
   have tA : Tendsto (fun d => ea d * ((1 + d) * ω * ((1 - κ₀) ^ n)⁻¹) + eb d) (𝓝[>] 0)
       (𝓝 (ω * ((1 - κ₀) ^ n)⁻¹)) := by
     have h := (tea.mul (((tid.const_add 1).mul_const ω).mul_const ((1 - κ₀) ^ n)⁻¹)).add teb
-    refine h.mono_right (le_of_eq ?_)
-    congr 1
-    ring
+    simp only [add_zero, one_mul] at h
+    exact h
   have tB : Tendsto (fun d => ea d * (((1 - qq d) ^ n)⁻¹ * (ea d * (Up d * ω * (1 + 4 * lam d) ^ n) +
       eb d + max C₉ 0 * (qq d * |Real.log (lam d)|) / θ₀ ^ n)) + eb d) (𝓝[>] 0) (𝓝 ω) := by
-    have h := (tea.mul ((((tqq.const_sub 1).pow n).inv₀ (by simp)).mul
+    have h := (tea.mul ((((tqq.const_sub 1).pow n).inv₀ (by rw [sub_zero, one_pow]; exact one_ne_zero)).mul
       (((tea.mul ((tUp.mul_const ω).mul (((tlam.const_mul 4).const_add 1).pow n))).add teb).add
         ((tlog.const_mul (max C₉ 0)).div_const (θ₀ ^ n))))).add teb
-    refine h.mono_right (le_of_eq ?_)
-    congr 1
-    simp
+    simp only [sub_zero, one_pow, inv_one, one_mul, mul_zero, add_zero, mul_one, zero_div] at h
+    exact h
   /- The finitely many smallness conditions on `δ`, all of which hold for small `δ > 0`. -/
   obtain ⟨P, hP⟩ : ∃ P : ℝ → Prop, ∀ d, P d ↔ (d ≤ (p - n) / (4 * p) ∧ d ≤ 1 / 4 ∧ Up d ≤ 2 ∧
       lam d < 1 / 4 ∧ qq d ≤ 1 / 2 ∧
@@ -5354,22 +5352,24 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
         max C₉ 0 * (qq d * |Real.log (lam d)|) / θ₀ ^ n)) + eb d ≤ (1 + ε) * ω) :=
     ⟨_, fun _ => Iff.rfl⟩
   have hev : ∀ᶠ d in 𝓝[>] (0 : ℝ), P d := by
-    have e1 := tid.eventually_lt_const (show (0 : ℝ) < (p - n) / (4 * p) by positivity)
+    have e1 := tid.eventually_lt_const (div_pos hpn (mul_pos four_pos hp0))
     have e2 := tid.eventually_lt_const (show (0 : ℝ) < 1 / 4 by norm_num)
     have e3 := tUp.eventually_lt_const (show (1 : ℝ) < 2 by norm_num)
     have e4 := tlam.eventually_lt_const (show (0 : ℝ) < 1 / 4 by norm_num)
     have e5 := tqq.eventually_lt_const (show (0 : ℝ) < 1 / 2 by norm_num)
     have e6 := tA.eventually_lt_const (show ω * ((1 - κ₀) ^ n)⁻¹ < (1 + ε) * ω by
       rw [mul_comm]; exact mul_lt_mul_of_pos_right hκ₀ε hω0)
-    have e7 := tB.eventually_lt_const (show ω < (1 + ε) * ω by linarith [mul_pos hε0 hω0])
+    have e7 := tB.eventually_lt_const (show ω < (1 + ε) * ω by
+      have h := mul_pos hε0 hω0
+      linarith only [h])
     filter_upwards [e1, e2, e3, e4, e5, e6, e7] with d h1 h2 h3 h4 h5 h6 h7
     exact (hP d).mpr ⟨h1.le, h2.le, h3.le, h4, h5.le, h6.le, h7.le⟩
   obtain ⟨δP, hδP0, hδP⟩ : ∃ δP > 0, ∀ d, 0 < d → d ≤ δP → P d := by
     rw [eventually_nhdsWithin_iff, Metric.eventually_nhds_iff] at hev
     obtain ⟨r, hr0, hr⟩ := hev
-    refine ⟨r / 2, by positivity, fun d hd0 hdP => hr ?_ hd0⟩
+    refine ⟨r / 2, half_pos hr0, fun d hd0 hdP => hr ?_ hd0⟩
     rw [Real.dist_eq, sub_zero, abs_of_pos hd0]
-    linarith
+    exact hdP.trans_lt (half_lt_self hr0)
   refine ⟨δP, cs, hδP0, hcs0, hcs16, ?_⟩
   /- Fix the data. -/
   intro U hU V H δ ρ hδ0 hδP' hA y hy
@@ -5381,12 +5381,14 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
   rw [hω] at hmass
   have hea0 : 0 ≤ ea δ := zero_le_one.trans (hea1 δ hδ0.le)
   have heb0' : 0 ≤ eb δ := heb0 δ hδ0.le
+  have hρn : 0 < ρ ^ n := pow_pos hρ n
   /- Finiteness of masses of balls in `B_ρ(0)`. -/
   have hfinρ : V.weight (closedBall 0 ρ) ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hmass
   have hfin : ∀ x t, closedBall x t ⊆ closedBall 0 ρ → V.weight (closedBall x t) ≠ ⊤ :=
     fun x t h => ne_top_of_le_ne_top hfinρ (measure_mono h)
   have hmassR : (V.weight (closedBall 0 ρ)).toReal ≤ (1 + δ) * (ω * ρ ^ n) :=
-    ENNReal.toReal_le_of_le_ofReal (by positivity) hmass
+    ENNReal.toReal_le_of_le_ofReal
+      (mul_nonneg (zero_le_one.trans (le_add_of_nonneg_right hδ0.le)) (mul_pos hω0 hρn).le) hmass
   /- (M1) with the outer radius included: `s⁻ⁿ μ(B_s(z)) ≤ e^{2Λ} R⁻ⁿ μ(B_R(z)) + 2e^Λ Λ`. -/
   have M1' : ∀ (z : Amb n ℓ) (Rz s : ℝ), 0 < s → s ≤ Rz → closedBall z Rz ⊆ closedBall 0 ρ →
       (V.weight (closedBall z s)).toReal / s ^ n ≤
@@ -5411,40 +5413,44 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
             have hmono : (V.weight (closedBall z r)).toReal ≤ (V.weight (closedBall z Rz)).toReal :=
               ENNReal.toReal_mono (hfin z Rz hsub)
                 (measure_mono (closedBall_subset_closedBall hr.2.le))
-            exact add_le_add (mul_le_mul_of_nonneg_left
-              (div_le_div_of_nonneg_right hmono (by positivity)) hea0) le_rfl
-    · have h1 : 0 ≤ (V.weight (closedBall z s)).toReal / s ^ n := by positivity
-      have h2 := mul_le_mul_of_nonneg_right (hea1 δ hδ0.le) h1
-      linarith
+            exact add_le_add_left (mul_le_mul_of_nonneg_left
+              (div_le_div_of_nonneg_right hmono (pow_pos hr0 n).le) hea0) _
+    · have h1 : 0 ≤ (V.weight (closedBall z s)).toReal / s ^ n :=
+        div_nonneg ENNReal.toReal_nonneg (pow_pos hs n).le
+      calc (V.weight (closedBall z s)).toReal / s ^ n
+          = 1 * ((V.weight (closedBall z s)).toReal / s ^ n) := (one_mul _).symm
+        _ ≤ ea δ * ((V.weight (closedBall z s)).toReal / s ^ n) :=
+          mul_le_mul_of_nonneg_right (hea1 δ hδ0.le) h1
+        _ ≤ ea δ * ((V.weight (closedBall z s)).toReal / s ^ n) + eb δ :=
+          le_add_of_nonneg_right heb0'
   /- Step 1a: two-sided density bounds at the centre. -/
   have hup : ∀ t, 0 < t → t ≤ ρ → (V.weight (closedBall 0 t)).toReal ≤ Up δ * ω * t ^ n := by
     intro t ht htρ
     have h1 := M1' 0 ρ t ht htρ subset_rfl
     have h2 : (V.weight (closedBall 0 ρ)).toReal / ρ ^ n ≤ (1 + δ) * ω := by
-      rw [div_le_iff₀ (by positivity)]
-      linarith
+      rw [div_le_iff₀ hρn, mul_assoc]
+      exact hmassR
     have h3 : (V.weight (closedBall 0 t)).toReal / t ^ n ≤ Up δ * ω := by
       calc (V.weight (closedBall 0 t)).toReal / t ^ n ≤ ea δ * ((1 + δ) * ω) + eb δ :=
-            h1.trans (by gcongr)
-        _ = Up δ * ω := by rw [hUp]; field_simp
-    rwa [div_le_iff₀ (by positivity)] at h3
+            h1.trans (add_le_add_left (mul_le_mul_of_nonneg_left h2 hea0) _)
+        _ = Up δ * ω := by
+            rw [hUp, add_mul (ea δ * (1 + δ)), div_mul_cancel₀ _ hω0.ne', mul_assoc (ea δ)]
+    rwa [div_le_iff₀ (pow_pos ht n)] at h3
   have hlo : ∀ t, 0 < t → t < ρ → Lo δ * ω * t ^ n ≤ (V.weight (closedBall 0 t)).toReal := by
     intro t ht htρ
     have h1 := M2 0 h0supp ρ t ht htρ subset_rfl
-    have h2 : Lo δ * ω = Real.exp (-Lam δ) * (ω - Lam δ) := by rw [hLo]; field_simp
-    rw [h2]
+    rw [hLo, div_mul_cancel₀ _ hω0.ne']
     exact h1
   have hratio : ∀ t, 0 < t → t < ρ →
       Lo δ ≤ (V.weight (closedBall 0 t)).toReal / (ω * t ^ n) ∧
         (V.weight (closedBall 0 t)).toReal / (ω * t ^ n) ≤ Up δ := by
     intro t ht htρ
+    have hωt : 0 < ω * t ^ n := mul_pos hω0 (pow_pos ht n)
     constructor
-    · rw [le_div_iff₀ (by positivity)]
-      have := hlo t ht htρ
-      linarith
-    · rw [div_le_iff₀ (by positivity)]
-      have := hup t ht htρ.le
-      linarith
+    · rw [le_div_iff₀ hωt, ← mul_assoc]
+      exact hlo t ht htρ
+    · rw [div_le_iff₀ hωt, ← mul_assoc]
+      exact hup t ht htρ.le
   /- Step 1b: `t^{1-n} ∫_{B_t(0)} |H| dμ ≤ KH δ` for `0 < t ≤ ρ` (Hölder). -/
   have hHint : IntegrableOn H (closedBall 0 ρ) V.weight :=
     hHmc.1.integrableOn_compact_subset hBU (isCompact_closedBall 0 ρ)
@@ -5453,19 +5459,22 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
   have hJb : ENNReal.ofReal (ρ ^ (1 - n / p)) * J ≤ ENNReal.ofReal δ := by
     have hK' : (ENNReal.ofReal (ρ ^ (p - n)) * ∫⁻ x in closedBall 0 ρ, ‖H x‖ₑ ^ p ∂V.weight) ^
         (1 / p) ≤ ENNReal.ofReal δ := hK
-    rw [ENNReal.mul_rpow_of_nonneg _ _ (by positivity),
-      ENNReal.ofReal_rpow_of_nonneg (by positivity) (by positivity), ← Real.rpow_mul hρ.le,
-      show (p - n) * (1 / p) = 1 - n / p by field_simp] at hK'
+    rw [ENNReal.mul_rpow_of_nonneg _ _ (one_div_nonneg.mpr hp0.le),
+      ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg hρ.le _) (one_div_nonneg.mpr hp0.le),
+      ← Real.rpow_mul hρ.le, sub_mul, mul_one_div_cancel hp0.ne', mul_one_div] at hK'
     rw [hJ]
     exact hK'
   have hJtop : J ≠ ⊤ := by
     intro hJt
-    rw [hJt, ENNReal.mul_top (ENNReal.ofReal_pos.mpr (by positivity)).ne'] at hJb
+    rw [hJt, ENNReal.mul_top (ENNReal.ofReal_pos.mpr (Real.rpow_pos_of_pos hρ _)).ne'] at hJb
     exact ENNReal.ofReal_ne_top (top_le_iff.mp hJb)
   have hJreal : ρ ^ (1 - n / p) * J.toReal ≤ δ := by
     have := ENNReal.toReal_mono ENNReal.ofReal_ne_top hJb
-    rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity),
+    rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.rpow_nonneg hρ.le _),
       ENNReal.toReal_ofReal hδ0.le] at this
+  have hexp : 0 ≤ 1 - 1 / p := by
+    rw [sub_nonneg, div_le_one hp0]
+    exact hp1.le
   have hHold : ∀ t, 0 < t → t ≤ ρ → ∫⁻ x in closedBall 0 t, ‖H x‖ₑ ∂V.weight ≤
       J * ENNReal.ofReal ((2 * ω * t ^ n) ^ (1 - 1 / p)) := by
     intro t ht htρ
@@ -5475,21 +5484,20 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
     have h := eLpNorm'_le_eLpNorm'_mul_rpow_measure_univ zero_lt_one hp1.le hmeas
     unfold eLpNorm' at h
     simp only [ENNReal.rpow_one, div_one, Measure.restrict_apply_univ] at h
+    have h2t : 0 < 2 * ω * t ^ n := mul_pos h2ω (pow_pos ht n)
     have hμt : V.weight (closedBall 0 t) ≤ ENNReal.ofReal (2 * ω * t ^ n) := by
-      rw [ENNReal.le_ofReal_iff_toReal_le (hfin 0 t hsub) (by positivity)]
-      calc (V.weight (closedBall 0 t)).toReal ≤ Up δ * ω * t ^ n := hup t ht htρ
-        _ ≤ 2 * ω * t ^ n := by gcongr
-    have hexp : 0 ≤ 1 - 1 / p := by
-      rw [sub_nonneg, div_le_one hp0]
-      exact hp1.le
+      rw [ENNReal.le_ofReal_iff_toReal_le (hfin 0 t hsub) h2t.le]
+      exact (hup t ht htρ).trans (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right c3 hω0.le) (pow_pos ht n).le)
     calc ∫⁻ x in closedBall 0 t, ‖H x‖ₑ ∂V.weight
         ≤ (∫⁻ x in closedBall 0 t, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) *
             V.weight (closedBall 0 t) ^ (1 - 1 / p) := h
       _ ≤ J * ENNReal.ofReal (2 * ω * t ^ n) ^ (1 - 1 / p) := by
           rw [hJ]
-          gcongr
+          exact mul_le_mul' (ENNReal.rpow_le_rpow (lintegral_mono_set hsub)
+            (one_div_nonneg.mpr hp0.le)) (ENNReal.rpow_le_rpow hμt hexp)
       _ = J * ENNReal.ofReal ((2 * ω * t ^ n) ^ (1 - 1 / p)) := by
-          rw [ENNReal.ofReal_rpow_of_nonneg (by positivity) hexp]
+          rw [ENNReal.ofReal_rpow_of_nonneg h2t.le hexp]
   have hHbound : ∀ t, 0 < t → t ≤ ρ → (∫⁻ x in closedBall 0 t, ‖H x‖ₑ ∂V.weight) ≠ ⊤ ∧
       t ^ (1 - (n : ℝ)) * (∫⁻ x in closedBall 0 t, ‖H x‖ₑ ∂V.weight).toReal ≤ KH * δ := by
     intro t ht htρ
@@ -5497,12 +5505,13 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
     have hne : J * ENNReal.ofReal ((2 * ω * t ^ n) ^ (1 - 1 / p)) ≠ ⊤ :=
       ENNReal.mul_ne_top hJtop ENNReal.ofReal_ne_top
     refine ⟨ne_top_of_le_ne_top hne h1, ?_⟩
+    have h2t : 0 ≤ 2 * ω * t ^ n := (mul_pos h2ω (pow_pos ht n)).le
     have h2 : (∫⁻ x in closedBall 0 t, ‖H x‖ₑ ∂V.weight).toReal ≤
         J.toReal * (2 * ω * t ^ n) ^ (1 - 1 / p) := by
       have := ENNReal.toReal_mono hne h1
-      rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)] at this
+      rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.rpow_nonneg h2t _)] at this
     have hid : t ^ (1 - (n : ℝ)) * (2 * ω * t ^ n) ^ (1 - 1 / p) = KH * t ^ (1 - n / p) := by
-      rw [hKH, Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_natCast t n,
+      rw [hKH, Real.mul_rpow h2ω.le (pow_pos ht n).le, ← Real.rpow_natCast t n,
         ← Real.rpow_mul ht.le, mul_left_comm, ← Real.rpow_add ht]
       congr 2
       ring
@@ -5511,74 +5520,75 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
       rw [sub_nonneg, div_le_one hp0]
       exact hp.le
     calc t ^ (1 - (n : ℝ)) * (∫⁻ x in closedBall 0 t, ‖H x‖ₑ ∂V.weight).toReal
-        ≤ t ^ (1 - (n : ℝ)) * (J.toReal * (2 * ω * t ^ n) ^ (1 - 1 / p)) := by gcongr
-      _ = J.toReal * (KH * t ^ (1 - n / p)) := by rw [← hid]; ring
-      _ ≤ J.toReal * (KH * ρ ^ (1 - n / p)) := by gcongr
-      _ = KH * (ρ ^ (1 - n / p) * J.toReal) := by ring
-      _ ≤ KH * δ := by gcongr
+        ≤ t ^ (1 - (n : ℝ)) * (J.toReal * (2 * ω * t ^ n) ^ (1 - 1 / p)) :=
+          mul_le_mul_of_nonneg_left h2 (Real.rpow_nonneg ht.le _)
+      _ = J.toReal * (KH * t ^ (1 - n / p)) := by rw [← hid, mul_left_comm]
+      _ ≤ J.toReal * (KH * ρ ^ (1 - n / p)) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left htp hKH0.le) ENNReal.toReal_nonneg
+      _ = KH * (ρ ^ (1 - n / p) * J.toReal) := by rw [mul_comm J.toReal, mul_assoc]
+      _ ≤ KH * δ := mul_le_mul_of_nonneg_left hJreal hKH0.le
   /- The point `y`. -/
   obtain ⟨-, hyB⟩ := hy
   rw [mem_closedBall_zero_iff] at hyB
-  have hyρ : ‖y‖ ≤ ρ := hyB.trans (mul_le_of_le_one_left hρ.le (by linarith))
+  have hγρ : γ * ρ ≤ ρ := mul_le_of_le_one_left hρ.le hγ1.le
+  have hyρ : ‖y‖ ≤ ρ := by linarith only [hyB, hγρ]
+  have hcsρ : 0 < cs * ρ := mul_pos hcs0 hρ
   have hsubcs : closedBall y (cs * ρ) ⊆ closedBall 0 ρ := by
     apply closedBall_subset_closedBall'
     rw [dist_zero_right]
-    have : cs * ρ ≤ (1 - γ) / 16 * ρ := mul_le_mul_of_nonneg_right hcs16 hρ.le
-    have : γ * ρ ≤ ρ := mul_le_of_le_one_left hρ.le hγ1.le
-    linarith
+    have h1 : cs * ρ ≤ (1 - γ) / 16 * ρ := mul_le_mul_of_nonneg_right hcs16 hρ.le
+    linarith only [h1, hyB, hγρ]
   suffices hreal : (V.weight (closedBall y (cs * ρ))).toReal / (cs * ρ) ^ n ≤ (1 + ε) * ω by
-    rw [ENNReal.le_ofReal_iff_toReal_le (hfin y _ hsubcs) (by positivity)]
-    rw [div_le_iff₀ (by positivity)] at hreal
-    linarith
+    rw [ENNReal.le_ofReal_iff_toReal_le (hfin y _ hsubcs)
+      (mul_nonneg (zero_le_one.trans (le_add_of_nonneg_right hε0.le))
+        (mul_pos hω0 (pow_pos hcsρ n)).le)]
+    rwa [div_le_iff₀ (pow_pos hcsρ n), mul_assoc] at hreal
   rcases le_or_gt ‖y‖ (κ₀ * ρ) with hya | hyb
   · /- Case (a): `|y| ≤ κ₀ ρ`; (M1) at `y` with outer radius `(1 - κ₀) ρ`. -/
-    have hRa : 0 < (1 - κ₀) * ρ := by
-      have : 0 < 1 - κ₀ := by linarith
-      positivity
+    have hRa : 0 < (1 - κ₀) * ρ := mul_pos hκ1 hρ
     have hsubA : closedBall y ((1 - κ₀) * ρ) ⊆ closedBall 0 ρ := by
       apply closedBall_subset_closedBall'
       rw [dist_zero_right]
-      linarith
+      linarith only [hya]
     have hcsRa : cs * ρ ≤ (1 - κ₀) * ρ := by
-      have : cs ≤ 1 - κ₀ := by
-        have : κ₀ * θ₀ ≤ 1 / 4 * (1 / 8) := by
-          apply mul_le_mul hκ₀4 hθ₀8.le hθ₀0.le (by norm_num)
+      have h1 : cs ≤ 1 - κ₀ := by
+        have h2 : κ₀ * θ₀ ≤ 1 / 4 * (1 / 8) := mul_le_mul hκ₀4 hθ₀8.le hθ₀0.le (by norm_num)
         rw [hcs]
-        linarith
-      exact mul_le_mul_of_nonneg_right this hρ.le
-    have h1 := M1' y ((1 - κ₀) * ρ) (cs * ρ) (by positivity) hcsRa hsubA
+        linarith only [h2, hκ₀4]
+      exact mul_le_mul_of_nonneg_right h1 hρ.le
+    have h1 := M1' y ((1 - κ₀) * ρ) (cs * ρ) hcsρ hcsRa hsubA
     have h2 : (V.weight (closedBall y ((1 - κ₀) * ρ))).toReal ≤ (1 + δ) * (ω * ρ ^ n) :=
       (ENNReal.toReal_mono hfinρ (measure_mono hsubA)).trans hmassR
     have h3 : (V.weight (closedBall y ((1 - κ₀) * ρ))).toReal / ((1 - κ₀) * ρ) ^ n ≤
         (1 + δ) * ω * ((1 - κ₀) ^ n)⁻¹ := by
-      have hk : 0 < 1 - κ₀ := by linarith
-      rw [div_le_iff₀ (by positivity)]
-      calc (V.weight (closedBall y ((1 - κ₀) * ρ))).toReal ≤ (1 + δ) * (ω * ρ ^ n) := h2
-        _ = (1 + δ) * ω * ((1 - κ₀) ^ n)⁻¹ * ((1 - κ₀) * ρ) ^ n := by
-            rw [mul_pow]
-            field_simp
+      rw [div_le_iff₀ (pow_pos hRa n), mul_pow, mul_assoc ((1 + δ) * ω),
+        inv_mul_cancel_left₀ (pow_ne_zero n hκ1.ne'), mul_assoc]
+      exact h2
     calc (V.weight (closedBall y (cs * ρ))).toReal / (cs * ρ) ^ n
         ≤ ea δ * ((V.weight (closedBall y ((1 - κ₀) * ρ))).toReal / ((1 - κ₀) * ρ) ^ n) + eb δ := h1
-      _ ≤ ea δ * ((1 + δ) * ω * ((1 - κ₀) ^ n)⁻¹) + eb δ := by gcongr
+      _ ≤ ea δ * ((1 + δ) * ω * ((1 - κ₀) ^ n)⁻¹) + eb δ :=
+          add_le_add_left (mul_le_mul_of_nonneg_left h3 hea0) _
       _ ≤ (1 + ε) * ω := c6
   · /- Case (b): `|y| > κ₀ ρ`; dilate by `R = |y|/(1 - θ₀)` and apply Theorem 6.1. -/
-    have hy0 : 0 < ‖y‖ := lt_of_le_of_lt (by positivity) hyb
-    have hθ1 : 0 < 1 - θ₀ := by linarith
+    have hy0 : 0 < ‖y‖ := (mul_pos hκ₀0 hρ).trans hyb
+    have hθ1 : 0 < 1 - θ₀ := by linarith only [hθ₀8]
     obtain ⟨R, hRdef⟩ : ∃ R : ℝ, R = ‖y‖ / (1 - θ₀) := ⟨_, rfl⟩
-    have hR0 : 0 < R := by rw [hRdef]; positivity
-    have hyR : ‖y‖ = (1 - θ₀) * R := by rw [hRdef]; field_simp
+    have hR0 : 0 < R := by rw [hRdef]; exact div_pos hy0 hθ1
+    have hRn : 0 < R ^ n := pow_pos hR0 n
+    have hyR : ‖y‖ = (1 - θ₀) * R := by rw [hRdef, mul_div_cancel₀ _ hθ1.ne']
     have hRρ : R < ρ := by
-      have : (1 + γ) / 2 * ρ < (1 - θ₀) * ρ := by
+      have h1 : (1 + γ) / 2 * ρ < (1 - θ₀) * ρ := by
         apply mul_lt_mul_of_pos_right _ hρ
         rw [hθ₀]
-        linarith
-      refine lt_of_mul_lt_mul_left ?_ hθ1.le
-      linarith
+        linarith only [hγ1]
+      exact lt_of_mul_lt_mul_left ((hyR.symm.trans_le hyB).trans_lt h1) hθ1.le
     have hκR : κ₀ * ρ < R := by
-      have : ‖y‖ ≤ R := by rw [hyR]; exact mul_le_of_le_one_left hR0.le (by linarith)
-      linarith
+      have h1 : ‖y‖ ≤ R := by rw [hyR]; exact mul_le_of_le_one_left hR0.le (sub_le_self 1 hθ₀0.le)
+      exact hyb.trans_le h1
     set l := lam δ
     have hl0 : 0 < l := hlam_pos δ hδ0
+    have hl1 : l < 1 := c4.trans (by norm_num)
+    have h2l : 0 < 2 * l := mul_pos two_pos hl0
     have hq0 : 0 ≤ qq δ := by rw [hqq]; exact Real.rpow_nonneg hl0.le _
     /- The dilated varifold `V'` (centre `0`, scale `R`). -/
     obtain ⟨V', -, -, hW, -, -, hHV'⟩ := Submission.any_radius_rescaled_varifold n ℓ U hU V 0 R hR0
@@ -5599,9 +5609,9 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
     have hballR : ∀ (x : Amb n ℓ) (t : ℝ), (V'.weight (closedBall x t)).toReal =
         (R ^ n)⁻¹ * (V.weight (closedBall (R • x) (R * t))).toReal := by
       intro x t
-      rw [hball, ENNReal.toReal_mul, ENNReal.toReal_inv, ENNReal.toReal_ofReal (by positivity)]
+      rw [hball, ENNReal.toReal_mul, ENNReal.toReal_inv, ENNReal.toReal_ofReal hRn.le]
     have hinvne : (ENNReal.ofReal (R ^ n))⁻¹ ≠ ⊤ :=
-      ENNReal.inv_ne_top.mpr (ENNReal.ofReal_pos.mpr (by positivity)).ne'
+      ENNReal.inv_ne_top.mpr (ENNReal.ofReal_pos.mpr hRn).ne'
     have hballfin : ∀ (x : Amb n ℓ) (t : ℝ), closedBall (R • x) (R * t) ⊆ closedBall 0 ρ →
         V'.weight (closedBall x t) ≠ ⊤ := by
       intro x t h
@@ -5609,8 +5619,8 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
       exact ENNReal.mul_ne_top hinvne (hfin _ _ h)
     /- Hypotheses of 6.1 for `V'`. -/
     have hξ : ‖R⁻¹ • y‖ = 1 - θ₀ := by
-      rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hR0, hyR]
-      field_simp
+      rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hR0, hyR, mul_comm (1 - θ₀) R,
+        inv_mul_cancel_left₀ hR0.ne']
     have hU'open : IsOpen ((fun x => (0 : Amb n ℓ) + R • x) ⁻¹' U) :=
       hU.preimage (by fun_prop)
     have hB1 : closedBall (0 : Amb n ℓ) 1 ⊆ (fun x => (0 : Amb n ℓ) + R • x) ⁻¹' U := by
@@ -5620,16 +5630,13 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
       apply hBU
       rw [mem_closedBall_zero_iff, norm_smul, Real.norm_eq_abs, abs_of_pos hR0]
       calc R * ‖x‖ ≤ R * 1 := mul_le_mul_of_nonneg_left hx hR0.le
-        _ ≤ ρ := by linarith
+        _ ≤ ρ := (mul_one R).le.trans hRρ.le
     have hmass' : V'.weight (closedBall 0 1) ≤ ENNReal.ofReal (2 * ω) := by
       rw [ENNReal.le_ofReal_iff_toReal_le
         (hballfin 0 1 (by rw [smul_zero, mul_one]; exact closedBall_subset_closedBall hRρ.le))
-        (by positivity), hballR, smul_zero, mul_one]
-      have := hup R hR0 hRρ.le
-      rw [inv_mul_le_iff₀ (by positivity)]
-      calc (V.weight (closedBall 0 R)).toReal ≤ Up δ * ω * R ^ n := this
-        _ ≤ 2 * ω * R ^ n := by gcongr
-        _ = R ^ n * (2 * ω) := by ring
+        h2ω.le, hballR, smul_zero, mul_one, inv_mul_le_iff₀ hRn, mul_comm (R ^ n)]
+      exact (hup R hR0 hRρ.le).trans (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right c3 hω0.le) hRn.le)
     have hpinch : ∀ r ∈ Icc l 1,
         |(V'.weight (closedBall 0 1)).toReal / ω -
             (V'.weight (closedBall 0 l)).toReal / (ω * l ^ n)| +
@@ -5637,34 +5644,30 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
           l := by
       intro r hr
       have hr0 : 0 < r := hl0.trans_le hr.1
-      have hRr : R * r ≤ ρ := by
-        calc R * r ≤ R * 1 := mul_le_mul_of_nonneg_left hr.2 hR0.le
-          _ ≤ ρ := by linarith
-      have hRl : R * l < ρ := by
-        calc R * l < R * 1 := mul_lt_mul_of_pos_left (by linarith) hR0
-          _ ≤ ρ := by linarith
+      have hRr : R * r ≤ ρ := (mul_le_of_le_one_right hR0.le hr.2).trans hRρ.le
+      have hRl : R * l < ρ := (mul_lt_of_lt_one_right hR0 hl1).trans hRρ
       have e1 : (V'.weight (closedBall 0 1)).toReal / ω =
           (V.weight (closedBall 0 R)).toReal / (ω * R ^ n) := by
-        rw [hballR, smul_zero, mul_one]
-        field_simp
+        rw [hballR, smul_zero, mul_one, inv_mul_eq_div, div_div, mul_comm (R ^ n) ω]
       have e2 : (V'.weight (closedBall 0 l)).toReal / (ω * l ^ n) =
           (V.weight (closedBall 0 (R * l))).toReal / (ω * (R * l) ^ n) := by
-        rw [hballR, smul_zero, mul_pow]
-        field_simp
+        rw [hballR, smul_zero, mul_pow, inv_mul_eq_div, div_div, mul_left_comm (R ^ n) ω (l ^ n)]
       obtain ⟨a1, a2⟩ := hratio R hR0 hRρ
-      obtain ⟨b1, b2⟩ := hratio (R * l) (by positivity) hRl
+      obtain ⟨b1, b2⟩ := hratio (R * l) (mul_pos hR0 hl0) hRl
       have habs : |(V'.weight (closedBall 0 1)).toReal / ω -
           (V'.weight (closedBall 0 l)).toReal / (ω * l ^ n)| ≤ Up δ - Lo δ := by
         rw [e1, e2, abs_le]
-        constructor <;> linarith
+        constructor
+        · linarith only [a1, b2]
+        · linarith only [a2, b1]
       /- The curvature term, transported back to `V`. -/
-      obtain ⟨hfinH, hbH⟩ := hHbound (R * r) (by positivity) hRr
+      obtain ⟨hfinH, hbH⟩ := hHbound (R * r) (mul_pos hR0 hr0) hRr
       have hlint : ∫⁻ x in closedBall (0 : Amb n ℓ) r, ENNReal.ofReal ‖R • H (0 + R • x)‖
           ∂V'.weight ≤ (ENNReal.ofReal (R ^ n))⁻¹ *
             (ENNReal.ofReal R * ∫⁻ z in closedBall 0 (R * r), ‖H z‖ₑ ∂V.weight) := by
         rw [hW, Measure.restrict_smul, lintegral_smul_measure,
           Measure.restrict_map hmeasg measurableSet_closedBall, hpre, smul_zero, smul_eq_mul]
-        gcongr
+        refine mul_le_mul' le_rfl ?_
         refine (lintegral_map_le _ hmeasg.aemeasurable).trans (le_of_eq ?_)
         rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
         refine lintegral_congr fun z => ?_
@@ -5681,47 +5684,44 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
         refine (le_abs_self _).trans ((Real.norm_eq_abs _ ▸ h1).trans ?_)
         have h2 := ENNReal.toReal_mono hne hlint
         rwa [ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_inv,
-          ENNReal.toReal_ofReal (by positivity), ENNReal.toReal_ofReal hR0.le] at h2
+          ENNReal.toReal_ofReal hRn.le, ENNReal.toReal_ofReal hR0.le] at h2
       have hscale : r ^ (1 - (n : ℝ)) *
           ((R ^ n)⁻¹ * (R * (∫⁻ z in closedBall 0 (R * r), ‖H z‖ₑ ∂V.weight).toReal)) =
           (R * r) ^ (1 - (n : ℝ)) * (∫⁻ z in closedBall 0 (R * r), ‖H z‖ₑ ∂V.weight).toReal := by
         rw [Real.mul_rpow hR0.le hr0.le, Real.rpow_sub hR0, Real.rpow_one, Real.rpow_natCast]
-        field_simp
+        ring
       have hHr : r ^ (1 - (n : ℝ)) * ∫ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖
-          ∂V'.weight ≤ KH * δ := by
-        calc r ^ (1 - (n : ℝ)) * ∫ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ ∂V'.weight
-            ≤ r ^ (1 - (n : ℝ)) *
-                ((R ^ n)⁻¹ * (R * (∫⁻ z in closedBall 0 (R * r), ‖H z‖ₑ ∂V.weight).toReal)) := by
-              gcongr
-          _ = (R * r) ^ (1 - (n : ℝ)) * (∫⁻ z in closedBall 0 (R * r), ‖H z‖ₑ ∂V.weight).toReal :=
-              hscale
-          _ ≤ KH * δ := hbH
+          ∂V'.weight ≤ KH * δ :=
+        (mul_le_mul_of_nonneg_left hint (Real.rpow_nonneg hr0.le _)).trans (hscale.trans_le hbH)
       calc _ ≤ (Up δ - Lo δ) + KH * δ := add_le_add habs hHr
         _ = l := (hlam δ).symm
     /- Theorem 6.1 with `λ = δ̃ = l`, `θ = θ₀`, `ξ = y/R`, `ρ = θ₀`, `τ = 2l`. -/
-    obtain ⟨hconc, -⟩ := hC₉ l θ₀ l hl0 c4 hθ₀0 (by linarith) hl0 c4 (R⁻¹ • y) hξ _ hU'open hB1 V'
-      _ hH' hpinch hmass' θ₀ ⟨hθ₀0, le_rfl⟩ (2 * l) ⟨le_rfl, by linarith⟩
+    obtain ⟨hconc, -⟩ := hC₉ l θ₀ l hl0 c4 hθ₀0 (hθ₀8.trans (by norm_num)) hl0 c4 (R⁻¹ • y) hξ _
+      hU'open hB1 V' _ hH' hpinch hmass' θ₀ ⟨hθ₀0, le_rfl⟩ (2 * l)
+      ⟨le_rfl, by linarith only [c4]⟩
     rw [← hqq δ] at hconc
     /- Back to `V`. -/
     have hRξ : R • (R⁻¹ • y) = y := smul_inv_smul₀ hR0.ne' y
     have hRτξ : R • ((2 * l) • (R⁻¹ • y)) = (2 * l) • y := by
       rw [smul_comm, smul_inv_smul₀ hR0.ne']
     have hτy : ‖(2 * l) • y‖ ≤ 2 * l * ρ := by
-      rw [norm_smul, Real.norm_of_nonneg (by positivity)]
-      exact mul_le_mul_of_nonneg_left hyρ (by positivity)
-    have h2lρ : 2 * l * ρ ≤ 1 / 2 * ρ := mul_le_mul_of_nonneg_right (by linarith) hρ.le
+      rw [norm_smul, Real.norm_of_nonneg h2l.le]
+      exact mul_le_mul_of_nonneg_left hyρ h2l.le
+    have h2lρ : 2 * l * ρ ≤ 1 / 2 * ρ :=
+      mul_le_mul_of_nonneg_right (by linarith only [c4]) hρ.le
     have hsub2 : closedBall ((2 * l) • y) (ρ / 2) ⊆ closedBall 0 ρ := by
       apply closedBall_subset_closedBall'
       rw [dist_zero_right]
-      linarith
-    have hs2 : 0 < R * ((2 * l) * θ₀) := by positivity
+      linarith only [hτy, h2lρ]
+    have h2lθ : 0 < (2 * l) * θ₀ := mul_pos h2l hθ₀0
+    have hs2 : 0 < R * ((2 * l) * θ₀) := mul_pos hR0 h2lθ
     have hs2le : R * ((2 * l) * θ₀) ≤ ρ / 2 := by
-      have : (2 * l) * θ₀ ≤ 1 / 2 := by
+      have h1 : (2 * l) * θ₀ ≤ 1 / 2 := by
         calc (2 * l) * θ₀ ≤ 1 / 2 * 1 :=
-              mul_le_mul (by linarith) (by linarith) hθ₀0.le (by norm_num)
-          _ = 1 / 2 := by norm_num
-      calc R * ((2 * l) * θ₀) ≤ ρ * (1 / 2) := mul_le_mul hRρ.le this (by positivity) hρ.le
-        _ = ρ / 2 := by ring
+              mul_le_mul (by linarith only [c4]) (by linarith only [hθ₀8]) hθ₀0.le (by norm_num)
+          _ = 1 / 2 := mul_one _
+      calc R * ((2 * l) * θ₀) ≤ ρ * (1 / 2) := mul_le_mul hRρ.le h1 h2lθ.le hρ.le
+        _ = ρ / 2 := mul_one_div ρ 2
     have hconcR : (R ^ n)⁻¹ * (V.weight (closedBall y (R * ((1 - qq δ) * θ₀)))).toReal ≤
         ((2 * l) ^ n)⁻¹ * ((R ^ n)⁻¹ *
           (V.weight (closedBall ((2 * l) • y) (R * ((2 * l) * θ₀)))).toReal) +
@@ -5737,31 +5737,33 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
           ENNReal.ofReal_ne_top⟩
       have h := ENNReal.toReal_mono hne hconc
       rw [ENNReal.toReal_add (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin2) ENNReal.ofReal_ne_top,
-        ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity), ENNReal.toReal_ofReal',
-        hballR, hballR, hRξ, hRτξ] at h
-      refine h.trans (add_le_add le_rfl ?_)
+        ENNReal.toReal_mul, ENNReal.toReal_ofReal (inv_nonneg.mpr (pow_pos h2l n).le),
+        ENNReal.toReal_ofReal', hballR, hballR, hRξ, hRτξ] at h
+      have hql : 0 ≤ qq δ * |Real.log l| := mul_nonneg hq0 (abs_nonneg _)
+      refine h.trans (add_le_add_right ?_ _)
       apply max_le
       · rw [mul_assoc]
-        exact mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity)
-      · have : 0 ≤ max C₉ 0 := le_max_right _ _
-        positivity
+        exact mul_le_mul_of_nonneg_right (le_max_left _ _) hql
+      · exact mul_nonneg (le_max_right _ _) hql
     /- The comparison ball `B_{2lθ₀R}(2l y)`. -/
     have hm3 : (V.weight (closedBall ((2 * l) • y) (ρ / 2))).toReal / (ρ / 2) ^ n ≤
         Up δ * ω * (1 + 4 * l) ^ n := by
       have hsub3 : closedBall ((2 * l) • y) (ρ / 2) ⊆ closedBall 0 (ρ / 2 + 2 * l * ρ) := by
         apply closedBall_subset_closedBall'
         rw [dist_zero_right]
-        linarith
+        exact add_le_add_right hτy _
+      have hle : ρ / 2 + 2 * l * ρ ≤ ρ := by linarith only [h2lρ]
       have h1 : (V.weight (closedBall ((2 * l) • y) (ρ / 2))).toReal ≤
           Up δ * ω * (ρ / 2 + 2 * l * ρ) ^ n :=
-        (ENNReal.toReal_mono (hfin 0 _ (closedBall_subset_closedBall (by linarith)))
-          (measure_mono hsub3)).trans (hup _ (by positivity) (by linarith))
-      rw [div_le_iff₀ (by positivity)]
+        (ENNReal.toReal_mono (hfin 0 _ (closedBall_subset_closedBall hle))
+          (measure_mono hsub3)).trans
+          (hup _ (add_pos (half_pos hρ) (mul_pos h2l hρ)) hle)
+      rw [div_le_iff₀ (pow_pos (half_pos hρ) n)]
       calc (V.weight (closedBall ((2 * l) • y) (ρ / 2))).toReal
           ≤ Up δ * ω * (ρ / 2 + 2 * l * ρ) ^ n := h1
         _ = Up δ * ω * (1 + 4 * l) ^ n * (ρ / 2) ^ n := by
-            rw [show ρ / 2 + 2 * l * ρ = (1 + 4 * l) * (ρ / 2) by ring, mul_pow]
-            ring
+            rw [show ρ / 2 + 2 * l * ρ = (1 + 4 * l) * (ρ / 2) by ring, mul_pow,
+              ← mul_assoc (Up δ * ω)]
     obtain ⟨X, hX⟩ : ∃ X : ℝ, X = ea δ * (Up δ * ω * (1 + 4 * l) ^ n) + eb δ := ⟨_, rfl⟩
     have hm2 : (V.weight (closedBall ((2 * l) • y) (R * ((2 * l) * θ₀)))).toReal ≤
         (R * ((2 * l) * θ₀)) ^ n * X := by
@@ -5769,52 +5771,55 @@ theorem any_radius_pinching : ConicalApproximationTheorem → ∀ (n ℓ : ℕ),
       have h2 : (V.weight (closedBall ((2 * l) • y) (R * ((2 * l) * θ₀)))).toReal /
           (R * ((2 * l) * θ₀)) ^ n ≤ X := by
         rw [hX]
-        exact h1.trans (by gcongr)
-      rw [div_le_iff₀ (by positivity)] at h2
-      linarith
+        exact h1.trans (add_le_add_left (mul_le_mul_of_nonneg_left hm3 hea0) _)
+      rw [div_le_iff₀ (pow_pos hs2 n)] at h2
+      exact h2.trans_eq (mul_comm _ _)
     have hm1 : (R ^ n)⁻¹ * (V.weight (closedBall y (R * ((1 - qq δ) * θ₀)))).toReal ≤
         θ₀ ^ n * X + max C₉ 0 * (qq δ * |Real.log l|) := by
-      refine hconcR.trans (add_le_add ?_ le_rfl)
+      refine hconcR.trans (add_le_add_left ?_ _)
       calc ((2 * l) ^ n)⁻¹ * ((R ^ n)⁻¹ *
             (V.weight (closedBall ((2 * l) • y) (R * ((2 * l) * θ₀)))).toReal)
-          ≤ ((2 * l) ^ n)⁻¹ * ((R ^ n)⁻¹ * ((R * ((2 * l) * θ₀)) ^ n * X)) := by gcongr
+          ≤ ((2 * l) ^ n)⁻¹ * ((R ^ n)⁻¹ * ((R * ((2 * l) * θ₀)) ^ n * X)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hm2 (inv_nonneg.mpr hRn.le))
+              (inv_nonneg.mpr (pow_pos h2l n).le)
         _ = θ₀ ^ n * X := by
-            rw [mul_pow, mul_pow]
-            field_simp
-            ring
+            rw [mul_pow R, mul_pow (2 * l) θ₀, mul_assoc (R ^ n),
+              inv_mul_cancel_left₀ hRn.ne', mul_assoc ((2 * l) ^ n),
+              inv_mul_cancel_left₀ (pow_pos h2l n).ne']
     /- Pinching at `y` on the scale `r_y = (1 - δ̃^{1/4}) θ₀ R`. -/
-    have hq2 : 0 < 1 - qq δ := by linarith
-    have hry : 0 < R * ((1 - qq δ) * θ₀) := by positivity
+    have hq2 : 0 < 1 - qq δ := by linarith only [c5]
+    have hry : 0 < R * ((1 - qq δ) * θ₀) := mul_pos hR0 (mul_pos hq2 hθ₀0)
+    have hθn : 0 < θ₀ ^ n := pow_pos hθ₀0 n
     have hm1' : (V.weight (closedBall y (R * ((1 - qq δ) * θ₀)))).toReal /
         (R * ((1 - qq δ) * θ₀)) ^ n ≤
         ((1 - qq δ) ^ n)⁻¹ * (X + max C₉ 0 * (qq δ * |Real.log l|) / θ₀ ^ n) := by
-      rw [div_le_iff₀ (by positivity)]
-      have h := (inv_mul_le_iff₀ (by positivity : (0 : ℝ) < R ^ n)).mp hm1
-      calc (V.weight (closedBall y (R * ((1 - qq δ) * θ₀)))).toReal
-          ≤ R ^ n * (θ₀ ^ n * X + max C₉ 0 * (qq δ * |Real.log l|)) := h
-        _ = ((1 - qq δ) ^ n)⁻¹ * (X + max C₉ 0 * (qq δ * |Real.log l|) / θ₀ ^ n) *
-            (R * ((1 - qq δ) * θ₀)) ^ n := by
-            rw [mul_pow, mul_pow]
-            field_simp
+      rw [mul_pow R, mul_pow (1 - qq δ) θ₀, ← div_div, div_eq_inv_mul _ (R ^ n),
+        div_mul_eq_div_div_swap]
+      calc (R ^ n)⁻¹ * (V.weight (closedBall y (R * ((1 - qq δ) * θ₀)))).toReal / θ₀ ^ n /
+            (1 - qq δ) ^ n
+          ≤ (θ₀ ^ n * X + max C₉ 0 * (qq δ * |Real.log l|)) / θ₀ ^ n / (1 - qq δ) ^ n :=
+            div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hm1 hθn.le)
+              (pow_pos hq2 n).le
+        _ = ((1 - qq δ) ^ n)⁻¹ * (X + max C₉ 0 * (qq δ * |Real.log l|) / θ₀ ^ n) := by
+            rw [add_div, mul_div_cancel_left₀ _ hθn.ne', div_eq_inv_mul _ ((1 - qq δ) ^ n)]
     have hsuby : closedBall y (R * ((1 - qq δ) * θ₀)) ⊆ closedBall 0 ρ := by
       apply closedBall_subset_closedBall'
       rw [dist_zero_right, hyR]
-      have : R * ((1 - qq δ) * θ₀) ≤ R * θ₀ := by
-        apply mul_le_mul_of_nonneg_left _ hR0.le
-        exact mul_le_of_le_one_left hθ₀0.le (by linarith)
-      linarith
+      have h1 : R * ((1 - qq δ) * θ₀) ≤ R * θ₀ :=
+        mul_le_mul_of_nonneg_left (mul_le_of_le_one_left hθ₀0.le (sub_le_self 1 hq0)) hR0.le
+      linarith only [h1, hRρ]
     have hcsry : cs * ρ ≤ R * ((1 - qq δ) * θ₀) := by
       rw [hcs]
       have h1 : κ₀ * ρ * θ₀ ≤ R * θ₀ := mul_le_mul_of_nonneg_right hκR.le hθ₀0.le
       have h2 : R * θ₀ * (1 / 2) ≤ R * θ₀ * (1 - qq δ) :=
-        mul_le_mul_of_nonneg_left (by linarith) (by positivity)
-      linarith
-    have hfinal := M1' y (R * ((1 - qq δ) * θ₀)) (cs * ρ) (by positivity) hcsry hsuby
+        mul_le_mul_of_nonneg_left (by linarith only [c5]) (mul_pos hR0 hθ₀0).le
+      linarith only [h1, h2]
+    have hfinal := M1' y (R * ((1 - qq δ) * θ₀)) (cs * ρ) hcsρ hcsry hsuby
     calc (V.weight (closedBall y (cs * ρ))).toReal / (cs * ρ) ^ n
         ≤ ea δ * ((V.weight (closedBall y (R * ((1 - qq δ) * θ₀)))).toReal /
             (R * ((1 - qq δ) * θ₀)) ^ n) + eb δ := hfinal
       _ ≤ ea δ * (((1 - qq δ) ^ n)⁻¹ * (X + max C₉ 0 * (qq δ * |Real.log l|) / θ₀ ^ n)) +
-            eb δ := by gcongr
+            eb δ := add_le_add_left (mul_le_mul_of_nonneg_left hm1' hea0) _
       _ ≤ (1 + ε) * ω := by rw [hX]; exact c7
 
 end Submission
