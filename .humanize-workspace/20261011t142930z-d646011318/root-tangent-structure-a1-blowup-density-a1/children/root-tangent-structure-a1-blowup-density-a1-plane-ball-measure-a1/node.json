@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.blowup_density-a1.plane_ball_measure-a1",
+  "parent_id": "root.tangent_structure-a1.blowup_density-a1",
+  "depth": 3,
+  "title": "Hⁿ-measure of balls in an n-plane: Hⁿ(P ∩ B_s(0)) = ω_n sⁿ",
+  "statement": "Let n, ℓ ≥ 0 be integers, E = Ambient n ℓ = ℝ^{n+ℓ}, P a linear subspace of E with dim P = n (finrank P = n), and s ≥ 0. Then (Hⁿ⌞P)(B_s(0)) = Hⁿ(P ∩ B_s(0)) = ω_n sⁿ. Precisely, ((μHE[n]).restrict P)(closedBall 0 s) = ENNReal.ofReal(omega n · sⁿ), where Hⁿ = μHE[n], B_s(0) is the closed ball and ω_n = omega n is the Lebesgue measure of the unit ball of ℝⁿ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (s : ℝ), Module.finrank ℝ P = n → 0 ≤ s → ((μHE[n] : Measure (Ambient n ℓ)).restrict (P : Set (Ambient n ℓ))) (closedBall (0 : Ambient n ℓ) s) = ENNReal.ofReal (omega n * s ^ n)",
+  "lean_name": "ts_plane_closedBall_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-blowup-density-a1-plane-ball-measure-a1-a1"
+}

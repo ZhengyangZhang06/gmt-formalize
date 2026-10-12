@@ -1884,6 +1884,215 @@ theorem Submission.ts_approx_tangent_plane_unique : ∀ (n ℓ : ℕ) (V : Recti
     _ = ((μHE[n] : Measure (Ambient n ℓ)).restrict Q).support :=
         hsupp _ _ (ENNReal.ofReal_pos.2 hc').ne'
     _ = Q := Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ
+/-- **`Hⁿ`-measure of balls in an `n`-plane.** If `P ⊆ ℝ^{n+ℓ}` is a linear subspace with
+`dim P = n` and `s ≥ 0`, then `(Hⁿ ⌞ P)(B_s(0)) = Hⁿ(P ∩ B_s(0)) = ωₙ sⁿ`. -/
+theorem Submission.ts_plane_closedBall_measure : ∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (s : ℝ), Module.finrank ℝ P = n → 0 ≤ s → ((μHE[n] : Measure (Ambient n ℓ)).restrict (P : Set (Ambient n ℓ))) (closedBall (0 : Ambient n ℓ) s) = ENNReal.ofReal (omega n * s ^ n) := by
+  intro n ℓ P s hP hs
+  -- `Hⁿ ⌞ P` is the push-forward of `Hⁿ` on `P` under the isometric inclusion `ι`, and
+  -- `ι⁻¹(B_s(0))` is the closed ball `B_s(0)` of `P`.
+  have hrange : Set.range (P.subtypeₗᵢ : P → Ambient n ℓ) = (P : Set (Ambient n ℓ)) := by
+    ext x
+    simp
+  have hpre : (P.subtypeₗᵢ : P → Ambient n ℓ) ⁻¹' closedBall 0 s = closedBall (0 : P) s := by
+    ext x
+    simp [mem_closedBall, dist_eq_norm]
+  have h1 : ((μHE[n] : Measure (Ambient n ℓ)).restrict (P : Set (Ambient n ℓ)))
+      (closedBall (0 : Ambient n ℓ) s) = (μHE[n] : Measure P) (closedBall (0 : P) s) := by
+    rw [← hrange, ← P.subtypeₗᵢ.isometry.map_euclideanHausdorffMeasure,
+      Measure.map_apply P.subtypeₗᵢ.continuous.measurable measurableSet_closedBall, hpre]
+  -- Orthonormal coordinates `e : P ≃ ℝⁿ` preserve `Hⁿ` and map `B_s(0)` onto `B_s(0)`.
+  let e : P ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin n) :=
+    ((stdOrthonormalBasis ℝ P).reindex (finCongr hP)).repr
+  have h2 : (μHE[n] : Measure P) (closedBall (0 : P) s) =
+      (μHE[n] : Measure (EuclideanSpace ℝ (Fin n))) (closedBall 0 s) := by
+    rw [← e.isometry.euclideanHausdorffMeasure_image, e.image_closedBall, map_zero]
+  -- `Lⁿ(B_1(0))` is finite, so it equals `ofReal ωₙ`.
+  have h3 : volume (ball (0 : EuclideanSpace ℝ (Fin n)) 1) = ENNReal.ofReal (omega n) := by
+    rw [omega, ENNReal.ofReal_toReal measure_ball_lt_top.ne]
+  -- `Hⁿ = Lⁿ` on `ℝⁿ`, and Haar scaling gives `Lⁿ(B_s(0)) = sⁿ Lⁿ(B_1(0))`.
+  rw [h1, h2, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_closedBall _ _ hs, finrank_euclideanSpace_fin, h3,
+    ← ENNReal.ofReal_mul (pow_nonneg hs n), mul_comm]
+/-- **Ball mass between blow-up integrals of cut-offs** (Simon Ch. 3, Remark 1.8(2)). Let `μ` be
+finite on compact sets, `t > 0` and `f ∈ C_c`. If `f ≤ 1` everywhere and `f ≤ 0` off the closed
+unit ball, then `∫ f(t⁻¹(y - x)) dμ(y) ≤ μ(B_t(x))`; if `f ≥ 0` everywhere and `f ≥ 1` on the
+closed unit ball, then `μ(B_t(x)) ≤ ∫ f(t⁻¹(y - x)) dμ(y)`. Both follow by integrating a pointwise
+comparison of `f(t⁻¹(y - x))` with the indicator of `B_t(x)`, as
+`‖t⁻¹(y - x)‖ ≤ 1 ↔ y ∈ B_t(x)`. -/
+theorem Submission.ts_blowup_cutoff_closedBall_bounds : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (x : Ambient n ℓ) (f : C_c(Ambient n ℓ, ℝ)) (t : ℝ), IsFiniteMeasureOnCompacts μ → 0 < t → ((∀ y : Ambient n ℓ, f y ≤ 1) → (∀ y : Ambient n ℓ, 1 < ‖y‖ → f y ≤ 0) → ∫ y, f (t⁻¹ • (y - x)) ∂μ ≤ μ.real (closedBall x t)) ∧ ((∀ y : Ambient n ℓ, 0 ≤ f y) → (∀ y : Ambient n ℓ, ‖y‖ ≤ 1 → 1 ≤ f y) → μ.real (closedBall x t) ≤ ∫ y, f (t⁻¹ • (y - x)) ∂μ) := by
+  intro n ℓ μ x f t _ ht
+  -- step 1: `η(y) = t⁻¹(y - x)` is a homeomorphism, so `f ∘ η` is continuous with compact
+  -- support, hence `μ`-integrable
+  let η : Ambient n ℓ ≃ₜ Ambient n ℓ :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero t⁻¹ (inv_ne_zero ht.ne'))
+  have hF : Integrable (fun y ↦ f (t⁻¹ • (y - x))) μ :=
+    ((map_continuous f).comp η.continuous).integrable_of_hasCompactSupport
+      (f.hasCompactSupport.comp_homeomorph η)
+  -- step 2: `B_t(x)` is compact, so `1_{B_t(x)}` is `μ`-integrable with integral `μ(B_t(x))`
+  have hB : MeasurableSet (closedBall x t) := measurableSet_closedBall
+  have hI : Integrable ((closedBall x t).indicator (1 : Ambient n ℓ → ℝ)) μ :=
+    (integrable_indicator_iff hB).2 (integrableOn_const measure_closedBall_lt_top.ne)
+  rw [← integral_indicator_one hB]
+  -- step 3: `‖t⁻¹(y - x)‖ ≤ 1 ↔ y ∈ B_t(x)`
+  have hmem : ∀ y, ‖t⁻¹ • (y - x)‖ ≤ 1 ↔ y ∈ closedBall x t := fun y ↦ by
+    rw [mem_closedBall, dist_eq_norm, norm_smul_of_nonneg (inv_nonneg.2 ht.le),
+      inv_mul_le_iff₀ ht, mul_one]
+  -- steps 4 and 5: compare pointwise with `1_{B_t(x)}` and integrate
+  refine ⟨fun hle hout ↦ integral_mono hF hI fun y ↦ ?_,
+    fun hnn hin ↦ integral_mono hI hF fun y ↦ ?_⟩
+  · by_cases hy : y ∈ closedBall x t
+    · rw [indicator_of_mem hy]
+      exact hle _
+    · rw [indicator_of_notMem hy]
+      exact hout _ (not_le.1 fun h ↦ hy ((hmem y).1 h))
+  · by_cases hy : y ∈ closedBall x t
+    · rw [indicator_of_mem hy]
+      exact hin _ ((hmem y).2 hy)
+    · rw [indicator_of_notMem hy]
+      exact hnn _
+
+/-- **Cut-offs approximating the unit ball of an `n`-plane.** If `P ⊆ ℝ^{n+ℓ}` is a linear
+subspace with `dim P = n`, then `ωₙ = Hⁿ(P ∩ B_1(0))` is approximated from below by `∫_P g dHⁿ`
+with `g ∈ C_c`, `g ≤ 1`, `g ≤ 0` off `B_1(0)`, and from above by `∫_P h dHⁿ` with `h ∈ C_c`,
+`h ≥ 0`, `h ≥ 1` on `B_1(0)` (Simon Ch. 3, Remark 1.8(2)). -/
+theorem Submission.ts_unit_ball_plane_cutoff_approx : ∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)), Module.finrank ℝ P = n → (∀ a : ℝ, a < omega n → ∃ g : C_c(Ambient n ℓ, ℝ), (∀ y : Ambient n ℓ, g y ≤ 1) ∧ (∀ y : Ambient n ℓ, 1 < ‖y‖ → g y ≤ 0) ∧ a < ∫ y in (P : Set (Ambient n ℓ)), g y ∂μHE[n]) ∧ (∀ b : ℝ, omega n < b → ∃ h : C_c(Ambient n ℓ, ℝ), (∀ y : Ambient n ℓ, 0 ≤ h y) ∧ (∀ y : Ambient n ℓ, ‖y‖ ≤ 1 → 1 ≤ h y) ∧ ∫ y in (P : Set (Ambient n ℓ)), h y ∂μHE[n] < b) := by
+  intro n ℓ P hP
+  set ν : Measure (Ambient n ℓ) := (μHE[n] : Measure (Ambient n ℓ)).restrict (P : Set (Ambient n ℓ))
+  have hω : 0 ≤ omega n := ENNReal.toReal_nonneg
+  -- `ν = Hⁿ ⌞ P` is finite on compact sets: a compact set lies in some `B_R(0)` with `R ≥ 0`,
+  -- and `ν(B_R(0)) = ωₙ Rⁿ`. Hence every `f ∈ C_c` is `ν`-integrable.
+  have hfin : IsFiniteMeasureOnCompacts ν := by
+    refine ⟨fun K hK ↦ ?_⟩
+    obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
+    calc ν K ≤ ν (closedBall 0 (max R 0)) :=
+          measure_mono (hR.trans (closedBall_subset_closedBall (le_max_left R 0)))
+      _ = ENNReal.ofReal (omega n * max R 0 ^ n) :=
+          Submission.ts_plane_closedBall_measure n ℓ P _ hP (le_max_right R 0)
+      _ < ⊤ := ENNReal.ofReal_lt_top
+  -- For `s ≥ 0`, `1_{B_s(0)}` is `ν`-integrable and `∫ 1_{B_s(0)} dν = ν(B_s(0)) = ωₙ sⁿ`.
+  have hball : ∀ s : ℝ, 0 ≤ s →
+      Integrable ((closedBall (0 : Ambient n ℓ) s).indicator (1 : Ambient n ℓ → ℝ)) ν ∧
+        ∫ y, (closedBall (0 : Ambient n ℓ) s).indicator (1 : Ambient n ℓ → ℝ) y ∂ν =
+          omega n * s ^ n := by
+    intro s hs
+    have hs' := Submission.ts_plane_closedBall_measure n ℓ P s hP hs
+    refine ⟨(integrable_indicator_iff measurableSet_closedBall).2
+      (integrableOn_const (by rw [hs']; exact ENNReal.ofReal_ne_top)), ?_⟩
+    rw [integral_indicator_one measurableSet_closedBall, measureReal_def, hs',
+      ENNReal.toReal_ofReal (mul_nonneg hω (pow_nonneg hs n))]
+  refine ⟨fun a ha ↦ ?_, fun b hb ↦ ?_⟩
+  · -- `δ ↦ ωₙ (1 - δ)ⁿ` is continuous with value `ωₙ > a` at `0`, so some `δ ∈ (0, 1)` has
+    -- `a < ωₙ (1 - δ)ⁿ`.
+    have hlim : Tendsto (fun δ : ℝ ↦ omega n * (1 - δ) ^ n) (𝓝[>] 0) (𝓝 (omega n)) := by
+      have h0 : Tendsto (fun δ : ℝ ↦ omega n * (1 - δ) ^ n) (𝓝 0) (𝓝 (omega n * (1 - 0) ^ n)) :=
+        (by fun_prop : Continuous fun δ : ℝ ↦ omega n * (1 - δ) ^ n).tendsto 0
+      rw [sub_zero, one_pow, mul_one] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    obtain ⟨δ, hδa, hδ⟩ := ((hlim.eventually_const_lt ha).and (Ioo_mem_nhdsGT one_pos)).exists
+    -- `g = min 1 (max 0 ((1 - ‖y‖) / δ))` vanishes off `B_1(0)` and is `1` on `B_{1-δ}(0)`.
+    set φ : Ambient n ℓ → ℝ := fun y ↦ min 1 (max 0 ((1 - ‖y‖) / δ)) with hφ
+    have hφ0 : ∀ y : Ambient n ℓ, 1 < ‖y‖ → φ y = 0 := by
+      intro y hy
+      have : (1 - ‖y‖) / δ < 0 := div_neg_of_neg_of_pos (by linarith) hδ.1
+      simp only [hφ, max_eq_left this.le, min_eq_right zero_le_one]
+    have hφs : HasCompactSupport φ :=
+      HasCompactSupport.intro (isCompact_closedBall (0 : Ambient n ℓ) 1) fun y hy ↦
+        hφ0 y (by simpa [mem_closedBall, dist_zero_right] using hy)
+    let g : C_c(Ambient n ℓ, ℝ) := ⟨⟨φ, by fun_prop⟩, hφs⟩
+    have hg : ∀ y, g y = φ y := fun y ↦ rfl
+    have hle : (closedBall (0 : Ambient n ℓ) (1 - δ)).indicator (1 : Ambient n ℓ → ℝ) ≤ g := by
+      intro y
+      by_cases hy : y ∈ closedBall (0 : Ambient n ℓ) (1 - δ)
+      · rw [Set.indicator_of_mem hy, Pi.one_apply, hg]
+        have hy' : ‖y‖ ≤ 1 - δ := by simpa [mem_closedBall, dist_zero_right] using hy
+        have h1 : 1 ≤ (1 - ‖y‖) / δ := by
+          rw [le_div_iff₀ hδ.1]
+          linarith
+        simp only [hφ, max_eq_right (zero_le_one.trans h1), min_eq_left h1, le_refl]
+      · rw [Set.indicator_of_notMem hy, hg]
+        exact le_min zero_le_one (le_max_left _ _)
+    have hδ1 : 0 ≤ 1 - δ := by linarith [hδ.2]
+    refine ⟨g, fun y ↦ ?_, fun y hy ↦ ?_, ?_⟩
+    · rw [hg]
+      exact min_le_left _ _
+    · rw [hg, hφ0 y hy]
+    · calc a < omega n * (1 - δ) ^ n := hδa
+        _ = ∫ y, (closedBall (0 : Ambient n ℓ) (1 - δ)).indicator 1 y ∂ν := (hball _ hδ1).2.symm
+        _ ≤ ∫ y, g y ∂ν := integral_mono (hball _ hδ1).1 g.integrable hle
+  · -- `δ ↦ ωₙ (1 + δ)ⁿ` is continuous with value `ωₙ < b` at `0`, so some `δ ∈ (0, 1)` has
+    -- `ωₙ (1 + δ)ⁿ < b`.
+    have hlim : Tendsto (fun δ : ℝ ↦ omega n * (1 + δ) ^ n) (𝓝[>] 0) (𝓝 (omega n)) := by
+      have h0 : Tendsto (fun δ : ℝ ↦ omega n * (1 + δ) ^ n) (𝓝 0) (𝓝 (omega n * (1 + 0) ^ n)) :=
+        (by fun_prop : Continuous fun δ : ℝ ↦ omega n * (1 + δ) ^ n).tendsto 0
+      rw [add_zero, one_pow, mul_one] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    obtain ⟨δ, hδb, hδ⟩ := ((hlim.eventually_lt_const hb).and (Ioo_mem_nhdsGT one_pos)).exists
+    -- `h = min 1 (max 0 ((1 + δ - ‖y‖) / δ))` vanishes off `B_{1+δ}(0)` and is `1` on `B_1(0)`.
+    set φ : Ambient n ℓ → ℝ := fun y ↦ min 1 (max 0 ((1 + δ - ‖y‖) / δ)) with hφ
+    have hφ0 : ∀ y : Ambient n ℓ, 1 + δ < ‖y‖ → φ y = 0 := by
+      intro y hy
+      have : (1 + δ - ‖y‖) / δ < 0 := div_neg_of_neg_of_pos (by linarith) hδ.1
+      simp only [hφ, max_eq_left this.le, min_eq_right zero_le_one]
+    have hφs : HasCompactSupport φ :=
+      HasCompactSupport.intro (isCompact_closedBall (0 : Ambient n ℓ) (1 + δ)) fun y hy ↦
+        hφ0 y (by simpa [mem_closedBall, dist_zero_right] using hy)
+    let h : C_c(Ambient n ℓ, ℝ) := ⟨⟨φ, by fun_prop⟩, hφs⟩
+    have hh : ∀ y, h y = φ y := fun y ↦ rfl
+    have hle : (h : Ambient n ℓ → ℝ) ≤ (closedBall (0 : Ambient n ℓ) (1 + δ)).indicator 1 := by
+      intro y
+      by_cases hy : y ∈ closedBall (0 : Ambient n ℓ) (1 + δ)
+      · rw [Set.indicator_of_mem hy, Pi.one_apply, hh]
+        exact min_le_left _ _
+      · rw [Set.indicator_of_notMem hy, hh,
+          hφ0 y (by simpa [mem_closedBall, dist_zero_right] using hy)]
+    have hδ1 : 0 ≤ 1 + δ := by linarith [hδ.1]
+    refine ⟨h, fun y ↦ ?_, fun y hy ↦ ?_, ?_⟩
+    · rw [hh]
+      exact le_min zero_le_one (le_max_left _ _)
+    · rw [hh]
+      have h1 : 1 ≤ (1 + δ - ‖y‖) / δ := by
+        rw [le_div_iff₀ hδ.1]
+        linarith
+      simp only [hφ, max_eq_right (zero_le_one.trans h1), min_eq_left h1, le_refl]
+    · calc ∫ y, h y ∂ν ≤ ∫ y, (closedBall (0 : Ambient n ℓ) (1 + δ)).indicator 1 y ∂ν :=
+            integral_mono h.integrable (hball _ hδ1).1 hle
+        _ = omega n * (1 + δ) ^ n := (hball _ hδ1).2
+        _ < b := hδb
+
+/-- Simon Ch. 3, Remark 1.8(2) (p. 75), with closed balls: if `dim P = n`, `c > 0` and
+`t⁻ⁿ ∫ f(t⁻¹(y - x)) dμ(y) → c ∫_P f dHⁿ` as `t ↓ 0` for every `f ∈ C_c`, then
+`μ(B_ρ(x)) / (ωₙ ρⁿ) → c` as `ρ ↓ 0`. -/
+theorem Submission.ts_blowup_closedBall_density : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → Module.finrank ℝ P = n → 0 < c → (∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂μ) (𝓝[>] 0) (𝓝 (c * ∫ y in (P : Set (Ambient n ℓ)), f y ∂μHE[n]))) → Tendsto (fun ρ : ℝ ↦ μ.real (closedBall x ρ) / (omega n * ρ ^ n)) (𝓝[>] 0) (𝓝 c) := by
+  intro n ℓ μ x P c _ hμ hP hc hlim
+  -- `ωₙ > 0`: the unit ball of `ℝⁿ` is nonempty, open and bounded.
+  have hω : 0 < omega n :=
+    ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  -- `t⁻ⁿ μ(B_t(x)) → c ωₙ`: it is squeezed between blow-up integrals of cut-offs.
+  have hL : Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * μ.real (closedBall x t)) (𝓝[>] 0)
+      (𝓝 (c * omega n)) := by
+    refine tendsto_order.2 ⟨fun a ha ↦ ?_, fun b hb ↦ ?_⟩
+    · -- A cut-off `g ≤ 1_{B_1(0)}` with `a < c ∫_P g dHⁿ`.
+      obtain ⟨g, hg1, hg0, hgP⟩ := (Submission.ts_unit_ball_plane_cutoff_approx n ℓ P hP).1
+        (a / c) ((div_lt_iff₀ hc).2 (by rwa [mul_comm]))
+      rw [div_lt_iff₀ hc, mul_comm] at hgP
+      filter_upwards [(hlim g).eventually (lt_mem_nhds hgP), self_mem_nhdsWithin]
+        with t ht (ht0 : 0 < t)
+      exact ht.trans_le (mul_le_mul_of_nonneg_left
+        ((Submission.ts_blowup_cutoff_closedBall_bounds n ℓ μ x g t hμ ht0).1 hg1 hg0)
+        (inv_nonneg.2 (pow_nonneg ht0.le n)))
+    · -- A cut-off `h ≥ 1_{B_1(0)}` with `c ∫_P h dHⁿ < b`.
+      obtain ⟨h, hh0, hh1, hhP⟩ := (Submission.ts_unit_ball_plane_cutoff_approx n ℓ P hP).2
+        (b / c) ((lt_div_iff₀ hc).2 (by rwa [mul_comm]))
+      rw [lt_div_iff₀ hc, mul_comm] at hhP
+      filter_upwards [(hlim h).eventually (gt_mem_nhds hhP), self_mem_nhdsWithin]
+        with t ht (ht0 : 0 < t)
+      exact (mul_le_mul_of_nonneg_left
+        ((Submission.ts_blowup_cutoff_closedBall_bounds n ℓ μ x h t hμ ht0).2 hh0 hh1)
+        (inv_nonneg.2 (pow_nonneg ht0.le n))).trans_lt ht
+  -- Divide by `ωₙ ≠ 0`.
+  have hdiv := hL.div_const (omega n)
+  rw [mul_div_cancel_right₀ c hω.ne'] at hdiv
+  exact hdiv.congr fun ρ ↦ by ring
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 

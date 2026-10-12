@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.blowup_density-a1.plane_cutoff_approx-a1",
+  "parent_id": "root.tangent_structure-a1.blowup_density-a1",
+  "depth": 3,
+  "title": "C_c cut-offs approximating Hⁿ(P ∩ B_1(0)) = ω_n from inside and outside",
+  "statement": "Let n, ℓ ≥ 0, E = Ambient n ℓ = ℝ^{n+ℓ}, P a linear subspace of E with dim P = n, Hⁿ = μHE[n] and ω_n = omega n. (i) For every real a < ω_n there is g ∈ C_c(E, ℝ) with g(y) ≤ 1 for all y, g(y) ≤ 0 whenever |y| > 1, and a < ∫_P g dHⁿ. (ii) For every real b > ω_n there is h ∈ C_c(E, ℝ) with h(y) ≥ 0 for all y, h(y) ≥ 1 whenever |y| ≤ 1, and ∫_P h dHⁿ < b. Here ∫_P is the Bochner integral with respect to Hⁿ⌞P.",
+  "lean_statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)), Module.finrank ℝ P = n → (∀ a : ℝ, a < omega n → ∃ g : C_c(Ambient n ℓ, ℝ), (∀ y : Ambient n ℓ, g y ≤ 1) ∧ (∀ y : Ambient n ℓ, 1 < ‖y‖ → g y ≤ 0) ∧ a < ∫ y in (P : Set (Ambient n ℓ)), g y ∂μHE[n]) ∧ (∀ b : ℝ, omega n < b → ∃ h : C_c(Ambient n ℓ, ℝ), (∀ y : Ambient n ℓ, 0 ≤ h y) ∧ (∀ y : Ambient n ℓ, ‖y‖ ≤ 1 → 1 ≤ h y) ∧ ∫ y in (P : Set (Ambient n ℓ)), h y ∂μHE[n] < b)",
+  "lean_name": "ts_unit_ball_plane_cutoff_approx",
+  "depends_on": [
+    "root.tangent_structure-a1.blowup_density-a1.plane_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_structure-a1.blowup_density-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-blowup-density-a1-plane-cutoff-approx-a1-a1"
+}
