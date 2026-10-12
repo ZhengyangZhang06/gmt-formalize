@@ -458,6 +458,68 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Continuity in the scale of a radial-profile integral (step 2(c) of the annular monotonicity
+proof, parts (a) and (b) of `allard52_am_cutoff_integral_calculus`): if `f` is `μ`-integrable on
+`B_S(y)`, `g` is continuous with `g = 0` on `(T, ∞)`, `T > 0`, `t > 0` and `T t < S`, then
+`s ↦ ∫ g(‖x − y‖/s) f(x) dμ` is continuous at `t`.  For `0 < s < S/T` the integrand vanishes off
+`B_S(y)`, so the integral is taken against `μ ⌞ B_S(y)`; there `|g| ≤ C` on `[0, ∞)` gives the
+dominating function `C |f|`, and dominated convergence applies. -/
+theorem allard52_am_cc_profile_integral_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (g : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → Continuous g → 0 < T → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, g (‖x - y‖ / s) * f x ∂μ) t := by
+  intro n ℓ μ y f g S T t hf hg hT hg0 ht htS
+  have hfν : Integrable f (μ.restrict (closedBall y S)) := hf
+  -- Step 1: `t < S/T`, so `(0, S/T)` is a neighbourhood of `t`.
+  have htR : t < S / T := by
+    rw [lt_div_iff₀ hT]
+    linarith
+  -- Step 2: for `s ∈ (0, S/T)` and `x ∉ B_S(y)`, `‖x − y‖/s > T`, so the integrand vanishes
+  -- off `B_S(y)` and the `μ`-integral is the `μ ⌞ B_S(y)`-integral.
+  have hconv : ∀ s ∈ Ioo 0 (S / T),
+      ∫ x, g (‖x - y‖ / s) * f x ∂(μ.restrict (closedBall y S)) =
+        ∫ x, g (‖x - y‖ / s) * f x ∂μ := by
+    rintro s ⟨hs, hsR⟩
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    rw [lt_div_iff₀ hT] at hsR
+    have h1 : T < ‖x - y‖ / s := by
+      rw [lt_div_iff₀ hs]
+      nlinarith
+    rw [hg0 _ h1, zero_mul]
+  -- Step 3: `|g u| ≤ C` for `u ≥ 0`, with `C` a bound for `|g|` on `[0, T]`.
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u → |g u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      hg.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hg0 u h, abs_zero]
+      exact le_max_right _ _
+  -- Steps 4-6: dominated convergence for `μ ⌞ B_S(y)` at `t`, with bound `C ‖f‖`.
+  have hmain : ContinuousAt (fun s =>
+      ∫ x, g (‖x - y‖ / s) * f x ∂(μ.restrict (closedBall y S))) t := by
+    refine continuousAt_of_dominated (bound := fun x => C * ‖f x‖) ?_ ?_
+      (hfν.norm.const_mul C) ?_
+    · -- Step 4: `x ↦ g(‖x − y‖/s)` is continuous and `f` is a.e. strongly measurable.
+      refine Eventually.of_forall fun s => ?_
+      exact (hg.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / s)
+        ).aestronglyMeasurable.mul hfν.aestronglyMeasurable
+    · -- Step 3: for `s > 0`, `‖x − y‖/s ≥ 0`, so `|g(‖x − y‖/s) f(x)| ≤ C ‖f(x)‖`.
+      filter_upwards [lt_mem_nhds ht] with s hs
+      refine Eventually.of_forall fun x => ?_
+      rw [norm_mul, Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_right (hC _ (div_nonneg (norm_nonneg _) hs.le)) (norm_nonneg _)
+    · -- Step 5: `s ↦ g(‖x − y‖/s) f(x)` is continuous at `t ≠ 0`.
+      refine Eventually.of_forall fun x => ?_
+      exact (hg.continuousAt.comp (continuousAt_const.div continuousAt_id ht.ne')).mul
+        continuousAt_const
+  -- Step 7: both functions agree on the neighbourhood `(0, S/T)` of `t`.
+  exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

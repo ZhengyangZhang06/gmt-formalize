@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_calculus-a1.cutoff_derivative-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_calculus-a1",
+  "depth": 5,
+  "title": "Derivative in the scale of a radial cutoff integral",
+  "statement": "Let n and l be natural numbers, mu a measure on R^(n+l), y in R^(n+l), and f : R^(n+l) -> R mu-integrable on the closed ball B_S(y). Let phi : R -> R be C^1 with phi(u) = 0 for all u >= T, where T > 0, and let t > 0 with T t < S. Write r_x := |x - y| and phi' := deriv phi; all integrals are Bochner integrals over R^(n+l). Then s -> integral phi(r_x/s) f(x) dmu has derivative -(integral (r_x/t) phi'(r_x/t) f(x) dmu)/t at t.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (φ : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → ContDiff ℝ 1 φ → 0 < T → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t) t",
+  "lean_name": "allard52_am_cc_cutoff_integral_hasDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-b17468f7e9-a1"
+}
