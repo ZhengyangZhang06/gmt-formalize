@@ -451,6 +451,53 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The point current `X(ω) = ⟨ω(p), ζ⟩` in `U` (Simon 6.2.1, 6.2.11): test-form convergence to `0`
+forces `ω_j(p) → 0`, and every `q ∈ U \ {p}` has a ball `V ∌ p` with `closure V` compact in `U` on
+which `X` vanishes, so `spt X ⊆ {p}`. -/
+theorem Submission.dtc_point_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (p : Euclid P) (ζ : MultiVector P n), IsOpen U → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = ζ ((ω : DifferentialForm (Euclid P) n) p)) ∧ X.support ⊆ {p} := by
+  intro P n U p ζ hU
+  -- test-form convergence to `0` forces `ω_j(p) → 0`
+  have heval : ∀ ωs : ℕ → TestFormOn U n, TestFormOnConverges ωs 0 →
+      Tendsto (fun j => ((ωs j : TestFormOn U n) : DifferentialForm (Euclid P) n) p) atTop
+        (𝓝 0) := by
+    rintro ωs ⟨K, -, -, hsupp, -, hderiv⟩
+    by_cases hpK : p ∈ K
+    · -- the `0`-th derivatives converge uniformly on `K ∋ p`; undo `iteratedFDeriv ℝ 0`
+      have h0 := ((continuousMultilinearCurryFin0 ℝ (Euclid P)
+        (Covector (Euclid P) n)).continuous.tendsto _).comp ((hderiv 0).tendsto_at hpK)
+      simpa [Function.comp_def, iteratedFDeriv_zero_eq_comp] using h0
+    · -- `p ∉ K ⊇ tsupport ω_j`, so `ω_j(p) = 0` for every `j`
+      have hz : ∀ j, ((ωs j : TestFormOn U n) : DifferentialForm (Euclid P) n) p = 0 := fun j =>
+        image_eq_zero_of_notMem_tsupport fun hp => hpK (hsupp j hp)
+      simp only [hz]
+      exact tendsto_const_nhds
+  -- the linear functional `ω ↦ ζ(ω(p))`, continuous by `heval`
+  refine ⟨⟨{ toFun := fun ω => ζ ((ω : DifferentialForm (Euclid P) n) p)
+             map_add' := fun ω η => by simp
+             map_smul' := fun c ω => by simp }, fun ωs h => ?_⟩, fun ω => rfl, ?_⟩
+  · simpa [Function.comp_def] using (ζ.continuous.tendsto 0).comp (heval ωs h)
+  -- support: each `q ∈ U \ {p}` lies in `ball q (min ε (dist q p) / 2)`, where `X` vanishes
+  · intro q hq
+    by_contra hqp
+    obtain ⟨hqU, hqZ⟩ := hq
+    apply hqZ
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU q hqU
+    have hm : 0 < min ε (dist q p) := lt_min hε (dist_pos.2 hqp)
+    have hr : 0 < min ε (dist q p) / 2 := half_pos hm
+    have hrε : min ε (dist q p) / 2 < ε := (half_lt_self hm).trans_le (min_le_left _ _)
+    have hrd : min ε (dist q p) / 2 < dist q p := (half_lt_self hm).trans_le (min_le_right _ _)
+    refine Set.mem_sUnion_of_mem (mem_ball_self hr) ⟨isOpen_ball, ?_, ?_, ?_⟩
+    · exact (isCompact_closedBall q _).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · exact closure_ball_subset_closedBall.trans ((closedBall_subset_ball hrε).trans hεU)
+    · intro ω hω
+      have hp : p ∉ tsupport (ω : DifferentialForm (Euclid P) n) := fun hp => by
+        have h := mem_ball.1 (hω hp)
+        rw [dist_comm] at h
+        linarith
+      show ζ _ = 0
+      rw [image_eq_zero_of_notMem_tsupport hp, map_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
