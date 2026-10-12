@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2414ec67faeab6afa8978b329907c41cf59f1617abe666242f5b1409baa47d7b",
+  "git_delta": {
+    "base_commit": "91d601bd0d6b05eed2dfc6c245ff656db55f855a",
+    "candidate_commit": "40b4cdead8969d38fb4e1a9f8527093f27e4d446",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_wn_adapted_onb",
+    "diff_sha256": "014138a4d285fa5784804fa40a49e57acf43bda2a62c8e1d7635a9da9683d234",
+    "source_sha256": "c49ab596088b52dd1bc4647be42eed75440b92d17fe752e91cd819ca01a7520d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_wn_adapted_onb",
+      "statement": "∀ (P : ℕ) (α : Eucl P →L[ℝ] ℝ), ∃ u : OrthonormalBasis (Fin P) ℝ (Eucl P), ∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then ‖α‖ else 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
