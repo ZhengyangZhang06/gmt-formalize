@@ -491,6 +491,127 @@ theorem dohr_eb_holder_of_contDiffOn_succ : ∀ (E₁ E₂ : Type) [NormedAddCom
   rw [mul_assoc]
   exact hL.norm_sub_le_of_le hx hy hd
 
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): the
+local Hölder class `C^{m,α}` is stable under composition.  Let `f` be `C^m` on the open set `U`
+with `f(U) ⊆ V`, `h` be `C^m` on the open set `V`, `Dᵐf` and `Dᵐh` be `α`-Hölder on compact sets,
+and `f` or `h` be `C¹` (automatic if `m ≥ 1`).  On `U`, `Dᵐ(h ∘ f)` is the Faà di Bruno sum
+`(D•h ∘ f).taylorComp D•f` (`iteratedFDeriv_comp`).  On a compact `K ⊆ U` every `Dᵏh ∘ f` and
+`Dᵏf`, `k ≤ m`, is bounded and `α`-Hölder (lower orders are Lipschitz by
+`dohr_eb_holder_of_contDiffOn_succ`), so `taylorComp_sub_taylorComp_isBigO` along `𝓟 (K ×ˢ K)`
+gives one Hölder constant for `Dᵐ(h ∘ f)` on `K`. -/
+theorem dohr_eb_holder_comp : ∀ (E₁ E₂ E₃ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃] (m : ℕ) (α : ℝ) (f : E₁ → E₂) (h : E₂ → E₃) (U : Set E₁) (V : Set E₂), 0 < α → α ≤ 1 → IsOpen U → IsOpen V → MapsTo f U V → (1 ≤ m ∨ ContDiffOn ℝ 1 f U ∨ ContDiffOn ℝ 1 h V) → ContDiffOn ℝ m f U → (∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m f x - iteratedFDeriv ℝ m f y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m h V → (∀ K : Set E₂, IsCompact K → K ⊆ V → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m h x - iteratedFDeriv ℝ m h y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m (h ∘ f) U ∧ ∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (h ∘ f) x - iteratedFDeriv ℝ m (h ∘ f) y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro E₁ E₂ E₃ _ _ _ _ _ _ m α f h U V hα hα1 hU hV hfUV hdisj hf hfH hh hhH
+  -- Step 1: chain rule; `f(K)` is a compact subset of `V`.
+  refine ⟨hh.comp hf hfUV, fun K hK hKU => ?_⟩
+  have hfK : IsCompact (f '' K) := hK.image_of_continuousOn (hf.continuousOn.mono hKU)
+  have hfKV : f '' K ⊆ V := (hfUV.mono_left hKU).image_subset
+  -- A Hölder bound on `K` is an `IsBigO` bound along the principal filter of `K ×ˢ K` ...
+  have hconv : ∀ {F : Type} [NormedAddCommGroup F] (A : E₁ → F) (C : ℝ),
+      (∀ x ∈ K, ∀ y ∈ K, ‖A x - A y‖ ≤ C * ‖x - y‖ ^ α) →
+      (fun p : E₁ × E₁ => A p.1 - A p.2) =O[𝓟 (K ×ˢ K)] (fun p => ‖p.1 - p.2‖ ^ α) := by
+    intro F _ A C hA
+    refine Asymptotics.isBigO_principal.2 ⟨C, fun p hp => ?_⟩
+    rw [Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _)]
+    exact hA _ hp.1 _ hp.2
+  -- ... and a function continuous on the compact `K` is bounded there.
+  have hbdd : ∀ {F : Type} [NormedAddCommGroup F] (A : E₁ → F), ContinuousOn A K →
+      IsBoundedUnder (· ≤ ·) (𝓟 (K ×ˢ K)) (fun p : E₁ × E₁ => ‖A p.1‖) ∧
+      IsBoundedUnder (· ≤ ·) (𝓟 (K ×ˢ K)) (fun p : E₁ × E₁ => ‖A p.2‖) := by
+    intro F _ A hA
+    obtain ⟨B, hB⟩ := hK.exists_bound_of_continuousOn hA
+    exact ⟨isBoundedUnder_of_eventually_le (eventually_principal.2 fun p hp => hB _ hp.1),
+      isBoundedUnder_of_eventually_le (eventually_principal.2 fun p hp => hB _ hp.2)⟩
+  have h0 : ∀ x y, ‖iteratedFDeriv ℝ 0 f x - iteratedFDeriv ℝ 0 f y‖ = ‖f x - f y‖ := by
+    intro x y
+    simp only [iteratedFDeriv_zero_eq_comp, Function.comp_apply, ← map_sub,
+      LinearIsometryEquiv.norm_map]
+  -- `f` is `α`-Hölder on `K`: by hypothesis if `m = 0`, being `C¹` otherwise.
+  obtain ⟨Cf, hCf⟩ : ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖f x - f y‖ ≤ C * ‖x - y‖ ^ α := by
+    rcases Nat.eq_zero_or_pos m with rfl | hm
+    · obtain ⟨C, hC⟩ := hfH K hK hKU
+      exact ⟨C, fun x hx y hy => (h0 x y).symm.trans_le (hC x hx y hy)⟩
+    · obtain ⟨C, hC⟩ := dohr_eb_holder_of_contDiffOn_succ E₁ E₂ 0 α f U hα hα1 hU
+        (hf.of_le (by exact_mod_cast hm)) K hK hKU
+      exact ⟨C, fun x hx y hy => (h0 x y).symm.trans_le (hC x hx y hy)⟩
+  -- Step 2: Faà di Bruno, `Dᵐ(h ∘ f) = (D•h ∘ f).taylorComp D•f` on `U`.
+  have hFdB : ∀ z ∈ U, iteratedFDeriv ℝ m (h ∘ f) z =
+      (ftaylorSeries ℝ h (f z)).taylorComp (ftaylorSeries ℝ f z) m := fun z hz =>
+    iteratedFDeriv_comp (hh.contDiffAt (hV.mem_nhds (hfUV hz))) (hf.contDiffAt (hU.mem_nhds hz))
+      le_rfl
+  have hcf : ∀ k ≤ m, ContinuousOn (iteratedFDeriv ℝ k f) K := fun k hk x hx =>
+    ((hf.contDiffAt (hU.mem_nhds (hKU hx))).continuousAt_iteratedFDeriv
+      (by exact_mod_cast hk)).continuousWithinAt
+  -- Step 3: the Faà di Bruno sums at `x` and `y` differ by `O(‖x - y‖ ^ α)` on `K ×ˢ K`.
+  have H : (fun p : E₁ × E₁ => (ftaylorSeries ℝ h (f p.1)).taylorComp (ftaylorSeries ℝ f p.1) m -
+      (ftaylorSeries ℝ h (f p.2)).taylorComp (ftaylorSeries ℝ f p.2) m) =O[𝓟 (K ×ˢ K)]
+      (fun p => ‖p.1 - p.2‖ ^ α) := by
+    apply FormalMultilinearSeries.taylorComp_sub_taylorComp_isBigO <;> intro k hk
+    · -- `Dᵏh ∘ f` is bounded on `K`.
+      refine (hbdd (fun x => iteratedFDeriv ℝ k h (f x)) fun x hx => ?_).1
+      exact ((hh.contDiffAt (hV.mem_nhds (hfUV (hKU hx)))).continuousAt_iteratedFDeriv
+        (by exact_mod_cast hk)).comp_continuousWithinAt (hf.continuousOn.mono hKU x hx)
+    · -- `Dᵏh ∘ f` is `α`-Hölder on `K`.
+      have hcase : ContDiffOn ℝ (k + 1 : ℕ) h V ∨ (k = m ∧ ContDiffOn ℝ 1 f U) := by
+        rcases hk.lt_or_eq with hlt | hkm
+        · exact Or.inl (hh.of_le (by exact_mod_cast hlt))
+        · rcases hdisj with h1 | h1 | h1
+          · exact Or.inr ⟨hkm, hf.of_le (by exact_mod_cast h1)⟩
+          · exact Or.inr ⟨hkm, h1⟩
+          · rcases Nat.eq_zero_or_pos k with hk0 | hk0
+            · left
+              rw [hk0]
+              simpa using h1
+            · exact Or.inr ⟨hkm, hf.of_le (by rw [← hkm]; exact_mod_cast hk0)⟩
+      rcases hcase with hk1 | ⟨hkm, hf1⟩
+      · -- `Dᵏh` is Lipschitz on `f(K)` and `f` is `α`-Hölder on `K`.
+        obtain ⟨L, hL⟩ := dohr_eb_holder_of_contDiffOn_succ E₂ E₃ k 1 h V one_pos le_rfl hV hk1
+          (f '' K) hfK hfKV
+        refine hconv (fun x => iteratedFDeriv ℝ k h (f x)) (|L| * Cf) fun x hx y hy => ?_
+        calc ‖iteratedFDeriv ℝ k h (f x) - iteratedFDeriv ℝ k h (f y)‖
+            ≤ L * ‖f x - f y‖ ^ (1 : ℝ) := hL _ (mem_image_of_mem f hx) _ (mem_image_of_mem f hy)
+          _ ≤ |L| * ‖f x - f y‖ := by
+              rw [Real.rpow_one]
+              exact mul_le_mul_of_nonneg_right (le_abs_self L) (norm_nonneg _)
+          _ ≤ |L| * (Cf * ‖x - y‖ ^ α) := mul_le_mul_of_nonneg_left (hCf x hx y hy) (abs_nonneg L)
+          _ = |L| * Cf * ‖x - y‖ ^ α := (mul_assoc _ _ _).symm
+      · -- `k = m`: `Dᵐh` is `α`-Hölder on `f(K)` and `f` is Lipschitz on `K`.
+        subst hkm
+        obtain ⟨Ch, hCh⟩ := hhH (f '' K) hfK hfKV
+        obtain ⟨Lf, hLf⟩ := dohr_eb_holder_of_contDiffOn_succ E₁ E₂ 0 1 f U one_pos le_rfl hU
+          (by simpa using hf1) K hK hKU
+        refine hconv (fun x => iteratedFDeriv ℝ k h (f x)) (|Ch| * |Lf| ^ α) fun x hx y hy => ?_
+        have hfxy : ‖f x - f y‖ ≤ |Lf| * ‖x - y‖ := by
+          have := hLf x hx y hy
+          rw [h0, Real.rpow_one] at this
+          exact this.trans (mul_le_mul_of_nonneg_right (le_abs_self Lf) (norm_nonneg _))
+        calc ‖iteratedFDeriv ℝ k h (f x) - iteratedFDeriv ℝ k h (f y)‖
+            ≤ Ch * ‖f x - f y‖ ^ α := hCh _ (mem_image_of_mem f hx) _ (mem_image_of_mem f hy)
+          _ ≤ |Ch| * ‖f x - f y‖ ^ α :=
+              mul_le_mul_of_nonneg_right (le_abs_self Ch) (Real.rpow_nonneg (norm_nonneg _) _)
+          _ ≤ |Ch| * (|Lf| * ‖x - y‖) ^ α :=
+              mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (norm_nonneg _) hfxy hα.le)
+                (abs_nonneg Ch)
+          _ = |Ch| * |Lf| ^ α * ‖x - y‖ ^ α := by
+              rw [Real.mul_rpow (abs_nonneg Lf) (norm_nonneg _), mul_assoc]
+    · -- `Dᵏf` is bounded on `K` (at `x` and at `y`).
+      exact (hbdd _ (hcf k hk)).1
+    · exact (hbdd _ (hcf k hk)).2
+    · -- `Dᵏf` is `α`-Hölder on `K`: as a `C¹` map if `k < m`, by hypothesis if `k = m`.
+      rcases hk.lt_or_eq with hlt | hkm
+      · obtain ⟨C, hC⟩ := dohr_eb_holder_of_contDiffOn_succ E₁ E₂ k α f U hα hα1 hU
+          (hf.of_le (by exact_mod_cast hlt)) K hK hKU
+        exact hconv (iteratedFDeriv ℝ k f) C hC
+      · subst hkm
+        obtain ⟨C, hC⟩ := hfH K hK hKU
+        exact hconv (iteratedFDeriv ℝ k f) C hC
+  -- Step 4: `Asymptotics.isBigO_principal` gives one constant on `K ×ˢ K`.
+  obtain ⟨c, hc⟩ := Asymptotics.isBigO_principal.1 H
+  refine ⟨c, fun x hx y hy => ?_⟩
+  rw [hFdB x (hKU hx), hFdB y (hKU hy)]
+  refine (hc (x, y) ⟨hx, hy⟩).trans_eq ?_
+  congr 1
+  exact Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _)
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
