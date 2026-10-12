@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "edf7be5dca2e9c2a48140a90e4371ec922b2e31d80a14816b3b82f0dc5e80c54",
+  "git_delta": {
+    "base_commit": "29015d661644010bf26bba1fda1849c9984c855d",
+    "candidate_commit": "9d8bd3d8cf6c69d5dd8f282d471b0b369e2f274f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_pp_hs_proj_split",
+    "diff_sha256": "371b6ff66751798261eb5e409d42223cc824ea929e0a11bc548f45d3fb7cbf06",
+    "source_sha256": "2067eab39a85f9214b2bc336d8a603fbe8b7f40a0526b0c2bf2f6990941674b5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_pp_hs_proj_split",
+      "statement": "(∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (K : Submodule ℝ (Rn m)), hsNormSq X = hsNormSq (X ∘L K.starProjection) + hsNormSq (X ∘L Kᗮ.starProjection)) ∧ ∀ (m : ℕ) (K L : Submodule ℝ (Rn m)), hsNormSq (K.starProjection - L.starProjection) = hsNormSq ((K.starProjection - L.starProjection) ∘L K.starProjection) + hsNormSq ((K.starProjection - L.starProjection) ∘L L.starProjection)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
