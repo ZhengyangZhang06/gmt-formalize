@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6dbb6d94810cbfe2d2a5c5fa2328f8dd8505fc4d8278a027f79e2908ad69f822",
+  "git_delta": {
+    "base_commit": "51c91d19ebbedca006cf4f6f2e80cc4c6cda5dd5",
+    "candidate_commit": "9bc99e09272956fd8f9061a0b05d10219bfc8abc",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_lb_repr_bound",
+    "diff_sha256": "4d5a2a43d4a40479d3b9c817a99ef359af3a8bdcb379952465a8a3c15821dff3",
+    "source_sha256": "2b0f04e3526d6423e5fb2c247ffc682e99835e4668b4194441062aa97ab67f27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_lb_repr_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → (∀ (x : Eucl P) (α : Covector (Eucl P) n), |v x α| ≤ covectorEuclideanNorm α) → ∀ η : TestFormOn U n, ENNReal.ofReal |T η| ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x)) ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
