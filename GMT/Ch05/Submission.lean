@@ -458,6 +458,27 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124: "Since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"), for an arbitrary continuous a.e. derivative: if `f` is `K`-Lipschitz on the
+open ball `B̆_r(c)`, `g` is continuous on `B̆_r(c)` and `Df(x) = g(x)` for `Lⁿ`-a.e.
+`x ∈ B̆_r(c)`, then `Df(x) = g(x)` at every `x ∈ B̆_r(c)`.  The ball is open and convex, so
+`f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for all `x, y ∈ B̆_r(c)`
+(`allard52_lad_line_integral_rep`), and continuity of `g` at `x` turns this formula into
+differentiability at `x` (`allard52_lad_hasFDerivAt_of_line_integral`). -/
+theorem allard52_lipschitz_hasFDerivAt_of_ae : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (c : Rn n) (r : ℝ) (K : ℝ≥0), LipschitzOnWith K f (ball c r) → ContinuousOn g (ball c r) → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x) → ∀ x ∈ ball c r, HasFDerivAt f (g x) x := by
+  intro n ℓ f g c r K hf hg hae x hx
+  -- Steps 0–3: the integral mean-value formula on the open convex ball.
+  have hrep : ∀ y ∈ ball c r, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x) :=
+    Submission.allard52_lad_line_integral_rep n ℓ f g (ball c r) K isOpen_ball
+      (convex_ball c r) hf hg hae x hx
+  -- Step 4: continuity of `g` at `x` upgrades the formula to the Fréchet derivative `g x` at `x`.
+  exact Submission.allard52_lad_hasFDerivAt_of_line_integral n ℓ f g (ball c r) x isOpen_ball hx
+    hg hrep
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
