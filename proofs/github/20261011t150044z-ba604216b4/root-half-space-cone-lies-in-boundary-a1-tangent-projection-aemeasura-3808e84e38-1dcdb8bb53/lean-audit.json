@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9e67cb8f3a6e67285965892d26e3b92db8841085897f6ec56170bf173aa17786",
+  "git_delta": {
+    "base_commit": "4f63722ba6c6dd049952866e43e49f055e7b12fe",
+    "candidate_commit": "3c953dc51e9275172a78ad6ab0ee0f4a0ddfb6ab",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "aemeasurable_starProjection_of_aemeasurable_norm_sq",
+    "diff_sha256": "5194d6bb79dcec78dfb719fa39e63a52e31f69182d9d7ae9fe052689455526a9",
+    "source_sha256": "a9da6b525537e2c8634c460b8b83b8008ebd5c2535eab3b3a4cf2bcc1c757983",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (K : Euclid P → Submodule ℝ (Euclid P)), (∀ u : Euclid P, AEMeasurable (fun x => ‖(K x).starProjection u‖ ^ 2) μ) → AEMeasurable (fun x => (K x).starProjection) μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
