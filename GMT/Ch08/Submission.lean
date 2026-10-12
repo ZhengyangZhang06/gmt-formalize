@@ -410,6 +410,91 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Hausdorff measure of an `L`-Lipschitz graph piece over an `n`-plane (a step in the proof of
+Simon Ch. 8, 5.9): if `|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|` for `y, z ∈ A` and `L ≥ 0`, then
+`p_P` is injective on `A` with a `(1 + L²)^{1/2}`-Lipschitz inverse on `p_P(A)`, so
+`H^n(A) ≤ (1 + L²)^{n/2} H^n(p_P(A))`.  `A` need not be closed or measurable. -/
+theorem Submission.intcpt_graph_hausdorff_le_projection :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → (μHE[n] : Measure (Euclidean N)) A ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' A) := by
+  intro N n P L A hL hgraph
+  -- Step 1: `p_P` is linear, symmetric and idempotent, so `|v|² = |p_P v|² + |v - p_P v|²`.
+  have hsub : ∀ u v : Euclidean N,
+      Grassmannian.project P (u - v) = Grassmannian.project P u - Grassmannian.project P v :=
+    fun u v ↦ map_sub P.projectionLinearMap u v
+  have hpyth : ∀ v : Euclidean N,
+      ‖v‖ ^ 2 = ‖Grassmannian.project P v‖ ^ 2 + ‖v - Grassmannian.project P v‖ ^ 2 := by
+    intro v
+    have hker : Grassmannian.project P (v - Grassmannian.project P v) = 0 := by
+      rw [hsub, Grassmannian.project_project, sub_self]
+    have horth : inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) = 0 := by
+      rw [show inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) =
+          inner ℝ v (Grassmannian.project P (v - Grassmannian.project P v)) from
+        P.projectionLinearMap_isSymmetric v (v - Grassmannian.project P v), hker, inner_zero_right]
+    have h := norm_add_sq_real (Grassmannian.project P v) (v - Grassmannian.project P v)
+    rw [horth, add_sub_cancel] at h
+    linarith
+  -- Step 2: on `A`, `|y - z|² ≤ (1 + L²) |p_P(y - z)|²`, i.e.
+  -- `|y - z| ≤ (1 + L²)^{1/2} |p_P y - p_P z|`.
+  have hkey : ∀ y ∈ A, ∀ z ∈ A, ‖y - z‖ ≤
+      Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P y - Grassmannian.project P z‖ := by
+    intro y hy z hz
+    rw [← hsub]
+    have h1 := hpyth (y - z)
+    have h2 := hgraph y hy z hz
+    have h3 : ‖(y - z) - Grassmannian.project P (y - z)‖ ^ 2 ≤
+        (L * ‖Grassmannian.project P (y - z)‖) ^ 2 := by
+      gcongr
+    have h4 : ‖y - z‖ ^ 2 ≤ (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2 := by
+      nlinarith
+    calc ‖y - z‖ = Real.sqrt (‖y - z‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+      _ ≤ Real.sqrt ((1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2) := Real.sqrt_le_sqrt h4
+      _ = Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ := by
+        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+  -- Step 3: `p_P` is injective on `A`, and `h = invFunOn p_P A` has `h (p_P y) = y` for `y ∈ A`.
+  have hinj : InjOn (Grassmannian.project P) A := by
+    intro y hy z hz hyz
+    have h := hkey y hy z hz
+    rw [hyz, sub_self, norm_zero, mul_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  have hleft : ∀ y ∈ A,
+      Function.invFunOn (Grassmannian.project P) A (Grassmannian.project P y) = y :=
+    fun y hy ↦ hinj.leftInvOn_invFunOn hy
+  -- Step 4: `h` is `(1 + L²)^{1/2}`-Lipschitz on `p_P(A)`.
+  have hinv : LipschitzOnWith (Real.toNNReal (Real.sqrt (1 + L ^ 2)))
+      (Function.invFunOn (Grassmannian.project P) A) (Grassmannian.project P '' A) := by
+    refine LipschitzOnWith.of_dist_le' ?_
+    rintro _ ⟨y, hy, rfl⟩ _ ⟨z, hz, rfl⟩
+    rw [hleft y hy, hleft z hz, dist_eq_norm, dist_eq_norm]
+    exact hkey y hy z hz
+  -- Step 5: `A = h(p_P(A))` and the Lipschitz image bound for `μH[n]`, with
+  -- `((1 + L²)^{1/2})^n = (1 + L²)^{n/2}` in `[0, ∞]`.
+  have hpow : (Real.toNNReal (Real.sqrt (1 + L ^ 2)) : ℝ≥0∞) ^ (n : ℝ) =
+      ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) := by
+    change ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ (n : ℝ) = _
+    rw [ENNReal.ofReal_rpow_of_nonneg (Real.sqrt_nonneg _) (Nat.cast_nonneg n),
+      Real.rpow_div_two_eq_sqrt _ (by positivity)]
+  have hH : (μH[(n : ℝ)] : Measure (Euclidean N)) A ≤
+      ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) *
+        (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A) := by
+    calc (μH[(n : ℝ)] : Measure (Euclidean N)) A
+        = (μH[(n : ℝ)] : Measure (Euclidean N))
+            (Function.invFunOn (Grassmannian.project P) A '' (Grassmannian.project P '' A)) := by
+          rw [hinj.invFunOn_image subset_rfl]
+      _ ≤ (Real.toNNReal (Real.sqrt (1 + L ^ 2)) : ℝ≥0∞) ^ (n : ℝ) *
+            (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A) :=
+          hinv.hausdorffMeasure_image_le (Nat.cast_nonneg n)
+      _ = ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) *
+            (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A) := by
+          rw [hpow]
+  -- Step 6: `μHE[n] = c • μH[n]` with `c = addHaarScalarFactor volume μH[n]`; multiply by `c`.
+  simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+    smul_eq_mul]
+  calc _ ≤ (Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin n))) μH[n] :
+          ℝ≥0∞) * (ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) *
+            (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A)) := by
+        gcongr
+    _ = _ := mul_left_comm _ _ _
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
