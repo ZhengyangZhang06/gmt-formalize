@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.admissible_field-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Lipschitz compactly supported fields with |G| ≤ 1 are admissible for |Dv|(W)",
+  "statement": "For every n ∈ ℕ, every set W ⊆ ℝⁿ, every v : ℝⁿ → ℝ and every K-Lipschitz G : ℝⁿ → ℝⁿ (K ∈ ℝ≥0) with compact support, tsupport G ⊆ W and ‖G(x)‖ ≤ 1 for all x: ENNReal.ofReal(∫_W v·div G) ≤ bvVariationOn v W, where div G = Chapter02.euclideanDivergence G and the integral is the Bochner integral over volume.restrict W.",
+  "lean_statement": "∀ (n : ℕ) (W : Set (Rn n)) (v : Rn n → ℝ) (G : Rn n → Rn n) (K : ℝ≥0), LipschitzWith K G → HasCompactSupport G → tsupport G ⊆ W → (∀ x, ‖G x‖ ≤ 1) → ENNReal.ofReal (∫ x in W, v x * Chapter02.euclideanDivergence G x) ≤ Chapter02.bvVariationOn v W",
+  "lean_name": "bv_ext_ofReal_integral_le_bvVariationOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-admissible-field-a1-a1"
+}

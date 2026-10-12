@@ -1,0 +1,78 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.bv_results-a1.extension-a1`
+- Child DAG node: `root.bv_results-a1.extension-a1.boundary_direction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof of Simon 2.8, Section C2 (Simon's inequality (1): 'x·Dd(x) ≤ −δ for a.e. x ∈ U with d(x) < dist(B_δ(0), ∂U)', obtained by taking y = −δDd(x)); here with centre ξ and radius r (r = δR in the caller).
+Notation: E := Rn n, d(y) := infDist y Uᶜ.
+1. Basic facts. Uᶜ is closed (U is open) and nonempty. d is 1-Lipschitz, hence continuous (Metric.continuous_infDist_pt). For y ∈ U we have y ∉ Uᶜ, hence d(y) > 0 (IsClosed.notMem_iff_infDist_pos).
+2. Choice of η. K := closedBall ξ r is compact (isCompact_closedBall; E is proper) and nonempty (ξ ∈ K as r ≥ 0). By IsCompact.exists_isMinOn, d attains its minimum over K at some y₀ ∈ K. Put η := d(y₀). Since y₀ ∈ K ⊆ U, η > 0 by step 1, and d(y) ≥ η for every y ∈ closedBall ξ r.
+3. Fix x ∈ U with d(x) < η such that d is differentiable at x, and let L := fderiv ℝ d x. Applying Submission.bv_ext_norm_fderiv_infDist_eq_one with S := Uᶜ (closed, nonempty, and x ∉ Uᶜ because x ∈ U) gives ‖L‖ = 1.
+4. Gradient vector. Let ν := (InnerProductSpace.toDual ℝ E).symm L. Then ⟪ν, h⟫ = L h for every h (InnerProductSpace.toDual_symm_apply) and ‖ν‖ = ‖L‖ = 1 (toDual is a linear isometry equivalence). In particular L ν = ⟪ν, ν⟫ = ‖ν‖² = 1.
+5. Test point. w := ξ − r•ν satisfies dist w ξ = ‖r•ν‖ = r, so w ∈ closedBall ξ r ⊆ U and, by step 2, d(w) ≥ η > d(x).
+6. Supergradient inequality. By Submission.bv_ext_infDist_compl_concaveOn, d is concave on U. For t ∈ (0, 1], x + t•(w − x) = (1 − t)•x + t•w, and concavity with weights 1 − t, t (both ≥ 0, sum 1; x, w ∈ U) gives (1 − t)·d(x) + t·d(w) ≤ d(x + t•(w − x)), i.e. q(t) := (d(x + t•(w − x)) − d(x))/t ≥ d(w) − d(x). Since d is differentiable at x, the chain rule gives HasDerivAt (t ↦ d(x + t•(w − x))) (L (w − x)) 0, so q(t) → L(w − x) as t → 0⁺ (HasDerivAt.tendsto_slope_zero_right). Hence L(w − x) ≥ d(w) − d(x) (ge_of_tendsto on 𝓝[>] 0, where eventually 0 < t ≤ 1). (Equivalently: ConcaveOn.slope_le_of_hasDerivAt applied to t ↦ d(AffineMap.lineMap x w t) on Icc 0 1.)
+7. Computation. By linearity and step 4, L(w − x) = L(ξ − x) − r·L ν = −L(x − ξ) − r.
+8. Combining steps 5–7: 0 < d(w) − d(x) ≤ −L(x − ξ) − r, hence r < −L(x − ξ) = −fderiv ℝ d x (x − ξ). ∎
+
+## Key steps
+
+1. η := min of d over the compact ball closedBall ξ r ⊆ U; η > 0 because d > 0 on the open U.
+2. At x ∈ U with d(x) < η and d differentiable, ‖Dd(x)‖ = 1 (Submission.bv_ext_norm_fderiv_infDist_eq_one with S = Uᶜ); let ν be its Riesz vector.
+3. w := ξ − rν ∈ closedBall ξ r ⊆ U, so d(w) ≥ η > d(x).
+4. Concavity of d on U (Submission.bv_ext_infDist_compl_concaveOn) and differentiability give d(w) − d(x) ≤ Dd(x)[w − x] = −Dd(x)[x − ξ] − r.
+5. Therefore r < −Dd(x)[x − ξ].
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'addHaar_frontier' mathlib/Mathlib/Analysis/Convex/`
+- `rg -n 'countable_meas_pos_of_disjoint' mathlib/Mathlib/MeasureTheory/Measure/ ; sed -n 245,330p mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean (countable_meas_level_set_pos)`
+- `rg -n 'exists_infDist_eq_dist|lipschitz_infDist_pt|theorem infDist_pos|notMem_iff_infDist_pos|theorem le_infDist|infDist_le_dist_of_mem|infDist_eq_zero_of_mem|theorem infDist_empty' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `rg -n 'infDist|infEDist' mathlib/Mathlib/Analysis/Convex/ (no match)`
+- `rg -n '^theorem|^lemma' mathlib/Mathlib/Analysis/Convex/Deriv.lean (ConvexOn/ConcaveOn slope-derivative lemmas)`
+- `rg -n 'trace_smulRight|trace_id|trace_one|trace_eq_contract' mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `rg -n 'fderiv_smul|HasFDerivAt.smul' mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean ; rg -n 'ae_differentiableAt' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean ; rg -n 'norm_fderiv_le_of_lipschitz' mathlib/Mathlib/Analysis/Calculus/FDeriv/`
+- `rg -n -A3 'setIntegral_eq_integral_of_forall_compl_eq_zero|setLIntegral_eq_of_support_subset|countable_meas_level_set_pos' mathlib/Mathlib/MeasureTheory/`
+- `rg -n 'dense_compl' mathlib/Mathlib/Topology/ mathlib/Mathlib/Analysis/ ; rg -n 'Countable.measure_zero' mathlib/Mathlib/MeasureTheory/`
+- `full read of simongmt Poincare/SimonGMT/Chapter02/BV.lean; read GMT/Ch02/Contract.lean and README rows for 2.8; cmp snapshot project/GMT/Ch02/Contract.lean with the workspace Contract.lean; sed -n 655,745p book/sources/chapter-02-source.txt`
+- `lean Avail.lean, Avail2.lean, Avail3.lean, Avail4.lean: #check of every cited lemma after import GMT.Ch02.Submission`
+- `python3 -I gen_checks.py (verifier gmt-compare.py layout/child_modules/contract_scope plus lean_contract.validate_lean_statement), then lean NodeChallenge_00..08.lean and Print.lean`
+- `lean Assembly.lean with #print axioms GMT.Ch02.node_check; lean Small.lean; lean Integrated.lean with #print axioms of the 9 children`
+- `grep -rl for each of the 9 proposed lean_names in the run directory; lean_name of every dag.json node and nodes/*/decomposition-v*.json subproblem`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/Cardinality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-extension-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1/decomposition-v1.json`
+- `/tmp/extdecomp-ilC422/checks/NodeChallenge_00.lean`
+- `/tmp/extdecomp-ilC422/checks/NodeChallenge_08.lean`
+- `/tmp/extdecomp-ilC422/checks/Assembly.lean`
+- `/tmp/extdecomp-ilC422/checks/Small.lean`
+- `/tmp/extdecomp-ilC422/checks/Avail.lean`
+- `/tmp/extdecomp-ilC422/verify/Integrated.lean`
+
+The snapshot project/GMT/Ch02/Contract.lean is byte-identical to the workspace contract (cmp). Rn, IsBVOn and BVExtensionEstimate match the selected type. README row 9 and its judgment-call note match the readings used: u = 0 a.e. off Ū, and |Du|(ℝⁿ∖Ū) = 0. The pinned SimonGMT BV.lean supplies every SimonGMT name the children use: euclideanDivergence, bvVariationOn, IsLipschitzTestField, compactlySupportedSupNorm, ofReal_integral_le_bvVariationOn, support_euclideanDivergence_subset, measurable_euclideanDivergence and norm_euclideanDivergence_le_of_lipschitz. The snapshot Mathlib supplies the cited tools: Metric.le_infDist, infDist_le_dist_of_mem, lipschitz_infDist_pt, IsClosed.exists_infDist_eq_dist, IsClosed.notMem_iff_infDist_pos, ConcaveOn.slope_le_of_hasDerivAt, HasDerivAt.tendsto_slope_zero_right, LipschitzWith.ae_differentiableAt, norm_fderiv_le_of_lipschitz, fderiv_fun_smul, LinearMap.trace_smulRight, LinearMap.trace_id, Measure.countable_meas_level_set_pos, Set.Countable.measure_zero, setIntegral_eq_integral_of_forall_compl_eq_zero and Convex.addHaar_frontier. After import GMT.Ch02.Submission all of these are available except two: Convex.addHaar_frontier (Mathlib.Analysis.Convex.Measure, needed only by the parent assembly) and the optional alternative Set.Countable.dense_compl (Mathlib.Topology.Algebra.Module.Cardinality). Adding Submission imports is allowed, because the verifier freezes only Contract.lean and the Lake inputs. Two searches found nothing. No Mathlib lemma states concavity of the distance to the complement of a convex set (no infDist match under Analysis/Convex). Neither Mathlib nor SimonGMT has a BV extension estimate. These are therefore genuine new obligations. All 9 child statements elaborate in the comparator's replayed scope. Each has a complete Lean proof using only standard axioms, and the Lean assembly proves the selected type from them plus Submission.bv_abs_variation_le.

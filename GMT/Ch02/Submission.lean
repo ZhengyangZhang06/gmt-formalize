@@ -13,6 +13,7 @@ import Poincare.SimonGMT.Chapter01.Hausdorff
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.Analysis.Calculus.BumpFunction.Normed
+import Mathlib.Analysis.Convex.Measure
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 2: Some further preliminaries from analysis (pp. 39–68)
@@ -1600,6 +1601,421 @@ theorem Submission.bv_mollifier_tendsto_L1 : ∀ (n : ℕ) (F : Rn n → ℝ) (�
     _ ≤ δ + (δ + δ) :=
         add_le_add ((hcontr j _ hFg).trans hg_close) (add_le_add hj hg_close)
     _ ≤ ε := hδ
+/-- **Concavity of the distance to the complement of a convex set** (Simon 2.8, proof, C1(b)).
+For a convex `U ⊆ ℝⁿ`, `d(x) = infDist x Uᶜ` is concave on `U`; `U` need not be open, and
+`infDist x ∅ = 0`. Fix `x, y ∈ U` and `a, b ≥ 0` with `a + b = 1`, and put `z = a • x + b • y`,
+`s = a d(x) + b d(y)`. Suppose some `p ∈ Uᶜ` had `dist z p < s`, and put `h = p - z`. Then the
+shifted points `x + (d(x)/s) • h` and `y + (d(y)/s) • h` lie in `U`
+(`Metric.ball_infDist_compl_subset`), and their `a, b`-combination is `p`. This contradicts
+convexity, so `s ≤ d(z)` by `Metric.le_infDist`. -/
+theorem Submission.bv_ext_infDist_compl_concaveOn : ∀ (n : ℕ) (U : Set (Rn n)), Convex ℝ U → ConcaveOn ℝ U (fun x ↦ infDist x Uᶜ) := by
+  intro n U hU
+  -- Step 1: fix `x, y ∈ U` and weights `a, b ≥ 0` with `a + b = 1`.
+  refine ⟨hU, fun x hx y hy a b ha hb hab ↦ ?_⟩
+  simp only [smul_eq_mul]
+  -- Step 2: if `Uᶜ = ∅` both sides vanish; otherwise it suffices to bound `dist z p`, `p ∈ Uᶜ`.
+  rcases (Uᶜ).eq_empty_or_nonempty with hE | hne
+  · simp [hE]
+  rw [le_infDist hne]
+  intro p hp
+  -- Step 4: suppose `dist z p < s`; then `s > 0`, and `h = p - z` has `‖h‖ < s`.
+  by_contra! hlt
+  set s := a * infDist x Uᶜ + b * infDist y Uᶜ
+  have hs0 : 0 < s := dist_nonneg.trans_lt hlt
+  set h := p - (a • x + b • y) with hh
+  have hnorm : ‖h‖ < s := by rwa [hh, ← dist_eq_norm, dist_comm]
+  -- Steps 3 and 5: each shifted point `q + (d(q)/s) • h`, `q ∈ U`, lies in `U`.
+  have hshift : ∀ q ∈ U, q + (infDist q Uᶜ / s) • h ∈ U := by
+    intro q hq
+    rcases (infDist_nonneg (x := q) (s := Uᶜ)).eq_or_lt with h0 | hpos
+    · rw [← h0, zero_div, zero_smul, add_zero]
+      exact hq
+    · apply ball_infDist_compl_subset
+      rw [mem_ball, dist_self_add_left, norm_smul, Real.norm_of_nonneg (div_nonneg hpos.le hs0.le)]
+      calc infDist q Uᶜ / s * ‖h‖ < infDist q Uᶜ / s * s := by gcongr
+        _ = infDist q Uᶜ := div_mul_cancel₀ _ hs0.ne'
+  -- Step 6: the `a, b`-combination of the shifted points is `z + h = p`, so `p ∈ U`.
+  have hcoef : a * (infDist x Uᶜ / s) + b * (infDist y Uᶜ / s) = 1 := by
+    rw [mul_div_assoc', mul_div_assoc', ← add_div, div_self hs0.ne']
+  have hp' : a • (x + (infDist x Uᶜ / s) • h) + b • (y + (infDist y Uᶜ / s) • h) = p := by
+    calc a • (x + (infDist x Uᶜ / s) • h) + b • (y + (infDist y Uᶜ / s) • h)
+        = (a • x + b • y) + (a * (infDist x Uᶜ / s) + b * (infDist y Uᶜ / s)) • h := by
+          simp only [smul_add, smul_smul, add_smul]
+          abel
+      _ = p := by rw [hcoef, one_smul, hh, add_sub_cancel]
+  exact hp (hp' ▸ hU (hshift x hx) (hshift y hy) ha hb hab)
+/-- **Unit gradient of the distance function off a closed set** (Simon 2.8 proof, C1(c), with `S`
+in place of `Uᶜ`). If `S ⊆ ℝⁿ` is closed and nonempty, `x ∉ S` and `d = infDist · S` is
+differentiable at `x`, then `‖Dd(x)‖ = 1`. Since `d` is 1-Lipschitz, `‖Dd(x)‖ ≤ 1`
+(`norm_fderiv_le_of_lipschitz`). Conversely, take a nearest point `a ∈ S`
+(`IsClosed.exists_infDist_eq_dist`), `ρ = d(x) > 0` and the unit vector `e = ρ⁻¹ • (a - x)`. Then
+`d(x + t • e) ≤ ρ - t` for `0 ≤ t ≤ ρ`, so the right difference quotients of `t ↦ d(x + t • e)` at
+`0` give `Dd(x) e ≤ -1`, and `‖Dd(x)‖ ≥ |Dd(x) e| ≥ 1`. -/
+theorem Submission.bv_ext_norm_fderiv_infDist_eq_one : ∀ (n : ℕ) (S : Set (Rn n)) (x : Rn n), IsClosed S → S.Nonempty → x ∉ S → DifferentiableAt ℝ (fun y ↦ infDist y S) x → ‖fderiv ℝ (fun y ↦ infDist y S) x‖ = 1 := by
+  intro n S x hS hne hx hd
+  set L := fderiv ℝ (fun y ↦ infDist y S) x with hL
+  -- Step 1: `infDist · S` is 1-Lipschitz, so `‖L‖ ≤ 1`.
+  have hup : ‖L‖ ≤ 1 := by
+    simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := x) (lipschitz_infDist_pt S)
+  -- Step 2: a nearest point `a ∈ S`, with `ρ = infDist x S = ‖a - x‖ > 0`.
+  obtain ⟨a, haS, hda⟩ := hS.exists_infDist_eq_dist hne x
+  have hρ : 0 < infDist x S := (hS.notMem_iff_infDist_pos hne).1 hx
+  set ρ := infDist x S with hρdef
+  have hax : ‖a - x‖ = ρ := by rw [hda, dist_comm, dist_eq_norm]
+  -- Step 3: along the unit vector `e` towards `a`, `infDist (x + t • e) S ≤ ρ - t` on `[0, ρ]`.
+  set e : Rn n := ρ⁻¹ • (a - x) with he
+  have he1 : ‖e‖ = 1 := by
+    rw [he, norm_smul, hax, Real.norm_eq_abs, abs_inv, abs_of_pos hρ, inv_mul_cancel₀ hρ.ne']
+  have hdec : ∀ t : ℝ, 0 ≤ t → t ≤ ρ → infDist (x + t • e) S ≤ ρ - t := by
+    intro t ht0 htρ
+    have hvec : a - (x + t • e) = (1 - t / ρ) • (a - x) := by
+      rw [he, smul_smul, sub_smul, one_smul, div_eq_mul_inv]; abel
+    have hcoef : 0 ≤ 1 - t / ρ := by rw [sub_nonneg, div_le_one hρ]; exact htρ
+    calc infDist (x + t • e) S ≤ dist (x + t • e) a := infDist_le_dist_of_mem haS
+      _ = ρ - t := by
+        rw [dist_comm, dist_eq_norm, hvec, norm_smul, hax, Real.norm_eq_abs, abs_of_nonneg hcoef]
+        field_simp
+  -- Step 4: `t ↦ infDist (x + t • e) S` has derivative `L e` at `0`; its right difference
+  -- quotients are `≤ -1` on `(0, ρ]`, hence `L e ≤ -1`.
+  have hderiv : HasDerivAt (fun t : ℝ ↦ infDist (x + t • e) S) (L e) 0 := by
+    have hline : HasDerivAt (fun t : ℝ ↦ x + t • e) e 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const e).const_add x
+    have hdx : HasFDerivAt (fun y ↦ infDist y S) L (x + (0 : ℝ) • e) := by
+      simpa using hd.hasFDerivAt
+    exact hdx.comp_hasDerivAt (0 : ℝ) hline
+  have hLe : L e ≤ -1 := by
+    refine le_of_tendsto hderiv.tendsto_slope_zero_right ?_
+    filter_upwards [Ioc_mem_nhdsGT hρ] with t ht
+    have h3 := hdec t ht.1.le ht.2
+    simp only [zero_add, zero_smul, add_zero, smul_eq_mul]
+    rw [inv_mul_le_iff₀ ht.1]
+    linarith
+  -- Step 5: `1 ≤ -L e = ‖L e‖ ≤ ‖L‖ * ‖e‖ = ‖L‖`.
+  have hlow : 1 ≤ ‖L‖ := by
+    have h := L.le_opNorm e
+    rw [he1, mul_one, Real.norm_eq_abs, abs_of_neg (by linarith)] at h
+    linarith
+  -- Step 6: combine the two bounds.
+  exact le_antisymm hup hlow
+/-- **Divergence of a scalar multiple** (Simon 2.8 proof, C4(b) and C5(b)). If `φ : ℝⁿ → ℝ` and
+`g : ℝⁿ → ℝⁿ` are differentiable at `x`, then `div(φ g)(x) = φ(x) div g(x) + Dφ(x)[g(x)]`. By the
+product rule (`fderiv_fun_smul`), `D(φ g)(x) = φ(x) Dg(x) + Dφ(x).smulRight (g x)`. The trace is
+linear, and the rank-one map `h ↦ Dφ(x)[h] g(x)` has trace `Dφ(x)[g(x)]`
+(`LinearMap.trace_smulRight`). -/
+theorem Submission.bv_ext_euclideanDivergence_smul : ∀ (n : ℕ) (φ : Rn n → ℝ) (g : Rn n → Rn n) (x : Rn n), DifferentiableAt ℝ φ x → DifferentiableAt ℝ g x → Chapter02.euclideanDivergence (fun y ↦ φ y • g y) x = φ x * Chapter02.euclideanDivergence g x + fderiv ℝ φ x (g x) := by
+  intro n φ g x hφ hg
+  -- Step 1: the divergence is the trace of the derivative, viewed as a linear map.
+  unfold Chapter02.euclideanDivergence
+  -- Step 2: product rule `D(φ g)(x) = φ(x) • Dg(x) + Dφ(x).smulRight (g x)`. The coercion to linear
+  -- maps and the trace are additive and commute with scalar multiplication.
+  rw [fderiv_fun_smul hφ hg, ContinuousLinearMap.toLinearMap_add,
+    ContinuousLinearMap.toLinearMap_smul, map_add, map_smul, smul_eq_mul]
+  -- Step 3: the coercion of `Dφ(x).smulRight (g x)` is definitionally
+  -- `(Dφ(x) : ℝⁿ →ₗ[ℝ] ℝ).smulRight (g x)`, whose trace is `Dφ(x)[g(x)]`.
+  congr 1
+  exact LinearMap.trace_smulRight (fderiv ℝ φ x).toLinearMap (g x)
+/-- **Admissible fields for `|Dv|(W)` (Simon 2.4).** A `K`-Lipschitz, compactly supported field
+`G : ℝⁿ → ℝⁿ` with `spt G ⊆ W` and `|G| ≤ 1` is one of the fields in the supremum defining
+`Chapter02.bvVariationOn v W`, so `ofReal (∫_W v div G) ≤ |Dv|(W)`. No openness or measurability of
+`W` and no integrability of `v` is needed: this is the defining supremum bound. `G` is packaged as
+`g ∈ C_c(ℝⁿ, ℝⁿ)` with `⇑g = G`. It is Lipschitz with constant `K`, and `sup |g| ≤ 1` by `csSup_le`. -/
+theorem Submission.bv_ext_ofReal_integral_le_bvVariationOn : ∀ (n : ℕ) (W : Set (Rn n)) (v : Rn n → ℝ) (G : Rn n → Rn n) (K : ℝ≥0), LipschitzWith K G → HasCompactSupport G → tsupport G ⊆ W → (∀ x, ‖G x‖ ≤ 1) → ENNReal.ofReal (∫ x in W, v x * Chapter02.euclideanDivergence G x) ≤ Chapter02.bvVariationOn v W := by
+  intro n W v G K hG hcs hsupp hnorm
+  -- Step 1: package `G` (continuous, being Lipschitz) as `g ∈ C_c(ℝⁿ, ℝⁿ)`; `⇑g` is `G` by definition.
+  let g : CompactlySupportedContinuousMap (Rn n) (Rn n) := ⟨⟨G, hG.continuous⟩, hcs⟩
+  -- Step 2: `g` is a Lipschitz test field with constant `K`, and `tsupport ⇑g = tsupport G ⊆ W`.
+  have hg : Chapter02.IsLipschitzTestField g := ⟨K, hG⟩
+  -- Step 3: `sup |g| ≤ 1`, since the range of `‖g ·‖` is nonempty and bounded by `1`.
+  have hn : Chapter02.compactlySupportedSupNorm g ≤ 1 :=
+    csSup_le (range_nonempty _) (by rintro _ ⟨x, rfl⟩; exact hnorm x)
+  -- Step 4: the defining supremum bound for the admissible field `g`.
+  exact Chapter02.ofReal_integral_le_bvVariationOn v W g hg hsupp hn
+
+/-- **Weighted gradient estimate** (Simon 2.8 proof, C4, Simon's (5)). Let `U ⊆ B_R(ξ)` be open,
+`u ∈ L¹(ℝⁿ)` and `φ : ℝⁿ → ℝ` Lipschitz with `0 ≤ φ ≤ 1`, `spt φ ⊆ U` compact and
+`r |Dφ(x)| ≤ -Dφ(x)[x - ξ]` for a.e. `x`. Then `r ∫ |u| |Dφ| ≤ R |D|u||(U) + n ∫_U |u|`. The field
+`V = φ (x - ξ)/R` is Lipschitz with `spt V ⊆ U` compact and `|V| ≤ 1`, so `-V` is admissible for
+`|D|u||(U)`. By Rademacher, `R div V = n φ + Dφ[x - ξ]` a.e., so
+`r |u| |Dφ| ≤ n |u| φ - R |u| div V` a.e., and integrating gives the estimate. -/
+theorem Submission.bv_ext_lintegral_enorm_mul_fderiv_le : ∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (R r : ℝ) (u φ : Rn n → ℝ), IsOpen U → 0 < R → U ⊆ closedBall ξ R → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → (∀ᵐ x ∂volume, r * ‖fderiv ℝ φ x‖ ≤ -fderiv ℝ φ x (x - ξ)) → ENNReal.ofReal r * ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ ≤ ENNReal.ofReal R * Chapter02.bvVariationOn (fun x ↦ |u x|) U + (n : ℝ≥0∞) * ∫⁻ x in U, ‖u x‖ₑ := by
+  rintro n U ξ R r u φ hUo hR hUB hu ⟨K, hφ⟩ hφ01 hφcs hφU hdir
+  -- Step 1: the case `r ≤ 0` is trivial, since then `ofReal r = 0`.
+  rcases le_or_gt r 0 with hr | hr
+  · rw [ENNReal.ofReal_of_nonpos hr, zero_mul]
+    exact bot_le
+  -- Step 2: the field `V = φ • c`, where `c y = R⁻¹ • (y - ξ)`.
+  set c : Rn n → Rn n := fun y ↦ R⁻¹ • (y - ξ) with hc_def
+  set V : Rn n → Rn n := fun y ↦ φ y • c y with hV_def
+  have hRinv : 0 ≤ R⁻¹ := inv_nonneg.mpr hR.le
+  -- (i) `‖y - ξ‖ ≤ R` wherever `φ y ≠ 0`, since then `y ∈ tsupport φ ⊆ U ⊆ B_R(ξ)`.
+  have hball : ∀ y, φ y ≠ 0 → ‖y - ξ‖ ≤ R := fun y hy ↦ by
+    have hy' : y ∈ closedBall ξ R := hUB (hφU (subset_tsupport φ hy))
+    rwa [mem_closedBall, dist_eq_norm] at hy'
+  have hφ1 : ∀ x, ‖φ x‖ ≤ 1 := fun x ↦ by
+    rw [Real.norm_of_nonneg (hφ01 x).1]
+    exact (hφ01 x).2
+  -- (ii) `V` is `(K + R⁻¹)`-Lipschitz: if `φ x ≠ 0`, then
+  -- `V x - V y = R⁻¹ • ((φ x - φ y) • (x - ξ) + φ y • (x - y))`.
+  have hkey : ∀ x y, φ x ≠ 0 → ‖V x - V y‖ ≤ (K + R⁻¹) * ‖x - y‖ := fun x y hx ↦ by
+    have hsplit : V x - V y = R⁻¹ • ((φ x - φ y) • (x - ξ) + φ y • (x - y)) := by
+      simp only [hV_def, hc_def]
+      module
+    have hφxy : ‖φ x - φ y‖ ≤ K * ‖x - y‖ := by
+      simpa only [dist_eq_norm] using hφ.dist_le_mul x y
+    rw [hsplit, norm_smul, Real.norm_of_nonneg hRinv]
+    calc R⁻¹ * ‖(φ x - φ y) • (x - ξ) + φ y • (x - y)‖
+        ≤ R⁻¹ * (‖φ x - φ y‖ * ‖x - ξ‖ + ‖φ y‖ * ‖x - y‖) := by
+          gcongr
+          rw [← norm_smul, ← norm_smul]
+          exact norm_add_le _ _
+      _ ≤ R⁻¹ * (K * ‖x - y‖ * R + 1 * ‖x - y‖) := by
+          gcongr
+          · exact hball x hx
+          · exact hφ1 y
+      _ = (K + R⁻¹) * ‖x - y‖ := by
+          field_simp
+  -- The case `φ y ≠ 0` is symmetric, and `V x = V y = 0` if `φ x = φ y = 0`.
+  have hVlip : LipschitzWith (K + R⁻¹.toNNReal) V := by
+    refine LipschitzWith.of_dist_le_mul fun x y ↦ ?_
+    rw [dist_eq_norm, dist_eq_norm, NNReal.coe_add, Real.coe_toNNReal _ hRinv]
+    by_cases hx : φ x = 0
+    · by_cases hy : φ y = 0
+      · simp only [hV_def, hx, hy, zero_smul, sub_self, norm_zero]
+        positivity
+      · rw [norm_sub_rev, norm_sub_rev x y]
+        exact hkey y x hy
+    · exact hkey x y hx
+  -- (iii) `V` has compact support and `tsupport V ⊆ tsupport φ ⊆ U`.
+  have hVcs : HasCompactSupport V := hφcs.smul_right
+  have hVU : tsupport V ⊆ U := (tsupport_smul_subset_left φ c).trans hφU
+  -- (iv) `‖V y‖ = φ y ‖y - ξ‖ / R ≤ 1`.
+  have hV1 : ∀ y, ‖V y‖ ≤ 1 := fun y ↦ by
+    by_cases hy : φ y = 0
+    · simp [hV_def, hy]
+    · calc ‖V y‖ = ‖φ y‖ * (R⁻¹ * ‖y - ξ‖) := by
+            rw [hV_def, hc_def]
+            simp only
+            rw [norm_smul, norm_smul, Real.norm_of_nonneg hRinv]
+        _ ≤ 1 * (R⁻¹ * R) := by
+            gcongr
+            · exact hφ1 y
+            · exact hball y hy
+        _ = 1 := by field_simp
+  -- Step 3: `-V` is admissible for `U`, so `ofReal b ≤ |D|u||(U)`.
+  have hadm : ENNReal.ofReal (∫ x in U, |u x| * Chapter02.euclideanDivergence (-V) x) ≤
+      Chapter02.bvVariationOn (fun x ↦ |u x|) U :=
+    Submission.bv_ext_ofReal_integral_le_bvVariationOn n U (fun x ↦ |u x|) (-V) _ hVlip.neg
+      hVcs.neg (by rw [tsupport_neg]; exact hVU) (fun y ↦ by rw [Pi.neg_apply, norm_neg]; exact hV1 y)
+  -- Step 4: `div (-V) = - div V`, and `div (-V)` vanishes off `tsupport (-V) ⊆ U`.
+  have hdivneg : ∀ x, Chapter02.euclideanDivergence (-V) x = -Chapter02.euclideanDivergence V x := by
+    intro x
+    unfold Chapter02.euclideanDivergence
+    rw [fderiv_neg, ContinuousLinearMap.toLinearMap_neg, map_neg]
+  set b : ℝ := ∫ x in U, |u x| * Chapter02.euclideanDivergence (-V) x with hb_def
+  have hb : b = -∫ x, |u x| * Chapter02.euclideanDivergence V x := by
+    rw [hb_def, setIntegral_eq_integral_of_forall_compl_eq_zero, ← integral_neg]
+    · simp only [hdivneg, mul_neg]
+    · intro x hx
+      have h0 : Chapter02.euclideanDivergence (-V) x = 0 := Function.notMem_support.mp fun h ↦
+        hx ((tsupport_neg V ▸ hVU) (Chapter02.support_euclideanDivergence_subset (-V) h))
+      rw [h0, mul_zero]
+  -- Step 5: `Dc = R⁻¹ • id`, so `div c = n / R`, and where `φ` is differentiable (a.e., by
+  -- Rademacher) the product rule gives `-Dφ(x)[x - ξ] = n φ(x) - R div V(x)`.
+  have hc_deriv : ∀ x, HasFDerivAt c (R⁻¹ • ContinuousLinearMap.id ℝ (Rn n)) x := fun x ↦
+    ((hasFDerivAt_id x).sub_const ξ).const_smul R⁻¹
+  have hdivc : ∀ x, Chapter02.euclideanDivergence c x = R⁻¹ * n := by
+    intro x
+    unfold Chapter02.euclideanDivergence
+    rw [(hc_deriv x).fderiv, ContinuousLinearMap.toLinearMap_smul, map_smul,
+      ContinuousLinearMap.coe_id, LinearMap.trace_id, finrank_euclideanSpace_fin, smul_eq_mul]
+  have hdivV : ∀ᵐ x ∂(volume : Measure (Rn n)),
+      -fderiv ℝ φ x (x - ξ) = n * φ x - R * Chapter02.euclideanDivergence V x := by
+    filter_upwards [hφ.ae_differentiableAt] with x hφx
+    have h := Submission.bv_ext_euclideanDivergence_smul n φ c x hφx (hc_deriv x).differentiableAt
+    rw [hdivc x] at h
+    rw [h]
+    simp only [hc_def, map_smul, smul_eq_mul]
+    field_simp
+    ring
+  -- Step 6: the pointwise a.e. inequality `r |u| ‖Dφ‖ ≤ n |u| φ - R |u| div V`.
+  have hpt : ∀ᵐ x ∂(volume : Measure (Rn n)),
+      r * (|u x| * ‖fderiv ℝ φ x‖) ≤
+        n * (|u x| * φ x) - R * (|u x| * Chapter02.euclideanDivergence V x) := by
+    filter_upwards [hdir, hdivV] with x hx hxV
+    have hux : 0 ≤ |u x| := abs_nonneg _
+    have := mul_le_mul_of_nonneg_left hx hux
+    rw [hxV] at this
+    nlinarith [this]
+  -- Step 7: integrability: `|u| ∈ L¹` times the bounded measurable `‖Dφ‖ ≤ K`, `φ ≤ 1` and
+  -- `|div V| ≤ n (K + R⁻¹)`.
+  have hint1 : Integrable fun x ↦ |u x| * ‖fderiv ℝ φ x‖ :=
+    hu.abs.mul_bdd (measurable_fderiv ℝ φ).norm.aestronglyMeasurable
+      (ae_of_all _ fun x ↦ (norm_norm _).trans_le (norm_fderiv_le_of_lipschitz ℝ hφ))
+  have hint2 : Integrable fun x ↦ |u x| * φ x :=
+    hu.abs.mul_bdd hφ.continuous.aestronglyMeasurable (ae_of_all _ hφ1)
+  have hint3 : Integrable fun x ↦ |u x| * Chapter02.euclideanDivergence V x :=
+    hu.abs.mul_bdd (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+      (ae_of_all _ (Chapter02.norm_euclideanDivergence_le_of_lipschitz hVlip))
+  -- Step 8: integrate the pointwise inequality.
+  have hineq : r * ∫ x, |u x| * ‖fderiv ℝ φ x‖ ≤
+      n * (∫ x, |u x| * φ x) - R * ∫ x, |u x| * Chapter02.euclideanDivergence V x := by
+    rw [← integral_const_mul, ← integral_const_mul, ← integral_const_mul, ← integral_sub]
+    · exact integral_mono_ae (hint1.const_mul r) ((hint2.const_mul _).sub (hint3.const_mul _)) hpt
+    · exact hint2.const_mul _
+    · exact hint3.const_mul _
+  -- Step 9: the first term: `|u| φ` vanishes off `U` and `|u| φ ≤ |u|`, so `∫ |u| φ ≤ a`.
+  set a : ℝ := ∫ x in U, |u x| with ha_def
+  have hfirst : ∫ x, |u x| * φ x ≤ a := by
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := U)]
+    · refine setIntegral_mono_on hint2.integrableOn hu.abs.integrableOn hUo.measurableSet
+        fun x _ ↦ ?_
+      exact mul_le_of_le_one_right (abs_nonneg _) (hφ01 x).2
+    · intro x hx
+      rw [image_eq_zero_of_notMem_tsupport fun h ↦ hx (hφU h), mul_zero]
+  have hA : ENNReal.ofReal a = ∫⁻ x in U, ‖u x‖ₑ := by
+    rw [ha_def, ← ofReal_integral_norm_eq_lintegral_enorm hu.integrableOn]
+    simp only [Real.norm_eq_abs]
+  -- Step 10: the second term is `-∫ |u| div V = b` (Step 4), and `ofReal b ≤ |D|u||(U)`.
+  -- Step 11: so `r ∫ |u| ‖Dφ‖ ≤ n a + R b`; convert to `[0, ∞]`.
+  have hreal : r * ∫ x, |u x| * ‖fderiv ℝ φ x‖ ≤ n * a + R * b := by
+    rw [hb]
+    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    nlinarith [mul_le_mul_of_nonneg_left hfirst hn0]
+  have hlint : ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ = ENNReal.ofReal (∫ x, |u x| * ‖fderiv ℝ φ x‖) := by
+    rw [ofReal_integral_eq_lintegral_ofReal hint1
+      (ae_of_all _ fun x ↦ mul_nonneg (abs_nonneg _) (norm_nonneg _))]
+    refine lintegral_congr fun x ↦ ?_
+    rw [ENNReal.ofReal_mul (abs_nonneg _), ← Real.norm_eq_abs, ofReal_norm, ofReal_norm]
+  calc ENNReal.ofReal r * ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ
+      = ENNReal.ofReal (r * ∫ x, |u x| * ‖fderiv ℝ φ x‖) := by
+        rw [hlint, ENNReal.ofReal_mul hr.le]
+    _ ≤ ENNReal.ofReal (n * a + R * b) := ENNReal.ofReal_le_ofReal hreal
+    _ ≤ ENNReal.ofReal (n * a) + ENNReal.ofReal (R * b) := ENNReal.ofReal_add_le
+    _ = (n : ℝ≥0∞) * ENNReal.ofReal a + ENNReal.ofReal R * ENNReal.ofReal b := by
+        rw [ENNReal.ofReal_mul (Nat.cast_nonneg n), ENNReal.ofReal_natCast,
+          ENNReal.ofReal_mul hR.le]
+    _ ≤ (n : ℝ≥0∞) * (∫⁻ x in U, ‖u x‖ₑ) +
+          ENNReal.ofReal R * Chapter02.bvVariationOn (fun x ↦ |u x|) U := by
+        rw [hA]
+        gcongr
+    _ = ENNReal.ofReal R * Chapter02.bvVariationOn (fun x ↦ |u x|) U +
+          (n : ℝ≥0∞) * ∫⁻ x in U, ‖u x‖ₑ :=
+        add_comm _ _
+/-- **Simon Ch. 2, 2.8, estimate (4) for one test field.** Let `u ∈ L¹(ℝⁿ)`, let `φ` be Lipschitz
+with `0 ≤ φ ≤ 1`, compact support and `tsupport φ ⊆ U`, and let `g` be a Lipschitz `C_c` test
+field with `sup |g| ≤ 1`. Then `∫ φ u div g ≤ |Du|(U) + ∫ |u| |Dφ|` in `[0, ∞]`. The field
+`ψ = φ • g` is admissible for `bvVariationOn u U`, and wherever `φ` and `g` are differentiable
+(a.e., by Rademacher) `div ψ = φ div g + Dφ[g]`, so `φ u div g ≤ u div ψ + |u| ‖Dφ‖` a.e. Since
+`div ψ` vanishes off `tsupport ψ ⊆ U`, `∫ u div ψ = ∫_U u div ψ ≤ |Du|(U)`. -/
+theorem Submission.bv_ext_ofReal_integral_cutoff_le : ∀ (n : ℕ) (U : Set (Rn n)) (u φ : Rn n → ℝ) (g : CompactlySupportedContinuousMap (Rn n) (Rn n)), IsOpen U → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → Chapter02.IsLipschitzTestField g → Chapter02.compactlySupportedSupNorm g ≤ 1 → ENNReal.ofReal (∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ := by
+  rintro n U u φ g - hu ⟨Kφ, hφ⟩ hφ01 hφcs hφU ⟨Kg, hg⟩ hgn
+  -- Step 1: `‖g x‖ ≤ compactlySupportedSupNorm g ≤ 1`, and `‖φ x‖ ≤ 1`.
+  have hg1 : ∀ x, ‖g x‖ ≤ 1 := by
+    obtain ⟨C, hC⟩ := g.continuous.bounded_above_of_compact_support g.hasCompactSupport
+    have hbdd : BddAbove (range fun x ↦ ‖g x‖) := ⟨C, by rintro _ ⟨y, rfl⟩; exact hC y⟩
+    exact fun x ↦ (le_csSup hbdd ⟨x, rfl⟩).trans hgn
+  have hφ1 : ∀ x, ‖φ x‖ ≤ 1 := fun x ↦ by
+    rw [Real.norm_of_nonneg (hφ01 x).1]
+    exact (hφ01 x).2
+  -- Step 2: `ψ = φ • g` is `(Kφ + Kg)`-Lipschitz, compactly supported in `U`, and `‖ψ‖ ≤ 1`.
+  set ψ : Rn n → Rn n := fun y ↦ φ y • g y with hψ_def
+  have hψ : LipschitzWith (Kφ + Kg) ψ := by
+    refine LipschitzWith.of_dist_le_mul fun x y ↦ ?_
+    have hφxy : ‖φ x - φ y‖ ≤ Kφ * ‖x - y‖ := by
+      simpa only [dist_eq_norm] using hφ.dist_le_mul x y
+    have hgxy : ‖g x - g y‖ ≤ Kg * ‖x - y‖ := by
+      simpa only [dist_eq_norm] using hg.dist_le_mul x y
+    have hgx := hg1 x
+    have hφy := hφ1 y
+    have hsplit : ψ x - ψ y = (φ x - φ y) • g x + φ y • (g x - g y) := by
+      simp only [hψ_def]
+      rw [sub_smul, smul_sub, sub_add_sub_cancel]
+    rw [dist_eq_norm, dist_eq_norm, hsplit]
+    calc ‖(φ x - φ y) • g x + φ y • (g x - g y)‖
+        ≤ ‖φ x - φ y‖ * ‖g x‖ + ‖φ y‖ * ‖g x - g y‖ := by
+          rw [← norm_smul, ← norm_smul]
+          exact norm_add_le _ _
+      _ ≤ Kφ * ‖x - y‖ * 1 + 1 * (Kg * ‖x - y‖) := by gcongr
+      _ = ((Kφ + Kg : ℝ≥0) : ℝ) * ‖x - y‖ := by push_cast; ring
+  have hψcs : HasCompactSupport ψ := hφcs.smul_right
+  have hψU : tsupport ψ ⊆ U := (tsupport_smul_subset_left φ (g : Rn n → Rn n)).trans hφU
+  have hψ1 : ∀ x, ‖ψ x‖ ≤ 1 := fun x ↦ by
+    calc ‖ψ x‖ = ‖φ x‖ * ‖g x‖ := norm_smul _ _
+      _ ≤ 1 := (mul_le_of_le_one_left (norm_nonneg _) (hφ1 x)).trans (hg1 x)
+  -- Step 3: `ψ` is admissible in `U`, and `∫_U u div ψ = ∫ u div ψ` since `div ψ = 0` off
+  -- `tsupport ψ ⊆ U`.
+  have hset : ∫ x in U, u x * Chapter02.euclideanDivergence ψ x =
+      ∫ x, u x * Chapter02.euclideanDivergence ψ x := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx ↦ ?_
+    rw [Function.notMem_support.mp fun h ↦
+      hx (hψU (Chapter02.support_euclideanDivergence_subset ψ h)), mul_zero]
+  have hadm : ENNReal.ofReal (∫ x, u x * Chapter02.euclideanDivergence ψ x) ≤
+      Chapter02.bvVariationOn u U := by
+    rw [← hset]
+    exact Submission.bv_ext_ofReal_integral_le_bvVariationOn n U u ψ (Kφ + Kg) hψ hψcs hψU hψ1
+  -- Steps 4–5: where `φ` and `g` are differentiable (a.e., Rademacher), the product rule gives
+  -- `div ψ = φ div g + Dφ[g]`, so `φ u div g = u div ψ - u Dφ[g] ≤ u div ψ + |u| ‖Dφ‖`.
+  have hpt : ∀ᵐ x ∂(volume : Measure (Rn n)),
+      φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x ≤
+        u x * Chapter02.euclideanDivergence ψ x + |u x| * ‖fderiv ℝ φ x‖ := by
+    filter_upwards [hφ.ae_differentiableAt, hg.ae_differentiableAt] with x hφx hgx
+    have hdiv : Chapter02.euclideanDivergence ψ x =
+        φ x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x + fderiv ℝ φ x (g x) :=
+      Submission.bv_ext_euclideanDivergence_smul n φ g x hφx hgx
+    have hD : ‖fderiv ℝ φ x (g x)‖ ≤ ‖fderiv ℝ φ x‖ := by
+      simpa only [mul_one] using (fderiv ℝ φ x).le_opNorm_of_le (hg1 x)
+    have hneg : -(u x * fderiv ℝ φ x (g x)) ≤ |u x| * ‖fderiv ℝ φ x‖ :=
+      calc -(u x * fderiv ℝ φ x (g x)) ≤ |u x * fderiv ℝ φ x (g x)| := neg_le_abs _
+        _ = |u x| * ‖fderiv ℝ φ x (g x)‖ := by rw [abs_mul, Real.norm_eq_abs]
+        _ ≤ |u x| * ‖fderiv ℝ φ x‖ := by gcongr
+    rw [hdiv]
+    linarith
+  -- Step 6: integrability, from `|φ| ≤ 1`, `|div g| ≤ n Kg`, `|div ψ| ≤ n (Kφ + Kg)` and
+  -- `‖Dφ‖ ≤ Kφ`.
+  have hint₁ : Integrable fun x ↦
+      φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x :=
+    (hu.bdd_mul hφ.continuous.aestronglyMeasurable (ae_of_all _ hφ1)).mul_bdd
+      (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+      (ae_of_all _ (Chapter02.norm_euclideanDivergence_le_of_lipschitz hg))
+  have hint₂ : Integrable fun x ↦ u x * Chapter02.euclideanDivergence ψ x :=
+    hu.mul_bdd (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+      (ae_of_all _ (Chapter02.norm_euclideanDivergence_le_of_lipschitz hψ))
+  have hint₃ : Integrable fun x ↦ |u x| * ‖fderiv ℝ φ x‖ :=
+    hu.abs.mul_bdd (measurable_fderiv ℝ φ).norm.aestronglyMeasurable
+      (ae_of_all _ fun x ↦ (norm_norm _).trans_le (norm_fderiv_le_of_lipschitz ℝ hφ))
+  -- Step 7: integrate the a.e. inequality.
+  have hle : ∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x ≤
+      (∫ x, u x * Chapter02.euclideanDivergence ψ x) + ∫ x, |u x| * ‖fderiv ℝ φ x‖ := by
+    rw [← integral_add hint₂ hint₃]
+    exact integral_mono_ae hint₁ (hint₂.add hint₃) hpt
+  -- Step 8: pass to `[0, ∞]`, where `ofReal (∫ |u| ‖Dφ‖) = ∫⁻ ‖u‖ₑ ‖Dφ‖ₑ`.
+  have hlint : ENNReal.ofReal (∫ x, |u x| * ‖fderiv ℝ φ x‖) =
+      ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ := by
+    rw [ofReal_integral_eq_lintegral_ofReal hint₃
+      (ae_of_all _ fun x ↦ mul_nonneg (abs_nonneg _) (norm_nonneg _))]
+    refine lintegral_congr fun x ↦ ?_
+    rw [ENNReal.ofReal_mul (abs_nonneg _), ← Real.norm_eq_abs, ofReal_norm, ofReal_norm]
+  calc ENNReal.ofReal (∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      ≤ ENNReal.ofReal ((∫ x, u x * Chapter02.euclideanDivergence ψ x) +
+          ∫ x, |u x| * ‖fderiv ℝ φ x‖) := ENNReal.ofReal_le_ofReal hle
+    _ ≤ ENNReal.ofReal (∫ x, u x * Chapter02.euclideanDivergence ψ x) +
+          ENNReal.ofReal (∫ x, |u x| * ‖fderiv ℝ φ x‖) := ENNReal.ofReal_add_le
+    _ ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ :=
+      add_le_add hadm hlint.le
+/-- **`|Du|(A) = 0` when `u = 0` a.e. on `A`** (Simon 2.8, proof, C0). For a measurable
+`A ⊆ ℝⁿ` and `u` vanishing `Lⁿ`-a.e. on `A`, every term `∫_A u div g` of the supremum
+`bvVariationOn u A` has an integrand that vanishes `(volume.restrict A)`-a.e.
+(`ae_restrict_iff'`), so it is `ofReal 0 = 0`. A supremum of zeros is `0`. -/
+theorem Submission.bv_ext_variation_eq_zero_of_ae_eq_zero : ∀ (n : ℕ) (A : Set (Rn n)) (u : Rn n → ℝ), MeasurableSet A → (∀ᵐ x ∂volume, x ∈ A → u x = 0) → Chapter02.bvVariationOn u A = 0 := by
+  intro n A u hA hu
+  -- Step 2: since `A` is measurable, `u = 0` holds `(volume.restrict A)`-a.e.
+  have hu' : ∀ᵐ x ∂(volume.restrict A), u x = 0 := (ae_restrict_iff' hA).2 hu
+  -- Step 1: `0 ≤ bvVariationOn u A`, so it suffices to bound every admissible term by `0`.
+  refine le_antisymm (iSup_le fun g ↦ iSup_le fun _ ↦ iSup_le fun _ ↦ iSup_le fun _ ↦ ?_) bot_le
+  -- Step 3: the integrand `u · div g` vanishes a.e. on `A`, so the term is `ofReal 0 = 0`.
+  have h0 : ∫ x in A, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x = 0 :=
+    integral_eq_zero_of_ae (hu'.mono fun x hx ↦ by simp [hx])
+  rw [h0, ENNReal.ofReal_zero]
 /-- **Monotonicity of `bvVariationOn` in the domain.** For every `u : ℝⁿ → ℝ` and all sets
 `W ⊆ O ⊆ ℝⁿ`, `bvVariationOn u W ≤ bvVariationOn u O`; no openness, measurability or integrability is
 assumed. A field `g` admissible for `W` is admissible for `O`, as `tsupport g ⊆ W ⊆ O`. Since `div g`
@@ -2857,5 +3273,356 @@ theorem Submission.bv_poincare_theorem : BVPoincare := by
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+/-- **The distance gradient points into `U` near `∂U`** (Simon 2.8, proof, C2, inequality (1)).
+Let `U ⊆ ℝⁿ` be open and convex with `Uᶜ ≠ ∅`, `r > 0`, `closedBall ξ r ⊆ U`, and
+`d(y) = infDist y Uᶜ`. Take `η > 0` to be the minimum of `d` over the compact ball
+`closedBall ξ r ⊆ U`. Fix `x ∈ U` with `d(x) < η` at which `d` is differentiable, and put
+`L = Dd(x)`. Then `‖L‖ = 1` (`Submission.bv_ext_norm_fderiv_infDist_eq_one`), so the Riesz
+vector `ν` of `L` is a unit vector with `L ν = 1`. The point `w = ξ - r • ν` lies in the ball,
+so `d(x) < η ≤ d(w)`. Since `d` is concave on `U` (`Submission.bv_ext_infDist_compl_concaveOn`),
+its restriction to the segment from `x` to `w` gives `d(w) - d(x) ≤ L (w - x) = -L (x - ξ) - r`
+(`ConcaveOn.slope_le_of_hasDerivAt`). -/
+theorem Submission.bv_ext_infDist_compl_fderiv_lt : ∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (r : ℝ), IsOpen U → Convex ℝ U → Uᶜ.Nonempty → 0 < r → closedBall ξ r ⊆ U → ∃ η : ℝ, 0 < η ∧ ∀ x ∈ U, infDist x Uᶜ < η → DifferentiableAt ℝ (fun y ↦ infDist y Uᶜ) x → r < -fderiv ℝ (fun y ↦ infDist y Uᶜ) x (x - ξ) := by
+  intro n U ξ r hUo hUc hne hr hball
+  -- Step 1: `Uᶜ` is closed and nonempty, so `d > 0` on `U`.
+  have hcl : IsClosed Uᶜ := hUo.isClosed_compl
+  have hpos : ∀ y ∈ U, 0 < infDist y Uᶜ := fun y hy ↦
+    (hcl.notMem_iff_infDist_pos hne).1 (Set.notMem_compl_iff.2 hy)
+  -- Step 2: `η = d(y₀)` is the minimum of `d` over the compact ball `closedBall ξ r ⊆ U`.
+  obtain ⟨y₀, hy₀, hmin⟩ := (isCompact_closedBall ξ r).exists_isMinOn
+    (nonempty_closedBall.2 hr.le) (continuous_infDist_pt Uᶜ).continuousOn
+  refine ⟨infDist y₀ Uᶜ, hpos y₀ (hball hy₀), fun x hx hxη hdiff ↦ ?_⟩
+  -- Step 3: `L = Dd(x)` has norm `1`.
+  generalize hL : fderiv ℝ (fun y ↦ infDist y Uᶜ) x = L
+  have hfd : HasFDerivAt (fun y ↦ infDist y Uᶜ) L x := hL ▸ hdiff.hasFDerivAt
+  have hLnorm : ‖L‖ = 1 := hL ▸ Submission.bv_ext_norm_fderiv_infDist_eq_one n Uᶜ x hcl hne
+    (Set.notMem_compl_iff.2 hx) hdiff
+  -- Step 4: the Riesz vector `ν` of `L` is a unit vector with `L ν = 1`.
+  obtain ⟨ν, hν, hLν⟩ : ∃ ν : Rn n, ‖ν‖ = 1 ∧ L ν = 1 := by
+    set e := InnerProductSpace.toDual ℝ (Rn n)
+    refine ⟨e.symm L, by rw [LinearIsometryEquiv.norm_map, hLnorm], ?_⟩
+    rw [← InnerProductSpace.toDual_symm_apply (x := e.symm L) (y := L),
+      real_inner_self_eq_norm_sq, LinearIsometryEquiv.norm_map, hLnorm, one_pow]
+  -- Step 5: `w = ξ - r • ν` lies in `closedBall ξ r ⊆ U`, so `d(x) < η ≤ d(w)`.
+  obtain ⟨w, hw⟩ : ∃ w : Rn n, w = ξ - r • ν := ⟨_, rfl⟩
+  have hwball : w ∈ closedBall ξ r := by
+    rw [mem_closedBall, dist_eq_norm, hw, sub_sub_cancel_left, norm_neg, norm_smul, hν, mul_one,
+      Real.norm_of_nonneg hr.le]
+  have hdw : infDist x Uᶜ < infDist w Uᶜ := hxη.trans_le (isMinOn_iff.1 hmin w hwball)
+  -- Step 6: concavity of `d` along the segment from `x` to `w` gives `d(w) - d(x) ≤ L (w - x)`.
+  have hsuper : infDist w Uᶜ - infDist x Uᶜ ≤ L (w - x) := by
+    have hcv := (Submission.bv_ext_infDist_compl_concaveOn n U hUc).comp_affineMap
+      (AffineMap.lineMap x w)
+    have hder := hfd.comp_hasDerivAt_of_eq 0 (AffineMap.hasDerivAt_lineMap (a := x) (b := w))
+      (AffineMap.lineMap_apply_zero x w).symm
+    simpa [slope_def_field] using
+      hcv.slope_le_of_hasDerivAt (by simpa using hx) (by simpa using hball hwball) zero_lt_one hder
+  -- Step 7: `L (w - x) = -L (x - ξ) - r`.
+  have hcomp : L (w - x) = -L (x - ξ) - r := by
+    rw [show w - x = -(x - ξ) - r • ν by rw [hw]; abel, map_sub, map_neg, map_smul, hLν,
+      smul_eq_mul, mul_one]
+  -- Step 8: `0 < d(w) - d(x) ≤ -L (x - ξ) - r`.
+  linarith
+
+/-- **Cut-offs for the BV extension estimate** (Simon Ch. 2, proof of Lemma 2.8, (2)–(3), p. 52).
+Let `U ⊂ ℝⁿ` be bounded, open and convex, and `B_r(ξ) ⊂ U` with `r > 0`. Then there are Lipschitz
+`φ_j : ℝⁿ → [0, 1]` with compact support in `U` such that `φ_j → 1_U` pointwise and
+`r |Dφ_j| ≤ -Dφ_j(x)[x - ξ]` for `Lⁿ`-a.e. `x`. Take `φ_j = γ_j ∘ d`, where `d = dist(·, ℝⁿ \ U)` and
+`γ_j(t) = min(1, max(0, 2t/ε_j - 1))`. The level `ε_j < min(η, 1/(j+1))` is chosen so that
+`{d = ε_j}` and `{d = ε_j/2}` are `Lⁿ`-null. Here `η` is given by
+`Submission.bv_ext_infDist_compl_fderiv_lt`: `r < -Dd(x)[x - ξ]` at every `x ∈ U` with `d(x) < η`
+at which `d` is differentiable. -/
+theorem Submission.bv_ext_exists_cutoffs : ∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (r : ℝ), IsOpen U → Bornology.IsBounded U → Convex ℝ U → 0 < r → closedBall ξ r ⊆ U → ∃ φ : ℕ → Rn n → ℝ, (∀ j, ∃ K, LipschitzWith K (φ j)) ∧ (∀ j x, 0 ≤ φ j x ∧ φ j x ≤ 1) ∧ (∀ j, HasCompactSupport (φ j)) ∧ (∀ j, tsupport (φ j) ⊆ U) ∧ (∀ x, Tendsto (fun j ↦ φ j x) atTop (𝓝 (U.indicator (fun _ ↦ (1 : ℝ)) x))) ∧ ∀ j, ∀ᵐ x ∂volume, r * ‖fderiv ℝ (φ j) x‖ ≤ -fderiv ℝ (φ j) x (x - ξ) := by
+  intro n U ξ r hUo hUb hUc hr hball
+  rcases Uᶜ.eq_empty_or_nonempty with hUe | hne
+  · -- Step 1: `Uᶜ = ∅`, so `U = univ` is compact and `φ_j ≡ 1` works.
+    have hU : U = univ := compl_empty_iff.1 hUe
+    have hcpt : IsCompact (univ : Set (Rn n)) :=
+      Metric.isCompact_of_isClosed_isBounded isClosed_univ (hU ▸ hUb)
+    refine ⟨fun _ _ ↦ 1, fun _ ↦ ⟨0, LipschitzWith.const 1⟩,
+      fun _ _ ↦ ⟨zero_le_one, le_rfl⟩, fun _ ↦ ?_, fun _ ↦ ?_, fun x ↦ ?_, fun _ ↦ ?_⟩
+    · exact hcpt.of_isClosed_subset (isClosed_tsupport _) (subset_univ _)
+    · rw [hU]; exact subset_univ _
+    · rw [hU, indicator_univ]; exact tendsto_const_nhds
+    · exact Filter.Eventually.of_forall fun x ↦ by simp
+  -- Step 2: `d = infDist · Uᶜ` is 1-Lipschitz, `0` off `U`, positive on `U`, `‖Dd‖ ≤ 1`, and
+  -- differentiable a.e. (Rademacher).
+  set d : Rn n → ℝ := fun y ↦ infDist y Uᶜ with hd_def
+  have hdlip : LipschitzWith 1 d := lipschitz_infDist_pt Uᶜ
+  have hdcont : Continuous d := hdlip.continuous
+  have hd0 : ∀ x, x ∉ U → d x = 0 := fun x hx ↦ infDist_zero_of_mem hx
+  have hdpos : ∀ x ∈ U, 0 < d x := fun x hx ↦
+    (hUo.isClosed_compl.notMem_iff_infDist_pos hne).1 (not_not.2 hx)
+  have hDd : ∀ x, ‖fderiv ℝ d x‖ ≤ 1 := fun x ↦ by
+    simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := x) hdlip
+  have hdiff : ∀ᵐ x ∂(volume : Measure (Rn n)), DifferentiableAt ℝ d x :=
+    hdlip.ae_differentiableAt
+  -- Step 3: the boundary-direction inequality near `∂U`.
+  obtain ⟨η, hη, hkey⟩ :=
+    Submission.bv_ext_infDist_compl_fderiv_lt n U ξ r hUo hUc hne hr hball
+  -- Step 4: only countably many levels of `d` have positive measure, so we can pick `ε_j` with
+  -- `{d = ε_j}` and `{d = ε_j / 2}` null.
+  have hB : {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}}.Countable :=
+    Measure.countable_meas_level_set_pos hdcont.measurable
+  have hB' : ({t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}} ∪
+      (fun t ↦ 2 * t) '' {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}}).Countable :=
+    hB.union (hB.image _)
+  have hε : ∀ j : ℕ, ∃ ε : ℝ, 0 < ε ∧ ε < η ∧ ε < 1 / ((j : ℝ) + 1) ∧
+      (volume : Measure (Rn n)) {y | d y = ε} = 0 ∧
+      (volume : Measure (Rn n)) {y | d y = ε / 2} = 0 := by
+    intro j
+    have hpos : 0 < min η (1 / ((j : ℝ) + 1)) := lt_min hη (by positivity)
+    have hns : ¬ Ioo 0 (min η (1 / ((j : ℝ) + 1))) ⊆
+        {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}} ∪
+        (fun t ↦ 2 * t) '' {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}} := by
+      intro hsub
+      have h0 := measure_mono_null hsub (hB'.measure_zero volume)
+      rw [Real.volume_Ioo, ENNReal.ofReal_eq_zero] at h0
+      linarith
+    obtain ⟨ε, hεI, hεB⟩ := not_subset.1 hns
+    refine ⟨ε, hεI.1, hεI.2.trans_le (min_le_left _ _), hεI.2.trans_le (min_le_right _ _), ?_, ?_⟩
+    · by_contra h
+      exact hεB (Or.inl (pos_iff_ne_zero.2 h))
+    · by_contra h
+      exact hεB (Or.inr ⟨ε / 2, pos_iff_ne_zero.2 h, by beta_reduce; ring⟩)
+  choose ε hε0 hεη hεj hεnull hεnull2 using hε
+  -- Step 5: the cut-offs `φ_j = min 1 (max 0 (2 d / ε_j - 1))`.
+  set φ : ℕ → Rn n → ℝ := fun j x ↦ min 1 (max 0 (2 * d x / ε j - 1)) with hφ_def
+  have hφ0 : ∀ j x, d x ≤ ε j / 2 → φ j x = 0 := by
+    intro j x hx
+    have h1 : 2 * d x / ε j - 1 ≤ 0 := by
+      rw [sub_nonpos, div_le_one (hε0 j)]; linarith
+    simp only [hφ_def, max_eq_left h1, min_eq_right zero_le_one]
+  have hφ1 : ∀ j x, ε j ≤ d x → φ j x = 1 := by
+    intro j x hx
+    have h1 : 1 ≤ 2 * d x / ε j - 1 := by
+      rw [le_sub_iff_add_le, le_div_iff₀ (hε0 j)]; linarith
+    simp only [hφ_def, max_eq_right (zero_le_one.trans h1), min_eq_left h1]
+  have hφlin : ∀ j x, ε j / 2 ≤ d x → d x ≤ ε j → φ j x = 2 * d x / ε j - 1 := by
+    intro j x h1 h2
+    have a1 : 0 ≤ 2 * d x / ε j - 1 := by
+      rw [sub_nonneg, one_le_div (hε0 j)]; linarith
+    have a2 : 2 * d x / ε j - 1 ≤ 1 := by
+      rw [sub_le_iff_le_add, div_le_iff₀ (hε0 j)]; linarith
+    simp only [hφ_def, max_eq_right a1, min_eq_right a2]
+  -- Step 7: `tsupport φ_j ⊆ {ε_j / 2 ≤ d} ⊆ U`.
+  have htsupp : ∀ j, tsupport (φ j) ⊆ {x | ε j / 2 ≤ d x} := by
+    intro j
+    refine closure_minimal ?_ (isClosed_le continuous_const hdcont)
+    intro x hx
+    by_contra h
+    exact hx (hφ0 j x (le_of_lt (not_le.1 h)))
+  have hFU : ∀ j, {x | ε j / 2 ≤ d x} ⊆ U := by
+    intro j x hx
+    by_contra h
+    have h1 := hd0 x h
+    have h2 := hε0 j
+    simp only [mem_ofPred_eq] at hx
+    linarith
+  refine ⟨φ, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 6: `φ_j` is `(2 / ε_j)`-Lipschitz.
+    intro j
+    have he := hε0 j
+    have hlin : LipschitzWith (Real.toNNReal (2 / ε j)) (fun x ↦ 2 * d x / ε j - 1) := by
+      refine LipschitzWith.of_dist_le_mul fun x y ↦ ?_
+      rw [Real.coe_toNNReal _ (by positivity), Real.dist_eq]
+      have hxy : |d x - d y| ≤ dist x y := by
+        simpa [Real.dist_eq] using hdlip.dist_le_mul x y
+      calc |2 * d x / ε j - 1 - (2 * d y / ε j - 1)| = 2 / ε j * |d x - d y| := by
+            rw [show 2 * d x / ε j - 1 - (2 * d y / ε j - 1) = 2 / ε j * (d x - d y) by ring,
+              abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 / ε j)]
+        _ ≤ 2 / ε j * dist x y := by gcongr
+    exact ⟨_, (hlin.const_max 0).const_min 1⟩
+  · -- Step 6: `0 ≤ φ_j ≤ 1`.
+    intro j x
+    exact ⟨le_min zero_le_one (le_max_left _ _), min_le_left _ _⟩
+  · -- Step 7: `{ε_j / 2 ≤ d}` is closed and bounded, hence compact.
+    intro j
+    have hF : IsCompact {x | ε j / 2 ≤ d x} :=
+      Metric.isCompact_of_isClosed_isBounded (isClosed_le continuous_const hdcont)
+        (hUb.subset (hFU j))
+    exact hF.of_isClosed_subset (isClosed_tsupport _) (htsupp j)
+  · intro j
+    exact (htsupp j).trans (hFU j)
+  · -- Step 8: `φ_j(x)` is eventually `1_U(x)`.
+    intro x
+    by_cases hx : x ∈ U
+    · rw [indicator_of_mem hx]
+      obtain ⟨N, hN⟩ := exists_nat_one_div_lt (hdpos x hx)
+      refine tendsto_const_nhds.congr' (eventually_atTop.2 ⟨N, fun j hj ↦ ?_⟩)
+      symm
+      apply hφ1
+      have : 1 / ((j : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) := by
+        gcongr
+      linarith [hεj j]
+    · rw [indicator_of_notMem hx]
+      refine tendsto_const_nhds.congr' (Filter.Eventually.of_forall fun j ↦ ?_)
+      symm
+      apply hφ0
+      rw [hd0 x hx]
+      have := hε0 j
+      linarith
+  · -- Step 9: off `{d = ε_j} ∪ {d = ε_j / 2}` and the non-differentiability set of `d`, either
+    -- `Dφ_j(x) = 0` or `Dφ_j(x) = (2 / ε_j) Dd(x)` with `0 < d(x) < ε_j < η`.
+    intro j
+    have he := hε0 j
+    have hn1 : ∀ᵐ x ∂(volume : Measure (Rn n)), d x ≠ ε j := by
+      rw [ae_iff]; simpa using hεnull j
+    have hn2 : ∀ᵐ x ∂(volume : Measure (Rn n)), d x ≠ ε j / 2 := by
+      rw [ae_iff]; simpa using hεnull2 j
+    filter_upwards [hdiff, hn1, hn2] with x hxd hx1 hx2
+    rcases lt_or_gt_of_ne hx2 with hlt | hgt
+    · -- (a) `d x < ε_j / 2`: `φ_j = 0` near `x`.
+      have hloc : φ j =ᶠ[𝓝 x] fun _ ↦ (0 : ℝ) := by
+        filter_upwards [(isOpen_lt hdcont continuous_const).mem_nhds hlt] with y hy
+        exact hφ0 j y (le_of_lt hy)
+      rw [hloc.fderiv_eq]
+      simp
+    rcases lt_or_gt_of_ne hx1 with hlt' | hgt'
+    · -- (c) `ε_j / 2 < d x < ε_j`: `φ_j = 2 d / ε_j - 1` near `x`.
+      have hloc : φ j =ᶠ[𝓝 x] fun y ↦ 2 * d y / ε j - 1 := by
+        filter_upwards [(isOpen_lt continuous_const hdcont).mem_nhds hgt,
+          (isOpen_lt hdcont continuous_const).mem_nhds hlt'] with y hy1 hy2
+        exact hφlin j y (le_of_lt hy1) (le_of_lt hy2)
+      have hderiv : fderiv ℝ (φ j) x = (2 / ε j) • fderiv ℝ d x := by
+        rw [hloc.fderiv_eq]
+        have hfun : (fun y ↦ 2 * d y / ε j - 1) = (fun y ↦ 2 / ε j * d y - 1) := by
+          funext y; ring
+        rw [hfun]
+        exact ((hxd.hasFDerivAt.const_mul (2 / ε j)).sub_const 1).fderiv
+      have hxU : x ∈ U := by
+        by_contra h
+        rw [hd0 x h] at hgt
+        linarith
+      have hk : r < -fderiv ℝ d x (x - ξ) := hkey x hxU (by linarith [hεη j]) hxd
+      have h2e : (0 : ℝ) < 2 / ε j := by positivity
+      rw [hderiv, norm_smul, smul_apply, smul_eq_mul, Real.norm_eq_abs, abs_of_pos h2e]
+      calc r * (2 / ε j * ‖fderiv ℝ d x‖) ≤ r * (2 / ε j * 1) := by
+            gcongr
+            exact hDd x
+        _ = 2 / ε j * r := by ring
+        _ ≤ 2 / ε j * (-fderiv ℝ d x (x - ξ)) := mul_le_mul_of_nonneg_left hk.le h2e.le
+        _ = -(2 / ε j * fderiv ℝ d x (x - ξ)) := by ring
+    · -- (b) `d x > ε_j`: `φ_j = 1` near `x`.
+      have hloc : φ j =ᶠ[𝓝 x] fun _ ↦ (1 : ℝ) := by
+        filter_upwards [(isOpen_lt continuous_const hdcont).mem_nhds hgt'] with y hy
+        exact hφ1 j y (le_of_lt hy)
+      rw [hloc.fderiv_eq]
+      simp
+
+/-- **Simon Ch. 2, Lemma 2.8 (p. 51), BV extension estimate**, with `C = max (1 + δ⁻¹) (n δ⁻¹)`.
+The first conjunct is `bv_ext_variation_eq_zero_of_ae_eq_zero` on the open set `(closure U)ᶜ`.
+For the second, take the cut-offs `φ_j` of `bv_ext_exists_cutoffs` with `r = δR`. By
+`bv_ext_lintegral_enorm_mul_fderiv_le` and `bv_abs_variation_le`,
+`∫ |u| |Dφ_j| ≤ δ⁻¹ |Du|(U) + n δ⁻¹ R⁻¹ ∫_U |u|`. For an admissible field `g` on `ℝⁿ`,
+`bv_ext_ofReal_integral_cutoff_le` bounds `∫ φ_j u div g` by `|Du|(U) + ∫ |u| |Dφ_j|`, hence by
+`C (|Du|(U) + R⁻¹ ∫_U |u|)`. Since `φ_j → 1_U` and `1_U u = u` a.e. (`u = 0` a.e. off `Ū`, and the
+frontier of the convex set `U` is null), dominated convergence gives `∫ φ_j u div g → ∫ u div g`;
+the supremum over `g` is the claim. -/
+theorem Submission.bv_extension_estimate_theorem : BVExtensionEstimate := by
+  intro n δ hδ _hδ1
+  -- Step 1: the constant `C = max (1 + δ⁻¹) (n δ⁻¹)`.
+  set C : ℝ := max (1 + δ⁻¹) (n * δ⁻¹)
+  refine ⟨C, le_max_of_le_left (by positivity), ?_⟩
+  intro U R ξ u hUo hUb hUc hR _hξ hball hUR hu hsupp
+  have hu_int : Integrable u volume := integrableOn_univ.1 hu.2.1
+  -- Step 2 (C0): `u = 0` a.e. on the open set `(closure U)ᶜ`, so its variation there vanishes.
+  refine ⟨Submission.bv_ext_variation_eq_zero_of_ae_eq_zero n _ u
+    isClosed_closure.isOpen_compl.measurableSet hsupp, ?_⟩
+  -- Step 3 (C3): the cut-offs `φ_j`, with `r = δR`.
+  have hδR : 0 < δ * R := mul_pos hδ hR
+  obtain ⟨φ, hφL, hφ01, hφc, hφs, hφlim, hφae⟩ :=
+    Submission.bv_ext_exists_cutoffs n U ξ (δ * R) hUo hUb hUc hδR hball
+  set A := Chapter02.bvVariationOn u U
+  set B := ∫⁻ x in U, ‖u x‖ₑ
+  -- Step 4 (C4): `∫ |u| |Dφ_j| ≤ δ⁻¹ |Du|(U) + n δ⁻¹ R⁻¹ ∫_U |u|`.
+  have habs : Chapter02.bvVariationOn (fun x ↦ |u x|) U ≤ A :=
+    Submission.bv_abs_variation_le n U u hUo hu_int.integrableOn.locallyIntegrableOn
+  have hgrad : ∀ j, ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ ≤
+      ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B) := by
+    intro j
+    have hw := Submission.bv_ext_lintegral_enorm_mul_fderiv_le n U ξ R (δ * R) u (φ j) hUo hR hUR
+      hu_int (hφL j) (hφ01 j) (hφc j) (hφs j) (hφae j)
+    have hinv : ENNReal.ofReal (δ * R)⁻¹ * ENNReal.ofReal (δ * R) = 1 := by
+      rw [← ENNReal.ofReal_mul (inv_nonneg.2 hδR.le), inv_mul_cancel₀ hδR.ne', ENNReal.ofReal_one]
+    have e1 : ENNReal.ofReal (δ * R)⁻¹ * ENNReal.ofReal R = ENNReal.ofReal δ⁻¹ := by
+      rw [← ENNReal.ofReal_mul (inv_nonneg.2 hδR.le)]
+      congr 1
+      field_simp
+    have e2 : ENNReal.ofReal (δ * R)⁻¹ * (n : ℝ≥0∞) =
+        ENNReal.ofReal (n * δ⁻¹) * ENNReal.ofReal R⁻¹ := by
+      rw [← ENNReal.ofReal_natCast n, ← ENNReal.ofReal_mul (inv_nonneg.2 hδR.le),
+        ← ENNReal.ofReal_mul (by positivity)]
+      congr 1
+      field_simp
+    calc ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ
+        = ENNReal.ofReal (δ * R)⁻¹ *
+            (ENNReal.ofReal (δ * R) * ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ) := by
+          rw [← mul_assoc, hinv, one_mul]
+      _ ≤ ENNReal.ofReal (δ * R)⁻¹ * (ENNReal.ofReal R * A + n * B) := by
+          gcongr
+          exact hw.trans (by gcongr)
+      _ = ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B) := by
+          rw [mul_add, ← mul_assoc, e1, ← mul_assoc, e2, mul_assoc]
+  -- Step 5: `A + (δ⁻¹ A + n δ⁻¹ R⁻¹ B) ≤ C (A + R⁻¹ B)`.
+  have hfin : A + (ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B)) ≤
+      ENNReal.ofReal C * (A + ENNReal.ofReal R⁻¹ * B) := by
+    have h1 : 1 + ENNReal.ofReal δ⁻¹ ≤ ENNReal.ofReal C := by
+      rw [← ENNReal.ofReal_one, ← ENNReal.ofReal_add zero_le_one (inv_nonneg.2 hδ.le)]
+      exact ENNReal.ofReal_le_ofReal (le_max_left _ _)
+    have h2 : ENNReal.ofReal (n * δ⁻¹) ≤ ENNReal.ofReal C :=
+      ENNReal.ofReal_le_ofReal (le_max_right _ _)
+    calc A + (ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B))
+        = (1 + ENNReal.ofReal δ⁻¹) * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B) := by
+          ring
+      _ ≤ ENNReal.ofReal C * A + ENNReal.ofReal C * (ENNReal.ofReal R⁻¹ * B) := by gcongr
+      _ = ENNReal.ofReal C * (A + ENNReal.ofReal R⁻¹ * B) := by ring
+  -- Step 6 (C5): fix an admissible test field `g` on `ℝⁿ`, `K`-Lipschitz.
+  refine iSup_le fun g ↦ iSup_le fun hg ↦ iSup_le fun _ ↦ iSup_le fun hn ↦ ?_
+  obtain ⟨K, hK⟩ := hg
+  rw [setIntegral_univ]
+  -- Step 7: a.e. `x ∈ U` or `u x = 0`, since `u = 0` a.e. off `closure U` and the frontier of the
+  -- convex set `U` is null.
+  have hae : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ U ∨ u x = 0 := by
+    filter_upwards [hsupp, measure_eq_zero_iff_ae_notMem.1 (hUc.addHaar_frontier volume)]
+      with x hx hxf
+    by_cases hxU : x ∈ U
+    · exact Or.inl hxU
+    · refine Or.inr (hx fun hxc ↦ hxf ?_)
+      rw [hUo.frontier_eq]
+      exact ⟨hxc, hxU⟩
+  -- Step 8: dominated convergence, `∫ φ_j u div g → ∫ u div g`, dominated by `n K |u|`.
+  have hlim : Tendsto (fun j ↦ ∫ x, φ j x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      atTop (𝓝 (∫ x, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)) := by
+    refine tendsto_integral_of_dominated_convergence
+      (fun x ↦ ‖u x‖ * ((Module.finrank ℝ (Rn n) : ℝ) * K)) (fun j ↦ ?_)
+      (hu_int.norm.mul_const _) (fun j ↦ ae_of_all _ fun x ↦ ?_) ?_
+    · obtain ⟨Kj, hKj⟩ := hφL j
+      exact (hKj.continuous.aestronglyMeasurable.mul hu_int.aestronglyMeasurable).mul
+        (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+    · have h1 : ‖φ j x‖ ≤ 1 := by
+        rw [Real.norm_of_nonneg (hφ01 j x).1]
+        exact (hφ01 j x).2
+      rw [norm_mul, norm_mul]
+      calc ‖φ j x‖ * ‖u x‖ * ‖Chapter02.euclideanDivergence (g : Rn n → Rn n) x‖
+          ≤ 1 * ‖u x‖ * ((Module.finrank ℝ (Rn n) : ℝ) * K) := by
+            gcongr
+            exact Chapter02.norm_euclideanDivergence_le_of_lipschitz hK x
+        _ = ‖u x‖ * ((Module.finrank ℝ (Rn n) : ℝ) * K) := by rw [one_mul]
+    · filter_upwards [hae] with x hx
+      convert ((hφlim x).mul_const (u x)).mul_const
+        (Chapter02.euclideanDivergence (g : Rn n → Rn n) x) using 2
+      rcases hx with hx | hx <;> simp [hx]
+  -- Step 9: each `∫ φ_j u div g` is at most `C (|Du|(U) + R⁻¹ ∫_U |u|)`; pass to the limit.
+  refine le_of_tendsto' ((ENNReal.continuous_ofReal.tendsto _).comp hlim) fun j ↦ ?_
+  calc ENNReal.ofReal (∫ x, φ j x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      ≤ A + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ (φ j) x‖ₑ :=
+        Submission.bv_ext_ofReal_integral_cutoff_le n U u (φ j) g hUo hu_int (hφL j) (hφ01 j)
+          (hφc j) (hφs j) ⟨K, hK⟩ hn
+    _ ≤ A + (ENNReal.ofReal δ⁻¹ * A + ENNReal.ofReal (n * δ⁻¹) * (ENNReal.ofReal R⁻¹ * B)) := by
+        gcongr
+        exact hgrad j
+    _ ≤ ENNReal.ofReal C * (A + ENNReal.ofReal R⁻¹ * B) := hfin
 
 end GMT.Ch02

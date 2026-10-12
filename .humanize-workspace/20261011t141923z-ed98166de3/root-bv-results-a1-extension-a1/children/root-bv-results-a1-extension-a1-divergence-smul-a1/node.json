@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.divergence_smul-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Product rule for the Euclidean divergence at points of differentiability",
+  "statement": "For every n ∈ ℕ, φ : ℝⁿ → ℝ, g : ℝⁿ → ℝⁿ and x ∈ ℝⁿ such that φ and g are differentiable at x: div(φ•g)(x) = φ(x)·div g(x) + Dφ(x)[g(x)], where div G(x) := Chapter02.euclideanDivergence G x = trace(fderiv ℝ G x) and Dφ = fderiv ℝ φ.",
+  "lean_statement": "∀ (n : ℕ) (φ : Rn n → ℝ) (g : Rn n → Rn n) (x : Rn n), DifferentiableAt ℝ φ x → DifferentiableAt ℝ g x → Chapter02.euclideanDivergence (fun y ↦ φ y • g y) x = φ x * Chapter02.euclideanDivergence g x + fderiv ℝ φ x (g x)",
+  "lean_name": "bv_ext_euclideanDivergence_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-divergence-smul-a1-a1"
+}
