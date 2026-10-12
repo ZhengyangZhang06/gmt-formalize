@@ -359,6 +359,113 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 1, 4.16 on the ball `B̄_R(0)` combined with the closed-set half of the portmanteau
+theorem: measures `μ_j` on `ℝ^P` with `sup_j μ_j(ℝ^P) < ∞` have a subsequence `μ_{χ(i)}` and a
+finite measure `ν` with `limsup_i μ_{χ(i)}(F) ≤ ν(F)` for every closed `F ⊆ B̄_R(0)`.
+
+`ν` is the measure of the content `K ↦ lim_𝒰 μ_j(K)` on compact sets, `𝒰` an ultrafilter finer
+than `atTop`; the subsequence is extracted along a countable family of finite unions of closed
+balls, and outer regularity of `ν` reduces a closed `F` to such a union. -/
+theorem Submission.ind_md_closedBall_weak_subseq : ∀ (P R : ℕ) (μ : ℕ → Measure (Eucl P)), (⨆ j, μ j univ) < ∞ → ∃ (χ : ℕ → ℕ) (ν : Measure (Eucl P)), StrictMono χ ∧ ν univ < ∞ ∧ ∀ F : Set (Eucl P), IsClosed F → F ⊆ closedBall 0 (R : ℝ) → limsup (fun i => μ (χ i) F) atTop ≤ ν F := by
+  intro P R μ hμ
+  -- An ultrafilter `uf` finer than `atTop`; every sequence in the compact space `[0, ∞]`
+  -- converges along it.  `lam A = lim_uf μ_j(A)`.
+  obtain ⟨uf, huf⟩ : ∃ uf : Ultrafilter ℕ, (uf : Filter ℕ) ≤ atTop :=
+    ⟨Ultrafilter.of atTop, Ultrafilter.of_le atTop⟩
+  have hex : ∀ A : Set (Eucl P), ∃ a : ℝ≥0∞, Tendsto (fun j => μ j A) uf (𝓝 a) := by
+    intro A
+    obtain ⟨a, -, ha⟩ := isCompact_univ.ultrafilter_le_nhds (uf.map fun j => μ j A) (by simp)
+    exact ⟨a, by rwa [Ultrafilter.coe_map] at ha⟩
+  choose lam hlam using hex
+  have hle : ∀ A, lam A ≤ ⨆ j, μ j univ := fun A =>
+    le_of_tendsto' (hlam A) fun j =>
+      (measure_mono (subset_univ A)).trans (le_iSup (fun j => μ j univ) j)
+  have hne : ∀ A, lam A ≠ ∞ := fun A => ((hle A).trans_lt hμ).ne
+  have hmono : ∀ A B : Set (Eucl P), A ⊆ B → lam A ≤ lam B := fun A B h =>
+    le_of_tendsto_of_tendsto' (hlam A) (hlam B) fun j => measure_mono h
+  -- The content `K ↦ lam K` on compact sets and its measure `ν`.
+  obtain ⟨c, hc⟩ : ∃ c : Content (Eucl P), ∀ K : TopologicalSpace.Compacts (Eucl P),
+      c K = lam K := by
+    refine ⟨{ toFun := fun K => (lam K).toNNReal
+              mono' := fun K₁ K₂ h => ENNReal.toNNReal_mono (hne _) (hmono _ _ h)
+              sup_disjoint' := fun K₁ K₂ hd _ h₂ => ?_
+              sup_le' := fun K₁ K₂ => ?_ }, fun K => ENNReal.coe_toNNReal (hne _)⟩
+    · have h := tendsto_nhds_unique (hlam ((K₁ : Set (Eucl P)) ∪ K₂))
+        (((hlam K₁).add (hlam K₂)).congr fun j => (measure_union hd h₂.measurableSet).symm)
+      show (lam ↑(K₁ ⊔ K₂)).toNNReal = (lam K₁).toNNReal + (lam K₂).toNNReal
+      rw [TopologicalSpace.Compacts.coe_sup, h, ENNReal.toNNReal_add (hne _) (hne _)]
+    · show (lam ↑(K₁ ⊔ K₂)).toNNReal ≤ (lam K₁).toNNReal + (lam K₂).toNNReal
+      rw [TopologicalSpace.Compacts.coe_sup, ← ENNReal.toNNReal_add (hne _) (hne _)]
+      exact ENNReal.toNNReal_mono (ENNReal.add_ne_top.2 ⟨hne _, hne _⟩)
+        (le_of_tendsto_of_tendsto' (hlam _) ((hlam K₁).add (hlam K₂)) fun j =>
+          measure_union_le _ _)
+  have hν : c.measure univ ≤ ⨆ j, μ j univ := by
+    rw [c.measure_apply MeasurableSet.univ, c.outerMeasure_of_isOpen univ isOpen_univ]
+    exact iSup₂_le fun K _ => (hc K).trans_le (hle K)
+  -- Finite unions `C k` of closed balls with centres in a dense sequence and radii `1/(b+1)`.
+  obtain ⟨d, hd⟩ := TopologicalSpace.exists_dense_seq (Eucl P)
+  obtain ⟨e, he⟩ := exists_surjective_nat (Finset (ℕ × ℕ))
+  obtain ⟨C, hC⟩ : ∃ C : ℕ → Set (Eucl P),
+      ∀ k, C k = ⋃ p ∈ e k, closedBall (d p.1) (1 / ((p.2 : ℝ) + 1)) := ⟨_, fun _ => rfl⟩
+  have hCc : ∀ k, IsCompact (C k) := fun k => by
+    rw [hC]
+    exact (e k).isCompact_biUnion fun p _ => isCompact_closedBall _ _
+  -- A subsequence with `μ_{χ(n)}(C k) < lam (C k) + 1/n` for all `k ≤ n`.
+  have hfreq : ∀ n : ℕ, ∃ᶠ j in atTop,
+      ∀ k ∈ Finset.range (n + 1), μ j (C k) < lam (C k) + (n : ℝ≥0∞)⁻¹ := by
+    intro n
+    refine (Filter.Eventually.frequently ?_).filter_mono huf
+    refine (Filter.eventually_all_finset _).2 fun k _ => (hlam (C k)).eventually_lt_const ?_
+    exact ENNReal.lt_add_right (hne _) (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top n))
+  obtain ⟨χ, hχ, hχC⟩ := Filter.extraction_forall_of_frequently hfreq
+  have hlimC : ∀ k, limsup (fun i => μ (χ i) (C k)) atTop ≤ lam (C k) := by
+    intro k
+    have h1 : Tendsto (fun n : ℕ => lam (C k) + (n : ℝ≥0∞)⁻¹) atTop (𝓝 (lam (C k))) := by
+      simpa only [add_zero] using
+        (tendsto_const_nhds (x := lam (C k))).add ENNReal.tendsto_inv_nat_nhds_zero
+    calc limsup (fun i => μ (χ i) (C k)) atTop
+        ≤ limsup (fun n : ℕ => lam (C k) + (n : ℝ≥0∞)⁻¹) atTop :=
+          limsup_le_limsup (eventually_atTop.2 ⟨k, fun n hn =>
+            (hχC n k (Finset.mem_range.2 (Nat.lt_succ_of_le hn))).le⟩)
+      _ = lam (C k) := h1.limsup_eq
+  refine ⟨χ, c.measure, hχ, hν.trans_lt hμ, fun F hF hFK => ?_⟩
+  have hFc : IsCompact F := (isCompact_closedBall 0 (R : ℝ)).of_isClosed_subset hF hFK
+  refine ENNReal.le_of_forall_pos_le_add fun ε hε hFfin => ?_
+  -- Outer regularity: an open `G ⊇ F` with `ν(G) < ν(F) + ε`.
+  obtain ⟨G, hFG, hGo, hGν⟩ := Set.exists_isOpen_lt_of_lt F (c.measure F + ε)
+    (ENNReal.lt_add_right hFfin.ne (ENNReal.coe_ne_zero.2 hε.ne'))
+  -- Some `C k` lies between `F` and `G`.
+  obtain ⟨k, hFC, hCG⟩ : ∃ k, F ⊆ C k ∧ C k ⊆ G := by
+    have hcov : F ⊆ ⋃ p ∈ {p : ℕ × ℕ | closedBall (d p.1) (1 / ((p.2 : ℝ) + 1)) ⊆ G},
+        ball (d p.1) (1 / ((p.2 : ℝ) + 1)) := by
+      intro x hx
+      obtain ⟨r, hr, hrG⟩ := Metric.isOpen_iff.1 hGo x (hFG hx)
+      obtain ⟨b, hb⟩ := exists_nat_one_div_lt (half_pos hr)
+      obtain ⟨a, ha⟩ := hd.exists_dist_lt x (Nat.one_div_pos_of_nat (n := b))
+      refine mem_iUnion₂.2 ⟨(a, b), fun y hy => hrG ?_, ha⟩
+      have hy' : dist y (d a) ≤ 1 / ((b : ℝ) + 1) := hy
+      have h3 := dist_triangle y (d a) x
+      rw [dist_comm (d a) x] at h3
+      rw [mem_ball]
+      linarith
+    obtain ⟨T, hTsub, hTfin, hFT⟩ := hFc.elim_finite_subcover_image (fun p _ => isOpen_ball) hcov
+    obtain ⟨k, hk⟩ := he hTfin.toFinset
+    refine ⟨k, fun x hx => ?_, fun y hy => ?_⟩
+    · obtain ⟨p, hpT, hxp⟩ := mem_iUnion₂.1 (hFT hx)
+      rw [hC, hk]
+      exact mem_iUnion₂.2 ⟨p, hTfin.mem_toFinset.2 hpT, ball_subset_closedBall hxp⟩
+    · rw [hC, hk] at hy
+      obtain ⟨p, hp, hyp⟩ := mem_iUnion₂.1 hy
+      exact hTsub (hTfin.mem_toFinset.1 hp) hyp
+  calc limsup (fun i => μ (χ i) F) atTop ≤ limsup (fun i => μ (χ i) (C k)) atTop :=
+        limsup_le_limsup (Eventually.of_forall fun i => measure_mono hFC)
+    _ ≤ lam (C k) := hlimC k
+    _ = c ⟨C k, hCc k⟩ := (hc ⟨C k, hCc k⟩).symm
+    _ ≤ c.outerMeasure (C k) := c.le_outerMeasure_compacts ⟨C k, hCc k⟩
+    _ = c.measure (C k) := (c.measure_apply (hCc k).measurableSet).symm
+    _ ≤ c.measure G := measure_mono hCG
+    _ ≤ c.measure F + ε := hGν.le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
