@@ -1933,6 +1933,45 @@ theorem Submission.lpf_weighted_tangent_on_c1_chart :
       hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
     ((hθC k).continuousWithinAt hyk) (hy₃ (hMV hyMN.1) fun h => h.2 hyk)
 
+/-- Chain rule on a `C¹` antilipschitz chart (Simon Ch. 6, proof of 3.9, steps 2 and 5.2): for
+`Lⁿ`-a.e. `w ∈ Ω ∩ Φ⁻¹(M)`, `DΦ(w)(ℝⁿ)` is the weighted approximate tangent space of `(M, θ)` at
+`Φ(w)` and `D(f∘Φ)(w) = L(Φ w) ∘ DΦ(w)`.  The tangent identification and the derivative clause
+for `L` hold `Hⁿ`-a.e. on `M`, hence at `Φ w` for a.e. parameter; `f∘Φ` is differentiable a.e.
+(Rademacher); and along each `DΦ(w)s ∈ TₓM` both `L(Φ w)` and `D(f∘Φ)(w)` give the derivative of
+`t ↦ f(Φ(w) + t DΦ(w)s)` at `0`. -/
+theorem Submission.lpf_chart_chain_rule : ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)), IsOpen U → IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), HasWeightedApproximateTangentSpaceAt n M θ (Φ w) (LinearMap.range (fderiv ℝ Φ w).toLinearMap) ∧ HasFDerivAt (f ∘ Φ) ((L (Φ w)).comp (fderiv ℝ Φ w)) w := by
+  intro P Q n U M θ ξ f L Φ Ω hU hT hf hL hΩ hΦ hanti
+  have hΩm : MeasurableSet Ω := hΩ.measurableSet
+  have hΦm : Measurable Φ := hΦ.continuous.measurable
+  -- Step 2: tangent identification `T_{Φ w}(M, θ) = DΦ(w)(ℝⁿ)` (sibling lemma), pulled back to
+  -- a.e. parameter; this also gives the null-measurability of `Ω ∩ Φ⁻¹(M)`.
+  obtain ⟨hSm, h₁⟩ := Submission.lpf_ccr_ae_pullback P n M Φ Ω _ hΩm hΦm hanti
+    hT.nullMeasurableSet
+    (Submission.lpf_weighted_tangent_on_c1_chart P n U M θ Φ Ω hU hT.subset
+      hT.nullMeasurableSet hT.pos hT.integrableOn hΩ hΦ hanti)
+  -- Step 3: the derivative clause for `L` holds at `Φ w` for a.e. parameter.
+  have h₂ := (Submission.lpf_ccr_ae_pullback P n M Φ Ω _ hΩm hΦm hanti hT.nullMeasurableSet
+    (ae_restrict_of_ae_restrict_of_subset inter_subset_left hL)).2
+  -- Step 4: Rademacher for `f ∘ Φ` on `Φ⁻¹(U) ⊇ Ω ∩ Φ⁻¹(M)`.
+  have h₃ := ae_restrict_of_ae (s := Ω ∩ Φ ⁻¹' M)
+    (Submission.lpf_ccr_ae_differentiableAt_comp P Q n U f Φ hU hf hΦ)
+  filter_upwards [h₁, h₂, h₃, ae_restrict_mem₀ hSm] with w hw₁ hw₂ hw₃ hwS
+  have hwU : Φ w ∈ U := hT.subset hwS.2
+  have hTw := hw₁ w hwS.1 rfl
+  refine ⟨hTw, ?_⟩
+  have hdiff : DifferentiableAt ℝ (f ∘ Φ) w := hw₃ hwU
+  -- Step 5: `f` is Lipschitz on a neighbourhood of `Φ w` (`U` is open), so along `DΦ(w)s` the
+  -- derivative of `t ↦ f(Φ w + t DΦ(w)s)` at `0` is both `D(f∘Φ)(w)s` and `L(Φ w)(DΦ(w)s)`.
+  have hlip : ∃ K : ℝ≥0, ∃ V ∈ 𝓝 (Φ w), LipschitzOnWith K f V := by
+    obtain ⟨K, V, hV, hfV⟩ := hf hwU
+    exact ⟨K, V, hU.nhdsWithin_eq hwU ▸ hV, hfV⟩
+  have hline := Submission.lpf_ccr_hasDerivAt_line_of_comp n P Q f Φ w hlip
+    (hΦ.differentiable one_ne_zero w) hdiff
+  have heq : fderiv ℝ (f ∘ Φ) w = (L (Φ w)).comp (fderiv ℝ Φ w) := by
+    ext1 s
+    exact (hline s).unique (hw₂ _ hTw _ (LinearMap.mem_range_self _ s))
+  exact heq ▸ hdiff.hasFDerivAt
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
