@@ -2731,6 +2731,167 @@ theorem aetp_lusin_compact_exhaustion : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)),
       refine hx.2 (mem_iUnion.2 ⟨Nat.pair i (Nat.pair k m), ?_⟩)
       simpa only [Nat.unpair_pair] using hm
     · exact Or.inl ⟨hx.1, hxG⟩
+/-- **Simon Ch. 3, Theorem 1.9** (with Lemma 1.2, Theorem 1.6 and Remark 1.8(1)).  For a rectifiable
+`n`-varifold `V = v(M, θ)` in an open `U ⊆ ℝ^{n+ℓ}`, the approximate tangent space of `M` with
+respect to `θ` exists for `μ_V`-a.e. `x`, so `V.tangentProj x` is then the orthogonal projection
+onto an `n`-dimensional subspace; and `x ↦ V.tangentProj x` is `μ_V`-a.e. strongly measurable.
+
+`M` is covered up to an `Hⁿ`-null set by embedded `C¹` pieces `N_k = G_k(B̆_{r_k}(c_k))`, whose
+approximate tangent plane at `G_k(b)` is `DG_k(b)(ℝⁿ)`, and exhausted up to an `Hⁿ`-null set by
+compacts `K_m` on which `θ` is continuous.  For `Hⁿ`-a.e. `x ∈ K_m ∩ N_k`, locality of approximate
+tangent planes gives `T_x K_m = P_k(x) := DG_k(b_k(x))(ℝⁿ)`, and the upper density theorem (for
+`μ_V` and `W ∖ K_m`, `W ⊇ K_m` open with compact closure in `U`) gives
+`μ_V((M ∖ K_m) ∩ B_{Rλ}(x)) = o(λⁿ)`, so `P_k(x)` is the weighted tangent plane at `x`.  As
+`μ_V ≪ Hⁿ` and `μ_V(Mᶜ) = 0`, this holds `μ_V`-a.e.; by uniqueness, `V.tangentProj = p_{P_k(·)}`
+`μ_V`-a.e. on `N_k`, and `p_{P_k(·)}` is continuous on `N_k` since `b_k` is Lipschitz there. -/
+theorem rectifiableVarifold_ae_tangentProj_starProjection : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ MeasureTheory.AEStronglyMeasurable V.tangentProj V.weight := by
+  intro n ℓ hn U hU V
+  -- Lemma 1.2: `M ⊆ Z₀ ∪ ⋃ k, N k`, `Hⁿ(Z₀) = 0`, with embedded `C¹` pieces `N k`.
+  obtain ⟨Z₀, -, hZ₀, G, c, r, σ, hG, -, hσ, hDG, hlow, hcover⟩ :=
+    Submission.aetp_rectifiable_c1_piece_cover n ℓ hn V.carrier V.countablyRectifiable
+  set N : ℕ → Set (Amb n ℓ) := fun k => G k '' ball (c k) (r k)
+  have hpiece : ∀ k, MeasurableSet (N k) ∧ (μHE[n] : Measure (Amb n ℓ)) (N k) < ⊤ ∧
+      ∀ y ∈ ball (c k) (r k), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (N k)
+        (G k y) (LinearMap.range (fderiv ℝ (G k) y).toLinearMap) := fun k =>
+    Submission.aetp_c1_piece_approxTangent n ℓ (G k) (c k) (r k) (σ k) (hG k) (hσ k) (hDG k)
+      (hlow k)
+  -- the parameter `b k x ∈ B̆_{r_k}(c_k)` of a point `x ∈ N k`
+  obtain ⟨b, hb⟩ : ∃ b : ℕ → Amb n ℓ → Rn n,
+      ∀ k, ∀ x ∈ N k, b k x ∈ ball (c k) (r k) ∧ G k (b k x) = x :=
+    ⟨fun k => Function.invFunOn (G k) (ball (c k) (r k)),
+      fun k x hx => ⟨Function.invFunOn_mem hx, Function.invFunOn_eq hx⟩⟩
+  have hNtan : ∀ k, ∀ x ∈ N k, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (N k) x
+      (LinearMap.range (fderiv ℝ (G k) (b k x)).toLinearMap) := by
+    intro k x hx
+    have h := (hpiece k).2.2 (b k x) (hb k x hx).1
+    rwa [(hb k x hx).2] at h
+  -- Remark 1.8(1): compacts `K m ⊆ M`, with `θ` continuous on `K m`, exhaust `M` up to a null set.
+  obtain ⟨K, hKc, hKM, hθK, hKfin, hKnull⟩ := Submission.aetp_lusin_compact_exhaustion n ℓ U hU V
+  have hfin : ∀ L : Set (Amb n ℓ), IsCompact L → L ⊆ U → V.weight L < ⊤ := by
+    intro L hL hLU
+    rw [RectifiableVarifold.weight, withDensity_apply _ hL.isClosed.measurableSet,
+      Measure.restrict_restrict hL.isClosed.measurableSet, inter_comm]
+    exact (V.integrableOn_mult L hL hLU).lintegral_lt_top
+  -- For `Hⁿ`-a.e. `x ∈ K m ∩ N k`, `DG_k(b_k(x))(ℝⁿ)` is the weighted tangent plane at `x`.
+  have hloc : ∀ m k, ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ K m → x ∈ N k →
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x
+        (LinearMap.range (fderiv ℝ (G k) (b k x)).toLinearMap) := by
+    intro m k
+    obtain ⟨L, hLc, hKL, hLU⟩ :=
+      exists_compact_between (hKc m) hU ((hKM m).trans V.carrier_subset)
+    have hA : MeasurableSet (interior L \ K m) :=
+      isOpen_interior.measurableSet.diff (hKc m).isClosed.measurableSet
+    have hAL : interior L \ K m ⊆ L := fun y hy => interior_subset hy.1
+    have hAfin : V.weight (interior L \ K m) < ⊤ := (measure_mono hAL).trans_lt (hfin L hLc hLU)
+    have htan := Submission.aetp_approxTangent_ae_of_inter n ℓ (K m) (N k)
+      (fun x => LinearMap.range (fderiv ℝ (G k) (b k x)).toLinearMap)
+      (hKc m).isClosed.measurableSet (hpiece k).1 (hKfin m) (hpiece k).2.1 (hNtan k)
+    rw [ae_restrict_iff' ((hKc m).isClosed.measurableSet.inter (hpiece k).1)] at htan
+    filter_upwards [htan, Submission.aetp_upper_density_zero_ae n ℓ V.weight _ hA hAfin]
+      with x hxtan hxdens hxK hxN
+    refine Submission.aetp_weightedTangent_of_lusin_compact n ℓ U hU V (K m) x _ (hKc m) (hKM m)
+      hxK (hθK m) (fun R hR => ?_) (hxtan ⟨hxK, hxN⟩)
+    -- `μ_V((M ∖ K m) ∩ B_{Rt}(x)) ≤ μ_V((W ∖ K m) ∩ B_{Rt}(x)) = o(tⁿ)`, `W = interior L`
+    have hd := hxdens fun h => h.2 hxK
+    have hRr : Tendsto (fun t : ℝ => R * t) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.2
+        ⟨?_, eventually_nhdsWithin_of_forall fun t (ht : 0 < t) => mul_pos hR ht⟩
+      have h0 : Tendsto (fun t : ℝ => R * t) (𝓝 0) (𝓝 (R * 0)) := tendsto_id.const_mul R
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    have hsub : ∀ᶠ t in 𝓝[>] (0 : ℝ), closedBall x (R * t) ⊆ interior L :=
+      (hRr.mono_right nhdsWithin_le_nhds).eventually
+        (eventually_closedBall_subset (isOpen_interior.mem_nhds (hKL hxK)))
+    have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal (R ^ n) *
+        (V.weight ((interior L \ K m) ∩ closedBall x (R * t)) / ENNReal.ofReal ((R * t) ^ n)))
+        (𝓝[>] 0) (𝓝 0) := by
+      have h := ENNReal.Tendsto.const_mul (hd.comp hRr)
+        (Or.inr (ENNReal.ofReal_ne_top : ENNReal.ofReal (R ^ n) ≠ ⊤))
+      rw [mul_zero] at h
+      exact h
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+      (Eventually.of_forall fun _ => zero_le) ?_
+    filter_upwards [hsub] with t ht
+    have hMA : (V.carrier \ K m) ∩ closedBall x (R * t) ⊆
+        (interior L \ K m) ∩ closedBall x (R * t) := fun y hy => ⟨⟨ht hy.2, hy.1.2⟩, hy.2⟩
+    calc V.weight ((V.carrier \ K m) ∩ closedBall x (R * t)) / ENNReal.ofReal (t ^ n)
+        ≤ V.weight ((interior L \ K m) ∩ closedBall x (R * t)) / ENNReal.ofReal (t ^ n) :=
+          ENNReal.div_le_div_right (measure_mono hMA) _
+      _ = ENNReal.ofReal (R ^ n) * (V.weight ((interior L \ K m) ∩ closedBall x (R * t)) /
+            ENNReal.ofReal ((R * t) ^ n)) := by
+          rw [mul_pow, ENNReal.ofReal_mul (pow_nonneg hR.le n), ENNReal.div_eq_inv_mul,
+            ENNReal.div_eq_inv_mul, ENNReal.mul_inv (Or.inr ENNReal.ofReal_ne_top)
+              (Or.inl ENNReal.ofReal_ne_top), ← mul_assoc, ← mul_assoc,
+            ENNReal.mul_inv_cancel (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne'
+              ENNReal.ofReal_ne_top, one_mul]
+  -- Off an `Hⁿ`-null set, each `x ∈ M` lies in some `N k`, and for every `k` with `x ∈ N k` the
+  -- plane `DG_k(b_k(x))(ℝⁿ)` is the weighted tangent plane at `x`.
+  have hgoodH : ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ V.carrier →
+      (∀ k, x ∈ N k → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n
+        V.carrier V.mult x (LinearMap.range (fderiv ℝ (G k) (b k x)).toLinearMap)) ∧
+      ∃ k, x ∈ N k := by
+    filter_upwards [ae_all_iff.2 fun m => ae_all_iff.2 fun k => hloc m k,
+      measure_eq_zero_iff_ae_notMem.1 hZ₀, measure_eq_zero_iff_ae_notMem.1 hKnull]
+      with x hx hxZ hxK hxM
+    obtain ⟨m, hm⟩ : ∃ m, x ∈ K m := by
+      by_contra h
+      exact hxK ⟨hxM, fun h' => h (mem_iUnion.1 h')⟩
+    refine ⟨fun k hk => hx m k hm hk, ?_⟩
+    rcases hcover hxM with h | h
+    · exact absurd h hxZ
+    · exact mem_iUnion.1 h
+  -- `μ_V ≪ Hⁿ` and `μ_V(Mᶜ) = 0`
+  have hμM : ∀ᵐ x ∂V.weight, x ∈ V.carrier :=
+    (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  have hμH : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)) :=
+    (withDensity_absolutelyContinuous _ _).trans
+      (Measure.absolutelyContinuous_of_le Measure.restrict_le_self)
+  have hgood : ∀ᵐ x ∂V.weight, x ∈ V.carrier ∧
+      (∀ k, x ∈ N k → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n
+        V.carrier V.mult x (LinearMap.range (fderiv ℝ (G k) (b k x)).toLinearMap)) ∧
+      ∃ k, x ∈ N k := by
+    filter_upwards [hμH.ae_le hgoodH, hμM] with x hx hxM
+    exact ⟨hxM, hx hxM⟩
+  -- A weighted tangent plane at `x ∈ M` is unique (`θ(x) > 0`), so it is the one in `tangentProj`.
+  have hproj : ∀ x (Q : Submodule ℝ (Amb n ℓ)), x ∈ V.carrier →
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x Q →
+      V.tangentProj x = Q.starProjection := by
+    intro x Q hxM hQ
+    have h : ∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
+        V.mult x P := ⟨Q, hQ⟩
+    have hP : ∀ (A B : Submodule ℝ (Amb n ℓ)) [A.HasOrthogonalProjection]
+        [B.HasOrthogonalProjection], A = B → A.starProjection = B.starProjection := by
+      rintro A B _ _ rfl
+      rfl
+    rw [RectifiableVarifold.tangentProj, dite_eq_left h]
+    exact hP _ _ (Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt.unique
+      (V.mult_pos x hxM).ne' (Classical.choose_spec h) hQ)
+  refine ⟨?_, ?_⟩
+  · filter_upwards [hgood] with x hx
+    obtain ⟨hxM, hW, k, hk⟩ := hx
+    exact ⟨_, (hW k hk).1, hproj x _ hxM (hW k hk)⟩
+  · -- `μ_V`-a.e. `x` lies in `⋃ k, N k`; on `N k`, `V.tangentProj = p_{DG_k(b_k(·))(ℝⁿ)}`
+    -- `μ_V`-a.e., a map continuous on `N k`.
+    have hcov : ∀ᵐ x ∂V.weight, x ∈ ⋃ k, N k := by
+      filter_upwards [hgood] with x hx
+      exact mem_iUnion.2 hx.2.2
+    rw [← Measure.restrict_eq_self_of_ae_mem hcov, aestronglyMeasurable_iUnion_iff]
+    intro k
+    have hlip : LipschitzOnWith (Real.toNNReal (σ k)⁻¹) (b k) (N k) := by
+      refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+      have h := hlow k (b k x) (hb k x hx).1 (b k y) (hb k y hy).1
+      rw [(hb k x hx).2, (hb k y hy).2] at h
+      rw [Real.coe_toNNReal _ (inv_nonneg.2 (hσ k).le), dist_eq_norm, dist_eq_norm,
+        inv_mul_eq_div, le_div_iff₀ (hσ k), mul_comm]
+      exact h
+    have hcont : ContinuousOn
+        (fun x => (LinearMap.range (fderiv ℝ (G k) (b k x)).toLinearMap).starProjection) (N k) :=
+      (Submission.aetp_starProjection_range_continuousOn n ℓ).comp
+        (((hG k).continuous_fderiv one_ne_zero).comp_continuousOn hlip.continuousOn)
+        fun x hx => hDG k (b k x) (hb k x hx).1
+    refine (hcont.aestronglyMeasurable (hpiece k).1).congr ((ae_restrict_iff' (hpiece k).1).2 ?_)
+    filter_upwards [hgood] with x hx hxN
+    exact (hproj x _ hx.1 (hx.2.1 k hxN)).symm
 
 end Submission
 
