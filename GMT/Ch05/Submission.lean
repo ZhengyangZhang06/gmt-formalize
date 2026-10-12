@@ -460,4 +460,48 @@ def RegularSetOpenDense : Prop :=
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+theorem allard52_am_fc_cutoff_facts : ∀ (φ : ℝ → ℝ) (ε : ℝ), 0 < ε → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → (∀ u : ℝ, 0 ≤ φ u ∧ φ u ≤ 1) ∧ (∀ u : ℝ, deriv φ u ≤ 0) ∧ (∀ u : ℝ, 1 + ε < u → deriv φ u = 0) ∧ Continuous (deriv φ) ∧ ∃ C : ℝ, ∀ u : ℝ, |deriv φ u| ≤ C := by
+  intro φ ε hε hφ hanti h1 h0
+  -- Step 1: `0 ≤ φ ≤ 1`, by monotonicity and the boundary values `φ (1 + ε) = 0`, `φ 1 = 1`.
+  have hbd : ∀ u : ℝ, 0 ≤ φ u ∧ φ u ≤ 1 := by
+    intro u
+    constructor
+    · rcases le_total (1 + ε) u with hu | hu
+      · rw [h0 u hu]
+      · rw [← h0 (1 + ε) le_rfl]
+        exact hanti hu
+    · rcases le_total u 1 with hu | hu
+      · rw [h1 u hu]
+      · rw [← h1 1 le_rfl]
+        exact hanti hu
+  -- Step 2: `φ' ≤ 0` because `φ` is nonincreasing.
+  have hneg : ∀ u : ℝ, deriv φ u ≤ 0 := fun u => hanti.deriv_nonpos
+  -- Step 3: `φ' = 0` on `(1 + ε, ∞)` and on `(-∞, 1)`, where `φ` is locally constant.
+  have hright : ∀ u : ℝ, 1 + ε < u → deriv φ u = 0 := by
+    intro u hu
+    have hev : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hu) (fun v hv => h0 v (le_of_lt hv))
+    rw [hev.deriv_eq, deriv_const]
+  have hleft : ∀ u : ℝ, u < 1 → deriv φ u = 0 := by
+    intro u hu
+    have hev : φ =ᶠ[𝓝 u] fun _ => (1 : ℝ) :=
+      Filter.eventually_of_mem (Iio_mem_nhds hu) (fun v hv => h1 v (le_of_lt hv))
+    rw [hev.deriv_eq, deriv_const]
+  -- Step 4: `φ'` is continuous because `φ` is `C¹`.
+  have hcont : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  -- Step 5: `φ'` is continuous with support in `[1, 1 + ε]`, hence bounded.
+  have hsupp : HasCompactSupport (deriv φ) := by
+    refine HasCompactSupport.of_support_subset_isCompact (isCompact_Icc (a := 1) (b := 1 + ε)) ?_
+    intro u hu
+    rw [Function.mem_support] at hu
+    exact ⟨not_lt.mp fun h => hu (hleft u h), not_lt.mp fun h => hu (hright u h)⟩
+  obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hsupp
+  refine ⟨hbd, hneg, hright, hcont, C, fun u => ?_⟩
+  rw [← Real.norm_eq_abs]
+  exact hC u
+
+end Submission
+
 end GMT.Ch05
