@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c95, Mathlib 25730c7c)",
+        "python3 scan of dag.json (235 nodes): no lean_name containing fiw_tb; frozen lean_statement of root.flat_iff_weak-a1.im_mass_formula-a1 (accepted) and im_lincomb-a1 compared textually with the MF/LC premises",
+        "git log --all --oneline -S fiw_tb_ (687 refs, no match); grep -rl fiw_tb_ .humanize/math-wiki (no match)",
+        "git show <commit>:GMT/Ch06/Submission.lean | grep -c 'theorem Submission.<name>' for the 12 cited accepted declarations (all present), including br_la_abs_apply_le_mul_mass @ d771ac3a and fiw_ims_frame_sign @ c90a4050",
+        "grep -n max_nodes /runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py; read _decompose, _solve_children, _existing_lean_name_problem; swarm-configs/8d6f8e1fdf494359a56bc7f71c57d439.json (max_nodes 1000, max_children 12, max_depth 6)",
+        "grep -n 'def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|def TestFormOnConverges|structure GeometricCurrentOn|zero_apply|boundary_apply|restrictDomain_apply|def testFormOnInclusion|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support|abbrev SimonMultiIndex|def CountablyRectifiable|countablyRectifiable_of_measure_zero|def blowUpMap|def HasWeightedApproximateTangentSpaceAt' in SimonGMT Chapter06/Chapter03",
+        "grep Mathlib: theorem exists_nnreal_pos_mul_lt, Finite.exists_infinite_fiber, Infinite.exists_ne_map_eq_of_mapsTo, thickening_subset_of_subset, cthickening_subset_of_subset, thickening_subset_cthickening, mul_le_mul_right",
+        "lake build GMT.Ch06.Submission in /tmp/tb5-Hq3Nws (git archive d8d46c9, packages linked)",
+        "python3 -I /tmp/tb5_tools/gen_challenges.py (verifier/gmt-compare.py child_modules mode contract + lean_contract.validate_lean_statement); lake env lean Scratch/V4/Ch_*.lean and Scratch/V4/Remaining3.lean (0 errors)",
+        "lake env lean Scratch/V4/Assembly.lean and Scratch/V4/FiniteNet.lean (#print axioms: propext, Classical.choice, Quot.sound)",
+        "sed -n 2028,2090p book/chapter-06.txt (Simon 7.2 and its proof, (1)–(3))"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/decomposition-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/decomposition-audit-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/swarm-configs/8d6f8e1fdf494359a56bc7f71c57d439.json",
+        "/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-br-la-abs-apply-le-mul-mass.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-fiw-ims-frame-sign.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-fiw-im-mass-formula.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Data/Fintype/Pigeonhole.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/tb5-Hq3Nws/Scratch/V4/Assembly.lean",
+        "/tmp/tb5-Hq3Nws/Scratch/V4/FiniteNet.lean",
+        "/tmp/tb5-Hq3Nws/Scratch/V4/Remaining3.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract (IsIntegerMultiplicity, IsRectifiableTriple, tauAction, latticeFace, latticeFaceAction, IsLatticeChain, DeformationTheorem). Neither the project nor SimonGMT has an integer-multiplicity calculus, a flat-norm lemma or a lattice-chain coefficient bound, so these become the 10 children.\n\nSimonGMT supplies the API used in the child proofs:\n- massOn and mass via massAdmissibleOn and covectorEuclideanNorm, and le_massOn / massOn_mono;\n- restrictDomain(_apply), testFormOnInclusion, zero_apply, boundary_apply and GeometricCurrentOn.ext;\n- zeroRegion and support = U \\ zeroRegion;\n- SimonMultiIndex = Fin n ↪o Fin p, CountablyRectifiable (with countablyRectifiable_of_measure_zero and .mono), blowUpMap and HasWeightedApproximateTangentSpaceAt.\nMathlib supplies ENNReal.exists_nnreal_pos_mul_lt and the thickening lemmas.\n\nAccepted Submission declarations, cited in the remarks as optional reuse pointers, were checked at their commits. The two new pointers are:\n- br_la_abs_apply_le_mul_mass (d771ac3a), the evaluation bound;\n- fiw_ims_frame_sign (c90a4050), the frame sign.\n\nScratch checks:\n- all 10 child types elaborate in the comparator's exact challenge scope;\n- the parent type follows from MF, LC, fiw_tb_finite_net and fiw_tb_flat_sub;\n- fiw_tb_finite_net follows from its five siblings;\n- both derivations use only [propext, Classical.choice, Quot.sound]."
+    }
+  ],
+  "proof": "Source: parent proof, preliminary (G2), first assertion (\"H(M ∖ spt X) = 0\"), with (F4) = the hypothesis MF (the frozen statement of the parent's sibling fiw_im_mass_formula) and (G1) = the sibling vanish_off_support.\n\nNotation. H := μHE[n] on ℝ^P. Z := zeroRegion(T), an open set (a union of open sets). spt T = U ∖ Z.\n\n1. Let V := U ∩ Z; V is open because U and Z are open. Since M ⊆ U (IsRectifiableTriple.subset), M ∖ spt T = M ∖ (U ∖ Z) = M ∩ Z = M ∩ V.\n2. M_V(T) = 0. By definition T.massOn V = sSup {ofReal(T ω) : ω ∈ massAdmissibleOn U n V}. If ω is admissible then tsupport ω ⊆ V ⊆ Z, and Z is disjoint from spt T = U ∖ Z; so tsupport ω and spt T are disjoint and T(ω) = 0 by the sibling vanish_off_support. Thus every element of the set equals ofReal 0 = 0, and the supremum is 0 (sSup_le).\n3. Apply MF with these P, n, U (open), T, the triple (M, θ, ξ) and the hypothesis T = τ(M, θ, ξ) on D^n(U), and with the open set W := V. It gives ∫⁻_{M∩V} ofReal(θ x) dH(x) = T.massOn V = 0.\n4. Exhaust U by compact sets: there are compact sets K_k ⊆ U (k ∈ ℕ) with ⋃_k K_k = U. (For instance K_k := closedBall(0, k) if U = ℝ^P, and otherwise K_k := {x : ‖x‖ ≤ k and infDist(x, ℝ^P ∖ U) ≥ 1/(k+1)}, which is closed and bounded, hence compact, and contained in U; every x ∈ U has positive distance to the closed set ℝ^P ∖ U, so it lies in some K_k.) Put S_k := M ∩ V ∩ K_k.\n5. Fix k. K_k is a compact subset of U, so by IsRectifiableTriple.integrableOn θ is H-integrable on M ∩ K_k; in particular θ, and hence x ↦ ofReal(θ x), is a.e.-measurable for H⌞S_k (S_k ⊆ M ∩ K_k). By monotonicity of the lower integral in the set (lintegral_mono_set), ∫⁻_{S_k} ofReal θ dH ≤ ∫⁻_{M∩V} ofReal θ dH = 0. By lintegral_eq_zero_iff', ofReal(θ x) = 0 for H⌞S_k-a.e. x. But θ > 0 on M (IsRectifiableTriple.pos), so ofReal(θ x) ≠ 0 for every x ∈ S_k; hence S_k ⊆ {x : ofReal(θ x) ≠ 0}, which has H⌞S_k-measure 0, and H(S_k) = (H⌞S_k)(S_k) = 0 (Measure.restrict_apply_self and monotonicity).\n6. M ∩ V ⊆ U = ⋃_k K_k, so M ∩ V = ⋃_k S_k and H(M ∩ V) ≤ Σ_k H(S_k) = 0 (measure_iUnion_null). By step 1, H(M ∖ spt T) = 0. ∎\n\nRemark (optional shortcut for step 4). The comparator-accepted Submission.cmb_exists_compactly_contained_exhaustion (commit cb89cc7f436bbfa9b474f73003fa9aa79ebad102) gives open W_k ⊂⊂ U such that every compact subset of U lies in some W_k; applied to singletons, K_k := closure W_k is a compact exhaustion of U as required in step 4. Its Lean proof may be adapted under a fresh name.",
+  "key_steps": [
+    "V := U ∩ zeroRegion(T) is open and M ∖ spt T = M ∩ V because M ⊆ U.",
+    "Every admissible form supported in V is killed by T (vanish_off_support), so M_V(T) = 0.",
+    "MF with W := V gives ∫⁻_{M∩V} θ dH^n = 0.",
+    "On each piece S_k = M ∩ V ∩ K_k of a compact exhaustion of U, θ is a.e.-measurable and positive, so H^n(S_k) = 0.",
+    "Countable subadditivity gives H^n(M ∖ spt T) = H^n(M ∩ V) = 0."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

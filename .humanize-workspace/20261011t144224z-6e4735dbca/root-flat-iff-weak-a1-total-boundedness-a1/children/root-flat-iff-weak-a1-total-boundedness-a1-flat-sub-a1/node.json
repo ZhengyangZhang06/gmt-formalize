@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.flat_sub-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1",
+  "depth": 3,
+  "title": "Difference of two integral flat decompositions (mass subadditivity)",
+  "statement": "Assume LC (as in top_dim_approx). Let P, n ∈ ℕ, U ⊆ ℝ^P open, and R₁, R₂ ∈ D_{n+1}(U), S₁, S₂ ∈ D_n(U) integer multiplicity. Then there are integer multiplicity R ∈ D_{n+1}(U), S ∈ D_n(U) with ∂R(ω) + S(ω) = (∂R₁(ω) + S₁(ω)) − (∂R₂(ω) + S₂(ω)) for every ω ∈ D^n(U), and M(R) + M(S) ≤ (M(R₁) + M(S₁)) + (M(R₂) + M(S₂)) (M = M_U).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) → ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (R₁ R₂ : GeometricCurrentOn U (n + 1)) (S₁ S₂ : GeometricCurrentOn U n), IsIntegerMultiplicity R₁ → IsIntegerMultiplicity R₂ → IsIntegerMultiplicity S₁ → IsIntegerMultiplicity S₂ → ∃ (R : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω, R.boundary ω + S ω = (R₁.boundary ω + S₁ ω) - (R₂.boundary ω + S₂ ω)) ∧ R.mass + S.mass ≤ (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass)",
+  "lean_name": "fiw_tb_flat_sub",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-flat-sub-a1-a1"
+}

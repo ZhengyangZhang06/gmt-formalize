@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1",
+  "depth": 3,
+  "title": "Approximation by an integral cubical chain in top dimension P = m + 1 (Simon 5.1, (27)–(37))",
+  "statement": "Assume MF (as in support_null) and LC: for all P, n, every open U ⊆ ℝ^P, all integer multiplicity T₁, T₂ ∈ D_n(U), integers a, b and S ∈ D_n(U) with S(ω) = aT₁(ω) + bT₂(ω) for every ω, S is integer multiplicity. Let m ∈ ℕ and n := m + 1. Then there is c ∈ [0, ∞) such that for every integer multiplicity X ∈ D_n(ℝ^n) with M(X) < ∞ and M(∂X) < ∞ and every ρ > 0 there are β : LatticeFaceIndex n n → ℝ and Pc, S ∈ D_n(ℝ^n) with: IsLatticeChain ρ β Pc; every β_F an integer; β_F ≠ 0 ⟹ latticeFace ρ F ⊆ cthickening(√n ρ, spt X); |β_F| ρ^n ≤ 2 M(X) for every F; S integer multiplicity; X(ω) − Pc(ω) = S(ω) for every ω; and M(S) ≤ c ρ M(∂X).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ W : Set (Eucl P), IsOpen W → T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) → (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) → ∀ m : ℕ, ∃ c : ℝ≥0, ∀ X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∀ ρ : ℝ, 0 < ρ → ∃ (β : LatticeFaceIndex (m + 1) (m + 1) → ℝ) (Pc S : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)), IsLatticeChain ρ β Pc ∧ (∀ F, ∃ k : ℤ, β F = k) ∧ (∀ F, β F ≠ 0 → latticeFace ρ F ⊆ cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ) X.support) ∧ (∀ F, ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ 2 * X.mass) ∧ IsIntegerMultiplicity S ∧ (∀ ω, X ω - Pc ω = S ω) ∧ S.mass ≤ c * ENNReal.ofReal ρ * X.boundary.mass",
+  "lean_name": "fiw_tb_top_dim_approx",
+  "depends_on": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.support_null-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.support_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-a1"
+}
