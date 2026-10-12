@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.rescale_conclusion-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+  "depth": 6,
+  "title": "Rescaling a unit-scale harmonic approximant to scale R₀ (step B3)",
+  "statement": "Let n ∈ ℕ, ε ∈ ℝ, R₀ > 0 and w, h₁ : ℝⁿ → ℝ (ℝⁿ = Euclid n). Suppose h₁ is C^m on B_1 for every m ∈ ℕ, Σ_{i<n} iteratedFDeriv ℝ 2 h₁ y ![e_i, e_i] = 0 for every y ∈ B_1, ‖Dh₁‖² is integrable on B_1 with ∫_{B_1} ‖Dh₁‖² ≤ 1, and y ↦ (h₁(y) − R₀⁻¹·w(R₀·y))² is integrable on B_1 with ∫_{B_1} (h₁(y) − R₀⁻¹·w(R₀·y))² dy ≤ ε (B_ρ := B̆_ρ(0), D := fderiv ℝ, e_i := EuclideanSpace.single i 1). Then there is h : ℝⁿ → ℝ (namely h(x) = R₀·h₁(R₀⁻¹x)) such that h is C^m on B_{R₀} for every m ∈ ℕ, Σ_{i<n} iteratedFDeriv ℝ 2 h y ![e_i, e_i] = 0 for every y ∈ B_{R₀}, ‖Dh‖² is integrable on B_{R₀} with ∫_{B_{R₀}} ‖Dh‖² ≤ R₀ⁿ, and (h − w)² is integrable on B_{R₀} with ∫_{B_{R₀}} (h − w)² ≤ ε·R₀^{n+2}.",
+  "lean_statement": "∀ (n : ℕ) (ε R₀ : ℝ) (w h₁ : Euclid n → ℝ), 0 < R₀ → (∀ m : ℕ, ContDiffOn ℝ m h₁ (ball (0 : Euclid n) 1)) → (∀ y ∈ ball (0 : Euclid n) 1, ∑ i : Fin n, iteratedFDeriv ℝ 2 h₁ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → IntegrableOn (fun y => ‖fderiv ℝ h₁ y‖ ^ 2) (ball (0 : Euclid n) 1) → ∫ y in ball (0 : Euclid n) 1, ‖fderiv ℝ h₁ y‖ ^ 2 ≤ 1 → IntegrableOn (fun y => (h₁ y - R₀⁻¹ * w (R₀ • y)) ^ 2) (ball (0 : Euclid n) 1) → ∫ y in ball (0 : Euclid n) 1, (h₁ y - R₀⁻¹ * w (R₀ • y)) ^ 2 ≤ ε → ∃ h : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R₀)) ∧ (∀ y ∈ ball (0 : Euclid n) R₀, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧ IntegrableOn (fun y => ‖fderiv ℝ h y‖ ^ 2) (ball (0 : Euclid n) R₀) ∧ ∫ y in ball (0 : Euclid n) R₀, ‖fderiv ℝ h y‖ ^ 2 ≤ R₀ ^ n ∧ IntegrableOn (fun y => (h y - w y) ^ 2) (ball (0 : Euclid n) R₀) ∧ ∫ y in ball (0 : Euclid n) R₀, (h y - w y) ^ 2 ≤ ε * R₀ ^ (n + 2)",
+  "lean_name": "dorag_haa_rescale_conclusion",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.ball_rescale-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.ball_rescale-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f-a1"
+}
