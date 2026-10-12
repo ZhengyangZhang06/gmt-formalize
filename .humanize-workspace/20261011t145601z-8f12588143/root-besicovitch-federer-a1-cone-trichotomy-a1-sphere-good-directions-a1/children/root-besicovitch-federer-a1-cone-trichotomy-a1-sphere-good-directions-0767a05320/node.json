@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_good_directions-a1.density_dichotomy-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_good_directions-a1",
+  "depth": 4,
+  "title": "Density dichotomy for an outer measure against a finite measure with n-dimensional ball bounds (Step 4 of the sphere lemma)",
+  "statement": "Let N, n ∈ ℕ and E := Rn N = ℝ^N with its Borel σ-algebra. Let σ be a finite measure on E, S ⊆ E, c₁ > 0 and C₁ ∈ ℝ. Assume (L) c₁ρⁿ ≤ σ(B(ζ, ρ)) for every ζ ∈ S and 0 < ρ ≤ 2, and (U) σ(B(ζ, ρ)) ≤ C₁ρⁿ for every ζ ∈ S and every ρ > 0. Here B(ζ, ρ) is the open ball, and numerical bounds are compared in [0, ∞] via ENNReal.ofReal. Let m be an outer measure on E and F ⊆ S a Borel set with m(F) = 0. Say (α) holds at θ ∈ E if for every c > 0 there is η > 0 with m(S ∩ B(θ, t)) ≤ ofReal(ctⁿ) for all 0 < t < η. Say (β) holds at θ if for every K ∈ ℝ and every η > 0 there is 0 < t < η with ofReal(Ktⁿ) < m(S ∩ B(θ, t)). Then σ({θ ∈ F : neither (α) nor (β) holds at θ}) = 0.",
+  "lean_statement": "∀ (N n : ℕ) (σ : Measure (Rn N)), IsFiniteMeasure σ → ∀ (S : Set (Rn N)) (c₁ C₁ : ℝ), 0 < c₁ → (∀ ζ ∈ S, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 2 → ENNReal.ofReal (c₁ * ρ ^ n) ≤ σ (Metric.ball ζ ρ)) → (∀ ζ ∈ S, ∀ ρ : ℝ, 0 < ρ → σ (Metric.ball ζ ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ n)) → ∀ (m : OuterMeasure (Rn N)) (F : Set (Rn N)), MeasurableSet F → F ⊆ S → m F = 0 → σ {θ | θ ∈ F ∧ ¬ (∀ c : ℝ, 0 < c → ∃ η : ℝ, 0 < η ∧ ∀ t : ℝ, 0 < t → t < η → m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (c * t ^ n)) ∧ ¬ (∀ K : ℝ, ∀ η : ℝ, 0 < η → ∃ t : ℝ, 0 < t ∧ t < η ∧ ENNReal.ofReal (K * t ^ n) < m (S ∩ Metric.ball θ t))} = 0",
+  "lean_name": "bf_sphereGood_densityDichotomy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-good-directions-0767a05320-a1"
+}
