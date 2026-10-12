@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'continuous_infEDist|mem_closure_iff_infEDist_zero|exists_inv_nat_lt' Mathlib/Topology/MetricSpace/HausdorffDistance.lean Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "rg -n -i 'cauchy.binet|binet.cauchy|det_mul_eq_sum' Mathlib/LinearAlgebra",
+        "git show cb89cc7f436bbfa9b474f73003fa9aa79ebad102:GMT/Ch06/Submission.lean",
+        "git show ba202ac0407b6e93210594416fcd0729874b2eff:GMT/Ch06/Submission.lean",
+        "git show 6c6b4b2753e8214a3e45619bb0b65d8d553557a5:GMT/Ch06/Submission.lean",
+        "python3 audit_compile.py Scratch/TypesBeforeReuse.lean",
+        "python3 audit_compile.py build",
+        "python3 audit_compile.py Scratch/Reuse_exhaustion.lean",
+        "python3 audit_compile.py Scratch/Reuse_mass_bound.lean",
+        "python3 audit_compile.py Scratch/Reuse_covector_expansion.lean",
+        "python3 audit_compile.py Scratch/GlueAll.lean",
+        "python3 audit_compile.py Scratch/Glue4.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/CrossProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-orientation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-orientation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-exhaustion-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-covector-expansion-a1/accepted-candidate.json",
+        "/tmp/orientation_independent_audit_bkrzgwjc/Scratch/TypesBeforeReuse.lean",
+        "/tmp/orientation_independent_audit_bkrzgwjc/GMT/Ch06/Submission.lean",
+        "/tmp/orientation_independent_audit_bkrzgwjc/Scratch/Reuse_exhaustion.lean",
+        "/tmp/orientation_independent_audit_bkrzgwjc/Scratch/Reuse_mass_bound.lean",
+        "/tmp/orientation_independent_audit_bkrzgwjc/Scratch/Reuse_covector_expansion.lean",
+        "/tmp/orientation_independent_audit_bkrzgwjc/Scratch/GlueAll.lean",
+        "/tmp/orientation_independent_audit_bkrzgwjc/Scratch/Glue4.lean"
+      ],
+      "conclusion": "Audited the exact selected contract rectifiability_orientation against its immutable handoff. All three names are bare identifiers identifying unique comparator-accepted declarations with byte-identical frozen types and matching accepted source hashes. Adding the reuse edges preserves acyclicity and the parent's existing dependencies. Seven frozen propositions elaborate before the reused implementations are installed. Fresh exact-type checks and the supplied parent glue compile using only propext, Classical.choice and Quot.sound. The Cauchy–Binet search found only a related CrossProduct docstring; the expansion-based normalization was independently checked. No child contains IsUnit, and supporting matrix expressions use Matrix.of. The reuse-only split is appropriate: its conclusions support compact localization, the vanishing boundary estimate and orientation algebra, which combine with the retained analytic proof and declared siblings to establish this selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose. Continuity and positivity of infEDist give open sets whose closures are compact and contained in U. Boundedness and a positive attained minimum on each nonempty compact K give compact cofinality. Empty K and U equal to the whole space are covered. The proof is complete and independent; singleton cofinality supplies the covering needed for the selected parent's localization."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact one-line type. Evaluating the norm bound at zero gives C ≥ 0. For c > C, both signed rescalings are mass-admissible; B ≥ 0 permits conversion of the ENNReal bound, yielding |T(ω)| ≤ Bc. The explicit epsilon argument gives BC, including zero bounds. No openness assumption or circular theorem is used. Applied to the boundary in degree m, this provides the parent's O(λ) estimate."
+    },
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the stated coordinate expansion. Determinant evaluations establish the Kronecker property; sorting and permutation-sign cancellation extend agreement to injective basis tuples; alternating-map extensionality completes the proof. Degree zero and degrees exceeding P are correctly covered. The proof is self-contained and non-circular. Its stated applications supply operator-norm boundedness, adapted-frame expansion and unit simple-vector normalization, completing the algebra needed for the parent's ± orientation conclusion."
+    }
+  ],
+  "required_changes": []
+}
