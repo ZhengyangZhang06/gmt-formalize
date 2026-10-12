@@ -1474,6 +1474,42 @@ theorem Submission.lpf_c1_local_antilipschitz :
       _ ≤ ‖G z - G z'‖ + ‖G z - G z' - A (z - z')‖ := norm_sub_le _ _
   rw [hcK] at h1 ⊢
   linarith
+/-- Countable localization of a locally Lipschitz map: open sets `B m ⊆ Ω` covering `Ω` and
+globally Lipschitz maps `v m` agreeing with `u` on `B m` (Lindelöf, then Lipschitz extension). -/
+theorem Submission.lpf_lipschitz_localization :
+    ∀ (n Q : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u →
+      ∃ (B : ℕ → Set (Eucl n)) (v : ℕ → Eucl n → Eucl Q), (∀ m, IsOpen (B m)) ∧
+        (∀ m, B m ⊆ Ω) ∧ Ω ⊆ ⋃ m, B m ∧ (∀ m, ∃ K : ℝ≥0, LipschitzWith K (v m)) ∧
+        ∀ m, EqOn u (v m) (B m) := by
+  intro n Q Ω u hΩ hu
+  -- Each `w ∈ Ω` has an open neighbourhood `V w ⊆ Ω` on which `u` is Lipschitz.
+  have hV : ∀ w : Ω, ∃ V : Set (Eucl n), IsOpen V ∧ V ⊆ Ω ∧ (w : Eucl n) ∈ V ∧
+      ∃ K : ℝ≥0, LipschitzOnWith K u V := by
+    rintro ⟨w, hw⟩
+    obtain ⟨K, t, ht, hK⟩ := hu hw
+    obtain ⟨o, ho, hwo, hot⟩ := mem_nhdsWithin.1 ht
+    exact ⟨o ∩ Ω, ho.inter hΩ, inter_subset_right, ⟨hwo, hw⟩, K, hK.mono hot⟩
+  choose V hVo hVΩ hwV hVK using hV
+  -- Lindelöf: countably many `V w` already cover `Ω`.
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable V hVo
+  have hΩT : Ω ⊆ ⋃ w ∈ T, V w := fun x hx => hTU ▸ mem_iUnion.2 ⟨⟨x, hx⟩, hwV _⟩
+  -- Extend `u` from each `V w` to a globally Lipschitz map `g w`.
+  have hext : ∀ w : Ω, ∃ g : Eucl n → Eucl Q, (∃ K : ℝ≥0, LipschitzWith K g) ∧
+      EqOn u g (V w) := fun w => by
+    obtain ⟨K, hK⟩ := hVK w
+    obtain ⟨g, hg, hug⟩ := hK.extend_finite_dimension
+    exact ⟨g, ⟨_, hg⟩, hug⟩
+  choose g hg hug using hext
+  rcases T.eq_empty_or_nonempty with hT | hT
+  · -- `T = ∅` forces `Ω = ∅`: take empty sets and the zero map.
+    refine ⟨fun _ => ∅, fun _ => 0, fun _ => isOpen_empty, fun _ => empty_subset _, ?_,
+      fun _ => ⟨0, LipschitzWith.const 0⟩, fun _ => eqOn_empty _ _⟩
+    simpa [hT] using hΩT
+  · -- Enumerate the nonempty countable `T` as `range f`.
+    obtain ⟨f, rfl⟩ := hTc.exists_eq_range hT
+    refine ⟨fun m => V (f m), fun m => g (f m), fun m => hVo _, fun m => hVΩ _, ?_,
+      fun m => hg _, fun m => hug _⟩
+    rwa [biUnion_range] at hΩT
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
