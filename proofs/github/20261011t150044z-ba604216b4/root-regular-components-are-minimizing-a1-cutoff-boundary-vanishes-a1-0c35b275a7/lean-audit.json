@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f64fb02d5ca50bd66c2b4d30cbe2a829b381304fabd56004498d195b870bac8c",
+  "git_delta": {
+    "base_commit": "c8b7c86e49a1c6c08660a423794f7f2a6a1b9d51",
+    "candidate_commit": "8f87767fa9e199dc38617cd203df089b5f327603",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "451f6e138e9a7f30b54b3a422e2c5ce34bbc0ee71edfe4e0058e7ec9b26baf21",
+    "source_sha256": "298a4004ed3754bc6f21d21fc672e114edf4a849267b740a61d6be2e5e4f3af2",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cutoff_boundary_vanishes",
+      "statement": "∀ (P m : ℕ) (U M₁ : Set (Euclid P)) (T T₁ : GeometricCurrentOn U (m + 1)) (ξ : Euclid P → MultiVector P (m + 1)), IsOpen U → T.boundary = 0 → (∀ ω : TestFormOn U (m + 1), T₁ ω = ∫ x in M₁, ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) → (∀ᵐ x ∂(μHE[m + 1].restrict M₁), ∀ α : Covector (Euclid P) (m + 1), |ξ x α| ≤ ‖α‖) → (∀ z ∈ M₁, ∃ G : Set (Euclid P), IsOpen G ∧ z ∈ G ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ G → T₁ ω = c * T ω) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Z : Set (Euclid P), IsCompact Z ∧ μH[(m : ℝ)] Z = 0 ∧ closure M₁ ∩ K ⊆ M₁ ∪ Z) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ x ∈ K, ∀ r : ℝ, 0 < r → r < r₁ → μHE[m + 1] (M₁ ∩ ball x r) ≤ ENNReal.ofReal (C * r ^ (m + 1))) → T₁.boundary = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

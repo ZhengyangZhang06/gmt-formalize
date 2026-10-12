@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hausdorffMeasure_apply|hausdorffMeasure_zero_singleton",
+        "one_of_mem_closedBall|support_eq|hasCompactSupport|protected.*contDiff",
+        "exists_isSubordinate|theorem.*sum|tsupport|variable.*Finite|variable.*Fintype",
+        "enorm_integral_le_lintegral_enorm|setIntegral_eq_zero_of_forall_eq_zero|lintegral_mono_ae|norm_alternatizeUncurryFin_le|norm_smulRight_apply|opNorm_smul_le",
+        "regcomp_(null_compact_ball_cover|smooth_cutoff_product|localized_boundary_zero|boundary_smul_estimate)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/cutoff-independent-audit-e0s8z6rc/TypesVerified.lean",
+        "/tmp/cutoff-split-chk/Full.lean"
+      ],
+      "conclusion": "The split is appropriate: four substantive, independent obligations supply the covering, cutoff, localization, and analytic estimate needed for this selected parent. The remaining density estimate and limiting argument establish its exact frozen conclusion. Empty dependency lists are correct and acyclic. All four names are bare identifiers, absent from the final 87-node DAG and the searched snapshot declarations. The handoff and frozen parent type are unchanged. Project/mathlib revisions and inspected compiler sources match the snapshot. Independently compiled all five types as standalone propositions without child declarations, verified the smoothness-order coercion and intended operator-norm/module instances, and reran Full.lean successfully. Each child and the exact parent depend only on propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "null_compact_ball_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes compactness, Hausdorff nullity, positive ε and δ, centres in Z, strict radius bounds, coverage, and the small sum. The proof correctly handles m = 0, extracts a countable cover, enlarges diameters by positive summable radii, bounds the finite subcover sum, and reindexes by Fin J. It is complete and non-circular."
+    },
+    {
+      "key": "smooth_cutoff_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches every stated property and quantifies c₀ before the ball family. The supplied rescaled-bump construction proves both indicator bounds, including derivative vanishing outside the doubled open balls. The finite-product arguments cover J = 0. Independently verified that the specified ContDiff order means C∞ and the derivative norm is the operator norm."
+    },
+    {
+      "key": "localized_boundary_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary U and potentially nonmeasurable M₁. Compactness, finite localization, and the subordinate smooth partition justify the decomposition. The remainder vanishes near every point of M₁; the other terms vanish by local proportionality and ∂T = 0. The cited set-integral result requires no measurability of M₁. Empty covers and support conditions are handled without circularity."
+    },
+    {
+      "key": "boundary_smul_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact ENNReal inequality matches the prose, including differentiability of f and the separate test-form hypothesis on F. The proof correctly combines the Fréchet product rule, operator-norm bounds, the m + 1 alternation factor, the simultaneous almost-everywhere covector bound, and unconditional Bochner/lower-integral domination. No integrability or measurability hypothesis is silently added."
+    }
+  ],
+  "required_changes": []
+}
