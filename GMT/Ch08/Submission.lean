@@ -410,6 +410,53 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Closed graph pieces from a local graph property (the localization `E_j ∩ B_{δ/4}(x_0)` after
+printed (10) in Simon Ch. 3, Thm 1.6, p. 74, with closures taken): if the `L`-graph inequality over
+`P` holds for all points of `E` at distance `≤ r`, then `E` is covered by countably many closed sets
+on each of which it holds for all pairs of points. -/
+theorem Submission.tgc_local_graph_closed_cover :
+    ∀ (N n : ℕ) (L r : ℝ) (P : Grassmannian N n) (E : Set (Euclidean N)), 0 < r → (∀ y ∈ E, ∀ z ∈ E, ‖y - z‖ ≤ r → ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ E, ∃ i, x ∈ Γ i := by
+  intro N n L r P E hr hE
+  -- Step 1: a dense sequence `d` in the separable, nonempty space `ℝ^N`.
+  obtain ⟨d, hd⟩ : ∃ d : ℕ → Euclidean N, DenseRange d :=
+    ⟨_, TopologicalSpace.denseRange_denseSeq (Euclidean N)⟩
+  -- Step 3: the graph relation `F` is closed, as `Grassmannian.project P` is a linear map on a
+  -- finite-dimensional space, hence continuous.
+  have hp : Continuous (Grassmannian.project P) :=
+    P.projectionLinearMap.continuous_of_finiteDimensional
+  have hsub : Continuous fun q : Euclidean N × Euclidean N ↦ q.1 - q.2 :=
+    continuous_fst.sub continuous_snd
+  have hF : IsClosed {q : Euclidean N × Euclidean N |
+      ‖(q.1 - q.2) - Grassmannian.project P (q.1 - q.2)‖ ≤
+        L * ‖Grassmannian.project P (q.1 - q.2)‖} :=
+    isClosed_le (hsub.sub (hp.comp hsub)).norm (continuous_const.mul (hp.comp hsub).norm)
+  -- Step 2: the closed pieces `Γ_j = closure (E ∩ B_{r/2}(d_j))`.
+  refine ⟨fun j ↦ closure (E ∩ closedBall (d j) (r / 2)), fun j ↦ isClosed_closure, ?_, ?_⟩
+  · intro j y hy z hz
+    -- Step 4: two points of `S_j = E ∩ B_{r/2}(d_j)` are at distance `≤ r`, so `S_j × S_j ⊆ F`.
+    have hSF : (E ∩ closedBall (d j) (r / 2)) ×ˢ (E ∩ closedBall (d j) (r / 2)) ⊆
+        {q : Euclidean N × Euclidean N |
+          ‖(q.1 - q.2) - Grassmannian.project P (q.1 - q.2)‖ ≤
+            L * ‖Grassmannian.project P (q.1 - q.2)‖} := by
+      rintro ⟨a, b⟩ ⟨⟨haE, ha⟩, hbE, hb⟩
+      rw [mem_closedBall, dist_eq_norm] at ha hb
+      refine hE a haE b hbE ?_
+      calc ‖a - b‖ = ‖(a - d j) - (b - d j)‖ := by rw [sub_sub_sub_cancel_right]
+        _ ≤ ‖a - d j‖ + ‖b - d j‖ := norm_sub_le _ _
+        _ ≤ r / 2 + r / 2 := add_le_add ha hb
+        _ = r := by ring
+    -- Step 5: `(y, z) ∈ closure S_j ×ˢ closure S_j = closure (S_j ×ˢ S_j) ⊆ F`.
+    have hyz : (y, z) ∈
+        closure ((E ∩ closedBall (d j) (r / 2)) ×ˢ (E ∩ closedBall (d j) (r / 2))) := by
+      rw [closure_prod_eq]
+      exact ⟨hy, hz⟩
+    have hmem := closure_minimal hSF hF hyz
+    exact hmem
+  · -- Step 6: density gives `j` with `dist x (d j) < r / 2`, so `x ∈ S_j ⊆ Γ_j`.
+    intro x hx
+    obtain ⟨j, hj⟩ := hd.exists_dist_lt x (half_pos hr)
+    exact ⟨j, subset_closure ⟨hx, mem_closedBall.2 hj.le⟩⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08

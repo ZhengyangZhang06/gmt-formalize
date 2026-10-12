@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1.density_bounds_uniform-a1",
+  "parent_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+  "depth": 3,
+  "title": "Uniformization of eventual density bounds (replacement of Egoroff): an eventual lower bound c t^n and arbitrarily small eventual upper bounds ε t^n hold for all t ∈ (0, 1/(k+1)] with constants 1/(m+1) and β/(m+1)",
+  "statement": "Let n ∈ ℕ, β ∈ ℝ with β > 0, and F, G : ℝ → [0,∞]. Suppose (H1) there is c ∈ [0,∞] with c > 0 such that c · ofReal(t)^n ≤ F(t) for all sufficiently small t > 0 (eventually in 𝓝[>] 0), and (H2) for every ε ∈ [0,∞] with ε > 0, G(t) ≤ ε · ofReal(t)^n for all sufficiently small t > 0. Then there are m, k ∈ ℕ such that for every real t with 0 < t ≤ 1/(k+1): ofReal((1/(m+1)) · t^n) ≤ F(t) and G(t) ≤ ofReal((1/(m+1)) · β · t^n).",
+  "lean_statement": "∀ (n : ℕ) (β : ℝ) (F G : ℝ → ℝ≥0∞), 0 < β → (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ F t) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), G t ≤ ε * ENNReal.ofReal t ^ n) → ∃ m k : ℕ, ∀ t : ℝ, 0 < t → t ≤ 1 / ((k : ℝ) + 1) → ENNReal.ofReal (1 / ((m : ℝ) + 1) * t ^ n) ≤ F t ∧ G t ≤ ENNReal.ofReal (1 / ((m : ℝ) + 1) * β * t ^ n)",
+  "lean_name": "tgc_eventual_density_bounds_uniform",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1-a1"
+}
