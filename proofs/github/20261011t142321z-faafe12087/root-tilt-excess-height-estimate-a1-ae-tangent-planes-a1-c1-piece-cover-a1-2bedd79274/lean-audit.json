@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3031197a6b67c9fb971efcfd48be4759d9b6c64a0762944ae530720ba393f9aa",
+  "git_delta": {
+    "base_commit": "e664b47a5ed331f6b3bb59b3a29a9d889e252d36",
+    "candidate_commit": "3685d4cd99510bd2f250bc37353b6dae7da54072",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_rectifiable_c1_piece_cover",
+    "diff_sha256": "0498bdd9a8118efa4827749e10da23858bc37bc85cd346df4c05b816cad51e35",
+    "source_sha256": "7ca01cf76f268ccd0d85045e59b011beebeaba08cc8adc8e4f88be9c595e7637",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_rectifiable_c1_piece_cover",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (M : Set (Amb n ℓ)), Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ Z₀ : Set (Amb n ℓ), MeasurableSet Z₀ ∧ (μHE[n] : Measure (Amb n ℓ)) Z₀ = 0 ∧ ∃ (G : ℕ → Rn n → Amb n ℓ) (c : ℕ → Rn n) (r σ : ℕ → ℝ), (∀ k, ContDiff ℝ 1 (G k)) ∧ (∀ k, 0 < r k) ∧ (∀ k, 0 < σ k) ∧ (∀ k, ∀ b ∈ ball (c k) (r k), Function.Injective (fderiv ℝ (G k) b)) ∧ (∀ k, ∀ b₁ ∈ ball (c k) (r k), ∀ b₂ ∈ ball (c k) (r k), σ k * ‖b₁ - b₂‖ ≤ ‖G k b₁ - G k b₂‖) ∧ M ⊆ Z₀ ∪ ⋃ k, G k '' ball (c k) (r k)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
