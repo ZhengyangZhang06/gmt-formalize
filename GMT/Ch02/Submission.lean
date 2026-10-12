@@ -501,6 +501,24 @@ theorem Submission.simon_submanifold_chart_inverse_continuousOn : ∀ (n N : ℕ
     eq_of_nhds_neBot (mapClusterPt_id_iff.1 hcl' |>.mono nhdsWithin_le_nhds).neBot
   exact hinj hx'.1 hgyV (hψx'y.trans hψgy.symm)
 
+/-- **Simon Ch. 2, 4.3 (p. 55).** If `(V, W, ψ)` is a `C^r` local representation of `M`, `r ≥ 1`,
+then `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`. `range Dψ(x) ⊆ T_{ψ(x)} M` holds for any `C¹` map of
+the open set `V` into `M` (here `ψ(V) = W ∩ M`). Conversely, every generating velocity of
+`T_{ψ(x)} M` lies in `range Dψ(x)`, since its curve lifts through `ψ⁻¹ = invFunOn ψ V`, which is
+continuous on `W ∩ M` by 4.2. -/
+theorem Submission.simon_submanifold_tangentSpace_eq_range : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap := by
+  intro n N r M V W ψ hr h x hx
+  -- Part A: `ψ` is a `C¹` map of the open set `V` into `ψ(V) = W ∩ M ⊆ M`.
+  have hA : LinearMap.range (fderiv ℝ ψ x).toLinearMap ≤ tangentSpace M (ψ x) :=
+    Submission.simon_chart_range_fderiv_le_tangentSpace n N M V ψ h.isOpen_source
+      (h.contDiffOn.of_le (by exact_mod_cast hr))
+      ((mapsTo_image ψ V).mono_right (h.image_eq.subset.trans inter_subset_right)) x hx
+  -- Part B: generating curves lift through `invFunOn ψ V`, continuous on `W ∩ M` (Simon 4.2).
+  have hB : tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    Submission.simon_chart_tangentSpace_le_range_fderiv n N r M V W ψ hr h
+      (Submission.simon_submanifold_chart_inverse_continuousOn n N r M V W ψ h) x hx
+  exact le_antisymm hB hA
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
