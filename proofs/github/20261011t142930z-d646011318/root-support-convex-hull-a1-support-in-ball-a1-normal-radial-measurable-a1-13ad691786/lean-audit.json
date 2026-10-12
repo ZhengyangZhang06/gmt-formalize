@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "92d365f8939bda90905aabbc350b3d7c9f31d0155daf3b9021b9034fc7625592",
+  "git_delta": {
+    "base_commit": "5994e5650bbf59e0224ca2a2dbc8c11f04f88fbf",
+    "candidate_commit": "2540d86c78de1e91a8662c37228aedda9109124f",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "aestronglyMeasurable_normalRadialSq_and_bounds",
+    "diff_sha256": "2264abdf9e04465e880591a352e6eb959bfb3d423a3207f9dd3cf48dae0b582a",
+    "source_sha256": "e39445000aae2adf1e98eaee42a59225335cada618e01936d00bef4cfe0f9c71",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aestronglyMeasurable_normalRadialSq_and_bounds",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (ξ : Ambient n ℓ), AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → AEStronglyMeasurable (fun x ↦ V.normalRadialSq ξ x) V.weight ∧ ∀ x, 0 ≤ V.normalRadialSq ξ x ∧ V.normalRadialSq ξ x ≤ 1",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
