@@ -434,6 +434,107 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Smooth level truncation** (Simon Ch. 4, 5.7, proof, with a general cut-off `γ`). If
+`∫_{g ≥ 1} g dμ_V ≤ C (∫ g dμ_V)^{1/n} ∫ (|∇^M g| + g|H|) dμ_V` for every nonnegative
+`g ∈ C¹_c(U)`, then for `h ∈ C¹_c(U)`, `h ≥ 0`, and `t ≥ 0` the truncation `g = γ(h - t)` gives
+`μ_V(h > t + ε) ≤ C μ_V(h > t)^{1/n} (∫ γ'(h - t)|∇^M h| dμ_V + ∫_{h > t} |H| dμ_V)`:
+`g = 1` on `{h > t + ε}`, `0 ≤ g ≤ 1_{h > t}`, and `∇^M g = γ'(h - t) ∇^M h` with `γ' ≥ 0`. -/
+theorem Submission.sobolev_truncation_superlevel_bound : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε t : ℝ), IsFiniteMeasureOnCompacts V.weight → LocallyIntegrableOn H U V.weight → 0 ≤ C → (∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ C * (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ * ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) → ContDiff ℝ 1 h → HasCompactSupport h → tsupport h ⊆ U → (∀ x, 0 ≤ h x) → Integrable (fun x ↦ ‖V.tangentialGradient h x‖) V.weight → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 < ε → (∀ s, ε ≤ s → γ s = 1) → 0 ≤ t → V.weight.real {x | t + ε < h x} ≤ C * (V.weight.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * ‖V.tangentialGradient h x‖ ∂V.weight) + ∫ x in {x | t < h x}, ‖H x‖ ∂V.weight) := by
+  intro n ℓ V U H h γ C ε t hfin hHloc hC hS hh hhc hhU hh0 hgrad hγ hγm hγ01 hγ0 hε hγ1 ht
+  have hhd : Differentiable ℝ h := hh.differentiable one_ne_zero
+  have hγd : Differentiable ℝ γ := hγ.differentiable one_ne_zero
+  have hγ' : Continuous (deriv γ) := hγ.continuous_deriv le_rfl
+  have hγ'0 : ∀ s, 0 ≤ deriv γ s := fun s ↦ hγm.deriv_nonneg
+  have hgc : Continuous fun x ↦ γ (h x - t) :=
+    hγ.continuous.comp (hh.continuous.sub continuous_const)
+  -- the superlevel sets `M_s = {h > s}` are open, and for `s ≥ 0` lie in the compact `tsupport h`
+  have hMmeas : ∀ s, MeasurableSet {x | s < h x} := fun s ↦
+    (isOpen_lt continuous_const hh.continuous).measurableSet
+  have hMsub : ∀ s, 0 ≤ s → {x | s < h x} ⊆ tsupport h := fun s hs x hx ↦
+    subset_tsupport _ (hs.trans_lt hx).ne'
+  have hMfin : ∀ s, 0 ≤ s → V.weight {x | s < h x} ≠ ⊤ := fun s hs ↦
+    ((measure_mono (hMsub s hs)).trans_lt hhc.isCompact.measure_lt_top).ne
+  -- the truncation `g = γ(h - t)` vanishes off `M_t`, so it is admissible in the hypothesis
+  have hg0 : ∀ x, ¬ t < h x → γ (h x - t) = 0 := fun x hx ↦ hγ0 _ (by linarith [not_lt.mp hx])
+  have hgsupp : Function.support (fun x ↦ γ (h x - t)) ⊆ Function.support h := fun x hx hx0 ↦
+    hx (hγ0 _ (by rw [hx0]; linarith))
+  have hgcs : HasCompactSupport fun x ↦ γ (h x - t) := hhc.mono hgsupp
+  have hgU : tsupport (fun x ↦ γ (h x - t)) ⊆ U := (closure_mono hgsupp).trans hhU
+  have hgint : Integrable (fun x ↦ γ (h x - t)) V.weight :=
+    hgc.integrable_of_hasCompactSupport hgcs
+  have A1 := hS (fun x ↦ γ (h x - t)) (hγ.comp (hh.sub contDiff_const)).contDiffOn hgcs hgU
+    (fun x ↦ (hγ01 _).1)
+  -- chain rule: `∇^M g = γ'(h - t) ∇^M h`
+  have hchain : ∀ x, V.tangentialGradient (fun y ↦ γ (h y - t)) x =
+      deriv γ (h x - t) • V.tangentialGradient h x := by
+    intro x
+    have hcomp : fderiv ℝ (fun y ↦ γ (h y - t)) x = deriv γ (h x - t) • fderiv ℝ h x :=
+      ((hγd _).hasDerivAt.comp_hasFDerivAt x ((hhd x).hasFDerivAt.sub_const t)).fderiv
+    simp only [RectifiableVarifold.tangentialGradient, gradient, hcomp, map_smul]
+  -- left side: `μ(M_{t+ε}) = ∫_{M_{t+ε}} g ≤ ∫_{g ≥ 1} g`
+  have hLHS : V.weight.real {x | t + ε < h x} ≤
+      ∫ x in {x | 1 ≤ γ (h x - t)}, γ (h x - t) ∂V.weight := by
+    calc V.weight.real {x | t + ε < h x} = ∫ x in {x | t + ε < h x}, γ (h x - t) ∂V.weight := by
+          rw [setIntegral_congr_fun (hMmeas (t + ε))
+            (fun x (hx : t + ε < h x) ↦ hγ1 _ (by linarith) :
+              EqOn (fun x ↦ γ (h x - t)) (fun _ ↦ (1 : ℝ)) _), setIntegral_const, smul_eq_mul,
+            mul_one]
+      _ ≤ ∫ x in {x | 1 ≤ γ (h x - t)}, γ (h x - t) ∂V.weight :=
+          setIntegral_mono_set hgint.integrableOn (Eventually.of_forall fun x ↦ (hγ01 _).1)
+            (EventuallySubset.of_subset fun x (hx : t + ε < h x) ↦ (hγ1 _ (by linarith)).ge)
+  -- mass factor: `0 ≤ g ≤ 1_{M_t}`
+  have hmass : ∫ x, γ (h x - t) ∂V.weight ≤ V.weight.real {x | t < h x} := by
+    rw [← integral_indicator_one (hMmeas t)]
+    refine integral_mono hgint ((integrableOn_const (hMfin t ht)).integrable_indicator (hMmeas t))
+      fun x ↦ ?_
+    by_cases hx : t < h x
+    · rw [Set.indicator_of_mem (show x ∈ {x | t < h x} from hx)]
+      exact (hγ01 _).2
+    · rw [Set.indicator_of_notMem (show x ∉ {x | t < h x} from hx), hg0 x hx]
+  have hmass' : (∫ x, γ (h x - t) ∂V.weight) ^ (n : ℝ)⁻¹ ≤
+      (V.weight.real {x | t < h x}) ^ (n : ℝ)⁻¹ :=
+    Real.rpow_le_rpow (integral_nonneg fun x ↦ (hγ01 _).1) hmass (inv_nonneg.mpr n.cast_nonneg)
+  -- energy factor: integrable majorant `γ'(h - t)|∇^M h| + 1_{M_t}|H|` (`γ'` is bounded on the
+  -- range of `h - t`, and `H` is integrable on the compact `tsupport h ⊆ U`)
+  have hPint : Integrable (fun x ↦ deriv γ (h x - t) * ‖V.tangentialGradient h x‖) V.weight := by
+    obtain ⟨m, hm⟩ := hh.continuous.bounded_above_of_compact_support hhc
+    obtain ⟨L, hL⟩ := (isCompact_Icc (a := -t) (b := m - t)).exists_bound_of_continuousOn
+      hγ'.continuousOn
+    refine hgrad.bdd_mul (c := L)
+      (hγ'.comp (hh.continuous.sub continuous_const)).aestronglyMeasurable
+      (Eventually.of_forall fun x ↦ hL _ ⟨?_, ?_⟩)
+    · linarith [hh0 x]
+    · have := hm x
+      rw [Real.norm_eq_abs] at this
+      linarith [le_abs_self (h x)]
+  have hRint : Integrable (Set.indicator {x | t < h x} fun x ↦ ‖H x‖) V.weight :=
+    (IntegrableOn.mono_set (Integrable.norm (hHloc.integrableOn_compact_subset hhU hhc.isCompact))
+      (hMsub t ht)).integrable_indicator (hMmeas t)
+  have hI : ∫ x, (‖V.tangentialGradient (fun y ↦ γ (h y - t)) x‖ + γ (h x - t) * ‖H x‖)
+      ∂V.weight ≤ (∫ x, deriv γ (h x - t) * ‖V.tangentialGradient h x‖ ∂V.weight) +
+        ∫ x in {x | t < h x}, ‖H x‖ ∂V.weight := by
+    rw [← integral_indicator (hMmeas t), ← integral_add hPint hRint]
+    refine integral_mono_of_nonneg (Eventually.of_forall fun x ↦ ?_) (hPint.add hRint)
+      (Eventually.of_forall fun x ↦ ?_)
+    · exact add_nonneg (norm_nonneg _) (mul_nonneg (hγ01 _).1 (norm_nonneg _))
+    · dsimp only
+      rw [hchain x, norm_smul, Real.norm_of_nonneg (hγ'0 _)]
+      refine add_le_add le_rfl ?_
+      by_cases hx : t < h x
+      · rw [Set.indicator_of_mem (show x ∈ {x | t < h x} from hx)]
+        exact mul_le_of_le_one_left (norm_nonneg _) (hγ01 _).2
+      · rw [Set.indicator_of_notMem (show x ∉ {x | t < h x} from hx), hg0 x hx, zero_mul]
+  have hI0 : 0 ≤ ∫ x, (‖V.tangentialGradient (fun y ↦ γ (h y - t)) x‖ + γ (h x - t) * ‖H x‖)
+      ∂V.weight :=
+    integral_nonneg fun x ↦ add_nonneg (norm_nonneg _) (mul_nonneg (hγ01 _).1 (norm_nonneg _))
+  calc V.weight.real {x | t + ε < h x}
+      ≤ ∫ x in {x | 1 ≤ γ (h x - t)}, γ (h x - t) ∂V.weight := hLHS
+    _ ≤ C * (∫ x, γ (h x - t) ∂V.weight) ^ (n : ℝ)⁻¹ *
+          ∫ x, (‖V.tangentialGradient (fun y ↦ γ (h y - t)) x‖ + γ (h x - t) * ‖H x‖) ∂V.weight :=
+        A1
+    _ ≤ _ := mul_le_mul (mul_le_mul_of_nonneg_left hmass' hC) hI hI0
+          (mul_nonneg hC (Real.rpow_nonneg measureReal_nonneg _))
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end

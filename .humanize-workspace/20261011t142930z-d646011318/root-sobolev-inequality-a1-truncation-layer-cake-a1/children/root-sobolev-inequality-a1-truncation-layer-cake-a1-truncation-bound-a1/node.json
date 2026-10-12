@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.truncation_bound-a1",
+  "parent_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1",
+  "depth": 3,
+  "title": "Smooth level truncation turns the superlevel inequality into a distribution-function estimate",
+  "statement": "Let n, ℓ ∈ ℕ and let V be a rectifiable n-varifold in E = ℝ^{n+ℓ} whose weight μ = μ_V is finite on compact sets. Let U ⊆ E, let H: E → E be locally μ-integrable on U, and let C ≥ 0. Assume (S): every g: E → ℝ that is C¹ on U, nonnegative, and compactly supported with tsupport g ⊆ U satisfies ∫_{{g≥1}} g dμ ≤ C(∫g dμ)^{1/n}∫(|∇^M g| + g|H|) dμ. Let h: E → ℝ be C¹ on all of E and nonnegative, with compact support, tsupport h ⊆ U, and |∇^M h| μ-integrable. Let ε > 0 and t ≥ 0. Let γ: ℝ → ℝ be C¹ and nondecreasing with 0 ≤ γ ≤ 1, γ = 0 on (−∞, 0] and γ = 1 on [ε, ∞). Write M_s := {x : h(x) > s}, μ(M_s) for the real measure of these sets, and γ' := deriv γ. Then μ(M_{t+ε}) ≤ C·μ(M_t)^{1/n}·(∫γ'(h − t)|∇^M h| dμ + ∫_{M_t}|H| dμ). Here 1/n means the real exponent (n)⁻¹, which is 0 when n = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε t : ℝ), IsFiniteMeasureOnCompacts V.weight → LocallyIntegrableOn H U V.weight → 0 ≤ C → (∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ C * (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ * ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) → ContDiff ℝ 1 h → HasCompactSupport h → tsupport h ⊆ U → (∀ x, 0 ≤ h x) → Integrable (fun x ↦ ‖V.tangentialGradient h x‖) V.weight → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 < ε → (∀ s, ε ≤ s → γ s = 1) → 0 ≤ t → V.weight.real {x | t + ε < h x} ≤ C * (V.weight.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * ‖V.tangentialGradient h x‖ ∂V.weight) + ∫ x in {x | t < h x}, ‖H x‖ ∂V.weight)",
+  "lean_name": "sobolev_truncation_superlevel_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-truncation-layer-cake-a1-truncation-bound-a1-a1"
+}
