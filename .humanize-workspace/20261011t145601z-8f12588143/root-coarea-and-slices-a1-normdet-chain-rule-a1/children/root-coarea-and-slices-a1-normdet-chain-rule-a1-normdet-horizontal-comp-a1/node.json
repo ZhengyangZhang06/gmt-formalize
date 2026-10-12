@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1.normdet_horizontal_comp-a1",
+  "parent_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1",
+  "depth": 3,
+  "title": "Horizontal chain step: Γ|_{(ker Γ)^⊥} = L|_{(ker L)^⊥} ∘ (p_W ∘ B|_{(ker Γ)^⊥})",
+  "statement": "Let V, X and Y be finite-dimensional real inner product spaces, B : V → X a bijective linear map, and L : X → Y and Γ : V → Y linear maps with Γv = L(Bv) for every v ∈ V. Let K ⊆ V and W ⊆ X be subspaces with K = ker Γ and W = (ker L)^⊥. Let p_W : X → W be the orthogonal projection (Submodule.orthogonalProjectionOnto, as a linear map), and let ι_{K^⊥} : K^⊥ → V and ι_W : W → X be the inclusions. Then normDet(Γ ∘ ι_{K^⊥}) = normDet(L ∘ ι_W) · normDet(p_W ∘ B ∘ ι_{K^⊥}).",
+  "lean_statement": "∀ {V X Y : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (B : V →ₗ[ℝ] X) (L : X →ₗ[ℝ] Y) (Γ : V →ₗ[ℝ] Y) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective B → (∀ v, Γ v = L (B v)) → K = LinearMap.ker Γ → W = (LinearMap.ker L)ᗮ → (Γ ∘ₗ Kᗮ.subtype).normDet = (L ∘ₗ W.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype).normDet",
+  "lean_name": "coarea_normDet_horizontal_comp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-normdet-chain-rule-a1-normdet-horizontal-comp-a1-a1"
+}
