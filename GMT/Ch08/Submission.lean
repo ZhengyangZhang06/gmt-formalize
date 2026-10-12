@@ -520,6 +520,92 @@ theorem Submission.intcpt_allard_good_point_monotonicity :
     exact ENNReal.tendsto_ofReal (h.mono_left nhdsWithin_le_nhds)
   exact ge_of_tendsto hlim (Filter.mem_of_superset (Ioo_mem_nhdsLT hσ1) key)
 
+/-- **Simon Ch. 8, proof of 5.10, printed (4)–(5) and the Besicovitch estimate, p. 221** (child
+`bad_set_bound` of `allard_lemma`): if `μ_W(B°_3(0)) ≤ Λ`, `‖δW‖(B°_3(0)) < ε²` and
+`∫_{B°_3(0) × G} ‖p_S - p_P‖ dW < ε²`, then the set of `y ∈ B_2(0) ∩ spt μ_W` at which
+`‖δW‖(B_ρ(y)) ≤ ε μ_W(B_ρ(y))` (printed (1), with `δ‖W‖` read as `‖δW‖`) or
+`∫_{B_ρ(y) × G} ‖p_S - p_P‖ dW ≤ ε ρ^n` (printed (2)) fails for some `ρ ∈ (0, 1)` has
+`μ_W`-measure at most `c₀ ε`, with `c₀` depending only on `N` and `Λ`.  At such a `y` some
+`ρ_y ∈ (0, 1)` has `μ_W(B_{ρ_y}(y)) ≤ ε⁻¹ ‖δW‖(B_{ρ_y}(y))` or, where (1) holds, by printed (3)
+`μ_W(B_{ρ_y}(y)) ≤ e Λ ρ_y^n ≤ e Λ ε⁻¹ ∫_{B_{ρ_y}(y) × G} ‖p_S - p_P‖ dW`; the Besicovitch covering
+lemma then bounds `μ_W` of the bad set by `C (ε⁻¹ ε² + e Λ ε⁻¹ ε²) = C (e Λ + 1) ε`. -/
+theorem Submission.intcpt_allard_bad_set_bound :
+    MonotonicityFormula → ∀ (N n : ℕ) (Λ : ℝ), 1 ≤ Λ → ∃ c₀ : ℝ, 0 ≤ c₀ ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → variationMeasure W (ball (0 : Euclidean N) 3) < ENNReal.ofReal (ε ^ 2) → (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) < ENNReal.ofReal (ε ^ 2) → W.weight {y | y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ ¬ ((∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)))} ≤ ENNReal.ofReal (c₀ * ε) := by
+  intro hMF N n Λ hΛ
+  have hΛ0 : 0 ≤ Λ := zero_le_one.trans hΛ
+  -- `C` is the Besicovitch constant of `ℝ^N`; `c₀ := C (e Λ + 1)`.
+  obtain ⟨C, hC⟩ := Submission.intcpt_allard_bsb_besicovitch_cover N
+  refine ⟨C * (Real.exp 1 * Λ + 1), by positivity, ?_⟩
+  intro ε hε0 hε1 U W P hU hW hμ hδ hT
+  -- `τ(A) = ∫_{A × G} ‖p_S - p_P‖ dW(z, S)` for Borel `A`.
+  obtain ⟨τ, hτ⟩ := Submission.intcpt_allard_bsb_marginal_measure N n W.measure fun z ↦
+    ENNReal.ofReal ‖LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+  -- `ν := ε⁻¹ ‖δW‖ + e Λ ε⁻¹ τ`.
+  obtain ⟨ν, hν⟩ : ∃ ν : Measure (Euclidean N), ∀ A, ν A =
+      ENNReal.ofReal (1 / ε) * variationMeasure W A + ENNReal.ofReal (Real.exp 1 * Λ / ε) * τ A :=
+    ⟨ENNReal.ofReal (1 / ε) • variationMeasure W + ENNReal.ofReal (Real.exp 1 * Λ / ε) • τ,
+      fun A ↦ by rw [Measure.add_apply, Measure.smul_apply, Measure.smul_apply, smul_eq_mul,
+        smul_eq_mul]⟩
+  refine le_trans (hC W.weight ν _ (ball 0 3) 1 1 ?_) ?_
+  · -- Every bad point `y` is the centre of a ball `B_ρ(y) ⊆ B°_3(0)`, `ρ ∈ (0, 1)`, with
+    -- `μ_W(B_ρ(y)) ≤ ν(B_ρ(y))`.
+    rintro y ⟨hy, -, hbad⟩
+    have hy2 : dist y 0 ≤ 2 := mem_closedBall.mp hy
+    have hsub : ∀ ρ : ℝ, ρ < 1 → closedBall y ρ ⊆ ball (0 : Euclidean N) 3 := fun ρ hρ ↦
+      closedBall_subset_ball' (by linarith)
+    by_cases h1 : ∀ ρ : ℝ, 0 < ρ → ρ < 1 →
+        variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)
+    · -- (1) holds, so (2) fails at some `ρ`, and printed (3) gives `μ_W(B_ρ(y)) ≤ e^ε Λ ρ^n`.
+      have h2 := not_and.mp hbad h1
+      push Not at h2
+      obtain ⟨ρ, hρ0, hρ1, hlt⟩ := h2
+      have hb1 : ball y 1 ⊆ ball (0 : Euclidean N) 3 := ball_subset_ball' (by linarith)
+      have hgood := (Submission.intcpt_allard_good_point_monotonicity hMF N n U W y ε Λ hW
+        (hb1.trans hU) hε0.le ((measure_mono hb1).trans hμ) h1).2.2 ρ hρ0 hρ1
+      refine ⟨ρ, hρ0, hρ1.le, hsub ρ hρ1, ?_⟩
+      rw [one_mul, hν]
+      calc W.weight (closedBall y ρ) ≤ ENNReal.ofReal (Real.exp ε * Λ * ρ ^ n) := hgood
+        _ ≤ ENNReal.ofReal (Real.exp 1 * Λ / ε * (ε * ρ ^ n)) := by
+            refine ENNReal.ofReal_le_ofReal ?_
+            rw [← mul_assoc, div_mul_cancel₀ _ hε0.ne']
+            exact mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hε1) hΛ0) (pow_nonneg hρ0.le n)
+        _ = ENNReal.ofReal (Real.exp 1 * Λ / ε) * ENNReal.ofReal (ε * ρ ^ n) :=
+            ENNReal.ofReal_mul (by positivity)
+        _ ≤ ENNReal.ofReal (Real.exp 1 * Λ / ε) * τ (closedBall y ρ) := by
+            rw [hτ _ measurableSet_closedBall]
+            exact mul_le_mul_right hlt.le _
+        _ ≤ _ := le_add_self
+    · -- (1) fails at some `ρ`: `μ_W(B_ρ(y)) ≤ ε⁻¹ ‖δW‖(B_ρ(y))`.
+      push Not at h1
+      obtain ⟨ρ, hρ0, hρ1, hlt⟩ := h1
+      refine ⟨ρ, hρ0, hρ1.le, hsub ρ hρ1, ?_⟩
+      rw [one_mul, hν]
+      calc W.weight (closedBall y ρ)
+          = ENNReal.ofReal (1 / ε) * (ENNReal.ofReal ε * W.weight (closedBall y ρ)) := by
+            rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), one_div_mul_cancel hε0.ne',
+              ENNReal.ofReal_one, one_mul]
+        _ ≤ ENNReal.ofReal (1 / ε) * variationMeasure W (closedBall y ρ) :=
+            mul_le_mul_right hlt.le _
+        _ ≤ _ := le_self_add
+  · -- `ν(B°_3(0)) ≤ ε⁻¹ ε² + e Λ ε⁻¹ ε² = (e Λ + 1) ε`.
+    have hτ3 : τ (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal (ε ^ 2) :=
+      (hτ _ measurableSet_ball).trans_le hT.le
+    rw [mul_one, hν]
+    calc (C : ℝ≥0∞) * (ENNReal.ofReal (1 / ε) * variationMeasure W (ball (0 : Euclidean N) 3) +
+          ENNReal.ofReal (Real.exp 1 * Λ / ε) * τ (ball (0 : Euclidean N) 3))
+        ≤ C * (ENNReal.ofReal (1 / ε) * ENNReal.ofReal (ε ^ 2) +
+          ENNReal.ofReal (Real.exp 1 * Λ / ε) * ENNReal.ofReal (ε ^ 2)) :=
+          mul_le_mul_right (add_le_add (mul_le_mul_right hδ.le _) (mul_le_mul_right hτ3 _)) _
+      _ = ENNReal.ofReal (C * (Real.exp 1 * Λ + 1) * ε) := by
+          rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+            ← ENNReal.ofReal_add (by positivity) (by positivity), ← ENNReal.ofReal_natCast,
+            ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
+          congr 1
+          field_simp
+          ring
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
