@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "51188dadbe5974df3baed274f770795aa262ee721507a592587b10aa7b740a12",
+  "git_delta": {
+    "base_commit": "2ec8fe382be0d908eebe99a9c608a2fc2d8d2b6b",
+    "candidate_commit": "c4455a4b7d828e9dec75e6ae248ab4de90308bb5",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "variation_deformation_mixed_partial",
+    "diff_sha256": "fd0a92081963f778f0bd8538b43d742052a0fd56f207fd59b9e14a01da35ea39",
+    "source_sha256": "a40c64512e1a8cb6130218b2da9bc2c730831edf93a14e3f6bce5bf15b90b14b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.variation_deformation_mixed_partial",
+      "statement": "∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (t : ℝ) (y : Rn N), ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ Φ p.1 p.2) (t, y) → HasDerivAt (fun s ↦ fderiv ℝ (Φ s) y) (fderiv ℝ (fun x ↦ deriv (fun s ↦ Φ s x) t) y) t",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
