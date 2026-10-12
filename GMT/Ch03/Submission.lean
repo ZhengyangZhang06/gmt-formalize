@@ -409,6 +409,55 @@ theorem Submission.bf_coneMass_slab_cover : ∀ (N : ℕ) (P : Rn N →L[ℝ] Rn
     have h4 := mul_lt_mul_of_pos_left (show h / 4 < ‖z - x‖ by linarith) hs
     show ‖P (z - x)‖ < s * ‖z - x‖
     linarith
+/-- **Packing disjoint balls centred in an `n`-plane** (Mattila, Lemma 15.14; used in the proof of
+Simon Ch. 3, Theorem 3.6). Let `W ⊆ ℝᴺ` be a subspace with `dim W = n` and let `B(w i, ρ i)`,
+`i ∈ T` (`T` countable), be pairwise disjoint open balls with `w i ∈ W`, `ρ i > 0`, contained in
+`B(w₀, R)` with `w₀ ∈ W`. Then `∑_{i ∈ T} ρ iⁿ ≤ Rⁿ`. The inclusion `W → ℝᴺ` is an isometry and
+`μHE[n]` on `W` is an additive Haar measure, so `Hⁿ(W ∩ B(v, r)) = rⁿ ω` for `v ∈ W`, `r > 0`,
+with `0 < ω < ∞`; countable additivity on the disjoint Borel pieces `W ∩ B(w i, ρ i)` gives
+`ω ∑ ρ iⁿ ≤ ω Rⁿ`, and `ω` cancels. -/
+theorem Submission.bf_coneMass_subspace_ball_packing : ∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → ∀ (ι : Type) (T : Set ι) (w : ι → Rn N) (ρ : ι → ℝ) (w₀ : Rn N) (R : ℝ), T.Countable → (∀ i ∈ T, w i ∈ W) → w₀ ∈ W → (∀ i ∈ T, 0 < ρ i) → T.PairwiseDisjoint (fun i ↦ Metric.ball (w i) (ρ i)) → (∀ i ∈ T, Metric.ball (w i) (ρ i) ⊆ Metric.ball w₀ R) → ∑' i : T, ENNReal.ofReal (ρ i ^ n) ≤ ENNReal.ofReal (R ^ n) := by
+  intro n N W hW ι T w ρ w₀ R hTc hwW hw₀ hρ hdisj hsub
+  -- Step 1: if `T = ∅` the sum vanishes; otherwise a nonempty ball inside `B(w₀, R)` forces `R > 0`.
+  rcases T.eq_empty_or_nonempty with hT | ⟨i₀, hi₀⟩
+  · subst hT; simp
+  have hR : 0 < R :=
+    dist_nonneg.trans_lt (hsub i₀ hi₀ (Metric.mem_ball_self (hρ i₀ hi₀)))
+  -- Steps 2–3: `Hⁿ(W ∩ B(v, r)) = ofReal (rⁿ) * ω` for `v ∈ W`, `r > 0`, with `0 < ω < ∞`.
+  obtain ⟨ω, hω0, hωtop, hball⟩ : ∃ ω : ℝ≥0∞, ω ≠ 0 ∧ ω ≠ ⊤ ∧ ∀ v ∈ W, ∀ r : ℝ, 0 < r →
+      μHE[n] ((W : Set (Rn N)) ∩ Metric.ball v r) = ENNReal.ofReal (r ^ n) * ω := by
+    subst hW
+    refine ⟨(μHE[finrank ℝ W] : Measure W) (Metric.ball 0 1),
+      (Metric.measure_ball_pos _ _ one_pos).ne', measure_ball_lt_top.ne, fun v hv r hr ↦ ?_⟩
+    -- The ambient piece `W ∩ B(v, r)` is the image of the intrinsic ball `B_W(v, r)`.
+    have himg : (W : Set (Rn N)) ∩ Metric.ball v r =
+        (Subtype.val : W → Rn N) '' Metric.ball (⟨v, hv⟩ : W) r := by
+      ext z
+      constructor
+      · rintro ⟨hzW, hz⟩
+        exact ⟨⟨z, hzW⟩, by simpa [Metric.mem_ball, Subtype.dist_eq] using hz, rfl⟩
+      · rintro ⟨⟨z, hzW⟩, hz, rfl⟩
+        exact ⟨hzW, by simpa [Metric.mem_ball, Subtype.dist_eq] using hz⟩
+    rw [himg, isometry_subtype_coe.euclideanHausdorffMeasure_image,
+      Measure.addHaar_ball_of_pos _ _ hr]
+  -- Steps 4–5: the pieces `W ∩ B(w i, ρ i)` are disjoint Borel subsets of `W ∩ B(w₀, R)`.
+  have hWclosed : IsClosed (W : Set (Rn N)) := Submodule.closed_of_finiteDimensional W
+  have key : (∑' i : T, ENNReal.ofReal (ρ i ^ n)) * ω ≤ ENNReal.ofReal (R ^ n) * ω := by
+    rw [← ENNReal.tsum_mul_right]
+    calc ∑' i : T, ENNReal.ofReal (ρ i ^ n) * ω
+        = ∑' i : T, μHE[n] ((W : Set (Rn N)) ∩ Metric.ball (w i) (ρ i)) := by
+          congr 1; ext i; rw [hball _ (hwW i i.2) _ (hρ i i.2)]
+      _ = μHE[n] (⋃ i ∈ T, (W : Set (Rn N)) ∩ Metric.ball (w i) (ρ i)) := by
+          rw [measure_biUnion hTc]
+          · intro i hi j hj hij
+            exact Disjoint.mono inter_subset_right inter_subset_right (hdisj hi hj hij)
+          · intro i _
+            exact hWclosed.measurableSet.inter measurableSet_ball
+      _ ≤ μHE[n] ((W : Set (Rn N)) ∩ Metric.ball w₀ R) :=
+          measure_mono (iUnion₂_subset fun i hi ↦ inter_subset_inter_right _ (hsub i hi))
+      _ = ENNReal.ofReal (R ^ n) * ω := hball w₀ hw₀ R hR
+  -- Step 6: cancel `ω ∈ (0, ∞)`.
+  exact (ENNReal.mul_le_mul_iff_left hω0 hωtop).1 key
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
