@@ -523,13 +523,13 @@ theorem Submission.ts_pdb_density_point_rescaled_limit : ∀ (n ℓ : ℕ) (C : 
   obtain ⟨K, -, hK⟩ := (A : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] Ambient n ℓ).exists_antilipschitzWith
     (LinearMap.ker_eq_bot.2 hAinj)
   have hKu : ∀ u, ‖u‖ ≤ K * ‖A u‖ := fun u ↦ by simpa using hK.le_mul_dist u 0
-  set R' : ℝ := R * (c⁻¹ + K) with hR'def
+  set R' : ℝ := R * (c⁻¹ + K) with hR'eq
   have hR' : 0 < R' := by positivity
   have hcR' : R ≤ c * R' := by
-    have h : c * R' = R + c * R * K := by rw [hR'def]; field_simp
+    have h : c * R' = R + c * R * K := by rw [hR'eq]; field_simp
     nlinarith [mul_nonneg (mul_nonneg hc.le hR.le) (NNReal.coe_nonneg K)]
   have hKR' : K * R ≤ R' := by
-    have h : R' = R * c⁻¹ + K * R := by rw [hR'def]; ring
+    have h : R' = R * c⁻¹ + K * R := by rw [hR'eq]; ring
     nlinarith [mul_nonneg hR.le (inv_pos.2 hc).le]
   -- Step 2: notation. `G t u = 1_C(w + tu) J(w + tu) f(t⁻¹(F(w + tu) - F(w)))`,
   -- `H u = J(w) f(Au)`.
@@ -594,7 +594,7 @@ theorem Submission.ts_pdb_density_point_rescaled_limit : ∀ (n ℓ : ℕ) (C : 
     set η := δf / (2 * (R' + 1)) with hηdef
     have hη : 0 < η := by positivity
     obtain ⟨δd, hδd, hdδ⟩ := Metric.eventually_nhds_iff.1
-      ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hA).def hη)
+      (Asymptotics.isLittleO_iff.1 (hasFDerivAt_iff_isLittleO_nhds_zero.1 hA) hη)
     refine ⟨min δJ δd / (R' + 1), by positivity, ?_⟩
     intro t ht ht₀ u hu hmem
     have htu : ‖t • u‖ < min δJ δd := by
