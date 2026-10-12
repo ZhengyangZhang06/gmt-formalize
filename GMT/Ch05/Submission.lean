@@ -501,6 +501,101 @@ theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f 
   refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
   simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
     one_smul, add_sub_cancel]
+/-- **Blow-up test integrals versus normalized ball mass** (Simon Ch. 3, Remark 1.8(2)).  For
+`η = η_{x,r}`, a Borel cut-off `0 ≤ φ ≤ 1` vanishing off `B_R(0)` with `B_{rR}(x) ⊆ U`, the blow-up
+integral `I = ∫_{η(M)} φ(y) θ(x + r y) dHⁿ(y)` is nonnegative, and it bounds
+`J = r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ` from above if `φ = 1` on `B_1(0)` and from below if `φ = 0` off
+`B_1(0)`. -/
+theorem rsod_blowUp_integral_ballMass_bounds : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r R : ℝ) (φ : Amb n ℓ → ℝ), 0 < r → 1 ≤ R →
+    closedBall x (r * R) ⊆ U → Measurable φ → (∀ y, 0 ≤ φ y ∧ φ y ≤ 1) →
+    (∀ y, y ∉ closedBall (0 : Amb n ℓ) R → φ y = 0) →
+    0 ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+        φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ∧
+    ((∀ y ∈ closedBall (0 : Amb n ℓ) 1, φ y = 1) →
+      (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)) ≤
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+          φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) ∧
+    ((∀ y, y ∉ closedBall (0 : Amb n ℓ) 1 → φ y = 0) →
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+          φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ≤
+        (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) := by
+  intro n ℓ U V x r R φ hr hR hball hφm hφ01 hφsupp
+  -- Step 1: change of variables, `I = r⁻ⁿ ∫_M φ(η z) θ(z) dHⁿ(z)`.
+  rw [Submission.rsod_blowUp_setIntegral_eq n ℓ V.carrier φ V.mult x r hr]
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r with hη
+  have hrpos : 0 ≤ (r ^ n)⁻¹ := inv_nonneg.mpr (pow_nonneg hr.le n)
+  -- Step 2: `η z ∈ B_s(0) ↔ z ∈ B_{rs}(x)`.
+  have hmem : ∀ z : Amb n ℓ, ∀ s : ℝ,
+      η z ∈ closedBall (0 : Amb n ℓ) s ↔ z ∈ closedBall x (r * s) := by
+    intro z s
+    simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, mem_closedBall, dist_eq_norm,
+      sub_zero, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr)]
+    rw [← div_eq_inv_mul, div_le_iff₀ hr, mul_comm s r]
+  -- Step 3: `θ` is integrable on `M ∩ B_{rR}(x)` and on `M ∩ B_r(x)`, compact subsets of `U`.
+  have hballr : closedBall x r ⊆ U :=
+    (closedBall_subset_closedBall (le_mul_of_one_le_right hr.le hR)).trans hball
+  have hintR : IntegrableOn V.mult (V.carrier ∩ closedBall x (r * R)) μ :=
+    V.integrableOn_mult _ (isCompact_closedBall _ _) hball
+  have hintr : IntegrableOn V.mult (V.carrier ∩ closedBall x r) μ :=
+    V.integrableOn_mult _ (isCompact_closedBall _ _) hballr
+  have hind : IntegrableOn ((closedBall x r).indicator V.mult) V.carrier μ := by
+    rw [IntegrableOn, integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact hintr
+  -- Step 4: `h = (φ ∘ η) θ` is integrable on `M`, being dominated by `1_{B_{rR}(x)} θ`.
+  have hηm : Measurable η := by
+    rw [hη]
+    unfold Poincare.SimonGMT.Chapter03.blowUpMap
+    fun_prop
+  have hh : IntegrableOn (fun z => φ (η z) * V.mult z) V.carrier μ := by
+    have hg : Integrable ((closedBall x (r * R)).indicator V.mult) (μ.restrict V.carrier) := by
+      rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact hintR
+    refine hg.mono ((hφm.comp hηm).aestronglyMeasurable.mul
+      V.aemeasurable_mult.aestronglyMeasurable) (Eventually.of_forall fun z => ?_)
+    by_cases hz : z ∈ closedBall x (r * R)
+    · rw [indicator_of_mem hz, norm_mul]
+      have h1 : ‖φ (η z)‖ ≤ 1 := by
+        rw [Real.norm_of_nonneg (hφ01 _).1]
+        exact (hφ01 _).2
+      calc ‖φ (η z)‖ * ‖V.mult z‖ ≤ 1 * ‖V.mult z‖ :=
+            mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
+        _ = ‖V.mult z‖ := one_mul _
+    · rw [indicator_of_notMem hz, hφsupp _ fun h => hz ((hmem z R).1 h), zero_mul, norm_zero]
+  -- Step 5: `ν = Hⁿ ⌞ M`-a.e. point lies in `M`, where `θ > 0`.
+  have hae : ∀ᵐ z ∂(μ.restrict V.carrier), z ∈ V.carrier :=
+    ae_restrict_mem₀ V.nullMeasurableSet_carrier
+  -- Step 7: `J = r⁻ⁿ ∫_M 1_{B_r(x)} θ dHⁿ`.
+  have hJ : ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂μ =
+      ∫ z in V.carrier, (closedBall x r).indicator V.mult z ∂μ :=
+    (setIntegral_indicator measurableSet_closedBall).symm
+  refine ⟨?_, ?_, ?_⟩
+  · -- Step 6, (a): `h ≥ 0` a.e. on `M`.
+    refine mul_nonneg hrpos (setIntegral_nonneg_of_ae_restrict ?_)
+    filter_upwards [hae] with z hz
+    exact mul_nonneg (hφ01 _).1 (V.mult_pos z hz).le
+  · -- Step 8, (b): `1_{B_r(x)} θ ≤ h` a.e. on `M` when `φ = 1` on `B_1(0)`.
+    intro hφ1
+    rw [hJ]
+    refine mul_le_mul_of_nonneg_left (setIntegral_mono_ae_restrict hind hh ?_) hrpos
+    filter_upwards [hae] with z hz
+    by_cases hzB : z ∈ closedBall x r
+    · rw [indicator_of_mem hzB, hφ1 _ ((hmem z 1).2 (by rwa [mul_one])), one_mul]
+    · rw [indicator_of_notMem hzB]
+      exact mul_nonneg (hφ01 _).1 (V.mult_pos z hz).le
+  · -- Step 9, (c): `h ≤ 1_{B_r(x)} θ` a.e. on `M` when `φ = 0` off `B_1(0)`.
+    intro hφ0
+    rw [hJ]
+    refine mul_le_mul_of_nonneg_left (setIntegral_mono_ae_restrict hh hind ?_) hrpos
+    filter_upwards [hae] with z hz
+    by_cases hzB : z ∈ closedBall x r
+    · rw [indicator_of_mem hzB]
+      exact mul_le_of_le_one_left (V.mult_pos z hz).le (hφ01 _).2
+    · rw [indicator_of_notMem hzB,
+        hφ0 _ fun h => hzB (by simpa only [mul_one] using (hmem z 1).1 h), zero_mul]
 
 end Submission
 
