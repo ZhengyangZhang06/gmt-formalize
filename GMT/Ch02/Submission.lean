@@ -462,6 +462,111 @@ theorem Submission.bv_abs_variation_smoothed_abs : ∀ (n : ℕ) (w : Rn n → �
     constructor
     · linarith [hlow (w x)]
     · linarith [hup (w x)]
+/-- **Integration by parts against a compactly supported Lipschitz vector field.** For `F ∈ C¹(ℝⁿ)`
+and a `K`-Lipschitz `g : ℝⁿ → ℝⁿ` with compact support, `∫ F div g = -∫ DF(x)[g(x)] dx`, where
+`div g = trace Dg` and `Dg = fderiv ℝ g` (which is `0` where `g` is not differentiable). This is the
+Fubini / absolute-continuity-on-lines step of Simon's proof of Rademacher's theorem (Ch. 2, 1.4).
+`F` is replaced by `χF` for a smooth bump `χ` equal to `1` near `spt g`; Mathlib's
+`LipschitzWith.integral_lineDeriv_mul_eq` is applied to each coordinate `⟨eᵢ, g⟩`; the line
+derivatives are identified with `fderiv` (everywhere for `χF`, a.e. for `g` by Rademacher's
+theorem); and the identities are summed over the standard orthonormal basis `(eᵢ)`. -/
+theorem Submission.bv_lipschitz_integration_by_parts : ∀ (n : ℕ) (F : Rn n → ℝ) (g : Rn n → Rn n) (K : ℝ≥0), ContDiff ℝ 1 F → LipschitzWith K g → HasCompactSupport g → ∫ x, F x * Chapter02.euclideanDivergence g x = -∫ x, fderiv ℝ F x (g x) := by
+  intro n F g K hF hg hgc
+  -- Step 3 (cut-off): `G = χF`, with `χ` a smooth bump equal to `1` on a ball `U ⊇ tsupport g`,
+  -- is `C¹` with compact support and equals `F` on the open set `U`.
+  obtain ⟨G, hG, hGc, U, hU, hSU, hEq⟩ : ∃ G : Rn n → ℝ, ContDiff ℝ 1 G ∧ HasCompactSupport G ∧
+      ∃ U : Set (Rn n), IsOpen U ∧ tsupport g ⊆ U ∧ EqOn G F U := by
+    obtain ⟨R, hR⟩ := hgc.isCompact.isBounded.subset_ball (0 : Rn n)
+    let χ : ContDiffBump (0 : Rn n) :=
+      ⟨max R 1, max R 1 + 1, lt_of_lt_of_le one_pos (le_max_right _ _), lt_add_one _⟩
+    refine ⟨fun x ↦ χ x * F x, χ.contDiff.mul hF, χ.hasCompactSupport.mul_right,
+      ball 0 (max R 1), isOpen_ball, hR.trans (ball_subset_ball (le_max_left _ _)), fun x hx ↦ ?_⟩
+    simp [χ.one_of_mem_closedBall (ball_subset_closedBall hx)]
+  -- `G` is Lipschitz (`C¹` with compact support) and differentiable everywhere.
+  obtain ⟨L, hL⟩ := hG.lipschitzWith_of_hasCompactSupport hGc one_ne_zero
+  have hGd : Differentiable ℝ G := hG.differentiable one_ne_zero
+  -- The coordinates `gᵢ = ⟨eᵢ, g⟩` in the standard orthonormal basis `(eᵢ)` are `K`-Lipschitz
+  -- with compact support.
+  let b := EuclideanSpace.basisFun (Fin n) ℝ
+  let gi : Fin n → Rn n → ℝ := fun i x ↦ inner ℝ (b i) (g x)
+  have hgi_lip : ∀ i, LipschitzWith K (gi i) := fun i ↦ by
+    have h1 : LipschitzWith 1 (fun y : Rn n ↦ inner ℝ (b i) y) :=
+      LipschitzWith.of_dist_le_mul fun y z ↦ by
+        rw [dist_eq_norm, dist_eq_norm, ← inner_sub_right]
+        simpa [b.norm_eq_one] using norm_inner_le_norm (𝕜 := ℝ) (b i) (y - z)
+    have h2 := h1.comp hg
+    rw [one_mul] at h2
+    exact h2
+  have hgi_c : ∀ i, HasCompactSupport (gi i) := fun i ↦
+    hgc.comp_left (g := fun y : Rn n ↦ inner ℝ (b i) y) (inner_zero_right (b i))
+  -- Steps 4–5: Lipschitz integration by parts for `G` and `gᵢ` in the direction `eᵢ`. Here
+  -- `lineDeriv G x eᵢ = DG(x)[eᵢ]` everywhere, and `lineDeriv gᵢ x (-eᵢ) = -⟨eᵢ, Dg(x)[eᵢ]⟩` at
+  -- every point where `g` is differentiable, i.e. a.e. by Rademacher's theorem.
+  have hcoord : ∀ i, ∫ x, fderiv ℝ G x (b i) * gi i x
+      = -∫ x, inner ℝ (b i) (fderiv ℝ g x (b i)) * G x := fun i ↦ by
+    calc ∫ x, fderiv ℝ G x (b i) * gi i x
+        = ∫ x, lineDeriv ℝ G x (b i) * gi i x := by
+          congr 1
+          funext x
+          rw [(hGd x).lineDeriv_eq_fderiv]
+      _ = ∫ x, lineDeriv ℝ (gi i) x (-b i) * G x :=
+          hL.integral_lineDeriv_mul_eq (hgi_lip i) (hgi_c i) (b i)
+      _ = ∫ x, -(inner ℝ (b i) (fderiv ℝ g x (b i)) * G x) := by
+          refine integral_congr_ae ?_
+          filter_upwards [hg.ae_differentiableAt (μ := volume)] with x hx
+          have hd : HasFDerivAt (gi i) ((innerSL ℝ (b i)).comp (fderiv ℝ g x)) x :=
+            (innerSL ℝ (b i)).hasFDerivAt.comp x hx.hasFDerivAt
+          rw [hd.differentiableAt.lineDeriv_eq_fderiv, hd.fderiv]
+          simp
+      _ = -∫ x, inner ℝ (b i) (fderiv ℝ g x (b i)) * G x := integral_neg _
+  -- The summands are integrable: the first is continuous with compact support; the second is
+  -- measurable, bounded by `K` (as `‖Dg(x)‖ ≤ K`) and multiplied by the integrable `G`.
+  have hint1 : ∀ i, Integrable (fun x ↦ fderiv ℝ G x (b i) * gi i x) := fun i ↦
+    Continuous.integrable_of_hasCompactSupport
+      (((hG.continuous_fderiv one_ne_zero).clm_apply continuous_const).mul
+        (continuous_const.inner hg.continuous)) (hgi_c i).mul_left
+  have hint2 : ∀ i, Integrable (fun x ↦ inner ℝ (b i) (fderiv ℝ g x (b i)) * G x) := fun i ↦ by
+    refine (hG.continuous.integrable_of_hasCompactSupport hGc).bdd_mul (c := K)
+      (measurable_const.inner (measurable_fderiv_apply_const ℝ g (b i))).aestronglyMeasurable
+      (Eventually.of_forall fun x ↦ ?_)
+    calc ‖inner ℝ (b i) (fderiv ℝ g x (b i))‖ ≤ ‖b i‖ * ‖fderiv ℝ g x (b i)‖ :=
+          norm_inner_le_norm _ _
+      _ ≤ ‖b i‖ * (‖fderiv ℝ g x‖ * ‖b i‖) :=
+          mul_le_mul_of_nonneg_left (ContinuousLinearMap.le_opNorm _ _) (norm_nonneg _)
+      _ ≤ K := by
+          simpa only [b.norm_eq_one, one_mul, mul_one] using
+            norm_fderiv_le_of_lipschitz ℝ hg (x₀ := x)
+  -- Step 6 (summation): `Σᵢ DG(x)[eᵢ] gᵢ(x) = DG(x)[g(x)]` and `Σᵢ ⟨eᵢ, Dg(x) eᵢ⟩ = div g(x)`.
+  have hsum1 : ∀ x, fderiv ℝ G x (g x) = ∑ i, fderiv ℝ G x (b i) * gi i x := fun x ↦ by
+    conv_lhs => rw [← b.sum_repr' (g x)]
+    simp [gi, map_sum, map_smul, smul_eq_mul, mul_comm]
+  have hsum2 : ∀ x, G x * Chapter02.euclideanDivergence g x
+      = ∑ i, inner ℝ (b i) (fderiv ℝ g x (b i)) * G x := fun x ↦ by
+    rw [Chapter02.euclideanDivergence_eq_sum_inner b g x, Finset.mul_sum]
+    simp [mul_comm]
+  have hGibp : ∫ x, G x * Chapter02.euclideanDivergence g x = -∫ x, fderiv ℝ G x (g x) := by
+    simp_rw [hsum1, hsum2]
+    rw [integral_finsetSum _ fun i _ ↦ hint2 i, integral_finsetSum _ fun i _ ↦ hint1 i]
+    simp_rw [hcoord, Finset.sum_neg_distrib, neg_neg]
+  -- Step 7: replacing `G` by `F` changes neither integrand. Off `tsupport g`, `div g` and `g`
+  -- vanish; on it, `G = F` and `DG = DF`, as `G = F` on the open set `U ⊇ tsupport g`.
+  have h1 : ∫ x, F x * Chapter02.euclideanDivergence g x
+      = ∫ x, G x * Chapter02.euclideanDivergence g x := by
+    congr 1
+    funext x
+    by_cases hx : x ∈ tsupport g
+    · rw [hEq (hSU hx)]
+    · have h0 : Chapter02.euclideanDivergence g x = 0 := by
+        by_contra h
+        exact hx (Chapter02.support_euclideanDivergence_subset g h)
+      simp [h0]
+  have h2 : ∫ x, fderiv ℝ F x (g x) = ∫ x, fderiv ℝ G x (g x) := by
+    congr 1
+    funext x
+    by_cases hx : x ∈ tsupport g
+    · rw [(Filter.eventuallyEq_of_mem (hU.mem_nhds (hSU hx)) hEq).fderiv_eq]
+    · simp [image_eq_zero_of_notMem_tsupport hx]
+  rw [h1, h2, hGibp]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
