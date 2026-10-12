@@ -614,6 +614,273 @@ theorem ted_lpm_curvature_holder : ∀ (n ℓ : ℕ) (p : ℝ), 1 < p → ∀ (�
   rw [hq1, mul_assoc]
   exact h
 
+/-- **Simon Ch. 4, 4.1–4.8** (monotonicity with an `Lᵖ` mean-curvature term, `p > n`), for an
+abstract measure `μ` satisfying the radial first-variation inequality (A5) on `B_S(y)`.  With
+`α = 1 − n/p` and the smallness `(R^{p−n} ∫_{B_R(y)} |H|ᵖ dμ)^{1/p} ≤ (p − n)/(4p) Λ`, there is `F`
+with `e^{−Λ} ≤ F ≤ e^Λ`, `|F(r) − 1| ≤ ½ e^{Λ/2} Λ (r/R)^α` (`≤ Λ (r/R)^α` if `Λ ≤ 1`) on `(0, R]`,
+and `r ↦ F(r) μ(B_r(y))/rⁿ + (F(r) − 1)` nondecreasing on `(0, R]`.
+Proof: cutoffs `φ_k → 1_{(-∞, 1]}` (`ted_lpm_am_cutoff_sequence`); the Hölder step
+(`ted_lpm_curvature_holder`) and `ted_lpm_am_coefficient_bound` give `|a_k(t)| ≤ M t^{−n/p}` for the
+coefficients `a_k(t) = L_k(t)/t^{n+1}/(1 + I_k(t)/tⁿ)`, and `ted_lpm_fixed_cutoff_monotone` makes
+`exp(−∫₀^ρ a_k)(1 + I_k(ρ)/ρⁿ)` nondecreasing on `(0, R]`.  Dominated convergence
+(`ted_lpm_am_cutoff_integral_tendsto`) gives `a_k → a₀` pointwise, Hölder with the indicator of
+`B_t(y)` gives `|a₀(t)| ≤ (∫_{B_R(y)} |H|ᵖ dμ)^{1/p} t^{−n/p}`, and
+`ted_lpm_am_integrating_factor_limit` passes to the limit for `F(r) = exp(−∫₀^r a₀)`. -/
+theorem ted_lpm_abstract_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (R S Λ : ℝ), 0 < R → R < S → 0 < Λ → μ (closedBall y S) < ⊤ → IntegrableOn H (closedBall y S) μ → ∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂μ < ⊤ → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → (∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → Antitone φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ < S → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ)) ∂μ ≤ -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → ∃ F : ℝ → ℝ, (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - (n : ℝ) / p) ∧ (Λ ≤ 1 → |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p))) ∧ ∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R → F s * ((μ (closedBall y s)).toReal / s ^ n) + (F s - 1) ≤ F r * ((μ (closedBall y r)).toReal / r ^ n) + (F r - 1) := by
+  intro n ℓ hn p hnp μ H y R S Λ hR hRS hΛ hμS hH hHpS hsmall hrad
+  -- Exponents: `p > 1`, `β = n/p < 1`, `α = 1 - β > 0` and `κ Λ ≥ 0` with `κ = (p - n)/(4p)`.
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp1 : 1 < p := by linarith
+  have hp0 : 0 < p := by linarith
+  have hβ1 : (n : ℝ) / p < 1 := (div_lt_one hp0).mpr hnp
+  have hβpos : 0 < 1 - (n : ℝ) / p := by linarith
+  have hκ : 0 ≤ (p - n) / (4 * p) * Λ :=
+    mul_nonneg (div_nonneg (by linarith) (by linarith)) hΛ.le
+  -- Step 1: `J(t) = ∫⁻_{B_t(y)} |H|ᵖ ≤ J(S) < ∞` for `t ≤ S`, and `N(t) = J(t).toReal ^ (1/p)` is
+  -- nondecreasing on `(-∞, S]`.
+  have hJt : ∀ t, t ≤ S → (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ) < ⊤ := fun t htS =>
+    lt_of_le_of_lt (lintegral_mono_set (closedBall_subset_closedBall htS)) hHpS
+  have hNmono : ∀ t t', t ≤ t' → t' ≤ S →
+      (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤
+        (∫⁻ x in closedBall y t', ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) := by
+    intro t t' htt' ht'S
+    exact Real.rpow_le_rpow ENNReal.toReal_nonneg
+      (ENNReal.toReal_mono (hJt t' ht'S).ne
+        (lintegral_mono_set (closedBall_subset_closedBall htt'))) (by positivity)
+  -- Step 2: with `K = N(R)`, the smallness hypothesis reads `K R^α ≤ κ Λ`, i.e.
+  -- `K R^{1-β}/(1-β) ≤ Λ/4`.
+  obtain ⟨J, hJ⟩ : ∃ J : ℝ≥0∞, J = ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ := ⟨_, rfl⟩
+  have hJne : J ≠ ⊤ := by
+    rw [hJ]
+    exact (hJt R hRS.le).ne
+  obtain ⟨K, hKdef⟩ : ∃ K : ℝ, K = (∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) :=
+    ⟨_, rfl⟩
+  have hKR : K * R ^ (1 - (n : ℝ) / p) ≤ (p - n) / (4 * p) * Λ := by
+    have hRp : 0 < R ^ (p - n) := Real.rpow_pos_of_pos hR _
+    have hp1' : 0 < 1 / p := by positivity
+    have h := hsmall
+    rw [← hJ] at h
+    have hJ' : J = ENNReal.ofReal J.toReal := (ENNReal.ofReal_toReal hJne).symm
+    rw [hJ', ← ENNReal.ofReal_mul hRp.le,
+      ENNReal.ofReal_rpow_of_nonneg (mul_nonneg hRp.le ENNReal.toReal_nonneg) hp1'.le,
+      ENNReal.ofReal_le_ofReal_iff hκ] at h
+    rw [Real.mul_rpow hRp.le ENNReal.toReal_nonneg, ← Real.rpow_mul hR.le] at h
+    have he : (p - n) * (1 / p) = 1 - (n : ℝ) / p := by
+      field_simp
+    rw [he] at h
+    rw [hKdef, ← hJ]
+    linarith
+  have hK0 : 0 ≤ K := by
+    rw [hKdef]
+    exact Real.rpow_nonneg ENNReal.toReal_nonneg _
+  have hKR' : K * R ^ (1 - (n : ℝ) / p) / (1 - (n : ℝ) / p) ≤ Λ / 4 := by
+    rw [div_le_iff₀ hβpos]
+    calc K * R ^ (1 - (n : ℝ) / p) ≤ (p - n) / (4 * p) * Λ := hKR
+      _ = Λ / 4 * (1 - (n : ℝ) / p) := by
+          field_simp
+  obtain ⟨KS, hKSdef⟩ : ∃ KS : ℝ,
+      KS = (∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) := ⟨_, rfl⟩
+  have hKS0 : 0 ≤ KS := by
+    rw [hKSdef]
+    exact Real.rpow_nonneg ENNReal.toReal_nonneg _
+  have hμsub : ∀ t, t ≤ S → μ (closedBall y t) < ⊤ := fun t htS =>
+    lt_of_le_of_lt (measure_mono (closedBall_subset_closedBall htS)) hμS
+  have hHsub : ∀ t, t ≤ S → IntegrableOn H (closedBall y t) μ := fun t htS =>
+    hH.mono_set (closedBall_subset_closedBall htS)
+  -- Step 4: the cutoffs `φ k`, with `ε₁ = (S - R)/(2R)`, so that `(1 + ε k) R ≤ (1 + ε₁) R < S`.
+  obtain ⟨ε₁, hε₁def⟩ : ∃ ε₁ : ℝ, ε₁ = (S - R) / (2 * R) := ⟨_, rfl⟩
+  have hε₁pos : 0 < ε₁ := by
+    rw [hε₁def]
+    exact div_pos (by linarith) (by linarith)
+  have hε₁R : (1 + ε₁) * R < S := by
+    have h : (1 + ε₁) * R = (R + S) / 2 := by
+      rw [hε₁def]
+      field_simp
+      ring
+    rw [h]
+    linarith
+  obtain ⟨φ, ε, hε, -, hφC, hφanti, hφ01, hφone, hφzero, hφev⟩ :=
+    ted_lpm_am_cutoff_sequence ε₁ hε₁pos
+  have hφc : ∀ k, Continuous (φ k) := fun k => (hφC k).continuous
+  have hφzero₁ : ∀ k s, 1 + ε₁ ≤ s → φ k s = 0 := fun k s hs =>
+    hφzero k s (le_trans (by linarith [(hε k).2]) hs)
+  have hεR : ∀ k, (1 + ε k) * R < S := fun k =>
+    lt_of_le_of_lt (mul_le_mul_of_nonneg_right (by linarith [(hε k).2]) hR.le) hε₁R
+  -- Step 5: the cutoff quantities `I k t`, `L k t` and the coefficients `a k t`.
+  obtain ⟨I, hI⟩ : ∃ I : ℕ → ℝ → ℝ, ∀ k t, I k t = ∫ x, φ k (‖x - y‖ / t) ∂μ :=
+    ⟨fun k t => ∫ x, φ k (‖x - y‖ / t) ∂μ, fun _ _ => rfl⟩
+  obtain ⟨L, hL⟩ : ∃ L : ℕ → ℝ → ℝ,
+      ∀ k t, L k t = ∫ x, φ k (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ :=
+    ⟨fun k t => ∫ x, φ k (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ, fun _ _ => rfl⟩
+  obtain ⟨a, ha⟩ : ∃ a : ℕ → ℝ → ℝ, ∀ k t, a k t = L k t / t ^ (n + 1) / (1 + I k t / t ^ n) :=
+    ⟨fun k t => L k t / t ^ (n + 1) / (1 + I k t / t ^ n), fun _ _ => rfl⟩
+  have hInn : ∀ k t, 0 ≤ I k t := fun k t => by
+    rw [hI]
+    exact integral_nonneg fun x => (hφ01 k _).1
+  -- Step 6: Hölder at radius `(1 + ε k) t` and the coefficient bound give
+  -- `|a k t| ≤ M t^{-β}` with `M = (1 + ε₁) N(S)`, uniformly in `k`.
+  have hab : ∀ k t, 0 < t → (1 + ε k) * t < S →
+      |a k t| ≤ (1 + ε₁) * KS * t ^ (-((n : ℝ) / p)) := by
+    intro k t ht htS
+    have hεk := hε k
+    have ht' : 0 ≤ (1 + ε k) * t := by
+      have : 0 < 1 + ε k := by linarith
+      positivity
+    have hhol := ted_lpm_curvature_holder n ℓ p hp1 μ H
+      (fun x => φ k (‖x - y‖ / t)) y ((1 + ε k) * t) ht' (hμsub _ htS.le) (hHsub _ htS.le)
+      (hJt _ htS.le)
+      ((hφc k).comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / t)).aestronglyMeasurable
+      (fun x => hφ01 k _) (fun x hx => hφzero k _ (by
+        rw [le_div_iff₀ ht]
+        exact hx.le))
+    have hN : (∫⁻ x in closedBall y ((1 + ε k) * t), ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤ KS := by
+      rw [hKSdef]
+      exact hNmono _ S htS.le le_rfl
+    have hNn : 0 ≤ (∫⁻ x in closedBall y ((1 + ε k) * t), ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) :=
+      Real.rpow_nonneg ENNReal.toReal_nonneg _
+    have hIp : 0 ≤ I k t ^ (1 - 1 / p) := Real.rpow_nonneg (hInn k t) _
+    have hLb : |L k t| ≤ t * ((1 + ε₁) * KS) * I k t ^ (1 - 1 / p) := by
+      rw [hL]
+      rw [← hI] at hhol
+      refine hhol.trans ?_
+      apply mul_le_mul_of_nonneg_right _ hIp
+      have h2 : 1 + ε k ≤ 1 + ε₁ := by linarith
+      have h3 := mul_le_mul h2 hN hNn (by linarith)
+      nlinarith
+    rw [ha]
+    exact Submission.ted_lpm_am_coefficient_bound n p t ((1 + ε₁) * KS) (I k t) (L k t) hp1 ht
+      (by positivity) (hInn k t) hLb
+  -- Step 7: for each `k`, `a k` is continuous and `Ψ_k(ρ) = exp(-∫₀^ρ a k)(1 + I k ρ/ρⁿ)` is
+  -- nondecreasing on `(0, S/(1 + ε k)) ⊇ (0, R]`.
+  have hfix : ∀ k, ContinuousOn (a k) (Ioo 0 (S / (1 + ε k))) ∧
+      MonotoneOn (fun ρ => Real.exp (-∫ t in (0)..ρ, a k t) * (1 + I k ρ / ρ ^ n))
+        (Ioo 0 (S / (1 + ε k))) := fun k =>
+    Submission.ted_lpm_fixed_cutoff_monotone n ℓ μ H y (φ k) (I k) (a k) (1 + ε k) S
+      ((1 + ε₁) * KS) ((n : ℝ) / p) (by linarith [(hε k).1]) hβ1 hμS hH (hφC k) (hφanti k)
+      (hφzero k)
+      (fun ρ hρ hρS => hrad (φ k) (1 + ε k) ρ (hφC k) (hφanti k) (hφone k) (hφzero k) hρ hρS)
+      (hI k) (fun t => by rw [ha, hL]) (hab k)
+  have hsub : ∀ k, Ioc (0 : ℝ) R ⊆ Ioo 0 (S / (1 + ε k)) := by
+    intro k t ht
+    have h1 : 0 < 1 + ε k := by linarith [(hε k).1]
+    refine ⟨ht.1, ?_⟩
+    rw [lt_div_iff₀ h1]
+    have := mul_le_mul_of_nonneg_left ht.2 h1.le
+    nlinarith [hεR k]
+  have hameas : ∀ k, AEStronglyMeasurable (a k) (volume.restrict (Ioc 0 R)) := fun k =>
+    ((hfix k).1.mono (hsub k)).aestronglyMeasurable measurableSet_Ioc
+  have hmono : ∀ k s r, 0 < s → s ≤ r → r ≤ R →
+      Real.exp (-∫ t in (0)..s, a k t) * (1 + I k s / s ^ n) ≤
+        Real.exp (-∫ t in (0)..r, a k t) * (1 + I k r / r ^ n) := by
+    intro k s r hs hsr hrR
+    exact (hfix k).2 (hsub k ⟨hs, hsr.trans hrR⟩) (hsub k ⟨hs.trans_le hsr, hrR⟩) hsr
+  have hab' : ∀ k t, 0 < t → t ≤ R → |a k t| ≤ (1 + ε₁) * KS * t ^ (-((n : ℝ) / p)) := by
+    intro k t ht htR
+    exact hab k t ht (lt_of_le_of_lt (mul_le_mul_of_nonneg_left htR (by linarith [(hε k).1]))
+      (hεR k))
+  -- Step 8: dominated convergence on `B_S(y)` gives `I k t → μ(B_t(y))`,
+  -- `L k t → ∫_{B_t(y)} (x - y)·H` and hence `a k t → a₀ t` for `t ∈ (0, R]`.
+  have hgint : IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y S) μ := by
+    refine Integrable.mono' (hH.norm.const_mul S) ?_ ?_
+    · exact continuous_inner.comp_aestronglyMeasurable
+        ((by fun_prop : Continuous fun x : Amb n ℓ => x - y).aestronglyMeasurable.prodMk
+          hH.aestronglyMeasurable)
+    · rw [ae_restrict_iff' measurableSet_closedBall]
+      refine Eventually.of_forall fun x hx => ?_
+      have hxS : ‖x - y‖ ≤ S := by simpa [mem_closedBall, dist_eq_norm] using hx
+      calc ‖(inner ℝ (x - y) (H x) : ℝ)‖ ≤ ‖x - y‖ * ‖H x‖ := norm_inner_le_norm _ _
+        _ ≤ S * ‖H x‖ := mul_le_mul_of_nonneg_right hxS (norm_nonneg _)
+  have h1int : IntegrableOn (fun _ => (1 : ℝ)) (closedBall y S) μ :=
+    integrableOn_const hμS.ne
+  have hIlim : ∀ t, 0 < t → t ≤ R →
+      Tendsto (fun k => I k t) atTop (𝓝 ((μ (closedBall y t)).toReal)) := by
+    intro t ht htR
+    have h := Submission.ted_lpm_am_cutoff_integral_tendsto n ℓ μ (fun _ => (1 : ℝ)) y φ S
+      (1 + ε₁) t ht (by linarith)
+      (lt_of_le_of_lt (mul_le_mul_of_nonneg_left htR (by linarith)) hε₁R).le
+      h1int hφc hφ01 hφone hφzero₁ hφev
+    simp only [mul_one] at h
+    rw [setIntegral_const, smul_eq_mul, mul_one, Measure.real_def] at h
+    exact h.congr fun k => (hI k t).symm
+  have hLlim : ∀ t, 0 < t → t ≤ R →
+      Tendsto (fun k => L k t) atTop (𝓝 (∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ)) := by
+    intro t ht htR
+    have h := Submission.ted_lpm_am_cutoff_integral_tendsto n ℓ μ
+      (fun x => inner ℝ (x - y) (H x)) y φ S (1 + ε₁) t ht (by linarith)
+      (lt_of_le_of_lt (mul_le_mul_of_nonneg_left htR (by linarith)) hε₁R).le
+      hgint hφc hφ01 hφone hφzero₁ hφev
+    exact h.congr fun k => (hL k t).symm
+  obtain ⟨a₀, ha₀⟩ : ∃ a₀ : ℝ → ℝ, ∀ t, a₀ t =
+      (∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ) / t ^ (n + 1) /
+        (1 + (μ (closedBall y t)).toReal / t ^ n) := ⟨_, fun _ => rfl⟩
+  have halim : ∀ t, 0 < t → t ≤ R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t)) := by
+    intro t ht htR
+    have hden : 1 + (μ (closedBall y t)).toReal / t ^ n ≠ 0 := by
+      have := div_nonneg (ENNReal.toReal_nonneg (a := μ (closedBall y t))) (pow_pos ht n).le
+      linarith
+    rw [ha₀]
+    have h := ((hLlim t ht htR).div_const (t ^ (n + 1))).div
+      (tendsto_const_nhds.add ((hIlim t ht htR).div_const (t ^ n))) hden
+    exact h.congr fun k => (ha k t).symm
+  -- Step 9: Hölder with the indicator of `B_t(y)` and the coefficient bound give
+  -- `|a₀ t| ≤ K t^{-β}` for `t ∈ (0, R]`.
+  have ha₀b : ∀ t, 0 < t → t ≤ R → |a₀ t| ≤ K * t ^ (-((n : ℝ) / p)) := by
+    intro t ht htR
+    have htS : t ≤ S := by linarith
+    have hhol := ted_lpm_curvature_holder n ℓ p hp1 μ H
+      ((closedBall y t).indicator (fun _ => (1 : ℝ))) y t ht.le (hμsub t htS) (hHsub t htS)
+      (hJt t htS) (aestronglyMeasurable_const.indicator measurableSet_closedBall)
+      (fun x => by
+        by_cases hx : x ∈ closedBall y t
+        · simp [hx]
+        · simp [hx])
+      (fun x hx => by
+        have : x ∉ closedBall y t := by
+          simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+        simp [this])
+    have e1 : ∫ x, (closedBall y t).indicator (fun _ => (1 : ℝ)) x * inner ℝ (x - y) (H x) ∂μ =
+        ∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ := by
+      rw [← integral_indicator measurableSet_closedBall]
+      congr 1
+      funext x
+      by_cases hx : x ∈ closedBall y t
+      · simp [hx]
+      · simp [hx]
+    have e2 : ∫ x, (closedBall y t).indicator (fun _ => (1 : ℝ)) x ∂μ =
+        (μ (closedBall y t)).toReal := by
+      rw [integral_indicator measurableSet_closedBall, setIntegral_const, smul_eq_mul, mul_one,
+        Measure.real_def]
+    rw [e1, e2] at hhol
+    have hN : (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤ K := by
+      rw [hKdef]
+      exact hNmono t R htR hRS.le
+    have hLb : |∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ| ≤
+        t * K * (μ (closedBall y t)).toReal ^ (1 - 1 / p) := by
+      refine hhol.trans ?_
+      apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg ENNReal.toReal_nonneg _)
+      exact mul_le_mul_of_nonneg_left hN ht.le
+    rw [ha₀]
+    exact Submission.ted_lpm_am_coefficient_bound n p t K _ _ hp1 ht hK0 ENNReal.toReal_nonneg hLb
+  -- Steps 10-12: pass to the limit `k → ∞` with `F(r) = exp(-∫₀^r a₀)`; then
+  -- `F(t)(1 + μ(B_t(y))/tⁿ) = F(t) μ(B_t(y))/tⁿ + (F(t) - 1) + 1` gives (ii).
+  have hQlim : ∀ t, 0 < t → t ≤ R → Tendsto (fun k => 1 + I k t / t ^ n) atTop
+      (𝓝 (1 + (μ (closedBall y t)).toReal / t ^ n)) := fun t ht htR =>
+    tendsto_const_nhds.add ((hIlim t ht htR).div_const _)
+  obtain ⟨hi, hii⟩ := Submission.ted_lpm_am_integrating_factor_limit R ((n : ℝ) / p)
+    ((1 + ε₁) * KS) K Λ a a₀ (fun k t => 1 + I k t / t ^ n)
+    (fun t => 1 + (μ (closedBall y t)).toReal / t ^ n)
+    hR hβ1 hΛ hKR' hameas hab' halim ha₀b hQlim hmono
+  refine ⟨fun r => Real.exp (-∫ t in (0)..r, a₀ t), hi, ?_⟩
+  intro s r hs hsr hrR
+  have h := hii s r hs hsr hrR
+  simp only at h ⊢
+  linarith [h, show Real.exp (-∫ t in (0)..s, a₀ t) * (1 + (μ (closedBall y s)).toReal / s ^ n) =
+      Real.exp (-∫ t in (0)..s, a₀ t) * ((μ (closedBall y s)).toReal / s ^ n) +
+        (Real.exp (-∫ t in (0)..s, a₀ t) - 1) + 1 by ring,
+    show Real.exp (-∫ t in (0)..r, a₀ t) * (1 + (μ (closedBall y r)).toReal / r ^ n) =
+      Real.exp (-∫ t in (0)..r, a₀ t) * ((μ (closedBall y r)).toReal / r ^ n) +
+        (Real.exp (-∫ t in (0)..r, a₀ t) - 1) + 1 by ring]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
