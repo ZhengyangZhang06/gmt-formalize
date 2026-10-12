@@ -458,6 +458,46 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, §3 (p. 90) and 4.7 (p. 94)**: the radial cutoffs of the monotonicity argument,
+with `ε ↓ 0`.  There are `C¹` nonincreasing `φ k : ℝ → [0, 1]` with `φ k = 1` on `(-∞, 1]` and
+`φ k = 0` on `[1 + ε k, ∞)`, where `0 < ε k ≤ 1` and `ε k → 0`.
+With `S = Real.smoothTransition` (`C^∞`, monotone, `[0, 1]`-valued, `0` on `(-∞, 0]` and `1` on
+`[1, ∞)`) take `ε k = 1 / (k + 2)` and `φ k u = 1 - S ((u - 1) (k + 2))`: the argument
+`(u - 1) (k + 2)` is `≤ 0` for `u ≤ 1` and `≥ 1` for `u ≥ 1 + ε k`. -/
+theorem allard52_amcl_cutoff_sequence : ∃ (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), (∀ k, 0 < ε k ∧ ε k ≤ 1) ∧ Tendsto ε atTop (𝓝 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, Antitone (φ k)) ∧ (∀ k u, 0 ≤ φ k u ∧ φ k u ≤ 1) ∧ (∀ k u, u ≤ 1 → φ k u = 1) ∧ (∀ k u, 1 + ε k ≤ u → φ k u = 0) := by
+  have hk : ∀ k : ℕ, (0 : ℝ) < (k : ℝ) + 2 := fun k => by positivity
+  refine ⟨fun k u => 1 - Real.smoothTransition ((u - 1) * ((k : ℝ) + 2)),
+    fun k => 1 / ((k : ℝ) + 2), fun k => ⟨by positivity, ?_⟩, ?_, fun k => ?_, fun k u v huv => ?_,
+    fun k u => ⟨?_, ?_⟩, fun k u hu => ?_, fun k u hu => ?_⟩
+  -- (a) `ε k ≤ 1 / 2 ≤ 1`
+  · rw [div_le_one (hk k)]
+    linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+  -- (b) `ε k → 0` since `k + 2 → ∞`
+  · exact tendsto_const_nhds.div_atTop
+      (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+  -- (c) a constant minus `S` composed with an affine map
+  · exact contDiff_const.sub (Real.smoothTransition.contDiff.comp
+      ((contDiff_id.sub contDiff_const).mul contDiff_const))
+  -- (d) `u ≤ v` gives `(u - 1) (k + 2) ≤ (v - 1) (k + 2)`, and `S` is monotone
+  · exact sub_le_sub_left (Real.smoothTransition.monotone
+      (mul_le_mul_of_nonneg_right (sub_le_sub_right huv 1) (hk k).le)) 1
+  -- (e) `0 ≤ S ≤ 1`
+  · exact sub_nonneg.2 (Real.smoothTransition.le_one _)
+  · exact sub_le_self _ (Real.smoothTransition.nonneg _)
+  -- (f) `u ≤ 1` makes the argument `≤ 0`, where `S = 0`
+  · dsimp only
+    rw [Real.smoothTransition.zero_of_nonpos
+      (mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 hu) (hk k).le), sub_zero]
+  -- (g) `u ≥ 1 + ε k` makes the argument `≥ 1`, where `S = 1`
+  · dsimp only at hu ⊢
+    have h1 : 1 / ((k : ℝ) + 2) ≤ u - 1 := by linarith
+    rw [div_le_iff₀ (hk k)] at h1
+    rw [Real.smoothTransition.one_of_one_le h1, sub_self]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
