@@ -538,6 +538,57 @@ theorem Submission.varifold_tangents_rescaled_divergence_bound :
         rw [hr, one_pow, mul_one, mul_one]
     _ = _ := by ring
 
+/-- **Simon Ch. 8, 5.4 (p. 215), varifold tangents are stationary** (child `limit_stationary` of
+`varifold_tangents`): if `V` has locally bounded first variation, `x ∈ U`,
+`γ(ρ) = ρ^{1-n} ‖δV‖(B_ρ(x)) → 0` as `ρ ↓ 0` (5.1) and `C ∈ VarTan(V, x)`, then `C` is stationary.
+For `X ∈ K(ℝ^N;ℝ^N)`, `div_S X` is continuous with compact support, so vague convergence gives
+`I_j = ∫ div_S X dV_{x,t_j} → δC(X)`.  With `spt X ⊆ B°_R(0)`, `|X| ≤ M` and `B_r(x) ⊆ U`, for large
+`j` the rescaled divergence bound (`varifold_tangents_rescaled_divergence_bound`) gives
+`|I_j| ≤ M (R^n / R) γ(t_j R) → 0`, hence `δC(X) = 0`. -/
+theorem Submission.varifold_tangents_limit_stationary :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (C : Varifold N n (univ : Set (Euclidean N))), V.HasLocallyBoundedFirstVariation → x ∈ U → Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → IsVarifoldTangent V x C → C.Stationary := by
+  rintro N n U V x C hV hx h51 ⟨t, ht, ht0, hconv⟩ X
+  -- Step 1: `div_S X ∈ C_c(Gₙ(ℝ^N))`, so `I_j = ∫ div_S X dV_{x,t_j} → δC(X)`.
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+    ⟨⟨fun z ↦ Varifold.tangentialDivergence X z.1 z.2,
+      Varifold.continuous_tangentialDivergence X.contDiff⟩,
+      Varifold.hasCompactSupport_tangentialDivergence X X.compactSupport⟩
+  have hI : Tendsto (fun j ↦ ∫ z, Varifold.tangentialDivergence X z.1 z.2
+      ∂(rescaledMeasure V x (t j))) atTop (𝓝 (C.firstVariation X)) := hconv f
+  -- Step 2: `spt X ⊆ B°_R(0)` with `R > 0`, `|X| ≤ M`, and `B_r(x) ⊆ U` with `r > 0`.
+  obtain ⟨R, hR, hXR⟩ := X.compactSupport.isBounded.subset_ball_lt 0 0
+  obtain ⟨M, hM⟩ := X.compactSupport.exists_bound_of_continuous X.contDiff.continuous
+  obtain ⟨r, hr, hrU⟩ := Metric.nhds_basis_closedBall.mem_iff.1 (V.isOpen_domain.mem_nhds hx)
+  -- Step 3: `t_j R → 0`, so for large `j`, `B_{t_j R}(x) ⊆ U` and `ofReal |I_j| ≤ K γ(t_j R)`.
+  have htR : Tendsto (fun j ↦ t j * R) atTop (𝓝 0) := by
+    simpa using ht0.mul_const R
+  obtain ⟨K, hK, hbound⟩ : ∃ K : ℝ≥0∞, K ≠ ∞ ∧ ∀ᶠ j in atTop,
+      ENNReal.ofReal |∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂(rescaledMeasure V x (t j))| ≤
+        K * (ENNReal.ofReal (t j * R) * variationMeasure V (closedBall x (t j * R)) /
+          ENNReal.ofReal (t j * R) ^ n) := by
+    refine ⟨ENNReal.ofReal M * (ENNReal.ofReal R ^ n / ENNReal.ofReal R),
+      ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+        (ENNReal.div_ne_top (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+          (ENNReal.ofReal_pos.2 hR).ne'), ?_⟩
+    filter_upwards [htR.eventually (eventually_lt_nhds hr)] with j hj
+    exact Submission.varifold_tangents_rescaled_divergence_bound N n U V x (t j) R M X hV (ht j) hR
+      ((closedBall_subset_closedBall hj.le).trans hrU) X.contDiff X.compactSupport hXR hM
+  -- Step 4: `t_j R → 0⁺`, so `K γ(t_j R) → K · 0 = 0` by (5.1); squeeze, then `|I_j| → 0`.
+  have hγ := h51.comp (tendsto_nhdsWithin_iff.2
+    ⟨htR, Eventually.of_forall fun j ↦ mul_pos (ht j) hR⟩)
+  have hKγ := ENNReal.Tendsto.const_mul hγ (Or.inr hK)
+  rw [mul_zero] at hKγ
+  have habs := tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hKγ
+    (Eventually.of_forall fun _ ↦ zero_le) hbound
+  have habs' := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp habs
+  rw [ENNReal.toReal_zero] at habs'
+  have hI0 : Tendsto (fun j ↦ ∫ z, Varifold.tangentialDivergence X z.1 z.2
+      ∂(rescaledMeasure V x (t j))) atTop (𝓝 0) :=
+    squeeze_zero_norm (fun j ↦ (Real.norm_eq_abs _).le)
+      (habs'.congr fun j ↦ ENNReal.toReal_ofReal (abs_nonneg _))
+  -- Step 5: uniqueness of limits in `ℝ`.
+  exact tendsto_nhds_unique hI hI0
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
