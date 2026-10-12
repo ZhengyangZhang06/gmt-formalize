@@ -757,6 +757,51 @@ theorem Submission.mean_curvature_comp_chart_continuousOn : ∀ (n N : ℕ) (M :
   refine (hw.sub (hPψ.clm_apply hw)).congr fun x hx ↦ ?_
   exact Submission.mean_curvature_eq_normalPart_gram_trace n N M (ψ x) (fderiv ℝ ψ x)
     (fderiv ℝ (fderiv ℝ ψ) x) (hψ.injective_fderiv hx) (htan x hx) (hsff x hx)
+/-- **Continuity on a Simon submanifold can be checked in charts.** If `M ⊆ ℝᴺ` is an
+`n`-dimensional `C^r` Simon submanifold and `x ↦ F (ψ x)` is continuous on `V` for every chart
+`(V, W, ψ)` of `M`, then `F` is continuous on `M`. At `y₀ = ψ x₀ ∈ M`, continuity of `F ∘ ψ` at
+`x₀` gives an open `U₀ ∋ x₀` with `F (ψ x) ∈ O` for `x ∈ U₀`. If `closedBall y₀ ε ⊆ W`, relative
+properness makes `K = V ∩ ψ⁻¹(closedBall y₀ ε)` compact, so `C = ψ (K \ U₀)` is compact, hence
+closed, and `y₀ ∉ C` by injectivity of `ψ` on `V`. As `ψ V = W ∩ M`, every `z` in
+`(ball y₀ ε \ C) ∩ M` is `ψ x` with `x ∈ K ∩ U₀`, so `F z ∈ O`. -/
+theorem Submission.simon_submanifold_continuousOn_of_chart_continuousOn : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (X : Type) [TopologicalSpace X] (F : Rn N → X), Chapter02.IsSimonSubmanifold (E := Rn n) r M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (fun x ↦ F (ψ x)) V) → ContinuousOn F M := by
+  intro n N r M X _ F hM hF y₀ hy₀
+  -- Step 2: a chart `(V, W, ψ)` with `y₀ ∈ W`, and `x₀ ∈ V` with `ψ x₀ = y₀`.
+  obtain ⟨V, W, ψ, hy₀W, hψ⟩ := hM.2 y₀ hy₀
+  obtain ⟨x₀, hx₀V, rfl⟩ : y₀ ∈ ψ '' V := by
+    rw [hψ.image_eq]
+    exact ⟨hy₀W, hy₀⟩
+  -- Step 1: it suffices that `F ⁻¹' O ∈ 𝓝[M] (ψ x₀)` for each neighbourhood `O` of `F (ψ x₀)`.
+  rw [ContinuousWithinAt, Filter.tendsto_def]
+  intro O hO
+  -- Step 3: `F ∘ ψ` is continuous at `x₀ ∈ V` (`V` is open), so an open `U₀ ∋ x₀` maps into `O`.
+  have hFψ : ContinuousAt (fun x ↦ F (ψ x)) x₀ :=
+    (hF V W ψ hψ x₀ hx₀V).continuousAt (hψ.isOpen_source.mem_nhds hx₀V)
+  obtain ⟨U₀, hU₀O, hU₀, hx₀U₀⟩ := _root_.mem_nhds_iff.mp (hFψ.preimage_mem_nhds hO)
+  -- Step 4: `Q = closedBall (ψ x₀) ε ⊆ W`; `K = V ∩ ψ ⁻¹' Q` is compact by relative properness,
+  -- so `C = ψ '' (K \ U₀)` is compact, hence closed.
+  obtain ⟨ε, hε, hQW⟩ := nhds_basis_closedBall.mem_iff.mp (hψ.isOpen_target.mem_nhds hy₀W)
+  have hK : IsCompact (V ∩ ψ ⁻¹' closedBall (ψ x₀) ε) :=
+    hψ.isCompact_source_inter_preimage _ (isCompact_closedBall _ _) hQW
+  have hC : IsClosed (ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ x₀) ε) \ U₀)) :=
+    ((hK.diff hU₀).image_of_continuousOn
+      (hψ.contDiffOn.continuousOn.mono fun _ hx ↦ hx.1.1)).isClosed
+  -- Step 5: `ψ x₀ ∉ C`, by injectivity of `ψ` on `V`.
+  have hx₀C : ψ x₀ ∉ ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ x₀) ε) \ U₀) := by
+    rintro ⟨x, ⟨⟨hxV, -⟩, hxU₀⟩, hx⟩
+    exact hxU₀ (hψ.injOn hxV hx₀V hx ▸ hx₀U₀)
+  -- Steps 6–7: `W₀ = ball (ψ x₀) ε \ C` is open and contains `ψ x₀`; every `z ∈ W₀ ∩ M` is
+  -- `ψ x` with `x ∈ K ∩ U₀`, so `F z ∈ O`.
+  refine mem_nhdsWithin.mpr ⟨ball (ψ x₀) ε \ ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ x₀) ε) \ U₀),
+    isOpen_ball.sdiff hC, ⟨mem_ball_self hε, hx₀C⟩, ?_⟩
+  rintro z ⟨⟨hzB, hzC⟩, hzM⟩
+  obtain ⟨x, hxV, rfl⟩ : z ∈ ψ '' V := by
+    rw [hψ.image_eq]
+    exact ⟨hQW (ball_subset_closedBall hzB), hzM⟩
+  have hxU₀ : x ∈ U₀ := by
+    by_contra hxU₀
+    exact hzC ⟨x, ⟨⟨hxV, ball_subset_closedBall hzB⟩, hxU₀⟩, rfl⟩
+  exact hU₀O hxU₀
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
