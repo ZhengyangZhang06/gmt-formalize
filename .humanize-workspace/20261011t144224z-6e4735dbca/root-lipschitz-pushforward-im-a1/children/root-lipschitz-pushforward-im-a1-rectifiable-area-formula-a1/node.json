@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1",
+  "depth": 2,
+  "title": "Area formula on rectifiable sets with J^M f = ‖L_#ξ‖ (Simon Ch. 3, 2.4–2.5)",
+  "statement": "Let U ⊆ ℝ^P be open, IsRectifiableTriple U n M θ ξ, f locally Lipschitz on U, and L : ℝ^P → L(ℝ^P, ℝ^Q) Hⁿ⌞M-a.e. strongly measurable such that for Hⁿ-a.e. x ∈ M, t ↦ f(x + tv) has derivative L(x)v at 0 for every v in every weighted approximate tangent space of (M, θ) at x. Then for every Hⁿ-null-measurable A ⊆ M and every Hⁿ⌞A-a.e. measurable h : ℝ^P → [0, ∞], the fibre-sum function y ↦ Σ_{x ∈ A ∩ f⁻¹(y)} h(x) is Hⁿ-a.e. measurable on ℝ^Q and ∫_A h(x)‖L(x)_#ξ(x)‖ dHⁿ(x) = ∫_{ℝ^Q} Σ_{x ∈ A ∩ f⁻¹(y)} h(x) dHⁿ(y).",
+  "lean_statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → ∀ (A : Set (Eucl P)) (h : Eucl P → ℝ≥0∞), A ⊆ M → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → AEMeasurable h ((μHE[n] : Measure (Eucl P)).restrict A) → AEMeasurable (fun y => ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x) (μHE[n] : Measure (Eucl Q)) ∧ ∫⁻ x in A, h x * ‖nVectorPushforward n (L x) (ξ x)‖ₑ ∂(μHE[n] : Measure (Eucl P)) = ∫⁻ y, ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x ∂(μHE[n] : Measure (Eucl Q))",
+  "lean_name": "lpf_rectifiable_area_formula",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+    "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1",
+    "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-a1"
+}

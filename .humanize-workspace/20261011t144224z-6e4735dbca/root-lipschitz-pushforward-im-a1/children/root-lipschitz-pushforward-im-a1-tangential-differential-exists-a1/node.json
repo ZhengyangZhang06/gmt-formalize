@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1",
+  "depth": 2,
+  "title": "Existence of a measurable, locally bounded tangential differential L (parent Steps 1–2)",
+  "statement": "Let U ⊆ ℝ^P be open, IsRectifiableTriple U n M θ ξ, and f : ℝ^P → ℝ^Q locally Lipschitz on U. There is L : ℝ^P → L(ℝ^P, ℝ^Q) such that (a) for Hⁿ-a.e. x ∈ M, for every subspace T_x that is a weighted approximate tangent space of (M, θ) at x and every v ∈ T_x, t ↦ f(x + tv) is differentiable at t = 0 with derivative L(x)v; (b) L is Hⁿ⌞M-a.e. strongly measurable; (c) for every compact K ⊆ U, sup_{x ∈ M ∩ K} ‖L(x)‖ < ∞.",
+  "lean_statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q), IsOpen U → IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f → ∃ L : Eucl P → (Eucl P →L[ℝ] Eucl Q), (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) ∧ AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ M ∩ K, ‖L x‖ ≤ C",
+  "lean_name": "lpf_tangential_differential_exists",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-a1"
+}
