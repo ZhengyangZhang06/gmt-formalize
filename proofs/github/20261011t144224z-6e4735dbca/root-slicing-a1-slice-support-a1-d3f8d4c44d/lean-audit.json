@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c3186c1cebd6d7a9b1ea5dc444efb771539a9d0cb97661bd21763b9448b7f3c6",
+  "git_delta": {
+    "base_commit": "3f6bcc25e6c2d4bebfba305fc4a9abdc61023075",
+    "candidate_commit": "13f3f1e557e5ac52f66148a9ea47edcc6e455aa9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_support_subset",
+    "diff_sha256": "68231b670a81f790c56d2321bfcb9a7bdcf242772a9430612bb128a62354948c",
+    "source_sha256": "40b51b72c175bd7e142ed4b3ca05cf11a3d8ab5628d45d774fbfac0a89c8fde3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_support_subset",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ (t : ℝ) (S : GeometricCurrentOn U m), IsSlice T f t S → S.support ⊆ T.support ∩ {x | f x = t}",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
