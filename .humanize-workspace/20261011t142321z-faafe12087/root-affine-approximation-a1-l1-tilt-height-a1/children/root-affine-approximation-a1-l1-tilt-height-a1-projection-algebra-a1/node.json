@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.l1_tilt_height-a1.projection_algebra-a1",
+  "parent_id": "root.affine_approximation-a1.l1_tilt_height-a1",
+  "depth": 3,
+  "title": "Operator norm <= Hilbert-Schmidt norm, and trace(p_{T^perp} p_P) = (1/2)|p_P - p_T|^2 for subspaces of equal dimension",
+  "statement": "(i) For all m, k in N and every continuous linear map A : R^m -> R^k, ||A|| <= hsNorm A, where ||A|| is the operator norm and hsNorm A = (sum_i |A e_i|^2)^{1/2} with e_i = EuclideanSpace.single i 1. (ii) For every m in N and all linear subspaces P, T of R^m with dim P = dim T, trace(p_{T^perp} o p_P) = hsNormSq(p_P - p_T)/2, where p_W = W.starProjection is the orthogonal projection onto W and hsNormSq B = sum_i |B e_i|^2.",
+  "lean_statement": "(∀ (m k : ℕ) (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A) ∧ ∀ (m : ℕ) (P T : Submodule ℝ (Rn m)), Module.finrank ℝ P = Module.finrank ℝ T → LinearMap.trace ℝ (Rn m) (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) = hsNormSq (P.starProjection - T.starProjection) / 2",
+  "lean_name": "aal_l1th_projection_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-l1-tilt-height-a1-projection-algebra-a1-a1"
+}
