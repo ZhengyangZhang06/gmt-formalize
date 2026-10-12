@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "952c8b993c98dea0bf6f9ba2fe18d0e3cc1ef0a5ba9b051d8fedefff7dd2dc55",
+  "git_delta": {
+    "base_commit": "e61fd53b6aa859072467413fd5487a8368cee397",
+    "candidate_commit": "b22df1bc1847e00bf6c728e733b8207b3f1e1721",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_plane_closedBall_measure",
+    "diff_sha256": "29ed4b0c5fb0ead22d954efccc750d86eae0ef8ec44e024c219923a9db035313",
+    "source_sha256": "f870568e5268857442eb91a4056e39922999f3706b78aad8437d244a83843404",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_plane_closedBall_measure",
+      "statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (s : ℝ), Module.finrank ℝ P = n → 0 ≤ s → ((μHE[n] : Measure (Ambient n ℓ)).restrict (P : Set (Ambient n ℓ))) (closedBall (0 : Ambient n ℓ) s) = ENNReal.ofReal (omega n * s ^ n)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
