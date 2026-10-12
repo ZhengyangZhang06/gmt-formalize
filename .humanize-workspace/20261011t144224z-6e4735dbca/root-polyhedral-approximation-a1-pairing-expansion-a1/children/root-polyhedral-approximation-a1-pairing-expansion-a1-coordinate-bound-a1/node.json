@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.pairing_expansion-a1.coordinate_bound-a1",
+  "parent_id": "root.polyhedral_approximation-a1.pairing_expansion-a1",
+  "depth": 3,
+  "title": "Each increasing coordinate is bounded by the Euclidean coefficient norm, |c_I| ≤ |c|",
+  "statement": "Let P, n ∈ ℕ, let c ∈ Λ^n(ℝ^P) be an n-covector (Covector (Eucl P) n), and let I ∈ SimonMultiIndex n P be a strictly increasing multi-index (an order embedding Fin n ↪o Fin P). Let c_I := euclideanCovectorCoordinate c I = c(e_{I(0)}, …, e_{I(n−1)}), where e_k := EuclideanSpace.single k 1. Let |c| := covectorEuclideanNorm c = √S. Here S := Σ_{J : Fin n → Fin P} t_J, with t_J := c(EuclideanSpace.basisFun (Fin P) ℝ (J 0), …, EuclideanSpace.basisFun (Fin P) ℝ (J (n−1)))² if J is StrictMono and t_J := 0 otherwise. Then |c_I| ≤ |c|.",
+  "lean_statement": "∀ (P n : ℕ) (c : Covector (Eucl P) n) (I : SimonMultiIndex n P), |euclideanCovectorCoordinate c I| ≤ covectorEuclideanNorm c",
+  "lean_name": "polyhedral_approx_pairing_coordinate_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-pairing-expansion-a1-coordinate-bound-a1-a1"
+}
