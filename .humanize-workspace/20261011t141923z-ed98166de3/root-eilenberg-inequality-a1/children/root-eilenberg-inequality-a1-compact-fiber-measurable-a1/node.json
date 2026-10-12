@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.compact_fiber_measurable-a1",
+  "parent_id": "root.eilenberg_inequality-a1",
+  "depth": 2,
+  "title": "Borel measurability of y ↦ 𝓗^k(Q ∩ f⁻¹{y}) for compact Q",
+  "statement": "Let X be a metric space with its Borel σ-algebra, m ∈ ℕ, k > 0 real, Q ⊆ X compact and f : X → ℝᵐ continuous on Q. Then y ↦ 𝓗^k(Q ∩ f⁻¹{y}) (𝓗^k = (ω_k/2^k)μH[k] = Chapter01.simonHausdorffMeasureReal k) is a Borel measurable function ℝᵐ → [0,∞].",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (Q : Set X) (f : X → Rn m), 0 < k → IsCompact Q → ContinuousOn f Q → Measurable (fun y ↦ Chapter01.simonHausdorffMeasureReal k (Q ∩ f ⁻¹' {y}))",
+  "lean_name": "eilenberg_compact_fiber_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-compact-fiber-measurable-a1-a1"
+}

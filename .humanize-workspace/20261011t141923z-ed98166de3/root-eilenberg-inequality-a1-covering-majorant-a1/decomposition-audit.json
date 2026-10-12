@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "eilenberg|covering_majorant|fixed_scale_majorant|liminf_majorant",
+        "ediam_le|ediam_mono|edist_le_ediam_of_mem|ediam_empty",
+        "mul_iSup|tsum_mul_left|lt_add_right|inv_pow|theorem mul_inv",
+        "le_liminf_of_le|liminf_le_liminf|Tendsto.liminf_eq|eventually_le_const",
+        "sed -n '512,590p' .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "sed -n '1,85p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/EuclideanNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/covering-majorant-audit-mghj_a_y/TypeAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/covering-majorant-audit-mghj_a_y/ApiAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/covering-majorant-audit-mghj_a_y/ProofAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/EuclideanNormalization.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-eilenberg-inequality-a1-covering-majorant-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-eilenberg-inequality-a1-covering-majorant-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/covering-majorant-audit-mghj_a_y/TypeAudit.lean",
+        "/tmp/covering-majorant-audit-mghj_a_y/ApiAudit.lean",
+        "/tmp/covering-majorant-audit-mghj_a_y/ProofAudit.lean"
+      ],
+      "conclusion": "The pinned definitions and APIs support the stated normalizations, weighted Hausdorff covering formula, extended-real algebra, measurability and Fatou argument. No existing covering-majorant or proposed child declaration was found in the snapshot project or pinned SimonGMT package. Installed package revisions match their pins, and inspected mathlib files match the snapshot. All exact types elaborate independently in the replayed comparator scope with autoImplicit disabled. Recompilation of the reviewed proof bodies and exact parent assembly succeeds using only propext, Classical.choice and Quot.sound. All three names are bare identifiers and have no reservation in another DAG branch. The split is appropriate: lipschitz_image_volume feeds fixed_scale_majorant; liminf_majorant is independent. These acyclic obligations imply the selected parent through the supplied normalization and shrinking-scale argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_image_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all prose hypotheses and the conclusion. The proof bounds image diameter, preserves it under closure, applies the independently axiom-checked isodiametric theorem, and expands natural powers without invalid cancellation. It covers unbounded D, m = 0 and K = 0. The specified additional import is permitted. No circular reliance occurs."
+    },
+    {
+      "key": "fixed_scale_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including arbitrary E and positive possibly infinite r and ε. Every step is justified: finite content permits near-optimal cover selection; trimming handles empty pieces using m+k > 0; closed image indicators give measurable sums and the fibre-content bound; the declared geometric dependency and valid ENNReal power identities yield the integral estimate. Infinite-value and zero-parameter cases introduce no gap."
+    },
+    {
+      "key": "liminf_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches the full generality of the prose. Scale monotonicity requires neither positive r_i nor nonnegative d. Eventual scale domination, unconditional ENNReal multiplication through suprema, measurable liminf, Fatou and convergence of b establish both conclusions, including c or L infinite. The proof is complete, independent of the other children and parent, and supplies exactly the limiting step required for reassembly."
+    }
+  ],
+  "required_changes": []
+}
