@@ -458,6 +458,56 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- On `ℝ¹` the squared Hilbert–Schmidt norm of `Dw` at `single 0 t` is the squared norm of the
+derivative of `s ↦ w (single 0 s)` at `t`, for every map `w` (Mathlib's `fderiv`/`deriv` vanish at
+points of non-differentiability).  `hsNormSq B = ‖B e‖²` with `e := single 0 1` (`Fin 1` is a
+singleton) and `single 0 s = s • e`.  If `w` is differentiable at `single 0 t`, the chain rule
+(`HasFDerivAt.comp_hasDerivAt`) gives `deriv (w ∘ single 0) t = Dw(single 0 t) e`.  Otherwise
+`w ∘ single 0` is not differentiable at `t` either, since `w = (w ∘ single 0) ∘ π` for the
+coordinate projection `π := EuclideanSpace.proj 0`, so both sides vanish. -/
+theorem tdo_ods_hsNormSq_fderiv_single : ∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (t : ℝ),
+    hsNormSq (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t)) =
+      ‖deriv (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) t‖ ^ 2 := by
+  intro ℓ w t
+  set e : Rn 1 := EuclideanSpace.single (0 : Fin 1) (1 : ℝ)
+  have hsing : ∀ s : ℝ, EuclideanSpace.single (0 : Fin 1) s = s • e := by
+    intro s
+    ext i
+    fin_cases i
+    simp [e]
+  have hLHS : hsNormSq (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t)) =
+      ‖fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t) e‖ ^ 2 := by
+    simp [hsNormSq, e]
+  rw [hLHS]
+  by_cases hw : DifferentiableAt ℝ w (EuclideanSpace.single (0 : Fin 1) t)
+  · have hι : HasDerivAt (fun s : ℝ => EuclideanSpace.single (0 : Fin 1) s) e t := by
+      simpa [hsing] using (hasDerivAt_id t).smul_const e
+    have hW : HasDerivAt (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s))
+        (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t) e) t :=
+      hw.hasFDerivAt.comp_hasDerivAt t hι
+    rw [hW.deriv]
+  · have hW : ¬ DifferentiableAt ℝ (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) t := by
+      intro hW
+      apply hw
+      set π : Rn 1 →L[ℝ] ℝ := EuclideanSpace.proj (0 : Fin 1)
+      have hπt : π (EuclideanSpace.single (0 : Fin 1) t) = t := by simp [π]
+      have hcomp := DifferentiableAt.comp (EuclideanSpace.single (0 : Fin 1) t)
+        (by rw [hπt]; exact hW) π.differentiableAt
+      have hw_eq : ((fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) ∘ π) = w := by
+        funext z
+        simp only [Function.comp_apply]
+        congr 1
+        ext i
+        fin_cases i
+        simp [π]
+      rwa [hw_eq] at hcomp
+    rw [fderiv_zero_of_not_differentiableAt hw, deriv_zero_of_not_differentiableAt hW]
+    simp
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
