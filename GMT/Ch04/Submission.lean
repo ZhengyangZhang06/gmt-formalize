@@ -705,6 +705,92 @@ theorem Submission.mcm_exp_neg_integral_ftc : ∀ (g : ℝ → ℝ) (R : ℝ), I
   rw [hD] at hDt
   simp only at hDt
   linarith
+/-- **Ch. 4, p. 94 (the Hölder estimate between 4.2 and 4.3).** If `H ∈ Lᵖ(μ ⌞ B_R(ξ))` with
+`p > n ≥ 1`, `μ` finite on compact sets and `0 < τ ≤ R`, then
+`|τ^{-n-1} ∫_{B_τ(ξ)} (x - ξ) · H dμ| ≤
+  (R^{p-n} ∫_{B_R(ξ)} |H|^p dμ)^{1/p} R⁻¹ (τ/R)^{-n/p} (1 + τ⁻ⁿ μ(B_τ(ξ)))`. -/
+theorem Submission.mcm_lp_holder_bound : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (p : ℝ) (ξ : Ambient n ℓ) (R τ : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → (n : ℝ) < p → MemLp H (ENNReal.ofReal p) (μ.restrict (closedBall ξ R)) → 0 < τ → τ ≤ R → |(∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂μ) / τ ^ (n + 1)| ≤ (R ^ (p - n) * ∫ x in closedBall ξ R, ‖H x‖ ^ p ∂μ) ^ (1 / p) / R * (τ / R) ^ (-(n : ℝ) / p) * (1 + μ.real (closedBall ξ τ) / τ ^ n) := by
+  intro n ℓ μ H p ξ R τ hn hμ hp hH hτ hτR
+  have hp1 : 1 < p := (show (1 : ℝ) ≤ n by exact_mod_cast hn).trans_lt hp
+  have hp0 : 0 < p := zero_lt_one.trans hp1
+  have hR : 0 < R := hτ.trans_le hτR
+  have htn : 0 < τ ^ n := pow_pos hτ n
+  -- Conjugate exponent `q`, `1 / q = 1 - 1 / p ∈ (0, 1)`.
+  have hpq := Real.HolderConjugate.conjExponent hp1
+  set q := p.conjExponent
+  have hq : 1 / q = 1 - 1 / p := by
+    have := hpq.inv_add_inv_eq_one
+    rw [one_div, one_div]
+    linarith
+  have hsub : closedBall ξ τ ⊆ closedBall ξ R := closedBall_subset_closedBall hτR
+  have : IsFiniteMeasure (μ.restrict (closedBall ξ τ)) :=
+    isFiniteMeasure_restrict.2 (isCompact_closedBall ξ τ).measure_lt_top.ne
+  have hHτ : MemLp H (ENNReal.ofReal p) (μ.restrict (closedBall ξ τ)) :=
+    hH.mono_measure (Measure.restrict_mono hsub le_rfl)
+  set I := ∫ x in closedBall ξ R, ‖H x‖ ^ p ∂μ
+  set m := μ.real (closedBall ξ τ)
+  have hI : 0 ≤ I := setIntegral_nonneg measurableSet_closedBall fun x _ ↦ by positivity
+  have hm : 0 ≤ m := measureReal_nonneg
+  -- `|∫_{B_τ} ⟨x - ξ, H⟩| ≤ τ ∫_{B_τ} |H|`, as `|x - ξ| ≤ τ` on `B_τ(ξ)`.
+  have h3 : |∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂μ| ≤
+      τ * ∫ x in closedBall ξ τ, ‖H x‖ ∂μ := by
+    rw [← Real.norm_eq_abs, ← integral_const_mul]
+    refine norm_integral_le_of_norm_le
+      ((hHτ.integrable (ENNReal.one_le_ofReal.2 hp1.le)).norm.const_mul τ) ?_
+    refine ae_restrict_of_forall_mem measurableSet_closedBall fun x hx ↦ ?_
+    rw [mem_closedBall, dist_eq_norm] at hx
+    exact (norm_inner_le_norm _ _).trans (mul_le_mul_of_nonneg_right hx (norm_nonneg _))
+  -- Hölder with the constant `1` on `B_τ`, then `∫_{B_τ} |H|^p ≤ ∫_{B_R} |H|^p`.
+  have h4 : ∫ x in closedBall ξ τ, ‖H x‖ ∂μ ≤ I ^ (1 / p) * m ^ (1 / q) := by
+    have hHolder := integral_mul_le_Lp_mul_Lq_of_nonneg (μ := μ.restrict (closedBall ξ τ)) hpq
+      (ae_of_all _ fun x ↦ norm_nonneg (H x)) (ae_of_all _ fun _ ↦ zero_le_one)
+      hHτ.norm (memLp_const (1 : ℝ))
+    simp only [mul_one, Real.one_rpow, integral_const, measureReal_restrict_apply_univ,
+      smul_eq_mul] at hHolder
+    refine hHolder.trans (mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hm _))
+    refine Real.rpow_le_rpow
+      (setIntegral_nonneg measurableSet_closedBall fun x _ ↦ by positivity) ?_ (by positivity)
+    have hint := hH.integrable_norm_rpow (ENNReal.ofReal_pos.2 hp0).ne' ENNReal.ofReal_ne_top
+    rw [ENNReal.toReal_ofReal hp0.le] at hint
+    exact setIntegral_mono_set hint (ae_of_all _ fun x ↦ by positivity) (ae_of_all _ hsub)
+  -- `m^{1-1/p} / τⁿ = a^{1-1/p} τ^{-n/p} ≤ (1 + a) τ^{-n/p}` with `a = m / τⁿ`.
+  have h5 : m ^ (1 / q) / τ ^ n ≤ τ ^ (-(n : ℝ) / p) * (1 + m / τ ^ n) := by
+    have ha : 0 ≤ m / τ ^ n := div_nonneg hm htn.le
+    have hs : 0 ≤ 1 / q := by rw [hq, sub_nonneg]; exact (div_le_one hp0).2 hp1.le
+    have has : (m / τ ^ n) ^ (1 / q) ≤ 1 + m / τ ^ n := by
+      rcases le_total (m / τ ^ n) 1 with h | h
+      · linarith [Real.rpow_le_one ha h hs]
+      · have := Real.rpow_le_rpow_of_exponent_le h
+          (show 1 / q ≤ 1 by rw [hq]; linarith [one_div_pos.2 hp0])
+        rw [Real.rpow_one] at this
+        linarith
+    have heq : m ^ (1 / q) / τ ^ n = (m / τ ^ n) ^ (1 / q) * τ ^ (-(n : ℝ) / p) := by
+      have hτq : (τ ^ n) ^ (1 / q) = τ ^ n * τ ^ (-(n : ℝ) / p) := by
+        rw [← Real.rpow_natCast_mul hτ.le, hq, ← Real.rpow_natCast τ n, ← Real.rpow_add hτ]
+        congr 1
+        ring
+      have hτp : τ ^ (-(n : ℝ) / p) ≠ 0 := (Real.rpow_pos_of_pos hτ _).ne'
+      rw [Real.div_rpow hm htn.le, hτq]
+      field_simp
+    rw [heq, mul_comm]
+    exact mul_le_mul_of_nonneg_left has (Real.rpow_nonneg hτ.le _)
+  -- Simplify the right-hand side: `(R^{p-n} I)^{1/p} / R (τ/R)^{-n/p} = I^{1/p} τ^{-n/p}`.
+  have h6 : (R ^ (p - n) * I) ^ (1 / p) / R * (τ / R) ^ (-(n : ℝ) / p) =
+      I ^ (1 / p) * τ ^ (-(n : ℝ) / p) := by
+    have hRn : R ^ (-(n : ℝ) / p) ≠ 0 := (Real.rpow_pos_of_pos hR _).ne'
+    rw [Real.mul_rpow (Real.rpow_nonneg hR.le _) hI, ← Real.rpow_mul hR.le,
+      show (p - n) * (1 / p) = 1 + -(n : ℝ) / p by field_simp; ring, Real.rpow_add hR,
+      Real.rpow_one, Real.div_rpow hτ.le hR.le]
+    field_simp
+  rw [h6, abs_div, abs_of_pos (pow_pos hτ _), div_le_iff₀ (pow_pos hτ _)]
+  calc |∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂μ|
+      ≤ τ * (I ^ (1 / p) * m ^ (1 / q)) := h3.trans (mul_le_mul_of_nonneg_left h4 hτ.le)
+    _ = I ^ (1 / p) * (m ^ (1 / q) / τ ^ n) * τ ^ (n + 1) := by
+      rw [pow_succ]
+      field_simp
+    _ ≤ I ^ (1 / p) * (τ ^ (-(n : ℝ) / p) * (1 + m / τ ^ n)) * τ ^ (n + 1) := by
+      gcongr
+    _ = I ^ (1 / p) * τ ^ (-(n : ℝ) / p) * (1 + m / τ ^ n) * τ ^ (n + 1) := by ring
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
