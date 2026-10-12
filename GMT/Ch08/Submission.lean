@@ -410,6 +410,88 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Layer-cake comparison of radial cutoff integrals (Simon Ch. 8, 3.3, p. 210): if
+`ν(B_r(x)) ≤ Λ μ(B_r(x))` for `0 < r < ρ₀`, and `φ` is continuous and non-increasing with `φ = 1`
+on `(-∞, 1]` and `φ = 0` on `[A², ∞)`, where `A, t > 0` and `t A < ρ₀`, then
+`∫ φ(|y - x|² / t²) dν(y) ≤ Λ ∫ φ(|y - x|² / t²) dμ(y)`.  Every superlevel set of the integrand at
+a positive height is empty or a closed ball `B_r(x)` with `0 < r < ρ₀`; no finiteness of `ν`, `μ`
+and no sign condition on `Λ` is needed. -/
+theorem Submission.mono833_radial_layer_cake_le :
+    ∀ (N : ℕ) (ν μ : Measure (Euclidean N)) (x : Euclidean N) (ρ₀ Λ A t : ℝ) (φ : ℝ → ℝ), (∀ r : ℝ, 0 < r → r < ρ₀ → ν (closedBall x r) ≤ ENNReal.ofReal Λ * μ (closedBall x r)) → Continuous φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, A ^ 2 ≤ s → φ s = 0) → 0 < A → 0 < t → t * A < ρ₀ → ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂ν ≤ ENNReal.ofReal Λ * ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂μ := by
+  intro N ν μ x ρ₀ Λ A t φ hball hφc hφa hφ1 hφ0 hA ht htA
+  -- Step 1: `0 ≤ φ ≤ 1`, from antitonicity and the two plateaus.
+  have hφnn : ∀ s, 0 ≤ φ s := fun s ↦
+    (hφ0 (max s (A ^ 2)) (le_max_right _ _)).symm.le.trans (hφa (le_max_left _ _))
+  have hφle : ∀ s, φ s ≤ 1 := fun s ↦
+    (hφa (min_le_left s 1)).trans (hφ1 (min s 1) (min_le_right _ _)).le
+  -- Step 2: the radial profile `c(y) = φ(|y - x|² / t²)` is continuous, hence measurable.
+  set c : Euclidean N → ℝ := fun y ↦ φ (‖y - x‖ ^ 2 / t ^ 2) with hc
+  have hcm : Measurable c :=
+    (hφc.comp (((continuous_id.sub continuous_const).norm.pow 2).div_const _)).measurable
+  -- Step 3: the layer-cake formula, for an arbitrary measure.
+  have hlc : ∀ m : Measure (Euclidean N),
+      ∫⁻ y, ENNReal.ofReal (c y) ∂m = ∫⁻ s in Ioi 0, m {y | s ≤ c y} := fun m ↦
+    lintegral_eq_lintegral_meas_le m (Eventually.of_forall fun y ↦ hφnn _) hcm.aemeasurable
+  -- Step 4: each superlevel set `{c ≥ s}`, `s > 0`, is empty or a ball of radius in `(0, ρ₀)`.
+  have hsub : ∀ s ∈ Ioi (0 : ℝ),
+      ν {y | s ≤ c y} ≤ ENNReal.ofReal Λ * μ {y | s ≤ c y} := by
+    intro s hs
+    rw [mem_Ioi] at hs
+    rcases lt_or_ge 1 s with h1 | h1
+    · -- 4a: `s > 1`, the superlevel set is empty.
+      have hempty : {y | s ≤ c y} = ∅ := by
+        ext y
+        simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_le]
+        exact (hφle _).trans_lt h1
+      simp [hempty]
+    · -- 4b: `E = {τ : s ≤ φ τ}` is closed, contains `1`, and is bounded above by `A²`.
+      set E : Set ℝ := {τ | s ≤ φ τ} with hE
+      have hEc : IsClosed E := isClosed_le continuous_const hφc
+      have h1E : (1 : ℝ) ∈ E := by
+        rw [hE, mem_ofPred_eq, hφ1 1 le_rfl]
+        exact h1
+      have hEbdd : BddAbove E := by
+        refine ⟨A ^ 2, fun τ hτ ↦ ?_⟩
+        by_contra h
+        rw [hE, mem_ofPred_eq, hφ0 τ (not_le.1 h).le] at hτ
+        exact absurd hτ (not_le.2 hs)
+      set b := sSup E with hb
+      have hbE : b ∈ E := hEc.csSup_mem ⟨1, h1E⟩ hEbdd
+      have hb1 : 1 ≤ b := le_csSup hEbdd h1E
+      have hbA : b < A ^ 2 := by
+        by_contra h
+        have hbE' := hbE
+        rw [hE, mem_ofPred_eq, hφ0 b (not_lt.1 h)] at hbE'
+        exact absurd hbE' (not_le.2 hs)
+      -- 4c: `E = (-∞, b]`.
+      have hEiff : ∀ τ, s ≤ φ τ ↔ τ ≤ b := fun τ ↦
+        ⟨fun h ↦ le_csSup hEbdd h, fun h ↦ hbE.trans (hφa h)⟩
+      -- 4d–4e: `{c ≥ s} = B_r(x)` with `r = t √b ∈ (0, ρ₀)`.
+      have hb0 : 0 ≤ b := zero_le_one.trans hb1
+      set r := t * Real.sqrt b with hr
+      have hr0 : 0 < r := mul_pos ht (Real.sqrt_pos.2 (zero_lt_one.trans_le hb1))
+      have hrρ : r < ρ₀ :=
+        (mul_lt_mul_of_pos_left ((Real.sqrt_lt' hA).2 hbA) ht).trans htA
+      have hr2 : r ^ 2 = b * t ^ 2 := by
+        rw [hr, mul_pow, Real.sq_sqrt hb0, mul_comm]
+      have hset : {y | s ≤ c y} = closedBall x r := by
+        ext y
+        rw [mem_ofPred_eq, mem_closedBall, dist_eq_norm, hc, hEiff,
+          div_le_iff₀ (pow_pos ht 2), ← hr2]
+        exact pow_le_pow_iff_left₀ (norm_nonneg _) hr0.le two_ne_zero
+      -- 4f: the ball hypothesis.
+      rw [hset]
+      exact hball r hr0 hrρ
+  -- Step 5: integrate over `(0, ∞)` and pull out the finite constant `ofReal Λ`.
+  calc ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂ν
+      = ∫⁻ s in Ioi 0, ν {y | s ≤ c y} := hlc ν
+    _ ≤ ∫⁻ s in Ioi 0, ENNReal.ofReal Λ * μ {y | s ≤ c y} :=
+      setLIntegral_mono' measurableSet_Ioi hsub
+    _ = ENNReal.ofReal Λ * ∫⁻ s in Ioi 0, μ {y | s ≤ c y} :=
+      lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+    _ = ENNReal.ofReal Λ * ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂μ := by
+      rw [← hlc μ]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
