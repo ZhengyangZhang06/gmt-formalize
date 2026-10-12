@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8772966cbc025f05b93100eebb5c62b1213e7b63179959e7d16a592d8262a61a",
+  "git_delta": {
+    "base_commit": "d08cb54493c90b85338e43138a7930181c102506",
+    "candidate_commit": "3cf436a15bd04353f78ce38e067eb555f2d4d1a6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_radial_segment_hausdorff_pos",
+    "diff_sha256": "b866612aa57b71b52b79ac24adf958974a20dd14ee3dcbdf251626617630f084",
+    "source_sha256": "43b9449ba51a6ab582c6ccc55c303c7131a77de43d5e45fd6554e611f9c0280e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_radial_segment_hausdorff_pos",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)) (z : Euclid P), z ≠ 0 → ‖z‖ < 1 → (∀ t : ℝ, 0 < t → t ≤ 1 → t • z ∈ S) → 0 < μH[1] (S ∩ ball (0 : Euclid P) 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
