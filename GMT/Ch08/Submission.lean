@@ -418,6 +418,44 @@ theorem Submission.allard_tc_fbl_plane_ball_measure :
   intro N n T r hr
   -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `T.plane`, from an orthonormal basis
   -- of `T.plane` indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 2: `H^n (J '' E) = vol E` for every `E ⊆ ℝ^n`.
+  have hmeas : ∀ E : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (J '' E) = volume E := by
+    intro E
+    rw [J.isometry.euclideanHausdorffMeasure_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 3: `T.plane ∩ {‖w‖ ∈ A} = J '' {‖y‖ ∈ A}`, since `J` preserves norms and has range
+  -- `T.plane`.
+  have himage : ∀ A : Set ℝ,
+      (T.plane : Set (Euclidean N)) ∩ {w | ‖w‖ ∈ A} = J '' {y | ‖y‖ ∈ A} := by
+    intro A
+    ext w
+    constructor
+    · rintro ⟨hw, hwA⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · simpa using hwA
+      · simp [J]
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨by simp [J], by simpa using hy⟩
+  have hcl : (T.plane : Set (Euclidean N)) ∩ closedBall 0 r = J '' closedBall 0 r := by
+    simpa only [Set.mem_Iic, ← mem_closedBall_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iic r)
+  have hop : (T.plane : Set (Euclidean N)) ∩ ball 0 r = J '' ball 0 r := by
+    simpa only [Set.mem_Iio, ← mem_ball_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iio r)
+  -- Steps 4–5: `vol (B_r(0)) = vol (B°_r(0)) = ω_n r^n` in `ℝ^n` (`r > 0`).
+  have hcl_vol : volume (closedBall (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  have hop_vol : volume (ball (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  -- Step 6: conclusion.
+  exact ⟨by rw [hcl, hmeas, hcl_vol], by rw [hop, hmeas, hop_vol]⟩
 /-- The monotonicity identity 3.4 at every centre of a stationary varifold `C` on `ℝ^N` (Simon
 Ch. 8, as used in the proof of 5.5): applying 3.4 with `U = ℝ^N` and `ρ₀ = k + 1` gives `θ_k` with
 `θ_k + ω_n^{-1} ∫_{Gₙ(B_ρ(y))} r^{-n-2}|p_{S^⊥}(x-y)|² dC = μ_C(B_ρ(y))/(ω_n ρ^n)` for
@@ -715,40 +753,21 @@ theorem Submission.allard_tc_scf_plane_ball_mass :
     (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
   let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
     T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
-  -- Step 2: `H^n (J '' E) = vol E` for every `E ⊆ ℝ^n`.
-  have hmeas : ∀ E : Set (EuclideanSpace ℝ (Fin n)),
-      (μHE[n] : Measure (Euclidean N)) (J '' E) = volume E := by
-    intro E
-    rw [J.isometry.euclideanHausdorffMeasure_image,
-      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-  -- Step 3: `T.plane ∩ {‖w‖ ∈ A} = J '' {‖y‖ ∈ A}`, since `J` preserves norms and has range
-  -- `T.plane`.
-  have himage : ∀ A : Set ℝ,
-      (T.plane : Set (Euclidean N)) ∩ {w | ‖w‖ ∈ A} = J '' {y | ‖y‖ ∈ A} := by
-    intro A
+  have hrange : range J = (T.plane : Set (Euclidean N)) := by
     ext w
     constructor
-    · rintro ⟨hw, hwA⟩
-      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
-      · simpa using hwA
-      · simp [J]
-    · rintro ⟨y, hy, rfl⟩
-      exact ⟨by simp [J], by simpa using hy⟩
-  have hcl : (T.plane : Set (Euclidean N)) ∩ closedBall 0 r = J '' closedBall 0 r := by
-    simpa only [Set.mem_Iic, ← mem_closedBall_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iic r)
-  have hop : (T.plane : Set (Euclidean N)) ∩ ball 0 r = J '' ball 0 r := by
-    simpa only [Set.mem_Iio, ← mem_ball_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iio r)
-  -- Steps 4–5: `vol (B_r(0)) = vol (B°_r(0)) = ω_n r^n` in `ℝ^n` (`r > 0`).
-  have hcl_vol : volume (closedBall (0 : EuclideanSpace ℝ (Fin n)) r) =
-      unitBallVolume n * ENNReal.ofReal r ^ n := by
-    rw [Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin,
-      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
-  have hop_vol : volume (ball (0 : EuclideanSpace ℝ (Fin n)) r) =
-      unitBallVolume n * ENNReal.ofReal r ^ n := by
-    rw [Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin,
-      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
-  -- Step 6: conclusion.
-  exact ⟨by rw [hcl, hmeas, hcl_vol], by rw [hop, hmeas, hop_vol]⟩
+    · rintro ⟨x, rfl⟩
+      exact (b.repr.symm x).2
+    · intro hw
+      exact ⟨b.repr ⟨w, hw⟩, by simp [J]⟩
+  -- Step 3: `H^n(B_r(0) ∩ T) = H^n(J⁻¹(B_r(0)))` and `J⁻¹(B_r(0)) = B_r(0) ⊆ ℝ^n`.
+  have hpre : J ⁻¹' closedBall 0 r = closedBall 0 r := by
+    ext x
+    simp
+  rw [← hrange, ← J.isometry.euclideanHausdorffMeasure_preimage, hpre]
+  -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
+    finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
 
 /-- The plane integrals of the unit-ball cut-offs `φ_k⁺ = max(0, 1 - (k+1) max(0, |y| - 1))` and
 `φ_k⁻ = min(1, (k+1) max(0, 1 - |y|))` over an `n`-plane `T ∈ G(N,n)` both converge to `ω_n`
@@ -1105,21 +1124,6 @@ theorem Submission.allard_tc_flat_blowup_ball_limits :
   refine h1.congr fun i ↦ ?_
   rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
     V.weight_apply measurableSet_closedBall]
-  have hrange : range J = (T.plane : Set (Euclidean N)) := by
-    ext w
-    constructor
-    · rintro ⟨x, rfl⟩
-      exact (b.repr.symm x).2
-    · intro hw
-      exact ⟨b.repr ⟨w, hw⟩, by simp [J]⟩
-  -- Step 3: `H^n(B_r(0) ∩ T) = H^n(J⁻¹(B_r(0)))` and `J⁻¹(B_r(0)) = B_r(0) ⊆ ℝ^n`.
-  have hpre : J ⁻¹' closedBall 0 r = closedBall 0 r := by
-    ext x
-    simp
-  rw [← hrange, ← J.isometry.euclideanHausdorffMeasure_preimage, hpre]
-  -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
-  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
-    finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
 /-- **Simon Ch. 8, proof of 5.5, pp. 216–217: a stationary cone with density `≥ θ₀` a.e. is
 `θ₀ v(T)`.** Let `C` be a stationary `n`-varifold on `ℝ^N` with `μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for every
 `ρ > 0` (printed (1)) and `Θ^n(μ_C, y) ≥ θ₀` for `μ_C`-a.e. `y` (printed (7)). By 3.4 at every
@@ -1779,6 +1783,27 @@ theorem Submission.plane_disintegration :
   -- `Filter.skolem` chooses `η(x)` from the first part wherever it exists.
   obtain ⟨η, hη⟩ := Filter.skolem.1 (Submission.plane_disint_pointwise_measure N n U V)
   exact ⟨η, hη, Submission.plane_disint_identity_of_limits N n U V η hη⟩
+
+/-- **Simon Ch. 8, 5.5 with Remark 5.6, and 5.7, pp. 215–218** (child `allard_tangent_cones` of
+`main_theorem`): Allard's Rectifiability Theorem, and tangent cones are rectifiable cones.
+Part A (5.5, 5.6) is child `allard_rectifiability`, applied to 2.5–2.10
+(`first_variation_theorems`), 3.4 and 3.6 (`monotonicity_and_density_theorems`), 4.1
+(`constancy_theorem`), 5.1–5.4 with the blow-up density lower bound (`varifold_tangent_theorems`),
+Lemma 1.3 (`plane_disintegration`) and 1.2 (`first_rectifiability_theorem`).  Part B (5.7) is child
+`tangent_cones_rectifiable`; as in the printed proof of 5.7, it applies 5.5, i.e. Part A, to each
+tangent cone. -/
+theorem Submission.allard_rectifiability_and_tangent_cones :
+    AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones := by
+  -- Part A (5.5, 5.6): child `allard_rectifiability` with the sibling theorems it assumes.
+  have hA : AllardRectifiabilityTheorem :=
+    Submission.allard_tc_rectifiability Submission.first_variation_theorems.2
+      Submission.monotonicity_and_density_theorems.2.1
+      Submission.monotonicity_and_density_theorems.2.2 Submission.constancy_theorem
+      Submission.varifold_tangent_theorems.1 Submission.varifold_tangent_theorems.2
+      Submission.plane_disintegration Submission.first_rectifiability_theorem
+  -- Part B (5.7): child `tangent_cones_rectifiable`, whose proof applies Part A to the cones.
+  exact ⟨hA, Submission.allard_tc_tangent_cones_rectifiable Submission.varifold_tangent_theorems.1
+    Submission.varifold_tangent_theorems.2 hA Submission.first_rectifiability_theorem⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
