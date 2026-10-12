@@ -335,6 +335,181 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Hausdorff measure of an `n`-disc in an `n`-plane** (Simon Ch. 1, Theorem 2.9: `Hⁿ = Lⁿ` on
+`ℝⁿ`, transported to an `n`-dimensional subspace; the normalization `Hⁿ(P ∩ B_ρ(0)) = ωₙ ρⁿ`
+behind Ch. 3, Remark 1.5(3)). If `P ⊆ ℝᴺ` is a subspace with `dim P = n` and `s > 0`, then
+`Hⁿ(P ∩ B̄_s(0)) = sⁿ ωₙ` with `ωₙ = Lⁿ(B_1(0))`. An orthonormal basis of `P` gives a linear
+isometry `ι : ℝⁿ → ℝᴺ` onto `P` with `P ∩ B̄_s(0) = ι(B̄_s(0))`; `Hⁿ` is isometry invariant and
+equals `Lⁿ` on `ℝⁿ`, and `Lⁿ(B̄_s(0)) = sⁿ Lⁿ(B_1(0))` by Haar scaling. -/
+theorem Submission.deGiorgiRH_plane_closedBall_measure : ∀ (n N : ℕ) (P : Submodule ℝ (Rn N)), finrank ℝ P = n → ∀ s : ℝ, 0 < s → μHE[n] ((P : Set (Rn N)) ∩ Metric.closedBall 0 s) = ENNReal.ofReal (s ^ n) * volume (Metric.ball (0 : Rn n) 1) := by
+  intro n N P hP s hs
+  subst hP
+  -- Step 1: an orthonormal basis of `P` gives a linear isometric isomorphism `e : P → ℝⁿ`; then
+  -- `ι = (P ↪ ℝᴺ) ∘ e⁻¹ : ℝⁿ → ℝᴺ` is a linear isometry with range `P`.
+  let e : P ≃ₗᵢ[ℝ] Rn (finrank ℝ P) := (stdOrthonormalBasis ℝ P).repr
+  let ι : Rn (finrank ℝ P) →ₗᵢ[ℝ] Rn N := P.subtypeₗᵢ.comp e.symm.toLinearIsometry
+  -- Step 2: `P ∩ B̄_s(0) = ι(B̄_s(0))`.
+  have himg : (P : Set (Rn N)) ∩ Metric.closedBall 0 s = ι '' Metric.closedBall 0 s := by
+    ext y
+    constructor
+    · rintro ⟨hyP, hy⟩
+      refine ⟨e ⟨y, hyP⟩, ?_, by simp [ι]⟩
+      rw [mem_closedBall_zero_iff, LinearIsometryEquiv.norm_map]
+      simpa using hy
+    · rintro ⟨t, ht, rfl⟩
+      refine ⟨(e.symm t).2, ?_⟩
+      rw [mem_closedBall_zero_iff] at ht ⊢
+      rwa [ι.norm_map]
+  -- Steps 3–6: isometry invariance, `Hⁿ = Lⁿ` on `ℝⁿ`, and Haar scaling of closed balls.
+  rw [himg, ι.isometry.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hs.le,
+    finrank_euclideanSpace_fin]
+
+/-- **Vague convergence to an `n`-plane gives the mass of the unit ball** (Simon Ch. 3, proof of
+Thm. 4.3, parent proof Steps 3 and 7; the squeeze of Remark 1.5(3)). Let `P ⊆ ℝᴺ` be an
+`n`-dimensional subspace and `(ν_r)` measures with `ν_r(B̄_2(0)) < ∞` for small `r > 0` and
+`∫ f dν_r → ∫_P f dHⁿ` for every `f ∈ C_c(ℝᴺ, ℝ)`. Then `ν_r(B̄_1(0)) → ω_n` in `[0, ∞]` as
+`r ↓ 0`. For `0 < τ < 1` take bump functions `g, f ∈ C_c` with values in `[0, 1]`, `g = 1` on
+`B̄_{1-τ}(0)`, `g = 0` off `B_1(0)`, `f = 1` on `B̄_1(0)` and `f = 0` off `B_{1+τ}(0)`. Comparing
+with indicators gives `∫ g dν_r ≤ ν_r(B̄_1(0)) ≤ ∫ f dν_r` for small `r`, while
+`Hⁿ(P ∩ B̄_s(0)) = sⁿ ω_n` gives `∫_P g dHⁿ ≥ (1 - τ)ⁿ ω_n` and `∫_P f dHⁿ ≤ (1 + τ)ⁿ ω_n`.
+Letting `r ↓ 0` and then `τ ↓ 0` squeezes `ν_r(B̄_1(0))` to `ω_n`. -/
+theorem Submission.deGiorgiRH_closedBall_tendsto_of_vague_plane : ∀ (n N : ℕ) (ν : ℝ → Measure (Rn N)) (P : Submodule ℝ (Rn N)), finrank ℝ P = n → (∀ᶠ r in 𝓝[>] (0 : ℝ), ν r (Metric.closedBall 0 2) < ∞) → (∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ ∫ y, f y ∂(ν r)) (𝓝[>] 0) (𝓝 (∫ y in (P : Set (Rn N)), f y ∂μHE[n]))) → Tendsto (fun r : ℝ ↦ ν r (Metric.closedBall 0 1)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) := by
+  intro n N ν P hP hfin hlim
+  have hω : volume (Metric.ball (0 : Rn n) 1) ≠ ∞ := measure_ball_lt_top.ne
+  set ω : ℝ≥0∞ := volume (Metric.ball (0 : Rn n) 1)
+  -- `(Hⁿ ⌞ P)(B̄_s(0)) = Hⁿ(P ∩ B̄_s(0)) = sⁿ ω_n` (sibling `plane_ball_measure`).
+  have hplane : ∀ s : ℝ, 0 < s → (μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N))
+      (Metric.closedBall 0 s) = ENNReal.ofReal (s ^ n) * ω := by
+    intro s hs
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+    exact Submission.deGiorgiRH_plane_closedBall_measure n N P hP s hs
+  -- Step 1 (cut-offs): for `0 < a < b`, a bump function `φ ∈ C_c` with values in `[0, 1]`,
+  -- `φ = 1` on `B̄_a(0)` and `φ = 0` off `B_b(0)`.
+  have hcut : ∀ a b : ℝ, 0 < a → a < b → ∃ φ : C_c(Rn N, ℝ), (∀ y, 0 ≤ φ y) ∧ (∀ y, φ y ≤ 1) ∧
+      (∀ y : Rn N, ‖y‖ ≤ a → φ y = 1) ∧ ∀ y : Rn N, b < ‖y‖ → φ y = 0 := by
+    intro a b ha hab
+    let β : ContDiffBump (0 : Rn N) := ⟨a, b, ha, hab⟩
+    refine ⟨⟨⟨β, β.continuous⟩, β.hasCompactSupport⟩, fun y ↦ β.nonneg' y,
+      fun y ↦ β.le_one (x := y), fun y hy ↦ β.one_of_mem_closedBall (mem_closedBall_zero_iff.2 hy),
+      fun y hy ↦ β.zero_of_le_dist ?_⟩
+    rw [dist_zero_right]
+    exact hy.le
+  -- Steps 2 and 4 (comparison with indicators): if `μ(B̄_b(0)) < ∞`, then
+  -- `μ(B̄_a(0)) ≤ ∫ φ dμ ≤ μ(B̄_b(0))`.
+  have key : ∀ (μ : Measure (Rn N)) (φ : C_c(Rn N, ℝ)) (a b : ℝ),
+      μ (Metric.closedBall 0 b) ≠ ∞ → (∀ y, 0 ≤ φ y) → (∀ y, φ y ≤ 1) →
+      (∀ y : Rn N, ‖y‖ ≤ a → φ y = 1) → (∀ y : Rn N, b < ‖y‖ → φ y = 0) →
+      μ (Metric.closedBall 0 a) ≤ ENNReal.ofReal (∫ y, φ y ∂μ) ∧
+        ENNReal.ofReal (∫ y, φ y ∂μ) ≤ μ (Metric.closedBall 0 b) := by
+    intro μ φ a b hb h0 h1 ha hb'
+    have hle : ∫⁻ y, ENNReal.ofReal (φ y) ∂μ ≤ μ (Metric.closedBall 0 b) := by
+      rw [← lintegral_indicator_one measurableSet_closedBall]
+      refine lintegral_mono fun y ↦ ?_
+      by_cases hy : y ∈ Metric.closedBall (0 : Rn N) b
+      · rw [indicator_of_mem hy, Pi.one_apply]
+        exact ENNReal.ofReal_le_one.2 (h1 y)
+      · rw [hb' y (not_le.1 (mt mem_closedBall_zero_iff.2 hy)), ENNReal.ofReal_zero]
+        exact zero_le
+    have hge : μ (Metric.closedBall 0 a) ≤ ∫⁻ y, ENNReal.ofReal (φ y) ∂μ := by
+      rw [← lintegral_indicator_one measurableSet_closedBall]
+      refine lintegral_mono fun y ↦ ?_
+      by_cases hy : y ∈ Metric.closedBall (0 : Rn N) a
+      · rw [indicator_of_mem hy, Pi.one_apply, ha y (mem_closedBall_zero_iff.1 hy),
+          ENNReal.ofReal_one]
+      · rw [indicator_of_notMem hy]
+        exact zero_le
+    rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall h0)
+      (map_continuous φ).aestronglyMeasurable, ENNReal.ofReal_toReal (ne_top_of_le_ne_top hb hle)]
+    exact ⟨hge, hle⟩
+  -- `sⁿ ω_n → ω_n` as `s → 1`, and `1 ∓ τ → 1` as `τ ↓ 0`.
+  have hpow : Tendsto (fun s : ℝ ↦ ENNReal.ofReal (s ^ n) * ω) (𝓝 1) (𝓝 ω) := by
+    have h := ENNReal.Tendsto.mul_const
+      (ENNReal.tendsto_ofReal ((continuous_pow n).tendsto (1 : ℝ))) (Or.inr hω)
+    rwa [one_pow, ENNReal.ofReal_one, one_mul] at h
+  have hsub : Tendsto (fun τ : ℝ ↦ 1 - τ) (𝓝[>] 0) (𝓝 1) :=
+    ((continuous_sub_left (1 : ℝ)).tendsto' 0 1 (sub_zero 1)).mono_left nhdsWithin_le_nhds
+  have hadd : Tendsto (fun τ : ℝ ↦ 1 + τ) (𝓝[>] 0) (𝓝 1) :=
+    ((show Continuous fun τ : ℝ ↦ 1 + τ from continuous_const.add continuous_id).tendsto' 0 1
+      (add_zero 1)).mono_left nhdsWithin_le_nhds
+  -- Steps 5 and 6: squeeze `ν_r(B̄_1(0))` in `[0, ∞]`.
+  rw [tendsto_order]
+  refine ⟨fun c hc ↦ ?_, fun c hc ↦ ?_⟩
+  · -- `c < ω_n`: fix `τ ∈ (0, 1)` with `c < (1 - τ)ⁿ ω_n ≤ ∫_P g dHⁿ`.
+    obtain ⟨τ, hτc, hτ0, hτ1⟩ := (((hpow.comp hsub).eventually (lt_mem_nhds hc)).and
+      (Ioo_mem_nhdsGT one_pos : ∀ᶠ τ in 𝓝[>] (0 : ℝ), τ ∈ Ioo 0 1)).exists
+    obtain ⟨g, hg0, hg1, hga, hgb⟩ := hcut (1 - τ) 1 (by linarith) (by linarith)
+    have hPg := (key ((μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N))) g (1 - τ) 1
+      (by rw [hplane 1 one_pos]; exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hω)
+      hg0 hg1 hga hgb).1
+    rw [hplane (1 - τ) (by linarith)] at hPg
+    filter_upwards [(ENNReal.tendsto_ofReal (hlim g)).eventually (lt_mem_nhds (hτc.trans_le hPg)),
+      hfin] with r hr hr2
+    -- `∫ g dν_r ≤ ν_r(B̄_1(0))`, as `ν_r(B̄_1(0)) ≤ ν_r(B̄_2(0)) < ∞`.
+    exact hr.trans_le (key (ν r) g (1 - τ) 1
+      ((measure_mono (Metric.closedBall_subset_closedBall one_le_two)).trans_lt hr2).ne
+      hg0 hg1 hga hgb).2
+  · -- `ω_n < c`: fix `τ ∈ (0, 1)` with `∫_P f dHⁿ ≤ (1 + τ)ⁿ ω_n < c`.
+    obtain ⟨τ, hτc, hτ0, hτ1⟩ := (((hpow.comp hadd).eventually (gt_mem_nhds hc)).and
+      (Ioo_mem_nhdsGT one_pos : ∀ᶠ τ in 𝓝[>] (0 : ℝ), τ ∈ Ioo 0 1)).exists
+    obtain ⟨f, hf0, hf1, hfa, hfb⟩ := hcut 1 (1 + τ) one_pos (by linarith)
+    have hPf := (key ((μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N))) f 1 (1 + τ)
+      (by rw [hplane (1 + τ) (by linarith)]; exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hω)
+      hf0 hf1 hfa hfb).2
+    rw [hplane (1 + τ) (by linarith)] at hPf
+    filter_upwards [(ENNReal.tendsto_ofReal (hlim f)).eventually (gt_mem_nhds (hPf.trans_lt hτc)),
+      hfin] with r hr hr2
+    -- `ν_r(B̄_1(0)) ≤ ∫ f dν_r`, as `ν_r(B̄_{1+τ}(0)) ≤ ν_r(B̄_2(0)) < ∞`.
+    exact (key (ν r) f 1 (1 + τ)
+      ((measure_mono (Metric.closedBall_subset_closedBall (by linarith))).trans_lt hr2).ne
+      hf0 hf1 hfa hfb).1.trans_lt hr
+
+/-- **Density `ωₙ` at a point with an approximate tangent plane of multiplicity `1`** (the
+measure form of Simon Ch. 3, Remark 1.5(3), as used for `μ_E` in Thm. 4.3; parent proof step 3).
+If `μ(B̄_δ(x)) < ∞` for some `δ > 0` and `μ` has approximate tangent plane `P` with multiplicity
+`1` at `x`, then `μ(B̄_ρ(x)) / ρⁿ → ωₙ = Lⁿ(B₁(0))` in `[0, ∞]` as `ρ ↓ 0`.
+The rescaled push-forwards `ν_r = (rⁿ)⁻¹ η_{x,r#} μ` satisfy `ν_r(B̄_R(0)) = μ(B̄_{rR}(x)) / rⁿ`
+for `r > 0`, as `η_{x,r}⁻¹(B̄_R(0)) = B̄_{rR}(x)`. Hence `ν_r(B̄_2(0)) < ∞` for `r < δ / 2`, and
+`∫ f dν_r = (rⁿ)⁻¹ ∫ f ∘ η_{x,r} dμ → ∫_P f dHⁿ` for `f ∈ C_c(ℝᴺ)`, so
+`deGiorgiRH_closedBall_tendsto_of_vague_plane` gives `ν_r(B̄_1(0)) → ωₙ`. -/
+theorem Submission.deGiorgiRH_measure_density_of_tangentPlane : ∀ (n N : ℕ) (μ : Measure (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)), (∃ δ : ℝ, 0 < δ ∧ μ (Metric.closedBall x δ) < ∞) → HasApproxTangentPlaneWithMultiplicity n μ x P 1 → Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) := by
+  intro n N μ x P ⟨δ, hδ, hδμ⟩ hP
+  have hη : ∀ r, Measurable (blowUpMap x r) := fun r ↦ by
+    unfold blowUpMap
+    fun_prop
+  let ν : ℝ → Measure (Rn N) := fun r ↦ (ENNReal.ofReal (r ^ n))⁻¹ • μ.map (blowUpMap x r)
+  -- `‖η_{x,r}(y)‖ = ‖y - x‖ / r`, so `ν_r(B̄_R(0)) = μ(B̄_{rR}(x)) / rⁿ`.
+  have hν : ∀ r : ℝ, 0 < r → ∀ R : ℝ,
+      ν r (Metric.closedBall 0 R) = μ (Metric.closedBall x (r * R)) / ENNReal.ofReal (r ^ n) := by
+    intro r hr R
+    have hpre : blowUpMap x r ⁻¹' Metric.closedBall 0 R = Metric.closedBall x (r * R) := by
+      ext y
+      rw [mem_preimage, mem_closedBall_zero_iff, mem_closedBall_iff_norm, blowUpMap, norm_smul,
+        norm_inv, Real.norm_eq_abs, abs_of_pos hr, inv_mul_le_iff₀ hr]
+    rw [Measure.smul_apply, Measure.map_apply (hη r) Metric.isClosed_closedBall.measurableSet,
+      hpre, smul_eq_mul, ENNReal.div_eq_inv_mul]
+  -- For `0 < r < δ / 2`, `ν_r(B̄_2(0)) = μ(B̄_{2r}(x)) / rⁿ ≤ μ(B̄_δ(x)) / rⁿ < ∞`.
+  have hfin : ∀ᶠ r in 𝓝[>] (0 : ℝ), ν r (Metric.closedBall 0 2) < ∞ := by
+    filter_upwards [Ioo_mem_nhdsGT (half_pos hδ)] with r hr
+    rw [hν r hr.1]
+    refine ENNReal.div_lt_top ?_ (ENNReal.ofReal_pos.2 (pow_pos hr.1 n)).ne'
+    refine ((measure_mono (Metric.closedBall_subset_closedBall ?_)).trans_lt hδμ).ne
+    linarith [hr.2]
+  -- `∫ f dν_r = (rⁿ)⁻¹ ∫ f ∘ η_{x,r} dμ`, which tends to `1 * ∫_P f dHⁿ`.
+  have hlim : ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ ∫ y, f y ∂(ν r)) (𝓝[>] 0)
+      (𝓝 (∫ y in (P : Set (Rn N)), f y ∂μHE[n])) := by
+    intro f
+    have hf := hP.2 f
+    rw [one_mul] at hf
+    refine hf.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    rw [integral_smul_measure, integral_map (hη r).aemeasurable
+      (map_continuous f).aestronglyMeasurable, ENNReal.toReal_inv,
+      ENNReal.toReal_ofReal (pow_nonneg hr.le n), smul_eq_mul]
+  refine (Submission.deGiorgiRH_closedBall_tendsto_of_vague_plane n N ν P hP.1 hfin hlim).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  rw [hν r hr, mul_one]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
