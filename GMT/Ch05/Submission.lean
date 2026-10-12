@@ -496,6 +496,103 @@ theorem allard52_gpa_hsNorm_bounds : ∀ (m k : ℕ) (A B : Rn m →L[ℝ] Rn k)
     rw [hF, hF, hF]
     exact norm_add_le (F A) (F B)
 
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123), (Gp) with `q = id`: for `|A|, |B| ≤ L₀` the
+orthogonal projections `p_{Γ_A}`, `p_{Γ_B}` onto the graph planes satisfy
+`|A − B|² ≤ |p_{Γ_A} − p_{Γ_B}|² ≤ 3 |A − B|²` (Hilbert–Schmidt norms), `L₀ = L₀(n, ℓ) ∈ (0, 1/4]`. -/
+theorem allard52_gpa_graphProj_bilipschitz : ∀ (n ℓ : ℕ), ∃ L₀ : ℝ, 0 < L₀ ∧ L₀ ≤ 1 / 4 ∧ ∀ (A B : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNorm B ≤ L₀ → hsNormSq (A - B) ≤ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ∧ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ≤ 3 * hsNormSq (A - B) := by
+  -- Steps 1 and 4 for any `C²` map: `‖f X - f Y - Df(0)(X - Y)‖ ≤ K r ‖X - Y‖` on `B_r(0)`, `r ≤ 1`
+  -- (`Df` is `K`-Lipschitz on the compact convex `B_1(0)`; mean value inequality on `B_r(0)`).
+  have remainder : ∀ {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+      [NormedAddCommGroup F] [NormedSpace ℝ F] (f : E → F), ContDiff ℝ 2 f → ∃ K : ℝ, 0 ≤ K ∧
+      ∀ r : ℝ, r ≤ 1 → ∀ X Y : E, ‖X‖ ≤ r → ‖Y‖ ≤ r →
+        ‖f X - f Y - fderiv ℝ f 0 (X - Y)‖ ≤ K * r * ‖X - Y‖ := by
+    intro E F _ _ _ _ _ f hf
+    have hf' : ContDiff ℝ 1 (fderiv ℝ f) := hf.fderiv_right (by norm_num)
+    obtain ⟨K, hK⟩ := (hf'.contDiffOn (s := closedBall (0 : E) 1)).exists_lipschitzOnWith
+      one_ne_zero (convex_closedBall 0 1) (isCompact_closedBall 0 1)
+    refine ⟨K, K.coe_nonneg, fun r hr X Y hX hY => ?_⟩
+    have hdiff : ∀ x ∈ closedBall (0 : E) r, DifferentiableAt ℝ f x :=
+      fun x _ => hf.differentiable (by norm_num) x
+    have hbound : ∀ x ∈ closedBall (0 : E) r, ‖fderiv ℝ f x - fderiv ℝ f 0‖ ≤ K * r := fun x hx =>
+      hK.norm_sub_le_of_le (closedBall_subset_closedBall hr hx)
+        (mem_closedBall_self zero_le_one) (by simpa using hx)
+    exact (convex_closedBall (0 : E) r).norm_image_sub_le_of_norm_fderiv_le' hdiff hbound
+      (mem_closedBall_zero_iff.2 hY) (mem_closedBall_zero_iff.2 hX)
+  -- Steps 0 and 6–8: `|X|² = 2|Z|²` and `|Y| ≤ (√3 - √2)|Z|` give `|Z|² ≤ |X + Y|² ≤ 3|Z|²`,
+  -- since `(2√2 - √3)|Z| ≤ |X + Y| ≤ √3 |Z|` and `2√2 - √3 ≥ 1`.
+  have perturb : ∀ (m k p q : ℕ) (X Y : Rn m →L[ℝ] Rn k) (Z : Rn p →L[ℝ] Rn q),
+      hsNormSq X = 2 * hsNormSq Z → hsNorm Y ≤ (Real.sqrt 3 - Real.sqrt 2) * hsNorm Z →
+        hsNormSq Z ≤ hsNormSq (X + Y) ∧ hsNormSq (X + Y) ≤ 3 * hsNormSq Z := by
+    intro m k p q X Y Z hX hY
+    have hsq : ∀ {a b : ℕ} (T : Rn a →L[ℝ] Rn b), hsNorm T ^ 2 = hsNormSq T :=
+      fun T => Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)
+    have hneg : hsNorm (-Y) = hsNorm Y := by simp [hsNorm, hsNormSq]
+    have hz : 0 ≤ hsNorm Z := Real.sqrt_nonneg _
+    have hx : hsNorm X = Real.sqrt 2 * hsNorm Z := by
+      rw [hsNorm, hX, Real.sqrt_mul (by norm_num)]; rfl
+    have tri1 := (allard52_gpa_hsNorm_bounds m k X Y).2.2
+    have tri2 := (allard52_gpa_hsNorm_bounds m k (X + Y) (-Y)).2.2
+    rw [add_neg_cancel_right, hneg] at tri2
+    have ha : 0 ≤ hsNorm (X + Y) := Real.sqrt_nonneg _
+    have s2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+    have s3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+    have s3le : Real.sqrt 3 ≤ 2 := by
+      rw [Real.sqrt_le_left (by norm_num)]; norm_num
+    have key : 1 ≤ 2 * Real.sqrt 2 - Real.sqrt 3 := by
+      nlinarith [Real.sqrt_nonneg 2, Real.sqrt_nonneg 3]
+    have up : hsNorm (X + Y) ≤ Real.sqrt 3 * hsNorm Z := by linarith
+    have low : hsNorm Z ≤ hsNorm (X + Y) := by nlinarith
+    rw [← hsq (X + Y), ← hsq Z]
+    exact ⟨pow_le_pow_left₀ hz low 2, (pow_le_pow_left₀ ha up 2).trans_eq (by rw [mul_pow, s3])⟩
+  intro n ℓ
+  -- [S2]: `Π` is `C²` and `|DΠ(0) H|² = 2 |H|²`.
+  obtain ⟨hC2, hD⟩ := Submission.allard52_gpa_graphProj_smooth n ℓ
+  obtain ⟨K, hK0, hK⟩ := remainder _ hC2
+  set D := fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ =>
+    (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 with hDdef
+  -- Step 2: `C_g = 1 + √(n + ℓ) K` and `L₀ = min {1/4, (√3 - √2)/C_g}`.
+  have h23 : Real.sqrt 2 < Real.sqrt 3 := Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  set Cg : ℝ := 1 + Real.sqrt ((n + ℓ : ℕ) : ℝ) * K with hCg
+  have hCg1 : 1 ≤ Cg := by
+    have := mul_nonneg (Real.sqrt_nonneg ((n + ℓ : ℕ) : ℝ)) hK0
+    linarith
+  set L₀ : ℝ := min (1 / 4) ((Real.sqrt 3 - Real.sqrt 2) / Cg) with hL₀
+  have hL₀pos : 0 < L₀ := lt_min (by norm_num) (div_pos (by linarith) (by linarith))
+  have hL₀1 : L₀ ≤ 1 := (min_le_left _ _).trans (by norm_num)
+  have hCgL : Cg * L₀ ≤ Real.sqrt 3 - Real.sqrt 2 := by
+    have := mul_le_mul_of_nonneg_left (min_le_right (1 / 4 : ℝ) ((Real.sqrt 3 - Real.sqrt 2) / Cg))
+      (show (0 : ℝ) ≤ Cg by linarith)
+    rwa [mul_div_cancel₀ _ (by linarith : Cg ≠ 0)] at this
+  refine ⟨L₀, hL₀pos, min_le_left _ _, fun A B hA hB => ?_⟩
+  -- Step 3: `‖A‖ ≤ |A| ≤ L₀` and `‖B‖ ≤ L₀` [S1].
+  have hA' : ‖A‖ ≤ L₀ := (allard52_gpa_hsNorm_bounds n ℓ A B).1.trans hA
+  have hB' : ‖B‖ ≤ L₀ := (allard52_gpa_hsNorm_bounds n ℓ B A).1.trans hB
+  -- Step 4: the remainder `R = Π(A) - Π(B) - D(A - B)` has `‖R‖ ≤ K L₀ ‖A - B‖`.
+  have hR := hK L₀ hL₀1 A B hA' hB'
+  set R : Amb n ℓ →L[ℝ] Amb n ℓ :=
+    (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection -
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection - D (A - B)
+    with hRdef
+  -- Step 5: `|R| ≤ √(n + ℓ) ‖R‖ ≤ √(n + ℓ) K L₀ |A - B| ≤ (√3 - √2) |A - B|` [S1].
+  have hRb : hsNorm R ≤ (Real.sqrt 3 - Real.sqrt 2) * hsNorm (A - B) := by
+    have hs0 : 0 ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) := Real.sqrt_nonneg _
+    have hh0 : 0 ≤ hsNorm (A - B) := Real.sqrt_nonneg _
+    calc hsNorm R ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) * ‖R‖ :=
+          (allard52_gpa_hsNorm_bounds (n + ℓ) (n + ℓ) R R).2.1
+      _ ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) * (K * L₀ * ‖A - B‖) := by gcongr
+      _ ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) * (K * L₀ * hsNorm (A - B)) := by
+          gcongr; exact (allard52_gpa_hsNorm_bounds n ℓ (A - B) (A - B)).1
+      _ = (Real.sqrt ((n + ℓ : ℕ) : ℝ) * K) * L₀ * hsNorm (A - B) := by ring
+      _ ≤ Cg * L₀ * hsNorm (A - B) := by gcongr; linarith
+      _ ≤ (Real.sqrt 3 - Real.sqrt 2) * hsNorm (A - B) := by gcongr
+  -- Steps 6–8: `Π(A) - Π(B) = D(A - B) + R` with `|D(A - B)|² = 2|A - B|²` [S2].
+  have hsum : (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection -
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection =
+      D (A - B) + R := by
+    rw [hRdef]; abel
+  rw [hsum]
+  exact perturb (n + ℓ) (n + ℓ) n ℓ (D (A - B)) R (A - B) (hD (A - B)) hRb
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
