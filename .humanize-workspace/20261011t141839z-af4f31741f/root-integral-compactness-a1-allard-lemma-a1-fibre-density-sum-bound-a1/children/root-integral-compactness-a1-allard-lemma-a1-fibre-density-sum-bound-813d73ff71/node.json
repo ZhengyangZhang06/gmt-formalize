@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1.one_point_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1",
+  "depth": 4,
+  "title": "Density at a single fibre point (Simon Ch. 8, one-point case of Remark 5.11(∗))",
+  "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N, x, y ∈ ℝ^N, θ ∈ [0,∞] and δ, ε ∈ ℝ with 0 < δ ≤ 1/2, 2^{n+2}δ ≤ 1, 0 < ε ≤ δ⁴ and |y − x| < ε. Suppose θ ≤ e^{εσ}·densityRatio n μ y σ (= e^{εσ}μ(B_σ(y))/(ω_nσ^n), closed balls, ω_n = unitBallVolume n) for every σ ∈ (0,1). Then θ ≤ (1 + δ)μ(B_1(x))/ω_n in [0,∞].",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x y : Euclidean N) (θ : ℝ≥0∞) (δ ε : ℝ), 0 < δ → δ ≤ 1 / 2 → 2 ^ (n + 2) * δ ≤ 1 → 0 < ε → ε ≤ δ ^ 4 → ‖y - x‖ < ε → (∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n μ y σ) → θ ≤ ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n",
+  "lean_name": "intcpt_allard_fdsb_one_point_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-813d73ff71-a1"
+}
