@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.carrier_null_measurable-a1.closure_lower_density-a1",
+  "parent_id": "root.first_rectifiability-a1.carrier_null_measurable-a1",
+  "depth": 3,
+  "title": "Uniform lower density-ratio bounds pass to the closure",
+  "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N = Euclidean N, E ⊆ ℝ^N, c ∈ [0, ∞] and δ ∈ ℝ. Write densityRatio n μ z ρ = μ(B_ρ(z))/(ω_n ρ^n) in [0, ∞], where B_ρ(z) is the closed ball and ω_n = unitBallVolume n. Suppose c ≤ densityRatio n μ x ρ for every x ∈ E and every real ρ with 0 < ρ ≤ δ. Then c ≤ densityRatio n μ y ρ for every y in the closure of E and every real ρ with 0 < ρ ≤ δ.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (E : Set (Euclidean N)) (c : ℝ≥0∞) (δ : ℝ), (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → c ≤ densityRatio n μ x ρ) → ∀ y ∈ closure E, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → c ≤ densityRatio n μ y ρ",
+  "lean_name": "frt_cnm_densityRatio_lower_closure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-carrier-null-measurable-a1-closure-lower-density-a1-a1"
+}

@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "exists_inv_nat_lt|theorem inv_le_inv|theorem inv_lt_inv|theorem le_div_iff_mul_le",
+        "theorem Tendsto.const_mul|theorem continuous_ofReal|theorem continuous_pow",
+        "exists_iUnion_isClosed",
+        "theorem of_null|protected theorem iUnion|protected theorem diff|def NullMeasurableSet",
+        "abbrev Euclidean|isOpen_domain|def weight|weight_finite_on_compact",
+        "frt_cnm_exists_uniform_densityRatio_lower|frt_cnm_densityRatio_lower_closure",
+        "python3 -I /tmp/cnm-independent-audit-FYdI9v/prepare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cnm-independent-audit-FYdI9v/uniform_lower_density.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cnm-independent-audit-FYdI9v/closure_lower_density.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cnm-independent-audit-FYdI9v/uniform_lower_density_Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cnm-independent-audit-FYdI9v/closure_lower_density_Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cnm-independent-audit-FYdI9v/AssemblyImplication.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-carrier-null-measurable-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-carrier-null-measurable-a1/decomposition-v1.json",
+        "/tmp/cnm-independent-audit-FYdI9v/prepare.py",
+        "/tmp/cnm-independent-audit-FYdI9v/uniform_lower_density.lean",
+        "/tmp/cnm-independent-audit-FYdI9v/closure_lower_density.lean",
+        "/tmp/cnm-independent-audit-FYdI9v/AssemblyImplication.lean"
+      ],
+      "conclusion": "Verified pinned revisions and byte-identical snapshot Contract/workspace Contract/Submission. The cited ENNReal cancellation and continuity lemmas have precisely the needed side conditions. Both standalone comparator challenge types elaborate without child implementations. Both supplied child proofs compile independently, using only propext, Classical.choice and Quot.sound. The parent assembly also compiles with exactly the two child contracts and the inherited sibling contract as explicit parameters, proving the selected frozen conclusion with only those standard axioms. Thus the split appropriately isolates two independent analytic obligations; dropping the unused theta threshold and using a countable closed cover preserve the argument. Both lean_names are bare identifiers, with no reservations in other DAG branches or node JSONs. No matching declaration names were found in the searched library sources. The dependency graph, including both proposed children, is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "uniform_lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every prose hypothesis and quantifier. The reciprocal choice gives a strict gap below t; HasDensity transfers it to a right neighbourhood, and a smaller reciprocal radius includes the required upper endpoint. This also handles t = infinity. The supplied argument is complete and non-circular, requires no sibling dependency, and provides the uniform pieces needed by the selected parent."
+    },
+    {
+      "key": "closure_lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the arbitrary-measure statement. Positive finite denominators justify cancellation; shrinking-ball inclusion and measure monotonicity give the bound before taking limits. Multiplication by arbitrary c, including infinity, preserves the limit because the limiting denominator is nonzero. The volume instances apply in dimension zero; nonpositive delta and empty E are vacuous. The supplied proof is complete, independent of both the parent and the other child, and establishes the closure bound required for the Hausdorff-null defect argument."
+    }
+  ],
+  "required_changes": []
+}
