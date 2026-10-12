@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_face_stokes-a1.cube_ftc-a1",
+  "parent_id": "root.boundary_rectifiability-a1.lattice_face_stokes-a1",
+  "depth": 3,
+  "title": "Fubini and the fundamental theorem of calculus on a cube",
+  "statement": "For n ∈ ℕ, ρ ≥ 0, every C^1 function φ : (Fin (n+1) → ℝ) → ℝ and every i ∈ Fin (n+1): ∫_{[0,ρ]^{n+1}} Dφ(s)(e_i) ds = ∫_{[0,ρ]^n} (φ(insertNth_i(ρ, s')) − φ(insertNth_i(0, s'))) ds'. Here e_i = Pi.single i 1, and insertNth_i(t, s') = Fin.insertNth i t s' is the point whose i-th coordinate is t and whose remaining coordinates, in increasing order, are s'. Both integrals are Lebesgue integrals over the boxes Set.Icc 0 (fun _ => ρ) in Fin (n+1) → ℝ and Fin n → ℝ.",
+  "lean_statement": "∀ (n : ℕ) (ρ : ℝ), 0 ≤ ρ → ∀ (φ : (Fin (n + 1) → ℝ) → ℝ), ContDiff ℝ 1 φ → ∀ (i : Fin (n + 1)), ∫ s in Set.Icc (0 : Fin (n + 1) → ℝ) (fun _ => ρ), fderiv ℝ φ s (Pi.single i 1) = ∫ s in Set.Icc (0 : Fin n → ℝ) (fun _ => ρ), (φ (Fin.insertNth i ρ s) - φ (Fin.insertNth i 0 s))",
+  "lean_name": "br_cube_integral_fderiv_eq_faces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-face-stokes-a1-cube-ftc-a1-a1"
+}

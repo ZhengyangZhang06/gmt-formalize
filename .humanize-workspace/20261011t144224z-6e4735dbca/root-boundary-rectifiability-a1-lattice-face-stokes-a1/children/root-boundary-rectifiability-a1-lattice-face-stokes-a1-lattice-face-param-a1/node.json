@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_face_stokes-a1.lattice_face_param-a1",
+  "parent_id": "root.boundary_rectifiability-a1.lattice_face_stokes-a1",
+  "depth": 3,
+  "title": "Integrals over a lattice face as integrals over the parameter cube",
+  "statement": "For all P, d ∈ ℕ, every real ρ, every d-face index G = (w, γ) ∈ LatticeFaceIndex d P (w ∈ ℤ^P, γ : Fin d → Fin P strictly increasing) and every function g : ℝ^P → ℝ, with no measurability or integrability assumption (Bochner integrals): ∫_{latticeFace ρ G} g dH^d = ∫_{[0,ρ]^d} g(Σ_l ρ w_l e_l + Σ_j s_j e_{γ(j)}) ds. Here H^d = μHE[d] on ℝ^P = EuclideanSpace ℝ (Fin P), e_l = EuclideanSpace.single l 1, and the right side is the integral against Lebesgue measure (volume) on Fin d → ℝ over the box Set.Icc 0 (fun _ => ρ).",
+  "lean_statement": "∀ (P d : ℕ) (ρ : ℝ) (G : LatticeFaceIndex d P) (g : Eucl P → ℝ), ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P)) = ∫ s in Set.Icc (0 : Fin d → ℝ) (fun _ => ρ), g (∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) + ∑ j, s j • EuclideanSpace.single (G.2 j) (1 : ℝ))",
+  "lean_name": "br_latticeFace_setIntegral_eq_cube",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-face-stokes-a1-lattice-face-param-a1-a1"
+}
