@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.annular_tonelli-a1.kernel_lower_bound-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.annular_tonelli-a1",
+  "depth": 5,
+  "title": "One-variable cutoff-kernel bound h(c) >= c^(-n) via the fundamental theorem of calculus",
+  "statement": "Let n be a natural number, phi : R -> R, and eps, s, r, c real numbers. Assume eps > 0; phi is C^1 and nonincreasing, with phi(u) = 1 for u <= 1 and phi(u) = 0 for u >= 1 + eps; s > 0 and (1 + eps) s <= c <= r. Write phi' := deriv phi. Then 1/c^n <= integral_s^r (-(c/t * phi'(c/t)))/t/t^n dt, where the integral is the oriented interval integral from s to r.",
+  "lean_statement": "∀ (n : ℕ) (φ : ℝ → ℝ) (ε s r c : ℝ), 0 < ε → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → 0 < s → (1 + ε) * s ≤ c → c ≤ r → 1 / c ^ n ≤ ∫ t in s..r, -(c / t * deriv φ (c / t)) / t / t ^ n",
+  "lean_name": "allard52_amt_kernel_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-a-9f53b90290-a1"
+}

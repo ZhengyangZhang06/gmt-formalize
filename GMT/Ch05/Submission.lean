@@ -458,6 +458,92 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Cutoff-kernel lower bound** (the cutoff form of Simon Ch. 4, 4.7: step 6 of the proof of
+`allard52_am_annular_tonelli`, for one fixed `c ∈ [(1 + ε)s, r]`).  For a `C¹` nonincreasing
+cutoff `φ` (`φ = 1` on `(−∞, 1]`, `φ = 0` on `[1 + ε, ∞)`), `0 < s` and `(1 + ε)s ≤ c ≤ r`,
+`c⁻ⁿ ≤ ∫ₛʳ −((c/t) φ'(c/t))/t · t⁻ⁿ dt`.
+Proof: the kernel `k(t) = −((c/t) φ'(c/t))/t` is the derivative of `t ↦ φ(c/t)` and is `≥ 0`
+on `[s, r]`, so `∫ₛʳ k = φ(c/r) − φ(c/s) = 1 − 0 = 1`.  Where `k(t) ≠ 0` we have `φ'(c/t) ≠ 0`,
+hence `c/t ≥ 1`, i.e. `t ≤ c`, and `k(t) c⁻ⁿ ≤ k(t) t⁻ⁿ`; integrate. -/
+theorem allard52_amt_kernel_lower_bound : ∀ (n : ℕ) (φ : ℝ → ℝ) (ε s r c : ℝ), 0 < ε → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → 0 < s → (1 + ε) * s ≤ c → c ≤ r → 1 / c ^ n ≤ ∫ t in s..r, -(c / t * deriv φ (c / t)) / t / t ^ n := by
+  intro n φ ε s r c hε hφ hanti hone hzero hs hsc hcr
+  -- step 1: `0 < s ≤ c ≤ r`
+  have hc : 0 < c := by nlinarith
+  have hsr : s ≤ r := by nlinarith
+  have hr : 0 < r := hc.trans_le hcr
+  have hpos : ∀ t ∈ Icc s r, 0 < t := fun t ht => hs.trans_le ht.1
+  -- step 2: `φ'` is continuous, `φ' ≤ 0`, and `φ' = 0` on `(−∞, 1)`
+  have hdiff : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  have hdcont : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hdnp : ∀ u, deriv φ u ≤ 0 := fun u => hanti.deriv_nonpos
+  have hdlo : ∀ u, u < 1 → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (1 : ℝ) := by
+      filter_upwards [Iio_mem_nhds hu] with v hv
+      exact hone v hv.le
+    exact h.deriv_eq.trans (deriv_const u 1)
+  -- step 3: the kernel `k` is continuous and nonnegative on `[s, r]`
+  obtain ⟨k, hk⟩ : ∃ k : ℝ → ℝ, k = fun t => -(c / t * deriv φ (c / t)) / t := ⟨_, rfl⟩
+  have hct : ContinuousOn (fun t : ℝ => c / t) (Icc s r) :=
+    continuousOn_const.div continuousOn_id fun t ht => (hpos t ht).ne'
+  have hkcont : ContinuousOn k (Icc s r) := by
+    rw [hk]
+    exact ((hct.mul (hdcont.comp_continuousOn hct)).neg).div continuousOn_id
+      fun t ht => (hpos t ht).ne'
+  have hknn : ∀ t ∈ Icc s r, 0 ≤ k t := by
+    intro t ht
+    have ht0 := hpos t ht
+    rw [hk]
+    exact div_nonneg (neg_nonneg.mpr (mul_nonpos_of_nonneg_of_nonpos
+      (div_nonneg hc.le ht0.le) (hdnp _))) ht0.le
+  -- step 4: `∫ₛʳ k = φ(c/r) − φ(c/s) = 1`
+  have hderiv : ∀ t ∈ uIcc s r, HasDerivAt (fun t => φ (c / t)) (k t) t := by
+    intro t ht
+    rw [uIcc_of_le hsr] at ht
+    have ht0 := hpos t ht
+    have h1 : HasDerivAt (fun t => c / t) (c * -(t ^ 2)⁻¹) t := by
+      simpa only [div_eq_mul_inv] using (hasDerivAt_inv ht0.ne').const_mul c
+    have h2 : HasDerivAt (fun t => φ (c / t)) (deriv φ (c / t) * (c * -(t ^ 2)⁻¹)) t :=
+      (hdiff (c / t)).hasDerivAt.comp t h1
+    convert h2 using 1
+    rw [hk]
+    field_simp
+  have hkint : IntervalIntegrable k volume s r := hkcont.intervalIntegrable_of_Icc hsr
+  have hint1 : ∫ t in s..r, k t = 1 := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hkint,
+      hone _ ((div_le_one hr).mpr hcr), hzero _ ((le_div_iff₀ hs).mpr hsc), sub_zero]
+  -- step 5: `k(t) c⁻ⁿ ≤ k(t) t⁻ⁿ` on `[s, r]`
+  have hpt : ∀ t ∈ Icc s r, k t * (1 / c ^ n) ≤ k t * (1 / t ^ n) := by
+    intro t ht
+    have ht0 := hpos t ht
+    by_cases hk0 : k t = 0
+    · rw [hk0, zero_mul, zero_mul]
+    · have hd : deriv φ (c / t) ≠ 0 := by
+        intro hd
+        apply hk0
+        rw [hk]
+        simp only [hd, mul_zero, neg_zero, zero_div]
+      have h1 : 1 ≤ c / t := by
+        by_contra hlt
+        push Not at hlt
+        exact hd (hdlo _ hlt)
+      have htc : t ≤ c := by
+        rwa [le_div_iff₀ ht0, one_mul] at h1
+      exact mul_le_mul_of_nonneg_left
+        (one_div_le_one_div_of_le (pow_pos ht0 n) (pow_le_pow_left₀ ht0.le htc n)) (hknn t ht)
+  -- step 6: integrate
+  have hint2 : IntervalIntegrable (fun t => k t * (1 / t ^ n)) volume s r := by
+    refine ContinuousOn.intervalIntegrable_of_Icc hsr (hkcont.mul ?_)
+    exact continuousOn_const.div (continuousOn_id.pow n) fun t ht => (pow_pos (hpos t ht) n).ne'
+  have hmono := intervalIntegral.integral_mono_on hsr (hkint.mul_const (1 / c ^ n)) hint2 hpt
+  rw [intervalIntegral.integral_mul_const, hint1, one_mul] at hmono
+  refine hmono.trans_eq (intervalIntegral.integral_congr fun t _ => ?_)
+  simp only [hk]
+  ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
