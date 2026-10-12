@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4beb0885a08bb009cded4efd66ed939660fc8b02e8c06ad19a937e61bcc9e580",
+  "git_delta": {
+    "base_commit": "c46aedbd83ece4d3c1ac9121fc87b822e0c920ae",
+    "candidate_commit": "cf9514097e2ea8835f44de8bc1c821c922d0ea97",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "stable_second_variation_integrand_integrableOn",
+    "diff_sha256": "36f91c092ae2722b549ef3a45261651d7f92445b9385609a19c4fa9c41767cc2",
+    "source_sha256": "7366c5d47e22ba6a9df98ea89d6deb6b79f9bc41bffce3b87efbcae02713d30b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.stable_second_variation_integrand_integrableOn",
+      "statement": "∀ (n N : ℕ) (M K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), MeasurableSet M → ContinuousOn (tangentProjection M) M → ContDiff ℝ 1 (initialVelocity φ) → IsClosed K → (∀ x ∉ K, initialVelocity φ x = 0) → IsCompact (M ∩ K) → μHE[n] (M ∩ K) < ⊤ → (∀ y ∈ M, ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ (initialVelocity φ) y τ) = -inner ℝ (initialVelocity φ y) (secondFundamentalForm M y τ η)) → (∀ y ∈ M, y ∉ K → stableSecondVariationIntegrand M φ y = 0) ∧ IntegrableOn (stableSecondVariationIntegrand M φ) M μHE[n]",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
