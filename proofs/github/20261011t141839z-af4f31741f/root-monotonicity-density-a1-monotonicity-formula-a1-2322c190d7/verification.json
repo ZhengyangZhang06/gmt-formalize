@@ -1,0 +1,20 @@
+{
+  "node_id": "root.monotonicity_density-a1.monotonicity_formula-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/562",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "8a2840f9496cbb0a3c7725abb03ce547808bdc84",
+  "integrated_commit": "",
+  "proof_base_commit": "1da933b87df2fc1a632380c22ecccd510b9feb60",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.monotonicity_density-a1",
+  "requires": [
+    "root.monotonicity_density-a1.monotonicity_formula-a1.radial_layer_cake-a1",
+    "root.monotonicity_density-a1.monotonicity_formula-a1.radial_first_variation_bound-a1",
+    "root.monotonicity_density-a1.monotonicity_formula-a1.integrating_factor_comparison-a1",
+    "root.monotonicity_density-a1.monotonicity_formula-a1.exp_weighted_density_limit-a1"
+  ]
+}
