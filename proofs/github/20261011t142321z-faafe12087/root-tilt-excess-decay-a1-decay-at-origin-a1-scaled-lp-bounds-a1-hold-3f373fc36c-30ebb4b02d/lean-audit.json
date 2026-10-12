@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5dda4afd8dd46a1fdc71a7d8f7148fc1cd1d87b405aca67dfeb316f654fb9813",
+  "git_delta": {
+    "base_commit": "aafa184c6daccd39901a312897687b2635076c78",
+    "candidate_commit": "8f6cd6b0a9882bcb2ae79fe060cd41a15dd65c8b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_slb_lintegral_rpow_le_scaledLpNorm",
+    "diff_sha256": "d42f40764368c239aef42b736855c192514afd01e296d2cb67afac07a5a57b29",
+    "source_sha256": "1b1034ddf1be85f53308196d35691dcedf12706baf761b7151d75bb1692fc52b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_slb_lintegral_rpow_le_scaledLpNorm",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
