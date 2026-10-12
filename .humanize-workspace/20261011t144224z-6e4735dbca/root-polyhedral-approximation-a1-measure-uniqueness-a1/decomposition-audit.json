@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "polyhedral_approx_(finite_smooth_ext|density_split|integrable_smooth_ext)",
+        "integral_withDensity_eq_integral_toReal_smul|variable|integral_withDensity_eq_integral_smul",
+        "variable|haveLebesgueDecomposition_add|singularPart_eq_zero_of_ac|rnDeriv_lt_top|lintegral_rnDeriv_lt_top|measurable_rnDeriv|instance.*[Ll]ebesgue|isFiniteMeasure_withDensity",
+        "exists_open_between_and_isCompact_closure|bounded_above_of_compact_support|integrable_smul_left_of_hasCompactSupport",
+        "scoped.*∞|notation.*∞|infty",
+        "def contract_scope|def validate_lean_statement|def validate_lean_name|Submission|child",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mu_independent_audit_udl5wmi6/FullAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mu_independent_audit_udl5wmi6/AssemblyAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-measure-uniqueness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-measure-uniqueness-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/mu_decomp_check/Scratch/FullCheck.lean",
+        "/tmp/mu_decomp_check/Scratch/Assembly.lean",
+        "/tmp/mu_independent_audit_udl5wmi6/FullAudit.lean",
+        "/tmp/mu_independent_audit_udl5wmi6/AssemblyAudit.lean"
+      ],
+      "conclusion": "Verified the frozen project and Mathlib revisions. The sources confirm the C∞ exponent, density identities for arbitrary integrands, and smooth-test uniqueness with the stated hypotheses. No proposed name occurs in the snapshot project or is reserved by another DAG branch or decomposition. All names are bare identifiers. All child types pass validation and independently elaborate before their implementations. Fresh checks of the supplied implementations, exact-type targets, and hypothesis-only assembly succeed using only propext, Classical.choice and Quot.sound. The split is appropriate: two independent leaves establish integrable_smooth_ext, and localization plus the indicator identity establishes exactly the selected frozen parent. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "finite_smooth_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including the unrestricted function b. Each proof step is justified: finite-measure Lebesgue decomposition supplies integrable densities, smooth-test uniqueness identifies them on O, and vanishing outside O gives equality of the weighted integrands almost everywhere. The density integration identity genuinely applies without measurability or integrability of b. The proof is complete and non-circular."
+    },
+    {
+      "key": "density_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes integrability of g and measurability and boundedness of b, without imposing σ-finiteness. The a.e.-measurable positive and negative densities define finite measures. Bounded multiplication supplies the integrability needed for subtraction, and the positive-part identity proves the conclusion. The supplied proof is complete and independent."
+    },
+    {
+      "key": "integrable_smooth_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match all hypotheses and the conclusion. The proof uses precisely the two declared dependencies. Bounded measurability justifies additivity over the finite measures; the resulting difference identity transfers smooth-test agreement and then the conclusion for b. Localization to compact L and b = A.indicator u recovers the selected parent. No circular reliance or deferred proof construction occurs."
+    }
+  ],
+  "required_changes": []
+}

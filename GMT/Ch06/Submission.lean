@@ -359,6 +359,65 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Finite measures `ν₁, ν₂` on `ℝ^P` that agree on every `C^∞` function with compact support in
+an open set `O` agree on every function `b` vanishing outside `O` (the uniqueness behind Simon
+Ch. 6, (2.7)–(2.9), p. 136).  For `ν = ν₁ + ν₂` and the real densities `fᵢ = (dνᵢ/dν).toReal`,
+the Lebesgue decomposition gives `∫ c dνᵢ = ∫ fᵢ c dν` for every `c`; the fundamental lemma of
+the calculus of variations gives `f₁ = f₂` `ν`-a.e. on `O`, hence `f₁ b = f₂ b` `ν`-a.e. -/
+theorem Submission.polyhedral_approx_finite_smooth_ext :
+    ∀ (P : ℕ) (ν₁ ν₂ : Measure (Eucl P)), IsFiniteMeasure ν₁ → IsFiniteMeasure ν₂ →
+      ∀ O : Set (Eucl P), IsOpen O →
+      (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ O → ∫ x, ψ x ∂ν₁ = ∫ x, ψ x ∂ν₂) →
+      ∀ b : Eucl P → ℝ, (∀ x, x ∉ O → b x = 0) → ∫ x, b x ∂ν₁ = ∫ x, b x ∂ν₂ := by
+  intro P ν₁ ν₂ h₁ h₂ O hO hψ b hb
+  -- Step 1: `ν = ν₁ + ν₂` is finite and dominates `ν₁` and `ν₂`.
+  set ν : Measure (Eucl P) := ν₁ + ν₂
+  have hac₁ : ν₁ ≪ ν := Measure.AbsolutelyContinuous.rfl.add_right ν₂
+  have hac₂ : ν₂ ≪ ν := Measure.AbsolutelyContinuous.rfl.add_right' ν₁
+  -- Steps 2–4: for finite `μ ≪ ν` the singular part vanishes, so `μ = ν.withDensity (dμ/dν)`;
+  -- hence `∫ c dμ = ∫ (dμ/dν).toReal * c dν` for every `c`, and `(dμ/dν).toReal` is
+  -- `ν`-integrable.
+  have key : ∀ μ : Measure (Eucl P), IsFiniteMeasure μ → μ ≪ ν →
+      Integrable (fun x => (μ.rnDeriv ν x).toReal) ν ∧
+      ∀ c : Eucl P → ℝ, ∫ x, c x ∂μ = ∫ x, (μ.rnDeriv ν x).toReal * c x ∂ν := by
+    intro μ hμ hac
+    have hdec : μ = ν.withDensity (μ.rnDeriv ν) := by
+      have h := Measure.haveLebesgueDecomposition_add μ ν
+      rwa [Measure.singularPart_eq_zero_of_ac hac, zero_add] at h
+    refine ⟨integrable_toReal_of_lintegral_ne_top (Measure.measurable_rnDeriv μ ν).aemeasurable
+      (Measure.lintegral_rnDeriv_lt_top μ ν).ne, fun c => ?_⟩
+    calc ∫ x, c x ∂μ = ∫ x, c x ∂(ν.withDensity (μ.rnDeriv ν)) := by
+          conv_lhs => rw [hdec]
+      _ = ∫ x, (μ.rnDeriv ν x).toReal • c x ∂ν :=
+          integral_withDensity_eq_integral_toReal_smul (Measure.measurable_rnDeriv μ ν)
+            (Measure.rnDeriv_lt_top μ ν) c
+      _ = ∫ x, (μ.rnDeriv ν x).toReal * c x ∂ν := by simp only [smul_eq_mul]
+  obtain ⟨hi₁, e₁⟩ := key ν₁ h₁ hac₁
+  obtain ⟨hi₂, e₂⟩ := key ν₂ h₂ hac₂
+  -- Steps 5–6: `f₁ - f₂` annihilates every smooth test function supported in `O`, so it
+  -- vanishes `ν`-a.e. on `O`.
+  have hF : ∀ᵐ x ∂ν, x ∈ O → (ν₁.rnDeriv ν x).toReal - (ν₂.rnDeriv ν x).toReal = 0 := by
+    refine hO.ae_eq_zero_of_integral_contDiff_smul_eq_zero
+      ((hi₁.sub hi₂).locallyIntegrable.locallyIntegrableOn O) ?_
+    intro g hg hgc hgO
+    have i₁ : Integrable (fun x => g x • (ν₁.rnDeriv ν x).toReal) ν :=
+      hi₁.locallyIntegrable.integrable_smul_left_of_hasCompactSupport hg.continuous hgc
+    have i₂ : Integrable (fun x => g x • (ν₂.rnDeriv ν x).toReal) ν :=
+      hi₂.locallyIntegrable.integrable_smul_left_of_hasCompactSupport hg.continuous hgc
+    have hg' := hψ g hg hgc hgO
+    rw [e₁ g, e₂ g] at hg'
+    simp only [smul_sub]
+    rw [integral_sub i₁ i₂, sub_eq_zero]
+    simpa only [smul_eq_mul, mul_comm] using hg'
+  -- Step 7: `f₁ b = f₂ b` `ν`-a.e.: on `O` by steps 5–6, off `O` because `b = 0` there.
+  rw [e₁ b, e₂ b]
+  refine integral_congr_ae ?_
+  filter_upwards [hF] with x hx
+  by_cases hxO : x ∈ O
+  · rw [sub_eq_zero.mp (hx hxO)]
+  · simp [hb x hxO]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
