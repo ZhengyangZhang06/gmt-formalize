@@ -619,6 +619,76 @@ theorem aal_l1th_exists_cutoff : ∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ), 0 < ρ �
     linarith
   · -- `φ` is `3`-Lipschitz, so `‖Dζ(x)‖ ≤ 3/ρ`.
     exact_mod_cast norm_fderiv_radial_profile_le_of_lipschitzWith m ξ ρ 3 φ hρ hφlip x
+/-- **Simon Ch. 5, proof of Lemma 2.1** (projection algebra).
+(i) The operator norm is at most the Hilbert–Schmidt norm: `‖A‖ ≤ |A|`.
+(ii) If `dim P = dim T`, then `trace(p_{Tᗮ} ∘ p_P) = ½ |p_P − p_T|²` (display (2), p. 107:
+`Σ_{i>n} e^{ii} = ½ |p_{T_x M} − p_{ℝⁿ}|²`).
+Proof: (i) `|A v| ≤ Σ |vᵢ| |A eᵢ| ≤ |v| |A|` by the triangle and Cauchy–Schwarz inequalities.
+(ii) With `p = p_P`, `q = p_T` and `trace C = Σ ⟨eᵢ, C eᵢ⟩`, self-adjointness and idempotence
+give `|p − q|² = trace p − 2 trace(q p) + trace q`, while `p_{Tᗮ} = 1 − q` gives
+`trace(p_{Tᗮ} p) = trace p − trace(q p)`; finally `trace p = dim P = dim T = trace q`. -/
+theorem aal_l1th_projection_algebra : (∀ (m k : ℕ) (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A) ∧ ∀ (m : ℕ) (P T : Submodule ℝ (Rn m)), Module.finrank ℝ P = Module.finrank ℝ T → LinearMap.trace ℝ (Rn m) (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) = hsNormSq (P.starProjection - T.starProjection) / 2 := by
+  refine ⟨fun m k A => ?_, fun m P T hPT => ?_⟩
+  · -- (i): `|A v| ≤ Σ |vᵢ| |A eᵢ| ≤ (Σ vᵢ²)^{1/2} (Σ |A eᵢ|²)^{1/2} = |v| |A|`.
+    refine ContinuousLinearMap.opNorm_le_bound A (Real.sqrt_nonneg _) fun v => ?_
+    have hv : v = ∑ i, v i • EuclideanSpace.single i (1 : ℝ) := by
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v]
+      simp
+    calc ‖A v‖ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by
+          conv_lhs => rw [hv]
+          simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i • A (EuclideanSpace.single i 1)‖ := norm_sum_le _ _
+      _ = ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ := by simp only [norm_smul]
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by
+          rw [mul_comm, EuclideanSpace.norm_eq]
+          rfl
+  · -- (ii): `eᵢ = EuclideanSpace.single i 1`, `p = p_P`, `q = p_T`.
+    -- The trace is the sum of the diagonal entries in the orthonormal basis `(eᵢ)`.
+    have htr : ∀ f : Rn m →ₗ[ℝ] Rn m, LinearMap.trace ℝ (Rn m) f =
+        ∑ i, inner ℝ (EuclideanSpace.single i (1 : ℝ)) (f (EuclideanSpace.single i 1)) := by
+      intro f
+      rw [LinearMap.trace_eq_matrix_trace ℝ (EuclideanSpace.basisFun (Fin m) ℝ).toBasis f]
+      refine Fintype.sum_congr _ _ fun i => ?_
+      rw [Matrix.diag_apply, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+        OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.repr_apply_apply,
+        EuclideanSpace.basisFun_apply]
+    -- The trace of an orthogonal projection is the dimension of its range.
+    have hdim : ∀ W : Submodule ℝ (Rn m), ∑ i, inner ℝ (EuclideanSpace.single i (1 : ℝ))
+        (W.starProjection (EuclideanSpace.single i 1)) = Module.finrank ℝ W := by
+      intro W
+      rw [← LinearMap.IsProj.trace (f := (W.starProjection : Rn m →ₗ[ℝ] Rn m))
+        ⟨fun x => W.starProjection_apply_mem x,
+          fun x hx => Submodule.starProjection_eq_self_iff.mpr hx⟩, htr]
+      rfl
+    -- An orthogonal projection is self-adjoint and idempotent: `|p_W x|² = ⟨x, p_W x⟩`.
+    have hsq : ∀ (W : Submodule ℝ (Rn m)) (x : Rn m),
+        ‖W.starProjection x‖ ^ 2 = inner ℝ x (W.starProjection x) := by
+      intro W x
+      rw [← real_inner_self_eq_norm_sq, Submodule.inner_starProjection_left_eq_right,
+        Submodule.starProjection_eq_self_iff.mpr (W.starProjection_apply_mem x)]
+    -- Pointwise identities for the two sides.
+    have hL : ∀ x : Rn m, inner ℝ x (Tᗮ.starProjection (P.starProjection x)) =
+        inner ℝ x (P.starProjection x) - inner ℝ x (T.starProjection (P.starProjection x)) := by
+      intro x
+      rw [Submodule.starProjection_orthogonal_val, inner_sub_right]
+    have hR : ∀ x : Rn m, ‖(P.starProjection - T.starProjection) x‖ ^ 2 =
+        inner ℝ x (P.starProjection x) - 2 * inner ℝ x (T.starProjection (P.starProjection x)) +
+          inner ℝ x (T.starProjection x) := by
+      intro x
+      rw [sub_apply, norm_sub_sq_real, hsq P, hsq T,
+        ← Submodule.inner_starProjection_left_eq_right T,
+        real_inner_comm x (T.starProjection (P.starProjection x))]
+    -- Assemble: both sides equal `dim P − Σ ⟨eᵢ, q (p eᵢ)⟩`.
+    rw [htr]
+    simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
+    simp only [hL]
+    unfold hsNormSq
+    simp only [hR]
+    rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum,
+      hdim P, hdim T, hPT]
+    ring
 
 end Submission
 
