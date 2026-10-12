@@ -488,6 +488,79 @@ theorem Submission.bv_exists_subseq_tendsto_lintegral_of_finite_nets : ∀ (n : 
   refine lintegral_congr_ae ?_
   filter_upwards [MemLp.coeFn_toLp (hmem j (ψ k))] with x hx
   simp only [f, Pi.sub_apply, hx]
+/-- **Gluing compatible `L¹` limits along a compact exhaustion** (steps 5–8 of the diagonal extraction
+in the proof of Simon 2.6). Let `U ⊆ ℝⁿ` be open and `Q₀ ⊆ Q₁ ⊆ ⋯` compact sets such that every
+compact `K ⊆ U` lies in some `Qⱼ`. If every `w_k` is a.e.-strongly measurable on every `Qⱼ`, every
+`Gⱼ` is integrable on `Qⱼ` and `∫_{Qⱼ} |w_k - Gⱼ| → 0` as `k → ∞`, then `w_k → v` in `L¹_loc(U)` for
+some `v` that is locally integrable on `U`. For `i ≤ j` the triangle inequality gives
+`∫_{Qᵢ} |Gᵢ - Gⱼ| ≤ ∫_{Qᵢ} |w_k - Gᵢ| + ∫_{Qⱼ} |w_k - Gⱼ| → 0`, so `Gᵢ = Gⱼ` a.e. on `Qᵢ`. Hence
+`v(x) = G_{j(x)}(x)`, where `j(x)` is the least `j` with `x ∈ Qⱼ` (and `v = 0` off `⋃ⱼ Qⱼ`),
+agrees with `Gⱼ` a.e. on every `Qⱼ`. -/
+theorem Submission.bv_tendstoLocallyInL1On_of_exhaustion_limits : ∀ (n : ℕ) (U : Set (Rn n)) (Q : ℕ → Set (Rn n)) (w G : ℕ → Rn n → ℝ), IsOpen U → (∀ j, IsCompact (Q j)) → Monotone Q → (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j) → (∀ j k, AEStronglyMeasurable (w k) (volume.restrict (Q j))) → (∀ j, IntegrableOn (G j) (Q j) volume) → (∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖w k x - G j x‖ₑ) atTop (𝓝 0)) → ∃ v : Rn n → ℝ, LocallyIntegrableOn v U volume ∧ Chapter02.TendstoLocallyInL1On w v U atTop := by
+  intro n U Q w G hU hQc hQm hcof hw hG hlim
+  -- Step 0: every `Q j` is compact, hence closed and measurable.
+  have hQmeas : ∀ j, MeasurableSet (Q j) := fun j ↦ (hQc j).isClosed.measurableSet
+  -- Step 1: compatibility, `G i = G j` a.e. on `Q i` for `i ≤ j`.
+  have compat : ∀ i j, i ≤ j → G i =ᵐ[volume.restrict (Q i)] G j := by
+    intro i j hij
+    have hsub : Q i ⊆ Q j := hQm hij
+    have hGi : AEStronglyMeasurable (G i) (volume.restrict (Q i)) := (hG i).aestronglyMeasurable
+    have hGj : AEStronglyMeasurable (G j) (volume.restrict (Q i)) :=
+      (hG j).aestronglyMeasurable.mono_measure (Measure.restrict_mono hsub le_rfl)
+    have hbound : ∀ k, ∫⁻ x in Q i, ‖G i x - G j x‖ₑ ≤
+        (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) + ∫⁻ x in Q j, ‖w k x - G j x‖ₑ := by
+      intro k
+      calc ∫⁻ x in Q i, ‖G i x - G j x‖ₑ
+          ≤ ∫⁻ x in Q i, (‖w k x - G i x‖ₑ + ‖w k x - G j x‖ₑ) := by
+            refine lintegral_mono fun x ↦ ?_
+            calc ‖G i x - G j x‖ₑ = ‖(w k x - G j x) - (w k x - G i x)‖ₑ := by congr 1; ring
+              _ ≤ ‖w k x - G j x‖ₑ + ‖w k x - G i x‖ₑ := enorm_sub_le
+              _ = ‖w k x - G i x‖ₑ + ‖w k x - G j x‖ₑ := add_comm _ _
+        _ = (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) + ∫⁻ x in Q i, ‖w k x - G j x‖ₑ :=
+            lintegral_add_left' ((hw i k).sub hGi).enorm _
+        _ ≤ (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) + ∫⁻ x in Q j, ‖w k x - G j x‖ₑ :=
+            add_le_add le_rfl (lintegral_mono_set hsub)
+    have hzero : ∫⁻ x in Q i, ‖G i x - G j x‖ₑ = 0 := by
+      have hT : Tendsto (fun k ↦ (∫⁻ x in Q i, ‖w k x - G i x‖ₑ) +
+          ∫⁻ x in Q j, ‖w k x - G j x‖ₑ) atTop (𝓝 0) := by
+        simpa using (hlim i).add (hlim j)
+      exact le_antisymm (ge_of_tendsto' hT hbound) zero_le
+    filter_upwards [(lintegral_eq_zero_iff' (hGi.sub hGj).enorm).1 hzero] with x hx
+    simpa [sub_eq_zero] using hx
+  -- Step 2: gluing, `v x = G (j x) x` with `j x` the least `j` such that `x ∈ Q j`.
+  classical
+  let v : Rn n → ℝ := fun x ↦ if h : ∃ j, x ∈ Q j then G (Nat.find h) x else 0
+  have hv : ∀ j, v =ᵐ[volume.restrict (Q j)] G j := by
+    intro j
+    have h1 : ∀ i, ∀ᵐ x ∂(volume : Measure (Rn n)), i ≤ j → x ∈ Q i → G i x = G j x := by
+      intro i
+      by_cases hij : i ≤ j
+      · filter_upwards [(ae_restrict_iff' (hQmeas i)).1 (compat i j hij)] with x hx _ hxi
+        exact hx hxi
+      · exact Eventually.of_forall fun x h ↦ absurd h hij
+    rw [EventuallyEq, ae_restrict_iff' (hQmeas j)]
+    filter_upwards [ae_all_iff.2 h1] with x hx hxj
+    have hex : ∃ j, x ∈ Q j := ⟨j, hxj⟩
+    simp only [v, hex, ↓reduceDIte]
+    exact hx _ (Nat.find_min' hex hxj) (Nat.find_spec hex)
+  -- Step 3: `v` is integrable on every `Q j`.
+  have hvint : ∀ j, IntegrableOn v (Q j) volume := fun j ↦ (hG j).congr_fun_ae (hv j).symm
+  refine ⟨v, ?_, ?_⟩
+  · -- Step 5: local integrability on the open set `U`.
+    rw [locallyIntegrableOn_iff hU.isLocallyClosed]
+    intro K hKU hK
+    obtain ⟨j, hj⟩ := hcof K hK hKU
+    exact (hvint j).mono_set hj
+  · -- Step 4: convergence on every compact `K ⊆ U`, squeezed by `∫⁻_{Q j} ‖w k - G j‖ₑ → 0`.
+    intro K hK hKU
+    obtain ⟨j, hj⟩ := hcof K hK hKU
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hlim j)
+      (fun _ ↦ zero_le) fun k ↦ ?_
+    calc ∫⁻ x in K, ‖w k x - v x‖ₑ ≤ ∫⁻ x in Q j, ‖w k x - v x‖ₑ := lintegral_mono_set hj
+      _ = ∫⁻ x in Q j, ‖w k x - G j x‖ₑ := by
+        refine lintegral_congr_ae ?_
+        filter_upwards [hv j] with x hx
+        rw [hx]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
