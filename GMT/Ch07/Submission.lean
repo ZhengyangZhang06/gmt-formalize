@@ -559,6 +559,41 @@ theorem Submission.dorag_ha_pb_segment_null : ∀ (n : ℕ) (N : Set (Euclid n))
     (p := fun q : (Euclid n × Euclid n) × ℝ => (1 - q.2) • q.1.2 + q.2 • q.1.1 ∉ N) ?_
   rw [ae_iff]
   simpa using hE
+/-- Cauchy–Schwarz for the integral over a finite measure space, `(∫ h dμ)² ≤ μ(α) ∫ h² dμ` for
+`h ∈ L²(μ)`: used twice in the Poincaré inequality on a ball that Simon's proof of Ch. 5,
+Lemma 3.1 cites ("by the Poincaré inequality (see e.g. [GT01])").  `h ∈ L¹` (`L² ⊆ L¹` on a finite
+measure space) and `h² = ‖h‖² ∈ L¹`.  If `m = μ(α) = 0` then `μ = 0` and both sides vanish;
+otherwise, with `c = ∫ h dμ`, `0 ≤ ∫ (h − c/m)² dμ = ∫ h² dμ − c²/m`, and multiplying by `m > 0`
+gives the claim. -/
+theorem Submission.dorag_ha_pb_sq_integral_le : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (h : α → ℝ), μ univ ≠ ∞ → MemLp h 2 μ → (∫ x, h x ∂μ) ^ 2 ≤ (μ univ).toReal * ∫ x, h x ^ 2 ∂μ := by
+  intro α _ μ h hμ hh
+  -- Step 1: `μ` is finite; `h ∈ L¹` (`L² ⊆ L¹` on a finite measure space) and `h² = ‖h‖² ∈ L¹`
+  have : IsFiniteMeasure μ := ⟨lt_top_iff_ne_top.2 hμ⟩
+  have hint : Integrable h μ := hh.integrable one_le_two
+  have hint2 : Integrable (fun x => h x ^ 2) μ := by
+    simpa [Real.norm_eq_abs, sq_abs] using hh.integrable_norm_pow (p := 2) two_ne_zero
+  rcases (ENNReal.toReal_nonneg (a := μ univ)).eq_or_lt with hm0 | hmpos
+  · -- Step 2: `μ(α) = 0`, so `μ = 0` and both sides vanish
+    have hμ0 : μ = 0 := Measure.measure_univ_eq_zero.1 <|
+      ((ENNReal.toReal_eq_zero_iff _).1 hm0.symm).resolve_right hμ
+    simp [hμ0]
+  · -- Step 3: `m = μ(α) > 0`, `c = ∫ h dμ`; `0 ≤ ∫ (h - c/m)² dμ = ∫ h² dμ - c²/m`
+    set m := (μ univ).toReal with hm
+    set c := ∫ x, h x ∂μ with hc
+    have hint1 : Integrable (fun x => h x ^ 2 - 2 * (c / m) * h x) μ :=
+      hint2.sub (hint.const_mul _)
+    have hexp : ∫ x, (h x - c / m) ^ 2 ∂μ = ∫ x, h x ^ 2 ∂μ - c ^ 2 / m := by
+      have e : ∀ x, (h x - c / m) ^ 2 = h x ^ 2 - 2 * (c / m) * h x + (c / m) ^ 2 :=
+        fun x => by ring
+      simp_rw [e]
+      rw [integral_add hint1 (integrable_const _), integral_sub hint2 (hint.const_mul _),
+        integral_const_mul, integral_const, smul_eq_mul, ← hc, measureReal_def, ← hm]
+      field_simp
+      ring
+    have hnn : 0 ≤ ∫ x, (h x - c / m) ^ 2 ∂μ := integral_nonneg fun x => sq_nonneg _
+    -- Step 4: `c²/m ≤ ∫ h² dμ`; multiply by `m > 0`
+    rw [hexp, sub_nonneg, div_le_iff₀ hmpos] at hnn
+    linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
