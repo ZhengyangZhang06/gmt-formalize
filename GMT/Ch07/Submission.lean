@@ -488,6 +488,107 @@ theorem Submission.dorag_ted_pl_geometric_limit : ∀ (X : Type) [MetricSpace X]
   -- Step 6: square
   calc dist (v j) w ^ 2 ≤ (2 * (Real.sqrt a * h ^ j)) ^ 2 := pow_le_pow_left₀ dist_nonneg htail 2
     _ = 4 * a * q ^ j := by rw [mul_pow, hCsq j]; ring
+/-- **Limits of orthogonal projections onto `n`-planes** (Simon Ch. 5, proof of Theorem 5.2:
+"(4) evidently implies that there is `S(ξ) (= lim S_ℓ)` such that (5)").  If every `S_j` is an
+`n`-dimensional subspace of `ℝᴾ` and `p_{S_j} eᵢ → wᵢ` for every standard basis vector `eᵢ`, then
+`wᵢ = p_{S'} eᵢ` for an `n`-dimensional subspace `S'`: the operator `L` with `L eᵢ = wᵢ` is the
+pointwise limit of the `p_{S_j}`, hence idempotent and self-adjoint, hence the orthogonal
+projection onto `S' = range L`, and `dim S' = trace p_{S'} = lim trace p_{S_j} = n`. -/
+theorem Submission.dorag_ted_pl_proj_limit_rank : ∀ (P n : ℕ) (S : ℕ → Submodule ℝ (Euclid P)) (w : Fin P → Euclid P), (∀ j, Module.finrank ℝ (S j) = n) → (∀ i : Fin P, Tendsto (fun j => (S j).starProjection (EuclideanSpace.single i (1 : ℝ))) atTop (𝓝 (w i))) → ∃ S' : Submodule ℝ (Euclid P), Module.finrank ℝ S' = n ∧ ∀ i : Fin P, S'.starProjection (EuclideanSpace.single i (1 : ℝ)) = w i := by
+  intro P n S w hS hw
+  -- the standard orthonormal basis `eᵢ = EuclideanSpace.single i 1`
+  obtain ⟨b, hb⟩ : ∃ b : OrthonormalBasis (Fin P) ℝ (Euclid P),
+      ∀ i, b i = EuclideanSpace.single i (1 : ℝ) :=
+    ⟨EuclideanSpace.basisFun (Fin P) ℝ, EuclideanSpace.basisFun_apply (Fin P) ℝ⟩
+  -- Step 1: column expansion `A x = ∑ᵢ xᵢ • A eᵢ`
+  have hcol : ∀ (A : Euclid P →L[ℝ] Euclid P) (x : Euclid P),
+      A x = ∑ i, inner ℝ (b i) x • A (b i) := by
+    intro A x
+    conv_lhs => rw [← b.sum_repr' x]
+    simp only [map_sum, map_smul]
+  -- Step 2: the limit operator, `L eᵢ = wᵢ`
+  obtain ⟨L, hLb⟩ : ∃ L : Euclid P →L[ℝ] Euclid P, ∀ i, L (b i) = w i :=
+    ⟨LinearMap.toContinuousLinearMap (b.toBasis.constr ℝ w), fun i => by
+      rw [LinearMap.coe_toContinuousLinearMap', ← b.coe_toBasis, b.toBasis.constr_basis]⟩
+  -- Step 3: `p_{S_j} x → L x` for every `x`
+  have hconv : ∀ x, Tendsto (fun j => (S j).starProjection x) atTop (𝓝 (L x)) := by
+    intro x
+    have h1 : (fun j => (S j).starProjection x) =
+        fun j => ∑ i, inner ℝ (b i) x • (S j).starProjection (b i) :=
+      funext fun j => hcol _ x
+    rw [h1, hcol L x]
+    refine tendsto_finsetSum _ fun i _ => ?_
+    rw [hLb i, hb i]
+    exact (hw i).const_smul _
+  -- Step 4: `L` is idempotent
+  have hidem : ∀ x, L (L x) = L x := by
+    intro x
+    -- `p_{S_j} (p_{S_j} x) = p_{S_j} x → L x`
+    have h1 : Tendsto (fun j => (S j).starProjection ((S j).starProjection x)) atTop
+        (𝓝 (L x)) := by
+      have : (fun j => (S j).starProjection ((S j).starProjection x)) =
+          fun j => (S j).starProjection x :=
+        funext fun j => Submodule.starProjection_eq_self_iff.mpr
+          (Submodule.starProjection_apply_mem _ _)
+      rw [this]
+      exact hconv x
+    -- `p_{S_j} (p_{S_j} x) = p_{S_j} (p_{S_j} x - L x) + p_{S_j} (L x) → 0 + L (L x)`
+    have h2 : Tendsto (fun j => (S j).starProjection ((S j).starProjection x)) atTop
+        (𝓝 (L (L x))) := by
+      have hsplit : (fun j => (S j).starProjection ((S j).starProjection x)) =
+          fun j => (S j).starProjection ((S j).starProjection x - L x) +
+            (S j).starProjection (L x) :=
+        funext fun j => by rw [← map_add, sub_add_cancel]
+      rw [hsplit, ← zero_add (L (L x))]
+      refine Tendsto.add ?_ (hconv (L x))
+      have h0 : Tendsto (fun j => (S j).starProjection x - L x) atTop (𝓝 0) := by
+        simpa using (hconv x).sub_const (L x)
+      exact squeeze_zero_norm (fun j => Submodule.norm_starProjection_apply_le _ _)
+        (by simpa using h0.norm)
+    exact tendsto_nhds_unique h2 h1
+  -- Step 5: `L` is symmetric
+  have hsymm : ∀ x y, inner ℝ (L x) y = inner ℝ x (L y) := by
+    intro x y
+    have h1 : Tendsto (fun j => inner ℝ ((S j).starProjection x) y) atTop
+        (𝓝 (inner ℝ (L x) y)) := (hconv x).inner tendsto_const_nhds
+    have h2 : Tendsto (fun j => inner ℝ ((S j).starProjection x) y) atTop
+        (𝓝 (inner ℝ x (L y))) := by
+      simp_rw [Submodule.inner_starProjection_left_eq_right]
+      exact tendsto_const_nhds.inner (hconv y)
+    exact tendsto_nhds_unique h1 h2
+  -- Step 6: `L` is the orthogonal projection onto `S' := range L`
+  have hL : IsStarProjection L :=
+    ⟨ContinuousLinearMap.ext hidem, ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr hsymm⟩
+  obtain ⟨_, hLeq⟩ := isStarProjection_iff_eq_starProjection_range.mp hL
+  -- Steps 7–8: `dim K = trace p_K = ∑ᵢ ⟪eᵢ, p_K eᵢ⟫`
+  have htr : ∀ K : Submodule ℝ (Euclid P),
+      (Module.finrank ℝ K : ℝ) = ∑ i, inner ℝ (b i) (K.starProjection (b i)) := by
+    intro K
+    have hproj : LinearMap.IsProj K (K.starProjection : Euclid P →ₗ[ℝ] Euclid P) :=
+      ⟨fun x => K.starProjection_apply_mem x,
+        fun x hx => Submodule.starProjection_eq_self_iff.mpr hx⟩
+    rw [← hproj.trace, LinearMap.trace_eq_sum_inner _ b]
+    rfl
+  -- Step 9: `dim S' = lim_j dim S_j = n`
+  have hlim : Tendsto (fun j => ∑ i, inner ℝ (b i) ((S j).starProjection (b i))) atTop
+      (𝓝 (∑ i, inner ℝ (b i) (w i))) := by
+    refine tendsto_finsetSum _ fun i _ => ?_
+    rw [hb i]
+    exact tendsto_const_nhds.inner (hw i)
+  have hsum : ∑ i, inner ℝ (b i) (w i) = (n : ℝ) := by
+    refine tendsto_nhds_unique hlim ?_
+    have : (fun j => ∑ i, inner ℝ (b i) ((S j).starProjection (b i))) = fun _ => (n : ℝ) :=
+      funext fun j => by rw [← htr, hS j]
+    rw [this]
+    exact tendsto_const_nhds
+  refine ⟨LinearMap.range (L : Euclid P →ₗ[ℝ] Euclid P), ?_, fun i => ?_⟩
+  · have : (Module.finrank ℝ (LinearMap.range (L : Euclid P →ₗ[ℝ] Euclid P)) : ℝ) = n := by
+      rw [htr, ← hsum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [← hLeq, hLb i]
+    exact_mod_cast this
+  · rw [← hb i, ← hLeq]
+    exact hLb i
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
