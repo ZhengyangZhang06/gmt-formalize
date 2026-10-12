@@ -397,26 +397,6 @@ theorem Submission.br_zd_im_dirac_repr :
     exact absurd (h1.trans_lt hn) (lt_irrefl _)
   -- Integrals over finsets are finite sums.
   have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ), IntegrableOn g (F : Set (Eucl P)) μ := by
-/-- Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): a finite
-integer combination of point masses `Y(ω) = ∑_{x ∈ D} a(x) ω(x)`, `D ⊆ U`, is the integer
-multiplicity current `τ(M, θ, ξ)` with `M = {x ∈ D : a(x) ≠ 0}`, `θ = |a|` and `ξ = ±1` the sign
-of `a`.  `Y` is continuous since convergence of test forms gives pointwise convergence.  `M` is
-finite, so it is `H⁰`-measurable and countably `0`-rectifiable and `H⁰`-integrals over it are
-finite sums; at `x ∈ M`, for small `r` the blow-up `η_{x,r}(M)` meets the support of a given
-`f ∈ C_c` only in `0`, so the weighted tangent space is `{0}`, spanned by the empty frame. -/
-theorem Submission.br_zd_finite_dirac_im :
-    ∀ (P : ℕ) (U : Set (Eucl P)) (D : Finset (Eucl P)) (a : Eucl P → ℤ),
-      (↑D : Set (Eucl P)) ⊆ U → ∃ Y : GeometricCurrentOn U 0, IsIntegerMultiplicity Y ∧
-        ∀ ω : TestFormOn U 0,
-          Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
-  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
-  classical
-  intro P U D a hDU
-  -- `H⁰{x} = 1`, so `H⁰`-integrals over finite sets are finite sums.
-  have hpt : ∀ x : Eucl P, (μHE[0] : Measure (Eucl P)) {x} = 1 := fun x => by
-    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
-  have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
-      IntegrableOn g (F : Set (Eucl P)) (μHE[0] : Measure (Eucl P)) := by
     intro F g
     rw [← biUnion_of_singleton (F : Set (Eucl P)), Finset.set_biUnion_coe,
       integrableOn_finset_iUnion]
@@ -527,6 +507,7 @@ theorem Submission.br_zd_finite_dirac_im :
   · have hx' : x ∉ tsupport f := fun h => hx.2 (by rw [hSM]; exact ⟨hx.1, h⟩)
     have h0 : (ω : DifferentialForm (Eucl P) 0) x = 0 := hzero x hx'
     simp [h0]
+
 /-- The mass lower bound for a locally finite Dirac sum (the `0`-dimensional step in the proof of
 Simon Ch. 6, 6.3): if `Y(ω) = ∑ᶠ_{x ∈ N} c(x) ω(x)` with `N ∩ K` finite for compact `K ⊆ U`, then
 `∑_{x ∈ S} |c(x)| ≤ M_W(Y)` for every finite `S ⊆ N ∩ W`, `W ⊆ U` open.  Test with
@@ -892,6 +873,7 @@ theorem Submission.br_zd_dirac_local_limit : ∀ (P : ℕ) (U W : Set (Eucl P)) 
       exact Finset.sum_congr rfl fun ℓ hℓ => by rw [(Finset.mem_filter.1 hℓ).2]
     · have hyW : y ℓ ∉ W := by simpa [s] using hℓ
       rw [hvan ω (y ℓ) fun h => hyW (hω h), mul_zero]
+
 /-- **Integrability of the integrands of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
 rectifiable triple `(M, θ, ξ)` in `U`: (a) `x ↦ θ(x) ⟨b, ξ(x)⟩` is `Hᵏ`-integrable on `M ∩ K` for
 every compact `K ⊆ U` and `k`-covector `b`; (b) `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`
