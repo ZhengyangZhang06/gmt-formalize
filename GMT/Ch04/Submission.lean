@@ -732,6 +732,182 @@ theorem Submission.sobolev_monotonicity_inequality : (∀ (n ℓ : ℕ) (V : Rec
     setIntegral_mono_on hLint.neg hΦint measurableSet_Ioc hbound
   rw [integral_neg] at hJ
   linarith
+/-- **Simon 5.7, proof (p. 99): good balls and the 5-times covering, `n ≥ 2`.** Let `μ` be finite
+on compact sets, `g ≥ 0` continuous with compact support and `φ ≥ 0` `μ`-integrable, such that
+`s⁻ⁿ∫_{B_s(ζ)} g ≤ r⁻ⁿ∫_{B_r(ζ)} g + ∫_{(s,r]} τ⁻ⁿ∫_{B_τ(ζ)} φ dτ` for `0 < s ≤ r`, and
+`μ(B_ρ(ζ))/(ωₙρⁿ) → t ≥ 1` at `μ`-a.e. `ζ` with `g(ζ) ≥ 1`. Then
+`∫_{g ≥ 1} g dμ ≤ 5ⁿωₙ^{-1/n}(∫ g dμ)^{1/n} ∫ φ dμ`. At such `ζ` the good-radius lemma for
+`f(τ) = ωₙ⁻¹∫_{B_τ(ζ)} g` and `k(τ) = ωₙ⁻¹∫_{B_τ(ζ)} φ` gives `r_ζ < 2(ωₙ⁻¹∫ g)^{1/n}` with
+`∫_{B_{5r_ζ}(ζ)} g ≤ 5ⁿωₙ^{-1/n}(∫ g)^{1/n} ∫_{B_{r_ζ}(ζ)} φ` (Simon's (1)); the covering lemma
+(Ch. 1, 3.4) selects countably many disjoint `B_{r_b}(b)` whose dilates `B_{5r_b}(b)` cover
+`{g ≥ 1}` up to a null set, and summing (1) over them gives the claim. -/
+theorem Submission.sobolev_covering_inequality : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ))
+    (g φ : Ambient n ℓ → ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous g →
+    HasCompactSupport g → (∀ x, 0 ≤ g x) → (∀ x, 0 ≤ φ x) → Integrable φ μ →
+    (∀ (ζ : Ambient n ℓ) (s r : ℝ), 0 < s → s ≤ r →
+      (∫ x in closedBall ζ s, g x ∂μ) / s ^ n ≤ (∫ x in closedBall ζ r, g x ∂μ) / r ^ n +
+        ∫ τ in Ioc s r, (∫ x in closedBall ζ τ, φ x ∂μ) / τ ^ n) →
+    (∀ᵐ ζ ∂μ, 1 ≤ g ζ → ∃ t : ℝ, 1 ≤ t ∧
+      Tendsto (fun ρ ↦ μ.real (closedBall ζ ρ) / (omega n * ρ ^ n)) (𝓝[>] 0) (𝓝 t)) →
+    ∫ x in {x | 1 ≤ g x}, g x ∂μ ≤
+      5 ^ n * omega n ^ (-(n : ℝ)⁻¹) * (∫ x, g x ∂μ) ^ (n : ℝ)⁻¹ * ∫ x, φ x ∂μ := by
+  intro n ℓ μ g φ hn hμ hgc hgs hg0 hφ0 hφi hmono hdens
+  -- Step 1: `Γ = ∫ g`, `F = ωₙ⁻¹Γ` and the constant `K = 5ⁿF^{1/n} = 5ⁿωₙ^{-1/n}Γ^{1/n}`.
+  have hgi : Integrable g μ := hgc.integrable_of_hasCompactSupport hgs
+  have hω : 0 < omega n := by
+    unfold omega
+    exact ENNReal.toReal_pos (measure_ball_pos _ _ one_pos).ne' measure_ball_lt_top.ne
+  have hωi : 0 ≤ (omega n)⁻¹ := inv_nonneg.2 hω.le
+  set Γ : ℝ := ∫ x, g x ∂μ
+  have hΓ0 : 0 ≤ Γ := integral_nonneg hg0
+  set F : ℝ := (omega n)⁻¹ * Γ with hF
+  set K : ℝ := 5 ^ n * omega n ^ (-(n : ℝ)⁻¹) * Γ ^ (n : ℝ)⁻¹ with hK
+  have hFK : 5 ^ n * F ^ (n : ℝ)⁻¹ = K := by
+    rw [hF, hK, Real.mul_rpow hωi hΓ0, Real.inv_rpow hω.le, ← Real.rpow_neg hω.le, mul_assoc]
+  have hK0 : 0 ≤ K := by
+    rw [hK]
+    have h1 : 0 ≤ omega n ^ (-(n : ℝ)⁻¹) := Real.rpow_nonneg hω.le _
+    have h2 : 0 ≤ Γ ^ (n : ℝ)⁻¹ := Real.rpow_nonneg hΓ0 _
+    positivity
+  set A : Set (Ambient n ℓ) := {x | 1 ≤ g x}
+  have hA : MeasurableSet A := measurableSet_le measurable_const hgc.measurable
+  -- Step 2: at `μ`-a.e. `ζ ∈ A`, the good-radius lemma for `f(τ) = ωₙ⁻¹∫_{B_τ(ζ)} g` and
+  -- `k(τ) = ωₙ⁻¹∫_{B_τ(ζ)} φ` gives `r ∈ (0, 2F^{1/n})` with `∫_{B_{5r}(ζ)} g ≤ K∫_{B_r(ζ)} φ`.
+  have hgood : ∀ᵐ ζ ∂μ, ζ ∈ A → ∃ r : ℝ, 0 < r ∧ r ≤ 2 * F ^ (n : ℝ)⁻¹ ∧
+      ∫ x in closedBall ζ (5 * r), g x ∂μ ≤ K * ∫ x in closedBall ζ r, φ x ∂μ := by
+    filter_upwards [hdens] with ζ hζ hgζ
+    replace hgζ : 1 ≤ g ζ := hgζ
+    obtain ⟨t, ht1, htend⟩ := hζ hgζ
+    -- (a), (b): `f` and `k` are nondecreasing, `0 ≤ f ≤ F` and `0 ≤ k`.
+    have hfm : MonotoneOn (fun τ ↦ (omega n)⁻¹ * ∫ x in closedBall ζ τ, g x ∂μ) (Ioi 0) :=
+      fun a _ b _ hab ↦ mul_le_mul_of_nonneg_left (setIntegral_mono_set hgi.integrableOn
+        (ae_of_all _ fun x ↦ hg0 x) (closedBall_subset_closedBall hab).eventuallyLE) hωi
+    have hkm : MonotoneOn (fun τ ↦ (omega n)⁻¹ * ∫ x in closedBall ζ τ, φ x ∂μ) (Ioi 0) :=
+      fun a _ b _ hab ↦ mul_le_mul_of_nonneg_left (setIntegral_mono_set hφi.integrableOn
+        (ae_of_all _ fun x ↦ hφ0 x) (closedBall_subset_closedBall hab).eventuallyLE) hωi
+    have hfb : ∀ τ : ℝ, 0 < τ → 0 ≤ (omega n)⁻¹ * (∫ x in closedBall ζ τ, g x ∂μ) ∧
+        (omega n)⁻¹ * (∫ x in closedBall ζ τ, g x ∂μ) ≤ F := fun τ _ ↦
+      ⟨mul_nonneg hωi (setIntegral_nonneg measurableSet_closedBall fun x _ ↦ hg0 x),
+        mul_le_mul_of_nonneg_left (setIntegral_le_integral hgi (ae_of_all _ hg0)) hωi⟩
+    have hkb : ∀ τ : ℝ, 0 < τ → 0 ≤ (omega n)⁻¹ * ∫ x in closedBall ζ τ, φ x ∂μ := fun τ _ ↦
+      mul_nonneg hωi (setIntegral_nonneg measurableSet_closedBall fun x _ ↦ hφ0 x)
+    -- (c): the hypothesis at `ζ`, multiplied by `ωₙ⁻¹`.
+    have hint : ∀ s r : ℝ, 0 < s → s ≤ r →
+        (omega n)⁻¹ * (∫ x in closedBall ζ s, g x ∂μ) / s ^ n ≤
+          (omega n)⁻¹ * (∫ x in closedBall ζ r, g x ∂μ) / r ^ n +
+            ∫ τ in Ioc s r, (omega n)⁻¹ * (∫ x in closedBall ζ τ, φ x ∂μ) / τ ^ n := by
+      intro s r hs hsr
+      have h := mul_le_mul_of_nonneg_left (hmono ζ s r hs hsr) hωi
+      simp_rw [mul_div_assoc]
+      rw [integral_const_mul, ← mul_add]
+      exact h
+    -- (d): for `η < 1`, `f(s)/sⁿ > η` for all small `s > 0`.
+    have hlow : ∀ η : ℝ, η < 1 →
+        ∃ᶠ s in 𝓝[>] (0 : ℝ), η < (omega n)⁻¹ * (∫ x in closedBall ζ s, g x ∂μ) / s ^ n := by
+      intro η hη
+      refine Eventually.frequently ?_
+      rcases lt_or_ge η 0 with hη0 | hη0
+      · filter_upwards [self_mem_nhdsWithin] with s hs
+        have hs0 : (0 : ℝ) < s := hs
+        have hI : 0 ≤ ∫ x in closedBall ζ s, g x ∂μ :=
+          setIntegral_nonneg measurableSet_closedBall fun x _ ↦ hg0 x
+        have : 0 ≤ (omega n)⁻¹ * (∫ x in closedBall ζ s, g x ∂μ) / s ^ n := by positivity
+        linarith
+      · -- With `η₁ = (1 + η)/2`: `g ≥ η₁` near `ζ`, and the density quotient tends to `t > η/η₁`.
+        set η₁ : ℝ := (1 + η) / 2 with hη₁
+        have hη₁pos : 0 < η₁ := by rw [hη₁]; linarith
+        have hη₁g : η₁ < g ζ := by rw [hη₁]; linarith
+        have hcont : ∀ᶠ x in 𝓝 ζ, η₁ < g x := hgc.continuousAt.eventually (lt_mem_nhds hη₁g)
+        obtain ⟨δ, hδ, hδball⟩ := Metric.eventually_nhds_iff_ball.1 hcont
+        have hlt : η / η₁ < t := by
+          rw [div_lt_iff₀ hη₁pos, hη₁]
+          nlinarith
+        have hratio : ∀ᶠ s in 𝓝[>] (0 : ℝ),
+            η / η₁ < μ.real (closedBall ζ s) / (omega n * s ^ n) :=
+          htend.eventually (lt_mem_nhds hlt)
+        have hsmall : ∀ᶠ s in 𝓝[>] (0 : ℝ), s < δ := nhdsWithin_le_nhds (Iio_mem_nhds hδ)
+        filter_upwards [hratio, hsmall, self_mem_nhdsWithin] with s hs1 hs2 hs3
+        have hs0 : (0 : ℝ) < s := hs3
+        have hsn : (0 : ℝ) < s ^ n := pow_pos hs0 n
+        have hgint : IntegrableOn g (closedBall ζ s) μ :=
+          hgc.continuousOn.integrableOn_compact (isCompact_closedBall ζ s)
+        have hge : η₁ * μ.real (closedBall ζ s) ≤ ∫ x in closedBall ζ s, g x ∂μ :=
+          setIntegral_ge_of_const_le_real measurableSet_closedBall measure_closedBall_lt_top.ne
+            (fun x hx ↦ (hδball x (closedBall_subset_ball hs2 hx)).le) hgint
+        calc η = η₁ * (η / η₁) := by field_simp
+          _ < η₁ * (μ.real (closedBall ζ s) / (omega n * s ^ n)) :=
+              mul_lt_mul_of_pos_left hs1 hη₁pos
+          _ = (omega n)⁻¹ * (η₁ * μ.real (closedBall ζ s)) / s ^ n := by field_simp
+          _ ≤ (omega n)⁻¹ * (∫ x in closedBall ζ s, g x ∂μ) / s ^ n := by gcongr
+    obtain ⟨_, r, hr0, hrR, hr⟩ := Submission.sobolev_good_radius_calculus n
+      (fun τ ↦ (omega n)⁻¹ * ∫ x in closedBall ζ τ, g x ∂μ)
+      (fun τ ↦ (omega n)⁻¹ * ∫ x in closedBall ζ τ, φ x ∂μ) F hn hfm hkm hfb hkb hint hlow
+    refine ⟨r, hr0, hrR.le, ?_⟩
+    -- Multiply `f(5r) ≤ 5ⁿF^{1/n}k(r)` by `ωₙ`.
+    have h2 := mul_le_mul_of_nonneg_left hr hω.le
+    have hωω : omega n * (omega n)⁻¹ = 1 := mul_inv_cancel₀ hω.ne'
+    calc ∫ x in closedBall ζ (5 * r), g x ∂μ
+        = omega n * ((omega n)⁻¹ * ∫ x in closedBall ζ (5 * r), g x ∂μ) := by
+          rw [← mul_assoc, hωω, one_mul]
+      _ ≤ omega n * (5 ^ n * F ^ (n : ℝ)⁻¹ * ((omega n)⁻¹ * ∫ x in closedBall ζ r, φ x ∂μ)) := h2
+      _ = K * ∫ x in closedBall ζ r, φ x ∂μ := by
+          rw [hFK, mul_left_comm, ← mul_assoc (omega n), hωω, one_mul]
+  -- Step 3: a measurable null set `N` containing the points of `A` without a good radius.
+  obtain ⟨N, hNsub, hNm, hN0⟩ := exists_measurable_superset_of_null (ae_iff.mp hgood)
+  have hgood' : ∀ ζ ∈ A \ N, ∃ r : ℝ, 0 < r ∧ r ≤ 2 * F ^ (n : ℝ)⁻¹ ∧
+      ∫ x in closedBall ζ (5 * r), g x ∂μ ≤ K * ∫ x in closedBall ζ r, φ x ∂μ := by
+    intro ζ hζ
+    by_contra hbad
+    exact hζ.2 (hNsub fun h ↦ hbad (h hζ.1))
+  choose! r hr0 hrR hrb using hgood'
+  -- Step 4: Vitali's lemma gives a disjoint subfamily `D` of the balls `B_{r_ζ}(ζ)`, `ζ ∈ A \ N`,
+  -- whose dilates `B_{5r_b}(b)` cover `A \ N`; `D` is countable as `Ambient n ℓ` is separable.
+  obtain ⟨D, hDA, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall
+    (A \ N) id r (2 * F ^ (n : ℝ)⁻¹) hrR 5 (by norm_num)
+  have hDc : D.Countable := hdisj.countable_of_nonempty_interior fun x hx ↦
+    (nonempty_ball.mpr (hr0 x (hDA hx))).mono ball_subset_interior_closedBall
+  have : Countable D := hDc.to_subtype
+  have hcover : A \ N ⊆ ⋃ b : D, closedBall b.val (5 * r b) := by
+    intro a ha
+    obtain ⟨b, hb, hab⟩ := hcov a ha
+    exact mem_iUnion.mpr ⟨⟨b, hb⟩, hab (mem_closedBall_self (hr0 a ha).le)⟩
+  have hdisj' : Pairwise fun b c : D ↦ Disjoint (closedBall b.val (r b)) (closedBall c.val (r c)) :=
+    fun b c hbc ↦ hdisj b.property c.property (Subtype.coe_ne_coe.mpr hbc)
+  -- Step 5: sum the good-ball inequalities with the finite measures `g μ` and `φ μ`.
+  set νg : Measure (Ambient n ℓ) := μ.withDensity fun x ↦ ENNReal.ofReal (g x) with hνg
+  set νφ : Measure (Ambient n ℓ) := μ.withDensity fun x ↦ ENNReal.ofReal (φ x) with hνφ
+  have hconvg : ∀ S, MeasurableSet S → ENNReal.ofReal (∫ x in S, g x ∂μ) = νg S := fun S hS ↦ by
+    rw [hνg, withDensity_apply _ hS]
+    exact ofReal_integral_eq_lintegral_ofReal hgi.integrableOn (ae_of_all _ fun x ↦ hg0 x)
+  have hconvφ : ∀ S, MeasurableSet S → ENNReal.ofReal (∫ x in S, φ x ∂μ) = νφ S := fun S hS ↦ by
+    rw [hνφ, withDensity_apply _ hS]
+    exact ofReal_integral_eq_lintegral_ofReal hφi.integrableOn (ae_of_all _ fun x ↦ hφ0 x)
+  have hball : ∀ b ∈ D,
+      νg (closedBall b (5 * r b)) ≤ ENNReal.ofReal K * νφ (closedBall b (r b)) := by
+    intro b hb
+    rw [← hconvg _ measurableSet_closedBall, ← hconvφ _ measurableSet_closedBall,
+      ← ENNReal.ofReal_mul hK0]
+    exact ENNReal.ofReal_le_ofReal (hrb b (hDA hb))
+  have hN : νg N = 0 := by
+    rw [hνg, withDensity_apply _ hNm, Measure.restrict_eq_zero.mpr hN0, lintegral_zero_measure]
+  have hsum : νg A ≤ ENNReal.ofReal K * νφ univ :=
+    calc νg A ≤ νg (A \ N ∪ N) := measure_mono fun x hx ↦ by
+            by_cases hxN : x ∈ N
+            · exact Or.inr hxN
+            · exact Or.inl ⟨hx, hxN⟩
+      _ ≤ νg (A \ N) + νg N := measure_union_le _ _
+      _ = νg (A \ N) := by rw [hN, add_zero]
+      _ ≤ νg (⋃ b : D, closedBall b.val (5 * r b)) := measure_mono hcover
+      _ ≤ ∑' b : D, νg (closedBall b.val (5 * r b)) := measure_iUnion_le _
+      _ ≤ ∑' b : D, ENNReal.ofReal K * νφ (closedBall b.val (r b)) :=
+          ENNReal.tsum_le_tsum fun b ↦ hball b.val b.property
+      _ = ENNReal.ofReal K * ∑' b : D, νφ (closedBall b.val (r b)) := ENNReal.tsum_mul_left
+      _ = ENNReal.ofReal K * νφ (⋃ b : D, closedBall b.val (r b)) := by
+          rw [measure_iUnion hdisj' fun _ ↦ measurableSet_closedBall]
+      _ ≤ ENNReal.ofReal K * νφ univ := by gcongr; exact subset_univ _
+  rw [← hconvg A hA, ← hconvφ univ MeasurableSet.univ, setIntegral_univ,
+    ← ENNReal.ofReal_mul hK0] at hsum
+  exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hK0 (integral_nonneg hφ0))).1 hsum
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
