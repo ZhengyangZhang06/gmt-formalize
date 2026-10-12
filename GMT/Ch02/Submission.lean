@@ -373,6 +373,61 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Derivative of the Gram map.** If `ψ : ℝⁿ → ℝᴺ` is `C²` on an open `V`, then
+`G(x) = Dψ(x)* ∘ Dψ(x)` is `C¹` on `V` and `DG(x)[v] = Dψ(x)* ∘ D²ψ(x)[v] + (D²ψ(x)[v])* ∘ Dψ(x)`,
+with `L*` the adjoint. Over `ℝ` the adjoint is a continuous linear map `adjR`, so
+`x ↦ Dψ(x)* = adjR ∘ Dψ` is `C¹` on `V` with derivative `adjR ∘ D²ψ(x)` (chain rule). Both claims
+then follow from the regularity (`ContDiffOn.clm_comp`) and the product rule
+(`HasFDerivAt.clm_comp`) of the continuous bilinear composition `(B, C) ↦ B ∘L C`. -/
+theorem Submission.adjoint_comp_fderiv_contDiffOn_fderiv_eq_add : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → ContDiffOn ℝ 1 (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) V ∧ ∀ x ∈ V, ∀ v : Rn n, fderiv ℝ (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) x v = ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x v + ContinuousLinearMap.adjoint (fderiv ℝ (fderiv ℝ ψ) x v) ∘L fderiv ℝ ψ x := by
+  intro n N V ψ hV hψ
+  -- Step 1: the adjoint over `ℝ` as a continuous `ℝ`-linear map `adjR`; `adjR L = L*` by `rfl`.
+  let adjR : (Rn n →L[ℝ] Rn N) →L[ℝ] (Rn N →L[ℝ] Rn n) :=
+    (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn n) (F := Rn N)).toContinuousLinearEquiv.toContinuousLinearMap
+  -- Step 2: `A = Dψ` is `C¹` on `V` (`1 + 1 ≤ 2`).
+  have hA : ContDiffOn ℝ 1 (fderiv ℝ ψ) V := hψ.fderiv_of_isOpen hV (by norm_num)
+  -- Step 3: `x ↦ A(x)* = adjR ∘ A` is `C¹` on `V`.
+  have hAd : ContDiffOn ℝ 1 (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x)) V :=
+    adjR.contDiff.comp_contDiffOn hA
+  -- Step 4 (first conjunct): `G = A* ∘L A` is `C¹` on `V`.
+  refine ⟨hAd.clm_comp hA, fun x hx v ↦ ?_⟩
+  -- Step 2 at `x ∈ V`: `A` has derivative `D²ψ(x)` at `x`, since `V` is a neighbourhood of `x`.
+  have hAx : HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) x) x :=
+    ((hA.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hx)).hasFDerivAt
+  -- Step 3 at `x` (chain rule): `x ↦ A(x)*` has derivative `adjR ∘L D²ψ(x)` at `x`.
+  have hAdx : HasFDerivAt (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x))
+      (adjR ∘L fderiv ℝ (fderiv ℝ ψ) x) x :=
+    adjR.hasFDerivAt.comp x hAx
+  -- Step 5 (second conjunct): by the product rule and uniqueness of the derivative,
+  -- `DG(x)[v] = A(x)* ∘L D²ψ(x)[v] + adjR (D²ψ(x)[v]) ∘L A(x)`, and `adjR L = L*` by `rfl`.
+  rw [(hAdx.clm_comp hAx).fderiv]
+  rfl
+/-- **Trace swap under a symmetric weight.** For `A, S : ℝⁿ → ℝᴺ` and a symmetric `P : ℝⁿ → ℝⁿ`
+(`⟨P v, w⟩ = ⟨v, P w⟩`), `tr(P ∘ S* ∘ A) = tr(P ∘ A* ∘ S)`, with `L*` the adjoint. By cyclicity,
+`tr(P ∘ A* ∘ S) = tr((A* ∘ S) ∘ P)`. Both traces are then expanded in the standard orthonormal
+basis `(e_l)` of `ℝⁿ`, and the terms agree:
+`⟨e, P S* A e⟩ = ⟨P e, S* A e⟩ = ⟨S P e, A e⟩ = ⟨A* S P e, e⟩ = ⟨e, A* S P e⟩`. -/
+theorem Submission.trace_comp_adjoint_comp_swap_of_symm : ∀ (n N : ℕ) (A S : Rn n →L[ℝ] Rn N) (P : Rn n →L[ℝ] Rn n), (∀ v w : Rn n, inner ℝ (P v) w = inner ℝ v (P w)) → LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint S ∘L A).toLinearMap = LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint A ∘L S).toLinearMap := by
+  intro n N A S P hP
+  -- Step 1 (cyclicity): `tr(P ∘ A* ∘ S) = tr((A* ∘ S) ∘ P)`.
+  have hcyc : LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint A ∘L S).toLinearMap =
+      LinearMap.trace ℝ (Rn n)
+        ((ContinuousLinearMap.adjoint A ∘L S).toLinearMap ∘ₗ P.toLinearMap) :=
+    LinearMap.trace_comp_comm' (ContinuousLinearMap.adjoint A ∘L S).toLinearMap P.toLinearMap
+  -- Step 2: expand both traces in the standard orthonormal basis `(e_l)` and compare termwise.
+  let e := EuclideanSpace.basisFun (Fin n) ℝ
+  rw [hcyc, LinearMap.trace_eq_sum_inner _ e, LinearMap.trace_eq_sum_inner _ e]
+  refine Finset.sum_congr rfl fun l _ ↦ ?_
+  -- Step 3: `⟨e, P S* A e⟩ = ⟨P e, S* A e⟩ = ⟨S P e, A e⟩ = ⟨A* S P e, e⟩ = ⟨e, A* S P e⟩`.
+  calc inner ℝ (e l) ((P ∘L ContinuousLinearMap.adjoint S ∘L A).toLinearMap (e l))
+      = inner ℝ (e l) (P (ContinuousLinearMap.adjoint S (A (e l)))) := rfl
+    _ = inner ℝ (P (e l)) (ContinuousLinearMap.adjoint S (A (e l))) := (hP _ _).symm
+    _ = inner ℝ (S (P (e l))) (A (e l)) := ContinuousLinearMap.adjoint_inner_right S _ _
+    _ = inner ℝ (ContinuousLinearMap.adjoint A (S (P (e l)))) (e l) :=
+      (ContinuousLinearMap.adjoint_inner_left A _ _).symm
+    _ = inner ℝ (e l) (ContinuousLinearMap.adjoint A (S (P (e l)))) := real_inner_comm _ _
+    _ = inner ℝ (e l)
+        (((ContinuousLinearMap.adjoint A ∘L S).toLinearMap ∘ₗ P.toLinearMap) (e l)) := rfl
 /-- **Gram operator of an injective linear map and the range projection.** For an injective
 `A : ℝⁿ →L[ℝ] ℝᴺ` with `K = range A`, the Gram operator `G = A* ∘L A` is a unit of `ℝⁿ →L[ℝ] ℝⁿ`,
 its ring inverse `G⁻¹` is symmetric, and `K.starProjection = A ∘L G⁻¹ ∘L A*`. `G` is injective
@@ -599,6 +654,55 @@ theorem Submission.continuousLinearMap_det_contDiff_fderiv_eq_mul_trace : ∀ n 
   have hchain := ((hC1.differentiable one_ne_zero) T).hasFDerivAt.comp_hasDerivAt_of_eq 0 hγ
     (show T = T + (0 : ℝ) • H by rw [zero_smul ℝ H, add_zero])
   exact hchain.unique hline
+
+/-- **Simon Ch. 2, §5, derivative of the area Jacobian of a `C²` immersion.** Let `V ⊆ ℝⁿ` be open
+and `ψ : ℝⁿ → ℝᴺ` be `C²` on `V` with injective `A(x) = Dψ(x)`, and let `G(x) = A(x)* A(x)`. Then
+`J = areaJacobianAt ψ = √(det ∘ G)` is `C¹` on `V` and `DJ(x)[v] = J(x) tr(G(x)⁻¹ A(x)* S_v)`, where
+`S_v = D²ψ(x)[v]`. Indeed `G` is `C¹` with `DG(x)[v] = A* S_v + S_v* A`, Jacobi's formula gives
+`D(det ∘ G)(x)[v] = det G · tr(G⁻¹ DG(x)[v])`, the symmetry of `G⁻¹` turns `tr(G⁻¹ S_v* A)` into
+`tr(G⁻¹ A* S_v)`, and `det G = J² > 0` because `A(x)` is injective. -/
+theorem Submission.areaJacobianAt_contDiffOn_fderiv_eq_gram_trace : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 (Chapter02.areaJacobianAt ψ) V ∧ ∀ x ∈ V, ∀ v : Rn n, fderiv ℝ (Chapter02.areaJacobianAt ψ) x v = Chapter02.areaJacobianAt ψ x * LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x v).toLinearMap := by
+  intro n N V ψ hV hψ hinj
+  -- `G = A* A` is `C¹` on `V` with `DG(x)[v] = A* S_v + S_v* A`, and `det` is `C¹` with
+  -- `D det(T)[H] = det T · tr(T⁻¹ H)` at every unit `T` (Jacobi's formula).
+  obtain ⟨hGC, hGD⟩ := Submission.adjoint_comp_fderiv_contDiffOn_fderiv_eq_add n N V ψ hV hψ
+  obtain ⟨hdetC, hdetD⟩ := Submission.continuousLinearMap_det_contDiff_fderiv_eq_mul_trace n
+  -- Step 1: `J = √(det ∘ G)`.
+  have hJ : Chapter02.areaJacobianAt ψ = fun x ↦
+      Real.sqrt (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x).det :=
+    funext fun x ↦ Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp ψ x
+  -- Step 2: on `V`, `A(x)` is injective, so `J x = normDet A(x) ≠ 0` and `det G(x) = (J x)² ≠ 0`.
+  have hJ0 : ∀ x ∈ V, Chapter02.areaJacobianAt ψ x ≠ 0 := fun x hx ↦ by
+    rw [Chapter02.areaJacobianAt_eq_normDet]
+    exact ((fderiv ℝ ψ x).toLinearMap.normDet_ne_zero_tfae.out 1 5).2 (hinj x hx)
+  have hd0 : ∀ x ∈ V, (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x).det ≠ 0 :=
+    fun x hx ↦ Chapter02.areaJacobianAt_sq_eq_det_adjoint_comp ψ x ▸ pow_ne_zero 2 (hJ0 x hx)
+  refine ⟨?_, fun x hx v ↦ ?_⟩
+  · -- Step 6: `√(det ∘ G)` is `C¹` on `V`, as `det ∘ G` is `C¹` and nonvanishing there.
+    rw [hJ]
+    exact (hdetC.comp_contDiffOn hGC).sqrt hd0
+  · -- Steps 4 and 7: the chain rule for `√(det ∘ G)` at `x`.
+    have hGx := ((hGC.differentiableOn one_ne_zero x hx).differentiableAt
+      (hV.mem_nhds hx)).hasFDerivAt
+    have hdetx := ((hdetC.differentiable one_ne_zero)
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)).hasFDerivAt
+    have hc := hdetx.comp x hGx
+    have hJx : HasFDerivAt (fun y ↦
+        Real.sqrt (ContinuousLinearMap.adjoint (fderiv ℝ ψ y) ∘L fderiv ℝ ψ y).det) _ x :=
+      hc.sqrt (hd0 x hx)
+    rw [← hJ] at hJx
+    -- Step 5: `G(x)` is a unit with symmetric inverse (`gram_projection`), so the two traces in
+    -- `tr(G⁻¹ (A* S_v + S_v* A))` agree (`trace_swap`).
+    obtain ⟨hunit, hsymm, -⟩ := Submission.gram_inverse_range_starProjection n N
+      (LinearMap.range (fderiv ℝ ψ x).toLinearMap) (fderiv ℝ ψ x) (hinj x hx) rfl
+    rw [hJx.fderiv, smul_apply, ContinuousLinearMap.comp_apply, hGD x hx v, hdetD _ _ hunit,
+      ContinuousLinearMap.comp_add, ContinuousLinearMap.toLinearMap_add, map_add,
+      Submission.trace_comp_adjoint_comp_swap_of_symm n N (fderiv ℝ ψ x)
+        (fderiv ℝ (fderiv ℝ ψ) x v) _ hsymm, Function.comp_apply,
+      ← Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp ψ x,
+      ← Chapter02.areaJacobianAt_sq_eq_det_adjoint_comp ψ x, smul_eq_mul]
+    field_simp [hJ0 x hx]
+    ring
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
