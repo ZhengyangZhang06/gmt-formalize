@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.null_open_nbhd-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1",
+  "depth": 5,
+  "title": "Small open neighbourhoods of a null set at which the measure is locally finite",
+  "statement": "Let N ∈ ℕ and let μ be a measure on ℝ^N = Euclid N with its Borel σ-algebra; for an arbitrary set S ⊆ ℝ^N, μ(S) denotes the outer measure. Let A ⊆ ℝ^N with μ(A) = 0, and suppose every x ∈ A has some r > 0 with μ(B(x, r)) < ∞, where B(x, r) is the open ball. Then for every ε ∈ (0, ∞] there is an open set O ⊆ ℝ^N with A ⊆ O and μ(O) < ε.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclid N)) (A : Set (Euclid N)), μ A = 0 → (∀ x ∈ A, ∃ r : ℝ, 0 < r ∧ μ (ball x r) ≠ ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ O : Set (Euclid N), IsOpen O ∧ A ⊆ O ∧ μ O < ε",
+  "lean_name": "dorag_sn_open_superset_measure_lt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e3e222819e-a1"
+}
