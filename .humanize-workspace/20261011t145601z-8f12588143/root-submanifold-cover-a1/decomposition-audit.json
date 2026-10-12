@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def IsC1Submanifold|def SubmanifoldCoverCharacterization|abbrev Rn' project/GMT/Ch03/Contract.lean",
+        "rg -n 'injective_iff_antilipschitz' mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "rg -n 'norm_image_sub_le_of_norm_hasFDerivWithin_le' mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "rg -n 'isOpen_biUnion_countable' mathlib/Mathlib/Topology/Bases.lean",
+        "rg -n 'theorem Countable.exists_eq_range' mathlib/Mathlib/Data/Set/Countable.lean",
+        "rg -n 'area_image_criticalSet_eq_zero|area_image_eq_zero_of_critical|areaJacobianAt_eq_zero_iff_not_injective|weighted_area_formula_lipschitzOn_fiberSum|aemeasurable_weightedAreaFiberSum_lipschitzOn' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "rg -n 'c1_regular_point_ball_image_isC1Submanifold|c1_range_null_union_submanifolds' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib .lake/packages/simongmt/Poincare",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sc-a1-independent-audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-submanifold-cover-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-c1-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/tmp/sc-a1-check/Stmts4.lean",
+        "/tmp/sc-a1-check/Stmts2.lean",
+        "/tmp/sc-a1-independent-audit.lean"
+      ],
+      "conclusion": "The first five searches ran from the pinned snapshot root. Verified project d09bc8a, Mathlib 25730c7c and SimonGMT 2b366308; inspected Mathlib files match the installed sources byte-for-byte. Contract.lean:68 and :182 confirm the exact submanifold predicate and selected parent. FiniteDimension.lean:242 supplies a strictly positive antilipschitz constant, including zero-dimensional domains. AreaCritical.lean:185 supplies the critical-image nullity theorem without a dimension inequality; SubmanifoldCover.lean:152 supplies the reverse implication after reordering the chart conditions. Exact-name searches found no collisions in the DAG or searched project/library sources. Both child propositions elaborated before either implementation existed. Independently recompiled the supplied child proofs under Submission and the parent assembly with the frozen approximation theorem as an explicit hypothesis, using unchanged frozen definitions. Compilation succeeded; both children, the conditional parent assembly and checked reused lemmas depend only on propext, Classical.choice and Quot.sound. The two-child split is appropriate and establishes precisely the selected SubmanifoldCoverCharacterization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "regular_ball_submanifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact one-line Lean proposition. Steps 1–5 correctly obtain a positive derivative lower bound, control derivative variation, and prove injectivity of G and its derivative on the doubled closed ball. Steps 6–8 construct the open ambient set by removing the compact annulus image and prove relative properness through the stated closed-ball preimage equality. Step 9 verifies every frozen chart condition. The argument includes n = 0 and requires no missing dimension hypothesis. It is complete, non-circular and directly formalizable. The bare lean_name is unreserved; the proposition elaborates independently, with fderiv inferred as the intended Euclidean continuous linear map."
+    },
+    {
+      "key": "c1_range_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line Lean proposition agree, including arbitrary dimensions and outer-measure nullity. Global C¹ regularity supplies differentiability everywhere; the critical-image theorem applies with finrank equal to n. The weighted-area explanation correctly handles local Lipschitz bounds, measurable weights and almost-everywhere vanishing of multiplicity. The proof then uses regular_ball_submanifold, extracts a countable family by Lindelöf, adds ∅ to permit enumeration even for an empty family, and proves the range inclusion pointwise. Its sole child dependency is correctly directed and acyclic. The proof is complete and does not invoke the parent. The bare lean_name is unreserved and its type elaborates independently. Combined with the registered approximation dependency, null-image estimates and the library reverse implication, these children prove the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
