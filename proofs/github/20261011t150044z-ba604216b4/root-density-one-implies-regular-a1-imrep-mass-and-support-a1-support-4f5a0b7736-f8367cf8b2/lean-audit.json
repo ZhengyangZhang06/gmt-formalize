@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ba54fa7b75636079c3d07d73fa8fe7e9379a4c1b74a30a2176a7b60d1cad1429",
+  "git_delta": {
+    "base_commit": "6366219d1d97a740d6498e0f7c9502a900136b65",
+    "candidate_commit": "abdba550516fcd54258a165b3c33730b7a6287a0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_ims_support_of_massOn_eq",
+    "diff_sha256": "43443313e10dd912751e2a0b37db21be0df34544abb9b9cc10d1c51a68daf8ee",
+    "source_sha256": "3d22c7d070553336cafb87925655570d96eb9b8ba08102279db9dffb1ce7b780",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_ims_support_of_massOn_eq",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) → T.support = U ∩ μ.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
