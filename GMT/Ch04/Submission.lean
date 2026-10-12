@@ -976,6 +976,229 @@ theorem Submission.mcm_annulus_integration_by_parts : ∀ (n ℓ : ℕ) (μ : Me
   linear_combination -h1 - h2 - h3 + hD + hP + F σ * ha σ ρ le_rfl hσρ le_rfl +
     a ρ * hF ρ ⟨hσρ, le_rfl⟩
 
+/-- **Ch. 4, 3.15–3.17 (pp. 92–93) and the remark after 3.17, from the unit-weight identity.**
+Assume the structure facts of §1 and, for `0 < σ ≤ ρ` with `B_ρ(ξ) ⊆ U`, the identity
+`a(ρ) - a(σ) = ∫_{B_ρ(ξ) \ B_σ(ξ)} w dμ_V + ∫_σ^ρ e(τ) dτ`, where `a(τ) = τ⁻ⁿμ_V(B_τ(ξ))`,
+`w = r⁻ⁿ|D^⊥r|²` and `e(τ) = τ^{-n-1} ∫_{B_τ(ξ)} (x - ξ) · H dμ_V`. If `|H| ≤ Λ`, then
+`|e| ≤ Λa` on `(0, R]` (3.15), so `E = e / a` satisfies `|E| ≤ Λ` and `e = Ea`. Integrating the
+identity by parts against the integrating factor `F(ρ) = exp(-∫_0^ρ E) ∈ [e^{-Λρ}, e^{Λρ}]`,
+whose derivative `-EF` cancels the error term, gives
+`F(ρ)a(ρ) - F(σ)a(σ) = ∫_{B_ρ(ξ) \ B_σ(ξ)} F(r) w dμ_V = G(σ, ρ) ∫_{B_ρ(ξ) \ B_σ(ξ)} w dμ_V`
+with `G(σ, ρ) ∈ [e^{-ΛR}, e^{ΛR}]`. Hence `F(ρ)a(ρ)` is increasing, with bounds on `F` that are
+uniform for centres near `ξ`; this gives the existence and upper semicontinuity of
+`Θⁿ(μ_V, ·)` on `U`. -/
+theorem Submission.mcm_bounded_curvature_of_identity : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) → BoundedCurvatureMonotonicity := by
+  intro hGF hUI n ℓ V U H Λ hn hU hHU hΛ hHb
+  have hfin : IsFiniteMeasureOnCompacts V.weight := (hGF n ℓ V hn).1
+  -- The annular weight `w_ξ = r⁻ⁿ|D^⊥r|²` is nonnegative everywhere.
+  have hw0 : ∀ ξ x : Ambient n ℓ, 0 ≤ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n := by
+    intro ξ x
+    unfold RectifiableVarifold.normalRadialSq
+    positivity
+  -- Part (A): the identity 3.17 on a ball `B_R(ξ) ⊆ U`.
+  have partA : ∀ (ξ : Ambient n ℓ) (R : ℝ), closedBall ξ R ⊆ U →
+      ∃ (F : ℝ → ℝ) (G : ℝ → ℝ → ℝ),
+        (∀ ρ ∈ Ioo 0 R, F ρ ∈ Icc (Real.exp (-(Λ * ρ))) (Real.exp (Λ * ρ))) ∧
+        ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < R →
+          G σ ρ ∈ Icc (Real.exp (-(Λ * R))) (Real.exp (Λ * R)) ∧
+          F ρ * (V.weight.real (closedBall ξ ρ) / ρ ^ n) -
+              F σ * (V.weight.real (closedBall ξ σ) / σ ^ n) =
+            G σ ρ * ∫ x in closedBall ξ ρ \ closedBall ξ σ,
+              V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight := by
+    intro ξ R hball
+    -- A0: for `R ≤ 0` the conditions are vacuous.
+    rcases le_or_gt R 0 with hR | hR
+    · refine ⟨fun _ ↦ 1, fun _ _ ↦ 1, ?_, ?_⟩
+      · intro ρ hρ
+        exact absurd (hρ.1.trans hρ.2) (not_lt.2 hR)
+      · intro σ ρ hσ hσρ hρR
+        exact absurd ((hσ.trans_le hσρ).trans hρR) (not_lt.2 hR)
+    set a : ℝ → ℝ := fun τ ↦ V.weight.real (closedBall ξ τ) / τ ^ n with ha
+    set e : ℝ → ℝ := fun τ ↦
+      (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1) with he
+    set w : Ambient n ℓ → ℝ := fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n with hw
+    -- The unit-weight identity at the centre `ξ`, for radii up to `R`.
+    have hUIξ : ∀ s t : ℝ, 0 < s → s ≤ t → t ≤ R →
+        IntegrableOn e (Ioc s t) ∧ IntegrableOn w (closedBall ξ t \ closedBall ξ s) V.weight ∧
+        a t - a s = (∫ x in closedBall ξ t \ closedBall ξ s, w x ∂V.weight) +
+          ∫ τ in Ioc s t, e τ := by
+      intro s t hs hst htR
+      exact hUI n ℓ V U H ξ s t hn hU hHU ((closedBall_subset_closedBall htR).trans hball) hs hst
+    have ha0 : ∀ τ, 0 < τ → 0 ≤ a τ := fun τ hτ ↦
+      div_nonneg measureReal_nonneg (pow_nonneg hτ.le _)
+    -- A1 (3.15): `|e(τ)| ≤ Λ a(τ)`, as `|(x - ξ) · H(x)| ≤ τΛ` for `μ_V`-a.e. `x ∈ B_τ(ξ)`.
+    have hA1 : ∀ τ ∈ Ioc 0 R, |e τ| ≤ Λ * a τ := by
+      intro τ hτ
+      have hτpos : 0 < τ := hτ.1
+      have hsub : closedBall ξ τ ⊆ U := (closedBall_subset_closedBall hτ.2).trans hball
+      have hbound : ‖∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight‖ ≤
+          (τ * Λ) * V.weight.real (closedBall ξ τ) := by
+        apply norm_setIntegral_le_of_norm_le_const_ae' measure_closedBall_lt_top
+        filter_upwards [hHb] with x hx hxB
+        have h1 : ‖x - ξ‖ ≤ τ := by rw [← dist_eq_norm]; exact mem_closedBall.1 hxB
+        calc ‖inner ℝ (x - ξ) (H x)‖ ≤ ‖x - ξ‖ * ‖H x‖ := norm_inner_le_norm _ _
+          _ ≤ τ * Λ := mul_le_mul h1 (hx (hsub hxB)) (norm_nonneg _) hτpos.le
+      rw [Real.norm_eq_abs] at hbound
+      simp only [he, ha]
+      rw [abs_div, abs_of_pos (pow_pos hτpos _), div_le_iff₀ (pow_pos hτpos _)]
+      calc _ ≤ τ * Λ * V.weight.real (closedBall ξ τ) := hbound
+        _ = Λ * (V.weight.real (closedBall ξ τ) / τ ^ n) * τ ^ (n + 1) := by
+          rw [pow_succ]; field_simp
+    -- A2: `E = e / a` (with `x / 0 = 0`) has `|E| ≤ Λ` and `E a = e` on `(0, R]`.
+    set E : ℝ → ℝ := fun τ ↦ e τ / a τ with hE
+    have hA2 : ∀ τ ∈ Ioc 0 R, |E τ| ≤ Λ ∧ E τ * a τ = e τ := by
+      intro τ hτ
+      have h1 := hA1 τ hτ
+      rcases (ha0 τ hτ.1).lt_or_eq with hpos | hzero
+      · refine ⟨?_, div_mul_cancel₀ _ hpos.ne'⟩
+        simp only [hE]
+        rw [abs_div, abs_of_pos hpos, div_le_iff₀ hpos]
+        exact h1
+      · simp only [hE]
+        rw [← hzero] at h1 ⊢
+        rw [mul_zero] at h1
+        rw [div_zero, abs_zero, zero_mul]
+        exact ⟨hΛ, (abs_nonpos_iff.1 h1).symm⟩
+    -- A3: `E` is integrable on `(0, R]`: `a` is Borel since `τ ↦ μ_V(B_τ(ξ))` is monotone, `e`
+    -- is integrable on every `(R/(k+1), R]` by the identity, and `|E| ≤ Λ`.
+    have hmono : Monotone (fun τ ↦ V.weight.real (closedBall ξ τ)) := fun s t hst ↦
+      measureReal_mono (closedBall_subset_closedBall hst) measure_closedBall_lt_top.ne
+    have ha_meas : Measurable a := hmono.measurable.div (continuous_pow n).measurable
+    have he_aesm : AEStronglyMeasurable e (volume.restrict (Ioc 0 R)) := by
+      have hUn : (⋃ k : ℕ, Ioc (R / (k + 1)) R) = Ioc 0 R := by
+        ext τ
+        simp only [mem_iUnion, mem_Ioc]
+        constructor
+        · rintro ⟨k, hk1, hk2⟩
+          exact ⟨lt_trans (div_pos hR (by positivity)) hk1, hk2⟩
+        · rintro ⟨h1, h2⟩
+          obtain ⟨k, hk⟩ := exists_nat_gt (R / τ)
+          refine ⟨k, ?_, h2⟩
+          rw [div_lt_iff₀ (by positivity)]
+          rw [div_lt_iff₀ h1] at hk
+          nlinarith
+      rw [← hUn, aestronglyMeasurable_iUnion_iff]
+      intro k
+      have hk : (0 : ℝ) < k + 1 := by positivity
+      have hle : R / (k + 1) ≤ R := (div_le_iff₀ hk).2 (by nlinarith [k.cast_nonneg (α := ℝ)])
+      exact (hUIξ _ _ (div_pos hR hk) hle le_rfl).1.aestronglyMeasurable
+    have hE_int : IntegrableOn E (Ioc 0 R) := by
+      refine IntegrableOn.of_bound measure_Ioc_lt_top (he_aesm.div₀ ha_meas.aestronglyMeasurable)
+        Λ ?_
+      exact (ae_restrict_iff' measurableSet_Ioc).2 (Eventually.of_forall fun τ hτ ↦ by
+        rw [Real.norm_eq_abs]; exact (hA2 τ hτ).1)
+    -- A4: the integrating factor `F(ρ) = exp(-∫_{(0,ρ]} E) ∈ [e^{-Λρ}, e^{Λρ}]`, with
+    -- `F(t) = F(σ) + ∫_{(σ,t]} F'` for `F' = -E F`.
+    set F : ℝ → ℝ := fun τ ↦ Real.exp (-∫ s in Ioc 0 τ, E s) with hF
+    have hFTC := Submission.mcm_exp_neg_integral_ftc E R hE_int
+    have hFbound : ∀ ρ ∈ Ioc 0 R, F ρ ∈ Icc (Real.exp (-(Λ * ρ))) (Real.exp (Λ * ρ)) := by
+      intro ρ hρ
+      have hI : |∫ s in Ioc 0 ρ, E s| ≤ Λ * ρ := by
+        have := norm_setIntegral_le_of_norm_le_const (μ := volume) (s := Ioc 0 ρ) (f := E) (C := Λ)
+          measure_Ioc_lt_top (fun τ hτ ↦ by
+            rw [Real.norm_eq_abs]; exact (hA2 τ ⟨hτ.1, hτ.2.trans hρ.2⟩).1)
+        rwa [Real.norm_eq_abs, Real.volume_real_Ioc_of_le hρ.1.le, sub_zero] at this
+      exact ⟨Real.exp_le_exp.2 (by linarith [le_abs_self (∫ s in Ioc 0 ρ, E s)]),
+        Real.exp_le_exp.2 (by linarith [neg_le_abs (∫ s in Ioc 0 ρ, E s)])⟩
+    -- A5–A7, with `D(σ, ρ) = ∫_{B_ρ \ B_σ} w dμ_V` and `I(σ, ρ) = ∫_{B_ρ \ B_σ} F(r) w dμ_V`.
+    set D : ℝ → ℝ → ℝ := fun s t ↦ ∫ x in closedBall ξ t \ closedBall ξ s, w x ∂V.weight with hD
+    set I : ℝ → ℝ → ℝ := fun s t ↦
+      ∫ x in closedBall ξ t \ closedBall ξ s, F ‖x - ξ‖ * w x ∂V.weight with hI
+    refine ⟨F, fun s t ↦ if D s t = 0 then 1 else I s t / D s t,
+      fun ρ hρ ↦ hFbound ρ ⟨hρ.1, hρ.2.le⟩, ?_⟩
+    intro σ ρ hσ hσρ hρR
+    obtain ⟨he_int, hw_int, -⟩ := hUIξ σ ρ hσ hσρ hρR.le
+    have hsub : Ioc σ ρ ⊆ Ioc 0 R := Ioc_subset_Ioc hσ.le hρR.le
+    -- A5: integration by parts against `F`.
+    obtain ⟨hFw_int, hid⟩ := Submission.mcm_annulus_integration_by_parts n ℓ V.weight ξ w a e F
+      (fun τ ↦ -(E τ * F τ)) σ ρ hfin hσ hσρ (fun x ↦ hw0 ξ x) hw_int he_int
+      (fun s t hs hst ht ↦ (hUIξ s t (hσ.trans_le hs) hst (ht.trans hρR.le)).2.2)
+      (hFTC.1.mono_set hsub)
+      (fun t ht ↦ hFTC.2 σ t hσ.le ht.1 (ht.2.trans hρR.le))
+    -- A6: the error term vanishes, `F e + F' a = F (e - E a) = 0`.
+    have hzero : ∫ τ in Ioc σ ρ, (F τ * e τ + -(E τ * F τ) * a τ) = 0 := by
+      rw [setIntegral_congr_fun measurableSet_Ioc (g := fun _ ↦ (0 : ℝ)) ?_]
+      · simp
+      intro τ hτ
+      have h2 := (hA2 τ (hsub hτ)).2
+      simp only
+      rw [← h2]; ring
+    have hmain : F ρ * a ρ - F σ * a σ = I σ ρ := by
+      rw [hid, hzero, add_zero]
+    -- A7: `e^{-ΛR} D ≤ I ≤ e^{ΛR} D`, since `F(r) ∈ [e^{-ΛR}, e^{ΛR}]` on `B_ρ(ξ) \ B_σ(ξ)`.
+    have hA_meas : MeasurableSet (closedBall ξ ρ \ closedBall ξ σ) :=
+      measurableSet_closedBall.diff measurableSet_closedBall
+    have hFx : ∀ x ∈ closedBall ξ ρ \ closedBall ξ σ,
+        F ‖x - ξ‖ ∈ Icc (Real.exp (-(Λ * R))) (Real.exp (Λ * R)) := by
+      intro x hx
+      have h1 : ‖x - ξ‖ ≤ ρ := by rw [← dist_eq_norm]; exact mem_closedBall.1 hx.1
+      have h2 : σ < ‖x - ξ‖ := by
+        rw [← dist_eq_norm]; exact not_le.1 (fun h ↦ hx.2 (mem_closedBall.2 h))
+      have hb := hFbound ‖x - ξ‖ ⟨hσ.trans h2, h1.trans hρR.le⟩
+      have hΛx : Λ * ‖x - ξ‖ ≤ Λ * R := mul_le_mul_of_nonneg_left (h1.trans hρR.le) hΛ
+      exact ⟨(Real.exp_le_exp.2 (by linarith)).trans hb.1, hb.2.trans (Real.exp_le_exp.2 hΛx)⟩
+    have hlow : Real.exp (-(Λ * R)) * D σ ρ ≤ I σ ρ := by
+      simp only [hD, hI]
+      rw [← integral_const_mul]
+      exact setIntegral_mono_on (hw_int.const_mul _) hFw_int hA_meas fun x hx ↦
+        mul_le_mul_of_nonneg_right (hFx x hx).1 (hw0 ξ x)
+    have hup : I σ ρ ≤ Real.exp (Λ * R) * D σ ρ := by
+      simp only [hD, hI]
+      rw [← integral_const_mul]
+      exact setIntegral_mono_on hFw_int (hw_int.const_mul _) hA_meas fun x hx ↦
+        mul_le_mul_of_nonneg_right (hFx x hx).2 (hw0 ξ x)
+    have hD0 : 0 ≤ D σ ρ := setIntegral_nonneg hA_meas fun x _ ↦ hw0 ξ x
+    have hΛR : 0 ≤ Λ * R := mul_nonneg hΛ hR.le
+    -- `G = I / D`, or `G = 1` when `D = 0` (then also `I = 0`).
+    by_cases hDz : D σ ρ = 0
+    · have hI0 : I σ ρ = 0 := by
+        rw [hDz, mul_zero] at hlow hup
+        exact le_antisymm hup hlow
+      simp only [hDz, ite_true, one_mul]
+      refine ⟨⟨?_, ?_⟩, ?_⟩
+      · rw [Real.exp_le_one_iff]; linarith
+      · exact Real.one_le_exp_iff.2 hΛR
+      · rw [hmain, hI0]; exact hDz.symm
+    · have hDpos : 0 < D σ ρ := lt_of_le_of_ne hD0 (Ne.symm hDz)
+      simp only [hDz, ite_false]
+      refine ⟨⟨?_, ?_⟩, ?_⟩
+      · rw [le_div_iff₀ hDpos]; exact hlow
+      · rw [div_le_iff₀ hDpos]; exact hup
+      · rw [hmain, div_mul_cancel₀ _ hDz]
+  -- Parts (B) and (C): take `r` with `B_{3r}(ξ) ⊆ U`. For `|η - ξ| < r`, (A) on `B_r(η)` makes
+  -- `F_η(ρ) a_η(ρ)` nondecreasing on `(0, r)` with `F_η(ρ) ∈ [e^{-Λρ}, e^{Λρ}]`, so the density
+  -- criterion applies with `c(ρ) = Λρ` and `E_η = 0`.
+  refine ⟨partA, ?_⟩
+  apply Submission.mcm_density_usc_of_monotone n ℓ V U hfin
+  intro ξ hξ
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU ξ hξ
+  refine ⟨ε / 3, by positivity, fun ρ ↦ Λ * ρ, ?_, ?_⟩
+  · have h : Tendsto (fun ρ : ℝ ↦ Λ * ρ) (𝓝 0) (𝓝 (Λ * 0)) :=
+      (continuous_const.mul continuous_id).tendsto 0
+    rw [mul_zero] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  · intro η hη
+    have hball : closedBall η (ε / 3) ⊆ U := by
+      intro y hy
+      apply hεU
+      rw [mem_ball]
+      have h1 := mem_closedBall.1 hy
+      have h2 := mem_ball.1 hη
+      calc dist y ξ ≤ dist y η + dist η ξ := dist_triangle _ _ _
+        _ < ε := by linarith
+    obtain ⟨F, G, hF, hFG⟩ := partA η (ε / 3) hball
+    refine ⟨F, fun _ ↦ 0, fun ρ hρ ↦ ⟨hF ρ hρ, ?_⟩, ?_⟩
+    · rw [abs_zero]; exact mul_nonneg hΛ hρ.1.le
+    · intro s hs ρ hρ hsρ
+      obtain ⟨hG, hid⟩ := hFG s ρ hs.1 hsρ hρ.2
+      have hD0 : 0 ≤ ∫ x in closedBall η ρ \ closedBall η s,
+          V.normalRadialSq η x / ‖x - η‖ ^ n ∂V.weight :=
+        setIntegral_nonneg (measurableSet_closedBall.diff measurableSet_closedBall)
+          fun x _ ↦ hw0 η x
+      have hGpos : 0 ≤ G s ρ := (Real.exp_pos _).le.trans hG.1
+      simp only [add_zero]
+      nlinarith [mul_nonneg hGpos hD0]
+
 end
 
 end GMT.Ch04
