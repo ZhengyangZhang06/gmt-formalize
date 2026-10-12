@@ -359,6 +359,131 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A top-dimensional current with an integrable integer density `v` that is locally constant
+where it is nonzero is integer multiplicity (Simon Ch. 6, 3.1):
+`T(ω) = ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ = τ(M, θ, ξ)(ω)` with `M = {v ≠ 0}` (open), `θ = |v|` and
+`ξ = ±e₁ ∧ ⋯ ∧ eₙ` according to the sign of `v`.  Near each `x ∈ M` the multiplicity `θ` is
+constant, so the weighted blow-up integrals of Ch. 3, 1.7 are eventually equal to `θ(x) ∫ f dLⁿ`
+and the approximate tangent space is `ℝⁿ = span(e)`. -/
+theorem Submission.fiw_tb_tda_locally_constant_im : ∀ (m : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (v : Eucl (m + 1) → ℝ), Measurable v → Integrable v → (∀ x, ∃ k : ℤ, v x = k) → (∀ x, v x ≠ 0 → ∀ᶠ y in 𝓝 x, v y = v x) → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), T ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → IsIntegerMultiplicity T := by
+  intro m T v hvm hvi hvZ hvloc hT
+  -- Notation: `e = (e₀, …, e_m)`, `M = {v ≠ 0}`, `θ = |v|`, `ξ = ±e₀ ∧ ⋯ ∧ e_m` (`+` iff `v > 0`).
+  set e : Fin (m + 1) → Eucl (m + 1) := fun i => EuclideanSpace.single i (1 : ℝ)
+  set M : Set (Eucl (m + 1)) := {x | v x ≠ 0}
+  set θ : Eucl (m + 1) → ℝ := fun x => |v x|
+  set ξ : Eucl (m + 1) → NVector (Eucl (m + 1)) (m + 1) :=
+    fun x => if 0 < v x then simpleNVector e else -simpleNVector e
+  have hvol : (μHE[m + 1] : Measure (Eucl (m + 1))) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume (m + 1)
+  -- Step 2: `M` is open (local constancy of `v` where `v ≠ 0`), hence measurable.
+  have hMopen : IsOpen M := by
+    rw [isOpen_iff_mem_nhds]
+    intro x hx
+    filter_upwards [hvloc x hx] with y hy
+    show v y ≠ 0
+    rw [hy]
+    exact hx
+  have hMmeas : MeasurableSet M := hMopen.measurableSet
+  -- Step 1: `θ(x) ⟨α, ξ(x)⟩ = v(x) α(e)` for every covector `α`.
+  have hθξ : ∀ x (α : Covector (Eucl (m + 1)) (m + 1)), θ x * ξ x α = v x * α e := by
+    intro x α
+    by_cases hpos : 0 < v x
+    · simp [θ, ξ, hpos, abs_of_pos hpos]
+    · simp [θ, ξ, hpos, abs_of_nonpos (not_lt.mp hpos)]
+  -- Step 4: the weighted approximate tangent space at `x ∈ M` is `ℝⁿ`.
+  have htan : ∀ x ∈ M, HasWeightedApproximateTangentSpaceAt (m + 1) M θ x ⊤ := by
+    intro x hx
+    refine ⟨by rw [finrank_top, finrank_euclideanSpace_fin], fun f => ?_⟩
+    -- `v = v(x)` on `B(x, δ)`, and `spt f ⊆ B̄(0, R)`.
+    obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp (hvloc x hx)
+    obtain ⟨R, hR, hRsupp⟩ :=
+      f.hasCompactSupport.isCompact.isBounded.subset_closedBall_lt 0 (0 : Eucl (m + 1))
+    -- For `0 < r < δ / (R + 1)` and `f(y) ≠ 0`: `x + r y ∈ B(x, δ) ⊆ M`, so
+    -- `y = η_{x,r}(x + r y) ∈ η_{x,r}(M)` and `θ(x + r y) = θ(x)`.
+    have hsmall : ∀ r ∈ Ioo (0 : ℝ) (δ / (R + 1)), ∀ y, f y ≠ 0 →
+        y ∈ Poincare.SimonGMT.Chapter03.blowUpMap x r '' M ∧ θ (x + r • y) = θ x := by
+      intro r hr y hy
+      have hyR : ‖y‖ ≤ R := by
+        simpa using hRsupp (subset_tsupport _ hy)
+      have hdist : dist (x + r • y) x < δ := by
+        rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr.1.le]
+        calc r * ‖y‖ ≤ r * (R + 1) := mul_le_mul_of_nonneg_left (by linarith) hr.1.le
+          _ < δ := (lt_div_iff₀ (by linarith)).mp hr.2
+      have hv : v (x + r • y) = v x := hball hdist
+      refine ⟨⟨x + r • y, ?_, ?_⟩, ?_⟩
+      · show v (x + r • y) ≠ 0
+        rw [hv]
+        exact hx
+      · simp [Poincare.SimonGMT.Chapter03.blowUpMap, inv_smul_smul₀ hr.1.ne']
+      · simp [θ, hv]
+    -- Hence the blow-up integral equals `θ(x) ∫ f dHⁿ` for all such `r`.
+    have hconst : ∀ r ∈ Ioo (0 : ℝ) (δ / (R + 1)),
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y * θ (x + r • y)
+            ∂(μHE[m + 1] : Measure (Eucl (m + 1))) =
+          θ x * ∫ y in ((⊤ : Submodule ℝ (Eucl (m + 1))) : Set (Eucl (m + 1))), f y
+            ∂(μHE[m + 1] : Measure (Eucl (m + 1))) := by
+      intro r hr
+      rw [Submodule.top_coe, Measure.restrict_univ, setIntegral_eq_integral_of_forall_compl_eq_zero,
+        ← integral_const_mul]
+      · congr 1
+        funext y
+        by_cases hy : f y = 0
+        · simp [hy]
+        · rw [(hsmall r hr y hy).2, mul_comm]
+      · intro y hy
+        by_cases hfy : f y = 0
+        · simp [hfy]
+        · exact absurd (hsmall r hr y hfy).1 hy
+    apply tendsto_const_nhds.congr'
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hδ (by linarith : (0 : ℝ) < R + 1))] with r hr
+    exact (hconst r hr).symm
+  -- `span(range e) = ℝⁿ`.
+  have hspan : Submodule.span ℝ (range e) = ⊤ := by
+    have h := (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis.span_eq
+    have hcoe : ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis = e := by
+      funext i
+      simp [e]
+    rwa [hcoe] at h
+  refine ⟨M, θ, ξ, ⟨subset_univ M, hMmeas.nullMeasurableSet, ?_, fun x hx => abs_pos.mpr hx,
+    ?_, ?_, ?_⟩, ?_, ?_⟩
+  · -- Step 3: `M ⊆ range id` is countably `n`-rectifiable.
+    exact (Poincare.SimonGMT.Chapter03.countablyRectifiable_range
+      (LipschitzWith.id : LipschitzWith 1 (id : Eucl (m + 1) → Eucl (m + 1)))).mono
+      (by rw [range_id]; exact subset_univ M)
+  · -- `θ = |v|` is integrable.
+    intro K _ _
+    rw [hvol]
+    exact hvi.abs.integrableOn
+  · -- `ξ` is constant on `{v > 0}` and on its complement.
+    exact (StronglyMeasurable.ite (measurableSet_lt measurable_const hvm)
+      stronglyMeasurable_const stronglyMeasurable_const).aestronglyMeasurable
+  · -- Orientation by the orthonormal frame `e` of `TₓM = ℝⁿ`, at every `x ∈ M`.
+    refine ae_restrict_of_forall_mem hMmeas fun x hx =>
+      ⟨e, EuclideanSpace.orthonormal_single, ?_, ?_⟩
+    · rw [hspan]
+      exact htan x hx
+    · by_cases hpos : 0 < v x
+      · left
+        simp [ξ, hpos]
+      · right
+        simp [ξ, hpos]
+  · -- `θ = |v|` is natural-valued.
+    intro x _
+    obtain ⟨k, hk⟩ := hvZ x
+    exact ⟨k.natAbs, by rw [Nat.cast_natAbs, Int.cast_abs, ← hk]⟩
+  · -- Step 5: `τ(M, θ, ξ)(ω) = ∫_M v ω_e dLⁿ = ∫ v ω_e dLⁿ = T(ω)`.
+    intro ω
+    rw [hT ω]
+    unfold tauAction
+    rw [hvol]
+    simp_rw [hθξ]
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    have hx0 : v x = 0 := by
+      by_contra h
+      exact hx h
+    simp [hx0]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
