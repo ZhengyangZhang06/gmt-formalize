@@ -587,6 +587,198 @@ theorem Submission.tgc_tangent_weight_lower_bound :
     _ = V.weight (closedBall x t) := by
         rw [mul_right_comm, ← ENNReal.ofReal_pow ht0.le, ← ENNReal.ofReal_mul htn, ← mul_pow,
           inv_mul_cancel₀ ht0.ne', one_pow, ENNReal.ofReal_one, one_mul]
+/-- **Cone decay at a tangent point** (child `cone_decay` of `tangent_graph_cover`, step (1.4) of
+its proof; the varifold form of the second limit in Simon Ch. 3, Remark 1.5(3), for a tangent plane
+as in Ch. 8, 1.1): if `V` has tangent plane `T` with multiplicity `θ` at `x` and `n ≥ 1`, then for
+every `β > 0` the cone section `{y ∈ B_t(x) : β|y - x| ≤ |(y - x) - p_T(y - x)|}` has `μ_V`-mass
+`o(t^n)` as `t ↓ 0`.  The rescaled section `C` meets `T` only at `0`, an `H^n`-null set, so a
+cut-off `g ≥ 1_C` has `θ ∫_T g dH^n` as small as we like, and the weight blow-ups of `g` bound
+`t^{-n}` times the `μ_V`-mass of the section. -/
+theorem Submission.tgc_tangent_cone_weight_decay :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), 0 < n → HasTangentPlane V x T θ → ∀ β : ℝ, 0 < β → ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), V.weight {y | y ∈ closedBall x t ∧ β * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n := by
+  intro N n U V x T θ hn hT β hβ ε hε
+  have hblow := Submission.tgc_weight_blowup_tendsto N n U V x T θ hT
+  have hplane := Submission.tgc_plane_closedBall_hausdorff N n T
+  -- Step 1: the case `ε = ∞` is trivial; otherwise `ε = ofReal e` with `e > 0`.
+  by_cases hεtop : ε = ∞
+  · filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+    rw [hεtop, ENNReal.top_mul (pow_ne_zero _ (ENNReal.ofReal_pos.2 ht).ne')]
+    exact le_top
+  obtain ⟨e, he, rfl⟩ : ∃ e : ℝ, 0 < e ∧ ε = ENNReal.ofReal e :=
+    ⟨ε.toReal, ENNReal.toReal_pos hε.ne' hεtop, (ENNReal.ofReal_toReal hεtop).symm⟩
+  obtain ⟨hxU, hθ, -⟩ := hT
+  set ν : Measure (Euclidean N) :=
+    (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) with hν
+  have hp_cont : Continuous (Grassmannian.project T) :=
+    T.projectionLinearMap.continuous_of_finiteDimensional
+  have hp_smul : ∀ (c : ℝ) (v : Euclidean N),
+      Grassmannian.project T (c • v) = c • Grassmannian.project T v :=
+    fun c v ↦ T.projectionLinearMap.map_smul c v
+  -- Step 2: the rescaled cone section `C`; it is closed, lies in `B_1(0)`, contains `0`, and
+  -- `t⁻¹ • (y - x) ∈ C` for every `y` in the cone section at scale `t`.
+  set C : Set (Euclidean N) := {w | ‖w‖ ≤ 1 ∧ β * ‖w‖ ≤ ‖w - Grassmannian.project T w‖}
+  have hC_closed : IsClosed C :=
+    (isClosed_le continuous_norm continuous_const).inter
+      (isClosed_le (continuous_const.mul continuous_norm) (continuous_id.sub hp_cont).norm)
+  have hC_ball : C ⊆ closedBall 0 1 := fun w hw ↦ by simpa using hw.1
+  have hC0 : (0 : Euclidean N) ∈ C := by
+    refine ⟨by simp, ?_⟩
+    rw [norm_zero, mul_zero]
+    exact norm_nonneg _
+  have hC_scale : ∀ t : ℝ, 0 < t → ∀ y : Euclidean N, y ∈ closedBall x t →
+      β * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖ → t⁻¹ • (y - x) ∈ C := by
+    intro t ht y hyB hyβ
+    have hti : 0 ≤ t⁻¹ := inv_nonneg.2 ht.le
+    have hyx : ‖y - x‖ ≤ t := by rw [← dist_eq_norm]; exact mem_closedBall.1 hyB
+    refine ⟨?_, ?_⟩
+    · rw [norm_smul, Real.norm_of_nonneg hti]
+      calc t⁻¹ * ‖y - x‖ ≤ t⁻¹ * t := mul_le_mul_of_nonneg_left hyx hti
+        _ = 1 := inv_mul_cancel₀ ht.ne'
+    · rw [hp_smul, ← smul_sub, norm_smul, norm_smul, Real.norm_of_nonneg hti]
+      calc β * (t⁻¹ * ‖y - x‖) = t⁻¹ * (β * ‖y - x‖) := by ring
+        _ ≤ t⁻¹ * ‖(y - x) - Grassmannian.project T (y - x)‖ :=
+          mul_le_mul_of_nonneg_left hyβ hti
+  -- Step 3: `C ∩ T ⊆ {0} = T ∩ B_0(0)`, which is `H^n`-null since `n ≥ 1`; so `ν C = 0`.
+  have hνC : ν C = 0 := by
+    rw [hν, Measure.restrict_apply hC_closed.measurableSet]
+    refine measure_mono_null (t := (T.plane : Set (Euclidean N)) ∩ closedBall 0 0) ?_ ?_
+    · rintro w ⟨hwC, hwT⟩
+      have hpw : Grassmannian.project T w = w := T.projectionLinearMap_apply_of_mem hwT
+      have h0 : β * ‖w‖ ≤ β * 0 := by
+        have := hwC.2
+        rwa [hpw, sub_self, norm_zero, ← mul_zero β] at this
+      refine ⟨hwT, mem_closedBall.2 ?_⟩
+      rw [dist_zero_right]
+      exact le_of_mul_le_mul_left h0 hβ
+    · rw [hplane 0 le_rfl, ENNReal.ofReal_zero, zero_pow hn.ne', mul_zero]
+  -- Step 4: thickenings of `C` lie in `B_2(0)`, which has finite `ν`-measure; choose `κ ∈ (0,1]`
+  -- with `ν (cthickening κ C) < e / θ`.
+  have hthick : ∀ r : ℝ, 0 ≤ r → r ≤ 1 → cthickening r C ⊆ closedBall 0 2 := by
+    intro r hr0 hr1
+    calc cthickening r C ⊆ cthickening r (closedBall (0 : Euclidean N) 1) :=
+          cthickening_subset_of_subset r hC_ball
+      _ = closedBall 0 (r + 1) := cthickening_closedBall hr0 zero_le_one 0
+      _ ⊆ closedBall 0 2 := closedBall_subset_closedBall (by linarith)
+  have hν2 : ν (closedBall 0 2) ≠ ∞ := by
+    rw [hν, Measure.restrict_apply measurableSet_closedBall, inter_comm, hplane 2 zero_le_two]
+    exact ENNReal.mul_ne_top measure_ball_lt_top.ne (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have hν1 : ν (cthickening 1 C) ≠ ∞ :=
+    ne_top_of_le_ne_top hν2 (measure_mono (hthick 1 zero_le_one le_rfl))
+  have htend : Tendsto (fun r ↦ ν (cthickening r C)) (𝓝 0) (𝓝 0) := by
+    rw [← hνC]
+    exact tendsto_measure_cthickening_of_isClosed ⟨1, one_pos, hν1⟩ hC_closed
+  have heθ : 0 < e / θ := div_pos he hθ
+  obtain ⟨δ, hδ, hδν⟩ :=
+    Metric.eventually_nhds_iff.1 (htend.eventually (gt_mem_nhds (ENNReal.ofReal_pos.2 heθ)))
+  set κ : ℝ := min (δ / 2) 1
+  have hκ0 : 0 < κ := lt_min (half_pos hδ) one_pos
+  have hκ1 : κ ≤ 1 := min_le_right _ _
+  have hκν : ν (cthickening κ C) < ENNReal.ofReal (e / θ) := by
+    refine hδν ?_
+    rw [Real.dist_eq, sub_zero, abs_of_pos hκ0]
+    exact (min_le_left _ _).trans_lt (half_lt_self hδ)
+  have hκfin : ν (cthickening κ C) ≠ ∞ := (hκν.trans ENNReal.ofReal_lt_top).ne
+  have hκreal : (ν (cthickening κ C)).toReal < e / θ := by
+    have := (ENNReal.toReal_lt_toReal hκfin ENNReal.ofReal_ne_top).2 hκν
+    rwa [ENNReal.toReal_ofReal heθ.le] at this
+  -- Step 5: the cut-off `g = max(0, 1 - dist(·, C)/κ)`: continuous, `0 ≤ g ≤ 1`, `g = 1` on `C`,
+  -- `g = 0` off `cthickening κ C ⊆ B_2(0)`; hence `g ∈ C_c(ℝ^N)`.
+  set g₀ : Euclidean N → ℝ := fun v ↦ max 0 (1 - infDist v C / κ)
+  have hg₀_cont : Continuous g₀ :=
+    continuous_const.max (continuous_const.sub ((continuous_infDist_pt C).div_const κ))
+  have hg₀_nonneg : ∀ v, 0 ≤ g₀ v := fun v ↦ le_max_left _ _
+  have hg₀_le_one : ∀ v, g₀ v ≤ 1 := fun v ↦
+    max_le zero_le_one (sub_le_self _ (div_nonneg infDist_nonneg hκ0.le))
+  have hg₀_one : ∀ v ∈ C, g₀ v = 1 := fun v hv ↦ by
+    simp only [g₀, infDist_zero_of_mem hv, zero_div, sub_zero]
+    exact max_eq_right zero_le_one
+  have hg₀_zero : ∀ v, v ∉ cthickening κ C → g₀ v = 0 := by
+    intro v hv
+    have hge : κ ≤ infDist v C := by
+      by_contra hlt
+      obtain ⟨w, hwC, hvw⟩ := (infDist_lt_iff ⟨0, hC0⟩).1 (not_le.1 hlt)
+      exact hv (mem_cthickening_of_dist_le v w κ C hwC hvw.le)
+    refine max_eq_left ?_
+    rw [sub_nonpos, le_div_iff₀ hκ0, one_mul]
+    exact hge
+  have hg₀_supp : HasCompactSupport g₀ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclidean N) 2) fun v hv ↦
+      hg₀_zero v fun h ↦ hv (hthick κ hκ0.le hκ1 h)
+  let g : C_c(Euclidean N, ℝ) := ⟨⟨g₀, hg₀_cont⟩, hg₀_supp⟩
+  -- Step 6: `θ ∫_T g dH^n ≤ θ ν(cthickening κ C) < e`, so eventually the blow-ups are `< e`.
+  have hint_le : ∫ v, g v ∂ν ≤ (ν (cthickening κ C)).toReal := by
+    have hmeas : MeasurableSet (cthickening κ C) := isClosed_cthickening.measurableSet
+    calc ∫ v, g v ∂ν ≤ ∫ v, (cthickening κ C).indicator (fun _ ↦ (1 : ℝ)) v ∂ν := by
+          refine integral_mono_of_nonneg (ae_of_all _ fun v ↦ hg₀_nonneg v)
+            ((integrable_indicator_iff hmeas).2 (integrableOn_const hκfin))
+            (ae_of_all _ fun v ↦ ?_)
+          by_cases hv : v ∈ cthickening κ C
+          · rw [indicator_of_mem hv]
+            exact hg₀_le_one v
+          · rw [indicator_of_notMem hv]
+            exact (hg₀_zero v hv).le
+      _ = (ν (cthickening κ C)).toReal := by
+          rw [integral_indicator_const _ hmeas, smul_eq_mul, mul_one, measureReal_def]
+  have hℓ : θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂(μHE[n] : Measure (Euclidean N)) < e :=
+    calc θ * ∫ v, g v ∂ν ≤ θ * (ν (cthickening κ C)).toReal :=
+          mul_le_mul_of_nonneg_left hint_le hθ.le
+      _ < θ * (e / θ) := mul_lt_mul_of_pos_left hκreal hθ
+      _ = e := by field_simp
+  have hev := (hblow g).eventually (gt_mem_nhds hℓ)
+  -- Step 7: `B_{R/2}(x)` is a compact subset of `U`, so it has finite `μ_V`-measure.
+  obtain ⟨R, hR, hRU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hxU
+  have hμR : V.weight (closedBall x (R / 2)) ≠ ∞ :=
+    V.weight_finite_on_compact _ (isCompact_closedBall x _)
+      ((closedBall_subset_ball (half_lt_self hR)).trans hRU)
+  -- Step 8: for `0 < t ≤ R/4` with blow-up `< e`, compare the cone section `S` with the
+  -- rescaled cut-off `k y = g(t⁻¹ • (y - x))`.
+  filter_upwards [hev, Ioc_mem_nhdsGT (by positivity : (0 : ℝ) < R / 4)] with t hFt ht
+  obtain ⟨ht0, htR⟩ := ht
+  set S : Set (Euclidean N) :=
+    {y | y ∈ closedBall x t ∧ β * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖}
+  set k : Euclidean N → ℝ := fun y ↦ g₀ (t⁻¹ • (y - x))
+  have hk_cont : Continuous k := hg₀_cont.comp (by fun_prop)
+  -- (a) `k` vanishes off `B_{R/2}(x)`.
+  have hk_supp : Function.support k ⊆ closedBall x (R / 2) := by
+    intro y hy
+    have hmem : t⁻¹ • (y - x) ∈ cthickening κ C := by
+      by_contra hn'
+      exact hy (hg₀_zero _ hn')
+    have hnorm : ‖t⁻¹ • (y - x)‖ ≤ 2 := by
+      simpa using hthick κ hκ0.le hκ1 hmem
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 ht0.le), inv_mul_le_iff₀ ht0] at hnorm
+    rw [mem_closedBall, dist_eq_norm]
+    linarith
+  -- (b) `k` is `μ_V`-integrable.
+  have hk_int : Integrable k V.weight := by
+    refine (integrableOn_iff_integrable_of_support_subset hk_supp).1 ?_
+    refine Measure.integrableOn_of_bounded (M := 1) hμR hk_cont.aestronglyMeasurable
+      (ae_of_all _ fun y ↦ ?_)
+    rw [Real.norm_of_nonneg (hg₀_nonneg _)]
+    exact hg₀_le_one _
+  -- (c) `1_S ≤ k`, so `μ_V(S) ≤ ∫ k dμ_V`.
+  have hS_meas : MeasurableSet S :=
+    (isClosed_closedBall.inter (isClosed_le (continuous_const.mul (continuous_id.sub
+      continuous_const).norm) ((continuous_id.sub continuous_const).sub
+        (hp_cont.comp (continuous_id.sub continuous_const))).norm)).measurableSet
+  have hmass : V.weight S ≤ ENNReal.ofReal (∫ y, k y ∂V.weight) := by
+    rw [← lintegral_indicator_one hS_meas,
+      ofReal_integral_eq_lintegral_ofReal hk_int (ae_of_all _ fun y ↦ hg₀_nonneg _)]
+    refine lintegral_mono fun y ↦ ?_
+    by_cases hy : y ∈ S
+    · have hky : k y = 1 := hg₀_one _ (hC_scale t ht0 y hy.1 hy.2)
+      rw [indicator_of_mem hy, Pi.one_apply, hky, ENNReal.ofReal_one]
+    · rw [indicator_of_notMem hy]
+      exact zero_le
+  -- Step 9: `μ_V(S) ≤ ∫ k dμ_V = t^n · (t⁻¹^n ∫ k dμ_V) ≤ t^n e`.
+  have hFt' : t⁻¹ ^ n * ∫ y, k y ∂V.weight < e := hFt
+  have hI : ∫ y, k y ∂V.weight ≤ t ^ n * e := by
+    have htn : ∫ y, k y ∂V.weight = t ^ n * (t⁻¹ ^ n * ∫ y, k y ∂V.weight) := by
+      rw [← mul_assoc, ← mul_pow, mul_inv_cancel₀ ht0.ne', one_pow, one_mul]
+    rw [htn]
+    exact mul_le_mul_of_nonneg_left hFt'.le (pow_nonneg ht0.le n)
+  refine hmass.trans ((ENNReal.ofReal_le_ofReal hI).trans_eq ?_)
+  rw [ENNReal.ofReal_mul (pow_nonneg ht0.le n), ENNReal.ofReal_pow ht0.le, mul_comm]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
