@@ -2492,6 +2492,23 @@ theorem ted_lemma_a_tilt_height : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
     rw [hg]
   rw [hgoal, hId, show (144 : ℝ) * (r ^ 2)⁻¹ = 144 / r ^ 2 by ring]
   exact hB2.trans key
+/-- **Lemma A** of the any-radius Allard theorem (Simon Ch. 5, Lemma 2.1, p. 107, with an `L¹`
+curvature term): if `spt V ∩ B_r(z)` lies within height `h` of `z + T`, `dim T = n`, then
+`∫_{B_{r/2}(z)} |p_{T_x M} − p_T|² dμ_V ≤ 144 r⁻² ∫_{B_r(z)} dist(x − z, T)² dμ_V
+  + 4h ∫_{B_r(z)} |H| dμ_V`.  By `any_radius_tangent_ae`, `x ↦ p_x` is `μ_V`-a.e. strongly
+measurable and `μ_V`-a.e. the projection onto an `n`-plane; the cutoff test field
+`X = ζ² p_{T⊥}(x − z)`, the first variation and Young absorption are `ted_lemma_a_tilt_height`. -/
+theorem any_radius_tilt_height_l1 : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → 0 ≤ h → closedBall z r ⊆ U → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ 144 * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+  intro n ℓ hn U hU V H hH z r h hr hh hBU T hT hht
+  -- Step 0 (child `tangent_ae`): `p_x` is `μ_V`-a.e. strongly measurable and `μ_V`-a.e. the
+  -- orthogonal projection onto an `n`-dimensional subspace.
+  obtain ⟨htan, hmeas, -⟩ := Submission.any_radius_tangent_ae n ℓ hn U hU V
+  have hae : ∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧
+      V.tangentProj x = P.starProjection :=
+    htan.mono fun _ ⟨P, hP, _, hPx⟩ => ⟨P, hP, hPx⟩
+  -- Steps 1–6: cutoff `ζ = φ(|x − z|/r)`, test field `X = ζ² p_{T⊥}(x − z)`, `div_M X`, first
+  -- variation, Young absorption, `ζ = 1` on `B_{r/2}(z)` and `|x'| ≤ h` `μ_V`-a.e. on `B_r(z)`.
+  exact Submission.ted_lemma_a_tilt_height n ℓ hn U hU V H hH hmeas hae z r h hr hBU hh T hT hht
 
 end Submission
 
