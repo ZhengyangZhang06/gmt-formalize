@@ -477,6 +477,51 @@ theorem Submission.pcoarea_chart_integrand_tonelli : ∀ (m k N : ℕ) (ψ : Rn 
   refine ⟨hFp.lintegral_prod_right', ?_⟩
   rw [← hmp.lintegral_comp hFm, Measure.volume_eq_prod]
   exact lintegral_prod _ hFp.aemeasurable
+/-- **Change of variables from `ℝⁿ` into `P = WithLp 2 (ℝᵐ × ℝᵏ)`** (`n = m + k`; Simon Ch. 3,
+(2.8)–(2.9), `chapter-03.txt` lines 412–436, via the `C¹` co-area formula Ch. 2 (6.3),
+`chapter-02.txt` lines 1462–1476, whose proof Simon omits; this is the injective
+equal-dimensional case of the area formula Ch. 2 (3.1)–(3.5), `chapter-02.txt` lines 743–797):
+if `f : ℝⁿ → P` has derivative `f'(u)` within the Borel set `B` at every `u ∈ B` and is injective
+on `B`, then `∫_{f(B)} g = ∫_B normDet(f'(u)) · g(f(u)) du` for every `g : P → [0, ∞]`.
+As `finrank P = n`, there is a linear isometric equivalence `e : P ≃ ℝⁿ`; `e⁻¹` preserves volume,
+Mathlib's change of variables applies to `e ∘ f` on `B`, and
+`|det(e ∘ f'(u))| = normDet(e) · normDet(f'(u)) = normDet(f'(u))`. -/
+theorem Submission.pcoarea_chart_change_of_variables : ∀ (m k : ℕ) (f : Rn (m + k) → WithLp 2 (Rn m × Rn k)) (f' : Rn (m + k) → Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) (B : Set (Rn (m + k))), MeasurableSet B → (∀ u ∈ B, HasFDerivWithinAt f (f' u) B u) → InjOn f B → ∀ g : WithLp 2 (Rn m × Rn k) → ℝ≥0∞, ∫⁻ w in f '' B, g w = ∫⁻ u in B, ENNReal.ofReal ((f' u).toLinearMap.normDet) * g (f u) := by
+  intro m k f f' B hB hf hinj g
+  -- Step 1: `finrank P = m + k`.
+  have hfin : finrank ℝ (WithLp 2 (Rn m × Rn k)) = m + k := by
+    rw [(WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).finrank_eq, Module.finrank_prod]
+    simp
+  -- Step 2: a linear isometric equivalence `e : P ≃ ℝⁿ`, and `E = e` as a continuous linear map.
+  let e : WithLp 2 (Rn m × Rn k) ≃ₗᵢ[ℝ] Rn (m + k) :=
+    ((stdOrthonormalBasis ℝ (WithLp 2 (Rn m × Rn k))).reindex (finCongr hfin)).repr
+  let E : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn (m + k) := e.toContinuousLinearEquiv
+  -- Step 3: `e⁻¹` is a volume-preserving measurable embedding, so
+  -- `∫_{e(f(B))} g ∘ e⁻¹ = ∫_{f(B)} g`.
+  have hes : MeasurePreserving e.symm volume volume := e.symm.measurePreserving
+  have h1 : ∫⁻ v in e '' (f '' B), g (e.symm v) = ∫⁻ w in f '' B, g w := by
+    rw [hes.setLIntegral_comp_emb e.symm.toHomeomorph.measurableEmbedding]
+    congr 2
+    rw [Set.image_image]
+    simp
+  -- Step 4: `e ∘ f` has derivative `E ∘ f'(u)` within `B` and is injective on `B`.
+  have hder : ∀ u ∈ B, HasFDerivWithinAt (fun u ↦ e (f u)) (E.comp (f' u)) B u := fun u hu ↦
+    E.hasFDerivAt.comp_hasFDerivWithinAt u (hf u hu)
+  have hinj' : InjOn (fun u ↦ e (f u)) B := fun a ha b hb hab ↦ hinj ha hb (e.injective hab)
+  -- Step 5: Mathlib's change of variables for `e ∘ f` and the integrand `g ∘ e⁻¹`.
+  have h2 := lintegral_image_eq_lintegral_abs_det_fderiv_mul volume hB hder hinj'
+    (fun v ↦ g (e.symm v))
+  -- Step 7: combine; on `B` it remains to compare the Jacobians, as `e⁻¹ (e (f u)) = f u`.
+  rw [← h1, Set.image_image, h2]
+  refine setLIntegral_congr_fun hB (fun u hu ↦ ?_)
+  simp only [LinearIsometryEquiv.symm_apply_apply]
+  congr 2
+  -- Step 6: `|det (E ∘ f'(u))| = normDet E · normDet (f'(u)) = normDet (f'(u))`.
+  have hE : (E : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] Rn (m + k)).normDet = 1 :=
+    LinearIsometry.normDet_eq_one e.toLinearIsometry
+  rw [ContinuousLinearMap.det, ContinuousLinearMap.toLinearMap_comp, ← LinearMap.normDet_eq_abs_det,
+    LinearMap.normDet_comp_of_finrank_eq _ _ (by rw [hfin, finrank_euclideanSpace_fin]), hE,
+    one_mul]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
