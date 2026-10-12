@@ -1673,6 +1673,161 @@ theorem Submission.variation_jacobian_family : ∀ (N : ℕ) (U K : Set (Rn N)) 
   · -- (FV): off `K`, `DX(y) = DZ(y) = 0`, so every term of both integrands vanishes.
     obtain ⟨-, -, hX, hZ⟩ := hD.1 r hr y hy
     simp [secondVariationIntegrand, tangentialDivergence, normalPart, hX, hZ]
+/-- **Differentiation under the integral sign for `g (t, e z)` with `e(S)` in a compact set**
+(Simon Ch. 2, §5, p. 62: differentiating `t ↦ Hⁿ(M_t)` once and twice in 5.3–5.4). Let `S` be
+measurable with `μ S < ∞`, let `C` be compact, and let `e` be a.e. strongly measurable for `μ⌊S`
+with `e(S) ⊆ C`. If `g` is `C¹` at every `(0, x)`, `x ∈ C`, then `z ↦ g (t, e z)` is integrable on
+`S` for `t` near `0`, and `d/dt ∫_S g (t, e z) dμ = ∫_S ∂_t g (0, e z) dμ` at `t = 0`. If `g` is
+`C²` there, the same formula holds at every `t` near `0`, and differentiating it once more at `0`
+gives `∫_S ∂²_t g (0, e z) dμ`. By compactness `g` is `C^k` on `(-2r, 2r) × C` for some `r > 0`, so
+`g`, `∂_t g` and `∂²_t g` are bounded on `[-r, r] × C`. Composition with `e` is a.e. strongly
+measurable (approximate `e` by simple functions). The constant bound is `μ⌊S`-integrable, so
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` applies. -/
+theorem Submission.variation_param_integral_deriv : ∀ (α X : Type) [MeasurableSpace α] [NormedAddCommGroup X] [NormedSpace ℝ X] (μ : Measure α) (S : Set α) (C : Set X) (e : α → X) (g : ℝ × X → ℝ), MeasurableSet S → μ S < ⊤ → IsCompact C → (∀ z ∈ S, e z ∈ C) → AEStronglyMeasurable e (μ.restrict S) → ((∀ x ∈ C, ContDiffAt ℝ 1 g (0, x)) → (∀ᶠ t in 𝓝 0, Integrable (fun z ↦ g (t, e z)) (μ.restrict S)) ∧ HasDerivAt (fun t ↦ ∫ z in S, g (t, e z) ∂μ) (∫ z in S, deriv (fun t ↦ g (t, e z)) 0 ∂μ) 0) ∧ ((∀ x ∈ C, ContDiffAt ℝ 2 g (0, x)) → (∀ᶠ t in 𝓝 0, HasDerivAt (fun s ↦ ∫ z in S, g (s, e z) ∂μ) (∫ z in S, deriv (fun s ↦ g (s, e z)) t ∂μ) t) ∧ HasDerivAt (fun t ↦ ∫ z in S, deriv (fun s ↦ g (s, e z)) t ∂μ) (∫ z in S, deriv (fun t ↦ deriv (fun s ↦ g (s, e z)) t) 0 ∂μ) 0) := by
+  intro α X _ _ _ μ S C e g hS hμS hC heC he
+  have : IsFiniteMeasure (μ.restrict S) := isFiniteMeasure_restrict.mpr hμS.ne
+  -- Step 4: if `h` is continuous at every point of `C`, then `z ↦ h (e z)` is a.e. strongly
+  -- measurable for `μ⌊S`: approximate a strongly measurable version `e'` of `e` by simple
+  -- functions `s_m`; `h ∘ s_m` is simple and `h (s_m z) → h (e' z)` whenever `e' z = e z ∈ C`.
+  have hmeas : ∀ h : X → ℝ, (∀ x ∈ C, ContinuousAt h x) →
+      AEStronglyMeasurable (fun z ↦ h (e z)) (μ.restrict S) := by
+    intro h hh
+    obtain ⟨e', he'm, hee'⟩ := he
+    have h' : AEStronglyMeasurable (fun z ↦ h (e' z)) (μ.restrict S) := by
+      refine aestronglyMeasurable_of_tendsto_ae atTop
+        (f := fun n z ↦ h (he'm.approx n z)) (fun n ↦ ?_) ?_
+      · exact ((he'm.approx n).map h).stronglyMeasurable.aestronglyMeasurable
+      · filter_upwards [hee', ae_restrict_mem hS] with z hz hzS
+        exact (hh (e' z) (hz ▸ heC z hzS)).tendsto.comp (he'm.tendsto_approx z)
+    exact h'.congr (hee'.fun_comp h).symm
+  -- Step 1: if `G` is `C¹` at `(t, x)`, then `G` and `∂_t G = DG(·)(1, 0)` are continuous at
+  -- `(t, x)`, and `s ↦ G (s, x)` has derivative `∂_t G (t, x)` at `t` (chain rule).
+  have facts : ∀ (G : ℝ × X → ℝ) (t : ℝ) (x : X), ContDiffAt ℝ 1 G (t, x) →
+      ContinuousAt G (t, x) ∧ ContinuousAt (fun q ↦ fderiv ℝ G q (1, 0)) (t, x) ∧
+        HasDerivAt (fun s ↦ G (s, x)) (fderiv ℝ G (t, x) (1, 0)) t := by
+    intro G t x hG
+    refine ⟨hG.continuousAt, ?_, ?_⟩
+    · exact (hG.fderiv_right (m := 0) (by norm_num)).continuousAt.clm_apply continuousAt_const
+    · exact (hG.differentiableAt (by norm_num)).hasFDerivAt.comp_hasDerivAt t
+        ((hasDerivAt_id' t).prodMk (hasDerivAt_const t x))
+  -- Step 2: tube lemma. If `g` is `C^n` (`n` finite) at every `(0, x)`, `x ∈ C`, then `g` is
+  -- `C^n` on `(-2r, 2r) × C` for some `r > 0`.
+  have tube : ∀ n : WithTop ℕ∞, n ≠ ((⊤ : ℕ∞) : WithTop ℕ∞) →
+      (∀ x ∈ C, ContDiffAt ℝ n g (0, x)) →
+        ∃ r > 0, ∀ t : ℝ, |t| < 2 * r → ∀ x ∈ C, ContDiffAt ℝ n g (t, x) := by
+    intro n hn hg
+    have hev : ∀ᶠ t in 𝓝 (0 : ℝ), ∀ x ∈ C, ContDiffAt ℝ n g (t, x) :=
+      hC.eventually_forall_of_forall_eventually (P := fun t x ↦ ContDiffAt ℝ n g (t, x))
+        fun x hx ↦ (hg x hx).eventually hn
+    obtain ⟨ε, hε, hεball⟩ := Metric.eventually_nhds_iff.mp hev
+    refine ⟨ε / 2, half_pos hε, fun t ht x hx ↦ hεball ?_ x hx⟩
+    rw [Real.dist_eq, sub_zero]
+    linarith
+  -- Steps 3, 5 and 6: let `G` have `t`-derivative `G'` on `(-2r, 2r) × C`, with `G` and `G'`
+  -- continuous there. For `|t₀| < r`, `z ↦ G (t₀, e z)` is `μ⌊S`-integrable, and dominated
+  -- differentiation on `ball t₀ (r - |t₀|) ⊆ (-r, r)` gives the derivative of the integral at `t₀`.
+  have core : ∀ (G G' : ℝ × X → ℝ) (r : ℝ), 0 < r →
+      (∀ t : ℝ, |t| < 2 * r → ∀ x ∈ C, ContinuousAt G (t, x) ∧ ContinuousAt G' (t, x) ∧
+        HasDerivAt (fun s ↦ G (s, x)) (G' (t, x)) t) →
+      ∀ t₀ : ℝ, |t₀| < r → Integrable (fun z ↦ G (t₀, e z)) (μ.restrict S) ∧
+        HasDerivAt (fun t ↦ ∫ z in S, G (t, e z) ∂μ) (∫ z in S, G' (t₀, e z) ∂μ) t₀ := by
+    intro G G' r hr hG t₀ ht₀
+    have hmG : ∀ t : ℝ, |t| < 2 * r → AEStronglyMeasurable (fun z ↦ G (t, e z)) (μ.restrict S) :=
+      fun t ht ↦ hmeas (fun x ↦ G (t, x)) fun x hx ↦
+        (hG t ht x hx).1.comp (continuous_const.prodMk continuous_id).continuousAt
+    have hmG' : ∀ t : ℝ, |t| < 2 * r → AEStronglyMeasurable (fun z ↦ G' (t, e z)) (μ.restrict S) :=
+      fun t ht ↦ hmeas (fun x ↦ G' (t, x)) fun x hx ↦
+        (hG t ht x hx).2.1.comp (continuous_const.prodMk continuous_id).continuousAt
+    -- Uniform bounds `B`, `B'` for `G`, `G'` on the compact set `[-r, r] × C`.
+    have hQ : IsCompact (closedBall (0 : ℝ) r ×ˢ C) := (isCompact_closedBall 0 r).prod hC
+    have hQmem : ∀ p ∈ closedBall (0 : ℝ) r ×ˢ C, |p.1| < 2 * r ∧ p.2 ∈ C := by
+      intro p hp
+      refine ⟨?_, hp.2⟩
+      have := hp.1
+      rw [mem_closedBall, Real.dist_eq, sub_zero] at this
+      linarith
+    obtain ⟨B, hB⟩ := hQ.exists_bound_of_continuousOn (f := G)
+      (continuousOn_of_forall_continuousAt fun p hp ↦ (hG p.1 (hQmem p hp).1 p.2 (hQmem p hp).2).1)
+    obtain ⟨B', hB'⟩ := hQ.exists_bound_of_continuousOn (f := G')
+      (continuousOn_of_forall_continuousAt fun p hp ↦
+        (hG p.1 (hQmem p hp).1 p.2 (hQmem p hp).2).2.1)
+    have hint : Integrable (fun z ↦ G (t₀, e z)) (μ.restrict S) := by
+      refine (integrable_const B).mono' (hmG t₀ (by linarith [abs_nonneg t₀])) ?_
+      filter_upwards [ae_restrict_mem hS] with z hz
+      refine hB (t₀, e z) ⟨?_, heC z hz⟩
+      rw [mem_closedBall, Real.dist_eq, sub_zero]
+      exact ht₀.le
+    refine ⟨hint, ?_⟩
+    have hpos : 0 < r - |t₀| := by linarith
+    have hball : ∀ t ∈ ball t₀ (r - |t₀|), |t| < r := by
+      intro t ht
+      rw [mem_ball, Real.dist_eq] at ht
+      linarith [abs_sub_abs_le_abs_sub t t₀]
+    have hd := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ.restrict S)
+      (F := fun t z ↦ G (t, e z)) (F' := fun t z ↦ G' (t, e z)) (x₀ := t₀)
+      (bound := fun _ ↦ B') (s := ball t₀ (r - |t₀|))
+      (ball_mem_nhds t₀ hpos)
+      (eventually_of_mem (ball_mem_nhds t₀ hpos) fun t ht ↦
+        hmG t (by linarith [hball t ht]))
+      hint (hmG' t₀ (by linarith [abs_nonneg t₀]))
+      (by
+        filter_upwards [ae_restrict_mem hS] with z hz t ht
+        refine hB' (t, e z) ⟨?_, heC z hz⟩
+        rw [mem_closedBall, Real.dist_eq, sub_zero]
+        exact (hball t ht).le)
+      (integrable_const B')
+      (by
+        filter_upwards [ae_restrict_mem hS] with z hz t ht
+        exact (hG t (by linarith [hball t ht]) (e z) (heC z hz)).2.2)
+    exact hd.2
+  refine ⟨fun h1 ↦ ?_, fun h2 ↦ ?_⟩
+  · -- (I1): apply `core` to `g` and `∂_t g`; by Step 1, `∂_t g (0, e z)` is the `deriv` integrand.
+    obtain ⟨r, hr, hgr⟩ := tube 1 (by simp) h1
+    have hG : ∀ t : ℝ, |t| < 2 * r → ∀ x ∈ C, ContinuousAt g (t, x) ∧
+        ContinuousAt (fun q ↦ fderiv ℝ g q (1, 0)) (t, x) ∧
+          HasDerivAt (fun s ↦ g (s, x)) (fderiv ℝ g (t, x) (1, 0)) t :=
+      fun t ht x hx ↦ facts g t x (hgr t ht x hx)
+    refine ⟨?_, ?_⟩
+    · filter_upwards [ball_mem_nhds (0 : ℝ) hr] with t ht
+      rw [mem_ball, Real.dist_eq, sub_zero] at ht
+      exact (core g _ r hr hG t ht).1
+    · refine (core g _ r hr hG 0 (by simpa using hr)).2.congr_deriv ?_
+      refine setIntegral_congr_fun hS fun z hz ↦ ?_
+      exact ((hG 0 (by simpa using hr) (e z) (heC z hz)).2.2.deriv).symm
+  · -- (I2): `g` is `C²` on `(-2r, 2r) × C`, so `g` and `g₁ = ∂_t g` are `C¹` there.
+    obtain ⟨r, hr, hgr⟩ := tube 2 (by simp) h2
+    have hG : ∀ t : ℝ, |t| < 2 * r → ∀ x ∈ C, ContinuousAt g (t, x) ∧
+        ContinuousAt (fun q ↦ fderiv ℝ g q (1, 0)) (t, x) ∧
+          HasDerivAt (fun s ↦ g (s, x)) (fderiv ℝ g (t, x) (1, 0)) t :=
+      fun t ht x hx ↦ facts g t x ((hgr t ht x hx).of_le (by norm_num))
+    have hG1 : ∀ t : ℝ, |t| < 2 * r → ∀ x ∈ C,
+        ContinuousAt (fun q ↦ fderiv ℝ g q (1, 0)) (t, x) ∧
+        ContinuousAt (fun q ↦ fderiv ℝ (fun q ↦ fderiv ℝ g q (1, 0)) q (1, 0)) (t, x) ∧
+          HasDerivAt (fun s ↦ fderiv ℝ g (s, x) (1, 0))
+            (fderiv ℝ (fun q ↦ fderiv ℝ g q (1, 0)) (t, x) (1, 0)) t :=
+      fun t ht x hx ↦ facts (fun q ↦ fderiv ℝ g q (1, 0)) t x
+        (((hgr t ht x hx).fderiv_right (m := 1) (by norm_num)).clm_apply contDiffAt_const)
+    have h2r : (0 : ℝ) < 2 * r := by linarith
+    refine ⟨?_, ?_⟩
+    · -- Step 6: `core` for `g` at every `|t| < r`.
+      filter_upwards [ball_mem_nhds (0 : ℝ) hr] with t ht
+      rw [mem_ball, Real.dist_eq, sub_zero] at ht
+      refine (core g _ r hr hG t ht).2.congr_deriv ?_
+      refine setIntegral_congr_fun hS fun z hz ↦ ?_
+      exact ((hG t (by linarith) (e z) (heC z hz)).2.2.deriv).symm
+    · -- Step 7: `core` for `g₁` at `0`. On `(-2r, 2r)` the `deriv` integrand equals `g₁ (t, e z)`,
+      -- both inside the integral and before differentiating once more at `0`.
+      refine ((core _ _ r hr hG1 0 (by simpa using hr)).2.congr_deriv ?_).congr_of_eventuallyEq ?_
+      · refine setIntegral_congr_fun hS fun z hz ↦ ?_
+        have hev : (fun t ↦ deriv (fun s ↦ g (s, e z)) t) =ᶠ[𝓝 0]
+            fun t ↦ fderiv ℝ g (t, e z) (1, 0) := by
+          filter_upwards [ball_mem_nhds (0 : ℝ) h2r] with t ht
+          rw [mem_ball, Real.dist_eq, sub_zero] at ht
+          exact (hG t ht (e z) (heC z hz)).2.2.deriv
+        exact (hev.deriv_eq.trans (hG1 0 (by simpa using h2r) (e z) (heC z hz)).2.2.deriv).symm
+      · filter_upwards [ball_mem_nhds (0 : ℝ) h2r] with t ht
+        rw [mem_ball, Real.dist_eq, sub_zero] at ht
+        exact setIntegral_congr_fun hS fun z hz ↦ (hG t ht (e z) (heC z hz)).2.2.deriv
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
