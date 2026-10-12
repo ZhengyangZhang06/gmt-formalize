@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_volume-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+  "depth": 3,
+  "title": "Lebesgue measure of a parameter set is at most H^n of its rotated graph",
+  "statement": "For all natural numbers n, l, every linear isometry q of R^(n+l), every map u : R^n -> R^l and every set A contained in R^n (no measurability or regularity assumed): L^n(A) <= H^n(q(graph u over A)), where graph u over A = {graphPoint(x, u(x)) : x in A}, graphPoint(x, y) = (x, y) in R^n x R^l = R^(n+l), L^n = volume on R^n and H^n = muHE[n] on R^(n+l).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (A : Set (Rn n)), volume A ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver u A)",
+  "lean_name": "anyrad_gc_volume_le_graph_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1-a1"
+}

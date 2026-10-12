@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_transfer-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+  "depth": 3,
+  "title": "Area comparison and null-set transfer along a continuous graph piece dominated by a measure",
+  "statement": "Let n, l be natural numbers, q a linear isometry of R^(n+l), Omega a Borel subset of R^n, u : R^n -> R^l continuous on Omega, F(x) := q(graphPoint(x, u(x))), Gamma := q(graph u over Omega) = F(Omega), and nu a measure on R^(n+l) with H^n restricted to Gamma <= nu (H^n = muHE[n]). Then (a) for every Borel A contained in Omega, q(graph u over A) = F(A) is Borel; (b) for every Borel A contained in Omega and every Borel g : R^(n+l) -> [0, infinity], the integral over A of g(F(x)) dL^n(x) is at most the integral over q(graph u over A) of g dnu; (c) for every property P of points of R^(n+l) that holds nu-a.e., P(F(x)) holds for L^n-a.e. x in Omega.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), MeasurableSet Ω → ContinuousOn u Ω → ∀ ν : Measure (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)).restrict (q '' graphOver u Ω) ≤ ν → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → MeasurableSet (q '' graphOver u A)) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂ν) ∧ ∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂ν, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x)))",
+  "lean_name": "anyrad_gc_graph_lintegral_transfer",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_comparison-a1.graph_volume-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_volume-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1-a1"
+}

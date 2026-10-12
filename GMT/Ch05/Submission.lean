@@ -2404,6 +2404,35 @@ theorem ted_tangent_plane_facts : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
       funext v
       rw [ContinuousLinearMap.coe_coe, hDGv]
     rw [hfun, ← LinearMap.coe_range, Submodule.span_eq]
+/-- **Lebesgue measure is dominated by the `Hⁿ`-measure of a rotated graph.**  For a linear
+isometry `q` of `ℝ^{n+ℓ}`, any `u : ℝⁿ → ℝ^ℓ` and any `A ⊆ ℝⁿ`, `Lⁿ(A) ≤ Hⁿ(q(graph u|A))`:
+`φ = π ∘ q⁻¹`, with `π` the projection onto the first `n` coordinates, is `1`-Lipschitz and maps
+`q(graph u|A)` onto `A`; Lipschitz maps scale `Hⁿ` by at most `Lip(φ)ⁿ`, and `Hⁿ = Lⁿ` on `ℝⁿ`. -/
+theorem anyrad_gc_volume_le_graph_hausdorff : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (A : Set (Rn n)), volume A ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver u A) := by
+  intro n ℓ q u A
+  -- `φ = π ∘ q⁻¹`, where `π` keeps the first `n` coordinates of `ℝ^{n+ℓ}`.
+  let φ : Amb n ℓ → Rn n := fun z => WithLp.toLp 2 fun i : Fin n => q.symm z (Fin.castAdd ℓ i)
+  -- `φ` is `1`-Lipschitz: `q⁻¹` is an isometry and `π` only drops the last `ℓ` squared coordinates.
+  have hφ : LipschitzWith 1 φ := by
+    refine LipschitzWith.mk_one fun z z' => ?_
+    rw [← q.symm.dist_map z z', EuclideanSpace.dist_eq, EuclideanSpace.dist_eq, Fin.sum_univ_add]
+    exact Real.sqrt_le_sqrt (le_add_of_nonneg_right (Finset.sum_nonneg fun i _ => sq_nonneg _))
+  -- `φ` is a left inverse of `x ↦ q(x, u x)`, so it maps `q(graph u|A)` onto `A`.
+  have hφA : φ '' (q '' graphOver u A) = A := by
+    have hleft : ∀ x : Rn n, φ (q (graphPoint x (u x))) = x := fun x => by
+      ext i
+      simp [φ, graphPoint]
+    simp only [graphOver, image_image, hleft, image_id']
+  -- On every space `μHE[n] = cₙ • μH[n]` with the same `cₙ`, and `μH[n](φ '' S) ≤ 1ⁿ μH[n](S)`.
+  have hle : (μHE[n] : Measure (Rn n)) (φ '' (q '' graphOver u A)) ≤
+      (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver u A) := by
+    simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply]
+    gcongr
+    simpa using hφ.hausdorffMeasure_image_le (Nat.cast_nonneg n) (q '' graphOver u A)
+  calc volume A = (μHE[n] : Measure (Rn n)) A := by
+        rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    _ = (μHE[n] : Measure (Rn n)) (φ '' (q '' graphOver u A)) := by rw [hφA]
+    _ ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver u A) := hle
 
 end Submission
 

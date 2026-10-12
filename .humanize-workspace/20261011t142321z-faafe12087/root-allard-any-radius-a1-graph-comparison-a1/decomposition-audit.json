@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "aetp_upper_density_zero_ae|ted_tangent_plane_facts|anyrad_gc_",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|euclideanHausdorffMeasure_eq_volume",
+        "hausdorffMeasure_image_le|hausdorffMeasure_le_liminf_tsum",
+        "theorem (ae_tendsto_lintegral_enorm_sub_div_of_integrable|ae_tendsto_lintegral_enorm_sub_div|ae_tendsto_average_norm_sub)",
+        "exists_disjoint_subfamily_covering_enlargement_closedBall",
+        "extend_finite_dimension",
+        "starProjection_norm_le",
+        "git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean",
+        "git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean Checks/Assembly.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/gc-independent-audit-6_po77j6/Conditional.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/accepted-candidate.json",
+        "/tmp/gc-independent-audit-6_po77j6/Types.lean",
+        "/tmp/gc-independent-audit-6_po77j6/Conditional.lean",
+        "/tmp/gc-independent-audit-6_po77j6/upper_density.lean",
+        "/tmp/gc-independent-audit-6_po77j6/tangent_facts.lean",
+        "/tmp/gc-split-k7/proj/Checks/Assembly.lean",
+        "/tmp/gc-split-k7/proj/Val/GraphTransfer.lean",
+        "/tmp/gc-split-k7/proj/Val/Lebesgue.lean"
+      ],
+      "conclusion": "The pinned definitions and library results support the proposed arguments. The name search found no matches in the snapshot project; DAG and proposal scans found no conflicting reservations for the five new names. Both reused declarations have identical accepted frozen types and unchanged contract definitions. All seven propositions independently elaborate without child implementations. Fresh Lean checks passed for both reused declarations, the three independent new proofs, the two dependent proofs with their dependencies supplied as explicit hypotheses, and the exact parent assembly; their axiom reports contain only propext, Classical.choice and Quot.sound. The split is appropriate: its correctly directed, acyclic dependencies establish E1–E3 of the selected theorem using the inherited monotonicity contract. Every name is bare, every statement is a standalone one-line proposition, and the operator norms and orthogonal projections use the intended instances. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "upper_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The finite restriction, outer regularity, countable disjoint 5r covering, and Hausdorff-content estimate prove the stated ENNReal limit, including n = 0. The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "tangent_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Independently reviewed graph blow-ups and complement-density estimates establish locality. The countable C¹ cover, measurable projection field, and cutoff squeeze prove the remaining conjuncts. Multiplicity positivity correctly supplies tangent uniqueness."
+    },
+    {
+      "key": "graph_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree for arbitrary sets without regularity assumptions. The coordinate projection composed with q⁻¹ is a 1-Lipschitz left inverse; the common Hausdorff normalization yields exactly the claimed volume bound."
+    },
+    {
+      "key": "hausdorff_le_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel carrier core permits application of upper_density. Positive lower density forces Γ minus the carrier to be Hausdorff-null. Positivity transfers the multiplicity bound, and restriction/withDensity monotonicity proves the exact measure inequality, including nonmeasurable Γ."
+    },
+    {
+      "key": "graph_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conclusions match the prose. Lusin–Souslin gives Borel images; graph_volume gives pushforward domination and the integral inequality. The arbitrary-set estimate transfers every almost-everywhere predicate without an unstated measurability assumption."
+    },
+    {
+      "key": "graph_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit transfer hypothesis supplies the needed parameter-null-set control. Local Lipschitz extensions, tangent_facts, equality of local derivatives, the span-image identity, and a countable cover prove precisely the stated projection identity."
+    },
+    {
+      "key": "lebesgue_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The everywhere operator-norm bound matches the prose. Finite restriction to O justifies Besicovitch differentiation. The Hilbert–Schmidt comparison and eventual equality of small-ball restrictions yield the exact ENNReal limit, including zero-mass balls."
+    }
+  ],
+  "required_changes": []
+}
