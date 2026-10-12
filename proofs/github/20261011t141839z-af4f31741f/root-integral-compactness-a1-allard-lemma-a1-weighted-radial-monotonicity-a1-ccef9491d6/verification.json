@@ -1,0 +1,21 @@
+{
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1350",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "3c6818bddadb89b47160584ce4f8ef0c883fcc29",
+  "integrated_commit": "",
+  "proof_base_commit": "da0a42e7aedc725ac5ffbc928f22fa400f8e7a89",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integral_compactness-a1.allard_lemma-a1",
+  "requires": [
+    "root.integral_compactness-a1.allard_lemma-a1.first_variation_bound-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.radial_field_divergence-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1.cutoff_mass_derivative-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1.first_variation_lower_bound-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1.gradient_term_bound-a1"
+  ]
+}
