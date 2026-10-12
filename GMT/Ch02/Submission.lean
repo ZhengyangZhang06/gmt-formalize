@@ -532,6 +532,43 @@ theorem Submission.coarea_normDet_adjoint_mul_normDet_chart : ∀ (m k : ℕ) (T
   -- Step 10: `normDet L* · normDet Φ = (normDet λ · normDet α) · normDet Ψ = normDet Ψ`.
   rw [← hGΦ, hG, hG₂₂, LinearMap.normDet_codRestrict, ← hlamJ, ← mul_assoc, h1, one_mul]
 
+/-- **Chart identity for the co-area Jacobian** (part (2) of `coarea_jacobian_linear_algebra`).
+Let `A : ℝᵐ × ℝᵏ → ℝᴺ` be injective with `range A = T_x M` and `Df(x) (A p) = p₁`, and let
+`B b = A (0, b)`. Then `J*_f(x) · normDet A = normDet B`. Indeed `A` and `B` take values in
+`T = T_x M`, and for `L = Df(x)|_T` the codomain restrictions `Φ = A|^T` (bijective) and
+`Ψ = B|^T` satisfy `L (Φ p) = p₁` and `Ψ b = Φ (0, b)`, so
+`coarea_normDet_adjoint_mul_normDet_chart` gives `normDet L* · normDet Φ = normDet Ψ`. Finally
+`J*_f(x) = normDet L*` (`coareaJacobian_eq_normDet_adjoint`), and following a map by the isometric
+inclusion `T ⊆ ℝᴺ` does not change `normDet` (`LinearMap.normDet_codRestrict`). -/
+theorem Submission.coareaJacobian_mul_normDet_chart : ∀ (N m k : ℕ) (M : Set (Rn N))
+    (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N),
+    Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap →
+    (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) →
+    coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet := by
+  intro N m k M f x A B hA hT hD hB
+  -- Step 1: `A` and `B` take values in `T = T_x M = range A`.
+  have hAT : ∀ p, A.toLinearMap p ∈ tangentSpace M x := fun p ↦
+    hT ▸ LinearMap.mem_range_self A.toLinearMap p
+  have hBT : ∀ b, B.toLinearMap b ∈ tangentSpace M x := fun b ↦ by
+    simpa only [ContinuousLinearMap.coe_coe, hB] using hAT (WithLp.toLp 2 (0, b))
+  -- Step 2: the codomain restrictions `Φ = A|^T` and `Ψ = B|^T`.
+  let Φ := A.toLinearMap.codRestrict (tangentSpace M x) hAT
+  let Ψ := B.toLinearMap.codRestrict (tangentSpace M x) hBT
+  -- Step 3: `Φ` is bijective, as `A` is injective and `T = range A`.
+  have hΦ : Function.Bijective Φ := by
+    refine ⟨fun p q hpq ↦ hA (congrArg Subtype.val hpq), fun t ↦ ?_⟩
+    obtain ⟨p, hp⟩ : (t : Rn N) ∈ LinearMap.range A.toLinearMap := hT ▸ t.2
+    exact ⟨p, Subtype.ext hp⟩
+  -- Steps 4–6: for `L = Df(x)|_T`, `L (Φ p) = p₁` (by `hD`) and `Ψ b = Φ (toLp (0, b))` (by `hB`),
+  -- so the abstract chart identity applies to `L`, `Φ` and `Ψ`.
+  have key := Submission.coarea_normDet_adjoint_mul_normDet_chart m k (tangentSpace M x)
+    ((fderiv ℝ f x).comp (tangentSpace M x).subtypeL).toLinearMap Φ Ψ hΦ hD
+    fun b ↦ Subtype.ext (hB b)
+  -- Steps 7–9: `J*_f(x) = normDet L*`, `normDet Φ = normDet A` and `normDet Ψ = normDet B`.
+  rw [Submission.coareaJacobian_eq_normDet_adjoint, ← LinearMap.normDet_codRestrict hAT,
+    ← LinearMap.normDet_codRestrict hBT]
+  exact key
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
