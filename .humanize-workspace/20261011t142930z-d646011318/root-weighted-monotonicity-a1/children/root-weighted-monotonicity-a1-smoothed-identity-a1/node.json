@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.smoothed_identity-a1",
+  "parent_id": "root.weighted_monotonicity-a1",
+  "depth": 2,
+  "title": "Integrated smoothed monotonicity identity for a fixed cutoff (parent Steps 3–4, Simon 3.4)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ}, μ a Borel measure on E finite on compact sets, u, q, G: E → ℝ, φ: ℝ → ℝ, ξ ∈ E and ε, σ, ρ, R, A ∈ ℝ with 0 < σ ≤ ρ, ε > 0, (1 + ε)ρ < R; u and q a.e. strongly measurable for μ restricted to B_R(ξ); |u(x)| ≤ A and |q(x)| ≤ 1 for x ∈ B_R(ξ); G μ-integrable on B_R(ξ); φ of class C¹ with φ(t) = 0 for t ≥ 1 + ε; and, for every τ ∈ [σ, ρ], (ODE_τ): n·∫u φ(r/τ)dμ + ∫u(1 − q)·((r/τ)φ'(r/τ))dμ + ∫φ(r/τ)G dμ = 0 (r = |x − ξ|, integrals over E). Then (∫uφ(r/ρ)dμ)/ρⁿ − (∫uφ(r/σ)dμ)/σⁿ = ∫u·q·k(r)dμ + ∫_{(σ,ρ]} (∫φ(r/τ)G dμ)/τⁿ⁺¹ dτ, where k(s) := ∫_{(σ,ρ]} −(s/τ²)φ'(s/τ)/τⁿ dτ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (u q G : Ambient n ℓ → ℝ) (φ : ℝ → ℝ) (ξ : Ambient n ℓ) (ε σ ρ R A : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → σ ≤ ρ → 0 < ε → (1 + ε) * ρ < R → AEStronglyMeasurable u (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |u x| ≤ A ∧ |q x| ≤ 1) → IntegrableOn G (closedBall ξ R) μ → ContDiff ℝ 1 φ → (∀ t, 1 + ε ≤ t → φ t = 0) → (∀ τ ∈ Icc σ ρ, (n : ℝ) * ∫ x, u x * φ (‖x - ξ‖ / τ) ∂μ + ∫ x, u x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) ∂μ + ∫ x, φ (‖x - ξ‖ / τ) * G x ∂μ = 0) → (∫ x, u x * φ (‖x - ξ‖ / ρ) ∂μ) / ρ ^ n - (∫ x, u x * φ (‖x - ξ‖ / σ) ∂μ) / σ ^ n = ∫ x, u x * q x * (∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ) / τ ^ n) ∂μ + ∫ τ in Ioc σ ρ, (∫ x, φ (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1)",
+  "lean_name": "weighted_mono_smoothed_identity",
+  "depends_on": [
+    "root.weighted_monotonicity-a1.cutoff_integral_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.weighted_monotonicity-a1.cutoff_integral_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-smoothed-identity-a1-a1"
+}
