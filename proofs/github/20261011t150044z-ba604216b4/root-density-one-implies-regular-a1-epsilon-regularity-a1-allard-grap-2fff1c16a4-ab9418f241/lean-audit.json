@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3ef613fb6a7c652c9c8767af8c5f1c86fd51f54039cdcb82095da2e4e6866a6a",
+  "git_delta": {
+    "base_commit": "8f0ddb873ee98f971dfa70b660d6f9d60955bed6",
+    "candidate_commit": "d59b6e0460b148aa59761f2f5f46e76aa535be26",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ted_hs_integral_compare",
+    "diff_sha256": "fd72e95b2ca4486d1114e5f164a8fa5cdf021d21594bd31aa58ef646a4625055",
+    "source_sha256": "eaecfdcb2af9c149452fbe22a234606fa3c71c801a5a91e00396b71bc18c0056",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ted_hs_integral_compare",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (τ : Euclid P → (Euclid P →L[ℝ] Euclid P)) (A₁ A₂ : Euclid P →L[ℝ] Euclid P) (s : Set (Euclid P)), AEStronglyMeasurable τ μ → ENNReal.ofReal (∑ i : Fin P, ‖A₁ (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * μ s ≤ 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₁ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) + 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) ∧ (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₁ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) ≤ 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) + 2 * ENNReal.ofReal (∑ i : Fin P, ‖A₁ (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * μ s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
