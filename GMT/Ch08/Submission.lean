@@ -410,6 +410,33 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Uniformization of eventual density bounds (Simon Ch. 3, 1.6, replacing Egoroff's theorem in
+(7)–(9)): if `c t^n ≤ F(t)` eventually for some `c > 0` and `G(t) ≤ ε t^n` eventually for every
+`ε > 0`, then for some `m, k` both `t^n/(m+1) ≤ F(t)` and `G(t) ≤ β t^n/(m+1)` hold for all
+`t ∈ (0, 1/(k+1)]`. -/
+theorem Submission.tgc_eventual_density_bounds_uniform :
+    ∀ (n : ℕ) (β : ℝ) (F G : ℝ → ℝ≥0∞), 0 < β → (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ F t) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), G t ≤ ε * ENNReal.ofReal t ^ n) → ∃ m k : ℕ, ∀ t : ℝ, 0 < t → t ≤ 1 / ((k : ℝ) + 1) → ENNReal.ofReal (1 / ((m : ℝ) + 1) * t ^ n) ≤ F t ∧ G t ≤ ENNReal.ofReal (1 / ((m : ℝ) + 1) * β * t ^ n) := by
+  rintro n β F G hβ ⟨c, hc, hF⟩ hG
+  -- Step 1: `m` with `m⁻¹ < c`, so `ofReal (1/(m+1)) = (m+1)⁻¹ ≤ m⁻¹ < c`.
+  obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt hc.ne'
+  have ha : 0 < 1 / ((m : ℝ) + 1) := by positivity
+  have hac : ENNReal.ofReal (1 / ((m : ℝ) + 1)) ≤ c := by
+    rw [one_div, ENNReal.ofReal_inv_of_pos (by positivity),
+      ENNReal.ofReal_add (Nat.cast_nonneg m) zero_le_one, ENNReal.ofReal_natCast, ENNReal.ofReal_one]
+    exact (ENNReal.inv_le_inv.mpr le_self_add).trans hm.le
+  -- Steps 2–3: with `ε = ofReal (β/(m+1)) > 0`, both bounds hold on a common interval `(0, δ)`.
+  obtain ⟨δ, hδ, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp
+    (hF.and (hG (ENNReal.ofReal (1 / ((m : ℝ) + 1) * β)) (ENNReal.ofReal_pos.mpr (mul_pos ha hβ))))
+  -- Step 4: `k` with `1/(k+1) < δ`.
+  obtain ⟨k, hk⟩ := exists_nat_one_div_lt (show (0 : ℝ) < δ from hδ)
+  -- Step 5: evaluate both bounds at `t ∈ (0, 1/(k+1)] ⊆ (0, δ)`.
+  refine ⟨m, k, fun t ht htk ↦ ?_⟩
+  obtain ⟨hFt, hGt⟩ := hsub ⟨ht, htk.trans_lt hk⟩
+  constructor
+  · rw [ENNReal.ofReal_mul ha.le, ENNReal.ofReal_pow ht.le]
+    exact (mul_le_mul_left hac _).trans hFt
+  · rwa [ENNReal.ofReal_mul (mul_pos ha hβ).le, ENNReal.ofReal_pow ht.le]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
