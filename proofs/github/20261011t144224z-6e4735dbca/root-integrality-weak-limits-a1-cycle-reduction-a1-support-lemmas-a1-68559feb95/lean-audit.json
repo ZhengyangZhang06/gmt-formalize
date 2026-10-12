@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "376b26d27f2d3c4d6bdd8e7a226f4a9565bffa596857460bf688b85eb954c0fc",
+  "git_delta": {
+    "base_commit": "bb551a3d5525bf4ca066cb07fb0c209d20bc96a9",
+    "candidate_commit": "02f3305faacfc43200f665dd4b67e2a44ab25d0b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_support_lemmas",
+    "diff_sha256": "cf9f3c00cd95f3b24c8667f91c68187ad7b16b9925adde98a87125d3533fe40e",
+    "source_sha256": "6cca27aeb1bcc5c1fc716fbc9f67988359dfffd19ad9cdfd26f3d04c70145386",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_support_lemmas",
+      "statement": "(∀ (P m : ℕ) (U : Set (Eucl P)) (Z : GeometricCurrentOn U (m + 1)), Z.boundary.support ⊆ Z.support) ∧ (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (K : Set (Eucl P)) (Zj : ℕ → GeometricCurrentOn U n) (Z : GeometricCurrentOn U n), IsClosed K → (∀ j, (Zj j).support ⊆ K) → WeaklyConvergesOn Zj Z → Z.support ⊆ K) ∧ (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Z₁ Z₂ Z : GeometricCurrentOn U n) (a b : ℝ), (∀ ω : TestFormOn U n, Z ω = a * Z₁ ω + b * Z₂ ω) → Z.support ⊆ Z₁.support ∪ Z₂.support)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
