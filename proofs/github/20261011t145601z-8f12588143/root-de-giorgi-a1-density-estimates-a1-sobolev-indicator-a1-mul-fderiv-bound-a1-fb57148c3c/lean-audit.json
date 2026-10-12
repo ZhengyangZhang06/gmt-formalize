@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e786b8643c67da3173610e7851e9d9e8851f443b704fd7f058f023cc8e15f4b9",
+  "git_delta": {
+    "base_commit": "4d2a75a7a1638c19f49ce4eaede3b2a836e1c1dd",
+    "candidate_commit": "bdae7cd3fa907c395b1e010aace4f154c74bcd04",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiSobInd_mul_lipschitz_fderiv_bound",
+    "diff_sha256": "baa651f3b5530fea347987c2d50ff06dd04459da4660769b47c48b4cb52fbf5d",
+    "source_sha256": "0b6a417df4ae68037aa1edde0858e7ab13b0fb6c3aab4b2cd0c139b0ba373231",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiSobInd_mul_lipschitz_fderiv_bound",
+      "statement": "∀ (N : ℕ) (ζ u : Rn N → ℝ) (K L : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → LipschitzWith L u → (∀ y, 0 ≤ u y ∧ u y ≤ 1) → (∃ K' : ℝ≥0, LipschitzWith K' (fun y ↦ ζ y * u y)) ∧ HasCompactSupport (fun y ↦ ζ y * u y) ∧ ∫ y, ‖fderiv ℝ (fun y ↦ ζ y * u y) y‖ ≤ (∫ y, ζ y * ‖fderiv ℝ u y‖) + ∫ y, u y * ‖fderiv ℝ ζ y‖",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
