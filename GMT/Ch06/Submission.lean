@@ -359,6 +359,43 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Representation estimate on `W \ K`: if `φ = h • θ` where `|h| ≤ c`, `h = 0` off `W` and on
+`K`, and `|ξ(x)(θ)| ≤ c'` for `μ`-a.e. `x`, then `|T φ| ≤ c c' μ(W \ K)`. -/
+theorem Submission.rpn_moc_abs_apply_le_mul_measure_diff :
+    ∀ (P n : ℕ) (U W K : Set (Eucl P)) (T : GeometricCurrentOn U n) (μ : Measure (Eucl P))
+      (ξ : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ ξ → IsOpen W →
+      IsCompact K → μ (W \ K) ≠ ∞ → ∀ (θ : Covector (Eucl P) n) (h : Eucl P → ℝ) (c c' : ℝ),
+      (∀ x, |h x| ≤ c) → (∀ x, x ∉ W → h x = 0) → (∀ x ∈ K, h x = 0) →
+      (∀ᵐ x ∂μ, |ξ x θ| ≤ c') → ∀ φ : TestFormOn U n,
+      (∀ x, (φ : DifferentialForm (Eucl P) n) x = h x • θ) →
+      |T φ| ≤ c * c' * (μ (W \ K)).toReal := by
+  intro P n U W K T μ ξ hrep hW hK hμ θ h c c' hc hW0 hK0 hξ φ hφ
+  have hA : MeasurableSet (W \ K) := hW.measurableSet.diff hK.isClosed.measurableSet
+  have hc0 : 0 ≤ c := (abs_nonneg _).trans (hc 0)
+  -- the integrand is `h x * ξ(x)(θ)`
+  have hg : ∀ x, ξ x ((φ : DifferentialForm (Eucl P) n) x) = h x * ξ x θ := fun x => by
+    rw [hφ x, map_smul, smul_eq_mul]
+  -- `μ`-a.e. domination by `c c' 1_{W \ K}`
+  have hbound : ∀ᵐ x ∂μ, ‖ξ x ((φ : DifferentialForm (Eucl P) n) x)‖ ≤
+      (W \ K).indicator (fun _ => c * c') x := by
+    filter_upwards [hξ] with x hx
+    rw [hg x, Real.norm_eq_abs, abs_mul]
+    by_cases hxA : x ∈ W \ K
+    · rw [Set.indicator_of_mem hxA]
+      exact mul_le_mul (hc x) hx (abs_nonneg _) hc0
+    · have hx0 : h x = 0 := by
+        by_cases hxW : x ∈ W
+        · exact hK0 x (not_not.mp fun hxK => hxA ⟨hxW, hxK⟩)
+        · exact hW0 x hxW
+      rw [Set.indicator_of_notMem hxA, hx0, abs_zero, zero_mul]
+  have hG : Integrable ((W \ K).indicator fun _ => c * c') μ :=
+    (integrable_indicator_iff hA).2 (integrableOn_const hμ)
+  rw [(hrep φ).2, ← Real.norm_eq_abs]
+  calc ‖∫ x, ξ x ((φ : DifferentialForm (Eucl P) n) x) ∂μ‖
+      ≤ ∫ x, (W \ K).indicator (fun _ => c * c') x ∂μ := norm_integral_le_of_norm_le hG hbound
+    _ = c * c' * (μ (W \ K)).toReal := by
+      rw [integral_indicator_const _ hA, measureReal_def, smul_eq_mul, mul_comm]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
