@@ -645,6 +645,77 @@ theorem Submission.c1_sard_submersion_level_set_chart : ∀ (m k : ℕ) (V : Set
     intro a b hab
     have := congrArg Prod.snd hab
     simpa using this
+/-- **Simon Ch. 2, 4.1–4.2 (p. 55), composition of local representations.** If `(V, W, ψ)` is a
+`C¹` local representation of `M`, `S ⊆ M`, and `(D, V₁, l)` is a `C¹` local representation of
+`ψ⁻¹(S)` with `V₁ ⊆ V`, then `ψ(V₁) = W₁ ∩ M` for some open `W₁ ⊆ W` (4.2: by relative
+properness, `ψ(V \ V₁)` is closed relative to `W`), and `(D, W₁, ψ ∘ l)` is a `C¹` local
+representation of `S`. -/
+theorem Submission.c1_sard_local_representation_comp : ∀ (n k N : ℕ) (M S : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (D : Set (Rn k)) (V₁ : Set (Rn n)) (l : Rn k → Rn n), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → S ⊆ M → V₁ ⊆ V → Chapter02.IsSimonLocalRepresentation 1 (ψ ⁻¹' S) D V₁ l → ∃ W₁ : Set (Rn N), W₁ ⊆ W ∧ ψ '' V₁ = W₁ ∩ M ∧ Chapter02.IsSimonLocalRepresentation 1 S D W₁ (ψ ∘ l) := by
+  intro n k N M S V W ψ D V₁ l hψ hSM hV₁V hl
+  obtain ⟨hV, hW, hψC, hψinj, hψimg, hψprop, hψder⟩ := hψ
+  obtain ⟨hD, hV₁, hlC, hlinj, hlimg, hlprop, hlder⟩ := hl
+  -- Simon 4.2: `ψ(V \ V₁)` is closed relative to `W`. Near `y ∈ W` it lies in the image of the
+  -- compact set `(V ∩ ψ⁻¹(B̄)) \ V₁`, where `B̄ ⊆ W` is a closed ball about `y`.
+  have hrel : ∀ y ∈ W, y ∈ closure (ψ '' (V \ V₁)) → y ∈ ψ '' (V \ V₁) := by
+    intro y hyW hycl
+    obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hW y hyW
+    have hQW : closedBall y (r / 2) ⊆ W := (closedBall_subset_ball (half_lt_self hr)).trans hball
+    have hK : IsCompact (ψ '' (V ∩ ψ ⁻¹' closedBall y (r / 2) ∩ V₁ᶜ)) :=
+      ((hψprop _ (isCompact_closedBall y (r / 2)) hQW).inter_right
+        hV₁.isClosed_compl).image_of_continuousOn (hψC.continuousOn.mono fun x hx => hx.1.1)
+    have hsub :
+        ball y (r / 2) ∩ ψ '' (V \ V₁) ⊆ ψ '' (V ∩ ψ ⁻¹' closedBall y (r / 2) ∩ V₁ᶜ) := by
+      rintro _ ⟨hyb, x, ⟨hxV, hxV₁⟩, rfl⟩
+      exact ⟨x, ⟨⟨hxV, ball_subset_closedBall hyb⟩, hxV₁⟩, rfl⟩
+    obtain ⟨x, ⟨⟨hxV, -⟩, hxV₁⟩, hxy⟩ := closure_minimal hsub hK.isClosed
+      (isOpen_ball.inter_closure ⟨mem_ball_self (half_pos hr), hycl⟩)
+    exact ⟨x, ⟨hxV, hxV₁⟩, hxy⟩
+  obtain ⟨W₁, hW₁, hW₁W, hW₁img⟩ : ∃ W₁ : Set (Rn N), IsOpen W₁ ∧ W₁ ⊆ W ∧ ψ '' V₁ = W₁ ∩ M := by
+    refine ⟨W \ closure (ψ '' (V \ V₁)), hW.sdiff isClosed_closure, sdiff_subset, ?_⟩
+    ext y
+    constructor
+    · rintro ⟨x, hxV₁, rfl⟩
+      have hxM : ψ x ∈ W ∩ M := by rw [← hψimg]; exact ⟨x, hV₁V hxV₁, rfl⟩
+      refine ⟨⟨hxM.1, fun hcl => ?_⟩, hxM.2⟩
+      obtain ⟨x', ⟨hx'V, hx'V₁⟩, hx'⟩ := hrel _ hxM.1 hcl
+      rw [hψinj hx'V (hV₁V hxV₁) hx'] at hx'V₁
+      exact hx'V₁ hxV₁
+    · rintro ⟨⟨hyW, hycl⟩, hyM⟩
+      obtain ⟨x, hxV, rfl⟩ : y ∈ ψ '' V := by rw [hψimg]; exact ⟨hyW, hyM⟩
+      by_cases hx : x ∈ V₁
+      · exact ⟨x, hx, rfl⟩
+      · exact (hycl (subset_closure ⟨x, ⟨hxV, hx⟩, rfl⟩)).elim
+  have hlD : MapsTo l D V₁ := fun z hz => by
+    have : l z ∈ l '' D := ⟨z, hz, rfl⟩
+    rw [hlimg] at this; exact this.1
+  refine ⟨W₁, hW₁W, hW₁img, hD, hW₁, ?_, ?_, ?_, ?_, ?_⟩
+  · exact hψC.comp hlC (hlD.mono_right hV₁V)
+  · exact hψinj.comp hlinj (hlD.mono_right hV₁V)
+  · rw [image_comp, hlimg, image_inter_preimage, hW₁img, inter_assoc, inter_eq_right.mpr hSM]
+  · intro Q hQ hQW₁
+    have hK := hψprop Q hQ (hQW₁.trans hW₁W)
+    have hKV₁ : V ∩ ψ ⁻¹' Q ⊆ V₁ := by
+      rintro x ⟨hxV, hxQ⟩
+      have hxM : ψ x ∈ W ∩ M := by rw [← hψimg]; exact ⟨x, hxV, rfl⟩
+      have : ψ x ∈ ψ '' V₁ := by rw [hW₁img]; exact ⟨hQW₁ hxQ, hxM.2⟩
+      obtain ⟨x', hx'V₁, hx'⟩ := this
+      rw [← hψinj (hV₁V hx'V₁) hxV hx']
+      exact hx'V₁
+    have heq : D ∩ (ψ ∘ l) ⁻¹' Q = D ∩ l ⁻¹' (V ∩ ψ ⁻¹' Q) := by
+      ext z
+      constructor
+      · rintro ⟨hz, hzQ⟩; exact ⟨hz, hV₁V (hlD hz), hzQ⟩
+      · rintro ⟨hz, _, hzQ⟩; exact ⟨hz, hzQ⟩
+    rw [heq]
+    exact hlprop _ hK hKV₁
+  · intro z hz
+    have hlz : l z ∈ V := hV₁V (hlD hz)
+    have hdψ : DifferentiableAt ℝ ψ (l z) :=
+      (hψC.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hlz)
+    have hdl : DifferentiableAt ℝ l z :=
+      (hlC.differentiableOn one_ne_zero).differentiableAt (hD.mem_nhds hz)
+    rw [fderiv_comp z hdψ hdl, ContinuousLinearMap.coe_comp]
+    exact (hψder (l z) hlz).comp (hlder z hz)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
