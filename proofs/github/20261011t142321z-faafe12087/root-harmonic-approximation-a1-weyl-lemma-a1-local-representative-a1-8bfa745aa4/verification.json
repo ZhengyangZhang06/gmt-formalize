@@ -1,0 +1,18 @@
+{
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.local_representative-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/885",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "662f21541b9d753cce663b250a050e6b49373f68",
+  "integrated_commit": "",
+  "proof_base_commit": "ac364daeae0b891db3e963fa6e089e624c3aea8c",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.harmonic_approximation-a1.weyl_lemma-a1",
+  "requires": [
+    "root.harmonic_approximation-a1.weyl_lemma-a1.mollifier_harmonic-a1",
+    "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1"
+  ]
+}
