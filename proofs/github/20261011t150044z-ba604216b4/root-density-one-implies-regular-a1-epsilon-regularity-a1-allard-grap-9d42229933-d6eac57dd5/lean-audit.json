@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f5a009b9fceed9fac8da11b4f3b11478d97d0491436c8e0326a1b7eb1b428e4d",
+  "git_delta": {
+    "base_commit": "1288a6d2b82594072902597fdaca72fdc81a78b8",
+    "candidate_commit": "3eb75f4012ebb938c8b3c4c24a8e6ed074e5f2aa",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_mv_deriv_under_integral",
+    "diff_sha256": "aa3aacf5ca62c6d277a3f7d3875a265d8b97074bd61c8b334c01ca40d77337b8",
+    "source_sha256": "5c5d3bdb4af7a55a42a7e443b16558c926687fb0801fbaa65354b5fe22794b4d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_mv_deriv_under_integral",
+      "statement": "∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ) (x : Euclid n) (r R : ℝ) (g : ℝ → ℝ), IsOpen U → ContDiffOn ℝ 1 h U → closedBall x R ⊆ U → 0 < r → Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, |s| * r < R → HasDerivAt (fun σ : ℝ => ∫ y : Euclid n, h (x - σ • y) * g (‖y‖ ^ 2)) (-∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2)) s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
