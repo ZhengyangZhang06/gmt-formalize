@@ -548,6 +548,8 @@ theorem dohr_tp_gat_blowup_two_point : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (G : R
 
 end Submission
 
+namespace Submission
+
 /-- Near-isometries change `Hⁿ` by at most the factor `(1 - δ)⁻ⁿ`: if `0 ≤ δ < 1`, `A` is
 measurable and `‖Φ p - Φ q - (p - q)‖ ≤ δ‖p - q‖` on `A`, then
 `Hⁿ ⌞ Φ(A) ≤ (1 - δ)⁻ⁿ Φ_#(Hⁿ ⌞ A)` and `Φ_#(Hⁿ ⌞ A) ≤ (1 - δ)⁻ⁿ Hⁿ ⌞ Φ(A)`.
@@ -839,6 +841,8 @@ theorem Submission.dohr_tp_gat_bilip_setIntegral_tendsto : ∀ (n ℓ : ℕ) (K 
   rw [Real.dist_eq, ← hΦA, abs_sub_lt_iff]
   constructor <;> linarith [hA1.1, hA1.2, hA2.1, hA2.2]
 
+namespace Submission
+
 /-- **Localizing set integrals to `B`.**  If `φ` vanishes off the measurable set `B`, then
 `φ = B.indicator φ`, so `∫_X φ dμ = ∫_{X ∩ B} φ dμ` for every set `X` (`setIntegral_indicator`;
 neither integrability of `φ` nor measurability of `X` is needed).  From `S ∩ B ⊆ T ⊆ S` we get
@@ -862,8 +866,9 @@ theorem dohr_tp_gat_setIntegral_eq_of_inter : ∀ (n ℓ : ℕ) (μ : Measure (A
 
 /-- Simon Ch. 3, Definition 1.4 for `C¹` graphs: if `u` is `C¹` on the open ball `B̆_R(0) ⊆ ℝⁿ`,
 `G(z) = (z, u(z))` and `x ∈ B̆_R(0)`, then `τ = range DG(x)` is the approximate tangent space of
-`graph u = G(B̆_R(0))` at `G(x)`.  The projection `π` onto the first `n` coordinates is
-`1`-Lipschitz and inverts `G`, hence also `DG(x)` (chain rule for `π ∘ G = id`), so `DG(x)` is
+`graph u = G(B̆_R(0))` at `G(x)`.  The projection `π` onto the first `n` coordinates
+(`rsod_graphPoint_eq_finAddEquivProd_symm`) is `1`-Lipschitz (`rsod_norm_graphPoint_sq`) and
+inverts `G`, hence also `DG(x)` (chain rule for `π ∘ G = id`), so `DG(x)` is
 injective and `dim τ = n`.  For `f ∈ C_c(ℝ^{n+ℓ})` vanishing off `B_ρ(0)`, the blow-ups
 `F_t(v) = t⁻¹ (G(x + tv) − G(x))` satisfy `π ∘ F_t = id` and, by `dohr_tp_gat_blowup_two_point`,
 the two-point and uniform estimates of `dohr_tp_gat_bilip_setIntegral_tendsto` on `K = B_ρ(0)`, so
@@ -876,19 +881,13 @@ theorem dohr_tp_graph_approx_tangent : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ
       (graphPoint x (u x))
       (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap) := by
   intro n ℓ _ R u hu x hx
-  -- `graphPoint a b` corresponds to `(a, b)` under the splitting `ℝ^{n+ℓ} ≃ ℝⁿ × ℝ^ℓ`
+  -- `graphPoint a b` corresponds to `(a, b)` under the splitting `ℝ^{n+ℓ} ≃ ℝⁿ × ℝ^ℓ`,
+  -- and `|(a, b)|² = |a|² + |b|²`
   let e : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ := EuclideanSpace.finAddEquivProd
-  have hgp : ∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = e.symm (a, b) := by
-    intro a b
-    ext i
-    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
-    · simp [e, graphPoint]
-    · simp [e, graphPoint]
-  have hgp_norm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
-    intro a b
-    rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
-      EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
-    simp [graphPoint]
+  have hgp : ∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = e.symm (a, b) :=
+    fun a b => Submission.rsod_graphPoint_eq_finAddEquivProd_symm a b
+  have hgp_norm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 :=
+    fun a b => Submission.rsod_norm_graphPoint_sq a b
   -- the projection `π` onto the first `n` coordinates
   let pr : Amb n ℓ →L[ℝ] Rn n :=
     (ContinuousLinearMap.fst ℝ (Rn n) (Rn ℓ)).comp (e : Amb n ℓ →L[ℝ] Rn n × Rn ℓ)
