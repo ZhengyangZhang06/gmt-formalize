@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.graph_measure_ext-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1",
+  "depth": 3,
+  "title": "Identity (1) for a Borel plane map forces V = μ_V pushed forward by x ↦ (x, τ x) (printed (2))",
+  "statement": "Let V be an n-varifold on the open set U ⊆ ℝ^N with weight μ_V, and let τ : ℝ^N → G(N,n) be Borel measurable. Suppose that for every Borel A ⊆ ℝ^N and every continuous β : G(N,n) → ℝ with β ≥ 0, ∫⁻_{A × G(N,n)} ENNReal.ofReal(β(S)) dV(y,S) = ∫⁻_A ENNReal.ofReal(β(τ(x))) dμ_V(x). Then V = (μ_V)_#(x ↦ (x, τ(x))) as measures on ℝ^N × G(N,n), i.e. V.measure = V.weight.map (fun x ↦ (x, τ x)).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (τ : Euclidean N → Grassmannian N n), Measurable τ → (∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, ENNReal.ofReal (β (τ x)) ∂V.weight) → V.measure = V.weight.map (fun x ↦ (x, τ x))",
+  "lean_name": "frt_vgm_eq_map_graph_of_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-graph-measure-ext-a1-a1"
+}

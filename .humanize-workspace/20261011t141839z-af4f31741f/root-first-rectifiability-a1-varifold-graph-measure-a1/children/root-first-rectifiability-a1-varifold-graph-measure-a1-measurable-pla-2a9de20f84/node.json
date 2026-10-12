@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1",
+  "depth": 3,
+  "title": "A Borel plane map τ agreeing with every Dirac limit of the ball averages",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N and suppose G(N,n) is nonempty. Then there is a Borel measurable map τ : ℝ^N → G(N,n) such that for every x ∈ ℝ^N and T ∈ G(N,n): if (∫_{Gₙ(B_ρ(x))} β(S) dV(y,S)) / μ_V(B_ρ(x)) → β(T) as ρ ↓ 0 for every continuous β : G(N,n) → ℝ (closed balls, μ_V = V.weight taken as a real number via toReal), then τ(x) = T.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), Nonempty (Grassmannian N n) → ∃ τ : Euclidean N → Grassmannian N n, Measurable τ ∧ ∀ (x : Euclidean N) (T : Grassmannian N n), (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (β T))) → τ x = T",
+  "lean_name": "frt_vgm_measurable_plane_selection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-measurable-pla-2a9de20f84-a1"
+}

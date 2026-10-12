@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def HasTangentPlane|def rescaledMeasure|def planeVarifoldMeasure|def unitBallVolume",
+        "addHaar_closedBall|euclideanHausdorffMeasure_eq_volume|Isometry.euclideanHausdorffMeasure_image",
+        "measurable_measure_prodMk_left|theorem ext_of_generateFrom_of_iUnion|theorem ext_of_generate_finite|theorem tendsto_lintegral_of_dominated_convergence|theorem ofReal_integral_eq_lintegral_ofReal|theorem setLIntegral_congr_fun_ae",
+        "continuous_infDist_pt|mem_iff_infDist_zero",
+        "frt_vgm_|frt_varifold_eq_tangent_graph_measure",
+        "frt_vgm_tangent_ball_average|frt_vgm_measurable_plane_selection|frt_vgm_eq_map_graph_of_lintegral",
+        "cat ../../verifier/lean_contract.py",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/vgm_independent_audit/ContractsAndAssembly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/vgm_independent_audit/KeyChecksOnly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/vgm_independent_audit/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/Polish/StronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/vgm_independent_audit/ContractsAndAssembly.lean",
+        "/tmp/vgm_independent_audit/KeyChecksOnly.lean",
+        "/tmp/vgm_independent_audit/Axioms.lean"
+      ],
+      "conclusion": "The pinned definitions and library hypotheses support the supplied arguments, including dimension zero, sigma-finiteness, measurable parameter integrals, measurable limits, and finite-slice measure extension. Compatibility checks matched the cited source files to the compiler packages. All three exact child types independently elaborated as propositions and passed the statement validator. The supplied parent assembly compiled against the immutable parent type with the children as explicit hypotheses and no sorry; its axioms and those of the checked SimonGMT declarations are only propext, Classical.choice, and Quot.sound. Targeted construction probes also compiled. No proposed name occurs in the snapshot's chapter, current DAG, or 108 searched local branches. The relevant dependency graph is acyclic. The split is appropriate: its three independent obligations establish exactly the selected graph-measure theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_ball_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose; openness is supplied by Varifold, and HasTangentPlane includes membership in U and positive multiplicity. Independently checked local integrability, both integral transformations, the plane-ball formula including n = 0, cutoff bounds, epsilon squeeze, signed-function reduction, and division by the positive limiting denominator. Taking beta = 1 supplies the denominator without density or uniqueness lemmas. The proof is complete and non-circular. The bare name is unreserved."
+    },
+    {
+      "key": "measurable_plane_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the pointwise selection claim and explicitly includes nonemptiness for the fallback plane. Sigma-finiteness justifies both parameter-measurability arguments, including potentially nonintegrable Bochner integrands. Measurable convergence sets and limUnder produce the matrix limit; Matrix.of, the closed projection predicate, and the piecewise subtype construction are sound. Sampling positive radii identifies every asserted limit plane through its entries. This complete proof does not invoke the tangent-average child. The bare name is unreserved."
+    },
+    {
+      "key": "graph_measure_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type includes exactly the measurable-map and integral-identity hypotheses in the prose. The proof correctly constructs finite slice measures, handles the empty closed set, supplies a compatible metric, and applies dominated convergence to closed-set approximations. Finite-measure uniqueness followed by the finite-base rectangle generator and sigma-finite spanning cover establishes the full measure equality without assuming global finite mass. The argument is complete, independent of its siblings and parent, and uses an unreserved bare name."
+    }
+  ],
+  "required_changes": []
+}
