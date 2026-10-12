@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4d531823363bb221eb0c55236d8383293397e41c0b9a2fe17b29ac8eae9fd3fc",
+  "git_delta": {
+    "base_commit": "d3ff215396e9e95d98ec4861a558f0597234cbcf",
+    "candidate_commit": "a2bc37026c6715aaac9d6e16978788fb714650f5",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "c5c35603b4442467bba5815a3ac8fdaff892282ae704b2af2a418e01f675bda0",
+    "source_sha256": "ca1d6a2a4b2aa78cc4e42c5c67e9ea1f34b02851878d8afd4b6c3e7f7953f4b6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_lintegral_norm_fderiv_le_of_dual_compact",
+      "statement": "∀ (n : ℕ) (w : Rn n → ℝ) (O L : Set (Rn n)) (M : ℝ≥0∞), ContDiff ℝ 2 w → IsOpen O → IsCompact L → L ⊆ O → (∀ g : Rn n → Rn n, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ O → (∀ x, ‖g x‖ ≤ 1) → ENNReal.ofReal (-∫ x, fderiv ℝ w x (g x)) ≤ M) → ∫⁻ x in L, ‖fderiv ℝ w x‖ₑ ≤ M",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
