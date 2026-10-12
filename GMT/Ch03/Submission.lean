@@ -335,6 +335,53 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **`L¹_loc` convergence of sets gives convergence of integrals of `C_c` functions**: the
+`L¹_loc` step behind the last sentence of the proof of Simon Ch. 3, Theorem 4.3
+(`chapter-03.txt` lines 739–746). With `K = tsupport g` and `|g| ≤ M`, whenever `A r` is
+null-measurable, `|∫_{A r} g - ∫_H g| = |∫ (1_{A r} - 1_H) g| ≤ M L^N(K ∩ (A r Δ H))`, and the
+right side tends to `0` as `r ↓ 0`. -/
+theorem Submission.deGiorgiTM_tendsto_setIntegral_of_symmDiff : ∀ (N : ℕ) (A : ℝ → Set (Rn N))
+    (H : Set (Rn N)) (g : Rn N → ℝ), (∀ᶠ r in 𝓝[>] (0 : ℝ), NullMeasurableSet (A r) volume) →
+    NullMeasurableSet H volume → Continuous g → HasCompactSupport g →
+    Tendsto (fun r : ℝ ↦ volume (tsupport g ∩ symmDiff (A r) H)) (𝓝[>] 0) (𝓝 0) →
+    Tendsto (fun r : ℝ ↦ ∫ y in A r, g y) (𝓝[>] 0) (𝓝 (∫ y in H, g y)) := by
+  intro N A H g hA hH hg hgc hlim
+  -- Step 1: `|g| ≤ M`, `g` is integrable, `K = tsupport g` is compact and `g = 0` off `K`.
+  obtain ⟨M, hM⟩ := hg.bounded_above_of_compact_support hgc
+  have hgi : Integrable g volume := hg.integrable_of_hasCompactSupport hgc
+  have hKm : MeasurableSet (tsupport g) := (isClosed_tsupport g).measurableSet
+  have hKfin : volume (tsupport g) < ∞ := hgc.isCompact.measure_lt_top
+  -- Steps 2–4: `|∫_{A r} g - ∫_H g| ≤ M L^N(K ∩ (A r Δ H))` whenever `A r` is null-measurable.
+  have hbound : ∀ r, NullMeasurableSet (A r) volume →
+      ‖(∫ y in A r, g y) - ∫ y in H, g y‖ ≤
+        M * (volume (tsupport g ∩ symmDiff (A r) H)).toReal := by
+    intro r hAr
+    have hS : NullMeasurableSet (tsupport g ∩ symmDiff (A r) H) volume :=
+      hKm.nullMeasurableSet.inter (hAr.symmDiff hH)
+    have hSfin : volume (tsupport g ∩ symmDiff (A r) H) ≠ ∞ :=
+      ((measure_mono inter_subset_left).trans_lt hKfin).ne
+    rw [← integral_indicator₀ hAr, ← integral_indicator₀ hH,
+      ← integral_sub (hgi.indicator₀ hAr) (hgi.indicator₀ hH)]
+    calc ‖∫ y, ((A r).indicator g y - H.indicator g y)‖
+        ≤ ∫ y, (tsupport g ∩ symmDiff (A r) H).indicator (fun _ ↦ M) y := by
+          refine norm_integral_le_of_norm_le ((integrableOn_const hSfin).integrable_indicator₀ hS)
+            (Eventually.of_forall fun y ↦ ?_)
+          by_cases hy : y ∈ tsupport g
+          · have hMy : |g y| ≤ M := by simpa using hM y
+            by_cases hyA : y ∈ A r <;> by_cases hyH : y ∈ H <;>
+              simp [hy, hyA, hyH, mem_symmDiff, hMy]
+          · have h0 : g y = 0 := image_eq_zero_of_notMem_tsupport hy
+            by_cases hyA : y ∈ A r <;> by_cases hyH : y ∈ H <;> simp [hy, hyA, hyH, h0]
+      _ = M * (volume (tsupport g ∩ symmDiff (A r) H)).toReal := by
+          rw [integral_indicator₀ hS, setIntegral_const, smul_eq_mul, mul_comm, measureReal_def]
+  -- Step 5: the bound tends to `0` (`ENNReal.toReal` is continuous at `0`); squeeze.
+  have hlim' : Tendsto (fun r ↦ M * (volume (tsupport g ∩ symmDiff (A r) H)).toReal)
+      (𝓝[>] 0) (𝓝 0) := by
+    simpa using ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hlim).const_mul M
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun r ↦ norm_nonneg _) ?_ hlim'
+  filter_upwards [hA] with r hr using hbound r hr
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
