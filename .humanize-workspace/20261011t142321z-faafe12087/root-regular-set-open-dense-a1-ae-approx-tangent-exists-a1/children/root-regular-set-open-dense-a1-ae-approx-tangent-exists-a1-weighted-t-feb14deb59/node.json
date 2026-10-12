@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_tangent_congr-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent spaces depend only on the germ of (A, ϑ) at x modulo Hⁿ-null sets",
+  "statement": "Let n, ℓ ∈ ℕ and Hⁿ := μHE[n] on ℝ^{n+ℓ}. Let A, A', O, Z ⊆ ℝ^{n+ℓ}, ϑ, ϑ' : ℝ^{n+ℓ} → ℝ, x ∈ ℝ^{n+ℓ} and P a linear subspace, and assume:\n- A is Hⁿ-null-measurable;\n- O is open with x ∈ O, and Hⁿ(Z) = 0;\n- (A ∩ O) ∖ Z = (A' ∩ O) ∖ Z;\n- ϑ(z) = ϑ'(z) for all z ∈ (A ∩ O) ∖ Z, and ϑ(x) = ϑ'(x).\nIf P is the approximate tangent space of A at x with respect to ϑ (Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P, Simon Def. 3.1.7), then P is the approximate tangent space of A' at x with respect to ϑ' (HasWeightedApproximateTangentSpaceAt n A' ϑ' x P).",
+  "lean_statement": "∀ (n ℓ : ℕ) (A A' O Z : Set (Amb n ℓ)) (ϑ ϑ' : Amb n ℓ → ℝ) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), NullMeasurableSet A (μHE[n] : Measure (Amb n ℓ)) → IsOpen O → x ∈ O → (μHE[n] : Measure (Amb n ℓ)) Z = 0 → (A ∩ O) \\ Z = (A' ∩ O) \\ Z → (∀ z ∈ (A ∩ O) \\ Z, ϑ z = ϑ' z) → ϑ x = ϑ' x → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A' ϑ' x P",
+  "lean_name": "rsod_weightedApproxTangent_congr",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-weighted-t-feb14deb59-a1"
+}

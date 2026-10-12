@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open|abbrev Amb)|def IsC1Submanifold|structure RectifiableVarifold|mult_pos|aemeasurable_mult|integrableOn",
+        "integral_area_formula_of_injective_derivative|continuous_normDet|ae_dimensionalUpperDensity_eq_zero_outside|measure_toOuterMeasure_isBorelRegular|exists_isClosed_continuousOn|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|simonAreaNormalization_eq_one|realUnitBallVolume_(pos|ne_top)",
+        "rsod_blowUpMap_measure_scaling|rsod_ae_tendsto_density_zero_outside|rsod_isC1Submanifold_measurableSet|rsod_isC1Submanifold_approxTangent|rsod_ae_approxTangent_of_c1Cover|rsod_ae_weightedApproxTangent_of_unweighted|rsod_weightedApproxTangent_congr",
+        "rg -l 'rsod_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "setIntegral_indicator|setIntegral_congr_ae₀|setIntegral_congr_set",
+        "1\\.2 Lemma|1\\.3 Remark|1\\.6 Theorem|1\\.7 Definition|1\\.8 Remark|1\\.9 Theorem",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/aetangent-independent-audit-jtwho265/Types.lean",
+        "/tmp/aetangent-independent-audit-jtwho265/Types.log",
+        "/tmp/aetangent-independent-audit-jtwho265/Axioms.lean",
+        "/tmp/aetangent-independent-audit-jtwho265/Axioms.log"
+      ],
+      "conclusion": "Independently confirmed the project, mathlib and simongmt pins and compatibility with the inspected snapshot definitions. All seven exact one-line propositions elaborate in the comparator's frozen scope before any child implementation; the seven test proofs were explicitly stubbed, so this establishes type validity only. Axiom checks for the cited density, Lusin, area, normalization, scaling and integral-congruence results report only propext, Classical.choice and Quot.sound. No proposed name is reserved in the 200-node DAG or other branches' child contracts; source searches found no conflicting declarations, and the snapshot Mathlib search for rsod_ returned no matches. All names are bare identifiers, and no Matrix/IsUnit construction occurs. The split is appropriate: its dependencies are acyclic and correctly directed, including the inherited rectifiable_c1_cover dependency. The supplied localization, Borel-representative and absolute-continuity arguments assemble these children into the exact selected parent statement."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary, possibly nonmeasurable B. Similarity scaling proves the first clause; evaluation on Borel test sets proves the push-forward identity. Positivity of r justifies every cancellation."
+    },
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned upper-density theorem applies to the stated arbitrary Borel measure and finite-measure Borel set. The proof correctly normalizes Hausdorff measure, turns zero nonnegative limsup into convergence, and converts the quotient to ν.real. It also covers n = 0."
+    },
+    {
+      "key": "c1_submanifold_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart hypotheses match the frozen definition. Properness makes the relevant local images compact and closed; the proof then establishes S = O ∩ closure S for an open O. This proves Borel measurability without an additional assumption."
+    },
+    {
+      "key": "c1_submanifold_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact tangent predicate. Injectivity of the derivative supplies the local lower bound, properness separates remote chart parameters, and the area formula yields integrands with a fixed integrable bound. Pointwise differentiation and dominated convergence give the required limit for every test function, with the correct plane dimension."
+    },
+    {
+      "key": "c1_cover_ae_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four declared dependencies are used in the correct direction. Borel disjointification and finite-measure integral splitting are justified. Both error terms vanish outside exceptional sets independent of the test function; their countable union with Z proves the exact a.e. conclusion."
+    },
+    {
+      "key": "weighted_from_unweighted",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The closed-set Lusin theorem has exactly the supplied measurability hypotheses. The finite absolute-weight measure controls the complementary pieces, while an unweighted cutoff bounds the local mass and continuity controls the remaining error. The argument is complete and valid for the stated real-valued weight without a positivity assumption."
+    },
+    {
+      "key": "weighted_tangent_congr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact-support localization and null-set scaling yield equal restricted sets and integrands a.e. The proof correctly propagates A's null-measurability before using restricted-integral congruence. Equality of the weights at x transfers the limiting value; global measurability of A' is unnecessary."
+    }
+  ],
+  "required_changes": []
+}
