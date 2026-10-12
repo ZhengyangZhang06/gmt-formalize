@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3609c16935d0e780b08ad5a623416e36ab95ccd3f6d65b266331c2fddb681cd3",
+  "git_delta": {
+    "base_commit": "c4bda33c9991ae19d100f90db62655a45780aac7",
+    "candidate_commit": "127487dd6bed94a74811cb8523d5535db984c906",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcn_covector_finiteDimensional",
+    "diff_sha256": "2d351896358d650737ae400b8ea4bc0bbe0c1e996a165b53c5c8f24c603e0e27",
+    "source_sha256": "d3ffc12b22619dce0b4024314ab22b128870cf12b5d66f6614ab8ce8e045360b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcn_covector_finiteDimensional",
+      "statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
