@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_weighted_blowup-a1.upper_density_vanish-a1",
+  "parent_id": "root.tangent_structure-a1.piece_weighted_blowup-a1",
+  "depth": 3,
+  "title": "Upper density theorem: ν(A ∩ B_r(x))/rⁿ → 0 for Hⁿ-a.e. x outside A",
+  "statement": "Let n, ℓ ∈ ℕ, E := Ambient n ℓ = ℝ^{n+ℓ} with its Borel σ-algebra, Hⁿ := μHE[n], let ν be a measure on E that is finite on compact sets, and let A ⊆ E be a Borel set. Then for Hⁿ-a.e. x ∈ E: if x ∉ A, then ν(A ∩ B_r(x))/rⁿ → 0 as r ↓ 0, where B_r(x) is the closed ball and ν(A ∩ B_r(x)) is taken as a real number (ν.real = toReal ∘ ν; it is finite since B_r(x) is compact).",
+  "lean_statement": "∀ (n ℓ : ℕ) (ν : Measure (Ambient n ℓ)) (A : Set (Ambient n ℓ)), IsFiniteMeasureOnCompacts ν → MeasurableSet A → ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)), x ∉ A → Tendsto (fun r : ℝ ↦ ν.real (A ∩ closedBall x r) / r ^ n) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "ts_pwb_upper_density_vanish_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-weighted-blowup-a1-upper-density-vanish-a1-a1"
+}

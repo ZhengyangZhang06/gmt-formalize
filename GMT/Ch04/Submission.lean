@@ -434,6 +434,46 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Ch. 4, 1.1 (p. 86): `μ_V = Hⁿ ⌞ θ`.** The weight of `V = v(M, θ)` is finite on compact
+sets, and `∫ g dμ_V = ∫_M θ g dHⁿ` for every `g : ℝ^{n+ℓ} → ℝ` (Bochner integrals; both sides
+vanish together when not integrable). -/
+theorem Submission.ts_pwb_pair_weight_integral : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ), IsFiniteMeasureOnCompacts (mk a).weight ∧ ∀ g : Ambient n ℓ → ℝ, ∫ y, g y ∂(mk a).weight = ∫ y in a.M, a.θ y * g y ∂μHE[n] := by
+  intro n ℓ a
+  have hM := a.isRectifiablePair.measurable
+  -- `θ` is a.e.-strongly measurable on `M = ⋃ₖ (M ∩ B_k(0))`, being integrable on each piece.
+  have hθ : AEStronglyMeasurable a.θ ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) := by
+    have hU : a.M = ⋃ k : ℕ, a.M ∩ closedBall (0 : Ambient n ℓ) k := by
+      ext y
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      constructor
+      · intro hy
+        obtain ⟨k, hk⟩ := exists_nat_ge ‖y‖
+        exact ⟨k, hy, hk⟩
+      · rintro ⟨k, hy, -⟩
+        exact hy
+    rw [hU, aestronglyMeasurable_iUnion_iff]
+    intro k
+    exact (a.isRectifiablePair.locallyIntegrable _ (isCompact_closedBall _ _)).aestronglyMeasurable
+  -- `μ_V` is definitionally `(Hⁿ ⌞ M).withDensity (ofReal ∘ θ)`.
+  have hw : (mk a).weight = ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M).withDensity
+      (fun x ↦ ENNReal.ofReal (a.θ x)) := rfl
+  refine ⟨⟨fun K hK ↦ ?_⟩, fun g ↦ ?_⟩
+  -- `μ_V(K) = ∫⁻_{K ∩ M} ofReal θ dHⁿ ≤ ∫⁻_{K ∩ M} |θ| dHⁿ < ∞`.
+  · rw [hw, withDensity_apply _ hK.measurableSet, Measure.restrict_restrict hK.measurableSet]
+    have hint := a.isRectifiablePair.locallyIntegrable K hK
+    rw [inter_comm] at hint
+    calc ∫⁻ x in K ∩ a.M, ENNReal.ofReal (a.θ x) ∂μHE[n]
+        ≤ ∫⁻ x in K ∩ a.M, ‖a.θ x‖ₑ ∂μHE[n] := lintegral_mono fun x ↦ Real.ofReal_le_enorm _
+      _ < ⊤ := hint.2
+  -- `∫ g dμ_V = ∫_M (ofReal θ).toReal • g dHⁿ`, and `(ofReal θ).toReal = θ` on `M`.
+  · rw [hw, integral_withDensity_eq_integral_toReal_smul₀
+      (f := fun x ↦ ENNReal.ofReal (a.θ x))
+      (ENNReal.measurable_ofReal.comp_aemeasurable hθ.aemeasurable)
+      (Eventually.of_forall fun x ↦ ENNReal.ofReal_lt_top)]
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem₀ hM] with y hy
+    simp [ENNReal.toReal_ofReal (a.isRectifiablePair.pos y hy).le]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end

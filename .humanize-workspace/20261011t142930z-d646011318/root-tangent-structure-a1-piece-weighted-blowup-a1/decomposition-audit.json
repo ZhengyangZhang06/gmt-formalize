@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "ae_dimensionalUpperDensity_eq_zero_outside|measure_toOuterMeasure_isBorelRegular|exists_isClosed_continuousOn_of_measurable|euclideanHausdorffMeasure_image_le_of_lipschitzOn|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def dimensionalDensityQuotient|def dimensionalUpperDensity",
+        "theorem integral_withDensity_eq_integral_toReal_smul₀|theorem ae_tendsto_measure_inter_div|theorem.*exists_measurable_subset_ae_eq|theorem.*exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|aestronglyMeasurable_iUnion_iff",
+        "child_modules|validate_lean_statement|namespace Submission|NodeChallenge|contract_digest",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Full",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Assembly",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Plain",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py WithImports",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Challenge_pair_weight_integral",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Challenge_upper_density_vanish",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Challenge_lusin_compact_cover",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Challenge_density_point_image",
+        "python3 /tmp/pwb-independent-audit-bpdqqiyp/run.py Challenge_good_point_blowup"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-weighted-blowup-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-weighted-blowup-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-density-blowup-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/tmp/pwb-independent-audit-bpdqqiyp/Full.lean",
+        "/tmp/pwb-independent-audit-bpdqqiyp/Full.log",
+        "/tmp/pwb-independent-audit-bpdqqiyp/Assembly.lean",
+        "/tmp/pwb-independent-audit-bpdqqiyp/Assembly.log",
+        "/tmp/pwb-independent-audit-bpdqqiyp/Plain.log",
+        "/tmp/pwb-independent-audit-bpdqqiyp/WithImports.log"
+      ],
+      "conclusion": "The split is appropriate for the selected weighted-blowup theorem. Its five analytic obligations and countable a.e. assembly preserve the frozen contract. The snapshot contract and workspace sources are byte-identical; package revisions match the pins, and inspected Mathlib sources match the snapshot. All five names are fresh bare identifiers: no reservation or identical-type match was found in the DAG, and no conflicting proposed name was found in another branch. Dependencies are acyclic; only good_point_blowup depends on pair_weight_integral, and the existing density-blowup sibling has no dependency path back to this parent. Every frozen child type passes lexical validation and elaborates independently in a comparator-generated challenge. Fully explicit type output is byte-identical with and without implementation imports; volume selects measureSpaceOfInnerProductSpace. No matrix-unit construction occurs. All five supplied proof appendices compile unmodified and depend only on propext, Classical.choice and Quot.sound. The supplied assembly compiles with the exact selected parent type using explicit stubs for the five children and frozen sibling; this verifies composition without claiming the external sibling has been proved."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pair_weight_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including the identity for arbitrary g. Compact exhaustion establishes density measurability; local integrability proves finite compact mass. The cited change-of-density identity requires no integrability assumption on g, and null-measurability plus positivity justifies replacing ofReal(θ).toReal by θ almost everywhere. The proof is complete and non-circular."
+    },
+    {
+      "key": "upper_density_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. The proof correctly converts the nonnegative extended-real limsup into convergence, removes the positive finite normalization, and localizes arbitrary Borel A through finite-measure intersections with integer-radius balls. The countable exceptional set and eventual equality of localized quotients are justified, including n = 0."
+    },
+    {
+      "key": "lusin_compact_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both statements. The Borel core and measurable null hull ensure pointwise equality with the measurable representative on the retained set. Finite restricted measures supply the required regularity without assuming regularity of the original measure. Lusin approximation, boundedness, vanishing defects and reindexing give exactly the claimed compact cover."
+    },
+    {
+      "key": "density_point_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition both quantify over every preimage and use the extended-real density quotient. Restriction to Borel C makes the bad source set null; the Lipschitz Hausdorff estimate makes its image null without requiring that image to be measurable. This establishes one exceptional set for all preimages, with no injectivity assumption or circular reliance."
+    },
+    {
+      "key": "good_point_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes the stated geometric, continuity and limit hypotheses. Local integrability justifies the four-term decomposition, including the indicator-based weight identity. Positive-radius rescaling handles both excess terms; continuity within K at x and max(Γ,0) control the oscillation term. The proof needs only its declared pair_weight_integral dependency and supplies the conclusion required by the parent assembly. The redundant x ∈ K hypothesis causes no defect."
+    }
+  ],
+  "required_changes": []
+}
