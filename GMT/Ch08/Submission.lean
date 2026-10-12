@@ -410,6 +410,44 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, proof of 5.5, step 5** (child `first_variation_control` of
+`density_lower_bound`): if `W = c · μ ⌞ Gₙ(Ω)` with `c < ∞` and `|∫ div_S X dμ| ≤ β < ∞` for every
+`C¹` field `X` with `|X| ≤ 1` and compact support in `Ω`, then `W` has locally bounded first
+variation and `‖δW‖(O) ≤ c β` for every open `O ⊂⊂ Ω`.  On test fields `div_S X` vanishes off
+`Gₙ(Ω)`, so `δW(X) = c ∫ div_S X dμ`; every term of the supremum (8.2.5) is then at most `c β`, and
+on `O ⊂⊂ Ω` that supremum is `‖δW‖(O)` (`firstVariationRieszMeasure_eq_norm`). -/
+theorem Submission.varifold_tangents_dlb_restricted_firstVariation_control :
+    ∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μ : Measure (Euclidean N × Grassmannian N n)) (W : Varifold N n Ω) (c β : ℝ≥0∞), c ≠ ∞ → β ≠ ∞ → W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → (∀ X : Euclidean N → Euclidean N, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ Ω → (∀ y, ‖X y‖ ≤ 1) → ENNReal.ofReal |∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂μ| ≤ β) → W.HasLocallyBoundedFirstVariation ∧ ∀ O : Set (Euclidean N), IsRelCompactOpenIn O Ω → variationMeasure W O ≤ c * β := by
+  intro N n Ω μ W c β hc hβ hW hdiv
+  -- Step 1: for a test field `X` on `Ω`, `δW(X) = c ∫ div_S X dμ`, since `div_S X` vanishes off
+  -- `tsupport X × G(N,n) ⊆ Ω × G(N,n)`.
+  have hfv : ∀ X : Varifold.TestVectorField Ω,
+      W.firstVariation X = c.toReal * ∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂μ := by
+    intro X
+    rw [Varifold.firstVariation, hW, integral_smul_measure, smul_eq_mul,
+      setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro z hz
+    by_contra hne
+    exact hz ⟨X.support_subset (Varifold.support_tangentialDivergence_subset X hne).1, mem_univ _⟩
+  -- Step 2: every term of the supremum (8.2.5) defining `firstVariationNormOn O` is at most `c β`.
+  have hnorm : ∀ O : Set (Euclidean N), W.firstVariationNormOn O ≤ c * β := by
+    intro O
+    rw [Varifold.firstVariationNormOn]
+    refine iSup_le fun X ↦ ?_
+    split_ifs with hXO
+    · rw [hfv X, abs_mul, abs_of_nonneg ENNReal.toReal_nonneg,
+        ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hc]
+      gcongr
+      exact hdiv X X.contDiff X.compactSupport X.support_subset hXO.2
+    · exact zero_le
+  -- Step 3: `c β < ∞`, so `W` has locally bounded first variation.
+  have hW' : W.HasLocallyBoundedFirstVariation := fun O _ _ ↦
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top hc hβ) (hnorm O)
+  -- Step 4: for open `O ⊂⊂ Ω`, `‖δW‖(O)` is the supremum (8.2.5), hence at most `c β`.
+  refine ⟨hW', fun O hO ↦ ?_⟩
+  rw [variationMeasure, dite_eq_left hW', W.firstVariationRieszMeasure_eq_norm hW' O hO.1 hO.2]
+  exact hnorm O
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
