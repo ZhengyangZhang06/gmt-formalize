@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1",
+  "depth": 3,
+  "title": "Allard regularity for integer multiplicity varifolds with bounded mean curvature (graph form)",
+  "statement": "Let n ≥ 1 and k ≥ 0. For every ε > 0 there are δ₀ > 0 and γ ∈ (0, 1] with the following property. Let U ⊆ ℝ^{n+k} be any set, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep) with weight μ_R = θHⁿ⌞M (R.measure), W ⊆ U open, κ ∈ ℝ, ρ > 0, z ∈ ℝ^{n+k}, and H : ℝ^{n+k} → ℝ^{n+k} μ_R-a.e. strongly measurable with |H(x)| ≤ κ for all x, such that v(M, θ) has generalized mean curvature H in W: R.firstVariation X = ∫_M θ div_M X dHⁿ = −∫⟨X, H⟩ dμ_R for every C¹ compactly supported vector field X with tsupport X ⊆ W (div_M X(x) = trace(p_{T_xM}∘DX(x)), T_xM the approximate tangent plane of M). If the closed ball B̄_ρ(z) ⊆ W, z ∈ spt μ_R, μ_R(B̄_ρ(z)) ≤ (1 + δ₀)ω_nρⁿ and κρ ≤ δ₀, then there are linear isometries ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} with ⟨ιv, ι'w⟩ = 0 for all v, w, and u : ℝⁿ → ℝ^k with u(0) = 0, u of class C¹ on the open ball B_{γρ}(0) ⊆ ℝⁿ with ‖Du(v)‖ ≤ ε there, such that spt μ_R ∩ B_{γρ}(z) = {z + ιv + ι'u(v) : |v| < γρ} ∩ B_{γρ}(z) (open balls). This is Allard's Regularity Theorem (Simon Ch. 5, 5.2 with Remark 5.3) for integer multiplicity varifolds with bounded generalized mean curvature, i.e. the case p = 2n of hypotheses 5.1.",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∀ ε : ℝ, 0 < ε → ∃ δ₀ γ : ℝ, 0 < δ₀ ∧ 0 < γ ∧ γ ≤ 1 ∧ ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ₀) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ₀ → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ u 0 = 0 ∧ ContDiffOn ℝ 1 u (ball 0 (γ * ρ)) ∧ (∀ v ∈ ball (0 : Euclid n) (γ * ρ), ‖fderiv ℝ u v‖ ≤ ε) ∧ R.measure.support ∩ ball z (γ * ρ) = ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) (γ * ρ)) ∩ ball z (γ * ρ)",
+  "lean_name": "dor_allard_bounded_curvature_graph",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1-a1"
+}
