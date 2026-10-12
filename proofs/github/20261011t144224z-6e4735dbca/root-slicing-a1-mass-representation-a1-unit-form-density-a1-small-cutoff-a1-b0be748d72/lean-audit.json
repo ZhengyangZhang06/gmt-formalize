@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc663fdc1d674a63ac1d0a6ea5622b6fd64cbadd7d0dc36bda8a85c4f4120a55",
+  "git_delta": {
+    "base_commit": "16e8aef346d8275e29369d3ddc06716b3bc882d7",
+    "candidate_commit": "75510cd11e798e82bf199927a441d19c6fec3111",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ufd_small_cutoff",
+    "diff_sha256": "d83fbe008c9a662ddb24cd19d800e9e62b8fe470cd38ecfa95aea7d05c360182",
+    "source_sha256": "e016f40b43c4170d3edb2345cd795a033008fc867667cef1085cd465b49988aa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ufd_small_cutoff",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → ∀ C W : Set (Eucl P), IsCompact C → IsOpen W → C ⊆ W → W ⊆ U → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ ψ : Eucl P → ℝ, Continuous ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ W ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x ∈ C, ψ x = 1) ∧ μ (Function.support ψ \\ C) < ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
