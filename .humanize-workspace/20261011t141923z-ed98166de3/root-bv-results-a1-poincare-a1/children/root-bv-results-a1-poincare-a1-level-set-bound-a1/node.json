@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.poincare-a1.level_set_bound-a1",
+  "parent_id": "root.bv_results-a1.poincare-a1",
+  "depth": 3,
+  "title": "Level-set (Markov) step of Simon 2.7: from an arbitrary constant c to β",
+  "statement": "For every n ∈ ℕ, every measurable U ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n), μ = volume = Lebesgue measure), every u : ℝⁿ → ℝ that is a.e.-measurable for μ restricted to U, and all reals θ, β, c with θ > 0: if ofReal θ·μ(U) ≤ min(μ{x ∈ U : β ≤ u(x)}, μ{x ∈ U : u(x) ≤ β}), the level sets being measured by the outer measure μ and not assumed measurable, then ∫⁻_U ‖u(x) − β‖ₑ dx ≤ ofReal(1 + θ⁻¹)·∫⁻_U ‖u(x) − c‖ₑ dx in [0,∞].",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (u : Rn n → ℝ) (θ β c : ℝ), MeasurableSet U → AEMeasurable u (volume.restrict U) → 0 < θ → ENNReal.ofReal θ * volume U ≤ min (volume {x ∈ U | β ≤ u x}) (volume {x ∈ U | u x ≤ β}) → ∫⁻ x in U, ‖u x - β‖ₑ ≤ ENNReal.ofReal (1 + θ⁻¹) * ∫⁻ x in U, ‖u x - c‖ₑ",
+  "lean_name": "poincare_level_set_lintegral_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-poincare-a1-level-set-bound-a1-a1"
+}

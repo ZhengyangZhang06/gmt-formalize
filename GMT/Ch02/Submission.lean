@@ -999,6 +999,390 @@ theorem Submission.bv_convolution_sub_lintegral_le_of_translate : ∀ (n : ℕ) 
           exact hT t (mem_ball_zero_iff.1 (hρs ht))
     _ = (∫⁻ t, ‖ρ t‖ₑ) * C := lintegral_mul_const'' _ hρint.aestronglyMeasurable.enorm
     _ = C := by rw [hρ1, one_mul]
+/-- **Level-set (Markov) step of Simon 2.7.** Let `U ⊆ ℝⁿ` be measurable, `u` a.e.-measurable on
+`U`, `θ > 0`, and let `β, c` be constants with
+`θ Lⁿ(U) ≤ min {Lⁿ{x ∈ U : u ≥ β}, Lⁿ{x ∈ U : u ≤ β}}` (outer measures; the level sets need not be
+measurable). Then `∫_U |u - β| ≤ (1 + θ⁻¹) ∫_U |u - c|` in `[0, ∞]`. Write `I = ∫_U |u - c|` and
+`a = |c - β|`. The triangle inequality gives `∫_U |u - β| ≤ I + a Lⁿ(U)`. The level set `{u ≥ β}`
+(if `c ≤ β`) or `{u ≤ β}` (if `β < c`) lies in `{|u - c| ≥ a}`, so Markov's inequality
+(`mul_meas_ge_le_lintegral₀`) gives `a θ Lⁿ(U) ≤ I`; multiplying by `θ⁻¹` gives `a Lⁿ(U) ≤ θ⁻¹ I`. -/
+theorem Submission.poincare_level_set_lintegral_le : ∀ (n : ℕ) (U : Set (Rn n)) (u : Rn n → ℝ) (θ β c : ℝ), MeasurableSet U → AEMeasurable u (volume.restrict U) → 0 < θ → ENNReal.ofReal θ * volume U ≤ min (volume {x ∈ U | β ≤ u x}) (volume {x ∈ U | u x ≤ β}) → ∫⁻ x in U, ‖u x - β‖ₑ ≤ ENNReal.ofReal (1 + θ⁻¹) * ∫⁻ x in U, ‖u x - c‖ₑ := by
+  intro n U u θ β c hU hu hθ hlev
+  -- Step 1: integrate `‖u x - β‖ₑ ≤ ‖u x - c‖ₑ + ‖c - β‖ₑ` over `U`.
+  have h1 : ∫⁻ x in U, ‖u x - β‖ₑ ≤ (∫⁻ x in U, ‖u x - c‖ₑ) + ‖c - β‖ₑ * volume U :=
+    calc ∫⁻ x in U, ‖u x - β‖ₑ ≤ ∫⁻ x in U, (‖u x - c‖ₑ + ‖c - β‖ₑ) :=
+          lintegral_mono fun x ↦ by
+            simpa only [sub_add_sub_cancel] using enorm_add_le (u x - c) (c - β)
+      _ = (∫⁻ x in U, ‖u x - c‖ₑ) + ‖c - β‖ₑ * volume U := by
+          rw [lintegral_add_right _ measurable_const, setLIntegral_const]
+  -- Step 2: the relevant level set lies in `{‖c - β‖ₑ ≤ ‖u - c‖ₑ}`; apply Markov on `U`.
+  have hlevel : ENNReal.ofReal θ * volume U ≤ volume ({x | ‖c - β‖ₑ ≤ ‖u x - c‖ₑ} ∩ U) := by
+    rcases le_or_gt c β with hcb | hbc
+    · -- (a) `c ≤ β`: if `β ≤ u x` then `|u x - c| ≥ β - c = |c - β|`.
+      have hsub : {x ∈ U | β ≤ u x} ⊆ {x | ‖c - β‖ₑ ≤ ‖u x - c‖ₑ} ∩ U := fun x hx ↦ by
+        refine ⟨?_, hx.1⟩
+        show ‖c - β‖ₑ ≤ ‖u x - c‖ₑ
+        rw [Real.enorm_eq_ofReal_abs, Real.enorm_eq_ofReal_abs, abs_sub_comm c β,
+          abs_of_nonneg (sub_nonneg.2 hcb)]
+        exact ENNReal.ofReal_le_ofReal (by linarith [hx.2, le_abs_self (u x - c)])
+      exact (hlev.trans (min_le_left _ _)).trans (measure_mono hsub)
+    · -- (b) `β < c`: if `u x ≤ β` then `|u x - c| ≥ c - β = |c - β|`.
+      have hsub : {x ∈ U | u x ≤ β} ⊆ {x | ‖c - β‖ₑ ≤ ‖u x - c‖ₑ} ∩ U := fun x hx ↦ by
+        refine ⟨?_, hx.1⟩
+        show ‖c - β‖ₑ ≤ ‖u x - c‖ₑ
+        rw [Real.enorm_eq_ofReal_abs, Real.enorm_eq_ofReal_abs, abs_of_pos (sub_pos.2 hbc)]
+        exact ENNReal.ofReal_le_ofReal (by linarith [hx.2, neg_le_abs (u x - c)])
+      exact (hlev.trans (min_le_right _ _)).trans (measure_mono hsub)
+  have h2 : ‖c - β‖ₑ * (ENNReal.ofReal θ * volume U) ≤ ∫⁻ x in U, ‖u x - c‖ₑ :=
+    calc ‖c - β‖ₑ * (ENNReal.ofReal θ * volume U)
+        ≤ ‖c - β‖ₑ * volume ({x | ‖c - β‖ₑ ≤ ‖u x - c‖ₑ} ∩ U) := by gcongr
+      _ = ‖c - β‖ₑ * (volume.restrict U) {x | ‖c - β‖ₑ ≤ ‖u x - c‖ₑ} := by
+          rw [Measure.restrict_apply' hU]
+      _ ≤ ∫⁻ x in U, ‖u x - c‖ₑ := mul_meas_ge_le_lintegral₀ (hu.sub_const c).enorm _
+  -- Step 3: multiply by `ofReal θ⁻¹`, using `ofReal θ⁻¹ * ofReal θ = 1`.
+  have hinv : ENNReal.ofReal θ⁻¹ * ENNReal.ofReal θ = 1 := by
+    rw [← ENNReal.ofReal_mul (inv_nonneg.2 hθ.le), inv_mul_cancel₀ hθ.ne', ENNReal.ofReal_one]
+  have h3 : ‖c - β‖ₑ * volume U ≤ ENNReal.ofReal θ⁻¹ * ∫⁻ x in U, ‖u x - c‖ₑ :=
+    calc ‖c - β‖ₑ * volume U
+        = ENNReal.ofReal θ⁻¹ * ENNReal.ofReal θ * (‖c - β‖ₑ * volume U) := by
+          rw [hinv, one_mul]
+      _ = ENNReal.ofReal θ⁻¹ * (‖c - β‖ₑ * (ENNReal.ofReal θ * volume U)) := by ring
+      _ ≤ ENNReal.ofReal θ⁻¹ * ∫⁻ x in U, ‖u x - c‖ₑ := by gcongr
+  -- Step 4: `I + ofReal θ⁻¹ * I = ofReal (1 + θ⁻¹) * I`.
+  calc ∫⁻ x in U, ‖u x - β‖ₑ ≤ (∫⁻ x in U, ‖u x - c‖ₑ) + ‖c - β‖ₑ * volume U := h1
+    _ ≤ (∫⁻ x in U, ‖u x - c‖ₑ) + ENNReal.ofReal θ⁻¹ * ∫⁻ x in U, ‖u x - c‖ₑ := by gcongr
+    _ = ENNReal.ofReal (1 + θ⁻¹) * ∫⁻ x in U, ‖u x - c‖ₑ := by
+        rw [ENNReal.ofReal_add zero_le_one (inv_nonneg.2 hθ.le), ENNReal.ofReal_one, add_mul,
+          one_mul]
+/-- **Poincaré inequality for `C¹` functions on bounded convex open sets** (step B1 of the proof of
+Simon 2.7, "the usual Poincaré inequality for smooth functions"). If `O ⊆ ℝⁿ` is open, bounded and
+convex and `w` is `C¹`, then `∫_O |w - w̄| ≤ 2ⁿ diam(O) ∫_O |Dw|`, where `w̄` is the mean of `w` over
+`O`. For `x, y ∈ O` the fundamental theorem of calculus along the segment gives
+`|w(x) - w(y)| ≤ diam(O) ∫₀¹ |Dw(x + t(y - x))| dt`. After Tonelli, the dilation `y ↦ (1 - t)x + ty`
+(for `t ≥ 1/2`) or `x ↦ (1 - t)x + ty` (for `t < 1/2`) costs a factor at most `2ⁿ`
+(`Measure.map_addHaar_smul`), and averaging over `y` bounds `|w(x) - w̄|`. -/
+theorem Submission.convex_poincare_smooth_lintegral_le : ∀ (n : ℕ) (O : Set (Rn n)) (w : Rn n → ℝ), IsOpen O → Bornology.IsBounded O → Convex ℝ O → ContDiff ℝ 1 w → ∫⁻ x in O, ‖w x - (volume O).toReal⁻¹ * ∫ y in O, w y‖ₑ ≤ ENNReal.ofReal (2 ^ n * Metric.diam O) * ∫⁻ x in O, ‖fderiv ℝ w x‖ₑ := by
+  intro n O w hO hOb hOc hw
+  -- Step 1: the case `O = ∅` is trivial.
+  rcases O.eq_empty_or_nonempty with rfl | hne
+  · simp
+  -- Step 3: dilation identity `∫⁻ F(a + s•y) dy = ofReal((sⁿ)⁻¹) ∫⁻ F`.
+  have dil : ∀ (F : Rn n → ℝ≥0∞) (a : Rn n) (s : ℝ), 0 < s →
+      ∫⁻ y, F (a + s • y) = ENNReal.ofReal ((s ^ n)⁻¹) * ∫⁻ y, F y := by
+    intro F a s hs
+    have hmap := Measure.map_addHaar_smul (volume : Measure (Rn n)) hs.ne'
+    rw [finrank_euclideanSpace_fin, abs_of_pos (inv_pos.mpr (pow_pos hs n))] at hmap
+    have hemb : MeasurableEmbedding (fun y : Rn n ↦ s • y) :=
+      (Homeomorph.smulOfNeZero s hs.ne').measurableEmbedding
+    calc ∫⁻ y, F (a + s • y)
+          = ∫⁻ z, F (a + z) ∂(Measure.map (fun y : Rn n ↦ s • y) volume) := by
+          rw [hemb.lintegral_map]
+      _ = ENNReal.ofReal ((s ^ n)⁻¹) * ∫⁻ z, F (a + z) := by
+          rw [hmap, lintegral_smul_measure]; rfl
+      _ = ENNReal.ofReal ((s ^ n)⁻¹) * ∫⁻ y, F y := by
+          rw [lintegral_add_left_eq_self]
+  have half : ∀ s : ℝ, 1 / 2 ≤ s → ENNReal.ofReal ((s ^ n)⁻¹) ≤ 2 ^ n := by
+    intro s hs
+    have hs0 : 0 < s := by linarith
+    have h1 : s⁻¹ ≤ 2 := by
+      rw [inv_le_comm₀ hs0 (by norm_num)]; linarith
+    calc ENNReal.ofReal ((s ^ n)⁻¹) ≤ ENNReal.ofReal (2 ^ n) := by
+          apply ENNReal.ofReal_le_ofReal
+          rw [← inv_pow]
+          exact pow_le_pow_left₀ (inv_nonneg.mpr hs0.le) h1 n
+      _ = 2 ^ n := by rw [ENNReal.ofReal_pow (by norm_num), ENNReal.ofReal_ofNat]
+  -- Step 4 (first half): FTC along the segment.
+  have seg : ∀ x y : Rn n, ‖w x - w y‖ₑ
+      ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖fderiv ℝ w (x + t • (y - x))‖ₑ * ‖y - x‖ₑ := by
+    intro x y
+    have hdiff : Differentiable ℝ w := hw.differentiable one_ne_zero
+    have hderiv : ∀ t ∈ uIcc (0:ℝ) 1, HasDerivAt (fun t : ℝ ↦ w (x + t • (y - x)))
+        (fderiv ℝ w (x + t • (y - x)) (y - x)) t := by
+      intro t _
+      have hg : HasDerivAt (fun t : ℝ ↦ x + t • (y - x)) (y - x) t := by
+        simpa using ((hasDerivAt_id t).smul_const (y - x)).const_add x
+      exact (hdiff _).hasFDerivAt.comp_hasDerivAt t hg
+    have hint : IntervalIntegrable (fun t : ℝ ↦ fderiv ℝ w (x + t • (y - x)) (y - x))
+        volume 0 1 := by
+      have hcont : Continuous (fun z ↦ fderiv ℝ w z) := hw.continuous_fderiv one_ne_zero
+      apply Continuous.intervalIntegrable
+      fun_prop
+    have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+    rw [intervalIntegral.integral_of_le zero_le_one] at hftc
+    simp only [zero_smul, add_zero, one_smul, add_sub_cancel] at hftc
+    calc ‖w x - w y‖ₑ = ‖w y - w x‖ₑ := by rw [← enorm_neg, neg_sub]
+      _ = ‖∫ t in Ioc (0:ℝ) 1, fderiv ℝ w (x + t • (y - x)) (y - x)‖ₑ := by rw [hftc]
+      _ ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖fderiv ℝ w (x + t • (y - x)) (y - x)‖ₑ :=
+          enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖fderiv ℝ w (x + t • (y - x))‖ₑ * ‖y - x‖ₑ := by
+          apply lintegral_mono
+          intro t
+          exact ContinuousLinearMap.le_opENorm _ _
+  -- Steps 5–6: Tonelli and the dilation bound.
+  have double : ∀ F : Rn n → ℝ≥0∞, Measurable F →
+      ∫⁻ x in O, ∫⁻ y in O, ∫⁻ t in Ioc (0:ℝ) 1, F (x + t • (y - x))
+        ≤ 2 ^ n * (∫⁻ z, F z) * volume O := by
+    intro F hF
+    have swap1 : ∀ x, ∫⁻ y in O, ∫⁻ t in Ioc (0:ℝ) 1, F (x + t • (y - x))
+        = ∫⁻ t in Ioc (0:ℝ) 1, ∫⁻ y in O, F (x + t • (y - x)) := by
+      intro x
+      apply lintegral_lintegral_swap
+      exact (hF.comp (by fun_prop)).aemeasurable
+    have swap2 : ∫⁻ x in O, ∫⁻ t in Ioc (0:ℝ) 1, ∫⁻ y in O, F (x + t • (y - x))
+        = ∫⁻ t in Ioc (0:ℝ) 1, ∫⁻ x in O, ∫⁻ y in O, F (x + t • (y - x)) := by
+      apply lintegral_lintegral_swap
+      exact (Measurable.lintegral_prod_right'
+        (f := fun q : (Rn n × ℝ) × Rn n ↦ F (q.1.1 + q.1.2 • (q.2 - q.1.1)))
+        (hF.comp (by fun_prop))).aemeasurable
+    rw [lintegral_congr swap1, swap2]
+    -- Step 6: `J(t) ≤ 2ⁿ (∫⁻ F) μ(O)` for `t ∈ (0, 1]`.
+    have hJ : ∀ t ∈ Ioc (0:ℝ) 1, ∫⁻ x in O, ∫⁻ y in O, F (x + t • (y - x))
+        ≤ 2 ^ n * (∫⁻ z, F z) * volume O := by
+      intro t ht
+      by_cases h2 : 1 / 2 ≤ t
+      · -- (a) `t ≥ 1/2`: dilate in `y`.
+        calc ∫⁻ x in O, ∫⁻ y in O, F (x + t • (y - x))
+              ≤ ∫⁻ x in O, 2 ^ n * ∫⁻ z, F z := by
+              apply lintegral_mono; intro x
+              calc ∫⁻ y in O, F (x + t • (y - x)) ≤ ∫⁻ y, F (x + t • (y - x)) :=
+                    setLIntegral_le_lintegral _ _
+                _ = ∫⁻ y, F ((1 - t) • x + t • y) := by
+                    congr 1; ext y; congr 1; module
+                _ = ENNReal.ofReal ((t ^ n)⁻¹) * ∫⁻ z, F z := dil F ((1 - t) • x) t ht.1
+                _ ≤ 2 ^ n * ∫⁻ z, F z := by gcongr; exact half t h2
+          _ = 2 ^ n * (∫⁻ z, F z) * volume O := setLIntegral_const _ _
+      · -- (b) `t < 1/2`: swap `x` and `y`, then dilate in `x`.
+        push Not at h2
+        have hm : Measurable (Function.uncurry fun x y : Rn n ↦ F (x + t • (y - x))) :=
+          hF.comp (by fun_prop)
+        rw [lintegral_lintegral_swap hm.aemeasurable]
+        calc ∫⁻ y in O, ∫⁻ x in O, F (x + t • (y - x))
+              ≤ ∫⁻ y in O, 2 ^ n * ∫⁻ z, F z := by
+              apply lintegral_mono; intro y
+              calc ∫⁻ x in O, F (x + t • (y - x)) ≤ ∫⁻ x, F (x + t • (y - x)) :=
+                    setLIntegral_le_lintegral _ _
+                _ = ∫⁻ x, F (t • y + (1 - t) • x) := by
+                    congr 1; ext x; congr 1; module
+                _ = ENNReal.ofReal (((1 - t) ^ n)⁻¹) * ∫⁻ z, F z :=
+                    dil F (t • y) (1 - t) (by linarith)
+                _ ≤ 2 ^ n * ∫⁻ z, F z := by gcongr; exact half (1 - t) (by linarith)
+          _ = 2 ^ n * (∫⁻ z, F z) * volume O := setLIntegral_const _ _
+    calc ∫⁻ t in Ioc (0:ℝ) 1, ∫⁻ x in O, ∫⁻ y in O, F (x + t • (y - x))
+          ≤ ∫⁻ t in Ioc (0:ℝ) 1, 2 ^ n * (∫⁻ z, F z) * volume O :=
+          setLIntegral_mono' measurableSet_Ioc hJ
+      _ = 2 ^ n * (∫⁻ z, F z) * volume O := by
+          rw [setLIntegral_const, Real.volume_Ioc]; simp
+  -- Step 7: the mean step, `‖w x - w̄‖ₑ ≤ μ(O)⁻¹ ∫⁻_O ‖w x - w y‖ₑ dy`.
+  have hm0 : volume O ≠ 0 := (hO.measure_pos volume hne).ne'
+  have hmt : volume O ≠ ⊤ := hOb.measure_lt_top.ne
+  have hwint : IntegrableOn w O volume :=
+    (hw.continuous.continuousOn.integrableOn_compact hOb.isCompact_closure).mono_set subset_closure
+  have mean : ∀ x, ‖w x - (volume O).toReal⁻¹ * ∫ y in O, w y‖ₑ
+      ≤ (volume O)⁻¹ * ∫⁻ y in O, ‖w x - w y‖ₑ := by
+    intro x
+    have hI : ∫ y in O, (w x - w y) = (volume O).toReal * w x - ∫ y in O, w y := by
+      rw [integral_sub (integrableOn_const (C := w x) hmt) hwint, setIntegral_const, smul_eq_mul,
+        measureReal_def]
+    have hmR : (volume O).toReal ≠ 0 := ENNReal.toReal_ne_zero.mpr ⟨hm0, hmt⟩
+    have key : w x - (volume O).toReal⁻¹ * ∫ y in O, w y
+        = (volume O).toReal⁻¹ * ∫ y in O, (w x - w y) := by
+      rw [hI]; field_simp
+    have hinv : ‖(volume O).toReal⁻¹‖ₑ = (volume O)⁻¹ := by
+      rw [Real.enorm_of_nonneg (inv_nonneg.mpr ENNReal.toReal_nonneg), ← ENNReal.toReal_inv,
+        ENNReal.ofReal_toReal (ENNReal.inv_ne_top.mpr hm0)]
+    rw [key, enorm_mul, hinv]
+    gcongr
+    exact enorm_integral_le_lintegral_enorm _
+  -- Step 2 and Step 4 (second half): the indicator `F` and the pointwise segment bound.
+  have hcont : Continuous (fun z ↦ fderiv ℝ w z) := hw.continuous_fderiv one_ne_zero
+  set F : Rn n → ℝ≥0∞ := O.indicator (fun z ↦ ‖fderiv ℝ w z‖ₑ) with hFdef
+  have hF : Measurable F := (hcont.enorm.measurable).indicator hO.measurableSet
+  have hFint : ∫⁻ z, F z = ∫⁻ x in O, ‖fderiv ℝ w x‖ₑ := lintegral_indicator hO.measurableSet _
+  set D := Metric.diam O with hD
+  have hseg : ∀ x ∈ O, ∀ y ∈ O, ‖w x - w y‖ₑ
+      ≤ ENNReal.ofReal D * ∫⁻ t in Ioc (0:ℝ) 1, F (x + t • (y - x)) := by
+    intro x hx y hy
+    calc ‖w x - w y‖ₑ ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖fderiv ℝ w (x + t • (y - x))‖ₑ * ‖y - x‖ₑ :=
+          seg x y
+      _ ≤ ∫⁻ t in Ioc (0:ℝ) 1, ENNReal.ofReal D * F (x + t • (y - x)) := by
+          apply setLIntegral_mono' measurableSet_Ioc
+          intro t ht
+          have hmem : x + t • (y - x) ∈ O := hOc.add_smul_sub_mem hx hy ⟨ht.1.le, ht.2⟩
+          rw [hFdef, indicator_of_mem hmem, mul_comm]
+          gcongr
+          rw [← ofReal_norm, ← dist_eq_norm]
+          exact ENNReal.ofReal_le_ofReal (dist_le_diam_of_mem hOb hy hx)
+      _ = ENNReal.ofReal D * ∫⁻ t in Ioc (0:ℝ) 1, F (x + t • (y - x)) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  -- (★) `∫⁻_O ∫⁻_O ‖w x - w y‖ₑ ≤ diam(O) 2ⁿ (∫⁻ F) μ(O)`.
+  have hstar : ∫⁻ x in O, ∫⁻ y in O, ‖w x - w y‖ₑ
+      ≤ ENNReal.ofReal D * (2 ^ n * (∫⁻ z, F z) * volume O) := by
+    calc ∫⁻ x in O, ∫⁻ y in O, ‖w x - w y‖ₑ
+          ≤ ∫⁻ x in O, ∫⁻ y in O, ENNReal.ofReal D * ∫⁻ t in Ioc (0:ℝ) 1, F (x + t • (y - x)) := by
+          apply setLIntegral_mono' hO.measurableSet; intro x hx
+          apply setLIntegral_mono' hO.measurableSet; intro y hy
+          exact hseg x hx y hy
+      _ = ENNReal.ofReal D * ∫⁻ x in O, ∫⁻ y in O, ∫⁻ t in Ioc (0:ℝ) 1, F (x + t • (y - x)) := by
+          rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+          congr 1; ext x
+          rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+      _ ≤ ENNReal.ofReal D * (2 ^ n * (∫⁻ z, F z) * volume O) := by
+          gcongr; exact double F hF
+  -- Step 8: integrate the mean step over `x` and cancel `μ(O)⁻¹ μ(O) = 1`.
+  calc ∫⁻ x in O, ‖w x - (volume O).toReal⁻¹ * ∫ y in O, w y‖ₑ
+        ≤ ∫⁻ x in O, (volume O)⁻¹ * ∫⁻ y in O, ‖w x - w y‖ₑ := lintegral_mono mean
+    _ = (volume O)⁻¹ * ∫⁻ x in O, ∫⁻ y in O, ‖w x - w y‖ₑ :=
+        lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr hm0)
+    _ ≤ (volume O)⁻¹ * (ENNReal.ofReal D * (2 ^ n * (∫⁻ z, F z) * volume O)) := by gcongr
+    _ = ((volume O)⁻¹ * volume O) * (2 ^ n * ENNReal.ofReal D * ∫⁻ z, F z) := by ring
+    _ = ENNReal.ofReal (2 ^ n * D) * ∫⁻ x in O, ‖fderiv ℝ w x‖ₑ := by
+        rw [ENNReal.inv_mul_cancel hm0 hmt, one_mul, hFint, ENNReal.ofReal_mul (by positivity),
+          ENNReal.ofReal_pow (by norm_num), ENNReal.ofReal_ofNat]
+/-- **Inner exhaustion of an open convex set** (Simon 2.7, "`W = {x ∈ U : dist(x, ∂U) > σ}`").
+Every open convex `U ⊆ ℝⁿ` is the increasing union of open convex sets `O_j` with
+`closedBall x σ_j ⊆ U` for `x ∈ O_j`, where `σ_j > 0` and `σ_j → 0`. Take `σ_j = 1/(j+1)`. If
+`U = ℝⁿ`, let `O_j = ℝⁿ`. Otherwise `Uᶜ` is closed and nonempty; with `d = infDist(·, Uᶜ)` let
+`O_j = {d > σ_j}`. A point `z` with `dist(x, z) < d(x)` lies in `U`; this gives the margins and
+`O_j ⊆ U`, and `d > 0` on `U` gives `⋃_j O_j = U`. Convexity: if `‖v‖ < min(d(x), d(y))` then
+`x + v, y + v ∈ U`, so `a(x + v) + b(y + v) = ax + by + v ∈ U`; hence `d(ax + by) ≥ min(d(x), d(y))`. -/
+theorem Submission.convex_open_exists_inner_exhaustion : ∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ∃ (O : ℕ → Set (Rn n)) (σ : ℕ → ℝ), Monotone O ∧ ⋃ j, O j = U ∧ Tendsto σ atTop (𝓝 0) ∧ ∀ j, IsOpen (O j) ∧ Convex ℝ (O j) ∧ 0 < σ j ∧ ∀ x ∈ O j, closedBall x (σ j) ⊆ U := by
+  intro n U hU hconv
+  -- Step 1: the radii `σ_j = 1/(j+1)` are positive and decreasing.
+  have hσpos : ∀ j : ℕ, (0 : ℝ) < 1 / ((j : ℝ) + 1) := fun j ↦ by positivity
+  have hσanti : ∀ i j : ℕ, i ≤ j → 1 / ((j : ℝ) + 1) ≤ 1 / ((i : ℝ) + 1) := fun i j hij ↦
+    one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.add_le_add_right hij 1)
+  by_cases hUniv : U = univ
+  · -- Step 2: `U = ℝⁿ`; take `O_j = ℝⁿ`.
+    subst hUniv
+    exact ⟨fun _ ↦ univ, fun j ↦ 1 / ((j : ℝ) + 1), monotone_const, iUnion_const _,
+      tendsto_one_div_add_atTop_nhds_zero_nat,
+      fun j ↦ ⟨isOpen_univ, convex_univ, hσpos j, fun _ _ ↦ subset_univ _⟩⟩
+  -- Step 3: `Uᶜ` is closed and nonempty; `O_j = {x | σ_j < infDist x Uᶜ}`.
+  have hne : (Uᶜ).Nonempty := nonempty_compl.2 hUniv
+  have hcl : IsClosed Uᶜ := hU.isClosed_compl
+  -- (a) A point closer to `x` than `infDist x Uᶜ` lies in `U`.
+  have key : ∀ x z : Rn n, dist x z < infDist x Uᶜ → z ∈ U := fun x z h ↦
+    notMem_compl_iff.1 (notMem_of_dist_lt_infDist h)
+  refine ⟨fun j ↦ {x | 1 / ((j : ℝ) + 1) < infDist x Uᶜ}, fun j ↦ 1 / ((j : ℝ) + 1), ?_, ?_,
+    tendsto_one_div_add_atTop_nhds_zero_nat, fun j ↦ ⟨?_, ?_, hσpos j, ?_⟩⟩
+  · -- (b) Monotone: `σ_j ≤ σ_i` for `i ≤ j`.
+    intro i j hij x hx
+    exact (hσanti i j hij).trans_lt hx
+  · -- (e) Union: `x ∈ O_j` gives `x ∈ U` by (a); `x ∈ U` gives `0 < infDist x Uᶜ`.
+    ext x
+    simp only [mem_iUnion, mem_ofPred_eq]
+    constructor
+    · rintro ⟨j, hj⟩
+      exact key x x (by rw [dist_self]; exact (hσpos j).trans hj)
+    · intro hx
+      exact exists_nat_one_div_lt ((hcl.notMem_iff_infDist_pos hne).1 (notMem_compl_iff.2 hx))
+  · -- (c) Open: `infDist · Uᶜ` is continuous.
+    exact isOpen_lt continuous_const (continuous_infDist_pt _)
+  · -- (f) Convex: `min (infDist x Uᶜ) (infDist y Uᶜ) ≤ infDist (a • x + b • y) Uᶜ`.
+    intro x hx y hy a b ha hb hab
+    simp only [mem_ofPred_eq] at hx hy ⊢
+    refine (lt_min hx hy).trans_le ((le_infDist hne).2 fun p hp ↦ not_lt.1 fun hlt ↦ hp ?_)
+    -- `v = p - (a • x + b • y)` has `‖v‖ < min (infDist x Uᶜ) (infDist y Uᶜ)`, so `x + v`,
+    -- `y + v ∈ U` by (a), and `a • (x + v) + b • (y + v) = p` lies in `U` by convexity.
+    rw [dist_comm, dist_eq_norm] at hlt
+    have hxv : x + (p - (a • x + b • y)) ∈ U := key x _ (by
+      rw [dist_eq_norm, sub_add_cancel_left, norm_neg]
+      exact hlt.trans_le (min_le_left _ _))
+    have hyv : y + (p - (a • x + b • y)) ∈ U := key y _ (by
+      rw [dist_eq_norm, sub_add_cancel_left, norm_neg]
+      exact hlt.trans_le (min_le_right _ _))
+    have hcomb : a • (x + (p - (a • x + b • y))) + b • (y + (p - (a • x + b • y))) = p := by
+      rw [smul_add, smul_add, add_add_add_comm, ← add_smul, hab, one_smul, add_sub_cancel]
+    exact hcomb ▸ hconv hxv hyv ha hb hab
+  · -- (d) Margin: `dist x p ≤ σ_j < infDist x Uᶜ` for `p ∈ closedBall x σ_j`.
+    intro x hx p hp
+    rw [mem_closedBall, dist_comm] at hp
+    exact key x p (hp.trans_lt hx)
+/-- **Mean-oscillation bounds pass to the `L¹` limit along an increasing exhaustion** (step B4 of
+the proof of Simon 2.7, "letting `σ ↓ 0`"). Let measurable `O j` increase to `U` with `μ(U) < ∞`,
+`u ∈ L¹(U)` and `w j ∈ L¹(O j)`. If `e_j = ∫⁻_{O j} ‖w j - u‖ₑ → 0` and `∫⁻_{O j} ‖w j - c_j‖ₑ ≤ K`
+for the means `c_j` of `w j` over `O j`, then `∫⁻_U ‖u - ū‖ₑ ≤ K` for the mean `ū` of `u` over `U`.
+Since `μ(O j) → μ(U)` and `|∫_{O j} w j - ∫_{O j} u| ≤ e_j`, `c_j → ū`; the integrated triangle
+inequality gives `∫⁻_{O j} ‖u - ū‖ₑ ≤ K + e_j + ‖c_j - ū‖ₑ μ(U)`, and `∫⁻_U = ⨆ j, ∫⁻_{O j}`
+(`setLIntegral_iUnion_of_directed`). -/
+theorem Submission.mean_oscillation_lintegral_le_of_approx : ∀ (n : ℕ) (U : Set (Rn n)) (u : Rn n → ℝ) (O : ℕ → Set (Rn n)) (w : ℕ → Rn n → ℝ) (K : ℝ≥0∞), volume U < ⊤ → IntegrableOn u U volume → (∀ j, MeasurableSet (O j)) → Monotone O → ⋃ j, O j = U → (∀ j, IntegrableOn (w j) (O j) volume) → Tendsto (fun j ↦ ∫⁻ x in O j, ‖w j x - u x‖ₑ) atTop (𝓝 0) → (∀ j, ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ ≤ K) → ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤ K := by
+  intro n U u O w K hUfin hu hOm hOmono hOU hw he hK
+  -- Step 1: every `O j` lies in `U`.
+  have hsub : ∀ j, O j ⊆ U := fun j ↦ hOU ▸ subset_iUnion O j
+  -- Step 2: the case `μ(U) = 0` is trivial.
+  by_cases hU0 : volume U = 0
+  · rw [setLIntegral_measure_zero U _ hU0]
+    exact zero_le
+  -- Step 3: `μ(O_j) → μ(U)` by continuity from below.
+  have hmeas : Tendsto (fun j ↦ (volume (O j)).toReal) atTop (𝓝 (volume U).toReal) := by
+    have h := tendsto_measure_iUnion_atTop (μ := volume) hOmono
+    rw [hOU] at h
+    exact (ENNReal.tendsto_toReal hUfin.ne).comp h
+  -- Step 4: `∫_{O_j} u → ∫_U u`.
+  have hint_u : Tendsto (fun j ↦ ∫ y in O j, u y) atTop (𝓝 (∫ y in U, u y)) := by
+    have h := tendsto_setIntegral_of_monotone (μ := volume) (f := u) hOm hOmono (hOU.symm ▸ hu)
+    rwa [hOU] at h
+  -- Step 5: `|∫_{O_j} w_j − ∫_{O_j} u| ≤ e_j → 0`, hence `∫_{O_j} w_j → ∫_U u`.
+  have hdiff : Tendsto (fun j ↦ (∫ y in O j, w j y) - ∫ y in O j, u y) atTop (𝓝 0) := by
+    refine tendsto_zero_iff_enorm_tendsto_zero.mpr
+      (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds he (fun j ↦ zero_le)
+        (fun j ↦ ?_))
+    show ‖(∫ y in O j, w j y) - ∫ y in O j, u y‖ₑ ≤ ∫⁻ x in O j, ‖w j x - u x‖ₑ
+    rw [← integral_sub (hw j) (hu.mono_set (hsub j))]
+    exact enorm_integral_le_lintegral_enorm _
+  have hint_w : Tendsto (fun j ↦ ∫ y in O j, w j y) atTop (𝓝 (∫ y in U, u y)) := by
+    simpa using hdiff.add hint_u
+  -- Step 6: the means `c_j` converge to `ū`.
+  have hM : (volume U).toReal ≠ 0 := (ENNReal.toReal_pos hU0 hUfin.ne).ne'
+  have hc : Tendsto (fun j ↦ (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y) atTop
+      (𝓝 ((volume U).toReal⁻¹ * ∫ y in U, u y)) := (hmeas.inv₀ hM).mul hint_w
+  have hc' : Tendsto (fun j ↦ ‖(volume (O j)).toReal⁻¹ * (∫ y in O j, w j y) -
+      (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ * volume U) atTop (𝓝 0) := by
+    have h1 := tendsto_zero_iff_enorm_tendsto_zero.mp (tendsto_sub_nhds_zero_iff.mpr hc)
+    simpa using ENNReal.Tendsto.mul_const h1 (Or.inr hUfin.ne)
+  have hr := he.add hc'
+  rw [add_zero] at hr
+  -- Step 7: the integrated triangle inequality on each `O_j`.
+  have hbound : ∀ j, ∫⁻ x in O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤
+      K + ((∫⁻ x in O j, ‖w j x - u x‖ₑ) + ‖(volume (O j)).toReal⁻¹ * (∫ y in O j, w j y) -
+        (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ * volume U) := by
+    intro j
+    set ub := (volume U).toReal⁻¹ * ∫ y in U, u y
+    set cj := (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y
+    have hpt : ∀ x, ‖u x - ub‖ₑ ≤ ‖w j x - u x‖ₑ + (‖w j x - cj‖ₑ + ‖cj - ub‖ₑ) := by
+      intro x
+      calc ‖u x - ub‖ₑ = ‖-(w j x - u x) + ((w j x - cj) + (cj - ub))‖ₑ := by congr 1; ring
+        _ ≤ ‖-(w j x - u x)‖ₑ + ‖(w j x - cj) + (cj - ub)‖ₑ := enorm_add_le _ _
+        _ ≤ ‖w j x - u x‖ₑ + (‖w j x - cj‖ₑ + ‖cj - ub‖ₑ) := by
+          rw [enorm_neg]
+          gcongr
+          exact enorm_add_le _ _
+    have hae : AEMeasurable (fun x ↦ ‖w j x - u x‖ₑ) (volume.restrict (O j)) :=
+      ((hw j).sub (hu.mono_set (hsub j))).aemeasurable.enorm
+    calc ∫⁻ x in O j, ‖u x - ub‖ₑ
+        ≤ ∫⁻ x in O j, ‖w j x - u x‖ₑ + (‖w j x - cj‖ₑ + ‖cj - ub‖ₑ) := lintegral_mono hpt
+      _ = (∫⁻ x in O j, ‖w j x - u x‖ₑ) +
+            ((∫⁻ x in O j, ‖w j x - cj‖ₑ) + ‖cj - ub‖ₑ * volume (O j)) := by
+          rw [lintegral_add_left' hae, lintegral_add_right _ measurable_const, setLIntegral_const]
+      _ ≤ (∫⁻ x in O j, ‖w j x - u x‖ₑ) + (K + ‖cj - ub‖ₑ * volume U) := by
+          gcongr
+          · exact hK j
+          · exact hsub j
+      _ = K + ((∫⁻ x in O j, ‖w j x - u x‖ₑ) + ‖cj - ub‖ₑ * volume U) := add_left_comm _ _ _
+  -- Step 8: for each fixed `j`, `∫⁻_{O_j} ‖u − ū‖ₑ ≤ K`.
+  have hO : ∀ j, ∫⁻ x in O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤ K := by
+    intro j
+    have hlim := (tendsto_const_nhds (x := K)).add hr
+    rw [add_zero] at hlim
+    refine ge_of_tendsto hlim ?_
+    filter_upwards [eventually_ge_atTop j] with k hk
+    exact (lintegral_mono_set (hOmono hk)).trans (hbound k)
+  -- Step 9: pass to the directed union `⋃ j, O j = U`.
+  calc ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ
+      = ∫⁻ x in ⋃ j, O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ := by rw [hOU]
+    _ = ⨆ j, ∫⁻ x in O j, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ :=
+        setLIntegral_iUnion_of_directed _ hOmono.directed_le
+    _ ≤ K := iSup_le hO
 /-- **Simon Ch. 2, Lemma 2.5 (`L¹` part), convergence of mollifiers.** If `F ∈ L¹(ℝⁿ)` and the
 kernels `ρ j` are continuous, nonnegative, of integral `1` and supported in the open ball
 `ball 0 (σ j)` with `σ j → 0`, then `ρ j * F → F` in `L¹`. The `L¹` contraction
@@ -2391,6 +2775,85 @@ theorem Submission.bv_compactness_theorem : BVCompactness := by
       Submission.bv_integral_div_le_of_variation_le n W (u (ψ k)) c hc (hcu (ψ k)).2 g hg hgW⟩
   -- Step A3: lower semicontinuity of `|D·|(W)` under `L¹_loc(U)` convergence.
   · exact Chapter02.bvVariationOn_le_liminf_of_locallyL1 hv hlocψ hL1 hWU
+/-- **Simon Ch. 2, Lemma 2.7 (p. 51), Poincaré inequality for BV**, with `C = 2^{n+1}(1 + θ⁻¹)`.
+Exhaust `U` by convex open sets `O j` with margins `σ j → 0`
+(`convex_open_exists_inner_exhaustion`) and mollify: `w j = ρ j * 1_U u` with normalized bump
+kernels `ρ j` supported in `ball 0 (σ j)`. On `O j` the smooth Poincaré inequality, the mollifier
+gradient bound `∫_{O j} |Dw j| ≤ |Du|(U)` and `diam (O j) ≤ diam U ≤ 2R` give
+`∫_{O j} |w j - c_j| ≤ 2ⁿ 2R |Du|(U)` for the means `c_j`. Since `w j → 1_U u = u` in `L¹(O j)`
+(`bv_mollifier_tendsto_L1`), this passes to `∫_U |u - ū| ≤ 2ⁿ 2R |Du|(U)`
+(`mean_oscillation_lintegral_le_of_approx`), and the level-set hypothesis replaces the mean `ū` by
+`β` at the cost of a factor `1 + θ⁻¹` (`poincare_level_set_lintegral_le`). -/
+theorem Submission.bv_poincare_theorem : BVPoincare := by
+  intro n θ δ hθ _ _ _
+  refine ⟨2 ^ (n + 1) * (1 + θ⁻¹), by positivity, ?_⟩
+  intro U R ξ u β hUo hUb hUc hR _ _ hUR hBV hlevel
+  obtain ⟨-, hu, -⟩ := hBV
+  -- B2: convex open sets `O j` increasing to `U`, with margins `σ j → 0`.
+  obtain ⟨O, σ, hOmono, hOU, hσ, hO⟩ :=
+    Submission.convex_open_exists_inner_exhaustion n U hUo hUc
+  have hOsub : ∀ j, O j ⊆ U := fun j ↦ hOU ▸ subset_iUnion O j
+  -- B3: normalized bump kernels `ρ j` supported in `ball 0 (σ j)`.
+  obtain ⟨ρ, hρc, hρd, hρn, hρs, hρi, hρcs⟩ : ∃ ρ : ℕ → Rn n → ℝ, (∀ j, Continuous (ρ j)) ∧
+      (∀ j (m : ℕ∞), ContDiff ℝ m (ρ j)) ∧ (∀ j x, 0 ≤ ρ j x) ∧
+      (∀ j, Function.support (ρ j) ⊆ ball 0 (σ j)) ∧ (∀ j, ∫ x, ρ j x = 1) ∧
+      ∀ j, HasCompactSupport (ρ j) := by
+    let φ : ℕ → ContDiffBump (0 : Rn n) := fun j ↦
+      ⟨σ j / 2, σ j, half_pos (hO j).2.2.1, half_lt_self (hO j).2.2.1⟩
+    exact ⟨fun j ↦ (φ j).normed volume, fun j ↦ (φ j).continuous_normed,
+      fun j _ ↦ (φ j).contDiff_normed, fun j ↦ (φ j).nonneg_normed,
+      fun j ↦ (φ j).support_normed_eq.subset, fun j ↦ (φ j).integral_normed,
+      fun j ↦ (φ j).hasCompactSupport_normed⟩
+  -- The mollified functions `w j = ρ j * 1_U u` are `C¹`, hence integrable on the bounded `O j`.
+  have hF : Integrable (U.indicator u) volume := (integrable_indicator_iff hUo.measurableSet).2 hu
+  set w : ℕ → Rn n → ℝ := fun j ↦
+    convolution (ρ j) (U.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  have hwC : ∀ j, ContDiff ℝ 1 (w j) := fun j ↦
+    (hρcs j).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρd j 1)
+      hF.locallyIntegrable
+  have hwint : ∀ j, IntegrableOn (w j) (O j) volume := fun j ↦
+    ((hwC j).continuous.continuousOn.integrableOn_compact
+      (hUb.subset (hOsub j)).isCompact_closure).mono_set subset_closure
+  -- B4, approximation: `∫⁻_{O j} ‖w j - u‖ₑ ≤ ∫⁻ ‖w j - 1_U u‖ₑ → 0`, as `1_U u = u` on `O j`.
+  have he : Tendsto (fun j ↦ ∫⁻ x in O j, ‖w j x - u x‖ₑ) atTop (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
+      (Submission.bv_mollifier_tendsto_L1 n (U.indicator u) ρ σ hF hρc hρn hρs hρi hσ)
+      (fun j ↦ zero_le) fun j ↦ ?_
+    calc ∫⁻ x in O j, ‖w j x - u x‖ₑ = ∫⁻ x in O j, ‖w j x - U.indicator u x‖ₑ :=
+          setLIntegral_congr_fun (hO j).1.measurableSet fun x hx ↦ by
+            rw [indicator_of_mem (hOsub j hx)]
+      _ ≤ ∫⁻ x, ‖w j x - U.indicator u x‖ₑ := setLIntegral_le_lintegral _ _
+  -- B3, uniform bound: smooth Poincaré on `O j`, `diam (O j) ≤ diam U ≤ 2R`, and the mollifier
+  -- gradient bound `∫⁻_{O j} ‖D w j‖ₑ ≤ |Du|(U)`, valid as `closedBall x (σ j) ⊆ U` for `x ∈ O j`.
+  have hdiam : Metric.diam U ≤ 2 * R :=
+    (Metric.diam_mono hUR isBounded_closedBall).trans (Metric.diam_closedBall hR.le)
+  have hK : ∀ j, ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ ≤
+      ENNReal.ofReal (2 ^ n * (2 * R)) * Chapter02.bvVariationOn u U := by
+    intro j
+    calc ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ
+        ≤ ENNReal.ofReal (2 ^ n * Metric.diam (O j)) * ∫⁻ x in O j, ‖fderiv ℝ (w j) x‖ₑ :=
+          Submission.convex_poincare_smooth_lintegral_le n (O j) (w j) (hO j).1
+            (hUb.subset (hOsub j)) (hO j).2.1 (hwC j)
+      _ ≤ ENNReal.ofReal (2 ^ n * (2 * R)) * Chapter02.bvVariationOn u U := by
+          gcongr
+          · exact (Metric.diam_mono (hOsub j) hUb).trans hdiam
+          · exact Submission.bv_mollifier_fderiv_lintegral_le n U (O j) u (ρ j) (σ j) hUo hu
+              (hρd j 2) (hρn j) (hρs j) (hρi j) (hO j).2.2.2
+  -- B4, limit: `∫⁻_U ‖u - ū‖ₑ ≤ 2ⁿ (2R) |Du|(U)` for the mean `ū` of `u` over `U`.
+  have hmean := Submission.mean_oscillation_lintegral_le_of_approx n U u O w _
+    hUb.measure_lt_top hu (fun j ↦ (hO j).1.measurableSet) hOmono hOU hwint he hK
+  -- B5: from the mean `ū` to `β`.
+  calc ∫⁻ x in U, ‖u x - β‖ₑ
+      ≤ ENNReal.ofReal (1 + θ⁻¹) * ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ :=
+        Submission.poincare_level_set_lintegral_le n U u θ β _ hUo.measurableSet
+          (Integrable.aemeasurable hu) hθ hlevel
+    _ ≤ ENNReal.ofReal (1 + θ⁻¹) *
+          (ENNReal.ofReal (2 ^ n * (2 * R)) * Chapter02.bvVariationOn u U) := by
+        gcongr
+    _ = ENNReal.ofReal (2 ^ (n + 1) * (1 + θ⁻¹) * R) * Chapter02.bvVariationOn u U := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+        congr 2
+        ring
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
