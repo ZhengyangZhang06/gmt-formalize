@@ -470,6 +470,55 @@ theorem Submission.ae_of_forall_relCompactOpen_null_exceptional :
     by_contra hyE
     exact hy (hEP x y hyx hyE)
   · exact Or.inl hyU
+/-- **Simon Ch. 8, proof of 3.7, pp. 212–213, displays (3) and (5)** (child `bad_interior_null` of
+`lower_density_ae`): suppose `μ(O) ≤ liminf_q μ_q(O)` for every open `O ⊆ W`, and the sets
+`Bad q k ⊆ W` satisfy `μ_q(Bad q k) ≤ C k⁻¹ a_q + b_q` for `k ≥ 1`, with `liminf_q a_q < ∞` and
+`b_q → 0`.  Then `⋂_{k ≥ 1} ⋃_i interior (⋂_{ℓ ≥ i} Bad ℓ k)` is `μ`-null.  The open set
+`O_{i,k} = interior (⋂_{ℓ ≥ i} Bad ℓ k)` lies in `Bad q k` for every `q ≥ i`, so
+`μ(O_{i,k}) ≤ C k⁻¹ liminf_q a_q` (printed (3)).  As `O_{i,k}` increases in `i`, the exceptional set
+has measure `≤ C k⁻¹ liminf_q a_q` for every `k ≥ 1` (printed (5)), and this bound tends to `0`. -/
+theorem Submission.measure_bad_interior_exceptional_eq_zero :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (Bad : ℕ → ℕ → Set (Euclidean N)) (C : ℕ) (a b : ℕ → ℝ≥0∞), (∀ O : Set (Euclidean N), IsOpen O → O ⊆ W → μ O ≤ liminf (fun q ↦ μs q O) atTop) → (∀ q k, Bad q k ⊆ W) → liminf a atTop ≠ ∞ → Tendsto b atTop (𝓝 0) → (∀ q k : ℕ, 1 ≤ k → μs q (Bad q k) ≤ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q + b q) → μ (⋂ k : ℕ, ⋂ (_ : 1 ≤ k), ⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) = 0 := by
+  intro N μ μs W Bad C a b hP1 hW hL hb hbad
+  -- Step 1: `O i k = interior (⋂_{ℓ ≥ i} Bad ℓ k)` is in `Bad ℓ k` for `ℓ ≥ i`, and grows with `i`.
+  have hO_sub : ∀ i k ℓ, i ≤ ℓ → interior (⋂ ℓ' : ℕ, ⋂ (_ : i ≤ ℓ'), Bad ℓ' k) ⊆ Bad ℓ k :=
+    fun i k ℓ hℓ ↦ interior_subset.trans (iInter₂_subset ℓ hℓ)
+  have hO_mono : ∀ k, Monotone fun i ↦ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k) :=
+    fun k i i' hii' ↦ interior_mono (subset_iInter₂ fun ℓ hℓ ↦ iInter₂_subset ℓ (hii'.trans hℓ))
+  -- Step 2 (printed (3)): `μ(O i k) ≤ liminf_q μ_q(O i k) ≤ liminf_q (C k⁻¹ a_q + b_q)`
+  -- `= liminf_q (C k⁻¹ a_q) = C k⁻¹ liminf_q a_q`, using `C k⁻¹ ≠ ∞` and `b_q → 0`.
+  have hstep2 : ∀ i k, 1 ≤ k →
+      μ (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) ≤
+        (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop := by
+    intro i k hk
+    have hc : (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ ≠ ∞ :=
+      ENNReal.mul_ne_top (ENNReal.natCast_ne_top C)
+        (ENNReal.inv_ne_top.2 (Nat.cast_ne_zero.2 (by omega)))
+    calc μ (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k))
+        ≤ liminf (fun q ↦ μs q (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k))) atTop :=
+          hP1 _ isOpen_interior ((hO_sub i k i le_rfl).trans (hW i k))
+      _ ≤ liminf (fun q ↦ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q + b q) atTop :=
+          liminf_le_liminf <| (eventually_ge_atTop i).mono fun q hq ↦
+            (measure_mono (hO_sub i k q hq)).trans (hbad q k hk)
+      _ = liminf (fun q ↦ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q) atTop :=
+          ENNReal.liminf_add_of_right_tendsto_zero hb _
+      _ = (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop := ENNReal.liminf_const_mul_of_ne_top hc
+  -- Step 3 (printed (5)): for `k ≥ 1` the exceptional set lies in `⋃_i O i k`, whose measure is
+  -- `⨆_i μ(O i k)` by continuity from below.
+  have hstep3 : ∀ k : ℕ, 1 ≤ k →
+      μ (⋂ k : ℕ, ⋂ (_ : 1 ≤ k), ⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) ≤
+        (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop := fun k hk ↦
+    calc _ ≤ μ (⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) :=
+          measure_mono (iInter₂_subset k hk)
+      _ = ⨆ i, μ (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) := (hO_mono k).measure_iUnion
+      _ ≤ _ := iSup_le fun i ↦ hstep2 i k hk
+  -- Step 4: `C k⁻¹ liminf_q a_q → C · 0 · liminf_q a_q = 0`, as `C ≠ ∞` and `liminf_q a_q ≠ ∞`.
+  have hstep4 : Tendsto (fun k : ℕ ↦ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop) atTop (𝓝 0) := by
+    have h := ENNReal.Tendsto.mul_const (ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+      (Or.inr (ENNReal.natCast_ne_top C))) (Or.inr hL)
+    rwa [mul_zero, zero_mul] at h
+  -- Step 5: the measure is eventually below a sequence tending to `0`, so it is `0`.
+  exact nonpos_iff_eq_zero.1 (ge_of_tendsto hstep4 ((eventually_ge_atTop 1).mono hstep3))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
