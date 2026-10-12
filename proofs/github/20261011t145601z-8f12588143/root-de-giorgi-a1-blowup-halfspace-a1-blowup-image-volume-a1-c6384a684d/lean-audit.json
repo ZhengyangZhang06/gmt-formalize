@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "775dc4f53354db3022bf7c3da68c10c1c226fceb8960d83393a7703b45a7d52f",
+  "git_delta": {
+    "base_commit": "2ea17955400a71f5ea4a7d908bf41b43de55a189",
+    "candidate_commit": "64e7bc78a0991222e8439fe7654ee55b1abe89e8",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiHS_blowUpMap_image_volume",
+    "diff_sha256": "5cc09fef1201e648011e03fe0116d0fd5e73aab4fa610f076de210d90ae841aa",
+    "source_sha256": "e7bab83b73aafa3d9e3acf3d90292d9ad389fa6e47830dd0ec31a14a88e9d8df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiHS_blowUpMap_image_volume",
+      "statement": "∀ (N : ℕ) (x : Rn N) (r : ℝ) (A : Set (Rn N)), (NullMeasurableSet A volume → NullMeasurableSet (blowUpMap x r '' A) volume) ∧ (0 < r → volume (blowUpMap x r '' A) = ENNReal.ofReal ((r ^ N)⁻¹) * volume A ∧ ∀ R : ℝ, blowUpMap x r '' A ∩ Metric.ball 0 R = blowUpMap x r '' (A ∩ Metric.ball x (r * R)) ∧ Metric.ball 0 R \\ blowUpMap x r '' A = blowUpMap x r '' (Metric.ball x (r * R) \\ A))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
