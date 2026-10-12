@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.upper_mass_bound-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Upper mass bound μ(B_ρ(x)) ≤ 2(n+1)ω_{n+1}ρⁿ from the half-average condition (Simon (6); parent Steps 4-5)",
+  "statement": "Let n ∈ ℕ, N := n + 1, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable, (μ, ν) a Gauss-Green pair for (U, E), x, w ∈ ℝ^N with |w| ≤ 1, and ρ₁ ∈ ℝ with B_{ρ₁}(x) ⊆ U such that μ(B_ρ(x)).toReal ≤ 2∫_{B_ρ(x)} ⟨ν(y), w⟩ dμ(y) for every ρ ∈ (0, ρ₁). Then μ(B_ρ(x)) ≤ ENNReal.ofReal(2(n + 1) ω_N ρⁿ) for every ρ ∈ (0, ρ₁), where ω_N := L^N(B_1(0)).toReal.",
+  "lean_statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ (x w : Rn (n + 1)) (ρ₁ : ℝ), ‖w‖ ≤ 1 → Metric.ball x ρ₁ ⊆ U → (∀ ρ ∈ Ioo 0 ρ₁, (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ) → ∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (2 * (n + 1) * (volume (Metric.ball (0 : Rn (n + 1)) 1)).toReal * ρ ^ n)",
+  "lean_name": "deGiorgiDens_ball_mass_le",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.first_variation_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.first_variation_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-upper-mass-bound-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_smooth_approx-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Smooth approximation of a compactly supported Lipschitz function with bounded, a.e. convergent derivatives (mollification; parent Steps 3 and 7)",
+  "statement": "Let N ∈ ℕ and let u : ℝ^N → ℝ be K-Lipschitz (K ∈ ℝ≥0) with compact support. Then there are functions v_j : ℝ^N → ℝ (j ∈ ℕ) such that: each v_j is C¹ with compact support and tsupport v_j ⊆ cthickening(1/(j + 1), tsupport u) (the closed 1/(j + 1)-neighbourhood of tsupport u); |Dv_j(y)| ≤ K for all j and y; v_j → u uniformly on ℝ^N; and Dv_j(y) → Du(y) in ℝ^N →L[ℝ] ℝ for L^N-a.e. y, where Dv(y) := fderiv ℝ v y.",
+  "lean_statement": "∀ (N : ℕ) (u : Rn N → ℝ) (K : ℝ≥0), LipschitzWith K u → HasCompactSupport u → ∃ v : ℕ → Rn N → ℝ, (∀ j, ContDiff ℝ 1 (v j)) ∧ (∀ j, HasCompactSupport (v j)) ∧ (∀ j, tsupport (v j) ⊆ Metric.cthickening (1 / ((j : ℝ) + 1)) (tsupport u)) ∧ (∀ j y, ‖fderiv ℝ (v j) y‖ ≤ K) ∧ TendstoUniformly v u atTop ∧ ∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ fderiv ℝ (v j) y) atTop (𝓝 (fderiv ℝ u y))",
+  "lean_name": "deGiorgiDens_lipschitz_smooth_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-lipschitz-smooth-approx-a1-a1"
+}

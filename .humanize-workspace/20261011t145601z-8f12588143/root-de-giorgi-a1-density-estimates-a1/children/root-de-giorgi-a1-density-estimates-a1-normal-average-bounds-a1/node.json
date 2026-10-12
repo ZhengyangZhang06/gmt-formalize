@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Normal averages at a reduced-boundary point: unit normal, positive mass with half-average bound, and excess decay under a mass bound (Simon (1), (2); parent Steps 0-2, 5, 6)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, μ a measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ U, and ν : ℝ^N → ℝ^N μ-a.e. strongly measurable with |ν| = 1 μ-a.e. Let x ∈ reducedBoundary U μ ν and e := reducedNormal μ ν x. Then (i) |e| = 1; (ii) there is ρ₀ > 0 with B_{ρ₀}(x) ⊆ U such that for every ρ ∈ (0, ρ₀): μ(B_ρ(x)) > 0 and μ(B_ρ(x)).toReal ≤ 2∫_{B_ρ(x)} ⟨ν(y), e⟩ dμ(y); (iii) for all n ∈ ℕ, C ∈ ℝ and ρ₂ > 0 such that μ(B_ρ(x)) ≤ ENNReal.ofReal(Cρⁿ) for every ρ ∈ (0, ρ₂), (ρⁿ)⁻¹ ∫_{B_ρ(x)} |ν(y) − e| dμ(y) → 0 as ρ ↓ 0 (along 𝓝[>] 0).",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ∀ x ∈ reducedBoundary U μ ν, ‖reducedNormal μ ν x‖ = 1 ∧ (∃ ρ₀ : ℝ, 0 < ρ₀ ∧ Metric.ball x ρ₀ ⊆ U ∧ ∀ ρ ∈ Ioo 0 ρ₀, 0 < μ (Metric.ball x ρ) ∧ (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) (reducedNormal μ ν x) ∂μ) ∧ ∀ (n : ℕ) (C ρ₂ : ℝ), 0 < ρ₂ → (∀ ρ ∈ Ioo 0 ρ₂, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - reducedNormal μ ν x‖ ∂μ) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "deGiorgiDens_normalAverage_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-normal-average-bounds-a1-a1"
+}

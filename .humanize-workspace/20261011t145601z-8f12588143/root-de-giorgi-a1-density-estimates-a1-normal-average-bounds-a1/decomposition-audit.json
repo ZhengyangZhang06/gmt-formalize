@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "deGiorgiNAB_|normalAverage|reducedNormal|reducedBoundary",
+        "limUnder_eq|theorem integral_inner|theorem.*inner_const|theorem AEStronglyMeasurable.inner|restrict_apply_univ|restrict_eq_zero|restrict_le_self|isFiniteMeasure_restrict|sqrt_mul |sqrt_sq_eq_abs|norm_sub_sq_real",
+        "sqrt_mul|sqrt_sq |sqrt_le_sqrt|continuous_sqrt",
+        "abbrev EuclideanSpace|def EuclideanSpace|inner_apply|innerProductSpace",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/NABSplitDecision.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/NABSplitStatementsOnly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/NABReviewAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Separation/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-normal-average-bounds-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-normal-average-bounds-a1/decomposition-v1.json",
+        "GMT/Scratch/NABSplitDecision.lean",
+        "GMT/Scratch/NABSplitStatementsOnly.lean",
+        "GMT/Scratch/NABReviewAssembly.lean"
+      ],
+      "conclusion": "The frozen handoff matches the selected parent. Snapshot contract files and inspected mathlib sources match the installed sources. Independently reran Lean using the pinned compiler and package LEAN_PATH: all three child proofs, the exact parent proof, and the parent assembly taking only the child propositions as hypotheses compile with axioms [propext, Classical.choice, Quot.sound]. Each frozen type is byte-identical to its checked declaration and independently elaborates as Prop before the type-only file's separate comparator stubs. Explicit instance output confirms the Euclidean PiLp inner product. Restriction identities apply without measurability of S. All names are bare identifiers; DAG and node-record searches found no competing reservation or accepted-declaration reuse. The split is appropriate: A and B are independent, C depends only on A, and their conclusions establish every selected parent conjunct, including excess decay for unrestricted C via max(C,0)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "reduced_boundary_basic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and one-line Lean proposition match without omitted hypotheses. The proof identifies reducedNormal with the unit limit using the nontrivial right-neighborhood filter, then obtains convergence and unit norm. Zero ball mass forces eventually zero averages, contradicting that unit limit. No child or parent theorem is assumed."
+    },
+    {
+      "key": "excess_cauchy_schwarz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact arbitrary-set contract is proved, including nonmeasurable S and zero mass. Restriction preserves the a.e. hypotheses; finite mass and boundedness justify every integral expansion. The identity K = 2(m − I), the integrated nonnegative square, and the justified square-root factorization establish the claimed bound. The proof is complete and independent."
+    },
+    {
+      "key": "inner_average_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All prose hypotheses appear exactly in the Lean proposition. The proof uses only its declared sibling dependency: openness and compact finiteness give integrability on sufficiently small balls; integral_inner and real symmetry identify the scalar averages; continuity and eventual equality give limit 1. The dependency reduced_boundary_basic → inner_average_limit is correctly directed and acyclic."
+    }
+  ],
+  "required_changes": []
+}

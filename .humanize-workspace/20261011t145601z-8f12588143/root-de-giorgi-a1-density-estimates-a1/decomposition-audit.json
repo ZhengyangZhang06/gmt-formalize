@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsGaussGreenPair|normalAverage|reducedBoundary|reducedNormal|euclideanDivergence|abbrev Rn",
+        "gauss.?green|de.?giorgi|density.?estimate|sobolev.*indicator|lipschitz.*divergence",
+        "eLpNorm_le_eLpNorm_fderiv_one|eLpNorm_le_eLpNorm_fderiv_of_eq|SNormLESNormFDerivOfEqConst",
+        "ae_convolution_tendsto_right_of_locallyIntegrable",
+        "ae_differentiableAt|intervalIntegral_deriv_mem_uIcc|intervalIntegrable_deriv",
+        "deGiorgiDens_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/density-independent-audit-zbvbgass/ExactTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/density-independent-audit-zbvbgass/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/density-independent-audit-zbvbgass/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Indicator.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-compl-pair-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa63/20261011T235439Z-ch03-root.de_giorgi-a1.compl_pair-a1-38n0xe18/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa63/20261011T235439Z-ch03-root.de_giorgi-a1.compl_pair-a1-38n0xe18/result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/density-independent-audit-zbvbgass/ExactTypes.lean",
+        "/tmp/density-independent-audit-zbvbgass/Instances.lean",
+        "/tmp/density-independent-audit-zbvbgass/Assembly.lean"
+      ],
+      "conclusion": "The pinned project/mathlib revisions match the compiler environment, and the snapshot Contract and Submission match the workspace byte-for-byte. Searches found no directly reusable analytic density-estimates theorem; the cited Sobolev, convolution, Rademacher, indicator-norm and monotone-integration prerequisites are present. All eleven frozen strings independently elaborate as propositions in the comparator scope without child implementations; their type expressions use only standard permitted axioms. Instance checks confirm the ENNReal Sobolev endpoint, real versus natural powers, indicators and derivative operator types. The exact parent assembly compiles against exact dependency stubs; its sorryAx comes from those stubs, so this is entailment evidence, not completed child verification. The accepted complement dependency has an identical frozen type and matching source hash, with successful Lean/comparator/Nanoda checks permitting only standard axioms. All proposed names are bare and unreserved, all dependency edges match proof uses, and the graph is acyclic. The split is appropriate: every child contributes to this selected density-estimates contract, which follows from A, H, I and the accepted complement lemma."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "normal_average_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including the independently quantified mass-bound implication. Limit uniqueness, compact-ball finiteness, positive mass, the half-average radius and the excess estimate are justified. Using max(C, 0) handles the unrestricted real constant. The conditional excess conclusion creates no circular dependence."
+    },
+    {
+      "key": "lipschitz_smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact support, derivative-bound and convergence obligations are proved. Difference quotients and domination establish the derivative-convolution identity; differentiation of locally integrable operator-valued functions then gives the required a.e. operator-norm convergence. Dimension zero and empty support are covered."
+    },
+    {
+      "key": "lipschitz_gauss_green",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the Gauss–Green sign match. The proof uses precisely the approximation child's guarantees, computes the rank-one divergence correctly, and supplies finite-measure domination on both sides. Eventual support inside U suffices."
+    },
+    {
+      "key": "radial_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit cutoff supplies every stated property independently of G. Its derivative norm is computed on the annulus; positive-radius spheres are Lebesgue-null, including the empty-sphere zero-dimensional case. Finite-volume additivity justifies the exact real-valued integral identity."
+    },
+    {
+      "key": "first_variation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two declared dependencies yield the slope inequality. Arbitrarily chosen cutoffs converge to the open-ball indicator using only their stated values, with domination on the finite-measure closed ball. No μ-null-sphere or cutoff-monotonicity assumption is hidden."
+    },
+    {
+      "key": "lipschitz_sobolev",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension-dependent constant and all hypotheses match. GNS handles n ≥ 1; the measure-preserving one-dimensional identification and FTC prove the n = 0 endpoint. The approximation child supplies dominated derivative convergence, and the cited Fatou bound also applies at exponent ∞."
+    },
+    {
+      "key": "sobolev_indicator",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact inequality with a constant uniform in the data. Mollification, the explicit dual test fields, Gauss–Green and compact-support bounds justify the gradient estimate and Fubini. The limiting argument handles null-measurable indicators and the ∞ endpoint without assuming finite global volume."
+    },
+    {
+      "key": "ball_isoperimetric",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive-volume and derivative hypotheses are retained exactly. Inner-ball indicators bound the cutoff norms from below; positivity near the limiting radius justifies the indicator-norm formula even when n = 0. Finite-measure conversions and the left-slope limit establish the conclusion."
+    },
+    {
+      "key": "ode_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The power transformation is valid because V is positive. The monotone-function integration theorem needs no absolute-continuity assumption and gives the required increment bound. Letting the inner endpoint approach zero and raising to the natural power proves the exact conclusion, including n = 0."
+    },
+    {
+      "key": "upper_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The half-average hypothesis and first-variation child give the a.e. mass bound with the stated constant. Ball-volume comparison bounds the derivative, and good radii above each target radius extend the estimate to every radius. Compact finiteness validates all toReal conversions."
+    },
+    {
+      "key": "lower_volume_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positivity is proved before invoking the isoperimetric child, using a zero derivative at half-radius to contradict positive mass. The declared dependencies then give V^a ≤ 3c_F V' and the explicit uniform lower constant. The final ENNReal conversion and both parent applications are justified."
+    }
+  ],
+  "required_changes": []
+}
