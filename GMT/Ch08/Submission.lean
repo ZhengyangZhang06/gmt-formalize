@@ -818,6 +818,78 @@ theorem Submission.tgc_dim_zero_tangent_points_countable :
     filter_upwards [self_mem_nhdsWithin] with t ht
     rw [cthickening_singleton x (mem_Ioi.1 ht).le]
   exact hc0.trans_le (ge_of_tendsto hlim hlow)
+/-- Closed graph pieces from a local graph property (the localization `E_j ∩ B_{δ/4}(x_0)` after
+printed (10) in Simon Ch. 3, Thm 1.6, p. 74, with closures taken): if the `L`-graph inequality over
+`P` holds for all points of `E` at distance `≤ r`, then `E` is covered by countably many closed sets
+on each of which it holds for all pairs of points. -/
+theorem Submission.tgc_local_graph_closed_cover :
+    ∀ (N n : ℕ) (L r : ℝ) (P : Grassmannian N n) (E : Set (Euclidean N)), 0 < r → (∀ y ∈ E, ∀ z ∈ E, ‖y - z‖ ≤ r → ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ E, ∃ i, x ∈ Γ i := by
+  intro N n L r P E hr hE
+  -- Step 1: a dense sequence `d` in the separable, nonempty space `ℝ^N`.
+  obtain ⟨d, hd⟩ : ∃ d : ℕ → Euclidean N, DenseRange d :=
+    ⟨_, TopologicalSpace.denseRange_denseSeq (Euclidean N)⟩
+  -- Step 3: the graph relation `F` is closed, as `Grassmannian.project P` is a linear map on a
+  -- finite-dimensional space, hence continuous.
+  have hp : Continuous (Grassmannian.project P) :=
+    P.projectionLinearMap.continuous_of_finiteDimensional
+  have hsub : Continuous fun q : Euclidean N × Euclidean N ↦ q.1 - q.2 :=
+    continuous_fst.sub continuous_snd
+  have hF : IsClosed {q : Euclidean N × Euclidean N |
+      ‖(q.1 - q.2) - Grassmannian.project P (q.1 - q.2)‖ ≤
+        L * ‖Grassmannian.project P (q.1 - q.2)‖} :=
+    isClosed_le (hsub.sub (hp.comp hsub)).norm (continuous_const.mul (hp.comp hsub).norm)
+  -- Step 2: the closed pieces `Γ_j = closure (E ∩ B_{r/2}(d_j))`.
+  refine ⟨fun j ↦ closure (E ∩ closedBall (d j) (r / 2)), fun j ↦ isClosed_closure, ?_, ?_⟩
+  · intro j y hy z hz
+    -- Step 4: two points of `S_j = E ∩ B_{r/2}(d_j)` are at distance `≤ r`, so `S_j × S_j ⊆ F`.
+    have hSF : (E ∩ closedBall (d j) (r / 2)) ×ˢ (E ∩ closedBall (d j) (r / 2)) ⊆
+        {q : Euclidean N × Euclidean N |
+          ‖(q.1 - q.2) - Grassmannian.project P (q.1 - q.2)‖ ≤
+            L * ‖Grassmannian.project P (q.1 - q.2)‖} := by
+      rintro ⟨a, b⟩ ⟨⟨haE, ha⟩, hbE, hb⟩
+      rw [mem_closedBall, dist_eq_norm] at ha hb
+      refine hE a haE b hbE ?_
+      calc ‖a - b‖ = ‖(a - d j) - (b - d j)‖ := by rw [sub_sub_sub_cancel_right]
+        _ ≤ ‖a - d j‖ + ‖b - d j‖ := norm_sub_le _ _
+        _ ≤ r / 2 + r / 2 := add_le_add ha hb
+        _ = r := by ring
+    -- Step 5: `(y, z) ∈ closure S_j ×ˢ closure S_j = closure (S_j ×ˢ S_j) ⊆ F`.
+    have hyz : (y, z) ∈
+        closure ((E ∩ closedBall (d j) (r / 2)) ×ˢ (E ∩ closedBall (d j) (r / 2))) := by
+      rw [closure_prod_eq]
+      exact ⟨hy, hz⟩
+    have hmem := closure_minimal hSF hF hyz
+    exact hmem
+  · -- Step 6: density gives `j` with `dist x (d j) < r / 2`, so `x ∈ S_j ⊆ Γ_j`.
+    intro x hx
+    obtain ⟨j, hj⟩ := hd.exists_dist_lt x (half_pos hr)
+    exact ⟨j, subset_closure ⟨hx, mem_closedBall.2 hj.le⟩⟩
+/-- Uniformization of eventual density bounds (Simon Ch. 3, 1.6, replacing Egoroff's theorem in
+(7)–(9)): if `c t^n ≤ F(t)` eventually for some `c > 0` and `G(t) ≤ ε t^n` eventually for every
+`ε > 0`, then for some `m, k` both `t^n/(m+1) ≤ F(t)` and `G(t) ≤ β t^n/(m+1)` hold for all
+`t ∈ (0, 1/(k+1)]`. -/
+theorem Submission.tgc_eventual_density_bounds_uniform :
+    ∀ (n : ℕ) (β : ℝ) (F G : ℝ → ℝ≥0∞), 0 < β → (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ F t) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), G t ≤ ε * ENNReal.ofReal t ^ n) → ∃ m k : ℕ, ∀ t : ℝ, 0 < t → t ≤ 1 / ((k : ℝ) + 1) → ENNReal.ofReal (1 / ((m : ℝ) + 1) * t ^ n) ≤ F t ∧ G t ≤ ENNReal.ofReal (1 / ((m : ℝ) + 1) * β * t ^ n) := by
+  rintro n β F G hβ ⟨c, hc, hF⟩ hG
+  -- Step 1: `m` with `m⁻¹ < c`, so `ofReal (1/(m+1)) = (m+1)⁻¹ ≤ m⁻¹ < c`.
+  obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt hc.ne'
+  have ha : 0 < 1 / ((m : ℝ) + 1) := by positivity
+  have hac : ENNReal.ofReal (1 / ((m : ℝ) + 1)) ≤ c := by
+    rw [one_div, ENNReal.ofReal_inv_of_pos (by positivity),
+      ENNReal.ofReal_add (Nat.cast_nonneg m) zero_le_one, ENNReal.ofReal_natCast, ENNReal.ofReal_one]
+    exact (ENNReal.inv_le_inv.mpr le_self_add).trans hm.le
+  -- Steps 2–3: with `ε = ofReal (β/(m+1)) > 0`, both bounds hold on a common interval `(0, δ)`.
+  obtain ⟨δ, hδ, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp
+    (hF.and (hG (ENNReal.ofReal (1 / ((m : ℝ) + 1) * β)) (ENNReal.ofReal_pos.mpr (mul_pos ha hβ))))
+  -- Step 4: `k` with `1/(k+1) < δ`.
+  obtain ⟨k, hk⟩ := exists_nat_one_div_lt (show (0 : ℝ) < δ from hδ)
+  -- Step 5: evaluate both bounds at `t ∈ (0, 1/(k+1)] ⊆ (0, δ)`.
+  refine ⟨m, k, fun t ht htk ↦ ?_⟩
+  obtain ⟨hFt, hGt⟩ := hsub ⟨ht, htk.trans_lt hk⟩
+  constructor
+  · rw [ENNReal.ofReal_mul ha.le, ENNReal.ofReal_pow ht.le]
+    exact (mul_le_mul_left hac _).trans hFt
+  · rwa [ENNReal.ofReal_mul (mul_pos ha hβ).le, ENNReal.ofReal_pow ht.le]
 /-- Linear algebra of tilted cones (step 3, (3.1)–(3.2), of the tangent-graph cover, with `c = L/4`
 and `γ = L/8`): if `‖p_T u - p_P u‖ ≤ (L/4)‖u‖` for all `u` and `v` violates the `L`-graph inequality
 over `P`, i.e. `L‖p_P v‖ < ‖v - p_P v‖`, then every `w` with `‖w - v‖ ≤ (L/8)‖v‖` lies in the cone
@@ -887,6 +959,92 @@ theorem Submission.tgc_tilted_cone_inclusion :
   have h2 := contraction T (w - v)
   have h3 : L / 16 * ‖w‖ ≤ L / 16 * (2 * ‖v‖) := mul_le_mul_of_nonneg_left step3 (by positivity)
   linarith
+
+/-- Cone/density covering lemma (steps 4–6 of the tangent-graph cover; Simon Ch. 3, Thm 1.6,
+printed (7)–(10), for an arbitrary measure `μ`): if every `x ∈ A` has a plane `T` tilted from `P`
+by at most `L/4`, an eventual lower mass bound `c t^n ≤ μ(B_t(x))` with `c > 0`, and eventual cone
+mass `μ{y ∈ B_t(x) : (L/16)‖y - x‖ ≤ ‖(y - x) - p_T(y - x)‖} ≤ ε t^n` for every `ε > 0`, then `A`
+is covered by countably many closed `L`-Lipschitz graphs over `P`. -/
+theorem Submission.tgc_cone_density_graph_cover :
+    ∀ (N n : ℕ) (L : ℝ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (A : Set (Euclidean N)), 0 < L → L ≤ 1 → (∀ x ∈ A, ∃ T : Grassmannian N n, (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) ∧ (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ {y | y ∈ closedBall x t ∧ L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ A, ∃ i, x ∈ Γ i := by
+  intro N n L μ P A hL0 hL1 hA
+  -- Step 1: with `γ = L/8` and `β = (L/16)^n/2`, class `m` uses the lower constant
+  -- `a_m = 1/(m+1)` and the cone constant `a_m β`, so that `a_m β (2s)^n = a_m (γs)^n / 2`.
+  have hβ : 0 < (L / 16) ^ n / 2 := by positivity
+  -- Step 2: the uniform classes `E m k`: some tilted `T` gives the lower bound `a_m t^n` and the
+  -- cone bound `a_m β t^n` for every `t ∈ (0, 1/(k+1)]`.
+  obtain ⟨E, hE⟩ : ∃ E : ℕ → ℕ → Set (Euclidean N), ∀ m k x, x ∈ E m k ↔
+      ∃ T : Grassmannian N n,
+        (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) ∧
+        ∀ t : ℝ, 0 < t → t ≤ 1 / ((k : ℝ) + 1) →
+          ENNReal.ofReal (1 / ((m : ℝ) + 1) * t ^ n) ≤ μ (closedBall x t) ∧
+          μ {y | y ∈ closedBall x t ∧
+              L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤
+            ENNReal.ofReal (1 / ((m : ℝ) + 1) * ((L / 16) ^ n / 2) * t ^ n) :=
+    ⟨fun m k ↦ {x | _}, fun _ _ _ ↦ Iff.rfl⟩
+  -- Step 3: the classes cover `A`, by uniformizing the eventual bounds (i) and (ii).
+  have hcover : ∀ x ∈ A, ∃ m k : ℕ, x ∈ E m k := by
+    intro x hx
+    obtain ⟨T, htilt, hlow, hcone⟩ := hA x hx
+    obtain ⟨m, k, hmk⟩ := Submission.tgc_eventual_density_bounds_uniform n ((L / 16) ^ n / 2)
+      (fun t ↦ μ (closedBall x t))
+      (fun t ↦ μ {y | y ∈ closedBall x t ∧
+        L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖}) hβ hlow hcone
+    exact ⟨m, k, (hE m k x).2 ⟨T, htilt, hmk⟩⟩
+  -- Step 4 (printed (10)): two points of one class at distance `≤ 1/(2(k+1))` satisfy the
+  -- `L`-graph inequality over `P`.
+  have hgraph : ∀ m k : ℕ, ∀ y ∈ E m k, ∀ z ∈ E m k, ‖y - z‖ ≤ 1 / ((k : ℝ) + 1) / 2 →
+      ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖ := by
+    intro m k y hy z hz hyz
+    by_contra hcon
+    have hcon := not_le.1 hcon
+    obtain ⟨_, -, hy⟩ := (hE m k y).1 hy
+    obtain ⟨T, htilt, hz⟩ := (hE m k z).1 hz
+    -- `s = ‖y - z‖ > 0`: at `y - z = 0` both sides of the graph inequality vanish.
+    have hs : 0 < ‖y - z‖ := by
+      refine norm_pos_iff.2 fun h ↦ ?_
+      have h0 : Grassmannian.project P 0 = 0 := map_zero P.projectionLinearMap
+      rw [h, h0, sub_zero, norm_zero, mul_zero] at hcon
+      exact lt_irrefl 0 hcon
+    -- (a) `B_{γs}(y)` lies in the cone region at `z` of radius `2s`.
+    have hsub : closedBall y (L / 8 * ‖y - z‖) ⊆ {w | w ∈ closedBall z (2 * ‖y - z‖) ∧
+        L / 16 * ‖w - z‖ ≤ ‖(w - z) - Grassmannian.project T (w - z)‖} := by
+      intro w hw
+      rw [mem_closedBall, dist_eq_norm] at hw
+      have hwv : ‖(w - z) - (y - z)‖ ≤ L / 8 * ‖y - z‖ := by
+        rwa [sub_sub_sub_cancel_right]
+      obtain ⟨hwcone, hwnorm⟩ :=
+        Submission.tgc_tilted_cone_inclusion N n L P T (y - z) (w - z) hL0 hL1 htilt hcon hwv
+      exact ⟨by rwa [mem_closedBall, dist_eq_norm], hwcone⟩
+    -- (b) the lower bound at `y` (radius `γs`), monotonicity of `μ` and the cone bound at `z`
+    -- (radius `2s`) give `a_m (γs)^n ≤ a_m β (2s)^n`.
+    have h2s : 2 * ‖y - z‖ ≤ 1 / ((k : ℝ) + 1) := by linarith
+    have hγs : L / 8 * ‖y - z‖ ≤ 1 / ((k : ℝ) + 1) :=
+      (mul_le_mul_of_nonneg_right (by linarith) hs.le).trans h2s
+    have hchain := ((hy (L / 8 * ‖y - z‖) (by positivity) hγs).1.trans
+      (measure_mono (μ := μ) hsub)).trans (hz (2 * ‖y - z‖) (by positivity) h2s).2
+    have hle := (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 hchain
+    -- (c) but `a_m β (2s)^n = a_m (γs)^n / 2` and `a_m (γs)^n > 0`.
+    have h16 : (L / 16) ^ n * (2 * ‖y - z‖) ^ n = (L / 8 * ‖y - z‖) ^ n := by
+      rw [← mul_pow]
+      ring
+    have heq : 1 / ((m : ℝ) + 1) * ((L / 16) ^ n / 2) * (2 * ‖y - z‖) ^ n =
+        1 / ((m : ℝ) + 1) * (L / 8 * ‖y - z‖) ^ n / 2 := by
+      rw [← h16]
+      ring
+    have hpos : 0 < 1 / ((m : ℝ) + 1) * (L / 8 * ‖y - z‖) ^ n := by positivity
+    linarith
+  -- Step 5: each class lies on countably many closed `L`-graphs over `P`.
+  choose Γ hΓclosed hΓgraph hΓcover using fun m k : ℕ ↦
+    Submission.tgc_local_graph_closed_cover N n L (1 / ((k : ℝ) + 1) / 2) P (E m k)
+      (by positivity) (hgraph m k)
+  -- Step 6: enumerate the triples `(m, k, j)` with `Nat.unpair`.
+  refine ⟨fun i ↦ Γ i.unpair.1 i.unpair.2.unpair.1 i.unpair.2.unpair.2, fun i ↦ hΓclosed _ _ _,
+    fun i ↦ hΓgraph _ _ _, fun x hx ↦ ?_⟩
+  obtain ⟨m, k, hmk⟩ := hcover x hx
+  obtain ⟨j, hj⟩ := hΓcover m k x hmk
+  refine ⟨Nat.pair m (Nat.pair k j), ?_⟩
+  simpa only [Nat.unpair_pair] using hj
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
