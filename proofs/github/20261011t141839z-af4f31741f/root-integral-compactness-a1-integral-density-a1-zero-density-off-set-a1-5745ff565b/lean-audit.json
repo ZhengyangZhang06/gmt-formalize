@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c424a290caa29138ed44b975ce10f91138c050bfb9108eeb953a343e3688f3a2",
+  "git_delta": {
+    "base_commit": "ddbd3c14f206c1b5949a12993e7b5c0b67a62aba",
+    "candidate_commit": "6822a90fa726ea0df0e54fe0f6fc5bdc71013c24",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_restrict_density_zero_ae",
+    "diff_sha256": "a3f245c2e27d262b482856a091f4fb44d1bdfe9d7e6a98cc00a61cb6e03daa7a",
+    "source_sha256": "841354f268bd77a330ed9e8c06e0ee1a0f089185f6f15b5ea3a7d81f206b57b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_restrict_density_zero_ae",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U A : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → MeasurableSet A → ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)), x ∈ U → x ∉ A → HasDensity n (μ.restrict A) x 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
