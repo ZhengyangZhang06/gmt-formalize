@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -l -i 'coarea|area.formula|areaFormula' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib",
+        "rg -n 'pcoarea_|c1_parametric_coarea' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT .lake/packages/simongmt/Poincare/SimonGMT",
+        "weighted_area_formula_lipschitzOn_fiberSum|ae_fderivWithin_eq_of_lipschitz_extension|exists_lipschitz_extension_finiteDimensional|def areaJacobianWithin|def weightedAreaFiberSum",
+        "normDet_comp_of_finrank_eq|normDet_eq_norm_det_toMatrix|normDet_codRestrict|normDet_eq_abs_det|normDet_eq_zero_iff_ker_ne_bot|normDet_sq|normDet_comp|normDet_of_subsingleton",
+        "coareaLinearJacobian_eq_zero_iff|coarea_kernel_finrank|coareaHorizontalLinear_normDet|normDet_adjoint_of_finrank_eq|coareaCoordinates_symm_apply|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "lintegral_iUnion|lintegral_tsum",
+        "exists_lipschitzOnWith|theorem measurable_fderiv|image_of_continuousOn_injOn|isOpen_iUnion_countable|volume_preserving_toLp|lintegral_image_eq_lintegral_abs_det_fderiv_mul|contDiffAt_symm|def toOpenPartialHomeomorph|ContinuousLinearEquiv.isOpen|def prod |theorem prod_apply",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/PCoareaIndependentAuditContracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/PCoareaIndependentAuditRefs.lean > /tmp/PCoareaIndependentAuditRefs.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/PCoareaIndependentAuditInstances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-critical-slices-a1/parent-supplied-natural-proof.md",
+        "/tmp/PCoareaIndependentAuditContracts.lean",
+        "/tmp/PCoareaIndependentAuditRefs.lean",
+        "/tmp/PCoareaIndependentAuditRefs.log",
+        "/tmp/PCoareaIndependentAuditInstances.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned revisions, unchanged Contract, and compatibility of inspected Mathlib sources with the installed package. Searches found no matching nonlinear coarea/area formula in Mathlib and no proposed declarations in the snapshot project or SimonGMT. All six exact one-line propositions pass validation and elaborate using Contract alone in the comparator's replayed scope. The supplied assembly, with children and the critical-slice sibling as explicit theorem parameters, proves the exact selected parent; its axiom report contains only propext, Classical.choice and Quot.sound. Reused principal library results likewise have only these standard axioms. Explicit Lean checks confirm the Euclidean WithLp inner product, product-volume preservation, and determinant normalization. No proposed name is reserved in the current 131-node DAG or another inspected decomposition. The split is appropriate: its six obligations cover the selected proof, with only chart_formula depending on c1_injective_area and flat_jacobian. The external critical-slice dependency has an independent covering proof. Public cross-check: the scalar regular-set reduction through inverse coordinates and Fubini is also described in [Gottlieb-Fenves, The Coarea Formula](https://people.math.wisc.edu/~gottliebfenv/files/The_Coarea_Formula.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_injective_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. All nine steps are justified: compact-ball Lipschitz bounds, disjoint Borel pieces and images, the rank-free weighted Lipschitz area formula, singleton fibre sums, and a.e. derivative identification using extensions from open balls. Countable additivity completes the stated identity. No injective-derivative assumption or coarea theorem is used."
+    },
+    {
+      "key": "flat_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The linear hypotheses and conclusion match exactly. Surjectivity and kernel dimensions follow from T; corestricting E supplies the equal-dimensional composition identities. The orthogonal decomposition gives the stated block determinant, and the adjoint identity completes the calculation without cancellation of possibly zero factors. The WithLp instance is the intended Euclidean product. Singular A and zero-dimensional cases are covered."
+    },
+    {
+      "key": "critical_part",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The revised prose states exactly the two Lean conclusions. Nonsurjectivity makes the adjoint normDet vanish. Countably many Lipschitz restrictions transfer the assumed null slices through ψ, making the inner function a.e. zero and proving both conclusions. The argument requires neither regularity of G nor measurability of Crit. The external slice theorem is an explicit antecedent, avoiding circular reliance."
+    },
+    {
+      "key": "implicit_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and chart properties match the frozen type. The proof explicitly constructs complementary kernel coordinates, proves invertibility of the augmented derivative, applies the inverse function theorem, and restricts to D and the open invertibility locus. It then verifies C¹ regularity of the inverse throughout the target and the required first-component identity."
+    },
+    {
+      "key": "chart_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the absence of global regularity assumptions on G. Local equality with fst∘Φ supplies its derivative on the source. The proof establishes inverse derivative identities, the exact slice-image equality, and every hypothesis of both declared dependencies. Joint measurability, Tonelli, volume-preserving coordinate transport, change of variables, and the flat Jacobian identity prove both conclusions. No additional obligation is deferred."
+    },
+    {
+      "key": "lindelof_gluing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The expanded Lean antecedents exactly express Crit and Loc. The countable open cover leaves a Borel remainder contained in arbitrary Z, so Z need not be measurable. Disjointification and injectivity give disjoint Borel slice images; countable additivity, a.e. measurability of sums, and lintegral_tsum finish the proof. The library's lintegral_iUnion permits the arbitrary weight w."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.chart_formula-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+  "depth": 3,
+  "title": "Parametric co-area formula on one implicit-function chart (parent steps 2 and 4)",
+  "statement": "Let m, k, N ∈ ℕ, n := m + k and P := WithLp 2 (ℝᵐ × ℝᵏ). Let Φ be an open partial homeomorphism from ℝⁿ to P with source O and target Ω, such that Φ is C¹ on O and Φ.symm is C¹ on Ω. Let ψ : ℝⁿ → ℝᴺ be of class C¹ on O and injective on O, and let G : ℝⁿ → ℝᵐ be such that the first component of Φ(u) equals G(u) for all u ∈ O. For u let K(u) := ker DG(u) and J(u) := normDet(Dψ(u)∘ι_{K(u)})·normDet(DG(u)*). Then for every Borel B ⊆ O and every Borel φ : ℝᴺ → [0, ∞]:\n- the function y ↦ ∫_{ψ(B∩G⁻¹{y})} φ dHᵏ is Lᵐ-a.e. measurable;\n- ∫_B φ(ψ(u))·J(u) dLⁿ(u) = ∫_{ℝᵐ} ∫_{ψ(B∩G⁻¹{y})} φ dHᵏ dLᵐ(y).\nNotation as in the parent: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hᵏ = μHE[k] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u; ι_{K(u)} is the inclusion of K(u) into ℝⁿ.",
+  "lean_statement": "∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))), ContDiffOn ℝ 1 ψ Φ.source → InjOn ψ Φ.source → ContDiffOn ℝ 1 Φ Φ.source → ContDiffOn ℝ 1 Φ.symm Φ.target → (∀ u ∈ Φ.source, (Φ u).fst = G u) → ∀ B ⊆ Φ.source, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * ENNReal.ofReal (((fderiv ℝ ψ u).toLinearMap ∘ₗ (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet * (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet) = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume",
+  "lean_name": "pcoarea_formula_on_chart",
+  "depends_on": [
+    "root.coarea_and_slices-a1.c1_parametric_coarea-a1.c1_injective_area-a1",
+    "root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.c1_injective_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-chart-formula-a1-a1"
+}
