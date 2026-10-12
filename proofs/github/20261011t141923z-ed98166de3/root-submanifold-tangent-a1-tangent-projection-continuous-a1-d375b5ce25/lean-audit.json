@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2d5d95413e68843578fa8747f17d3e58cb37a7da01bab1db22e60538c3f6e33b",
+  "git_delta": {
+    "base_commit": "52aa8cde942cc3294964d70c4d1611df74fd194d",
+    "candidate_commit": "4fc746e04949daf295c019b4d644ffa17522ee80",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_submanifold_tangentProjection_continuousOn",
+    "diff_sha256": "a3a78d9c565063b0c8c2376de05dc0d132a135752258688eec9306b9da72b54e",
+    "source_sha256": "e513c0cd526db3325c550fb1ea0d874fae31a1b10597af01b9b5df4851316d8b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_submanifold_tangentProjection_continuousOn",
+      "statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ContinuousOn (tangentProjection M) M",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
