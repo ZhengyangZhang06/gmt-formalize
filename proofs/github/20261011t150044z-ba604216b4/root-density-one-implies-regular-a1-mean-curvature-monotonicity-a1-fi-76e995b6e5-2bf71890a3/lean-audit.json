@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "66af1cfc6deb19fe5f8a2ba95d3fcfeff32310f851907852d24d295bcc4b5b49",
+  "git_delta": {
+    "base_commit": "ed3a6a23d0ef5d18c9fd613a11eb14a664164fa4",
+    "candidate_commit": "6c199bd2f71cf6454e96792be486679e1ca03ac1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_firstVariation_eq_integral",
+    "diff_sha256": "e31f0235c3cd1c58e63425a551ee0777d63f0dc4aefd7f4938c17ba7ab28a1b3",
+    "source_sha256": "5b3495847149e78b96cde3ee48a3870e66f3a269de8c6300c0ab1a7bc5de79f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_firstVariation_eq_integral",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (X : Euclid P → Euclid P), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → Integrable (fun x => tangentialDivergence n R.carrier X x) R.measure ∧ R.firstVariation X = ∫ x, tangentialDivergence n R.carrier X x ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
