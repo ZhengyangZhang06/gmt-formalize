@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "665143268644800953642791154c7445d5cb558f13d26cdba66580ee1b359f53",
+  "git_delta": {
+    "base_commit": "efffe0ddd59d01d62db9513197144890ea00674e",
+    "candidate_commit": "10f051165236b03c8f8ce342fa206422439b3335",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "poincare_set_mean_deviation_sq_bound",
+    "diff_sha256": "74691f656337961e60f1173fda623da39ea321b0f10ca908f9f5a64a92580dff",
+    "source_sha256": "db6388fc6d3869dbb0d98b886186c5f549d797c3382133ba232669d279713369",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.poincare_set_mean_deviation_sq_bound",
+      "statement": "∀ (n : ℕ) (s : Set (Rn n)) (f : Rn n → ℝ), MeasurableSet s → volume s ≠ ∞ → MemLp f 2 (volume.restrict s) → ∫⁻ x in s, ‖f x - ⨍ y in s, f y‖ₑ ^ 2 ≤ (volume s)⁻¹ * ∫⁻ x in s, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
