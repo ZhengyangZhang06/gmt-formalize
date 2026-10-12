@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ca79f9073eccc43f154810e8f637770f2530138a46022006d9460a6712abebac",
+  "git_delta": {
+    "base_commit": "78c1d1dc8d1ecf3873d7d2a69927c39f74c01a00",
+    "candidate_commit": "3047dcd2a39a402d0c218985fe97b92bf589038f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_imc_normalized_lebesgue_points",
+    "diff_sha256": "88dfde7e961b0979bfe030409176b4803ea1aba84b04c85d8e373c4d0f6a782b",
+    "source_sha256": "ad11e5f1337a0590ac8b0dc63ac0dad3a2c9051827c19f48d08f0fcbbd2ee5b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_imc_normalized_lebesgue_points",
+      "statement": "∀ (P k : ℕ) (U M : Set (Eucl P)) (f : Eucl P → ℝ), IsOpen U → M ⊆ U → NullMeasurableSet M (μHE[k] : Measure (Eucl P)) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (μHE[k] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn f (M ∩ K) (μHE[k] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ y in M ∩ closedBall x (R * r), ‖f y - f x‖ₑ ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
