@@ -484,6 +484,45 @@ theorem any_radius_rv_map_hausdorff : ∀ (n ℓ : ℕ) (c : Amb n ℓ) (R : ℝ
   rw [Measure.map_apply (by fun_prop) hB, Measure.smul_apply, hκ, hpre,
     euclideanHausdorffMeasure_homothety_preimage n 0 hR.ne',
     hτ.measure_preimage hB.nullMeasurableSet, ENNReal.smul_def]
+/-- Weight of the rescaled varifold (the rescaling `ψ(x) = c + R x` behind Simon Ch. 5, Remark 5.3):
+if `W = v(ψ⁻¹M, θ ∘ ψ)`, then `μ_W = R⁻ⁿ φ_# μ_V` with `φ(y) = R⁻¹(y − c)`.  On a measurable set
+`A`, `A ∩ ψ⁻¹M = ψ⁻¹(φ⁻¹A ∩ M)` because `φ ∘ ψ = id`, so `μ_W(A) = ∫_{ψ⁻¹(φ⁻¹A ∩ M)} θ ∘ ψ dHⁿ`;
+the change of variables `∫_{ψ⁻¹S} g ∘ ψ dHⁿ = R⁻ⁿ ∫_S g dHⁿ`, from `ψ_# Hⁿ = R⁻ⁿ Hⁿ`
+(`any_radius_rv_map_hausdorff`), turns this into `R⁻ⁿ μ_V(φ⁻¹A)`. -/
+theorem any_radius_rv_weight_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (c : Amb n ℓ) (R : ℝ), 0 < R → W.carrier = (fun x => c + R • x) ⁻¹' V.carrier → (∀ x, W.mult x = V.mult (c + R • x)) → W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) := by
+  intro n ℓ U U' V W c R hR hW hθ
+  -- `ψ(x) = c + R x` is a measurable embedding, `φ(y) = R⁻¹(y − c)` is measurable, `φ ∘ ψ = id`.
+  have hψ : MeasurableEmbedding (fun x : Amb n ℓ => c + R • x) :=
+    (measurableEmbedding_addLeft c).comp (measurableEmbedding_const_smul₀ hR.ne')
+  have hφ : Measurable (fun y : Amb n ℓ => R⁻¹ • (y - c)) :=
+    ((continuous_id.sub continuous_const).const_smul R⁻¹).measurable
+  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • (c + R • x - c) = x := fun x => by
+    rw [add_sub_cancel_left, inv_smul_smul₀ hR.ne']
+  -- Change of variables: `∫_{ψ⁻¹S} g ∘ ψ dHⁿ = R⁻ⁿ ∫_S g dHⁿ`, from `ψ_# Hⁿ = R⁻ⁿ Hⁿ`.
+  have hcv : ∀ (S : Set (Amb n ℓ)) (g : Amb n ℓ → ℝ≥0∞),
+      ∫⁻ x in (fun x => c + R • x) ⁻¹' S, g (c + R • x) ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (ENNReal.ofReal (R ^ n))⁻¹ * ∫⁻ y in S, g y ∂(μHE[n] : Measure (Amb n ℓ)) := by
+    intro S g
+    have h := hψ.lintegral_map (μ := (μHE[n] : Measure (Amb n ℓ)).restrict
+      ((fun x => c + R • x) ⁻¹' S)) g
+    rw [← hψ.restrict_map, Submission.any_radius_rv_map_hausdorff n ℓ c R hR,
+      Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul] at h
+    exact h.symm
+  -- Compare both measures on a measurable set `A`.
+  ext A hA
+  rw [Measure.smul_apply, Measure.map_apply hφ hA, smul_eq_mul, RectifiableVarifold.weight,
+    RectifiableVarifold.weight, withDensity_apply _ hA, withDensity_apply _ (hφ hA),
+    Measure.restrict_restrict hA, Measure.restrict_restrict (hφ hA)]
+  -- `A ∩ ψ⁻¹M = ψ⁻¹(φ⁻¹A ∩ M)` (as `φ ∘ ψ = id`) and `θ_W = θ ∘ ψ`.
+  have hA' : A ∩ W.carrier =
+      (fun x => c + R • x) ⁻¹' ((fun y => R⁻¹ • (y - c)) ⁻¹' A ∩ V.carrier) := by
+    rw [hW, preimage_inter]
+    congr 1
+    ext x
+    simp only [mem_preimage, hφψ]
+  rw [hA']
+  simp only [hθ]
+  exact hcv _ fun y => ENNReal.ofReal (V.mult y)
 
 end Submission
 
