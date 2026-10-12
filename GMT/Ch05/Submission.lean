@@ -458,6 +458,141 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 3.2–3.3 and 4.1** (first variation of the radial cutoff fields).  Let `V` have
+generalized mean curvature `H` in `U`, with `p_{T_x M}` the projection onto an `n`-plane for
+`μ_V`-a.e. `x`.  Let `φ ∈ C¹(ℝ)` with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[T, ∞)`, let `ρ > 0`, and
+let `B_{Tρ}(y) ⊆ U`.  Then `X(x) = φ(r/ρ)(x − y)`, `r = |x − y|`, is admissible in 3.14, and
+`div_M X = n φ(r/ρ) + (r/ρ) φ'(r/ρ)(1 − |(x − y) − p_{T_x M}(x − y)|²/r²)` `μ_V`-a.e.
+(both sides equal `n` at `x = y`).  So `∫ div_M X dμ_V = −∫ X · H dμ_V` is the stated identity. -/
+theorem aal_radial_first_variation_identity : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (y : Amb n ℓ) (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → closedBall y (T * ρ) ⊆ U → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) ∂V.weight = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂V.weight := by
+  intro n ℓ U V H hH hP y φ T ρ hφ hφ1 hφT hρ hU
+  -- Step 1: the field `X(x) = φ(|x - y|/ρ)(x - y)` is `C¹`.  On `B̆_ρ(y)` it is `x - y`.
+  obtain ⟨X, hX⟩ : ∃ X : Amb n ℓ → Amb n ℓ, X = fun x => φ (‖x - y‖ / ρ) • (x - y) := ⟨_, rfl⟩
+  have hXball : ∀ x ∈ ball y ρ, X =ᶠ[𝓝 x] fun z => z - y := by
+    intro x hx
+    filter_upwards [isOpen_ball.mem_nhds hx] with z hz
+    have : ‖z - y‖ / ρ ≤ 1 := by
+      rw [mem_ball, dist_eq_norm] at hz
+      rw [div_le_one hρ]; exact hz.le
+    simp [hX, hφ1 _ this]
+  have hXcd : ContDiff ℝ 1 X := by
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    by_cases hxy : x = y
+    · exact (contDiffAt_id.sub contDiffAt_const).congr_of_eventuallyEq
+        (hXball x (by rw [hxy]; exact mem_ball_self hρ))
+    · rw [hX]
+      have h1 : ContDiffAt ℝ 1 (fun z : Amb n ℓ => ‖z - y‖) x :=
+        (contDiffAt_id.sub contDiffAt_const).norm ℝ (sub_ne_zero.2 hxy)
+      have h2 : ContDiffAt ℝ 1 (fun z : Amb n ℓ => φ (‖z - y‖ / ρ)) x :=
+        hφ.contDiffAt.comp x (h1.div_const ρ)
+      exact h2.smul (contDiffAt_id.sub contDiffAt_const)
+  -- Step 2: `X = 0` off `B_{Tρ}(y)`, a compact subset of `U`, so `X` is admissible in 3.14.
+  have hXzero : ∀ z, T * ρ < ‖z - y‖ → X z = 0 := by
+    intro z hz
+    have hT : T ≤ ‖z - y‖ / ρ := by rw [le_div_iff₀ hρ]; exact hz.le
+    rw [hX]; simp [hφT _ hT]
+  have hsupp : tsupport X ⊆ closedBall y (T * ρ) := by
+    refine closure_minimal (fun z hz => ?_) isClosed_closedBall
+    by_contra h
+    rw [mem_closedBall, dist_eq_norm, not_le] at h
+    exact hz (hXzero z h)
+  have hXcs : HasCompactSupport X :=
+    (isCompact_closedBall y (T * ρ)).of_isClosed_subset (isClosed_tsupport X) hsupp
+  have key := hH.2 X hXcd hXcs (hsupp.trans hU)
+  -- Step 3: `X · H = φ(r/ρ)(x - y) · H`.
+  have hRHS : (fun x => inner ℝ (X x) (H x)) =
+      fun x => φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) := by
+    funext x; rw [hX]; exact real_inner_smul_left _ _ _
+  rw [hRHS] at key
+  -- Step 4: for `x ≠ y`, `DX(x) = φ(r/ρ) id + ρ⁻¹ r⁻¹ φ'(r/ρ) ((x - y) · ⬝) (x - y)`.
+  have hXderiv : ∀ x, x ≠ y → HasFDerivAt X
+      (φ (‖x - y‖ / ρ) • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+        (deriv φ (‖x - y‖ / ρ) / (ρ * ‖x - y‖)) • (innerSL ℝ (x - y)).smulRight (x - y)) x := by
+    intro x hxy
+    have hr : 0 < ‖x - y‖ := norm_pos_iff.2 (sub_ne_zero.2 hxy)
+    -- `D|· - y|(x) = r⁻¹ (x - y) · ⬝`, from `|z - y| = √(|z - y|²)`.
+    have hnorm : HasFDerivAt (fun z : Amb n ℓ => ‖z - y‖) (‖x - y‖⁻¹ • innerSL ℝ (x - y)) x := by
+      have h := (Real.hasDerivAt_sqrt (pow_pos hr 2).ne').comp_hasFDerivAt x
+        (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y).norm_sq
+      convert h using 1
+      · funext z; simp [Real.sqrt_sq (norm_nonneg _)]
+      · ext v; simp [Real.sqrt_sq hr.le]; field_simp
+    have hcomp : HasDerivAt (fun t => φ (t / ρ)) (deriv φ (‖x - y‖ / ρ) / ρ) ‖x - y‖ :=
+      (((hφ.differentiable one_ne_zero) (‖x - y‖ / ρ)).hasDerivAt.comp ‖x - y‖
+        ((hasDerivAt_id' ‖x - y‖).div_const ρ)).congr_deriv (mul_one_div _ _)
+    have hc := (hcomp.comp_hasFDerivAt x hnorm).smul (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y)
+    have hfun : X = ((fun t => φ (t / ρ)) ∘ fun z : Amb n ℓ => ‖z - y‖) • fun z => z - y := by
+      rw [hX]; rfl
+    rw [hfun]
+    refine hc.congr_fderiv ?_
+    ext v
+    simp
+    ring
+  -- Step 5: `trace p_P = dim P` and `trace ((a id + c (u · ⬝) u) ∘ p_P) = a dim P + c u · p_P u`.
+  have htrP : ∀ P : Submodule ℝ (Amb n ℓ),
+      LinearMap.trace ℝ (Amb n ℓ) P.starProjection.toLinearMap = (Module.finrank ℝ P : ℝ) := by
+    intro P
+    rw [Submodule.starProjection, ContinuousLinearMap.toLinearMap_comp, LinearMap.trace_comp_comm']
+    have hcomp : P.orthogonalProjectionOnto.toLinearMap.comp P.subtypeL.toLinearMap =
+        LinearMap.id := by
+      ext x; simp
+    rw [hcomp, LinearMap.trace_id]
+  have htr : ∀ (P : Submodule ℝ (Amb n ℓ)) (a c : ℝ) (u : Amb n ℓ),
+      LinearMap.trace ℝ (Amb n ℓ) ((a • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+          c • (innerSL ℝ u).smulRight u).toLinearMap ∘ₗ P.starProjection.toLinearMap) =
+        a * Module.finrank ℝ P + c * inner ℝ u (P.starProjection u) := by
+    intro P a c u
+    have hcomp : (a • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+          c • (innerSL ℝ u).smulRight u).toLinearMap ∘ₗ P.starProjection.toLinearMap =
+        a • P.starProjection.toLinearMap +
+          c • ((innerSL ℝ u).toLinearMap ∘ₗ P.starProjection.toLinearMap).smulRight u := by
+      ext w; simp
+    rw [hcomp, map_add, map_smul, map_smul, LinearMap.trace_smulRight, htrP]
+    simp
+  -- Step 6: `div_M X` equals the integrand at every `x` where `p_{T_x M}` projects onto an
+  -- `n`-plane `P`.
+  have hae : ∀ᵐ x ∂V.weight, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) *
+      (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) = V.divM X x := by
+    filter_upwards [hP] with x hx
+    obtain ⟨P, hPn, hPx⟩ := hx
+    rw [RectifiableVarifold.divM, hPx]
+    by_cases hxy : x = y
+    · -- At the center `DX(y) = id`, so `div_M X(y) = n = n φ(0)`.
+      have hfd : fderiv ℝ X x = ContinuousLinearMap.id ℝ (Amb n ℓ) := by
+        rw [(hXball x (by rw [hxy]; exact mem_ball_self hρ)).fderiv_eq]
+        exact (hasFDerivAt_sub_const y).fderiv
+      rw [hfd]
+      simp only [ContinuousLinearMap.coe_id, LinearMap.id_comp, htrP, hPn]
+      subst hxy
+      simp [hφ1 0 zero_le_one]
+    · -- Away from it, `(x - y) · p_P (x - y) = |p_P (x - y)|²` and Pythagoras.
+      rw [(hXderiv x hxy).fderiv, htr, hPn]
+      have hr : 0 < ‖x - y‖ := norm_pos_iff.2 (sub_ne_zero.2 hxy)
+      have h0 : inner ℝ ((x - y) - P.starProjection (x - y)) (P.starProjection (x - y)) = 0 :=
+        Submodule.starProjection_inner_eq_zero _ _ (Submodule.starProjection_apply_mem _ _)
+      have h1 : inner ℝ (x - y) (P.starProjection (x - y)) = ‖P.starProjection (x - y)‖ ^ 2 := by
+        calc inner ℝ (x - y) (P.starProjection (x - y))
+            = inner ℝ (((x - y) - P.starProjection (x - y)) + P.starProjection (x - y))
+                (P.starProjection (x - y)) := by rw [sub_add_cancel]
+          _ = ‖P.starProjection (x - y)‖ ^ 2 := by
+            rw [inner_add_left, h0, zero_add, real_inner_self_eq_norm_sq]
+      have h2 : ‖x - y‖ ^ 2 =
+          ‖(x - y) - P.starProjection (x - y)‖ ^ 2 + ‖P.starProjection (x - y)‖ ^ 2 := by
+        have := norm_add_sq_real ((x - y) - P.starProjection (x - y)) (P.starProjection (x - y))
+        rw [sub_add_cancel, h0] at this
+        linarith
+      rw [h1]
+      field_simp
+      linear_combination (deriv φ (‖x - y‖ / ρ)) * h2
+  -- Step 7: integrals of `μ_V`-a.e. equal functions agree.
+  rw [← key]
+  exact integral_congr_ae hae
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
