@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8225b4e54936da404720c13bee681485060c761a7b8472d57194381be22fcf79",
+  "git_delta": {
+    "base_commit": "a974ecefe43b5648166cbbd2d0e87c34d9c1cf65",
+    "candidate_commit": "5725f723329de2d5a38068bd95f2cedf690d131e",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_dlb_restricted_firstVariation_control",
+    "diff_sha256": "fb665312e0789aeafd0fde3d4da04617166b2109916a8bdf107bca18d1b75648",
+    "source_sha256": "215a5414af46518138cc5e29f046880b56d6f31f4d67b2e200a335fced49fa59",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_dlb_restricted_firstVariation_control",
+      "statement": "∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μ : Measure (Euclidean N × Grassmannian N n)) (W : Varifold N n Ω) (c β : ℝ≥0∞), c ≠ ∞ → β ≠ ∞ → W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → (∀ X : Euclidean N → Euclidean N, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ Ω → (∀ y, ‖X y‖ ≤ 1) → ENNReal.ofReal |∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂μ| ≤ β) → W.HasLocallyBoundedFirstVariation ∧ ∀ O : Set (Euclidean N), IsRelCompactOpenIn O Ω → variationMeasure W O ≤ c * β",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
