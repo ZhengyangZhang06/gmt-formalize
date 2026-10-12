@@ -625,6 +625,60 @@ theorem Submission.bf_sphereGood_densityDichotomy : ∀ (N n : ℕ) (σ : Measur
   · obtain ⟨k, hk⟩ := mem_iUnion.1 h
     exact Or.inr (mem_iUnion.2 ⟨k, hk, hnα, hnβ⟩)
   · exact Or.inl ⟨hθF, h⟩
+/-- **The non-axis unit directions of a subspace form a Borel set** (Step 2 of the supplied proof
+of the sphere lemma in the Besicovitch–Federer argument, Simon Ch. 3, Theorem 3.6). Let
+`H ⊆ ℝᴺ` be a subspace with orthogonal projection `p_H`, `A ⊆ ℝᴺ` compact, `δ ∈ ℝ` and `a ∈ ℝᴺ`.
+The unit vectors `θ ∈ H` for which no `b ∈ A` with `0 < |b - a| < δ` has
+`p_H(b - a) - (p_H(b - a) · θ) θ = 0` form a Borel set: with `S(H) = H ∩ ∂B₁(0)` (compact) and
+the compact sets `Kⱼ = {(θ, b) ∈ S(H) × A : 1/(j+1) ≤ |b - a| ≤ δ - 1/(j+1),
+p_H(b - a) - (p_H(b - a) · θ) θ = 0}`, the set is `S(H) ∖ ⋃ⱼ π₁(Kⱼ)`, and each `π₁(Kⱼ)` is
+compact, hence closed. -/
+theorem Submission.bf_sphereGood_axisFree_measurableSet : ∀ (N : ℕ) (H : Submodule ℝ (Rn N)) (A : Set (Rn N)), IsCompact A → ∀ (δ : ℝ) (a : Rn N), MeasurableSet {θ : Rn N | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0} := by
+  intro N H A hA δ a
+  -- Step 1: the unit sphere `S(H) = H ∩ ∂B₁(0)` of `H` is compact (`H` is closed).
+  let S : Set (Rn N) := (H : Set (Rn N)) ∩ Metric.sphere 0 1
+  have hS : IsCompact S := (isCompact_sphere 0 1).inter_left H.closed_of_finiteDimensional
+  -- Step 2: `g(θ, b) = p_H(b - a) - (p_H(b - a) · θ) θ` is continuous on `ℝᴺ × ℝᴺ`.
+  let g : Rn N × Rn N → Rn N := fun p ↦
+    H.starProjection (p.2 - a) - inner ℝ (H.starProjection (p.2 - a)) p.1 • p.1
+  have hg : Continuous g := by
+    have hp : Continuous fun p : Rn N × Rn N ↦ H.starProjection (p.2 - a) :=
+      H.starProjection.continuous.comp (continuous_snd.sub continuous_const)
+    exact hp.sub ((hp.inner continuous_fst).fun_smul continuous_fst)
+  have hd : Continuous fun p : Rn N × Rn N ↦ dist p.2 a := continuous_snd.dist continuous_const
+  -- Step 3: `Kⱼ` is a closed subset of the compact set `S(H) × A`, so `Pⱼ = π₁(Kⱼ)` is closed.
+  let K : ℕ → Set (Rn N × Rn N) := fun j ↦
+    S ×ˢ A ∩ {p | 1 / ((j : ℝ) + 1) ≤ dist p.2 a} ∩ {p | dist p.2 a ≤ δ - 1 / ((j : ℝ) + 1)} ∩
+      {p | g p = 0}
+  have hP : ∀ j, IsClosed (Prod.fst '' K j) := fun j ↦
+    ((((hS.prod hA).inter_right (isClosed_le continuous_const hd)).inter_right
+      (isClosed_le hd continuous_const)).inter_right
+        (isClosed_eq hg continuous_const)).image continuous_fst |>.isClosed
+  -- Step 5: `S(H) ∖ ⋃ⱼ Pⱼ` is Borel.
+  have hmeas : MeasurableSet (S \ ⋃ j, Prod.fst '' K j) :=
+    hS.isClosed.measurableSet.diff (.iUnion fun j ↦ (hP j).measurableSet)
+  convert hmeas using 1
+  -- Step 4: for `θ ∈ S(H)`, some `b ∈ A` with `0 < |b - a| < δ` and `g(θ, b) = 0` exists iff
+  -- `θ ∈ ⋃ⱼ Pⱼ` (Archimedean choice of `j`).
+  ext θ
+  constructor
+  · rintro ⟨hθH, hθ1, hno⟩
+    refine ⟨⟨hθH, mem_sphere_zero_iff_norm.2 hθ1⟩, fun hmem ↦ hno ?_⟩
+    obtain ⟨j, ⟨θ', b⟩, ⟨⟨⟨⟨-, hbA⟩, hlo⟩, hhi⟩, hg0⟩, rfl⟩ := Set.mem_iUnion.1 hmem
+    have hlo' : 1 / ((j : ℝ) + 1) ≤ dist b a := hlo
+    have hhi' : dist b a ≤ δ - 1 / ((j : ℝ) + 1) := hhi
+    have hj : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+    refine ⟨b, hbA, fun hba ↦ ?_, by linarith, hg0⟩
+    rw [hba, dist_self] at hlo'
+    linarith
+  · rintro ⟨hθS, hno⟩
+    refine ⟨hθS.1, mem_sphere_zero_iff_norm.1 hθS.2, ?_⟩
+    rintro ⟨b, hbA, hba, hbδ, hg0⟩
+    obtain ⟨j, hj⟩ := exists_nat_one_div_lt (lt_min (dist_pos.2 hba) (sub_pos.2 hbδ))
+    have hlo : 1 / ((j : ℝ) + 1) ≤ dist b a := (hj.trans_le (min_le_left _ _)).le
+    have hhi : dist b a ≤ δ - 1 / ((j : ℝ) + 1) := by
+      linarith [hj.trans_le (min_le_right _ _)]
+    exact hno (Set.mem_iUnion.2 ⟨j, (θ, b), ⟨⟨⟨⟨hθS, hbA⟩, hlo⟩, hhi⟩, hg0⟩, rfl⟩)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
