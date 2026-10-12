@@ -515,6 +515,90 @@ theorem Submission.chart_meanCurvature_eq_normalPart_gram_sum : ∀ (n N : ℕ) 
       _ = S (a i) (a i) := by rw [hexp]
   -- Step 8: combine Steps 4 and 7.
   rw [hH, hS]
+/-- **Smoothness of the determinant on `L(ℝⁿ)`.** For every `n` and every order `k : WithTop ℕ∞`
+(finite, `∞` or analytic), `T ↦ T.det` is `C^k` on `ℝⁿ →L[ℝ] ℝⁿ`. In the standard basis `eᵢ` the
+Leibniz formula gives `T.det = ∑_σ sign σ * ∏ᵢ (T eᵢ)_{σ i}` (`LinearMap.det_toMatrix`,
+`Matrix.det_apply`). Each entry `T ↦ (T eᵢ)_l` is continuous linear, and finite sums and products of
+`C^k` functions are `C^k` (`ContDiff.sum`, `contDiff_prod`). -/
+theorem Submission.contDiff_rn_continuousLinearMap_det : ∀ (n : ℕ) (k : WithTop ℕ∞), ContDiff ℝ k (fun T : Rn n →L[ℝ] Rn n ↦ T.det) := by
+  intro n k
+  -- Steps 1–2: the Leibniz formula in the standard basis, whose matrix entries are `(T eᵢ)_l`.
+  let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  have h : (fun T : Rn n →L[ℝ] Rn n ↦ T.det) = fun T ↦ ∑ σ : Equiv.Perm (Fin n),
+      ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, (T (EuclideanSpace.single i (1 : ℝ))).ofLp (σ i) := by
+    funext T
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b, Matrix.det_apply]
+    refine Finset.sum_congr rfl fun σ _ ↦ ?_
+    rw [Units.smul_def, zsmul_eq_mul]
+    congr 1
+  rw [h]
+  -- Steps 3–4: each entry is a continuous linear functional of `T`; close under `∏` and `∑`.
+  refine ContDiff.sum fun σ _ ↦ contDiff_const.mul (contDiff_prod fun i _ ↦ ?_)
+  exact ((EuclideanSpace.proj (σ i)).comp
+    (ContinuousLinearMap.apply ℝ (Rn n) (EuclideanSpace.single i (1 : ℝ)))).contDiff
+/-- **Jacobi's formula at the identity.** For `K ∈ L(ℝⁿ)`, `t ↦ det(1 + t • K)` has derivative
+`trace K` at `t = 0`. With `b` the standard basis of `ℝⁿ` and `A = [K]_b`, the matrix of `1 + t • K` is
+`1 + t • A`, so `det(1 + t • K) = det(1 + t • A) = 1 + trace A · t + p(t) t²` for every `t`, with the
+fixed polynomial `p = (det(1 + X • A)).divX.divX` (`LinearMap.det_toMatrix`,
+`Matrix.det_one_add_smul`). The right side has derivative `trace A` at `0`, and `trace A = trace K`
+(`LinearMap.trace_eq_matrix_trace`). -/
+theorem Submission.hasDerivAt_rn_det_one_add_smul_trace : ∀ (n : ℕ) (K : Rn n →L[ℝ] Rn n), HasDerivAt (fun t : ℝ ↦ (1 + t • K).det) (LinearMap.trace ℝ (Rn n) K.toLinearMap) 0 := by
+  intro n K
+  -- Step 1: the standard basis `b` of `ℝⁿ`, the matrix `A` of `K` and the fixed polynomial `p`.
+  let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  obtain ⟨A, hA⟩ : ∃ A : Matrix (Fin n) (Fin n) ℝ, LinearMap.toMatrix b b K.toLinearMap = A :=
+    ⟨_, rfl⟩
+  obtain ⟨p, hp⟩ : ∃ p : Polynomial ℝ,
+      (1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C).det.divX.divX = p := ⟨_, rfl⟩
+  -- Steps 2–3: `[1 + t • K]_b = 1 + t • A`, so `det(1 + t • K) = 1 + trace A * t + p(t) * t ^ 2`.
+  have hexp : ∀ t : ℝ, (1 + t • K).det = 1 + A.trace * t + p.eval t * t ^ 2 := fun t ↦ by
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b, ContinuousLinearMap.toLinearMap_add,
+      ContinuousLinearMap.toLinearMap_smul, ContinuousLinearMap.toLinearMap_one, map_add, map_smul,
+      LinearMap.toMatrix_one, hA, Matrix.det_one_add_smul, hp]
+  -- Step 5: `t ↦ 1 + trace A * t + p(t) * t ^ 2` has derivative `trace A + 0` at `0`.
+  have hlin : HasDerivAt (fun t : ℝ ↦ A.trace * t) A.trace 0 := by
+    simpa using (hasDerivAt_id (0 : ℝ)).const_mul A.trace
+  have hquad : HasDerivAt (fun t : ℝ ↦ p.eval t * t ^ 2) 0 0 := by
+    simpa using (Polynomial.hasDerivAt p 0).fun_mul (hasDerivAt_pow 2 (0 : ℝ))
+  have hg := (hlin.const_add 1).fun_add hquad
+  rw [add_zero] at hg
+  -- Steps 4 and 6: `trace K = trace A`, and `det(1 + t • K)` agrees with the polynomial everywhere.
+  rw [LinearMap.trace_eq_matrix_trace ℝ b, hA]
+  exact hg.congr_of_eventuallyEq (Filter.Eventually.of_forall hexp)
+
+/-- **Jacobi's formula on `L(ℝⁿ)`.** `det : L(ℝⁿ) → ℝ` is `C¹`, and at a unit `T` of the ring
+`L(ℝⁿ)` (multiplication is composition), `D det(T)[H] = det T · trace(T⁻¹ ∘ H)` with
+`T⁻¹ = Ring.inverse T`. The first conjunct is `Submission.contDiff_rn_continuousLinearMap_det` at
+order `1`. For the second, put `K = T⁻¹ ∘ H`: then `T + t • H = T ∘ (1 + t • K)`
+(`Ring.mul_inverse_cancel`), so `det(T + t • H) = det T · det(1 + t • K)` (`LinearMap.det_comp`), which
+has derivative `det T · trace K` at `t = 0` by `Submission.hasDerivAt_rn_det_one_add_smul_trace`. The
+chain rule along `t ↦ T + t • H` and uniqueness of derivatives identify it with `D det(T)[H]`. -/
+theorem Submission.continuousLinearMap_det_contDiff_fderiv_eq_mul_trace : ∀ n : ℕ, ContDiff ℝ 1 (fun T : Rn n →L[ℝ] Rn n ↦ T.det) ∧ ∀ T H : Rn n →L[ℝ] Rn n, IsUnit T → fderiv ℝ (fun T : Rn n →L[ℝ] Rn n ↦ T.det) T H = T.det * LinearMap.trace ℝ (Rn n) (Ring.inverse T ∘L H).toLinearMap := by
+  intro n
+  -- Step 2: `det` is `C¹`, hence differentiable at every `T`.
+  have hC1 : ContDiff ℝ 1 (fun T : Rn n →L[ℝ] Rn n ↦ T.det) :=
+    Submission.contDiff_rn_continuousLinearMap_det n 1
+  refine ⟨hC1, fun T H hT ↦ ?_⟩
+  -- Step 3: `T ∘ (1 + t • K) = T + t • H` for `K = T⁻¹ ∘ H`, since `T ∘ T⁻¹ = 1`.
+  have hTK : T * (Ring.inverse T ∘L H) = H := by
+    rw [← ContinuousLinearMap.mul_def, ← mul_assoc, Ring.mul_inverse_cancel T hT, one_mul]
+  have hfac : ∀ t : ℝ, T * (1 + t • (Ring.inverse T ∘L H)) = T + t • H := fun t ↦ by
+    rw [mul_add, mul_one, ContinuousLinearMap.mul_def T, ContinuousLinearMap.comp_smul,
+      ← ContinuousLinearMap.mul_def, hTK]
+  -- Steps 3–5: `det(T + t • H) = det T · det(1 + t • K)` has derivative `det T · trace K` at `0`.
+  have hline : HasDerivAt (fun t : ℝ ↦ (T + t • H).det)
+      (T.det * LinearMap.trace ℝ (Rn n) (Ring.inverse T ∘L H).toLinearMap) 0 := by
+    have hmul : (fun t : ℝ ↦ (T + t • H).det) =
+        fun t ↦ T.det * (1 + t • (Ring.inverse T ∘L H)).det :=
+      funext fun t ↦ by rw [← hfac t]; exact LinearMap.det_comp _ _
+    rw [hmul]
+    exact (Submission.hasDerivAt_rn_det_one_add_smul_trace n (Ring.inverse T ∘L H)).const_mul T.det
+  -- Step 6: chain rule along `γ t = T + t • H` (`γ 0 = T`, `γ' 0 = H`) and uniqueness.
+  have hγ : HasDerivAt (fun t : ℝ ↦ T + t • H) H 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const H).const_add T
+  have hchain := ((hC1.differentiable one_ne_zero) T).hasFDerivAt.comp_hasDerivAt_of_eq 0 hγ
+    (show T = T + (0 : ℝ) • H by rw [zero_smul ℝ H, add_zero])
+  exact hchain.unique hline
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
