@@ -410,6 +410,127 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, 5.5 (Allard's Rectifiability Theorem) with Remark 5.6** (child
+`allard_rectifiability` of `allard_tangent_cones`).  At `μ_V`-a.e. `x`: `θ₀ = Θ^n(μ_V, x)` exists
+in `(0, ∞)`, `D_{μ_V}‖δV‖(x) < ∞` (which gives 5.1), the `β`-averages of `V` over `B_ρ(x)` converge
+(Lemma 1.3), and the density decay of `allard_tc_density_blowup_decay` holds.  At such `x` the
+blow-up density lower bound with `τ_k = θ₀ - θ₀/(k+2) ↑ θ₀` gives `Θ^n(μ_C, ·) ≥ θ₀` `μ_C`-a.e.
+(printed (7)) for each `C ∈ VarTan(V, x)`, so `C = θ₀ v(T)` (`allard_tc_stationary_cone_flat`) and
+`V` has a tangent plane at `x` (`allard_tc_unique_tangent_plane`).  Rectifiability then follows
+from 1.2. -/
+theorem Submission.allard_tc_rectifiability :
+    FirstVariationRepresentation → StationaryMonotonicityIdentity → DensityExistsAE →
+      ConstancyTheorem → VarifoldTangentCones →
+      (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (τ : ℝ),
+        V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < τ →
+        Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) /
+          ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) →
+        Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧
+            ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} /
+          ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) →
+        ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+          ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ) →
+      (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U),
+        ∃ η : Euclidean N → Measure (Grassmannian N n),
+          (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧
+            ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦
+              (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) /
+                (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧
+          ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A →
+            (∀ S, 0 ≤ β S) →
+            ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure =
+              ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight) →
+      FirstRectifiabilityTheorem → AllardRectifiabilityTheorem := by
+  intro hFVR hSMI hDE hCT hVTC hlower hdisint hFRT N n U V hV hpos
+  obtain ⟨η, hη, -⟩ := hdisint N n U V
+  obtain ⟨Θ, -, hΘ⟩ := hDE N n U V hV
+  have hU : ∀ᵐ x ∂V.weight, x ∈ U := by
+    rw [ae_iff]
+    change V.weight Uᶜ = 0
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  have hω0 : unitBallVolume n ≠ 0 := by
+    rw [unitBallVolume]
+    exact (measure_ball_pos _ _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Remark 5.6: `V` has a tangent plane at every point where the a.e. statements hold.
+  have htan : ∀ᵐ x ∂V.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ := by
+    filter_upwards [hη, hΘ, (hFVR N n U V hV).2.1, hU,
+      Submission.allard_tc_density_blowup_decay hDE N n U V hV, hpos]
+      with x hηx hΘx hFx hxU hdec hpx
+    -- `θ₀ = Θ^n(μ_V, x) ∈ (0, ∞)`.
+    obtain ⟨θ, hθ, hθpos⟩ := hpx
+    have hθtop : θ ≠ ∞ := by
+      rw [tendsto_nhds_unique hθ hΘx.2]
+      exact hΘx.1
+    obtain ⟨θ₀, hθ₀, rfl⟩ : ∃ θ₀ : ℝ, 0 < θ₀ ∧ ENNReal.ofReal θ₀ = θ :=
+      ⟨θ.toReal, ENNReal.toReal_pos hθpos.ne' hθtop, ENNReal.ofReal_toReal hθtop⟩
+    -- 5.1: `‖δV‖(B_ρ(x)) ≤ Λ μ_V(B_ρ(x))` for small `ρ`, since `D_{μ_V}‖δV‖(x) < ∞`.
+    obtain ⟨Λ, hΛ, hev⟩ : ∃ Λ : ℝ≥0∞, Λ ≠ ∞ ∧ ∀ᶠ ρ in 𝓝[>] (0 : ℝ),
+        variationMeasure V (closedBall x ρ) ≤ Λ * V.weight (closedBall x ρ) := by
+      have hΛ : variationDensity V x + 1 ≠ ∞ := ENNReal.add_ne_top.2 ⟨hFx.1, ENNReal.one_ne_top⟩
+      refine ⟨_, hΛ, ?_⟩
+      filter_upwards [hFx.2.eventually (gt_mem_nhds (ENNReal.lt_add_right hFx.1 one_ne_zero))]
+        with ρ hρ
+      exact (ENNReal.div_le_iff_le_mul (Or.inr hΛ) (Or.inr (by positivity))).1 hρ.le
+    have h51 : Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) /
+        ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+      have h0 : Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ) (𝓝[>] 0) (𝓝 0) := by
+        rw [← ENNReal.ofReal_zero]
+        exact ENNReal.tendsto_ofReal (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id)
+      have hlim := ENNReal.Tendsto.mul h0
+        (Or.inr (ENNReal.mul_ne_top hΛ (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top)))
+        (ENNReal.Tendsto.const_mul (ENNReal.Tendsto.const_mul hθ (Or.inr hωtop)) (Or.inr hΛ))
+        (Or.inr ENNReal.zero_ne_top)
+      rw [zero_mul] at hlim
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+        (Eventually.of_forall fun _ ↦ zero_le) ?_
+      filter_upwards [hev] with ρ hρ
+      calc ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n
+          ≤ ENNReal.ofReal ρ * (Λ * V.weight (closedBall x ρ)) / ENNReal.ofReal ρ ^ n := by
+            gcongr
+        _ = ENNReal.ofReal ρ * (Λ * (unitBallVolume n * densityRatio n V.weight x ρ)) := by
+            rw [densityRatio, ← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop,
+              mul_div_assoc, mul_div_assoc]
+    -- 5.2–5.4: compactness, stationarity and the ball identity of the varifold tangents.
+    obtain ⟨hcpt, hcone⟩ := hVTC N n U V x θ₀ hV hxU hθ₀ hθ h51
+    -- Every `C ∈ VarTan(V, x)` is `θ₀ v(T)`.
+    have hflat : ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+        ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T := by
+      intro C hC
+      obtain ⟨hstat, hball, -⟩ := hcone C hC
+      refine Submission.allard_tc_stationary_cone_flat hSMI hCT N n C θ₀ hθ₀ hstat hball ?_
+      -- Printed (3)–(7): `Θ^n(μ_C, ·) ≥ τ_k` a.e. for `τ_k = θ₀ - θ₀/(k+2)`, and `τ_k → θ₀`.
+      have hk : ∀ k : ℕ, ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧
+          ENNReal.ofReal (θ₀ - θ₀ / ((k : ℝ) + 2)) ≤ θ := by
+        intro k
+        have hk2 : (1 : ℝ) < (k : ℝ) + 2 := by
+          have : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+          linarith
+        have hsmall : 0 < θ₀ / ((k : ℝ) + 2) := div_pos hθ₀ (by linarith)
+        have hlt : θ₀ / ((k : ℝ) + 2) < θ₀ := div_lt_self hθ₀ hk2
+        exact hlower N n U V x (θ₀ - θ₀ / ((k : ℝ) + 2)) hV hxU (by linarith) h51
+          (hdec θ₀ (θ₀ - θ₀ / ((k : ℝ) + 2)) hθ (by linarith)) C hC
+      have hτ : Tendsto (fun k : ℕ ↦ θ₀ - θ₀ / ((k : ℝ) + 2)) atTop (𝓝 θ₀) := by
+        have h2 : Tendsto (fun k : ℕ ↦ θ₀ / ((k : ℝ) + 2)) atTop (𝓝 0) :=
+          tendsto_const_nhds.div_atTop
+            (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+        have h3 : Tendsto (fun k : ℕ ↦ θ₀ - θ₀ / ((k : ℝ) + 2)) atTop (𝓝 (θ₀ - 0)) :=
+          tendsto_const_nhds.sub h2
+        rwa [sub_zero] at h3
+      filter_upwards [ae_all_iff.2 hk] with y hy
+      obtain ⟨θy, hθy, -⟩ := hy 0
+      refine ⟨θy, hθy, le_of_tendsto' (ENNReal.tendsto_ofReal hτ) fun k ↦ ?_⟩
+      obtain ⟨θ, hθ', hle⟩ := hy k
+      rwa [tendsto_nhds_unique hθ' hθy] at hle
+    -- (8)–(9): the varifold tangent is unique, so `V` has a tangent plane at `x`.
+    obtain ⟨T, hT⟩ := Submission.allard_tc_unique_tangent_plane N n U V x θ₀ (η x) hxU hθ₀
+      hcpt hflat hηx.2
+    exact ⟨T, θ₀, hT⟩
+  -- 1.2 turns the tangent planes into `V = v(M, θ)`.
+  obtain ⟨θ, -, hM⟩ := hFRT N n U V htan
+  exact ⟨⟨_, θ, hM⟩, htan⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
