@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "61153b3e964484c92233645f6d30505fbd9fb1e24a601f7889886d5b45001a07",
+  "git_delta": {
+    "base_commit": "f3b2c95165eaef5b0ed8cff2310ebc4ed24a5dcc",
+    "candidate_commit": "8d3eca4e040c0599092d375796b2005c94ed9695",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "32d9472188ce85c0ec292c18f15ebce28ffc6e4bcc884e8e87174d9ece068f8f",
+    "source_sha256": "6dde90aff6eb0cc9840f375e40dcf6b760bd5e88d9da865169901fd6acc39ffc",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_radial_stationary_homogeneous",
+      "statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → (∀ᵐ z ∂C.measure, Grassmannian.project z.2 z.1 = z.1) → ∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
