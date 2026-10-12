@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "structure Varifold|def domainMeasure|theorem map_domainMeasure|def weight|theorem weight_finite_on_compact|isOpen_domain|CompactSpace|BorelSpace",
+        "theorem exists_continuous_one_zero_of_isCompact|theorem exists_compact_between|theorem Monotone.measure_iUnion|theorem tendsto_measure_iInter_atTop|theorem IsOpen.exists_iUnion_isClosed",
+        "integrableOn_iff_integrable_of_support_subset|Measure.integrableOn_of_bounded|theorem ofReal_integral_eq_lintegral_ofReal|theorem lintegral_indicator_one",
+        "Monotone.measure_iUnion|exists_iUnion_isClosed|IsCompact.cthickening|IsCompact.exists_cthickening_subset_open|isCompact_preimage\\x27|tendsto_ofReal|MeasurableEmbedding.integral_map",
+        "vague|le_liminf.*open|limsup.*compact",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/weight-portmanteau-independent-audit-sf_nqynu/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/weight-portmanteau-independent-audit-sf_nqynu/ReviewedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1-weight-portmanteau-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/tmp/weight-portmanteau-independent-audit-sf_nqynu/IndependentTypes.lean",
+        "/tmp/weight-portmanteau-independent-audit-sf_nqynu/ReviewedProofs.lean"
+      ],
+      "conclusion": "The split is appropriate. The transfer and shared sandwich are independent obligations; both portmanteau halves depend only on the sandwich. These dependencies are acyclic and correctly directed. Weight finiteness and V.isOpen_domain discharge the general measure lemmas' hypotheses, yielding exactly the selected frozen parent statement.\n\nVerified the pinned revisions, identical contract files, and compatibility of inspected Mathlib sources with the compiler environment. The cited APIs support the supplied proofs. The search found no directly matching vague-convergence portmanteau theorem; the inspected existing convergence results require finite/probability measures.\n\nAll four names are bare identifiers, with no collisions in 77 DAG nodes, other decomposition proposals, or 91 local branches. All four one-line types passed lexical validation and independently elaborated as Prop before any child declaration. The supplied scratch proofs, exact-type checks, and selected parent assembly compiled successfully; every proof uses only propext, Classical.choice and Quot.sound. Measure and integral instances match the intended Borel/real-valued contracts. No matrix-unit construction occurs.\n\nThe classical compact-test-function argument is also corroborated by Theorem 2 of [Jerrard's lecture notes](https://www.math.utoronto.ca/rjerrard/1501/notes/week4.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match exactly. Grassmannian compactness and support containment justify the compactly supported lift. Varifold openness supplies the measurable embedding, and both integral-map identities transfer RadonConverges to the required weight integrals. The proof is complete and non-circular."
+    },
+    {
+      "key": "urysohn_sandwich",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The quantifier order correctly supplies one function for every admissible measure. The compact buffer and Urysohn construction control its support; compact-set finiteness proves integrability. Nonnegativity and indicator comparisons establish both exact integral bounds without global finiteness or unstated regularity."
+    },
+    {
+      "key": "open_set_liminf",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type include all required hypotheses. The increasing compact exhaustion covers O, and continuity from below reduces the claim to the sandwich bounds. Integral convergence, continuity of ofReal, and liminf monotonicity finish the proof. Openness of U is unnecessary; the only sibling dependency is correctly declared."
+    },
+    {
+      "key": "compact_set_limsup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes the necessary openness of U. The proof constructs decreasing measurable neighborhoods with intersection K and a finite first neighborhood, justifying continuity from above. The sandwich and integral convergence give the limsup bound for each neighborhood; passing to the limit proves the stated conclusion without circularity."
+    }
+  ],
+  "required_changes": []
+}

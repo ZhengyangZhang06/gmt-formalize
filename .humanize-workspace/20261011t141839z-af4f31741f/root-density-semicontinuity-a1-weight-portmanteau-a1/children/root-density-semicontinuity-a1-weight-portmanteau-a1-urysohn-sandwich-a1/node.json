@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.weight_portmanteau-a1.urysohn_sandwich-a1",
+  "parent_id": "root.density_semicontinuity-a1.weight_portmanteau-a1",
+  "depth": 3,
+  "title": "Urysohn test function with ν(K) ≤ ofReal(∫ g dν) ≤ ν(O) for all locally finite ν",
+  "statement": "Let N ∈ ℕ, let K ⊆ ℝ^N be compact and O ⊆ ℝ^N open with K ⊆ O. Then there is a continuous g : ℝ^N → ℝ with compact support and tsupport g ⊆ O such that ν(K) ≤ ENNReal.ofReal(∫ g dν) ≤ ν(O) for every measure ν on ℝ^N with ν(L) < ∞ for every compact L ⊆ O. The same g works for all such ν.",
+  "lean_statement": "∀ (N : ℕ) (K O : Set (Euclidean N)), IsCompact K → IsOpen O → K ⊆ O → ∃ g : Euclidean N → ℝ, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ O ∧ ∀ ν : Measure (Euclidean N), (∀ L : Set (Euclidean N), IsCompact L → L ⊆ O → ν L ≠ ∞) → ν K ≤ ENNReal.ofReal (∫ x, g x ∂ν) ∧ ENNReal.ofReal (∫ x, g x ∂ν) ≤ ν O",
+  "lean_name": "exists_urysohn_integral_sandwich",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-weight-portmanteau-a1-urysohn-sandwich-a1-a1"
+}
