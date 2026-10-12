@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "87abcf60e149ed864b117b30367795ad469a3e165e003b398ce45f35484204a3",
+  "git_delta": {
+    "base_commit": "de4bba25657942ce0984f6776ad7195b5576a9c3",
+    "candidate_commit": "2bf50ebc12633baabe9d93a1a3e2f70659e34b29",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_lusin_compact_exhaustion",
+    "diff_sha256": "008adb0278a3e6b0671c7375b1bcd9ddc189b52481b403ec1c929afa7223fc58",
+    "source_sha256": "2360eefed7fb5e51065ab8ab7f38ceda588f74c111af2c753a7f6407660f13f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_lusin_compact_exhaustion",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), ∃ K : ℕ → Set (Amb n ℓ), (∀ m, IsCompact (K m)) ∧ (∀ m, K m ⊆ V.carrier) ∧ (∀ m, ContinuousOn V.mult (K m)) ∧ (∀ m, (μHE[n] : Measure (Amb n ℓ)) (K m) < ⊤) ∧ (μHE[n] : Measure (Amb n ℓ)) (V.carrier \\ ⋃ m, K m) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
