@@ -4362,6 +4362,48 @@ theorem ae_weightedApproximateTangent_density_eq_mult : ∀ {n ℓ : ℕ} {U : S
       filter_upwards [hgood i k] with x hx using ⟨_, hx⟩
     filter_upwards [hex, ae_restrict_mem₀ V.nullMeasurableSet_carrier] with x ⟨P, hP⟩ hx
     exact ⟨⟨P, hP⟩, Submission.tae_hasDensity_of_weightedApproxTangent V x P hn hU hx hP⟩
+/-- **Simon Ch. 4, 4.9 and Remark 4.10(1)** (`Θ ≥ 1` on `spt V`).  If `V` has generalized mean
+curvature `H ∈ Lᵖ_loc(μ_V)` in the open set `U`, `p > n`, and `θ ≥ 1` `μ_V`-a.e., then at every
+`ξ ∈ spt V` the density `Θⁿ(μ_V, ξ)` exists and is `≥ 1`.  The tangent facts of Ch. 3, 1.9 hold
+`Hⁿ ⌞ M`-a.e., hence `μ_V`-a.e.; they give the hypotheses of the existence and upper semicontinuity
+of `Θⁿ(μ_V, ·)` (4.9) and `Θⁿ(μ_V, ·) = θ ≥ 1` `μ_V`-a.e.  If `Θⁿ(μ_V, ξ) < 1`, upper
+semicontinuity gives a neighbourhood of `ξ`, of positive `μ_V`-measure as `ξ ∈ spt μ_V`, that
+contains no such point. -/
+theorem one_le_density_on_support_of_locallyLp : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), 1 ≤ n → IsOpen U → (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ x ∈ V.support, ∃ t : ℝ, 1 ≤ t ∧ V.HasDensity x t := by
+  intro n ℓ U V H p hn hU hp hH hLp hθ ξ hξ
+  have hξ' : ξ ∈ U ∩ V.weight.support := hξ
+  -- Step 1: the tangent facts of Ch. 3, 1.9 hold `Hⁿ ⌞ M`-a.e., hence `μ_V`-a.e. (`μ_V ≪ Hⁿ ⌞ M`).
+  obtain ⟨hmeas, hae⟩ := Submission.ae_weightedApproximateTangent_density_eq_mult V hn hU
+  have hac : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)).restrict V.carrier :=
+    withDensity_absolutelyContinuous _ _
+  have hG2 : AEStronglyMeasurable V.tangentProj V.weight := hmeas.mono_ac hac
+  have hae' : ∀ᵐ x ∂V.weight, (∃ P : Submodule ℝ (Amb n ℓ),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P) ∧
+      V.HasDensity x (V.mult x) :=
+    hac.ae_le hae
+  -- Where an approximate tangent space exists, `tangentProj` projects onto it, of rank `n`.
+  have hG1 : ∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ),
+      Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection := by
+    filter_upwards [hae'] with x hx
+    obtain ⟨h, -⟩ := hx
+    refine ⟨Classical.choose h, (Classical.choose_spec h).1, ?_⟩
+    rw [RectifiableVarifold.tangentProj, dite_eq_left h]
+  -- Steps 2–7 (4.1–4.9): `Θⁿ(μ_V, ξ) = d` exists and `Θⁿ(μ_V, ·)` is upper semicontinuous at `ξ`.
+  obtain ⟨d, -, hd, husc⟩ := Submission.exists_density_upperSemicontinuous_of_locallyLp V H p hn hU
+    hp hH hLp hG2 hG1 ξ hξ'.1
+  refine ⟨d, ?_, hd⟩
+  -- Step 8 (4.10(1)): if `d < 1`, a neighbourhood `S` of `ξ` has `Θⁿ(μ_V, ·) < 1` wherever the
+  -- density exists, so `μ_V(S) = 0` as `Θⁿ(μ_V, ·) = θ ≥ 1` `μ_V`-a.e.; but `ξ ∈ spt μ_V`.
+  by_contra hlt
+  have hd1 : d < 1 := not_le.mp hlt
+  obtain ⟨S, hS, hSd⟩ := (husc ((1 - d) / 2) (by linarith)).exists_mem
+  have hpos : 0 < V.weight S := (Measure.mem_support_iff_forall ξ).mp hξ'.2 S hS
+  have hnull : V.weight S = 0 := by
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hae', hθ] with y hy h1 hyS
+    have := hSd y hyS (V.mult y) hy.2
+    linarith
+  exact hpos.ne' hnull
 
 end Submission
 
