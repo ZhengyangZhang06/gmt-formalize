@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1",
+  "parent_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+  "depth": 3,
+  "title": "Blow-up change of variables for weighted Hausdorff integrals",
+  "statement": "Let n, ℓ ∈ ℕ. Let M ⊆ ℝ^{n+ℓ} be an arbitrary set; no measurability is assumed. Let f, θ : ℝ^{n+ℓ} → ℝ be arbitrary functions, x ∈ ℝ^{n+ℓ} and r > 0. Write η_{x,r}(y) := r⁻¹(y − x) (Chapter03.blowUpMap x r) and Hⁿ := μHE[n]. With Bochner integrals, which equal 0 for non-integrable integrands,\n∫_{η_{x,r}(M)} f(y)·θ(x + r y) dHⁿ(y) = r⁻ⁿ ∫_M f(η_{x,r}(z))·θ(z) dHⁿ(z).",
+  "lean_statement": "∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f θ : Amb n ℓ → ℝ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) = (r ^ n)⁻¹ * ∫ z in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * θ z ∂(μHE[n] : Measure (Amb n ℓ))",
+  "lean_name": "rsod_blowUp_setIntegral_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc-a1"
+}

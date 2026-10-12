@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.weight_ball_integral-a1",
+  "parent_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+  "depth": 3,
+  "title": "Weight of a closed ball as the integral of the multiplicity",
+  "statement": "Let n, ℓ ∈ ℕ and U ⊆ ℝ^{n+ℓ}. Let V = v(M, θ) be a rectifiable n-varifold in U (RectifiableVarifold n ℓ U) with carrier M and multiplicity θ. Let x ∈ ℝ^{n+ℓ} and r ∈ ℝ be such that the closed ball B_r(x) ⊆ U. Then μ_V(B_r(x)) = ENNReal.ofReal(∫_{M ∩ B_r(x)} θ dHⁿ), where Hⁿ = μHE[n].",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r : ℝ), closedBall x r ⊆ U → V.weight (closedBall x r) = ENNReal.ofReal (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)))",
+  "lean_name": "rsod_weight_closedBall_eq_ofReal_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-weight-ba-26a0dc4b42-a1"
+}
