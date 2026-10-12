@@ -458,6 +458,32 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Ball cover step of the patching argument for Simon Ch. 5, Remark 5.3 (p. 122): a closed set
+`D ∋ c` that is relatively open in the open ball `B̆_R(c)` (every `w ∈ D ∩ B̆_R(c)` has
+`B̆_ε(w) ∩ B̆_R(c) ⊆ D` for some `ε > 0`) contains `B̆_R(c)`.  The set `U = D ∩ B̆_R(c)` is open,
+meets the preconnected ball at `c`, and `closure U ∩ B̆_R(c) ⊆ U` since `D` is closed, so
+`IsPreconnected.subset_of_closure_inter_subset` gives `B̆_R(c) ⊆ U`. -/
+theorem arp_ball_subset_of_closed_rel_open : ∀ {m : ℕ} (D : Set (Rn m)) (c : Rn m) (R : ℝ), 0 < R → IsClosed D → c ∈ D → (∀ w ∈ D ∩ ball c R, ∃ ε : ℝ, 0 < ε ∧ ball w ε ∩ ball c R ⊆ D) → ball c R ⊆ D := by
+  intro m D c R hR hD hc hloc
+  -- Step 1: `U = D ∩ B̆_R(c)` is open; each `w ∈ U` has the neighbourhood `B̆_ε(w) ∩ B̆_R(c) ⊆ U`.
+  have hU : IsOpen (D ∩ ball c R) := by
+    refine isOpen_iff_mem_nhds.2 fun w hw => ?_
+    obtain ⟨ε, hε, hεD⟩ := hloc w hw
+    exact Filter.mem_of_superset
+      (Filter.inter_mem (ball_mem_nhds w hε) (isOpen_ball.mem_nhds hw.2)) fun x hx => ⟨hεD hx, hx.2⟩
+  -- Step 4: `closure U ⊆ closure D = D`.
+  have hcl : closure (D ∩ ball c R) ⊆ D :=
+    (closure_mono inter_subset_left).trans hD.closure_eq.subset
+  -- Steps 2, 3 and 5: the convex ball is preconnected and meets `U` at `c`.
+  have hsub : ball c R ⊆ D ∩ ball c R :=
+    (convex_ball c R).isPreconnected.subset_of_closure_inter_subset hU
+      ⟨c, mem_ball_self hR, hc, mem_ball_self hR⟩ fun x hx => ⟨hcl hx.1, hx.2⟩
+  exact hsub.trans inter_subset_left
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
