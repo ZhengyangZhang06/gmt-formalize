@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "37c688220aae8c39537be0c1d0f48516cd5f20071c4e9d13820619c5ebd54b57",
+  "git_delta": {
+    "base_commit": "2081ee4767092759a314ee0973683506247dd9e6",
+    "candidate_commit": "0ba2c113373bdef2ad49798279c4ff6f7fc02ec1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_projection_algebra",
+    "diff_sha256": "fa8d3e4a514a808f77248d88a8471cead62f62b3d5245e3fc6268701178ff414",
+    "source_sha256": "763b0e38d213abe9a44d57c22aed0e1063ea39387e99bf9479fa7a029caf94a6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_projection_algebra",
+      "statement": "∀ (N : ℕ), (∀ (A : Euclid N →L[ℝ] Euclid N) (y : Euclid N), ‖A y‖ ^ 2 ≤ (∑ i : Fin N, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖y‖ ^ 2) ∧ (∀ Q S T : Submodule ℝ (Euclid N), ∑ i : Fin N, ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 2 * ∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 + 2 * ∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∧ (∀ (Q T : Submodule ℝ (Euclid N)) (a b : Euclid N), a ∈ T → b ∈ T → |inner ℝ (Q.starProjection a) b - inner ℝ a b| ≤ (∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖a‖ * ‖b‖) ∧ ∀ (Q T : Submodule ℝ (Euclid N)) (e : Euclid N), e ∈ Tᗮ → ‖Q.starProjection e‖ ^ 2 ≤ (∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖e‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

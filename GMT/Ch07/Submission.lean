@@ -451,6 +451,90 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Hilbert–Schmidt inequalities for orthogonal projections** (Simon Ch. 5, Remark 4.4 and
+(10)–(11) in the proof of 4.5; chapter-05.txt lines 715–737, 869–883).  Write
+`eᵢ = EuclideanSpace.single i 1`, `|A|² = Σᵢ ‖A eᵢ‖²` and `p_Q = Q.starProjection`.  Then
+(a) `‖A y‖² ≤ |A|² ‖y‖²` (operator norm `≤` inner product norm); (b)
+`|p_S − p_T|² ≤ 2|p_Q − p_S|² + 2|p_Q − p_T|²`; (c) `|⟨p_Q a, b⟩ − ⟨a, b⟩| ≤ |p_Q − p_T|² ‖a‖ ‖b‖`
+for `a, b ∈ T`, since `⟨p_Q a, b⟩ − ⟨a, b⟩ = −⟨(p_Q − p_T) a, (p_Q − p_T) b⟩`; (d)
+`‖p_Q e‖² ≤ |p_Q − p_T|² ‖e‖²` for `e ∈ Tᗮ`, since `p_Q e = (p_Q − p_T) e`. -/
+theorem Submission.dorag_tes_projection_algebra : ∀ (N : ℕ), (∀ (A : Euclid N →L[ℝ] Euclid N) (y : Euclid N), ‖A y‖ ^ 2 ≤ (∑ i : Fin N, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖y‖ ^ 2) ∧ (∀ Q S T : Submodule ℝ (Euclid N), ∑ i : Fin N, ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 2 * ∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 + 2 * ∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∧ (∀ (Q T : Submodule ℝ (Euclid N)) (a b : Euclid N), a ∈ T → b ∈ T → |inner ℝ (Q.starProjection a) b - inner ℝ a b| ≤ (∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖a‖ * ‖b‖) ∧ ∀ (Q T : Submodule ℝ (Euclid N)) (e : Euclid N), e ∈ Tᗮ → ‖Q.starProjection e‖ ^ 2 ≤ (∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖e‖ ^ 2 := by
+  intro N
+  -- (a): `y = Σᵢ yᵢ eᵢ`, so `‖Ay‖ ≤ Σᵢ |yᵢ| ‖Aeᵢ‖`; then Cauchy–Schwarz and `Σᵢ yᵢ² = ‖y‖²`.
+  have ha : ∀ (A : Euclid N →L[ℝ] Euclid N) (y : Euclid N), ‖A y‖ ^ 2 ≤
+      (∑ i : Fin N, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖y‖ ^ 2 := by
+    intro A y
+    have hAy : A y = ∑ i : Fin N, y i • A (EuclideanSpace.single i (1 : ℝ)) := by
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin N) ℝ).sum_repr y]
+      simp [map_sum, map_smul]
+    have h1 : ‖A y‖ ≤ ∑ i : Fin N, |y i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖ := by
+      rw [hAy]
+      refine (norm_sum_le _ _).trans (le_of_eq ?_)
+      simp [norm_smul]
+    have h2 := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun i : Fin N => |y i|)
+      (fun i => ‖A (EuclideanSpace.single i (1 : ℝ))‖)
+    have h3 : ∑ i : Fin N, |y i| ^ 2 = ‖y‖ ^ 2 := by
+      simp [EuclideanSpace.real_norm_sq_eq]
+    calc ‖A y‖ ^ 2 ≤ (∑ i : Fin N, |y i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 :=
+          pow_le_pow_left₀ (norm_nonneg _) h1 2
+      _ ≤ (∑ i : Fin N, |y i| ^ 2) * ∑ i : Fin N, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := h2
+      _ = _ := by rw [h3, mul_comm]
+  refine ⟨ha, ?_, ?_, ?_⟩
+  · -- (b): termwise `‖sᵢ − tᵢ‖ ≤ ‖qᵢ − sᵢ‖ + ‖qᵢ − tᵢ‖` and `(u + w)² ≤ 2u² + 2w²`.
+    intro Q S T
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    have h : ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ≤
+        ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ +
+        ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ := by
+      rw [norm_sub_rev (Q.starProjection _) (S.starProjection _)]
+      exact norm_sub_le_norm_sub_add_norm_sub _ _ _
+    nlinarith [mul_self_le_mul_self (norm_nonneg _) h,
+      sq_nonneg (‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ -
+        ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        T.starProjection (EuclideanSpace.single i (1 : ℝ))‖)]
+  · -- (c): with `B = p_Q − p_T`, `⟨p_Q a, b⟩ − ⟨a, b⟩ = −⟨Ba, Bb⟩`; Cauchy–Schwarz and (a).
+    intro Q T a b haT hbT
+    have hBa := ha (Q.starProjection - T.starProjection) a
+    have hBb := ha (Q.starProjection - T.starProjection) b
+    simp only [sub_apply, Submodule.starProjection_eq_self_iff.mpr haT,
+      Submodule.starProjection_eq_self_iff.mpr hbT] at hBa hBb
+    have hid : inner ℝ (Q.starProjection a) b - inner ℝ a b =
+        -inner ℝ (Q.starProjection a - a) (Q.starProjection b - b) := by
+      have h1 : inner ℝ (Q.starProjection a) (Q.starProjection b) =
+          inner ℝ (Q.starProjection a) b := by
+        rw [Submodule.inner_starProjection_left_eq_right Q a,
+          Submodule.starProjection_eq_self_iff.mpr (Q.starProjection_apply_mem b),
+          ← Submodule.inner_starProjection_left_eq_right Q a]
+      have h2 : inner ℝ a (Q.starProjection b) = inner ℝ (Q.starProjection a) b :=
+        (Submodule.inner_starProjection_left_eq_right Q a b).symm
+      simp only [inner_sub_left, inner_sub_right, h1, h2]
+      ring
+    rw [hid, abs_neg]
+    refine (abs_real_inner_le_norm _ _).trans ?_
+    set H := ∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+      T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+    have hH : 0 ≤ H := Finset.sum_nonneg fun i _ => sq_nonneg _
+    have hsq : (‖Q.starProjection a - a‖ * ‖Q.starProjection b - b‖) ^ 2 ≤
+        (H * ‖a‖ * ‖b‖) ^ 2 := by
+      calc (‖Q.starProjection a - a‖ * ‖Q.starProjection b - b‖) ^ 2 =
+            ‖Q.starProjection a - a‖ ^ 2 * ‖Q.starProjection b - b‖ ^ 2 := by ring
+        _ ≤ (H * ‖a‖ ^ 2) * (H * ‖b‖ ^ 2) :=
+          mul_le_mul hBa hBb (sq_nonneg _) (mul_nonneg hH (sq_nonneg _))
+        _ = (H * ‖a‖ * ‖b‖) ^ 2 := by ring
+    exact (pow_le_pow_iff_left₀ (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+      (mul_nonneg (mul_nonneg hH (norm_nonneg _)) (norm_nonneg _)) two_ne_zero).mp hsq
+  · -- (d): `p_T e = 0`, so `p_Q e = (p_Q − p_T) e`; then (a).
+    intro Q T e he
+    have hBe := ha (Q.starProjection - T.starProjection) e
+    simp only [sub_apply,
+      (Submodule.starProjection_apply_eq_zero_iff T).mpr he, sub_zero] at hBe
+    exact hBe
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
