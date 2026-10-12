@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "109f89422623e49c039800e339a212b827e02b2844d36725637ba23f654ebe13",
+  "git_delta": {
+    "base_commit": "6db8191ed158a4db4a9ff4ad4c267a57f4e81c93",
+    "candidate_commit": "52115c22ec2d028a20c63361e75b9f6ee1c485bd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cone_current_apply_dilation_pullback",
+    "diff_sha256": "c56c2774dee717d22037fcfdb9e3cfb7128db85908161c558faa92361a70b8f0",
+    "source_sha256": "acb7a6b172c0fe73e40d5c087bb5c8d9cf407cf5dfe17a271111c60a54c4ea80",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cone_current_apply_dilation_pullback",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ lam : ℝ, 0 < lam → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) ∧ C ω' = C ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
