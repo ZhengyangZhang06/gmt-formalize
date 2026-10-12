@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e711a3d8ad3f1a3b62d1ea1626f466f695360d847de07fbe4d58ee412241b7b4",
+  "git_delta": {
+    "base_commit": "5a7a966ad6cd6fb3a626286969d83fd8718fc3b1",
+    "candidate_commit": "02cf080762a9f8dcefb9623931b4381d6251c6ca",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pdb_density_point_rescaled_limit",
+    "diff_sha256": "78edb457e9587deca07f5d25485fcdc02458e9b2d8d4536a42ce50e6c636f87b",
+    "source_sha256": "f97a8ac9b8c5c09016d4b744e4cd43bdb41ff09963bf19da2002121df43e104f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pdb_density_point_rescaled_limit",
+      "statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (J : EuclideanSpace ℝ (Fin n) → ℝ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (w : EuclideanSpace ℝ (Fin n)) (c : ℝ), IsCompact C → Continuous F → ContinuousOn J C → w ∈ C → HasFDerivAt F A w → Function.Injective A → 0 < c → (∀ v ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ v in C, J v * f (t⁻¹ • (F v - F w))) (𝓝[>] 0) (𝓝 (J w * ∫ u, f (A u)))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
