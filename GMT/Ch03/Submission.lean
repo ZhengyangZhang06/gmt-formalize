@@ -1110,6 +1110,148 @@ theorem Submission.chartTD_injective_area_setIntegral : ∀ (n N : ℕ) (B : Set
   simp only
   rw [Real.coe_toNNReal _ (LinearMap.normDet_nonneg _), mul_comm]
 
+/-- **Blow-up limit of a pulled-back chart integral** (Simon Ch. 3, proof of Theorem 1.6 "⇒" and
+Remark 1.5(2), `chapter-03.txt` lines 87–90 and 113–143, for a single bi-Lipschitz `C¹` chart):
+let `B ⊆ ℝⁿ` be open, `ψ` `C¹` and `K`-Lipschitz on `B` with `c|u - u'| ≤ |ψ(u) - ψ(u')|`
+(`c > 0`) on `B`, and `Jψ(v) = normDet(Dψ(v))`. Then for `u ∈ B` and `f ∈ C_c(ℝᴺ)`,
+`r⁻ⁿ ∫_B f(η_{ψ(u),r}(ψ(v))) Jψ(v) dv → Jψ(u) ∫_{ℝⁿ} f(Dψ(u) y) dy` as `r ↓ 0`. The substitution
+`v = u + r y` turns the left side into `∫ G_r` with
+`G_r(y) = 1_B(u + r y) f(r⁻¹(ψ(u + r y) - ψ(u))) Jψ(u + r y)`. If `f(z) ≠ 0` forces `|z| ≤ R`, the
+lower bound gives `G_r = 0` off `B̄_{R/c}(0)`, and `|G_r| ≤ (sup |f|) Kⁿ` by
+`Submission.chartTD_chart_fderiv_bounds` and `Submission.chartTD_normDet_le_opNorm_pow`. Since
+`G_r(y) → f(Dψ(u) y) Jψ(u)` pointwise (`Dψ` and `normDet` are continuous), dominated convergence
+applies. -/
+theorem Submission.chartTD_chart_blowup_integral_tendsto : ∀ (n N : ℕ) (B : Set (Rn n))
+    (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B →
+    LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) →
+    ∀ u ∈ B, ∀ f : C_c(Rn N, ℝ),
+      Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ v in B, f (blowUpMap (ψ u) r (ψ v)) *
+          (fderiv ℝ ψ v).toLinearMap.normDet) (𝓝[>] 0)
+        (𝓝 ((fderiv ℝ ψ u).toLinearMap.normDet * ∫ y, f (fderiv ℝ ψ u y))) := by
+  intro n N B ψ K c hB hψ hLip hc hlow u hu f
+  set J : Rn n → ℝ := fun v => (fderiv ℝ ψ v).toLinearMap.normDet with hJdef
+  set L := fderiv ℝ ψ u with hLdef
+  have hBmeas : MeasurableSet B := hB.measurableSet
+  -- Step 1: `normDet = √det(A* ∘ A)` is continuous, so `J = normDet ∘ Dψ` is Borel and continuous
+  -- at `u`; `0 ≤ J ≤ Kⁿ` on `B`; `ψ` is continuous on `B` and has derivative `L` at `u`.
+  have hND : Continuous (fun A : Rn n →L[ℝ] Rn N ↦ A.toLinearMap.normDet) := by
+    have key : ∀ A : Rn n →L[ℝ] Rn N, A.toLinearMap.normDet =
+        Real.sqrt ((ContinuousLinearMap.adjoint A ∘L A).det) := by
+      intro A
+      rw [← A.normDet_sq]
+      simp [Real.sqrt_sq (LinearMap.normDet_nonneg _)]
+    simp_rw [key]
+    exact Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      ((ContinuousLinearMap.adjoint.continuous).clm_comp continuous_id))
+  have hJmeas : Measurable J := hND.measurable.comp (measurable_fderiv ℝ ψ)
+  have hJnn : ∀ v, 0 ≤ J v := fun v => LinearMap.normDet_nonneg _
+  have hJle : ∀ v ∈ B, J v ≤ (K : ℝ) ^ n := fun v hv =>
+    (Submission.chartTD_normDet_le_opNorm_pow n N _).trans
+      (pow_le_pow_left₀ (norm_nonneg _)
+        (Submission.chartTD_chart_fderiv_bounds n N B ψ K c hB hψ hLip hlow v hv).1 n)
+  have hJcont : ContinuousAt J u := by
+    have h1 : ContinuousAt (fderiv ℝ ψ) u :=
+      (hψ.continuousOn_fderiv_of_isOpen hB le_rfl).continuousAt (hB.mem_nhds hu)
+    exact hND.continuousAt.comp h1
+  have hψcont : ContinuousOn ψ B := hLip.continuousOn
+  have hd : HasFDerivAt ψ L u :=
+    ((hψ.differentiableOn one_ne_zero).differentiableAt (hB.mem_nhds hu)).hasFDerivAt
+  -- Step 2: `|f| ≤ M` everywhere, and `f z ≠ 0` forces `‖z‖ ≤ R`.
+  obtain ⟨M, hM⟩ := f.hasCompactSupport.exists_bound_of_continuous f.continuous
+  obtain ⟨R, hR⟩ : ∃ R, ∀ z, f z ≠ 0 → ‖z‖ ≤ R := by
+    obtain ⟨R, hR⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+    exact ⟨R, fun z hz => by simpa using hR (subset_tsupport _ hz)⟩
+  -- Step 3: the substitution `v = u + r y`: `r⁻ⁿ ∫_B h_r = ∫ G_r` for every `r > 0`.
+  let h : ℝ → Rn n → ℝ := fun r v => f (blowUpMap (ψ u) r (ψ v)) * J v
+  let G : ℝ → Rn n → ℝ := fun r y => B.indicator (h r) (u + r • y)
+  have hsub : ∀ r : ℝ, 0 < r →
+      (r ^ n)⁻¹ * ∫ v in B, f (blowUpMap (ψ u) r (ψ v)) * J v = ∫ y, G r y := by
+    intro r hr
+    rw [← integral_indicator hBmeas]
+    have h1 := Measure.integral_comp_smul (volume : Measure (Rn n))
+      (fun y => B.indicator (h r) (u + y)) r
+    rw [integral_add_left_eq_self (fun y => B.indicator (h r) y) u] at h1
+    rw [finrank_euclideanSpace_fin, abs_of_pos (inv_pos.mpr (pow_pos hr n)), smul_eq_mul] at h1
+    exact h1.symm
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  -- Step 4: dominated convergence with the bound `M Kⁿ 1_{B̄_{R/c}(0)}`.
+  have hDCT : Tendsto (fun r => ∫ y, G r y) (𝓝[>] 0) (𝓝 (∫ y, f (L y) * J u)) := by
+    refine tendsto_integral_filter_of_dominated_convergence
+      (fun y => (Metric.closedBall (0 : Rn n) (R / c)).indicator (fun _ => M * (K : ℝ) ^ n) y)
+      ?_ ?_ ?_ ?_
+    · -- `G_r = 1_{S_r} · (h_r ∘ (u + r •))` with `S_r = {y | u + r y ∈ B}` open.
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      have haff : Continuous (fun y : Rn n => u + r • y) := by fun_prop
+      set S : Set (Rn n) := (fun y : Rn n => u + r • y) ⁻¹' B with hSdef
+      have hSopen : IsOpen S := hB.preimage haff
+      have hGS : G r = S.indicator (fun y => h r (u + r • y)) := by
+        funext y
+        by_cases hy : u + r • y ∈ B
+        · simp [G, S, Set.indicator_of_mem, hy]
+        · simp [G, S, Set.indicator_of_notMem, hy]
+      rw [hGS, aestronglyMeasurable_indicator_iff hSopen.measurableSet]
+      have h1 : ContinuousOn (fun y : Rn n => f (blowUpMap (ψ u) r (ψ (u + r • y)))) S := by
+        have hb : Continuous (fun z : Rn N => blowUpMap (ψ u) r z) := by
+          unfold blowUpMap; fun_prop
+        exact (f.continuous.comp hb).comp_continuousOn
+          (hψcont.comp haff.continuousOn (fun y hy => hy))
+      have h2 : Measurable (fun y : Rn n => J (u + r • y)) := hJmeas.comp haff.measurable
+      exact (h1.aestronglyMeasurable hSopen.measurableSet).mul
+        h2.aestronglyMeasurable.restrict
+    · -- If `G_r(y) ≠ 0` then `c r ‖y‖ ≤ ‖ψ(u + r y) - ψ(u)‖ ≤ r R`, so `‖y‖ ≤ R / c`.
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      have hr' : (0:ℝ) < r := hr
+      refine Eventually.of_forall (fun y => ?_)
+      by_cases hy : u + r • y ∈ B
+      · have hGy : G r y = f (blowUpMap (ψ u) r (ψ (u + r • y))) * J (u + r • y) := by
+          simp [G, h, Set.indicator_of_mem, hy]
+        rw [hGy]
+        by_cases hf0 : f (blowUpMap (ψ u) r (ψ (u + r • y))) = 0
+        · rw [hf0, zero_mul, norm_zero]
+          exact Set.indicator_nonneg (fun _ _ => by positivity) _
+        · have hRb := hR _ hf0
+          have hyball : y ∈ Metric.closedBall (0 : Rn n) (R / c) := by
+            rw [Metric.mem_closedBall, dist_zero_right, le_div_iff₀ hc]
+            have h1 := hlow (u + r • y) hy u hu
+            rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr'.le] at h1
+            unfold blowUpMap at hRb
+            rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hr'.le)] at hRb
+            have h2 : ‖ψ (u + r • y) - ψ u‖ ≤ r * R := by
+              rw [inv_mul_le_iff₀ hr'] at hRb; linarith
+            nlinarith
+          rw [Set.indicator_of_mem hyball, norm_mul, Real.norm_of_nonneg (hJnn _)]
+          exact mul_le_mul (hM _) (hJle _ hy) (hJnn _) hM0
+      · have hGy : G r y = 0 := by simp [G, Set.indicator_of_notMem, hy]
+        rw [hGy, norm_zero]
+        exact Set.indicator_nonneg (fun _ _ => by positivity) _
+    · exact (integrableOn_const (measure_closedBall_lt_top (x := (0 : Rn n))
+        (r := R / c)).ne).integrable_indicator measurableSet_closedBall
+    · -- Pointwise: eventually `u + r y ∈ B`, `r⁻¹(ψ(u + r y) - ψ(u)) → L y`, `J(u + r y) → J(u)`.
+      refine Eventually.of_forall (fun y => ?_)
+      have hlin : Tendsto (fun r : ℝ => u + r • y) (𝓝[>] 0) (𝓝 u) := by
+        have : Tendsto (fun r : ℝ => u + r • y) (𝓝 0) (𝓝 (u + (0:ℝ) • y)) :=
+          ((continuous_const.add (continuous_id.smul continuous_const)).tendsto 0)
+        simpa using this.mono_left nhdsWithin_le_nhds
+      have hevB : ∀ᶠ r in 𝓝[>] (0:ℝ), u + r • y ∈ B := hlin (hB.mem_nhds hu)
+      have hq : Tendsto (fun r : ℝ => blowUpMap (ψ u) r (ψ (u + r • y))) (𝓝[>] 0)
+          (𝓝 (L y)) := by
+        have := hd.lim y (c := fun r : ℝ => r⁻¹) (l := 𝓝[>] (0:ℝ)) (by
+          refine (tendsto_inv_nhdsGT_zero (𝕜 := ℝ)).congr' ?_
+          filter_upwards [self_mem_nhdsWithin] with t ht
+          simp [abs_of_pos (show (0:ℝ) < t from ht)])
+        simpa [blowUpMap, inv_inv] using this
+      have hlim : Tendsto (fun r : ℝ => f (blowUpMap (ψ u) r (ψ (u + r • y))) * J (u + r • y))
+          (𝓝[>] 0) (𝓝 (f (L y) * J u)) :=
+        ((f.continuous.tendsto _).comp hq).mul (hJcont.tendsto.comp hlin)
+      refine hlim.congr' ?_
+      filter_upwards [hevB] with r hr
+      simp [G, h, Set.indicator_of_mem, hr]
+  -- Step 5: `∫ f(L y) J(u) dy = J(u) ∫ f(L y) dy`, and the two sides agree for `r > 0`.
+  rw [integral_mul_const, mul_comm] at hDCT
+  refine hDCT.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact (hsub r hr).symm
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
