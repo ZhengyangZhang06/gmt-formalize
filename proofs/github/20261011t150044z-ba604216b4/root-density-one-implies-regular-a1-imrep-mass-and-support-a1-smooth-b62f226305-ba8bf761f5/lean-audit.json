@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f6b7cbb38fe5a1eabee390e4b99c418eb6e802d58abd3b31a1cb45a0daf213a",
+  "git_delta": {
+    "base_commit": "5700415957d44005e1d46f0206979c008b2322ef",
+    "candidate_commit": "8abce3204fc05f00ae9a4047981f27a9f9a6ba3b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_ims_sua_mollify_unit_field",
+    "diff_sha256": "cf68716995aeae1aae1595d5fc949192315df286605c4efde871e4a2bafe3b84",
+    "source_sha256": "cd75e1d993ce5b0e84dfce30f1a4ed9862443361f80b3db04fcbd4a869259b57",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_ims_sua_mollify_unit_field",
+      "statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsOpen V → Continuous g → HasCompactSupport g → tsupport g ⊆ V → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (ω x - g x) ≤ ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
