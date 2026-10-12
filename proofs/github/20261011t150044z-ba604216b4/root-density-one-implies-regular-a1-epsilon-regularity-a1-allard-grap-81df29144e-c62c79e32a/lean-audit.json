@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cab6dd6f0dc741eeb71de11e8010de5f308952a08a833921118f052818acedfa",
+  "git_delta": {
+    "base_commit": "05a21c9db43afbe93a656c3bcd4d2981ad216899",
+    "candidate_commit": "f471edcde34d72291315dddc1b95e379b67767fb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_weyl_ae_tendsto",
+    "diff_sha256": "e978084e38de38940041cbe85b9ff0f4d913645d8f33381be4cfa37c11fa2be8",
+    "source_sha256": "4604c8eef5fca35b16f7fb58233b2aa62558eb692786327a4c4e36c04159df06",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_weyl_ae_tendsto",
+      "statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (C : ℝ) (φ : ℝ → Euclid n → ℝ), 0 < n → Integrable f → (∀ ε : ℝ, 0 < ε → Continuous (φ ε)) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, ε ≤ ‖y‖ → φ ε y = 0) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, |φ ε y| ≤ C / ε ^ n) → (∀ ε : ℝ, 0 < ε → ∫ y, φ ε y = 1) → ∀ᵐ x ∂(volume : Measure (Euclid n)), Tendsto (fun ε => ∫ y, f y * φ ε (x - y)) (𝓝[>] (0 : ℝ)) (𝓝 (f x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
