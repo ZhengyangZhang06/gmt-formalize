@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7cdfd9cf853dabaab414f8395e8277ce213772b7df5f2b491f05440e2d65cc93",
+  "git_delta": {
+    "base_commit": "3fe721747a635acb83fe9b7128d590e6c88b261d",
+    "candidate_commit": "da24ae4652b4da8c3e8ae05dd21aa5c9f50dad1b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lintegral_ball_comp_sub_le",
+    "diff_sha256": "c7be920389d3db44573398359204e0c3e3b9b15ecc201a79099d52544f49a0c6",
+    "source_sha256": "11f56e3c6dc07594462b3e2f13e928192e1eebfc173478e55289c6000f52b0ee",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lintegral_ball_comp_sub_le",
+      "statement": "∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (r s : ℝ) (w : Rn n), r + ‖w‖ ≤ s → ∫⁻ x in ball (0 : Rn n) r, F (x - w) ≤ ∫⁻ x in ball (0 : Rn n) s, F x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
