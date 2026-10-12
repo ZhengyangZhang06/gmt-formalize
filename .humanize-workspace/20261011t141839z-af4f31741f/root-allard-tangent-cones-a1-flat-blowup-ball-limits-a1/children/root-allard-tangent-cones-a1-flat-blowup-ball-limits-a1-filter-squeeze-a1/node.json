@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.filter_squeeze-a1",
+  "parent_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+  "depth": 3,
+  "title": "Squeeze along a filter by approximating families",
+  "statement": "Let l be a filter on a type ι, m : ι → ℝ, a, b : ℕ → ι → ℝ, A, B : ℕ → ℝ and L ∈ ℝ. Suppose that for every k, eventually along l, a_k(i) ≤ m(i) ≤ b_k(i). Suppose also that a_k → A_k and b_k → B_k along l for every k, and that A_k → L and B_k → L as k → ∞. Then m → L along l.",
+  "lean_statement": "∀ {ι : Type} (l : Filter ι) (m : ι → ℝ) (a b : ℕ → ι → ℝ) (A B : ℕ → ℝ) (L : ℝ), (∀ k, ∀ᶠ i in l, a k i ≤ m i ∧ m i ≤ b k i) → (∀ k, Tendsto (a k) l (𝓝 (A k))) → (∀ k, Tendsto (b k) l (𝓝 (B k))) → Tendsto A atTop (𝓝 L) → Tendsto B atTop (𝓝 L) → Tendsto m l (𝓝 L)",
+  "lean_name": "allard_tc_fbl_squeeze",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1-filter-squeeze-a1-a1"
+}
