@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f0f4eb8bc350c13059372d774725510b6b97b0a03473dda6c59aa8887d7e1742",
+  "git_delta": {
+    "base_commit": "08b7e2df9183d2d4048a3bbbcb394f441afc745e",
+    "candidate_commit": "9f764c01567d2ff746753ffa8d655a2c1c570803",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_gpa_hsNorm_bounds",
+    "diff_sha256": "0090d1a4974c09e9a487d7632649a11a978fb532ecf6883699bbe2a751f25ce4",
+    "source_sha256": "1e099ece855279adf588d9269596a41b089d7be05c9eed3a58af4011f0f0c0c4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gpa_hsNorm_bounds",
+      "statement": "∀ (m k : ℕ) (A B : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A ∧ hsNorm A ≤ Real.sqrt m * ‖A‖ ∧ hsNorm (A + B) ≤ hsNorm A + hsNorm B",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
