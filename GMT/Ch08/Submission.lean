@@ -1112,6 +1112,94 @@ theorem Submission.frt_weq_nondensity_points_null :
   simp only [ν, Measure.restrict_apply' hW.measurableSet, inter_eq_left.2 hrW,
     inter_eq_left.2 (inter_subset_right.trans hrW)]
 
+/-- Steps 6–8 of the proof of Simon Ch. 8, 1.2, on one piece `A ⊆ W` (`W` open, `μ(W) < ∞`,
+`H^n(A) < ∞`): if `μ` has density `θ(x) > 0` at every `x ∈ A`, `μ` and `H^n` have the same null
+subsets of `A`, and `H^n ⌞ A` has density one `H^n ⌞ A`-a.e., then `μ ⌞ A = (H^n ⌞ A) ⌞ θ`, i.e.
+`μ(B ∩ A) = ∫_{B ∩ A} θ dH^n` for every Borel `B` (Besicovitch differentiation and
+Radon–Nikodym). -/
+theorem Submission.frt_weq_piece_restrict_eq_density :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsOpen W → μ W ≠ ∞ → A ⊆ W → μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → (∀ x ∈ A, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → (∀ Z ⊆ A, μHE[n] Z = 0 → μ Z = 0) → (∀ Z ⊆ A, μ Z = 0 → μHE[n] Z = 0) → (∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict A, HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict A) x 1) → ∀ B : Set (Euclidean N), MeasurableSet B → μ (B ∩ A) = ∫⁻ x in B ∩ A, ENNReal.ofReal (θ x) ∂μHE[n] := by
+  intro N n μ W A θ hW hμW hAW hHA hAnm hθ hnullμ hnullH hdens B hB
+  -- Notation: `H = H^n`, `ρ = μ ⌞ A`, `ν = H^n ⌞ A`, `c(r) = ω_n r^n`.
+  set H : Measure (Euclidean N) := μHE[n]
+  set ρ : Measure (Euclidean N) := μ.restrict A with hρ
+  set ν : Measure (Euclidean N) := H.restrict A with hν
+  let c : ℝ → ℝ≥0∞ := fun r ↦ unitBallVolume n * ENNReal.ofReal r ^ n
+  -- Step 1: `0 < ω_n < ∞`, so `c(r) ∉ {0, ∞}` for `r > 0`.
+  have hc0 : ∀ r : ℝ, 0 < r → c r ≠ 0 := fun r hr ↦
+    mul_ne_zero (measure_ball_pos volume _ one_pos).ne'
+      (pow_ne_zero _ (ENNReal.ofReal_pos.2 hr).ne')
+  have hctop : ∀ r : ℝ, c r ≠ ∞ := fun r ↦
+    ENNReal.mul_ne_top measure_ball_lt_top.ne (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- Step 2: `ρ` and `ν` are finite measures.
+  have : IsFiniteMeasure ρ :=
+    isFiniteMeasure_restrict.2 (ne_top_of_le_ne_top hμW (measure_mono hAW))
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 hHA
+  -- Step 3: `ρ ≪ ν`, by (ii).
+  have hac : ρ ≪ ν := Measure.AbsolutelyContinuous.mk fun s hs hs0 ↦ by
+    rw [hν, Measure.restrict_apply hs] at hs0
+    rw [hρ, Measure.restrict_apply hs]
+    exact hnullμ _ inter_subset_right hs0
+  -- Step 4: the non-density points `E` of `A` are `μ`-null, hence `H`-null by (iii) and `ν`-null.
+  set E : Set (Euclidean N) := {x | x ∈ A ∧ ¬ Tendsto (fun r : ℝ ↦ μ (A ∩ closedBall x r) /
+    μ (closedBall x r)) (𝓝[>] 0) (𝓝 1)}
+  have hEν : ν E = 0 := nonpos_iff_eq_zero.1 <| (Measure.restrict_apply_le A E).trans_eq <|
+    hnullH E (fun x hx ↦ hx.1) (Submission.frt_weq_nondensity_points_null N μ W A hW hμW hAW)
+  -- Steps 5–7: `ν`-a.e., `ρ(B_r(x))/ν(B_r(x)) → θ(x)`, so `dρ/dν = θ` `ν`-a.e. (Besicovitch).
+  have hderiv : ρ.rnDeriv ν =ᵐ[ν] fun x ↦ ENNReal.ofReal (θ x) := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hEν, ae_restrict_mem₀ hAnm, hdens,
+      Besicovitch.ae_tendsto_rnDeriv ρ ν] with x hxE hxA hxα hxD
+    -- (α) `ν(B_r(x))/c(r) → 1`, (β) `μ(A ∩ B_r(x))/μ(B_r(x)) → 1`, (γ) `μ(B_r(x))/c(r) → θ(x)`.
+    have hα : Tendsto (fun r ↦ ν (closedBall x r) / c r) (𝓝[>] 0) (𝓝 1) := hxα
+    have hβ : Tendsto (fun r : ℝ ↦ μ (A ∩ closedBall x r) / μ (closedBall x r)) (𝓝[>] 0)
+        (𝓝 1) := by
+      by_contra h
+      exact hxE ⟨hxA, h⟩
+    have hγ : Tendsto (fun r ↦ μ (closedBall x r) / c r) (𝓝[>] 0)
+        (𝓝 (ENNReal.ofReal (θ x))) := (hθ x hxA).2
+    have hL0 : ENNReal.ofReal (θ x) ≠ 0 := (ENNReal.ofReal_pos.2 (hθ x hxA).1).ne'
+    -- (c) the product of the three ratios tends to `1 · θ(x) / 1`.
+    have hlim : Tendsto (fun r ↦ μ (A ∩ closedBall x r) / μ (closedBall x r) *
+        (μ (closedBall x r) / c r) / (ν (closedBall x r) / c r)) (𝓝[>] 0)
+        (𝓝 (ENNReal.ofReal (θ x))) := by
+      simpa using ENNReal.Tendsto.div (ENNReal.Tendsto.mul hβ (Or.inl one_ne_zero) hγ
+        (Or.inr ENNReal.one_ne_top)) (Or.inr one_ne_zero) hα (Or.inl ENNReal.one_ne_top)
+    -- (a), (b), (d): eventually that product is `ρ(B_r(x))/ν(B_r(x))`.
+    have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), μ (A ∩ closedBall x r) / μ (closedBall x r) *
+        (μ (closedBall x r) / c r) / (ν (closedBall x r) / c r) =
+          ρ (closedBall x r) / ν (closedBall x r) := by
+      filter_upwards [self_mem_nhdsWithin, hγ.eventually_ne hL0,
+        hγ.eventually_ne ENNReal.ofReal_ne_top, hα.eventually_ne one_ne_zero,
+        hα.eventually_ne ENNReal.one_ne_top] with r hr hb0 hbtop hd0 hdtop
+      have hb0' : μ (closedBall x r) ≠ 0 := fun h ↦ hb0 (by rw [h, ENNReal.zero_div])
+      have hbtop' : μ (closedBall x r) ≠ ∞ := fun h ↦
+        hbtop (by rw [h, ENNReal.top_div_of_ne_top (hctop r)])
+      have hd0' : ν (closedBall x r) ≠ 0 := fun h ↦ hd0 (by rw [h, ENNReal.zero_div])
+      have hdtop' : ν (closedBall x r) ≠ ∞ := fun h ↦
+        hdtop (by rw [h, ENNReal.top_div_of_ne_top (hctop r)])
+      have hρr : ρ (closedBall x r) = μ (A ∩ closedBall x r) := by
+        rw [hρ, Measure.restrict_apply (μ := μ) isClosed_closedBall.measurableSet,
+          inter_comm (closedBall x r) A]
+      rw [hρr]
+      simp only [div_eq_mul_inv]
+      rw [ENNReal.mul_inv (Or.inl hd0') (Or.inl hdtop'), inv_inv]
+      calc μ (A ∩ closedBall x r) * (μ (closedBall x r))⁻¹ * (μ (closedBall x r) * (c r)⁻¹) *
+            ((ν (closedBall x r))⁻¹ * c r)
+          = μ (A ∩ closedBall x r) * (ν (closedBall x r))⁻¹ *
+              ((μ (closedBall x r))⁻¹ * μ (closedBall x r)) * ((c r)⁻¹ * c r) := by ring
+        _ = μ (A ∩ closedBall x r) * (ν (closedBall x r))⁻¹ := by
+          rw [ENNReal.inv_mul_cancel hb0' hbtop', ENNReal.inv_mul_cancel (hc0 r hr) (hctop r),
+            mul_one, mul_one]
+    exact tendsto_nhds_unique hxD (hlim.congr' hev)
+  -- Step 8: Radon–Nikodym, `ρ = ν ⌞ θ`.
+  have hρeq : ρ = ν.withDensity fun x ↦ ENNReal.ofReal (θ x) := by
+    rw [← withDensity_congr_ae hderiv, Measure.withDensity_rnDeriv_eq ρ ν hac]
+  -- Step 9: evaluate on the Borel set `B`.
+  calc μ (B ∩ A) = ρ B := (Measure.restrict_apply hB).symm
+    _ = ν.withDensity (fun x ↦ ENNReal.ofReal (θ x)) B := by rw [← hρeq]
+    _ = ∫⁻ x in B, ENNReal.ofReal (θ x) ∂ν := withDensity_apply _ hB
+    _ = ∫⁻ x in B ∩ A, ENNReal.ofReal (θ x) ∂H := by rw [hν, Measure.restrict_restrict hB]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
