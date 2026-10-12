@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1.cutoff_gradient-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1",
+  "depth": 4,
+  "title": "Tangential gradient of the piecewise-linear level cut-off h_ε = ψ_ε∘f (parent Step 7; Simon Ch. 6, proof of 4.5(2), (4))",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P, and let Tan(x, Q) be an arbitrary predicate on points x ∈ ℝ^P and linear subspaces Q ⊆ ℝ^P. Let f : ℝ^P → ℝ be L-Lipschitz (L ≥ 0), let G : ℝ^P → ℝ^P be Borel with |G(x)| ≤ L for every x, and let t ∈ ℝ and ε > 0. Assume (TG): for μ-a.e. x and every Q with Tan(x, Q), G(x) ∈ Q and, for every u ∈ Q, s ↦ f(x + su) has derivative ⟨G(x), u⟩ at s = 0. Assume also that for μ-a.e. x, f(x) = t − ε implies G(x) = 0, and that for μ-a.e. x, f(x) = t implies G(x) = 0. Put h_ε(x) := max(0, min(1, (t − f(x))/ε)) and G_ε := 1_{f⁻¹((t−ε,t))}·(−ε⁻¹G). Then there is K ≥ 0 with four properties: h_ε is K-Lipschitz; G_ε is Borel; |G_ε(x)| ≤ K for every x; and for μ-a.e. x and every Q with Tan(x, Q), G_ε(x) ∈ Q and, for every u ∈ Q, s ↦ h_ε(x + su) has derivative ⟨G_ε(x), u⟩ at s = 0.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (Tan : Eucl P → Submodule ℝ (Eucl P) → Prop) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P) (t ε : ℝ), 0 < ε → LipschitzWith L f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂μ, ∀ Q : Submodule ℝ (Eucl P), Tan x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → (∀ᵐ x ∂μ, f x = t - ε → G x = 0) → (∀ᵐ x ∂μ, f x = t → G x = 0) → ∃ K : ℝ≥0, LipschitzWith K (fun x => max 0 (min 1 ((t - f x) / ε))) ∧ Measurable ((f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y)) ∧ (∀ x, ‖(f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y) x‖ ≤ K) ∧ ∀ᵐ x ∂μ, ∀ Q : Submodule ℝ (Eucl P), Tan x Q → (f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y) x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => max 0 (min 1 ((t - f (x + s • u)) / ε))) (inner ℝ ((f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y) x) u) 0",
+  "lean_name": "slicing_im_si_cutoff_tangential_gradient",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-identity-a1-cutof-828585ced7-a1"
+}

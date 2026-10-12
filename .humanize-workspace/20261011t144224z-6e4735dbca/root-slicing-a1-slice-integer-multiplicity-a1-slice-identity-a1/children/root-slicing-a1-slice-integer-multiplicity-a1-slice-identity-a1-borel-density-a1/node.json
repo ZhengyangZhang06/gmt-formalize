@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1.borel_density-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1",
+  "depth": 4,
+  "title": "A Borel L¹ density g on M with θ⟨ξ, G♭∧ω⟩ = |G|·g and g = θ⟨ξ⌞(G/|G|), ω⟩ where G ≠ 0 (parent Step 3)",
+  "statement": "Let P, m ∈ ℕ, U ⊆ ℝ^P, and let (M, θ, ξ) satisfy IsRectifiableTriple U (m+1) M θ ξ. Let G : ℝ^P → ℝ^P be Borel and ω ∈ D^m(U) (a smooth m-form with compact support and tsupport ω ⊆ U). For w ∈ ℝ^P and an m-covector α put w♭∧α := alternatizeUncurryFin((innerSL ℝ w).smulRight α). Put ν(x) := |G(x)|⁻¹G(x), so ν(x) = 0 when G(x) = 0, and ξ_t(x) := ξ(x)⌞ν(x), i.e. ξ_t(x)(α) = ξ(x)(ν(x)♭∧α); in Lean, ξ_t(x) = (ξ x).comp ((alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x)))). Then there is a Borel function g : ℝ^P → ℝ with the following properties: g is H^{m+1}⌞M-integrable; g(x) = 0 whenever G(x) = 0; and for H^{m+1}⌞M-a.e. x, (a) if G(x) ≠ 0 then g(x) = θ(x)·ξ_t(x)(ω(x)), and (b) θ(x)·ξ(x)(G(x)♭∧ω(x)) = |G(x)|·g(x). Here H^{m+1} = μHE[m+1].",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (G : Eucl P → Eucl P) (ω : TestFormOn U m), IsRectifiableTriple U (m + 1) M θ ξ → Measurable G → ∃ g : Eucl P → ℝ, Measurable g ∧ Integrable g ((μHE[m + 1] : Measure (Eucl P)).restrict M) ∧ (∀ x, G x = 0 → g x = 0) ∧ ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), (G x ≠ 0 → g x = θ x * (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x)))) ((ω : DifferentialForm (Eucl P) m) x)) ∧ θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x))) = ‖G x‖ * g x",
+  "lean_name": "slicing_im_si_borel_density",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.unit_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.unit_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-unit-bound-a1-a1",
+      "result_commit": "27af9b191b732eae73e3d693d8903e52f89962ce",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-identity-a1-borel-density-a1-a1"
+}

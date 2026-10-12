@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1.coarea_null-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1",
+  "depth": 4,
+  "title": "Null-set consequences of the co-area identity: G = 0 a.e. on each level set, and null subsets of M have null slices (parent Steps 1–2; Simon Ch. 6, proof of 4.5(2))",
+  "statement": "Let P ∈ ℕ, let μ and ν be measures on ℝ^P, let M ⊆ ℝ^P be an arbitrary set, and let f : ℝ^P → ℝ and G : ℝ^P → ℝ^P be Borel measurable. Assume the co-area identity (CA): for every Borel g : ℝ^P → [0, ∞], the function t ↦ ∫_{M∩f⁻¹{t}} g dν is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹{t}} g dν dt = ∫_M |G| g dμ. Integrals over M ∩ f⁻¹{t} and over M are taken against the restricted measures, which are defined for arbitrary sets. Then: (i) for every c ∈ ℝ and μ⌞M-a.e. x, f(x) = c implies G(x) = 0; (ii) for every Z ⊆ M with μ(Z) = 0, ν(Z ∩ f⁻¹{t}) = 0 for Lebesgue-a.e. t ∈ ℝ.",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Eucl P)) (M : Set (Eucl P)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P), Measurable f → Measurable G → (∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * g x ∂μ) → (∀ c : ℝ, ∀ᵐ x ∂(μ.restrict M), f x = c → G x = 0) ∧ ∀ Z : Set (Eucl P), Z ⊆ M → μ Z = 0 → ∀ᵐ t ∂(volume : Measure ℝ), ν (Z ∩ f ⁻¹' {t}) = 0",
+  "lean_name": "slicing_im_si_coarea_null_sets",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-identity-a1-coarea-null-a1-a1"
+}
