@@ -605,6 +605,278 @@ theorem Submission.intcpt_allard_bad_set_bound :
           congr 1
           field_simp
           ring
+/-- Cylinder cut-off weight (Simon Ch. 8, proof of Lemma 5.10, displays (6)–(7): the `h` used in
+3.5, `h(z) = f(|q(z - y)|)` with `f ≡ 1` on `[0, τ)`, `f ≡ 0` on `(2τ, ∞)`).  With
+`M₀ = 4 sup |st'|` (`st = Real.smoothTransition`), `h(z) = st(4 - ‖q(z - y)‖²/τ²)` is `C¹`, takes
+values in `[0, 1]`, equals `1` where `‖q(z - y)‖ < τ` and `0` where `‖q(z - y)‖ ≥ 2τ`
+(`q = id - p_P`), and `|Dh(z)[p_S(z - y)]| ≤ (M₀/τ) ‖p_S - p_P‖ ‖z - y‖`. -/
+theorem Submission.intcpt_allard_cm_cylinder_weight :
+    ∃ M₀ : ℝ, 0 ≤ M₀ ∧ ∀ (N n : ℕ) (P : Grassmannian N n) (y : Euclidean N) (τ : ℝ), 0 < τ → ∃ h : Euclidean N → ℝ, ContDiff ℝ 1 h ∧ (∀ z, 0 ≤ h z ∧ h z ≤ 1) ∧ (∀ z, ‖(z - y) - Grassmannian.project P (z - y)‖ < τ → h z = 1) ∧ (∀ z, 2 * τ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ → h z = 0) ∧ ∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M₀ / τ * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖ := by
+  -- Step 1: `deriv smoothTransition` vanishes off `[0, 1]`, where `smoothTransition` is locally
+  -- constant (`0` on `(-∞, 0)`, `1` on `(1, ∞)`).
+  have hst'_zero : ∀ u : ℝ, u ∉ Icc (0 : ℝ) 1 → deriv Real.smoothTransition u = 0 := by
+    intro u hu
+    rcases lt_or_ge u 0 with hu0 | hu0
+    · have hev : Real.smoothTransition =ᶠ[𝓝 u] fun _ ↦ (0 : ℝ) := by
+        filter_upwards [Iio_mem_nhds hu0] with v hv
+        exact Real.smoothTransition.zero_of_nonpos (le_of_lt hv)
+      rw [hev.deriv_eq, deriv_const]
+    · have hu1 : 1 < u := lt_of_not_ge fun h1 ↦ hu ⟨hu0, h1⟩
+      have hev : Real.smoothTransition =ᶠ[𝓝 u] fun _ ↦ (1 : ℝ) := by
+        filter_upwards [Ioi_mem_nhds hu1] with v hv
+        exact Real.smoothTransition.one_of_one_le (le_of_lt hv)
+      rw [hev.deriv_eq, deriv_const]
+  -- Step 2: `deriv smoothTransition` is continuous with compact support, hence bounded by some
+  -- `L ≥ 0`; take `M₀ := 4 L`.
+  have hcont : Continuous (deriv Real.smoothTransition) :=
+    (Real.smoothTransition.contDiff (n := 1)).continuous_deriv le_rfl
+  obtain ⟨L, hL⟩ :=
+    (HasCompactSupport.intro isCompact_Icc hst'_zero).exists_bound_of_continuous hcont
+  have hL0 : 0 ≤ L := (norm_nonneg _).trans (hL 0)
+  refine ⟨4 * L, by positivity, ?_⟩
+  intro N n P y τ hτ
+  -- Step 3: `Q = id - p_P` as a continuous linear map, and
+  -- `h z = smoothTransition (4 - ‖Q (z - y)‖² / τ²)`.
+  obtain ⟨Q, hQ⟩ : ∃ Q : Euclidean N →L[ℝ] Euclidean N,
+      ∀ v, Q v = v - Grassmannian.project P v :=
+    ⟨LinearMap.toContinuousLinearMap (LinearMap.id - Grassmannian.projectionLinearMap P),
+      fun v ↦ rfl⟩
+  have hτ2 : 0 < τ ^ 2 := by positivity
+  refine ⟨fun z ↦ Real.smoothTransition (4 - ‖Q (z - y)‖ ^ 2 / τ ^ 2), ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 4: `h` is `C^∞`, in particular `C¹`.
+    exact (Real.smoothTransition.contDiff (n := 1)).comp
+      (contDiff_const.sub
+        (((Q.contDiff.comp (contDiff_id.sub contDiff_const)).norm_sq ℝ).div_const _))
+  · -- Step 5: values in `[0, 1]`.
+    exact fun z ↦ ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  · -- Step 6: `‖q(z - y)‖ < τ` gives `4 - F(z) > 3 ≥ 1`, so `h z = 1`.
+    intro z hz
+    apply Real.smoothTransition.one_of_one_le
+    have h1 : ‖Q (z - y)‖ ^ 2 < τ ^ 2 := by
+      rw [hQ]
+      exact pow_lt_pow_left₀ hz (norm_nonneg _) two_ne_zero
+    have h2 : ‖Q (z - y)‖ ^ 2 / τ ^ 2 < 1 := (div_lt_one hτ2).2 h1
+    linarith
+  · -- Step 7: `‖q(z - y)‖ ≥ 2τ` gives `4 - F(z) ≤ 0`, so `h z = 0`.
+    intro z hz
+    apply Real.smoothTransition.zero_of_nonpos
+    have h1 : (2 * τ) ^ 2 ≤ ‖Q (z - y)‖ ^ 2 := by
+      rw [hQ]
+      exact pow_le_pow_left₀ (by positivity) hz 2
+    have h2 : 4 ≤ ‖Q (z - y)‖ ^ 2 / τ ^ 2 := by
+      rw [le_div_iff₀ hτ2]
+      nlinarith
+    linarith
+  · intro z S
+    -- Step 8: chain rule.  `z' ↦ Q (z' - y)` has derivative `Q`, so with
+    -- `G z' = 4 - ‖Q (z' - y)‖² (τ²)⁻¹` we get `Dh(z) = st'(G z) • DG(z)`.
+    have hQd : HasFDerivAt (fun z' ↦ Q (z' - y)) Q z := by
+      have h1 := Q.hasFDerivAt.comp z ((hasFDerivAt_id z).sub_const y)
+      rwa [ContinuousLinearMap.comp_id] at h1
+    have hGd := (hQd.norm_sq.mul_const ((τ ^ 2)⁻¹)).const_sub (4 : ℝ)
+    have hst : HasDerivAt Real.smoothTransition
+        (deriv Real.smoothTransition (4 - ‖Q (z - y)‖ ^ 2 * (τ ^ 2)⁻¹))
+        (4 - ‖Q (z - y)‖ ^ 2 * (τ ^ 2)⁻¹) :=
+      ((Real.smoothTransition.contDiff (n := 1)).differentiable one_ne_zero _).hasDerivAt
+    have hfun : (fun z' ↦ Real.smoothTransition (4 - ‖Q (z' - y)‖ ^ 2 / τ ^ 2)) =
+        Real.smoothTransition ∘ fun z' ↦ 4 - ‖Q (z' - y)‖ ^ 2 * (τ ^ 2)⁻¹ := by
+      funext z'
+      simp only [Function.comp_apply, div_eq_mul_inv]
+    rw [hfun, (hst.comp_hasFDerivAt z hGd).fderiv]
+    simp only [_root_.smul_apply, _root_.neg_apply, ContinuousLinearMap.comp_apply,
+      innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat]
+    -- Step 9: `p_P (Q w) = 0`, and self-adjointness of `p_P`, `p_S` gives
+    -- `⟪Q w, Q (p_S w)⟫ = ⟪(p_S - p_P) (Q w), w⟫` with `w = z - y`.
+    have hpa : Grassmannian.projectionLinearMap P (Q (z - y)) = 0 := by
+      have h1 := Grassmannian.project_project P (z - y)
+      simp only [Grassmannian.project] at h1
+      rw [hQ, Grassmannian.project, map_sub, h1, sub_self]
+    have hkey : inner ℝ (Q (z - y)) (Q (Grassmannian.project S (z - y))) =
+        inner ℝ (LinearMap.toContinuousLinearMap
+          (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P) (Q (z - y)))
+          (z - y) := by
+      rw [LinearMap.coe_toContinuousLinearMap', LinearMap.sub_apply, hpa, sub_zero,
+        hQ (Grassmannian.project S (z - y)), inner_sub_right]
+      simp only [Grassmannian.project]
+      rw [← Grassmannian.projectionLinearMap_isSymmetric P (Q (z - y)), hpa, inner_zero_left,
+        sub_zero, Grassmannian.projectionLinearMap_isSymmetric S (Q (z - y)) (z - y)]
+    rw [hkey]
+    -- Step 10: if `G z < 0` then `st'(G z) = 0`; otherwise `‖Q w‖ ≤ 2τ`, and
+    -- `|Dh(z)[p_S w]| ≤ L (2/τ²) ‖T‖ (2τ) ‖w‖ = (4L/τ) ‖T‖ ‖w‖`.
+    set T := LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)
+    set a := Q (z - y)
+    set w := z - y
+    have hRHS : 0 ≤ 4 * L / τ * ‖T‖ * ‖w‖ := by positivity
+    rcases lt_or_ge (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹) 0 with hneg | hnn
+    · rw [hst'_zero _ fun hmem ↦ (not_le.2 hneg) hmem.1, zero_mul, abs_zero]
+      exact hRHS
+    · have ha2 : ‖a‖ ≤ 2 * τ := by
+        rw [sub_nonneg, ← div_eq_mul_inv, div_le_iff₀ hτ2] at hnn
+        nlinarith [norm_nonneg a]
+      have hd : |deriv Real.smoothTransition (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹)| ≤ L := by
+        simpa only [Real.norm_eq_abs] using hL (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹)
+      have hX : |inner ℝ (T a) w| ≤ ‖T‖ * (2 * τ) * ‖w‖ :=
+        (abs_real_inner_le_norm _ _).trans
+          (mul_le_mul_of_nonneg_right ((T.le_opNorm a).trans
+            (mul_le_mul_of_nonneg_left ha2 (norm_nonneg _))) (norm_nonneg _))
+      calc |deriv Real.smoothTransition (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹) *
+            -((τ ^ 2)⁻¹ * (2 * inner ℝ (T a) w))|
+          = |deriv Real.smoothTransition (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹)| *
+            ((τ ^ 2)⁻¹ * (2 * |inner ℝ (T a) w|)) := by
+            rw [abs_mul, abs_neg, abs_mul, abs_mul, abs_of_pos (inv_pos.2 hτ2), abs_two]
+        _ ≤ L * ((τ ^ 2)⁻¹ * (2 * (‖T‖ * (2 * τ) * ‖w‖))) := by
+            gcongr
+        _ = 4 * L / τ * ‖T‖ * ‖w‖ := by
+            field_simp
+            ring
+/-- **Simon Ch. 8, proof of 5.10, p. 221, the radial cutoffs** (child `radial_cutoff` of
+`cylinder_monotonicity`, step 1): for `A > 1`, `φ(s) = st((A² - s)/(A² - 1))`, with `st` Mathlib's
+`Real.smoothTransition`, is a `C¹` non-increasing function with values in `[0,1]` that is `1` on
+`(-∞, 1]` and `0` on `[A², ∞)`. -/
+theorem Submission.intcpt_allard_cm_radial_cutoff :
+    ∀ A : ℝ, 1 < A → ∃ φ : ℝ → ℝ, ContDiff ℝ 1 φ ∧ Antitone φ ∧ (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) ∧
+      (∀ s, s ≤ 1 → φ s = 1) ∧ (∀ s, A ^ 2 ≤ s → φ s = 0) := by
+  intro A hA
+  -- `d = A² - 1 > 0`, so `s ↦ (A² - s)/d` is a decreasing affine map.
+  have hd : 0 < A ^ 2 - 1 := by nlinarith
+  refine ⟨fun s ↦ Real.smoothTransition ((A ^ 2 - s) / (A ^ 2 - 1)), ?_, fun s s' hs ↦ ?_,
+    fun s ↦ ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩, fun s hs ↦ ?_,
+    fun s hs ↦ ?_⟩
+  · exact Real.smoothTransition.contDiff.comp ((contDiff_const.sub contDiff_id).div_const _)
+  · exact Real.smoothTransition.monotone (div_le_div_of_nonneg_right (by linarith) hd.le)
+  · -- `s ≤ 1` gives `(A² - s)/d ≥ 1`.
+    exact Real.smoothTransition.one_of_one_le ((one_le_div₀ hd).2 (by linarith))
+  · -- `A² ≤ s` gives `(A² - s)/d ≤ 0`.
+    exact Real.smoothTransition.zero_of_nonpos
+      (div_nonpos_of_nonpos_of_nonneg (by linarith) hd.le)
+/-- Dominated convergence for shrinking radial cutoffs (step 4 of the cylinder monotonicity used
+for Simon Ch. 8, 5.9): if `φ_j = 1` on `(-∞, 1]`, `φ_j = 0` on `[A_j², ∞)`, `0 ≤ φ_j ≤ 1`,
+`A_j → 1` and `μ(B_R(y)) < ∞` with `t A_j ≤ R`, then
+`∫ φ_j(|z - y|²/t²) h(z) dμ(z) → ∫_{B_t(y)} h dμ` for measurable `0 ≤ h ≤ 1`. -/
+theorem Submission.intcpt_allard_cm_cutoff_integral_tendsto :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℕ → ℝ → ℝ) (A : ℕ → ℝ) (t R : ℝ), Measurable h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ j, Measurable (φ j)) → (∀ j s, 0 ≤ φ j s ∧ φ j s ≤ 1) → (∀ j s, s ≤ 1 → φ j s = 1) → (∀ j s, A j ^ 2 ≤ s → φ j s = 0) → (∀ j, 0 < A j) → Tendsto A atTop (𝓝 1) → 0 < t → (∀ j, t * A j ≤ R) → μ (closedBall y R) ≠ ∞ → Tendsto (fun j ↦ ∫ z, φ j (‖z - y‖ ^ 2 / t ^ 2) * h z ∂μ) atTop (𝓝 (∫ z in closedBall y t, h z ∂μ)) := by
+  intro N μ y h φ A t R hh h01 hφm hφ01 hφ1 hφ0 hA hAlim ht htR hμR
+  -- Step 1: `∫_{B_t(y)} h dμ = ∫ 1_{B_t(y)} h dμ`; dominated convergence with bound `1_{B_R(y)}`.
+  rw [← integral_indicator measurableSet_closedBall]
+  refine tendsto_integral_filter_of_dominated_convergence
+    ((closedBall y R).indicator fun _ ↦ (1 : ℝ)) ?_ ?_ ?_ ?_
+  -- Step 2: every `F_j` is measurable.
+  · have hmeas : Measurable fun z : Euclidean N ↦ ‖z - y‖ ^ 2 / t ^ 2 := by fun_prop
+    exact Eventually.of_forall fun j ↦ (((hφm j).comp hmeas).mul hh).aestronglyMeasurable
+  -- Step 3: domination `‖F_j z‖ ≤ 1_{B_R(y)} z`.
+  · refine Eventually.of_forall fun j ↦ ae_of_all _ fun z ↦ ?_
+    by_cases hz : z ∈ closedBall y R
+    · rw [indicator_of_mem hz, Real.norm_eq_abs,
+        abs_of_nonneg (mul_nonneg (hφ01 j _).1 (h01 z).1)]
+      exact (mul_le_of_le_one_left (h01 z).1 (hφ01 j _).2).trans (h01 z).2
+    · have hRz : R < ‖z - y‖ := by rwa [mem_closedBall, dist_eq_norm, not_le] at hz
+      have hAz : A j ≤ ‖z - y‖ / t := by
+        rw [le_div_iff₀ ht]
+        linarith [htR j, mul_comm (A j) t]
+      have hs : A j ^ 2 ≤ ‖z - y‖ ^ 2 / t ^ 2 := by
+        rw [← div_pow]
+        exact pow_le_pow_left₀ (hA j).le hAz 2
+      rw [indicator_of_notMem hz, hφ0 j _ hs, zero_mul, norm_zero]
+  -- Step 4: `1_{B_R(y)}` is integrable since `μ(B_R(y)) < ∞`.
+  · exact (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hμR)
+  -- Step 5: pointwise convergence `F_j z → 1_{B_t(y)} h z`.
+  · refine ae_of_all _ fun z ↦ ?_
+    by_cases hz : z ∈ closedBall y t
+    · have hzt : ‖z - y‖ ≤ t := by rwa [mem_closedBall, dist_eq_norm] at hz
+      have hs : ‖z - y‖ ^ 2 / t ^ 2 ≤ 1 := by
+        rw [div_le_one₀ (pow_pos ht 2)]
+        exact pow_le_pow_left₀ (norm_nonneg _) hzt 2
+      rw [indicator_of_mem hz]
+      refine tendsto_const_nhds.congr fun j ↦ ?_
+      rw [hφ1 j _ hs, one_mul]
+    · have hzt : t < ‖z - y‖ := by rwa [mem_closedBall, dist_eq_norm, not_le] at hz
+      have hs : 1 < ‖z - y‖ ^ 2 / t ^ 2 := by
+        rw [one_lt_div₀ (pow_pos ht 2)]
+        exact pow_lt_pow_left₀ hzt ht.le two_ne_zero
+      have hA2 : Tendsto (fun j ↦ A j ^ 2) atTop (𝓝 1) := by simpa using hAlim.pow 2
+      rw [indicator_of_notMem hz]
+      refine tendsto_const_nhds.congr' ((hA2.eventually_le_const hs).mono fun j hj ↦ ?_)
+      dsimp only
+      rw [hφ0 j _ hj, zero_mul]
+/-- Cylinder masses from cut-off ball integrals (Simon Ch. 8, proof of Lemma 5.10, display (7):
+the last step after integrating 3.5 from `σ` to `ρ`).  Let `0 ≤ h ≤ 1` be measurable with `h = 1`
+where `‖q(z - y)‖ < τ` and `h = 0` where `‖q(z - y)‖ ≥ 2τ` (`q = id - p_P`), `0 < σ ≤ ρ` and
+`μ(B_ρ(y)) < ∞`.  If `σ^{-n} ∫_{B_σ(y)} h dμ ≤ ρ^{-n} ∫_{B_ρ(y)} h dμ + E`, then in `[0, ∞]`
+`σ^{-n} μ(U^τ_σ(y)) ≤ ρ^{-n} μ(U^{2τ}_ρ(y)) + max(E, 0)`, where
+`U^τ_r(y) = B_r(y) ∩ {z : ‖q(z - y)‖ < τ}`. -/
+theorem Submission.intcpt_allard_cm_cylinder_mass_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (y : Euclidean N) (h : Euclidean N → ℝ) (τ σ ρ E : ℝ), Measurable h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ z, ‖(z - y) - Grassmannian.project P (z - y)‖ < τ → h z = 1) → (∀ z, 2 * τ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ → h z = 0) → 0 < σ → σ ≤ ρ → μ (closedBall y ρ) ≠ ∞ → (∫ z in closedBall y σ, h z ∂μ) / σ ^ n ≤ (∫ z in closedBall y ρ, h z ∂μ) / ρ ^ n + E → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal E := by
+  intro N n μ P y h τ σ ρ E hmeas hbd h1 h0 hσ hσρ hfin hineq
+  -- Step 1: `z ↦ ‖q(z - y)‖` is continuous (`p_P` is linear on `ℝ^N`), so the cylinders
+  -- `S₁ = {‖q(z - y)‖ < τ}` and `S₂ = {‖q(z - y)‖ < 2τ}` are open, hence measurable.
+  have hcont : Continuous fun z : Euclidean N ↦ ‖(z - y) - Grassmannian.project P (z - y)‖ := by
+    have hP : Continuous (Grassmannian.project P) :=
+      (Grassmannian.projectionLinearMap P).continuous_of_finiteDimensional
+    exact ((continuous_id.sub continuous_const).sub
+      (hP.comp (continuous_id.sub continuous_const))).norm
+  have hS₁ : MeasurableSet {z : Euclidean N | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ} :=
+    (isOpen_lt hcont continuous_const).measurableSet
+  have hS₂ : MeasurableSet
+      {z : Euclidean N | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ} :=
+    (isOpen_lt hcont continuous_const).measurableSet
+  -- Step 2: `B_σ(y) ⊆ B_ρ(y)`, so `B_σ(y)`, `U₁ = B_σ(y) ∩ S₁` and `U₂ = B_ρ(y) ∩ S₂` have finite
+  -- measure.
+  have hρ : 0 < ρ := lt_of_lt_of_le hσ hσρ
+  have hfinσ : μ (closedBall y σ) ≠ ∞ :=
+    ne_top_of_le_ne_top hfin (measure_mono (closedBall_subset_closedBall hσρ))
+  have hU₁fin : μ (closedBall y σ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) ≠ ∞ :=
+    ne_top_of_le_ne_top hfinσ (measure_mono inter_subset_left)
+  have hU₂fin : μ (closedBall y ρ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) ≠ ∞ :=
+    ne_top_of_le_ne_top hfin (measure_mono inter_subset_left)
+  -- Step 3: `h` is measurable with `|h| ≤ 1`, hence integrable on every set of finite measure.
+  have hint : ∀ s, μ s ≠ ∞ → IntegrableOn h s μ := fun s hs ↦
+    Measure.integrableOn_of_bounded hs hmeas.aestronglyMeasurable (M := 1)
+      (Eventually.of_forall fun z ↦ by
+        rw [Real.norm_eq_abs, abs_le]; exact ⟨by linarith [(hbd z).1], (hbd z).2⟩)
+  -- Step 4: `h = 1` on `U₁` and `h ≥ 0`, so `μ(U₁) = ∫_{U₁} h dμ ≤ ∫_{B_σ(y)} h dμ`.
+  have hlow : μ.real (closedBall y σ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) ≤ ∫ z in closedBall y σ, h z ∂μ := by
+    have heq : ∫ z in closedBall y σ ∩
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}, h z ∂μ =
+        μ.real (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) := by
+      rw [setIntegral_congr_fun (measurableSet_closedBall.inter hS₁) (g := fun _ ↦ (1 : ℝ))
+        (fun z hz ↦ h1 z hz.2)]
+      exact setIntegral_one_eq_measureReal
+    rw [← heq]
+    exact setIntegral_mono_set (hint _ hfinσ) (Eventually.of_forall fun z ↦ (hbd z).1)
+      (Eventually.of_forall fun z hz ↦ hz.1)
+  -- Step 5: `h = 0` on `B_ρ(y) ∖ S₂` and `h ≤ 1`, so `∫_{B_ρ(y)} h dμ = ∫_{U₂} h dμ ≤ μ(U₂)`.
+  have hup : ∫ z in closedBall y ρ, h z ∂μ ≤ μ.real (closedBall y ρ ∩
+      {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) := by
+    rw [← integral_inter_add_sdiff hS₂ (hint _ hfin)]
+    have hzero : ∫ z in closedBall y ρ \
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}, h z ∂μ = 0 :=
+      setIntegral_eq_zero_of_forall_eq_zero fun z hz ↦ h0 z (not_lt.mp hz.2)
+    rw [hzero, add_zero, ← setIntegral_one_eq_measureReal]
+    exact setIntegral_mono_on (hint _ hU₂fin) (integrableOn_const hU₂fin)
+      (measurableSet_closedBall.inter hS₂) fun z _ ↦ (hbd z).2
+  -- Step 6: the real inequality `μ(U₁)/σ^n ≤ μ(U₂)/ρ^n + E`.
+  have hσn : 0 < σ ^ n := pow_pos hσ n
+  have hρn : 0 < ρ ^ n := pow_pos hρ n
+  have hreal : μ.real (closedBall y σ ∩
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / σ ^ n ≤
+      μ.real (closedBall y ρ ∩
+        {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ρ ^ n + E :=
+    calc _ ≤ (∫ z in closedBall y σ, h z ∂μ) / σ ^ n := div_le_div_of_nonneg_right hlow hσn.le
+      _ ≤ (∫ z in closedBall y ρ, h z ∂μ) / ρ ^ n + E := hineq
+      _ ≤ _ := by gcongr
+  -- Step 7: for `r > 0` and `μ s < ∞`, `μ s / ofReal r ^ n = ofReal (μ.real s / r ^ n)`; conclude
+  -- with monotonicity of `ofReal` and `ofReal (a + E) ≤ ofReal a + ofReal E`.
+  have hconv : ∀ (s : Set (Euclidean N)) (r : ℝ), 0 < r → μ s ≠ ∞ →
+      μ s / ENNReal.ofReal r ^ n = ENNReal.ofReal (μ.real s / r ^ n) := by
+    intro s r hr hs
+    rw [ENNReal.ofReal_div_of_pos (pow_pos hr n), ENNReal.ofReal_pow hr.le, measureReal_def,
+      ENNReal.ofReal_toReal hs]
+  rw [hconv _ σ hσ hU₁fin, hconv _ ρ hρ hU₂fin]
+  exact (ENNReal.ofReal_le_ofReal hreal).trans ENNReal.ofReal_add_le
 /-- Differentiation of the radial cutoff mass under the integral sign (step 5 of the weighted
 radial monotonicity argument, Simon Ch. 8, §3): if `φ` is `C¹` with `φ = 0` on `[A², ∞)`, `h` is
 continuous and `μ(B_R(y)) < ∞`, then for `t₀ > 0` with `t₀ A < R` the map
@@ -1151,6 +1423,79 @@ theorem Submission.intcpt_allard_weighted_radial_monotonicity :
   simp only at hF
   rw [← hC]
   linarith
+
+/-- Cylinder monotonicity (Simon Ch. 8, (7) in the proof of 5.10, "proved by simply integrating
+3.5"): under (1r)–(3r) on `B_r(y)` for `0 < r < 1`, for `0 < τ ≤ 1` and `0 < σ ≤ ρ < 1`,
+`μ_W(U^τ_σ(y))/σ^n ≤ μ_W(U^{2τ}_ρ(y))/ρ^n + C(1 + K)ερ/τ` with `C = 2^{n+1}(M₀ + 1)`, where
+`U^τ_r(y) = B_r(y) ∩ {z : |q(z - y)| < τ}` and `q = id - p_P`.  The integrated weighted
+monotonicity is applied to a cylindrical weight `h` (`1` where `|q(z - y)| < τ`, `0` where
+`|q(z - y)| ≥ 2τ`, `|Dh(z)[p_S(z - y)]| ≤ (M₀/τ)|p_S - p_P||z - y|`) and radial cutoffs `φ_j` with
+`A_j ↓ 1`; letting `j → ∞` gives the inequality for `∫_{B_t(y)} h dμ_W`, which bounds the
+cylinder masses. -/
+theorem Submission.intcpt_allard_cylinder_monotonicity :
+    ∀ (N n : ℕ), ∃ C : ℝ, 0 ≤ C ∧ ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε K : ℝ), W.HasLocallyBoundedFirstVariation → ball y 1 ⊆ U → 0 < ε → 0 ≤ K → (∀ r : ℝ, 0 < r → r < 1 → variationMeasure W (closedBall y r) ≤ ENNReal.ofReal ε * W.weight (closedBall y r)) → (∀ r : ℝ, 0 < r → r < 1 → (∫⁻ z in closedBall y r ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * r ^ n)) → (∀ r : ℝ, 0 < r → r < 1 → W.weight (closedBall y r) ≤ ENNReal.ofReal (K * r ^ n)) → ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → W.weight (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ W.weight (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (C * (1 + K) * ε * ρ / τ) := by
+  intro N n
+  -- Step 0: `C = 2^{n+1}(M₀ + 1)`, where `M₀/τ` is the gradient constant of the cylindrical weight.
+  obtain ⟨M₀, hM₀, hweight⟩ := Submission.intcpt_allard_cm_cylinder_weight
+  refine ⟨2 ^ (n + 1) * (M₀ + 1), mul_nonneg (pow_nonneg zero_le_two _) (by linarith), ?_⟩
+  intro U W P y ε K hW hU hε hK hvar htilt hmass τ σ ρ hτ hτ1 hσ hσρ hρ
+  have hρ0 : 0 < ρ := hσ.trans_le hσρ
+  -- Step 2: the cylindrical weight `h`.
+  obtain ⟨h, hh, hh01, hh1, hh0, hDh⟩ := hweight N n P y τ hτ
+  have hhm : Measurable h := hh.continuous.measurable
+  -- Step 1: `A_j = 1 + (1 - ρ)/(2(j + 1)) ↓ 1`, with `A_j ≤ 2` and `ρA_j ≤ R := (1 + ρ)/2 < 1`.
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, R = (1 + ρ) / 2 := ⟨_, rfl⟩
+  have hR1 : R < 1 := by rw [hR]; linarith
+  obtain ⟨A, hA1, hA2, hρA, hAlim⟩ : ∃ A : ℕ → ℝ, (∀ j, 1 < A j) ∧ (∀ j, A j ≤ 2) ∧
+      (∀ j, ρ * A j ≤ R) ∧ Tendsto A atTop (𝓝 1) := by
+    have hx : ∀ j : ℕ, 0 < 1 / ((j : ℝ) + 1) ∧ 1 / ((j : ℝ) + 1) ≤ 1 := fun j ↦
+      ⟨by positivity, (div_le_one₀ (by positivity)).2 (by linarith [j.cast_nonneg (α := ℝ)])⟩
+    refine ⟨fun j ↦ 1 + (1 - ρ) / 2 * (1 / ((j : ℝ) + 1)), fun j ↦ ?_, fun j ↦ ?_, fun j ↦ ?_, ?_⟩
+    · nlinarith [mul_pos (sub_pos.2 hρ) (hx j).1]
+    · nlinarith [mul_nonneg hρ0.le (hx j).1.le, (hx j).2]
+    · rw [hR]
+      nlinarith [mul_nonneg (sub_nonneg.2 hρ.le) (sub_nonneg.2 hρ.le),
+        mul_nonneg (mul_nonneg hρ0.le (sub_nonneg.2 hρ.le)) (sub_nonneg.2 (hx j).2)]
+    · simpa using (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul ((1 - ρ) / 2)).const_add 1
+  have hA0 : ∀ j, 0 < A j := fun j ↦ zero_lt_one.trans (hA1 j)
+  -- The radial cutoffs `φ_j`: `1` on `(-∞, 1]`, `0` on `[A_j², ∞)`.
+  choose φ hφ hφanti hφ01 hφ1 hφ0 using fun j ↦
+    Submission.intcpt_allard_cm_radial_cutoff (A j) (hA1 j)
+  -- Step 3: for each `j`, the integrated weighted monotonicity with `M = M₀/τ`.
+  have hj : ∀ j, (∫ z, φ j (‖z - y‖ ^ 2 / σ ^ 2) * h z ∂W.weight) / σ ^ n ≤
+      (∫ z, φ j (‖z - y‖ ^ 2 / ρ ^ 2) * h z ∂W.weight) / ρ ^ n +
+        2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ := fun j ↦
+    Submission.intcpt_allard_weighted_radial_monotonicity N n U W P y ε K (M₀ / τ) (A j) h (φ j)
+      hW hU hε hK (div_nonneg hM₀ hτ.le) hvar htilt hmass hh hh01 hDh (hφ j) (hφanti j) (hφ01 j)
+      (hA0 j) (hA2 j) (hφ0 j) σ ρ hσ hσρ ((hρA j).trans_lt hR1)
+  -- Step 4: let `j → ∞`; `B_R(y) ⊆ B°_1(y) ⊆ U` is compact, so `μ_W(B_R(y)) < ∞`.
+  have hRfin : W.weight (closedBall y R) ≠ ∞ :=
+    W.weight_finite_on_compact _ (isCompact_closedBall y R) ((closedBall_subset_ball hR1).trans hU)
+  have hlim : ∀ t, 0 < t → t ≤ ρ →
+      Tendsto (fun j ↦ ∫ z, φ j (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight) atTop
+        (𝓝 (∫ z in closedBall y t, h z ∂W.weight)) := fun t ht htρ ↦
+    Submission.intcpt_allard_cm_cutoff_integral_tendsto N W.weight y h φ A t R hhm hh01
+      (fun j ↦ (hφ j).continuous.measurable) hφ01 hφ1 hφ0 hA0 hAlim ht
+      (fun j ↦ (mul_le_mul_of_nonneg_right htρ (hA0 j).le).trans (hρA j)) hRfin
+  have hI : (∫ z in closedBall y σ, h z ∂W.weight) / σ ^ n ≤
+      (∫ z in closedBall y ρ, h z ∂W.weight) / ρ ^ n + 2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ :=
+    le_of_tendsto_of_tendsto' ((hlim σ hσ hσρ).div_const _)
+      (((hlim ρ hρ0 le_rfl).div_const _).add_const _) hj
+  -- `2^{n+1}(M₀/τ + K)ερ ≤ C(1 + K)ερ/τ`, since `τ ≤ 1` gives `M₀ + Kτ ≤ (M₀ + 1)(1 + K)`.
+  have hMK : M₀ / τ + K ≤ (M₀ + 1) * (1 + K) / τ := by
+    rw [div_add' _ _ _ hτ.ne', div_le_div_iff_of_pos_right hτ]
+    nlinarith [mul_nonneg hM₀ hK, mul_nonneg hK (sub_nonneg.2 hτ1)]
+  have hE : 2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ ≤
+      2 ^ (n + 1) * (M₀ + 1) * (1 + K) * ε * ρ / τ :=
+    calc 2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ = 2 ^ (n + 1) * ε * ρ * (M₀ / τ + K) := by ring
+      _ ≤ 2 ^ (n + 1) * ε * ρ * ((M₀ + 1) * (1 + K) / τ) :=
+        mul_le_mul_of_nonneg_left hMK (mul_pos (mul_pos (pow_pos two_pos _) hε) hρ0).le
+      _ = 2 ^ (n + 1) * (M₀ + 1) * (1 + K) * ε * ρ / τ := by ring
+  -- Step 5: compare the ball integrals of `h` with the cylinder masses.
+  exact Submission.intcpt_allard_cm_cylinder_mass_bound N n W.weight P y h τ σ ρ
+    (2 ^ (n + 1) * (M₀ + 1) * (1 + K) * ε * ρ / τ) hhm hh01 hh1 hh0 hσ hσρ
+    (W.weight_finite_on_compact _ (isCompact_closedBall y ρ) ((closedBall_subset_ball hρ).trans hU))
+    (by linarith)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 

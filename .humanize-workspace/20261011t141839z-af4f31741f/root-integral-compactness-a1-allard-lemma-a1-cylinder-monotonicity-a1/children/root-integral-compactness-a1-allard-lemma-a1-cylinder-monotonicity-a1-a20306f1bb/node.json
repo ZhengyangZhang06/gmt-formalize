@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1.radial_cutoff-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+  "depth": 4,
+  "title": "C¹ non-increasing radial cutoff: 1 on (−∞,1], 0 on [A²,∞) (step 1 of the cylinder-monotonicity proof)",
+  "statement": "For every real number A > 1 there is a function φ : ℝ → ℝ that is C¹, non-increasing, takes values in [0,1], and satisfies φ(s) = 1 for every s ≤ 1 and φ(s) = 0 for every s ≥ A².",
+  "lean_statement": "∀ A : ℝ, 1 < A → ∃ φ : ℝ → ℝ, ContDiff ℝ 1 φ ∧ Antitone φ ∧ (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) ∧ (∀ s, s ≤ 1 → φ s = 1) ∧ (∀ s, A ^ 2 ≤ s → φ s = 0)",
+  "lean_name": "intcpt_allard_cm_radial_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-monotonicity-a1-a20306f1bb-a1"
+}
