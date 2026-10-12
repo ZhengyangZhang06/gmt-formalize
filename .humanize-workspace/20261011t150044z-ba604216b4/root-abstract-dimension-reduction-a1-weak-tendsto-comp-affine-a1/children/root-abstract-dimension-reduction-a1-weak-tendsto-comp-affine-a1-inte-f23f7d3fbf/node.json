@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1.integral_comp_affine-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+  "depth": 3,
+  "title": "Affine change of variables for Hausdorff-measure integrals",
+  "statement": "Let P, n, Q ∈ ℕ and let μ := μH[n] be Mathlib's n-dimensional Hausdorff measure on ℝ^P = Euclid P. For every function h : ℝ^P → ℝ^Q (no measurability or integrability assumed), every y ∈ ℝ^P and every real c > 0, the Bochner integrals satisfy ∫ h(y + c·x) dμ(x) = (c^n)⁻¹ · ∫ h dμ. In particular both sides are 0 when h is not μ-integrable.",
+  "lean_statement": "∀ (P n Q : ℕ) (h : Euclid P → Euclid Q) (y : Euclid P) (c : ℝ), 0 < c → ∫ x, h (y + c • x) ∂μH[(n : ℝ)] = (c ^ n)⁻¹ • ∫ x, h x ∂μH[(n : ℝ)]",
+  "lean_name": "adr_hausdorff_integral_comp_affine",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1-inte-f23f7d3fbf-a1"
+}
