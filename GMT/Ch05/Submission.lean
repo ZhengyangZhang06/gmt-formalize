@@ -458,6 +458,149 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 1, Theorem 3.6 (Upper Density Theorem)** in the contract normalization: for a
+`ν`-null-measurable `A` with `ν A < ∞`, the upper density `Θ*ⁿ(ν, A, x)` vanishes for
+`Hⁿ`-a.e. `x ∉ A`.  Simon's printed proof: on the level set `S_t = {x ∉ A : Θ*ⁿ > t}` and for
+closed `C ⊆ A`, Vitali's covering lemma gives the comparison bound 3.3 for `ν ⌞ (A \ C)` (with
+the non-sharp constant `8ⁿ / ω_n`, enough for null sets); `ν (A \ C)` is small by 1.15(2).  The
+levels `t = 1/(k+1)` exhaust `Θ*ⁿ ≠ 0`, and `μHE[n]` is a multiple of `μH[n]`. -/
+theorem upperDensity_ne_zero_outside_hausdorff_null : ∀ {n ℓ : ℕ} (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), NullMeasurableSet A ν → ν A < ∞ → (μHE[n] : Measure (Amb n ℓ)) {x | x ∉ A ∧ limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) ≠ 0} = 0 := by
+  intro n ℓ ν A hA hAfin
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- Simon 1.15(2): `A` contains closed sets `C` with `ν (A \ C)` arbitrarily small.
+  have hreg : ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ C ⊆ A, IsClosed C ∧ ν (A \ C) < ε := by
+    intro ε hε
+    obtain ⟨A', hA'A, hA'm, hA'eq⟩ := hA.exists_measurable_subset_ae_eq
+    have : IsFiniteMeasure (ν.restrict A') :=
+      isFiniteMeasure_restrict.2 (ne_top_of_le_ne_top hAfin.ne (measure_mono hA'A))
+    obtain ⟨C, hCA', hC, hCε⟩ :=
+      hA'm.exists_isClosed_sdiff_lt (μ := ν.restrict A') (measure_ne_top _ _) hε
+    refine ⟨C, hCA'.trans hA'A, hC, ?_⟩
+    rw [Measure.restrict_apply (hA'm.diff hC.measurableSet), inter_eq_left.2 sdiff_subset] at hCε
+    rwa [measure_congr (hA'eq.symm.diff (EventuallyEq.refl _ C))]
+  -- The level set `S_t` is `μH[n]`-null for every `t > 0`.
+  have hlevel : ∀ t : ℝ, 0 < t → μH[(n : ℝ)] {x : Amb n ℓ | x ∉ A ∧ ENNReal.ofReal t <
+      limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n))
+        (𝓝[>] 0)} = 0 := by
+    intro t ht
+    set S := {x : Amb n ℓ | x ∉ A ∧ ENNReal.ofReal t <
+      limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n))
+        (𝓝[>] 0)} with hS
+    have hKnn : (0 : ℝ) ≤ 8 ^ n / unitBallVolume n / t :=
+      div_nonneg (div_nonneg (by positivity) hω.le) ht.le
+    set K : ℝ≥0∞ := ENNReal.ofReal (8 ^ n / unitBallVolume n / t) with hK
+    -- Simon 3.3 for `ν ⌞ (A \ C)`, `C ⊆ A` closed, via Vitali's covering lemma.
+    have hcomp : ∀ C ⊆ A, IsClosed C → μH[(n : ℝ)] S ≤ K * ν (A \ C) := by
+      intro C hCA hC
+      have hcov : ∀ R : ℝ, 0 < R → ∃ u : Set (Amb n ℓ × ℝ), u.Countable ∧
+          u.PairwiseDisjoint (fun b => closedBall b.1 b.2) ∧
+          (∀ b ∈ u, 0 < b.2 ∧ b.2 ≤ R ∧
+            ENNReal.ofReal t * ENNReal.ofReal (unitBallVolume n * b.2 ^ n) ≤
+              ν.restrict (A \ C) (closedBall b.1 b.2)) ∧
+          S ⊆ ⋃ b ∈ u, closedBall b.1 (4 * b.2) := by
+        intro R hR
+        obtain ⟨u, huT, hud, hucov⟩ :=
+          Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall
+            {b : Amb n ℓ × ℝ | b.1 ∈ S ∧ 0 < b.2 ∧ b.2 ≤ R ∧
+              ENNReal.ofReal t * ENNReal.ofReal (unitBallVolume n * b.2 ^ n) ≤
+                ν.restrict (A \ C) (closedBall b.1 b.2)}
+            Prod.fst Prod.snd R (fun b hb => hb.2.2.1) 4 (by norm_num)
+        refine ⟨u, hud.countable_of_nonempty_interior fun b hb =>
+          ⟨b.1, ball_subset_interior_closedBall (mem_ball_self (huT hb).2.1)⟩, hud,
+          fun b hb => (huT hb).2, fun x hx => ?_⟩
+        -- A small ball around `x ∉ C` on which the density quotient exceeds `t`.
+        obtain ⟨ρ, hρ, hρC⟩ := nhds_basis_closedBall.mem_iff.1
+          (hC.isOpen_compl.mem_nhds fun h => hx.1 (hCA h))
+        obtain ⟨r, hr, hrI⟩ := ((frequently_lt_of_lt_limsup (by isBoundedDefault) hx.2).and_eventually
+          (Ioo_mem_nhdsGT (lt_min hR hρ))).exists
+        have hr0 : 0 < r := hrI.1
+        have hmass : ENNReal.ofReal t * ENNReal.ofReal (unitBallVolume n * r ^ n) ≤
+            ν.restrict (A \ C) (closedBall x r) := by
+          rw [Measure.restrict_apply measurableSet_closedBall]
+          have hset : closedBall x r ∩ (A \ C) = A ∩ closedBall x r := by
+            ext y
+            constructor
+            · rintro ⟨hy1, hy2, -⟩
+              exact ⟨hy2, hy1⟩
+            · rintro ⟨hy1, hy2⟩
+              exact ⟨hy2, hy1,
+                hρC (closedBall_subset_closedBall (hrI.2.le.trans (min_le_right _ _)) hy2)⟩
+          rw [hset]
+          exact ((ENNReal.lt_div_iff_mul_lt
+            (Or.inl (ENNReal.ofReal_pos.2 (mul_pos hω (pow_pos hr0 n))).ne')
+            (Or.inl ENNReal.ofReal_ne_top)).1 hr).le
+        obtain ⟨b, hbu, hsub⟩ := hucov (x, r) ⟨hx, hr0, hrI.2.le.trans (min_le_left _ _), hmass⟩
+        exact mem_biUnion hbu (hsub (mem_closedBall_self hr0.le))
+      -- Covers by the enlarged balls at scales `1/(k+1) → 0`.
+      choose u hu using fun k : ℕ => hcov (1 / ((k : ℝ) + 1)) (by positivity)
+      have : ∀ k, Countable (u k) := fun k => (hu k).1.to_subtype
+      have hH := Measure.hausdorffMeasure_le_liminf_tsum (n : ℝ) S (l := atTop)
+        (fun k : ℕ => ENNReal.ofReal (8 * (1 / ((k : ℝ) + 1))))
+        (by simpa using ENNReal.tendsto_ofReal (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul 8))
+        (fun k (b : u k) => closedBall (b : Amb n ℓ × ℝ).1 (4 * (b : Amb n ℓ × ℝ).2))
+        (Eventually.of_forall fun k b => ediam_le_of_forall_dist_le fun y hy z hz => by
+          have h1 := dist_triangle_right y z (b : Amb n ℓ × ℝ).1
+          have h2 := ((hu k).2.2.1 b b.2).2.1
+          rw [mem_closedBall] at hy hz
+          linarith)
+        (Eventually.of_forall fun k x hx => by
+          obtain ⟨b, hb, hxb⟩ := mem_iUnion₂.1 ((hu k).2.2.2 hx)
+          exact mem_iUnion.2 ⟨⟨b, hb⟩, hxb⟩)
+      refine hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall fun k => ?_))
+      calc ∑' b : u k, ediam (closedBall (b : Amb n ℓ × ℝ).1 (4 * (b : Amb n ℓ × ℝ).2)) ^ (n : ℝ)
+          ≤ ∑' b : u k,
+              K * ν.restrict (A \ C) (closedBall (b : Amb n ℓ × ℝ).1 (b : Amb n ℓ × ℝ).2) := by
+            refine ENNReal.tsum_le_tsum fun b => ?_
+            obtain ⟨hb0, -, hbm⟩ := (hu k).2.2.1 b b.2
+            calc ediam (closedBall (b : Amb n ℓ × ℝ).1 (4 * (b : Amb n ℓ × ℝ).2)) ^ (n : ℝ)
+                ≤ ENNReal.ofReal (8 * (b : Amb n ℓ × ℝ).2) ^ (n : ℝ) := by
+                  gcongr
+                  exact ediam_le_of_forall_dist_le fun y hy z hz => by
+                    have h1 := dist_triangle_right y z (b : Amb n ℓ × ℝ).1
+                    rw [mem_closedBall] at hy hz
+                    linarith
+              _ = K * (ENNReal.ofReal t *
+                    ENNReal.ofReal (unitBallVolume n * (b : Amb n ℓ × ℝ).2 ^ n)) := by
+                  rw [hK, ← ENNReal.ofReal_mul ht.le, ← ENNReal.ofReal_mul hKnn,
+                    ENNReal.rpow_natCast,
+                    ← ENNReal.ofReal_pow (by linarith : (0 : ℝ) ≤ 8 * (b : Amb n ℓ × ℝ).2)]
+                  congr 1
+                  field_simp
+                  ring
+              _ ≤ K * ν.restrict (A \ C) (closedBall (b : Amb n ℓ × ℝ).1 (b : Amb n ℓ × ℝ).2) := by
+                  gcongr
+        _ = K * ν.restrict (A \ C) (⋃ b ∈ u k, closedBall b.1 b.2) := by
+            rw [ENNReal.tsum_mul_left,
+              measure_biUnion (hu k).1 (hu k).2.1 fun b _ => measurableSet_closedBall]
+        _ ≤ K * ν (A \ C) := by
+            refine mul_le_mul_right ?_ K
+            exact (measure_mono (subset_univ _)).trans_eq (Measure.restrict_apply_univ _)
+    -- Letting `ν (A \ C) → 0`.
+    have hKtop : K ≠ ∞ := ENNReal.ofReal_ne_top
+    refine le_antisymm (le_of_forall_gt_imp_ge_of_dense fun c hc => ?_) bot_le
+    obtain ⟨ε, hε0, hεc⟩ := ENNReal.exists_nnreal_pos_mul_lt hKtop hc.ne'
+    obtain ⟨C, hCA, hC, hCε⟩ := hreg ε (by exact_mod_cast hε0.ne')
+    calc μH[(n : ℝ)] S ≤ K * ν (A \ C) := hcomp C hCA hC
+      _ ≤ K * ε := by gcongr
+      _ = ε * K := mul_comm _ _
+      _ ≤ c := hεc.le
+  -- The levels `t = 1/(k+1)` exhaust the positive upper densities.
+  have hE : μH[(n : ℝ)] {x : Amb n ℓ | x ∉ A ∧ limsup (fun r : ℝ => ν (A ∩ closedBall x r) /
+      ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) ≠ 0} = 0 := by
+    refine measure_mono_null (fun x hx => ?_)
+      (measure_iUnion_null fun k : ℕ => hlevel (1 / ((k : ℝ) + 1)) (by positivity))
+    obtain ⟨s, -, hs0, hs⟩ := ENNReal.lt_iff_exists_real_btwn.1 (pos_iff_ne_zero.2 hx.2)
+    have hs0' : 0 < s := ENNReal.ofReal_pos.1 hs0
+    obtain ⟨k, hk⟩ := exists_nat_one_div_lt hs0'
+    exact mem_iUnion.2 ⟨k, hx.1, ((ENNReal.ofReal_lt_ofReal_iff hs0').2 hk).trans hs⟩
+  -- `μHE[n]` is a scalar multiple of `μH[n]`.
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hE, smul_zero]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
