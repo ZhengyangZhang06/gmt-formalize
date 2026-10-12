@@ -451,6 +451,40 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Weyl's lemma, a.e. convergence of approximate identities** (Lebesgue differentiation; cf.
+Evans, *PDE*, App. C, Thm. 7(ii)).  If `f ∈ L¹(ℝⁿ)` and for every `ε > 0` the kernel `φ ε` is
+continuous, vanishes on `{|y| ≥ ε}`, satisfies `|φ ε| ≤ C ε⁻ⁿ` and has integral `1`, then
+`∫ f(y) φ ε(x − y) dy → f(x)` as `ε → 0⁺` for `Lⁿ`-a.e. `x`.  At a Lebesgue point `x₀` the
+kernels `y ↦ φ ε(x₀ − y)` have integral `1`, support in `B_ε(x₀)` and sup `≤ C c₁ / Lⁿ(B_ε(x₀))`,
+`c₁ = Lⁿ(B₁(0))`, so `|∫ f φ ε(x₀ − ·) − f(x₀)| ≤ C c₁ ⨍_{B_ε(x₀)} |f − f(x₀)| → 0`. -/
+theorem Submission.dorag_ha_weyl_ae_tendsto : ∀ (n : ℕ) (f : Euclid n → ℝ) (C : ℝ) (φ : ℝ → Euclid n → ℝ), 0 < n → Integrable f → (∀ ε : ℝ, 0 < ε → Continuous (φ ε)) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, ε ≤ ‖y‖ → φ ε y = 0) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, |φ ε y| ≤ C / ε ^ n) → (∀ ε : ℝ, 0 < ε → ∫ y, φ ε y = 1) → ∀ᵐ x ∂(volume : Measure (Euclid n)), Tendsto (fun ε => ∫ y, f y * φ ε (x - y)) (𝓝[>] (0 : ℝ)) (𝓝 (f x)) := by
+  intro n f C φ _hn hf _hcont hsupp hbound hint
+  -- Lebesgue differentiation: `⨍_{B_r(x₀)} |f - f x₀| → 0` as `r → 0⁺` for a.e. `x₀`
+  filter_upwards [VitaliFamily.ae_tendsto_average_norm_sub
+    (Besicovitch.vitaliFamily (volume : Measure (Euclid n))) hf.locallyIntegrable] with x₀ h₀
+  -- `c₁ = Lⁿ(B₁(0)) > 0`, and `Lⁿ(B_ε(x₀)) = εⁿ c₁`
+  have hc₁ : 0 < (volume : Measure (Euclid n)).real (closedBall 0 1) :=
+    ENNReal.toReal_pos (measure_closedBall_pos _ _ one_pos).ne' measure_closedBall_lt_top.ne
+  -- `y ↦ φ ε (x₀ - y)` has integral `1`, support in `B_ε(x₀)` and sup `≤ C c₁ / Lⁿ(B_ε(x₀))`
+  have key : Tendsto (fun ε => ∫ y, φ ε (x₀ - y) • f y) (𝓝[>] (0 : ℝ)) (𝓝 (f x₀)) := by
+    apply tendsto_integral_smul_of_tendsto_average_norm_sub
+      (C * (volume : Measure (Euclid n)).real (closedBall 0 1))
+      (h₀.comp (Besicovitch.tendsto_filterAt _ x₀))
+    · exact Eventually.of_forall fun _ => hf.integrableOn
+    · apply tendsto_const_nhds.congr'
+      filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε)
+      rw [integral_sub_left_eq_self (φ ε) volume x₀, hint ε hε]
+    · filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε) y hy
+      rw [mem_closedBall, dist_eq_norm, norm_sub_rev]
+      by_contra! h
+      exact hy (hsupp ε hε _ h.le)
+    · filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε) y
+      rw [Measure.addHaar_real_closedBall' _ x₀ hε.le, finrank_euclideanSpace_fin,
+        mul_div_mul_right _ _ hc₁.ne']
+      exact hbound ε hε (x₀ - y)
+  refine key.congr fun ε => ?_
+  simp_rw [smul_eq_mul, mul_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
