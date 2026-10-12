@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.pointwise_bound-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1",
+  "depth": 5,
+  "title": "Pointwise gradient bound for the mollified indicator: ‖D(∫_G ρ(· − z)dz)(y)‖ ≤ ∫ρ(y − z)dμ(z) when B̄_r(y) ⊆ U",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, G ⊆ ℝ^N Lebesgue null-measurable, and (μ, ν) a Gauss–Green pair for (U, G) (IsGaussGreenPair U G μ ν, as in the parent). Let ρ : ℝ^N → ℝ be C¹ with compact support and ρ ≥ 0, let r ∈ ℝ with tsupport ρ ⊆ B̄_r(0), and let y ∈ ℝ^N with B̄_r(y) ⊆ U. Put u(x) := ∫_G ρ(x − z) dL^N(z). Then ‖Du(y)‖ ≤ ∫ ρ(y − z) dμ(z), where ‖Du(y)‖ is the operator norm of fderiv ℝ u y.",
+  "lean_statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ x, 0 ≤ ρ x) → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) y‖ ≤ ∫ z, ρ (y - z) ∂μ",
+  "lean_name": "deGiorgiSobIndMFL_norm_fderiv_le",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.fderiv_setintegral-a1",
+    "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.kernel_gauss_green-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.fderiv_setintegral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.kernel_gauss_green-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-a53949da46-a1"
+}
