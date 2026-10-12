@@ -357,6 +357,42 @@ theorem Submission.deGiorgiNAB_reducedBoundary_basic : ∀ (N : ℕ) (U : Set (R
   have hv0 : v = 0 := tendsto_nhds_unique_of_eventuallyEq hv tendsto_const_nhds hA
   simp [hv0] at hv1
 
+/-- **Scalar normal averages at a reduced-boundary point** (Simon Ch. 3, proof of Theorem 4.3,
+display (1), `chapter-03.txt` lines 607–614). Let `μ` be finite on compact subsets of the open set
+`U`, `|ν| = 1` `μ`-a.e., `x ∈ ∂*E` and `e = ν_E(x)`. Then
+`μ(B_ρ(x))⁻¹ ∫_{B_ρ(x)} ν · e dμ → 1` as `ρ ↓ 0` (with `0⁻¹ = 0`). For `ρ` below the radius of a
+compact ball `B̄_r(x) ⊆ U`, `ν` is integrable on `B_ρ(x)`, so the functional `w ↦ e · w` commutes
+with the integral and the scalar average is `A(ρ) · e` for `A(ρ) = normalAverage μ ν x ρ`; since
+`A(ρ) → e` and `|e| = 1`, `A(ρ) · e → e · e = 1`. -/
+theorem Submission.deGiorgiNAB_innerAverage_tendsto_one : ∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ∀ x ∈ reducedBoundary U μ ν, Tendsto (fun ρ : ℝ ↦ (μ (Metric.ball x ρ)).toReal⁻¹ * ∫ y in Metric.ball x ρ, inner ℝ (ν y) (reducedNormal μ ν x) ∂μ) (𝓝[>] 0) (𝓝 1) := by
+  intro N U μ ν hU hfin hν hν1 x hx
+  -- `x ∈ U`, `|e| = 1` and `A(ρ) → e`.
+  obtain ⟨hxU, he, hA, -⟩ := Submission.deGiorgiNAB_reducedBoundary_basic N U μ ν x hx
+  set e := reducedNormal μ ν x
+  -- A compact ball `B̄_{ε/2}(x) ⊆ U`, so that `μ(B_ρ(x)) < ∞` for `ρ ≤ ε / 2`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU x hxU
+  have hrU : Metric.closedBall x (ε / 2) ⊆ U :=
+    (Metric.closedBall_subset_ball (half_lt_self hε)).trans hεU
+  have hfinr : μ (Metric.closedBall x (ε / 2)) < ∞ := hfin _ (isCompact_closedBall x _) hrU
+  -- `A(ρ) · e → e · e = |e|² = 1`.
+  have hlim : Tendsto (fun ρ ↦ inner ℝ (normalAverage μ ν x ρ) e) (𝓝[>] 0)
+      (𝓝 (inner ℝ e e)) := hA.inner tendsto_const_nhds
+  rw [real_inner_self_eq_norm_sq, he, one_pow] at hlim
+  -- On `(0, ε / 2)` the scalar average equals `A(ρ) · e`.
+  refine hlim.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (half_pos hε)] with ρ hρ
+  have hfinρ : μ (Metric.ball x ρ) < ∞ := (measure_mono (Metric.ball_subset_closedBall.trans
+    (Metric.closedBall_subset_closedBall hρ.2.le))).trans_lt hfinr
+  -- `ν` is integrable on `B_ρ(x)`: `|ν| ≤ 1` a.e. on a set of finite measure.
+  have hint : IntegrableOn ν (Metric.ball x ρ) μ :=
+    IntegrableOn.of_bound hfinρ hν.restrict 1 ((ae_restrict_of_ae hν1).mono fun y hy ↦ hy.le)
+  -- The continuous linear functional `w ↦ e · w` commutes with the integral.
+  have hcomm : ∫ y in Metric.ball x ρ, inner ℝ (ν y) e ∂μ =
+      inner ℝ (∫ y in Metric.ball x ρ, ν y ∂μ) e := by
+    simpa only [innerSL_apply_apply, real_inner_comm e] using
+      (innerSL ℝ e).integral_comp_comm hint
+  rw [normalAverage, real_inner_smul_left, hcomm]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
