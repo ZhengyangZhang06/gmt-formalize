@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "eee0a6f13de970e21578a40c1288cc962acc6809cab69280df30d19f9338a8a5",
+  "git_delta": {
+    "base_commit": "fe1e4a099686ffe2675bf6950bcfe212af9c26ae",
+    "candidate_commit": "34d20def09b4991ec4dda2ca129c7ff84a942cc4",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "c7ccb52a48c97526385d0e0fd8046e68be563123ea2f3195a65ca19567e82386",
+    "source_sha256": "e9561c84f92231c7c61933a057a2fb526105a4065239020725ff20679a13015d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_vdb_liminf_ratio_bound_ae",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (r : ℝ), ⨆ i, ν i (thickening r W) ≠ ∞ → ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
