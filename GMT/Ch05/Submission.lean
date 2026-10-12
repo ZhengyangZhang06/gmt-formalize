@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -457,6 +458,56 @@ def RegularSetOpenDense : Prop :=
     (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) →
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
+
+namespace Submission
+
+/-- **FTC bound for a Lipschitz curve** (used for the one-dimensional sup bound in the proof of the
+Tilt-excess Decay Theorem, Simon Ch. 5, 4.5).  If `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]`, then
+`|W(t) - W(s)| ≤ ∫_{(-a,a)} |W'|` for all `s, t ∈ [-a, a]`.
+
+Proof: if `W(t) = W(s)` the right side is the integral of a nonnegative function.  Otherwise put
+`v = W(t) - W(s)` and `u = |v|⁻¹ v`, so `|u| = 1` and `⟨u, v⟩ = |v|`.  The scalar function
+`φ = ⟨u, W⟩` is `K`-Lipschitz on `[-a, a] ⊇ uIcc s t`, hence absolutely continuous there, so
+`|v| = φ(t) - φ(s) = ∫_s^t φ'` (`AbsolutelyContinuousOnInterval.integral_deriv_eq_sub`) and `φ'` is
+interval integrable.  Since `|W'|` is integrable on `(-a, a)` (`tdo_ods_integrableOn_norm_deriv`)
+and `|φ'| ≤ |W'|` a.e. on `(-a, a)` (`tdo_ods_ae_abs_deriv_inner_le`), the dominated interval
+bound `tdo_ods_intervalIntegral_le_of_ae_abs_le` gives `∫_s^t φ' ≤ ∫_{(-a,a)} |W'|`. -/
+theorem tdo_ods_norm_sub_le_integral_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → ∀ s ∈ Icc (-a) a, ∀ t ∈ Icc (-a) a, ‖W t - W s‖ ≤ ∫ r in Ioo (-a) a, ‖deriv W r‖ := by
+  intro ℓ W a K hW s hs t ht
+  -- The trivial case `W t = W s`: the integrand is nonnegative.
+  by_cases hv : W t - W s = 0
+  · rw [hv, norm_zero]
+    exact integral_nonneg fun r => norm_nonneg _
+  -- The unit vector `u = |v|⁻¹ v` for `v = W t - W s`.
+  have hvn : ‖W t - W s‖ ≠ 0 := norm_ne_zero_iff.mpr hv
+  set u : Rn ℓ := ‖W t - W s‖⁻¹ • (W t - W s) with hu_def
+  have hu : ‖u‖ ≤ 1 := by
+    have h1 : ‖u‖ = 1 := by rw [hu_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hvn]
+    exact h1.le
+  -- `φ = ⟨u, W⟩` is `K`-Lipschitz on `[-a, a]`, hence absolutely continuous on `uIcc s t`.
+  set φ : ℝ → ℝ := fun x => inner ℝ u (W x) with hφ_def
+  have hφ : LipschitzOnWith K φ (Icc (-a) a) := by
+    refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+    calc dist (φ x) (φ y) = |inner ℝ u (W x - W y)| := by
+          rw [Real.dist_eq, inner_sub_right]
+      _ ≤ ‖u‖ * ‖W x - W y‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖W x - W y‖ := mul_le_of_le_one_left (norm_nonneg _) hu
+      _ = dist (W x) (W y) := (dist_eq_norm _ _).symm
+      _ ≤ K * dist x y := hW.dist_le_mul x hx y hy
+  have hac := (hφ.mono (uIcc_subset_Icc hs ht)).absolutelyContinuousOnInterval
+  -- `φ(t) - φ(s) = ⟨u, v⟩ = |v|`.
+  have hφst : φ t - φ s = ‖W t - W s‖ := by
+    show inner ℝ u (W t) - inner ℝ u (W s) = ‖W t - W s‖
+    rw [← inner_sub_right, hu_def, real_inner_smul_left, real_inner_self_eq_norm_sq, sq,
+      ← mul_assoc, inv_mul_cancel₀ hvn, one_mul]
+  calc ‖W t - W s‖ = φ t - φ s := hφst.symm
+    _ = ∫ r in s..t, deriv φ r := hac.integral_deriv_eq_sub.symm
+    _ ≤ ∫ r in Ioo (-a) a, ‖deriv W r‖ :=
+      Submission.tdo_ods_intervalIntegral_le_of_ae_abs_le (deriv φ) (fun r => ‖deriv W r‖) a s t
+        (Submission.tdo_ods_integrableOn_norm_deriv ℓ W a K hW) hs ht hac.intervalIntegrable_deriv
+        (Submission.tdo_ods_ae_abs_deriv_inner_le ℓ W a K u hW hu)
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
