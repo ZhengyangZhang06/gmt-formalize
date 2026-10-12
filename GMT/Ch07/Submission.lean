@@ -669,6 +669,93 @@ theorem Submission.dtc_imrep_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (R :
       rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
       nlinarith
 
+/-- **Extension by zero** (steps 6.2–6.6 of the localization in the proof of Simon 7.3.1).  Let
+`V ⊆ U` be open, `K ⊆ V` compact and `X = τ(M, θ, ξ) ∈ 𝒟ₙ(V)` with `Hⁿ(M \ K) = 0`.  Move the
+representation to `U` with carrier in `K` and let `Y ∈ 𝒟ₙ(U)` be the current it defines.  Then
+`Y⌞V = X`; `Y` kills every form whose support misses `K`, so `spt Y = K \ Z_Y` is a compact subset
+of `K`; and if `∂X = 0`, then for a cutoff `χ ∈ C^∞_c(V)` equal to `1` near `K` we get
+`∂Y(ω) = Y(dω) = X(d(χω)) = ∂X(χω) = 0`, since `d(χω) = dω` near the carrier. -/
+theorem Submission.dtc_extend_by_zero : ∀ (P n : ℕ) (U V K : Set (Euclid P)) (hVU : V ⊆ U) (X : GeometricCurrentOn V n) (R : IMRep V n), IsOpen U → IsOpen V → IsCompact K → K ⊆ V → R.Represents X → μHE[n] (R.carrier \ K) = 0 → ∃ Y : GeometricCurrentOn U n, Y.restrictDomain hVU = X ∧ Y.support ⊆ K ∧ IsCompact Y.support ∧ (BoundaryVanishes X → BoundaryVanishes Y) ∧ IsIntegerMultiplicity Y := by
+  intro P n U V K hVU X R hU hV hK hKV hRX hnull
+  -- Step 1: move `R` to `U`, with carrier in `K` and the same action
+  obtain ⟨R', hR'K, hR'R⟩ :=
+    Submission.dtc_imrep_of_null_off_compact P n U V K R hK hKV (hKV.trans hVU) hnull
+  -- Step 2: `Y = τ(R')`, which is integer multiplicity
+  obtain ⟨Y, hY⟩ := Submission.dtc_imrep_current P n U R'
+  -- Step 4: `Y` vanishes on forms whose support misses `K`
+  have hvan : ∀ ω : TestFormOn U n,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → Y ω = 0 := by
+    intro ω hω
+    rw [hY ω, IMRep.action]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport (Set.disjoint_right.mp hω (hR'K hx)), map_zero,
+      mul_zero]
+  -- Step 5: `spt Y ⊆ K`; a point of `U \ K` has a ball `W ⊂⊂ U \ K` on which `Y` vanishes
+  have hspt : Y.support ⊆ K := by
+    rintro q ⟨hqU, hqZ⟩
+    by_contra hqK
+    obtain ⟨r, hr, hrUK⟩ := Metric.isOpen_iff.mp (hU.sdiff hK.isClosed) q ⟨hqU, hqK⟩
+    have hcl : closure (ball q (r / 2)) ⊆ ball q r :=
+      closure_ball_subset_closedBall.trans (closedBall_subset_ball (half_lt_self hr))
+    refine hqZ (mem_sUnion.mpr ⟨ball q (r / 2), ⟨isOpen_ball,
+      (isCompact_closedBall q (r / 2)).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall,
+      hcl.trans (hrUK.trans sdiff_subset), fun ω hω => hvan ω ?_⟩, mem_ball_self (half_pos hr)⟩)
+    exact disjoint_sdiff_left.mono_left (hω.trans (subset_closure.trans (hcl.trans hrUK)))
+  -- Step 6: `spt Y = K \ Z_Y` is compact
+  have hcpt : IsCompact Y.support := by
+    have heq : Y.support = K \ Y.zeroRegion :=
+      Subset.antisymm (fun x hx => ⟨hspt hx, hx.2⟩) fun x hx => ⟨hVU (hKV hx.1), hx.2⟩
+    rw [heq]
+    exact hK.diff Y.isOpen_zeroRegion
+  -- Step 3: `Y⌞V = X`, since `R'` and `R` have the same action
+  have hres : Y.restrictDomain hVU = X := by
+    ext ω
+    rw [GeometricCurrentOn.restrictDomain_apply, hY (testFormOnInclusion hVU n ω),
+      testFormOnInclusion_coe, hR'R, hRX ω]
+  refine ⟨Y, hres, hspt, hcpt, ?_, ⟨R', hY⟩⟩
+  -- Step 7: `∂X = 0 → ∂Y = 0` (trivial in degree `0`)
+  rcases n with _ | m
+  · exact fun _ => trivial
+  intro hX
+  change X.boundary = 0 at hX
+  change Y.boundary = 0
+  -- Step 7.1: a cutoff `χ ∈ C^∞_c(V)` equal to `1` on an open set `O ⊇ K`
+  obtain ⟨δ, hδ, hδV⟩ := hK.exists_cthickening_subset_open hV hKV
+  obtain ⟨χ, hχ1, hχ0, -⟩ := exists_contMDiffMap_one_nhds_of_subset_interior
+    (modelWithCornersSelf ℝ (Euclid P)) (n := ⊤) hK.isClosed
+    ((self_subset_thickening hδ K).trans (thickening_subset_interior_cthickening δ K))
+  have hχs : ContDiff ℝ (⊤ : ℕ∞) χ := contMDiff_iff_contDiff.mp χ.contMDiff
+  have hχsupp : tsupport χ ⊆ cthickening δ K :=
+    closure_minimal (fun x hx => by_contra fun h => hx (hχ0 x h)) isClosed_cthickening
+  have hχc : HasCompactSupport χ :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport _) hχsupp
+  obtain ⟨O, hO, hKO, hOχ⟩ := mem_nhdsSet_iff_exists.mp hχ1
+  -- Step 7.2: `χω ∈ 𝒟^m(V)` for `ω ∈ 𝒟^m(U)`
+  have hcut : ∀ ω : TestFormOn U m,
+      (fun x => χ x • (ω : DifferentialForm (Euclid P) m) x) ∈ testFormOnSubmodule V m :=
+    fun ω => ⟨⟨hχs.smul ω.property.1.1, hχc.smul_right⟩,
+      (tsupport_smul_subset_left _ _).trans (hχsupp.trans hδV)⟩
+  -- Step 7.4: `∂Y(ω) = R'(dω) = R'(d(χω)) = R(d(χω)) = X(d(χω)) = ∂X(χω) = 0`
+  ext ω
+  rw [GeometricCurrentOn.zero_apply, GeometricCurrentOn.boundary_apply,
+    hY (exteriorDerivativeTestOn U m ω)]
+  have hd : R'.action (exteriorDerivativeTestOn U m ω : DifferentialForm (Euclid P) (m + 1)) =
+      R'.action (exteriorDerivativeTestOn V m ⟨_, hcut ω⟩ :
+        DifferentialForm (Euclid P) (m + 1)) := by
+    unfold IMRep.action
+    refine setIntegral_congr_fun R'.measurableSet_carrier fun x hx => ?_
+    -- Step 7.3: `χω = ω` near `x ∈ M' ⊆ K ⊆ O`, so `d(χω)(x) = dω(x)`
+    have hloc : (fun y => χ y • (ω : DifferentialForm (Euclid P) m) y) =ᶠ[𝓝 x]
+        (ω : DifferentialForm (Euclid P) m) :=
+      Filter.eventuallyEq_of_mem (hO.mem_nhds (hKO (hR'K hx))) fun y hy => by
+        rw [show χ y = 1 from hOχ hy, one_smul]
+    show (R'.mult x : ℝ) * R'.orient x (extDeriv (ω : DifferentialForm (Euclid P) m) x) =
+      (R'.mult x : ℝ) * R'.orient x
+        (extDeriv (fun y => χ y • (ω : DifferentialForm (Euclid P) m) y) x)
+    rw [hloc.extDeriv_eq]
+  rw [hd, hR'R, ← hRX, ← GeometricCurrentOn.boundary_apply, hX, GeometricCurrentOn.zero_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
