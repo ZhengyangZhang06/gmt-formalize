@@ -462,6 +462,47 @@ theorem Submission.br_weightedTangent_congr :
     _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
         (hcut M' θ').symm
 
+/-- Restriction of a triple `(M, θ, ξ)` (Simon Ch. 6, 3.1) to an open set `V`, the localization
+step in the proof of Ch. 6, 6.3: if `M ∩ V ⊆ U'` and `θ` is locally `Hⁿ`-integrable on `M ∩ V`
+in `U'`, then `(M ∩ V, θ, ξ)` satisfies the triple conditions in `U'`.  As
+`(M ∆ (M ∩ V)) ∩ V = ∅`, at `x ∈ V` the weighted tangent spaces of `(M, θ)` are those of
+`(M ∩ V, θ)` (`Submission.br_weightedTangent_congr`). -/
+theorem Submission.br_loc_triple_inter_open :
+    ∀ (P n : ℕ) (U U' V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n),
+      IsRectifiableTriple U n M θ ξ → IsOpen V → M ∩ V ⊆ U' →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U' →
+        IntegrableOn θ (M ∩ V ∩ K) (μHE[n] : Measure (Eucl P))) →
+      IsRectifiableTriple U' n (M ∩ V) θ ξ := by
+  intro P n U U' V M θ ξ hTr hV hsub hint
+  have hnull : NullMeasurableSet (M ∩ V) (μHE[n] : Measure (Eucl P)) :=
+    hTr.nullMeasurableSet.inter hV.measurableSet.nullMeasurableSet
+  refine
+    { subset := hsub
+      nullMeasurableSet := hnull
+      countablyRectifiable := hTr.countablyRectifiable.mono inter_subset_left
+      pos := fun x hx => hTr.pos x hx.1
+      integrableOn := hint
+      aestronglyMeasurable :=
+        hTr.aestronglyMeasurable.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+      orients := ?_ }
+  -- The orientation of `(M, θ, ξ)` holds `Hⁿ ⌞ (M ∩ V)`-a.e.
+  have h1 : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)), ∃ τ : Fin n → Eucl P,
+      Orthonormal ℝ τ ∧
+      HasWeightedApproximateTangentSpaceAt n M θ x (Submodule.span ℝ (range τ)) ∧
+      (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ) :=
+    ae_restrict_of_ae_restrict_of_subset inter_subset_left hTr.orients
+  -- `(M ∆ (M ∩ V)) ∩ V = ∅`.
+  have hsd : (μHE[n] : Measure (Eucl P)) (symmDiff M (M ∩ V) ∩ V) = 0 := by
+    have : symmDiff M (M ∩ V) ∩ V = ∅ := by
+      ext x
+      simp only [Set.mem_symmDiff, mem_inter_iff, mem_empty_iff_false, iff_false]
+      tauto
+    rw [this, measure_empty]
+  filter_upwards [h1, ae_restrict_mem₀ hnull] with x hx hxMV
+  obtain ⟨τ, hτ, htan, hξ⟩ := hx
+  exact ⟨τ, hτ, Submission.br_weightedTangent_congr P n M (M ∩ V) θ θ x V hV hxMV.2 hsd
+    (Filter.Eventually.of_forall (fun _ => rfl)) rfl _ htan, hξ⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
