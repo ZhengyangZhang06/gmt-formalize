@@ -1048,6 +1048,72 @@ theorem Submission.pcoarea_flat_jacobian_identity : ∀ (m k N : ℕ) (A : Rn (m
   -- Step 7: combine.
   rw [hblock, ← hsec, hadj]
   ring
+/-- **Critical part of the parametric co-area formula** (parent steps 0(a) and 1). On
+`B ⊆ Crit = {u | DG(u) not surjective}` the Jacobian vanishes: `ker DG(u)* = (range DG(u))ᗮ ≠ 0`,
+so `normDet DG(u)* = 0` and the left side is `0`. On the right, `ψ` is `C¹` on the open set `D`,
+hence locally Lipschitz there; by Lindelöf and Ch. 2, Thm. 1.8(i) (SimonGMT
+`euclideanHausdorffMeasure_image_le_of_lipschitzOn`) it maps `Hᵏ`-null subsets of `D` to `Hᵏ`-null
+sets. For `Lᵐ`-a.e. `y`, `Hᵏ(B ∩ G⁻¹{y}) ≤ Hᵏ(Crit ∩ G⁻¹{y}) = 0`, so the inner integral over
+`ψ(B ∩ G⁻¹{y})` vanishes: the inner function is a.e. `0`, hence a.e.-measurable with integral `0`.
+Neither measurability of `φ` nor any regularity of `G` is needed. -/
+theorem Submission.pcoarea_critical_part : ∀ (m k N : ℕ) (D : Set (Rn (m + k)))
+    (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m), IsOpen D → ContDiffOn ℝ 1 ψ D →
+    (∀ᵐ y ∂(volume : Measure (Rn m)),
+      μHE[k] ({u | ¬ Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}) = 0) →
+    ∀ B ⊆ D, MeasurableSet B → B ⊆ {u | ¬ Function.Surjective (fderiv ℝ G u)} →
+    ∀ φ : Rn N → ℝ≥0∞, Measurable φ →
+    AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧
+    ∫⁻ u in B, φ (ψ u) * ENNReal.ofReal (((fderiv ℝ ψ u).toLinearMap ∘ₗ
+      (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet *
+      (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet) =
+    ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by
+  intro m k N D ψ G hD hψ hcrit B hBD hB hBcrit φ hφ
+  -- Step 1: on `B`, `DG(u)` is not surjective, so `normDet (DG(u)*) = 0` and the left side is `0`.
+  have hdet : ∀ u ∈ B, (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet = 0 := by
+    intro u hu
+    rw [LinearMap.normDet_eq_zero_iff_ker_ne_bot, ← LinearMap.orthogonal_range, Ne,
+      Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
+    exact hBcrit hu
+  have hlhs : ∫⁻ u in B, φ (ψ u) * ENNReal.ofReal (((fderiv ℝ ψ u).toLinearMap ∘ₗ
+      (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet *
+      (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet) = 0 := by
+    refine (setLIntegral_congr_fun hB fun u hu ↦ ?_).trans lintegral_zero
+    simp only [hdet u hu, mul_zero, ENNReal.ofReal_zero]
+  -- Step 2: `ψ` is locally Lipschitz on the open set `D`, so it maps `Hᵏ`-null subsets of `D`
+  -- to `Hᵏ`-null sets (Lindelöf and countable subadditivity).
+  have hnull : ∀ S ⊆ D, μHE[k] S = 0 → μHE[k] (ψ '' S) = 0 := by
+    intro S hSD hS
+    have hloc : ∀ x ∈ S, ∃ o : Set (Rn (m + k)), IsOpen o ∧ x ∈ o ∧
+        ∃ K : ℝ≥0, LipschitzOnWith K ψ o := by
+      intro x hx
+      obtain ⟨K, t, ht, hK⟩ := (hψ.contDiffAt (hD.mem_nhds (hSD hx))).exists_lipschitzOnWith
+      obtain ⟨o, hot, ho, hxo⟩ := mem_nhds_iff.mp ht
+      exact ⟨o, ho, hxo, K, hK.mono hot⟩
+    choose! o ho hxo K hK using hloc
+    obtain ⟨T, hTS, hTc, hTo⟩ := TopologicalSpace.isOpen_biUnion_countable S o ho
+    have hcover : ψ '' S ⊆ ⋃ x ∈ T, ψ '' (S ∩ o x) := by
+      rintro _ ⟨z, hz, rfl⟩
+      have hzT : z ∈ ⋃ x ∈ T, o x := by
+        rw [hTo]
+        exact mem_biUnion hz (hxo z hz)
+      obtain ⟨x, hxT, hzx⟩ := mem_iUnion₂.mp hzT
+      exact mem_iUnion₂.mpr ⟨x, hxT, z, ⟨hz, hzx⟩, rfl⟩
+    have hpiece : ∀ x ∈ T, μHE[k] (ψ '' (S ∩ o x)) = 0 := by
+      intro x hx
+      have hL : LipschitzOnWith (K x) ψ (S ∩ o x) := (hK x (hTS hx)).mono inter_subset_right
+      have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k hL
+      rw [measure_mono_null inter_subset_left hS, mul_zero] at h
+      exact nonpos_iff_eq_zero.mp h
+    exact measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 hpiece)
+  -- Step 3: for a.e. `y`, `Hᵏ(B ∩ G⁻¹{y}) = 0`, so `Hᵏ(ψ(B ∩ G⁻¹{y})) = 0` and the inner
+  -- integral vanishes.
+  have hae : (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) =ᵐ[volume]
+      fun _ ↦ 0 := by
+    filter_upwards [hcrit] with y hy
+    exact setLIntegral_measure_zero _ _ (hnull _ (inter_subset_left.trans hBD)
+      (measure_mono_null (inter_subset_inter_left _ hBcrit) hy))
+  -- Step 4: the inner function is a.e. `0`, so it is a.e.-measurable and both sides are `0`.
+  exact ⟨aemeasurable_const.congr hae.symm, by rw [hlhs, lintegral_congr_ae hae, lintegral_zero]⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
