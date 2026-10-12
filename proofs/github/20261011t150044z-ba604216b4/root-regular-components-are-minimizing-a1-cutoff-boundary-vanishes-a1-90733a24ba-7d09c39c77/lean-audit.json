@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ed9975fad7f6dd24321ead22f4d88f66037bcd3fabc09980141569ea8c544b05",
+  "git_delta": {
+    "base_commit": "d416af9629ee4f74ffe6d1bf0ffcfc6156aee6e2",
+    "candidate_commit": "c6b061d487f2cff0f300e16096f9a0b45904ad38",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_localized_boundary_zero",
+    "diff_sha256": "ae738c2832fc1c38fd5c474df0ff3819bfb6cefd1a65bea8f57271b849c30027",
+    "source_sha256": "bfe0a4f134c340749cae2c503e1da118e3f8387fcd6cd933c3a6c75883ace6e5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_localized_boundary_zero",
+      "statement": "∀ (P m : ℕ) (U M₁ : Set (Euclid P)) (T T₁ : GeometricCurrentOn U (m + 1)) (ξ : Euclid P → MultiVector P (m + 1)), T.boundary = 0 → (∀ ω : TestFormOn U (m + 1), T₁ ω = ∫ x in M₁, ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) → (∀ z ∈ M₁, ∃ G : Set (Euclid P), IsOpen G ∧ z ∈ G ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ G → T₁ ω = c * T ω) → ∀ η : TestFormOn U m, closure M₁ ∩ tsupport (η : DifferentialForm (Euclid P) m) ⊆ M₁ → T₁.boundary η = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
