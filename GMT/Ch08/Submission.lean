@@ -410,6 +410,27 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, proof of 5.10, p. 221, the radial cutoffs** (child `radial_cutoff` of
+`cylinder_monotonicity`, step 1): for `A > 1`, `φ(s) = st((A² - s)/(A² - 1))`, with `st` Mathlib's
+`Real.smoothTransition`, is a `C¹` non-increasing function with values in `[0,1]` that is `1` on
+`(-∞, 1]` and `0` on `[A², ∞)`. -/
+theorem Submission.intcpt_allard_cm_radial_cutoff :
+    ∀ A : ℝ, 1 < A → ∃ φ : ℝ → ℝ, ContDiff ℝ 1 φ ∧ Antitone φ ∧ (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) ∧
+      (∀ s, s ≤ 1 → φ s = 1) ∧ (∀ s, A ^ 2 ≤ s → φ s = 0) := by
+  intro A hA
+  -- `d = A² - 1 > 0`, so `s ↦ (A² - s)/d` is a decreasing affine map.
+  have hd : 0 < A ^ 2 - 1 := by nlinarith
+  refine ⟨fun s ↦ Real.smoothTransition ((A ^ 2 - s) / (A ^ 2 - 1)), ?_, fun s s' hs ↦ ?_,
+    fun s ↦ ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩, fun s hs ↦ ?_,
+    fun s hs ↦ ?_⟩
+  · exact Real.smoothTransition.contDiff.comp ((contDiff_const.sub contDiff_id).div_const _)
+  · exact Real.smoothTransition.monotone (div_le_div_of_nonneg_right (by linarith) hd.le)
+  · -- `s ≤ 1` gives `(A² - s)/d ≥ 1`.
+    exact Real.smoothTransition.one_of_one_le ((one_le_div₀ hd).2 (by linarith))
+  · -- `A² ≤ s` gives `(A² - s)/d ≤ 0`.
+    exact Real.smoothTransition.zero_of_nonpos
+      (div_nonpos_of_nonpos_of_nonneg (by linarith) hd.le)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
