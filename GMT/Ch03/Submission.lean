@@ -859,6 +859,241 @@ theorem Submission.c1_critical_slices_null : ∀ (m k : ℕ) (G : Rn (m + k) →
   refine measure_mono_null (fun u hu ↦ ?_) (measure_iUnion_null hy)
   obtain ⟨R, hR⟩ := exists_nat_ge ‖u‖
   exact mem_iUnion.2 ⟨R, ⟨hu.1, mem_closedBall_zero_iff.2 hR⟩, hu.2⟩
+/-- **`normDet` of an adjoint** (Simon Ch. 2, §6, co-area formula for linear maps,
+`chapter-02.txt` lines 1424–1461, and Ch. 3 (2.7), `chapter-03.txt` lines 412–419): for a linear
+map `P : X → Y` of finite-dimensional real inner product spaces, if `P` is surjective then
+`normDet P* = normDet (P ∘ ι)` with `ι` the inclusion of `(ker P)ᗮ`, and otherwise
+`normDet P* = 0`. The horizontal map `h = P ∘ ι` is an isomorphism, `P*` corestricts to `h*`
+(as `range P* = (ker P)ᗮ`), and in orthonormal bases with a common index the matrix of `h*` is
+the transpose of that of `h`. If `P` is not surjective, `ker P* = (range P)ᗮ ≠ 0`. -/
+theorem Submission.coarea_normDet_adjoint_eq_horizontal : ∀ {X Y : Type} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (P : X →ₗ[ℝ] Y), (Function.Surjective P → (LinearMap.adjoint P).normDet = (P ∘ₗ (LinearMap.ker P)ᗮ.subtype).normDet) ∧ (¬ Function.Surjective P → (LinearMap.adjoint P).normDet = 0) := by
+  intro X Y _ _ _ _ _ _ P
+  refine ⟨fun hP => ?_, fun hP => ?_⟩
+  · set H := (LinearMap.ker P)ᗮ
+    set h : H →ₗ[ℝ] Y := P ∘ₗ H.subtype with hh
+    -- `h` is injective, as `ker P ⊓ (ker P)ᗮ = ⊥`.
+    have hinj : Function.Injective h := by
+      rw [← LinearMap.ker_eq_bot, eq_bot_iff]
+      intro u hu
+      have hz : (u : X) ∈ LinearMap.ker P ⊓ H := ⟨hu, u.property⟩
+      rw [Submodule.inf_orthogonal_eq_bot] at hz
+      exact (Submodule.mem_bot ℝ).mpr (Subtype.ext ((Submodule.mem_bot ℝ).mp hz))
+    -- `h` is surjective: `P x = h (x - π x)` with `π` the orthogonal projection onto `ker P`.
+    have hsurj : Function.Surjective h := by
+      intro y
+      obtain ⟨x, rfl⟩ := hP y
+      refine ⟨⟨x - (LinearMap.ker P).starProjection x,
+        Submodule.sub_starProjection_mem_orthogonal x⟩, ?_⟩
+      simp [hh, (LinearMap.mem_ker).mp ((LinearMap.ker P).starProjection_apply_mem x)]
+    have hd : finrank ℝ H = finrank ℝ Y := (LinearEquiv.ofBijective h ⟨hinj, hsurj⟩).finrank_eq
+    -- `P*` takes values in `H = (ker P)ᗮ = range P*`, and its corestriction to `H` is `h*`.
+    have hm : ∀ y, LinearMap.adjoint P y ∈ H := by
+      intro y
+      rw [show H = LinearMap.range (LinearMap.adjoint P) from LinearMap.orthogonal_ker P]
+      exact ⟨y, rfl⟩
+    have ha : (LinearMap.adjoint P).codRestrict H hm = LinearMap.adjoint h := by
+      apply (LinearMap.eq_adjoint_iff _ _).mpr
+      intro y u
+      exact LinearMap.adjoint_inner_left P (u : X) y
+    rw [← LinearMap.normDet_codRestrict hm, ha]
+    -- In orthonormal bases indexed by the same `Fin d`, the matrix of `h*` is `Mᴴ = Mᵀ`.
+    classical
+    let bH := stdOrthonormalBasis ℝ H
+    let bY := (stdOrthonormalBasis ℝ Y).reindex (finCongr hd.symm)
+    rw [(LinearMap.adjoint h).normDet_eq_norm_det_toMatrix bY bH,
+      h.normDet_eq_norm_det_toMatrix bH bY, LinearMap.toMatrix_adjoint, Matrix.det_conjTranspose]
+    simp
+  · -- `ker P* = (range P)ᗮ ≠ ⊥`, since `range P ≠ ⊤`.
+    rw [LinearMap.normDet_eq_zero_iff_ker_ne_bot, ← LinearMap.orthogonal_range, ne_eq,
+      Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
+    exact hP
+/-- **Block-triangular factorization of `normDet`** (step 5 of the parent proof of
+`coarea_normDet_chain_rule`, the block form of `A`). Let `f : V → X` be a linear bijection,
+`K ⊆ V` a subspace and `W = f(K)ᗮ`. In orthonormal bases of `V = K ⊕ Kᗮ` and `X = f(K) ⊕ W`
+indexed by `Fin r ⊕ Fin s` (`r = dim K = dim f(K)`, `s = dim Kᗮ = dim W`), the matrix of `f` is
+`fromBlocks M₁₁ M₁₂ 0 M₂₂`: `M₁₁` is the matrix of `f|_K : K → f(K)`, the lower-left block
+vanishes because `W ⊥ f(K)`, and `M₂₂` is the matrix of `p_W ∘ f ∘ ι_{Kᗮ}` because
+`⟪w, x⟫ = ⟪w, p_W x⟫` for `w ∈ W`. Hence `normDet f = |det M₁₁| · |det M₂₂|`, and
+`|det M₁₁| = normDet (f ∘ ι_K)` since corestricting to `f(K)` does not change `normDet`. -/
+theorem Submission.coarea_normDet_block_triangular : ∀ {V X : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] (f : V →ₗ[ℝ] X) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective f → W = (K.map f)ᗮ → f.normDet = (f ∘ₗ K.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype).normDet := by
+  intro V X _ _ _ _ _ _ f K W hf hW
+  classical
+  -- Notation: `F = f(K)`, so `W = Fᗮ`.
+  obtain ⟨F, hF⟩ : ∃ F : Submodule ℝ X, F = K.map f := ⟨_, rfl⟩
+  rw [← hF] at hW
+  -- Step 1: dimensions, `dim F = dim K` and `dim W = dim Kᗮ`.
+  have hr : finrank ℝ F = finrank ℝ K := by
+    rw [hF]; exact (Submodule.equivMapOfInjective f hf.1 K).finrank_eq.symm
+  have hVX : finrank ℝ V = finrank ℝ X := (LinearEquiv.ofBijective f hf).finrank_eq
+  have e1 := Submodule.finrank_add_finrank_orthogonal K
+  have e2 := Submodule.finrank_add_finrank_orthogonal F
+  rw [← hW] at e2
+  have hs : finrank ℝ W = finrank ℝ Kᗮ := by omega
+  -- Steps 2–3: orthonormal bases of `K`, `Kᗮ`, `F`, `W`; adapted bases `β` of `V`, `γ` of `X`.
+  let b₁ := stdOrthonormalBasis ℝ K
+  let b₂ := stdOrthonormalBasis ℝ Kᗮ
+  let c₁ : OrthonormalBasis (Fin (finrank ℝ K)) ℝ F :=
+    (stdOrthonormalBasis ℝ F).reindex (finCongr hr)
+  let c₂ : OrthonormalBasis (Fin (finrank ℝ Kᗮ)) ℝ W :=
+    (stdOrthonormalBasis ℝ W).reindex (finCongr hs)
+  let c₂' : OrthonormalBasis (Fin (finrank ℝ Kᗮ)) ℝ Fᗮ := c₂.map (LinearIsometryEquiv.ofEq _ _ hW)
+  let β := (b₁.prod b₂).map K.orthogonalDecomposition.symm
+  let γ := (c₁.prod c₂').map F.orthogonalDecomposition.symm
+  have hβl : ∀ i, β (Sum.inl i) = (b₁ i : V) := by intro i; simp [β]
+  have hβr : ∀ j, β (Sum.inr j) = (b₂ j : V) := by intro j; simp [β]
+  have hγl : ∀ i, γ (Sum.inl i) = (c₁ i : X) := by intro i; simp [γ]
+  have hγr : ∀ j, γ (Sum.inr j) = (c₂ j : X) := by intro j; simp [γ, c₂']
+  -- The diagonal blocks: `f_K : K → F` and `g = p_W ∘ f ∘ ι_{Kᗮ} : Kᗮ → W`.
+  have hmemF : ∀ k : K, f k ∈ F := fun k => hF ▸ Submodule.mem_map_of_mem k.2
+  let fK : K →ₗ[ℝ] F := (f ∘ₗ K.subtype).codRestrict F (fun k => hmemF k)
+  let g : Kᗮ →ₗ[ℝ] W := (W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype
+  -- Steps 6–7: `normDet = |det|` in square orthonormal bases; `normDet (f ∘ ι_K) = normDet f_K`.
+  have h1 : (f ∘ₗ K.subtype).normDet = fK.normDet := (LinearMap.normDet_codRestrict _).symm
+  rw [h1, LinearMap.normDet_eq_norm_det_toMatrix f β γ,
+    LinearMap.normDet_eq_norm_det_toMatrix fK b₁ c₁, LinearMap.normDet_eq_norm_det_toMatrix g b₂ c₂,
+    ← norm_mul]
+  congr 1
+  -- Step 4: the matrix of `f` in `β`, `γ` is block upper triangular.
+  have hM : LinearMap.toMatrix β.toBasis γ.toBasis f =
+      Matrix.fromBlocks (LinearMap.toMatrix b₁.toBasis c₁.toBasis fK)
+        (Matrix.of fun i j => inner ℝ (c₁ i : X) (f (b₂ j))) 0
+        (LinearMap.toMatrix b₂.toBasis c₂.toBasis g) := by
+    ext a b
+    rcases a with i | i <;> rcases b with j | j
+    · -- (a) the `K → F` block is the matrix of `f_K`.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₁₁,
+        hβl, hγl]
+      rfl
+    · -- (d) the unconstrained block `M₁₂`.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₁₂,
+        hβr, hγl, Matrix.of_apply]
+    · -- (b) `W ⊥ F` kills the `K → W` block.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₂₁,
+        hβl, hγr, Matrix.zero_apply]
+      have hmem : (c₂ i : X) ∈ Fᗮ := hW ▸ (c₂ i).2
+      exact Submodule.inner_left_of_mem_orthogonal (hmemF (b₁ j)) hmem
+    · -- (c) `⟪w, x⟫ = ⟪w, p_W x⟫` for `w ∈ W`: the `Kᗮ → W` block is the matrix of `g`.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₂₂,
+        hβr, hγr]
+      simp [g]
+  -- Step 5: `det (fromBlocks M₁₁ M₁₂ 0 M₂₂) = det M₁₁ * det M₂₂`.
+  rw [hM, Matrix.det_fromBlocks_zero₂₁]
+/-- **Horizontal step of the `normDet` chain rule** (step 6 of the supplied proof of the `normDet`
+chain rule behind the co-area Jacobian, Simon Ch. 3, (2.7)). Let `B : V → X` be bijective,
+`Γ = L ∘ B`, `K = ker Γ` and `W = (ker L)ᗮ`. Since `Wᗮ = ker L`, the restriction of `Γ` to `Kᗮ`
+factors as `L|_W ∘ (p_W ∘ B|_{Kᗮ})`, and `B(K) = ker L` gives `dim Kᗮ = dim W`; hence
+`normDet (Γ|_{Kᗮ}) = normDet (L|_W) · normDet (p_W ∘ B|_{Kᗮ})`. -/
+theorem Submission.coarea_normDet_horizontal_comp : ∀ {V X Y : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (B : V →ₗ[ℝ] X) (L : X →ₗ[ℝ] Y) (Γ : V →ₗ[ℝ] Y) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective B → (∀ v, Γ v = L (B v)) → K = LinearMap.ker Γ → W = (LinearMap.ker L)ᗮ → (Γ ∘ₗ Kᗮ.subtype).normDet = (L ∘ₗ W.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype).normDet := by
+  intro V X Y _ _ _ _ _ _ _ _ _ B L Γ K W hB hΓ hK hW
+  -- `Wᗮ = (ker L)ᗮᗮ = ker L`.
+  have hWperp : Wᗮ = LinearMap.ker L := by
+    rw [hW, Submodule.orthogonal_orthogonal]
+  -- `Γ ∘ ι_{Kᗮ} = (L ∘ ι_W) ∘ (p_W ∘ B ∘ ι_{Kᗮ})`, since `B u - p_W (B u) ∈ Wᗮ = ker L`.
+  have hcomp : Γ ∘ₗ Kᗮ.subtype =
+      (L ∘ₗ W.subtype) ∘ₗ ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype) := by
+    refine LinearMap.ext fun u ↦ ?_
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply, ContinuousLinearMap.coe_coe]
+    have h : B u - (W.orthogonalProjectionOnto (B u) : X) ∈ Wᗮ :=
+      Submodule.sub_starProjection_mem_orthogonal (K := W) (B u)
+    rw [hWperp, LinearMap.mem_ker, map_sub, sub_eq_zero] at h
+    rw [hΓ]
+    exact h
+  -- `ker L = B(K)`, using that `B` is surjective.
+  have hker : LinearMap.ker L = K.map B := by
+    ext t
+    constructor
+    · intro ht
+      obtain ⟨v, rfl⟩ := hB.2 t
+      refine ⟨v, ?_, rfl⟩
+      rw [SetLike.mem_coe, hK, LinearMap.mem_ker, hΓ]
+      exact LinearMap.mem_ker.mp ht
+    · rintro ⟨v, hv, rfl⟩
+      rw [SetLike.mem_coe, hK, LinearMap.mem_ker, hΓ] at hv
+      exact hv
+  -- `dim Kᗮ = dim V - dim K = dim X - dim (ker L) = dim W`.
+  have hfin : finrank ℝ Kᗮ = finrank ℝ W := by
+    have e1 := Submodule.finrank_add_finrank_orthogonal K
+    have e2 := Submodule.finrank_add_finrank_orthogonal (LinearMap.ker L)
+    rw [← hW] at e2
+    have e3 := (LinearEquiv.ofBijective B hB).finrank_eq
+    have e4 := (Submodule.equivMapOfInjective B hB.1 K).finrank_eq
+    rw [← hker] at e4
+    omega
+  -- Multiplicativity of `normDet` for a composition through an equal-dimensional space.
+  rw [hcomp]
+  exact LinearMap.normDet_comp_of_finrank_eq _ _ hfin
+
+/-- **Chain rule for the co-area factor** (Simon Ch. 3, (2.7)–(2.8), `chapter-03.txt`
+lines 412–428, where `J^{M*}_f` is reduced to the `C¹` case along charts): let `A : ℝⁿ → ℝᴺ` be
+injective with range `T`, `L : T → ℝᵐ` linear and `Γ = L ∘ A`. Then
+`normDet L* · normDet A = normDet (A ∘ ι_{ker Γ}) · normDet Γ*`.
+The corestriction `A' : ℝⁿ → T` of `A` is bijective with the same `normDet`, `Γ = L ∘ A'` and
+`range L = range Γ`. If `Γ` is not surjective, both adjoints have `normDet` zero
+(`Submission.coarea_normDet_adjoint_eq_horizontal`). Otherwise `normDet P* = normDet (P ∘ ι)` for
+the inclusion `ι` of `(ker P)ᗮ`, `P = L, Γ`; `ker L = A'(K)` for `K = ker Γ`, and with
+`W = (ker L)ᗮ`, `g = p_W ∘ A' ∘ ι_{Kᗮ}`:
+`normDet A' = normDet (A' ∘ ι_K) · normDet g` (`Submission.coarea_normDet_block_triangular`) and
+`normDet (Γ ∘ ι_{Kᗮ}) = normDet (L ∘ ι_W) · normDet g`
+(`Submission.coarea_normDet_horizontal_comp`). -/
+theorem Submission.coarea_normDet_chain_rule : ∀ (n N m : ℕ) (T : Submodule ℝ (Rn N))
+    (A : Rn n →ₗ[ℝ] Rn N) (L : T →ₗ[ℝ] Rn m) (Γ : Rn n →ₗ[ℝ] Rn m), Function.Injective A →
+    LinearMap.range A = T → (∀ (v : Rn n) (hv : A v ∈ T), Γ v = L ⟨A v, hv⟩) →
+    (LinearMap.adjoint L).normDet * A.normDet =
+      (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet := by
+  intro n N m T A L Γ hA hT hΓ
+  -- Step 1(i): `A` corestricts to a bijection `A' : ℝⁿ → T` with `Γ = L ∘ A'`; corestricting
+  -- does not change `normDet`.
+  have hmem : ∀ v, A v ∈ T := fun v ↦ hT ▸ LinearMap.mem_range_self A v
+  obtain ⟨A', hA'⟩ : ∃ A' : Rn n →ₗ[ℝ] T, A' = A.codRestrict T hmem := ⟨_, rfl⟩
+  have hA'v : ∀ v, (A' v : Rn N) = A v := fun v ↦ by rw [hA']; rfl
+  have hbij : Function.Bijective A' := by
+    refine ⟨fun v w h ↦ hA (by rw [← hA'v, ← hA'v, h]), ?_⟩
+    rintro ⟨t, ht⟩
+    obtain ⟨v, rfl⟩ : t ∈ LinearMap.range A := hT ▸ ht
+    exact ⟨v, Subtype.ext (hA'v v)⟩
+  have hΓA' : ∀ v, Γ v = L (A' v) := fun v ↦ by
+    rw [hΓ v (hmem v)]
+    exact congrArg L (Subtype.ext (hA'v v).symm)
+  have hnA : A.normDet = A'.normDet := by
+    rw [hA', LinearMap.normDet_codRestrict]
+  obtain ⟨K, hK⟩ : ∃ K : Submodule ℝ (Rn n), K = LinearMap.ker Γ := ⟨_, rfl⟩
+  rw [← hK]
+  have hnAK : (A ∘ₗ K.subtype).normDet = (A' ∘ₗ K.subtype).normDet := by
+    have hKT : ∀ k : K, (A ∘ₗ K.subtype) k ∈ T := fun k ↦ hmem k
+    have h : A' ∘ₗ K.subtype = (A ∘ₗ K.subtype).codRestrict T hKT :=
+      LinearMap.ext fun k ↦ Subtype.ext (hA'v k)
+    rw [h, LinearMap.normDet_codRestrict]
+  -- Step 2: `range L = range Γ`, since `A'` is onto `T`; so `L` is onto iff `Γ` is.
+  by_cases hsurj : Function.Surjective Γ
+  · -- Step 4: `normDet P* = normDet (P ∘ ι_{(ker P)ᗮ})` for `P = L, Γ`, and `ker L = A'(K)`.
+    have hLsurj : Function.Surjective L := fun y ↦ by
+      obtain ⟨v, hv⟩ := hsurj y
+      exact ⟨A' v, (hΓA' v).symm.trans hv⟩
+    rw [(Submission.coarea_normDet_adjoint_eq_horizontal L).1 hLsurj,
+      (Submission.coarea_normDet_adjoint_eq_horizontal Γ).1 hsurj, ← hK]
+    have hker : LinearMap.ker L = K.map A' := by
+      rw [hK, show Γ = L ∘ₗ A' from LinearMap.ext hΓA', LinearMap.ker_comp,
+        Submodule.map_comap_eq_of_surjective hbij.2]
+    obtain ⟨W, hW⟩ : ∃ W : Submodule ℝ T, W = (LinearMap.ker L)ᗮ := ⟨_, rfl⟩
+    rw [← hW]
+    -- Step 5: `A'` is block triangular along `K ⊕ Kᗮ → A'(K) ⊕ W`.
+    have hblock := Submission.coarea_normDet_block_triangular A' K W hbij (by rw [hW, hker])
+    -- Step 6: `Γ ∘ ι_{Kᗮ} = (L ∘ ι_W) ∘ (p_W ∘ A' ∘ ι_{Kᗮ})`.
+    have hstep := Submission.coarea_normDet_horizontal_comp A' L Γ K W hbij hΓA' hK hW
+    -- Step 7.
+    rw [hnA, hblock, hnAK, hstep]
+    ring
+  · -- Step 3: neither `L` nor `Γ` is onto, so both adjoints have `normDet` zero.
+    have hLsurj : ¬ Function.Surjective L := fun hL ↦ hsurj fun y ↦ by
+      obtain ⟨t, ht⟩ := hL y
+      obtain ⟨v, rfl⟩ := hbij.2 t
+      exact ⟨v, (hΓA' v).trans ht⟩
+    rw [(Submission.coarea_normDet_adjoint_eq_horizontal L).2 hLsurj,
+      (Submission.coarea_normDet_adjoint_eq_horizontal Γ).2 hsurj, zero_mul, mul_zero]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
