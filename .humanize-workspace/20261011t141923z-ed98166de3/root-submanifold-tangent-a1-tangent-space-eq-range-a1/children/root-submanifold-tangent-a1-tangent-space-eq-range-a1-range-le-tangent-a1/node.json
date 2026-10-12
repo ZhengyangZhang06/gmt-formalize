@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1.range_le_tangent-a1",
+  "parent_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1",
+  "depth": 3,
+  "title": "Range of the chart derivative lies in the tangent space (Simon 2.4.3, Part A)",
+  "statement": "Let n, N ∈ ℕ and write ℝᵏ := EuclideanSpace ℝ (Fin k). Let M ⊆ ℝᴺ, V ⊆ ℝⁿ and ψ : ℝⁿ → ℝᴺ. Assume V is open, ψ is C¹ on V (ContDiffOn ℝ 1 ψ V), and ψ maps V into M (MapsTo ψ V M). Then for every x ∈ V, the range of Dψ(x) = fderiv ℝ ψ x is contained in tangentSpace M (ψ x). Here tangentSpace M y is the linear span of all vectors γ′(0) such that γ : ℝ → ℝᴺ is C¹ on (−1,1), maps (−1,1) into M, satisfies γ(0) = y and has derivative γ′(0) at 0.",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → MapsTo ψ V M → ∀ x ∈ V, LinearMap.range (fderiv ℝ ψ x).toLinearMap ≤ tangentSpace M (ψ x)",
+  "lean_name": "simon_chart_range_fderiv_le_tangentSpace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-tangent-space-eq-range-a1-range-le-tangent-a1-a1"
+}
