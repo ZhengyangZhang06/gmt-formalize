@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "78b28320a910da0d79468e65cc7d836c1f6017abb8da8dde9f7612a99ca414cb",
+  "git_delta": {
+    "base_commit": "2dc74aa959d64a4291090694d5c016f196e6f529",
+    "candidate_commit": "0325970d8b47298803106a41abbcdb3c8c9ac103",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "unit_orientation_norm_le_one",
+    "diff_sha256": "f64958daff55ce47574987c45295eac6f91970dcff03784f86345266490e7f6e",
+    "source_sha256": "0ee9d89bbe573f1a0e4fff627d350578cca27e80e999504859ac063335950ffd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.unit_orientation_norm_le_one",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
