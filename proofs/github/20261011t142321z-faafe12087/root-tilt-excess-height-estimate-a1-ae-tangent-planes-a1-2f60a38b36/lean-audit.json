@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "472100f1de719cf7b26a69f31b7d2f91bcc6ed5330ecdfe6259a1b717e7388be",
+  "git_delta": {
+    "base_commit": "5b5893920a407b7693467f9eae6ed660e915e408",
+    "candidate_commit": "deb661c3007a7661df05b587d756a3182b38c3e8",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "89f387e7e08d29929b12a5bc43543bbdf48e8087d51642944c7954c5693d9c3d",
+    "source_sha256": "b78866fde01321d3c58e0dc8fb517350bd74e6c34c2db4dbef7f1745fe832cb0",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiableVarifold_ae_tangentProj_starProjection",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ MeasureTheory.AEStronglyMeasurable V.tangentProj V.weight",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
