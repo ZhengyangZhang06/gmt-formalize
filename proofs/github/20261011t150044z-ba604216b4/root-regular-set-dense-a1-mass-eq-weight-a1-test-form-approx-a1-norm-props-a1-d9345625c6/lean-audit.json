@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f58357312197012ade46c031aa7b32ca179abeada7e10fb0aaf6b5e7890d750c",
+  "git_delta": {
+    "base_commit": "bfb7b24d1fcd2b1d9024388b8bb4a12bef38429b",
+    "candidate_commit": "f492ba4a003c8f1324077e050d48667ae23c7100",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_tfa_norm_props",
+    "diff_sha256": "61f38f9b8aeb9cc330ba89c251d2be9c58b5cf0f92849c88146ca27a9069d7f6",
+    "source_sha256": "8b9ae23fb45f32f58d3210673eeeb6d353bb7a10f828196406275c5274e619b5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_tfa_norm_props",
+      "statement": "∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
