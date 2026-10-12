@@ -666,6 +666,208 @@ theorem Submission.dsmc_chart_tangentSpace_eq_range : ∀ (P r d : ℕ) (N : Set
         (himg.subset.trans inter_subset_right) v hv),
     hii, hiii⟩
 
+/-- **A `C¹` field of tangent projections near a point of a `C²` submanifold** (Simon Ch. 4,
+2.5–2.7; Ch. 2, 5.9).  Near `y₀ ∈ N ∩ U` there is a `C¹` field `Pt` of self-adjoint operators with
+`‖DPt‖ ≤ β` on `B_{2r}(y₀)` such that `Pt(q)` is the orthogonal projection onto `T_qN` for every
+`q ∈ N ∩ B_{3r}(y₀)`.  Instead of the nearest-point projection of a tubular neighbourhood we use a
+`C¹` retraction parameter built from a `C²` chart `ψ : V → W`, `ψ(v₀) = y₀`: `Pt(y) = G(Dψ(σ(y)))`,
+where `G(B) = B (B*B)⁻¹ B*` is the orthogonal projection onto `range B` and `σ = λ ∘ L` with `L` a
+linear left inverse of `Dψ(v₀)` and `λ` a local inverse of `L ∘ ψ` (inverse function theorem), so
+that `σ(ψ(z)) = z` near `v₀`.  `dsmc_chart_tangentSpace_eq_range` gives `T_{ψ(z)}N = range Dψ(z)`
+and the continuity of `ψ⁻¹` at `y₀`; `β` bounds `‖DPt‖` on the compact `B̄_{2r}(y₀)`. -/
+theorem Submission.dsmc_tangent_projection_field : ∀ (P d : ℕ) (U N : Set (Euclid P)) (y₀ : Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → y₀ ∈ N ∩ U → ∃ (r β : ℝ) (Pt : Euclid P → (Euclid P →L[ℝ] Euclid P)), 0 < r ∧ 0 ≤ β ∧ closedBall y₀ (3 * r) ⊆ U ∧ ContDiffOn ℝ 1 Pt (ball y₀ (3 * r)) ∧ (∀ y ∈ ball y₀ (3 * r), ∀ u w : Euclid P, inner ℝ (Pt y u) w = inner ℝ u (Pt y w)) ∧ (∀ y ∈ ball y₀ (2 * r), ‖fderiv ℝ Pt y‖ ≤ β) ∧ (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u : Euclid P, Pt q u ∈ tangentSpace N q) ∧ (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u ∈ tangentSpace N q, Pt q u = u) := by
+  intro P d U N y₀ hU hN hy₀
+  -- Step 1: a `C²` chart `ψ : V → W` with `y₀ = ψ(v₀)`; `T_{ψ(z)}N = range Dψ(z)` and `ψ⁻¹` is
+  -- continuous at `y₀` (chart lemma); `z ↦ Dψ(z)` is `C¹` on `V`
+  obtain ⟨hy₀N, hy₀U⟩ := hy₀
+  obtain ⟨V, W, ψ, hV, hW, hy₀W, hψ, hinj, himg, hprop, hDψ⟩ := hN y₀ hy₀N
+  obtain ⟨v₀, hv₀V, rfl⟩ : y₀ ∈ ψ '' V := by rw [himg]; exact ⟨hy₀W, hy₀N⟩
+  have hchart := Submission.dsmc_chart_tangentSpace_eq_range P 2 d N V W ψ (by norm_num) hV hW hψ
+    hinj himg hprop hDψ
+  have hA : ContDiffOn ℝ 1 (fun z => fderiv ℝ ψ z) V := hψ.fderiv_of_isOpen hV (by norm_num)
+  -- Step 2: for injective `B`, `G(B) = B (B*B)⁻¹ B*` is `C¹` near `B`, self-adjoint, maps into
+  -- `range B` and fixes `range B` pointwise
+  obtain ⟨G, hG⟩ : ∃ G : (Euclid d →L[ℝ] Euclid P) → (Euclid P →L[ℝ] Euclid P),
+      ∀ B : Euclid d →L[ℝ] Euclid P, Injective B → ContDiffAt ℝ 1 G B ∧
+        (∀ u w : Euclid P, inner ℝ (G B u) w = inner ℝ u (G B w)) ∧
+        (∀ u : Euclid P, G B u ∈ Set.range B) ∧ ∀ a : Euclid d, G B (B a) = B a := by
+    -- the real adjoint `B ↦ B*` as a continuous linear map
+    let adjL : (Euclid d →L[ℝ] Euclid P) →L[ℝ] (Euclid P →L[ℝ] Euclid d) :=
+      { toFun := fun B => ContinuousLinearMap.adjoint B
+        map_add' := fun B C => by simp
+        map_smul' := fun c B => by simp
+        cont := ContinuousLinearMap.adjoint.continuous }
+    have hadj : ∀ B, adjL B = ContinuousLinearMap.adjoint B := fun B => rfl
+    refine ⟨fun B => B ∘L (Ring.inverse (adjL B ∘L B) ∘L adjL B), fun B hB => ?_⟩
+    -- `C = B*B` is self-adjoint with `⟨C a, a⟩ = ‖B a‖²`, hence injective and a unit
+    set C : Euclid d →L[ℝ] Euclid d := adjL B ∘L B with hC_def
+    have hCsymm : ∀ x y : Euclid d, inner ℝ (C x) y = inner ℝ x (C y) := by
+      intro x y
+      simp only [hC_def, ContinuousLinearMap.comp_apply, hadj]
+      rw [ContinuousLinearMap.adjoint_inner_left, ContinuousLinearMap.adjoint_inner_right]
+    have hCinj : Injective C := by
+      intro x y hxy
+      have h0 : C (x - y) = 0 := by rw [map_sub, hxy, sub_self]
+      have h1 : inner ℝ (C (x - y)) (x - y) = ‖B (x - y)‖ ^ 2 := by
+        simp only [hC_def, ContinuousLinearMap.comp_apply, hadj]
+        rw [ContinuousLinearMap.adjoint_inner_left, real_inner_self_eq_norm_sq]
+      rw [h0, inner_zero_left] at h1
+      have h2 : B (x - y) = 0 := by
+        have : ‖B (x - y)‖ = 0 := by nlinarith [norm_nonneg (B (x - y))]
+        exact norm_eq_zero.1 this
+      exact sub_eq_zero.1 (hB (by rw [h2, map_zero]))
+    have hCunit : IsUnit C := by
+      rw [ContinuousLinearMap.isUnit_iff_bijective]
+      exact ⟨hCinj, LinearMap.injective_iff_surjective.1 hCinj⟩
+    -- `C⁻¹` is a two-sided inverse of `C`, and self-adjoint
+    set Ci := Ring.inverse C
+    have hCiC : ∀ x, Ci (C x) = x := fun x => by
+      have := Ring.inverse_mul_cancel C hCunit
+      simpa using congrArg (fun T : Euclid d →L[ℝ] Euclid d => T x) this
+    have hCCi : ∀ x, C (Ci x) = x := fun x => by
+      have := Ring.mul_inverse_cancel C hCunit
+      simpa using congrArg (fun T : Euclid d →L[ℝ] Euclid d => T x) this
+    have hCisymm : ∀ x y : Euclid d, inner ℝ (Ci x) y = inner ℝ x (Ci y) := by
+      intro x y
+      calc inner ℝ (Ci x) y = inner ℝ (Ci x) (C (Ci y)) := by rw [hCCi]
+        _ = inner ℝ (C (Ci x)) (Ci y) := (hCsymm _ _).symm
+        _ = inner ℝ x (Ci y) := by rw [hCCi]
+    refine ⟨?_, ?_, fun u => ⟨_, rfl⟩, ?_⟩
+    · -- `B' ↦ B'*B'` is smooth and `Ring.inverse` is smooth at the unit `C`
+      obtain ⟨u, hu⟩ := hCunit
+      have hinv : ContDiffAt ℝ 1
+          (fun B' : Euclid d →L[ℝ] Euclid P => Ring.inverse (adjL B' ∘L B')) B := by
+        have h1 : ContDiffAt ℝ 1 (fun B' : Euclid d →L[ℝ] Euclid P => adjL B' ∘L B') B :=
+          adjL.contDiff.contDiffAt.clm_comp contDiffAt_id
+        have h2 : ContDiffAt ℝ 1 Ring.inverse (adjL B ∘L B) := by
+          have := contDiffAt_ringInverse ℝ (n := 1) u
+          rw [hu] at this
+          exact this
+        exact ContDiffAt.comp (g := Ring.inverse)
+          (f := fun B' : Euclid d →L[ℝ] Euclid P => adjL B' ∘L B') B h2 h1
+      exact contDiffAt_id.clm_comp (hinv.clm_comp adjL.contDiff.contDiffAt)
+    · intro u w
+      simp only [ContinuousLinearMap.comp_apply]
+      rw [← ContinuousLinearMap.adjoint_inner_right, ← hadj, hCisymm,
+        hadj, ContinuousLinearMap.adjoint_inner_left]
+      rfl
+    · intro a
+      simp only [ContinuousLinearMap.comp_apply]
+      have : adjL B (B a) = C a := rfl
+      rw [this, hCiC]
+  -- Steps 3–4: a `C¹` map `σ` on an open `O ∋ y₀`, with values in `V`, such that `σ(ψ(z)) = z`
+  -- for `z` in an open `O₁ ∋ v₀`.  A continuous linear left inverse `L` of `A = Dψ(v₀)` plays
+  -- the role of the projection onto `T_{y₀}N = range A` (e.g. `L = A⁻¹ ∘ p_{range A}`), so
+  -- `f = L ∘ ψ` has `Df(v₀) = id`; `λ` is the local inverse of `f` given by the inverse function
+  -- theorem, restricted to an open set on which it is `C¹` and maps into `V`, and `σ = λ ∘ L`.
+  obtain ⟨O, O₁, σ, hO, hO₁, hv₀O₁, hσ, hσV, hσψ⟩ : ∃ (O : Set (Euclid P)) (O₁ : Set (Euclid d))
+      (σ : Euclid P → Euclid d), IsOpen O ∧ IsOpen O₁ ∧ v₀ ∈ O₁ ∧ ContDiffOn ℝ 1 σ O ∧
+        MapsTo σ O V ∧ ∀ z ∈ O₁, ψ z ∈ O ∧ σ (ψ z) = z := by
+    set A := fderiv ℝ ψ v₀
+    obtain ⟨L₀, hL₀⟩ := LinearMap.exists_leftInverse_of_injective (A : Euclid d →ₗ[ℝ] Euclid P)
+      (LinearMap.ker_eq_bot.2 (hDψ v₀ hv₀V))
+    let L : Euclid P →L[ℝ] Euclid d := LinearMap.toContinuousLinearMap L₀
+    have hLA : ∀ a, L (A a) = a := fun a => by
+      have := LinearMap.congr_fun hL₀ a
+      simpa [L] using this
+    set f : Euclid d → Euclid d := fun z => L (ψ z)
+    have hψat : ContDiffAt ℝ 1 ψ v₀ := (hψ.contDiffAt (hV.mem_nhds hv₀V)).of_le (by norm_num)
+    have hfat : ContDiffAt ℝ 1 f v₀ := L.contDiff.contDiffAt.comp v₀ hψat
+    have hderiv0 : HasFDerivAt f (L ∘L A) v₀ :=
+      L.hasFDerivAt.comp v₀ (hψat.differentiableAt (by norm_num)).hasFDerivAt
+    have hLA' : L ∘L A =
+        ((ContinuousLinearEquiv.refl ℝ (Euclid d) : Euclid d ≃L[ℝ] Euclid d) :
+          Euclid d →L[ℝ] Euclid d) := by
+      ext1 a
+      simp [hLA]
+    have hderiv : HasFDerivAt f
+        ((ContinuousLinearEquiv.refl ℝ (Euclid d) : Euclid d ≃L[ℝ] Euclid d) :
+          Euclid d →L[ℝ] Euclid d) v₀ :=
+      hLA' ▸ hderiv0
+    have hstrict : HasStrictFDerivAt f
+        ((ContinuousLinearEquiv.refl ℝ (Euclid d) : Euclid d ≃L[ℝ] Euclid d) :
+          Euclid d →L[ℝ] Euclid d) v₀ :=
+      hfat.hasStrictFDerivAt' hderiv one_ne_zero
+    -- the inverse function theorem: a partial homeomorphism `e = f` near `v₀`
+    set e := HasStrictFDerivAt.toOpenPartialHomeomorph f hstrict
+    have he_coe : (e : Euclid d → Euclid d) = f := rfl
+    have hv₀src : v₀ ∈ e.source := hstrict.mem_toOpenPartialHomeomorph_source
+    have hfv₀tgt : f v₀ ∈ e.target := hstrict.image_mem_toOpenPartialHomeomorph_target
+    have hsymm_v₀ : e.symm (f v₀) = v₀ := e.left_inv hv₀src
+    have hsymm : ContDiffAt ℝ 1 e.symm (f v₀) := by
+      refine e.contDiffAt_symm (f₀' := ContinuousLinearEquiv.refl ℝ (Euclid d)) hfv₀tgt ?_ ?_
+      · rw [hsymm_v₀]; exact hderiv
+      · rw [hsymm_v₀]; exact hfat
+    -- `O₂ ∋ f(v₀)` open, inside the target, on which `e⁻¹` is `C¹` with values in `V`
+    have hev : ∀ᶠ w in 𝓝 (f v₀), ContDiffAt ℝ 1 e.symm w := hsymm.eventually (by simp)
+    have hpre : e.symm ⁻¹' V ∈ 𝓝 (f v₀) :=
+      (e.continuousAt_symm hfv₀tgt).preimage_mem_nhds (by rw [hsymm_v₀]; exact hV.mem_nhds hv₀V)
+    have hnhds : e.target ∩ (e.symm ⁻¹' V ∩ {w | ContDiffAt ℝ 1 e.symm w}) ∈ 𝓝 (f v₀) :=
+      Filter.inter_mem (e.open_target.mem_nhds hfv₀tgt) (Filter.inter_mem hpre hev)
+    obtain ⟨O₂, hO₂sub, hO₂open, hfv₀O₂⟩ := _root_.mem_nhds_iff.1 hnhds
+    -- `O = L⁻¹(O₂)`, `O₁ = e.source ∩ f⁻¹(O₂)`, `σ = e⁻¹ ∘ L`
+    refine ⟨L ⁻¹' O₂, e.source ∩ f ⁻¹' O₂, fun y => e.symm (L y), hO₂open.preimage L.continuous,
+      ?_, ⟨hv₀src, hfv₀O₂⟩, ?_, fun y hy => (hO₂sub hy).2.1, ?_⟩
+    · have : ContinuousOn f e.source := by rw [← he_coe]; exact e.continuousOn
+      exact this.isOpen_inter_preimage e.open_source hO₂open
+    · intro y hy
+      have h1 : ContDiffAt ℝ 1 e.symm (L y) := (hO₂sub hy).2.2
+      exact (h1.comp y L.contDiff.contDiffAt).contDiffWithinAt
+    · rintro z ⟨hzsrc, hzO₂⟩
+      refine ⟨hzO₂, ?_⟩
+      show e.symm (f z) = z
+      rw [← he_coe]
+      exact e.left_inv hzsrc
+  -- Step 5: `Pt(y) = G(Dψ(σ(y)))` is `C¹` on `O`
+  set Pt : Euclid P → (Euclid P →L[ℝ] Euclid P) := fun y => G (fderiv ℝ ψ (σ y))
+  have hPtO : ContDiffOn ℝ 1 Pt O := fun y hy =>
+    (hG _ (hDψ _ (hσV hy))).1.comp_contDiffWithinAt y ((hA (σ y) (hσV hy)).comp y (hσ y hy) hσV)
+  -- Step 6: `B_{ε₁}(v₀) ⊆ O₁`; `z ∈ V`, `|ψ(z) − y₀| < δ₁` give `|z − v₀| < ε₁`; choose `r > 0`
+  -- with `3r ≤ δ₁` and `B̄_{3r}(y₀) ⊆ U ∩ W ∩ O`
+  obtain ⟨ε₁, hε₁, hball⟩ := Metric.isOpen_iff.1 hO₁ v₀ hv₀O₁
+  obtain ⟨δ₁, hδ₁, hδ₁'⟩ := (hchart v₀ hv₀V).2.1 ε₁ hε₁
+  obtain ⟨ρ, hρ, hρsub⟩ := Metric.isOpen_iff.1 ((hU.inter hW).inter hO) (ψ v₀)
+    ⟨⟨hy₀U, hy₀W⟩, (hσψ v₀ hv₀O₁).1⟩
+  set r := min (ρ / 6) (δ₁ / 3)
+  have hr : 0 < r := lt_min (by linarith) (by linarith)
+  have h3r : 3 * r < ρ := by have := min_le_left (ρ / 6) (δ₁ / 3); linarith
+  have h3rδ : 3 * r ≤ δ₁ := by have := min_le_right (ρ / 6) (δ₁ / 3); linarith
+  have hcl : closedBall (ψ v₀) (3 * r) ⊆ U ∩ W ∩ O := (closedBall_subset_ball h3r).trans hρsub
+  have hballO : ball (ψ v₀) (3 * r) ⊆ O :=
+    ball_subset_closedBall.trans (hcl.trans inter_subset_right)
+  have hPt3 : ContDiffOn ℝ 1 Pt (ball (ψ v₀) (3 * r)) := hPtO.mono hballO
+  -- Step 7: `DPt` is continuous on `B_{3r}(y₀)`, hence bounded on the compact `B̄_{2r}(y₀)`
+  have hcont2 : ContinuousOn (fderiv ℝ Pt) (closedBall (ψ v₀) (2 * r)) :=
+    (hPt3.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl).mono
+      (closedBall_subset_ball (show 2 * r < 3 * r by linarith))
+  obtain ⟨C, hC⟩ := IsCompact.exists_bound_of_continuousOn
+    (E := Euclid P →L[ℝ] Euclid P →L[ℝ] Euclid P) (isCompact_closedBall (ψ v₀) (2 * r)) hcont2
+  -- Step 8: `q ∈ N ∩ B_{3r}(y₀)` is `ψ(z)` with `z ∈ O₁`, so `Pt(q) = G(Dψ(z))` and
+  -- `T_qN = range Dψ(z)`
+  have hNq : ∀ q ∈ N ∩ ball (ψ v₀) (3 * r), ∃ z ∈ V,
+      Pt q = G (fderiv ℝ ψ z) ∧ tangentSpace N q = Set.range (fderiv ℝ ψ z) := by
+    rintro q ⟨hqN, hqB⟩
+    obtain ⟨z, hzV, rfl⟩ : q ∈ ψ '' V := by
+      rw [himg]; exact ⟨(hcl (ball_subset_closedBall hqB)).1.2, hqN⟩
+    have hzO₁ : z ∈ O₁ := hball (mem_ball.2 (hδ₁' z hzV (lt_of_lt_of_le (mem_ball.1 hqB) h3rδ)))
+    refine ⟨z, hzV, ?_, (hchart z hzV).1⟩
+    show G (fderiv ℝ ψ (σ (ψ z))) = G (fderiv ℝ ψ z)
+    rw [(hσψ z hzO₁).2]
+  -- Step 9: assemble, with `β = max C 0`
+  refine ⟨r, max C 0, Pt, hr, le_max_right _ _, fun y hy => (hcl hy).1.1, hPt3,
+    fun y hy u w => (hG _ (hDψ _ (hσV (hballO hy)))).2.1 u w,
+    fun y hy => (hC y (ball_subset_closedBall hy)).trans (le_max_left _ _), ?_, ?_⟩
+  · intro q hq u
+    obtain ⟨z, hzV, hPtq, hTq⟩ := hNq q hq
+    rw [hPtq, hTq]
+    exact (hG _ (hDψ z hzV)).2.2.1 u
+  · intro q hq u hu
+    obtain ⟨z, hzV, hPtq, hTq⟩ := hNq q hq
+    rw [hTq] at hu
+    obtain ⟨a, rfl⟩ := hu
+    rw [hPtq]
+    exact (hG _ (hDψ z hzV)).2.2.2 a
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
