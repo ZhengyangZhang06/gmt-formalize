@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "85d31818b181182f6e2fc4b0932b443dca9ceb1b129e958b07d5ec38ad0638d3",
+  "git_delta": {
+    "base_commit": "499f270471da942d67906c2b21c40c79e1a02c82",
+    "candidate_commit": "cc7578a42704443cb1fc4df03a2c3e0d94d6c4a6",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tp_graph_ball_growth",
+    "diff_sha256": "653a42dc8cbff97f9b4e83bdd60230e211d882659fb0583492d41da85bc5815e",
+    "source_sha256": "aa66d461fb4173a517621f6d575c6542c2ce03971698d6bc167f4fc038ef6425",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_graph_ball_growth",
+      "statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (R ρ : ℝ) (u : Rn n → Rn ℓ), 0 < ρ → ρ < R → ContDiffOn ℝ 1 u (ball 0 R) → ∃ C : ℝ, 0 ≤ C ∧ ∀ (z : Amb n ℓ) (r : ℝ), 0 < r → (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 ρ) ∩ closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
