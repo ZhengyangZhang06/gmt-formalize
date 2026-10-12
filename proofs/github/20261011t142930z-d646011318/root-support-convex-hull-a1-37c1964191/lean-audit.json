@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "91c7c60d5a9ceaabd61bd4da3b3c8692146c2d607bc637ff6a87599bd9aa2466",
+  "git_delta": {
+    "base_commit": "2509eae51e1e7685713ac11b3783f028dab4064f",
+    "candidate_commit": "bc8bce5e4b43b49674b608edd9b871bfae3892e0",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "db2a533f0a76d160165a9c1df6329f47880f4c5a5502e03ad51cb04b3de8025c",
+    "source_sha256": "b6e3b755758ee2c83aa08aaf6a9d9911e0c280537a7dcedf7f1c861f619b12cd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.support_in_ball_convex_hull",
+      "statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SupportInBall ∧ ConvexHullProperty",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
