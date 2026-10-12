@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2482e399d68d9a6aa1eda8ab7614c88e2cf84df1f3a65f28130af41d4b99583c",
+  "git_delta": {
+    "base_commit": "8e62c746ab1be9035958b3575386379f9315716c",
+    "candidate_commit": "bc0bc2b9beef1ebefbfd6842a345b022d52db914",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_th_radial_cutoff",
+    "diff_sha256": "9909a79d581d1b5b67e0ed3fe80cb257ef6ee8541b448b1d31e971bab5fa2e2e",
+    "source_sha256": "5c5c97699eec5172f12d38eb378c300e1e101aedd7b8d30dfeb12a60abf2e751",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_th_radial_cutoff",
+      "statement": "∀ (P : ℕ) (ξ : Euclid P) (r : ℝ), 0 < r → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ closedBall ξ (r / 2), ζ x = 1) ∧ tsupport ζ ⊆ closedBall ξ r ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / r",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
