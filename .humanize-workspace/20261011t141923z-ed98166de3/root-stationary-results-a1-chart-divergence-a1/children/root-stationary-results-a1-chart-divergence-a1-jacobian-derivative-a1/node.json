@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.jacobian_derivative-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1",
+  "depth": 3,
+  "title": "Derivative of the area Jacobian of a C² immersion (Jacobi's formula for √det(Dψ*Dψ))",
+  "statement": "For all n, N ∈ ℕ, every open V ⊆ ℝⁿ and every ψ : ℝⁿ → ℝᴺ that is C² on V with Dψ(x) = fderiv ℝ ψ x injective for every x ∈ V: the area Jacobian J := Chapter02.areaJacobianAt ψ (J(x) = normDet Dψ(x) = √det(Dψ(x)* Dψ(x))) is C¹ on V, and for all x ∈ V and v ∈ ℝⁿ, DJ(x)[v] = J(x) · trace(G(x)⁻¹ ∘ Dψ(x)* ∘ D²ψ(x)[v]), where G(x)⁻¹ := Ring.inverse (Dψ(x)* ∘ Dψ(x)) and D²ψ(x)[v] := fderiv ℝ (fderiv ℝ ψ) x v ∈ L(ℝⁿ, ℝᴺ).",
+  "lean_statement": "∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 (Chapter02.areaJacobianAt ψ) V ∧ ∀ x ∈ V, ∀ v : Rn n, fderiv ℝ (Chapter02.areaJacobianAt ψ) x v = Chapter02.areaJacobianAt ψ x * LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x v).toLinearMap",
+  "lean_name": "areaJacobianAt_contDiffOn_fderiv_eq_gram_trace",
+  "depends_on": [
+    "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1",
+    "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-jacobian-derivative-a1-a1"
+}

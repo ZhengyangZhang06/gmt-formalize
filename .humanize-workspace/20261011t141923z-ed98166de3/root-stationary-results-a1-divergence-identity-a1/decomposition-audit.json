@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsProperOnInto|def IsSimonLocalRepresentation|def IsSimonSubmanifold|theorem integral_area_formula_of_injective_derivative|theorem submanifoldDivergenceAt_eq_sum_inner|areaJacobianAt_eq_sqrt_det|theorem integral_submanifoldDivergence_eq_curvature_sub_boundary",
+        "integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|euclideanHausdorffMeasure_eq_volume|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|of_forall_sdiff_eq_zero|trace_eq_sum_inner|prod_one_sub_ordered|HasCompactSupport.fderiv_apply|restrict_of_bounded",
+        "one_of_mem_closedBall|tsupport_eq|hasCompactSupport|theorem contDiff|instance|variable",
+        "euclidean_setIntegral_trace_fderiv_eq_zero|chart_setIntegral_eq_zero_of_trace_fderiv_eq|exists_finite_contDiff_partition_near_compact|tangentialDivergence_meanCurvature_integrableOn|tangentialDivergence_add_inner_eq_sum_partition",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/divergence-independent-audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/divergence-independent-audit/ChildrenWithoutParent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/divergence-independent-audit/AssemblyFromHypotheses.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-divergence-identity-a1/parent-child-handoff.json",
+        "/tmp/divergence-independent-audit/Challenges.lean",
+        "/tmp/divergence-independent-audit/ChildrenWithoutParent.lean",
+        "/tmp/divergence-independent-audit/AssemblyFromHypotheses.lean"
+      ],
+      "conclusion": "The split appropriately isolates five genuine obligations of the selected divergence identity. The handoff and DAG parent types agree exactly. All five frozen propositions independently elaborate from the frozen Contract without child implementations; their bare declaration names have no matches in the searched reference sources, 247 Git refs, or 129 checked DAG reservations. The only proposed dependency is chart_localization on euclidean_divergence, and the existing dependency closure is acyclic. Compiler packages match the pinned Mathlib and SimonGMT revisions; consulted source files were checked for compatibility. Independent compilation verifies all five supplied child proofs without parent or sibling stubs. A separate assembly check proves the exact frozen parent from the five child contracts and its three existing sibling contracts as explicit hypotheses. These checks and the reused library results depend only on propext, Classical.choice, and Quot.sound. Euclidean volume, trace, and scalar-action instances match the prose; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "euclidean_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the stated hypotheses and Lebesgue integral. The zero extension is C¹ by the two open neighbourhood arguments, has compact support, and preserves derivatives on V. Coordinate derivatives are integrable, and integration by parts against 1 proves the trace integral vanishes. No circular dependence or missing dimension hypothesis occurs."
+    },
+    {
+      "key": "chart_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Relative properness supplies the compact parameter set; support vanishing permits restriction to the chart image. The pinned Bochner area formula requires no additional integrability assumption. The Jacobian identity then reduces the conclusion to euclidean_divergence, with every hypothesis supplied. The dependency is correctly directed."
+    },
+    {
+      "key": "partition_of_unity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite subcover, explicit bump radii, support containment, and telescoping product identity establish every asserted output. The construction handles empty C and zero-dimensional ambient space. The frozen proposition precisely states the requested C¹ conclusion and is independently usable; no further proof search or planning is needed."
+    },
+    {
+      "key": "integrability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The trace identity establishes divergence continuity without assuming a continuous chosen frame. Closedness of F gives derivative vanishing outside F. Boundedness and the explicit finite-measure hypothesis on compact M ∩ F yield integrability there, then on M. Both conclusions and all required hypotheses match the frozen type."
+    },
+    {
+      "key": "partition_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the field equality on an ambient neighbourhood of each point of M, using O or Sᶜ. Differentiability of each localized field justifies differentiating the finite sum; frame-sum and inner-product linearity give exactly the stated identity. No submanifold hypothesis or circular reliance is hidden."
+    }
+  ],
+  "required_changes": []
+}
