@@ -359,6 +359,36 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Countable measurable gluing by the first index: for measurable sets `S j` and measurable
+maps `G j : X → Y` there is a measurable `L : X → Y` vanishing off `⋃ j, S j` and agreeing at each
+`x ∈ ⋃ j, S j` with some `G j` such that `x ∈ S j`.  Take `L x = G'_{j(x)} x` with
+`G'_j = (S j).piecewise (G j) 0` and `j(x)` the least `j` with `x ∈ S j ∨ x ∉ ⋃ i, S i`;
+`L` is measurable by `Measurable.find`. -/
+theorem Submission.lpf_tde_mcd_countable_glue :
+    ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] [Zero Y] (S : ℕ → Set X)
+      (G : ℕ → X → Y), (∀ j, MeasurableSet (S j)) → (∀ j, Measurable (G j)) →
+      ∃ L : X → Y, Measurable L ∧ (∀ x, x ∉ (⋃ j, S j) → L x = 0) ∧
+        ∀ x ∈ (⋃ j, S j), ∃ j, x ∈ S j ∧ L x = G j x := by
+  intro X Y _ _ _ S G hS hG
+  classical
+  -- Every `x` satisfies `x ∈ S j ∨ x ∉ ⋃ i, S i` for some `j`.
+  have h : ∀ x, ∃ j, x ∈ S j ∨ x ∉ ⋃ i, S i := fun x => by
+    by_cases hx : x ∈ ⋃ i, S i
+    · obtain ⟨j, hj⟩ := mem_iUnion.1 hx
+      exact ⟨j, Or.inl hj⟩
+    · exact ⟨0, Or.inr hx⟩
+  -- `L x = G'_{j(x)} x` with `G'_j = (S j).piecewise (G j) 0` and `j(x)` the least such `j`.
+  refine ⟨fun x => (S (Nat.find (h x))).piecewise (G (Nat.find (h x))) 0 x, ?_, ?_, ?_⟩
+  · exact Measurable.find (p := fun j x => x ∈ S j ∨ x ∉ ⋃ i, S i)
+      (fun j => (hG j).piecewise (hS j) measurable_const)
+      (fun j => (hS j).union (MeasurableSet.iUnion hS).compl) h
+  · intro x hx
+    have hxS : x ∉ S (Nat.find (h x)) := fun hxS => hx (mem_iUnion.2 ⟨_, hxS⟩)
+    simp only [piecewise_eq_of_notMem _ _ _ hxS, Pi.zero_apply]
+  · intro x hx
+    have hxS : x ∈ S (Nat.find (h x)) := (Nat.find_spec (h x)).resolve_right (not_not.2 hx)
+    exact ⟨Nat.find (h x), hxS, piecewise_eq_of_mem _ _ _ hxS⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
