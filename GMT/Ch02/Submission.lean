@@ -1020,4 +1020,65 @@ theorem Submission.coarea_critical_fibers_null_euclidean : ∀ (m k : ℕ) (V : 
   -- `μHE[k] = c_k • μH[k]`.
   rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
 
+/-- **Simon Ch. 2, §6 (pp. 66–67), critical fibres.** For `Lᵐ`-a.e. `y`,
+`Hᵏ(M ∩ f⁻¹{y} ∩ {J*_f = 0}) = 0` (the first assertion of Theorem 6.4). Countably many Simon charts
+`ψ` cover `M`; in a chart, critical points of `f` are images of critical points of `f ∘ ψ`, whose
+fibres are null by the Euclidean case, and `ψ` is Lipschitz near each point. -/
+theorem Submission.coarea_critical_fibers_null : ∀ (N m k : ℕ) (M U : Set (Rn N))
+    (f : Rn N → Rn m), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U →
+    ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N),
+      Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V,
+        tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) →
+    ∀ᵐ y ∂(volume : Measure (Rn m)),
+      μHE[k] (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}) = 0 := by
+  intro N m k M U f hM hU hMU hf hT
+  -- One chart: the critical part of the fibre inside `W` is null for a.e. `y`.
+  have hchart : ∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N),
+      Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ᵐ y ∂(volume : Measure (Rn m)),
+        μHE[k] (W ∩ (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0})) = 0 := by
+    intro V W ψ hrep
+    have hV : IsOpen V := hrep.isOpen_source
+    have hψ : ContDiffOn ℝ 1 ψ V := hrep.contDiffOn
+    have hψU : MapsTo ψ V U := fun x hx ↦ hMU (hrep.image_eq.subset (mem_image_of_mem ψ hx)).2
+    -- `ψ` is Lipschitz on a neighbourhood of each point of `V`; countably many cover `V`.
+    choose! K t ht hKt using fun x (hx : x ∈ V) ↦
+      (hψ.contDiffAt (hV.mem_nhds hx)).exists_lipschitzOnWith
+    obtain ⟨T, hTV, hTc, hVT⟩ := TopologicalSpace.countable_cover_nhdsWithin (f := t) (s := V)
+      fun x hx ↦ mem_nhdsWithin_of_mem_nhds (ht x hx)
+    filter_upwards [Submission.coarea_critical_fibers_null_euclidean m k V (f ∘ ψ) hV
+      (hf.comp hψ hψU)] with y hy
+    refine measure_mono_null (t := ⋃ x ∈ T, ψ '' (t x ∩
+      ({x | x ∈ V ∧ ¬ Function.Surjective (fderiv ℝ (f ∘ ψ) x)} ∩ (f ∘ ψ) ⁻¹' {y}))) ?_ ?_
+    · rintro p ⟨hpW, ⟨hpM, hpy⟩, hpC⟩
+      have hpV : p ∈ ψ '' V := by rw [hrep.image_eq]; exact ⟨hpW, hpM⟩
+      obtain ⟨x, hx, rfl⟩ := hpV
+      obtain ⟨x₀, hx₀, hxt⟩ := mem_iUnion₂.1 (hVT hx)
+      refine mem_iUnion₂.2 ⟨x₀, hx₀, x, ⟨hxt, ⟨hx, ?_⟩, hpy⟩, rfl⟩
+      -- `D(f ∘ ψ)(x) = Df(ψ x) ∘ Dψ(x)` is not surjective because `J*_f(ψ x) = 0`.
+      rw [fderiv_comp x ((hf.differentiableOn one_ne_zero).differentiableAt
+        (hU.mem_nhds (hψU hx))) ((hψ.differentiableOn one_ne_zero).differentiableAt
+          (hV.mem_nhds hx))]
+      exact (Submission.coarea_jacobian_linear_algebra.1 N m (m + k) M f (ψ x) (fderiv ℝ ψ x)
+        (hT V W ψ hrep x hx)).1 hpC
+    · refine (measure_biUnion_null_iff hTc).2 fun x hx ↦ nonpos_iff_eq_zero.1 ?_
+      calc μHE[k] (ψ '' (t x ∩
+            ({x | x ∈ V ∧ ¬ Function.Surjective (fderiv ℝ (f ∘ ψ) x)} ∩ (f ∘ ψ) ⁻¹' {y})))
+          ≤ (K x : ℝ≥0∞) ^ k * μHE[k] (t x ∩
+            ({x | x ∈ V ∧ ¬ Function.Surjective (fderiv ℝ (f ∘ ψ) x)} ∩ (f ∘ ψ) ⁻¹' {y})) :=
+            Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k
+              ((hKt x (hTV hx)).mono inter_subset_left)
+        _ = 0 := by rw [measure_mono_null inter_subset_right hy, mul_zero]
+  -- Countably many charts cover `M`.
+  choose! V W ψ hzW hrep using fun z (hz : z ∈ M) ↦ hM.exists_localRepresentation hz
+  obtain ⟨I, hIM, hIc, hMI⟩ := TopologicalSpace.countable_cover_nhdsWithin (f := W) (s := M)
+    fun z hz ↦ mem_nhdsWithin_of_mem_nhds ((hrep z hz).isOpen_target.mem_nhds (hzW z hz))
+  have hae : ∀ᵐ y ∂(volume : Measure (Rn m)), ∀ z ∈ I,
+      μHE[k] (W z ∩ (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0})) = 0 :=
+    (ae_ball_iff hIc).2 fun z hz ↦ hchart _ _ _ (hrep z (hIM hz))
+  filter_upwards [hae] with y hy
+  refine measure_mono_null ?_ ((measure_biUnion_null_iff hIc).2 hy)
+  intro p hp
+  obtain ⟨z, hz, hpz⟩ := mem_iUnion₂.1 (hMI hp.1.1)
+  exact mem_iUnion₂.2 ⟨z, hz, hpz, hp⟩
+
 end GMT.Ch02
