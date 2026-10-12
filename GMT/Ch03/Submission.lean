@@ -335,6 +335,207 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **The measure of a symmetric difference in a ball is the `L¹` distance of the indicators**
+(used in the BV translation estimate for the compactness of sets of locally bounded perimeter,
+Simon Ch. 2, Thm. 2.6). For `Lᴺ`-measurable `A, F ⊆ ℝᴺ` and the open ball `B = B_R(0)`,
+`Lᴺ(B ∩ (A Δ F)) = ∫_B |1_A - 1_F| dLᴺ`: pointwise `|1_A - 1_F| = 1_{A Δ F}`, and
+`∫_B 1_{A Δ F} dLᴺ = Lᴺ(A Δ F ∩ B)`, which is finite since `Lᴺ(B) < ∞`. -/
+theorem Submission.indCompact_transEst_volume_symmDiff_eq_integral : ∀ (N : ℕ) (A F : Set (Rn N)) (R : ℝ), NullMeasurableSet A volume → NullMeasurableSet F volume → volume (Metric.ball (0 : Rn N) R ∩ symmDiff A F) = ENNReal.ofReal (∫ y in Metric.ball (0 : Rn N) R, |A.indicator (1 : Rn N → ℝ) y - F.indicator (1 : Rn N → ℝ) y|) := by
+  intro N A F R hA hF
+  -- Step 1: `|1_A - 1_F| = 1_{A Δ F}` pointwise.
+  have h1 : ∀ y, |A.indicator (1 : Rn N → ℝ) y - F.indicator (1 : Rn N → ℝ) y| =
+      (symmDiff A F).indicator (fun _ ↦ (1 : ℝ)) y := by
+    intro y
+    rw [← abs_indicator_symmDiff]
+    by_cases hy : y ∈ symmDiff A F <;> simp [hy]
+  simp_rw [h1]
+  -- Step 2: `A Δ F` is null-measurable for `Lᴺ`, hence for `Lᴺ ⌞ B ≤ Lᴺ`.
+  have hS : NullMeasurableSet (symmDiff A F) (volume.restrict (Metric.ball (0 : Rn N) R)) :=
+    (hA.symmDiff hF).mono_ac (Measure.absolutelyContinuous_of_le Measure.restrict_le_self)
+  -- Step 5: `Lᴺ(A Δ F ∩ B) ≤ Lᴺ(B) < ∞`.
+  have hfin : volume (symmDiff A F ∩ Metric.ball (0 : Rn N) R) ≠ ∞ :=
+    ((measure_mono Set.inter_subset_right).trans_lt measure_ball_lt_top).ne
+  -- Steps 3, 4 and 6: `∫_B 1_{A Δ F} dLᴺ = (Lᴺ ⌞ B)(A Δ F) = Lᴺ(A Δ F ∩ B)`, `B` being open.
+  rw [integral_indicator₀ hS, setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+    Measure.restrict_apply' measurableSet_ball, ENNReal.ofReal_toReal hfin, Set.inter_comm]
+/-- **Translation change of variables for indicator differences** (Step 5(a) of the supplied
+proof of the BV translation estimate used for the compactness of sets of bounded perimeter in
+De Giorgi's theorem, Simon Ch. 3, Theorem 4.3). For `L^N`-measurable `F ⊆ ℝᴺ`, integrable `ψ`
+and `h ∈ ℝᴺ`, `∫ (χ_F(y + h) - χ_F(y)) ψ(y) dy = ∫_F (ψ(z - h) - ψ(z)) dz`: pointwise the
+integrand is `G(y + h) - H(y)` with `G = χ_F ψ(· - h)` and `H = χ_F ψ`, and Lebesgue measure is
+translation invariant. -/
+theorem Submission.indCompact_transEst_integral_indicator_shift_mul : ∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), NullMeasurableSet F volume → Integrable ψ volume → ∫ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y = ∫ z in F, (ψ (z - h) - ψ z) := by
+  intro N F ψ h hF hψ
+  -- The translate `ψ_h = ψ (· - h)` is integrable.
+  have hψh : Integrable (fun z ↦ ψ (z - h)) volume := hψ.comp_sub_right h
+  -- `y ↦ G (y + h)` with `G = 1_F ψ_h`, and `H = 1_F ψ`, are integrable.
+  have hG : Integrable (fun y ↦ F.indicator (fun z ↦ ψ (z - h)) (y + h)) volume :=
+    (hψh.indicator₀ hF).comp_add_right h
+  have hH : Integrable (F.indicator ψ) volume := hψ.indicator₀ hF
+  -- Pointwise, `(1_F (y + h) - 1_F y) ψ y = G (y + h) - H y` (four cases).
+  have hpt : ∀ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y =
+      F.indicator (fun z ↦ ψ (z - h)) (y + h) - F.indicator ψ y := by
+    intro y
+    by_cases hy₁ : y + h ∈ F <;> by_cases hy₂ : y ∈ F <;> simp [hy₁, hy₂]
+  -- Linearity, translation invariance, indicator integrals, linearity on `F`.
+  calc ∫ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y
+      = ∫ y, (F.indicator (fun z ↦ ψ (z - h)) (y + h) - F.indicator ψ y) :=
+        integral_congr_ae (Eventually.of_forall hpt)
+    _ = (∫ y, F.indicator (fun z ↦ ψ (z - h)) (y + h)) - ∫ y, F.indicator ψ y :=
+        integral_sub hG hH
+    _ = (∫ z in F, ψ (z - h)) - ∫ z in F, ψ z := by
+        rw [integral_add_right_eq_self (F.indicator fun z ↦ ψ (z - h)) h,
+          integral_indicator₀ hF, integral_indicator₀ hF]
+    _ = ∫ z in F, (ψ (z - h) - ψ z) :=
+        (integral_sub hψh.integrableOn hψ.integrableOn).symm
+/-- **Translation difference of a `C¹_c` function as a parametric integral of directional
+derivatives** (steps 5(b) and 5(d) of the BV translation estimate behind the Compactness
+Theorem 2.6 of Simon Ch. 2, `chapter-02.txt` lines 598–620, [GT01, Thm. 7.22], as used in the
+proof of Ch. 3, Thm. 4.3, `chapter-03.txt` line 653). For an arbitrary `F ⊆ ℝᴺ`, `ψ ∈ C¹_c(ℝᴺ)`
+and `h ∈ ℝᴺ`: `∫_F (ψ(z - h) - ψ(z)) dz = -∫₀¹ ∫_F Dψ(z - th)[h] dz dt`. For fixed `z`, the
+fundamental theorem of calculus along `t ↦ ψ(z - th)` gives
+`ψ(z - h) - ψ(z) = -∫₀¹ Dψ(z - th)[h] dt`. The integrand `f(z, t) = Dψ(z - th)[h]` is continuous
+and, for `t ∈ [0, 1]`, vanishes unless `z` lies in the compact `K = tsupport ψ + [0, 1] h`; so it
+is integrable on `ℝᴺ × [0, 1] ⊇ F × (0, 1]`, and Fubini for `Lᴺ ⌞ F ⊗ L¹ ⌞ (0, 1]` swaps the
+integrals. -/
+theorem Submission.indCompact_transEst_setIntegral_shift_sub_ftc : ∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ z in F, (ψ (z - h) - ψ z) = -∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h := by
+  intro N F ψ h hψ hψs
+  -- Step 1: `ψ` is differentiable and `f(z, t) = Dψ(z - th)[h]` is continuous on `ℝᴺ × ℝ`.
+  have hdiff : Differentiable ℝ ψ := hψ.differentiable one_ne_zero
+  have hcont : Continuous (fderiv ℝ ψ) := hψ.continuous_fderiv one_ne_zero
+  set f : Rn N → ℝ → ℝ := fun z t ↦ fderiv ℝ ψ (z - t • h) h
+  have hfc : Continuous (Function.uncurry f) :=
+    (hcont.comp (continuous_fst.sub (continuous_snd.smul continuous_const))).clm_apply
+      continuous_const
+  -- Step 2 (FTC along `t ↦ ψ(z - th)`, whose derivative is `-f(z, t)`):
+  -- `ψ(z - h) - ψ(z) = -∫₀¹ f(z, t) dt`.
+  have hftc : ∀ z, ψ (z - h) - ψ z = -∫ t in (0 : ℝ)..1, f z t := by
+    intro z
+    have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+        HasDerivAt (fun t : ℝ ↦ ψ (z - t • h)) (-(f z t)) t := by
+      intro t _
+      have h1 : HasDerivAt (fun t : ℝ ↦ z - t • h) (-h) t := by
+        simpa using ((hasDerivAt_id t).smul_const h).const_sub z
+      have h2 : HasDerivAt (fun t : ℝ ↦ ψ (z - t • h)) (fderiv ℝ ψ (z - t • h) (-h)) t :=
+        (hdiff (z - t • h)).hasFDerivAt.comp_hasDerivAt t h1
+      simpa [f, map_neg] using h2
+    have hint : IntervalIntegrable (fun t ↦ -(f z t)) volume 0 1 :=
+      ((hfc.comp (continuous_const.prodMk continuous_id)).neg).intervalIntegrable 0 1
+    have := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+    simp only [one_smul, zero_smul, sub_zero, intervalIntegral.integral_neg] at this
+    linarith
+  -- Step 3: integrate over `F`, write `∫₀¹` as `∫_{(0, 1]}`, and reduce to Fubini for
+  -- `Lᴺ ⌞ F ⊗ L¹ ⌞ (0, 1]`.
+  rw [integral_congr_ae (Eventually.of_forall hftc), integral_neg]
+  congr 1
+  simp_rw [intervalIntegral.integral_of_le zero_le_one]
+  apply integral_integral_swap
+  -- Step 4: integrability. With `K = {x + s h : x ∈ tsupport ψ, s ∈ [0, 1]}` compact, `f` is
+  -- integrable on `K × [0, 1]` and vanishes on `(ℝᴺ × [0, 1]) \ (K × [0, 1])`.
+  set K : Set (Rn N) := (fun p : Rn N × ℝ ↦ p.1 + p.2 • h) '' (tsupport ψ ×ˢ Icc (0 : ℝ) 1)
+  have hK : IsCompact K := (hψs.isCompact.prod isCompact_Icc).image (by fun_prop)
+  rw [Measure.prod_restrict]
+  have h1 : IntegrableOn (Function.uncurry f) (K ×ˢ Icc (0 : ℝ) 1) (volume.prod volume) :=
+    hfc.continuousOn.integrableOn_compact (hK.prod isCompact_Icc)
+  have h2 : IntegrableOn (Function.uncurry f) (univ ×ˢ Icc (0 : ℝ) 1) (volume.prod volume) := by
+    refine h1.of_forall_sdiff_eq_zero (MeasurableSet.univ.prod measurableSet_Icc) ?_
+    rintro ⟨z, t⟩ ⟨⟨-, ht⟩, hnot⟩
+    simp only [Function.uncurry_apply_pair, f]
+    by_contra hne
+    apply hnot
+    refine ⟨?_, ht⟩
+    -- `Dψ = 0` off `tsupport ψ`, so `z - th ∈ tsupport ψ` and `z = (z - th) + th ∈ K`.
+    have hmem : z - t • h ∈ tsupport ψ := by
+      by_contra hns
+      apply hne
+      rw [fderiv_of_notMem_tsupport ℝ hns]
+      simp
+    exact ⟨(z - t • h, t), ⟨hmem, ht⟩, by simp⟩
+  -- Step 5: `F × (0, 1] ⊆ ℝᴺ × [0, 1]`.
+  exact h2.mono_set (prod_mono (subset_univ _) Ioc_subset_Icc_self)
+/-- **Divergence-test bound for translated directional derivatives** (a step of the translation
+estimate behind the compactness theorem, Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of
+Thm. 4.3): if `∫_F div g ≤ C` for every `C¹` field `g` with compact support in `B_{R+1}(0)` and
+`|g| ≤ 1`, then `|∫_F Dψ(z - a)[h] dz| ≤ C |h|` for every `C¹` function `ψ` with compact support
+in `B_R(0)` and `|ψ| ≤ 1`, and all `a, h` with `|a| ≤ 1`. For `|c| = |h|⁻¹` the field
+`G = c ψ(· - a) h` is admissible and `div G(z) = c Dψ(z - a)[h]` (the trace of a rank-one map),
+so `c ∫_F Dψ(z - a)[h] dz ≤ C`; take `c = ±|h|⁻¹`. -/
+theorem Submission.indCompact_transEst_abs_setIntegral_fderiv_le : ∀ (N : ℕ) (F : Set (Rn N))
+    (R C : ℝ), (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g →
+      tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) →
+      ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) →
+    ∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) →
+      ∀ a h : Rn N, ‖a‖ ≤ 1 → |∫ z in F, fderiv ℝ ψ (z - a) h| ≤ C * ‖h‖ := by
+  intro N F R C hdiv ψ hψ hψs hψsub hψ1 a h ha
+  -- Step 1. The case `h = 0` is trivial; otherwise `‖h‖ > 0`.
+  rcases eq_or_ne h 0 with rfl | hh
+  · simp
+  have hpos : 0 < ‖h‖ := norm_pos_iff.mpr hh
+  have hdiff : Differentiable ℝ ψ := hψ.differentiable one_ne_zero
+  set I := ∫ z in F, fderiv ℝ ψ (z - a) h with hI
+  -- Step 2. `ψ(· - a)` has compact support, and `tsupport ψ(· - a) ⊆ B_{R+1}(0)`.
+  have hTs : HasCompactSupport (fun y ↦ ψ (y - a)) := by
+    simpa [Function.comp_def] using hψs.comp_homeomorph (Homeomorph.subRight a)
+  have hTsub : tsupport (fun y ↦ ψ (y - a)) ⊆ Metric.ball 0 (R + 1) := by
+    intro y hy
+    have hy' : y - a ∈ tsupport ψ := by
+      have := tsupport_comp_eq_preimage ψ (Homeomorph.subRight a)
+      have hy2 : y ∈ tsupport (ψ ∘ (Homeomorph.subRight a)) := by
+        simpa [Function.comp_def] using hy
+      rw [this] at hy2
+      simpa using hy2
+    have h1 := hψsub hy'
+    rw [mem_ball_zero_iff] at h1 ⊢
+    calc ‖y‖ = ‖(y - a) + a‖ := by rw [sub_add_cancel]
+      _ ≤ ‖y - a‖ + ‖a‖ := norm_add_le _ _
+      _ < R + 1 := by linarith
+  -- Step 3. For `|c| = ‖h‖⁻¹`, testing the hypothesis with `G = c ψ(· - a) h` gives `c I ≤ C`.
+  have key : ∀ c : ℝ, |c| = ‖h‖⁻¹ → c * I ≤ C := by
+    intro c hc
+    set G : Rn N → Rn N := fun y ↦ (c * ψ (y - a)) • h with hG
+    have hGc : ContDiff ℝ 1 G :=
+      (contDiff_const.mul (hψ.comp (contDiff_id.sub contDiff_const))).smul contDiff_const
+    have hGsupp : tsupport G ⊆ tsupport (fun y ↦ ψ (y - a)) := by
+      refine (tsupport_smul_subset_left _ _).trans ?_
+      exact tsupport_mul_subset_right
+    have hGcs : HasCompactSupport G :=
+      hTs.of_isClosed_subset (isClosed_tsupport _) hGsupp
+    have hGb : ∀ y, ‖G y‖ ≤ 1 := by
+      intro y
+      simp only [hG, norm_smul, Real.norm_eq_abs, abs_mul, hc]
+      calc ‖h‖⁻¹ * |ψ (y - a)| * ‖h‖ = |ψ (y - a)| := by field_simp
+        _ ≤ 1 := hψ1 _
+    -- `div G(z) = trace (Dφ(z).smulRight h) = Dφ(z)[h] = c Dψ(z - a)[h]`, `φ = c ψ(· - a)`.
+    have hdivG : ∀ z, Poincare.SimonGMT.Chapter02.euclideanDivergence G z
+        = c * fderiv ℝ ψ (z - a) h := by
+      intro z
+      have hd : DifferentiableAt ℝ (fun y ↦ c * ψ (y - a)) z :=
+        (differentiableAt_const _).mul ((hdiff _).comp z (differentiableAt_id.sub_const a))
+      simp only [Poincare.SimonGMT.Chapter02.euclideanDivergence, hG]
+      rw [fderiv_smul_const hd]
+      have : ((fderiv ℝ (fun y ↦ c * ψ (y - a)) z).smulRight h : Rn N →L[ℝ] Rn N).toLinearMap
+          = (fderiv ℝ (fun y ↦ c * ψ (y - a)) z).toLinearMap.smulRight h := by
+        ext v; simp
+      rw [this, LinearMap.trace_smulRight]
+      have hd' : DifferentiableAt ℝ (fun y ↦ ψ (y - a)) z :=
+        (hdiff (z - a)).comp z (differentiableAt_id.sub_const a)
+      rw [ContinuousLinearMap.coe_coe, fderiv_const_mul hd' c, fderiv_comp_sub]
+      simp
+    have := hdiv G hGc hGcs (hGsupp.trans hTsub) hGb
+    simpa [hdivG, integral_const_mul] using this
+  -- Step 4. `c = ‖h‖⁻¹` gives `I ≤ C ‖h‖`, and `c = -‖h‖⁻¹` gives `-I ≤ C ‖h‖`.
+  have k1 := key ‖h‖⁻¹ (abs_of_pos (inv_pos.mpr hpos))
+  have k2 := key (-‖h‖⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hpos)])
+  have e1 : I ≤ C * ‖h‖ := by
+    have := mul_le_mul_of_nonneg_left k1 hpos.le
+    rw [← mul_assoc, mul_inv_cancel₀ hpos.ne', one_mul] at this
+    linarith
+  have e2 : -I ≤ C * ‖h‖ := by
+    have := mul_le_mul_of_nonneg_left k2 hpos.le
+    rw [← mul_assoc, mul_neg, mul_inv_cancel₀ hpos.ne', neg_one_mul] at this
+    linarith
+  exact abs_le.mpr ⟨by linarith, e1⟩
 /-- **A.e. approximation by admissible `C¹` test functions** (the mollification part of the
 `L¹`-duality step of the proof of Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of Thm. 4.3): if `s`
 is a.e.-strongly measurable, `|s| ≤ 1` and `s = 0` off `B_R(0)`, then `C¹` functions `ψⱼ` with
@@ -576,6 +777,60 @@ theorem Submission.indCompact_ball_integral_abs_le_of_test_bound : ∀ (N : ℕ)
     (fun j y hy ↦ image_eq_zero_of_notMem_tsupport fun h ↦ hy (hψt j h)) hψs
   rw [hws] at hlim
   exact le_of_tendsto' hlim fun j ↦ hM (ψ j) (hψ j) (hψc j) (hψt j) (hψb j)
+
+/-- **Translation estimate for the indicator of a set with bounded perimeter in `B_{R+1}(0)`**
+(the `L¹` translation bound behind the compactness theorem for sets of locally bounded perimeter,
+Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of Thm. 4.3): if `∫_F div g ≤ C` for every `C¹`
+field `g` with compact support in `B_{R+1}(0)` and `|g| ≤ 1`, then
+`Lᴺ(B_R(0) ∩ (F_h Δ F)) ≤ C |h|` for `|h| ≤ 1`, where `F_h = {y : y + h ∈ F}`. With
+`w = 1_F(· + h) - 1_F` we have `Lᴺ(B_R(0) ∩ (F_h Δ F)) = ∫_{B_R(0)} |w|`, and for every `C¹`
+test function `ψ` with compact support in `B_R(0)` and `|ψ| ≤ 1`,
+`∫ w ψ = ∫_F (ψ(z - h) - ψ(z)) dz = -∫_0^1 ∫_F Dψ(z - t h)[h] dz dt ≤ C |h|`, since each inner
+integral is the integral over `F` of the divergence of the field `ψ(· - t h) h`. `L¹` duality on
+`B_R(0)` concludes. -/
+theorem Submission.indCompact_translation_estimate : ∀ (N : ℕ) (F : Set (Rn N)) (R C : ℝ), NullMeasurableSet F volume → (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∀ h : Rn N, ‖h‖ ≤ 1 → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F) F) ≤ ENNReal.ofReal (C * ‖h‖) := by
+  intro N F R C hF hdiv h hh
+  -- `F_h = (· + h)⁻¹ F` is null-measurable, since `y ↦ y + h` preserves `Lᴺ`.
+  have hA : NullMeasurableSet ((fun y ↦ y + h) ⁻¹' F) volume :=
+    hF.preimage (measurePreserving_add_right volume h).quasiMeasurePreserving
+  -- Step 4. `Lᴺ(B_R(0) ∩ (F_h Δ F)) = ofReal ∫_{B_R(0)} |w|` with `w = 1_F(· + h) - 1_F`,
+  -- because `1_{F_h}(y) = 1_F(y + h)`. It remains to show `∫_{B_R(0)} |w| ≤ C |h|`.
+  rw [Submission.indCompact_transEst_volume_symmDiff_eq_integral N _ F R hA hF]
+  apply ENNReal.ofReal_le_ofReal
+  have hw : ∀ y, ((fun y ↦ y + h) ⁻¹' F).indicator (1 : Rn N → ℝ) y
+      = F.indicator (1 : Rn N → ℝ) (y + h) := fun y ↦ rfl
+  simp only [hw]
+  -- Step 6. `L¹` duality on `B_R(0)` with `M = C |h|`.
+  apply Submission.indCompact_ball_integral_abs_le_of_test_bound N
+    (fun y ↦ F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) R (C * ‖h‖)
+  · -- `w` is a.e.-strongly measurable with `|w| ≤ 1`, and `Lᴺ(B_R(0)) < ∞`.
+    refine Measure.integrableOn_of_bounded (M := 1) measure_ball_lt_top.ne ?_ ?_
+    · have h1 : AEStronglyMeasurable (fun y ↦ F.indicator (1 : Rn N → ℝ) (y + h)) volume :=
+        (aestronglyMeasurable_const (b := (1 : ℝ))).indicator₀ hA
+      have h2 : AEStronglyMeasurable (fun y ↦ F.indicator (1 : Rn N → ℝ) y) volume :=
+        (aestronglyMeasurable_const (b := (1 : ℝ))).indicator₀ hF
+      exact h1.sub h2
+    · refine Eventually.of_forall fun y ↦ ?_
+      by_cases h1 : y + h ∈ F <;> by_cases h2 : y ∈ F <;> simp [h1, h2]
+  · -- Step 5. Fix a `C¹` test function `ψ` with compact support in `B_R(0)` and `|ψ| ≤ 1`.
+    intro ψ hψ hψs hψsub hψ1
+    -- (a) translation invariance and (b), (d) the fundamental theorem of calculus and Fubini:
+    -- `∫ w ψ = ∫_F (ψ(z - h) - ψ(z)) dz = -∫_0^1 ∫_F Dψ(z - t h)[h] dz dt`.
+    rw [Submission.indCompact_transEst_integral_indicator_shift_mul N F ψ h hF
+        (hψ.continuous.integrable_of_hasCompactSupport hψs),
+      Submission.indCompact_transEst_setIntegral_shift_sub_ftc N F ψ h hψ hψs]
+    -- (c) for `t ∈ (0, 1]`, `‖t h‖ ≤ 1`, so `|∫_F Dψ(z - t h)[h] dz| ≤ C |h|`; (e) integrate.
+    have hb : ‖∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h‖ ≤ C * ‖h‖ * |1 - 0| := by
+      apply intervalIntegral.norm_integral_le_of_norm_le_const
+      intro t ht
+      rw [Real.norm_eq_abs]
+      apply Submission.indCompact_transEst_abs_setIntegral_fderiv_le N F R C hdiv ψ hψ hψs hψsub
+        hψ1 (t • h) h
+      rw [Set.uIoc_of_le zero_le_one] at ht
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos ht.1]
+      nlinarith [ht.2, norm_nonneg h]
+    rw [sub_zero, abs_one, mul_one, Real.norm_eq_abs] at hb
+    linarith [neg_le_abs (∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h)]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry

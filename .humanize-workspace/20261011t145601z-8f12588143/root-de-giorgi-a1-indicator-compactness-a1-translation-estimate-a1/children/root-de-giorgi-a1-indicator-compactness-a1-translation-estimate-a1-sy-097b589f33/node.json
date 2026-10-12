@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.symmdiff_l1_identity-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "Measure of a symmetric difference in a ball equals the L¹ distance of the indicators",
+  "statement": "Let N ∈ ℕ and R ∈ ℝ, and let A, F ⊆ ℝ^N be L^N-null-measurable sets with real-valued indicator functions 1_A and 1_F. Let B_R(0) be the open ball (empty if R ≤ 0) and A Δ F the symmetric difference. Then, in [0, ∞], L^N(B_R(0) ∩ (A Δ F)) = ofReal(∫_{B_R(0)} |1_A(y) − 1_F(y)| dL^N(y)).",
+  "lean_statement": "∀ (N : ℕ) (A F : Set (Rn N)) (R : ℝ), NullMeasurableSet A volume → NullMeasurableSet F volume → volume (Metric.ball (0 : Rn N) R ∩ symmDiff A F) = ENNReal.ofReal (∫ y in Metric.ball (0 : Rn N) R, |A.indicator (1 : Rn N → ℝ) y - F.indicator (1 : Rn N → ℝ) y|)",
+  "lean_name": "indCompact_transEst_volume_symmDiff_eq_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33-a1"
+}

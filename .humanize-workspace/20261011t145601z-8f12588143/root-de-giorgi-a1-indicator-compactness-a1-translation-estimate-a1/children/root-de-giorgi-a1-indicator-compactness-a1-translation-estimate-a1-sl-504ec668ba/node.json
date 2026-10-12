@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.slice_divergence_bound-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "Divergence-test bound for translated directional derivatives",
+  "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be an arbitrary set, and let R, C ∈ ℝ. Assume ∫_F div g dL^N ≤ C for every C¹ vector field g : ℝ^N → ℝ^N that has compact support, satisfies tsupport g ⊆ B_{R+1}(0), and has |g(y)| ≤ 1 for all y. Here div g = trace Dg (euclideanDivergence) and ∫_F is integration against L^N⌞F. Let ψ : ℝ^N → ℝ be C¹ with compact support, tsupport ψ ⊆ B_R(0), and |ψ(y)| ≤ 1 for all y. Then |∫_F Dψ(z − a)[h] dz| ≤ C|h| for all a, h ∈ ℝ^N with |a| ≤ 1.",
+  "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (R C : ℝ), (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ → tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) → ∀ a h : Rn N, ‖a‖ ≤ 1 → |∫ z in F, fderiv ℝ ψ (z - a) h| ≤ C * ‖h‖",
+  "lean_name": "indCompact_transEst_abs_setIntegral_fderiv_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba-a1"
+}
