@@ -972,6 +972,36 @@ theorem Submission.c1_critical_slices_null : ∀ (m k : ℕ) (G : Rn (m + k) →
   obtain ⟨R, hR⟩ := exists_nat_ge ‖u‖
   exact mem_iUnion.2 ⟨R, ⟨hu.1, mem_closedBall_zero_iff.2 hR⟩, hu.2⟩
 
+/-- **Level slices of a `C¹` map have countably `k`-rectifiable `C¹` images for `Lᵐ`-a.e. value**
+(Simon Ch. 3, Remark 2.10(2), `chapter-03.txt` lines 439–442, via the `C¹` Sard-type Ch. 2,
+Theorem 6.4, `chapter-02.txt` lines 1476–1497). With `C = {u | DG(u) not onto}`,
+`ψ(D ∩ G⁻¹{y})` is the union of the regular part `ψ(D ∖ C ∩ G⁻¹{y})`, countably
+`k`-rectifiable for every `y` (implicit function charts), and the critical part
+`ψ(D ∩ C ∩ G⁻¹{y})`. For `Lᵐ`-a.e. `y`, `Hᵏ(C ∩ G⁻¹{y}) = 0`, and `ψ`, locally Lipschitz on `D`,
+keeps it `Hᵏ`-null; an `Hᵏ`-null set is countably `k`-rectifiable. -/
+theorem Submission.c1_level_slices_countablyRectifiable : ∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m), 0 < k → IsOpen D → ContDiffOn ℝ 1 ψ D → ContDiff ℝ 1 G → ∀ᵐ y ∂(volume : Measure (Rn m)), CountablyRectifiable k (ψ '' (D ∩ G ⁻¹' {y})) := by
+  intro m k N D ψ G hk hD hψ hG
+  -- The critical slices are `Hᵏ`-null for `Lᵐ`-a.e. `y`.
+  filter_upwards [Submission.c1_critical_slices_null m k G hk hG] with y hy
+  -- Split the slice into its regular part and its critical part.
+  have hsplit : ψ '' (D ∩ G ⁻¹' {y}) ⊆
+      ⋃₀ {ψ '' (D ∩ {u | Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}),
+        ψ '' (D ∩ ({u | ¬ Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}))} := by
+    rw [sUnion_pair]
+    rintro _ ⟨u, ⟨huD, huy⟩, rfl⟩
+    by_cases hu : Function.Surjective (fderiv ℝ G u)
+    · exact Or.inl ⟨u, ⟨⟨huD, hu⟩, huy⟩, rfl⟩
+    · exact Or.inr ⟨u, ⟨huD, hu, huy⟩, rfl⟩
+  refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+    ((countable_singleton _).insert _) ?_).mono hsplit
+  rintro S (rfl | rfl)
+  -- Regular part: countably `k`-rectifiable for every `y` (implicit function charts).
+  · exact Submission.c1_regular_level_slice_image_countablyRectifiable m k N D ψ G y hD hψ hG
+  -- Critical part: `ψ`, locally Lipschitz on `D`, keeps it `Hᵏ`-null.
+  · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero
+      (Submission.contDiffOn_image_euclideanHausdorff_null (m + k) N k D _ ψ hD hψ
+        inter_subset_left (measure_mono_null inter_subset_right hy))
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
