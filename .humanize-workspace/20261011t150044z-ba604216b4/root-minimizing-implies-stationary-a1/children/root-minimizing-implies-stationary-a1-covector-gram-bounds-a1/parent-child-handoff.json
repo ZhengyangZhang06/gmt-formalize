@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json}",
+        "python3 -I: list dag.json node ids and lean_name (56 nodes; no collision with the twelve child names)",
+        "grep -n 'exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' -A 25 mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "grep -rn 'theorem LinearMap.exists_antilipschitzWith' mathlib/Mathlib",
+        "grep -n 'def normDet\\|normDet_of_subsingleton\\|normDet_comp\\|normDet_sq_eq_det_gram\\|euclideanHausdorffMeasure_image' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "sed -n 1,100p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -n hausdorffMeasure_zero_singleton mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "grep -rn 'MeasurableSet.image_of_continuousOn_injOn\\|ae_tendsto_measure_inter_div\\|hausdorffMeasure_image_le\\|measurable_fderiv\\|measurableSet_of_differentiableAt\\|extDerivWithin_pullback\\|det_isEmpty\\|lintegral_iUnion\\|to_localInverse\\|toHomeomorph\\|exists_isSubordinate' mathlib/Mathlib",
+        "sed -n 1,420p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n areaJacobianAt simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "sed -n 60,110p simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean; sed -n 30,70p simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; sed -n 95,140p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; sed -n 110,360p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; sed -n 25,125p simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "sed -n 1,75p book/chapter-07.txt; sed -n 400,440p book/chapter-06.txt; sed -n 760,880p book/chapter-06.txt",
+        "lake env lean /tmp/mis-decomp-v2/Check.lean (import GMT.Ch07.Submission; 12 child types in namespace GMT.Ch07.Submission, minimizing_implies_stationary and a conditional assembly_check; #print axioms)",
+        "lake env lean /tmp/mis-decomp-v2/Standalone.lean (same with the frozen contract inlined)",
+        "lake env lean /tmp/mis-decomp-v2/Radius.lean (radius_check, pieces_check; #print axioms)",
+        "lake env lean /tmp/mis-decomp-v2/Instances.lean (Gram Matrix.of, HasOrthogonalProjection instances, operator norm, μHE[0] singleton, normDet out of ℝ^0)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/mis-decomp-v2/Check.lean",
+        "/tmp/mis-decomp-v2/Standalone.lean",
+        "/tmp/mis-decomp-v2/Radius.lean",
+        "/tmp/mis-decomp-v2/Instances.lean"
+      ],
+      "conclusion": "The local snapshot (project b4d606d, Mathlib 25730c7c) has no counterpart for the contract's IMRep push-forward, first variation or mean curvature, so the twelve children are new. The library facts they reuse are the ones cited in the child proofs. The only blocking defect from v1 is confirmed and repaired. Mathlib's exists_partition_approximatesLinearOn_of_hasFDerivWithinAt takes r : (E →L[ℝ] F) → ℝ≥0 with rpos : ∀ A, r A ≠ 0, and the unit-sphere minimum used in v1 does not exist for n = 0. The fix sets m(A) = 1 for n = 0 (alternatively 1/K from LinearMap.exists_antilipschitzWith, which also covers subsingleton domains) and r = 1 on non-injective maps; rpos then holds for every A. pieces_check compiles the resulting bi-Lipschitz partition for all n and P using only propext, Classical.choice and Quot.sound. The n = 0 facts used in the new step 10 exist: Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton, LinearMap.normDet_of_subsingleton and Matrix.det_isEmpty. The upper-density lemma needs only real n ≥ 0, and the SimonGMT area lemmas have no rank hypothesis and accept arbitrary weights. All twelve child types (eleven identical to v1) elaborate after import GMT.Ch07.Submission and also with the contract inlined. minimizing_implies_stationary compiles from them, and the conditional assembly uses only standard axioms. Inferred instances were verified: Matrix.of Gram matrix, Submodule.HasOrthogonalProjection.ofCompleteSpace and ContinuousLinearMap.hasOpNorm. No child name collides with any of the 56 DAG nodes."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+  "subproblem": {
+    "key": "covector_gram_bounds",
+    "title": "Euclidean coefficient norm of covectors versus Gram determinants (Cauchy–Binet)",
+    "statement": "For all P, n: (1) for every n-covector α on ℝ^P and v_1, …, v_n ∈ ℝ^P, |α(v_1, …, v_n)| ≤ |α|_E·(det(v_i·v_j)_{i,j})^{1/2}, where |α|_E = covectorEuclideanNorm α = (Σ_{i_1<⋯<i_n} α(e_{i_1}, …, e_{i_n})²)^{1/2} is the Euclidean coefficient norm of Simon 6.1.15; (2) for every orthonormal family τ_1, …, τ_n in ℝ^P there is an n-covector α with |α|_E ≤ 1 and α(τ_1, …, τ_n) = 1.",
+    "lean_statement": "∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1",
+    "lean_name": "covectorEuclideanNorm_gram_bounds",
+    "depends_on": [],
+    "natural_proof": "Source: Simon 6.1 (Λ^n with the inner product making e^{i_1}∧⋯∧e^{i_n} orthonormal, 6.1.15) and 6.3.4–3.5 (|v_1∧⋯∧v_n| = J); these are the algebraic facts behind \"M_W(τ(M,θ,ξ)) = ∫_{M∩W}θ dH^n\" (6.3.2(3)) and the Jacobian bound in step 5 of the parent proof.\n1. Notation. 𝓘 := the strictly increasing maps I : Fin n → Fin P; e_k := EuclideanSpace.basisFun (Fin P) ℝ k; for I ∈ 𝓘, α_I := α(e_{I 1}, …, e_{I n}); by definition |α|_E = (Σ_{I∈𝓘} α_I²)^{1/2} (the sum over all I with the StrictMono filter). For v = (v_1, …, v_n) let V be the P×n matrix V_{k,j} := ⟨e_k, v_j⟩ = v_j(k), and for I ∈ 𝓘 let V_I be the n×n matrix (V_I)_{a,j} := v_j(I a).\n2. Expansion. α(v) = Σ_{I∈𝓘} α_I·det V_I. Proof: write v_j = Σ_k v_j(k)e_k and expand by multilinearity: α(v) = Σ_{f : Fin n → Fin P} (Π_j v_j(f j))·α(e_{f 1}, …, e_{f n}). Terms with f not injective vanish (α alternating, repeated argument). Each injective f is uniquely f = I∘σ with I ∈ 𝓘 (the increasing enumeration of its range) and σ a permutation, and α(e_{I∘σ}) = sgn(σ)α_I. So α(v) = Σ_I α_I Σ_σ sgn(σ) Π_j v_j(I(σ j)) = Σ_I α_I det V_I by the Leibniz formula.\n3. Cauchy–Binet. Σ_{I∈𝓘} (det V_I)² = det(VᵀV) = det(⟨v_i, v_j⟩)_{i,j}. Proof: det(VᵀV) = Σ_σ sgn(σ) Π_i (Σ_k V_{k,i}V_{k,σ i}) = Σ_{f : Fin n → Fin P} (Π_i V_{f i, i})·Σ_σ sgn(σ) Π_i V_{f i, σ i} = Σ_f (Π_i V_{f i, i})·det(V_f), where V_f is the n×n matrix (V_{f a, j})_{a,j}. det V_f = 0 unless f is injective, and for f = I∘σ, det V_f = sgn(σ) det V_I (row permutation). Hence det(VᵀV) = Σ_I det V_I·Σ_σ sgn(σ) Π_i V_{I(σ i), i} = Σ_I (det V_I)² (Leibniz formula again).\n4. Part (1). By step 2 and the Cauchy–Schwarz inequality in ℝ^𝓘, |α(v)| ≤ (Σ_I α_I²)^{1/2}(Σ_I (det V_I)²)^{1/2} = |α|_E·(det(⟨v_i, v_j⟩))^{1/2} by step 3 (the Gram determinant is ≥ 0, being a sum of squares).\n5. Part (2). For n = 0 take α the constant 0-covector with value 1: |α|_E = 1 (𝓘 consists of the empty map) and α() = 1. For n ≥ 1 let α(u_1, …, u_n) := det(⟨τ_a, u_b⟩)_{a,b}; it is multilinear, alternating and continuous, hence an n-covector, and α(τ) = det(⟨τ_a, τ_b⟩) = det I = 1. Moreover α_I = det(⟨τ_a, e_{I b}⟩)_{a,b} = det(T_I) with T the P×n matrix of τ (transposes have equal determinants), so by step 3 applied to v = τ: |α|_E² = Σ_I det(T_I)² = det(⟨τ_a, τ_b⟩) = 1. Hence |α|_E = 1 ≤ 1.\n6. Degenerate cases are covered: if n > P then 𝓘 = ∅, |α|_E = 0, every n-covector vanishes (n vectors in ℝ^P are dependent) and there is no orthonormal n-family.",
+    "proof_key_steps": [
+      "Expansion α(v) = Σ_I α(e_I) det V_I by multilinearity and alternation.",
+      "Cauchy–Binet: Σ_I (det V_I)² = det(v_i·v_j).",
+      "Cauchy–Schwarz gives (1); the covector u ↦ det(⟨τ_a, u_b⟩) gives (2)."
+    ]
+  },
+  "audit": {
+    "key": "covector_gram_bounds",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Both conclusions match the coefficient norm in the pinned definition. The alternating expansion, Cauchy–Binet calculation and determinant covector establish them, including empty frames and n > P. The Gram matrix explicitly uses Matrix.of."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/parent-supplied-natural-proof.json"
+}
