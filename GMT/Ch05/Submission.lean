@@ -458,6 +458,80 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Quadratic Lebesgue points of a bounded operator field** (step 7 of the graph-comparison
+proof; Simon Ch. 1, 3.23).  If `μ(O) < ∞` for an open `O ⊆ ℝ^{n+ℓ}` and
+`g : ℝ^{n+ℓ} → L(ℝ^{n+ℓ}, ℝ^{n+ℓ})` is `μ`-a.e. strongly measurable with `‖g w‖ ≤ C`, then for
+`μ`-a.e. `y ∈ O`, `μ(B_s(y))⁻¹ ∫_{B_s(y)} |g w − g y|² dμ(w) → 0` as `s ↓ 0`.
+
+Proof: `|A|² = Σ_i |A eᵢ|² ≤ (n + ℓ) ‖A‖²` and `‖g w − g y‖ ≤ 2C`, so
+`|g w − g y|² ≤ K ‖g w − g y‖` with `K = 2 (n + ℓ) C`.  The bounded field `g` is integrable for the
+finite measure `μ ⌞ O`, so the Lebesgue differentiation theorem along the Besicovitch Vitali family
+of closed balls gives `μ⌞O(B_s(y))⁻¹ ∫_{B_s(y)} ‖g w − g y‖ dμ⌞O → 0` for `μ`-a.e. `y ∈ O`.  For
+`B_s(y) ⊆ O` the measures `μ ⌞ O` and `μ` agree on `B_s(y)`, and the claim follows by squeezing
+between `0` and `K` times these averages. -/
+theorem anyrad_gc_hsNormSq_lebesgue_ae : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (O : Set (Amb n ℓ)), IsOpen O → μ O < ⊤ → ∀ (g : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (C : ℝ), AEStronglyMeasurable g μ → (∀ w, ‖g w‖ ≤ C) → ∀ᵐ y ∂μ, y ∈ O → Tendsto (fun s : ℝ => (μ (closedBall y s))⁻¹ * ∫⁻ w in closedBall y s, ENNReal.ofReal (hsNormSq (g w - g y)) ∂μ) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ μ O hO hμO g C hg hC
+  -- Step 1: `|g w − g y|² ≤ (n + ℓ) ‖g w − g y‖² ≤ 2 (n + ℓ) C ‖g w − g y‖`.
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+  set K : ℝ≥0∞ := ENNReal.ofReal (2 * (n + ℓ : ℕ) * C)
+  have hbound : ∀ w y, ENNReal.ofReal (hsNormSq (g w - g y)) ≤ K * ‖g w - g y‖ₑ := by
+    intro w y
+    have hA : ‖g w - g y‖ ≤ 2 * C := by
+      calc ‖g w - g y‖ ≤ ‖g w‖ + ‖g y‖ := norm_sub_le _ _
+        _ ≤ C + C := add_le_add (hC w) (hC y)
+        _ = 2 * C := by ring
+    have hle : hsNormSq (g w - g y) ≤ 2 * (n + ℓ : ℕ) * C * ‖g w - g y‖ := by
+      unfold hsNormSq
+      calc ∑ i : Fin (n + ℓ), ‖(g w - g y) (EuclideanSpace.single i 1)‖ ^ 2
+          ≤ ∑ _i : Fin (n + ℓ), 2 * C * ‖g w - g y‖ := by
+            refine Finset.sum_le_sum fun i _ => ?_
+            have h1 : ‖(g w - g y) (EuclideanSpace.single i 1)‖ ≤ ‖g w - g y‖ := by
+              have := (g w - g y).le_opNorm (EuclideanSpace.single i 1)
+              simpa using this
+            calc ‖(g w - g y) (EuclideanSpace.single i 1)‖ ^ 2
+                ≤ ‖g w - g y‖ ^ 2 := by gcongr
+              _ = ‖g w - g y‖ * ‖g w - g y‖ := sq _
+              _ ≤ 2 * C * ‖g w - g y‖ := by gcongr
+        _ = 2 * (n + ℓ : ℕ) * C * ‖g w - g y‖ := by
+            rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]; ring
+    calc ENNReal.ofReal (hsNormSq (g w - g y))
+        ≤ ENNReal.ofReal (2 * (n + ℓ : ℕ) * C * ‖g w - g y‖) := ENNReal.ofReal_le_ofReal hle
+      _ = K * ‖g w - g y‖ₑ := by
+          rw [ENNReal.ofReal_mul (by positivity), ofReal_norm]
+  -- Step 2: `μ ⌞ O` is finite and the bounded field `g` is integrable for it.
+  have hfin : IsFiniteMeasure (μ.restrict O) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+  have hint : Integrable g (μ.restrict O) :=
+    Integrable.of_bound hg.restrict C (Eventually.of_forall hC)
+  -- Step 3: Lebesgue–Besicovitch differentiation along closed balls for `μ ⌞ O`.
+  have hdiff :=
+    (Besicovitch.vitaliFamily (μ.restrict O)).ae_tendsto_lintegral_enorm_sub_div_of_integrable hint
+  rw [ae_restrict_iff' hO.measurableSet] at hdiff
+  -- Step 4: on balls `B_s(y) ⊆ O` compare with `K` times the averages and squeeze.
+  filter_upwards [hdiff] with y hy hyO
+  have hT := ENNReal.Tendsto.const_mul
+    ((hy hyO).comp (Besicovitch.tendsto_filterAt (μ.restrict O) y))
+    (Or.inr ENNReal.ofReal_ne_top) (a := K)
+  rw [mul_zero] at hT
+  obtain ⟨ε, hε, hεO⟩ := Metric.isOpen_iff.1 hO y hyO
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hT
+    (Eventually.of_forall fun _ => zero_le) ?_
+  filter_upwards [Ioo_mem_nhdsGT hε] with s hs
+  have hsub : closedBall y s ⊆ O := (closedBall_subset_ball hs.2).trans hεO
+  simp only [Function.comp_apply]
+  rw [Measure.restrict_restrict_of_subset hsub, Measure.restrict_apply measurableSet_closedBall,
+    inter_eq_left.2 hsub, ENNReal.div_eq_inv_mul]
+  calc (μ (closedBall y s))⁻¹ * ∫⁻ w in closedBall y s, ENNReal.ofReal (hsNormSq (g w - g y)) ∂μ
+      ≤ (μ (closedBall y s))⁻¹ * ∫⁻ w in closedBall y s, K * ‖g w - g y‖ₑ ∂μ := by
+        gcongr with w
+        exact hbound w y
+    _ = K * ((μ (closedBall y s))⁻¹ * ∫⁻ w in closedBall y s, ‖g w - g y‖ₑ ∂μ) := by
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+        ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
