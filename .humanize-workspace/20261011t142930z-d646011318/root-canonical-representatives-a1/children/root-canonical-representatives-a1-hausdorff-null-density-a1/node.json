@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.canonical_representatives-a1.hausdorff_null_density-a1",
+  "parent_id": "root.canonical_representatives-a1",
+  "depth": 2,
+  "title": "Hⁿ-null sets from a positive density lower bound on a μ-null set (Simon Ch. 1, Thm 3.3)",
+  "statement": "Let n ≥ 1 and ℓ ≥ 0 be integers, E = Ambient n ℓ = ℝ^{n+ℓ} with its Borel σ-algebra, μ a Borel measure on E that is finite on compact sets (IsFiniteMeasureOnCompacts μ), A ⊆ E an arbitrary set with μ(A) = 0 (outer measure), and t > 0. Assume that for every x ∈ A there is a real number s ≥ t such that μ.real(B_ρ(x)) / (ω_n ρⁿ) → s as ρ ↓ 0 (limit along 𝓝[>] 0), where B_ρ(x) = closedBall x ρ, μ.real = toReal ∘ μ, and ω_n = omega n is the Lebesgue measure of the unit ball of ℝⁿ. Then Hⁿ(A) = 0, where Hⁿ = μHE[n] is the Euclidean n-dimensional Hausdorff measure on E.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (A : Set (Ambient n ℓ)) (t : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → 0 < t → μ A = 0 → (∀ x ∈ A, ∃ s : ℝ, t ≤ s ∧ Tendsto (fun ρ ↦ μ.real (closedBall x ρ) / (omega n * ρ ^ n)) (𝓝[>] 0) (𝓝 s)) → (μHE[n] : Measure (Ambient n ℓ)) A = 0",
+  "lean_name": "hausdorff_null_of_measure_null_density_ge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-canonical-representatives-a1-hausdorff-null-density-a1-a1"
+}
