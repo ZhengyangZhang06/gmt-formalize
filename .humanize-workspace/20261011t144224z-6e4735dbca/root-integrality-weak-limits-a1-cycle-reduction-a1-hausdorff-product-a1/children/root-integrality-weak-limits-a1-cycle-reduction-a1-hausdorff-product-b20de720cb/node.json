@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1.piece_product-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1",
+  "depth": 4,
+  "title": "Product formula on one injective Lipschitz piece",
+  "statement": "Let P, m ∈ ℕ, K ∈ ℝ≥0, G : ℝ^m → ℝ^P with LipschitzWith K G, and B ⊆ ℝ^m Borel such that G is injective on B and differentiable at every point of B. Write Φ(s, x) := (s, x_1, …, x_P) ∈ ℝ^{P+1} for s ∈ ℝ, x ∈ ℝ^P (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) and π(y) := (y_1, …, y_P) (Lean: (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y))), with H^k := μHE[k]. Then for every Borel g : ℝ^{P+1} → [0, ∞]:\n(1) φ(s) := ∫⁻_{G(B)} g(Φ(s, x)) dH^m(x) is a measurable function of s ∈ ℝ;\n(2) ∫⁻_{{y : π(y) ∈ G(B)}} g dH^{m+1} = ∫⁻_ℝ φ(s) ds.\nThis is the product formula H^{m+1}⌞(ℝ × G(B)) = L¹ ⊗ H^m⌞G(B) for one injective Lipschitz piece.",
+  "lean_statement": "∀ (P m : ℕ) (G : Eucl m → Eucl P) (K : ℝ≥0) (B : Set (Eucl m)), LipschitzWith K G → MeasurableSet B → InjOn G B → (∀ b ∈ B, DifferentiableAt ℝ G b) → ∀ g : Eucl (P + 1) → ℝ≥0∞, Measurable g → Measurable (fun s : ℝ => ∫⁻ x in G '' B, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P))) ∧ ∫⁻ y in {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ G '' B}, g y ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫⁻ s : ℝ, ∫⁻ x in G '' B, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P))",
+  "lean_name": "iwl_cr_hp_piece_product",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1.lift_gram_det-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1.lift_gram_det-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-hausdorff-product-b20de720cb-a1"
+}

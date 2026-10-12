@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1.cylinder_null-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1",
+  "depth": 4,
+  "title": "Cylinders over H^m-null sets are H^{m+1}-null",
+  "statement": "Let P, m ∈ ℕ and write π(y) := (y_1, …, y_P) ∈ ℝ^P for y = (y_0, …, y_P) ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y))). Let H^k := μHE[k] be Mathlib's normalized k-dimensional Hausdorff measure. If N ⊆ ℝ^P satisfies H^m(N) = 0, then the cylinder {y ∈ ℝ^{P+1} : π(y) ∈ N} = ℝ × N satisfies H^{m+1}({y : π(y) ∈ N}) = 0. (This is verbatim Part (a), the first conjunct, of the parent theorem.)",
+  "lean_statement": "∀ (P m : ℕ) (N : Set (Eucl P)), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0",
+  "lean_name": "iwl_cr_hp_cylinder_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-hausdorff-product-b10d4bf3df-a1"
+}
