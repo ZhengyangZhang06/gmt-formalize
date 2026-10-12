@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dd868aab2660dac807fcf05785280bcda55bf0652eb1fb6764bf7a8ada19282a",
+  "git_delta": {
+    "base_commit": "bdec0da1f79e416d344ad10816544f4ff4d5af5c",
+    "candidate_commit": "bba9b40575a65466ccbb58c2991337c1bb817ccf",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_weq_open_compact_exhaustion",
+    "diff_sha256": "9bd1d4639b3d7e95157f468b02e9917dddf2634bff8dc818cfd76ce9203c6409",
+    "source_sha256": "737160590c6d32610b011a8a83c9fab54ca6ab1ff3e716fc21003829cf30ec98",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_weq_open_compact_exhaustion",
+      "statement": "∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ K : ℕ → Set (Euclidean N), (∀ p, IsCompact (K p)) ∧ (∀ p, K p ⊆ U) ∧ (∀ p, K p ⊆ interior (K (p + 1))) ∧ Monotone K ∧ ⋃ p, K p = U",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
