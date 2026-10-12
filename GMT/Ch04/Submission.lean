@@ -1502,6 +1502,14 @@ theorem Submission.ts_fv_cv_first_order_regularity : ∀ (n ℓ : ℕ) (φ : ℝ
     fun t ht y ↦ ⟨ht, mem_univ y⟩
   have h0 : (0 : ℝ) ∈ Ioo (-ε) ε := ⟨neg_lt_zero.mpr hφ.pos, hφ.pos⟩
   have hKc : IsOpen Kᶜ := hφ.compact.isClosed.isOpen_compl
+/-- Simon 2.1, 2.4 (pp. 87–88): the initial velocity `X = ∂φ_t/∂t|_{t=0}` of a family as in 2.1
+with `K ⊆ U` is a test field, `X ∈ C¹_c(U; ℝ^{n+ℓ})`; in fact `tsupport X ⊆ K`. -/
+theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → K ⊆ U → IsTestField U (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
+  intro n ℓ U φ ε K hφ hKU
+  -- `Φ(q) = φ q.1 q.2` is `C^∞` on the open set `S = (-ε, ε) × ℝ^{n+ℓ}`, and `(0, y) ∈ S`.
+  have hS : IsOpen (Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ))) := isOpen_Ioo.prod isOpen_univ
+  have hmem : ∀ y : Ambient n ℓ, ((0 : ℝ), y) ∈ Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ)) :=
+    fun y ↦ ⟨⟨neg_lt_zero.mpr hφ.pos, hφ.pos⟩, mem_univ _⟩
   -- Chain rule along `t ↦ (t, y)`: `X(y) = DΦ(0, y)(1, 0)`.
   have hvel : ∀ y, deriv (fun t ↦ φ t y) 0 =
       fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) (1, 0) := by
@@ -1514,6 +1522,13 @@ theorem Submission.ts_fv_cv_first_order_regularity : ∀ (n ℓ : ℕ) (φ : ℝ
   -- (a) `DΦ` is `C¹` on `S`, so `y ↦ DΦ(0, y)(1, 0)` is `C¹`.
   have ha : ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
     have h1 : ContDiffOn ℝ 1 (fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2))
+      (hφ.smooth.contDiffAt (hS.mem_nhds (hmem y))).differentiableAt (by simp)
+    have hg : HasDerivAt (fun t : ℝ ↦ (t, y)) ((1 : ℝ), (0 : Ambient n ℓ)) 0 :=
+      (hasDerivAt_id (0 : ℝ)).prodMk (hasDerivAt_const (0 : ℝ) y)
+    exact (hdiff.hasFDerivAt.comp_hasDerivAt (0 : ℝ) hg).deriv
+  -- `DΦ` is `C¹` on the open set `S`, so `y ↦ DΦ(0, y)(1, 0)` is `C¹`.
+  have hcd : ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
+    have h1 : ContDiffOn ℝ 1 (fun q ↦ fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) q)
         (Ioo (-ε) ε ×ˢ univ) :=
       hφ.smooth.fderiv_of_isOpen hS (WithTop.coe_le_coe.mpr le_top)
     have h2 : ContDiff ℝ 1
@@ -1524,6 +1539,11 @@ theorem Submission.ts_fv_cv_first_order_regularity : ∀ (n ℓ : ℕ) (φ : ℝ
     exact h2.clm_apply contDiff_const
   -- Off `K`, `t ↦ φ t y` is constant near `0`, so `X(y) = 0`.
   have hzero : ∀ y ∉ K, deriv (fun t ↦ φ t y) 0 = 0 := by
+      exact h1.comp (contDiff_const.prodMk contDiff_id).contDiffOn (fun y _ ↦ hmem y)
+    simp_rw [hvel]
+    exact h2.clm_apply contDiff_const
+  -- Off `K`, `t ↦ φ t y` is constant near `0`, so `X(y) = 0`.
+  have hzero : ∀ y, y ∉ K → deriv (fun t ↦ φ t y) 0 = 0 := by
     intro y hy
     have : (fun t ↦ φ t y) =ᶠ[𝓝 0] fun _ ↦ y := by
       filter_upwards [Ioo_mem_nhds (neg_lt_zero.mpr hφ.pos) hφ.pos] with t ht
@@ -4805,6 +4825,310 @@ theorem Submission.lipschitz_range_piece_cover : ∀ (n ℓ : ℕ) (K : NNReal)
     obtain ⟨-, -, hreg, c, hc, hlow⟩ := hT (Nat.unpair i).1
     exact ⟨hcpt, fun w hw ↦ hreg w (hsub hw), hcont, c, hc,
       fun v hv w hw ↦ hlow v (hsub hv) w (hsub hw)⟩
+    rw [this.deriv_eq]; simp
+  -- `K` is compact, hence closed: `tsupport X ⊆ K ⊆ U` and `X` has compact support.
+  have hsupp : tsupport (fun y ↦ deriv (fun t ↦ φ t y) 0) ⊆ K :=
+    closure_minimal (fun y hy ↦ by_contra fun h ↦ hy (hzero y h)) hφ.compact.isClosed
+  exact ⟨hcd, HasCompactSupport.intro hφ.compact hzero, hsupp.trans hKU⟩
+/-- **Ch. 4, 2.1 and 2.4 (pp. 87–88), linear variations.** If `X` is `C^∞` with compact support,
+then `φ_t(y) = y + tX(y)` is a family as in 2.1 with `K = spt X` and initial velocity
+`∂φ_t/∂t|_{t=0} = X`, as used in the equivalence of 2.4. With `L ≥ sup |DX|` and
+`ε = 1/(L + 1)`: for `|t| < ε`, `φ_t - id = tX` is `|t|L`-Lipschitz with `|t|L < 1`, so `φ_t` is a
+homeomorphism, and `Dφ_t = I + t DX` is invertible (Neumann series), so `φ_t⁻¹` is smooth by the
+inverse function theorem. -/
+theorem Submission.exists_isCompactVariation_add_smul : ∀ (n ℓ : ℕ) (X : Ambient n ℓ → Ambient n ℓ), ContDiff ℝ ∞ X → HasCompactSupport X → ∃ ε : ℝ, IsCompactVariation (fun t y ↦ y + t • X y) ε (tsupport X) ∧ (fun y ↦ deriv (fun t : ℝ ↦ y + t • X y) 0) = X := by
+  intro n ℓ X hX hXc
+  have hX1 : ContDiff ℝ 1 X := hX.of_le (WithTop.coe_le_coe.mpr le_top)
+  -- `DX` is continuous with compact support, so `‖DX‖ ≤ L` for some `L ≥ 0`, and `X` is
+  -- `L`-Lipschitz.
+  obtain ⟨C, hC⟩ := (hXc.fderiv ℝ).exists_bound_of_continuous (hX1.continuous_fderiv one_ne_zero)
+  obtain ⟨L, hL0, hDX⟩ : ∃ L : ℝ, 0 ≤ L ∧ ∀ y, ‖fderiv ℝ X y‖ ≤ L :=
+    ⟨max C 0, le_max_right _ _, fun y ↦ (hC y).trans (le_max_left _ _)⟩
+  have hLip : ∀ x y, ‖X x - X y‖ ≤ L * ‖x - y‖ := fun x y ↦
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun z _ ↦ hX1.differentiable one_ne_zero z)
+      (fun z _ ↦ hDX z) (mem_univ y) (mem_univ x)
+  refine ⟨1 / (L + 1), ⟨by positivity, hXc.isCompact, ?_, ?_, ?_, ?_⟩, ?_⟩
+  · exact (contDiff_snd.add (contDiff_fst.smul (hX.comp contDiff_snd))).contDiffOn
+  · intro t ht
+    have htL : |t| * L < 1 := by
+      calc |t| * L ≤ 1 / (L + 1) * L := by gcongr; exact (abs_lt.mpr ⟨ht.1, ht.2⟩).le
+        _ < 1 := by
+          rw [div_mul_eq_mul_div, one_mul, div_lt_one (by positivity)]; linarith
+    -- `φ_t - id = tX` is `c`-Lipschitz with `c = |t|L < 1`, so `φ_t` is a homeomorphism `h`.
+    let c : NNReal := ⟨|t| * L, by positivity⟩
+    have hcR : (c : ℝ) = |t| * L := rfl
+    have hA : ApproximatesLinearOn (fun y ↦ y + t • X y)
+        ((ContinuousLinearEquiv.refl ℝ (Ambient n ℓ) : Ambient n ℓ →L[ℝ] Ambient n ℓ)) univ c := by
+      intro x _ y _
+      have hxy : x + t • X x - (y + t • X y) -
+          (ContinuousLinearEquiv.refl ℝ (Ambient n ℓ) : Ambient n ℓ →L[ℝ] Ambient n ℓ) (x - y)
+            = t • (X x - X y) := by
+        simp only [ContinuousLinearEquiv.coe_refl, ContinuousLinearMap.id_apply, smul_sub]
+        abel
+      rw [hxy, norm_smul, Real.norm_eq_abs, hcR, mul_assoc]
+      gcongr
+      exact hLip x y
+    have hc : Subsingleton (Ambient n ℓ) ∨ c < ‖((ContinuousLinearEquiv.refl ℝ (Ambient n ℓ)).symm :
+        Ambient n ℓ →L[ℝ] Ambient n ℓ)‖₊⁻¹ := by
+      rcases subsingleton_or_nontrivial (Ambient n ℓ) with h | h
+      · exact Or.inl h
+      · right
+        rw [ContinuousLinearEquiv.refl_symm, ContinuousLinearEquiv.coe_refl,
+          ContinuousLinearMap.nnnorm_id, inv_one, ← NNReal.coe_lt_coe, hcR, NNReal.coe_one]
+        exact htL
+    let h := hA.toHomeomorph _ hc
+    have hbij : Function.Bijective (fun y : Ambient n ℓ ↦ y + t • X y) := h.bijective
+    refine ⟨hbij, ?_⟩
+    have hinv : Function.invFun (fun y : Ambient n ℓ ↦ y + t • X y) = h.symm := by
+      funext z
+      apply hbij.1
+      exact (Function.invFun_eq (hbij.2 z)).trans (h.apply_symm_apply z).symm
+    rw [hinv]
+    -- `Dφ_t(a) = I + t DX(a) = 1 - (-t DX(a))` is a unit since `‖t DX(a)‖ ≤ |t|L < 1`.
+    have hsmall : ∀ a, ‖-(t • fderiv ℝ X a)‖ < 1 := fun a ↦ by
+      rw [norm_neg, norm_smul, Real.norm_eq_abs]
+      calc |t| * ‖fderiv ℝ X a‖ ≤ |t| * L := by gcongr; exact hDX a
+        _ < 1 := htL
+    refine h.contDiff_symm
+      (f₀' := fun a ↦ ContinuousLinearEquiv.unitsEquiv ℝ _ (Units.oneSub _ (hsmall a))) ?_ ?_
+    · intro a
+      have hd : HasFDerivAt (fun y : Ambient n ℓ ↦ y + t • X y)
+          (ContinuousLinearMap.id ℝ _ + t • fderiv ℝ X a) a :=
+        (hasFDerivAt_id a).add (((hX1.differentiable one_ne_zero) a).hasFDerivAt.const_smul t)
+      rw [show (⇑h : Ambient n ℓ → Ambient n ℓ) = fun y ↦ y + t • X y from rfl]
+      convert hd using 1
+      refine ContinuousLinearMap.ext fun v ↦ ?_
+      show ((1 : Ambient n ℓ →L[ℝ] Ambient n ℓ) - -(t • fderiv ℝ X a)) v =
+        ((ContinuousLinearMap.id ℝ (Ambient n ℓ) + t • fderiv ℝ X a :
+          Ambient n ℓ →L[ℝ] Ambient n ℓ) v)
+      simp
+    · exact contDiff_id.add (hX.const_smul t)
+  · intro x
+    simp
+  · intro t _ x hx
+    simp [image_eq_zero_of_notMem_tsupport hx]
+  · funext y
+    have : HasDerivAt (fun t : ℝ ↦ y + t • X y) (X y) 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X y)).const_add y
+    exact this.deriv
+/-- **Smooth approximation of test fields (for Simon 2.4).** If `U` is open and
+`X ∈ C¹_c(U; ℝ^{n+ℓ})`, there are a compact `K` with `tsupport X ⊆ K ⊆ U` and `C^∞` fields `Y_k`
+with compact support in `K` such that `DY_k → DX` uniformly: `Y_k = ψ_k ⋆ X` for mollifiers
+`ψ_k` supported in `B_{r_k}(0)`, `r_k ↓ 0`. -/
+theorem Submission.exists_smooth_approx_testField_fderiv : ∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ), IsOpen U → IsTestField U X → ∃ (K : Set (Ambient n ℓ)) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsCompact K ∧ K ⊆ U ∧ tsupport X ⊆ K ∧ (∀ k, ContDiff ℝ ∞ (Y k) ∧ HasCompactSupport (Y k) ∧ tsupport (Y k) ⊆ K) ∧ TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop := by
+  intro n ℓ U X hU hXT
+  obtain ⟨hX, hXc, hXU⟩ := hXT
+  -- `K = cthickening δ (tsupport X) ⊆ U` is compact and contains `tsupport X`.
+  obtain ⟨δ, hδ, hδU⟩ := hXc.exists_cthickening_subset_open hU hXU
+  -- Radii `r k = δ / (k + 2) ∈ (0, δ)`, tending to `0`.
+  set r : ℕ → ℝ := fun k ↦ δ / (k + 2) with hrdef
+  have hr : ∀ k, 0 < r k := fun k ↦ by simp only [hrdef]; positivity
+  have hrδ : ∀ k, r k < δ := fun k ↦ by
+    simp only [hrdef]
+    rw [div_lt_iff₀ (by positivity)]
+    nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+  -- Mollifiers `ψ k = φ k / ∫ φ k` with `φ k` a smooth bump supported in `ball 0 (r k)`.
+  let φ : ℕ → ContDiffBump (0 : Ambient n ℓ) := fun k ↦
+    ⟨r k / 2, r k, half_pos (hr k), half_lt_self (hr k)⟩
+  have hφint : ∀ k, 0 < ∫ x, φ k x := fun k ↦ by
+    refine (integral_pos_iff_support_of_nonneg (φ k).nonneg'
+      ((φ k).continuous.integrable_of_hasCompactSupport (φ k).hasCompactSupport)).mpr ?_
+    rw [(φ k).support_eq]
+    exact measure_ball_pos _ _ (hr k)
+  set ψ : ℕ → Ambient n ℓ → ℝ := fun k x ↦ φ k x / ∫ y, φ k y with hψdef
+  have hψsupp : ∀ k, Function.support (ψ k) = ball 0 (r k) := fun k ↦ by
+    simp only [hψdef]
+    rw [Function.support_div, (φ k).support_eq, Function.support_const (hφint k).ne', inter_univ]
+  have hψc : ∀ k, HasCompactSupport (ψ k) := fun k ↦ by
+    rw [HasCompactSupport, tsupport, hψsupp, closure_ball _ (hr k).ne']
+    exact isCompact_closedBall _ _
+  have hψnn : ∀ k x, 0 ≤ ψ k x := fun k x ↦ div_nonneg (φ k).nonneg (hφint k).le
+  have hψ1 : ∀ k, ∫ x, ψ k x = 1 := fun k ↦ by
+    simp only [hψdef]
+    rw [integral_div, div_self (hφint k).ne']
+  have hψsmooth : ∀ k, ContDiff ℝ ∞ (ψ k) := fun k ↦ (φ k).contDiff.div_const _
+  -- `Y k = ψ k ⋆ X`.
+  set Y : ℕ → Ambient n ℓ → Ambient n ℓ := fun k ↦
+    convolution (ψ k) X (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  refine ⟨cthickening δ (tsupport X), Y, hXc.cthickening, hδU, self_subset_cthickening _,
+    fun k ↦ ⟨?_, ?_, ?_⟩, ?_⟩
+  · exact (hψc k).contDiff_convolution_left _ (hψsmooth k) hX.continuous.locallyIntegrable
+  · exact (hψc k).convolution _ hXc
+  · -- `support (ψ k ⋆ X) ⊆ ball 0 (r k) + tsupport X ⊆ cthickening δ (tsupport X)`.
+    apply closure_minimal _ isClosed_cthickening
+    refine (support_convolution_subset _).trans ?_
+    rintro _ ⟨a, ha, b, hb, rfl⟩
+    rw [hψsupp, mem_ball_zero_iff] at ha
+    refine mem_cthickening_of_dist_le _ b δ _ (subset_tsupport _ hb) ?_
+    rw [dist_eq_norm, add_sub_cancel_right]
+    exact (ha.trans (hrδ k)).le
+  · -- `DY_k = ψ k ⋆ DX`, and `DX` is uniformly continuous.
+    rw [Metric.tendstoUniformly_iff]
+    intro η hη
+    have hDX : Continuous (fderiv ℝ X) := hX.continuous_fderiv one_ne_zero
+    have huc : UniformContinuous (fderiv ℝ X) :=
+      (hXc.fderiv ℝ).uniformContinuous_of_continuous hDX
+    obtain ⟨ρ, hρ, hρη⟩ := Metric.uniformContinuous_iff.mp huc (η / 2) (half_pos hη)
+    obtain ⟨N, hN⟩ := exists_nat_gt (δ / ρ)
+    have hev : ∀ᶠ k in atTop, r k < ρ := by
+      refine eventually_atTop.mpr ⟨N, fun k hk ↦ ?_⟩
+      simp only [hrdef]
+      rw [div_lt_iff₀ (by positivity)]
+      have hkN : (N : ℝ) ≤ k := by exact_mod_cast hk
+      rw [div_lt_iff₀ hρ] at hN
+      nlinarith
+    -- `(lsmul ℝ ℝ).precompR` is again scalar multiplication, now on `E →L[ℝ] E`.
+    have hpre : (ContinuousLinearMap.lsmul ℝ ℝ :
+        ℝ →L[ℝ] Ambient n ℓ →L[ℝ] Ambient n ℓ).precompR (Ambient n ℓ) =
+          ContinuousLinearMap.lsmul ℝ ℝ := by
+      ext c A v; simp
+    filter_upwards [hev] with k hk x
+    have hderiv : fderiv ℝ (Y k) x =
+        convolution (ψ k) (fderiv ℝ X) (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+      rw [(hXc.hasFDerivAt_convolution_right _
+        (hψsmooth k).continuous.locallyIntegrable hX x).fderiv, hpre]
+    rw [hderiv, dist_comm]
+    calc dist (convolution (ψ k) (fderiv ℝ X) (ContinuousLinearMap.lsmul ℝ ℝ) volume x)
+          (fderiv ℝ X x) ≤ η / 2 :=
+        dist_convolution_le (half_pos hη).le (hψsupp k).le (hψnn k) (hψ1 k)
+          hDX.aestronglyMeasurable fun y hy ↦ (hρη ((mem_ball.mp hy).trans hk)).le
+      _ < η := half_lt_self hη
+namespace Submission
+
+theorem tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (K : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsCompact K → ContDiff ℝ 1 X → tsupport X ⊆ K → (∀ k, ContDiff ℝ 1 (Y k) ∧ tsupport (Y k) ⊆ K) → TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop → Tendsto (fun k ↦ ∫ x, V.tangentialDiv (Y k) x ∂V.weight) atTop (𝓝 (∫ x, V.tangentialDiv X x ∂V.weight)) := by
+  intro n ℓ V K X Y hfin hP hK hX hXK hY hconv
+  -- Step 1: `|trace (A ∘ P)| ≤ (n + ℓ) ‖A‖` when `‖P‖ ≤ 1`, expanding the trace in the
+  -- standard orthonormal basis `eᵢ` and bounding each `⟪eᵢ, A P eᵢ⟫` by Cauchy–Schwarz.
+  set d : ℝ := ((n + ℓ : ℕ) : ℝ)
+  have hd0 : 0 ≤ d := Nat.cast_nonneg _
+  have htrace : ∀ A P : Ambient n ℓ →L[ℝ] Ambient n ℓ, ‖P‖ ≤ 1 →
+      |LinearMap.trace ℝ (Ambient n ℓ) (A.comp P).toLinearMap| ≤ d * ‖A‖ := by
+    intro A P hP
+    set b := EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ
+    rw [LinearMap.trace_eq_matrix_trace ℝ b.toBasis, Matrix.trace]
+    simp only [Matrix.diag, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+      OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.repr_apply_apply]
+    calc |∑ i, inner ℝ (b i) ((A.comp P).toLinearMap (b i))|
+        ≤ ∑ i, |inner ℝ (b i) ((A.comp P).toLinearMap (b i))| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _i : Fin (n + ℓ), ‖A‖ := by
+          gcongr with i
+          have hb : ‖b i‖ = 1 := b.orthonormal.1 i
+          calc |inner ℝ (b i) ((A.comp P).toLinearMap (b i))|
+              ≤ ‖b i‖ * ‖(A.comp P) (b i)‖ := abs_real_inner_le_norm _ _
+            _ ≤ ‖b i‖ * (‖A.comp P‖ * ‖b i‖) := by gcongr; exact (A.comp P).le_opNorm (b i)
+            _ = ‖A.comp P‖ := by rw [hb]; ring
+            _ ≤ ‖A‖ * ‖P‖ := A.opNorm_comp_le P
+            _ ≤ ‖A‖ * 1 := by gcongr
+            _ = ‖A‖ := mul_one _
+      _ = d * ‖A‖ := by simp [d]
+  -- Step 2: `div_M Z x = T (DZ(x) ∘ p_x)` for the continuous linear functional `T = trace`,
+  -- so `div_M Z` is a continuous function of `(DZ(x), p_x)`, hence a.e. strongly measurable.
+  set T : (Ambient n ℓ →L[ℝ] Ambient n ℓ) →ₗ[ℝ] ℝ :=
+    (LinearMap.trace ℝ (Ambient n ℓ)).comp (ContinuousLinearMap.coeLM ℝ) with hT
+  have hTc : Continuous T := T.continuous_of_finiteDimensional
+  have hdiv : ∀ Z x, V.tangentialDiv Z x =
+      T ((fderiv ℝ Z x).comp (V.tangentSpace x).starProjection) := fun Z x ↦ rfl
+  have hcomp : Continuous (fun q : (Ambient n ℓ →L[ℝ] Ambient n ℓ) × (Ambient n ℓ →L[ℝ] Ambient n ℓ) ↦
+      q.1.comp q.2) := isBoundedBilinearMap_comp.continuous
+  have hmeas : ∀ Z : Ambient n ℓ → Ambient n ℓ, ContDiff ℝ 1 Z →
+      AEStronglyMeasurable (fun x ↦ V.tangentialDiv Z x) V.weight := by
+    intro Z hZ
+    have h1 : Continuous (fun x ↦ fderiv ℝ Z x) := hZ.continuous_fderiv one_ne_zero
+    exact (hTc.comp hcomp).comp_aestronglyMeasurable (h1.aestronglyMeasurable.prodMk hP)
+  have hbound : ∀ (A : Ambient n ℓ →L[ℝ] Ambient n ℓ) x,
+      |T (A.comp (V.tangentSpace x).starProjection)| ≤ d * ‖A‖ := fun A x ↦
+    htrace A _ (Submodule.starProjection_norm_le _)
+  -- Step 3: `div_M Z` vanishes off `K` when `tsupport Z ⊆ K`.
+  have hvan : ∀ Z : Ambient n ℓ → Ambient n ℓ, tsupport Z ⊆ K → ∀ x ∉ K,
+      V.tangentialDiv Z x = 0 := by
+    intro Z hZK x hx
+    rw [hdiv, fderiv_of_notMem_tsupport ℝ (fun h ↦ hx (hZK h))]
+    simp
+  -- Step 4: `div_M Z` is integrable, being bounded by `d B 1_K` with `μ(K) < ∞`.
+  have hμK : V.weight K < ⊤ := hK.measure_lt_top
+  have hint : ∀ Z : Ambient n ℓ → Ambient n ℓ, ContDiff ℝ 1 Z → tsupport Z ⊆ K →
+      Integrable (fun x ↦ V.tangentialDiv Z x) V.weight := by
+    intro Z hZ hZK
+    have hZc : HasCompactSupport Z := hK.of_isClosed_subset (isClosed_tsupport Z) hZK
+    obtain ⟨B, hB⟩ := (hZc.fderiv ℝ).exists_bound_of_continuous (hZ.continuous_fderiv one_ne_zero)
+    refine Integrable.mono' ((integrableOn_const (C := d * B) hμK.ne).integrable_indicator
+      hK.isClosed.measurableSet) (hmeas Z hZ) (Eventually.of_forall fun x ↦ ?_)
+    by_cases hx : x ∈ K
+    · rw [indicator_of_mem hx, Real.norm_eq_abs, hdiv]
+      exact (hbound _ x).trans (by gcongr; exact hB x)
+    · rw [indicator_of_notMem hx, hvan Z hZK x hx, norm_zero]
+  have hIX := hint X hX hXK
+  -- Steps 5–6: `|∫ div_M Y_k - ∫ div_M X| ≤ d sup ‖DY_k - DX‖ μ(K) → 0`.
+  rw [Metric.tendsto_atTop]
+  intro η hη
+  set m : ℝ := V.weight.real K
+  have hm0 : 0 ≤ m := measureReal_nonneg
+  obtain ⟨N, hN⟩ := (Metric.tendstoUniformly_iff.mp hconv (η / (2 * (d * m + 1)))
+    (by positivity)).exists_forall_of_atTop
+  refine ⟨N, fun k hk ↦ ?_⟩
+  have hIY := hint (Y k) (hY k).1 (hY k).2
+  rw [Real.dist_eq, ← integral_sub hIY hIX]
+  calc |∫ x, V.tangentialDiv (Y k) x - V.tangentialDiv X x ∂V.weight|
+      ≤ ∫ x, K.indicator (fun _ ↦ d * (η / (2 * (d * m + 1)))) x ∂V.weight := by
+        rw [← Real.norm_eq_abs]
+        refine norm_integral_le_of_norm_le
+          ((integrableOn_const (C := d * (η / (2 * (d * m + 1)))) hμK.ne).integrable_indicator
+          hK.isClosed.measurableSet)
+          (Eventually.of_forall fun x ↦ ?_)
+        by_cases hx : x ∈ K
+        · rw [indicator_of_mem hx, Real.norm_eq_abs, hdiv, hdiv, ← map_sub,
+            ← ContinuousLinearMap.sub_comp]
+          refine (hbound _ x).trans ?_
+          gcongr
+          rw [← dist_eq_norm, dist_comm]
+          exact (hN k hk x).le
+        · rw [indicator_of_notMem hx, hvan _ (hY k).2 x hx, hvan X hXK x hx, sub_zero, norm_zero]
+    _ = d * (η / (2 * (d * m + 1))) * m := by
+        rw [integral_indicator hK.isClosed.measurableSet, setIntegral_const, smul_eq_mul, mul_comm]
+    _ < η := by
+        have h1 : 0 < d * m + 1 := by positivity
+        have he : d * (η / (2 * (d * m + 1))) * m = η * (d * m) / (2 * (d * m + 1)) := by ring
+        rw [he, div_lt_iff₀ (by positivity)]
+        nlinarith [mul_nonneg hd0 hm0]
+
+end Submission
+
+/-- **Stationarity** (Ch. 4, 2.4). Given (GF) and the first variation formula 2.2, the integral
+and variational forms of stationarity agree: the initial velocity of a compact variation with
+`K ⊆ U` is a test field in `U`; a smooth compactly supported `X` is the initial velocity of the
+compact variation `y + tX(y)`; and a `C¹` test field is the `C¹` limit of smooth fields supported
+in one compact subset of `U`, along which `∫ div_M` converges by (GF). -/
+theorem Submission.stationary_iff_variational_of_first_variation :
+    (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧
+      (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+      AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) →
+    FirstVariationFormula → StationaryIffVariational := by
+  intro hGF hFVF n ℓ a U hn hU
+  refine ⟨fun hstat φ ε K hφ hKU ↦ ?_, fun hvar ↦ ?_⟩
+  · -- (⇒) The initial velocity of `φ` is a test field in `U`, so the first variation vanishes.
+    exact (hFVF n ℓ a φ ε K hn hφ).congr_deriv
+      (hstat _ (Submission.compactVariation_velocity_isTestField n ℓ U φ ε K hφ hKU))
+  · -- (⇐), smooth fields: `Z` is the initial velocity of `y + t • Z y`, and derivatives are unique.
+    have hsmooth : ∀ Z : Ambient n ℓ → Ambient n ℓ, ContDiff ℝ ∞ Z → HasCompactSupport Z →
+        tsupport Z ⊆ U → ∫ x, (mk a).tangentialDiv Z x ∂(mk a).weight = 0 := by
+      intro Z hZ hZc hZU
+      obtain ⟨ε, hφ, hvel⟩ := Submission.exists_isCompactVariation_add_smul n ℓ Z hZ hZc
+      calc ∫ x, (mk a).tangentialDiv Z x ∂(mk a).weight
+          = ∫ x, (mk a).tangentialDiv (fun y ↦ deriv (fun t : ℝ ↦ y + t • Z y) 0) x
+              ∂(mk a).weight :=
+            congrArg (fun W ↦ ∫ x, (mk a).tangentialDiv W x ∂(mk a).weight) hvel.symm
+        _ = 0 := (hFVF n ℓ a _ ε _ hn hφ).unique (hvar _ ε _ hφ hZU)
+    -- (⇐), `C¹` fields: approximate `X` in `C¹` by smooth `Y k` supported in a compact `K ⊆ U`.
+    intro X hX
+    obtain ⟨K, Y, hK, hKU, hXK, hY, hYX⟩ :=
+      Submission.exists_smooth_approx_testField_fderiv n ℓ U X hU hX
+    obtain ⟨hfin, -, hmeas⟩ := hGF n ℓ (mk a) hn
+    refine tendsto_nhds_unique
+      (Submission.tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv n ℓ (mk a) K X Y
+        hfin hmeas hK hX.1 hXK
+        (fun k ↦ ⟨(hY k).1.of_le (WithTop.coe_le_coe.mpr le_top), (hY k).2.2⟩) hYX) ?_
+    exact tendsto_const_nhds.congr fun k ↦
+      (hsmooth (Y k) (hY k).1 (hY k).2.1 ((hY k).2.2.trans hKU)).symm
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 

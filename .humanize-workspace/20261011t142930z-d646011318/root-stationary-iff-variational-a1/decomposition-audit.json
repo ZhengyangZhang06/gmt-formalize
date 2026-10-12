@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "rg -n 'compactVariation_velocity_isTestField|exists_isCompactVariation_add_smul|exists_smooth_approx_testField_fderiv|tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv' project/GMT mathlib/Mathlib",
+        "theorem surjective|def toHomeomorph|theorem toHomeomorph|contDiff_symm|def oneSub|def unitsEquiv",
+        "contDiff_convolution_left|hasFDerivAt_convolution_right|dist_normed_convolution_le|support_normed_eq|integral_normed|support_convolution_subset|exists_cthickening_subset_open|theorem IsCompact.cthickening|cthickening_empty",
+        "trace_eq_sum_inner|starProjection_norm_le|fderiv_of_notMem_tsupport|support_fderiv_subset|HasCompactSupport.fderiv|uniformContinuous_of_continuous",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/mathlib diff --name-only",
+        "python3 /tmp/ch04-siv-independent-jze5vsin/verify.py types",
+        "python3 /tmp/ch04-siv-independent-jze5vsin/verify.py proofs"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecificLimits/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-stationary-iff-variational-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-stationary-iff-variational-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/tmp/ch04-siv-independent-jze5vsin/FullAudit.lean",
+        "/tmp/ch04-siv-independent-jze5vsin/InlineChecks.lean",
+        "/tmp/ch04-siv-independent-jze5vsin/verify.py"
+      ],
+      "conclusion": "The workspace contract matches the frozen snapshot; Mathlib is at the pinned revision 25730c7c759d108ef87ab70af2342a196760f79d, and twelve checked Mathlib source files match the snapshot byte-for-byte. Searching the snapshot found no declarations with the four proposed names. All names are bare identifiers and remain unreserved in the active DAG. Each exact one-line proposition independently elaborates in the generated comparator challenge scope before implementation. Fresh compilation of the supplied child proofs and an assembly of the exact selected parent succeeds; all five declarations depend only on propext, Classical.choice and Quot.sound. Inline checks confirm the intended smoothness notation, Haar and bump instances, continuous-linear-map composition algebra, and tangential-divergence trace expression. The split is appropriate: four independent, acyclic analytic obligations establish the selected equivalence using GF and FirstVariationFormula, without proving or assuming an ancestor theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "variation_velocity_test_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose hypotheses and Lean proposition agree. Joint smoothness near (0,y) gives the velocity formula and C¹ regularity by the chain rule. The fixed-off-K condition gives vanishing outside K; compactness makes K closed and yields compact support inside U. Neither openness of U nor positive dimension is needed. The supplied proof is complete and independent."
+    },
+    {
+      "key": "linear_compact_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes every compact-variation requirement and the real-parameter velocity identity. A uniform derivative bound gives the Lipschitz estimate; contraction gives surjectivity, the lower distance bound gives injectivity, and the Neumann-series derivative inverse gives a smooth inverse. Function.invFun is identified using bijectivity. The proof also handles zero-dimensional ambient space and has no circular dependency."
+    },
+    {
+      "key": "smooth_c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type require precisely one fixed compact K inside U, support control for every index, and uniform derivative convergence. The proof constructs K by closed thickening and uses normalized bumps of radius δ/(k+2). It proves smoothness, support containment, the differentiated convolution formula, and uniform convergence from uniform continuity of DX. Empty support is covered. No construction or proof obligation is deferred."
+    },
+    {
+      "key": "first_variation_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All needed hypotheses are explicit and match the Lean type. The trace bound uses ambient dimension, so no tangent-rank hypothesis is missing. Projection measurability gives measurable divergences, and bounded derivatives with common compact support give integrability. The finite-measure integral estimate proves the stated limit, including zero-dimensional and zero-mass cases. This independently supplies exactly the parent's required limit passage."
+    }
+  ],
+  "required_changes": []
+}
