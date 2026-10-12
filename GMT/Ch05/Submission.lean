@@ -536,6 +536,41 @@ theorem tdo_slb_scaledLpNorm_le_of_subset : ∀ (n ℓ : ℕ) (U : Set (Amb n �
           * ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) := by
         rw [ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg hst' _) hp', ← Real.rpow_mul hst',
           mul_one_div]
+/-- Simon Ch. 5, Remark 2.2 (p. 107): the Hölder estimate of `∫_{B_s(z)} |H|^q dμ_V` by the scaled
+`Lᵖ` norm on a larger ball `B_t(w) ⊇ B_s(z)`.  If `0 < q ≤ p` and `μ_V(B_s(z)) ≤ m`, then
+`∫_{B_s(z)} |H|^q dμ_V ≤ m^{1−q/p} t^{q(n−p)/p} (t^{p−n} ∫_{B_t(w)} |H|ᵖ dμ_V)^{q/p}`
+(lower integrals in `[0, ∞]`; no measurability of `H` and no condition on `s`). -/
+theorem tdo_slb_lintegral_rpow_le_scaledLpNorm : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q := by
+  intro n ℓ U V H p q z w s t m hq hqp ht hm hsub hmass
+  -- Step 1: `p > 0`, `a = q/p ≥ 0`, `b = 1 - q/p ≥ 0`.
+  have hp : 0 < p := hq.trans_le hqp
+  have ha : 0 ≤ q / p := (div_pos hq hp).le
+  have hb : 0 ≤ 1 - q / p := sub_nonneg.2 ((div_le_one hp).2 hqp)
+  -- Step 5: `I^a = ofReal(t^{q(n-p)/p}) · K(w, t)^q` with `I = ∫⁻_{B_t(w)} |H|ᵖ`.
+  have hkey : ENNReal.ofReal (t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q =
+      (∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (q / p) := by
+    have hexp : q * (n - p) / p + (p - n) * (q / p) = 0 := by
+      field_simp
+      ring
+    rw [RectifiableVarifold.scaledLpNorm, ← ENNReal.rpow_mul, one_div_mul_eq_div,
+      ENNReal.mul_rpow_of_nonneg _ _ ha,
+      ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg ht.le _) ha, ← Real.rpow_mul ht.le,
+      ← mul_assoc, ← ENNReal.ofReal_mul (Real.rpow_nonneg ht.le _), ← Real.rpow_add ht, hexp,
+      Real.rpow_zero, ENNReal.ofReal_one, one_mul]
+  calc ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight
+      ≤ (∫⁻ x in closedBall z s, ‖H x‖ₑ ^ p ∂V.weight) ^ (q / p) *
+          V.weight (closedBall z s) ^ (1 - q / p) :=
+        Submission.tdo_slb_setLIntegral_rpow_le_holder (Amb n ℓ) V.weight (closedBall z s)
+          (fun x => ‖H x‖ₑ) p q hq hqp
+    -- Step 3: enlarge the domain to `B_t(w)` and bound the mass by `m`.
+    _ ≤ (∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (q / p) *
+          ENNReal.ofReal m ^ (1 - q / p) :=
+        mul_le_mul' (ENNReal.rpow_le_rpow (lintegral_mono_set hsub) ha)
+          (ENNReal.rpow_le_rpow hmass hb)
+    -- Steps 4 and 6: recombine the constants.
+    _ = ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q := by
+        rw [ENNReal.ofReal_mul (Real.rpow_nonneg hm _), mul_assoc, hkey,
+          ← ENNReal.ofReal_rpow_of_nonneg hm hb, mul_comm]
 
 end Submission
 
