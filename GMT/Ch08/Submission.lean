@@ -2,6 +2,7 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter08.ConstancyTangent
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -468,6 +469,37 @@ theorem Submission.allard_tc_scf_subspace_classical_tangent :
     refine ⟨fun s ↦ y + s • ξ, ?_, fun s _ ↦ P.add_mem hy (P.smul_mem s hξ), by simp, ?_⟩
     · exact (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn
     · simpa using ((hasDerivAt_id (0 : ℝ)).smul_const ξ).const_add y
+/-- **Simon Ch. 8, 4.1 for a plane** (child `constancy_plane` of `stationary_cone_flat`; the step
+"`C = θ₀ v(T)` by Constancy 4.1" in the proof of 5.5): a stationary `n`-varifold `C` on `ℝ^N` with
+`spt μ_C ⊆ T` is `θ v(T)` for a constant `θ ≥ 0`.  `ConstancyTheorem` applies with `U = ℝ^N` and
+`M = T`: `T` is a `C²` submanifold (`allard_tc_scf_subspace_submanifold`) and `T ∩ ℝ^N = T` is
+convex, hence connected.  Since `T_x T = T` (`allard_tc_scf_subspace_classical_tangent`) and a point
+of `G(N,n)` is determined by its plane, the constancy set of `A` is `{x ∈ T : (x, T) ∈ A}`, whose
+`H^n`-measure is `v(T)(A)`. -/
+theorem Submission.allard_tc_scf_constancy_plane :
+    ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N)))
+      (T : Grassmannian N n), C.Stationary → C.weight.support ⊆ (T.plane : Set (Euclidean N)) →
+      ∃ θ : ℝ, 0 ≤ θ ∧ C.measure = ENNReal.ofReal θ • planeVarifoldMeasure T := by
+  intro hconst N n C T hC hspt
+  obtain ⟨θ, hθ, hA⟩ := hconst N n univ C (T.plane : Set (Euclidean N)) hC
+    (Submission.allard_tc_scf_subspace_submanifold N n T.plane T.finrank_plane)
+    (fun x hx ↦ hspt hx.2)
+    (by rw [inter_univ]; exact T.plane.convex.isPreconnected)
+  refine ⟨θ, hθ, Measure.ext fun A hA' ↦ ?_⟩
+  have hmeas : Measurable fun y : Euclidean N ↦ (y, T) := measurable_prodMk_right
+  rw [hA A hA', Measure.smul_apply, smul_eq_mul, planeVarifoldMeasure,
+    Measure.map_apply hmeas hA', Measure.restrict_apply (hmeas hA')]
+  -- The constancy set of `A` is `{x ∈ T : (x, T) ∈ A}`.
+  congr 2
+  ext x
+  simp only [mem_ofPred_eq, mem_inter_iff, mem_preimage, mem_univ, and_true, SetLike.mem_coe]
+  constructor
+  · rintro ⟨hx, S, hS, hxS⟩
+    rw [Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx] at hS
+    rw [Grassmannian.eq_of_plane_eq (SetLike.coe_injective hS)] at hxS
+    exact ⟨hxS, hx⟩
+  · rintro ⟨hxT, hx⟩
+    exact ⟨hx, T, (Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx).symm, hxT⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
