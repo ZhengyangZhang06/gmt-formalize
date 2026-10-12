@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.tangent_projection_continuous-a1",
+  "parent_id": "root.submanifold_tangent-a1",
+  "depth": 2,
+  "title": "The tangent projection y ↦ P_y is continuous on a Simon submanifold",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞ and M ⊆ ℝᴺ with IsSimonSubmanifold (E := ℝⁿ) r M. That is, 1 ≤ r, and every y ∈ M lies in W for some local representation (V, W, ψ) as in Simon 4.1, i.e. IsSimonLocalRepresentation r M V W ψ. Then the map y ↦ tangentProjection M y ∈ L(ℝᴺ, ℝᴺ), the orthogonal projection of ℝᴺ onto tangentSpace M y, is continuous on M. Here M carries the relative topology and L(ℝᴺ, ℝᴺ) the operator-norm topology.",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ContinuousOn (tangentProjection M) M",
+  "lean_name": "simon_submanifold_tangentProjection_continuousOn",
+  "depends_on": [
+    "root.submanifold_tangent-a1.chart_inverse_continuous-a1",
+    "root.submanifold_tangent-a1.tangent_space_eq_range-a1",
+    "root.submanifold_tangent-a1.range_projection_continuous-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.submanifold_tangent-a1.chart_inverse_continuous-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.submanifold_tangent-a1.range_projection_continuous-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-tangent-projection-continuous-a1-a1"
+}
