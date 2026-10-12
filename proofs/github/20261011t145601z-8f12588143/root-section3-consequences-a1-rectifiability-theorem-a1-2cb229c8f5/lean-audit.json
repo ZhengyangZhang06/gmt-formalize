@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1a0556daa38aaaaf1652b70656f35a4048525861fd1592d041f8dc2b6bc3d43e",
+  "git_delta": {
+    "base_commit": "0344d5d639c009669f97298f741e8a371b75bd73",
+    "candidate_commit": "eb91296cace4cce8c770b8766d0a030a29555d99",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "section3_rectifiabilityTheorem_of_besicovitchFederer",
+    "diff_sha256": "0da9a2647febeab54883fbcbfc7fa1a1f5d5b54311abf4efc0b459ddf1b83365",
+    "source_sha256": "a04d7004f6218dde34b4ee8d83c35dcdbe626dbedb1ec0cdb1449b20cfbfca8f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_rectifiabilityTheorem_of_besicovitchFederer",
+      "statement": "BesicovitchFedererProjectionTheorem → RectifiabilityTheoremForSets",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
