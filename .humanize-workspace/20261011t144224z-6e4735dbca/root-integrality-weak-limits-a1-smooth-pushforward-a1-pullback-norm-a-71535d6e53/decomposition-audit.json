@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "range_inj_of_wellFoundedLT|theorem monotone_sort|def sort |strictMono_of_injective|map_eq_zero_of_not_injective|theorem map_perm|norm_dual|curryLeft_apply_apply|theorem basisFun_apply",
+        "covectorEuclideanNorm|slicing_mb_wn_sq_sum_eq_factorial_mul|slicing_mb_wn_norm_sq_eq_onb_sum",
+        "git show 66289299bceafab55148bb8a5f37d375b4b47e6e:GMT/Ch06/Submission.lean",
+        "/tmp/iwl-tsf-decomp/leanrun.sh /tmp/iwl-tuple-independent-audit-w4rqsvxs/Assembly.lean",
+        "/tmp/iwl-tsf-decomp/leanrun.sh /tmp/iwl-tuple-independent-audit-w4rqsvxs/AcceptedReplay.lean",
+        "/tmp/iwl-tuple-independent-audit-w4rqsvxs/leanrun.sh /tmp/iwl-tuple-independent-audit-w4rqsvxs/Challenge_count_sq_sum.lean",
+        "/tmp/iwl-tuple-independent-audit-w4rqsvxs/leanrun.sh /tmp/iwl-tuple-independent-audit-w4rqsvxs/Challenge_onb_norm_sq.lean",
+        "/tmp/iwl-tuple-independent-audit-w4rqsvxs/leanrun.sh /tmp/iwl-tuple-independent-audit-w4rqsvxs/Challenge_tuple_sum_factorial.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-count-sq-sum-a1/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-onb-norm-sq-a1/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-parseval-sq-sum-a1/lean-audit-v1.json",
+        "/tmp/iwl-tuple-independent-audit-w4rqsvxs/Assembly.lean",
+        "/tmp/iwl-tuple-independent-audit-w4rqsvxs/AcceptedReplay.lean"
+      ],
+      "conclusion": "Verified project revision d8d46c95 and Mathlib revision 25730c7c, the covector and coefficient-norm definitions, and the required alternating-map, sorting, and Parseval APIs. The frozen project contains neither reused declaration; both come from comparator-accepted DAG candidates with identical frozen types and unique ownership. Their dependency closure is acyclic and excludes the selected parent and its ancestors. The reuse split is appropriate: specializing both children to the standard basis proves exactly the selected parent. Independently compiled all three comparator-generated challenges against the frozen baseline, the parent assembly from child hypotheses, and exact-type checks of the accepted implementations. The child results, retained Parseval result, and assembled parent use only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "count_sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every quantifier and hypothesis in the prose. Repeated indices vanish without assuming that u is injective; permutation signs disappear after squaring; increasing enumeration gives the stated bijection; reindexing contributes exactly k!. The proof covers k = 0 and k > P and has no circular dependency. The bare identifier uniquely belongs to the accepted declaration with the identical frozen type. This child supplies the selected parent's counting step."
+    },
+    {
+      "key": "onb_norm_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the arbitrary-orthonormal-basis statement. The proof establishes nonnegativity of the defining radicand, applies count_sq_sum, proves basis invariance through the supplied slotwise Parseval appendix, and correctly cancels the nonzero real factorial. The appendix is complete, including the empty cases and continuous-linear-functional construction. Dependence on count_sq_sum is correctly directed; the retained Parseval prerequisite is independently accepted and non-circular. The bare identifier has a unique accepted owner with the identical frozen type. Standard-basis specialization supplies precisely the norm identity needed by the selected parent."
+    }
+  ],
+  "required_changes": []
+}
