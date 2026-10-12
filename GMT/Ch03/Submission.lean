@@ -912,6 +912,67 @@ theorem Submission.deGiorgiRH_unitBall_mul_hausdorffMeasure_eq_two_pow_mul :
     rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul,
       key, mul_assoc]
 
+/-- **Density `ωₙ` on `A` gives `μ(A) ≤ 2ⁿ Hⁿ(A)`** (the step `μ_E ≤ Hⁿ ⌞ ∂*E` in Simon Ch. 3,
+Theorem 4.3; parent Step 6 (D2)). Let `A ⊆ ℝᴺ` be arbitrary, `ωₙ = Lⁿ(B₁(0))`, and suppose
+`μ(B̄_ρ(x)) / ρⁿ → ωₙ` as `ρ ↓ 0` for every `x ∈ A`; no finiteness of `μ` is used. Fix
+`c = ωₙ + τ` with `τ > 0` and let `A_j` be the set of `x ∈ A` with `μ(B̄_ρ(x)) ≤ c ρⁿ` for all
+`0 < ρ < 1/(j+1)`. Since `ωₙ < c`, the `A_j` increase to `A`. The closed-ball covering bound
+gives `μ(A_j) ≤ c μH[n](A_j) ≤ c μH[n](A)`, and continuity from below (valid for arbitrary
+sets) gives `μ(A) ≤ c μH[n](A)`. Letting `τ ↓ 0`, `μ(A) ≤ ωₙ μH[n](A) = 2ⁿ μHE[n](A)`. -/
+theorem Submission.deGiorgiRH_measure_le_two_pow_mul_hausdorff : ∀ (n N : ℕ) (μ : Measure (Rn N)) (A : Set (Rn N)), (∀ x ∈ A, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))) → μ A ≤ 2 ^ n * μHE[n] A := by
+  intro n N μ A hdens
+  have hω0 : volume (Metric.ball (0 : Rn n) 1) ≠ 0 :=
+    (Metric.measure_ball_pos volume (0 : Rn n) one_pos).ne'
+  have hωt : volume (Metric.ball (0 : Rn n) 1) ≠ ∞ := measure_ball_lt_top.ne
+  -- Steps 1–4: `μ(A) ≤ (ωₙ + τ) μH[n](A)` for every `τ > 0`.
+  have hτ : ∀ τ : ℝ, 0 < τ →
+      μ A ≤ (volume (Metric.ball (0 : Rn n) 1) + ENNReal.ofReal τ) * μH[(n : ℝ)] A := by
+    intro τ hτ
+    set c : ℝ≥0∞ := volume (Metric.ball (0 : Rn n) 1) + ENNReal.ofReal τ
+    have hωc : volume (Metric.ball (0 : Rn n) 1) < c :=
+      ENNReal.lt_add_right hωt (ENNReal.ofReal_pos.mpr hτ).ne'
+    have hc0 : c ≠ 0 := (zero_le.trans_lt hωc).ne'
+    have hct : c ≠ ∞ := ENNReal.add_ne_top.mpr ⟨hωt, ENNReal.ofReal_ne_top⟩
+    -- Step 1: `A_j` is the set of `x ∈ A` with `μ(B̄_ρ(x)) ≤ c ρⁿ` for all `0 < ρ < 1/(j+1)`.
+    let Aj : ℕ → Set (Rn N) := fun j => {x | x ∈ A ∧ ∀ ρ : ℝ, 0 < ρ → ρ < 1 / ((j : ℝ) + 1) →
+      μ (Metric.closedBall x ρ) ≤ c * ENNReal.ofReal (ρ ^ n)}
+    have hmono : Monotone Aj := by
+      intro j k hjk x hx
+      refine ⟨hx.1, fun ρ hρ0 hρ => hx.2 ρ hρ0 (hρ.trans_le ?_)⟩
+      gcongr
+    -- Since `ωₙ < c`, the density hypothesis puts every `x ∈ A` into some `A_j`.
+    have hunion : A = ⋃ j, Aj j := by
+      refine Subset.antisymm (fun x hx => ?_) (iUnion_subset fun j x hx => hx.1)
+      obtain ⟨ε, hε, hεsub⟩ :=
+        mem_nhdsGT_iff_exists_Ioo_subset.mp ((hdens x hx).eventually (gt_mem_nhds hωc))
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt (mem_Ioi.mp hε)
+      refine mem_iUnion.mpr ⟨j, hx, fun ρ hρ0 hρ => ?_⟩
+      have hlt : μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n) < c :=
+        hεsub ⟨hρ0, hρ.trans hj⟩
+      exact (ENNReal.div_le_iff (ENNReal.ofReal_pos.mpr (pow_pos hρ0 n)).ne'
+        ENNReal.ofReal_ne_top).mp hlt.le
+    -- Steps 2–3: the closed-ball covering bound on each `A_j`, then monotonicity of `μH[n]`.
+    have hAj : ∀ j, μ (Aj j) ≤ c * μH[(n : ℝ)] A := fun j =>
+      (Submission.deGiorgiRH_measure_le_mul_hausdorffMeasure_of_closedBall_le n N μ (Aj j) c
+        (1 / ((j : ℝ) + 1)) hc0 hct Nat.one_div_pos_of_nat fun x hx => hx.2).trans
+        (by gcongr; exact fun x hx => hx.1)
+    -- Step 4: continuity from below along `A_j ↑ A` (arbitrary sets).
+    calc μ A = μ (⋃ j, Aj j) := by rw [← hunion]
+      _ = ⨆ j, μ (Aj j) := hmono.measure_iUnion
+      _ ≤ c * μH[(n : ℝ)] A := iSup_le hAj
+  -- Step 5: let `τ ↓ 0`, then use `ωₙ μH[n] = 2ⁿ μHE[n]`.
+  have hlim : Tendsto (fun τ : ℝ => (volume (Metric.ball (0 : Rn n) 1) + ENNReal.ofReal τ) *
+      μH[(n : ℝ)] A) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1) * μH[(n : ℝ)] A)) := by
+    have h : Tendsto (fun τ : ℝ => volume (Metric.ball (0 : Rn n) 1) + ENNReal.ofReal τ) (𝓝 0)
+        (𝓝 (volume (Metric.ball (0 : Rn n) 1) + ENNReal.ofReal 0)) :=
+      (continuous_const.add ENNReal.continuous_ofReal).tendsto 0
+    rw [ENNReal.ofReal_zero, add_zero] at h
+    exact ENNReal.Tendsto.mul_const (h.mono_left nhdsWithin_le_nhds) (Or.inl hω0)
+  calc μ A ≤ volume (Metric.ball (0 : Rn n) 1) * μH[(n : ℝ)] A :=
+        ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun τ hτ' => hτ τ hτ')
+    _ = 2 ^ n * μHE[n] A :=
+        Submission.deGiorgiRH_unitBall_mul_hausdorffMeasure_eq_two_pow_mul n N A
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
