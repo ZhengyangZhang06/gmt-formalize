@@ -451,6 +451,84 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Graph push-forward bound** (the inequality half of the area formula used in the graph-`C¹`
+argument).  Let `Φ(v) = z + ι v + ι'(f v)` with `ι`, `ι'` isometric embeddings with orthogonal
+ranges and `f` continuous, and suppose `Φ(A) ⊆ spt μ ∩ W`, where `Hⁿ((spt μ ∩ W) ∖ M) = 0` and
+`μ = θ Hⁿ⌞M`.  Then `Φ_#(Lⁿ⌞A) ≤ μ⌞Φ(A)`: `π(x) = ι*(x − z)` is a `1`-Lipschitz left inverse of
+`Φ`, so `Lⁿ(Z) = Hⁿ(π(Φ(Z))) ≤ Hⁿ(Φ(Z))`, and `Hⁿ ≤ μ` on subsets of `spt μ ∩ W` because
+`(spt μ ∩ W) ∖ M` is `Hⁿ`-null and `θ ≥ 1` on `M`. -/
+theorem Submission.dorag_gc_graph_map_volume_le_measure : ∀ (n k P : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (f : Euclid n → Euclid k) (z : Euclid P) (A : Set (Euclid n)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → Continuous f → μHE[n] ((R.measure.support ∩ W) \ R.carrier) = 0 → (∀ v ∈ A, z + ι v + ι' (f v) ∈ R.measure.support ∩ W) → Measure.map (fun v => z + ι v + ι' (f v)) (volume.restrict A) ≤ R.measure.restrict ((fun v => z + ι v + ι' (f v)) '' A) := by
+  intro n k P U W R ι ι' f z A horth hf hnull hA
+  set Φ : Euclid n → Euclid P := fun v => z + ι v + ι' (f v) with hΦ
+  have hΦc : Continuous Φ := by
+    simp only [hΦ]
+    exact (continuous_const.add ι.continuous).add (ι'.continuous.comp hf)
+  -- 1. a 1-Lipschitz left inverse `π(x) = ι*(x − z)` of `Φ`
+  set π : Euclid P → Euclid n := fun x => (ι.toContinuousLinearMap.adjoint) (x - z) with hπ
+  have hπΦ : ∀ v, π (Φ v) = v := by
+    intro v
+    apply ext_inner_left ℝ
+    intro u
+    have hsub : z + ι v + ι' (f v) - z = ι v + ι' (f v) := by abel
+    simp only [hπ, hΦ, ContinuousLinearMap.adjoint_inner_right,
+      LinearIsometry.coe_toContinuousLinearMap, hsub, inner_add_right, LinearIsometry.inner_map_map]
+    rw [horth u (f v), add_zero]
+  have hπlip : LipschitzWith 1 π := by
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    simp only [hπ, dist_eq_norm, NNReal.coe_one, one_mul]
+    rw [← map_sub, sub_sub_sub_cancel_right]
+    calc ‖(ι.toContinuousLinearMap.adjoint) (x - y)‖
+        ≤ ‖ι.toContinuousLinearMap.adjoint‖ * ‖x - y‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ 1 * ‖x - y‖ := by
+          gcongr
+          rw [LinearIsometryEquiv.norm_map]
+          exact ι.norm_toContinuousLinearMap_le
+      _ = ‖x - y‖ := one_mul _
+  -- 2. `Lⁿ(Z) ≤ Hⁿ(Φ(Z))`, since `π(Φ(Z)) = Z` and `Hⁿ = Lⁿ` on `ℝⁿ`
+  have hvol : ∀ Z : Set (Euclid n), volume Z ≤ μHE[n] (Φ '' Z) := by
+    intro Z
+    have h1 : π '' (Φ '' Z) = Z := by
+      rw [image_image]; simp [hπΦ]
+    have h2 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hπlip.lipschitzOnWith (s := Φ '' Z))
+    rw [h1] at h2
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume n]
+    simpa using h2
+  -- 3. `Hⁿ(T) ≤ μ(T)` for `T ⊆ spt μ ∩ W`, through a measurable hull of `T`
+  have hHle : ∀ T ⊆ R.measure.support ∩ W, μHE[n] T ≤ R.measure T := by
+    intro T hT
+    set T' := toMeasurable R.measure T with hT'
+    have hT'm : MeasurableSet T' := measurableSet_toMeasurable _ _
+    calc μHE[n] T ≤ μHE[n] ((T' ∩ R.carrier) ∪ ((R.measure.support ∩ W) \ R.carrier)) := by
+          apply measure_mono
+          intro x hx
+          by_cases hxM : x ∈ R.carrier
+          · exact Or.inl ⟨subset_toMeasurable _ _ hx, hxM⟩
+          · exact Or.inr ⟨hT hx, hxM⟩
+      _ ≤ μHE[n] (T' ∩ R.carrier) + μHE[n] ((R.measure.support ∩ W) \ R.carrier) :=
+          measure_union_le _ _
+      _ = μHE[n] (T' ∩ R.carrier) := by rw [hnull, add_zero]
+      _ ≤ R.measure T' := by
+          unfold IMRep.measure
+          rw [withDensity_apply _ hT'm, Measure.restrict_restrict hT'm]
+          calc μHE[n] (T' ∩ R.carrier) = ∫⁻ _ in T' ∩ R.carrier, (1 : ℝ≥0∞) ∂μHE[n] := by
+                simp
+            _ ≤ ∫⁻ x in T' ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+                apply setLIntegral_mono' (hT'm.inter R.measurableSet_carrier)
+                intro x hx
+                exact_mod_cast R.mult_pos x hx.2
+      _ = R.measure T := measure_toMeasurable _
+  -- 4. test on measurable `Y`: `Lⁿ(Φ⁻¹(Y) ∩ A) ≤ μ(Φ(Φ⁻¹(Y) ∩ A)) ≤ μ(Y ∩ Φ(A))`
+  rw [Measure.le_iff]
+  intro Y hY
+  rw [Measure.map_apply hΦc.measurable hY, Measure.restrict_apply (hΦc.measurable hY),
+    Measure.restrict_apply hY]
+  calc volume (Φ ⁻¹' Y ∩ A) ≤ μHE[n] (Φ '' (Φ ⁻¹' Y ∩ A)) := hvol _
+    _ ≤ R.measure (Φ '' (Φ ⁻¹' Y ∩ A)) := hHle _ (by
+        rintro _ ⟨v, hv, rfl⟩; exact hA v hv.2)
+    _ ≤ R.measure (Y ∩ Φ '' A) := measure_mono (by
+        rintro _ ⟨v, hv, rfl⟩; exact ⟨hv.1, v, hv.2, rfl⟩)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
