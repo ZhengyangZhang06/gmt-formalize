@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5527e022364f9d7330283b980220923c29c5070d67c19cb1bc3e0a5c2fcbe310",
+  "git_delta": {
+    "base_commit": "819d5918c9dcfc1c50033e9d575a99bdb3333b9a",
+    "candidate_commit": "e77dde2622f01687e517ccc911dce788f959d3fa",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_lad_segment_integral_continuousOn",
+    "diff_sha256": "044395ddff004b6886e6443f80942877fa2d70c8dc0980143b6c66e38dbea40b",
+    "source_sha256": "22d630fcd9b7b3530c60e88f2f0e9844cd2ddbeead976a8d285f98414d8f4e0d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_lad_segment_integral_continuousOn",
+      "statement": "∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ContinuousOn g U → ContinuousOn (fun p : Rn n × Rn n => ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)) (U ×ˢ U)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
