@@ -451,6 +451,77 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The point current `ω ↦ ξ₀(ω(x))` at `x ∈ U` (Simon 6.2.1, 6.2.11).  It is linear, and it is
+continuous: if `ωⱼ → 0` in `𝒟ⁿ(U)` with supports in the compact `K`, then `ωⱼ(x) → 0` by uniform
+convergence of the order-`0` derivatives on `K` when `x ∈ K`, and `ωⱼ(x) = 0` when `x ∉ K`.  Let
+`ξ₀(α₀) ≠ 0`.  For each open `W ∋ x`, a bump `φ` at `x` supported in `W` gives
+`D(φα₀) = ξ₀(α₀) ≠ 0`, so `x ∈ spt D`.  Each `z ∈ U ∖ {x}` has a ball `B_ρ(z)` with
+`B̄_ρ(z) ⊆ U` and `x ∉ B_ρ(z)`; `D` vanishes there, so `z ∉ spt D`. -/
+theorem Submission.dor_zdm_point_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (ξ₀ : MultiVector P n), IsOpen U → x ∈ U → (∃ D : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, D ω = ξ₀ ((ω : DifferentialForm (Euclid P) n) x)) ∧ ∀ D : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, D ω = ξ₀ ((ω : DifferentialForm (Euclid P) n) x)) → ξ₀ ≠ 0 → D.support = {x} := by
+  intro P n U x ξ₀ hU hxU
+  refine ⟨?_, fun D hD hξ₀ => ?_⟩
+  · -- (a) `L(ω) = ξ₀(ω(x))` is linear and sequentially continuous
+    let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+      { toFun := fun ω => ξ₀ ((ω : DifferentialForm (Euclid P) n) x)
+        map_add' := fun ω η => by simp
+        map_smul' := fun c ω => by simp }
+    refine ⟨⟨L, fun ωs hωs => ?_⟩, fun ω => rfl⟩
+    obtain ⟨K, -, -, hωK, -, hderiv⟩ := hωs
+    by_cases hxK : x ∈ K
+    · -- `ωⱼ(x) → 0`: the order-`0` derivatives converge uniformly on `K ∋ x`
+      have h0 := ((continuousMultilinearCurryFin0 ℝ (Euclid P)
+        (Covector (Euclid P) n)).continuous.tendsto _).comp ((hderiv 0).tendsto_at hxK)
+      have h1 : Tendsto (fun j => ((ωs j : TestFormOn U n) : DifferentialForm (Euclid P) n) x)
+          atTop (𝓝 0) := by
+        simpa [Function.comp_def] using h0
+      simpa [L, Function.comp_def] using (ξ₀.continuous.tendsto 0).comp h1
+    · -- `x ∉ K ⊇ tsupport ωⱼ`, so `ωⱼ(x) = 0` for every `j`
+      have h : ∀ j, ((ωs j : TestFormOn U n) : DifferentialForm (Euclid P) n) x = 0 :=
+        fun j => image_eq_zero_of_notMem_tsupport fun hx => hxK (hωK j hx)
+      simp [L, h]
+  · -- (b) `D(ω) = 0` whenever `x ∉ tsupport ω`
+    have hD0 : ∀ ω : TestFormOn U n, x ∉ tsupport (ω : DifferentialForm (Euclid P) n) →
+        D ω = 0 := by
+      intro ω hω
+      rw [hD, image_eq_zero_of_notMem_tsupport hω, map_zero]
+    apply Set.Subset.antisymm
+    · -- every `z ∈ U ∖ {x}` lies in a ball `B_ρ(z)`, `B̄_ρ(z) ⊆ U`, `x ∉ B_ρ(z)`, where `D = 0`
+      rintro z ⟨hzU, hz⟩
+      by_contra hzx
+      apply hz
+      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU z hzU
+      have hd : 0 < dist z x := dist_pos.mpr hzx
+      have hρ0 : 0 < min (ε / 2) (dist z x / 2) := lt_min (half_pos hε) (half_pos hd)
+      have hρε : min (ε / 2) (dist z x / 2) < ε := (min_le_left _ _).trans_lt (half_lt_self hε)
+      have hρd : min (ε / 2) (dist z x / 2) < dist z x :=
+        (min_le_right _ _).trans_lt (half_lt_self hd)
+      refine Set.mem_sUnion_of_mem (mem_ball_self hρ0) ⟨isOpen_ball,
+        (isCompact_closedBall z _).of_isClosed_subset isClosed_closure
+          closure_ball_subset_closedBall,
+        closure_ball_subset_closedBall.trans ((closedBall_subset_ball hρε).trans hεU),
+        fun ω hω => hD0 ω fun hx => ?_⟩
+      have h1 : dist x z < min (ε / 2) (dist z x / 2) := hω hx
+      rw [dist_comm] at h1
+      linarith
+    · -- `x ∈ spt D`: a bump form `φα₀` at `x` with `ξ₀(α₀) ≠ 0` fits in every open `W ∋ x`
+      refine Set.singleton_subset_iff.mpr ⟨hxU, fun hx => ?_⟩
+      obtain ⟨W, ⟨hWo, -, hWU, hWD⟩, hxW⟩ := hx
+      obtain ⟨α₀, hα₀⟩ : ∃ α₀, ξ₀ α₀ ≠ 0 := by
+        by_contra! h
+        exact hξ₀ (ContinuousLinearMap.ext h)
+      obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.mp hWo x hxW
+      let φ : ContDiffBump x := ⟨ε / 4, ε / 2, by linarith, by linarith⟩
+      let ω : DifferentialForm (Euclid P) n := fun y => φ y • α₀
+      have hωW : tsupport ω ⊆ W := (tsupport_smul_subset_left _ _).trans
+        (φ.tsupport_eq.trans_subset ((closedBall_subset_ball (half_lt_self hε)).trans hεW))
+      have hωU : ω ∈ TestFormOn U n :=
+        ⟨⟨φ.contDiff.smul contDiff_const, φ.hasCompactSupport.smul_right⟩,
+          hωW.trans (subset_closure.trans hWU)⟩
+      have h1 := hWD ⟨ω, hωU⟩ hωW
+      rw [hD] at h1
+      apply hα₀
+      simpa [ω, φ.one_of_mem_closedBall (mem_closedBall_self φ.rIn_pos.le)] using h1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
