@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "04f5371a6fa227e71599692bd840a25d5f1b68e2ab6aef1028146e6e3d182d56",
+  "git_delta": {
+    "base_commit": "01e4aff02fbd3c4e48212faac9ecdbf590ecc6ad",
+    "candidate_commit": "8f0f0d3c508986f06607f33115bd7cccdfc1f55f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mollifier_l2_contraction",
+    "diff_sha256": "e3991ba97491920bc5e4ee6b88aba6b1b39ed9224a3604f1633309cf5bd3d83e",
+    "source_sha256": "46221390401cd56a732f00c36c5bd97af0bdc2a48768da632768e765e8d3037f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mollifier_l2_contraction",
+      "statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (ρ : Rn n → ℝ) (H : Rn n → E), Continuous ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → AEStronglyMeasurable H volume → ∫⁻ x, ‖∫ z, ρ z • H (x - z)‖ₑ ^ 2 ≤ ∫⁻ x, ‖H x‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
