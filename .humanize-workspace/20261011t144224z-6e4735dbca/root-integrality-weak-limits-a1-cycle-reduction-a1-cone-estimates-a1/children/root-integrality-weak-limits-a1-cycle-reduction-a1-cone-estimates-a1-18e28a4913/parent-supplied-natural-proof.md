@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.mass_le_of_forms-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 6 of the parent proof (the mass bound), with the construction of the transfer forms ψ = ζ_δψ_ω abstracted into the hypothesis.
+Notation: |α| := covectorEuclideanNorm α; for T ∈ GeometricCurrentOn univ j, M(T) := T.mass = T.massOn univ = sSup{ofReal(T(ω)) : ω ∈ massAdmissibleOn univ j univ} ∈ [0, ∞], where ω ∈ massAdmissibleOn univ j univ means ω ∈ TestFormOn univ j, tsupport ω ⊆ univ and |ω(y)| ≤ 1 for all y.
+1. Since M(X) < ∞, B := M(X).toReal ≥ 0 satisfies M(X) = ofReal(B) (ENNReal.ofReal_toReal).
+2. Fix ω ∈ massAdmissibleOn univ k univ. Claim: C(ω) ≤ cR·B. Let ε > 0 and δ := ε/(Bc + 1). As B, c ≥ 0 we have Bc + 1 > 0, δ > 0 and δ(Bc + 1) = ε, hence Bcδ = ε − δ < ε. By hypothesis there is ψ ∈ TestFormOn univ n with C(ω) = X(ψ) and |ψ(x)| ≤ c(R + δ) for all x. Apply the accepted lemma cmb_abs_apply_le_of_massOn_le (sibling mass_bound) with U = W = univ, T = X, the form ψ, the bound B (B ≥ 0 and X.massOn univ = M(X) = ofReal B), tsupport ψ ⊆ univ, and the pointwise bound c(R + δ): |X(ψ)| ≤ B·c(R + δ). Hence C(ω) = X(ψ) ≤ |X(ψ)| ≤ cRB + Bcδ < cRB + ε. As ε > 0 was arbitrary, C(ω) ≤ cRB (le_of_forall_pos_lt_add).
+3. By monotonicity of ofReal and since cR ≥ 0: ofReal(C(ω)) ≤ ofReal(cR·B) = ofReal(cR)·ofReal(B) = ofReal(cR)·M(X) (ENNReal.ofReal_mul).
+4. M(C) = C.massOn univ is the supremum of ofReal(C(ω)) over ω ∈ massAdmissibleOn univ k univ, and by Step 3 each of these values is ≤ ofReal(cR)·M(X). Hence M(C) ≤ ofReal(c·R)·M(X) (sSup_le). ∎
+
+## Key steps
+
+1. Write M(X) = ofReal B with B := M(X).toReal ≥ 0.
+2. For admissible ω and δ = ε/(Bc + 1), the hypothesis and cmb_abs_apply_le_of_massOn_le give C(ω) = X(ψ) ≤ Bc(R + δ) < cRB + ε; hence C(ω) ≤ cRB.
+3. ofReal(C(ω)) ≤ ofReal(cR)·ofReal(B) = ofReal(cR)·M(X); taking the supremum over admissible ω gives M(C) ≤ ofReal(cR)·M(X).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean`
+- `python3 -I: dag.json status/lean_statement of cmb_abs_apply_le_of_massOn_le, isoperimetric_abs_covector_apply_le, iwl_cr_radial_operator, iwl_cr_cone_estimates and all cycle_reduction siblings; reuse records in nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json; nodes/*cone-exists-a1/decomposition-v1.json`
+- `python3 -I name scan: 458 dag.json lean_names, subproblem lean_names of all nodes/*/decomposition-v*.json, substring 'iwl_cr_cest' over 4916 nodes/*/*.json`
+- `git show 8c000d1fa9feee2acb018915bef93ab6fe6393ef:GMT/Ch06/Submission.lean; git show ba202ac0407b6e93210594416fcd0729874b2eff:GMT/Ch06/Submission.lean`
+- `rg -n 'theorem norm_integral_le_of_norm_le_const|theorem integral_congr|theorem integral_zero' mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `rg -n 'structure ContDiffBump|theorem one_of_mem_closedBall|theorem support_eq|theorem tsupport_eq|protected theorem hasCompactSupport|protected theorem contDiff|theorem nonneg|theorem le_one' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `rg -n 'theorem closure_ball |theorem isCompact_closedBall|exists_thickening_subset_open|theorem ofReal_mul|theorem le_of_forall_pos_lt_add|theorem HasCompactSupport.smul_right|theorem ContDiff.smul|theorem map_update_smul|theorem map_coord_zero|theorem Fintype.card_fun|image_eq_zero_of_notMem_tsupport' mathlib/Mathlib`
+- `cat simongmt Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean`
+- `grep -n -i 'cone|homotopy formula' book/chapter-06.txt; sed -n 436,560p book/chapter-06.txt`
+- `python3 -I /tmp/ce-decomp-q7/scripts/gen.py (verifier gmt-compare.py contract_scope/child_modules + lean_contract.validate_lean_statement); lake env lean /tmp/ce-decomp-q7/gen/<key>__NodeChallenge.lean for the 6 children`
+- `lake env lean /tmp/ce-decomp-q7/Scratch/{Assembly,ChildA,ChildB,ChildC,ChildD,Full}.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-boundary-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-covector-eval-bound-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/RCLike/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fintype/BigOperators.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ce-decomp-q7/scripts/gen.py`
+- `/tmp/ce-decomp-q7/scripts/full.py`
+- `/tmp/ce-decomp-q7/Scratch/Full.lean`
+- `/tmp/ce-decomp-q7/Scratch/Assembly.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. Its Ch06 Contract.lean is byte-identical (sha256 ea3ee0dd…853d) to the workspace Contract.lean and Submission.lean.
+
+DAG findings:
+- cmb_abs_apply_le_of_massOn_le and isoperimetric_abs_covector_apply_le are `accepted`, with frozen types byte-identical to the reuse children. Their accepted proofs (commits ba202ac0 and 8c000d1f) compile here with standard axioms.
+- iwl_cr_radial_operator is `decomposing`, i.e. not accepted. It cannot be reused as a child, so it remains a parent-level dependency, and the new child cutoff_radial_form takes ψ₀ as an input.
+- The prefix iwl_cr_ce_* is used by the cone_exists decomposition, so the new names use iwl_cr_cest_*. No match for iwl_cr_cest in dag.json or the 4,916 node JSON files.
+- No accepted DAG lemma makes any new child redundant. cone_exists's iwl_cr_ce_cutoff_radial_operator is a different, unaccepted statement (a continuous linear cutoff operator).
+
+Library inputs, all present in the snapshot Mathlib:
+- intervalIntegral.norm_integral_le_of_norm_le_const (no integrability hypothesis), integral_congr, integral_zero;
+- ContDiffBump: contDiff, nonneg, le_one, one_of_mem_closedBall, support_eq, hasCompactSupport;
+- ContDiff.smul and HasCompactSupport.smul_right;
+- closure_ball and isCompact_closedBall;
+- ContinuousAlternatingMap.map_coord_zero and map_update_smul;
+- ENNReal.ofReal_mul;
+- le_of_forall_pos_lt_add, Nat.le_self_pow and Fintype.card_fun.
+
+SimonGMT supplies the definitions used: support = univ ∖ zeroRegion, massOn as an sSup of ofReal(T ω) over massAdmissibleOn, covectorEuclideanNorm as a sum over StrictMono I, and IsSmoothForm = ContDiff ℝ ∞.
+
+Public/book citation: Simon, Introduction to GMT (2014), Ch. 6, 2.25–2.31, printed pp. 140–142 (local book/chapter-06.txt). These give the homotopy formula, the mass estimate 2.27 (for the cone, M(0⨯T) ≤ R·M(T)) and the cone 0⨯T := h#([[(0,1)]]×T). The node's cruder constant P^{2m+1} suffices.
+
+Lean checks: the 6 challenge modules compile. Full.lean (sha256 734b207f…) proves all 6 children with only propext, Classical.choice and Quot.sound, and proves the exact frozen parent type from them, with sorryAx only from the radial_operator stub. An independent reviewer agent re-verified this and accepted the split.
