@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "044e5fc4df41a7437af089dee0342e1b85ba095659b0e7fba7c3420c3b26ec12",
+  "git_delta": {
+    "base_commit": "1dc87d379cd96db2f115d8cf13c007f6870a808f",
+    "candidate_commit": "2a7a318dbd3c29d1ba9b898d70abb5b1f0a6dcb8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_firstVariation_eq_neg_meanCurvature",
+    "diff_sha256": "6821b00e72fb16f6017791e12f3fc512c93f5b8701662499c0ee7ef3eaf81b96",
+    "source_sha256": "7295e4eb3af779e50db55a0ccd487c2a07b14f84f145caedac91bd19b687a01f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_firstVariation_eq_neg_meanCurvature",
+      "statement": "∀ (P n : ℕ) (U N : Set (Euclid P)) (R : IMRep U n) (Pt : Euclid P → (Euclid P →L[ℝ] Euclid P)) (y₀ : Euclid P) (r β : ℝ), 0 ≤ β → ball y₀ (3 * r) ⊆ U → ContDiffOn ℝ 1 Pt (ball y₀ (3 * r)) → (∀ y ∈ ball y₀ (3 * r), ∀ u w : Euclid P, inner ℝ (Pt y u) w = inner ℝ u (Pt y w)) → (∀ y ∈ ball y₀ (2 * r), ‖fderiv ℝ Pt y‖ ≤ β) → (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u : Euclid P, Pt q u ∈ tangentSpace N q) → (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u ∈ tangentSpace N q, Pt q u = u) → (∀ᵐ x ∂R.measure, x ∈ N) → (∀ᵐ x ∂R.measure, x ∈ ball y₀ (3 * r) → (approxTangentPlane n R.carrier x : Set (Euclid P)) ⊆ tangentSpace N x) → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → R.IsStationaryAlong N → ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ (n : ℝ) * β) ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball y₀ (2 * r) → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
