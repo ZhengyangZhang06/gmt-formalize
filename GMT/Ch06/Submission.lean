@@ -359,6 +359,33 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Coefficients of a measure representation (2.7) are integrable on compact sets (Simon Ch. 6,
+p. 136): for compact `K ⊆ W ⊆ U`, `W` open, test with `ψ = χ dx^β`, where the smooth cutoff `χ`
+equals `1` exactly on `K` and has compact support in `W`.  Then `⟨ψ, v⟩` is `μ`-integrable and
+agrees on `K` with the coefficient `⟨dx^β, v⟩`. -/
+theorem Submission.cmb_rb_measureRepresentation_integrableOn_coeff :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)), IsOpen W → W ⊆ U → ∀ (T : GeometricCurrentOn U n)
+      (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v →
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ β : SimonMultiIndex n P,
+        IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ := by
+  intro P n U W hW hWU T μ v hrep K hK hKW β
+  -- An open `V` with `K ⊆ V` and `closure V` compact inside `W`.
+  obtain ⟨V, hVo, hKV, hVW, hVc⟩ := exists_open_between_and_isCompact_closure hK hW hKW
+  -- A smooth cutoff `χ` with `support χ = V` and `χ x = 1 ↔ x ∈ K`.
+  obtain ⟨χ, hχs, -, hχV, hχK⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞)) hVo hK.isClosed hKV
+  -- The test form `ψ = χ dx^β`.
+  let c : Covector (Eucl P) n := wedgeCovectors n (fun j => EuclideanSpace.proj (β j))
+  let ψ : DifferentialForm (Eucl P) n := fun x => χ x • c
+  have hψV : tsupport ψ ⊆ closure V := by
+    simpa [tsupport, hχV] using tsupport_smul_subset_left χ (fun _ => c)
+  have hψ : ψ ∈ TestFormOn U n :=
+    ⟨⟨hχs.smul contDiff_const, hVc.of_isClosed_subset (isClosed_tsupport _) hψV⟩,
+      hψV.trans (hVW.trans hWU)⟩
+  -- `⟨ψ, v⟩` is `μ`-integrable and equals the coefficient on the closed set `K`.
+  refine (hrep ⟨ψ, hψ⟩).1.integrableOn.congr_fun (fun x hx => ?_) hK.isClosed.measurableSet
+  simp [ψ, c, (hχK x).1 hx, euclideanNVectorCoordinate]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
