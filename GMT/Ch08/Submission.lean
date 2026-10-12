@@ -2,6 +2,7 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter08.StationaryMonotonicity
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -674,6 +675,267 @@ theorem Submission.mono833_exp_weighted_density_limit :
       neg_add_cancel, Real.exp_zero, ENNReal.ofReal_one, one_mul]
   · -- Step 4: `θ ≤ h(ρ₀/2) = e^{Λρ₀/2} P(ρ₀/2) < ∞`.
     exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hP) (hle _ hmem.1 hmem.2)
+/-- **Simon Ch. 8, 3.3 (monotonicity formula with `‖δV‖ ≤ Λ μ_V`), p. 210.**
+If `V` has locally bounded first variation, `B°_{ρ₀}(x) ⊆ U`, `Λ ≥ 0` and
+`‖δV‖(B_ρ(x)) ≤ Λ μ_V(B_ρ(x))` for `0 < ρ < ρ₀`, then `e^{Λρ} ρ^{-n} μ_V(B_ρ(x))` is increasing on
+`(0, ρ₀)`, `Θ^n(μ_V, x)` exists and is finite, and for `0 < σ ≤ ρ < ρ₀` it is bounded by
+`e^{Λσ} ω_n^{-1} σ^{-n} μ_V(B_σ(x))`, while `e^{Λσ} ω_n^{-1} σ^{-n} μ_V(B_σ(x))` plus
+`ω_n^{-1} ∫_{Gₙ(B_ρ(x) ∖ B_σ(x))} r^{-n-2} |p_{S^⊥}(y - x)|² dV` is at most
+`e^{Λρ} ω_n^{-1} ρ^{-n} μ_V(B_ρ(x))`.  For each smooth cutoff `φ_ε` (SimonGMT's
+`monotonicityCutoff ε`) the radial identity (★) for `I(t)/tⁿ` (SimonGMT's
+`hasDerivAt_normalized_weightedCutoffMass` with weight `h ≡ 1`) and the bound
+`|δV(X_t)| ≤ (1 + ε) Λ t I(t)` (`mono833_radial_first_variation_bound`) feed the
+integrating-factor comparison `mono833_integrating_factor_comparison` on `[σ, ρ]`; letting `ε ↓ 0`
+by dominated convergence gives the annular inequality, and `mono833_exp_weighted_density_limit`
+gives the density. -/
+theorem Submission.monotonicity_formula_8_3_3 : MonotonicityFormula := by
+  open Chapter04.RectifiableVarifold in
+  intro N n U V x ρ₀ Λ hV hρ₀ hball hΛ hbound
+  -- Step 0: `0 < ω_n < ∞`.
+  have hω₀ : unitBallVolume n ≠ 0 := by
+    unfold unitBallVolume
+    exact (measure_ball_pos _ _ one_pos).ne'
+  have hω : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume
+    exact measure_ball_lt_top.ne
+  -- For `t > 0`, `densityRatio` is `ω_n⁻¹` times SimonGMT's `normalizedBallMass = μ_V(B_t) / t^n`.
+  have hratio : ∀ t : ℝ, 0 < t →
+      densityRatio n V.weight x t = (unitBallVolume n)⁻¹ * V.normalizedBallMass x t := by
+    intro t ht
+    rw [densityRatio, Varifold.normalizedBallMass, ENNReal.ofReal_pow ht.le,
+      ENNReal.div_eq_inv_mul, ENNReal.div_eq_inv_mul, ENNReal.mul_inv (Or.inl hω₀) (Or.inl hω),
+      mul_assoc]
+  -- `|p_{S^⊥}(y - x)|² / r^{n+2} = radialNormalSq / r^n` (both `0` at `y = x`), so on annuli
+  -- `normalDefect` is SimonGMT's `annularMonotonicityDefect`.
+  have hdefect : ∀ σ ρ : ℝ, normalDefect V x (closedBall x ρ \ closedBall x σ) =
+      V.annularMonotonicityDefect x σ ρ := by
+    intro σ ρ
+    unfold normalDefect Varifold.annularMonotonicityDefect
+    refine lintegral_congr fun z ↦ congrArg ENNReal.ofReal ?_
+    rw [← Grassmannian.normalProject_eq_sub z.2 (z.1 - x),
+      Grassmannian.norm_normalProject_radial_sq]
+    rcases eq_or_ne ‖z.1 - x‖ 0 with h | h
+    · have hg : z.2.radialNormalSq x z.1 = 0 := by
+        simp [Grassmannian.radialNormalSq, Grassmannian.normalProject, norm_eq_zero.1 h]
+      simp [hg]
+    · field_simp
+      ring
+  -- Steps 1–5: the real form of (3.3) on the annulus `B_ρ(x) ∖ B_σ(x)`.
+  have hreal : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ →
+      Real.exp (Λ * σ) * (V.weight.real (closedBall x σ) / σ ^ n) +
+          ∫ z in (closedBall x ρ \ closedBall x σ) ×ˢ (univ : Set (Grassmannian N n)),
+            z.2.radialNormalSq x z.1 / ‖z.1 - x‖ ^ n ∂V.measure ≤
+        Real.exp (Λ * ρ) * (V.weight.real (closedBall x ρ) / ρ ^ n) := by
+    intro σ ρ hσ hσρ hρ
+    have hρpos : 0 < ρ := hσ.trans_le hσρ
+    -- an intermediate radius `ρ < R < ρ₀`, so that `B_R(x)` is a compact subset of `U`
+    obtain ⟨R, hρR, hRρ₀⟩ := exists_between hρ
+    have hballR : closedBall x R ⊆ U := (closedBall_subset_ball hRρ₀).trans hball
+    -- the bounded weight `q = g / max(σ, r)ⁿ` (SimonGMT's `truncatedRadialDefect`)
+    have hqm : AEStronglyMeasurable (Varifold.truncatedRadialDefect (n := n) x σ) V.measure :=
+      (Varifold.measurable_truncatedRadialDefect x σ).aestronglyMeasurable
+    have hqb : ∀ z : Euclidean N × Grassmannian N n, z.1 ∈ closedBall x R →
+        ‖Varifold.truncatedRadialDefect x σ z‖ ≤ (σ ^ n)⁻¹ :=
+      fun z _ ↦ Varifold.norm_truncatedRadialDefect_le x hσ z
+    -- Step 4: the integrating-factor comparison for the cutoff `φ_ε`, for every admissible `ε`.
+    have hstep : ∀ ε : ℝ, 0 < ε → ρ * (1 + ε) < R →
+        Real.exp ((1 + ε) * Λ * σ) * (V.cutoffMass x (monotonicityCutoff ε) σ / σ ^ n) +
+            ((∫ z, scaledRadialCutoff x (monotonicityCutoff ε) ρ z.1 *
+                Varifold.truncatedRadialDefect x σ z ∂V.measure) -
+              ∫ z, scaledRadialCutoff x (monotonicityCutoff ε) σ z.1 *
+                Varifold.truncatedRadialDefect x σ z ∂V.measure) ≤
+          Real.exp ((1 + ε) * Λ * ρ) * (V.cutoffMass x (monotonicityCutoff ε) ρ / ρ ^ n) := by
+      intro ε hε hεR
+      have hA : 0 < 1 + ε := by linarith
+      have hφ : ContDiff ℝ 1 (monotonicityCutoff ε) := contDiff_monotonicityCutoff ε
+      have hcut : ∀ s, (1 + ε) ^ 2 ≤ s → monotonicityCutoff ε s = 0 := monotonicityCutoff_cutoff hε
+      have hpos : ∀ t ∈ Icc σ ρ, 0 < t := fun t ht ↦ hσ.trans_le ht.1
+      have hscale : ∀ t ∈ Icc σ ρ, t * (1 + ε) < R :=
+        fun t ht ↦ (mul_le_mul_of_nonneg_right ht.2 hA.le).trans_lt hεR
+      -- (★): `(I/tⁿ)' = J'/tⁿ - δV(X_t)/t^{n+1}` (SimonGMT's radial identity with weight `h ≡ 1`)
+      have hF : ∀ t ∈ Icc σ ρ, HasDerivAt (fun s ↦ V.cutoffMass x (monotonicityCutoff ε) s / s ^ n)
+          ((∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+              z.2.radialNormalSq x z.1 ∂V.measure) / t ^ n -
+            V.firstVariation (Varifold.weightedRadialVectorField x (fun _ ↦ 1)
+              (monotonicityCutoff ε) t) / t ^ (n + 1)) t := by
+        intro t ht
+        have hJ := (V.hasDerivAt_weightedCutoffNormalMass x (h := fun _ ↦ 1) continuous_const hφ hA
+          hcut (hpos t ht) (hscale t ht) hballR).2
+        have hd := V.hasDerivAt_normalized_weightedCutoffMass x (h := fun _ ↦ 1) contDiff_const hφ
+          hA hcut (hpos t ht) (hscale t ht) hballR
+        rw [hJ.deriv] at hd
+        refine hd.congr_deriv ?_
+        simp only [Varifold.weightedRadialGradientTerm, fderiv_const_apply, zero_apply, mul_zero,
+          integral_zero, mul_one]
+        ring
+      -- `G(t) = ∫ c_t q dV` has derivative `G'(t) = ∫ ċ_t q dV`
+      have hG : ∀ t ∈ Icc σ ρ, HasDerivAt
+          (fun s ↦ ∫ z, scaledRadialCutoff x (monotonicityCutoff ε) s z.1 *
+            Varifold.truncatedRadialDefect x σ z ∂V.measure)
+          (∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+            Varifold.truncatedRadialDefect x σ z ∂V.measure) t := fun t ht ↦
+        (V.hasDerivAt_integral_radialCutoff_of_radius x hφ hA hcut (hpos t ht) (hscale t ht) hballR
+          hqm hqb).2
+      -- Step 3: `δV(X_t) ≤ (1 + ε) Λ t I(t)`
+      have hδ : ∀ t ∈ Icc σ ρ, V.firstVariation (Varifold.weightedRadialVectorField x (fun _ ↦ 1)
+          (monotonicityCutoff ε) t) ≤
+            (1 + ε) * Λ * t * V.cutoffMass x (monotonicityCutoff ε) t := by
+        intro t ht
+        have hb := Submission.mono833_radial_first_variation_bound N n U V x ρ₀ Λ (1 + ε) t
+          (monotonicityCutoff ε) hV hball hΛ hbound hφ (monotonicityCutoff_antitone hε)
+          (fun s hs ↦ monotonicityCutoff_one hε hs) hcut hA (hpos t ht) ((hscale t ht).trans hRρ₀)
+        have hX : Varifold.weightedRadialVectorField x (fun _ ↦ 1) (monotonicityCutoff ε) t =
+            fun y ↦ monotonicityCutoff ε (‖y - x‖ ^ 2 / t ^ 2) • (y - x) := by
+          funext y
+          simp only [Varifold.weightedRadialVectorField, squaredRadialVectorField, one_smul]
+        have hI : V.cutoffMass x (monotonicityCutoff ε) t =
+            ∫ y, monotonicityCutoff ε (‖y - x‖ ^ 2 / t ^ 2) ∂V.weight := by
+          rw [Varifold.cutoffMass, V.weightedCutoffMass_eq_weight_integral x continuous_const
+            hφ.continuous]
+          simp only [scaledRadialCutoff, mul_one]
+        rw [hX, hI]
+        exact (le_abs_self _).trans hb
+      -- `J'(t) ≥ 0`, and `G'(t) ≤ J'(t)/tⁿ` (Step 4.2)
+      have hJnn : ∀ t ∈ Icc σ ρ, 0 ≤ ∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+          z.2.radialNormalSq x z.1 ∂V.measure := fun t ht ↦
+        integral_nonneg fun z ↦ mul_nonneg
+          (scaledRadialCutoffDeriv_nonneg x z.1 (monotonicityCutoff_antitone hε) (hpos t ht))
+          (z.2.radialNormalSq_nonneg x z.1)
+      have hGJ : ∀ t ∈ Icc σ ρ, (∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+            Varifold.truncatedRadialDefect x σ z ∂V.measure) ≤
+          (∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+            z.2.radialNormalSq x z.1 ∂V.measure) / t ^ n := by
+        intro t ht
+        have hgint := (V.hasDerivAt_integral_radialCutoff_of_radius x hφ hA hcut (hpos t ht)
+          (hscale t ht) hballR hqm hqb).1
+        have hfint := (V.hasDerivAt_integral_radialCutoff_of_radius x hφ hA hcut (hpos t ht)
+          (hscale t ht) hballR (Grassmannian.measurable_radialNormalSq x).aestronglyMeasurable
+          (B := 1) fun z _ ↦ by
+            rw [Real.norm_eq_abs, abs_of_nonneg (z.2.radialNormalSq_nonneg x z.1)]
+            exact z.2.radialNormalSq_le_one x z.1).1
+        rw [← integral_div]
+        exact integral_mono hgint (hfint.div_const (t ^ n))
+          fun z ↦ (Varifold.scaledRadialCutoffDeriv_defect_bounds x z hε hσ ht.1).1
+      -- Step 4.1: `J'(t)/tⁿ ≤ F'(t) + (1 + ε) Λ F(t)` with `F = I/tⁿ`
+      have hkey : ∀ t ∈ Icc σ ρ, (∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+            z.2.radialNormalSq x z.1 ∂V.measure) / t ^ n ≤
+          ((∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+              z.2.radialNormalSq x z.1 ∂V.measure) / t ^ n -
+            V.firstVariation (Varifold.weightedRadialVectorField x (fun _ ↦ 1)
+              (monotonicityCutoff ε) t) / t ^ (n + 1)) +
+          (1 + ε) * Λ * (V.cutoffMass x (monotonicityCutoff ε) t / t ^ n) := by
+        intro t ht
+        have ht0 : 0 < t := hpos t ht
+        have ht0' : t ≠ 0 := ht0.ne'
+        have h1 : V.firstVariation (Varifold.weightedRadialVectorField x (fun _ ↦ 1)
+            (monotonicityCutoff ε) t) / t ^ (n + 1) ≤
+            (1 + ε) * Λ * (V.cutoffMass x (monotonicityCutoff ε) t / t ^ n) := by
+          rw [div_le_iff₀ (pow_pos ht0 (n + 1))]
+          calc _ ≤ (1 + ε) * Λ * t * V.cutoffMass x (monotonicityCutoff ε) t := hδ t ht
+            _ = (1 + ε) * Λ * (V.cutoffMass x (monotonicityCutoff ε) t / t ^ n) * t ^ (n + 1) := by
+              rw [pow_succ]
+              field_simp
+        linarith
+      exact Submission.mono833_integrating_factor_comparison ((1 + ε) * Λ) σ ρ
+        (fun t ↦ V.cutoffMass x (monotonicityCutoff ε) t / t ^ n)
+        (fun t ↦ ∫ z, scaledRadialCutoff x (monotonicityCutoff ε) t z.1 *
+          Varifold.truncatedRadialDefect x σ z ∂V.measure)
+        (fun t ↦ (∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+            z.2.radialNormalSq x z.1 ∂V.measure) / t ^ n -
+          V.firstVariation (Varifold.weightedRadialVectorField x (fun _ ↦ 1)
+            (monotonicityCutoff ε) t) / t ^ (n + 1))
+        (fun t ↦ ∫ z, scaledRadialCutoffDeriv x (monotonicityCutoff ε) t z.1 *
+          Varifold.truncatedRadialDefect x σ z ∂V.measure)
+        (mul_nonneg hA.le hΛ) hσ.le hσρ hF hG
+        (fun t ht ↦ (div_nonneg (hJnn t ht) (pow_pos (hpos t ht) n).le).trans (hkey t ht))
+        (fun t ht ↦ (hGJ t ht).trans (hkey t ht))
+    -- Step 5: let `ε ↓ 0` (dominated convergence for the cutoffs, continuity of `exp`).
+    have hid : Tendsto (fun ε : ℝ ↦ ε) (𝓝[>] (0 : ℝ)) (𝓝 0) := tendsto_id.mono_left inf_le_left
+    have hsum : Tendsto (fun ε : ℝ ↦ 1 + ε) (𝓝[>] (0 : ℝ)) (𝓝 (1 + 0)) :=
+      tendsto_const_nhds.add hid
+    have hexp : ∀ t : ℝ, Tendsto (fun ε : ℝ ↦ Real.exp ((1 + ε) * Λ * t)) (𝓝[>] (0 : ℝ))
+        (𝓝 (Real.exp (Λ * t))) := fun t ↦ by
+      simpa only [add_zero, one_mul] using ((hsum.mul_const Λ).mul_const t).rexp
+    have hscale : Tendsto (fun ε : ℝ ↦ ρ * (1 + ε)) (𝓝[>] (0 : ℝ)) (𝓝 ρ) := by
+      simpa only [add_zero, mul_one] using hsum.const_mul ρ
+    have hlim := le_of_tendsto_of_tendsto
+      (((hexp σ).mul ((V.tendsto_cutoffMass x hσ (hσρ.trans_lt hρR) hballR).div_const (σ ^ n))).add
+        ((V.tendsto_integral_radialCutoff x hρpos hρR hballR hqm hqb).sub
+          (V.tendsto_integral_radialCutoff x hσ (hσρ.trans_lt hρR) hballR hqm hqb)))
+      ((hexp ρ).mul ((V.tendsto_cutoffMass x hρpos hρR hballR).div_const (ρ ^ n)))
+      (by
+        filter_upwards [self_mem_nhdsWithin, hscale.eventually (gt_mem_nhds hρR)] with ε hε hεR
+        exact hstep ε hε hεR)
+    -- the limit of `G(ρ) - G(σ)` is the defect integral over the annulus, where `q = g / rⁿ`
+    have hsd : (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)),
+          Varifold.truncatedRadialDefect x σ z ∂V.measure) -
+        ∫ z in closedBall x σ ×ˢ (univ : Set (Grassmannian N n)),
+          Varifold.truncatedRadialDefect x σ z ∂V.measure =
+        ∫ z in (closedBall x ρ \ closedBall x σ) ×ˢ (univ : Set (Grassmannian N n)),
+          z.2.radialNormalSq x z.1 / ‖z.1 - x‖ ^ n ∂V.measure := by
+      rw [← setIntegral_sdiff (measurableSet_closedBall.prod MeasurableSet.univ)
+        (V.integrableOn_truncatedRadialDefect x hσ
+          ((closedBall_subset_closedBall hρR.le).trans hballR))
+        (prod_mono_left (closedBall_subset_closedBall hσρ)),
+        prod_sdiff_prod, sdiff_self, prod_empty, empty_union]
+      refine setIntegral_congr_fun
+        ((measurableSet_closedBall.diff measurableSet_closedBall).prod MeasurableSet.univ)
+        fun z hz ↦ ?_
+      have hr : σ < ‖z.1 - x‖ := by
+        simpa only [mem_closedBall, dist_eq_norm, not_le] using hz.1.2
+      simp only [Varifold.truncatedRadialDefect, max_eq_right hr.le]
+    rw [hsd] at hlim
+    exact hlim
+  -- Step 6: the additive form of (3.3) in `[0, ∞]` (every term is finite).
+  have hann : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ →
+      ENNReal.ofReal (Real.exp (Λ * σ)) * V.normalizedBallMass x σ +
+          V.annularMonotonicityDefect x σ ρ ≤
+        ENNReal.ofReal (Real.exp (Λ * ρ)) * V.normalizedBallMass x ρ := by
+    intro σ ρ hσ hσρ hρ
+    have hρpos : 0 < ρ := hσ.trans_le hσρ
+    have hρU : closedBall x ρ ⊆ U := (closedBall_subset_ball hρ).trans hball
+    have hσU : closedBall x σ ⊆ U := (closedBall_subset_closedBall hσρ).trans hρU
+    have hnonneg : ∀ z : Euclidean N × Grassmannian N n,
+        0 ≤ z.2.radialNormalSq x z.1 / ‖z.1 - x‖ ^ n :=
+      fun z ↦ div_nonneg (z.2.radialNormalSq_nonneg x z.1) (pow_nonneg (norm_nonneg _) n)
+    have hint : 0 ≤ ∫ z in (closedBall x ρ \ closedBall x σ) ×ˢ (univ : Set (Grassmannian N n)),
+        z.2.radialNormalSq x z.1 / ‖z.1 - x‖ ^ n ∂V.measure := integral_nonneg hnonneg
+    have hmass : 0 ≤ Real.exp (Λ * σ) * (V.weight.real (closedBall x σ) / σ ^ n) :=
+      mul_nonneg (Real.exp_pos _).le (div_nonneg ENNReal.toReal_nonneg (pow_pos hσ n).le)
+    have h := ENNReal.ofReal_le_ofReal (hreal σ ρ hσ hσρ hρ)
+    rw [ENNReal.ofReal_add hmass hint, ENNReal.ofReal_mul (Real.exp_pos _).le,
+      ENNReal.ofReal_mul (Real.exp_pos _).le, V.ofReal_normalizedBallMass_real x hσ hσU,
+      V.ofReal_normalizedBallMass_real x hρpos hρU,
+      ofReal_integral_eq_lintegral_ofReal (V.integrableOn_radialDefect_annulus x hσ hρU)
+        (Eventually.of_forall hnonneg)] at h
+    exact h
+  -- Multiplying by `ω_n⁻¹`: the second inequality of the conclusion.
+  have hnorm : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ →
+      ENNReal.ofReal (Real.exp (Λ * σ)) * densityRatio n V.weight x σ +
+          (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ \ closedBall x σ) ≤
+        ENNReal.ofReal (Real.exp (Λ * ρ)) * densityRatio n V.weight x ρ := by
+    intro σ ρ hσ hσρ hρ
+    rw [hratio σ hσ, hratio ρ (hσ.trans_le hσρ), hdefect, mul_left_comm _ (unitBallVolume n)⁻¹,
+      mul_left_comm _ (unitBallVolume n)⁻¹, ← mul_add]
+    gcongr
+    exact hann σ ρ hσ hσρ hρ
+  refine ⟨fun σ hσ ρ hρ hσρ ↦ ?_, ?_⟩
+  -- Step 7: monotonicity of `e^{Λρ} ρ^{-n} μ_V(B_ρ(x))` on `(0, ρ₀)`.
+  · have h := le_self_add.trans (hann σ ρ hσ.1 hσρ hρ.2)
+    simp only [Varifold.normalizedBallMass, ENNReal.ofReal_pow hσ.1.le, ENNReal.ofReal_pow hρ.1.le,
+      ← mul_div_assoc] at h
+    exact h
+  -- Step 8: the density `θ`, from the monotonicity of `e^{Λρ} · densityRatio`.
+  · have hmono : MonotoneOn (fun ρ : ℝ ↦ ENNReal.ofReal (Real.exp (Λ * ρ)) *
+        densityRatio n V.weight x ρ) (Ioo 0 ρ₀) :=
+      fun σ hσ ρ hρ hσρ ↦ le_self_add.trans (hnorm σ ρ hσ.1 hσρ hρ.2)
+    have hfin : densityRatio n V.weight x (ρ₀ / 2) ≠ ∞ := by
+      rw [hratio _ (half_pos hρ₀)]
+      exact ENNReal.mul_ne_top (ENNReal.inv_ne_top.2 hω₀) (V.normalizedBallMass_ne_top x
+        (half_pos hρ₀) ((closedBall_subset_ball (half_lt_self hρ₀)).trans hball))
+    obtain ⟨θ, hθ, hθtop, hθle⟩ := Submission.mono833_exp_weighted_density_limit
+      (densityRatio n V.weight x) ρ₀ Λ hρ₀ hmono hfin
+    exact ⟨θ, hθ, hθtop, fun σ ρ hσ hσρ hρ ↦ ⟨hθle σ hσ (hσρ.trans_lt hρ), hnorm σ ρ hσ hσρ hρ⟩⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
