@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter02.AreaDomain
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -459,6 +460,93 @@ theorem Submission.lpf_wtc_caf_signed_of_lintegral :
     rintro _ ⟨⟨v, hv, rfl⟩, hvs⟩
     exact hvan v ⟨hv, fun hvs' => hvs (mem_image_of_mem Φ hvs')⟩
   rw [eΦΩ, eΩ, key]
+/-- Injective area formula on a `C¹` antilipschitz chart (Simon Ch. 2, (3.1), (3.2), (3.5)):
+if `Φ : ℝⁿ → ℝ^Q` is `C¹`, `Ω ⊆ ℝⁿ` is open and `c |w - w'| ≤ |Φ w - Φ w'|` on `Ω` for some
+`c > 0`, then `∫_{Φ(Ω)} h dHⁿ = ∫_Ω JΦ(v) h(Φ(v)) dLⁿ(v)` for every `h ∈ C_c(ℝ^Q, ℝ)`, where
+`JΦ(v) = √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)`.
+
+Proof.  `JΦ(v) = normDet(DΦ(v))` (`LinearMap.normDet_sq_eq_det_gram` for the standard basis), and
+`JΦ` is continuous and nonnegative; `Φ` is injective on `Ω`.  Localize to a bounded open
+`s ⊆ Ω` containing `Ω ∩ Φ⁻¹(spt h)` on which `Φ` is Lipschitz
+(`lpf_wtc_caf_lipschitz_localization`).  As `Φ` is injective on `s`, the fibre sum of the
+weighted area formula on `s` (`weighted_area_formula_lipschitzOn_fiberSum`, weight `g ∘ Φ`) is
+the indicator of the Borel set `Φ(s)` applied to `g`, and the within Jacobian on the open `s` is
+`JΦ`; this gives `∫⁻_{Φ(s)} g dHⁿ = ∫⁻_s JΦ (g ∘ Φ) dLⁿ` for every Borel `g ≥ 0`.  The signed
+identity on `Ω` then follows from `lpf_wtc_caf_signed_of_lintegral`. -/
+theorem Submission.lpf_wtc_chart_area_formula : ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ h : Eucl Q → ℝ, Continuous h → HasCompactSupport h → ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) = ∫ v in Ω, Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det * h (Φ v) := by
+  intro Q n Φ Ω hΩ hΦ hanti h hh hsupp
+  -- The Gram-determinant Jacobian `JΦ(v) = √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)`.
+  set J : Eucl n → ℝ := fun v => Real.sqrt (Matrix.of fun i j : Fin n =>
+    inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1))
+      (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det with hJ
+  -- Step 1: `JΦ(v) = normDet(DΦ(v))`, since `normDet(A)² = det(⟨A eᵢ, A eⱼ⟩)` and `normDet ≥ 0`.
+  have hJdet : ∀ v, J v = (fderiv ℝ Φ v).normDet := by
+    intro v
+    have hgram := LinearMap.normDet_sq_eq_det_gram (fderiv ℝ Φ v).toLinearMap
+      (EuclideanSpace.basisFun (Fin n) ℝ)
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe] at hgram
+    rw [hJ]
+    change Real.sqrt (Matrix.gram ℝ fun i : Fin n =>
+      fderiv ℝ Φ v (EuclideanSpace.single i 1)).det = _
+    rw [← hgram]
+    exact Real.sqrt_sq (LinearMap.normDet_nonneg _)
+  -- `JΦ` is continuous (`DΦ` is continuous) and nonnegative.
+  have hJcont : Continuous J := by
+    have hD : Continuous fun v => fderiv ℝ Φ v := hΦ.continuous_fderiv one_ne_zero
+    have hcol : ∀ i : Fin n, Continuous fun v => fderiv ℝ Φ v (EuclideanSpace.single i 1) :=
+      fun i => hD.clm_apply continuous_const
+    exact Real.continuous_sqrt.comp
+      (continuous_matrix fun i j => (hcol i).inner (hcol j)).matrix_det
+  have hJnonneg : ∀ v, 0 ≤ J v := fun v => Real.sqrt_nonneg _
+  -- `Φ` is injective on `Ω` by the lower bound.
+  have hinj : InjOn Φ Ω := by
+    obtain ⟨c, hc, hcΦ⟩ := hanti
+    intro w hw w' hw' hww'
+    have hle := hcΦ w hw w' hw'
+    rw [hww', sub_self, norm_zero] at hle
+    have h0 : ‖w - w'‖ ≤ 0 := by
+      by_contra hpos
+      exact absurd hle (not_le.2 (mul_pos hc (lt_of_not_ge hpos)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h0)
+  -- Step 2: a bounded open `s ⊆ Ω` carrying `Ω ∩ Φ⁻¹(spt h)` on which `Φ` is Lipschitz.
+  obtain ⟨s, L, hs, hsΩ, hcover, hsb, hLip⟩ :=
+    Submission.lpf_wtc_caf_lipschitz_localization Q n Φ Ω (tsupport h) hΩ hΦ hanti hsupp
+  -- Step 3: the nonnegative identity on `s`, from the injective weighted area formula.
+  have hlint : ∀ g : Eucl Q → ℝ≥0∞, Measurable g →
+      ∫⁻ y in Φ '' s, g y ∂(μHE[n] : Measure (Eucl Q)) =
+        ∫⁻ v in s, ENNReal.ofReal (J v) * g (Φ v) ∂(volume : Measure (Eucl n)) := by
+    intro g hg
+    have hinjs : InjOn Φ s := hinj.mono hsΩ
+    have hsm : MeasurableSet s := hs.measurableSet
+    have harea := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitzOn_fiberSum
+      hsm.nullMeasurableSet hLip (w := fun v => g (Φ v))
+      (hg.comp hΦ.continuous.measurable).aemeasurable
+    rw [finrank_euclideanSpace_fin] at harea
+    -- Injectivity: the fibre sum is the indicator of `Φ(s)` applied to `g`.
+    have hfib : ∀ y, Poincare.SimonGMT.Chapter02.weightedAreaFiberSum s Φ (fun v => g (Φ v)) y =
+        (Φ '' s).indicator g y := by
+      intro y
+      unfold Poincare.SimonGMT.Chapter02.weightedAreaFiberSum
+        Poincare.SimonGMT.Chapter02.areaFiber
+      by_cases hy : y ∈ Φ '' s
+      · obtain ⟨x, hx, rfl⟩ := hy
+        rw [indicator_of_mem (mem_image_of_mem Φ hx),
+          tsum_eq_single (⟨x, hx, rfl⟩ : {x' // x' ∈ s ∧ Φ x' = Φ x})]
+        intro z hz
+        exact absurd (Subtype.ext (hinjs z.2.1 hx z.2.2)) hz
+      · rw [indicator_of_notMem hy]
+        have : IsEmpty {x' // x' ∈ s ∧ Φ x' = y} := ⟨fun z => hy ⟨z.1, z.2.1, z.2.2⟩⟩
+        exact tsum_empty
+    simp_rw [hfib] at harea
+    rw [lintegral_indicator (hsm.image_of_continuousOn_injOn hΦ.continuous.continuousOn hinjs)]
+      at harea
+    rw [harea]
+    refine setLIntegral_congr_fun hsm fun v hv => ?_
+    simp only [Poincare.SimonGMT.Chapter02.areaJacobianWithin, fderivWithin_of_isOpen hs hv,
+      hJdet v]
+  -- Steps 4–5: the signed identity, extended from `s, Φ(s)` back to `Ω, Φ(Ω)`.
+  exact Submission.lpf_wtc_caf_signed_of_lintegral Q n Φ Ω s J h hΩ hs hsΩ hsb hΦ.continuous
+    hinj hJcont hJnonneg hh hsupp hcover hlint
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
