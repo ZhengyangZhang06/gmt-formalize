@@ -1,0 +1,15 @@
+{
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.open_approx-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2891",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0625c19fe802df3906b708000edb534872ec1e7e",
+  "integrated_commit": "",
+  "proof_base_commit": "3193cd9eb7c6d3f466d04fa3e5e033b517260b4f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "requires": []
+}
