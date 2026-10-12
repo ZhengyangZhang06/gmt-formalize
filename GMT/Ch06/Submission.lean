@@ -359,6 +359,62 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 3 §2 (p. 76), fact (DD) at one chart point: if `f` is `K`-Lipschitz on
+`B_ρ(Φ(w))`, `DΦ(w) = A` and `D(f ∘ Φ)(w) = B`, then `t ↦ f(Φ(w) + t A s)` has derivative
+`B s` at `t = 0`, and `|B s| ≤ K |A s|`. -/
+theorem Submission.lpf_tde_chart_directional_deriv :
+    ∀ (P Q n : ℕ) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (w : Eucl n)
+      (A : Eucl n →L[ℝ] Eucl P) (B : Eucl n →L[ℝ] Eucl Q) (K : ℝ≥0) (ρ : ℝ), 0 < ρ →
+      LipschitzOnWith K f (ball (Φ w) ρ) → HasFDerivAt Φ A w → HasFDerivAt (f ∘ Φ) B w →
+      ∀ s : Eucl n, HasDerivAt (fun t : ℝ => f (Φ w + t • A s)) (B s) 0 ∧
+        ‖B s‖ ≤ (K : ℝ) * ‖A s‖ := by
+  intro P Q n f Φ w A B K ρ hρ hf hΦ hfΦ s
+  -- Chain rule along the line `t ↦ w + t s`.
+  have hℓ : HasDerivAt (fun t : ℝ => w + t • s) s 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const s).const_add w
+  have hγ : HasDerivAt (fun t : ℝ => Φ (w + t • s)) (A s) 0 :=
+    hΦ.comp_hasDerivAt_of_eq 0 hℓ (by simp)
+  have hg : HasDerivAt (fun t : ℝ => f (Φ (w + t • s))) (B s) 0 :=
+    hfΦ.comp_hasDerivAt_of_eq 0 hℓ (by simp)
+  -- For small `t`, both `Φ(w) + t A s` and `Φ(w + t s)` lie in `B_ρ(Φ(w))`.
+  have hball : ball (Φ w) ρ ∈ 𝓝 (Φ w) := ball_mem_nhds (Φ w) hρ
+  have hline : ∀ᶠ t in 𝓝 (0 : ℝ), Φ w + t • A s ∈ ball (Φ w) ρ := by
+    have hc : Continuous (fun t : ℝ => Φ w + t • A s) := by fun_prop
+    have : Tendsto (fun t : ℝ => Φ w + t • A s) (𝓝 0) (𝓝 (Φ w)) := by
+      simpa using hc.tendsto 0
+    exact this.eventually_mem hball
+  have hcurve : ∀ᶠ t in 𝓝 (0 : ℝ), Φ (w + t • s) ∈ ball (Φ w) ρ := by
+    have : Tendsto (fun t : ℝ => Φ (w + t • s)) (𝓝 0) (𝓝 (Φ w)) := by
+      simpa using hγ.continuousAt.tendsto
+    exact this.eventually_mem hball
+  -- `f(Φ(w) + t A s) - f(Φ(w + t s)) = O(Φ(w + t s) - Φ(w) - t A s) = o(t)`.
+  have hd : HasDerivAt (fun t : ℝ => f (Φ w + t • A s) - f (Φ (w + t • s))) 0 0 := by
+    refine HasDerivAt.of_isLittleO ?_
+    have hO : Asymptotics.IsBigO (𝓝 0) (fun t : ℝ => f (Φ w + t • A s) - f (Φ (w + t • s)))
+        fun t : ℝ => Φ (w + t • s) - Φ (w + (0 : ℝ) • s) - (t - 0) • A s := by
+      refine Asymptotics.IsBigO.of_bound (K : ℝ) ?_
+      filter_upwards [hline, hcurve] with t h₁ h₂
+      calc ‖f (Φ w + t • A s) - f (Φ (w + t • s))‖
+          ≤ K * ‖Φ w + t • A s - Φ (w + t • s)‖ := hf.norm_sub_le h₁ h₂
+        _ = K * ‖Φ (w + t • s) - Φ (w + (0 : ℝ) • s) - (t - 0) • A s‖ := by
+          rw [zero_smul, add_zero, sub_zero, norm_sub_rev, sub_add_eq_sub_sub]
+    simpa using hO.trans_isLittleO hγ.isLittleO
+  have hh : HasDerivAt (fun t : ℝ => f (Φ w + t • A s)) (B s) 0 := by
+    convert hg.add hd using 1
+    · funext t
+      simp
+    · simp
+  -- `|f(Φ(w) + t A s) - f(Φ(w))| ≤ K |A s| |t|` near `0`.
+  refine ⟨hh, hh.le_of_lip' (by positivity) ?_⟩
+  have h₀ : Φ w + (0 : ℝ) • A s ∈ ball (Φ w) ρ := by
+    rw [zero_smul, add_zero]
+    exact mem_ball_self hρ
+  filter_upwards [hline] with t ht
+  calc ‖f (Φ w + t • A s) - f (Φ w + (0 : ℝ) • A s)‖
+      ≤ K * ‖Φ w + t • A s - (Φ w + (0 : ℝ) • A s)‖ := hf.norm_sub_le ht h₀
+    _ = K * ‖A s‖ * ‖t - 0‖ := by
+      rw [zero_smul, add_zero, add_sub_cancel_left, norm_smul, sub_zero]; ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
