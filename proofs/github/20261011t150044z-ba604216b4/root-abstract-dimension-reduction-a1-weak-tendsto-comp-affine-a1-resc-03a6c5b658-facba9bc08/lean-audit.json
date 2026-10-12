@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f155ea21bd6d1c583e18d2dd1c6db6c3f2f3042fd60a17f22191639a6cad919e",
+  "git_delta": {
+    "base_commit": "3b2f799ecbbdad11bd74b1c714fb410224ca40c8",
+    "candidate_commit": "9d9f3556f7238adf123e90e4800d421791d2a834",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_rescaled_translate_tendstoUniformly",
+    "diff_sha256": "cd35f91f6521df814dfbf6fdfcaf9c1c2f07da2627738544113ed7c55dadff3a",
+    "source_sha256": "953910182c28e88fdd65b111e5d9262712eebf40012a49edf6b0ed801cf26d83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_rescaled_translate_tendstoUniformly",
+      "statement": "∀ (P : ℕ) (f : Euclid P → ℝ) (y : Euclid P) (mus : ℕ → ℝ), Continuous f → HasCompactSupport f → Tendsto mus atTop (𝓝 1) → ∃ K : Set (Euclid P), IsCompact K ∧ (∀ w ∉ K, f (w - y) = 0) ∧ (∀ᶠ k in atTop, ∀ w ∉ K, f ((mus k)⁻¹ • (w - y)) = 0) ∧ TendstoUniformly (fun k w => f ((mus k)⁻¹ • (w - y))) (fun w => f (w - y)) atTop",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
