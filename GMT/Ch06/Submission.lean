@@ -406,6 +406,18 @@ theorem Submission.slicing_mb_lb_wedge_testForm :
   -- `alternatizeUncurryFin` is the continuous linear map `alternatizeUncurryFinCLM`.
   exact (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).contDiff.comp
     (hα.smulRight hωs)
+/-- **Mass estimate from a normalized measure representation** (Simon Ch. 6, (2.7)).  If
+`T(η) = ∫ ⟨η, v⟩ dμ` for every test form `η` and `|⟨α, v(x)⟩| ≤ |α|` for every `x` and every
+`n`-covector `α` (Euclidean coefficient norm), then `|T(η)| ≤ ∫ |η| dμ` in `[0, ∞]`. -/
+theorem Submission.slicing_mb_lb_repr_bound : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → (∀ (x : Eucl P) (α : Covector (Eucl P) n), |v x α| ≤ covectorEuclideanNorm α) → ∀ η : TestFormOn U n, ENNReal.ofReal |T η| ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x)) ∂μ := by
+  intro P n U T μ v hrep hv η
+  -- Step 1: `T(η) = ∫ ⟨η(x), v(x)⟩ dμ(x)` by the representation (2.7).
+  rw [(hrep η).2, ← Real.enorm_eq_ofReal_abs]
+  -- Step 2: `‖∫ g dμ‖ₑ ≤ ∫⁻ ‖g‖ₑ dμ`, which needs no integrability hypothesis.
+  refine (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono fun x => ?_)
+  -- Steps 3–4: pointwise `‖⟨η(x), v(x)⟩‖ₑ = ofReal |⟨η(x), v(x)⟩| ≤ ofReal |η(x)|`.
+  rw [Real.enorm_eq_ofReal_abs]
+  exact ENNReal.ofReal_le_ofReal (hv x _)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
