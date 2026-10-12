@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6afa55489b26596534593dc769d7130b0654d5c3d03d5533ff56246b759a62f2",
+  "git_delta": {
+    "base_commit": "2e9cbce84edbf1686bf88f5c304d59bf8b01654b",
+    "candidate_commit": "10b355cf6ff4cb808b4b8d43049140ed6ede003e",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rh_edc_pow_of_hasDerivAt",
+    "diff_sha256": "6e06f13c642e1687a2c9459093fda7dc9c2d88847bdc144ff05eccf4afc2ba9f",
+    "source_sha256": "4decbd6bba5f13a461666b62f6553717cce64e8683d830589dbed8857f3c43c7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_edc_pow_of_hasDerivAt",
+      "statement": "∀ (n : ℕ) (F : ℝ → ℝ), (∀ t : ℝ, 0 < t → HasDerivAt F ((n : ℝ) * F t / t) t) → ∀ s : ℝ, 0 < s → F s = s ^ n * F 1",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
