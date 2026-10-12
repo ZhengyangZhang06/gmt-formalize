@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "766f4de3257c3d2d2b39ce8d3dd591f30275683823852a4715d7d0f36b055ef0",
+  "git_delta": {
+    "base_commit": "d7f5808dc5175e6aa940bcc56eedfeaefec69bc8",
+    "candidate_commit": "df3cfcf1ec402ee201e919cf5a475a1c1ff1b088",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pdb_linear_range_integral",
+    "diff_sha256": "f455fb507c9a583a7358799484db217e35a2d4fb711ab4e42f8eaa4855656a52",
+    "source_sha256": "0896872b76d9886b23e68f209f8bc070c370d5730ede3574e3abcadd30f3be4d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pdb_linear_range_integral",
+      "statement": "∀ (n ℓ : ℕ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (j : ℝ), 0 ≤ j → (∀ S : Set (EuclideanSpace ℝ (Fin n)), (μHE[n] : Measure (Ambient n ℓ)) (A '' S) = ENNReal.ofReal j * volume S) → ∀ f : C_c(Ambient n ℓ, ℝ), ∫ y in (LinearMap.range A.toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n] = j * ∫ u, f (A u)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
