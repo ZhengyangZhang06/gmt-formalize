@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1f638bd7b514d5ba9b148e8baacad7e63ab0337eb337ff275491826308e6e1af",
+  "git_delta": {
+    "base_commit": "20ae906ba9bb88cff682b568c7262476cac8b103",
+    "candidate_commit": "8c1c60879a450348a1f82a0e41ff0b27230e9ea5",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ghe_ae_mem_support",
+    "diff_sha256": "07d7246599afaf63c39dcd020cc8ce083d37366cccca3c29cfdfcc6c37aef16a",
+    "source_sha256": "f9be8c7a439ff7679ff94fd823246fda699e1e4857213ed9bf2366c00d917b3e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ghe_ae_mem_support",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), ∀ᵐ x ∂V.weight, x ∈ V.support",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
