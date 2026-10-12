@@ -542,6 +542,141 @@ theorem Submission.deGiorgiDens_normalAverage_bounds : ∀ (N : ℕ) (U : Set (R
         _ = max C 0 * Real.sqrt (2 * (1 - (μ (Metric.ball x ρ)).toReal⁻¹ *
               ∫ y in Metric.ball x ρ, inner ℝ (ν y) e ∂μ)) := by
             rw [mul_comm (max C 0), mul_assoc, inv_mul_cancel_left₀ hρn.ne']
+/-- **Radial cut-off between `B_s(x)` and `B_ρ(x)`** (Simon Ch. 3, proof of Thm. 4.3, (4)
+(p. 82, `chapter-03.txt` lines 631–637), with `ρ − 1/k` replaced by any `s ∈ (0, ρ)`).
+`ζ(y) = min{1, max{0, (ρ − |y − x|)/(ρ − s)}}` is `(ρ − s)⁻¹`-Lipschitz, `0 ≤ ζ ≤ 1`, `ζ = 1`
+on `B_s(x)` and `ζ = 0` off `B_ρ(x)`. `Dζ = 0` on `B_s(x)` and off `B̄_ρ(x)`; on the open annulus
+`‖Dζ‖ = (ρ − s)⁻¹` (`≤` by the Lipschitz bound, `≥` since the derivative in the direction
+`v = y − x` is `−|v|/(ρ − s)`). The two spheres are Lebesgue-null (empty if `N = 0`), so
+`‖Dζ‖ = (ρ − s)⁻¹ 1_{B_ρ(x) ∖ B_s(x)}` a.e., and integrating over `G` gives
+`(L^N(G ∩ B_ρ(x)) − L^N(G ∩ B_s(x)))/(ρ − s)`. -/
+theorem Submission.deGiorgiDens_radial_cutoff : ∀ (N : ℕ) (x : Rn N) (s ρ : ℝ), 0 < s → s < ρ → ∃ ζ : Rn N → ℝ, (∃ K : ℝ≥0, LipschitzWith K ζ) ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ Metric.closedBall x ρ ∧ (∀ y, 0 ≤ ζ y ∧ ζ y ≤ 1) ∧ (∀ y ∈ Metric.ball x s, ζ y = 1) ∧ (∀ y ∉ Metric.ball x ρ, ζ y = 0) ∧ ∀ G : Set (Rn N), NullMeasurableSet G volume → ∫ y in G, ‖fderiv ℝ ζ y‖ = ((volume (G ∩ Metric.ball x ρ)).toReal - (volume (G ∩ Metric.ball x s)).toReal) / (ρ - s) := by
+  intro N x s ρ hs hsρ
+  have hc : 0 < ρ - s := sub_pos.mpr hsρ
+  -- Step 1: `ζ = min 1 (max 0 ((ρ - |y - x|)/(ρ - s)))` is `(ρ - s)⁻¹`-Lipschitz.
+  set K : ℝ≥0 := ⟨(ρ - s)⁻¹, (inv_pos.mpr hc).le⟩ with hK
+  set ζ : Rn N → ℝ := fun y ↦ min 1 (max 0 ((ρ - dist y x) / (ρ - s))) with hζ
+  have hlip : LipschitzWith K ζ := by
+    have hg : LipschitzWith K fun y : Rn N ↦ (ρ - dist y x) / (ρ - s) := by
+      refine LipschitzWith.of_dist_le_mul fun a b ↦ ?_
+      rw [Real.dist_eq, show (ρ - dist a x) / (ρ - s) - (ρ - dist b x) / (ρ - s) =
+        (ρ - s)⁻¹ * (dist b x - dist a x) by ring, abs_mul, abs_of_pos (inv_pos.mpr hc)]
+      exact mul_le_mul_of_nonneg_left ((abs_dist_sub_le b a x).trans_eq (dist_comm b a))
+        (inv_pos.mpr hc).le
+    exact (hg.const_max 0).const_min 1
+  -- Step 2: values and support.
+  have hone : ∀ y : Rn N, dist y x < s → ζ y = 1 := by
+    intro y hy
+    have h1 : 1 ≤ (ρ - dist y x) / (ρ - s) := by
+      rw [le_div_iff₀ hc]; linarith
+    exact min_eq_left (le_max_of_le_right h1)
+  have hzero : ∀ y : Rn N, ρ ≤ dist y x → ζ y = 0 := by
+    intro y hy
+    have h1 : (ρ - dist y x) / (ρ - s) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hc.le
+    simp only [hζ, max_eq_left h1, min_eq_right zero_le_one]
+  have hval : ∀ y, 0 ≤ ζ y ∧ ζ y ≤ 1 := fun y ↦
+    ⟨le_min zero_le_one (le_max_left _ _), min_le_left _ _⟩
+  have hout : ∀ y ∉ Metric.ball x ρ, ζ y = 0 := fun y hy ↦
+    hzero y (not_lt.mp (mt Metric.mem_ball.mpr hy))
+  have htsupp : tsupport ζ ⊆ Metric.closedBall x ρ := by
+    refine closure_minimal (fun y hy ↦ ?_) Metric.isClosed_closedBall
+    by_contra hyρ
+    exact (Function.mem_support.mp hy) (hout y fun hb ↦ hyρ (Metric.ball_subset_closedBall hb))
+  -- Step 3: off the spheres `{|y - x| = s}`, `{|y - x| = ρ}`, `|Dζ| = (ρ - s)⁻¹ 1_{B_ρ ∖ B_s}`.
+  have hcont : Continuous fun z : Rn N ↦ dist z x := continuous_id.dist continuous_const
+  have hpt : ∀ y : Rn N, dist y x ≠ s → dist y x ≠ ρ →
+      ‖fderiv ℝ ζ y‖ = (Metric.ball x ρ \ Metric.ball x s).indicator (fun _ ↦ (ρ - s)⁻¹) y := by
+    intro y hys hyρ
+    rcases lt_or_gt_of_ne hys with h1 | h1
+    · -- in `B_s(x)`, `ζ ≡ 1` near `y`
+      have hev : ∀ᶠ z in 𝓝 y, dist z x < s := (hcont.tendsto y).eventually (gt_mem_nhds h1)
+      have hEq : ζ =ᶠ[𝓝 y] fun _ ↦ (1 : ℝ) := by
+        filter_upwards [hev] with z hz using hone z hz
+      have hnA : y ∉ Metric.ball x ρ \ Metric.ball x s := fun h ↦ h.2 (Metric.mem_ball.mpr h1)
+      rw [Set.indicator_of_notMem hnA, hEq.fderiv_eq, fderiv_const_apply, norm_zero]
+    rcases lt_or_gt_of_ne hyρ with h2 | h2
+    · -- on the open annulus, `ζ = g` near `y`, `g z = (ρ - |z - x|)/(ρ - s)`
+      have hyA : y ∈ Metric.ball x ρ \ Metric.ball x s :=
+        ⟨Metric.mem_ball.mpr h2, fun h ↦ lt_asymm (Metric.mem_ball.mp h) h1⟩
+      rw [Set.indicator_of_mem hyA]
+      set g : Rn N → ℝ := fun z ↦ (ρ - ‖z - x‖) * (ρ - s)⁻¹ with hg
+      have hev1 : ∀ᶠ z in 𝓝 y, s < dist z x := (hcont.tendsto y).eventually (lt_mem_nhds h1)
+      have hev2 : ∀ᶠ z in 𝓝 y, dist z x < ρ := (hcont.tendsto y).eventually (gt_mem_nhds h2)
+      have hEq : ζ =ᶠ[𝓝 y] g := by
+        filter_upwards [hev1, hev2] with z hz1 hz2
+        have hlo : 0 ≤ (ρ - dist z x) / (ρ - s) := div_nonneg (by linarith) hc.le
+        have hhi : (ρ - dist z x) / (ρ - s) ≤ 1 := by rw [div_le_one hc]; linarith
+        simp only [hζ, hg]
+        rw [max_eq_right hlo, min_eq_right hhi, dist_eq_norm, div_eq_mul_inv]
+      set v : Rn N := y - x with hv
+      have hvpos : 0 < ‖v‖ := by rw [hv, ← dist_eq_norm]; linarith
+      have hvne : v ≠ 0 := norm_pos_iff.mp hvpos
+      have hgd : DifferentiableAt ℝ g y :=
+        (((differentiableAt_id.sub_const x).norm ℝ hvne).const_sub ρ).mul_const (ρ - s)⁻¹
+      -- the radial derivative of `g` at `y` is `-|v|/(ρ - s)`
+      have hline : HasDerivAt (fun t : ℝ ↦ g (y + t • v)) (fderiv ℝ g y v) 0 := by
+        have hℓ : HasDerivAt (fun t : ℝ ↦ y + t • v) v 0 := by
+          simpa using ((hasDerivAt_id (0 : ℝ)).smul_const v).const_add y
+        exact hgd.hasFDerivAt.comp_hasDerivAt_of_eq 0 hℓ (by simp)
+      have hline' : HasDerivAt (fun t : ℝ ↦ g (y + t • v)) (-(‖v‖ / (ρ - s))) 0 := by
+        have haff : HasDerivAt (fun t : ℝ ↦ (ρ - (1 + t) * ‖v‖) * (ρ - s)⁻¹)
+            (-(‖v‖ / (ρ - s))) 0 :=
+          ((((hasDerivAt_id (0 : ℝ)).const_add 1).mul_const ‖v‖).const_sub ρ).mul_const
+            (ρ - s)⁻¹ |>.congr_deriv (by ring)
+        refine haff.congr_of_eventuallyEq ?_
+        filter_upwards [Ioi_mem_nhds (show (-1 : ℝ) < 0 by norm_num)] with t ht
+        have h1t : 0 ≤ 1 + t := by linarith [show (-1 : ℝ) < t from ht]
+        have hyt : y + t • v - x = (1 + t) • v := by rw [add_smul, one_smul, hv]; abel
+        simp only [hg]
+        rw [hyt, norm_smul, Real.norm_of_nonneg h1t]
+      have hgv : fderiv ℝ g y v = -(‖v‖ / (ρ - s)) := hline.unique hline'
+      refine le_antisymm (norm_fderiv_le_of_lipschitz ℝ hlip) ?_
+      rw [hEq.fderiv_eq]
+      have h := (fderiv ℝ g y).le_opNorm v
+      rw [hgv, norm_neg, Real.norm_of_nonneg (div_nonneg hvpos.le hc.le), div_eq_inv_mul] at h
+      exact le_of_mul_le_mul_right h hvpos
+    · -- off `B̄_ρ(x)`, `ζ ≡ 0` near `y`
+      have hev : ∀ᶠ z in 𝓝 y, ρ < dist z x := (hcont.tendsto y).eventually (lt_mem_nhds h2)
+      have hEq : ζ =ᶠ[𝓝 y] fun _ ↦ (0 : ℝ) := by
+        filter_upwards [hev] with z hz using hzero z hz.le
+      have hnA : y ∉ Metric.ball x ρ \ Metric.ball x s := fun h ↦
+        lt_asymm (Metric.mem_ball.mp h.1) h2
+      rw [Set.indicator_of_notMem hnA, hEq.fderiv_eq, fderiv_const_apply, norm_zero]
+  -- spheres of positive radius are Lebesgue-null (empty when `N = 0`)
+  have hsph : ∀ r : ℝ, 0 < r → volume (Metric.sphere x r) = 0 := by
+    intro r hr
+    rcases subsingleton_or_nontrivial (Rn N) with hsub | hnt
+    · have : Metric.sphere x r = ∅ := Set.eq_empty_of_forall_notMem fun y hy ↦ by
+        rw [Metric.mem_sphere, Subsingleton.elim y x, dist_self] at hy
+        exact hr.ne hy
+      rw [this, measure_empty]
+    · exact Measure.addHaar_sphere volume x r
+  have hae : ∀ᵐ y ∂(volume : Measure (Rn N)),
+      ‖fderiv ℝ ζ y‖ = (Metric.ball x ρ \ Metric.ball x s).indicator (fun _ ↦ (ρ - s)⁻¹) y := by
+    have h0 : volume (Metric.sphere x s ∪ Metric.sphere x ρ) = 0 :=
+      measure_union_null (hsph s hs) (hsph ρ (hs.trans hsρ))
+    filter_upwards [compl_mem_ae_iff.mpr h0] with y hy
+    simp only [Set.mem_compl_iff, Set.mem_union, Metric.mem_sphere, not_or] at hy
+    exact hpt y hy.1 hy.2
+  refine ⟨ζ, ⟨K, hlip⟩, (isCompact_closedBall x ρ).of_isClosed_subset (isClosed_tsupport ζ) htsupp,
+    htsupp, hval, fun y hy ↦ hone y (Metric.mem_ball.mp hy), hout, fun G hG ↦ ?_⟩
+  -- Step 4: integrate over `G`; `L^N(G ∩ B_ρ) = L^N(G ∩ B_s) + L^N(G ∩ (B_ρ ∖ B_s))`.
+  have hAm : MeasurableSet (Metric.ball x ρ \ Metric.ball x s) :=
+    measurableSet_ball.diff measurableSet_ball
+  have hint : ∫ y in G, ‖fderiv ℝ ζ y‖ =
+      ∫ y in G, (Metric.ball x ρ \ Metric.ball x s).indicator (fun _ ↦ (ρ - s)⁻¹) y :=
+    integral_congr_ae (ae_restrict_of_ae hae)
+  have hset : (Metric.ball x ρ \ Metric.ball x s) ∩ G =
+      (G ∩ Metric.ball x ρ) \ (G ∩ Metric.ball x s) := by
+    ext y; simp only [Set.mem_inter_iff, Set.mem_sdiff]; tauto
+  have hsub : G ∩ Metric.ball x s ⊆ G ∩ Metric.ball x ρ :=
+    Set.inter_subset_inter_right G (Metric.ball_subset_ball hsρ.le)
+  have hfin : volume (G ∩ Metric.ball x ρ) ≠ ∞ :=
+    ((measure_mono Set.inter_subset_right).trans_lt measure_ball_lt_top).ne
+  rw [hint, integral_indicator_const _ hAm, measureReal_restrict_apply hAm, smul_eq_mul, hset,
+    measureReal_def, measure_sdiff hsub (hG.inter measurableSet_ball.nullMeasurableSet)
+      (ne_top_of_le_ne_top hfin (measure_mono hsub)),
+    ENNReal.toReal_sub_of_le (measure_mono hsub) hfin, div_eq_mul_inv]
 /-- **A mollifier sequence and the mollified indicators of a measurable set** (Steps 1 and 3 of
 the mollification argument for the Sobolev inequality for `ζ χ_G` in the proof of Simon Ch. 3,
 Theorem 4.3, `chapter-03.txt` lines 689–705; mollifiers as in Simon Ch. 2, §2, `chapter-02.txt`
@@ -2128,6 +2263,91 @@ theorem Submission.deGiorgiDens_sobolev_indicator : ∀ (n : ℕ), ∃ c : ℝ, 
         liminf_le_liminf (Eventually.of_forall hbound)
     _ = ENNReal.ofReal (c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖)) :=
         ((ENNReal.continuous_ofReal.tendsto _).comp (hlim.const_mul c)).liminf_eq
+
+/-- **Isoperimetric differential inequality** at a differentiability radius, from the proof of
+Simon Ch. 3, Theorem 4.3 (p. 83, `chapter-03.txt` lines 706–722): with
+`V(r) = L^{n+1}(G ∩ B_r(x))` and `B̄_ρ(x) ⊆ U`, `V(ρ)^{n/(n+1)} ≤ c (μ(B_ρ(x)) + V'(ρ))`.
+Let `c` be the constant of `deGiorgiDens_sobolev_indicator` and `p = (n+1)/n`, so that
+`1/p = n/(n+1)` (also for `n = 0`, where `p = ∞`). For `s ∈ (0, ρ)` with `V(s) > 0`, apply it to
+the radial cut-off `ζ_s` of `deGiorgiDens_radial_cutoff` (`ζ_s = 1` on `B_s`, `0 ≤ ζ_s ≤ 1_{B_ρ}`,
+`∫_G |Dζ_s| = (V(ρ) - V(s))/(ρ - s)`): since `1_{G ∩ B_s} ≤ χ_G ζ_s` and `∫ ζ_s dμ ≤ μ(B_ρ)`,
+`V(s)^{n/(n+1)} = ‖1_{G ∩ B_s}‖_p ≤ ‖χ_G ζ_s‖_p ≤ c (μ(B_ρ) + (V(ρ) - V(s))/(ρ - s))`. As `s ↑ ρ`,
+`V(s) → V(ρ) > 0` (so the bound holds for all `s` near `ρ`) and the difference quotient tends to
+`V'(ρ)`. -/
+theorem Submission.deGiorgiDens_ball_isoperimetric : ∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x : Rn (n + 1)) (ρ d : ℝ), 0 < ρ → Metric.closedBall x ρ ⊆ U → 0 < volume (G ∩ Metric.ball x ρ) → HasDerivAt (fun r : ℝ ↦ (volume (G ∩ Metric.ball x r)).toReal) d ρ → (volume (G ∩ Metric.ball x ρ)).toReal ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + d) := by
+  intro n
+  -- Step 0: `c` is the Sobolev constant; `p = (n+1)/n ≠ 0`, `1/p = n/(n+1)` (`1/⊤ = 0` if `n = 0`).
+  obtain ⟨c, hc, hsob⟩ := Submission.deGiorgiDens_sobolev_indicator n
+  refine ⟨c, hc, fun U G μ ν hU hG hμν x ρ d hρ hcl hpos hderiv ↦ ?_⟩
+  have hp0 : (n + 1 : ℝ≥0∞) / n ≠ 0 := ENNReal.div_ne_zero.2 ⟨by simp, ENNReal.natCast_ne_top n⟩
+  have hpa : 1 / ((n + 1 : ℝ≥0∞) / n).toReal = (n : ℝ) / (n + 1) := by
+    rw [ENNReal.toReal_div, ENNReal.toReal_add (ENNReal.natCast_ne_top n) ENNReal.one_ne_top,
+      ENNReal.toReal_natCast, ENNReal.toReal_one, one_div_div]
+  -- Step 1: `V(r) = L(G ∩ B_r)` is finite and non-decreasing, `V(ρ) > 0`, and `μ(B_ρ) < ∞`.
+  set V : ℝ → ℝ := fun r ↦ (volume (G ∩ Metric.ball x r)).toReal
+  have hfin : ∀ r, volume (G ∩ Metric.ball x r) ≠ ∞ := fun r ↦
+    ((measure_mono inter_subset_right).trans_lt measure_ball_lt_top).ne
+  have hVρ : 0 < V ρ := ENNReal.toReal_pos hpos.ne' (hfin ρ)
+  have hμB : μ (Metric.ball x ρ) ≠ ∞ :=
+    ((measure_mono Metric.ball_subset_closedBall).trans_lt
+      (hμν.2.1 _ (isCompact_closedBall x ρ) hcl)).ne
+  -- Step 2: `(∗) V(s)^{n/(n+1)} ≤ c (μ(B_ρ) + (V(ρ) - V(s))/(ρ - s))` for `s ∈ (0, ρ)`, `V(s) > 0`.
+  have hstar : ∀ s, 0 < s → s < ρ → 0 < volume (G ∩ Metric.ball x s) →
+      V s ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + (V ρ - V s) / (ρ - s)) := by
+    intro s hs hsρ hVs
+    obtain ⟨ζ, ⟨K, hK⟩, hζc, hζt, hζ01, hζ1, hζ0, hζD⟩ :=
+      Submission.deGiorgiDens_radial_cutoff (n + 1) x s ρ hs hsρ
+    have hS := hsob U G μ ν hU hG hμν ζ K hK hζc (hζt.trans hcl) fun y ↦ (hζ01 y).1
+    -- (a) `∫_G |Dζ_s| = (V(ρ) - V(s))/(ρ - s) ≥ 0`.
+    have hD : ∫ y in G, ‖fderiv ℝ ζ y‖ = (V ρ - V s) / (ρ - s) := hζD G hG
+    have hD0 : 0 ≤ (V ρ - V s) / (ρ - s) :=
+      div_nonneg (sub_nonneg.2 (ENNReal.toReal_mono (hfin ρ)
+        (measure_mono (inter_subset_inter_right _ (Metric.ball_subset_ball hsρ.le)))))
+        (sub_nonneg.2 hsρ.le)
+    -- (b) `0 ≤ ∫ ζ_s dμ ≤ ∫ 1_{B_ρ} dμ = μ(B_ρ)`.
+    have hI0 : 0 ≤ ∫ y, ζ y ∂μ := integral_nonneg fun y ↦ (hζ01 y).1
+    have hI : ∫ y, ζ y ∂μ ≤ (μ (Metric.ball x ρ)).toReal := by
+      calc ∫ y, ζ y ∂μ ≤ ∫ y, (Metric.ball x ρ).indicator 1 y ∂μ := by
+            refine integral_mono_of_nonneg (ae_of_all _ fun y ↦ (hζ01 y).1)
+              ((integrable_indicator_iff measurableSet_ball).2
+                (integrableOn_const (C := (1 : ℝ)) hμB)) (ae_of_all _ fun y ↦ ?_)
+            by_cases hy : y ∈ Metric.ball x ρ
+            · rw [indicator_of_mem hy]
+              exact (hζ01 y).2
+            · rw [indicator_of_notMem hy, hζ0 y hy]
+        _ = (μ (Metric.ball x ρ)).toReal := integral_indicator_one measurableSet_ball
+    -- (c) `L(G ∩ B_s)^{n/(n+1)} = ‖1_{G ∩ B_s}‖_p ≤ ‖χ_G ζ_s‖_p`, as `ζ_s = 1` on `B_s`.
+    have hGs : NullMeasurableSet (G ∩ Metric.ball x s) volume :=
+      hG.inter measurableSet_ball.nullMeasurableSet
+    have hlow : volume (G ∩ Metric.ball x s) ^ ((n : ℝ) / (n + 1)) ≤
+        eLpNorm (G.indicator ζ) ((n + 1 : ℝ≥0∞) / n) volume := by
+      have h1 := eLpNorm_indicator_const' (c := (1 : ℝ)) hGs hVs.ne' hp0
+      rw [hpa, enorm_one, one_mul] at h1
+      rw [← h1]
+      refine eLpNorm_mono (aestronglyMeasurable_const.indicator₀ hGs) fun y ↦ ?_
+      by_cases hy : y ∈ G ∩ Metric.ball x s
+      · rw [indicator_of_mem hy, indicator_of_mem hy.1, hζ1 y hy.2]
+      · rw [indicator_of_notMem hy, norm_zero]
+        exact norm_nonneg _
+    -- Combine (a)–(c) and pass to real numbers.
+    have hR0 : 0 ≤ c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖) := by
+      rw [hD]
+      exact mul_nonneg hc.le (add_nonneg hI0 hD0)
+    have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top (hlow.trans hS)
+    rw [← ENNReal.toReal_rpow, ENNReal.toReal_ofReal hR0, hD] at hreal
+    exact hreal.trans (mul_le_mul_of_nonneg_left (add_le_add hI le_rfl) hc.le)
+  -- Step 3: let `s ↑ ρ`; `V` is continuous at `ρ` and its difference quotients tend to `d`.
+  have hcont : Tendsto V (𝓝[<] ρ) (𝓝 (V ρ)) :=
+    hderiv.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have hslope : Tendsto (fun s ↦ (V ρ - V s) / (ρ - s)) (𝓝[<] ρ) (𝓝 d) :=
+    ((hasDerivAt_iff_tendsto_slope.1 hderiv).mono_left
+      (nhdsWithin_mono _ fun s (hs : s < ρ) ↦ hs.ne)).congr fun s ↦ by
+        rw [slope_comm, slope_def_field]
+  show V ρ ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + d)
+  refine le_of_tendsto_of_tendsto (hcont.rpow_const (Or.inl hVρ.ne'))
+    ((tendsto_const_nhds.add hslope).const_mul c) ?_
+  filter_upwards [Ioo_mem_nhdsLT hρ, hcont.eventually (lt_mem_nhds hVρ)] with s hs hVs
+  exact hstar s hs.1 hs.2 (ENNReal.toReal_pos_iff.1 hVs).1
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
