@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cccc767b0bca93ee85da418328a410080ac1dbbadc96e1528dd8037cf63519bb",
+  "git_delta": {
+    "base_commit": "f6922da56c06b2e34e43c813d708861c0ab990d2",
+    "candidate_commit": "ad2754f0138e72a1ea98b86b543871e164c81aee",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_amt_fubini_lintegral",
+    "diff_sha256": "66fe9a0cb1884187f8f8a13e4a46d3d3cb290c4f749bc2459eeb089fbfb0a65d",
+    "source_sha256": "cb6292b7566d7cecd8a3a5ac3588ca0fee4e608b8a2d3aa471ef2728f5425780",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_amt_fubini_lintegral",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (R ε s r : ℝ), 0 < ε → μ (closedBall y R) < ⊤ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → 0 < s → s ≤ r → (1 + ε) * r < R → ∫⁻ x, ENNReal.ofReal (w x * (∫ t in s..r, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t / t ^ n)) ∂μ = ENNReal.ofReal (∫ t in s..r, -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t / t ^ n)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
