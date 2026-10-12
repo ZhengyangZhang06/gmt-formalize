@@ -458,6 +458,51 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The rescaled chart `ψ_r(u) = r⁻¹(φ(v₀ + ru) − φ(v₀))` on `U_r = {u | v₀ + ru ∈ V}` is an
+injective parametrization of the blow-up `η_{φ(v₀),r}(φ(V))` (`Chapter03.blowUpMap`) of the chart
+image, with the same derivative `Dψ_r(u) = Dφ(v₀ + ru)`, for any `r ≠ 0` and any `v₀`. -/
+theorem rsod_c1tan_blowUp_chart_reparam : ∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (r : ℝ), IsOpen V → DifferentiableOn ℝ φ V → InjOn φ V → r ≠ 0 → IsOpen {u : Rn m | v₀ + r • u ∈ V} ∧ InjOn (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) {u : Rn m | v₀ + r • u ∈ V} ∧ (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) '' {u : Rn m | v₀ + r • u ∈ V} = Poincare.SimonGMT.Chapter03.blowUpMap (φ v₀) r '' (φ '' V) ∧ ∀ u ∈ {u : Rn m | v₀ + r • u ∈ V}, HasFDerivAt (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) (fderiv ℝ φ (v₀ + r • u)) u := by
+  intro m N V φ v₀ r hV hφ hinj hr
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- `U_r` is the preimage of `V` under the continuous affine map `u ↦ v₀ + r • u`.
+    exact hV.preimage (continuous_const.add (continuous_const_smul r))
+  · -- Injectivity: cancel `r⁻¹`, then use `InjOn φ V`, then cancel `v₀` and `r`.
+    intro u₁ hu₁ u₂ hu₂ h
+    have h₁ : φ (v₀ + r • u₁) = φ (v₀ + r • u₂) :=
+      sub_left_injective (smul_right_injective _ (inv_ne_zero hr) h)
+    exact smul_right_injective _ hr (add_left_cancel (hinj hu₁ hu₂ h₁))
+  · -- `u ↦ v₀ + r • u` maps `U_r` onto `V`, with inverse `v ↦ r⁻¹ • (v - v₀)`.
+    ext y
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      exact ⟨φ (v₀ + r • u), ⟨v₀ + r • u, hu, rfl⟩, rfl⟩
+    · rintro ⟨z, ⟨v, hv, rfl⟩, rfl⟩
+      have hv' : v₀ + r • r⁻¹ • (v - v₀) = v := by
+        rw [smul_smul, mul_inv_cancel₀ hr, one_smul, add_sub_cancel]
+      refine ⟨r⁻¹ • (v - v₀), ?_, ?_⟩
+      · show v₀ + r • r⁻¹ • (v - v₀) ∈ V
+        rw [hv']
+        exact hv
+      · show r⁻¹ • (φ (v₀ + r • r⁻¹ • (v - v₀)) - φ v₀) = r⁻¹ • (φ v - φ v₀)
+        rw [hv']
+  · -- Chain rule: `Dψ_r(u) = r⁻¹ • (Dφ(v₀ + r • u) ∘ (r • id)) = Dφ(v₀ + r • u)`.
+    intro u hu
+    have hd : HasFDerivAt φ (fderiv ℝ φ (v₀ + r • u)) (v₀ + r • u) :=
+      ((hφ _ hu).differentiableAt (hV.mem_nhds hu)).hasFDerivAt
+    have ha : HasFDerivAt (fun u : Rn m => v₀ + r • u) (r • ContinuousLinearMap.id ℝ (Rn m)) u :=
+      ((hasFDerivAt_id u).const_smul r).const_add v₀
+    have hL : r⁻¹ • (fderiv ℝ φ (v₀ + r • u)).comp (r • ContinuousLinearMap.id ℝ (Rn m)) =
+        fderiv ℝ φ (v₀ + r • u) := by
+      refine ContinuousLinearMap.ext fun w => ?_
+      rw [smul_apply, ContinuousLinearMap.comp_apply,
+        smul_apply, ContinuousLinearMap.id_apply, map_smul,
+        inv_smul_smul₀ hr]
+    exact (((hd.comp u ha).sub_const (φ v₀)).const_smul r⁻¹).congr_fderiv hL
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
