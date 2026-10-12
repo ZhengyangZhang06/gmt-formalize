@@ -535,6 +535,101 @@ theorem Submission.dorag_tes_projection_algebra : ∀ (N : ℕ), (∀ (A : Eucli
       (Submodule.starProjection_apply_eq_zero_iff T).mpr he, sub_zero] at hBe
     exact hBe
 
+/-- **Choice of a plane with small tilt and small height** (Simon Ch. 5, proof of 4.5, (1)–(2)).
+Write `J(S) = ∫_{B_σ(ξ)} |p_{Q(x)} − p_S|² dμ` (Hilbert–Schmidt norm).  If `J(T) ≤ a`, keep
+`S = T`: integrating `|p_T − p_{T₁}|² ≤ 2|p_{Q(x)} − p_T|² + 2|p_{Q(x)} − p_{T₁}|²` over
+`B_σ(ξ)`, where `μ(B_σ(ξ)) ≥ M`, gives `|p_T − p_{T₁}|² ≤ 4a/M`, and then
+`y − p_T y = (y − p_{T₁} y) + (p_{T₁} − p_T) y` gives the height bound.  Otherwise `S = T₁`,
+as `J(T₁) ≤ a < J(T)`. -/
+theorem Submission.dorag_tes_plane_reduction : ∀ (N : ℕ) (μ : Measure (Euclid N)) (Q : Euclid N → Submodule ℝ (Euclid N)) (ξ : Euclid N) (σ a M h₁ : ℝ) (T T₁ : Submodule ℝ (Euclid N)), 0 < σ → 0 ≤ a → 0 < M → AEStronglyMeasurable (fun x => (Q x).starProjection) μ → ENNReal.ofReal M ≤ μ (closedBall ξ σ) → ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₁.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ≤ ENNReal.ofReal a → (∀ x ∈ μ.support ∩ closedBall ξ σ, ‖(x - ξ) - T₁.starProjection (x - ξ)‖ ≤ h₁) → ∃ S : Submodule ℝ (Euclid N), (S = T ∨ S = T₁) ∧ ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ≤ ENNReal.ofReal a ∧ ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ≤ ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ∧ ∀ x ∈ μ.support ∩ closedBall ξ σ, ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ h₁ + Real.sqrt (4 * a / M) * σ := by
+  intro N μ Q ξ σ a M h₁ T T₁ hσ ha hM hQ hμB hJ₁ hh₁
+  obtain ⟨hHS, htri, -, -⟩ := Submission.dorag_tes_projection_algebra N
+  -- `τ S x = |p_{Q(x)} − p_S|²`, so that `J(S) = ∫_{B_σ(ξ)} τ S dμ`
+  let τ : Submodule ℝ (Euclid N) → Euclid N → ℝ := fun S x =>
+    ∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+      S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+  change ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (τ T₁ x) ∂μ ≤ ENNReal.ofReal a at hJ₁
+  change ∃ S : Submodule ℝ (Euclid N), (S = T ∨ S = T₁) ∧
+    ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (τ S x) ∂μ ≤ ENNReal.ofReal a ∧
+    ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (τ S x) ∂μ ≤
+      ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (τ T x) ∂μ ∧
+    ∀ x ∈ μ.support ∩ closedBall ξ σ,
+      ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ h₁ + Real.sqrt (4 * a / M) * σ
+  by_cases hT : ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (τ T x) ∂μ ≤ ENNReal.ofReal a
+  swap
+  · -- `J(T) > a`: take `S = T₁`
+    refine ⟨T₁, Or.inr rfl, hJ₁, hJ₁.trans (not_le.mp hT).le, fun x hx => ?_⟩
+    have h₂ : 0 ≤ Real.sqrt (4 * a / M) * σ := mul_nonneg (Real.sqrt_nonneg _) hσ.le
+    linarith [hh₁ x hx]
+  -- `J(T) ≤ a`: keep `S = T`
+  refine ⟨T, Or.inl rfl, hT, le_rfl, ?_⟩
+  -- `c₀ = |p_T − p_{T₁}|²`
+  set c₀ : ℝ := ∑ i : Fin N, ‖T.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+    T₁.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+  have hc₀ : 0 ≤ c₀ := Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hτ : ∀ S x, 0 ≤ τ S x := fun S x => Finset.sum_nonneg fun i _ => sq_nonneg _
+  -- each `x ↦ τ S x` is `μ`-a.e. measurable, being continuous in `p_{Q(x)}`
+  have hmeas : ∀ S : Submodule ℝ (Euclid N),
+      AEMeasurable (fun x => ENNReal.ofReal (τ S x)) (μ.restrict (closedBall ξ σ)) := by
+    intro S
+    have hcont : Continuous fun L : Euclid N →L[ℝ] Euclid N =>
+        ∑ i : Fin N, ‖L (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+      continuous_finsetSum _ fun i _ =>
+        ((continuous_id.clm_apply continuous_const).sub continuous_const).norm.pow 2
+    exact (hcont.comp_aestronglyMeasurable hQ).aemeasurable.ennreal_ofReal.restrict
+  -- `c₀ μ(B_σ(ξ)) ≤ 2 J(T) + 2 J(T₁) ≤ 4a`
+  have hint : ENNReal.ofReal c₀ * μ (closedBall ξ σ) ≤ ENNReal.ofReal (4 * a) := by
+    rw [← setLIntegral_const]
+    calc ∫⁻ _ in closedBall ξ σ, ENNReal.ofReal c₀ ∂μ
+        ≤ ∫⁻ x in closedBall ξ σ,
+            (2 * ENNReal.ofReal (τ T x) + 2 * ENNReal.ofReal (τ T₁ x)) ∂μ := by
+          refine lintegral_mono fun x => ?_
+          calc ENNReal.ofReal c₀ ≤ ENNReal.ofReal (2 * τ T x + 2 * τ T₁ x) :=
+                ENNReal.ofReal_le_ofReal (htri (Q x) T T₁)
+            _ = 2 * ENNReal.ofReal (τ T x) + 2 * ENNReal.ofReal (τ T₁ x) := by
+                rw [ENNReal.ofReal_add (mul_nonneg zero_le_two (hτ T x))
+                    (mul_nonneg zero_le_two (hτ T₁ x)),
+                  ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_mul zero_le_two,
+                  ENNReal.ofReal_ofNat]
+      _ = 2 * ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (τ T x) ∂μ +
+            2 * ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (τ T₁ x) ∂μ := by
+          rw [lintegral_add_left' ((hmeas T).const_mul 2),
+            lintegral_const_mul' _ _ ENNReal.ofNat_ne_top,
+            lintegral_const_mul' _ _ ENNReal.ofNat_ne_top]
+      _ ≤ 2 * ENNReal.ofReal a + 2 * ENNReal.ofReal a := by gcongr
+      _ = ENNReal.ofReal (4 * a) := by
+          rw [ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_ofNat]
+          ring
+  -- hence `c₀ ≤ 4a/M`, as `μ(B_σ(ξ)) ≥ M > 0`
+  have hc₀M : c₀ ≤ 4 * a / M := by
+    rw [le_div_iff₀ hM, ← ENNReal.ofReal_le_ofReal_iff (by linarith), ENNReal.ofReal_mul hc₀]
+    calc ENNReal.ofReal c₀ * ENNReal.ofReal M ≤ ENNReal.ofReal c₀ * μ (closedBall ξ σ) := by
+          gcongr
+      _ ≤ ENNReal.ofReal (4 * a) := hint
+  -- the height bound: `y − p_T y = (y − p_{T₁} y) + (p_{T₁} − p_T) y` with `y = x − ξ`
+  intro x hx
+  have hy : ‖x - ξ‖ ≤ σ := by
+    simpa [Metric.mem_closedBall, dist_eq_norm] using hx.2
+  have hA : ‖T.starProjection (x - ξ) - T₁.starProjection (x - ξ)‖ ≤
+      Real.sqrt c₀ * ‖x - ξ‖ := by
+    have h := hHS (T.starProjection - T₁.starProjection) (x - ξ)
+    simp only [sub_apply] at h
+    rw [← Real.sqrt_sq (norm_nonneg (T.starProjection (x - ξ) - T₁.starProjection (x - ξ))),
+      ← Real.sqrt_sq (norm_nonneg (x - ξ)), ← Real.sqrt_mul hc₀]
+    exact Real.sqrt_le_sqrt h
+  calc ‖(x - ξ) - T.starProjection (x - ξ)‖
+      = ‖((x - ξ) - T₁.starProjection (x - ξ)) +
+          (T₁.starProjection (x - ξ) - T.starProjection (x - ξ))‖ := by
+        rw [sub_add_sub_cancel]
+    _ ≤ ‖(x - ξ) - T₁.starProjection (x - ξ)‖ +
+          ‖T₁.starProjection (x - ξ) - T.starProjection (x - ξ)‖ := norm_add_le _ _
+    _ ≤ h₁ + Real.sqrt (4 * a / M) * σ := by
+        refine add_le_add (hh₁ x hx) ?_
+        rw [norm_sub_rev]
+        refine hA.trans ?_
+        gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
