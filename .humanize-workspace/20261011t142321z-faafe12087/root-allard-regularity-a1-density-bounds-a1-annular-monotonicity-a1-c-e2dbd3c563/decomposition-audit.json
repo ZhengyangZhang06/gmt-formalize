@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_amcl_|allard52_am_cutoff_limit|allard52_am_fixed_cutoff",
+        "setLIntegral_iUnion_of_directed|lintegral_mono_set",
+        "tendsto_integral.*dominated_convergence|abs_exp_sub_one_le|intervalIntegrable_rpow.|theorem integral_rpow",
+        "^(theorem|lemma) (div_rpow|rpow_neg|rpow_sub|zero_rpow)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cutoff-audit-9698b16f-hj3phwsj/CombinedAx.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-e2dbd3c563/parent-child-handoff.json",
+        "/tmp/cl-decomp/check/Children.lean",
+        "/tmp/cl-decomp/check/Assembly.lean",
+        "/tmp/cutoff-audit-9698b16f-hj3phwsj/CombinedAx.lean"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; inspected library sources match the compiler installation. The cited cutoff, dominated-convergence, power-integral and directed-union lemmas support the supplied proofs. No proposed names occur in snapshot declarations or competing DAG reservations. All four names are bare identifiers intended for Submission. All four exact one-line propositions elaborate independently against a freshly rebuilt frozen Submission, without child implementations. Each supplied child proof also compiles in isolation with only propext, Classical.choice and Quot.sound. The exact frozen parent assembly compiles from these children and the exact frozen fixed_cutoff contract; with the children proved, fixed_cutoff is its only additional axiom. Dependencies are acyclic. The split appropriately isolates four genuine analytic obligations establishing this selected parent. No problematic typeclass-sensitive inline construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_sequence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches all seven stated properties. The proof checks the profile's endpoint derivatives, continuity, monotonicity and bounds, then verifies the shrinking widths and both cutoff regions. The supplied smoothTransition alternative is supported by the pinned library. The argument is complete and independent of the parent and other children."
+    },
+    {
+      "key": "radial_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the whole-space integral conclusion match. Eventual support inside B_R justifies restriction without assuming global integrability. Restricted measurability, domination by |f| and pointwise convergence are established, including the closed-ball boundary. Dominated convergence and eventual equality prove the exact statement without circular reliance."
+    },
+    {
+      "key": "interval_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including the uniform eventual quantifier over (0,t]. The proof derives p>0 and n/p<1, verifies the integrable power majorant and its exact Lambda/2 coefficient, applies eventual dominated convergence, and passes the integral bound to the limit. The n=0 case and the rpow convention at zero are handled correctly."
+    },
+    {
+      "key": "annular_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract permits arbitrary ENNReal-valued g and unrestricted real width sequences tending to zero. The proof correctly uses increasing inner annuli, eventual containment and continuity of ofReal. Their union is precisely the required closed-ball difference. The pinned directed-union lower-integral theorem needs no measurability hypothesis, so the argument proves the stated generality without relying on Fatou or unstated positivity of the widths."
+    }
+  ],
+  "required_changes": []
+}
