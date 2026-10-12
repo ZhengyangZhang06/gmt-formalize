@@ -451,6 +451,176 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`C¹` criterion for Lipschitz maps** (step 7 of the graph-`C¹` argument).  If `f : ℝⁿ → ℝᵏ`
+is Lipschitz, `Ω` is open, `g` is continuous on `Ω` and `Df(v) = g(v)` for `Lⁿ`-a.e. `v ∈ Ω`, then
+`Df(x) = g(x)` at *every* `x ∈ Ω`, so `f` is `C¹` on `Ω`.  Mollify with the normalized tent kernels
+`ϱ_t = (t − |y|)⁺ / ∫ (t − |y|)⁺`: differentiating under the integral (Rademacher) gives
+`D(f ∗ ϱ_t)(x) = ∫ ϱ_t(y) Df(x − y) dy = ∫ ϱ_t(y) g(x − y) dy` once `B_t(x) ⊆ Ω`, which tends to
+`g` locally uniformly on `Ω`; `f ∗ ϱ_t → f` pointwise, and the uniform-limit theorem for
+derivatives (`hasFDerivAt_of_tendstoLocallyUniformlyOn`) gives `Df = g` on `Ω`. -/
+theorem Submission.dorag_gc_contDiffOn_of_ae_hasFDerivAt : ∀ (n k : ℕ) (f : Euclid n → Euclid k) (L : NNReal) (Ω : Set (Euclid n)) (g : Euclid n → (Euclid n →L[ℝ] Euclid k)), 0 < n → LipschitzWith L f → IsOpen Ω → ContinuousOn g Ω → (∀ᵐ v ∂volume, v ∈ Ω → HasFDerivAt f (g v) v) → ContDiffOn ℝ 1 f Ω := by
+  intro n k f L Ω g hn hf hΩ hg hae
+  -- 1. it suffices that `f` has derivative `g x` at every `x ∈ Ω`
+  suffices H : ∀ x ∈ Ω, HasFDerivAt f (g x) x by
+    have hfd : ∀ x ∈ Ω, fderiv ℝ f x = g x := fun x hx => (H x hx).fderiv
+    rw [show (1 : WithTop ℕ∞) = 0 + 1 by norm_num, contDiffOn_succ_iff_fderiv_of_isOpen hΩ]
+    refine ⟨fun x hx => (H x hx).differentiableAt.differentiableWithinAt, by simp, ?_⟩
+    rw [contDiffOn_zero]
+    exact hg.congr hfd
+  -- 2. tent kernels `ϱ_t ≥ 0`, vanishing for `t ≤ |y|`, with `∫ ϱ_t = 1`
+  set τ : ℝ → Euclid n → ℝ := fun t y => max (t - ‖y‖) 0 with hτ
+  have hτc : ∀ t, Continuous (τ t) := fun t =>
+    (continuous_const.sub continuous_norm).max continuous_const
+  have hτ0 : ∀ t y, t ≤ ‖y‖ → τ t y = 0 := fun t y h => max_eq_right (by linarith)
+  have hτnn : ∀ t y, 0 ≤ τ t y := fun t y => le_max_right _ _
+  have hτcs : ∀ t, HasCompactSupport (τ t) := fun t =>
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) t) (fun y hy => by
+      rw [mem_closedBall_zero_iff, not_le] at hy
+      exact hτ0 t y hy.le)
+  have hIpos : ∀ t, 0 < t → 0 < ∫ y, τ t y := fun t ht =>
+    Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (x := (0 : Euclid n)) (hτc t)
+      (hτcs t) (fun y => hτnn t y) (by simp [hτ, ht])
+  set ρ : ℝ → Euclid n → ℝ := fun t y => τ t y / ∫ y, τ t y with hρ
+  have hρc : ∀ t, Continuous (ρ t) := fun t => (hτc t).div_const _
+  have hρ0 : ∀ t y, t ≤ ‖y‖ → ρ t y = 0 := fun t y h => by simp [hρ, hτ0 t y h]
+  have hρnn : ∀ t, 0 < t → ∀ y, 0 ≤ ρ t y := fun t ht y => div_nonneg (hτnn t y) (hIpos t ht).le
+  have hρcs : ∀ t, HasCompactSupport (ρ t) := fun t =>
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) t) (fun y hy => by
+      rw [mem_closedBall_zero_iff, not_le] at hy
+      exact hρ0 t y hy.le)
+  have hρi : ∀ t, Integrable (ρ t) := fun t => (hρc t).integrable_of_hasCompactSupport (hρcs t)
+  have hρint : ∀ t, 0 < t → ∫ y, ρ t y = 1 := fun t ht => by
+    simp only [hρ]
+    rw [integral_div, div_self (hIpos t ht).ne']
+  -- 3. the a.e. statements pulled back along the measure-preserving map `y ↦ x - y`
+  have hdiffae : ∀ x : Euclid n, ∀ᵐ y ∂(volume : Measure (Euclid n)), DifferentiableAt ℝ f (x - y) :=
+    fun x => (Measure.measurePreserving_sub_left volume x).quasiMeasurePreserving.ae
+      hf.ae_differentiableAt
+  have hgae : ∀ x : Euclid n, ∀ᵐ y ∂(volume : Measure (Euclid n)),
+      x - y ∈ Ω → HasFDerivAt f (g (x - y)) (x - y) :=
+    fun x => (Measure.measurePreserving_sub_left volume x).quasiMeasurePreserving.ae hae
+  -- 4. `D(f ∗ ϱ_t)(x) = ∫ ϱ_t(y) Df(x - y) dy` (differentiation under the integral)
+  have hD : ∀ t, 0 < t → ∀ x, Integrable (fun y => ρ t y • fderiv ℝ f (x - y)) ∧
+      HasFDerivAt (fun x' => ∫ y, ρ t y • f (x' - y)) (∫ y, ρ t y • fderiv ℝ f (x - y)) x := by
+    intro t ht x
+    have hcont : ∀ x', Continuous (fun y => ρ t y • f (x' - y)) := fun x' =>
+      (hρc t).smul (hf.continuous.comp (continuous_const.sub continuous_id))
+    refine hasFDerivAt_integral_of_dominated_loc_of_lip (μ := volume) (s := univ)
+      (bound := fun y => (L : ℝ) * ρ t y) univ_mem
+      (Eventually.of_forall fun x' => (hcont x').aestronglyMeasurable)
+      ((hcont x).integrable_of_hasCompactSupport ((hρcs t).smul_right))
+      (((hρc t).measurable.smul ((measurable_fderiv ℝ f).comp
+        (measurable_const.sub measurable_id))).aestronglyMeasurable)
+      (Eventually.of_forall fun y => ?_) ((hρi t).const_mul _) ?_
+    · refine LipschitzOnWith.of_dist_le_mul fun a _ b _ => ?_
+      rw [dist_eq_norm, dist_eq_norm, ← smul_sub, norm_smul, Real.norm_eq_abs,
+        abs_of_nonneg (hρnn t ht y), Real.coe_nnabs, abs_of_nonneg (by
+          have := hρnn t ht y; positivity)]
+      calc ρ t y * ‖f (a - y) - f (b - y)‖ ≤ ρ t y * (L * ‖(a - y) - (b - y)‖) :=
+            mul_le_mul_of_nonneg_left
+              (by simpa [dist_eq_norm] using hf.dist_le_mul (a - y) (b - y)) (hρnn t ht y)
+        _ = L * ρ t y * ‖a - b‖ := by rw [sub_sub_sub_cancel_right]; ring
+    · filter_upwards [hdiffae x] with y hy
+      have h1 : HasFDerivAt (fun x' => f (x' - y)) (fderiv ℝ f (x - y)) x := by
+        have := hy.hasFDerivAt.comp x (hasFDerivAt_sub_const y)
+        rw [ContinuousLinearMap.comp_id] at this
+        exact this
+      exact h1.const_smul (ρ t y)
+  -- 5. if `B_t(x) ⊆ Ω`, then `Df(x - y) = g(x - y)` for a.e. `y` with `ϱ_t(y) ≠ 0`
+  have haeq : ∀ t, 0 < t → ∀ x, closedBall x t ⊆ Ω →
+      (fun y => ρ t y • fderiv ℝ f (x - y)) =ᵐ[volume] (fun y => ρ t y • g (x - y)) := by
+    intro t ht x hx
+    filter_upwards [hgae x] with y hy
+    by_cases hyt : ‖y‖ < t
+    · have hxy : x - y ∈ Ω := hx (by
+        rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg]; exact hyt.le)
+      rw [(hy hxy).fderiv]
+    · show ρ t y • fderiv ℝ f (x - y) = ρ t y • g (x - y)
+      rw [hρ0 t y (not_lt.1 hyt)]
+      exact (zero_smul ℝ (fderiv ℝ f (x - y))).trans (zero_smul ℝ (g (x - y))).symm
+  -- 6. `|D(f ∗ ϱ_t)(x) - g(x)| ≤ sup_{|y| < t} |g(x - y) - g(x)|` when `B_t(x) ⊆ Ω`
+  have hest : ∀ t, 0 < t → ∀ x, closedBall x t ⊆ Ω → ∀ ε : ℝ,
+      (∀ y : Euclid n, ‖y‖ < t → ‖g (x - y) - g x‖ ≤ ε) →
+      ‖(∫ y, ρ t y • fderiv ℝ f (x - y)) - g x‖ ≤ ε := by
+    intro t ht x hx ε hε
+    have hint2 : Integrable (fun y => ρ t y • g (x - y)) := (hD t ht x).1.congr (haeq t ht x hx)
+    rw [integral_congr_ae (haeq t ht x hx)]
+    have hgx : g x = ∫ y, ρ t y • g x := by rw [integral_smul_const, hρint t ht, one_smul]
+    rw [hgx, ← integral_sub hint2 ((hρi t).smul_const _)]
+    calc ‖∫ y, (ρ t y • g (x - y) - ρ t y • g x)‖ ≤ ∫ y, ρ t y * ε :=
+          norm_integral_le_of_norm_le ((hρi t).mul_const ε) (Eventually.of_forall fun y => by
+            rw [show ρ t y • g (x - y) - ρ t y • g x = ρ t y • (g (x - y) - g x) from
+              (smul_sub _ _ _).symm, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hρnn t ht y)]
+            by_cases hyt : ‖y‖ < t
+            · exact mul_le_mul_of_nonneg_left (hε y hyt) (hρnn t ht y)
+            · rw [hρ0 t y (not_lt.1 hyt)]; simp)
+      _ = ε := by rw [integral_mul_const, hρint t ht, one_mul]
+  -- 7. along `t_m = 1 / (m + 1)`, `D(f ∗ ϱ_{t_m}) → g` locally uniformly on `Ω`
+  set tm : ℕ → ℝ := fun m => 1 / ((m : ℝ) + 1) with htm
+  have htm_pos : ∀ m, 0 < tm m := fun m => by positivity
+  have htm_lim : Tendsto tm atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  have hloc : TendstoLocallyUniformlyOn
+      (fun m x => ∫ y, ρ (tm m) y • fderiv ℝ f (x - y)) g atTop Ω := by
+    rw [tendstoLocallyUniformlyOn_iff]
+    intro ε hε x₁ hx₁
+    obtain ⟨ρ₁, hρ₁, hball⟩ := Metric.isOpen_iff.1 hΩ x₁ hx₁
+    have hr : 0 < ρ₁ / 3 := by positivity
+    have hcb : closedBall x₁ (2 * (ρ₁ / 3)) ⊆ Ω :=
+      (closedBall_subset_ball (by linarith)).trans hball
+    have huc := (isCompact_closedBall x₁ (2 * (ρ₁ / 3))).uniformContinuousOn_of_continuous
+      (hg.mono hcb)
+    obtain ⟨δ, hδ, hδ'⟩ := Metric.uniformContinuousOn_iff.1 huc (ε / 2) (by positivity)
+    refine ⟨ball x₁ (ρ₁ / 3), mem_nhdsWithin_of_mem_nhds (ball_mem_nhds x₁ hr), ?_⟩
+    have hev : ∀ᶠ m in atTop, tm m < min δ (ρ₁ / 3) := htm_lim (Iio_mem_nhds (lt_min hδ hr))
+    filter_upwards [hev] with m hm y hy
+    rw [mem_ball] at hy
+    have hm1 : tm m < δ := lt_of_lt_of_le hm (min_le_left _ _)
+    have hm2 : tm m < ρ₁ / 3 := lt_of_lt_of_le hm (min_le_right _ _)
+    have hsub : closedBall y (tm m) ⊆ closedBall x₁ (2 * (ρ₁ / 3)) :=
+      closedBall_subset_closedBall' (by linarith)
+    rw [dist_eq_norm, norm_sub_rev]
+    calc ‖(∫ w, ρ (tm m) w • fderiv ℝ f (y - w)) - g y‖ ≤ ε / 2 := by
+          refine hest (tm m) (htm_pos m) y (hsub.trans hcb) (ε / 2) fun w hw => ?_
+          have h1 : y - w ∈ closedBall x₁ (2 * (ρ₁ / 3)) := hsub (by
+            rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg]; exact hw.le)
+          have h2 : y ∈ closedBall x₁ (2 * (ρ₁ / 3)) := hsub (mem_closedBall_self (htm_pos m).le)
+          have h3 : dist (y - w) y < δ := by
+            rw [dist_eq_norm, sub_sub_cancel_left, norm_neg]; linarith
+          have := hδ' (y - w) h1 y h2 h3
+          rw [dist_eq_norm] at this
+          exact this.le
+      _ < ε := half_lt_self hε
+  -- 8. `|(f ∗ ϱ_t)(x) - f(x)| ≤ L t`, so `f ∗ ϱ_{t_m} → f` pointwise
+  have hpt : ∀ x, Tendsto (fun m => ∫ y, ρ (tm m) y • f (x - y)) atTop (𝓝 (f x)) := by
+    intro x
+    have hbound : ∀ m, ‖(∫ y, ρ (tm m) y • f (x - y)) - f x‖ ≤ L * tm m := by
+      intro m
+      have ht := htm_pos m
+      have hint : Integrable (fun y => ρ (tm m) y • f (x - y)) :=
+        ((hρc _).smul (hf.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+          ((hρcs _).smul_right)
+      have hfx : f x = ∫ y, ρ (tm m) y • f x := by rw [integral_smul_const, hρint _ ht, one_smul]
+      rw [hfx, ← integral_sub hint ((hρi _).smul_const _)]
+      calc ‖∫ y, (ρ (tm m) y • f (x - y) - ρ (tm m) y • f x)‖ ≤ ∫ y, ρ (tm m) y * (L * tm m) :=
+            norm_integral_le_of_norm_le ((hρi _).mul_const _) (Eventually.of_forall fun y => by
+              rw [show ρ (tm m) y • f (x - y) - ρ (tm m) y • f x = ρ (tm m) y • (f (x - y) - f x) from
+                (smul_sub _ _ _).symm, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hρnn _ ht y)]
+              by_cases hyt : ‖y‖ < tm m
+              · refine mul_le_mul_of_nonneg_left ?_ (hρnn _ ht y)
+                calc ‖f (x - y) - f x‖ ≤ L * ‖(x - y) - x‖ := by
+                      simpa [dist_eq_norm] using hf.dist_le_mul (x - y) x
+                  _ ≤ L * tm m := by
+                      rw [sub_sub_cancel_left, norm_neg]; gcongr
+              · rw [hρ0 _ y (not_lt.1 hyt)]; simp)
+        _ = L * tm m := by rw [integral_mul_const, hρint _ ht, one_mul]
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero (fun m => norm_nonneg _) hbound ?_
+    simpa using htm_lim.const_mul (L : ℝ)
+  -- 9. the uniform-limit theorem for derivatives
+  intro x hx
+  exact hasFDerivAt_of_tendstoLocallyUniformlyOn hΩ hloc
+    (fun m x' _ => (hD (tm m) (htm_pos m) x').2) (fun x' _ => hpt x') hx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
