@@ -482,6 +482,28 @@ theorem aal_cfs_hasDerivAt_cutoff_integral : ∀ (n ℓ : ℕ) (μ : Measure (Am
     have h := hanti (min_le_left s 1)
     rwa [hone _ (min_le_right _ _)] at h
   have hdzero : ∀ s, 1 + ε < s → deriv φ s = 0 := fun s hs => by
+/-- **Integrated squeeze from the derivative comparison** (Simon Ch. 4, 3.4 → 3.5 "by
+integration in 3.4", with the prefactors of 3.5 in corrected order).  Write `r = |x − y|` and,
+for `t > 0`, `J'(t) = −t⁻¹ ∫ (r/t) φ'(r/t) w dμ`.  If `0 ≤ w ≤ 1` a.e., `φ` is a `C¹`
+nonincreasing cutoff (`φ = 1` on `(−∞, 1]`, `φ = 0` on `[1 + ε, ∞)`), `0 < σ ≤ ρ`,
+`(1 + ε)ρ < S`, `μ(B_S(y)) < ∞`, and on `[σ, ρ]` both `e^{−c} ≤ F ≤ e^c` and `Ψ' = F J'/tⁿ`,
+then with `A = ∫ (φ(r/ρ) − φ(r/σ)) w / rⁿ dμ`,
+`e^{−c} A ≤ Ψ(ρ) − Ψ(σ) ≤ e^c (1 + ε)ⁿ A`.
+Proof: take the comparison weight `q = w / max(σ, r)ⁿ` and `G(t) = ∫ φ(r/t) q dμ`, whose
+derivative `G'` comes from `aal_cfs_hasDerivAt_cutoff_integral`.  Where `∂ₜ φ(r/t) ≠ 0` we have
+`t ≤ r ≤ (1 + ε)t` and `q = w/rⁿ`, so integrating in `x` gives `0 ≤ G' ≤ J'/tⁿ ≤ (1 + ε)ⁿ G'` on
+`[σ, ρ]`.  Hence `Ψ − e^{−c} G` and `e^c (1 + ε)ⁿ G − Ψ` have nonnegative derivatives there and
+are monotone (mean value theorem), and `G(ρ) − G(σ) = A`. -/
+theorem aal_cfs_squeeze_of_deriv : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ Ψ F : ℝ → ℝ) (S ε c σ ρ : ℝ), 0 < ε → μ (closedBall y S) < ⊤ → AEStronglyMeasurable w μ → (∀ᵐ x ∂μ, 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < σ → σ ≤ ρ → (1 + ε) * ρ < S → (∀ t : ℝ, σ ≤ t → t ≤ ρ → Real.exp (-c) ≤ F t ∧ F t ≤ Real.exp c) → (∀ t : ℝ, σ ≤ t → t ≤ ρ → HasDerivAt Ψ (F t * ((-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t) / t ^ n)) t) → Real.exp (-c) * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ ≤ Ψ ρ - Ψ σ ∧ Ψ ρ - Ψ σ ≤ Real.exp c * (1 + ε) ^ n * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ := by
+  intro n ℓ μ w y φ Ψ F S ε c σ ρ hε hμS hw hw01 hφ hanti hone hzero hσ hσρ hρS hF hΨ
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  -- `φ' = 0` off `[1, 1 + ε]`, and `φ' ≤ 0`
+  have hdlo : ∀ s, s < 1 → deriv φ s = 0 := fun s hs => by
+    have h : φ =ᶠ[𝓝 s] fun _ => (1 : ℝ) := by
+      filter_upwards [gt_mem_nhds hs] with u hu
+      exact hone u hu.le
+    exact h.deriv_eq.trans (deriv_const s 1)
+  have hdhi : ∀ s, 1 + ε < s → deriv φ s = 0 := fun s hs => by
     have h : φ =ᶠ[𝓝 s] fun _ => (0 : ℝ) := by
       filter_upwards [lt_mem_nhds hs] with u hu
       exact hzero u hu.le
@@ -601,6 +623,166 @@ theorem aal_cfs_hasDerivAt_cutoff_integral : ∀ (n ℓ : ℕ) (μ : Measure (Am
   · filter_upwards with x s hs
     have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
     exact (hderiv ‖x - y‖ s hs0.ne').mul_const (q x)
+  have hdnp : ∀ s, deriv φ s ≤ 0 := fun s => hanti.deriv_nonpos
+  -- the radii `t ∈ [σ, ρ]` are admissible for `aal_cfs_hasDerivAt_cutoff_integral`
+  have hadm : ∀ t, σ ≤ t → t ≤ ρ → 0 < t ∧ (1 + ε) * t < S := fun t h1 h2 =>
+    ⟨hσ.trans_le h1, lt_of_le_of_lt (mul_le_mul_of_nonneg_left h2 hε1.le) hρS⟩
+  -- the comparison weight `q = w / max(σ, r)ⁿ`, bounded by `σ⁻ⁿ`
+  set q : Amb n ℓ → ℝ := fun x => w x / (max σ ‖x - y‖) ^ n with hqdef
+  have hq : AEStronglyMeasurable q μ :=
+    hw.div₀ (by fun_prop : Continuous fun x : Amb n ℓ => (max σ ‖x - y‖) ^ n).aestronglyMeasurable
+  have hqB : ∀ᵐ x ∂μ, |q x| ≤ 1 / σ ^ n := by
+    filter_upwards [hw01] with x hx
+    have hm : 0 < max σ ‖x - y‖ := lt_of_lt_of_le hσ (le_max_left _ _)
+    rw [hqdef, abs_div, abs_of_nonneg hx.1, abs_of_pos (pow_pos hm n),
+      div_le_div_iff₀ (pow_pos hm n) (pow_pos hσ n)]
+    calc w x * σ ^ n ≤ 1 * σ ^ n := mul_le_mul_of_nonneg_right hx.2 (pow_pos hσ n).le
+      _ ≤ 1 * (max σ ‖x - y‖) ^ n := by
+        gcongr
+        exact le_max_left _ _
+  have hw1 : ∀ᵐ x ∂μ, |w x| ≤ 1 :=
+    hw01.mono fun x hx => abs_le.mpr ⟨by linarith [hx.1], hx.2⟩
+  -- the sibling cutoff derivative, with the weights `q` and `w`
+  have hG := fun t (h1 : σ ≤ t) (h2 : t ≤ ρ) =>
+    Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ q y φ S ε (1 / σ ^ n) t hε hμS hq hqB
+      hφ hanti hone hzero (hadm t h1 h2).1 (hadm t h1 h2).2
+  have hJ := fun t (h1 : σ ≤ t) (h2 : t ≤ ρ) =>
+    Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ w y φ S ε 1 t hε hμS hw hw1
+      hφ hanti hone hzero (hadm t h1 h2).1 (hadm t h1 h2).2
+  set G : ℝ → ℝ := fun s => ∫ x, φ (‖x - y‖ / s) * q x ∂μ with hGdef
+  set G' : ℝ → ℝ := fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ) / t
+    with hG'eq
+  set N : ℝ → ℝ := fun t => (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t) / t ^ n
+    with hNdef
+  -- pointwise, then integrated, comparison of the scale derivatives
+  have hcmp : ∀ t, σ ≤ t → t ≤ ρ → G' t ≤ N t ∧ N t ≤ (1 + ε) ^ n * G' t ∧ 0 ≤ G' t := by
+    intro t h1 h2
+    have ht : 0 < t := (hadm t h1 h2).1
+    set D : Amb n ℓ → ℝ := fun x => -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t with hDdef
+    have eG : G' t = ∫ x, D x * q x ∂μ := by
+      rw [hG'eq, hDdef]
+      dsimp only
+      rw [← integral_neg, ← integral_div]
+      congr 1
+      funext x
+      ring
+    have eN : N t = ∫ x, D x * w x / t ^ n ∂μ := by
+      rw [hNdef, hDdef]
+      dsimp only
+      rw [← integral_neg, ← integral_div, ← integral_div]
+      congr 1
+      funext x
+      ring
+    have intG : Integrable (fun x => D x * q x) μ := by
+      have h := ((hG t h1 h2).2.1.const_mul (-1 / t))
+      refine h.congr (Eventually.of_forall fun x => ?_)
+      simp only [hDdef]
+      ring
+    have intN : Integrable (fun x => D x * w x / t ^ n) μ := by
+      have h := ((hJ t h1 h2).2.1.const_mul (-1 / t / t ^ n))
+      refine h.congr (Eventually.of_forall fun x => ?_)
+      simp only [hDdef]
+      ring
+    have hpt : ∀ᵐ x ∂μ, D x * q x ≤ D x * w x / t ^ n ∧
+        D x * w x / t ^ n ≤ (1 + ε) ^ n * (D x * q x) ∧ 0 ≤ D x * q x := by
+      filter_upwards [hw01] with x hx
+      have hD0 : 0 ≤ D x := by
+        simp only [hDdef]
+        apply div_nonneg _ ht.le
+        rw [neg_nonneg]
+        exact mul_nonpos_of_nonneg_of_nonpos (div_nonneg (norm_nonneg _) ht.le) (hdnp _)
+      by_cases hd : deriv φ (‖x - y‖ / t) = 0
+      · have hD : D x = 0 := by simp only [hDdef, hd, mul_zero, neg_zero, zero_div]
+        simp [hD]
+      · -- here `1 ≤ r/t ≤ 1 + ε`, so `σ ≤ t ≤ r ≤ (1 + ε)t` and `q = w/rⁿ`
+        have hlo : 1 ≤ ‖x - y‖ / t := by
+          by_contra h
+          exact hd (hdlo _ (lt_of_not_ge h))
+        have hhi : ‖x - y‖ / t ≤ 1 + ε := by
+          by_contra h
+          exact hd (hdhi _ (lt_of_not_ge h))
+        have htr : t ≤ ‖x - y‖ := by rwa [le_div_iff₀ ht, one_mul] at hlo
+        have hrt : ‖x - y‖ ≤ (1 + ε) * t := by rwa [div_le_iff₀ ht] at hhi
+        have hr : 0 < ‖x - y‖ := ht.trans_le htr
+        have hqx : q x = w x / ‖x - y‖ ^ n := by
+          simp only [hqdef, max_eq_right (h1.trans htr)]
+        have hDw : 0 ≤ D x * w x := mul_nonneg hD0 hx.1
+        have hrn : 0 < ‖x - y‖ ^ n := pow_pos hr n
+        have htn : 0 < t ^ n := pow_pos ht n
+        rw [hqx, ← mul_div_assoc]
+        refine ⟨div_le_div_of_nonneg_left hDw htn (pow_le_pow_left₀ ht.le htr n), ?_,
+          div_nonneg hDw hrn.le⟩
+        have hpow : ‖x - y‖ ^ n ≤ (1 + ε) ^ n * t ^ n := by
+          rw [← mul_pow]
+          exact pow_le_pow_left₀ hr.le hrt n
+        calc D x * w x / t ^ n = (D x * w x) * (1 / t ^ n) := by ring
+          _ ≤ (D x * w x) * ((1 + ε) ^ n / ‖x - y‖ ^ n) := by
+              apply mul_le_mul_of_nonneg_left _ hDw
+              rw [div_le_div_iff₀ htn hrn]
+              linarith [hpow]
+          _ = (1 + ε) ^ n * (D x * w x / ‖x - y‖ ^ n) := by ring
+    refine ⟨?_, ?_, ?_⟩
+    · rw [eG, eN]
+      exact integral_mono_ae intG intN (hpt.mono fun x hx => hx.1)
+    · rw [eN, eG, ← integral_const_mul]
+      exact integral_mono_ae intN (intG.const_mul _) (hpt.mono fun x hx => hx.2.1)
+    · rw [eG]
+      exact integral_nonneg_of_ae (hpt.mono fun x hx => hx.2.2)
+  have hGder : ∀ t, σ ≤ t → t ≤ ρ → HasDerivAt G (G' t) t := fun t h1 h2 => (hG t h1 h2).2.2
+  -- a function with nonnegative derivative at every point of `[σ, ρ]` increases from `σ` to `ρ`
+  have hmono : ∀ (f : ℝ → ℝ) (f' : ℝ → ℝ), (∀ t, σ ≤ t → t ≤ ρ → HasDerivAt f (f' t) t) →
+      (∀ t, σ ≤ t → t ≤ ρ → 0 ≤ f' t) → f σ ≤ f ρ := by
+    intro f f' hf hf'
+    have hm : MonotoneOn f (Icc σ ρ) := by
+      apply monotoneOn_of_deriv_nonneg (convex_Icc σ ρ)
+      · intro t ht
+        exact (hf t ht.1 ht.2).continuousAt.continuousWithinAt
+      · intro t ht
+        rw [interior_Icc] at ht
+        exact (hf t ht.1.le ht.2.le).differentiableAt.differentiableWithinAt
+      · intro t ht
+        rw [interior_Icc] at ht
+        rw [(hf t ht.1.le ht.2.le).deriv]
+        exact hf' t ht.1.le ht.2.le
+    exact hm ⟨le_rfl, hσρ⟩ ⟨hσρ, le_rfl⟩ hσρ
+  -- `e^{−c} G' ≤ Ψ' ≤ e^c (1 + ε)ⁿ G'` on `[σ, ρ]`, integrated
+  have hlow := hmono (fun t => Ψ t - Real.exp (-c) * G t)
+    (fun t => F t * N t - Real.exp (-c) * G' t)
+    (fun t h1 h2 => (hΨ t h1 h2).sub ((hGder t h1 h2).const_mul _))
+    (fun t h1 h2 => by
+      obtain ⟨hc1, -, hc3⟩ := hcmp t h1 h2
+      obtain ⟨hF1, -⟩ := hF t h1 h2
+      have hN0 : 0 ≤ N t := hc3.trans hc1
+      have := mul_le_mul hF1 hc1 hc3 ((Real.exp_pos _).le.trans hF1)
+      linarith)
+  have hup := hmono (fun t => Real.exp c * (1 + ε) ^ n * G t - Ψ t)
+    (fun t => Real.exp c * (1 + ε) ^ n * G' t - F t * N t)
+    (fun t h1 h2 => ((hGder t h1 h2).const_mul _).sub (hΨ t h1 h2))
+    (fun t h1 h2 => by
+      obtain ⟨hc1, hc2, hc3⟩ := hcmp t h1 h2
+      obtain ⟨-, hF2⟩ := hF t h1 h2
+      have hN0 : 0 ≤ N t := hc3.trans hc1
+      have h1' := mul_le_mul_of_nonneg_right hF2 hN0
+      have h2' := mul_le_mul_of_nonneg_left hc2 (Real.exp_pos c).le
+      nlinarith)
+  -- the increment of `G` is the annular integral `A`
+  have hA : G ρ - G σ = ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ := by
+    rw [hGdef]
+    dsimp only
+    rw [← integral_sub (hG ρ hσρ le_rfl).1 (hG σ le_rfl hσρ).1]
+    congr 1
+    funext x
+    by_cases hr : ‖x - y‖ ≤ σ
+    · have h1 : ‖x - y‖ / σ ≤ 1 := (div_le_one hσ).mpr hr
+      have h2 : ‖x - y‖ / ρ ≤ 1 := (div_le_one (hσ.trans_le hσρ)).mpr (hr.trans hσρ)
+      rw [hone _ h1, hone _ h2]
+      ring
+    · have hmax : max σ ‖x - y‖ = ‖x - y‖ := max_eq_right (le_of_lt (lt_of_not_ge hr))
+      simp only [hqdef, hmax]
+      ring
+  rw [← hA]
+  beta_reduce at hlow hup
+  constructor <;> nlinarith [hlow, hup]
 
 end Submission
 
