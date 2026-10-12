@@ -335,6 +335,43 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **`C¹` maps on open sets send `Hᵏ`-null sets to `Hᵏ`-null sets**: the critical-part step of
+the slice rectifiability in Simon Ch. 3, Remark 2.10(2) (`chapter-03.txt` lines 437–442). Each
+`u ∈ D` has an open `t u ∋ u` on which `ψ` is `K u`-Lipschitz (mean value inequality); by
+Lindelöf countably many `t u`, `u ∈ T`, cover `Z ⊆ D`. By Ch. 2, Thm. 1.8(i) (`chapter-02.txt`
+lines 270–295, valid for non-measurable sets) `Hᵏ(ψ(Z ∩ t u)) ≤ (K u)ᵏ Hᵏ(Z ∩ t u) = 0`, and
+countable subadditivity gives `Hᵏ(ψ(Z)) = 0`. No measurability of `Z` and no relation between
+`k` and `n` is needed: all estimates are for outer measures. -/
+theorem Submission.contDiffOn_image_euclideanHausdorff_null : ∀ (n N k : ℕ) (D Z : Set (Rn n))
+    (ψ : Rn n → Rn N), IsOpen D → ContDiffOn ℝ 1 ψ D → Z ⊆ D → μHE[k] Z = 0 →
+    μHE[k] (ψ '' Z) = 0 := by
+  intro n N k D Z ψ hD hψ hZD hZ
+  -- Step 1: each `u ∈ D` has an open `t u ∋ u` on which `ψ` is `K u`-Lipschitz.
+  have hloc : ∀ u : D, ∃ K : ℝ≥0, ∃ t : Set (Rn n), IsOpen t ∧ (u : Rn n) ∈ t ∧
+      LipschitzOnWith K ψ t := by
+    intro u
+    obtain ⟨K, t, ht, hKt⟩ := (hψ.contDiffAt (hD.mem_nhds u.2)).exists_lipschitzOnWith
+    obtain ⟨t', ht't, ht'o, hut'⟩ := mem_nhds_iff.mp ht
+    exact ⟨K, t', ht'o, hut', hKt.mono ht't⟩
+  choose K t ht hut hKt using hloc
+  -- Step 2 (Lindelöf): countably many `t u`, `u ∈ T`, cover `Z ⊆ D`.
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable t ht
+  have hcover : Z ⊆ ⋃ i ∈ T, t i := by
+    intro z hz
+    rw [hTU]
+    exact mem_iUnion.2 ⟨⟨z, hZD hz⟩, hut _⟩
+  have himg : ψ '' Z ⊆ ⋃ i ∈ T, ψ '' (Z ∩ t i) := by
+    rintro _ ⟨z, hz, rfl⟩
+    obtain ⟨i, hiT, hzi⟩ := mem_iUnion₂.1 (hcover hz)
+    exact mem_iUnion₂.2 ⟨i, hiT, ⟨z, ⟨hz, hzi⟩, rfl⟩⟩
+  -- Steps 3–4: `Hᵏ(ψ(Z ∩ t i)) ≤ (K i)ᵏ Hᵏ(Z ∩ t i) = 0`, then countable subadditivity.
+  refine measure_mono_null himg ((measure_biUnion_null_iff hTc).2 fun i _ => ?_)
+  refine le_antisymm ?_ bot_le
+  calc μHE[k] (ψ '' (Z ∩ t i)) ≤ (K i : ℝ≥0∞) ^ k * μHE[k] (Z ∩ t i) :=
+        Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k
+          ((hKt i).mono inter_subset_right)
+    _ = 0 := by rw [measure_mono_null inter_subset_left hZ, mul_zero]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
