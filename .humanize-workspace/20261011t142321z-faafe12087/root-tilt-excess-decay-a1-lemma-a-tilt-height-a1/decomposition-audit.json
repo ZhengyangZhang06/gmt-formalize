@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def hsNormSq|def hsNorm |def divM|def HasGeneralizedMeanCurvature|def tangentProj|def weight|def support|integrableOn_mult",
+        "hsNorm_starProjection_trace_identities|exists_smooth_step_profile_lipschitz_three|norm_fderiv_radial_profile_le_of_lipschitzWith|ted_lemma_a_tilt_height",
+        "theorem starProjection_orthogonal_val|theorem dist_starProjection_eq_infDist|theorem inner_starProjection_left_eq_right|theorem starProjection_norm_le|theorem IsProj.trace|lemma trace_smulRight|theorem opNorm_le_bound|sum_mul_le_sqrt_mul_sqrt|theorem norm_fderiv_le_of_lipschitz",
+        "protected theorem contDiff|theorem zero_of_nonpos|theorem one_of_one_le|theorem nonneg|theorem le_one|lipschitzWith_of_nnnorm_deriv_le|integral_hasStrictDerivAt|theorem contDiff_infty_iff_deriv|theorem integral_mono_interval",
+        "git diff --unified=0 c66ac899c47c9a6cdfc70b47696f93e118685afa 164f08e449a335e8b0962c8f511579e3e102246a -- GMT/Ch05/Submission.lean",
+        "git diff --unified=0 a0b1c14fc81b767c03133bd3bedfca0f53b1009f a848bdd4f1c1b3faae2d4587793b5217d8d0853b -- GMT/Ch05/Submission.lean",
+        "git diff --unified=0 a0b1c14fc81b767c03133bd3bedfca0f53b1009f af644036de53e2e01ae2d2ad242f5035b5a9ca0f -- GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lemma-a-tilt-height-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lemma-a-tilt-height-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-projection-algebra-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-step-profile-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-radial-gradient-bound-a1/accepted-candidate.json",
+        "/tmp/ted-la-decomp-v2/scripts/parent_proof_reuse3.lean",
+        "/tmp/tilt-height-independent-audit-yw3oj9tz/Challenges.lean",
+        "/tmp/tilt-height-independent-audit-yw3oj9tz/EndToEnd.lean",
+        "/tmp/tilt-height-independent-audit-yw3oj9tz/EndToEnd.log"
+      ],
+      "conclusion": "Verified snapshot revisions ea5607598f3133b40a13241f2e51517a8c6423cd and 25730c7c759d108ef87ab70af2342a196760f79d. The frozen project contains none of the three child names or the selected parent name. Relevant projection, trace, smooth-transition, FTC and Lipschitz-derivative lemmas support the supplied proofs. Each proposed name has exactly one comparator-accepted owner with an identical frozen type and no dependencies or children. All names are bare identifiers. Independently rebuilt the frozen module, elaborated all four types before introducing child implementations, and compiled the accepted child code with the supplied parent assembly. Each proved target uses only propext, Classical.choice and Quot.sound. The reuse-only split is appropriate and acyclic: its children supply precisely the projection algebra, cutoff profile and derivative bound needed for the selected parent. The remaining supplied argument establishes admissibility, integrability, first variation and absorption, yielding the exact constants 144 and 4."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "projection_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches all three prose claims. Cauchy–Schwarz proves the operator-norm bound; orthogonal decomposition proves the infDist identity; summing the displayed pointwise identity and using equal projection ranks proves the trace formula. The argument covers zero dimensions and is complete and non-circular. The Euclidean and continuous-linear-map instances have the intended norms. Accepted-name reuse has an identical frozen type."
+    },
+    {
+      "key": "step_profile",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type exactly specifies the five stated properties. The explicit smooth bump equals one on an interval of length 1/3, so its normalizing integral is positive and its reciprocal is at most 3. FTC supplies the smooth primitive; normalization gives the endpoint values, range and derivative bound, hence 3-Lipschitz continuity. Every step is justified without circular reliance or deferred proof construction. Accepted-name reuse is type-identical."
+    },
+    {
+      "key": "radial_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the totalized fderiv convention appear in the prose and exact standalone type. The reverse triangle inequality gives Lipschitz constant K/ρ; positivity of ρ justifies the NNReal conversion. The pinned derivative-bound theorem applies everywhere, including nondifferentiable points where fderiv is zero. This general result needs no dependency on step_profile; the parent supplies its profile when applying it. Accepted-name reuse is type-identical."
+    }
+  ],
+  "required_changes": []
+}
