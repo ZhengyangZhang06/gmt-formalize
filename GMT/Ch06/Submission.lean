@@ -359,6 +359,142 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Sharp smooth cut-off below the level `t` (the cut-off of the proof of Simon Ch. 6, 4.11,
+p. 158, with slope bound `(1 + ε)/h`): for `h, ε > 0` there is a `C^∞` function `χ : ℝ → ℝ` with
+`0 ≤ χ ≤ 1`, `χ = 1` on `(-∞, t - h]`, `χ = 0` on `[t, ∞)`, `|χ'| ≤ (1 + ε)/h`, and `χ' = 0` off
+`(t - h, t)`.  Take `χ = ρ ⋆ λ`: `λ` is the clamped affine profile equal to `1` on
+`(-∞, t - h + κ]`, to `0` on `[t - κ, ∞)` and of slope `-(1 + ε)/h` in between
+(`κ = εh/(2(1 + ε))`), and `ρ` is a normalized smooth bump supported in `(-κ/2, κ/2)`. -/
+theorem Submission.slicing_mb_cutoff : ∀ (t h ε : ℝ), 0 < h → 0 < ε → ∃ χ : ℝ → ℝ,
+    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ ∧ (∀ s, 0 ≤ χ s ∧ χ s ≤ 1) ∧
+    (∀ s, s ≤ t - h → χ s = 1) ∧ (∀ s, t ≤ s → χ s = 0) ∧
+    (∀ s, |deriv χ s| ≤ (1 + ε) / h) ∧ (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) := by
+  intro t h ε hh hε
+  -- Slope `K = (1 + ε)/h`, `κ = εh/(2(1 + ε))` (so `(h - 2κ) K = 1`), mollification radius `κ/2`.
+  set K : ℝ := (1 + ε) / h with hK_def
+  have hK : 0 < K := by positivity
+  set κ : ℝ := ε * h / (2 * (1 + ε)) with hκ_def
+  have hκ : 0 < κ := by positivity
+  have hκK : (h - 2 * κ) * K = 1 := by
+    rw [hK_def, hκ_def]; field_simp; ring
+  set r : ℝ := κ / 2 with hr_def
+  have hr : 0 < r := by positivity
+  set Kn : ℝ≥0 := ⟨K, hK.le⟩ with hKn_def
+  have hKn : (Kn : ℝ) = K := rfl
+  -- The profile `λ`: `1` on `(-∞, t - h + κ]`, `0` on `[t - κ, ∞)`, `K`-Lipschitz.
+  set lam : ℝ → ℝ := fun u => min (max 0 ((t - κ - u) * K)) 1 with hlam_def
+  have haff_lip : LipschitzWith Kn (fun u : ℝ => (t - κ - u) * K) := by
+    refine LipschitzWith.of_dist_le_mul fun a b => ?_
+    rw [Real.dist_eq, Real.dist_eq, hKn,
+      show (t - κ - a) * K - (t - κ - b) * K = -((a - b) * K) by ring, abs_neg, abs_mul,
+      abs_of_pos hK, mul_comm]
+  have hlam_lip : LipschitzWith Kn lam := (haff_lip.const_max 0).min_const 1
+  have hlam_cont : Continuous lam := hlam_lip.continuous
+  have hlam01 : ∀ u, 0 ≤ lam u ∧ lam u ≤ 1 := fun u =>
+    ⟨le_min (le_max_left _ _) zero_le_one, min_le_right _ _⟩
+  have hlam_one : ∀ u, u < t - h + κ → lam u = 1 := by
+    intro u hu
+    have h1 : 1 < (t - κ - u) * K := by
+      rw [← hκK]; exact mul_lt_mul_of_pos_right (by linarith) hK
+    simp only [hlam_def]
+    rw [max_eq_right (by linarith), min_eq_right h1.le]
+  have hlam_zero : ∀ u, t - κ < u → lam u = 0 := by
+    intro u hu
+    have h1 : (t - κ - u) * K ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (by linarith) hK.le
+    simp only [hlam_def]
+    rw [max_eq_left h1, min_eq_left zero_le_one]
+  -- The mollifier `ρ = (∫ φ)⁻¹ φ`, `φ` a smooth bump with support `ball 0 r`.
+  let φ : ContDiffBump (0 : ℝ) := ⟨r / 2, r, by positivity, by linarith⟩
+  have hφ_int_pos : 0 < ∫ y, φ y := by
+    refine φ.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero φ.hasCompactSupport
+      (fun y => φ.nonneg) (x := 0) ?_
+    rw [φ.one_of_mem_closedBall (by simp [φ]; positivity)]
+    exact one_ne_zero
+  set I : ℝ := ∫ y, φ y with hI_def
+  set ρ : ℝ → ℝ := fun y => I⁻¹ * φ y with hρ_def
+  have hρ_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ρ := contDiff_const.mul φ.contDiff
+  have hρ_cs : HasCompactSupport ρ := φ.hasCompactSupport.mul_left
+  have hρ_cont : Continuous ρ := hρ_smooth.continuous
+  have hρ_nonneg : ∀ y, 0 ≤ ρ y := fun y => mul_nonneg (inv_nonneg.2 hφ_int_pos.le) φ.nonneg
+  have hρ_int : Integrable ρ := hρ_cont.integrable_of_hasCompactSupport hρ_cs
+  have hρ_one : ∫ y, ρ y = 1 := by
+    simp only [hρ_def]; rw [integral_const_mul]; exact inv_mul_cancel₀ hφ_int_pos.ne'
+  have hρ_supp : ∀ y, ρ y ≠ 0 → |y| < r := by
+    intro y hy
+    have hy' : y ∈ Function.support φ := fun h0 => hy (by simp [hρ_def, h0])
+    rw [φ.support_eq, mem_ball, Real.dist_eq, sub_zero] at hy'
+    exact hy'
+  -- `χ = ρ ⋆ λ`.
+  set χ : ℝ → ℝ := convolution ρ lam (ContinuousLinearMap.lsmul ℝ ℝ) volume with hχ_def
+  have hχ : ∀ s, χ s = ∫ y, ρ y * lam (s - y) := by
+    intro s
+    simp only [hχ_def, convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+  have hint : ∀ s, Integrable (fun y => ρ y * lam (s - y)) := fun s =>
+    Continuous.integrable_of_hasCompactSupport
+      (hρ_cont.mul (hlam_cont.comp (continuous_const.sub continuous_id))) hρ_cs.mul_right
+  -- `χ = 1` on `(-∞, t - h + r)` and `χ = 0` on `(t - r, ∞)`.
+  have hχ_one : ∀ s, s < t - h + r → χ s = 1 := by
+    intro s hs
+    rw [hχ s, ← hρ_one]
+    congr 1
+    funext y
+    by_cases hy : ρ y = 0
+    · simp [hy]
+    · have := (abs_lt.1 (hρ_supp y hy)).1
+      rw [hlam_one (s - y) (by linarith), mul_one]
+  have hχ_zero : ∀ s, t - r < s → χ s = 0 := by
+    intro s hs
+    rw [hχ s]
+    have : (fun y => ρ y * lam (s - y)) = fun _ => 0 := by
+      funext y
+      by_cases hy : ρ y = 0
+      · simp [hy]
+      · have := (abs_lt.1 (hρ_supp y hy)).2
+        rw [hlam_zero (s - y) (by linarith), mul_zero]
+    rw [this, integral_zero]
+  -- `χ` is `K`-Lipschitz, since `λ` is and `ρ` is a probability density.
+  have hχ_lip : LipschitzWith Kn χ := by
+    refine LipschitzWith.of_dist_le_mul fun a b => ?_
+    rw [Real.dist_eq, Real.dist_eq, hχ a, hχ b, ← integral_sub (hint a) (hint b),
+      ← Real.norm_eq_abs]
+    calc ‖∫ y, (ρ y * lam (a - y) - ρ y * lam (b - y))‖ ≤ ∫ y, ρ y * (K * |a - b|) := by
+          refine norm_integral_le_of_norm_le (hρ_int.mul_const _)
+            (Eventually.of_forall fun y => ?_)
+          rw [Real.norm_eq_abs, ← mul_sub, abs_mul, abs_of_nonneg (hρ_nonneg y)]
+          refine mul_le_mul_of_nonneg_left ?_ (hρ_nonneg y)
+          have := hlam_lip.dist_le_mul (a - y) (b - y)
+          rw [Real.dist_eq, Real.dist_eq, hKn, sub_sub_sub_cancel_right] at this
+          exact this
+      _ = ↑Kn * |a - b| := by rw [integral_mul_const, hρ_one, one_mul, hKn]
+  refine ⟨χ, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact hρ_cs.contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hρ_smooth
+      hlam_cont.locallyIntegrable
+  · intro s
+    rw [hχ s]
+    refine ⟨integral_nonneg fun y => mul_nonneg (hρ_nonneg y) (hlam01 _).1, ?_⟩
+    calc ∫ y, ρ y * lam (s - y) ≤ ∫ y, ρ y :=
+          integral_mono (hint s) hρ_int fun y =>
+            mul_le_of_le_one_right (hρ_nonneg y) (hlam01 _).2
+      _ = 1 := hρ_one
+  · intro s hs
+    exact hχ_one s (by linarith)
+  · intro s hs
+    exact hχ_zero s (by linarith)
+  · intro s
+    have := norm_deriv_le_of_lipschitz (x₀ := s) hχ_lip
+    rwa [Real.norm_eq_abs, hKn] at this
+  · intro s hs
+    rw [mem_Ioo, not_and_or, not_lt, not_lt] at hs
+    rcases hs with hs | hs
+    · have hev : χ =ᶠ[𝓝 s] fun _ => (1 : ℝ) := by
+        filter_upwards [Iio_mem_nhds (show s < t - h + r by linarith)] with u hu
+        exact hχ_one u hu
+      rw [hev.deriv_eq, deriv_const]
+    · have hev : χ =ᶠ[𝓝 s] fun _ => (0 : ℝ) := by
+        filter_upwards [Ioi_mem_nhds (show t - r < s by linarith)] with u hu
+        exact hχ_zero u hu
+      rw [hev.deriv_eq, deriv_const]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
