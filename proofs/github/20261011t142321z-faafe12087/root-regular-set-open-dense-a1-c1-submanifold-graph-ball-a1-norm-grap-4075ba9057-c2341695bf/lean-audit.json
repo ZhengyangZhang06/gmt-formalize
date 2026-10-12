@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "096a6e377bb5a034cd325d7a74d315b370211cddba0e23a26c09d183472f885b",
+  "git_delta": {
+    "base_commit": "f9f4a88170b89d382c7876d04fcf127ecb19087f",
+    "candidate_commit": "a2b4772332bc9c27da8217e3494b043a4d2dec4c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_norm_graphPoint_sq",
+    "diff_sha256": "5851f5f1ab358b2d10662adf68d8afe600e7f9223b40778fb9f75e99327f9f20",
+    "source_sha256": "858570d411ee95086606bfaa02011e34edbf3334178f2b59ff2865ed7a58615f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_norm_graphPoint_sq",
+      "statement": "∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ), ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

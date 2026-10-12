@@ -1,0 +1,81 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1`
+- Child DAG node: `root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.norm_graph_point_sq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent proof (‖G(x,y)‖² = Σ_{i<n+ℓ} (Fin.append x y)_i² = ‖x‖² + ‖y‖², splitting the sum over Fin (n+ℓ) with Fin.sum_univ_add). Fix n, ℓ ∈ ℕ, x ∈ ℝⁿ, y ∈ ℝ^ℓ and write G := graphPoint x y = toLp 2 (Fin.append (ofLp x) (ofLp y)).
+1. For every finite index type ι and every z ∈ EuclideanSpace ℝ ι we have ‖z‖² = Σ_{i ∈ ι} z_i² (EuclideanSpace.real_norm_sq_eq). Applied to G, x and y this gives ‖G‖² = Σ_{i : Fin (n+ℓ)} G_i², ‖x‖² = Σ_{j : Fin n} x_j² and ‖y‖² = Σ_{k : Fin ℓ} y_k².
+2. By the definition of graphPoint, G_i = Fin.append (ofLp x) (ofLp y) i for every i : Fin (n+ℓ). Hence for j : Fin n, G_{Fin.castAdd ℓ j} = x_j (Fin.append_left), and for k : Fin ℓ, G_{Fin.natAdd n k} = y_k (Fin.append_right).
+3. Every sum over Fin (n+ℓ) splits as Σ_{i : Fin (n+ℓ)} f(i) = Σ_{j : Fin n} f(Fin.castAdd ℓ j) + Σ_{k : Fin ℓ} f(Fin.natAdd n k) (Fin.sum_univ_add). Applying this to f(i) := G_i² and then step 2 gives ‖G‖² = Σ_{j : Fin n} x_j² + Σ_{k : Fin ℓ} y_k².
+4. By step 1 the right-hand side of step 3 equals ‖x‖² + ‖y‖². Hence ‖graphPoint x y‖² = ‖x‖² + ‖y‖². (Lean outline, checked against the pinned Mathlib: rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]; simp [graphPoint].)
+
+## Key steps
+
+1. ‖z‖² = Σ_i z_i² for Euclidean vectors (EuclideanSpace.real_norm_sq_eq)
+2. Coordinates of graphPoint x y: castAdd ℓ j ↦ x_j and natAdd n k ↦ y_k (Fin.append_left/right)
+3. Split the sum over Fin (n+ℓ) with Fin.sum_univ_add
+4. Recombine the two partial sums into ‖x‖² + ‖y‖²
+
+## Reference use
+
+### local-project
+
+Queries:
+- `grep -n 'graphPoint\|graphOver\|IsC1Submanifold\|def \|abbrev \|structure \|^theorem\|namespace\|^open' <snapshot>/project/GMT/Ch05/Contract.lean; diff <snapshot>/project/GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Submission.lean`
+- `rg -n 'Fin.append' Mathlib -t lean -l  (in <snapshot>/mathlib)`
+- `rg -n 'finAddEquivProd|appendEquiv|appendIsometry|appendLinear|sumPiLp|appendHomeomorph' Mathlib -t lean`
+- `rg -n 'theorem norm_eq|theorem nnnorm_eq|theorem norm_sq_eq|lemma norm_eq' Mathlib/Analysis/InnerProductSpace/PiL2.lean; sed -n 330,420p Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `rg -n 'theorem EuclideanSpace.real_norm_sq_eq|abbrev EuclideanSpace.finAddEquivProd' Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `rg -n 'theorem sum_univ_add|theorem prod_univ_add' Mathlib/Algebra/BigOperators/Fin.lean; rg -n 'theorem append_left|theorem append_right' Mathlib/Data/Fin/Tuple/Basic.lean`
+- `rg -n 'theorem ContinuousOn.isOpen_inter_preimage|theorem ContinuousOn.preimage_isClosed_of_isClosed' Mathlib/Topology; rg -n 'theorem IsCompact.of_isClosed_subset' Mathlib/Topology`
+- `rg -n 'theorem ContDiffOn.contDiffAt' Mathlib/Analysis/Calculus; rg -n 'theorem HasFDerivAt.prodMk' Mathlib/Analysis/Calculus/FDeriv; rg -n 'theorem finSumFinEquiv_apply_left|theorem finSumFinEquiv_apply_right' Mathlib`
+- `grep -rhoE '(theorem|lemma) [A-Za-z_.0-9]+' --include=*.lean .swarm-worktrees/*/gmt-ch05/GMT; grep -rhoE '^(theorem|lemma|def|noncomputable def|abbrev) [A-Za-z_.0-9]*[gG]raph[A-Za-z_.0-9]*' --include=*.lean .swarm-worktrees/*/gmt-ch05`
+- `grep -rlE 'rsod_norm_graphPoint_sq|rsod_graphPoint_eq_finAddEquivProd_symm|rsod_graphChart_injective_contDiffOn_fderiv_injective' gmt-ch05/.humanize .swarm-worktrees/*/gmt-ch05/GMT (name-collision check)`
+- `python3 over runs/.../dag.json: list lean_name/lean_statement of all 60 nodes (incl. exists_open_graph_domain_of_closedBall_graph, rsod_isC1Submanifold_open_inter)`
+- `grep -n -i submanifold book/chapter-02.txt; sed -n 849,895p book/chapter-02.txt`
+- `lean -o build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (scratch /tmp/c1gb-check, snapshot copy); /tmp/c1gb-check/run.sh T/All2.lean (full proofs + #print axioms); reviewer: review/Review1.lean (comparator scope), review/Review2.lean (children as sorry)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/BigOperators/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Logic/Equiv/Fin/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Homeomorph/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/c1gb-check/draft/All2.lean`
+- `/tmp/c1gb-check/review/Review1.lean`
+- `/tmp/c1gb-check/review/Review2.lean`
+
+The snapshot is pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Contract.lean and Submission.lean are identical.
+
+No prior work to reuse: no graphPoint or graphOver lemmas exist in the project snapshot or in any of the 22 Ch05 swarm worktrees. Their only declarations are the frozen defs. None of the three proposed names appears anywhere in the run, the snapshot or the worktrees.
+
+Usable Mathlib items:
+- EuclideanSpace.finAddEquivProd (PiL2.lean:378), defined as piLpCongrLeft finSumFinEquiv.symm followed by sumEquivProd. graphPoint x y = finAddEquivProd.symm (x, y) holds by ext with Fin.addCases and simp [graphPoint].
+- EuclideanSpace.real_norm_sq_eq (PiL2.lean:153).
+- Fin.sum_univ_add (to_additive of prod_univ_add, Algebra/BigOperators/Fin.lean:159).
+- Fin.append_left and Fin.append_right (Data/Fin/Tuple/Basic.lean:312 and 323).
+- finSumFinEquiv_apply_left and finSumFinEquiv_apply_right (Logic/Equiv/Fin/Basic.lean:231 and 236).
+- ContinuousOn.isOpen_inter_preimage and ContinuousOn.preimage_isClosed_of_isClosed (Topology/ContinuousOn.lean:188 and 197).
+- IsCompact.of_isClosed_subset (Compactness/Compact.lean:105).
+- ContDiffOn.contDiffAt (ContDiff/Defs.lean:962).
+- HasFDerivAt.prodMk (FDeriv/Prod.lean:70).
+
+Mathlib does not package graphPoint itself, so the two graphPoint lemmas are new obligations.
+
+Simon Ch. 2 §4 (4.1) matches the contract's IsC1Submanifold.
+
+Lean check (scratch build of the snapshot Submission, Lean v4.35.0-rc3): /tmp/c1gb-check/draft/All2.lean proves all three children and the parent with 0 sorry and only the axioms propext, Classical.choice and Quot.sound. Review1.lean elaborates the frozen types in the comparator scope, and Review2.lean shows the parent compiles from the three child types alone.
