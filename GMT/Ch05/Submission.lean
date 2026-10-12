@@ -2863,6 +2863,23 @@ theorem rsod_tendsto_scaled_mult_integral : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (
     exact ((Submission.rsod_blowUp_integral_ballMass_bounds n ℓ U V x r (1 + ε) f hr'.1
       (by linarith [hε.1]) (hballU r (1 + ε) hr'.1 hr'.2 (by linarith [hε.2]))
       (map_continuous f).measurable hf01 hf0).2.1 hf1).trans_lt hr
+/-- **Weight of a ball as an integral of the multiplicity** (Simon Ch. 4, 1.1).  If
+`B_r(x) ⊆ U`, then `μ_V(B_r(x)) = ∫_{M ∩ B_r(x)} θ dHⁿ`.  By definition
+`μ_V(B_r(x)) = ∫⁻_{M ∩ B_r(x)} θ dHⁿ`; as `B_r(x)` is compact, `θ` is `Hⁿ`-integrable on
+`M ∩ B_r(x)`, and `θ > 0` on `M`, so this lower integral is the (real) integral. -/
+theorem rsod_weight_closedBall_eq_ofReal_integral : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r : ℝ), closedBall x r ⊆ U → V.weight (closedBall x r) = ENNReal.ofReal (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) := by
+  intro n ℓ U V x r hU
+  -- `θ` is integrable on `M ∩ B_r(x)` (the closed ball is compact and lies in `U`) ...
+  have hint : IntegrableOn V.mult (V.carrier ∩ closedBall x r) (μHE[n] : Measure (Amb n ℓ)) :=
+    V.integrableOn_mult _ (isCompact_closedBall x r) hU
+  -- ... and nonnegative a.e. there, since a.e. point of `M ∩ B_r(x)` lies in `M`.
+  have hnn : 0 ≤ᵐ[(μHE[n] : Measure (Amb n ℓ)).restrict (V.carrier ∩ closedBall x r)] V.mult := by
+    filter_upwards [ae_restrict_mem₀
+      (V.nullMeasurableSet_carrier.inter measurableSet_closedBall.nullMeasurableSet)] with z hz
+    exact (V.mult_pos z hz.1).le
+  rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+    Measure.restrict_restrict measurableSet_closedBall, inter_comm (closedBall x r) V.carrier,
+    ofReal_integral_eq_lintegral_ofReal hint.integrable hnn]
 
 end Submission
 
