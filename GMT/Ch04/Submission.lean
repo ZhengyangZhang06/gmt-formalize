@@ -655,6 +655,84 @@ theorem Submission.sobolev_good_radius_calculus : ∀ (n : ℕ) (f k : ℝ → �
     exact hstep τ hτ
   linarith
 
+/-- Simon 5.5 for `g ∈ C¹_c(U)`, `g ≥ 0`, at every pair of radii `0 < s ≤ r` (node
+`monotonicity_inequality`): assuming the weighted monotonicity identity (W),
+`s⁻ⁿ ∫_{B_s(ζ)} g dμ_V ≤ r⁻ⁿ ∫_{B_r(ζ)} g dμ_V + ∫_{(s,r]} τ⁻ⁿ ∫_{B_τ(ζ)} (|∇^M g| + g|H|) dμ_V dτ`.
+The annulus term of (W) is nonnegative, and by Cauchy–Schwarz its radial term is bounded below
+by `-∫_{(s,r]} τ⁻ⁿ Φ(τ) dτ`, where `Φ(τ) = ∫_{B_τ(ζ)} (|∇^M g| + g|H|) dμ_V` is monotone and
+bounded (the energy is integrable by `sobolev_energy_integrable`). -/
+theorem Submission.sobolev_monotonicity_inequality : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (g : Ambient n ℓ → ℝ) (ζ : Ambient n ℓ) (s r : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → 0 < s → s ≤ r → (∫ x in closedBall ζ s, g x ∂V.weight) / s ^ n ≤ (∫ x in closedBall ζ r, g x ∂V.weight) / r ^ n + ∫ τ in Ioc s r, (∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) / τ ^ n := by
+  intro hW n ℓ V U H g ζ s r hn hfin hdim hmeas hU hH hg hgc hgU hg0 hs hsr
+  obtain ⟨hLint, -, hid⟩ :=
+    hW n ℓ V U H g ζ s r hn hfin hdim hmeas hU hH hg (fun x hx ↦ hgU hx.1) hs hsr
+  obtain ⟨-, -, hgrad, hgH⟩ :=
+    Submission.sobolev_energy_integrable n ℓ V U H g hfin hmeas hU hH.1 hg hgc hgU
+  have hφ : Integrable (fun x ↦ ‖V.tangentialGradient g x‖ + g x * ‖H x‖) V.weight :=
+    hgrad.add hgH
+  have hφ0 : ∀ x, 0 ≤ ‖V.tangentialGradient g x‖ + g x * ‖H x‖ := fun x ↦
+    add_nonneg (norm_nonneg _) (mul_nonneg (hg0 x) (norm_nonneg _))
+  -- `Φ(τ) = ∫_{B_τ(ζ)} (|∇^M g| + g|H|) dμ_V` is monotone, so `Φ(τ)/τⁿ` is integrable on `(s, r]`.
+  have hΦmono : Monotone fun τ : ℝ ↦
+      ∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight :=
+    fun τ τ' hττ' ↦ setIntegral_mono_set hφ.integrableOn (ae_of_all _ hφ0)
+      (Eventually.of_forall (closedBall_subset_closedBall hττ'))
+  have hΦint : IntegrableOn (fun τ ↦ (∫ x in closedBall ζ τ,
+      (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) / τ ^ n) (Ioc s r) := by
+    refine Measure.integrableOn_of_bounded measure_Ioc_lt_top.ne
+      (hΦmono.measurable.div (continuous_pow n).measurable).aestronglyMeasurable
+      (M := (∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) / s ^ n)
+      (ae_restrict_of_forall_mem measurableSet_Ioc fun τ hτ ↦ ?_)
+    have hτ0 : 0 < τ := hs.trans hτ.1
+    have hΦ0 : 0 ≤ ∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight :=
+      setIntegral_nonneg measurableSet_closedBall fun x _ ↦ hφ0 x
+    rw [Real.norm_of_nonneg (div_nonneg hΦ0 (pow_nonneg hτ0.le n))]
+    exact div_le_div₀ (integral_nonneg hφ0) (setIntegral_le_integral hφ (ae_of_all _ hφ0))
+      (pow_pos hs n) (pow_le_pow_left₀ hs.le hτ.1.le n)
+  -- The annulus term of (W) is nonnegative.
+  have hA : 0 ≤ ∫ x in closedBall ζ r \ closedBall ζ s,
+      g x * (V.normalRadialSq ζ x / ‖x - ζ‖ ^ n) ∂V.weight :=
+    integral_nonneg fun x ↦ mul_nonneg (hg0 x)
+      (div_nonneg (div_nonneg (sq_nonneg _) (sq_nonneg _)) (pow_nonneg (norm_nonneg _) n))
+  -- Cauchy–Schwarz on `B_τ(ζ)`: `-L(τ)/τ^{n+1} ≤ |L(τ)|/τ^{n+1} ≤ Φ(τ)/τⁿ` for `τ ∈ (s, r]`.
+  have hbound : ∀ τ ∈ Ioc s r,
+      -((∫ x in closedBall ζ τ, inner ℝ (x - ζ) (V.tangentialGradient g x + g x • H x)
+          ∂V.weight) / τ ^ (n + 1)) ≤
+        (∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) /
+          τ ^ n := by
+    intro τ hτ
+    have hτ0 : 0 < τ := hs.trans hτ.1
+    have hL : ‖∫ x in closedBall ζ τ, inner ℝ (x - ζ) (V.tangentialGradient g x + g x • H x)
+        ∂V.weight‖ ≤
+        τ * ∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight := by
+      rw [← integral_const_mul]
+      refine norm_integral_le_of_norm_le (hφ.const_mul τ).integrableOn
+        (ae_restrict_of_forall_mem measurableSet_closedBall fun x hx ↦ ?_)
+      calc ‖inner ℝ (x - ζ) (V.tangentialGradient g x + g x • H x)‖
+          ≤ ‖x - ζ‖ * ‖V.tangentialGradient g x + g x • H x‖ := norm_inner_le_norm _ _
+        _ ≤ τ * (‖V.tangentialGradient g x‖ + g x * ‖H x‖) := by
+          refine mul_le_mul (mem_closedBall_iff_norm.mp hx)
+            ((norm_add_le _ _).trans_eq ?_) (norm_nonneg _) hτ0.le
+          rw [norm_smul, Real.norm_of_nonneg (hg0 x)]
+    have hτn : 0 < τ ^ (n + 1) := pow_pos hτ0 _
+    calc -((∫ x in closedBall ζ τ, inner ℝ (x - ζ) (V.tangentialGradient g x + g x • H x)
+          ∂V.weight) / τ ^ (n + 1))
+        ≤ ‖∫ x in closedBall ζ τ, inner ℝ (x - ζ) (V.tangentialGradient g x + g x • H x)
+          ∂V.weight‖ / τ ^ (n + 1) := by
+          rw [← neg_div, Real.norm_eq_abs]
+          exact div_le_div_of_nonneg_right (neg_le_abs _) hτn.le
+      _ ≤ (τ * ∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) /
+          τ ^ (n + 1) := div_le_div_of_nonneg_right hL hτn.le
+      _ = (∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) /
+          τ ^ n := by rw [pow_succ', mul_div_mul_left _ _ hτ0.ne']
+  -- Integrate the bound over `(s, r]` and rearrange (W).
+  have hJ : ∫ τ in Ioc s r, -((∫ x in closedBall ζ τ, inner ℝ (x - ζ)
+        (V.tangentialGradient g x + g x • H x) ∂V.weight) / τ ^ (n + 1)) ≤
+      ∫ τ in Ioc s r, (∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖)
+        ∂V.weight) / τ ^ n :=
+    setIntegral_mono_on hLint.neg hΦint measurableSet_Ioc hbound
+  rw [integral_neg] at hJ
+  linarith
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
