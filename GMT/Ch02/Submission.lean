@@ -562,6 +562,32 @@ theorem Submission.variation_matrix_det_derivatives_at_one : ∀ (ι : Type) [Fi
       Submission.variation_matrix_det_leibniz_first_order_at_one] at hφ
     -- Step 9: `deriv h` agrees with `φ` near `0`.
     exact (hφ.congr_deriv (by ring)).congr_of_eventuallyEq (hdet.mono fun t ht ↦ ht.deriv)
+/-- **Simon Ch. 2, 5.2–5.4 (p. 63), derivatives of `√h` at a point where `h = 1`.** Let `h : ℝ → ℝ`
+have `h(0) = 1` and derivative `h₁` at `0`. Then `t ↦ √h(t)` has derivative `h₁/2` at `0`. If
+moreover `h` is differentiable near `0` and `deriv h` has derivative `h₂` at `0`, then
+`deriv (t ↦ √h(t))` has derivative `h₂/2 - h₁²/4` at `0`. This is the derivative form of
+`√(1 + x) = 1 + x/2 - x²/8 + O(x³)`, which Simon quotes without proof: near `0`,
+`deriv (t ↦ √h(t)) = deriv h / (2√h)`, and the quotient rule applies at `0`. -/
+theorem Submission.variation_sqrt_derivatives_at_one : ∀ (h : ℝ → ℝ) (h₁ : ℝ), h 0 = 1 → HasDerivAt h h₁ 0 → HasDerivAt (fun t ↦ Real.sqrt (h t)) (h₁ / 2) 0 ∧ ∀ h₂ : ℝ, (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ h t) → HasDerivAt (deriv h) h₂ 0 → HasDerivAt (deriv (fun t ↦ Real.sqrt (h t))) (h₂ / 2 - h₁ ^ 2 / 4) 0 := by
+  intro h h₁ h0 hd
+  -- (1) Chain rule at `h 0 = 1`: the derivative is `h₁ / (2 * √1) = h₁ / 2`.
+  have hsqrt : HasDerivAt (fun t ↦ Real.sqrt (h t)) (h₁ / 2) 0 := by
+    simpa [h0] using hd.sqrt (by rw [h0]; exact one_ne_zero)
+  refine ⟨hsqrt, fun h₂ hdiff hdd ↦ ?_⟩
+  -- `h` is continuous at `0` and `h 0 = 1 > 0`, so `h > 0` near `0`.
+  have hpos : ∀ᶠ t in 𝓝 0, 0 < h t :=
+    hd.continuousAt.eventually (lt_mem_nhds (by rw [h0]; exact one_pos))
+  -- Near `0`, the chain rule at `t` gives `deriv (√ ∘ h) t = deriv h t / (2 * √(h t))`.
+  have heq : deriv (fun t ↦ Real.sqrt (h t)) =ᶠ[𝓝 0]
+      fun t ↦ deriv h t / (2 * Real.sqrt (h t)) := by
+    filter_upwards [hpos, hdiff] with t ht hdt
+    exact (hdt.hasDerivAt.sqrt ht.ne').deriv
+  -- Quotient rule at `0`: the numerator `deriv h` has value `h₁` and derivative `h₂`, the
+  -- denominator `2 * √h` has value `2` and derivative `2 * (h₁ / 2)`.
+  have hq := hdd.fun_div (hsqrt.const_mul 2) (by rw [h0, Real.sqrt_one]; norm_num)
+  rw [hd.deriv, h0, Real.sqrt_one] at hq
+  convert hq.congr_of_eventuallyEq heq using 1
+  ring
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
