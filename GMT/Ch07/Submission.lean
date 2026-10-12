@@ -595,6 +595,74 @@ theorem Submission.dorag_ha_pb_sq_integral_le : ∀ {α : Type} [MeasurableSpace
     rw [hexp, sub_nonneg, div_le_iff₀ hmpos] at hnn
     linarith
 
+/-- **Segment bound for a Lipschitz function at almost every pair** (steps 0, 2 and 3 of the
+Poincaré inequality on the ball, written out for all pairs `(x, y)`).  By Rademacher the set `N`
+where `u` is not differentiable is Borel and `Lⁿ`-null, so `segment_null` gives, for
+`Lⁿ ⊗ Lⁿ`-a.e. `(x, y)`, differentiability of `u` at `γ(t) = (1 − t)y + tx` for a.e.
+`t ∈ [0, 1]`.  For such a pair `segment_ftc` gives `u(x) − u(y) = ∫₀¹ Du(γ(t))(x − y) dt`, hence
+`|u(x) − u(y)| ≤ ∫₀¹ g` with `g(t) = ‖Du(γ(t))‖‖x − y‖ ≤ L‖x − y‖`, and `sq_integral_le` for
+`L¹⌞(0, 1]` (total mass `1`) gives `(∫₀¹ g)² ≤ ∫₀¹ g² = ‖x − y‖² ∫₀¹ ‖Du(γ(t))‖² dt`. -/
+theorem Submission.dorag_ha_pb_pair_sq_bound : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∀ᵐ p : Euclid n × Euclid n, (u p.1 - u p.2) ^ 2 ≤ ‖p.1 - p.2‖ ^ 2 * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ u ((1 - t) • p.2 + t • p.1)‖ ^ 2 := by
+  intro n u L hu
+  -- Step 1: the non-differentiability set of `u` is Borel and `Lⁿ`-null (Rademacher).
+  have hNmeas : MeasurableSet {z : Euclid n | ¬DifferentiableAt ℝ u z} :=
+    (measurableSet_of_differentiableAt ℝ u).compl
+  have hNnull : volume {z : Euclid n | ¬DifferentiableAt ℝ u z} = 0 :=
+    ae_iff.mp hu.ae_differentiableAt
+  -- Step 2: for a.e. pair, `u` is differentiable at a.e. point of the segment.
+  filter_upwards [Submission.dorag_ha_pb_segment_null n _ hNmeas hNnull] with p hp
+  have hdiff : ∀ᵐ t ∂(volume.restrict (Icc (0 : ℝ) 1)),
+      DifferentiableAt ℝ u ((1 - t) • p.2 + t • p.1) := by
+    filter_upwards [hp] with t ht
+    simpa only [mem_ofPred_eq, not_not] using ht
+  -- Step 3: the fundamental theorem of calculus along the segment.
+  have hftc : u p.1 - u p.2 =
+      ∫ t in (0 : ℝ)..1, fderiv ℝ u ((1 - t) • p.2 + t • p.1) (p.1 - p.2) :=
+    Submission.dorag_ha_pb_segment_ftc n u L p.1 p.2 hu hdiff
+  -- Step 4: `|u x - u y| ≤ ∫₀¹ g` with `g t = ‖Du(γ t)‖ ‖x - y‖`, a bounded measurable function.
+  have hDmeas : Measurable fun t : ℝ => fderiv ℝ u ((1 - t) • p.2 + t • p.1) :=
+    (measurable_fderiv ℝ u).comp
+      (by fun_prop : Continuous fun t : ℝ => (1 - t) • p.2 + t • p.1).measurable
+  obtain ⟨g, hg⟩ : ∃ g : ℝ → ℝ,
+      g = fun t => ‖fderiv ℝ u ((1 - t) • p.2 + t • p.1)‖ * ‖p.1 - p.2‖ := ⟨_, rfl⟩
+  have hgmeas : Measurable g := by
+    rw [hg]
+    exact hDmeas.norm.mul_const _
+  have hgbound : ∀ t, ‖g t‖ ≤ L * ‖p.1 - p.2‖ := by
+    intro t
+    simp only [hg, norm_mul, norm_norm]
+    exact mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hu) (norm_nonneg _)
+  have hgint : IntervalIntegrable g volume 0 1 :=
+    (intervalIntegrable_const (c := (L : ℝ) * ‖p.1 - p.2‖)).mono_fun'
+      hgmeas.aestronglyMeasurable (ae_of_all _ hgbound)
+  have hfirst : |u p.1 - u p.2| ≤ ∫ t in (0 : ℝ)..1, g t := by
+    rw [hftc, ← Real.norm_eq_abs]
+    refine intervalIntegral.norm_integral_le_of_norm_le zero_le_one
+      (ae_of_all _ fun t _ => ?_) hgint
+    simp only [hg]
+    exact (fderiv ℝ u ((1 - t) • p.2 + t • p.1)).le_opNorm (p.1 - p.2)
+  -- Step 5: Cauchy–Schwarz (`sq_integral_le`) on `(0, 1]`, which has total mass `1`.
+  have hμ : volume.restrict (Ioc (0 : ℝ) 1) univ = 1 := by
+    rw [Measure.restrict_apply_univ, Real.volume_Ioc]
+    simp
+  have hmem : MemLp g 2 (volume.restrict (Ioc (0 : ℝ) 1)) :=
+    MemLp.of_bound hgmeas.aestronglyMeasurable _ (ae_of_all _ hgbound)
+  have hcs : (∫ t in (0 : ℝ)..1, g t) ^ 2 ≤ ∫ t in (0 : ℝ)..1, g t ^ 2 := by
+    have h := Submission.dorag_ha_pb_sq_integral_le (volume.restrict (Ioc (0 : ℝ) 1)) g
+      (by rw [hμ]; exact ENNReal.one_ne_top) hmem
+    rw [hμ, ENNReal.toReal_one, one_mul] at h
+    rwa [intervalIntegral.integral_of_le zero_le_one, intervalIntegral.integral_of_le zero_le_one]
+  -- Step 6: combine, and pull the constant `‖x - y‖²` out of the integral.
+  calc (u p.1 - u p.2) ^ 2 = |u p.1 - u p.2| ^ 2 := (sq_abs _).symm
+    _ ≤ (∫ t in (0 : ℝ)..1, g t) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) hfirst 2
+    _ ≤ ∫ t in (0 : ℝ)..1, g t ^ 2 := hcs
+    _ = ‖p.1 - p.2‖ ^ 2 * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ u ((1 - t) • p.2 + t • p.1)‖ ^ 2 := by
+      rw [← intervalIntegral.integral_const_mul]
+      congr 1
+      funext t
+      simp only [hg]
+      ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
