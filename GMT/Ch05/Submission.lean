@@ -458,6 +458,81 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Exponential bounds for a perturbation (step 11 (a)–(d) of the abstract `Lᵖ` monotonicity
+inequality, Simon Ch. 4, 4.1–4.8, used for the tilt-excess decay theorem): if `Λ > 0`, `0 ≤ q ≤ 1`
+and `|u| ≤ (Λ/4) q`, then `e^{-Λ} ≤ e^u ≤ e^Λ` and `|e^u - 1| ≤ (e^{Λ/2}/2) Λ q`, and
+`|e^u - 1| ≤ Λ q` if moreover `Λ ≤ 1`.  With `b = (Λ/4) q`, everything follows from the key estimate
+`|e^u - 1| ≤ e^b b`, a consequence of `e^x ≥ 1 + x`. -/
+theorem ted_lpm_am_exp_perturbation_bounds : ∀ (Λ q u : ℝ), 0 < Λ → 0 ≤ q → q ≤ 1 → |u| ≤ Λ / 4 * q → Real.exp (-Λ) ≤ Real.exp u ∧ Real.exp u ≤ Real.exp Λ ∧ |Real.exp u - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * q ∧ (Λ ≤ 1 → |Real.exp u - 1| ≤ Λ * q) := by
+  intro Λ q u hΛ hq0 hq1 hu
+  -- Step 1: `b = (Λ/4) q` lies in `[0, Λ/4]` and `-b ≤ u ≤ b`.
+  obtain ⟨b, hb⟩ : ∃ b : ℝ, b = Λ / 4 * q := ⟨_, rfl⟩
+  rw [← hb] at hu
+  have hb0 : 0 ≤ b := by rw [hb]; positivity
+  have hbΛ : b ≤ Λ / 4 := by
+    rw [hb]
+    calc Λ / 4 * q ≤ Λ / 4 * 1 := mul_le_mul_of_nonneg_left hq1 (by positivity)
+      _ = Λ / 4 := mul_one _
+  obtain ⟨hlo, hhi⟩ := abs_le.mp hu
+  -- Step 3: the key estimate `|e^u - 1| ≤ e^b b`.
+  have hkey : |Real.exp u - 1| ≤ Real.exp b * b := by
+    rcases le_total 0 u with h | h
+    · -- `u ≥ 0`: multiplying `e^{-u} ≥ 1 - u` by `e^u` gives `e^u - 1 ≤ u e^u ≤ b e^b`.
+      have h1 : 0 ≤ Real.exp u - 1 := by linarith [Real.add_one_le_exp u]
+      rw [abs_of_nonneg h1]
+      have h2 : 1 - u ≤ Real.exp (-u) := by linarith [Real.add_one_le_exp (-u)]
+      have h3 : Real.exp u * Real.exp (-u) = 1 := by
+        rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+      have h4 : Real.exp u - 1 ≤ u * Real.exp u := by
+        have := mul_le_mul_of_nonneg_left h2 (Real.exp_pos u).le
+        nlinarith
+      calc Real.exp u - 1 ≤ u * Real.exp u := h4
+        _ ≤ b * Real.exp b := mul_le_mul hhi (Real.exp_le_exp.mpr hhi) (Real.exp_pos u).le hb0
+        _ = Real.exp b * b := mul_comm _ _
+    · -- `u ≤ 0`: `1 - e^u ≤ -u ≤ b ≤ e^b b`, by `e^u ≥ 1 + u` and `e^b ≥ 1`.
+      have h1 : Real.exp u - 1 ≤ 0 := by
+        have := Real.exp_le_one_iff.mpr h
+        linarith
+      rw [abs_of_nonpos h1]
+      have h2 : u + 1 ≤ Real.exp u := Real.add_one_le_exp u
+      have h3 : 1 ≤ Real.exp b := Real.one_le_exp hb0
+      nlinarith
+  refine ⟨?_, ?_, ?_, ?_⟩
+  -- Step 2: `-Λ ≤ -b ≤ u ≤ b ≤ Λ/4 ≤ Λ`, and `exp` is monotone.
+  · exact Real.exp_le_exp.mpr (by linarith)
+  · exact Real.exp_le_exp.mpr (by linarith)
+  -- Step 4: `e^b b ≤ e^{Λ/4} b = (e^{Λ/4}/4) Λ q ≤ (e^{Λ/2}/2) Λ q`.
+  · have h1 : Real.exp (Λ / 4) ≤ Real.exp (Λ / 2) := Real.exp_le_exp.mpr (by linarith)
+    have hΛq : 0 ≤ Λ * q := by positivity
+    calc |Real.exp u - 1| ≤ Real.exp b * b := hkey
+      _ ≤ Real.exp (Λ / 4) * b := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hbΛ) hb0
+      _ = Real.exp (Λ / 4) / 4 * (Λ * q) := by rw [hb]; ring
+      _ ≤ Real.exp (Λ / 2) / 2 * (Λ * q) := by
+          apply mul_le_mul_of_nonneg_right _ hΛq
+          have := Real.exp_pos (Λ / 4)
+          linarith
+      _ = Real.exp (Λ / 2) / 2 * Λ * q := by ring
+  -- Step 5: if `Λ ≤ 1`, then `|e^{Λ/4} - 1| ≤ 2 (Λ/4) ≤ 1/2`, so `e^{Λ/4} ≤ 4` and
+  -- `|e^u - 1| ≤ 4 b = Λ q`.
+  · intro hΛ1
+    have h4 : Real.exp (Λ / 4) ≤ 4 := by
+      have hΛ4 : (0 : ℝ) < Λ / 4 := by positivity
+      have hx : |Λ / 4| ≤ 1 := by
+        rw [abs_of_pos hΛ4]
+        linarith
+      have h := Real.abs_exp_sub_one_le hx
+      rw [abs_of_pos hΛ4] at h
+      have h2 := (abs_le.mp h).2
+      linarith
+    calc |Real.exp u - 1| ≤ Real.exp b * b := hkey
+      _ ≤ Real.exp (Λ / 4) * b := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hbΛ) hb0
+      _ ≤ 4 * b := mul_le_mul_of_nonneg_right h4 hb0
+      _ = Λ * q := by rw [hb]; ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
