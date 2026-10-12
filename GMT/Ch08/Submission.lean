@@ -689,6 +689,29 @@ theorem Submission.plane_disint_identity_of_limits :
     (β.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace β))
     (ae_of_all _ hβ)
 
+/-- **Simon Ch. 8, Lemma 1.3, pp. 207–208** (child `plane_disintegration` of `main_theorem`): the
+measures `η_V^(x)` on `G(N,n)` that disintegrate `V` along its weight `μ_V`.  Child
+`plane_disint_pointwise_measure` gives, for `μ_V`-a.e. `x`, a probability measure that is the limit
+of the normalized slices of `V` over `B_ρ(x)`.  `η(x)` is such a measure wherever one exists; its
+value on the remaining `μ_V`-null set is irrelevant (the printed lemma only defines `η_V^(x)` for
+`μ_V`-a.e. `x`).  The second part is child `plane_disint_identity_of_limits` applied to this `η`. -/
+theorem Submission.plane_disintegration :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U),
+      ∃ η : Euclidean N → Measure (Grassmannian N n),
+        (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧
+          ∀ β : C(Grassmannian N n, ℝ),
+            Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)),
+                β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal)
+              (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧
+        ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A →
+          (∀ S, 0 ≤ β S) →
+          ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure =
+            ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight := by
+  intro N n U V
+  -- `Filter.skolem` chooses `η(x)` from the first part wherever it exists.
+  obtain ⟨η, hη⟩ := Filter.skolem.1 (Submission.plane_disint_pointwise_measure N n U V)
+  exact ⟨η, hη, Submission.plane_disint_identity_of_limits N n U V η hη⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
