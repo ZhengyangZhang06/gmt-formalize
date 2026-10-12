@@ -410,6 +410,34 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Change of variables for `H^n` under a dilation (used for the rescaling invariance of
+tangent cones, Simon Ch. 8, 5.3 and 5.7): for `s > 0`, an arbitrary set `D` and an arbitrary
+`f : ℝ^N → [0,∞]`, `∫_D f dH^n = s^n ∫_{s⁻¹ D} f(s w) dH^n(w)`. -/
+theorem Submission.allard_tc_cri_hausdorff_dilation_lintegral :
+    ∀ (N n : ℕ) (s : ℝ) (D : Set (Euclidean N)) (f : Euclidean N → ℝ≥0∞), 0 < s → ∫⁻ x in D, f x ∂(μHE[n] : Measure (Euclidean N)) = ENNReal.ofReal s ^ n * ∫⁻ w in {w : Euclidean N | s • w ∈ D}, f (s • w) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro N n s D f hs
+  -- Step 1: the dilation `σ w = s • w` is a measurable equivalence of `ℝ^N`.
+  let σ : Euclidean N ≃ᵐ Euclidean N := MeasurableEquiv.smul₀ s hs.ne'
+  -- Step 2: `H^n.map σ = ofReal (s⁻¹) ^ n • H^n`, since `σ⁻¹ E = s⁻¹ • E`.
+  have hmap : (μHE[n] : Measure (Euclidean N)).map σ =
+      ENNReal.ofReal s⁻¹ ^ n • (μHE[n] : Measure (Euclidean N)) := by
+    ext E hE
+    rw [Measure.map_apply σ.measurable hE, Measure.smul_apply, smul_eq_mul,
+      show (σ : Euclidean N → Euclidean N) ⁻¹' E = s⁻¹ • E from Set.preimage_smul₀ hs.ne' E,
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hs.ne'), ENNReal.smul_def,
+      smul_eq_mul, ENNReal.coe_pow, ← enorm_eq_nnnorm, Real.enorm_eq_ofReal (inv_nonneg.2 hs.le)]
+  -- Step 3: hence `H^n = ofReal s ^ n • H^n.map σ`.
+  have hH : (μHE[n] : Measure (Euclidean N)) =
+      ENNReal.ofReal s ^ n • (μHE[n] : Measure (Euclidean N)).map σ := by
+    rw [hmap, smul_smul, ← mul_pow, ← ENNReal.ofReal_mul hs.le, mul_inv_cancel₀ hs.ne',
+      ENNReal.ofReal_one, one_pow, one_smul]
+  -- Steps 4–6: pull out the constant, commute restriction with `σ`, change variables.
+  conv_lhs => rw [hH]
+  rw [Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul, MeasurableEquiv.restrict_map,
+    lintegral_map_equiv]
+  -- Step 7: `σ⁻¹ D = {w | s • w ∈ D}` and `σ w = s • w` definitionally.
+  rfl
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
