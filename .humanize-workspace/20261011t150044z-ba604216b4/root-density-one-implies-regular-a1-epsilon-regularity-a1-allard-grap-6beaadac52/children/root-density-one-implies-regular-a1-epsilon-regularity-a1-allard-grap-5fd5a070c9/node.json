@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1.segment_ftc-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1",
+  "depth": 6,
+  "title": "Fundamental theorem of calculus along a segment for a Lipschitz function",
+  "statement": "Let n ∈ ℕ, u : ℝⁿ → ℝ (ℝⁿ = Euclid n) Lipschitz with constant L, and x, y ∈ ℝⁿ. If u is differentiable at (1 − t)y + tx for L¹-almost every t ∈ [0, 1], then u(x) − u(y) = ∫_0^1 Du((1 − t)y + tx)(x − y) dt. Here Du = fderiv ℝ u and the integral is the interval integral from 0 to 1.",
+  "lean_statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (x y : Euclid n), LipschitzWith L u → (∀ᵐ t ∂(volume.restrict (Icc (0 : ℝ) 1)), DifferentiableAt ℝ u ((1 - t) • y + t • x)) → u x - u y = ∫ t in (0 : ℝ)..1, fderiv ℝ u ((1 - t) • y + t • x) (x - y)",
+  "lean_name": "dorag_ha_pb_segment_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5fd5a070c9-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1.slice_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1",
+  "depth": 6,
+  "title": "Affine change-of-variables bound for each t-slice over the unit ball",
+  "statement": "Let n ∈ ℕ, B := B̆_1(0) ⊂ ℝⁿ (ℝⁿ = Euclid n) the open unit ball, g : ℝⁿ → [0, ∞] measurable, and t ∈ [0, 1]. Then ∫_B ∫_B g((1 − t)y + tx) dy dx ≤ 2ⁿ·Lⁿ(B)·∫_B g. These are lower Lebesgue integrals in [0, ∞]; the outer variable is x and the inner variable is y.",
+  "lean_statement": "∀ (n : ℕ) (g : Euclid n → ℝ≥0∞), Measurable g → ∀ t ∈ Icc (0 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x) ≤ 2 ^ n * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z",
+  "lean_name": "dorag_ha_pb_slice_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-7f89a1ea18-a1"
+}
