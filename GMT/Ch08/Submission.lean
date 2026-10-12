@@ -1229,6 +1229,79 @@ theorem Submission.intcpt_allard_weighted_radial_monotonicity :
   rw [← hC]
   linarith
 
+/-- Cylinder monotonicity (Simon Ch. 8, (7) in the proof of 5.10, "proved by simply integrating
+3.5"): under (1r)–(3r) on `B_r(y)` for `0 < r < 1`, for `0 < τ ≤ 1` and `0 < σ ≤ ρ < 1`,
+`μ_W(U^τ_σ(y))/σ^n ≤ μ_W(U^{2τ}_ρ(y))/ρ^n + C(1 + K)ερ/τ` with `C = 2^{n+1}(M₀ + 1)`, where
+`U^τ_r(y) = B_r(y) ∩ {z : |q(z - y)| < τ}` and `q = id - p_P`.  The integrated weighted
+monotonicity is applied to a cylindrical weight `h` (`1` where `|q(z - y)| < τ`, `0` where
+`|q(z - y)| ≥ 2τ`, `|Dh(z)[p_S(z - y)]| ≤ (M₀/τ)|p_S - p_P||z - y|`) and radial cutoffs `φ_j` with
+`A_j ↓ 1`; letting `j → ∞` gives the inequality for `∫_{B_t(y)} h dμ_W`, which bounds the
+cylinder masses. -/
+theorem Submission.intcpt_allard_cylinder_monotonicity :
+    ∀ (N n : ℕ), ∃ C : ℝ, 0 ≤ C ∧ ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε K : ℝ), W.HasLocallyBoundedFirstVariation → ball y 1 ⊆ U → 0 < ε → 0 ≤ K → (∀ r : ℝ, 0 < r → r < 1 → variationMeasure W (closedBall y r) ≤ ENNReal.ofReal ε * W.weight (closedBall y r)) → (∀ r : ℝ, 0 < r → r < 1 → (∫⁻ z in closedBall y r ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * r ^ n)) → (∀ r : ℝ, 0 < r → r < 1 → W.weight (closedBall y r) ≤ ENNReal.ofReal (K * r ^ n)) → ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → W.weight (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ W.weight (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (C * (1 + K) * ε * ρ / τ) := by
+  intro N n
+  -- Step 0: `C = 2^{n+1}(M₀ + 1)`, where `M₀/τ` is the gradient constant of the cylindrical weight.
+  obtain ⟨M₀, hM₀, hweight⟩ := Submission.intcpt_allard_cm_cylinder_weight
+  refine ⟨2 ^ (n + 1) * (M₀ + 1), mul_nonneg (pow_nonneg zero_le_two _) (by linarith), ?_⟩
+  intro U W P y ε K hW hU hε hK hvar htilt hmass τ σ ρ hτ hτ1 hσ hσρ hρ
+  have hρ0 : 0 < ρ := hσ.trans_le hσρ
+  -- Step 2: the cylindrical weight `h`.
+  obtain ⟨h, hh, hh01, hh1, hh0, hDh⟩ := hweight N n P y τ hτ
+  have hhm : Measurable h := hh.continuous.measurable
+  -- Step 1: `A_j = 1 + (1 - ρ)/(2(j + 1)) ↓ 1`, with `A_j ≤ 2` and `ρA_j ≤ R := (1 + ρ)/2 < 1`.
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, R = (1 + ρ) / 2 := ⟨_, rfl⟩
+  have hR1 : R < 1 := by rw [hR]; linarith
+  obtain ⟨A, hA1, hA2, hρA, hAlim⟩ : ∃ A : ℕ → ℝ, (∀ j, 1 < A j) ∧ (∀ j, A j ≤ 2) ∧
+      (∀ j, ρ * A j ≤ R) ∧ Tendsto A atTop (𝓝 1) := by
+    have hx : ∀ j : ℕ, 0 < 1 / ((j : ℝ) + 1) ∧ 1 / ((j : ℝ) + 1) ≤ 1 := fun j ↦
+      ⟨by positivity, (div_le_one₀ (by positivity)).2 (by linarith [j.cast_nonneg (α := ℝ)])⟩
+    refine ⟨fun j ↦ 1 + (1 - ρ) / 2 * (1 / ((j : ℝ) + 1)), fun j ↦ ?_, fun j ↦ ?_, fun j ↦ ?_, ?_⟩
+    · nlinarith [mul_pos (sub_pos.2 hρ) (hx j).1]
+    · nlinarith [mul_nonneg hρ0.le (hx j).1.le, (hx j).2]
+    · rw [hR]
+      nlinarith [mul_nonneg (sub_nonneg.2 hρ.le) (sub_nonneg.2 hρ.le),
+        mul_nonneg (mul_nonneg hρ0.le (sub_nonneg.2 hρ.le)) (sub_nonneg.2 (hx j).2)]
+    · simpa using (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul ((1 - ρ) / 2)).const_add 1
+  have hA0 : ∀ j, 0 < A j := fun j ↦ zero_lt_one.trans (hA1 j)
+  -- The radial cutoffs `φ_j`: `1` on `(-∞, 1]`, `0` on `[A_j², ∞)`.
+  choose φ hφ hφanti hφ01 hφ1 hφ0 using fun j ↦
+    Submission.intcpt_allard_cm_radial_cutoff (A j) (hA1 j)
+  -- Step 3: for each `j`, the integrated weighted monotonicity with `M = M₀/τ`.
+  have hj : ∀ j, (∫ z, φ j (‖z - y‖ ^ 2 / σ ^ 2) * h z ∂W.weight) / σ ^ n ≤
+      (∫ z, φ j (‖z - y‖ ^ 2 / ρ ^ 2) * h z ∂W.weight) / ρ ^ n +
+        2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ := fun j ↦
+    Submission.intcpt_allard_weighted_radial_monotonicity N n U W P y ε K (M₀ / τ) (A j) h (φ j)
+      hW hU hε hK (div_nonneg hM₀ hτ.le) hvar htilt hmass hh hh01 hDh (hφ j) (hφanti j) (hφ01 j)
+      (hA0 j) (hA2 j) (hφ0 j) σ ρ hσ hσρ ((hρA j).trans_lt hR1)
+  -- Step 4: let `j → ∞`; `B_R(y) ⊆ B°_1(y) ⊆ U` is compact, so `μ_W(B_R(y)) < ∞`.
+  have hRfin : W.weight (closedBall y R) ≠ ∞ :=
+    W.weight_finite_on_compact _ (isCompact_closedBall y R) ((closedBall_subset_ball hR1).trans hU)
+  have hlim : ∀ t, 0 < t → t ≤ ρ →
+      Tendsto (fun j ↦ ∫ z, φ j (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight) atTop
+        (𝓝 (∫ z in closedBall y t, h z ∂W.weight)) := fun t ht htρ ↦
+    Submission.intcpt_allard_cm_cutoff_integral_tendsto N W.weight y h φ A t R hhm hh01
+      (fun j ↦ (hφ j).continuous.measurable) hφ01 hφ1 hφ0 hA0 hAlim ht
+      (fun j ↦ (mul_le_mul_of_nonneg_right htρ (hA0 j).le).trans (hρA j)) hRfin
+  have hI : (∫ z in closedBall y σ, h z ∂W.weight) / σ ^ n ≤
+      (∫ z in closedBall y ρ, h z ∂W.weight) / ρ ^ n + 2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ :=
+    le_of_tendsto_of_tendsto' ((hlim σ hσ hσρ).div_const _)
+      (((hlim ρ hρ0 le_rfl).div_const _).add_const _) hj
+  -- `2^{n+1}(M₀/τ + K)ερ ≤ C(1 + K)ερ/τ`, since `τ ≤ 1` gives `M₀ + Kτ ≤ (M₀ + 1)(1 + K)`.
+  have hMK : M₀ / τ + K ≤ (M₀ + 1) * (1 + K) / τ := by
+    rw [div_add' _ _ _ hτ.ne', div_le_div_iff_of_pos_right hτ]
+    nlinarith [mul_nonneg hM₀ hK, mul_nonneg hK (sub_nonneg.2 hτ1)]
+  have hE : 2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ ≤
+      2 ^ (n + 1) * (M₀ + 1) * (1 + K) * ε * ρ / τ :=
+    calc 2 ^ (n + 1) * (M₀ / τ + K) * ε * ρ = 2 ^ (n + 1) * ε * ρ * (M₀ / τ + K) := by ring
+      _ ≤ 2 ^ (n + 1) * ε * ρ * ((M₀ + 1) * (1 + K) / τ) :=
+        mul_le_mul_of_nonneg_left hMK (mul_pos (mul_pos (pow_pos two_pos _) hε) hρ0).le
+      _ = 2 ^ (n + 1) * (M₀ + 1) * (1 + K) * ε * ρ / τ := by ring
+  -- Step 5: compare the ball integrals of `h` with the cylinder masses.
+  exact Submission.intcpt_allard_cm_cylinder_mass_bound N n W.weight P y h τ σ ρ
+    (2 ^ (n + 1) * (M₀ + 1) * (1 + K) * ε * ρ / τ) hhm hh01 hh1 hh0 hσ hσρ
+    (W.weight_finite_on_compact _ (isCompact_closedBall y ρ) ((closedBall_subset_ball hρ).trans hU))
+    (by linarith)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
