@@ -2301,6 +2301,383 @@ theorem Submission.mcm_lp_density_of_monotonicity : (∀ (n ℓ : ℕ) (V : Rect
       Real.exp (Λ / 2) * Λ * (ρ / R) ^ (1 - (n : ℝ) / p) := by nlinarith
   exact ⟨⟨(Real.exp_le_exp.2 (neg_le_neg h₁)).trans hF₁, hF₂.trans (Real.exp_le_exp.2 h₁)⟩,
     hF₃.trans h₂⟩
+set_option maxHeartbeats 400000 in
+/-- **Poincaré inequality** (Simon Ch. 4, 5.1–5.6, with 4.10(1), 4.10(2) and 4.11), given
+`ApproxTangentAE` and the structure facts of §1 for every varifold. For `n, α, Γ` we fix
+`β ∈ (0, ½)` with `(1 - α²)(1 - β)⁻ⁿ ≤ 1 - α²/2` and `c = 8Γ/(α²ωₙ)` before `ℓ` and the data.
+Bounded `H` is `L^{n+1}_loc`, so `Θⁿ(μ_V, ·)` exists on `U` (4.9) and is `≥ 1` on `spt V ∩ U`
+(4.10(1)). The ball-average estimate 5.4 with `g ≡ 1` gives `μ_V(B_s(y)) ≤ 2Γsⁿ`, hence
+`∫_{B_s(y)} |x - y|^{1-n} dμ_V ≤ 2nΓs` (4.10(2) for full balls). At `μ_V`-a.e. `ζ ∈ B_{βρ}(ξ)`
+with `h(ζ) > t + ε`, the mean-value estimate for `ψ(h - t)` on `B_{(1-β)ρ}(ζ)` gives
+`α²nωₙ/4 ≤ ∫ ψ'(h - t)|∇^M h||x - ζ|^{1-n} dμ_V`; integrating in `ζ` and `t` (Tonelli and the
+layer-cake formula 4.11) gives `∫_{B_{βρ}(ξ)} (h - ε)⁺ dμ_V ≤ cρ ∫_{B_ρ(ξ)} |∇^M h| dμ_V`, and
+`ε ↓ 0`. -/
+theorem Submission.poincare_inequality : ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → PoincareInequality := by
+  intro hAT hGF
+  obtain ⟨-, -, -, hLpDensity⟩ := Submission.mean_curvature_monotonicity hGF
+  obtain ⟨-, hLpSupp⟩ := Submission.canonical_representatives hAT hGF
+  have hWMI := @Submission.weighted_monotonicity_identity
+  intro n hn α Γ hα0 hα1 hΓ
+  have hω : 0 < omega n := by
+    unfold omega
+    exact ENNReal.toReal_pos (Metric.measure_ball_pos _ _ one_pos).ne' measure_ball_lt_top.ne
+  have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+  obtain ⟨β, hβ0, hβ1, hβkey⟩ : ∃ β : ℝ, 0 < β ∧ β < 1 / 2 ∧
+      (1 - α ^ 2) * ((1 - β) ^ n)⁻¹ ≤ 1 - α ^ 2 / 2 := by
+    refine ⟨min (1 / 4) (α ^ 2 / (4 * n)), lt_min (by norm_num) (by positivity),
+      (min_le_left _ _).trans_lt (by norm_num), ?_⟩
+    set β := min (1 / 4 : ℝ) (α ^ 2 / (4 * n)) with hβ
+    have hβ14 : β ≤ 1 / 4 := min_le_left _ _
+    have hb : (1 : ℝ) - α ^ 2 / 4 ≤ (1 - β) ^ n := by
+      have h1 := one_add_mul_le_pow (a := -β) (by linarith) n
+      have h2 : (n : ℝ) * β ≤ α ^ 2 / 4 := by
+        have : β ≤ α ^ 2 / (4 * n) := min_le_right _ _
+        calc (n : ℝ) * β ≤ n * (α ^ 2 / (4 * n)) := by gcongr
+          _ = α ^ 2 / 4 := by field_simp
+      calc (1 : ℝ) - α ^ 2 / 4 ≤ 1 + n * (-β) := by linarith
+        _ ≤ (1 + -β) ^ n := h1
+        _ = (1 - β) ^ n := by ring
+    have hα2 : α ^ 2 < 1 := pow_lt_one₀ hα0.le hα1 two_ne_zero
+    have hpos : (0 : ℝ) < 1 - α ^ 2 / 4 := by linarith
+    have hpos' : (0 : ℝ) < (1 - β) ^ n := hpos.trans_le hb
+    rw [← div_eq_mul_inv, div_le_iff₀ hpos']
+    calc 1 - α ^ 2 ≤ (1 - α ^ 2 / 2) * (1 - α ^ 2 / 4) := by
+          linarith [sq_nonneg α, sq_nonneg (α ^ 2)]
+      _ ≤ (1 - α ^ 2 / 2) * (1 - β) ^ n := mul_le_mul_of_nonneg_left hb (by linarith)
+  refine ⟨β, 8 * Γ / (α ^ 2 * omega n), hβ0, hβ1, by positivity, ?_⟩
+  intro ℓ V U H Λ h ξ ρ hU hH hHΛ hθ hh hh0 hρ hball hmeas hexp hΓρ
+  classical
+  obtain ⟨hFV1, hFV2, hFV3⟩ := hGF n ℓ V hn
+  set μ := V.weight with hμ
+  set Λ' := max Λ 0 with hΛ'
+  have hΛ'0 : 0 ≤ Λ' := le_max_right _ _
+  have hHΛ' : ∀ᵐ x ∂μ, x ∈ U → ‖H x‖ ≤ Λ' :=
+    hHΛ.mono fun x hx hxU => (hx hxU).trans (le_max_left _ _)
+  have hexp' : Real.exp (Λ' * ρ) ≤ 1 + α := by
+    rcases le_total 0 Λ with hΛ0 | hΛ0
+    · rw [hΛ', max_eq_left hΛ0]; exact hexp
+    · rw [hΛ', max_eq_right hΛ0, zero_mul, Real.exp_zero]; linarith
+  have hLp : V.IsLocallyLp U H ((n : ℝ) + 1) := by
+    intro K hK hKU
+    have : IsFiniteMeasure (μ.restrict K) := ⟨by
+      rw [Measure.restrict_apply_univ]; exact hK.measure_lt_top⟩
+    have hint : IntegrableOn H K μ := hH.1.integrableOn_compact_subset hKU hK
+    refine MemLp.of_bound hint.aestronglyMeasurable Λ' ?_
+    rw [ae_restrict_iff' hK.measurableSet]
+    exact hHΛ'.mono fun x hx hxK => hx (hKU hxK)
+  have hn1 : (n : ℝ) < (n : ℝ) + 1 := by linarith
+  have hDens : ∀ ζ ∈ U, V.HasDensityAt ζ (V.density ζ) :=
+    (hLpDensity n ℓ V U H _ hn hU hH hn1 hLp).1
+  have hΘ : ∀ x ∈ V.support ∩ U, 1 ≤ V.density x :=
+    (hLpSupp n ℓ V U H _ hn hU hH hn1 hLp hθ).1
+  have hBU : closedBall ξ ρ ⊆ U :=
+    (closedBall_subset_closedBall (by linarith : ρ ≤ 2 * ρ)).trans hball
+  -- growth bound (5.4 with g ≡ 1)
+  have hgrowth : ∀ y ∈ closedBall ξ ρ, ∀ s : ℝ, 0 < s → s ≤ ρ →
+      μ (closedBall y s) ≤ ENNReal.ofReal (2 * Γ * s ^ n) := by
+    intro y hy s hs hsρ
+    have hyξ : dist y ξ ≤ ρ := mem_closedBall.1 hy
+    have hy2 : closedBall y ρ ⊆ closedBall ξ (2 * ρ) := closedBall_subset_closedBall' (by linarith)
+    have hyball : closedBall y ρ ⊆ U := hy2.trans hball
+    have hzero : ∀ x, V.tangentialGradient (fun _ => (1 : ℝ)) x = 0 := by
+      intro x
+      simp [RectifiableVarifold.tangentialGradient, gradient_fun_const]
+    have key := Submission.bounded_curvature_ball_average_estimate hWMI n ℓ V U H Λ'
+      (fun _ => 1) y ρ s hn hFV1 hFV2 hFV3 hU hH hΛ'0 hHΛ' contDiffOn_const
+      (fun _ _ => zero_le_one) hyball hs hsρ (by simp [hzero])
+    simp only [hzero, norm_zero, zero_mul, integral_zero, mul_zero, add_zero,
+      setIntegral_const, smul_eq_mul, mul_one] at key
+    have hfin : μ (closedBall y s) ≠ ⊤ := (isCompact_closedBall y s).measure_lt_top.ne
+    have hfin2 : μ (closedBall ξ (2 * ρ)) ≠ ⊤ := (isCompact_closedBall ξ (2 * ρ)).measure_lt_top.ne
+    have h1 : μ.real (closedBall y ρ) ≤ Γ * ρ ^ n :=
+      (measureReal_mono hy2 hfin2).trans hΓρ
+    have h2 : Real.exp (Λ' * (ρ - s)) ≤ 1 + α :=
+      (Real.exp_le_exp.2 (mul_le_mul_of_nonneg_left (by linarith) hΛ'0)).trans hexp'
+    have hsn : (0 : ℝ) < s ^ n := pow_pos hs n
+    have hρn : (0 : ℝ) < ρ ^ n := pow_pos hρ n
+    have h3 : μ.real (closedBall y s) ≤ Real.exp (Λ' * (ρ - s)) * (μ.real (closedBall y ρ) / ρ ^ n) * s ^ n := by
+      rwa [div_le_iff₀ hsn] at key
+    have h4 : μ.real (closedBall y ρ) / ρ ^ n ≤ Γ := by rwa [div_le_iff₀ hρn]
+    have h5 : 0 ≤ μ.real (closedBall y ρ) / ρ ^ n := by positivity
+    rw [← ENNReal.ofReal_toReal hfin]
+    apply ENNReal.ofReal_le_ofReal
+    change μ.real (closedBall y s) ≤ 2 * Γ * s ^ n
+    calc μ.real (closedBall y s) ≤ Real.exp (Λ' * (ρ - s)) * (μ.real (closedBall y ρ) / ρ ^ n) * s ^ n := h3
+      _ ≤ (1 + α) * Γ * s ^ n := by gcongr
+      _ ≤ 2 * Γ * s ^ n := by gcongr; linarith
+  have hkernel : ∀ x ∈ closedBall ξ ρ, ∀ s : ℝ, 0 < s → s ≤ ρ →
+      ∫⁻ z in closedBall x s, ENNReal.ofReal (‖z - x‖ ^ (1 - (n : ℝ))) ∂μ ≤
+        ENNReal.ofReal (n * (2 * Γ) * s) := fun x hx =>
+    Submission.closedBall_rpow_kernel_lintegral_le_of_growth μ n x ρ (2 * Γ) hn (hgrowth x hx)
+  set c := 8 * Γ / (α ^ 2 * omega n) with hc
+  set A := closedBall ξ (β * ρ) with hA
+  set B := closedBall ξ ρ with hB
+  set r₀ := (1 - β) * ρ with hr₀
+  have hr₀pos : 0 < r₀ := mul_pos (by linarith) hρ
+  have hr₀ρ : r₀ ≤ ρ := by rw [hr₀]; exact mul_le_of_le_one_left hρ.le (by linarith)
+  have hAB : A ⊆ B := closedBall_subset_closedBall (mul_le_of_le_one_left hρ.le (by linarith))
+  have hball₀ : ∀ ζ ∈ A, closedBall ζ r₀ ⊆ B := fun ζ hζ =>
+    closedBall_subset_closedBall' (by rw [mem_closedBall] at hζ; linarith)
+  have hTGmeas_of : ∀ f : Ambient n ℓ → ℝ, AEStronglyMeasurable (V.tangentialGradient f) μ := by
+    intro f
+    have hgm : Measurable (gradient f) :=
+      (InnerProductSpace.toDual ℝ (Ambient n ℓ)).symm.continuous.measurable.comp (measurable_fderiv ℝ f)
+    exact (ContinuousLinearMap.id ℝ (Ambient n ℓ →L[ℝ] Ambient n ℓ)).aestronglyMeasurable_comp₂
+      hFV3 hgm.aestronglyMeasurable
+  have hgradcont : ContinuousOn (gradient h) U :=
+    (InnerProductSpace.toDual ℝ (Ambient n ℓ)).symm.continuous.comp_continuousOn
+      (hh.continuousOn_fderiv_of_isOpen hU le_rfl)
+  obtain ⟨Cg, hCg⟩ : ∃ C, ∀ x ∈ B, ‖gradient h x‖ ≤ C :=
+    (isCompact_closedBall ξ ρ).exists_bound_of_continuousOn (hgradcont.mono hBU)
+  have hTGbound : ∀ x ∈ B, ‖V.tangentialGradient h x‖ ≤ Cg := fun x hx =>
+    (Submodule.norm_starProjection_apply_le _ _).trans (hCg x hx)
+  have : IsFiniteMeasure (μ.restrict B) := ⟨by
+    rw [Measure.restrict_apply_univ]; exact (isCompact_closedBall ξ ρ).measure_lt_top⟩
+  have hTGint : IntegrableOn (fun x => ‖V.tangentialGradient h x‖) B μ :=
+    Integrable.of_bound (hTGmeas_of h).norm.restrict Cg
+      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => by
+        rw [norm_norm]; exact hTGbound x hx))
+  have hSmeas : MeasurableSet {x | x ∈ closedBall ξ ρ ∧ 0 < h x} := by
+    have : {x | x ∈ closedBall ξ ρ ∧ 0 < h x} = closedBall ξ ρ ∩ (U ∩ h ⁻¹' Ioi 0) := by
+      ext x; constructor
+      · rintro ⟨hx1, hx2⟩; exact ⟨hx1, hBU hx1, hx2⟩
+      · rintro ⟨hx1, -, hx2⟩; exact ⟨hx1, hx2⟩
+    rw [this]
+    exact measurableSet_closedBall.inter
+      (hh.continuousOn.isOpen_inter_preimage hU isOpen_Ioi).measurableSet
+  have main : ∀ ε : ℝ, 0 < ε → ∫ x in A, h x ∂μ ≤
+      c * ρ * ∫ x in B, ‖V.tangentialGradient h x‖ ∂μ + ε * μ.real A := by
+    intro ε hε
+    obtain ⟨ψ, hψC, hψ01, hψ0, hψ1, hψ'0, ⟨M, hM⟩, hψint⟩ :=
+      Submission.smooth_step_truncation_exists ε hε
+    set h' : Ambient n ℓ → ℝ := U.piecewise h 0 with hh'
+    have hh'meas : Measurable h' :=
+      hh.continuousOn.measurable_piecewise continuousOn_const hU.measurableSet
+    have hh'eq : ∀ x ∈ U, h' x = h x := fun x hx => Set.piecewise_eq_of_mem _ _ _ hx
+    set G0 : Ambient n ℓ → ℝ≥0∞ := fun x => ENNReal.ofReal ‖V.tangentialGradient h x‖ with hG0
+    have hG0meas : AEMeasurable G0 (μ.restrict B) :=
+      (ENNReal.measurable_ofReal.comp_aemeasurable (hTGmeas_of h).norm.aemeasurable).restrict
+    set G' := hG0meas.mk G0 with hG'
+    have hG'meas : Measurable G' := hG0meas.measurable_mk
+    have hG'eq : G0 =ᵐ[μ.restrict B] G' := hG0meas.ae_eq_mk
+    set φ : ℝ → Ambient n ℓ → ℝ≥0∞ := fun t x => ENNReal.ofReal (deriv ψ (h' x - t)) with hφ
+    have hφmeas : Measurable (Function.uncurry φ) :=
+      ENNReal.measurable_ofReal.comp ((measurable_deriv ψ).comp
+        ((hh'meas.comp measurable_snd).sub measurable_fst))
+    set k : Ambient n ℓ → Ambient n ℓ → ℝ≥0∞ := fun x ζ =>
+      (closedBall x r₀).indicator (fun z => ENNReal.ofReal (‖z - x‖ ^ (1 - (n : ℝ)))) ζ with hk
+    have hkmeas : Measurable (Function.uncurry k) := by
+      have : Function.uncurry k = {p : Ambient n ℓ × Ambient n ℓ | dist p.2 p.1 ≤ r₀}.indicator
+          (fun p => ENNReal.ofReal (‖p.2 - p.1‖ ^ (1 - (n : ℝ)))) := by
+        ext ⟨x, ζ⟩
+        simp only [Function.uncurry_apply_pair, hk, Set.indicator, mem_closedBall, Set.mem_ofPred_eq]
+      rw [this]
+      refine Measurable.indicator ?_ (measurableSet_le (by fun_prop) measurable_const)
+      exact ENNReal.measurable_ofReal.comp ((measurable_snd.sub measurable_fst).norm.pow_const _)
+    set κ : ℝ≥0∞ := ENNReal.ofReal (α ^ 2 * n * omega n / 4) with hκ
+    set L : ℝ≥0∞ := ENNReal.ofReal (n * (2 * Γ) * ρ) with hL
+    have hi : ∀ x ∈ B, ∫⁻ t in Ioi 0, φ t x ≤ 1 := fun x _ => hψint (h' x)
+    have hii : ∀ x ∈ B, ∫⁻ ζ in A, k x ζ ∂μ ≤ L := by
+      intro x hx
+      calc ∫⁻ ζ in A, k x ζ ∂μ
+          = ∫⁻ ζ in A ∩ closedBall x r₀, ENNReal.ofReal (‖ζ - x‖ ^ (1 - (n : ℝ))) ∂μ := by
+            simp only [hk]
+            rw [lintegral_indicator measurableSet_closedBall, Measure.restrict_restrict measurableSet_closedBall,
+              Set.inter_comm]
+        _ ≤ ∫⁻ ζ in closedBall x r₀, ENNReal.ofReal (‖ζ - x‖ ^ (1 - (n : ℝ))) ∂μ :=
+            lintegral_mono_set Set.inter_subset_right
+        _ ≤ ENNReal.ofReal (n * (2 * Γ) * r₀) := hkernel x hx r₀ hr₀pos hr₀ρ
+        _ ≤ L := ENNReal.ofReal_le_ofReal (by gcongr)
+    have hiii : ∀ t : ℝ, 0 < t → ∀ᵐ ζ ∂μ, ζ ∈ A → t + ε < h' ζ →
+        κ ≤ ∫⁻ x in B, φ t x * G' x * k x ζ ∂μ := by
+      intro t ht
+      filter_upwards [Measure.support_mem_ae (μ := μ)] with ζ hζsupp hζA hζh
+      have hζB : ζ ∈ B := hAB hζA
+      have hζU : ζ ∈ U := hBU hζB
+      rw [hh'eq ζ hζU] at hζh
+      have hb0 : closedBall ζ r₀ ⊆ B := hball₀ ζ hζA
+      have hb0U : closedBall ζ r₀ ⊆ U := hb0.trans hBU
+      set g : Ambient n ℓ → ℝ := fun y => ψ (h y - t) with hg
+      have hgC : ContDiffOn ℝ 1 g U := hψC.comp_contDiffOn (hh.sub contDiffOn_const)
+      have hg0 : ∀ x ∈ U, 0 ≤ g x := fun x _ => (hψ01 _).1
+      have hchain : ∀ x ∈ U, V.tangentialGradient g x =
+          deriv ψ (h x - t) • V.tangentialGradient h x := by
+        intro x hx
+        have hdx : DifferentiableAt ℝ h x :=
+          (hh.differentiableOn one_ne_zero).differentiableAt (hU.mem_nhds hx)
+        have := Submission.tangentialGradient_comp_of_differentiableAt n ℓ V (fun y => h y - t) ψ x
+          (hdx.sub_const t) (hψC.differentiable one_ne_zero _)
+        rw [this]
+        congr 1
+        simp only [RectifiableVarifold.tangentialGradient, gradient, fderiv_sub_const]
+      have hnormchain : ∀ x ∈ U, ‖V.tangentialGradient g x‖ =
+          deriv ψ (h x - t) * ‖V.tangentialGradient h x‖ := by
+        intro x hx
+        rw [hchain x hx, norm_smul, Real.norm_of_nonneg (hψ'0 _)]
+      have hkerfin := hkernel ζ hζB r₀ hr₀pos hr₀ρ
+      have hkermeas : AEStronglyMeasurable (fun x => ‖x - ζ‖ ^ (1 - (n : ℝ))) (μ.restrict (closedBall ζ r₀)) :=
+        ((measurable_id.sub measurable_const).norm.pow_const _).aestronglyMeasurable
+      have hkerint : IntegrableOn (fun x => ‖x - ζ‖ ^ (1 - (n : ℝ))) (closedBall ζ r₀) μ := by
+        refine (lintegral_ofReal_ne_top_iff_integrable hkermeas
+          (Eventually.of_forall fun x => by positivity)).1 ?_
+        exact ne_top_of_le_ne_top ENNReal.ofReal_ne_top hkerfin
+      have hgint : IntegrableOn (fun x => ‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ)))
+          (closedBall ζ r₀) μ := by
+        refine Integrable.bdd_mul (c := M * Cg) hkerint (hTGmeas_of g).norm.restrict ?_
+        refine (ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_)
+        rw [norm_norm, hnormchain x (hb0U hx)]
+        have hM0 : 0 ≤ M := (hψ'0 0).trans (hM 0)
+        exact mul_le_mul (hM _) (hTGbound x (hb0 hx)) (norm_nonneg _) hM0
+      have hmv := Submission.density_point_mean_value_estimate hWMI n ℓ V U H Λ' g ζ r₀
+        (V.density ζ) hn hFV1 hFV2 hFV3 hU hH hΛ'0 hHΛ' hgC hg0 hr₀pos hb0U (hDens ζ hζU)
+        (hΘ ζ ⟨hζsupp, hζU⟩) hgint
+      have hgζ : g ζ = 1 := hψ1 _ (by linarith)
+      rw [hgζ, mul_one] at hmv
+      -- the average term
+      have hgcont : ContinuousOn g U := hgC.continuousOn
+      have : IsFiniteMeasure (μ.restrict (closedBall ζ r₀)) := ⟨by
+        rw [Measure.restrict_apply_univ]; exact (isCompact_closedBall ζ r₀).measure_lt_top⟩
+      have hgintB : IntegrableOn g (closedBall ζ r₀) μ := by
+        refine Integrable.of_bound ((hgcont.mono hb0U).aestronglyMeasurable measurableSet_closedBall) 1
+          (Eventually.of_forall fun x => ?_)
+        rw [Real.norm_of_nonneg (hψ01 _).1]; exact (hψ01 _).2
+      set S := {x | x ∈ closedBall ξ ρ ∧ 0 < h x} with hS
+      have hSfin : μ S ≠ ⊤ := ne_top_of_le_ne_top (isCompact_closedBall ξ ρ).measure_lt_top.ne
+        (measure_mono fun x hx => hx.1)
+      have hX : ∫ x in closedBall ζ r₀, g x ∂μ ≤ (1 - α) * omega n * ρ ^ n := by
+        have hind : IntegrableOn (S.indicator (fun _ => (1 : ℝ))) (closedBall ζ r₀) μ :=
+          (integrable_const (1 : ℝ)).indicator hSmeas
+        calc ∫ x in closedBall ζ r₀, g x ∂μ
+            ≤ ∫ x in closedBall ζ r₀, S.indicator (fun _ => (1 : ℝ)) x ∂μ := by
+              refine setIntegral_mono_on hgintB hind measurableSet_closedBall fun x hx => ?_
+              by_cases hxS : x ∈ S
+              · rw [Set.indicator_of_mem hxS]; exact (hψ01 _).2
+              · rw [Set.indicator_of_notMem hxS]
+                have hxB : x ∈ closedBall ξ ρ := hb0 hx
+                have : ¬ 0 < h x := fun hpos => hxS ⟨hxB, hpos⟩
+                exact (hψ0 _ (by linarith [not_lt.1 this])).le
+          _ = μ.real (closedBall ζ r₀ ∩ S) := by
+              rw [setIntegral_indicator hSmeas, setIntegral_const, smul_eq_mul, mul_one]
+          _ ≤ μ.real S := measureReal_mono Set.inter_subset_right hSfin
+          _ ≤ (1 - α) * omega n * ρ ^ n := hmeas
+      set I := ∫ x in closedBall ζ r₀, ‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ)) ∂μ with hI
+      have hI0 : 0 ≤ I := setIntegral_nonneg measurableSet_closedBall fun x _ => by positivity
+      have hX0 : 0 ≤ ∫ x in closedBall ζ r₀, g x ∂μ :=
+        setIntegral_nonneg measurableSet_closedBall fun x hx => hg0 x (hb0U hx)
+      have hE : Real.exp (Λ' * r₀) ≤ 1 + α :=
+        (Real.exp_le_exp.2 (mul_le_mul_of_nonneg_left hr₀ρ hΛ'0)).trans hexp'
+      have hr₀n : r₀ ^ n = (1 - β) ^ n * ρ ^ n := by rw [hr₀, mul_pow]
+      have h1β : (0 : ℝ) < (1 - β) ^ n := pow_pos (by linarith) n
+      have hρn : (0 : ℝ) < ρ ^ n := pow_pos hρ n
+      have hXr : (∫ x in closedBall ζ r₀, g x ∂μ) / r₀ ^ n ≤ (1 - α) * omega n * ((1 - β) ^ n)⁻¹ := by
+        rw [div_le_iff₀ (by rw [hr₀n]; positivity), hr₀n]
+        calc ∫ x in closedBall ζ r₀, g x ∂μ ≤ (1 - α) * omega n * ρ ^ n := hX
+          _ = (1 - α) * omega n * ((1 - β) ^ n)⁻¹ * ((1 - β) ^ n * ρ ^ n) := by
+            field_simp
+      have hIn : 0 ≤ (n : ℝ)⁻¹ * I := by positivity
+      have hbr0 : 0 ≤ (∫ x in closedBall ζ r₀, g x ∂μ) / r₀ ^ n + (n : ℝ)⁻¹ * I := by positivity
+      have hstep : omega n ≤ (1 + α) * ((1 - α) * omega n * ((1 - β) ^ n)⁻¹ + (n : ℝ)⁻¹ * I) :=
+        calc omega n ≤ Real.exp (Λ' * r₀) * ((∫ x in closedBall ζ r₀, g x ∂μ) / r₀ ^ n + (n : ℝ)⁻¹ * I) := hmv
+          _ ≤ (1 + α) * ((∫ x in closedBall ζ r₀, g x ∂μ) / r₀ ^ n + (n : ℝ)⁻¹ * I) :=
+            mul_le_mul_of_nonneg_right hE hbr0
+          _ ≤ (1 + α) * ((1 - α) * omega n * ((1 - β) ^ n)⁻¹ + (n : ℝ)⁻¹ * I) := by
+            gcongr
+      have hkeyω : (1 + α) * ((1 - α) * omega n * ((1 - β) ^ n)⁻¹) ≤ (1 - α ^ 2 / 2) * omega n := by
+        have : (1 + α) * ((1 - α) * omega n * ((1 - β) ^ n)⁻¹) =
+            ((1 - α ^ 2) * ((1 - β) ^ n)⁻¹) * omega n := by ring
+        rw [this]
+        exact mul_le_mul_of_nonneg_right hβkey hω.le
+      have hIbound : α ^ 2 * n * omega n / 4 ≤ I := by
+        have h2 : α ^ 2 / 2 * omega n ≤ (1 + α) * ((n : ℝ)⁻¹ * I) := by
+          rw [mul_add] at hstep
+          linarith
+        have h3 : (1 + α) * ((n : ℝ)⁻¹ * I) ≤ 2 * ((n : ℝ)⁻¹ * I) :=
+          mul_le_mul_of_nonneg_right (by linarith) hIn
+        have h4 : α ^ 2 / 2 * omega n ≤ 2 * ((n : ℝ)⁻¹ * I) := h2.trans h3
+        have h5 : α ^ 2 / 2 * omega n * n ≤ 2 * I := by
+          have := mul_le_mul_of_nonneg_right h4 hn'.le
+          calc α ^ 2 / 2 * omega n * n ≤ 2 * ((n : ℝ)⁻¹ * I) * n := this
+            _ = 2 * I := by field_simp
+        linarith
+      -- convert to the lintegral form
+      have hconv : ∫⁻ x in B, φ t x * G' x * k x ζ ∂μ = ENNReal.ofReal I := by
+        calc ∫⁻ x in B, φ t x * G' x * k x ζ ∂μ = ∫⁻ x in B, φ t x * G0 x * k x ζ ∂μ := by
+              refine lintegral_congr_ae ?_
+              filter_upwards [hG'eq] with x hx
+              rw [hx]
+          _ = ∫⁻ x in B, (closedBall ζ r₀).indicator
+                (fun x => ENNReal.ofReal (‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ)))) x ∂μ := by
+              refine setLIntegral_congr_fun measurableSet_closedBall fun x hxB => ?_
+              by_cases hx : x ∈ closedBall ζ r₀
+              · have hζx : ζ ∈ closedBall x r₀ := mem_closedBall_comm.1 hx
+                have hxU : x ∈ U := hb0U hx
+                rw [Set.indicator_of_mem hx]
+                simp only [hk, hφ, hG0, Set.indicator_of_mem hζx, hh'eq x hxU, norm_sub_rev ζ x,
+                  hnormchain x hxU]
+                rw [← ENNReal.ofReal_mul (hψ'0 _), ← ENNReal.ofReal_mul (mul_nonneg (hψ'0 _) (norm_nonneg _))]
+              · have hζx : ζ ∉ closedBall x r₀ := fun h' => hx (mem_closedBall_comm.1 h')
+                rw [Set.indicator_of_notMem hx]
+                simp only [hk, Set.indicator_of_notMem hζx, mul_zero]
+          _ = ∫⁻ x in closedBall ζ r₀, ENNReal.ofReal (‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ))) ∂μ := by
+              rw [lintegral_indicator measurableSet_closedBall, Measure.restrict_restrict measurableSet_closedBall,
+                Set.inter_eq_left.2 hb0]
+          _ = ENNReal.ofReal I := by
+              rw [hI, ofReal_integral_eq_lintegral_ofReal hgint
+                (Eventually.of_forall fun x => by positivity)]
+      rw [hconv]
+      exact ENNReal.ofReal_le_ofReal hIbound
+    have hK4 := Submission.layer_cake_tonelli_truncation_bound μ A B h' φ G' k κ L ε
+      measurableSet_closedBall measurableSet_closedBall hh'meas hφmeas hG'meas hkmeas hi hii hiii
+    have hAU : A ⊆ U := hAB.trans hBU
+    have hhintA : IntegrableOn h A μ :=
+      (hh.continuousOn.mono hAU).integrableOn_compact (isCompact_closedBall ξ (β * ρ))
+    have hposint : IntegrableOn (fun x => max (h x - ε) 0) A μ :=
+      (hhintA.sub (integrableOn_const (isCompact_closedBall ξ (β * ρ)).measure_lt_top.ne)).pos_part
+    have hYeq : ∫⁻ x in B, G' x ∂μ = ENNReal.ofReal (∫ x in B, ‖V.tangentialGradient h x‖ ∂μ) := by
+      rw [lintegral_congr_ae hG'eq.symm, ofReal_integral_eq_lintegral_ofReal hTGint
+        (Eventually.of_forall fun x => norm_nonneg _)]
+    have hXeq : ∫⁻ ζ in A, ENNReal.ofReal (h' ζ - ε) ∂μ = ENNReal.ofReal (∫ x in A, max (h x - ε) 0 ∂μ) := by
+      rw [ofReal_integral_eq_lintegral_ofReal hposint (Eventually.of_forall fun x => le_max_right _ _)]
+      refine setLIntegral_congr_fun measurableSet_closedBall fun x hx => ?_
+      rw [hh'eq x (hAU hx)]
+      rcases le_total 0 (h x - ε) with hpos | hneg
+      · rw [max_eq_left hpos]
+      · rw [max_eq_right hneg, ENNReal.ofReal_of_nonpos hneg, ENNReal.ofReal_zero]
+    rw [hXeq, hYeq, hκ, hL, ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)] at hK4
+    have hK4' := (ENNReal.ofReal_le_ofReal_iff (by
+      have := setIntegral_nonneg (μ := μ) measurableSet_closedBall
+        (fun x (_ : x ∈ B) => norm_nonneg (V.tangentialGradient h x))
+      positivity)).1 hK4
+    set X := ∫ x in A, max (h x - ε) 0 ∂μ with hXdef
+    set Y := ∫ x in B, ‖V.tangentialGradient h x‖ ∂μ with hYdef
+    have hκpos : 0 < α ^ 2 * n * omega n / 4 := by positivity
+    have hXY : X ≤ c * ρ * Y := by
+      have : X = (α ^ 2 * n * omega n / 4 * X) / (α ^ 2 * n * omega n / 4) := by
+        field_simp
+      rw [this, div_le_iff₀ hκpos]
+      calc α ^ 2 * n * omega n / 4 * X ≤ n * (2 * Γ) * ρ * Y := hK4'
+        _ = c * ρ * Y * (α ^ 2 * n * omega n / 4) := by
+          rw [hc]; field_simp; ring
+    have hAle : ∫ x in A, h x ∂μ ≤ X + ε * μ.real A := by
+      have h1 : ∫ x in A, h x ∂μ ≤ ∫ x in A, (max (h x - ε) 0 + ε) ∂μ :=
+        setIntegral_mono_on hhintA (hposint.add (integrableOn_const
+          (isCompact_closedBall ξ (β * ρ)).measure_lt_top.ne)) measurableSet_closedBall
+          fun x _ => by linarith [le_max_left (h x - ε) 0]
+      rw [integral_add hposint (integrableOn_const (isCompact_closedBall ξ (β * ρ)).measure_lt_top.ne),
+        setIntegral_const, smul_eq_mul, mul_comm (μ.real A)] at h1
+      exact h1
+    linarith
+  apply le_of_forall_pos_le_add
+  intro ε hε
+  have hA0 : 0 ≤ μ.real A := measureReal_nonneg
+  have := main (ε / (μ.real A + 1)) (by positivity)
+  calc ∫ x in A, h x ∂μ ≤ c * ρ * ∫ x in B, ‖V.tangentialGradient h x‖ ∂μ +
+        ε / (μ.real A + 1) * μ.real A := this
+    _ ≤ c * ρ * ∫ x in B, ‖V.tangentialGradient h x‖ ∂μ + ε := by
+      have : ε / (μ.real A + 1) * μ.real A ≤ ε := by
+        rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
+        exact mul_le_mul_of_nonneg_left (by linarith) hε.le
+      linarith
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
