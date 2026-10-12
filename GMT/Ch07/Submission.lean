@@ -519,6 +519,37 @@ theorem Submission.rsd_cmr_ir_approxTangent_of_local_null : ∀ (P n : ℕ) (M M
   rw [mem_ball, dist_eq_norm]
   linarith [hr.1]
 
+/-- **Restricting an integer multiplicity triple to a locally full-measure subset.**  If
+`R = (M, θ, ξ)` is an integer multiplicity triple in `U` and `A` is Borel, then `(M ∩ A, θ', ξ)` is
+one in `U'` provided `M ∩ A ⊆ U'`, `θ'` is measurable, positive on `M ∩ A` and locally integrable
+on `M ∩ A` in `U'`, and `Hⁿ`-a.e. `x ∈ M ∩ A` has a ball `B_δ(x)` with `Hⁿ((M \ A) ∩ B_δ(x)) = 0`.
+This is used for `(M ∩ B, 1, ξ)`, `B` open, and for `(M_X ∩ K, θ_X, ξ_X)` in the constant
+multiplicity reduction behind Simon 7.4.2 (via Ch. 5, Corollary 7.3).  All fields but the
+orientation pass from `R` to the subset `M ∩ A ⊆ M`; at such `x`, `T_x(M ∩ A) = T_xM`
+(Simon Ch. 3, Definition 1.4, chapter-03.txt lines 77–84) by
+`Submission.rsd_cmr_ir_approxTangent_of_local_null`, since `M \ (M ∩ A) = M \ A`. -/
+theorem Submission.rsd_cmr_imrep_restrict : ∀ (P n : ℕ) (U U' A : Set (Euclid P)) (R : IMRep U n) (θ : Euclid P → ℕ), MeasurableSet A → R.carrier ∩ A ⊆ U' → Measurable θ → (∀ x ∈ R.carrier ∩ A, 0 < θ x) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U' → ∫⁻ x in R.carrier ∩ A ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ A)), ∃ δ : ℝ, 0 < δ ∧ μHE[n] ((R.carrier \ A) ∩ ball x δ) = 0) → ∃ R' : IMRep U' n, R'.carrier = R.carrier ∩ A ∧ R'.mult = θ ∧ R'.orient = R.orient := by
+  intro P n U U' A R θ hA hsub hθ hθpos hθint hlocal
+  refine ⟨{ carrier := R.carrier ∩ A
+            mult := θ
+            orient := R.orient
+            measurableSet_carrier := R.measurableSet_carrier.inter hA
+            carrier_subset := hsub
+            rectifiable := R.rectifiable.mono inter_subset_left
+            measurable_mult := hθ
+            mult_pos := hθpos
+            locallyIntegrable_mult := hθint
+            aestronglyMeasurable_orient :=
+              R.aestronglyMeasurable_orient.mono_set inter_subset_left
+            orients := ?_ }, rfl, rfl, rfl⟩
+  -- `Hⁿ⌞(M ∩ A)`-a.e. `x` has `T_xM = Q` oriented by `ξ(x)` (from `Hⁿ⌞M`-a.e., `M ∩ A ⊆ M`) and
+  -- a ball `B_δ(x)` on which `M \ (M ∩ A) = M \ A` is `Hⁿ`-null, so `T_x(M ∩ A) = Q`.
+  filter_upwards [ae_restrict_of_ae_restrict_of_subset inter_subset_left R.orients, hlocal]
+    with x ⟨Q, hQ, hξ⟩ ⟨δ, hδ, hnull⟩
+  refine ⟨Q, Submission.rsd_cmr_ir_approxTangent_of_local_null P n R.carrier (R.carrier ∩ A) x δ Q
+    R.measurableSet_carrier inter_subset_left hδ ?_ hQ, hξ⟩
+  rwa [Set.sdiff_self_inter]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
