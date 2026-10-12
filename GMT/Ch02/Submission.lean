@@ -373,6 +373,47 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Gram operator of an injective linear map and the range projection.** For an injective
+`A : ℝⁿ →L[ℝ] ℝᴺ` with `K = range A`, the Gram operator `G = A* ∘L A` is a unit of `ℝⁿ →L[ℝ] ℝⁿ`,
+its ring inverse `G⁻¹` is symmetric, and `K.starProjection = A ∘L G⁻¹ ∘L A*`. `G` is injective
+because `ker (A* ∘L A) = ker A` (`ContinuousLinearMap.adjoint_comp_self_injective_iff`), so in
+finite dimension it is a continuous linear automorphism. Then
+`⟪G⁻¹v, w⟫ = ⟪G⁻¹v, G G⁻¹w⟫ = ⟪A G⁻¹v, A G⁻¹w⟫ = ⟪G G⁻¹v, G⁻¹w⟫ = ⟪v, G⁻¹w⟫`, and
+`A G⁻¹ A* z ∈ range A` with `⟪z - A G⁻¹ A* z, A c⟫ = ⟪A* z - G G⁻¹ A* z, c⟫ = 0`, which
+characterizes the orthogonal projection (`Submodule.eq_starProjection_of_mem_of_inner_eq_zero`). -/
+theorem Submission.gram_inverse_range_starProjection : ∀ (n N : ℕ) (K : Submodule ℝ (Rn N)) (A : Rn n →L[ℝ] Rn N), Function.Injective A → K = LinearMap.range A.toLinearMap → IsUnit (ContinuousLinearMap.adjoint A ∘L A) ∧ (∀ v w : Rn n, inner ℝ (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) v) w = inner ℝ v (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) w)) ∧ K.starProjection = A ∘L Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A := by
+  intro n N K A hA hK
+  subst hK
+  set G := ContinuousLinearMap.adjoint A ∘L A
+  -- Step 2: `G` is injective, since `ker (A* ∘L A) = ker A = ⊥`.
+  have hGinj : Function.Injective G := (ContinuousLinearMap.adjoint_comp_self_injective_iff A).2 hA
+  -- Step 3: an injective endomorphism of `ℝⁿ` is a continuous linear automorphism, so `G` is a unit.
+  have hunit : IsUnit G := by
+    let e : Rn n ≃L[ℝ] Rn n :=
+      (LinearEquiv.ofInjectiveEndo (G : Rn n →ₗ[ℝ] Rn n) hGinj).toContinuousLinearEquiv
+    exact ⟨e.toUnit, by ext x; rfl⟩
+  have hGG : ∀ x, G (Ring.inverse G x) = x := fun x => by
+    rw [← mul_apply_eq_comp, Ring.mul_inverse_cancel G hunit, one_apply_eq_self]
+  -- Step 1: `⟪G x, y⟫ = ⟪A x, A y⟫ = ⟪x, G y⟫`.
+  have hl : ∀ x y, inner ℝ (G x) y = inner ℝ (A x) (A y) := fun x y =>
+    ContinuousLinearMap.adjoint_inner_left A y (A x)
+  have hr : ∀ x y, inner ℝ x (G y) = inner ℝ (A x) (A y) := fun x y =>
+    ContinuousLinearMap.adjoint_inner_right A x (A y)
+  refine ⟨hunit, fun v w => ?_, ?_⟩
+  -- Step 4: `G⁻¹` is symmetric.
+  · calc inner ℝ (Ring.inverse G v) w = inner ℝ (Ring.inverse G v) (G (Ring.inverse G w)) := by
+          rw [hGG]
+      _ = inner ℝ (G (Ring.inverse G v)) (Ring.inverse G w) := by rw [hl, hr]
+      _ = inner ℝ v (Ring.inverse G w) := by rw [hGG]
+  -- Step 7: `A G⁻¹ A* z ∈ range A` and `z - A G⁻¹ A* z` is orthogonal to `range A`.
+  · ext1 z
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (LinearMap.mem_range_self _ _) ?_
+    rintro _ ⟨c, rfl⟩
+    rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left, map_sub]
+    have h : ContinuousLinearMap.adjoint A ((A ∘L Ring.inverse G ∘L ContinuousLinearMap.adjoint A) z) =
+        ContinuousLinearMap.adjoint A z := hGG _
+    rw [h, sub_self, inner_zero_left]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
