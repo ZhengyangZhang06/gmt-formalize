@@ -860,6 +860,156 @@ theorem dohr_tp_gat_setIntegral_eq_of_inter : ∀ (n ℓ : ℕ) (μ : Measure (A
     _ = ∫ w in T, B.indicator φ w ∂μ := (setIntegral_indicator hB).symm
     _ = ∫ w in T, φ w ∂μ := by rw [hind]
 
+/-- Simon Ch. 3, Definition 1.4 for `C¹` graphs: if `u` is `C¹` on the open ball `B̆_R(0) ⊆ ℝⁿ`,
+`G(z) = (z, u(z))` and `x ∈ B̆_R(0)`, then `τ = range DG(x)` is the approximate tangent space of
+`graph u = G(B̆_R(0))` at `G(x)`.  The projection `π` onto the first `n` coordinates is
+`1`-Lipschitz and inverts `G`, hence also `DG(x)` (chain rule for `π ∘ G = id`), so `DG(x)` is
+injective and `dim τ = n`.  For `f ∈ C_c(ℝ^{n+ℓ})` vanishing off `B_ρ(0)`, the blow-ups
+`F_t(v) = t⁻¹ (G(x + tv) − G(x))` satisfy `π ∘ F_t = id` and, by `dohr_tp_gat_blowup_two_point`,
+the two-point and uniform estimates of `dohr_tp_gat_bilip_setIntegral_tendsto` on `K = B_ρ(0)`, so
+`∫_{F_t(K)} f dHⁿ → ∫_{DG(x)(K)} f dHⁿ`.  As `|v| ≤ |F_t(v)|` and `|v| ≤ |DG(x) v|`,
+`dohr_tp_gat_setIntegral_eq_of_inter` (with `B = B_ρ(0)`) identifies these integrals with
+`∫_{η_{G(x),t}(graph u)} f dHⁿ` for small `t > 0` and with `∫_τ f dHⁿ`. -/
+theorem dohr_tp_graph_approx_tangent : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ) (u : Rn n → Rn ℓ),
+    ContDiffOn ℝ 1 u (ball 0 R) → ∀ x ∈ ball (0 : Rn n) R,
+    Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (graphOver u (ball 0 R))
+      (graphPoint x (u x))
+      (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap) := by
+  intro n ℓ _ R u hu x hx
+  -- `graphPoint a b` corresponds to `(a, b)` under the splitting `ℝ^{n+ℓ} ≃ ℝⁿ × ℝ^ℓ`
+  let e : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ := EuclideanSpace.finAddEquivProd
+  have hgp : ∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = e.symm (a, b) := by
+    intro a b
+    ext i
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+    · simp [e, graphPoint]
+    · simp [e, graphPoint]
+  have hgp_norm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+      EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+    simp [graphPoint]
+  -- the projection `π` onto the first `n` coordinates
+  let pr : Amb n ℓ →L[ℝ] Rn n :=
+    (ContinuousLinearMap.fst ℝ (Rn n) (Rn ℓ)).comp (e : Amb n ℓ →L[ℝ] Rn n × Rn ℓ)
+  have hpr_gp : ∀ (a : Rn n) (b : Rn ℓ), pr (graphPoint a b) = a := by
+    intro a b
+    simp [pr, hgp]
+  have hpr_norm : ∀ w : Amb n ℓ, ‖pr w‖ ≤ ‖w‖ := by
+    intro w
+    have hw : graphPoint (e w).1 (e w).2 = w := by rw [hgp]; exact e.symm_apply_apply w
+    have h2 := hgp_norm (e w).1 (e w).2
+    rw [hw] at h2
+    have h3 : ‖pr w‖ ^ 2 ≤ ‖w‖ ^ 2 := by
+      have hpw : pr w = (e w).1 := rfl
+      rw [hpw, h2]
+      exact le_add_of_nonneg_right (sq_nonneg _)
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h3
+  set G : Rn n → Amb n ℓ := fun z => graphPoint z (u z)
+  have hprG : ∀ z, pr (G z) = z := fun z => hpr_gp z (u z)
+  have hGc : ContDiffOn ℝ 1 G (ball 0 R) := by
+    have hGe : G = e.symm ∘ fun z => (z, u z) := funext fun z => hgp z (u z)
+    rw [hGe]
+    exact e.symm.contDiff.comp_contDiffOn (contDiffOn_id.prodMk hu)
+  have hGd : DifferentiableAt ℝ G x :=
+    (hGc.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hx)
+  set L : Rn n →L[ℝ] Amb n ℓ := fderiv ℝ G x
+  have hprL : ∀ v, pr (L v) = v := by
+    have h1 : HasFDerivAt (pr ∘ G) (pr.comp L) x := pr.hasFDerivAt.comp x hGd.hasFDerivAt
+    have h2 : (pr ∘ G) = id := funext hprG
+    rw [h2] at h1
+    have h3 := h1.unique (hasFDerivAt_id x)
+    intro v
+    exact congrArg (fun T : Rn n →L[ℝ] Rn n => T v) h3
+  have hLinj : Function.Injective L := fun v v' h => by rw [← hprL v, ← hprL v', h]
+  refine ⟨?_, ?_⟩
+  · rw [LinearMap.finrank_range_of_inj (f := L.toLinearMap) hLinj, finrank_euclideanSpace_fin]
+  intro f
+  -- a radius `ρ ≥ 0` outside of which `f` vanishes
+  obtain ⟨ρ0, hρ0⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+  set ρ : ℝ := max ρ0 0
+  have hρ_nn : 0 ≤ ρ := le_max_right _ _
+  have hfz : ∀ w, w ∉ closedBall (0 : Amb n ℓ) ρ → f w = 0 := by
+    intro w hw
+    apply image_eq_zero_of_notMem_tsupport
+    intro hw'
+    exact hw (closedBall_subset_closedBall (le_max_left _ _) (hρ0 hw'))
+  set K : Set (Rn n) := closedBall 0 ρ
+  -- the blow-ups `F_t(v) = t⁻¹ (G(x + t v) - G(x))` of the graph map at `x`
+  set F : ℝ → Rn n → Amb n ℓ := fun t v => t⁻¹ • (G (x + t • v) - G x) with hF
+  have hprF : ∀ t : ℝ, t ≠ 0 → ∀ v, pr (F t v) = v := by
+    intro t ht v
+    simp only [hF, map_smul, map_sub, hprG, add_sub_cancel_left, inv_smul_smul₀ ht]
+  have hF_blowUp : ∀ t : ℝ, t ≠ 0 → ∀ z,
+      F t (t⁻¹ • (z - x)) = Poincare.SimonGMT.Chapter03.blowUpMap (G x) t (G z) := by
+    intro t ht z
+    simp only [hF, Poincare.SimonGMT.Chapter03.blowUpMap, smul_inv_smul₀ ht, add_sub_cancel]
+  have h_pr : ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, pr (F t v) = v := by
+    filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t) v _
+    exact hprF t ht.ne' v
+  have h_two : ∀ ε : ℝ, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, ∀ v' ∈ K,
+      ‖F t v - F t v' - L (v - v')‖ ≤ ε * ‖v - v'‖ := by
+    intro ε hε
+    filter_upwards [Submission.dohr_tp_gat_blowup_two_point n ℓ (ball 0 R) G x ρ ε isOpen_ball
+      hGc hx hε] with t ht v hv v' hv'
+    have hsub : F t v - F t v' = t⁻¹ • (G (x + t • v) - G (x + t • v')) := by
+      simp only [hF, ← smul_sub, sub_sub_sub_cancel_right]
+    rw [hsub]
+    exact ht.2 v hv v' hv'
+  have h_one : ∀ ε : ℝ, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, ‖F t v - L v‖ ≤ ε := by
+    intro ε hε
+    have hρ1 : (0 : ℝ) < ρ + 1 := by linarith
+    have hε' : 0 < ε / (ρ + 1) := div_pos hε hρ1
+    filter_upwards [Submission.dohr_tp_gat_blowup_two_point n ℓ (ball 0 R) G x ρ (ε / (ρ + 1))
+      isOpen_ball hGc hx hε'] with t ht v hv
+    have h1 := ht.2 v hv 0 (mem_closedBall_self hρ_nn)
+    simp only [smul_zero, add_zero, sub_zero] at h1
+    have hv' : ‖v‖ ≤ ρ := mem_closedBall_zero_iff.mp hv
+    calc ‖F t v - L v‖ ≤ ε / (ρ + 1) * ‖v‖ := h1
+      _ ≤ ε / (ρ + 1) * (ρ + 1) := mul_le_mul_of_nonneg_left (by linarith) hε'.le
+      _ = ε := div_mul_cancel₀ ε hρ1.ne'
+  -- localize the blown-up graph to `F_t(K)` and the plane `τ` to `L(K)`
+  have hloc1 : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+      ∫ w in F t '' K, f w ∂(μHE[n] : Measure (Amb n ℓ)) =
+        ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap (G x) t '' graphOver u (ball 0 R),
+          f w ∂(μHE[n] : Measure (Amb n ℓ)) := by
+    filter_upwards [self_mem_nhdsWithin,
+      Submission.dohr_tp_gat_blowup_two_point n ℓ (ball 0 R) G x ρ 1 isOpen_ball hGc hx one_pos]
+      with t (ht : 0 < t) hball
+    symm
+    refine Submission.dohr_tp_gat_setIntegral_eq_of_inter n ℓ _ f _ _ (closedBall 0 ρ)
+      measurableSet_closedBall hfz ?_ ?_
+    · rintro w ⟨⟨y, ⟨z, hz, rfl⟩, rfl⟩, hwB⟩
+      refine ⟨t⁻¹ • (z - x), ?_, hF_blowUp t ht.ne' z⟩
+      rw [mem_closedBall_zero_iff] at hwB ⊢
+      calc ‖t⁻¹ • (z - x)‖ = ‖pr (F t (t⁻¹ • (z - x)))‖ := by rw [hprF t ht.ne']
+        _ ≤ ‖F t (t⁻¹ • (z - x))‖ := hpr_norm _
+        _ = ‖Poincare.SimonGMT.Chapter03.blowUpMap (G x) t (G z)‖ := by
+          rw [hF_blowUp t ht.ne' z]
+        _ ≤ ρ := hwB
+    · rintro w ⟨v, hv, rfl⟩
+      exact ⟨G (x + t • v), ⟨x + t • v, hball.1 v hv, rfl⟩, rfl⟩
+  have hloc2 : ∫ w in L '' K, f w ∂(μHE[n] : Measure (Amb n ℓ)) =
+      ∫ w in (LinearMap.range L.toLinearMap : Set (Amb n ℓ)), f w
+        ∂(μHE[n] : Measure (Amb n ℓ)) := by
+    symm
+    refine Submission.dohr_tp_gat_setIntegral_eq_of_inter n ℓ _ f _ _ (closedBall 0 ρ)
+      measurableSet_closedBall hfz ?_ ?_
+    · rintro w ⟨hw, hwB⟩
+      obtain ⟨v, rfl⟩ := LinearMap.mem_range.mp hw
+      refine ⟨v, ?_, rfl⟩
+      rw [mem_closedBall_zero_iff] at hwB ⊢
+      calc ‖v‖ = ‖pr (L v)‖ := by rw [hprL]
+        _ ≤ ‖L v‖ := hpr_norm _
+        _ ≤ ρ := hwB
+    · rintro w ⟨v, -, rfl⟩
+      exact LinearMap.mem_range_self _ v
+  have hlim := Submission.dohr_tp_gat_bilip_setIntegral_tendsto n ℓ K pr L F f
+    (isCompact_closedBall 0 ρ) (map_continuous f) f.hasCompactSupport hprL h_pr h_two h_one
+  have h := hlim.congr' hloc1
+  rw [hloc2] at h
+  exact h
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
