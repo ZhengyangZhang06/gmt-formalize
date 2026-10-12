@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "641b5acf23a6cd5bd6720d7c106c13f32ce6f3c28a33552e0bdc3db43014c0df",
+  "git_delta": {
+    "base_commit": "2a9df835e9c7991cb668fe018b5e19a9f2add6b4",
+    "candidate_commit": "a2a69a08f815abcf63c2e24fa1b57c6c02fdd1eb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pi_measurability",
+    "diff_sha256": "06674e1b2a77591f02c41e72da162c74770472e9c0bc5631faac093817ee0eae",
+    "source_sha256": "4af8adcab8b958a708e463111c97ed88af434a29f11a3c924d27a2de1eaf32ba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pi_measurability",
+      "statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → AEMeasurable θ ((μHE[n] : Measure (Eucl P)).restrict M) ∧ AEStronglyMeasurable (fun x => nVectorPushforward n (L x) (ξ x)) ((μHE[n] : Measure (Eucl P)).restrict M)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
