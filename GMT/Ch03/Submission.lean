@@ -335,6 +335,77 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Product rule bound for `ζ u`** (Step 1 of the supplied proof of the Sobolev inequality for
+`ζ χ_G`, part of the density estimates for De Giorgi's theorem, Simon Ch. 3, Theorem 4.3). Let
+`ζ ≥ 0` be `K`-Lipschitz with compact support and `u` be `L`-Lipschitz with `0 ≤ u ≤ 1` on `ℝᴺ`.
+Then `ζ u` is Lipschitz with compact support and, by Rademacher's theorem and the product rule,
+`∫ |D(ζ u)| ≤ ∫ ζ |Du| + ∫ u |Dζ|`. -/
+theorem Submission.deGiorgiSobInd_mul_lipschitz_fderiv_bound : ∀ (N : ℕ) (ζ u : Rn N → ℝ) (K L : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → LipschitzWith L u → (∀ y, 0 ≤ u y ∧ u y ≤ 1) → (∃ K' : ℝ≥0, LipschitzWith K' (fun y ↦ ζ y * u y)) ∧ HasCompactSupport (fun y ↦ ζ y * u y) ∧ ∫ y, ‖fderiv ℝ (fun y ↦ ζ y * u y) y‖ ≤ (∫ y, ζ y * ‖fderiv ℝ u y‖) + ∫ y, u y * ‖fderiv ℝ ζ y‖ := by
+  intro N ζ u K L hζ hζc hζ0 hu hu01
+  -- Step 1: `0 ≤ ζ ≤ M` for some `M ∈ ℝ≥0`.
+  obtain ⟨M, hM⟩ : ∃ M : ℝ≥0, ∀ y, ζ y ≤ M := by
+    obtain ⟨B, hB⟩ := hζ.continuous.bddAbove_range_of_hasCompactSupport hζc
+    exact ⟨B.toNNReal, fun y ↦ (hB (Set.mem_range_self y)).trans (Real.le_coe_toNNReal B)⟩
+  -- Step 2: `ζ u` is `(M L + K)`-Lipschitz.
+  have hlip : LipschitzWith (M * L + K) (fun y ↦ ζ y * u y) := by
+    refine LipschitzWith.of_dist_le_mul fun x y ↦ ?_
+    have h1 := hu.dist_le_mul x y
+    have h2 := hζ.dist_le_mul x y
+    rw [Real.dist_eq] at h1 h2 ⊢
+    calc |ζ x * u x - ζ y * u y| = |ζ x * (u x - u y) + u y * (ζ x - ζ y)| := by
+          congr 1; ring
+      _ ≤ |ζ x * (u x - u y)| + |u y * (ζ x - ζ y)| := abs_add_le _ _
+      _ = ζ x * |u x - u y| + u y * |ζ x - ζ y| := by
+          rw [abs_mul, abs_mul, abs_of_nonneg (hζ0 x), abs_of_nonneg (hu01 y).1]
+      _ ≤ M * (L * dist x y) + 1 * (K * dist x y) := by
+          gcongr
+          · exact hM x
+          · exact (hu01 y).2
+      _ = ((M * L + K : ℝ≥0) : ℝ) * dist x y := by push_cast; ring
+  -- Step 3: `ζ u` has compact support, and `tsupport (ζ u) ⊆ T := tsupport ζ`.
+  have hcs : HasCompactSupport (fun y ↦ ζ y * u y) := hζc.mul_right
+  have hsub : tsupport (fun y ↦ ζ y * u y) ⊆ tsupport ζ := tsupport_mul_subset_left
+  -- Step 4: the pointwise bound at every point where `ζ` and `u` are differentiable.
+  have hpt : ∀ᵐ y ∂(volume : Measure (Rn N)),
+      ‖fderiv ℝ (fun y ↦ ζ y * u y) y‖ ≤ ζ y * ‖fderiv ℝ u y‖ + u y * ‖fderiv ℝ ζ y‖ := by
+    filter_upwards [hζ.ae_differentiableAt (μ := volume), hu.ae_differentiableAt (μ := volume)]
+      with y hy1 hy2
+    rw [fderiv_fun_mul hy1 hy2]
+    calc ‖ζ y • fderiv ℝ u y + u y • fderiv ℝ ζ y‖
+        ≤ ‖ζ y • fderiv ℝ u y‖ + ‖u y • fderiv ℝ ζ y‖ := norm_add_le _ _
+      _ = ζ y * ‖fderiv ℝ u y‖ + u y * ‖fderiv ℝ ζ y‖ := by
+          rw [norm_smul, norm_smul, Real.norm_of_nonneg (hζ0 y), Real.norm_of_nonneg (hu01 y).1]
+  -- Step 5: integrability; all three functions are bounded and vanish off `T`.
+  have hT : volume (tsupport ζ) ≠ ∞ := hζc.isCompact.measure_lt_top.ne
+  have hi1 : Integrable (fun y ↦ ‖fderiv ℝ (fun y ↦ ζ y * u y) y‖) := by
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport ζ) ?_ fun y hy ↦ ?_
+    · refine Measure.integrableOn_of_bounded (M := ((M * L + K : ℝ≥0) : ℝ)) hT
+        (measurable_fderiv ℝ _).norm.aestronglyMeasurable (ae_of_all _ fun y ↦ ?_)
+      rw [norm_norm]
+      exact norm_fderiv_le_of_lipschitz ℝ hlip
+    · rw [fderiv_of_notMem_tsupport ℝ fun h ↦ hy (hsub h), norm_zero]
+  have hi2 : Integrable (fun y ↦ ζ y * ‖fderiv ℝ u y‖) := by
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport ζ) ?_ fun y hy ↦ ?_
+    · refine Measure.integrableOn_of_bounded (M := (M : ℝ) * L) hT
+        (hζ.continuous.measurable.mul (measurable_fderiv ℝ u).norm).aestronglyMeasurable
+        (ae_of_all _ fun y ↦ ?_)
+      rw [Real.norm_of_nonneg (mul_nonneg (hζ0 y) (norm_nonneg _))]
+      exact mul_le_mul (hM y) (norm_fderiv_le_of_lipschitz ℝ hu) (norm_nonneg _) M.2
+    · rw [image_eq_zero_of_notMem_tsupport hy, zero_mul]
+  have hi3 : Integrable (fun y ↦ u y * ‖fderiv ℝ ζ y‖) := by
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport ζ) ?_ fun y hy ↦ ?_
+    · refine Measure.integrableOn_of_bounded (M := 1 * (K : ℝ)) hT
+        (hu.continuous.measurable.mul (measurable_fderiv ℝ ζ).norm).aestronglyMeasurable
+        (ae_of_all _ fun y ↦ ?_)
+      rw [Real.norm_of_nonneg (mul_nonneg (hu01 y).1 (norm_nonneg _))]
+      exact mul_le_mul (hu01 y).2 (norm_fderiv_le_of_lipschitz ℝ hζ) (norm_nonneg _) zero_le_one
+    · rw [fderiv_of_notMem_tsupport ℝ hy, norm_zero, mul_zero]
+  -- Step 6: integrate the pointwise bound.
+  refine ⟨⟨M * L + K, hlip⟩, hcs, ?_⟩
+  calc ∫ y, ‖fderiv ℝ (fun y ↦ ζ y * u y) y‖
+      ≤ ∫ y, (ζ y * ‖fderiv ℝ u y‖ + u y * ‖fderiv ℝ ζ y‖) := integral_mono_ae hi1 (hi2.add hi3) hpt
+    _ = (∫ y, ζ y * ‖fderiv ℝ u y‖) + ∫ y, u y * ‖fderiv ℝ ζ y‖ := integral_add hi2 hi3
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
