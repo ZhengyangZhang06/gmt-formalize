@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "56ad84b3c28b2d1a4395ee1fc3b10e981fac3a1a47bf223d179c8ca5e0dc09b1",
+  "git_delta": {
+    "base_commit": "992049df36c939191fa3912dc07b6281062fb665",
+    "candidate_commit": "17c63f22cc8bff3693345ac9074b98fadbf16246",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_blowUp_massOn_image",
+    "diff_sha256": "04862676bec8af5333a0beb057cfa0f4ad2c1365d973dcf0c93c734b6d98ea12",
+    "source_sha256": "6adeeb585b77b88771153fcd2205926b2ff9bf6e296b2677c6f49b4f70ef4ee7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_blowUp_massOn_image",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (W : Set (Euclid P)), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
