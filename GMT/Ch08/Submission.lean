@@ -441,6 +441,43 @@ theorem Submission.allard_tc_scf_monotonicity_identity :
   rw [← hall ρ hρ, ← hall ρ' hρ']
   gcongr
   exact lintegral_mono_set (prod_mono (closedBall_subset_closedBall hle) subset_rfl)
+/-- Density ratios are bounded by the ball-mass constant about `0` (Simon Ch. 8, the display before
+5.5(2)): if `ρ ↦ μ(B_ρ(y))/(ω_n ρ^n)` is non-decreasing on `(0,∞)` for every `y` and
+`μ(B_ρ(0)) = a ω_n ρ^n` for every `ρ > 0`, then for `ρ' ≥ ρ`, using `B_{ρ'}(y) ⊆ B_{ρ'+|y|}(0)`,
+`μ(B_ρ(y))/(ω_n ρ^n) ≤ μ(B_{ρ'}(y))/(ω_n ρ'^n) ≤ a (1 + |y|/ρ')^n → a` as `ρ' → ∞`. -/
+theorem Submission.allard_tc_scf_ratio_le :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ ρ : ℝ, 0 < ρ → μ (closedBall 0 ρ) = a * unitBallVolume n * ENNReal.ofReal ρ ^ n) → ∀ (y : Euclidean N) (ρ : ℝ), 0 < ρ → densityRatio n μ y ρ ≤ a := by
+  intro N n μ a hmono hball y ρ hρ
+  -- Step 1: `ω_n ∈ (0, ∞)`.
+  have hω₀ : unitBallVolume n ≠ 0 := (Metric.measure_ball_pos volume _ one_pos).ne'
+  have hω : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Steps 2–4: for every `ρ' ≥ ρ`, `R(y, ρ) ≤ R(y, ρ') ≤ a (1 + |y|/ρ')^n`.
+  have hbound : ∀ ρ' : ℝ, ρ ≤ ρ' →
+      densityRatio n μ y ρ ≤ a * ENNReal.ofReal ((1 + ‖y‖ / ρ') ^ n) := by
+    intro ρ' hρρ'
+    have hρ' : 0 < ρ' := hρ.trans_le hρρ'
+    have hsub : closedBall y ρ' ⊆ closedBall 0 (ρ' + ‖y‖) :=
+      closedBall_subset_closedBall' (by rw [dist_zero_right])
+    have hmass : μ (closedBall y ρ') ≤ a * unitBallVolume n * ENNReal.ofReal (ρ' + ‖y‖) ^ n :=
+      (measure_mono hsub).trans_eq (hball _ (by positivity))
+    calc densityRatio n μ y ρ ≤ densityRatio n μ y ρ' := hmono y hρ hρ' hρρ'
+      _ ≤ a * unitBallVolume n * ENNReal.ofReal (ρ' + ‖y‖) ^ n /
+            (unitBallVolume n * ENNReal.ofReal ρ' ^ n) := ENNReal.div_le_div_right hmass _
+      _ = a * (ENNReal.ofReal (ρ' + ‖y‖) ^ n / ENNReal.ofReal ρ' ^ n) := by
+        rw [mul_comm a, mul_assoc, ENNReal.mul_div_mul_left _ _ hω₀ hω, mul_div_assoc]
+      _ = a * ENNReal.ofReal ((1 + ‖y‖ / ρ') ^ n) := by
+        rw [← ENNReal.ofReal_pow (by positivity), ← ENNReal.ofReal_pow hρ'.le,
+          ← ENNReal.ofReal_div_of_pos (pow_pos hρ' n), ← div_pow, add_div, div_self hρ'.ne']
+  -- Step 6: `a (1 + |y|/ρ')^n → a` as `ρ' → ∞`.
+  have hlim : Tendsto (fun ρ' : ℝ ↦ a * ENNReal.ofReal ((1 + ‖y‖ / ρ') ^ n)) atTop (𝓝 a) := by
+    have h : Tendsto (fun ρ' : ℝ ↦ (1 + ‖y‖ / ρ') ^ n) atTop (𝓝 ((1 + 0) ^ n)) :=
+      (tendsto_const_nhds.add (tendsto_const_nhds.div_atTop tendsto_id)).pow n
+    rw [add_zero, one_pow] at h
+    have h' := ENNReal.Tendsto.const_mul (a := a) (ENNReal.tendsto_ofReal h)
+      (Or.inl (by rw [ENNReal.ofReal_one]; exact one_ne_zero))
+    rwa [ENNReal.ofReal_one, mul_one] at h'
+  -- Steps 5 and 7: `R(y, ρ)` is eventually below a quantity tending to `a`.
+  exact ge_of_tendsto hlim ((eventually_ge_atTop ρ).mono hbound)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
