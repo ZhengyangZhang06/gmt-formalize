@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "982b865f997c591528b697b24519a9cc4273edd9d3da9af407cfa09f415da3bb",
+  "git_delta": {
+    "base_commit": "90771ff601777de2547befed74a7dda3418be0f9",
+    "candidate_commit": "9033fa2e07ffde806e032949c38f995fa1875133",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "e267305afe0a54735ec16d1cde2e4714bce0f2499334cb3af64dab034ebd3104",
+    "source_sha256": "0935d957ab1d05c099cb644c0258ad50506af2fe4d31978e0790d6a2d283f795",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.w12_ball_weyl_lemma",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∀ (w : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) = 0) → ∃ u : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd u (ball 0 1) ∧ (∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), gradient u x = g x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
