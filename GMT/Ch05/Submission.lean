@@ -519,6 +519,55 @@ theorem rsod_c1tan_chart_lower_bound : ∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn
     have := norm_sub_le (φ (v₀ + w) - φ v₀) (φ (v₀ + w) - φ v₀ - L w)
     rwa [sub_sub_cancel] at this
   linarith
+/-- Separation of remote chart parameters by properness and injectivity: if `φ` is continuous and
+injective on `V`, `φ v₀ ∈ W` with `W` open, and `V ∩ φ⁻¹(K)` is compact for every compact `K ⊆ W`,
+then for each `δ > 0` some `ε > 0` has `ε ≤ ‖φ v - φ v₀‖` whenever `v ∈ V`, `δ ≤ ‖v - v₀‖`.
+Pick a closed ball `K₀ = B_{ε₀}(φ v₀) ⊆ W`; by properness `Q = (V ∩ φ⁻¹(K₀)) ∩ {δ ≤ ‖v - v₀‖}` is
+compact, and `‖φ v - φ v₀‖ > 0` on `Q` by injectivity.  If `Q = ∅` take `ε = ε₀`; otherwise take
+`ε = min(ε₀, min_Q ‖φ v - φ v₀‖)` (`IsCompact.exists_isMinOn`).  Points with `φ v ∉ K₀` are farther
+than `ε₀` from `φ v₀`. -/
+theorem rsod_c1tan_chart_separation : ∀ (m N : ℕ) (V : Set (Rn m)) (W : Set (EuclideanSpace ℝ (Fin N))) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m), IsOpen W → ContinuousOn φ V → InjOn φ V → v₀ ∈ V → φ v₀ ∈ W → (∀ K : Set (EuclideanSpace ℝ (Fin N)), IsCompact K → K ⊆ W → IsCompact (V ∩ φ ⁻¹' K)) → ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ∀ v ∈ V, δ ≤ ‖v - v₀‖ → ε ≤ ‖φ v - φ v₀‖ := by
+  intro m N V W φ v₀ hW hφ hinj hv₀ hφv₀ hprop δ hδ
+  -- Step 1: a compact closed ball `K₀ = B_{ε₀}(φ v₀) ⊆ W`, with `ε₀ = ε₁ / 2`.
+  obtain ⟨ε₁, hε₁, hball⟩ := Metric.isOpen_iff.mp hW (φ v₀) hφv₀
+  have hε₀ : 0 < ε₁ / 2 := half_pos hε₁
+  have hK₀W : closedBall (φ v₀) (ε₁ / 2) ⊆ W :=
+    (closedBall_subset_ball (half_lt_self hε₁)).trans hball
+  -- Step 2: `Q = (V ∩ φ⁻¹(K₀)) ∩ {v | δ ≤ ‖v - v₀‖}` is compact, and `‖φ v - φ v₀‖` is continuous
+  -- on `Q ⊆ V` and positive there by injectivity.
+  have hQ : IsCompact ((V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖}) :=
+    (hprop _ (isCompact_closedBall _ _) hK₀W).inter_right
+      (isClosed_le continuous_const (continuous_id.sub continuous_const).norm)
+  have hcont : ContinuousOn (fun v => ‖φ v - φ v₀‖)
+      ((V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖}) :=
+    ((hφ.mono fun v hv => hv.1.1).sub continuousOn_const).norm
+  have hpos : ∀ q ∈ (V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖},
+      0 < ‖φ q - φ v₀‖ := by
+    intro q hq
+    refine norm_pos_iff.mpr (sub_ne_zero.mpr fun hEq => ?_)
+    have hqv : q = v₀ := hinj hq.1.1 hv₀ hEq
+    have hδq : δ ≤ ‖q - v₀‖ := hq.2
+    rw [hqv, sub_self, norm_zero] at hδq
+    exact absurd hδq (not_le.mpr hδ)
+  rcases ((V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖}).eq_empty_or_nonempty
+    with hQe | hQne
+  · -- Step 4: `Q = ∅`; take `ε = ε₀`.
+    refine ⟨ε₁ / 2, hε₀, fun v hv hvδ => ?_⟩
+    by_contra hlt
+    have hvK : φ v ∈ closedBall (φ v₀) (ε₁ / 2) := by
+      rw [mem_closedBall, dist_eq_norm]
+      exact (not_le.mp hlt).le
+    have hvQ : v ∈ (V ∩ φ ⁻¹' closedBall (φ v₀) (ε₁ / 2)) ∩ {v | δ ≤ ‖v - v₀‖} :=
+      ⟨⟨hv, hvK⟩, hvδ⟩
+    rw [hQe] at hvQ
+    exact hvQ
+  · -- Step 3: `Q ≠ ∅`; take `ε = min ε₀ ‖φ q - φ v₀‖` for a minimizer `q ∈ Q`.
+    obtain ⟨q, hqQ, hqmin⟩ := hQ.exists_isMinOn hQne hcont
+    refine ⟨min (ε₁ / 2) ‖φ q - φ v₀‖, lt_min hε₀ (hpos q hqQ), fun v hv hvδ => ?_⟩
+    by_cases hvK : φ v ∈ closedBall (φ v₀) (ε₁ / 2)
+    · exact (min_le_right _ _).trans (hqmin ⟨⟨hv, hvK⟩, hvδ⟩)
+    · rw [mem_closedBall, dist_eq_norm, not_le] at hvK
+      exact (min_le_left _ _).trans hvK.le
 
 end Submission
 
