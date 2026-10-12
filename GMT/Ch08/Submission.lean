@@ -410,6 +410,31 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, proof of 5.5, p. 215, the plane's classical tangent space** (child
+`subspace_tangent` of `stationary_cone_flat`, step 7): for a linear subspace `P` of `ℝ^N` and
+`y ∈ P`, the classical tangent space `T_y P` (Ch. 2, §4) is `P` itself. A velocity `γ'(0)` is the
+limit of the difference quotients `t⁻¹(γ(t) - y) ∈ P` and `P` is closed (finite-dimensional);
+conversely `ξ ∈ P` is the velocity of the line `s ↦ y + sξ`, which stays in `P`. -/
+theorem Submission.allard_tc_scf_subspace_classical_tangent :
+    ∀ (N : ℕ) (P : Submodule ℝ (Euclidean N)) (y : Euclidean N), y ∈ P →
+      classicalTangentSpace (P : Set (Euclidean N)) y = (P : Set (Euclidean N)) := by
+  intro N P y hy
+  ext ξ
+  constructor
+  · rintro ⟨γ, -, hγP, hγ0, hγ⟩
+    -- `t⁻¹ • (γ t - γ 0) → ξ` as `t → 0`, `t ≠ 0`; for `t ∈ (-1,1)` these quotients lie in `P`,
+    -- and `P` is closed.
+    refine P.closed_of_finiteDimensional.mem_of_tendsto hγ.tendsto_slope_zero ?_
+    filter_upwards [mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) one_pos)]
+      with t ht
+    rw [zero_add, hγ0]
+    exact P.smul_mem _ (P.sub_mem (hγP ht) hy)
+  · intro hξ
+    -- The line `s ↦ y + s • ξ` lies in `P` and has velocity `ξ`.
+    refine ⟨fun s ↦ y + s • ξ, ?_, fun s _ ↦ P.add_mem hy (P.smul_mem s hξ), by simp, ?_⟩
+    · exact (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn
+    · simpa using ((hasDerivAt_id (0 : ℝ)).smul_const ξ).const_add y
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
