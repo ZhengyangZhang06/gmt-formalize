@@ -1654,6 +1654,479 @@ theorem Submission.pcoarea_gluing : ∀ (n N m k : ℕ) (D Z : Set (Rn n)) (ψ :
       _ = ∫⁻ y, ∑' t, (∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume :=
         (lintegral_tsum fun t ↦ (hPgood t φ hφ).1).symm
       _ = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by rw [hfun]
+/-- **Fine covers with small weighted image volume give `Hᵏ`-null slices** (the Fatou covering
+criterion behind Simon Ch. 2, p. 66, the consequence of (6.3) stated before 6.4,
+`chapter-02.txt` lines 1476–1478). Let `k > 0` and let `S ⊆ ℝⁿ` and `G : ℝⁿ → ℝᵐ` be arbitrary.
+If for every `ε > 0` some countable cover `(Tᵢ)` of `S` has `diam Tᵢ ≤ ε` and
+`∑ᵢ (diam Tᵢ)ᵏ Lᵐ(G(Tᵢ ∩ S)) ≤ ε`, then `Hᵏ(S ∩ G⁻¹{y}) = 0` for `Lᵐ`-a.e. `y ∈ ℝᵐ`.
+With measurable hulls `Aⱼᵢ ⊇ G(Tⱼᵢ ∩ S)` of equal measure, the majorants
+`gⱼ = ∑ᵢ (diam Tⱼᵢ)ᵏ 1_{Aⱼᵢ}` have `∫ gⱼ ≤ εⱼ → 0`, so `liminf gⱼ = 0` a.e. by Fatou; for such
+`y` the covers `Tⱼᵢ ∩ S ∩ G⁻¹{y}` give `Hᵏ(S ∩ G⁻¹{y}) ≤ liminf gⱼ(y) = 0`. -/
+theorem Submission.critSlices_ae_slice_null_of_covers : ∀ (n m k : ℕ) (S : Set (Rn n)) (G : Rn n → Rn m), 0 < k → (∀ ε : ℝ≥0∞, 0 < ε → ∃ (ι : Type) (_ : Countable ι) (T : ι → Set (Rn n)), S ⊆ ⋃ i, T i ∧ (∀ i, Metric.ediam (T i) ≤ ε) ∧ ∑' i, Metric.ediam (T i) ^ k * volume (G '' (T i ∩ S)) ≤ ε) → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (S ∩ G ⁻¹' {y}) = 0 := by
+  intro n m k S G hk hcov
+  -- Covers at the scales `εⱼ = (j + 1)⁻¹ → 0`.
+  have hεpos : ∀ j : ℕ, (0 : ℝ≥0∞) < ((j : ℝ≥0∞) + 1)⁻¹ := fun j =>
+    ENNReal.inv_pos.2 (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top j, ENNReal.one_ne_top⟩)
+  have hr : Tendsto (fun j : ℕ => ((j : ℝ≥0∞) + 1)⁻¹) atTop (𝓝 0) :=
+    (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)).congr fun j => by
+      simp [Nat.cast_add, Nat.cast_one]
+  choose ι hι T hTcov hTdiam hTsum using fun j : ℕ => hcov _ (hεpos j)
+  -- Measurable hulls `Aⱼᵢ ⊇ G(Tⱼᵢ ∩ S)` of equal measure and the majorants `gⱼ`.
+  set A : ∀ j, ι j → Set (Rn m) := fun j i => toMeasurable volume (G '' (T j i ∩ S))
+  set g : ℕ → Rn m → ℝ≥0∞ := fun j y => ∑' i, Metric.ediam (T j i) ^ k * (A j i).indicator 1 y
+  have hterm : ∀ j i, Measurable fun y => Metric.ediam (T j i) ^ k * (A j i).indicator 1 y :=
+    fun j i => measurable_const.mul (measurable_one.indicator (measurableSet_toMeasurable _ _))
+  have hgm : ∀ j, Measurable (g j) := fun j => Measurable.tsum fun i => hterm j i
+  have hgint : ∀ j, ∫⁻ y, g j y ≤ ((j : ℝ≥0∞) + 1)⁻¹ := by
+    intro j
+    calc ∫⁻ y, g j y
+        = ∑' i, ∫⁻ y, Metric.ediam (T j i) ^ k * (A j i).indicator 1 y :=
+          lintegral_tsum fun i => (hterm j i).aemeasurable
+      _ = ∑' i, Metric.ediam (T j i) ^ k * volume (G '' (T j i ∩ S)) := by
+          congr 1
+          ext i
+          rw [lintegral_const_mul _ (measurable_one.indicator (measurableSet_toMeasurable _ _)),
+            lintegral_indicator_one (measurableSet_toMeasurable _ _), measure_toMeasurable]
+      _ ≤ ((j : ℝ≥0∞) + 1)⁻¹ := hTsum j
+  -- Fatou: `∫ liminf gⱼ ≤ liminf ∫ gⱼ ≤ liminf εⱼ = 0`, so `liminf gⱼ = 0` a.e.
+  have hfatou : ∫⁻ y, liminf (fun j => g j y) atTop = 0 := by
+    refine le_antisymm ?_ zero_le
+    calc ∫⁻ y, liminf (fun j => g j y) atTop ≤ liminf (fun j => ∫⁻ y, g j y) atTop :=
+          lintegral_liminf_le hgm
+      _ ≤ liminf (fun j : ℕ => ((j : ℝ≥0∞) + 1)⁻¹) atTop :=
+          liminf_le_liminf (Eventually.of_forall hgint)
+      _ = 0 := hr.liminf_eq
+  have hae : ∀ᵐ y ∂(volume : Measure (Rn m)), liminf (fun j => g j y) atTop = 0 := by
+    filter_upwards [(lintegral_eq_zero_iff (Measurable.liminf hgm)).1 hfatou] with y hy
+    simpa using hy
+  filter_upwards [hae] with y hy
+  -- The covers `Tⱼᵢ ∩ (S ∩ G⁻¹{y})` of the slice: an empty piece contributes `0ᵏ = 0`, and a
+  -- nonempty one forces `y ∈ G(Tⱼᵢ ∩ S) ⊆ Aⱼᵢ`.
+  have hH : μH[(k : ℝ)] (S ∩ G ⁻¹' {y}) ≤ liminf (fun j => g j y) atTop := by
+    calc μH[(k : ℝ)] (S ∩ G ⁻¹' {y})
+        ≤ liminf (fun j => ∑' i, Metric.ediam (T j i ∩ (S ∩ G ⁻¹' {y})) ^ (k : ℝ)) atTop :=
+          Measure.hausdorffMeasure_le_liminf_tsum (k : ℝ) (S ∩ G ⁻¹' {y}) _ hr
+            (fun j i => T j i ∩ (S ∩ G ⁻¹' {y}))
+            (Eventually.of_forall fun j i =>
+              (Metric.ediam_mono inter_subset_left).trans (hTdiam j i))
+            (Eventually.of_forall fun j u hu => by
+              obtain ⟨i, hi⟩ := mem_iUnion.1 (hTcov j hu.1)
+              exact mem_iUnion.2 ⟨i, hi, hu⟩)
+      _ ≤ liminf (fun j => g j y) atTop := by
+          refine liminf_le_liminf (Eventually.of_forall fun j => ENNReal.tsum_le_tsum fun i => ?_)
+          by_cases hne : (T j i ∩ (S ∩ G ⁻¹' {y})).Nonempty
+          · obtain ⟨u, huT, huS, huy⟩ := hne
+            have hyA : y ∈ A j i := subset_toMeasurable _ _ ⟨u, ⟨huT, huS⟩, huy⟩
+            rw [indicator_of_mem hyA, Pi.one_apply, mul_one, ENNReal.rpow_natCast]
+            exact pow_le_pow_left' (Metric.ediam_mono inter_subset_left) k
+          · rw [not_nonempty_iff_eq_empty.1 hne, Metric.ediam_empty,
+              ENNReal.zero_rpow_of_pos (by exact_mod_cast hk)]
+            exact zero_le
+  have hμH : μH[(k : ℝ)] (S ∩ G ⁻¹' {y}) = 0 := le_antisymm (hH.trans hy.le) zero_le
+  -- `μHE[k] = c_k • μH[k]`.
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hμH, smul_zero]
+/-- **Volume of a slab intersected with a ball**: for a unit vector `ν` of `ℝᵐ`,
+`Lᵐ{w : |⟨w - c, ν⟩| ≤ r, |w - c| ≤ R} ≤ 2r (2R)^{m-1}`. This is the slab estimate in a direct
+covering proof that critical slices are null (Simon Ch. 2, p. 66: the consequence of 6.3 stated
+before 6.4, which Simon derives from the co-area formula 6.3, whose proof he defers to [Har79],
+[Fed69]). The set is empty if `r < 0` or `R < 0`, and `‖ν‖ = 1` forces `m ≥ 1`. The reflection
+`ρ` of `ℝᵐ` in `(ℝ (ν - e₀))ᗮ` maps `ν` to `e₀`, so `w ↦ ρ(w - c)` maps the set into the box
+`[-r, r] × [-R, R]^{m-1}`, since `⟨ρ(w - c), e₀⟩ = ⟨w - c, ν⟩` and `|x_i| ≤ |x| = |w - c|`.
+Translation, `ρ` and `ofLp` preserve Lebesgue measure, and the box has volume `2r (2R)^{m-1}`. -/
+theorem Submission.critSlices_slab_volume_le : ∀ (m : ℕ) (ν c : Rn m) (r R : ℝ), ‖ν‖ = 1 → volume {w : Rn m | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} ≤ ENNReal.ofReal (2 * r * (2 * R) ^ (m - 1)) := by
+  intro m ν c r R hν
+  -- Step 1: for `r < 0` or `R < 0` the set is empty.
+  by_cases hr : r < 0
+  · have hempty : {w : Rn m | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} = ∅ := by
+      ext w
+      simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_and]
+      intro h
+      exact absurd ((abs_nonneg _).trans h) (not_le.2 hr)
+    rw [hempty, measure_empty]
+    positivity
+  by_cases hR : R < 0
+  · have hempty : {w : Rn m | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} = ∅ := by
+      ext w
+      simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_and]
+      intro _ h
+      exact absurd ((norm_nonneg _).trans h) (not_le.2 hR)
+    rw [hempty, measure_empty]
+    positivity
+  push Not at hr hR
+  -- Step 2: `‖ν‖ = 1` rules out `m = 0`.
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := by
+    rcases m with _ | m'
+    · exfalso
+      have h0 : ν = 0 := Subsingleton.elim _ _
+      rw [h0, norm_zero] at hν
+      exact zero_ne_one hν
+    · exact ⟨m', rfl⟩
+  -- Step 3: the reflection `ρ` in `(ℝ (ν - e₀))ᗮ` satisfies `ρ ν = e₀`.
+  set e₀ : Rn (m' + 1) := EuclideanSpace.single 0 1 with he₀
+  have he₀n : ‖e₀‖ = 1 := by simp [he₀]
+  set ρ : Rn (m' + 1) ≃ₗᵢ[ℝ] Rn (m' + 1) := (ℝ ∙ (ν - e₀))ᗮ.reflection with hρ
+  have hρν : ρ ν = e₀ := Submodule.reflection_sub (hν.trans he₀n.symm)
+  -- Step 4: `w ↦ ofLp (ρ (w - c))` maps the set into the box `Icc a b`.
+  set a : Fin (m' + 1) → ℝ := fun i ↦ if i = 0 then -r else -R with ha
+  set b : Fin (m' + 1) → ℝ := fun i ↦ if i = 0 then r else R with hb
+  have hsub : {w : Rn (m' + 1) | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} ⊆
+      (WithLp.ofLp ∘ ρ ∘ fun w ↦ w - c) ⁻¹' Icc a b := by
+    intro w hw
+    obtain ⟨h1, h2⟩ := hw
+    simp only [mem_preimage, Function.comp_apply, mem_Icc]
+    set x := ρ (w - c) with hx
+    have hx0 : x.ofLp 0 = inner ℝ (w - c) ν := by
+      have h : inner ℝ x e₀ = x.ofLp 0 := by
+        rw [he₀, EuclideanSpace.inner_single_right]
+        simp
+      rw [← h, ← hρν, hx, LinearIsometryEquiv.inner_map_map]
+    have hxn : ‖x‖ = ‖w - c‖ := LinearIsometryEquiv.norm_map _ _
+    have hcoord : ∀ i, |x.ofLp i| ≤ R := by
+      intro i
+      have := PiLp.norm_apply_le x i
+      rw [Real.norm_eq_abs] at this
+      exact this.trans (hxn ▸ h2)
+    refine ⟨fun i ↦ ?_, fun i ↦ ?_⟩
+    · by_cases hi : i = 0
+      · subst hi
+        simp only [ha, ite_true]
+        rw [hx0]
+        exact (abs_le.1 h1).1
+      · simp only [ha, hi, ite_false]
+        exact (abs_le.1 (hcoord i)).1
+    · by_cases hi : i = 0
+      · subst hi
+        simp only [hb, ite_true]
+        rw [hx0]
+        exact (abs_le.1 h1).2
+      · simp only [hb, hi, ite_false]
+        exact (abs_le.1 (hcoord i)).2
+  -- Step 5: translation, `ρ` and `ofLp` preserve Lebesgue measure.
+  have hmp : MeasurePreserving (WithLp.ofLp ∘ ρ ∘ fun w : Rn (m' + 1) ↦ w - c) volume volume :=
+    (PiLp.volume_preserving_ofLp (Fin (m' + 1))).comp
+      (ρ.measurePreserving.comp (measurePreserving_sub_right volume c))
+  -- Steps 6–7: the box has volume `2r (2R)^{m'}`; conclude by monotonicity.
+  calc volume {w : Rn (m' + 1) | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R}
+      ≤ volume ((WithLp.ofLp ∘ ρ ∘ fun w ↦ w - c) ⁻¹' Icc a b) := measure_mono hsub
+    _ = volume (Icc a b) := hmp.measure_preimage measurableSet_Icc.nullMeasurableSet
+    _ = ∏ i, ENNReal.ofReal (b i - a i) := Real.volume_Icc_pi
+    _ = ENNReal.ofReal (2 * r * (2 * R) ^ (m' + 1 - 1)) := by
+      rw [Fin.prod_univ_succ]
+      simp only [ha, hb, ite_true, Fin.succ_ne_zero, ite_false, Finset.prod_const,
+        Finset.card_univ, Fintype.card_fin, Nat.add_sub_cancel]
+      rw [ENNReal.ofReal_mul (by linarith), ← ENNReal.ofReal_pow (by linarith)]
+      congr 2 <;> ring
+
+/-- **Images under a nearly degenerate derivative lie in a thin slab.** This is the step "the
+image of a critical subcube lies in a thin slab" of the covering proof that critical slices are
+null (Simon Ch. 2, p. 66, the consequence of 6.3, `chapter-02.txt` lines 1476–1478; Simon gives
+no proof). Here it is stated for a convex `S` of radius `d` about `u₀`. Since `P` is not
+surjective, some unit `ν` is orthogonal to `range P`. The mean value inequality for `G - P` gives
+`G(u) - G(u₀) = P(u - u₀) + e` with `|e| ≤ εd`. Hence `G(S)` lies in
+`{w : |⟨w - G(u₀), ν⟩| ≤ εd, |w - G(u₀)| ≤ (Λ + ε)d}`, whose volume is bounded by
+`Submission.critSlices_slab_volume_le`. -/
+theorem Submission.critSlices_image_volume_le_of_fderiv_near : ∀ (n m : ℕ) (G : Rn n → Rn m)
+    (S : Set (Rn n)) (P : Rn n →L[ℝ] Rn m) (u₀ : Rn n) (d ε Λ : ℝ), Convex ℝ S → u₀ ∈ S →
+    (∀ v ∈ S, DifferentiableAt ℝ G v) → (∀ v ∈ S, ‖fderiv ℝ G v - P‖ ≤ ε) →
+    (∀ v ∈ S, ‖v - u₀‖ ≤ d) → ¬ Function.Surjective P → ‖P‖ ≤ Λ →
+    volume (G '' S) ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1)) := by
+  intro n m G S P u₀ d ε Λ hS hu₀ hdiff hnear hd hP hΛ
+  -- `u₀ ∈ S` gives `ε ≥ ‖DG(u₀) - P‖ ≥ 0`.
+  have hε : 0 ≤ ε := (norm_nonneg _).trans (hnear u₀ hu₀)
+  -- A unit normal `ν` to the proper subspace `range P`: `(range P)ᗮ ≠ 0` as `range P ≠ ℝᵐ`.
+  obtain ⟨ν, hν, hPν⟩ : ∃ ν : Rn m, ‖ν‖ = 1 ∧ ∀ x, inner ℝ (P x) ν = 0 := by
+    have hV : LinearMap.range (P : Rn n →ₗ[ℝ] Rn m) ≠ ⊤ := fun h ↦
+      hP fun y ↦ LinearMap.mem_range.1 (h ▸ Submodule.mem_top)
+    obtain ⟨ν₀, hν₀, hν₀0⟩ :=
+      Submodule.exists_mem_ne_zero_of_ne_bot (mt Submodule.orthogonal_eq_bot_iff.1 hV)
+    refine ⟨‖ν₀‖⁻¹ • ν₀, ?_, fun x ↦ ?_⟩
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hν₀0)]
+    · have h0 : inner ℝ (P x) ν₀ = 0 :=
+        (Submodule.mem_orthogonal _ _).1 hν₀ (P x) (LinearMap.mem_range_self _ x)
+      rw [inner_smul_right, h0, mul_zero]
+  -- `G(S)` lies in the slab of half-width `εd` normal to `ν`, cut off by the closed ball of
+  -- radius `(Λ + ε)d`, both about `G(u₀)`.
+  have hsub : G '' S ⊆
+      {w : Rn m | |inner ℝ (w - G u₀) ν| ≤ ε * d ∧ ‖w - G u₀‖ ≤ (Λ + ε) * d} := by
+    rintro _ ⟨u, hu, rfl⟩
+    -- Mean value inequality for `G - P` on the convex `S`: `|e| ≤ ε|u - u₀| ≤ εd`.
+    set e := G u - G u₀ - P (u - u₀) with he_def
+    have he : ‖e‖ ≤ ε * d :=
+      (hS.norm_image_sub_le_of_norm_fderiv_le' hdiff hnear hu₀ hu).trans
+        (mul_le_mul_of_nonneg_left (hd u hu) hε)
+    have hw : G u - G u₀ = P (u - u₀) + e := by
+      rw [he_def]
+      abel
+    refine ⟨?_, ?_⟩
+    · -- `⟨w, ν⟩ = ⟨e, ν⟩` because `ν ⊥ range P`; then Cauchy–Schwarz.
+      rw [hw, inner_add_left, hPν, zero_add]
+      calc |inner ℝ e ν| ≤ ‖e‖ * ‖ν‖ := abs_real_inner_le_norm e ν
+        _ = ‖e‖ := by rw [hν, mul_one]
+        _ ≤ ε * d := he
+    · -- `|w| ≤ ‖P‖ |u - u₀| + |e| ≤ Λd + εd`.
+      rw [hw]
+      calc ‖P (u - u₀) + e‖ ≤ ‖P (u - u₀)‖ + ‖e‖ := norm_add_le _ _
+        _ ≤ Λ * d + ε * d := add_le_add ((P.le_opNorm _).trans
+            (mul_le_mul hΛ (hd u hu) (norm_nonneg _) ((norm_nonneg _).trans hΛ))) he
+        _ = (Λ + ε) * d := by ring
+  calc volume (G '' S)
+      ≤ volume {w : Rn m | |inner ℝ (w - G u₀) ν| ≤ ε * d ∧ ‖w - G u₀‖ ≤ (Λ + ε) * d} :=
+        measure_mono hsub
+    _ ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1)) :=
+        Submission.critSlices_slab_volume_le m ν (G u₀) (ε * d) ((Λ + ε) * d) hν
+/-- **Subdivision of `[-R, R]ⁿ` into `Mⁿ` subcubes**: for `M > 0` and `R ≥ 0`, with side
+`s = 2R/M`, the closed cubes `Q_α = {u : -R + s αᵢ ≤ uᵢ ≤ -R + s (αᵢ + 1) for all i}`,
+`α : Fin n → Fin M`, are convex, lie in `closedBall 0 (√n R)`, have diameter at most `√n s` and
+cover `closedBall 0 R`. This is the cube subdivision in the covering proof that critical slices
+are null (Simon Ch. 2, p. 66, the consequence of (6.3) stated before 6.4). The defining
+inequalities are preserved by convex combinations. Every coordinate of a point of `Q_α` lies in
+`[-R, R]`, and two points of `Q_α` differ by at most `s` in every coordinate, which gives the two
+norm bounds. A point `u` of `closedBall 0 R` has `|uᵢ| ≤ R`; it lies in `Q_α` for `α ≡ 0` if
+`R = 0`, and for `αᵢ = min ⌊(uᵢ + R)/s⌋₊ (M - 1)` if `R > 0`. -/
+theorem Submission.critSlices_cube_cover : ∀ (n M : ℕ) (R : ℝ), 0 < M → 0 ≤ R → ∃ Q : (Fin n → Fin M) → Set (Rn n), (∀ α, Convex ℝ (Q α)) ∧ (∀ α, Q α ⊆ Metric.closedBall 0 (Real.sqrt n * R)) ∧ (∀ α, ∀ u ∈ Q α, ∀ v ∈ Q α, dist u v ≤ Real.sqrt n * (2 * R / M)) ∧ Metric.closedBall (0 : Rn n) R ⊆ ⋃ α, Q α := by
+  intro n M R hM hR
+  have hM' : (0 : ℝ) < M := Nat.cast_pos.2 hM
+  -- The side length `s = 2R/M`, so `s ≥ 0` and `s M = 2R`.
+  set s : ℝ := 2 * R / M with hs
+  have hs0 : 0 ≤ s := div_nonneg (by linarith) hM'.le
+  have hsM : s * M = 2 * R := div_mul_cancel₀ _ hM'.ne'
+  refine ⟨fun α ↦ {u : Rn n | ∀ i, -R + s * (α i : ℕ) ≤ u i ∧ u i ≤ -R + s * ((α i : ℕ) + 1)},
+    ?_, ?_, ?_, ?_⟩
+  -- Step 1: the defining inequalities are preserved by convex combinations.
+  · intro α u hu v hv a b ha hb hab i
+    obtain ⟨hu1, hu2⟩ := hu i
+    obtain ⟨hv1, hv2⟩ := hv i
+    obtain rfl : b = 1 - a := by linarith
+    have hcomb : (a • u + (1 - a) • v) i = a * u i + (1 - a) * v i := rfl
+    rw [hcomb]
+    constructor
+    · linarith [mul_le_mul_of_nonneg_left hu1 ha, mul_le_mul_of_nonneg_left hv1 hb]
+    · linarith [mul_le_mul_of_nonneg_left hu2 ha, mul_le_mul_of_nonneg_left hv2 hb]
+  -- Step 2: the coordinates of a point of `Q α` lie in `[-R, R]`, so its norm is at most `√n R`.
+  · intro α u hu
+    have hcoord : ∀ i, ‖u i‖ ≤ R := by
+      intro i
+      obtain ⟨h1, h2⟩ := hu i
+      have hα0 : (0 : ℝ) ≤ (α i : ℕ) := Nat.cast_nonneg _
+      have hαM : ((α i : ℕ) : ℝ) + 1 ≤ M := by exact_mod_cast (α i).isLt
+      rw [Real.norm_eq_abs, abs_le]
+      constructor
+      · linarith [mul_nonneg hs0 hα0]
+      · linarith [mul_le_mul_of_nonneg_left hαM hs0]
+    rw [mem_closedBall_zero_iff, EuclideanSpace.norm_eq]
+    calc √(∑ i, ‖u i‖ ^ 2) ≤ √(∑ _i : Fin n, R ^ 2) := by
+          gcongr with i
+          exact hcoord i
+      _ = √n * R := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hR]
+  -- Step 3: two points of `Q α` differ by at most `s` in every coordinate.
+  · intro α u hu v hv
+    have hcoord : ∀ i, dist (u i) (v i) ≤ s := by
+      intro i
+      obtain ⟨hu1, hu2⟩ := hu i
+      obtain ⟨hv1, hv2⟩ := hv i
+      rw [Real.dist_eq, abs_le]
+      constructor <;> linarith
+    rw [EuclideanSpace.dist_eq]
+    calc √(∑ i, dist (u i) (v i) ^ 2) ≤ √(∑ _i : Fin n, s ^ 2) := by
+          gcongr with i
+          exact hcoord i
+      _ = √n * s := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hs0]
+  -- Step 4: every point of `closedBall 0 R` lies in some `Q α`.
+  · intro u hu
+    rw [mem_closedBall_zero_iff] at hu
+    have hcoord : ∀ i, |u i| ≤ R := fun i ↦ by
+      have h := PiLp.norm_apply_le u i
+      rw [Real.norm_eq_abs] at h
+      exact h.trans hu
+    rcases hR.eq_or_lt with rfl | hRpos
+    · -- `R = 0`: all coordinates vanish and `s = 0`; take `α ≡ 0`.
+      refine mem_iUnion.2 ⟨fun _ ↦ ⟨0, hM⟩, fun i ↦ ?_⟩
+      have hui : u i = 0 := abs_nonpos_iff.1 (hcoord i)
+      have hs00 : s = 0 := by rw [hs]; simp
+      simp [hui, hs00]
+    · -- `R > 0`: `αᵢ = min ⌊tᵢ⌋₊ (M - 1)` with `tᵢ = (uᵢ + R)/s ∈ [0, M]`.
+      have hspos : 0 < s := div_pos (by linarith) hM'
+      obtain ⟨t, ht⟩ : ∃ t : Fin n → ℝ, ∀ i, t i = (u i + R) / s := ⟨_, fun _ ↦ rfl⟩
+      have ht0 : ∀ i, 0 ≤ t i := fun i ↦ by
+        rw [ht i]
+        exact div_nonneg (by linarith [(abs_le.1 (hcoord i)).1]) hs0
+      have htM : ∀ i, t i ≤ M := fun i ↦ by
+        rw [ht i, div_le_iff₀ hspos]
+        linarith [(abs_le.1 (hcoord i)).2]
+      have hk : ∀ i, ((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) ≤ t i ∧
+          t i ≤ ((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) + 1 := by
+        intro i
+        refine ⟨(Nat.cast_le.2 (min_le_left _ _)).trans (Nat.floor_le (ht0 i)), ?_⟩
+        rcases le_total ⌊t i⌋₊ (M - 1) with hle | hle
+        · rw [min_eq_left hle]
+          exact (Nat.lt_floor_add_one (t i)).le
+        · rw [min_eq_right hle, Nat.cast_sub (Nat.one_le_iff_ne_zero.2 hM.ne'), Nat.cast_one,
+            sub_add_cancel]
+          exact htM i
+      refine mem_iUnion.2 ⟨fun i ↦ ⟨min ⌊t i⌋₊ (M - 1), by omega⟩, fun i ↦ ?_⟩
+      obtain ⟨hk1, hk2⟩ := hk i
+      have hut : u i = -R + s * t i := by
+        rw [ht i, mul_div_cancel₀ _ hspos.ne']
+        ring
+      show -R + s * ((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) ≤ u i ∧
+        u i ≤ -R + s * (((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) + 1)
+      rw [hut]
+      exact ⟨by linarith [mul_le_mul_of_nonneg_left hk1 hs0],
+        by linarith [mul_le_mul_of_nonneg_left hk2 hs0]⟩
+
+/-- **`C¹` critical slices are `Hᵏ`-null** (Simon Ch. 2, p. 66: the consequence of the co-area
+formula 6.3 stated before Theorem 6.4, `chapter-02.txt` lines 1476–1478, whose proof Simon leaves
+to [Har79]/[Fed69]). Let `G : ℝ^{m+k} → ℝᵐ` be `C¹`, `k > 0` and `C = {u : DG(u) not surjective}`.
+Then `Hᵏ(C ∩ G⁻¹{y}) = 0` for `Lᵐ`-a.e. `y`. If `m = 0` then `C = ∅`. Otherwise, by the fine-cover
+criterion, it suffices to treat `C ∩ B̄_R` for `R ∈ ℕ`. Given `ε > 0`, let `Λ` bound `‖DG‖` on
+`K = B̄_{√n R}` (`n = m + k`), let `η > 0` be small and `δ > 0` such that
+`‖DG(v) - DG(v')‖ ≤ η` for `v, v' ∈ K` with `|v - v'| ≤ δ`, and subdivide `[-R, R]ⁿ` into `Mⁿ`
+convex cubes `Q` of diameter `d ≤ min(δ, ε)`. If `Q` meets `C` at `u₀`, then `G(Q)` lies in a slab
+normal to `range DG(u₀)`, so `Lᵐ(G(Q)) ≤ 2ηd (2(Λ + η)d)^{m-1}`. As `Md = 2√n R`, the cover has
+`Σ_Q (diam Q)ᵏ Lᵐ(G(Q ∩ C)) ≤ (2√n R)ⁿ 2ᵐ (Λ + 1)^{m-1} η ≤ ε`. -/
+theorem Submission.c1_critical_slices_null : ∀ (m k : ℕ) (G : Rn (m + k) → Rn m), 0 < k →
+    ContDiff ℝ 1 G → ∀ᵐ y ∂(volume : Measure (Rn m)),
+      μHE[k] ({u | ¬ Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}) = 0 := by
+  intro m k G hk hG
+  -- `m = 0`: every linear map into `ℝ⁰` is surjective, so the critical set is empty.
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · have hC : {u : Rn (0 + k) | ¬ Function.Surjective (fderiv ℝ G u)} = ∅ := by
+      ext u
+      simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_not]
+      exact fun _ ↦ ⟨0, Subsingleton.elim _ _⟩
+    filter_upwards with y
+    simp [hC]
+  set C := {u : Rn (m + k) | ¬ Function.Surjective (fderiv ℝ G u)} with hCdef
+  have hdiff : Differentiable ℝ G := hG.differentiable one_ne_zero
+  have hcont : Continuous (fderiv ℝ G) := hG.continuous_fderiv one_ne_zero
+  -- `m ≥ 1`: by the fine-cover criterion, each `C ∩ B̄_R` (`R ∈ ℕ`) has `Hᵏ`-null slices over
+  -- `Lᵐ`-a.e. `y`.
+  have key : ∀ R : ℕ, ∀ᵐ y ∂(volume : Measure (Rn m)),
+      μHE[k] ((C ∩ Metric.closedBall 0 (R : ℝ)) ∩ G ⁻¹' {y}) = 0 := by
+    intro R
+    refine Submission.critSlices_ae_slice_null_of_covers (m + k) m k
+      (C ∩ Metric.closedBall 0 (R : ℝ)) G hk fun ε hε ↦ ?_
+    -- Constants: `0 < e` with `e ≤ ε`; a bound `Λ ≥ 0` of `‖DG‖` on the compact `K = B̄_{√n R}`;
+    -- the tolerance `η ∈ (0, 1]` with `A₀ η ≤ e`; the modulus `δ > 0` of uniform continuity of
+    -- `DG` on `K` for `η`; and `M ∈ ℕ` with cube diameter `d = √n (2R / M) ≤ min(δ, e)`.
+    obtain ⟨e, he0, he⟩ : ∃ e : ℝ, 0 < e ∧ ENNReal.ofReal e ≤ ε := by
+      obtain ⟨r, -, hr, hrε⟩ := ENNReal.lt_iff_exists_real_btwn.1 hε
+      exact ⟨r, ENNReal.ofReal_pos.1 hr, hrε.le⟩
+    set K := Metric.closedBall (0 : Rn (m + k)) (Real.sqrt ((m + k : ℕ) : ℝ) * R) with hKdef
+    have hK : IsCompact K := isCompact_closedBall _ _
+    obtain ⟨Λ₀, hΛ₀⟩ := hK.exists_bound_of_continuousOn hcont.continuousOn
+    set Λ : ℝ := max Λ₀ 0 with hΛdef
+    have hΛ : ∀ x ∈ K, ‖fderiv ℝ G x‖ ≤ Λ := fun x hx ↦ (hΛ₀ x hx).trans (le_max_left _ _)
+    have hΛ0 : 0 ≤ Λ := le_max_right _ _
+    set A₀ : ℝ := (2 * Real.sqrt ((m + k : ℕ) : ℝ) * R) ^ (m + k) * 2 ^ m * (Λ + 1) ^ (m - 1)
+      with hA₀def
+    have hA₀ : 0 ≤ A₀ := by positivity
+    set η : ℝ := min 1 (e / (A₀ + 1)) with hηdef
+    have hη0 : 0 < η := lt_min one_pos (div_pos he0 (by linarith))
+    have hη1 : η ≤ 1 := min_le_left _ _
+    have hηA : A₀ * η ≤ e := by
+      have h1 : A₀ * η ≤ A₀ * (e / (A₀ + 1)) := mul_le_mul_of_nonneg_left (min_le_right _ _) hA₀
+      have h2 : A₀ * (e / (A₀ + 1)) ≤ e := by
+        rw [mul_div_assoc', div_le_iff₀ (by linarith)]
+        nlinarith
+      linarith
+    obtain ⟨δ, hδ0, hδ⟩ := Metric.uniformContinuousOn_iff_le.1
+      (hK.uniformContinuousOn_of_continuous hcont.continuousOn) η hη0
+    set ρ : ℝ := min δ e with hρdef
+    have hρ0 : 0 < ρ := lt_min hδ0 he0
+    obtain ⟨M, hM⟩ := exists_nat_gt (2 * Real.sqrt ((m + k : ℕ) : ℝ) * R / ρ)
+    have hR0 : (0 : ℝ) ≤ R := Nat.cast_nonneg R
+    have hMpos' : (0 : ℝ) < M := lt_of_le_of_lt (by positivity) hM
+    have hMpos : 0 < M := by exact_mod_cast hMpos'
+    set d : ℝ := Real.sqrt ((m + k : ℕ) : ℝ) * (2 * R / M) with hddef
+    have hd0 : 0 ≤ d := by positivity
+    have hdρ : d ≤ ρ := by
+      have h := (div_lt_iff₀ hρ0).1 hM
+      rw [hddef, mul_div_assoc', div_le_iff₀ hMpos']
+      nlinarith
+    have hdδ : d ≤ δ := hdρ.trans (min_le_left _ _)
+    have hde : d ≤ e := hdρ.trans (min_le_right _ _)
+    -- The cover: the `Mⁿ` convex cubes `Q α ⊆ K` of diameter `≤ d ≤ ε` covering `B̄_R`.
+    obtain ⟨Q, hQconv, hQK, hQdiam, hQcov⟩ :=
+      Submission.critSlices_cube_cover (m + k) M R hMpos hR0
+    have hdiamQ : ∀ α, Metric.ediam (Q α) ≤ ENNReal.ofReal d := fun α ↦
+      Metric.ediam_le fun u hu v hv ↦ by
+        rw [edist_dist]
+        exact ENNReal.ofReal_le_ofReal (hQdiam α u hu v hv)
+    refine ⟨Fin (m + k) → Fin M, inferInstance, Q, inter_subset_right.trans hQcov,
+      fun α ↦ (hdiamQ α).trans ((ENNReal.ofReal_le_ofReal hde).trans he), ?_⟩
+    rw [tsum_fintype]
+    -- A cube `Q α` meeting `C` at `u₀`: `‖DG(v) - DG(u₀)‖ ≤ η` and `|v - u₀| ≤ d` on `Q α`, and
+    -- `DG(u₀)` is not surjective, so `Lᵐ(G(Q α)) ≤ 2ηd (2(Λ + η)d)^{m-1}`.
+    have hterm : ∀ α, Metric.ediam (Q α) ^ k *
+        volume (G '' (Q α ∩ (C ∩ Metric.closedBall 0 (R : ℝ)))) ≤
+        ENNReal.ofReal (d ^ k * (2 * (η * d) * (2 * ((Λ + η) * d)) ^ (m - 1))) := by
+      intro α
+      by_cases hne : (Q α ∩ (C ∩ Metric.closedBall 0 (R : ℝ))).Nonempty
+      · obtain ⟨u₀, hu₀Q, hu₀C, -⟩ := hne
+        have hu₀K : u₀ ∈ K := hQK α hu₀Q
+        have hvol := Submission.critSlices_image_volume_le_of_fderiv_near (m + k) m G (Q α)
+          (fderiv ℝ G u₀) u₀ d η Λ (hQconv α) hu₀Q (fun v _ ↦ hdiff v)
+          (fun v hv ↦ by
+            have h := hδ v (hQK α hv) u₀ hu₀K ((hQdiam α v hv u₀ hu₀Q).trans hdδ)
+            rwa [dist_eq_norm] at h)
+          (fun v hv ↦ by
+            rw [← dist_eq_norm]
+            exact hQdiam α v hv u₀ hu₀Q)
+          hu₀C (hΛ u₀ hu₀K)
+        calc Metric.ediam (Q α) ^ k * volume (G '' (Q α ∩ (C ∩ Metric.closedBall 0 (R : ℝ))))
+            ≤ ENNReal.ofReal d ^ k * volume (G '' Q α) :=
+              mul_le_mul' (pow_le_pow_left' (hdiamQ α) k)
+                (measure_mono (image_mono inter_subset_left))
+          _ ≤ ENNReal.ofReal d ^ k *
+              ENNReal.ofReal (2 * (η * d) * (2 * ((Λ + η) * d)) ^ (m - 1)) :=
+              mul_le_mul' le_rfl hvol
+          _ = ENNReal.ofReal (d ^ k * (2 * (η * d) * (2 * ((Λ + η) * d)) ^ (m - 1))) := by
+              rw [ENNReal.ofReal_mul (pow_nonneg hd0 k), ENNReal.ofReal_pow hd0]
+      · rw [not_nonempty_iff_eq_empty.1 hne, image_empty, measure_empty, mul_zero]
+        positivity
+    -- Summing over the `Mⁿ` cubes: `Md = 2√n R`, `n = m + k`, `m ≥ 1` and `η ≤ 1` give
+    -- `Σ ≤ (2√n R)ⁿ 2ᵐ (Λ + η)^{m-1} η ≤ A₀ η ≤ e ≤ ε`.
+    calc ∑ α, Metric.ediam (Q α) ^ k * volume (G '' (Q α ∩ (C ∩ Metric.closedBall 0 (R : ℝ))))
+        ≤ ∑ _α : Fin (m + k) → Fin M,
+            ENNReal.ofReal (d ^ k * (2 * (η * d) * (2 * ((Λ + η) * d)) ^ (m - 1))) :=
+          Finset.sum_le_sum fun α _ ↦ hterm α
+      _ = ENNReal.ofReal ((M : ℝ) ^ (m + k) *
+            (d ^ k * (2 * (η * d) * (2 * ((Λ + η) * d)) ^ (m - 1)))) := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+            Fintype.card_fin, nsmul_eq_mul,
+            ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ (M : ℝ) ^ (m + k)),
+            ← Nat.cast_pow, ENNReal.ofReal_natCast]
+      _ ≤ ENNReal.ofReal e := by
+          apply ENNReal.ofReal_le_ofReal
+          obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, (Nat.succ_pred_eq_of_pos hm).symm⟩
+          have hMd : (M : ℝ) * d = 2 * Real.sqrt ((m' + 1 + k : ℕ) : ℝ) * R := by
+            rw [hddef]
+            field_simp
+          have hpow : (Λ + η) ^ (m' + 1 - 1) ≤ (Λ + 1) ^ (m' + 1 - 1) :=
+            pow_le_pow_left₀ (by linarith) (by linarith) _
+          have hid : (M : ℝ) ^ (m' + 1 + k) *
+              (d ^ k * (2 * (η * d) * (2 * ((Λ + η) * d)) ^ (m' + 1 - 1))) =
+              ((M : ℝ) * d) ^ (m' + 1 + k) * 2 ^ (m' + 1) * (Λ + η) ^ (m' + 1 - 1) * η := by
+            simp only [Nat.add_sub_cancel, mul_pow]
+            ring
+          rw [hid, hMd]
+          calc (2 * Real.sqrt ((m' + 1 + k : ℕ) : ℝ) * R) ^ (m' + 1 + k) * 2 ^ (m' + 1) *
+                (Λ + η) ^ (m' + 1 - 1) * η
+              ≤ (2 * Real.sqrt ((m' + 1 + k : ℕ) : ℝ) * R) ^ (m' + 1 + k) * 2 ^ (m' + 1) *
+                (Λ + 1) ^ (m' + 1 - 1) * η := by gcongr
+            _ = A₀ * η := by rw [hA₀def]
+            _ ≤ e := hηA
+      _ ≤ ε := he
+  -- `C ∩ G⁻¹{y} ⊆ ⋃_R (C ∩ B̄_R) ∩ G⁻¹{y}`, a countable union of `Hᵏ`-null sets for a.e. `y`.
+  filter_upwards [ae_all_iff.2 key] with y hy
+  refine measure_mono_null (fun u hu ↦ ?_) (measure_iUnion_null hy)
+  obtain ⟨R, hR⟩ := exists_nat_ge ‖u‖
+  exact mem_iUnion.2 ⟨R, ⟨hu.1, mem_closedBall_zero_iff.2 hR⟩, hu.2⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
