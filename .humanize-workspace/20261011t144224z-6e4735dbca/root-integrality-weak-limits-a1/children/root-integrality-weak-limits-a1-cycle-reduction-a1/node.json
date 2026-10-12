@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Reduction of 8.2 to cycles via cones",
+  "statement": "Assume LipschitzPushforwardIntegerMultiplicity. Fix P, m ∈ ℕ and suppose (BLI) for all Y_j, Y ∈ D_{m+1}(ℝ^P): if every ∂Y_j is integer multiplicity, sup_j M(∂Y_j) < ∞ and ∂Y_j ⇀ ∂Y, then ∂Y is integer multiplicity; and (Cyc) whenever K ⊆ ℝ^P is compact and T_j, T ∈ D_{m+1}(ℝ^P) with T_j integer multiplicity, ∂T_j = 0, spt T_j ⊆ K, sup_j M(T_j) < ∞ and T_j ⇀ T, then T is integer multiplicity. Then whenever K ⊆ ℝ^P is compact and T_j, T ∈ D_{m+1}(ℝ^P) with T_j and ∂T_j integer multiplicity, spt T_j ⊆ K, sup_j(M(T_j) + M(∂T_j)) < ∞ and T_j ⇀ T, the current T is integer multiplicity.",
+  "lean_statement": "∀ (P m : ℕ), LipschitzPushforwardIntegerMultiplicity → (∀ (Yj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Yj j).boundary) → (⨆ j, (Yj j).boundary.mass) < ∞ → WeaklyConvergesOn (fun j => (Yj j).boundary) Y.boundary → IsIntegerMultiplicity Y.boundary) → (∀ (K : Set (Eucl P)), IsCompact K → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, (Tj j).boundary = 0) → (∀ j, (Tj j).support ⊆ K) → (⨆ j, (Tj j).mass) < ∞ → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T) → (∀ (K : Set (Eucl P)), IsCompact K → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegralCurrent (Tj j)) → (∀ j, (Tj j).support ⊆ K) → (⨆ j, ((Tj j).mass + (Tj j).boundary.mass)) < ∞ → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T)",
+  "lean_name": "iwl_cycle_reduction",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.im_closure-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.im_closure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-a1"
+}

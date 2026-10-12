@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Integrality of the multiplicity of a rectifiable weak limit (printed (7)–(10))",
+  "statement": "Assume m + 2 ≤ P, SlicingTheorem and LipschitzPushforwardIntegerMultiplicity. Let T_j, T ∈ D_{m+1}(ℝ^P) with T_j integer multiplicity, ∂T_j = 0, sup_j M(T_j) < ∞, T_j ⇀ T, and suppose T is rectifiable (IsRectifiableCurrent: T = τ(M,θ,ξ) with real θ > 0). Then T is integer multiplicity.",
+  "lean_statement": "∀ (P m : ℕ), m + 2 ≤ P → SlicingTheorem → LipschitzPushforwardIntegerMultiplicity → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, (Tj j).boundary = 0) → (⨆ j, (Tj j).mass) < ∞ → WeaklyConvergesOn Tj T → IsRectifiableCurrent T → IsIntegerMultiplicity T",
+  "lean_name": "iwl_integer_density",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.integrality_weak_limits-a1.top_dim-a1",
+    "root.integrality_weak_limits-a1.restriction_theory-a1",
+    "root.integrality_weak_limits-a1.restriction_limit-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.top_dim-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_theory-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-a1"
+}
