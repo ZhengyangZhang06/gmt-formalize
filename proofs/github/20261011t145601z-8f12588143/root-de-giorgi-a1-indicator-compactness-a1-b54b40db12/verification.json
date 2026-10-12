@@ -1,0 +1,21 @@
+{
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/377",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "71c489c08cffad0d739396a25026f251a1a61fca",
+  "integrated_commit": "",
+  "proof_base_commit": "e155cfc4aa2b59309b4ef86f5dc385d54ba2cbd5",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.de_giorgi-a1",
+  "requires": [
+    "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+    "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+    "root.de_giorgi-a1.indicator_compactness-a1.mollified_cauchy-a1",
+    "root.de_giorgi-a1.indicator_compactness-a1.diagonal_arzela_ascoli-a1",
+    "root.de_giorgi-a1.indicator_compactness-a1.local_cauchy_limit-a1"
+  ]
+}

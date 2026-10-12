@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7700efeb8d6f89eb192d3ab0ab65b72cf28d2fbe9c9f4dbf972659d8fb684e08",
+  "git_delta": {
+    "base_commit": "cc94f846ba9b3f3f20fced2299a2cecb28071b8c",
+    "candidate_commit": "71c489c08cffad0d739396a25026f251a1a61fca",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "f59e57aa715c0e53e7e4b96db0db2201f6c88729effb26d7b73c2f16cec758e8",
+    "source_sha256": "82c6ae0c0654dc54b849f7adadbddd50fc2f3dc2c4cce8d4464afc6c868473db",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_indicator_compactness",
+      "statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F k, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ G : Set (Rn N), MeasurableSet G ∧ ∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F (φ k)) G)) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
