@@ -410,6 +410,53 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The `n`-dimensional Hausdorff measure of the closed and open balls `B_r(0)` of an `n`-plane
+`T ∈ G(N,n)` is `ω_n r^n` (step 6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5):
+`H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.allard_tc_fbl_plane_ball_measure :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `T.plane`, from an orthonormal basis
+  -- of `T.plane` indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 2: `H^n (J '' E) = vol E` for every `E ⊆ ℝ^n`.
+  have hmeas : ∀ E : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (J '' E) = volume E := by
+    intro E
+    rw [J.isometry.euclideanHausdorffMeasure_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 3: `T.plane ∩ {‖w‖ ∈ A} = J '' {‖y‖ ∈ A}`, since `J` preserves norms and has range
+  -- `T.plane`.
+  have himage : ∀ A : Set ℝ,
+      (T.plane : Set (Euclidean N)) ∩ {w | ‖w‖ ∈ A} = J '' {y | ‖y‖ ∈ A} := by
+    intro A
+    ext w
+    constructor
+    · rintro ⟨hw, hwA⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · simpa using hwA
+      · simp [J]
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨by simp [J], by simpa using hy⟩
+  have hcl : (T.plane : Set (Euclidean N)) ∩ closedBall 0 r = J '' closedBall 0 r := by
+    simpa only [Set.mem_Iic, ← mem_closedBall_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iic r)
+  have hop : (T.plane : Set (Euclidean N)) ∩ ball 0 r = J '' ball 0 r := by
+    simpa only [Set.mem_Iio, ← mem_ball_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iio r)
+  -- Steps 4–5: `vol (B_r(0)) = vol (B°_r(0)) = ω_n r^n` in `ℝ^n` (`r > 0`).
+  have hcl_vol : volume (closedBall (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  have hop_vol : volume (ball (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  -- Step 6: conclusion.
+  exact ⟨by rw [hcl, hmeas, hcl_vol], by rw [hop, hmeas, hop_vol]⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
