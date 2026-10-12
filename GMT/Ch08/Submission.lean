@@ -2565,6 +2565,40 @@ theorem Submission.monotonicity_and_density_theorems :
   ⟨Submission.monotonicity_formula_8_3_3, Submission.stationary_monotonicity_identity_8_3_4,
     Submission.density_exists_ae_8_3_6⟩
 
+/-- **Simon Ch. 8, 4.1 (Constancy Theorem), corrected** (child `constancy` of `main_theorem`).
+If `M = ∅`, then `V` is carried by `U ∩ spt μ_V = ∅`, so `V = 0` and `θ₀ = 0` works.  Otherwise the
+measure form `V = (c H^n ⌞ (M ∩ U)).map (x ↦ (x, T x))` with `c < ∞` (child
+`stationary_constancy_tangentGraph_measure`) gives the formula with `θ₀ = c`: if `c = 0` both
+sides vanish, and if `c ≠ 0` then `T x` is the only point of `G(N,n)` whose plane is
+`classicalTangentSpace M x`, since a point of `G(N,n)` is determined by its plane. -/
+theorem Submission.constancy_theorem : ConstancyTheorem := by
+  intro N n U V M hV hM hsupp hconn
+  rcases M.eq_empty_or_nonempty with rfl | hne
+  · have hV0 : V.measure = 0 := by
+      refine ae_eq_bot.mp (eventually_false_iff_eq_bot.mp ?_)
+      filter_upwards [V.ae_mem_domain,
+        ae_of_ae_map measurable_fst.aemeasurable V.weight.support_mem_ae] with z hzU hz
+      exact hsupp ⟨hzU.1, hz⟩
+    exact ⟨0, le_rfl, fun A _ ↦ by simp [hV0]⟩
+  obtain ⟨c, T, hc, hT, hVc, hplane⟩ :=
+    Submission.stationary_constancy_tangentGraph_measure N n U V M hV hM hsupp hconn hne
+  refine ⟨c.toReal, ENNReal.toReal_nonneg, fun A hA ↦ ?_⟩
+  have hgraph : Measurable fun x : Euclidean N ↦ (x, T x) := measurable_id.prodMk hT
+  rw [ENNReal.ofReal_toReal hc, hVc, Measure.map_apply hgraph hA, Measure.smul_apply, smul_eq_mul,
+    Measure.restrict_apply (hgraph hA)]
+  -- Now `V(A) = c H^n({x ∈ M ∩ U : (x, T x) ∈ A})`; for `c ≠ 0` this set is the contract's.
+  rcases eq_or_ne c 0 with rfl | hc0
+  · rw [zero_mul, zero_mul]
+  congr 2
+  ext x
+  refine ⟨fun ⟨hxA, hx⟩ ↦ ⟨hx, T x, hplane hc0 x hx, hxA⟩, fun ⟨hx, S, hS, hxS⟩ ↦ ⟨?_, hx⟩⟩
+  -- `S` and `T x` have the same plane, so they are the same point of `G(N,n)`.
+  obtain rfl : S = T x := by
+    rw [← S.ofSubmodule_plane, ← (T x).ofSubmodule_plane]
+    congr 1
+    exact SetLike.coe_injective (hS.trans (hplane hc0 x hx).symm)
+  exact hxS
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
