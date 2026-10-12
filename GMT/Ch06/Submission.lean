@@ -359,6 +359,103 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 1, Theorem 1.17 (Lusin), in the form used in the proof of Ch. 2, Theorem 1.5
+(p. 44), "which applies to sets of infinite measure for `Lⁿ`": if `S ⊆ ℝⁿ` is Borel and
+`f : ℝⁿ → (ℝⁿ)*` is Borel measurable, then for every `ε > 0` there is a closed `C ⊆ S` with
+`Lⁿ(S ∖ C) < ε` and `f|C` continuous. -/
+theorem Submission.lpf_c1r_lusin_closed :
+    ∀ (n : ℕ) (S : Set (Eucl n)) (f : Eucl n → (Eucl n →L[ℝ] ℝ)), MeasurableSet S →
+      Measurable f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C : Set (Eucl n), IsClosed C ∧ C ⊆ S ∧
+        (volume : Measure (Eucl n)) (S \ C) < ε ∧ ContinuousOn f C := by
+  intro n S f hS hf ε hε
+  -- Closed inner approximation of Borel sets of any measure: on the closed annuli
+  -- `K j = {j ≤ |x| ≤ j + 1}`, which are bounded and locally finite and cover `ℝⁿ`, choose
+  -- closed `F j ⊆ A ∩ K j` with `Lⁿ((A ∩ K j) ∖ F j) < η j`, `∑ η j < δ`; `⋃ j, F j` is closed.
+  have hreg : ∀ A : Set (Eucl n), MeasurableSet A → ∀ δ : ℝ≥0∞, δ ≠ 0 →
+      ∃ F ⊆ A, IsClosed F ∧ (volume : Measure (Eucl n)) (A \ F) < δ := by
+    intro A hA δ hδ
+    obtain ⟨η, hη0, hηδ⟩ := ENNReal.exists_pos_sum_of_countable hδ ℕ
+    set K : ℕ → Set (Eucl n) := fun j => (fun x : Eucl n => ‖x‖) ⁻¹' Icc (j : ℝ) (j + 1)
+    have hKc : ∀ j, IsClosed (K j) := fun j => isClosed_Icc.preimage continuous_norm
+    have hKb : ∀ j, K j ⊆ closedBall 0 (j + 1) := by
+      intro j x hx
+      rw [mem_closedBall, dist_zero_right]
+      exact hx.2
+    have hKcov : ∀ x : Eucl n, x ∈ K ⌊‖x‖⌋₊ := fun x =>
+      ⟨Nat.floor_le (norm_nonneg x), (Nat.lt_floor_add_one _).le⟩
+    -- `B₁(x)` meets `K j` only if `j ≤ |y| < |x| + 1` for some `y`.
+    have hKlf : LocallyFinite K := by
+      intro x
+      refine ⟨ball x 1, ball_mem_nhds x one_pos, (Set.finite_lt_nat (⌊‖x‖⌋₊ + 2)).subset ?_⟩
+      rintro j ⟨y, hyK, hyx⟩
+      have h1 : (j : ℝ) ≤ ‖y‖ := hyK.1
+      have h2 : ‖y‖ < ‖x‖ + 1 := by
+        have hd : ‖y - x‖ < 1 := by rw [← dist_eq_norm]; exact mem_ball.1 hyx
+        have := norm_le_norm_add_norm_sub' y x
+        linarith [norm_sub_rev y x]
+      have h3 : ‖x‖ < ⌊‖x‖⌋₊ + 1 := Nat.lt_floor_add_one _
+      have h4 : (j : ℝ) < ((⌊‖x‖⌋₊ + 2 : ℕ) : ℝ) := by push_cast; linarith
+      exact_mod_cast h4
+    have hfin : ∀ j, (volume : Measure (Eucl n)) (A ∩ K j) ≠ ⊤ := fun j =>
+      ((measure_mono (inter_subset_right.trans (hKb j))).trans_lt measure_closedBall_lt_top).ne
+    choose F hFA hFc hFlt using fun j =>
+      (hA.inter (hKc j).measurableSet).exists_isClosed_sdiff_lt (hfin j)
+        (ENNReal.coe_ne_zero.2 (hη0 j).ne')
+    refine ⟨⋃ j, F j, iUnion_subset fun j => (hFA j).trans inter_subset_left,
+      (hKlf.subset fun j => (hFA j).trans inter_subset_right).isClosed_iUnion hFc, ?_⟩
+    calc (volume : Measure (Eucl n)) (A \ ⋃ j, F j)
+        ≤ volume (⋃ j, (A ∩ K j) \ F j) := by
+          refine measure_mono fun x hx => mem_iUnion.2 ⟨⌊‖x‖⌋₊, ⟨hx.1, hKcov x⟩, fun hxF => ?_⟩
+          exact hx.2 (mem_iUnion.2 ⟨_, hxF⟩)
+      _ ≤ ∑' j, volume ((A ∩ K j) \ F j) := measure_iUnion_le _
+      _ ≤ ∑' j, (η j : ℝ≥0∞) := ENNReal.tsum_le_tsum fun j => (hFlt j).le
+      _ < δ := hηδ
+  -- Lusin's theorem through a countable basis `(b k)` of the second countable space `(ℝⁿ)*`:
+  -- closed `F k ⊆ S ∩ f⁻¹(b k)` and `G k ⊆ S ∖ f⁻¹(b k)` with defects `< η k`, `∑ η k < ε / 2`,
+  -- and `C = ⋂ k, (F k ∪ G k)`.
+  obtain ⟨b, hb⟩ := TopologicalSpace.exists_seq_basis (Eucl n →L[ℝ] ℝ)
+  have hbo : ∀ k, IsOpen (b k) := fun k => hb.isOpen (mem_range_self k)
+  obtain ⟨η, hη0, hηε⟩ := ENNReal.exists_pos_sum_of_countable (ENNReal.half_pos hε.ne').ne' ℕ
+  have hη : ∀ k, ((η k : ℝ≥0) : ℝ≥0∞) ≠ 0 := fun k => ENNReal.coe_ne_zero.2 (hη0 k).ne'
+  choose F hFE hFc hFlt using fun k =>
+    hreg _ (hS.inter (hf (hbo k).measurableSet)) (η k) (hη k)
+  choose G hGE hGc hGlt using fun k =>
+    hreg _ (hS.diff (hf (hbo k).measurableSet)) (η k) (hη k)
+  refine ⟨⋂ k, (F k ∪ G k), isClosed_iInter fun k => (hFc k).union (hGc k), ?_, ?_, ?_⟩
+  · exact (iInter_subset _ 0).trans
+      (union_subset ((hFE 0).trans inter_subset_left) ((hGE 0).trans Set.sdiff_subset))
+  -- `S ∖ C ⊆ ⋃ k, ((S ∩ f⁻¹(b k)) ∖ F k ∪ (S ∖ f⁻¹(b k)) ∖ G k)`.
+  · calc (volume : Measure (Eucl n)) (S \ ⋂ k, (F k ∪ G k))
+        ≤ volume (⋃ k, ((S ∩ f ⁻¹' b k) \ F k ∪ (S \ f ⁻¹' b k) \ G k)) := by
+          refine measure_mono fun x hx => ?_
+          obtain ⟨k, hk⟩ : ∃ k, x ∉ F k ∪ G k := by
+            by_contra! h
+            exact hx.2 (mem_iInter.2 h)
+          refine mem_iUnion.2 ⟨k, ?_⟩
+          by_cases hxb : f x ∈ b k
+          · exact Or.inl ⟨⟨hx.1, hxb⟩, fun h => hk (Or.inl h)⟩
+          · exact Or.inr ⟨⟨hx.1, hxb⟩, fun h => hk (Or.inr h)⟩
+      _ ≤ ∑' k, volume ((S ∩ f ⁻¹' b k) \ F k ∪ (S \ f ⁻¹' b k) \ G k) := measure_iUnion_le _
+      _ ≤ ∑' k, ((η k : ℝ≥0∞) + η k) := ENNReal.tsum_le_tsum fun k =>
+          (measure_union_le _ _).trans (add_le_add (hFlt k).le (hGlt k).le)
+      _ = ∑' k, (η k : ℝ≥0∞) + ∑' k, (η k : ℝ≥0∞) := ENNReal.tsum_add
+      _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hηε hηε
+      _ = ε := ENNReal.add_halves ε
+  -- `f⁻¹(b k) ∩ C = (G k)ᶜ ∩ C` is relatively open in `C` for every basic open set `b k`.
+  · rw [hb.continuousOn_iff]
+    rintro t ⟨k, rfl⟩
+    refine ⟨(G k)ᶜ, (hGc k).isOpen_compl, ?_⟩
+    ext x
+    simp only [mem_inter_iff, mem_preimage, mem_compl_iff]
+    constructor
+    · rintro ⟨hxb, hxC⟩
+      exact ⟨fun hxG => ((hGE k) hxG).2 hxb, hxC⟩
+    · rintro ⟨hxG, hxC⟩
+      refine ⟨?_, hxC⟩
+      rcases mem_iInter.1 hxC k with hxF | hxG'
+      · exact ((hFE k) hxF).2
+      · exact absurd hxG' hxG
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
