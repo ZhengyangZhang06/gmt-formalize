@@ -508,6 +508,184 @@ theorem Submission.intcpt_diag_rescaled_integrable :
     (integrable_map_measure (map_continuous F).aestronglyMeasurable
       Φ.continuous.measurable.aemeasurable).mpr hHint
   exact hmap.smul_measure ENNReal.ofReal_ne_top
+/-- A countable sup-dense family of test functions on `B°_R(0) × G(N,n)` (Simon Ch. 8, proof of
+5.9, printed (3)–(4), step 1 of the diagonal blow-up): for `R > 0` there are
+`g_m ∈ C_c(ℝ^N × G(N,n))` with `spt g_m ⊆ B°_R(0) × G(N,n)` such that every
+`f ∈ C_c(ℝ^N × G(N,n))` with `spt f ⊆ B°_R(0) × G(N,n)` is a uniform limit of the `g_m`. -/
+theorem Submission.intcpt_diag_ball_cc_dense_seq :
+    ∀ (N n : ℕ) (R : ℝ), 0 < R → ∃ g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ),
+      (∀ m, tsupport (g m) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧
+      ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+        tsupport f ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) →
+        ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η := by
+  intro N n R hR
+  -- Step 1: `C(Z, ℝ)` (compact-open) is second countable (inlined, as in the accepted
+  -- `Submission.radon_compactlySupported_countable_approx`).
+  set X := Euclidean N × Grassmannian N n
+  set S : Set (Set X) :=
+    closure '' {B | B ∈ TopologicalSpace.countableBasis X ∧ IsCompact (closure B)}
+  set T : Set (Set ℝ) := TopologicalSpace.countableBasis ℝ
+  have hT : TopologicalSpace.IsTopologicalBasis T := TopologicalSpace.isBasis_countableBasis ℝ
+  have hS₁ : ∀ K ∈ S, IsCompact K := by
+    rintro _ ⟨B, hB, rfl⟩
+    exact hB.2
+  have hS₂ : ∀ f : C(X, ℝ), ∀ x, ∀ V ∈ T, f x ∈ V → ∃ K ∈ S, K ∈ 𝓝 x ∧ MapsTo f K V := by
+    intro f x V hV hxV
+    have hpre : f ⁻¹' V ∈ 𝓝 x := ((hT.isOpen hV).preimage f.continuous).mem_nhds hxV
+    obtain ⟨C, hCx, hCV, hC⟩ := local_compact_nhds hpre
+    obtain ⟨B, hB, hxB, hBC⟩ := (TopologicalSpace.isBasis_countableBasis X).mem_nhds_iff.1 hCx
+    have hBC' : closure B ⊆ C := closure_minimal hBC hC.isClosed
+    refine ⟨closure B, ⟨B, ⟨hB, hC.of_isClosed_subset isClosed_closure hBC'⟩, rfl⟩, ?_, ?_⟩
+    · exact mem_of_superset
+        ((TopologicalSpace.isOpen_of_mem_countableBasis hB).mem_nhds hxB) subset_closure
+    · exact fun y hy => hCV (hBC' hy)
+  have hkey : (ContinuousMap.compactOpen : TopologicalSpace C(X, ℝ)) =
+      TopologicalSpace.generateFrom (Set.image2 (fun K t ↦
+        {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}) := by
+    apply le_antisymm
+    · apply_rules [TopologicalSpace.generateFrom_anti, image2_subset_iff.mpr]
+      intro K hK t ht
+      exact mem_image2_of_mem (hS₁ K hK) (isOpen_sUnion fun _ h ↦ hT.isOpen <| ht.2 h)
+    · refine le_of_nhds_le_nhds fun f ↦ ?_
+      simp only [ContinuousMap.nhds_compactOpen, le_iInf_iff, le_principal_iff]
+      intro K (hK : IsCompact K) U (hU : IsOpen U) hfKU
+      simp only [TopologicalSpace.nhds_generateFrom]
+      obtain ⟨t, htT, htf, hTU, hKT⟩ :
+          ∃ t ⊆ T, t.Finite ∧ (∀ V ∈ t, V ⊆ U) ∧ f '' K ⊆ ⋃₀ t := by
+        rw [hT.open_eq_sUnion' hU, mapsTo_iff_image_subset, sUnion_eq_biUnion] at hfKU
+        obtain ⟨t, ht, hfin, htK⟩ :=
+          (hK.image (map_continuous f)).elim_finite_subcover_image (fun V hV ↦ hT.isOpen hV.1)
+            hfKU
+        refine ⟨t, fun _ h ↦ (ht h).1, hfin, fun _ h ↦ (ht h).2, ?_⟩
+        rwa [sUnion_eq_biUnion]
+      rw [image_subset_iff] at hKT
+      obtain ⟨s, hsS, hsf, hKs, hst⟩ :
+          ∃ s ⊆ S, s.Finite ∧ K ⊆ ⋃₀ s ∧ MapsTo f (⋃₀ s) (⋃₀ t) := by
+        have : ∀ x ∈ K, ∃ L ∈ S, L ∈ 𝓝 x ∧ MapsTo f L (⋃₀ t) := by
+          intro x hx
+          rcases hKT hx with ⟨V, hVt, hxV⟩
+          rcases hS₂ f x V (htT hVt) hxV with ⟨L, hLS, hLx, hLV⟩
+          exact ⟨L, hLS, hLx, hLV.mono_right <| subset_sUnion_of_mem hVt⟩
+        choose! L hLS hLmem hLt using this
+        rcases hK.elim_nhds_subcover L hLmem with ⟨s, hsK, hs⟩
+        refine ⟨L '' s, image_subset_iff.2 fun x hx ↦ hLS x <| hsK x hx, s.finite_toSet.image _,
+          by rwa [sUnion_image], ?_⟩
+        rw [mapsTo_sUnion, forall_mem_image]
+        exact fun x hx ↦ hLt x <| hsK x hx
+      have hsub : (⋂ L ∈ s, {g : C(X, ℝ) | MapsTo g L (⋃₀ t)}) ⊆ {g | MapsTo g K U} := by
+        simp only [← ofPred_forall, ← mapsTo_iUnion, ← sUnion_eq_biUnion]
+        exact fun g hg ↦ hg.mono hKs (sUnion_subset hTU)
+      refine mem_of_superset ((biInter_mem hsf).2 fun L hL ↦ ?_) hsub
+      refine mem_iInf_of_mem _ <| mem_iInf_of_mem ?_ <| mem_principal_self _
+      exact ⟨hst.mono_left (subset_sUnion_of_mem hL), mem_image2_of_mem (hsS hL) ⟨htf, htT⟩⟩
+  have hcount : (Set.image2 (fun K t ↦ {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S
+      {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}).Countable :=
+    (((TopologicalSpace.countable_countableBasis X).mono fun _ hB => hB.1).image _).image2
+      (countable_ofPred_finite_subset (TopologicalSpace.countable_countableBasis ℝ)) _
+  have : SecondCountableTopology C(X, ℝ) := ⟨⟨_, hcount, hkey⟩⟩
+  -- Step 2: dense sequence, uniform approximation on compact sets.
+  obtain ⟨d, hd⟩ : ∃ d : ℕ → C(X, ℝ), DenseRange d :=
+    ⟨TopologicalSpace.denseSeq C(X, ℝ), TopologicalSpace.denseRange_denseSeq C(X, ℝ)⟩
+  have happrox : ∀ (h : C(X, ℝ)) (L : Set X), IsCompact L → ∀ η : ℝ, 0 < η →
+      ∃ i, ∀ x ∈ L, |h x - d i x| < η := by
+    intro h L hL η hη
+    have hW : {p : C(X, ℝ) × C(X, ℝ) | ∀ x ∈ L,
+        (p.1 x, p.2 x) ∈ {q : ℝ × ℝ | dist q.1 q.2 < η}} ∈ uniformity C(X, ℝ) :=
+      ContinuousMap.hasBasis_compactConvergenceUniformity.mem_of_mem
+        (i := (L, {q : ℝ × ℝ | dist q.1 q.2 < η})) ⟨hL, Metric.dist_mem_uniformity hη⟩
+    obtain ⟨_, ⟨i, rfl⟩, hi⟩ := hd.inter_nhds_nonempty (UniformSpace.ball_mem_nhds h hW)
+    exact ⟨i, fun x hx => by simpa [Real.dist_eq] using hi x hx⟩
+  -- Step 3: exhaustion of the ball and cutoffs.
+  set r : ℕ → ℝ := fun m ↦ R * ((m + 1 : ℝ) / (m + 2)) with hr
+  have hrpos : ∀ m, 0 < r m := fun m ↦ by positivity
+  have hrlt : ∀ m, r m < R := by
+    intro m
+    have : ((m : ℝ) + 1) / (m + 2) < 1 := by rw [div_lt_one (by positivity)]; linarith
+    calc r m = R * (((m : ℝ) + 1) / (m + 2)) := rfl
+      _ < R * 1 := mul_lt_mul_of_pos_left this hR
+      _ = R := mul_one R
+  have hrmono : ∀ m, r m < r (m + 1) := by
+    intro m
+    have h1 : ((m : ℝ) + 1) / (m + 2) < ((m + 1 : ℕ) + 1 : ℝ) / ((m + 1 : ℕ) + 2) := by
+      push_cast
+      rw [div_lt_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    exact mul_lt_mul_of_pos_left h1 hR
+  have hrlim : ∀ y : Euclidean N, ‖y‖ < R → ∃ m, ‖y‖ < r m := by
+    intro y hy
+    have ht : Tendsto r atTop (𝓝 R) := by
+      have h1 : Tendsto (fun m : ℕ ↦ ((m : ℝ) + 1) / (m + 2)) atTop (𝓝 1) := by
+        have := tendsto_natCast_div_add_atTop (𝕜 := ℝ) (1 : ℝ)
+        have h2 : Tendsto (fun m : ℕ ↦ ((m + 1 : ℕ) : ℝ) / ((m + 1 : ℕ) + 1)) atTop (𝓝 1) :=
+          this.comp (tendsto_add_atTop_nat 1)
+        refine h2.congr (fun m ↦ ?_)
+        push_cast; ring_nf
+      simpa using h1.const_mul R
+    exact (ht.eventually (lt_mem_nhds hy)).exists
+  set E : ℕ → Set X := fun m ↦ closedBall (0 : Euclidean N) (r m) ×ˢ (univ : Set (Grassmannian N n))
+  have hEc : ∀ m, IsCompact (E m) := fun m ↦ (isCompact_closedBall _ _).prod isCompact_univ
+  choose χ hχ1 hχ0 hχc hχI using fun m => exists_continuous_one_zero_of_isCompact (X := X)
+    (hEc m)
+    ((isOpen_ball (x := (0 : Euclidean N)) (ε := r (m + 1))).prod isOpen_univ).isClosed_compl
+    (by
+      rw [disjoint_compl_right_iff_subset]
+      exact prod_mono (closedBall_subset_ball (hrmono m)) subset_rfl)
+  have hχsupp : ∀ m,
+      tsupport (χ m) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro m
+    have hcl : IsClosed (closedBall (0 : Euclidean N) (r (m + 1)) ×ˢ
+        (univ : Set (Grassmannian N n))) := isClosed_closedBall.prod isClosed_univ
+    refine (closure_minimal ?_ hcl).trans ?_
+    · intro x hx
+      by_contra hxE
+      apply hx
+      apply hχ0 m
+      intro hxb
+      exact hxE (prod_mono ball_subset_closedBall subset_rfl hxb)
+    · exact prod_mono (closedBall_subset_ball (hrlt (m + 1))) subset_rfl
+  -- Step 4: the family.
+  let g : ℕ → C_c(X, ℝ) := fun k =>
+    ⟨χ (Nat.unpair k).1 * d (Nat.unpair k).2, (hχc (Nat.unpair k).1).mul_right⟩
+  have hgx : ∀ k x, g k x = χ (Nat.unpair k).1 x * d (Nat.unpair k).2 x := fun _ _ => rfl
+  have hgsupp : ∀ k, tsupport (g k) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) :=
+    fun k => (tsupport_mul_subset_left (f := χ (Nat.unpair k).1) (g := d (Nat.unpair k).2)).trans
+      (hχsupp _)
+  clear_value g
+  refine ⟨g, hgsupp, fun f hf η hη => ?_⟩
+  -- Step 5: approximation.
+  obtain ⟨m, hm⟩ : ∃ m, tsupport f ⊆ E m := by
+    have hcov : tsupport f ⊆
+        ⋃ m, ball (0 : Euclidean N) (r m) ×ˢ (univ : Set (Grassmannian N n)) := by
+      intro z hz
+      have hz1 := (hf hz).1
+      rw [mem_ball, dist_zero_right] at hz1
+      obtain ⟨m, hm⟩ := hrlim z.1 hz1
+      exact mem_iUnion.mpr ⟨m, ⟨by rw [mem_ball, dist_zero_right]; exact hm, trivial⟩⟩
+    have hmono :
+        Monotone (fun m ↦ ball (0 : Euclidean N) (r m) ×ˢ (univ : Set (Grassmannian N n))) := by
+      intro a b hab
+      apply prod_mono _ subset_rfl
+      apply ball_subset_ball
+      exact (strictMono_nat_of_lt_succ hrmono).monotone hab
+    obtain ⟨m, hm⟩ := f.hasCompactSupport.isCompact.elim_directed_cover _
+      (fun m ↦ isOpen_ball.prod isOpen_univ) hcov hmono.directed_le
+    exact ⟨m, hm.trans (prod_mono ball_subset_closedBall subset_rfl)⟩
+  obtain ⟨i, hi⟩ := happrox f (E (m + 1)) (hEc _) η hη
+  refine ⟨Nat.pair m i, fun x => ?_⟩
+  have hfx : f x = χ m x * f x := by
+    by_cases hx : x ∈ E m
+    · rw [hχ1 m hx, Pi.one_apply, one_mul]
+    · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hm h)), mul_zero]
+  rw [hgx, Nat.unpair_pair, hfx, ← mul_sub, abs_mul, abs_of_nonneg (hχI m x).1]
+  by_cases hx : x ∈ E (m + 1)
+  · calc χ m x * |f x - d i x| ≤ 1 * η :=
+          mul_le_mul (hχI m x).2 (hi x hx).le (abs_nonneg _) zero_le_one
+      _ = η := one_mul η
+  · have hx' : x ∈ (ball (0 : Euclidean N) (r (m + 1)) ×ˢ (univ : Set (Grassmannian N n)))ᶜ := by
+      intro hb
+      exact hx (prod_mono ball_subset_closedBall subset_rfl hb)
+    rw [hχ0 m hx', Pi.zero_apply, zero_mul]
+    exact hη.le
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
