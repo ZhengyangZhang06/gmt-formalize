@@ -335,6 +335,566 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Area formula for a `C¹` map that is injective on an open parameter domain** (Simon Ch. 2,
+(3.2) and its weighted form (3.5), cf. (4.13)). Let `V ⊆ ℝᵏ` be open and `χ : ℝᵏ → ℝᴺ` be `C¹`
+and injective on `V`; no rank condition on `Dχ` is assumed. Then for every Borel `S ⊆ V` and
+Borel `φ ≥ 0`, `∫_{χ(S)} φ dHᵏ = ∫_S φ(χ(z)) J(z) dLᵏ(z)` with `J(z) = normDet (Dχ(z))`.
+
+The Lipschitz area formula of the pinned `simongmt` package (`Chapter02.AreaDomain`) is not in the
+import closure of the contract, so the formula is derived here for `C¹` maps from Mathlib's
+change of variables in equal dimension and the linear area formula:
+* if `Dχ(z)` is injective, let `P` be the orthogonal projection onto its range, read in an
+  orthonormal basis. On a small ball `P` is `1`-Lipschitz on `χ(A)` and has a `K`-Lipschitz
+  inverse there, and the same holds for `Dχ(w)` in place of `χ`; with the change of variables
+  for `P ∘ χ` this gives `∫_A J ≤ Kᵏ Hᵏ(χ(A))` and `Hᵏ(χ(A)) ≤ Kᵏ ∫_A J`;
+* if `Dχ(z)` is not injective, compressing a unit kernel direction by `δ` shows
+  `Hᵏ(χ(A)) ≤ (‖Dχ(z)‖ + 2)ᵏ δ Lᵏ(A)` on a small ball;
+* Lindelöf, Lusin–Souslin (Borel images, `MeasurableSet.image_of_continuousOn_injOn`) and
+  `K → 1`, `δ → 0` give `Hᵏ(χ(A)) = ∫_A J` for Borel `A ⊆ V`; the weighted formula follows by
+  pushing `J Lᵏ ⌞ S` forward under `χ`. -/
+theorem Submission.pcoarea_c1_injOn_area_formula : ∀ (k N : ℕ) (V : Set (Rn k))
+    (χ : Rn k → Rn N), IsOpen V → ContDiffOn ℝ 1 χ V → InjOn χ V → ∀ S ⊆ V, MeasurableSet S →
+    ∀ φ : Rn N → ℝ≥0∞, Measurable φ → ∫⁻ x in χ '' S, φ x ∂μHE[k] =
+      ∫⁻ z in S, φ (χ z) * ENNReal.ofReal ((fderiv ℝ χ z).toLinearMap.normDet) := by
+  intro k N V χ hV hχ hinj S hSV hS φ hφ
+  /- Step 1: measure-theoretic tools. `Hᵏ = Lᵏ` on `ℝᵏ`; the linear area formula; images under
+  a map with a `K`-Lipschitz inverse; continuity of `normDet`. -/
+  have hvolE : (μHE[k] : Measure (Rn k)) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume k
+  have hlinarea : ∀ (L : Rn k →L[ℝ] Rn N) (s : Set (Rn k)),
+      μHE[k] (L '' s) = ENNReal.ofReal L.toLinearMap.normDet * volume s := by
+    intro L s
+    have h := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume
+      (L : Rn k →ₗ[ℝ] Rn N) s
+    rwa [finrank_euclideanSpace_fin] at h
+  have hlipInv : ∀ (s : Set (Rn k)) (g : Rn k → Rn k) (f : Rn k → Rn N) (K : ℝ≥0),
+      (∀ x ∈ s, ∀ y ∈ s, ‖f x - f y‖ ≤ K * ‖g x - g y‖) →
+        μHE[k] (f '' s) ≤ (K : ℝ≥0∞) ^ k * volume (g '' s) := by
+    intro s g f K hKf
+    have hfeq : ∀ x ∈ s, f (Function.invFunOn g s (g x)) = f x := by
+      intro x hx
+      have hmem := Function.invFunOn_mem (f := g) (b := g x) ⟨x, hx, rfl⟩
+      have heq := Function.invFunOn_eq (f := g) (b := g x) ⟨x, hx, rfl⟩
+      have h := hKf _ hmem x hx
+      rw [heq, sub_self, norm_zero, mul_zero] at h
+      exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+    have himage : f '' s = (f ∘ Function.invFunOn g s) '' (g '' s) := by
+      rw [← Set.image_comp]
+      ext y
+      constructor
+      · rintro ⟨x, hx, rfl⟩
+        exact ⟨x, hx, hfeq x hx⟩
+      · rintro ⟨x, hx, rfl⟩
+        exact ⟨x, hx, (hfeq x hx).symm⟩
+    have hLip : LipschitzOnWith K (f ∘ Function.invFunOn g s) (g '' s) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+      simp only [Function.comp_apply, dist_eq_norm, hfeq x hx, hfeq y hy]
+      exact hKf x hx y hy
+    rw [himage, ← hvolE]
+    exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k hLip
+  have hndcont : Continuous (fun L : Rn k →L[ℝ] Rn N ↦ L.toLinearMap.normDet) := by
+    have h1 : Continuous (fun L : Rn k →L[ℝ] Rn N ↦ ContinuousLinearMap.adjoint L ∘L L) :=
+      ContinuousLinearMap.adjoint.continuous.clm_comp continuous_id
+    have h2 : Continuous (fun L : Rn k →L[ℝ] Rn N ↦
+        Real.sqrt (ContinuousLinearMap.adjoint L ∘L L).det) :=
+      Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp h1)
+    refine h2.congr fun L ↦ ?_
+    rw [← ContinuousLinearMap.normDet_sq L]
+    exact Real.sqrt_sq (LinearMap.normDet_nonneg _)
+  -- Step 2: `χ` is strictly differentiable on `V`, `Dχ` is continuous there, and images of Borel
+  -- subsets of `V` are Borel and disjoint for disjoint sets (Lusin–Souslin, injectivity).
+  have hdiff : ∀ z ∈ V, HasFDerivAt χ (fderiv ℝ χ z) z := fun z hz =>
+    (((hχ.differentiableOn one_ne_zero) z hz).differentiableAt (hV.mem_nhds hz)).hasFDerivAt
+  have hstrict : ∀ z ∈ V, HasStrictFDerivAt χ (fderiv ℝ χ z) z := fun z hz =>
+    (hχ.contDiffAt (hV.mem_nhds hz)).hasStrictFDerivAt one_ne_zero
+  have hfcont : ContinuousOn (fderiv ℝ χ) V := hχ.continuousOn_fderiv_of_isOpen hV le_rfl
+  have hχcont : ContinuousOn χ V := hχ.continuousOn
+  have hJcont : ContinuousOn (fun z ↦ (fderiv ℝ χ z).toLinearMap.normDet) V :=
+    hndcont.comp_continuousOn hfcont
+  have himg : ∀ A ⊆ V, MeasurableSet A → MeasurableSet (χ '' A) := fun A hAV hA =>
+    hA.image_of_continuousOn_injOn (hχcont.mono hAV) (hinj.mono hAV)
+  have hdisjimg : ∀ A B : Set (Rn k), A ⊆ V → B ⊆ V → Disjoint A B →
+      Disjoint (χ '' A) (χ '' B) := by
+    intro A B hAV hBV hAB
+    rw [Set.disjoint_left]
+    rintro _ ⟨a, ha, rfl⟩ ⟨b, hb, hab⟩
+    have hba : b = a := hinj (hBV hb) (hAV ha) hab
+    exact Set.disjoint_left.mp hAB ha (hba ▸ hb)
+  /- Step 3 (regular points): if `Dχ(z)` is injective and `K > 1`, then on a small ball
+  `∫_A J ≤ Kᵏ Hᵏ(χ(A))` and `Hᵏ(χ(A)) ≤ Kᵏ ∫_A J`. -/
+  have hreg : ∀ z ∈ V, (fderiv ℝ χ z).toLinearMap.normDet ≠ 0 → ∀ K : ℝ≥0, 1 < K →
+      ∃ r > 0, Metric.ball z r ⊆ V ∧ ∀ A ⊆ Metric.ball z r, MeasurableSet A →
+        μHE[k] (χ '' A) ≤ (K : ℝ≥0∞) ^ k *
+            ∫⁻ w in A, ENNReal.ofReal (fderiv ℝ χ w).toLinearMap.normDet ∧
+          ∫⁻ w in A, ENNReal.ofReal (fderiv ℝ χ w).toLinearMap.normDet ≤
+            (K : ℝ≥0∞) ^ k * μHE[k] (χ '' A) := by
+    intro z hz hJz K hK
+    set T : Rn k →L[ℝ] Rn N := fderiv ℝ χ z with hTdef
+    -- `T` is injective, with a lower bound `‖v‖ ≤ c₀ ‖T v‖`
+    have hker : LinearMap.ker T.toLinearMap = ⊥ := by
+      by_contra h
+      exact hJz (LinearMap.normDet_eq_zero_iff_ker_ne_bot.mpr h)
+    have hTinj : Function.Injective T := LinearMap.ker_eq_bot.mp hker
+    obtain ⟨c₀, hc₀, hanti⟩ := T.toLinearMap.exists_antilipschitzWith hker
+    have hlow : ∀ v, ‖v‖ ≤ c₀ * ‖T v‖ := by
+      intro v
+      simpa [dist_eq_norm] using hanti.le_mul_dist v 0
+    -- `P`: the orthogonal projection onto `range T`, read in an orthonormal basis of the range
+    set R := LinearMap.range T.toLinearMap with hRdef
+    have hRrank : finrank ℝ R = k := by
+      rw [LinearMap.finrank_range_of_inj hTinj, finrank_euclideanSpace_fin]
+    let b : OrthonormalBasis (Fin k) ℝ R := (stdOrthonormalBasis ℝ R).reindex (finCongr hRrank)
+    let P : Rn N →L[ℝ] Rn k :=
+      (b.repr.toContinuousLinearEquiv : R →L[ℝ] Rn k) ∘L R.orthogonalProjectionOnto
+    have hP1 : ∀ y, ‖P y‖ ≤ ‖y‖ := by
+      intro y
+      have h1 : ‖P y‖ = ‖R.orthogonalProjectionOnto y‖ := by
+        simp only [P, ContinuousLinearMap.comp_apply]
+        exact b.repr.norm_map _
+      rw [h1]
+      exact (R.orthogonalProjectionOnto.le_opNorm y).trans
+        (mul_le_of_le_one_left (norm_nonneg y) R.orthogonalProjectionOnto_norm_le)
+    have hPT : ∀ v, ‖P (T v)‖ = ‖T v‖ := by
+      intro v
+      have hmem : T v ∈ R := LinearMap.mem_range_self T.toLinearMap v
+      have h1 : R.orthogonalProjectionOnto (T v) = ⟨T v, hmem⟩ :=
+        R.orthogonalProjectionOnto_mem_subspace_eq_self ⟨T v, hmem⟩
+      simp only [P, ContinuousLinearMap.comp_apply, h1]
+      exact b.repr.norm_map _
+    -- the approximation constant `δ`, with `θ = c₀ δ ≤ min (1/4) ((K - 1)/4)`
+    have hK1 : (1 : ℝ) < K := by exact_mod_cast hK
+    have hc₀pos : (0 : ℝ) < c₀ := by exact_mod_cast hc₀
+    obtain ⟨θ, hθpos, hθ14, hθK⟩ : ∃ θ : ℝ, 0 < θ ∧ θ ≤ 1 / 4 ∧ θ ≤ ((K : ℝ) - 1) / 4 :=
+      ⟨min (1 / 4) (((K : ℝ) - 1) / 4), lt_min (by norm_num) (by linarith), min_le_left _ _,
+        min_le_right _ _⟩
+    obtain ⟨δ, hδpos, hc₀δ⟩ : ∃ δ : ℝ≥0, 0 < δ ∧ (c₀ : ℝ) * δ = θ :=
+      ⟨⟨θ / c₀, (div_pos hθpos hc₀pos).le⟩, div_pos hθpos hc₀pos, mul_div_cancel₀ θ hc₀pos.ne'⟩
+    have hδ0 : (0 : ℝ) ≤ δ := δ.2
+    -- core estimate for any map `f` approximating `T` with constant `δ` on `s`:
+    -- `P ∘ f` is injective on `s`, `P` is `1`-Lipschitz, and `f = h ∘ P ∘ f` with `h` `K`-Lipschitz
+    have core : ∀ (f : Rn k → Rn N) (s : Set (Rn k)), ApproximatesLinearOn f T s δ →
+        InjOn (P ∘ f) s ∧ volume ((P ∘ f) '' s) ≤ μHE[k] (f '' s) ∧
+          μHE[k] (f '' s) ≤ (K : ℝ≥0∞) ^ k * volume ((P ∘ f) '' s) := by
+      intro f s hf
+      have key : ∀ x ∈ s, ∀ y ∈ s, ‖f x - f y‖ ≤ K * ‖P (f x) - P (f y)‖ ∧
+          3 * ‖x - y‖ ≤ 4 * c₀ * ‖P (f x) - P (f y)‖ := by
+        intro x hx y hy
+        have he : ‖f x - f y - T (x - y)‖ ≤ δ * ‖x - y‖ := hf x hx y hy
+        have hPe : ‖P (f x - f y - T (x - y))‖ ≤ δ * ‖x - y‖ := (hP1 _).trans he
+        have ht : ‖T (x - y)‖ ≤ ‖P (f x) - P (f y)‖ + δ * ‖x - y‖ := by
+          have h : P (T (x - y)) = (P (f x) - P (f y)) - P (f x - f y - T (x - y)) := by
+            rw [map_sub P (f x - f y), map_sub P (f x)]; abel
+          rw [← hPT, h]
+          exact (norm_sub_le _ _).trans (by linarith)
+        have hq : ‖f x - f y‖ ≤ ‖T (x - y)‖ + δ * ‖x - y‖ := by
+          have h : f x - f y = T (x - y) + (f x - f y - T (x - y)) := by abel
+          calc ‖f x - f y‖ = ‖T (x - y) + (f x - f y - T (x - y))‖ := congrArg _ h
+            _ ≤ ‖T (x - y)‖ + ‖f x - f y - T (x - y)‖ := norm_add_le _ _
+            _ ≤ ‖T (x - y)‖ + δ * ‖x - y‖ := by linarith
+        have ha : ‖x - y‖ ≤ c₀ * ‖T (x - y)‖ := hlow (x - y)
+        have hp0 : 0 ≤ ‖P (f x) - P (f y)‖ := norm_nonneg _
+        have ha0 : 0 ≤ ‖x - y‖ := norm_nonneg _
+        have h1 := mul_le_mul_of_nonneg_left ht hc₀pos.le
+        have h1' : (c₀ : ℝ) * (δ * ‖x - y‖) = θ * ‖x - y‖ := by rw [← mul_assoc, hc₀δ]
+        have hθa := mul_le_mul_of_nonneg_right hθ14 ha0
+        have h2 : 3 * ‖x - y‖ ≤ 4 * c₀ * ‖P (f x) - P (f y)‖ := by
+          rw [mul_add, h1'] at h1
+          linarith
+        refine ⟨?_, h2⟩
+        have h3 := mul_le_mul_of_nonneg_left h2 hδ0
+        have h3' : (δ : ℝ) * (4 * c₀ * ‖P (f x) - P (f y)‖) = 4 * θ * ‖P (f x) - P (f y)‖ := by
+          rw [← hc₀δ]; ring
+        have hθp := mul_le_mul_of_nonneg_right hθK hp0
+        have hKp : 0 ≤ ((K : ℝ) - 1) * ‖P (f x) - P (f y)‖ := mul_nonneg (by linarith) hp0
+        rw [h3'] at h3
+        linarith
+      refine ⟨?_, ?_, ?_⟩
+      · intro x hx y hy hxy
+        have h := (key x hx y hy).2
+        have hxy' : P (f x) - P (f y) = 0 := sub_eq_zero.mpr hxy
+        rw [hxy', norm_zero, mul_zero] at h
+        have h0 : ‖x - y‖ = 0 := le_antisymm (by linarith) (norm_nonneg _)
+        exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+      · rw [Set.image_comp, ← hvolE]
+        have hLipP : LipschitzOnWith 1 P (f '' s) := by
+          apply LipschitzOnWith.of_dist_le_mul
+          intro y₁ _ y₂ _
+          rw [dist_eq_norm, dist_eq_norm, ← map_sub, NNReal.coe_one, one_mul]
+          exact hP1 _
+        simpa using
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k hLipP
+      · exact hlipInv s (P ∘ f) f K (fun x hx y hy => (key x hx y hy).1)
+    -- choose the radius: `χ` approximates `T` and `‖Dχ - T‖ < δ` on the ball, which lies in `V`
+    obtain ⟨s₀, hs₀, happrox⟩ :=
+      (hstrict z hz).approximates_deriv_on_nhds (c := δ) (Or.inr hδpos)
+    have hcontz : ContinuousAt (fderiv ℝ χ) z := hfcont.continuousAt (hV.mem_nhds hz)
+    have hev : ∀ᶠ w in 𝓝 z, ‖fderiv ℝ χ w - T‖ < δ := by
+      have := hcontz.eventually (Metric.ball_mem_nhds T (show (0 : ℝ) < δ from hδpos))
+      filter_upwards [this] with w hw
+      rwa [dist_eq_norm] at hw
+    obtain ⟨r, hr, hball⟩ :=
+      Metric.mem_nhds_iff.mp (inter_mem (inter_mem hs₀ (hV.mem_nhds hz)) hev)
+    refine ⟨r, hr, fun w hw => (hball hw).1.2, ?_⟩
+    intro A hAr hA
+    have hAV : A ⊆ V := fun w hw => (hball (hAr hw)).1.2
+    obtain ⟨hinjA, hlowA, hupA⟩ :=
+      core χ A (happrox.mono_set fun w hw => (hball (hAr hw)).1.1)
+    -- change of variables for `P ∘ χ` (Mathlib, equal dimension)
+    have hcov : ∫⁻ w in A, ENNReal.ofReal |(P ∘L fderiv ℝ χ w).det| =
+        volume ((P ∘ χ) '' A) :=
+      lintegral_abs_det_fderiv_eq_addHaar_image volume hA
+        (fun w hw => (P.hasFDerivAt.comp w (hdiff w (hAV hw))).hasFDerivWithinAt) hinjA
+    -- pointwise comparison of `|det (P ∘ Dχ(w))|` with `J(w)`, from `core` for `Dχ(w)`
+    have hlin : ∀ w ∈ Metric.ball z r,
+        ENNReal.ofReal |(P ∘L fderiv ℝ χ w).det| ≤
+            ENNReal.ofReal (fderiv ℝ χ w).toLinearMap.normDet ∧
+          ENNReal.ofReal (fderiv ℝ χ w).toLinearMap.normDet ≤
+            (K : ℝ≥0∞) ^ k * ENNReal.ofReal |(P ∘L fderiv ℝ χ w).det| := by
+      intro w hw
+      set L := fderiv ℝ χ w
+      have hLT : ‖L - T‖ < δ := (hball hw).2
+      have happL : ApproximatesLinearOn (L : Rn k → Rn N) T univ δ := by
+        intro x _ y _
+        have h : L x - L y - T (x - y) = (L - T) (x - y) := by
+          simp only [sub_apply, map_sub]; abel
+        rw [h]
+        exact ((L - T).le_opNorm _).trans (mul_le_mul_of_nonneg_right hLT.le (norm_nonneg _))
+      obtain ⟨-, hlow', hup'⟩ := core L (Metric.ball 0 1) (happL.mono_set (subset_univ _))
+      have h1 : volume ((P ∘ L) '' Metric.ball 0 1) =
+          ENNReal.ofReal |(P ∘L L).det| * volume (Metric.ball (0 : Rn k) 1) :=
+        Measure.addHaar_image_continuousLinearMap volume (P ∘L L) _
+      rw [h1, hlinarea L (Metric.ball 0 1)] at hlow' hup'
+      have hB0 : volume (Metric.ball (0 : Rn k) 1) ≠ 0 :=
+        (Metric.measure_ball_pos volume (0 : Rn k) one_pos).ne'
+      have hBtop : volume (Metric.ball (0 : Rn k) 1) ≠ ⊤ := measure_ball_lt_top.ne
+      constructor
+      · exact (ENNReal.mul_le_mul_iff_left hB0 hBtop).mp hlow'
+      · rw [← mul_assoc] at hup'
+        exact (ENNReal.mul_le_mul_iff_left hB0 hBtop).mp hup'
+    constructor
+    · calc μHE[k] (χ '' A) ≤ (K : ℝ≥0∞) ^ k * volume ((P ∘ χ) '' A) := hupA
+        _ = (K : ℝ≥0∞) ^ k * ∫⁻ w in A, ENNReal.ofReal |(P ∘L fderiv ℝ χ w).det| := by
+            rw [hcov]
+        _ ≤ (K : ℝ≥0∞) ^ k *
+              ∫⁻ w in A, ENNReal.ofReal (fderiv ℝ χ w).toLinearMap.normDet :=
+            mul_le_mul_right (setLIntegral_mono' hA fun w hw => (hlin w (hAr hw)).1) _
+    · calc ∫⁻ w in A, ENNReal.ofReal (fderiv ℝ χ w).toLinearMap.normDet
+          ≤ ∫⁻ w in A, (K : ℝ≥0∞) ^ k * ENNReal.ofReal |(P ∘L fderiv ℝ χ w).det| :=
+            setLIntegral_mono' hA fun w hw => (hlin w (hAr hw)).2
+        _ = (K : ℝ≥0∞) ^ k * ∫⁻ w in A, ENNReal.ofReal |(P ∘L fderiv ℝ χ w).det| :=
+            lintegral_const_mul' _ _ (by simp)
+        _ = (K : ℝ≥0∞) ^ k * volume ((P ∘ χ) '' A) := by rw [hcov]
+        _ ≤ (K : ℝ≥0∞) ^ k * μHE[k] (χ '' A) := mul_le_mul_right hlowA _
+  /- Step 4 (critical points): if `Dχ(z)` is not injective and `ε > 0`, then on a small ball
+  `Hᵏ(χ(A)) ≤ ε Lᵏ(A)`. -/
+  have hcrit : ∀ z ∈ V, (fderiv ℝ χ z).toLinearMap.normDet = 0 → ∀ ε : ℝ≥0, 0 < ε →
+      ∃ r > 0, Metric.ball z r ⊆ V ∧ ∀ A ⊆ Metric.ball z r,
+        μHE[k] (χ '' A) ≤ ε * volume A := by
+    intro z hz hJz ε hε
+    set T : Rn k →L[ℝ] Rn N := fderiv ℝ χ z with hTdef
+    -- a unit vector `u` in the kernel of `T`
+    have hker : LinearMap.ker T.toLinearMap ≠ ⊥ :=
+      LinearMap.normDet_eq_zero_iff_ker_ne_bot.mp hJz
+    obtain ⟨u₀, hu₀mem, hu₀ne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hker
+    set u : Rn k := (‖u₀‖⁻¹ : ℝ) • u₀ with hudef
+    have hu1 : ‖u‖ = 1 := norm_smul_inv_norm hu₀ne
+    have hTu : T u = 0 := by
+      have h0 : T u₀ = 0 := hu₀mem
+      rw [hudef, map_smul, h0, smul_zero]
+    have huu : inner ℝ u u = (1 : ℝ) := by
+      rw [real_inner_self_eq_norm_sq, hu1]; norm_num
+    -- constants: `M = ‖T‖ + 2` and `δ ≤ 1` with `Mᵏ δ ≤ ε`
+    set M : ℝ≥0 := ‖T‖₊ + 2 with hM
+    have hMpos : 0 < M := by positivity
+    set δ : ℝ≥0 := min 1 (ε / M ^ k) with hδ
+    have hδpos : 0 < δ := lt_min one_pos (div_pos hε (pow_pos hMpos k))
+    have hδ1 : (δ : ℝ) ≤ 1 := by exact_mod_cast min_le_left _ _
+    have hMδ : M ^ k * δ ≤ ε := by
+      calc M ^ k * δ ≤ M ^ k * (ε / M ^ k) := mul_le_mul_right (min_le_right _ _) _
+        _ = ε := mul_div_cancel₀ _ (pow_pos hMpos k).ne'
+    -- the compression `S x = x + (δ - 1) ⟪u, x⟫ u`
+    let S : Rn k →L[ℝ] Rn k :=
+      ContinuousLinearMap.id ℝ (Rn k) + ((δ : ℝ) - 1) • (innerSL ℝ u).smulRight u
+    have hS : ∀ x, S x = x + (((δ : ℝ) - 1) * inner ℝ u x) • u := by
+      intro x
+      simp only [S, add_apply, ContinuousLinearMap.id_apply, smul_apply,
+        ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_smul]
+    have hSnorm : ∀ x, ‖x - (inner ℝ u x) • u‖ ≤ ‖S x‖ ∧ (δ : ℝ) * |inner ℝ u x| ≤ ‖S x‖ := by
+      intro x
+      set a := inner ℝ u x with ha
+      have horth : inner ℝ (x - a • u) (((δ : ℝ) * a) • u) = 0 := by
+        rw [inner_smul_right, inner_sub_left, inner_smul_left, huu, real_inner_comm, ← ha]
+        simp
+      have hSx : S x = (x - a • u) + ((δ : ℝ) * a) • u := by
+        rw [hS, ← ha, sub_mul, one_mul, sub_smul]
+        abel
+      have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+      rw [← hSx] at hpy
+      have hnu : ‖((δ : ℝ) * a) • u‖ = (δ : ℝ) * |a| := by
+        rw [norm_smul, hu1, mul_one, Real.norm_eq_abs, abs_mul, NNReal.abs_eq]
+      rw [hnu] at hpy
+      have h0 : 0 ≤ (δ : ℝ) * |a| := mul_nonneg δ.2 (abs_nonneg a)
+      constructor
+      · refine (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).mpr ?_
+        rw [hpy]
+        exact le_add_of_nonneg_right (mul_self_nonneg _)
+      · refine (mul_self_le_mul_self_iff h0 (norm_nonneg _)).mpr ?_
+        rw [hpy]
+        exact le_add_of_nonneg_left (mul_self_nonneg _)
+    -- `det S = δ`, computed in an orthonormal basis containing `u`
+    have hdetS : LinearMap.det (S : Rn k →ₗ[ℝ] Rn k) = δ := by
+      have hk : k ≠ 0 := by
+        rintro rfl
+        exact hu₀ne (Subsingleton.elim _ _)
+      set i₀ : Fin k := ⟨0, Nat.pos_of_ne_zero hk⟩
+      obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (𝕜 := ℝ)
+        (E := Rn k) (ι := Fin k) (by simp) (v := fun _ => u) (s := {i₀}) (by
+          rw [orthonormal_iff_ite]
+          rintro ⟨i, hi⟩ ⟨j, hj⟩
+          simp only [Set.mem_singleton_iff] at hi hj
+          subst hi hj
+          simp [hu1])
+      have hbi₀ : b i₀ = u := hb i₀ rfl
+      rw [← LinearMap.det_toMatrix b.toBasis]
+      have hmat : LinearMap.toMatrix b.toBasis b.toBasis (S : Rn k →ₗ[ℝ] Rn k) =
+          Matrix.diagonal (fun i => if i = i₀ then (δ : ℝ) else 1) := by
+        ext i j
+        rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+          OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis,
+          ContinuousLinearMap.coe_coe, hS, inner_add_right, inner_smul_right, ← hbi₀,
+          b.inner_eq_ite, b.inner_eq_ite, b.inner_eq_ite, Matrix.diagonal_apply]
+        by_cases hij : i = j
+        · subst hij
+          by_cases hi : i = i₀
+          · subst hi; simp
+          · simp [hi, Ne.symm hi]
+        · by_cases hj : i₀ = j
+          · subst hj; simp [hij]
+          · simp [hij, hj]
+      rw [hmat, Matrix.det_diagonal, Finset.prod_ite_eq' Finset.univ i₀ (fun _ => (δ : ℝ))]
+      simp
+    -- choose the radius: `χ` approximates `T` with constant `δ` on the ball
+    obtain ⟨s₀, hs₀, happrox⟩ :=
+      (hstrict z hz).approximates_deriv_on_nhds (c := δ) (Or.inr hδpos)
+    obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp (inter_mem hs₀ (hV.mem_nhds hz))
+    refine ⟨r, hr, fun w hw => (hball hw).2, ?_⟩
+    intro A hAr
+    have happA : ApproximatesLinearOn χ T A δ := happrox.mono_set fun w hw => (hball (hAr hw)).1
+    -- `‖χ x - χ y‖ ≤ M ‖S x - S y‖` on `A`, since `T` kills the compressed direction
+    have hkey : ∀ x ∈ A, ∀ y ∈ A, ‖χ x - χ y‖ ≤ M * ‖S x - S y‖ := by
+      intro x hx y hy
+      set Δ := x - y with hΔ
+      set a := inner ℝ u Δ with ha
+      have he : ‖χ x - χ y - T Δ‖ ≤ δ * ‖Δ‖ := happA x hx y hy
+      have hTΔ : T Δ = T (Δ - a • u) := by
+        rw [T.map_sub Δ (a • u), T.map_smul, hTu, smul_zero, sub_zero]
+      have hTb : ‖T (Δ - a • u)‖ ≤ ‖T‖ * ‖Δ - a • u‖ := T.le_opNorm _
+      have hΔle : ‖Δ‖ ≤ ‖Δ - a • u‖ + |a| := by
+        calc ‖Δ‖ = ‖(Δ - a • u) + a • u‖ := by rw [sub_add_cancel]
+          _ ≤ ‖Δ - a • u‖ + ‖a • u‖ := norm_add_le _ _
+          _ = ‖Δ - a • u‖ + |a| := by rw [norm_smul, hu1, mul_one, Real.norm_eq_abs]
+      obtain ⟨h1, h2⟩ := hSnorm Δ
+      rw [← ha, hΔ, map_sub] at h1 h2
+      have hq : ‖χ x - χ y‖ ≤ ‖T Δ‖ + δ * ‖Δ‖ := by
+        calc ‖χ x - χ y‖ = ‖T Δ + (χ x - χ y - T Δ)‖ := by rw [add_sub_cancel]
+          _ ≤ ‖T Δ‖ + ‖χ x - χ y - T Δ‖ := norm_add_le _ _
+          _ ≤ ‖T Δ‖ + δ * ‖Δ‖ := by linarith
+      have hM' : (M : ℝ) = ‖T‖ + 2 := by simp [M]
+      rw [hTΔ] at hq
+      rw [hM']
+      have hδ0 : (0 : ℝ) ≤ δ := δ.2
+      have h3 := mul_le_mul_of_nonneg_left hΔle hδ0
+      have h4 := mul_le_mul_of_nonneg_right hδ1 (norm_nonneg (Δ - a • u))
+      have h5 := mul_le_mul_of_nonneg_left h1 (norm_nonneg T)
+      linarith
+    calc μHE[k] (χ '' A) ≤ (M : ℝ≥0∞) ^ k * volume (S '' A) := hlipInv A S χ M hkey
+      _ = (M : ℝ≥0∞) ^ k * ((δ : ℝ≥0∞) * volume A) := by
+          rw [Measure.addHaar_image_continuousLinearMap, hdetS, NNReal.abs_eq,
+            ENNReal.ofReal_coe_nnreal]
+      _ = ((M ^ k * δ : ℝ≥0) : ℝ≥0∞) * volume A := by push_cast; ring
+      _ ≤ ε * volume A := mul_le_mul_left (by exact_mod_cast hMδ) _
+  /- Step 5: localization (Lindelöf). A property of Borel sets that is stable under countable
+  disjoint unions and holds for Borel subsets of small balls around each point of `W` holds for
+  all Borel subsets of `W`. -/
+  have hloc : ∀ (W : Set (Rn k)) (Pr : Set (Rn k) → Prop), Pr ∅ →
+      (∀ A : ℕ → Set (Rn k), (∀ i, MeasurableSet (A i)) →
+        Pairwise (Function.onFun Disjoint A) → (∀ i, Pr (A i)) → Pr (⋃ i, A i)) →
+      (∀ z ∈ W, ∃ r > 0, ∀ A, MeasurableSet A → A ⊆ Metric.ball z r → Pr A) →
+      ∀ A, MeasurableSet A → A ⊆ W → Pr A := by
+    intro W Pr h0 hU hlocal A hA hAW
+    choose! r hr hPr using hlocal
+    obtain ⟨T, hTc, hT⟩ := TopologicalSpace.isOpen_iUnion_countable
+      (fun z : W => Metric.ball (z : Rn k) (r z)) (fun _ => Metric.isOpen_ball)
+    have hcov : A ⊆ ⋃ i ∈ T, Metric.ball (i : Rn k) (r i) := by
+      rw [hT]
+      intro x hx
+      exact mem_iUnion.mpr ⟨⟨x, hAW hx⟩, Metric.mem_ball_self (hr x (hAW hx))⟩
+    rcases T.eq_empty_or_nonempty with hTe | hTne
+    · have hAe : A = ∅ := by
+        rw [hTe] at hcov
+        simpa using hcov
+      rw [hAe]
+      exact h0
+    obtain ⟨e, he⟩ := hTc.exists_eq_range hTne
+    set B : ℕ → Set (Rn k) := fun n => A ∩ Metric.ball (e n : Rn k) (r (e n)) with hB
+    have hBmeas : ∀ n, MeasurableSet (B n) := fun n => hA.inter measurableSet_ball
+    have hAeq : A = ⋃ n, disjointed B n := by
+      rw [iUnion_disjointed]
+      apply Subset.antisymm
+      · intro x hx
+        have hx' := hcov hx
+        rw [he] at hx'
+        simp only [mem_iUnion, mem_range, exists_prop] at hx'
+        obtain ⟨i, ⟨n, rfl⟩, hxi⟩ := hx'
+        exact mem_iUnion.mpr ⟨n, hx, hxi⟩
+      · exact iUnion_subset fun n => inter_subset_left
+    rw [hAeq]
+    apply hU
+    · exact MeasurableSet.disjointed hBmeas
+    · exact disjoint_disjointed B
+    · intro n
+      exact hPr _ (e n).2 _ (MeasurableSet.disjointed hBmeas n)
+        ((disjointed_subset B n).trans inter_subset_right)
+  -- Step 6: two limit arguments in `[0, ∞]`
+  have hlim : ∀ a b : ℝ≥0∞, (∀ K : ℝ≥0, 1 < K → a ≤ (K : ℝ≥0∞) ^ k * b) → a ≤ b := by
+    intro a b h
+    by_cases hb : b = ⊤
+    · rw [hb]; exact le_top
+    have h1 : Tendsto (fun K : ℝ≥0 => (K : ℝ≥0∞) ^ k) (𝓝 1) (𝓝 1) := by
+      have hc : Continuous (fun K : ℝ≥0 => (K : ℝ≥0∞) ^ k) :=
+        (ENNReal.continuous_pow k).comp ENNReal.continuous_coe
+      simpa using hc.tendsto 1
+    have ht : Tendsto (fun K : ℝ≥0 => (K : ℝ≥0∞) ^ k * b) (𝓝[>] 1) (𝓝 b) := by
+      simpa using (ENNReal.Tendsto.mul_const h1 (Or.inr hb)).mono_left nhdsWithin_le_nhds
+    exact ge_of_tendsto ht (eventually_nhdsWithin_of_forall fun K hK => h K hK)
+  have hzero : ∀ a c : ℝ≥0∞, c ≠ ⊤ → (∀ ε : ℝ≥0, 0 < ε → a ≤ ε * c) → a = 0 := by
+    intro a c hc h
+    have h1 : Tendsto (fun ε : ℝ≥0 => (ε : ℝ≥0∞)) (𝓝 0) (𝓝 0) := by
+      simpa using ENNReal.continuous_coe.tendsto 0
+    have ht : Tendsto (fun ε : ℝ≥0 => (ε : ℝ≥0∞) * c) (𝓝[>] 0) (𝓝 0) := by
+      simpa using (ENNReal.Tendsto.mul_const h1 (Or.inr hc)).mono_left nhdsWithin_le_nhds
+    exact le_antisymm (ge_of_tendsto ht (eventually_nhdsWithin_of_forall fun ε hε => h ε hε))
+      zero_le
+  -- Step 7: the regular set `G = {J ≠ 0}` (open) and the critical set `Z = V \ G`
+  set G : Set (Rn k) := V ∩ (fun z ↦ (fderiv ℝ χ z).toLinearMap.normDet) ⁻¹' {0}ᶜ with hG
+  have hGopen : IsOpen G := hJcont.isOpen_inter_preimage hV isOpen_compl_singleton
+  set Z : Set (Rn k) := V \ G with hZ
+  -- on Borel subsets of `G`: `Hᵏ(χ(A)) = ∫_A J`
+  have hregG : ∀ A, MeasurableSet A → A ⊆ G →
+      μHE[k] (χ '' A) = ∫⁻ z in A, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet := by
+    intro A hA hAG
+    have hbounds : ∀ K : ℝ≥0, 1 < K →
+        μHE[k] (χ '' A) ≤ (K : ℝ≥0∞) ^ k *
+            ∫⁻ z in A, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet ∧
+          ∫⁻ z in A, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet ≤
+            (K : ℝ≥0∞) ^ k * μHE[k] (χ '' A) := by
+      intro K hK
+      refine hloc G (fun A => A ⊆ V → (μHE[k] (χ '' A) ≤ (K : ℝ≥0∞) ^ k *
+            ∫⁻ z in A, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet ∧
+          ∫⁻ z in A, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet ≤
+            (K : ℝ≥0∞) ^ k * μHE[k] (χ '' A))) ?_ ?_ ?_ A hA hAG (hAG.trans inter_subset_left)
+      · intro _
+        simp
+      · intro As hAs hdisj hPr hUV
+        have hAsV : ∀ i, As i ⊆ V := fun i => (subset_iUnion As i).trans hUV
+        have h1 : μHE[k] (χ '' ⋃ i, As i) = ∑' i, μHE[k] (χ '' As i) := by
+          rw [image_iUnion]
+          exact measure_iUnion (fun i j hij => hdisjimg _ _ (hAsV i) (hAsV j) (hdisj hij))
+            (fun i => himg _ (hAsV i) (hAs i))
+        have h2 : ∫⁻ z in ⋃ i, As i, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet =
+            ∑' i, ∫⁻ z in As i, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet :=
+          lintegral_iUnion hAs hdisj _
+        rw [h1, h2, ← ENNReal.tsum_mul_left, ← ENNReal.tsum_mul_left]
+        exact ⟨ENNReal.tsum_le_tsum fun i => ((hPr i) (hAsV i)).1,
+          ENNReal.tsum_le_tsum fun i => ((hPr i) (hAsV i)).2⟩
+      · intro z hz
+        obtain ⟨r, hr, -, hb⟩ := hreg z hz.1 hz.2 K hK
+        exact ⟨r, hr, fun A hA hAr _ => hb A hAr hA⟩
+    exact le_antisymm (hlim _ _ fun K hK => (hbounds K hK).1)
+      (hlim _ _ fun K hK => (hbounds K hK).2)
+  -- on Borel subsets of `Z`: `Hᵏ(χ(A)) = 0`
+  have hcritZ : ∀ A, MeasurableSet A → A ⊆ Z → μHE[k] (χ '' A) = 0 := by
+    intro A hA hAZ
+    have hball : ∀ n : ℕ, μHE[k] (χ '' (A ∩ Metric.ball 0 n)) = 0 := by
+      intro n
+      apply hzero _ (volume (Metric.ball (0 : Rn k) n)) measure_ball_lt_top.ne
+      intro ε hε
+      have hle := hloc Z (fun A => μHE[k] (χ '' A) ≤ ε * volume A) (by simp) ?_ ?_
+        (A ∩ Metric.ball 0 n) (hA.inter measurableSet_ball) (inter_subset_left.trans hAZ)
+      · exact hle.trans (mul_le_mul_right (measure_mono inter_subset_right) _)
+      · intro As hAs hdisj hPr
+        calc μHE[k] (χ '' ⋃ i, As i) = μHE[k] (⋃ i, χ '' As i) := by rw [image_iUnion]
+          _ ≤ ∑' i, μHE[k] (χ '' As i) := measure_iUnion_le _
+          _ ≤ ∑' i, ε * volume (As i) := ENNReal.tsum_le_tsum hPr
+          _ = ε * volume (⋃ i, As i) := by rw [ENNReal.tsum_mul_left, measure_iUnion hdisj hAs]
+      · intro z hz
+        have hJz : (fderiv ℝ χ z).toLinearMap.normDet = 0 := by
+          by_contra h
+          exact hz.2 ⟨hz.1, h⟩
+        obtain ⟨r, hr, -, hb⟩ := hcrit z hz.1 hJz ε hε
+        exact ⟨r, hr, fun A _ hAr => hb A hAr⟩
+    have hAU : χ '' A = ⋃ n : ℕ, χ '' (A ∩ Metric.ball 0 n) := by
+      rw [← image_iUnion, ← inter_iUnion, Metric.iUnion_ball_nat, inter_univ]
+    rw [hAU]
+    exact measure_iUnion_null hball
+  -- Step 8: the area formula `Hᵏ(χ(A)) = ∫_A J` for Borel `A ⊆ V`
+  have hmain : ∀ A ⊆ V, MeasurableSet A →
+      μHE[k] (χ '' A) = ∫⁻ z in A, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet := by
+    intro A hAV hA
+    have hAG : MeasurableSet (A ∩ G) := hA.inter hGopen.measurableSet
+    have hAZ : MeasurableSet (A ∩ Z) := hA.inter (hV.measurableSet.diff hGopen.measurableSet)
+    have hAsplit : A = (A ∩ G) ∪ (A ∩ Z) := by
+      rw [← inter_union_distrib_left, hZ, union_sdiff_cancel inter_subset_left,
+        inter_eq_left.mpr hAV]
+    have hJZ : ∫⁻ z in A ∩ Z, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet = 0 := by
+      rw [setLIntegral_congr_fun hAZ (g := fun _ => 0) (fun z hz => by
+        have hJz : (fderiv ℝ χ z).toLinearMap.normDet = 0 := by
+          by_contra h
+          exact hz.2.2 ⟨hz.2.1, h⟩
+        simp [hJz])]
+      simp
+    have hint : ∫⁻ z in A, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet =
+        ∫⁻ z in A ∩ G, ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet := by
+      conv_lhs => rw [hAsplit]
+      rw [lintegral_union hAZ (Disjoint.mono inter_subset_right inter_subset_right
+        disjoint_sdiff_right), hJZ, add_zero]
+    have hcz := hcritZ (A ∩ Z) hAZ inter_subset_right
+    rw [hint, ← hregG (A ∩ G) hAG inter_subset_right]
+    apply le_antisymm
+    · calc μHE[k] (χ '' A) = μHE[k] (χ '' (A ∩ G) ∪ χ '' (A ∩ Z)) := by
+            rw [← image_union, ← hAsplit]
+        _ ≤ μHE[k] (χ '' (A ∩ G)) + μHE[k] (χ '' (A ∩ Z)) := measure_union_le _ _
+        _ = μHE[k] (χ '' (A ∩ G)) := by rw [hcz, add_zero]
+    · exact measure_mono (image_mono inter_subset_left)
+  -- Step 9: the weighted formula, pushing `J Lᵏ ⌞ S` forward under (a Borel version of) `χ`
+  classical
+  set u : Rn k → Rn N := S.piecewise χ 0 with hu
+  have humeas : Measurable u := (hχcont.mono hSV).measurable_piecewise continuousOn_const hS
+  have hueq : ∀ z ∈ S, u z = χ z := fun z hz => Set.piecewise_eq_of_mem _ _ _ hz
+  have hmap : Measure.map u ((volume.restrict S).withDensity
+      (fun z ↦ ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet)) =
+        (μHE[k] : Measure (Rn N)).restrict (χ '' S) := by
+    ext B hB
+    rw [Measure.map_apply humeas hB, withDensity_apply _ (humeas hB),
+      Measure.restrict_restrict (humeas hB), Measure.restrict_apply hB,
+      ← hmain _ (inter_subset_right.trans hSV) ((humeas hB).inter hS)]
+    congr 1
+    ext y
+    constructor
+    · rintro ⟨z, ⟨hzB, hzS⟩, rfl⟩
+      exact ⟨by rwa [mem_preimage, hueq z hzS] at hzB, z, hzS, rfl⟩
+    · rintro ⟨hyB, z, hzS, rfl⟩
+      exact ⟨z, ⟨by rwa [mem_preimage, hueq z hzS], hzS⟩, rfl⟩
+  have hJae : AEMeasurable (fun z ↦ ENNReal.ofReal (fderiv ℝ χ z).toLinearMap.normDet)
+      (volume.restrict S) :=
+    ENNReal.measurable_ofReal.comp_aemeasurable ((hJcont.mono hSV).aemeasurable hS)
+  rw [← hmap, lintegral_map hφ humeas, lintegral_withDensity_eq_lintegral_mul₀ hJae
+    (g := fun z ↦ φ (u z)) (hφ.comp humeas).aemeasurable]
+  refine setLIntegral_congr_fun hS fun z hz => ?_
+  simp only [Pi.mul_apply, hueq z hz]
+  exact mul_comm _ _
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
