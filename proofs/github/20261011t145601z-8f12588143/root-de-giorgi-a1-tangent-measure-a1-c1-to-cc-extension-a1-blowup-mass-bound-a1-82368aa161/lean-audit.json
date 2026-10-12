@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c7dc791536d6d116e86c56f95c196253785fa173c0df1eb67d987ebc0881bc9f",
+  "git_delta": {
+    "base_commit": "a9409186d1b277b45c692a8ff93d3611b0f4d530",
+    "candidate_commit": "1d87909cc7c2801dc21dbff595c726254b2a7320",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiTM_blowUp_integral_bound",
+    "diff_sha256": "64cb6663ffaeb5943a75876edc0e489d0ee15be013f39da72849cbac05d8553a",
+    "source_sha256": "b0e2d2e66cac86a65d848397b786bb7be4c42a7f25c9f52c0f590ce60ca8e3c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiTM_blowUp_integral_bound",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (C R r M : ℝ) (h : Rn N → ℝ), 0 < r → 0 < R → μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) → Continuous h → (∀ z, |h z| ≤ M) → (∀ z, h z ≠ 0 → ‖z‖ < R) → Integrable (fun y ↦ h (blowUpMap x r y)) μ ∧ |(r ^ n)⁻¹ * ∫ y, h (blowUpMap x r y) ∂μ| ≤ M * max C 0 * R ^ n",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
