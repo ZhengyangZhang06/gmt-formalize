@@ -1376,6 +1376,96 @@ theorem w12_ball_smooth_approximation : ∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n �
             (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_congr_fun measurableSet_ball hpt
       _ ≤ ∫⁻ x, ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
             (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+/-- **Boundary-layer `L²` estimate for `W^{1,2}(B)`**, `B = B̆₁(0)` (a trace-type estimate along
+rays from the origin; the boundary control of Rellich's theorem, cf. Evans §5.7,
+Gilbarg–Trudinger §7.10): if `f ∈ W^{1,2}(B)` has weak gradient `g` and `0 < r < 1`, then
+`∫_{B \ B̆_r(0)} |f|² ≤ 2^{n+3} √(1 − r) (∫_B |f|² + ∫_B |g|²)`.
+
+For `r < 1/2` the constant is at least `1`.  For `r ≥ 1/2` and `0 < s < 1`, smooth `φ_j` with
+`φ_j → f` and `∇φ_j → g` in `L²(B̆_s(0))` satisfy the annulus estimate on `B̆_s \ B̆_{rs}`; their
+squared `L²` norms converge, so the estimate passes to `f`.  Finally `B̆_s \ B̆_r ⊆ B̆_s \ B̆_{rs}`,
+and the sets `B̆_s \ B̆_r` increase to `B \ B̆_r` as `s ↑ 1`. -/
+theorem w12_ball_boundary_layer_estimate : ∀ n : ℕ, 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ r : ℝ, 0 < r → r < 1 → ∫⁻ x in ball (0 : Rn n) 1 \ ball 0 r, ‖f x‖ₑ ^ 2 ≤ ENNReal.ofReal (C * Real.sqrt (1 - r)) * ((∫⁻ x in ball (0 : Rn n) 1, ‖f x‖ₑ ^ 2) + ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2) := by
+  intro n hn
+  refine ⟨2 ^ (n + 3), by positivity, ?_⟩
+  intro f g hW r hr0 hr1
+  have hf2 : MemLp f 2 (volume.restrict (ball (0 : Rn n) 1)) := hW.1
+  have hg2 : MemLp g 2 (volume.restrict (ball (0 : Rn n) 1)) := hW.2.1
+  rcases lt_or_ge r (1 / 2) with hr | hr
+  · -- Step 1: for `r < 1/2`, `√(1 − r) ≥ 1/2` and `2^{n+3} ≥ 8`, so the constant is `≥ 1`.
+    have h1 : (1 / 2 : ℝ) ≤ Real.sqrt (1 - r) := by
+      rw [Real.le_sqrt (by norm_num) (by linarith)]
+      linarith
+    have h2 : (8 : ℝ) ≤ 2 ^ (n + 3) :=
+      calc (8 : ℝ) = 2 ^ 3 := by norm_num
+        _ ≤ 2 ^ (n + 3) := pow_le_pow_right₀ (by norm_num) (by omega)
+    have hK : 1 ≤ ENNReal.ofReal (2 ^ (n + 3) * Real.sqrt (1 - r)) := by
+      rw [ENNReal.one_le_ofReal]
+      linarith [mul_le_mul h2 h1 (by norm_num) (by positivity)]
+    calc ∫⁻ x in ball (0 : Rn n) 1 \ ball 0 r, ‖f x‖ₑ ^ 2
+        ≤ ∫⁻ x in ball (0 : Rn n) 1, ‖f x‖ₑ ^ 2 := lintegral_mono_set sdiff_subset
+      _ ≤ (∫⁻ x in ball (0 : Rn n) 1, ‖f x‖ₑ ^ 2) + ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 :=
+        le_self_add
+      _ ≤ _ := le_mul_of_one_le_left zero_le hK
+  -- Step 3: for `0 < s < 1`, the annulus estimate for the smooth approximants on `B̆_s(0)`
+  -- passes to `f` in the limit.
+  have hannulus : ∀ s : ℝ, 0 < s → s < 1 →
+      ∫⁻ x in ball (0 : Rn n) s \ ball 0 (r * s), ‖f x‖ₑ ^ 2 ≤
+        ENNReal.ofReal (2 ^ (n + 3) * Real.sqrt (1 - r)) *
+          ((∫⁻ x in ball (0 : Rn n) 1, ‖f x‖ₑ ^ 2) + ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2) := by
+    intro s hs0 hs1
+    obtain ⟨φ, hφ, hφf, hφg⟩ := Submission.w12_ball_smooth_approximation n hn f g hW s hs0 hs1
+    have hB : ball (0 : Rn n) s ⊆ ball 0 1 := ball_subset_ball hs1.le
+    have hA : ball (0 : Rn n) s \ ball 0 (r * s) ⊆ ball 0 s := sdiff_subset
+    -- The approximants are `C¹`; they and their gradients are continuous.
+    have hφ1 : ∀ j, ContDiff ℝ 1 (φ j) := fun j => (hφ j).of_le (by exact_mod_cast le_top)
+    have hφc : ∀ j, Continuous (φ j) := fun j => (hφ j).continuous
+    have hgc : ∀ j, Continuous (gradient (φ j)) := fun j =>
+      (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp
+        ((hφ1 j).continuous_fderiv one_ne_zero)
+    -- Convergence of the squared `L²` norms on `B̆_s \ B̆_{rs}` and on `B̆_s`.
+    have hlimA : Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) s \ ball 0 (r * s), ‖φ j x‖ₑ ^ 2)
+        atTop (𝓝 (∫⁻ x in ball (0 : Rn n) s \ ball 0 (r * s), ‖f x‖ₑ ^ 2)) :=
+      Submission.ble_lintegral_sq_tendsto_of_l2_tendsto _ f φ
+        (hf2.mono_measure (Measure.restrict_mono (hA.trans hB) le_rfl))
+        (fun j => (hφc j).aestronglyMeasurable)
+        (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hφf
+          (fun _ => zero_le) (fun _ => lintegral_mono_set hA))
+    have hlimf : Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) s, ‖φ j x‖ₑ ^ 2)
+        atTop (𝓝 (∫⁻ x in ball (0 : Rn n) s, ‖f x‖ₑ ^ 2)) :=
+      Submission.ble_lintegral_sq_tendsto_of_l2_tendsto _ f φ
+        (hf2.mono_measure (Measure.restrict_mono hB le_rfl))
+        (fun j => (hφc j).aestronglyMeasurable) hφf
+    have hlimg : Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) s, ‖gradient (φ j) x‖ₑ ^ 2)
+        atTop (𝓝 (∫⁻ x in ball (0 : Rn n) s, ‖g x‖ₑ ^ 2)) :=
+      Submission.ble_lintegral_sq_tendsto_of_l2_tendsto _ g (fun j => gradient (φ j))
+        (hg2.mono_measure (Measure.restrict_mono hB le_rfl))
+        (fun j => (hgc j).aestronglyMeasurable) hφg
+    -- Step 2 (the smooth annulus estimate) for each `φ_j`, and the limit `j → ∞`.
+    have hlim := le_of_tendsto_of_tendsto' hlimA
+      (ENNReal.Tendsto.const_mul (hlimf.add hlimg) (Or.inr ENNReal.ofReal_ne_top))
+      fun j => Submission.ble_smooth_annulus_estimate n hn (φ j) (hφ1 j) r s hr hr1 hs0 hs1.le
+    -- Enlarge `B̆_s(0)` to `B`.
+    refine hlim.trans ?_
+    gcongr
+  -- Step 4: `B̆_s \ B̆_r ⊆ B̆_s \ B̆_{rs}`, and `B̆_s \ B̆_r` increases to `B \ B̆_r` along radii
+  -- `s_m ↑ 1`.
+  obtain ⟨s, hs_mono, hs_mem, hs_lim⟩ := exists_seq_strictMono_tendsto' (zero_lt_one' ℝ)
+  have hU : ball (0 : Rn n) 1 \ ball 0 r = ⋃ m, ball (0 : Rn n) (s m) \ ball 0 r := by
+    rw [← iUnion_sdiff]
+    congr 1
+    ext x
+    simp only [mem_ball, dist_zero_right, mem_iUnion]
+    exact ⟨fun hx => (hs_lim.eventually (lt_mem_nhds hx)).exists,
+      fun ⟨m, hm⟩ => hm.trans (hs_mem m).2⟩
+  have hd : Directed (· ⊆ ·) fun m => ball (0 : Rn n) (s m) \ ball 0 r :=
+    Monotone.directed_le fun i j hij =>
+      sdiff_subset_sdiff_left (ball_subset_ball (hs_mono.monotone hij))
+  rw [hU, setLIntegral_iUnion_of_directed _ hd]
+  refine iSup_le fun m => ?_
+  have hsub : ball (0 : Rn n) (s m) \ ball 0 r ⊆ ball 0 (s m) \ ball 0 (r * s m) :=
+    sdiff_subset_sdiff_right (ball_subset_ball (mul_le_of_le_one_right hr0.le (hs_mem m).2.le))
+  exact (lintegral_mono_set hsub).trans (hannulus (s m) (hs_mem m).1 (hs_mem m).2)
 
 end Submission
 
