@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6086e3568dd2555214d8ba2de79293df85b0380bca121dfdf2cb40d77670db86",
+  "git_delta": {
+    "base_commit": "04be0f6611c8d054d3d52fc7c1ee131652c23087",
+    "candidate_commit": "ec286ab96f589cc6bee788597f3ff66a146354a3",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiTM_halfSpace_integral_fderiv",
+    "diff_sha256": "9e16f044f80fd9d2198050539ae6c28b96bd0431b8821d8b802a94e443bbfa15",
+    "source_sha256": "cb094ab10096f11751d707e60270377c63e6ba28705e886e91523f12020c5d00",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiTM_halfSpace_integral_fderiv",
+      "statement": "∀ (n : ℕ) (e : Rn (n + 1)) (φ : Rn (n + 1) → ℝ), ‖e‖ = 1 → ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ y in {y : Rn (n + 1) | 0 < inner ℝ y e}, fderiv ℝ φ y e = -∫ y in ((Submodule.span ℝ {e})ᗮ : Set (Rn (n + 1))), φ y ∂μHE[n]",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
