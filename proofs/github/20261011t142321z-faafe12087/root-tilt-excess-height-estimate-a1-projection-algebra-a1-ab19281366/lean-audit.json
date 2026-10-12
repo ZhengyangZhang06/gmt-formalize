@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d0e4d91949ac11445f3ce14cb905d1d32fd61a39ceb441a96a638f3802ad4c7f",
+  "git_delta": {
+    "base_commit": "c66ac899c47c9a6cdfc70b47696f93e118685afa",
+    "candidate_commit": "164f08e449a335e8b0962c8f511579e3e102246a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "hsNorm_starProjection_trace_identities",
+    "diff_sha256": "a6afd74c10d987b311dccc2fbdc07e6b553165bc51f990c1056dbe2c044e5377",
+    "source_sha256": "52835f7606047d92672bbf5e4a8a786364cf258b461a0269f9f79654d4c0640c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.hsNorm_starProjection_trace_identities",
+      "statement": "(∀ (m k : ℕ) (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A) ∧ (∀ (m : ℕ) (T : Submodule ℝ (Rn m)) (v : Rn m), ‖Tᗮ.starProjection v‖ = Metric.infDist v (T : Set (Rn m))) ∧ ∀ (m : ℕ) (P T : Submodule ℝ (Rn m)), Module.finrank ℝ P = Module.finrank ℝ T → LinearMap.trace ℝ (Rn m) (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) = hsNormSq (P.starProjection - T.starProjection) / 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
