@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7c44515b7d618661b2e4ca9b4fd10aa3bbf90f052d00b7074f37ca48498e5bd5",
+  "git_delta": {
+    "base_commit": "fbe739dcf791ca56f8a18933bbcd929a3767eca1",
+    "candidate_commit": "064c78314ef6430e18020e4e0348d85de12f0c65",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "3574c56ac09868d538bb296868e62ce53da1696cef0be97b0ed49baa768f45c8",
+    "source_sha256": "f2916e9b5b8c7adb102685bdf46d05abd4a461a081ffa9387bb8cd3f40fcbb8d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_variation_liminf_density_bound",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ W : Set (Euclidean N), IsRelCompactOpenIn W U → ⨆ i, ν i W ≠ ∞) → (∀ᵐ x ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ x θ ∧ θ ≠ ∞) → ∀ᵐ x ∂μ, ∃ c r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ ENNReal.ofReal (c * ρ ^ n)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,19 @@
+{
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/894",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "064c78314ef6430e18020e4e0348d85de12f0c65",
+  "integrated_commit": "",
+  "proof_base_commit": "f46dc3621587385d3197e223b3f18d11b98724ea",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integral_compactness-a1",
+  "requires": [
+    "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1",
+    "root.integral_compactness-a1.variation_density_bound-a1.open_thickening_exhaustion-a1",
+    "root.integral_compactness-a1.variation_density_bound-a1.ball_mass_le_of_density-a1"
+  ]
+}
