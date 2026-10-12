@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.carrier_support_null-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1",
+  "depth": 3,
+  "title": "Carrier and support agree up to H^n-null sets on a measurable set inside U where the density is at least one",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U with weight mu and support Sigma := V.support = U cap spt mu (H^n := muHE[n]), and O a measurable subset of R^(n+l) with O contained in U. Assume (b) for almost every y with respect to H^n restricted to Sigma cap O, y not in M implies V.HasDensity y 0; and (c) every y in Sigma cap O has some real Theta >= 1 with V.HasDensity y Theta. Then H^n((M cap O) symmetric-difference (Sigma cap O)) = 0.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → O ⊆ U → (∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)), y ∉ V.carrier → V.HasDensity y 0) → (∀ y ∈ V.support ∩ O, ∃ Θ : ℝ, 1 ≤ Θ ∧ V.HasDensity y Θ) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (V.carrier ∩ O) (V.support ∩ O)) = 0",
+  "lean_name": "dohr_lmo_carrier_support_null",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.hausdorff_null_of_weight_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.hausdorff_null_of_weight_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-carri-41190013e5-a1"
+}
