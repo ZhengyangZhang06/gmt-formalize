@@ -458,6 +458,52 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Graph tangent planes are `n`-dimensional `μ_V`-a.e. in the graph region.  `μ_V`-a.e. `y` lies in
+`spt μ_V` (`Measure.support_mem_ae`), so for `y ∈ B̆_R(ξ)` the point `Q(y − ξ)` lies on the graph:
+`Q(y − ξ) = G(x)` with `x ∈ B̆ⁿ_R(0)`, `G(z) = graphPoint z (u z)`.  By (TP) the tangent projection
+at `y` is the projection onto `Q⁻¹(range DG(x))`.  `G` is differentiable at `x` coordinatewise, and
+its first `n` coordinates are those of `z`, so by uniqueness of derivatives the first `n`
+coordinates of `DG(x) v` are those of `v`; hence `DG(x)` is injective, `range DG(x)` has dimension
+`n`, and so has its image under the linear equivalence `Q⁻¹`. -/
+theorem dohr_lmo_graph_tangent_rank : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), ball ξ R ⊆ U → DifferentiableOn ℝ u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (∀ᵐ y ∂V.weight, y ∈ ball ξ R → ∀ x ∈ ball (0 : Rn n) R, Q (y - ξ) = graphPoint x (u x) → V.tangentProj y = (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection) → ∀ᵐ y ∂V.weight, y ∈ ball ξ R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj y = P.starProjection := by
+  intro n ℓ U V ξ R Q u hball hdiff hgraph hTP
+  filter_upwards [hTP, Measure.support_mem_ae (μ := V.weight)] with y hTPy hy hyR
+  have hmem : Q (y - ξ) ∈ Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R := by
+    refine ⟨⟨y - ξ, ⟨y, ⟨hball hyR, hy⟩, rfl⟩, rfl⟩, ?_⟩
+    rw [mem_ball_zero_iff, LinearIsometryEquiv.norm_map, ← dist_eq_norm]
+    exact hyR
+  rw [hgraph] at hmem
+  obtain ⟨⟨x, hx, hxy⟩, -⟩ := hmem
+  have hux : DifferentiableAt ℝ u x := hdiff.differentiableAt (isOpen_ball.mem_nhds hx)
+  have hG : DifferentiableAt ℝ (fun z : Rn n => graphPoint z (u z)) x := by
+    rw [differentiableAt_euclidean]
+    intro i
+    induction i using Fin.addCases with
+    | left j =>
+      simpa [graphPoint] using (PiLp.hasStrictFDerivAt_apply (𝕜 := ℝ) 2 x j).differentiableAt
+    | right k => simpa [graphPoint] using differentiableAt_euclidean.mp hux k
+  have hcoord : ∀ (j : Fin n) (v : Rn n),
+      fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x v (Fin.castAdd ℓ j) = v j := by
+    intro j v
+    have h1 := (PiLp.hasStrictFDerivAt_apply (𝕜 := ℝ) 2 (graphPoint x (u x))
+      (Fin.castAdd ℓ j)).hasFDerivAt.comp x hG.hasFDerivAt
+    have h2 : HasFDerivAt (fun z : Rn n => graphPoint z (u z) (Fin.castAdd ℓ j))
+        (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin n => ℝ) j) x := by
+      simpa [graphPoint] using (PiLp.hasStrictFDerivAt_apply (𝕜 := ℝ) 2 x j).hasFDerivAt
+    simpa using congrArg (fun L => L v) (h1.unique h2)
+  have hinj : Function.Injective
+      (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x : Rn n →ₗ[ℝ] Amb n ℓ) := by
+    intro v w hvw
+    ext j
+    rw [← hcoord j v, ← hcoord j w]
+    exact congrArg (fun z : Amb n ℓ => z (Fin.castAdd ℓ j)) hvw
+  refine ⟨_, ?_, hTPy hyR x hx hxy.symm⟩
+  rw [LinearEquiv.finrank_map_eq, LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
