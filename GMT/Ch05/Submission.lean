@@ -458,6 +458,55 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 4.5 (p. 120), the step "keeping in mind `θ(x) ≤ 1 + Cδ ≤ 2`"
+comparing `μ_V` with `Hⁿ` on `B_{ησ}(τ) ∩ graph f`: if `θ ≤ C` holds `μ_V`-a.e. on a measurable set
+`E`, then `∫_E g dμ_V ≤ C ∫_E g dHⁿ` for every measurable `g ≥ 0` (no sign condition on `C`, since
+`ofReal C = 0` for `C < 0`). Write `μ_V = ν ⌞ ρ` with `ν = Hⁿ ⌞ M` and `ρ = ofReal ∘ θ`, which is
+`ν`-a.e. measurable. Then `∫_E g dμ_V = ∫ ρ g d(ν ⌞ E)`; the hypothesis gives `θ(x) ≤ C` for
+`ν`-a.e. `x ∈ E` with `ρ(x) ≠ 0`, so `ρ g ≤ ofReal(C) g` `(ν ⌞ E)`-a.e.; and
+`ν ⌞ E = Hⁿ ⌞ (E ∩ M) ≤ Hⁿ ⌞ E`. -/
+theorem tdo_ghe_setLIntegral_weight_le_mul : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (E : Set (Amb n ℓ)) (C : ℝ) (g : Amb n ℓ → ℝ≥0∞), MeasurableSet E → Measurable g → (∀ᵐ x ∂V.weight, x ∈ E → V.mult x ≤ C) → ∫⁻ x in E, g x ∂V.weight ≤ ENNReal.ofReal C * ∫⁻ x in E, g x ∂(μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ U V E C g hE hg hC
+  -- `μ_V = ν.withDensity ρ` with `ν = Hⁿ ⌞ M` and `ρ = ofReal ∘ θ`; `ρ` is a.e.-measurable for `ν`
+  have hρ : AEMeasurable (fun x => ENNReal.ofReal (V.mult x))
+      ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier) :=
+    V.aemeasurable_mult.ennreal_ofReal
+  -- the bound `θ ≤ C` on `E` holds `ν`-a.e. where `ρ ≠ 0`
+  have hCν : ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)).restrict V.carrier,
+      ENNReal.ofReal (V.mult x) ≠ 0 → x ∈ E → V.mult x ≤ C :=
+    (ae_withDensity_iff' hρ).mp hC
+  -- hence `ρ g ≤ ofReal C · g` a.e. for `ν ⌞ E`
+  have hle : ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E,
+      ENNReal.ofReal (V.mult x) * g x ≤ ENNReal.ofReal C * g x := by
+    filter_upwards [ae_restrict_of_ae hCν, ae_restrict_mem hE] with x hx hxE
+    rcases eq_or_ne (ENNReal.ofReal (V.mult x)) 0 with h0 | h0
+    · rw [h0, zero_mul]
+      exact zero_le
+    · gcongr
+      exact hx h0 hxE
+  -- `ν ⌞ E = Hⁿ ⌞ (E ∩ M) ≤ Hⁿ ⌞ E`
+  have hνE : ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E ≤
+      (μHE[n] : Measure (Amb n ℓ)).restrict E := by
+    rw [Measure.restrict_restrict hE]
+    exact Measure.restrict_mono inter_subset_left le_rfl
+  calc ∫⁻ x in E, g x ∂V.weight
+      = ∫⁻ x, ENNReal.ofReal (V.mult x) * g x
+          ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E := by
+        rw [RectifiableVarifold.weight, restrict_withDensity hE,
+          lintegral_withDensity_eq_lintegral_mul₀ hρ.restrict hg.aemeasurable]
+        rfl
+    _ ≤ ∫⁻ x, ENNReal.ofReal C * g x
+          ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E := lintegral_mono_ae hle
+    _ = ENNReal.ofReal C * ∫⁻ x, g x
+          ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E := lintegral_const_mul _ hg
+    _ ≤ ENNReal.ofReal C * ∫⁻ x in E, g x ∂(μHE[n] : Measure (Amb n ℓ)) := by
+        gcongr ENNReal.ofReal C * ?_
+        exact lintegral_mono' hνE le_rfl
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
