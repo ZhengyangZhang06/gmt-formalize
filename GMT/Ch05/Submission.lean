@@ -561,6 +561,31 @@ theorem dohr_tv_weight_eq_map : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
   refine lintegral_congr fun x => ?_
   show ENNReal.ofReal (V'.mult (x - ξ)) = ENNReal.ofReal (V.mult x)
   rw [hm, sub_add_cancel]
+/-- **Support of a translated measure** (used for Simon Ch. 5, Theorem 7.1, p. 127, where `V` is
+translated by `τ(x) = x − ξ`).  For every measure `μ` on `ℝ^{n+ℓ}`, `spt (τ_# μ) = τ (spt μ)`.
+`τ` is the measurable equivalence `MeasurableEquiv.subRight ξ`, so `(τ_# μ)(N) = μ(τ⁻¹ N)` for
+every set `N`.  If `y ∈ spt (τ_# μ)` and `N` is a neighbourhood of `y + ξ`, then `σ⁻¹ N`
+(`σ(x) = x + ξ`) is a neighbourhood of `y` and `μ N = (τ_# μ)(σ⁻¹ N) > 0`, so `y = τ(y + ξ)`
+with `y + ξ ∈ spt μ`; conversely `τ⁻¹ N` is a neighbourhood of `x` for every neighbourhood `N`
+of `τ(x)`. -/
+theorem dohr_tv_support_map_sub : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (ξ : Amb n ℓ),
+    (μ.map (fun x => x - ξ)).support = (fun x => x - ξ) '' μ.support := by
+  intro n ℓ μ ξ
+  -- `(τ_# μ)(N) = μ(τ⁻¹ N)` for every set `N`, measurable or not.
+  have hmap : ∀ N : Set (Amb n ℓ), μ.map (fun x => x - ξ) N = μ ((fun x => x - ξ) ⁻¹' N) :=
+    fun N => (MeasurableEquiv.subRight ξ).map_apply N
+  ext y
+  simp only [Measure.mem_support_iff_forall, hmap, mem_image]
+  constructor
+  · -- `y + ξ ∈ spt μ`: pull each neighbourhood `N` of `y + ξ` back along `σ`.
+    intro hy
+    refine ⟨y + ξ, fun N hN => ?_, add_sub_cancel_right y ξ⟩
+    have h := hy ((fun x => x + ξ) ⁻¹' N)
+      ((continuous_add_const ξ).continuousAt.preimage_mem_nhds hN)
+    simpa [preimage_preimage] using h
+  · -- `τ⁻¹ N` is a neighbourhood of `x` for every neighbourhood `N` of `τ(x)`.
+    rintro ⟨x, hx, rfl⟩ N hN
+    exact hx _ ((continuous_sub_right ξ).continuousAt.preimage_mem_nhds hN)
 
 end Submission
 
