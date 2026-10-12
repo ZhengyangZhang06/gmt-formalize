@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "73af13c5055168610a56d1978c2f768b16659f6d61a26f394ef29576676402c6",
+  "git_delta": {
+    "base_commit": "827b79d613564b1f7882cc5cfb4d108fb0710175",
+    "candidate_commit": "b19b0828ad9ae56f88d8bd415064ad0736ca29c8",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_wfu_blowUp_freeze_weight_tendsto_zero",
+    "diff_sha256": "cb9b0c09cd704dbd97657ceaefb5e476bf986788dc6b062b4ece551dbb11b6c5",
+    "source_sha256": "5e67bcf147b7aaec93a99bc535d969c758ae7417c6704912f2bbe0f412576002",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_wfu_blowUp_freeze_weight_tendsto_zero",
+      "statement": "∀ (n ℓ : ℕ) (C : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ), MeasurableSet C → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → ContinuousWithinAt ϑ C x → (∀ R : ℝ, 0 < R → ∃ Λ : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), (r ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (C ∩ closedBall x (r * R)) ≤ Λ) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z in C, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * (ϑ z - ϑ x) ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
