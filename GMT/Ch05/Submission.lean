@@ -1412,6 +1412,158 @@ theorem ball_harmonic_patching : ∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, 
     rw [compat _ _ hex hex' (hmem m).1 (hmem m).2 x
       (by rw [mem_ball_zero_iff, max_eq_left hm3.le]; linarith)]
     exact hx m (by rw [mem_ball_zero_iff]; linarith)
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Weyl's lemma step "thus `w` is harmonic in `B`":
+if `w ∈ W^{1,2}(B)` has weak gradient `g` and `u` is `C¹` on the open unit ball `B` with `u = w`
+a.e. on `B`, then `∇u = g` a.e. on `B`.  For a test function `ζ`, `φ = u ζ` is `C¹` with compact
+support in `B`, so translation invariance of Lebesgue measure gives `∫ Dφ = 0`, i.e.
+`∫ u ∇ζ = -∫ ζ ∇u`.  With `u = w` a.e. and the weak-gradient identity this yields
+`∫ ζ (∇u - g) = 0`, and the fundamental lemma of the calculus of variations on the open ball `B`
+gives `∇u = g` a.e. on `B`. -/
+theorem w12_ball_gradient_ae_eq_of_contDiffAt : ∀ n : ℕ, 1 ≤ n → ∀ (w u : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ x ∈ ball (0 : Rn n) 1, ContDiffAt ℝ 1 u x) → (∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x) → ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), gradient u x = g x := by
+  intro n _ w u g hw hu huw
+  obtain ⟨-, hgL, hweak⟩ := hw
+  -- `∇u` is continuous on `B` and `g` is integrable on `B`, so `∇u - g` is locally integrable.
+  have hgu : ∀ x ∈ ball (0 : Rn n) 1, ContinuousAt (gradient u) x := fun x hx =>
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.continuousAt.comp
+      ((hu x hx).continuousAt_fderiv one_ne_zero)
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hg : IntegrableOn g (ball (0 : Rn n) 1) := hgL.integrable one_le_two
+  have hloc : LocallyIntegrableOn (fun x => gradient u x - g x) (ball (0 : Rn n) 1) :=
+    ((continuousOn_of_forall_continuousAt hgu).locallyIntegrableOn measurableSet_ball).sub
+      hg.locallyIntegrableOn
+  -- `∫ ζ (∇u - g) = 0` for every test function `ζ` supported in `B`.
+  have key : ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball 0 1 → ∫ x, ζ x • (gradient u x - g x) = 0 := by
+    intro ζ hζ hζc hζB
+    have hζ1 : ContDiff ℝ 1 ζ := hζ.of_le (by exact_mod_cast le_top)
+    have hgζ : Continuous (gradient ζ) :=
+      (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp
+        (hζ1.continuous_fderiv one_ne_zero)
+    -- `ζ` and `∇ζ` vanish on the open set `(tsupport ζ)ᶜ`.
+    have hζ0 : ∀ x ∉ tsupport ζ, ζ x = 0 := fun x hx => image_eq_zero_of_notMem_tsupport hx
+    have hgζ0 : ∀ x ∉ tsupport ζ, gradient ζ x = 0 := fun x hx => by
+      rw [gradient, fderiv_of_notMem_tsupport ℝ hx, map_zero]
+    have hK : ∀ x ∉ tsupport ζ, ∀ᶠ y in 𝓝 x, y ∉ tsupport ζ := fun x hx =>
+      (isClosed_tsupport ζ).isOpen_compl.mem_nhds hx
+    -- `φ = u ζ` is `C¹` with compact support in `B`, and `∇φ = u ∇ζ + ζ ∇u`.
+    set φ : Rn n → ℝ := fun x => u x * ζ x
+    have hφ0 : ∀ x ∉ tsupport ζ, φ =ᶠ[𝓝 x] fun _ => 0 := fun x hx => by
+      filter_upwards [hK x hx] with y hy
+      simp [φ, hζ0 y hy]
+    have hφ1 : ContDiff ℝ 1 φ := by
+      rw [contDiff_iff_contDiffAt]
+      intro x
+      by_cases hx : x ∈ tsupport ζ
+      · exact (hu x (hζB hx)).mul hζ1.contDiffAt
+      · exact contDiffAt_const.congr_of_eventuallyEq (hφ0 x hx)
+    have hφc : HasCompactSupport φ := hζc.mul_left
+    have hφB : tsupport φ ⊆ ball 0 1 := tsupport_mul_subset_right.trans hζB
+    have hφg : ∀ x, gradient φ x = u x • gradient ζ x + ζ x • gradient u x := by
+      intro x
+      by_cases hx : x ∈ tsupport ζ
+      · have hd : HasFDerivAt φ (u x • fderiv ℝ ζ x + ζ x • fderiv ℝ u x) x :=
+          (((hu x (hζB hx)).differentiableAt one_ne_zero).hasFDerivAt).mul
+            ((hζ1.differentiable one_ne_zero x).hasFDerivAt)
+        rw [gradient, hd.fderiv, map_add, map_smulₛₗ, map_smulₛₗ]
+        simp [gradient]
+      · rw [gradient, (hφ0 x hx).fderiv_eq, hζ0 x hx, hgζ0 x hx]
+        simp
+    -- Translation invariance: `y ↦ ∫ φ (x + y) dx` is constant, so `∫ Dφ = 0`.
+    have hdφ : Continuous (fderiv ℝ φ) := hφ1.continuous_fderiv one_ne_zero
+    obtain ⟨M, hM⟩ := hdφ.bounded_above_of_compact_support (hφc.fderiv ℝ)
+    have hDφ : ∫ x, fderiv ℝ φ x = 0 := by
+      have hderiv : HasFDerivAt (fun y : Rn n => ∫ x, φ (x + y)) (∫ x, fderiv ℝ φ (x + 0)) 0 := by
+        refine hasFDerivAt_integral_of_dominated_of_fderiv_le
+          (F' := fun y x => fderiv ℝ φ (x + y))
+          (bound := (ball (0 : Rn n) 2).indicator fun _ => M) (ball_mem_nhds 0 one_pos)
+          (Eventually.of_forall fun y =>
+            (hφ1.continuous.comp (continuous_id.add_const y)).aestronglyMeasurable)
+          ?_ (hdφ.comp (continuous_id.add_const 0)).aestronglyMeasurable ?_ ?_ ?_
+        · simpa using hφ1.continuous.integrable_of_hasCompactSupport hφc
+        · refine Eventually.of_forall fun x y hy => ?_
+          by_cases hx : x ∈ ball (0 : Rn n) 2
+          · rw [indicator_of_mem hx]
+            exact hM _
+          · rw [indicator_of_notMem hx]
+            have hxy : x + y ∉ tsupport φ := by
+              intro h
+              have h1 := hφB h
+              rw [mem_ball_zero_iff] at h1 hy
+              rw [mem_ball_zero_iff, not_lt] at hx
+              have h2 := norm_sub_le (x + y) y
+              rw [add_sub_cancel_right] at h2
+              linarith
+            rw [fderiv_of_notMem_tsupport ℝ hxy, norm_zero]
+        · exact (integrableOn_const (measure_ball_lt_top).ne).integrable_indicator
+            measurableSet_ball
+        · exact Eventually.of_forall fun x y _ =>
+            (hasFDerivAt_comp_add_left x).2 (hφ1.differentiable one_ne_zero (x + y)).hasFDerivAt
+      have hconst : (fun y : Rn n => ∫ x, φ (x + y)) = fun _ => ∫ x, φ x := by
+        funext y
+        exact integral_add_right_eq_self φ y
+      rw [hconst] at hderiv
+      simpa using hderiv.unique (hasFDerivAt_const _ _)
+    have hgφ : ∫ x, gradient φ x = 0 := by
+      have h := ContinuousLinearMap.integral_comp_commSL (σ := starRingEnd ℝ) (by simp)
+        ((InnerProductSpace.toDual ℝ (Rn n)).symm.toContinuousLinearEquiv :
+          StrongDual ℝ (Rn n) →SL[starRingEnd ℝ] Rn n)
+        (μ := volume) (hdφ.integrable_of_hasCompactSupport (hφc.fderiv ℝ))
+      simpa [gradient, hDφ] using h
+    -- Integrability of the three pieces.
+    have hA : Integrable (fun x => u x • gradient ζ x) := by
+      refine Continuous.integrable_of_hasCompactSupport ?_ ?_
+      · refine continuous_iff_continuousAt.2 fun x => ?_
+        by_cases hx : x ∈ tsupport ζ
+        · exact ((hu x (hζB hx)).continuousAt).smul hgζ.continuousAt
+        · refine ContinuousAt.congr (f := fun _ => (0 : Rn n)) continuousAt_const ?_
+          filter_upwards [hK x hx] with y hy
+          simp [hgζ0 y hy]
+      · refine hζc.mono' fun x hx => ?_
+        by_contra h
+        exact hx (by simp [hgζ0 x h])
+    have hC : Integrable (fun x => ζ x • gradient u x) := by
+      refine Continuous.integrable_of_hasCompactSupport ?_ ?_
+      · refine continuous_iff_continuousAt.2 fun x => ?_
+        by_cases hx : x ∈ tsupport ζ
+        · exact hζ.continuous.continuousAt.smul (hgu x (hζB hx))
+        · refine ContinuousAt.congr (f := fun _ => (0 : Rn n)) continuousAt_const ?_
+          filter_upwards [hK x hx] with y hy
+          simp [hζ0 y hy]
+      · refine hζc.mono' fun x hx => ?_
+        by_contra h
+        exact hx (by simp [hζ0 x h])
+    have hD : Integrable (fun x => ζ x • g x) := by
+      obtain ⟨Cζ, hCζ⟩ := hζ.continuous.bounded_above_of_compact_support hζc
+      refine IntegrableOn.integrable_of_forall_notMem_eq_zero
+        (hg.bdd_smul Cζ hζ.continuous.aestronglyMeasurable (Eventually.of_forall hCζ)) ?_
+      intro x hx
+      simp [hζ0 x fun h => hx (hζB h)]
+    -- `∫ u ∇ζ = -∫ ζ ∇u` and `∫ ζ g = -∫ u ∇ζ`.
+    have hibp : (∫ x, u x • gradient ζ x) + ∫ x, ζ x • gradient u x = 0 := by
+      rw [← integral_add hA hC, ← hgφ]
+      exact integral_congr_ae (Eventually.of_forall fun x => (hφg x).symm)
+    have hζg : ∫ x, ζ x • g x = -∫ x, u x • gradient ζ x := by
+      have h1 : ∫ x in ball (0 : Rn n) 1, ζ x • g x = ∫ x, ζ x • g x :=
+        setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+          simp [hζ0 x fun h => hx (hζB h)]
+      have h2 : ∫ x in ball (0 : Rn n) 1, u x • gradient ζ x = ∫ x, u x • gradient ζ x :=
+        setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+          simp [hgζ0 x fun h => hx (hζB h)]
+      have h3 : ∫ x in ball (0 : Rn n) 1, w x • gradient ζ x =
+          ∫ x in ball (0 : Rn n) 1, u x • gradient ζ x :=
+        integral_congr_ae (by filter_upwards [huw] with x hx; rw [hx])
+      rw [← h1, ← h2, ← h3, hweak ζ hζ hζc hζB, neg_neg]
+    have hsub : ∫ x, ζ x • (gradient u x - g x) =
+        (∫ x, ζ x • gradient u x) - ∫ x, ζ x • g x := by
+      rw [← integral_sub hC hD]
+      simp only [smul_sub]
+    rw [hsub, hζg, sub_neg_eq_add, add_comm, hibp]
+  -- Fundamental lemma of the calculus of variations on the open ball.
+  have h0 := isOpen_ball.ae_eq_zero_of_integral_contDiff_smul_eq_zero hloc key
+  rw [ae_restrict_iff' measurableSet_ball]
+  filter_upwards [h0] with x hx hxB
+  exact sub_eq_zero.1 (hx hxB)
 
 end Submission
 
