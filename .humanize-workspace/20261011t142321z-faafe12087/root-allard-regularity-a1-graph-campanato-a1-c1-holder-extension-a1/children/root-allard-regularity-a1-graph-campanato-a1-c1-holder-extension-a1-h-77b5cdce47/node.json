@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.c1_holder_extension-a1.hs_norm_basics-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.c1_holder_extension-a1",
+  "depth": 4,
+  "title": "Operator norm is at most the Hilbert-Schmidt norm, and the Hilbert-Schmidt norm is continuous",
+  "statement": "For all natural numbers m, k >= 0: every continuous linear map A : R^m -> R^k satisfies ||A|| <= hsNorm(A), where ||A|| is the operator norm and hsNorm(A) = (sum_{i<m} ||A e_i||^2)^(1/2) is the Hilbert-Schmidt norm (e_i the standard orthonormal basis of R^m). Moreover the map A -> hsNorm(A) is continuous on the space L(R^m, R^k) of continuous linear maps with its operator-norm topology.",
+  "lean_statement": "∀ (m k : ℕ), (∀ A : Rn m →L[ℝ] Rn k, ‖A‖ ≤ hsNorm A) ∧ Continuous (fun A : Rn m →L[ℝ] Rn k => hsNorm A)",
+  "lean_name": "allard52_c1h_opNorm_le_hsNorm_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-c1-holder-extension-a1-h-77b5cdce47-a1"
+}
