@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.level_integral_bound-a1.energy_tonelli-a1",
+  "parent_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.level_integral_bound-a1",
+  "depth": 4,
+  "title": "Integrated truncation energy over levels: ∫_0^∞(∫γ'(h−t)D dμ + ∫_{M_t}K dμ) dt ≤ ∫(D + hK) dμ",
+  "statement": "Let n, ℓ ∈ ℕ and let μ be a measure on E = ℝ^{n+ℓ} (Borel σ-algebra) that is finite on compact sets. Let h: E → ℝ be continuous, nonnegative and compactly supported. Let D, K: E → ℝ be nonnegative, with D μ-integrable and K μ-integrable on tsupport h. Let γ: ℝ → ℝ be C¹ and nondecreasing, with 0 ≤ γ ≤ 1 and γ = 0 on (−∞, 0]. Put γ' := deriv γ and M_t := {x : h(x) > t}. Then ∫⁻_{(0,∞)} ofReal(∫ γ'(h − t) D dμ + ∫_{M_t} K dμ) dt ≤ ofReal(∫ (D + hK) dμ). Here ∫⁻ is the lower Lebesgue integral of a [0, ∞]-valued function with respect to Lebesgue measure dt, ofReal: ℝ → [0, ∞] is y ↦ max(y, 0), and ∫ denotes Bochner integrals.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h D K : Ambient n ℓ → ℝ) (γ : ℝ → ℝ), IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → (∀ x, 0 ≤ D x) → Integrable D μ → (∀ x, 0 ≤ K x) → IntegrableOn K (tsupport h) μ → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) ≤ ENNReal.ofReal (∫ x, (D x + h x * K x) ∂μ)",
+  "lean_name": "sobolev_level_energy_tonelli",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-truncation-layer-cake-a1-level-integral-bo-2bd75605fb-a1"
+}

@@ -434,6 +434,52 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Level-set moment factor (Simon Ch. 4, proof of 5.7, p. 100).** The "trivial inequality"
+of Simon's proof, with `M_α = {x : h(x) > α}` and `p = n/(n-1)`: if `n ≥ 2`, `μ` is finite on
+compact sets, `h ≥ 0` is continuous with compact support, `ε > 0` and `t ≥ 0`, then
+`(t + ε)^{1/(n-1)} μ(M_t)^{1/n} ≤ (∫_{M_0} (h + ε)^p dμ)^{1/n}`. -/
+theorem Submission.sobolev_level_moment_factor : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε t : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → 0 ≤ t → (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ ≤ (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ := by
+  intro n ℓ μ h ε t hn hμ hh hhc hh0 hε ht
+  -- (1) Exponents: `p = n/(n-1) ≥ 0`, `p · (1/n) = 1/(n-1)`, and `t + ε ≥ 0`.
+  have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn0 : (0 : ℝ) < n := by linarith
+  have hn1 : (0 : ℝ) < n - 1 := by linarith
+  set p : ℝ := (n : ℝ) / ((n : ℝ) - 1) with hp_def
+  have hp : 0 ≤ p := div_nonneg hn0.le hn1.le
+  have hpn : p * (n : ℝ)⁻¹ = ((n : ℝ) - 1)⁻¹ := by
+    rw [hp_def, div_mul_eq_mul_div, mul_inv_cancel₀ hn0.ne', one_div]
+  have hte : 0 ≤ t + ε := by linarith
+  -- (2) Sets: `M_t ⊆ M_0 ⊆ tsupport h` (compact), so `μ(M_t) < ∞`; `M_t` is open.
+  have hMt : MeasurableSet {x | t < h x} := (isOpen_lt continuous_const hh).measurableSet
+  have hsub : {x | t < h x} ⊆ {x | 0 < h x} := fun x (hx : t < h x) ↦ ht.trans_lt hx
+  have hsubK : {x | 0 < h x} ⊆ tsupport h := fun x (hx : 0 < h x) ↦ subset_tsupport h hx.ne'
+  have hK : IsCompact (tsupport h) := hhc.isCompact
+  have hMt_fin : μ {x | t < h x} ≠ ⊤ :=
+    ((measure_mono (hsub.trans hsubK)).trans_lt hK.measure_lt_top).ne
+  -- (3) The continuous `(h + ε)^p` is integrable on `tsupport h`, hence on `M_0`.
+  have hcont : Continuous fun x ↦ (h x + ε) ^ p :=
+    (hh.add continuous_const).rpow_const fun _ ↦ Or.inr hp
+  have hint0 : IntegrableOn (fun x ↦ (h x + ε) ^ p) {x | 0 < h x} μ :=
+    (hcont.continuousOn.integrableOn_compact hK).mono_set hsubK
+  -- (4) `(t + ε)^p μ(M_t) = ∫_{M_t} (t + ε)^p ≤ ∫_{M_t} (h + ε)^p ≤ ∫_{M_0} (h + ε)^p`.
+  have hmom : (t + ε) ^ p * μ.real {x | t < h x} ≤ ∫ x in {x | 0 < h x}, (h x + ε) ^ p ∂μ := by
+    calc (t + ε) ^ p * μ.real {x | t < h x} = ∫ _ in {x | t < h x}, (t + ε) ^ p ∂μ := by
+          rw [setIntegral_const, smul_eq_mul, mul_comm]
+      _ ≤ ∫ x in {x | t < h x}, (h x + ε) ^ p ∂μ :=
+          setIntegral_mono_on (integrableOn_const hMt_fin) (hint0.mono_set hsub) hMt
+            fun x (hx : t < h x) ↦ Real.rpow_le_rpow hte (by linarith) hp
+      _ ≤ ∫ x in {x | 0 < h x}, (h x + ε) ^ p ∂μ :=
+          setIntegral_mono_set hint0
+            (ae_of_all _ fun x ↦ Real.rpow_nonneg (by linarith [hh0 x]) p)
+            (Eventually.of_forall hsub)
+  -- (5) `n`-th roots: `((t + ε)^p μ(M_t))^{1/n} = (t + ε)^{1/(n-1)} μ(M_t)^{1/n}`.
+  calc (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹
+      = ((t + ε) ^ p * μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ := by
+        rw [Real.mul_rpow (Real.rpow_nonneg hte p) measureReal_nonneg, ← Real.rpow_mul hte, hpn]
+    _ ≤ (∫ x in {x | 0 < h x}, (h x + ε) ^ p ∂μ) ^ (n : ℝ)⁻¹ :=
+        Real.rpow_le_rpow (mul_nonneg (Real.rpow_nonneg hte p) measureReal_nonneg) hmom
+          (inv_nonneg.2 hn0.le)
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
