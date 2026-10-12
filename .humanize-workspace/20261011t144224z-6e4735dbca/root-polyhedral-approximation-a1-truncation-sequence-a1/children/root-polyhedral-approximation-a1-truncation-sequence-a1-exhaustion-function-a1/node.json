@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.truncation_sequence-a1.exhaustion_function-a1",
+  "parent_id": "root.polyhedral_approximation-a1.truncation_sequence-a1",
+  "depth": 3,
+  "title": "1-Lipschitz exhaustion function of an open set U ⊆ ℝ^P (Simon 6.2 proof: φ > 0 in U, {φ > λ} ⊂⊂ U)",
+  "statement": "Let P ∈ ℕ and let U ⊆ ℝ^P be open. Then there is a function φ : ℝ^P → ℝ such that:\n(i) φ is 1-Lipschitz for the Euclidean metric: |φ(x) − φ(y)| ≤ |x − y| for all x, y ∈ ℝ^P;\n(ii) for every t > 0 the superlevel set {x ∈ ℝ^P : φ(x) ≥ t} is compact and contained in U;\n(iii) for every compact K ⊆ U there is δ > 0 with φ(x) ≥ δ for all x ∈ K.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ φ : Eucl P → ℝ, LipschitzWith 1 φ ∧ (∀ t : ℝ, 0 < t → IsCompact {x | t ≤ φ x} ∧ {x | t ≤ φ x} ⊆ U) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ K, δ ≤ φ x",
+  "lean_name": "polyhedral_approx_exhaustion_function",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1-a1"
+}
