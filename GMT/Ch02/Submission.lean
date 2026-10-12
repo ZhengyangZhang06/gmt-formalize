@@ -416,6 +416,52 @@ theorem Submission.bv_abs_variation_exists_kernel : ∀ (n : ℕ) (σ : ℝ), 0 
     ?_, ?_⟩
   · rw [Function.support_div, φ.support_eq, Function.support_const hpos.ne', inter_univ, hφ]
   · rw [integral_div, div_self hpos.ne']
+/-- **Smoothed absolute value.** For `w ∈ C¹(ℝⁿ)` and `η > 0`, `F = √(w² + η²) - η` is `C¹`,
+satisfies `‖DF(x)‖ ≤ ‖Dw(x)‖` and is uniformly `η`-close to `|w|`. With `ψ(t) = √(t² + η²) - η`
+and `F = ψ ∘ w`: `|t| ≤ √(t² + η²) ≤ |t| + η` gives the closeness, and the chain rule gives
+`DF(x) = (w(x) / √(w(x)² + η²)) • Dw(x)` with a coefficient of absolute value at most `1`. -/
+theorem Submission.bv_abs_variation_smoothed_abs : ∀ (n : ℕ) (w : Rn n → ℝ) (η : ℝ), 0 < η → ContDiff ℝ 1 w → ContDiff ℝ 1 (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) ∧ (∀ x, ‖fderiv ℝ (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) x‖ ≤ ‖fderiv ℝ w x‖) ∧ ∀ x, abs (Real.sqrt (w x ^ 2 + η ^ 2) - η - |w x|) ≤ η := by
+  intro n w η hη hw
+  -- Step 1: the radicand `t² + η²` is positive.
+  have hpos : ∀ t : ℝ, 0 < t ^ 2 + η ^ 2 := fun t ↦ by positivity
+  -- Step 2: `|t| = √(t²) ≤ √(t² + η²)`.
+  have hlow : ∀ t : ℝ, |t| ≤ Real.sqrt (t ^ 2 + η ^ 2) := fun t ↦ by
+    rw [← Real.sqrt_sq_eq_abs]
+    exact Real.sqrt_le_sqrt (le_add_of_nonneg_right (sq_nonneg η))
+  -- Step 3: `√(t² + η²) ≤ √((|t| + η)²) = |t| + η`.
+  have hup : ∀ t : ℝ, Real.sqrt (t ^ 2 + η ^ 2) ≤ |t| + η := fun t ↦ by
+    rw [← Real.sqrt_sq (add_nonneg (abs_nonneg t) hη.le)]
+    exact Real.sqrt_le_sqrt (by nlinarith [abs_nonneg t, sq_abs t])
+  refine ⟨?_, fun x ↦ ?_, fun x ↦ ?_⟩
+  -- Step 5: the radicand is `C¹` and never vanishes, so `F` is `C¹`.
+  · have h1 : ContDiff ℝ 1 (fun x ↦ w x ^ 2 + η ^ 2) := (hw.pow 2).add contDiff_const
+    exact (h1.sqrt fun x ↦ (hpos (w x)).ne').sub contDiff_const
+  -- Step 6: `ψ'(t₀) = 2t₀ / (2√(t₀² + η²))` at `t₀ = w(x)`; the chain rule gives
+  -- `DF(x) = ψ'(t₀) • Dw(x)`, and `|ψ'(t₀)| ≤ 1` by Step 2.
+  · have hψ : HasDerivAt (fun t : ℝ ↦ Real.sqrt (t ^ 2 + η ^ 2) - η)
+        (2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))) (w x) := by
+      have h1 : HasDerivAt (fun t : ℝ ↦ t ^ 2 + η ^ 2) (2 * w x) (w x) := by
+        simpa using (hasDerivAt_pow 2 (w x)).add_const (η ^ 2)
+      exact (h1.sqrt (hpos (w x)).ne').sub_const η
+    have hwx : HasFDerivAt w (fderiv ℝ w x) x := (hw.differentiable one_ne_zero x).hasFDerivAt
+    have hF : HasFDerivAt (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η)
+        ((2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))) • fderiv ℝ w x) x :=
+      hψ.comp_hasFDerivAt x hwx
+    have h2s : 0 < 2 * Real.sqrt (w x ^ 2 + η ^ 2) := by
+      have := Real.sqrt_pos.2 (hpos (w x))
+      positivity
+    have hc : |2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))| ≤ 1 := by
+      rw [abs_div, abs_of_pos h2s, div_le_one h2s, abs_mul, abs_two]
+      linarith [hlow (w x)]
+    rw [hF.fderiv, norm_smul, Real.norm_eq_abs]
+    calc |2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))| * ‖fderiv ℝ w x‖
+        ≤ 1 * ‖fderiv ℝ w x‖ := mul_le_mul_of_nonneg_right hc (norm_nonneg _)
+      _ = ‖fderiv ℝ w x‖ := one_mul _
+  -- Step 4: `-η ≤ F(x) - |w(x)| ≤ 0 ≤ η`, by Steps 2 and 3.
+  · rw [abs_le]
+    constructor
+    · linarith [hlow (w x)]
+    · linarith [hup (w x)]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
