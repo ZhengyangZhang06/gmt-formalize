@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1cbad12542cd641314f2c9a70bf61792919d3016f0ac0e8f9b71b55a0173629e",
+  "git_delta": {
+    "base_commit": "3029a0e42bf3fc142762e117888d290f789ce561",
+    "candidate_commit": "df6794cbcbe4b9d27792d7b228121d408209e6fb",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_tpd_plane_cutoff",
+    "diff_sha256": "f7b07cea443239ecfe4095413088972cff163f7ea7730ee70d818847bfbae6b1",
+    "source_sha256": "e4fcda3310815ef7308e88f29349bf8e7edfc352f2260b406fee93027f9d7d59",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_tpd_plane_cutoff",
+      "statement": "∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)) (a R : ℝ), Module.finrank ℝ P = n → 0 < a → a < R → ∃ f : C_c(Euclidean N, ℝ), (∀ y, 0 ≤ f y) ∧ (∀ y, f y ≤ 1) ∧ (∀ y, ‖y‖ ≤ a → f y = 1) ∧ (∀ y, R < ‖y‖ → f y = 0) ∧ (unitBallVolume n).toReal * a ^ n ≤ ∫ y in (P : Set (Euclidean N)), f y ∂μHE[n] ∧ ∫ y in (P : Set (Euclidean N)), f y ∂μHE[n] ≤ (unitBallVolume n).toReal * R ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
