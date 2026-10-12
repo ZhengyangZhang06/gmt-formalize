@@ -1,0 +1,22 @@
+{
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1357",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "f5333307aaddb46d2dcbf9592bd2737aded82721",
+  "integrated_commit": "",
+  "proof_base_commit": "da0a42e7aedc725ac5ffbc928f22fa400f8e7a89",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integral_compactness-a1.allard_lemma-a1",
+  "requires": [
+    "root.integral_compactness-a1.allard_lemma-a1.good_point_monotonicity-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1.density_cylinder_bound-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1.one_point_bound-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1.separated_sum_bound-a1"
+  ]
+}
