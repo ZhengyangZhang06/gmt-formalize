@@ -513,6 +513,43 @@ theorem Submission.ts_starProjection_range_continuousOn_injective : ∀ (n ℓ :
   intro A₀ hA₀
   exact ((hcont A₀ hA₀).continuousWithinAt).congr (fun A hA ↦ hformula A hA) (hformula A₀ hA₀)
 
+/-- **The tangent projection of a `C¹` piece, as a function on its image** (Ch. 4, 1.3). If
+`c‖v - w‖ ≤ ‖F v - F w‖` on `C` with `c > 0`, and `DF` is injective and continuous on `C`, then
+`y ↦ p_{DF(ψ y)(ℝⁿ)}` is continuous on `F(C)`, where `ψ` inverts `F` on `C` and is
+`c⁻¹`-Lipschitz on `F(C)`. -/
+theorem Submission.ts_piece_projection_continuousOn_image : ∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (c : ℝ), 0 < c → (∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → (∀ w ∈ C, Function.Injective (fderiv ℝ F w)) → ContinuousOn (fderiv ℝ F) C → ∃ G : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), ContinuousOn G (F '' C) ∧ ∀ w ∈ C, G (F w) = (LinearMap.range (fderiv ℝ F w).toLinearMap).starProjection := by
+  intro n ℓ C F c hc hlow hinj hcont
+  classical
+  -- `F` is injective on `C`: `F v = F w` forces `c‖v - w‖ ≤ 0`
+  have hInjOn : Set.InjOn F C := by
+    intro v hv w hw hvw
+    have h := hlow v hv w hw
+    rw [hvw, sub_self, norm_zero] at h
+    have h' : ‖v - w‖ ≤ 0 := by
+      by_contra hpos
+      exact absurd h (not_le.mpr (mul_pos hc (lt_of_not_ge hpos)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h')
+  -- the inverse `ψ` of `F` on `C`
+  set ψ : Ambient n ℓ → EuclideanSpace ℝ (Fin n) := Function.invFunOn F C with hψ
+  have hψmaps : Set.MapsTo ψ (F '' C) C := fun y hy ↦ Function.invFunOn_mem hy
+  have hFψ : ∀ y ∈ F '' C, F (ψ y) = y := fun y hy ↦ Function.invFunOn_eq hy
+  have hψF : ∀ w ∈ C, ψ (F w) = w := fun w hw ↦ hInjOn.leftInvOn_invFunOn hw
+  -- `ψ` is `c⁻¹`-Lipschitz, hence continuous, on `F(C)`
+  have hψcont : ContinuousOn ψ (F '' C) := by
+    refine (LipschitzOnWith.of_dist_le_mul (K := Real.toNNReal c⁻¹) fun y hy y' hy' ↦ ?_).continuousOn
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (inv_nonneg.mpr hc.le)]
+    have h := hlow (ψ y) (hψmaps hy) (ψ y') (hψmaps hy')
+    rw [hFψ y hy, hFψ y' hy'] at h
+    rw [inv_mul_eq_div, le_div_iff₀ hc, mul_comm]
+    exact h
+  -- `G = p ∘ DF ∘ ψ`: `ψ` maps `F(C)` into `C`, where `DF` is continuous with injective values,
+  -- and `A ↦ p_{A(ℝⁿ)}` is continuous on the injective maps
+  refine ⟨fun y ↦ (LinearMap.range (fderiv ℝ F (ψ y)).toLinearMap).starProjection, ?_, ?_⟩
+  · exact (Submission.ts_starProjection_range_continuousOn_injective n ℓ).comp
+      (hcont.comp hψcont hψmaps) (fun y hy ↦ hinj (ψ y) (hψmaps hy))
+  · intro w hw
+    simp only [hψF w hw]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
