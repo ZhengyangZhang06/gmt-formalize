@@ -1,0 +1,126 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.affine_approximation-a1.pinched_density_bounds-a1`
+- Child DAG node: `root.affine_approximation-a1.pinched_density_bounds-a1.pinched_constants-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1-2 of the parent proof (the explicit constants and the elementary inequalities (E1)-(E5)), with kappa = (p-n)/(4p) and omega = omega_n replaced by arbitrary kappa > 0 and omega > 0, and with the three bounds on g_+, g_-, g_c stated after multiplication by omega: omega g_+(t) = e^(2 Lambda)(a omega) + 2 e^Lambda Lambda, omega g_-(t) = e^(-Lambda)(omega - Lambda), omega g_c(t) = e^Lambda (e^Lambda (a omega) + Lambda - omega).
+
+1. Constants. Let e := exp(1) > 0, A := 1 + n 2^(n+4) >= 1, B := (9/8) 2^n > 0, and
+ C_+ := A + (2 e^2 B + 2e/omega)/kappa (= A + (9 e^2 2^n/4 + 2e/omega)/kappa),
+ C_- := (1 + 1/omega)/kappa,
+ C_c := e A + (e^2 B + e/omega)/kappa (= e A + (9 e^2 2^n/8 + e/omega)/kappa),
+ C_P := max{1, C_+, C_-, C_c}, delta_P := min{1/8, kappa, 1/(2 C_P)}.
+ Then C_P >= 1 > 0 and C_P >= C_+, C_P >= C_-, C_P >= C_c. delta_P > 0 as the minimum of three positive numbers, delta_P <= 1/8, delta_P <= kappa, and C_P delta_P <= C_P * 1/(2 C_P) = 1/2. These constants depend only on n, kappa, omega.
+
+2. Fix t with 0 < t <= delta_P. Then t <= 1/8 and t <= kappa, so Lambda = t/kappa satisfies 0 < Lambda <= 1 and t = kappa Lambda, and 1 - 4t >= 1/2 > 0, so a = (1 + t)/(1 - 4t)^n is well defined and a >= 0.
+
+3. Exponential bounds (E1). We use 1 + x <= e^x for every real x.
+ (a) e^(-Lambda) >= 1 - Lambda (take x = -Lambda).
+ (b) e^Lambda <= e^1 = e (since Lambda <= 1) and e^(-Lambda) <= 1 (since -Lambda <= 0).
+ (c) e^Lambda <= 1 + e Lambda: multiplying (a) by e^Lambda > 0 gives e^Lambda (1 - Lambda) <= e^Lambda e^(-Lambda) = 1, so e^Lambda <= 1 + Lambda e^Lambda <= 1 + Lambda e by (b) and Lambda >= 0.
+ (d) e^(2 Lambda) <= 1 + 2 e^2 Lambda: from 1 - 2 Lambda <= e^(-2 Lambda) we get e^(2 Lambda)(1 - 2 Lambda) <= 1, so e^(2 Lambda) <= 1 + 2 Lambda e^(2 Lambda) <= 1 + 2 Lambda e^2, since e^(2 Lambda) <= e^2 (2 Lambda <= 2) and Lambda >= 0.
+ (These are exactly the bounds (E1) of the parent proof, there obtained by the mean value theorem.)
+
+4. Bounds on a (E2).
+ (a) Bernoulli's inequality (1 + x)^n >= 1 + n x, valid for x >= -2, applied with x = -4t >= -1/2, gives (1 - 4t)^n >= 1 - 4 n t.
+ (b) Since 1 - 4t >= 1/2 > 0, (1 - 4t)^n >= (1/2)^n > 0; hence 1/(1 - 4t)^n <= 2^n.
+ (c) Put c := n 2^(n+2) >= 0. Then (1 + c t)(1 - 4t)^n = (1 - 4t)^n + c t (1 - 4t)^n >= (1 - 4 n t) + c t (1/2)^n = 1 - 4 n t + 4 n t = 1, by (a), by (b) together with c t >= 0, and since 2^(n+2) (1/2)^n = 4. Dividing by (1 - 4t)^n > 0: 1/(1 - 4t)^n <= 1 + c t. (This is the parent's bound (1 - 4t)^(-n) <= 1 + n 2^(n+3) t in a slightly sharper form.)
+ (d) a = (1 + t) * (1/(1 - 4t)^n) <= (1 + t)(1 + c t) = 1 + t + c t + c t^2 <= 1 + t + 4 c t = 1 + (1 + n 2^(n+4)) t = 1 + A t, because c t^2 <= 3 c t (as 0 < t <= 1/8 and c >= 0) and 4c = n 2^(n+4).
+ (e) a <= (9/8) 2^n = B, because 0 < 1 + t <= 9/8 and 0 < 1/(1 - 4t)^n <= 2^n by (b). Also a omega >= 0.
+
+5. Proof of (i) (E3). By 3(d) and a omega >= 0: e^(2 Lambda)(a omega) <= (1 + 2 e^2 Lambda)(a omega) = a omega + 2 e^2 Lambda (a omega). By 3(b): 2 e^Lambda Lambda <= 2 e Lambda. By 4(d): a omega <= (1 + A t) omega = omega + A t omega. By 4(e): 2 e^2 Lambda (a omega) <= 2 e^2 Lambda (B omega). Adding,
+ e^(2 Lambda)(a omega) + 2 e^Lambda Lambda <= omega + A t omega + 2 e^2 B Lambda omega + 2 e Lambda.
+ Using t/kappa = Lambda, (1 + C_+ t) omega = omega + A t omega + (2 e^2 B + 2e/omega) Lambda omega = omega + A t omega + 2 e^2 B Lambda omega + 2 e Lambda. Since C_+ <= C_P and t omega > 0, (1 + C_+ t) omega <= (1 + C_P t) omega. This proves (i).
+
+6. Proof of (ii) (E4). Since C_- <= C_P and t omega > 0, (1 - C_P t) omega <= (1 - C_- t) omega = omega - (1 + 1/omega) Lambda omega = omega - Lambda omega - Lambda. Let c' := omega - Lambda.
+ - If c' >= 0: by 3(a), e^(-Lambda) c' >= (1 - Lambda) c' = omega - Lambda omega - Lambda + Lambda^2 >= omega - Lambda omega - Lambda.
+ - If c' < 0: by 3(b), e^(-Lambda) <= 1, so e^(-Lambda) c' >= c' = omega - Lambda >= omega - Lambda omega - Lambda, because Lambda omega >= 0.
+ In both cases e^(-Lambda)(omega - Lambda) >= omega - Lambda omega - Lambda >= (1 - C_P t) omega. This proves (ii).
+
+7. Proof of (iii) (E5). Let b := e^Lambda (a omega) + Lambda - omega and b' := A t omega + e Lambda B omega + Lambda >= 0. By 3(c) and a omega >= 0, e^Lambda (a omega) <= (1 + e Lambda)(a omega) = a omega + e Lambda (a omega) <= (omega + A t omega) + e Lambda B omega, using 4(d) and 4(e); hence b <= b'.
+ - If b >= 0: e^Lambda b <= e b <= e b', by 3(b), b <= b' and e > 0.
+ - If b < 0: e^Lambda b < 0 <= e b'.
+ So e^Lambda b <= e b' = e A t omega + e^2 B Lambda omega + e Lambda. Using Lambda = t/kappa, C_c omega t = e A t omega + (e^2 B + e/omega)(t/kappa) omega = e A t omega + e^2 B Lambda omega + e Lambda = e b'. Since C_c <= C_P and omega t > 0, e^Lambda (e^Lambda (a omega) + Lambda - omega) <= C_c omega t <= C_P omega t. This proves (iii), completing the proof.
+
+## Key steps
+
+1. Define e = exp 1, A = 1 + n 2^(n+4), B = (9/8) 2^n, C_+, C_-, C_c, C_P = max{1, C_+, C_-, C_c}, delta_P = min{1/8, kappa, 1/(2 C_P)} and check C_P >= 1, 0 < delta_P <= 1/8, delta_P <= kappa, C_P delta_P <= 1/2.
+2. For t in (0, delta_P]: Lambda = t/kappa in (0,1], t = kappa Lambda, 1 - 4t >= 1/2.
+3. From 1 + x <= e^x: e^(-Lambda) >= 1 - Lambda, e^Lambda <= e, e^Lambda <= 1 + e Lambda, e^(2 Lambda) <= 1 + 2 e^2 Lambda.
+4. Bernoulli and (1-4t)^n >= 2^(-n) give 1/(1-4t)^n <= 1 + n 2^(n+2) t, hence 0 <= a <= 1 + A t and a <= (9/8) 2^n.
+5. (i): sum the bounds and identify (1 + C_+ t) omega; (ii): case split on the sign of omega - Lambda against (1 - C_- t) omega; (iii): case split on the sign of b against e b' = C_c omega t; finally C_+, C_-, C_c <= C_P.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `timeout 300 rg -n "aal_|pinched|scaledLpNorm_mono|scaledLpNorm_le" <snapshot>/project`
+- `timeout 300 rg -n "theorem lintegral_iUnion_le|theorem lintegral_union |theorem lintegral_union_le|theorem ofReal_integral_eq_lintegral_ofReal|theorem lintegral_singleton|theorem lintegral_biUnion_finset|theorem lintegral_mono_set " <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "theorem add_one_le_exp|theorem one_add_mul_self_le_rpow_one_add|theorem continuousAt_rpow_const|theorem rpow_le_rpow |theorem rpow_le_one |theorem Gamma_pos_of_pos|theorem ofReal_le_iff_le_toReal" <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "lemma one_add_mul_le_pow|theorem toReal_le_of_le_ofReal|theorem top_rpow_of_pos|theorem lt_top_of_mul_ne_top_right|theorem closedBall_subset_closedBall'|lemma div_le_iff₀|lemma le_div_iff₀|lemma integral_nonneg" <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "restrict_iUnion_eq_iSup|lintegral_iUnion_mono|restrict_iUnion_apply_eq_iSup|lintegral_iSup_restrict" <snapshot>/mathlib/Mathlib; grep theorem/lemma in MeasureTheory/Measure/Continuity.lean; rg -n "theorem withDensity_apply " MeasureTheory/Measure/WithDensity.lean`
+- `timeout 300 rg -n "Ioo_mem_nhdsGT|theorem exp_le_one_iff|theorem exp_le_exp|theorem exp_nat_mul" <snapshot>/mathlib/Mathlib`
+- `python3 -I dag.json lean_name listing (collision check for aal_pinched_constants, aal_allard_subball_bounds, aal_monotone_quantity_ge_density, aal_lintegral_closedBall_le_of_annuli)`
+- `python3 -I: verifier/lean_contract.validate_lean_statement + verifier/gmt-compare.child_modules(mode=contract) on the 4 child lean_statements`
+- `lean -R /tmp/pdb/proj -o .../GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (frozen Submission, pinned toolchain, LEAN_PATH = lake-packages-25730c7c builds)`
+- `lean /tmp/pdb/proj/Combined.lean (4 child proofs + sorry-free parent assembly from children and verbatim sibling stubs; #print axioms)`
+- `lean NodeChallenge.lean / NodeSolution.lean per child against a scratch Submission containing the child proofs`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gamma/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-pinched-density-bounds-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/pdb/proj/Combined.lean`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json).
+
+No reuse is possible:
+- The snapshot project has no match for aal_, pinched or scaledLpNorm-monotonicity; it contains only the frozen contract.
+- None of the four proposed names occurs in dag.json.
+
+Mathlib items located in the snapshot and used in the scratch Lean proofs (paths under mathlib/Mathlib):
+- MeasureTheory/Integral/Lebesgue/Basic.lean: lintegral_mono_set (:98), lintegral_iUnion_le (:623), lintegral_union (:628).
+- Lebesgue/Countable.lean: lintegral_singleton (:131).
+- Bochner/Basic.lean: integral_nonneg (:649), ofReal_integral_eq_lintegral_ofReal (:739).
+- Measure/WithDensity.lean: withDensity_apply (:44), valid for any integrand on measurable sets.
+- Measure/Continuity.lean: Monotone.measure_iUnion (:71). There is no lintegral-over-monotone-union lemma, hence the withDensity route.
+- Analysis/Complex/Exponential.lean: add_one_le_exp (:632), exp_le_exp (:316), exp_le_one_iff (:339), exp_nat_mul (:233).
+- Algebra/Order/Ring/Pow.lean: Bernoulli one_add_mul_le_pow (:99).
+- Pow/Real.lean: rpow_le_rpow (:549), rpow_le_one (:661).
+- Pow/Continuity.lean: continuousAt_rpow_const (:220).
+- Pow/NNReal.lean: ENNReal.rpow_le_rpow (:798), top_rpow_of_pos (:508).
+- Gamma/Basic.lean: Gamma_pos_of_pos (:443).
+- Basic/ENNReal/Real.lean: ofReal_le_iff_le_toReal (:262), toReal_le_of_le_ofReal (:283).
+- Basic/ENNReal/Operations.lean: lt_top_of_mul_ne_top_right (:208).
+- Topology/MetricSpace/Pseudo/Defs.lean: closedBall_subset_closedBall' (:547).
+- Algebra/Order/GroupWithZero/Basic.lean: le_div_iff₀ (:1128), div_le_iff₀ (:1132).
+- Ioo_mem_nhdsGT is available.
+
+Lean checks:
+- All 4 child types pass validate_lean_statement and elaborate in the comparator's contract scope (open MeasureTheory Metric Set Filter Topology; open scoped ENNReal NNReal; namespace GMT.Ch05; open RectifiableVarifold).
+- Each child's NodeSolution (exact Submission.X) compiles.
+- Combined.lean proves all 4 children with axioms propext, Classical.choice, Quot.sound only, and assembles the exact frozen parent type sorry-free from them plus verbatim stubs of aal_lp_monotonicity and aal_density_ge_one.
