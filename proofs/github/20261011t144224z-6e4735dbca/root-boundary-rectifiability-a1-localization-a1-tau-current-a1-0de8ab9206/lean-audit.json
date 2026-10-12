@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4e5dd2e6fbb22526b35f7753a6a591261ded8c109299e52eabe321be52ab6531",
+  "git_delta": {
+    "base_commit": "5e06944f852e024facf8bc7484df0f06251e2987",
+    "candidate_commit": "9c856ad6531d6f4cd254db013a3e4274667e65c5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_loc_tauAction_current",
+    "diff_sha256": "146fbc67c853ec45fbe7b5c0a99ffbcc1398a8e78bc5245117db31f5ed1829d4",
+    "source_sha256": "a6bc64a0b4614c2ddf95b2a04dc26c48b605fb9551721e3f1672ee6f363573e9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_loc_tauAction_current",
+      "statement": "∀ (P n : ℕ) (V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple V n M θ ξ → ∃ X : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, X ω = tauAction n M θ ξ ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
