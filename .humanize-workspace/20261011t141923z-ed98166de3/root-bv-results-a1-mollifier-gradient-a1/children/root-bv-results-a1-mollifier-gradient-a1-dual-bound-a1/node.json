@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.dual_bound-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1",
+  "depth": 3,
+  "title": "Duality bound for a mollification tested against admissible C¹ fields (computation of Simon 2.5)",
+  "statement": "Let n ∈ ℕ, W ⊆ ℝⁿ open, u integrable on W, and σ ∈ ℝ. Let ρ : ℝⁿ → ℝ be continuous with ρ ≥ 0, support ρ ⊆ B(0,σ) (open ball) and ∫ρ = 1. Let g : ℝⁿ → ℝⁿ be a C¹ vector field with compact support such that ‖g(x)‖ ≤ 1 for all x and closedBall(y,σ) ⊆ W for every y ∈ tsupport g. Put w := ρ * (1_W u) = convolution ρ (W.indicator u) (lsmul ℝ ℝ) volume. Then ofReal(∫ w(x) div g(x) dx) ≤ |Du|(W) := Chapter02.bvVariationOn u W in [0,∞], where div = Chapter02.euclideanDivergence.",
+  "lean_statement": "∀ (n : ℕ) (W : Set (Rn n)) (u ρ : Rn n → ℝ) (σ : ℝ) (g : Rn n → Rn n), IsOpen W → IntegrableOn u W volume → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, ‖g x‖ ≤ 1) → (∀ y ∈ tsupport g, closedBall y σ ⊆ W) → ENNReal.ofReal (∫ x, convolution ρ (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume x * Chapter02.euclideanDivergence g x) ≤ Chapter02.bvVariationOn u W",
+  "lean_name": "bv_mollifier_integral_mul_div_le",
+  "depends_on": [
+    "root.bv_results-a1.mollifier_gradient-a1.conv_adjoint-a1",
+    "root.bv_results-a1.mollifier_gradient-a1.div_conv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.mollifier_gradient-a1.conv_adjoint-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.mollifier_gradient-a1.div_conv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-dual-bound-a1-a1"
+}

@@ -373,6 +373,39 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, proof of Lemma 2.5: transposing a mollification.** For `F ∈ L¹(ℝⁿ)` and
+continuous, compactly supported `ρ`, `h`, with `ρ̌(t) = ρ(-t)`: `∫ (ρ * F) h = ∫ F (ρ̌ * h)` (the
+step `∫ (φ_σ * u) div g = ∫ u (φ_σ * div g)`, for a kernel that need not be even). Both
+convolutions are rewritten in the symmetric form `(a * b)(x) = ∫ a(x - t) b(t) dt` (translation and
+reflection invariance of `Lⁿ`); then one application of Fubini to `(x, s) ↦ ρ(x - s) F(s) h(x)`
+gives the identity. -/
+theorem Submission.bv_integral_convolution_mul_reflect : ∀ (n : ℕ) (F ρ h : Rn n → ℝ), Integrable F volume → Continuous ρ → HasCompactSupport ρ → Continuous h → HasCompactSupport h → ∫ x, convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x * h x = ∫ x, F x * convolution (fun t ↦ ρ (-t)) h (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+  intro n F ρ h hF hρ hρc hh hhc
+  -- Step 1: `ρ` is integrable and `h` is bounded, `|h| ≤ C`.
+  have hρi : Integrable ρ volume := hρ.integrable_of_hasCompactSupport hρc
+  obtain ⟨C, hC⟩ := hh.bounded_above_of_compact_support hhc
+  -- Step 2: `(x, s) ↦ ρ(x - s) F(s) h(x)` is integrable on `ℝⁿ × ℝⁿ`: the convolution integrand
+  -- `F(s) ρ(x - s)` is integrable and `h(x)` is continuous and bounded.
+  have hG : Integrable (fun p : Rn n × Rn n ↦ ρ (p.1 - p.2) * F p.2 * h p.1)
+      (volume.prod volume) := by
+    refine ((hF.convolution_integrand (ContinuousLinearMap.lsmul ℝ ℝ) hρi).mul_bdd
+      (hh.comp continuous_fst).aestronglyMeasurable
+      (Eventually.of_forall fun p ↦ hC p.1)).congr (Eventually.of_forall fun p ↦ ?_)
+    simp only [Function.comp_apply, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+    ring
+  -- Step 3: `(ρ * F)(x) = ∫ ρ(x - s) F(s) ds` and `(ρ̌ * h)(s) = ∫ ρ(x - s) h(x) dx`; swap the
+  -- order of integration once.
+  calc ∫ x, convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x * h x
+      = ∫ x, ∫ s, ρ (x - s) * F s * h x := by
+        refine integral_congr_ae (Eventually.of_forall fun x ↦ ?_)
+        simp only [convolution_lsmul_swap, smul_eq_mul, ← integral_mul_const]
+    _ = ∫ s, ∫ x, ρ (x - s) * F s * h x := integral_integral_swap hG
+    _ = ∫ s, F s * convolution (fun t ↦ ρ (-t)) h (ContinuousLinearMap.lsmul ℝ ℝ) volume s := by
+        refine integral_congr_ae (Eventually.of_forall fun s ↦ ?_)
+        simp only [convolution_lsmul_swap, smul_eq_mul, neg_sub, ← integral_const_mul]
+        refine integral_congr_ae (Eventually.of_forall fun x ↦ ?_)
+        ring
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 

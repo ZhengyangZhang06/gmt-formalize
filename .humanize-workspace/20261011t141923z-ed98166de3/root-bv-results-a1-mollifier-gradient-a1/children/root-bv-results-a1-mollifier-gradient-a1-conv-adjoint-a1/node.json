@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.conv_adjoint-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1",
+  "depth": 3,
+  "title": "Transposition of a convolution against a compactly supported test function (Fubini)",
+  "statement": "Let n ∈ ℕ and E = ℝⁿ (EuclideanSpace ℝ (Fin n)) with Lebesgue measure. Let F : E → ℝ be integrable, and let ρ, h : E → ℝ be continuous with compact support. Use Mathlib's scalar convolution (a * b)(x) := ∫ a(t) b(x − t) dt, i.e. convolution a b (lsmul ℝ ℝ) volume, and put ρ̌(t) := ρ(−t). Then ∫ (ρ * F)(x) h(x) dx = ∫ F(x) (ρ̌ * h)(x) dx.",
+  "lean_statement": "∀ (n : ℕ) (F ρ h : Rn n → ℝ), Integrable F volume → Continuous ρ → HasCompactSupport ρ → Continuous h → HasCompactSupport h → ∫ x, convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x * h x = ∫ x, F x * convolution (fun t ↦ ρ (-t)) h (ContinuousLinearMap.lsmul ℝ ℝ) volume x",
+  "lean_name": "bv_integral_convolution_mul_reflect",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-conv-adjoint-a1-a1"
+}
