@@ -688,6 +688,56 @@ theorem allard52_gpa_span_graph_zero : ∀ (n ℓ : ℕ),
     dsimp only
     rw [hsum]
     simp
+/-- Simon Ch. 5, proof of Theorem 5.2 (pp. 123–124): the linear algebra of graph planes.  For
+`n ≥ 1` there is `L₀ = L₀(n, ℓ) ∈ (0, 1/4]` such that, with `P_q(A)` the orthogonal projection onto
+`q(Γ_A)`, `Γ_A = {(v, A v) : v ∈ ℝⁿ}`, `|·|` the Hilbert–Schmidt norm and `‖·‖` the operator norm:
+(1) (Gp) `|A − B|² ≤ |P_q(A) − P_q(B)|² ≤ 3 |A − B|²` if `|A|, |B| ≤ L₀`;
+(2) `|A|² ≤ |P_q(A) − p_{q(ℝⁿ × {0})}|²` if `|A| ≤ L₀`;
+(3) (Nor) `|y − A x| ≤ 2 |w − P_q(A) w|` for `w = q(x, y)` if `‖A‖ ≤ 1`;
+(4) `‖A‖ ≤ |A| ≤ √n ‖A‖`; (5) every `n`-plane is `q(ℝⁿ × {0})` for some `q`;
+(6) `A ↦ P_q(A)` is continuous.
+`L₀` is the constant of the bi-Lipschitz estimate for the unrotated projection `Π(A) = p_{Γ_A}`.
+Since `P_q(A) = q Π(A) q⁻¹` and conjugation by `q` preserves `|·|`, that estimate gives (1), and
+(2) is its case `B = 0`, as `Γ_0 = ℝⁿ × {0}`; (6) holds because `Π` is `C²`. -/
+theorem allard52_graph_plane_algebra : ∀ (n ℓ : ℕ), 1 ≤ n → ∃ L₀ : ℝ, 0 < L₀ ∧ L₀ ≤ 1 / 4 ∧ (∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A B : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNorm B ≤ L₀ → hsNormSq (A - B) ≤ hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).map q.toLinearEquiv.toLinearMap).starProjection) ∧ hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).map q.toLinearEquiv.toLinearMap).starProjection) ≤ 3 * hsNormSq (A - B)) ∧ (∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNormSq A ≤ hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection - (rotatedPlane q).starProjection)) ∧ (∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), ‖A‖ ≤ 1 → ‖y - A x‖ ≤ 2 * ‖q (graphPoint x y) - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection (q (graphPoint x y))‖) ∧ (∀ A : Rn n →L[ℝ] Rn ℓ, ‖A‖ ≤ hsNorm A ∧ hsNorm A ≤ Real.sqrt n * ‖A‖) ∧ (∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T) ∧ (∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, Continuous fun A : Rn n →L[ℝ] Rn ℓ => ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection) := by
+  intro n ℓ _
+  -- `L₀` from the bi-Lipschitz estimate for the unrotated graph projection `Π(A) = p_{Γ_A}`.
+  obtain ⟨L₀, hL₀, hL₀le, hbil⟩ := Submission.allard52_gpa_graphProj_bilipschitz n ℓ
+  -- `p_{q(K)} − p_{q(K')} = q (p_K − p_{K'}) q⁻¹` has the Hilbert–Schmidt norm of `p_K − p_{K'}`.
+  have hconj : ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (K K' : Submodule ℝ (Amb n ℓ)),
+      hsNormSq ((K.map q.toLinearEquiv.toLinearMap).starProjection -
+        (K'.map q.toLinearEquiv.toLinearMap).starProjection) =
+      hsNormSq (K.starProjection - K'.starProjection) := by
+    intro q K K'
+    obtain ⟨hmap, hhs⟩ := Submission.allard52_gpa_isometry_conj n ℓ q
+    rw [hmap, hmap, ← ContinuousLinearMap.comp_sub, ← ContinuousLinearMap.sub_comp, hhs]
+  refine ⟨L₀, hL₀, hL₀le, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- (1) (Gp) for `P_q`, from (Gp) for `Π`.
+    intro q A B hA hB
+    rw [hconj]
+    exact hbil A B hA hB
+  · -- (2) `q(ℝⁿ × {0}) = q(Γ_0)` and `|0| = 0 ≤ L₀`, so this is (Gp) with `B = 0`.
+    intro q A hA
+    have h0 : hsNorm (0 : Rn n →L[ℝ] Rn ℓ) ≤ L₀ := by
+      simpa [hsNorm, hsNormSq] using hL₀.le
+    have h := (hbil A 0 hA h0).1
+    rw [sub_zero] at h
+    rw [rotatedPlane, ← Submission.allard52_gpa_span_graph_zero n ℓ, hconj]
+    exact h
+  · -- (3) (Nor)
+    exact Submission.allard52_gpa_graph_normal_bound n ℓ
+  · -- (4) `‖A‖ ≤ |A| ≤ √n ‖A‖`
+    intro A
+    obtain ⟨h1, h2, -⟩ := Submission.allard52_gpa_hsNorm_bounds n ℓ A 0
+    exact ⟨h1, h2⟩
+  · -- (5) every `n`-plane is a rotated coordinate plane
+    exact Submission.allard52_gpa_exists_rotatedPlane_eq n ℓ
+  · -- (6) `P_q(A) = q Π(A) q⁻¹`, and `Π` is continuous (indeed `C²`).
+    intro q
+    obtain ⟨hmap, -⟩ := Submission.allard52_gpa_isometry_conj n ℓ q
+    exact (continuous_const.clm_comp
+      ((Submission.allard52_gpa_graphProj_smooth n ℓ).1.continuous.clm_comp continuous_const)).congr
+      fun A => (hmap _).symm
 
 end Submission
 
