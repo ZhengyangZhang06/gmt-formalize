@@ -1507,6 +1507,61 @@ theorem Submission.ts_pdb_density_point_rescaled_limit : ∀ (n ℓ : ℕ) (C : 
   filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
   exact (hresc t ht).symm
 
+/-- **Blow-up of a Lipschitz piece at a Lebesgue density point** (Simon Ch. 3, proof of 1.6 `⇒`,
+for a parametrized piece in place of the embedded `C¹` pieces of 1.2). Let `C ⊆ ℝⁿ` be compact and
+`F : ℝⁿ → ℝ^{n+ℓ}` `K`-Lipschitz, differentiable at every `w ∈ C` with injective `DF(w)`, `DF`
+continuous on `C`, and `c|v - w| ≤ |F(v) - F(w)|` on `C` with `c > 0`. Then (3b)
+`Hⁿ(F(C) ∩ B_ρ(x)) ≤ Γρⁿ` for `x ∈ F(C)`, `ρ > 0`, with `Γ = Kⁿωₙ/cⁿ`; and (3a) at every Lebesgue
+density point `w ∈ C` of `C` and for `f ∈ C_c`,
+`t⁻ⁿ ∫_{F(C)} f(t⁻¹(y - F(w))) dHⁿ(y) → ∫_{DF(w)(ℝⁿ)} f dHⁿ` as `t ↓ 0`. -/
+theorem Submission.ts_piece_density_blowup : ∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n)))
+    (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), 0 < n →
+    (IsCompact C ∧ (∃ K : NNReal, LipschitzWith K F) ∧
+      (∀ w ∈ C, DifferentiableAt ℝ F w ∧ Function.Injective (fderiv ℝ F w)) ∧
+      ContinuousOn (fderiv ℝ F) C ∧
+      ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) →
+    (∃ Γ : ℝ, ∀ x ∈ F '' C, ∀ ρ : ℝ, 0 < ρ →
+      (μHE[n] : Measure (Ambient n ℓ)) (F '' C ∩ closedBall x ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) ∧
+    ∀ w ∈ C, Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r))
+      (𝓝[>] 0) (𝓝 1) →
+    ∀ f : C_c(Ambient n ℓ, ℝ),
+      Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y in F '' C, f (t⁻¹ • (y - F w)) ∂μHE[n]) (𝓝[>] 0)
+        (𝓝 (∫ y in (LinearMap.range (fderiv ℝ F w).toLinearMap : Set (Ambient n ℓ)),
+          f y ∂μHE[n])) := by
+  rintro n ℓ C F - ⟨hC, ⟨K, hK⟩, hdiff, hcont, c, hc, hlow⟩
+  -- Step 1(a): by the lower Lipschitz bound, `F` is injective on `C`.
+  have hinj : Set.InjOn F C := fun v hv w hw hvw ↦ by
+    have h := hlow v hv w hw
+    rw [hvw, sub_self, norm_zero] at h
+    have h' : ‖v - w‖ = 0 := le_antisymm (by nlinarith [norm_nonneg (v - w)]) (norm_nonneg _)
+    exact sub_eq_zero.mp (norm_eq_zero.mp h')
+  refine ⟨⟨(K : ℝ) ^ n * omega n / c ^ n, ?_⟩, ?_⟩
+  -- Step 2, claim (3b): `F(C) ∩ B_ρ(F w) ⊆ F(C ∩ B_{ρ/c}(w))` and the Lipschitz image bound.
+  · rintro x ⟨w, hw, rfl⟩ ρ hρ
+    exact Submission.ts_pdb_image_closedBall_measure_le n ℓ C F K c w hK hc
+      (fun v hv ↦ hlow v hv w hw) ρ hρ
+  -- Steps 3–7, claim (3a).
+  · intro w hw hdens f
+    -- Steps 1(c) and 4: the area formula on the piece, with a Jacobian `J` continuous on `C`
+    -- that is the area factor of each `DF(v)`, `v ∈ C`.
+    obtain ⟨J, hJ, hJC, harea⟩ := Submission.ts_pdb_piece_area_formula n ℓ C F K
+      hC.isClosed.measurableSet hK hinj hcont
+    obtain ⟨hJw, hJwS⟩ := hJC w hw
+    -- (4.1) for `g = f(t⁻¹(· - F(w)))`.
+    have hN : ∀ t : ℝ, ∫ y in F '' C, f (t⁻¹ • (y - F w)) ∂μHE[n] =
+        ∫ v in C, J v * f (t⁻¹ • (F v - F w)) := fun t ↦
+      harea (fun y ↦ f (t⁻¹ • (y - F w))) (by fun_prop)
+    -- Step 6: `∫_{range DF(w)} f dHⁿ = J(w) ∫ f(DF(w) u) du`.
+    have hT : ∫ y in (LinearMap.range (fderiv ℝ F w).toLinearMap : Set (Ambient n ℓ)),
+        f y ∂μHE[n] = J w * ∫ u, f (fderiv ℝ F w u) :=
+      Submission.ts_pdb_linear_range_integral n ℓ (fderiv ℝ F w) (J w) hJw hJwS f
+    -- Steps 5 and 7: `t⁻ⁿ ∫_C J(v) f(t⁻¹(F(v) - F(w))) dv → J(w) ∫ f(DF(w) u) du`.
+    rw [hT]
+    refine (Submission.ts_pdb_density_point_rescaled_limit n ℓ C F J (fderiv ℝ F w) w c hC
+      hK.continuous hJ hw (hdiff w hw).1.hasFDerivAt (hdiff w hw).2 hc
+      (fun v hv ↦ hlow v hv w hw) hdens f).congr fun t ↦ ?_
+    rw [hN t]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
