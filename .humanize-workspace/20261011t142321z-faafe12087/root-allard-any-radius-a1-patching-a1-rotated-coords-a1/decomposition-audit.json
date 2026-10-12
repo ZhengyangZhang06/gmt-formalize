@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rsod_graphPoint_eq_finAddEquivProd_symm|rsod_norm_graphPoint_sq|arp_rotatedPlane_graphPoint_coords",
+        "finAddEquivProd|sumEquivProd|real_norm_sq_eq|norm_sq_eq",
+        "append_left|append_right",
+        "finSumFinEquiv_apply_left|finSumFinEquiv_apply_right|finSumFinEquiv_symm_apply_castAdd|finSumFinEquiv_symm_apply_natAdd",
+        "prod_univ_add",
+        "theorem infDist_image|theorem le_infDist |theorem infDist_le_dist_of_mem",
+        "theorem map_coe",
+        "python3 -I /tmp/rotated-coords-independent-audit-fygib7x9/check.py Checks/Consolidated.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Logic/Equiv/Fin/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/BigOperators/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Module/Submodule/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-graph-poi-152c2738dc/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-norm-grap-4075ba9057/accepted-candidate.json",
+        "/tmp/rotated-coords-independent-audit-fygib7x9/Checks/Consolidated.lean",
+        "/tmp/rotated-coords-independent-audit-fygib7x9/Consolidated.log"
+      ],
+      "conclusion": "Verified the pinned revisions and recomputed the requested parent digest. The three queried declaration names are absent from the frozen snapshot; the two reused declarations instead have unique comparator-accepted DAG owners with byte-identical frozen types. Both candidates are compatible with the unchanged contract and merge cleanly into the selected node's base. Independent Lean 4.35.0-rc3 checks passed: all frozen propositions elaborate before child implementations; both supplied child proofs formalize directly; and the exact parent follows from precisely the two child assumptions. The real child and parent proofs use only propext, Classical.choice and Quot.sound, with no dependence on the root placeholder. Norm inference selects PiLp.instNorm at exponent 2; no Matrix/IsUnit construction occurs. The split is appropriate and acyclic: the children supply clauses (i) and (ii), while the retained span characterization, isometry reduction and distance bounds establish clause (iii)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_point_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including arbitrary natural dimensions. The bare name validly reuses its unique accepted declaration with identical frozen type. Each proof step checks: reindexing gives the stated coordinates, Fin.append recovers x and y, extensionality gives E(graphPoint x y) = (x,y), and applying E.symm concludes. This includes zero-dimensional cases, uses no parent or child theorem circularly, and directly formalizes. Empty dependencies are correct."
+    },
+    {
+      "key": "norm_graph_point_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the universally quantified Euclidean norm identity. The bare name validly reuses its unique accepted declaration with identical frozen type. The proof independently expands all three squared norms, evaluates graphPoint coordinates, splits the finite sum, and recombines it. It covers zero dimensions and does not assume that the product-valued equivalence is an isometry. The supplied proof directly formalizes without the other child, so empty dependencies are correct."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T142321Z-faafe12087",
+  "parent_id": "root.allard_any_radius-a1.patching-a1.rotated_coords-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch05/20261011t142321z-faafe12087/dispatch/root-allard-any-radius-a1-patching-a1-rotated-coords-a1",
+  "source_commit": "ea5607598f3133b40a13241f2e51517a8c6423cd",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch05/Submission.lean",
+  "children": [],
+  "files": {
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/task.md": "dfbb96c99584d2d384c58549f43fcf0bdd3ac2e8b8a71edf8b14c8afcabcd8fc",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/problem.md": "48c9992b115965304a389586c670b288f316caa7929675f19c9b628e3101d681",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/problem.json": "903986fbfad51db95c6d9248a0daa43d238876f161c37cf7419ff4eda4a4786e",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/reference-manifest.json": "79927b124570304468be0ca6c249cfa2a3ebfd5d3f74fe7260e04399c872e1a9",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/decomposition.json": "1b71c3f155900064c6bb6d0ba62c6d5ed0cb127079018a9ac56ac62b2380af20",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/decomposition-audit.json": "2c1be836d3686679b1cbbdc406f7bc2302dc86264ba7d7d6fca9546efab654e8",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1/controller-contract.json": "975f7dd6624a7302dadf68f7c66e60b0a60b125bed783510c38ebe3bf2350b51"
+  }
+}
