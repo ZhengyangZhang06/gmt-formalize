@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a81d822755b1c6a4665e8be83c3a31910269ee9e4b80bbc3a40489cfc1437bda",
+  "git_delta": {
+    "base_commit": "e88fee6174604f898351508c1134f4b44b67ab27",
+    "candidate_commit": "d07ba8aea602269d170446069f947f2dfafdbe07",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doragm_sab_cutoff_mass_sandwich",
+    "diff_sha256": "9dd8648ee79906bb33f7d02092322148e7b4fd88b4487daa9edd9378f7003894",
+    "source_sha256": "8711efbcb58f0ea4ed4007c79ed82cb471e653d54adac215293dfbbebb7ff85b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doragm_sab_cutoff_mass_sandwich",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (φ : ℝ → ℝ) (A τ : ℝ), 0 < τ → (∀ u, 0 ≤ φ u ∧ φ u ≤ 1) → (∀ u, u ≤ 1 → φ u = 1) → (∀ u, A ≤ u → φ u = 0) → Integrable (fun x => φ (‖x - y‖ / τ)) μ → μ (closedBall y τ) ≤ ENNReal.ofReal (∫ x, φ (‖x - y‖ / τ) ∂μ) ∧ ENNReal.ofReal (∫ x, φ (‖x - y‖ / τ) ∂μ) ≤ μ (closedBall y (A * τ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
