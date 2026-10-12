@@ -481,6 +481,57 @@ theorem Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value : ∀ (n : ℕ) (f
   rw [hexp, hmean] at hnonneg
   linarith
 
+/-- **Operator-norm `L²` bound from the ball mean value identity** (the gradient case of the
+interior estimates for harmonic functions, Simon Ch. 5, 3.2–3.3; chapter-05.txt lines 643–653).
+Let `g : ℝⁿ → (ℝⁿ)*` be continuous on `closedBall y ρ`, `ρ > 0`, with `V = |B_ρ(y)|` and
+`I = ∫_{B_ρ(y)} ‖g‖²`.  If every component `z ↦ g z e` has ball average `g y e`, then
+`Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value` and `|g z e| ≤ ‖g z‖ ‖e‖` give
+`(g y e)² V ≤ ∫_{B_ρ(y)} (g z e)² ≤ ‖e‖² I`, i.e. `|g y e| ≤ √(I/V) ‖e‖` for every `e`.  Hence
+`‖g y‖ ≤ √(I/V)` (`opNorm_le_bound`) and `‖g y‖² V ≤ I`. -/
+theorem Submission.dorag_ha_ie_opNorm_sq_mul_volume_le_of_mean_value : ∀ (n : ℕ) (g : Euclid n → (Euclid n →L[ℝ] ℝ)) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn g (closedBall y ρ) → (∀ e : Euclid n, ∫ z in ball y ρ, g z e = (volume (ball y ρ)).toReal * g y e) → ‖g y‖ ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, ‖g z‖ ^ 2 := by
+  intro n g y ρ hρ hg hmv
+  set V := (volume (ball y ρ)).toReal
+  set I := ∫ z in ball y ρ, ‖g z‖ ^ 2
+  -- `V > 0`, and `‖g‖²` is integrable on the ball (continuous on the compact closed ball).
+  have hV : 0 < V := ENNReal.toReal_pos (measure_ball_pos volume y hρ).ne' measure_ball_lt_top.ne
+  have hgn : IntegrableOn (fun z => ‖g z‖ ^ 2) (ball y ρ) :=
+    ((hg.norm.pow 2).integrableOn_compact (isCompact_closedBall y ρ)).mono_set
+      ball_subset_closedBall
+  have hI : 0 ≤ I := setIntegral_nonneg measurableSet_ball fun z _ => sq_nonneg _
+  -- Each component: `(g y e)² V ≤ ∫_{B_ρ(y)} (g z e)² ≤ ‖e‖² I`.
+  have hcomp : ∀ e : Euclid n, g y e ^ 2 * V ≤ ‖e‖ ^ 2 * I := by
+    intro e
+    have hfe : ContinuousOn (fun z => g z e) (closedBall y ρ) := hg.clm_apply continuousOn_const
+    have hfe2 : IntegrableOn (fun z => g z e ^ 2) (ball y ρ) :=
+      ((hfe.pow 2).integrableOn_compact (isCompact_closedBall y ρ)).mono_set
+        ball_subset_closedBall
+    have hpt : ∀ z, g z e ^ 2 ≤ ‖e‖ ^ 2 * ‖g z‖ ^ 2 := fun z => by
+      have h : |g z e| ≤ ‖g z‖ * ‖e‖ := by
+        simpa only [Real.norm_eq_abs] using (g z).le_opNorm e
+      calc g z e ^ 2 = |g z e| ^ 2 := (sq_abs _).symm
+        _ ≤ (‖g z‖ * ‖e‖) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+        _ = ‖e‖ ^ 2 * ‖g z‖ ^ 2 := by ring
+    calc g y e ^ 2 * V ≤ ∫ z in ball y ρ, g z e ^ 2 :=
+          Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value n (fun z => g z e) y ρ hρ hfe
+            (hmv e)
+      _ ≤ ∫ z in ball y ρ, ‖e‖ ^ 2 * ‖g z‖ ^ 2 := setIntegral_mono hfe2 (hgn.const_mul _) hpt
+      _ = ‖e‖ ^ 2 * I := integral_const_mul _ _
+  -- Hence `|g y e| ≤ √(I/V) ‖e‖` for every `e`, so `‖g y‖ ≤ √(I/V)`.
+  have hIV : 0 ≤ I / V := div_nonneg hI hV.le
+  have hop : ‖g y‖ ≤ √(I / V) := by
+    refine (g y).opNorm_le_bound (Real.sqrt_nonneg _) fun e => ?_
+    have h : g y e ^ 2 ≤ ‖e‖ ^ 2 * (I / V) := by
+      rw [mul_div_assoc', le_div_iff₀ hV]
+      exact hcomp e
+    calc ‖g y e‖ = √(g y e ^ 2) := by rw [Real.norm_eq_abs, Real.sqrt_sq_eq_abs]
+      _ ≤ √(‖e‖ ^ 2 * (I / V)) := Real.sqrt_le_sqrt h
+      _ = √(I / V) * ‖e‖ := by
+        rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg _), mul_comm]
+  -- Square and multiply by `V > 0`.
+  calc ‖g y‖ ^ 2 * V ≤ √(I / V) ^ 2 * V :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hop 2) hV.le
+    _ = I := by rw [Real.sq_sqrt hIV, div_mul_cancel₀ I hV.ne']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
