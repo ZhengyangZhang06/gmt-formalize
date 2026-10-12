@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "442d295d70f138010483e6e6085d8a89f76e33864dcf454b87123a25e691a78d",
+  "git_delta": {
+    "base_commit": "2dcd02614975c100d8651de170661e5cb9eb6103",
+    "candidate_commit": "b1e4c16efea6fbcd5f1a60826fd0e1e7dacbe23c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_dilation_average",
+    "diff_sha256": "351369a4c21abcb13bc522a906e067fa27a38b1e8ae4163dabb02892c6e8bf93",
+    "source_sha256": "7e16bcde11e97337767f01c7b98b160315862f1cc39d337926faa37773da62d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_dilation_average",
+      "statement": "∀ (n : ℕ) (F : Euclid n → ℝ) (s : ℝ), Measurable F → (∀ y, 0 ≤ F y) → IntegrableOn F (ball (0 : Euclid n) 1) → 0 < s → s ≤ 1 / 2 → ∫ x in ball (0 : Euclid n) 1 \\ ball (0 : Euclid n) (1 - s), (∫ t in (1 / 2 : ℝ)..1, F (t • x)) ≤ 2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
