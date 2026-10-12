@@ -359,6 +359,59 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of Lemma 5.4 (pointwise bounds integrate along segments): if every point
+of `[0, 1]` has pointwise upper Lipschitz constant at most `K` for `γ`, then `‖γ 1 - γ 0‖ ≤ K`.
+For `ε > 0`, continuous induction shows `‖γ s - γ 0‖ ≤ (K + ε) s` on `[0, 1]`. -/
+theorem Submission.deformation_retraction_dini_segment : ∀ (N : ℕ) (γ : ℝ → Eucl N) (K : ℝ), (∀ s ∈ Icc (0 : ℝ) 1, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ s' ∈ Icc (0 : ℝ) 1, |s' - s| < δ → ‖γ s' - γ s‖ ≤ (K + ε) * |s' - s|) → ‖γ 1 - γ 0‖ ≤ K := by
+  intro N γ K h
+  -- Step 1: the estimate with `ε = 1` makes `γ` continuous on `[0, 1]`.
+  have hcont : ContinuousOn γ (Icc 0 1) := by
+    intro s hs
+    obtain ⟨δ, hδ, hδs⟩ := h s hs 1 one_pos
+    rw [Metric.continuousWithinAt_iff]
+    intro e he
+    have hc : 0 < |K + 1| + 1 := by positivity
+    refine ⟨min δ (e / (|K + 1| + 1)), lt_min hδ (div_pos he hc), fun x hx hxs => ?_⟩
+    rw [Real.dist_eq] at hxs
+    rw [dist_eq_norm]
+    have h2 : |x - s| * (|K + 1| + 1) < e :=
+      (lt_div_iff₀ hc).1 (lt_of_lt_of_le hxs (min_le_right _ _))
+    calc ‖γ x - γ s‖ ≤ (K + 1) * |x - s| := hδs x hx (lt_of_lt_of_le hxs (min_le_left _ _))
+      _ ≤ |K + 1| * |x - s| := mul_le_mul_of_nonneg_right (le_abs_self _) (abs_nonneg _)
+      _ < e := by nlinarith [abs_nonneg (x - s)]
+  -- Steps 2–3: for fixed `ε > 0`, continuous induction on
+  -- `S = {x | ‖γ x - γ 0‖ ≤ (K + ε) x}` gives `[0, 1] ⊆ S`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  set S : Set ℝ := {x | ‖γ x - γ 0‖ ≤ (K + ε) * x} with hS
+  have hclosed : IsClosed (S ∩ Icc 0 1) := by
+    have hpair : ContinuousOn (fun x => (‖γ x - γ 0‖, (K + ε) * x)) (Icc 0 1) :=
+      (hcont.sub continuousOn_const).norm.prodMk (continuousOn_const.mul continuousOn_id)
+    rw [inter_comm]
+    exact hpair.preimage_isClosed_of_isClosed isClosed_Icc OrderClosedTopology.isClosed_le'
+  have h0 : (0 : ℝ) ∈ S := by simp [hS]
+  have hsub : Icc (0 : ℝ) 1 ⊆ S := by
+    refine hclosed.Icc_subset_of_forall_exists_gt h0 ?_
+    rintro x ⟨hxS, hx0, hx1⟩ y hy
+    obtain ⟨δ, hδ, hδx⟩ := h x ⟨hx0, hx1.le⟩ ε hε
+    -- Step 3: `z = min (min y 1) (x + δ / 2)` lies in `S ∩ (x, y]`.
+    set z := min (min y 1) (x + δ / 2) with hz
+    have hxz : x < z := lt_min (lt_min hy hx1) (by linarith)
+    have hzy : z ≤ y := (min_le_left _ _).trans (min_le_left _ _)
+    have hz1 : z ≤ 1 := (min_le_left _ _).trans (min_le_right _ _)
+    have hzx : z ≤ x + δ / 2 := min_le_right _ _
+    have habs : |z - x| = z - x := abs_of_pos (sub_pos.2 hxz)
+    have hzx' : |z - x| < δ := by rw [habs]; linarith
+    have hstep := hδx z ⟨hx0.trans hxz.le, hz1⟩ hzx'
+    rw [habs] at hstep
+    refine ⟨z, ?_, hxz, hzy⟩
+    show ‖γ z - γ 0‖ ≤ (K + ε) * z
+    calc ‖γ z - γ 0‖ ≤ ‖γ z - γ x‖ + ‖γ x - γ 0‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+      _ ≤ (K + ε) * (z - x) + (K + ε) * x := add_le_add hstep hxS
+      _ = (K + ε) * z := by ring
+  -- Step 4 is `le_of_forall_pos_le_add`; here we read off the bound at `x = 1`.
+  have h1 : ‖γ 1 - γ 0‖ ≤ (K + ε) * 1 := hsub ⟨zero_le_one, le_rfl⟩
+  linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
