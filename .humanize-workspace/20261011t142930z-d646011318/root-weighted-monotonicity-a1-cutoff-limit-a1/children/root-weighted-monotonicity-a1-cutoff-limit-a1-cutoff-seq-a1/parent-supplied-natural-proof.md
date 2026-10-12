@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.weighted_monotonicity-a1.cutoff_limit-a1`
+- Child DAG node: `root.weighted_monotonicity-a1.cutoff_limit-a1.cutoff_seq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ψ := Real.smoothTransition. (Context only: this is the cutoff φ_ε(t) = 1 − ψ((t − 1)/ε) of Steps 1–2 of the parent proof, with the explicit widths ε_m := a/(m + 2); nothing beyond the facts listed below is used.)
+1. (Facts about ψ.) ψ: ℝ → ℝ is C^∞ (Real.smoothTransition.contDiff), monotone (Real.smoothTransition.monotone), ψ(x) = 0 for x ≤ 0 (Real.smoothTransition.zero_of_nonpos), ψ(x) = 1 for x ≥ 1 (Real.smoothTransition.one_of_one_le), and 0 ≤ ψ(x) ≤ 1 for every x (Real.smoothTransition.nonneg, Real.smoothTransition.le_one).
+2. (Definitions.) For m ∈ ℕ put ε_m := a/(m + 2) and φ_m(t) := 1 − ψ((t − 1)/ε_m).
+3. (Widths.) Since m + 2 ≥ 2 > 0 and a > 0, ε_m > 0. Multiplying by m + 2 > 0, ε_m < a ⟺ a < a(m + 2), which holds because a(m + 2) − a = a(m + 1) > 0. Finally m + 2 → +∞ as m → ∞ (the natural numbers tend to +∞ in ℝ and adding the constant 2 preserves this), so ε_m = a/(m + 2) → 0 (a constant divided by a sequence tending to +∞ tends to 0; Filter.Tendsto.const_div_atTop).
+4. (C¹.) t ↦ (t − 1)/ε_m is affine, hence C^∞; ψ is C^∞, so the composition t ↦ ψ((t − 1)/ε_m) is C^∞, and so is t ↦ 1 − ψ((t − 1)/ε_m) (ContDiff.comp, ContDiff.sub, ContDiff.div_const). In particular φ_m is C¹.
+5. (Nonincreasing.) If s ≤ t then s − 1 ≤ t − 1 and, ε_m being positive, (s − 1)/ε_m ≤ (t − 1)/ε_m; by monotonicity of ψ, ψ((s − 1)/ε_m) ≤ ψ((t − 1)/ε_m), i.e. φ_m(t) ≤ φ_m(s).
+6. (Plateau.) If t ≤ 1 then t − 1 ≤ 0 and ε_m > 0, so (t − 1)/ε_m ≤ 0, hence ψ((t − 1)/ε_m) = 0 and φ_m(t) = 1 − 0 = 1.
+7. (Vanishing.) If t ≥ 1 + ε_m then t − 1 ≥ ε_m > 0, so (t − 1)/ε_m ≥ 1, hence ψ((t − 1)/ε_m) = 1 and φ_m(t) = 1 − 1 = 0.
+8. (Range.) From 0 ≤ ψ ≤ 1 we get 0 ≤ 1 − ψ((t − 1)/ε_m) ≤ 1, i.e. 0 ≤ φ_m(t) ≤ 1 for every t.
+9. (Conclusion.) The families φ := (m ↦ φ_m) and ε := (m ↦ ε_m) satisfy ε_m → 0 by 3 and, for every m, all the listed properties by 3–8.
+
+## Key steps
+
+1. ψ = Real.smoothTransition is C^∞, monotone, 0 on (−∞,0], 1 on [1,∞), with values in [0,1]
+2. Define ε_m = a/(m+2) and φ_m(t) = 1 − ψ((t−1)/ε_m)
+3. 0 < ε_m < a and ε_m → 0 (constant over a sequence tending to +∞)
+4. φ_m is C¹ and nonincreasing (composition with an increasing affine map)
+5. φ_m = 1 on t ≤ 1, φ_m = 0 on t ≥ 1+ε_m, and 0 ≤ φ_m ≤ 1
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `grep -n '^theorem\|^protected theorem' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `rg -n 'theorem tendsto_integral_filter_of_dominated_convergence|theorem continuousOn_of_dominated|theorem _root_.aestronglyMeasurable_of_tendsto_ae|theorem StronglyMeasurable.integral_prod_right|theorem measurable_deriv|lemma IntegrableOn.of_bound|theorem integrableOn_const |theorem integral_indicator |theorem integrable_indicator_iff|theorem tendsto_of_tendsto_of_tendsto_of_le_of_le'|theorem norm_integral_le_of_norm_le |theorem measure_closedBall_lt_top|theorem div₀|theorem ContinuousOn.aestronglyMeasurable|theorem tendsto_nhds_unique ' <snapshot>/mathlib/Mathlib`
+- `rg -n 'aestronglyMeasurable_indicator_iff|const_div_atTop' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'monotonicityCutoff' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04`
+- `rg/grep/git grep 'weighted_mono_cutoff_seq_exists|weighted_mono_cutoff_integral_tendsto|weighted_mono_kernel_limit|weighted_mono_kernel_term_tendsto|weighted_mono_curvature_term_tendsto' over <snapshot>, dag.json, nodes/, GMT/Ch04/Submission.lean and all local branches`
+- `python3 -I: verifier/lean_contract.validate_lean_statement and verifier/gmt-compare.py child_modules (contract mode) for each child`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/cutoff-limit-decomp/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/cutoff-limit-decomp/olean lean /tmp/cutoff-limit-decomp/work/{Assembly,C1,C2,C3,C4,C5,Full}.lean (#print axioms)`
+- `LEAN_PATH=... lean /tmp/cutoff-limit-decomp/gen/<key>_NodeChallenge.lean for all five children`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Order/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-cutoff-limit-a1/parent-child-handoff.json`
+- `/tmp/cutoff-limit-decomp/work/Assembly.lean`
+- `/tmp/cutoff-limit-decomp/work/Full.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b; project ff75f52a, mathlib 25730c7c).
+
+Every tool the children use exists in the snapshot Mathlib:
+- Real.smoothTransition.{contDiff, monotone, zero_of_nonpos, one_of_one_le, nonneg, le_one}: SmoothTransition.lean:161–222.
+- tendsto_integral_filter_of_dominated_convergence: DominatedConvergence.lean:67.
+- continuousOn_of_dominated and norm_integral_le_of_norm_le: Bochner/Basic.lean:467, 985.
+- integral_indicator: Bochner/Set.lean:185.
+- integrableOn_const, IntegrableOn.of_bound, integrable_indicator_iff, ContinuousOn.aestronglyMeasurable: IntegrableOn.lean:119, 174, 340, 791.
+- AEStronglyMeasurable.div₀, aestronglyMeasurable_indicator_iff, aestronglyMeasurable_of_tendsto_ae: AEStronglyMeasurable.lean:332, 545, 696.
+- MeasureTheory.StronglyMeasurable.integral_prod_right: Integral/Prod.lean:67.
+- measurable_deriv: FDeriv/Measurable.lean:398.
+- measure_closedBall_lt_top: Typeclasses/Finite.lean:364.
+- tendsto_of_tendsto_of_tendsto_of_le_of_le': Topology/Order/Basic.lean:220.
+- tendsto_nhds_unique: Separation/Hausdorff.lean:180.
+- Filter.Tendsto.const_div_atTop: Topology/Algebra/Order/Field.lean:222.
+
+SimonGMT's monotonicityCutoff (Chapter04/FirstVariation.lean:825–885) is the same construction as cutoff_seq. GMT.Ch04.Submission does not import that module, so the child uses Real.smoothTransition directly.
+
+No-match result: none of the five proposed lean_names occurs in the snapshot, dag.json, nodes/, GMT/, or any local branch.
+
+All five child types elaborate in the comparator contract scope, and each has a sorry-free Lean proof using only standard axioms. The selected frozen theorem compiles from the five children plus the frozen weighted_mono_kernel_bounds type.

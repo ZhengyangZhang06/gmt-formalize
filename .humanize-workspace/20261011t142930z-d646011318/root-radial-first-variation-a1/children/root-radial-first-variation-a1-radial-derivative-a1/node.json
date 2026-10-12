@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radial_first_variation-a1.radial_derivative-a1",
+  "parent_id": "root.radial_first_variation-a1",
+  "depth": 2,
+  "title": "Derivative of the radial field γ(|y−ξ|)(y−ξ), including the centre (Simon Ch. 4, 3.2)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ, Euclidean inner product ⟨·,·⟩ and norm |·|), γ : ℝ → ℝ of class C¹, and ξ, x ∈ E; put r = |x − ξ|. Then the vector field g(y) = γ(|y − ξ|)(y − ξ) is Fréchet differentiable at x with derivative Dg(x)v = γ(r)v + (γ'(r)/r)⟨x − ξ, v⟩(x − ξ) for v ∈ E, where γ'(r)/r is read as 0 when r = 0 (Lean's a/0 = 0); in particular Dg(ξ) = γ(0)·I.",
+  "lean_statement": "∀ (n ℓ : ℕ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), ContDiff ℝ 1 γ → HasFDerivAt (fun y : Ambient n ℓ ↦ γ ‖y - ξ‖ • (y - ξ)) (γ ‖x - ξ‖ • ContinuousLinearMap.id ℝ (Ambient n ℓ) + (deriv γ ‖x - ξ‖ / ‖x - ξ‖) • (innerSL ℝ (x - ξ)).smulRight (x - ξ)) x",
+  "lean_name": "radial_vector_field_hasFDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-radial-first-variation-a1-radial-derivative-a1-a1"
+}

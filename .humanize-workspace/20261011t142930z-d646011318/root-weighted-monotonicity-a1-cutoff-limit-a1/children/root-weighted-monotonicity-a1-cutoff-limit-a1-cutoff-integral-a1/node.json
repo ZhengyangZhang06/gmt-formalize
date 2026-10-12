@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.cutoff_limit-a1.cutoff_integral-a1",
+  "parent_id": "root.weighted_monotonicity-a1.cutoff_limit-a1",
+  "depth": 3,
+  "title": "Dominated convergence for radial cutoff integrals (parent Steps 3–5)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), μ a measure on E, f: E → ℝ μ-integrable on the closed ball B_R(ξ), ξ ∈ E, and t, R ∈ ℝ with t > 0. Let φ_m: ℝ → ℝ (m ∈ ℕ) be Borel measurable and ε_m ∈ ℝ with ε_m → 0, (1 + ε_m)t ≤ R for every m, 0 ≤ φ_m(s) ≤ 1 for all s, φ_m(s) = 1 for s ≤ 1 and φ_m(s) = 0 for s ≥ 1 + ε_m. Then ∫ φ_m(|x − ξ|/t)·f(x) dμ(x) → ∫_{B_t(ξ)} f dμ as m → ∞.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (f : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (t R : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < t → IntegrableOn f (closedBall ξ R) μ → Tendsto ε atTop (𝓝 0) → (∀ m, (1 + ε m) * t ≤ R) → (∀ m, Measurable (φ m)) → (∀ m s, 0 ≤ φ m s ∧ φ m s ≤ 1) → (∀ m s, s ≤ 1 → φ m s = 1) → (∀ m s, 1 + ε m ≤ s → φ m s = 0) → Tendsto (fun m ↦ ∫ x, φ m (‖x - ξ‖ / t) * f x ∂μ) atTop (𝓝 (∫ x in closedBall ξ t, f x ∂μ))",
+  "lean_name": "weighted_mono_cutoff_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-cutoff-limit-a1-cutoff-integral-a1-a1"
+}

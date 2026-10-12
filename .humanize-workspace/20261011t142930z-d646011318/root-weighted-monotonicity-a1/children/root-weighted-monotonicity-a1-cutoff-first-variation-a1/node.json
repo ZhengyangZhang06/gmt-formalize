@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.cutoff_first_variation-a1",
+  "parent_id": "root.weighted_monotonicity-a1",
+  "depth": 2,
+  "title": "Local data and the differentiated cutoff identity from first variation (parent Steps 0, 1, 2–3)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ}, V a rectifiable n-varifold in E with weight μ = μ_V = V.weight such that μ is finite on compact sets (IsFiniteMeasureOnCompacts) and x ↦ p_x := (T_xV).starProjection is μ-a.e. strongly measurable; U ⊆ E open; H: E → E a generalized mean curvature of V in U (HasMeanCurvatureIn U H); h: E → ℝ with h ∈ C¹(U); ξ ∈ E; ρ > 0 with tsupport h ∩ B_ρ(ξ) ⊆ U. Write r = |x − ξ|, q_ξ = V.normalRadialSq ξ, ∇^M h = V.tangentialGradient h. Assume (RFV): for every C¹ function γ: ℝ → ℝ such that x ↦ (h(x)γ(r))(x − ξ) is a test field in U, ∫_U [h(nγ(r) + r·γ'(r)·(1 − q_ξ)) + γ(r)⟨x − ξ, ∇^M h⟩] dμ = −∫_U h·γ(r)·⟨x − ξ, H⟩ dμ. Then there exist real numbers R and A with ρ < R such that: h and q_ξ are a.e. strongly measurable for μ restricted to B_R(ξ); |h(x)| ≤ A and |q_ξ(x)| ≤ 1 for all x ∈ B_R(ξ); G(x) := ⟨x − ξ, ∇^M h(x) + h(x)H(x)⟩ is μ-integrable on B_R(ξ); and for every ε > 0 with (1 + ε)ρ < R, every C¹ function φ: ℝ → ℝ with φ(t) = 1 for t ≤ 1 and φ(t) = 0 for t ≥ 1 + ε, and every τ with 0 < τ ≤ ρ, n·∫ h φ(r/τ) dμ + ∫ h(1 − q_ξ)·((r/τ)φ'(r/τ)) dμ + ∫ φ(r/τ)·G dμ = 0 (integrals over E).",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (ρ : ℝ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < ρ → (∀ γ : ℝ → ℝ, ContDiff ℝ 1 γ → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) → ∫ x in U, (h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)) ∂V.weight = -∫ x in U, h x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight) → ∃ R A : ℝ, ρ < R ∧ AEStronglyMeasurable h (V.weight.restrict (closedBall ξ R)) ∧ AEStronglyMeasurable (V.normalRadialSq ξ) (V.weight.restrict (closedBall ξ R)) ∧ (∀ x ∈ closedBall ξ R, |h x| ≤ A ∧ |V.normalRadialSq ξ x| ≤ 1) ∧ IntegrableOn (fun x ↦ inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x)) (closedBall ξ R) V.weight ∧ ∀ (ε : ℝ) (φ : ℝ → ℝ), 0 < ε → (1 + ε) * ρ < R → ContDiff ℝ 1 φ → (∀ t, t ≤ 1 → φ t = 1) → (∀ t, 1 + ε ≤ t → φ t = 0) → ∀ τ, 0 < τ → τ ≤ ρ → (n : ℝ) * ∫ x, h x * φ (‖x - ξ‖ / τ) ∂V.weight + ∫ x, h x * (1 - V.normalRadialSq ξ x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) ∂V.weight + ∫ x, φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight = 0",
+  "lean_name": "weighted_mono_cutoff_first_variation",
+  "depends_on": [
+    "root.weighted_monotonicity-a1.radial_test_field-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.weighted_monotonicity-a1.radial_test_field-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-cutoff-first-variation-a1-a1"
+}

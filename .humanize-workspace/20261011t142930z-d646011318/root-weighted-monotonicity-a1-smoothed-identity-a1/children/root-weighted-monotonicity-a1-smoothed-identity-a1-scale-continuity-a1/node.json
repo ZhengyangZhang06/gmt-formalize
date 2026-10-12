@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.smoothed_identity-a1.scale_continuity-a1",
+  "parent_id": "root.weighted_monotonicity-a1.smoothed_identity-a1",
+  "depth": 3,
+  "title": "Continuity in the scale of radial cutoff integrals against an integrable weight",
+  "statement": "Let n, ℓ ∈ ℕ and E = Ambient n ℓ = ℝ^{n+ℓ}, with the Euclidean norm and Borel σ-algebra. Let μ be any measure on E, g: E → ℝ, ψ: ℝ → ℝ, ξ ∈ E, and c, σ, ρ, R ∈ ℝ with σ > 0, c > 0 and cρ < R. Assume g is μ-integrable on the closed ball B_R(ξ), ψ is continuous, and ψ(t) = 0 for every t > c. Then the map τ ↦ ∫_E g(x)·ψ(|x − ξ|/τ) dμ(x) is continuous on [σ, ρ].",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (g : Ambient n ℓ → ℝ) (ψ : ℝ → ℝ) (ξ : Ambient n ℓ) (c σ ρ R : ℝ), 0 < σ → 0 < c → c * ρ < R → IntegrableOn g (closedBall ξ R) μ → Continuous ψ → (∀ t, c < t → ψ t = 0) → ContinuousOn (fun τ ↦ ∫ x, g x * ψ (‖x - ξ‖ / τ) ∂μ) (Icc σ ρ)",
+  "lean_name": "wm_smoothed_scale_integral_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-smoothed-identity-a1-scale-continuity-a1-a1"
+}

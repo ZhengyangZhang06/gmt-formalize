@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "rg -n 'def weight|def tangentSpace|def tangentialGradient|def normalRadialSq|def IsTestField|def HasMeanCurvatureIn' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "rg -n 'weighted_mono_local_data|weighted_mono_cutoff_identity' .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project",
+        "python3 /tmp/cfv-independent-audit-bi87eqgn/run_lean.py /tmp/cfv-independent-audit-bi87eqgn/local_data.lean",
+        "python3 /tmp/cfv-independent-audit-bi87eqgn/run_lean.py /tmp/cfv-independent-audit-bi87eqgn/cutoff_identity.lean",
+        "python3 /tmp/cfv-independent-audit-bi87eqgn/run_lean.py /tmp/cfv-independent-audit-bi87eqgn/Full.lean",
+        "python3 /tmp/cfv-independent-audit-bi87eqgn/run_lean.py /tmp/cfv-independent-audit-bi87eqgn/Parse.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-cutoff-first-variation-a1/parent-child-handoff.json",
+        "/tmp/cfv-independent-audit-bi87eqgn/local_data.lean",
+        "/tmp/cfv-independent-audit-bi87eqgn/cutoff_identity.lean",
+        "/tmp/cfv-independent-audit-bi87eqgn/Full.lean",
+        "/tmp/cfv-independent-audit-bi87eqgn/Parse.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical frozen Contract/Submission. The inspected APIs support compact thickening, projection estimates, localized integrability, and extension of integrals without measurability of U. Both child types pass lexical validation and independently elaborate as comparator challenges against the frozen Submission. Their supplied proofs compile separately using only propext, Classical.choice, and Quot.sound. Parsing checks confirm the intended integral grouping and sign. The assembly compiles at the exact selected handoff type; its only additional assumption is the declared radial_test_field dependency, stubbed at its exact frozen type. The split appropriately separates local analytic data from cutoff regrouping. Dependencies are acyclic and correctly directed. Both names are bare identifiers, with no reservations or existing declarations found in the current DAG, snapshot project, or searched git refs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all prose hypotheses and conclusions and is independently usable. Each proof step is justified: compact thickening supplies R; local C¹ regularity and vanishing off tsupport give continuity and bounds; projection measurability gives the tangential-gradient and q estimates; compact localization of H gives both integrability conclusions. No parent or sibling theorem is used. The exported room and additional integrability supply precisely what the parent assembly needs."
+    },
+    {
+      "key": "cutoff_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the general-measure statement, including arbitrary U and real c and R. The proof correctly establishes cutoff-derivative vanishing, applies the chain rule, removes the restriction to U, and proves integrability before regrouping. Empty-ball cases remain valid. The bound |1−q|≤2 uses only the stated |q|≤1 assumption; Q=T₄−T₃ avoids any unstated integrability assumption on H. The final cancellation has the correct sign. RFV_τ is an explicit hypothesis supplied by the parent's declared test-field dependency, so there is no circular reliance."
+    }
+  ],
+  "required_changes": []
+}
