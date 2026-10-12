@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9587e2eb0cc6ee05a269c465a7f5f2689b31e314d77a5d4b422c1a3c736cd672",
+  "git_delta": {
+    "base_commit": "fa2b1a667e399a01d7c45eab9bd10a32db12f3ed",
+    "candidate_commit": "e073a856ff461cd86c8c5e3ba575c4246174755a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_haa_l2_pairing_tendsto",
+    "diff_sha256": "1906d840eae739d0c5f9ff57416991f543a0efb86db641abae87a40662f1f9a4",
+    "source_sha256": "aa5faf000b9b2c7ae217c03e30ec1cac18138b8dc2961e5aacdacf5709a2591a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_haa_l2_pairing_tendsto",
+      "statement": "∀ (n : ℕ) (R : ℝ) (f : ℕ → Euclid n → ℝ) (W g : Euclid n → ℝ), (∀ j, MemLp (f j) 2 (volume.restrict (ball (0 : Euclid n) R))) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → MemLp g 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, f j x * g x) atTop (𝓝 (∫ x in ball (0 : Euclid n) R, W x * g x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
