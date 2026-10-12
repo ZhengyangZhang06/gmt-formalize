@@ -1437,6 +1437,47 @@ theorem Submission.allard_tc_tangent_plane_density :
     rw [ENNReal.ofReal_mul hω.le, ENNReal.ofReal_pow hρ.1.le, ENNReal.ofReal_toReal hωtop]
   rw [densityRatio, hden, div_div, mul_comm (ρ ^ n),
     ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hρ.1 n)), ENNReal.ofReal_toReal hfin]
+/-- **Simon Ch. 8, 2.2–2.10** (child `first_variation` of `main_theorem`): the mass derivative of a
+deformation is `δV(X)` (2.2–2.4), and locally bounded first variation gives `‖δV‖`, the polar field,
+the density `D_{μ_V}‖δV‖`, the generalized boundary and the decomposition 2.10 (2.5–2.10).
+Both parts are SimonGMT's kernel-checked theorems; `variationMeasure V` unfolds to its Riesz
+measure, which turns the contract's density, boundary and mean curvature into SimonGMT's
+symmetric ones. -/
+theorem Submission.first_variation_theorems :
+    FirstVariationIsMassDerivative ∧ FirstVariationRepresentation := by
+  refine ⟨⟨fun N n U V φ K X hK hKU hφ hzero hmaps hfix hX ↦ ?_,
+    fun N n X x S b ↦ Varifold.tangentialDivergence_eq_sum_inner X x S b⟩, ?_⟩
+  · exact V.hasDerivAt_pushforwardMeasure_cylinder_family_of_velocity φ hφ hzero K hK hKU
+      (fun t ht ↦ (hmaps t ht).1) (fun t ht ↦ (hmaps t ht).2) hfix X (fun x hx ↦ (hX x hx).deriv)
+  · intro N n U V hV
+    have hμ : variationMeasure V = V.firstVariationRieszMeasure hV := dite_eq_left hV
+    have hD : variationDensity V =
+        V.symmetricFirstVariationDensity (V.firstVariationRieszMeasure hV) := by
+      funext x
+      rw [variationDensity, Varifold.symmetricFirstVariationDensity, hμ]
+    have hZ : generalizedBoundary V =
+        V.symmetricGeneralizedBoundarySet (V.firstVariationRieszMeasure hV) := by
+      rw [generalizedBoundary, Varifold.symmetricGeneralizedBoundarySet, hD]
+    have hσ : generalizedBoundaryMeasure V =
+        V.symmetricGeneralizedBoundaryMeasure (V.firstVariationRieszMeasure hV) := by
+      rw [generalizedBoundaryMeasure, Varifold.symmetricGeneralizedBoundaryMeasure, hμ, hZ]
+    have hH : generalizedMeanCurvature V =
+        V.symmetricGeneralizedMeanCurvature (V.firstVariationRieszMeasure hV) := by
+      funext ν x
+      rw [generalizedMeanCurvature, Varifold.symmetricGeneralizedMeanCurvature, hD]
+    rw [hH, hσ, hZ, hD, hμ]
+    refine ⟨V.isFirstVariationMeasure_riesz hV, ?_, (V.firstVariationRiesz_boundary_spec hV).2.1,
+      V.firstVariationPolarField hV, V.measurable_firstVariationPolarField hV,
+      V.ae_firstVariationPolarField_norm_one hV, fun X ↦ ?_⟩
+    · filter_upwards [(V.firstVariationRiesz_symmetricDensity_spec hV).2] with x hx
+      exact ⟨hx.2, hx.1⟩
+    · obtain ⟨hint, hform⟩ := (V.isFirstVariationPolarRepresentation_riesz hV).2.2 X
+      obtain ⟨hHint, hσint⟩ := V.firstVariationRiesz_integrable_meanCurvature_and_boundary hV X
+      refine ⟨hint, hform, hHint, hσint, ?_⟩
+      -- 2.10 restricts `σ = ‖δV‖ ⌞ Z` once more to `Z`, which does not change it.
+      rw [V.firstVariation_eq_meanCurvature_add_boundary_of_locallyBounded hV X,
+        Varifold.symmetricGeneralizedBoundaryMeasure,
+        Measure.restrict_restrict_of_subset subset_rfl]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
