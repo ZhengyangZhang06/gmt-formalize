@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_properties-a1.hessian_symm-a1",
+  "parent_id": "root.stationary_results-a1.sff_properties-a1",
+  "depth": 3,
+  "title": "Symmetry of the second derivative of a C² map (Schwarz)",
+  "statement": "For all n, N ∈ ℕ, every f : ℝⁿ → ℝᴺ (ℝ^d := EuclideanSpace ℝ (Fin d)) and every x ∈ ℝⁿ such that f is C² at x (ContDiffAt ℝ 2 f x), the second derivative L := fderiv ℝ (fderiv ℝ f) x is symmetric: L a b = L b a for all a, b ∈ ℝⁿ.",
+  "lean_statement": "∀ (n N : ℕ) (f : Rn n → Rn N) (x : Rn n), ContDiffAt ℝ 2 f x → ∀ a b : Rn n, fderiv ℝ (fderiv ℝ f) x a b = fderiv ℝ (fderiv ℝ f) x b a",
+  "lean_name": "fderiv_fderiv_symm_of_contDiffAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-properties-a1-hessian-symm-a1-a1"
+}
