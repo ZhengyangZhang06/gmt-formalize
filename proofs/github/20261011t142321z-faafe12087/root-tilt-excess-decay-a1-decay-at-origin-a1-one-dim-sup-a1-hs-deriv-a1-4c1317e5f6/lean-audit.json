@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "facb030d4d185fa0eac78d9f6349ff3affa347807c06527449c8be0e54369ecf",
+  "git_delta": {
+    "base_commit": "d31f75edef7d50a79bb55bedbc9b7100332afbf4",
+    "candidate_commit": "4f74ab11dfdb0b1ec93ca9515f64abe4ffd7fb2d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ods_hsNormSq_fderiv_single",
+    "diff_sha256": "6e485b682263eda87d17bd501604a71607cb9d0a51ac357e88cfddd0e2e92206",
+    "source_sha256": "73f5f450d1a0b7dbc59b7b4e5160cc775522300ed4760920e7a8f348c25c4301",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ods_hsNormSq_fderiv_single",
+      "statement": "∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (t : ℝ), hsNormSq (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t)) = ‖deriv (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) t‖ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
