@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0aa4577f3a16d0ad8c530839948c6bbe8b9915436af4fea78056abb9d9429a74",
+  "git_delta": {
+    "base_commit": "06bc2b0976dca2e54350d688f1e8c23219c00c03",
+    "candidate_commit": "8d2c403b220160b37bdc4d4f55b7db741761d8d6",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_tba_product_blowup_tendsto",
+    "diff_sha256": "bffbd58e8f2f34a2944d11451d74481b59c1a46fbe761def53cacf18dd50655b",
+    "source_sha256": "671cc6d1a1862a5d618d9417428e4bf2036b16f0be7dbc9cb628fbac07f08370",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_tba_product_blowup_tendsto",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ (g : C_c(Euclidean N, ℝ)) (β : C(Grassmannian N n, ℝ)), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z.1 - x)) * β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (β T * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n])))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
