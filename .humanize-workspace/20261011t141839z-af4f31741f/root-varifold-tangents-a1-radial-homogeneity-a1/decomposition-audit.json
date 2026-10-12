@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "ext_of_integral_eq_on_compactlySupported|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|protected theorem (map|smul)|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|hasDerivAt_integral_of_dominated_loc_of_deriv_le|dist_normed_convolution_le|contDiff_convolution_left|support_convolution_subset|theorem map_apply",
+        "homogen|Euler|dilation|ext_of_integral_eq_on_compactlySupported",
+        "norm_setIntegral_le_of_norm_le_const|setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "rg -l --hidden --glob '*.json' '\"lean_name\"\\s*:\\s*\"varifold_tangents_rh_' .humanize",
+        "runpy.run_path('../../verifier/lean_contract.py')['validate_lean_statement']",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rh-independent-audit-e4hhzxhu/ContractOnly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rh-independent-audit-e4hhzxhu/ProofReplay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1/decomposition-v1.json",
+        "/tmp/rh-decomp/Final.lean",
+        "/tmp/rh-independent-audit-e4hhzxhu/ContractOnly.lean",
+        "/tmp/rh-independent-audit-e4hhzxhu/ProofReplay.lean"
+      ],
+      "conclusion": "The four-stage split is appropriate and proves exactly the selected parent contract. Project, Mathlib and SimonGMT revisions match the pinned references; the snapshot contract and workspace contract/submission are byte-identical. The inspected sources support the divergence identity, dominated differentiation, mollification, regularity and arbitrary-set map evaluation. The homogeneity search found no general replacement theorem. All four statements validate as standalone one-line propositions and elaborate without child implementations. All names are bare identifiers and unreserved by another branch in the 130-node DAG or searched run JSONs. Empty dependencies are correct: preceding identities are explicit hypotheses, discharged during parent assembly. Independently compiled ContractOnly.lean proves the frozen parent from precisely the four child types. Replaying the supplied complete Lean proofs and comparator-shaped checks also succeeds; all five results use only propext, Classical.choice and Quot.sound. No admitted ancestor or problematic inline Matrix/IsUnit construction is used."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_euler_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including stationarity, the almost-everywhere projection condition, and C¹ compact support. The supplied proof constructs a valid radial test field, computes its divergence using trace S = n, applies the radial hypothesis almost everywhere, and transfers the integral through Prod.fst. Each step is justified without homogeneity or circular reliance."
+    },
+    {
+      "key": "euler_dilation_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all stated hypotheses. Compact support bounds the derivative and supplies an integrable dominating function on a neighbourhood of each positive scale. Applying the assumed Euler identity to dilates yields the stated ODE; the quotient argument proves scaling, explicitly covering n = 0. Integrability, differentiation and constancy are sufficiently detailed and non-circular."
+    },
+    {
+      "key": "dilation_mollify_cc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fixed-scale conditional statement matches its Lean proposition. Normalized Lebesgue mollifiers give C¹ approximants with a common compact support and uniform convergence. Finite compact mass controls both integral limits, including the dilated supports. The argument requires no absolute continuity of μ and completely derives the conclusion from the stated C¹ scaling hypothesis."
+    },
+    {
+      "key": "dilation_riesz_sets",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition correctly quantifies over arbitrary sets. Finite compact mass provides regularity; the supplied integral identities identify the inverse-dilation pushforward with ENNReal.ofReal s ^ n • μ by Riesz uniqueness. MeasurableEquiv.map_apply applies without measurability of A, and its preimage is exactly s • A. The scalar conversion and all hypotheses are justified."
+    }
+  ],
+  "required_changes": []
+}
