@@ -335,6 +335,70 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Uniform `C¹_c` approximation with support control**: the smoothing step that extends the
+blow-up convergence for `C¹_c` test functions to all of `C_c` (the approximation left implicit at
+the end of the proof of Simon Ch. 3, Thm. 4.3, `chapter-03.txt` lines 739–746). A continuous
+compactly supported `f` vanishing off `B_{R-1}(0)` is uniformly `δ`-approximated by a `C¹_c`
+function `φ` vanishing off `B_R(0)`: `φ = κ ⋆ f` with `κ ≥ 0` a `C¹_c` bump of integral `1`
+supported in `B_ε(0)`, where `ε ≤ 1/2` is a modulus of uniform continuity of `f` for `δ`. -/
+theorem Submission.deGiorgiTM_cc_contDiff_approx : ∀ (N : ℕ) (f : Rn N → ℝ) (R δ : ℝ),
+    Continuous f → HasCompactSupport f → (∀ z, f z ≠ 0 → ‖z‖ < R - 1) → 0 < δ →
+    ∃ φ : Rn N → ℝ, ContDiff ℝ 1 φ ∧ HasCompactSupport φ ∧ (∀ z, |φ z - f z| ≤ δ) ∧
+      ∀ z, φ z ≠ 0 → ‖z‖ < R := by
+  intro N f R δ hfc hfs hfR hδ
+  -- Step 1: `f` is uniformly continuous; `ε = min ε₀ (1/2)` for a modulus `ε₀` at `δ`.
+  obtain ⟨ε₀, hε₀, hε₀f⟩ :=
+    Metric.uniformContinuous_iff.mp (hfs.uniformContinuous_of_continuous hfc) δ hδ
+  set ε : ℝ := min ε₀ (1 / 2) with hεdef
+  have hεpos : 0 < ε := lt_min hε₀ (by norm_num)
+  have hεle₀ : ε ≤ ε₀ := min_le_left _ _
+  have hεhalf : ε ≤ 1 / 2 := min_le_right _ _
+  -- Step 2: a normalized `C¹` bump `κ = c⁻¹ ψ`, `c = ∫ ψ > 0`, supported in `B_ε(0)`.
+  obtain ⟨ψ, hψt, hψcs, hψd, hψr, hψ0⟩ :=
+    exists_contDiff_tsupport_subset (n := 1) (Metric.ball_mem_nhds (0 : Rn N) hεpos)
+  have hψnn : ∀ t, 0 ≤ ψ t := fun t => (hψr (mem_range_self t)).1
+  have hc : 0 < ∫ t, ψ t := hψd.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hψcs
+    (fun t => hψnn t) (x := 0) (by rw [hψ0]; exact one_ne_zero)
+  set κ : Rn N → ℝ := fun t => (∫ t, ψ t)⁻¹ * ψ t with hκdef
+  have hκd : ContDiff ℝ 1 κ := contDiff_const.mul hψd
+  have hκsupp' : Function.support κ ⊆ Function.support ψ := fun t ht h0 => ht (by simp [hκdef, h0])
+  have hκcs : HasCompactSupport κ := hψcs.mono hκsupp'
+  have hκnn : ∀ t, 0 ≤ κ t := fun t => mul_nonneg (inv_nonneg.mpr hc.le) (hψnn t)
+  have hκint : ∫ t, κ t = 1 := by
+    simp only [hκdef]
+    rw [integral_const_mul]
+    exact inv_mul_cancel₀ hc.ne'
+  have hκsupp : Function.support κ ⊆ Metric.ball (0 : Rn N) ε :=
+    fun t ht => hψt (subset_tsupport _ (hκsupp' ht))
+  -- Step 3: the mollification `φ = κ ⋆ f` is `C¹` with compact support.
+  set φ : Rn N → ℝ := convolution κ f (ContinuousLinearMap.lsmul ℝ ℝ) volume with hφdef
+  have hφd : ContDiff ℝ 1 φ := hκcs.contDiff_convolution_left _ hκd hfc.locallyIntegrable
+  have hφcs : HasCompactSupport φ := hκcs.convolution _ hfs
+  -- Step 4: averaging estimate: `|f - w| ≤ η` on `B_ε(z)` implies `|φ z - w| ≤ η`.
+  have avg : ∀ (z : Rn N) (w η : ℝ), 0 ≤ η → (∀ z' ∈ Metric.ball z ε, dist (f z') w ≤ η) →
+      dist (φ z) w ≤ η := fun z w η hη h =>
+    dist_convolution_le (μ := (volume : Measure (Rn N))) hη hκsupp hκnn hκint
+      hfc.aestronglyMeasurable h
+  refine ⟨φ, hφd, hφcs, fun z => ?_, fun z hz => ?_⟩
+  · -- Step 5: uniform approximation (`w = f z`, `η = δ`).
+    have h := avg z (f z) δ hδ.le fun z' hz' =>
+      (hε₀f (lt_of_lt_of_le (Metric.mem_ball.mp hz') hεle₀)).le
+    rwa [Real.dist_eq] at h
+  · -- Step 6: support control: for `‖z‖ ≥ R`, `f = 0` on `B_ε(z)` (there `‖z'‖ > R - 1/2`).
+    by_contra hzR
+    push Not at hzR
+    apply hz
+    have h0 : ∀ z' ∈ Metric.ball z ε, dist (f z') 0 ≤ 0 := by
+      intro z' hz'
+      have hfz' : f z' = 0 := by
+        by_contra hne
+        have h1 := hfR z' hne
+        have h2 := norm_sub_norm_le z z'
+        rw [Metric.mem_ball, dist_eq_norm, norm_sub_rev] at hz'
+        linarith
+      simp [hfz']
+    exact dist_le_zero.mp (avg z 0 0 le_rfl h0)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1.ball_integral_bound-a1",
+  "parent_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1",
+  "depth": 4,
+  "title": "Integrability and sup-mass bound for a bounded continuous function vanishing off a ball of finite measure",
+  "statement": "Let N ∈ ℕ and let ν be a measure on ℝ^N = EuclideanSpace ℝ (Fin N) with its Borel σ-algebra. Let a ∈ ℝ^N and ρ, M ∈ ℝ. Let g : ℝ^N → ℝ be continuous with |g(y)| ≤ M for every y, and such that g(y) ≠ 0 implies y ∈ B_ρ(a) (open ball). If ν(B_ρ(a)) < ∞, then g is ν-integrable and |∫ g dν| ≤ M · ν.real(B_ρ(a)). Here ν.real(B_ρ(a)) = (ν(B_ρ(a))).toReal is the real value of the finite measure of the ball.",
+  "lean_statement": "∀ (N : ℕ) (ν : Measure (Rn N)) (a : Rn N) (ρ M : ℝ) (g : Rn N → ℝ), ν (Metric.ball a ρ) < ∞ → Continuous g → (∀ y, |g y| ≤ M) → (∀ y, g y ≠ 0 → y ∈ Metric.ball a ρ) → Integrable g ν ∧ |∫ y, g y ∂ν| ≤ M * ν.real (Metric.ball a ρ)",
+  "lean_name": "deGiorgiTM_integral_bound_of_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1-ball-integ-c57bf04e7d-a1"
+}

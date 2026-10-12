@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1.smooth_approx-a1",
+  "parent_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1",
+  "depth": 4,
+  "title": "Uniform C¹_c approximation of a compactly supported continuous function with support control",
+  "statement": "Let N ∈ ℕ and ℝ^N = EuclideanSpace ℝ (Fin N) with its Euclidean norm |·|. Let f : ℝ^N → ℝ be continuous with compact support. Let R ∈ ℝ be such that f(z) ≠ 0 implies |z| < R − 1, and let δ > 0. Then there is a C¹ function φ : ℝ^N → ℝ with compact support such that |φ(z) − f(z)| ≤ δ for every z ∈ ℝ^N, and φ(z) ≠ 0 implies |z| < R.",
+  "lean_statement": "∀ (N : ℕ) (f : Rn N → ℝ) (R δ : ℝ), Continuous f → HasCompactSupport f → (∀ z, f z ≠ 0 → ‖z‖ < R - 1) → 0 < δ → ∃ φ : Rn N → ℝ, ContDiff ℝ 1 φ ∧ HasCompactSupport φ ∧ (∀ z, |φ z - f z| ≤ δ) ∧ ∀ z, φ z ≠ 0 → ‖z‖ < R",
+  "lean_name": "deGiorgiTM_cc_contDiff_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1-smooth-approx-a1-a1"
+}

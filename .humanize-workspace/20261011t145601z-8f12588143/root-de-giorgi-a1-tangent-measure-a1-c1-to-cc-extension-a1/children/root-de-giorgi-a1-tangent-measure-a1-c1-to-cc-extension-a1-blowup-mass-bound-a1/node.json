@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1.blowup_mass_bound-a1",
+  "parent_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1",
+  "depth": 4,
+  "title": "Blow-up integrals of bounded functions supported in B_R(0) are bounded by M·max(C,0)·Rⁿ under the mass bound",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N = EuclideanSpace ℝ (Fin N), let x ∈ ℝ^N, and let C, R, r, M ∈ ℝ with r > 0, R > 0 and μ(B_{rR}(x)) ≤ ENNReal.ofReal(C·(rR)ⁿ) (open ball). Let h : ℝ^N → ℝ be continuous with |h(z)| ≤ M for every z, and such that h(z) ≠ 0 implies |z| < R. Then y ↦ h(η_{x,r}(y)) is μ-integrable and |(rⁿ)⁻¹ ∫ h(η_{x,r}(y)) dμ(y)| ≤ M · max(C, 0) · Rⁿ, where η_{x,r}(y) = r⁻¹(y − x) is blowUpMap x r.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (C R r M : ℝ) (h : Rn N → ℝ), 0 < r → 0 < R → μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) → Continuous h → (∀ z, |h z| ≤ M) → (∀ z, h z ≠ 0 → ‖z‖ < R) → Integrable (fun y ↦ h (blowUpMap x r y)) μ ∧ |(r ^ n)⁻¹ * ∫ y, h (blowUpMap x r y) ∂μ| ≤ M * max C 0 * R ^ n",
+  "lean_name": "deGiorgiTM_blowUp_integral_bound",
+  "depends_on": [
+    "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1.ball_integral_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1.ball_integral_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1-blowup-mass-bound-a1-a1"
+}
