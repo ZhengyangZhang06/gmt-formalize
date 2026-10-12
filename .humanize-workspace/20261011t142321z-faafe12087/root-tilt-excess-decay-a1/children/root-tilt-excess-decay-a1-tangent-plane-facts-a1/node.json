@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Approximate tangent planes of contract varifolds: existence, measurability, density, Lipschitz graphs",
+  "statement": "Let n >= 1, l, U in R^{n+l} open and V = v(M, theta) a contract rectifiable n-varifold in U; mu = V.weight, p_x = V.tangentProj x. Then (0) for mu-a.e. x there is a subspace P with HasWeightedApproximateTangentSpaceAt n M theta x P (Simon Ch. 3, 1.7); (1) for mu-a.e. x, p_x is the orthogonal projection onto an n-dimensional subspace; (2) x |-> p_x is mu-a.e. strongly measurable; (3) for mu-a.e. x, V.HasDensity x (theta x), i.e. mu(B_r(x))/(omega_n r^n) -> theta(x); (4) for every linear isometry q of R^{n+l}, every R in R, L >= 0 and every f : R^n -> R^l that is L-Lipschitz on the closed ball B^n_R(0): for mu-a.e. x, whenever x = q(graphPoint(x', f(x'))) with |x'| < R and f is differentiable at x', p_x is the orthogonal projection onto span{q(graphPoint(v, Df(x') v)) : v in R^n}.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ V : RectifiableVarifold n ℓ U, (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P) ∧ (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ AEStronglyMeasurable V.tangentProj V.weight ∧ (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x)) ∧ ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ) (L : ℝ≥0), LipschitzOnWith L f (closedBall 0 R) → ∀ᵐ x ∂V.weight, ∀ x' ∈ ball (0 : Rn n) R, x = q (graphPoint x' (f x')) → DifferentiableAt ℝ f x' → V.tangentProj x = (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (fderiv ℝ f x' v)))).starProjection",
+  "lean_name": "ted_tangent_plane_facts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-tangent-plane-facts-a1-a1"
+}
