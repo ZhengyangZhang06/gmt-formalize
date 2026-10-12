@@ -410,6 +410,39 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Weight blow-ups at a tangent point (Simon Ch. 8, Definition 1.1 tested with `f(z,S) = g(z)`):
+if `V` has tangent plane `T` with multiplicity `θ` at `x`, then for every `g ∈ C_c(ℝ^N)`,
+`t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z) → θ ∫_T g dH^n` as `t ↓ 0`. -/
+theorem Submission.intcpt_canon_weight_blowup_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂V.weight) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n])) := by
+  intro N n U V x T θ hT g
+  -- Step 1: `f(z, S) := g(z)` is compactly supported, `G(N,n)` being compact.
+  have hf : HasCompactSupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1) :=
+    HasCompactSupport.intro (g.hasCompactSupport.isCompact.prod isCompact_univ) fun z hz ↦
+      image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+    ⟨⟨fun z ↦ g z.1, (map_continuous g).comp continuous_fst⟩, hf⟩
+  have hfc : Continuous (f : Euclidean N × Grassmannian N n → ℝ) := map_continuous f
+  -- Step 2: the convergence clause of Definition 1.1 applied to `f`.
+  have hlim := hT.2.2 f
+  -- Step 3: plane side, `∫ f dv(T) = ∫_T g dH^n`.
+  have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+      ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] := by
+    rw [planeVarifoldMeasure, integral_map (φ := fun y : Euclidean N ↦ (y, T)) (by fun_prop)
+      hfc.aestronglyMeasurable]
+    rfl
+  rw [hplane] at hlim
+  -- Steps 4–5: for `t > 0`, `∫ f dV_{x,t} = t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z)`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  have ht' : (0 : ℝ) ≤ t⁻¹ ^ n := pow_nonneg (inv_nonneg.2 (le_of_lt ht)) n
+  have hg : Continuous fun y : Euclidean N ↦ g (t⁻¹ • (y - x)) := by fun_prop
+  rw [rescaledMeasure, integral_smul_measure,
+    integral_map (φ := fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2))
+      (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal ht', smul_eq_mul,
+    Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
+  rfl
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
