@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c0a590249aebd9bce9e542d584a4d5a29eb3b1393b3f1bf090032a3b6b98eae3",
+  "git_delta": {
+    "base_commit": "30226f4206f73c2e153f3cebfc66a4333125f712",
+    "candidate_commit": "00e25f29d11f119107208fecc5b5f223465975d0",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_weightedApproxTangent_congr",
+    "diff_sha256": "3a552cdc2de89f470276c4cf9ab3889c53cafdbcaa384438d48dd5f5b300465b",
+    "source_sha256": "267fea284be3c07b9212889348acfea332bdd3268db78d9402cddca0d1a62b3d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_weightedApproxTangent_congr",
+      "statement": "∀ (n ℓ : ℕ) (A A' O Z : Set (Amb n ℓ)) (ϑ ϑ' : Amb n ℓ → ℝ) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), NullMeasurableSet A (μHE[n] : Measure (Amb n ℓ)) → IsOpen O → x ∈ O → (μHE[n] : Measure (Amb n ℓ)) Z = 0 → (A ∩ O) \\ Z = (A' ∩ O) \\ Z → (∀ z ∈ (A ∩ O) \\ Z, ϑ z = ϑ' z) → ϑ x = ϑ' x → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A' ϑ' x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
