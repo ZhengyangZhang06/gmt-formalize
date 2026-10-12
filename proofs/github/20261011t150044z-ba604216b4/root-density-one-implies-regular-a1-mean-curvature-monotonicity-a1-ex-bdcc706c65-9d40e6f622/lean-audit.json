@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "21635b0385799609a2d7be2074c63389b24fbd2989bddd2d079c3ac1f53e200f",
+  "git_delta": {
+    "base_commit": "cee7100b515e514cc35a1c2cb26517fed9ff05e4",
+    "candidate_commit": "8cec26e7fcd1acddba02de65f763cd58691308f3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_em_exp_monotoneOn_of_deriv_ineq",
+    "diff_sha256": "41dae939e4cfced4b55ef890bb4ba4838ceedfa4bfa86f8e02b52b8e0135565c",
+    "source_sha256": "82b303f3a5b0f3f4444ac6e7026a4fde213f9c4707126d690b0b0571a8dee14f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_em_exp_monotoneOn_of_deriv_ineq",
+      "statement": "∀ (n : ℕ) (κ r : ℝ) (I I' : ℝ → ℝ), ContinuousOn I (Ioc 0 r) → (∀ s ∈ Ioo 0 r, HasDerivAt I (I' s) s) → (∀ s ∈ Ioo 0 r, (n : ℝ) * I s - s * I' s ≤ κ * s * I s) → MonotoneOn (fun s => Real.exp (κ * s) / s ^ n * I s) (Ioc 0 r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
