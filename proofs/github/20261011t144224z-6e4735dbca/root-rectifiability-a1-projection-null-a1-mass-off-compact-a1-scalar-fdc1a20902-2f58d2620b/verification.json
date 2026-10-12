@@ -1,0 +1,15 @@
+{
+  "node_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1.scalar_test_form-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3352",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "66a361cb9eac00bbe955552996021fb1ccc21f68",
+  "integrated_commit": "",
+  "proof_base_commit": "c1a767ef49862eafbda41158bf89c8f7cc06bb60",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1",
+  "requires": []
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dc6878c750b755b961053daeba919fef81daea4885666d4711eb7728656b0632",
+  "git_delta": {
+    "base_commit": "c1a767ef49862eafbda41158bf89c8f7cc06bb60",
+    "candidate_commit": "66a361cb9eac00bbe955552996021fb1ccc21f68",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_moc_exists_testForm_smul",
+    "diff_sha256": "a14f9a915d867e243ed5643198553d223a0193b408d7204df965c8ad058d144b",
+    "source_sha256": "30cbc8d2f75c05144890a797c959eb580962d9ae5480a48892cdfc53f90cf96e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_moc_exists_testForm_smul",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (f : Eucl P → ℝ) (θ : Covector (Eucl P) n), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → tsupport f ⊆ U → ∃ φ : TestFormOn U n, ∀ x, (φ : DifferentialForm (Eucl P) n) x = f x • θ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
