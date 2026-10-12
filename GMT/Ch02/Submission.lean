@@ -373,7 +373,237 @@ def C1Sard : Prop :=
 
 end
 
+/-- **The co-area Jacobian as a norm determinant** (Simon Ch. 2, §6, p. 66). Let `T = T_x M`, let
+`L = Df(x) ∘ ι_T : T → ℝᵐ` with `ι_T` the inclusion of `T` in `ℝᴺ`, and let `L*` be the adjoint
+of `L`. Then `J*_f(x) = √det(L ∘ L*) = normDet(L*)`. For `g = L*` we have `g* = L`, so
+`(normDet g)² = det(g* ∘ g) = det(L ∘ L*)`, and `normDet g ≥ 0`. -/
+theorem Submission.coareaJacobian_eq_normDet_adjoint : ∀ (N m : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N), coareaJacobian M f x = (LinearMap.adjoint ((fderiv ℝ f x).comp (tangentSpace M x).subtypeL).toLinearMap).normDet := by
+  intro N m M f x
+  -- Step 3: for `g = L*`, `(normDet g)² = det(g* ∘ₗ g) = det(L ∘ₗ L*)`, as `g* = L`.
+  have hsq :=
+    (LinearMap.adjoint ((fderiv ℝ f x).comp (tangentSpace M x).subtypeL).toLinearMap).normDet_sq
+  rw [LinearMap.adjoint_adjoint] at hsq
+  -- Step 4: `normDet g ≥ 0`, so `normDet g = √((normDet g)²)`.
+  rw [← Real.sqrt_sq (LinearMap.normDet_nonneg _)]
+  -- Steps 1-2 and 5: by unfolding, `coareaJacobian M f x = √det(L ∘ₗ L*)`, since
+  -- `ContinuousLinearMap.det` is `LinearMap.det` of the underlying map and the underlying map of
+  -- the continuous adjoint is `LinearMap.adjoint`.
+  exact congrArg Real.sqrt hsq.symm
+/-- **Norm determinant of a block lower-triangular map** (Simon Ch. 2, §6, p. 66: the block
+computation behind the co-area Jacobian `J*_f`). Let `E₁, E₂, F₁, F₂` be finite-dimensional real
+inner product spaces with `dim E₁ = dim F₁` and `dim E₂ = dim F₂`, and let
+`G : E₁ × E₂ → F₁ × F₂` be linear between the `L²` products, with `(G (0, b))₁ = 0` for all `b`.
+If `G₁₁ a = (G (a, 0))₁` and `G₂₂ b = (G (0, b))₂`, then `normDet G = normDet G₁₁ · normDet G₂₂`.
+In product orthonormal bases the matrix of `G` is block lower-triangular, `[[G₁₁, 0], [*, G₂₂]]`,
+and its determinant is the product of the determinants of the diagonal blocks. -/
+theorem Submission.coarea_normDet_block_triangular : ∀ (E₁ E₂ F₁ F₂ : Type) [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁] [FiniteDimensional ℝ E₁] [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] [FiniteDimensional ℝ E₂] [NormedAddCommGroup F₁] [InnerProductSpace ℝ F₁] [FiniteDimensional ℝ F₁] [NormedAddCommGroup F₂] [InnerProductSpace ℝ F₂] [FiniteDimensional ℝ F₂] (G : WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (F₁ × F₂)) (G₁₁ : E₁ →ₗ[ℝ] F₁) (G₂₂ : E₂ →ₗ[ℝ] F₂), Module.finrank ℝ E₁ = Module.finrank ℝ F₁ → Module.finrank ℝ E₂ = Module.finrank ℝ F₂ → (∀ b : E₂, WithLp.fst (G (WithLp.toLp 2 (0, b))) = 0) → (∀ a : E₁, G₁₁ a = WithLp.fst (G (WithLp.toLp 2 (a, 0)))) → (∀ b : E₂, G₂₂ b = WithLp.snd (G (WithLp.toLp 2 (0, b)))) → G.normDet = G₁₁.normDet * G₂₂.normDet := by
+  intro E₁ E₂ F₁ F₂ _ _ _ _ _ _ _ _ _ _ _ _ G G₁₁ G₂₂ h₁ h₂ h0 hG₁₁ hG₂₂
+  classical
+  -- Step 1: orthonormal bases indexed by `Fin d₁` (`E₁`, `F₁`) and `Fin d₂` (`E₂`, `F₂`).
+  let bE₁ := stdOrthonormalBasis ℝ E₁
+  let bE₂ := stdOrthonormalBasis ℝ E₂
+  let bF₁ := (stdOrthonormalBasis ℝ F₁).reindex (finCongr h₁.symm)
+  let bF₂ := (stdOrthonormalBasis ℝ F₂).reindex (finCongr h₂.symm)
+  -- Step 2: the product orthonormal bases of the `L²` products, indexed by `Fin d₁ ⊕ Fin d₂`.
+  let bE := bE₁.prod bE₂
+  let bF := bF₁.prod bF₂
+  -- Step 3: the `bF`-coordinates of `w` are the `bF₁`-coordinates of `w₁` and the
+  -- `bF₂`-coordinates of `w₂`.
+  have hrepr₁ : ∀ (v : WithLp 2 (F₁ × F₂)) i, bF.repr v (Sum.inl i) = bF₁.repr (WithLp.fst v) i := by
+    intro v i
+    simp [bF, OrthonormalBasis.repr_apply_apply]
+  have hrepr₂ : ∀ (v : WithLp 2 (F₁ × F₂)) i, bF.repr v (Sum.inr i) = bF₂.repr (WithLp.snd v) i := by
+    intro v i
+    simp [bF, OrthonormalBasis.repr_apply_apply]
+  -- Step 4: the matrix of `G` is block lower-triangular, with the matrices of `G₁₁` and `G₂₂` on
+  -- the diagonal and a zero upper-right block.
+  have hmat : LinearMap.toMatrix bE.toBasis bF.toBasis G =
+      Matrix.fromBlocks (LinearMap.toMatrix bE₁.toBasis bF₁.toBasis G₁₁) 0
+        (Matrix.of fun i j => bF₂.repr (WithLp.snd (G (WithLp.toLp 2 (bE₁ j, 0)))) i)
+        (LinearMap.toMatrix bE₂.toBasis bF₂.toBasis G₂₂) := by
+    ext (i | i) (j | j)
+    · simp [LinearMap.toMatrix_apply, hrepr₁, bE, hG₁₁]
+    · simp [LinearMap.toMatrix_apply, hrepr₁, bE, h0]
+    · simp [LinearMap.toMatrix_apply, hrepr₂, bE]
+    · simp [LinearMap.toMatrix_apply, hrepr₂, bE, hG₂₂]
+  -- Steps 5–6: `normDet` is `‖det‖` of the matrix in orthonormal bases with a common index type,
+  -- and `det (fromBlocks A 0 C D) = det A * det D`.
+  rw [G.normDet_eq_norm_det_toMatrix bE bF, G₁₁.normDet_eq_norm_det_toMatrix bE₁ bF₁,
+    G₂₂.normDet_eq_norm_det_toMatrix bE₂ bF₂, hmat, Matrix.det_fromBlocks_zero₁₂, norm_mul]
+
+/-- **Chart identity for the coarea Jacobian** (Simon Ch. 2, §6, 6.2). If the linear bijection
+`Φ : ℝᵐ × ℝᵏ → T` straightens `L : T → ℝᵐ` (`L ∘ Φ = WithLp.fst`) and `Ψ = Φ ∘ (0, ·)`, then
+`normDet L* · normDet Φ = normDet Ψ`. In the orthogonal coordinates `C = (π_{Qᗮ}, π_Q)`,
+`Q = ker L`, the map `C ∘ Φ` is block lower triangular with diagonal blocks
+`α = π_{Qᗮ} ∘ Φ ∘ (·, 0)` and `Ψ` (corestricted to `Q`). Moreover `λ ∘ α = id` for
+`λ = L|_{Qᗮ}`, and `normDet λ = normDet L*` because `L*` corestricted to `Qᗮ` is `λ*`. -/
+theorem Submission.coarea_normDet_adjoint_mul_normDet_chart : ∀ (m k : ℕ) (T : Type) [NormedAddCommGroup T] [InnerProductSpace ℝ T] [FiniteDimensional ℝ T] (L : T →ₗ[ℝ] Rn m) (Φ : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] T) (Ψ : Rn k →ₗ[ℝ] T), Function.Bijective Φ → (∀ p, L (Φ p) = WithLp.fst p) → (∀ b, Ψ b = Φ (WithLp.toLp 2 (0, b))) → (LinearMap.adjoint L).normDet * Φ.normDet = Ψ.normDet := by
+  intro m k T _ _ _ L Φ Ψ hΦ hL hΨ
+  -- Step 1: `L` is onto.
+  have hsurj : Function.Surjective L := fun a => ⟨Φ (WithLp.toLp 2 (a, 0)), by rw [hL]; rfl⟩
+  -- Step 2: `dim P = dim T = m + k`, `dim Q = k` and `dim Qᗮ = m`, where `Q = ker L`.
+  have hP : Module.finrank ℝ (WithLp 2 (Rn m × Rn k)) = m + k := by
+    rw [(WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).finrank_eq, Module.finrank_prod]
+    simp
+  have hT : Module.finrank ℝ T = m + k := by
+    rw [← (LinearEquiv.ofBijective Φ hΦ).finrank_eq, hP]
+  have hQ : Module.finrank ℝ (LinearMap.ker L) = k := by
+    have h := L.finrank_range_add_finrank_ker
+    rw [LinearMap.range_eq_top.mpr hsurj, finrank_top, hT, finrank_euclideanSpace_fin] at h
+    omega
+  have hQperp : Module.finrank ℝ (LinearMap.ker L)ᗮ = m := by
+    have := (LinearMap.ker L).finrank_add_finrank_orthogonal
+    omega
+  -- Step 3: the isometric coordinates `C t = (π_{Qᗮ} t, π_Q t)`.
+  let C : T ≃ₗᵢ[ℝ] WithLp 2 ((LinearMap.ker L)ᗮ × LinearMap.ker L) :=
+    (LinearMap.ker L).orthogonalDecomposition.trans (LinearIsometryEquiv.withLpProdComm 2 ℝ _ _)
+  have hC : ∀ t, C t = WithLp.toLp 2 ((LinearMap.ker L)ᗮ.orthogonalProjectionOnto t,
+      (LinearMap.ker L).orthogonalProjectionOnto t) := by
+    intro t
+    simp [C, Submodule.orthogonalDecomposition_apply, LinearIsometryEquiv.withLpProdComm_apply]
+  -- Step 4: `G = C ∘ Φ` has `normDet G = normDet C · normDet Φ = normDet Φ`.
+  let G : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] WithLp 2 ((LinearMap.ker L)ᗮ × LinearMap.ker L) :=
+    C.toLinearEquiv.toLinearMap ∘ₗ Φ
+  have hGΦ : G.normDet = Φ.normDet := by
+    rw [LinearMap.normDet_comp_of_finrank_eq _ _ (by rw [hP, hT])]
+    have : (C.toLinearEquiv.toLinearMap).normDet = 1 := C.toLinearIsometry.normDet_eq_one
+    rw [this, one_mul]
+  -- Step 5: `Ψ` maps into `Q`, so the upper-right block of `G` vanishes.
+  have hΨmem : ∀ b, Ψ b ∈ LinearMap.ker L := by
+    intro b; rw [LinearMap.mem_ker, hΨ, hL]; rfl
+  have h0 : ∀ b, WithLp.fst (G (WithLp.toLp 2 (0, b))) = 0 := by
+    intro b
+    simp only [G, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearIsometryEquiv.coe_toLinearEquiv]
+    rw [← hΨ, hC]
+    simp [Submodule.orthogonalProjectionOnto_apply_of_mem_orthogonal
+      ((LinearMap.ker L).le_orthogonal_orthogonal (hΨmem b))]
+  -- Step 6: the diagonal blocks `α = G₁₁` and `Θ = G₂₂`, where `Θ` is `Ψ` corestricted to `Q`.
+  let inl : Rn m →ₗ[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm.toLinearMap ∘ₗ LinearMap.inl ℝ (Rn m) (Rn k)
+  let inr : Rn k →ₗ[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm.toLinearMap ∘ₗ LinearMap.inr ℝ (Rn m) (Rn k)
+  let G₁₁ : Rn m →ₗ[ℝ] (LinearMap.ker L)ᗮ := (WithLp.fstL 2 ℝ _ _).toLinearMap ∘ₗ G ∘ₗ inl
+  let G₂₂ : Rn k →ₗ[ℝ] LinearMap.ker L := (WithLp.sndL 2 ℝ _ _).toLinearMap ∘ₗ G ∘ₗ inr
+  have hG₂₂ : G₂₂ = Ψ.codRestrict (LinearMap.ker L) hΨmem := by
+    refine LinearMap.ext fun b => ?_
+    apply Subtype.ext
+    simp only [G₂₂, G, inr, LinearMap.comp_apply, LinearEquiv.coe_coe,
+      LinearIsometryEquiv.coe_toLinearEquiv, LinearMap.codRestrict_apply]
+    have : (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm (LinearMap.inr ℝ (Rn m) (Rn k) b) =
+        WithLp.toLp 2 (0, b) := rfl
+    rw [this, ← hΨ, hC]
+    simp [Submodule.orthogonalProjectionOnto_mem_subspace_eq_self ⟨Ψ b, hΨmem b⟩]
+  -- Step 7: the block lemma gives `normDet G = normDet α · normDet Θ`.
+  have hG := Submission.coarea_normDet_block_triangular (Rn m) (Rn k) _ _ G G₁₁ G₂₂
+    (by simp [hQperp]) (by simp [hQ]) h0 (fun a => rfl) (fun b => rfl)
+  -- Step 8: `λ = L|_{Qᗮ}` satisfies `λ ∘ α = id`, since `L (π_{Qᗮ} t) = L (t - π_Q t) = L t`.
+  let lam : (LinearMap.ker L)ᗮ →ₗ[ℝ] Rn m := L.domRestrict (LinearMap.ker L)ᗮ
+  have hproj : ∀ t, L ((LinearMap.ker L)ᗮ.orthogonalProjectionOnto t) = L t := by
+    intro t
+    rw [Submodule.coe_orthogonalProjectionOnto_apply, Submodule.starProjection_orthogonal_val,
+      map_sub, LinearMap.mem_ker.mp ((LinearMap.ker L).starProjection_apply_mem t), sub_zero]
+  have hlam : lam ∘ₗ G₁₁ = LinearMap.id := by
+    refine LinearMap.ext fun a => ?_
+    have hα : G₁₁ a = WithLp.fst (C (Φ (WithLp.toLp 2 (a, 0)))) := rfl
+    show L (G₁₁ a : T) = a
+    rw [hα, hC]
+    show L ((LinearMap.ker L)ᗮ.orthogonalProjectionOnto (Φ (WithLp.toLp 2 (a, 0))) : T) = a
+    rw [hproj, hL]
+    rfl
+  have h1 : lam.normDet * G₁₁.normDet = 1 := by
+    rw [← LinearMap.normDet_comp_of_finrank_eq _ _ (by simp [hQperp]), hlam, LinearMap.normDet_id]
+  -- Step 9: `L*` maps onto `range L* = Qᗮ`, and corestricted to `Qᗮ` it is `λ*`. In orthonormal
+  -- bases indexed by `Fin m` the matrix of `λ*` is the transpose of that of `λ`, so
+  -- `normDet L* = normDet λ* = normDet λ`.
+  have hm : ∀ y, (LinearMap.adjoint L) y ∈ (LinearMap.ker L)ᗮ := by
+    intro y
+    rw [LinearMap.orthogonal_ker]
+    exact LinearMap.mem_range_self _ y
+  have ha : (LinearMap.adjoint L).codRestrict (LinearMap.ker L)ᗮ hm = LinearMap.adjoint lam := by
+    refine (LinearMap.eq_adjoint_iff _ _).mpr fun y q => ?_
+    exact LinearMap.adjoint_inner_left L q y
+  have hlamJ : lam.normDet = (LinearMap.adjoint L).normDet := by
+    let bQ := (stdOrthonormalBasis ℝ (LinearMap.ker L)ᗮ).reindex (finCongr hQperp)
+    let bR := EuclideanSpace.basisFun (Fin m) ℝ
+    rw [← LinearMap.normDet_codRestrict hm, ha,
+      (LinearMap.adjoint lam).normDet_eq_norm_det_toMatrix bR bQ,
+      lam.normDet_eq_norm_det_toMatrix bQ bR, LinearMap.toMatrix_adjoint, Matrix.det_conjTranspose]
+    simp
+  -- Step 10: `normDet L* · normDet Φ = (normDet λ · normDet α) · normDet Ψ = normDet Ψ`.
+  rw [← hGΦ, hG, hG₂₂, LinearMap.normDet_codRestrict, ← hlamJ, ← mul_assoc, h1, one_mul]
+
+/-- **Chart identity for the co-area Jacobian** (part (2) of `coarea_jacobian_linear_algebra`).
+Let `A : ℝᵐ × ℝᵏ → ℝᴺ` be injective with `range A = T_x M` and `Df(x) (A p) = p₁`, and let
+`B b = A (0, b)`. Then `J*_f(x) · normDet A = normDet B`. Indeed `A` and `B` take values in
+`T = T_x M`, and for `L = Df(x)|_T` the codomain restrictions `Φ = A|^T` (bijective) and
+`Ψ = B|^T` satisfy `L (Φ p) = p₁` and `Ψ b = Φ (0, b)`, so
+`coarea_normDet_adjoint_mul_normDet_chart` gives `normDet L* · normDet Φ = normDet Ψ`. Finally
+`J*_f(x) = normDet L*` (`coareaJacobian_eq_normDet_adjoint`), and following a map by the isometric
+inclusion `T ⊆ ℝᴺ` does not change `normDet` (`LinearMap.normDet_codRestrict`). -/
+theorem Submission.coareaJacobian_mul_normDet_chart : ∀ (N m k : ℕ) (M : Set (Rn N))
+    (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N),
+    Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap →
+    (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) →
+    coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet := by
+  intro N m k M f x A B hA hT hD hB
+  -- Step 1: `A` and `B` take values in `T = T_x M = range A`.
+  have hAT : ∀ p, A.toLinearMap p ∈ tangentSpace M x := fun p ↦
+    hT ▸ LinearMap.mem_range_self A.toLinearMap p
+  have hBT : ∀ b, B.toLinearMap b ∈ tangentSpace M x := fun b ↦ by
+    simpa only [ContinuousLinearMap.coe_coe, hB] using hAT (WithLp.toLp 2 (0, b))
+  -- Step 2: the codomain restrictions `Φ = A|^T` and `Ψ = B|^T`.
+  let Φ := A.toLinearMap.codRestrict (tangentSpace M x) hAT
+  let Ψ := B.toLinearMap.codRestrict (tangentSpace M x) hBT
+  -- Step 3: `Φ` is bijective, as `A` is injective and `T = range A`.
+  have hΦ : Function.Bijective Φ := by
+    refine ⟨fun p q hpq ↦ hA (congrArg Subtype.val hpq), fun t ↦ ?_⟩
+    obtain ⟨p, hp⟩ : (t : Rn N) ∈ LinearMap.range A.toLinearMap := hT ▸ t.2
+    exact ⟨p, Subtype.ext hp⟩
+  -- Steps 4–6: for `L = Df(x)|_T`, `L (Φ p) = p₁` (by `hD`) and `Ψ b = Φ (toLp (0, b))` (by `hB`),
+  -- so the abstract chart identity applies to `L`, `Φ` and `Ψ`.
+  have key := Submission.coarea_normDet_adjoint_mul_normDet_chart m k (tangentSpace M x)
+    ((fderiv ℝ f x).comp (tangentSpace M x).subtypeL).toLinearMap Φ Ψ hΦ hD
+    fun b ↦ Subtype.ext (hB b)
+  -- Steps 7–9: `J*_f(x) = normDet L*`, `normDet Φ = normDet A` and `normDet Ψ = normDet B`.
+  rw [Submission.coareaJacobian_eq_normDet_adjoint, ← LinearMap.normDet_codRestrict hAT,
+    ← LinearMap.normDet_codRestrict hBT]
+  exact key
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+/-- **`J*_f(x) = 0` iff `Df(x) ∘ A` is not onto** (Simon Ch. 2, §6, p. 66: `J*_f(x) ≠ 0`
+precisely when `df_x` has rank `m`), for `A : ℝⁿ → ℝᴺ` with `T_x M = range A`. With
+`L = df_x = Df(x)|_{T_x M}`, `J*_f(x) = normDet(L*)` (`coareaJacobian_eq_normDet_adjoint`), which
+vanishes iff `ker L* = (range L)ᗮ ≠ 0`, i.e. iff `L` is not onto; and `L` is onto iff `Df(x) ∘ A`
+is, since both have range `Df(x)(T_x M)`. -/
+theorem Submission.coareaJacobian_eq_zero_iff_not_surjective : ∀ (N m n : ℕ) (M : Set (Rn N))
+    (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N),
+    tangentSpace M x = LinearMap.range A.toLinearMap →
+    (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A)) := by
+  intro N m n M f x A hT
+  -- Steps 1–3: `J*_f(x) = normDet(L*)` vanishes iff `(range L)ᗮ = ker L* ≠ 0` iff `L` is not onto.
+  rw [Submission.coareaJacobian_eq_normDet_adjoint, LinearMap.normDet_eq_zero_iff_ker_ne_bot,
+    ← LinearMap.orthogonal_range, ne_eq, Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
+  -- Step 4: since `T_x M = range A`, `L` is onto iff `Df(x) ∘ A` is.
+  refine not_congr ⟨fun hs y ↦ ?_, fun hs y ↦ ?_⟩
+  · obtain ⟨t, rfl⟩ := hs y
+    obtain ⟨z, hz⟩ : (t : Rn N) ∈ LinearMap.range A.toLinearMap := hT ▸ t.2
+    exact ⟨z, congrArg (fderiv ℝ f x) hz⟩
+  · obtain ⟨z, rfl⟩ := hs y
+    exact ⟨⟨A z, hT ▸ LinearMap.mem_range_self A.toLinearMap z⟩, rfl⟩
+
+/-- **Linear algebra of the co-area Jacobian** (Simon Ch. 2, §6, 6.2, p. 66). Let `T = T_x M`,
+`D = Df(x)` and `L = D|_T : T → ℝᵐ`, so that `J*_f(x) = √det(L L*)`.
+(1) If `A : ℝⁿ → ℝᴺ` is linear with `T = range A`, then `J*_f(x) = 0` iff `D ∘ A` is not onto.
+(2) Let `A : ℝᵐ × ℝᵏ → ℝᴺ` (Euclidean product) be injective and linear with `T = range A` and
+`D (A p) = p₁`, and let `B b = A (0, b)`. Then `J*_f(x) · normDet A = normDet B`.
+Part (1) is `coareaJacobian_eq_zero_iff_not_surjective` and part (2) is
+`coareaJacobian_mul_normDet_chart`. -/
+theorem Submission.coarea_jacobian_linear_algebra : (∀ (N m n : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N), tangentSpace M x = LinearMap.range A.toLinearMap → (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A))) ∧ ∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N), Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap → (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) → coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet :=
+  -- Part (1), Steps 1–3: `J*_f(x) = 0` iff `L` is not onto, and `range L = range (D ∘ A)`.
+  -- Part (2), Steps 4–9: corestrict `A` and `B` to `T` and compute in block-triangular form.
+  ⟨Submission.coareaJacobian_eq_zero_iff_not_surjective,
+    Submission.coareaJacobian_mul_normDet_chart⟩
 
 end GMT.Ch02
