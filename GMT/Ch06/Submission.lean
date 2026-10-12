@@ -359,6 +359,51 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of 8.1, (8) (p. 174): σ-finite Radon–Nikodym with a positive real density.
+If `ν⌞B` and `μ` are σ-finite, `μ(X ∖ B) = 0` and `μ ≪ ν`, then `μ = (ν⌞M).withDensity θ` with
+`M = B ∩ {0 < dμ/d(ν⌞B) < ∞}` and `θ = (dμ/d(ν⌞B)).toReal`; `θ` is `ν`-integrable on `M ∩ K`
+whenever `μ K < ∞`, since `∫_{M ∩ K} θ dν = μ K`. -/
+theorem Submission.rectifiability_rn_positive_real_density : ∀ (X : Type) [MeasurableSpace X] (ν μ : Measure X) (B : Set X), MeasurableSet B → SigmaFinite (ν.restrict B) → SigmaFinite μ → μ Bᶜ = 0 → μ ≪ ν → ∃ (M : Set X) (θ : X → ℝ), M ⊆ B ∧ MeasurableSet M ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ (∀ K : Set X, MeasurableSet K → μ K < ∞ → IntegrableOn θ (M ∩ K) ν) ∧ μ = (ν.restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) := by
+  intro X _ ν μ B hB _ _ hμB hμν
+  -- Step 1: `μ ≪ ν⌞B`, since `μ ≪ ν` and `μ(X ∖ B) = 0`.
+  have hac : μ ≪ ν.restrict B := by
+    refine Measure.AbsolutelyContinuous.mk fun s hs hs0 => ?_
+    rw [Measure.restrict_apply hs] at hs0
+    exact measure_mono_null (inter_union_sdiff s B).symm.subset
+      (measure_union_null (hμν hs0) (measure_mono_null (fun x hx => hx.2) hμB))
+  -- Step 2: Radon–Nikodym for the σ-finite pair `(μ, ν⌞B)`: `μ = (ν⌞B).withDensity h` with
+  -- `h = dμ/d(ν⌞B)` measurable and `(ν⌞B)`-a.e. finite.
+  obtain ⟨h, hh, hrep, hfin⟩ : ∃ h : X → ℝ≥0∞, Measurable h ∧
+      μ = (ν.restrict B).withDensity h ∧ ∀ᵐ x ∂(ν.restrict B), h x < ∞ := by
+    refine ⟨μ.rnDeriv (ν.restrict B), Measure.measurable_rnDeriv _ _, ?_,
+      Measure.rnDeriv_lt_top _ _⟩
+    conv_lhs => rw [Measure.haveLebesgueDecomposition_add μ (ν.restrict B)]
+    rw [Measure.singularPart_eq_zero_of_ac hac, zero_add]
+  -- Step 3: `θ = h.toReal` and `M = B ∩ {0 < θ} = B ∩ {0 < h < ∞}`.
+  have hθ : Measurable fun x => (h x).toReal := hh.ennreal_toReal
+  have hM : MeasurableSet (B ∩ {x | 0 < (h x).toReal}) :=
+    hB.inter (measurableSet_lt measurable_const hθ)
+  -- Steps 4–5: `h = 1_M · ofReal θ` `(ν⌞B)`-a.e., hence `μ = (ν⌞M).withDensity (ofReal ∘ θ)`.
+  have hrepM : μ = (ν.restrict (B ∩ {x | 0 < (h x).toReal})).withDensity
+      (fun x => ENNReal.ofReal (h x).toReal) := by
+    have hae : h =ᵐ[ν.restrict B] (B ∩ {x | 0 < (h x).toReal}).indicator
+        (fun x => ENNReal.ofReal (h x).toReal) := by
+      filter_upwards [hfin, ae_restrict_mem hB] with x hxfin hxB
+      by_cases hx : 0 < (h x).toReal
+      · rw [indicator_of_mem (show x ∈ B ∩ {x | 0 < (h x).toReal} from ⟨hxB, hx⟩),
+          ENNReal.ofReal_toReal hxfin.ne]
+      · rw [indicator_of_notMem fun hxM => hx hxM.2]
+        exact ((ENNReal.toReal_eq_zero_iff _).mp
+          (le_antisymm (not_lt.mp hx) ENNReal.toReal_nonneg)).resolve_right hxfin.ne
+    rw [hrep, withDensity_congr_ae hae, withDensity_indicator hM, Measure.restrict_restrict hM,
+      inter_eq_left.mpr inter_subset_left]
+  -- Step 6: for measurable `K` with `μ K < ∞`, `∫_{M ∩ K} |θ| dν = μ K < ∞`.
+  refine ⟨B ∩ {x | 0 < (h x).toReal}, fun x => (h x).toReal, inter_subset_left, hM, hθ,
+    fun x hx => hx.2, fun K hK hμK => ⟨hθ.aestronglyMeasurable, ?_⟩, hrepM⟩
+  rw [hasFiniteIntegral_iff_ofReal (Eventually.of_forall fun x => ENNReal.toReal_nonneg)]
+  rw [hrepM, withDensity_apply _ hK, Measure.restrict_restrict hK, inter_comm K] at hμK
+  exact hμK
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
