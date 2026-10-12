@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T142321Z-faafe12087",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch05/20261011t142321z-faafe12087/dispatch/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1",
+  "source_commit": "ea5607598f3133b40a13241f2e51517a8c6423cd",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch05/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.ae_deriv_inner_bound-a1",
+      "key": "ae_deriv_inner_bound",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json (project ea5607598f31, mathlib 25730c7c759d)",
+              "rg -n \"theorem _root_.LipschitzOnWith.absolutelyContinuousOnInterval\" <snapshot>/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean; rg -n \"integral_deriv_eq_sub|intervalIntegrable_deriv\" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+              "rg -n \"(theorem|lemma) +(norm_deriv_le_of_lipschitzOn|measurable_deriv|ae_differentiableWithinAt_of_mem|Measure\\.integrableOn_of_bounded|setIntegral_mono_on_ae|setIntegral_mono_set|integral_Ioc_eq_integral_Ioo|integrableOn_Ioc_iff_integrableOn_Ioo|HasDerivAt\\.inner|abs_real_inner_le_norm|norm_integral_le_integral_norm_uIoc|measure_Ioo_lt_top|intervalIntegrable_iff)( |$)\" <snapshot>/mathlib/Mathlib",
+              "lake env lean -o /tmp/ftcb-decomp/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean /tmp/ftcb-decomp/checks/Avail.lean and Sigs.lean (#check of every cited lemma after import GMT.Ch05.Submission)",
+              "python3 -I: dag.json statuses, the one_dim_sup subtree, regex search for similar statements (IntegrableOn (fun _ => ‖deriv, deriv (fun _ => inner, IntervalIntegrable, ...)), lean_names allard52_lad_lipschitz_ftc / allard52_tangent_ae / lgc_tangent_plane_ae / ted_tangent_plane_facts / aal_tangent_structure",
+              "rg -l -F <name> <run>/dag.json <run>/nodes <snapshot>/project <snapshot>/mathlib/Mathlib GMT .lake/packages/simongmt/Poincare .humanize/math-wiki; git log --all -S<name> for tdo_ods_integrableOn_norm_deriv, tdo_ods_ae_abs_deriv_inner_le, tdo_ods_intervalIntegral_le_of_ae_abs_le (no match)",
+              "grep -rhoi 'leaf gate' <run>/nodes and .humanize/math-wiki ('import closure', 'AbsolutelyContinuousFun'); git show d715896f (lipschitz_ftc deviation); git show 9f4dca65 / 55e098f5 / a8902dc6 -- GMT/Ch05/Submission.lean | grep -c '^+import' (6 each)",
+              "read check_source_delta in /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py and check_parent_git_delta in parent_verification.py; python3 -I /tmp/ftcb-review/scripts/leafgate.py (children PASS; whole node with AC import FAIL)",
+              "python3 -I: gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') for the comparator child scope; read .humanize/swarm-configs/42724b071e414e11afdd6da8fa97f1bb.json (max_depth 6, max_children 12, max_nodes 1000)",
+              "lean /tmp/ftcb-decomp/checks/Children.lean, Glue.lean, GlueStubs.lean; /tmp/ftcb-decomp/final/StatementsOnly.lean; lake env lean --root=/tmp/ftcb-decomp/sim -o ... /tmp/ftcb-decomp/sim/GMT/Ch05/Submission.lean; lean /tmp/ftcb-decomp/final/NodeSolutionSim.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/problem.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/42724b071e414e11afdd6da8fa97f1bb.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/parent_verification.py",
+              "/tmp/ftcb-decomp/checks/Avail.lean",
+              "/tmp/ftcb-decomp/checks/Sigs.lean",
+              "/tmp/ftcb-decomp/checks/Children.lean",
+              "/tmp/ftcb-decomp/checks/Glue.lean",
+              "/tmp/ftcb-decomp/checks/GlueStubs.lean",
+              "/tmp/ftcb-decomp/final/StatementsOnly.lean",
+              "/tmp/ftcb-decomp/final/NodeSolutionSim.lean",
+              "/tmp/ftcb-decomp/sim/GMT/Ch05/Submission.lean",
+              "/tmp/ftcb-review/scripts/leafgate.py"
+            ],
+            "conclusion": "**Snapshot.** a7f8fcd21d5c8fc7 pins project ea5607598f31 and Mathlib 25730c7c759d.\n\n**Lemma locations (snapshot Mathlib).**\n- Outside the frozen import closure (all three report unknown constant/identifier after import GMT.Ch05.Submission):\n  - LipschitzOnWith.absolutelyContinuousOnInterval (MeasureTheory/Function/AbsolutelyContinuous.lean:309).\n  - AbsolutelyContinuousOnInterval.integral_deriv_eq_sub (IntervalIntegral/AbsolutelyContinuousFun.lean:225).\n  - AbsolutelyContinuousOnInterval.intervalIntegrable_deriv (IntervalIntegral/DerivIntegrable.lean:160).\n- Inside the closure, and used by the children:\n  - measurable_deriv (FDeriv/Measurable.lean:398) and norm_deriv_le_of_lipschitzOn (Deriv/Basic.lean:932).\n  - LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher.lean:361).\n  - Measure.integrableOn_of_bounded (IntegrableOn.lean:716) and integrableOn_Ioc_iff_integrableOn_Ioo (:956).\n  - integral_Ioc_eq_integral_Ioo, setIntegral_mono_set and setIntegral_mono_on_ae (Bochner/Set.lean:709, 737, 766).\n  - intervalIntegrable_iff and norm_integral_le_integral_norm_uIoc (IntervalIntegral/Basic.lean:86, 738).\n  - HasDerivAt.inner (InnerProductSpace/Calculus.lean:109) and abs_real_inner_le_norm (InnerProductSpace/Basic.lean:471).\n  - measure_Ioo_lt_top (Typeclasses/Finite.lean:661).\n\n**Gates.**\n- Leaf gate (check_source_delta): requires the frozen base byte-for-byte, exactly one theorem, and no import. On this whole node with the AC import it reports 'leaf proof must preserve the complete frozen base byte-for-byte'.\n- Parent gate (check_parent_git_delta): restricts only which files change.\n- Precedents: accepted parents 55e098f5, 9f4dca65 and a8902dc6 each add 6 imports. The accepted leaf allard52_lad_lipschitz_ftc requires ContinuousOn k, so it is not reusable here.\n\n**Reuse and names.** No DAG node has an identical statement. The three new names occur nowhere.\n\n**Lean results.**\n- The three children prove in the frozen closure, and each passes the leaf gate.\n- The glue, with the AC import, proves the parent from the children and also from sorry'd children.\n- A simulated full Submission.lean compiles.\n- Comparator-form challenge and solution checks pass for all four declarations, with axioms [propext, Classical.choice, Quot.sound]."
+          }
+        ],
+        "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+        "child_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.ae_deriv_inner_bound-a1",
+        "subproblem": {
+          "key": "ae_deriv_inner_bound",
+          "title": "A.e. bound |(<u, W>)'| <= ||W'|| on (-a, a) via Rademacher, for ||u|| <= 1",
+          "statement": "Let l be a natural number, W : R -> R^l (R^l = EuclideanSpace R (Fin l)), a a real number, K >= 0 and u in R^l with ||u|| <= 1, and suppose W is K-Lipschitz on the closed interval [-a, a]. Then for Lebesgue-almost every real r: if -a < r < a, then |deriv phi r| <= ||deriv W r||, where phi(x) = <u, W(x)> is the real Euclidean inner product. Here deriv is Mathlib's derivative (0 at points where the function is not differentiable).",
+          "lean_statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0) (u : Rn ℓ), LipschitzOnWith K W (Icc (-a) a) → ‖u‖ ≤ 1 → ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |deriv (fun x => inner ℝ u (W x)) r| ≤ ‖deriv W r‖",
+          "lean_name": "tdo_ods_ae_abs_deriv_inner_le",
+          "depends_on": [],
+          "natural_proof": "1. Rademacher. R and R^l are finite-dimensional real normed spaces and Lebesgue measure on R is an additive Haar measure. Since W is K-Lipschitz on [-a, a], LipschitzOnWith.ae_differentiableWithinAt_of_mem gives: for almost every r, if r is in [-a, a] then W is differentiable within [-a, a] at r.\n2. Fix any r from this full-measure set, and suppose r is in (-a, a). It suffices to prove |deriv (x |-> <u, W x>) r| <= ||deriv W r|| for this r. Since (-a, a) is contained in [-a, a] (Ioo_subset_Icc_self), W is differentiable within [-a, a] at r. Because -a < r < a, [-a, a] is a neighbourhood of r (Icc_mem_nhds). Hence W is differentiable at r (DifferentiableWithinAt.differentiableAt), i.e. HasDerivAt W (deriv W r) r.\n3. Derivative of the scalarization. The constant map x |-> u has derivative 0 at r (hasDerivAt_const). By the derivative rule for the real inner product of two differentiable curves (HasDerivAt.inner), x |-> <u, W x> has derivative <u, deriv W r> + <0, W r> = <u, deriv W r> at r (inner_zero_left, add_zero). Equivalently, x |-> <u, W x> = (innerSL R u) o W, and the chain rule applies. Therefore deriv (x |-> <u, W x>) r = <u, deriv W r> (HasDerivAt.deriv).\n4. Cauchy-Schwarz. |<u, deriv W r>| <= ||u|| ||deriv W r|| (abs_real_inner_le_norm). Since ||u|| <= 1 and ||deriv W r|| >= 0, this is <= 1 * ||deriv W r|| = ||deriv W r||.\n5. Conclusion. By steps 2-4, the inequality |deriv (x |-> <u, W x>) r| <= ||deriv W r|| holds for every r in the full-measure set of step 1 with r in (-a, a). This is exactly the almost-everywhere statement.\nRemark (Lean implementation): every lemma cited (Rademacher's theorem LipschitzOnWith.ae_differentiableWithinAt_of_mem with mu := volume, HasDerivAt.inner, abs_real_inner_le_norm) is in the import closure of the frozen header, so no new import is needed. In this Mathlib the inner product takes the scalar field explicitly: inner R u v.",
+          "proof_key_steps": [
+            "Rademacher (LipschitzOnWith.ae_differentiableWithinAt_of_mem): a.e. r in [-a, a] has W differentiable within [-a, a] at r",
+            "for such r in (-a, a), [-a, a] is a neighbourhood of r, so W is differentiable at r",
+            "HasDerivAt.inner with the constant curve u: deriv (x |-> <u, W x>) r = <u, deriv W r>",
+            "Cauchy-Schwarz and ||u|| <= 1: |<u, deriv W r>| <= ||u|| ||deriv W r|| <= ||deriv W r||"
+          ]
+        },
+        "audit": {
+          "key": "ae_deriv_inner_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition exactly expresses the stated Lebesgue-a.e. implication with ‖u‖ ≤ 1. Rademacher supplies within differentiability; interior membership supplies the neighborhood needed for ordinary differentiability. The inner-product derivative rule and Cauchy–Schwarz then prove the bound. All typeclass assumptions hold for the specified Euclidean spaces. No parent or sibling conclusion is used."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.deriv_norm_integrable-a1",
+      "key": "deriv_norm_integrable",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json (project ea5607598f31, mathlib 25730c7c759d)",
+              "rg -n \"theorem _root_.LipschitzOnWith.absolutelyContinuousOnInterval\" <snapshot>/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean; rg -n \"integral_deriv_eq_sub|intervalIntegrable_deriv\" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+              "rg -n \"(theorem|lemma) +(norm_deriv_le_of_lipschitzOn|measurable_deriv|ae_differentiableWithinAt_of_mem|Measure\\.integrableOn_of_bounded|setIntegral_mono_on_ae|setIntegral_mono_set|integral_Ioc_eq_integral_Ioo|integrableOn_Ioc_iff_integrableOn_Ioo|HasDerivAt\\.inner|abs_real_inner_le_norm|norm_integral_le_integral_norm_uIoc|measure_Ioo_lt_top|intervalIntegrable_iff)( |$)\" <snapshot>/mathlib/Mathlib",
+              "lake env lean -o /tmp/ftcb-decomp/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean /tmp/ftcb-decomp/checks/Avail.lean and Sigs.lean (#check of every cited lemma after import GMT.Ch05.Submission)",
+              "python3 -I: dag.json statuses, the one_dim_sup subtree, regex search for similar statements (IntegrableOn (fun _ => ‖deriv, deriv (fun _ => inner, IntervalIntegrable, ...)), lean_names allard52_lad_lipschitz_ftc / allard52_tangent_ae / lgc_tangent_plane_ae / ted_tangent_plane_facts / aal_tangent_structure",
+              "rg -l -F <name> <run>/dag.json <run>/nodes <snapshot>/project <snapshot>/mathlib/Mathlib GMT .lake/packages/simongmt/Poincare .humanize/math-wiki; git log --all -S<name> for tdo_ods_integrableOn_norm_deriv, tdo_ods_ae_abs_deriv_inner_le, tdo_ods_intervalIntegral_le_of_ae_abs_le (no match)",
+              "grep -rhoi 'leaf gate' <run>/nodes and .humanize/math-wiki ('import closure', 'AbsolutelyContinuousFun'); git show d715896f (lipschitz_ftc deviation); git show 9f4dca65 / 55e098f5 / a8902dc6 -- GMT/Ch05/Submission.lean | grep -c '^+import' (6 each)",
+              "read check_source_delta in /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py and check_parent_git_delta in parent_verification.py; python3 -I /tmp/ftcb-review/scripts/leafgate.py (children PASS; whole node with AC import FAIL)",
+              "python3 -I: gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') for the comparator child scope; read .humanize/swarm-configs/42724b071e414e11afdd6da8fa97f1bb.json (max_depth 6, max_children 12, max_nodes 1000)",
+              "lean /tmp/ftcb-decomp/checks/Children.lean, Glue.lean, GlueStubs.lean; /tmp/ftcb-decomp/final/StatementsOnly.lean; lake env lean --root=/tmp/ftcb-decomp/sim -o ... /tmp/ftcb-decomp/sim/GMT/Ch05/Submission.lean; lean /tmp/ftcb-decomp/final/NodeSolutionSim.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/problem.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/42724b071e414e11afdd6da8fa97f1bb.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/parent_verification.py",
+              "/tmp/ftcb-decomp/checks/Avail.lean",
+              "/tmp/ftcb-decomp/checks/Sigs.lean",
+              "/tmp/ftcb-decomp/checks/Children.lean",
+              "/tmp/ftcb-decomp/checks/Glue.lean",
+              "/tmp/ftcb-decomp/checks/GlueStubs.lean",
+              "/tmp/ftcb-decomp/final/StatementsOnly.lean",
+              "/tmp/ftcb-decomp/final/NodeSolutionSim.lean",
+              "/tmp/ftcb-decomp/sim/GMT/Ch05/Submission.lean",
+              "/tmp/ftcb-review/scripts/leafgate.py"
+            ],
+            "conclusion": "**Snapshot.** a7f8fcd21d5c8fc7 pins project ea5607598f31 and Mathlib 25730c7c759d.\n\n**Lemma locations (snapshot Mathlib).**\n- Outside the frozen import closure (all three report unknown constant/identifier after import GMT.Ch05.Submission):\n  - LipschitzOnWith.absolutelyContinuousOnInterval (MeasureTheory/Function/AbsolutelyContinuous.lean:309).\n  - AbsolutelyContinuousOnInterval.integral_deriv_eq_sub (IntervalIntegral/AbsolutelyContinuousFun.lean:225).\n  - AbsolutelyContinuousOnInterval.intervalIntegrable_deriv (IntervalIntegral/DerivIntegrable.lean:160).\n- Inside the closure, and used by the children:\n  - measurable_deriv (FDeriv/Measurable.lean:398) and norm_deriv_le_of_lipschitzOn (Deriv/Basic.lean:932).\n  - LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher.lean:361).\n  - Measure.integrableOn_of_bounded (IntegrableOn.lean:716) and integrableOn_Ioc_iff_integrableOn_Ioo (:956).\n  - integral_Ioc_eq_integral_Ioo, setIntegral_mono_set and setIntegral_mono_on_ae (Bochner/Set.lean:709, 737, 766).\n  - intervalIntegrable_iff and norm_integral_le_integral_norm_uIoc (IntervalIntegral/Basic.lean:86, 738).\n  - HasDerivAt.inner (InnerProductSpace/Calculus.lean:109) and abs_real_inner_le_norm (InnerProductSpace/Basic.lean:471).\n  - measure_Ioo_lt_top (Typeclasses/Finite.lean:661).\n\n**Gates.**\n- Leaf gate (check_source_delta): requires the frozen base byte-for-byte, exactly one theorem, and no import. On this whole node with the AC import it reports 'leaf proof must preserve the complete frozen base byte-for-byte'.\n- Parent gate (check_parent_git_delta): restricts only which files change.\n- Precedents: accepted parents 55e098f5, 9f4dca65 and a8902dc6 each add 6 imports. The accepted leaf allard52_lad_lipschitz_ftc requires ContinuousOn k, so it is not reusable here.\n\n**Reuse and names.** No DAG node has an identical statement. The three new names occur nowhere.\n\n**Lean results.**\n- The three children prove in the frozen closure, and each passes the leaf gate.\n- The glue, with the AC import, proves the parent from the children and also from sorry'd children.\n- A simulated full Submission.lean compiles.\n- Comparator-form challenge and solution checks pass for all four declarations, with axioms [propext, Classical.choice, Quot.sound]."
+          }
+        ],
+        "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+        "child_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.deriv_norm_integrable-a1",
+        "subproblem": {
+          "key": "deriv_norm_integrable",
+          "title": "Integrability of ||W'|| on (-a, a) for a curve that is Lipschitz on [-a, a]",
+          "statement": "Let l be a natural number, W : R -> R^l (R^l = EuclideanSpace R (Fin l)), a a real number and K >= 0, and suppose W is K-Lipschitz on the closed interval [-a, a]. Then the function r |-> ||deriv W r|| is integrable for Lebesgue measure on the open interval (-a, a). Here deriv is Mathlib's derivative (0 where W is not differentiable).",
+          "lean_statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → IntegrableOn (fun r => ‖deriv W r‖) (Ioo (-a) a)",
+          "lean_name": "tdo_ods_integrableOn_norm_deriv",
+          "depends_on": [],
+          "natural_proof": "1. Measurability. Since R^l is complete, deriv W : R -> R^l is measurable (measurable_deriv). Hence r |-> ||deriv W r|| is measurable, and so AE-strongly measurable for Lebesgue measure.\n2. Pointwise bound on (-a, a). Let r be in (-a, a), so -a < r < a. Then the closed interval [-a, a] is a neighbourhood of r (Icc_mem_nhds). W is K-Lipschitz on this neighbourhood, so ||deriv W r|| <= K (norm_deriv_le_of_lipschitzOn). This also holds when W is not differentiable at r, since then deriv W r = 0. Consequently | ||deriv W r|| | = ||deriv W r|| <= K for every r in (-a, a) (norm_norm).\n3. Almost-everywhere form of the bound. (-a, a) is measurable (measurableSet_Ioo). So the statement 'for a.e. r for Lebesgue measure restricted to (-a, a), | ||deriv W r|| | <= K' is equivalent to 'for a.e. r, r in (-a, a) implies | ||deriv W r|| | <= K' (ae_restrict_iff'). The latter holds for every r by step 2.\n4. Finite measure. The Lebesgue measure of (-a, a) is finite (measure_Ioo_lt_top).\n5. Conclusion. A function that is AE-strongly measurable and almost everywhere bounded in norm by the constant M = K on a set of finite measure is integrable on that set (Measure.integrableOn_of_bounded). Steps 1, 3 and 4 give these hypotheses, so r |-> ||deriv W r|| is integrable on (-a, a). (If a <= 0, then (-a, a) is empty and the claim is trivial, but the argument covers this case without change.)\nRemark (Lean implementation): every lemma cited is in the import closure of the frozen header (import GMT.Ch05.Submission), so no new import is needed.",
+          "proof_key_steps": [
+            "deriv W is measurable (measurable_deriv), so ||deriv W|| is AE-strongly measurable",
+            "for r in (-a, a), [-a, a] is a neighbourhood of r, so ||deriv W r|| <= K (Icc_mem_nhds, norm_deriv_le_of_lipschitzOn)",
+            "rewrite the bound as an a.e. bound for the measure restricted to (-a, a) (ae_restrict_iff', measurableSet_Ioo)",
+            "(-a, a) has finite measure (measure_Ioo_lt_top), so Measure.integrableOn_of_bounded with M = K gives integrability"
+          ]
+        },
+        "audit": {
+          "key": "deriv_norm_integrable",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. Measurability, the local Lipschitz derivative bound, restriction to the measurable interval, and finite measure establish integrability. Completeness and measurability instances hold for Rn ℓ, including ℓ = 0. Nonpositive a causes no gap. The proof is complete, independently formalizable, and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.interval_dominated_bound-a1",
+      "key": "interval_dominated_bound",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json (project ea5607598f31, mathlib 25730c7c759d)",
+              "rg -n \"theorem _root_.LipschitzOnWith.absolutelyContinuousOnInterval\" <snapshot>/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean; rg -n \"integral_deriv_eq_sub|intervalIntegrable_deriv\" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+              "rg -n \"(theorem|lemma) +(norm_deriv_le_of_lipschitzOn|measurable_deriv|ae_differentiableWithinAt_of_mem|Measure\\.integrableOn_of_bounded|setIntegral_mono_on_ae|setIntegral_mono_set|integral_Ioc_eq_integral_Ioo|integrableOn_Ioc_iff_integrableOn_Ioo|HasDerivAt\\.inner|abs_real_inner_le_norm|norm_integral_le_integral_norm_uIoc|measure_Ioo_lt_top|intervalIntegrable_iff)( |$)\" <snapshot>/mathlib/Mathlib",
+              "lake env lean -o /tmp/ftcb-decomp/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean /tmp/ftcb-decomp/checks/Avail.lean and Sigs.lean (#check of every cited lemma after import GMT.Ch05.Submission)",
+              "python3 -I: dag.json statuses, the one_dim_sup subtree, regex search for similar statements (IntegrableOn (fun _ => ‖deriv, deriv (fun _ => inner, IntervalIntegrable, ...)), lean_names allard52_lad_lipschitz_ftc / allard52_tangent_ae / lgc_tangent_plane_ae / ted_tangent_plane_facts / aal_tangent_structure",
+              "rg -l -F <name> <run>/dag.json <run>/nodes <snapshot>/project <snapshot>/mathlib/Mathlib GMT .lake/packages/simongmt/Poincare .humanize/math-wiki; git log --all -S<name> for tdo_ods_integrableOn_norm_deriv, tdo_ods_ae_abs_deriv_inner_le, tdo_ods_intervalIntegral_le_of_ae_abs_le (no match)",
+              "grep -rhoi 'leaf gate' <run>/nodes and .humanize/math-wiki ('import closure', 'AbsolutelyContinuousFun'); git show d715896f (lipschitz_ftc deviation); git show 9f4dca65 / 55e098f5 / a8902dc6 -- GMT/Ch05/Submission.lean | grep -c '^+import' (6 each)",
+              "read check_source_delta in /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py and check_parent_git_delta in parent_verification.py; python3 -I /tmp/ftcb-review/scripts/leafgate.py (children PASS; whole node with AC import FAIL)",
+              "python3 -I: gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') for the comparator child scope; read .humanize/swarm-configs/42724b071e414e11afdd6da8fa97f1bb.json (max_depth 6, max_children 12, max_nodes 1000)",
+              "lean /tmp/ftcb-decomp/checks/Children.lean, Glue.lean, GlueStubs.lean; /tmp/ftcb-decomp/final/StatementsOnly.lean; lake env lean --root=/tmp/ftcb-decomp/sim -o ... /tmp/ftcb-decomp/sim/GMT/Ch05/Submission.lean; lean /tmp/ftcb-decomp/final/NodeSolutionSim.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/problem.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/42724b071e414e11afdd6da8fa97f1bb.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/parent_verification.py",
+              "/tmp/ftcb-decomp/checks/Avail.lean",
+              "/tmp/ftcb-decomp/checks/Sigs.lean",
+              "/tmp/ftcb-decomp/checks/Children.lean",
+              "/tmp/ftcb-decomp/checks/Glue.lean",
+              "/tmp/ftcb-decomp/checks/GlueStubs.lean",
+              "/tmp/ftcb-decomp/final/StatementsOnly.lean",
+              "/tmp/ftcb-decomp/final/NodeSolutionSim.lean",
+              "/tmp/ftcb-decomp/sim/GMT/Ch05/Submission.lean",
+              "/tmp/ftcb-review/scripts/leafgate.py"
+            ],
+            "conclusion": "**Snapshot.** a7f8fcd21d5c8fc7 pins project ea5607598f31 and Mathlib 25730c7c759d.\n\n**Lemma locations (snapshot Mathlib).**\n- Outside the frozen import closure (all three report unknown constant/identifier after import GMT.Ch05.Submission):\n  - LipschitzOnWith.absolutelyContinuousOnInterval (MeasureTheory/Function/AbsolutelyContinuous.lean:309).\n  - AbsolutelyContinuousOnInterval.integral_deriv_eq_sub (IntervalIntegral/AbsolutelyContinuousFun.lean:225).\n  - AbsolutelyContinuousOnInterval.intervalIntegrable_deriv (IntervalIntegral/DerivIntegrable.lean:160).\n- Inside the closure, and used by the children:\n  - measurable_deriv (FDeriv/Measurable.lean:398) and norm_deriv_le_of_lipschitzOn (Deriv/Basic.lean:932).\n  - LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher.lean:361).\n  - Measure.integrableOn_of_bounded (IntegrableOn.lean:716) and integrableOn_Ioc_iff_integrableOn_Ioo (:956).\n  - integral_Ioc_eq_integral_Ioo, setIntegral_mono_set and setIntegral_mono_on_ae (Bochner/Set.lean:709, 737, 766).\n  - intervalIntegrable_iff and norm_integral_le_integral_norm_uIoc (IntervalIntegral/Basic.lean:86, 738).\n  - HasDerivAt.inner (InnerProductSpace/Calculus.lean:109) and abs_real_inner_le_norm (InnerProductSpace/Basic.lean:471).\n  - measure_Ioo_lt_top (Typeclasses/Finite.lean:661).\n\n**Gates.**\n- Leaf gate (check_source_delta): requires the frozen base byte-for-byte, exactly one theorem, and no import. On this whole node with the AC import it reports 'leaf proof must preserve the complete frozen base byte-for-byte'.\n- Parent gate (check_parent_git_delta): restricts only which files change.\n- Precedents: accepted parents 55e098f5, 9f4dca65 and a8902dc6 each add 6 imports. The accepted leaf allard52_lad_lipschitz_ftc requires ContinuousOn k, so it is not reusable here.\n\n**Reuse and names.** No DAG node has an identical statement. The three new names occur nowhere.\n\n**Lean results.**\n- The three children prove in the frozen closure, and each passes the leaf gate.\n- The glue, with the AC import, proves the parent from the children and also from sorry'd children.\n- A simulated full Submission.lean compiles.\n- Comparator-form challenge and solution checks pass for all four declarations, with axioms [propext, Classical.choice, Quot.sound]."
+          }
+        ],
+        "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+        "child_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.interval_dominated_bound-a1",
+        "subproblem": {
+          "key": "interval_dominated_bound",
+          "title": "Interval integral bounded by the integral over (-a, a) of an a.e. dominating function",
+          "statement": "Let g, h : R -> R and let a, s, t be real numbers. Suppose that h is Lebesgue integrable on the open interval (-a, a), that s and t lie in the closed interval [-a, a], and that g is interval integrable between s and t, i.e. integrable on uIoc s t = (min s t, max s t]. Suppose also that for Lebesgue-almost every r, -a < r < a implies |g(r)| <= h(r). Then the oriented interval integral ∫_s^t g(r) dr is at most the Bochner integral ∫_{(-a,a)} h(r) dr for Lebesgue measure on (-a, a).",
+          "lean_statement": "∀ (g h : ℝ → ℝ) (a s t : ℝ), IntegrableOn h (Ioo (-a) a) → s ∈ Icc (-a) a → t ∈ Icc (-a) a → IntervalIntegrable g volume s t → (∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |g r| ≤ h r) → ∫ r in s..t, g r ≤ ∫ r in Ioo (-a) a, h r",
+          "lean_name": "tdo_ods_intervalIntegral_le_of_ae_abs_le",
+          "depends_on": [],
+          "natural_proof": "1. Inclusion. uIoc s t is contained in (-a, a]. Indeed, if r is in uIoc s t (mem_uIoc), then either s < r <= t or t < r <= s. In the first case -a <= s < r and r <= t <= a. In the second case -a <= t < r and r <= s <= a. In both cases -a < r <= a.\n2. Integrability of h. The singleton {a} is Lebesgue-null and h(a) is a finite real number. So h is integrable on (-a, a] iff it is integrable on (-a, a) (integrableOn_Ioc_iff_integrableOn_Ioo). By hypothesis h is integrable on (-a, a), so by this equivalence it is integrable on (-a, a]; therefore, by step 1, it is integrable on uIoc s t (IntegrableOn.mono_set).\n3. Integrability of |g|. g is interval integrable between s and t, i.e. integrable on uIoc s t (intervalIntegrable_iff). Hence |g| = ||g|| is integrable on uIoc s t (Integrable.norm).\n4. Domination on (-a, a]. For almost every r we have r ≠ a (Measure.ae_ne), and also the hypothesis 'r in (-a, a) implies |g(r)| <= h(r)'. For such r with r in (-a, a], we get r < a, so r is in (-a, a) and hence |g(r)| <= h(r). Thus, for a.e. r: r in (-a, a] implies |g(r)| <= h(r). In particular 0 <= |g(r)| <= h(r) for a.e. r in (-a, a], i.e. h >= 0 almost everywhere for Lebesgue measure restricted to (-a, a] (ae_restrict_iff', measurableSet_Ioc).\n5. Chain of inequalities:\n ∫_s^t g <= |∫_s^t g| = ||∫_s^t g|| (le_abs_self, Real.norm_eq_abs)\n <= ∫_{uIoc s t} ||g|| (intervalIntegral.norm_integral_le_integral_norm_uIoc)\n <= ∫_{uIoc s t} h (setIntegral_mono_on_ae: both integrands are integrable on uIoc s t by steps 3 and 2, uIoc s t is measurable (measurableSet_uIoc), and for a.e. r in uIoc s t we have r in (-a, a] by step 1, so ||g(r)|| = |g(r)| <= h(r) by step 4)\n <= ∫_{(-a,a]} h (setIntegral_mono_set: h is integrable on (-a, a] by step 2, h >= 0 a.e. on (-a, a] by step 4, and uIoc s t is contained in (-a, a] by step 1)\n = ∫_{(-a,a)} h (integral_Ioc_eq_integral_Ioo; Lebesgue measure has no atoms).\n This is the claim.\nRemark (Lean implementation): every lemma cited is in the import closure of the frozen header, so no new import is needed.",
+          "proof_key_steps": [
+            "uIoc s t is contained in (-a, a] because s, t are in [-a, a]",
+            "h is integrable on (-a, a] (null endpoint) and on uIoc s t; ||g|| is integrable on uIoc s t (intervalIntegrable_iff)",
+            "with Measure.ae_ne for a: |g| <= h a.e. on (-a, a], hence h >= 0 a.e. there",
+            "∫_s^t g <= |∫_s^t g| <= ∫_{uIoc s t} |g| <= ∫_{uIoc s t} h <= ∫_{(-a,a]} h = ∫_{(-a,a)} h"
+          ]
+        },
+        "audit": {
+          "key": "interval_dominated_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition matches all prose hypotheses and the oriented-integral conclusion. The proof correctly handles either endpoint order, transfers integrability across the null endpoint, and obtains integrability of |g|. Domination implies the required a.e. nonnegativity of h throughout Ioc (-a) a, so no positivity hypothesis is missing. Both integral comparisons and endpoint removal are justified. The proof is complete and independent."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/task.md": "dfbb96c99584d2d384c58549f43fcf0bdd3ac2e8b8a71edf8b14c8afcabcd8fc",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/problem.md": "48c9992b115965304a389586c670b288f316caa7929675f19c9b628e3101d681",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/problem.json": "903986fbfad51db95c6d9248a0daa43d238876f161c37cf7419ff4eda4a4786e",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/reference-manifest.json": "79927b124570304468be0ca6c249cfa2a3ebfd5d3f74fe7260e04399c872e1a9",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/decomposition.json": "c4f9771ae13a2fccaf2a37777b532e89df0aca8add7fc27601b733a738a807f4",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/decomposition-audit.json": "498e39461a98b1df2794d304c4422b5cb1fb863248a999c1e31f532d08d9bb60",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/controller-contract.json": "975f7dd6624a7302dadf68f7c66e60b0a60b125bed783510c38ebe3bf2350b51",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/parent-child-handoff.json": "90270f1765ec2d8b108de4f39c5f3e861e2abf2579b62b9ac9afb453f671b6ce",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/parent-supplied-plan.md": "077d169c0ee27a63bc749d89acc49cf9539ceaeea016767aeb8a3ea4cc451b61",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/parent-supplied-natural-proof.md": "b9464ddaf1a51e02d44fbe7e8e2a94b4233300e56fea48b7c1eb05acfa30ff68",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/parent-supplied-natural-proof.json": "7c74a063b28079cd7a5c7d0ca1a77c26ff28eafd1538562b64b768c9f841bac0",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da/node.json": "0b4eaa711b02a351f5042c5fecb8000c28de60b1e5f7b897953f88c00e713932",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/parent-child-handoff.json": "36787a93f363f51255567ccdccb5548bb98642f99b3d8a760969b039996160cf",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/parent-supplied-plan.md": "8068aaad2b9d92d250a8502532a31396923c970caa08161a941bce5a759192b7",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/parent-supplied-natural-proof.md": "dd6f17d160d6fd234c147c125ebb3b22543d53933f4f4c520301232c64ed4506",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/parent-supplied-natural-proof.json": "124bf3e78b1fb77f9f48ad38bd024cc905e04a46db2eabb662fcfa4d5283f8f1",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f/node.json": "c68f996337b45fe4041adc647815d780f935de5bb2c1533a57df4bc45cb96894",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/parent-child-handoff.json": "772c71caa3d85ab20687f3fe47d7c16cf2035a8c13b92816b3c057cfc98ebc02",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/parent-supplied-plan.md": "55b5c01dfde19ed56818f06fe7eb48f7e9f92d26efaf9bd47863f10e5429efe4",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/parent-supplied-natural-proof.md": "bac5787bc95c177d4e92325fa7b300eb11066f06ac0c6f480482fdb6ed1bb301",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/parent-supplied-natural-proof.json": "c0ee6a59ab8ed260775b220ec954e071c2cc3cdd5da8f6822b33f7c0bea437d3",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/children/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47/node.json": "04d636f81259c9a44f6cd7c00a90f75e4f2a7e603756a48aaec3abdb14bf3330"
+  }
+}
