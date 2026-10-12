@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5c5668674e6896ea19e3220576127173e553d146599c5f58f39013268b657bc0",
+  "git_delta": {
+    "base_commit": "c8d3def42f7e06399285c465d227f3ffadd6c152",
+    "candidate_commit": "29ba5dc1ff6d1747771cc468e5a4b6ff219e4fdf",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_slb_setLIntegral_rpow_le_holder",
+    "diff_sha256": "f4c1adb2cc582f2defcd6ff783251f8233febb3455583e2bd5ccc8f2c95a1560",
+    "source_sha256": "0964ebd4a1c7feba21094c58c3c59d80ac3eb6a3941e3b2838986772e96fb4bd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_slb_setLIntegral_rpow_le_holder",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (B : Set X) (g : X → ℝ≥0∞) (p q : ℝ), 0 < q → q ≤ p → ∫⁻ x in B, g x ^ q ∂μ ≤ (∫⁻ x in B, g x ^ p ∂μ) ^ (q / p) * μ B ^ (1 - q / p)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
