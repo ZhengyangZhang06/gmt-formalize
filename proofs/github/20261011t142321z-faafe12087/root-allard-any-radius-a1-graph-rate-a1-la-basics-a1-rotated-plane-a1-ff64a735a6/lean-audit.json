@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30157bb4884e039cc56119787a52bbe7d9b10a766efe08b52d08ea56dc603f5e",
+  "git_delta": {
+    "base_commit": "b76ff397312d29550f21d498f637e5da06c99618",
+    "candidate_commit": "b1a6014f632b63d6344dec2f438823629559e2e1",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_la_rotatedPlane_facts",
+    "diff_sha256": "db7d9bebdb8ba7cf95258140c4e2f035c4539c310df6e1cbb0eed3532db7724c",
+    "source_sha256": "13155bbf44b4475ecc3d7d6cba6c88488fd097ebb2d8a3ff08ca76ff11e99934",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_la_rotatedPlane_facts",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ))) ∧ (∀ (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖) ∧ Module.finrank ℝ (rotatedPlane q) = n",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
