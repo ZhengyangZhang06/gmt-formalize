@@ -458,6 +458,93 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Scaled `Lᵖ` norm of `H` on sub-balls** (the Hölder estimate of Simon Ch. 5, Remark 2.2,
+p. 107, with exponent `1` in place of `2`).  Let `p > n ≥ 1`, `0 < r ≤ ρ` and
+`B_r(z) ⊆ B_ρ(0)`, with `K(ξ, σ) = (σ^{p−n} ∫_{B_σ(ξ)} |H|ᵖ dμ_V)^{1/p}` (`scaledLpNorm`).
+(K1) `K(z, r) ≤ K(0, ρ)`.
+(K2) If `K(0, ρ) ≤ δ` and `μ_V(B_r(z)) < ∞`, then
+`∫_{B_r(z)} |H| dμ_V ≤ δ ρ^{n/p−1} μ_V(B_r(z))^{1−1/p}`.
+Proof: (K1) follows from `r^{p−n} ≤ ρ^{p−n}`, monotonicity of the lower integral in the domain and
+of `t ↦ t^{1/p}`.  For (K2), `K(0, ρ) = ρ^{1−n/p} (∫_{B_ρ(0)} |H|ᵖ)^{1/p}`, so
+`(∫_{B_r(z)} |H|ᵖ)^{1/p} ≤ δ ρ^{n/p−1}`.  If `|H|` is not integrable on `B_r(z)` the Bochner
+integral is `0`; otherwise Hölder with exponents `p` and `p/(p−1)` against `1` gives
+`∫_{B_r(z)} |H| ≤ (∫_{B_r(z)} |H|ᵖ)^{1/p} μ_V(B_r(z))^{1−1/p}`, a finite bound. -/
+theorem any_radius_gr_scaled_lp_ball_bounds : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (z : Amb n ℓ) (r ρ : ℝ), 0 < r → r ≤ ρ → closedBall z r ⊆ closedBall 0 ρ → V.scaledLpNorm H p z r ≤ V.scaledLpNorm H p 0 ρ ∧ ∀ δ : ℝ, 0 ≤ δ → V.scaledLpNorm H p 0 ρ ≤ ENNReal.ofReal δ → V.weight (closedBall z r) < ⊤ → ∫ x in closedBall z r, ‖H x‖ ∂V.weight ≤ δ * ρ ^ ((n : ℝ) / p - 1) * (V.weight (closedBall z r)).toReal ^ (1 - 1 / p) := by
+  intro n ℓ hn p hnp U V H z r ρ hr hrρ hsub
+  -- Step 1: `p > 1`, `p - n > 0`, `ρ ≥ r > 0`.
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp1 : 1 < p := lt_of_le_of_lt hn1 hnp
+  have hp0 : 0 < p := by linarith
+  have hpn : 0 < p - n := by linarith
+  have hρ : 0 < ρ := lt_of_lt_of_le hr hrρ
+  have hinvp : 0 ≤ 1 / p := by positivity
+  -- Step 2: domain monotonicity of the lower integral (no measurability needed).
+  have hI : ∫⁻ x in closedBall z r, ‖H x‖ₑ ^ p ∂V.weight ≤
+      ∫⁻ x in closedBall 0 ρ, ‖H x‖ₑ ^ p ∂V.weight :=
+    lintegral_mono_set hsub
+  refine ⟨?_, fun δ hδ hK hfin => ?_⟩
+  · -- (K1): `r^{p-n} ≤ ρ^{p-n}`, then monotonicity of products and of `t ↦ t^{1/p}`.
+    unfold RectifiableVarifold.scaledLpNorm
+    exact ENNReal.rpow_le_rpow (mul_le_mul' (ENNReal.ofReal_le_ofReal
+      (Real.rpow_le_rpow hr.le hrρ hpn.le)) hI) hinvp
+  -- (K2), Step 4: `I(z, r)^{1/p} ≤ ofReal (δ ρ^{n/p - 1})`, using
+  -- `K(0, ρ) = ofReal (ρ^{(p-n)/p}) I(0, ρ)^{1/p}` and `ρ^{n/p - 1} ρ^{(p-n)/p} = 1`.
+  have he : 0 < ρ ^ ((n : ℝ) / p - 1) := Real.rpow_pos_of_pos hρ _
+  have hc : 0 ≤ ρ ^ (p - n) := (Real.rpow_pos_of_pos hρ _).le
+  have hce : ρ ^ ((n : ℝ) / p - 1) * (ρ ^ (p - n)) ^ (1 / p) = 1 := by
+    rw [← Real.rpow_mul hρ.le, ← Real.rpow_add hρ]
+    have : (n : ℝ) / p - 1 + (p - n) * (1 / p) = 0 := by field_simp; ring
+    rw [this, Real.rpow_zero]
+  have hJ : (∫⁻ x in closedBall z r, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) ≤
+      ENNReal.ofReal (δ * ρ ^ ((n : ℝ) / p - 1)) := by
+    calc (∫⁻ x in closedBall z r, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p)
+        ≤ (∫⁻ x in closedBall 0 ρ, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) :=
+          ENNReal.rpow_le_rpow hI hinvp
+      _ = ENNReal.ofReal (ρ ^ ((n : ℝ) / p - 1)) * V.scaledLpNorm H p 0 ρ := by
+          unfold RectifiableVarifold.scaledLpNorm
+          rw [ENNReal.mul_rpow_of_nonneg _ _ hinvp, ENNReal.ofReal_rpow_of_nonneg hc hinvp,
+            ← mul_assoc, ← ENNReal.ofReal_mul he.le, hce, ENNReal.ofReal_one, one_mul]
+      _ ≤ ENNReal.ofReal (ρ ^ ((n : ℝ) / p - 1)) * ENNReal.ofReal δ := mul_le_mul' le_rfl hK
+      _ = ENNReal.ofReal (δ * ρ ^ ((n : ℝ) / p - 1)) := by
+          rw [← ENNReal.ofReal_mul he.le, mul_comm]
+  -- Step 3: case split on the integrability of the real function `f = ‖H‖` on the ball.
+  by_cases hint : IntegrableOn (fun x => ‖H x‖) (closedBall z r) V.weight
+  swap
+  · -- Case A: the Bochner integral of a non-integrable function is `0`.
+    rw [integral_undef hint]
+    positivity
+  -- Case B: `f` is a.e.-strongly measurable for `μ ⌞ B`, hence so is `ofReal ∘ f = ‖H‖ₑ`.
+  have hf : AEStronglyMeasurable (fun x => ‖H x‖) (V.weight.restrict (closedBall z r)) :=
+    Integrable.aestronglyMeasurable hint
+  have hF : AEMeasurable (fun x => ENNReal.ofReal ‖H x‖) (V.weight.restrict (closedBall z r)) :=
+    ENNReal.measurable_ofReal.comp_aemeasurable hf.aemeasurable
+  -- Step 5: Hölder with exponents `p` and `p' = p/(p-1)` against the constant `1`.
+  have hpq : p.HolderConjugate (Real.conjExponent p) := Real.HolderConjugate.conjExponent hp1
+  have hq : 1 / Real.conjExponent p = 1 - 1 / p := by
+    rw [one_div, one_div, hpq.one_sub_inv]
+  have hHolder := ENNReal.lintegral_mul_le_Lp_mul_Lq (V.weight.restrict (closedBall z r)) hpq hF
+    (aemeasurable_const (b := (1 : ℝ≥0∞)))
+  simp only [Pi.mul_apply, mul_one, ENNReal.one_rpow, lintegral_const, Measure.restrict_apply_univ,
+    one_mul, ofReal_norm, hq] at hHolder
+  have hp' : 0 ≤ 1 - 1 / p := sub_nonneg.mpr ((div_le_one hp0).mpr hp1.le)
+  have hL : ∫⁻ x in closedBall z r, ‖H x‖ₑ ∂V.weight ≤
+      ENNReal.ofReal (δ * ρ ^ ((n : ℝ) / p - 1)) * V.weight (closedBall z r) ^ (1 - 1 / p) :=
+    hHolder.trans (mul_le_mul' hJ le_rfl)
+  -- Step 6: convert to the Bochner integral and take `toReal` of the finite bound.
+  rw [integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun x => norm_nonneg _) hf]
+  simp only [ofReal_norm]
+  calc (∫⁻ x in closedBall z r, ‖H x‖ₑ ∂V.weight).toReal
+      ≤ (ENNReal.ofReal (δ * ρ ^ ((n : ℝ) / p - 1)) *
+          V.weight (closedBall z r) ^ (1 - 1 / p)).toReal :=
+        ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+          (ENNReal.rpow_ne_top_of_nonneg hp' hfin.ne)) hL
+    _ = δ * ρ ^ ((n : ℝ) / p - 1) * (V.weight (closedBall z r)).toReal ^ (1 - 1 / p) := by
+        rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity), ENNReal.toReal_rpow]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
