@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1.helly_selection-a1",
+  "parent_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+  "depth": 3,
+  "title": "Helly selection for uniformly bounded nondecreasing functions with a countable exceptional set",
+  "statement": "Let (F_j)_{j∈ℕ} be functions ℝ → ℝ, each nondecreasing, and let C ∈ ℝ with |F_j(t)| ≤ C for all j ∈ ℕ and t ∈ ℝ. Then there exist a strictly increasing ψ : ℕ → ℕ and a countable set E ⊆ ℝ such that for every s ∈ ℝ ∖ E and every ε > 0 there are real numbers a < s < b with F_{ψ(j)}(b) − F_{ψ(j)}(a) < ε for all sufficiently large j.",
+  "lean_statement": "∀ (F : ℕ → ℝ → ℝ) (C : ℝ), (∀ j, Monotone (F j)) → (∀ j t, |F j t| ≤ C) → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ ε : ℝ, 0 < ε → ∃ a b : ℝ, a < s ∧ s < b ∧ ∀ᶠ j in atTop, F (ψ j) b - F (ψ j) a < ε",
+  "lean_name": "iwl_rl_monotone_helly_selection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-restriction-limit-a1-helly-selection-a1-a1"
+}

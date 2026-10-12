@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "helly|massOn_iUnion|massOn_iSup|iwl_rl_",
+        "def IsMeasureRepresentation|def IsRestriction|def IsMassMeasure|namespace|^import|theorem main_theorem",
+        "exists_contDiff_zero_iff_one_iff_of_isClosed|^variable",
+        "bounded_above_of_compact_support",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/iwl-rl-independent-audit-rhjzx2vr/Types.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/iwl-rl-independent-audit-rhjzx2vr/Assembly.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/iwl-rl-independent-audit-rhjzx2vr/Candidate.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convex/Radon.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/MonotoneConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-limit-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-limit-a1/decomposition-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/accepted-candidate.json",
+        "/tmp/iwl-rl-independent-audit-rhjzx2vr/Types.lean",
+        "/tmp/iwl-rl-independent-audit-rhjzx2vr/Assembly.lean",
+        "/tmp/iwl-rl-independent-audit-rhjzx2vr/Candidate.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and the relevant definitions and library lemmas. The Helly search found only convex Helly; no massOn_iUnion, massOn_iSup or iwl_rl_* declaration was found in the searched snapshot sources. All six unchanged one-line types independently elaborate without any Submission declarations present. The parent assembly compiles from precisely the six child contracts and the existing restriction-theory prerequisite, proving both (A) and (B) of the selected frozen statement. Recompiling the supplied implementations and exact-type checks succeeded; all six children, the selected parent and restriction theory use only propext, Classical.choice and Quot.sound. The two reused declarations have comparator-accepted, identical frozen types and retained proof sources. All names are bare identifiers; the four new names have no competing DAG/proposal reservations. The proposed dependency closure is acyclic, with cutoff_estimate depending on mass_bound. The split is appropriate and preserves the selected contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "helly_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Sequential compactness of the countable rational product supplies one strictly increasing subsequence. The nonempty bounded left envelope is monotone; its countable discontinuity set and rational-limit estimates give exactly the required eventual small increments. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "testform_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including arbitrary U and open neighborhoods of both closed sets. Normality and smooth Urysohn yield the cutoff; scalar multiplication preserves smoothness and compact support, and coefficient-norm homogeneity proves the bound. The smoothness parameter was verified to mean C∞."
+    },
+    {
+      "key": "mass_iunion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact extended-real equality follows from the mass definition. Compact support in an increasing open cover lies in one member, giving one inequality; monotonicity gives the other. No finiteness, measure representation or additional domain hypothesis is needed."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the comparator-accepted declaration. Independently, the reproduced proof derives C ≥ 0, applies admissibility to both signed rescalings for c > C, uses B ≥ 0 to unpack ENNReal bounds, and lets c decrease to C. It covers zero bounds without circularity."
+    },
+    {
+      "key": "cutoff_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the Lean type. The given restriction supplies the representation needed for self-restriction and S(ω′) = Y(ω′). Disjoint-set bookkeeping establishes the finite strip-mass bound before applying toReal. The proof derives c ≥ 0 and correctly applies mass_bound on the open strip. Its sole child dependency is correctly directed and sufficient."
+    },
+    {
+      "key": "testform_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the comparator-accepted declaration. Continuous evaluations, a finite sum of squares and square root prove continuity of the coefficient norm. Compact support gives a global bound, and adding one produces the required positive constant. The reproduced proof is complete for arbitrary U."
+    }
+  ],
+  "required_changes": []
+}
