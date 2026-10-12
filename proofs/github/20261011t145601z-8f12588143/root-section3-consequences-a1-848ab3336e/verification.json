@@ -1,0 +1,24 @@
+{
+  "node_id": "root.section3_consequences-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/30",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "9477567347bac2b815aeda9e87af1e1e939319c7",
+  "integrated_commit": "",
+  "proof_base_commit": "6be94373bf40f79994a2c12d5633d329715b1740",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.submanifold_cover-a1",
+    "root.besicovitch_federer-a1",
+    "root.section3_consequences-a1.rectifiable_decomposition-a1",
+    "root.section3_consequences-a1.coordinate_projection_injective-a1",
+    "root.section3_consequences-a1.c1_image_null-a1",
+    "root.section3_consequences-a1.chart_projection_positive-a1",
+    "root.section3_consequences-a1.coordinate_projection_criterion-a1",
+    "root.section3_consequences-a1.rectifiability_theorem-a1"
+  ]
+}

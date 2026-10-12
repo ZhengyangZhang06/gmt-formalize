@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "25a8b5cf177de14c1133d6e3b6089282552db56d5ed2cd61b0255bbd74a85d45",
+  "git_delta": {
+    "base_commit": "81cf73e4ba00fc18a876a1baffd0119b46ac7675",
+    "candidate_commit": "9477567347bac2b815aeda9e87af1e1e939319c7",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "7033e63b09201973fa3a17dde8c120a60cc446e2a8198e65063cfd895000cc58",
+    "source_sha256": "28fbbb44ad84ba823a1c62a23e3ec8bf86196c4451d7a1af630680da48054a95",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_decomposition_projection_rectifiability",
+      "statement": "RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ RectifiabilityTheoremForSets",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
