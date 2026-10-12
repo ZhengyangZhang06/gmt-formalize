@@ -1,0 +1,135 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_graph_corollary-a1`
+- Child DAG node: `root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 3, Lemma 1.2 (only-if part), Remark 1.3, Theorem 1.6 (=>), Remarks 1.8(1),(2) and Theorem 1.9 (=>); the printed proofs are copied and specialized to the contract's varifold, and the measurability statement is the remark recorded as fact (F1) in the parent proof. This child is the fact (F1) of the parent proof.
+
+Notation. eta_{x,r}(y) := r^-1 (y - x) (SimonGMT blowUpMap); for A ⊆ R^(n+l) and E ⊆ R^(n+l), H^n(eta_{x,r}(A) ∩ E) = r^-n H^n(A ∩ (x + r E)). C_c := compactly supported continuous real functions on R^(n+l). B_r(x) is the closed ball. mu := V.weight; p_x := V.tangentProj x, which by definition is the orthogonal projection onto the subspace chosen (by choice) among the weighted approximate tangent spaces (Def. 1.7) of M w.r.t. theta at x when one exists, and 0 otherwise.
+
+1. Reduction to H^n-a.e. statements on M. mu is a with-density measure of H^n restricted to M, so mu << H^n restricted to M and mu(R^(n+l) \ M) = 0. Hence a property holding at H^n-a.e. point of M holds mu-a.e., and two maps that agree at H^n-a.e. point of M agree mu-a.e. It therefore suffices to find an H^n-null set Z and a Borel map g from R^(n+l) into the finite-dimensional normed space of linear maps of R^(n+l) such that every x in M \ Z has a weighted approximate tangent space T_x with p_x = p_{T_x} = g(x). Then (b) holds mu-a.e., and V.tangentProj = g mu-a.e.; a Borel map into a finite-dimensional normed space is strongly measurable, so (a) follows. We may also replace theta by a Borel function theta~ equal to theta at H^n-a.e. point of M: none of the integrals in Def. 1.7 changes (the exceptional null set stays null under the similarities eta_{x,r}), and for x outside the null set {x in M : theta(x) != theta~(x)} the values theta(x) = theta~(x) agree, so the weighted approximate tangent spaces for theta and theta~ coincide at such x. Below theta denotes this Borel representative on M (still > 0 on M after discarding a further null set).
+
+2. Localization to U. For k >= 1 let W_k := {x in U : |x| < k and dist(x, R^(n+l) \ U) > 1/k} (drop the second condition if U = R^(n+l)). Each W_k is open, its closure is a compact subset of U, and U is the union of the W_k. Put M_k := M ∩ W_k. M_k is H^n-measurable and countably n-rectifiable (a subset of M), and for every compact K ⊆ R^(n+l) the integral of theta over M_k ∩ K is at most the integral of theta over M ∩ closure(W_k), which is finite by the contract hypothesis; so (M_k, theta) satisfies the hypotheses of Simon Ch. 3, Def. 1.7 and Thm. 1.9. If x in W_k, f in C_c with spt f ⊆ B_R(0) and 0 < r < dist(x, R^(n+l) \ W_k)/R, then f(eta_{x,r}(z)) = 0 for every z outside W_k, so the integrals over eta_{x,r}(M) and over eta_{x,r}(M_k) of f(y) theta(x + r y) dH^n(y) coincide (and are finite) for all small r > 0. Hence an n-dimensional subspace T is a weighted approximate tangent space of M at x iff it is one of M_k at x. Since M is the union of the M_k, it suffices to prove, for each fixed k, that H^n-a.e. x in M_k has a weighted approximate tangent space and to produce the Borel representative on M_k.
+
+3. Lusin (Simon Rem. 1.8(1)). Fix k. Apply Lusin's theorem (Ch. 1, 1.17; SimonGMT IsBorelRegularOuterMeasure.simon_theorem_1_17) to the finite Borel-regular measure nu_k := theta H^n restricted to M_k and the Borel function theta: for each j there is a compact set K_j ⊆ M_k with nu_k(M_k \ K_j) < 1/j and theta restricted to K_j continuous (no nesting of the K_j is needed); hence nu_k(M_k \ union_j K_j) = 0. Since theta > 0 on M_k, also H^n(M_k \ union_j K_j) = 0. As theta|K_j is continuous and positive on the compact set K_j, c_j := min over K_j of theta > 0, so H^n(K_j) <= c_j^-1 * (integral of theta over K_j) < infinity.
+
+4. Vanishing density of the weight off K_j (Simon Rem. 1.8(1), upper density theorem Ch. 1, 3.6). For each j, nu_k restricted to M_k \ K_j is a finite Borel-regular measure, so by the upper density theorem (Ch. 1, 3.6; SimonGMT simon_theorem_3_6), r^-n * (integral of theta over (M_k \ K_j) ∩ B_r(x)) -> 0 as r -> 0 for H^n-a.e. x outside M_k \ K_j, in particular for H^n-a.e. x in K_j. Let E_j be the exceptional H^n-null subset of K_j.
+
+5. C^1 cover (Simon Ch. 3, Lemma 1.2 and Remark 1.3; printed proof of the only-if part). By Def. 1.1, M_k ⊆ M_0' ∪ union_m F_m(R^n) with H^n(M_0') = 0 and F_m : R^n -> R^(n+l) Lipschitz. By the C^1 approximation theorem (Ch. 2, 1.5, applied to each component) there are C^1 maps G_{im} : R^n -> R^(n+l), i = 1, 2, ..., with L^n({u : F_m(u) != G_{im}(u)}) < 1/i. With Z_m := R^n \ union_i {F_m = G_{im}} we get L^n(Z_m) = 0, hence H^n(F_m(Z_m)) <= (Lip F_m)^n L^n(Z_m) = 0, and F_m(R^n) ⊆ F_m(Z_m) ∪ union_i G_{im}(R^n). By the area formula (Ch. 2), H^n(G_{im}({J G_{im} = 0})) <= integral over {J G_{im} = 0} of J G_{im} dL^n = 0. If J G_{im}(u) != 0, then D G_{im}(u) is injective, and by the inverse function theorem there is eps_u > 0 such that G_{im} is an injective immersion on a neighbourhood of the closed ball B_{eps_u}(u) and a homeomorphism of that neighbourhood onto its image; then N := G_{im}(open ball of radius eps_u about u) is an embedded n-dimensional C^1 submanifold with H^n(N) < infinity, parametrized by the single C^1 map phi := G_{im} restricted to that open ball, which has injective differential and continuous inverse on N. Countably many such balls cover {J G_{im} > 0} (Lindelof). Collecting all null sets into N_0 and enumerating the submanifolds as N_1, N_2, ... with parametrizations phi_i : O_i -> N_i, we get M_k ⊆ N_0 ∪ union_{i >= 1} N_i with H^n(N_0) = 0, each N_i sigma-compact (hence Borel) with H^n(N_i) < infinity. As in Remark 1.3 put K_{j,i} := (K_j ∩ N_i) \ union_{i' < i} N_{i'} for i >= 1: these are Borel, pairwise disjoint, K_{j,i} ⊆ N_i, and H^n(K_j \ union_i K_{j,i}) <= H^n(N_0) = 0.
+
+6. Unweighted tangent planes of K_j (printed proof of Simon Ch. 3, 1.6 (=>), applied to the finite-measure set K_j). Fix j, i and f in C_c with spt f ⊆ B_R(0). For x in K_{j,i} and r > 0,
+ integral over eta_{x,r}(K_j) of f dH^n = integral over eta_{x,r}(N_i) of f dH^n - integral over eta_{x,r}(N_i \ K_j) of f dH^n + integral over eta_{x,r}(K_j \ N_i) of f dH^n.
+Since x in N_i and N_i is a C^1 submanifold, the first term tends to the integral of f over T_x N_i = D phi_i(phi_i^-1(x))(R^n) with respect to H^n as r -> 0 (blow-ups of a C^1 submanifold converge to its tangent plane; area formula for phi_i). The other two terms are bounded in absolute value by sup|f| * r^-n H^n(B_{rR}(x) ∩ (N_i \ K_j)) and sup|f| * r^-n H^n(B_{rR}(x) ∩ (K_j \ N_i)). The measures H^n restricted to N_i \ K_j and to K_j \ N_i are finite and Borel-regular, so by the upper density theorem both bounds tend to 0 for H^n-a.e. x in K_j ∩ N_i (such x lie outside both sets). The exceptional null set E'_{j,i} does not depend on f. Hence for every x in K_{j,i} \ E'_{j,i}, T_x N_i is the approximate tangent space (Def. 1.4) of K_j at x; in particular (Rem. 1.5(3)) r^-n H^n(K_j ∩ B_{rR}(x)) -> omega_n R^n, so r^-n H^n(K_j ∩ B_{rR}(x)) is bounded for all small r.
+
+7. Weighted tangent planes (Simon Rem. 1.8(1)). Let x in K_{j,i} \ (E_j ∪ E'_{j,i}). For f in C_c with spt f ⊆ B_R(0) and small r > 0,
+ integral over eta_{x,r}(M_k) of f(y) theta(x + r y) dH^n(y) = theta(x) * (integral over eta_{x,r}(K_j) of f dH^n) + integral over eta_{x,r}(K_j) of f(y) (theta(x + r y) - theta(x)) dH^n(y) + integral over eta_{x,r}(M_k \ K_j) of f(y) theta(x + r y) dH^n(y).
+The first term tends to theta(x) * (integral of f over T_x N_i) by step 6. The second is at most sup|f| * sup{|theta(z) - theta(x)| : z in K_j ∩ B_{rR}(x)} * r^-n H^n(K_j ∩ B_{rR}(x)), which tends to 0 by continuity of theta|K_j at x and the boundedness at the end of step 6. The third is at most sup|f| * r^-n * (integral of theta over (M_k \ K_j) ∩ B_{rR}(x)), which tends to 0 because x is not in E_j (step 4). Hence T_x := T_x N_i, an n-dimensional subspace, satisfies Def. 1.7 for (M_k, theta) at x, hence for (M, theta) at x by step 2: HasWeightedApproximateTangentSpaceAt n M theta x T_x holds. Since H^n(M_k \ union_j K_j) = 0, H^n(K_j \ union_i K_{j,i}) = 0 and all exceptional sets are null, this holds for H^n-a.e. x in M_k, and therefore (step 2) for H^n-a.e. x in M.
+
+8. Identification of p_x. At every such x we have x in M, so theta(x) > 0, and weighted approximate tangent spaces at x are unique (Def. 1.7: 'evidently P_x is unique'; SimonGMT HasWeightedApproximateTangentSpaceAt.unique, which only needs theta(x) != 0). Therefore the subspace selected by choice in the definition of V.tangentProj is T_x, i.e. p_x = T_x.starProjection. With step 1 this proves (b).
+
+9. Borel representative and measurability. For each piece (k, j, i) define g_{k,j,i}(x) := p_{T_x N_i} for x in N_i. Writing x = phi_i(u) with u = phi_i^-1(x) (continuous on N_i) and A := D phi_i(u) (injective and continuous in u), T_x N_i = A(R^n) and p_{T_x N_i} = A (A^T A)^-1 A^T, which depends continuously on x in N_i; hence g_{k,j,i} is Borel on the Borel set N_i. Enumerate the countably many Borel sets K_{j,i} (over all k, j, i) as B_1, B_2, ... with corresponding maps g_m, let B'_m := B_m \ union_{m' < m} B_{m'}, and define g(x) := g_m(x) for x in B'_m and g(x) := 0 off the union of the B'_m. Then g is Borel. The union of the B_m has H^n-null complement in M (steps 2, 3, 5), and by steps 7-8, for H^n-a.e. x in B'_m ⊆ K_{j,i} we have p_x = p_{T_x N_i} = g(x). Thus p_x = g(x) at H^n-a.e. point of M, so by step 1 V.tangentProj agrees mu-a.e. with the Borel (hence strongly measurable) map g, i.e. V.tangentProj is mu-a.e. strongly measurable. This proves (a). QED
+
+## Key steps
+
+1. Reduce mu-a.e. claims to H^n-a.e. claims on M (mu << H^n restricted to M) and replace theta by a Borel representative
+2. Localize to M_k = M ∩ W_k with closure(W_k) compact in U, so theta is integrable on compacts and blow-ups of M and M_k agree
+3. Lusin: compact K_j ⊆ M_k exhausting M_k up to a null set, theta|K_j continuous and positive, H^n(K_j) < infinity
+4. Lemma 1.2/Remark 1.3: cover by finite-measure embedded C^1 submanifolds N_i up to an H^n-null set; disjoint Borel pieces K_{j,i}
+5. Proof of 1.6 (=>) with the upper density theorem: T_x N_i is the unweighted approximate tangent space of K_j at a.e. x in K_{j,i}
+6. Remark 1.8(1): continuity of theta on K_j and vanishing density of theta H^n on M_k minus K_j give the weighted approximate tangent space T_x N_i
+7. Uniqueness where theta(x) > 0 identifies p_x = p_{T_x N_i}
+8. x -> p_{T_x N_i} = A(A^T A)^-1 A^T is continuous on N_i; gluing gives a Borel representative, hence mu-a.e. strong measurability
+
+## Reference use
+
+### local-project
+
+Queries:
+- `diff <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean (identical); diff GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean (identical)`
+- `grep -o '"lgc_[a-z_]*"' <run>/dag.json (no match); python3 listing of every dag.json node id, status and lean_name, plus the lean_statements of aal_lp_monotonicity, aal_tangent_structure, aal_density_ge_one, aal_pinched_density_bounds and rectifiableVarifold_ae_tangentProj_starProjection`
+- `grep -n 'theorem HasGeneralizedMeanCurvatureIn.cutoffMass_deriv_identity\|theorem HasGeneralizedMeanCurvatureIn.hasDerivAt_normalizedCutoffMass\b\|Corrected Simon (4.3.16)\|^def cutoffCancellationFactor\|theorem HasGeneralizedMeanCurvatureIn.hasDerivAt_cancelledCutoffMass\|theorem HasGeneralizedMeanCurvatureIn.exists_cancellationFactor_squeeze_of_lt\|structure LpAnnularCorrection\|theorem HasGeneralizedMeanCurvatureIn.cancelledCutoffMass_squeeze\|def lpMeanCurvatureKappa\|def monotonicityCutoff\|theorem integral_lpCurvatureCoefficientBound\|theorem tendsto_cutoffDefect_difference\|theorem tendsto_cutoffMass' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/*.lean`
+- `grep -rn sorry .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Lp*.lean | wc -l (0)`
+- `sed -n 240,330p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean; sed -n 1,330p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean; sed -n 1,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean; sed -n 395,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `grep -n 'structure RectifiableVarifold' -A 40 .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `sed -n 1,120p and sed -n 280,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'theorem hausdorff_blowUp_image\|theorem .*blowUp' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `rg -n 'μHE\[' <snapshot>/mathlib/Mathlib (timed out after 120 s; replaced by the targeted greps below)`
+- `grep -n 'theorem\|lemma\|notation\|def ' .lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; diff -q against <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (identical)`
+- `timeout 100 grep -rn 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le\b\|theorem tendsto_integral_of_dominated_convergence\b\|theorem integral_integral_swap\b\|theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume\|theorem euclideanHausdorffMeasure_coe_image\|lemma measure_compl_support' on ParametricIntegral.lean, DominatedConvergence.lean, Integral/Prod.lean, Geometry/Euclidean/Volume/Measure.lean, Measure/Support.lean`
+- `timeout 100 grep -rn 'theorem integral_hasDerivAt_right\b\|theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image\|theorem lintegral_mul_le_Lp_mul_Lq \|theorem lintegral_lintegral_swap \|theorem add_one_le_exp \|lemma mem_support_iff_forall\|lemma one_add_mul_le_pow\|theorem volume_closedBall\|tendsto_measure_iInter_atTop' on the corresponding <snapshot>/mathlib/Mathlib files; grep -rln 'theorem tendsto_measure_iInter_atTop' <snapshot>/mathlib/Mathlib/MeasureTheory/`
+- `timeout 60 grep -rn 'theorem integral_withDensity_eq_integral_toReal_smul\b\|theorem integral_withDensity_eq_integral_toReal_smul₀\|theorem ae_restrict_mem₀\|theorem LocallyIntegrableOn.integrableOn_compact_subset\|theorem Monotone.measurable\|theorem restrict_map\b' on Bochner/ContinuousLinearMap.lean, Function/LocallyIntegrable.lean, Measure/Restrict.lean, BorelSpace/Order.lean`
+- `grep -n '^3\.[0-9]' and sed -n 250,560p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `lake env lean -o /tmp/lgc-v2-check/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean`
+- `LEAN_PATH=/tmp/lgc-v2-check/olean:$(lake env printenv LEAN_PATH) lean /tmp/lgc-v2-check/src/Types.lean`
+- `LEAN_PATH=/tmp/lgc-v2-check/olean:$(lake env printenv LEAN_PATH) lean /tmp/lgc-v2-check/src/Asm.lean (with #print axioms GMT.Ch05.Submission.lipschitz_graph_corollary)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/lgc-v2-check/src/Types.lean`
+- `/tmp/lgc-v2-check/src/Asm.lean`
+- `/tmp/lgc-v2-scripts/density_monotonicity_proof.txt`
+
+Snapshot and names. manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean equals the workspace Contract.lean, and Submission.lean equals Contract.lean. No lgc_ name occurs in the snapshot or in dag.json. Related nodes in other branches (aal_lp_monotonicity, aal_tangent_structure, aal_pinched_density_bounds, rectifiableVarifold_ae_tangentProj_starProjection) carry different names and types.
+
+Book versus library. The printed text (chapter-04.txt) has 4.1 with a minus curvature term and the integrating factor exp(+integral F_0) in 4.3-4.4. The pinned SimonGMT corrects this:
+- cutoffMass_deriv_identity (Chapter04/MeanCurvature.lean:251) gives n I - rho I' = -rho J' - C.
+- hasDerivAt_normalizedCutoffMass (MeanCurvature.lean:283-286) is documented as 'Corrected Simon (4.3.16) ... plus'.
+- cutoffCancellationFactor (LpCancellation.lean:162) is exp(-integral).
+- cancelledCutoffMass_squeeze (LpCancellation.lean:400) and exists_cancellationFactor_squeeze_of_lt (LpAnnular.lean:47) are the squeeze-and-limit route.
+- lpMeanCurvatureKappa = (p-n)/(4p) (LpMeanCurvature.lean:76).
+- Chapter04/Lp*.lean contains no sorry.
+These results are stated for Chapter04.RectifiableVarifold, which has a measurable carrier, a stored tangent field and a globally locally finite weight (Basic.lean:53-72). They are therefore used only as cross-checks, and the corrected child proof re-derives (M) for the contract's varifold. hausdorff_blowUp_image (TangentDensity.lean:31) models the blow-up scaling.
+
+Mathlib items used by the corrected proof, all present in the snapshot:
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (ParametricIntegral.lean:286)
+- tendsto_integral_of_dominated_convergence (DominatedConvergence.lean:57)
+- integral_hasDerivAt_right (FundThmCalculus.lean:725)
+- ENNReal.lintegral_mul_le_Lp_mul_Lq (MeanInequalities.lean:202)
+- lintegral_lintegral_swap (Measure/Prod.lean:1071)
+- integral_withDensity_eq_integral_toReal_smul₀ (Bochner/ContinuousLinearMap.lean:311)
+- ae_restrict_mem₀ and MeasurableEquiv.restrict_map (Restrict.lean:637, 910)
+- LocallyIntegrableOn.integrableOn_compact_subset (LocallyIntegrable.lean:122)
+- Monotone.measurable (BorelSpace/Order.lean:790)
+- mem_support_iff_forall and measure_compl_support (Support.lean:75, 202)
+- tendsto_measure_iInter_atTop (Measure/Continuity.lean:220)
+- one_add_mul_le_pow (Ring/Pow.lean:99) and add_one_le_exp (Complex/Exponential.lean:632)
+- the notation μHE[d], Isometry.euclideanHausdorffMeasure_image, MeasureTheory.euclideanHausdorffMeasure_homothety_image, InnerProductSpace.euclideanHausdorffMeasure_eq_volume and euclideanHausdorffMeasure_coe_image (Geometry/Euclidean/Volume/Measure.lean:72, 131, 164, 191, 226)
+- volume_closedBall (VolumeOfBalls.lean:324, 354)
+A whole-tree rg for μHE[ timed out, so the targeted greps above were used instead.
+
+Lean (lean-4.35.0-rc3). The five child types elaborate after importing GMT.Ch05.Submission. The parent assembly compiles to GMT.Ch05.Submission.lipschitz_graph_corollary : GMT.Ch05.LipschitzGraphCorollary, with axioms propext, sorryAx, Classical.choice and Quot.sound; sorry occurs only in the five children and the sibling placeholder.
