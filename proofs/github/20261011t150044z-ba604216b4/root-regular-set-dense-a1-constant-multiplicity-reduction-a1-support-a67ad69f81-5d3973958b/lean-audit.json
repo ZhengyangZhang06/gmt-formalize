@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cfdcb15eaee2ea84effccb7c86908699b32d1f2b6448cf48a7e25385a61a4f2a",
+  "git_delta": {
+    "base_commit": "d3ea2e1c191b161a95169c907a576bb52a804fed",
+    "candidate_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_support_subset_of_vanish",
+    "diff_sha256": "6d9544f01958b10035ead5b47c5027f5b2c266e4364092b519c845da8201958d",
+    "source_sha256": "cf2b642b826c07498e3fee6bbfb48fc1914cc8e6b26ce4f720892b72c7cfd11f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_support_subset_of_vanish",
+      "statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (F : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → F ω = 0) → F.support ⊆ K ∧ IsCompact F.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
