@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "05f08b7812ee99d9e07886dcb179f46e3b3cea8a4fb10c5e3685282ed5d0d33a",
+  "git_delta": {
+    "base_commit": "3558c05a1c21da64b03b72054f9da21576684897",
+    "candidate_commit": "bb8a069533cebf3cb8c21e33803e5294faa7a94a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_vel_graph_fderiv",
+    "diff_sha256": "40f883256d25fdd8864948335799cc1b33cf375cb518d69bda8e7c804d91846b",
+    "source_sha256": "39f52cd2b00469ba093d04842038c214ee6780339ec9cfce7276233896cb416d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_vel_graph_fderiv",
+      "statement": "∀ n ℓ : ℕ, ∀ (u : Rn n → Rn ℓ) (x : Rn n), DifferentiableAt ℝ u x → DifferentiableAt ℝ (fun z : Rn n => graphPoint z (u z)) x ∧ ∀ v : Rn n, fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x v = graphPoint v (fderiv ℝ u x v)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
