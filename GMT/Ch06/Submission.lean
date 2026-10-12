@@ -359,6 +359,64 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Continuity from above for the shrinking level bands (parent proof, Step 6).  With
+`δ_j = 1/(j+1)`, the sets `E_j = K ∩ f⁻¹((a − δ_j, b + δ_j))` are Borel (`K` is closed and
+`f` is continuous on `K`), decrease in `j`, have intersection `K ∩ f⁻¹([a, b])`, and
+`μ(E_0) ≤ μ(K) < ∞`; so `μ(E_j) → μ(K ∩ f⁻¹([a, b]))`. -/
+theorem Submission.slicing_mb_cdb_band_measure_tendsto :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (K : Set (Eucl P)) (f : Eucl P → ℝ) (a b : ℝ),
+      IsClosed K → ContinuousOn f K → μ K < ∞ →
+        Tendsto
+          (fun j : ℕ => μ (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))))
+          atTop (𝓝 (μ (K ∩ f ⁻¹' Icc a b))) := by
+  intro P μ K f a b hK hf hμK
+  -- `E_j = K \ (K ∩ f⁻¹((a − δ_j, b + δ_j)ᶜ))` is Borel.
+  have hmeas : ∀ j : ℕ,
+      MeasurableSet (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))) := by
+    intro j
+    have hcl :
+        IsClosed (K ∩ f ⁻¹' (Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)))ᶜ) :=
+      hf.preimage_isClosed_of_isClosed hK isOpen_Ioo.isClosed_compl
+    have heq : K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) =
+        K \ (K ∩ f ⁻¹' (Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)))ᶜ) := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage, Set.mem_sdiff, mem_compl_iff]
+      tauto
+    rw [heq]
+    exact hK.measurableSet.diff hcl.measurableSet
+  -- `δ_j` decreases, so the bands decrease.
+  have hanti : Antitone fun j : ℕ =>
+      K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) := by
+    intro i j hij x hx
+    have hle : 1 / ((j : ℝ) + 1) ≤ 1 / ((i : ℝ) + 1) := Nat.one_div_le_one_div hij
+    simp only [mem_inter_iff, mem_preimage, mem_Ioo] at hx ⊢
+    exact ⟨hx.1, by linarith [hx.2.1], by linarith [hx.2.2]⟩
+  -- `⋂_j E_j = K ∩ f⁻¹([a, b])`.
+  have hinter :
+      ⋂ j : ℕ, K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) =
+        K ∩ f ⁻¹' Icc a b := by
+    ext x
+    simp only [mem_iInter, mem_inter_iff, mem_preimage, mem_Ioo, mem_Icc]
+    constructor
+    · intro h
+      refine ⟨(h 0).1, ?_, ?_⟩
+      · by_contra! hlt
+        obtain ⟨j, hj⟩ := exists_nat_one_div_lt (sub_pos.mpr hlt)
+        linarith [(h j).2.1]
+      · by_contra! hlt
+        obtain ⟨j, hj⟩ := exists_nat_one_div_lt (sub_pos.mpr hlt)
+        linarith [(h j).2.2]
+    · rintro ⟨hxK, hax, hxb⟩ j
+      have hδ : 0 < 1 / ((j : ℝ) + 1) := Nat.one_div_pos_of_nat
+      exact ⟨hxK, by linarith, by linarith⟩
+  -- `μ(E_0) ≤ μ(K) < ∞`; continuity from above.
+  have hfin : ∃ j : ℕ,
+      μ (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))) ≠ ∞ :=
+    ⟨0, ((measure_mono inter_subset_left).trans_lt hμK).ne⟩
+  have h := tendsto_measure_iInter_atTop (fun j => (hmeas j).nullMeasurableSet) hanti hfin
+  rw [hinter] at h
+  exact h
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
