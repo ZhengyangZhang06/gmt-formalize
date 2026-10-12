@@ -1820,6 +1820,112 @@ theorem Submission.bv_mollifier_sub_lintegral_le : ∀ (n : ℕ) (W Q : Set (Rn 
   -- On `Q` we have `1_W u = u`, because `x ∈ closedBall x σ ⊆ W`.
   refine (setLIntegral_congr_fun hQ fun x hx ↦ ?_).trans_le hconv
   simp only [indicator_of_mem (hQW x hx (mem_closedBall_self hσ.le))]
+/-- **Simon Ch. 2, Theorem 2.6 (p. 50), compactness for BV functions.** If `u_k ∈ BV_loc(U)` and
+`sup_k ∫_W (|u_k| + |Du_k|(W)) < ∞` for every open `W ⊂⊂ U`, then some subsequence `u_{ψ(k)}`
+converges in `L¹_loc(U)` to a `v ∈ BV_loc(U)` with `|Dv|(W) ≤ liminf_k |Du_{ψ(k)}|(W)` for every
+open `W ⊂⊂ U`. A0: `∫_W |u_k| ≤ c_W` and `|Du_k|(W) ≤ c_W`. A1: for compact `Q ⊆ U` and
+`W = thickening (δ / 2) Q ⊂⊂ U`, the mollifications `ρ_σ * (1_W u_k)` are equibounded,
+equi-Lipschitz and within `σ c_W` of `u_k` in `L¹(Q)`, so `{u_k}` has finite `L¹(Q)`-nets.
+A2: a diagonal subsequence converges in `L¹_loc(U)`. A3–A4: lower semicontinuity and the uniform
+bound (2.1) pass to the limit. -/
+theorem Submission.bv_compactness_theorem : BVCompactness := by
+  intro n U u hBV hS
+  -- `U` is open and every `u_k` is locally integrable on `U`.
+  have hU : IsOpen U := (hBV 0).1
+  have hloc : ∀ k, LocallyIntegrableOn (u k) U volume := fun k ↦ (hBV k).2.1
+  -- Step A0: for open `W ⊂⊂ U`, one `c ≥ 0` bounds `∫_W |u_k|` and `|Du_k|(W)` for all `k`
+  -- (`Lⁿ(W) ≤ Lⁿ(closure W) < ∞`).
+  have hA0 : ∀ W, IsOpen W → Chapter02.IsRelativelyCompactIn W U → ∃ c : ℝ, 0 ≤ c ∧
+      ∀ k, (∫⁻ x in W, ‖u k x‖ₑ) ≤ ENNReal.ofReal c ∧
+        Chapter02.bvVariationOn (u k) W ≤ ENNReal.ofReal c := fun W hW hWU ↦
+    Submission.bv_compactness_uniform_bounds n W u hW
+      ((measure_mono subset_closure).trans_lt hWU.1.measure_lt_top) (hS W hW hWU)
+  -- Step A1: `{u_k}` has finite `L¹(Q)`-nets on every compact `Q ⊆ U`.
+  have hA1 : ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ U → ∀ ε : ℝ, 0 < ε →
+      ∃ F : Finset ℕ, ∀ k, ∃ j ∈ F, (∫⁻ x in Q, ‖u k x - u j x‖ₑ) < ENNReal.ofReal ε := by
+    intro Q hQ hQU
+    -- `cthickening δ Q ⊆ U`, and `W = thickening (δ / 2) Q` is open with `W ⊂⊂ U`.
+    obtain ⟨δ, hδ, hδU⟩ := hQ.exists_cthickening_subset_open hU hQU
+    set W := thickening (δ / 2) Q
+    have hWo : IsOpen W := isOpen_thickening
+    have hWcl : closure W ⊆ cthickening (δ / 2) Q := closure_thickening_subset_cthickening _ _
+    have hWU : Chapter02.IsRelativelyCompactIn W U :=
+      ⟨hQ.cthickening.of_isClosed_subset isClosed_closure hWcl,
+        hWcl.trans ((cthickening_mono (by linarith) Q).trans hδU)⟩
+    obtain ⟨c, hc, hcu⟩ := hA0 W hWo hWU
+    have hWint : ∀ k, IntegrableOn (u k) W volume := fun k ↦
+      ((hloc k).integrableOn_compact_subset hWU.2 hWU.1).mono_set subset_closure
+    -- `F_k = 1_W u_k` is integrable with `∫ |F_k| = ∫_W |u_k| ≤ c`.
+    have hFint : ∀ k, Integrable (W.indicator (u k)) volume := fun k ↦
+      (hWint k).integrable_indicator hWo.measurableSet
+    have hF1 : ∀ k, (∫ t, |W.indicator (u k) t|) ≤ c := fun k ↦ by
+      have h := integral_norm_eq_lintegral_enorm (hFint k).aestronglyMeasurable
+      simp only [Real.norm_eq_abs] at h
+      rw [h]
+      refine ENNReal.toReal_le_of_le_ofReal hc ?_
+      simp_rw [enorm_indicator_eq_indicator_enorm]
+      rw [lintegral_indicator hWo.measurableSet]
+      exact (hcu k).1
+    refine Submission.bv_lintegral_finite_net_of_lipschitz_approx n Q u hQ
+      (fun k ↦ (hloc k).integrableOn_compact_subset hQU hQ) fun ε hε ↦ ?_
+    -- Mollifier radius `σ = min (δ / 4) (ε / (c + 1))`, so `σ < δ / 2` and `σ c ≤ ε`.
+    set σ := min (δ / 4) (ε / (c + 1))
+    have hσ : 0 < σ := lt_min (by positivity) (by positivity)
+    have hσδ : σ < δ / 2 := (min_le_left _ _).trans_lt (by linarith)
+    have hσc : σ * c ≤ ε := calc
+      σ * c ≤ ε / (c + 1) * c := mul_le_mul_of_nonneg_right (min_le_right _ _) hc
+      _ ≤ ε := by
+        rw [div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
+        nlinarith
+    -- Kernel: the normalized bump `ρ` at `0` with radii `σ / 2 < σ`; it is continuous, `≥ 0`,
+    -- supported in `B(0, σ)`, of integral `1`, bounded by some `A` and `K`-Lipschitz.
+    let f : ContDiffBump (0 : Rn n) := ⟨σ / 2, σ, half_pos hσ, half_lt_self hσ⟩
+    set ρ : Rn n → ℝ := f.normed volume
+    have hρcs : HasCompactSupport ρ := f.hasCompactSupport_normed
+    have hρC1 : ContDiff ℝ 1 ρ := f.contDiff_normed
+    obtain ⟨K, hK⟩ := hρC1.lipschitzWith_of_hasCompactSupport hρcs one_ne_zero
+    obtain ⟨A, hA⟩ := f.continuous_normed.bounded_above_of_compact_support hρcs
+    have hA' : ∀ x, |ρ x| ≤ A := fun x ↦ (Real.norm_eq_abs _).symm.trans_le (hA x)
+    have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA' 0)
+    -- `w_k = ρ * (1_W u_k)`: bounded by `A c` and `K c`-Lipschitz, by the convolution bounds.
+    refine ⟨A * c, K * c, fun k ↦ convolution ρ (W.indicator (u k))
+      (ContinuousLinearMap.lsmul ℝ ℝ) volume, fun k x _ ↦ ?_, fun k x _ y _ ↦ ?_, fun k ↦ ?_⟩
+    · exact (Submission.bv_convolution_bound_and_lipschitz n ρ _ A K hA' hK (hFint k) x x).1.trans
+        (mul_le_mul_of_nonneg_left (hF1 k) hA0)
+    · calc _ ≤ K * ‖x - y‖ * (∫ t, |W.indicator (u k) t|) :=
+            (Submission.bv_convolution_bound_and_lipschitz n ρ _ A K hA' hK (hFint k) x y).2
+        _ ≤ K * ‖x - y‖ * c := mul_le_mul_of_nonneg_left (hF1 k) (by positivity)
+        _ = K * c * ‖x - y‖ := by ring
+    -- Mollifier estimate: `∫_Q |u_k - w_k| ≤ σ |Du_k|(W) ≤ σ c ≤ ε`, since `B_σ(x) ⊆ W` on `Q`.
+    · have hball : ∀ x ∈ Q, closedBall x σ ⊆ W := fun x hx y hy ↦
+        mem_thickening_iff.2 ⟨x, hx, (mem_closedBall.1 hy).trans_lt hσδ⟩
+      calc (∫⁻ x in Q, ‖u k x - convolution ρ (W.indicator (u k))
+            (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ)
+          = ∫⁻ x in Q, ‖convolution ρ (W.indicator (u k))
+              (ContinuousLinearMap.lsmul ℝ ℝ) volume x - u k x‖ₑ :=
+            lintegral_congr fun x ↦ enorm_sub_rev _ _
+        _ ≤ ENNReal.ofReal σ * Chapter02.bvVariationOn (u k) W :=
+          Submission.bv_mollifier_sub_lintegral_le n W Q (u k) ρ σ hWo (hWint k)
+            hQ.isClosed.measurableSet f.continuous_normed f.nonneg_normed
+            f.support_normed_eq.subset f.integral_normed hball
+        _ ≤ ENNReal.ofReal σ * ENNReal.ofReal c := by gcongr; exact (hcu k).2
+        _ = ENNReal.ofReal (σ * c) := (ENNReal.ofReal_mul hσ.le).symm
+        _ ≤ ENNReal.ofReal ε := ENNReal.ofReal_le_ofReal hσc
+  -- Step A2: a diagonal subsequence `u_{ψ(k)}` converges in `L¹_loc(U)` to `v ∈ L¹_loc(U)`.
+  obtain ⟨ψ, v, hψ, hv, hL1⟩ :=
+    Submission.bv_exists_subseq_tendstoLocallyInL1On n U u hU hloc hA1
+  have hlocψ : ∀ᶠ k in atTop, LocallyIntegrableOn (u (ψ k)) U volume :=
+    Eventually.of_forall fun k ↦ hloc (ψ k)
+  refine ⟨ψ, v, hψ, ?_, hL1, fun W hW hWU ↦ ?_⟩
+  -- Step A4: by A0, every `u_{ψ(k)}` satisfies (2.1) on `W` with the constant `c_W`, and this
+  -- bound passes to the `L¹_loc` limit `v`.
+  · refine Chapter02.isLocallyBV_of_locallyL1_of_uniform_bound hU hv hlocψ hL1
+      fun W hW hWU ↦ ?_
+    obtain ⟨c, hc, hcu⟩ := hA0 W hW hWU
+    exact ⟨c, hc, Eventually.of_forall fun k g hg hgW ↦
+      Submission.bv_integral_div_le_of_variation_le n W (u (ψ k)) c hc (hcu (ψ k)).2 g hg hgW⟩
+  -- Step A3: lower semicontinuity of `|D·|(W)` under `L¹_loc(U)` convergence.
+  · exact Chapter02.bvVariationOn_le_liminf_of_locallyL1 hv hlocψ hL1 hWU
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
