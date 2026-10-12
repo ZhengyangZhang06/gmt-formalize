@@ -464,6 +464,129 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
   calc |T ω| ≤ B * (C + ε / (B + 1)) := this
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
+/-- **Separability step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `closure W` is compact, a
+countable family `E` of test forms supported in `W` is dense among all test forms supported in
+`W`, uniformly in the Euclidean coefficient norm.  The coefficient vector
+`c(α) = (α(e_{I 0}, …, e_{I (n-1)}))_I ∈ ℝ^(Fin n → Fin P)` satisfies `|α| ≤ √N ‖c(α)‖_∞`.  For
+each accuracy `1/(m+1)` and scale `1/(j+1)`, the forms whose coefficients oscillate by less than
+`1/(m+1)` at scale `1/(j+1)` are approximated through their values on a finite `1/(j+1)`-net of
+`closure W`, which lie in a separable finite-dimensional space. -/
+theorem Submission.cmb_exists_countable_dense_testForms : ∀ (P n : ℕ) (U W : Set (Eucl P)), IsCompact (closure W) → ∃ E : Set (TestFormOn U n), E.Countable ∧ (∀ η ∈ E, tsupport (η : DifferentialForm (Eucl P) n) ⊆ W) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → ∀ ε : ℝ, 0 < ε → ∃ η ∈ E, ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x) ≤ ε := by
+  intro P n U W hW
+  classical
+  -- The coefficient map `c` and the estimate `|α| ≤ √N ‖c α‖_∞`.
+  let c : Covector (Eucl P) n → (Fin n → Fin P) → ℝ :=
+    fun α I => α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+  have hc_cont : Continuous c := continuous_pi fun I => by fun_prop
+  have hc_sub : ∀ α γ, c (α - γ) = c α - c γ := fun α γ => by funext I; simp [c]
+  have hc_zero : c 0 = 0 := by funext I; simp [c]
+  set N : ℝ := Real.sqrt (Fintype.card (Fin n → Fin P)) with hN_def
+  have hN : 0 ≤ N := Real.sqrt_nonneg _
+  have hcmp : ∀ α, covectorEuclideanNorm α ≤ N * ‖c α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hN_def, ← Real.sqrt_sq (norm_nonneg (c α)), ← Real.sqrt_mul (by positivity)]
+    apply Real.sqrt_le_sqrt
+    calc ∑ I : Fin n → Fin P,
+          (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+        ≤ ∑ _I : Fin n → Fin P, ‖c α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h : |c α I| ≤ ‖c α‖ := by
+              simpa [Real.norm_eq_abs] using norm_le_pi_norm (c α) I
+            calc (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 = |c α I| ^ 2 :=
+                  (sq_abs _).symm
+              _ ≤ ‖c α‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+          · positivity
+      _ = (Fintype.card (Fin n → Fin P) : ℝ) * ‖c α‖ ^ 2 := by simp
+  -- Test forms supported in `W` vanish off `closure W`.
+  let D : Set (TestFormOn U n) := {ω | tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W}
+  have hzero : ∀ ω ∈ D, ∀ x ∉ closure W, (ω : DifferentialForm (Eucl P) n) x = 0 :=
+    fun ω hω x hx => image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hω h))
+  -- Finite `1/(j+1)`-nets of the compact set `closure W`.
+  have hnet : ∀ j : ℕ, ∃ t : Finset (Eucl P),
+      closure W ⊆ ⋃ y ∈ t, Metric.ball y (1 / ((j : ℝ) + 1)) := by
+    intro j
+    obtain ⟨t, -, ht, hcov⟩ := hW.finite_cover_balls (e := 1 / ((j : ℝ) + 1)) (by positivity)
+    exact ⟨ht.toFinset, by simpa using hcov⟩
+  choose net hnet using hnet
+  -- Accuracy `r = 1/(m+1)` at scale `1/(j+1)`: take a countable dense subset of the coefficient
+  -- values on the net and choose preimages.
+  have key : ∀ m j : ℕ, ∃ E' : Set (TestFormOn U n), E'.Countable ∧ E' ⊆ D ∧
+      ∀ ω ∈ D, (∀ x y, dist x y < 1 / ((j : ℝ) + 1) →
+          dist (c ((ω : DifferentialForm (Eucl P) n) x)) (c ((ω : DifferentialForm (Eucl P) n) y))
+            < 1 / ((m : ℝ) + 1)) →
+        ∃ η ∈ E', ∀ x, ‖c ((ω : DifferentialForm (Eucl P) n) x)
+          - c ((η : DifferentialForm (Eucl P) n) x)‖ ≤ 3 / ((m : ℝ) + 1) := by
+    intro m j
+    set r : ℝ := 1 / ((m : ℝ) + 1) with hr_def
+    have hr : 0 < r := by positivity
+    let Dj : Set (TestFormOn U n) := {ω | ω ∈ D ∧ ∀ x y, dist x y < 1 / ((j : ℝ) + 1) →
+      dist (c ((ω : DifferentialForm (Eucl P) n) x))
+        (c ((ω : DifferentialForm (Eucl P) n) y)) < r}
+    let g : TestFormOn U n → (net j → (Fin n → Fin P) → ℝ) :=
+      fun ω y => c ((ω : DifferentialForm (Eucl P) n) y)
+    obtain ⟨S, hSA, hSc, hAS⟩ :=
+      (TopologicalSpace.IsSeparable.of_separableSpace (g '' Dj)).exists_countable_dense_subset
+    have hpre : ∀ s : S, ∃ ω ∈ Dj, g ω = s := fun s => hSA s.2
+    choose pick hpickD hpickg using hpre
+    have : Countable S := hSc.to_subtype
+    refine ⟨Set.range pick, Set.countable_range pick, ?_, ?_⟩
+    · rintro _ ⟨s, rfl⟩
+      exact (hpickD s).1
+    · intro ω hωD hωmod
+      obtain ⟨s, hsS, hdist⟩ :=
+        Metric.mem_closure_iff.mp (hAS ⟨ω, ⟨hωD, hωmod⟩, rfl⟩) r hr
+      set η := pick ⟨s, hsS⟩ with hη_def
+      have hηD : η ∈ Dj := hpickD ⟨s, hsS⟩
+      have hgη : g η = s := hpickg ⟨s, hsS⟩
+      refine ⟨η, ⟨⟨s, hsS⟩, rfl⟩, fun x => ?_⟩
+      by_cases hx : x ∈ closure W
+      · obtain ⟨y, hy, hxy⟩ := Set.mem_iUnion₂.mp (hnet j hx)
+        have h1 := hωmod x y (Metric.mem_ball.mp hxy)
+        rw [← hgη] at hdist
+        have h2 : dist (c ((ω : DifferentialForm (Eucl P) n) y))
+            (c ((η : DifferentialForm (Eucl P) n) y)) < r :=
+          (dist_le_pi_dist (g ω) (g η) ⟨y, hy⟩).trans_lt hdist
+        have h3 := hηD.2 y x (by rwa [dist_comm])
+        have h4 := dist_triangle4 (c ((ω : DifferentialForm (Eucl P) n) x))
+          (c ((ω : DifferentialForm (Eucl P) n) y)) (c ((η : DifferentialForm (Eucl P) n) y))
+          (c ((η : DifferentialForm (Eucl P) n) x))
+        rw [← dist_eq_norm, show 3 / ((m : ℝ) + 1) = r + r + r by rw [hr_def]; ring]
+        linarith
+      · rw [hzero ω hωD x hx, hzero η hηD.1 x hx, sub_self, norm_zero]
+        positivity
+  choose E' hE'c hE'D hE' using key
+  refine ⟨⋃ m, ⋃ j, E' m j,
+    Set.countable_iUnion fun m => Set.countable_iUnion fun j => hE'c m j, ?_, ?_⟩
+  · intro η hη
+    obtain ⟨m, j, hη⟩ := Set.mem_iUnion₂.mp hη
+    exact hE'D m j hη
+  · intro ω hω ε hε
+    obtain ⟨m, hm⟩ : ∃ m : ℕ, N * (3 / ((m : ℝ) + 1)) ≤ ε := by
+      obtain ⟨m, hm⟩ := exists_nat_gt (3 * N / ε)
+      refine ⟨m, ?_⟩
+      rw [div_lt_iff₀ hε] at hm
+      rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+      nlinarith
+    -- `c ∘ ω` is continuous with compact support, hence uniformly continuous.
+    have huc : UniformContinuous (c ∘ (ω : DifferentialForm (Eucl P) n)) :=
+      (ω.property.1.2.comp_left hc_zero).uniformContinuous_of_continuous
+        (hc_cont.comp ω.property.1.1.continuous)
+    obtain ⟨δ, hδ, hδ'⟩ :=
+      Metric.uniformContinuous_iff.mp huc (1 / ((m : ℝ) + 1)) (by positivity)
+    obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+    obtain ⟨η, hηE, hη⟩ := hE' m j ω hω fun x y hxy => hδ' (hxy.trans hj)
+    refine ⟨η, Set.mem_iUnion.2 ⟨m, Set.mem_iUnion.2 ⟨j, hηE⟩⟩, fun x => ?_⟩
+    calc covectorEuclideanNorm
+          ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x)
+        ≤ N * ‖c ((ω : DifferentialForm (Eucl P) n) x
+            - (η : DifferentialForm (Eucl P) n) x)‖ := hcmp _
+      _ = N * ‖c ((ω : DifferentialForm (Eucl P) n) x)
+            - c ((η : DifferentialForm (Eucl P) n) x)‖ := by rw [hc_sub]
+      _ ≤ N * (3 / ((m : ℝ) + 1)) := mul_le_mul_of_nonneg_left (hη x) hN
+      _ ≤ ε := hm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
