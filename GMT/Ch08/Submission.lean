@@ -678,4 +678,58 @@ theorem Submission.radon_exists_subseq_tendsto_integral :
   rw [Real.dist_eq, abs_lt]
   constructor <;> linarith
 
+/-- **Simon Ch. 1, 4.16 (Compactness Theorem for Radon measures), corrected**, on `Gₙ(U)`; used in
+Ch. 8, 5.1 and 5.8.  If `μ_j(K × G(N,n))` is eventually bounded for each compact `K ⊆ U`, then a
+subsequence `μ_{φ(j)}` converges to an `n`-varifold `V` on `U` against every test function supported
+in `U × G(N,n)`.  The printed proof extracts with Alaoglu, which only yields a subnet; on the second
+countable space `Gₙ(U)` the extraction is sequential, and the limit functional is represented by
+the Riesz theorem (Ch. 1, 4.12). -/
+theorem Submission.varifold_radon_compactness :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : ℕ → Measure (Euclidean N × Grassmannian N n)),
+      IsOpen U →
+      (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → ∃ C : ℝ≥0∞, C ≠ ∞ ∧
+        ∀ᶠ j in atTop, μ j (K ×ˢ (univ : Set (Grassmannian N n))) ≤ C) →
+      ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ V : Varifold N n U,
+        ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+          tsupport f ⊆ U ×ˢ (univ : Set (Grassmannian N n)) →
+          Tendsto (fun j ↦ ∫ z, f z ∂(μ (φ j))) atTop (𝓝 (∫ z, f z ∂V.measure)) := by
+  intro N n U μ hU hμ
+  -- Simon's `Gₙ(U)`: the open subset `U × G(N,n)`, as a subtype.
+  set S : Set (Euclidean N × Grassmannian N n) := U ×ˢ (univ : Set (Grassmannian N n))
+  have hSo : IsOpen S := hU.prod isOpen_univ
+  have hS : MeasurableSet S := hSo.measurableSet
+  have : LocallyCompactSpace S := hSo.locallyCompactSpace
+  -- The `μ_j` restricted to `Gₙ(U)`; a compact subset of `Gₙ(U)` lies over a compact `K ⊆ U`.
+  have hμS : ∀ K : Set S, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧
+      ∀ᶠ j in atTop, (μ j).comap Subtype.val K ≤ C := by
+    intro K hK
+    obtain ⟨C, hC, hev⟩ := hμ ((fun z : S ↦ z.1.1) '' K)
+      (hK.image (continuous_fst.comp continuous_subtype_val)) (by rintro _ ⟨z, _, rfl⟩; exact z.2.1)
+    refine ⟨C, hC, hev.mono fun j hj ↦ ?_⟩
+    rw [comap_subtype_coe_apply hS]
+    refine (measure_mono ?_).trans hj
+    rintro _ ⟨z, hz, rfl⟩
+    exact ⟨⟨z, hz, rfl⟩, mem_univ _⟩
+  -- Sequential extraction, then Riesz representation of the limit functional on `C_c(Gₙ(U))`.
+  obtain ⟨φ, hφ, hlim⟩ :=
+    Submission.radon_exists_subseq_tendsto_integral S (fun j ↦ (μ j).comap Subtype.val) hμS
+  obtain ⟨ν, hν, hconv⟩ :=
+    Submission.radon_exists_measure_of_tendsto_integral S (fun j ↦ (μ (φ j)).comap Subtype.val)
+      (fun K hK ↦ (hμS K hK).imp fun _ h ↦ ⟨h.1, hφ.tendsto_atTop.eventually h.2⟩) hlim
+  refine ⟨φ, hφ, Varifold.ofDomainMeasure hU ν, fun f hf ↦ ?_⟩
+  -- `f` vanishes off `Gₙ(U)` and restricts to a compactly supported function on it.
+  have hf0 : ∀ z, z ∉ S → f z = 0 := fun z hz ↦ image_eq_zero_of_notMem_tsupport fun h ↦ hz (hf h)
+  let f' : C_c(S, ℝ) :=
+    ⟨⟨fun z ↦ f z, f.continuous.comp continuous_subtype_val⟩,
+      IsCompact.of_isClosed_subset (Topology.IsInducing.subtypeVal.isCompact_preimage'
+          f.hasCompactSupport (by rwa [Subtype.range_coe])) (isClosed_tsupport _)
+        (closure_minimal (fun z hz ↦ subset_tsupport f hz)
+          ((isClosed_tsupport f).preimage continuous_subtype_val))⟩
+  have hμf : ∀ j, ∫ z, f' z ∂((μ (φ j)).comap Subtype.val) = ∫ z, f z ∂(μ (φ j)) := fun j ↦
+    (integral_subtype_comap hS _).trans (setIntegral_eq_integral_of_forall_compl_eq_zero hf0)
+  have hVf : ∫ z, f z ∂(Varifold.ofDomainMeasure hU ν).measure = ∫ z, f' z ∂ν :=
+    (MeasurableEmbedding.subtype_coe hS).integral_map _
+  rw [hVf]
+  exact (hconv f').congr hμf
+
 end GMT.Ch08
