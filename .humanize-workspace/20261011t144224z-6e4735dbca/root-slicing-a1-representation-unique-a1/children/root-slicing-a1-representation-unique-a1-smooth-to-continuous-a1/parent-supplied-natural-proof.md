@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.representation_unique-a1`
+- Child DAG node: `root.slicing-a1.representation_unique-a1.smooth_to_continuous-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof (agreement on continuous functions via mollification and dominated convergence). Here O is any open set and g₁, g₂ are any integrable functions; the parent uses O = W′ and g_i = g_i^β = 1_{K_r}·v_i(dx^β).
+
+Setting. μ₁, μ₂ are Borel measures on ℝ^P; g_i is μ_i-integrable (i = 1, 2); O ⊆ ℝ^P is open. Hypothesis (H): ∫ φ g₁ dμ₁ = ∫ φ g₂ dμ₂ for every φ that is C^∞ (smooth of every finite order) with compact support and tsupport φ ⊆ O. Fix a continuous φ with compact support and K := tsupport φ ⊆ O. If K = ∅, then φ ≡ 0 and both sides vanish, so assume K ≠ ∅.
+
+1. (Preliminaries.) K is compact, O is open and K ⊆ O, so there is s > 0 with cthickening s K ⊆ O (IsCompact.exists_cthickening_subset_open). Since φ is continuous with compact support, there is M ≥ 0 with |φ(x)| ≤ M for all x.
+
+2. (Mollification.) For j ∈ ℕ let ε_j := s/(j + 2), so 0 < ε_j < s and ε_j → 0. Let ρ_j be C^∞ with ρ_j ≥ 0, ρ_j = 0 outside B̄(0, ε_j) and ∫ ρ_j dℒ^P = 1. Set φ_j(x) := ∫ ρ_j(x − y) φ(y) dℒ^P(y).
+ (a) φ_j is C^∞: it is the convolution of a compactly supported C^∞ function with a continuous compactly supported function, and one may differentiate under the integral sign.
+ (b) If φ_j(x) ≠ 0, some y has ρ_j(x − y) ≠ 0 and φ(y) ≠ 0, so |x − y| ≤ ε_j and y ∈ K; hence infDist(x, K) ≤ ε_j. So φ_j = 0 outside cthickening ε_j K, which is closed and bounded, hence compact. Therefore φ_j has compact support and tsupport φ_j ⊆ cthickening ε_j K ⊆ cthickening s K ⊆ O.
+ (c) |φ_j(x)| ≤ ∫ ρ_j(x − y)|φ(y)| dy ≤ M·∫ ρ_j = M for all x.
+ (d) For each x, |φ_j(x) − φ(x)| = |∫ ρ_j(x − y)(φ(y) − φ(x)) dy| ≤ sup{|φ(y) − φ(x)| : |y − x| ≤ ε_j}. This tends to 0 as j → ∞ by continuity of φ at x, so φ_j(x) → φ(x).
+
+3. (Smooth agreement.) By (a), (b) and (H), ∫ φ_j g₁ dμ₁ = ∫ φ_j g₂ dμ₂ for every j.
+
+4. (Dominated convergence.) Fix i ∈ {1, 2}. Each φ_j g_i is μ_i-a.e. strongly measurable, since φ_j is continuous and g_i is integrable. By (c), |φ_j g_i| ≤ M|g_i|, and M|g_i| is μ_i-integrable. By (d), φ_j g_i → φ g_i pointwise. The dominated convergence theorem gives ∫ φ_j g_i dμ_i → ∫ φ g_i dμ_i.
+
+5. (Conclusion.) By step 3 the sequences in step 4 for i = 1 and i = 2 coincide term by term, so their limits are equal: ∫ φ g₁ dμ₁ = ∫ φ g₂ dμ₂. ∎
+
+Formalization note: instead of convolution, the approximants may be taken from Mathlib's Continuous.exists_contDiff_approx (module Mathlib.Geometry.Manifold.SmoothApprox), with n = ⊤ and constant tolerance 1/(j + 1). It gives C^∞ functions ψ_j with |ψ_j − φ| < 1/(j + 1) and support ψ_j ⊆ support φ. Then tsupport ψ_j ⊆ K ⊆ O, ψ_j has compact support, |ψ_j| ≤ M + 1 and ψ_j → φ pointwise, so steps 3–5 apply verbatim with dominating functions (M + 1)|g_i|.
+
+## Key steps
+
+1. K := tsupport φ is a compact subset of O; choose s > 0 with cthickening s K ⊆ O and a bound |φ| ≤ M.
+2. Mollify: φ_j := ρ_{ε_j} * φ with ε_j = s/(j+2) is C^∞, compactly supported with tsupport ⊆ cthickening ε_j K ⊆ O, satisfies |φ_j| ≤ M, and φ_j → φ pointwise.
+3. Apply the smooth hypothesis to each φ_j: ∫ φ_j g₁ dμ₁ = ∫ φ_j g₂ dμ₂.
+4. Dominated convergence with dominating functions M|g_i| gives ∫ φ_j g_i dμ_i → ∫ φ g_i dμ_i.
+5. Termwise-equal convergent sequences have equal limits.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/Contract.lean vs workspace GMT/Ch06/Contract.lean and vs snapshot project/GMT/Ch06/Submission.lean (all byte-identical)`
+- `python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (child scope: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06 ...; noncomputable section; end)`
+- `read verifier/gmt-compare.py candidate_inputs/child_modules (only contract + build inputs byte-checked; Submission may add imports) and verifier/lean_contract.py validate_lean_statement`
+- `read simongmt Chapter06/{Forms,Currents,FormsDuality,Mass}.lean: Covector, DifferentialForm, IsSmoothForm (ContDiff ℝ ∞), IsTestForm, testFormOnSubmodule/TestFormOn, NVector, SimonMultiIndex, wedgeCovectors, wedgeCovectors_apply_det, euclideanCovectorCoordinate, covectorEuclideanNorm`
+- `grep -rn 'IsCompact.exists_cthickening_subset_open|ext_of_generate_finite|isPiSystem_isOpen|integral_withDensity_eq_integral_toReal_smul|isFiniteMeasure_withDensity_ofReal|Module.Basis.ext_alternating|theorem map_perm|monotone_sort|StrictMono.range_inj_of_wellFoundedLT|det_eq_zero_of_column_eq_zero|IsClosed.notMem_iff_infDist_pos|tendsto_integral_of_dominated_convergence|integral_finsetSum' snapshot mathlib/Mathlib`
+- `grep -rn 'exists_contMDiffMap_one_nhds_of_subset_interior|Continuous.exists_contDiff_approx|IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|integral_rnDeriv_smul|integral_toReal_rnDeriv_mul|Measure.integrable_toReal_rnDeriv' snapshot mathlib/Mathlib`
+- `python3 scan of dag.json lean_name/status (86 nodes) + grep -rl 'slicing_ru_' nodes/ (no matches); inspected cmb_covector_eq_sum_coord_smul_wedge (same type as child 4, status decomposing) and polyhedral_approx_measure_uniqueness / polyhedral_approx_pairing_expansion (different statements)`
+- `lake build GMT.Ch06.Submission (scratch /tmp/ru_split_check from git archive d8d46c9, .lake/packages -> lake-packages-25730c7c)`
+- `lake env lean Scratch/Stmts.lean (4 child statements as _root_ comparator targets in the child scope; elaborate)`
+- `lake env lean Scratch/AssemblyAx.lean (parent frozen type from the 4 children as axioms + comparator target; #print axioms)`
+- `lake env lean Scratch/ChildA.lean, Scratch/ChildC.lean, Scratch/ChildB1.lean, Scratch/ChildB2.lean, Scratch/Full.lean (#print axioms = propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/IntegralRNDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/WellFounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-measure-uniqueness-a1/parent-supplied-natural-proof.md`
+- `/tmp/ru_split_check/Scratch/Stmts.lean`
+- `/tmp/ru_split_check/Scratch/Assembly.lean`
+- `/tmp/ru_split_check/Scratch/AssemblyAx.lean`
+- `/tmp/ru_split_check/Scratch/ChildA.lean`
+- `/tmp/ru_split_check/Scratch/ChildB1.lean`
+- `/tmp/ru_split_check/Scratch/ChildB2.lean`
+- `/tmp/ru_split_check/Scratch/ChildC.lean`
+- `/tmp/ru_split_check/Scratch/Full.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract; its Submission is byte-identical, and the comparator byte-checks only the contract and build inputs, so a submission may add Mathlib imports. SimonGMT provides TestFormOn (order-∞ smooth, compact support, tsupport ⊆ U), NVector, SimonMultiIndex, wedgeCovectors with wedgeCovectors_apply_det, and euclideanCovectorCoordinate. It has no coordinate-expansion lemma and no representation-uniqueness lemma, so these become children. Mathlib at the pin provides every tool used: IsCompact.exists_cthickening_subset_open, the smooth Urysohn lemma exists_contMDiffMap_one_nhds_of_subset_interior, Continuous.exists_contDiff_approx, dominated convergence, withDensity integrals and isFiniteMeasure_withDensity_ofReal, ext_of_generate_finite with isPiSystem_isOpen, the Radon–Nikodym integral lemmas, IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, Module.Basis.ext_alternating, AlternatingMap.map_perm, Tuple.sort and StrictMono.range_inj_of_wellFoundedLT. In a scratch build of the frozen project, all four child statements elaborate in the comparator child scope and pass validate_lean_statement. The parent's exact frozen type is derived from them; besides the four children it uses only [propext, Classical.choice, Quot.sound]. Trial proofs of all four children, under the proposed names, compile together with the parent with no sorry and standard axioms only. The DAG (86 nodes) reserves none of the four names. The identical-type cmb_covector_eq_sum_coord_smul_wedge is not comparator-accepted, so a separate unique name is used.
