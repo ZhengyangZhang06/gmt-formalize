@@ -410,6 +410,55 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The net-of-planes step of Simon Ch. 3, proof of Theorem 1.6 "⇐" (p. 73), for the tangent
+points of a varifold (Ch. 8, 1.2): suppose that for every `L ∈ (0,1]` and every plane `P` there are
+closed `L`-graphs `Γ_0, Γ_1, …` over `P` (`|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|` for
+`y, z ∈ Γ_i`) containing every `x` at which `V` has a tangent plane `T` with
+`|p_T v - p_P v| ≤ (L/4)|v|`.  Then for every `L ∈ (0,1]` countably many closed `L`-graphs, each
+paired with its base plane, cover all points at which `V` has a tangent plane.  A countable dense set
+of planes replaces the book's finite net: `S ↦ p_S` is continuous into operators, so every plane is
+within operator distance `L/4` of a plane of the dense set. -/
+theorem Submission.frt_tangent_points_flat_graph_cover :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), (∀ L : ℝ, 0 < L → L ≤ 1 → ∀ P : Grassmannian N n, ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) → ∃ i, x ∈ Γ i) → ∀ L : ℝ, 0 < L → L ≤ 1 → ∃ C : Set (Grassmannian N n × Set (Euclidean N)), C.Countable ∧ (∀ c ∈ C, IsClosed c.2 ∧ ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ L * ‖Grassmannian.project c.1 (y - z)‖) ∧ {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ} ⊆ ⋃ c ∈ C, c.2 := by
+  intro N n U V hcov L hL0 hL1
+  -- Step 2: `Φ S = p_S`, as a continuous linear operator, depends continuously on `S`, being a
+  -- linear function of the projection matrix `S.1`.
+  let Φ : Grassmannian N n → (Euclidean N →L[ℝ] Euclidean N) := fun S ↦
+    LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S)
+  have hΦ : Continuous Φ := by
+    let F : Matrix (Fin N) (Fin N) ℝ →ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N) :=
+      (LinearMap.toContinuousLinearMap :
+          (Euclidean N →ₗ[ℝ] Euclidean N) ≃ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N)).toLinearMap ∘ₗ
+        (LinearMap.toMatrix Grassmannian.coordinateBasis.toBasis
+          Grassmannian.coordinateBasis.toBasis).symm.toLinearMap
+    exact F.continuous_of_finiteDimensional.comp continuous_subtype_val
+  have hΦapp : ∀ S v, Φ S v = Grassmannian.project S v := fun _ _ ↦ rfl
+  -- Step 3: a countable dense set `D` of planes is an `L/4`-net in operator norm.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Grassmannian N n)
+  have hnet : ∀ T : Grassmannian N n, ∃ P ∈ D, ∀ v : Euclidean N,
+      ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖ := by
+    intro T
+    have hopen : IsOpen {S | ‖Φ S - Φ T‖ < L / 4} :=
+      isOpen_lt (continuous_norm.comp (hΦ.sub continuous_const)) continuous_const
+    obtain ⟨P, hPD, hP⟩ := hDd.exists_mem_open hopen ⟨T, by simpa using div_pos hL0 four_pos⟩
+    refine ⟨P, hPD, fun v ↦ ?_⟩
+    have hTP : ‖Φ T - Φ P‖ ≤ L / 4 := by
+      rw [norm_sub_rev]
+      exact le_of_lt hP
+    simpa [hΦapp] using (Φ T - Φ P).le_of_opNorm_le hTP v
+  -- Step 4: choose the covers `Γ P` supplied for the planes `P ∈ D` and collect them over `D × ℕ`.
+  choose Γ hΓc hΓg hΓx using hcov L hL0 hL1
+  refine ⟨(fun p : Grassmannian N n × ℕ ↦ (p.1, Γ p.1 p.2)) '' (D ×ˢ univ),
+    (hDc.prod countable_univ).image _, ?_, ?_⟩
+  · -- Step 5: each member is a closed `L`-graph over its plane.
+    rintro c ⟨⟨P, i⟩, -, rfl⟩
+    exact ⟨hΓc P i, hΓg P i⟩
+  · -- Step 6: a tangent point with plane `T` lies in a graph over a plane `P ∈ D` near `T`.
+    rintro x ⟨T, θ, hx⟩
+    obtain ⟨P, hPD, hP⟩ := hnet T
+    obtain ⟨i, hi⟩ := hΓx P x T θ hx hP
+    exact mem_iUnion₂.2 ⟨(P, Γ P i), ⟨(P, i), ⟨hPD, mem_univ i⟩, rfl⟩, hi⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
