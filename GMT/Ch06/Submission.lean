@@ -431,6 +431,38 @@ theorem Submission.iwl_rl_testForm_smooth_cutoff : ∀ (P k : ℕ) (U : Set (Euc
     isClosed_closure isClosed_closure (subset_compl_iff_disjoint_right.mp hN₀N₁)
   -- Step 3: homogeneity of the Euclidean coefficient norm, `|t α| = |t| |α|`.
   have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) k),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- Step 4: `ω' = χ ω` is a test form in `U` with `tsupport ω' ⊆ tsupport ω`.
+  let f : DifferentialForm (Eucl P) k := fun x => χ x • (ω : DifferentialForm (Eucl P) k) x
+  have hfω : tsupport f ⊆ tsupport (ω : DifferentialForm (Eucl P) k) :=
+    tsupport_smul_subset_right χ _
+  have hf : f ∈ TestFormOn U k :=
+    ⟨⟨hχ.smul ω.2.1.1, ω.2.1.2.of_isClosed_subset (isClosed_tsupport f) hfω⟩, hfω.trans ω.2.2⟩
+  refine ⟨⟨f, hf⟩, ⟨N₀, hN₀, hCN₀, fun x hx => ?_⟩, ⟨N₁, hN₁, hCN₁, fun x hx => ?_⟩, hfω,
+    fun x => ?_⟩
+  · -- Step 5 (i): `χ = 0` on `N₀ ⊆ closure N₀`.
+    change χ x • (ω : DifferentialForm (Eucl P) k) x = 0
+    rw [(hχ0 x).mp (subset_closure hx), zero_smul]
+  · -- (ii): `χ = 1` on `N₁ ⊆ closure N₁`.
+    change χ x • (ω : DifferentialForm (Eucl P) k) x = (ω : DifferentialForm (Eucl P) k) x
+    rw [(hχ1 x).mp (subset_closure hx), one_smul]
+  · -- Step 6 (iv): `ω - χ ω = (1 - χ) ω` with `0 ≤ 1 - χ ≤ 1`.
+    obtain ⟨h0, h1⟩ := hχr (mem_range_self x)
+    change covectorEuclideanNorm
+      ((ω : DifferentialForm (Eucl P) k) x - χ x • (ω : DifferentialForm (Eucl P) k) x) ≤ _
+    have hsub : (ω : DifferentialForm (Eucl P) k) x - χ x • (ω : DifferentialForm (Eucl P) k) x =
+        (1 - χ x) • (ω : DifferentialForm (Eucl P) k) x :=
+      ((sub_smul (1 : ℝ) (χ x) ((ω : DifferentialForm (Eucl P) k) x)).trans (by rw [one_smul])).symm
+    rw [hsub, hsmul, abs_of_nonneg (by linarith)]
+    exact mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (by linarith)
 /-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
 lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
 theorem Submission.cmb_exists_compactly_contained_exhaustion :
@@ -582,45 +614,6 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
     split_ifs
     · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
     · simp
-  -- Step 4: `ω' = χ ω` is a test form in `U` with `tsupport ω' ⊆ tsupport ω`.
-  let f : DifferentialForm (Eucl P) k := fun x => χ x • (ω : DifferentialForm (Eucl P) k) x
-  have hfω : tsupport f ⊆ tsupport (ω : DifferentialForm (Eucl P) k) :=
-    tsupport_smul_subset_right χ _
-  have hf : f ∈ TestFormOn U k :=
-    ⟨⟨hχ.smul ω.2.1.1, ω.2.1.2.of_isClosed_subset (isClosed_tsupport f) hfω⟩, hfω.trans ω.2.2⟩
-  refine ⟨⟨f, hf⟩, ⟨N₀, hN₀, hCN₀, fun x hx => ?_⟩, ⟨N₁, hN₁, hCN₁, fun x hx => ?_⟩, hfω,
-    fun x => ?_⟩
-  · -- Step 5 (i): `χ = 0` on `N₀ ⊆ closure N₀`.
-    change χ x • (ω : DifferentialForm (Eucl P) k) x = 0
-    rw [(hχ0 x).mp (subset_closure hx), zero_smul]
-  · -- (ii): `χ = 1` on `N₁ ⊆ closure N₁`.
-    change χ x • (ω : DifferentialForm (Eucl P) k) x = (ω : DifferentialForm (Eucl P) k) x
-    rw [(hχ1 x).mp (subset_closure hx), one_smul]
-  · -- Step 6 (iv): `ω - χ ω = (1 - χ) ω` with `0 ≤ 1 - χ ≤ 1`.
-    obtain ⟨h0, h1⟩ := hχr (mem_range_self x)
-    change covectorEuclideanNorm
-      ((ω : DifferentialForm (Eucl P) k) x - χ x • (ω : DifferentialForm (Eucl P) k) x) ≤ _
-    have hsub : (ω : DifferentialForm (Eucl P) k) x - χ x • (ω : DifferentialForm (Eucl P) k) x =
-        (1 - χ x) • (ω : DifferentialForm (Eucl P) k) x :=
-      ((sub_smul (1 : ℝ) (χ x) ((ω : DifferentialForm (Eucl P) k) x)).trans (by rw [one_smul])).symm
-    rw [hsub, hsmul, abs_of_nonneg (by linarith)]
-    exact mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (by linarith)
-/-- **Local mass along increasing unions of open sets** (continuity from below of `W ↦ M_W(T)`
-on open sets, used in the selection argument of Simon Ch. 6, Remark 8.3(1), p. 176).  If
-`O₀ ⊆ O₁ ⊆ ⋯` are open, then `M_{⋃ᵢ Oᵢ}(T) = supᵢ M_{Oᵢ}(T)` in `[0, ∞]`.  `≥` is monotonicity
-of `M`.  For `≤`, a form admissible for `⋃ᵢ Oᵢ` has compact support, which the increasing open
-cover `(Oᵢ)` covers by a single `Oᵢ`; the form is then admissible for that `Oᵢ`. -/
-theorem Submission.iwl_rl_massOn_iUnion_monotone : ∀ (P k : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U k) (O : ℕ → Set (Eucl P)), (∀ i, IsOpen (O i)) → Monotone O → T.massOn (⋃ i, O i) = ⨆ i, T.massOn (O i) := by
-  intro P k U T O hO hmono
-  -- `≥`: each `Oᵢ ⊆ ⋃ᵢ Oᵢ`, and `M` is monotone in the support region.
-  refine le_antisymm ?_ (iSup_le fun i => T.massOn_mono (subset_iUnion O i))
-  -- `≤`: it suffices to bound `ofReal (T ω)` for every `ω` admissible for `⋃ᵢ Oᵢ`.
-  refine sSup_le ?_
-  rintro r ⟨ω, hω, rfl⟩
-  -- `tsupport ω` is compact and lies in the directed open union, hence in a single `Oᵢ`.
-  obtain ⟨i, hi⟩ := IsCompact.elim_directed_cover ω.property.1.2 O hO hω.1 hmono.directed_le
-  -- So `ω` is admissible for `Oᵢ`: `ofReal (T ω) ≤ M_{Oᵢ}(T) ≤ supᵢ M_{Oᵢ}(T)`.
-  exact le_iSup_of_le i (T.le_massOn ⟨hi, hω.2⟩)
   -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
   have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
   -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
@@ -663,6 +656,22 @@ theorem Submission.iwl_rl_massOn_iUnion_monotone : ∀ (P k : ℕ) (U : Set (Euc
   calc |T ω| ≤ B * (C + ε / (B + 1)) := this
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
+/-- **Local mass along increasing unions of open sets** (continuity from below of `W ↦ M_W(T)`
+on open sets, used in the selection argument of Simon Ch. 6, Remark 8.3(1), p. 176).  If
+`O₀ ⊆ O₁ ⊆ ⋯` are open, then `M_{⋃ᵢ Oᵢ}(T) = supᵢ M_{Oᵢ}(T)` in `[0, ∞]`.  `≥` is monotonicity
+of `M`.  For `≤`, a form admissible for `⋃ᵢ Oᵢ` has compact support, which the increasing open
+cover `(Oᵢ)` covers by a single `Oᵢ`; the form is then admissible for that `Oᵢ`. -/
+theorem Submission.iwl_rl_massOn_iUnion_monotone : ∀ (P k : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U k) (O : ℕ → Set (Eucl P)), (∀ i, IsOpen (O i)) → Monotone O → T.massOn (⋃ i, O i) = ⨆ i, T.massOn (O i) := by
+  intro P k U T O hO hmono
+  -- `≥`: each `Oᵢ ⊆ ⋃ᵢ Oᵢ`, and `M` is monotone in the support region.
+  refine le_antisymm ?_ (iSup_le fun i => T.massOn_mono (subset_iUnion O i))
+  -- `≤`: it suffices to bound `ofReal (T ω)` for every `ω` admissible for `⋃ᵢ Oᵢ`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  -- `tsupport ω` is compact and lies in the directed open union, hence in a single `Oᵢ`.
+  obtain ⟨i, hi⟩ := IsCompact.elim_directed_cover ω.property.1.2 O hO hω.1 hmono.directed_le
+  -- So `ω` is admissible for `Oᵢ`: `ofReal (T ω) ≤ M_{Oᵢ}(T) ≤ supᵢ M_{Oᵢ}(T)`.
+  exact le_iSup_of_le i (T.le_massOn ⟨hi, hω.2⟩)
 /-- Coordinate expansion of an `n`-covector on `ℝ^P` in the wedge basis:
 `α = ∑_β α(e_{β(0)}, …, e_{β(n-1)}) dx^β` over the increasing multi-indices `β`. -/
 theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
@@ -2185,6 +2194,199 @@ theorem Submission.br_la_testForm_covectorNorm_bounded : ∀ (P n : ℕ) (U : Se
   refine ⟨C₀ + 1, by linarith [(norm_nonneg _).trans (hC₀ 0)], fun x => ?_⟩
   linarith [le_abs_self (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)),
     (Real.norm_eq_abs _).symm.trans_le (hC₀ x)]
+/-- **Restrictions of weakly convergent currents converge weakly** (Simon Ch. 6, Remark 8.3(1)
+and (1), (8) in the proof of 8.2, p. 176: "4.5(1) and a selection argument as in 6.7(2) of
+Ch. 2").  `F_j(t) = M_{W ∩ {φ < t}}(X_j)` is nondecreasing in `t` and bounded by
+`sup_j M_W(X_j)`, so Helly selection gives `ψ` and a countable `E` such that for `s ∉ E` the
+increments `F_{ψ j}(b) - F_{ψ j}(a)` over some `a < s < b` are eventually small.  The
+restrictions give measure representations, hence mass measures (restriction theory).
+(A) For `tsupport ω ⊆ W` and `a < s`, a smooth cutoff `ω'` of `ω` vanishes on `{φ ≥ s}` and
+equals `ω` near `tsupport ω ∩ {φ ≤ a}`; the cutoff estimate bounds `|R_j ω - X_{ψ j} ω'|` by
+`c (F_{ψ j}(s) - F_{ψ j}(a))` and `|R ω - X ω'|` by `c (M_{W_s}(X) - M_{W_a}(X))`, which is small
+for `a` near `s` by continuity of `t ↦ M_{W_t}(X)` from below, while `X_{ψ j} ω' → X ω'`.
+(B) If `{φ ≤ s} ⊆ K ⊆ W`, a cutoff `ω''` equal to `ω` near `K` and supported in `W` has the
+same restrictions to `{φ < s}`, so (A) applied to `ω''` gives `R_j ω → R ω`. -/
+theorem Submission.iwl_restriction_weak_limit : ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P)) (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U → (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k), (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) → IsRestriction X {x | x ∈ U ∧ φ x < s} R → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K → WeaklyConvergesOn Rj R) := by
+  intro P k U hU Xj X W φ hconv hWo hWU hsup hφ
+  -- `W_t = {x ∈ W : φ x < t}` is an open subset of `W`.
+  have hWt : ∀ t : ℝ, IsOpen {x | x ∈ W ∧ φ x < t} := fun t =>
+    (hφ.mono hWU).isOpen_inter_preimage hWo isOpen_Iio
+  have hWtW : ∀ t : ℝ, {x | x ∈ W ∧ φ x < t} ⊆ W := fun t x hx => hx.1
+  -- Uniform bound `M_W(X_j) ≤ sup_j M_W(X_j) < ∞`, and `M_W(X) < ∞` by lower semicontinuity.
+  have hXjW : ∀ j, (Xj j).massOn W ≤ ⨆ j, (Xj j).massOn W := fun j =>
+    le_iSup (fun j => (Xj j).massOn W) j
+  have hXW : X.massOn W < ∞ :=
+    calc X.massOn W ≤ liminf (fun j => (Xj j).massOn W) atTop := hconv.massOn_le_liminf W
+      _ ≤ limsup (fun j => (Xj j).massOn W) atTop := liminf_le_limsup
+      _ ≤ ⨆ j, (Xj j).massOn W := limsup_le_iSup
+      _ < ∞ := hsup
+  have hXfin : ∀ t, X.massOn {x | x ∈ W ∧ φ x < t} ≠ ∞ := fun t =>
+    ((X.massOn_mono (hWtW t)).trans_lt hXW).ne
+  -- `F_j(t) = M_{W_t}(X_j)` is nondecreasing in `t` with values in `[0, sup_j M_W(X_j)]`.
+  obtain ⟨F, hF⟩ : ∃ F : ℕ → ℝ → ℝ, ∀ j t, F j t = ((Xj j).massOn {x | x ∈ W ∧ φ x < t}).toReal :=
+    ⟨_, fun _ _ => rfl⟩
+  have hFmono : ∀ j, Monotone (F j) := fun j t t' htt' => by
+    rw [hF, hF]
+    exact ENNReal.toReal_mono (((Xj j).massOn_mono (hWtW t')).trans (hXjW j) |>.trans_lt hsup).ne
+      ((Xj j).massOn_mono fun x hx => ⟨hx.1, hx.2.trans_le htt'⟩)
+  have hFbound : ∀ j t, |F j t| ≤ (⨆ j, (Xj j).massOn W).toReal := fun j t => by
+    rw [hF, abs_of_nonneg ENNReal.toReal_nonneg]
+    exact ENNReal.toReal_mono hsup.ne (((Xj j).massOn_mono (hWtW t)).trans (hXjW j))
+  -- Helly selection: `ψ` and the countable exceptional set `E`.
+  obtain ⟨ψ, E, hψ, hE, hHelly⟩ :=
+    Submission.iwl_rl_monotone_helly_selection F _ hFmono hFbound
+  refine ⟨ψ, E, hψ, hE, fun s hs Rj R hRj hR => ?_⟩
+  -- A current with a restriction has a measure representation, hence locally finite mass and a
+  -- mass measure computing the masses of all of its restrictions (restriction theory).
+  have hmeas : ∀ (Y S : GeometricCurrentOn U k) (A : Set (Eucl P)), IsRestriction Y A S →
+      ∃ μ : Measure (Eucl P), ∀ (A' : Set (Eucl P)) (S' : GeometricCurrentOn U k),
+        IsRestriction Y A' S' → ∀ W' : Set (Eucl P), IsOpen W' → W' ⊆ U →
+          S'.massOn W' = μ (W' ∩ A') := by
+    intro Y S A hYS
+    obtain ⟨-, μ, v, hrep, -⟩ := hYS
+    obtain ⟨μ', -, -, hmass⟩ := Submission.iwl_restriction_theory.2.2 P k U hU Y
+      (Submission.iwl_restriction_theory.1 P k U hU Y μ v hrep)
+    exact ⟨μ', hmass⟩
+  -- (A) Convergence on test forms supported in `W`.
+  have hA : ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W →
+      Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω)) := by
+    intro ω hωW
+    obtain ⟨c, hc, hωc⟩ := Submission.br_la_testForm_covectorNorm_bounded P k U ω
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have h2c : 0 < 2 * c + 1 := by linarith
+    obtain ⟨δ, hδ, hεδ⟩ : ∃ δ : ℝ, 0 < δ ∧ (2 * c + 1) * δ = ε :=
+      ⟨ε / (2 * c + 1), div_pos hε h2c, mul_div_cancel₀ ε h2c.ne'⟩
+    -- Helly at `s ∉ E`: `F_{ψ j}(b₀) - F_{ψ j}(a₀) < δ` for all large `j`.
+    obtain ⟨a₀, b₀, ha₀, hb₀, hev⟩ := hHelly s hs δ hδ
+    -- Continuity from below of `t ↦ M_{W_t}(X)` at `s`, via `W_s = ⋃ᵢ W_{s - 1/(i+1)}`.
+    obtain ⟨a₁, ha₁, hXa₁⟩ : ∃ a₁ < s, (X.massOn {x | x ∈ W ∧ φ x < s}).toReal -
+        (X.massOn {x | x ∈ W ∧ φ x < a₁}).toReal < δ := by
+      have hOmono : Monotone fun i : ℕ => {x | x ∈ W ∧ φ x < s - 1 / ((i : ℝ) + 1)} := by
+        intro i i' hii' x hx
+        refine ⟨hx.1, hx.2.trans_le ?_⟩
+        have h0 : (0 : ℝ) < (i : ℝ) + 1 := by positivity
+        have h1 : (i : ℝ) ≤ (i' : ℝ) := Nat.cast_le.mpr hii'
+        have := one_div_le_one_div_of_le h0 (by linarith : (i : ℝ) + 1 ≤ (i' : ℝ) + 1)
+        linarith
+      have hUnion : (⋃ i : ℕ, {x | x ∈ W ∧ φ x < s - 1 / ((i : ℝ) + 1)}) =
+          {x | x ∈ W ∧ φ x < s} := by
+        ext x
+        simp only [mem_iUnion, mem_ofPred_eq]
+        constructor
+        · rintro ⟨i, hxW, hxi⟩
+          have : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
+          exact ⟨hxW, by linarith⟩
+        · rintro ⟨hxW, hxs⟩
+          obtain ⟨i, hi⟩ := exists_nat_one_div_lt (sub_pos.mpr hxs)
+          exact ⟨i, hxW, by linarith⟩
+      have hiU : X.massOn (⋃ i : ℕ, {x | x ∈ W ∧ φ x < s - 1 / ((i : ℝ) + 1)}) =
+          ⨆ i : ℕ, X.massOn {x | x ∈ W ∧ φ x < s - 1 / ((i : ℝ) + 1)} :=
+        Submission.iwl_rl_massOn_iUnion_monotone P k U X
+          (fun i : ℕ => {x | x ∈ W ∧ φ x < s - 1 / ((i : ℝ) + 1)}) (fun i => hWt _) hOmono
+      have hreal : (X.massOn {x | x ∈ W ∧ φ x < s}).toReal =
+          ⨆ i : ℕ, (X.massOn {x | x ∈ W ∧ φ x < s - 1 / ((i : ℝ) + 1)}).toReal := by
+        rw [← hUnion, hiU, ENNReal.toReal_iSup fun i => hXfin _]
+      obtain ⟨i, hi⟩ := exists_lt_of_lt_ciSup (show (X.massOn {x | x ∈ W ∧ φ x < s}).toReal - δ <
+          ⨆ i : ℕ, (X.massOn {x | x ∈ W ∧ φ x < s - 1 / ((i : ℝ) + 1)}).toReal by
+        rw [← hreal]; linarith)
+      have : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
+      exact ⟨s - 1 / ((i : ℝ) + 1), by linarith, by linarith⟩
+    obtain ⟨a, ha₀a, ha₁a, has⟩ : ∃ a, a₀ ≤ a ∧ a₁ ≤ a ∧ a < s :=
+      ⟨max a₀ a₁, le_max_left _ _, le_max_right _ _, max_lt ha₀ ha₁⟩
+    -- The cutoff `ω'`: `0` near `tsupport ω ∩ {φ ≥ s}`, `ω` near `tsupport ω ∩ {φ ≤ a}`.
+    have hφK : ContinuousOn φ (tsupport (ω : DifferentialForm (Eucl P) k)) :=
+      hφ.mono (hωW.trans hWU)
+    obtain ⟨ω', ⟨N₀, -, hCN₀, hω'0⟩, ⟨N₁, hN₁, hCN₁, hω'1⟩, hω'supp, hω'norm⟩ :=
+      Submission.iwl_rl_testForm_smooth_cutoff P k U ω
+        (tsupport (ω : DifferentialForm (Eucl P) k) ∩ φ ⁻¹' Ici s)
+        (tsupport (ω : DifferentialForm (Eucl P) k) ∩ φ ⁻¹' Iic a)
+        (hφK.preimage_isClosed_of_isClosed (isClosed_tsupport _) isClosed_Ici)
+        (hφK.preimage_isClosed_of_isClosed (isClosed_tsupport _) isClosed_Iic)
+        (Set.disjoint_left.mpr fun x hx₀ hx₁ => by
+          have h₀ : s ≤ φ x := hx₀.2
+          have h₁ : φ x ≤ a := hx₁.2
+          linarith)
+    -- `ω'` vanishes on `{x ∈ U : s ≤ φ x}`.
+    have hω'zero : ∀ x ∈ U, s ≤ φ x → (ω' : DifferentialForm (Eucl P) k) x = 0 := by
+      intro x _ hx
+      by_cases hxK : x ∈ tsupport (ω : DifferentialForm (Eucl P) k)
+      · exact hω'0 x (hCN₀ ⟨hxK, hx⟩)
+      · exact image_eq_zero_of_notMem_tsupport fun h => hxK (hω'supp h)
+    -- `ω - ω'` is supported in `tsupport ω ∖ N₁ ⊆ {x ∈ W : a < φ x}`.
+    have hdiff : tsupport ((ω : DifferentialForm (Eucl P) k) - (ω' : DifferentialForm (Eucl P) k)) ⊆
+        {x | x ∈ W ∧ a < φ x} := by
+      have h1 : tsupport ((ω : DifferentialForm (Eucl P) k) - (ω' : DifferentialForm (Eucl P) k)) ⊆
+          tsupport (ω : DifferentialForm (Eucl P) k) ∩ N₁ᶜ := by
+        refine closure_minimal (fun x hx => ⟨?_, fun hxN => hx ?_⟩)
+          ((isClosed_tsupport _).inter hN₁.isClosed_compl)
+        · by_contra hxK
+          apply hx
+          rw [Pi.sub_apply, image_eq_zero_of_notMem_tsupport hxK,
+            image_eq_zero_of_notMem_tsupport fun h => hxK (hω'supp h), sub_zero]
+        · rw [Pi.sub_apply, hω'1 x hxN, sub_self]
+      intro x hx
+      obtain ⟨hxK, hxN⟩ := h1 hx
+      exact ⟨hωW hxK, not_le.mp fun hxa => hxN (hCN₁ ⟨hxK, hxa⟩)⟩
+    have hnorm : ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x -
+        (ω' : DifferentialForm (Eucl P) k) x) ≤ c := fun x => (hω'norm x).trans (hωc x)
+    -- The cutoff estimates for `X_{ψ j}` and for `X`.
+    have hestj : ∀ j, |Rj j ω - Xj (ψ j) ω'| ≤ c * (F (ψ j) s - F (ψ j) a) := by
+      intro j
+      obtain ⟨μ, hμ⟩ := hmeas _ _ _ (hRj j)
+      rw [hF, hF]
+      exact Submission.iwl_rl_restriction_cutoff_estimate P k U W φ a s c (Xj (ψ j)) (Rj j) μ ω ω'
+        hWo hWU hφ has (hRj j) hμ ((hXjW (ψ j)).trans_lt hsup) hω'zero hdiff hnorm
+    have hest : |R ω - X ω'| ≤ c * ((X.massOn {x | x ∈ W ∧ φ x < s}).toReal -
+        (X.massOn {x | x ∈ W ∧ φ x < a}).toReal) := by
+      obtain ⟨μ, hμ⟩ := hmeas _ _ _ hR
+      exact Submission.iwl_rl_restriction_cutoff_estimate P k U W φ a s c X R μ ω ω'
+        hWo hWU hφ has hR hμ hXW hω'zero hdiff hnorm
+    have hXa : (X.massOn {x | x ∈ W ∧ φ x < s}).toReal -
+        (X.massOn {x | x ∈ W ∧ φ x < a}).toReal < δ := by
+      have : (X.massOn {x | x ∈ W ∧ φ x < a₁}).toReal ≤
+          (X.massOn {x | x ∈ W ∧ φ x < a}).toReal :=
+        ENNReal.toReal_mono (hXfin a) (X.massOn_mono fun x hx => ⟨hx.1, hx.2.trans_le ha₁a⟩)
+      linarith
+    -- Weak convergence on the fixed test form `ω'`.
+    have hconvω' : Tendsto (fun j => Xj (ψ j) ω') atTop (𝓝 (X ω')) :=
+      (hconv ω').comp hψ.tendsto_atTop
+    have hev' : ∀ᶠ j in atTop, |Xj (ψ j) ω' - X ω'| < δ := by
+      filter_upwards [Metric.tendsto_nhds.mp hconvω' δ hδ] with j hj
+      rwa [Real.dist_eq] at hj
+    filter_upwards [hev, hev'] with j hj₁ hj₂
+    have hFa : F (ψ j) a₀ ≤ F (ψ j) a := hFmono _ ha₀a
+    have hFs : F (ψ j) s ≤ F (ψ j) b₀ := hFmono _ hb₀.le
+    have e₁ : c * (F (ψ j) s - F (ψ j) a) ≤ c * δ :=
+      mul_le_mul_of_nonneg_left (by linarith) hc.le
+    have e₃ : c * ((X.massOn {x | x ∈ W ∧ φ x < s}).toReal -
+        (X.massOn {x | x ∈ W ∧ φ x < a}).toReal) ≤ c * δ :=
+      mul_le_mul_of_nonneg_left hXa.le hc.le
+    have t₁ := abs_sub_le (Rj j ω) (Xj (ψ j) ω') (R ω)
+    have t₂ := abs_sub_le (Xj (ψ j) ω') (X ω') (R ω)
+    have t₃ : |X ω' - R ω| = |R ω - X ω'| := abs_sub_comm _ _
+    rw [Real.dist_eq]
+    linarith [hestj j, hest]
+  -- (B) If `{x ∈ U : φ x ≤ s} ⊆ K ⊆ W` with `K` compact, cut `ω` off near `K` inside `W`.
+  refine ⟨hA, fun K hK hKW hsK => ?_⟩
+  intro ω
+  obtain ⟨ω'', ⟨N₀, hN₀, hCN₀, hω''0⟩, ⟨N₁, -, hCN₁, hω''1⟩, -, -⟩ :=
+    Submission.iwl_rl_testForm_smooth_cutoff P k U ω Wᶜ K hWo.isClosed_compl hK.isClosed
+      (disjoint_compl_left_iff_subset.mpr hKW)
+  -- `ω'' = 0` on `N₀ ⊇ ℝ^P ∖ W`, so `tsupport ω'' ⊆ ℝ^P ∖ N₀ ⊆ W`.
+  have hω''W : tsupport (ω'' : DifferentialForm (Eucl P) k) ⊆ W := by
+    refine (closure_minimal ?_ hN₀.isClosed_compl).trans (compl_subset_comm.mp hCN₀)
+    intro x hx hxN
+    exact hx (hω''0 x hxN)
+  -- `ω'' = ω` on `N₁ ⊇ K ⊇ {x ∈ U : φ x < s}`, so restrictions to `{φ < s}` agree on them.
+  have hsame : ∀ (Y S : GeometricCurrentOn U k), IsRestriction Y {x | x ∈ U ∧ φ x < s} S →
+      S ω'' = S ω := by
+    rintro Y S ⟨hAm, μ, v, -, hS⟩
+    rw [hS ω, hS ω'']
+    exact setIntegral_congr_fun hAm fun x hx =>
+      congrArg (v x) (hω''1 x (hCN₁ (hsK ⟨hx.1, hx.2.le⟩)))
+  have h := (hA ω'' hω''W).congr fun j => hsame _ _ (hRj j)
+  rwa [hsame X R hR] at h
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
