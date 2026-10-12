@@ -436,6 +436,44 @@ theorem Submission.weightedMeasure_finite_null_tangent :
     rw [hdens, Submission.setIntegral_blowUpMap_image n N x r M
       (fun y ↦ f y * θ (x + r • y)) hr]
     simp only [hη]
+/-- **Locally Lipschitz maps on open subsets of `ℝⁿ` send `Lⁿ`-null sets to `Hⁿ`-null sets**:
+the null-set case of Simon Ch. 2, Thm. 1.8(i) (`Hⁿ(f(A)) ≤ (Lip f)ⁿ Hⁿ(A)`, `chapter-02.txt`
+lines 270–274), applied to chart images in Ch. 3, Remark 1.3 and the proof of Thm. 1.6 "⇒"
+(`chapter-03.txt` lines 67–72, 113–143). As `V` is open, each `u ∈ V` has an open `O u ∋ u` on
+which `ψ` is `K u`-Lipschitz; by Lindelöf countably many `O u`, `u ∈ T ⊆ V`, cover `V ⊇ Z`. Then
+`Hⁿ(ψ(Z ∩ O u)) ≤ (K u)ⁿ Hⁿ(Z ∩ O u) = (K u)ⁿ Lⁿ(Z ∩ O u) = 0`, and countable subadditivity gives
+`Hⁿ(ψ(Z)) = 0`. No measurability of `Z` is needed: all estimates are for outer measures. -/
+theorem Submission.hausdorffMeasure_image_null_of_locallyLipschitzOn : ∀ (n N : ℕ)
+    (V Z : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → LocallyLipschitzOn V ψ → Z ⊆ V →
+    volume Z = 0 → μHE[n] (ψ '' Z) = 0 := by
+  intro n N V Z ψ hV hψ hZV hZ
+  -- Step 1: each `u ∈ V` has an open neighbourhood `O u` on which `ψ` is `K u`-Lipschitz.
+  have hloc : ∀ u ∈ V, ∃ O : Set (Rn n), IsOpen O ∧ u ∈ O ∧ ∃ K : ℝ≥0, LipschitzOnWith K ψ O := by
+    intro u hu
+    obtain ⟨K, t, ht, hK⟩ := hψ hu
+    rw [hV.nhdsWithin_eq hu] at ht
+    obtain ⟨O, hOt, hO, huO⟩ := mem_nhds_iff.mp ht
+    exact ⟨O, hO, huO, K, hK.mono hOt⟩
+  choose! O hO huO K hK using hloc
+  -- Step 2 (Lindelöf): countably many `O u`, `u ∈ T ⊆ V`, cover `V ⊇ Z`.
+  obtain ⟨T, hTV, hTc, hTO⟩ := TopologicalSpace.isOpen_biUnion_countable V O hO
+  have hcover : ψ '' Z ⊆ ⋃ u ∈ T, ψ '' (Z ∩ O u) := by
+    rintro _ ⟨z, hz, rfl⟩
+    have hzT : z ∈ ⋃ u ∈ T, O u := by
+      rw [hTO]
+      exact mem_biUnion (hZV hz) (huO z (hZV hz))
+    obtain ⟨u, huT, hzu⟩ := mem_iUnion₂.mp hzT
+    exact mem_iUnion₂.mpr ⟨u, huT, z, ⟨hz, hzu⟩, rfl⟩
+  -- Steps 3–4: `Hⁿ(ψ(Z ∩ O u)) ≤ (K u)ⁿ Hⁿ(Z ∩ O u) = (K u)ⁿ Lⁿ(Z ∩ O u) = 0`.
+  have hpiece : ∀ u ∈ T, μHE[n] (ψ '' (Z ∩ O u)) = 0 := by
+    intro u hu
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      ((hK u (hTV hu)).mono (inter_subset_right (s := Z)))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+      measure_mono_null inter_subset_left hZ, mul_zero] at h
+    exact nonpos_iff_eq_zero.mp h
+  -- Step 5: countable subadditivity.
+  exact measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 hpiece)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
