@@ -456,6 +456,59 @@ theorem Submission.br_latticeFace_setIntegral_eq_cube :
     _ = _ := by
         rw [hpre]
         simp only [hL]
+/-- Fubini and the fundamental theorem of calculus on the cube `[0,ρ]^{n+1}`: for `φ` of class
+`C¹` and `e_i = Pi.single i 1`,
+`∫_{[0,ρ]^{n+1}} Dφ(s)(e_i) ds = ∫_{[0,ρ]^n} (φ(insertNth_i(ρ, s')) - φ(insertNth_i(0, s'))) ds'`.
+The measure-preserving map `(t, s') ↦ insertNth_i(t, s')` pulls the cube back to
+`[0,ρ] × [0,ρ]^n`, Fubini puts the `t`-integral inside, and
+`d/dt φ(insertNth_i(t, s')) = Dφ(insertNth_i(t, s'))(e_i)`. -/
+theorem Submission.br_cube_integral_fderiv_eq_faces :
+    ∀ (n : ℕ) (ρ : ℝ), 0 ≤ ρ → ∀ (φ : (Fin (n + 1) → ℝ) → ℝ), ContDiff ℝ 1 φ →
+      ∀ (i : Fin (n + 1)),
+        ∫ s in Set.Icc (0 : Fin (n + 1) → ℝ) (fun _ => ρ), fderiv ℝ φ s (Pi.single i 1) =
+          ∫ s in Set.Icc (0 : Fin n → ℝ) (fun _ => ρ),
+            (φ (Fin.insertNth i ρ s) - φ (Fin.insertNth i 0 s)) := by
+  intro n ρ hρ φ hφ i
+  -- `g(s) = Dφ(s)(e_i)` is continuous.
+  have hg : Continuous fun s => fderiv ℝ φ s (Pi.single i 1) :=
+    (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  -- `(t, s') ↦ insertNth_i(t, s')` is measure preserving and pulls `[0,ρ]^{n+1}` back to
+  -- `[0,ρ] × [0,ρ]^n` (as in Mathlib's `torusIntegral_succAbove`).
+  set e : ℝ × (Fin n → ℝ) ≃ᵐ (Fin (n + 1) → ℝ) :=
+    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm
+  have hem : MeasurePreserving e :=
+    (volume_preserving_piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) i).symm _
+  have heI : (e ⁻¹' Set.Icc 0 fun _ => ρ) =
+      Set.Icc 0 ρ ×ˢ Set.Icc (0 : Fin n → ℝ) fun _ => ρ :=
+    ((Fin.insertNthOrderIso (fun _ => ℝ) i).preimage_Icc _ _).trans (Set.Icc_prod_eq _ _)
+  have hint : Integrable (fun z => fderiv ℝ φ (e z) (Pi.single i 1))
+      ((volume.restrict (Set.Icc (0 : ℝ) ρ)).prod
+        (volume.restrict (Set.Icc (0 : Fin n → ℝ) fun _ => ρ))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact (hg.comp (continuous_fst.finInsertNth i continuous_snd)).continuousOn.integrableOn_compact
+      (isCompact_Icc.prod isCompact_Icc)
+  rw [← hem.map_eq, setIntegral_map_equiv, heI, Measure.volume_eq_prod, ← Measure.prod_restrict,
+    integral_prod_symm _ hint]
+  -- Fundamental theorem of calculus in the `i`-th coordinate, for each `s'`.
+  congr 1
+  funext y
+  have hcurve : ∀ t : ℝ,
+      HasDerivAt (fun t : ℝ => (Fin.insertNth i t y : Fin (n + 1) → ℝ)) (Pi.single i 1) t := by
+    intro t
+    refine hasDerivAt_pi.2 fun j => ?_
+    rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
+    · simp only [Fin.insertNth_apply_same, Pi.single_eq_same]
+      exact hasDerivAt_id' t
+    · simp only [Fin.insertNth_apply_succAbove, Pi.single_eq_of_ne (Fin.succAbove_ne _ k)]
+      exact hasDerivAt_const t (y k)
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun t : ℝ => φ (Fin.insertNth i t y))
+      (fderiv ℝ φ (Fin.insertNth i t y) (Pi.single i 1)) t := fun t =>
+    ((hφ.differentiable one_ne_zero) _).hasFDerivAt.comp_hasDerivAt t (hcurve t)
+  have hcont : Continuous fun t : ℝ => fderiv ℝ φ (Fin.insertNth i t y) (Pi.single i 1) :=
+    hg.comp (continuous_iff_continuousAt.2 fun t => (hcurve t).continuousAt)
+  rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hρ]
+  exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+    (hcont.intervalIntegrable 0 ρ)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
