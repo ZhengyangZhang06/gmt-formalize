@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.product_support-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1",
+  "depth": 4,
+  "title": "The support of the product current [[(0,1)]] × X lies in the compact set Φ([0,1] × B̄_R(0))",
+  "statement": "Let P, m ∈ ℕ, R ∈ ℝ, X ∈ D_m(ℝ^P) with spt X ⊆ B̄_R(0), and Z ∈ D_{m+1}(ℝ^{P+1}) such that Z(η) = ∫_0^1 X(φ(s)) ds whenever η ∈ D^{m+1}(ℝ^{P+1}), φ : ℝ → D^m(ℝ^P) and φ(s)(x)(v) = η(Φ(s, x))(e_0, ι(v_1), …, ι(v_m)) for all s ∈ [0, 1], x ∈ ℝ^P, v ∈ (ℝ^P)^m (Φ, e_0, ι as in slice_forms). Then L := Φ([0, 1] × B̄_R(0)) = {Φ(p.1, p.2) : p ∈ [0, 1] × B̄_R(0)} is compact and spt Z ⊆ L.",
+  "lean_statement": "∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (Z : GeometricCurrentOn (univ : Set (Eucl (P + 1))) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P), (φ s : DifferentialForm (Eucl P) m) x v = (η : DifferentialForm (Eucl (P + 1)) (m + 1)) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → IsCompact ((fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) '' (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : Eucl P) R)) ∧ Z.support ⊆ ((fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) '' (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : Eucl P) R))",
+  "lean_name": "iwl_cr_ci_product_support",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+    "root.isoperimetric-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-product-support-a1-a1"
+}

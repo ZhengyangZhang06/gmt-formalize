@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.cone_map-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1",
+  "depth": 4,
+  "title": "The cone map h(y) = y_0 · π(y): smoothness, values on Φ(s, x), and its pull-back on (e_0, ιv)",
+  "statement": "Let P, m ∈ ℕ and h : ℝ^{P+1} → ℝ^P, h(y) := y_0 · π(y) with π(y) = (y_1, …, y_P) = (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)). Then h is C^∞, and for all s ∈ ℝ, x ∈ ℝ^P: h(Φ(s, x)) = s x, and for every (m+1)-covector α on ℝ^P and every v ∈ (ℝ^P)^m, (α ∘ Dh(Φ(s, x)))(e_0, ι(v_1), …, ι(v_m)) = s^m α(x, v_1, …, v_m), where (α ∘ L) := α.compContinuousLinearMap L and Φ, e_0, ι are as in slice_forms.",
+  "lean_statement": "∀ (P m : ℕ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ∧ ∀ (s : ℝ) (x : Eucl P), (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) = s • x ∧ ∀ (α : Covector (Eucl P) (m + 1)) (v : Fin m → Eucl P), (α.compContinuousLinearMap (fderiv ℝ (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i)))) = s ^ m * α (Fin.cons x v)",
+  "lean_name": "iwl_cr_ci_cone_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-cone-map-a1-a1"
+}

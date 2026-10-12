@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1",
+  "depth": 4,
+  "title": "Hyperplane slices of a test form on ℝ^{P+1} are test forms on ℝ^P, jointly continuous in the slice parameter",
+  "statement": "Let P, m ∈ ℕ and η ∈ D^{m+1}(ℝ^{P+1}). Then there is a family φ : ℝ → D^m(ℝ^P) such that (s, x) ↦ φ(s)(x) is continuous from ℝ × ℝ^P to the m-covectors on ℝ^P, and φ(s)(x)(v) = η(Φ(s, x))(e_0, ι(v_1), …, ι(v_m)) for all s ∈ ℝ, x ∈ ℝ^P and v ∈ (ℝ^P)^m. Here Φ(s, x) = (s, x_1, …, x_P) = (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)), e_0 = EuclideanSpace.single 0 1 and ι(w) = Φ(0, w).",
+  "lean_statement": "∀ (P m : ℕ) (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)), ∃ φ : ℝ → TestFormOn (univ : Set (Eucl P)) m, Continuous (fun p : ℝ × Eucl P => (φ p.1 : DifferentialForm (Eucl P) m) p.2) ∧ ∀ (s : ℝ) (x : Eucl P) (v : Fin m → Eucl P), (φ s : DifferentialForm (Eucl P) m) x v = (η : DifferentialForm (Eucl (P + 1)) (m + 1)) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))",
+  "lean_name": "iwl_cr_ci_slice_testForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-slice-forms-a1-a1"
+}
