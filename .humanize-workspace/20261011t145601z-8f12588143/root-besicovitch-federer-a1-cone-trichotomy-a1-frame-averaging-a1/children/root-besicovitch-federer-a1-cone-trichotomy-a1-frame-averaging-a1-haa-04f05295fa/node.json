@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.haar_to_frames-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "Transfer from Haar-random rotated planes to Lebesgue-a.e. frames (Steps 8–10)",
+  "statement": "Let N, n ∈ ℕ, E := ℝᴺ = EuclideanSpace ℝ (Fin N), and let 𝓛 := E →L[ℝ] E carry the Borel σ-algebra of its norm topology; g* is the adjoint. Let λ := volume on Eⁿ = (Fin n → E), and assume that v ↦ frameProjection v is continuous on the set of linearly independent frames. Let θ be a Borel probability measure on 𝓛 with g*g = 1 for θ-a.e. g, such that the image of θ under g ↦ gk equals θ for every k with k*k = 1. Let W₀ ⊆ E be a subspace of dimension n, P₀ := W₀.starProjection, and Q ⊆ 𝓛 a Borel set with θ({g : g P₀ g* ∈ Q}) = 0. Then for λ-a.e. v ∈ Eⁿ, if v is linearly independent then frameProjection v ∉ Q; that is, ForAlmostAllProjections N n (fun p ↦ p ∉ Q).",
+  "lean_statement": "∀ (N n : ℕ), ContinuousOn (fun v : Fin n → Rn N ↦ frameProjection v) {v | LinearIndependent ℝ v} → ∀ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → Measure.map (fun g ↦ g * k) θ = θ) → ∀ W₀ : Submodule ℝ (Rn N), finrank ℝ W₀ = n → ∀ Q : Set (Rn N →L[ℝ] Rn N), MeasurableSet Q → θ {g | g * W₀.starProjection * ContinuousLinearMap.adjoint g ∈ Q} = 0 → ForAlmostAllProjections N n (fun p ↦ p ∉ Q)",
+  "lean_name": "bf_haar_null_to_frames",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_conj_projection-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_plane_transitive-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_conj_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_plane_transitive-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-haa-04f05295fa-a1"
+}

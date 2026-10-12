@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "^structure OuterMeasure|^theorem ae_tendsto_measure_inter_div\\b|^theorem exists_disjoint_subfamily_covering_enlargement\\b|^theorem exists_disjoint_subfamily_covering_enlargement_ball|exists_isClosed_sdiff_lt|HasBesicovitchCovering|countable_of_isOpen",
+        "^abbrev Rn|^open |^namespace|μHE\\[",
+        "densityDichotomy|doubleCone|axisFree|sphereGood|slabGood",
+        "bf_sphereGood_densityDichotomy|bf_sphereGood_axisFree_measurableSet|bf_sphereGood_doubleCone_outerMeasure",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/SphereGoodSplitApi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/SphereGoodSplitReplay.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sphere-good-audit-7crcv_po/IndependentAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-good-directions-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-good-directions-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereGoodSplitApi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereGoodSplitDecision.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereGoodSplitReplay.lean",
+        "/tmp/sphere-good-audit-7crcv_po/IndependentAudit.lean"
+      ],
+      "conclusion": "The pinned project and mathlib revisions match; inspected compiler sources match the snapshot. The snapshot supplies the required covering, density, regularity, restriction and projection APIs, and all relevant instances compile. No existing matching project declaration was found. DAG, handoff and 518 other decomposition-record checks found no conflicting name reservation. All three names are fresh bare identifiers. Each frozen type independently elaborates as Prop before child implementations and exactly matches its replay theorem. Recompiled child proofs depend only on propext, Classical.choice and Quot.sound. The split is appropriate: three genuine independent obligations separate measure theory, topology and cone geometry. Their empty mutual dependency lists are correct; the inherited sphere_cap_bounds dependency is acyclic. A separate assembly check, taking the three exact child contracts and the exact inherited cap-bounds contract as explicit premises, proves the selected frozen parent type without sorry or additional axioms. All parent hypotheses remain unchanged."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_dichotomy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every stated hypothesis and both density predicates. Independently checked closed approximation, closure of F_j, the reduction from failure of β, the countable Vitali covering estimate, and the Besicovitch density argument. Positive finite denominators justify the ENNReal arithmetic; no measurability of S or m-caps is needed. The proof covers n = 0 and supplies all construction details without circular reliance. Its source argument and spherical extension also appear in [Dall’Alba, Lemma 4.15 and Theorem 4.16, pp. 66–67](https://www.math.unipd.it/~monti/tesi/DallAlba.pdf)."
+    },
+    {
+      "key": "axis_free_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary δ. Finite-dimensionality makes S(H) compact and the projection expression continuous. Each K_j and its projected image are compact; the Archimedean argument proves both directions of the asserted union identity. Taking its complement within S(H) gives precisely the required Borel set. Empty spheres and δ ≤ 0 cause no gap. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "double_cone_outer_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the existential outer-measure contract and both implications. The supplied construction is defined on every ambient subset and proves all outer-measure axioms using countable subadditivity, without assumptions on A. Normalized signed projections prove axis-free nullity and both cap/cone inclusions. The coefficient rescaling proves Ψ0; strict supremum extraction with positive finite denominators proves Ψ∞, with K ≤ 0 handled explicitly. Projection instances are valid, and the complete proof uses neither the selected parent nor another child."
+    }
+  ],
+  "required_changes": []
+}

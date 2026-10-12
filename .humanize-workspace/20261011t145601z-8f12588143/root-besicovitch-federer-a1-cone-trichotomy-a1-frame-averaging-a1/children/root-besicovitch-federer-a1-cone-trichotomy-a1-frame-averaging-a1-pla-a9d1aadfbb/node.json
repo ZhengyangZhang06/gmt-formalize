@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.plane_direction_null-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "A Haar-random rotation of a plane and a unit direction avoids Bad (Steps 5–6 for one plane)",
+  "statement": "Let n, N ∈ ℕ, E := ℝᴺ = EuclideanSpace ℝ (Fin N), and let 𝓛 := E →L[ℝ] E carry the Borel σ-algebra of its norm topology. Write g* for the adjoint, Hⁿ := μHE[n] and P_W := W.starProjection. Let Bad ⊆ E × 𝓛 × E be measurable and a ∈ E. Assume that for every (n+1)-dimensional subspace H ⊆ E, Hⁿ({x ∈ H : |x| = 1, (a, P_H, x) ∈ Bad}) = 0. Let θ be a Borel probability measure on 𝓛 with g*g = 1 for θ-a.e. g, such that the image of θ under g ↦ gk equals θ for every k ∈ 𝓛 with k*k = 1. Let V ⊆ E be a subspace of dimension n + 1 with 0 < Hⁿ({x ∈ V : |x| = 1}) < ∞, and let ζ ∈ V with |ζ| = 1. Then θ({g ∈ 𝓛 : (a, g P_V g*, gζ) ∈ Bad}) = 0.",
+  "lean_statement": "∀ (n N : ℕ) (Bad : Set (Rn N × (Rn N →L[ℝ] Rn N) × Rn N)), MeasurableSet Bad → ∀ a : Rn N, (∀ H : Submodule ℝ (Rn N), finrank ℝ H = n + 1 → μHE[n] {x | x ∈ H ∧ ‖x‖ = 1 ∧ (a, H.starProjection, x) ∈ Bad} = 0) → ∀ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → Measure.map (fun g ↦ g * k) θ = θ) → ∀ V : Submodule ℝ (Rn N), finrank ℝ V = n + 1 → 0 < μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} → μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} < ∞ → ∀ ζ ∈ V, ‖ζ‖ = 1 → θ {g | (a, g * V.starProjection * ContinuousLinearMap.adjoint g, g ζ) ∈ Bad} = 0",
+  "lean_name": "bf_haar_planeDirection_null",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.haar_stabilizer-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.stabilizer_orbit_null-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.coset_fubini-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_conj_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.haar_stabilizer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.stabilizer_orbit_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.coset_fubini-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_conj_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-pla-a9d1aadfbb-a1"
+}

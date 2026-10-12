@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.slab_to_cone-a1.trichotomy_transfer-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.slab_to_cone-a1",
+  "depth": 4,
+  "title": "Transfer of the cone density trichotomy from finitely many comparable cone families (parent step 4, abstracted)",
+  "statement": "Let N, n ∈ ℕ, ι a finite nonempty index type, and μ a measure on E := ℝ^N, evaluated on arbitrary sets as an outer measure. Let A ⊆ E, δ ∈ ℝ, κ > 0 and a ∈ E. Let X : ℝ → 𝒫(E) and Z : ι → ℝ → 𝒫(E) be families of sets, Ax a proposition and (Ax′_j)_{j∈ι} propositions. Write B(a, r) for the open ball and ofReal := ENNReal.ofReal. Assume:\n(i) Z_j(s) ⊆ X(s) for every j and every s > 0;\n(ii) X(s) ⊆ ⋃_j Z_j(κs) for every s > 0;\n(iii) Ax′_j implies Ax for every j;\n(iv) for every j, Ψ0_j ∨ Ψ∞_j ∨ Ax′_j, where\n Ψ0_j: for every c > 0 there is ε > 0 with μ(A ∩ (Z_j(s) ∩ B(a, r))) ≤ ofReal(c(rs)ⁿ) for all 0 < s < ε and 0 < r < δ;\n Ψ∞_j: for every K ∈ ℝ and ε > 0 there are 0 < s < ε and 0 < r < δ with ofReal(K(rs)ⁿ) ≤ μ(A ∩ (Z_j(s) ∩ B(a, r))).\nThen Φ0 ∨ Φ∞ ∨ Ax, where Φ0 and Φ∞ are Ψ0_j and Ψ∞_j with X(s) in place of Z_j(s).",
+  "lean_statement": "∀ (N n : ℕ) (ι : Type) [Fintype ι] [Nonempty ι] (μ : Measure (Rn N)) (A : Set (Rn N)) (δ κ : ℝ) (a : Rn N) (X : ℝ → Set (Rn N)) (Z : ι → ℝ → Set (Rn N)) (Ax : Prop) (Ax' : ι → Prop), 0 < κ → (∀ j (s : ℝ), 0 < s → Z j s ⊆ X s) → (∀ s : ℝ, 0 < s → X s ⊆ ⋃ j, Z j (κ * s)) → (∀ j, Ax' j → Ax) → (∀ j, ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μ (A ∩ (Z j s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (Z j s ∩ Metric.ball a r))) ∨ Ax' j)) → ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μ (A ∩ (X s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (X s ∩ Metric.ball a r))) ∨ Ax)",
+  "lean_name": "bf_coneTrichotomy_of_slabCover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-slab-to-cone-a1-tricho-60da978f98-a1"
+}

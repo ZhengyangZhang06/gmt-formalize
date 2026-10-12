@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.coset_fubini-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "Fubini over left cosets: θ-null set when almost every coset fibre is θ′-null (Step 6)",
+  "statement": "Let N ∈ ℕ and let 𝓛 := ℝᴺ →L[ℝ] ℝᴺ carry the Borel σ-algebra of its operator-norm topology, with multiplication given by composition. Let θ be a finite Borel measure and θ′ a Borel probability measure on 𝓛 such that, for θ′-a.e. k ∈ 𝓛, the image of θ under g ↦ gk equals θ. Let B ⊆ 𝓛 be a Borel set with θ′({g ∈ 𝓛 : hg ∈ B}) = 0 for θ-a.e. h ∈ 𝓛. Then θ(B) = 0.",
+  "lean_statement": "∀ (N : ℕ) (θ θ' : Measure (Rn N →L[ℝ] Rn N)), IsFiniteMeasure θ → IsProbabilityMeasure θ' → (∀ᵐ k ∂θ', Measure.map (fun g ↦ g * k) θ = θ) → ∀ B : Set (Rn N →L[ℝ] Rn N), MeasurableSet B → (∀ᵐ h ∂θ, θ' {g | h * g ∈ B} = 0) → θ B = 0",
+  "lean_name": "bf_haar_null_of_cosetFibres_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-cos-a577914526-a1"
+}

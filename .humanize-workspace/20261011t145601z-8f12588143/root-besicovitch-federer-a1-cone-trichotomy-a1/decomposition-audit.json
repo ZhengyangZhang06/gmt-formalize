@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "sed -n '1,155p' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "theorem exists_disjoint_subfamily_covering_enlargement|theorem ae_tendsto_measure_inter_div",
+        "exists_isClosed_sdiff_lt|ext_of_forall_integral_eq_of_IsFiniteMeasure|isMulInvariant_eq_smul_of_compactSpace|isHaarMeasure_eq_of_isProbabilityMeasure",
+        "inverse_continuousAt|isOpen_setOfPred_linearIndependent|IsTopologicalGroup \\(unitary|isClosed_unitary",
+        "instMeasurableSpace|instBorelSpace|measurable_measure_prodMk_left|measurable_measure_prodMk_right",
+        "bf_coneExceptional_measurableSet|bf_sphereCap_measure_bounds|bf_sphere_ae_slabGood|bf_slabGood_imp_coneTrichotomy|bf_frameProjection_continuousOn|bf_frameAveraging_null",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 /tmp/runConeDecompositionAudit.py /tmp/IndependentConeDecompositionTypes.lean",
+        "python3 /tmp/runConeDecompositionAudit.py /tmp/IndependentConeDecompositionAssembly.lean",
+        "python3 /tmp/runConeDecompositionAudit.py /tmp/IndependentConeDecompositionLibraries.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/HasOuterApproxClosed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1/parent-child-handoff.json",
+        "GMT/Scratch/ConeTrichotomySplitAssembly.lean",
+        "/tmp/IndependentConeDecompositionTypes.lean",
+        "/tmp/IndependentConeDecompositionAssembly.lean",
+        "/tmp/IndependentConeDecompositionLibraries.lean",
+        "/tmp/runConeDecompositionAudit.py"
+      ],
+      "conclusion": "Verified the frozen definitions and pinned revisions; inspected library sources match the compiler sources. All six exact one-line propositions independently elaborate without child implementations, replaying frozen definitions and omitting the unsolved root theorem. The assembly proves the exact selected parent from the exact child assumptions. Its axiom check, and checks of fifteen reused library declarations, report only propext, Classical.choice and Quot.sound. Additional probes confirm the required density/regularity instances, adjoint continuity, and composition multiplication on continuous linear endomorphisms. No proposed name occurs in the searched snapshot declarations or active DAG; all names are bare identifiers. No Matrix/IsUnit construction occurs in the contracts. The split is appropriate, every child contributes, and dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exceptional_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including arbitrary jointly continuous F₁,F₂ and unrestricted natural n,ℓ. The proof correctly restricts Hausdorff measure to finite A, establishes rational approximation using positivity of ‖F₂‖ on each cone, obtains the strict countable Φ∞ formulation using K+1, and proves axis measurability by closed projection over compact A. No linearity or parent theorem is assumed."
+    },
+    {
+      "key": "sphere_cap_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact cap bounds follow from the supplied graph construction, the projection's Lipschitz bound, the explicit Lipschitz estimate for Γ, and finite covering of the sphere. The constants are uniform in center and radius. Flat-ball normalization and ambient/subspace Hausdorff measures are correctly connected by isometries. No additional positivity assumption on ℓ is needed."
+    },
+    {
+      "key": "sphere_good_directions",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The general-vertex statement matches the Lean proposition. The proof establishes subadditivity of μ, the null complement of the axis set, both cap/cone inclusions, and the closed-set/Vitali/density argument, including finite positive denominators. It supplies the spherical adaptation of [Dall’Alba’s density dichotomy, Lemma 4.15 and Theorem 4.16](https://www.math.unipd.it/~monti/tesi/DallAlba.pdf), rather than assuming it. Only the declared sphere_cap_bounds sibling is used; the final outer-measure nullity is exactly the conclusion."
+    },
+    {
+      "key": "slab_to_cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension count makes the supplied orthonormal family a basis of Wᗮ. The projection formulas and both cone inclusions are correct, including the √ℓ enlargement for every positive s. The three cases and constant c/(ℓ(√ℓ)^n) yield the exact trichotomy. Arbitrary A and real δ are handled without adding measurability, finiteness, or δ>0 assumptions."
+    },
+    {
+      "key": "frame_projection_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states continuity on independent frames for all N,n. The proof handles n=0, proves Gram-operator invertibility, identifies the resulting operator with frameProjection, and transfers continuity within the independent-frame set. Inversion takes place in the composition algebra of continuous linear endomorphisms, with no pointwise-multiplication ambiguity or circular dependency."
+    },
+    {
+      "key": "frame_averaging",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract measurable-set contract matches its prose and suffices for the selected parent. The proof constructs compact orthogonal groups and normalized Haar measures, justifies right invariance and the sphere law, and applies h1 directly to hH⁰, requiring no unstated equivariance of Bad. Measurability and finite/σ-finite hypotheses justify both Tonelli stages and transfer to frames. Its only sibling dependencies are the declared cap bounds and projection continuity; the exact parent assembly independently compiles."
+    }
+  ],
+  "required_changes": []
+}
