@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.weight_eq_restrict-a1",
+  "parent_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "depth": 3,
+  "title": "From the approximate-tangent set to all of M: μ = θ H^n⌞M on Borel sets (B3a)",
+  "statement": "Let N, n ∈ ℕ, H := μHE[n] on ℝ^N, and let μ be a Borel measure on ℝ^N with μ(K) < ∞ for every compact K. Let M ⊆ ℝ^N be such that H⌞M is s-finite, and let E ⊆ M. Let θ : ℝ^N → ℝ satisfy θ(x) > 0 and HasDensity n μ x (ofReal θ(x)) for every x ∈ M. If μ(B) = ∫⁻_{E∩B} ofReal(θ) dH for every Borel B ⊆ ℝ^N, then μ(B) = ∫⁻_{M∩B} ofReal(θ) dH for every Borel B ⊆ ℝ^N.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M E : Set (Euclidean N)) (θ : Euclidean N → ℝ), (∀ K : Set (Euclidean N), IsCompact K → μ K ≠ ∞) → SFinite ((μHE[n] : Measure (Euclidean N)).restrict M) → E ⊆ M → (∀ x ∈ M, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in E ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]) → ∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]",
+  "lean_name": "allard_tc_tpr_weight_eq_restrict",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.hausdorff_null_of_weight_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.hausdorff_null_of_weight_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-point-representation-a1-weight-e-023940aa84-a1"
+}

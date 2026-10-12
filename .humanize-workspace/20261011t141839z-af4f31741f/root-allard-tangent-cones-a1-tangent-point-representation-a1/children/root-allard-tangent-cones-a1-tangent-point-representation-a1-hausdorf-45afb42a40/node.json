@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.hausdorff_null_of_weight_null-a1",
+  "parent_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "depth": 3,
+  "title": "μ-null sets of positive n-density are H^n-null (Simon Ch. 1, 3.3 with outer regularity)",
+  "statement": "Let N, n ∈ ℕ and let μ be a Borel measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ ℝ^N. Let θ : ℝ^N → ℝ, and let Z ⊆ ℝ^N with μ(Z) = 0 (outer measure). Suppose every x ∈ Z has θ(x) > 0 and Θ^n(μ, x) = θ(x), i.e. μ(B_ρ(x))/(ω_n ρ^n) → θ(x) as ρ ↓ 0 with closed balls (HasDensity n μ x (ofReal θ(x))). Then H^n(Z) = 0, where H^n = μHE[n].",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (Z : Set (Euclidean N)) (θ : Euclidean N → ℝ), (∀ K : Set (Euclidean N), IsCompact K → μ K ≠ ∞) → μ Z = 0 → (∀ x ∈ Z, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → μHE[n] Z = 0",
+  "lean_name": "allard_tc_tpr_hausdorff_null_of_weight_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-point-representation-a1-hausdorf-45afb42a40-a1"
+}
