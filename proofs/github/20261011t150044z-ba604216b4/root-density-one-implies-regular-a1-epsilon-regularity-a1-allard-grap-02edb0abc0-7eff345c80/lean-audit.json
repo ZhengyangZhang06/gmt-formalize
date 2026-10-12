@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c013bfddeeb120e85229298371e68f42ead519ece94128ea11c61c6b97a8b8e7",
+  "git_delta": {
+    "base_commit": "8e62c746ab1be9035958b3575386379f9315716c",
+    "candidate_commit": "20bbdd9904db2142dc6418cb8176db7f8c59d1df",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_th_norm_apply_sq_le_hs",
+    "diff_sha256": "b2a3e82030ad0c377c42247ff6092e3d0e61e03e86c48f9c1ae50e312af63907",
+    "source_sha256": "13b0db85f104150807bbb25ccdac3ac298d77684c6c8c2aae0b22f733784f21f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_th_norm_apply_sq_le_hs",
+      "statement": "∀ (P : ℕ) (A : Euclid P →L[ℝ] Euclid P) (v : Euclid P), ‖A v‖ ^ 2 ≤ (∑ i : Fin P, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖v‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
