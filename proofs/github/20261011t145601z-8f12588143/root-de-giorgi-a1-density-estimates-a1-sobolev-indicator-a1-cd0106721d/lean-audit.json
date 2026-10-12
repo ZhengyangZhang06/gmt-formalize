@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a9ee239f13ce636b894ab1879d1734f912efd2119a2059b359b68d925f3e4380",
+  "git_delta": {
+    "base_commit": "bf55a75112629268c4a7067a9d2cf3e1cd9d183c",
+    "candidate_commit": "fc08bb2dd1ce44c1433a7f8e721ed33fe86c3e12",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "2cf620b9ef60f7a9e50f316ca55376453f97313dd65eb076a17d2b799c7ae5e0",
+    "source_sha256": "d990a62f777f96db95efe5e846b014ceb412cefe011faf9cbef9def8f8024c1e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_sobolev_indicator",
+      "statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ : Rn (n + 1) → ℝ) (K : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → (∀ y, 0 ≤ ζ y) → eLpNorm (G.indicator ζ) ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
