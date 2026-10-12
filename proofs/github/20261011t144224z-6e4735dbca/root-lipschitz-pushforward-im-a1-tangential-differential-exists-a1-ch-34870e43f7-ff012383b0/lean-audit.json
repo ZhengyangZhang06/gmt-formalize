@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06c5da78563b7e6377ceb380448a9c56296a3742581484c6f55ae0b233e3986f",
+  "git_delta": {
+    "base_commit": "ec9be34e30772bc1bd77d9477954c51d591e1bf7",
+    "candidate_commit": "019ad40a7219b394f7e3a76a9361c778b6a98739",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_tde_chart_nondiff_image_null",
+    "diff_sha256": "9aff921c1aa2c33da850885945c6b7e84641da6ddd14c53610b5a82e7a82a0d6",
+    "source_sha256": "0a5e66d8b1ad96105a8b97807ea52458a0cd47a92f87d07d70b34e0838fe873e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_tde_chart_nondiff_image_null",
+      "statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (K : ℝ≥0), IsOpen U → LocallyLipschitzOn U f → IsOpen Ω → LipschitzOnWith K Φ Ω → (μHE[n] : Measure (Eucl P)) (Φ '' {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w}) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
