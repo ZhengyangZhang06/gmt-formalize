@@ -519,6 +519,77 @@ theorem Submission.backward_integral_gronwall_Ioc : ∀ (a b Λ C : ℝ) (f : �
     exact le_of_mul_le_mul_left h1 (Real.exp_pos (Λ * s))
   -- Step 7: `f(s) ≤ F(s) ≤ G(s) ≤ C e^{Λ(b - s)}`
   exact (hfF s hs).trans ((hFG s hs).trans h2)
+/-- **`C¹` step function for the truncations `γ(h - t)`** (Simon Ch. 4, proof of 5.6, pp. 97–98).
+For `ε > 0`, `ψ(x) = S(x / ε)` with `S = Real.smoothTransition` is `C¹`, nondecreasing,
+`[0, 1]`-valued, `0` on `(-∞, 0]` and `1` on `[ε, ∞)`. `ψ'` is continuous and vanishes off
+`[0, ε]`, hence bounded, and with `T = max a 0`,
+`∫_{(0,∞)} ψ'(a - t) dt = ∫_0^T ψ'(a - t) dt = ψ(a) - ψ(a - T) = ψ(a) ≤ 1`. -/
+theorem Submission.smooth_step_truncation_exists : ∀ ε : ℝ, 0 < ε → ∃ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x, x ≤ 0 → ψ x = 0) ∧ (∀ x, ε ≤ x → ψ x = 1) ∧ (∀ x, 0 ≤ deriv ψ x) ∧ (∃ M : ℝ, ∀ x, deriv ψ x ≤ M) ∧ ∀ a : ℝ, ∫⁻ t in Ioi 0, ENNReal.ofReal (deriv ψ (a - t)) ≤ 1 := by
+  intro ε hε
+  -- `ψ(x) = S(x / ε)`: `C¹`, nondecreasing, `0` on `(-∞, 0]`, `1` on `[ε, ∞)`
+  set ψ : ℝ → ℝ := fun x ↦ Real.smoothTransition (x / ε) with hψdef
+  have hψC : ContDiff ℝ 1 ψ :=
+    (Real.smoothTransition.contDiff (n := 1)).comp (contDiff_id.div_const ε)
+  have hψmono : Monotone ψ := fun x y hxy ↦
+    Real.smoothTransition.monotone (div_le_div_of_nonneg_right hxy hε.le)
+  have hψ0 : ∀ x, x ≤ 0 → ψ x = 0 := fun x hx ↦
+    Real.smoothTransition.zero_of_nonpos (div_nonpos_of_nonpos_of_nonneg hx hε.le)
+  have hψ1 : ∀ x, ε ≤ x → ψ x = 1 := fun x hx ↦
+    Real.smoothTransition.one_of_one_le ((one_le_div hε).2 hx)
+  -- `ψ'` vanishes off `[0, ε]`, since `ψ` is locally constant there
+  have hd0 : ∀ x, x < 0 → deriv ψ x = 0 := by
+    intro x hx
+    have : ψ =ᶠ[𝓝 x] fun _ ↦ (0 : ℝ) :=
+      (eventually_lt_nhds hx).mono fun y hy ↦ hψ0 y hy.le
+    rw [this.deriv_eq, deriv_const]
+  have hd1 : ∀ x, ε < x → deriv ψ x = 0 := by
+    intro x hx
+    have : ψ =ᶠ[𝓝 x] fun _ ↦ (1 : ℝ) :=
+      (eventually_gt_nhds hx).mono fun y hy ↦ hψ1 y hy.le
+    rw [this.deriv_eq, deriv_const]
+  -- `ψ'` is continuous with support in `[0, ε]`
+  have hdcont : Continuous (deriv ψ) := hψC.continuous_deriv le_rfl
+  have hdsupp : HasCompactSupport (deriv ψ) := by
+    refine HasCompactSupport.of_support_subset_isCompact (K := Icc 0 ε) isCompact_Icc ?_
+    intro x hx
+    by_contra hxI
+    rw [Set.mem_Icc, not_and_or, not_le, not_le] at hxI
+    rcases hxI with h | h
+    · exact hx (hd0 x h)
+    · exact hx (hd1 x h)
+  have hdnn : ∀ x, 0 ≤ deriv ψ x := fun x ↦ hψmono.deriv_nonneg
+  refine ⟨ψ, hψC, fun x ↦ ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩,
+    hψ0, hψ1, hdnn, ?_, ?_⟩
+  · obtain ⟨M, hM⟩ := hdcont.bddAbove_range_of_hasCompactSupport hdsupp
+    exact ⟨M, fun x ↦ hM ⟨x, rfl⟩⟩
+  · intro a
+    -- split `(0, ∞) = (0, T] ∪ (T, ∞)` with `T = max a 0`; the integrand vanishes on `(T, ∞)`
+    set T := max a 0 with hT
+    have hT0 : 0 ≤ T := le_max_right _ _
+    have hsplit : Ioi (0 : ℝ) = Ioc 0 T ∪ Ioi T := (Ioc_union_Ioi_eq_Ioi hT0).symm
+    rw [hsplit, lintegral_union measurableSet_Ioi (Ioc_disjoint_Ioi le_rfl)]
+    have h2 : ∫⁻ t in Ioi T, ENNReal.ofReal (deriv ψ (a - t)) = 0 := by
+      refine setLIntegral_eq_zero_iff' measurableSet_Ioi ?_ |>.2 ?_
+      · exact (ENNReal.measurable_ofReal.comp ((measurable_deriv ψ).comp
+          (measurable_const.sub measurable_id))).aemeasurable
+      · refine Eventually.of_forall fun t ht ↦ ?_
+        have : a - t < 0 := by
+          have := le_max_left a 0
+          rw [Set.mem_Ioi] at ht
+          linarith
+        rw [hd0 _ this, ENNReal.ofReal_zero]
+    rw [h2, add_zero]
+    -- on `(0, T]`: substitution `u = a - t` and FTC give `ψ(a) - ψ(a - T) = ψ(a) ≤ 1`
+    have hint : IntegrableOn (fun t ↦ deriv ψ (a - t)) (Ioc 0 T) :=
+      ((hdcont.comp (continuous_const.sub continuous_id)).integrableOn_Icc).mono_set
+        Ioc_subset_Icc_self
+    rw [← ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun t ↦ hdnn _),
+      ← intervalIntegral.integral_of_le hT0, intervalIntegral.integral_comp_sub_left,
+      intervalIntegral.integral_deriv_eq_sub (fun x _ ↦ (hψC.differentiable one_ne_zero) x)
+        (hdcont.intervalIntegrable _ _)]
+    have : a - T ≤ 0 := by have := le_max_left a 0; linarith
+    rw [sub_zero, hψ0 _ this, sub_zero]
+    exact ENNReal.ofReal_le_one.2 (Real.smoothTransition.le_one _)
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
