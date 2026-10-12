@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.continuous_form_conv-a1",
+  "parent_id": "root.compactness_mass_bounds-a1",
+  "depth": 2,
+  "title": "Weak convergence with local mass bounds implies convergence on continuous forms",
+  "statement": "Let P, n ∈ ℕ and let U ⊆ ℝ^P be open. Assume:\n- S : ℕ → GeometricCurrentOn U n and S₀ ∈ GeometricCurrentOn U n satisfy sup_q M_W(S_q) < ∞ for every W with CompactlyContainedOpen W U, and S_q ⇀ S₀ (WeaklyConvergesOn S S₀);\n- ω : ℝ^P → Covector (Eucl P) n is continuous with compact support and tsupport ω ⊆ U;\n- μ_q, μ₀ are measures and v_q, v₀ : ℝ^P → NVector (Eucl P) n are maps with IsMeasureRepresentation (S q) (μ q) (v q) for all q and IsMeasureRepresentation S₀ μ₀ v₀.\nThen ∫ v_q(x)(ω(x)) dμ_q(x) → ∫ v₀(x)(ω(x)) dμ₀(x) as q → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (S : ℕ → GeometricCurrentOn U n) (S₀ : GeometricCurrentOn U n), (∀ W, CompactlyContainedOpen W U → (⨆ q, (S q).massOn W) < ∞) → WeaklyConvergesOn S S₀ → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → ∀ (μ : ℕ → Measure (Eucl P)) (v : ℕ → Eucl P → NVector (Eucl P) n) (μ₀ : Measure (Eucl P)) (v₀ : Eucl P → NVector (Eucl P) n), (∀ q, IsMeasureRepresentation (S q) (μ q) (v q)) → IsMeasureRepresentation S₀ μ₀ v₀ → Tendsto (fun q => ∫ x, v q x (ω x) ∂(μ q)) atTop (𝓝 (∫ x, v₀ x (ω x) ∂μ₀))",
+  "lean_name": "cmb_tendsto_integral_of_weaklyConvergesOn",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.mollify-a1",
+    "root.compactness_mass_bounds-a1.repr_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.mollify-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_mass_bounds-a1.repr_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-continuous-form-conv-a1-a1"
+}
