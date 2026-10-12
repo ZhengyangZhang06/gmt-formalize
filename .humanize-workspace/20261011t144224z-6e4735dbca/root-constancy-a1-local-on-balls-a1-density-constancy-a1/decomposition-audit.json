@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hasFDerivAt_convolution_right|contDiff_convolution_left|contDiff_convolution_right",
+        "convolutionExists_right|support_convolution_subset|convolution_precompR_apply|HasCompactSupport.convolution ",
+        "ae_tendsto_average_norm_sub|exists_contDiff_tsupport_subset|addHaar_closedBall|isUnifLocDoublingMeasure|integral_comp_smul",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero|integrableOn_of_bounded|locallyIntegrable_iff|is_const_of_fderiv_eq_zero",
+        "constancy_mdc_weak_partials_vanish|constancy_mdc_smooth_approx_identity_ae_tendsto|constancy_mdc_ae_const_of_weak_partials_vanish|ae_eq_const_of_weak_coordinate_derivatives_zero",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/density-constancy-audit-ebst9369/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/density-constancy-audit-ebst9369/SuppliedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/density-constancy-audit-ebst9369/Typeclasses.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py",
+        "/tmp/density-constancy-audit-ebst9369/StandaloneTypes.lean",
+        "/tmp/density-constancy-audit-ebst9369/SuppliedProofs.lean",
+        "/tmp/density-constancy-audit-ebst9369/Typeclasses.lean"
+      ],
+      "conclusion": "The split is appropriate for this selected analytic theorem. Independently confirmed the frozen import limitation and the leaf gate's prohibition on adding imports. The snapshot supplies the convolution, bump, scaling, Lebesgue-point and zero-derivative constancy tools needed by the supplied proofs. Inspected Mathlib sources match the compiler package byte-for-byte. All three exact one-line propositions elaborate independently in comparator scope without child implementations or aliases. Their supplied proof bodies and the exact selected parent composition compile using only propext, Classical.choice and Quot.sound; the inherited root placeholder is unused. Each child insertion passes the source-delta gate. Scalar convolution and Haar/doubling instances check correctly. All names are bare identifiers, with no reservation matches among 458 DAG nodes or declaration matches in the searched project and SimonGMT sources. The sole child dependency is weak_constancy_ball on smooth_approx_identity, and it is acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weak_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and exactly matches the Lean proposition. The proof establishes derivative support and integrability, convolution admissibility, and differentiation on the right before applying the two hypotheses on u. Passing from the restricted integral to the whole-space integral requires no measurability of θ because the integrand vanishes outside the ball. Dropping radius positivity and boundedness is justified. The supplied proof is complete, non-circular, and compiles at the exact frozen type."
+    },
+    {
+      "key": "smooth_approx_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states all five kernel properties and the correctly ordered convergence quantifiers: one sequence works for every locally integrable g, with an exceptional null set allowed to depend on g. The proof constructs and normalizes a bump, verifies scaling and support, justifies integrability, and bounds the error by a fixed constant times the Lebesgue-point average. Dimension zero is covered. This is a complete independent obligation, and the supplied proof compiles at the exact type."
+    },
+    {
+      "key": "weak_constancy_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including global local integrability, positive radius, smooth compactly supported tests, and restricted-measure a.e. equality. Using only smooth_approx_identity, the proof checks reflected-kernel support and the derivative sign, obtains zero derivatives on shrinking balls, and uses a good base point and eventual constancy to identify one limit throughout the ball. There is no circular reliance. Its conclusion, combined with weak_identity and bounded measurability, proves the selected parent's exact integral representation; this composition also compiles."
+    }
+  ],
+  "required_changes": []
+}

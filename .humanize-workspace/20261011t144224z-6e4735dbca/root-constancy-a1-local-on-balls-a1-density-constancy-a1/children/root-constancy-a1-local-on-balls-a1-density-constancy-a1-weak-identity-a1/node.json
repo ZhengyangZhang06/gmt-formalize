@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.local_on_balls-a1.density_constancy-a1.weak_identity-a1",
+  "parent_id": "root.constancy-a1.local_on_balls-a1.density_constancy-a1",
+  "depth": 4,
+  "title": "Printed display (2): the density θ has vanishing weak coordinate derivatives on B_ρ(x₀)",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ and u : (ℝⁿ → ℝ) → ℝ such that u(D_j a) = 0 for every C^∞ compactly supported a : ℝⁿ → ℝ with spt a ⊆ U and every j ∈ {1,…,n}. Here spt g is the closed support of g, the closure of {g ≠ 0} (Lean: tsupport g), and D_j a(x) := Da(x)(e_j), where e_j = EuclideanSpace.single j 1 is the j-th standard basis vector. Let x₀ ∈ ℝⁿ and ρ, ε ∈ ℝ with B̄_{ρ+ε}(x₀) ⊆ U, and put B := B_ρ(x₀). Let φ : ℝⁿ → ℝ be C^∞ with compact support and spt φ ⊆ B̄_ε(0). Let θ : ℝⁿ → ℝ be any function satisfying (1) u(φ ∗ (1_B f)) = ∫_B f θ dLⁿ for every f : ℝⁿ → ℝ integrable on B. Here (φ ∗ g)(x) = ∫ φ(t) g(x − t) dLⁿ(t), and 1_B f is f on B and 0 off B. All integrals are Bochner integrals with respect to Lebesgue measure Lⁿ (Lean's ∫, which is 0 for a non-integrable integrand); no measurability or integrability of θ is assumed. Then ∫_{ℝⁿ} θ(x) D_j a(x) dLⁿ(x) = 0 for every C^∞ compactly supported a : ℝⁿ → ℝ with spt a ⊆ B and every j ∈ {1,…,n}.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ), (∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ∀ j : Fin n, u (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) = 0) → ∀ (x₀ : Eucl n) (ρ ε : ℝ), closedBall x₀ (ρ + ε) ⊆ U → ∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ closedBall 0 ε → ∀ θ : Eucl n → ℝ, (∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = ∫ x in ball x₀ ρ, f x * θ x ∂volume) → ∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ ball x₀ ρ → ∀ j : Fin n, ∫ x, θ x * fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) ∂volume = 0",
+  "lean_name": "constancy_mdc_weak_partials_vanish",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-local-on-balls-a1-density-constancy-a1-weak-identity-a1-a1"
+}
