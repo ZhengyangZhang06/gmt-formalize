@@ -359,6 +359,61 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Push-forward of Borel representing data from the open subspace `↥U` to `ℝ^P`: `μ = m.map ι`
+and the zero extension `ν` of `ν₁` represent the same integrals against every `f ∈ CF_N(U)`. -/
+theorem Submission.smr_rb_pushforward_subtype :
+    ∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U →
+      ∀ (m : Measure ↥U) (ν₁ : ↥U → EuclideanSpace ℝ (Fin N)),
+      (∀ K : Set ↥U, IsCompact K → m K < ∞) → Measurable ν₁ → (∀ y, ‖ν₁ y‖ ≤ 1) →
+      (∀ᵐ y ∂m, ‖ν₁ y‖ = 1) →
+      ∃ (μ : Measure (Eucl P)) (ν : Eucl P → EuclideanSpace ℝ (Fin N)), Measurable ν ∧
+        μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧
+        (∀ x, ‖ν x‖ ≤ 1) ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧
+        ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f →
+          tsupport f ⊆ U → Integrable (fun x => inner ℝ (f x) (ν x)) μ ∧
+            ∫ x, inner ℝ (f x) (ν x) ∂μ = ∫ y, inner ℝ (f ↑y) (ν₁ y) ∂m := by
+  intro P N U hU m ν₁ hm hν₁ hle hae
+  -- `ι = Subtype.val : ↥U → ℝ^P` is a measurable embedding since `U` is open.
+  have hι : MeasurableEmbedding (Subtype.val : ↥U → Eucl P) :=
+    MeasurableEmbedding.subtype_coe hU.measurableSet
+  -- The zero extension `ν = Function.extend Subtype.val ν₁ 0` of `ν₁`.
+  set ν : Eucl P → EuclideanSpace ℝ (Fin N) := Function.extend Subtype.val ν₁ 0
+  have hνval : ∀ y : ↥U, ν y = ν₁ y := fun y => Subtype.val_injective.extend_apply ν₁ 0 y
+  have hνout : ∀ x, x ∉ U → ν x = 0 := fun x hx =>
+    Function.extend_apply' _ _ _ fun ⟨y, hy⟩ => hx (hy ▸ y.2)
+  have hνm : Measurable ν := hι.measurable_extend hν₁ measurable_zero
+  have hνle : ∀ x, ‖ν x‖ ≤ 1 := by
+    intro x
+    by_cases hx : x ∈ U
+    · rw [← Subtype.coe_mk x hx, hνval]; exact hle _
+    · rw [hνout x hx, norm_zero]; exact zero_le_one
+  -- Compact subsets of `U` have finite `m.map ι`-measure.
+  have hfin : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → m.map Subtype.val K < ∞ := by
+    intro K hK hKU
+    rw [hι.map_apply]
+    exact hm _ ((Topology.IsInducing.subtypeVal.isCompact_preimage_iff
+      (hKU.trans Subtype.range_coe.symm.subset)).2 hK)
+  refine ⟨m.map Subtype.val, ν, hνm, ?_, hfin, hνle, ?_, fun f hf hfc hfU => ⟨?_, ?_⟩⟩
+  · rw [hι.map_apply, Subtype.preimage_coe_compl, measure_empty]
+  · exact hι.ae_map_iff.2 (hae.mono fun y hy => by rw [hνval]; exact hy)
+  · -- `⟨f, ν⟩` is measurable, bounded, and vanishes off the compact `tsupport f ⊆ U`.
+    have hFm : Measurable fun x => inner ℝ (f x) (ν x) :=
+      continuous_inner.measurable.comp (hf.measurable.prodMk hνm)
+    obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfc
+    have hsupp : Function.support (fun x => inner ℝ (f x) (ν x)) ⊆ tsupport f := by
+      intro x hx
+      by_contra h
+      exact hx (by simp only [image_eq_zero_of_notMem_tsupport h, inner_zero_left])
+    refine (integrableOn_iff_integrable_of_support_subset hsupp).1
+      (Measure.integrableOn_of_bounded (hfin _ hfc hfU).ne hFm.aestronglyMeasurable
+        (M := C) (ae_of_all _ fun x => ?_))
+    calc ‖inner ℝ (f x) (ν x)‖ ≤ ‖f x‖ * ‖ν x‖ := norm_inner_le_norm _ _
+      _ ≤ ‖f x‖ := mul_le_of_le_one_right (norm_nonneg _) (hνle x)
+      _ ≤ C := hC x
+  · -- Change of variables along the measurable embedding `ι`.
+    rw [hι.integral_map]
+    simp only [hνval]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
