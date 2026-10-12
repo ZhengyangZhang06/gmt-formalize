@@ -458,6 +458,167 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Schauder bootstrap for the prescribed-mean-curvature graph system** (Simon Ch. 5, proof of
+Theorem 7.1, p. 128: "by the Schauder theory for elliptic equations we see that `h ∈ C^{q,α}`
+implies `u ∈ C^{q+2,α}`").  Let `J(P) = det(I + (⟨Pe_a, Pe_b⟩)_{ab})^{1/2}` be the area integrand.
+If `u` is `C^{1,β}` on `B̆_r(0)` (`α ≤ β ≤ 1`) with `Du(0) = 0`, `(x, u(x)) ∈ O` there, and `u`
+weakly solves `∫ DJ(Du)[Dφ] = −∫ J(Du) ⟨(0, φ), F(x, u(x))⟩` for `F ∈ C^{q,α}_loc(O)`, then `u` is
+`C^{q+2,α}` (`IsHolderCkα`) on some ball `B̆_{r'}(0)`, `0 < r' ≤ r`.  On a small-gradient ball the
+system is Legendre-elliptic; its right side `J(Du) pv(F(x, u))` (`pv` = last `ℓ` coordinates) is
+`C^{m,α}_loc` once `u` is `C^{m+1,α}_loc` (`m ≤ q`); Schauder theory then gives `C^{2,α}_loc` and,
+inductively, `C^{q+2,α}_loc`, and global bounds follow on the half ball. -/
+theorem dohr_elliptic_bootstrap : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (q : ℕ) (α β : ℝ), 0 < α → α < 1 → α ≤ β → β ≤ 1 → ∀ (r : ℝ) (u : Rn n → Rn ℓ) (F : Amb n ℓ → Amb n ℓ) (O : Set (Amb n ℓ)), 0 < r → IsOpen O → IsLocallyHolderCkα q α F O → (∀ x ∈ ball (0 : Rn n) r, graphPoint x (u x) ∈ O) → ContDiffOn ℝ 1 u (ball 0 r) → fderiv ℝ u 0 = 0 → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) r, ∀ y ∈ ball (0 : Rn n) r, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K * ‖x - y‖ ^ β) → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∫ x in ball (0 : Rn n) r, fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in ball (0 : Rn n) r, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * inner ℝ (graphPoint 0 (φ x)) (F (graphPoint x (u x)))) → ∃ r' > 0, r' ≤ r ∧ IsHolderCkα (q + 2) α u (ball 0 r') := by
+  intro n ℓ hn q α β hα0 hα1 hαβ hβ1 r u F O hr hO hF hGO hu hDu0 hβ hweak
+  -- Step 1: the area integrand `J` is smooth and Legendre-elliptic (constant `1/2`) for `‖P‖ ≤ ε`.
+  obtain ⟨hJs, ε, hε, hJleg⟩ := Submission.dohr_eb_area_integrand_legendre n ℓ
+  set J : (Rn n →L[ℝ] Rn ℓ) → ℝ := fun P => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+    Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ)))
+      (P (EuclideanSpace.single b (1 : ℝ)))))
+  -- A small-gradient ball `U = B̆_{r₁}(0)`, `r₁ ≤ r`, with `‖Du‖ ≤ ε` on `U` (`Du` is continuous
+  -- at `0` and `Du(0) = 0`).
+  have hcont : ContinuousAt (fderiv ℝ u) 0 :=
+    (hu.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl).continuousAt
+      (isOpen_ball.mem_nhds (mem_ball_self hr))
+  obtain ⟨δ, hδ, hδε⟩ := Metric.continuousAt_iff.mp hcont ε hε
+  set r₁ := min δ r
+  have hr₁0 : 0 < r₁ := lt_min hδ hr
+  have hr₁r : r₁ ≤ r := min_le_right _ _
+  set U := ball (0 : Rn n) r₁
+  have hUo : IsOpen U := isOpen_ball
+  have hUr : U ⊆ ball 0 r := ball_subset_ball hr₁r
+  have hDuε : ∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε := by
+    intro x hx
+    have h := hδε (lt_of_lt_of_le (mem_ball.mp hx) (min_le_left δ r))
+    rw [hDu0, dist_zero_right] at h
+    exact h.le
+  have hu1 : ContDiffOn ℝ 1 u U := hu.mono hUr
+  -- Step 2a: `u ∈ C^{1,α}_loc(U)`: `‖x − y‖^β ≤ (2r₁)^{β−α} ‖x − y‖^α` on `U`.
+  obtain ⟨K₀, hK₀⟩ := hβ
+  have hu1α : IsLocallyHolderCkα 1 α u U := by
+    refine (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) 0 α u U hUo).1.mpr ⟨hu1, ?_, ?_⟩
+    · rw [Nat.cast_zero, contDiffOn_zero]
+      exact hu1.continuousOn_fderiv_of_isOpen hUo le_rfl
+    · intro K _ hKU
+      refine ⟨max K₀ 0 * (2 * r₁) ^ (β - α), fun x hx y hy => ?_⟩
+      have hxU := hKU hx
+      have hyU := hKU hy
+      rw [iteratedFDeriv_zero_eq_comp, Function.comp_apply, Function.comp_apply, ← map_sub,
+        LinearIsometryEquiv.norm_map]
+      have hxy : ‖x - y‖ ≤ 2 * r₁ := by
+        have h1 := mem_ball_zero_iff.mp hxU
+        have h2 := mem_ball_zero_iff.mp hyU
+        linarith [norm_sub_le x y]
+      have hsplit : ‖x - y‖ ^ β = ‖x - y‖ ^ (β - α) * ‖x - y‖ ^ α := by
+        rw [← Real.rpow_add' (norm_nonneg _) (by linarith : (0 : ℝ) < β - α + α).ne',
+          sub_add_cancel]
+      have hpow : ‖x - y‖ ^ (β - α) ≤ (2 * r₁) ^ (β - α) :=
+        Real.rpow_le_rpow (norm_nonneg _) hxy (sub_nonneg.mpr hαβ)
+      calc ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K₀ * ‖x - y‖ ^ β := hK₀ x (hUr hxU) y (hUr hyU)
+        _ ≤ max K₀ 0 * ‖x - y‖ ^ β :=
+          mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg (norm_nonneg _) _)
+        _ = max K₀ 0 * (‖x - y‖ ^ (β - α) * ‖x - y‖ ^ α) := by rw [hsplit]
+        _ ≤ max K₀ 0 * ((2 * r₁) ^ (β - α) * ‖x - y‖ ^ α) :=
+          mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_right hpow (Real.rpow_nonneg (norm_nonneg _) _))
+            (le_max_right _ _)
+        _ = max K₀ 0 * (2 * r₁) ^ (β - α) * ‖x - y‖ ^ α := by ring
+  -- Step 2b: the vertical projection `pv` with `⟨(0, w), z⟩ = ⟨w, pv z⟩`.
+  obtain ⟨pv, hpv⟩ : ∃ pv : Amb n ℓ →L[ℝ] Rn ℓ, ∀ (w : Rn ℓ) (z : Amb n ℓ),
+      inner ℝ (graphPoint 0 w) z = inner ℝ w (pv z) := by
+    let pvₗ : Amb n ℓ →ₗ[ℝ] Rn ℓ :=
+      { toFun := fun z => WithLp.toLp 2 (fun j : Fin ℓ => z (Fin.natAdd n j))
+        map_add' := fun a b => rfl
+        map_smul' := fun c a => rfl }
+    refine ⟨LinearMap.toContinuousLinearMap pvₗ, fun w z => ?_⟩
+    simp only [graphPoint, PiLp.inner_apply, Fin.sum_univ_add, Fin.append_left, Fin.append_right,
+      WithLp.ofLp_zero, Pi.zero_apply, inner_zero_left, Finset.sum_const_zero, zero_add,
+      LinearMap.coe_toContinuousLinearMap', pvₗ]
+    rfl
+  -- Step 2c: the graph map `G(x) = (x, u(x))` is as smooth as `u`.
+  set G : Rn n → Amb n ℓ := fun x => graphPoint x (u x)
+  have hGU : MapsTo G U O := fun x hx => hGO x (hUr hx)
+  have hGcd : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k u U → ContDiffOn ℝ k G U := by
+    intro k hk
+    refine (contDiffOn_piLp 2).2 fun i => ?_
+    induction i using Fin.addCases with
+    | left j =>
+      simp only [G, graphPoint, WithLp.ofLp_toLp, Fin.append_left]
+      exact (contDiff_piLp_apply 2).contDiffOn
+    | right j =>
+      simp only [G, graphPoint, WithLp.ofLp_toLp, Fin.append_right]
+      exact (contDiff_piLp_apply 2).comp_contDiffOn hk
+  -- The right-hand side `g(x) = J(Du(x)) pv(F(x, u(x)))` of the weak system.
+  set g : Rn n → Rn ℓ := fun x => (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Rn ℓ →L[ℝ] Rn ℓ)
+    ((J ∘ fderiv ℝ u) x) (((pv ∘ F) ∘ G) x)
+  -- Step 2d / 5: `g ∈ C^{m,α}_loc(U)` whenever `m ≤ q` and `u ∈ C^{m+1,α}_loc(U)`.
+  obtain ⟨hFc, hFh⟩ := hF
+  have hgreg : ∀ m : ℕ, m ≤ q → IsLocallyHolderCkα (m + 1) α u U → IsLocallyHolderCkα m α g U := by
+    intro m hmq hum
+    obtain ⟨-, hDum, hDuh⟩ :=
+      (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) m α u U hUo).1.mp hum
+    have hJm : ∀ k : ℕ, ContDiffOn ℝ k J univ := fun k => (contDiff_infty.mp hJs k).contDiffOn
+    have hJ1 : ContDiffOn ℝ 1 J univ := by exact_mod_cast hJm 1
+    have h1 := Submission.dohr_eb_holder_comp (Rn n) (Rn n →L[ℝ] Rn ℓ) ℝ m α (fderiv ℝ u) J U univ
+      hα0 hα1.le hUo isOpen_univ (mapsTo_univ _ _) (Or.inr (Or.inr hJ1)) hDum hDuh (hJm m)
+      (Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n →L[ℝ] Rn ℓ) ℝ m α J univ hα0 hα1.le
+        isOpen_univ (hJm (m + 1)))
+    have hFm : ContDiffOn ℝ m F O := hFc.of_le (by exact_mod_cast hmq)
+    have hFmh : ∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ O → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ m F x - iteratedFDeriv ℝ m F y‖ ≤ C * ‖x - y‖ ^ α := by
+      rcases Nat.lt_or_eq_of_le hmq with hlt | heq
+      · exact Submission.dohr_eb_holder_of_contDiffOn_succ (Amb n ℓ) (Amb n ℓ) m α F O hα0 hα1.le
+          hO (hFc.of_le (by exact_mod_cast Nat.succ_le_of_lt hlt))
+      · rw [heq]
+        exact hFh
+    have hpv : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k pv univ := fun k => pv.contDiff.contDiffOn
+    have h2 := Submission.dohr_eb_holder_comp (Amb n ℓ) (Amb n ℓ) (Rn ℓ) m α F pv O univ hα0 hα1.le
+      hO isOpen_univ (mapsTo_univ _ _) (Or.inr (Or.inr (hpv 1))) hFm hFmh (hpv m)
+      (Submission.dohr_eb_holder_of_contDiffOn_succ (Amb n ℓ) (Rn ℓ) m α pv univ hα0 hα1.le
+        isOpen_univ (hpv _))
+    have hGm1 : ContDiffOn ℝ (m + 1 : ℕ) G U := hGcd _ hum.1
+    have h3 := Submission.dohr_eb_holder_comp (Rn n) (Amb n ℓ) (Rn ℓ) m α G (pv ∘ F) U O hα0
+      hα1.le hUo hO hGU (Or.inr (Or.inl (hGcd 1 hu1)))
+      (hGm1.of_le (by exact_mod_cast Nat.le_succ m))
+      (Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n) (Amb n ℓ) m α G U hα0 hα1.le hUo hGm1)
+      h2.1 h2.2
+    exact Submission.dohr_eb_holder_bilinear (Rn n) ℝ (Rn ℓ) (Rn ℓ) m α
+      (ContinuousLinearMap.lsmul ℝ ℝ) (J ∘ fderiv ℝ u) ((pv ∘ F) ∘ G) U hα0 hα1.le hUo h1.1 h1.2
+      h3.1 h3.2
+  -- Step 3: the weak system on `U`, with right-hand side `g`.
+  have hweakU : ∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U →
+      ∫ x in U, fderiv ℝ J (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x) := by
+    intro φ hφ hφc hφU
+    have hout : ∀ x ∈ ball (0 : Rn n) r \ U, x ∉ tsupport φ := fun x hx h' => hx.2 (hφU h')
+    have h := hweak φ hφ hφc (hφU.trans hUr)
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_ball hUr fun x hx => by
+      rw [fderiv_of_notMem_tsupport ℝ (hout x hx), map_zero]] at h
+    rw [h, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_ball hUr fun x hx => by
+      rw [hpv, image_eq_zero_of_notMem_tsupport (hout x hx), inner_zero_left, mul_zero]]
+    congr 1
+    refine setIntegral_congr_fun hUo.measurableSet fun x _ => ?_
+    simp only [g, Function.comp_apply, ContinuousLinearMap.lsmul_apply, real_inner_smul_right,
+      ← hpv, G, J]
+  -- Steps 4–5: `C^{2,α}_loc` (Schauder) and the bootstrap up to `C^{q+2,α}_loc` on `U`.
+  have hmain : ∀ m : ℕ, m ≤ q → IsLocallyHolderCkα (m + 2) α u U := by
+    intro m
+    induction m with
+    | zero =>
+      intro _
+      exact Submission.dohr_eb_el_c2alpha_regularity n ℓ hn α hα0 hα1 J (1 / 2) ε U u g
+        (by norm_num) hUo hJs hJleg hu1α hDuε (hgreg 0 (Nat.zero_le q) hu1α) hweakU
+    | succ k ih =>
+      intro hk
+      have hk2 : IsLocallyHolderCkα (k + 2) α u U := ih (Nat.le_of_succ_le hk)
+      exact Submission.dohr_eb_el_higher_regularity_step n ℓ hn α hα0 hα1 (k + 1) (Nat.succ_pos k)
+        J (1 / 2) ε U u g (by norm_num) hUo hJs hJleg hk2 hDuε (hgreg (k + 1) hk hk2) hweakU
+  -- Step 6: global `C^{q+2,α}` bounds on the half ball `B̆_{r₁/2}(0)`.
+  exact ⟨r₁ / 2, half_pos hr₁0, (half_le_self hr₁0.le).trans hr₁r,
+    Submission.dohr_eb_isHolderCk_half_ball n ℓ (q + 2) α u 0 r₁ (hmain q le_rfl)⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
