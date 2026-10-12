@@ -458,6 +458,43 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): every `n`-dimensional subspace `T` of `ℝ^{n+ℓ}` is
+a rotated coordinate plane `T = q(ℝⁿ × {0})` for some linear isometry `q` of `ℝ^{n+ℓ}`. -/
+theorem allard52_gpa_exists_rotatedPlane_eq : ∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T := by
+  intro n ℓ T hT
+  -- An orthonormal basis `u₀, …, u_{n-1}` of `T`.
+  let u : OrthonormalBasis (Fin n) ℝ T := (stdOrthonormalBasis ℝ T).reindex (finCongr hT)
+  -- Put `uᵢ` at the first `n` indices and extend to an orthonormal basis `b` of `ℝ^{n+ℓ}`.
+  let v : Fin (n + ℓ) → Amb n ℓ := Fin.addCases (fun i => (u i : Amb n ℓ)) fun _ => 0
+  have hv : Orthonormal ℝ ((Set.range (Fin.castAdd ℓ)).domRestrict v) := by
+    rw [orthonormal_iff_ite]
+    intro x y
+    obtain ⟨i, hi⟩ := x.2
+    obtain ⟨j, hj⟩ := y.2
+    have hxy : x = y ↔ i = j := by
+      rw [Subtype.ext_iff, ← hi, ← hj, Fin.castAdd_inj]
+    simp only [Set.domRestrict_apply, ← hi, ← hj, v, Fin.addCases_left, hxy]
+    rw [← Submodule.coe_inner, orthonormal_iff_ite.mp u.orthonormal i j]
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hv
+  -- `q = b.repr.symm` sends `e_{castAdd i}` to `b (castAdd i) = uᵢ`, so `q(ℝⁿ × {0}) = span{uᵢ} = T`.
+  refine ⟨b.repr.symm, ?_⟩
+  have hq : ∀ i : Fin n,
+      b.repr.symm (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) = (u i : Amb n ℓ) := by
+    intro i
+    rw [b.repr_symm_single, hb _ (Set.mem_range_self i)]
+    simp [v]
+  rw [rotatedPlane, horizontalPlane, Submodule.map_span, ← Set.range_comp]
+  have hcomp : (b.repr.symm.toLinearEquiv.toLinearMap ∘ fun i : Fin n =>
+      EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) = T.subtype ∘ u := by
+    funext i
+    exact hq i
+  rw [hcomp, Set.range_comp, Submodule.span_image, ← u.coe_toBasis, u.toBasis.span_eq,
+    Submodule.map_subtype_top]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
