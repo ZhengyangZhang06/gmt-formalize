@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image",
+        "MeasurableEmbedding\\.(restrict_map|integral_map|lintegral_map|ae_map_iff)|theorem (restrict_map|integral_map|lintegral_map|ae_map_iff)|theorem integral_smul_measure|theorem integral_const_mul",
+        "CountablyRectifiable|def blowUpMap|def HasApproximateTangentSpaceAt",
+        "affinePullbackForm|affinePullbackTestOn_coe|affinePushforward_apply",
+        "testFormOnInclusion_coe|restrictDomain_apply",
+        "smul_measure|comp_aemeasurable",
+        "class BorelSpace|measurable_eq",
+        "euclid_hausdorff_dilation_change_of_variables|approx_tangent_space_smul_preimage|imrep_univ_smul_rescale_exists|cone_current_apply_dilation_pullback|imrep_smul_rescale_action_measure",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmh-independent-audit-5sx3r913/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmh-independent-audit-5sx3r913/Checked.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-child-handoff.json",
+        "/tmp/cmh-decomp/Inst.lean",
+        "/tmp/cmh-independent-audit-5sx3r913/Challenges.lean",
+        "/tmp/cmh-independent-audit-5sx3r913/Checked.lean",
+        "/tmp/cmh-independent-audit-5sx3r913/Instances.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected measure-homogeneity theorem. Snapshot definitions and installed dependency revisions match the pins. All five exact one-line propositions elaborate independently without child declarations. Their proofs compile as Submission.X using only propext, Classical.choice and Quot.sound. The selected parent conclusion also compiles with representation uniqueness as an explicit hypothesis of its exact existing frozen type, without sorry. Every child contributes to this assembly; dependencies are correctly directed and acyclic. All names are bare identifiers, with no reservations found in other DAG branches or node artifacts. Scalar operations use the intended measure, covector and Euclidean-space instances. The original optional instance probe has an extraneous failing rfl assertion about Borel-space equality; the independent check succeeds using BorelSpace.measurable_eq. No child contract or natural proof relies on that definitional equality."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dilation_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including arbitrary M and unrestricted integrands. Hausdorff scaling gives the stated inverse-power factor. The pinned measurable-embedding restriction and integral lemmas genuinely require neither measurable M nor measurable/integrable g. All three conclusions follow without circularity."
+    },
+    {
+      "key": "tangent_space_dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the literal approximate-tangent predicate. The proof preserves dimension, establishes the blow-up image identity, and composes the hypothesis limit with r ↦ cr. Positivity ensures convergence within the positive half-line. No rectifiability or additional measure hypothesis is needed."
+    },
+    {
+      "key": "rescaled_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies every IMRep field and all three pointwise identities. Null-set scaling, Lipschitz covering, compact-set integrability, strong measurability and orientation transfer are justified. The measurable embedding transfers arbitrary a.e. predicates correctly. Exactly the two declared child dependencies are used."
+    },
+    {
+      "key": "cone_pullback_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes every required hypothesis and matches the prose. Surjectivity makes currentEval take its test-form branch; affine push-forward and domain restriction produce the required test form. Multilinearity yields the inverse nth-power factor, including n = 0. The cone identity gives the stated evaluation equality directly."
+    },
+    {
+      "key": "rescaled_action_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match the exact type. The action computation is valid for arbitrary forms under total Bochner integration. For measurable A, its dilation is measurable and the preimage/intersection identity gives the weight formula through withDensity and lower-integral change of variables. Only the declared dependency is required; infinite measures cause no gap."
+    }
+  ],
+  "required_changes": []
+}
