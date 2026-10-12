@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dohr_tp_wtlp|rsod_blowUp_setIntegral_eq|wtlp",
+        "theorem (setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_congr_set|integral_indicator₀|norm_integral_le_of_norm_le|integral_norm_eq_lintegral_enorm|integral_smul_measure|integral_const_mul)|MeasurableEmbedding.integral_map",
+        "theorem (restrict_restrict₀|restrict_restrict|aemeasurable_indicator_iff₀|hasFiniteIntegral_iff_enorm)|theorem Integrable.bdd_mul|theorem ae_eq_set|theorem tendsto_toReal|theorem toReal_mul|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image",
+        "sed -n '75,125p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n '306,357p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "git show 98fd790d5bc2f705d0efa953dadfb274b5462997:GMT/Ch05/Submission.lean | tail -150",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean gen/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean gen/ExactSolutions.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-weighte-2b8750410f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-weighte-2b8750410f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc/lean-audit-v1.json",
+        "/tmp/wtp-independent-audit-3qb8deoj/full-src/GMT/Ch05/Submission.lean",
+        "/tmp/wtp-independent-audit-3qb8deoj/gen/FrozenTypes.lean",
+        "/tmp/wtp-independent-audit-3qb8deoj/gen/ExactSolutions.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and the SimonGMT definitions. Snapshot name searches found no matches; the DAG reserves only rsod_blowUp_setIntegral_eq, whose accepted candidate 98fd790d has the identical frozen type and passing comparator evidence. Both new names are unreserved. The pinned lemmas support arbitrary-set integral transport, null-measurable localization, integrability, and ENNReal rescaling. Independently rebuilt the supplied proofs with unchanged frozen context. All three child propositions elaborate without their implementations; exact type checks for all children and dohr_tp_weighted_tangent_of_lebesgue_point pass. All four axiom closures contain only propext, Classical.choice, and Quot.sound. The split is appropriate and acyclic: applying the comparison on closedBall y (r * ρ), then the rescaled limit and blow-up identity, gives the required error convergence; the unweighted tangent hypothesis supplies the plane limit and dimension."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree, including arbitrary M, f and θ. The proof establishes the homeomorphism, Hausdorff scaling, restricted-measure identity, unconditional integral transport, and inverse-map cancellation without hidden measurability assumptions. Reuse of the bare identifier is valid: the comparator-accepted frozen type is identical, and the reused proof has a clean axiom closure."
+    },
+    {
+      "key": "ball_comparison_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All nine hypotheses occur correctly in the prose and exact Lean proposition. Localization and null-set replacement justify the indicator identity; finite measure, indicator measurability, and finite error integral establish integrability before subtraction. The norm estimate then gives precisely K * Lambda.toReal. The proof is complete, independent of the other children and parent, and the bare name is unreserved."
+    },
+    {
+      "key": "rescaled_density_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly states both conclusions for arbitrary L. Positive radius rescaling preserves the right-hand filter; eventual boundedness of the scaled expression and its nonzero coefficient force eventual finiteness of L. Continuity of toReal at zero and the displayed scaling identity prove the real limit, including n = 0. The proof is complete and non-circular, and the bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
