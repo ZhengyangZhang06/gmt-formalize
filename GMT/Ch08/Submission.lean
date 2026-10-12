@@ -410,6 +410,51 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Change of variables for `H^n` set integrals under the blow-up map (step 1 of the tangent-point
+density argument, Simon Ch. 3, Remark 1.8(2)): for `r > 0`, `η = η_{x,r}` (`η y = r⁻¹ • (y - x)`),
+an arbitrary set `M` and an arbitrary `F : ℝ^N → ℝ`, `∫_{η(M)} F dH^n = r⁻¹ ^ n ∫_M F ∘ η dH^n`. -/
+theorem Submission.intcpt_id_tpd_setIntegral_blowUpMap_image :
+    ∀ (N n : ℕ) (x : Euclidean N) (r : ℝ) (M : Set (Euclidean N)) (F : Euclidean N → ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, F y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, F (Chapter03.blowUpMap x r z) ∂μHE[n] := by
+  intro N n x r M F hr
+  -- Step 1: `η` is a homeomorphism of `ℝ^N` (inverse `y ↦ x + r • y`), hence an injective
+  -- measurable embedding.
+  let η : Euclidean N ≃ₜ Euclidean N :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have hη : (η : Euclidean N → Euclidean N) = Chapter03.blowUpMap x r := rfl
+  have hemb : MeasurableEmbedding η := η.measurableEmbedding
+  -- Step 2: for every set `S`, `η⁻¹(S) = x + r • S`, so `H^n(η⁻¹(S)) = r ^ n H^n(S)`.
+  have hpre : ∀ S : Set (Euclidean N),
+      (μHE[n] : Measure (Euclidean N)) (η ⁻¹' S) = ENNReal.ofReal (r ^ n) * μHE[n] S := by
+    intro S
+    have hS : (η : Euclidean N → Euclidean N) ⁻¹' S = (x + ·) '' (r • S) := by
+      ext y
+      constructor
+      · intro hy
+        refine ⟨r • η y, Set.smul_mem_smul_set hy, ?_⟩
+        change x + r • (r⁻¹ • (y - x)) = y
+        rw [smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+      · rintro ⟨_, ⟨s, hs, rfl⟩, rfl⟩
+        change r⁻¹ • (x + r • s - x) ∈ S
+        rwa [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+    rw [hS, (isometry_add_left x).euclideanHausdorffMeasure_image,
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne', ENNReal.smul_def, smul_eq_mul,
+      ENNReal.coe_pow, ← enorm_eq_nnnorm, Real.enorm_eq_ofReal hr.le, ENNReal.ofReal_pow hr.le]
+  -- Step 3: `H^n.map η = r ^ n • H^n`, checked on Borel sets.
+  have hmap : (μHE[n] : Measure (Euclidean N)).map η =
+      ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Euclidean N)) := by
+    ext S hS
+    rw [Measure.map_apply hemb.measurable hS, hpre, Measure.smul_apply, smul_eq_mul]
+  -- Step 4: `(H^n ⌞ M).map η = r ^ n • H^n ⌞ η(M)`, since `η⁻¹(η(M)) = M`.
+  have hres : ((μHE[n] : Measure (Euclidean N)).restrict M).map η =
+      ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Euclidean N)).restrict (η '' M) := by
+    rw [← Measure.restrict_smul, ← hmap, hemb.restrict_map, Set.preimage_image_eq M η.injective]
+  -- Step 5: `∫_M F ∘ η dH^n = r ^ n ∫_{η(M)} F dH^n`; neither `M` nor `F` need be measurable.
+  have hcov : ∫ z in M, F (η z) ∂μHE[n] = r ^ n * ∫ y in η '' M, F y ∂μHE[n] := by
+    rw [← hemb.integral_map, hres, integral_smul_measure,
+      ENNReal.toReal_ofReal (pow_nonneg hr.le n), smul_eq_mul]
+  -- Step 6: multiply by `r⁻¹ ^ n`, as `r⁻¹ ^ n * r ^ n = 1`.
+  rw [← hη, hcov, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ hr.ne', one_pow, one_mul]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
