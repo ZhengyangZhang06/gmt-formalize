@@ -1,0 +1,15 @@
+{
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1.lusin_volume-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1899",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "78e49ee2d4079532566aced23d3b827d78e93557",
+  "integrated_commit": "",
+  "proof_base_commit": "cc59bc46c4c1f1391d21197539b68cf37a53888a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1",
+  "requires": []
+}
