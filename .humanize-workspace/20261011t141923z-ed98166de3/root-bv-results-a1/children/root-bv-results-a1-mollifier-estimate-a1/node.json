@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_estimate-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "L¹ mollification estimate ∫_Q |ρ*(1_W u) − u| ≤ σ|Du|(W)",
+  "statement": "For every n ∈ ℕ, every open W ⊆ ℝⁿ, every measurable Q ⊆ ℝⁿ, every u integrable on W, every σ ∈ ℝ and every continuous kernel ρ : ℝⁿ → ℝ with ρ ≥ 0, support ρ ⊆ B(0,σ) (open ball) and ∫ρ = 1, if closedBall(x,σ) ⊆ W for every x ∈ Q then ∫⁻_Q |(ρ * (1_W u))(x) − u(x)| dx ≤ ofReal(σ)·|Du|(W) in [0,∞], where ρ * (1_W u) = convolution ρ (W.indicator u) (lsmul ℝ ℝ) volume and |Du|(W) = SimonGMT bvVariationOn u W.",
+  "lean_statement": "∀ (n : ℕ) (W Q : Set (Rn n)) (u ρ : Rn n → ℝ) (σ : ℝ), IsOpen W → IntegrableOn u W volume → MeasurableSet Q → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → (∀ x ∈ Q, closedBall x σ ⊆ W) → ∫⁻ x in Q, ‖convolution ρ (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume x - u x‖ₑ ≤ ENNReal.ofReal σ * Chapter02.bvVariationOn u W",
+  "lean_name": "bv_mollifier_sub_lintegral_le",
+  "depends_on": [
+    "root.bv_results-a1.mollifier_l1-a1",
+    "root.bv_results-a1.mollifier_gradient-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.mollifier_l1-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.mollifier_gradient-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-estimate-a1-a1"
+}

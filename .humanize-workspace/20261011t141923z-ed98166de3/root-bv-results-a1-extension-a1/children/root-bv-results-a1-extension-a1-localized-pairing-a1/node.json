@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.localized_pairing-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Localized pairing ofReal(∫φu div g) ≤ |Du|(U) + ∫|u||Dφ| (Simon 2.8 (4), C5(b))",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ open, u ∈ L¹(ℝⁿ), φ : ℝⁿ → ℝ Lipschitz with 0 ≤ φ ≤ 1, compact support and tsupport φ ⊆ U, and g ∈ C_c(ℝⁿ, ℝⁿ) with Chapter02.IsLipschitzTestField g and compactlySupportedSupNorm g ≤ 1. Then in [0, ∞]: ofReal(∫ φ·u·div g) ≤ bvVariationOn u U + ∫⁻ ‖u‖ₑ‖Dφ‖ₑ (Dφ = fderiv ℝ φ, div g = Chapter02.euclideanDivergence ⇑g).",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (u φ : Rn n → ℝ) (g : CompactlySupportedContinuousMap (Rn n) (Rn n)), IsOpen U → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → Chapter02.IsLipschitzTestField g → Chapter02.compactlySupportedSupNorm g ≤ 1 → ENNReal.ofReal (∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ",
+  "lean_name": "bv_ext_ofReal_integral_cutoff_le",
+  "depends_on": [
+    "root.bv_results-a1.extension-a1.divergence_smul-a1",
+    "root.bv_results-a1.extension-a1.admissible_field-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.extension-a1.divergence_smul-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.extension-a1.admissible_field-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-localized-pairing-a1-a1"
+}

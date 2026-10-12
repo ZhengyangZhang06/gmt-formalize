@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'addHaar_frontier' mathlib/Mathlib/Analysis/Convex/",
+        "rg -n 'countable_meas_pos_of_disjoint' mathlib/Mathlib/MeasureTheory/Measure/ ; sed -n 245,330p mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean (countable_meas_level_set_pos)",
+        "rg -n 'exists_infDist_eq_dist|lipschitz_infDist_pt|theorem infDist_pos|notMem_iff_infDist_pos|theorem le_infDist|infDist_le_dist_of_mem|infDist_eq_zero_of_mem|theorem infDist_empty' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "rg -n 'infDist|infEDist' mathlib/Mathlib/Analysis/Convex/ (no match)",
+        "rg -n '^theorem|^lemma' mathlib/Mathlib/Analysis/Convex/Deriv.lean (ConvexOn/ConcaveOn slope-derivative lemmas)",
+        "rg -n 'trace_smulRight|trace_id|trace_one|trace_eq_contract' mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "rg -n 'fderiv_smul|HasFDerivAt.smul' mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean ; rg -n 'ae_differentiableAt' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean ; rg -n 'norm_fderiv_le_of_lipschitz' mathlib/Mathlib/Analysis/Calculus/FDeriv/",
+        "rg -n -A3 'setIntegral_eq_integral_of_forall_compl_eq_zero|setLIntegral_eq_of_support_subset|countable_meas_level_set_pos' mathlib/Mathlib/MeasureTheory/",
+        "rg -n 'dense_compl' mathlib/Mathlib/Topology/ mathlib/Mathlib/Analysis/ ; rg -n 'Countable.measure_zero' mathlib/Mathlib/MeasureTheory/",
+        "full read of simongmt Poincare/SimonGMT/Chapter02/BV.lean; read GMT/Ch02/Contract.lean and README rows for 2.8; cmp snapshot project/GMT/Ch02/Contract.lean with the workspace Contract.lean; sed -n 655,745p book/sources/chapter-02-source.txt",
+        "lean Avail.lean, Avail2.lean, Avail3.lean, Avail4.lean: #check of every cited lemma after import GMT.Ch02.Submission",
+        "python3 -I gen_checks.py (verifier gmt-compare.py layout/child_modules/contract_scope plus lean_contract.validate_lean_statement), then lean NodeChallenge_00..08.lean and Print.lean",
+        "lean Assembly.lean with #print axioms GMT.Ch02.node_check; lean Small.lean; lean Integrated.lean with #print axioms of the 9 children",
+        "grep -rl for each of the 9 proposed lean_names in the run directory; lean_name of every dag.json node and nodes/*/decomposition-v*.json subproblem"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/Cardinality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-extension-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1/decomposition-v1.json",
+        "/tmp/extdecomp-ilC422/checks/NodeChallenge_00.lean",
+        "/tmp/extdecomp-ilC422/checks/NodeChallenge_08.lean",
+        "/tmp/extdecomp-ilC422/checks/Assembly.lean",
+        "/tmp/extdecomp-ilC422/checks/Small.lean",
+        "/tmp/extdecomp-ilC422/checks/Avail.lean",
+        "/tmp/extdecomp-ilC422/verify/Integrated.lean"
+      ],
+      "conclusion": "The snapshot project/GMT/Ch02/Contract.lean is byte-identical to the workspace contract (cmp). Rn, IsBVOn and BVExtensionEstimate match the selected type. README row 9 and its judgment-call note match the readings used: u = 0 a.e. off Ū, and |Du|(ℝⁿ∖Ū) = 0. The pinned SimonGMT BV.lean supplies every SimonGMT name the children use: euclideanDivergence, bvVariationOn, IsLipschitzTestField, compactlySupportedSupNorm, ofReal_integral_le_bvVariationOn, support_euclideanDivergence_subset, measurable_euclideanDivergence and norm_euclideanDivergence_le_of_lipschitz. The snapshot Mathlib supplies the cited tools: Metric.le_infDist, infDist_le_dist_of_mem, lipschitz_infDist_pt, IsClosed.exists_infDist_eq_dist, IsClosed.notMem_iff_infDist_pos, ConcaveOn.slope_le_of_hasDerivAt, HasDerivAt.tendsto_slope_zero_right, LipschitzWith.ae_differentiableAt, norm_fderiv_le_of_lipschitz, fderiv_fun_smul, LinearMap.trace_smulRight, LinearMap.trace_id, Measure.countable_meas_level_set_pos, Set.Countable.measure_zero, setIntegral_eq_integral_of_forall_compl_eq_zero and Convex.addHaar_frontier. After import GMT.Ch02.Submission all of these are available except two: Convex.addHaar_frontier (Mathlib.Analysis.Convex.Measure, needed only by the parent assembly) and the optional alternative Set.Countable.dense_compl (Mathlib.Topology.Algebra.Module.Cardinality). Adding Submission imports is allowed, because the verifier freezes only Contract.lean and the Lake inputs. Two searches found nothing. No Mathlib lemma states concavity of the distance to the complement of a convex set (no infDist match under Analysis/Convex). Neither Mathlib nor SimonGMT has a BV extension estimate. These are therefore genuine new obligations. All 9 child statements elaborate in the comparator's replayed scope. Each has a complete Lean proof using only standard axioms, and the Lean assembly proves the selected type from them plus Submission.bv_abs_variation_le."
+    }
+  ],
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "child_id": "root.bv_results-a1.extension-a1.localized_pairing-a1",
+  "subproblem": {
+    "key": "localized_pairing",
+    "title": "Localized pairing ofReal(∫φu div g) ≤ |Du|(U) + ∫|u||Dφ| (Simon 2.8 (4), C5(b))",
+    "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ open, u ∈ L¹(ℝⁿ), φ : ℝⁿ → ℝ Lipschitz with 0 ≤ φ ≤ 1, compact support and tsupport φ ⊆ U, and g ∈ C_c(ℝⁿ, ℝⁿ) with Chapter02.IsLipschitzTestField g and compactlySupportedSupNorm g ≤ 1. Then in [0, ∞]: ofReal(∫ φ·u·div g) ≤ bvVariationOn u U + ∫⁻ ‖u‖ₑ‖Dφ‖ₑ (Dφ = fderiv ℝ φ, div g = Chapter02.euclideanDivergence ⇑g).",
+    "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (u φ : Rn n → ℝ) (g : CompactlySupportedContinuousMap (Rn n) (Rn n)), IsOpen U → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → Chapter02.IsLipschitzTestField g → Chapter02.compactlySupportedSupNorm g ≤ 1 → ENNReal.ofReal (∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ",
+    "lean_name": "bv_ext_ofReal_integral_cutoff_le",
+    "depends_on": [
+      "divergence_smul",
+      "admissible_field"
+    ],
+    "natural_proof": "Source: parent proof of Simon 2.8, Section C5(b) (Simon's (4): ∫|D(φu)| ≤ ∫|Dφ||u| + ∫φ|Du|, applied to one test field g).\nNotation: E := Rn n, μ := volume, Dφ := fderiv ℝ φ, K_φ and K_g Lipschitz constants of φ and ⇑g (IsLipschitzTestField g provides K_g).\n1. Pointwise bound for g. ⇑g is continuous with compact support, so x ↦ ‖g x‖ is bounded (Continuous.bounded_above_of_compact_support) and its range is bounded above; therefore ‖g x‖ ≤ sSup (range fun x ↦ ‖g x‖) = compactlySupportedSupNorm g ≤ 1 for every x (le_csSup).\n2. The field ψ(y) := φ(y)•g(y). (i) ψ is (K_φ + K_g)-Lipschitz: ψ(x) − ψ(y) = (φ(x) − φ(y))•g(x) + φ(y)•(g(x) − g(y)), so ‖ψ(x) − ψ(y)‖ ≤ K_φ‖x − y‖·1 + 1·K_g‖x − y‖ using ‖g‖ ≤ 1 and |φ| ≤ 1. (ii) support ψ ⊆ support φ, so tsupport ψ ⊆ tsupport φ ⊆ U and ψ has compact support (HasCompactSupport.smul_right). (iii) ‖ψ(y)‖ = φ(y)‖g(y)‖ ≤ 1.\n3. Admissibility. Submission.bv_ext_ofReal_integral_le_bvVariationOn (v := u, G := ψ, W := U) gives ofReal(∫ x in U, u·div ψ) ≤ bvVariationOn u U. Since div ψ = 0 off tsupport ψ ⊆ U (Chapter02.support_euclideanDivergence_subset), ∫ x in U, u·div ψ = ∫ u·div ψ (setIntegral_eq_integral_of_forall_compl_eq_zero).\n4. A.e. product rule. φ and ⇑g are Lipschitz, so both are differentiable at μ-a.e. x (LipschitzWith.ae_differentiableAt, intersect the two a.e. sets). At such x, Submission.bv_ext_euclideanDivergence_smul gives div ψ(x) = φ(x)·div g(x) + Dφ(x)[g(x)].\n5. Pointwise a.e. inequality. At such x, φ(x)·u(x)·div g(x) = u(x)·div ψ(x) − u(x)·Dφ(x)[g(x)] ≤ u(x)·div ψ(x) + |u(x)|·‖Dφ(x)‖, because |Dφ(x)[g(x)]| ≤ ‖Dφ(x)‖·‖g(x)‖ ≤ ‖Dφ(x)‖ by step 1.\n6. Integrability. φ·u·div g is integrable (φ continuous with |φ| ≤ 1; |div g| ≤ n·K_g by Chapter02.norm_euclideanDivergence_le_of_lipschitz and div g is measurable by Chapter02.measurable_euclideanDivergence; u ∈ L¹); u·div ψ is integrable in the same way (|div ψ| ≤ n(K_φ + K_g)); |u|·‖Dφ‖ is integrable (‖Dφ‖ ≤ K_φ by norm_fderiv_le_of_lipschitz, measurable by measurable_fderiv). No measurability of x ↦ Dφ(x)[g(x)] is needed.\n7. Integrating step 5 (integral_mono_ae, integral_add): ∫ φ·u·div g ≤ ∫ u·div ψ + ∫ |u|·‖Dφ‖ = ∫ x in U, u·div ψ + ∫ |u|·‖Dφ‖ (step 3).\n8. Passing to [0, ∞] (ENNReal.ofReal_le_ofReal, ENNReal.ofReal_add_le): ofReal(∫ φ·u·div g) ≤ ofReal(∫ x in U, u·div ψ) + ofReal(∫ |u|·‖Dφ‖) ≤ bvVariationOn u U + ∫⁻ ‖u‖ₑ‖Dφ‖ₑ, using step 3 and ofReal(∫|u|‖Dφ‖) = ∫⁻ ofReal(|u|‖Dφ‖) = ∫⁻ ‖u‖ₑ‖Dφ‖ₑ (ofReal_integral_eq_lintegral_ofReal; the integrand is nonnegative and integrable). (The hypothesis that U is open is not needed in this argument; it is kept to match the caller.) ∎",
+    "proof_key_steps": [
+      "‖g(x)‖ ≤ compactlySupportedSupNorm g ≤ 1 (bounded range, le_csSup).",
+      "ψ = φ•g is Lipschitz, compactly supported in U, ‖ψ‖ ≤ 1, so ofReal(∫_U u div ψ) ≤ |Du|(U) (Submission.bv_ext_ofReal_integral_le_bvVariationOn), and ∫_U u div ψ = ∫ u div ψ.",
+      "A.e. product rule (Rademacher + Submission.bv_ext_euclideanDivergence_smul): φ u div g = u div ψ − u Dφ[g] ≤ u div ψ + |u|‖Dφ‖.",
+      "Integrate and convert to [0,∞] with ofReal_add_le."
+    ]
+  },
+  "audit": {
+    "key": "localized_pairing",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof establishes the pointwise bound on g, admissibility of φg, the a.e. product identity, and integrability before integrating. The error estimate and ENNReal conversion prove exactly the frozen inequality. The redundant openness hypothesis causes no mismatch."
+  },
+  "resolved_dependencies": [
+    "root.bv_results-a1.extension-a1.divergence_smul-a1",
+    "root.bv_results-a1.extension-a1.admissible_field-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-extension-a1-localized-pairing-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-extension-a1-localized-pairing-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-extension-a1-localized-pairing-a1/parent-supplied-natural-proof.json"
+}
