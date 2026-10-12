@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.truncation_sequence-a1.boundary_mass_cutoff-a1",
+  "parent_id": "root.polyhedral_approximation-a1.truncation_sequence-a1",
+  "depth": 3,
+  "title": "Boundary mass transfer through a smooth cut-off (locality of d)",
+  "statement": "Let P, m ∈ ℕ and U₁, U₂, W, V ⊆ ℝ^P. Let X ∈ D_{m+1}(U₁) and A ∈ D_{m+1}(U₂) be currents (GeometricCurrentOn). Assume:\n- W is open and W ⊆ U₂;\n- the closure of V is compact and closure V ⊆ W;\n- (H) X(η) = A(η′) for every η ∈ D^{m+1}(U₁) and η′ ∈ D^{m+1}(U₂) with η(x) = η′(x) for every x ∈ V.\nThen M(∂X) ≤ M_W(∂A). Here M(∂X) = M_{U₁}(∂X) is the mass of ∂X ∈ D_m(U₁), and M_W(∂A) is the mass in W of ∂A ∈ D_m(U₂). Both are the suprema of the current over test forms supported in the indicated set with Euclidean coefficient norm ≤ 1 everywhere (SimonGMT massOn).",
+  "lean_statement": "∀ (P m : ℕ) (U₁ U₂ W V : Set (Eucl P)) (X : GeometricCurrentOn U₁ (m + 1)) (A : GeometricCurrentOn U₂ (m + 1)), IsOpen W → W ⊆ U₂ → IsCompact (closure V) → closure V ⊆ W → (∀ (η : TestFormOn U₁ (m + 1)) (η' : TestFormOn U₂ (m + 1)), (∀ x ∈ V, (η : DifferentialForm (Eucl P) (m + 1)) x = (η' : DifferentialForm (Eucl P) (m + 1)) x) → X η = A η') → X.boundary.mass ≤ A.boundary.massOn W",
+  "lean_name": "polyhedral_approx_boundary_mass_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1-a1"
+}
