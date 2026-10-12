@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e48b84005762a9743d4f64e73090d92388c4c5cdd7b5a7086041243c97812947",
+  "git_delta": {
+    "base_commit": "db9f39016b650770856906e1d80f94e749036188",
+    "candidate_commit": "ca7f9909e931355c1168604c521f00af2b5bcb59",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_rescaled_content_lower_bound",
+    "diff_sha256": "722ce2524d4e80bf516e1a987bd4c2e1754a20a2b7cf61d4272d02571c4e92e7",
+    "source_sha256": "83481bfbc68e9f38ded3dde2b3d4d6856911fb7818c9decef3395975ee3f6818",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_rescaled_content_lower_bound",
+      "statement": "∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)) (x : Euclid P) (ρ : ℝ) (U : ℕ → Set (Euclid P)), 0 < ℓ → 0 < ρ → (∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ) → (∀ z : Euclid P, x + (2 * ρ) • z ∈ A → ‖z‖ < 1 / 2 → z ∈ ⋃ j, U j) → (2 : ℝ≥0∞) ^ (-ℓ) / 8 ≤ ∑' j, Metric.ediam (U j) ^ ℓ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
