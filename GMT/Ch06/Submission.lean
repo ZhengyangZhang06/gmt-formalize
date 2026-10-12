@@ -403,6 +403,63 @@ theorem Submission.constancy_exists_topTestForm_integral_eq_one : ∀ (m : ℕ) 
   simp only [ContinuousAlternatingMap.smul_apply, hdx, smul_eq_mul, mul_one]
   rw [integral_mul_const]
   exact mul_inv_cancel₀ hI.ne'
+/-- Partition-of-unity decomposition of a test form (globalization step of the proof of Simon
+Ch. 6, Theorem 2.34, p. 143): if `spt ω ⊆ ⋃ᵢ Vᵢ` with every `Vᵢ` open, then `ω = ∑_{i ∈ s} ηᵢ`
+for a finite `s` and test forms `ηᵢ ∈ 𝒟ⁿ(U)` with `spt ηᵢ ⊆ Vᵢ`.  Take a finite subcover of the
+compact set `spt ω`, a smooth partition of unity `(χᵢ)_{i ∈ s}` on `spt ω` subordinate to it,
+and `ηᵢ = χᵢ ω`. -/
+theorem Submission.constancy_testFormOn_eq_finset_sum_subordinate :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (ι : Type) (V : ι → Set (Eucl P)), (∀ i, IsOpen (V i)) →
+      ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ ⋃ i, V i →
+        ∃ (s : Finset ι) (η : ι → TestFormOn U n),
+          (∀ i ∈ s, tsupport (η i : DifferentialForm (Eucl P) n) ⊆ V i) ∧ ω = ∑ i ∈ s, η i := by
+  intro P n U ι V hV ω hsub
+  classical
+  set K := tsupport (ω : DifferentialForm (Eucl P) n)
+  have hK : IsCompact K := ω.property.1.2
+  obtain ⟨s, hs⟩ := hK.elim_finite_subcover V hV hsub
+  have hcov : K ⊆ ⋃ i : s, V i := by
+    intro x hx
+    have := hs hx
+    simp only [mem_iUnion] at this ⊢
+    obtain ⟨i, hi, hxi⟩ := this
+    exact ⟨⟨i, hi⟩, hxi⟩
+  -- A smooth partition of unity `(f i)_{i ∈ s}` on `K`, subordinate to `(V i)_{i ∈ s}`.
+  obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate (modelWithCornersSelf ℝ (Eucl P))
+    (isClosed_tsupport _) (fun i : s => V i) (fun i => hV i) hcov
+  have hfsmooth : ∀ i : s, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f i) := fun i =>
+    contMDiff_iff_contDiff.mp (f i).contMDiff
+  -- The pieces `f i • ω`: smooth, with `spt (f i • ω) ⊆ spt ω` compact and contained in `U`.
+  let piece : s → TestFormOn U n := fun i =>
+    ⟨fun x => f i x • (ω : DifferentialForm (Eucl P) n) x,
+      ⟨((hfsmooth i).smul ω.property.1.1),
+        ω.property.1.2.mono' ((subset_tsupport _).trans (tsupport_smul_subset_right _ _))⟩,
+      (tsupport_smul_subset_right _ _).trans ω.property.2⟩
+  have hpiece_coe : ∀ i : s, ((piece i : TestFormOn U n) : DifferentialForm (Eucl P) n) =
+      fun x => f i x • (ω : DifferentialForm (Eucl P) n) x := fun i => rfl
+  let η : ι → TestFormOn U n := fun i => if h : i ∈ s then piece ⟨i, h⟩ else 0
+  refine ⟨s, η, ?_, ?_⟩
+  · intro i hi
+    simp only [η, hi, ↓reduceDIte, hpiece_coe]
+    exact (tsupport_smul_subset_left _ _).trans (hf ⟨i, hi⟩)
+  · have hsum : ∑ i ∈ s, η i = ∑ i : s, piece i := by
+      rw [← Finset.sum_attach s]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [η, i.2, ↓reduceDIte]
+    rw [hsum]
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    simp only [hpiece_coe]
+    rw [← Finset.sum_smul]
+    -- `∑ᵢ f i x = 1` on `K = spt ω`, and `ω x = 0` off `K`.
+    by_cases hx : x ∈ K
+    · have h1 : ∑ i : s, f i x = 1 := by
+        rw [← finsum_eq_sum_of_fintype]
+        exact f.sum_eq_one hx
+      rw [h1, one_smul]
+    · have h0 : (ω : DifferentialForm (Eucl P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      rw [h0, smul_zero]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
