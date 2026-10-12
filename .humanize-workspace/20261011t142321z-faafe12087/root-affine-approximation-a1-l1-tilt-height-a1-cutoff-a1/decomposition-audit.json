@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_smooth_step_profile_lipschitz_three|contDiff_radial_profile_of_eq_one_le_half|norm_fderiv_radial_profile_le_of_lipschitzWith|aal_l1th_exists_cutoff",
+        "theorem norm_fderiv_le_of_lipschitz|theorem lipschitzWith_of_nnnorm_deriv_le|theorem contDiffAt_norm",
+        "lipschitzWith_of_nnnorm_deriv_le|theorem _root_.Continuous.integral_hasStrictDerivAt|theorem integral_mono_interval|theorem integral_add_adjacent_intervals\\b|theorem integral_nonneg\\b|theorem integral_congr\\b",
+        "theorem contDiff_iff_contDiffAt|theorem ContDiffAt.congr_of_eventuallyEq|theorem ContDiff.of_le|theorem LipschitzWith.of_dist_le_mul|abs_norm_sub_norm_le",
+        "python3 -I /tmp/cutoff-independent-audit-jid6vi55/run.py frozen challenges",
+        "python3 -I /tmp/cutoff-independent-audit-jid6vi55/run.py frozen Assembly.lean",
+        "python3 -I /tmp/cutoff-independent-audit-jid6vi55/run.py full solutions",
+        "python3 -I /tmp/cutoff-independent-audit-jid6vi55/run.py frozen Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-l1-tilt-height-a1-cutoff-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-l1-tilt-height-a1-cutoff-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-step-profile-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-radial-smoothness-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-radial-gradient-bound-a1/accepted-candidate.json",
+        "/tmp/cutoff-independent-audit-jid6vi55/Assembly.lean",
+        "/tmp/cutoff-independent-audit-jid6vi55/Instances.lean",
+        "/tmp/cutoff-independent-audit-jid6vi55/full/GMT/Ch05/Submission.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected cutoff theorem. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the consulted Mathlib sources match the compiler checkout. The four declaration names have no matches in the snapshot. The three reused children each have exactly one accepted DAG owner, identical frozen types, passing comparator records, and candidate source hashes matching their acceptance records. Their names are bare identifiers, with no conflicting active owner. All are dependency-free leaves; adding the proposed edges leaves the DAG acyclic. Independently generated comparator challenges elaborate against the frozen Submission without child implementations. The accepted proof blocks compile, and exact Submission.X checks report only propext, Classical.choice and Quot.sound. A separate proof from the three child types alone establishes the exact selected parent type with those same axioms: choose the profile, take its radial lift, weaken C∞ to C¹, and apply its range, plateau and derivative bounds. Instance checks confirm the smooth order, NNReal Lipschitz constants, scaling coercion and continuous-linear-map derivative type. No matrix construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "step_profile",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and accepted frozen contract. The explicit bump gives c ≥ 1/3 > 0. FTC establishes φ′ = −c⁻¹g; smoothness of g proves the strengthened C∞ claim without circularity, and the derivative bound gives 3-Lipschitz continuity. The oriented-integral and positivity arguments establish both endpoint-inclusive plateaus and the global range. The supplied proof is complete and directly formalizable."
+    },
+    {
+      "key": "radial_smoothness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact Lean type includes every stated hypothesis and matches the accepted contract. Positivity of ρ supplies a neighborhood of ξ on which the lift equals 1. Away from ξ, smoothness of the Euclidean norm and composition prove C∞ regularity. These cases exhaust every dimension, including m = 0. The universal profile hypotheses justify the empty sibling dependencies; the proof uses neither the parent conclusion nor this child circularly."
+    },
+    {
+      "key": "radial_gradient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact accepted type agree, including Lean's zero derivative convention at nondifferentiable points. The supplied proof correctly uses ρ > 0 and K ≥ 0 to obtain the K/ρ Lipschitz bound by the reverse triangle inequality. The NNReal scaling coercion is valid, and norm_fderiv_le_of_lipschitz gives the stated operator-norm bound everywhere without a missing differentiability hypothesis. No sibling or parent theorem is assumed."
+    }
+  ],
+  "required_changes": []
+}
