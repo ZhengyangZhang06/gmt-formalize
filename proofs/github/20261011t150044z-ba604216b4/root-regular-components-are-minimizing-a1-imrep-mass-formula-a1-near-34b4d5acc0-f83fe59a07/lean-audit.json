@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0fd6540869612c2777aa22e7937089421aebfe97d290d61b09230b1dc538a1c6",
+  "git_delta": {
+    "base_commit": "2582a5324d6e8614878be4c1565192af07e087a5",
+    "candidate_commit": "475ba05fe03a13ed6aaa93d3d809ecba5ddaf0b2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_covector_first_hit_selection",
+    "diff_sha256": "02572a388ee8a94a8d9bca083fced72e4dda6dcc6f18043776496ef9daadd67d",
+    "source_sha256": "1c57e6d731a08dc74804a93f29576197ac0c2c1649f295df8e5dd237e90bfabb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covector_first_hit_selection",
+      "statement": "∀ (P n : ℕ) (A : ℕ → Set (Euclid P)) (b : ℕ → Covector (Euclid P) n), (∀ k, MeasurableSet (A k)) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ ∀ x, (g x = 0 ∧ ∀ k, x ∉ A k) ∨ ∃ k, x ∈ A k ∧ g x = b k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
