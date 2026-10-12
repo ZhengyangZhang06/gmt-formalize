@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b180c351a043b00a62fdda0e2c1af3784ad604d69aa4c42057149d2be4e76458",
+  "git_delta": {
+    "base_commit": "74948dd60fbbdc812505b76f92c9f03579701d82",
+    "candidate_commit": "5b63f318a7c2767299e106753ba0ff341fd199c2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_lusin_compact_pieces",
+    "diff_sha256": "ef4d3692ff3a93617f6f472576d93bc7e474639814aaea42c029203624757fd8",
+    "source_sha256": "11ade396e98b473d39f3ad3bb35e691ca2ed25395805e47b3041cb9d2c396ca9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_lusin_compact_pieces",
+      "statement": "∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ), IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) → ∃ C : ℕ → Set (Eucl Q), (∀ k, IsCompact (C k)) ∧ (∀ k, C k ⊆ M) ∧ (∀ k, ContinuousOn θ (C k)) ∧ (∀ k, (μHE[n] : Measure (Eucl Q)) (C k) < ∞) ∧ (μHE[n] : Measure (Eucl Q)) (M \\ ⋃ k, C k) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
