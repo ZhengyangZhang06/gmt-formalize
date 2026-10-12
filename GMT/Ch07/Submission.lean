@@ -6,7 +6,6 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
-import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -473,6 +472,7 @@ theorem Submission.dor_ims_sua_coeff_norm_rep : ∀ (P n : ℕ), ∃ A : Covecto
   congr 1
   refine Finset.sum_congr rfl fun I _ => ?_
   by_cases hI : StrictMono I <;> simp [c, hI]
+
 /-- **Mollifying a unit covector field** (smooth unit approximation, step 6).  A continuous,
 compactly supported `n`-covector field `g` with `tsupport g ⊆ V` (`V` open) and `|g| ≤ 1` for the
 Euclidean coefficient norm `|·|` is uniformly `ε`-approximated in `|·|` by a test form `ω` with
@@ -480,10 +480,11 @@ Euclidean coefficient norm `|·|` is uniformly `ε`-approximated in `|·|` by a 
 
 Write `|α| = ‖Aα‖` for a continuous linear coefficient map `A` (`dor_ims_sua_coeff_norm_rep`), so
 `|α| ≤ ‖A‖‖α‖`.  Take `r > 0` with `cthickening r (tsupport g) ⊆ V`, and `s ≤ r` such that
-`‖g y − g x‖ < ε/(‖A‖+1)` when `dist y x < s` (uniform continuity).  Let `ω = ψ ⋆ g` with `ψ` the
-normalized smooth bump of radius `s`.  Then `ω` is `C^∞` with compact support and
-`tsupport ω ⊆ cthickening s (tsupport g) ⊆ V`; `Aω(x) = (ψ ⋆ (A ∘ g))(x)` is an average of
-values of norm `|g| ≤ 1`; and `‖ω(x) − g(x)‖ ≤ ε/(‖A‖+1)`, whence `|ω(x) − g(x)| ≤ ε`. -/
+`‖g y − g x‖ < ε/(‖A‖+1)` when `dist y x < s` (uniform continuity).  Let `ω = ψ ⋆ g`, where
+`ψ = φ / ∫ φ` normalizes a smooth bump `φ ≥ 0` with `support φ = B_s(0)`.  Then `ω` is `C^∞` with
+compact support and `tsupport ω ⊆ cthickening s (tsupport g) ⊆ V`; `Aω(x) = (ψ ⋆ (A ∘ g))(x)` is
+an average of values of norm `|g| ≤ 1`; and `‖ω(x) − g(x)‖ ≤ ε/(‖A‖+1)`, whence
+`|ω(x) − g(x)| ≤ ε`. -/
 theorem Submission.dor_ims_sua_mollify_unit_field : ∀ (P n : ℕ) (V : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsOpen V → Continuous g → HasCompactSupport g → tsupport g ⊆ V → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (ω x - g x) ≤ ε := by
   intro P n V g ε hV hgc hgs hgV hg1 hε
   -- (1) the coefficient map `A` with `|α| = ‖A α‖ ≤ ‖A‖ ‖α‖`
@@ -495,23 +496,34 @@ theorem Submission.dor_ims_sua_mollify_unit_field : ∀ (P n : ℕ) (V : Set (Eu
   obtain ⟨s₀, hs₀, hgs₀⟩ := Metric.uniformContinuous_iff.mp
     (hgs.uniformContinuous_of_continuous hgc) (ε / (‖A‖ + 1)) (div_pos hε hC)
   have hs : 0 < min s₀ r := lt_min hs₀ hr
-  -- (4) the normalized smooth bump `ψ` of radius `s`
+  -- (4) a smooth bump `φ` with `support φ = B_s(0)`, and `ψ = φ / ∫ φ`: `ψ ≥ 0`, `∫ ψ = 1`
   let φ : ContDiffBump (0 : Euclid P) := ⟨min s₀ r / 2, min s₀ r, half_pos hs, half_lt_self hs⟩
+  have hφ : 0 < ∫ y, φ y := by
+    refine (integral_pos_iff_support_of_nonneg φ.nonneg'
+      (φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport)).mpr ?_
+    rw [φ.support_eq]
+    exact measure_ball_pos volume 0 hs
+  let ψ : Euclid P → ℝ := fun y => φ y / ∫ y, φ y
+  have hψφ : support ψ ⊆ support φ := fun y hy h => hy (by simp [ψ, h])
+  have hψs : support ψ ⊆ ball 0 (min s₀ r) := hψφ.trans φ.support_eq.subset
+  have hψc : HasCompactSupport ψ := φ.hasCompactSupport.mono hψφ
+  have hψ0 : ∀ y, 0 ≤ ψ y := fun y => div_nonneg φ.nonneg hφ.le
+  have hψ1 : ∫ y, ψ y = 1 := by rw [integral_div, div_self hφ.ne']
   -- (5) `ω = ψ ⋆ g`
   let ω : DifferentialForm (Euclid P) n :=
-    convolution (φ.normed volume) g (ContinuousLinearMap.lsmul ℝ ℝ) volume
+    convolution ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume
   have hgi : LocallyIntegrable g volume := hgc.locallyIntegrable
-  have hω : ConvolutionExists (φ.normed volume) g (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
-    φ.hasCompactSupport_normed.convolutionExists_left _ φ.continuous_normed hgi
+  have hω : ConvolutionExists ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
+    hψc.convolutionExists_left _ (φ.continuous.div_const _) hgi
   refine ⟨ω, ⟨?_, ?_⟩, ?_, ?_, ?_⟩
   · -- (6) smoothness
-    exact φ.hasCompactSupport_normed.contDiff_convolution_left _ φ.contDiff_normed hgi
-  · exact φ.hasCompactSupport_normed.convolution _ hgs
+    exact hψc.contDiff_convolution_left _ (φ.contDiff.div_const _) hgi
+  · exact hψc.convolution _ hgs
   · -- (7) `spt ω ⊆ cthickening s (tsupport g) ⊆ V`
     have hsupp : support ω ⊆ thickening (min s₀ r) (tsupport g) := by
       refine (support_convolution_subset _).trans ?_
       rintro _ ⟨t, ht, z, hz, rfl⟩
-      rw [φ.support_normed_eq, mem_ball_zero_iff] at ht
+      have ht' : ‖t‖ < min s₀ r := mem_ball_zero_iff.mp (hψs ht)
       exact mem_thickening_iff.mpr ⟨z, subset_tsupport g hz, by
         rwa [dist_eq_norm, add_sub_cancel_right]⟩
     calc tsupport ω ⊆ closure (thickening (min s₀ r) (tsupport g)) := closure_mono hsupp
@@ -520,20 +532,20 @@ theorem Submission.dor_ims_sua_mollify_unit_field : ∀ (P n : ℕ) (V : Set (Eu
       _ ⊆ V := hrV
   · -- (8) `|ω x| = ‖(ψ ⋆ (A ∘ g)) x‖ ≤ 1`
     intro x
-    have hAω : A (ω x) = convolution (φ.normed volume) (fun y => A (g y))
+    have hAω : A (ω x) = convolution ψ (fun y => A (g y))
         (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
-      calc A (ω x) = ∫ t, A (ContinuousLinearMap.lsmul ℝ ℝ (φ.normed volume t) (g (x - t))) :=
+      calc A (ω x) = ∫ t, A (ContinuousLinearMap.lsmul ℝ ℝ (ψ t) (g (x - t))) :=
             (A.integral_comp_comm (hω x).integrable).symm
         _ = _ := by simp only [convolution_def, ContinuousLinearMap.lsmul_apply, map_smul]
     rw [hA, hAω, ← dist_zero_right]
-    exact dist_convolution_le zero_le_one φ.support_normed_eq.subset φ.nonneg_normed
-      φ.integral_normed (A.continuous.comp hgc).aestronglyMeasurable fun y _ => by
+    exact dist_convolution_le zero_le_one hψs hψ0 hψ1
+      (A.continuous.comp hgc).aestronglyMeasurable fun y _ => by
         rw [dist_zero_right, ← hA]
         exact hg1 y
   · -- (9) `‖ω x − g x‖ ≤ ε/(‖A‖+1)`, hence `|ω x − g x| ≤ ‖A‖ ε/(‖A‖+1) ≤ ε`
     intro x
     have hd : dist (ω x) (g x) ≤ ε / (‖A‖ + 1) :=
-      φ.dist_normed_convolution_le hgc.aestronglyMeasurable fun y hy =>
+      dist_convolution_le (div_pos hε hC).le hψs hψ0 hψ1 hgc.aestronglyMeasurable fun y hy =>
         (hgs₀ ((mem_ball.mp hy).trans_le (min_le_left _ _))).le
     calc covectorEuclideanNorm (ω x - g x) = ‖A (ω x - g x)‖ := hA _
       _ ≤ ‖A‖ * dist (ω x) (g x) := by rw [dist_eq_norm]; exact A.le_opNorm _
