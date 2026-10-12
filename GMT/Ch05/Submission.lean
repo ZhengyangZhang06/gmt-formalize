@@ -537,6 +537,77 @@ theorem aal_cfs_integrating_factor_deriv : ∀ (n : ℕ) (I L a P Q : ℝ → �
     have h3 := abs_le.mp (h1.trans h2)
     exact ⟨Real.exp_le_exp.mpr (by linarith [h3.2]), Real.exp_le_exp.mpr (by linarith [h3.1])⟩
 
+/-- Simon Ch. 4, 3.4–3.5 and 4.3–4.4, for one fixed cutoff `φ` (`C¹`, nonincreasing, `φ = 0` on
+`[T, ∞)`): if the radial inequality (R) holds on `(0, S/T)` and `|a(t)| ≤ M t^{−β}` with `β < 1`, where
+`I(t) = ∫ φ(|x − y|/t) dμ` and `a = (L/t^{n+1})/(1 + I/tⁿ)` with `L(t) = ∫ φ(|x − y|/t)(x − y)·H dμ`,
+then `a` is continuous on `(0, S/T)` and `Ψ(ρ) = exp(−∫₀^ρ a)(1 + I(ρ)/ρⁿ)` is nondecreasing there. -/
+theorem ted_lpm_fixed_cutoff_monotone : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (I a : ℝ → ℝ) (T S M β : ℝ), 0 < T → β < 1 → μ (closedBall y S) < ⊤ → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ t : ℝ, T ≤ t → φ t = 0) → (∀ ρ : ℝ, 0 < ρ → T * ρ < S → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ)) ∂μ ≤ -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → (∀ t : ℝ, I t = ∫ x, φ (‖x - y‖ / t) ∂μ) → (∀ t : ℝ, a t = (∫ x, φ (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ) / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → T * t < S → |a t| ≤ M * t ^ (-β)) → ContinuousOn a (Ioo 0 (S / T)) ∧ MonotoneOn (fun ρ => Real.exp (-∫ t in (0)..ρ, a t) * (1 + I ρ / ρ ^ n)) (Ioo 0 (S / T)) := by
+  intro n ℓ μ H y φ I a T S M β hT hβ hμS hH hφ hanti hφT hR hI ha hab
+  -- `t < S/T` means `T t < S`
+  have hTt : ∀ t, t < S / T → T * t < S := fun t htR => (lt_div_iff₀' hT).mp htR
+  -- the pairing `L`, the derivative `P = I'` and the defect `Q = (t P − n I − L)/t`
+  set L : ℝ → ℝ := fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ
+  set P : ℝ → ℝ := fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t with hP
+  set Q : ℝ → ℝ := fun t => (t * P t - n * I t - L t) / t with hQ
+  -- `φ ≥ 0` (it is nonincreasing and `φ(T) = 0`), hence `I ≥ 0`
+  have hφnn : ∀ u, 0 ≤ φ u := fun u => by
+    rcases le_total u T with h | h
+    · simpa [hφT T le_rfl] using hanti h
+    · exact le_of_eq (hφT u h).symm
+  have hInn : ∀ t, 0 ≤ I t := fun t => by
+    rw [hI t]
+    exact integral_nonneg fun x => hφnn _
+  -- the cutoff mass `I` is differentiable with `I' = P`, and the pairing `L` is continuous
+  have hmass : ∀ t, 0 < t → t < S / T →
+      Integrable (fun x => φ (‖x - y‖ / t)) μ ∧
+        Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧
+        HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) ∂μ) (P t) t := fun t ht htR =>
+    Submission.ted_lpm_fcm_cutoff_mass_hasDerivAt n ℓ μ y φ S T t hT hμS hφ hφT ht (hTt t htR)
+  have hIder : ∀ t, 0 < t → t < S / T → HasDerivAt I (P t) t := fun t ht htR => by
+    rw [show I = fun s => ∫ x, φ (‖x - y‖ / s) ∂μ from funext hI]
+    exact (hmass t ht htR).2.2
+  have hLc : ∀ t, 0 < t → t < S / T → ContinuousAt L t := fun t ht htR =>
+    Submission.ted_lpm_fcm_cutoff_pairing_continuousAt n ℓ μ H y φ S T t hT hH hφ.continuous hφT
+      ht (hTt t htR)
+  -- the radial inequality (R) reads `n I − t I' ≤ −L`, i.e. `Q ≥ 0`
+  have hQnn : ∀ t, 0 < t → t < S / T → 0 ≤ Q t := fun t ht htR => by
+    obtain ⟨h1, h2, -⟩ := hmass t ht htR
+    have hRt : ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) + ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) ∂μ ≤
+        -L t := hR t ht (hTt t htR)
+    rw [integral_add (h1.const_mul (n : ℝ)) h2, integral_const_mul, ← hI t] at hRt
+    have htP : t * P t = -∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ := by
+      simp only [hP]
+      field_simp
+    simp only [hQ]
+    refine div_nonneg ?_ ht.le
+    rw [htP]
+    linarith
+  have hid : ∀ t, 0 < t → t < S / T → (n : ℝ) * I t - t * P t + t * Q t = -L t :=
+    fun t ht _ => by
+      have ht0 : t ≠ 0 := ht.ne'
+      simp only [hQ]
+      field_simp
+      ring
+  -- the integrating factor: `Ψ' = exp(−∫₀ᵗ a) Q(t)/tⁿ` on `(0, S/T)`
+  obtain ⟨hΨ, -⟩ := aal_cfs_integrating_factor_deriv n I L a P Q (S / T) M β hβ hIder hLc
+    (fun t _ _ => hInn t) hid (fun t _ _ => ha t) (fun t ht htR => hab t ht (hTt t htR))
+  refine ⟨fun t ht => ?_, ?_⟩
+  · -- `a = (L/t^{n+1})/(1 + I/tⁿ)` is continuous at every point of `(0, S/T)`
+    have hden : 1 + I t / t ^ n ≠ 0 := by
+      have := div_nonneg (hInn t) (pow_pos ht.1 n).le
+      linarith
+    rw [show a = fun s => L s / s ^ (n + 1) / (1 + I s / s ^ n) from funext ha]
+    exact (((hLc t ht.1 ht.2).div (continuous_pow (n + 1)).continuousAt
+      (pow_ne_zero _ ht.1.ne')).div (continuousAt_const.add ((hIder t ht.1 ht.2).continuousAt.div
+        (continuous_pow n).continuousAt (pow_ne_zero _ ht.1.ne'))) hden).continuousWithinAt
+  · -- `Ψ' ≥ 0` on the open interval `(0, S/T)`
+    refine monotoneOn_of_deriv_nonneg (convex_Ioo 0 (S / T))
+      (fun t ht => (hΨ t ht.1 ht.2).continuousAt.continuousWithinAt) ?_ ?_ <;> rw [interior_Ioo]
+    · exact fun t ht => (hΨ t ht.1 ht.2).differentiableAt.differentiableWithinAt
+    · intro t ht
+      rw [(hΨ t ht.1 ht.2).deriv]
+      exact mul_nonneg (Real.exp_pos _).le (div_nonneg (hQnn t ht.1 ht.2) (pow_pos ht.1 n).le)
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
