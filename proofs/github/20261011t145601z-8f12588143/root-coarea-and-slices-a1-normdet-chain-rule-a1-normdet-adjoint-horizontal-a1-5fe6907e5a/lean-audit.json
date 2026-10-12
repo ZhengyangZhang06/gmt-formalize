@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d9e7ff996aab94883aa5e2d054018ac57a2181711b19b8d1627bcb6b4e3349e6",
+  "git_delta": {
+    "base_commit": "b66e405fb3f071ec19068322b9ccd21e0844d6b8",
+    "candidate_commit": "b2ffd950819831b82aa1054208e51419012b08b2",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "coarea_normDet_adjoint_eq_horizontal",
+    "diff_sha256": "f2a573e2b2a0f27c4c3aa65e96bd8d4ab194def9ffaaf579bc3c6015333211d0",
+    "source_sha256": "01f1f790503d9d70ed02f80f26a3a96f450f0b1bf48e90db2d14acb103996ac7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_normDet_adjoint_eq_horizontal",
+      "statement": "∀ {X Y : Type} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (P : X →ₗ[ℝ] Y), (Function.Surjective P → (LinearMap.adjoint P).normDet = (P ∘ₗ (LinearMap.ker P)ᗮ.subtype).normDet) ∧ (¬ Function.Surjective P → (LinearMap.adjoint P).normDet = 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
