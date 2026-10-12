@@ -1,0 +1,49 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'ted_dge1_|density_le_monotone_bound|support_density_lower_bound|ted_density_ge_one' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "mem_support_iff_forall|tendsto_measure_biInter_gt|biInter_gt_closedBall|squeeze_zero.|tendsto_toReal|toReal_div|rpow_const",
+        "theorem toReal_mono|lemma toReal_mono|theorem ofReal_toReal|theorem ae_iff|theorem measure_mono_null",
+        "theorem mul_lt_top_iff|rpow_lt_top_iff_of_pos|theorem withDensity_apply |theorem restrict_restrict |theorem lintegral_mono_set ",
+        "git -C /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib rev-parse HEAD",
+        "sed -n '318,365p;518,576p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-density-ge-one-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-density-ge-one-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/tmp/codex-dge1-audit-w4diolyt/Audit.lean",
+        "/tmp/codex-dge1-audit-w4diolyt/Audit.log"
+      ],
+      "conclusion": "Verified the pinned project/mathlib revisions and relevant source compatibility. The snapshot search found no matching proposed declarations. Both names are unreserved bare identifiers; the relevant DAG is acyclic. Splitting is appropriate: the children isolate independent limit and support arguments, so both empty dependency lists are correct. Their one-line propositions elaborate before either child is declared, without aliases or implementation dependencies. Independently compiled both supplied proofs unchanged and the supplied assembly of the exact selected parent type, with the exact frozen sibling types as hypotheses. All three report only propext, Classical.choice and Quot.sound. The assembly supplies every child hypothesis, including local finiteness and uniform error control, without assuming positive delta or invoking the parent. Powers and support resolve as intended: Real.rpow, natural powers, and Measure.support. Local Simon §§3.11 and 4.9–4.10 corroborate the argument; supplementary background also appears in [arXiv:2504.10758v2, Corollary 2.1](https://arxiv.org/pdf/2504.10758v2#page=28)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "monotone_density_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and exactly matches the Lean proposition. Each proof step is valid: the correction tends to zero, squeezing gives F → 1, continuity of toReal at the finite density limit gives the normalized real-mass limit, and monotonicity bounds that limit by the corrected ratio at t. Nonnegativity then gives the claimed upper bound. Neither finiteness of individual masses nor an additional sign hypothesis on A is needed. The proof is complete, independently compiled, and uses neither child nor parent circularly."
+    },
+    {
+      "key": "support_lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including local finiteness, the uniform almost-everywhere estimate, and the right-neighbourhood conclusion. Support supplies good points outside the null exceptional set without requiring that set to be measurable. Ball inclusion, finite-mass toReal monotonicity, and continuity from above transfer the estimate to y. The gamma argument correctly handles 0 < epsilon < 1, and epsilon ≥ 1 is handled separately. This is a complete independent proof; the parent supplies its estimate using the first child, without creating a dependency cycle."
+    }
+  ],
+  "required_changes": []
+}
