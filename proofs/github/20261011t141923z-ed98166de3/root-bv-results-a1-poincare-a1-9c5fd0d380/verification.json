@@ -1,0 +1,22 @@
+{
+  "node_id": "root.bv_results-a1.poincare-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/168",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e9b4cc7cd6edfef6cf8daa37e3610c383a8a06b0",
+  "integrated_commit": "",
+  "proof_base_commit": "dd04578eea943e2d6667453fbc53c8528f038103",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.bv_results-a1",
+  "requires": [
+    "root.bv_results-a1.mollifier_l1-a1",
+    "root.bv_results-a1.mollifier_gradient-a1",
+    "root.bv_results-a1.poincare-a1.level_set_bound-a1",
+    "root.bv_results-a1.poincare-a1.smooth_convex_poincare-a1",
+    "root.bv_results-a1.poincare-a1.inner_exhaustion-a1",
+    "root.bv_results-a1.poincare-a1.mean_oscillation_limit-a1"
+  ]
+}
