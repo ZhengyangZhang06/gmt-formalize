@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c0aa31fb027c25a5de7b52075c9d5457a48da27016fc58978d49196786834895",
+  "git_delta": {
+    "base_commit": "8a8847afce1e2a3a75941fb552a5a4f718ee8337",
+    "candidate_commit": "b6b296511a091d8aff59e5964d833f7cdba706e3",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "cccd0bc533029b9eb89b9ba6080e057870c9986e563bcc2fc42cd28ba15ab2ee",
+    "source_sha256": "38496264ab6e4b3125b3efd06f344ccc59b6d10e71abbf9226d4aa3a7d90380b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_varifold_eq_tangent_graph_measure",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), (∃ η : Euclidean N → Measure (Grassmannian N n), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧ ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight) → (∀ᵐ x ∂V.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ) → ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → NullMeasurableSet {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ ∧ (x, T) ∈ A} V.weight ∧ V.measure A = V.weight {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ ∧ (x, T) ∈ A}",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
