@@ -685,6 +685,41 @@ theorem Submission.adr_rescaled_translate_tendstoUniformly : ∀ (P : ℕ) (f : 
   · rw [hK w hw, hk w hw, dist_self]
     exact hε
 
+/-- **Simon, proof of A.4 (chapter-A.txt lines 125–133): weak limits of rescalings.**  If
+`gₖ ⇀ g` in the weak sense of Appendix A (lines 13–15: tested against `C⁰_c(ℝᴾ)`), each `gₖ`
+locally `μH[n]`-integrable, and `cₖ > 0`, `cₖ → 1`, then `gₖ(y + cₖ ·) ⇀ g(y + ·)`.  The change of
+variables `w = y + cₖ x` (`adr_hausdorff_integral_comp_affine`) gives
+`∫ f(x) gₖ(y + cₖ x) dμ = (cₖⁿ)⁻¹ ∫ fₖ gₖ dμ` with `fₖ = f(cₖ⁻¹ • (· - y))`.  The `fₖ` converge
+uniformly to `f(· - y)` with supports eventually in a fixed compact set
+(`adr_rescaled_translate_tendstoUniformly`), so the Banach–Steinhaus bound behind
+`adr_weak_tendsto_of_tendstoUniformly` gives `∫ fₖ gₖ dμ → ∫ f(· - y) g dμ`. -/
+theorem Submission.adr_weak_tendsto_comp_affine : ∀ (P n Q : ℕ) (gs : ℕ → Euclid P → Euclid Q) (g : Euclid P → Euclid Q) (y : Euclid P) (mus : ℕ → ℝ), (∀ k, LocallyIntegrable (gs k) μH[(n : ℝ)]) → (∀ k, 0 < mus k) → Tendsto mus atTop (𝓝 1) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • g x ∂μH[(n : ℝ)]))) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k (y + mus k • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • g (y + x) ∂μH[(n : ℝ)])) := by
+  intro P n Q gs g y mus hloc hpos hmus hweak f hf hfc
+  -- `fₖ = f (cₖ⁻¹ • (· - y)) → f (· - y)` uniformly, all eventually vanishing off a compact `K`
+  obtain ⟨K, hK, h0, hk0, hunif⟩ :=
+    Submission.adr_rescaled_translate_tendstoUniformly P f y mus hf hfc hmus
+  -- change of variables `w = y + cₖ • x`, and `w = y + x` in the limit
+  have hL : ∀ k, ∫ x, f x • gs k (y + mus k • x) ∂μH[(n : ℝ)] =
+      ((mus k) ^ n)⁻¹ • ∫ w, f ((mus k)⁻¹ • (w - y)) • gs k w ∂μH[(n : ℝ)] := by
+    intro k
+    rw [← Submission.adr_hausdorff_integral_comp_affine P n Q
+      (fun w => f ((mus k)⁻¹ • (w - y)) • gs k w) y (mus k) (hpos k)]
+    simp only [add_sub_cancel_left, inv_smul_smul₀ (hpos k).ne']
+  have hR : ∫ x, f x • g (y + x) ∂μH[(n : ℝ)] = ∫ w, f (w - y) • g w ∂μH[(n : ℝ)] := by
+    simpa only [one_smul, add_sub_cancel_left, one_pow, inv_one] using
+      Submission.adr_hausdorff_integral_comp_affine P n Q (fun w => f (w - y) • g w) y 1 one_pos
+  -- weak convergence against the moving test functions `fₖ`
+  have hmain := Submission.adr_weak_tendsto_of_tendstoUniformly P Q μH[(n : ℝ)] gs g
+    (fun k w => f ((mus k)⁻¹ • (w - y))) (fun w => f (w - y)) K hloc hweak hK
+    (fun k => by fun_prop) (by fun_prop) hk0 h0 hunif
+  -- the Jacobian factors `(cₖⁿ)⁻¹ → 1`
+  have hc : Tendsto (fun k => ((mus k) ^ n)⁻¹) atTop (𝓝 (1 : ℝ)) := by
+    simpa only [one_pow, inv_one] using (hmus.pow n).inv₀ (pow_ne_zero n one_ne_zero)
+  have hlim := hc.smul hmain
+  rw [one_smul] at hlim
+  rw [hR]
+  exact hlim.congr fun k => (hL k).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
