@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon A.4** (proof of (1), the radii `λₖ ↓ 0`): if every `δ > 0` admits some `ρ ∈ (0, δ)`
+with `Q ρ`, then there are `ρₖ ∈ (0, δ₀)` with `Q ρₖ`, strictly decreasing to `0`.  Choose
+`g(δ) ∈ (0, δ)` with `Q (g δ)` for each `δ > 0` and set `ρ₀ = g(δ₀)`,
+`ρₖ₊₁ = g(min ρₖ (1/(k+1)))`; then `0 < ρₖ₊₁ < min ρₖ (1/(k+1))`. -/
+theorem Submission.adr_exists_strictAnti_radii : ∀ (Q : ℝ → Prop) (δ₀ : ℝ), 0 < δ₀ → (∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ Q ρ) → ∃ ρs : ℕ → ℝ, (∀ k, 0 < ρs k) ∧ (∀ k, ρs k < δ₀) ∧ StrictAnti ρs ∧ Tendsto ρs atTop (𝓝 0) ∧ ∀ k, Q (ρs k) := by
+  intro Q δ₀ hδ₀ hQ
+  -- `g δ ∈ (0, δ)` with `Q (g δ)` for every `δ > 0`
+  choose! g hg0 hgδ hgQ using hQ
+  -- `ρ₀ = g δ₀`, `ρₖ₊₁ = g (min ρₖ (1/(k+1)))`
+  let ρs : ℕ → ℝ := fun k =>
+    Nat.rec (motive := fun _ => ℝ) (g δ₀) (fun k ρ => g (min ρ (1 / ((k : ℝ) + 1)))) k
+  have hsucc : ∀ k, ρs (k + 1) = g (min (ρs k) (1 / ((k : ℝ) + 1))) := fun _ => rfl
+  have hpos : ∀ k, 0 < ρs k := by
+    intro k
+    induction k with
+    | zero => exact hg0 δ₀ hδ₀
+    | succ k ih =>
+      rw [hsucc]
+      exact hg0 _ (lt_min ih Nat.one_div_pos_of_nat)
+  have hmin : ∀ k, 0 < min (ρs k) (1 / ((k : ℝ) + 1)) := fun k =>
+    lt_min (hpos k) Nat.one_div_pos_of_nat
+  have hlt : ∀ k, ρs (k + 1) < min (ρs k) (1 / ((k : ℝ) + 1)) := fun k => by
+    rw [hsucc]
+    exact hgδ _ (hmin k)
+  have hanti : StrictAnti ρs :=
+    strictAnti_nat_of_succ_lt fun k => (hlt k).trans_le (min_le_left _ _)
+  refine ⟨ρs, hpos, fun k => (hanti.antitone k.zero_le).trans_lt (hgδ δ₀ hδ₀), hanti, ?_, ?_⟩
+  · -- squeeze `0 < ρₖ₊₁ < 1/(k+1)`
+    refine (tendsto_add_atTop_iff_nat 1).1 (tendsto_of_tendsto_of_tendsto_of_le_of_le
+      tendsto_const_nhds tendsto_one_div_add_atTop_nhds_zero_nat (fun k => (hpos (k + 1)).le)
+      fun k => ((hlt k).trans_le (min_le_right _ _)).le)
+  · intro k
+    cases k with
+    | zero => exact hgQ δ₀ hδ₀
+    | succ k =>
+      rw [hsucc]
+      exact hgQ _ (hmin k)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
