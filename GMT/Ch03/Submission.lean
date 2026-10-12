@@ -3265,6 +3265,134 @@ theorem Submission.chart_piece_coarea_formula : (∀ (n ℓ p : ℕ) (M U : Set 
     LinearMap.normDet_nonneg _
   rw [← hJ, ENNReal.ofReal_mul hJ0]
   ring
+/-- **Gluing local co-area formulas over countably many Borel pieces** (Simon Ch. 3, proof of the
+co-area formula (2.8)–(2.9), pp. 76–77, decomposition and summation steps; with the erratum of
+(2.9): the domain is `A` on both sides). Let `f` be continuous on the open `U ⊇ M`, `w ≥ 0`
+arbitrary and `S_j` Borel with `Hⁿ(M ∖ ⋃ S_j) = 0`. Assume (NS): every `Hⁿ`-null `Z ⊆ M` has
+`Hᵏ`-null slices `Z ∩ f⁻¹{y}` for `Lᵐ`-a.e. `y`, and (Loc): for Borel `B ⊆ S_j` and Borel `φ ≥ 0`,
+`∫_B φ w dHⁿ = ∫ ∫_{B ∩ f⁻¹{y}} φ dHᵏ dLᵐ(y)` with an a.e.-measurable inner integral. Then
+`∫_A g w dHⁿ = ∫ ∫_{A ∩ f⁻¹{y}} g dHᵏ dLᵐ(y)` for every `Hⁿ`-measurable `A ⊆ M` and every
+`Hⁿ ⌞ A`-measurable `g ≥ 0`. Replace `g` by a Borel `g'` and `A` by a Borel `A' ⊆ A` (up to
+`Hⁿ`-null sets) and disjointify `A' ∩ S_j` into Borel `T_j`; the remainder `A ∖ ⋃ T_j` is
+`Hⁿ`-null. The left side is `∑_j ∫_{T_j} g' w dHⁿ` (countable additivity of the set integral,
+valid for any integrand), each term is given by (Loc), and monotone convergence sums the inner
+integrals. Since `f` is continuous on the open `U`, the slices `T_j ∩ f⁻¹{y}` are disjoint Borel
+sets, so the sum is `∫_{⋃ T_j ∩ f⁻¹{y}} g' dHᵏ`; by (NS) applied to `A ∖ ⋃ T_j` and to
+`{x ∈ A : g x ≠ g' x}` this is `∫_{A ∩ f⁻¹{y}} g dHᵏ` for `Lᵐ`-a.e. `y`. -/
+theorem Submission.coarea_gluing_of_pieces : ∀ (N n m k : ℕ) (U M : Set (Rn N)) (f : Rn N → Rn m)
+    (w : Rn N → ℝ≥0∞) (S : ℕ → Set (Rn N)), IsOpen U → M ⊆ U → ContinuousOn f U →
+    (∀ Z ⊆ M, μHE[n] Z = 0 → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (Z ∩ f ⁻¹' {y}) = 0) →
+    (∀ j, MeasurableSet (S j)) → μHE[n] (M \ ⋃ j, S j) = 0 →
+    (∀ j, ∀ B ⊆ S j, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ →
+      AEMeasurable (fun y : Rn m ↦ ∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) volume ∧
+        ∫⁻ x in B, φ x * w x ∂μHE[n] = ∫⁻ y, (∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) ∂volume) →
+    ∀ A ⊆ M, NullMeasurableSet A μHE[n] → ∀ g : Rn N → ℝ≥0∞,
+      AEMeasurable g ((μHE[n] : Measure (Rn N)).restrict A) →
+      ∫⁻ x in A, g x * w x ∂μHE[n] = ∫⁻ y, (∫⁻ x in A ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∂volume := by
+  intro N n m k U M f w S hU hMU hf hNS hS hcov hloc A hAM hA g hg
+  -- Borel representatives: `g = g'` `Hⁿ ⌞ A`-a.e. and a Borel `A' ⊆ A` with `A' = A` `Hⁿ`-a.e.
+  have hg'm : Measurable (hg.mk g) := hg.measurable_mk
+  have hgg' : g =ᵐ[(μHE[n] : Measure (Rn N)).restrict A] hg.mk g := hg.ae_eq_mk
+  obtain ⟨A', hA'A, hA'm, hA'ae⟩ := hA.exists_measurable_subset_ae_eq
+  -- Disjoint Borel pieces `T j ⊆ A' ∩ S j` with union `A' ∩ ⋃ j, S j`.
+  have hTm : ∀ j, MeasurableSet (disjointed (fun j ↦ A' ∩ S j) j) :=
+    MeasurableSet.disjointed fun j ↦ hA'm.inter (hS j)
+  have hTd := disjoint_disjointed fun j ↦ A' ∩ S j
+  have hTS : ∀ j, disjointed (fun j ↦ A' ∩ S j) j ⊆ S j :=
+    fun j ↦ (disjointed_subset _ j).trans inter_subset_right
+  have hTU : ⋃ j, disjointed (fun j ↦ A' ∩ S j) j = A' ∩ ⋃ j, S j := by
+    rw [iUnion_disjointed, inter_iUnion]
+  have hA''A : ⋃ j, disjointed (fun j ↦ A' ∩ S j) j ⊆ A := by
+    rw [hTU]
+    exact inter_subset_left.trans hA'A
+  -- The remainder `Z = A ∖ ⋃ T j` is `Hⁿ`-null.
+  have hZ : μHE[n] (A \ ⋃ j, disjointed (fun j ↦ A' ∩ S j) j) = 0 := by
+    have hsub : A \ ⋃ j, disjointed (fun j ↦ A' ∩ S j) j ⊆ (A \ A') ∪ (M \ ⋃ j, S j) := by
+      intro x hx
+      rw [hTU] at hx
+      by_cases hx' : x ∈ A'
+      · exact Or.inr ⟨hAM hx.1, fun hxS ↦ hx.2 ⟨hx', hxS⟩⟩
+      · exact Or.inl ⟨hx.1, hx'⟩
+    exact measure_mono_null hsub (measure_union_null (ae_eq_set.1 hA'ae).2 hcov)
+  have hA''ae : A =ᵐ[(μHE[n] : Measure (Rn N))] ⋃ j, disjointed (fun j ↦ A' ∩ S j) j := by
+    rw [ae_eq_set, sdiff_eq_empty.2 hA''A]
+    exact ⟨hZ, measure_empty⟩
+  -- Left side: countable additivity of the set integral over the pieces.
+  have hL : ∫⁻ x in A, g x * w x ∂μHE[n] =
+      ∑' j, ∫⁻ x in disjointed (fun j ↦ A' ∩ S j) j, hg.mk g x * w x ∂μHE[n] := by
+    calc ∫⁻ x in A, g x * w x ∂μHE[n] = ∫⁻ x in A, hg.mk g x * w x ∂μHE[n] := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hgg'] with x hx
+          rw [hx]
+      _ = ∫⁻ x in ⋃ j, disjointed (fun j ↦ A' ∩ S j) j, hg.mk g x * w x ∂μHE[n] :=
+          setLIntegral_congr hA''ae
+      _ = ∑' j, ∫⁻ x in disjointed (fun j ↦ A' ∩ S j) j, hg.mk g x * w x ∂μHE[n] :=
+          lintegral_iUnion hTm hTd _
+  -- Each piece by (Loc); monotone convergence for the series.
+  have hpiece := fun j ↦ hloc j _ (hTS j) (hTm j) (hg.mk g) hg'm
+  have hsum : ∑' j, ∫⁻ x in disjointed (fun j ↦ A' ∩ S j) j, hg.mk g x * w x ∂μHE[n] =
+      ∫⁻ y, ∑' j, ∫⁻ x in disjointed (fun j ↦ A' ∩ S j) j ∩ f ⁻¹' {y}, hg.mk g x ∂μHE[k]
+        ∂volume := by
+    rw [lintegral_tsum fun j ↦ (hpiece j).1]
+    exact tsum_congr fun j ↦ (hpiece j).2
+  -- The slices of the pieces are Borel since `f` is continuous on the open `U`.
+  have hslice : ∀ y : Rn m, MeasurableSet (U ∩ f ⁻¹' {y}) := by
+    intro y
+    have hopen : IsOpen (U ∩ f ⁻¹' {y}ᶜ) := hf.isOpen_inter_preimage hU isOpen_compl_singleton
+    have heq : U ∩ f ⁻¹' {y} = U \ (U ∩ f ⁻¹' {y}ᶜ) := by
+      ext x
+      simp only [mem_inter_iff, Set.mem_sdiff, mem_preimage, mem_compl_iff, mem_singleton_iff]
+      tauto
+    rw [heq]
+    exact hU.measurableSet.diff hopen.measurableSet
+  have hTslice : ∀ j (y : Rn m), MeasurableSet (disjointed (fun j ↦ A' ∩ S j) j ∩ f ⁻¹' {y}) := by
+    intro j y
+    have hTU' : disjointed (fun j ↦ A' ∩ S j) j ⊆ U :=
+      fun x hx ↦ hMU (hAM (hA''A (mem_iUnion.2 ⟨j, hx⟩)))
+    rw [← inter_eq_left.2 hTU', inter_assoc]
+    exact (hTm j).inter (hslice y)
+  have hsumslice : ∀ y : Rn m,
+      ∑' j, ∫⁻ x in disjointed (fun j ↦ A' ∩ S j) j ∩ f ⁻¹' {y}, hg.mk g x ∂μHE[k] =
+        ∫⁻ x in (⋃ j, disjointed (fun j ↦ A' ∩ S j) j) ∩ f ⁻¹' {y}, hg.mk g x ∂μHE[k] := by
+    intro y
+    rw [iUnion_inter]
+    exact (lintegral_iUnion (fun j ↦ hTslice j y)
+      (fun i j hij ↦ Disjoint.mono inter_subset_left inter_subset_left (hTd hij)) _).symm
+  -- Exceptional slices: (NS) for `Z = A ∖ ⋃ T j` and `Y = {x ∈ A : g x ≠ g' x}`.
+  have hY : μHE[n] {x | x ∈ A ∧ g x ≠ hg.mk g x} = 0 := by
+    have h := (ae_restrict_iff'₀ hA).1 hgg'
+    rw [ae_iff] at h
+    refine measure_mono_null (fun x hx ↦ ?_) h
+    simp only [mem_ofPred_eq, not_imp]
+    exact hx
+  have hae : ∀ᵐ y ∂(volume : Measure (Rn m)),
+      ∫⁻ x in (⋃ j, disjointed (fun j ↦ A' ∩ S j) j) ∩ f ⁻¹' {y}, hg.mk g x ∂μHE[k] =
+        ∫⁻ x in A ∩ f ⁻¹' {y}, g x ∂μHE[k] := by
+    filter_upwards [hNS _ (fun x hx ↦ hAM hx.1) hZ, hNS _ (fun x hx ↦ hAM hx.1) hY]
+      with y hZy hYy
+    have hset : (⋃ j, disjointed (fun j ↦ A' ∩ S j) j) ∩ f ⁻¹' {y}
+        =ᵐ[(μHE[k] : Measure (Rn N))] A ∩ f ⁻¹' {y} := by
+      rw [ae_eq_set, sdiff_eq_empty.2 (inter_subset_inter_left _ hA''A)]
+      refine ⟨measure_empty, measure_mono_null (fun x hx ↦ ?_) hZy⟩
+      exact ⟨⟨hx.1.1, fun h ↦ hx.2 ⟨h, hx.1.2⟩⟩, hx.1.2⟩
+    have hfun : ∀ᵐ x ∂(μHE[k] : Measure (Rn N)),
+        x ∈ (⋃ j, disjointed (fun j ↦ A' ∩ S j) j) ∩ f ⁻¹' {y} → hg.mk g x = g x := by
+      rw [ae_iff]
+      refine measure_mono_null (fun x hx ↦ ?_) hYy
+      simp only [mem_ofPred_eq, not_imp] at hx
+      exact ⟨⟨hA''A hx.1.1, fun h ↦ hx.2 h.symm⟩, hx.1.2⟩
+    have hmeas : MeasurableSet ((⋃ j, disjointed (fun j ↦ A' ∩ S j) j) ∩ f ⁻¹' {y}) := by
+      rw [iUnion_inter]
+      exact MeasurableSet.iUnion fun j ↦ hTslice j y
+    rw [setLIntegral_congr_fun_ae hmeas hfun]
+    exact setLIntegral_congr hset
+  calc ∫⁻ x in A, g x * w x ∂μHE[n]
+      = ∑' j, ∫⁻ x in disjointed (fun j ↦ A' ∩ S j) j, hg.mk g x * w x ∂μHE[n] := hL
+    _ = ∫⁻ y, ∑' j, ∫⁻ x in disjointed (fun j ↦ A' ∩ S j) j ∩ f ⁻¹' {y}, hg.mk g x ∂μHE[k]
+          ∂volume := hsum
+    _ = ∫⁻ y, ∫⁻ x in (⋃ j, disjointed (fun j ↦ A' ∩ S j) j) ∩ f ⁻¹' {y}, hg.mk g x ∂μHE[k]
+          ∂volume := lintegral_congr hsumslice
+    _ = ∫⁻ y, (∫⁻ x in A ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∂volume := lintegral_congr_ae hae
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
