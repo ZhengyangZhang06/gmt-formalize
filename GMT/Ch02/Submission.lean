@@ -766,6 +766,170 @@ theorem Submission.eilenberg_covering_liminf_majorant : ∀ (X : Type) [MetricSp
         ≤ liminf (fun i ↦ ∫⁻ y, g i y ∂ν) atTop := lintegral_liminf_le hg
       _ ≤ liminf b atTop := liminf_le_liminf (Eventually.of_forall hint)
       _ = L := hb.liminf_eq
+/-- **Simon Ch. 2, Theorem 1.9 (p. 45), measurability of `y ↦ Hᵏ(A ∩ f⁻¹y)`**: for compact `F`
+and `k > 0`, `μH[k](F)` is the supremum over `n` of the finite open-cover content of `F` at scale
+`(n + 1)⁻¹`. Padding a finite open cover by `∅` bounds the fixed-scale precontent of
+`hausdorffMeasure_apply` by the open content at the same scale. Conversely, thickening each set of
+a near-optimal countable cover at scale `δ / 2` by a radius `ηₙ > 0` with `2ηₙ < δ / 2` and cost
+`eₙ` (`∑ eₙ < ε / 2`), then extracting a finite subcover by compactness, bounds the open content
+at scale `δ` by the precontent at scale `δ / 2` plus `ε`. -/
+theorem Submission.eilenberg_compact_hausdorff_eq_iSup_open_content : ∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (k : ℝ) (F : Set X), 0 < k → IsCompact F → MeasureTheory.Measure.hausdorffMeasure k F = ⨆ n : ℕ, ⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ Metric.ediam (O i) < ((n : ℝ≥0∞) + 1)⁻¹) (_ : F ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, Metric.ediam (O i) ^ k := by
+  intro X _ _ _ k F hk hF
+  -- Step 1: the fixed-scale precontent of `hausdorffMeasure_apply` is antitone in the scale.
+  have hmono : ∀ r r' : ℝ≥0∞, r ≤ r' →
+      (⨅ (t : ℕ → Set X) (_ : F ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r'),
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k) ≤
+      ⨅ (t : ℕ → Set X) (_ : F ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r),
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k := fun r r' h =>
+    iInf_mono fun t => iInf_mono fun _ => iInf_mono' fun ht => ⟨fun n => (ht n).trans h, le_rfl⟩
+  -- Step 2: padding a finite open cover by `∅` shows precontent ≤ open content.
+  have hpre_le : ∀ δ : ℝ≥0∞,
+      (⨅ (t : ℕ → Set X) (_ : F ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ δ),
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k) ≤
+      ⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ ediam (O i) < δ)
+        (_ : F ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, ediam (O i) ^ k := by
+    intro δ
+    refine le_iInf fun I => le_iInf fun O => le_iInf fun hO => le_iInf fun hcov => ?_
+    set t : ℕ → Set X := fun n => if n ∈ I then O n else ∅
+    have htcov : F ⊆ ⋃ n, t n := by
+      intro x hx
+      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.1 (hcov hx)
+      exact mem_iUnion.2 ⟨i, by simp [t, hi, hxi]⟩
+    have htdiam : ∀ n, ediam (t n) ≤ δ := by
+      intro n
+      by_cases hn : n ∈ I
+      · simpa only [t, hn, ite_true] using (hO n hn).2.le
+      · simp [t, hn]
+    calc _ ≤ ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k :=
+          iInf_le_of_le t (iInf_le_of_le htcov (iInf_le_of_le htdiam le_rfl))
+      _ = ∑ n ∈ I, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k :=
+          tsum_eq_sum fun n hn => by simp [t, hn]
+      _ ≤ ∑ n ∈ I, ediam (O n) ^ k :=
+          Finset.sum_le_sum fun n hn => iSup_le fun _ => by simp [t, hn]
+  -- Step 3: thickening a near-optimal countable cover at scale `δ/2` and extracting a finite
+  -- subcover by compactness shows open content at scale `δ` ≤ precontent at scale `δ/2`.
+  have hle_pre : ∀ δ : ℝ≥0∞, 0 < δ → δ ≠ ∞ →
+      (⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ ediam (O i) < δ)
+        (_ : F ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, ediam (O i) ^ k) ≤
+      ⨅ (t : ℕ → Set X) (_ : F ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ δ / 2),
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k := by
+    intro δ hδpos hδ
+    have hδ2 : δ / 2 ≠ ∞ := ENNReal.div_ne_top hδ two_ne_zero
+    have hδ2pos : 0 < δ / 2 := ENNReal.half_pos hδpos.ne'
+    refine ENNReal.le_of_forall_pos_le_add fun ε hε hlt => ?_
+    have hε2 : (ε : ℝ≥0∞) / 2 ≠ 0 := (ENNReal.half_pos (by exact_mod_cast hε.ne')).ne'
+    obtain ⟨C, hCcov, hCdiam, hCsum⟩ : ∃ C : ℕ → Set X, F ⊆ ⋃ n, C n ∧
+        (∀ n, ediam (C n) ≤ δ / 2) ∧
+        ∑' n, ⨆ _ : (C n).Nonempty, ediam (C n) ^ k <
+          (⨅ (t : ℕ → Set X) (_ : F ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ δ / 2),
+            ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k) + ε / 2 := by
+      have := ENNReal.lt_add_right hlt.ne hε2
+      simpa only [iInf_lt_iff, exists_prop] using this
+    obtain ⟨e, he0, hesum⟩ := ENNReal.exists_pos_sum_of_countable' hε2 ℕ
+    have hη : ∀ n, ∃ η : ℝ≥0, 0 < η ∧ 2 * (η : ℝ≥0∞) < δ / 2 ∧
+        (ediam (C n) + 2 * η) ^ k < ediam (C n) ^ k + e n := by
+      intro n
+      have hfin : ediam (C n) ^ k ≠ ∞ :=
+        ENNReal.rpow_ne_top_of_nonneg hk.le (ne_top_of_le_ne_top hδ2 (hCdiam n))
+      have hc1 : Continuous fun η : ℝ≥0 => 2 * (η : ℝ≥0∞) :=
+        (ENNReal.continuous_const_mul (by norm_num)).comp ENNReal.continuous_coe
+      have hc2 : Continuous fun η : ℝ≥0 => (ediam (C n) + 2 * (η : ℝ≥0∞)) ^ k :=
+        ENNReal.continuous_rpow_const.comp (continuous_const.add hc1)
+      have h1 : ∀ᶠ η : ℝ≥0 in 𝓝 0, 2 * (η : ℝ≥0∞) < δ / 2 :=
+        (hc1.tendsto 0).eventually_lt_const (by simpa using hδ2pos)
+      have h2 : ∀ᶠ η : ℝ≥0 in 𝓝 0, (ediam (C n) + 2 * (η : ℝ≥0∞)) ^ k < ediam (C n) ^ k + e n :=
+        (hc2.tendsto 0).eventually_lt_const
+          (by simpa using ENNReal.lt_add_right hfin (he0 n).ne')
+      obtain ⟨η, ⟨hη1, hη2⟩, hη0⟩ :=
+        (((h1.and h2).filter_mono nhdsWithin_le_nhds).and
+          (eventually_mem_nhdsWithin (s := Ioi (0 : ℝ≥0)) (a := 0))).exists
+      exact ⟨η, hη0, hη1, hη2⟩
+    choose η hη0 hη1 hη2 using hη
+    set O : ℕ → Set X := fun n => thickening (η n : ℝ) (C n)
+    have hOdiam : ∀ n, ediam (O n) < δ := fun n =>
+      calc ediam (O n) ≤ ediam (C n) + 2 * η n := ediam_thickening_le _
+        _ ≤ δ / 2 + 2 * η n := add_le_add (hCdiam n) le_rfl
+        _ < δ / 2 + δ / 2 := ENNReal.add_lt_add_left hδ2 (hη1 n)
+        _ = δ := ENNReal.add_halves δ
+    have hcost : ∀ n, ediam (O n) ^ k ≤ (⨆ _ : (C n).Nonempty, ediam (C n) ^ k) + e n := by
+      intro n
+      rcases (C n).eq_empty_or_nonempty with hC | hC
+      · simp [O, hC, ENNReal.zero_rpow_of_pos hk]
+      · rw [iSup_pos hC]
+        calc ediam (O n) ^ k ≤ (ediam (C n) + 2 * η n) ^ k :=
+              ENNReal.rpow_le_rpow (ediam_thickening_le _) hk.le
+          _ ≤ ediam (C n) ^ k + e n := (hη2 n).le
+    obtain ⟨I, hI⟩ := hF.elim_finite_subcover O (fun n => isOpen_thickening)
+      (hCcov.trans (iUnion_mono fun n =>
+        self_subset_thickening (by exact_mod_cast hη0 n) (C n)))
+    calc (⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ ediam (O i) < δ)
+          (_ : F ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, ediam (O i) ^ k)
+        ≤ ∑ i ∈ I, ediam (O i) ^ k :=
+          iInf_le_of_le I (iInf_le_of_le O (iInf_le_of_le
+            (fun i _ => ⟨isOpen_thickening, hOdiam i⟩) (iInf_le_of_le hI le_rfl)))
+      _ ≤ ∑ i ∈ I, ((⨆ _ : (C i).Nonempty, ediam (C i) ^ k) + e i) :=
+          Finset.sum_le_sum fun i _ => hcost i
+      _ ≤ ∑' i, ((⨆ _ : (C i).Nonempty, ediam (C i) ^ k) + e i) := ENNReal.sum_le_tsum I
+      _ = (∑' i, ⨆ _ : (C i).Nonempty, ediam (C i) ^ k) + ∑' i, e i := ENNReal.tsum_add
+      _ ≤ ((⨅ (t : ℕ → Set X) (_ : F ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ δ / 2),
+            ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ k) + ε / 2) + ε / 2 :=
+          add_le_add hCsum.le hesum.le
+      _ = _ := by rw [add_assoc, ENNReal.add_halves]
+  -- Step 4: compare both sides along the scales `(n + 1)⁻¹`.
+  rw [Measure.hausdorffMeasure_apply]
+  apply le_antisymm
+  · refine iSup₂_le fun r hr => ?_
+    obtain ⟨n, hn⟩ := ENNReal.exists_inv_nat_lt hr.ne'
+    have hnr : ((n : ℝ≥0∞) + 1)⁻¹ ≤ r := (ENNReal.inv_le_inv' le_self_add).trans hn.le
+    exact (hmono _ _ hnr).trans ((hpre_le _).trans (le_iSup (fun m : ℕ =>
+      ⨅ (I : Finset ℕ) (O : ℕ → Set X)
+        (_ : ∀ i ∈ I, IsOpen (O i) ∧ ediam (O i) < ((m : ℝ≥0∞) + 1)⁻¹)
+        (_ : F ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, ediam (O i) ^ k) n))
+  · refine iSup_le fun n => ?_
+    have hpos : 0 < ((n : ℝ≥0∞) + 1)⁻¹ := ENNReal.inv_pos.2 (by simp)
+    have hne : ((n : ℝ≥0∞) + 1)⁻¹ ≠ ∞ := ENNReal.inv_ne_top.2 (by simp)
+    exact (hle_pre _ hpos hne).trans
+      (le_iSup₂_of_le (((n : ℝ≥0∞) + 1)⁻¹ / 2) (ENNReal.half_pos hpos.ne') le_rfl)
+/-- **Simon Ch. 2, Theorem 1.9 (p. 45), measurability of `y ↦ Hᵏ(A ∩ f⁻¹y)`**: upper
+semicontinuity of the finite open-cover content of the fibres `Q ∩ f⁻¹{y}`, for compact `Q` and
+`f` continuous on `Q`. A cover `(I, O)` of the fibre over `y₀` with sum `< t` has open union `W`;
+`f '' (Q \ W)` is compact, hence closed, and misses `y₀`, and off it the same cover still covers
+the fibre. -/
+theorem Submission.eilenberg_fiber_open_content_upperSemicontinuous : ∀ (X : Type) [MetricSpace X] (m : ℕ) (k : ℝ) (δ : ℝ≥0∞) (Q : Set X) (f : X → Rn m), IsCompact Q → ContinuousOn f Q → UpperSemicontinuous (fun y : Rn m ↦ ⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ Metric.ediam (O i) < δ) (_ : Q ∩ f ⁻¹' {y} ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, Metric.ediam (O i) ^ k) := by
+  intro X _ m k δ Q f hQ hf y₀ t ht
+  simp only [iInf_lt_iff] at ht
+  obtain ⟨I, O, hO, hcov, hS⟩ := ht
+  have hW : IsOpen (⋃ i ∈ I, O i) := isOpen_biUnion fun i hi ↦ (hO i hi).1
+  have hK : IsClosed (f '' (Q \ ⋃ i ∈ I, O i)) :=
+    ((hQ.diff hW).image_of_continuousOn (hf.mono sdiff_subset)).isClosed
+  have hy₀ : y₀ ∈ (f '' (Q \ ⋃ i ∈ I, O i))ᶜ := by
+    rintro ⟨x, ⟨hxQ, hxW⟩, rfl⟩
+    exact hxW (hcov ⟨hxQ, rfl⟩)
+  filter_upwards [hK.isOpen_compl.mem_nhds hy₀] with y hy
+  -- Off `f '' (Q \ W)` the fibre over `y` lies in `W`, so `(I, O)` stays admissible.
+  have hcov' : Q ∩ f ⁻¹' {y} ⊆ ⋃ i ∈ I, O i := fun x ⟨hxQ, hxy⟩ ↦
+    by_contra fun hxW ↦ hy ⟨x, ⟨hxQ, hxW⟩, hxy⟩
+  exact lt_of_le_of_lt (iInf_le_of_le I <| iInf_le_of_le O <| iInf_le_of_le hO <|
+    iInf_le_of_le hcov' le_rfl) hS
+
+/-- **Simon Ch. 2, Theorem 1.9 (pp. 45–46), measurability of `y ↦ Hᵏ(A ∩ f⁻¹y)`**, for compact
+`A = Q` (Simon leaves this measurability as an exercise). For `f` continuous on `Q` every fibre
+`Q ∩ f⁻¹{y}` is compact, so its `μH[k]` is the countable supremum over `n` of its finite open-cover
+contents at scale `(n + 1)⁻¹` (`eilenberg_compact_hausdorff_eq_iSup_open_content`). Each content is
+upper semicontinuous in `y` (`eilenberg_fiber_open_content_upperSemicontinuous`), hence Borel, and
+`𝓗[k] = (ω_k / 2^k) • μH[k]`. -/
+theorem Submission.eilenberg_compact_fiber_measurable : ∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (Q : Set X) (f : X → Rn m), 0 < k → IsCompact Q → ContinuousOn f Q → Measurable (fun y ↦ Chapter01.simonHausdorffMeasureReal k (Q ∩ f ⁻¹' {y})) := by
+  intro X _ _ _ m k Q f hk hQ hf
+  -- Each fibre is a closed subset of the compact set `Q`, hence compact.
+  have hfib (y : Rn m) : IsCompact (Q ∩ f ⁻¹' {y}) :=
+    hQ.of_isClosed_subset (hf.preimage_isClosed_of_isClosed hQ.isClosed isClosed_singleton)
+      inter_subset_left
+  have hμ : Measurable fun y : Rn m ↦ μH[k] (Q ∩ f ⁻¹' {y}) := by
+    simp_rw [fun y ↦ Submission.eilenberg_compact_hausdorff_eq_iSup_open_content X k _ hk (hfib y)]
+    exact Measurable.iSup fun n ↦
+      (Submission.eilenberg_fiber_open_content_upperSemicontinuous X m k _ Q f hQ hf).measurable
+  simp only [Chapter01.simonHausdorffMeasureReal, Measure.smul_apply, smul_eq_mul]
+  exact hμ.const_mul _
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.compact_fiber_measurable-a1.fiber_content_usc-a1",
+  "parent_id": "root.eilenberg_inequality-a1.compact_fiber_measurable-a1",
+  "depth": 3,
+  "title": "Upper semicontinuity of the finite open-cover content of the fibres Q ∩ f⁻¹{y}",
+  "statement": "Let X be a metric space, m ∈ ℕ, k ∈ ℝ, δ ∈ [0,∞], Q ⊆ X compact and f : X → ℝᵐ continuous on Q, where ℝᵐ = Rn m = EuclideanSpace ℝ (Fin m). For y ∈ ℝᵐ let u(y) ∈ [0,∞] be the infimum (inf ∅ = ∞) of Σ_{i∈I} (ediam O_i)^k. The infimum runs over all finite sets I ⊆ ℕ and all families O : ℕ → Set X such that every O_i with i ∈ I is open with ediam O_i < δ, and Q ∩ f⁻¹{y} ⊆ ⋃_{i∈I} O_i. Here ediam = Metric.ediam, and powers in [0,∞] are ENNReal.rpow. Then u : ℝᵐ → [0,∞] is upper semicontinuous: for every y₀ ∈ ℝᵐ and every t > u(y₀) there is a neighbourhood V of y₀ with u(y) < t for all y ∈ V.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] (m : ℕ) (k : ℝ) (δ : ℝ≥0∞) (Q : Set X) (f : X → Rn m), IsCompact Q → ContinuousOn f Q → UpperSemicontinuous (fun y : Rn m ↦ ⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ Metric.ediam (O i) < δ) (_ : Q ∩ f ⁻¹' {y} ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, Metric.ediam (O i) ^ k)",
+  "lean_name": "eilenberg_fiber_open_content_upperSemicontinuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-compact-fiber-measurable-a1-fiber-content-usc-a1-a1"
+}
