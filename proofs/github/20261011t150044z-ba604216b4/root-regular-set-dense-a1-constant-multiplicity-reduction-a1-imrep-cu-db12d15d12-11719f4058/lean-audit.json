@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "af4a9ba242a6bf8d1b358931a13636377f46484ea59bd03d9d9d6a5a1204e82e",
+  "git_delta": {
+    "base_commit": "5e068ec56d9b29abab8a8594b1887702d625ecb0",
+    "candidate_commit": "5c54ddba5dec85274dd7c6e4e765104160cb32fd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_ic_action_integrable",
+    "diff_sha256": "f39f0be58dd98f9fd2dc9d107a881d7168bef72066b6ed3e0c074f64d15c63c2",
+    "source_sha256": "60b50d13e9882a8abe920caba593b31e937c25d03b3457ac27cf9bc9424b1646",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_ic_action_integrable",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n), Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)) (μHE[n].restrict R.carrier)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
