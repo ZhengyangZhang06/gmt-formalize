@@ -391,6 +391,68 @@ theorem Submission.lpf_wtc_cat_fderiv_lower_bound :
     linarith [h1]
   exact ge_of_tendsto hnorm hev
 
+/-- Measurable tangential differential on a single `C¹` chart (for the push-forward in Simon
+Ch. 6, 3.9): let `Φ` be `C¹` with `c ‖w - w'‖ ≤ ‖Φ w - Φ w'‖` (`c > 0`) on the open set `Ω`, and
+let `Λ A` be a left inverse of each injective `A` with `‖A (Λ A v)‖ ≤ ‖v‖`, `Λ` continuous on the
+injective maps.  With `Ψ` the inverse of `Φ` on `S = Φ(Ω)`, the map
+`G x = D(f ∘ Φ)(Ψ x) ∘ Λ(DΦ(Ψ x))` on `S` (`0` elsewhere) is Borel: `S` is Borel by
+Lusin–Souslin, `Ψ` is `c⁻¹`-Lipschitz on `S`, `DΦ(w)` is injective by
+`lpf_wtc_cat_fderiv_lower_bound`, and `D(f ∘ Φ)` is Borel. -/
+theorem Submission.lpf_tde_mcd_single_chart :
+    ∀ (P Q n : ℕ) (Λ : (Eucl n →L[ℝ] Eucl P) → (Eucl P →L[ℝ] Eucl n)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (f : Eucl P → Eucl Q), ContinuousOn Λ {A : Eucl n →L[ℝ] Eucl P | Function.Injective A} → (∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A → (Λ A).comp A = ContinuousLinearMap.id ℝ (Eucl n) ∧ ∀ v : Eucl P, ‖A (Λ A v)‖ ≤ ‖v‖) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∃ G : Eucl P → (Eucl P →L[ℝ] Eucl Q), Measurable G ∧ MeasurableSet (Φ '' Ω) ∧ ∀ x ∈ Φ '' Ω, ∃ w ∈ Ω, Φ w = x ∧ (∀ s : Eucl n, G x (fderiv ℝ Φ w s) = fderiv ℝ (f ∘ Φ) w s) ∧ ∀ v : Eucl P, ∃ s : Eucl n, ‖fderiv ℝ Φ w s‖ ≤ ‖v‖ ∧ G x v = fderiv ℝ (f ∘ Φ) w s := by
+  classical
+  intro P Q n Λ Φ Ω f hΛc hΛ hΩ hΦ hc
+  obtain ⟨c, hcpos, hanti⟩ := hc
+  -- `c ‖a‖ ≤ 0` with `c > 0` forces `a = 0`.
+  have hzero : ∀ a : Eucl n, c * ‖a‖ ≤ 0 → a = 0 := fun a ha =>
+    norm_le_zero_iff.mp (by nlinarith [norm_nonneg a])
+  -- `Φ` is injective on `Ω`, so `S = Φ(Ω)` is Borel by the Lusin–Souslin theorem.
+  have hinj : InjOn Φ Ω := by
+    intro w hw w' hw' h
+    have h1 := hanti w hw w' hw'
+    rw [h, sub_self, norm_zero] at h1
+    exact sub_eq_zero.mp (hzero _ h1)
+  have hS : MeasurableSet (Φ '' Ω) :=
+    hΩ.measurableSet.image_of_continuousOn_injOn hΦ.continuous.continuousOn hinj
+  -- The inverse chart `Ψ` maps `S` into `Ω`, inverts `Φ` there and is `c⁻¹`-Lipschitz on `S`.
+  obtain ⟨Ψ, hΨmem, hΨeq⟩ : ∃ Ψ : Eucl P → Eucl n,
+      (∀ x ∈ Φ '' Ω, Ψ x ∈ Ω) ∧ ∀ x ∈ Φ '' Ω, Φ (Ψ x) = x :=
+    ⟨Function.invFunOn Φ Ω, fun _ hx => Function.invFunOn_mem hx,
+      fun _ hx => Function.invFunOn_eq hx⟩
+  have hΨcont : ContinuousOn Ψ (Φ '' Ω) := by
+    refine (LipschitzOnWith.of_dist_le_mul (K := Real.toNNReal c⁻¹)
+      fun x hx x' hx' => ?_).continuousOn
+    have h1 := hanti (Ψ x) (hΨmem x hx) (Ψ x') (hΨmem x' hx')
+    rw [hΨeq x hx, hΨeq x' hx'] at h1
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (inv_nonneg.mpr hcpos.le),
+      inv_mul_eq_div, le_div_iff₀ hcpos]
+    linarith
+  -- `DΦ(w)` is injective for `w ∈ Ω` by the lower bound `c ‖s‖ ≤ ‖DΦ(w) s‖`.
+  have hDinj : ∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w) := by
+    intro w hw s t hst
+    have h1 := Submission.lpf_wtc_cat_fderiv_lower_bound P n Φ Ω c w hΩ hw
+      (hΦ.differentiable one_ne_zero w) hanti (s - t)
+    rw [map_sub, hst, sub_self, norm_zero] at h1
+    exact sub_eq_zero.mp (hzero _ h1)
+  -- `Ψ` and `x ↦ Λ(DΦ(Ψ x))`, extended by `0` off `S`, are Borel, and so is `D(f ∘ Φ)`.
+  have hΨm : Measurable ((Φ '' Ω).piecewise Ψ fun _ => 0) :=
+    hΨcont.measurable_piecewise continuousOn_const hS
+  have hΛm : Measurable ((Φ '' Ω).piecewise (fun x => Λ (fderiv ℝ Φ (Ψ x))) fun _ => 0) := by
+    refine ContinuousOn.measurable_piecewise ?_ continuousOn_const hS
+    exact hΛc.comp ((hΦ.continuous_fderiv one_ne_zero).comp_continuousOn hΨcont)
+      fun x hx => hDinj (Ψ x) (hΨmem x hx)
+  have hBm := (measurable_fderiv ℝ (f ∘ Φ)).comp hΨm
+  -- `G x = D(f ∘ Φ)(Ψ x) ∘ Λ(DΦ(Ψ x))` on `S`; composition of linear maps is continuous.
+  refine ⟨fun x => (fderiv ℝ (f ∘ Φ) ((Φ '' Ω).piecewise Ψ (fun _ => 0) x)).comp
+      ((Φ '' Ω).piecewise (fun x => Λ (fderiv ℝ Φ (Ψ x))) (fun _ => 0) x),
+    isBoundedBilinearMap_comp.continuous.measurable2 hBm hΛm, hS, fun x hx => ?_⟩
+  have hA := hΛ _ (hDinj (Ψ x) (hΨmem x hx))
+  refine ⟨Ψ x, hΨmem x hx, hΨeq x hx, fun s => ?_,
+    fun v => ⟨Λ (fderiv ℝ Φ (Ψ x)) v, hA.2 v, ?_⟩⟩
+  · simp only [Set.piecewise_eq_of_mem _ _ _ hx, ContinuousLinearMap.comp_apply]
+    rw [← ContinuousLinearMap.comp_apply (Λ _), hA.1, ContinuousLinearMap.id_apply]
+  · simp only [Set.piecewise_eq_of_mem _ _ _ hx, ContinuousLinearMap.comp_apply]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
