@@ -1,0 +1,162 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.affine_approximation-a1.lp_monotonicity-a1`
+- Child DAG node: `root.affine_approximation-a1.lp_monotonicity-a1.monotonicity_core-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 4, 3.5-3.6 and 4.2-4.7, with kappa = (p - n)/(4p). This is Step 0 (annular integrability), Step 1, the Hoelder part of Step 3 and Step 5 of the parent proof, with |D^perp r|^2 replaced by w. It uses the sibling results aal_curvature_pairing_holder_bound (the Hoelder bound) and aal_cutoff_integrating_factor_squeeze (the fixed-cutoff squeeze).
+Notation:
+ - r = r(x) := |x - y|.
+ - For 0 < t <= S, ||H||_t := (integral_{B_t(y)} |H|^p dmu)^(1/p). It is a finite real number (at most ||H||_S < infinity) and nondecreasing in t.
+ - kappa := (p - n)/(4p) > 0.
+ - Since p > n >= 1, we have p > 1 and 0 < n/p < 1.
+
+1. Annular integrability (the integrability claim of (ii)). Let 0 < s <= r <= R.
+ - On B_r(y) minus B_s(y) we have |x - y| > s > 0, so 0 <= w(x)/|x - y|^n <= s^(-n) for mu-a.e. such x.
+ - w/|. - y|^n is a.e. strongly measurable.
+ - mu(B_r(y)) <= mu(B_S(y)) < infinity.
+ Hence w/|x - y|^n is mu-integrable on B_r(y) minus B_s(y).
+
+2. Smallness. integral_{B_R(y)} |H|^p dmu <= integral_{B_S(y)} |H|^p dmu < infinity, so all quantities are finite. The hypothesis reads (R^(p-n) ||H||_R^p)^(1/p) = R^(1 - n/p) ||H||_R <= kappa Lambda. Hence ||H||_t <= ||H||_R <= kappa Lambda R^(n/p - 1) for 0 < t <= R.
+
+3. Cutoffs. Fix chi in C^1(R), nonincreasing, with chi = 1 on (-infinity, 0] and chi = 0 on [1, infinity). For example, chi = 1 - s, where s is the standard C^infinity smooth transition function: s = 0 on (-infinity, 0], s = 1 on [1, infinity), s nondecreasing. For epsilon > 0 put phi_epsilon(t) := chi((t - 1)/epsilon). Then phi_epsilon:
+ - is C^1 and nonincreasing, with 0 <= phi_epsilon <= 1;
+ - equals 1 on (-infinity, 1] and 0 on [1 + epsilon, infinity);
+ - satisfies phi_epsilon(t) -> 1_{(-infinity, 1]}(t) as epsilon -> 0+ for each t: if t <= 1 the value is always 1, and if t > 1 it is 0 once epsilon <= t - 1.
+
+4. The sequence. Choose epsilon_1 in (0, 1] with (1 + epsilon_1) R < S, and put epsilon_k := epsilon_1/k for k >= 1. Then epsilon_k is in (0, 1], epsilon_k -> 0, and (1 + epsilon_k) R < S. Write:
+ - phi_k := phi_{epsilon_k};
+ - I_k(t) := integral phi_k(r/t) dmu;
+ - L_k(t) := integral phi_k(r/t)(x - y).H dmu;
+ - a_k(t) := t^(-(n+1)) L_k(t)/(1 + t^(-n) I_k(t));
+ - F_k(t) := exp(-integral_0^t a_k);
+ - c_k(t) := integral_0^t |a_k|;
+ - A_k(sigma, rho) := integral (phi_k(r/rho) - phi_k(r/sigma)) w/r^n dmu.
+
+5. Bound on a_k (Simon 4.2-4.3). Let t > 0 with (1 + epsilon_k) t < S.
+ - psi(x) := phi_k(r/t) is continuous, takes values in [0, 1], and vanishes when |x - y| > (1 + epsilon_k) t.
+ - The ball B_{(1+epsilon_k) t}(y) is contained in B_S(y). So it has finite measure, H is integrable on it, and its |H|^p-integral is finite.
+ By aal_curvature_pairing_holder_bound with radius (1 + epsilon_k) t:
+ |L_k(t)| <= (1 + epsilon_k) t ||H||_{(1+epsilon_k) t} I_k(t)^(1 - 1/p).
+ Write b := t^(-n) I_k(t) >= 0, so that I_k(t)^(1 - 1/p) = t^(n - n/p) b^(1 - 1/p). Also b^(1 - 1/p) <= 1 + b (it is <= 1 if b <= 1 and <= b if b >= 1). Therefore
+ |a_k(t)| = t^(-(n+1)) |L_k(t)| / (1 + b) <= (1 + epsilon_k) ||H||_{(1+epsilon_k) t} t^(-n/p) <= 2 ||H||_S t^(-n/p). (D.1)
+
+6. Fixed-cutoff squeeze. Apply aal_cutoff_integrating_factor_squeeze with phi = phi_k, epsilon = epsilon_k, I = I_k, a = a_k, M = 2 ||H||_S and beta = n/p < 1. Its hypotheses hold:
+ - mu(B_S(y)) < infinity, and the hypotheses on w and H;
+ - the properties of phi_k from step 3;
+ - the radial identity for phi_k at every rho > 0 with (1 + epsilon_k) rho <= S, which is the assumed radial identity with phi = phi_k and T = 1 + epsilon_k;
+ - the defining formulas of I_k and a_k;
+ - the bound (D.1).
+ For 0 < sigma <= rho <= R we have (1 + epsilon_k) rho < S, and therefore
+ e^(-c_k(rho)) A_k(sigma, rho) <= F_k(rho)(1 + rho^(-n) I_k(rho)) - F_k(sigma)(1 + sigma^(-n) I_k(sigma)) <= e^(c_k(rho)) (1 + epsilon_k)^n A_k(sigma, rho). (D.2)
+
+7. Pointwise limits (Simon 3.6, 4.5). Fix t in (0, R].
+ - For every x, phi_k(r/t) -> 1_{r <= t} by step 3.
+ - phi_k(r/t) = 0 for r >= (1 + epsilon_k) t, in particular for x outside B_S(y).
+ By dominated convergence, with dominating functions 1_{B_S(y)} and S |H| 1_{B_S(y)}:
+ I_k(t) -> mu(B_t(y)) and L_k(t) -> L_0(t) := integral_{B_t(y)} (x - y).H dmu.
+ Hence a_k(t) -> a_0(t) := t^(-(n+1)) L_0(t)/(1 + t^(-n) mu(B_t(y))).
+
+8. Measurability. I_k and L_k are continuous on (0, S/(1 + epsilon_k)), an interval containing (0, R], by dominated convergence: the integrands are continuous in t and, for t in a compact subinterval, are dominated by 1_{B_S(y)} and S |H| 1_{B_S(y)}. Since 1 + t^(-n) I_k(t) >= 1, each a_k is continuous, hence measurable, on (0, R]. So a_0, their pointwise limit, is measurable on (0, R].
+
+9. Bound on a_0 (Simon 4.5-4.6 with kappa). Let 0 < t <= R. Apply aal_curvature_pairing_holder_bound with psi = 1_{B_t(y)} and radius t. Here psi is measurable, takes values in {0, 1} and vanishes for |x - y| > t; its integral is mu(B_t(y)) and its pairing is L_0(t). This gives |L_0(t)| <= t ||H||_t mu(B_t(y))^(1 - 1/p). As in step 5, now with b = t^(-n) mu(B_t(y)), and using step 2:
+ |a_0(t)| <= ||H||_t t^(-n/p) <= kappa Lambda R^(n/p - 1) t^(-n/p) = kappa Lambda R^(-1) (t/R)^(-n/p).
+ Since kappa/(1 - n/p) = 1/4, for 0 < rho <= R:
+ c_0(rho) := integral_0^rho |a_0(t)| dt <= kappa Lambda R^(-1) integral_0^rho (t/R)^(-n/p) dt = (Lambda/4)(rho/R)^(1 - n/p) <= Lambda/4. (D.3)
+
+10. Limits of the integrating factors. By (D.1), |a_k(t)| <= 2 ||H||_S t^(-n/p) on (0, R]; this is integrable because n/p < 1. By steps 7-8 and dominated convergence, for each rho in (0, R]: integral_0^rho a_k -> integral_0^rho a_0 and c_k(rho) -> c_0(rho). Define F(t) := exp(-integral_0^t a_0(s) ds) for all real t. Then F_k(rho) -> F(rho) for rho in (0, R].
+
+11. Proof of (i) (Simon 4.5-4.6). Let 0 < r <= R and b := (Lambda/4)(r/R)^(1 - n/p). Since 0 < r/R <= 1 and 0 < 1 - n/p, we have 0 <= b <= Lambda/4.
+ - u := -integral_0^r a_0 satisfies |u| <= c_0(r) <= b by (D.3). So e^(-Lambda) <= e^(-b) <= F(r) = e^u <= e^b <= e^Lambda.
+ - By the mean value theorem, |e^u - 1| <= e^|u| |u| <= e^b b. Hence |F(r) - 1| <= e^(Lambda/4)(Lambda/4)(r/R)^(1 - n/p) <= (1/2) e^(Lambda/2) Lambda (r/R)^(1 - n/p), because e^(Lambda/4)/4 <= e^(Lambda/2)/2.
+ - If Lambda <= 1, then e^b b <= e^(1/4)(Lambda/4)(r/R)^(1 - n/p) <= Lambda (r/R)^(1 - n/p), because e^(1/4) <= 4.
+
+12. Limit of the squeeze (Simon 3.6, 4.7). Fix 0 < sigma <= rho <= R.
+ - Middle term. By steps 7 and 10, the middle term of (D.2) tends to F(rho)(1 + rho^(-n) mu(B_rho(y))) - F(sigma)(1 + sigma^(-n) mu(B_sigma(y))) = Phi(rho) - Phi(sigma), where Phi(t) := F(t) t^(-n) mu(B_t(y)) + F(t) - 1 and mu(B_t(y)) is finite.
+ - Annular integrals. A_k(sigma, rho) -> A_0(sigma, rho) := integral_{B_rho(y) minus B_sigma(y)} w/r^n dmu, by dominated convergence with dominating function sigma^(-n) 1_{B_S(y)}:
+ * if r(x) <= sigma, the integrand is 0 for every k, because phi_k(r/rho) = phi_k(r/sigma) = 1;
+ * if r(x) > sigma, the integrand is bounded by sigma^(-n) for mu-a.e. such x and vanishes outside B_S(y), since both cutoffs vanish for r >= (1 + epsilon_k) rho; it converges to r^(-n)(1_{r <= rho} - 1_{r <= sigma}) w(x) = (w(x)/r^n) 1_{B_rho(y) minus B_sigma(y)}(x).
+ - Constants. c_k(rho) -> c_0(rho) and (1 + epsilon_k)^n -> 1.
+ Passing to the limit in (D.2) gives e^(-c_0(rho)) A_0 <= Phi(rho) - Phi(sigma) <= e^(c_0(rho)) A_0. Since A_0 >= 0 (w >= 0 a.e.) and 0 <= c_0(rho) <= Lambda/4 <= Lambda by (D.3):
+ e^(-Lambda) A_0(sigma, rho) <= Phi(rho) - Phi(sigma) <= e^Lambda A_0(sigma, rho).
+
+13. Conclusion. Take F from step 10. Step 11 is (i). Step 1 and step 12, with s = sigma and r = rho, give (ii), because Phi(t) = F(t) (mu(B_t(y))/t^n) + (F(t) - 1) is exactly the expression in the statement.
+
+## Key steps
+
+1. On B_r(y) minus B_s(y), w/|x-y|^n <= s^-n a.e.; finite measure gives annular integrability.
+2. Smallness: ||H||_t <= ||H||_R <= kappa Lambda R^(n/p-1) for 0 < t <= R.
+3. Cutoffs phi_epsilon(t) = chi((t-1)/epsilon) and a sequence epsilon_k -> 0 in (0,1] with (1+epsilon_k)R < S.
+4. Hoelder sibling at radius (1+epsilon_k)t, plus b^(1-1/p) <= 1+b: |a_k(t)| <= 2||H||_S t^(-n/p).
+5. Fixed-cutoff sibling (T = 1+epsilon_k, M = 2||H||_S, beta = n/p) gives the squeeze (D.2) for every k.
+6. Dominated convergence: I_k -> mu(B_t), L_k -> L_0 and a_k -> a_0 (measurable as a pointwise limit of continuous functions); also integral_0^rho a_k -> integral_0^rho a_0, c_k -> c_0, and A_k -> integral_{B_rho minus B_sigma} w/r^n.
+7. Hoelder sibling with the indicator of B_t: |a_0(t)| <= kappa Lambda R^-1 (t/R)^(-n/p). Since kappa/(1-n/p) = 1/4, c_0(rho) <= (Lambda/4)(rho/R)^(1-n/p), which gives (i) for F = exp(-integral_0^t a_0).
+8. Pass to the limit in (D.2) and use 0 <= c_0 <= Lambda: e^-Lambda A_0 <= Phi(rho) - Phi(sigma) <= e^Lambda A_0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `timeout 300 rg -n "aal_radial|radial_first_variation|curvature_pairing|integrating_factor|monotonicity_of_radial" <snapshot>/project`
+- `timeout 300 rg -n "^theorem integral_mul_le_Lp_mul_Lq_of_nonneg|^theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|^theorem tendsto_integral_filter_of_dominated_convergence|^theorem integral_hasDerivAt_right|^theorem integral_integral_swap|^theorem integral_eq_sub_of_hasDerivAt\b|^lemma starProjection_orthogonal'|^theorem norm_starProjection_apply_le|^theorem contDiffAt_norm|^theorem intervalIntegrable_rpow'|^theorem integral_rpow" <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "theorem trace_smulRight|protected theorem contDiff|protected theorem monotone|theorem zero_of_nonpos|theorem one_of_one_le" <snapshot>/mathlib/Mathlib/LinearAlgebra/Trace.lean <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `timeout 300 rg -n "theorem setIntegral_nonneg_of_ae_restrict|theorem lintegral_mono_set|theorem measure_mono" <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem isBoundedBilinearMap_apply|protected theorem prodMk" <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean <snapshot>/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `grep -n "^theorem\|^def\|^structure\|^private theorem" .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/{FirstVariation,LpMeanCurvature,LpCancellation,MeanCurvature,LpAnnular}.lean`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement on the four child types; string comparison of the assembled aal_lp_monotonicity and aal_tangent_structure types against the handoff files`
+- `lake env lean /tmp/claude-1000/lpm-check/Check.lean (contract lines 1-459 + sorried aal_tangent_structure and four children + sorry-free assembly of Submission.aal_lp_monotonicity + example instantiating children 2 and 3 inside child 4's context)`
+- `lake env lean /tmp/claude-1000/lpm-check/CheckAx.lean (#print axioms GMT.Ch05.Submission.aal_lp_monotonicity with children as axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/claude-1000/lpm-check/Check.lean`
+- `/tmp/claude-1000/lpm-check/CheckAx.lean`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+
+No existing declarations: the snapshot project has no match for the proposed child names or their topics.
+
+Mathlib tools located for the children (paths under mathlib/Mathlib):
+- Child 2: integral_mul_le_Lp_mul_Lq_of_nonneg (MeasureTheory/Integral/Bochner/Basic.lean:1230), Hölder.
+- Child 3: hasDerivAt_integral_of_dominated_loc_of_deriv_le (Analysis/Calculus/ParametricIntegral.lean:286); integral_hasDerivAt_right (IntervalIntegral/FundThmCalculus.lean:725) and integral_eq_sub_of_hasDerivAt (:1148) for the FTC; integral_integral_swap (MeasureTheory/Integral/Prod.lean:478) for Fubini; intervalIntegrable_rpow' (SpecialFunctions/Integrability/Basic.lean:47).
+- Child 4: tendsto_integral_filter_of_dominated_convergence (MeasureTheory/Integral/DominatedConvergence.lean:67); integral_rpow (SpecialFunctions/Integrals/Basic.lean:146); smoothTransition contDiff/monotone/zero_of_nonpos/one_of_one_le (Analysis/SpecialFunctions/SmoothTransition.lean:161-222).
+- Child 1: contDiffAt_norm (Analysis/InnerProductSpace/Calculus.lean:154); LinearMap.trace_smulRight (LinearAlgebra/Trace.lean:272).
+- Parent assembly: starProjection_orthogonal' (InnerProductSpace/Projection/Basic.lean:223); norm_starProjection_apply_le (:411); LocallyIntegrableOn.integrableOn_compact_subset (MeasureTheory/Function/LocallyIntegrable.lean:122); isBoundedBilinearMap_apply (Normed/Operator/BoundedLinearMaps.lean:391); AEStronglyMeasurable.prodMk (AEStronglyMeasurable.lean:256); setIntegral_nonneg_of_ae_restrict (Bochner/Set.lean:809).
+
+Pinned SimonGMT Chapter04 (outside the snapshot):
+- Directly usable, stated for any finite-dimensional E and Submodule P: trace_starProjection, trace_radialEndomorphism and inner_starProjection_eq_norm_sq (FirstVariation.lean:122-157) for child 1; monotonicityCutoff = 1 - smoothTransition((t-1)/eps) and its lemmas (FirstVariation.lean:825-870) for child 4.
+- Patterns to adapt from SimonGMT's own varifold structure to an abstract finite measure: hasDerivAt_integral_scaledRadialCutoff_mul (FirstVariation.lean:680) and cancelledCutoffMass_squeeze (LpCancellation.lean:400).
+- Not used: exists_lpAnnularCorrection (LpAnnular.lean:358). It is the same result for the strengthened Chapter04.RectifiableVarifold, and the supplied proof deliberately avoids that bridge. The printed Simon Ch. 4, 3.2-3.6 and 4.1-4.8 (book/chapter-04.txt) matches Steps 0-6.
+
+Lean checks:
+- Check.lean compiles. All four child types elaborate in the contract scope and pass validate_lean_statement.
+- The sorry-free assembly of the exact frozen aal_lp_monotonicity type typechecks from children 1 and 4 plus aal_tangent_structure.
+- The example shows child 4 can instantiate children 2 and 3.
+- CheckAx.lean: #print axioms lists only propext, Classical.choice, Quot.sound and the three used declarations.
