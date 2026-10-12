@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6ccd4f7c80f27ef159ef5c93fae7dfc7ef5e3ad98ce3f07762250249c5d1124",
+  "git_delta": {
+    "base_commit": "80d4e485561596564ad55072811d9ee9683f3d19",
+    "candidate_commit": "7fafe1418e3002a8a1686f5e0e3ba5972373612f",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_fbl_rescaled_sandwich",
+    "diff_sha256": "e238684fe50c48d1630ea0ff30c0cf2ac58fa362bde5ad381469da33186cb627",
+    "source_sha256": "1d7add8d54a21f0303fc1126bdfec0800e07ecd03663c5b79e97a1227b6ab08b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_fbl_rescaled_sandwich",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (β : C(Grassmannian N n, ℝ)) (r : ℝ) (k : ℕ), 0 < r → closedBall x (2 * r) ⊆ U → (∀ S, 0 ≤ β S) → (∫ z, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2 ∂(rescaledMeasure V x r)) ≤ (∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / r ^ n ∧ (∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / r ^ n ≤ ∫ z, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2 ∂(rescaledMeasure V x r)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
