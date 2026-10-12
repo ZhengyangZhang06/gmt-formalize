@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c3f6582dd04d8652ee3d0a5e0a8c395c1e12a45ee680d0836ad6886bc470937c",
+  "git_delta": {
+    "base_commit": "77b90e4316404f4c5491736ddd902c4947f8b3f0",
+    "candidate_commit": "00c28371397b9328e4c0eb7f27df2f0f8881fdb6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_rim_imrep_split",
+    "diff_sha256": "6dbb440eaac7702a6e945161a9d58d63b2c47e276874c7250c99071b05bd62f2",
+    "source_sha256": "fd8ba5ced0a591bd02b4ec01e5bc8670729bc2866a8be9c03ae10068b0cb4b51",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_rim_imrep_split",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R R₁ R₂ : IMRep U n), R₁.carrier ⊆ R.carrier → R₂.carrier ⊆ R.carrier → R₁.orient = R.orient → R₂.orient = R.orient → (∀ x ∈ R.carrier, R.mult x = R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) → R.measure = R₁.measure + R₂.measure ∧ ∀ ω : TestFormOn U n, R.action (ω : DifferentialForm (Euclid P) n) = R₁.action (ω : DifferentialForm (Euclid P) n) + R₂.action (ω : DifferentialForm (Euclid P) n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
