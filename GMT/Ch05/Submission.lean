@@ -3646,6 +3646,806 @@ theorem ted_lemma_a_tilt_height : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
   rw [hgoal, hId, show (144 : ℝ) * (r ^ 2)⁻¹ = 144 / r ^ 2 by ring]
   exact hB2.trans key
 
+set_option maxHeartbeats 1000000 in
+/-- **Tilt-excess decay at the origin at the natural scale `σ = δρ`** (Simon Ch. 5, proof of
+Theorem 4.5, steps (1)–(22)).  For `t ∈ (0, 1/128]` and `δ ≤ δ₁(t)`, to every `n`-plane `T` there
+corresponds an `n`-plane `S` with `E(0, tδρ, S) ≤ C t² E_*(0, δρ, T)`, `C = C(n, ℓ, p)`. -/
+theorem ted_decay_at_origin : TiltExcessHeightEstimate → AffineApproximationLemma → LipschitzApproximationLemma → HarmonicApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C : ℝ, 0 < C ∧ ∀ t : ℝ, 0 < t → t ≤ 1 / 128 → ∃ δ₁ : ℝ, 0 < δ₁ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ∃ S : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S = n ∧ V.tiltExcess 0 (t * (δ * ρ)) S ≤ C * t ^ 2 * V.tiltExcessStar H p δ 0 (δ * ρ) T := by
+  intro h21 h25 h26 h31 n ℓ hn p hp
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp0 : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg n) hp
+  have hp1 : 1 ≤ p := by linarith only [hn1, hp]
+  /- Elementary facts on Hilbert–Schmidt norms. -/
+  have hhs0 : ∀ {m k : ℕ} (A : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq A := fun A => by
+    unfold hsNormSq; positivity
+  have hsq2 : ∀ a b c : ℝ, 0 ≤ c → c ≤ a + b → c ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := by
+    intro a b c hc hcab
+    nlinarith [sq_nonneg (a - b)]
+  have hhs_sub : ∀ {m k : ℕ} (B A : Rn m →L[ℝ] Rn k),
+      hsNormSq (B - A) ≤ 2 * hsNormSq B + 2 * hsNormSq A := by
+    intro m k B A
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    gcongr with i
+    rw [sub_apply]
+    exact hsq2 _ _ _ (norm_nonneg _) (norm_sub_le _ _)
+  have hhsle : ∀ A : Rn n →L[ℝ] Rn ℓ, hsNormSq A ≤ n * ‖A‖ ^ 2 := fun A => by
+    unfold hsNormSq
+    calc ∑ i : Fin n, ‖A (EuclideanSpace.single i 1)‖ ^ 2 ≤ ∑ _i : Fin n, ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = n * ‖A‖ ^ 2 := by simp
+  /- Step 0: the constants; they depend only on `n, ℓ, p`.  As in the accepted natural proof:
+  `C_R` bounds tilt and height of the reduced plane (`C₂ = C₃ = C_R`), `C_P, δ_P` come from the
+  density bounds, `β₆, C₆` from 2.6, `C₂₁` from 2.1, `C_G` from the harmonic affine approximation and
+  `C_W` from the weak equation; `C₄, …, C₁₉` are the derived constants (up to harmless enlargement)
+  and `X` is the constant of the height-excess bound (20a). -/
+  obtain ⟨CR, hCR, hSTP⟩ := Submission.tdo_small_tilt_plane h25 n ℓ hn p hp
+  obtain ⟨CP, δP, hCP1, hδP, hδP8, hCPδP, hADB⟩ :=
+    Submission.ted_allard_density_bounds n ℓ hn p hp
+  obtain ⟨β6, C6, hβ6, -, hLAL⟩ := h26 n ℓ hn p hp
+  obtain ⟨C21, hTEH⟩ := h21 n hn
+  obtain ⟨CG, hCG, hHAA⟩ := Submission.ted_harmonic_affine_approx h31 n ℓ hn
+  obtain ⟨CW, hCW, hGWE⟩ :=
+    Submission.ted_graph_weak_equation n ℓ hn (max C6 1) (le_trans zero_le_one (le_max_right _ _))
+  clear h21 h25 h26 h31
+  have hCP : 0 < CP := lt_of_lt_of_le one_pos hCP1
+  set C6' : ℝ := max C6 1 with hC6'def
+  have hC6' : 0 < C6' := lt_of_lt_of_le one_pos (le_max_right _ _)
+  set C21' : ℝ := max C21 1 with hC21'def
+  have hC21' : 0 < C21' := lt_of_lt_of_le one_pos (le_max_right _ _)
+  set ω : ℝ := unitBallVolume n with hωdef
+  have hω : 0 < ω :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  set cω : ℝ := max 1 (2 * ω) with hcωdef
+  have hcω : 0 < cω := lt_of_lt_of_le one_pos (le_max_left _ _)
+  -- the scaling factor in the Hölder bounds for `H`
+  have hrpow : ∀ r s q : ℝ, 0 < r → r ≤ s → 0 < q → q ≤ p →
+      (2 * (ω * r ^ n)) ^ (1 - q / p) * s ^ (q * ((n : ℝ) - p) / p) ≤ cω * r ^ ((n : ℝ) - q) := by
+    intro r s q hr hrs hq hqp
+    have hs : 0 < s := hr.trans_le hrs
+    have ha0 : 0 ≤ 1 - q / p := by rw [sub_nonneg, div_le_one hp0]; exact hqp
+    have ha1 : 1 - q / p ≤ 1 := by linarith only [div_pos hq hp0]
+    have hb0 : 0 ≤ q - q * n / p := by
+      rw [sub_nonneg, mul_div_assoc]
+      exact mul_le_of_le_one_right hq.le ((div_le_one hp0).2 hp.le)
+    have e1 : (2 * (ω * r ^ n)) ^ (1 - q / p) =
+        (2 * ω) ^ (1 - q / p) * (r ^ ((n : ℝ) - q) * r ^ (q - q * n / p)) := by
+      rw [show 2 * (ω * r ^ n) = (2 * ω) * r ^ n by ring, Real.mul_rpow (by positivity)
+        (by positivity), ← Real.rpow_natCast r n, ← Real.rpow_mul hr.le, ← Real.rpow_add hr]
+      congr 2
+      field_simp
+      ring
+    have e2 : s ^ (q * ((n : ℝ) - p) / p) = (s ^ (q - q * n / p))⁻¹ := by
+      rw [← Real.rpow_neg hs.le]
+      congr 1
+      field_simp
+      ring
+    have hrs' : r ^ (q - q * n / p) / s ^ (q - q * n / p) ≤ 1 := by
+      rw [← Real.div_rpow hr.le hs.le]
+      exact Real.rpow_le_one (by positivity) (div_le_one_of_le₀ hrs hs.le) hb0
+    have h2ω : (2 * ω) ^ (1 - q / p) ≤ cω := by
+      rcases le_total (2 * ω) 1 with h | h
+      · exact (Real.rpow_le_one (by positivity) h ha0).trans (le_max_left _ _)
+      · calc (2 * ω) ^ (1 - q / p) ≤ (2 * ω) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le h ha1
+          _ = 2 * ω := Real.rpow_one _
+          _ ≤ cω := le_max_right _ _
+    rw [e1, e2]
+    calc (2 * ω) ^ (1 - q / p) * (r ^ ((n : ℝ) - q) * r ^ (q - q * n / p)) *
+          (s ^ (q - q * n / p))⁻¹
+        = (2 * ω) ^ (1 - q / p) * r ^ ((n : ℝ) - q) *
+            (r ^ (q - q * n / p) / s ^ (q - q * n / p)) := by ring
+      _ ≤ cω * r ^ ((n : ℝ) - q) * 1 := by gcongr
+      _ = cω * r ^ ((n : ℝ) - q) := mul_one _
+  clear_value cω ω
+  set C4 : ℝ := CR + 1 with hC4def
+  have hC4 : 0 < C4 := by positivity
+  set C9 : ℝ := 4 ^ n * CW with hC9def
+  have hC9 : 0 < C9 := by positivity
+  set C8 : ℝ := Real.sqrt C4 + cω + CP with hC8def
+  have hC8 : 0 < C8 := by positivity
+  set C11 : ℝ := CG * (CR + Real.sqrt C9 * Real.sqrt C4 / 4) with hC11def
+  have hC11 : 0 < C11 := by positivity
+  set C12 : ℝ := CG * Real.sqrt C9 with hC12def
+  have hC12 : 0 < C12 := by positivity
+  set C14 : ℝ := CR + C12 * Real.sqrt C4 + C11 with hC14def
+  have hC14 : 0 < C14 := by positivity
+  set X : ℝ := 4 * Real.sqrt 2 ^ n * CG * C9 + C14 ^ 2 * C6' with hXdef
+  have hX : 0 < X := by positivity
+  set C17 : ℝ := Real.sqrt (CG * C9) + Real.sqrt (CW + C12 ^ 2) with hC17def
+  have hC17 : 0 ≤ C17 := by positivity
+  set C18 : ℝ := 2 * C17 + 4 * C6' / ω with hC18def
+  have hC18 : 0 ≤ C18 := by positivity
+  set C19 : ℝ := C21' * (X + cω) + 288 * X + 2 * C18 * cω with hC19def
+  have hC19 : 0 < C19 := by positivity
+  clear_value C19 C18 C17 X C14 C12 C11 C8 C9 C4 C21' C6'
+  refine ⟨2 ^ n * 256 * C19, by positivity, fun t ht ht128 => ?_⟩
+  /- The choices depending on `t`: `η = 16 t`, `ε = η^{n+4}`, `δ_ε` and `δ₁`. -/
+  have h16t : 16 * t ≤ 1 / 8 := by linarith only [ht128]
+  set ε : ℝ := (16 * t) ^ (n + 4) with hεdef
+  have hε0 : 0 < ε := by positivity
+  have hε1 : ε < 1 := by
+    calc ε = (16 * t) ^ (n + 4) := rfl
+      _ ≤ (16 * t) ^ 1 :=
+        pow_le_pow_of_le_one (by positivity) (by linarith only [h16t]) (by omega)
+      _ < 1 := by rw [pow_one]; linarith only [h16t]
+  obtain ⟨δε, hδε, hHAAε⟩ := hHAA ε hε0 hε1
+  clear hHAA
+  set κ₀ : ℝ := min (1 / C4) (min (1 / (16 * CR)) (min (δε * Real.sqrt C9 / (4 ^ n * CW * C8))
+    (min (t / C11) (min (1 / (32 * C14)) (min ((16 * t) ^ 2 * (4 * t) ^ (n + 2))
+      (t * (16 * t) ^ 2)))))) with hκ₀def
+  have hκ₀ : 0 < κ₀ := by
+    simp only [hκ₀def, lt_min_iff]
+    exact ⟨by positivity, by positivity, by positivity, by positivity, by positivity,
+      by positivity, by positivity⟩
+  have hκ1 : κ₀ ≤ 1 / C4 := min_le_left _ _
+  have hκ2 : κ₀ ≤ 1 / (16 * CR) := (min_le_right _ _).trans (min_le_left _ _)
+  have hκ3 : κ₀ ≤ δε * Real.sqrt C9 / (4 ^ n * CW * C8) :=
+    (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hκ4 : κ₀ ≤ t / C11 :=
+    (min_le_right _ _).trans ((min_le_right _ _).trans ((min_le_right _ _).trans
+      (min_le_left _ _)))
+  have hκ5 : κ₀ ≤ 1 / (32 * C14) :=
+    (min_le_right _ _).trans ((min_le_right _ _).trans ((min_le_right _ _).trans
+      ((min_le_right _ _).trans (min_le_left _ _))))
+  have hκ6 : κ₀ ≤ (16 * t) ^ 2 * (4 * t) ^ (n + 2) :=
+    (min_le_right _ _).trans ((min_le_right _ _).trans ((min_le_right _ _).trans
+      ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _)))))
+  have hκ7 : κ₀ ≤ t * (16 * t) ^ 2 :=
+    (min_le_right _ _).trans ((min_le_right _ _).trans ((min_le_right _ _).trans
+      ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _)))))
+  clear_value κ₀
+  refine ⟨min δP (min (β6 ^ (2 * n + 2)) (κ₀ ^ (2 * n + 2))), by positivity, ?_⟩
+  intro U hU V H δ ρ hδ hδ₁ hAH T hT
+  /- Step 1: smallness of `δ`, the scale `σ = δρ`, the power `d = δ^γ` and the density bounds. -/
+  have hδP' : δ ≤ δP := hδ₁.trans (min_le_left _ _)
+  have hδβ : δ ≤ β6 ^ (2 * n + 2) := hδ₁.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hδκ : δ ≤ κ₀ ^ (2 * n + 2) := hδ₁.trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hδ8 : δ ≤ 1 / 8 := hδP'.trans hδP8
+  have hδ1 : δ ≤ 1 := by linarith only [hδ8]
+  have hCPδ : CP * δ ≤ 1 / 2 := (mul_le_mul_of_nonneg_left hδP' hCP.le).trans hCPδP
+  clear hδ₁ hCPδP hδP8
+  obtain ⟨hρ, hGMC, hθ1, h0spt, hBρU, -, hKρ⟩ := id hAH
+  set σ : ℝ := δ * ρ with hσdef
+  have hσ : 0 < σ := mul_pos hδ hρ
+  have hσρ : σ ≤ ρ / 8 := by
+    have := mul_le_mul_of_nonneg_right hδ8 hρ.le
+    rw [hσdef]; linarith only [this]
+  have h3σ : ∀ x : ℝ, x ≤ σ → x ≤ 3 * δ * ρ := fun x hx => by
+    have : 3 * δ * ρ = 3 * σ := by rw [hσdef]; ring
+    rw [this]; linarith only [hx, hσ]
+  have hBσU : closedBall (0 : Amb n ℓ) σ ⊆ U :=
+    (closedBall_subset_closedBall (by linarith only [hσρ, hρ])).trans hBρU
+  set γ : ℝ := 1 / (2 * (n : ℝ) + 2) with hγdef
+  have hγ0 : 0 < γ := by positivity
+  have hγ2 : γ * 2 ≤ 1 := by
+    rw [hγdef, div_mul_eq_mul_div, one_mul, div_le_one (by positivity)]
+    linarith only [hn1]
+  set d : ℝ := δ ^ γ with hddef
+  have hd0 : 0 < d := Real.rpow_pos_of_pos hδ γ
+  have hd1 : d ≤ 1 := Real.rpow_le_one hδ.le hδ1 hγ0.le
+  have hδd2 : δ ≤ d ^ 2 := by
+    rw [hddef, ← Real.rpow_mul_natCast hδ.le]
+    calc δ = δ ^ (1 : ℝ) := (Real.rpow_one δ).symm
+      _ ≤ δ ^ (γ * ((2 : ℕ) : ℝ)) :=
+        Real.rpow_le_rpow_of_exponent_ge hδ hδ1 (by push_cast; linarith only [hγ2])
+  have hd2d : d ^ 2 ≤ d := by rw [sq]; exact mul_le_of_le_one_right hd0.le hd1
+  have hδd : δ ≤ d := hδd2.trans hd2d
+  have hsδ : Real.sqrt δ ≤ d := by
+    rw [Real.sqrt_eq_rpow, hddef]
+    exact Real.rpow_le_rpow_of_exponent_ge hδ hδ1 (by linarith only [hγ2])
+  have hdκ : d ≤ κ₀ := by
+    calc d = δ ^ γ := rfl
+      _ ≤ (κ₀ ^ (2 * n + 2)) ^ γ := Real.rpow_le_rpow hδ.le hδκ hγ0.le
+      _ = κ₀ := by
+        rw [show γ = ((2 * n + 2 : ℕ) : ℝ)⁻¹ by rw [hγdef]; push_cast; ring]
+        exact Real.pow_rpow_inv_natCast hκ₀.le (by omega)
+  have hdC4 : C4 * d ^ 2 ≤ 1 := by
+    calc C4 * d ^ 2 ≤ C4 * d := by gcongr
+      _ ≤ C4 * (1 / C4) := by gcongr; exact hdκ.trans hκ1
+      _ = 1 := by field_simp
+  have hdCR : CR * d ≤ 1 / 16 := by
+    calc CR * d ≤ CR * (1 / (16 * CR)) := by gcongr; exact hdκ.trans hκ2
+      _ = 1 / 16 := by field_simp
+  have hdtest : CW * C8 * d * 4 ^ n ≤ δε * Real.sqrt C9 := by
+    calc CW * C8 * d * 4 ^ n = (4 ^ n * CW * C8) * d := by ring
+      _ ≤ (4 ^ n * CW * C8) * (δε * Real.sqrt C9 / (4 ^ n * CW * C8)) := by
+          gcongr; exact hdκ.trans hκ3
+      _ = δε * Real.sqrt C9 := by field_simp
+  have hdC11 : C11 * d ≤ t := by
+    calc C11 * d ≤ C11 * (t / C11) := by gcongr; exact hdκ.trans hκ4
+      _ = t := by field_simp
+  have hdC14 : C14 * d ≤ 1 / 32 := by
+    calc C14 * d ≤ C14 * (1 / (32 * C14)) := by gcongr; exact hdκ.trans hκ5
+      _ = 1 / 32 := by field_simp
+  have hdY : d ^ 2 ≤ (16 * t) ^ 2 * (4 * t) ^ (n + 2) := hd2d.trans (hdκ.trans hκ6)
+  have hδt : δ ≤ (16 * t) ^ 2 :=
+    hδd.trans (hdκ.trans (hκ7.trans
+      (mul_le_of_le_one_left (by positivity) (by linarith only [ht128]))))
+  have hsδt : Real.sqrt δ ≤ t * (16 * t) ^ 2 := hsδ.trans (hdκ.trans hκ7)
+  clear hdκ hδκ hκ1 hκ2 hκ3 hκ4 hκ5 hκ6 hκ7 hκ₀ hκ₀def κ₀ hγ0 hγ2
+  obtain ⟨hUp, hLow, hMult, hCarr⟩ := hADB U hU V H δ ρ hδ hδP' hAH
+  clear hADB
+  have hUp2 : ∀ y : Amb n ℓ, ‖y‖ ≤ σ → ∀ s : ℝ, 0 < s → s ≤ σ →
+      V.weight (closedBall y s) ≤ ENNReal.ofReal (2 * (ω * s ^ n)) := by
+    intro y hy s hs hsσ
+    refine (hUp y (h3σ _ hy) s hs (by linarith only [hsσ, hσρ, hρ])).trans
+      (ENNReal.ofReal_le_ofReal ?_)
+    exact mul_le_mul_of_nonneg_right (by linarith only [hCPδ]) (by positivity)
+  have hLow2 : ∀ y ∈ V.support, ‖y‖ ≤ σ → ∀ s : ℝ, 0 < s → s ≤ σ →
+      ENNReal.ofReal ((1 - CP * δ) * (ω * s ^ n)) ≤ V.weight (closedBall y s) :=
+    fun y hy hyσ s hs hsσ => hLow y hy (h3σ _ hyσ) s hs (by linarith only [hsσ, hσρ, hρ])
+  have hMult2 : ∀ᵐ x ∂V.weight, ‖x‖ ≤ σ → V.mult x ≤ 1 + CP * δ := by
+    filter_upwards [hMult] with x hx hxσ
+    exact hx (h3σ _ hxσ)
+  clear hUp hLow hMult
+  /- Step 2: reduction to a plane `T'` of small tilt and height (book (1), (2)). -/
+  have hTPF := Submission.ted_tangent_plane_facts n ℓ hn U hU V
+  have hmeas : AEStronglyMeasurable V.tangentProj V.weight := hTPF.2.2.1
+  have hlow0 : ENNReal.ofReal (ω * σ ^ n / 2) ≤ V.weight (closedBall 0 σ) := by
+    refine le_trans (ENNReal.ofReal_le_ofReal ?_)
+      (hLow2 0 h0spt (by rw [norm_zero]; exact hσ.le) σ hσ le_rfl)
+    calc ω * σ ^ n / 2 = (1 / 2) * (ω * σ ^ n) := by ring
+      _ ≤ (1 - CP * δ) * (ω * σ ^ n) :=
+        mul_le_mul_of_nonneg_right (by linarith only [hCPδ]) (by positivity)
+  obtain ⟨T', hT'n, hT'star, hT'E, hT'h⟩ :=
+    hSTP U hU V H δ ρ hδ (by linarith only [hδ8]) hAH hmeas hlow0 T hT
+  have hT'star' : V.tiltExcessStar H p δ 0 σ T' ≤ V.tiltExcessStar H p δ 0 σ T := hT'star
+  have hT'E' : V.tiltExcess 0 σ T' ≤ CR * d ^ 2 := hT'E
+  have hT'h' : ∀ x ∈ V.support ∩ closedBall 0 (2 * σ),
+      infDist x (T' : Set (Amb n ℓ)) ≤ CR * d * σ := hT'h
+  clear hSTP hT'star hT'E hlow0
+  -- the curvature term at scale `σ`: `K(0, σ) ≤ δ`
+  have hK : V.scaledLpNorm H p 0 σ ≤ ENNReal.ofReal δ := by
+    refine (Submission.tdo_scaledLpNorm_bounds.1 n ℓ U V H p 0 0 σ ρ hp0 hσ
+      (by linarith only [hσρ, hρ]) (closedBall_subset_closedBall (by linarith only [hσρ, hρ]))).trans ?_
+    calc ENNReal.ofReal ((σ / ρ) ^ ((p - n) / p)) * V.scaledLpNorm H p 0 ρ
+        ≤ ENNReal.ofReal 1 * ENNReal.ofReal δ := by
+          refine mul_le_mul' (ENNReal.ofReal_le_ofReal (Real.rpow_le_one (by positivity) ?_
+            (div_nonneg (sub_nonneg.2 hp.le) hp0.le))) hKρ
+          rw [div_le_one hρ]; linarith only [hσρ, hρ]
+      _ = ENNReal.ofReal δ := by rw [ENNReal.ofReal_one, one_mul]
+  set k : ℝ := (V.scaledLpNorm H p 0 σ).toReal with hkdef
+  have hk0 : 0 ≤ k := ENNReal.toReal_nonneg
+  have hkδ : k ≤ δ := ENNReal.toReal_le_of_le_ofReal hδ.le hK
+  have hKk : V.scaledLpNorm H p 0 σ ≤ ENNReal.ofReal k := by
+    rw [hkdef, ENNReal.ofReal_toReal (ne_top_of_le_ne_top ENNReal.ofReal_ne_top hK)]
+  -- the excess `E₀ = E_*(0, σ, T')`
+  set E0 : ℝ := V.tiltExcessStar H p δ 0 σ T' with hE0def
+  have hE0eq : E0 = max (V.tiltExcess 0 σ T') (δ⁻¹ * k ^ 2) := rfl
+  clear_value E0 k
+  have hE0a : V.tiltExcess 0 σ T' ≤ E0 := by rw [hE0eq]; exact le_max_left _ _
+  have hE0b : δ⁻¹ * k ^ 2 ≤ E0 := by rw [hE0eq]; exact le_max_right _ _
+  have hE0nn : 0 ≤ E0 := le_trans (by positivity) hE0b
+  have hE0C4 : E0 ≤ C4 * d ^ 2 := by
+    rw [hE0eq]
+    refine max_le (hT'E'.trans (mul_le_mul_of_nonneg_right
+      (by rw [hC4def]; linarith only) (sq_nonneg d))) ?_
+    calc δ⁻¹ * k ^ 2 ≤ δ⁻¹ * δ ^ 2 := by gcongr
+      _ = δ := by field_simp
+      _ ≤ d ^ 2 := hδd2
+      _ ≤ C4 * d ^ 2 := le_mul_of_one_le_left (sq_nonneg d) (by rw [hC4def]; linarith only [hCR])
+  have hE01 : E0 ≤ 1 := hE0C4.trans hdC4
+  have hk2 : k ^ 2 ≤ δ * E0 := by
+    have := mul_le_mul_of_nonneg_left hE0b hδ.le
+    rwa [← mul_assoc, mul_inv_cancel₀ hδ.ne', one_mul] at this
+  have hksq : k ≤ Real.sqrt δ * Real.sqrt E0 := by
+    rw [← Real.sqrt_mul hδ.le]
+    exact (Real.le_sqrt hk0 (by positivity)).2 hk2
+  have hsE0 : Real.sqrt E0 ≤ Real.sqrt C4 * d := by
+    calc Real.sqrt E0 ≤ Real.sqrt (C4 * d ^ 2) := Real.sqrt_le_sqrt hE0C4
+      _ = Real.sqrt C4 * d := by rw [Real.sqrt_mul hC4.le, Real.sqrt_sq hd0.le]
+  have hstarT : 0 ≤ V.tiltExcessStar H p δ 0 σ T := le_max_of_le_right (by positivity)
+  -- the trivial case `E₀ = 0`
+  rcases hE0nn.eq_or_lt with hE0z | hE0pos
+  · refine ⟨T', hT'n, ?_⟩
+    have htσ : t * σ ≤ σ := mul_le_of_le_one_left hσ.le (by linarith only [ht128])
+    have h1 := Submission.tdo_tiltExcess_le_of_subset n ℓ U V hmeas 0 0 (t * σ) σ T'
+      (by positivity) htσ (closedBall_subset_closedBall htσ) hBσU
+    calc V.tiltExcess 0 (t * σ) T' ≤ (σ / (t * σ)) ^ n * V.tiltExcess 0 σ T' := h1
+      _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (by positivity) (le_of_le_of_eq hE0a hE0z.symm)
+      _ ≤ 2 ^ n * 256 * C19 * t ^ 2 * V.tiltExcessStar H p δ 0 σ T := by positivity
+  /- Step 2 (end): a rotation `q` with `q(ℝⁿ × {0}) = T'`. -/
+  obtain ⟨q, hq⟩ := Submission.tdo_exists_isometry_rotatedPlane n ℓ T' hT'n
+  /- Step 3: Lipschitz approximation (Simon 2.6 with `L = 1`, book (3), (4)). -/
+  obtain ⟨f, hfLip0, hfsup0, hbad0⟩ := hLAL 1 CR one_pos le_rfl hCR.le U hU V H δ ρ hδ
+    (by rw [mul_one]; exact hδβ) hAH q (by rw [hq]; exact hT'h)
+  have hfLip : LipschitzOnWith 1 f (closedBall 0 (σ / 2)) := by
+    simpa only [Real.toNNReal_one] using hfLip0
+  have hfsup : ∀ x ∈ closedBall (0 : Rn n) (σ / 2), ‖f x‖ ≤ CR * d * σ := hfsup0
+  clear hLAL hfLip0 hfsup0 hT'h hδβ
+  clear_value d
+  clear_value γ
+  have hJ0 : 0 ≤ ∫ x in closedBall 0 σ,
+      hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight :=
+    integral_nonneg fun x => hhs0 _
+  have hJ : ∫ x in closedBall 0 σ,
+      hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ E0 * σ ^ n := by
+    have h := hE0a
+    rw [← hq] at h
+    unfold RectifiableVarifold.tiltExcess at h
+    rw [inv_mul_le_iff₀ (by positivity)] at h
+    exact h.trans_eq (mul_comm _ _)
+  have hbad : V.weight (closedBall 0 (σ / 2) ∩ (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))) +
+      (μHE[n] : Measure (Amb n ℓ))
+        (closedBall 0 (σ / 2) ∩ (q '' graphOver f (closedBall 0 (σ / 2)) \ V.support)) ≤
+      ENNReal.ofReal (C6' * E0 * σ ^ n) := by
+    refine hbad0.trans (ENNReal.ofReal_le_ofReal ?_)
+    rw [one_pow, inv_one, mul_one]
+    calc C6 * ∫ x in closedBall 0 σ,
+          hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight
+        ≤ C6' * ∫ x in closedBall 0 σ,
+          hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight :=
+          mul_le_mul_of_nonneg_right (by rw [hC6'def]; exact le_max_left _ _) hJ0
+      _ ≤ C6' * (E0 * σ ^ n) := mul_le_mul_of_nonneg_left hJ hC6'.le
+      _ = C6' * E0 * σ ^ n := by ring
+  clear hbad0 hJ0
+  clear_value σ
+  /- Step 4: the weak equation for `f` (book (15), (16)). -/
+  have hgraph := hTPF.2.2.2.2 q f (σ / 2) 1 hfLip
+  have hmult : ∀ᵐ x ∂V.weight, x ∈ closedBall 0 σ → 1 ≤ V.mult x ∧ V.mult x ≤ 1 + CP * δ := by
+    filter_upwards [hθ1, hMult2] with x h1 h2 hx
+    exact ⟨h1, h2 (mem_closedBall_zero_iff.1 hx)⟩
+  have hcarr : (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ closedBall 0 σ) \ V.carrier) = 0 :=
+    measure_mono_null (sdiff_subset_sdiff_left (inter_subset_inter_right _
+      (closedBall_subset_ball (by linarith only [hσρ, hρ])))) hCarr
+  -- Hölder for `|H|` on balls inside `B_σ(0)`
+  have hHol1 : ∀ (z : Amb n ℓ) (s m : ℝ), 0 ≤ m → closedBall z s ⊆ closedBall 0 σ →
+      V.weight (closedBall z s) ≤ ENNReal.ofReal m →
+      ∫ x in closedBall z s, ‖H x‖ ∂V.weight ≤
+        m ^ (1 - 1 / p) * σ ^ (1 * ((n : ℝ) - p) / p) * k := by
+    intro z s m hm hsub hμ
+    have hb := Submission.tdo_scaledLpNorm_bounds.2 n ℓ U V H p 1 z 0 s σ m one_pos hp1 hσ hm
+      hsub hμ
+    simp only [ENNReal.rpow_one] at hb
+    have ha : 0 ≤ m ^ (1 - 1 / p) * σ ^ (1 * ((n : ℝ) - p) / p) := by positivity
+    have hlin : ∫⁻ x in closedBall z s, ‖H x‖ₑ ∂V.weight ≤
+        ENNReal.ofReal (m ^ (1 - 1 / p) * σ ^ (1 * ((n : ℝ) - p) / p) * k) := by
+      rw [ENNReal.ofReal_mul ha]
+      exact hb.trans (by gcongr)
+    by_cases hm' : AEStronglyMeasurable (fun x => ‖H x‖) (V.weight.restrict (closedBall z s))
+    · rw [integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun x => norm_nonneg _) hm']
+      simp_rw [ofReal_norm]
+      exact ENNReal.toReal_le_of_le_ofReal (by positivity) hlin
+    · rw [integral_non_aestronglyMeasurable hm']
+      positivity
+  have hHσ : ∫ x in closedBall 0 (σ / 2), ‖H x‖ ∂V.weight ≤ cω * k * σ ^ (n - 1) := by
+    have h1 := hHol1 0 (σ / 2) (2 * (ω * σ ^ n)) (by positivity)
+      (closedBall_subset_closedBall (by linarith only [hσ]))
+      ((measure_mono (closedBall_subset_closedBall (by linarith only [hσ]))).trans
+        (hUp2 0 (by rw [norm_zero]; exact hσ.le) σ hσ le_rfl))
+    have h2 := hrpow σ σ 1 hσ le_rfl one_pos hp1
+    have h3 : σ ^ ((n : ℝ) - 1) = σ ^ (n - 1) := by
+      rw [← Real.rpow_natCast, Nat.cast_sub hn, Nat.cast_one]
+    calc ∫ x in closedBall 0 (σ / 2), ‖H x‖ ∂V.weight
+        ≤ (2 * (ω * σ ^ n)) ^ (1 - 1 / p) * σ ^ (1 * ((n : ℝ) - p) / p) * k := h1
+      _ ≤ cω * σ ^ ((n : ℝ) - 1) * k := mul_le_mul_of_nonneg_right h2 hk0
+      _ = cω * k * σ ^ (n - 1) := by rw [h3]; ring
+  have hfσ16 : ∀ x ∈ closedBall (0 : Rn n) (σ / 2), ‖f x‖ ≤ σ / 16 := fun x hx =>
+    (hfsup x hx).trans (by have := mul_le_mul_of_nonneg_right hdCR hσ.le; linarith only [this])
+  have hdistσ16 : ∀ x ∈ V.support ∩ closedBall 0 σ,
+      infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16 := by
+    intro x hx
+    rw [hq]
+    refine (hT'h' x ⟨hx.1, closedBall_subset_closedBall (by linarith only [hσ]) hx.2⟩).trans ?_
+    have := mul_le_mul_of_nonneg_right hdCR hσ.le
+    linarith only [this]
+  obtain ⟨h16, h15⟩ := hGWE U hU V H hGMC hmeas σ hσ hBσU q f hfLip hfσ16 hdistσ16 hgraph
+    (CP * δ) E0 (cω * k) (by positivity) (by linarith only [hCPδ]) hE0nn (by positivity) hmult
+    hcarr hJ hbad hHσ
+  clear hGWE hgraph hmult hcarr hJ hHσ hfσ16 hdistσ16
+  /- Step 5: harmonic and affine approximation (book (17)–(19)). -/
+  have hint38 : IntegrableOn (fun x => hsNormSq (fderiv ℝ f x)) (ball (0 : Rn n) (3 * σ / 8)) := by
+    have hcont : Continuous (fun A : Rn n →L[ℝ] Rn ℓ => hsNormSq A) :=
+      continuous_finsetSum _ (fun i _ => (continuous_id.clm_apply continuous_const).norm.pow 2)
+    have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) (3 * σ / 8))) :=
+      isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+    refine Integrable.of_bound (hcont.measurable.comp (measurable_fderiv ℝ f)).aestronglyMeasurable
+      (n * 1 ^ 2) ((ae_restrict_iff' measurableSet_ball).2 (Filter.Eventually.of_forall
+        (fun x hx => ?_)))
+    rw [Real.norm_eq_abs, abs_of_nonneg (hhs0 _)]
+    have hx' : x ∈ ball (0 : Rn n) (σ / 2) := ball_subset_ball (by linarith only [hσ]) hx
+    have hD : ‖fderiv ℝ f x‖ ≤ 1 := by
+      simpa using norm_fderiv_le_of_lipschitzOn ℝ (closedBall_mem_nhds_of_mem hx') hfLip
+    calc hsNormSq (fderiv ℝ f x) ≤ n * ‖fderiv ℝ f x‖ ^ 2 := hhsle _
+      _ ≤ n * 1 ^ 2 := by gcongr
+  have hDf : ∀ s : ℝ, s ≤ 3 * σ / 8 →
+      ∫ x in ball (0 : Rn n) s, hsNormSq (fderiv ℝ f x) ≤ CW * E0 * σ ^ n := fun s hs =>
+    (setIntegral_mono_set hint38 (ae_of_all _ fun x => hhs0 _)
+      (ae_of_all _ (ball_subset_ball hs))).trans h16
+  have htest : ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ,
+      |∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)| ≤
+        δε * Real.sqrt (C9 * E0) * M * (σ / 4) ^ n := by
+    intro ζ hζ hζc hζs M hM j
+    have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+    refine (h15 ζ (hζ.of_le (by exact_mod_cast le_top)) hζc hζs M hM j).trans ?_
+    have hb1 : E0 ≤ Real.sqrt C4 * d * Real.sqrt E0 := by
+      calc E0 = Real.sqrt E0 * Real.sqrt E0 := (Real.mul_self_sqrt hE0nn).symm
+        _ ≤ Real.sqrt C4 * d * Real.sqrt E0 := by gcongr
+    have hb2 : cω * k ≤ cω * d * Real.sqrt E0 := by
+      calc cω * k ≤ cω * (Real.sqrt δ * Real.sqrt E0) := by gcongr
+        _ ≤ cω * (d * Real.sqrt E0) := by gcongr
+        _ = cω * d * Real.sqrt E0 := by ring
+    have hb3 : CP * δ * Real.sqrt E0 ≤ CP * d * Real.sqrt E0 := by gcongr
+    have hsum : E0 + cω * k + CP * δ * Real.sqrt E0 ≤ C8 * d * Real.sqrt E0 := by
+      rw [hC8def]; linarith only [hb1, hb2, hb3]
+    calc CW * (E0 + cω * k + CP * δ * Real.sqrt E0) * M * σ ^ n
+        ≤ CW * (C8 * d * Real.sqrt E0) * M * σ ^ n := by gcongr
+      _ = (CW * C8 * d * 4 ^ n) * Real.sqrt E0 * M * (σ / 4) ^ n := by
+          rw [div_pow]; field_simp
+      _ ≤ (δε * Real.sqrt C9) * Real.sqrt E0 * M * (σ / 4) ^ n := by gcongr
+      _ = δε * Real.sqrt (C9 * E0) * M * (σ / 4) ^ n := by rw [Real.sqrt_mul hC9.le]; ring
+  have hDfσ4 : ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x) ≤
+      C9 * E0 * (σ / 4) ^ n := by
+    refine (hDf (σ / 4) (by linarith only [hσ])).trans (le_of_eq ?_)
+    rw [hC9def, div_pow]; field_simp
+  obtain ⟨c, A, hA, hc, h19⟩ := hHAAε (σ / 4) (C9 * E0) (CR * d * σ) f 1 (by positivity)
+    (by positivity) (by positivity) (hfLip.mono (closedBall_subset_closedBall
+      (by linarith only [hσ])))
+    (fun x hx => hfsup x (closedBall_subset_closedBall (by linarith only [hσ])
+      (ball_subset_closedBall hx)))
+    hDfσ4 htest
+  clear hHAAε htest hDfσ4 h15 h16
+  have hAnn : 0 ≤ hsNorm A := Real.sqrt_nonneg _
+  have hA' : hsNorm A ≤ C12 * Real.sqrt E0 := by
+    rw [hC12def, mul_assoc, ← Real.sqrt_mul hC9.le]; exact hA
+  have hc' : ‖c‖ ≤ C11 * d * σ := by
+    refine hc.trans ?_
+    have h1 : Real.sqrt (ε * (C9 * E0)) ≤ Real.sqrt C9 * (Real.sqrt C4 * d) := by
+      calc Real.sqrt (ε * (C9 * E0)) ≤ Real.sqrt (C9 * E0) :=
+            Real.sqrt_le_sqrt (mul_le_of_le_one_left (by positivity) hε1.le)
+        _ = Real.sqrt C9 * Real.sqrt E0 := Real.sqrt_mul hC9.le _
+        _ ≤ Real.sqrt C9 * (Real.sqrt C4 * d) := by gcongr
+    calc CG * (CR * d * σ + σ / 4 * Real.sqrt (ε * (C9 * E0)))
+        ≤ CG * (CR * d * σ + σ / 4 * (Real.sqrt C9 * (Real.sqrt C4 * d))) := by gcongr
+      _ = C11 * d * σ := by rw [hC11def]; ring
+  have hcτ : ‖c‖ ≤ t * σ :=
+    hc'.trans (by have := mul_le_mul_of_nonneg_right hdC11 hσ.le; linarith only [this])
+  /- Step 6: tilt from height (book (20)). -/
+  obtain ⟨hSdim, hSdist, -, -, hτnorm⟩ := Submission.tdo_graph_plane_dist n ℓ q A
+  set S : Submodule ℝ (Amb n ℓ) :=
+    Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) with hSdef
+  set τ : Amb n ℓ := q (graphPoint (0 : Rn n) c) with hτdef
+  have hτc : ‖τ‖ = ‖c‖ := hτnorm c
+  have htσ : t * σ ≤ σ / 128 := by
+    have := mul_le_mul_of_nonneg_right ht128 hσ.le; linarith only [this]
+  have hτ : ‖τ‖ ≤ t * σ := hτc.trans_le hcτ
+  set r : ℝ := 16 * t * (σ / 4) with hrdef
+  have hr : 0 < r := by positivity
+  have hrσ : r ≤ σ / 32 := by rw [hrdef]; linarith only [htσ]
+  have hBτr : closedBall τ r ⊆ closedBall 0 (σ / 2) :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith only [hrσ, hτ, htσ, hσ])
+  have hBτσ : closedBall τ r ⊆ closedBall 0 σ :=
+    hBτr.trans (closedBall_subset_closedBall (by linarith only [hσ]))
+  have hBσ2U : closedBall (0 : Amb n ℓ) (σ / 2) ⊆ U :=
+    (closedBall_subset_closedBall (by linarith only [hσ])).trans hBσU
+  have hBτrU : closedBall τ r ⊆ U := hBτσ.trans hBσU
+  have hμτ : V.weight (closedBall τ r) ≤ ENNReal.ofReal (2 * (ω * r ^ n)) :=
+    hUp2 τ (by linarith only [hτ, htσ, hσ]) r hr (by linarith only [hrσ, hσ])
+  -- heights of `spt V` near `τ` over the plane `S`
+  have hheight : ∀ x ∈ V.support ∩ closedBall τ r,
+      infDist (x - τ) (S : Set (Amb n ℓ)) ≤ C14 * d * σ := by
+    intro x hx
+    have hxσ : ‖x‖ ≤ σ := mem_closedBall_zero_iff.1 (hBτσ hx.2)
+    have h1 : infDist (x - τ) (S : Set (Amb n ℓ)) ≤ infDist x (S : Set (Amb n ℓ)) + ‖τ‖ := by
+      have := infDist_le_infDist_add_dist (s := (S : Set (Amb n ℓ))) (x := x - τ) (y := x)
+      rwa [dist_eq_norm, sub_sub_cancel_left, norm_neg] at this
+    have h2 := hSdist x
+    rw [hq] at h2
+    have h3 := hT'h' x ⟨hx.1, mem_closedBall_zero_iff.2 (by linarith only [hxσ, hσ])⟩
+    have h4 : hsNorm A * ‖x‖ ≤ C12 * (Real.sqrt C4 * d) * σ :=
+      mul_le_mul (hA'.trans (by gcongr)) hxσ (norm_nonneg _) (by positivity)
+    calc infDist (x - τ) (S : Set (Amb n ℓ))
+        ≤ CR * d * σ + C12 * (Real.sqrt C4 * d) * σ + C11 * d * σ := by
+          linarith only [h1, h2, h3, h4, hτc, hc']
+      _ = C14 * d * σ := by rw [hC14def]; ring
+  -- the height excess near `τ` (book (20a))
+  have hmult2 : ∀ᵐ x ∂V.weight, x ∈ closedBall τ r → V.mult x ≤ 2 := by
+    filter_upwards [hMult2] with x hx hxB
+    have := hx (mem_closedBall_zero_iff.1 (hBτσ hxB))
+    linarith only [this, hCPδ]
+  have hbad1 : V.weight (closedBall 0 (σ / 2) ∩
+      (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))) ≤ ENNReal.ofReal (C6' * E0 * σ ^ n) :=
+    le_trans le_self_add hbad
+  set Q : ℝ := ∫ x in closedBall τ r, infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2 ∂V.weight with hQdef
+  have hQ0 : 0 ≤ Q := integral_nonneg fun x => sq_nonneg _
+  have hGHE : Q ≤ 2 * Real.sqrt 2 ^ n * (∫ x in ball (0 : Rn n) r, ‖f x - (c + A x)‖ ^ 2) +
+      (C14 * d * σ) ^ 2 * (C6' * E0 * σ ^ n) :=
+    Submission.tdo_graph_height_excess n ℓ U V q f c A (σ / 2) r (C14 * d * σ) (C6' * E0 * σ ^ n)
+      hr (by linarith only [hrσ, hσ]) hBσ2U hfLip hBτr (by positivity) hmult2 hheight hbad1
+  clear_value Q
+  have h19e : ∫ x in ball (0 : Rn n) r, ‖f x - (c + A x)‖ ^ 2 ≤
+      CG * (ε + ε) * (C9 * E0) * (σ / 4) ^ (n + 2) :=
+    h19 (16 * t) (by positivity) (by linarith only [h16t])
+  clear_value r ε
+  have ha : (16 * t) ^ (n + 4) * (σ / 4) ^ (n + 2) = (16 * t) ^ 2 * r ^ (n + 2) := by
+    calc (16 * t) ^ (n + 4) * (σ / 4) ^ (n + 2)
+        = (16 * t) ^ 2 * ((16 * t) ^ (n + 2) * (σ / 4) ^ (n + 2)) := by ring
+      _ = (16 * t) ^ 2 * r ^ (n + 2) := by rw [hrdef, ← mul_pow]
+  have hb : (4 * t) ^ (n + 2) * σ ^ (n + 2) = r ^ (n + 2) := by
+    rw [← mul_pow, hrdef]; congr 1; ring
+  have h20a : Q ≤ X * (16 * t) ^ 2 * E0 * r ^ (n + 2) := by
+    calc Q ≤ 2 * Real.sqrt 2 ^ n * (∫ x in ball (0 : Rn n) r, ‖f x - (c + A x)‖ ^ 2) +
+          (C14 * d * σ) ^ 2 * (C6' * E0 * σ ^ n) := hGHE
+      _ ≤ 2 * Real.sqrt 2 ^ n * (CG * (ε + ε) * (C9 * E0) * (σ / 4) ^ (n + 2)) +
+          (C14 * d * σ) ^ 2 * (C6' * E0 * σ ^ n) := by gcongr
+      _ = 4 * Real.sqrt 2 ^ n * CG * C9 * (16 * t) ^ 2 * E0 * r ^ (n + 2) +
+          C14 ^ 2 * C6' * d ^ 2 * E0 * σ ^ (n + 2) := by
+          rw [hεdef]; linear_combination (4 * Real.sqrt 2 ^ n * CG * C9 * E0) * ha
+      _ ≤ 4 * Real.sqrt 2 ^ n * CG * C9 * (16 * t) ^ 2 * E0 * r ^ (n + 2) +
+          C14 ^ 2 * C6' * ((16 * t) ^ 2 * (4 * t) ^ (n + 2)) * E0 * σ ^ (n + 2) := by gcongr
+      _ = X * (16 * t) ^ 2 * E0 * r ^ (n + 2) := by
+          rw [hXdef]; linear_combination (C14 ^ 2 * C6' * (16 * t) ^ 2 * E0) * hb
+  /- The tilt bound (book (20)) in the two curvature regimes. -/
+  have h20 : V.tiltExcess τ (r / 2) S ≤ C19 * (16 * t) ^ 2 * E0 := by
+    rcases le_or_gt 2 p with hp2 | hp2
+    · -- Case `p ≥ 2`: Simon 2.1 at `(τ, r, S)` with the `L²` Hölder bound for `H`.
+      have h21i := hTEH ℓ U hU V H hGMC τ r hr hBτrU S hSdim
+      set Y : ℝ := (2 * (ω * r ^ n)) ^ (1 - 2 / p) * σ ^ (2 * ((n : ℝ) - p) / p) * k ^ 2
+        with hYdef
+      have hY0 : 0 ≤ Y := by positivity
+      clear_value Y
+      have hHs : ∫⁻ x in closedBall τ r, ‖H x‖ₑ ^ 2 ∂V.weight ≤ ENNReal.ofReal Y := by
+        have hb2 := Submission.tdo_scaledLpNorm_bounds.2 n ℓ U V H p 2 τ 0 r σ (2 * (ω * r ^ n))
+          two_pos hp2 hσ (by positivity) hBτσ hμτ
+        simp only [ENNReal.rpow_two] at hb2
+        rw [hYdef, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow hk0]
+        exact hb2.trans (by gcongr)
+      have hdiv : ∫ x in closedBall τ r, (infDist (x - τ) (S : Set (Amb n ℓ)) / r) ^ 2 ∂V.weight =
+          Q / r ^ 2 := by
+        rw [hQdef]; simp_rw [div_pow]; exact integral_div _ _
+      have hC21le : C21 ≤ C21' := by rw [hC21'def]; exact le_max_left _ _
+      have ha0 : 0 ≤ C21' * (r ^ n)⁻¹ * (Q / r ^ 2) := by positivity
+      have hb0 : 0 ≤ C21' * r ^ ((2 : ℝ) - n) * Y := by positivity
+      have hE : V.tiltExcess τ (r / 2) S ≤
+          C21' * (r ^ n)⁻¹ * (Q / r ^ 2) + C21' * r ^ ((2 : ℝ) - n) * Y := by
+        rw [← ENNReal.ofReal_le_ofReal_iff (add_nonneg ha0 hb0), ENNReal.ofReal_add ha0 hb0,
+          ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ C21' * r ^ ((2 : ℝ) - n))]
+        refine h21i.trans (add_le_add ?_ ?_)
+        · rw [hdiv]
+          exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hC21le (by positivity)) (by positivity))
+        · exact mul_le_mul' (ENNReal.ofReal_le_ofReal
+            (mul_le_mul_of_nonneg_right hC21le (by positivity))) hHs
+      have hQr : (r ^ n)⁻¹ * (Q / r ^ 2) ≤ X * (16 * t) ^ 2 * E0 := by
+        rw [show (r ^ n)⁻¹ * (Q / r ^ 2) = Q / r ^ (n + 2) by rw [pow_add]; field_simp,
+          div_le_iff₀ (by positivity)]
+        exact h20a
+      have hrr : r ^ ((2 : ℝ) - n) * r ^ ((n : ℝ) - 2) = 1 := by
+        rw [← Real.rpow_add hr, show (2 : ℝ) - n + (n - 2) = 0 by ring, Real.rpow_zero]
+      have hYb : r ^ ((2 : ℝ) - n) * Y ≤ cω * (δ * E0) := by
+        have h1 := hrpow r σ 2 hr (by linarith only [hrσ, hσ]) two_pos hp2
+        calc r ^ ((2 : ℝ) - n) * Y ≤ r ^ ((2 : ℝ) - n) * (cω * r ^ ((n : ℝ) - 2) * k ^ 2) := by
+              rw [hYdef]; gcongr
+          _ = cω * k ^ 2 * (r ^ ((2 : ℝ) - n) * r ^ ((n : ℝ) - 2)) := by ring
+          _ = cω * k ^ 2 := by rw [hrr, mul_one]
+          _ ≤ cω * (δ * E0) := by gcongr
+      calc V.tiltExcess τ (r / 2) S
+          ≤ C21' * (r ^ n)⁻¹ * (Q / r ^ 2) + C21' * r ^ ((2 : ℝ) - n) * Y := hE
+        _ = C21' * ((r ^ n)⁻¹ * (Q / r ^ 2)) + C21' * (r ^ ((2 : ℝ) - n) * Y) := by ring
+        _ ≤ C21' * (X * (16 * t) ^ 2 * E0) + C21' * (cω * (δ * E0)) := by gcongr
+        _ ≤ C21' * (X * (16 * t) ^ 2 * E0) + C21' * (cω * ((16 * t) ^ 2 * E0)) := by gcongr
+        _ = C21' * (X + cω) * (16 * t) ^ 2 * E0 := by ring
+        _ ≤ C19 * (16 * t) ^ 2 * E0 := by
+            gcongr
+            rw [hC19def]
+            have : 0 ≤ 288 * X + 2 * C18 * cω := by positivity
+            linarith only [this]
+    · -- Case `n < p < 2`, so `n = 1`: Lemma A with the one-dimensional sup bound.
+      obtain rfl : n = 1 := by
+        have h2 : (n : ℝ) < 2 := hp.trans hp2
+        have : n < 2 := by exact_mod_cast h2
+        omega
+      -- `|f - λ| ≤ C₁₇ σ E₀^{1/2}` on `B¹_{σ/16}`
+      have hwLip := (hfLip.mono (closedBall_subset_closedBall (by linarith only [hσ]) :
+          closedBall (0 : Rn 1) (σ / 16) ⊆ closedBall 0 (σ / 2))).sub
+        ((LipschitzWith.const c).add A.lipschitzWith).lipschitzOnWith
+      have hsup1 : ∀ x ∈ closedBall (0 : Rn 1) (σ / 16), ‖f x - (c + A x)‖ ≤
+          Real.sqrt ((2 * (σ / 16))⁻¹ * ∫ y in ball (0 : Rn 1) (σ / 16), ‖f y - (c + A y)‖ ^ 2) +
+          Real.sqrt (2 * (σ / 16) * ∫ y in ball (0 : Rn 1) (σ / 16),
+            hsNormSq (fderiv ℝ (fun x => f x - (c + A x)) y)) :=
+        Submission.tdo_one_dim_sup_le ℓ (fun x => f x - (c + A x)) (σ / 16) _ (by positivity) hwLip
+      have hw2 : ∫ y in ball (0 : Rn 1) (σ / 16), ‖f y - (c + A y)‖ ^ 2 ≤
+          CG * (ε + (1 / 4) ^ (1 + 4)) * (C9 * E0) * (σ / 4) ^ (1 + 2) := by
+        have h := h19 (1 / 4) (by norm_num) le_rfl
+        rwa [show (1 : ℝ) / 4 * (σ / 4) = σ / 16 by ring] at h
+      have hDw : ∀ y, hsNormSq (fderiv ℝ (fun x => f x - (c + A x)) y) ≤
+          2 * hsNormSq (fderiv ℝ f y) + 2 * hsNormSq A := by
+        intro y
+        have hlam : DifferentiableAt ℝ (fun x => c + A x) y :=
+          (differentiableAt_const c).add A.differentiableAt
+        by_cases hfy : DifferentiableAt ℝ f y
+        · rw [fderiv_fun_sub hfy hlam, fderiv_const_add, ContinuousLinearMap.fderiv]
+          exact hhs_sub _ _
+        · have hw : ¬ DifferentiableAt ℝ (fun x => f x - (c + A x)) y := fun hw =>
+            hfy (by simpa using hw.add hlam)
+          rw [fderiv_zero_of_not_differentiableAt hw]
+          have h0 : hsNormSq (0 : Rn 1 →L[ℝ] Rn ℓ) = 0 := by simp [hsNormSq]
+          rw [h0]
+          have := hhs0 (fderiv ℝ f y)
+          have := hhs0 A
+          positivity
+      have hvol : volume (ball (0 : Rn 1) (σ / 16)) = ENNReal.ofReal (2 * (σ / 16)) := by
+        rw [EuclideanSpace.volume_ball (Fin 1) 0 (σ / 16)]
+        simp only [Fintype.card_fin, pow_one, Nat.cast_one]
+        have hΓ : Real.Gamma (1 / 2 + 1) = Real.sqrt Real.pi / 2 := by
+          rw [Real.Gamma_add_one (by norm_num), Real.Gamma_one_half_eq]; ring
+        rw [hΓ, ← ENNReal.ofReal_mul (by positivity)]
+        congr 1
+        have : Real.sqrt Real.pi ≠ 0 := (Real.sqrt_pos.2 Real.pi_pos).ne'
+        field_simp
+      have hIf : IntegrableOn (fun y => hsNormSq (fderiv ℝ f y)) (ball (0 : Rn 1) (σ / 16)) :=
+        hint38.mono_set (ball_subset_ball (by linarith only [hσ]))
+      have hIc : IntegrableOn (fun _ : Rn 1 => 2 * hsNormSq A) (ball (0 : Rn 1) (σ / 16)) :=
+        integrableOn_const (by rw [hvol]; exact ENNReal.ofReal_ne_top)
+      have hDwI : ∫ y in ball (0 : Rn 1) (σ / 16), hsNormSq (fderiv ℝ (fun x => f x - (c + A x)) y) ≤
+          2 * (CW * E0 * σ ^ 1) + 2 * hsNormSq A * (2 * (σ / 16)) := by
+        calc ∫ y in ball (0 : Rn 1) (σ / 16), hsNormSq (fderiv ℝ (fun x => f x - (c + A x)) y)
+            ≤ ∫ y in ball (0 : Rn 1) (σ / 16), (2 * hsNormSq (fderiv ℝ f y) + 2 * hsNormSq A) :=
+              integral_mono_of_nonneg (ae_of_all _ fun y => hhs0 _) ((hIf.const_mul 2).add hIc)
+                (ae_of_all _ hDw)
+          _ = 2 * (∫ y in ball (0 : Rn 1) (σ / 16), hsNormSq (fderiv ℝ f y)) +
+                2 * hsNormSq A * (2 * (σ / 16)) := by
+              rw [integral_add (hIf.const_mul 2) hIc, integral_const_mul, setIntegral_const,
+                measureReal_def, hvol, ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+              ring
+          _ ≤ 2 * (CW * E0 * σ ^ 1) + 2 * hsNormSq A * (2 * (σ / 16)) := by
+              gcongr
+              exact hDf _ (by linarith only [hσ])
+      have hAsq : hsNormSq A ≤ C12 ^ 2 * E0 := by
+        rw [show hsNormSq A = hsNorm A ^ 2 from (Real.sq_sqrt (hhs0 A)).symm]
+        calc hsNorm A ^ 2 ≤ (C12 * Real.sqrt E0) ^ 2 := pow_le_pow_left₀ hAnn hA' 2
+          _ = C12 ^ 2 * E0 := by rw [mul_pow, Real.sq_sqrt hE0nn]
+      have hsupb : ∀ x' ∈ closedBall (0 : Rn 1) (σ / 16),
+          ‖f x' - (c + A x')‖ ≤ C17 * σ * Real.sqrt E0 := by
+        intro x' hx'
+        refine (hsup1 x' hx').trans ?_
+        have hs1 : Real.sqrt ((2 * (σ / 16))⁻¹ * ∫ y in ball (0 : Rn 1) (σ / 16),
+            ‖f y - (c + A y)‖ ^ 2) ≤ Real.sqrt (CG * C9) * σ * Real.sqrt E0 := by
+          have e : Real.sqrt (CG * C9 * σ ^ 2 * E0) = Real.sqrt (CG * C9) * σ * Real.sqrt E0 := by
+            rw [Real.sqrt_mul' _ hE0nn, Real.sqrt_mul' _ (sq_nonneg σ), Real.sqrt_sq hσ.le]
+          rw [← e]
+          apply Real.sqrt_le_sqrt
+          calc (2 * (σ / 16))⁻¹ * ∫ y in ball (0 : Rn 1) (σ / 16), ‖f y - (c + A y)‖ ^ 2
+              ≤ (2 * (σ / 16))⁻¹ * (CG * (ε + (1 / 4) ^ (1 + 4)) * (C9 * E0) * (σ / 4) ^ (1 + 2)) := by
+                gcongr
+            _ = CG * C9 * σ ^ 2 * E0 * ((ε + 1 / 1024) / 8) := by field_simp; ring
+            _ ≤ CG * C9 * σ ^ 2 * E0 * 1 := by gcongr; linarith only [hε1]
+            _ = CG * C9 * σ ^ 2 * E0 := mul_one _
+        have hs2 : Real.sqrt (2 * (σ / 16) * ∫ y in ball (0 : Rn 1) (σ / 16),
+            hsNormSq (fderiv ℝ (fun x => f x - (c + A x)) y)) ≤
+            Real.sqrt (CW + C12 ^ 2) * σ * Real.sqrt E0 := by
+          have e : Real.sqrt ((CW + C12 ^ 2) * σ ^ 2 * E0) =
+              Real.sqrt (CW + C12 ^ 2) * σ * Real.sqrt E0 := by
+            rw [Real.sqrt_mul' _ hE0nn, Real.sqrt_mul' _ (sq_nonneg σ), Real.sqrt_sq hσ.le]
+          rw [← e]
+          apply Real.sqrt_le_sqrt
+          calc 2 * (σ / 16) * ∫ y in ball (0 : Rn 1) (σ / 16),
+                hsNormSq (fderiv ℝ (fun x => f x - (c + A x)) y)
+              ≤ 2 * (σ / 16) * (2 * (CW * E0 * σ ^ 1) + 2 * (C12 ^ 2 * E0) * (2 * (σ / 16))) := by
+                gcongr
+                exact hDwI.trans (by gcongr)
+            _ = (CW / 4 + C12 ^ 2 / 32) * σ ^ 2 * E0 := by ring
+            _ ≤ (CW + C12 ^ 2) * σ ^ 2 * E0 := by
+                gcongr <;> linarith only [hCW, sq_nonneg C12]
+        calc _ ≤ Real.sqrt (CG * C9) * σ * Real.sqrt E0 +
+              Real.sqrt (CW + C12 ^ 2) * σ * Real.sqrt E0 := add_le_add hs1 hs2
+          _ = C17 * σ * Real.sqrt E0 := by rw [hC17def]; ring
+      -- the sup of the heights over `S` near `τ`
+      set κ : ℝ := (1 - CP * δ) * ω with hκdef
+      clear_value κ
+      have hκω : ω / 2 ≤ κ := by
+        rw [hκdef]
+        calc ω / 2 = (1 / 2) * ω := by ring
+          _ ≤ (1 - CP * δ) * ω := mul_le_mul_of_nonneg_right (by linarith only [hCPδ]) hω.le
+      have hκ : 0 < κ := lt_of_lt_of_le (by positivity) hκω
+      have hlowκ : ∀ x ∈ V.support ∩ closedBall τ r, ∀ s : ℝ, 0 < s → s ≤ σ / 64 →
+          ENNReal.ofReal (κ * s) ≤ V.weight (closedBall x s) := by
+        intro x hx s hs hs'
+        have h1 := hLow2 x hx.1 (mem_closedBall_zero_iff.1 (hBτσ hx.2)) s hs
+          (by linarith only [hs', hσ])
+        rw [pow_one] at h1
+        calc ENNReal.ofReal (κ * s) = ENNReal.ofReal ((1 - CP * δ) * (ω * s)) := by
+              rw [hκdef, mul_assoc]
+          _ ≤ V.weight (closedBall x s) := h1
+      have hheight2 : ∀ x ∈ V.support ∩ closedBall τ r,
+          infDist (x - τ) (S : Set (Amb 1 ℓ)) ≤ 2 * (σ / 64) := by
+        intro x hx
+        refine (hheight x hx).trans ?_
+        have := mul_le_mul_of_nonneg_right hdC14 hσ.le
+        linarith only [this]
+      have hHS : ∀ x ∈ V.support ∩ closedBall τ r, infDist (x - τ) (S : Set (Amb 1 ℓ)) ≤
+          max (2 * (C17 * σ * Real.sqrt E0)) (2 * (C6' * E0 * σ ^ 1) / κ) :=
+        Submission.tdo_graph_height_sup 1 ℓ U V q f c A (σ / 2) (σ / 16) r (σ / 64)
+          (C17 * σ * Real.sqrt E0) (C6' * E0 * σ ^ 1) κ (by positivity) hκ
+          (by linarith only [hrσ, hσ]) (by linarith only [hcτ, htσ, hrσ, hσ]) hsupb hbad1 hlowκ
+          hheight2
+      have hE0s : E0 ≤ Real.sqrt E0 := by
+        calc E0 = Real.sqrt E0 * Real.sqrt E0 := (Real.mul_self_sqrt hE0nn).symm
+          _ ≤ Real.sqrt E0 * 1 := by gcongr; exact Real.sqrt_le_one.2 hE01
+          _ = Real.sqrt E0 := mul_one _
+      have hhstar : ∀ x ∈ V.support ∩ closedBall τ r,
+          infDist (x - τ) (S : Set (Amb 1 ℓ)) ≤ C18 * σ * Real.sqrt E0 := by
+        intro x hx
+        refine (hHS x hx).trans (max_le ?_ ?_)
+        · rw [hC18def]
+          have : 0 ≤ 4 * C6' / ω * σ * Real.sqrt E0 := by positivity
+          linarith only [this]
+        · calc 2 * (C6' * E0 * σ ^ 1) / κ ≤ 2 * (C6' * E0 * σ ^ 1) / (ω / 2) :=
+                div_le_div_of_nonneg_left (by positivity) (by positivity) hκω
+            _ = 4 * C6' / ω * σ * E0 := by field_simp; ring
+            _ ≤ 4 * C6' / ω * σ * Real.sqrt E0 := by gcongr
+            _ ≤ C18 * σ * Real.sqrt E0 := by
+                gcongr
+                rw [hC18def]; linarith only [hC17]
+      -- Lemma A at `(τ, r)` and the `L¹` Hölder bound for `H`
+      have hLA : ∫ x in closedBall τ (r / 2), hsNormSq (V.tangentProj x - S.starProjection) ∂V.weight ≤
+          144 * (r ^ 2)⁻¹ * Q + 4 * (C18 * σ * Real.sqrt E0) * ∫ x in closedBall τ r, ‖H x‖ ∂V.weight := by
+        rw [hQdef]
+        exact Submission.ted_lemma_a_tilt_height 1 ℓ le_rfl U hU V H hGMC hmeas hTPF.2.1 τ r
+          (C18 * σ * Real.sqrt E0) hr hBτrU (by positivity) S hSdim hhstar
+      have hHτ : ∫ x in closedBall τ r, ‖H x‖ ∂V.weight ≤ cω * k := by
+        have h1 := hHol1 τ r (2 * (ω * r ^ 1)) (by positivity) hBτσ hμτ
+        have h2 := hrpow r σ 1 hr (by linarith only [hrσ, hσ]) one_pos hp1
+        have h3 : r ^ (((1 : ℕ) : ℝ) - 1) = 1 := by norm_num
+        calc ∫ x in closedBall τ r, ‖H x‖ ∂V.weight
+            ≤ (2 * (ω * r ^ 1)) ^ (1 - 1 / p) * σ ^ (1 * (((1 : ℕ) : ℝ) - p) / p) * k := h1
+          _ ≤ cω * r ^ (((1 : ℕ) : ℝ) - 1) * k := mul_le_mul_of_nonneg_right h2 hk0
+          _ = cω * k := by rw [h3, mul_one]
+      have hE : V.tiltExcess τ (r / 2) S ≤
+          (r / 2)⁻¹ * (144 * (r ^ 2)⁻¹ * Q + 4 * (C18 * σ * Real.sqrt E0) * (cω * k)) := by
+        unfold RectifiableVarifold.tiltExcess
+        rw [pow_one]
+        gcongr
+        exact hLA.trans (by gcongr)
+      have hT1 : (r / 2)⁻¹ * (144 * (r ^ 2)⁻¹ * Q) ≤ 288 * X * (16 * t) ^ 2 * E0 := by
+        have hQ3 : Q ≤ X * (16 * t) ^ 2 * E0 * r ^ 3 := h20a
+        rw [show (r / 2)⁻¹ * (144 * (r ^ 2)⁻¹ * Q) = 288 * (Q / r ^ 3) by field_simp; ring,
+          show 288 * X * (16 * t) ^ 2 * E0 = 288 * (X * (16 * t) ^ 2 * E0) by ring]
+        gcongr
+        rw [div_le_iff₀ (by positivity)]
+        exact hQ3
+      have hT2 : (r / 2)⁻¹ * (4 * (C18 * σ * Real.sqrt E0) * (cω * k)) ≤
+          2 * C18 * cω * (16 * t) ^ 2 * E0 := by
+        calc (r / 2)⁻¹ * (4 * (C18 * σ * Real.sqrt E0) * (cω * k))
+            ≤ (r / 2)⁻¹ * (4 * (C18 * σ * Real.sqrt E0) * (cω * (Real.sqrt δ * Real.sqrt E0))) := by
+              gcongr
+          _ = 2 * C18 * cω * (Real.sqrt δ / t) * (Real.sqrt E0 * Real.sqrt E0) := by
+              rw [hrdef]; field_simp; ring
+          _ = 2 * C18 * cω * (Real.sqrt δ / t) * E0 := by rw [Real.mul_self_sqrt hE0nn]
+          _ ≤ 2 * C18 * cω * (16 * t) ^ 2 * E0 := by
+              gcongr
+              rw [div_le_iff₀ ht]
+              calc Real.sqrt δ ≤ t * (16 * t) ^ 2 := hsδt
+                _ = (16 * t) ^ 2 * t := by ring
+      calc V.tiltExcess τ (r / 2) S
+          ≤ (r / 2)⁻¹ * (144 * (r ^ 2)⁻¹ * Q + 4 * (C18 * σ * Real.sqrt E0) * (cω * k)) := hE
+        _ = (r / 2)⁻¹ * (144 * (r ^ 2)⁻¹ * Q) +
+            (r / 2)⁻¹ * (4 * (C18 * σ * Real.sqrt E0) * (cω * k)) := mul_add _ _ _
+        _ ≤ 288 * X * (16 * t) ^ 2 * E0 + 2 * C18 * cω * (16 * t) ^ 2 * E0 := add_le_add hT1 hT2
+        _ = (288 * X + 2 * C18 * cω) * (16 * t) ^ 2 * E0 := by ring
+        _ ≤ C19 * (16 * t) ^ 2 * E0 := by
+            gcongr
+            rw [hC19def]
+            have : 0 ≤ C21' * (X + cω) := by positivity
+            linarith only [this]
+  /- Step 7: back to the centre (book (21), (22)); Step 8: conclusion. -/
+  refine ⟨S, hSdim, ?_⟩
+  have hr2 : r / 2 = 2 * (t * σ) := by rw [hrdef]; ring
+  have htσ0 : 0 < t * σ := by positivity
+  have hmono := Submission.tdo_tiltExcess_le_of_subset n ℓ U V hmeas 0 τ (t * σ) (r / 2) S htσ0
+    (by rw [hr2]; linarith only [htσ0])
+    (closedBall_subset_closedBall' (by rw [hr2, dist_zero_left]; linarith only [hτ]))
+    ((closedBall_subset_closedBall (by linarith only [hr])).trans hBτrU)
+  rw [show r / 2 / (t * σ) = 2 by rw [hr2]; field_simp] at hmono
+  calc V.tiltExcess 0 (t * σ) S ≤ 2 ^ n * V.tiltExcess τ (r / 2) S := hmono
+    _ ≤ 2 ^ n * (C19 * (16 * t) ^ 2 * E0) := by gcongr
+    _ = 2 ^ n * 256 * C19 * t ^ 2 * E0 := by ring
+    _ ≤ 2 ^ n * 256 * C19 * t ^ 2 * V.tiltExcessStar H p δ 0 σ T := by gcongr
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
