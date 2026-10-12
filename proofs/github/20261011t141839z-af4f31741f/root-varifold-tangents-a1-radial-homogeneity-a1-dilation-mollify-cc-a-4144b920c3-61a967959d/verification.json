@@ -1,0 +1,15 @@
+{
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_mollify_cc-a1.mollifier_c1_approx-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2355",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "85df1e5ac2e7bed5ff6a486bcd2d685098df2bbb",
+  "integrated_commit": "",
+  "proof_base_commit": "343d3f6ee30b69edc5f9677504f431e2fff6484f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_mollify_cc-a1",
+  "requires": []
+}
