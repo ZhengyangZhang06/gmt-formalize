@@ -410,6 +410,62 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- A countably `n`-rectifiable set `M ⊆ ℝ^N` carries a σ-finite measure `H^n ⌞ M`: up to the
+`H^n`-null set `M₀`, `M` is covered by the compact Lipschitz images `F_j(B_k(0))`, each of finite
+`H^n`-measure. -/
+theorem Submission.allard_tc_tpr_rectifiable_sigmaFinite :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)), Chapter03.CountablyRectifiable n M → SigmaFinite ((μHE[n] : Measure (Euclidean N)).restrict M) := by
+  intro N n M hM
+  -- Step 1: `M ⊆ M₀ ∪ ⋃ j, range (F j)` with `H^n(M₀) = 0` and `F j` `K j`-Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hM
+  choose K hK using hF
+  -- Step 2: the compact pieces `C (j, k) = F j '' closedBall 0 k` are measurable.
+  let C : ℕ × ℕ → Set (Euclidean N) := fun p ↦ F p.1 '' closedBall 0 p.2
+  have hCmeas : ∀ p, MeasurableSet (C p) := fun p ↦
+    ((isCompact_closedBall _ _).image (hK p.1).continuous).isClosed.measurableSet
+  -- Step 3: `H^n(C (j, k)) ≤ K_j^n H^n(closedBall 0 k) < ∞`, using `μHE[n] = c • μH[n]`.
+  have hCfin : ∀ p, (μHE[n] : Measure (Euclidean N)) (C p) < ∞ := by
+    intro p
+    have hball : (μHE[n] : Measure (EuclideanSpace ℝ (Fin n)))
+        (closedBall (0 : EuclideanSpace ℝ (Fin n)) p.2) < ∞ := by
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact measure_closedBall_lt_top
+    have hle : (μHE[n] : Measure (Euclidean N)) (C p) ≤
+        (K p.1 : ℝ≥0∞) ^ (n : ℝ) * (μHE[n] : Measure (EuclideanSpace ℝ (Fin n)))
+          (closedBall (0 : EuclideanSpace ℝ (Fin n)) p.2) := by
+      simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+        smul_eq_mul]
+      rw [mul_left_comm]
+      gcongr
+      exact (hK p.1).hausdorffMeasure_image_le (Nat.cast_nonneg n) _
+    exact hle.trans_lt (ENNReal.mul_lt_top
+      (ENNReal.rpow_lt_top_of_nonneg (Nat.cast_nonneg n) ENNReal.coe_ne_top) hball)
+  -- Step 4: `S = toMeasurable H M₀ ∪ ⋃ C` is measurable and contains `M`.
+  let T := toMeasurable (μHE[n] : Measure (Euclidean N)) M₀
+  let S := T ∪ ⋃ p, C p
+  have hSmeas : MeasurableSet S :=
+    (measurableSet_toMeasurable _ _).union (MeasurableSet.iUnion hCmeas)
+  have hMS : M ⊆ S := by
+    intro x hx
+    rcases hcover hx with h0 | hr
+    · exact Or.inl (subset_toMeasurable _ _ h0)
+    · obtain ⟨j, y, rfl⟩ := mem_iUnion.1 hr
+      obtain ⟨k, hk⟩ := exists_nat_ge ‖y‖
+      exact Or.inr (mem_iUnion.2 ⟨(j, k), y, mem_closedBall_zero_iff.2 hk, rfl⟩)
+  -- Steps 5–7: the countable family `{Sᶜ, T} ∪ {C p}` covers and has finite `H^n ⌞ M`-measure.
+  refine Measure.sigmaFinite_of_countable (S := insert Sᶜ (insert T (range C)))
+    (((countable_range C).insert _).insert _) ?_ ?_
+  · rintro s (rfl | rfl | ⟨p, rfl⟩)
+    · rw [Measure.restrict_apply hSmeas.compl,
+        measure_mono_null (fun x hx ↦ (hx.1 (hMS hx.2)).elim) measure_empty]
+      exact ENNReal.zero_lt_top
+    · refine (Measure.restrict_apply_le _ _).trans_lt ?_
+      rw [measure_toMeasurable, hM₀]
+      exact ENNReal.zero_lt_top
+    · exact (Measure.restrict_apply_le _ _).trans_lt (hCfin p)
+  · rw [sUnion_insert, sUnion_insert, sUnion_range]
+    exact compl_union_self S
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
