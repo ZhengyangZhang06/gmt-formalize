@@ -359,6 +359,79 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Jacobian identity for one linear map (Simon Ch. 6, 3.4–3.5, p. 147): given (S1)
+`‖v₁ ∧ ⋯ ∧ vₙ‖² = det(⟨vᵢ, vⱼ⟩)` and (S2) `simpleNVector (B τ) = det B • simpleNVector τ`, if
+`τ` is orthonormal, `A : ℝⁿ → ℝ^P` takes values in `span τ` and `ξ = ±τ₁ ∧ ⋯ ∧ τₙ`, then
+`‖L_# ξ‖ · √det(⟨A eᵢ, A eⱼ⟩) = √det(⟨L A eᵢ, L A eⱼ⟩)`. -/
+theorem Submission.lpf_raf_jacobian_identity : ((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (P Q n : ℕ) (A : Eucl n →L[ℝ] Eucl P) (τ : Fin n → Eucl P) (ξ : NVector (Eucl P) n) (L : Eucl P →L[ℝ] Eucl Q), Orthonormal ℝ τ → (∀ v, A v ∈ Submodule.span ℝ (range τ)) → (ξ = simpleNVector τ ∨ ξ = -simpleNVector τ) → ‖nVectorPushforward n L ξ‖ * Real.sqrt (Matrix.of fun i j => inner ℝ (A (EuclideanSpace.single i 1)) (A (EuclideanSpace.single j 1))).det = Real.sqrt (Matrix.of fun i j => inner ℝ (L (A (EuclideanSpace.single i 1))) (L (A (EuclideanSpace.single j 1)))).det := by
+  rintro ⟨hS1, hS2⟩ P Q n A τ ξ L hτ hA hξ
+  -- Step 1: `A eᵢ = ∑ₖ Bᵢₖ τₖ` with `Bᵢₖ = ⟪τₖ, A eᵢ⟫` (orthonormality of `τ`).
+  let B : Matrix (Fin n) (Fin n) ℝ :=
+    Matrix.of fun i k => inner ℝ (τ k) (A (EuclideanSpace.single i 1))
+  have hexp : ∀ i, A (EuclideanSpace.single i 1) = ∑ k, B i k • τ k := by
+    intro i
+    obtain ⟨c, hc⟩ :=
+      (Submodule.mem_span_range_iff_exists_fun ℝ).1 (hA (EuclideanSpace.single i 1))
+    have hcoef : ∀ k, B i k = c k := fun k => by
+      change inner ℝ (τ k) (A (EuclideanSpace.single i 1)) = c k
+      rw [← hc]
+      exact hτ.inner_right_fintype c k
+    simp only [hcoef]
+    exact hc.symm
+  -- Step 2: (S2) gives `simpleNVector (A e) = det B • simpleNVector τ`.
+  have h2 : simpleNVector (fun i => A (EuclideanSpace.single i 1)) =
+      B.det • simpleNVector τ := by
+    rw [← hS2 P n B τ]
+    exact congrArg simpleNVector (funext hexp)
+  -- Step 3: push forward by `L` (`nVectorPushforward` is linear in the `n`-vector).
+  have h3 : simpleNVector (fun i => L (A (EuclideanSpace.single i 1))) =
+      B.det • nVectorPushforward n L (simpleNVector τ) := by
+    have hpush : simpleNVector (fun i => L (A (EuclideanSpace.single i 1))) =
+        nVectorPushforward n L (simpleNVector fun i => A (EuclideanSpace.single i 1)) :=
+      (nVectorPushforward_simple L _).symm
+    rw [hpush, h2]
+    ext ω
+    rfl
+  -- Step 4: `‖L_# ξ‖ = ‖L_# (simpleNVector τ)‖` since `ξ = ± simpleNVector τ`.
+  have h4 : ‖nVectorPushforward n L ξ‖ = ‖nVectorPushforward n L (simpleNVector τ)‖ := by
+    rcases hξ with rfl | rfl
+    · rfl
+    · have hneg : nVectorPushforward n L (-simpleNVector τ) =
+          -nVectorPushforward n L (simpleNVector τ) := by
+        ext ω
+        rfl
+      rw [hneg, ContinuousLinearMap.opNorm_neg]
+  -- Step 5: (S1) gives `√det(⟨vᵢ, vⱼ⟩) = ‖simpleNVector v‖`.
+  have h5 : ∀ (R : ℕ) (v : Fin n → Eucl R),
+      Real.sqrt (Matrix.of fun i j => inner ℝ (v i) (v j)).det = ‖simpleNVector v‖ := by
+    intro R v
+    rw [← hS1 R n v, Real.sqrt_sq (ContinuousLinearMap.opNorm_nonneg _)]
+  -- Step 6: the Gram matrix of the orthonormal `τ` is `1`, so `‖simpleNVector τ‖ = 1`.
+  have h6 : ‖simpleNVector τ‖ = 1 := by
+    have hG : (Matrix.of fun i j => inner ℝ (τ i) (τ j)) = (1 : Matrix (Fin n) (Fin n) ℝ) := by
+      ext i j
+      rw [Matrix.of_apply, orthonormal_iff_ite.mp hτ i j, Matrix.one_apply]
+    rw [← h5 P τ, hG, Matrix.det_one, Real.sqrt_one]
+  -- Step 7: `‖c • w‖ = |c| * ‖w‖` for the operator norm on `n`-vectors.
+  have h7 : ∀ (R : ℕ) (c : ℝ) (w : NVector (Eucl R) n), ‖c • w‖ = |c| * ‖w‖ := by
+    intro R c w
+    have hle : ∀ (d : ℝ) (u : NVector (Eucl R) n), ‖d • u‖ ≤ |d| * ‖u‖ := fun d u => by
+      have := ContinuousLinearMap.opNorm_smul_le d u
+      rwa [Real.norm_eq_abs] at this
+    rcases eq_or_ne c 0 with rfl | hc
+    · rw [zero_smul, abs_zero, zero_mul]
+      exact ContinuousLinearMap.opNorm_zero
+    · refine le_antisymm (hle c w) ?_
+      have hinv := hle c⁻¹ (c • w)
+      rw [smul_smul, inv_mul_cancel₀ hc, one_smul, abs_inv] at hinv
+      have hcpos : 0 < |c| := abs_pos.mpr hc
+      calc |c| * ‖w‖ ≤ |c| * (|c|⁻¹ * ‖c • w‖) := mul_le_mul_of_nonneg_left hinv hcpos.le
+        _ = ‖c • w‖ := by rw [← mul_assoc, mul_inv_cancel₀ hcpos.ne', one_mul]
+  -- Step 8: both sides equal `|det B| * ‖L_# ξ‖`.
+  rw [h5 P (fun i => A (EuclideanSpace.single i 1)),
+    h5 Q (fun i => L (A (EuclideanSpace.single i 1))), h2, h3, h7, h7, h6, h4]
+  ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
