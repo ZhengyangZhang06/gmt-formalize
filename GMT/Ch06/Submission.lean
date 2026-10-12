@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter01.RadonPolarRepresentation
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -358,6 +359,83 @@ def IntegralityOfWeakLimits : Prop :=
       WeaklyConvergesOn Tj T → IsIntegerMultiplicity T
 
 end
+
+/-- Riesz representation (Simon Ch. 1, 4.14) with Borel data on a σ-compact locally compact
+Hausdorff space: a locally bounded functional on `C_c(Y, ℝ^N)` is `g ↦ ∫ ⟨g, ν⟩ dm` for a
+measure `m` finite on compacts and a Borel field `ν` with `‖ν‖ ≤ 1`, `‖ν‖ = 1` `m`-a.e. -/
+theorem Submission.smr_rb_borel_riesz_sigma_compact : ∀ (Y : Type) [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y] [SigmaCompactSpace Y] [MeasurableSpace Y] [BorelSpace Y] (N : ℕ) (L : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ), (∀ K : Set Y, IsCompact K → ∃ B : ℝ, ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), (∀ y, ‖g y‖ ≤ 1) → tsupport g ⊆ K → L g ≤ B) → ∃ (m : Measure Y) (ν : Y → EuclideanSpace ℝ (Fin N)), (∀ K : Set Y, IsCompact K → m K < ∞) ∧ Measurable ν ∧ (∀ y, ‖ν y‖ ≤ 1) ∧ (∀ᵐ y ∂m, ‖ν y‖ = 1) ∧ ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), L g = ∫ y, inner ℝ (g y) (ν y) ∂m := by
+  intro Y _ _ _ _ mY hY N L hL
+  -- Step 1: Simon's local boundedness hypothesis.
+  have hL' : Poincare.SimonGMT.Chapter01.IsLocallyBoundedCcFunctional L := by
+    intro K hK
+    obtain ⟨B, hB⟩ := hL K hK
+    exact ⟨B, by rintro _ ⟨g, ⟨hg1, hgK⟩, rfl⟩; exact hB g hg1 hgK⟩
+  -- Step 2: Riesz representation (Simon 4.14): a Radon outer measure `μ₀` and a
+  -- Carathéodory-measurable unit field `ν₀`.
+  obtain ⟨μ₀, hμ₀, ν₀, hν₀, hunit, hrep⟩ := Poincare.SimonGMT.Chapter01.simon_theorem_4_14 L hL'
+  -- Step 3: the Borel measure `m = μ₀` on Borel sets; Borel hulls give `m A = μ₀ A` for all `A`.
+  have hle : mY ≤ μ₀.caratheodory := by
+    rw [hY.measurable_eq]; exact hμ₀.borel_regular.borel_le_caratheodory
+  let m : Measure Y := μ₀.toMeasure hle
+  have hm : ∀ A : Set Y, m A = μ₀ A := by
+    intro A
+    obtain ⟨B, hAB, hB, hμB⟩ := hμ₀.borel_regular.exists_borel_superset A
+    rw [← hY.measurable_eq] at hB
+    refine le_antisymm ?_ (le_toMeasure_apply μ₀ hle A)
+    calc m A ≤ m B := measure_mono hAB
+      _ = μ₀ B := toMeasure_apply μ₀ hle hB
+      _ = μ₀ A := hμB
+  have hC : ∀ A : Set Y, hμ₀.toCaratheodoryMeasure A = μ₀ A :=
+    hμ₀.toCaratheodoryMeasure_apply_all
+  have hae : ∀ p : Y → Prop, (∀ᵐ y ∂m, p y) ↔ ∀ᵐ y ∂hμ₀.toCaratheodoryMeasure, p y := by
+    intro p
+    rw [ae_iff, ae_iff, hm, hC]
+  have htrim : hμ₀.toCaratheodoryMeasure.trim hle = m := by
+    ext A hA
+    rw [trim_measurableSet_eq hle hA, hC, hm]
+  -- Step 4: σ-compactness makes `μ₀` open-σ-finite, so Carathéodory-measurable sets are
+  -- `m`-null-measurable.
+  have hopen := Poincare.SimonGMT.Chapter01.isOpenSigmaFinite_of_finite_compacts hμ₀.finite_compacts
+  have hnull : ∀ A : Set Y, μ₀.IsCaratheodory A → NullMeasurableSet A m := by
+    intro A hA
+    obtain ⟨B, hBA, hB, hAB, -⟩ := hμ₀.borel_regular.exists_borel_subset_mod_null hopen hA
+    rw [← hY.measurable_eq] at hB
+    have h0 : m (A \ B) = 0 := by rw [hm]; exact hAB
+    have := hB.nullMeasurableSet.union (NullMeasurableSet.of_null h0 : NullMeasurableSet (A \ B) m)
+    rwa [union_sdiff_cancel hBA] at this
+  -- Step 5: a Borel version `ν₁` of `ν₀` (the target `ℝ^N` is countably generated).
+  have hν₀null : NullMeasurable ν₀ m := by
+    intro S hS
+    rw [BorelSpace.measurable_eq (α := EuclideanSpace ℝ (Fin N))] at hS
+    exact hnull _ (hν₀ hS)
+  have hν₀ae : AEMeasurable ν₀ m := hν₀null.aemeasurable
+  set ν₁ := hν₀ae.mk ν₀ with hν₁def
+  have hν₁ : Measurable ν₁ := hν₀ae.measurable_mk
+  have hν₀ν₁ : ν₀ =ᵐ[m] ν₁ := hν₀ae.ae_eq_mk
+  -- Step 6: normalization, `ν = ν₁` where `‖ν₁‖ = 1` and `0` elsewhere.
+  let ν : Y → EuclideanSpace ℝ (Fin N) := fun y => if ‖ν₁ y‖ = 1 then ν₁ y else 0
+  have hν : Measurable ν :=
+    Measurable.ite (measurableSet_eq_fun hν₁.norm measurable_const) hν₁ measurable_const
+  have hνle : ∀ y, ‖ν y‖ ≤ 1 := by
+    intro y
+    by_cases h : ‖ν₁ y‖ = 1
+    · simp [ν, h]
+    · simp [ν, h]
+  have hunit' : ∀ᵐ y ∂m, ‖ν₀ y‖ = 1 := (hae _).2 hunit
+  have hgood : ∀ᵐ y ∂m, ν₀ y = ν y ∧ ‖ν y‖ = 1 := by
+    filter_upwards [hunit', hν₀ν₁] with y h1 h2
+    have h3 : ‖ν₁ y‖ = 1 := h2 ▸ h1
+    have hνy : ν y = ν₁ y := ite_eq_left h3
+    rw [hνy]
+    exact ⟨h2, h3⟩
+  -- Step 7: representation with Borel data, via `integral_congr_ae` and `integral_trim`.
+  refine ⟨m, ν, fun K hK => (hm K).trans_lt (hμ₀.finite_compacts hK), hν, hνle,
+    hgood.mono fun y hy => hy.2, fun g => ?_⟩
+  have hF : StronglyMeasurable (fun y => inner ℝ (g y) (ν y)) :=
+    (continuous_inner.measurable.comp (g.continuous.measurable.prodMk hν)).stronglyMeasurable
+  have hgoodC : ∀ᵐ y ∂hμ₀.toCaratheodoryMeasure, ν₀ y = ν y :=
+    (hae _).1 (hgood.mono fun y hy => hy.1)
+  rw [hrep g, integral_congr_ae (hgoodC.mono fun y hy => by rw [hy]), integral_trim hle hF, htrim]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
