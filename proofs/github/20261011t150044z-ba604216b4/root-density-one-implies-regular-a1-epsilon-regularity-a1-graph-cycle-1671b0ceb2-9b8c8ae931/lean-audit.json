@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3f15af0f83c92b949f84dc435b3b6078da3e361c19937229fa485c9af44cd89f",
+  "git_delta": {
+    "base_commit": "ecc53ec24a4257fbec663adb97bf513c2ccbefcb",
+    "candidate_commit": "9f25c4124c2fc12a378905d138be9dde889870a7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgoj_det_adjoint_comp_eq_det_sq",
+    "diff_sha256": "65d4a8e77ee090b890d7b56470d063aad1a25a7f0ba5c9fca29c3edfb8327c17",
+    "source_sha256": "489f2e4b53ad7d99a81cf4d64d7b99432e53823b9742e0e32a9125782c58be58",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgoj_det_adjoint_comp_eq_det_sq",
+      "statement": "∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ)) → (F.adjoint ∘L F).det = (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
