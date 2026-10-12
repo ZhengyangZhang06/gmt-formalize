@@ -373,6 +373,215 @@ theorem Submission.areaFormula_image_null_of_locallyLipschitzOn : ∀ (N P n : �
     exact nonpos_iff_eq_zero.mp h
   -- Step 4: countable subadditivity.
   exact measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 hpiece)
+/-- **Good chart pieces** (Simon Ch. 3, Lemma 1.2, "if" part, `chapter-03.txt` lines 25–38, for
+the embedded `C¹` submanifolds of Ch. 2, (4.1)). Let `U` be open, `M ⊆ U`, `f` locally Lipschitz
+on `U`, and `M ⊆ N₀ ∪ ⋃ⱼ Sⱼ` with every `Sⱼ` an `n`-dimensional embedded `C¹` submanifold. Then
+`M ⊆ N₀ ∪ ⋃_α ψ_α(D_α)` for countably many `C¹` maps `ψ_α` on open `V_α ⊆ ℝⁿ` with injective
+differential and compact `D_α ⊆ V_α` on which `ψ_α` is bi-Lipschitz and `f ∘ ψ_α` is Lipschitz.
+By Lindelöf, countably many charts cover each `Sⱼ`. At a parameter `u₀` with `ψ(u₀) ∈ U`, the
+injectivity of `A = Dψ(u₀)`, the continuity of `Dψ` and the mean value inequality give a closed
+ball on which `|ψ(u) - ψ(v) - A(u - v)| ≤ (m/2)|u - v|`, `m|w| ≤ |A w|`, so `ψ` is bi-Lipschitz
+there; shrinking it, `ψ` maps it into a ball on which `f` is Lipschitz. By Lindelöf again,
+countably many such balls cover `V ∩ ψ⁻¹(U)`, and all pieces are enumerated by `ℕ`. -/
+theorem Submission.areaFormula_good_chart_pieces : ∀ (n N p : ℕ) (M U N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (f : Rn N → Rn p), IsOpen U → M ⊆ U → LocallyLipschitzOn U f → (∀ j, IsC1Submanifold n (S j)) → M ⊆ N₀ ∪ ⋃ j, S j → ∃ (V D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn N) (K C : ℕ → ℝ≥0), (∀ α, IsOpen (V α) ∧ ContDiffOn ℝ 1 (ψ α) (V α) ∧ (∀ u ∈ V α, Function.Injective (fderiv ℝ (ψ α) u)) ∧ IsCompact (D α) ∧ D α ⊆ V α ∧ LipschitzOnWith (K α) (ψ α) (D α) ∧ (∀ u ∈ D α, ∀ v ∈ D α, dist u v ≤ (C α : ℝ) * dist (ψ α u) (ψ α v)) ∧ LipschitzOnWith (K α) (f ∘ ψ α) (D α)) ∧ M ⊆ N₀ ∪ ⋃ α, ψ α '' D α := by
+  intro n N p M U N₀ S f hU hMU hf hS hcov
+  classical
+  -- Step 2: a good closed ball around a chart parameter `u₀` with `ψ(u₀) ∈ U`.
+  have goodBall : ∀ (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V →
+      (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ u₀ ∈ V, ψ u₀ ∈ U →
+      ∃ r > 0, Metric.closedBall u₀ r ⊆ V ∧ ∃ K C : ℝ≥0,
+        LipschitzOnWith K ψ (Metric.closedBall u₀ r) ∧
+        (∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+          dist u v ≤ (C : ℝ) * dist (ψ u) (ψ v)) ∧
+        LipschitzOnWith K (f ∘ ψ) (Metric.closedBall u₀ r) := by
+    intro V ψ hV hψC hInj u₀ hu₀ hx₀
+    -- (a) `A = Dψ(u₀)` is injective, so `m ‖w‖ ≤ ‖A w‖` with `m = K_A⁻¹ > 0`.
+    set A := fderiv ℝ ψ u₀ with hA
+    obtain ⟨KA, hKA0, hKA⟩ := LinearMap.exists_antilipschitzWith A.toLinearMap
+      (LinearMap.ker_eq_bot.mpr (hInj u₀ hu₀))
+    have hKA0' : (0 : ℝ) < KA := by exact_mod_cast hKA0
+    set m : ℝ := (KA : ℝ)⁻¹ with hm
+    have hm0 : 0 < m := inv_pos.mpr hKA0'
+    have hAlow : ∀ w : Rn n, m * ‖w‖ ≤ ‖A w‖ := by
+      intro w
+      have h1 : dist w 0 ≤ KA * dist (A.toLinearMap w) (A.toLinearMap 0) := hKA.le_mul_dist w 0
+      rw [map_zero, dist_zero_right, dist_zero_right] at h1
+      have h2 : ‖w‖ ≤ KA * ‖A w‖ := h1
+      rw [hm, inv_mul_le_iff₀ hKA0']
+      exact h2
+    -- (b), (c) radii: `‖Dψ(z) - A‖ < m/2`, the ball lies in `V`, and `ψ` maps it into a ball
+    -- `B_s(ψ(u₀)) ⊆ t` on which `f` is `L_f`-Lipschitz.
+    have hcont : ContinuousOn (fun z ↦ fderiv ℝ ψ z) V :=
+      hψC.continuousOn_fderiv_of_isOpen hV le_rfl
+    have hcontAt : ContinuousAt (fun z ↦ fderiv ℝ ψ z) u₀ := hcont.continuousAt (hV.mem_nhds hu₀)
+    obtain ⟨δ₁, hδ₁, hδ₁'⟩ := Metric.continuousAt_iff.mp hcontAt (m / 2) (half_pos hm0)
+    obtain ⟨δ₂, hδ₂, hδ₂'⟩ := Metric.isOpen_iff.mp hV u₀ hu₀
+    obtain ⟨Lf, t, ht, hLf⟩ := hf hx₀
+    rw [hU.nhdsWithin_eq hx₀] at ht
+    obtain ⟨s, hs, hst⟩ := Metric.mem_nhds_iff.mp ht
+    have hψcontAt : ContinuousAt ψ u₀ := hψC.continuousOn.continuousAt (hV.mem_nhds hu₀)
+    obtain ⟨δ₃, hδ₃, hδ₃'⟩ := Metric.continuousAt_iff.mp hψcontAt s hs
+    set r := min (min δ₁ δ₂) δ₃ / 2 with hr
+    have hmin0 : 0 < min (min δ₁ δ₂) δ₃ := lt_min (lt_min hδ₁ hδ₂) hδ₃
+    have hr0 : 0 < r := by rw [hr]; linarith
+    have hrmin : r < min (min δ₁ δ₂) δ₃ := by rw [hr]; linarith
+    have hrlt : ∀ u ∈ Metric.closedBall u₀ r,
+        dist u u₀ < δ₁ ∧ dist u u₀ < δ₂ ∧ dist u u₀ < δ₃ := by
+      intro u hu
+      have hu' : dist u u₀ < min (min δ₁ δ₂) δ₃ :=
+        lt_of_le_of_lt (Metric.mem_closedBall.mp hu) hrmin
+      simp only [lt_min_iff] at hu'
+      exact ⟨hu'.1.1, hu'.1.2, hu'.2⟩
+    have hBV : Metric.closedBall u₀ r ⊆ V := fun u hu ↦ hδ₂' (Metric.mem_ball.mpr (hrlt u hu).2.1)
+    have hdiffB : ∀ z ∈ Metric.closedBall u₀ r, DifferentiableAt ℝ ψ z := fun z hz ↦
+      ((hψC.differentiableOn one_ne_zero) z (hBV hz)).differentiableAt (hV.mem_nhds (hBV hz))
+    -- Mean value inequality for `z ↦ ψ z - A z` on the convex ball.
+    have hMV : ∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+        ‖(ψ u - A u) - (ψ v - A v)‖ ≤ m / 2 * ‖u - v‖ := by
+      intro u hu v hv
+      have hg : ∀ z ∈ Metric.closedBall u₀ r, DifferentiableAt ℝ (fun z ↦ ψ z - A z) z :=
+        fun z hz ↦ (hdiffB z hz).sub A.differentiableAt
+      have hbound : ∀ z ∈ Metric.closedBall u₀ r, ‖fderiv ℝ (fun z ↦ ψ z - A z) z‖ ≤ m / 2 := by
+        intro z hz
+        rw [fderiv_fun_sub (hdiffB z hz) A.differentiableAt, A.fderiv, ← dist_eq_norm]
+        exact (hδ₁' (hrlt z hz).1).le
+      exact Convex.norm_image_sub_le_of_norm_fderiv_le hg hbound (convex_closedBall u₀ r) hv hu
+    have hupper : ∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+        dist (ψ u) (ψ v) ≤ (‖A‖ + m / 2) * dist u v := by
+      intro u hu v hv
+      rw [dist_eq_norm, dist_eq_norm]
+      have h1 := hMV u hu v hv
+      have h2 : ‖A (u - v)‖ ≤ ‖A‖ * ‖u - v‖ := A.le_opNorm _
+      have h3 : ψ u - ψ v = ((ψ u - A u) - (ψ v - A v)) + A (u - v) := by rw [map_sub]; abel
+      calc ‖ψ u - ψ v‖ = ‖((ψ u - A u) - (ψ v - A v)) + A (u - v)‖ := by rw [← h3]
+        _ ≤ ‖(ψ u - A u) - (ψ v - A v)‖ + ‖A (u - v)‖ := norm_add_le _ _
+        _ ≤ m / 2 * ‖u - v‖ + ‖A‖ * ‖u - v‖ := add_le_add h1 h2
+        _ = (‖A‖ + m / 2) * ‖u - v‖ := by ring
+    have hlower : ∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+        dist u v ≤ ((2 * KA : ℝ≥0) : ℝ) * dist (ψ u) (ψ v) := by
+      intro u hu v hv
+      rw [dist_eq_norm, dist_eq_norm]
+      have h1 := hMV u hu v hv
+      have h2 := hAlow (u - v)
+      have h3 : A (u - v) = (ψ u - ψ v) - ((ψ u - A u) - (ψ v - A v)) := by rw [map_sub]; abel
+      have h4 : ‖A (u - v)‖ ≤ ‖ψ u - ψ v‖ + m / 2 * ‖u - v‖ := by
+        rw [h3]; exact (norm_sub_le _ _).trans (add_le_add le_rfl h1)
+      have h5 : m / 2 * ‖u - v‖ ≤ ‖ψ u - ψ v‖ := by linarith
+      have hKAeq : (KA : ℝ) * m = 1 := by rw [hm]; exact mul_inv_cancel₀ hKA0'.ne'
+      push_cast
+      calc ‖u - v‖ = (2 * KA) * (m / 2 * ‖u - v‖) := by
+            have : (2 * (KA : ℝ)) * (m / 2 * ‖u - v‖) = ((KA : ℝ) * m) * ‖u - v‖ := by ring
+            rw [this, hKAeq, one_mul]
+        _ ≤ (2 * KA) * ‖ψ u - ψ v‖ := mul_le_mul_of_nonneg_left h5 (by positivity)
+    -- (d) `K = (‖A‖ + m/2) + L_f (‖A‖ + m/2)` and `C = 2 K_A`.
+    set K0 : ℝ≥0 := ⟨‖A‖ + m / 2, by positivity⟩ with hK0
+    have hK0r : (K0 : ℝ) = ‖A‖ + m / 2 := rfl
+    refine ⟨r, hr0, hBV, K0 + Lf * K0, 2 * KA, ?_, hlower, ?_⟩
+    · refine LipschitzOnWith.of_dist_le_mul fun u hu v hv ↦ ?_
+      calc dist (ψ u) (ψ v) ≤ (‖A‖ + m / 2) * dist u v := hupper u hu v hv
+        _ ≤ ((K0 + Lf * K0 : ℝ≥0) : ℝ) * dist u v := by
+          push_cast
+          rw [hK0r]
+          have h0 : 0 ≤ (Lf : ℝ) * (‖A‖ + m / 2) := by positivity
+          exact mul_le_mul_of_nonneg_right (by linarith) dist_nonneg
+    · refine LipschitzOnWith.of_dist_le_mul fun u hu v hv ↦ ?_
+      have hψu : ψ u ∈ t := hst (Metric.mem_ball.mpr (hδ₃' (hrlt u hu).2.2))
+      have hψv : ψ v ∈ t := hst (Metric.mem_ball.mpr (hδ₃' (hrlt v hv).2.2))
+      calc dist (f (ψ u)) (f (ψ v)) ≤ Lf * dist (ψ u) (ψ v) := hLf.dist_le_mul _ hψu _ hψv
+        _ ≤ Lf * ((‖A‖ + m / 2) * dist u v) := by gcongr; exact hupper u hu v hv
+        _ ≤ ((K0 + Lf * K0 : ℝ≥0) : ℝ) * dist u v := by
+          push_cast
+          rw [hK0r]
+          have h0 : 0 ≤ (‖A‖ + m / 2) * dist u v := by positivity
+          have h1 : (‖A‖ + m / 2 + ↑Lf * (‖A‖ + m / 2)) * dist u v =
+              (‖A‖ + m / 2) * dist u v + ↑Lf * ((‖A‖ + m / 2) * dist u v) := by ring
+          rw [h1]
+          linarith
+  -- Step 1: by Lindelöf, countably many charts `ψ_{j,y}`, `y ∈ T j`, cover each `S j`.
+  choose! Vc Wc ψc hVc hWc hyW hψC hInjOn hImg hProper hDer using hS
+  choose T hTS hTc hTU using fun j ↦
+    TopologicalSpace.isOpen_biUnion_countable (S j) (Wc j) (fun y hy ↦ hWc j y hy)
+  -- Step 3: by Lindelöf in `ℝⁿ`, countably many good balls cover `V_{j,y} ∩ ψ_{j,y}⁻¹(U)`.
+  have hgood : ∀ j, ∀ y ∈ S j, ∀ u₀ ∈ Vc j y ∩ ψc j y ⁻¹' U, ∃ r > 0,
+      Metric.closedBall u₀ r ⊆ Vc j y ∧ ∃ K C : ℝ≥0,
+        LipschitzOnWith K (ψc j y) (Metric.closedBall u₀ r) ∧
+        (∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+          dist u v ≤ (C : ℝ) * dist (ψc j y u) (ψc j y v)) ∧
+        LipschitzOnWith K (f ∘ ψc j y) (Metric.closedBall u₀ r) := fun j y hy u₀ hu₀ ↦
+    goodBall (Vc j y) (ψc j y) (hVc j y hy) (hψC j y hy) (hDer j y hy) u₀ hu₀.1 hu₀.2
+  choose! r hr hrV Kb Cb hKb hCb hfKb using hgood
+  choose Q hQO hQc hQU using fun j y ↦
+    TopologicalSpace.isOpen_biUnion_countable (Vc j y ∩ ψc j y ⁻¹' U)
+      (fun u₀ ↦ Metric.ball u₀ (r j y u₀)) (fun _ _ ↦ Metric.isOpen_ball)
+  -- Step 4: the countable index set of pieces `(j, y, u₀)`.
+  set I : Set (ℕ × Rn N × Rn n) := ⋃ j, ⋃ y ∈ T j, (fun u ↦ (j, y, u)) '' Q j y with hIdef
+  have hIc : I.Countable :=
+    Set.countable_iUnion fun j ↦ (hTc j).biUnion fun y _ ↦ (hQc j y).image _
+  have hImem : ∀ π ∈ I, π.2.1 ∈ T π.1 ∧ π.2.2 ∈ Q π.1 π.2.1 := by
+    intro π hπ
+    simp only [hIdef, mem_iUnion, mem_image] at hπ
+    obtain ⟨j, y, hy, u, hu, rfl⟩ := hπ
+    exact ⟨hy, hu⟩
+  -- Step 5: the per-piece properties.
+  have hpiece : ∀ π ∈ I, IsOpen (Vc π.1 π.2.1) ∧ ContDiffOn ℝ 1 (ψc π.1 π.2.1) (Vc π.1 π.2.1) ∧
+      (∀ u ∈ Vc π.1 π.2.1, Function.Injective (fderiv ℝ (ψc π.1 π.2.1) u)) ∧
+      IsCompact (Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2)) ∧
+      Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2) ⊆ Vc π.1 π.2.1 ∧
+      LipschitzOnWith (Kb π.1 π.2.1 π.2.2) (ψc π.1 π.2.1)
+        (Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2)) ∧
+      (∀ u ∈ Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2),
+        ∀ v ∈ Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2),
+          dist u v ≤ (Cb π.1 π.2.1 π.2.2 : ℝ) * dist (ψc π.1 π.2.1 u) (ψc π.1 π.2.1 v)) ∧
+      LipschitzOnWith (Kb π.1 π.2.1 π.2.2) (f ∘ ψc π.1 π.2.1)
+        (Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2)) := by
+    intro π hπ
+    obtain ⟨hyT, huQ⟩ := hImem π hπ
+    have hy : π.2.1 ∈ S π.1 := hTS π.1 hyT
+    have hu : π.2.2 ∈ Vc π.1 π.2.1 ∩ ψc π.1 π.2.1 ⁻¹' U := hQO π.1 π.2.1 huQ
+    exact ⟨hVc _ _ hy, hψC _ _ hy, hDer _ _ hy, isCompact_closedBall _ _, hrV _ _ hy _ hu,
+      hKb _ _ hy _ hu, hCb _ _ hy _ hu, hfKb _ _ hy _ hu⟩
+  -- Step 6: every `x ∈ M \ N₀` is `ψ_{j,y}(u)` with `u` in one of the chosen balls.
+  have hcovI : ∀ x ∈ M, x ∉ N₀ → ∃ π ∈ I,
+      x ∈ ψc π.1 π.2.1 '' Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2) := by
+    intro x hxM hxN
+    rcases hcov hxM with hx0 | hx1
+    · exact absurd hx0 hxN
+    obtain ⟨j, hxj⟩ := mem_iUnion.mp hx1
+    have hxW : x ∈ ⋃ y ∈ T j, Wc j y := by
+      rw [hTU j]; exact mem_biUnion hxj (hyW j x hxj)
+    obtain ⟨y, hyT, hxWy⟩ := mem_iUnion₂.mp hxW
+    have hy : y ∈ S j := hTS j hyT
+    have hxim : x ∈ ψc j y '' Vc j y := by rw [hImg j y hy]; exact ⟨hxWy, hxj⟩
+    obtain ⟨u, huV, rfl⟩ := hxim
+    have huO : u ∈ Vc j y ∩ ψc j y ⁻¹' U := ⟨huV, hMU hxM⟩
+    have hu' : u ∈ ⋃ u₀ ∈ Q j y, Metric.ball u₀ (r j y u₀) := by
+      rw [hQU j y]; exact mem_biUnion huO (Metric.mem_ball_self (hr j y hy u huO))
+    obtain ⟨u₀, hu₀Q, huB⟩ := mem_iUnion₂.mp hu'
+    refine ⟨(j, y, u₀), ?_, u, Metric.ball_subset_closedBall huB, rfl⟩
+    simp only [hIdef, mem_iUnion, mem_image]
+    exact ⟨j, y, hyT, u₀, hu₀Q, rfl⟩
+  -- Step 4 (enumeration): a surjection `ℕ → I`, or empty pieces if `I = ∅`.
+  by_cases hIne : I.Nonempty
+  · obtain ⟨e, he⟩ := hIc.exists_eq_range hIne
+    have heI : ∀ α, e α ∈ I := fun α ↦ by rw [he]; exact mem_range_self α
+    refine ⟨fun α ↦ Vc (e α).1 (e α).2.1,
+      fun α ↦ Metric.closedBall (e α).2.2 (r (e α).1 (e α).2.1 (e α).2.2),
+      fun α ↦ ψc (e α).1 (e α).2.1, fun α ↦ Kb (e α).1 (e α).2.1 (e α).2.2,
+      fun α ↦ Cb (e α).1 (e α).2.1 (e α).2.2, fun α ↦ hpiece (e α) (heI α), ?_⟩
+    intro x hxM
+    by_cases hxN : x ∈ N₀
+    · exact Or.inl hxN
+    · obtain ⟨π, hπI, hxπ⟩ := hcovI x hxM hxN
+      rw [he] at hπI
+      obtain ⟨α, rfl⟩ := hπI
+      exact Or.inr (mem_iUnion.mpr ⟨α, hxπ⟩)
+  · refine ⟨fun _ ↦ ∅, fun _ ↦ ∅, fun _ ↦ 0, fun _ ↦ 0, fun _ ↦ 0, fun α ↦ ?_, ?_⟩
+    · simp
+    · intro x hxM
+      by_cases hxN : x ∈ N₀
+      · exact Or.inl hxN
+      · obtain ⟨π, hπI, -⟩ := hcovI x hxM hxN
+        exact absurd ⟨π, hπI⟩ hIne
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
