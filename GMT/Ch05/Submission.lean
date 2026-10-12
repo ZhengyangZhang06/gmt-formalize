@@ -458,6 +458,160 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Hölder continuity of Campanato centers** (Simon Ch. 5, proof of Theorem 5.2, the Hölder
+step after (11)).  If `∫_{B_{s/2}(z)} |G − c(z)|² ≤ A sⁿ (s/R)^{2α}` for every `z ∈ B_{R/4}(0)` and
+`s ∈ (0, R/4]`, then `|c(x) − c(y)| ≤ C √A (|x − y|/R)^α` for `x, y ∈ B̆_{R/16}(0)`, with
+`C = (4^{n+2} / Lⁿ(B₁(0)))^{1/2}`.
+
+For `x ≠ y` put `d = |x − y| < R/8` and `s = 2d`: the ball `B_{d/2}((x + y)/2)` lies in
+`B_{s/2}(x) ∩ B_{s/2}(y)`, and averaging `|c(x) − c(y)|² ≤ 2|G − c(x)|² + 2|G − c(y)|²` over it
+gives `|c(x) − c(y)|² (d/2)ⁿ Lⁿ(B₁(0)) ≤ 4A (2d)ⁿ (2d/R)^{2α} ≤ 4^{n+2} A (d/R)^{2α} (d/2)ⁿ`. -/
+theorem allard52_campanato_center_holder : ∀ (n : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α : ℝ), 0 ≤ A → 0 < R → 0 < α → α ≤ 1 → Measurable G → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (c x - c y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ α := by
+  intro n _
+  -- `v = Lⁿ(B₁(0))`, positive and finite; `Lⁿ(B_t(w)) = tⁿ v`.
+  set v : ℝ := (volume (closedBall (0 : Rn n) 1)).toReal with hv_def
+  have hV0 : volume (closedBall (0 : Rn n) 1) ≠ 0 := (measure_closedBall_pos volume 0 one_pos).ne'
+  have hVtop : volume (closedBall (0 : Rn n) 1) ≠ ∞ := measure_closedBall_lt_top.ne
+  have hv : 0 < v := ENNReal.toReal_pos hV0 hVtop
+  refine ⟨Real.sqrt (4 ^ (n + 2) / v), Real.sqrt_nonneg _, ?_⟩
+  intro m k G c A R α hA hR hα hα1 hG hcamp x hx y hy
+  have hRHS : 0 ≤ Real.sqrt (4 ^ (n + 2) / v) * Real.sqrt A * (‖x - y‖ / R) ^ α :=
+    mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+      (Real.rpow_nonneg (div_nonneg (norm_nonneg _) hR.le) _)
+  -- Hilbert–Schmidt facts.
+  have hHS0 : ∀ T : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq T := fun T =>
+    Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hHSsub : ∀ T T' : Rn m →L[ℝ] Rn k,
+      hsNormSq (T - T') ≤ 2 * hsNormSq T + 2 * hsNormSq T' := by
+    intro T T'
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [sub_apply]
+    have h1 := norm_sub_le (T (EuclideanSpace.single i 1)) (T' (EuclideanSpace.single i 1))
+    have h2 := norm_nonneg (T (EuclideanSpace.single i 1) - T' (EuclideanSpace.single i 1))
+    nlinarith [sq_nonneg (‖T (EuclideanSpace.single i 1)‖ - ‖T' (EuclideanSpace.single i 1)‖)]
+  have hHScont : Continuous fun T : Rn m →L[ℝ] Rn k => hsNormSq T := by
+    unfold hsNormSq
+    fun_prop
+  -- The case `x = y`.
+  rcases eq_or_ne x y with rfl | hxy
+  · have h0 : hsNorm (c x - c x) = 0 := by
+      simp [hsNorm, hsNormSq]
+    rw [h0]
+    exact hRHS
+  -- Geometry for `x ≠ y`: `d = ‖x - y‖ < R/8`, `s = 2d`, and the midpoint ball `B_{d/2}(m₀)`.
+  set d := ‖x - y‖ with hd_def
+  have hd : 0 < d := norm_pos_iff.2 (sub_ne_zero.2 hxy)
+  have hxR : ‖x‖ < R / 16 := mem_ball_zero_iff.1 hx
+  have hyR : ‖y‖ < R / 16 := mem_ball_zero_iff.1 hy
+  have hdR : d < R / 8 := by
+    calc d ≤ ‖x‖ + ‖y‖ := norm_sub_le x y
+      _ < R / 16 + R / 16 := add_lt_add hxR hyR
+      _ = R / 8 := by ring
+  have hs0 : 0 < 2 * d := by positivity
+  have hsR : 2 * d ≤ R / 4 := by linarith
+  have hs2 : 2 * d / 2 = d := by ring
+  have hxB : x ∈ closedBall (0 : Rn n) (R / 4) :=
+    mem_closedBall_zero_iff.2 (by linarith)
+  have hyB : y ∈ closedBall (0 : Rn n) (R / 4) :=
+    mem_closedBall_zero_iff.2 (by linarith)
+  set m₀ : Rn n := midpoint ℝ x y with hm₀
+  have hm₀x : dist m₀ x = d / 2 := by
+    rw [hm₀, dist_midpoint_left, dist_eq_norm, Real.norm_two]
+    ring
+  have hm₀y : dist m₀ y = d / 2 := by
+    rw [hm₀, dist_midpoint_right, dist_eq_norm, Real.norm_two]
+    ring
+  have hBx : closedBall m₀ (d / 2) ⊆ closedBall x (2 * d / 2) := by
+    rw [hs2]
+    exact closedBall_subset_closedBall' (by rw [hm₀x]; linarith)
+  have hBy : closedBall m₀ (d / 2) ⊆ closedBall y (2 * d / 2) := by
+    rw [hs2]
+    exact closedBall_subset_closedBall' (by rw [hm₀y]; linarith)
+  -- Pointwise bound.
+  have hpt : ∀ w, ENNReal.ofReal (hsNormSq (c x - c y)) ≤
+      2 * ENNReal.ofReal (hsNormSq (G w - c x)) + 2 * ENNReal.ofReal (hsNormSq (G w - c y)) := by
+    intro w
+    have h := hHSsub (G w - c y) (G w - c x)
+    rw [sub_sub_sub_cancel_left] at h
+    calc ENNReal.ofReal (hsNormSq (c x - c y))
+        ≤ ENNReal.ofReal (2 * hsNormSq (G w - c x) + 2 * hsNormSq (G w - c y)) :=
+          ENNReal.ofReal_le_ofReal (by linarith)
+      _ = 2 * ENNReal.ofReal (hsNormSq (G w - c x)) +
+            2 * ENNReal.ofReal (hsNormSq (G w - c y)) := by
+          rw [ENNReal.ofReal_add (mul_nonneg zero_le_two (hHS0 _))
+              (mul_nonneg zero_le_two (hHS0 _)),
+            ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+  -- Averaging over the midpoint ball.
+  have hmeas : ∀ T₀ : Rn m →L[ℝ] Rn k, Measurable fun w => ENNReal.ofReal (hsNormSq (G w - T₀)) :=
+    fun T₀ => ENNReal.measurable_ofReal.comp
+      ((hHScont.comp (continuous_id.sub continuous_const)).measurable.comp hG)
+  set K : ℝ := A * (2 * d) ^ n * (2 * d / R) ^ (2 * α) with hK_def
+  have hK0 : 0 ≤ K := by positivity
+  have hint : ENNReal.ofReal (hsNormSq (c x - c y)) * volume (closedBall m₀ (d / 2)) ≤
+      4 * ENNReal.ofReal K := by
+    calc ENNReal.ofReal (hsNormSq (c x - c y)) * volume (closedBall m₀ (d / 2))
+        = ∫⁻ _ in closedBall m₀ (d / 2), ENNReal.ofReal (hsNormSq (c x - c y)) :=
+          (setLIntegral_const _ _).symm
+      _ ≤ ∫⁻ w in closedBall m₀ (d / 2),
+            (2 * ENNReal.ofReal (hsNormSq (G w - c x)) +
+              2 * ENNReal.ofReal (hsNormSq (G w - c y))) := lintegral_mono fun w => hpt w
+      _ = 2 * (∫⁻ w in closedBall m₀ (d / 2), ENNReal.ofReal (hsNormSq (G w - c x))) +
+            2 * ∫⁻ w in closedBall m₀ (d / 2), ENNReal.ofReal (hsNormSq (G w - c y)) := by
+          rw [lintegral_add_left ((hmeas (c x)).const_mul 2), lintegral_const_mul 2 (hmeas (c x)),
+            lintegral_const_mul 2 (hmeas (c y))]
+      _ ≤ 2 * (∫⁻ w in closedBall x (2 * d / 2), ENNReal.ofReal (hsNormSq (G w - c x))) +
+            2 * ∫⁻ w in closedBall y (2 * d / 2), ENNReal.ofReal (hsNormSq (G w - c y)) := by
+          gcongr
+      _ ≤ 2 * ENNReal.ofReal K + 2 * ENNReal.ofReal K := by
+          gcongr
+          · exact hcamp x hxB (2 * d) hs0 hsR
+          · exact hcamp y hyB (2 * d) hs0 hsR
+      _ = 4 * ENNReal.ofReal K := by ring
+  -- Arithmetic.
+  have hvolB : volume (closedBall m₀ (d / 2)) = ENNReal.ofReal ((d / 2) ^ n * v) := by
+    rw [Measure.addHaar_closedBall' volume m₀ (by positivity), finrank_euclideanSpace_fin,
+      ENNReal.ofReal_mul (by positivity), hv_def, ENNReal.ofReal_toReal hVtop]
+  rw [hvolB, ← ENNReal.ofReal_mul (hHS0 _), ← ENNReal.ofReal_ofNat 4,
+    ← ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_le_ofReal_iff (by positivity)] at hint
+  have hpow : (2 * d) ^ n = 4 ^ n * (d / 2) ^ n := by
+    rw [← mul_pow]
+    ring
+  have hrpow : (2 * d / R) ^ (2 * α) ≤ 4 * (d / R) ^ (2 * α) := by
+    rw [mul_div_assoc, Real.mul_rpow zero_le_two (by positivity)]
+    gcongr
+    calc (2 : ℝ) ^ (2 * α) ≤ 2 ^ (2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le one_le_two (by linarith)
+      _ = 4 := by norm_num [Real.rpow_two]
+  have hsq : ((d / R) ^ α) ^ 2 = (d / R) ^ (2 * α) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity), mul_comm]
+    norm_num
+  have hdn : 0 < (d / 2) ^ n := by positivity
+  have hmain : hsNormSq (c x - c y) ≤ 4 ^ (n + 2) / v * A * ((d / R) ^ α) ^ 2 := by
+    rw [hsq, div_mul_eq_mul_div, div_mul_eq_mul_div, le_div_iff₀ hv]
+    have h4 : 4 * K ≤ 4 ^ (n + 2) * A * (d / R) ^ (2 * α) * (d / 2) ^ n := by
+      rw [hK_def, hpow]
+      calc 4 * (A * (4 ^ n * (d / 2) ^ n) * (2 * d / R) ^ (2 * α))
+          ≤ 4 * (A * (4 ^ n * (d / 2) ^ n) * (4 * (d / R) ^ (2 * α))) := by gcongr
+        _ = 4 ^ (n + 2) * A * (d / R) ^ (2 * α) * (d / 2) ^ n := by ring
+    have h5 : hsNormSq (c x - c y) * v * (d / 2) ^ n ≤
+        4 ^ (n + 2) * A * (d / R) ^ (2 * α) * (d / 2) ^ n := by
+      calc hsNormSq (c x - c y) * v * (d / 2) ^ n
+          = hsNormSq (c x - c y) * ((d / 2) ^ n * v) := by ring
+        _ ≤ 4 * K := hint
+        _ ≤ _ := h4
+    exact le_of_mul_le_mul_right h5 hdn
+  -- Square roots.
+  unfold hsNorm
+  rw [Real.sqrt_le_left hRHS, mul_pow, mul_pow, Real.sq_sqrt (by positivity),
+    Real.sq_sqrt hA]
+  exact hmain
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
