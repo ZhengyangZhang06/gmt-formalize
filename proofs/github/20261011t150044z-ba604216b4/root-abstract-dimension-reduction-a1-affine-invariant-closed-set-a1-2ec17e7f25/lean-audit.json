@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cc2a396ee671592befe54fa9f687e4eaa85051659a0bbb184689e1ecf5719d71",
+  "git_delta": {
+    "base_commit": "d7755ba953a239de2ff323d9ea1742d091814766",
+    "candidate_commit": "64f176020a955d00c93754cd060d8de53ac5e331",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_affine_invariant_closed_set",
+    "diff_sha256": "06ba8981b1634aa6b852bb0299dff6b0204321911b0623108025c9bc76cd975e",
+    "source_sha256": "09ce18a331363db9c55b697179f6986834f58ccd23fcf85520375ae3c1fc2bba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_affine_invariant_closed_set",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)) (L : Submodule ℝ (Euclid P)), IsClosed S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => y + lam • x) ⁻¹' S = S) → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ z, y + lam • z ∈ S ↔ z ∈ S) ∧ (S.Nonempty → (L : Set (Euclid P)) ⊆ S)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
