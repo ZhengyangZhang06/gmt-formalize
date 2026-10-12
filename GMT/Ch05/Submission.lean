@@ -458,6 +458,46 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Approximate tangent spaces under rigid motions** (Simon Ch. 3, 1.4; used for the graph
+tangent planes in the proof of 7.1).  If `P` is the approximate tangent space of `S` at `z`, then
+for every linear isometry `Q` of `ℝ^{n+ℓ}` and every `ξ`, `Q(P)` is the approximate tangent space
+of `ξ + Q(S)` at `ξ + Q z`.
+Proof: `η_{ξ+Qz,r}(ξ + Q w) = Q(η_{z,r} w)` and `Q` preserves `Hⁿ`, so for `φ ∈ C_c` the blown-up
+integrals of `φ` over `ξ + Q(S)` equal those of `φ ∘ Q ∈ C_c` over `S`, while
+`∫_{Q(P)} φ dHⁿ = ∫_P φ ∘ Q dHⁿ`; and `dim Q(P) = dim P`. -/
+theorem dohr_tp_approx_tangent_affine_isometry : ∀ (n ℓ : ℕ) (S : Set (Amb n ℓ)) (z ξ : Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S z P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n ((fun w => ξ + Q w) '' S) (ξ + Q z) (Submodule.map Q.toLinearEquiv.toLinearMap P) := by
+  intro n ℓ S z ξ Q P hP
+  obtain ⟨hdim, hconv⟩ := hP
+  -- `Q` is an isometric equivalence: a measurable embedding preserving `μHE[n]`, so
+  -- `∫_{Q '' X} φ dHⁿ = ∫_X φ ∘ Q dHⁿ` for every set `X`.
+  have hmp : MeasurePreserving Q (μHE[n] : Measure (Amb n ℓ)) μHE[n] :=
+    Q.toIsometryEquiv.measurePreserving_euclideanHausdorffMeasure n
+  have hme : MeasurableEmbedding Q := Q.toHomeomorph.measurableEmbedding
+  refine ⟨(LinearEquiv.finrank_map_eq Q.toLinearEquiv P).trans hdim, fun φ => ?_⟩
+  -- The test function `ψ = φ ∘ Q` is again in `C_c`.
+  set ψ : CompactlySupportedContinuousMap (Amb n ℓ) ℝ := φ.comp Q.toHomeomorph.toCocompactMap
+  have hψ : ∀ X : Set (Amb n ℓ), ∫ y in Q '' X, φ y ∂μHE[n] = ∫ y in X, ψ y ∂μHE[n] :=
+    fun X => hmp.setIntegral_image_emb hme φ X
+  -- Blow-ups commute with `w ↦ ξ + Q w`: `η_{ξ+Qz,r}(ξ + Q w) = Q (η_{z,r} w)`.
+  have himg : ∀ r : ℝ,
+      Poincare.SimonGMT.Chapter03.blowUpMap (ξ + Q z) r '' ((fun w => ξ + Q w) '' S) =
+        Q '' (Poincare.SimonGMT.Chapter03.blowUpMap z r '' S) := by
+    intro r
+    rw [Set.image_image, Set.image_image]
+    refine Set.image_congr fun w _ => ?_
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, add_sub_add_left_eq_sub, map_smul, map_sub]
+  have hlim : ∫ y in (Submodule.map Q.toLinearEquiv.toLinearMap P : Set (Amb n ℓ)), φ y ∂μHE[n] =
+      ∫ y in (P : Set (Amb n ℓ)), ψ y ∂μHE[n] := by
+    rw [Submodule.map_coe]
+    exact hψ P
+  rw [hlim]
+  refine (hconv ψ).congr fun r => ?_
+  rw [himg r, hψ]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
