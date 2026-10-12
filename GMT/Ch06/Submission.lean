@@ -412,6 +412,209 @@ theorem Submission.deformation_retraction_dini_segment : ∀ (N : ℕ) (γ : ℝ
   have h1 : ‖γ 1 - γ 0‖ ≤ (K + ε) * 1 := hsub ⟨zero_le_one, le_rfl⟩
   linarith
 
+/-- Simon Ch. 6, proof of Lemma 5.4 (local to global Lipschitz bounds): if `ψ` maps each closed
+unit cube `z + [0, 1]^N` into itself off `L` and has pointwise Lipschitz constant `c₁ / dist(x, L)`
+inside each such cube, then `ψ` is `c / σ`-Lipschitz on `{x | σ ≤ dist(x, L)}` for `0 < σ ≤ 1/4`,
+with `c = max (2 c₁) (1/4 + 4 √N)`.  Far pairs use `|ψ y - y| ≤ √N`; for near pairs the segment
+stays in `{σ / 2 < dist(·, L)}` and `deformation_retraction_dini_segment` integrates the bound. -/
+theorem Submission.deformation_retraction_globalize : ∀ (N : ℕ) (c₁ : ℝ), 0 ≤ c₁ → ∃ c : ℝ≥0, ∀ (L : Set (Eucl N)) (ψ : Eucl N → Eucl N), (∀ (z : Fin N → ℤ) (x : Eucl N), x ∉ L → (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) → ∀ i, (z i : ℝ) ≤ ψ x i ∧ ψ x i ≤ z i + 1) → (∀ (z : Fin N → ℤ) (x : Eucl N), x ∉ L → (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl N, x' ∉ L → (∀ i, (z i : ℝ) ≤ x' i ∧ x' i ≤ z i + 1) → dist x' x < δ → dist (ψ x') (ψ x) ≤ (c₁ / infDist x L + ε) * dist x' x) → ∀ σ : ℝ, 0 < σ → σ ≤ 1 / 4 → LipschitzOnWith (c / Real.toNNReal σ) ψ {x | σ ≤ infDist x L} := by
+  intro N c₁ hc₁
+  -- Step 5(b): from `p` in direction `v`, the points `p + t • v`, `0 ≤ t < τ`, stay in one closed
+  -- unit cube `z + Q` (`zᵢ = ⌊pᵢ⌋` if `0 ≤ vᵢ`, `zᵢ = ⌈pᵢ⌉ - 1` if `vᵢ < 0`); `-v` gives `z⁻`.
+  have cube_ray : ∀ p v : Eucl N, ∃ z : Fin N → ℤ, ∃ τ : ℝ, 0 < τ ∧ ∀ t : ℝ, 0 ≤ t → t < τ →
+      ∀ i, (z i : ℝ) ≤ p i + t * v i ∧ p i + t * v i ≤ z i + 1 := by
+    intro p v
+    classical
+    let z : Fin N → ℤ := fun i => if 0 ≤ v i then ⌊p i⌋ else ⌈p i⌉ - 1
+    have hev : ∀ i, ∀ᶠ t in 𝓝[≥] (0 : ℝ),
+        (z i : ℝ) ≤ p i + t * v i ∧ p i + t * v i ≤ z i + 1 := by
+      intro i
+      have hlim : Tendsto (fun t : ℝ => p i + t * v i) (𝓝 0) (𝓝 (p i)) := by
+        have hcont : Continuous fun t : ℝ => p i + t * v i := by fun_prop
+        simpa using hcont.tendsto 0
+      by_cases hvi : 0 ≤ v i
+      · have hz : z i = ⌊p i⌋ := by simp [z, hvi]
+        have h1 : ∀ᶠ t in 𝓝 (0 : ℝ), p i + t * v i < (⌊p i⌋ : ℝ) + 1 :=
+          hlim.eventually (eventually_lt_nhds (Int.lt_floor_add_one (p i)))
+        filter_upwards [nhdsWithin_le_nhds h1, self_mem_nhdsWithin] with t ht ht0
+        have ht0' : (0 : ℝ) ≤ t := ht0
+        have htv : 0 ≤ t * v i := mul_nonneg ht0' hvi
+        rw [hz]
+        exact ⟨by linarith [Int.floor_le (p i)], ht.le⟩
+      · have hz : z i = ⌈p i⌉ - 1 := by simp [z, hvi]
+        have hlt : (⌈p i⌉ : ℝ) - 1 < p i := by linarith [Int.ceil_lt_add_one (p i)]
+        have h1 : ∀ᶠ t in 𝓝 (0 : ℝ), (⌈p i⌉ : ℝ) - 1 < p i + t * v i :=
+          hlim.eventually (eventually_gt_nhds hlt)
+        filter_upwards [nhdsWithin_le_nhds h1, self_mem_nhdsWithin] with t ht ht0
+        have ht0' : (0 : ℝ) ≤ t := ht0
+        have htv : t * v i ≤ 0 := mul_nonpos_of_nonneg_of_nonpos ht0' (le_of_not_ge hvi)
+        rw [hz]
+        push_cast
+        exact ⟨ht.le, by linarith [Int.le_ceil (p i)]⟩
+    obtain ⟨τ, hτ, hsub⟩ := mem_nhdsGE_iff_exists_Ico_subset.1 (Filter.eventually_all.2 hev)
+    exact ⟨z, τ, hτ, fun t ht htτ => hsub ⟨ht, htτ⟩⟩
+  -- Step 1: the constant `c = max (2 c₁) (1/4 + 4 √N)`, chosen before `L` and `ψ`.
+  have hsqrt : 0 ≤ Real.sqrt N := Real.sqrt_nonneg _
+  refine ⟨.mk (max (2 * c₁) (1 / 4 + 4 * Real.sqrt N)) (le_max_of_le_left (by linarith)), ?_⟩
+  intro L ψ H1 H2 σ hσ hσ4
+  -- Step 2: a point at positive distance from `L` is not in `L`.
+  have notL : ∀ w : Eucl N, 0 < infDist w L → w ∉ L := fun w hw hwL => by
+    rw [infDist_zero_of_mem hwL] at hw
+    exact lt_irrefl 0 hw
+  -- Step 3: `|ψ y - y| ≤ √N` for `y ∉ L`, since `y, ψ y ∈ ⌊y⌋ + Q` by (H1).
+  have displacement : ∀ y : Eucl N, y ∉ L → dist (ψ y) y ≤ Real.sqrt N := by
+    intro y hy
+    have hy' : ∀ i, ((fun i => ⌊y i⌋ : Fin N → ℤ) i : ℝ) ≤ y i ∧
+        y i ≤ ((fun i => ⌊y i⌋ : Fin N → ℤ) i : ℝ) + 1 :=
+      fun i => ⟨Int.floor_le _, (Int.lt_floor_add_one _).le⟩
+    have hψ := H1 (fun i => ⌊y i⌋) y hy hy'
+    rw [EuclideanSpace.dist_eq]
+    apply Real.sqrt_le_sqrt
+    have hle : ∀ i, dist (ψ y i) (y i) ^ 2 ≤ 1 := by
+      intro i
+      obtain ⟨a1, a2⟩ := hψ i
+      obtain ⟨b1, b2⟩ := hy' i
+      rw [Real.dist_eq]
+      have h : |ψ y i - y i| ≤ 1 := abs_le.2 ⟨by linarith, by linarith⟩
+      have h0 := abs_nonneg (ψ y i - y i)
+      nlinarith
+    calc ∑ i, dist (ψ y i) (y i) ^ 2 ≤ ∑ _i : Fin N, (1 : ℝ) :=
+          Finset.sum_le_sum fun i _ => hle i
+      _ = N := by simp
+  -- Step 5(c): if the segment `x + s • v` (`s ∈ [0, 1]`) avoids `L` with `c₁ / dist(·, L) ≤ K`,
+  -- then `s ↦ ψ (x + s • v)` satisfies the hypothesis of `deformation_retraction_dini_segment`
+  -- with constant `K ‖v‖`: apply (H2) at `x + s • v` on the cubes `z⁺` (`s ≤ s'`), `z⁻` (`s' < s`).
+  have segment_slope : ∀ (K : ℝ) (x v : Eucl N),
+      (∀ s ∈ Icc (0 : ℝ) 1, x + s • v ∉ L ∧ c₁ / infDist (x + s • v) L ≤ K) →
+      ∀ s ∈ Icc (0 : ℝ) 1, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ s' ∈ Icc (0 : ℝ) 1,
+        |s' - s| < δ → ‖ψ (x + s' • v) - ψ (x + s • v)‖ ≤ (K * ‖v‖ + ε) * |s' - s| := by
+    intro K x v hseg s hs ε hε
+    by_cases hv : v = 0
+    · refine ⟨1, one_pos, fun s' _ _ => ?_⟩
+      subst hv
+      simp only [smul_zero, add_zero, sub_self, norm_zero, mul_zero, zero_add]
+      positivity
+    have hvpos : 0 < ‖v‖ := norm_pos_iff.2 hv
+    obtain ⟨hpL, hpK⟩ := hseg s hs
+    obtain ⟨zp, τp, hτp, hzp⟩ := cube_ray (x + s • v) v
+    obtain ⟨zm, τm, hτm, hzm⟩ := cube_ray (x + s • v) (-v)
+    have hpzp : ∀ i, (zp i : ℝ) ≤ (x + s • v) i ∧ (x + s • v) i ≤ zp i + 1 := by
+      intro i
+      simpa using hzp 0 le_rfl hτp i
+    have hpzm : ∀ i, (zm i : ℝ) ≤ (x + s • v) i ∧ (x + s • v) i ≤ zm i + 1 := by
+      intro i
+      simpa using hzm 0 le_rfl hτm i
+    have hε' : 0 < ε / ‖v‖ := div_pos hε hvpos
+    obtain ⟨δp, hδp, hp2⟩ := H2 zp (x + s • v) hpL hpzp (ε / ‖v‖) hε'
+    obtain ⟨δm, hδm, hm2⟩ := H2 zm (x + s • v) hpL hpzm (ε / ‖v‖) hε'
+    refine ⟨min (min τp τm) (min (δp / ‖v‖) (δm / ‖v‖)), by positivity, ?_⟩
+    intro s' hs' hss'
+    have hτp' : |s' - s| < τp := lt_of_lt_of_le hss' ((min_le_left _ _).trans (min_le_left _ _))
+    have hτm' : |s' - s| < τm := lt_of_lt_of_le hss' ((min_le_left _ _).trans (min_le_right _ _))
+    have hδp' : |s' - s| < δp / ‖v‖ :=
+      lt_of_lt_of_le hss' ((min_le_right _ _).trans (min_le_left _ _))
+    have hδm' : |s' - s| < δm / ‖v‖ :=
+      lt_of_lt_of_le hss' ((min_le_right _ _).trans (min_le_right _ _))
+    have hq : x + s' • v = (x + s • v) + (s' - s) • v := by rw [sub_smul]; abel
+    have hqL : x + s' • v ∉ L := (hseg s' hs').1
+    have hdist : dist (x + s' • v) (x + s • v) = |s' - s| * ‖v‖ := by
+      rw [hq, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+    -- (H2) on a cube `z` containing `x + s' • v` gives the bound, via `c₁ / dist(·, L) ≤ K`.
+    have key : ∀ (z : Fin N → ℤ) (δ' : ℝ), (∀ x' : Eucl N, x' ∉ L →
+        (∀ i, (z i : ℝ) ≤ x' i ∧ x' i ≤ z i + 1) → dist x' (x + s • v) < δ' →
+        dist (ψ x') (ψ (x + s • v)) ≤
+          (c₁ / infDist (x + s • v) L + ε / ‖v‖) * dist x' (x + s • v)) →
+        |s' - s| < δ' / ‖v‖ → (∀ i, (z i : ℝ) ≤ (x + s' • v) i ∧ (x + s' • v) i ≤ z i + 1) →
+        ‖ψ (x + s' • v) - ψ (x + s • v)‖ ≤ (K * ‖v‖ + ε) * |s' - s| := by
+      intro z δ' h2 hlt hmem
+      have hd : dist (x + s' • v) (x + s • v) < δ' := by
+        rw [hdist]
+        rwa [lt_div_iff₀ hvpos] at hlt
+      rw [← dist_eq_norm]
+      calc dist (ψ (x + s' • v)) (ψ (x + s • v))
+          ≤ (c₁ / infDist (x + s • v) L + ε / ‖v‖) * dist (x + s' • v) (x + s • v) :=
+            h2 _ hqL hmem hd
+        _ ≤ (K + ε / ‖v‖) * dist (x + s' • v) (x + s • v) := by gcongr
+        _ = (K * ‖v‖ + ε) * |s' - s| := by rw [hdist]; field_simp
+    rcases le_or_gt s s' with hle | hlt
+    · refine key zp δp hp2 hδp' fun i => ?_
+      have hts : 0 ≤ s' - s := sub_nonneg.2 hle
+      have h := hzp (s' - s) hts (by rwa [abs_of_nonneg hts] at hτp') i
+      have hcoord : (x + s' • v) i = (x + s • v) i + (s' - s) * v i := by
+        rw [hq]
+        simp
+      rw [hcoord]
+      exact h
+    · refine key zm δm hm2 hδm' fun i => ?_
+      have hts : 0 ≤ s - s' := by linarith
+      have h := hzm (s - s') hts (by rw [abs_sub_comm, abs_of_nonneg hts] at hτm'; exact hτm') i
+      have hcoord : (x + s' • v) i = (x + s • v) i + (s - s') * (-v) i := by
+        rw [hq]
+        simp
+        ring
+      rw [hcoord]
+      exact h
+  -- Step 1 (cont.): it suffices that `dist (ψ x) (ψ x') ≤ (c / σ) * dist x x'` on
+  -- `A = {σ ≤ dist(·, L)}`, as `Real.toNNReal σ = σ`.
+  apply LipschitzOnWith.of_dist_le_mul
+  intro x hx x' hx'
+  have hx0 : σ ≤ infDist x L := hx
+  have hx0' : σ ≤ infDist x' L := hx'
+  rw [NNReal.coe_div, NNReal.coe_mk, Real.coe_toNNReal σ hσ.le]
+  set c : ℝ := max (2 * c₁) (1 / 4 + 4 * Real.sqrt N) with hc
+  have hc1 : 2 * c₁ ≤ c := le_max_left _ _
+  have hc2 : 1 / 4 + 4 * Real.sqrt N ≤ c := le_max_right _ _
+  have hxL : x ∉ L := notL x (lt_of_lt_of_le hσ hx0)
+  have hx'L : x' ∉ L := notL x' (lt_of_lt_of_le hσ hx0')
+  have hd0 : 0 ≤ dist x x' := dist_nonneg
+  rcases le_or_gt (σ / 2) (dist x x') with hfar | hnear
+  · -- Step 4: far pairs, `σ / 2 ≤ |x - x'|`, by Step 3 and the triangle inequality.
+    have d1 := displacement x hxL
+    have d2 := displacement x' hx'L
+    have tri : dist (ψ x) (ψ x') ≤ dist x x' + 2 * Real.sqrt N := by
+      calc dist (ψ x) (ψ x') ≤ dist (ψ x) x + dist x x' + dist x' (ψ x') :=
+            dist_triangle4 _ _ _ _
+        _ ≤ Real.sqrt N + dist x x' + Real.sqrt N := by rw [dist_comm x' (ψ x')]; gcongr
+        _ = dist x x' + 2 * Real.sqrt N := by ring
+    refine tri.trans ?_
+    rw [div_mul_eq_mul_div, le_div_iff₀ hσ]
+    have e1 : dist x x' * σ ≤ dist x x' * (1 / 4) := mul_le_mul_of_nonneg_left hσ4 hd0
+    have e2 : Real.sqrt N * σ ≤ Real.sqrt N * (2 * dist x x') :=
+      mul_le_mul_of_nonneg_left (by linarith) hsqrt
+    have e3 : (1 / 4 + 4 * Real.sqrt N) * dist x x' ≤ c * dist x x' :=
+      mul_le_mul_of_nonneg_right hc2 hd0
+    nlinarith
+  · -- Step 5: near pairs, `|x - x'| < σ / 2`; put `v = x' - x`.
+    set v := x' - x with hv
+    have hnv : ‖v‖ = dist x x' := by rw [hv, ← dist_eq_norm, dist_comm]
+    -- Step 5(a): `σ / 2 < dist(x + s • v, L)` on `[0, 1]`, so the segment avoids `L` and
+    -- `c₁ / dist(x + s • v, L) ≤ 2 c₁ / σ`.
+    have hseg : ∀ s ∈ Icc (0 : ℝ) 1,
+        x + s • v ∉ L ∧ c₁ / infDist (x + s • v) L ≤ 2 * c₁ / σ := by
+      intro s hs
+      have hdist : dist x (x + s • v) = s * dist x x' := by
+        rw [dist_comm, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+          abs_of_nonneg hs.1, hnv]
+      have h1 := infDist_le_infDist_add_dist (x := x) (y := x + s • v) (s := L)
+      rw [hdist] at h1
+      have h2 : s * dist x x' ≤ dist x x' := by nlinarith [hs.2]
+      have hlow : σ / 2 < infDist (x + s • v) L := by linarith
+      have hpos : 0 < infDist (x + s • v) L := by linarith
+      refine ⟨notL _ hpos, ?_⟩
+      calc c₁ / infDist (x + s • v) L ≤ c₁ / (σ / 2) :=
+            div_le_div_of_nonneg_left hc₁ (by positivity) hlow.le
+        _ = 2 * c₁ / σ := by field_simp
+    -- Step 5(d): `deformation_retraction_dini_segment` for `γ s = ψ (x + s • v)`,
+    -- `K = (2 c₁ / σ) ‖v‖`.
+    have hd := Submission.deformation_retraction_dini_segment N (fun s => ψ (x + s • v))
+      (2 * c₁ / σ * ‖v‖) (segment_slope (2 * c₁ / σ) x v hseg)
+    simp only [one_smul, zero_smul, add_zero] at hd
+    have hxv : x + v = x' := by rw [hv]; abel
+    rw [hxv, hnv] at hd
+    rw [dist_comm, dist_eq_norm]
+    calc ‖ψ x' - ψ x‖ ≤ 2 * c₁ / σ * dist x x' := hd
+      _ ≤ c / σ * dist x x' := by gcongr
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
