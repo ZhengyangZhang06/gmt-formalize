@@ -813,6 +813,41 @@ theorem Submission.allard_tc_flat_blowup_ball_limits :
   rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
     V.weight_apply measurableSet_closedBall]
 
+/-- **At a tangent point the density equals the multiplicity** (child `tangent_plane_density` of
+`allard_tangent_cones`; Simon Ch. 8, 1.1 with Ch. 1, 3.1): if `V` has tangent plane `T` with
+multiplicity `θ` at `x`, then `Θ^n(μ_V, x) = θ`.  Child `flat_blowup_ball_limits` along `t = id` on
+`𝓝[>] 0` gives `μ_V(B_ρ(x)) / ρ^n → θ ω_n`.  For `B_ρ(x) ⊆ U` the ball mass is finite, so with
+`0 < ω_n < ∞` the density ratio is `ofReal (μ_V(B_ρ(x)) / ρ^n / ω_n)`; continuity of `ofReal`
+concludes. -/
+theorem Submission.allard_tc_tangent_plane_density :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ) := by
+  intro N n U V x T θ hT
+  obtain ⟨hxU, -, hconv⟩ := hT
+  -- `0 < ω_n < ∞`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hω : 0 < (unitBallVolume n).toReal := ENNReal.toReal_pos hω0 hωtop
+  -- `μ_V(B_ρ(x)) / ρ^n → θ ω_n` as `ρ ↓ 0`.
+  have hball : Tendsto (fun ρ : ℝ ↦ (V.weight (closedBall x ρ)).toReal / ρ ^ n) (𝓝[>] 0)
+      (𝓝 (θ * (unitBallVolume n).toReal)) :=
+    (Submission.allard_tc_flat_blowup_ball_limits N n U V x T θ (𝓝[>] 0) id hxU tendsto_id
+      hconv).2
+  -- Hence `ofReal (μ_V(B_ρ(x)) / ρ^n / ω_n) → ofReal θ`.
+  have hlim := ENNReal.tendsto_ofReal (hball.div_const (unitBallVolume n).toReal)
+  rw [mul_div_cancel_right₀ θ hω.ne'] at hlim
+  -- On `(0, δ)` with `B_δ(x) ⊆ U` this is the density ratio.
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hxU
+  refine hlim.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+  have hfin : V.weight (closedBall x ρ) ≠ ∞ := V.weight_finite_on_compact _
+    (isCompact_closedBall x ρ) ((closedBall_subset_ball hρ.2).trans hδU)
+  have hden : unitBallVolume n * ENNReal.ofReal ρ ^ n =
+      ENNReal.ofReal ((unitBallVolume n).toReal * ρ ^ n) := by
+    rw [ENNReal.ofReal_mul hω.le, ENNReal.ofReal_pow hρ.1.le, ENNReal.ofReal_toReal hωtop]
+  rw [densityRatio, hden, div_div, mul_comm (ρ ^ n),
+    ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hρ.1 n)), ENNReal.ofReal_toReal hfin]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
