@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_pointwise-a1.ball_comparison_bound-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_pointwise-a1",
+  "depth": 4,
+  "title": "Fixed-scale comparison of the weighted M-integral with the S-integral on a set carrying M",
+  "statement": "Let n, l be natural numbers, E = R^(n+l) (Amb n l), H^n = muHE[n]. Let M, S, B be subsets of E, theta, psi : E -> R, and c, K real numbers. Assume: B is measurable; M is H^n-null-measurable; theta is a.e.-measurable for H^n restricted to M; H^n((M cap B) minus S) = 0; H^n(S cap B) < infinity; psi is measurable; |psi(w)| <= K for every w; psi(w) = 0 for every w not in B; and Lambda := lintegral over S cap B of |1_M theta(w) - c|_e dH^n(w) < infinity, where 1_M theta = M.indicator theta. Then, for Bochner integrals, |integral over M of psi(w) theta(w) dH^n(w) - c * integral over S of psi(w) dH^n(w)| <= K * Lambda.toReal.",
+  "lean_statement": "∀ (n ℓ : ℕ) (M S B : Set (Amb n ℓ)) (θ ψ : Amb n ℓ → ℝ) (c K : ℝ), MeasurableSet B → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ B) \\ S) = 0 → (μHE[n] : Measure (Amb n ℓ)) (S ∩ B) ≠ ⊤ → Measurable ψ → (∀ w, |ψ w| ≤ K) → (∀ w, w ∉ B → ψ w = 0) → ∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ)) ≠ ⊤ → |∫ w in M, ψ w * θ w ∂(μHE[n] : Measure (Amb n ℓ)) - c * ∫ w in S, ψ w ∂(μHE[n] : Measure (Amb n ℓ))| ≤ K * (∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ))).toReal",
+  "lean_name": "dohr_tp_wtlp_ball_comparison_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-weighte-aee6e90149-a1"
+}

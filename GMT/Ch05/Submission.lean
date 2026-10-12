@@ -502,9 +502,204 @@ theorem dohr_tp_ae_lebesgue_point_of_growth : ∀ (n ℓ : ℕ) (ν : Measure (A
     _ = ENNReal.ofReal C *
           ((∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) / ν (closedBall y r)) := by
         rw [mul_comm C, inv_mul_cancel_left₀ hrn.ne']
+/-- **Blow-up change of variables** (Simon Ch. 3, Remark 1.8(2)).  For `η = η_{x,r}`,
+`η(z) = r⁻¹(z − x)`, with `r > 0`, any set `M` and any `f, θ`:
+`∫_{η(M)} f(y) θ(x + r y) dHⁿ(y) = r⁻ⁿ ∫_M f(η z) θ(z) dHⁿ(z)`.  As `η` is a homeomorphism and
+`Hⁿ(η(S)) = r⁻ⁿ Hⁿ(S)` for every `S`, `Hⁿ ⌞ η(M) = r⁻ⁿ η_#(Hⁿ ⌞ M)`; no integrability is needed. -/
+theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f θ : Amb n ℓ → ℝ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) = (r ^ n)⁻¹ * ∫ z in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * θ z ∂(μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ M f θ x r hr
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r with hη
+  -- `η` is the homeomorphism `z ↦ r⁻¹ • (z - x)`, hence a measurable embedding.
+  let e : Amb n ℓ ≃ₜ Amb n ℓ :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : ⇑e = η := rfl
+  have hemb : MeasurableEmbedding η := he ▸ e.toMeasurableEquiv.measurableEmbedding
+  have hinj : Function.Injective η := he ▸ e.injective
+  have hsurj : Function.Surjective η := he ▸ e.surjective
+  -- `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for every set `S`: a translation followed by a homothety.
+  have hscale : ∀ S : Set (Amb n ℓ), μ (η '' S) = ENNReal.ofReal r⁻¹ ^ n * μ S := by
+    intro S
+    have hshift : Isometry (fun y : Amb n ℓ => y - x) :=
+      Isometry.of_dist_eq fun a b => by simp only [dist_eq_norm, sub_sub_sub_cancel_right]
+    have himage : η '' S = AffineMap.homothety (0 : Amb n ℓ) r⁻¹ '' ((fun y => y - x) '' S) := by
+      rw [← image_comp]
+      congr 1
+      funext y
+      simp [hη, Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Amb n ℓ) (inv_ne_zero hr.ne'),
+      hshift.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow,
+      ← ENNReal.ofReal_coe_nnreal, coe_nnnorm, Real.norm_of_nonneg (inv_pos.mpr hr).le]
+  -- `Hⁿ ⌞ η(M) = (r⁻¹)ⁿ η_#(Hⁿ ⌞ M)`, checked on measurable `A` via `A ∩ η(M) = η(η⁻¹(A) ∩ M)`.
+  have hmeas : μ.restrict (η '' M) = (ENNReal.ofReal r⁻¹ ^ n) • (μ.restrict M).map η := by
+    ext A hA
+    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply hemb.measurable hA,
+      Measure.restrict_apply (hemb.measurable hA), smul_eq_mul, ← hscale, image_inter hinj,
+      image_preimage_eq A hsurj]
+  -- Transfer the integral and simplify `x + r • η z = z`.
+  rw [hmeas, integral_smul_measure, hemb.integral_map, ENNReal.toReal_pow,
+    ENNReal.toReal_ofReal (inv_pos.mpr hr).le, inv_pow, smul_eq_mul]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
+  simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
+    one_smul, add_sub_cancel]
+/-- **Rescaling the radius in a scaled Lebesgue-point limit.**  If `t⁻ⁿ L(t) → 0` in `[0, ∞]` as
+`t ↓ 0` and `ρ > 0`, then `L(rρ) < ∞` for all small `r > 0` and `r⁻ⁿ L(rρ) → 0` in `ℝ` as `r ↓ 0`:
+`r ↦ rρ` maps `𝓝[>] 0` into itself, `toReal` is continuous at `0`, and for `r > 0`
+`r⁻ⁿ L(rρ) = ρⁿ ((rρ)⁻ⁿ L(rρ)).toReal`. -/
+theorem dohr_tp_wtlp_rescaled_limit : ∀ (n : ℕ) (L : ℝ → ℝ≥0∞) (ρ : ℝ), 0 < ρ → Tendsto (fun t : ℝ => ENNReal.ofReal ((t ^ n)⁻¹) * L t) (𝓝[>] 0) (𝓝 0) → (∀ᶠ r in 𝓝[>] (0 : ℝ), L (r * ρ) ≠ ⊤) ∧ Tendsto (fun r : ℝ => (r ^ n)⁻¹ * (L (r * ρ)).toReal) (𝓝[>] 0) (𝓝 0) := by
+  intro n L ρ hρ hL
+  -- `r ↦ r * ρ` maps `𝓝[>] 0` into `𝓝[>] 0`, so `((rρ)ⁿ)⁻¹ L(rρ) → 0` as `r ↓ 0`.
+  have hmap : Tendsto (fun r : ℝ => r * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · exact ((continuous_mul_const ρ).tendsto' 0 0 (zero_mul ρ)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr using mul_pos hr hρ
+  have hF := hL.comp hmap
+  have hpos : ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < r := self_mem_nhdsWithin
+  refine ⟨?_, ?_⟩
+  · -- Eventually `((rρ)ⁿ)⁻¹ L(rρ) < 1`, while `L(rρ) = ∞` would make it `∞`.
+    filter_upwards [hpos, hF.eventually (eventually_lt_nhds zero_lt_one)] with r hr hlt htop
+    have hne : ENNReal.ofReal (((r * ρ) ^ n)⁻¹) ≠ 0 :=
+      (ENNReal.ofReal_pos.mpr (inv_pos.mpr (pow_pos (mul_pos hr hρ) n))).ne'
+    simp [htop, ENNReal.mul_top hne] at hlt
+  · -- `ρⁿ (((rρ)ⁿ)⁻¹ L(rρ)).toReal → 0` and equals `(rⁿ)⁻¹ (L(rρ)).toReal` for `r > 0`.
+    have h1 := ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hF).const_mul (ρ ^ n)
+    rw [ENNReal.toReal_zero, mul_zero] at h1
+    refine h1.congr' ?_
+    filter_upwards [hpos] with r hr
+    simp only [Function.comp_def, ENNReal.toReal_mul,
+      ENNReal.toReal_ofReal (inv_nonneg.mpr (pow_nonneg (mul_pos hr hρ).le n))]
+    rw [mul_pow, mul_inv, mul_comm ((r ^ n)⁻¹), ← mul_assoc, ← mul_assoc,
+      mul_inv_cancel₀ (pow_ne_zero n hρ.ne'), one_mul]
 
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
+
+namespace Submission
+
+/-- **Fixed-scale comparison on a set carrying `M`.**  If `ψ` is measurable, `|ψ| ≤ K` and `ψ = 0`
+off the measurable set `B`, and `Hⁿ ⌞ (M ∩ B)` is carried by `S` with `Hⁿ(S ∩ B) < ∞`, then
+`|∫_M ψ θ dHⁿ - c ∫_S ψ dHⁿ| ≤ K ∫_{S ∩ B} |1_M θ - c| dHⁿ`, provided the right side is finite.
+Both integrals localize to `S ∩ B`, where the difference is `∫_{S ∩ B} ψ (1_M θ - c) dHⁿ`. -/
+theorem dohr_tp_wtlp_ball_comparison_le : ∀ (n ℓ : ℕ) (M S B : Set (Amb n ℓ)) (θ ψ : Amb n ℓ → ℝ) (c K : ℝ), MeasurableSet B → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ B) \ S) = 0 → (μHE[n] : Measure (Amb n ℓ)) (S ∩ B) ≠ ⊤ → Measurable ψ → (∀ w, |ψ w| ≤ K) → (∀ w, w ∉ B → ψ w = 0) → ∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ)) ≠ ⊤ → |∫ w in M, ψ w * θ w ∂(μHE[n] : Measure (Amb n ℓ)) - c * ∫ w in S, ψ w ∂(μHE[n] : Measure (Amb n ℓ))| ≤ K * (∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ))).toReal := by
+  intro n ℓ M S B θ ψ c K
+  generalize (μHE[n] : Measure (Amb n ℓ)) = μ
+  intro hB hM hθ hMBS hSB hψ hψK hψB hΛ
+  have hψK' : ∀ w, ‖ψ w‖ ≤ K := fun w => by rw [Real.norm_eq_abs]; exact hψK w
+  -- The `S`-integral localizes to `S ∩ B`, as `ψ = 0` off `B`.
+  have h1 : ∫ w in S, ψ w ∂μ = ∫ w in S ∩ B, ψ w ∂μ := by
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := μ.restrict S) hψB,
+      Measure.restrict_restrict hB, inter_comm B S]
+  -- The `M`-integral localizes to `M ∩ B =ᵐ M ∩ (S ∩ B)`, i.e. to the integral of `ψ · 1_M θ`
+  -- over `S ∩ B`.
+  have h2 : ∫ w in M, ψ w * θ w ∂μ = ∫ w in S ∩ B, ψ w * M.indicator θ w ∂μ := by
+    have hae : (M ∩ B : Set (Amb n ℓ)) =ᵐ[μ] (M ∩ (S ∩ B) : Set (Amb n ℓ)) := by
+      refine ae_eq_set.mpr ⟨measure_mono_null (fun w hw => ?_) hMBS, ?_⟩
+      · exact ⟨hw.1, fun hS => hw.2 ⟨hw.1.1, hS, hw.1.2⟩⟩
+      · rw [show (M ∩ (S ∩ B)) \ (M ∩ B) = ∅ from
+          eq_empty_of_forall_notMem fun w hw => hw.2 ⟨hw.1.1, hw.1.2.2⟩, measure_empty]
+    have hMν : NullMeasurableSet M (μ.restrict (S ∩ B)) := hM.mono Measure.restrict_le_self
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := μ.restrict M) (s := B)
+        (f := fun w => ψ w * θ w) (fun w hw => by rw [hψB w hw, zero_mul]),
+      Measure.restrict_restrict hB, inter_comm B M, setIntegral_congr_set hae,
+      ← Measure.restrict_restrict₀ hMν, ← integral_indicator₀ hMν]
+    congr 1
+    funext w
+    exact indicator_mul_right M ψ θ
+  -- Integrability on `S ∩ B`, which has finite measure.
+  have : IsFiniteMeasure (μ.restrict (S ∩ B)) := isFiniteMeasure_restrict.mpr hSB
+  have hf : AEStronglyMeasurable (M.indicator θ) (μ.restrict (S ∩ B)) :=
+    ((aemeasurable_indicator_iff₀ hM).mpr hθ).restrict.aestronglyMeasurable
+  have hfc : Integrable (fun w => M.indicator θ w - c) (μ.restrict (S ∩ B)) :=
+    ⟨hf.sub aestronglyMeasurable_const, hasFiniteIntegral_iff_enorm.mpr hΛ.lt_top⟩
+  have hfi : Integrable (M.indicator θ) (μ.restrict (S ∩ B)) :=
+    (hfc.add (integrable_const c)).congr (ae_of_all _ fun w => by simp)
+  have hψb : ∀ᵐ w ∂(μ.restrict (S ∩ B)), ‖ψ w‖ ≤ K := ae_of_all _ hψK'
+  have hψi : Integrable ψ (μ.restrict (S ∩ B)) :=
+    (integrable_const K).mono' hψ.aestronglyMeasurable hψb
+  have hψf : Integrable (fun w => ψ w * M.indicator θ w) (μ.restrict (S ∩ B)) :=
+    hfi.bdd_mul hψ.aestronglyMeasurable hψb
+  -- Linearity: the difference is `∫_{S ∩ B} ψ (1_M θ - c)`.
+  have h6 : ∫ w in S ∩ B, ψ w * M.indicator θ w ∂μ - c * ∫ w in S ∩ B, ψ w ∂μ =
+      ∫ w in S ∩ B, ψ w * (M.indicator θ w - c) ∂μ := by
+    rw [← integral_const_mul, ← integral_sub hψf (hψi.const_mul c)]
+    congr 1
+    funext w
+    ring
+  -- `|ψ (1_M θ - c)| ≤ K |1_M θ - c|`, and `∫ |1_M θ - c| = Λ.toReal`.
+  have hle : ‖∫ w in S ∩ B, ψ w * (M.indicator θ w - c) ∂μ‖ ≤
+      ∫ w in S ∩ B, K * ‖M.indicator θ w - c‖ ∂μ :=
+    norm_integral_le_of_norm_le (hfc.norm.const_mul K) (ae_of_all _ fun w => by
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_right (hψK' w) (norm_nonneg _))
+  rw [integral_const_mul, integral_norm_eq_lintegral_enorm hfc.aestronglyMeasurable] at hle
+  rw [h2, h1, h6, ← Real.norm_eq_abs]
+  exact hle
+
+/-- **Weighted approximate tangent space at a Lebesgue point** (Simon Ch. 3, 1.4 ⇒ 1.7).
+Let `M` be `Hⁿ`-measurable, `θ` be `Hⁿ ⌞ M`-measurable, `Hⁿ((M ∩ B̆_ε(y)) \ S) = 0`,
+`Hⁿ(S ∩ B̆_ε(y)) < ∞`, `P` the approximate tangent space of `S` at `y`, and
+`r⁻ⁿ ∫_{S ∩ B_r(y)} |1_M θ − θ(y)| dHⁿ → 0`.  Then `P` is the approximate tangent space of `M`
+with respect to `θ` at `y`.  For `φ ∈ C_c` vanishing off `B_ρ(0)` with `|φ| ≤ K`, undoing the
+blow-up gives `I(r) − θ(y) J(r) = r⁻ⁿ (∫_M ψ θ − θ(y) ∫_S ψ)` with `ψ = φ ∘ η_{y,r}` supported in
+`B_{rρ}(y)`, which is at most `K r⁻ⁿ ∫_{S ∩ B_{rρ}(y)} |1_M θ − θ(y)| dHⁿ → 0`. -/
+theorem dohr_tp_weighted_tangent_of_lebesgue_point : ∀ (n ℓ : ℕ) (M S : Set (Amb n ℓ)) (θ : Amb n ℓ → ℝ) (y : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)) (ε : ℝ), 0 < ε → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ ball y ε) \ S) = 0 → (μHE[n] : Measure (Amb n ℓ)) (S ∩ ball y ε) ≠ ⊤ → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y P → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ w in S ∩ closedBall y r, ‖M.indicator θ w - θ y‖ₑ ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P := by
+  intro n ℓ M S θ y P ε hε hM hθ hMS hSfin hS hleb
+  refine ⟨hS.1, fun φ => ?_⟩
+  -- `φ` vanishes outside `B_ρ(0)` for some `ρ > 0`, and `|φ| ≤ K`.
+  obtain ⟨ρ, hρ, hφρ⟩ := φ.hasCompactSupport.exists_pos_le_norm
+  obtain ⟨K, hK⟩ := (map_continuous φ).bounded_above_of_compact_support φ.hasCompactSupport
+  -- The Lebesgue-point hypothesis along the radii `r ρ`: `L(r ρ) < ∞` and `r⁻ⁿ L(r ρ) → 0`.
+  obtain ⟨hLfin, hLlim⟩ := Submission.dohr_tp_wtlp_rescaled_limit n
+    (fun t => ∫⁻ w in S ∩ closedBall y t, ‖M.indicator θ w - θ y‖ₑ ∂(μHE[n] : Measure (Amb n ℓ)))
+    ρ hρ hleb
+  have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r * ρ < ε :=
+    (((continuous_mul_const ρ).tendsto' 0 0 (zero_mul ρ)).eventually
+      (eventually_lt_nhds hε)).filter_mono nhdsWithin_le_nhds
+  -- `I(r) - θ(y) J(r) → 0` for the weighted and unweighted blow-up integrals `I`, `J`.
+  have key : Tendsto (fun r : ℝ =>
+      (∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' M, φ z * θ (y + r • z)
+          ∂(μHE[n] : Measure (Amb n ℓ))) -
+        θ y * ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' S, φ z
+          ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) := by
+    have hlimK := hLlim.const_mul K
+    rw [mul_zero] at hlimK
+    refine squeeze_zero_norm' ?_ hlimK
+    filter_upwards [self_mem_nhdsWithin, hsmall, hLfin] with r hr hrε hLr
+    have hr' : (0 : ℝ) < r := hr
+    have hBε : closedBall y (r * ρ) ⊆ ball y ε := closedBall_subset_ball hrε
+    -- `ψ = φ ∘ η_{y,r}` is continuous, bounded by `K`, and vanishes off `B_{rρ}(y)`.
+    have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap y r) :=
+      show Continuous fun w : Amb n ℓ => r⁻¹ • (w - y) by fun_prop
+    have hψ0 : ∀ w, w ∉ closedBall y (r * ρ) →
+        φ (Poincare.SimonGMT.Chapter03.blowUpMap y r w) = 0 := by
+      intro w hw
+      apply hφρ
+      rw [mem_closedBall, not_le] at hw
+      rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv,
+        Real.norm_of_nonneg hr'.le, ← dist_eq_norm, le_inv_mul_iff₀ hr']
+      exact hw.le
+    -- The comparison on `B_{rρ}(y)`, using `Hⁿ((M ∩ B) \ S) = 0` and `Hⁿ(S ∩ B) < ∞`.
+    have hcmp := Submission.dohr_tp_wtlp_ball_comparison_le n ℓ M S (closedBall y (r * ρ)) θ
+      (fun w => φ (Poincare.SimonGMT.Chapter03.blowUpMap y r w)) (θ y) K measurableSet_closedBall
+      hM hθ (measure_mono_null (sdiff_subset_sdiff_left (inter_subset_inter_right M hBε)) hMS)
+      (ne_top_of_le_ne_top hSfin (measure_mono (inter_subset_inter_right S hBε)))
+      ((map_continuous φ).comp hηc).measurable
+      (fun w => by rw [← Real.norm_eq_abs]; exact hK _) hψ0 hLr
+    -- Undo the blow-ups: `I(r) = r⁻ⁿ ∫_M ψ θ` and `J(r) = r⁻ⁿ ∫_S ψ`.
+    have hJ := rsod_blowUp_setIntegral_eq n ℓ S φ (fun _ => 1) y r hr'
+    simp only [mul_one] at hJ
+    have hpos : (0 : ℝ) < (r ^ n)⁻¹ := inv_pos.mpr (pow_pos hr' n)
+    rw [rsod_blowUp_setIntegral_eq n ℓ M φ θ y r hr', hJ, Real.norm_eq_abs, mul_left_comm (θ y),
+      ← mul_sub, abs_mul, abs_of_pos hpos, mul_left_comm K]
+    exact mul_le_mul_of_nonneg_left hcmp hpos.le
+  -- `J(r) → ∫_P φ` by the tangent-space hypothesis on `S`, hence `I(r) → θ(y) ∫_P φ`.
+  have h2 := key.add ((hS.2 φ).const_mul (θ y))
+  rw [zero_add] at h2
+  refine Tendsto.congr (fun r => ?_) h2
+  exact sub_add_cancel _ _
+
+end Submission
 
 end GMT.Ch05
