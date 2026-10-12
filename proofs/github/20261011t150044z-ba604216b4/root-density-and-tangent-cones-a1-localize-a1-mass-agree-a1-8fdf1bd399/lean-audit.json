@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4addde957d4b8686159a268496f1927ffdf00e0827102c604b983b54286621fa",
+  "git_delta": {
+    "base_commit": "9fc696be8f4f5b697f59ac71581b8603f19a1fb6",
+    "candidate_commit": "0c79e2ab8192c141221cbe30fcd242e4becc6f00",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_massOn_eq_of_agreeOn",
+    "diff_sha256": "a36519b92157253a650fd67dbb6cfa65c4189b2a573452fe3643237256a0c179",
+    "source_sha256": "2765d3ee2cfa43d781b1392252ffc699493dd1f568f8b5655d215022793e2713",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_massOn_eq_of_agreeOn",
+      "statement": "∀ (P n : ℕ) (U V W : Set (Euclid P)) (hVU : V ⊆ U) (S : GeometricCurrentOn U n) (S' : GeometricCurrentOn V n), W ⊆ V → (∀ ω : TestFormOn V n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → S (testFormOnInclusion hVU n ω) = S' ω) → S.massOn W = S'.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
