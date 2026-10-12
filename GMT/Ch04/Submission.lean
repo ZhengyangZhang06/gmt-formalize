@@ -870,6 +870,60 @@ theorem Submission.mcm_density_usc_of_monotone : ∀ (n ℓ : ℕ) (V : Rectifia
               (Real.exp_pos _).le) le_rfl
         _ < omega n * t := hδt
     exact lt_of_mul_lt_mul_left hlt hω.le
+/-- **Ch. 4, 3.18 (p. 93) from the unit-weight identity.** Assume, for `0 < σ ≤ ρ` with
+`B_ρ(ξ) ⊆ U`, the identity
+`ρ⁻ⁿμ_V(B_ρ(ξ)) - σ⁻ⁿμ_V(B_σ(ξ)) = ∫_{B_ρ(ξ) \ B_σ(ξ)} r⁻ⁿ|D^⊥r|² dμ_V + ∫_σ^ρ e(τ) dτ`,
+`e(τ) = τ^{-n-1} ∫_{B_τ(ξ)} (x - ξ) · H dμ_V`. Since `|(x - ξ) · H| ≤ τ|H|` on `B_τ(ξ)`,
+`|e(τ)| ≤ τ⁻¹ · τ^{1-n} ∫_{B_τ(ξ)} |H| dμ_V ≤ δ/τ`, and `∫_σ^ρ δ/τ dτ = δ log(ρ/σ)`. -/
+theorem Submission.mcm_log_error_of_identity : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) → LogarithmicMonotonicityError := by
+  intro hUI n ℓ V U H ξ σ ρ δ hn hU hH hρU hσ hσρ hδ
+  obtain ⟨-, -, hid⟩ := hUI n ℓ V U H ξ σ ρ hn hU hH hρU hσ hσρ.le
+  -- Step 1: by the identity, the quantity inside the absolute value is `∫_{(σ,ρ]} e`.
+  have key : V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n -
+      ∫ x in closedBall ξ ρ \ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight =
+      ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1) := by
+    rw [hid]; ring
+  rw [key]
+  -- Step 2: `|e(τ)| ≤ δ / τ` for `τ ∈ (σ, ρ]`.
+  have hbound : ∀ τ ∈ Ioc σ ρ,
+      ‖(∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)‖ ≤ δ * τ⁻¹ := by
+    intro τ hτ
+    have hτpos : 0 < τ := hσ.trans hτ.1
+    have hsub : closedBall ξ τ ⊆ U := (closedBall_subset_closedBall hτ.2).trans hρU
+    have hHint : IntegrableOn H (closedBall ξ τ) V.weight :=
+      hH.1.integrableOn_compact_subset hsub (isCompact_closedBall ξ τ)
+    have h1 : ‖∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight‖ ≤
+        τ * ∫ x in closedBall ξ τ, ‖H x‖ ∂V.weight := by
+      rw [← integral_const_mul]
+      refine norm_integral_le_of_norm_le (hHint.norm.const_mul τ) ?_
+      filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+      calc ‖inner ℝ (x - ξ) (H x)‖ ≤ ‖x - ξ‖ * ‖H x‖ := norm_inner_le_norm _ _
+        _ ≤ τ * ‖H x‖ := by
+          gcongr
+          exact mem_closedBall_iff_norm.1 hx
+    have h2 := hδ τ ⟨hτ.1.le, hτ.2⟩
+    rw [Real.rpow_sub hτpos, Real.rpow_one, Real.rpow_natCast] at h2
+    have hτn : 0 < τ ^ n := pow_pos hτpos n
+    rw [norm_div, norm_pow, Real.norm_of_nonneg hτpos.le]
+    calc ‖∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight‖ / τ ^ (n + 1)
+        ≤ (τ * ∫ x in closedBall ξ τ, ‖H x‖ ∂V.weight) / τ ^ (n + 1) := by gcongr
+      _ = (τ / τ ^ n * ∫ x in closedBall ξ τ, ‖H x‖ ∂V.weight) * τ⁻¹ := by
+          rw [pow_succ]; field_simp
+      _ ≤ δ * τ⁻¹ := by gcongr
+  -- Step 3: `τ ↦ δ / τ` is continuous on `[σ, ρ]`, hence integrable on `(σ, ρ]`.
+  have hint : IntegrableOn (fun τ : ℝ ↦ δ * τ⁻¹) (Ioc σ ρ) := by
+    have hc : ContinuousOn (fun τ : ℝ ↦ δ * τ⁻¹) (Icc σ ρ) :=
+      continuousOn_const.mul (continuousOn_inv₀.mono fun x hx ↦ (hσ.trans_le hx.1).ne')
+    exact hc.integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  -- Step 4: `|∫_{(σ,ρ]} e| ≤ ∫_{(σ,ρ]} δ / τ dτ = δ log (ρ / σ)`.
+  calc |∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)|
+      = ‖∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)‖ :=
+        (Real.norm_eq_abs _).symm
+    _ ≤ ∫ τ in Ioc σ ρ, δ * τ⁻¹ :=
+        norm_integral_le_of_norm_le hint (ae_restrict_of_forall_mem measurableSet_Ioc hbound)
+    _ = δ * Real.log (ρ / σ) := by
+        rw [integral_const_mul, ← intervalIntegral.integral_of_le hσρ.le,
+          integral_inv_of_pos hσ (hσ.trans hσρ)]
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
