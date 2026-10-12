@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8639366bbd57f6cd31722c000397e408917924c9072dd3dfd123c28246279ef6",
+  "git_delta": {
+    "base_commit": "345203cd6c1bd16e7ee3eab0517903795fb6435c",
+    "candidate_commit": "2b7b5eeee3cb42ad4278d63de841c9c0cec82f19",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_ie_norm_fderiv_le_of_mean_value",
+    "diff_sha256": "69115cc6bb72cc2e89b096625b9100cf73f19a36eaf64abe727298a556f5ff74",
+    "source_sha256": "862a490d7644a3b284738c387608dc43a4d815ea74c9a584a23195ef50019ae3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_ie_norm_fderiv_le_of_mean_value",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (x : Euclid n) (ρ K : ℝ), 0 < n → 0 < ρ → DifferentiableAt ℝ u x → ContinuousOn u (closedBall x (3 * ρ / 2)) → (∀ z ∈ closedBall x (3 * ρ / 2), |u z| ≤ K) → (∀ z ∈ closedBall x (ρ / 2), ∫ y in ball z ρ, u y = (volume (ball z ρ)).toReal * u z) → ‖fderiv ℝ u x‖ ≤ 2 * (n : ℝ) * K / ρ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
