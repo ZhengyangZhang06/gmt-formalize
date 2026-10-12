@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "72b81192996f1966607b611400a2ed41eb866fa33f70c2c3c9458fca7ff7bce3",
+  "git_delta": {
+    "base_commit": "91725bc6273f8c4b48ea9977ee2458d60f2167ef",
+    "candidate_commit": "dbef2c15948a21d9574315bea458a9edb4f708e3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_tendsto_closedBall_density_of_approxTangent",
+    "diff_sha256": "c1820010ec1290e09151633fe8d24b076f2dafacafdca04486e7c745476bb99a",
+    "source_sha256": "6b2053dfea986b9457e33dcefd3e213f52e8a17a987f2c865568483543d88f72",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_tendsto_closedBall_density_of_approxTangent",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), 0 < s → μHE[n] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → Tendsto (fun ρ : ℝ => μHE[n] (M ∩ closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
