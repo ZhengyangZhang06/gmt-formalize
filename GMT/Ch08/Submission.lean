@@ -442,6 +442,42 @@ theorem Submission.intcpt_canon_weight_blowup_tendsto :
       (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal ht', smul_eq_mul,
     Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
   rfl
+/-- `H^n` of a closed disc in an `n`-plane (step 3 of the canonical-representation proof for
+Simon Ch. 8, 5.9): for `T ∈ G(N,n)` and `r ≥ 0`, `H^n(T ∩ B_r(0)) = ω_n r^n`, because `T.plane` is
+an `n`-dimensional inner product space, isometrically included in `ℝ^N`, on which `μHE[n]` is
+Lebesgue measure. -/
+theorem Submission.intcpt_canon_plane_closedBall_hausdorff :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: `dim T.plane = n`.
+  have hP : Module.finrank ℝ T.plane = n := T.finrank_plane
+  -- Step 2: `T.plane ∩ B_r(0)` is the image of the closed `r`-ball of `T.plane` under the inclusion.
+  have himage : (T.plane : Set (Euclidean N)) ∩ closedBall 0 r =
+      ((↑) : T.plane → Euclidean N) '' closedBall (0 : T.plane) r := by
+    ext z
+    constructor
+    · rintro ⟨hz, hzr⟩
+      exact ⟨⟨z, hz⟩, by simpa using hzr, rfl⟩
+    · rintro ⟨w, hw, rfl⟩
+      exact ⟨w.2, by simpa using hw⟩
+  -- Steps 3–5: the inclusion is an isometry, `μHE[finrank T.plane] = volume` on `T.plane`, and
+  -- Haar scaling gives `volume (B_r(0)) = ofReal (r ^ n) * volume (ball 0 1)`.
+  have hvol : (μHE[n] : Measure T.plane) = volume := by
+    have h := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := T.plane)
+    rwa [hP] at h
+  rw [himage, isometry_subtype_coe.euclideanHausdorffMeasure_image, hvol,
+    Measure.addHaar_closedBall volume (0 : T.plane) hr, hP]
+  -- Step 6: a linear isometry `T.plane ≃ ℝ^n` carries `volume (ball 0 1)` to `ω_n`.
+  have hball : (volume : Measure T.plane) (ball 0 1) = unitBallVolume n := by
+    let e : T.plane ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin n) :=
+      ((stdOrthonormalBasis ℝ T.plane).reindex (finCongr hP)).repr
+    have hpre : e ⁻¹' ball 0 1 = ball (0 : T.plane) 1 := by
+      ext w
+      simp [e]
+    rw [unitBallVolume, ← hpre,
+      e.measurePreserving.measure_preimage measurableSet_ball.nullMeasurableSet]
+  -- Step 7: `ofReal (r ^ n) = ofReal r ^ n`.
+  rw [hball, ENNReal.ofReal_pow hr, mul_comm]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
