@@ -458,6 +458,46 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **`C^{m+1,α}_loc` through first derivatives**: `u ∈ C^{m+1,α}_loc` iff `Du ∈ C^{m,α}_loc` iff
+every `D_k u ∈ C^{m,α}_loc`, the bookkeeping of the Schauder bootstrap in the proof of Simon Ch. 5,
+Theorem 7.1 (p. 128).  For `f : ℝⁿ → E` and open `U ⊆ ℝⁿ`, write
+(A) `f` is `C^{m+1}` on `U` and `D^{m+1}f` is `α`-Hölder on each compact `K ⊆ U`;
+(B) `f` is `C¹` on `U`, `Df` is `C^m` on `U` and `D^m(Df)` is `α`-Hölder on each compact `K ⊆ U`;
+(C) `f` is `C¹` on `U` and every partial derivative `D_k f = Df(·) e_k` is `C^m` on `U` with
+`D^m(D_k f)` `α`-Hölder on each compact `K ⊆ U`.
+Then `(A ↔ B) ∧ (A ↔ C)`. -/
+theorem dohr_eb_holder_succ_iff_fderiv : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → (((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) ∧ ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ∀ k : Fin n, ContDiffOn ℝ m (fun x => fderiv ℝ f x (EuclideanSpace.single k (1 : ℝ))) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ C * ‖x - y‖ ^ α))) := by
+  intro n E _ _ m α f U hU
+  -- Steps 1–2, (A ↔ B): `D^{m+1}f = Ψ ∘ D^m(Df)` for a linear isometry `Ψ`, and on the open set
+  -- `U`, `f ∈ C^{m+1}` iff `f ∈ C¹` and `Df ∈ C^m`.
+  have hAB := Submission.dohr_eb_hsif_succ_iff_curry n E m α f U hU
+  refine ⟨hAB, hAB.trans (and_congr_right fun _ => ?_)⟩
+  -- Steps 3–4, (B ↔ C) once `f ∈ C¹(U)`: `Df ∈ C^m(U)` iff every column `D_k f ∈ C^m(U)`; on `U`,
+  -- `‖Δ D^m(D_k f)‖ ≤ ‖Δ D^m(Df)‖ ≤ Σ_k ‖Δ D^m(D_k f)‖` (`Δ h = h(x) - h(y)`) transfers the Hölder
+  -- constants: `C` for each `D_k f`, and `Σ_k C_k` for `Df`.
+  have hcols := Submission.dohr_eb_hsif_contDiffOn_clm_iff_columns n E m (fderiv ℝ f) U
+  have hbds := Submission.dohr_eb_hsif_iteratedFDeriv_column_bounds n E m (fderiv ℝ f) U hU
+  constructor
+  · rintro ⟨hm, hH⟩ k
+    refine ⟨hcols.1 hm k, fun K hK hKU => ?_⟩
+    obtain ⟨C, hC⟩ := hH K hK hKU
+    exact ⟨C, fun x hx y hy => ((hbds hm x (hKU hx) y (hKU hy)).1 k).trans (hC x hx y hy)⟩
+  · intro hk
+    have hm : ContDiffOn ℝ m (fderiv ℝ f) U := hcols.2 fun k => (hk k).1
+    refine ⟨hm, fun K hK hKU => ?_⟩
+    choose C hC using fun k => (hk k).2 K hK hKU
+    refine ⟨∑ k, C k, fun x hx y hy => ?_⟩
+    calc _ ≤ ∑ k : Fin n,
+          ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x -
+            iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ :=
+          (hbds hm x (hKU hx) y (hKU hy)).2
+      _ ≤ ∑ k : Fin n, C k * ‖x - y‖ ^ α := Finset.sum_le_sum fun k _ => hC k x hx y hy
+      _ = (∑ k : Fin n, C k) * ‖x - y‖ ^ α := (Finset.sum_mul _ _ _).symm
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
