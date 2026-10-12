@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "175eb048706c33b9d631a5a585f1366f4231142625ae68dfd47424f16543749e",
+  "git_delta": {
+    "base_commit": "bf997ba43f0eb2ea823348c4c34cb970bf63574d",
+    "candidate_commit": "10187bec3a3b50651e82dbba25159a573e95a35f",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "poincare_level_set_lintegral_le",
+    "diff_sha256": "eb323c7966491f7ccd9d067f38bdef0d0e5b9d1339654ec28839fd214bce1722",
+    "source_sha256": "b556704cd02f6a9c2bd16c5c531f4bdf82689f75be7bf87a021ad4ff817d0313",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.poincare_level_set_lintegral_le",
+      "statement": "∀ (n : ℕ) (U : Set (Rn n)) (u : Rn n → ℝ) (θ β c : ℝ), MeasurableSet U → AEMeasurable u (volume.restrict U) → 0 < θ → ENNReal.ofReal θ * volume U ≤ min (volume {x ∈ U | β ≤ u x}) (volume {x ∈ U | u x ≤ β}) → ∫⁻ x in U, ‖u x - β‖ₑ ≤ ENNReal.ofReal (1 + θ⁻¹) * ∫⁻ x in U, ‖u x - c‖ₑ",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
