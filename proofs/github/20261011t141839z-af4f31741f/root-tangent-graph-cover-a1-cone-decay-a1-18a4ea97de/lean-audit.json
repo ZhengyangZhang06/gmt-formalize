@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ee79b57b7901d4d15fde428852a201c47c387151e886fa60ce50af0fa83c507c",
+  "git_delta": {
+    "base_commit": "3e8b00533a90aeedf902a6dff9adca3994e3155a",
+    "candidate_commit": "74924bc743564d594c9c5e5603f84109dc76dbed",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "tgc_tangent_cone_weight_decay",
+    "diff_sha256": "a9093315cab78fa4d70a05faf88626634def524d75774f8806185d1e80101a4a",
+    "source_sha256": "e23e7d516d277f331df73a706524d9d4d862f752e23c114d1f527c539431c114",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tgc_tangent_cone_weight_decay",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), 0 < n → HasTangentPlane V x T θ → ∀ β : ℝ, 0 < β → ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), V.weight {y | y ∈ closedBall x t ∧ β * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
