@@ -727,6 +727,35 @@ theorem mvk_laplacian_comp_add_smul : ∀ (n : ℕ) (h : Rn n → ℝ) (x₀ : R
   -- Step 4: `D²h₀(σ z) = D²h(x₀ + σ z)`.
   rw [iteratedFDeriv_comp_add_left]
   simp [L]
+/-- Rescaling and reflection of the convolution integral for an even kernel (used for the mean
+value kernel in Weyl's lemma, Simon Ch. 5, proof of Lemma 3.1): for `t > 0` and `ρ` even,
+`∫ t⁻ⁿ ρ(t⁻¹ y) h(x₀ − y) dy = ∫ ρ(z) h(x₀ + t z) dz`.  No integrability is needed: the Haar
+scaling formula, constant factors and the reflection `z ↦ −z` hold for the Bochner integral of an
+arbitrary function. -/
+theorem mvk_integral_rescale_reflect : ∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 < t → (∀ z : Rn n, ρ (-z) = ρ z) → ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y) = ∫ z, ρ z * h (x₀ + t • z) := by
+  intro n ρ h x₀ t ht hρ
+  -- The integrand is `f (t⁻¹ • y)` for `f z = t⁻ⁿ ρ(z) h(x₀ − t z)`, since `t • t⁻¹ • y = y`.
+  calc ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y)
+      = ∫ y, (fun z : Rn n => t⁻¹ ^ n * (ρ z * h (x₀ - t • z))) (t⁻¹ • y) := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+        simp only [smul_inv_smul₀ ht.ne', mul_assoc]
+    -- Scaling of Lebesgue measure: `∫ f (t⁻¹ • y) dy = tⁿ ∫ f`, since `finrank ℝ ℝⁿ = n`.
+    _ = t ^ n • ∫ z, t⁻¹ ^ n * (ρ z * h (x₀ - t • z)) := by
+        have hs := Measure.integral_comp_inv_smul_of_nonneg (volume : Measure (Rn n))
+          (fun z : Rn n => t⁻¹ ^ n * (ρ z * h (x₀ - t • z))) ht.le
+        rw [finrank_euclideanSpace_fin] at hs
+        exact hs
+    -- Pull out the constant `t⁻ⁿ` and cancel `tⁿ t⁻ⁿ = 1`.
+    _ = ∫ z, ρ z * h (x₀ - t • z) := by
+        rw [integral_const_mul, smul_eq_mul, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ ht.ne',
+          one_pow, one_mul]
+    -- `ρ` is even and `t • -z = -(t • z)`.
+    _ = ∫ z, ρ (-z) * h (x₀ + t • -z) := by
+        congr 1
+        ext z
+        rw [hρ, smul_neg, sub_eq_add_neg]
+    -- Lebesgue measure is invariant under `z ↦ -z`.
+    _ = ∫ z, ρ z * h (x₀ + t • z) := integral_neg_eq_self (fun z => ρ z * h (x₀ + t • z)) volume
 
 end Submission
 
