@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9a87c6b2fc423b5b0d1ee059cd7a077bbe3bccc4b36f2ab2174af7552eb75b34",
+  "git_delta": {
+    "base_commit": "cc722edd447d54f25e2a9572095d8b4a95165226",
+    "candidate_commit": "665bd8fa0da6c6fbb5d93bae028ec0a5b9f726d3",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "chart_tangentialDivergence_eq_gram_trace",
+    "diff_sha256": "9f25bb19b085563de5b13d3d4a0c4d429c9d7c0ba8e4c0f5b0c73230d5029971",
+    "source_sha256": "1c2bf427e719ec2889814328a64345817d17d555a918f26409c84a61632c0264",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chart_tangentialDivergence_eq_gram_trace",
+      "statement": "∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (Y : Rn N → Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → tangentialDivergence M Y y = LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A ∘L fderiv ℝ Y y ∘L A).toLinearMap",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "first.?variation|second.?variation|IsAdmissibleDeformation",
+        "weighted_area_formula|injective_area_formula_areaJacobianAt|IsSimonLocalRepresentation|IsSimonSubmanifold",
+        "normDet_comp|normDet_sq_eq_det_gram|theorem normDet_sq",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem ContDiffAt.eventually|eventually_forall_of_forall_eventually",
+        "aestronglyMeasurable_of_tendsto_ae|theorem.*tendsto_approx|def approx",
+        "python3 /tmp/variation-independent-audit-_7rz76ep/run_lean.py checks/image_area_formula.lean checks/gram_det_identity.lean checks/gram_det_derivatives.lean checks/deformation_calculus.lean checks/jacobian_family.lean checks/param_integral_deriv.lean",
+        "python3 /tmp/variation-independent-audit-_7rz76ep/run_lean.py Assembly.lean FamilyFull.lean",
+        "python3 /tmp/variation-independent-audit-_7rz76ep/run_lean.py InstCheck.lean GramCheck.lean",
+        "python3 /tmp/variation-independent-audit-_7rz76ep/run_lean.py LibAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1/decomposition-v1.json",
+        "/tmp/variation-independent-audit-_7rz76ep/AuditPremises.lean",
+        "/tmp/variation-independent-audit-_7rz76ep/Assembly.lean",
+        "/tmp/variation-independent-audit-_7rz76ep/FamilyFull.lean",
+        "/tmp/variation-independent-audit-_7rz76ep/InstCheck.lean",
+        "/tmp/variation-independent-audit-_7rz76ep/GramCheck.lean",
+        "/tmp/variation-independent-audit-_7rz76ep/LibAxioms.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected FirstVariation ∧ SecondVariation contract. All six one-line propositions independently elaborate against the frozen Submission without child implementations. Their bare names are unreserved in the DAG and other proposals; dependencies are acyclic and correctly directed. Independent recompilation verifies the supplied parent assembly from the exact child assumptions and authorized tangent sibling, with no sorryAx or parent-theorem reliance. The family proof uses exactly its two declared dependencies. Instance checks confirm identity, composition and determinant are those of continuous linear endomorphisms. Pinned dependency revisions match, and checked library lemmas use only propext, Classical.choice and Quot.sound. WeightedArea permits arbitrary nonnegative weights; the searched SimonGMT second-variation pattern returned no matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "image_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean agree, including hT, Borel measurability, pointwise differentiability and both injectivity hypotheses. The countable chart partition, Jacobian factorization, weighted chart formula and measurable disjoint-image summation prove the exact conclusion without circularity or additional regularity assumptions."
+    },
+    {
+      "key": "gram_det_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact operator identity matches the prose. The adapted orthonormal basis gives the Gram block on T and identity on its orthogonal complement; determinant invariance proves the formula, including zero-dimensional and noninjective cases."
+    },
+    {
+      "key": "gram_det_derivatives",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both derivative statements match their hypotheses precisely. The Leibniz calculation establishes the determinant derivatives; local positivity justifies differentiating the square root and identifying deriv j near zero. Parseval and Pythagoras produce the stated normal term. Only the declared Gram-identity dependency is used."
+    },
+    {
+      "key": "deformation_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three clauses match the prose. Local constancy outside compact K proves vanishing of both fields and spatial derivatives for every r. Spatial differentiation and symmetry of second derivatives prove C2; applying the same argument to the C² time-derivative field under C³ proves the exact C3 acceleration identity."
+    },
+    {
+      "key": "jacobian_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all smoothness, derivative and vanishing claims. Idempotence alone gives determinant 1 at the base point, so self-adjointness is unnecessary for smoothness. The remaining conclusions follow by unfolding the frozen definitions and applying the two declared dependencies. Independent Lean recompilation confirms this dependency usage."
+    },
+    {
+      "key": "param_integral_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes every required measure, compactness and measurability hypothesis. The proof supplies a uniform neighbourhood, bounds on g and its time derivatives, and composition measurability through simple-function approximation. Dominated differentiation and eventual derivative identities establish both clauses without requiring completeness or finite dimensionality of X."
+    }
+  ],
+  "required_changes": []
+}

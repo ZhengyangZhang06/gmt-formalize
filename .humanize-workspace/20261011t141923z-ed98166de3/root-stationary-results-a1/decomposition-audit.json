@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsAdmissibleDeformation|stationary_imp_mean_curvature_zero|second_fundamental_form_chart_formula|submanifold_divergence_identity_compact|deformation_velocity_acceleration_regularity|Submission\\.",
+        "integral_area_formula_of_injective_derivative|IsSimonLocalRepresentation.area_formula|weighted_area_formula|theorem|import",
+        "exists_open_image_eq_inter|isEmbedding_chartMap|integral_submanifoldDivergence|submanifoldDivergenceAt_eq_sum_inner|def submanifoldDivergenceAt|def areaJacobianAt|areaJacobianAt_eq_sqrt_det_adjoint_comp|measurable_areaJacobianAt",
+        "unique_on|mapsTo_tangent_cone|tangentConeAt_of_mem_nhds|theorem tangentConeAt_mono",
+        "integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean Types.lean > Types.log 2>&1",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean Assembly.lean > Assembly.log 2>&1",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean Library.lean > Library.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1/parent-child-handoff.json",
+        "/tmp/stationary-independent-audit-x9brtcbc/Types.lean",
+        "/tmp/stationary-independent-audit-x9brtcbc/Assembly.lean",
+        "/tmp/stationary-independent-audit-x9brtcbc/Library.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected conjunction. All ten children contribute, dependencies are correctly directed and acyclic, and TH exactly matches the registered sibling type. No name collisions were found among 54 DAG nodes or 29 other decomposition files; all names are bare identifiers. All ten frozen statements independently elaborate as propositions in the comparator-replayed scope, without referring to child implementations. No matrix-unit construction occurs. The supplied parent assembly was kernel-checked conditionally on the child and sibling hypotheses, with no sorryAx. Pinned definitions and library hypotheses support the proofs; checked area, topology, derivative and integration lemmas use only propext, Classical.choice and Quot.sound. The existing integral-curvature theorem assumes the divergence identity, so the proposed divergence proof is a genuine new obligation."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "deformation_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches both regularity and support clauses. The chain-rule calculations and patching over U and Kᶜ establish the claimed global differentiability orders, including the iterated derivative defining acceleration."
+    },
+    {
+      "key": "measure_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusions match. Compact chart preimages and finite Lipschitz covers prove finiteness; the area formula and positive Jacobian prove positivity. The argument covers dimension zero."
+    },
+    {
+      "key": "scaled_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every admissibility clause: bounded derivative, contraction-based bijectivity, preservation of U, invertible spatial derivatives, joint C² regularity, support, and the exact initial velocity."
+    },
+    {
+      "key": "sff_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The local projection extension is justified by the inverse function theorem and chart topology. Within-derivative uniqueness is used only on tangent-cone directions, correctly proving the frozen fderivWithin formula without assuming ambient uniqueness."
+    },
+    {
+      "key": "sff_properties",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart formula proves symmetry and normality; the Gram-matrix trace expression proves continuity of H. The normal-field argument needs only differentiability at the stated point, matching the weaker hypothesis exactly."
+    },
+    {
+      "key": "chart_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit density field has the required C¹ regularity and vanishing property. The product-rule, trace and Jacobi calculations establish the displayed identity with the correct curvature sign, using only declared dependencies."
+    },
+    {
+      "key": "divergence_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Integrability is established before integral manipulations. Chart properness, extension by zero, Euclidean integration by parts and the finite partition of unity prove the identity without assuming a submanifold divergence theorem."
+    },
+    {
+      "key": "stationary_mean_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Admissible bump deformations and FirstVariation yield a zero integral, contradicted by positivity near any nonzero H. Supporting the bump inside a chart supplies compactness, justifying removal of the parent's global compactness hypothesis."
+    },
+    {
+      "key": "mean_zero_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness of closure U ∩ M supplies the required local finiteness. Velocity regularity, the divergence identity and H = 0 give zero first variation; the empty-intersection case is handled explicitly."
+    },
+    {
+      "key": "stable_second_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes compact support, zero acceleration-divergence integral and the exact pointwise integrand identity. Its trace expressions justify integrability without continuous frames. SecondVariation and the empty case then prove the frozen conclusion non-circularly."
+    }
+  ],
+  "required_changes": []
+}

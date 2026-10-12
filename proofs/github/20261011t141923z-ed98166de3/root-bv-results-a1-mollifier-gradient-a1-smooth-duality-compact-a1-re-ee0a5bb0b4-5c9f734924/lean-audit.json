@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b4104c912867c129e203b002df2af2f6e11ef58f1a83fc84dd1bced4d2fccfa8",
+  "git_delta": {
+    "base_commit": "fd57875d9fa8cbb464c570f923ef481aa8103784",
+    "candidate_commit": "51fe04777ab63cb4c6c835e483b85e17fc6ffee1",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_regularized_unit_field_admissible",
+    "diff_sha256": "cd3bd8154c4e594ff00dba89431ec0fe108fa6e3cd7c50a49d951636ba83fcde",
+    "source_sha256": "189a4236557940803f512bcf04498506905d97f996f862e0f10565f67a249a8c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_regularized_unit_field_admissible",
+      "statement": "∀ (n : ℕ) (G : Rn n → Rn n) (χ : Rn n → ℝ) (η : ℝ) (g : Rn n → Rn n), ContDiff ℝ 1 G → ContDiff ℝ 1 χ → HasCompactSupport χ → (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) → 0 < η → (∀ x, g x = -(χ x / Real.sqrt (‖G x‖ ^ 2 + η ^ 2)) • G x) → ContDiff ℝ 1 g ∧ HasCompactSupport g ∧ tsupport g ⊆ tsupport χ ∧ ∀ x, ‖g x‖ ≤ 1",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

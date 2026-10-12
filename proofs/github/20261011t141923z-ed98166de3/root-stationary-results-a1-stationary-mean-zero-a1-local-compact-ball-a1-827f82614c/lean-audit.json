@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9542edd50b92755bed78ca6e8dff093209a9cc2f7ca0cf31eb650c47d7f0521c",
+  "git_delta": {
+    "base_commit": "248ae58165dc2ba3f7a07d67f8b26e019d681309",
+    "candidate_commit": "74549c2c89392dae1fbf78aa1c80b18a0c61d0a6",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_submanifold_exists_closedBall_isCompact_inter",
+    "diff_sha256": "53c5030c80238a555ebad4a650821de79ba36cd03d052a2da3cf4dc83477106e",
+    "source_sha256": "920e871b60b3d3e42a5ee7542326843357597c82542bd600ffc9faae79b5a7e8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_submanifold_exists_closedBall_isCompact_inter",
+      "statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

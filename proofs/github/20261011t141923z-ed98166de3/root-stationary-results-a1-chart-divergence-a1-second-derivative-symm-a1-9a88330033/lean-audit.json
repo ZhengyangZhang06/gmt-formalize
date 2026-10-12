@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9b767f1e94343d0b15bcab859f7abcb755174318e0da4f1e8e1fd3ae1a8bdc24",
+  "git_delta": {
+    "base_commit": "65a65d4e97b3246efcfa8e6b1ddc07366e30a27c",
+    "candidate_commit": "56a6d0a889abe1ee0d5b7cf7d4eabbeb19885bb2",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "fderiv_fderiv_symm_of_contDiffOn_two",
+    "diff_sha256": "a193ae3509959c27dfcb857481dd3c1041ffc4d8d00b947b0134923ecb3996d0",
+    "source_sha256": "a8c5acf7bf92e24e844ddb79934d044530fad25317a93d09f71c5a8df94dec6f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fderiv_fderiv_symm_of_contDiffOn_two",
+      "statement": "∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → ∀ x ∈ V, ∀ v w : Rn n, fderiv ℝ (fderiv ℝ ψ) x v w = fderiv ℝ (fderiv ℝ ψ) x w v",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

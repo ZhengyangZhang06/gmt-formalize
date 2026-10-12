@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.divergence_identity-a1.partition_identity-a1",
+  "parent_id": "root.stationary_results-a1.divergence_identity-a1",
+  "depth": 3,
+  "title": "Pointwise partition-of-unity decomposition of div_M Y + ⟨Y, H⟩ on M",
+  "statement": "Let N, p ∈ ℕ, M, S, O ⊆ ℝᴺ, Y : ℝᴺ → ℝᴺ of class C¹, and ζ_q : ℝᴺ → ℝ of class C¹ for q ∈ Fin p. Assume:\n- S is closed and Y(x) = 0 for x ∉ S;\n- O is open, M ∩ S ⊆ O, and Σ_q ζ_q(z) = 1 for every z ∈ O.\nThen for every y ∈ M:\ntangentialDivergence M Y y + ⟨Y(y), meanCurvature M y⟩ = Σ_q (tangentialDivergence M (ζ_q Y) y + ⟨ζ_q(y) Y(y), meanCurvature M y⟩),\nwhere ζ_q Y denotes the field z ↦ ζ_q(z) Y(z).",
+  "lean_statement": "∀ (N p : ℕ) (M S O : Set (Rn N)) (Y : Rn N → Rn N) (ζ : Fin p → Rn N → ℝ), ContDiff ℝ 1 Y → (∀ q, ContDiff ℝ 1 (ζ q)) → IsClosed S → (∀ x ∉ S, Y x = 0) → IsOpen O → M ∩ S ⊆ O → (∀ z ∈ O, ∑ q, ζ q z = 1) → ∀ y ∈ M, tangentialDivergence M Y y + inner ℝ (Y y) (meanCurvature M y) = ∑ q, (tangentialDivergence M (fun z ↦ ζ q z • Y z) y + inner ℝ (ζ q y • Y y) (meanCurvature M y))",
+  "lean_name": "tangentialDivergence_add_inner_eq_sum_partition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-divergence-identity-a1-partition-identity-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.gram_det_derivatives-a1",
+  "parent_id": "root.variation_formulas-a1",
+  "depth": 2,
+  "title": "First and second derivatives at t = 0 of √det(I − P + P A(t)* A(t) P) (Simon's printed second-order expansion)",
+  "statement": "Let N ∈ ℕ and let T ⊆ ℝᴺ be a linear subspace with orthogonal projection P := T.starProjection. Let (b_i)_{i∈ι} be an orthonormal basis of T indexed by a finite type ι, and let A : ℝ → L(ℝᴺ) (continuous linear endomorphisms of ℝᴺ) satisfy A(0) = I. Put j(t) := √det(I − P + P A(t)* A(t) P). (1) If A has derivative A₁ at 0, then j has derivative Σ_i ⟨b_i, A₁ b_i⟩ at 0. (2) Suppose A is differentiable at every point of some neighbourhood of 0, A has derivative A₁ at 0, and t ↦ deriv A t has derivative A₂ at 0. Then the function deriv j has derivative Σ_i ⟨b_i, A₂ b_i⟩ + (Σ_i ⟨b_i, A₁ b_i⟩)² + Σ_i ‖A₁b_i − P(A₁b_i)‖² − Σ_i Σ_k ⟨b_i, A₁ b_k⟩⟨b_k, A₁ b_i⟩ at 0.",
+  "lean_statement": "∀ (N : ℕ) (T : Submodule ℝ (Rn N)) (ι : Type) [Fintype ι] (b : OrthonormalBasis ι ℝ T) (A : ℝ → Rn N →L[ℝ] Rn N), A 0 = 1 → let j : ℝ → ℝ := fun t ↦ Real.sqrt ((1 - T.starProjection + T.starProjection ∘L ContinuousLinearMap.adjoint (A t) ∘L A t ∘L T.starProjection).det); (∀ A₁ : Rn N →L[ℝ] Rn N, HasDerivAt A A₁ 0 → HasDerivAt j (∑ i, inner ℝ (b i : Rn N) (A₁ (b i : Rn N))) 0) ∧ ∀ A₁ A₂ : Rn N →L[ℝ] Rn N, (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ A t) → HasDerivAt A A₁ 0 → HasDerivAt (deriv A) A₂ 0 → HasDerivAt (deriv j) (∑ i, inner ℝ (b i : Rn N) (A₂ (b i : Rn N)) + (∑ i, inner ℝ (b i : Rn N) (A₁ (b i : Rn N))) ^ 2 + ∑ i, ‖A₁ (b i : Rn N) - T.starProjection (A₁ (b i : Rn N))‖ ^ 2 - ∑ i, ∑ k, inner ℝ (b i : Rn N) (A₁ (b k : Rn N)) * inner ℝ (b k : Rn N) (A₁ (b i : Rn N))) 0",
+  "lean_name": "variation_gram_det_derivatives",
+  "depends_on": [
+    "root.variation_formulas-a1.gram_det_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.variation_formulas-a1.gram_det_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-gram-det-derivatives-a1-a1"
+}

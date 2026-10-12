@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1.egorov_closed_compact-a1",
+  "parent_id": "root.c1_approximation-a1",
+  "depth": 2,
+  "title": "Egorov's theorem on ℝⁿ with a closed good set and uniform convergence on its compact subsets",
+  "statement": "Let n ∈ ℕ, let C ⊆ ℝⁿ be Borel, and let F_k : ℝⁿ → ℝ (k ∈ ℕ) and G : ℝⁿ → ℝ be Borel functions with F_k(x) → G(x) for every x ∈ C. Then for every real ε > 0 there is a closed set A ⊆ C such that Lⁿ(C∖A) < ε and F_k → G uniformly on every compact subset of A.",
+  "lean_statement": "∀ (n : ℕ) (C : Set (Rn n)) (F : ℕ → Rn n → ℝ) (G : Rn n → ℝ), MeasurableSet C → (∀ k, Measurable (F k)) → Measurable G → (∀ x ∈ C, Tendsto (fun k ↦ F k x) atTop (𝓝 (G x))) → ∀ ε : ℝ, 0 < ε → ∃ A ⊆ C, IsClosed A ∧ volume (C \\ A) < ENNReal.ofReal ε ∧ ∀ K ⊆ A, IsCompact K → TendstoUniformlyOn F G atTop K",
+  "lean_name": "c1approx_egorov_closed_compact_uniform",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-approximation-a1-egorov-closed-compact-a1-a1"
+}

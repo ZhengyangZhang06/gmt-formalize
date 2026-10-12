@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b6603af4c73514214d74cc4d1123efe3f4fdade60fe4f109ddbb9cc0847d3fc6",
+  "git_delta": {
+    "base_commit": "f5f284c03fa37667dda1e788f648d6bae5d8f877",
+    "candidate_commit": "1c4376f5bdc6bb91df69d1f5ebfc7a474e5a0321",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "eilenberg_compact_hausdorff_eq_iSup_open_content",
+    "diff_sha256": "7b8e14126d57535468c4dd9ba6b5512ca4a9a748be7d94a8dfcd3fef8acd1e59",
+    "source_sha256": "f38ac8829b0cea35b280d5379547a4cfd460cd3cca05cd7d07679a09e2953bb7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.eilenberg_compact_hausdorff_eq_iSup_open_content",
+      "statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (k : ℝ) (F : Set X), 0 < k → IsCompact F → MeasureTheory.Measure.hausdorffMeasure k F = ⨆ n : ℕ, ⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ Metric.ediam (O i) < ((n : ℝ≥0∞) + 1)⁻¹) (_ : F ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, Metric.ediam (O i) ^ k",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

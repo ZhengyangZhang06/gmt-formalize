@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4f9edd03cf09dd3069dd306683b6e038e578f2322480e1d2fe2c46253758c816",
+  "git_delta": {
+    "base_commit": "72e695e1199c7cf6a2d27e6364767aef8d73b7fe",
+    "candidate_commit": "c31ee22dac53c6a06b0aa190847248e84cca2fe6",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "150d7b2ce513db62d587a0678c6abf47cf2a66e4d1d07cf623630929ced5f450",
+    "source_sha256": "6ba0ef74de33b98978c0b9c4580be96a3029c2d488eebf1322f0c6c36b21030f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.whitney_smooth_partition_of_unity",
+      "statement": "∀ (n : ℕ) (A : Set (Rn n)), IsClosed A → A.Nonempty → ∃ (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (C M : ℝ), 0 ≤ C ∧ 0 ≤ M ∧ (∀ i, p i ∈ A) ∧ (∀ i, ∀ x ∉ A, ContDiffAt ℝ 1 (φ i) x) ∧ (∀ i, ∀ x ∉ A, 0 ≤ φ i x) ∧ (∀ x ∉ A, ∃ s : Finset ι, ∃ V ∈ 𝓝 x, ∀ i ∉ s, ∀ y ∈ V, φ i y = 0) ∧ (∀ x ∉ A, ∑ᶠ i, φ i x = 1) ∧ (∀ i, ∀ x ∉ A, φ i x ≠ 0 → ‖x - p i‖ ≤ C * Metric.infDist x A) ∧ (∀ x ∉ A, Metric.infDist x A ≤ 1 → ∑ᶠ i, ‖fderiv ℝ (φ i) x‖ ≤ M / Metric.infDist x A)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

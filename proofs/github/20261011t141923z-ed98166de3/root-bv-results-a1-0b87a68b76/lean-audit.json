@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6f9495f9bcf27a09bdfa6df856ad6e67e6cadd4bebc2888728e4978ad1a33a90",
+  "git_delta": {
+    "base_commit": "cddaba634a8a63098642871c4edd2003db7a2802",
+    "candidate_commit": "5f29a27e4cf77717a0be4acd371184be3b255282",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "1f729110c7e337afbe00562e5aef5562add3a30d65a6c9308fb68cb06a749703",
+    "source_sha256": "cf98a404b69790a02a39bccef340c5dad75db150942598ccf41d63b1b1831c4c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_compactness_poincare_extension",
+      "statement": "BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

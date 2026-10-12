@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "03461a37153cdd2ba5d6e309c88391bd43af65150fc4378ede5ffc53af83aadd",
+  "git_delta": {
+    "base_commit": "683b3f4aa8d6db46af92e32ee3ac54177b4efb47",
+    "candidate_commit": "247710eee67560b9980fed19a2b2d575c45f4d33",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bounded_set_separated_finset_card_mul_pow_le",
+    "diff_sha256": "bc30b7d521e5e69070907268ce7ad7d669c2eaddfb33a55aedd8b99f7987c734",
+    "source_sha256": "cce61c1568c91ef3b6312d7e808a8568d14fd2d90c1a8d52ea189c3bc911dd93",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bounded_set_separated_finset_card_mul_pow_le",
+      "statement": "∀ (n : ℕ) (K : Set (Rn n)), Bornology.IsBounded K → ∃ C : ℝ, ∀ r : ℝ, 0 < r → r ≤ 1 → ∀ F : Finset (Rn n), (↑F : Set (Rn n)) ⊆ K → (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → (F.card : ℝ) * r ^ n ≤ C",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

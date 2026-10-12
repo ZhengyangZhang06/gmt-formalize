@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.covering_majorant-a1.fixed_scale_majorant-a1",
+  "parent_id": "root.eilenberg_inequality-a1.covering_majorant-a1",
+  "depth": 3,
+  "title": "Eilenberg covering estimate at one fixed scale",
+  "statement": "Let X be a metric space with its Borel σ-algebra, m ∈ ℕ, k > 0 real, and E ⊆ X with μH[m+k](E) < ∞. Here μH is Mathlib's unnormalized Hausdorff measure, and E is arbitrary (not assumed measurable). Let K ∈ ℝ≥0, let f : X → ℝᵐ (= Rn m) be K-Lipschitz on E, and let r, ε ∈ (0,∞]. For F ⊆ X put pre^k_r(F) := inf { Σ_n [t_n ≠ ∅](ediam t_n)^k : t : ℕ → Set X, F ⊆ ⋃_n t_n, ediam t_n ≤ r for all n }, where [t ≠ ∅]x = x if t ≠ ∅ and 0 if t = ∅. Then there is a Borel measurable g : ℝᵐ → [0,∞] such that (ω_k/2^k)·pre^k_r(E ∩ f⁻¹{y}) ≤ g(y) for every y ∈ ℝᵐ, and ∫_{ℝᵐ} g dLᵐ ≤ (ω_m ω_k K^m / 2^{m+k})·(μH[m+k](E) + ε). Here ω_d = Chapter01.realUnitBallVolume d, 2^k and 2^{m+k} are real powers, and K^m is a natural power.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (E : Set X) (f : X → Rn m) (K : ℝ≥0) (r ε : ℝ≥0∞), 0 < k → μH[(m : ℝ) + k] E < ⊤ → LipschitzOnWith K f E → 0 < r → 0 < ε → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, Chapter01.realUnitBallVolume k / (2 : ℝ≥0∞) ^ k * (⨅ (t : ℕ → Set X) (_ : E ∩ f ⁻¹' {y} ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r), ∑' n, ⨆ (_ : (t n).Nonempty), ediam (t n) ^ k) ≤ g y) ∧ ∫⁻ y, g y ∂volume ≤ Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k * (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) * (μH[(m : ℝ) + k] E + ε)",
+  "lean_name": "eilenberg_covering_fixed_scale_majorant",
+  "depends_on": [
+    "root.eilenberg_inequality-a1.covering_majorant-a1.lipschitz_image_volume-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.eilenberg_inequality-a1.covering_majorant-a1.lipschitz_image_volume-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-covering-majorant-a1-fixed-scale-majorant-a1-a1"
+}

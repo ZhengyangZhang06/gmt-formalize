@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.gram_det_identity-a1",
+  "parent_id": "root.variation_formulas-a1",
+  "depth": 2,
+  "title": "Tangential Jacobian as the square root of an ambient Gram determinant",
+  "statement": "Let N, N′ ∈ ℕ and let T ⊆ ℝᴺ be a linear subspace with orthogonal projection P := T.starProjection : ℝᴺ → ℝᴺ and inclusion ι_T : T → ℝᴺ. Let A : ℝᴺ → ℝ^{N′} be a continuous linear map with adjoint A*. Then areaJacobian(A ∘ ι_T) = √det(I − P + P ∘ A* ∘ A ∘ P), where the determinant on the right is that of the linear endomorphism I − P + PA*AP of ℝᴺ, and areaJacobian(L) = √det(L*L).",
+  "lean_statement": "∀ (N N' : ℕ) (T : Submodule ℝ (Rn N)) (A : Rn N →L[ℝ] Rn N'), areaJacobian (A.comp T.subtypeL) = Real.sqrt ((1 - T.starProjection + T.starProjection ∘L ContinuousLinearMap.adjoint A ∘L A ∘L T.starProjection).det)",
+  "lean_name": "variation_gram_det_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-gram-det-identity-a1-a1"
+}

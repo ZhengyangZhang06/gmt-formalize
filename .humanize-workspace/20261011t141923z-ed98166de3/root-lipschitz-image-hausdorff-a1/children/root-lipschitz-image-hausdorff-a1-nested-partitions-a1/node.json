@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_image_hausdorff-a1.nested_partitions-a1",
+  "parent_id": "root.lipschitz_image_hausdorff-a1",
+  "depth": 2,
+  "title": "Nested countable Borel partitions of a separable metric space with mesh 1/(i+1)",
+  "statement": "Let X be a separable metric space with its Borel σ-algebra. There is a family P : ℕ → ℕ → Set X such that:\n(1) every P i j is Borel;\n(2) for each i, the sets P i j (j ∈ ℕ) are pairwise disjoint;\n(3) for each i, ∪_j P i j = X;\n(4) for all i, j, any two points x, x′ ∈ P i j satisfy dist(x, x′) < 1/(i+1);\n(5) for all i, j there is k with P (i+1) j ⊆ P i k, i.e. each partition refines the previous one.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [TopologicalSpace.SeparableSpace X] [MeasurableSpace X] [BorelSpace X], ∃ P : ℕ → ℕ → Set X, (∀ i j, MeasurableSet (P i j)) ∧ (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) ∧ (∀ i, ⋃ j, P i j = Set.univ) ∧ (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) ∧ (∀ i j, ∃ k, P (i + 1) j ⊆ P i k)",
+  "lean_name": "lipschitzImage_exists_nested_partitions",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-lipschitz-image-hausdorff-a1-nested-partitions-a1-a1"
+}

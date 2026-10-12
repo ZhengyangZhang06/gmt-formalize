@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.stationary_results-a1.divergence_identity-a1`
+- Child DAG node: `root.stationary_results-a1.divergence_identity-a1.chart_localization-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2a–2c of the supplied proof of the parent node root.stationary_results-a1.divergence_identity-a1 (restriction of ∫_M to the chart image, the area formula, extension by zero), with the integrand f there replaced by an arbitrary g.
+
+Notation:
+- ℝ^d := EuclideanSpace ℝ (Fin d) = Rn d.
+- Hⁿ := μHE[n], on ℝᴺ and also on ℝⁿ, where it equals Lebesgue measure.
+- Dψ(x) := fderiv ℝ ψ x, and Jψ := Chapter02.areaJacobianAt ψ.
+
+1. (Compact parameter set.) Put Q := V ∩ ψ⁻¹(K). Since K is compact and K ⊆ W, Q is compact by relative properness of the representation (the IsProperOnInto ψ V W field). Clearly Q ⊆ V. If x ∈ V ∖ Q then ψ(x) ∉ K, hence w(x) = 0 by hypothesis. So w = 0 on V ∖ Q.
+
+2. (Restriction to the chart image.) We have ψ(V) = W ∩ M ⊆ M. Let y ∈ M ∖ ψ(V). Then y ∉ W (otherwise y ∈ W ∩ M = ψ(V)), hence y ∉ K because K ⊆ W, hence g(y) = 0 by hypothesis. M is measurable, ψ(V) ⊆ M and g = 0 on M ∖ ψ(V), so ∫_M g dHⁿ = ∫_{ψ(V)} g dHⁿ (MeasureTheory.setIntegral_eq_of_subset_of_forall_sdiff_eq_zero with t := M, s := ψ(V)). This identity of Bochner integrals needs no integrability assumption on g.
+
+3. (Hypotheses of the area formula.)
+ - V is open, hence measurable.
+ - Since 1 ≤ r we have r ≠ 0, and ψ is C^r on V, so ψ is differentiable on V (ContDiffOn.differentiableOn). As V is a neighbourhood of each of its points, ψ is differentiable at every x ∈ V (DifferentiableOn.differentiableAt).
+ - Dψ(x) is injective for x ∈ V, and ψ is injective on V (fields of the representation).
+
+4. (Area formula.) Apply SimonGMT's kernel-checked Bochner area formula Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative (module Poincare.SimonGMT.Chapter02.WeightedArea) with E := ℝⁿ, F := ℝᴺ, G := ℝ, s := V, f := ψ, to the function g; no integrability hypothesis is required. It gives ∫_{ψ(V)} g dμHE[finrank ℝ ℝⁿ] = ∫_V Jψ(x) • g(ψ(x)) dμHE[finrank ℝ ℝⁿ](x). Here finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin), and μHE[n] on ℝⁿ = EuclideanSpace ℝ (Fin n) equals Lebesgue measure (EuclideanSpace.euclideanHausdorffMeasure_eq_volume). Hence ∫_{ψ(V)} g dHⁿ = ∫_V Jψ(x) g(ψ(x)) dx.
+
+5. (Divergence form.) By hypothesis Jψ(x) g(ψ(x)) = trace Dw(x) for every x ∈ V. Since V is measurable, ∫_V Jψ(x) g(ψ(x)) dx = ∫_V trace Dw(x) dx (setIntegral_congr_fun).
+
+6. (Euclidean divergence theorem.) The sibling euclidean_divergence (Submission.euclidean_setIntegral_trace_fderiv_eq_zero) applies to V (open), Q (compact, with Q ⊆ V by step 1) and w (C¹ on V, with w(x) = 0 for x ∈ V ∖ Q by step 1). It gives ∫_V trace Dw(x) dx = 0.
+
+7. (Conclusion.) Combining steps 2, 4, 5 and 6: ∫_M g dHⁿ = ∫_{ψ(V)} g dHⁿ = ∫_V Jψ(x) g(ψ(x)) dx = ∫_V trace Dw(x) dx = 0. ∎
+
+Implementation note: integral_area_formula_of_injective_derivative is not imported by GMT.Ch02.Submission. Add `import Poincare.SimonGMT.Chapter02.WeightedArea`; this was checked to leave all frozen contract definitions byte-identical.
+
+## Key steps
+
+1. Q := V ∩ ψ⁻¹(K) is compact by relative properness, and w = 0 on V ∖ Q.
+2. g = 0 on M ∖ ψ(V) because M ∖ ψ(V) = M ∖ W and K ⊆ W; since M is measurable, ∫_M g = ∫_{ψ(V)} g.
+3. By the Bochner area formula (SimonGMT integral_area_formula_of_injective_derivative), finrank ℝⁿ = n and μHE[n] = Lⁿ on ℝⁿ: ∫_{ψ(V)} g dHⁿ = ∫_V Jψ · (g ∘ ψ) dLⁿ.
+4. Replace Jψ · (g ∘ ψ) by trace Dw on V and apply euclidean_divergence to (V, Q, w).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat -n GMT/Ch02/Contract.lean; cat GMT/Ch02/README.md (snapshot project; checked that no SimonGMT tool used here is flagged unfaithful)`
+- `grep -n 'theorem\|def ' simongmt/Poincare/SimonGMT/Chapter02/{Submanifold,SubmanifoldCalculus,SubmanifoldIntegral,SubmanifoldTopology,WeightedArea,Area}.lean`
+- `grep -rn 'integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|euclideanHausdorffMeasure_eq_volume|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|finrank_euclideanSpace_fin|IntegrableOn.of_forall_sdiff_eq_zero|integrableOn_of_bounded|trace_eq_sum_inner|exists_isSubordinate' mathlib/Mathlib`
+- `grep ContDiffBump API (one_of_mem_closedBall, tsupport_eq, hasCompactSupport, contDiff); prod_one_sub_ordered; IsCompact.elim_nhds_subcover; contDiff_prod; HasCompactSupport.fderiv_apply; integral_finsetSum; setIntegral_eq_integral_of_forall_compl_eq_zero; basisFun_inner`
+- `rg for the five proposed lean_names in project/, mathlib/Mathlib, simongmt/Poincare and all 234 git refs (GMT/*.lean); python3 -I collision check against dag.json (119 nodes)`
+- `python3 -I gen_checks.py: gmt-compare.py child_modules (contract scope) + lean_contract.validate_lean_statement for the 5 statements; lake env lean NodeChallenge_00..04.lean`
+- `lake env lean checks/AssemblyCheck.lean, C1Check..C5Check.lean, FullCheck.lean with #print axioms; ImportProbe.lean; pp.all #print diff of the 36 contract definitions with/without extra imports (PrintA vs PrintB)`
+- `sed -n 1040,1160p book/chapter-02.txt (printed 4.20-4.30); read dag.json and nodes/root-stationary-results-a1-divergence-identity-a1/parent-child-handoff.json and parent-supplied-plan.md; git show of accepted-node Submission.lean headers`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/BigOperators/Ring/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-divergence-identity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/divid-decomp/checks/AssemblyCheck.lean`
+- `/tmp/divid-decomp/checks/FullCheck.lean`
+
+Frozen contract (Contract.lean lines 83-176): tangentialDivergence is the frame sum, meanCurvature is the frame trace of B, and tangentProjection is starProjection. The README marks none of the SimonGMT tools used here as unfaithful.
+
+SimonGMT supplies kernel-checked tools:
+- integral_area_formula_of_injective_derivative (WeightedArea.lean): a Bochner area formula with no integrability hypothesis;
+- submanifoldDivergenceAt_eq_sum_inner (SubmanifoldCalculus.lean);
+- areaJacobianAt (Area.lean).
+SimonGMT has no submanifold divergence theorem: integral_submanifoldDivergence_eq_curvature_sub_boundary takes the tangential divergence theorem as a hypothesis. So the five children are new obligations.
+
+Mathlib 25730c7c supplies:
+- integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (LineDeriv/IntegrationByParts.lean);
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume;
+- setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (the _diff name is deprecated);
+- IntegrableOn.of_forall_sdiff_eq_zero;
+- integral_finsetSum (integral_finset_sum is deprecated);
+- LinearMap.trace_eq_sum_inner;
+- ContDiffBump.{one_of_mem_closedBall, tsupport_eq, hasCompactSupport, contDiff};
+- Finset.prod_one_sub_ordered;
+- IsCompact.elim_nhds_subcover;
+- HasCompactSupport.fderiv_apply.
+The manifold and topological partitions of unity (exists_isSubordinate) were checked and are not needed.
+
+Compile checks:
+- All 5 statements validate and elaborate in the replayed contract scope.
+- AssemblyCheck.lean proves the frozen parent type from the children and the sibling types.
+- FullCheck.lean proves every child with only propext, Classical.choice and Quot.sound.
+- Extra imports leave all frozen definitions byte-identical under pp.all.
+- No lean_name collisions.

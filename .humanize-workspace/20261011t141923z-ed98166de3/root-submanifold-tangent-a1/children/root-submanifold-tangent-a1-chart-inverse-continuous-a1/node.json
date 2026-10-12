@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.chart_inverse_continuous-a1",
+  "parent_id": "root.submanifold_tangent-a1",
+  "depth": 2,
+  "title": "Continuity of the inverse of a Simon local representation on W ∩ M (Simon 2.4.2)",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞, M ⊆ ℝᴺ, V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ satisfy IsSimonLocalRepresentation r M V W ψ: V and W are open, ψ is C^r on V, ψ is injective on V, ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(x) is injective for every x ∈ V. Let g := Function.invFunOn ψ V : ℝᴺ → ℝⁿ. Here g(y) is a point of V mapped to y by ψ whenever such a point exists, and a fixed arbitrary point of ℝⁿ otherwise. Then g is continuous on W ∩ M in the relative topology, that is, ContinuousOn g (W ∩ M).",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (Function.invFunOn ψ V) (W ∩ M)",
+  "lean_name": "simon_submanifold_chart_inverse_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-chart-inverse-continuous-a1-a1"
+}

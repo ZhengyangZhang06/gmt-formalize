@@ -1,0 +1,18 @@
+{
+  "node_id": "root.coarea_formula-a1.critical_fibers_submanifold-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/76",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/2225",
+  "candidate_commit": "56344428b37071d8d3148720d270ec78eb8135d8",
+  "integrated_commit": "",
+  "proof_base_commit": "3d68009ba7c12c282d863c27bb2562a54c17d818",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.coarea_formula-a1",
+  "requires": [
+    "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+    "root.coarea_formula-a1.critical_fibers_euclidean-a1"
+  ]
+}

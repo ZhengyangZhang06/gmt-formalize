@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "748fb790c4e3a793910209e52b038c02c47c9d5bb08e95c07a42ce8509478a4c",
+  "git_delta": {
+    "base_commit": "98231e95e1eb65e83f5086940b29ad30a19b4a62",
+    "candidate_commit": "8a81330d18d2e0e672819fac57eaa7295c4366d5",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "b6187e7c54a708f0c4e00089540c8c274755fc8493df774cba92ad49770629a7",
+    "source_sha256": "6ca00019dbbad9737f30b6f1e1285a159f510998c9932e997392b0c5e9f7c1ab",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.eilenberg_compact_fiber_measurable",
+      "statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (Q : Set X) (f : X → Rn m), 0 < k → IsCompact Q → ContinuousOn f Q → Measurable (fun y ↦ Chapter01.simonHausdorffMeasureReal k (Q ∩ f ⁻¹' {y}))",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

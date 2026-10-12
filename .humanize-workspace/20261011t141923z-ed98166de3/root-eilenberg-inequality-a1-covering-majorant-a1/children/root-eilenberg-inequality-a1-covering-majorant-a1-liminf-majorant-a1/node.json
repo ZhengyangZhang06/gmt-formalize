@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.covering_majorant-a1.liminf_majorant-a1",
+  "parent_id": "root.eilenberg_inequality-a1.covering_majorant-a1",
+  "depth": 3,
+  "title": "Fatou passage from scale-wise majorants to a Borel majorant of Hausdorff measures",
+  "statement": "Let X be a metric space with its Borel σ-algebra, (Y, ν) a measure space (Y : Type with a σ-algebra), d ∈ ℝ, c ∈ [0,∞], and F : Y → Set X. Let r : ℕ → [0,∞] satisfy r_i → 0; let g : ℕ → (Y → [0,∞]) with each g_i measurable; and let b : ℕ → [0,∞] and L ∈ [0,∞] satisfy b_i → L. For S ⊆ X and ρ ∈ [0,∞] put pre^d_ρ(S) := inf { Σ_n [t_n ≠ ∅](ediam t_n)^d : t : ℕ → Set X, S ⊆ ⋃_n t_n, ediam t_n ≤ ρ for all n }, where [t ≠ ∅]x = x if t ≠ ∅ and 0 otherwise. Assume c·pre^d_{r_i}(F(y)) ≤ g_i(y) for all i ∈ ℕ and y ∈ Y, and ∫_Y g_i dν ≤ b_i for all i. Then there is a measurable G : Y → [0,∞] with c·μH[d](F(y)) ≤ G(y) for every y ∈ Y and ∫_Y G dν ≤ L, where μH[d] is Mathlib's unnormalized d-dimensional Hausdorff measure on X.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (Y : Type) [MeasurableSpace Y] (ν : Measure Y) (d : ℝ) (c : ℝ≥0∞) (F : Y → Set X) (r : ℕ → ℝ≥0∞) (g : ℕ → Y → ℝ≥0∞) (b : ℕ → ℝ≥0∞) (L : ℝ≥0∞), Tendsto r atTop (𝓝 0) → (∀ i, Measurable (g i)) → (∀ (i : ℕ) (y : Y), c * (⨅ (t : ℕ → Set X) (_ : F y ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r i), ∑' n, ⨆ (_ : (t n).Nonempty), ediam (t n) ^ d) ≤ g i y) → (∀ i, ∫⁻ y, g i y ∂ν ≤ b i) → Tendsto b atTop (𝓝 L) → ∃ G : Y → ℝ≥0∞, Measurable G ∧ (∀ y, c * μH[d] (F y) ≤ G y) ∧ ∫⁻ y, G y ∂ν ≤ L",
+  "lean_name": "eilenberg_covering_liminf_majorant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-covering-majorant-a1-liminf-majorant-a1-a1"
+}

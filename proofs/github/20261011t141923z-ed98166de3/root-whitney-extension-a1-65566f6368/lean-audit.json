@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9015c7607934b4e3d109293a4f6a8fd6244db409a8fc9b47e5ac9d60acb87ef7",
+  "git_delta": {
+    "base_commit": "afe80bdc4fc0c0b8d911fdd278b87566bccf2713",
+    "candidate_commit": "b3fc3504803d0df1a8f1a9826d92509a8f5e263b",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "229e06aa9bada4aaa5874b9d1e1f0d0a104f9237978a9aa69427e2184787db37",
+    "source_sha256": "e27ce95409917d6d96377135739a7b882a0bd3cae99cc273b183057884893fd0",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.whitney_extension_theorem",
+      "statement": "WhitneyExtension",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f7bfc86a2cadb17869dd8ae493aebf88f8b6cdeee7d494195d086859727656c4",
+  "git_delta": {
+    "base_commit": "1cb8243d7ad379350e3c82f45bbf625765588f5f",
+    "candidate_commit": "27415b1387f93e3f7ff227cda04b869245ba70d2",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "eilenberg_covering_liminf_majorant",
+    "diff_sha256": "12af3f69f1a5abc980a3c50682284cc95989ee97f049f28e9301f1cc48fe1d33",
+    "source_sha256": "b7dca0680ade53552c93c96e4aa6726d510201a6d39c91ef38fc3e729962fea5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.eilenberg_covering_liminf_majorant",
+      "statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (Y : Type) [MeasurableSpace Y] (ν : Measure Y) (d : ℝ) (c : ℝ≥0∞) (F : Y → Set X) (r : ℕ → ℝ≥0∞) (g : ℕ → Y → ℝ≥0∞) (b : ℕ → ℝ≥0∞) (L : ℝ≥0∞), Tendsto r atTop (𝓝 0) → (∀ i, Measurable (g i)) → (∀ (i : ℕ) (y : Y), c * (⨅ (t : ℕ → Set X) (_ : F y ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r i), ∑' n, ⨆ (_ : (t n).Nonempty), ediam (t n) ^ d) ≤ g i y) → (∀ i, ∫⁻ y, g i y ∂ν ≤ b i) → Tendsto b atTop (𝓝 L) → ∃ G : Y → ℝ≥0∞, Measurable G ∧ (∀ y, c * μH[d] (F y) ≤ G y) ∧ ∫⁻ y, G y ∂ν ≤ L",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

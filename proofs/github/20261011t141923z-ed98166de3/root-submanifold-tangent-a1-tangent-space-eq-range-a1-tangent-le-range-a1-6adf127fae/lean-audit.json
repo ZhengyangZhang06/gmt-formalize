@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "607102e1cabb672e0e2c6007035351c398372d6420f89bcb15adbf2298dc2be2",
+  "git_delta": {
+    "base_commit": "4d7be4003d44627de739d3be334d6428d1866913",
+    "candidate_commit": "5d9392b46b51454a6431309295a248f40dbd5a7b",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_chart_tangentSpace_le_range_fderiv",
+    "diff_sha256": "75d06dadac6c3b822a5fd848616d314fa40b3089ce61240b96d9d32a9250795c",
+    "source_sha256": "2255ed852cb8c066cbc32066d6c9cd7e7318da7c1fb6f3df8bfc777db44e0a55",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_chart_tangentSpace_le_range_fderiv",
+      "statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (Function.invFunOn ψ V) (W ∩ M) → ∀ x ∈ V, tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

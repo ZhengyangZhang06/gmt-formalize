@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1.det_contdiff-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1",
+  "depth": 4,
+  "title": "Smoothness of the determinant on L(ℝⁿ): T ↦ T.det is C^k for every order k",
+  "statement": "Let n ∈ ℕ. Let ℝⁿ := Rn n = EuclideanSpace ℝ (Fin n), and let L(ℝⁿ) := ℝⁿ →L[ℝ] ℝⁿ carry its operator-norm normed-space structure. For every smoothness order k ∈ WithTop ℕ∞ (finite orders, k = ∞ and the analytic order ω = ⊤), the determinant map det : L(ℝⁿ) → ℝ, T ↦ T.det, is C^k (ContDiff ℝ k). Here T.det = ContinuousLinearMap.det T = LinearMap.det of the underlying linear map of T.",
+  "lean_statement": "∀ (n : ℕ) (k : WithTop ℕ∞), ContDiff ℝ k (fun T : Rn n →L[ℝ] Rn n ↦ T.det)",
+  "lean_name": "contDiff_rn_continuousLinearMap_det",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-det-jacobi-a1-det-contdiff-a1-a1"
+}

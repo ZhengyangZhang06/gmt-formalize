@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4344887a5606db633fb7b31bf94c0352ab76d67464e2cc6250ba79202e24b7a2",
+  "git_delta": {
+    "base_commit": "adddcb22f37ae2eaef5c032f7738de31b0224bee",
+    "candidate_commit": "256079dddbb2e34d8769f3a1d707912a5aed7161",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_ext_ofReal_integral_cutoff_le",
+    "diff_sha256": "1d9424b13932dfed9956784a15fe7d2c3eaa1b25ff651952ebd9a4fa0b4d062f",
+    "source_sha256": "6a9a484e2cf095786d7682cc0ee02b98edfd4a96f457370f9d0a46360aeecc95",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_ext_ofReal_integral_cutoff_le",
+      "statement": "∀ (n : ℕ) (U : Set (Rn n)) (u φ : Rn n → ℝ) (g : CompactlySupportedContinuousMap (Rn n) (Rn n)), IsOpen U → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → Chapter02.IsLipschitzTestField g → Chapter02.compactlySupportedSupNorm g ≤ 1 → ENNReal.ofReal (∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

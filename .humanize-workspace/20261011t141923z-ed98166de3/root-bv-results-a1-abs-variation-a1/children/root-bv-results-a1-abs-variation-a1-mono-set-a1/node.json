@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.abs_variation-a1.mono_set-a1",
+  "parent_id": "root.bv_results-a1.abs_variation-a1",
+  "depth": 3,
+  "title": "Monotonicity of bvVariationOn in the domain",
+  "statement": "For every n ∈ ℕ, every function u : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) and all sets W ⊆ O ⊆ ℝⁿ, Chapter02.bvVariationOn u W ≤ Chapter02.bvVariationOn u O in [0,∞]. No openness, measurability or integrability is assumed. Here bvVariationOn u A is Simon's variational quantity (2.4): the supremum of ofReal(∫_A u·div g) over compactly supported Lipschitz vector fields g : C_c(ℝⁿ,ℝⁿ) with tsupport g ⊆ A and compactlySupportedSupNorm g ≤ 1.",
+  "lean_statement": "∀ (n : ℕ) (u : Rn n → ℝ) (W O : Set (Rn n)), W ⊆ O → Chapter02.bvVariationOn u W ≤ Chapter02.bvVariationOn u O",
+  "lean_name": "bv_abs_variation_mono_set",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-abs-variation-a1-mono-set-a1-a1"
+}

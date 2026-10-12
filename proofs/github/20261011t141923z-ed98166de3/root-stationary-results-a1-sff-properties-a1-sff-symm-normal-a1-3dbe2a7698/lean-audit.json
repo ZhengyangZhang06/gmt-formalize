@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4b9283cc193a8e6e83fe66563d2bc6ce0a7790f577a32a4ea7a0eddd7ef5ec7e",
+  "git_delta": {
+    "base_commit": "93c41a18d16b3117de3d0244f32fb2ad6bafd95f",
+    "candidate_commit": "d15154b702d5100abe18d869b533134add8ae76d",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "second_fundamental_form_symm_normal_of_chart_formula",
+    "diff_sha256": "76e07f7de538f9b85ce4580c217d81ab87a9094a127569e08e7256bab4f8eec3",
+    "source_sha256": "662709579dc97a0598ef02d302b92d89271675ed1e810b0659be0c549a450cd6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.second_fundamental_form_symm_normal_of_chart_formula",
+      "statement": "∀ (n N : ℕ) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, ∀ a b : Rn n, secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) = normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b)) → ∀ y ∈ M, ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, secondFundamentalForm M y τ η = secondFundamentalForm M y η τ ∧ ∀ v ∈ tangentSpace M y, inner ℝ (secondFundamentalForm M y τ η) v = 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

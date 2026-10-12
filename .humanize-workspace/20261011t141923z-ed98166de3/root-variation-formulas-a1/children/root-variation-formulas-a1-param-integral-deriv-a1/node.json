@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.param_integral_deriv-a1",
+  "parent_id": "root.variation_formulas-a1",
+  "depth": 2,
+  "title": "Differentiation once and twice under the integral sign for integrands g(t, e(z)) with e(S) inside a compact set",
+  "statement": "Let (α, μ) be a measure space, X a real normed space, S ⊆ α measurable with μ(S) < ∞, C ⊆ X compact, and e : α → X with e(z) ∈ C for every z ∈ S and e a.e. strongly measurable for μ⌊S. Let g : ℝ × X → ℝ. (I1) Suppose g is C¹ at (0,x) for every x ∈ C. Then z ↦ g(t, e z) is μ⌊S-integrable for all t in a neighbourhood of 0, and t ↦ ∫_S g(t, e z) dμ has derivative ∫_S deriv(t ↦ g(t, e z)) 0 dμ at 0. (I2) Suppose g is C² at (0,x) for every x ∈ C. Then, for all t in a neighbourhood of 0, s ↦ ∫_S g(s, e z) dμ has derivative ∫_S deriv(s ↦ g(s, e z)) t dμ at t. Moreover t ↦ ∫_S deriv(s ↦ g(s, e z)) t dμ has derivative ∫_S deriv(t ↦ deriv(s ↦ g(s, e z)) t) 0 dμ at 0.",
+  "lean_statement": "∀ (α X : Type) [MeasurableSpace α] [NormedAddCommGroup X] [NormedSpace ℝ X] (μ : Measure α) (S : Set α) (C : Set X) (e : α → X) (g : ℝ × X → ℝ), MeasurableSet S → μ S < ⊤ → IsCompact C → (∀ z ∈ S, e z ∈ C) → AEStronglyMeasurable e (μ.restrict S) → ((∀ x ∈ C, ContDiffAt ℝ 1 g (0, x)) → (∀ᶠ t in 𝓝 0, Integrable (fun z ↦ g (t, e z)) (μ.restrict S)) ∧ HasDerivAt (fun t ↦ ∫ z in S, g (t, e z) ∂μ) (∫ z in S, deriv (fun t ↦ g (t, e z)) 0 ∂μ) 0) ∧ ((∀ x ∈ C, ContDiffAt ℝ 2 g (0, x)) → (∀ᶠ t in 𝓝 0, HasDerivAt (fun s ↦ ∫ z in S, g (s, e z) ∂μ) (∫ z in S, deriv (fun s ↦ g (s, e z)) t ∂μ) t) ∧ HasDerivAt (fun t ↦ ∫ z in S, deriv (fun s ↦ g (s, e z)) t ∂μ) (∫ z in S, deriv (fun t ↦ deriv (fun s ↦ g (s, e z)) t) 0 ∂μ) 0)",
+  "lean_name": "variation_param_integral_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-param-integral-deriv-a1-a1"
+}

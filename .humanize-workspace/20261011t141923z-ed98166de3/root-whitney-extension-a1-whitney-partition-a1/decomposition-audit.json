@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "exists_disjoint_subfamily_covering_enlargement_closedBall|lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|notMem_iff_infDist_pos|exists_infDist_eq_dist|lipschitz_infDist_pt|theorem (support_eq|hasCompactSupport|one_of_mem_closedBall)|protected theorem contDiff",
+        "theorem totallyBounded_iff|exists_uniform_separated_bound|exists_whitneyBallCover_overlap_bound|exists_sum_norm_fderiv_whitneyWeight_bound|dist_near_anchor_le",
+        "whitney_cover_finite_overlap|whitney_partition_of_finite_overlap_cover|exists_whitneyBallCover|whitneyWeight",
+        "python3 /tmp/wpou-independent-audit-79b0a9ec-thcqvffq/check.py types",
+        "python3 /tmp/wpou-independent-audit-79b0a9ec-thcqvffq/check.py assembly",
+        "python3 /tmp/wpou-independent-audit-79b0a9ec-thcqvffq/check.py cover",
+        "python3 /tmp/wpou-independent-audit-79b0a9ec-thcqvffq/check.py partition",
+        "python3 /tmp/wpou-independent-audit-79b0a9ec-thcqvffq/check.py endtoend"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-whitney-extension-a1-whitney-partition-a1/parent-child-handoff.json",
+        "/tmp/wpou-independent-audit-79b0a9ec-thcqvffq/TypeCheck.lean",
+        "/tmp/wpou-independent-audit-79b0a9ec-thcqvffq/AssemblyCheck.lean",
+        "/tmp/wpou-independent-audit-79b0a9ec-thcqvffq/src/GMT/Ch02/Wpou/CoverCheck.lean",
+        "/tmp/wpou-independent-audit-79b0a9ec-thcqvffq/src/GMT/Ch02/Wpou/PartitionCheck.lean",
+        "/tmp/wpou-independent-audit-79b0a9ec-thcqvffq/EndToEnd.lean"
+      ],
+      "conclusion": "The pinned sources support the Vitali selection, finite-net packing, distance estimates, nearest anchors, smooth bumps, and derivative bounds used in the proofs. Inspected Mathlib sources match the compiler package at revision 25730c7c759d108ef87ab70af2342a196760f79d; the frozen contract matches the workspace contract. The searched Whitney names have no matches in pinned Mathlib. Neither proposed declaration name is reserved by another run branch. Independently elaborated both exact propositions without either child implementation, rebuilt both supplied child proofs in fresh scratch, and compiled their composition into the exact selected parent type. Both Submission declarations and the assembled parent use only propext, Classical.choice, and Quot.sound. The geometric/analytic split is appropriate; its interfaces match and its dependencies are acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cover_finite_overlap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly states C1–C4 with every hypothesis. Vitali applies with bounded radii and τ = 5. Disjointness gives the required separation; the finite-net injection proves finiteness before bounding ncard. Rescaling into the fixed balls establishes both uniform overlap and local finiteness with valid constants. The proof is complete, non-circular, and supplies precisely the second child's cover hypotheses. The bare declaration name is unreserved."
+    },
+    {
+      "key": "partition_of_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes H0–H4 and concludes the exact frozen parent contract. The proof correctly constructs nearest anchors, positive-radius bumps, locally finite normalizing sums, and the quotient family. Local vanishing justifies differentiation and finite derivative support; the estimates yield C = 3 and M = 30ΛN(N + 1). Subtype cardinalities, zero denominators outside the complement, and empty-complement cases are handled. No disjointness or parent theorem is assumed. Empty sibling dependencies are correct because the cover is an explicit hypothesis. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

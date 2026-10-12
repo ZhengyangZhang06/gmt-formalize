@@ -1,0 +1,19 @@
+{
+  "node_id": "root.c1_sard-a1.regular_fiber-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/95",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/549",
+  "candidate_commit": "c112ddac4b7e9fbc557ce669fd6f8d47c75fd6c6",
+  "integrated_commit": "",
+  "proof_base_commit": "6aa972d49349b10fb0c80727c1c1ec9192b18702",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.c1_sard-a1",
+  "requires": [
+    "root.c1_sard-a1.jacobian_rank-a1",
+    "root.c1_sard-a1.level_set_chart-a1",
+    "root.c1_sard-a1.chart_composition-a1"
+  ]
+}

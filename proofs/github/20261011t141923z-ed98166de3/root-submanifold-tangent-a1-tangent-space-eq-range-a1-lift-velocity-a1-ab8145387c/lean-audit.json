@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4a473d9a88685c2d2a424e282f0aed7343f3851b606c84f82efc9eb99c2a130",
+  "git_delta": {
+    "base_commit": "8bc6ec159a1bd23731d6f40bc606f21626ca1546",
+    "candidate_commit": "0f3c06fb21dd642f45b8b7fba8854ca1202db2ab",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_lift_velocity_mem_range_fderiv",
+    "diff_sha256": "e4a63d8be85ac0f6dc936570c5c1b31528424050d6923b2dc44cfc85c1c7dfe5",
+    "source_sha256": "d2fc3fac1ec4a607d54073aae549373a6c4f0dbab3213c5aebf2445b1d722539",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_lift_velocity_mem_range_fderiv",
+      "statement": "∀ (n N : ℕ) (ψ : Rn n → Rn N) (x₀ : Rn n) (c : ℝ → Rn n) (γ : ℝ → Rn N) (v : Rn N), DifferentiableAt ℝ ψ x₀ → Function.Injective (fderiv ℝ ψ x₀) → Tendsto c (𝓝 (0 : ℝ)) (𝓝 x₀) → (∀ᶠ t in 𝓝 (0 : ℝ), γ t = ψ (c t)) → HasDerivAt γ v 0 → v ∈ LinearMap.range (fderiv ℝ ψ x₀).toLinearMap",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

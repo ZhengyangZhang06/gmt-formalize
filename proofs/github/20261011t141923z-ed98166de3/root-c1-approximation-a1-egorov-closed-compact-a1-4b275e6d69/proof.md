@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.c1_approximation-a1`
+- Child DAG node: `root.c1_approximation-a1.egorov_closed_compact-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon, Introduction to GMT, Ch. 2, proof of Theorem 1.5 (printed p. 44), printed: "… and hence by Egoroff's Theorem (applied to the finite measure sets C ∩ B_j(0), j = 1, 2, …) there is an Lⁿ-measurable set A′ ⊆ C such that Lⁿ(C∖A′) < ε/4 and η_k converges uniformly to zero on each bounded subset of A′. Since we can take a closed set A ⊆ A′ with Lⁿ(A′∖A) < ε/4 we thus have Lⁿ(ℝⁿ∖A) < ε …". Below this is carried out as in the parent proof (Part II, steps 5–6), with three changes. The Borel set C, the Borel functions F_k and the pointwise limit G are general. Disjoint bounded shells replace the balls B_j(0). The closed set is chosen shell by shell, so that the union is closed. No erratum concerns this step. Notation: ℝⁿ = EuclideanSpace ℝ (Fin n), |·| the Euclidean norm, Lⁿ = volume.
+
+1. Shells. For j ∈ ℕ let P_j := {x ∈ ℝⁿ : j ≤ |x| < j+1}. Each P_j is Borel and bounded (P_j ⊆ closedBall(0,j+1)), hence Lⁿ(P_j) < ∞. The P_j are pairwise disjoint and ∪_j P_j = ℝⁿ (x ∈ P_{⌊|x|⌋}). For x ∈ ℝⁿ the neighbourhood ball(x,1) meets P_j only if j ≤ |y| < |x|+1 for some y, i.e. only for j < |x|+1. So every family (E_j)_{j∈ℕ} with E_j ⊆ P_j is locally finite. (For n = 0, P_0 = ℝ⁰ = {0} and P_j = ∅ for j ≥ 1.)
+
+2. Egorov on each shell. Fix j. Put C_j := C ∩ P_j (Borel, Lⁿ(C_j) < ∞) and ε_j := ε2^{−j−3} > 0. The F_k and G are Borel real functions on ℝⁿ, hence strongly measurable, and F_k(x) → G(x) for every x ∈ C_j, in particular for a.e. x ∈ C_j. Mathlib's Egorov theorem (MeasureTheory.tendstoUniformlyOn_of_ae_tendsto, Egorov.lean:205) takes strongly measurable f_k and g, a measurable set s with μ(s) < ∞, a.e. convergence on s, and ε > 0. It gives a measurable t ⊆ s with μ(t) ≤ ε such that f_k → g uniformly on s∖t. Applied here, it gives a Borel t_j ⊆ C_j with Lⁿ(t_j) ≤ ε_j such that F_k → G uniformly on A′_j := C_j∖t_j.
+
+3. Closed inner approximation. A′_j is Borel with Lⁿ(A′_j) < ∞. By weak regularity of Lⁿ (Simon Ch. 1, Theorem 1.15(2); Mathlib MeasurableSet.exists_isClosed_sdiff_lt, Regular.lean:1036) there is a closed F_j ⊆ A′_j with Lⁿ(A′_j∖F_j) < ε_j.
+
+4. The closed set. Put A := ∪_{j∈ℕ} F_j. Then A ⊆ ∪_j A′_j ⊆ ∪_j C_j ⊆ C. Since F_j ⊆ P_j, the family (F_j) is locally finite by step 1, and each F_j is closed, so A is closed (Mathlib LocallyFinite.isClosed_iUnion).
+
+5. Measure estimate. Let x ∈ C∖A and let j be the index with x ∈ P_j. Then x ∈ C_j, and either x ∈ t_j or x ∈ A′_j∖F_j (because x ∉ A ⊇ F_j). Hence C∖A ⊆ ∪_j (t_j ∪ (A′_j∖F_j)). By countable subadditivity, Lⁿ(C∖A) ≤ Σ_{j≥0} (Lⁿ(t_j) + Lⁿ(A′_j∖F_j)) ≤ Σ_{j≥0} 2ε2^{−j−3} = Σ_{j≥0} ε2^{−j−2} = ε/2 < ε. In extended reals, volume(C∖A) ≤ ENNReal.ofReal(ε/2) < ENNReal.ofReal ε because ε > 0.
+
+6. Uniform convergence on compact subsets. Let K ⊆ A be compact. Then K is bounded, so K ⊆ closedBall(0,R) for some R ≥ 0; choose J ∈ ℕ with J ≥ R. For j > J we have P_j ∩ closedBall(0,R) = ∅, since |x| ≥ j > R on P_j. Hence K ⊆ F_0 ∪ … ∪ F_J ⊆ A′_0 ∪ … ∪ A′_J. Let δ > 0. For each j ≤ J, step 2 yields k_j such that |F_k(x) − G(x)| < δ for all k ≥ k_j and all x ∈ A′_j. With k_* := max_{j≤J} k_j we get |F_k(x) − G(x)| < δ for all k ≥ k_* and all x ∈ K. So F_k → G uniformly on K (Metric.tendstoUniformlyOn_iff); equivalently, uniform convergence on each of the finitely many sets A′_j passes to their union and then to the subset K.
+
+7. Conclusion. A is closed, A ⊆ C, volume(C∖A) < ENNReal.ofReal ε, and F_k → G uniformly (TendstoUniformlyOn F G atTop K) on every compact K ⊆ A. ∎
+
+## Key steps
+
+1. Disjoint bounded Borel shells P_j = {j ≤ |x| < j+1} cover ℝⁿ; families subordinate to them are locally finite.
+2. Egorov (Mathlib tendstoUniformlyOn_of_ae_tendsto) on each finite-measure C ∩ P_j: exceptional t_j with Lⁿ(t_j) ≤ ε2^{−j−3}, uniform convergence on A′_j = (C ∩ P_j)∖t_j.
+3. Closed F_j ⊆ A′_j with Lⁿ(A′_j∖F_j) < ε2^{−j−3} (weak regularity); A = ∪ F_j is closed by local finiteness.
+4. C∖A ⊆ ∪_j (t_j ∪ (A′_j∖F_j)) gives Lⁿ(C∖A) ≤ ε/2 < ε.
+5. A compact K ⊆ A meets only F_0,…,F_J, so uniform convergence on the finitely many A′_j gives uniform convergence on K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'theorem LipschitzWith.ae_differentiableAt' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `rg -n '^theorem measurableSet_of_differentiableAt |^theorem measurable_fderiv ' mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `rg -n 'exists_isClosed_sdiff_lt|exists_isClosed_diff_lt' mathlib/Mathlib`
+- `rg -n 'theorem tendstoUniformlyOn_of_ae_tendsto' mathlib/Mathlib`
+- `rg -n -i 'lusin|luzin' mathlib/Mathlib`
+- `rg -n 'theorem Measurable.iSup |theorem IsSeparable.exists_countable_dense_subset|theorem LocallyFinite.isClosed_iUnion|theorem addHaar_sphere ' mathlib/Mathlib`
+- `sed -n 510,530p mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean; sed -n 95,115p mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `rg -n 'theorem innerSL_apply|innerSL_apply_apply|theorem toDual_symm_apply' mathlib/Mathlib/Analysis/InnerProductSpace`
+- `rg -n 'theorem continuous_toLp|theorem continuous_ofLp' mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `rg -n 'theorem continuousWithinAt_inter |theorem continuousOn_pi |theorem measure_iUnion_le |theorem ae_iff |theorem tendstoUniformlyOn_iff ' mathlib/Mathlib`
+- `rg -n '^def C1Approximation|^def WhitneyExtension|^def Rademacher|^theorem main_theorem' project/GMT/Ch02/Contract.lean; rg -n '1.5: ' project/GMT/Ch02/README.md`
+- `rg -n -i 'lusin|egorov|egoroff' project/`
+- `rg -n 'theorem exists_isClosed_continuousOn_of_measurable' -A 25 lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean; rg -n 'instance' (same file)`
+- `rg -o '"lean_name": "[^"]*"' -g '*.json' <run dir> (name-collision check)`
+- `python3 -I gen_checks.py (replays verifier gmt-compare.py contract_scope/child_modules and lean_contract.validate_lean_statement for the 3 lean_statements); lake env lean checks/NodeChallenge_00..02.lean against a scratch olean of GMT.Ch02.Submission`
+- `lake env lean checks/Assembly.lean (#print axioms assembly_check); lake env lean checks/LibCompat.lean; lake env lean checks/Review_adv_child1.lean checks/Review_adv_child02.lean checks/Review_adv_child2_noLusin.lean; python3 -I cmp_stmts.py (verbatim statement comparison)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch01/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-c1-approximation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-01-source.txt`
+- `/tmp/c1approx-decomp-zCiTNz/checks/Assembly.lean`
+- `/tmp/c1approx-decomp-zCiTNz/checks/LibCompat.lean`
+- `/tmp/c1approx-decomp-zCiTNz/checks/NodeChallenge_00.lean`
+- `/tmp/c1approx-decomp-zCiTNz/checks/NodeChallenge_01.lean`
+- `/tmp/c1approx-decomp-zCiTNz/checks/NodeChallenge_02.lean`
+- `/tmp/c1approx-decomp-zCiTNz/checks/Review_adv_child1.lean`
+- `/tmp/c1approx-decomp-zCiTNz/checks/Review_adv_child02.lean`
+
+Contract.lean:199 (C1Approximation), :191 (Rademacher) and :208 (WhitneyExtension) fix the parent and sibling types. The snapshot Mathlib has every library fact the three children and the parent glue need: LipschitzWith.ae_differentiableAt (Rademacher.lean:385), measurableSet_of_differentiableAt and measurable_fderiv (FDeriv/Measurable.lean:372, :378), MeasurableSet.exists_isClosed_sdiff_lt (Regular.lean:1036; the WeaklyRegular instance for volume on Rn n is found), tendstoUniformlyOn_of_ae_tendsto (Egorov.lean:205), Measurable.iSup (BorelSpace/Order.lean:909), IsSeparable.exists_countable_dense_subset (Metrizable/Basic.lean:185), LocallyFinite.isClosed_iUnion and LocallyFinite.continuousOn_iUnion (LocallyFinite.lean:103), addHaar_sphere_of_ne_zero (EqHaar.lean:519; addHaar_sphere needs [Nontrivial] and fails for variable n), innerSL_apply_apply (LinearMap.lean:172; innerSL_apply does not exist), toDual_symm_apply (Dual.lean:178), PiLp.continuous_toLp (PiLp.lean:546), continuousWithinAt_inter, continuousOn_pi, measure_iUnion_le and ae_iff. No-match results: Mathlib has no continuity Lusin theorem (rg 'lusin' finds only Lusin separation and Lusin–Souslin in Polish/Basic.lean), and the project snapshot has no σ-finite or vector-valued Lusin, no closed-set Egorov and no remainder-modulus lemma. These three obligations are therefore new children. The finite-measure real Lusin theorem is the pinned SimonGMT lemma Poincare.SimonGMT.Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127). It uses only propext, Classical.choice and Quot.sound, declares no instances, and instantiates for volume on Rn n with hreg := MeasurableSet.exists_isClosed_sdiff_lt. It needs `import Poincare.SimonGMT.Chapter01.Lusin` in Submission.lean; the Ch01 contract imports the same module. Using the comparator's own contract_scope/child_modules code, all three lean_statements elaborate after import GMT.Ch02.Submission, and the generated NodeChallenge_00..02 compile. Assembly.lean proves C1Approximation from LipschitzExtension ∧ Rademacher, WhitneyExtension and the three verbatim child types, using only the standard axioms. Scratch Lean proofs of all three child statements (verbatim types) compile with only the standard axioms. dag.json and the decompositions already written by other branches contain no c1approx_* names.

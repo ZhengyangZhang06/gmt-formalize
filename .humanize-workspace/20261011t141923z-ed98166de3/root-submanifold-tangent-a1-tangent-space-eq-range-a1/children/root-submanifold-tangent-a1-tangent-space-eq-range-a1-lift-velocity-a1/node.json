@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1.lift_velocity-a1",
+  "parent_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1",
+  "depth": 3,
+  "title": "A curve that lifts continuously through a map with injective derivative has its velocity in the range of the derivative",
+  "statement": "Let n, N ∈ ℕ and write ℝᵏ := EuclideanSpace ℝ (Fin k). Let ψ : ℝⁿ → ℝᴺ, x₀ ∈ ℝⁿ, c : ℝ → ℝⁿ, γ : ℝ → ℝᴺ and v ∈ ℝᴺ. Assume:\n(i) ψ is Fréchet differentiable at x₀;\n(ii) A := Dψ(x₀) = fderiv ℝ ψ x₀ is injective;\n(iii) c(t) → x₀ as t → 0 along the full, unpunctured neighbourhood filter of 0 (Tendsto c (𝓝 0) (𝓝 x₀)); in particular c(0) = x₀ and c is continuous at 0;\n(iv) γ(t) = ψ(c(t)) for all t in some neighbourhood of 0;\n(v) γ has derivative v at 0.\nThen v ∈ range A, i.e. v = A ζ for some ζ ∈ ℝⁿ (v ∈ LinearMap.range (fderiv ℝ ψ x₀).toLinearMap). No differentiability of c is assumed.",
+  "lean_statement": "∀ (n N : ℕ) (ψ : Rn n → Rn N) (x₀ : Rn n) (c : ℝ → Rn n) (γ : ℝ → Rn N) (v : Rn N), DifferentiableAt ℝ ψ x₀ → Function.Injective (fderiv ℝ ψ x₀) → Tendsto c (𝓝 (0 : ℝ)) (𝓝 x₀) → (∀ᶠ t in 𝓝 (0 : ℝ), γ t = ψ (c t)) → HasDerivAt γ v 0 → v ∈ LinearMap.range (fderiv ℝ ψ x₀).toLinearMap",
+  "lean_name": "simon_lift_velocity_mem_range_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-tangent-space-eq-range-a1-lift-velocity-a1-a1"
+}

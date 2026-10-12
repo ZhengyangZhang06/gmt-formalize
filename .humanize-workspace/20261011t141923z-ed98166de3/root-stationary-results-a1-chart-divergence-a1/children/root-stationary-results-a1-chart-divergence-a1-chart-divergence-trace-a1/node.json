@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.chart_divergence_trace-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1",
+  "depth": 3,
+  "title": "Tangential divergence through an injective parametrization differential",
+  "statement": "For all n, N ∈ ℕ, M ⊆ ℝᴺ, y ∈ ℝᴺ, every map Y : ℝᴺ → ℝᴺ and every injective continuous linear map A : ℝⁿ → ℝᴺ with tangentSpace M y = range A: tangentialDivergence M Y y = trace(G⁻¹ ∘ A* ∘ DY(y) ∘ A), the trace of an endomorphism of ℝⁿ, where DY(y) := fderiv ℝ Y y, A* := ContinuousLinearMap.adjoint A and G⁻¹ := Ring.inverse (A* ∘ A). No differentiability of Y is assumed (both sides only involve the linear map fderiv ℝ Y y).",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (Y : Rn N → Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → tangentialDivergence M Y y = LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A ∘L fderiv ℝ Y y ∘L A).toLinearMap",
+  "lean_name": "chart_tangentialDivergence_eq_gram_trace",
+  "depends_on": [
+    "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-chart-divergence-trace-a1-a1"
+}

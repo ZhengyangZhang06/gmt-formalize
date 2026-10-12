@@ -1,0 +1,15 @@
+{
+  "node_id": "root.eilenberg_inequality-a1.compact_fiber_measurable-a1.compact_open_cover_content-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/194",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1560",
+  "candidate_commit": "1c4376f5bdc6bb91df69d1f5ebfc7a474e5a0321",
+  "integrated_commit": "",
+  "proof_base_commit": "f5f284c03fa37667dda1e788f648d6bae5d8f877",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.eilenberg_inequality-a1.compact_fiber_measurable-a1",
+  "requires": []
+}

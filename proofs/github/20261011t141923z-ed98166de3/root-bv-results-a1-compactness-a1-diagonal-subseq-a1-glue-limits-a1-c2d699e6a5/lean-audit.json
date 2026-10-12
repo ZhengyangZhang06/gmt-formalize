@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c46389943344f0fb25cd3eaa70ec578fc975f03f5030b6edf58577fb788baedd",
+  "git_delta": {
+    "base_commit": "11df9271e5439739a1968805f9658f314e6f6667",
+    "candidate_commit": "897da1202dce399f730d42a01a89c4171bc05baf",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_tendstoLocallyInL1On_of_exhaustion_limits",
+    "diff_sha256": "88a488a939f7ffa995833a18c16cd44053738c41d9b47aba27efc6d67467e5ca",
+    "source_sha256": "156095f65f79e8708031459ccdf623ff48460ecb2c1401843fa25cbde8953d92",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_tendstoLocallyInL1On_of_exhaustion_limits",
+      "statement": "∀ (n : ℕ) (U : Set (Rn n)) (Q : ℕ → Set (Rn n)) (w G : ℕ → Rn n → ℝ), IsOpen U → (∀ j, IsCompact (Q j)) → Monotone Q → (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j) → (∀ j k, AEStronglyMeasurable (w k) (volume.restrict (Q j))) → (∀ j, IntegrableOn (G j) (Q j) volume) → (∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖w k x - G j x‖ₑ) atTop (𝓝 0)) → ∃ v : Rn n → ℝ, LocallyIntegrableOn v U volume ∧ Chapter02.TendstoLocallyInL1On w v U atTop",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

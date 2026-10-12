@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.finite_net-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1",
+  "depth": 3,
+  "title": "L¹(Q) approximation, uniform in k, by equibounded equi-Lipschitz functions gives finite L¹(Q) nets (step A1(iii)–(iv), elementary Arzelà–Ascoli)",
+  "statement": "For every n ∈ ℕ, every compact Q ⊆ ℝⁿ and every sequence u_k : ℝⁿ → ℝ (k ∈ ℕ) of functions integrable on Q: if for every ε > 0 there are reals B, Λ and functions w_k : ℝⁿ → ℝ (k ∈ ℕ) with |w_k(x)| ≤ B for x ∈ Q, |w_k(x) − w_k(y)| ≤ Λ‖x − y‖ for x, y ∈ Q, and ∫⁻_Q ‖u_k − w_k‖ₑ ≤ ofReal ε for every k, then for every ε > 0 there is a finite set F ⊆ ℕ such that every k ∈ ℕ has some j ∈ F with ∫⁻_Q ‖u_k(x) − u_j(x)‖ₑ dx < ofReal ε.",
+  "lean_statement": "∀ (n : ℕ) (Q : Set (Rn n)) (u : ℕ → Rn n → ℝ), IsCompact Q → (∀ k, IntegrableOn (u k) Q volume) → (∀ ε : ℝ, 0 < ε → ∃ (B Λ : ℝ) (w : ℕ → Rn n → ℝ), (∀ k, ∀ x ∈ Q, |w k x| ≤ B) ∧ (∀ k, ∀ x ∈ Q, ∀ y ∈ Q, |w k x - w k y| ≤ Λ * ‖x - y‖) ∧ ∀ k, (∫⁻ x in Q, ‖u k x - w k x‖ₑ) ≤ ENNReal.ofReal ε) → ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ j ∈ F, (∫⁻ x in Q, ‖u k x - u j x‖ₑ) < ENNReal.ofReal ε",
+  "lean_name": "bv_lintegral_finite_net_of_lipschitz_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-finite-net-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f03cdd2a34a94eb050a7948c77f78def096a5c3e4c16466cc280c95a8d066668",
+  "git_delta": {
+    "base_commit": "c7a37d3d72e550cf37803a37d55dccb4847903f3",
+    "candidate_commit": "37df9744a503d3f76d96ea308e74927d164a6458",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_compactness_uniform_bounds",
+    "diff_sha256": "d02c428b70904509e883b177c698f05c4ce541222e6f56518ff5b53d6005bfe3",
+    "source_sha256": "9d8d1e3a59a485f8303c43e13ac25800c974d6485166226d0269bd1706bc0032",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_compactness_uniform_bounds",
+      "statement": "∀ (n : ℕ) (W : Set (Rn n)) (u : ℕ → Rn n → ℝ), IsOpen W → volume W < ⊤ → ⨆ k, (∫⁻ x in W, ‖u k x‖ₑ + Chapter02.bvVariationOn (u k) W) < ⊤ → ∃ c : ℝ, 0 ≤ c ∧ ∀ k, (∫⁻ x in W, ‖u k x‖ₑ) ≤ ENNReal.ofReal c ∧ Chapter02.bvVariationOn (u k) W ≤ ENNReal.ofReal c",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

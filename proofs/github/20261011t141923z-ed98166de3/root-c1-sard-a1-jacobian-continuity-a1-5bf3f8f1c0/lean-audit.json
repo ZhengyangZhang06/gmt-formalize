@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "57f4d43ab3bd1c00c32f07df61236d97844e83d4d67c2dcf2b81fe6384d3627f",
+  "git_delta": {
+    "base_commit": "6aa972d49349b10fb0c80727c1c1ec9192b18702",
+    "candidate_commit": "286ac062ec6896b9883b83f79c242c511ae2746e",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "c1_sard_coarea_jacobian_continuousOn",
+    "diff_sha256": "3f5b97644fcffbde3dd453be2fb160732769052a248f03995cfadfdbfe330401",
+    "source_sha256": "e47e74356b38d95a1dabc29534924b6c8bc2f47477c519a3c721b1b8c2d38d13",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_sard_coarea_jacobian_continuousOn",
+      "statement": "∀ (N m : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → ContinuousOn (tangentProjection M) M → ContinuousOn (coareaJacobian M f) M ∧ ∀ y : Rn m, ∃ F : Set (Rn N), IsClosed F ∧ M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0} = M ∩ F",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

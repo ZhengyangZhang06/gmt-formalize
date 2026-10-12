@@ -1,0 +1,156 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1`
+- Child DAG node: `root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1.weighted_area_formula-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. This is Simon, Ch. 2, (3.5) on p. 54, for an injective map with injective derivative. Simon only remarks that 3.5 “follows directly from 3.4 if we approximate h by simple functions”. The argument below is the kernel-checked SimonGMT proof in WeightedArea.lean (restrict_map_withDensity_areaJacobian_eq and weighted_area_formula_of_injective_derivative). It needs no measurability of the weight. It is replayed locally from the sibling child `variation_injective_area_formula` (Simon 3.2), because a leaf cannot import WeightedArea.
+
+Notation.
+- ℝᵈ := EuclideanSpace ℝ (Fin d). μ := μHE[n] on ℝⁿ and on ℝᴺ. DΦ(x) := fderiv ℝ Φ x, which is 0 where Φ is not differentiable.
+- J(x) := ofReal(areaJacobian(DΦ(x))) ∈ [0, ∞) for x ∈ ℝⁿ.
+- Φ_s : s → ℝᴺ is the restriction, Φ_s(x) := Φ(x) (s.domRestrict Φ). ι : s → ℝⁿ is the inclusion.
+- J·μ := μ.withDensity J on ℝⁿ, and ν := ι^*(J·μ) is its comap to s.
+
+1. J is Borel and finite.
+   - x ↦ DΦ(x) is Borel measurable (measurable_fderiv).
+   - L ↦ areaJacobian(L) = √det(L* ∘ L) is continuous on the space of linear maps ℝⁿ → ℝᴺ, since adjoint, composition, det and √ are continuous.
+   - Hence J is measurable, and J(x) < ∞ for every x.
+2. Measurable embeddings.
+   - Φ is differentiable, hence continuous, at every point of s, so Φ is continuous on s. It is also injective on the Borel set s.
+   - So Φ_s is a measurable embedding (Lusin–Souslin, ContinuousOn.measurableEmbedding).
+   - ι is a measurable embedding because s is Borel (MeasurableEmbedding.subtype_coe).
+3. Push-forward identity: (Φ_s)_*ν = μ⌊Φ(s), the restriction of μ (on ℝᴺ) to Φ(s).
+   Both sides are measures on ℝᴺ, so it suffices to compare them on an arbitrary Borel set t ⊆ ℝᴺ.
+   - (Φ_s)_*ν(t) = ν(Φ_s⁻¹(t)), since Φ_s is measurable and t is Borel.
+   - ν(Φ_s⁻¹(t)) = (J·μ)(C) with C := ι(Φ_s⁻¹(t)), by the comap formula along the measurable embedding ι.
+   - C = {x ∈ s : Φ(x) ∈ t}. It is Borel, being the image of a measurable subset of s under ι, and C ⊆ s.
+   - (J·μ)(C) = ∫⁻_C J dμ (withDensity_apply, C Borel).
+   - The sibling theorem variation_injective_area_formula applies to C:
+     - C is Borel;
+     - Φ is differentiable with injective derivative at every point of C ⊆ s;
+     - Φ is injective on C.
+     It gives ∫⁻_C J dμ = μ(Φ(C)).
+   - Φ(C) = Φ(s) ∩ t. If x ∈ s and Φ(x) ∈ t, then Φ(x) ∈ Φ(s) ∩ t. Conversely, if y = Φ(x) with x ∈ s and y ∈ t, then x ∈ C.
+   - So (Φ_s)_*ν(t) = μ(Φ(s) ∩ t) = (μ⌊Φ(s))(t) (Measure.restrict_apply, t Borel).
+4. Integration against an arbitrary g : ℝᴺ → [0, ∞]. The following equalities hold.
+   - ∫⁻_{Φ(s)} g dμ = ∫⁻ g d((Φ_s)_*ν), by step 3.
+   - ∫⁻ g d((Φ_s)_*ν) = ∫⁻_{x∈s} g(Φ_s(x)) dν(x), by MeasurableEmbedding.lintegral_map. This holds for every g, measurable or not, because Φ_s is a measurable embedding.
+   - ∫⁻_{x∈s} g(Φ_s(x)) dν(x) = ∫⁻_{x∈s} g(Φ(x)) d(J·μ)(x), by lintegral_subtype_comap (s Borel).
+   - ∫⁻_{x∈s} g(Φ(x)) d(J·μ)(x) = ∫⁻_{x∈s} J(x)·g(Φ(x)) dμ(x), by setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀. Its hypotheses hold: J is measurable, J < ∞ a.e. on s, s is Borel, and the integrand g∘Φ may be non-measurable.
+   Chaining these gives ∫⁻_{y∈Φ(s)} g(y) dμHE[n](y) = ∫⁻_{x∈s} ofReal(areaJacobian(DΦ(x)))·g(Φ(x)) dμHE[n](x). ∎
+
+Implementation notes (Lean v4.35.0-rc3, Mathlib 25730c7c; leaf rules: one theorem, no imports or helpers).
+This proof compiled against the frozen imports plus the accepted sibling. It reports axioms [propext, Classical.choice, Quot.sound] and passes the controller's check_source_delta.
+
+    intro n N s Φ g hs hΦ hreg hinj
+    have hJmeas : Measurable (fun x : Rn n ↦ ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x))) := by
+      have hc : Continuous (fun L : Rn n →L[ℝ] Rn N ↦ areaJacobian L) :=
+        Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+          (Continuous.clm_comp ContinuousLinearMap.adjoint.continuous continuous_id))
+      exact (hc.measurable.comp (measurable_fderiv ℝ Φ)).ennreal_ofReal
+    have hcont : ContinuousOn Φ s := fun x hx ↦ (hΦ x hx).continuousAt.continuousWithinAt
+    have hemb : MeasurableEmbedding (s.domRestrict Φ) := hcont.measurableEmbedding hs hinj
+    have hsub := MeasurableEmbedding.subtype_coe hs
+    have hmap : Measure.map (s.domRestrict Φ)
+        (((μHE[n] : Measure (Rn n)).withDensity
+          (fun x ↦ ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)))).comap (Subtype.val : s → Rn n)) =
+          (μHE[n] : Measure (Rn N)).restrict (Φ '' s) := by
+      ext t ht
+      rw [Measure.map_apply hemb.measurable ht, hsub.comap_apply]
+      have hCm : MeasurableSet (Subtype.val '' ((s.domRestrict Φ) ⁻¹' t)) :=
+        hsub.measurableSet_image' (hemb.measurable ht)
+      have hCs : Subtype.val '' ((s.domRestrict Φ) ⁻¹' t) ⊆ s := by
+        rintro x ⟨v, _, rfl⟩
+        exact v.property
+      rw [withDensity_apply _ hCm,
+        ← Submission.variation_injective_area_formula n N _ Φ hCm (fun x hx ↦ hΦ x (hCs hx))
+          (fun x hx ↦ hreg x (hCs hx)) (hinj.mono hCs), Measure.restrict_apply ht]
+      congr 1
+      ext y
+      constructor
+      · rintro ⟨x, ⟨v, hv, rfl⟩, rfl⟩
+        exact ⟨hv, ⟨v, v.property, rfl⟩⟩
+      · rintro ⟨hy, x, hx, rfl⟩
+        exact ⟨x, ⟨⟨x, hx⟩, hy, rfl⟩, rfl⟩
+    rw [← hmap, hemb.lintegral_map]
+    change (∫⁻ x : s, (fun x : Rn n ↦ g (Φ x)) x ∂
+      (((μHE[n] : Measure (Rn n)).withDensity
+        (fun x ↦ ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)))).comap (Subtype.val : s → Rn n))) = _
+    rw [lintegral_subtype_comap hs (fun x : Rn n ↦ g (Φ x)),
+      setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ _ _ _ hs]
+    · rfl
+    · simp only [eventually_true, ENNReal.ofReal_lt_top]
+    · exact hJmeas.aemeasurable
+
+## Key steps
+
+1. J(x) = ofReal(areaJacobian(DΦ(x))) is Borel (measurable_fderiv and continuity of L ↦ √det(L* ∘ L)) and finite.
+2. Φ|_s is a measurable embedding (continuous and injective on the Borel set s; Lusin–Souslin), and so is the inclusion of s.
+3. Child A on each Borel C = s ∩ Φ⁻¹(t) gives (Φ|_s)_*(comap of J·μHE[n]) = μHE[n]⌊Φ(s).
+4. MeasurableEmbedding.lintegral_map, lintegral_subtype_comap and setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ turn this into the weighted formula for an arbitrary g.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-variation-formulas-a1-image-area-formula-a1-chart-image-area-a1/{parent-child-handoff.json,parent-supplied-natural-proof.md,parent-supplied-plan.md}; python3 -I scans of dag.json and nodes/root-variation-formulas-a1-image-area-formula-a1{,-jacobian-chain-rule-a1}/decomposition-v1.json`
+- `git show fb5cd8c:GMT/Ch02/Submission.lean (accepted sibling variation_areaJacobian_chain_rule); git show 1d4a0ad:GMT/Ch02/Submission.lean | cmp - GMT/Ch02/Contract.lean`
+- `sed -n 1,140p project/GMT/Ch02/Contract.lean; grep -n 'areaJacobian|tangentSpace|IsSimonLocalRepresentation|μHE' Contract.lean; cmp Contract.lean Submission.lean`
+- `cat simongmt/Poincare/SimonGMT/Chapter02/{WeightedArea,AreaFormula,AreaApproximation,AreaDerivative}.lean; sed -n 20,125p Submanifold.lean; grep -n areaJacobianAt Area.lean; sed -n 200,240p Lipschitz.lean`
+- `rg -n 'theorem setLIntegral_congr_fun ' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/`
+- `rg -n 'continuousOn_iff_continuous_domRestrict|theorem finrank_euclideanSpace_fin|theorem fderiv_comp |theorem DifferentiableAt\.comp |theorem ContDiffOn\.differentiableOn ' Topology/ContinuousOn.lean Analysis/InnerProductSpace/PiL2.lean Analysis/Calculus/FDeriv/Comp.lean Analysis/Calculus/ContDiff/Defs.lean`
+- `rg -n 'theorem ofReal_mul' mathlib/Mathlib/Basic/ENNReal/Real.lean; sed -n 205,215p MeasureTheory/MeasurableSpace/Constructions.lean; rg -n 'def domRestrict' Data/Set/`
+- `rg -n 'theorem euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|euclideanHausdorffMeasure_eq_volume' Analysis/InnerProductSpace/NormDet.lean Geometry/Euclidean/Volume/Measure.lean; rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' MeasureTheory/Function/Jacobian.lean`
+- `grep -n '4\.1[0-3]|Jacobian' and sed -n 735,1000p book/sources/chapter-02-source.txt (Simon 3.1–3.6, 4.11–4.14)`
+- `sed -n 1,200p /runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/leaf_verification.py; cat parent_verification.py; sed -n 3690,3775p runtime.py; sed -n 80,160p speculation.py`
+- `git show 3e39136:GMT/Ch02/Submission.lean (accepted coarea_chart_area_pullback inline area-formula replay, lines 382–840); git log 9c5098d..3e39136; decomposition-v1.json of that node; git branch -r --contains 3e39136`
+- `python3 -I gate_check.py (the controller's real check_source_delta) on: unsplit proof plus import (rejected), unsplit proof without import (shape accepted), A/frozen base, A/base+sibling, B/base+A, parent/base+sibling+A+B (all accepted)`
+- `lean -o out/GMT/Ch02/Submission.olean for: unsplit proof with import (ok), unsplit without import (Unknown identifier), stand-in split (ok), full split with frozen imports only (ok)`
+- `python3 -I gen_checks.py / gen_child_modules.py (verifier child_modules + validate_lean_statement), then lean {A,B,P}_NodeChallenge.lean, {A,B,P}_AxSolution.lean with #print axioms, and InstCheck.lean (pp.explicit areaJacobian instances, BorelSpace, μHE[n] = volume)`
+- `python3 -I scan of dag.json lean_name fields, nodes/*/decomposition-v*.json and git for-each-ref (492 refs) GMT/Ch02/Submission.lean for variation_injective_area_formula and variation_injective_weighted_area_formula`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDerivative.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/speculation.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-image-area-formula-a1-chart-image-area-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-image-area-formula-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-image-area-formula-a1-jacobian-chain-rule-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-chart-coarea-a1-chart-area-pullback-a1/decomposition-v1.json`
+- `/tmp/chartarea-decomp-kHP5PZ/child-A.lean`
+- `/tmp/chartarea-decomp-kHP5PZ/child-B.lean`
+- `/tmp/chartarea-decomp-kHP5PZ/parent-split.lean`
+- `/tmp/chartarea-decomp-kHP5PZ/chart-child.lean`
+- `/tmp/chartarea-decomp-kHP5PZ/full/src/GMT/Ch02/Submission.lean`
+- `/tmp/chartarea-decomp-kHP5PZ/scripts/gate_check.py`
+
+Pinned Mathlib 25730c7c has no area formula in arbitrary codimension. It does provide the pieces: the linear formula LinearMap.euclideanHausdorffMeasure_image(_eq_normDet_mul_volume) (NormDet.lean:422/433), exists_partition_approximatesLinearOn_of_hasFDerivWithinAt (Jacobian.lean), EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Measure.lean:187) and the Besicovitch density lemmas. SimonGMT 2b36630 proves the rectangular injective area formula and its weighted form (AreaFormula.lean; WeightedArea.lean:32/76/204). Those modules are outside the frozen import closure, which reaches only Chapter02.Area and Chapter02.Lipschitz (euclideanHausdorffMeasure_image_le_of_lipschitzOn, Lipschitz.lean:216). The controller's leaf gate (check_source_delta) forbids adding imports, so a leaf cannot implement the supplied proof as written: with the import it is rejected, and without it the proof fails with Unknown identifier. The two citations therefore become children A (Simon 3.2) and B (Simon 3.5). Gate-compliant single-theorem proofs compile with the frozen imports only: A, adapted from the accepted coarea replay in commit 3e39136 (lines 391–740, on origin); B from A; and this node from A, B and the sibling. Axioms are standard, the verifier-scope challenge and solution modules compile, the gate accepts every insertion, and no name collides. An independent reviewer accepted. The book (lines 740–1000) prints no proof of 3.2 and only sketches 3.5; its chart argument after 4.12 matches the supplied steps.

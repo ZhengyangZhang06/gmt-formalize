@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def WhitneyExtension|Whitney",
+        "Whitney|whitney",
+        "theorem exists_disjoint_subfamily_covering_enlargement_closedBall",
+        "structure ContDiffBump|one_of_mem_closedBall|theorem support_eq|protected theorem contDiff|hasCompactSupport",
+        "exists_infDist_eq_dist|notMem_iff_infDist_pos|infDist_le_dist_of_mem|lipschitz_infDist_pt",
+        "finprod_eq_prod_of_mulSupport_subset",
+        "whitney_smooth_partition_of_unity|whitney_jet_gluing_c1",
+        "theorem (contDiff_one_iff_fderiv|ContDiffAt.continuousAt_fderiv|ContDiff.lipschitzWith_of_hasCompactSupport|IsLocalMin.fderiv_eq_zero)|lemma (ContDiffAt.continuousAt_fderiv|ContDiff.lipschitzWith_of_hasCompactSupport)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean PartitionCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean SupportChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/BigOperators/Finprod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LocalExtr/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-whitney-extension-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-whitney-extension-a1/decomposition-v1.json",
+        "/tmp/whitney-independent-audit-0aloi9md/NodeChallenge_0.lean",
+        "/tmp/whitney-independent-audit-0aloi9md/NodeChallenge_1.lean",
+        "/tmp/whitney-independent-audit-0aloi9md/Assembly.lean",
+        "/tmp/whitney-independent-audit-0aloi9md/PartitionCheck.lean",
+        "/tmp/whitney-independent-audit-0aloi9md/SupportChecks.lean"
+      ],
+      "conclusion": "The handoff fixes whitney_extension_theorem : WhitneyExtension, matching Contract.lean:208–213. The split is appropriate: geometric partition construction and abstract jet gluing are substantive independent obligations. Both exact one-line types pass validation and elaborate in comparator-generated challenge modules before either child is implemented. An independently written Lean assembly proves WhitneyExtension from precisely these two types, including the empty-set case. Both names are bare identifiers and unreserved; empty sibling dependency lists are correct and acyclic. Snapshot Mathlib supplies the cited covering, bump, distance, finite-sum and calculus tools; the Whitney search finds no relevant extension theorem there. Package revisions and inspected Mathlib source files match the pins. Independent source ports of all four SimonGMT Whitney modules compile, and the exact partition contract checks against them. Assembly, partition, source-reuse and zero-weight derivative axiom checks report only propext, Classical.choice and Quot.sound. ProperSpace, smooth-bump instances and the inner-product functional norm identity also kernel-check."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "whitney_partition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches all hypotheses and P1–P7. The supplied proof establishes Vitali selection, finite packing and local finiteness, nearest anchors, bump normalization, and the derivative bound with M = 30ΛN(N+1). It justifies finite-support sums and derivatives without assuming the extension theorem. The full-set and zero-dimensional cases are covered. The proof is complete enough for formalization; the bare name is unreserved."
+    },
+    {
+      "key": "whitney_gluing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type concerns the prescribed g and includes every stated hypothesis. Local finite sums justify differentiation. Nonnegativity makes Dφ_i(x) vanish when φ_i(x)=0, so restricting to indices where P6 applies is valid. Compact-uniform compatibility and continuity of ν give the stated first-order and derivative estimates, with positive radii and legitimate nearest-point choices. These prove differentiability on A and continuity of fderiv, hence C¹ regularity. Empty-set and degenerate cases are covered; continuity of h is unnecessary. No parent or sibling conclusion is assumed, and the bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

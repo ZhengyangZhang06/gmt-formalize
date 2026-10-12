@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_l1-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "L¹ convergence of mollifications with shrinking supports",
+  "statement": "For every n ∈ ℕ, every F ∈ L¹(ℝⁿ) (Integrable F volume), every sequence of kernels ρ_j : ℝⁿ → ℝ (j ∈ ℕ) that are continuous, nonnegative, satisfy support ρ_j ⊆ B(0,σ_j) (open ball) and ∫ρ_j = 1, and every sequence σ_j → 0: ∫⁻_{ℝⁿ} |(ρ_j * F)(x) − F(x)| dx → 0 in [0,∞], where (ρ_j * F)(x) := convolution (ρ j) F (lsmul ℝ ℝ) volume x = ∫ ρ_j(t) F(x − t) dt.",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → ℝ) (ρ : ℕ → Rn n → ℝ) (σ : ℕ → ℝ), Integrable F volume → (∀ j, Continuous (ρ j)) → (∀ j x, 0 ≤ ρ j x) → (∀ j, Function.support (ρ j) ⊆ ball 0 (σ j)) → (∀ j, ∫ x, ρ j x = 1) → Tendsto σ atTop (𝓝 0) → Tendsto (fun j ↦ ∫⁻ x, ‖convolution (ρ j) F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ) atTop (𝓝 0)",
+  "lean_name": "bv_mollifier_tendsto_L1",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-l1-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.jacobian_derivative-a1.trace_swap-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1.jacobian_derivative-a1",
+  "depth": 4,
+  "title": "Trace swap under a symmetric weight: tr(P∘S*∘A) = tr(P∘A*∘S)",
+  "statement": "For all n, N ∈ ℕ, all A, S ∈ L(ℝⁿ, ℝᴺ) (ℝᵈ := EuclideanSpace ℝ (Fin d) = Rn d) and every P ∈ L(ℝⁿ) that is symmetric, i.e. ⟨P v, w⟩ = ⟨v, P w⟩ for all v, w ∈ ℝⁿ: trace(P ∘ S* ∘ A) = trace(P ∘ A* ∘ S), where L* := ContinuousLinearMap.adjoint L and trace is LinearMap.trace ℝ ℝⁿ applied to the underlying linear map.",
+  "lean_statement": "∀ (n N : ℕ) (A S : Rn n →L[ℝ] Rn N) (P : Rn n →L[ℝ] Rn n), (∀ v w : Rn n, inner ℝ (P v) w = inner ℝ v (P w)) → LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint S ∘L A).toLinearMap = LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint A ∘L S).toLinearMap",
+  "lean_name": "trace_comp_adjoint_comp_swap_of_symm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-jacobian-derivative-a1-8970b38ef5-a1"
+}

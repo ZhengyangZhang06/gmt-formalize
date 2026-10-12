@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "58462b99bb5ed54c3fa7352fc9c9a36d17b5f85dacafb6e57838481a9faef730",
+  "git_delta": {
+    "base_commit": "fe76d48088512e536dfc0dde42c5a64023bc26fa",
+    "candidate_commit": "90f1e1e98cd11b1b4b4e7bef522173409d590b52",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "variation_jacobian_family",
+    "diff_sha256": "b408439809daa68196fe1e19fa6ca6367f0e1373677bc7195f2f1ca20512b803",
+    "source_sha256": "0fba8f65ba51d0969c7542e969c187d92a8f7ac38b781af4a94a40584f2f9dfc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.variation_jacobian_family",
+      "statement": "∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), let g : ℝ × (Rn N × (Rn N →L[ℝ] Rn N)) → ℝ := fun p ↦ Real.sqrt ((1 - p.2.2 + p.2.2 ∘L ContinuousLinearMap.adjoint (fderiv ℝ (φ p.1) p.2.1) ∘L fderiv ℝ (φ p.1) p.2.1 ∘L p.2.2).det); (IsAdmissibleDeformation 2 U K φ → (∀ x ∈ U, ∀ P : Rn N →L[ℝ] Rn N, P ∘L P = P → ContDiffAt ℝ 1 g (0, (x, P))) ∧ ∀ (M : Set (Rn N)) (y : Rn N), y ∈ U → HasDerivAt (fun t ↦ g (t, (y, tangentProjection M y))) (tangentialDivergence M (initialVelocity φ) y) 0) ∧ (IsAdmissibleDeformation 3 U K φ → (∀ x ∈ U, ∀ P : Rn N →L[ℝ] Rn N, P ∘L P = P → ContDiffAt ℝ 2 g (0, (x, P))) ∧ ∀ (M : Set (Rn N)) (y : Rn N), y ∈ U → HasDerivAt (fun t ↦ deriv (fun s ↦ g (s, (y, tangentProjection M y))) t) (secondVariationIntegrand M φ y) 0) ∧ ∀ r : ℕ∞, IsAdmissibleDeformation r U K φ → ∀ (M : Set (Rn N)) (y : Rn N), y ∉ K → tangentialDivergence M (initialVelocity φ) y = 0 ∧ secondVariationIntegrand M φ y = 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

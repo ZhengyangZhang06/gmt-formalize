@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1",
+  "parent_id": "root.coarea_formula-a1",
+  "depth": 2,
+  "title": "Critical fibres of a C¹ map ℝ^{m+k} → ℝᵐ are Hᵏ-null for almost every value",
+  "statement": "Let m, k ∈ ℕ, V ⊆ ℝ^{m+k} open, and G : ℝ^{m+k} → ℝᵐ of class C¹ on V. Then for Lᵐ-almost every y ∈ ℝᵐ, μHE[k]({x ∈ V : DG(x) is not surjective} ∩ G⁻¹{y}) = 0. Here μHE[k] is Mathlib's Euclidean-normalized k-dimensional Hausdorff measure on ℝ^{m+k} and Lᵐ = volume.",
+  "lean_statement": "∀ (m k : ℕ) (V : Set (Rn (m + k))) (G : Rn (m + k) → Rn m), IsOpen V → ContDiffOn ℝ 1 G V → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] ({x | x ∈ V ∧ ¬ Function.Surjective (fderiv ℝ G x)} ∩ G ⁻¹' {y}) = 0",
+  "lean_name": "coarea_critical_fibers_null_euclidean",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-a1"
+}

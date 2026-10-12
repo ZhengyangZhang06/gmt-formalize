@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "38ffe6edc25752d97bc43975f751a6ccba7248abf28ba43a74a06544dca160df",
+  "git_delta": {
+    "base_commit": "d09feb91c7b7172ea266ebc86d21098906583acd",
+    "candidate_commit": "0fcc1743f8e3b67b9602eb9533f5dde282b5fe80",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "chart_setIntegral_eq_zero_of_trace_fderiv_eq",
+    "diff_sha256": "99b13e2430374ec92ac8d02a74b59699cb30c7ae575672c77c16585a030846f6",
+    "source_sha256": "4eabc1e5b795a9b844c760d207870a3f18c581bc24b8a8765be5f660ba5a666d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chart_setIntegral_eq_zero_of_trace_fderiv_eq",
+      "statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W K : Set (Rn N)) (ψ : Rn n → Rn N) (g : Rn N → ℝ) (w : Rn n → Rn n), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → MeasurableSet M → IsCompact K → K ⊆ W → (∀ y ∈ M, y ∉ K → g y = 0) → ContDiffOn ℝ 1 w V → (∀ x ∈ V, ψ x ∉ K → w x = 0) → (∀ x ∈ V, LinearMap.trace ℝ (Rn n) (fderiv ℝ w x).toLinearMap = Chapter02.areaJacobianAt ψ x * g (ψ x)) → ∫ y in M, g y ∂μHE[n] = 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

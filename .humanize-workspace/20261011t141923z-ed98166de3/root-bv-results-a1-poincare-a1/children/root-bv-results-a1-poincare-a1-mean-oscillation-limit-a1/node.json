@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.poincare-a1.mean_oscillation_limit-a1",
+  "parent_id": "root.bv_results-a1.poincare-a1",
+  "depth": 3,
+  "title": "Mean-oscillation bounds pass to the L¹ limit along an increasing exhaustion",
+  "statement": "Let n ∈ ℕ, μ = volume on ℝⁿ = EuclideanSpace ℝ (Fin n), U ⊆ ℝⁿ with μ(U) < ∞, u integrable on U, O_j ⊆ ℝⁿ (j ∈ ℕ) measurable sets increasing in j with ⋃_j O_j = U, w_j : ℝⁿ → ℝ integrable on O_j, and K ∈ [0,∞]. Suppose e_j := ∫⁻_{O_j} ‖w_j(x) − u(x)‖ₑ dx → 0, and for every j, ∫⁻_{O_j} ‖w_j(x) − c_j‖ₑ dx ≤ K with c_j := μ(O_j).toReal⁻¹·∫_{O_j} w_j. Then ∫⁻_U ‖u(x) − ū‖ₑ dx ≤ K, where ū := μ(U).toReal⁻¹·∫_U u. All integrals of real functions are Bochner integrals; the others are lintegrals in [0,∞].",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (u : Rn n → ℝ) (O : ℕ → Set (Rn n)) (w : ℕ → Rn n → ℝ) (K : ℝ≥0∞), volume U < ⊤ → IntegrableOn u U volume → (∀ j, MeasurableSet (O j)) → Monotone O → ⋃ j, O j = U → (∀ j, IntegrableOn (w j) (O j) volume) → Tendsto (fun j ↦ ∫⁻ x in O j, ‖w j x - u x‖ₑ) atTop (𝓝 0) → (∀ j, ∫⁻ x in O j, ‖w j x - (volume (O j)).toReal⁻¹ * ∫ y in O j, w j y‖ₑ ≤ K) → ∫⁻ x in U, ‖u x - (volume U).toReal⁻¹ * ∫ y in U, u y‖ₑ ≤ K",
+  "lean_name": "mean_oscillation_lintegral_le_of_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-poincare-a1-mean-oscillation-limit-a1-a1"
+}

@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json",
+        "rg -n 'setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_eq_integral_of_ae_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "rg -n 'variable|def normed|theorem (contDiff_normed|nonneg_normed|support_normed_eq|integral_normed)' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "rg -n 'hasContDiffBump_of_innerProductSpace|instance' mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "rg -n 'HasDerivAt.sqrt|ContDiff.sqrt' mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "rg -n 'comp_hasFDerivAt' mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "rg -n 'bvVariationOn_mono|bvVariationOn.*mono|bv_abs_variation_(mono_set|exists_kernel|smoothed_abs)|mollif' project --glob '*.lean'",
+        "python3 /tmp/absvar-independent-audit-o44nw8uy/run_check.py Challenge0.lean",
+        "python3 /tmp/absvar-independent-audit-o44nw8uy/run_check.py Challenge1.lean",
+        "python3 /tmp/absvar-independent-audit-o44nw8uy/run_check.py Challenge2.lean",
+        "python3 /tmp/absvar-independent-audit-o44nw8uy/run_check.py ReviewedProofs.lean",
+        "python3 /tmp/absvar-independent-audit-o44nw8uy/run_check.py ReviewedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-abs-variation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-abs-variation-a1/decomposition-v1.json",
+        "/tmp/absvar-independent-audit-o44nw8uy/Challenge0.lean",
+        "/tmp/absvar-independent-audit-o44nw8uy/Challenge1.lean",
+        "/tmp/absvar-independent-audit-o44nw8uy/Challenge2.lean",
+        "/tmp/absvar-independent-audit-o44nw8uy/ReviewedProofs.lean",
+        "/tmp/absvar-independent-audit-o44nw8uy/ReviewedAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected bv_abs_variation_le contract. The pinned sources validate localization without measurability assumptions, normalized smooth bumps, and the square-root chain rule. The project search found no matching existing child declarations. All three names are bare identifiers, with no collisions in the DAG, other proposed decompositions, or 126 checked branch refs. Dependencies are correctly directed and acyclic. All frozen types pass lexical validation and independently generated comparator challenge compilation against a freshly compiled frozen Submission, without child implementations. After step-by-step review, the supplied child proofs and assembly were independently recompiled; each uses only propext, Classical.choice, and Quot.sound. The assembly's six assumptions exactly match the three children and three declared sibling contracts, and its conclusion exactly matches the selected parent. Package revisions and inspected Mathlib sources match the pinned snapshot."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mono_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree for arbitrary u and sets W ⊆ O. Divergence vanishes outside the test field's topological support, so both pairings equal the whole-space integral without measurability or integrability assumptions. Admissibility transfer and the supremum comparison complete the proof. This independent child supplies the parent's domain-monotonicity step."
+    },
+    {
+      "key": "exists_kernel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the positive-radius kernel bundle over Euclidean volume. The explicit normalized bump with radii σ/2 and σ establishes every conjunct, including n = 0. The required instances compile, and (⊤ : ℕ∞) denotes smoothness of all finite orders. The proof is complete and independent; its conclusion supplies both mollifier siblings' kernel requirements."
+    },
+    {
+      "key": "smoothed_abs",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C¹ hypothesis, η > 0, and all three conclusions match exactly. Positivity validates square-root differentiation; the scalar bounds prove η-closeness; the chain rule and coefficient bound prove the operator-norm inequality. Every step is supplied without circular reliance. These conclusions suffice for the parent's integration-by-parts bound and limit."
+    }
+  ],
+  "required_changes": []
+}

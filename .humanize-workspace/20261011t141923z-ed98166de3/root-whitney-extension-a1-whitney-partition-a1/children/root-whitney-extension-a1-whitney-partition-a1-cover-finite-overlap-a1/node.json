@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.whitney_extension-a1.whitney_partition-a1.cover_finite_overlap-a1",
+  "parent_id": "root.whitney_extension-a1.whitney_partition-a1",
+  "depth": 3,
+  "title": "Whitney ball cover of the complement with bounded overlap and local finiteness",
+  "statement": "Let n ∈ ℕ and let A ⊆ ℝⁿ = EuclideanSpace ℝ (Fin n) be closed and nonempty. Write d(x) := Metric.infDist x A and r(x) := min{1, d(x)}/20. Then there exist a set J ⊆ ℝⁿ and N ∈ ℕ such that: (C1) J ⊆ ℝⁿ∖A; (C2) every x ∉ A has some s ∈ J with |x − s| ≤ 5r(s); (C3) for every x ∉ A, the set J(x) := {s ∈ J : |x − s| < 10r(s)} is finite and has at most N elements (Set.ncard J(x) ≤ N); (C4) for every x ∉ A, the set J'(x) := {s ∈ J : ∃ z ∈ ℝⁿ, |z − s| < 10r(s) and |z − x| < r(x)} is finite.",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Rn n)), IsClosed A → A.Nonempty → ∃ (J : Set (Rn n)) (N : ℕ), J ⊆ Aᶜ ∧ (∀ x ∉ A, ∃ s ∈ J, ‖x - s‖ ≤ 5 * (min 1 (Metric.infDist s A) / 20)) ∧ (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ∧ Set.ncard {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ≤ N) ∧ (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ∃ z : Rn n, ‖z - s‖ < 10 * (min 1 (Metric.infDist s A) / 20) ∧ ‖z - x‖ < min 1 (Metric.infDist x A) / 20})",
+  "lean_name": "whitney_cover_finite_overlap",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-whitney-extension-a1-whitney-partition-a1-cover-finite-overlap-a1-a1"
+}

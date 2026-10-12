@@ -1,0 +1,76 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.bv_results-a1.extension-a1`
+- Child DAG node: `root.bv_results-a1.extension-a1.distance_concave-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof of Simon 2.8, Section C1(b) (Simon: 'since U is convex, U_σ = {x : dist(x,∂U) > σ} is convex'); the argument is specialised to Mathlib's form of concavity with weights a, b ≥ 0, a + b = 1.
+Notation: E := Rn n, d(x) := infDist x Uᶜ ≥ 0.
+1. ConcaveOn ℝ U d means Convex ℝ U (a hypothesis) together with: for x, y ∈ U and a, b ∈ ℝ with 0 ≤ a, 0 ≤ b, a + b = 1, a•d(x) + b•d(y) ≤ d(a•x + b•y). Fix such x, y, a, b and put z := a•x + b•y and s := a·d(x) + b·d(y) ≥ 0.
+2. If Uᶜ = ∅ then d ≡ 0 (Metric.infDist_empty), so s = 0 = d(z). Assume from now on that Uᶜ is nonempty. Then, by Metric.le_infDist, s ≤ d(z) holds as soon as s ≤ dist z p for every p ∈ Uᶜ.
+3. Ball property. If q ∈ U, d(q) > 0 and h ∈ E with ‖h‖ < d(q), then q + h ∈ U. Indeed, if q + h ∈ Uᶜ then d(q) ≤ dist q (q + h) = ‖h‖ < d(q) (Metric.infDist_le_dist_of_mem), a contradiction.
+4. Suppose, for a contradiction, that some p ∈ Uᶜ has dist z p < s; then s > 0. Put h := p − z (so ‖h‖ < s) and define x' := x + (d(x)/s)•h and y' := y + (d(y)/s)•h.
+5. x' ∈ U: if d(x) = 0 then x' = x ∈ U; if d(x) > 0 then ‖(d(x)/s)•h‖ = (d(x)/s)‖h‖ < d(x), so x' ∈ U by step 3. In the same way y' ∈ U.
+6. a•x' + b•y' = (a•x + b•y) + ((a·d(x) + b·d(y))/s)•h = z + h = p. Since U is convex, a, b ≥ 0 and a + b = 1, we get p ∈ U, contradicting p ∈ Uᶜ.
+7. Hence s ≤ dist z p for every p ∈ Uᶜ, so s ≤ d(z) by step 2, which is the required inequality a•d(x) + b•d(y) ≤ d(z). ∎
+
+## Key steps
+
+1. Unfold ConcaveOn: fix x, y ∈ U, a, b ≥ 0 with a + b = 1, z = a•x + b•y, s = a·d(x) + b·d(y); the case Uᶜ = ∅ is trivial.
+2. Ball property: d(q) > 0 and ‖h‖ < d(q) imply q + h ∈ U (infDist_le_dist_of_mem).
+3. If p ∈ Uᶜ had dist z p < s, the shifted points x + (d(x)/s)(p − z), y + (d(y)/s)(p − z) lie in U and their a,b-combination is p, contradicting convexity.
+4. Metric.le_infDist then gives s ≤ d(z).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'addHaar_frontier' mathlib/Mathlib/Analysis/Convex/`
+- `rg -n 'countable_meas_pos_of_disjoint' mathlib/Mathlib/MeasureTheory/Measure/ ; sed -n 245,330p mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean (countable_meas_level_set_pos)`
+- `rg -n 'exists_infDist_eq_dist|lipschitz_infDist_pt|theorem infDist_pos|notMem_iff_infDist_pos|theorem le_infDist|infDist_le_dist_of_mem|infDist_eq_zero_of_mem|theorem infDist_empty' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `rg -n 'infDist|infEDist' mathlib/Mathlib/Analysis/Convex/ (no match)`
+- `rg -n '^theorem|^lemma' mathlib/Mathlib/Analysis/Convex/Deriv.lean (ConvexOn/ConcaveOn slope-derivative lemmas)`
+- `rg -n 'trace_smulRight|trace_id|trace_one|trace_eq_contract' mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `rg -n 'fderiv_smul|HasFDerivAt.smul' mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean ; rg -n 'ae_differentiableAt' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean ; rg -n 'norm_fderiv_le_of_lipschitz' mathlib/Mathlib/Analysis/Calculus/FDeriv/`
+- `rg -n -A3 'setIntegral_eq_integral_of_forall_compl_eq_zero|setLIntegral_eq_of_support_subset|countable_meas_level_set_pos' mathlib/Mathlib/MeasureTheory/`
+- `rg -n 'dense_compl' mathlib/Mathlib/Topology/ mathlib/Mathlib/Analysis/ ; rg -n 'Countable.measure_zero' mathlib/Mathlib/MeasureTheory/`
+- `full read of simongmt Poincare/SimonGMT/Chapter02/BV.lean; read GMT/Ch02/Contract.lean and README rows for 2.8; cmp snapshot project/GMT/Ch02/Contract.lean with the workspace Contract.lean; sed -n 655,745p book/sources/chapter-02-source.txt`
+- `lean Avail.lean, Avail2.lean, Avail3.lean, Avail4.lean: #check of every cited lemma after import GMT.Ch02.Submission`
+- `python3 -I gen_checks.py (verifier gmt-compare.py layout/child_modules/contract_scope plus lean_contract.validate_lean_statement), then lean NodeChallenge_00..08.lean and Print.lean`
+- `lean Assembly.lean with #print axioms GMT.Ch02.node_check; lean Small.lean; lean Integrated.lean with #print axioms of the 9 children`
+- `grep -rl for each of the 9 proposed lean_names in the run directory; lean_name of every dag.json node and nodes/*/decomposition-v*.json subproblem`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/Cardinality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-extension-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1/decomposition-v1.json`
+- `/tmp/extdecomp-ilC422/checks/NodeChallenge_00.lean`
+- `/tmp/extdecomp-ilC422/checks/NodeChallenge_08.lean`
+- `/tmp/extdecomp-ilC422/checks/Assembly.lean`
+- `/tmp/extdecomp-ilC422/checks/Small.lean`
+- `/tmp/extdecomp-ilC422/checks/Avail.lean`
+- `/tmp/extdecomp-ilC422/verify/Integrated.lean`
+
+The snapshot project/GMT/Ch02/Contract.lean is byte-identical to the workspace contract (cmp). Rn, IsBVOn and BVExtensionEstimate match the selected type. README row 9 and its judgment-call note match the readings used: u = 0 a.e. off Ū, and |Du|(ℝⁿ∖Ū) = 0. The pinned SimonGMT BV.lean supplies every SimonGMT name the children use: euclideanDivergence, bvVariationOn, IsLipschitzTestField, compactlySupportedSupNorm, ofReal_integral_le_bvVariationOn, support_euclideanDivergence_subset, measurable_euclideanDivergence and norm_euclideanDivergence_le_of_lipschitz. The snapshot Mathlib supplies the cited tools: Metric.le_infDist, infDist_le_dist_of_mem, lipschitz_infDist_pt, IsClosed.exists_infDist_eq_dist, IsClosed.notMem_iff_infDist_pos, ConcaveOn.slope_le_of_hasDerivAt, HasDerivAt.tendsto_slope_zero_right, LipschitzWith.ae_differentiableAt, norm_fderiv_le_of_lipschitz, fderiv_fun_smul, LinearMap.trace_smulRight, LinearMap.trace_id, Measure.countable_meas_level_set_pos, Set.Countable.measure_zero, setIntegral_eq_integral_of_forall_compl_eq_zero and Convex.addHaar_frontier. After import GMT.Ch02.Submission all of these are available except two: Convex.addHaar_frontier (Mathlib.Analysis.Convex.Measure, needed only by the parent assembly) and the optional alternative Set.Countable.dense_compl (Mathlib.Topology.Algebra.Module.Cardinality). Adding Submission imports is allowed, because the verifier freezes only Contract.lean and the Lake inputs. Two searches found nothing. No Mathlib lemma states concavity of the distance to the complement of a convex set (no infDist match under Analysis/Convex). Neither Mathlib nor SimonGMT has a BV extension estimate. These are therefore genuine new obligations. All 9 child statements elaborate in the comparator's replayed scope. Each has a complete Lean proof using only standard axioms, and the Lean assembly proves the selected type from them plus Submission.bv_abs_variation_le.

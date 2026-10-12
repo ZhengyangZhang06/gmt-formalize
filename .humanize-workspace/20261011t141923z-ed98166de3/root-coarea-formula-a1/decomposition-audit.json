@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'coarea|[Ss]ard' mathlib/Mathlib",
+        "rg -n 'hausdorffMeasure_apply|euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_eq_volume|normDet_eq_norm_det_toMatrix|normDet_codRestrict|normDet_sq|normDet_comp' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "sed -n '1,280p' WeightedArea.lean",
+        "sed -n '24,51p' mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "sed -n '200,226p' mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "rg -n 'theorem lintegral_iUnion|theorem lintegral_union|theorem lintegral_tsum|lintegral_prod_right' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue mathlib/Mathlib/MeasureTheory/Measure/Prod.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1/parent-child-handoff.json",
+        "/tmp/coarea-independent-audit-1ti95b5h/ConditionalAssembly.lean",
+        "/tmp/coarea-independent-audit-1ti95b5h/InstancesAndAxioms.lean"
+      ],
+      "conclusion": "The handoff fixes exactly coarea_formula_theorem : CoareaFormula. Package revisions match the pinned snapshot. Search found no nonlinear coarea theorem in Mathlib; it did find equal-dimensional Sard lemmas, which do not supply the general critical-fiber obligation. The weighted area theorem permits arbitrary nonnegative target weights. WithLp 2 has the intended sum inner product and volume normalization. Independently generated comparator challenges for all six exact types compile against a fresh frozen import without child implementations. All names are bare, distinct and unreserved, and dependencies are acyclic. The supplied assembly was also checked with explicit hypotheses replacing every stand-in: the submanifold transfer, Borel assembly and final CoareaFormula implication compile using only propext, Classical.choice and Quot.sound. Reused library lemmas pass the same axiom check. The split is appropriate and establishes this selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "jacobian_linear_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts match their prose and elaborate independently. The kernel/range argument proves the vanishing criterion without requiring A to be injective. Codomain restriction, orthogonal decomposition and the block determinant calculation prove the chart identity, including zero-dimensional cases. The WithLp inner-product instance is correct; no matrix-instance ambiguity occurs."
+    },
+    {
+      "key": "critical_fibers_euclidean",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes openness and C¹ regularity and matches the stated conclusion. The compact reduction, uniform derivative modulus, thin-box bound and packing estimate yield an integral bound tending to zero using n = m+k. Fatou supplies one null exceptional set controlling every Hausdorff scale. Empty covering sets have zero cost, so k = 0 is covered. Neither Sard nor coarea is assumed."
+    },
+    {
+      "key": "critical_fibers_submanifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The universal tangent-space hypothesis is explicit in both statements. The chain rule and declared algebra dependency identify chart preimages of critical points. Countably many Lipschitz chart pieces transfer the Euclidean null-fiber conclusion, and a countable atlas completes the proof. All required hypotheses are available and dependencies are correctly directed."
+    },
+    {
+      "key": "straightening_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type assert the same chart properties. The algebra dependency gives surjectivity; kernel coordinates make the completed derivative invertible. The inverse function theorem and Simon's open-image lemma produce the required chart. Surjectivity of the inverse derivative transfers the tangent identity. No unasserted properness or regular-image property is needed downstream."
+    },
+    {
+      "key": "chart_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All differentiability, injectivity, tangent, Borel-set and weight hypotheses match exactly. The chain rule supplies the algebra dependency's hypotheses. Two applicable weighted area formulas and volume-preserving WithLp transport identify the integrals. The measurable zero-extended integrand makes Tonelli's inner integral Borel for every parameter. Arbitrary values outside Ω create no gap."
+    },
+    {
+      "key": "borel_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel measurability of M and the tangent hypothesis are explicit. Countable charts, empty-chart padding and disjointification correctly cover all regular points. The complement has zero Jacobian and almost-everywhere null fibers by the declared dependency. Summation proves both conclusions. Applying this result to a Borel representative and its null exceptional-set indicator completes the selected parent's a.e.-measurable case."
+    }
+  ],
+  "required_changes": []
+}

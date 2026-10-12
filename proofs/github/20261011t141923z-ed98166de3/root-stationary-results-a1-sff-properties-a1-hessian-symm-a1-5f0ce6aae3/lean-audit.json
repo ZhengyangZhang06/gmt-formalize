@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9db104f4c5b950554e146689f7b8056f04f74a9626c4eee686ed283c647972b0",
+  "git_delta": {
+    "base_commit": "eceab16ee4952cae206140dda4dd8bcca9d3b017",
+    "candidate_commit": "e8978dfc37be5b1fe103f83bdd9af4d6ca35ee5f",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "fderiv_fderiv_symm_of_contDiffAt",
+    "diff_sha256": "5ca097fc8dc68d1a8498a83c48838449ad7486bdd7c4c540e8be69fbb25062c3",
+    "source_sha256": "13d2044dbf00310df49e711ab832087243d54e3a89259d566a1036dec9be7c39",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fderiv_fderiv_symm_of_contDiffAt",
+      "statement": "∀ (n N : ℕ) (f : Rn n → Rn N) (x : Rn n), ContDiffAt ℝ 2 f x → ∀ a b : Rn n, fderiv ℝ (fderiv ℝ f) x a b = fderiv ℝ (fderiv ℝ f) x b a",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

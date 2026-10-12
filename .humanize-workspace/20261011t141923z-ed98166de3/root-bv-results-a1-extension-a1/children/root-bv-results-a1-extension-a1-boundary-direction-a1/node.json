@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.boundary_direction-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Key inequality r < −Dd(x)[x − ξ] near the boundary of a convex set (Simon 2.8 (1), C2)",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ open and convex with Uᶜ nonempty, ξ ∈ ℝⁿ and r > 0 with closedBall(ξ, r) ⊆ U, and d(y) := infDist(y, Uᶜ). Then there is η > 0 such that for every x ∈ U with d(x) < η at which d is differentiable, r < −Dd(x)[x − ξ] (Dd = fderiv ℝ d).",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (r : ℝ), IsOpen U → Convex ℝ U → Uᶜ.Nonempty → 0 < r → closedBall ξ r ⊆ U → ∃ η : ℝ, 0 < η ∧ ∀ x ∈ U, infDist x Uᶜ < η → DifferentiableAt ℝ (fun y ↦ infDist y Uᶜ) x → r < -fderiv ℝ (fun y ↦ infDist y Uᶜ) x (x - ξ)",
+  "lean_name": "bv_ext_infDist_compl_fderiv_lt",
+  "depends_on": [
+    "root.bv_results-a1.extension-a1.distance_concave-a1",
+    "root.bv_results-a1.extension-a1.distance_gradient-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.extension-a1.distance_concave-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.extension-a1.distance_gradient-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-boundary-direction-a1-a1"
+}

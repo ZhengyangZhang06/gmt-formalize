@@ -1,0 +1,28 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "454ab255905e4aaf4e7d2d61ae0c68d2c317293c687927ddbf5f70a8797642e7",
+  "git_delta": {
+    "base_commit": "c6f1e71858acad96e20e368953b0a77dbbd5391a",
+    "candidate_commit": "c0b6ac1c372dc2851ddc3214f06f9a018326cd1a",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean",
+      "proofs/github/20261011t141923z-ed98166de3/root-final-proof.md"
+    ],
+    "diff_sha256": "07acdeb2b62c036a5ab37a686de6b50d4f1cc1f5ad25e1b5b7a9464633e44b39",
+    "source_sha256": "e0d00933f6cfaa4bd09e07c8eeae8bdfb7e327ac82522b359fb4bdf018893519",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "GMT.Ch02.main_theorem",
+      "statement": "LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": true,
+  "publication_proof_blob": "3ddb88b321e8f31d23a2a052f089e75bf48bf58a"
+}

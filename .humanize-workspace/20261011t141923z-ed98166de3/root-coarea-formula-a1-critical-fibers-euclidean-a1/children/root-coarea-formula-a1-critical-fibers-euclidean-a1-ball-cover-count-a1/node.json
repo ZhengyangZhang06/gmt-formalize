@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1",
+  "parent_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1",
+  "depth": 3,
+  "title": "Bounded subsets of ℝⁿ are covered by O(r⁻ⁿ) closed r-balls centred in the set",
+  "statement": "Let n ∈ ℕ and let K ⊆ ℝⁿ = EuclideanSpace ℝ (Fin n) be bounded. Then there is a constant C ∈ ℝ such that for every r ∈ ℝ with 0 < r ≤ 1 there is a finite set s ⊆ K with K ⊆ ⋃_{x∈s} B̄(x,r) (closed Euclidean balls) and card(s)·rⁿ ≤ C.",
+  "lean_statement": "∀ (n : ℕ) (K : Set (Rn n)), Bornology.IsBounded K → ∃ C : ℝ, ∀ r : ℝ, 0 < r → r ≤ 1 → ∃ s : Finset (Rn n), (↑s : Set (Rn n)) ⊆ K ∧ K ⊆ ⋃ x ∈ s, closedBall x r ∧ (s.card : ℝ) * r ^ n ≤ C",
+  "lean_name": "bounded_set_closedBall_cover_card_mul_pow_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-ball-cover-count-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_chart-a1",
+  "parent_id": "root.stationary_results-a1",
+  "depth": 2,
+  "title": "Second fundamental form in a C² chart (Simon 4.26 for the frame-free B)",
+  "statement": "Assume (TH). (TH) is the frozen statement of the sibling root.submanifold_tangent-a1, taken as an explicit hypothesis: (TH1) for every Simon local representation (V, W, ψ) of class r ≥ 1 of any M ⊆ ℝᴺ, tangentSpace M (ψ x) = range Dψ(x) for x ∈ V; (TH2) every n-dimensional C^r Simon submanifold of ℝᴺ is a measurable set on which y ↦ tangentProjection M y is continuous. Then for all n, N ∈ ℕ, M ⊆ ℝᴺ, every Simon local representation (V, W, ψ) of M of class 2 (Chapter02.IsSimonLocalRepresentation 2 M V W ψ, ψ : ℝⁿ → ℝᴺ), every x ∈ V and all a, b ∈ ℝⁿ: secondFundamentalForm M (ψ x) (Dψ(x)a) (Dψ(x)b) = normalPart M (ψ x) (D²ψ(x)[a, b]), where D²ψ(x)[a, b] = fderiv ℝ (fderiv ℝ ψ) x a b; i.e. B_{ψ(x)}(Dψ(x)a, Dψ(x)b) = (I − P_{ψ(x)}) D²ψ(x)[a, b].",
+  "lean_statement": "((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, ∀ a b : Rn n, secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) = normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b)",
+  "lean_name": "second_fundamental_form_chart_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-chart-a1-a1"
+}

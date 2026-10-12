@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "eilenberg|coarea|hausdorffMeasure.*preimage|preimage.*hausdorffMeasure",
+        "eilenberg_covering_majorant|eilenberg_compact_fiber_measurable|eilenberg_compact_exhaustion",
+        "exists_measurable_subset_ae_eq|restrict_apply\\x27",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Audit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean LibraryIndependent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/EuclideanNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/tmp/eilenberg-independent-audit-4r0am5v2/Audit.lean",
+        "/tmp/eilenberg-independent-audit-4r0am5v2/Audit.log",
+        "/tmp/eilenberg-independent-audit-4r0am5v2/LibraryIndependent.log"
+      ],
+      "conclusion": "The pinned definitions and library hypotheses support the proposed arguments; searches found no ready-made Eilenberg or coarea theorem in Mathlib. All three exact child types elaborate in the replayed comparator scope with autoImplicit disabled. Independently rerunning the supplied assembly proves precisely EilenbergInequality from these child types, and the exhaustion witness proves its exact contract. These checks used a scratch context without the admitted ancestor theorem. Assembly, exhaustion, and the inspected library results depend only on propext, Classical.choice and Quot.sound. All proposed names are bare, unreserved identifiers; the empty child dependency lists are justified and acyclic. The split is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covering_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition exactly matches the prose. Near-optimal covers, trimming, closed image indicators, pointwise scale bounds and Fatou establish the measurable majorant with the stated normalization. Positivity and finiteness justify the ENNReal cancellations and limit. The proof covers arbitrary E, m = 0 and K = 0 without additional hypotheses or circular reliance."
+    },
+    {
+      "key": "compact_fiber_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes compactness, continuity on Q and k > 0. The two open-cover comparisons are justified, including empty sets and infinite content. Compactness of f(Q ∖ W) proves upper semicontinuity; the countable supremum then gives Borel measurability. No global continuity, σ-compactness or finite fiber measure is assumed implicitly."
+    },
+    {
+      "key": "compact_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable kernel, finite restricted measure, compact approximation and accumulated finite unions prove the exact contract; the supplied Lean witness also checks. Step 3 explicitly supplies a valid direct Regular/exists_isCompact_sdiff_lt argument. Its redundant expanded derivation has a nonblocking arithmetic typo: Σ_{j≥0} ε·2^{−(j+2)} equals ε/2, not ε/4. The supplied direct library argument independently closes that step, so no additional proof obligation is needed."
+    }
+  ],
+  "required_changes": []
+}

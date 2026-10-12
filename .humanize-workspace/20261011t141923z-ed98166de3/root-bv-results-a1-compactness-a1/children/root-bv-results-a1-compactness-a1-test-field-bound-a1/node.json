@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.test_field_bound-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1",
+  "depth": 3,
+  "title": "A variation bound |Du|(W) ≤ c gives ∫_W u div g ≤ c·sup|g| for C¹ test fields (step A4)",
+  "statement": "For every n ∈ ℕ, every set W ⊆ ℝⁿ, every u : ℝⁿ → ℝ and every real c ≥ 0 with |Du|(W) := SimonGMT Chapter02.bvVariationOn u W ≤ ofReal c, and for every compactly supported continuous vector field g ∈ C_c(ℝⁿ, ℝⁿ) that is C¹ (Chapter02.IsC1TestField g) with tsupport g ⊆ W: ∫_W u(x)·div g(x) dx ≤ c · sup_x |g(x)|, where div g = Chapter02.euclideanDivergence g (trace of fderiv), sup_x |g(x)| = Chapter02.compactlySupportedSupNorm g, and ∫_W is the Bochner integral for volume restricted to W.",
+  "lean_statement": "∀ (n : ℕ) (W : Set (Rn n)) (u : Rn n → ℝ) (c : ℝ), 0 ≤ c → Chapter02.bvVariationOn u W ≤ ENNReal.ofReal c → ∀ g : CompactlySupportedContinuousMap (Rn n) (Rn n), Chapter02.IsC1TestField g → tsupport g ⊆ W → (∫ x in W, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ c * Chapter02.compactlySupportedSupNorm g",
+  "lean_name": "bv_integral_div_le_of_variation_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-test-field-bound-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "BV compactness (Simon 2.2.6), BV Poincaré inequality (2.2.7) and BV extension estimate (2.2.8)",
+  "statement": "(2.6) If U ⊆ ℝⁿ and u_k (k ∈ ℕ) are locally BV on U (SimonGMT IsLocallyBV) and, for every open W ⊂⊂ U, sup_k ∫_W (|u_k(x)| + |Du_k|(W)) dLⁿ(x) < ∞, where |Du|(W) = SimonGMT bvVariationOn u W is an x-independent constant inside the integrand (so the hypothesis is sup_k (∫_W|u_k| + Lⁿ(W)·|Du_k|(W)) < ∞; Lean: ⨆ k, (∫⁻ x in W, ‖u k x‖ₑ + bvVariationOn (u k) W) < ⊤), then a subsequence u_{ψ(k)} (ψ strictly increasing) converges in L¹_loc(U) to a locally BV v with |Dv|(W) ≤ liminf |Du_{ψ(k)}|(W) for all open W ⊂⊂ U. (2.7) For all n and θ, δ ∈ (0,1) there is C ≥ 0 such that for bounded open convex U, R > 0, ξ ∈ U with B̄(ξ,δR) ⊆ U ⊆ B̄(ξ,R), u ∈ BV(U) (u ∈ L¹(U), |Du|(U) < ∞) and β with θLⁿ(U) ≤ min(Lⁿ{u ≥ β}, Lⁿ{u ≤ β}) (sets inside U): ∫_U|u − β| ≤ C R |Du|(U). (2.8) For all n and δ ∈ (0,1) there is C ≥ 0 such that for U, R, ξ as in 2.7 and u ∈ BV(ℝⁿ) with u = 0 a.e. off Ū: |Du|(ℝⁿ∖Ū) = 0 and |Du|(ℝⁿ) ≤ C(|Du|(U) + R⁻¹∫_U|u|).",
+  "lean_statement": "BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate",
+  "lean_name": "bv_compactness_poincare_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-a1"
+}
