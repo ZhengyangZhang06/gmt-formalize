@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.flat_to_weak-a1",
+  "parent_id": "root.flat_iff_weak-a1",
+  "depth": 2,
+  "title": "Flat convergence implies weak convergence (Simon 7.2, 'if' part)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and T, T_j ∈ D_n(U) (j ∈ ℕ) arbitrary currents. Suppose that for every open W ⊂⊂ U (W open, closure W compact and contained in U) the flat pseudodistance d_W(T_j, T) = flatDistance W (T_j) T = inf{M_W(S) + M_W(R) : R ∈ D_{n+1}(U), S ∈ D_n(U) integer multiplicity, T_j − T = ∂R + S} tends to 0 in [0, ∞]. Then T_j ⇀ T, i.e. T_j(ω) → T(ω) for every ω ∈ D^n(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (Tj : ℕ → GeometricCurrentOn U n), (∀ W, CompactlyContainedOpen W U → Tendsto (fun j => flatDistance W (Tj j) T) atTop (𝓝 0)) → WeaklyConvergesOn Tj T",
+  "lean_name": "fiw_flat_to_weak",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-flat-to-weak-a1-a1"
+}
