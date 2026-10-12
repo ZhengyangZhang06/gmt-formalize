@@ -517,6 +517,77 @@ theorem Submission.exists_separated_finset_subset_cover_closedBall : ∀ (X : Ty
       exact haF x hxF
     · exact hFr x hxF y hyF hxy
   · rw [Finset.card_insert_of_notMem ha', hFc]
+/-- **Simon Ch. 2, §6 (pp. 66–67), critical fibres: covering and Fatou step.** If for all
+`ε, δ > 0` the set `K` is covered by finitely many closed balls `closedBall x r` with `2 r ≤ δ`
+and `∑ₓ (2 r) ^ k ν (G '' closedBall x r) ≤ ε`, then `μH[k] (K ∩ G ⁻¹' {y}) = 0` for
+`ν`-a.e. `y`. -/
+theorem Submission.ae_hausdorffMeasure_fiber_eq_zero_of_small_ball_covers : ∀ (X Y : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] [MeasurableSpace Y] (ν : Measure Y) (k : ℕ) (K : Set X) (G : X → Y), (∀ ε : ℝ, 0 < ε → ∀ δ : ℝ, 0 < δ → ∃ (s : Finset X) (r : ℝ), 0 < r ∧ 2 * r ≤ δ ∧ K ⊆ ⋃ x ∈ s, closedBall x r ∧ ∑ x ∈ s, ENNReal.ofReal ((2 * r) ^ k) * ν (G '' closedBall x r) ≤ ENNReal.ofReal ε) → ∀ᵐ y ∂ν, μH[k] (K ∩ G ⁻¹' {y}) = 0 := by
+  intro X Y _ _ _ _ ν k K G h
+  classical
+  -- Step 1: covers `(s j, r j)` for `ε = δ = 1 / (j + 1)`; these scales tend to `0`.
+  choose s r hr hrd hcov hsum using fun j : ℕ ↦
+    h (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+  have hd : Tendsto (fun j : ℕ ↦ ENNReal.ofReal (1 / ((j : ℝ) + 1))) atTop (𝓝 0) := by
+    have := ENNReal.tendsto_ofReal (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+    rwa [ENNReal.ofReal_zero] at this
+  -- `ediam (closedBall x (r j)) ≤ 2 r j`, hence `ediam (closedBall x (r j)) ^ k ≤ (2 r j) ^ k`.
+  have hdiam : ∀ j (x : X), ediam (closedBall x (r j)) ≤ ENNReal.ofReal (2 * r j) := fun j x ↦
+    ediam_le_of_forall_dist_le fun a ha b hb ↦ by
+      linarith [dist_triangle_right a b x, mem_closedBall.1 ha, mem_closedBall.1 hb]
+  have hpow : ∀ j (x : X),
+      ediam (closedBall x (r j)) ^ (k : ℝ) ≤ ENNReal.ofReal ((2 * r j) ^ k) := by
+    intro j x
+    rw [ENNReal.rpow_natCast, ENNReal.ofReal_pow (mul_pos two_pos (hr j)).le]
+    exact pow_le_pow_left₀ zero_le (hdiam j x) k
+  -- Step 2: measurable majorants `S j = ∑_{x ∈ s j} (2 r j)^k 1_{T j x}`, where
+  -- `T j x = toMeasurable ν (G '' closedBall x (r j))` has the same measure as the image.
+  obtain ⟨S, hSm, hSi, hSy⟩ : ∃ S : ℕ → Y → ℝ≥0∞, (∀ j, Measurable (S j)) ∧
+      (∀ j, ∫⁻ y, S j y ∂ν ≤ ENNReal.ofReal (1 / ((j : ℝ) + 1))) ∧
+      ∀ j y, ∑ x ∈ s j with y ∈ G '' closedBall x (r j), ENNReal.ofReal ((2 * r j) ^ k) ≤
+        S j y := by
+    have hm : ∀ j x, Measurable ((toMeasurable ν (G '' closedBall x (r j))).indicator
+        fun _ : Y ↦ ENNReal.ofReal ((2 * r j) ^ k)) := fun j x ↦
+      measurable_const.indicator (measurableSet_toMeasurable _ _)
+    refine ⟨fun j y ↦ ∑ x ∈ s j, (toMeasurable ν (G '' closedBall x (r j))).indicator
+      (fun _ ↦ ENNReal.ofReal ((2 * r j) ^ k)) y, fun j ↦ Finset.measurable_sum _ fun x _ ↦ hm j x,
+      fun j ↦ ?_, fun j y ↦ ?_⟩
+    · rw [lintegral_finsetSum _ fun x _ ↦ hm j x]
+      simp_rw [lintegral_indicator_const (measurableSet_toMeasurable _ _), measure_toMeasurable]
+      exact hsum j
+    · rw [Finset.sum_filter]
+      refine Finset.sum_le_sum fun x _ ↦ ?_
+      split_ifs with hy
+      · rw [indicator_of_mem (subset_toMeasurable _ _ hy)]
+      · exact zero_le
+  -- Step 3: Fatou's lemma gives `liminf_j S j y = 0` for `ν`-a.e. `y`.
+  have hae : ∀ᵐ y ∂ν, liminf (fun j ↦ S j y) atTop = 0 := by
+    refine (lintegral_eq_zero_iff (Measurable.liminf hSm)).1 (le_antisymm ?_ zero_le)
+    calc ∫⁻ y, liminf (fun j ↦ S j y) atTop ∂ν
+        ≤ liminf (fun j ↦ ∫⁻ y, S j y ∂ν) atTop := lintegral_liminf_le hSm
+      _ ≤ liminf (fun j : ℕ ↦ ENNReal.ofReal (1 / ((j : ℝ) + 1))) atTop :=
+          liminf_le_liminf (Eventually.of_forall hSi)
+      _ = 0 := hd.liminf_eq
+  -- Steps 4–6: for such `y`, the balls `closedBall x (r j)`, `x ∈ s j`, whose image contains `y`
+  -- cover the fibre; bound `μH[k]` of the fibre by `liminf_j S j y = 0`.
+  filter_upwards [hae] with y hy
+  set F : ℕ → Finset X := fun j ↦ {x ∈ s j | y ∈ G '' closedBall x (r j)}
+  refine le_antisymm ?_ zero_le
+  calc μH[k] (K ∩ G ⁻¹' {y})
+      ≤ liminf (fun j ↦ ∑ i : F j, ediam (closedBall (i : X) (r j)) ^ (k : ℝ)) atTop :=
+        Measure.hausdorffMeasure_le_liminf_sum (ι := fun j ↦ ↥(F j)) _ _ _ hd
+          (fun j i ↦ closedBall (i : X) (r j))
+          (Eventually.of_forall fun j i ↦ (hdiam j i).trans (ENNReal.ofReal_le_ofReal (hrd j)))
+          (Eventually.of_forall fun j a ha ↦ by
+            obtain ⟨x, hx, hax⟩ := mem_iUnion₂.1 (hcov j ha.1)
+            exact mem_iUnion.2 ⟨⟨x, Finset.mem_filter.2 ⟨hx, a, hax, ha.2⟩⟩, hax⟩)
+    _ ≤ liminf (fun j ↦ S j y) atTop := by
+        refine liminf_le_liminf (Eventually.of_forall fun j ↦ ?_)
+        calc ∑ i : F j, ediam (closedBall (i : X) (r j)) ^ (k : ℝ)
+            ≤ ∑ _i : F j, ENNReal.ofReal ((2 * r j) ^ k) := Finset.sum_le_sum fun i _ ↦ hpow j i
+          _ = ∑ _x ∈ F j, ENNReal.ofReal ((2 * r j) ^ k) :=
+            Finset.sum_coe_sort (s := F j) (f := fun _ ↦ ENNReal.ofReal ((2 * r j) ^ k))
+          _ ≤ S j y := hSy j y
+    _ = 0 := hy
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
