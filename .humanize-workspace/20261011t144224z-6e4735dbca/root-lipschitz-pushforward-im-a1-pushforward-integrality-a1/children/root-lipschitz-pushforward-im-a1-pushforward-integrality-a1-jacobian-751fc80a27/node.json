@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.jacobian_local_bound-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Local essential bound for the tangential Jacobian ‖L_#ξ‖ (parent Step 2)",
+  "statement": "Let P, Q, n ∈ ℕ, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, f : ℝ^P → ℝ^Q locally Lipschitz on U, and L : ℝ^P → L(ℝ^P, ℝ^Q). Assume the derivative clause: for Hⁿ⌞M-a.e. x, every subspace T_x with HasWeightedApproximateTangentSpaceAt n M θ x T_x and every v ∈ T_x, the map t ↦ f(x + t v) has derivative L(x)v at t = 0. Then for every compact K ⊆ U there is C ∈ ℝ such that ‖L(x)_#ξ(x)‖ ≤ C for Hⁿ⌞M-a.e. x with x ∈ K.",
+  "lean_statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ K → ‖nVectorPushforward n (L x) (ξ x)‖ ≤ C",
+  "lean_name": "lpf_pi_jacobian_local_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-jacobian-751fc80a27-a1"
+}
