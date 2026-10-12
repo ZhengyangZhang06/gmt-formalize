@@ -1271,6 +1271,41 @@ theorem Submission.ts_fv_piece_image_area_formula : ∀ (n ℓ : ℕ) (C : Set (
   rw [fderiv_comp v (hfd _ hv.2) (hFd v hv.1), hchain _ _ (P (F v)) (hP v hv.1 hv.2),
     ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
   ring
+/-- **Countable gluing of image integrals.** Let `f : X → X` be injective and map `μ`-null sets to
+`μ`-null sets and `μ`-null-measurable sets to `μ`-null-measurable sets. If the pairwise disjoint
+measurable sets `D i` cover the `μ`-null-measurable set `Z` up to a `μ`-null set and
+`∫_{f(Z ∩ D i)} u dμ = ∫_{Z ∩ D i} g dμ` for every `i`, then `∫_{f(Z)} u dμ = ∫_Z g dμ`. -/
+theorem Submission.ts_fv_lintegral_image_eq_of_pieces : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (f : X → X) (Z : Set X) (D : ℕ → Set X) (u g : X → ℝ≥0∞), Function.Injective f → (∀ Y : Set X, μ Y = 0 → μ (f '' Y) = 0) → (∀ Y : Set X, NullMeasurableSet Y μ → NullMeasurableSet (f '' Y) μ) → NullMeasurableSet Z μ → (∀ i, MeasurableSet (D i)) → Pairwise (fun i j ↦ Disjoint (D i) (D j)) → μ (Z \ ⋃ i, D i) = 0 → (∀ i, ∫⁻ y in f '' (Z ∩ D i), u y ∂μ = ∫⁻ x in Z ∩ D i, g x ∂μ) → ∫⁻ y in f '' Z, u y ∂μ = ∫⁻ x in Z, g x ∂μ := by
+  intro X _ μ f Z D u g hf hnull hnm hZ hD hdisj hrem hpiece
+  -- `Z =ᵐ ⋃ i, Z ∩ D i`: the remainder `Z \ ⋃ i, (Z ∩ D i) = Z \ ⋃ i, D i` is null.
+  have hrem' : Z \ ⋃ i, (Z ∩ D i) = Z \ ⋃ i, D i := by
+    rw [← Set.inter_iUnion, Set.sdiff_self_inter]
+  have hsub : ⋃ i, (Z ∩ D i) ⊆ Z := Set.iUnion_subset fun i ↦ Set.inter_subset_left
+  have hZae : Z =ᵐ[μ] ⋃ i, (Z ∩ D i) := by
+    refine ae_eq_set.2 ⟨by rw [hrem']; exact hrem, ?_⟩
+    rw [Set.sdiff_eq_empty.2 hsub]
+    exact measure_empty
+  -- `f(Z) =ᵐ ⋃ i, f(Z ∩ D i)`: the remainder is `f(Z \ ⋃ i, D i)`, null since `f` keeps null sets.
+  have hfZae : f '' Z =ᵐ[μ] ⋃ i, f '' (Z ∩ D i) := by
+    rw [← Set.image_iUnion]
+    refine ae_eq_set.2 ⟨?_, ?_⟩
+    · rw [← Set.image_sdiff hf, hrem']
+      exact hnull _ hrem
+    · rw [Set.sdiff_eq_empty.2 (Set.image_mono hsub)]
+      exact measure_empty
+  -- The pieces are null-measurable and pairwise disjoint; so are their images (`f` injective).
+  have hm : ∀ i, NullMeasurableSet (Z ∩ D i) μ := fun i ↦ hZ.inter (hD i).nullMeasurableSet
+  have hd : ∀ i j, i ≠ j → Disjoint (Z ∩ D i) (Z ∩ D j) := fun i j hij ↦
+    (hdisj hij).mono Set.inter_subset_right Set.inter_subset_right
+  -- Sum the piecewise identities over both countable decompositions.
+  calc ∫⁻ y in f '' Z, u y ∂μ = ∫⁻ y in ⋃ i, f '' (Z ∩ D i), u y ∂μ := setLIntegral_congr hfZae
+    _ = ∑' i, ∫⁻ y in f '' (Z ∩ D i), u y ∂μ :=
+        lintegral_iUnion₀ (fun i ↦ hnm _ (hm i))
+          (fun i j hij ↦ (Set.disjoint_image_of_injective hf (hd i j hij)).aedisjoint) u
+    _ = ∑' i, ∫⁻ x in Z ∩ D i, g x ∂μ := tsum_congr hpiece
+    _ = ∫⁻ x in ⋃ i, (Z ∩ D i), g x ∂μ :=
+        (lintegral_iUnion₀ hm (fun i j hij ↦ (hd i j hij).aedisjoint) g).symm
+    _ = ∫⁻ x in Z, g x ∂μ := setLIntegral_congr hZae.symm
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
