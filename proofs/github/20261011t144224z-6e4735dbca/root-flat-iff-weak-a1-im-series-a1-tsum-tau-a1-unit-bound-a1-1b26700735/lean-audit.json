@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d79962da3344d083aacf1aba3d37093ab2c96492b2b573b5d2d244ffb5d293f7",
+  "git_delta": {
+    "base_commit": "faec408ec0e74e9e7cb0b88b8b9d232cc8e53745",
+    "candidate_commit": "27af9b191b732eae73e3d693d8903e52f89962ce",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_tt_unit_bound",
+    "diff_sha256": "665ce02ed9a8bf81489d18211869c7f46d67f03a8567aa8b73713909f6de3748",
+    "source_sha256": "f88e7ce8c2a63831d1eb71fc53a7b36c66c7c6c6ecec2146fe751f2f9a04927b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_tt_unit_bound",
+      "statement": "∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∀ α : Covector (Eucl P) n, |w α| ≤ ‖α‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
