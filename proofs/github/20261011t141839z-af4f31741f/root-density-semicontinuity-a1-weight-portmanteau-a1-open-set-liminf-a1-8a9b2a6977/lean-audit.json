@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5050ea5b8abeaed87e3711787f2fad78bd2a6c87d0cb473bf97371269a43bfa4",
+  "git_delta": {
+    "base_commit": "74c3b6a90157bbe4640f6448ce5f8d33dbd9d98e",
+    "candidate_commit": "5daabce7f5e16bd046ec529426ccf411a94ddfa7",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "measure_open_le_liminf_of_tendsto_integral",
+    "diff_sha256": "6ed84853ea88a4031fffc70ce1c9f7eb9937236ea05d3663c1968bf105cb9f36",
+    "source_sha256": "1b69b2b5bf011dc1c693bc6b18fd20165e6250486d3d5183f8501f436babd5d2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.measure_open_le_liminf_of_tendsto_integral",
+      "statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → μ O ≤ liminf (fun i ↦ μs i O) atTop",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
