@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_iff_variational-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Stationarity in integral form is equivalent to vanishing first variation of mass (Simon 2.4)",
+  "statement": "Assume (GF) (for every n ≥ 1, ℓ and every rectifiable n-varifold V: μ_V is finite on compacts, dim T_xV = n μ_V-a.e., and x ↦ p_{T_xV} is μ_V-a.e. strongly measurable) and FirstVariationFormula. Then StationaryIffVariational holds: for n ≥ 1, every pair a and every open U, V = mk a is stationary in U (∫ div_M X dμ_V = 0 for all C¹ fields X with compact support in U) if and only if t ↦ (imageMass a (φ t) K).toReal has derivative 0 at t = 0 for every compact variation (φ, ε, K) with K ⊆ U.",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → FirstVariationFormula → StationaryIffVariational",
+  "lean_name": "stationary_iff_variational_of_first_variation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-iff-variational-a1-a1"
+}

@@ -1,0 +1,100 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.sobolev_inequality-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions (used throughout). n ≥ 1 and ℓ ≥ 0 are integers, E = Ambient n ℓ = ℝ^{n+ℓ}, Hⁿ = μHE[n] (equal to Simon's Hⁿ), B_ρ(ξ) = closedBall ξ ρ (closed ball), ω_n = omega n ∈ (0, ∞), and Hⁿ(P ∩ B_s(0)) = ω_n sⁿ for every n-dimensional subspace P. For a rectifiable n-varifold V: μ = μ_V = V.weight; T_x = V.tangentSpace x; p_x and p_x^⊥ are the orthogonal projections onto T_x and T_x^⊥; div_M X(x) = V.tangentialDiv X x = trace(DX(x)∘p_x); ∇^M h(x) = V.tangentialGradient h x = p_x(∇h(x)); r = |x − ξ|; q_ξ(x) = V.normalRadialSq ξ x = |p_x^⊥(x − ξ)|²/|x − ξ|² ∈ [0, 1] (q_ξ(ξ) = 0 because division by 0 is 0); w_ξ(x) = q_ξ(x)/|x − ξ|ⁿ (w_ξ(ξ) = 0); a_ξ(ρ) = μ(B_ρ(ξ))/ρⁿ (a real number); Θ(ξ) = V.density ξ. A test field in U is a C¹ map X: E → E with compact support and tsupport X ⊆ U (IsTestField). 'V has mean curvature H in U' (HasMeanCurvatureIn) means H ∈ L¹_loc(U, μ) and ∫div_M X dμ = −∫⟨X, H⟩dμ for every test field X in U; 'stationary in U' means ∫div_M X dμ = 0 for every test field X in U. (FV) for V means: (FV1) μ(K) < ∞ for every compact K; (FV2) dim T_x = n for μ-a.e. x; (FV3) x ↦ p_x is μ-a.e. strongly measurable. (GF) is the statement that (FV) holds for every n ≥ 1, every ℓ and every V : RectifiableVarifold n ℓ (exactly the second conjunct of the sibling tangent_structure_first_variation); (AT) is the contract Prop ApproxTangentAE. Under (FV): q_ξ, w_ξ, ∇^M h (for h ∈ C¹(U), on U) and div_M X (for X ∈ C¹) are μ-a.e. strongly measurable, being continuous functions of p_x and of continuous data; |div_M X| ≤ (n+ℓ)‖DX‖ and div_M X = 0 off tsupport X, so div_M X is μ-integrable for every test field X; μ is a locally finite, hence outer regular, Borel measure, and μ(E ∖ spt μ) = 0 (spt V = spt μ).
+
+Source: Simon Ch. 4, 5.5, 5.7, 5.8, 5.9 (with 4.11 and the 5-times covering Lemma 3.4 of Ch. 1). Documented corrections: 5.7 requires n ≥ 2, and 'c does not depend on k' means ℓ; Lemma 5.8 is inconsistent as printed (its lower bound 1 ≤ σ^{−n}f(σ) for all σ contradicts boundedness of f) and is replaced by the corrected Lemma of Step 2 (lower bound only along small radii, finite-interval inequality, same conclusion); as in 5.9 only H ∈ L¹_loc is used, and Θ ≥ 1 is used only μ-a.e. (where Θ = θ, by ApproxTangentAE). The constant is c = 5^{n+1}ω_n^{−1/n}.
+
+Assume (AT) and (GF). Fix n ≥ 2, c := 5^{n+1}ω_n^{−1/n} > 0, and let ℓ, V, U, H, h be as in SobolevInequality; μ = μ_V.
+
+1. Preliminaries. h is C¹ on E (C¹ on U, and identically 0 on the open set E ∖ tsupport h, which together with U covers E). K_h := tsupport h is compact and ⊆ U; h and ∇^M h are bounded, μ-a.e. strongly measurable by (GF), and vanish off K_h; H ∈ L¹(μ⌞K_h); so all integrals below are finite. MultiplicityGE 1 U gives a pair b = (M', θ') with mk b = V and θ' ≥ 1 Hⁿ-a.e. on M' ∩ U; by (AT) for b, μ(B_s(ζ))/(ω_n sⁿ) → θ'(ζ) for Hⁿ-a.e. ζ ∈ M'; since μ is absolutely continuous with respect to Hⁿ⌞M':
+(1.1) for μ-a.e. ζ ∈ U, Θ(ζ) exists (HasDensityAt) and Θ(ζ) ≥ 1.
+For g ∈ C¹(U) with g ≥ 0 and tsupport g ⊆ K_h, and ζ ∈ E, put f_ζ(τ) := ω_n^{−1}∫_{B_τ(ζ)} g dμ and k_ζ(τ) := ω_n^{−1}∫_{B_τ(ζ)} (|∇^M g| + g|H|) dμ (τ > 0): both are nondecreasing and bounded, and sup f_ζ = ω_n^{−1}∫ g dμ (attained for τ large).
+(5.5) For 0 < s ≤ r: s^{−n}f_ζ(s) ≤ r^{−n}f_ζ(r) + ∫_s^r τ^{−n}k_ζ(τ) dτ. Indeed the sibling weighted_monotonicity_identity applies for every radius r because tsupport g ∩ B_r(ζ) ⊆ K_h ⊆ U; its annulus term is ≥ 0, and |⟨x − ζ, ∇^M g + gH⟩| ≤ τ(|∇^M g| + g|H|) on B_τ(ζ).
+
+2. Corrected Lemma 5.8. Let n ≥ 2 and f, k: (0, ∞) → [0, ∞) be nondecreasing with f bounded, f_∞ := sup f, such that (a) s^{−n}f(s) ≤ r^{−n}f(r) + ∫_s^r τ^{−n}k(τ) dτ for 0 < s ≤ r, and (b) limsup_{s↓0} s^{−n}f(s) ≥ 1. Then f_∞ > 0 and, with r_0 := 2f_∞^{1/n}, there is r ∈ (0, r_0) with f(5r) ≤ ½·5ⁿ r_0 k(r).
+Proof: f_∞ > 0 by (b). Suppose k(r) < 2·5^{−n}r_0^{−1}f(5r) for all r ∈ (0, r_0). Fix s ∈ (0, r_0) and let S := sup_{τ∈[s,r_0]} τ^{−n}f(τ) ≤ s^{−n}f_∞ < ∞. For s' ∈ [s, r_0], (a) with r = r_0 and the substitution u = 5τ give s'^{−n}f(s') ≤ r_0^{−n}f_∞ + (2/(5ⁿr_0))∫_{s'}^{r_0} τ^{−n}f(5τ) dτ = r_0^{−n}f_∞ + (2/(5r_0))∫_{5s'}^{5r_0} u^{−n}f(u) du ≤ r_0^{−n}f_∞ + (2/(5r_0))[r_0 S + f_∞ r_0^{1−n}/(n − 1)], because [5s', 5r_0] ⊆ [s, r_0] ∪ [r_0, ∞) and ∫_{r_0}^∞ u^{−n} du = r_0^{1−n}/(n − 1). As n ≥ 2 and r_0^{−n}f_∞ = 2^{−n}, taking the supremum over s' gives S ≤ (7/5)2^{−n} + (2/5)S, so S ≤ (7/3)2^{−n} ≤ 7/12. Thus s^{−n}f(s) ≤ 7/12 for every s ∈ (0, r_0), contradicting (b).
+
+3. Good balls (proof of 5.7, (1)). Let g be as in step 1 and G_g := {ζ ∈ U : g(ζ) ≥ 1, Θ(ζ) exists and Θ(ζ) ≥ 1}. For ζ ∈ G_g, s^{−n}f_ζ(s) = (ω_n sⁿ)^{−1}∫_{B_s(ζ)} g dμ → g(ζ)Θ(ζ) ≥ 1 (g is continuous at ζ). By step 2 with f = f_ζ, k = k_ζ there is r_ζ ∈ (0, r_0), r_0 := 2(ω_n^{−1}∫ g dμ)^{1/n}, with
+∫_{B_{5r_ζ}(ζ)} g dμ ≤ 5ⁿ ω_n^{−1/n}(∫ g dμ)^{1/n}∫_{B_{r_ζ}(ζ)} (|∇^M g| + g|H|) dμ.
+
+4. Covering. {g ≥ 1} ⊆ K_h ⊆ U, so by (1.1) μ({g ≥ 1} ∖ G_g) = 0. The closed balls B_{r_ζ}(ζ), ζ ∈ G_g, have radii < r_0; by the 5-times covering Lemma (Ch. 1, 3.4; Mathlib Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall) there is a pairwise disjoint subfamily {B_{r_j}(ζ_j)} — countable, since disjoint balls with nonempty interior in E are countably many — with G_g ⊆ ⋃_j B_{5r_j}(ζ_j). Summing step 3 over j (g ≥ 0, the small balls are disjoint):
+(4.1) ∫_{{g ≥ 1}} g dμ ≤ 5ⁿ ω_n^{−1/n}(∫ g dμ)^{1/n}∫ (|∇^M g| + g|H|) dμ.
+
+5. Truncation and layer cake (end of the proof of 5.7). Fix ε ∈ (0, 1] and ψ ∈ C¹(ℝ) nondecreasing with 0 ≤ ψ ≤ 1, ψ = 0 on (−∞, 0] and ψ = 1 on [ε, ∞). For t ≥ 0 let h_t := ψ(h − t) (C¹ on U, ≥ 0, tsupport h_t ⊆ K_h) and M_s := {h > s}. Then {h_t ≥ 1} ⊇ M_{t+ε}, h_t ≤ 1_{M_t} and |∇^M h_t| = ψ'(h − t)|∇^M h|. Applying (4.1) to g = h_t:
+μ(M_{t+ε}) ≤ 5ⁿ ω_n^{−1/n} μ(M_t)^{1/n}[∫ ψ'(h − t)|∇^M h| dμ + ∫_{M_t} |H| dμ].
+Since (t + ε)^{n/(n−1)}μ(M_t) ≤ ∫_{M_t} (h + ε)^{n/(n−1)} dμ ≤ Q_ε := ∫_{M_0} (h + ε)^{n/(n−1)} dμ, multiplying by (t + ε)^{1/(n−1)} gives
+(t + ε)^{1/(n−1)}μ(M_{t+ε}) ≤ 5ⁿ ω_n^{−1/n} Q_ε^{1/n}[∫ ψ'(h − t)|∇^M h| dμ + ∫_{M_t} |H| dμ].
+Integrate over t ∈ (0, ∞) (Tonelli; 4.11): the left side equals ∫_ε^∞ u^{1/(n−1)}μ(M_u) du = ((n − 1)/n)∫_{M_ε} (h^{n/(n−1)} − ε^{n/(n−1)}) dμ; on the right, ∫_0^∞ ψ'(h(x) − t) dt = ψ(h(x)) ≤ 1 and ∫_0^∞ 1_{M_t}(x) dt = h(x). Hence ((n − 1)/n)∫_{M_ε}(h^{n/(n−1)} − ε^{n/(n−1)}) dμ ≤ 5ⁿ ω_n^{−1/n} Q_ε^{1/n}∫ (|∇^M h| + h|H|) dμ.
+
+6. Let ε ↓ 0: by dominated convergence (integrands bounded on the compact K_h, μ(K_h) < ∞) the left side tends to ((n − 1)/n)Q with Q := ∫ h^{n/(n−1)} dμ, and Q_ε → Q. If Q = 0, the asserted inequality reads 0 ≤ c∫(|∇^M h| + h|H|) dμ, which holds as the integrand is ≥ 0. If Q > 0, dividing by Q^{1/n} gives Q^{(n−1)/n} ≤ (n/(n − 1))5ⁿ ω_n^{−1/n}∫(|∇^M h| + h|H|) dμ ≤ c∫(|∇^M h| + h|H|) dμ, since n/(n − 1) ≤ 2 ≤ 5. The constant c depends only on n, which proves SobolevInequality.
+
+## Key steps
+
+1. h is C¹ with compact support in U; ApproxTangentAE and MultiplicityGE give Θ ≥ 1 μ-a.e. in U
+2. weighted_monotonicity_identity gives 5.5 for all radii: s^{−n}f(s) ≤ r^{−n}f(r) + ∫_s^r τ^{−n}k(τ)dτ
+3. Corrected Lemma 5.8 (n ≥ 2, lower bound only as s ↓ 0) yields a good radius r < 2f_∞^{1/n} with f(5r) ≤ ½5ⁿ r_0 k(r)
+4. 5-times covering of the good balls gives ∫_{g≥1} g ≤ 5ⁿω_n^{−1/n}(∫g)^{1/n}∫(|∇^M g| + g|H|)
+5. Apply to truncations ψ(h − t), multiply by (t+ε)^{1/(n−1)}, integrate in t (layer cake), let ε ↓ 0 and divide by Q^{1/n}
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'def C1Approximation|def WhitneyExtension|def Rademacher' <snapshot>/project/GMT`
+- `rg -n 'theorem .*[Ll]usin' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem ae_tendsto_measure_inter_div|theorem exists_measurable_superset_of_null|theorem measurableSet_of_differentiableAt |theorem measurable_fderiv |euclideanHausdorffMeasure_eq_volume' <snapshot>/mathlib/Mathlib`
+- `rg -n 'exists_disjoint_subfamily_covering_enlargement_closedBall|geometric_hahn_banach_point_closed|lintegral_eq_lintegral_meas_lt|eq_pos_convex_span_of_mem_convexHull|isCompact_convexHull|measure_compl_support|normDet_comp|exists_isClosed_diff_lt|ext_of_integral_eq_on_compactlySupported' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' <snapshot>/mathlib/Mathlib`
+- `grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter02/{Lipschitz,AreaLipschitz,AreaCritical,WhitneyExtension}.lean Chapter01/{Lusin,DensityComparison}.lean Chapter03/Rectifiable.lean`
+- `grep -n 'Whitney' simongmt/Poincare/SimonGMT.lean; test -f simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02/WhitneyExtension.olean`
+- `git -C lake-packages-25730c7c/simongmt rev-parse HEAD`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-v2-audit/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/ch04-v2-audit/olean lean /tmp/ch04-v2-audit/ChildTypes.lean`
+- `LEAN_PATH=... lean /tmp/ch04-v2-audit/Inspect.lean (rfl check of the elaborated piece-cover type; #print axioms of Mathlib lemmas)`
+- `lake env lean /tmp/ch04-v2-audit/Axioms.lean (#print axioms of the cited SimonGMT lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/LocallyConvex/Separation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/Caratheodory.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root/decomposition-audit-v1.json`
+- `/tmp/ch04-v2-audit/ChildTypes.lean`
+- `/tmp/ch04-v2-audit/Axioms.lean`
+
+The snapshot contract (sha256 6e58e5dd…0f4770b) is byte-identical to the workspace Contract.lean and Submission.lean; the pinned SimonGMT revision is 2b3663083f3fe399b6296fb8eaee52169170e197 as in project/lake-manifest.json. No axiom-checked C¹ approximation or Whitney extension is available: project/GMT/Ch02/Contract.lean has C1Approximation and WhitneyExtension only as Props inside the sorry'd Ch. 2 main theorem, SimonGMT's Chapter02/WhitneyExtension.lean is not imported by Poincare/SimonGMT.lean and has no built olean, and the snapshot Mathlib has no Lusin-type C¹ approximation (no 'theorem …Lusin' match). The v2 split therefore replaces that step by the new child rectifiable_lipschitz_piece_cover, whose cited inputs exist and depend only on propext, Classical.choice and Quot.sound (#print axioms): SimonGMT Chapter02.rademacher_ae_differentiableAt, euclideanHausdorffMeasure_image_le_of_lipschitzOn, measurableSet_areaRegularSet, area_image_compl_regularSet_eq_zero, weighted_area_formula_lipschitz_injOn, Chapter01.exists_isClosed_continuousOn_of_measurable, ae_dimensionalUpperDensity_eq_zero_outside, simon_theorem_3_3, Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, Chapter03.support_euclideanHausdorffMeasure_restrict_submodule; Mathlib Besicovitch.ae_tendsto_measure_inter_div, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, measurable_fderiv, Measure.ext_of_integral_eq_on_compactlySupported. Also present: Mathlib LinearMap.normDet_comp, MeasurableSet.exists_isClosed_sdiff_lt, Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall, geometric_hahn_banach_point_closed, eq_pos_convex_span_of_mem_convexHull, lintegral_eq_lintegral_meas_lt, Measure.measure_compl_support; SimonGMT Chapter01.measure_toOuterMeasure_isBorelRegular, Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule, Chapter02.areaJacobian_comp_eq_parametrization_mul_tangential. No compact-convex-hull-of-compact-set lemma was found (only Set.Finite.isCompact_convexHull), so support_convex_hull proves compactness of conv K via Carathéodory. With GMT.Ch04.Submission compiled to an olean, all twelve child types elaborate after `import GMT.Ch04.Submission` inside `namespace GMT.Ch04` with the contract's opens and `open RectifiableVarifold`, the elaborated piece-cover type is checked by rfl against a fully explicit form (μHE[n] on Ambient n ℓ, fderiv on EuclideanSpace ℝ (Fin n)), and the parent assembly from the twelve sorry'd children typechecks with exactly the type of GMT.Ch04.main_theorem; the only diagnostics are the expected sorry warnings.

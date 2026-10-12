@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "^theorem LinearMap.exists_antilipschitzWith|^theorem OneHomClass.bound_of_antilipschitz|^theorem hasFDerivAt_iff_isLittleO_nhds_zero|^theorem IsLittleO.def ",
+        "exists_dist_lt|exists_nat_one_div_lt",
+        "^theorem exists_dense_seq|^theorem DenseRange.exists_dist_lt|^theorem eventually_nhds_iff|^theorem exists_nat_one_div_lt|^theorem unpair_pair|^theorem isBounded_closedBall|^theorem isClosed_biInter|^theorem isClosed_le ",
+        "injective_fderiv_local_lower_bound|lower_lipschitz_cover_of_local_bound",
+        "sed -n '1,86p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsc-independent-audit-gmm77zd5/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsc-independent-audit-gmm77zd5/SuppliedProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Asymptotics/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Data/Nat/Pairing.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/problem.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/issue-workers.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1-regular-set-cover-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1-regular-set-cover-a1/decomposition-v1.json",
+        "/tmp/rsc-independent-audit-gmm77zd5/ChallengeTypes.lean",
+        "/tmp/rsc-independent-audit-gmm77zd5/SuppliedProofs.lean"
+      ],
+      "conclusion": "The snapshot pins project ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; SimonGMT is pinned at 2b3663083f3fe399b6296fb8eaee52169170e197. Inspected declarations support every cited analytic and covering step, including the subsingleton case of exists_antilipschitzWith. AreaLipschitz.lean:31–41 defines exactly the selected regular set and proves its measurability under satisfied Euclidean-space instances. The handoff type matches the DAG type. Neither proposed name occurs in the three run registries or 48 inspected other-branch contract files; both are valid bare identifiers. Fresh Lean checks passed: both exact child types elaborate before either child is declared; required Euclidean instances synthesize; the supplied child proofs and exact selected-parent assembly compile. Their axiom closures, and that of measurableSet_areaRegularSet, contain only propext, Classical.choice and Quot.sound. Thus the two independent children form an appropriate, acyclic split and establish this selected parent. The rationale's related decomposition references were also checked: [Lang, Lemma 1.10](https://people.math.ethz.ch/~lang/diab05_notes_rev.pdf) and [Bate–Takáč, Lemma 2.9](https://arxiv.org/html/2306.07943v3)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pointwise_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose and all hypotheses. Injectivity supplies a positive linear lower bound, including when n = 0. Differentiability supplies the little-o estimate; the triangle inequality and c = min(m/2, r/2) establish the precise closed-radius conclusion. The arbitrary normed target needs no completeness assumption. Every step is supplied, non-circular, and sufficient for formalization; the empty dependency list is correct."
+    },
+    {
+      "key": "local_bound_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the continuity, Borel-set, and pointwise-bound hypotheses and every conclusion. Continuity makes G_k closed; choosing r_k < c covers R; dense half-radius balls and Nat.pair give the bounded Borel cover. The diameter estimate and u = v − w prove the uniform lower bound. The proof is complete and independent of the first child, so its empty dependency list is correct. Applying it with the first child's bounds and the pinned regular-set measurability theorem yields the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

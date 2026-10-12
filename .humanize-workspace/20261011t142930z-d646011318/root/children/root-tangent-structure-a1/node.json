@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Approximate tangent planes a.e., the tangent-field interface (GF), and the first variation formula",
+  "statement": "(1) ApproxTangentAE: for all n ≥ 1, ℓ ≥ 0 and every admissible pair a = (M, θ) in ℝ^{n+ℓ}, for Hⁿ-a.e. x ∈ M: exactly one subspace P satisfies (mk a).IsApproxTangentAt x P; the chosen tangent space (mk a).tangentSpace x is the approximate tangent space of M with respect to θ at x in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt); and μ_V(B_ρ(x))/(ω_n ρⁿ) → θ(x) as ρ ↓ 0. (2) (GF): for all n ≥ 1, ℓ and every rectifiable n-varifold V in ℝ^{n+ℓ}, μ_V is finite on compact sets, dim T_xV = n for μ_V-a.e. x, and x ↦ p_{T_xV} is μ_V-a.e. strongly measurable. (3) FirstVariationFormula: for every pair a, every n ≥ 1 and every compact variation (φ, ε, K) as in Ch. 4, 2.1, the function t ↦ (imageMass a (φ t) K).toReal = M(φ_t#(V⌞K)) has derivative ∫ div_M X dμ_V at t = 0, where X(y) = ∂_tφ(t, y)|_{t=0}.",
+  "lean_statement": "ApproxTangentAE ∧ (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) ∧ FirstVariationFormula",
+  "lean_name": "tangent_structure_first_variation",
+  "depends_on": [
+    "root.lipschitz_pieces-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pieces-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-a1"
+}

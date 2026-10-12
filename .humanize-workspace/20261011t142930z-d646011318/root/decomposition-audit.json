@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "areaRegularSet|area_image_compl_regularSet_eq_zero|weighted_area_formula_lipschitz_injOn|rademacher_ae_differentiableAt",
+        "exists_isClosed_continuousOn_of_measurable|ae_dimensionalUpperDensity_eq_zero_outside|simon_theorem_3_3",
+        "def C1Approximation|def WhitneyExtension|theorem main_theorem",
+        "^theorem .*([Ll]usin|[Ww]hitney)",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch04-independent-audit/ChildTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch04-independent-audit/Elaboration.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch04-independent-audit/Axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch04-independent-audit/EdgeChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/tmp/ch04-independent-audit/ChildTypes.lean",
+        "/tmp/ch04-independent-audit/Elaboration.lean",
+        "/tmp/ch04-independent-audit/Axioms.lean",
+        "/tmp/ch04-independent-audit/EdgeChecks.lean"
+      ],
+      "conclusion": "The frozen contract and workspace Contract/Submission are byte-identical; package revisions match the manifest. All twelve exact child types independently elaborate as propositions without child implementations. An explicit rfl check confirms the piece-cover type's scopes, spaces and derivative type. The supplied parent assembly, checked using child parameters and no sorry, proves exactly GMT.Ch04.main_theorem's frozen conjunction. The cited library lemmas passed axiom checks using only propext, Classical.choice and Quot.sound. The Lusin/Whitney-name search found no relevant Mathlib theorem; Chapter 2's corresponding contract statements remain unproved, but this split avoids relying on them. Splitting is appropriate: every child contributes directly or through a sibling, dependencies are acyclic and correctly directed, and GF/AT/FVF are explicit assumptions where required. Every lean_name is a distinct bare identifier; the active DAG contains only root, so no branch reservation conflicts exist. No child type references its implementation, and no Matrix/IsUnit inline construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Uniform local lower Lipschitz bounds, entrywise Lusin approximation and compact exhaustion establish every required piece property. The area formula and Lipschitz null-image bound account for the entire exceptional set without Whitney extension or circular reliance."
+    },
+    {
+      "key": "tangent_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three conclusions match the frozen type. Density-point blow-ups, compact multiplicity pieces and the upper-density theorem establish the weighted tangent limit; measure uniqueness and the piecewise projection field establish uniqueness and GF. The area formula and uniform Jacobian derivative bound justify the mass derivative. Only the declared Lipschitz-piece dependency is required."
+    },
+    {
+      "key": "stationary_iff_variational",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "GF and FirstVariationFormula are explicit antecedents. Initial velocities prove the forward implication; the compact variations x+tX realize smooth fields, and mollification with uniform derivative convergence proves the converse for C¹ fields. The proof does not assume this equivalence."
+    },
+    {
+      "key": "radial_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The radial derivative, including its value at the centre, and the projection trace calculation give the exact integrand. Support localization and almost-everywhere equality justify the restricted Bochner integrals without extra integrability assumptions. The calculation also covers n=0, as permitted by the Lean type."
+    },
+    {
+      "key": "weighted_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All localization and FV hypotheses match. The proof establishes both integrability conclusions, derives the correctly signed identity, and supplies uniform kernel bounds for dominated convergence. The limiting kernel yields precisely the closed-ball annulus and stated endpoints, also for signed h."
+    },
+    {
+      "key": "stationary_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weighted identity with h=1 and H=0 gives monotonicity. The monotone limit and monotone convergence prove density existence, defect integrability and the full-ball identity. Continuity from above for closed balls supplies upper semicontinuity. Both frozen propositions are proved."
+    },
+    {
+      "key": "curvature_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied integration-by-parts argument rigorously constructs cutoff-independent factors. The zero-mass case, logarithmic estimate, corrected κ bounds and endpoint ρ=R are handled. The density and upper-semicontinuity arguments establish all four exact conclusions using only the declared weighted-identity dependency."
+    },
+    {
+      "key": "canonical_representatives",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the needed Hausdorff-null difference of carriers through density comparison, rather than assuming representation. ApproxTangentAE identifies multiplicities; upper semicontinuity yields relative closedness and the support lower bound. Admissibility and restricted-weight equality follow for both stated representations."
+    },
+    {
+      "key": "poincare_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The constants follow the frozen order: β and c are chosen after n, α, Γ and before ℓ and the remaining data. The Gronwall estimate, full-ball kernel bound, truncation, Tonelli and layer-cake calculations prove the stated inequality with c=8Γ/(α²ω_n). Dependencies supply exactly the density facts used."
+    },
+    {
+      "key": "sobolev_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof respects n≥2 and requires only locally integrable mean curvature. Its corrected calculus lemma uses a finite supremum and proves the good-radius conclusion. The covering and truncation arguments then establish the exact Sobolev inequality with a constant independent of codimension; density is needed only almost everywhere."
+    },
+    {
+      "key": "support_convex_hull",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The radial cutoff and strict curvature bound force zero mass outside each enlarged ball, proving SupportInBall. Carathéodory compactness and separation construct a containing ball excluding each point outside the convex hull, including the empty-K case. This proves both conclusions without circular dependence."
+    },
+    {
+      "key": "classical_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit choice of t₀ and ρ₀ gives a uniform lower mass bound at nearby support points. The supplied compactly supported test function converts the approximate-tangent limit into vanishing off-plane mass; the small-ball contradiction then proves the exact sSup limit with distance from y−x to P."
+    }
+  ],
+  "required_changes": []
+}

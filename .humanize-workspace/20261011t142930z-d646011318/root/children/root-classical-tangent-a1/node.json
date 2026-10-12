@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.classical_tangent-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Approximate tangent planes are classical tangent planes of spt V for Lᵖ mean curvature (Simon 6.3)",
+  "statement": "Assume ApproxTangentAE and (GF). Then ClassicalTangent holds: if n ≥ 1, U is open, V has generalized mean curvature H ∈ L^p_loc(μ_V) in U with p > n, θ ≥ 1 μ_V-a.e. in U, x ∈ U, and V.IsApproxTangentAt x P, then sup{ρ^{-1}dist(y − x, P) : y ∈ spt V ∩ B_ρ(x)} → 0 as ρ ↓ 0 (with sSup of the image set in Lean).",
+  "lean_statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → ClassicalTangent",
+  "lean_name": "classical_tangent",
+  "depends_on": [
+    "root.curvature_monotonicity-a1",
+    "root.canonical_representatives-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.curvature_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.canonical_representatives-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-classical-tangent-a1-a1"
+}

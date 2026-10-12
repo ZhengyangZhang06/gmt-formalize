@@ -13,6 +13,7 @@ import Mathlib.MeasureTheory.Measure.WithDensity
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.Topology.Semicontinuity.Basic
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 4: Rectifiable `n`-varifolds (printed pp. 85–102)
@@ -434,7 +435,248 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Local lower bound at a regular point.** If `f : ℝⁿ → F` is differentiable at `w` and
+`Df(w)` is injective, then for some `c > 0`, `c |u| ≤ |f(w + u) - f(w)|` whenever `|u| ≤ c`
+(the pointwise step of the Lipschitz-piece replacement for Simon Ch. 3, Lemma 1.2). -/
+theorem Submission.injective_fderiv_local_lower_bound : ∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (f : EuclideanSpace ℝ (Fin n) → F) (w : EuclideanSpace ℝ (Fin n)), DifferentiableAt ℝ f w → Function.Injective (fderiv ℝ f w) → ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖ := by
+  intro n F _ _ f w hf hinj
+  -- `L = Df(w)` is injective on the finite-dimensional `ℝⁿ`, so `‖u‖ ≤ K ‖L u‖` with `K > 0`.
+  obtain ⟨K, hK, hKL⟩ :=
+    (fderiv ℝ f w : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] F).exists_antilipschitzWith
+      (LinearMap.ker_eq_bot.2 hinj)
+  have hK' : (0 : ℝ) < K := hK
+  -- With `m = K⁻¹`: `m ‖u‖ ≤ ‖L u‖` for all `u`.
+  have hm : ∀ u, (K : ℝ)⁻¹ * ‖u‖ ≤ ‖fderiv ℝ f w u‖ := fun u ↦
+    (inv_mul_le_iff₀ hK').2 (ZeroHomClass.bound_of_antilipschitz _ hKL u)
+  have hm2 : 0 < (K : ℝ)⁻¹ / 2 := half_pos (inv_pos.2 hK')
+  -- Differentiability: `‖f(w + u) - f(w) - L u‖ ≤ (m/2) ‖u‖` for `‖u‖ < r`.
+  obtain ⟨r, hr, hfr⟩ := Metric.eventually_nhds_iff.1
+    ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hf.hasFDerivAt).bound hm2)
+  -- `c = min(m/2, r/2)`.
+  refine ⟨min ((K : ℝ)⁻¹ / 2) (r / 2), lt_min hm2 (half_pos hr), fun u hu ↦ ?_⟩
+  have hur : dist u 0 < r := by
+    rw [dist_zero_right]
+    exact hu.trans_lt ((min_le_right _ _).trans_lt (half_lt_self hr))
+  have h2 : ‖f (w + u) - f w - fderiv ℝ f w u‖ ≤ (K : ℝ)⁻¹ / 2 * ‖u‖ := hfr hur
+  -- Triangle inequality: `‖L u‖ ≤ ‖f(w + u) - f(w)‖ + ‖f(w + u) - f(w) - L u‖`.
+  have h3 : ‖fderiv ℝ f w u‖ ≤ ‖f (w + u) - f w‖ + ‖f (w + u) - f w - fderiv ℝ f w u‖ := by
+    simpa only [sub_sub_cancel] using
+      norm_sub_le (f (w + u) - f w) (f (w + u) - f w - fderiv ℝ f w u)
+  calc min ((K : ℝ)⁻¹ / 2) (r / 2) * ‖u‖ ≤ (K : ℝ)⁻¹ / 2 * ‖u‖ :=
+        mul_le_mul_of_nonneg_right (min_le_left _ _) (norm_nonneg u)
+    _ ≤ ‖f (w + u) - f w‖ := by linarith [hm u]
+/-- **Lower Lipschitz pieces from pointwise local lower bounds.** If `f : ℝⁿ → F` is continuous
+and every point `w` of the Borel set `R` has some `c > 0` with `c|u| ≤ |f(w + u) - f(w)|` for
+`|u| ≤ c`, then `R` is covered by countably many bounded Borel sets `T_p ⊆ R`, on each of which
+`f` satisfies a uniform lower Lipschitz bound `c_p|v - w| ≤ |f(v) - f(w)|`. -/
+theorem Submission.lower_lipschitz_cover_of_local_bound : ∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] (f : EuclideanSpace ℝ (Fin n) → F) (R : Set (EuclideanSpace ℝ (Fin n))), Continuous f → MeasurableSet R → (∀ w ∈ R, ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖) → ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)), R ⊆ ⋃ p, T p ∧ ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧ T p ⊆ R ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖ := by
+  intro n F _ f R hf hR hloc
+  -- Scales `r_k = 1/(k+1)` and the closed sets `G_k` of points with the lower bound at scale `r_k`.
+  obtain ⟨r, hr, hrc⟩ : ∃ r : ℕ → ℝ, (∀ k, 0 < r k) ∧ ∀ c : ℝ, 0 < c → ∃ k, r k < c :=
+    ⟨fun k ↦ 1 / ((k : ℝ) + 1), fun _ ↦ Nat.one_div_pos_of_nat, fun _ hc ↦ exists_nat_one_div_lt hc⟩
+  obtain ⟨G, hG, hGmem⟩ : ∃ G : ℕ → Set (EuclideanSpace ℝ (Fin n)), (∀ k, IsClosed (G k)) ∧
+      ∀ k w, w ∈ G k ↔ ∀ u, ‖u‖ ≤ r k → r k * ‖u‖ ≤ ‖f (w + u) - f w‖ :=
+    ⟨fun k ↦ ⋂ u ∈ closedBall 0 (r k), {w | r k * ‖u‖ ≤ ‖f (w + u) - f w‖},
+      fun k ↦ isClosed_biInter fun u _ ↦ isClosed_le continuous_const
+        ((hf.comp (continuous_id.add continuous_const)).sub hf).norm,
+      fun k w ↦ by simp only [mem_iInter₂, mem_closedBall_zero_iff, mem_ofPred_eq]⟩
+  -- Every point of `R` lies in some `G_k`.
+  have hRG : ∀ w ∈ R, ∃ k, w ∈ G k := fun w hw ↦ by
+    obtain ⟨c, hc, hcw⟩ := hloc w hw
+    obtain ⟨k, hk⟩ := hrc c hc
+    exact ⟨k, (hGmem k w).2 fun u hu ↦
+      (mul_le_mul_of_nonneg_right hk.le (norm_nonneg u)).trans (hcw u (hu.trans hk.le))⟩
+  -- A dense sequence `q`: balls of radius `r_k / 2` around the `q_m` cover `ℝⁿ` for each `k`.
+  obtain ⟨q, hq⟩ := TopologicalSpace.exists_dense_seq (EuclideanSpace ℝ (Fin n))
+  refine ⟨fun p ↦ R ∩ G p.unpair.1 ∩ closedBall (q p.unpair.2) (r p.unpair.1 / 2), ?_,
+    fun p ↦ ⟨?_, ?_, ?_, ?_⟩⟩
+  · intro w hw
+    obtain ⟨k, hk⟩ := hRG w hw
+    obtain ⟨m, hm⟩ := hq.exists_dist_lt w (half_pos (hr k))
+    refine mem_iUnion.2 ⟨Nat.pair k m, ?_⟩
+    rw [Nat.unpair_pair]
+    exact ⟨⟨hw, hk⟩, mem_closedBall.2 hm.le⟩
+  · exact (hR.inter (hG _).measurableSet).inter measurableSet_closedBall
+  · exact isBounded_closedBall.subset inter_subset_right
+  · exact inter_subset_left.trans inter_subset_left
+  · -- Two points of `T_p` are within `r_k` of each other, so the bound of `G_k` applies to `v - w`.
+    refine ⟨r p.unpair.1, hr _, fun v hv w hw ↦ ?_⟩
+    have hvw : ‖v - w‖ ≤ r p.unpair.1 := by
+      rw [← dist_eq_norm]
+      calc dist v w ≤ dist v (q p.unpair.2) + dist w (q p.unpair.2) := dist_triangle_right _ _ _
+        _ ≤ r p.unpair.1 / 2 + r p.unpair.1 / 2 :=
+          add_le_add (mem_closedBall.1 hv.2) (mem_closedBall.1 hw.2)
+        _ = r p.unpair.1 := add_halves _
+    simpa only [add_sub_cancel] using (hGmem _ w).1 hw.1.2 (v - w) hvw
+/-- **Regular points of a continuous map.** If `f : ℝⁿ → ℝ^{n+ℓ}` is continuous, the set `R` of
+points where `f` is differentiable with injective derivative is covered by countably many bounded
+Borel sets `T_p ⊆ R`, on each of which `f` has a lower Lipschitz bound. `R` is SimonGMT's
+`Chapter02.areaRegularSet f`, hence Borel. Each `w ∈ R` has a local lower bound
+`c|u| ≤ |f(w + u) - f(w)|` for `|u| ≤ c` (`injective_fderiv_local_lower_bound`), and
+`lower_lipschitz_cover_of_local_bound` makes these bounds uniform on countably many pieces. -/
+theorem Submission.regular_set_lower_lipschitz_cover : ∀ (n ℓ : ℕ)
+    (f : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), Continuous f →
+    ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)),
+      {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)} ⊆ ⋃ p, T p ∧
+      ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧
+        (∀ w ∈ T p, DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖ := by
+  intro n ℓ f hf
+  -- Every regular point has a pointwise lower bound; the cover makes the bounds uniform.
+  obtain ⟨T, hRT, hT⟩ := Submission.lower_lipschitz_cover_of_local_bound n f
+    {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)} hf
+    (Poincare.SimonGMT.Chapter02.measurableSet_areaRegularSet f)
+    (fun w hw ↦ Submission.injective_fderiv_local_lower_bound n f w hw.1 hw.2)
+  refine ⟨T, hRT, fun p ↦ ?_⟩
+  obtain ⟨hmeas, hbdd, hsub, hlower⟩ := hT p
+  exact ⟨hmeas, hbdd, fun w hw ↦ hsub hw, hlower⟩
+/-- **Lusin exhaustion (Simon Ch. 1, 1.17).** If `Y` is a finite-dimensional real normed space,
+`g : ℝⁿ → Y` is Borel and `S ⊆ ℝⁿ` is Borel with `Lⁿ(S) < ∞`, then `S` is covered up to an
+`Lⁿ`-null set by countably many compact sets `C_j ⊆ S` on each of which `g` is continuous. -/
+theorem Submission.lusin_compact_exhaustion_of_measurable : ∀ {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y] (n : ℕ) (g : EuclideanSpace ℝ (Fin n) → Y) (S : Set (EuclideanSpace ℝ (Fin n))), Measurable g → MeasurableSet S → volume S ≠ ⊤ → ∃ C : ℕ → Set (EuclideanSpace ℝ (Fin n)), (∀ j, IsCompact (C j) ∧ C j ⊆ S ∧ ContinuousOn g (C j)) ∧ volume (S \ ⋃ j, C j) = 0 := by
+  intro Y _ _ _ _ _ n g S hg hS hSfin
+  -- `Lⁿ ⌞ S` is finite, hence outer regular; `Y` has a countable topological basis.
+  have : IsFiniteMeasure (volume.restrict S) := isFiniteMeasure_restrict.2 hSfin
+  have hb := TopologicalSpace.isBasis_countableBasis Y
+  have : Countable (TopologicalSpace.countableBasis Y) :=
+    (TopologicalSpace.countable_countableBasis Y).to_subtype
+  -- One compact set: `K ⊆ S` with `g` continuous on `K` and `Lⁿ(S \ K) < ε`.
+  have key : ∀ ε : ℝ≥0∞, ε ≠ 0 →
+      ∃ K, IsCompact K ∧ K ⊆ S ∧ ContinuousOn g K ∧ volume (S \ K) < ε := by
+    intro ε hε
+    obtain ⟨δ, hδ, hδε⟩ := ENNReal.exists_pos_sum_of_countable (ENNReal.half_pos hε).ne'
+      (TopologicalSpace.countableBasis Y)
+    -- Open `O_U ⊇ g⁻¹(U)` with `(Lⁿ ⌞ S)(O_U \ g⁻¹(U)) < δ_U` for each basic open `U`.
+    choose O hgO hO _ hOδ using fun U : TopologicalSpace.countableBasis Y ↦
+      (hg (hb.isOpen U.2).measurableSet).exists_isOpen_sdiff_lt (μ := volume.restrict S)
+        (measure_ne_top _ _) (ENNReal.coe_ne_zero.2 (hδ U).ne')
+    -- The bad set `B = ⋃_U (O_U \ g⁻¹(U))` has `Lⁿ(S ∩ B) < ε/2`.
+    set B := ⋃ U, (O U \ g ⁻¹' U)
+    have hBm : MeasurableSet B :=
+      MeasurableSet.iUnion fun U ↦ (hO U).measurableSet.diff (hg (hb.isOpen U.2).measurableSet)
+    have hSB : volume (S ∩ B) < ε / 2 :=
+      calc volume (S ∩ B) = volume.restrict S B := by rw [Measure.restrict_apply hBm, inter_comm]
+        _ ≤ ∑' U, volume.restrict S (O U \ g ⁻¹' U) := measure_iUnion_le _
+        _ ≤ ∑' U, (δ U : ℝ≥0∞) := ENNReal.tsum_le_tsum fun U ↦ (hOδ U).le
+        _ < ε / 2 := hδε
+    -- Inner regularity: compact `K ⊆ S \ B` with `Lⁿ((S \ B) \ K) < ε/2`.
+    obtain ⟨K, hKSB, hK, hKε⟩ := (hS.diff hBm).exists_isCompact_sdiff_lt
+      (ne_top_of_le_ne_top hSfin (measure_mono sdiff_subset)) (ENNReal.half_pos hε).ne'
+    refine ⟨K, hK, hKSB.trans sdiff_subset, fun x _ ↦ ?_, ?_⟩
+    · -- On `K`, `g⁻¹(U) ∩ K = O_U ∩ K` is relatively open, so `g` is continuous on `K`.
+      refine hb.nhds_hasBasis.tendsto_right_iff.2 fun U ⟨hUb, hxU⟩ ↦
+        mem_nhdsWithin.2 ⟨O ⟨U, hUb⟩, hO _, hgO _ hxU, fun y ⟨hyO, hyK⟩ ↦ ?_⟩
+      by_contra hyU
+      exact (hKSB hyK).2 (mem_iUnion.2 ⟨⟨U, hUb⟩, hyO, hyU⟩)
+    · calc volume (S \ K) ≤ volume (S ∩ B) + volume ((S \ B) \ K) :=
+            (measure_mono (show S \ K ⊆ (S ∩ B) ∪ ((S \ B) \ K) from fun y ⟨hyS, hyK⟩ ↦ by
+              by_cases hyB : y ∈ B
+              · exact Or.inl ⟨hyS, hyB⟩
+              · exact Or.inr ⟨⟨hyS, hyB⟩, hyK⟩)).trans (measure_union_le _ _)
+        _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hSB hKε
+        _ = ε := ENNReal.add_halves ε
+  -- Exhaustion: `C_j` with `Lⁿ(S \ C_j) < 1/j`, so `Lⁿ(S \ ⋃ C_j) = 0`.
+  choose C hC hCS hCg hCε using fun j : ℕ ↦
+    key (j : ℝ≥0∞)⁻¹ (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top j))
+  refine ⟨C, fun j ↦ ⟨hC j, hCS j, hCg j⟩, ?_⟩
+  by_contra h
+  obtain ⟨j, hj⟩ := ENNReal.exists_inv_nat_lt h
+  exact lt_asymm hj
+    ((measure_mono (sdiff_subset_sdiff_right (subset_iUnion C j))).trans_lt (hCε j))
+/-- **Compact pieces of one Lipschitz image.** If `f : ℝⁿ → ℝ^{n+ℓ}` is Lipschitz, then up to an
+`Hⁿ`-null set `Y`, `f(ℝⁿ)` is covered by images `f(C_i)` of compact sets on which `f` is
+differentiable with injective derivative, `Df` is continuous, and `f` has a lower Lipschitz
+bound. The bounded Borel pieces `T_p` of the regular set (`regular_set_lower_lipschitz_cover`)
+are exhausted by Lusin compacta `D_{p,q}` for `Df` (`lusin_compact_exhaustion_of_measurable`);
+`Y` is the image of the non-regular set (null by the area formula, Ch. 2 §3) together with the
+image of the null remainders `T_p \ ⋃_q D_{p,q}` (null by Ch. 2, 1.8(i)). -/
+theorem Submission.lipschitz_range_piece_cover : ∀ (n ℓ : ℕ) (K : NNReal)
+    (f : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), LipschitzWith K f →
+    ∃ (Y : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))),
+      (μHE[n] : Measure (Ambient n ℓ)) Y = 0 ∧ Set.range f ⊆ Y ∪ ⋃ i, f '' C i ∧
+      ∀ i, IsCompact (C i) ∧
+        (∀ w ∈ C i, DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)) ∧
+        ContinuousOn (fderiv ℝ f) (C i) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖f v - f w‖ := by
+  intro n ℓ K f hf
+  -- Bounded Borel pieces `T_p` of the regular set `R`, with lower Lipschitz bounds.
+  obtain ⟨T, hRT, hT⟩ := Submission.regular_set_lower_lipschitz_cover n ℓ f hf.continuous
+  -- `T_p` has finite measure and `Df` is Borel, so Lusin gives compacta `D_{p,q} ⊆ T_p` on
+  -- which `Df` is continuous, exhausting `T_p` up to a Lebesgue-null set.
+  choose D hD hDnull using fun p ↦
+    Submission.lusin_compact_exhaustion_of_measurable n (fderiv ℝ f) (T p)
+      (measurable_fderiv ℝ f) (hT p).1 (hT p).2.1.measure_lt_top.ne
+  -- `Y = f(ℝⁿ \ R) ∪ f(Z)` with `Z = ⋃_p (T_p \ ⋃_q D_{p,q})`; the pieces are `D_{Nat.unpair i}`.
+  refine ⟨f '' (univ \ {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)}) ∪
+      f '' ⋃ p, (T p \ ⋃ q, D p q), fun i ↦ D (Nat.unpair i).1 (Nat.unpair i).2, ?_, ?_,
+      fun i ↦ ?_⟩
+  · refine measure_union_null ?_ ?_
+    · -- The area formula: the image of the non-regular set is `Hⁿ`-null.
+      have h := Poincare.SimonGMT.Chapter02.area_image_compl_regularSet_eq_zero hf univ
+      rwa [finrank_euclideanSpace_fin] at h
+    · -- Ch. 2, 1.8(i): `Hⁿ(f(Z)) ≤ Kⁿ Hⁿ(Z) = Kⁿ Lⁿ(Z) = 0`.
+      have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+        (hf.lipschitzOnWith (s := ⋃ p, (T p \ ⋃ q, D p q)))
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume n, measure_iUnion_null hDnull,
+        mul_zero] at h
+      exact nonpos_iff_eq_zero.1 h
+  · rintro _ ⟨w, rfl⟩
+    by_cases hw : w ∈ {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)}
+    · obtain ⟨p, hp⟩ := mem_iUnion.1 (hRT hw)
+      by_cases hq : w ∈ ⋃ q, D p q
+      · obtain ⟨q, hq⟩ := mem_iUnion.1 hq
+        refine mem_union_right _ (mem_iUnion.2 ⟨Nat.pair p q, ?_⟩)
+        simpa only [Nat.unpair_pair] using mem_image_of_mem f hq
+      · exact mem_union_left _ (mem_union_right _
+          (mem_image_of_mem f (mem_iUnion.2 ⟨p, mem_sdiff_of_mem hp hq⟩)))
+    · exact mem_union_left _ (mem_union_left _
+        (mem_image_of_mem f (mem_sdiff_of_mem (mem_univ w) hw)))
+  · -- Each piece inherits the properties of `D_{p,q} ⊆ T_p`.
+    obtain ⟨hcpt, hsub, hcont⟩ := hD (Nat.unpair i).1 (Nat.unpair i).2
+    obtain ⟨-, -, hreg, c, hc, hlow⟩ := hT (Nat.unpair i).1
+    exact ⟨hcpt, fun w hw ↦ hreg w (hsub hw), hcont, c, hc,
+      fun v hv w hw ↦ hlow v (hsub hv) w (hsub hw)⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+/-- **Lipschitz pieces of a countably `n`-rectifiable set** (Ch. 3, 1.1, with Rademacher, the
+area formula and Lusin in place of the `C¹` cover of Ch. 3, 1.2). Up to a Borel `Hⁿ`-null set
+`N₀`, `M` is covered by countably many images `F_i(C_i)` of compact sets under Lipschitz maps
+that are differentiable on `C_i` with injective, continuous derivative and satisfy a lower
+Lipschitz bound there. Each parametrization of 1.1 is split by `lipschitz_range_piece_cover`;
+the pieces are re-indexed by `Nat.pair`. -/
+theorem Submission.rectifiable_lipschitz_piece_cover : ∀ (n ℓ : ℕ) (M : Set (Ambient n ℓ)),
+    0 < n → Poincare.SimonGMT.Chapter03.CountablyRectifiable n M →
+    ∃ (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n)))
+      (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ),
+      MeasurableSet N₀ ∧ (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 ∧ M ⊆ N₀ ∪ ⋃ i, F i '' C i ∧
+      ∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧
+        (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧
+        ContinuousOn (fderiv ℝ (F i)) (C i) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖ := by
+  intro n ℓ M _hn hM
+  -- 1.1: `M ⊆ M₀ ∪ ⋃_j G_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and `G_j` Lipschitz with constant `K_j`.
+  obtain ⟨M₀, hM₀, G, hG, hMcover⟩ := hM
+  choose K hK using hG
+  -- Every `G_j(ℝⁿ)` lies in `Y_j ∪ ⋃_q G_j(D_{j,q})` with `Hⁿ(Y_j) = 0`.
+  choose Y D hY hrange hD using fun j ↦
+    Submission.lipschitz_range_piece_cover n ℓ (K j) (G j) (hK j)
+  -- A Borel `Hⁿ`-null hull `N₀` of `M₀ ∪ ⋃_j Y_j`.
+  obtain ⟨N₀, hN₀sub, hN₀meas, hN₀null⟩ :=
+    exists_measurable_superset_of_null (measure_union_null hM₀ (measure_iUnion_null hY))
+  refine ⟨N₀, fun i ↦ D (Nat.unpair i).1 (Nat.unpair i).2, fun i ↦ G (Nat.unpair i).1,
+    hN₀meas, hN₀null, ?_, fun i ↦ ?_⟩
+  · intro x hx
+    rcases hMcover hx with hx₀ | hx
+    · exact mem_union_left _ (hN₀sub (mem_union_left _ hx₀))
+    obtain ⟨j, hj⟩ := mem_iUnion.mp hx
+    rcases hrange j hj with hxY | hxD
+    · exact mem_union_left _ (hN₀sub (mem_union_right _ (mem_iUnion.2 ⟨j, hxY⟩)))
+    obtain ⟨q, hq⟩ := mem_iUnion.mp hxD
+    refine mem_union_right _ (mem_iUnion.2 ⟨Nat.pair j q, ?_⟩)
+    simpa only [Nat.unpair_pair] using hq
+  · obtain ⟨hcpt, hdiff, hcont, hlower⟩ := hD (Nat.unpair i).1 (Nat.unpair i).2
+    exact ⟨hcpt, ⟨K _, hK _⟩, hdiff, hcont, hlower⟩
 
 end
 
