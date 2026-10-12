@@ -410,6 +410,132 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Cylinder cut-off weight (Simon Ch. 8, proof of Lemma 5.10, displays (6)–(7): the `h` used in
+3.5, `h(z) = f(|q(z - y)|)` with `f ≡ 1` on `[0, τ)`, `f ≡ 0` on `(2τ, ∞)`).  With
+`M₀ = 4 sup |st'|` (`st = Real.smoothTransition`), `h(z) = st(4 - ‖q(z - y)‖²/τ²)` is `C¹`, takes
+values in `[0, 1]`, equals `1` where `‖q(z - y)‖ < τ` and `0` where `‖q(z - y)‖ ≥ 2τ`
+(`q = id - p_P`), and `|Dh(z)[p_S(z - y)]| ≤ (M₀/τ) ‖p_S - p_P‖ ‖z - y‖`. -/
+theorem Submission.intcpt_allard_cm_cylinder_weight :
+    ∃ M₀ : ℝ, 0 ≤ M₀ ∧ ∀ (N n : ℕ) (P : Grassmannian N n) (y : Euclidean N) (τ : ℝ), 0 < τ → ∃ h : Euclidean N → ℝ, ContDiff ℝ 1 h ∧ (∀ z, 0 ≤ h z ∧ h z ≤ 1) ∧ (∀ z, ‖(z - y) - Grassmannian.project P (z - y)‖ < τ → h z = 1) ∧ (∀ z, 2 * τ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ → h z = 0) ∧ ∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M₀ / τ * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖ := by
+  -- Step 1: `deriv smoothTransition` vanishes off `[0, 1]`, where `smoothTransition` is locally
+  -- constant (`0` on `(-∞, 0)`, `1` on `(1, ∞)`).
+  have hst'_zero : ∀ u : ℝ, u ∉ Icc (0 : ℝ) 1 → deriv Real.smoothTransition u = 0 := by
+    intro u hu
+    rcases lt_or_ge u 0 with hu0 | hu0
+    · have hev : Real.smoothTransition =ᶠ[𝓝 u] fun _ ↦ (0 : ℝ) := by
+        filter_upwards [Iio_mem_nhds hu0] with v hv
+        exact Real.smoothTransition.zero_of_nonpos (le_of_lt hv)
+      rw [hev.deriv_eq, deriv_const]
+    · have hu1 : 1 < u := lt_of_not_ge fun h1 ↦ hu ⟨hu0, h1⟩
+      have hev : Real.smoothTransition =ᶠ[𝓝 u] fun _ ↦ (1 : ℝ) := by
+        filter_upwards [Ioi_mem_nhds hu1] with v hv
+        exact Real.smoothTransition.one_of_one_le (le_of_lt hv)
+      rw [hev.deriv_eq, deriv_const]
+  -- Step 2: `deriv smoothTransition` is continuous with compact support, hence bounded by some
+  -- `L ≥ 0`; take `M₀ := 4 L`.
+  have hcont : Continuous (deriv Real.smoothTransition) :=
+    (Real.smoothTransition.contDiff (n := 1)).continuous_deriv le_rfl
+  obtain ⟨L, hL⟩ :=
+    (HasCompactSupport.intro isCompact_Icc hst'_zero).exists_bound_of_continuous hcont
+  have hL0 : 0 ≤ L := (norm_nonneg _).trans (hL 0)
+  refine ⟨4 * L, by positivity, ?_⟩
+  intro N n P y τ hτ
+  -- Step 3: `Q = id - p_P` as a continuous linear map, and
+  -- `h z = smoothTransition (4 - ‖Q (z - y)‖² / τ²)`.
+  obtain ⟨Q, hQ⟩ : ∃ Q : Euclidean N →L[ℝ] Euclidean N,
+      ∀ v, Q v = v - Grassmannian.project P v :=
+    ⟨LinearMap.toContinuousLinearMap (LinearMap.id - Grassmannian.projectionLinearMap P),
+      fun v ↦ rfl⟩
+  have hτ2 : 0 < τ ^ 2 := by positivity
+  refine ⟨fun z ↦ Real.smoothTransition (4 - ‖Q (z - y)‖ ^ 2 / τ ^ 2), ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 4: `h` is `C^∞`, in particular `C¹`.
+    exact (Real.smoothTransition.contDiff (n := 1)).comp
+      (contDiff_const.sub
+        (((Q.contDiff.comp (contDiff_id.sub contDiff_const)).norm_sq ℝ).div_const _))
+  · -- Step 5: values in `[0, 1]`.
+    exact fun z ↦ ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  · -- Step 6: `‖q(z - y)‖ < τ` gives `4 - F(z) > 3 ≥ 1`, so `h z = 1`.
+    intro z hz
+    apply Real.smoothTransition.one_of_one_le
+    have h1 : ‖Q (z - y)‖ ^ 2 < τ ^ 2 := by
+      rw [hQ]
+      exact pow_lt_pow_left₀ hz (norm_nonneg _) two_ne_zero
+    have h2 : ‖Q (z - y)‖ ^ 2 / τ ^ 2 < 1 := (div_lt_one hτ2).2 h1
+    linarith
+  · -- Step 7: `‖q(z - y)‖ ≥ 2τ` gives `4 - F(z) ≤ 0`, so `h z = 0`.
+    intro z hz
+    apply Real.smoothTransition.zero_of_nonpos
+    have h1 : (2 * τ) ^ 2 ≤ ‖Q (z - y)‖ ^ 2 := by
+      rw [hQ]
+      exact pow_le_pow_left₀ (by positivity) hz 2
+    have h2 : 4 ≤ ‖Q (z - y)‖ ^ 2 / τ ^ 2 := by
+      rw [le_div_iff₀ hτ2]
+      nlinarith
+    linarith
+  · intro z S
+    -- Step 8: chain rule.  `z' ↦ Q (z' - y)` has derivative `Q`, so with
+    -- `G z' = 4 - ‖Q (z' - y)‖² (τ²)⁻¹` we get `Dh(z) = st'(G z) • DG(z)`.
+    have hQd : HasFDerivAt (fun z' ↦ Q (z' - y)) Q z := by
+      have h1 := Q.hasFDerivAt.comp z ((hasFDerivAt_id z).sub_const y)
+      rwa [ContinuousLinearMap.comp_id] at h1
+    have hGd := (hQd.norm_sq.mul_const ((τ ^ 2)⁻¹)).const_sub (4 : ℝ)
+    have hst : HasDerivAt Real.smoothTransition
+        (deriv Real.smoothTransition (4 - ‖Q (z - y)‖ ^ 2 * (τ ^ 2)⁻¹))
+        (4 - ‖Q (z - y)‖ ^ 2 * (τ ^ 2)⁻¹) :=
+      ((Real.smoothTransition.contDiff (n := 1)).differentiable one_ne_zero _).hasDerivAt
+    have hfun : (fun z' ↦ Real.smoothTransition (4 - ‖Q (z' - y)‖ ^ 2 / τ ^ 2)) =
+        Real.smoothTransition ∘ fun z' ↦ 4 - ‖Q (z' - y)‖ ^ 2 * (τ ^ 2)⁻¹ := by
+      funext z'
+      simp only [Function.comp_apply, div_eq_mul_inv]
+    rw [hfun, (hst.comp_hasFDerivAt z hGd).fderiv]
+    simp only [_root_.smul_apply, _root_.neg_apply, ContinuousLinearMap.comp_apply,
+      innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat]
+    -- Step 9: `p_P (Q w) = 0`, and self-adjointness of `p_P`, `p_S` gives
+    -- `⟪Q w, Q (p_S w)⟫ = ⟪(p_S - p_P) (Q w), w⟫` with `w = z - y`.
+    have hpa : Grassmannian.projectionLinearMap P (Q (z - y)) = 0 := by
+      have h1 := Grassmannian.project_project P (z - y)
+      simp only [Grassmannian.project] at h1
+      rw [hQ, Grassmannian.project, map_sub, h1, sub_self]
+    have hkey : inner ℝ (Q (z - y)) (Q (Grassmannian.project S (z - y))) =
+        inner ℝ (LinearMap.toContinuousLinearMap
+          (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P) (Q (z - y)))
+          (z - y) := by
+      rw [LinearMap.coe_toContinuousLinearMap', LinearMap.sub_apply, hpa, sub_zero,
+        hQ (Grassmannian.project S (z - y)), inner_sub_right]
+      simp only [Grassmannian.project]
+      rw [← Grassmannian.projectionLinearMap_isSymmetric P (Q (z - y)), hpa, inner_zero_left,
+        sub_zero, Grassmannian.projectionLinearMap_isSymmetric S (Q (z - y)) (z - y)]
+    rw [hkey]
+    -- Step 10: if `G z < 0` then `st'(G z) = 0`; otherwise `‖Q w‖ ≤ 2τ`, and
+    -- `|Dh(z)[p_S w]| ≤ L (2/τ²) ‖T‖ (2τ) ‖w‖ = (4L/τ) ‖T‖ ‖w‖`.
+    set T := LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)
+    set a := Q (z - y)
+    set w := z - y
+    have hRHS : 0 ≤ 4 * L / τ * ‖T‖ * ‖w‖ := by positivity
+    rcases lt_or_ge (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹) 0 with hneg | hnn
+    · rw [hst'_zero _ fun hmem ↦ (not_le.2 hneg) hmem.1, zero_mul, abs_zero]
+      exact hRHS
+    · have ha2 : ‖a‖ ≤ 2 * τ := by
+        rw [sub_nonneg, ← div_eq_mul_inv, div_le_iff₀ hτ2] at hnn
+        nlinarith [norm_nonneg a]
+      have hd : |deriv Real.smoothTransition (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹)| ≤ L := by
+        simpa only [Real.norm_eq_abs] using hL (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹)
+      have hX : |inner ℝ (T a) w| ≤ ‖T‖ * (2 * τ) * ‖w‖ :=
+        (abs_real_inner_le_norm _ _).trans
+          (mul_le_mul_of_nonneg_right ((T.le_opNorm a).trans
+            (mul_le_mul_of_nonneg_left ha2 (norm_nonneg _))) (norm_nonneg _))
+      calc |deriv Real.smoothTransition (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹) *
+            -((τ ^ 2)⁻¹ * (2 * inner ℝ (T a) w))|
+          = |deriv Real.smoothTransition (4 - ‖a‖ ^ 2 * (τ ^ 2)⁻¹)| *
+            ((τ ^ 2)⁻¹ * (2 * |inner ℝ (T a) w|)) := by
+            rw [abs_mul, abs_neg, abs_mul, abs_mul, abs_of_pos (inv_pos.2 hτ2), abs_two]
+        _ ≤ L * ((τ ^ 2)⁻¹ * (2 * (‖T‖ * (2 * τ) * ‖w‖))) := by
+            gcongr
+        _ = 4 * L / τ * ‖T‖ * ‖w‖ := by
+            field_simp
+            ring
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
