@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3bca9b57a397b832c9831c59333cd2ec6618ca8545fe3e53c940e9e9f2d93f0f",
+  "git_delta": {
+    "base_commit": "cee7100b515e514cc35a1c2cb26517fed9ff05e4",
+    "candidate_commit": "080ec06975feeda9f1020b63fd5ee2570995ce95",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_em_cutoff_tendsto_ball",
+    "diff_sha256": "6193cbbc3a4277cd51e2eb31e18c00e3142f623ac7c688f71d49b96e9513a7cc",
+    "source_sha256": "51a5a5f81c3773a2eddfe7158fc210e5d8cca7cd81057210ed37c63857fbeb10",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_em_cutoff_tendsto_ball",
+      "statement": "∃ η : ℕ → ℝ → ℝ, (∀ j, ContDiff ℝ 1 (η j)) ∧ (∀ j u, 0 ≤ η j u) ∧ (∀ j u, deriv (η j) u ≤ 0) ∧ (∀ j u, 1 ≤ u → η j u = 0) ∧ ∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (s : ℝ), 0 < s → μ (ball z s) < ∞ → Tendsto (fun j => ∫ x, η j (‖x - z‖ ^ 2 / s ^ 2) ∂μ) atTop (𝓝 (μ.real (ball z s)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
