@@ -4240,6 +4240,261 @@ theorem w12_ball_weyl_lemma : ∀ n : ℕ, 1 ≤ n → ∀ (w : Rn n → ℝ) (g
   -- `u` is `C²`, hence `C¹`, near each point of `B`, so its gradient is the weak gradient `g`.
   exact ⟨u, hu, huw, Submission.w12_ball_gradient_ae_eq_of_contDiffAt n hn w u g hwg
     (fun x hx => (hu x hx).1.of_le one_le_two) huw⟩
+/-- **Simon Ch. 5, Lemma 3.1 (Harmonic approximation, p. 114)**, by the book's compactness
+argument.  A counterexample sequence for `δ = 1/(k+1)` is normalized by its means over `B`; the
+Poincaré inequality, Rellich's theorem and weak compactness of `L²(B; ℝⁿ)` give a subsequence
+converging to some `w ∈ W^{1,2}(B)` with weak gradient `g`, `∫_B |g|² ≤ 1`.  The defect bound
+`|∫_B g_k · ∇ζ| ≤ sup|∇ζ| / (k+1)` makes `w` weakly harmonic, so by Weyl's lemma `w = u₀` a.e.
+for a harmonic `u₀` with `∇u₀ = g` a.e.; then `u₀ + mean` contradicts the choice of the sequence. -/
+theorem harmonic_approximation_lemma : HarmonicApproximationLemma := by
+  have hPoinc := Submission.w12_ball_poincare_inequality
+  have hRellich := Submission.w12_ball_rellich_compactness
+  have hWeak := Submission.l2_ball_weak_subsequence
+  have hWeyl := Submission.w12_ball_weyl_lemma
+  intro n hn ε hε
+  -- Step 1: a contradiction sequence `F k, G k` for `δ = 1/(k+1)`.
+  by_contra hcon
+  push Not at hcon
+  choose F G hFG hGle hGδ hFu using fun k : ℕ => hcon (1 / ((k : ℝ) + 1)) (by positivity)
+  have hfin : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have htop : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
+  -- Test functions: their gradients are continuous, compactly supported, and integrate to `0`.
+  have hgradCont : ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → Continuous (gradient ζ) :=
+    fun ζ hζ => (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp
+      (hζ.continuous_fderiv htop)
+  have hgradSupp : ∀ ζ : Rn n → ℝ, HasCompactSupport ζ → HasCompactSupport (gradient ζ) :=
+    fun ζ hζc => (hζc.fderiv (𝕜 := ℝ)).comp_left
+      (g := (InnerProductSpace.toDual ℝ (Rn n)).symm) (map_zero _)
+  have hgradTop : ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ →
+      MemLp (gradient ζ) ⊤ (volume.restrict (ball (0 : Rn n) 1)) := fun ζ hζ hζc =>
+    ((hgradCont ζ hζ).memLp_of_hasCompactSupport (hgradSupp ζ hζc)).restrict _
+  have hgradInt : ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, gradient ζ x = 0 := by
+    intro ζ hζ hζc hζB
+    have hout : ∀ x, x ∉ ball (0 : Rn n) 1 → gradient ζ x = 0 := by
+      intro x hx
+      have hx' : fderiv ℝ ζ x = 0 := fderiv_of_notMem_tsupport ℝ fun h => hx (hζB h)
+      simp [gradient, hx']
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero hout]
+    have hint : Integrable (gradient ζ) volume :=
+      (hgradCont ζ hζ).integrable_of_hasCompactSupport (hgradSupp ζ hζc)
+    refine ext_inner_left ℝ fun v => ?_
+    have hcomm := (innerSL ℝ v).integral_comp_comm hint
+    simp only [innerSL_apply_apply] at hcomm
+    rw [inner_zero_right, ← hcomm]
+    simp only [inner_gradient_right, conj_trivial]
+    -- `∫ ∂ᵥζ = 0`: differentiate the translation-invariant `t ↦ ∫ ζ (x + t • v)` at `t = 0`.
+    obtain ⟨C, hC⟩ := (hζ.continuous_fderiv htop).bounded_above_of_compact_support
+      (hζc.fderiv (𝕜 := ℝ))
+    have hbound : ∀ x : Rn n, ∀ t ∈ ball (0 : ℝ) 1, ‖fderiv ℝ ζ (x + t • v) v‖ ≤
+        (ball (0 : Rn n) (1 + ‖v‖)).indicator (fun _ => C * ‖v‖) x := by
+      intro x t ht
+      by_cases hx : x + t • v ∈ tsupport ζ
+      · have hxB : x ∈ ball (0 : Rn n) (1 + ‖v‖) := by
+          have h1 : ‖x + t • v‖ < 1 := mem_ball_zero_iff.1 (hζB hx)
+          have h2 : ‖t • v‖ ≤ ‖v‖ := by
+            rw [norm_smul]
+            have : ‖t‖ < 1 := mem_ball_zero_iff.1 ht
+            nlinarith [norm_nonneg v, norm_nonneg t]
+          rw [mem_ball_zero_iff]
+          calc ‖x‖ = ‖(x + t • v) - t • v‖ := by rw [add_sub_cancel_right]
+            _ ≤ ‖x + t • v‖ + ‖t • v‖ := norm_sub_le _ _
+            _ < 1 + ‖v‖ := by linarith
+        rw [indicator_of_mem hxB]
+        exact (ContinuousLinearMap.le_opNorm _ _).trans
+          (mul_le_mul_of_nonneg_right (hC _) (norm_nonneg _))
+      · rw [fderiv_of_notMem_tsupport ℝ hx]
+        refine (le_of_eq (by simp)).trans (indicator_nonneg
+          (fun _ _ => mul_nonneg ((norm_nonneg _).trans (hC 0)) (norm_nonneg _)) x)
+    have hhas : ∀ x : Rn n, ∀ t ∈ ball (0 : ℝ) 1,
+        HasDerivAt (fun t : ℝ => ζ (x + t • v)) (fderiv ℝ ζ (x + t • v) v) t := by
+      intro x t _
+      have h1 : HasDerivAt (fun t : ℝ => x + t • v) v t := by
+        simpa using ((hasDerivAt_id t).smul_const v).const_add x
+      exact ((hζ.differentiable htop) (x + t • v)).hasFDerivAt.comp_hasDerivAt t h1
+    have hderiv := (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume) (𝕜 := ℝ)
+      (F := fun (t : ℝ) (x : Rn n) => ζ (x + t • v))
+      (F' := fun (t : ℝ) (x : Rn n) => fderiv ℝ ζ (x + t • v) v)
+      (ball_mem_nhds (0 : ℝ) one_pos)
+      (Eventually.of_forall fun t =>
+        (hζ.continuous.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+      (by simpa using hζ.continuous.integrable_of_hasCompactSupport hζc)
+      ((((hζ.continuous_fderiv htop).comp (continuous_id.add continuous_const)).clm_apply
+        continuous_const).aestronglyMeasurable)
+      (Eventually.of_forall hbound)
+      ((integrable_indicator_iff measurableSet_ball).2
+        (integrableOn_const measure_ball_lt_top.ne))
+      (Eventually.of_forall hhas)).2
+    have hzero : HasDerivAt (fun t : ℝ => ∫ x, ζ (x + t • v)) 0 0 := by
+      have hconst : (fun t : ℝ => ∫ x, ζ (x + t • v)) = fun _ => ∫ x, ζ x :=
+        funext fun t => integral_add_right_eq_self ζ (t • v)
+      rw [hconst]
+      exact hasDerivAt_const _ _
+    simpa using hderiv.unique hzero
+  -- Step 2: subtract the means `lam k`; the normalized functions keep the weak gradients `G k`.
+  obtain ⟨lam, hlam⟩ : ∃ lam : ℕ → ℝ, ∀ k, lam k = ⨍ y in ball (0 : Rn n) 1, F k y :=
+    ⟨fun k => ⨍ y in ball (0 : Rn n) 1, F k y, fun _ => rfl⟩
+  have hW12 : ∀ k, IsW12WithGradient (fun x => F k x - lam k) (G k) (ball 0 1) := by
+    intro k
+    obtain ⟨hF2, hG2, hFid⟩ := hFG k
+    refine ⟨hF2.sub (memLp_const (lam k)), hG2, fun ζ hζ hζc hζB => ?_⟩
+    have h1 : Integrable (fun x => F k x • gradient ζ x)
+        (volume.restrict (ball (0 : Rn n) 1)) :=
+      (hF2.integrable one_le_two).smul_of_top_left (hgradTop ζ hζ hζc)
+    have h2 : Integrable (fun x => lam k • gradient ζ x)
+        (volume.restrict (ball (0 : Rn n) 1)) :=
+      ((hgradTop ζ hζ hζc).integrable le_top).smul (lam k)
+    simp_rw [sub_smul]
+    rw [integral_sub h1 h2, integral_smul, hgradInt ζ hζ hζc hζB, smul_zero, sub_zero]
+    exact hFid ζ hζ hζc hζB
+  -- Step 3: Poincaré bounds the normalized functions in `L²(B)`.
+  obtain ⟨CP, -, hCP⟩ := hPoinc n hn
+  have hWbd : ∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖F k x - lam k‖ₑ ^ 2 ≤
+      ENNReal.ofReal (max CP 1) := by
+    intro k
+    rw [hlam k]
+    calc ∫⁻ x in ball (0 : Rn n) 1, ‖F k x - ⨍ y in ball (0 : Rn n) 1, F k y‖ₑ ^ 2
+        ≤ ENNReal.ofReal CP * ∫⁻ x in ball (0 : Rn n) 1, ‖G k x‖ₑ ^ 2 := hCP (F k) (G k) (hFG k)
+      _ ≤ ENNReal.ofReal CP * 1 := by gcongr; exact hGle k
+      _ ≤ ENNReal.ofReal (max CP 1) := by
+        rw [mul_one]; exact ENNReal.ofReal_le_ofReal (le_max_left _ _)
+  have hGbd : ∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖G k x‖ₑ ^ 2 ≤ ENNReal.ofReal (max CP 1) :=
+    fun k => (hGle k).trans (by
+      rw [← ENNReal.ofReal_one]; exact ENNReal.ofReal_le_ofReal (le_max_right _ _))
+  -- Step 4: Rellich (strong `L²` limit `w`) and weak compactness (weak `L²` limit `g`).
+  obtain ⟨φ1, w, hφ1, hw2, hwconv⟩ :=
+    hRellich n hn (max CP 1) (fun k x => F k x - lam k) G hW12 hWbd hGbd
+  obtain ⟨φ2, g, hφ2, hg2, hgle, hgweak⟩ :=
+    hWeak n (fun k => G (φ1 k)) (fun k => (hFG (φ1 k)).2.1) (fun k => hGle (φ1 k))
+  have hψ : Tendsto (fun k => φ1 (φ2 k)) atTop atTop :=
+    hφ1.tendsto_atTop.comp hφ2.tendsto_atTop
+  have hconv2 : Tendsto (fun k => ∫⁻ x in ball (0 : Rn n) 1,
+      ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ ^ 2) atTop (𝓝 0) :=
+    hwconv.comp hφ2.tendsto_atTop
+  -- `L²` convergence on the finite-measure ball gives `L¹` convergence (Cauchy–Schwarz).
+  have hL1 : Tendsto (fun k => ∫⁻ x in ball (0 : Rn n) 1,
+      ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ) atTop (𝓝 0) := by
+    have hbound : ∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ ≤
+        (∫⁻ x in ball (0 : Rn n) 1, ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ ^ 2) ^ (1 / 2 : ℝ) *
+          volume (ball (0 : Rn n) 1) ^ (1 / 2 : ℝ) := by
+      intro k
+      have hmeas : AEMeasurable (fun x => ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ)
+          (volume.restrict (ball (0 : Rn n) 1)) :=
+        ((hW12 (φ1 (φ2 k))).1.sub hw2).aestronglyMeasurable.enorm
+      have hCS := ENNReal.lintegral_mul_le_Lp_mul_Lq (volume.restrict (ball (0 : Rn n) 1))
+        Real.HolderConjugate.two_two hmeas (aemeasurable_const (b := (1 : ℝ≥0∞)))
+      simpa [ENNReal.rpow_two] using hCS
+    have hlim : Tendsto (fun k => (∫⁻ x in ball (0 : Rn n) 1,
+        ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ ^ 2) ^ (1 / 2 : ℝ) *
+          volume (ball (0 : Rn n) 1) ^ (1 / 2 : ℝ)) atTop (𝓝 0) := by
+      have h1 := ((ENNReal.continuous_rpow_const (y := (1 / 2 : ℝ))).tendsto 0).comp hconv2
+      rw [ENNReal.zero_rpow_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h1
+      have h2 := ENNReal.Tendsto.mul_const h1
+        (Or.inr (ENNReal.rpow_ne_top_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)
+          (measure_ball_lt_top (μ := (volume : Measure (Rn n))) (x := 0) (r := 1)).ne))
+      rw [zero_mul] at h2
+      exact h2
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim
+      (fun _ => zero_le) hbound
+  -- Passing to the limit in `∫ W_k ∇ζ` along the subsequence.
+  have hLHS : ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ →
+      Tendsto (fun k => ∫ x in ball (0 : Rn n) 1,
+        (F (φ1 (φ2 k)) x - lam (φ1 (φ2 k))) • gradient ζ x) atTop
+        (𝓝 (∫ x in ball (0 : Rn n) 1, w x • gradient ζ x)) := by
+    intro ζ hζ hζc
+    obtain ⟨M, hM⟩ := (hgradCont ζ hζ).bounded_above_of_compact_support (hgradSupp ζ hζc)
+    have hle : ∀ k, ∫⁻ x in ball (0 : Rn n) 1,
+        ‖(F (φ1 (φ2 k)) x - lam (φ1 (φ2 k))) • gradient ζ x - w x • gradient ζ x‖ₑ ≤
+          ENNReal.ofReal M * ∫⁻ x in ball (0 : Rn n) 1,
+            ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ := by
+      intro k
+      rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+      refine lintegral_mono fun x => ?_
+      rw [← sub_smul, enorm_smul, mul_comm]
+      gcongr
+      rw [← ofReal_norm]
+      exact ENNReal.ofReal_le_ofReal (hM x)
+    have hlim := ENNReal.Tendsto.const_mul hL1 (Or.inr (ENNReal.ofReal_ne_top (r := M)))
+    rw [mul_zero] at hlim
+    refine tendsto_integral_of_L1 _
+      (hw2.aestronglyMeasurable.smul (hgradTop ζ hζ hζc).aestronglyMeasurable)
+      (Eventually.of_forall fun k =>
+        ((hW12 (φ1 (φ2 k))).1.integrable one_le_two).smul_of_top_left (hgradTop ζ hζ hζc))
+      (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le) hle)
+  -- Step 5: the limit `w` lies in `W^{1,2}(B)` with weak gradient `g`.
+  have hwW12 : IsW12WithGradient w g (ball 0 1) := by
+    refine ⟨hw2, hg2, fun ζ hζ hζc hζB => ?_⟩
+    have hζtop : MemLp ζ ⊤ (volume.restrict (ball (0 : Rn n) 1)) :=
+      (hζ.continuous.memLp_of_hasCompactSupport hζc).restrict _
+    -- `⟪v, ∫_B ζ • H⟫ = ∫_B ⟪H, ζ • v⟫` for `H ∈ L²(B)`.
+    have hpair : ∀ H : Rn n → Rn n, MemLp H 2 (volume.restrict (ball (0 : Rn n) 1)) →
+        ∀ v : Rn n, inner ℝ v (∫ x in ball (0 : Rn n) 1, ζ x • H x) =
+          ∫ x in ball (0 : Rn n) 1, inner ℝ (H x) (ζ x • v) := by
+      intro H hH v
+      have hi : Integrable (fun x => ζ x • H x) (volume.restrict (ball (0 : Rn n) 1)) :=
+        (hH.integrable one_le_two).smul_of_top_right hζtop
+      have hcomm := (innerSL ℝ v).integral_comp_comm hi
+      simp only [innerSL_apply_apply] at hcomm
+      rw [← hcomm]
+      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      simp only [real_inner_smul_right, real_inner_comm]
+    refine ext_inner_left ℝ fun v => ?_
+    have hh : MemLp (fun x => ζ x • v) 2 (volume.restrict (ball (0 : Rn n) 1)) :=
+      ((hζ.continuous.smul continuous_const).memLp_of_hasCompactSupport
+        (hζc.smul_right (f' := fun _ => v))).restrict _
+    have hlimL := (tendsto_const_nhds (x := v)).inner (𝕜 := ℝ) (hLHS ζ hζ hζc)
+    have hlimR : Tendsto (fun k => inner ℝ v (∫ x in ball (0 : Rn n) 1,
+        (F (φ1 (φ2 k)) x - lam (φ1 (φ2 k))) • gradient ζ x)) atTop
+        (𝓝 (-∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (ζ x • v))) := by
+      refine ((hgweak (fun x => ζ x • v) hh).neg).congr fun k => ?_
+      rw [(hW12 (φ1 (φ2 k))).2.2 ζ hζ hζc hζB, inner_neg_right,
+        hpair (G (φ1 (φ2 k))) (hFG (φ1 (φ2 k))).2.1 v]
+    rw [tendsto_nhds_unique hlimL hlimR, inner_neg_right, hpair g hg2 v]
+  -- Step 6: `w` is weakly harmonic, since the defect `≤ M/(k+1)` vanishes in the limit.
+  have hharm0 : ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) = 0 := by
+    intro ζ hζ hζc hζB
+    obtain ⟨M, hM⟩ := (hgradCont ζ hζ).bounded_above_of_compact_support (hgradSupp ζ hζc)
+    have hgrad2 : MemLp (gradient ζ) 2 (volume.restrict (ball (0 : Rn n) 1)) :=
+      ((hgradCont ζ hζ).memLp_of_hasCompactSupport (hgradSupp ζ hζc)).restrict _
+    have hδ : Tendsto (fun k => 1 / ((φ1 (φ2 k) : ℝ) + 1) * M) atTop (𝓝 0) := by
+      have := (tendsto_one_div_add_atTop_nhds_zero_nat.comp hψ).mul_const M
+      rw [zero_mul] at this
+      exact this
+    have hzero : Tendsto (fun k => ∫ x in ball (0 : Rn n) 1,
+        inner ℝ (G (φ1 (φ2 k)) x) (gradient ζ x)) atTop (𝓝 0) := by
+      refine squeeze_zero_norm (fun k => ?_) hδ
+      rw [Real.norm_eq_abs]
+      exact hGδ (φ1 (φ2 k)) ζ hζ hζc hζB M hM
+    exact tendsto_nhds_unique (hgweak (gradient ζ) hgrad2) hzero
+  -- Step 7: Weyl's lemma, and the harmonic approximants `u₀ + lam k` contradict Step 1.
+  obtain ⟨u0, hu0, hu0w, hu0g⟩ := hWeyl n hn w g hwW12 hharm0
+  obtain ⟨k, hk⟩ := ((tendsto_order.1 hconv2).2 (ENNReal.ofReal ε)
+    (ENNReal.ofReal_pos.2 hε)).exists
+  have hharm : InnerProductSpace.HarmonicOnNhd (fun x => u0 x + lam (φ1 (φ2 k))) (ball 0 1) :=
+    hu0.add (InnerProductSpace.harmonicOnNhd_const _)
+  have henergy : ∫⁻ x in ball (0 : Rn n) 1,
+      ‖gradient (fun x => u0 x + lam (φ1 (φ2 k))) x‖ₑ ^ 2 ≤ 1 := by
+    have hgradu : ∀ x, gradient (fun x => u0 x + lam (φ1 (φ2 k))) x = gradient u0 x := by
+      intro x
+      simp only [gradient, fderiv_add_const]
+    simp_rw [hgradu]
+    calc ∫⁻ x in ball (0 : Rn n) 1, ‖gradient u0 x‖ₑ ^ 2
+        = ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 :=
+          lintegral_congr_ae (hu0g.mono fun x hx => by dsimp only; rw [hx])
+      _ ≤ 1 := hgle
+  have hclose : ENNReal.ofReal ε < ∫⁻ x in ball (0 : Rn n) 1,
+      ‖u0 x + lam (φ1 (φ2 k)) - F (φ1 (φ2 k)) x‖ₑ ^ 2 :=
+    hFu (φ1 (φ2 k)) _ hharm henergy
+  have heq : ∫⁻ x in ball (0 : Rn n) 1, ‖u0 x + lam (φ1 (φ2 k)) - F (φ1 (φ2 k)) x‖ₑ ^ 2 =
+      ∫⁻ x in ball (0 : Rn n) 1, ‖F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x‖ₑ ^ 2 := by
+    refine lintegral_congr_ae (hu0w.mono fun x hx => ?_)
+    dsimp only
+    rw [hx, show w x + lam (φ1 (φ2 k)) - F (φ1 (φ2 k)) x =
+      -(F (φ1 (φ2 k)) x - lam (φ1 (φ2 k)) - w x) by ring, enorm_neg]
+  rw [heq] at hclose
+  exact lt_irrefl _ (hclose.trans hk)
 
 end Submission
 
