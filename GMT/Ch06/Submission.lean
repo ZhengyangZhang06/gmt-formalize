@@ -425,6 +425,40 @@ theorem Submission.polyhedral_approx_testForm_covectorNorm_bounded : ∀ (P n : 
   linarith [Real.le_norm_self (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)),
     hC₀ x]
 
+/-- Simon Ch. 6, 6.2 (p. 169), "(1), (2) give `P_k(ω) → T(ω)`": if `X_k − Pc_k = ∂R_k + S_k`
+with `M(R_k) → 0` and `M(S_k) → 0`, then `Pc_k(ω) − X_k(ω) → 0` for every test form `ω`. -/
+theorem Submission.polyhedral_approx_flat_seq_tendsto :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (X Pc S : ℕ → GeometricCurrentOn U n)
+      (R : ℕ → GeometricCurrentOn U (n + 1)),
+      (∀ (k : ℕ) (ω : TestFormOn U n), X k ω - Pc k ω = (R k).boundary ω + S k ω) →
+      Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) →
+      ∀ ω : TestFormOn U n, Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0) := by
+  intro P n U X Pc S R hXPc hR hS ω
+  -- Uniform bounds `|ω| ≤ C₀` and `|dω| ≤ C₁`; note `∂R_k(ω) = R_k(dω)`.
+  obtain ⟨C₀, hC₀, hω⟩ := Submission.polyhedral_approx_testForm_covectorNorm_bounded P n U ω
+  obtain ⟨C₁, hC₁, hdω⟩ := Submission.polyhedral_approx_testForm_covectorNorm_bounded P (n + 1) U
+    (exteriorDerivativeTestOn U n ω)
+  -- `M(R_k)` and `M(S_k)` are eventually finite, and their real values tend to `0`.
+  have hRfin : ∀ᶠ k in atTop, (R k).mass ≠ ∞ :=
+    hR.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hSfin : ∀ᶠ k in atTop, (S k).mass ≠ ∞ :=
+    hS.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hRreal : Tendsto (fun k => (R k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hR
+  have hSreal : Tendsto (fun k => (S k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hS
+  have hbound :
+      Tendsto (fun k => C₁ * (R k).mass.toReal + C₀ * (S k).mass.toReal) atTop (𝓝 0) := by
+    simpa using (hRreal.const_mul C₁).add (hSreal.const_mul C₀)
+  -- Eventually `|Pc_k(ω) − X_k(ω)| = |R_k(dω) + S_k(ω)| ≤ C₁ M(R_k) + C₀ M(S_k)`; squeeze.
+  refine squeeze_zero_norm' ?_ hbound
+  filter_upwards [hRfin, hSfin] with k hRk hSk
+  rw [Real.norm_eq_abs, abs_sub_comm, hXPc k ω, GeometricCurrentOn.boundary_apply]
+  exact (abs_add_le _ _).trans (add_le_add
+    (Submission.br_la_abs_apply_le_mul_mass P (n + 1) U (R k) (exteriorDerivativeTestOn U n ω)
+      C₁ hC₁ hdω hRk)
+    (Submission.br_la_abs_apply_le_mul_mass P n U (S k) ω C₀ hC₀ hω hSk))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
