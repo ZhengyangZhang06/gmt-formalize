@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "12c4c34caf66466d5a731916e9bd76f16299a608730e7717291df4701288b336",
+  "git_delta": {
+    "base_commit": "8e62c746ab1be9035958b3575386379f9315716c",
+    "candidate_commit": "f4aba22391ca046795ef2137abb0296ed33a594e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_th_trace_comp_fderiv_test_field",
+    "diff_sha256": "a3faca69524b2c79e223e19ca62d296e644f4aaca98ec999999eec2a54c0de77",
+    "source_sha256": "c502c9764f6c7151aa77a2a479224a0e533ce688ca13b2cb408e4cfbb4ebb64f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_th_trace_comp_fderiv_test_field",
+      "statement": "∀ (P : ℕ) (T S : Submodule ℝ (Euclid P)) (ζ : Euclid P → ℝ) (ξ x : Euclid P), DifferentiableAt ℝ ζ x → LinearMap.trace ℝ (Euclid P) (T.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun y => ζ y ^ 2 • ((y - ξ) - S.starProjection (y - ξ))) x).toLinearMap) = ζ x ^ 2 * LinearMap.trace ℝ (Euclid P) (T.starProjection.toLinearMap ∘ₗ (ContinuousLinearMap.id ℝ (Euclid P) - S.starProjection).toLinearMap) + 2 * ζ x * fderiv ℝ ζ x (T.starProjection ((x - ξ) - S.starProjection (x - ξ)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
