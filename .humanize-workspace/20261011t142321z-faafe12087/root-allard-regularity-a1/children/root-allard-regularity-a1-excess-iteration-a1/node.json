@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.excess_iteration-a1",
+  "parent_id": "root.allard_regularity-a1",
+  "depth": 2,
+  "title": "Iteration of the tilt-excess decay theorem: limit planes with decay at all scales (Part I)",
+  "statement": "Assume TiltExcessDecayTheorem. For n >= 1, l >= 0 and p > n there are delta_1 > 0 and C >= 0 (depending only on n, l, p) such that: if U is open, V has generalized mean curvature H in U, 0 < delta <= delta_1, 2.3 holds (AllardHypotheses H p delta rho), xi in spt V cap B_{delta rho}(0), sigma in (0, delta rho/2] and S_0 is an n-dimensional subspace, then there is an n-dimensional subspace S with |p_S - p_{S_0}|^2 <= C E_*(xi, sigma, S_0) and E(xi, s, S) <= C (s/sigma)^(2(1-n/p)) E_*(xi, sigma, S_0) for every s in (0, sigma], where E = V.tiltExcess, E_* = V.tiltExcessStar H p delta and |.| is the Hilbert-Schmidt norm.",
+  "lean_statement": "TiltExcessDecayTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₁ C : ℝ, 0 < δ₁ ∧ 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ ξ ∈ V.support ∩ closedBall 0 (δ * ρ), ∀ σ : ℝ, 0 < σ → σ ≤ δ * ρ / 2 → ∀ S₀ : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S₀ = n → ∃ S : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S = n ∧ hsNormSq (S.starProjection - S₀.starProjection) ≤ C * V.tiltExcessStar H p δ ξ σ S₀ ∧ ∀ s : ℝ, 0 < s → s ≤ σ → V.tiltExcess ξ s S ≤ C * (s / σ) ^ (2 * (1 - n / p)) * V.tiltExcessStar H p δ ξ σ S₀",
+  "lean_name": "allard52_excess_iteration",
+  "depends_on": [
+    "root.allard_regularity-a1.tangent_ae-a1",
+    "root.allard_regularity-a1.density_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.density_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-excess-iteration-a1-a1"
+}
