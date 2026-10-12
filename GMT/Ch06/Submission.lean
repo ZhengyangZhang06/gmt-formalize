@@ -654,6 +654,75 @@ theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Euc
   rw [harea, ← lintegral_indicator₀ hA]
   exact lintegral_congr fun y => (hfib y).symm
 
+/-- **Area formula on one chart piece (Simon Ch. 3, 2.1–2.2, for one piece `A_j` of the proof of
+the area formula on a countably `n`-rectifiable set).**  Let `f` be locally Lipschitz on the open
+set `U ⊆ ℝ^P`, `Φ` Lipschitz and `c`-antilipschitz on the open set `Ω ⊆ ℝⁿ`, and
+`A ⊆ U ∩ Φ(Ω)` `Hⁿ`-measurable.  If `J(Φ w) · JΦ(w) = J(f ∘ Φ)(w)` for a.e. `w ∈ Ω ∩ Φ⁻¹(A)`
+(Gram-determinant Jacobians), then `N_A(y) = ∑_{x ∈ A, f x = y} h(x)` is `Hⁿ`-a.e. measurable and
+`∫_A h J dHⁿ = ∫ N_A dHⁿ`.
+With `D = Ω ∩ Φ⁻¹(A)`: the change of variables `x = Φ(w)` and the Jacobian identity give
+`∫_A h J dHⁿ = ∫_D h(Φ w) J(f ∘ Φ)(w) dw`; the area formula for `f ∘ Φ`, which is locally
+Lipschitz on the open set `Ω ∩ Φ⁻¹(U) ⊇ D`, gives `∫ ∑_{w ∈ D, f(Φ w) = y} h(Φ w) dHⁿ(y)`; and
+`Φ` maps the fibres `{w ∈ D : f(Φ w) = y}` bijectively onto `{x ∈ A : f x = y}`. -/
+theorem Submission.lpf_raf_chart_area_formula : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (J h : Eucl P → ℝ≥0∞) (A : Set (Eucl P)), IsOpen U → LocallyLipschitzOn U f → IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ U → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → AEMeasurable h ((μHE[n] : Measure (Eucl P)).restrict A) → AEMeasurable J ((μHE[n] : Measure (Eucl P)).restrict A) → (∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)), J (Φ w) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) = ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single i 1)) (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single j 1))).det)) → AEMeasurable (fun y => ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x) (μHE[n] : Measure (Eucl Q)) ∧ ∫⁻ x in A, h x * J x ∂(μHE[n] : Measure (Eucl P)) = ∫⁻ y, ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x ∂(μHE[n] : Measure (Eucl Q)) := by
+  intro P Q n U f Φ Ω J h A hU hf hΩ hΦL hΦc hAU hAΦ hA hh hJ hJac
+  obtain ⟨K, hK⟩ := hΦL
+  obtain ⟨c, hc, hcΦ⟩ := hΦc
+  -- Step 1: `Φ` is injective on `Ω` (as `c > 0`) and continuous on `Ω`.
+  have hinj : InjOn Φ Ω := by
+    intro w hw w' hw' hww'
+    have h1 := hcΦ w hw w' hw'
+    rw [hww', sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by nlinarith [norm_nonneg (w - w')]
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  have hΦcont : ContinuousOn Φ Ω := hK.continuousOn
+  -- Step 2: change of variables `x = Φ(w)` with `g = h J` (and `g = h`, for the measurability
+  -- of `h ∘ Φ` on `D = Ω ∩ Φ⁻¹(A)`).
+  obtain ⟨hDm, -, hcov⟩ := Submission.lpf_raf_chart_change_of_variables P n Φ Ω A
+    (fun x => h x * J x) hΩ ⟨K, hK⟩ ⟨c, hc, hcΦ⟩ hAΦ hA (hh.mul hJ)
+  obtain ⟨-, hhΦ, -⟩ := Submission.lpf_raf_chart_change_of_variables P n Φ Ω A h hΩ ⟨K, hK⟩
+    ⟨c, hc, hcΦ⟩ hAΦ hA hh
+  -- Step 3: substitute `J(Φ w) JΦ(w) = J(f ∘ Φ)(w)` a.e. on `D`.
+  have hsub : ∫⁻ x in A, h x * J x ∂(μHE[n] : Measure (Eucl P)) =
+      ∫⁻ w in Ω ∩ Φ ⁻¹' A, h (Φ w) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j =>
+        inner ℝ (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single i 1))
+          (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n)) := by
+    rw [hcov]
+    refine lintegral_congr_ae ?_
+    filter_upwards [hJac] with w hw
+    exact (mul_assoc _ _ _).trans (congrArg (h (Φ w) * ·) hw)
+  -- Step 4: `Ω' = Ω ∩ Φ⁻¹(U)` is open and contains `D`.
+  have hΩ' : IsOpen (Ω ∩ Φ ⁻¹' U) := hΦcont.isOpen_inter_preimage hΩ hU
+  have hDΩ' : Ω ∩ Φ ⁻¹' A ⊆ Ω ∩ Φ ⁻¹' U := fun w hw => ⟨hw.1, hAU hw.2⟩
+  -- Step 5: `f ∘ Φ` is locally Lipschitz on `Ω'`.
+  have hfΦ : LocallyLipschitzOn (Ω ∩ Φ ⁻¹' U) (f ∘ Φ) := by
+    intro w hw
+    obtain ⟨K', t, ht, hft⟩ := hf (show Φ w ∈ U from hw.2)
+    have htend : Tendsto Φ (𝓝[Ω ∩ Φ ⁻¹' U] w) (𝓝[U] (Φ w)) :=
+      ((hΦcont w hw.1).mono inter_subset_left).tendsto_nhdsWithin fun v hv => hv.2
+    refine ⟨K' * K, (Ω ∩ Φ ⁻¹' U) ∩ Φ ⁻¹' t, inter_mem self_mem_nhdsWithin (htend ht), ?_⟩
+    exact hft.comp (hK.mono fun v hv => hv.1.1) fun v hv => hv.2
+  -- Step 6: the area formula for `f ∘ Φ` on `D ⊆ Ω'` with weight `h ∘ Φ`.
+  obtain ⟨hmeas, harea⟩ := Submission.lpf_raf_local_lipschitz_area n Q (Ω ∩ Φ ⁻¹' U)
+    (Ω ∩ Φ ⁻¹' A) (f ∘ Φ) (fun w => h (Φ w)) hΩ' hfΦ hDΩ' hDm hhΦ
+  -- Step 7: `Φ` maps the `D`-fibres of `f ∘ Φ` bijectively onto the `A`-fibres of `f`.
+  have hfib : ∀ y : Eucl Q,
+      ∑' w : {w : Eucl n // w ∈ Ω ∩ Φ ⁻¹' A ∧ (f ∘ Φ) w = y}, h (Φ w) =
+        ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x := by
+    intro y
+    let e : {w : Eucl n // w ∈ Ω ∩ Φ ⁻¹' A ∧ (f ∘ Φ) w = y} ≃
+        {x : Eucl P // x ∈ A ∧ f x = y} :=
+      Equiv.ofBijective (fun w => ⟨Φ w, w.2.1.2, w.2.2⟩)
+        ⟨fun w w' hww' => Subtype.ext (hinj w.2.1.1 w'.2.1.1 (congrArg Subtype.val hww')),
+          fun x => by
+            obtain ⟨w, hw, hwx⟩ := hAΦ x.2.1
+            exact ⟨⟨w, ⟨hw, show Φ w ∈ A from hwx ▸ x.2.1⟩,
+              show f (Φ w) = y from hwx ▸ x.2.2⟩, Subtype.ext hwx⟩⟩
+    exact e.tsum_eq fun x => h x
+  -- Step 8: conclusions.
+  exact ⟨hmeas.congr (Eventually.of_forall hfib),
+    hsub.trans (harea.trans (lintegral_congr hfib))⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
