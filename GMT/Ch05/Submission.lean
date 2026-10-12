@@ -573,6 +573,238 @@ theorem arp_rotatedPlane_graphPoint_coords : ∀ (n ℓ : ℕ),
       nlinarith [sq_nonneg ‖a - a'‖]
     exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp hsq
 
+/-- Regraphing a `C¹` graph over a rotated plane (step 6 of the any-radius patching argument).
+Let `π z`, `σ z` be the coordinates of `q₀⁻¹ z` along `ℝⁿ × {0}` and `{0} × ℝ^ℓ`, so that
+`z = q₀(π z, σ z)`, `|z|² = |π z|² + |σ z|²` and `dist(z, T₀) = |σ z|`
+(`arp_rotatedPlane_graphPoint_coords`).  The chart `Φ(x) = π(y + q(x, v x)) = c + A x + π(q(0, v x))`,
+with `A h = π(q(h, 0))`, satisfies `|A h| ≥ (11/12)|h|` (Pythagoras and the tilt bound) and
+`|Φ x₁ - Φ x₂ - A(x₁ - x₂)| ≤ ε|x₁ - x₂|` (mean value inequality), so
+`arp_rgr_ball_right_inverse` gives a unique `8/7`-Lipschitz right inverse `X` on `B_{r/2}(c)` with
+values in `B_{3r/5}(0)`.  By `arp_rgr_graph_map_fderiv`, `DΦ(x) h = A h + π(q(0, Dv(x) h))` has
+`|DΦ(x) h| ≥ (7/8)|h|` on `B̆_r(0)`, so `arp_rgr_right_inverse_contDiffOn` makes `X` `C¹` on
+`B̆_{r/2}(c)` with `|DX| ≤ 8/7`.  Then `f := σ ∘ (y + q(·, v ·)) ∘ X` is `C¹`, and
+`Df(w) k = σ(q(h, Dv h))` with `h = DX(w) k` has norm `≤ (ϑ + ε)|h| ≤ |h|/8 ≤ |k|/7`; (b) holds
+with `x = X w` since `|X w|² + |v(X w)|² ≤ (3r/5)² + (r/40)² ≤ r²`, and (c) is the uniqueness
+of `X`. -/
+theorem arp_regraph_over_rotatedPlane : ∀ {n ℓ : ℕ} (q q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (c : Rn n) (d : Rn ℓ) (r ε ϑ : ℝ), 0 < r → 0 ≤ ε → ε ≤ 1 / 24 → 0 ≤ ϑ → ϑ ≤ 1 / 12 → ContDiffOn ℝ 1 v (closedBall 0 r) → v 0 = 0 → (∀ x ∈ closedBall (0 : Rn n) r, ‖fderivWithin ℝ v (closedBall 0 r) x‖ ≤ ε) → (∀ x : Rn n, infDist (q (graphPoint x 0)) (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ ϑ * ‖x‖) → y = q₀ (graphPoint c d) → ∃ f : Rn n → Rn ℓ, ContDiffOn ℝ 1 f (ball c (r / 2)) ∧ (∀ w ∈ ball c (r / 2), ‖fderiv ℝ f w‖ ≤ 1 / 7) ∧ (∀ w ∈ closedBall c (r / 2), ∃ x ∈ closedBall (0 : Rn n) r, y + q (graphPoint x (v x)) = q₀ (graphPoint w (f w)) ∧ ‖graphPoint x (v x)‖ ≤ r) ∧ (∀ x ∈ closedBall (0 : Rn n) r, ∀ (w : Rn n) (b : Rn ℓ), y + q (graphPoint x (v x)) = q₀ (graphPoint w b) → w ∈ closedBall c (r / 2) → b = f w) := by
+  intro n ℓ q q₀ v y c d r ε ϑ hr hε0 hε hϑ0 hϑ hv hv0 hDv htilt hy
+  obtain ⟨hG, hG2, hG3⟩ := Submission.arp_rotatedPlane_graphPoint_coords n ℓ
+  -- graph points are linear in the pair
+  have hGsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint (a - a') (b - b') = graphPoint a b - graphPoint a' b' := by
+    intro a a' b b'
+    rw [hG, hG, hG, ← map_sub, Prod.mk_sub_mk]
+  have hsplit : ∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = graphPoint a 0 + graphPoint 0 b := by
+    intro a b
+    rw [hG, hG, hG, ← map_add, Prod.mk_add_mk, add_zero, zero_add]
+  have hG0 : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    rw [hG, Prod.mk_zero_zero, map_zero]
+  have hnG0 : ∀ b : Rn ℓ, ‖graphPoint (0 : Rn n) b‖ = ‖b‖ := by
+    intro b
+    have h := hG2 0 b
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h
+  have hnG0' : ∀ a : Rn n, ‖graphPoint a (0 : Rn ℓ)‖ = ‖a‖ := by
+    intro a
+    have h := hG2 a 0
+    rw [norm_zero, zero_pow two_ne_zero, add_zero] at h
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h
+  -- step 0: coordinates `π`, `σ` adapted to `T₀ = rotatedPlane q₀`
+  obtain ⟨π, σ, hrec, hπ, hσ⟩ : ∃ (π : Amb n ℓ →L[ℝ] Rn n) (σ : Amb n ℓ →L[ℝ] Rn ℓ),
+      (∀ z, q₀ (graphPoint (π z) (σ z)) = z) ∧ (∀ a b, π (q₀ (graphPoint a b)) = a) ∧
+        ∀ a b, σ (q₀ (graphPoint a b)) = b := by
+    let F : Amb n ℓ →L[ℝ] Rn n × Rn ℓ :=
+      ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ) :
+        Amb n ℓ →L[ℝ] Rn n × Rn ℓ).comp
+        (q₀.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ)
+    have hF : ∀ a b, F (q₀ (graphPoint a b)) = (a, b) := by
+      intro a b
+      simp [F, hG]
+    refine ⟨(ContinuousLinearMap.fst ℝ (Rn n) (Rn ℓ)).comp F,
+      (ContinuousLinearMap.snd ℝ (Rn n) (Rn ℓ)).comp F, fun z => ?_, fun a b => ?_,
+      fun a b => ?_⟩
+    · change q₀ (graphPoint (F z).1 (F z).2) = z
+      rw [hG, Prod.mk.eta]
+      change q₀ ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm
+        ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ) (q₀.symm z))) = z
+      rw [ContinuousLinearEquiv.symm_apply_apply, LinearIsometryEquiv.apply_symm_apply]
+    · simp [hF]
+    · simp [hF]
+  have hnorm : ∀ z : Amb n ℓ, ‖z‖ ^ 2 = ‖π z‖ ^ 2 + ‖σ z‖ ^ 2 := by
+    intro z
+    conv_lhs => rw [← hrec z]
+    rw [LinearIsometryEquiv.norm_map, hG2]
+  have hπle : ∀ z : Amb n ℓ, ‖π z‖ ≤ ‖z‖ := by
+    intro z
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp ?_
+    linarith [hnorm z, sq_nonneg ‖σ z‖]
+  have hσle : ∀ z : Amb n ℓ, ‖σ z‖ ≤ ‖z‖ := by
+    intro z
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp ?_
+    linarith [hnorm z, sq_nonneg ‖π z‖]
+  have hπy : π y = c := by rw [hy, hπ]
+  -- the linear part `A h = π (q (h, 0))` and the splitting of `π ∘ q` and `σ ∘ q`
+  obtain ⟨A, hA⟩ : ∃ A : Rn n →L[ℝ] Rn n, ∀ h, A h = π (q (graphPoint h 0)) := by
+    refine ⟨π.comp ((q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).comp
+      (((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm :
+        Rn n × Rn ℓ →L[ℝ] Amb n ℓ).comp (ContinuousLinearMap.inl ℝ (Rn n) (Rn ℓ)))),
+      fun h => ?_⟩
+    simp [hG]
+  have hπq : ∀ (a : Rn n) (b : Rn ℓ), π (q (graphPoint a b)) = A a + π (q (graphPoint 0 b)) := by
+    intro a b
+    rw [hsplit a b, map_add, map_add, hA]
+  have hσq : ∀ (a : Rn n) (b : Rn ℓ),
+      σ (q (graphPoint a b)) = σ (q (graphPoint a 0)) + σ (q (graphPoint 0 b)) := by
+    intro a b
+    rw [hsplit a b, map_add, map_add]
+  have hπq0 : ∀ b : Rn ℓ, ‖π (q (graphPoint 0 b))‖ ≤ ‖b‖ := fun b =>
+    (hπle _).trans_eq (by rw [LinearIsometryEquiv.norm_map, hnG0])
+  have hσq0 : ∀ b : Rn ℓ, ‖σ (q (graphPoint 0 b))‖ ≤ ‖b‖ := fun b =>
+    (hσle _).trans_eq (by rw [LinearIsometryEquiv.norm_map, hnG0])
+  -- the tilt hypothesis: `|σ (q (h, 0))| = dist(q (h, 0), T₀) ≤ ϑ |h|`
+  have hV : ∀ h : Rn n, ‖σ (q (graphPoint h 0))‖ ≤ ϑ * ‖h‖ := by
+    intro h
+    have e : infDist (q (graphPoint h 0)) (rotatedPlane q₀ : Set (Amb n ℓ)) =
+        ‖σ (q (graphPoint h 0))‖ := by
+      conv_lhs => rw [← hrec (q (graphPoint h 0))]
+      exact hG3 q₀ _ _
+    rw [← e]
+    exact htilt h
+  -- step 2: `|A h| ≥ (11/12)|h|`
+  have hAlow : ∀ h : Rn n, 11 / 12 * ‖h‖ ≤ ‖A h‖ := by
+    intro h
+    have h1 := hnorm (q (graphPoint h 0))
+    rw [LinearIsometryEquiv.norm_map, hnG0', ← hA] at h1
+    have h2 : ‖σ (q (graphPoint h 0))‖ ^ 2 ≤ (ϑ * ‖h‖) ^ 2 :=
+      pow_le_pow_left₀ (norm_nonneg _) (hV h) 2
+    have h3 : (ϑ * ‖h‖) ^ 2 ≤ (1 / 12 * ‖h‖) ^ 2 :=
+      pow_le_pow_left₀ (mul_nonneg hϑ0 (norm_nonneg _))
+        (mul_le_mul_of_nonneg_right hϑ (norm_nonneg _)) 2
+    refine (pow_le_pow_iff_left₀ (mul_nonneg (by norm_num) (norm_nonneg _)) (norm_nonneg _)
+      two_ne_zero).mp ?_
+    linarith [sq_nonneg ‖h‖]
+  -- step 1: mean value bounds for `v`
+  have hvlip : ∀ x₁ ∈ closedBall (0 : Rn n) r, ∀ x₂ ∈ closedBall (0 : Rn n) r,
+      ‖v x₁ - v x₂‖ ≤ ε * ‖x₁ - x₂‖ := fun x₁ h₁ x₂ h₂ =>
+    (convex_closedBall (0 : Rn n) r).norm_image_sub_le_of_norm_fderivWithin_le
+      (hv.differentiableOn one_ne_zero) hDv h₂ h₁
+  have hDvb : ∀ x ∈ ball (0 : Rn n) r, ‖fderiv ℝ v x‖ ≤ ε := by
+    intro x hx
+    rw [← fderivWithin_of_mem_nhds (closedBall_mem_nhds_of_mem hx)]
+    exact hDv x (ball_subset_closedBall hx)
+  -- step 3: the chart `Φ x = π (y + q (x, v x))` is `ε`-close to `c + A x`
+  have hΦx : ∀ x : Rn n,
+      π (y + q (graphPoint x (v x))) = c + A x + π (q (graphPoint 0 (v x))) := by
+    intro x
+    rw [map_add, hπq, hπy, add_assoc]
+  have hΦA : ∀ x₁ ∈ closedBall (0 : Rn n) r, ∀ x₂ ∈ closedBall (0 : Rn n) r,
+      ‖π (y + q (graphPoint x₁ (v x₁))) - π (y + q (graphPoint x₂ (v x₂))) - A (x₁ - x₂)‖ ≤
+        ε * ‖x₁ - x₂‖ := by
+    intro x₁ h₁ x₂ h₂
+    have e : graphPoint (0 : Rn n) (v x₁ - v x₂) = graphPoint 0 (v x₁) - graphPoint 0 (v x₂) := by
+      rw [← hGsub, sub_zero]
+    have e' : π (y + q (graphPoint x₁ (v x₁))) - π (y + q (graphPoint x₂ (v x₂))) - A (x₁ - x₂) =
+        π (q (graphPoint 0 (v x₁ - v x₂))) := by
+      rw [hΦx, hΦx, e, map_sub, map_sub, map_sub]
+      abel
+    rw [e']
+    exact (hπq0 _).trans (hvlip x₁ h₁ x₂ h₂)
+  have hΦ0 : π (y + q (graphPoint 0 (v 0))) = c := by
+    rw [hv0, hG0, map_zero, add_zero, hπy]
+  -- steps 4, 5, 7, 9: the right inverse `X` of the chart
+  obtain ⟨X, hX1, hX2, hX3⟩ := Submission.arp_rgr_ball_right_inverse
+    (fun x => π (y + q (graphPoint x (v x)))) A c r ε hr hε0 hε hAlow hΦA hΦ0
+  beta_reduce at hX1 hX2
+  have hXU : ∀ w ∈ ball c (r / 2),
+      X w ∈ ball (0 : Rn n) r ∧ π (y + q (graphPoint (X w) (v (X w)))) = w := by
+    intro w hw
+    obtain ⟨h1, h2⟩ := hX1 w (ball_subset_closedBall hw)
+    exact ⟨closedBall_subset_ball (by linarith) h1, h2⟩
+  have hXcont : ContinuousOn X (ball c (r / 2)) := by
+    have hlip : LipschitzOnWith 2 X (closedBall c (r / 2)) := by
+      refine LipschitzOnWith.of_dist_le_mul fun w₁ h₁ w₂ h₂ => ?_
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_ofNat]
+      linarith [hX3 w₁ h₁ w₂ h₂, norm_nonneg (X w₁ - X w₂)]
+    exact hlip.continuousOn.mono ball_subset_closedBall
+  -- step 8: derivatives of the graph map `Ψ` and of the chart `Φ = π ∘ Ψ`
+  obtain ⟨hΨ, hDΨ⟩ := Submission.arp_rgr_graph_map_fderiv q v y (ball 0 r) isOpen_ball
+    (hv.mono ball_subset_closedBall)
+  have hΨd : ∀ x ∈ ball (0 : Rn n) r,
+      HasFDerivAt (fun x => y + q (graphPoint x (v x)))
+        (fderiv ℝ (fun x => y + q (graphPoint x (v x))) x) x := fun x hx =>
+    ((hΨ.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hx)).hasFDerivAt
+  have hΦlow : ∀ x ∈ ball (0 : Rn n) r, ∀ h : Rn n,
+      7 / 8 * ‖h‖ ≤ ‖fderiv ℝ (fun x => π (y + q (graphPoint x (v x)))) x h‖ := by
+    intro x hx h
+    have hd : HasFDerivAt (fun x => π (y + q (graphPoint x (v x))))
+        (π.comp (fderiv ℝ (fun x => y + q (graphPoint x (v x))) x)) x :=
+      π.hasFDerivAt.comp x (hΨd x hx)
+    rw [hd.fderiv, ContinuousLinearMap.comp_apply, hDΨ x hx h, hπq]
+    have h1 : ‖π (q (graphPoint 0 (fderiv ℝ v x h)))‖ ≤ ε * ‖h‖ :=
+      (hπq0 _).trans ((ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (hDvb x hx) (norm_nonneg _)))
+    have h2 := norm_sub_le (A h + π (q (graphPoint 0 (fderiv ℝ v x h))))
+      (π (q (graphPoint 0 (fderiv ℝ v x h))))
+    rw [add_sub_cancel_right] at h2
+    linarith [hAlow h, mul_le_mul_of_nonneg_right hε (norm_nonneg h)]
+  -- the normal component of `DΨ` is small: `|σ (q (h, Dv h))| ≤ (ϑ + ε)|h| ≤ |h|/8`
+  have hσDΨ : ∀ x ∈ ball (0 : Rn n) r, ∀ h : Rn n,
+      ‖σ (q (graphPoint h (fderiv ℝ v x h)))‖ ≤ 1 / 8 * ‖h‖ := by
+    intro x hx h
+    rw [hσq]
+    have h1 : ‖σ (q (graphPoint 0 (fderiv ℝ v x h)))‖ ≤ ε * ‖h‖ :=
+      (hσq0 _).trans ((ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (hDvb x hx) (norm_nonneg _)))
+    linarith [norm_add_le (σ (q (graphPoint h 0))) (σ (q (graphPoint 0 (fderiv ℝ v x h)))),
+      hV h, mul_le_mul_of_nonneg_right hε (norm_nonneg h),
+      mul_le_mul_of_nonneg_right hϑ (norm_nonneg h)]
+  -- steps 10, 11: `X` is `C¹` with `|DX| ≤ 8/7`
+  obtain ⟨hXC, hDX⟩ := Submission.arp_rgr_right_inverse_contDiffOn
+    (fun x => π (y + q (graphPoint x (v x)))) X (ball 0 r) (ball c (r / 2)) (7 / 8)
+    isOpen_ball isOpen_ball (by norm_num) (hΨ.continuousLinearMap_comp π) hΦlow hXcont hXU
+  refine ⟨fun w => σ (y + q (graphPoint (X w) (v (X w)))),
+    (hΨ.comp hXC fun w hw => (hXU w hw).1).continuousLinearMap_comp σ, ?_, ?_, ?_⟩
+  · -- (a): `|Df| ≤ (1/8)(8/7) = 1/7`
+    intro w hw
+    have hXd : HasFDerivAt X (fderiv ℝ X w) w :=
+      ((hXC.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hw)).hasFDerivAt
+    have hd : HasFDerivAt (fun w => σ (y + q (graphPoint (X w) (v (X w)))))
+        (σ.comp ((fderiv ℝ (fun x => y + q (graphPoint x (v x))) (X w)).comp
+          (fderiv ℝ X w))) w :=
+      σ.hasFDerivAt.comp w ((hΨd (X w) (hXU w hw).1).comp w hXd)
+    rw [hd.fderiv]
+    refine ContinuousLinearMap.opNorm_le_bound _ (by norm_num) fun k => ?_
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hDΨ _ (hXU w hw).1]
+    have h1 := hσDΨ (X w) (hXU w hw).1 (fderiv ℝ X w k)
+    have h2 : ‖fderiv ℝ X w k‖ ≤ (7 / 8)⁻¹ * ‖k‖ :=
+      (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (hDX w hw) (norm_nonneg _))
+    norm_num at h2
+    linarith
+  · -- (b): the point `x = X w`
+    intro w hw
+    obtain ⟨h1, h2⟩ := hX1 w hw
+    refine ⟨X w, closedBall_subset_closedBall (by linarith) h1, ?_, ?_⟩
+    · conv_lhs => rw [← hrec (y + q (graphPoint (X w) (v (X w))))]
+      rw [h2]
+    · have hx : ‖X w‖ ≤ 3 * r / 5 := mem_closedBall_zero_iff.mp h1
+      have hvx : ‖v (X w)‖ ≤ ε * ‖X w‖ := by
+        have h := hvlip (X w) (closedBall_subset_closedBall (by linarith) h1) 0
+          (mem_closedBall_self hr.le)
+        rwa [hv0, sub_zero, sub_zero] at h
+      have hvx' : ‖v (X w)‖ ≤ r / 40 := by
+        linarith [mul_le_mul_of_nonneg_left hx hε0,
+          mul_le_mul_of_nonneg_right hε (by linarith : (0 : ℝ) ≤ 3 * r / 5)]
+      have e1 : ‖X w‖ ^ 2 ≤ (3 * r / 5) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hx 2
+      have e2 : ‖v (X w)‖ ^ 2 ≤ (r / 40) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hvx' 2
+      refine (pow_le_pow_iff_left₀ (norm_nonneg _) hr.le two_ne_zero).mp ?_
+      linarith [hG2 (X w) (v (X w)), sq_nonneg r]
+  · -- (c): uniqueness of `X`
+    intro x hx w b heq hw
+    have hxX : x = X w := hX2 x hx w hw (by rw [heq, hπ])
+    show b = σ (y + q (graphPoint (X w) (v (X w))))
+    rw [← hxX, heq, hσ]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
