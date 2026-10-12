@@ -359,6 +359,45 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 2, 4.10 (cf. 4.7): if `f` is `L`-Lipschitz and both `Φ` and `f ∘ Φ` are
+differentiable at `w`, then `s ↦ f(Φ(w) + s DΦ(w)u)` has derivative `D(f∘Φ)(w)u` at `0`.  It
+differs from `s ↦ f(Φ(w + su))` by at most `L ‖Φ(w + su) - Φ(w) - s DΦ(w)u‖ = o(s)`, and the
+latter map has derivative `D(f∘Φ)(w)u` by the chain rule. -/
+theorem Submission.slicing_im_tg_line_deriv_of_comp : ∀ (n P : ℕ) (f : Eucl P → ℝ) (L : ℝ≥0) (Φ : Eucl n → Eucl P) (w : Eucl n), LipschitzWith L f → DifferentiableAt ℝ Φ w → DifferentiableAt ℝ (f ∘ Φ) w → ∀ u : Eucl n, HasDerivAt (fun s : ℝ => f (Φ w + s • fderiv ℝ Φ w u)) (fderiv ℝ (f ∘ Φ) w u) 0 := by
+  intro n P f L Φ w hf hΦ hfΦ u
+  -- The line `s ↦ w + s u` has derivative `u` at `0`.
+  have hℓ : HasDerivAt (fun s : ℝ => w + s • u) u 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const u).const_add w
+  have hℓ0 : w = w + (0 : ℝ) • u := by simp
+  -- Chain rule along the line: `s ↦ Φ(w + s u)` has derivative `DΦ(w)u` and
+  -- `γ₁(s) = f(Φ(w + s u))` has derivative `D(f∘Φ)(w)u` at `0`.
+  have hφ : HasDerivAt (fun s : ℝ => Φ (w + s • u)) (fderiv ℝ Φ w u) 0 :=
+    hΦ.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hℓ hℓ0
+  have hγ₁ : HasDerivAt (fun s : ℝ => f (Φ (w + s • u))) (fderiv ℝ (f ∘ Φ) w u) 0 :=
+    hfΦ.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hℓ hℓ0
+  -- The two curves are tangent at `0`: `Φ(w + s u) - Φ(w) - s DΦ(w)u = o(s)`.
+  have hrem : (fun s : ℝ => Φ (w + s • u) - Φ w - s • fderiv ℝ Φ w u) =o[𝓝 0]
+      fun s : ℝ => s := by
+    simpa using hφ.isLittleO
+  -- Lipschitz transfer: `|γ(s) - γ₁(s)| ≤ L ‖Φ(w + s u) - Φ(w) - s DΦ(w)u‖`.
+  have hO : (fun s : ℝ => f (Φ w + s • fderiv ℝ Φ w u) - f (Φ (w + s • u))) =O[𝓝 0]
+      fun s : ℝ => Φ (w + s • u) - Φ w - s • fderiv ℝ Φ w u := by
+    refine Asymptotics.IsBigO.of_bound L ?_
+    filter_upwards with s
+    have hL := hf.dist_le_mul (Φ w + s • fderiv ℝ Φ w u) (Φ (w + s • u))
+    rw [dist_eq_norm, dist_eq_norm] at hL
+    rw [sub_sub, norm_sub_rev (Φ (w + s • u))]
+    exact hL
+  -- Hence `γ - γ₁`, which vanishes at `0`, has derivative `0` there.
+  have hh : HasDerivAt (fun s : ℝ => f (Φ w + s • fderiv ℝ Φ w u) - f (Φ (w + s • u))) 0 0 := by
+    rw [hasDerivAt_iff_isLittleO]
+    simpa using hO.trans_isLittleO hrem
+  -- Conclude from `γ = γ₁ + (γ - γ₁)`.
+  have hsum := hγ₁.add hh
+  rw [add_zero] at hsum
+  refine hsum.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
+  simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
