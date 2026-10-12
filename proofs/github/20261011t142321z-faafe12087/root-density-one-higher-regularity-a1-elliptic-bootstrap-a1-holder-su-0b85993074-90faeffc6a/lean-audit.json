@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "600a63642440e52ce8545478798118ae9fccdc3c5dca19cb9cb1dbd5837d2a54",
+  "git_delta": {
+    "base_commit": "c300e3dcf10896d4e78d277427d01a1546170065",
+    "candidate_commit": "e2a7eaf352c33a35fa7cabd3b6a70e6ead817975",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_hsif_iteratedFDeriv_column_bounds",
+    "diff_sha256": "5b0b2430326e77821a2b49d55a60dcb99ca622b1681c361d0fa0c6f231a60a54",
+    "source_sha256": "d1701e7d8e80e08a654b5ad46e9a09b9634a18d588353e0eb89b9962b8c6fd8c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_hsif_iteratedFDeriv_column_bounds",
+      "statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ m g U → ∀ x ∈ U, ∀ y ∈ U, (∀ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖) ∧ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ ∑ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

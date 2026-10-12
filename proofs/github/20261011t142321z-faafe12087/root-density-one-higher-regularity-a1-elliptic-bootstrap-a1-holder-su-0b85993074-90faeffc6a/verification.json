@@ -1,0 +1,15 @@
+{
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1.column_iterated_bounds-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3588",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e2a7eaf352c33a35fa7cabd3b6a70e6ead817975",
+  "integrated_commit": "",
+  "proof_base_commit": "c300e3dcf10896d4e78d277427d01a1546170065",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1",
+  "requires": []
+}
