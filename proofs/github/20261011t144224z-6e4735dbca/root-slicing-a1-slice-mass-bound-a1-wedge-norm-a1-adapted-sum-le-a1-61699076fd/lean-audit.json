@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2aad135a6f2acbe6bd6bce5a9c51968f05e05ee53176a00efdf8bb25f37affc7",
+  "git_delta": {
+    "base_commit": "91d601bd0d6b05eed2dfc6c245ff656db55f855a",
+    "candidate_commit": "1f87f778d505794f94b904210228c8e50b604a2a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_wn_adapted_sum_le",
+    "diff_sha256": "5e0da5f7c2341097c41fad1527c68b5ad2eda565502212180597e13c8f95a13c",
+    "source_sha256": "93345b91a5887e61a9fb7611e34d90e607e44a0986fff64935cba9ecc8aeaa3f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_wn_adapted_sum_le",
+      "statement": "∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m) (u : Fin P → Eucl P) (c : ℝ), (∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then c else 0) → (∑ I : Fin (m + 1) → Fin P, if StrictMono I then (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i))) ^ 2 else 0) ≤ c ^ 2 * ∑ I : Fin m → Fin P, if StrictMono I then (γ (fun i => u (I i))) ^ 2 else 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
