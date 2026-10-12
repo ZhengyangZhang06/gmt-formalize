@@ -805,6 +805,43 @@ theorem mvk_integral_radial_fderiv_eq_neg_laplacian : ∀ (n : ℕ) (ρ Ψ h : R
     _ = -σ * ∫ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z := by
         rw [integral_const_mul]
         field_simp
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), mean value step of Weyl's lemma: there is a smooth
+kernel `ρ` vanishing off the open unit ball with `∫ t⁻ⁿ ρ(t⁻¹ y) h(x₀ - y) dy = h(x₀)` for every
+`t > 0` and every `C²` function `h` with `Δh = 0` on `B_t(x₀)`.  Take `ρ` (even, `∫ ρ = 1`) and
+its potential `Ψ` (`DΨ(z)[v] = ρ(z) ⟨z, v⟩`, `Ψ = 0` off the unit ball); rescaling and reflecting
+turn the left side into `∫ ρ(z) h(x₀ + t z) dz`, the fundamental theorem of calculus along rays
+and Fubini give `h(x₀) + ∫₀ᵗ I(σ) dσ` with `I(σ) = ∫ ρ(z) Dh(x₀ + σ z)[z] dz`, and integration by
+parts against `Ψ` gives `I(σ) = -σ ∫ Δh(x₀ + σ z) Ψ(z) dz = 0` for `0 < σ ≤ t`. -/
+theorem exists_smooth_mean_value_kernel : ∀ n : ℕ, 1 ≤ n → ∃ ρ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) ∧ ∀ (h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 < t → ContDiff ℝ 2 h → (∀ y ∈ closedBall x₀ t, Laplacian.laplacian h y = 0) → ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y) = h x₀ := by
+  intro n _
+  -- Step 1: the kernel `ρ` and its potential `Ψ`.
+  obtain ⟨ρ, Ψ, hρ, hΨ, hρ1, hΨ1, hρneg, hρint, hdΨ⟩ := Submission.mvk_exists_kernel_potential n
+  refine ⟨ρ, hρ, hρ1, fun h x₀ t ht hh hΔ => ?_⟩
+  -- Step 2: `I(σ) = -σ ∫ Δh(x₀ + σ z) Ψ(z) dz = 0` for `0 < σ ≤ t`, since `Ψ(z) = 0` for
+  -- `‖z‖ ≥ 1` and `x₀ + σ z ∈ B_t(x₀)` for `‖z‖ < 1`.
+  have hI : ∀ σ ∈ Ioc (0 : ℝ) t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = 0 := by
+    rintro σ ⟨hσ, hσt⟩
+    rw [Submission.mvk_integral_radial_fderiv_eq_neg_laplacian n ρ Ψ h x₀ σ hσ.ne' hh
+      (hΨ.of_le (by exact_mod_cast le_top)) hΨ1 hdΨ]
+    have hzero : ∀ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z = 0 := by
+      intro z
+      rcases le_or_gt 1 ‖z‖ with hz | hz
+      · rw [hΨ1 z hz, mul_zero]
+      · have hmem : x₀ + σ • z ∈ closedBall x₀ t := by
+          rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul,
+            Real.norm_of_nonneg hσ.le]
+          nlinarith [norm_nonneg z]
+        rw [hΔ _ hmem, zero_mul]
+    simp only [hzero, integral_zero, mul_zero]
+  -- Step 3: so `∫₀ᵗ I(σ) dσ = 0`, the endpoint `σ = 0` being outside `(0, t]`.
+  have hint : ∫ σ in (0 : ℝ)..t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = 0 :=
+    intervalIntegral.integral_zero_ae (Eventually.of_forall fun σ hσ =>
+      hI σ (by rwa [uIoc_of_le ht.le] at hσ))
+  -- Step 4: rescale and reflect, then integrate along rays:
+  -- `∫ ρ(z) h(x₀ + t z) dz = (∫ ρ) h(x₀) + ∫₀ᵗ I(σ) dσ = h(x₀)`.
+  rw [Submission.mvk_integral_rescale_reflect n ρ h x₀ t ht hρneg,
+    Submission.mvk_integral_ray_fubini n ρ h x₀ t ht.le hρ.continuous hρ1
+      (hh.of_le (by norm_num)), hρint, one_mul, hint, add_zero]
 
 end Submission
 
