@@ -1309,6 +1309,58 @@ theorem Submission.indCompact_limit_of_local_cauchy : ∀ (N : ℕ) (F : ℕ →
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hball R)
     (fun k ↦ zero_le) (fun k ↦ measure_mono (inter_subset_inter_left _ hKR))
 
+/-- **Compactness for sets of locally bounded perimeter** (Simon Ch. 2, Thm. 2.6, for
+characteristic functions, as used in the proof of Ch. 3, Thm. 4.3): if `∫_{F_k} div g ≤ C_R` for
+all large `k` and all `g ∈ C¹_c(B_R(0); ℝᴺ)` with `|g| ≤ 1`, then some subsequence `F_{φ(k)}`
+converges in `L¹_loc` to a measurable set `G`. Mollify with `ρₘ = bₘ / ∫ bₘ` (`bₘ` a smooth bump
+with support `B_{1/(m+1)}(0)`). The diagonal Arzelà–Ascoli extraction gives `φ`. The perimeter
+bound on `B_{R+1}(0)` gives translation estimates on `B_R(0)`, which together with the uniformly
+Cauchy mollifications make `F_{φ(k)}` locally Cauchy in measure, so it has a measurable limit. -/
+theorem Submission.deGiorgi_indicator_compactness : ∀ (N : ℕ) (F : ℕ → Set (Rn N)),
+    (∀ k, NullMeasurableSet (F k) volume) →
+    (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Rn N → Rn N, ContDiff ℝ 1 g →
+      HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → (∀ y, ‖g y‖ ≤ 1) →
+        ∫ y in F k, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) →
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ G : Set (Rn N), MeasurableSet G ∧
+      ∀ K : Set (Rn N), IsCompact K →
+        Tendsto (fun k ↦ volume (K ∩ symmDiff (F (φ k)) G)) atTop (𝓝 0) := by
+  intro N F hF hbd
+  -- Kernels `ρₘ := bₘ / ∫ bₘ`, `bₘ` the smooth bump at `0` with `rOut = 1/(m+1)`, `rIn = rOut/2`.
+  obtain ⟨b, hbr⟩ : ∃ b : ℕ → ContDiffBump (0 : Rn N), ∀ m, (b m).rOut = 1 / ((m : ℝ) + 1) :=
+    ⟨fun m => ⟨1 / ((m : ℝ) + 1) / 2, 1 / ((m : ℝ) + 1), by positivity,
+      half_lt_self (by positivity)⟩, fun _ => rfl⟩
+  have hb : ∀ m, 0 < ∫ y, b m y := fun m =>
+    (b m).continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (b m).hasCompactSupport
+      (fun _ => (b m).nonneg) ((b m).pos_of_mem_ball (Metric.mem_ball_self (b m).rOut_pos)).ne'
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℕ → Rn N → ℝ, ∀ m y, ρ m y = b m y / ∫ z, b m z :=
+    ⟨_, fun _ _ => rfl⟩
+  have hρb : ∀ m, Function.support (ρ m) ⊆ Function.support (b m) := fun m y hy =>
+    Function.mem_support.2 fun h0 => Function.mem_support.1 hy (by rw [hρ, h0, zero_div])
+  have hρc : ∀ m, Continuous (ρ m) := fun m => by
+    rw [show ρ m = fun y => b m y / ∫ z, b m z from funext (hρ m)]
+    exact (b m).continuous.div_const _
+  have hρs : ∀ m, HasCompactSupport (ρ m) := fun m => (b m).hasCompactSupport.mono (hρb m)
+  -- Diagonal Arzelà–Ascoli: along `φ` the mollified sets are uniformly Cauchy on every `B̄ₘ(0)`.
+  obtain ⟨φ, hφ, hcau⟩ := Submission.indCompact_diagonal_mollified_uniform_cauchy N ρ F hρc hρs
+  -- Translation estimates on `B_R(0)` along `φ`, from the perimeter bound on `B_{R+1}(0)`.
+  have htr : ∀ R : ℕ, ∃ C : ℝ, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ h : Rn N, ‖h‖ ≤ 1 →
+      volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F (φ k)) (F (φ k))) ≤
+        ENNReal.ofReal (C * ‖h‖) := by
+    intro R
+    obtain ⟨C, hC⟩ := hbd ((R : ℝ) + 1) (by positivity)
+    obtain ⟨k₀, hk₀⟩ := eventually_atTop.1 hC
+    exact ⟨C, k₀, fun k hk => Submission.indCompact_translation_estimate N (F (φ k)) R C (hF _)
+      (hk₀ _ (le_trans hk hφ.le_apply))⟩
+  -- `F_{φ(k)}` is locally Cauchy in measure, hence converges locally to a measurable set `G`.
+  obtain ⟨G, hG, hlim⟩ := Submission.indCompact_limit_of_local_cauchy N (fun k => F (φ k))
+    (fun _ => hF _) (Submission.indCompact_local_cauchy_of_mollified_cauchy N (fun k => F (φ k))
+      ρ (fun _ => hF _) hρc hρs (fun m y => by rw [hρ]; exact div_nonneg (b m).nonneg (hb m).le)
+      (fun m => by simp_rw [hρ]; rw [integral_div, div_self (hb m).ne'])
+      (fun m => (hρb m).trans (by
+        rw [(b m).support_eq, hbr m]; exact Metric.ball_subset_closedBall))
+      htr hcau)
+  exact ⟨φ, hφ, G, hG, hlim⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
