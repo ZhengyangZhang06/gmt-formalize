@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a4e2bfab2b59d99d137f88c76a3b81ffaf31e73d5de2b1b75ac43d156142f0e8",
+  "git_delta": {
+    "base_commit": "2174fd75573a793e9441151784f376eae8fbd0dd",
+    "candidate_commit": "2b253c1e7a683459ba838896849fa52af7bdbea5",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aal_mass_upper_bound",
+    "diff_sha256": "405a7cc184059398525c878413aa9e1ccfca36b5daead67b97eb6a56a1b87c68",
+    "source_sha256": "e5516c1e68d6fd8e91643b5a1031fbb0b2e65b636f257a4c1325c9c45c52927a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_mass_upper_bound",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ 1 / 4 → V.AllardHypotheses H p δ ρ → ∀ y : Amb n ℓ, ‖y‖ ≤ ρ / 4 → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal (C₀ * (unitBallVolume n * s ^ n))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
