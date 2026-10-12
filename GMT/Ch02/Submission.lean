@@ -709,6 +709,55 @@ theorem Submission.mean_curvature_eq_normalPart_gram_trace : ∀ (n N : ℕ) (M 
         exact Finset.sum_congr rfl fun k _ ↦ Finset.sum_comm
     _ = _ := by simp only [hgram]
 
+/-- **Simon Ch. 2, 4.27 (p. 60): the mean curvature is continuous in a `C²` chart.** Let
+`ψ : V → W` be a `C²` local representation of `M ⊆ ℝᴺ` with `T_{ψ(x)} M = range Dψ(x)` and
+`B_{ψ(x)}(Dψ(x)a, Dψ(x)b) = (D²ψ(x)[a, b])^⊥`, and let `y ↦ P_y` be continuous on `M`. By the
+Gram trace formula, `H(ψ(x)) = w(x) - P_{ψ(x)} w(x)` on `V`, where `G(x) = Dψ(x)* ∘ Dψ(x)` and
+`w(x) = ∑ₖ ∑ₗ ⟪eₖ, G(x)⁻¹ eₗ⟫ D²ψ(x)[eₖ, eₗ]`. Here `Dψ` and `D²ψ` are continuous on the open `V`,
+`G` is continuous and unit-valued, `Ring.inverse` is continuous at units, and `x ↦ P_{ψ(x)}` is
+continuous because `ψ` maps `V` into `M`. -/
+theorem Submission.mean_curvature_comp_chart_continuousOn : ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ContinuousOn (tangentProjection M) M → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → (∀ x ∈ V, ∀ a b : Rn n, secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) = normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b)) → ContinuousOn (fun x ↦ meanCurvature M (ψ x)) V := by
+  intro n N M V W ψ hψ hP htan hsff
+  have hV : IsOpen V := hψ.isOpen_source
+  -- Step 1: `Dψ` and `D²ψ` are continuous on the open set `V`, as `ψ` is `C²` there.
+  have hA : ContinuousOn (fderiv ℝ ψ) V :=
+    hψ.contDiffOn.continuousOn_fderiv_of_isOpen hV (by norm_num)
+  have hS : ContinuousOn (fderiv ℝ (fderiv ℝ ψ)) V :=
+    (hψ.contDiffOn.fderiv_of_isOpen hV (m := 1) (by norm_num)).continuousOn_fderiv_of_isOpen hV
+      le_rfl
+  -- Step 2: the Gram operator `G(x) = Dψ(x)* ∘ Dψ(x)` is continuous on `V`; it is a unit at each
+  -- `x ∈ V` (`Dψ(x)` is injective), and `Ring.inverse` is continuous at units, so `G⁻¹` is too.
+  have hG : ContinuousOn (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) V :=
+    ((ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn n) (F := Rn N)).continuous.comp_continuousOn
+      hA).clm_comp hA
+  have hGinv : ContinuousOn
+      (fun x ↦ Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)) V := by
+    intro x hx
+    have hu := Submission.gram_operator_isUnit_of_injective n N (fderiv ℝ ψ x)
+      (hψ.injective_fderiv hx)
+    have hinv := NormedRing.inverse_continuousAt hu.unit
+    rw [hu.unit_spec] at hinv
+    exact ContinuousAt.comp_continuousWithinAt
+      (f := fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) hinv (hG x hx)
+  -- Step 3: `w(x) = ∑ₖ ∑ₗ ⟪eₖ, G(x)⁻¹ eₗ⟫ • D²ψ(x)[eₖ, eₗ]` is continuous on `V`.
+  have hw : ContinuousOn (fun x ↦ ∑ k : Fin n, ∑ l : Fin n,
+      inner ℝ (EuclideanSpace.single k (1 : ℝ))
+          (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)
+            (EuclideanSpace.single l (1 : ℝ))) •
+        fderiv ℝ (fderiv ℝ ψ) x (EuclideanSpace.single k (1 : ℝ))
+          (EuclideanSpace.single l (1 : ℝ))) V :=
+    continuousOn_finsetSum _ fun k _ ↦ continuousOn_finsetSum _ fun l _ ↦
+      (continuousOn_const.inner (hGinv.clm_apply continuousOn_const)).fun_smul
+        ((hS.clm_apply continuousOn_const).clm_apply continuousOn_const)
+  -- Step 4: `x ↦ P_{ψ(x)}` is continuous on `V`, since `ψ` maps `V` into `M`.
+  have hmaps : MapsTo ψ V M := fun x hx ↦ (hψ.image_eq ▸ mem_image_of_mem ψ hx).2
+  have hPψ : ContinuousOn (fun x ↦ tangentProjection M (ψ x)) V :=
+    hP.comp hψ.contDiffOn.continuousOn hmaps
+  -- Step 5: on `V`, `H(ψ(x)) = w(x)^⊥ = w(x) - P_{ψ(x)} w(x)` by the Gram trace formula.
+  refine (hw.sub (hPψ.clm_apply hw)).congr fun x hx ↦ ?_
+  exact Submission.mean_curvature_eq_normalPart_gram_trace n N M (ψ x) (fderiv ℝ ψ x)
+    (fderiv ℝ (fderiv ℝ ψ) x) (hψ.injective_fderiv hx) (htan x hx) (hsff x hx)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
