@@ -570,6 +570,130 @@ theorem Submission.weighted_mono_local_data : (∀ (n ℓ : ℕ) (V : Rectifiabl
   · rw [← Real.norm_eq_abs]
     exact hA x hx
   · exact (hF₁.add hF₂).congr_fun (fun x _ ↦ (inner_add_right _ _ _).symm) hBm
+/-- **Cutoff identity (Simon Ch. 4, 3.1–3.3 and 5.1).** The first variation identity tested with
+the radial field `h(x) γ(r)(x - ξ)`, `γ(t) = φ(t/τ)`, `r = |x - ξ|` (the last hypothesis, an
+identity of integrals over `U`), rewritten over the whole space. Assume `μ` is finite on compacts,
+`tsupport h ∩ B_R(ξ) ⊆ U`, `g = 0` off `tsupport h`, `h` and `q` are a.e. strongly measurable for
+`μ ⌞ B_R(ξ)` with `|h| ≤ A` and `|q| ≤ 1` on `B_R(ξ)`, `(x - ξ) · g` and `(x - ξ) · (g + hH)` are
+`μ`-integrable on `B_R(ξ)`, `φ ∈ C¹` vanishes on `[c, ∞)`, `τ > 0` and `cτ ≤ R`. Then
+`n ∫ h φ(r/τ) dμ + ∫ h (1 - q) (r/τ) φ'(r/τ) dμ + ∫ φ(r/τ) (x - ξ) · (g + hH) dμ = 0`. -/
+theorem Submission.weighted_mono_cutoff_identity : (∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (U : Set (Ambient n ℓ)) (h q : Ambient n ℓ → ℝ) (g H : Ambient n ℓ → Ambient n ℓ) (φ : ℝ → ℝ) (ξ : Ambient n ℓ) (c τ R A : ℝ), IsFiniteMeasureOnCompacts μ → tsupport h ∩ closedBall ξ R ⊆ U → (∀ x, x ∉ tsupport h → g x = 0) → AEStronglyMeasurable h (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |h x| ≤ A ∧ |q x| ≤ 1) → IntegrableOn (fun x ↦ inner ℝ (x - ξ) (g x)) (closedBall ξ R) μ → IntegrableOn (fun x ↦ inner ℝ (x - ξ) (g x + h x • H x)) (closedBall ξ R) μ → ContDiff ℝ 1 φ → (∀ t, c ≤ t → φ t = 0) → 0 < τ → c * τ ≤ R → ∫ x in U, (h x * ((n : ℝ) * φ (‖x - ξ‖ / τ) + ‖x - ξ‖ * deriv (fun t ↦ φ (t / τ)) ‖x - ξ‖ * (1 - q x)) + φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x)) ∂μ = -∫ x in U, h x * φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (H x) ∂μ → (n : ℝ) * ∫ x, h x * φ (‖x - ξ‖ / τ) ∂μ + ∫ x, h x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) ∂μ + ∫ x, φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x + h x • H x) ∂μ = 0) := by
+  intro n ℓ μ U h q g H φ ξ c τ R A hμ hU hg hhm hqm hbd hgi hGi hφ hφc hτ hcR hRFV
+  -- Step 1: `φ` is differentiable, `φ'` is continuous, and `φ' = 0` on `(c, ∞)`.
+  have hφd : Differentiable ℝ φ := hφ.differentiable_one
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hφ'0 : ∀ t, c < t → deriv φ t = 0 := by
+    intro t ht
+    have hev : φ =ᶠ[𝓝 t] fun _ ↦ (0 : ℝ) := by
+      filter_upwards [Ioi_mem_nhds ht] with s hs
+      exact hφc s (le_of_lt hs)
+    rw [hev.deriv_eq, deriv_const]
+  -- Step 2: off `B = B_R(ξ)` we have `r/τ > c`, so `φ(r/τ) = φ'(r/τ) = 0`.
+  have hout : ∀ x, x ∉ closedBall ξ R →
+      φ (‖x - ξ‖ / τ) = 0 ∧ deriv φ (‖x - ξ‖ / τ) = 0 := by
+    intro x hx
+    have hr : R < ‖x - ξ‖ := by
+      rw [mem_closedBall, dist_eq_norm, not_le] at hx
+      exact hx
+    have hct : c < ‖x - ξ‖ / τ := by
+      rw [lt_div_iff₀ hτ]
+      linarith
+    exact ⟨hφc _ hct.le, hφ'0 _ hct⟩
+  -- Step 3: chain rule, `γ'(s) = φ'(s/τ)/τ` for `γ(t) = φ(t/τ)`.
+  have hchain : ∀ s, deriv (fun t ↦ φ (t / τ)) s = deriv φ (s / τ) / τ := by
+    intro s
+    have h1 : HasDerivAt (fun t : ℝ ↦ t / τ) (1 / τ) s := (hasDerivAt_id s).div_const τ
+    have h2 : HasDerivAt φ (deriv φ (s / τ)) (s / τ) := (hφd (s / τ)).hasDerivAt
+    have h3 : HasDerivAt (fun t ↦ φ (t / τ)) (deriv φ (s / τ) * (1 / τ)) s := h2.comp s h1
+    rw [h3.deriv]
+    ring
+  -- Steps 4–5: off `U`, either `x ∉ tsupport h` (so `h x = 0` and `g x = 0`) or `x ∉ B`; in
+  -- both cases the two integrands of the hypothesis vanish, so `∫_U = ∫`.
+  have hoff : ∀ x, x ∉ U → x ∉ tsupport h ∨ x ∉ closedBall ξ R :=
+    fun x hx ↦ not_and_or.mp fun hx' ↦ hx (hU hx')
+  have hLU : ∫ x in U, (h x * ((n : ℝ) * φ (‖x - ξ‖ / τ) +
+          ‖x - ξ‖ * deriv (fun t ↦ φ (t / τ)) ‖x - ξ‖ * (1 - q x)) +
+        φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x)) ∂μ =
+      ∫ x, (h x * ((n : ℝ) * φ (‖x - ξ‖ / τ) +
+          ‖x - ξ‖ * deriv (fun t ↦ φ (t / τ)) ‖x - ξ‖ * (1 - q x)) +
+        φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x)) ∂μ := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx ↦ ?_
+    rcases hoff x hx with hx' | hx'
+    · simp [image_eq_zero_of_notMem_tsupport hx', hg x hx']
+    · simp [hchain, (hout x hx').1, (hout x hx').2]
+  have hQU : ∫ x in U, h x * φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (H x) ∂μ =
+      ∫ x, h x * φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (H x) ∂μ := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx ↦ ?_
+    rcases hoff x hx with hx' | hx'
+    · simp [image_eq_zero_of_notMem_tsupport hx']
+    · simp [(hout x hx').1]
+  -- Step 6: `μ(B) < ∞`, and the continuous radial factors are bounded on the compact set `B`.
+  have hBfin : μ (closedBall ξ R) < ⊤ := (isCompact_closedBall ξ R).measure_lt_top
+  have hr : Continuous fun x : Ambient n ℓ ↦ ‖x - ξ‖ / τ :=
+    (continuous_id.sub continuous_const).norm.div_const τ
+  have hc0 : Continuous fun x : Ambient n ℓ ↦ φ (‖x - ξ‖ / τ) := hφd.continuous.comp hr
+  have hc1 : Continuous fun x : Ambient n ℓ ↦ ‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ) :=
+    hr.mul (hφ'c.comp hr)
+  obtain ⟨M₀, hM₀⟩ := (isCompact_closedBall ξ R).exists_bound_of_continuousOn hc0.continuousOn
+  obtain ⟨M₁, hM₁⟩ := (isCompact_closedBall ξ R).exists_bound_of_continuousOn hc1.continuousOn
+  have hA : ∀ x ∈ closedBall ξ R, 0 ≤ A := fun x hx ↦ (abs_nonneg _).trans (hbd x hx).1
+  -- Step 7: the four pieces `T₁, …, T₄` are integrable on `B` and vanish off `B`.
+  have hT1 : Integrable (fun x ↦ h x * φ (‖x - ξ‖ / τ)) μ := by
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := closedBall ξ R) ?_ ?_
+    · refine IntegrableOn.of_bound hBfin (hhm.mul hc0.aestronglyMeasurable) (A * M₀) ?_
+      filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+      rw [norm_mul, Real.norm_eq_abs (h x)]
+      exact mul_le_mul (hbd x hx).1 (hM₀ x hx) (norm_nonneg _) (hA x hx)
+    · intro x hx
+      simp [(hout x hx).1]
+  have hT2 : Integrable (fun x ↦ h x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ))) μ := by
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := closedBall ξ R) ?_ ?_
+    · refine IntegrableOn.of_bound hBfin
+        ((hhm.mul (aestronglyMeasurable_const.sub hqm)).mul hc1.aestronglyMeasurable)
+        (A * 2 * M₁) ?_
+      filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+      have hq := abs_le.mp (hbd x hx).2
+      have hq1 : |1 - q x| ≤ 2 := abs_le.mpr ⟨by linarith [hq.2], by linarith [hq.1]⟩
+      rw [norm_mul (h x * (1 - q x)), norm_mul (h x), Real.norm_eq_abs (h x),
+        Real.norm_eq_abs (1 - q x)]
+      exact mul_le_mul (mul_le_mul (hbd x hx).1 hq1 (abs_nonneg _) (hA x hx)) (hM₁ x hx)
+        (norm_nonneg _) (mul_nonneg (hA x hx) zero_le_two)
+    · intro x hx
+      simp [(hout x hx).2]
+  have hT3 : Integrable (fun x ↦ φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x)) μ := by
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := closedBall ξ R) ?_ ?_
+    · exact hgi.bdd_mul hc0.aestronglyMeasurable
+        (ae_restrict_of_forall_mem measurableSet_closedBall hM₀)
+    · intro x hx
+      simp [(hout x hx).1]
+  have hT4 : Integrable (fun x ↦ φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x + h x • H x)) μ := by
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero (s := closedBall ξ R) ?_ ?_
+    · exact hGi.bdd_mul hc0.aestronglyMeasurable
+        (ae_restrict_of_forall_mem measurableSet_closedBall hM₀)
+    · intro x hx
+      simp [(hout x hx).1]
+  -- Step 8: pointwise `L = n T₁ + T₂ + T₃` and `Q = T₄ - T₃`; integrate and rearrange.
+  have hL : (fun x ↦ h x * ((n : ℝ) * φ (‖x - ξ‖ / τ) +
+          ‖x - ξ‖ * deriv (fun t ↦ φ (t / τ)) ‖x - ξ‖ * (1 - q x)) +
+        φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x)) =
+      fun x ↦ (n : ℝ) * (h x * φ (‖x - ξ‖ / τ)) +
+        h x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) +
+        φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x) := by
+    funext x
+    rw [hchain]
+    ring
+  have hQ : (fun x ↦ h x * φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (H x)) =
+      fun x ↦ φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x + h x • H x) -
+        φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x) := by
+    funext x
+    rw [inner_add_right, real_inner_smul_right]
+    ring
+  have hT12 : Integrable (fun x ↦ (n : ℝ) * (h x * φ (‖x - ξ‖ / τ)) +
+      h x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ))) μ :=
+    (hT1.const_mul (n : ℝ)).add hT2
+  rw [hLU, hQU, hL, hQ, integral_add hT12 hT3, integral_add (hT1.const_mul (n : ℝ)) hT2,
+    integral_const_mul, integral_sub hT4 hT3] at hRFV
+  linarith
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
