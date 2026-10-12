@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "aetp_|rsod_blowUp|lgc_tangent_plane_ae",
+        "tangentProj|1\\.9|a\\.e\\.",
+        "C1Approximation|UpperDensityTheorem|AreaFormula|LusinTheorem|C1Sard|main_theorem",
+        "exists_isClosed_continuousOn_of_measurable|ae_dimensionalUpperDensity_eq_zero_outside|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|exists_contDiff_one_extension_of_whitney|structure HasWhitneyC1Compatibility",
+        "mul_apply|mul_def|mul_eq_comp|def mul|instance.*Ring",
+        "python3 /tmp/lgc-tpa-independent-audit/RunChecks.py reused",
+        "python3 /tmp/lgc-tpa-independent-audit/RunChecks.py assembly"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch01/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-tangent-plane-ae-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-tangent-plane-ae-a1/decomposition-v2.json",
+        "/tmp/lgc-tpa-independent-audit/Types.lean",
+        "/tmp/lgc-tpa-independent-audit/combined/GMT/Ch05/Submission.lean",
+        "/tmp/lgc-tpa-independent-audit/Reused.lean",
+        "/tmp/lgc-tpa-independent-audit/reused.log",
+        "/tmp/lgc-tpa2/src/Final.lean",
+        "/tmp/lgc-tpa-independent-audit/assembly.log"
+      ],
+      "conclusion": "Verified the selected contract digest. The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace contract matches the snapshot. The snapshot project contains none of the six reused declarations. Independently checked each declaration's accepted DAG record, identical frozen type, passing comparator evidence and matching candidate-source hash. Every name has one accepted owner; all six dependency closures are independent of the selected parent. All seven proposition types elaborate without child implementations. Reconstructed and compiled the six candidate additions together without added imports; exact-type reuse checks report only propext, Classical.choice and Quot.sound. The parent assembly also compiles with those axioms, conditional on the explicitly retained C¹-cover and C¹-chart tangent claims. These correspond to steps 5–6 of the accepted parent proof. Together with those retained arguments, the children establish this selected theorem, including measurability and tangent identification. The split is appropriate; it creates no new nodes and preserves all remaining parent obligations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including n = 0 and the contract structure's hypotheses. Compact exhaustion inside U supplies finite weighted measures. The Borel good subset preserves the original multiplicity; Lusin, positivity and compactness give continuous finite-Hⁿ pieces and an Hⁿ-null remainder. No tangent existence is assumed. Reuse at 2bf50ebc has the identical accepted type."
+    },
+    {
+      "key": "upper_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof applies to exactly the stated arbitrary Borel measure and finite-measure Borel set, including n = 0. Borel regularity, the cited upper-density theorem, positive finite normalization and nonnegativity justify the asserted limit. Rescaling supplies every radius factor on the same conull set. Reuse at 06640682 is exact and non-circular."
+    },
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The annular construction correctly uses n ≥ 1 for null spheres and handles infinite ε by reduction. Summable losses, locally finite closed pieces, measurable Taylor quotients and Egorov yield the compact-uniform Whitney condition; extension gives the exact conclusion. Componentwise application supplies the parent's vector-valued approximation. Reuse at 4d18f1d6 has the identical type."
+    },
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "No measurability or integrability assumption is silently added. All-set Hausdorff scaling gives the restricted-measure identity by evaluation on Borel sets. The measurable-embedding and scalar-measure integral rules hold for arbitrary integrands, proving the stated Bochner identity. The factor is finite and positive because r > 0. Reuse at 98fd790d is exact."
+    },
+    {
+      "key": "weighted_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All stated hypotheses are represented in the Lean type. Positivity and compact integrability establish finite Hⁿ(K) before splitting integrals. The cutoff bounds rescaled compact mass; continuity controls the oscillation term and the density hypothesis controls the complement. The dimension condition is inherited from the unweighted tangent. Change of variables is independently supplied, so empty sibling dependencies are valid. Reuse at 8a976e56 is exact."
+    },
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The operator-norm ContinuousOn proposition matches the prose. For injective L, the Gram endomorphism is invertible; the range and orthogonality identities identify its formula with starProjection, and inverse continuity proves the claim, including n = 0. Independently verified that endomorphism multiplication is composition. No pointwise matrix instance occurs. Reuse at 9f89be4c is exact."
+    }
+  ],
+  "required_changes": []
+}
