@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.area_formula-a1.chart_jacobian_identity-a1",
+  "parent_id": "root.area_formula-a1",
+  "depth": 2,
+  "title": "Pointwise identification of T_xM, d^Mf_x and the Jacobian chain rule at a chart parameter",
+  "statement": "Let n, N, p ∈ ℕ, M ⊆ ℝ^N, θ : ℝ^N → ℝ, f : ℝ^N → ℝ^p, ψ : ℝⁿ → ℝ^N and u ∈ ℝⁿ. Put x := ψ(u), A := fderiv ℝ ψ u, T := range A and B := fderiv ℝ (f∘ψ) u. Assume:\n- θ(x) ≠ 0;\n- HasWeightedApproximateTangentSpaceAt n M θ x T;\n- HasLineDerivAt ℝ f (B w) x (A w) for every w ∈ ℝⁿ.\n\nThen:\n(i) approxTangentPlane n M θ x = T;\n(ii) there is a continuous linear L : T → ℝ^p with HasTangentialDifferentialAt T f x L;\n(iii) areaJacobian (approxTangentPlane n M θ x) f x · normDet(A) = normDet(B).",
+  "lean_statement": "∀ (n N p : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (f : Rn N → Rn p) (ψ : Rn n → Rn N) (u : Rn n), θ (ψ u) ≠ 0 → HasWeightedApproximateTangentSpaceAt n M θ (ψ u) (LinearMap.range (fderiv ℝ ψ u).toLinearMap) → (∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) → approxTangentPlane n M θ (ψ u) = LinearMap.range (fderiv ℝ ψ u).toLinearMap ∧ (∃ L : ↥(LinearMap.range (fderiv ℝ ψ u).toLinearMap) →L[ℝ] Rn p, HasTangentialDifferentialAt (LinearMap.range (fderiv ℝ ψ u).toLinearMap) f (ψ u) L) ∧ areaJacobian (approxTangentPlane n M θ (ψ u)) f (ψ u) * (fderiv ℝ ψ u).toLinearMap.normDet = (fderiv ℝ (f ∘ ψ) u).toLinearMap.normDet",
+  "lean_name": "areaFormula_chart_jacobian_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-area-formula-a1-chart-jacobian-identity-a1-a1"
+}

@@ -335,6 +335,45 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Locally Lipschitz maps send `Hⁿ`-null sets to `Hⁿ`-null sets**: the "(easily checked)
+fact" used to conclude the area formula (2.4) in Simon Ch. 3 (`chapter-03.txt` lines 393–396).
+Each `x ∈ Z ⊆ U` has an open `o x ∋ x` with `f` `K x`-Lipschitz on `o x ∩ U`; by Lindelöf
+countably many `o x`, `x ∈ T ⊆ Z`, cover `Z`. By Ch. 2, Thm. 1.8(i) (`chapter-02.txt`
+lines 270–295, valid for non-measurable sets) `Hⁿ(f(Z ∩ o x)) ≤ (K x)ⁿ Hⁿ(Z ∩ o x) = 0`, and
+countable subadditivity gives `Hⁿ(f(Z)) = 0`. Neither openness of `U` nor measurability of `Z`
+is needed: all estimates are for outer measures. -/
+theorem Submission.areaFormula_image_null_of_locallyLipschitzOn : ∀ (N P n : ℕ)
+    (U Z : Set (Rn N)) (f : Rn N → Rn P), LocallyLipschitzOn U f → Z ⊆ U → μHE[n] Z = 0 →
+    μHE[n] (f '' Z) = 0 := by
+  intro N P n U Z f hf hZU hZ
+  -- Step 1: each `x ∈ Z` has an open `o x ∋ x` with `f` `K x`-Lipschitz on `o x ∩ U`.
+  have hloc : ∀ x ∈ Z, ∃ o : Set (Rn N), IsOpen o ∧ x ∈ o ∧
+      ∃ K : ℝ≥0, LipschitzOnWith K f (o ∩ U) := by
+    intro x hx
+    obtain ⟨K, t, ht, hK⟩ := hf (hZU hx)
+    obtain ⟨o, ho, hxo, hot⟩ := mem_nhdsWithin.mp ht
+    exact ⟨o, ho, hxo, K, hK.mono hot⟩
+  choose! o ho hxo K hK using hloc
+  -- Step 2 (Lindelöf): countably many `o x`, `x ∈ T ⊆ Z`, cover `Z`.
+  obtain ⟨T, hTZ, hTc, hTo⟩ := TopologicalSpace.isOpen_biUnion_countable Z o ho
+  have hcover : f '' Z ⊆ ⋃ x ∈ T, f '' (Z ∩ o x) := by
+    rintro _ ⟨z, hz, rfl⟩
+    have hzT : z ∈ ⋃ x ∈ T, o x := by
+      rw [hTo]
+      exact mem_biUnion hz (hxo z hz)
+    obtain ⟨x, hxT, hzx⟩ := mem_iUnion₂.mp hzT
+    exact mem_iUnion₂.mpr ⟨x, hxT, z, ⟨hz, hzx⟩, rfl⟩
+  -- Step 3: `Z ∩ o x ⊆ o x ∩ U`, so `Hⁿ(f(Z ∩ o x)) ≤ (K x)ⁿ Hⁿ(Z ∩ o x) = 0`.
+  have hpiece : ∀ x ∈ T, μHE[n] (f '' (Z ∩ o x)) = 0 := by
+    intro x hx
+    have hL : LipschitzOnWith (K x) f (Z ∩ o x) :=
+      (hK x (hTZ hx)).mono fun z hz ↦ ⟨hz.2, hZU hz.1⟩
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hL
+    rw [measure_mono_null inter_subset_left hZ, mul_zero] at h
+    exact nonpos_iff_eq_zero.mp h
+  -- Step 4: countable subadditivity.
+  exact measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 hpiece)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 

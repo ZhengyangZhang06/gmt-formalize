@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.area_formula-a1.glue_pieces-a1",
+  "parent_id": "root.area_formula-a1",
+  "depth": 2,
+  "title": "Gluing fibre-sum area identities over a countable cover",
+  "statement": "Let X, Y be measurable spaces, μ, ν measures on X and Y, f : X → Y, g, h : X → [0, ∞], M ⊆ X and G : ℕ → Set X. For S ⊆ X put F_S(y) := Σ_{x∈S∩f⁻¹{y}} h(x). Assume:\n- M and every G_α are μ-null-measurable;\n- μ(M ∖ ⋃_α G_α) = 0 and ν(f(M ∖ ⋃_α G_α)) = 0;\n- for every α and every μ-null-measurable S ⊆ M ∩ G_α, ∫_S g dμ = ∫ F_S dν and F_S is ν-AEMeasurable.\n\nThen ∫_M g dμ = ∫ F_M dν.",
+  "lean_statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (g h : X → ℝ≥0∞) (M : Set X) (G : ℕ → Set X), NullMeasurableSet M μ → (∀ α, NullMeasurableSet (G α) μ) → μ (M \\ ⋃ α, G α) = 0 → ν (f '' (M \\ ⋃ α, G α)) = 0 → (∀ α, ∀ S ⊆ M ∩ G α, NullMeasurableSet S μ → (∫⁻ x in S, g x ∂μ = ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂ν) ∧ AEMeasurable (fun y ↦ ∑' x : ↥(S ∩ f ⁻¹' {y}), h x) ν) → ∫⁻ x in M, g x ∂μ = ∫⁻ y, ∑' x : ↥(M ∩ f ⁻¹' {y}), h x ∂ν",
+  "lean_name": "areaFormula_glue_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-area-formula-a1-glue-pieces-a1-a1"
+}

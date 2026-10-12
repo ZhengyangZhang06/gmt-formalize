@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.area_formula-a1.good_chart_pieces-a1",
+  "parent_id": "root.area_formula-a1",
+  "depth": 2,
+  "title": "Countably many bi-Lipschitz chart pieces covering M (Lemma 1.2 charts, Lindelöf, mean value inequality)",
+  "statement": "Let n, N, p ∈ ℕ, M, U, N₀ ⊆ ℝ^N, (S_j)_{j∈ℕ} subsets of ℝ^N and f : ℝ^N → ℝ^p. Assume:\n- U is open and M ⊆ U;\n- f is locally Lipschitz on U;\n- every S_j is an n-dimensional embedded C¹ submanifold of ℝ^N (IsC1Submanifold n (S j));\n- M ⊆ N₀ ∪ ⋃_j S_j.\n\nThen there are sets V_α, D_α ⊆ ℝⁿ, maps ψ_α : ℝⁿ → ℝ^N and constants K_α, C_α ∈ ℝ≥0 (α ∈ ℕ) such that M ⊆ N₀ ∪ ⋃_α ψ_α(D_α), and for every α:\n- V_α is open, ψ_α is C¹ on V_α, and Dψ_α(u) is injective for all u ∈ V_α;\n- D_α is compact and D_α ⊆ V_α;\n- ψ_α is K_α-Lipschitz on D_α, and |u − v| ≤ C_α·|ψ_α(u) − ψ_α(v)| for all u, v ∈ D_α;\n- f∘ψ_α is K_α-Lipschitz on D_α.",
+  "lean_statement": "∀ (n N p : ℕ) (M U N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (f : Rn N → Rn p), IsOpen U → M ⊆ U → LocallyLipschitzOn U f → (∀ j, IsC1Submanifold n (S j)) → M ⊆ N₀ ∪ ⋃ j, S j → ∃ (V D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn N) (K C : ℕ → ℝ≥0), (∀ α, IsOpen (V α) ∧ ContDiffOn ℝ 1 (ψ α) (V α) ∧ (∀ u ∈ V α, Function.Injective (fderiv ℝ (ψ α) u)) ∧ IsCompact (D α) ∧ D α ⊆ V α ∧ LipschitzOnWith (K α) (ψ α) (D α) ∧ (∀ u ∈ D α, ∀ v ∈ D α, dist u v ≤ (C α : ℝ) * dist (ψ α u) (ψ α v)) ∧ LipschitzOnWith (K α) (f ∘ ψ α) (D α)) ∧ M ⊆ N₀ ∪ ⋃ α, ψ α '' D α",
+  "lean_name": "areaFormula_good_chart_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-area-formula-a1-good-chart-pieces-a1-a1"
+}
