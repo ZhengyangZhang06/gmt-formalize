@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.c1_piece_tangent-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "depth": 3,
+  "title": "Embedded C¹ piece: Borel, finite Hⁿ, approximate tangent plane DG(b)(ℝⁿ)",
+  "statement": "Let n, ℓ ≥ 0, G : ℝⁿ → ℝ^{n+ℓ} of class C¹, c ∈ ℝⁿ, r ∈ ℝ, σ > 0, and B := B°_r(c) (open ball). Assume DG(b) is injective for every b ∈ B and σ|b₁ − b₂| ≤ |G(b₁) − G(b₂)| for all b₁, b₂ ∈ B. Let N := G(B). Then (i) N is Borel; (ii) Hⁿ(N) < ∞ (Hⁿ = μHE[n]); (iii) for every b ∈ B, the subspace P := DG(b)(ℝⁿ) (LinearMap.range of the derivative) is the approximate tangent space of N at G(b) in the sense of Simon Ch. 3, Def. 1.4 (Chapter03.HasApproximateTangentSpaceAt n N (G b) P): finrank P = n and lim_{λ↓0} ∫_{η_{G(b),λ}(N)} f dHⁿ = ∫_P f dHⁿ for every compactly supported continuous f : ℝ^{n+ℓ} → ℝ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ) (c : Rn n) (r σ : ℝ), ContDiff ℝ 1 G → 0 < σ → (∀ b ∈ ball c r, Function.Injective (fderiv ℝ G b)) → (∀ b₁ ∈ ball c r, ∀ b₂ ∈ ball c r, σ * ‖b₁ - b₂‖ ≤ ‖G b₁ - G b₂‖) → MeasurableSet (G '' ball c r) ∧ (μHE[n] : Measure (Amb n ℓ)) (G '' ball c r) < ⊤ ∧ ∀ b ∈ ball c r, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (G '' ball c r) (G b) (LinearMap.range (fderiv ℝ G b).toLinearMap)",
+  "lean_name": "aetp_c1_piece_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-c1-piece-tangent-a1-a1"
+}
