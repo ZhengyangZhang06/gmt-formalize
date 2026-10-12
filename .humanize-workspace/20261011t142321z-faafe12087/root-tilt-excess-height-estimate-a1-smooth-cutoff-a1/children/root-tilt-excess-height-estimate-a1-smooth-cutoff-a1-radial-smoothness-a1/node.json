@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1.radial_smoothness-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1",
+  "depth": 3,
+  "title": "The radial lift x ↦ φ(‖x − ξ‖/ρ) of a C^∞ profile with φ = 1 on (−∞, 1/2] is C^∞",
+  "statement": "Let m ∈ N, ξ ∈ R^m (Euclidean space EuclideanSpace ℝ (Fin m)), ρ > 0, and let φ : R → R be C^infinity with φ(t) = 1 for every t <= 1/2. Then the function ζ : R^m → R, ζ(x) := φ(‖x − ξ‖/ρ), is C^infinity.",
+  "lean_statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (φ : ℝ → ℝ), 0 < ρ → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ t, t ≤ 1 / 2 → φ t = 1) → ContDiff ℝ (⊤ : ℕ∞) (fun x : Rn m => φ (‖x - ξ‖ / ρ))",
+  "lean_name": "contDiff_radial_profile_of_eq_one_le_half",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-radial-smoothness-a1-a1"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.allard_density_bounds-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Mass, multiplicity and carrier bounds under the Allard hypotheses (Simon 2.4)",
+  "statement": "For n >= 1, l and p > n there are C >= 1 and delta_P in (0, 1/8] with C delta_P <= 1/2 (depending only on n, l, p) such that, whenever U is open, V has generalized mean curvature H in U and AllardHypotheses H p delta rho hold with 0 < delta <= delta_P: (i) mu(B_s(y)) <= (1 + C delta) omega_n s^n for all y with |y| <= 3 delta rho and 0 < s <= rho/2; (ii) mu(B_s(y)) >= (1 - C delta) omega_n s^n if moreover y in spt V; (iii) theta(x) <= 1 + C delta for mu-a.e. x with |x| <= 3 delta rho; (iv) H^n((spt V cap B°_rho(0)) \\ M) = 0. (mu = V.weight, theta = V.mult, M = V.carrier, closed balls B_s, open ball B°_rho, omega_n = unitBallVolume n.)",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C δP : ℝ, 1 ≤ C ∧ 0 < δP ∧ δP ≤ 1 / 8 ∧ C * δP ≤ 1 / 2 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → (∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal ((1 + C * δ) * (unitBallVolume n * s ^ n))) ∧ (∀ y ∈ V.support, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → ENNReal.ofReal ((1 - C * δ) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)) ∧ (∀ᵐ x ∂V.weight, ‖x‖ ≤ 3 * δ * ρ → V.mult x ≤ 1 + C * δ) ∧ (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ ball 0 ρ) \\ V.carrier) = 0",
+  "lean_name": "ted_allard_density_bounds",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+    "root.tilt_excess_decay-a1.density_ge_one-a1",
+    "root.tilt_excess_decay-a1.tangent_plane_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.density_ge_one-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-allard-density-bounds-a1-a1"
+}
