@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2282bc1f18c367be5094bb46dc2137473c721f09e0e0a86f3893e06011c5bbc0",
+  "git_delta": {
+    "base_commit": "09bf83aff2da7919f71fa9431c5f1d5541e9fbb3",
+    "candidate_commit": "9e9ed91039d2cf6387a1cce74c9551d973e487c3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_sn_open_superset_measure_lt",
+    "diff_sha256": "44da5d724941d8de0888308ab11c2a6d97bc08d5cde62cd169637fcdfad3c12f",
+    "source_sha256": "5933607787c15ba5625449275da71e17ef990f8cf66197eb9cb7eb3019ac2a5f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_sn_open_superset_measure_lt",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclid N)) (A : Set (Euclid N)), μ A = 0 → (∀ x ∈ A, ∃ r : ℝ, 0 < r ∧ μ (ball x r) ≠ ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ O : Set (Euclid N), IsOpen O ∧ A ⊆ O ∧ μ O < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
