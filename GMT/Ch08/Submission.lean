@@ -519,6 +519,35 @@ theorem Submission.measure_bad_interior_exceptional_eq_zero :
     rwa [mul_zero, zero_mul] at h
   -- Step 5: the measure is eventually below a sequence tending to `0`, so it is `0`.
   exact nonpos_iff_eq_zero.1 (ge_of_tendsto hstep4 ((eventually_ge_atTop 1).mono hstep3))
+/-- Choice of `y_i`, `q_i` in the proof of 3.7 (Simon Ch. 8, p. 212, before (4)): if `x ∈ W` with
+`W` open and `x ∉ interior (⋂_{ℓ ≥ i} Bad ℓ)` for every `i`, then there are `y_i → x` in `W` and
+`q_i → ∞` with `y_i ∉ Bad (q_i)`. -/
+theorem Submission.exists_nearby_points_off_bad_sets :
+    ∀ (N : ℕ) (W : Set (Euclidean N)) (Bad : ℕ → Set (Euclidean N)) (x : Euclidean N), IsOpen W → x ∈ W → (∀ i : ℕ, x ∉ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ)) → ∃ (q : ℕ → ℕ) (y : ℕ → Euclidean N), Tendsto q atTop atTop ∧ Tendsto y atTop (𝓝 x) ∧ ∀ i, y i ∈ W ∧ y i ∉ Bad (q i) := by
+  intro N W Bad x hW hxW hx
+  -- Steps 1–2: for each `i`, the open neighbourhood `W ∩ B_{1/(i+1)}(x)` of `x` is not contained
+  -- in `⋂_{ℓ ≥ i} Bad ℓ` (else `x` would be in its interior), so it has a point off some `Bad ℓ`.
+  have key : ∀ i : ℕ, ∃ ℓ : ℕ, ∃ z : Euclidean N,
+      i ≤ ℓ ∧ z ∈ W ∧ dist z x < 1 / ((i : ℝ) + 1) ∧ z ∉ Bad ℓ := by
+    intro i
+    by_contra hcon
+    push Not at hcon
+    apply hx i
+    have hsub : W ∩ ball x (1 / ((i : ℝ) + 1)) ⊆ ⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ := by
+      intro z hz
+      simp only [mem_iInter]
+      intro ℓ hℓ
+      exact hcon ℓ z hℓ hz.1 (mem_ball.1 hz.2)
+    exact interior_maximal hsub (hW.inter isOpen_ball) ⟨hxW, mem_ball_self (by positivity)⟩
+  -- Step 3: choose `q i ≥ i` and `y i` for every `i`.
+  choose q y hq hyW hyx hyBad using key
+  refine ⟨q, y, ?_, ?_, fun i ↦ ⟨hyW i, hyBad i⟩⟩
+  -- Step 4: `q i ≥ i`, so `q i → ∞`.
+  · exact tendsto_atTop_mono hq tendsto_id
+  -- Step 5: `0 ≤ dist (y i) x < 1/(i+1) → 0`, so `y i → x`.
+  · rw [tendsto_iff_dist_tendsto_zero]
+    exact squeeze_zero (fun i ↦ dist_nonneg) (fun i ↦ (hyx i).le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
