@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/5a882a57db723346/manifest.json (project_commit 63436ae6, mathlib_commit 25730c7c); sha256sum snapshot project/GMT/Ch08/Contract.lean vs workspace GMT/Ch08/Contract.lean and Submission.lean (all 2e5cd5b3…c487)",
+        "cat nodes/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1/parent-child-handoff.json and parent-supplied-plan.md; problem.md",
+        "grep -n 'IsVarifoldOf|HasTangentPlane|rescaledMeasure|planeVarifoldMeasure' GMT/Ch08/Contract.lean",
+        "python3 dump of dag.json nodes (root.allard_tangent_cones-a1 subtree: lean_name, lean_statement, depends_on; sibling tangent_plane_dilation-a1 statement)",
+        "grep -rn 'allard_tc_cri' dag.json GMT/ .humanize/ and .swarm-worktrees (*.lean, *.json): no matches",
+        "grep '^structure|weight|weight_apply' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "grep 'euclideanHausdorffMeasure_smul₀|homothety' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep 'restrict_map|restrict_congr_set|restrict_apply|restrict_apply₀'|restrict_eq_zero|exists_measurable_subset_ae_eq|lintegral_map_equiv|lintegral_eq_zero_iff'|setLIntegral_measure_zero' mathlib/Mathlib/MeasureTheory",
+        "grep 'def smul₀|preimage_smul₀|mem_inv_smul_set_iff₀|MeasurableSet.const_smul' mathlib/Mathlib",
+        "rg 'theorem (lintegral_comp_smul|setLIntegral_congr|setLIntegral_congr_fun)' mathlib/Mathlib/MeasureTheory; rg lintegral in Hausdorff.lean and Volume/Measure.lean",
+        "rg 'euclideanHausdorffMeasure_smul₀|MeasurableEquiv.smul₀|lintegral_map_equiv' and '^theorem .*(rescal|dilat|homothety)' over SimonGMT",
+        "contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') from verifier/gmt-compare.py; validate_lean_statement from verifier/lean_contract.py on the 4 child statements",
+        "lake env lean /tmp/cri-decomp/{Stmts,ChildAC,ChildB,All,Cmp}.lean (import GMT.Ch08.Submission + replayed scope, autoImplicit false; #print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/GroupWithZero/Action/Pointwise/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Group/Pointwise.lean",
+        "/tmp/cri-decomp/Stmts.lean",
+        "/tmp/cri-decomp/ChildAC.lean",
+        "/tmp/cri-decomp/ChildB.lean",
+        "/tmp/cri-decomp/All.lean",
+        "/tmp/cri-decomp/Cmp.lean",
+        "/tmp/cri-decomp/stmts.json"
+      ],
+      "conclusion": "The snapshot pins project 63436ae6 and Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission.\n\nWhat the snapshot already provides:\n- Varifold.weight = measure.map Prod.fst, with weight_apply on measurable sets (SimonGMT Chapter08/Varifold.lean).\n- Mathlib lemmas valid for arbitrary sets and functions, with no σ-finiteness: Measure.euclideanHausdorffMeasure_smul₀ (μHE[d](r•s) = ‖r‖₊^d•μHE[d] s for every s), MeasurableEquiv.smul₀ / coe_smul₀, Set.preimage_smul₀, Set.mem_inv_smul_set_iff₀, MeasurableEquiv.restrict_map, lintegral_map_equiv, Measure.restrict_congr_set and Measure.restrict_apply (measurable test set, arbitrary restricting set).\n- Also present: NullMeasurableSet.exists_measurable_subset_ae_eq, lintegral_eq_zero_iff', setLIntegral_measure_zero and Measure.restrict_eq_zero.\n\nWhat is missing (no match in Mathlib or SimonGMT):\n- No change-of-variables lintegral lemma for Hausdorff measure under dilations. SimonGMT has only simonHausdorffMeasure_smul, a wrapper of the set-level Mathlib lemma.\n- No varifold rescaling-of-representation lemma.\n- No carrier dilation-invariance lemma.\n- Mathlib's setLIntegral_congr_fun_ae₀ needs a null-measurable integration set, so it does not cover child C.\n\nThe pinned Mathlib deprecates Set.mem_setOf_eq (use Set.mem_ofPred_eq) and Set.diff_eq (use Set.sdiff_eq).\n\nScratch checks: all 4 child statements validate and elaborate in the replayed comparator scope, and each is fully proved with only propext, Classical.choice and Quot.sound. The frozen parent type is closed using only the 4 children and the verbatim sibling allard_tc_tangent_plane_dilation interface."
+    }
+  ],
+  "proof": "Source: the change-of-variables paragraph of parent Step 5 (B6), specialised to an arbitrary set D and integrand f. That paragraph reads: \"For every set E, H(σ⁻¹(E)) = H(s⁻¹ • E) = s^{-n}·H(E). So H.map σ = ofReal(s⁻¹)^n • H, i.e. H = ofReal(s)^n • H.map σ. MeasurableEquiv.restrict_map holds for arbitrary sets … Then lintegral_map_equiv gives …\".\n\nNotation. H := (μHE[n] : Measure (Euclidean N)) and c := ENNReal.ofReal. Fix s > 0, D and f.\n\n1. The dilation. Since s ≠ 0, σ := MeasurableEquiv.smul₀ s (ne_of_gt hs) is a measurable equivalence of Euclidean N with σ w = s • w for all w. This holds definitionally (MeasurableEquiv.coe_smul₀). For every set E, σ⁻¹(E) = {w | s • w ∈ E} = s⁻¹ • E (Set.preimage_smul₀ with s ≠ 0).\n\n2. Pushforward of H. Claim: H.map σ = c(s⁻¹)^n • H. By Measure.ext it is enough to test a measurable set E.\n - (H.map σ)(E) = H(σ⁻¹ E), by Measure.map_apply since σ is measurable.\n - By step 1 this is H(s⁻¹ • E).\n - By Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero _) E, which holds for every set, this is ‖s⁻¹‖₊^n • H(E).\n - Since s⁻¹ ≥ 0, the coercion of ‖s⁻¹‖₊ into ℝ≥0∞ equals c(s⁻¹) (rewrite with ← enorm_eq_nnnorm, then Real.enorm_eq_ofReal).\n - So, using ENNReal.smul_def and ENNReal.coe_pow, the value is c(s⁻¹)^n · H(E) = (c(s⁻¹)^n • H)(E) (Measure.smul_apply, smul_eq_mul).\n\n3. Inversion. c(s)^n • H.map σ = c(s)^n • (c(s⁻¹)^n • H) = (c(s)·c(s⁻¹))^n • H = c(s·s⁻¹)^n • H = c(1)^n • H = H. This uses smul_smul, mul_pow, ENNReal.ofReal_mul (s ≥ 0), mul_inv_cancel₀, ENNReal.ofReal_one, one_pow and one_smul. Hence H = c(s)^n • H.map σ.\n\n4. Pull out the constant. Rewrite the measure on the left-hand side only (e.g. conv_lhs => rw [h3]), because H also occurs inside H.map σ. Then ∫⁻_D f dH = ∫⁻_D f d(c(s)^n • H.map σ) = c(s)^n · ∫⁻_D f d(H.map σ), by Measure.restrict_smul, lintegral_smul_measure and smul_eq_mul.\n\n5. Restriction commutes with the equivalence. For the arbitrary set D, (H.map σ).restrict D = (H.restrict (σ⁻¹ D)).map σ (MeasurableEquiv.restrict_map). No measurability of D is needed because σ is a measurable equivalence.\n\n6. Change of variables. For the arbitrary function f, ∫⁻ f d((H.restrict (σ⁻¹ D)).map σ) = ∫⁻_{σ⁻¹ D} f(σ w) dH(w) (MeasureTheory.lintegral_map_equiv). No measurability of f is needed.\n\n7. Conclusion. Steps 4–6 give ∫⁻_D f dH = c(s)^n · ∫⁻_{σ⁻¹ D} f(σ w) dH(w). Since σ⁻¹ D = {w | s • w ∈ D} and σ w = s • w definitionally, this is ∫⁻ x in D, f x ∂H = ENNReal.ofReal s ^ n * ∫⁻ w in {w | s • w ∈ D}, f (s • w) ∂H. No σ-finiteness of H was used; H^n on ℝ^N is not s-finite when n < N. ∎",
+  "key_steps": [
+    "σ := MeasurableEquiv.smul₀ s with σ w = s•w; σ⁻¹(E) = {w | s•w ∈ E} = s⁻¹•E (Set.preimage_smul₀).",
+    "H.map σ = ofReal(s⁻¹)^n • H, checked on measurable E via Measure.map_apply and Measure.euclideanHausdorffMeasure_smul₀, with ‖s⁻¹‖₊ = ofReal s⁻¹.",
+    "Hence H = ofReal(s)^n • H.map σ.",
+    "∫⁻_D f dH = ofReal(s)^n · ∫⁻_D f d(H.map σ) (Measure.restrict_smul, lintegral_smul_measure).",
+    "(H.map σ).restrict D = (H.restrict(σ⁻¹D)).map σ for arbitrary D (MeasurableEquiv.restrict_map).",
+    "lintegral_map_equiv for arbitrary f gives ∫⁻_{σ⁻¹D} f(s•w) dH(w); σ⁻¹D = {w | s•w ∈ D}."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
