@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.allard_rectifiability-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "Allard's Rectifiability Theorem 8.5.5 with Remark 5.6, from the sibling results",
+  "statement": "Assume FirstVariationRepresentation, StationaryMonotonicityIdentity, DensityExistsAE, ConstancyTheorem, VarifoldTangentCones, the blow-up density lower bound, Lemma 1.3 and FirstRectifiabilityTheorem. The blow-up density lower bound (second conjunct of the sibling varifold_tangents) says: if V has locally bounded first variation, x ∈ U, τ > 0, ρ^{1−n}‖δV‖(B_ρ(x)) → 0 and ρ^{-n}μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V,y) exists and ≥ ofReal τ)}) → 0, then every C ∈ VarTan(V,x) has Θ^n(μ_C,·) ≥ ofReal τ μ_C-a.e. Lemma 1.3 is the sibling plane_disintegration statement. Then AllardRectifiabilityTheorem holds. That is, if V has locally bounded first variation in U and Θ^n(μ_V,x) exists and is > 0 for μ_V-a.e. x, then V is rectifiable and has a tangent plane with positive multiplicity (Def. 1.1) at μ_V-a.e. x.",
+  "lean_statement": "FirstVariationRepresentation → StationaryMonotonicityIdentity → DensityExistsAE → ConstancyTheorem → VarifoldTangentCones → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (τ : ℝ), V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < τ → Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C → ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), ∃ η : Euclidean N → Measure (Grassmannian N n), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧ ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight) → FirstRectifiabilityTheorem → AllardRectifiabilityTheorem",
+  "lean_name": "allard_tc_rectifiability",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+    "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+    "root.allard_tangent_cones-a1.unique_tangent_plane-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.unique_tangent_plane-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-allard-rectifiability-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "Ball integrals at a flat blow-up limit (portmanteau for the unit ball)",
+  "statement": "Let V be an n-varifold on an open set U ⊆ ℝ^N, x ∈ U, T ∈ G(N,n), θ ∈ ℝ, and let l be a filter on a type ι and t : ι → ℝ with t_i → 0 within (0,∞) along l. Suppose that for every f ∈ C_c(ℝ^N × G(N,n)), ∫ f dV_{x,t_i} → θ ∫ f dv(T) along l, where V_{x,r} = rescaledMeasure V x r and v(T) = planeVarifoldMeasure T. Then for every continuous β : G(N,n) → ℝ, t_i^{-n} ∫_{B_{t_i}(x) × G(N,n)} β(S) dV(y,S) → θ ω_n β(T) along l, and t_i^{-n} μ_V(B_{t_i}(x)) (as a real number) → θ ω_n along l. Here B_r(x) is the closed ball and ω_n = (unitBallVolume n).toReal.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ) {ι : Type} (l : Filter ι) (t : ι → ℝ), x ∈ U → Tendsto t l (𝓝[>] 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), Tendsto (fun i ↦ ∫ z, f z ∂(rescaledMeasure V x (t i))) l (𝓝 (θ * ∫ z, f z ∂(planeVarifoldMeasure T)))) → (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal * β T))) ∧ Tendsto (fun i ↦ (V.weight (closedBall x (t i))).toReal / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal))",
+  "lean_name": "allard_tc_flat_blowup_ball_limits",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1-a1"
+}

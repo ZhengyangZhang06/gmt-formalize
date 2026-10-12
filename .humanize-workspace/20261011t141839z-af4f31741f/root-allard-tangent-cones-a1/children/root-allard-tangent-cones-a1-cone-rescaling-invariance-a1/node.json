@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "A homogeneous varifold v(M,θ) with tangent planes on M is invariant under dilations",
+  "statement": "Let C be an n-varifold on ℝ^N, M ⊆ ℝ^N and θ : ℝ^N → ℝ with IsVarifoldOf C M θ. Suppose every x ∈ M has a tangent plane T with multiplicity θ(x), and C(A) = ∫ over {x ∈ M : ∃ T, HasTangentPlane C x T (θ x) ∧ (x,T) ∈ A} of θ dH^n for every Borel A. Suppose also μ_C(sA) = s^n μ_C(A) for all s > 0 and A ⊆ ℝ^N. Then η_{0,s#}C = C for every s > 0, i.e. rescaledMeasure C 0 s = C.measure.",
+  "lean_statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ → (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) → (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n]) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → ∀ s : ℝ, 0 < s → rescaledMeasure C 0 s = C.measure",
+  "lean_name": "allard_tc_cone_rescaling_invariance",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.tangent_plane_dilation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.tangent_plane_dilation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1-a1"
+}

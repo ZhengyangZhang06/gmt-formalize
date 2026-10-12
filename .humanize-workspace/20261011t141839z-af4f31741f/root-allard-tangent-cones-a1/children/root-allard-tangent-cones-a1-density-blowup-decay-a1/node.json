@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "Approximate continuity of the density gives the blow-up density hypothesis (Remark 5.6(iii))",
+  "statement": "Assume DensityExistsAE (Simon 8.3.6). If V is an n-varifold on open U ⊆ ℝ^N with locally bounded first variation, then for μ_V-a.e. x the following holds. For all real θ0 and τ with Θ^n(μ_V, x) = ofReal θ0 and τ < θ0: ρ^{-n} μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V, y) exists and is ≥ ofReal τ)}) → 0 as ρ ↓ 0.",
+  "lean_statement": "DensityExistsAE → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∀ θ₀ τ : ℝ, HasDensity n V.weight x (ENNReal.ofReal θ₀) → τ < θ₀ → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "allard_tc_density_blowup_decay",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1-a1"
+}
