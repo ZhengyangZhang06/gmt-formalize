@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c4bbeb77d2b81e2452f8385a92e96ca129210848671ce31634caa5c28b43e3f5",
+  "git_delta": {
+    "base_commit": "1d413761d4920fe295b13967cf42a7906180c1a2",
+    "candidate_commit": "5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_blowUp_testForm_corr",
+    "diff_sha256": "31b1e5daf3eef7ce2054f3bdf181d55e8b778d1a1aa1d0da8ee0863b47b1612e",
+    "source_sha256": "a37f263a7524594b510a64dcd5d0c3a3b665fb0fb5f414c77a99d93521d21126",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_blowUp_testForm_corr",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ ω : TestFormOn (dilation x lam '' U) n, ∃ ω' : TestFormOn U n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ (∀ ω' : TestFormOn U n, ∃ ω : TestFormOn (dilation x lam '' U) n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn (dilation x lam '' U) n) (ω' : TestFormOn U n), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) → blowUp T x lam hlam.ne' ω = lam⁻¹ ^ n * T ω'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
