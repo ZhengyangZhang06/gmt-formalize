@@ -576,6 +576,70 @@ theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f 
   simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
     one_smul, add_sub_cancel]
 
+/-- **Ball-mass bound at an approximate tangent plane** (Simon Ch. 3, Remark 1.5(3)).  If
+`Hⁿ(C) < ∞` and `T_x C = P`, then for each `R > 0` the ratios `r⁻ⁿ Hⁿ(C ∩ B_{rR}(x))` are
+eventually bounded as `r ↓ 0`: test Definition 1.4 against a cutoff `g ∈ C_c` with `0 ≤ g ≤ 1`
+and `g = 1` on `B_R(0)`, and pull `∫_{η(C)} g dHⁿ` back to `C` by the blow-up change of
+variables. -/
+theorem rsod_wfu_approxTangent_ballMass_bound : ∀ (n ℓ : ℕ) (C : Set (Amb n ℓ)) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) C < ∞ → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P → ∀ R : ℝ, 0 < R → ∃ Λ : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), (r ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (C ∩ closedBall x (r * R)) ≤ Λ := by
+  intro n ℓ C x P hC hT R _
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  -- The cutoff `g(y) = max(0, min(1, R + 1 - ‖y‖))`: continuous, `0 ≤ g ≤ 1`, `g = 1` on
+  -- `B_R(0)` and `g = 0` off the compact ball `B_{R+1}(0)`.
+  obtain ⟨g, hg_cont, hg_supp, hg_nonneg, hg_le_one, hg_one⟩ : ∃ g : Amb n ℓ → ℝ,
+      Continuous g ∧ HasCompactSupport g ∧ (∀ y, 0 ≤ g y) ∧ (∀ y, g y ≤ 1) ∧
+        ∀ y, ‖y‖ ≤ R → g y = 1 := by
+    refine ⟨fun y => max 0 (min 1 (R + 1 - ‖y‖)),
+      continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm)),
+      HasCompactSupport.intro (isCompact_closedBall (0 : Amb n ℓ) (R + 1)) fun y hy => ?_,
+      fun y => le_max_left _ _, fun y => max_le zero_le_one (min_le_left _ _), fun y hy => ?_⟩
+    · rw [mem_closedBall, dist_zero_right, not_le] at hy
+      exact max_eq_left ((min_le_right _ _).trans (by linarith))
+    · show max 0 (min 1 (R + 1 - ‖y‖)) = 1
+      rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+  -- `T_x C = P` tested on `g`: eventually `∫_{η_r(C)} g dHⁿ < ∫_P g dHⁿ + 1`.
+  have hlim : Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' C, g y ∂μ)
+      (𝓝[>] 0) (𝓝 (∫ y in (P : Set (Amb n ℓ)), g y ∂μ)) :=
+    hT.2 ⟨⟨g, hg_cont⟩, hg_supp⟩
+  refine ⟨(∫ y in (P : Set (Amb n ℓ)), g y ∂μ) + 1, ?_⟩
+  filter_upwards [hlim.eventually (gt_mem_nhds (lt_add_one _)), self_mem_nhdsWithin]
+    with r hr (hr0 : 0 < r)
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r with hη
+  -- Change of variables with `θ ≡ 1`: `∫_{η(C)} g dHⁿ = r⁻ⁿ ∫_C g ∘ η dHⁿ`.
+  have hcov := rsod_blowUp_setIntegral_eq n ℓ C g (fun _ => 1) x r hr0
+  simp only [mul_one] at hcov
+  -- `1_B ≤ g ∘ η` for `B = B_{rR}(x)`, since `‖η z‖ = r⁻¹ ‖z - x‖ ≤ R` on `B`.
+  have hB : MeasurableSet (closedBall x (r * R)) := measurableSet_closedBall
+  have hle : ∀ z, (closedBall x (r * R)).indicator 1 z ≤ g (η z) := by
+    intro z
+    by_cases hz : z ∈ closedBall x (r * R)
+    · rw [indicator_of_mem hz, Pi.one_apply, hg_one]
+      rw [hη, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul,
+        Real.norm_of_nonneg (inv_nonneg.mpr hr0.le), ← dist_eq_norm]
+      calc r⁻¹ * dist z x ≤ r⁻¹ * (r * R) :=
+            mul_le_mul_of_nonneg_left (mem_closedBall.mp hz) (inv_nonneg.mpr hr0.le)
+        _ = R := inv_mul_cancel_left₀ hr0.ne' R
+    · rw [indicator_of_notMem hz]
+      exact hg_nonneg _
+  -- Both sides are `Hⁿ ⌞ C`-integrable because `Hⁿ(C) < ∞`, so `Hⁿ(C ∩ B) ≤ ∫_C g ∘ η dHⁿ`.
+  have hmass : μ.real (C ∩ closedBall x (r * R)) ≤ ∫ z in C, g (η z) ∂μ := by
+    have : IsFiniteMeasure (μ.restrict C) := isFiniteMeasure_restrict.mpr hC.ne
+    have hηcont : Continuous η := (continuous_id.sub continuous_const).const_smul r⁻¹
+    have h1 : Integrable ((closedBall x (r * R)).indicator (1 : Amb n ℓ → ℝ)) (μ.restrict C) :=
+      (integrable_const (1 : ℝ)).indicator hB
+    have h2 : Integrable (fun z => g (η z)) (μ.restrict C) :=
+      (integrable_const (1 : ℝ)).mono' (hg_cont.comp hηcont).aestronglyMeasurable
+        (ae_of_all _ fun z => by rw [Real.norm_of_nonneg (hg_nonneg _)]; exact hg_le_one _)
+    calc μ.real (C ∩ closedBall x (r * R))
+        = ∫ z in C, (closedBall x (r * R)).indicator 1 z ∂μ := by
+          rw [integral_indicator_one hB, measureReal_restrict_apply hB, inter_comm]
+      _ ≤ ∫ z in C, g (η z) ∂μ := integral_mono h1 h2 hle
+  calc (r ^ n)⁻¹ * μ.real (C ∩ closedBall x (r * R))
+      ≤ (r ^ n)⁻¹ * ∫ z in C, g (η z) ∂μ :=
+        mul_le_mul_of_nonneg_left hmass (inv_nonneg.mpr (pow_nonneg hr0.le n))
+    _ = ∫ y in η '' C, g y ∂μ := hcov.symm
+    _ ≤ (∫ y in (P : Set (Amb n ℓ)), g y ∂μ) + 1 := hr.le
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
