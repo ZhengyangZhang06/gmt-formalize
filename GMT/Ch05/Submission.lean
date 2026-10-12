@@ -665,6 +665,64 @@ theorem aal_monotone_quantity_ge_density : ∀ (n : ℕ) (α ω R Λ : ℝ) (m F
   -- `Φ(u) ≥ (1 − η)² ω − η ≥ ω − η (2ω + 1) > Φ(t)`, contradicting `Φ(u) ≤ Φ(t)`.
   have hmon := hmono u t hu0 hut.le htR
   linarith [mul_nonneg (sq_nonneg η) hω.le]
+/-- **Lower integral over a closed ball from uniform annular bounds** (Simon Ch. 5, proof of
+Lemma 2.5, inequality (1), which follows from Ch. 4, 4.7 and 2.4: the monotone-convergence step
+from the annuli `B_s(y) \ B_t(y)` to the ball as `t ↓ 0`).  If `g ≥ 0`, `g(y) = 0` and, for every
+`t ∈ (0, s)`, `g` is `μ`-integrable on the annulus `B_s(y) \ B_t(y)` with
+`∫_{B_s(y) \ B_t(y)} g dμ ≤ M`, then `∫⁻_{B_s(y)} g dμ ≤ M`.
+
+Proof: for `ν = μ.withDensity g` the annuli `A_k = B_s(y) \ B_{s/(k+2)}(y)` increase, satisfy
+`ν(A_k) = ∫_{A_k} g dμ ≤ M` and cover `B_s(y) \ {y}`, while `ν {y} = g(y) μ {y} = 0`; continuity
+from below gives `ν(B_s(y)) ≤ M`. -/
+theorem aal_lintegral_closedBall_le_of_annuli : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (s M : ℝ), 0 < s → (∀ x, 0 ≤ g x) → g y = 0 → (∀ t : ℝ, 0 < t → t < s → IntegrableOn g (closedBall y s \ closedBall y t) μ ∧ ∫ x in closedBall y s \ closedBall y t, g x ∂μ ≤ M) → ∫⁻ x in closedBall y s, ENNReal.ofReal (g x) ∂μ ≤ ENNReal.ofReal M := by
+  intro n ℓ μ g y s M hs hg0 hgy hann
+  set ν : Measure (Amb n ℓ) := μ.withDensity (fun x => ENNReal.ofReal (g x)) with hν
+  set A : ℕ → Set (Amb n ℓ) := fun k => closedBall y s \ closedBall y (s / ((k : ℝ) + 2)) with hA
+  have hAmeas : ∀ k, MeasurableSet (A k) := fun k =>
+    measurableSet_closedBall.diff measurableSet_closedBall
+  -- The annuli increase, since the inner radii `s / (k + 2)` decrease.
+  have hAmono : Monotone A := by
+    intro i j hij
+    refine Set.sdiff_subset_sdiff_right (closedBall_subset_closedBall ?_)
+    have hij' : (i : ℝ) ≤ j := by exact_mod_cast hij
+    exact div_le_div_of_nonneg_left hs.le (by positivity) (by linarith)
+  -- `ν(A_k) = ∫_{A_k} g dμ ≤ M`, by the hypothesis with `t = s / (k + 2) ∈ (0, s)`.
+  have hAle : ∀ k, ν (A k) ≤ ENNReal.ofReal M := by
+    intro k
+    have hk2 : (0 : ℝ) < (k : ℝ) + 2 := by positivity
+    have ht0 : 0 < s / ((k : ℝ) + 2) := div_pos hs hk2
+    have hts : s / ((k : ℝ) + 2) < s := by
+      rw [div_lt_iff₀ hk2]
+      have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+      nlinarith
+    obtain ⟨hint, hle⟩ := hann _ ht0 hts
+    rw [hν, withDensity_apply _ (hAmeas k),
+      ← ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun x => hg0 x)]
+    exact ENNReal.ofReal_le_ofReal hle
+  -- Every `x ∈ B_s(y) \ {y}` lies in `A_k` as soon as `k > s / |x - y|`.
+  have hcover : closedBall y s ⊆ (⋃ k, A k) ∪ {y} := by
+    intro x hx
+    by_cases hxy : x = y
+    · exact Or.inr hxy
+    · refine Or.inl (mem_iUnion.2 ?_)
+      have hd : 0 < dist x y := dist_pos.2 hxy
+      obtain ⟨k, hk⟩ := exists_nat_gt (s / dist x y)
+      refine ⟨k, hx, ?_⟩
+      have hk2 : (0 : ℝ) < (k : ℝ) + 2 := by positivity
+      rw [mem_closedBall, not_le, div_lt_iff₀ hk2]
+      rw [div_lt_iff₀ hd] at hk
+      nlinarith
+  -- The center carries no `ν`-mass because `g(y) = 0`.
+  have hy : ν {y} = 0 := by
+    rw [hν, withDensity_apply _ (measurableSet_singleton y), lintegral_singleton, hgy,
+      ENNReal.ofReal_zero, zero_mul]
+  calc ∫⁻ x in closedBall y s, ENNReal.ofReal (g x) ∂μ = ν (closedBall y s) := by
+        rw [hν, withDensity_apply _ measurableSet_closedBall]
+    _ ≤ ν ((⋃ k, A k) ∪ {y}) := measure_mono hcover
+    _ ≤ ν (⋃ k, A k) + ν {y} := measure_union_le _ _
+    _ = ν (⋃ k, A k) := by rw [hy, add_zero]
+    _ = ⨆ k, ν (A k) := hAmono.measure_iUnion
+    _ ≤ ENNReal.ofReal M := iSup_le hAle
 
 end Submission
 
