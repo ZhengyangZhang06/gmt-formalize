@@ -677,6 +677,238 @@ theorem Submission.scaled_field_deformation_is_admissible : ∀ (N : ℕ) (U : S
     have h : HasDerivAt (fun t : ℝ ↦ x + (c * t) • Y x) (c • Y x) 0 := by
       simpa using (((hasDerivAt_id (0 : ℝ)).const_mul c).smul_const (Y x)).const_add x
     exact h.deriv
+/-- **Differentiability of the projection onto the range.** For an injective `A : ℝⁿ →L[ℝ] ℝᴺ`,
+the map `B ↦ (range B).starProjection` (the orthogonal projection of `ℝᴺ` onto the range of `B`) is
+Fréchet differentiable at `A`. The Gram operator `G(B) = B† ∘ B` is injective at `A`
+(`adjoint_comp_self_injective_iff`), hence a unit (finite dimension), hence a unit near `A`
+(`Units.isOpen`). There the projection equals `B ∘ G(B)⁻¹ ∘ B†`
+(`eq_starProjection_of_mem_of_inner_eq_zero`), and that map is differentiable at `A`
+(`DifferentiableAt.clm_comp`, `DifferentiableAt.inverse`). -/
+theorem Submission.sff_range_starProjection_differentiableAt : ∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), Function.Injective A → DifferentiableAt ℝ (fun B : Rn n →L[ℝ] Rn N ↦ (LinearMap.range B.toLinearMap).starProjection) A := by
+  intro n N A hA
+  -- Step 1: the adjoint `B ↦ B†` as a continuous `ℝ`-linear map (Mathlib bundles `adjoint` as a
+  -- conjugate-linear isometry, and conjugation is trivial on `ℝ`).
+  let adj : (Rn n →L[ℝ] Rn N) →L[ℝ] (Rn N →L[ℝ] Rn n) :=
+    { toFun := fun B ↦ ContinuousLinearMap.adjoint B
+      map_add' := fun B C ↦ by simp
+      map_smul' := fun c B ↦ by simp
+      cont := ContinuousLinearMap.adjoint.continuous }
+  have hadj : ∀ B, adj B = ContinuousLinearMap.adjoint B := fun _ ↦ rfl
+  -- The Gram operator `G(B) = B† ∘ B`.
+  let G : (Rn n →L[ℝ] Rn N) → (Rn n →L[ℝ] Rn n) := fun B ↦ (adj B).comp B
+  -- Step 2: `G(A)` is injective, hence bijective in finite dimension, hence a unit.
+  have hGA : IsUnit (G A) := by
+    have hinj : Function.Injective (G A) :=
+      (ContinuousLinearMap.adjoint_comp_self_injective_iff A).2 hA
+    exact ContinuousLinearMap.isUnit_iff_bijective.2
+      ⟨hinj, LinearMap.injective_iff_surjective.1 hinj⟩
+  -- Step 3: `G(B)` stays a unit for `B` near `A`.
+  have hS : ∀ᶠ B in 𝓝 A, IsUnit (G B) :=
+    (adj.continuous.clm_comp continuous_id).continuousAt.eventually (Units.isOpen.mem_nhds hGA)
+  -- Step 4: where `G(B)` is a unit, the projection onto `range B` is `B ∘ G(B)⁻¹ ∘ B†`.
+  have hformula : ∀ B : Rn n →L[ℝ] Rn N, IsUnit (G B) →
+      (LinearMap.range B.toLinearMap).starProjection =
+        B.comp ((Ring.inverse (G B)).comp (adj B)) := by
+    intro B hB
+    -- `B† (B (G(B)⁻¹ (B† w))) = B† w`, from `G(B) * G(B)⁻¹ = 1`.
+    have hcancel : ∀ w, adj B (B (Ring.inverse (G B) (adj B w))) = adj B w := fun w ↦ by
+      simpa [G] using
+        congrArg (fun T : Rn n →L[ℝ] Rn n ↦ T (adj B w)) (Ring.mul_inverse_cancel _ hB)
+    ext1 w
+    -- `p = B (G(B)⁻¹ (B† w))` lies in `range B`, and `w - p ⊥ B v` because `B† (w - p) = 0`.
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (LinearMap.mem_range_self _ _) ?_
+    rintro u ⟨v, rfl⟩
+    rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left]
+    simp only [ContinuousLinearMap.comp_apply, map_sub]
+    rw [← hadj, hcancel, sub_self, inner_zero_left]
+  -- Step 5: `B ↦ B ∘ G(B)⁻¹ ∘ B†` is differentiable at `A`.
+  have hdiff : DifferentiableAt ℝ
+      (fun B : Rn n →L[ℝ] Rn N ↦ B.comp ((Ring.inverse (G B)).comp (adj B))) A :=
+    differentiableAt_id.clm_comp
+      (((adj.differentiableAt.clm_comp differentiableAt_id).inverse hGA).clm_comp
+        adj.differentiableAt)
+  -- Step 6: the two maps agree near `A`.
+  exact hdiff.congr_of_eventuallyEq (hS.mono fun B hB ↦ hformula B hB)
+/-- **Local left inverse of an immersion.** If `ψ : ℝⁿ → ℝᴺ` is `C¹` at `x₀` and `Dψ(x₀)` is
+injective, then some `g : ℝᴺ → ℝⁿ` is differentiable at `ψ(x₀)` and satisfies `g(ψ(x)) = x` near
+`x₀`. `Dψ(x₀)` has a linear left inverse `L`, which is continuous because `ℝᴺ` is
+finite-dimensional. So `L ∘ ψ` has strict derivative `L ∘ Dψ(x₀) = id` at `x₀`. The inverse function
+theorem gives a local inverse `k` of `L ∘ ψ` that is differentiable at `L(ψ(x₀))`, and
+`g = k ∘ L` works. -/
+theorem Submission.sff_immersion_local_left_inverse : ∀ (n N : ℕ) (ψ : Rn n → Rn N) (x₀ : Rn n), ContDiffAt ℝ 1 ψ x₀ → Function.Injective (fderiv ℝ ψ x₀) → ∃ g : Rn N → Rn n, DifferentiableAt ℝ g (ψ x₀) ∧ ∀ᶠ x in 𝓝 x₀, g (ψ x) = x := by
+  intro n N ψ x₀ hψ hinj
+  -- Step 1: a continuous linear left inverse `L` of `Dψ(x₀)`.
+  obtain ⟨L₀, hL₀⟩ := (fderiv ℝ ψ x₀).toLinearMap.exists_leftInverse_of_injective
+    (LinearMap.ker_eq_bot.mpr hinj)
+  let L : Rn N →L[ℝ] Rn n := LinearMap.toContinuousLinearMap L₀
+  have hLA : L.comp (fderiv ℝ ψ x₀) = (ContinuousLinearEquiv.refl ℝ (Rn n) : Rn n →L[ℝ] Rn n) := by
+    ext1 v
+    exact LinearMap.congr_fun hL₀ v
+  -- Step 2: `h = L ∘ ψ` has strict derivative `L ∘ Dψ(x₀) = id` at `x₀`.
+  have hh : HasStrictFDerivAt (fun x ↦ L (ψ x))
+      ((ContinuousLinearEquiv.refl ℝ (Rn n) : Rn n ≃L[ℝ] Rn n) : Rn n →L[ℝ] Rn n) x₀ := by
+    rw [← hLA]
+    exact L.hasStrictFDerivAt.comp x₀ (hψ.hasStrictFDerivAt one_ne_zero)
+  -- Step 3: the inverse function theorem gives the local inverse `k = hh.localInverse` of `h`.
+  refine ⟨fun y ↦ hh.localInverse _ _ _ (L y), ?_, ?_⟩
+  · -- Step 4: `g = k ∘ L` is differentiable at `ψ(x₀)`, since `k` is at `L(ψ(x₀)) = h(x₀)`.
+    exact hh.to_localInverse.differentiableAt.comp (ψ x₀) L.differentiableAt
+  · -- Step 5: `g(ψ(x)) = k(h(x)) = x` near `x₀`.
+    exact hh.eventually_left_inverse
+
+/-- **Local differentiable extension of the tangent projection.** Let `ψ` be a `C²` Simon local
+representation `V → W` of `M` with `T_{ψ x} M = range Dψ(x)` for `x ∈ V`, and let `x₀ ∈ V`. Write
+`Π(B) = (range B).starProjection`. There is `Q` differentiable at `ψ x₀` with `P_z = Q(z)` for
+`z ∈ M` near `ψ x₀` and `Q(ψ x) = Π(Dψ x)` for `x` near `x₀`. Take a left inverse `g` of `ψ` near
+`x₀` that is differentiable at `ψ x₀` (`Submission.sff_immersion_local_left_inverse`) and
+`Q = Π ∘ Dψ ∘ g`. `Q` is differentiable at `ψ x₀` by the chain rule
+(`Submission.sff_range_starProjection_differentiableAt`, `ContDiffAt.fderiv_right`). By Simon 4.2
+(from the relative properness of `ψ`), the points of `M` near `ψ x₀` are the `ψ x` with
+`g (ψ x) = x`, where `Q (ψ x) = Π(Dψ x) = P_{ψ x}`. -/
+theorem Submission.sff_tangentProjection_local_extension : ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ∀ x₀ ∈ V, ∃ Q : Rn N → (Rn N →L[ℝ] Rn N), DifferentiableAt ℝ Q (ψ x₀) ∧ tangentProjection M =ᶠ[𝓝[M] ψ x₀] Q ∧ ∀ᶠ x in 𝓝 x₀, Q (ψ x) = (LinearMap.range (fderiv ℝ ψ x).toLinearMap).starProjection := by
+  intro n N M V W ψ hrep hT x₀ hx₀
+  -- Step 1: `ψ` is `C²` at `x₀`, so `ψ` is `C¹` there and `Dψ` is differentiable at `x₀`.
+  have h2 : ContDiffAt ℝ 2 ψ x₀ := hrep.contDiffOn.contDiffAt (hrep.isOpen_source.mem_nhds hx₀)
+  have h1 : ContDiffAt ℝ 1 ψ x₀ := h2.of_le (by norm_num)
+  have hA : DifferentiableAt ℝ (fderiv ℝ ψ) x₀ :=
+    (h2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hinj : Function.Injective (fderiv ℝ ψ x₀) := hrep.injective_fderiv hx₀
+  -- Step 2: a left inverse `g` of `ψ` on an open `U ∋ x₀`, differentiable at `ψ x₀`.
+  obtain ⟨g, hg, hgψ⟩ := Submission.sff_immersion_local_left_inverse n N ψ x₀ h1 hinj
+  obtain ⟨U, hUg, hUo, hxU⟩ := _root_.eventually_nhds_iff.mp hgψ
+  have hgx₀ : g (ψ x₀) = x₀ := hUg x₀ hxU
+  -- Step 3 (Simon 4.2): near `ψ x₀`, every point of `M` is `ψ x` with `x ∈ U ∩ V`. Take a compact
+  -- neighbourhood `K ⊆ W` of `ψ x₀`. By relative properness `V ∩ ψ⁻¹ K` is compact, so
+  -- `ψ ((V ∩ ψ⁻¹ K) \ U)` is compact, hence closed, and it misses `ψ x₀` since `ψ` is injective on `V`.
+  have hy₀W : ψ x₀ ∈ W := by
+    have h : ψ x₀ ∈ ψ '' V := ⟨x₀, hx₀, rfl⟩
+    rw [hrep.image_eq] at h
+    exact h.1
+  obtain ⟨K, hKn, hKW, hK⟩ := local_compact_nhds (hrep.isOpen_target.mem_nhds hy₀W)
+  have hcl : IsClosed (ψ '' ((V ∩ ψ ⁻¹' K) \ U)) :=
+    (((hrep.isCompact_source_inter_preimage K hK hKW).diff hUo).image_of_continuousOn
+      (hrep.contDiffOn.continuousOn.mono fun x hx ↦ hx.1.1)).isClosed
+  have hy₀C : ψ x₀ ∉ ψ '' ((V ∩ ψ ⁻¹' K) \ U) := by
+    rintro ⟨x, ⟨⟨hxV, -⟩, hxU'⟩, hx⟩
+    rw [hrep.injOn hxV hx₀ hx] at hxU'
+    exact hxU' hxU
+  have hloc : ∀ᶠ z in 𝓝 (ψ x₀), z ∈ M → ∃ x ∈ U ∩ V, ψ x = z := by
+    filter_upwards [hKn, hcl.isOpen_compl.mem_nhds hy₀C] with z hzK hzC hzM
+    have hz : z ∈ ψ '' V := by rw [hrep.image_eq]; exact ⟨hKW hzK, hzM⟩
+    obtain ⟨x, hxV, rfl⟩ := hz
+    refine ⟨x, ⟨?_, hxV⟩, rfl⟩
+    by_contra hxU'
+    exact hzC ⟨x, ⟨⟨hxV, hzK⟩, hxU'⟩, rfl⟩
+  -- Step 4: `Q = Π ∘ Dψ ∘ g` is differentiable at `ψ x₀` by the chain rule.
+  let Pr : (Rn n →L[ℝ] Rn N) → (Rn N →L[ℝ] Rn N) :=
+    fun B ↦ (LinearMap.range B.toLinearMap).starProjection
+  refine ⟨fun z ↦ Pr (fderiv ℝ ψ (g z)), ?_, ?_, ?_⟩
+  · have hPr : DifferentiableAt ℝ Pr (fderiv ℝ ψ (g (ψ x₀))) := by
+      rw [hgx₀]; exact Submission.sff_range_starProjection_differentiableAt n N _ hinj
+    have hAg : DifferentiableAt ℝ (fderiv ℝ ψ) (g (ψ x₀)) := by rw [hgx₀]; exact hA
+    exact hPr.comp (ψ x₀) (hAg.comp (ψ x₀) hg)
+  -- Step 5: each `z ∈ M` near `ψ x₀` is `ψ x` with `x ∈ U ∩ V`, so `Q z = Π(Dψ x) = P_z` by (T).
+  · -- Equal subspaces have equal projections (`HasOrthogonalProjection` is a `Prop`).
+    have key : ∀ K K' : Submodule ℝ (Rn N), K = K' → K.starProjection = K'.starProjection := by
+      rintro K K' rfl; rfl
+    rw [Filter.EventuallyEq, eventually_nhdsWithin_iff]
+    filter_upwards [hloc] with z hz hzM
+    obtain ⟨x, ⟨hxU', hxV⟩, rfl⟩ := hz hzM
+    show (tangentSpace M (ψ x)).starProjection = Pr (fderiv ℝ ψ (g (ψ x)))
+    rw [hUg x hxU']
+    exact key _ _ (hT x hxV)
+  -- Step 6: for `x ∈ U`, `Q (ψ x) = Π(Dψ (g (ψ x))) = Π(Dψ x)`.
+  · filter_upwards [hUo.mem_nhds hxU] with x hx
+    show Pr (fderiv ℝ ψ (g (ψ x))) = _
+    rw [hUg x hx]
+/-- **Derivative of an operator field that fixes the chart tangent vectors** (Simon 4.23–4.26, the
+computation `B = (D²ψ)^⊥` in a chart). Let `ψ : ℝⁿ → ℝᴺ` and its derivative `Dψ` be differentiable
+at `x₀`, and let `Q : ℝᴺ → L(ℝᴺ, ℝᴺ)` be differentiable at `ψ(x₀)` with
+`Q(ψ(x))(Dψ(x)v) = Dψ(x)v` for all `v` and all `x` near `x₀`. Then
+`DQ(ψ(x₀))(Dψ(x₀)a)(Dψ(x₀)b) = D²ψ(x₀)[a, b] - Q(ψ(x₀))(D²ψ(x₀)[a, b])`. The map
+`G(x) = Q(ψ(x))(Dψ(x)b)` has derivative `a ↦ Q(ψ(x₀))(D²ψ(x₀)[a, b]) + DQ(ψ(x₀))(Dψ(x₀)a)(Dψ(x₀)b)`
+by the chain rule and the product rule `HasFDerivAt.clm_apply`. Since `G(x) = Dψ(x)b` near `x₀`,
+it also has derivative `a ↦ D²ψ(x₀)[a, b]`; uniqueness of the derivative gives the identity. -/
+theorem Submission.sff_projection_field_fderiv_identity : ∀ (n N : ℕ) (ψ : Rn n → Rn N) (Q : Rn N → (Rn N →L[ℝ] Rn N)) (x₀ : Rn n), DifferentiableAt ℝ ψ x₀ → DifferentiableAt ℝ (fderiv ℝ ψ) x₀ → DifferentiableAt ℝ Q (ψ x₀) → (∀ᶠ x in 𝓝 x₀, ∀ v : Rn n, Q (ψ x) (fderiv ℝ ψ x v) = fderiv ℝ ψ x v) → ∀ a b : Rn n, fderiv ℝ Q (ψ x₀) (fderiv ℝ ψ x₀ a) (fderiv ℝ ψ x₀ b) = fderiv ℝ (fderiv ℝ ψ) x₀ a b - Q (ψ x₀) (fderiv ℝ (fderiv ℝ ψ) x₀ a b) := by
+  intro n N ψ Q x₀ hψ hDψ hQ hfix a b
+  -- Step 1 (chain rule): `c(x) = Q(ψ(x))` has derivative `DQ(ψ(x₀)) ∘ Dψ(x₀)` at `x₀`.
+  have hc : HasFDerivAt (fun x ↦ Q (ψ x)) ((fderiv ℝ Q (ψ x₀)).comp (fderiv ℝ ψ x₀)) x₀ :=
+    hQ.hasFDerivAt.comp x₀ hψ.hasFDerivAt
+  -- Step 2: `u(x) = Dψ(x)b` has derivative `a' ↦ D²ψ(x₀)[a', b]` at `x₀`.
+  have hu : HasFDerivAt (fun x ↦ fderiv ℝ ψ x b)
+      ((fderiv ℝ ψ x₀).comp (0 : Rn n →L[ℝ] Rn n) + (fderiv ℝ (fderiv ℝ ψ) x₀).flip b) x₀ :=
+    hDψ.hasFDerivAt.clm_apply (hasFDerivAt_const b x₀)
+  -- Step 3 (product rule): the derivative of `G(x) = c(x)(u(x))` at `x₀`.
+  have hG := hc.clm_apply hu
+  -- Step 4: `G = u` near `x₀`, so the two derivatives of `G` at `x₀` agree.
+  have hGu : (fun x ↦ Q (ψ x) (fderiv ℝ ψ x b)) =ᶠ[𝓝 x₀] fun x ↦ fderiv ℝ ψ x b :=
+    hfix.mono fun x hx ↦ hx b
+  have h := congrArg (fun L ↦ L a) (hG.unique (hu.congr_of_eventuallyEq hGu))
+  simp only [add_apply, ContinuousLinearMap.coe_comp, Function.comp_apply, zero_apply, map_zero,
+    ContinuousLinearMap.flip_apply, zero_add] at h
+  -- Step 5: rearrange `Q(ψ(x₀))(D²ψ(x₀)[a, b]) + DQ(ψ(x₀))(Dψ(x₀)a)(Dψ(x₀)b) = D²ψ(x₀)[a, b]`.
+  rw [eq_sub_iff_add_eq, add_comm]
+  exact h
+/-- **Simon Ch. 2, 4.23–4.26 (pp. 59–60), derivative within `M` along chart directions.** Let `V`
+be a neighbourhood of `x₀` with `ψ(V) ⊆ M`, `ψ` differentiable at `x₀`, `g` differentiable at
+`y₀ = ψ(x₀)` and `f = g` on `M` near `y₀`. Then the derivative of `f` within `M` at `y₀` agrees with
+`Dg(y₀)` in every chart direction `Dψ(x₀)a`. Both are derivatives of `f` within `M` at `y₀`, so they
+agree on the tangent cone of `M` at `y₀`; this cone contains `Dψ(x₀)a`, the image of `a` in the
+tangent cone `ℝⁿ` of `V` at `x₀`. `M` need not have unique differentiability at `y₀`. -/
+theorem Submission.sff_fderivWithin_chart_direction : ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (ψ : Rn n → Rn N) (f g : Rn N → (Rn N →L[ℝ] Rn N)) (x₀ : Rn n), V ∈ 𝓝 x₀ → ψ '' V ⊆ M → DifferentiableAt ℝ ψ x₀ → DifferentiableAt ℝ g (ψ x₀) → f =ᶠ[𝓝[M] ψ x₀] g → ∀ a : Rn n, fderivWithin ℝ f M (ψ x₀) (fderiv ℝ ψ x₀ a) = fderiv ℝ g (ψ x₀) (fderiv ℝ ψ x₀ a) := by
+  intro n N M V ψ f g x₀ hV hψV hψ hg hfg a
+  -- `ψ x₀ ∈ ψ '' V ⊆ M`, so `f (ψ x₀) = g (ψ x₀)` and `Dg(ψ x₀)` is a derivative of `f` within `M`.
+  have hmem : ψ x₀ ∈ M := hψV (mem_image_of_mem ψ (mem_of_mem_nhds hV))
+  have hf : HasFDerivWithinAt f (fderiv ℝ g (ψ x₀)) M (ψ x₀) :=
+    hg.hasFDerivAt.hasFDerivWithinAt.congr_of_eventuallyEq hfg (hfg.eq_of_nhdsWithin hmem)
+  -- The tangent cone of `V` at `x₀` is everything, and `Dψ(x₀)` maps it into the tangent cone of
+  -- `ψ '' V ⊆ M` at `ψ x₀`.
+  have hcone : fderiv ℝ ψ x₀ a ∈ tangentConeAt ℝ M (ψ x₀) := by
+    refine tangentConeAt_mono hψV
+      ((hψ.hasFDerivAt.hasFDerivWithinAt (s := V)).mapsTo_tangent_cone ?_)
+    rw [tangentConeAt_of_mem_nhds hV]
+    exact mem_univ a
+  -- Two derivatives of `f` within `M` at `ψ x₀` agree on the tangent cone.
+  exact hf.differentiableWithinAt.hasFDerivWithinAt.unique_on hf hcone
+
+/-- **Simon Ch. 2, 4.26 (p. 60), the second fundamental form in a chart.** Assume (TH), the frozen
+statement of `Submission.simon_submanifold_tangent_basics`; only its first part, the chart
+description `T_{ψ(x)} M = range Dψ(x)` of the tangent space, is used. Then for a `C²` local
+representation `(V, W, ψ)` of `M`, `x ∈ V` and `a, b ∈ ℝⁿ`,
+`B_{ψ(x)}(Dψ(x)a, Dψ(x)b) = (D²ψ(x)[a, b])^⊥`. On `M` near `ψ(x)` the tangent projection `P` agrees
+with a field `Q` that is differentiable at `ψ(x)` and fixes the chart tangent vectors
+(`sff_tangentProjection_local_extension`). So `B_{ψ(x)}(Dψ(x)a, ·) = DQ(ψ(x))(Dψ(x)a)`
+(`sff_fderivWithin_chart_direction`), and differentiating `Q(ψ(x'))(Dψ(x')b) = Dψ(x')b` gives
+`DQ(ψ(x))(Dψ(x)a)(Dψ(x)b) = D²ψ(x)[a, b] - Q(ψ(x))(D²ψ(x)[a, b])`
+(`sff_projection_field_fderiv_identity`), where `Q(ψ(x)) = P_{ψ(x)}`. -/
+theorem Submission.second_fundamental_form_chart_formula : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, ∀ a b : Rn n, secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) = normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b) := by
+  intro hTH n N M V W ψ hψ x₀ hx₀ a b
+  -- Step 1: the chart instance of (TH1) (class `2 ≥ 1`): `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`.
+  have hT : ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    hTH.1 n N 2 M V W ψ (by norm_num) hψ
+  -- Step 2: an extension `Q` of the tangent projection near `ψ(x₀)`, differentiable at `ψ(x₀)`.
+  obtain ⟨Q, hQ, hPQ, hQψ⟩ :=
+    Submission.sff_tangentProjection_local_extension n N M V W ψ hψ hT x₀ hx₀
+  -- Step 3: `ψ` is `C²` at `x₀`, so `ψ` and `Dψ` are differentiable at `x₀`.
+  have hV : V ∈ 𝓝 x₀ := hψ.isOpen_source.mem_nhds hx₀
+  have hψ2 := hψ.contDiffOn.contDiffAt hV
+  have hψ1 : DifferentiableAt ℝ ψ x₀ := hψ2.differentiableAt (by norm_num)
+  have hDψ : DifferentiableAt ℝ (fderiv ℝ ψ) x₀ :=
+    (hψ2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  -- Step 4: `ψ '' V = W ∩ M ⊆ M`; in particular `ψ(x₀) ∈ M`, so `P_{ψ(x₀)} = Q(ψ(x₀))`.
+  have hψV : ψ '' V ⊆ M := hψ.image_eq ▸ inter_subset_right
+  have hP₀ : tangentProjection M (ψ x₀) = Q (ψ x₀) :=
+    hPQ.eq_of_nhdsWithin (hψV (mem_image_of_mem ψ hx₀))
+  -- Step 5: near `x₀`, `Q(ψ(x))` is the projection onto `range Dψ(x)`, so it fixes `Dψ(x)v`.
+  have hfix : ∀ᶠ x in 𝓝 x₀, ∀ v : Rn n, Q (ψ x) (fderiv ℝ ψ x v) = fderiv ℝ ψ x v :=
+    hQψ.mono fun x hx v ↦ by
+      rw [hx]
+      exact Submodule.starProjection_eq_self_iff.2 (LinearMap.mem_range_self _ v)
+  -- Step 6: `B_{ψ(x₀)}(Dψ(x₀)a, ·) = DQ(ψ(x₀))(Dψ(x₀)a)`; then the derivative identity for `Q`.
+  rw [secondFundamentalForm, normalPart,
+    Submission.sff_fderivWithin_chart_direction n N M V ψ (tangentProjection M) Q x₀ hV hψV hψ1
+      hQ hPQ a,
+    Submission.sff_projection_field_fderiv_identity n N ψ Q x₀ hψ1 hDψ hQ hfix a b, hP₀]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
