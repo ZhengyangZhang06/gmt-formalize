@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d10ed2e3e4b6327c699e8bfee393daeb3d29b4e06ee6047e5393195c8ff118e1",
+  "git_delta": {
+    "base_commit": "01c5ebd85aaaf0df0e8cafae7fd002e960d34ac8",
+    "candidate_commit": "fd5f1e29719e3bfa62df774678e3c6879599f8f9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_exists_compatible_testForm",
+    "diff_sha256": "8345bd9ceaf7a48ffc44fc1182c493244b055cdd8b7b8b76b92cd1630143d499",
+    "source_sha256": "43f4e7121f9fff1d1b7d840e77a45d2500d5bdb07b93f199c22a5ef8b111dbca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_exists_compatible_testForm",
+      "statement": "∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (f : Eucl P → Eucl Q), IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) → ∀ ω : TestFormOn V j, ∃ (η : TestFormOn U j) (ζ : Eucl P → ℝ) (N : Set (Eucl P)), IsOpen N ∧ A ⊆ N ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x, (η : DifferentialForm (Eucl P) j) x = ζ x • ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧ (∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x = ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧ tsupport (η : DifferentialForm (Eucl P) j) ⊆ f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
