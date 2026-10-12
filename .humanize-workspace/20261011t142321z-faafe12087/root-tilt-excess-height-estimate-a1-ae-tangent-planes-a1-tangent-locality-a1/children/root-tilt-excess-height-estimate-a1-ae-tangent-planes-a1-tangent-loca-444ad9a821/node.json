@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1.blowup_vanish-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1",
+  "depth": 4,
+  "title": "Blow-up integrals over a set of zero n-density vanish (error term of Simon Ch. 3, proof of Thm 1.6 ⇒)",
+  "statement": "Let n, ℓ ∈ ℕ, x ∈ ℝ^{n+ℓ} (= Amb n ℓ), Hⁿ = μHE[n], and S ⊆ ℝ^{n+ℓ} an arbitrary set (no measurability or finiteness assumed). Suppose Hⁿ(S ∩ B_r(x))/rⁿ → 0 in [0, ∞] as r ↓ 0 (B_r(x) the closed ball, rⁿ read as ENNReal.ofReal (rⁿ)). Then for every compactly supported continuous f : ℝ^{n+ℓ} → ℝ (f ∈ C_c(ℝ^{n+ℓ}, ℝ)), ∫_{η_{x,r}(S)} f dHⁿ → 0 as r ↓ 0, where η_{x,r}(y) = r⁻¹(y − x) is Simon's blow-up map (Chapter03.blowUpMap x r) and the integral is the Bochner integral over Hⁿ restricted to η_{x,r}(S).",
+  "lean_statement": "∀ (n ℓ : ℕ) (x : Amb n ℓ) (S : Set (Amb n ℓ)), Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (S ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "aetp_blowUp_integral_tendsto_zero_of_density_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-tangent-loca-444ad9a821-a1"
+}

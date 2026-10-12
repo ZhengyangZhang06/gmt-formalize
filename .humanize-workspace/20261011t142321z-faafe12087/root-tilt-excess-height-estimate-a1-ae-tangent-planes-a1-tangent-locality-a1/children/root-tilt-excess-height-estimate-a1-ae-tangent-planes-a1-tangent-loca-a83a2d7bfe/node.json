@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1.tangent_density_congr-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1",
+  "depth": 4,
+  "title": "Approximate tangent spaces are unchanged by zero-density modifications (pointwise Simon Ch. 3, Remark 1.5(2))",
+  "statement": "Let n, ℓ ∈ ℕ, Hⁿ = μHE[n] on ℝ^{n+ℓ} (= Amb n ℓ), A, N ⊆ ℝ^{n+ℓ} Borel sets with Hⁿ(A) < ∞ and Hⁿ(N) < ∞, x ∈ ℝ^{n+ℓ}, and Q a linear subspace of ℝ^{n+ℓ}. Suppose Hⁿ((A ∖ N) ∩ B_r(x))/rⁿ → 0 and Hⁿ((N ∖ A) ∩ B_r(x))/rⁿ → 0 in [0, ∞] as r ↓ 0 (B_r(x) closed ball, rⁿ read as ENNReal.ofReal (rⁿ)), and Q is the approximate tangent space of N at x in the sense of Simon Ch. 3, Def. 1.4 (Chapter03.HasApproximateTangentSpaceAt n N x Q: finrank Q = n and ∫_{η_{x,r}(N)} f dHⁿ → ∫_Q f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^{n+ℓ}, ℝ)). Then Q is the approximate tangent space of A at x (Chapter03.HasApproximateTangentSpaceAt n A x Q).",
+  "lean_statement": "∀ (n ℓ : ℕ) (A N : Set (Amb n ℓ)) (x : Amb n ℓ) (Q : Submodule ℝ (Amb n ℓ)), MeasurableSet A → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) A < ⊤ → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((A \\ N) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((N \\ A) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x Q → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n A x Q",
+  "lean_name": "aetp_approxTangent_of_density_zero_symmDiff",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1.blowup_vanish-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1.blowup_vanish-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-tangent-loca-a83a2d7bfe-a1"
+}
