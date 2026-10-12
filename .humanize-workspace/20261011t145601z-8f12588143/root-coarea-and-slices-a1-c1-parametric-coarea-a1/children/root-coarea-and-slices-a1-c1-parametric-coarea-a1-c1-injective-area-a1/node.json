@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.c1_injective_area-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+  "depth": 3,
+  "title": "Weighted area formula for a C¹ map injective on an open parameter domain (Simon Ch. 2 (3.2)/(3.5), derived from the Lipschitz area formula)",
+  "statement": "Let k, N ∈ ℕ, let V ⊆ ℝᵏ be open, and let χ : ℝᵏ → ℝᴺ be of class C¹ on V and injective on V. No rank condition on Dχ is assumed. Then for every Borel set S ⊆ V and every Borel φ : ℝᴺ → [0, ∞]:\n∫_{χ(S)} φ dHᵏ = ∫_S φ(χ(z))·normDet(Dχ(z)) dLᵏ(z).\nNotation as in the parent: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hᵏ = μHE[k]; Lᵏ = volume; normDet = LinearMap.normDet; Dχ(z) = fderiv ℝ χ z.",
+  "lean_statement": "∀ (k N : ℕ) (V : Set (Rn k)) (χ : Rn k → Rn N), IsOpen V → ContDiffOn ℝ 1 χ V → InjOn χ V → ∀ S ⊆ V, MeasurableSet S → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → ∫⁻ x in χ '' S, φ x ∂μHE[k] = ∫⁻ z in S, φ (χ z) * ENNReal.ofReal ((fderiv ℝ χ z).toLinearMap.normDet)",
+  "lean_name": "pcoarea_c1_injOn_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-c1-injective-area-a1-a1"
+}

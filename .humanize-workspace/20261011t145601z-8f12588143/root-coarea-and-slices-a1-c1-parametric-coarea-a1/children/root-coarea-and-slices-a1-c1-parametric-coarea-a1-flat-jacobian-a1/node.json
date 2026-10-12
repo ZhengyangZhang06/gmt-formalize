@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+  "depth": 3,
+  "title": "Flat Jacobian identity normDet(A∘E)·normDet(T) = normDet(A∘ι_{ker Γ})·normDet(Γ*) (parent step 3, flat half of LA)",
+  "statement": "Let m, k, N ∈ ℕ and n := m + k. Let P := WithLp 2 (ℝᵐ × ℝᵏ), the Euclidean product with inner product ⟨(y,z),(y',z')⟩ = ⟨y,y'⟩ + ⟨z,z'⟩. Let A : ℝⁿ → ℝᴺ, Γ : ℝⁿ → ℝᵐ, T : ℝⁿ → P and E : ℝᵏ → ℝⁿ be linear maps such that:\n- T is bijective;\n- the first component of T v is Γ v for every v ∈ ℝⁿ;\n- T(E z) = (0, z) for every z ∈ ℝᵏ.\nLet K := ker Γ and let ι_K : K → ℝⁿ be the inclusion. Then\nnormDet(A∘E)·normDet(T) = normDet(A∘ι_K)·normDet(Γ*),\nwhere Γ* = LinearMap.adjoint Γ and normDet = LinearMap.normDet.",
+  "lean_statement": "∀ (m k N : ℕ) (A : Rn (m + k) →ₗ[ℝ] Rn N) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) (E : Rn k →ₗ[ℝ] Rn (m + k)), Function.Bijective T → (∀ v, (T v).fst = Γ v) → (∀ z, T (E z) = WithLp.toLp 2 (0, z)) → (A ∘ₗ E).normDet * T.normDet = (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet",
+  "lean_name": "pcoarea_flat_jacobian_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-flat-jacobian-a1-a1"
+}
