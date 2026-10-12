@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "103ca7c8ddfaa33bf7beabd891ceaf0f0b6e88810a8db026316cbc25beb36978",
+  "git_delta": {
+    "base_commit": "026079c7132f598c0b885a1456ff3594e0ff3114",
+    "candidate_commit": "a42c4419200b2e87583260f173609445536119bf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_gc_campanato_continuous_deriv",
+    "diff_sha256": "6631505f243829a532ed071b953d8f942f1e0a2fbb2a586a02f247a0e11a0799",
+    "source_sha256": "a82ec76a668e002b971eb8ce27fc0442ae4fdc59d83d34cbcd60f1b0c971b91b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_gc_campanato_continuous_deriv",
+      "statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (Ω : Set (Euclid n)) (C s₁ : ℝ), 0 < n → IsOpen Ω → 0 ≤ C → 0 < s₁ → (∀ᵐ v ∂volume, v ∈ Ω → DifferentiableAt ℝ f v ∧ ∀ s : ℝ, 0 < s → s ≤ s₁ → ∫⁻ w in ball v s, ENNReal.ofReal (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤ ENNReal.ofReal (C * s ^ (n + 1))) → ∃ g : Euclid n → (Euclid n →L[ℝ] Euclid k), ContinuousOn g Ω ∧ ∀ᵐ v ∂volume, v ∈ Ω → HasFDerivAt f (g v) v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

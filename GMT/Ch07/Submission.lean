@@ -451,6 +451,227 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Campanato's criterion for the derivative** (steps 6 and 7 of the graph-`C¹` argument).  Let
+`n ≥ 1`, `Ω ⊆ ℝⁿ` open, `C ≥ 0`, `s₁ > 0`, and suppose that for `Lⁿ`-a.e. `v ∈ Ω`, `f` is
+differentiable at `v` and `∫_{B_s(v)} |Df(w) − Df(v)|² dw ≤ C s^{n+1}` for `0 < s ≤ s₁`, where
+`|A|² = Σᵢ |A eᵢ|²`.  On the good set `G` of such `v`, averaging
+`|Df(v₁) − Df(v₂)|² ≤ 2 |Df(w) − Df(v₁)|² + 2 |Df(w) − Df(v₂)|²` over the ball of radius `d / 2`
+about the midpoint (`d = |v₁ − v₂| ≤ s₁`) gives `‖Df(v₁) − Df(v₂)‖² ≤ 2^{n+2} C ωₙ⁻¹ d`, so `Df` is
+uniformly continuous on `G`.  As `Ω ∖ G` is null, `G` is dense in `Ω`, and `g = extendFrom G Df` is
+continuous on `Ω`, equals `Df` on `G`, and hence is the derivative of `f` at a.e. point of `Ω`. -/
+theorem Submission.dorag_gc_campanato_continuous_deriv : ∀ (n k : ℕ) (f : Euclid n → Euclid k) (Ω : Set (Euclid n)) (C s₁ : ℝ), 0 < n → IsOpen Ω → 0 ≤ C → 0 < s₁ → (∀ᵐ v ∂volume, v ∈ Ω → DifferentiableAt ℝ f v ∧ ∀ s : ℝ, 0 < s → s ≤ s₁ → ∫⁻ w in ball v s, ENNReal.ofReal (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤ ENNReal.ofReal (C * s ^ (n + 1))) → ∃ g : Euclid n → (Euclid n →L[ℝ] Euclid k), ContinuousOn g Ω ∧ ∀ᵐ v ∂volume, v ∈ Ω → HasFDerivAt f (g v) v := by
+  -- scalar and vector inequalities proved in an empty context
+  have aux_vec : ∀ (m : ℕ) (a b c : Euclid m), ‖a - b‖ ^ 2 ≤ 2 * ‖c - a‖ ^ 2 + 2 * ‖c - b‖ ^ 2 := by
+    intro m a b c
+    have htri : ‖a - b‖ ≤ ‖c - a‖ + ‖c - b‖ := by
+      calc ‖a - b‖ = ‖(c - b) - (c - a)‖ := by congr 1; abel
+        _ ≤ ‖c - b‖ + ‖c - a‖ := norm_sub_le _ _
+        _ = ‖c - a‖ + ‖c - b‖ := add_comm _ _
+    nlinarith [norm_nonneg (a - b), norm_nonneg (c - a), norm_nonneg (c - b),
+      sq_nonneg (‖c - a‖ - ‖c - b‖)]
+  have aux_div : ∀ (d ω C X : ℝ) (m : ℕ), 0 < d → 0 < ω →
+      (d / 2) ^ m * ω * X ≤ 4 * (C * d ^ (m + 1)) → X ≤ 2 ^ (m + 2) * C / ω * d := by
+    intro d ω C X m hd hω h
+    have hpos : 0 < (d / 2) ^ m * ω := by positivity
+    have e : 4 * (C * d ^ (m + 1)) = (d / 2) ^ m * ω * (2 ^ (m + 2) * C / ω * d) := by
+      rw [div_pow, pow_succ, pow_succ 2 (m + 1), pow_succ 2 m]
+      field_simp
+      ring
+    rw [e] at h
+    exact le_of_mul_le_mul_left h hpos
+  have aux_eps : ∀ (M ε t : ℝ), 0 ≤ M → 0 < ε → 0 ≤ t → t < ε ^ 2 / (M + 1) → M * t < ε ^ 2 := by
+    intro M ε t hM hε ht h
+    have h1 : M * t ≤ M * (ε ^ 2 / (M + 1)) := by gcongr
+    have h2 : M * (ε ^ 2 / (M + 1)) < ε ^ 2 := by
+      rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+      nlinarith [sq_nonneg ε, sq_pos_of_pos hε]
+    linarith
+  intro n k f Ω C s₁ hn hΩ hC hs₁ hcamp
+  have : Nontrivial (Euclid n) := by
+    have : 0 < Module.finrank ℝ (Euclid n) := by simp [hn]
+    exact Module.nontrivial_of_finrank_pos this
+  obtain ⟨G, hG⟩ : ∃ G : Set (Euclid n), G = {v | v ∈ Ω ∧ (DifferentiableAt ℝ f v ∧ ∀ s : ℝ, 0 < s → s ≤ s₁ →
+      ∫⁻ w in ball v s, ENNReal.ofReal (∑ i : Fin n,
+        ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤
+        ENNReal.ofReal (C * s ^ (n + 1)))} := ⟨_, rfl⟩
+  have hnull : volume (Ω \ G) = 0 := by
+    rw [ae_iff] at hcamp
+    refine measure_mono_null (fun v hv => ?_) hcamp
+    rw [hG] at hv
+    exact fun h => hv.2 ⟨hv.1, h hv.1⟩
+  have hGmem : ∀ v ∈ G, v ∈ Ω ∧ DifferentiableAt ℝ f v ∧ ∀ s : ℝ, 0 < s → s ≤ s₁ →
+      ∫⁻ w in ball v s, ENNReal.ofReal (∑ i : Fin n,
+        ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤
+        ENNReal.ofReal (C * s ^ (n + 1)) := fun v hv => by rw [hG] at hv; exact hv
+  clear hcamp hG
+  have hHSnn : ∀ A : Euclid n →L[ℝ] Euclid k,
+      0 ≤ ∑ i : Fin n, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+    fun A => Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hop : ∀ A : Euclid n →L[ℝ] Euclid k,
+      ‖A‖ ^ 2 ≤ ∑ i : Fin n, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+    intro A
+    have hbound : ‖A‖ ≤ Real.sqrt (∑ i : Fin n, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+      refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _) fun x => ?_
+      have hx : x = ∑ i : Fin n, x i • EuclideanSpace.single i (1 : ℝ) := by
+        ext j; simp [Pi.single_apply]
+      calc ‖A x‖ = ‖∑ i : Fin n, x i • A (EuclideanSpace.single i (1 : ℝ))‖ := by
+            conv_lhs => rw [hx]
+            simp [map_sum, map_smul]
+        _ ≤ ∑ i : Fin n, ‖x i‖ * ‖A (EuclideanSpace.single i (1 : ℝ))‖ := by
+            refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun i _ => ?_)
+            rw [norm_smul]
+        _ ≤ Real.sqrt (∑ i : Fin n, ‖x i‖ ^ 2) *
+              Real.sqrt (∑ i : Fin n, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) :=
+            Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+        _ = Real.sqrt (∑ i : Fin n, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖x‖ := by
+            rw [EuclideanSpace.norm_eq, mul_comm]
+    calc ‖A‖ ^ 2 ≤ (Real.sqrt (∑ i : Fin n, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) ^ 2 := by
+          gcongr
+      _ = _ := Real.sq_sqrt (hHSnn A)
+  have hmeas : ∀ A : Euclid n →L[ℝ] Euclid k, Measurable fun w => ENNReal.ofReal
+      (∑ i : Fin n, ‖(fderiv ℝ f w - A) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+    intro A
+    have hc : Continuous fun B : Euclid n →L[ℝ] Euclid k =>
+        ∑ i : Fin n, ‖B (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by fun_prop
+    exact ENNReal.measurable_ofReal.comp (hc.measurable.comp ((measurable_fderiv ℝ f).sub_const A))
+  have hωpos : (0 : ℝ≥0∞) < volume (ball (0 : Euclid n) 1) := measure_ball_pos _ _ one_pos
+  have hωfin : volume (ball (0 : Euclid n) 1) ≠ ∞ := measure_ball_lt_top.ne
+  obtain ⟨ω, hωdef⟩ : ∃ ω : ℝ, ω = (volume (ball (0 : Euclid n) 1)).toReal := ⟨_, rfl⟩
+  have hω : 0 < ω := hωdef ▸ ENNReal.toReal_pos hωpos.ne' hωfin
+  have hωeq : volume (ball (0 : Euclid n) 1) = ENNReal.ofReal ω := by
+    rw [hωdef]; exact (ENNReal.ofReal_toReal hωfin).symm
+  -- pointwise inequality for the Hilbert–Schmidt squares
+  have hpt : ∀ v₁ v₂ w : Euclid n,
+      ENNReal.ofReal (∑ i : Fin n, ‖(fderiv ℝ f v₁ - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤
+        2 * ENNReal.ofReal (∑ i : Fin n,
+          ‖(fderiv ℝ f w - fderiv ℝ f v₁) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) +
+        2 * ENNReal.ofReal (∑ i : Fin n,
+          ‖(fderiv ℝ f w - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+    intro v₁ v₂ w
+    have hreal : ∑ i : Fin n, ‖(fderiv ℝ f v₁ - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤
+        2 * (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v₁) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) +
+        2 * (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_le_sum fun i _ => by
+        simpa only [sub_apply] using aux_vec k
+          (fderiv ℝ f v₁ (EuclideanSpace.single i 1))
+          (fderiv ℝ f v₂ (EuclideanSpace.single i 1)) (fderiv ℝ f w (EuclideanSpace.single i 1))
+    calc _ ≤ ENNReal.ofReal
+          (2 * (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v₁) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) +
+          2 * (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) :=
+          ENNReal.ofReal_le_ofReal hreal
+      _ = _ := by
+          rw [ENNReal.ofReal_add (by positivity) (by positivity),
+            ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_mul (by norm_num)]
+          simp
+  -- Hölder estimate on G
+  have hHolder : ∀ v₁ ∈ G, ∀ v₂ ∈ G, 0 < dist v₁ v₂ → dist v₁ v₂ ≤ s₁ →
+      ‖fderiv ℝ f v₁ - fderiv ℝ f v₂‖ ^ 2 ≤ 2 ^ (n + 2) * C / ω * dist v₁ v₂ := by
+    intro v₁ h₁ v₂ h₂ hd hds
+    have hm1 : dist (midpoint ℝ v₁ v₂) v₁ = dist v₁ v₂ / 2 := by
+      rw [dist_midpoint_left, Real.norm_eq_abs, abs_two]; ring
+    have hm2 : dist (midpoint ℝ v₁ v₂) v₂ = dist v₁ v₂ / 2 := by
+      rw [dist_midpoint_right, Real.norm_eq_abs, abs_two]; ring
+    have hsub1 : ball (midpoint ℝ v₁ v₂) (dist v₁ v₂ / 2) ⊆ ball v₁ (dist v₁ v₂) :=
+      ball_subset_ball' (by rw [hm1]; linarith)
+    have hsub2 : ball (midpoint ℝ v₁ v₂) (dist v₁ v₂ / 2) ⊆ ball v₂ (dist v₁ v₂) :=
+      ball_subset_ball' (by rw [hm2]; linarith)
+    have hint : volume (ball (midpoint ℝ v₁ v₂) (dist v₁ v₂ / 2)) * ENNReal.ofReal (∑ i : Fin n,
+        ‖(fderiv ℝ f v₁ - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤
+        4 * ENNReal.ofReal (C * dist v₁ v₂ ^ (n + 1)) := by
+      rw [mul_comm, ← setLIntegral_const]
+      calc _ ≤ ∫⁻ w in ball (midpoint ℝ v₁ v₂) (dist v₁ v₂ / 2), (2 * ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₁) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) +
+            2 * ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) :=
+            lintegral_mono fun w => hpt v₁ v₂ w
+        _ = (∫⁻ w in ball (midpoint ℝ v₁ v₂) (dist v₁ v₂ / 2), 2 * ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₁) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) +
+            ∫⁻ w in ball (midpoint ℝ v₁ v₂) (dist v₁ v₂ / 2), 2 * ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) :=
+            lintegral_add_left ((hmeas _).const_mul 2) _
+        _ ≤ (∫⁻ w in ball v₁ (dist v₁ v₂), 2 * ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₁) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) +
+            ∫⁻ w in ball v₂ (dist v₁ v₂), 2 * ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) :=
+            add_le_add (lintegral_mono_set hsub1) (lintegral_mono_set hsub2)
+        _ = 2 * (∫⁻ w in ball v₁ (dist v₁ v₂), ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₁) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) +
+            2 * ∫⁻ w in ball v₂ (dist v₁ v₂), ENNReal.ofReal (∑ i : Fin n,
+              ‖(fderiv ℝ f w - fderiv ℝ f v₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+            rw [lintegral_const_mul _ (hmeas _), lintegral_const_mul _ (hmeas _)]
+        _ ≤ 2 * ENNReal.ofReal (C * dist v₁ v₂ ^ (n + 1)) + 2 * ENNReal.ofReal (C * dist v₁ v₂ ^ (n + 1)) :=
+            by
+              gcongr
+              · exact (hGmem v₁ h₁).2.2 _ hd hds
+              · exact (hGmem v₂ h₂).2.2 _ hd hds
+        _ = 4 * ENNReal.ofReal (C * dist v₁ v₂ ^ (n + 1)) := by ring
+    rw [Measure.addHaar_ball _ _ (by linarith : (0 : ℝ) ≤ dist v₁ v₂ / 2), finrank_euclideanSpace_fin, hωeq,
+      ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+      ← ENNReal.ofReal_ofNat 4, ← ENNReal.ofReal_mul (by norm_num),
+      ENNReal.ofReal_le_ofReal_iff (by positivity)] at hint
+    exact (hop _).trans (aux_div _ _ _ _ n hd hω hint)
+  -- uniform continuity of the derivative on G
+  have hUC : UniformContinuousOn (fderiv ℝ f) G := by
+    rw [Metric.uniformContinuousOn_iff]
+    intro ε hε
+    have hM0 : 0 ≤ 2 ^ (n + 2) * C / ω := by positivity
+    refine ⟨min s₁ (ε ^ 2 / (2 ^ (n + 2) * C / ω + 1)),
+      lt_min hs₁ (div_pos (pow_pos hε 2) (by linarith)), fun a ha b hb hab => ?_⟩
+    rcases (dist_nonneg : 0 ≤ dist a b).lt_or_eq with hpos | hzero
+    · have h1 := hHolder a ha b hb hpos (hab.le.trans (min_le_left _ _))
+      have h3 : ‖fderiv ℝ f a - fderiv ℝ f b‖ ^ 2 < ε ^ 2 :=
+        lt_of_le_of_lt h1 (aux_eps _ _ _ hM0 hε dist_nonneg (lt_of_lt_of_le hab (min_le_right _ _)))
+      rw [dist_eq_norm]
+      exact (abs_lt_of_sq_lt_sq' h3 hε.le).2
+    · have : a = b := dist_eq_zero.1 hzero.symm
+      subst this
+      simpa using hε
+  -- density of G in Ω
+  have hdense : Ω ⊆ closure G := by
+    intro x hx
+    rw [Metric.mem_closure_iff]
+    intro ε hε
+    by_contra hcon
+    push Not at hcon
+    have hsub : ball x ε ∩ Ω ⊆ Ω \ G := fun y hy => ⟨hy.2, fun hyG => by
+      have := hcon y hyG
+      have hy1 : dist y x < ε := hy.1
+      rw [dist_comm] at hy1
+      exact absurd hy1 (not_lt.2 this)⟩
+    have hpos : 0 < volume (ball x ε ∩ Ω) :=
+      (isOpen_ball.inter hΩ).measure_pos _ ⟨x, mem_ball_self hε, hx⟩
+    exact absurd (measure_mono_null hsub hnull) hpos.ne'
+  -- the continuous extension
+  have hlim : ∀ x ∈ Ω, ∃ y, Tendsto (fderiv ℝ f) (𝓝[G] x) (𝓝 y) := by
+    intro x hx
+    have : (𝓝[G] x).NeBot := mem_closure_iff_nhdsWithin_neBot.1 (hdense hx)
+    have hc : Cauchy (map (fderiv ℝ f) (𝓝[G] x)) := by
+      rw [Metric.cauchy_iff]
+      refine ⟨inferInstance, fun ε hε => ?_⟩
+      obtain ⟨δ, hδ, hδ'⟩ := Metric.uniformContinuousOn_iff.1 hUC ε hε
+      refine ⟨fderiv ℝ f '' (G ∩ ball x (δ / 2)), ?_, ?_⟩
+      · rw [mem_map]
+        refine mem_of_superset (inter_mem_nhdsWithin G (ball_mem_nhds x (half_pos hδ))) ?_
+        intro y hy
+        exact ⟨y, hy, rfl⟩
+      · rintro _ ⟨a, ⟨haG, hax⟩, rfl⟩ _ ⟨b, ⟨hbG, hbx⟩, rfl⟩
+        refine hδ' a haG b hbG ?_
+        rw [mem_ball] at hax hbx
+        calc dist a b ≤ dist a x + dist b x := dist_triangle_right _ _ _
+          _ < δ / 2 + δ / 2 := add_lt_add hax hbx
+          _ = δ := by ring
+    obtain ⟨y, hy⟩ := CompleteSpace.complete hc
+    exact ⟨y, hy⟩
+  refine ⟨extendFrom G (fderiv ℝ f), continuousOn_extendFrom hdense hlim, ?_⟩
+  have hext := extendFrom_extends hUC.continuousOn
+  rw [ae_iff]
+  refine measure_mono_null (fun v hv => ?_) hnull
+  simp only [mem_ofPred_eq, not_imp] at hv
+  refine ⟨hv.1, fun hvG => hv.2 ?_⟩
+  rw [hext v hvG]
+  exact (hGmem v hvG).2.1.hasFDerivAt
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
