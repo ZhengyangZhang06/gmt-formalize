@@ -359,6 +359,91 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, (2.7) with `μ = Lⁿ` (`n = m + 1`): an integrable density `v` on `ℝⁿ` defines
+the top-dimensional current `ω ↦ ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` in `𝒟ₙ(ℝⁿ)`.  Since `‖eᵢ‖ = 1`,
+`|⟨ω(x), e₁ ∧ ⋯ ∧ eₙ⟩| ≤ ‖ω(x)‖`, so the integrand is dominated by `(sup ‖ω‖)·|v|`; linearity is
+`integral_add`/`integral_const_mul`, and for a null sequence `ω_j → 0` of test forms
+`sup ‖ω_j‖ → 0`, whence `|T(ω_j)| ≤ sup ‖ω_j‖ · ∫ |v| → 0`. -/
+theorem Submission.fiw_tb_tda_density_current : ∀ (m : ℕ) (v : Eucl (m + 1) → ℝ), Integrable v → ∃ T : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), T ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  intro m v hv
+  -- Step 1: `|α(e₁, …, eₙ)| ≤ ‖α‖` for every `n`-covector `α`, since `‖eᵢ‖ = 1`.
+  have hcov : ∀ α : Covector (Eucl (m + 1)) (m + 1),
+      ‖α (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ ‖α‖ := by
+    intro α
+    calc ‖α (fun i => EuclideanSpace.single i (1 : ℝ))‖
+        ≤ ‖α‖ * ∏ i, ‖(EuclideanSpace.single i (1 : ℝ) : Eucl (m + 1))‖ := α.le_opNorm _
+      _ = ‖α‖ := by simp
+  -- Step 2: if `η` is continuous with `‖η‖ ≤ B`, then `v · η(e)` is integrable and
+  -- `|∫ v η(e)| ≤ B ∫ |v|`.
+  have hkey : ∀ (η : Eucl (m + 1) → Covector (Eucl (m + 1)) (m + 1)) (B : ℝ),
+      Continuous η → (∀ x, ‖η x‖ ≤ B) →
+      Integrable (fun x => v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))) ∧
+        ‖∫ x, v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ B * ∫ x, ‖v x‖ := by
+    intro η B hη hB
+    have hbd : ∀ x, ‖η x (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ B :=
+      fun x => (hcov _).trans (hB x)
+    have hbound : ∀ᵐ x, ‖v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ B * ‖v x‖ :=
+      Eventually.of_forall fun x => by
+        rw [norm_mul, mul_comm]
+        exact mul_le_mul_of_nonneg_right (hbd x) (norm_nonneg _)
+    refine ⟨hv.mul_bdd (hη.eval_const _).aestronglyMeasurable (Eventually.of_forall hbd), ?_⟩
+    calc ‖∫ x, v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))‖
+        ≤ ∫ x, B * ‖v x‖ := norm_integral_le_of_norm_le (hv.norm.const_mul B) hbound
+      _ = B * ∫ x, ‖v x‖ := integral_const_mul B _
+  -- Step 3: the integrand of every test form is integrable.
+  have hintω : ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1),
+      Integrable (fun x => v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))) := by
+    intro ω
+    have hcont : Continuous (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) :=
+      ContDiff.continuous ω.property.1.1
+    obtain ⟨B, hB⟩ := hcont.bounded_above_of_compact_support ω.property.1.2
+    exact (hkey _ B hcont hB).1
+  -- Step 4: the linear functional `ω ↦ ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ`.
+  let T₀ : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1) →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))
+      map_add' := by
+        intro ω₁ ω₂
+        simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply, mul_add]
+        exact integral_add (hintω ω₁) (hintω ω₂)
+      map_smul' := by
+        intro c ω
+        simp only [Submodule.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply,
+          smul_eq_mul, RingHom.id_apply, mul_left_comm (v _) c]
+        exact integral_const_mul c _ }
+  -- Step 5: sequential continuity at `0`, from uniform convergence of the forms themselves.
+  refine ⟨⟨T₀, ?_⟩, fun ω => rfl⟩
+  intro ωs hconv
+  obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+  set I := ∫ x, ‖v x‖
+  have hI0 : 0 ≤ I := integral_nonneg fun x => norm_nonneg _
+  have h0 := Metric.tendstoUniformlyOn_iff.1 (hunif 0)
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (I + 1) := div_pos hε (by linarith)
+  filter_upwards [h0 _ hδ] with j hj
+  have hBj : ∀ y, ‖(ωs j : DifferentialForm (Eucl (m + 1)) (m + 1)) y‖ ≤ ε / (I + 1) := by
+    intro y
+    by_cases hy : y ∈ K
+    · have h1 := hj y hy
+      have h2 : iteratedFDeriv ℝ 0
+          ((0 : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1)) :
+            DifferentialForm (Eucl (m + 1)) (m + 1)) y = 0 := by
+        rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+        simp
+      rw [h2, dist_zero_left, norm_iteratedFDeriv_zero] at h1
+      exact h1.le
+    · rw [image_eq_zero_of_notMem_tsupport fun hy' => hy (hsupp j hy'), norm_zero]
+      exact hδ.le
+  have hcont : Continuous (ωs j : DifferentialForm (Eucl (m + 1)) (m + 1)) :=
+    ContDiff.continuous (ωs j).property.1.1
+  have hle := (hkey _ _ hcont hBj).2
+  rw [Real.dist_eq, sub_zero, ← Real.norm_eq_abs]
+  refine lt_of_le_of_lt hle ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
