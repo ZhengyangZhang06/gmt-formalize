@@ -1826,6 +1826,24 @@ theorem Submission.monotonicity_and_density_theorems :
   ⟨Submission.monotonicity_formula_8_3_3, Submission.stationary_monotonicity_identity_8_3_4,
     Submission.density_exists_ae_8_3_6⟩
 
+/-- **Simon Ch. 8, 3.7** (child `density_semicontinuity` of `main_theorem`; Step 4 of its proof).
+Remark 3.8(1) (child `variation_lsc`) gives that `V` has locally bounded first variation and
+`‖δV‖(W) ≤ liminf_i ‖δV_i‖(W)`.  The printed steps (1)–(5) (child `lower_density_ae`, run with the
+monotonicity formula 3.3) give `liminf_{ρ↓0} μ_V(B_ρ(y)) / (ω_n ρ^n) ≥ 1` for `μ_V`-a.e. `y`, and
+Lemma 3.6 for `V` gives that `Θ^n(μ_V, y)` exists for `μ_V`-a.e. `y`.  Where the density exists it
+equals that `liminf`, so it is `≥ 1`. -/
+theorem Submission.density_semicontinuity_theorem : DensitySemicontinuity := by
+  intro N n U Vi V B hconv hLB hbound hdens hsmall
+  obtain ⟨hV, hle⟩ :=
+    Submission.variationMeasure_le_liminf_of_radonConverges N n U Vi V hconv hLB hbound
+  refine ⟨hV, hle, ?_⟩
+  obtain ⟨Θ, -, hΘ⟩ := Submission.monotonicity_and_density_theorems.2.2 N n U V hV
+  have hlow := Submission.lower_density_ge_one_ae_of_radonConverges
+    Submission.monotonicity_and_density_theorems.1 N n U Vi V B hconv hLB hbound hdens hsmall
+  filter_upwards [hΘ, hlow] with y hy hy'
+  have h : Tendsto (densityRatio n V.weight y) (𝓝[>] 0) (𝓝 (Θ y)) := hy.2
+  exact ⟨Θ y, hy.2, by rwa [h.liminf_eq] at hy'⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
