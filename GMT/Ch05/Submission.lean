@@ -504,6 +504,77 @@ theorem rsod_graphChart_injective_contDiffOn_fderiv_injective : ∀ {n ℓ : ℕ
     (A.hasFDerivAt.comp x ((hasFDerivAt_id x).prodMk hux)).add_const x₀
   rw [hφx.fderiv]
   exact fun v w h => (Prod.ext_iff.mp (hA h)).1
+/-- Simon Ch. 3, Theorem 1.9 (measurability of `x ↦ p_{T_x M}`, used for Ch. 5, Lemma 2.1): for
+injective `L : ℝⁿ → ℝ^{n+ℓ}` the orthogonal projection onto `L(ℝⁿ)` is `L (Lᵀ L)⁻¹ Lᵀ`, hence it
+depends continuously on `L`.  Here `Lᵀ w = Σᵢ ⟨L eᵢ, w⟩ eᵢ` is the transpose, `Lᵀ L` is a unit of
+`End(ℝⁿ)` because `⟨Lᵀ L v, v⟩ = |L v|²`, inversion is continuous at units, and
+`w − L (Lᵀ L)⁻¹ Lᵀ w ⊥ L(ℝⁿ)` identifies the formula with `p_{L(ℝⁿ)}`. -/
+theorem aetp_starProjection_range_continuousOn : ∀ (n ℓ : ℕ), ContinuousOn (fun L : Rn n →L[ℝ] Amb n ℓ => (LinearMap.range L.toLinearMap).starProjection) {L : Rn n →L[ℝ] Amb n ℓ | Function.Injective L} := by
+  intro n ℓ
+  -- The transpose `T L = Lᵀ`, built from the standard basis `e i` of `ℝⁿ`.
+  let e : Fin n → Rn n := fun i => EuclideanSpace.single i (1 : ℝ)
+  let T : (Rn n →L[ℝ] Amb n ℓ) → (Amb n ℓ →L[ℝ] Rn n) :=
+    fun L => ∑ i, (innerSL ℝ (L (e i))).smulRight (e i)
+  have hT : ∀ L (w : Amb n ℓ) (v : Rn n), inner ℝ (T L w) v = inner ℝ w (L v) := by
+    intro L w v
+    have hv : v = ∑ i, v i • e i := by
+      simpa [e] using ((EuclideanSpace.basisFun (Fin n) ℝ).sum_repr v).symm
+    have hTw : T L w = ∑ i, inner ℝ (L (e i)) w • e i := by
+      simp [T]
+    rw [hTw]
+    conv_rhs => rw [hv]
+    simp only [sum_inner, inner_sum, map_sum, map_smul, real_inner_smul_left,
+      real_inner_smul_right, e, EuclideanSpace.inner_single_left, one_mul, map_one]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [real_inner_comm]
+    ring
+  have hTc : Continuous T := by
+    refine continuous_finsetSum _ fun i _ => ?_
+    have h1 : Continuous fun L : Rn n →L[ℝ] Amb n ℓ => innerSL ℝ (L (e i)) :=
+      (innerSL ℝ).continuous.comp (continuous_id.clm_apply continuous_const)
+    exact ((ContinuousLinearMap.smulRightL ℝ (Amb n ℓ) (Rn n)).continuous.comp h1).clm_apply
+      continuous_const
+  -- The Gram operator `A L = Lᵀ L` and the candidate projection `Q L = L (Lᵀ L)⁻¹ Lᵀ`.
+  let A : (Rn n →L[ℝ] Amb n ℓ) → (Rn n →L[ℝ] Rn n) := fun L => (T L).comp L
+  let Q : (Rn n →L[ℝ] Amb n ℓ) → (Amb n ℓ →L[ℝ] Amb n ℓ) :=
+    fun L => L.comp ((Ring.inverse (A L)).comp (T L))
+  -- `A L` is a unit for injective `L`: `A L v = 0` gives `|L v|² = ⟨A L v, v⟩ = 0`.
+  have hA : ∀ L : Rn n →L[ℝ] Amb n ℓ, Function.Injective L → IsUnit (A L) := by
+    intro L hL
+    rw [ContinuousLinearMap.isUnit_iff_isUnit_toLinearMap, LinearMap.isUnit_iff_ker_eq_bot,
+      LinearMap.ker_eq_bot']
+    intro v hv
+    have h0 : T L (L v) = 0 := hv
+    have h1 : inner ℝ (L v) (L v) = 0 := by
+      rw [← hT, h0, inner_zero_left]
+    exact hL (by rw [inner_self_eq_zero.mp h1, map_zero])
+  -- `Q L = p_{L(ℝⁿ)}` for injective `L`: `Q L w ∈ L(ℝⁿ)` and `Lᵀ (w − Q L w) = 0`.
+  have hQ : ∀ L : Rn n →L[ℝ] Amb n ℓ, Function.Injective L →
+      (LinearMap.range L.toLinearMap).starProjection = Q L := by
+    intro L hL
+    ext1 w
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact ⟨_, rfl⟩
+    · rintro _ ⟨v, rfl⟩
+      have h1 : T L (L (Ring.inverse (A L) (T L w))) = T L w := by
+        have h2 := congrArg (fun S : Rn n →L[ℝ] Rn n => S (T L w))
+          (Ring.mul_inverse_cancel _ (hA L hL))
+        simpa [A] using h2
+      rw [inner_sub_left, ContinuousLinearMap.coe_coe, ← hT, ← hT]
+      simp only [Q, ContinuousLinearMap.coe_comp, Function.comp_apply]
+      rw [h1, sub_self]
+  -- `Q` is continuous at every injective `L`, since inversion is continuous at units.
+  have hQc : ∀ L : Rn n →L[ℝ] Amb n ℓ, Function.Injective L → ContinuousAt Q L := by
+    intro L hL
+    have hAc : Continuous A := hTc.clm_comp continuous_id
+    obtain ⟨u, hu⟩ := hA L hL
+    have hinv : ContinuousAt (fun L => Ring.inverse (A L)) L := by
+      have h1 := NormedRing.inverse_continuousAt u
+      rw [hu] at h1
+      exact h1.comp hAc.continuousAt
+    exact continuous_id.continuousAt.clm_comp (hinv.clm_comp hTc.continuousAt)
+  intro L hL
+  exact (hQc L hL).continuousWithinAt.congr (fun L' hL' => hQ L' hL') (hQ L hL)
 
 end Submission
 
