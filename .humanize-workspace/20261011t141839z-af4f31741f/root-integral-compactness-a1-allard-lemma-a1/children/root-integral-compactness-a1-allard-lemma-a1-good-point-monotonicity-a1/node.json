@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.good_point_monotonicity-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Monotonicity consequences at a point satisfying the ratio bound (1) (Simon 8.5.10, printed (3))",
+  "statement": "Assume MonotonicityFormula (the frozen contract statement of Simon 8.3.3). Let N, n ∈ ℕ, U ⊆ ℝ^N, W an n-varifold on U with locally bounded first variation, y ∈ ℝ^N with B°_1(y) := ball y 1 ⊆ U, ε ≥ 0 and Λ ∈ ℝ with μ_W(B°_1(y)) ≤ ofReal Λ, and suppose (1): ‖δW‖(B_ρ(y)) ≤ ε·μ_W(B_ρ(y)) for all ρ ∈ (0,1), where μ_W = W.weight, ‖δW‖ = variationMeasure W and B_ρ(y) = closedBall y ρ. Then (i) ρ ↦ e^{ερ}μ_W(B_ρ(y))/ρ^n is non-decreasing on (0,1) (as a [0,∞]-valued function); (ii) there is θ ∈ [0,∞) with HasDensity n μ_W y θ and θ ≤ e^{εσ}·densityRatio n μ_W y σ for every σ ∈ (0,1); (iii) μ_W(B_σ(y)) ≤ ofReal(e^ε·Λ·σ^n) for every σ ∈ (0,1).",
+  "lean_statement": "MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (y : Euclidean N) (ε Λ : ℝ), W.HasLocallyBoundedFirstVariation → ball y 1 ⊆ U → 0 ≤ ε → W.weight (ball y 1) ≤ ENNReal.ofReal Λ → (∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) → MonotoneOn (fun ρ : ℝ ↦ ENNReal.ofReal (Real.exp (ε * ρ)) * W.weight (closedBall y ρ) / ENNReal.ofReal ρ ^ n) (Ioo 0 1) ∧ (∃ θ : ℝ≥0∞, HasDensity n W.weight y θ ∧ θ ≠ ∞ ∧ ∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n W.weight y σ) ∧ ∀ σ : ℝ, 0 < σ → σ < 1 → W.weight (closedBall y σ) ≤ ENNReal.ofReal (Real.exp ε * Λ * σ ^ n)",
+  "lean_name": "intcpt_allard_good_point_monotonicity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-good-point-monotonicity-a1-a1"
+}

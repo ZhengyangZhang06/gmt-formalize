@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.bad_set_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Measure of the bad set: μ_W(E) ≤ c₀ε (Simon 8.5.10, printed (4)–(5), Besicovitch)",
+  "statement": "Assume MonotonicityFormula. Let N, n ∈ ℕ and Λ ≥ 1. There is c₀ ≥ 0 such that for every ε ∈ (0,1], every U ⊆ ℝ^N with B°_3(0) ⊆ U, every n-varifold W on U with locally bounded first variation and every P ∈ G(N,n) with μ_W(B°_3(0)) ≤ Λ, ‖δW‖(B°_3(0)) < ε² and ∫_{B°_3(0)×G(N,n)} t_P(S) dW(z,S) < ε² (t_P(S) = operator norm of p_S − p_P, all in [0,∞]): the set E of y ∈ B_2(0) ∩ spt μ_W at which (1) ‖δW‖(B_ρ(y)) ≤ ε μ_W(B_ρ(y)) for all ρ ∈ (0,1) and (2) ∫_{B_ρ(y)×G} t_P dW ≤ ερ^n for all ρ ∈ (0,1) do not both hold satisfies μ_W(E) ≤ ofReal(c₀ε) (outer measure; balls B are closed, B° open).",
+  "lean_statement": "MonotonicityFormula → ∀ (N n : ℕ) (Λ : ℝ), 1 ≤ Λ → ∃ c₀ : ℝ, 0 ≤ c₀ ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → variationMeasure W (ball (0 : Euclidean N) 3) < ENNReal.ofReal (ε ^ 2) → (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) < ENNReal.ofReal (ε ^ 2) → W.weight {y | y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ ¬ ((∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)))} ≤ ENNReal.ofReal (c₀ * ε)",
+  "lean_name": "intcpt_allard_bad_set_bound",
+  "depends_on": [
+    "root.integral_compactness-a1.allard_lemma-a1.good_point_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.good_point_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-bad-set-bound-a1-a1"
+}

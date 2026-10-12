@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Weighted radial monotonicity with error terms for a fixed cutoff (Simon 8.3.5 integrated over [σ, ρ])",
+  "statement": "Let W be an n-varifold on U ⊆ ℝ^N with locally bounded first variation, P ∈ G(N,n), y ∈ ℝ^N with B°_1(y) ⊆ U, ε > 0, K ≥ 0, M ≥ 0, and assume for every r ∈ (0,1): (1r) ‖δW‖(B_r(y)) ≤ εμ_W(B_r(y)); (2r) ∫_{B_r(y)×G(N,n)} t_P(S) dW(z,S) ≤ εr^n (t_P(S) = operator norm of p_S − p_P); (3r) μ_W(B_r(y)) ≤ Kr^n. Let h : ℝ^N → [0,1] be C¹ with |Dh(z)[p_S(z − y)]| ≤ M·t_P(S)·|z − y| for all z ∈ ℝ^N and S ∈ G(N,n), and let φ : ℝ → [0,1] be C¹ and non-increasing with φ(s) = 0 for s ≥ A², where 0 < A ≤ 2. Then for all 0 < σ ≤ ρ with ρA < 1, writing Ĩ(t) := ∫ φ(|z − y|²/t²)h(z) dμ_W(z) (Bochner integral): Ĩ(σ)/σ^n ≤ Ĩ(ρ)/ρ^n + 2^{n+1}(M + K)ερ.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε K M A : ℝ) (h : Euclidean N → ℝ) (φ : ℝ → ℝ), W.HasLocallyBoundedFirstVariation → ball y 1 ⊆ U → 0 < ε → 0 ≤ K → 0 ≤ M → (∀ r : ℝ, 0 < r → r < 1 → variationMeasure W (closedBall y r) ≤ ENNReal.ofReal ε * W.weight (closedBall y r)) → (∀ r : ℝ, 0 < r → r < 1 → (∫⁻ z in closedBall y r ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * r ^ n)) → (∀ r : ℝ, 0 < r → r < 1 → W.weight (closedBall y r) ≤ ENNReal.ofReal (K * r ^ n)) → ContDiff ℝ 1 h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖) → ContDiff ℝ 1 φ → Antitone φ → (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) → 0 < A → A ≤ 2 → (∀ s, A ^ 2 ≤ s → φ s = 0) → ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ * A < 1 → (∫ z, φ (‖z - y‖ ^ 2 / σ ^ 2) * h z ∂W.weight) / σ ^ n ≤ (∫ z, φ (‖z - y‖ ^ 2 / ρ ^ 2) * h z ∂W.weight) / ρ ^ n + 2 ^ (n + 1) * (M + K) * ε * ρ",
+  "lean_name": "intcpt_allard_weighted_radial_monotonicity",
+  "depends_on": [
+    "root.integral_compactness-a1.allard_lemma-a1.first_variation_bound-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.radial_field_divergence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.first_variation_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.radial_field_divergence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-weighted-radial-monotonicity-a1-a1"
+}

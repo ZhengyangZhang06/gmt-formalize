@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Clustering estimate for cylinder masses at the points of a fibre (Simon 8.5.10, printed (8))",
+  "statement": "For all N, n ∈ ℕ, K ≥ 0 and m ∈ ℕ there are c ≥ 0 and δ_m > 0 such that: for δ ∈ (0,δ_m], ε ∈ (0,δ⁴], every Borel measure μ on ℝ^N, P ∈ G(N,n), x ∈ ℝ^N and finite s ⊆ ℝ^N with #s ≤ m, if every y ∈ s satisfies p_P(y) = x, |y − p_P(y)| < ε, (M_y) r ↦ e^{εr}μ(B_r(y))/r^n is non-decreasing on (0,1), and (C_y) μ(U^τ_σ(y))/σ^n ≤ μ(U^{2τ}_ρ(y))/ρ^n + Kερ/τ for 0 < τ ≤ 1, 0 < σ ≤ ρ < 1 (U^τ_σ(y) := B_σ(y) ∩ {z : |(z − y) − p_P(z − y)| < τ}), then for all σ, τ with 0 < σ ≤ δ², 2δ²σ ≤ τ and 4τ ≤ |y − y'| for all distinct y, y' ∈ s: Σ_{y∈s} μ(U^τ_σ(y))/σ^n ≤ (1 + cδ²)μ(B_1(x)) + cδ² in [0,∞].",
+  "lean_statement": "∀ (N n : ℕ) (K : ℝ) (m : ℕ), 0 ≤ K → ∃ c δm : ℝ, 0 ≤ c ∧ 0 < δm ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δm → 0 < ε → ε ≤ δ ^ 4 → ∀ (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s : Finset (Euclidean N)), s.card ≤ m → (∀ y ∈ s, Grassmannian.project P y = x ∧ ‖y - Grassmannian.project P y‖ < ε ∧ MonotoneOn (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (ε * r)) * μ (closedBall y r) / ENNReal.ofReal r ^ n) (Ioo 0 1) ∧ ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ σ τ : ℝ, 0 < σ → σ ≤ δ ^ 2 → 2 * δ ^ 2 * σ ≤ τ → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * τ ≤ ‖y - y'‖) → ∑ y ∈ s, μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) + ENNReal.ofReal (c * δ ^ 2)",
+  "lean_name": "intcpt_allard_cylinder_cluster_bound",
+  "depends_on": [
+    "root.integral_compactness-a1.allard_lemma-a1.cluster_selection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.cluster_selection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a1-a1"
+}

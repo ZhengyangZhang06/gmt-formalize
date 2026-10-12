@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cluster_selection-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Cluster selection for a finite fibre (Simon 8.5.10, proof of (8), step 5(c))",
+  "statement": "Let N ∈ ℕ, s ⊆ ℝ^N a finite set with k := #s ≥ 2, and d > 0 such that |y − y'| ≥ d for all distinct y, y' ∈ s and |y₀ − y₁| ≤ d for some distinct y₀, y₁ ∈ s. Then there are Z ⊆ s and S ≥ 0 with #Z < #s, S ≤ (10k)^k d, every y ∈ s within distance S of some z ∈ Z, and |z − z'| ≥ 2d + 4S for all distinct z, z' ∈ Z.",
+  "lean_statement": "∀ (N : ℕ) (s : Finset (Euclidean N)) (d : ℝ), 2 ≤ s.card → 0 < d → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖) → (∃ y ∈ s, ∃ y' ∈ s, y ≠ y' ∧ ‖y - y'‖ ≤ d) → ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ s ∧ Z.card < s.card ∧ 0 ≤ S ∧ S ≤ (10 * (s.card : ℝ)) ^ s.card * d ∧ (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧ ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖",
+  "lean_name": "intcpt_allard_cluster_selection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cluster-selection-a1-a1"
+}
