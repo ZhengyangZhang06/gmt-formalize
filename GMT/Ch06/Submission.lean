@@ -359,6 +359,59 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Coefficient sum of `α ∧ γ` on a family adapted to `α`: if `α (u j)` is `c` for `j = 0` and
+`0` otherwise, then `∑_{I increasing} ((α ∧ γ)(u_I))² ≤ c² ∑_{J increasing} γ(u_J)²`, where
+`α ∧ γ = alternatizeUncurryFin (α.smulRight γ)`.  The family `u` need not be orthonormal. -/
+theorem Submission.slicing_mb_wn_adapted_sum_le :
+    ∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m) (u : Fin P → Eucl P) (c : ℝ), (∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then c else 0) → (∑ I : Fin (m + 1) → Fin P, if StrictMono I then (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i))) ^ 2 else 0) ≤ c ^ 2 * ∑ I : Fin m → Fin P, if StrictMono I then (γ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P m α γ u c hα
+  -- Steps 1–2: on a strictly increasing `I`, every term of the wedge formula with `i ≥ 1`
+  -- vanishes, because `I i > I 0 ≥ 0` forces `α (u (I i)) = 0`.
+  have hval : ∀ I : Fin (m + 1) → Fin P, StrictMono I →
+      ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i)) =
+        α (u (I 0)) * γ (fun j => u (I j.succ)) := by
+    intro I hI
+    rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_succ,
+      Finset.sum_eq_zero fun i _ => ?_, add_zero]
+    · simp only [Fin.val_zero, pow_zero, one_smul, Fin.removeNth_zero,
+        ContinuousLinearMap.smulRight_apply, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+      rfl
+    · have h : ((I 0 : Fin P) : ℕ) < (I i.succ : ℕ) := hI (Fin.succ_pos i)
+      have h0 : ((I i.succ : Fin P) : ℕ) ≠ 0 := by omega
+      simp [hα, h0]
+  -- Step 3: the summands of the left side vanish unless `I` is strictly increasing with
+  -- `I 0 = 0`, where they equal `c ^ 2 * γ (u ∘ I ∘ succ) ^ 2`.
+  have hL : ∀ I : Fin (m + 1) → Fin P,
+      (if StrictMono I then
+        (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i))) ^ 2
+        else 0) =
+      if StrictMono I ∧ ((I 0 : Fin P) : ℕ) = 0 then
+        c ^ 2 * (γ (fun j => u (I j.succ))) ^ 2 else 0 := by
+    intro I
+    by_cases hI : StrictMono I
+    · rw [hval I hI, hα (I 0)]
+      by_cases h0 : ((I 0 : Fin P) : ℕ) = 0 <;> simp [hI, h0, mul_pow]
+    · simp [hI]
+  rw [Finset.sum_congr rfl fun I _ => hL I, ← Finset.sum_filter, ← Finset.mul_sum]
+  refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg c)
+  -- Steps 4–5: `I ↦ I ∘ succ` is injective on `{I | StrictMono I ∧ I 0 = 0}` and maps it into
+  -- the strictly increasing `m`-tuples; the remaining summands are nonnegative squares.
+  have hinj : Set.InjOn (fun (I : Fin (m + 1) → Fin P) (j : Fin m) => I j.succ)
+      (Finset.univ.filter fun I : Fin (m + 1) → Fin P =>
+        StrictMono I ∧ ((I 0 : Fin P) : ℕ) = 0) := by
+    intro I hI I' hI' h
+    simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at hI hI'
+    funext i
+    refine Fin.cases ?_ (fun j => congrFun h j) i
+    exact Fin.ext (hI.2.trans hI'.2.symm)
+  rw [← Finset.sum_filter,
+    ← Finset.sum_image (f := fun J : Fin m → Fin P => (γ (fun i => u (J i))) ^ 2) hinj]
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun J _ _ => sq_nonneg _
+  intro J hJ
+  simp only [Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and] at hJ ⊢
+  obtain ⟨I, ⟨hI, _⟩, rfl⟩ := hJ
+  exact hI.comp Fin.strictMono_succ
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
