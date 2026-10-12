@@ -1,0 +1,116 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.c1_approximation-a1`
+- Child DAG node: `root.c1_approximation-a1.egorov_sigma_finite-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon's proof of Ch. 2, Theorem 1.5, chapter-02.txt lines 260–265: “by Egoroff's Theorem (applied to the finite measure sets C ∩ B_j(0), j = 1, 2, …) there is an Lⁿ-measurable set A₀ ⊆ C such that Lⁿ(C ∖ A₀) < ε/4 and η_k converges uniformly to zero on each bounded subset of A₀. Since we can take a closed set A ⊆ A₀ with Lⁿ(A₀ ∖ A) < ε/4 …”. This is Steps 6–7 of the parent proof, with the closed set C replaced by an arbitrary Borel set S and the limit 0 by an arbitrary Borel function g. The closed inner regularity used is Simon Ch. 1, Theorem 1.15(2) (chapter-01.txt lines 274–285). Notation: |x| is the Euclidean norm, B_r(0) the open ball (B_0(0) := ∅), Lⁿ = volume.
+
+Statement. Let η_k : ℝⁿ → ℝ (k ∈ ℕ) and g : ℝⁿ → ℝ be Borel, S ⊆ ℝⁿ Borel with η_k(x) → g(x) for every x ∈ S, and ε ∈ (0, ∞]. Then there is a closed A ⊆ S with Lⁿ(S ∖ A) < ε such that η_k → g uniformly on every compact Q ⊆ A.
+
+Proof.
+
+1. Choose positive reals δ_j (j = 1, 2, …) with Σ_j δ_j < ε/2. For instance δ_j := 2^{−j−2} min{ε, 1} works: its sum is min{ε, 1}/4 < ε/2, also when ε = ∞.
+
+2. Egoroff on the bounded pieces. Fix j ≥ 1. The set S ∩ B_j(0) is Borel with Lⁿ(S ∩ B_j(0)) ≤ Lⁿ(B_j(0)) < ∞. The functions η_k and g are Borel and real-valued, hence strongly measurable, and η_k(x) → g(x) at every point of S ∩ B_j(0). Egoroff's theorem on a set of finite measure (Lean: MeasureTheory.tendstoUniformlyOn_of_ae_tendsto, module Mathlib.MeasureTheory.Function.Egorov) gives a Borel set t_j ⊆ S ∩ B_j(0) with Lⁿ(t_j) ≤ δ_j such that η_k → g uniformly on G_j := (S ∩ B_j(0)) ∖ t_j. Each G_j is Borel.
+
+3. The set A₀. Put P_j := G_j ∖ B_{j−1}(0) and A₀ := ⋃_j P_j ⊆ S. If x ∈ S ∖ A₀, let j := ⌊|x|⌋ + 1. Then j − 1 ≤ |x| < j, so x ∈ (S ∩ B_j(0)) ∖ B_{j−1}(0), and since x ∉ P_j we must have x ∈ t_j. Hence S ∖ A₀ ⊆ ⋃_j t_j and Lⁿ(S ∖ A₀) ≤ Σ_j δ_j.
+
+4. Closed pieces. Each P_j is Borel with Lⁿ(P_j) ≤ Lⁿ(B_j(0)) < ∞. By closed inner regularity (Simon 1.15(2); Lean: MeasurableSet.exists_isClosed_sdiff_lt) there is a closed F_j ⊆ P_j with Lⁿ(P_j ∖ F_j) < δ_j. Put A := ⋃_j F_j. Then A ⊆ A₀ ⊆ S. If x ∈ A₀ ∖ A, then x ∈ P_j ∖ F_j for some j; so A₀ ∖ A ⊆ ⋃_j (P_j ∖ F_j) and Lⁿ(A₀ ∖ A) ≤ Σ_j δ_j.
+
+5. A is closed. We have F_j ⊆ P_j ⊆ {x : j − 1 ≤ |x| < j}. If z ∈ ℝⁿ and y ∈ F_j ∩ B_1(z), then j − 1 ≤ |y| < |z| + 1, so B_1(z) meets F_j only for the finitely many j < |z| + 2. Thus (F_j) is a locally finite family of closed sets, and its union A is closed (Lean: LocallyFinite.isClosed_iUnion).
+
+6. Measure estimate. S ∖ A ⊆ (S ∖ A₀) ∪ (A₀ ∖ A) ⊆ ⋃_j t_j ∪ ⋃_j (P_j ∖ F_j). Hence Lⁿ(S ∖ A) ≤ Σ_j δ_j + Σ_j δ_j < ε/2 + ε/2 = ε. This holds in [0, ∞] because Σ_j δ_j is finite.
+
+7. Uniform convergence on compact subsets of A. Let Q ⊆ A be compact. Q is bounded, so Q ⊆ B_R(0) for some real R; choose an integer J ≥ max{R, 1}. If x ∈ Q, then x ∈ F_j for some j with j − 1 ≤ |x| < R ≤ J, so j ≤ J and x ∈ F_j ⊆ P_j ⊆ G_j. Hence Q ⊆ G_1 ∪ … ∪ G_J.
+Given e > 0, for each of the finitely many j ≤ J, uniform convergence on G_j gives k_j with |η_k(x) − g(x)| < e for all k ≥ k_j and x ∈ G_j. Then |η_k(x) − g(x)| < e for all k ≥ max{k_1, …, k_J} and all x ∈ Q (Lean: Metric.tendstoUniformlyOn_iff with Filter.eventually_all_finset). So η_k → g uniformly on Q. ∎
+
+## Key steps
+
+1. Choose positive δ_j with Σ δ_j < ε/2.
+2. Egoroff on the finite-measure pieces S ∩ B_j(0): uniform convergence on G_j = (S ∩ B_j(0)) ∖ t_j with Lⁿ(t_j) ≤ δ_j.
+3. A₀ = ⋃_j (G_j ∖ B_{j−1}(0)) satisfies S ∖ A₀ ⊆ ⋃ t_j.
+4. Closed F_j ⊆ G_j ∖ B_{j−1}(0) with defect < δ_j; A = ⋃ F_j is closed by local finiteness, and Lⁿ(S ∖ A) < ε.
+5. A compact Q ⊆ A lies in G_1 ∪ … ∪ G_J, where convergence is uniform; a finite intersection of eventualities gives uniform convergence on Q.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n -i "lusin" mathlib/Mathlib (snapshot)`
+- `rg -n "theorem tendstoUniformlyOn_of_ae_tendsto" mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `rg -n "exists_isClosed_sdiff_lt|exists_isClosed_lt_add" mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `rg -n "theorem measurableSet_of_differentiableAt|theorem measurable_fderiv" mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `rg -n "theorem LipschitzWith.ae_differentiableAt" mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `rg -n "protected theorem Measurable.iSup" mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `rg -n "measurable_apply'|Measurable.apply_continuousLinearMap" mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean`
+- `rg -n "isClosed_iUnion|continuousOn_iUnion" mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `rg -n "IsSeparable.exists_countable_dense_subset|IsSeparable.of_separableSpace|exists_countable_dense" mathlib/Mathlib/Topology`
+- `rg -n "mem_closure_iff_nhdsWithin_neBot|theorem le_of_tendsto" mathlib/Mathlib/Topology`
+- `rg -n "theorem tendstoUniformlyOn_iff|IsBounded.subset_ball|eventually_all_finset" mathlib/Mathlib`
+- `rg -n "union|iUnion|biUnion" mathlib/Mathlib/Topology/UniformSpace/UniformConvergence*.lean LocallyUniformConvergence.lean`
+- `grep -n "theorem|structure" simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean Chapter02/WhitneyJet.lean Chapter01/Lusin.lean`
+- `grep -rn rademacher_ae_differentiableAt simongmt/Poincare`
+- `grep -rl Chapter02.WhitneyExtension simongmt/Poincare; ls simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02`
+- `grep -rl <each proposed lean_name> .humanize simongmt/Poincare; python dag.json lean_name listing`
+- `#check ENNReal.exists_pos_sum_of_countable, Poincare.SimonGMT.Chapter02.rademacher_ae_differentiableAt; elaboration of all child statements via gmt-compare.py contract_scope/child_modules in a /tmp scratch copy`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/ClusterPt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UniformSpace/LocallyUniformConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+
+Snapshot: project d09bc8a, whose Contract.lean is byte-identical to the workspace copy, and Mathlib 25730c7c, plus the pinned simongmt package.
+
+Available in Mathlib:
+- finite-measure Egorov: MeasureTheory.tendstoUniformlyOn_of_ae_tendsto (Egorov.lean:205; gives μ t ≤ ε and uniform convergence on s ∖ t)
+- closed inner regularity: MeasurableSet.exists_isClosed_sdiff_lt (Regular.lean:1036); volume on Rn n is WeaklyRegular
+- Rademacher: LipschitzWith.ae_differentiableAt (Rademacher.lean:385)
+- measurableSet_of_differentiableAt and measurable_fderiv (FDeriv/Measurable.lean:372, 378), with the Borel instances on E →L[ℝ] F
+- Measurable.iSup for conditionally complete linear orders, so it covers ℝ with junk values (BorelSpace/Order.lean:909)
+- LocallyFinite.isClosed_iUnion and LocallyFinite.continuousOn_iUnion (LocallyFinite.lean:128, 103)
+- IsSeparable.of_separableSpace and IsSeparable.exists_countable_dense_subset; mem_closure_iff_nhdsWithin_neBot; le_of_tendsto; Metric.tendstoUniformlyOn_iff; Filter.eventually_all_finset; ENNReal.exists_pos_sum_of_countable
+
+Available in SimonGMT:
+- real-valued finite-measure Lusin exists_isClosed_continuousOn_of_measurable (Chapter01/Lusin.lean:127). The module is built but not imported by the contract.
+- rademacher_ae_differentiableAt (Chapter02/Lipschitz.lean:192)
+- HasWhitneyC1Compatibility (WhitneyJet.lean:34; fields continuous_value, continuous_derivative, remainder)
+- exists_contDiff_one_extension_of_whitney (WhitneyExtension.lean:373). This module is not imported by the contract and has no prebuilt .olean, but it compiles against the pinned Mathlib.
+
+Not found, so supplied as children:
+- no Lusin continuity theorem in Mathlib (only Lusin–Souslin)
+- no σ-finite or vector-valued Lusin in either library
+- no σ-finite Egorov with closed sets
+- no finite-union lemma for TendstoUniformlyOn
+- no C¹ approximation theorem in either library
+
+The proposed lean_names are unused in the run directory and in SimonGMT. All four child types elaborate in the comparator's exact child context, and complete Lean proofs of the children and of the parent from them compile with standard axioms only.

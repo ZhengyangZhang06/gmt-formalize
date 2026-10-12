@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1.lusin_sigma_finite-a1",
+  "parent_id": "root.c1_approximation-a1",
+  "depth": 2,
+  "title": "Lusin's theorem for Lebesgue measure on ℝⁿ: closed subsets of Borel sets, finite-dimensional targets",
+  "statement": "Let n ∈ ℕ, let F be a finite-dimensional real normed space with its Borel σ-algebra, let u : ℝⁿ → F be Borel measurable (ℝⁿ = EuclideanSpace ℝ (Fin n)), let S ⊆ ℝⁿ be a Borel set and let ε ∈ (0, ∞]. Then there is a closed set C ⊆ S with Lⁿ(S ∖ C) < ε such that the restriction u|C is continuous.",
+  "lean_statement": "∀ (n : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] [MeasurableSpace F] [BorelSpace F] (u : Rn n → F) (S : Set (Rn n)), Measurable u → MeasurableSet S → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C ⊆ S, IsClosed C ∧ volume (S \\ C) < ε ∧ ContinuousOn u C",
+  "lean_name": "lusin_closed_subset_continuousOn_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-c1-approximation-a1-lusin-sigma-finite-a1-a1"
+}
