@@ -715,6 +715,150 @@ theorem ble_sac_annulus_dilation_avg_le : ∀ (n : ℕ) (F : Rn n → ℝ≥0∞
         · simp [indicator_of_mem hy]
         · simp [indicator_of_notMem hy]
     _ = _ := by rw [lintegral_mul_const _ hF, mul_comm]
+/-- **Smooth annulus estimate** (the smooth step of the boundary-layer estimate for `W^{1,2}` on
+balls).  Let `n ≥ 1`, `φ ∈ C¹(ℝⁿ)`, `1/2 ≤ r < 1`, `0 < s ≤ 1`, `a := √(1 - r)` and
+`A := B̆_s(0) \ B̆_{rs}(0)`.  Then `∫_A |φ|² ≤ 2^{n+3} a (∫_{B̆_s(0)} |φ|² + ∫_{B̆_s(0)} |∇φ|²)`
+(lintegrals of squared extended norms).  With `τ := 1 - a/2 ∈ [1/2, 1)`, integrate the ray
+inequality `ble_sac_ray_sq_bound` over `A` and swap the order of integration (Tonelli).  The
+dilation formula `ble_sac_lintegral_comp_smul`, with `σA ⊆ B̆_s(0)` and `σ⁻ⁿ ≤ 2ⁿ` for
+`σ ∈ [τ, 1]`, bounds the gradient term by `2ⁿ (1 - τ) ∫_{B̆_s(0)} |∇φ|²`; the kernel bound
+`ble_sac_annulus_dilation_avg_le` bounds the function term by `2^{n+1} (1 - r) ∫_{B̆_s(0)} |φ|²`.
+Dividing by `1 - τ = a/2` and using `1 - r = a²`, `a ≤ 1` gives the constant `2^{n+3} a`. -/
+theorem ble_smooth_annulus_estimate : ∀ n : ℕ, 1 ≤ n → ∀ (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ r s : ℝ, 1 / 2 ≤ r → r < 1 → 0 < s → s ≤ 1 → ∫⁻ x in ball (0 : Rn n) s \ ball 0 (r * s), ‖φ x‖ₑ ^ 2 ≤ ENNReal.ofReal (2 ^ (n + 3) * Real.sqrt (1 - r)) * ((∫⁻ x in ball (0 : Rn n) s, ‖φ x‖ₑ ^ 2) + ∫⁻ x in ball (0 : Rn n) s, ‖gradient φ x‖ₑ ^ 2) := by
+  intro n _ φ hφ r s hr1 hr2 hs0 hs1
+  -- Step 0: `a := √(1 - r) ∈ (0, 1]` with `a² = 1 - r`, and `τ := 1 - a/2 ∈ [1/2, 1]`.
+  obtain ⟨a, ha_def⟩ : ∃ a : ℝ, a = Real.sqrt (1 - r) := ⟨_, rfl⟩
+  rw [← ha_def]
+  have ha0 : 0 < a := by rw [ha_def]; exact Real.sqrt_pos.2 (by linarith)
+  have ha1 : a ≤ 1 := by
+    rw [ha_def]
+    calc Real.sqrt (1 - r) ≤ Real.sqrt 1 := Real.sqrt_le_sqrt (by linarith)
+      _ = 1 := Real.sqrt_one
+  have ha2 : a ^ 2 = 1 - r := by rw [ha_def]; exact Real.sq_sqrt (by linarith)
+  obtain ⟨τ, hτ_def⟩ : ∃ τ : ℝ, τ = 1 - a / 2 := ⟨_, rfl⟩
+  have hτ1 : τ ≤ 1 := by rw [hτ_def]; linarith
+  have hτ2 : 1 / 2 ≤ τ := by rw [hτ_def]; linarith
+  have h1τ : 1 - τ = a / 2 := by rw [hτ_def]; ring
+  set A := ball (0 : Rn n) s \ ball 0 (r * s)
+  have hA : MeasurableSet A := measurableSet_ball.diff measurableSet_ball
+  have hA1 : ∀ x ∈ A, ‖x‖ ≤ 1 := fun x hx => by
+    have h := mem_ball_zero_iff.1 hx.1
+    linarith
+  -- `φ` and `∇φ = (toDual ℝ ℝⁿ)⁻¹ ∘ Dφ` are continuous; measurability for Tonelli.
+  have hφc : Continuous φ := hφ.continuous
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  have hFm : Measurable (fun y : Rn n => ‖φ y‖ₑ ^ 2) :=
+    ((ENNReal.continuous_pow 2).comp hφc.enorm).measurable
+  have hH1 : Measurable (fun p : Rn n × ℝ => ‖φ (p.2 • p.1)‖ₑ ^ 2) :=
+    ((ENNReal.continuous_pow 2).comp
+      (hφc.comp (continuous_snd.smul continuous_fst)).enorm).measurable
+  have hH2 : Measurable (fun p : Rn n × ℝ => ‖gradient φ (p.2 • p.1)‖ₑ ^ 2) :=
+    ((ENNReal.continuous_pow 2).comp
+      (hgc.comp (continuous_snd.smul continuous_fst)).enorm).measurable
+  have hP : Measurable (fun x : Rn n => ∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2) :=
+    hH1.lintegral_prod_right'
+  have hQ : Measurable (fun x : Rn n => ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2) :=
+    hH2.lintegral_prod_right'
+  -- Step 3: integrate the ray inequality over `A` (where `‖x‖ < s ≤ 1`), then swap integrals.
+  have h3 : ENNReal.ofReal (1 - τ) * ∫⁻ x in A, ‖φ x‖ₑ ^ 2 ≤
+      2 * (∫⁻ t in Icc τ 1, ∫⁻ x in A, ‖φ (t • x)‖ₑ ^ 2) +
+        2 * ENNReal.ofReal ((1 - τ) ^ 2) *
+          ∫⁻ σ in Icc τ 1, ∫⁻ x in A, ‖gradient φ (σ • x)‖ₑ ^ 2 := by
+    have hs1 : ∫⁻ x in A, ∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2 =
+        ∫⁻ t in Icc τ 1, ∫⁻ x in A, ‖φ (t • x)‖ₑ ^ 2 :=
+      lintegral_lintegral_swap hH1.aemeasurable
+    have hs2 : ∫⁻ x in A, ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2 =
+        ∫⁻ σ in Icc τ 1, ∫⁻ x in A, ‖gradient φ (σ • x)‖ₑ ^ 2 :=
+      lintegral_lintegral_swap hH2.aemeasurable
+    calc ENNReal.ofReal (1 - τ) * ∫⁻ x in A, ‖φ x‖ₑ ^ 2
+          = ∫⁻ x in A, ENNReal.ofReal (1 - τ) * ‖φ x‖ₑ ^ 2 :=
+            (lintegral_const_mul' _ _ ENNReal.ofReal_ne_top).symm
+      _ ≤ ∫⁻ x in A, (2 * (∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2) +
+            2 * ENNReal.ofReal ((1 - τ) ^ 2) * ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2) :=
+            setLIntegral_mono' hA fun x hx =>
+              Submission.ble_sac_ray_sq_bound n φ hφ x (hA1 x hx) τ hτ1
+      _ = 2 * (∫⁻ x in A, ∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2) +
+            2 * ENNReal.ofReal ((1 - τ) ^ 2) *
+              ∫⁻ x in A, ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2 := by
+          rw [lintegral_add_left (hP.const_mul 2), lintegral_const_mul _ hP,
+            lintegral_const_mul _ hQ]
+      _ = _ := by rw [hs1, hs2]
+  -- Step 4: gradient term.  For `σ ∈ [τ, 1]`, `∫_A |∇φ(σx)|² dx ≤ 2ⁿ ∫_{B̆_s(0)} |∇φ|²` by the
+  -- dilation formula, `σ⁻ⁿ ≤ 2ⁿ` and `σA ⊆ B̆_s(0)`; then integrate over `σ ∈ [τ, 1]`.
+  have h4 : ∫⁻ σ in Icc τ 1, ∫⁻ x in A, ‖gradient φ (σ • x)‖ₑ ^ 2 ≤
+      ENNReal.ofReal (2 ^ n * (1 - τ)) * ∫⁻ y in ball (0 : Rn n) s, ‖gradient φ y‖ₑ ^ 2 := by
+    have hJ : ∀ σ ∈ Icc τ 1, ∫⁻ x in A, ‖gradient φ (σ • x)‖ₑ ^ 2 ≤
+        ENNReal.ofReal (2 ^ n) * ∫⁻ y in ball (0 : Rn n) s, ‖gradient φ y‖ₑ ^ 2 := by
+      intro σ hσ
+      have hσ0 : 0 < σ := by linarith [hσ.1]
+      rw [Submission.ble_sac_lintegral_comp_smul n (fun y => ‖gradient φ y‖ₑ ^ 2) A σ hσ0]
+      gcongr ?_ * ?_
+      · apply ENNReal.ofReal_le_ofReal
+        rw [← inv_pow]
+        apply pow_le_pow_left₀ (by positivity)
+        rw [inv_le_comm₀ hσ0 (by norm_num)]
+        linarith [hσ.1]
+      · apply lintegral_mono_set
+        intro y hy
+        rw [Set.mem_preimage] at hy
+        have h1 := mem_ball_zero_iff.1 hy.1
+        rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hσ0] at h1
+        rw [mem_ball_zero_iff]
+        calc ‖y‖ = σ * (σ⁻¹ * ‖y‖) := by rw [← mul_assoc, mul_inv_cancel₀ hσ0.ne', one_mul]
+          _ < σ * s := by gcongr
+          _ ≤ s := by nlinarith [hσ.2]
+    calc ∫⁻ σ in Icc τ 1, ∫⁻ x in A, ‖gradient φ (σ • x)‖ₑ ^ 2
+          ≤ ∫⁻ σ in Icc τ 1,
+              ENNReal.ofReal (2 ^ n) * ∫⁻ y in ball (0 : Rn n) s, ‖gradient φ y‖ₑ ^ 2 :=
+            setLIntegral_mono measurable_const hJ
+      _ = _ := by
+          rw [setLIntegral_const, Real.volume_Icc, ENNReal.ofReal_mul (by positivity)]
+          ring
+  -- Step 5: function term, by the kernel bound.
+  have h5 : ∫⁻ t in Icc τ 1, ∫⁻ x in A, ‖φ (t • x)‖ₑ ^ 2 ≤
+      ENNReal.ofReal (2 ^ (n + 1) * (1 - r)) * ∫⁻ y in ball (0 : Rn n) s, ‖φ y‖ₑ ^ 2 :=
+    Submission.ble_sac_annulus_dilation_avg_le n (fun y => ‖φ y‖ₑ ^ 2) hFm r s τ hr1 hr2 hs0 hτ2
+  -- Step 6: combine, cancel the finite nonzero factor `1 - τ = a/2`, and compare coefficients
+  -- using `1 - r = a²` and `a ≤ 1`.
+  set X := ∫⁻ x in A, ‖φ x‖ₑ ^ 2
+  set P := ∫⁻ y in ball (0 : Rn n) s, ‖φ y‖ₑ ^ 2
+  set G := ∫⁻ y in ball (0 : Rn n) s, ‖gradient φ y‖ₑ ^ 2
+  have key : ENNReal.ofReal (a / 2) * X ≤
+      2 * (ENNReal.ofReal (2 ^ (n + 1) * a ^ 2) * P) +
+        2 * ENNReal.ofReal ((a / 2) ^ 2) * (ENNReal.ofReal (2 ^ n * (a / 2)) * G) := by
+    rw [← h1τ, ha2]
+    refine h3.trans ?_
+    gcongr
+  have hb0 : ENNReal.ofReal (a / 2) ≠ 0 := by
+    rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+    positivity
+  refine (ENNReal.mul_le_mul_iff_right hb0 ENNReal.ofReal_ne_top).1 (key.trans ?_)
+  have h2 : (2 : ℝ≥0∞) = ENNReal.ofReal 2 := (ENNReal.ofReal_ofNat 2).symm
+  have e1 : (2 : ℝ≥0∞) * (ENNReal.ofReal (2 ^ (n + 1) * a ^ 2) * P) =
+      ENNReal.ofReal (2 * (2 ^ (n + 1) * a ^ 2)) * P := by
+    rw [ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ← h2, mul_assoc]
+  have e2 : (2 : ℝ≥0∞) * ENNReal.ofReal ((a / 2) ^ 2) * (ENNReal.ofReal (2 ^ n * (a / 2)) * G) =
+      ENNReal.ofReal (2 * (a / 2) ^ 2 * (2 ^ n * (a / 2))) * G := by
+    rw [ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ 2 * (a / 2) ^ 2),
+      ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ← h2]
+    ring
+  have e3 : ENNReal.ofReal (a / 2) * (ENNReal.ofReal (2 ^ (n + 3) * a) * (P + G)) =
+      ENNReal.ofReal (a / 2 * (2 ^ (n + 3) * a)) * P +
+        ENNReal.ofReal (a / 2 * (2 ^ (n + 3) * a)) * G := by
+    rw [ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ a / 2)]
+    ring
+  rw [e1, e2, e3]
+  -- `2 · 2^{n+1} a² = (a/2) · 2^{n+3} a` and `2 (a/2)² · 2ⁿ (a/2) = 2ⁿ a² (a/4) ≤ 2ⁿ a² · 4`.
+  have c1 : 2 * (2 ^ (n + 1) * a ^ 2) ≤ a / 2 * (2 ^ (n + 3) * a) := le_of_eq (by ring)
+  have c2 : 2 * (a / 2) ^ 2 * (2 ^ n * (a / 2)) ≤ a / 2 * (2 ^ (n + 3) * a) := by
+    have k1 : 2 * (a / 2) ^ 2 * (2 ^ n * (a / 2)) = 2 ^ n * a ^ 2 * (a / 4) := by ring
+    have k2 : a / 2 * (2 ^ (n + 3) * a) = 2 ^ n * a ^ 2 * 4 := by ring
+    rw [k1, k2]
+    have h0 : (0 : ℝ) ≤ 2 ^ n * a ^ 2 := by positivity
+    nlinarith [mul_nonneg h0 (by linarith : (0 : ℝ) ≤ 4 - a / 4)]
+  exact add_le_add (mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal c1) (by positivity))
+    (mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal c2) (by positivity))
 
 end Submission
 
