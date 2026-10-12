@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cba7aaf1c096f01d632a82fc7835d6897b0394ed8014d7ff6a2c20c53dedba47",
+  "git_delta": {
+    "base_commit": "7f2e25c990e68cbdfc2412c455f026374a1d072b",
+    "candidate_commit": "4f8cb90675e599236a81c02b079ab48e84f7a9be",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_pairing_wedge_kronecker",
+    "diff_sha256": "044dd16d3b9aced5720797043b859232e168236b012c7b7c7664234ec4c601ca",
+    "source_sha256": "6213dc1ada0fb6e47329a935ce36e361e881cff3429cf6858eb9aa6ab08beebd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_pairing_wedge_kronecker",
+      "statement": "∀ (P n : ℕ) (I : SimonMultiIndex n P), euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) I = 1 ∧ ∀ J : SimonMultiIndex n P, J ≠ I → euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
