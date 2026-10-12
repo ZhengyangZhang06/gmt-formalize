@@ -478,6 +478,59 @@ theorem Submission.lipschitzOn_open_c1_first_order_agreement : ∀ (n m : ℕ), 
         not_not.1 fun h₂ ↦ hcon (Or.inr h₂)⟩)
     · exact Or.inl hud
 
+/-- **`C¹` chart pieces of a countably rectifiable set with first-order `C¹` agreement of `f`**
+(Simon Ch. 3, Lemma 1.2 and Remark 1.3, `chapter-03.txt` lines 25–73, and the procedure of the
+area formula, lines 376–381, invoked for the co-area formula at lines 426–428 and for the slices
+at lines 440–442). Assume Lemma 1.2 (`SubmanifoldCoverCharacterization`) and the `C¹`
+Approximation Theorem (Ch. 2, Thm. 1.5) for Lipschitz maps `ℝⁿ → ℝᵖ`. Let `M ⊆ ℝ^{n+ℓ}` be
+countably `n`-rectifiable, `U ⊇ M` open and `f` locally Lipschitz on `U`. Then there are open
+`D_j ⊆ ℝⁿ`, maps `ψ_j` that are `C¹`, injective and Lipschitz on `D_j` with injective
+differential, `C¹` maps `G_j` and Borel sets `E_j ⊆ D_j` such that `f(ψ_j(u)) = G_j(u)` and
+`D(f ∘ ψ_j)(u) = DG_j(u)` for `u ∈ E_j`, and `Hⁿ(M \ ⋃_j ψ_j(E_j)) = 0`. Lemma 1.2 gives
+`M ⊆ N₀ ∪ ⋃ᵢ Sᵢ` with `Hⁿ(N₀) = 0`; the chart pieces `(D_α, ψ_α)` of
+`submanifold_cover_lipschitz_open_charts` cover `M \ N₀`, and
+`lipschitzOn_open_c1_first_order_agreement` for `f ∘ ψ_α` gives `(G_{α,i}, E_{α,i})` with
+`Lⁿ(D_α \ ⋃ᵢ E_{α,i}) = 0`, whose image under the Lipschitz `ψ_α` is `Hⁿ`-null. The pairs
+`(α, i)` are re-indexed by `Nat.unpair`. -/
+theorem Submission.rectifiable_c1_chart_pieces : SubmanifoldCoverCharacterization → (∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε) → ∀ (n ℓ m : ℕ) (M U : Set (Rn (n + ℓ))) (f : Rn (n + ℓ) → Rn m), CountablyRectifiable n M → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → ∃ (D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn (n + ℓ)) (G : ℕ → Rn n → Rn m) (E : ℕ → Set (Rn n)), (∀ j, IsOpen (D j)) ∧ (∀ j, ContDiffOn ℝ 1 (ψ j) (D j)) ∧ (∀ j, InjOn (ψ j) (D j)) ∧ (∀ j, ∃ K, LipschitzOnWith K (ψ j) (D j)) ∧ (∀ j, ∀ u ∈ D j, Function.Injective (fderiv ℝ (ψ j) u)) ∧ (∀ j, ContDiff ℝ 1 (G j)) ∧ (∀ j, MeasurableSet (E j)) ∧ (∀ j, E j ⊆ D j) ∧ (∀ j, ∀ u ∈ E j, f (ψ j u) = G j u ∧ HasFDerivAt (f ∘ ψ j) (fderiv ℝ (G j) u) u) ∧ μHE[n] (M \ ⋃ j, ψ j '' E j) = 0 := by
+  intro hSC hC1 n ℓ m M U f hM hU hMU hf
+  -- Step 1: Lemma 1.2 gives `M ⊆ N₀ ∪ ⋃ i, S i` with `Hⁿ(N₀) = 0` and `C¹` submanifolds `S i`.
+  obtain ⟨N₀, S, hN₀, hS, hcov⟩ := (hSC n ℓ M).1 hM
+  -- Steps 2–4: chart pieces `(D α, ψ α)`, `f ∘ ψ α` Lipschitz, `M ⊆ N₀ ∪ ⋃ α, ψ α '' D α`.
+  obtain ⟨D, ψ, hDo, hψC, hψinj, hψL, hψD, hfψL, hMcov⟩ :=
+    Submission.submanifold_cover_lipschitz_open_charts n (n + ℓ) m M U N₀ S f hU hMU hf hS hcov
+  -- Steps 5–7: `C¹` maps `G α i` agreeing with `f ∘ ψ α` to first order on Borel sets
+  -- `E α i ⊆ D α`, with `Lⁿ(D α \ ⋃ i, E α i) = 0`.
+  choose G E hGC hEm hED hEagr hEnull using fun α ↦
+    Submission.lipschitzOn_open_c1_first_order_agreement n m (hC1 n m) (D α) (f ∘ ψ α) (hDo α)
+      (hfψL α)
+  -- Step 9: re-index the pairs `(α, i)` by `j` through `Nat.unpair`.
+  refine ⟨fun j ↦ D j.unpair.1, fun j ↦ ψ j.unpair.1, fun j ↦ G j.unpair.1 j.unpair.2,
+    fun j ↦ E j.unpair.1 j.unpair.2, fun j ↦ hDo _, fun j ↦ hψC _, fun j ↦ hψinj _,
+    fun j ↦ hψL _, fun j ↦ hψD _, fun j ↦ hGC _ _, fun j ↦ hEm _ _, fun j ↦ hED _ _,
+    fun j ↦ hEagr _ _, ?_⟩
+  -- Step 8: `ψ α '' (D α \ ⋃ i, E α i)` is `Hⁿ`-null: `ψ α` is Lipschitz and `Hⁿ = Lⁿ` on `ℝⁿ`.
+  have hnull : ∀ α, μHE[n] (ψ α '' (D α \ ⋃ i, E α i)) = 0 := by
+    intro α
+    obtain ⟨K, hK⟩ := hψL α
+    refine nonpos_iff_eq_zero.1 ?_
+    calc μHE[n] (ψ α '' (D α \ ⋃ i, E α i))
+        ≤ (K : ℝ≥0∞) ^ n * μHE[n] (D α \ ⋃ i, E α i) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hK.mono sdiff_subset)
+      _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hEnull α, mul_zero]
+  -- Step 9: `M \ ⋃ j, ψ j '' E j ⊆ N₀ ∪ ⋃ α, ψ α '' (D α \ ⋃ i, E α i)`, a null set.
+  refine measure_mono_null ?_ (measure_union_null hN₀ (measure_iUnion_null hnull))
+  rintro x ⟨hxM, hxE⟩
+  rcases hMcov hxM with hx0 | hxD
+  · exact Or.inl hx0
+  obtain ⟨α, u, huD, rfl⟩ := mem_iUnion.1 hxD
+  refine Or.inr (mem_iUnion.2 ⟨α, u, ⟨huD, fun huE ↦ ?_⟩, rfl⟩)
+  obtain ⟨i, hi⟩ := mem_iUnion.1 huE
+  refine hxE (mem_iUnion.2 ⟨Nat.pair α i, ?_⟩)
+  simp only [Nat.unpair_pair]
+  exact mem_image_of_mem _ hi
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
