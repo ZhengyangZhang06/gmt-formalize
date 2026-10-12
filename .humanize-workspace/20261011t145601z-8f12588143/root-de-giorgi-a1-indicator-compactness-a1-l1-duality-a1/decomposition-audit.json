@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem ae_convolution_tendsto_right_of_locallyIntegrable",
+        "contDiff_convolution_left",
+        "theorem tendsto_integral_of_dominated_convergence ",
+        "aestronglyMeasurable_indicator_iff",
+        "theorem integrable_indicator_iff|lemma integrable_indicator_iff",
+        "indCompact_l1Dual_exists_admissible_ae_tendsto|indCompact_l1Dual_tendsto_integral_mul|indCompact_ball_integral_abs_le_of_test_bound",
+        "/tmp/l1dual-independent-audit-20261012/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/l1dual-independent-audit-20261012/VerifiedAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/parent-child-handoff.json",
+        "/tmp/l1dual-independent-audit-20261012/ChallengeTypes.lean",
+        "/tmp/l1dual-independent-audit-20261012/ChallengeTypes.log",
+        "/tmp/l1dual-independent-audit-20261012/VerifiedAssembly.lean",
+        "/tmp/l1dual-independent-audit-20261012/VerifiedAssembly.log"
+      ],
+      "conclusion": "The pinned contract and inspected Mathlib sources match the workspace versions. The split appropriately separates approximation from dominated convergence; both children are independent and together establish exactly the selected parent through the supplied sign-function and zero-test assembly. Both names are bare identifiers, with no collision found in the DAG or 230 local recursive branches. All frozen types passed lexical validation and independently elaborated under the original comparator imports, without child implementations. Fresh compilation of both complete child proofs and the exact parent assembly succeeded; all three depend only on propext, Classical.choice and Quot.sound. The expected challenge-stub warnings do not occur in the complete proofs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "admissible_ae_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every prose hypothesis and conclusion. The explicit construction proves integrability, smoothness, the pointwise bound, and compact topological support strictly inside the ball. Eventual agreement at interior points, normalized-bump differentiation with K = 2, and vanishing outside the ball establish the stated global a.e. convergence, including dimension zero. All library hypotheses are available. The proof is complete and non-circular; its empty dependency list and unreserved bare name are valid."
+    },
+    {
+      "key": "dominated_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary real R and no separate measurability assumption on s. The indicator argument correctly establishes global a.e. strong measurability of wψ_j using only integrability of w on the ball. The integrable bound 1_B|w| and continuity of multiplication supply precisely the pinned dominated-convergence hypotheses. Empty balls are handled correctly without asserting that w vanishes. The proof is complete, independent of the approximation child, and uses a valid unreserved bare name."
+    }
+  ],
+  "required_changes": []
+}

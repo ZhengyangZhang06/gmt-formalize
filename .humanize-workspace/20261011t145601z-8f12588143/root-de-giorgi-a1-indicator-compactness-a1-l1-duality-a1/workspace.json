@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T145601Z-8f12588143",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch03/20261011t145601z-8f12588143/dispatch/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1",
+  "source_commit": "d09bc8a18ce60face651f042976e8465f21f0f68",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch03/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1.admissible_ae_approx-a1",
+      "key": "admissible_ae_approx",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <run>/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/parent-child-handoff.json; cat .../parent-supplied-plan.md",
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; diff GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean",
+              "rg -n 'theorem ae_convolution_tendsto_right_of_locallyIntegrable' -A 25 <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+              "rg -n '^theorem|^lemma|^protected theorem|^def|^variable' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+              "rg -n 'contDiff_convolution_left|theorem support_convolution_subset|theorem convolution_eq_right|theorem dist_convolution_le|theorem convolution_def|theorem convolution_lsmul' <snapshot>/mathlib/Mathlib/Analysis/Convolution.lean <snapshot>/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -rn 'theorem tendsto_integral_of_dominated_convergence|theorem aestronglyMeasurable_indicator_iff|theorem integral_indicator|theorem setIntegral_empty|theorem ball_eq_empty|theorem le_of_tendsto' <snapshot>/mathlib/Mathlib/MeasureTheory <snapshot>/mathlib/Mathlib/Topology",
+              "grep -n 'image_eq_one_of_notMem_mulTSupport|theorem mulTSupport_one' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "sed -n 1,60p <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+              "grep -rn 'ae_convolution_tendsto|ContDiffBump|normed volume' .lake/packages/simongmt/Poincare/SimonGMT",
+              "python3 -I (verifier/gmt-compare.py contract_scope + child_modules, verifier/lean_contract.py validate_lean_statement) -> /tmp/l1dual-decomp/Challenge_{admissible_ae_approx,dominated_limit,parent_selected}.lean; lake env lean on each",
+              "lake env lean /tmp/l1dual-decomp/Assembly.lean; lake env lean /tmp/l1dual-decomp/Proofs.lean (#print axioms)",
+              "lean_name scan of dag.json (321 names); grep -c l1Dual DAG.md issue-workers.json dag.json dag.mmd GMT/Ch03/Submission.lean; git show refs/heads/humanize-recursive/.../{l1-duality-a1-a1,translation-estimate-a1-a1,speculative-c83e4b1dc0-a1,indicator-compactness-a1-a1}:GMT/Ch03/Submission.lean | grep l1Dual",
+              "grep -n 'Compactness Theorem|GT01, The|Theorem 4.3|Compactness Theorem 2.6' book/chapter-02.txt book/chapter-03.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/l1dual-decomp/Challenge_admissible_ae_approx.lean",
+              "/tmp/l1dual-decomp/Challenge_dominated_limit.lean",
+              "/tmp/l1dual-decomp/Challenge_parent_selected.lean",
+              "/tmp/l1dual-decomp/Assembly.lean",
+              "/tmp/l1dual-decomp/Assembly.final.log",
+              "/tmp/l1dual-decomp/Proofs.lean",
+              "/tmp/l1dual-decomp/Proofs.final.log"
+            ],
+            "conclusion": "The snapshot contract is byte-identical to the workspace contract (project d09bc8a18ce6, Mathlib 25730c7c), and Submission.lean is a byte copy of it.\n\nNeither the snapshot Mathlib nor SimonGMT contains an L1-duality-on-a-ball lemma, or an a.e. approximation of bounded measurable functions by admissible C1 test functions; both obligations must be proved.\n\nMathlib supplies every ingredient:\n- ContDiffBump.normed API (contDiff/nonneg/integral/support/hasCompactSupport_normed).\n- ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (Lebesgue differentiation with bounded rOut/rIn ratio, K = 2).\n- HasCompactSupport.contDiff_convolution_left, support_convolution_subset, dist_convolution_le.\n- tendsto_integral_of_dominated_convergence, aestronglyMeasurable_indicator_iff, integrable_indicator_iff, integral_indicator, setIntegral_empty, Metric.ball_eq_empty, le_of_tendsto'.\n- image_eq_zero_of_notMem_tsupport (additive form of image_eq_one_of_notMem_mulTSupport).\nSimonGMT Chapter08 constancyMollifier already uses the same rIn = rOut/2, K = 2 pattern.\n\nLean results:\n- Both proposed child types (and the parent type) pass validate_lean_statement and elaborate in the exact NodeChallenge scope.\n- Assembly.lean derives the frozen parent from sorry-stubs of exactly these children (axioms propext, sorryAx, Classical.choice, Quot.sound).\n- Proofs.lean proves both children completely (axioms propext, Classical.choice, Quot.sound only). Child 1 needs the extra imports Mathlib.Analysis.Calculus.BumpFunction.Convolution and Mathlib.Analysis.Calculus.ContDiff.Convolution.\n- No lean_name collision in dag.json, the run metadata, or the related branches."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+        "child_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1.admissible_ae_approx-a1",
+        "subproblem": {
+          "key": "admissible_ae_approx",
+          "title": "A.e. approximation of bounded functions on a ball by admissible C1 test functions",
+          "statement": "Let N ∈ ℕ and R > 0, and let s : ℝ^N → ℝ be a.e.-strongly measurable for Lebesgue measure L^N. Assume |s(y)| ≤ 1 for every y ∈ ℝ^N and s(y) = 0 for every y ∉ B_R(0) (open ball). Then there exist functions ψ_j : ℝ^N → ℝ (j ∈ ℕ) such that, for every j, ψ_j is C¹, has compact support, satisfies tsupport ψ_j ⊆ B_R(0), and has |ψ_j(y)| ≤ 1 for all y. Moreover, ψ_j(y) → s(y) as j → ∞ for L^N-almost every y ∈ ℝ^N.",
+          "lean_statement": "∀ (N : ℕ) (R : ℝ) (s : Rn N → ℝ), 0 < R → AEStronglyMeasurable s volume → (∀ y, |s y| ≤ 1) → (∀ y, y ∉ Metric.ball (0 : Rn N) R → s y = 0) → ∃ ψ : ℕ → Rn N → ℝ, (∀ j, ContDiff ℝ 1 (ψ j)) ∧ (∀ j, HasCompactSupport (ψ j)) ∧ (∀ j, tsupport (ψ j) ⊆ Metric.ball (0 : Rn N) R) ∧ (∀ j y, |ψ j y| ≤ 1) ∧ ∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y))",
+          "lean_name": "indCompact_l1Dual_exists_admissible_ae_tendsto",
+          "depends_on": [],
+          "natural_proof": "Source. Steps 3–5 of the parent proof (the mollification part of its L¹-duality step), generalized from the parent's sign function to an arbitrary bounded, a.e.-strongly measurable s vanishing off the ball. Step 1 below is the integrability of s from the last bullet of the parent's step 2. The L¹-duality step is not printed in the book. It is a detail of the ancestor's mollification/Arzelà–Ascoli proof of Simon, Ch. 2, Theorem 2.6 (chapter-02.txt lines 598–628; the printed proof defers to [GT01, Thm 7.22], lines 619–620). Simon, Ch. 3, proof of Theorem 4.3 invokes that theorem (chapter-03.txt lines 653–655). Standard background on mollifiers: Evans–Gariepy, Measure Theory and Fine Properties of Functions, Ch. 4.\n\nNotation.\n- B := B_R(0) = {y : |y| < R}.\n- L^N = volume on ℝ^N = EuclideanSpace ℝ (Fin N).\n- B_r(0) and B̄_r(0) are the open and closed balls of radius r about 0.\n- For ρ, g : ℝ^N → ℝ, (ρ ⋆ g)(y) := ∫ ρ(t) g(y − t) dL^N(t). In Mathlib this is ρ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] g (notation from open scoped Convolution), unfolded by convolution_def, lsmul_apply and smul_eq_mul.\n\n1. (s is integrable.) For every y, |s(y)| ≤ 1_B(y): for y ∈ B this is |s(y)| ≤ 1, and for y ∉ B we have s(y) = 0. The function 1_B is integrable, because B is measurable and L^N(B) < ∞. Since s is a.e.-strongly measurable, s is integrable (Integrable.mono'), hence locally integrable. For every r ∈ ℝ, the truncation 1_{B_r(0)}·s is integrable (Integrable.indicator; balls are measurable). Hence it is locally integrable and a.e.-strongly measurable, and |1_{B_r(0)}·s| ≤ 1 everywhere.\n\n2. (Radii.) For j ∈ ℕ put δ_j := R/(4(j+1)). Since R > 0, δ_j > 0. Also δ_j → 0 as j → ∞, because 4(j+1) → +∞ (Tendsto.div_atTop).\n\n3. (Mollifiers.) Let φ_j be the smooth bump function centred at 0 with inner radius δ_j/2 and outer radius δ_j (Mathlib: ContDiffBump (0 : ℝ^N) with rIn = δ_j/2 < rOut = δ_j). Let ρ_j be its L^N-normalization (φ_j.normed volume). Then:\n (a) ρ_j is C^∞, in particular C¹ (ContDiffBump.contDiff_normed);\n (b) ρ_j ≥ 0 (nonneg_normed) and ∫ ρ_j dL^N = 1 (integral_normed);\n (c) support ρ_j = B_{δ_j}(0) (support_normed_eq), and ρ_j has compact support (hasCompactSupport_normed);\n (d) rOut(φ_j) = δ_j → 0, and rOut(φ_j) = δ_j = 2·rIn(φ_j).\n\n4. (Definition.) Put s_j := 1_{B_{R−2δ_j}(0)}·s and ψ_j := ρ_j ⋆ s_j, i.e. ψ_j(y) = ∫ ρ_j(t) s_j(y − t) dt.\n\n5. (ψ_j is C¹.) ρ_j is C¹ with compact support (3(a), 3(c)), and s_j is locally integrable (step 1). Lebesgue measure is invariant under translations and under y ↦ −y. Hence the convolution ψ_j = ρ_j ⋆ s_j is C¹ (HasCompactSupport.contDiff_convolution_left with L = lsmul ℝ ℝ and n = 1).\n\n6. (|ψ_j| ≤ 1.) Fix y. For every t, |ρ_j(t) s_j(y − t)| = ρ_j(t)|s_j(y − t)| ≤ ρ_j(t), by 3(b) and |s_j| ≤ 1. The integrand is a.e.-strongly measurable: ρ_j is continuous, and t ↦ s_j(y − t) is a.e.-strongly measurable because t ↦ y − t preserves L^N. Since ρ_j is integrable, |ψ_j(y)| ≤ ∫ ρ_j(t) dt = 1.\n In Mathlib this is dist_convolution_le with f = ρ_j, g = s_j, x₀ = y, radius δ_j, z₀ = 0 and ε = 1. Its hypotheses are: support ρ_j ⊆ B_{δ_j}(0); ρ_j ≥ 0; ∫ ρ_j = 1; s_j is a.e.-strongly measurable; and dist(s_j(x), 0) = |s_j(x)| ≤ 1 for all x. It yields dist(ψ_j(y), 0) = |ψ_j(y)| ≤ 1.\n\n7. (Support and compact support.) Suppose ψ_j(y) ≠ 0. Then the integrand t ↦ ρ_j(t) s_j(y − t) is not identically zero, since otherwise its integral would be 0. So there is t with ρ_j(t) ≠ 0 and s_j(y − t) ≠ 0. By 3(c), |t| < δ_j. Since s_j vanishes outside B_{R−2δ_j}(0), also |y − t| < R − 2δ_j. Hence |y| ≤ |t| + |y − t| < R − δ_j.\n (Mathlib: support_convolution_subset gives support(ρ_j ⋆ s_j) ⊆ support ρ_j + support s_j. Write y = t + z with t ∈ support ρ_j = B_{δ_j}(0) and z ∈ support s_j ⊆ B_{R−2δ_j}(0).)\n Thus support ψ_j ⊆ B_{R−δ_j}(0). The closed ball B̄_{R−δ_j}(0) is closed and contains B_{R−δ_j}(0), so tsupport ψ_j = closure(support ψ_j) ⊆ B̄_{R−δ_j}(0). Moreover B̄_{R−δ_j}(0) ⊆ B_R(0) because δ_j > 0. Finally, tsupport ψ_j is a closed subset of the compact set B̄_{R−δ_j}(0), hence compact; that is, ψ_j has compact support.\n\n8. (Agreement with ρ_j ⋆ s near points of B.) Let y ∈ B and η := (R − |y|)/3 > 0. Since δ_j → 0, there is j₀ such that δ_j < η for all j ≥ j₀. Fix j ≥ j₀ and t ∈ ℝ^N.\n – If ρ_j(t) = 0, then both ρ_j(t) s_j(y − t) and ρ_j(t) s(y − t) vanish.\n – If ρ_j(t) ≠ 0, then |t| < δ_j by 3(c). So |y − t| ≤ |y| + |t| < |y| + δ_j < R − 2δ_j, where the last inequality is 3δ_j < 3η = R − |y|. Hence y − t ∈ B_{R−2δ_j}(0) and s_j(y − t) = s(y − t).\n The integrands of ψ_j(y) and (ρ_j ⋆ s)(y) therefore agree at every t, so ψ_j(y) = (ρ_j ⋆ s)(y) for every j ≥ j₀.\n\n9. (Lebesgue differentiation.) Apply the Lebesgue differentiation theorem for normalized bump functions (Mathlib: ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable) to the family (φ_j) along atTop with K = 2. Its hypotheses are: rOut(φ_j) → 0; rOut(φ_j) ≤ 2·rIn(φ_j) for every j; and s is locally integrable. They hold by 3(d) and step 1. It gives an L^N-null set Z such that (ρ_j ⋆ s)(y) → s(y) as j → ∞ for every y ∉ Z.\n\n10. (A.e. convergence of ψ_j.) Let y ∉ Z.\n – If y ∈ B: by step 8, ψ_j(y) = (ρ_j ⋆ s)(y) for all j ≥ j₀, and the right-hand side tends to s(y) by step 9. Hence ψ_j(y) → s(y).\n – If y ∉ B: then |y| ≥ R > R − δ_j, so y ∉ support ψ_j by step 7, i.e. ψ_j(y) = 0 for every j. Also s(y) = 0 by hypothesis, so ψ_j(y) → s(y) trivially.\n Hence ψ_j(y) → s(y) for every y outside the null set Z, i.e. L^N-almost everywhere.\n\n11. (Conclusion.) By steps 5, 7, 6 and 10, for every j, ψ_j is C¹, has compact support, satisfies tsupport ψ_j ⊆ B_R(0), and has |ψ_j| ≤ 1. Moreover ψ_j → s L^N-almost everywhere. ∎",
+          "proof_key_steps": [
+            "|s| ≤ 1_B with L^N(B) < ∞ makes s integrable, hence locally integrable. Each truncation 1_{B_r(0)}·s is integrable, a.e.-strongly measurable and bounded by 1.",
+            "δ_j := R/(4(j+1)) → 0. ρ_j := the normalized ContDiffBump with rIn = δ_j/2 and rOut = δ_j is C^∞, nonnegative, has integral 1 and support B_{δ_j}(0), and is compactly supported.",
+            "ψ_j := ρ_j ⋆ (1_{B_{R−2δ_j}(0)}·s) is C¹ (HasCompactSupport.contDiff_convolution_left) and satisfies |ψ_j| ≤ 1 (dist_convolution_le with z₀ = 0, ε = 1).",
+            "support ψ_j ⊆ B_{δ_j}(0) + B_{R−2δ_j}(0) ⊆ B_{R−δ_j}(0) (support_convolution_subset). Hence tsupport ψ_j ⊆ B̄_{R−δ_j}(0) ⊆ B_R(0), and tsupport ψ_j is compact.",
+            "For y ∈ B_R(0) and 3δ_j < R − |y|, the two integrands agree pointwise, so ψ_j(y) = (ρ_j ⋆ s)(y) for all large j.",
+            "Lebesgue differentiation for normalized bumps (ae_convolution_tendsto_right_of_locallyIntegrable, K = 2) gives (ρ_j ⋆ s)(y) → s(y) off a null set. Off B_R(0), ψ_j(y) = 0 = s(y). Hence ψ_j → s a.e."
+          ]
+        },
+        "audit": {
+          "key": "admissible_ae_approx",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly matches every prose hypothesis and conclusion. The explicit construction proves integrability, smoothness, the pointwise bound, and compact topological support strictly inside the ball. Eventual agreement at interior points, normalized-bump differentiation with K = 2, and vanishing outside the ball establish the stated global a.e. convergence, including dimension zero. All library hypotheses are available. The proof is complete and non-circular; its empty dependency list and unreserved bare name are valid."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1.dominated_limit-a1",
+      "key": "dominated_limit",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <run>/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/parent-child-handoff.json; cat .../parent-supplied-plan.md",
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; diff GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean",
+              "rg -n 'theorem ae_convolution_tendsto_right_of_locallyIntegrable' -A 25 <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+              "rg -n '^theorem|^lemma|^protected theorem|^def|^variable' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+              "rg -n 'contDiff_convolution_left|theorem support_convolution_subset|theorem convolution_eq_right|theorem dist_convolution_le|theorem convolution_def|theorem convolution_lsmul' <snapshot>/mathlib/Mathlib/Analysis/Convolution.lean <snapshot>/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -rn 'theorem tendsto_integral_of_dominated_convergence|theorem aestronglyMeasurable_indicator_iff|theorem integral_indicator|theorem setIntegral_empty|theorem ball_eq_empty|theorem le_of_tendsto' <snapshot>/mathlib/Mathlib/MeasureTheory <snapshot>/mathlib/Mathlib/Topology",
+              "grep -n 'image_eq_one_of_notMem_mulTSupport|theorem mulTSupport_one' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "sed -n 1,60p <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+              "grep -rn 'ae_convolution_tendsto|ContDiffBump|normed volume' .lake/packages/simongmt/Poincare/SimonGMT",
+              "python3 -I (verifier/gmt-compare.py contract_scope + child_modules, verifier/lean_contract.py validate_lean_statement) -> /tmp/l1dual-decomp/Challenge_{admissible_ae_approx,dominated_limit,parent_selected}.lean; lake env lean on each",
+              "lake env lean /tmp/l1dual-decomp/Assembly.lean; lake env lean /tmp/l1dual-decomp/Proofs.lean (#print axioms)",
+              "lean_name scan of dag.json (321 names); grep -c l1Dual DAG.md issue-workers.json dag.json dag.mmd GMT/Ch03/Submission.lean; git show refs/heads/humanize-recursive/.../{l1-duality-a1-a1,translation-estimate-a1-a1,speculative-c83e4b1dc0-a1,indicator-compactness-a1-a1}:GMT/Ch03/Submission.lean | grep l1Dual",
+              "grep -n 'Compactness Theorem|GT01, The|Theorem 4.3|Compactness Theorem 2.6' book/chapter-02.txt book/chapter-03.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/l1dual-decomp/Challenge_admissible_ae_approx.lean",
+              "/tmp/l1dual-decomp/Challenge_dominated_limit.lean",
+              "/tmp/l1dual-decomp/Challenge_parent_selected.lean",
+              "/tmp/l1dual-decomp/Assembly.lean",
+              "/tmp/l1dual-decomp/Assembly.final.log",
+              "/tmp/l1dual-decomp/Proofs.lean",
+              "/tmp/l1dual-decomp/Proofs.final.log"
+            ],
+            "conclusion": "The snapshot contract is byte-identical to the workspace contract (project d09bc8a18ce6, Mathlib 25730c7c), and Submission.lean is a byte copy of it.\n\nNeither the snapshot Mathlib nor SimonGMT contains an L1-duality-on-a-ball lemma, or an a.e. approximation of bounded measurable functions by admissible C1 test functions; both obligations must be proved.\n\nMathlib supplies every ingredient:\n- ContDiffBump.normed API (contDiff/nonneg/integral/support/hasCompactSupport_normed).\n- ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (Lebesgue differentiation with bounded rOut/rIn ratio, K = 2).\n- HasCompactSupport.contDiff_convolution_left, support_convolution_subset, dist_convolution_le.\n- tendsto_integral_of_dominated_convergence, aestronglyMeasurable_indicator_iff, integrable_indicator_iff, integral_indicator, setIntegral_empty, Metric.ball_eq_empty, le_of_tendsto'.\n- image_eq_zero_of_notMem_tsupport (additive form of image_eq_one_of_notMem_mulTSupport).\nSimonGMT Chapter08 constancyMollifier already uses the same rIn = rOut/2, K = 2 pattern.\n\nLean results:\n- Both proposed child types (and the parent type) pass validate_lean_statement and elaborate in the exact NodeChallenge scope.\n- Assembly.lean derives the frozen parent from sorry-stubs of exactly these children (axioms propext, sorryAx, Classical.choice, Quot.sound).\n- Proofs.lean proves both children completely (axioms propext, Classical.choice, Quot.sound only). Child 1 needs the extra imports Mathlib.Analysis.Calculus.BumpFunction.Convolution and Mathlib.Analysis.Calculus.ContDiff.Convolution.\n- No lean_name collision in dag.json, the run metadata, or the related branches."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+        "child_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1.dominated_limit-a1",
+        "subproblem": {
+          "key": "dominated_limit",
+          "title": "Dominated convergence for pairings with a function integrable on a ball",
+          "statement": "Let N ∈ ℕ, R ∈ ℝ, w, s : ℝ^N → ℝ, and ψ_j : ℝ^N → ℝ for j ∈ ℕ. Assume that:\n- w is integrable with respect to Lebesgue measure L^N on the open ball B := B_R(0);\n- every ψ_j is L^N-a.e.-strongly measurable;\n- |ψ_j(y)| ≤ 1 for all j and all y;\n- ψ_j(y) = 0 for all j and all y ∉ B;\n- ψ_j(y) → s(y) as j → ∞ for L^N-almost every y.\nThen ∫_{ℝ^N} w ψ_j dL^N → ∫_{ℝ^N} w s dL^N as j → ∞.",
+          "lean_statement": "∀ (N : ℕ) (w s : Rn N → ℝ) (R : ℝ) (ψ : ℕ → Rn N → ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume → (∀ j, AEStronglyMeasurable (ψ j) volume) → (∀ j y, |ψ j y| ≤ 1) → (∀ j y, y ∉ Metric.ball (0 : Rn N) R → ψ j y = 0) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y))) → Tendsto (fun j ↦ ∫ y, w y * ψ j y) atTop (𝓝 (∫ y, w y * s y))",
+          "lean_name": "indCompact_l1Dual_tendsto_integral_mul",
+          "depends_on": [],
+          "natural_proof": "Source. Step 6 (dominated convergence) of the parent proof, generalized to an arbitrary sequence of uniformly bounded functions that vanish off the ball and converge a.e. to an arbitrary s. The L¹-duality step is not printed in the book. It is a detail of the ancestor's mollification/Arzelà–Ascoli proof of Simon, Ch. 2, Theorem 2.6 (chapter-02.txt lines 598–628; the printed proof defers to [GT01, Thm 7.22], lines 619–620). Simon, Ch. 3, proof of Theorem 4.3 invokes that theorem (chapter-03.txt lines 653–655).\n\nNotation. B := B_R(0) is the open ball (empty if R ≤ 0). L^N = volume is Lebesgue measure, and L^N⌞B is L^N restricted to B (volume.restrict B).\n\n1. (Bound.) Let g := 1_B·|w|, i.e. g(y) = |w(y)| for y ∈ B and g(y) = 0 otherwise. B is open, hence measurable, and |w| is integrable on B because w is. Hence g is integrable on ℝ^N (integrable_indicator_iff).\n\n2. (Measurability.) Fix j. Since ψ_j(y) = 0 for y ∉ B, we have w·ψ_j = 1_B·(w·ψ_j) pointwise. Integrability of w on B includes a.e.-strong measurability of w for L^N⌞B. Also ψ_j is a.e.-strongly measurable for L^N, hence for L^N⌞B. So the product w·ψ_j is a.e.-strongly measurable for L^N⌞B. As B is measurable, aestronglyMeasurable_indicator_iff shows that 1_B·(w·ψ_j) = w·ψ_j is a.e.-strongly measurable for L^N.\n\n3. (Domination.) Let j and y be arbitrary.\n – If y ∈ B, then |w(y)ψ_j(y)| = |w(y)||ψ_j(y)| ≤ |w(y)| = g(y), because |ψ_j(y)| ≤ 1.\n – If y ∉ B, then ψ_j(y) = 0, so |w(y)ψ_j(y)| = 0 = g(y).\n Hence |w ψ_j| ≤ g everywhere, for every j.\n\n4. (Pointwise limit.) For L^N-a.e. y, ψ_j(y) → s(y). Hence w(y)ψ_j(y) → w(y)s(y), since multiplication by the fixed real number w(y) is continuous (Tendsto.const_mul).\n\n5. (Dominated convergence.) By the dominated convergence theorem (tendsto_integral_of_dominated_convergence with bound g), steps 1–4 give ∫ w ψ_j dL^N → ∫ w s dL^N.\n No measurability hypothesis on s is needed. Indeed, w·s is the a.e. limit of the a.e.-strongly measurable functions w·ψ_j and is dominated by g, and the theorem's conclusion concerns the Bochner integral of w·s.\n The argument does not distinguish cases in R. If R ≤ 0, then B = ∅, so g ≡ 0 and ψ_j ≡ 0 for every j. Hence w·ψ_j ≡ 0, and, since s is the a.e. limit of the ψ_j, s = 0 a.e. and w·s = 0 a.e. (w itself need not vanish). In that case both integrals are 0, and steps 1–5 apply verbatim. ∎",
+          "proof_key_steps": [
+            "The bound g := 1_B·|w| is integrable, because w is integrable on the measurable ball B (integrable_indicator_iff).",
+            "w·ψ_j = 1_B·(w·ψ_j) is a.e.-strongly measurable for L^N (aestronglyMeasurable_indicator_iff).",
+            "|w ψ_j| ≤ g everywhere, since |ψ_j| ≤ 1 on B and ψ_j = 0 off B.",
+            "w ψ_j → w s almost everywhere (Tendsto.const_mul).",
+            "Dominated convergence (tendsto_integral_of_dominated_convergence) gives ∫ w ψ_j → ∫ w s, without any measurability assumption on s."
+          ]
+        },
+        "audit": {
+          "key": "dominated_limit",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly matches the prose, including arbitrary real R and no separate measurability assumption on s. The indicator argument correctly establishes global a.e. strong measurability of wψ_j using only integrability of w on the ball. The integrable bound 1_B|w| and continuity of multiplication supply precisely the pinned dominated-convergence hypotheses. Empty balls are handled correctly without asserting that w vanishes. The proof is complete, independent of the approximation child, and uses a valid unreserved bare name."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/task.md": "e75273998f7c4f95ebf065f0fad2d086525ca06c562b9d468f9786e0824e1b5d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/problem.md": "d450b947d5616531ac8cc4a99158db188c875f9e857bfcaf8b809a207631a989",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/problem.json": "8a4e29f58fc3cd9ec56e6ed45bec4c9008d5eb705e95bd016943fc957faf50db",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/reference-manifest.json": "b6a97248df40c5dc702e39c00119a850911686a21d507e00b0849f87a8d3d512",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/decomposition.json": "7e39738498033d0ca08c4d3bd98a736b2e14bdabd3affe1bebfd8aa331736234",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/decomposition-audit.json": "b74b471c1ecfb4f3ab51e02305409e0355b41f4bc21c9233ada9e3efcbc99420",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/controller-contract.json": "31d3ac7a976c9c9beab4104bf5eed7a165f1f72155288ca9c3600d33f425a627",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/parent-child-handoff.json": "30d1e81aca2aa984882e5db81a7b099fe04832592905f0da8c02844354c65b7e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/parent-supplied-plan.md": "17c16a6664b1266324dd6b921ff1df87106fd81664cd9874364e977356541d27",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/parent-supplied-natural-proof.md": "3e446168d79f71bb86f0bda9d91407a8b3cca727c95bc4229d22763e1c497486",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/parent-supplied-natural-proof.json": "454aad04a141ca910bb84b9d16ec9069d186245c11eb3c05f36808777ba363ec",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1/node.json": "4d023bc1f447c4532c4acfb98104f6ab61d2e153a75d3266a4422f7edf3d3d72",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/parent-child-handoff.json": "3d97a674f6c28567f023befc3b797637ecf0de55d803785825e1c077517b7b83",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/parent-supplied-plan.md": "b85644041389448169a2b99ff7d20bac29f746af806f7e2c507e4067d925c227",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/parent-supplied-natural-proof.md": "add37d27ace9b3d16a929082c9001fd8182fdc29e5814559898ac2474cd89ff5",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/parent-supplied-natural-proof.json": "5db9ded12abb76df60770346adf4b2e22f62f12f82a4ac2d8a11537a52572122",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1/children/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1/node.json": "159271f86f4661d517c6ea7943ae2bec49741e39ef1008008ffe8a1cb3f66c18"
+  }
+}
