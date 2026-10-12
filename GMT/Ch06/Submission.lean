@@ -396,6 +396,30 @@ theorem Submission.polyhedral_approx_pairing_wedge_kronecker : ∀ (P n : ℕ) (
     -- (5) Row `i` of the matrix vanishes, so the determinant is `0`.
     rw [hdet]
     exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [hi j]
+/-- An `n`-covector on `ℝ^P` is determined by its coordinates on increasing multi-indices
+(Simon Ch. 6, 1.2): if `α(e_{I(0)}, …, e_{I(n-1)}) = β(e_{I(0)}, …, e_{I(n-1)})` for every
+increasing `I`, then `α = β`.  Alternating maps agreeing on injective tuples of basis vectors are
+equal; sorting an injective tuple `v` by `σ = Tuple.sort v` gives the increasing `I = v ∘ σ`, and
+`e_v = e_I ∘ σ⁻¹` gives `γ(e_v) = sign(σ⁻¹) γ(e_I)` for `γ = α, β`. -/
+theorem Submission.polyhedral_approx_pairing_covector_ext : ∀ (P n : ℕ) (α β : Covector (Eucl P) n), (∀ I : SimonMultiIndex n P, euclideanCovectorCoordinate α I = euclideanCovectorCoordinate β I) → α = β := by
+  intro P n α β h
+  -- Reduce to the underlying alternating maps on injective tuples of standard basis vectors.
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+  -- Sorting `v` by `σ = Tuple.sort v` gives the increasing multi-index `I = v ∘ σ`.
+  have hsm : StrictMono (v ∘ Tuple.sort v) :=
+    (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+  let I : SimonMultiIndex n P := OrderEmbedding.ofStrictMono _ hsm
+  -- `e_v = e_I ∘ σ⁻¹`.
+  have he : (fun i => EuclideanSpace.single (v i) (1 : ℝ)) =
+      (fun j => EuclideanSpace.single (I j) (1 : ℝ)) ∘ ⇑(Tuple.sort v)⁻¹ := by
+    funext i
+    simp [I]
+  -- `γ(e_v) = sign(σ⁻¹) • γ(e_I)` for `γ = α, β`, and `α(e_I) = β(e_I)`.
+  rw [he, AlternatingMap.map_perm, AlternatingMap.map_perm]
+  congr 1
+  exact h I
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
