@@ -335,6 +335,95 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Slice integrals over a `C¹` chart** (steps 1–3 of the supplied proof of the chart formula
+for the `C¹` parametric co-area formula, Simon Ch. 3, (2.8)–(2.9)). Let `Φ` be an open partial
+homeomorphism from `ℝ^{m+k}` to `ℝᵐ × ℝᵏ` (Euclidean product) whose first component is `G` and
+whose inverse is `C¹`, let `ψ` be `C¹` and injective on `Φ.source`, and let `B ⊆ Φ.source` be
+Borel. If the injective area formula (AF) holds for `φ` in dimension `k`, then for every `y ∈ ℝᵐ`,
+`∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ = ∫_{ℝᵏ} F(y, z) dz` with `F = 1_{Φ(B)} · φ ∘ ψ ∘ Φ⁻¹ ·
+normDet(D(ψ ∘ Φ⁻¹) ∘ j)`, `j z = (0, z)`: apply (AF) to `χ = ψ ∘ Φ⁻¹ ∘ ι`, `ι z = (y, z)`, on the
+Borel set `S = ι⁻¹(Φ(B))`, whose image is `ψ(B ∩ G⁻¹{y})`, and use `Dχ(z) = D(ψ ∘ Φ⁻¹)(ι z) ∘ j`. -/
+theorem Submission.pcoarea_chart_slice_lintegral : ∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))), ContDiffOn ℝ 1 ψ Φ.source → InjOn ψ Φ.source → ContDiffOn ℝ 1 Φ.symm Φ.target → (∀ u ∈ Φ.source, (Φ u).fst = G u) → ∀ B ⊆ Φ.source, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, (∀ (V : Set (Rn k)) (χ : Rn k → Rn N), IsOpen V → ContDiffOn ℝ 1 χ V → InjOn χ V → ∀ S ⊆ V, MeasurableSet S → ∫⁻ x in χ '' S, φ x ∂μHE[k] = ∫⁻ z in S, φ (χ z) * ENNReal.ofReal ((fderiv ℝ χ z).toLinearMap.normDet)) → ∀ y : Rn m, ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k] = ∫⁻ z : Rn k, (Φ '' B).indicator (fun w ↦ φ (ψ (Φ.symm w)) * ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet)) (WithLp.toLp 2 (y, z)) := by
+  intro m k N ψ G Φ hψ hinj hΦs hfst B hB hBm φ hAF y
+  classical
+  -- Step 1: the slice map `ι z = (y, z)` has derivative `j z = (0, z)`, is `C¹` and injective.
+  set j : Rn k →L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.inr ℝ (Rn m) (Rn k))
+  let ι : Rn k → WithLp 2 (Rn m × Rn k) := fun z ↦ WithLp.toLp 2 (y, z)
+  have hιd : ∀ z, HasFDerivAt ι j z := by
+    intro z
+    have h1 : HasFDerivAt (fun z : Rn k ↦ (y, z)) (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)) z :=
+      hasFDerivAt_prodMk_right y z
+    exact (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.hasFDerivAt.comp z h1
+  have hιcd : ContDiff ℝ 1 ι :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.contDiff.comp
+      (contDiff_const.prodMk contDiff_id)
+  have hιc : Continuous ι := hιcd.continuous
+  have hιinj : Function.Injective ι := by
+    intro z₁ z₂ h
+    simpa [ι] using congrArg WithLp.snd h
+  -- Step 2: `Φ(B)` is a Borel subset of `Φ.target` (Lusin–Souslin).
+  have hB' : MeasurableSet (Φ '' B) :=
+    hBm.image_of_continuousOn_injOn (Φ.continuousOn.mono hB) (Φ.injOn.mono hB)
+  have hB'Ω : Φ '' B ⊆ Φ.target := by
+    rintro _ ⟨u, hu, rfl⟩
+    exact Φ.map_source (hB hu)
+  -- Step 3: `V = ι⁻¹(Φ.target)` is open and `S = ι⁻¹(Φ(B)) ⊆ V` is Borel.
+  have hV : IsOpen (ι ⁻¹' Φ.target) := Φ.open_target.preimage hιc
+  have hS : MeasurableSet (ι ⁻¹' (Φ '' B)) := hιc.measurable hB'
+  have hSV : ι ⁻¹' (Φ '' B) ⊆ ι ⁻¹' Φ.target := fun z hz ↦ hB'Ω hz
+  -- Steps 4–5: `χ = ψ ∘ Φ⁻¹ ∘ ι` is `C¹` and injective on `V`.
+  let χ : Rn k → Rn N := fun z ↦ ψ (Φ.symm (ι z))
+  have hχ : ContDiffOn ℝ 1 χ (ι ⁻¹' Φ.target) := by
+    have h1 : ContDiffOn ℝ 1 (fun z ↦ Φ.symm (ι z)) (ι ⁻¹' Φ.target) :=
+      hΦs.comp hιcd.contDiffOn (fun z hz ↦ hz)
+    exact hψ.comp h1 (fun z hz ↦ Φ.map_target hz)
+  have hχi : InjOn χ (ι ⁻¹' Φ.target) := by
+    intro z₁ h₁ z₂ h₂ h
+    exact hιinj (Φ.symm.injOn h₁ h₂ (hinj (Φ.map_target h₁) (Φ.map_target h₂) h))
+  -- Step 6: `ψ(B ∩ G⁻¹{y}) = χ(S)`, since `ι((Φ u).snd) = Φ u` when `G u = y`.
+  have himg : ψ '' (B ∩ G ⁻¹' {y}) = χ '' (ι ⁻¹' (Φ '' B)) := by
+    ext x
+    constructor
+    · rintro ⟨u, ⟨huB, huG⟩, rfl⟩
+      have hfu : (Φ u).fst = y := (hfst u (hB huB)).trans huG
+      have hιu : ι (Φ u).snd = Φ u := by
+        show WithLp.toLp 2 (y, (Φ u).snd) = Φ u
+        rw [← hfu]
+        rfl
+      refine ⟨(Φ u).snd, ?_, ?_⟩
+      · show ι (Φ u).snd ∈ Φ '' B
+        rw [hιu]
+        exact ⟨u, huB, rfl⟩
+      · show ψ (Φ.symm (ι (Φ u).snd)) = ψ u
+        rw [hιu, Φ.left_inv (hB huB)]
+    · rintro ⟨z, ⟨u, huB, hu⟩, rfl⟩
+      refine ⟨u, ⟨huB, ?_⟩, ?_⟩
+      · show G u = y
+        rw [← hfst u (hB huB), hu]
+        rfl
+      · show ψ u = ψ (Φ.symm (ι z))
+        rw [← hu, Φ.left_inv (hB huB)]
+  -- Step 8: chain rule on `V`, `Dχ(z) = D(ψ ∘ Φ⁻¹)(ι z) ∘ j`.
+  have hderiv : ∀ z ∈ ι ⁻¹' Φ.target, fderiv ℝ χ z = (fderiv ℝ (ψ ∘ Φ.symm) (ι z)).comp j := by
+    intro z hz
+    have hΦsd : DifferentiableAt ℝ Φ.symm (ι z) :=
+      (hΦs.differentiableOn one_ne_zero _ hz).differentiableAt (Φ.open_target.mem_nhds hz)
+    have hψd : DifferentiableAt ℝ ψ (Φ.symm (ι z)) :=
+      (hψ.differentiableOn one_ne_zero _ (Φ.map_target hz)).differentiableAt
+        (Φ.open_source.mem_nhds (Φ.map_target hz))
+    have hχeq : χ = (ψ ∘ Φ.symm) ∘ ι := rfl
+    rw [hχeq, fderiv_comp z (hψd.comp (ι z) hΦsd) (hιd z).differentiableAt, (hιd z).fderiv]
+  -- Steps 7, 9, 10: apply (AF) on `(V, χ, S)` and compare the integrands pointwise.
+  rw [himg, hAF (ι ⁻¹' Φ.target) χ hV hχ hχi (ι ⁻¹' (Φ '' B)) hSV hS, ← lintegral_indicator hS]
+  refine lintegral_congr fun z ↦ ?_
+  by_cases hz : z ∈ ι ⁻¹' (Φ '' B)
+  · rw [Set.indicator_of_mem hz, Set.indicator_of_mem (show WithLp.toLp 2 (y, z) ∈ Φ '' B from hz),
+      hderiv z (hSV hz)]
+  · rw [Set.indicator_of_notMem hz,
+      Set.indicator_of_notMem (show WithLp.toLp 2 (y, z) ∉ Φ '' B from hz)]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
