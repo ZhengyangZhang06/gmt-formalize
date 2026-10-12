@@ -858,6 +858,71 @@ theorem rsod_exists_translated_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)
   exact ⟨W, hc, hm, hw, Submission.rsod_tv_support_eq n ℓ U V x₀ W hw,
     Submission.rsod_tv_meanCurvature n ℓ U V x₀ W hw hT,
     Submission.rsod_tv_locallyLp n ℓ U V x₀ W hw⟩
+/-- **Allard hypotheses at small scales** (Simon Ch. 5, proof of Theorem 7.1 and Corollary 7.3):
+at a point `0 ∈ U` with `Θⁿ(μ_V, 0) = 1`, the hypotheses 5.1 hold for every `δ > 0` at all small
+radii `ρ`.  Density one forces `0 ∈ spt μ_V` and `ω_n⁻¹ ρ⁻ⁿ μ_V(B_ρ(0)) < 1 + δ` for small `ρ`,
+while `(ρ^{p−n} ∫_{B_ρ(0)} |H|ᵖ dμ_V)^{1/p} ≤ (ρ^{p−n} ∫_{B_{ρ₁}(0)} |H|ᵖ dμ_V)^{1/p} → 0`
+since `p > n` and `H ∈ Lᵖ_loc`. -/
+theorem rsod_allardHypotheses_small_scale : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U →
+    ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p →
+    V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) →
+    (0 : Amb n ℓ) ∈ U → V.HasDensity 0 1 → ∀ δ : ℝ, 0 < δ →
+    ∃ ρ : ℝ, V.AllardHypotheses H p δ ρ := by
+  intro n ℓ hn U hU V H p hp hH hLp hmult h0U hdens δ hδ
+  -- `ω_n > 0`, so `ω_n rⁿ > 0` for `r > 0`.
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  have hpos : ∀ r : ℝ, 0 < r → ENNReal.ofReal (unitBallVolume n * r ^ n) ≠ 0 := fun r hr =>
+    (ENNReal.ofReal_pos.2 (mul_pos hω (pow_pos hr n))).ne'
+  unfold RectifiableVarifold.HasDensity at hdens
+  rw [ENNReal.ofReal_one] at hdens
+  -- `0 ∈ spt μ_V`: otherwise `μ_V(B_r(0)) = 0` for small `r`, and the density would be `0`.
+  have hsupp : (0 : Amb n ℓ) ∈ V.weight.support := by
+    by_contra h
+    obtain ⟨G, hG, hG0⟩ := Measure.notMem_support_iff_exists.1 h
+    obtain ⟨ε, hε, hεG⟩ := nhds_basis_closedBall.mem_iff.1 hG
+    have h0 : Tendsto (fun r : ℝ => V.weight (closedBall 0 r) /
+        ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 0) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Ioc_mem_nhdsGT hε] with r hr
+      rw [measure_mono_null ((closedBall_subset_closedBall hr.2).trans hεG) hG0, ENNReal.zero_div]
+    exact zero_ne_one (tendsto_nhds_unique h0 hdens)
+  -- A closed ball `B_{ρ₁}(0) ⊆ U`; it is compact, so `∫_{B_{ρ₁}(0)} |H|ᵖ dμ_V < ∞`.
+  obtain ⟨ρ₁, hρ₁, hρ₁U⟩ := nhds_basis_closedBall.mem_iff.1 (hU.mem_nhds h0U)
+  have hA := hLp _ (isCompact_closedBall 0 ρ₁) hρ₁U
+  -- The mass ratio is eventually `< 1 + δ`.
+  have hmass : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      V.weight (closedBall 0 r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * r ^ n)) := by
+    have h1 : (1 : ℝ≥0∞) < ENNReal.ofReal (1 + δ) := by
+      rw [← ENNReal.ofReal_one, ENNReal.ofReal_lt_ofReal_iff (by linarith)]
+      linarith
+    filter_upwards [hdens.eventually_lt_const h1, self_mem_nhdsWithin] with r hr hr0
+    rw [ENNReal.ofReal_mul (by linarith)]
+    exact (ENNReal.div_le_iff (hpos r hr0) ENNReal.ofReal_ne_top).1 hr.le
+  -- The scaled `Lᵖ` norm is eventually `≤ δ`, since `(r^{p−n} A)^{1/p} → 0` for `p > n`.
+  have hlp : ∀ᶠ r in 𝓝[>] (0 : ℝ), V.scaledLpNorm H p 0 r ≤ ENNReal.ofReal δ := by
+    have hpn : 0 < p - n := sub_pos.2 hp
+    have hp0 : 0 < 1 / p := one_div_pos.2 ((Nat.cast_nonneg n).trans_lt hp)
+    have h1 : Tendsto (fun r : ℝ => r ^ (p - n)) (𝓝[>] 0) (𝓝 0) := by
+      have := (Real.continuousAt_rpow_const 0 (p - n) (Or.inr hpn.le)).tendsto
+      rw [Real.zero_rpow hpn.ne'] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    have h2 := ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hA.ne)
+    rw [ENNReal.ofReal_zero, zero_mul] at h2
+    have h3 : Tendsto (fun r : ℝ => (ENNReal.ofReal (r ^ (p - n)) *
+        ∫⁻ x in closedBall 0 ρ₁, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p)) (𝓝[>] 0) (𝓝 0) := by
+      have := ((ENNReal.continuous_rpow_const (y := 1 / p)).tendsto 0).comp h2
+      rwa [ENNReal.zero_rpow_of_pos hp0] at this
+    filter_upwards [h3.eventually_lt_const (ENNReal.ofReal_pos.2 hδ), Ioc_mem_nhdsGT hρ₁]
+      with r hr hrρ
+    refine le_trans ?_ hr.le
+    unfold RectifiableVarifold.scaledLpNorm
+    gcongr
+    exact hrρ.2
+  -- Any radius in all three eventual sets works.
+  obtain ⟨ρ, ⟨hρmass, hρlp⟩, hρ0, hρρ₁⟩ := ((hmass.and hlp).and (Ioc_mem_nhdsGT hρ₁)).exists
+  exact ⟨ρ, hρ0, hH, hmult, ⟨h0U, hsupp⟩, (closedBall_subset_closedBall hρρ₁).trans hρ₁U,
+    hρmass, hρlp⟩
 
 end Submission
 
