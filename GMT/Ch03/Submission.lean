@@ -4,7 +4,6 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Topology.EMetricSpace.Lipschitz
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter03.Rectifiable
-import Poincare.SimonGMT.Chapter02.WeightedArea
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 3 "Countably n-Rectifiable Sets" (pp. 69–84): contract
@@ -2453,26 +2452,6 @@ theorem Submission.chart_coarea_jacobian_identification : ∀ (n N m : ℕ) (M :
     hA rfl fun v hv ↦ ?_
   show Γ v = L ⟨A v, hv⟩
   rw [show (⟨A v, hv⟩ : T) = e v from Subtype.ext (he v).symm, hLe]
-/-- Parent 0.1 of the co-area formula on a chart piece, the case `m = 0`: `ℝ⁰` is a point,
-`L⁰` is the unit point mass, `J^{M*}_f ≡ 1` (the adjoint `ℝ⁰ → T_x M` has zero-dimensional
-domain) and every slice `B ∩ f⁻¹(y)` is `B`, so both sides equal `∫_B φ dHᵏ`. -/
-theorem Submission.chartPC_coarea_dim_zero {k ℓ : ℕ} (M : Set (Rn (0 + k + ℓ)))
-    (θ : Rn (0 + k + ℓ) → ℝ) (f : Rn (0 + k + ℓ) → Rn 0) (B : Set (Rn (0 + k + ℓ)))
-    (φ : Rn (0 + k + ℓ) → ℝ≥0∞) :
-    AEMeasurable (fun y : Rn 0 ↦ ∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) volume ∧
-      ∫⁻ x in B, φ x * ENNReal.ofReal (coareaJacobian (approxTangentPlane (0 + k) M θ x) f x)
-          ∂μHE[0 + k] =
-        ∫⁻ y, (∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) ∂volume := by
-  refine ⟨Subsingleton.measurable.aemeasurable, ?_⟩
-  have hslice : ∀ y : Rn 0, B ∩ f ⁻¹' {y} = B := fun y ↦
-    inter_eq_left.2 fun x _ ↦ Subsingleton.elim (f x) y
-  have hJ : ∀ x, coareaJacobian (approxTangentPlane (0 + k) M θ x) f x = 1 := fun x ↦
-    LinearMap.normDet_of_subsingleton _
-  have hμ : (μHE[0 + k] : Measure (Rn (0 + k + ℓ))) = μHE[k] :=
-    congrArg (fun d ↦ (μHE[d] : Measure (Rn (0 + k + ℓ)))) (Nat.zero_add k)
-  simp only [hslice, hJ, hμ, ENNReal.ofReal_one, mul_one, lintegral_const,
-    volume_euclideanSpace_eq_dirac, measure_univ]
-
 /-- **Simon Ch. 3, co-area formula (2.9) on one `C¹` chart piece** (`chapter-03.txt` lines
 412–428: (2.8) "follows from the `C¹` case … in a similar manner to the procedure used for the
 discussion of the area formula", lines 377–389). Assume the chart lemma (CT), the frozen
@@ -2482,14 +2461,17 @@ statement of `Submission.chart_approx_tangent_and_differential`. Let `n = m + k`
 for Borel `B ⊆ ψ(E) ∩ M` and Borel `φ ≥ 0`, `y ↦ ∫_{B ∩ f⁻¹(y)} φ dHᵏ` is `Lᵐ`-a.e.
 measurable and `∫_B φ J^{M*}_f dHⁿ = ∫_{ℝᵐ} ∫_{B ∩ f⁻¹(y)} φ dHᵏ dLᵐ(y)`.
 
-Proof: for `m = 0` see `chartPC_coarea_dim_zero`. Otherwise pull `B` back to the Borel set
-`B' = E ∩ ψ⁻¹(B)`; then `ψ(B') = B` and `B ∩ f⁻¹(y) = ψ(B' ∩ G⁻¹(y))`, so the right side is
-the `C¹` parametric co-area formula `Submission.c1_parametric_coarea_formula` on `B'`. The left
-side is `∫_{B'} φ(ψ u) J^{M*}_f(ψ u) Jψ(u) du` by the injective area formula for `ψ` (SimonGMT
-`weighted_area_formula_volume_of_injective_derivative`, arbitrary non-negative integrand), and
-(CT) with `Submission.chart_coarea_jacobian_identification` gives
+Proof: for `m = 0`, `ℝ⁰` is a point carrying the unit mass, `J^{M*}_f ≡ 1` (the adjoint has
+zero-dimensional domain) and every slice `B ∩ f⁻¹(y)` is `B`. Otherwise pull `B` back to the
+Borel set `B' = E ∩ ψ⁻¹(B)`; then `ψ(B') = B` and `B ∩ f⁻¹(y) = ψ(B' ∩ G⁻¹(y))`, so the right
+side is the `C¹` parametric co-area formula `Submission.c1_parametric_coarea_formula` on `B'`.
+For the left side, the `C¹` area formula `Submission.pcoarea_c1_injOn_area_formula` on the Borel
+sets `B' ∩ ψ⁻¹(T)` gives `Hⁿ ⌞ B = (ψ|_{B'})_# (Jψ Lⁿ ⌞ B')`, `Jψ = normDet Dψ`, and `ψ|_{B'}`
+is a measurable embedding (Lusin–Souslin), so `∫_B g dHⁿ = ∫_{B'} Jψ(u) g(ψ u) du` for every
+`g ≥ 0`, measurable or not; thus the measurability of `J^{M*}_f` is not needed. Finally (CT) and
+`Submission.chart_coarea_jacobian_identification` give
 `J^{M*}_f(ψ u) Jψ(u) = normDet(Dψ(u) ∘ ι_{ker DG(u)}) normDet(DG(u)*)`, the `C¹` integrand, for
-`Lⁿ`-a.e. `u ∈ B'` (`Jψ = normDet Dψ`; `D(f ∘ ψ)(u) = DG(u)` on `E`). -/
+`Lⁿ`-a.e. `u ∈ B'` (`D(f ∘ ψ)(u) = DG(u)` on `E`). -/
 theorem Submission.chart_piece_coarea_formula : (∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ)))
     (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)),
     NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U →
@@ -2516,7 +2498,16 @@ theorem Submission.chart_piece_coarea_formula : (∀ (n ℓ p : ℕ) (M U : Set 
   intro hCT m k ℓ M U θ f D E ψ G hk hM hθ hU hMU hf hD hψ hψinj _ hψD hG hE hED hEG
     B hB hBm φ hφ
   rcases Nat.eq_zero_or_pos m with rfl | hm
-  · exact Submission.chartPC_coarea_dim_zero M θ f B φ
+  · -- `m = 0`: `ℝ⁰` is a point carrying the unit mass, `J^{M*}_f ≡ 1` and every slice is `B`.
+    refine ⟨Subsingleton.measurable.aemeasurable, ?_⟩
+    have hslice : ∀ y : Rn 0, B ∩ f ⁻¹' {y} = B := fun y ↦
+      inter_eq_left.2 fun x _ ↦ Subsingleton.elim (f x) y
+    have hJ : ∀ x, coareaJacobian (approxTangentPlane (0 + k) M θ x) f x = 1 := fun x ↦
+      LinearMap.normDet_of_subsingleton _
+    have hμ : (μHE[0 + k] : Measure (Rn (0 + k + ℓ))) = μHE[k] :=
+      congrArg (fun d ↦ (μHE[d] : Measure (Rn (0 + k + ℓ)))) (Nat.zero_add k)
+    simp only [hslice, hJ, hμ, ENNReal.ofReal_one, mul_one, lintegral_const,
+      volume_euclideanSpace_eq_dirac, measure_univ]
   -- The Borel parameter set `B' = E ∩ ψ⁻¹(B)`, with `ψ(B') = B`.
   set B' : Set (Rn (m + k)) := E ∩ ψ ⁻¹' B with hB'
   have hB'D : B' ⊆ D := inter_subset_left.trans hED
@@ -2546,12 +2537,47 @@ theorem Submission.chart_piece_coarea_formula : (∀ (n ℓ p : ℕ) (M U : Set 
   simp only [hslice] at hmeas hc1
   refine ⟨hmeas, ?_⟩
   rw [← hc1]
-  -- Left side: the injective area formula for `ψ` on `B'`, with an arbitrary integrand.
-  have harea := Poincare.SimonGMT.Chapter02.weighted_area_formula_volume_of_injective_derivative
-    hB'm (fun u hu ↦ (hψ.contDiffAt (hD.mem_nhds (hB'D hu))).differentiableAt one_ne_zero)
-    (fun u hu ↦ hψD u (hB'D hu)) (hψinj.mono hB'D)
-    fun x ↦ φ x * ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ x) f x)
-  rw [himage, finrank_euclideanSpace_fin] at harea
+  -- Left side: `Hⁿ ⌞ B` is the image of `Jψ Lⁿ ⌞ B'` under the measurable embedding `ψ|_{B'}`
+  -- (Lusin–Souslin), by the `C¹` area formula on the Borel sets `B' ∩ ψ⁻¹(T)`.
+  have hndcont : Continuous fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦ L.toLinearMap.normDet := by
+    have h1 : Continuous (fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦
+        ContinuousLinearMap.adjoint L ∘L L) :=
+      ContinuousLinearMap.adjoint.continuous.clm_comp continuous_id
+    have h2 : Continuous (fun L : Rn (m + k) →L[ℝ] Rn (m + k + ℓ) ↦
+        Real.sqrt (ContinuousLinearMap.adjoint L ∘L L).det) :=
+      Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp h1)
+    refine h2.congr fun L ↦ ?_
+    rw [← ContinuousLinearMap.normDet_sq L]
+    exact Real.sqrt_sq (LinearMap.normDet_nonneg _)
+  have hwm : Measurable fun u ↦ ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet :=
+    ENNReal.measurable_ofReal.comp (hndcont.measurable.comp (measurable_fderiv ℝ ψ))
+  have hemb : MeasurableEmbedding (B'.domRestrict ψ) :=
+    ContinuousOn.measurableEmbedding hB'm (hψ.continuousOn.mono hB'D) (hψinj.mono hB'D)
+  have hmap : Measure.map (B'.domRestrict ψ) (Measure.comap Subtype.val
+      (volume.withDensity fun u ↦ ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet)) =
+      (μHE[m + k] : Measure (Rn (m + k + ℓ))).restrict B := by
+    ext T hT
+    have hS : Subtype.val '' (B'.domRestrict ψ ⁻¹' T) = B' ∩ ψ ⁻¹' T := by
+      rw [domRestrict_eq, preimage_comp, Subtype.image_preimage_coe]
+    have hSm : MeasurableSet (B' ∩ ψ ⁻¹' T) := hS ▸ hB'm.subtype_image (hemb.measurable hT)
+    have hTB : T ∩ B = ψ '' (B' ∩ ψ ⁻¹' T) := by rw [image_inter_preimage, himage, inter_comm]
+    have h := Submission.pcoarea_c1_injOn_area_formula (m + k) (m + k + ℓ) D ψ hD hψ hψinj
+      (B' ∩ ψ ⁻¹' T) (inter_subset_left.trans hB'D) hSm 1 measurable_const
+    simp only [Pi.one_apply, one_mul, setLIntegral_one] at h
+    rw [hemb.map_apply, comap_subtype_coe_apply hB'm, hS, withDensity_apply _ hSm,
+      Measure.restrict_apply hT, hTB, h]
+  -- Hence `∫_B g dHⁿ = ∫_{B'} Jψ (g ∘ ψ) dLⁿ` for the (possibly non-measurable) integrand `g`.
+  have harea : ∫⁻ x in B, φ x * ENNReal.ofReal
+        (coareaJacobian (approxTangentPlane (m + k) M θ x) f x) ∂μHE[m + k] =
+      ∫⁻ u in B', ENNReal.ofReal (fderiv ℝ ψ u).toLinearMap.normDet * (φ (ψ u) *
+        ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u))) := by
+    rw [← hmap, hemb.lintegral_map]
+    simp only [domRestrict_apply]
+    rw [lintegral_subtype_comap hB'm (fun u ↦ φ (ψ u) *
+        ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u))),
+      setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable _ hwm _ hB'm
+        (ae_of_all _ fun _ ↦ ENNReal.ofReal_lt_top)]
+    rfl
   rw [harea]
   -- Pointwise for a.e. `u ∈ B'`: `J^{M*}_f(ψ u) Jψ(u)` is the integrand of the `C¹` formula.
   refine setLIntegral_congr_fun_ae hB'm ?_
@@ -2563,7 +2589,7 @@ theorem Submission.chart_piece_coarea_formula : (∀ (n ℓ p : ℕ) (M U : Set 
     (fderiv ℝ ψ u) (fderiv ℝ G u) (hθ.1 _ huM).ne' (hψD u (hB'D huB')) htan hline).2.2
   have hJ0 : 0 ≤ coareaJacobian (approxTangentPlane (m + k) M θ (ψ u)) f (ψ u) :=
     LinearMap.normDet_nonneg _
-  rw [← hJ, ENNReal.ofReal_mul hJ0, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
+  rw [← hJ, ENNReal.ofReal_mul hJ0]
   ring
 
 /-- The frozen Chapter 3 contract. -/
