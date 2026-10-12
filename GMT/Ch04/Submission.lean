@@ -3972,6 +3972,32 @@ theorem Submission.canonical_representatives : ApproxTangentAE →
     rw [hCarrier] at hPair hWeight hOne
     exact ⟨hOne, hPair, hWeight⟩
 
+/-- **Classical tangent plane** (Ch. 4, 6.3). The uniform lower density bound 6.3(1),
+`μ_V(B_s(ζ)) ≥ (ωₙ/2) sⁿ` for `ζ ∈ spt V` near `x` and small `s`, comes from 4.7 and 4.10(1);
+the blow-up to `c Hⁿ ⌞ P` makes the mass of `B_ρ(x)` away from `x + P` of order `o(ρⁿ)`; and 6.3(2)
+combines the two into the flatness of `spt V` at `x`. -/
+theorem Submission.classical_tangent : ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ),
+    0 < n → IsFiniteMeasureOnCompacts V.weight ∧
+      (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+      AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) →
+    ClassicalTangent := by
+  intro hTangent hStruct
+  -- 4.7–4.9 (`LpMonotonicity`, `LpDensity`) and 4.10(1) (`LpSupportRepresentation`).
+  obtain ⟨-, -, hLpMono, hLpDensity⟩ := Submission.mean_curvature_monotonicity hStruct
+  obtain ⟨-, hLpSupport⟩ := Submission.canonical_representatives hTangent hStruct
+  intro n ℓ V U H p x P hn hU hH hθ hp hLp hx hP
+  have hfin : IsFiniteMeasureOnCompacts V.weight := (hStruct n ℓ V hn).1
+  -- 6.3(1): `μ_V(B_s(ζ)) ≥ (ωₙ/2) sⁿ` for `ζ ∈ spt V ∩ B_{ρ₀}(x)` and `0 < s ≤ ρ₀`.
+  obtain ⟨ρ₀, hρ₀, hlower⟩ := Submission.classical_tangent_uniform_lower_density hLpMono
+    hLpDensity hLpSupport n ℓ V U H p x hn hU hH hθ hp hLp hx
+  have hω : 0 < omega n :=
+    ENNReal.toReal_pos (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+      measure_ball_lt_top.ne
+  -- 6.3(2), fed by the blow-up: `ρ⁻ⁿ μ_V(B_ρ(x) \ {dist(· - x, P) < ερ}) → 0` for every `ε > 0`.
+  exact Submission.classical_tangent_support_flatness n ℓ V.weight V.support x P (omega n / 2) ρ₀
+    hfin (half_pos hω) hρ₀ hlower fun ε hε ↦
+      Submission.classical_tangent_off_plane_mass_decay n ℓ V x P ε hfin hP hε
+
 end
 
 end GMT.Ch04
