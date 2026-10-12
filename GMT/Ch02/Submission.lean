@@ -5223,6 +5223,24 @@ theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞
   exact .biUnion hTc fun y hy ↦
     (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
+/-- **Simon Ch. 2, Lemma 5.5(2) and Lemma 5.11 (pp. 63–65).** If `Ū ∩ M` is compact, a `C²`
+submanifold `M` is stationary in the open set `U` iff `H ≡ 0` on `M ∩ U`. If `M` is stationary in
+`U`, `(M̄ \ M) ∩ U = ∅` and a `C³` deformation has initial velocity `X` normal to `M`, the second
+variation is `∫_M (∑ᵢ |(D_{τᵢ}X)^⊥|² - ∑_{i,j} (X · B(τᵢ, τⱼ))²) dHⁿ`. The two directions of
+5.5(2) are `stationary_imp_mean_curvature_zero` and `mean_curvature_zero_imp_stationary`, and
+Lemma 5.11 is `second_variation_stationary_of_variations`. These take as hypotheses the
+tangent-space facts 4.1–4.3 (`simon_submanifold_tangent_basics`) and the first (5.3) and, for
+5.11, second (5.4) variation formulas (`first_and_second_variation`). -/
+theorem Submission.stationary_mean_curvature_and_stable_variation :
+    StationaryIffMeanCurvatureZero ∧ SecondVariationStationary :=
+  ⟨fun n ℓ M U hM hU hUM ↦
+      ⟨Submission.stationary_imp_mean_curvature_zero Submission.simon_submanifold_tangent_basics
+          Submission.first_and_second_variation.1 n ℓ M U hM hU,
+        Submission.mean_curvature_zero_imp_stationary Submission.simon_submanifold_tangent_basics
+          Submission.first_and_second_variation.1 n ℓ M U hM hU hUM⟩,
+    Submission.second_variation_stationary_of_variations Submission.simon_submanifold_tangent_basics
+      Submission.first_and_second_variation.1 Submission.first_and_second_variation.2⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
