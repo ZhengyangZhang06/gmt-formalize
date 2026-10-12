@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1.grad_norm_sq-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1",
+  "depth": 6,
+  "title": "Operator norm of a linear functional on R^n via its gradient coordinates",
+  "statement": "Let n ∈ ℕ and ℝⁿ = Euclid n, with standard basis e_i := EuclideanSpace.single i 1 (i ∈ Fin n). Let L : ℝⁿ →L[ℝ] ℝ be a continuous linear functional with operator norm ‖L‖. Then:\n(i) ‖L‖² = Σ_i L(e_i)²;\n(ii) for every a : Fin n → ℝ, |Σ_i L(e_i)·a_i| ≤ ‖L‖·√(Σ_i a_i²).",
+  "lean_statement": "∀ (n : ℕ) (L : Euclid n →L[ℝ] ℝ), ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 ∧ ∀ a : Fin n → ℝ, |∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) * a i| ≤ ‖L‖ * Real.sqrt (∑ i : Fin n, a i ^ 2)",
+  "lean_name": "dorag_ha_lsc_grad_norm_sq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6113d5ce09-a1"
+}

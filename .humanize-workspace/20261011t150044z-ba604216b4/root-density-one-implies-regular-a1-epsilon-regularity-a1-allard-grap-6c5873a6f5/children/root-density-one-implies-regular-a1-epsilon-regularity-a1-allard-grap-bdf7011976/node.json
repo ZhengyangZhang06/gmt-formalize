@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1.ibp_lipschitz-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1",
+  "depth": 6,
+  "title": "Integration by parts for Lipschitz functions against C^1_c fields supported in the ball",
+  "statement": "Let n ∈ ℕ, R ∈ ℝ, B := B̆_R(0) ⊆ ℝⁿ (ℝⁿ = Euclid n), e_i := EuclideanSpace.single i 1, and D = fderiv ℝ (so Du(x) = 0 at points where u is not differentiable). Let u : ℝⁿ → ℝ be Lipschitz. Let Φ_0, …, Φ_{n−1} : ℝⁿ → ℝ be C¹, each with compact support and tsupport Φ_i ⊆ B. Then\n∫_B Σ_i Du(x)(e_i)·Φ_i(x) dx = −∫_B u(x)·Σ_i DΦ_i(x)(e_i) dx.",
+  "lean_statement": "∀ (n : ℕ) (R : ℝ) (u : Euclid n → ℝ) (Φ : Fin n → Euclid n → ℝ), (∃ L : NNReal, LipschitzWith L u) → (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u x (EuclideanSpace.single i (1 : ℝ)) * Φ i x = -∫ x in ball (0 : Euclid n) R, u x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "dorag_ha_lsc_ibp_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-bdf7011976-a1"
+}
