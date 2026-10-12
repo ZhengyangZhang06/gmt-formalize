@@ -470,6 +470,51 @@ theorem Submission.lpf_raf_jacobian_identity : ((∀ (P n : ℕ) (v : Fin n → 
     h5 Q (fun i => L (A (EuclideanSpace.single i 1))), h2, h3, h7, h7, h6, h4]
   ring
 
+/-- A.e. Jacobian identity on a `C¹` antilipschitz chart (Simon Ch. 6, 3.9 via Ch. 3, 2.4–2.5):
+for `Lⁿ`-a.e. `w ∈ Ω ∩ Φ⁻¹(M)`, `θ(Φ w) > 0`, the orientation `ξ(Φ w) = ±τ₁ ∧ ⋯ ∧ τₙ` holds
+(its `Hⁿ`-null exceptional set pulls back to an `Lⁿ`-null set), the tangent plane
+`range DΦ(w) = span τ` is unique, and the Jacobian identity with `D(f ∘ Φ)(w) = L(Φ w) ∘ DΦ(w)`
+gives `‖L(Φ w)_# ξ(Φ w)‖ · JΦ(w) = J(f ∘ Φ)(w)`. -/
+theorem Submission.lpf_raf_chart_jacobian_ae : ((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)), IsRectifiableTriple U n M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → (∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), HasWeightedApproximateTangentSpaceAt n M θ (Φ w) (LinearMap.range (fderiv ℝ Φ w).toLinearMap) ∧ HasFDerivAt (f ∘ Φ) ((L (Φ w)).comp (fderiv ℝ Φ w)) w) → ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), ‖nVectorPushforward n (L (Φ w)) (ξ (Φ w))‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) = ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single i 1)) (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single j 1))).det) := by
+  intro hS P Q n U M θ ξ f L Φ Ω hM hΩ hΦ hanti hae
+  obtain ⟨c, hc, hΦc⟩ := hanti
+  -- Step 1: `S = Ω ∩ Φ⁻¹(M)` is `Lⁿ`-null-measurable: a Borel part plus an `Lⁿ`-null part.
+  have hSnm : NullMeasurableSet (Ω ∩ Φ ⁻¹' M) (volume : Measure (Eucl n)) := by
+    obtain ⟨B, hBM, hB, hBae⟩ := hM.nullMeasurableSet.exists_measurable_subset_ae_eq
+    have hnull : (volume : Measure (Eucl n)) (Ω ∩ Φ ⁻¹' (M \ B)) = 0 :=
+      Submission.lpf_raf_chart_preimage_null P n Φ Ω c hc hΦc _ (ae_eq_set.mp hBae).2
+    have heq : Ω ∩ Φ ⁻¹' M = (Ω ∩ Φ ⁻¹' B) ∪ (Ω ∩ Φ ⁻¹' (M \ B)) := by
+      ext w
+      by_cases hwB : Φ w ∈ B
+      · simp [hwB, hBM hwB]
+      · simp [hwB]
+    rw [heq]
+    exact (hΩ.measurableSet.inter (hB.preimage hΦ.continuous.measurable)).nullMeasurableSet.union
+      (NullMeasurableSet.of_null hnull)
+  -- Step 2: the `Hⁿ`-null set where `orients` fails pulls back to an `Lⁿ`-null set.
+  have hor := ae_iff.mp ((ae_restrict_iff'₀ hM.nullMeasurableSet).mp hM.orients)
+  have hpull := measure_eq_zero_iff_ae_notMem.mp
+    (Submission.lpf_raf_chart_preimage_null P n Φ Ω c hc hΦc _ hor)
+  -- Step 3: good parameters `w ∈ S`.
+  filter_upwards [hae, ae_restrict_of_ae hpull, ae_restrict_mem₀ hSnm] with w hw hwG hwS
+  obtain ⟨htan, hder⟩ := hw
+  obtain ⟨τ, hτ, hτtan, hξ⟩ : ∃ τ : Fin n → Eucl P, Orthonormal ℝ τ ∧
+      HasWeightedApproximateTangentSpaceAt n M θ (Φ w) (Submodule.span ℝ (range τ)) ∧
+      (ξ (Φ w) = simpleNVector τ ∨ ξ (Φ w) = -simpleNVector τ) := by
+    by_contra hcon
+    exact hwG ⟨hwS.1, fun himp => hcon (himp hwS.2)⟩
+  -- Step 4: `θ(Φ w) > 0`, so the tangent plane is unique: `range DΦ(w) = span τ`.
+  have hrange := htan.unique (hM.pos _ hwS.2).ne' hτtan
+  have hA : ∀ v, fderiv ℝ Φ w v ∈ Submodule.span ℝ (range τ) := fun v => by
+    rw [← hrange]
+    exact LinearMap.mem_range_self _ v
+  -- Step 5: the Jacobian identity for `A = DΦ(w)` and `L(Φ w)`.
+  have hJ := Submission.lpf_raf_jacobian_identity hS P Q n (fderiv ℝ Φ w) τ (ξ (Φ w))
+    (L (Φ w)) hτ hA hξ
+  -- Steps 6–7: chain rule `D(f ∘ Φ)(w) = L(Φ w) ∘ DΦ(w)`, then pass to `[0, ∞]`.
+  rw [hder.fderiv, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
+  exact congrArg ENNReal.ofReal hJ
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
