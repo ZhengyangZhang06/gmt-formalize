@@ -651,6 +651,90 @@ theorem Submission.fiw_tb_lcc_face_integral_pos : ∀ (n N : ℕ) (ρ : ℝ) (F 
         · exact (hs j (mem_univ j)).1.le
         · exact (hs j (mem_univ j)).2.le
 
+/-- Local isolating form for a lattice face: near any point `x` of the face `F₀ = ρ (z + F_α)`
+and inside any open `W ∋ x` there is a test form `ω = (ψ φ) • dx^α` on `ℝ^N` with
+`tsupport ω ⊆ W`, `[[F]](ω) = 0` for every other face `F ≠ F₀` and `[[F₀]](ω) > 0`. -/
+theorem Submission.fiw_tb_lcc_local_isolating_form : ∀ (n N : ℕ) (ρ : ℝ) (F₀ : LatticeFaceIndex n N) (x : Eucl N) (W : Set (Eucl N)), 0 < ρ → x ∈ latticeFace ρ F₀ → IsOpen W → x ∈ W → ∃ ω : TestFormOn (univ : Set (Eucl N)) n, tsupport (ω : DifferentialForm (Eucl N) n) ⊆ W ∧ (∀ F : LatticeFaceIndex n N, F ≠ F₀ → latticeFaceAction ρ F (ω : DifferentialForm (Eucl N) n) = 0) ∧ 0 < latticeFaceAction ρ F₀ (ω : DifferentialForm (Eucl N) n) := by
+  intro n N ρ F₀ x W hρ hx hW hxW
+  obtain ⟨z, α⟩ := F₀
+  -- Step 1: the centre `c` of the face.
+  set c : Eucl N := WithLp.toLp 2 (fun i => if i ∈ range α then ρ * ((z i : ℝ) + 1 / 2)
+    else ρ * (z i : ℝ)) with hc
+  -- Step 2: a point `p = x + t (c - x)`, `0 < t ≤ 1`, of `W`.
+  have hcont : Continuous fun t : ℝ => x + t • (c - x) := by fun_prop
+  have h0 : (0 : ℝ) ∈ (fun t : ℝ => x + t • (c - x)) ⁻¹' W := by simpa using hxW
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 (hW.preimage hcont) 0 h0
+  set t : ℝ := min (ε / 2) 1 with ht
+  have ht0 : 0 < t := lt_min (half_pos hε) one_pos
+  have ht1 : t ≤ 1 := min_le_right _ _
+  have htε : t < ε := lt_of_le_of_lt (min_le_left _ _) (half_lt_self hε)
+  set p : Eucl N := x + t • (c - x) with hp
+  have hpW : p ∈ W :=
+    hball (by rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos ht0]; exact htε)
+  have hpcoord : ∀ i, p i = x i + t * (c i - x i) := fun i => by simp [hp]
+  -- Step 3: `p` lies in the shrunken face `K_{t/2}`, hence in the open face.
+  have hpK : ∀ i : Fin N, (i ∈ range α → ρ * ((z i : ℝ) + t / 2) ≤ p i ∧
+      p i ≤ ρ * ((z i : ℝ) + 1 - t / 2)) ∧ (i ∉ range α → p i = ρ * (z i : ℝ)) := by
+    intro i
+    constructor
+    · intro hi
+      obtain ⟨h1, h2⟩ := (hx i).1 hi
+      have hci : c i = ρ * ((z i : ℝ) + 1 / 2) := by
+        simp only [hc, PiLp.toLp_apply, hi, ↓reduceIte]
+      rw [hpcoord, hci]
+      constructor <;> nlinarith
+    · intro hi
+      have hci : c i = ρ * (z i : ℝ) := by
+        simp only [hc, PiLp.toLp_apply, hi, ↓reduceIte]
+      rw [hpcoord, hci, (hx i).2 hi]
+      ring
+  have hpopen : ∀ i : Fin N, (i ∈ range α → ρ * (z i : ℝ) < p i ∧ p i < ρ * ((z i : ℝ) + 1)) ∧
+      (i ∉ range α → p i = ρ * (z i : ℝ)) := by
+    intro i
+    refine ⟨fun hi => ?_, (hpK i).2⟩
+    obtain ⟨h1, h2⟩ := (hpK i).1 hi
+    constructor <;> nlinarith
+  -- Step 4: a bump `ψ` at `p` supported in `W`, the cut-off `φ` of the face, `dx^α`.
+  obtain ⟨ψ, hψW, hψc, hψs, hψr, hψp⟩ :=
+    exists_contDiff_tsupport_subset (n := (⊤ : ℕ∞)) (hW.mem_nhds hpW)
+  obtain ⟨φ, hφs, hφc, hφ01, hφ1, hφ0⟩ :=
+    Submission.isoperimetric_lattice_face_cutoff n N ρ (t / 2) z α hρ (half_pos ht0)
+  obtain ⟨hηα, hηne, -⟩ := Submission.isoperimetric_coord_covector_eval n N α
+  set η : Covector (Eucl N) n := wedgeCovectors n (fun i => EuclideanSpace.proj (α i))
+  -- Step 5: the test form `ω = (ψ φ) • dx^α`.
+  have hgs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y => ψ y * φ y) := hψs.mul hφs
+  have hgc : HasCompactSupport (fun y => ψ y * φ y) := hψc.mul_right
+  obtain ⟨ω, hωx⟩ : ∃ ω : TestFormOn (univ : Set (Eucl N)) n,
+      ∀ y, (ω : DifferentialForm (Eucl N) n) y = (ψ y * φ y) • η :=
+    ⟨⟨fun y => (ψ y * φ y) • η, ⟨hgs.smul contDiff_const, hgc.smul_right (f' := fun _ => η)⟩,
+      subset_univ _⟩, fun _ => rfl⟩
+  have hωv : ∀ y (v : Fin n → Eucl N), (ω : DifferentialForm (Eucl N) n) y v = ψ y * φ y * η v :=
+    fun y v => by rw [hωx, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+  refine ⟨ω, ?_, ?_, ?_⟩
+  -- Step 6: `tsupport ω ⊆ tsupport ψ ⊆ W`.
+  · have hω : (ω : DifferentialForm (Eucl N) n) = fun y => (ψ y * φ y) • η := funext hωx
+    rw [hω]
+    exact (tsupport_smul_subset_left _ _).trans (tsupport_mul_subset_left.trans hψW)
+  -- Step 7: every other face contributes `0`.
+  · rintro ⟨z', α'⟩ hF
+    rw [latticeFaceAction]
+    by_cases hα : α' = α
+    · have hz : z' ≠ z := fun h => hF (by rw [h, hα])
+      refine setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+      rw [hωv, hφ0 z' hz y (by rwa [hα] at hy), mul_zero, zero_mul]
+    · simp only [hωv, hηne α' hα, mul_zero, integral_zero]
+  -- Step 8: `[[F₀]](ω) = ∫_{F₀} ψ φ dHⁿ > 0`.
+  · have hval : latticeFaceAction ρ ((z, α) : LatticeFaceIndex n N)
+          (ω : DifferentialForm (Eucl N) n) =
+        ∫ y in latticeFace ρ ((z, α) : LatticeFaceIndex n N), ψ y * φ y
+          ∂(μHE[n] : Measure (Eucl N)) := by
+      simp only [latticeFaceAction, hωv, hηα, mul_one]
+    rw [hval]
+    refine Submission.fiw_tb_lcc_face_integral_pos n N ρ (z, α) (fun y => ψ y * φ y) p hρ
+      hgs.continuous (fun y => mul_nonneg (hψr ⟨y, rfl⟩).1 (hφ01 y).1) ?_ hpopen
+    rw [hψp, hφ1 p hpK, one_mul]
+    exact one_pos
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
