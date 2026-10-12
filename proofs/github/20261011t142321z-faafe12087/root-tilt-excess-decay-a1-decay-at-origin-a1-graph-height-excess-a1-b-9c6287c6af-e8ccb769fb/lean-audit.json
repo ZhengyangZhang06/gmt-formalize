@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "78dd30a5b113d461abf250e0974b1d0b7da58b23a61dcf76993339b1c275bae2",
+  "git_delta": {
+    "base_commit": "20ae906ba9bb88cff682b568c7262476cac8b103",
+    "candidate_commit": "17633ab19811c6abb97aac28bc0be98f87b1a410",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ghe_lintegral_closedBall_ofReal_eq",
+    "diff_sha256": "ef051d4a77c3cea04fd0ddcae054c29049fe1a2c2517a209a2ffe67d7d8595d7",
+    "source_sha256": "b076af685b259b20788cdd1bff58329d00a9dd24305fd41fc2ab7bff8745ed94",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ghe_lintegral_closedBall_ofReal_eq",
+      "statement": "∀ (n : ℕ) (φ : Rn n → ℝ) (r : ℝ), 0 < r → ContinuousOn φ (closedBall 0 r) → (∀ x ∈ closedBall (0 : Rn n) r, 0 ≤ φ x) → ∫⁻ x in closedBall (0 : Rn n) r, ENNReal.ofReal (φ x) = ENNReal.ofReal (∫ x in ball (0 : Rn n) r, φ x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
