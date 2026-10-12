@@ -597,6 +597,18 @@ theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞
   exact .biUnion hTc fun y hy ↦
     (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
+/-- **Simon Ch. 2, 4.1–4.3 (p. 55).** (1) If `ψ : V → W` is a local representation of `M` of class
+`C^r`, `r ≥ 1`, then `T_{ψ(x)} M = range Dψ(x)` for every `x ∈ V`. (2) An `n`-dimensional `C^r`
+submanifold `M` is a Borel set and `y ↦ P_y` is continuous on `M`. Part (1) is
+`simon_submanifold_tangentSpace_eq_range`. In part (2), `M` is Borel because properness makes it
+locally closed and countably many charts cover it (`simon_submanifold_measurableSet`). On a chart,
+`P_y` is the projection onto `range Dψ(ψ⁻¹ y)`, which depends continuously on `y` because `Dψ` and
+`ψ⁻¹` are continuous (`simon_submanifold_tangentProjection_continuousOn`). -/
+theorem Submission.simon_submanifold_tangent_basics : (∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M :=
+  ⟨Submission.simon_submanifold_tangentSpace_eq_range, fun n N r M hM ↦
+    ⟨Submission.simon_submanifold_measurableSet n N r M hM,
+      Submission.simon_submanifold_tangentProjection_continuousOn n N r M hM⟩⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
