@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b86b3bc3b931a71f821746457761485e11af3a0fab69f77c000d9ac1e84472f1",
+  "git_delta": {
+    "base_commit": "22d08909d4e32a5b6d3a49cf6fd52e5529c7f401",
+    "candidate_commit": "637f03eecd88b5446391251e3a50ba6db1dd82fa",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "anyrad_gc_graph_tangentProj_ae",
+    "diff_sha256": "6925f0f6da9ac14946471a3c53cce6cf5ae0d2b41e4c1337d855bd5931391792",
+    "source_sha256": "4ca73ee51e728bd2fc5e115c448d4f17b432671c44bf03e4ad91d49cb272bc09",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.anyrad_gc_graph_tangentProj_ae",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → (∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂V.weight, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x)))) → ∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
