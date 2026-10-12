@@ -503,6 +503,74 @@ theorem Submission.coarea_normDet_horizontal_comp : ∀ {V X Y : Type} [NormedAd
   rw [hcomp]
   exact LinearMap.normDet_comp_of_finrank_eq _ _ hfin
 
+/-- **Chain rule for the co-area factor** (Simon Ch. 3, (2.7)–(2.8), `chapter-03.txt`
+lines 412–428, where `J^{M*}_f` is reduced to the `C¹` case along charts): let `A : ℝⁿ → ℝᴺ` be
+injective with range `T`, `L : T → ℝᵐ` linear and `Γ = L ∘ A`. Then
+`normDet L* · normDet A = normDet (A ∘ ι_{ker Γ}) · normDet Γ*`.
+The corestriction `A' : ℝⁿ → T` of `A` is bijective with the same `normDet`, `Γ = L ∘ A'` and
+`range L = range Γ`. If `Γ` is not surjective, both adjoints have `normDet` zero
+(`Submission.coarea_normDet_adjoint_eq_horizontal`). Otherwise `normDet P* = normDet (P ∘ ι)` for
+the inclusion `ι` of `(ker P)ᗮ`, `P = L, Γ`; `ker L = A'(K)` for `K = ker Γ`, and with
+`W = (ker L)ᗮ`, `g = p_W ∘ A' ∘ ι_{Kᗮ}`:
+`normDet A' = normDet (A' ∘ ι_K) · normDet g` (`Submission.coarea_normDet_block_triangular`) and
+`normDet (Γ ∘ ι_{Kᗮ}) = normDet (L ∘ ι_W) · normDet g`
+(`Submission.coarea_normDet_horizontal_comp`). -/
+theorem Submission.coarea_normDet_chain_rule : ∀ (n N m : ℕ) (T : Submodule ℝ (Rn N))
+    (A : Rn n →ₗ[ℝ] Rn N) (L : T →ₗ[ℝ] Rn m) (Γ : Rn n →ₗ[ℝ] Rn m), Function.Injective A →
+    LinearMap.range A = T → (∀ (v : Rn n) (hv : A v ∈ T), Γ v = L ⟨A v, hv⟩) →
+    (LinearMap.adjoint L).normDet * A.normDet =
+      (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet := by
+  intro n N m T A L Γ hA hT hΓ
+  -- Step 1(i): `A` corestricts to a bijection `A' : ℝⁿ → T` with `Γ = L ∘ A'`; corestricting
+  -- does not change `normDet`.
+  have hmem : ∀ v, A v ∈ T := fun v ↦ hT ▸ LinearMap.mem_range_self A v
+  obtain ⟨A', hA'⟩ : ∃ A' : Rn n →ₗ[ℝ] T, A' = A.codRestrict T hmem := ⟨_, rfl⟩
+  have hA'v : ∀ v, (A' v : Rn N) = A v := fun v ↦ by rw [hA']; rfl
+  have hbij : Function.Bijective A' := by
+    refine ⟨fun v w h ↦ hA (by rw [← hA'v, ← hA'v, h]), ?_⟩
+    rintro ⟨t, ht⟩
+    obtain ⟨v, rfl⟩ : t ∈ LinearMap.range A := hT ▸ ht
+    exact ⟨v, Subtype.ext (hA'v v)⟩
+  have hΓA' : ∀ v, Γ v = L (A' v) := fun v ↦ by
+    rw [hΓ v (hmem v)]
+    exact congrArg L (Subtype.ext (hA'v v).symm)
+  have hnA : A.normDet = A'.normDet := by
+    rw [hA', LinearMap.normDet_codRestrict]
+  obtain ⟨K, hK⟩ : ∃ K : Submodule ℝ (Rn n), K = LinearMap.ker Γ := ⟨_, rfl⟩
+  rw [← hK]
+  have hnAK : (A ∘ₗ K.subtype).normDet = (A' ∘ₗ K.subtype).normDet := by
+    have hKT : ∀ k : K, (A ∘ₗ K.subtype) k ∈ T := fun k ↦ hmem k
+    have h : A' ∘ₗ K.subtype = (A ∘ₗ K.subtype).codRestrict T hKT :=
+      LinearMap.ext fun k ↦ Subtype.ext (hA'v k)
+    rw [h, LinearMap.normDet_codRestrict]
+  -- Step 2: `range L = range Γ`, since `A'` is onto `T`; so `L` is onto iff `Γ` is.
+  by_cases hsurj : Function.Surjective Γ
+  · -- Step 4: `normDet P* = normDet (P ∘ ι_{(ker P)ᗮ})` for `P = L, Γ`, and `ker L = A'(K)`.
+    have hLsurj : Function.Surjective L := fun y ↦ by
+      obtain ⟨v, hv⟩ := hsurj y
+      exact ⟨A' v, (hΓA' v).symm.trans hv⟩
+    rw [(Submission.coarea_normDet_adjoint_eq_horizontal L).1 hLsurj,
+      (Submission.coarea_normDet_adjoint_eq_horizontal Γ).1 hsurj, ← hK]
+    have hker : LinearMap.ker L = K.map A' := by
+      rw [hK, show Γ = L ∘ₗ A' from LinearMap.ext hΓA', LinearMap.ker_comp,
+        Submodule.map_comap_eq_of_surjective hbij.2]
+    obtain ⟨W, hW⟩ : ∃ W : Submodule ℝ T, W = (LinearMap.ker L)ᗮ := ⟨_, rfl⟩
+    rw [← hW]
+    -- Step 5: `A'` is block triangular along `K ⊕ Kᗮ → A'(K) ⊕ W`.
+    have hblock := Submission.coarea_normDet_block_triangular A' K W hbij (by rw [hW, hker])
+    -- Step 6: `Γ ∘ ι_{Kᗮ} = (L ∘ ι_W) ∘ (p_W ∘ A' ∘ ι_{Kᗮ})`.
+    have hstep := Submission.coarea_normDet_horizontal_comp A' L Γ K W hbij hΓA' hK hW
+    -- Step 7.
+    rw [hnA, hblock, hnAK, hstep]
+    ring
+  · -- Step 3: neither `L` nor `Γ` is onto, so both adjoints have `normDet` zero.
+    have hLsurj : ¬ Function.Surjective L := fun hL ↦ hsurj fun y ↦ by
+      obtain ⟨t, ht⟩ := hL y
+      obtain ⟨v, rfl⟩ := hbij.2 t
+      exact ⟨v, (hΓA' v).trans ht⟩
+    rw [(Submission.coarea_normDet_adjoint_eq_horizontal L).2 hLsurj,
+      (Submission.coarea_normDet_adjoint_eq_horizontal Γ).2 hsurj, zero_mul, mul_zero]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
