@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30d5dfc18817d1e74e2ec7fdc32c10b833a3a57c29745d5e94b10a4d58da4444",
+  "git_delta": {
+    "base_commit": "d38bed062d525d87e927e555d775c21ffbcce6bf",
+    "candidate_commit": "9a020521be660518b150d89b7b64d912ba4468ff",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aal_packing_finite_net",
+    "diff_sha256": "a0eb05b065264dd777966147aca9689409b0fc6174ab194207f6f5e5fbcaaf23",
+    "source_sha256": "d9600857d4bc40c63c732033583809577dc02527ac85cc55125c8f14759f9b83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_packing_finite_net",
+      "statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [OpensMeasurableSpace X] (μ : Measure X) (S E : Set X) (r a b : ℝ), 0 < r → 0 < a → 0 ≤ b → μ E ≤ ENNReal.ofReal b → (∀ y ∈ S, closedBall y r ⊆ E ∧ ENNReal.ofReal a ≤ μ (closedBall y r)) → ∃ F : Finset X, (↑F : Set X) ⊆ S ∧ (F.card : ℝ) * a ≤ b ∧ ∀ y ∈ S, ∃ z ∈ F, dist y z ≤ 2 * r",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
