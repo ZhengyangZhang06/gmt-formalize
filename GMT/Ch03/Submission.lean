@@ -497,38 +497,6 @@ theorem Submission.section3_exists_coordinateProjection_injOn :
       have hi : j i ∈ Finset.univ.image j := Finset.mem_image_of_mem j (Finset.mem_univ i)
       rw [PiLp.sub_apply, ← hcoord _ x (j i) hi, ← hcoord _ y (j i) hi, hxy, sub_self]
     exact sub_eq_zero.mp (congrArg Subtype.val (hzero ⟨x - y, L.sub_mem hx hy⟩ hsel))
-/-- **`C¹` maps send `Lⁿ`-null sets to `Hⁿ`-null sets**: the measure step in Simon Ch. 3,
-proof of Lemma 3.3 (p. 79, `chapter-03.txt` lines 495–496: a `C¹` diffeomorphism `p` gives
-`Hⁿ(p(S ∩ N ∩ B_σ(x))) > 0`). Each `u ∈ T ⊆ V` has a neighbourhood `t` on which `ψ` is
-`K`-Lipschitz, since `ψ` is `C¹` near `u` and hence strictly differentiable at `u`. As
-`Hⁿ = c • μH[n]` with one constant `c` on every space and `Hⁿ = Lⁿ` on `ℝⁿ`,
-`Hⁿ(ψ(T ∩ t)) ≤ Kⁿ Hⁿ(T ∩ t) = Kⁿ Lⁿ(T ∩ t) = 0`. By second countability
-(`measure_null_of_locally_null` for the outer measure `B ↦ Hⁿ(ψ(B))`), `Hⁿ(ψ(T)) = 0`. -/
-theorem Submission.section3_contDiffOn_image_null_of_volume_null : ∀ (n N : ℕ) (V T : Set (Rn n))
-    (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → T ⊆ V → volume T = 0 →
-    μHE[n] (ψ '' T) = 0 := by
-  intro n N V T ψ hV hψ hTV hT
-  -- `B ↦ Hⁿ(ψ(B))` is an outer measure on `ℝⁿ`; it suffices that it vanishes on a relative
-  -- neighbourhood of each point of `T`.
-  suffices h : OuterMeasure.comap ψ (μHE[n] : Measure (Rn N)).toOuterMeasure T = 0 by
-    simpa using h
-  refine measure_null_of_locally_null T fun u hu ↦ ?_
-  obtain ⟨K, t, ht, hK⟩ :=
-    ((hψ.contDiffAt (hV.mem_nhds (hTV hu))).hasStrictFDerivAt one_ne_zero).exists_lipschitzOnWith
-  refine ⟨T ∩ t, inter_mem_nhdsWithin T ht, ?_⟩
-  have hvol : (μHE[n] : Measure (Rn n)) (T ∩ t) = 0 := by
-    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-    exact measure_mono_null inter_subset_left hT
-  -- `μHE[n] = c • μH[n]` with the same constant `c` on `ℝⁿ` and on `ℝᴺ`.
-  have himg : (μHE[n] : Measure (Rn N)) (ψ '' (T ∩ t)) ≤
-      (K : ℝ≥0∞) ^ (n : ℝ) * (μHE[n] : Measure (Rn n)) (T ∩ t) := by
-    simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
-      smul_eq_mul]
-    rw [mul_left_comm]
-    gcongr
-    exact (hK.mono inter_subset_right).hausdorffMeasure_image_le (Nat.cast_nonneg n)
-  rw [hvol, mul_zero] at himg
-  simpa using himg
 
 /-- **Simon Ch. 3, proof of Lemma 3.3, positivity step (p. 79)** (`chapter-03.txt` lines
 490–496). If `ψ` is `C¹` on an open `V ⊆ ℝⁿ` with `Dψ` injective and `T ⊆ V` has `Lⁿ(T) > 0`,
@@ -5156,23 +5124,6 @@ theorem Submission.besicovitchFedererProjectionTheorem_holds :
   rw [image_union, image_iUnion]
   exact measure_union_null (hnull v Z hZ) (measure_iUnion_null fun i ↦ hv i hlin)
 
-/-- **Simon Ch. 3, Lemma 3.2, Lemma 3.3 and Theorem 3.8 (pp. 78–80)** (`chapter-03.txt`
-lines 449–469, 476–496 and 540–548). Lemma 3.2 is SimonGMT's `simon_lemma_3_2` for the cover
-`(Aⱼ)`. Lemma 3.3 follows from Lemma 1.2 "⇒": a countably `n`-rectifiable `R ⊆ S` with
-`Hⁿ(R) > 0` has `Hⁿ(R ∩ ψ(V)) > 0` for a `C¹` chart `ψ : V → ℝ^{n+ℓ}` of one of the covering
-submanifolds, so `T = V ∩ ψ⁻¹(R)` has `Lⁿ(T) > 0`; near a density point of `T`, `p_J ∘ ψ` is
-bi-Lipschitz for a `J` with `p_J` injective on the tangent plane, so `Hⁿ(p_J(S)) > 0`.
-Theorem 3.8 combines 3.2 with the Besicovitch–Federer theorem 3.6 (erratum: line 540 cites
-"3.2 and 3.7", but Remark 3.7 is the converse of 3.6): for `A = R ∪ P` as in 3.2, `Hⁿ(p(P)) = 0`
-for almost all `p`, so the hypothesis forces `Hⁿ(P) = 0` and `A` is countably `n`-rectifiable. -/
-theorem Submission.section3_decomposition_projection_rectifiability :
-    RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ RectifiabilityTheoremForSets :=
-  ⟨Submission.section3_rectifiableDecomposition,
-    Submission.section3_coordinateProjectionCriterion_of_submanifoldCover
-      Submission.submanifoldCoverCharacterization_holds,
-    Submission.section3_rectifiabilityTheorem_of_besicovitchFederer
-      Submission.besicovitchFedererProjectionTheorem_holds⟩
-
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
@@ -5327,5 +5278,22 @@ theorem Submission.submanifoldCoverCharacterization_holds : SubmanifoldCoverChar
       (fun j ↦ ⟨le_rfl, fun y hy ↦ ?_⟩) hM
     obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himage, hproper, hD⟩ := hN j y hy
     exact ⟨V, W, ψ, hyW, hV, hW, hψ, hinj, himage, hproper, hD⟩
+
+/-- **Simon Ch. 3, Lemma 3.2, Lemma 3.3 and Theorem 3.8 (pp. 78–80)** (`chapter-03.txt`
+lines 449–469, 476–496 and 540–548). Lemma 3.2 is SimonGMT's `simon_lemma_3_2` for the cover
+`(Aⱼ)`. Lemma 3.3 follows from Lemma 1.2 "⇒": a countably `n`-rectifiable `R ⊆ S` with
+`Hⁿ(R) > 0` has `Hⁿ(R ∩ ψ(V)) > 0` for a `C¹` chart `ψ : V → ℝ^{n+ℓ}` of one of the covering
+submanifolds, so `T = V ∩ ψ⁻¹(R)` has `Lⁿ(T) > 0`; near a density point of `T`, `p_J ∘ ψ` is
+bi-Lipschitz for a `J` with `p_J` injective on the tangent plane, so `Hⁿ(p_J(S)) > 0`.
+Theorem 3.8 combines 3.2 with the Besicovitch–Federer theorem 3.6 (erratum: line 540 cites
+"3.2 and 3.7", but Remark 3.7 is the converse of 3.6): for `A = R ∪ P` as in 3.2, `Hⁿ(p(P)) = 0`
+for almost all `p`, so the hypothesis forces `Hⁿ(P) = 0` and `A` is countably `n`-rectifiable. -/
+theorem Submission.section3_decomposition_projection_rectifiability :
+    RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ RectifiabilityTheoremForSets :=
+  ⟨Submission.section3_rectifiableDecomposition,
+    Submission.section3_coordinateProjectionCriterion_of_submanifoldCover
+      Submission.submanifoldCoverCharacterization_holds,
+    Submission.section3_rectifiabilityTheorem_of_besicovitchFederer
+      Submission.besicovitchFedererProjectionTheorem_holds⟩
 
 end GMT.Ch03
