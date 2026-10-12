@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b889fa7386c03543640ceebffa4032ee14429b0c004f70fc502946df2038c1f7",
+  "git_delta": {
+    "base_commit": "f889dade7f24ee42917b3bd4ff84621dcc1192b3",
+    "candidate_commit": "91a11f17ee877dfc61ef2f745002be21b9270405",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_lipschitz_range_subset_c1_ranges",
+    "diff_sha256": "e10a405f6cbcd004af88ff4c09a16e86d661e50a215784d0d5c1bdeba2e4eea8",
+    "source_sha256": "e07f4dc60a353c35ffe23b931f2e2f49470f284466b09b9a0afcacb8b0056efc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_lipschitz_range_subset_c1_ranges",
+      "statement": "∀ (n ℓ : ℕ) (F : Rn n → Amb n ℓ) (K : ℝ≥0), LipschitzWith K F → ∃ (N₀ : Set (Amb n ℓ)) (G : ℕ → Rn n → Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ k, ContDiff ℝ 1 (G k)) ∧ range F ⊆ N₀ ∪ ⋃ k, range (G k)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
