@@ -359,6 +359,37 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Images of open sets under `C¹` maps `ℝⁿ → ℝ^Q` are countably `n`-rectifiable.  `O` is a
+countable union of compact sets `C j ⊆ O`; `G` is locally Lipschitz on `O`, hence Lipschitz on
+each `C j`, and extends to a Lipschitz `g j : ℝⁿ → ℝ^Q`; then `G '' O ⊆ ⋃ j, range (g j)`. -/
+theorem Submission.lpf_pi_chart_image_rectifiable :
+    ∀ (Q n : ℕ) (G : Eucl n → Eucl Q) (O : Set (Eucl n)), IsOpen O → ContDiffOn ℝ 1 G O →
+      CountablyRectifiable n (G '' O) := by
+  intro Q n G O hO hG
+  -- The subspace `O` is locally compact and second countable, hence σ-compact.
+  have : LocallyCompactSpace O := hO.locallyCompactSpace
+  obtain ⟨K, hKc, hKcover⟩ := SigmaCompactSpace.exists_compact_covering (X := O)
+  set C : ℕ → Set (Eucl n) := fun j => ((↑) : O → Eucl n) '' K j
+  have hCc : ∀ j, IsCompact (C j) := fun j => (hKc j).image continuous_subtype_val
+  have hCO : ∀ j, C j ⊆ O := by
+    rintro j _ ⟨y, -, rfl⟩
+    exact y.2
+  -- `G` is `C¹`, hence Lipschitz, near each point of `O`; so it is Lipschitz on each `C j`.
+  have hLip : ∀ j, ∃ L : ℝ≥0, LipschitzOnWith L G (C j) := by
+    intro j
+    apply LocallyLipschitzOn.exists_lipschitzOnWith_of_compact (hCc j)
+    intro x hx
+    obtain ⟨L, t, ht, hGt⟩ := (hG.contDiffAt (hO.mem_nhds (hCO j hx))).exists_lipschitzOnWith
+    exact ⟨L, t, mem_nhdsWithin_of_mem_nhds ht, hGt⟩
+  choose L hL using hLip
+  -- Lipschitz extensions `g j : ℝⁿ → ℝ^Q` of `G|C j` (finite-dimensional target).
+  choose g hgLip hgEq using fun j => (hL j).extend_finite_dimension
+  refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion (fun j => range (g j))
+    fun j => Poincare.SimonGMT.Chapter03.countablyRectifiable_range (hgLip j)).mono ?_
+  rintro y ⟨x, hxO, rfl⟩
+  obtain ⟨j, hj⟩ := mem_iUnion.mp (hKcover.symm ▸ mem_univ (⟨x, hxO⟩ : O))
+  exact mem_iUnion.mpr ⟨j, x, (hgEq j ⟨⟨x, hxO⟩, hj, rfl⟩).symm⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
