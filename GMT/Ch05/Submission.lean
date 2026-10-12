@@ -669,6 +669,52 @@ theorem rsod_tv_meanCurvature : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : Rec
     show ∫ x, W.divM X (x - x₀) ∂V.weight = -∫ x, inner ℝ (X (x - x₀)) (H (x - x₀ + x₀)) ∂V.weight
     simp only [hdiv, sub_add_cancel]
     exact key
+/-- **Translating a rectifiable varifold** (Simon Ch. 5, proof of Theorem 4.5, p. 117: "We can
+suppose `ξ = 0`").  For `τ(x) = x - ξ`, the varifold `V' = v(τ M, θ ∘ τ⁻¹)` in `τ U` has weight
+`μ_{V'} = τ_# μ_V`, tangent planes `T_x V' = T_{x + ξ} V`, support `spt V' = τ(spt V)` and
+generalized mean curvature `H ∘ τ⁻¹`.  Since `τ⁻¹(B_s(z)) = B_s(z + ξ)`, changing variables along
+the measurable equivalence `τ` in the Bochner and lower integrals over `B_s(z)` identifies the
+tilt-excess and the scaled `Lᵖ` norm of the mean curvature of `V'` at `z` with those of `V` at
+`z + ξ`. -/
+theorem ted_translate_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x + ξ) ⁻¹' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ (∀ x, V'.mult x = V.mult (x + ξ)) ∧ (∀ x, V'.tangentProj x = V.tangentProj (x + ξ)) ∧ (∀ x, x ∈ V'.support ↔ x + ξ ∈ V.support) ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => H (x + ξ))) ∧ (∀ (z : Amb n ℓ) (s : ℝ) (S : Submodule ℝ (Amb n ℓ)), V'.tiltExcess z s S = V.tiltExcess (z + ξ) s S) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z : Amb n ℓ) (s : ℝ), V'.scaledLpNorm (fun x => H (x + ξ)) p z s = V.scaledLpNorm H p (z + ξ) s) := by
+  intro n ℓ U V ξ
+  -- `V' = v((· + ξ)⁻¹ M, θ(· + ξ))`, with its weight, tangent planes and support.
+  obtain ⟨W, hc, hm⟩ := rsod_tv_exists_structure n ℓ U V ξ
+  have hw := rsod_tv_weight_eq n ℓ U _ V W ξ hc hm
+  have hT := rsod_tv_tangentProj_eq n ℓ U _ V W ξ hc hm
+  have hS := rsod_tv_support_eq n ℓ U V ξ W hw
+  -- `τ = MeasurableEquiv.subRight ξ` is definitionally `x ↦ x - ξ`, so `μ_{V'} = τ_# μ_V`;
+  -- moreover `τ⁻¹(B_s(z)) = B_s(z + ξ)`.
+  have hw' : W.weight = V.weight.map (MeasurableEquiv.subRight ξ) := hw
+  have hτ : ∀ x : Amb n ℓ, MeasurableEquiv.subRight ξ x + ξ = x := fun x => sub_add_cancel x ξ
+  have hball : ∀ (z : Amb n ℓ) (s : ℝ),
+      MeasurableEquiv.subRight ξ ⁻¹' closedBall z s = closedBall (z + ξ) s := by
+    intro z s
+    ext x
+    show x - ξ ∈ closedBall z s ↔ x ∈ closedBall (z + ξ) s
+    rw [mem_closedBall, mem_closedBall, dist_eq_norm, dist_eq_norm, sub_sub, add_comm ξ z]
+  refine ⟨W, ?_, hw, hm, hT, fun x => by simp only [hS, mem_preimage],
+    rsod_tv_meanCurvature n ℓ U V ξ W hw hT, ?_, ?_⟩
+  · -- `(· + ξ)⁻¹ M = (· - ξ) '' M`.
+    rw [hc]
+    ext x
+    constructor
+    · intro hx
+      exact ⟨x + ξ, hx, add_sub_cancel_right x ξ⟩
+    · rintro ⟨y, hy, rfl⟩
+      show y - ξ + ξ ∈ V.carrier
+      rwa [sub_add_cancel]
+  · -- Change variables along `τ` in the Bochner integral over `B_s(z)`.
+    intro z s S
+    simp only [RectifiableVarifold.tiltExcess]
+    rw [hw', setIntegral_map_equiv, hball]
+    simp only [hT, hτ]
+  · -- Change variables along `τ` in the lower integral over `B_s(z)`.
+    intro H p z s
+    simp only [RectifiableVarifold.scaledLpNorm]
+    rw [hw', (MeasurableEquiv.subRight ξ).measurableEmbedding.restrict_map, lintegral_map_equiv,
+      hball]
+    simp only [hτ]
 
 end Submission
 
