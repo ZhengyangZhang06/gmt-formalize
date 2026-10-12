@@ -1,0 +1,136 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.graph_tangent_planes-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation. E := Amb n l = R^(n+l), H := muHE[n] on E. Bo := ball (0 : Rn n) R, G(z) := graphPoint z (u z), Gamma := graphOver u Bo = G '' Bo, L := fderiv R G x, tau := LinearMap.range L, eta_lam := blowUpMap (G x) lam, i.e. eta_lam(w) = lam^{-1} (w - G x). Let pi : E -> Rn n, pi(w) := WithLp.toLp 2 (fun i : Fin n => w (Fin.castAdd l i)), be the projection onto the first n coordinates; pi is linear and continuous. The proof uses only facts available under the frozen imports of GMT.Ch05.Submission; in particular it uses neither an area formula nor normDet.
+
+1. Algebra of graphPoint. graphPoint a b = toLp (Fin.append a b) has coordinates (a_1, ..., a_n, b_1, ..., b_l). Hence graphPoint is additive and homogeneous in the pair (a, b), so Phi(a, b) := graphPoint a b is a continuous linear map Rn n x Rn l -> E; pi(graphPoint a b) = a (Fin.append_left); and, splitting the coordinate sum over Fin (n+l) into Fin n and Fin l (Fin.sum_univ_add, Fin.append_left, Fin.append_right), |graphPoint a b|^2 = |a|^2 + |b|^2, so |a| <= |graphPoint a b|. In particular pi(G z) = z for every z in Rn n.
+
+2. Differentiability. Bo is open and u is C^1 on Bo, so u is differentiable at every z in Bo and z -> fderiv R u z is continuous on Bo (ContDiffOn.differentiableOn with 1 <= 1, DifferentiableOn.differentiableAt with isOpen_ball, ContDiffOn.continuousOn_fderiv_of_isOpen). Since G = Phi o (z -> (z, u z)), G is differentiable at every z in Bo with DG(z) v = graphPoint v (Du(z) v). For z, z' in Bo, (DG(z) - DG(z')) v = graphPoint 0 ((Du(z) - Du(z')) v), whose norm is |(Du(z) - Du(z')) v| by step 1, so |DG(z) - DG(z')| <= |Du(z) - Du(z')| and z -> DG(z) is continuous on Bo. In particular L v = graphPoint v (Du(x) v).
+
+3. Injectivity. For all z, z' in Rn n: G z - G z' = graphPoint (z - z') (u z - u z'), hence |z - z'| <= |G z - G z'|. For every v: pi(L v) = v and |v| <= |L v|; in particular L is injective.
+
+4. Dimension. finrank tau = finrank (Rn n) = n (LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin). This is the first component of HasApproximateTangentSpaceAt.
+
+5. Set-up for one test function. Fix phi in C_c(E, R). Choose rho > 0 with phi(w) = 0 whenever |w| > rho, and c_phi >= 0 with |phi| <= c_phi (phi is continuous with compact support); phi is uniformly continuous (HasCompactSupport.uniformContinuous_of_continuous). Put K' := closedBall (0 : Rn n) rho, delta := (R - |x|)/2 > 0 (so closedBall x delta is contained in Bo) and lam0 := delta/rho. For lam > 0 define F_lam : Rn n -> E by F_lam(v) := lam^{-1} (G(x + lam v) - G x). For 0 < lam <= lam0 and v in K' we have x + lam v in closedBall x delta, contained in Bo, so F_lam is continuous on K' (step 2). For every v: pi(F_lam v) = v (step 1 and linearity of pi), F_lam(0) = 0, and F_lam(v) = eta_lam(G(x + lam v)).
+ V0 := H(L '' K') is finite: L is |L|-Lipschitz, so LipschitzOnWith.hausdorffMeasure_image_le (for muH[n], then multiplied by the constant c of euclideanHausdorffMeasure_def, which says muHE[n] = c * muH[n] on every space with the same c) gives H(L '' K') <= |L|^n muHE[n](K') = |L|^n volume(K') < infinity (EuclideanSpace.euclideanHausdorffMeasure_eq_volume; K' is compact).
+
+6. Near-linearity. Let 0 < eps <= 1/2. By continuity of z -> DG(z) at x (step 2) choose lam1 in (0, lam0] with |DG(z) - L| <= eps for all z in closedBall x (lam1 rho). Let 0 < lam <= lam1. The map h(v) := F_lam(v) - L v is differentiable at every v in K' with fderiv R h v = DG(x + lam v) - L (chain rule; v -> x + lam v has derivative lam id, which cancels the factor lam^{-1}), and |DG(x + lam v) - L| <= eps there because x + lam v lies in closedBall x (lam rho), contained in closedBall x (lam1 rho). By the mean value inequality on the convex set K' (Convex.norm_image_sub_le_of_norm_fderiv_le), |h v - h v'| <= eps |v - v'| for v, v' in K'. Since |v - v'| <= |L(v - v')| (step 3), for v, v' in K':
+ (a) (1 - eps) |L v - L v'| <= |F_lam v - F_lam v'| <= (1 + eps) |L v - L v'|;
+ (b) |F_lam v - L v| = |h v - h 0| <= eps |v| <= eps rho.
+
+7. Measure comparison. For 0 < lam <= lam1 and every set A contained in K':
+ H(F_lam '' A) <= (1 + eps)^n H(L '' A) and (1 - eps)^n H(L '' A) <= H(F_lam '' A).
+ Indeed, F_lam o pi is (1 + eps)-Lipschitz on L '' K' (for a = L v, b = L v' with v, v' in K' we have pi a = v, pi b = v', and (a) applies) and maps L '' A onto F_lam '' A; and L o pi is (1 - eps)^{-1}-Lipschitz on F_lam '' K' (pi(F_lam v) = v and (a)) and maps F_lam '' A onto L '' A. Apply LipschitzOnWith.hausdorffMeasure_image_le with d = n to muH[n] and multiply by the constant c of euclideanHausdorffMeasure_def.
+
+8. Push-forward to Rn n. For 0 < lam <= lam1 let m1 := Measure.map pi (H.restrict (F_lam '' K')) and m0 := Measure.map pi (H.restrict (L '' K')); the sets F_lam '' K' and L '' K' are compact (continuous images of the compact set K'), hence measurable. For a measurable B in Rn n, pi^{-1}(B) cap F_lam '' K' = F_lam '' (B cap K') and pi^{-1}(B) cap L '' K' = L '' (B cap K') (pi is a left inverse of F_lam and of L); hence m1(B) = H(F_lam '' (B cap K')) and m0(B) = H(L '' (B cap K')). By step 7, m1 <= (1 + eps)^n * m0 and (1 - eps)^n * m0 <= m1 as measures; moreover m0(univ) = V0, m1(univ) <= (1 + eps)^n V0, and m0(K'^c) = m1(K'^c) = 0.
+
+9. Integrals as push-forward integrals. Since w = F_lam(pi w) for w in F_lam '' K' and w = L(pi w) for w in L '' K':
+ integral over F_lam '' K' of phi dH = integral of phi(F_lam v) dm1(v), and integral over L '' K' of phi dH = integral of phi(L v) dm0(v)
+ (setIntegral_congr_fun on these measurable sets, then MeasureTheory.integral_map with the continuous map pi; phi o F_lam and phi o L are continuous on the closed set K', which carries m1 and m0, so they are a.e.-strongly measurable for these measures).
+
+10. Estimate. Put g1 := phi o F_lam and g0 := phi o L; both are bounded by c_phi. Let eta' > 0 and t > 0 be such that |phi a - phi b| <= eta' whenever |a - b| <= t (uniform continuity), and suppose eps rho <= t. Then |g1 - g0| <= eta' on K' by (b), hence m1-a.e. because m1(K'^c) = 0. Both g1 and g0 are bounded by c_phi and a.e.-strongly measurable for m1 and for m0 (as in step 9), and m1, m0 are finite measures (step 8), so g1 and g0 are integrable for m1 and for m0. Therefore
+ |integral g1 dm1 - integral g0 dm0| <= integral |g1 - g0| dm1 + |integral g0 dm1 - integral g0 dm0| <= eta' (1 + eps)^n V0 + 2 ((1 + eps)^n - (1 - eps)^n) c_phi V0.
+ For the last term write g0 = g0^+ - g0^- with 0 <= g0^+, g0^- <= c_phi; for g in {g0^+, g0^-} (a.e.-strongly measurable for m0 and m1, with 0 <= g <= c_phi), the Bochner integrals are the toReal of the corresponding lintegrals (integral_eq_lintegral_of_nonneg_ae), and step 8 (monotonicity of the lintegral in the measure and lintegral_smul_measure; all quantities are finite) gives (1 - eps)^n integral g dm0 <= integral g dm1 <= (1 + eps)^n integral g dm0 with integral g dm0 <= c_phi V0, hence |integral g dm1 - integral g dm0| <= ((1 + eps)^n - (1 - eps)^n) c_phi V0.
+
+11. Localization. For 0 < lam <= lam0: (eta_lam '' Gamma) cap closedBall 0 rho is contained in F_lam '' K', which is contained in eta_lam '' Gamma. Indeed, if x' is in Bo and |eta_lam(G x')| <= rho, put v := lam^{-1} (x' - x); then x' = x + lam v, F_lam(v) = eta_lam(G x') and |v| = lam^{-1} |x' - x| <= lam^{-1} |G x' - G x| = |eta_lam(G x')| <= rho by step 3; conversely F_lam(v) = eta_lam(G(x + lam v)) with x + lam v in Bo for v in K'. Likewise tau cap closedBall 0 rho is contained in L '' K', which is contained in tau, because |v| <= |L v|. Since phi vanishes outside the measurable set closedBall 0 rho, the set integral of phi over any set X equals the set integral of phi over X cap closedBall 0 rho (restrict to closedBall 0 rho and use Measure.restrict_restrict; no integrability is needed). Hence the integral over eta_lam '' Gamma of phi dH equals the integral over F_lam '' K' of phi dH, and the integral over tau of phi dH equals the integral over L '' K' of phi dH.
+
+12. Conclusion. Let vartheta > 0. Choose eta' > 0 with eta' (3/2)^n V0 < vartheta/2, then t > 0 for eta' as in step 10, then eps in (0, 1/2] with eps rho <= t and 2 ((1 + eps)^n - (1 - eps)^n) c_phi V0 < vartheta/2 (possible since (1 + eps)^n - (1 - eps)^n -> 0 as eps -> 0+), and finally lam1 as in step 6. For 0 < lam <= lam1, steps 9-11 give |integral over blowUpMap (G x) lam '' Gamma of phi dH - integral over tau of phi dH| < vartheta. Hence the integral over blowUpMap (G x) lam '' Gamma of phi dH tends to the integral over tau of phi dH as lam -> 0+. Since phi in C_c(E, R) was arbitrary, together with step 4 this is Chapter03.HasApproximateTangentSpaceAt n Gamma (G x) tau.
+
+## Key steps
+
+1. graphPoint algebra: |a| <= |graphPoint a b|, the first-n-coordinates map pi inverts G and DG(x), DG(x) is injective, so finrank range DG(x) = n
+2. C^1 and the mean value inequality: for small lam, F_lam(v) = lam^{-1}(G(x + lam v) - G x) is (1 +- eps)-bi-Lipschitz relative to L = DG(x) on closedBall 0 rho and |F_lam - L| <= eps rho there
+3. Lipschitz image bounds for Hausdorff measure: (1 - eps)^n H(L A) <= H(F_lam A) <= (1 + eps)^n H(L A)
+4. push H restricted to F_lam(K') and to L(K') forward by pi: the measures m1, m0 on R^n are comparable within factors (1 +- eps)^n
+5. localize the blow-up integral to F_lam(K') and the plane integral to L(K'); their difference tends to 0 by uniform continuity of phi
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; git rev-parse HEAD (project ea56075..., .lake/packages/mathlib 25730c7c..., .lake/packages/simongmt 2b366308...)`
+- `diff GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean; diff GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean`
+- `rg -n 'dohr_tp_|dohr_graph_tangent_planes' <snapshot>; grep -c dohr_tp_ dag.json; grep -rl dohr_tp_ <run>/nodes GMT .lake/packages/simongmt`
+- `rg -n 'theorem ae_tendsto_lintegral_enorm_sub_div' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `rg -n 'theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n 'theorem hausdorffMeasure_image_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'theorem inverse_continuousAt' <snapshot>/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `rg -n 'theorem eq_starProjection_of_mem_of_inner_eq_zero|theorem starProjection_map_apply' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n 'theorem lintegral_image_eq_lintegral_abs_det_fderiv_mul|theorem integral_image_eq_integral_abs_det_fderiv_smul' <snapshot>/mathlib/Mathlib`
+- `grep -n 'instance.*HasBesicovitchCovering' Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean; grep -n 'def comp ' Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `sed -n 1,200p .lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -n 'def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|def blowUpMap|theorem HasWeightedApproximateTangentSpaceAt.unique' -A 22 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `lean -o build/GMT/Ch05/Submission.olean (fresh scratch compile of the frozen GMT/Ch05/Submission.lean)`
+- `lean Probe.lean (#check of the cited Mathlib/SimonGMT lemmas under import GMT.Ch05.Submission)`
+- `lean Probe2.lean (#check Poincare.SimonGMT.Chapter02.injective_area_formula_lipschitzOn, LinearMap.normDet, ContinuousLinearMap.adjoint, LinearMap.adjoint; HasSummableGeomSeries (Rn n ->L[R] Rn n); (a * b) v = a (b v))`
+- `python3 -I gen_children.py (lean_contract.validate_lean_statement + gmt-compare.child_modules contract mode) then lean on the 7 NodeChallenge and 7 NodeSolution modules`
+- `lean Assembly.lean; #print axioms Submission.dohr_graph_tangent_planes`
+- `lean Child6.lean; #print axioms Submission.dohr_tp_ae_weighted_tangent_of_growth`
+- `python3 scan of dag.json: accepted checkpoints, and lean_statements mentioning HasApproximateTangentSpaceAt / HasWeightedApproximateTangentSpaceAt / starProjection`
+- `grep -rn max_nodes /runtime/flows/gmt-claude-6e6a457c9391; sed -n 1793,1990p _recursive_lean/runtime.py; sed -n 6490,6560p _recursive_lean/runtime.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1/decomposition-audit-v3.json`
+- `/runtime/flows/gmt-claude-6e6a457c9391/__init__.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/models.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/gtp5-tZl9KO/src/Probe.lean`
+- `/tmp/gtp5-tZl9KO/src/Probe2.lean`
+- `/tmp/gtp5-tZl9KO/src/Assembly.lean`
+- `/tmp/gtp5-tZl9KO/src/Child6.lean`
+- `/tmp/gtp5-tZl9KO/gen/NodeChallenge_graph_approx_tangent.lean`
+
+Snapshot manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace HEAD and .lake/packages/mathlib match them, and simongmt is at its pinned 2b3663083f3f. The workspace Contract.lean and Submission.lean are byte-identical to the snapshot copies.
+
+rg finds no 'dohr_tp_' or 'dohr_graph_tangent_planes' anywhere in the snapshot. dag.json has 0 'dohr_tp_' matches, and the only node-directory matches are this node's unactivated v2 records, so the 7 proposed names are free.
+
+The pinned Mathlib supplies:
+- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (Differentiation.lean:818)
+- Besicovitch.tendsto_filterAt (Besicovitch.lean:1060)
+- instHasBesicovitchCovering (BesicovitchVectorSpace.lean:499)
+- LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean:733)
+- euclideanHausdorffMeasure_def, IsometryEquiv.measurePreserving_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_image, Measure.euclideanHausdorffMeasure_smul₀ and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean)
+- NormedRing.inverse_continuousAt (Units.lean:183)
+- Submodule.eq_starProjection_of_mem_of_inner_eq_zero and Submodule.starProjection_map_apply (Projection/Basic.lean:180, 358)
+- CompactlySupportedContinuousMap.comp
+Mathlib's Jacobian change of variables (Jacobian.lean:1183/1213) only treats maps E -> E of equal dimension, so it is not an area formula for graphs.
+
+SimonGMT Chapter03/Rectifiable.lean supplies blowUpMap, HasApproximateTangentSpaceAt (l.102), HasWeightedApproximateTangentSpaceAt (l.330) and its .unique (l.345).
+
+Lean checks, run against a fresh scratch build of the frozen Submission:
+- Every cited lemma resolves under the frozen imports.
+- injective_area_formula_lipschitzOn, LinearMap.normDet, ContinuousLinearMap.adjoint and LinearMap.adjoint are unknown there. This is why child (1) uses a bi-Lipschitz comparison and child (7) uses a hand-built adjoint.
+- All 7 statements pass validate_lean_statement and elaborate in the verifier-generated NodeChallenge modules. All 7 NodeSolution modules elaborate.
+- The exact frozen parent type is proved from children (1), (2), (3), (6), (7) with axioms {propext, Classical.choice, Quot.sound} plus those children.
+- Child (6) is proved from (4) and (5) with the same clean report.
+
+None of the 17 accepted DAG checkpoints is an ingredient of this proof. Related tangent lemmas in other branches are unaccepted and have different types.
+
+The controller's node bound is a hard 200 (Field le=200 in __init__.py), and dag.json holds 199 nodes. Activating these 7 children therefore needs the operator to resolve the cap at the orchestration level, as the v3 audit stated.

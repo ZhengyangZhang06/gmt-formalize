@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.approx_tangent_isometry-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "depth": 3,
+  "title": "Approximate tangent spaces are transported by affine isometries",
+  "statement": "Let n, l be natural numbers, S a subset of R^(n+l), z, xi in R^(n+l), Q a linear isometry equivalence of R^(n+l), and P a linear subspace. If P is the approximate tangent space of S at z in the sense of Simon Ch. 3, Definition 1.4 (Chapter03.HasApproximateTangentSpaceAt n S z P), then Q(P) = Submodule.map Q P is the approximate tangent space of A(S) at A(z), where A(w) := xi + Q w.",
+  "lean_statement": "∀ (n ℓ : ℕ) (S : Set (Amb n ℓ)) (z ξ : Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S z P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n ((fun w => ξ + Q w) '' S) (ξ + Q z) (Submodule.map Q.toLinearEquiv.toLinearMap P)",
+  "lean_name": "dohr_tp_approx_tangent_affine_isometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-approx-c97b4fcbe2-a1"
+}
