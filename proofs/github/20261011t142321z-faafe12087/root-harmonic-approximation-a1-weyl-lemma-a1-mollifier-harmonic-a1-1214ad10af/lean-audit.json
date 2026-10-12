@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1dc0eca04424668d9cdf3f3cd908ed2d98623cda3d04832c460c08c29d0a3a3",
+  "git_delta": {
+    "base_commit": "ac364daeae0b891db3e963fa6e089e624c3aea8c",
+    "candidate_commit": "aa7888c9e1abcd9580d0dd92dba7fe20769eb702",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ball_convolution_contDiff_laplacian_eq_zero",
+    "diff_sha256": "a072942b9fc56e986cc3c1e60393f8127eda4f53b02fcedc7992aaf7d7f2831e",
+    "source_sha256": "b1dcff996acb73555863488757a49795c11898d03d308463b492853aa9968827",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ball_convolution_contDiff_laplacian_eq_zero",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, IntegrableOn w (ball (0 : Rn n) 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0) → ∀ (κ : Rn n → ℝ) (ε : ℝ), ContDiff ℝ (⊤ : ℕ∞) κ → (∀ z : Rn n, ε ≤ ‖z‖ → κ z = 0) → ContDiff ℝ (⊤ : ℕ∞) (fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y) ∧ ∀ x ∈ ball (0 : Rn n) (1 - ε), Laplacian.laplacian (fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y) x = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
