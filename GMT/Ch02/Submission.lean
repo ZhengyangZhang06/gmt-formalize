@@ -417,6 +417,108 @@ theorem Submission.variation_matrix_det_leibniz_first_order_at_one : ∀ (ι : T
       Finset.prod_eq_zero (Finset.mem_erase.2 ⟨hjm, Finset.mem_univ j⟩) (Matrix.one_apply_ne hj)
     rw [hzero, zero_mul]
   · exact fun h ↦ absurd (Finset.mem_univ _) h
+/-- **Simon Ch. 2, §5 (p. 62), second-order term of `det (I + A)`.** The second-order Leibniz sum
+at the identity matrix: for `m ≠ l` the product `∏_{j ∉ {m, l}} I_{σ j, j}` vanishes unless `σ` is
+`1` or the transposition `(m l)`, so the sum is `∑_{m ≠ l} (B_ll B_mm - B_ml B_lm)`, which equals
+`(tr B)² - tr (B B)`, twice the coefficient `½ (tr A)² - ½ tr (A²)` of Simon's formula. -/
+theorem Submission.variation_matrix_det_leibniz_second_order_at_one : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (B : Matrix ι ι ℝ), ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∑ l ∈ Finset.univ.erase m, (∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) (σ j) j) * B (σ l) l) * B (σ m) m = B.trace ^ 2 - (B * B).trace := by
+  intro ι _ _ B
+  -- Step 2: for `m ≠ l`, a permutation fixing every `j ∉ {m, l}` is `1` or `swap m l`.
+  have hclass : ∀ (m l : ι) (σ : Equiv.Perm ι), m ≠ l → (∀ j, j ≠ m → j ≠ l → σ j = j) →
+      σ = 1 ∨ σ = Equiv.swap m l := by
+    intro m l σ hml h
+    -- `σ` sends every point it moves into `{m, l}`, since it also moves the image.
+    have hmoved : ∀ y, σ y ≠ y → σ y = m ∨ σ y = l := by
+      intro y hy
+      by_contra hc
+      exact hy (σ.injective (h (σ y) (fun e => hc (Or.inl e)) (fun e => hc (Or.inr e))))
+    by_cases hm : σ m = m
+    · have hl : σ l = l := by
+        by_contra hl
+        rcases hmoved l hl with h1 | h1
+        · exact hml (σ.injective (hm.trans h1.symm))
+        · exact hl h1
+      left
+      ext j
+      by_cases hjm : j = m
+      · subst hjm; simpa using hm
+      by_cases hjl : j = l
+      · subst hjl; simpa using hl
+      simpa using h j hjm hjl
+    · have hm' : σ m = l := (hmoved m hm).resolve_left hm
+      have hl' : σ l = m := by
+        have hl : σ l ≠ l := fun hl => hml (σ.injective (hm'.trans hl.symm))
+        exact (hmoved l hl).resolve_right hl
+      right
+      ext j
+      by_cases hjm : j = m
+      · subst hjm; simp [hm']
+      by_cases hjl : j = l
+      · subst hjl; simp [hl']
+      rw [h j hjm hjl, Equiv.swap_apply_of_ne_of_ne hjm hjl]
+  -- Steps 3–4: for `m ≠ l` only `σ = 1` and `σ = swap m l` contribute to the `σ`-sum.
+  have hS : ∀ m l : ι, m ≠ l →
+      ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+        ((∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) (σ j) j) * B (σ l) l * B (σ m) m)
+        = B l l * B m m - B m l * B l m := by
+    intro m l hml
+    have hne : (1 : Equiv.Perm ι) ≠ Equiv.swap m l := by
+      intro h
+      have h' := congrArg (fun τ : Equiv.Perm ι => τ m) h
+      simp only [Equiv.Perm.coe_one, id_eq, Equiv.swap_apply_left] at h'
+      exact hml h'
+    rw [← Finset.sum_subset (Finset.subset_univ {1, Equiv.swap m l}) ?_]
+    · rw [Finset.sum_pair hne]
+      have hP1 :
+          ∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) ((1 : Equiv.Perm ι) j) j = 1 :=
+        Finset.prod_eq_one fun j _ => Matrix.one_apply_eq j
+      have hP2 :
+          ∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) (Equiv.swap m l j) j = 1 := by
+        refine Finset.prod_eq_one fun j hj => ?_
+        rw [Finset.mem_erase, Finset.mem_erase] at hj
+        rw [Equiv.swap_apply_of_ne_of_ne hj.2.1 hj.1, Matrix.one_apply_eq]
+      rw [hP1, hP2, Equiv.Perm.sign_swap hml, Equiv.Perm.sign_one, Equiv.swap_apply_left,
+        Equiv.swap_apply_right]
+      simp only [Equiv.Perm.coe_one, id_eq, Units.val_one, Units.val_neg, Int.cast_one,
+        Int.cast_neg]
+      ring
+    · intro σ _ hσ
+      simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hσ
+      have hP : ∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) (σ j) j = 0 := by
+        by_contra hP
+        have hfix : ∀ j, j ≠ m → j ≠ l → σ j = j := by
+          intro j hjm hjl
+          by_contra hj
+          exact hP (Finset.prod_eq_zero
+            (Finset.mem_erase.2 ⟨hjl, Finset.mem_erase.2 ⟨hjm, Finset.mem_univ j⟩⟩)
+            (Matrix.one_apply_ne hj))
+        rcases hclass m l σ hml hfix with h | h
+        · exact hσ.1 h
+        · exact hσ.2 h
+      rw [hP]
+      ring
+  -- Step 1: distribute the products and move the `σ`-sum inside the `m`- and `l`-sums.
+  calc ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∑ l ∈ Finset.univ.erase m,
+          (∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) (σ j) j) * B (σ l) l) * B (σ m) m
+      = ∑ m : ι, ∑ l ∈ Finset.univ.erase m, ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ((∏ j ∈ (Finset.univ.erase m).erase l, (1 : Matrix ι ι ℝ) (σ j) j) * B (σ l) l *
+            B (σ m) m) := by
+        simp_rw [Finset.sum_mul, Finset.mul_sum]
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun m _ => ?_
+        rw [Finset.sum_comm]
+    -- Step 4: each inner `σ`-sum is `B_ll B_mm - B_ml B_lm`.
+    _ = ∑ m : ι, ∑ l ∈ Finset.univ.erase m, (B l l * B m m - B m l * B l m) :=
+        Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun l hl =>
+          hS m l (Finset.ne_of_mem_erase hl).symm
+    -- Step 5: the omitted `l = m` term `B_mm B_mm - B_mm B_mm` is zero.
+    _ = ∑ m : ι, ∑ l : ι, (B l l * B m m - B m l * B l m) :=
+        Finset.sum_congr rfl fun m _ => Finset.sum_erase _ (sub_self _)
+    -- Step 6: `∑∑ B_ll B_mm = (tr B)²` and `∑∑ B_ml B_lm = tr (B B)`.
+    _ = B.trace ^ 2 - (B * B).trace := by
+        simp only [Finset.sum_sub_distrib, Matrix.trace, Matrix.diag, Matrix.mul_apply, sq,
+          Finset.sum_mul_sum]
+        rw [Finset.sum_comm (f := fun m l => B l l * B m m)]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
