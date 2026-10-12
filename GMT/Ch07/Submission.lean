@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Operator norm of an `n`-covector from its values on the standard basis: if
+`|α(e_{j(0)}, …, e_{j(n−1)})| ≤ C` for every `j : Fin n → Fin P` (`e` the standard orthonormal
+basis of `ℝᴾ`), then `‖α‖ ≤ Pⁿ C`.  Expanding each `v_k = Σᵢ (v_k)ᵢ eᵢ`, multilinearity gives
+`α(v) = Σ_r (Π_k (v_k)_{r(k)}) α(e ∘ r)` over the `Pⁿ` tuples `r : Fin n → Fin P`, and
+`|(v_k)ᵢ| ≤ ‖v_k‖` bounds each term by `C Π_k ‖v_k‖`. -/
+theorem Submission.regcomp_covector_opNorm_le_of_basis_bound : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (C : ℝ), 0 ≤ C → (∀ j : Fin n → Fin P, |α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k))| ≤ C) → ‖α‖ ≤ (P : ℝ) ^ n * C := by
+  intro P n α C hC hbound
+  refine ContinuousAlternatingMap.opNorm_le_bound α (by positivity) fun v => ?_
+  -- multilinear expansion in the standard basis
+  have hexp : α v = ∑ r : Fin n → Fin P,
+      (∏ k, v k (r k)) * α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (r k)) := by
+    conv_lhs => rw [show v = fun k => ∑ i, v k i • EuclideanSpace.basisFun (Fin P) ℝ i from
+      funext fun k => ((EuclideanSpace.basisFun (Fin P) ℝ).sum_repr (v k)).symm]
+    rw [α.map_sum]
+    refine Finset.sum_congr rfl fun r _ => ?_
+    rw [α.map_smul_univ, smul_eq_mul]
+  rw [hexp]
+  calc ‖∑ r : Fin n → Fin P,
+        (∏ k, v k (r k)) * α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (r k))‖
+      ≤ ∑ r : Fin n → Fin P,
+        ‖(∏ k, v k (r k)) * α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (r k))‖ :=
+        norm_sum_le _ _
+    _ ≤ ∑ _r : Fin n → Fin P, (∏ k, ‖v k‖) * C := by
+        refine Finset.sum_le_sum fun r _ => ?_
+        rw [norm_mul, norm_prod]
+        refine mul_le_mul ?_ ?_ (norm_nonneg _) (by positivity)
+        · exact Finset.prod_le_prod₀ (fun k _ => norm_nonneg _) fun k _ =>
+            PiLp.norm_apply_le (v k) (r k)
+        · simpa [Real.norm_eq_abs] using hbound r
+    _ = (P : ℝ) ^ n * C * ∏ k, ‖v k‖ := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+          Fintype.card_fin, nsmul_eq_mul]
+        push_cast
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
