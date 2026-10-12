@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'theorem surjOn_closedBall_of_nonlinearRightInverse|theorem of_local_left_inverse|theorem inverse_continuousAt|theorem contDiffOn_succ_iff_fderiv_of_isOpen|continuousOn_fderiv_of_isOpen|structure NonlinearRightInverse|abbrev EuclideanSpace.finAddEquivProd|def ofInjectiveEndo|theorem norm_image_sub_le_of_norm_fderivWithin_le|def toUnit|theorem inverse_unit' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "rg -n 'arp_rgr_ball_right_inverse|arp_rgr_right_inverse_contDiffOn|arp_rgr_graph_map_fderiv' GMT .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/Types.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/Instances.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/ChildA.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/ChildB.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/ChildC.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/ParentComposition.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/Challenge_ball_right_inverse.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/Challenge_inverse_c1.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/Challenge_graph_map_fderiv.lean",
+        "python3 -I /tmp/regraph-independent-audit-_ahmsnfa/run_lean.py Checks/Challenge_parent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-regraph-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-regraph-a1/decomposition-v1.json",
+        "/tmp/regraph-independent-audit-_ahmsnfa/proj/Checks/Types.lean",
+        "/tmp/regraph-independent-audit-_ahmsnfa/proj/Checks/Instances.lean",
+        "/tmp/regraph-independent-audit-_ahmsnfa/proj/Checks/ChildA.lean",
+        "/tmp/regraph-independent-audit-_ahmsnfa/proj/Checks/ChildB.lean",
+        "/tmp/regraph-independent-audit-_ahmsnfa/proj/Checks/ChildC.lean",
+        "/tmp/regraph-independent-audit-_ahmsnfa/proj/Checks/ParentComposition.lean"
+      ],
+      "conclusion": "The three-way split is appropriate for the selected arp_regraph_over_rotatedPlane contract. The handoff and DAG types agree exactly. The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; relevant source files match the compiler environment. All frozen types pass lexical validation and independently elaborate in generated comparator challenges without child implementations. Separate proofs of all three exact child types compile with only propext, Classical.choice and Quot.sound. The exact parent composition compiles using precisely the three proposed contracts and the existing rotated-coordinates dependency, plus those standard axioms. Thus the children establish the selected theorem, including closed-ball existence, uniqueness, C¹ regularity and the 1/7 slope bound. All names are bare identifiers, with no reservation found in the DAG or other node proposals and no declaration match in the searched project sources. No declaration reuse is proposed. Dependencies are acyclic. Instance checks confirm Euclidean norms, continuous-linear-map operator norms, and composition multiplication for the endomorphism ring; no Matrix construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_right_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every hypothesis and all three prose conclusions. The proof correctly derives 7/8 expansion and finite-dimensional invertibility of A with inverse bound 12/11. Its contraction preserves the nonempty complete ball: 63r/110 < 3r/5, with contraction constant 1/22. The cited in-scope surjectivity lemma supplies the same existence result. Choice, uniqueness throughout B_r(0), and the stated inverse Lipschitz estimate then follow. No parent or sibling result is assumed; the proof is complete and directly formalizable."
+    },
+    {
+      "key": "inverse_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including openness, positive κ, continuity of X and its right-inverse property. The lower derivative bound gives an invertible endomorphism and inverse norm at most κ⁻¹. The local-left-inverse lemma has exactly the required orientation and hypotheses. Openness justifies continuity at points and neighborhood identities; continuity of ring inversion then gives a continuous derivative on W, establishing C¹ regularity. Ring.inverse uses the ordinary continuous-linear-endomorphism ring. The argument is complete and non-circular."
+    },
+    {
+      "key": "graph_map_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes all hypotheses. The proof independently establishes the graphPoint coordinate identity from Fin.append, so the empty dependency list is correct. It uses finAddEquivProd only as a continuous linear equivalence, then obtains C¹ regularity by composition and the exact derivative formula by the product and chain rules. Openness supplies ordinary differentiability at each specified point. No parent or unavailable sibling theorem is used."
+    }
+  ],
+  "required_changes": []
+}
