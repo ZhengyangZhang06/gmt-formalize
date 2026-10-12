@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "acd31978628cbab5f08ecc2ea47d86ff8e6efbb51c655cb20da0e8a9fb38244b",
+  "git_delta": {
+    "base_commit": "3b2f799ecbbdad11bd74b1c714fb410224ca40c8",
+    "candidate_commit": "28ac305fee1e127c6162a3399e24a18a2e73942a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_uniform_bound_of_weak_bounded",
+    "diff_sha256": "7dd3d8772528854d96204544e3244972fd38441001c1ccefd98378739861c723",
+    "source_sha256": "fcc2ec00b3ad126f01fe08b4c7af8978cbe5c6fbbda117ec116c6cb037a59093",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_uniform_bound_of_weak_bounded",
+      "statement": "∀ (P Q : ℕ) (μ : Measure (Euclid P)) (gs : ℕ → Euclid P → Euclid Q) (K : Set (Euclid P)), (∀ k, LocallyIntegrable (gs k) μ) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∃ C, ∀ k, ‖∫ x, f x • gs k x ∂μ‖ ≤ C) → IsCompact K → ∃ M, ∀ (k : ℕ) (h : Euclid P → ℝ) (C : ℝ), Continuous h → (∀ x ∉ K, h x = 0) → (∀ x, |h x| ≤ C) → ‖∫ x, h x • gs k x ∂μ‖ ≤ M * C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
