@@ -359,6 +359,18 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Multiplication by a smooth function `ψ` maps `𝒟ᵏ(U)` into itself: `ψ φ` is smooth, and
+`spt (ψ φ) ⊆ spt φ`, which is compact and contained in `U`. -/
+theorem Submission.slicing_mb_lb_smul_testForm :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (φ : TestFormOn U k) (ψ : Eucl P → ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ →
+      ∃ η : TestFormOn U k, ∀ x, (η : DifferentialForm (Eucl P) k) x =
+        ψ x • (φ : DifferentialForm (Eucl P) k) x := by
+  intro P k U φ ψ hψ
+  obtain ⟨⟨hφ, hφc⟩, hφU⟩ := φ.2
+  exact ⟨⟨ψ • (φ : DifferentialForm (Eucl P) k), ⟨hψ.smul hφ, hφc.smul_left⟩,
+    (tsupport_smul_subset_right ψ _).trans hφU⟩, fun _ => rfl⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
