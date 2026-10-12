@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "510dfc5dff9c8bbd06bfa4ba900ed24cc0ca6b0e2de8f1a554b20dbfdd21c080",
+  "git_delta": {
+    "base_commit": "22a3053f0d075b6d41ee860071ac971c9db1fcb2",
+    "candidate_commit": "4a5af2c290e6fcc54f8c463bedd790a7d6f2c99e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_pinching",
+    "diff_sha256": "a7700e067ea76004c7a28d0401d6c50f1266ab4decb4bfeafa586e1da415f3da",
+    "source_sha256": "af9e707c9687c95cea5fd2382a43b51a0b867920ace7ab45ed5b408c7b9e63a9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_pinching",
+      "statement": "ConicalApproximationTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ γ ε : ℝ, 0 < γ → γ < 1 → 0 < ε → ε ≤ 1 / 4 → ∃ δP cs : ℝ, 0 < δP ∧ 0 < cs ∧ cs ≤ (1 - γ) / 16 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → ∀ y ∈ V.support ∩ closedBall 0 ((1 + γ) / 2 * ρ), V.weight (closedBall y (cs * ρ)) ≤ ENNReal.ofReal ((1 + ε) * (unitBallVolume n * (cs * ρ) ^ n))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
