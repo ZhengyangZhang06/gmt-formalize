@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.integrating_factor_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 10, 11 and 12 of the parent proof (dominated convergence of integral_0^rho a_k, the bound |integral_0^r a_inf| <= (Lambda/4)(r/R)^alpha, the bounds (i), and passage to the limit in Psi_k(s) <= Psi_k(r)), stated for abstract sequences: beta plays the role of n/p (alpha = 1 - beta), M of (1 + eps_0) N_S, K of N_R, Q_k(t) of 1 + I_k(t)/t^n, and the limit functions a_inf and Q_inf play the roles of the parent's limit coefficient (written a_0 in the parent proof) and of 1 + m(t)/t^n. Step 4 uses the sibling ted_lpm_am_exp_perturbation_bounds: for real Lambda, q, u with Lambda > 0, 0 <= q <= 1 and |u| <= (Lambda/4) q, one has e^(-Lambda) <= e^u <= e^Lambda, |e^u - 1| <= (e^(Lambda/2)/2) Lambda q, and |e^u - 1| <= Lambda q if Lambda <= 1.
+
+1. Integrable majorants. Since beta < 1, 1 - beta > 0 and -beta > -1. Hence for all real C and rho, t -> C t^(-beta) is interval integrable on [0, rho] (intervalIntegral.intervalIntegrable_rpow' for the exponent -beta > -1, multiplied by the constant C).
+2. Convergence of the integrals. Fix rho in (0, R]. On (0, rho] (the interval uIoc 0 rho): (a) each a_k is a.e.-strongly measurable for Lebesgue measure restricted to (0, rho], by (H1) and (0, rho] being a subset of (0, R] (restriction to a smaller set); (b) |a_k(t)| <= M t^(-beta) for every k and t in (0, rho], by (H2); (c) this majorant is interval integrable by item 1; (d) a_k(t) -> a_inf(t) for t in (0, rho], by (H3). By dominated convergence for interval integrals (intervalIntegral.tendsto_integral_filter_of_dominated_convergence), integral_0^rho a_k -> integral_0^rho a_inf.
+3. Bound on integral_0^rho a_inf for rho in (0, R]. By (H4) and item 1, |integral_0^rho a_inf| <= integral_0^rho K t^(-beta) dt (intervalIntegral.norm_integral_le_of_norm_le, as 0 <= rho). By integral_rpow (exponent -beta > -1) and 0^(1-beta) = 0, integral_0^rho K t^(-beta) dt = K rho^(1-beta)/(1 - beta). Since rho > 0 and R > 0, rho^(1-beta) = R^(1-beta) (rho/R)^(1-beta) (Real.div_rpow, R^(1-beta) > 0), so K rho^(1-beta)/(1 - beta) = [K R^(1-beta)/(1 - beta)] (rho/R)^(1-beta) <= (Lambda/4) (rho/R)^(1-beta), using the hypothesis K R^(1-beta)/(1 - beta) <= Lambda/4 and (rho/R)^(1-beta) >= 0. Thus |integral_0^rho a_inf| <= (Lambda/4) (rho/R)^(1-beta).
+4. Proof of (i). Let r in (0, R] and q := (r/R)^(1-beta). Since 0 < r/R <= 1 and 1 - beta > 0, 0 <= q <= 1 (Real.rpow_nonneg, Real.rpow_le_one). Let u := -integral_0^r a_inf; then |u| = |integral_0^r a_inf| <= (Lambda/4) q by item 3, and F(r) = e^u. Applying ted_lpm_am_exp_perturbation_bounds to Lambda, q and u gives e^(-Lambda) <= F(r) <= e^Lambda, |F(r) - 1| <= (e^(Lambda/2)/2) Lambda (r/R)^(1-beta), and |F(r) - 1| <= Lambda (r/R)^(1-beta) when Lambda <= 1. This is (i).
+5. Proof of (ii). Let 0 < s <= r <= R, so s and r lie in (0, R]. By item 2 (for rho = s and rho = r), negation and continuity of exp, exp(-integral_0^s a_k) -> F(s) and exp(-integral_0^r a_k) -> F(r). By (H5), Q_k(s) -> Q_inf(s) and Q_k(r) -> Q_inf(r). Products of convergent real sequences converge to the product of the limits, so exp(-integral_0^s a_k) Q_k(s) -> F(s) Q_inf(s) and exp(-integral_0^r a_k) Q_k(r) -> F(r) Q_inf(r). By (H6) the inequality exp(-integral_0^s a_k) Q_k(s) <= exp(-integral_0^r a_k) Q_k(r) holds for every k, and limits of real sequences preserve non-strict inequalities (le_of_tendsto_of_tendsto'). Hence F(s) Q_inf(s) <= F(r) Q_inf(r). This is (ii).
+
+## Key steps
+
+1. t -> C t^(-beta) is interval integrable on [0, rho] because -beta > -1.
+2. Dominated convergence on (0, rho]: integral_0^rho a_k -> integral_0^rho a_inf for every rho in (0, R].
+3. |integral_0^rho a_inf| <= K rho^(1-beta)/(1 - beta) = [K R^(1-beta)/(1 - beta)] (rho/R)^(1-beta) <= (Lambda/4)(rho/R)^(1-beta).
+4. ted_lpm_am_exp_perturbation_bounds with q = (r/R)^(1-beta) and u = -integral_0^r a_inf gives (i).
+5. Pass to the limit in (H6) using continuity of exp and (H5) to get (ii).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean (snapshot = .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7)`
+- `rg -n 'ted_lpm_am_|ted_lpm_abstract_monotonicity' <snapshot>/project (no match)`
+- `rg -n 'theorem abs_exp_sub_one_le|theorem add_one_le_exp |theorem tendsto_integral_filter_of_dominated_convergence|theorem norm_integral_le_of_norm_le |theorem intervalIntegrable_rpow' |theorem integral_rpow |theorem tendsto_integral_of_dominated_convergence |theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem le_of_tendsto_of_tendsto'|theorem ContinuousOn.aestronglyMeasurable|theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem rpow_le_rpow_of_exponent_le |theorem div_rpow |theorem ofReal_rpow_of_nonneg' <snapshot>/mathlib/Mathlib`
+- `rg -n 'protected theorem contDiff|protected theorem monotone|theorem zero_of_nonpos|theorem one_of_one_le|theorem nonneg|theorem le_one|monotone' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `python3 -I scan of dag.json (411 nodes): lean_name/status/lean_statement; whitespace-normalized equality of the five child types against every node; name-collision check; grep -rl 'ted_lpm_am_' dag.json nodes; git log --all --oneline -S 'ted_lpm_am_' (no match)`
+- `read nodes/*/decomposition-v*.json and decomposition-audit-v*.json (aal monotonicity_core, dohr local_monotonicity, curvature_holder sibling) and GMT/Scratch/aal_mrc/README.md + aal_mrc_split_all.lean.txt (template proofs), swarm-project.json (max_nodes), problem.md:477`
+- `lake env lean -o /tmp/ted-lpm-am-decomp/build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean on ted_lpm_am_split_all.lean.txt, the axiom-sibling variant, the #count_heartbeats variant, and Facts.lean (#check of all cited lemmas)`
+- `verifier/gmt-compare.py child_modules (contract mode) + verifier/lean_contract.validate_lean_statement on the five child types and the parent type; NodeChallenge against the contract build; NodeSolution against a lean --root build containing the split`
+- `runtime /runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py check_source_delta (identical in gmt-claude-d253855dab51) on each child and the assembly, with negative controls`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-curvature-holder-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-local-monotonicity-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/aal_mrc/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/aal_mrc/aal_mrc_split_all.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/ted_lpm_am/ted_lpm_am_split_all.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/ted_lpm_am/README.md`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its project Contract.lean and Submission.lean are byte-identical (cmp) to the workspace copies.
+
+No-match results: the snapshot project has no ted_lpm_am_* or ted_lpm_abstract_monotonicity declaration, and the prefix ted_lpm_am_ occurs nowhere in dag.json, nodes/ or git history. No node among the 411 in dag.json has any of the five child types. The accepted aal_monotonicity_of_radial_identity needs an identity with a weight w for all C^1 cutoffs, which (A5) cannot supply, so nothing is reused.
+
+Pinned Mathlib supplies every cited fact (mathlib/Mathlib/...):
+- Real.smoothTransition contDiff/monotone/one_of_one_le/zero_of_nonpos/nonneg/le_one: Analysis/SpecialFunctions/SmoothTransition.lean:205, 222, 161, 168, 190, 187
+- Real.abs_exp_sub_one_le and Real.add_one_le_exp: Analysis/Complex/Exponential.lean:533, 632
+- tendsto_integral_of_dominated_convergence: MeasureTheory/Integral/DominatedConvergence.lean:57; intervalIntegral.tendsto_integral_filter_of_dominated_convergence: same file, line 170
+- intervalIntegral.norm_integral_le_of_norm_le: MeasureTheory/Integral/IntervalIntegral/Basic.lean:756
+- intervalIntegrable_rpow': Analysis/SpecialFunctions/Integrability/Basic.lean:47; integral_rpow: Analysis/SpecialFunctions/Integrals/Basic.lean:146
+- setIntegral_eq_integral_of_forall_compl_eq_zero: MeasureTheory/Integral/Bochner/Set.lean:486
+- ContinuousOn.aestronglyMeasurable: MeasureTheory/Integral/IntegrableOn.lean:791
+- le_of_tendsto_of_tendsto': Topology/Order/OrderClosed.lean:480
+- tendsto_one_div_add_atTop_nhds_zero_nat: Analysis/SpecificLimits/Basic.lean:70
+- Real.div_rpow and Real.rpow_le_rpow_of_exponent_le: Analysis/SpecialFunctions/Pow/Real.lean:487, 616; ENNReal.ofReal_rpow_of_nonneg: Analysis/SpecialFunctions/Pow/NNReal.lean:971
+All elaborate in the contract's import closure (#check).
+
+Lean evidence, stored in GMT/Scratch/ted_lpm_am with SHA256SUMS:
+- The five children compile with complete proofs, each depending only on propext, Classical.choice and Quot.sound.
+- From them, the frozen ted_lpm_abstract_monotonicity compiles, depending only on those three and the two siblings.
+- Heartbeats: 3.6k-11k per child and 65k for the assembly, against a 200k limit.
+- The comparator's NodeChallenge and NodeSolution modules pass for all five children and for the parent.
+- The runtime leaf gate accepts each child and the assembly as single theorems.
