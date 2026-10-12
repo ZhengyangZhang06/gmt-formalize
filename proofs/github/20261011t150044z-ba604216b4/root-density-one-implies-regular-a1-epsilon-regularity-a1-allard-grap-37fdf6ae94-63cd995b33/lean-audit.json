@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4deffee1d4cd9c2a079cd100e7c0664f5515a0b41e74ef0f0ce7ecc2354d0cd1",
+  "git_delta": {
+    "base_commit": "567e37360583029384b0d61204b0c33feba845cd",
+    "candidate_commit": "b44e073ec47e7aea7e8083b79eb05bc01e965185",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_lip_graph_hole_measure_bound",
+    "diff_sha256": "9f86430c03d4bbe7cd932e051cfecbf9677928372d3c3234220ec7e1f84b02c1",
+    "source_sha256": "bba37a45fa7f7c192211f0368a455647951aab936e089774e734901ddd1970f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_lip_graph_hole_measure_bound",
+      "statement": "∀ (n k : ℕ) (μ : Measure (Euclid (n + k))) (e : Euclid (n + k) → ℝ) (F A B : Set (Euclid (n + k))) (K : ℝ≥0∞) (C₉ R₀ : ℝ), MeasurableSet B → A ⊆ F → (∀ η ∈ A, ∀ r : ℝ, 0 < r → μHE[n] (F ∩ closedBall η r) ≤ K * ENNReal.ofReal (r ^ n)) → (∀ η ∈ A, ∃ s : ℝ, 0 < s ∧ s ≤ R₀ ∧ closedBall η (3 * s) ⊆ B ∧ ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal C₉ * (μ (closedBall η (3 * s) \\ F) + ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal (e x) ∂μ)) → μHE[n] A ≤ K * ENNReal.ofReal (15 ^ n * C₉) * (μ (B \\ F) + ∫⁻ x in B, ENNReal.ofReal (e x) ∂μ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
