@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.cutoff_deriv-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+  "depth": 5,
+  "title": "Differentiation of radial cutoff integrals under the integral sign",
+  "statement": "Let P ∈ ℕ, ν a measure on ℝ^P (Euclid P), y ∈ ℝ^P, φ : ℝ → ℝ of class C¹ with φ(u) = 0 for every u ≥ A, where A > 0, q : ℝ^P → ℝ ν-a.e. strongly measurable with |q(x)| ≤ B for all x, and τ, R₀ ∈ ℝ with τ > 0, Aτ < R₀ and ν(B̄_{R₀}(y)) < ∞ (closed ball). Write r(x) := |x − y| (Euclidean norm) and φ' := deriv φ. Then (a) x ↦ φ(r(x)/τ)q(x) is ν-integrable; (b) x ↦ −(r(x)/τ²)φ'(r(x)/τ)q(x) is ν-integrable; and (c) the real function σ ↦ ∫ φ(r(x)/σ)q(x) dν(x) has derivative ∫ −(r(x)/τ²)φ'(r(x)/τ)q(x) dν(x) at σ = τ (HasDerivAt).",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (y : Euclid P) (φ : ℝ → ℝ) (q : Euclid P → ℝ) (A B τ R₀ : ℝ), ContDiff ℝ 1 φ → (∀ u, A ≤ u → φ u = 0) → 0 < A → 0 < τ → A * τ < R₀ → ν (closedBall y R₀) ≠ ∞ → AEStronglyMeasurable q ν → (∀ x, ‖q x‖ ≤ B) → Integrable (fun x => φ (‖x - y‖ / τ) * q x) ν ∧ Integrable (fun x => -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * q x) ν ∧ HasDerivAt (fun σ => ∫ x, φ (‖x - y‖ / σ) * q x ∂ν) (∫ x, -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * q x ∂ν) τ",
+  "lean_name": "doragm_radial_cutoff_hasDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2c1dfd89e1-a1"
+}
