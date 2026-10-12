@@ -584,6 +584,30 @@ theorem Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq : ∀ (P 
     continuous_finsetSum _ fun ab _ => (continuous_apply ab).smul continuous_const
   rw [heq]
   exact hΛ.measurable.comp_aemeasurable (AEMeasurable.of_eval fun ab => hcoef _ _)
+/-- For an integer multiplicity triple `R = (M, θ, ξ)` in an open set `U`, `Hⁿ⌞M` is σ-finite.
+The open set `U ⊆ ℝᴾ` is σ-compact, `U = ⋃ⱼ Kⱼ` with `Kⱼ` compact.  As `θ ≥ 1` on `M`,
+`Hⁿ(M ∩ Kⱼ) ≤ ∫_{M ∩ Kⱼ} θ dHⁿ < ∞`, and `M ⊆ ⋃ⱼ (M ∩ Kⱼ)`. -/
+theorem Submission.dsmc_imrep_carrier_sigmaFinite : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → SigmaFinite (μHE[n].restrict R.carrier) := by
+  intro P n U R hU
+  -- `U` is locally compact and second countable, hence σ-compact
+  obtain ⟨K, hKc, hKU⟩ : IsSigmaCompact U := by
+    have := hU.locallyCompactSpace
+    exact isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
+  -- `Hⁿ(M ∩ Kⱼ) ≤ ∫_{M ∩ Kⱼ} θ dHⁿ < ∞`, since `θ ≥ 1` on `M`
+  have hfin : ∀ j, μHE[n] (R.carrier ∩ K j) < ∞ := by
+    intro j
+    calc μHE[n] (R.carrier ∩ K j) = ∫⁻ _ in R.carrier ∩ K j, 1 ∂μHE[n] :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ K j, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+          setLIntegral_mono' (R.measurableSet_carrier.inter (hKc j).isClosed.measurableSet)
+            fun x hx => Nat.one_le_cast.mpr (R.mult_pos x hx.1)
+      _ < ∞ := (R.locallyIntegrable_mult (K j) (hKc j)
+          ((subset_iUnion K j).trans hKU.subset)).lt_top
+  -- `M ⊆ U = ⋃ⱼ Kⱼ`, so the sets `M ∩ Kⱼ` cover `M`
+  refine Poincare.SimonGMT.Chapter03.sigmaFinite_restrict_of_hausdorff_finite_cover
+    (fun j => R.carrier ∩ K j) ?_ hfin
+  rw [← inter_iUnion, hKU]
+  exact fun x hx => ⟨hx, R.carrier_subset hx⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
