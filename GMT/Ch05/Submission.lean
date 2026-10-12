@@ -599,6 +599,52 @@ theorem upperDensity_ne_zero_outside_hausdorff_null : ∀ {n ℓ : ℕ} (ν : Me
   -- `μHE[n]` is a scalar multiple of `μH[n]`.
   rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hE, smul_zero]
 
+/-- **Simon Ch. 3, Remark 1.8(2)** via the Upper Density Theorem (Ch. 1, 3.6), on an open set `W`
+of finite `μ_V`-mass: if every `y ∈ spt V ∩ W` satisfies `μ_V(B_s(y)) ≥ c ω_n sⁿ` for some `c > 0`
+and all small `s > 0`, then `Hⁿ((spt V ∩ W) \ M) = 0`.  A measurable kernel `B ⊆ M` of the
+`Hⁿ`-null-measurable carrier is `μ_V`-conull; at `x ∈ (spt V ∩ W) \ M` the upper density of
+`μ_V ⌞ (B ∩ W)` is at least `c > 0` while `x ∉ B ∩ W`, so 3.6 makes these points `Hⁿ`-null. -/
+theorem ted_adb_support_diff_carrier_null : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : Set (Amb n ℓ)), IsOpen W → V.weight W < ⊤ → (∀ y ∈ V.support ∩ W, ∃ c : ℝ, 0 < c ∧ ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal (c * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)) → (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ W) \ V.carrier) = 0 := by
+  intro n ℓ U V W hWo hWfin hlow
+  -- Step 1: `ω_n > 0`.
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- Step 2: a measurable kernel `B ⊆ M` with `B = M` `Hⁿ`-a.e.
+  obtain ⟨B, hBM, hBmeas, hBae⟩ := V.nullMeasurableSet_carrier.exists_measurable_subset_ae_eq
+  -- Step 3: `μ_V(Bᶜ) = Hⁿ ⌞ θ (Bᶜ ∩ M) = 0`, since `Hⁿ(M \ B) = 0`.
+  have hBc : V.weight Bᶜ = 0 := by
+    rw [RectifiableVarifold.weight, withDensity_apply _ hBmeas.compl]
+    refine setLIntegral_measure_zero _ _ ?_
+    rw [Measure.restrict_apply hBmeas.compl, inter_comm, ← Set.sdiff_eq]
+    exact (ae_eq_set.1 hBae).2
+  -- Step 4: the Upper Density Theorem for `ν = μ_V` and `A = B ∩ W`, with `μ_V(A) ≤ μ_V(W) < ∞`.
+  have hE := upperDensity_ne_zero_outside_hausdorff_null V.weight (B ∩ W)
+    (hBmeas.inter hWo.measurableSet).nullMeasurableSet
+    ((measure_mono inter_subset_right).trans_lt hWfin)
+  -- Steps 5–6: `(spt V ∩ W) \ M` lies in the exceptional set of 3.6.
+  refine measure_mono_null (fun x hx => ?_) hE
+  obtain ⟨⟨hxS, hxW⟩, hxM⟩ := hx
+  -- (a) `x ∉ A`, as `A ⊆ B ⊆ M`.
+  refine ⟨fun hxA => hxM (hBM hxA.1), ?_⟩
+  obtain ⟨c, hc, hev⟩ := hlow x ⟨hxS, hxW⟩
+  -- (b) `B_r(x) ⊆ W` for small `r > 0`, since `W` is open.
+  have hloc : ∀ᶠ r in 𝓝[>] (0 : ℝ), closedBall x r ⊆ W :=
+    nhdsWithin_le_nhds (eventually_closedBall_subset (hWo.mem_nhds hxW))
+  -- (c), (d) For small `r > 0`: `μ_V(A ∩ B_r(x)) = μ_V(B_r(x)) ≥ c ω_n rⁿ`.
+  have hge : ∀ᶠ r in 𝓝[>] (0 : ℝ), ENNReal.ofReal c ≤
+      V.weight ((B ∩ W) ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n) := by
+    filter_upwards [hev, hloc, self_mem_nhdsWithin] with r hr hrW hr0
+    have hpos : 0 < unitBallVolume n * r ^ n := mul_pos hω (pow_pos hr0 n)
+    have hset : (B ∩ W) ∩ closedBall x r = closedBall x r ∩ B := by
+      ext z
+      exact ⟨fun hz => ⟨hz.2, hz.1.1⟩, fun hz => ⟨⟨hz.2, hrW hz.1⟩, hz.1⟩⟩
+    rw [hset, measure_inter_conull hBc,
+      ENNReal.le_div_iff_mul_le (Or.inl (ENNReal.ofReal_pos.2 hpos).ne')
+        (Or.inl ENNReal.ofReal_ne_top), ← ENNReal.ofReal_mul hc.le]
+    exact hr
+  -- (e) Hence the limsup is at least `ofReal c > 0`.
+  exact ((ENNReal.ofReal_pos.2 hc).trans_le (le_limsup_of_frequently_le hge.frequently)).ne'
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
