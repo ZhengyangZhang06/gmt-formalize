@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b8f10e9f07d68987bbc5bb8f06b06c44acae3e2c0039ce493f38bc50f87fb49a",
+  "git_delta": {
+    "base_commit": "e3d56e8772aa92a58992791e8ee7ad64c9fc53e2",
+    "candidate_commit": "d5e029d5491f14cde86f926a115e1c61096d3512",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_unitOrientation_eq_or_neg",
+    "diff_sha256": "db13716f624244dd2596f03065612b5029b16cd2f22cd4ac4766ac0aa88588b7",
+    "source_sha256": "3d744a1d5c7d8d7b72857e2b38b926f8a64f710f84bcb0d3377ad9c8de76068c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_unitOrientation_eq_or_neg",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ₁ ξ₂ : MultiVector P n), IsUnitOrientationOf ξ₁ Q → IsUnitOrientationOf ξ₂ Q → ξ₂ = ξ₁ ∨ ξ₂ = -ξ₁",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
