@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "49c4a993a7e1268db76b86ea5f6c80b1001b43d22459d835d5c5642f6955f61c",
+  "git_delta": {
+    "base_commit": "8d114237220376cc274e646457904f81d7b45f49",
+    "candidate_commit": "9bb1f75ad2bd013b1db8d6891b041df51d44ab31",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7a4fd9ddc56822a8dc6b822bb70ef31abecd7eacb885f0badc69f3bf86fe6444",
+    "source_sha256": "6fb5e251575ffc07c7fc7fc67dd3577c33c0e6571c1934e4f1be0e361bc6c165",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imsupp_measure_eq_zero_of_vanishesOn",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → R.measure W = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
