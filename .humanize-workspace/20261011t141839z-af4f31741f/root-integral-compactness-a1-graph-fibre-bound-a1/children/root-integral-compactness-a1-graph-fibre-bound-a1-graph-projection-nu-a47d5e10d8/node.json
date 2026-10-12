@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.graph_fibre_bound-a1.graph_projection_null_measurable-a1",
+  "parent_id": "root.integral_compactness-a1.graph_fibre_bound-a1",
+  "depth": 3,
+  "title": "The projection of a null-measurable L-Lipschitz graph piece is H^n-null-measurable",
+  "statement": "Let N, n ∈ ℕ, P ∈ G(N,n) with orthogonal projection p := Grassmannian.project P, L ≥ 0, and let A ⊆ ℝ^N be an L-Lipschitz graph over P (|(y − z) − p(y − z)| ≤ L|p(y − z)| for all y, z ∈ A) that is H^n-null-measurable, H^n = μHE[n]. Then p(A) is H^n-null-measurable.",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → NullMeasurableSet A (μHE[n] : Measure (Euclidean N)) → NullMeasurableSet (Grassmannian.project P '' A) (μHE[n] : Measure (Euclidean N))",
+  "lean_name": "intcpt_graph_projection_nullMeasurableSet",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-graph-fibre-bound-a1-graph-projection-nu-a47d5e10d8-a1"
+}
