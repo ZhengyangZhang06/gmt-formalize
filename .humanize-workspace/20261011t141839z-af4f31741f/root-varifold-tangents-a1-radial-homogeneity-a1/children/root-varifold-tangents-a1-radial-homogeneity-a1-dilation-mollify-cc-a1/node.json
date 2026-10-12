@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_mollify_cc-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1",
+  "depth": 3,
+  "title": "Mollification extends the dilation law ∫ g(s⁻¹y) dμ = sⁿ ∫ g dμ from C¹_c to C_c functions",
+  "statement": "Let μ be a Borel measure on ℝ^N that is finite on compact sets, n ∈ ℕ and s > 0. Suppose that ∫ h(s⁻¹y) dμ(y) = s^n ∫ h dμ for every C¹ function h : ℝ^N → ℝ with compact support. Then ∫ g(s⁻¹y) dμ(y) = s^n ∫ g dμ for every continuous function g : ℝ^N → ℝ with compact support.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ",
+  "lean_name": "varifold_tangents_rh_scaling_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-dilation-mollify-cc-a1-a1"
+}
