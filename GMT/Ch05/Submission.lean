@@ -13,7 +13,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
-import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -535,12 +534,13 @@ theorem any_radius_gr_pp_hs_ideal : (∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (
     _ ≤ ‖W‖ ^ 2 * hsNormSq X' :=
         mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hW'n 2) hX'nn
     _ = ‖W‖ ^ 2 * hsNormSq X := by rw [hb]
+
 /-- Hilbert–Schmidt splitting along orthogonal projections, with `|A|² = Σᵢ |A eᵢ|²` (`hsNormSq`).
 (S1) For `X : ℝᵐ → ℝᵏ` and a subspace `K`, `|X|² = |X p_K|² + |X p_{K⊥}|²`.
 (S2) For subspaces `K, L`, with `P = p_K` and `Q = p_L`, `|P − Q|² = |(P − Q) P|² + |(P − Q) Q|²`.
-Proof: (S1) Let `X*` be the adjoint of `X`.  As `p_W` is self-adjoint, `p_W X*` is an adjoint of
-`X p_W`, so adjoint invariance of `|·|` (first conjunct of `any_radius_gr_pp_hs_ideal`) gives
-`|X p_W|² = |p_W X*|²` and `|X|² = |X*|²`; summing Pythagoras
+Proof: (S1) Let `X* v = Σᵢ ⟨X eᵢ, v⟩ eᵢ` be the adjoint of `X`.  As `p_W` is self-adjoint,
+`p_W X*` is an adjoint of `X p_W`, so adjoint invariance of `|·|` (first conjunct of
+`any_radius_gr_pp_hs_ideal`) gives `|X p_W|² = |p_W X*|²` and `|X|² = |X*|²`; summing Pythagoras
 `|X* f_j|² = |p_K X* f_j|² + |p_{K⊥} X* f_j|²` over the standard basis `(f_j)` of `ℝᵏ` gives (S1).
 (S2) By (S1) for `X = P − Q`, it remains to show `|(P − Q) p_{K⊥}|² = |(P − Q) Q|²`.  Since
 `p_{K⊥} = 1 − P`, `P² = P`, `Q² = Q` and `P, Q` are self-adjoint, `(P − Q) Q` is an adjoint of
@@ -551,9 +551,19 @@ theorem any_radius_gr_pp_hs_proj_split : (∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn
   have S1 : ∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (K : Submodule ℝ (Rn m)),
       hsNormSq X = hsNormSq (X ∘L K.starProjection) + hsNormSq (X ∘L Kᗮ.starProjection) := by
     intro m k X K
+    -- 0(e): `X* v = Σᵢ ⟨X eᵢ, v⟩ eᵢ` is an adjoint of `X`, as `⟨X u, v⟩ = Σᵢ uᵢ ⟨X eᵢ, v⟩`.
     obtain ⟨Xa, hXa⟩ : ∃ Xa : Rn k →L[ℝ] Rn m, ∀ (u : Rn m) (v : Rn k),
-        inner ℝ (X u) v = inner ℝ u (Xa v) :=
-      ⟨ContinuousLinearMap.adjoint X, fun u v => (ContinuousLinearMap.adjoint_inner_right X u v).symm⟩
+        inner ℝ (X u) v = inner ℝ u (Xa v) := by
+      refine ⟨∑ i : Fin m, (innerSL ℝ (X (EuclideanSpace.single i 1))).smulRight
+        (EuclideanSpace.single i (1 : ℝ)), fun u v => ?_⟩
+      have hu : ∑ i, u i • EuclideanSpace.single i (1 : ℝ) = u := by
+        simpa only [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr] using
+          (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr u
+      conv_lhs => rw [← hu]
+      simp only [sum_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
+        map_sum, map_smul, sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right,
+        EuclideanSpace.inner_single_right, one_mul, conj_trivial]
+      exact Finset.sum_congr rfl fun i _ => mul_comm _ _
     have hX : hsNormSq Xa = hsNormSq X := H1 m k X Xa hXa
     -- `p_W X*` is an adjoint of `X p_W`.
     have hW : ∀ (W : Submodule ℝ (Rn m)) [W.HasOrthogonalProjection],
