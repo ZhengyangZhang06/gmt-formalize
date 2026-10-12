@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 1 of the parent-supplied proof of dohr_eb_el_higher_regularity_step (testing the weak Euler-Lagrange equation with difference quotients of zeta), specialised to an arbitrary direction e, with every estimate made explicit.
+Notation: L := L(R^n, R^l) = (Rn n →L[ℝ] Rn ℓ) with the operator norm, and L* := L(L, R). A := DPsi = fderiv R Psi : L -> L* and B := DA = fderiv R (fderiv R Psi), so B(P)[Q][Q'] = fderiv R (fderiv R Psi) P Q Q'. Since Psi is C^2, A is C^1 on L and B is continuous. Put F(y) := A(Du(y)) in L*, v_e(z) := Du(z)e = fderiv R u z e, and Kz := tsupport zeta.
+1. Regularity on U. U is open and u is C^2 on U, so Du = fderiv R u is C^1 on U (ContDiffOn.fderiv_of_isOpen). Hence F = A o Du is C^1 on U. By the chain rule DF(y)w = B(Du(y))[D(Du)(y)w] for y in U and w in R^n, and y -> DF(y)e is continuous on U. Likewise v_e = ev_e o Du, where ev_e(P) := Pe is a continuous linear map L -> R^l, is C^1 on U. Its derivative is Dv_e(y)w = (D(Du)(y)w)e = D^2u(y)[w][e] (derivative of evaluation at the constant vector e; fderiv_clm_apply).
+2. Symmetry. For y in U, u is C^2 on a neighbourhood of y (U is open), so D^2u(y) is symmetric (Schwarz; Mathlib ContDiffAt.isSymmSndFDerivAt with minSmoothness R 2 = 2). That is, D^2u(y)[w][e] = D^2u(y)[e][w] for all w. Hence Dv_e(y) = D(Du)(y)e as elements of L, and by step 1
+   DF(y)e = B(Du(y))[Dv_e(y)] for every y in U.   (*)
+3. Reduction and margin. If Kz is empty, then zeta = 0 identically, so Dzeta = 0 and both integrands in the claim vanish identically; the claim reads 0 = 0. Assume from now on that Kz is nonempty. Kz is compact (zeta has compact support) and contained in the open set U, so there is delta > 0 such that K' := cthickening delta Kz = {y : dist(y, Kz) <= delta} is contained in U (IsCompact.exists_cthickening_subset_open). K' is compact (IsCompact.cthickening) and contains Kz. Put h0 := delta/(||e|| + 1) > 0; this choice also covers e = 0. For 0 < |h| < h0, y in Kz and |t| <= |h| we have ||(y + te) - y|| = |t| ||e|| < delta, so y + te lies in K'. In particular Kz + he is contained in K'.
+4. Two general facts.
+   (a) Outside Kz the map zeta vanishes on a neighbourhood, so Dzeta(x) = 0 for x not in Kz (support_fderiv_subset). Hence for any linear forms Lambda(x) in L* the function x -> Lambda(x)[Dzeta(x - a)] vanishes for x outside Kz + a.
+   (b) Let G : R^n -> V, with V a finite-dimensional normed space, be continuous on U and vanish outside a compact set K contained in U. Then G is integrable on R^n: it is continuous on the compact K, hence integrable on K (ContinuousOn.integrableOn_compact), and it is 0 off K. Moreover its integral over U equals its integral over R^n (setIntegral_eq_integral_of_forall_compl_eq_zero).
+5. Test functions. For 0 < |h| < h0 let phi_h(x) := h^{-1}(zeta(x) - zeta(x - he)). Then phi_h is C^1 with Dphi_h(x) = h^{-1}(Dzeta(x) - Dzeta(x - he)). Its support lies in supp zeta ∪ (supp zeta + he), so tsupport phi_h ⊆ Kz ∪ (Kz + he) ⊆ K' ⊆ U. Also phi_h has compact support, since its tsupport is a closed subset of the compact K'. The hypothesis therefore gives
+   ∫_U A(Du(x))[Dphi_h(x)] dx = - ∫_U <phi_h(x), g(x)> dx.   (1)
+6. The left side of (1) is a difference quotient. By linearity A(Du(x))[Dphi_h(x)] = h^{-1} F(x)[Dzeta(x)] - h^{-1} F(x)[Dzeta(x - he)]. The first term vanishes outside Kz and the second outside Kz + he (step 4a). Both sets lie in K' ⊆ U and both terms are continuous on U, so by step 4b both are integrable on R^n and their integrals over U equal their integrals over R^n. By translation invariance of Lebesgue measure (integral_add_right_eq_self, substituting x = y + he), ∫ F(x)[Dzeta(x - he)] dx = ∫ F(y + he)[Dzeta(y)] dy. Both y -> F(y)[Dzeta(y)] and y -> F(y + he)[Dzeta(y)] vanish for y outside Kz, and for y in Kz both y and y + he lie in K' ⊆ U. Therefore, with Q_h(y) := h^{-1}(F(y + he) - F(y)) in L*,
+   ∫_U A(Du)[Dphi_h] = - ∫_{Kz} Q_h(y)[Dzeta(y)] dy.   (2)
+7. Uniform convergence of Q_h on Kz. The map y -> DF(y)e is continuous on U, hence uniformly continuous on the compact K' (Heine-Cantor; IsCompact.uniformContinuousOn_of_continuous). Let omega(r) := sup{ ||DF(z)e - DF(z')e|| : z, z' in K', ||z - z'|| <= r }. This is a supremum over a nonempty set, and it is finite because y -> DF(y)e is bounded on K'; moreover omega(r) -> 0 as r -> 0+. Fix y in Kz and 0 < |h| < h0. For t between 0 and h the point y + te lies in K' ⊆ U, so gamma(t) := F(y + te) - t DF(y)e is differentiable there with gamma'(t) = DF(y + te)e - DF(y)e. Hence ||gamma'(t)|| <= omega(|t| ||e||) <= omega(|h| ||e||). The mean value inequality on the segment between 0 and h gives ||gamma(h) - gamma(0)|| <= |h| omega(|h| ||e||), that is,
+   ||Q_h(y) - DF(y)e|| <= omega(|h| ||e||) for every y in Kz.   (3)
+8. Limit of the left side. Let M := max over Kz of ||Dzeta||, which is finite because Dzeta is continuous and Kz is compact and nonempty, and let |Kz| be the finite Lebesgue measure of Kz. The function y -> DF(y)e[Dzeta(y)] is continuous on U and vanishes outside Kz, so it is integrable (step 4b). By (2) and (3),
+   | ∫_U A(Du)[Dphi_h] + ∫_{Kz} DF(y)e[Dzeta(y)] dy | <= |Kz| M omega(|h| ||e||) -> 0 as h -> 0.
+   By (*), DF(y)e[Dzeta(y)] = B(Du(y))[Dv_e(y)][Dzeta(y)], and this integrand vanishes on U outside Kz. Hence
+   ∫_U A(Du)[Dphi_h] -> - ∫_U B(Du(y))[Dv_e(y)][Dzeta(y)] dy as h -> 0.   (4)
+9. Limit of the right side.
+   (a) The map x -> Dzeta(x)e is continuous with compact support, hence uniformly continuous on R^n (HasCompactSupport.uniformContinuous_of_continuous). Let omega_z(r) := sup{ ||Dzeta(z)e - Dzeta(z')e|| : ||z - z'|| <= r }; then omega_z(r) -> 0 as r -> 0+.
+   (b) Fix x. The map s -> zeta(x - se) + s Dzeta(x)e has derivative -Dzeta(x - se)e + Dzeta(x)e, whose norm is <= omega_z(|h| ||e||) for s between 0 and h. The mean value inequality gives ||zeta(x - he) - zeta(x) + h Dzeta(x)e|| <= |h| omega_z(|h| ||e||), i.e. ||phi_h(x) - Dzeta(x)e|| <= omega_z(|h| ||e||).
+   (c) Both phi_h and x -> Dzeta(x)e vanish outside K'. G := max over K' of ||g|| is finite, because g is continuous on U ⊇ K' and K' is compact and nonempty.
+   (d) The functions x -> <phi_h(x), g(x)> and x -> <Dzeta(x)e, g(x)> are continuous on U and vanish outside K', hence integrable (step 4b). By (b) and (c),
+   | ∫_U <phi_h, g> - ∫_U <Dzeta(x)e, g(x)> dx | <= |K'| G omega_z(|h| ||e||) -> 0 as h -> 0.   (5)
+10. Conclusion. By (1), for every 0 < |h| < h0 the number ∫_U A(Du)[Dphi_h] equals - ∫_U <phi_h, g>. As h -> 0 the first tends to - ∫_U B(Du)[Dv_e][Dzeta] by (4), and the second tends to - ∫_U <Dzeta(x)e, g(x)> dx by (5). By uniqueness of limits (for instance along h_j := h0/(j + 2)) the two limits coincide. Multiplying by -1 and using the symmetry of the real inner product gives ∫_U B(Du(x))[Dv_e(x)][Dzeta(x)] dx = ∫_U <g(x), Dzeta(x)e> dx. In Lean notation this is ∫ x in U, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x) (fderiv ℝ (fun z => fderiv ℝ u z e) x) (fderiv ℝ ζ x) = ∫ x in U, inner ℝ (g x) (fderiv ℝ ζ x e). QED
+Lean note (pin: Lean 4.35.0-rc3, Mathlib 25730c7c):
+- Imports. ContDiffAt.isSymmSndFDerivAt (step 2) is not reachable from the frozen import list of GMT.Ch05.Submission. Add `import Mathlib.Analysis.Calculus.FDeriv.Symmetric` to Submission.lean; accepted solutions in this run, e.g. conical approximation, already add Mathlib imports. With it, `minSmoothness ℝ 2 = 2` closes by simp.
+- Every other lemma cited is available under the frozen imports: IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, support_fderiv_subset, ContinuousOn.integrableOn_compact, setIntegral_eq_integral_of_forall_compl_eq_zero, MeasureTheory.integral_add_right_eq_self, IsCompact.uniformContinuousOn_of_continuous, HasCompactSupport.uniformContinuous_of_continuous, norm_image_sub_le_of_norm_deriv_le_segment', fderiv_clm_apply, ContDiffOn.fderiv_of_isOpen and ContDiffOn.continuousOn_fderiv_of_isOpen.
+- Instances. At the default maxSynthPendingDepth, normed-structure instances fail for the bilinear-form type (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ and for Rn n →L[ℝ] L*; use `set_option maxSynthPendingDepth 3` if they are needed. The argument only needs norms on L and on L* = (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, for F, Q_h and y ↦ DF(y)e. B enters only through (*), which is obtained pointwise from the chain rule and fderiv_clm_apply. Continuity of y ↦ DF(y)e on U elaborates at the default depth via ContDiffOn.continuousOn_fderiv_of_isOpen followed by clm_apply.
+
+## Key steps
+
+1. if tsupport zeta is empty both sides vanish; otherwise choose delta > 0 with K' := cthickening delta Kz ⊆ U and set h0 := delta/(||e|| + 1)
+2. u is C^2 on the open U, so F := DPsi o Du is C^1 on U; by Schwarz symmetry of D^2u, DF(y)e = D^2Psi(Du(y))[Dv_e(y)] with v_e = Du(.)e
+3. test the weak equation with phi_h := h^{-1}(zeta - zeta(. - he)), which is C^1 with compact support in K' ⊆ U
+4. translation invariance of Lebesgue measure turns the left side into -∫_{Kz} h^{-1}(F(y + he) - F(y))[Dzeta(y)] dy
+5. mean value inequality plus uniform continuity on K': h^{-1}(F(y + he) - F(y)) -> DF(y)e uniformly on Kz, and phi_h -> Dzeta(.)e uniformly on R^n
+6. pass to the limit h -> 0 on both sides (bounded integrands supported in compact subsets of U) and multiply by -1
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `python3 -I scan of dag.json lean_name values containing dohr_eb / ehs (collision check, 431 unique names); rg -c 'dohr_eb_ehs' <snapshot>`
+- `rg -n 'theorem ContinuousLinearMap.iteratedFDeriv_comp_left|theorem norm_compContinuousMultilinearMap_le|theorem contDiff_infty_iff_fderiv|theorem fderiv_clm_apply|theorem ContDiffAt.isSymmSndFDerivAt|theorem support_fderiv_subset|theorem IsCompact.uniformContinuousOn_of_continuous|theorem ContDiffOn.fderiv_of_isOpen|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib`
+- `rg -n 'integral_add_right_eq_self|uniformContinuous_of_continuous|norm_image_sub_le_of_norm_hasFDerivWithin_le|exists_cthickening_subset_open' <snapshot>/mathlib/Mathlib`
+- `lake build GMT.Ch05.Submission in scratch copy /tmp/ehs-split-1tMXHd/proj (Lean 4.35.0-rc3, .lake/packages -> shared lake-packages-25730c7c)`
+- `lake env lean Checks/Types.lean (3 child types + parent type in the comparator's replayed scope: namespace GMT.Ch05, open MeasureTheory Metric Set Filter Topology, open scoped ENNReal NNReal, open RectifiableVarifold)`
+- `lake env lean Checks/Assembly.lean (parent frozen type proved from the 3 child types + 4 dependency types posed as axioms; #print axioms)`
+- `lake env lean Checks/Small.lean (children dohr_eb_ehs_hessian_apply_contDiff and dohr_eb_ehs_inner_right_holder proved outright)`
+- `lake env lean Probe/Avail.lean and Probe/Avail2.lean (#check of every lemma cited in child 1 under the frozen imports, and with import Mathlib.Analysis.Calculus.FDeriv.Symmetric)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py, identical to the flow's copy) on the 3 child statements`
+- `git show <ref>:GMT/Ch05/Submission.lean | grep '^import' for the conical-approximation solution branches (precedent for adding Mathlib imports)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+
+The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Contract.lean and Submission.lean are byte-identical to the snapshot Contract. Neither the snapshot nor dag.json uses the prefix 'dohr_eb_ehs', so the three proposed names are globally fresh.
+
+All Mathlib lemmas cited in the child proofs exist at the pin, with these locations:
+- ContinuousLinearMap.iteratedFDeriv_comp_left: ContDiff/Basic.lean:255.
+- ContinuousLinearMap.norm_compContinuousMultilinearMap_le: Normed/Module/Multilinear/Basic.lean:919.
+- contDiff_infty_iff_fderiv: ContDiff/Defs.lean:1266.
+- ContDiffOn.fderiv_of_isOpen: ContDiff/Defs.lean:907.
+- fderiv_clm_apply: FDeriv/CompCLM.lean:143.
+- ContDiffAt.isSymmSndFDerivAt: FDeriv/Symmetric.lean:533.
+- support_fderiv_subset: FDeriv/Const.lean:379.
+- IsCompact.uniformContinuousOn_of_continuous: HeineCantor.lean:49.
+- HasCompactSupport.uniformContinuous_of_continuous: to_additive of HeineCantor.lean:91.
+- IsCompact.exists_cthickening_subset_open: Thickening.lean:426.
+- setIntegral_eq_integral_of_forall_compl_eq_zero: Bochner/Set.lean:486.
+- ContinuousOn.integrableOn_compact: LocallyIntegrable.lean:592.
+- norm_image_sub_le_of_norm_hasFDerivWithin_le: MeanValue.lean:422.
+- integral_add_right_eq_self: used at Rademacher.lean:190.
+
+Under the frozen Submission imports every one of these resolves except ContDiffAt.isSymmSndFDerivAt and second_derivative_symmetric_of_eventually. Child 1 must therefore add `import Mathlib.Analysis.Calculus.FDeriv.Symmetric`. The conical-approximation solution branches already add Mathlib imports to Submission.lean, so this has precedent. With that import, minSmoothness ℝ 2 = 2 closes by simp.
+
+Lean checks on the scratch build:
+- The 3 child types and the frozen parent type elaborate in the comparator scope.
+- With the 3 child types and the 4 dependency types posed as axioms, the parent type is proved. #print axioms lists propext, Classical.choice, Quot.sound and exactly those 7.
+- Children 2 and 3 are proved outright.
+
+The snapshot contains no elliptic or difference-quotient regularity theory that could replace child 1. 'difference quotient' only appears in UniformLimitsDeriv.lean, as recorded in the parent handoff.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.inner_holder-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1",
+  "depth": 4,
+  "title": "Inner product with a fixed vector preserves local C^{m,alpha} regularity",
+  "statement": "Let n, l, m be natural numbers, alpha ∈ R, U ⊆ R^n open, w ∈ R^l, and g : R^n -> R^l with IsLocallyHolderCkα m alpha g U. That is, g is C^m on U and for every compact K ⊆ U there is C with ||D^m g(x) - D^m g(y)|| <= C ||x - y||^alpha for all x, y ∈ K, where D^m is iteratedFDeriv R m. Then f(x) := <g(x), w> is C^m on U, and for every compact K ⊆ U there is C' with ||D^m f(x) - D^m f(y)|| <= C' ||x - y||^alpha for all x, y ∈ K.",
+  "lean_statement": "∀ (n ℓ m : ℕ) (α : ℝ) (U : Set (Rn n)) (g : Rn n → Rn ℓ) (w : Rn ℓ), IsOpen U → IsLocallyHolderCkα m α g U → ContDiffOn ℝ m (fun x => inner ℝ (g x) w) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => inner ℝ (g z) w) x - iteratedFDeriv ℝ m (fun z => inner ℝ (g z) w) y‖ ≤ C * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_ehs_inner_right_holder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-e4e3ba4721-a1"
+}

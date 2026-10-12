@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.hessian_apply_smooth-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1",
+  "depth": 4,
+  "title": "Components of the second derivative of a smooth integrand are smooth",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) (= Rn n →L[ℝ] Rn ℓ) and Psi : L -> R of class C^infinity (ContDiff ℝ (⊤ : ℕ∞)). Then for all P, Q ∈ L the scalar function R ↦ D^2Psi(R)[P][Q] = fderiv R (fderiv R Psi) R P Q is of class C^infinity on L.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ, ContDiff ℝ (⊤ : ℕ∞) Ψ → ∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiff ℝ (⊤ : ℕ∞) (fun R : Rn n →L[ℝ] Rn ℓ => fderiv ℝ (fderiv ℝ Ψ) R P Q)",
+  "lean_name": "dohr_eb_ehs_hessian_apply_contDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-7ab7b4703d-a1"
+}
