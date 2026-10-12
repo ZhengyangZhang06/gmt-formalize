@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "71466bd499f61063f89c82e562d0a83fa2af3526f57ebfef1c091ae8fda954dd",
+  "git_delta": {
+    "base_commit": "2c2e689e8131be1db0f9cb0d7dcf96b1298d5495",
+    "candidate_commit": "a79903e2e6d062499d4243efc096d6b99c5ac2cd",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "exists_nearby_points_off_bad_sets",
+    "diff_sha256": "d1c68cf383598197841c334ad0f5e61f8ed4f04078996b2ef9a33047be31d5f0",
+    "source_sha256": "e3b4b997b5907bc0b8e4c3120f1c2fb2c37006a9f82e5bd6dde8273abbe51cb4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_nearby_points_off_bad_sets",
+      "statement": "∀ (N : ℕ) (W : Set (Euclidean N)) (Bad : ℕ → Set (Euclidean N)) (x : Euclidean N), IsOpen W → x ∈ W → (∀ i : ℕ, x ∉ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ)) → ∃ (q : ℕ → ℕ) (y : ℕ → Euclidean N), Tendsto q atTop atTop ∧ Tendsto y atTop (𝓝 x) ∧ ∀ i, y i ∈ W ∧ y i ∉ Bad (q i)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
