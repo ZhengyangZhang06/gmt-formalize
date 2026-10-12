@@ -1049,6 +1049,58 @@ theorem Submission.pcoarea_flat_jacobian_identity : ∀ (m k N : ℕ) (A : Rn (m
   rw [hblock, ← hsec, hadj]
   ring
 
+/-- **Parametric co-area formula on one chart** (Simon Ch. 3, co-area formula 2.8–2.9, regular
+part of the `C¹` case; cf. Federer 3.2.12, 3.2.22). Let `Φ` be an open partial homeomorphism from
+`ℝⁿ`, `n = m + k`, to `P = WithLp 2 (ℝᵐ × ℝᵏ)`, `C¹` on its source `O` with `C¹` inverse on its
+target, whose first component is `G` on `O`, and let `ψ` be `C¹` and injective on `O`. For Borel
+`B ⊆ O` and Borel `φ ≥ 0`, `y ↦ ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ` is a.e. measurable and
+`∫_B φ(ψ(u)) J(u) du = ∫_{ℝᵐ} ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ dy`, where
+`J(u) = normDet (Dψ(u) ∘ ι_{ker DG(u)}) · normDet (DG(u)*)`.
+With `ρ = ψ ∘ Φ⁻¹`, `j z = (0, z)`, `h = φ ∘ ρ · normDet (Dρ ∘ j)` and `F = 1_{Φ(B)} h` on `P`:
+* each slice integral is `∫_{ℝᵏ} F(y, z) dz`, by the injective area formula on the slice
+  `z ↦ ρ(y, z)` (`pcoarea_chart_slice_lintegral` with `pcoarea_c1_injOn_area_formula`);
+* `y ↦ ∫ F(y, z) dz` is measurable and `∫_P F = ∫_{ℝᵐ} ∫_{ℝᵏ} F(y, z) dz dy` (Tonelli,
+  `pcoarea_chart_integrand_tonelli`);
+* `Φ(B)` is Borel (Lusin–Souslin), so `∫_P F = ∫_{Φ(B)} h = ∫_B normDet (DΦ(u)) h(Φ(u)) du`
+  (`pcoarea_chart_change_of_variables`);
+* `normDet (Dρ(Φ(u)) ∘ j) · normDet (DΦ(u)) = J(u)` (`pcoarea_chart_pointwise_jacobian` with the
+  flat Jacobian identity `pcoarea_flat_jacobian_identity`). -/
+theorem Submission.pcoarea_formula_on_chart : ∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N)
+    (G : Rn (m + k) → Rn m) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))),
+    ContDiffOn ℝ 1 ψ Φ.source → InjOn ψ Φ.source → ContDiffOn ℝ 1 Φ Φ.source →
+    ContDiffOn ℝ 1 Φ.symm Φ.target → (∀ u ∈ Φ.source, (Φ u).fst = G u) →
+    ∀ B ⊆ Φ.source, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ →
+    AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧
+      ∫⁻ u in B, φ (ψ u) * ENNReal.ofReal (((fderiv ℝ ψ u).toLinearMap ∘ₗ
+          (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet *
+          (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet) =
+        ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by
+  intro m k N ψ G Φ hψ hinj hΦ hΦs hfst B hB hBm φ hφ
+  -- Steps 1–3: the area formula on every slice gives `∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ = ∫ F(y, z) dz`.
+  have hslice := Submission.pcoarea_chart_slice_lintegral m k N ψ G Φ hψ hinj hΦs hfst B hB hBm φ
+    (fun V χ hV hχ hχi S hSV hS ↦
+      Submission.pcoarea_c1_injOn_area_formula k N V χ hV hχ hχi S hSV hS φ hφ)
+  -- Steps 4–5: `F` is Borel, and Tonelli on `ℝᵐ × ℝᵏ` transported to `P`.
+  obtain ⟨hmeas, htonelli⟩ :=
+    Submission.pcoarea_chart_integrand_tonelli m k N ψ Φ hψ.continuousOn B hB hBm φ hφ
+  -- First claim: the slice integral is everywhere equal to a measurable function of `y`.
+  refine ⟨hmeas.aemeasurable.congr (Eventually.of_forall fun y ↦ (hslice y).symm), ?_⟩
+  -- Step 6: `Φ(B)` is Borel and `Φ` has derivative `DΦ(u)` within `B` at each `u ∈ B`.
+  have hΦB : MeasurableSet (Φ '' B) :=
+    hBm.image_of_continuousOn_injOn (Φ.continuousOn.mono hB) (Φ.injOn.mono hB)
+  have hder : ∀ u ∈ B, HasFDerivWithinAt Φ (fderiv ℝ Φ u) B u := fun u hu ↦
+    ((hΦ.differentiableOn one_ne_zero u (hB hu)).differentiableAt
+      (Φ.open_source.mem_nhds (hB hu))).hasFDerivAt.hasFDerivWithinAt
+  -- Step 7: `normDet (Dρ(Φ(u)) ∘ j) · normDet (DΦ(u)) = J(u)` on the source.
+  have hjac := Submission.pcoarea_chart_pointwise_jacobian m k N ψ G Φ hψ hΦ hΦs hfst
+    (Submission.pcoarea_flat_jacobian_identity m k N)
+  -- Second claim: `∫∫ = ∫_P F = ∫_{Φ(B)} h = ∫_B normDet (DΦ(u)) h(Φ(u)) du = ∫_B φ(ψ(u)) J(u) du`.
+  rw [lintegral_congr hslice, ← htonelli, lintegral_indicator hΦB,
+    Submission.pcoarea_chart_change_of_variables m k Φ (fderiv ℝ Φ) B hBm hder (Φ.injOn.mono hB)]
+  refine setLIntegral_congr_fun hBm (fun u hu ↦ ?_)
+  rw [← hjac u (hB hu), ENNReal.ofReal_mul (LinearMap.normDet_nonneg _), Φ.left_inv (hB hu)]
+  ring
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
