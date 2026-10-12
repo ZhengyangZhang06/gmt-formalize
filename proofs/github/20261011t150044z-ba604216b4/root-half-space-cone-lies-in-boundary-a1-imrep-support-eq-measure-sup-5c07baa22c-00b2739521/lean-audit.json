@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25d4c61eef2c1fa0689c05b93bec1bb12213901bd42d3cd4dd392b2178207d0f",
+  "git_delta": {
+    "base_commit": "c4996afd6a47ccb4eaff0a43e52254bf2e001e31",
+    "candidate_commit": "33fafe4794d0d9614132d3f016393fa05039f6c6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "imsupp_vanishesOn_of_measure_eq_zero",
+    "diff_sha256": "6c6b809dadf4cff19aa2d60b2a9650ab1565d6e326adf69ec960bf72ca20d2f7",
+    "source_sha256": "2ca5b2d048c398075474a23f1dba114bc91b10791eb0849fe6f823489ae00448",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imsupp_vanishesOn_of_measure_eq_zero",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → R.measure W = 0 → T.VanishesOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
