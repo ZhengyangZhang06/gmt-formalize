@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1.whitney_extension-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1",
+  "depth": 4,
+  "title": "Whitney's C^1 extension theorem (Simon Ch. 2, Theorem 1.6)",
+  "statement": "Let n be a natural number, A ⊆ R^n = EuclideanSpace R (Fin n) a closed set, h : R^n -> R, and D : R^n -> L(R^n,R) (continuous linear maps). Assume that h and D are continuous on A, and that (*) for every compact Q ⊆ A and every η > 0 there is ρ > 0 with |h(y) - h(x) - D(x)(y - x)| <= η |y - x| for all x ∈ Q and all y ∈ A with dist(x, y) < ρ. Then there is a function g : R^n -> R of class C^1 (ContDiff R 1 g) such that g(a) = h(a) and g is differentiable at a with derivative D(a) (HasFDerivAt g (D a) a), for every a ∈ A.",
+  "lean_statement": "∀ {n : ℕ} (A : Set (Rn n)) (h : Rn n → ℝ) (D : Rn n → (Rn n →L[ℝ] ℝ)), IsClosed A → ContinuousOn h A → ContinuousOn D A → (∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ η : ℝ, 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < ρ → ‖h y - h x - D x (y - x)‖ ≤ η * ‖y - x‖) → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ (∀ a ∈ A, g a = h a) ∧ ∀ a ∈ A, HasFDerivAt g (D a) a",
+  "lean_name": "tae_whitney_c1_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1-whit-17056b2e48-a1"
+}

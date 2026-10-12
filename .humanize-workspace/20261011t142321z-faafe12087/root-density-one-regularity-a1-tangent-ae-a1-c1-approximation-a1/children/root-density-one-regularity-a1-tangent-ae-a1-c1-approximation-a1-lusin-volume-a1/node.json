@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1.lusin_volume-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1",
+  "depth": 4,
+  "title": "Lusin's theorem for Lebesgue measure on sets of infinite measure, for Borel maps into L(R^n, R)",
+  "statement": "Let n be a natural number, L^n = volume on R^n = EuclideanSpace R (Fin n), and L(R^n,R) the finite-dimensional normed space of continuous linear maps R^n -> R with its Borel sigma-algebra. Let F : R^n -> L(R^n,R) be Borel measurable, let S ⊆ R^n be a Borel set (possibly of infinite measure) and let δ ∈ (0, ∞] (an extended nonnegative real with δ ≠ 0). Then there is a closed set C ⊆ S with L^n(S \\ C) < δ such that the restriction of F to C is continuous.",
+  "lean_statement": "∀ {n : ℕ} (F : Rn n → (Rn n →L[ℝ] ℝ)), Measurable F → ∀ S : Set (Rn n), MeasurableSet S → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ C : Set (Rn n), C ⊆ S ∧ IsClosed C ∧ volume (S \\ C) < δ ∧ ContinuousOn F C",
+  "lean_name": "tae_c1_lusin_clm_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1-lusin-volume-a1-a1"
+}
