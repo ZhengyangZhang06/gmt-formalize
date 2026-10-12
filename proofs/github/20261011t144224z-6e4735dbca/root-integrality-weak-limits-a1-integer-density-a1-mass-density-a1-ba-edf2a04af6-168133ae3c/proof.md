@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.ball_weak_subseq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps (2a) and 3 of the parent proof of ind_mass_density_bound, applied to one fixed R and the given sequence. Step (2a) is compactness of the measures on the ball K_R (Simon Ch. 1, 4.16, compact metrizable form); Step 3 is the closed-set portmanteau inequality.
+
+Conventions. ℝ^P := Eucl P and K := B̄_R(0) = closedBall (0 : ℝ^P) (R : ℝ). K also denotes the subtype {y // y ∈ K}, with the subspace topology and the subtype σ-algebra. ι : K → ℝ^P is the inclusion Subtype.val. Measures take values in [0, ∞].
+
+1. A real bound. Let L := sup_j μ_j(ℝ^P) < ∞ and Λ := L.toNNReal ∈ ℝ≥0. Since L ≠ ∞, coercing Λ back to [0, ∞] gives L (ENNReal.coe_toNNReal). So μ_j(ℝ^P) ≤ L = Λ for every j (le_iSup).
+
+2. The compact space K.
+ - K is compact (isCompact_closedBall), so the subtype K is a compact space (isCompact_iff_compactSpace).
+ - It is metrizable as a subspace of a metric space, and its σ-algebra is Borel (Subtype.borelSpace).
+ - It is nonempty because 0 ∈ K (R ≥ 0, mem_closedBall_self).
+ - K is closed (isClosed_closedBall), hence measurable, so ι is a measurable embedding (MeasurableEmbedding.subtype_coe).
+ Consequently (m.comap ι)(S) = m(ι(S)) for every measure m on ℝ^P and every S ⊆ K (MeasurableEmbedding.comap_apply).
+
+3. Finite measures on K. For each j put m_j := μ_j.comap ι. By step 2, m_j(K) = μ_j(ι(univ)) ≤ μ_j(ℝ^P) ≤ Λ < ∞. So m_j is a finite measure on K, i.e. an element of FiniteMeasure K, with mass(m_j) ≤ Λ. To get this, compare in [0, ∞] via FiniteMeasure.ennreal_mass and cast back to ℝ≥0.
+
+4. Compactness. Apply Poincare.SimonGMT.Chapter01.finiteMeasure_tendsto_subseq_of_compact_metrizable (Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean) to the sequence (m_j)_j in FiniteMeasure K with the bound C := Λ. Its hypotheses hold: K is a nonempty compact metrizable Borel space and all masses are ≤ Λ. It gives a strictly increasing χ : ℕ → ℕ and ν̃ ∈ FiniteMeasure K with m_{χ(i)} → ν̃ as i → ∞ in the weak (narrow) topology of FiniteMeasure K.
+
+5. The limit measure. Define ν := (ν̃ regarded as a measure on K).map ι, a measure on ℝ^P. Since ι is measurable (measurable_subtype_coe), ν(B) = ν̃(ι⁻¹(B)) for every measurable B ⊆ ℝ^P (Measure.map_apply). In particular ν(ℝ^P) = ν̃(univ) < ∞, because ν̃ is a finite measure (measure_lt_top).
+
+6. Portmanteau. Let F ⊆ ℝ^P be closed with F ⊆ K. Then ι⁻¹(F) is closed in K (IsClosed.preimage with continuous_subtype_val). K is pseudo-metrizable, so the HasOuterApproxClosed instance applies, and K is an OpensMeasurableSpace because it is Borel. Mathlib's MeasureTheory.FiniteMeasure.limsup_measure_closed_le_of_tendsto (Mathlib/MeasureTheory/Measure/Portmanteau.lean), applied to the convergence of step 4 and the closed set ι⁻¹(F), gives limsup_i m_{χ(i)}(ι⁻¹(F)) ≤ ν̃(ι⁻¹(F)).
+
+7. Back to ℝ^P. For every i:
+ m_{χ(i)}(ι⁻¹(F)) = μ_{χ(i)}(ι(ι⁻¹(F))) (step 2)
+ = μ_{χ(i)}(F ∩ K) (Subtype.image_preimage_coe)
+ = μ_{χ(i)}(F) (F ⊆ K, inter_eq_right).
+ Also ν̃(ι⁻¹(F)) = ν(F) by step 5, since F is closed and hence measurable. Substituting into step 6 gives limsup_i μ_{χ(i)}(F) ≤ ν(F).
+
+8. Conclusion. χ is strictly increasing (step 4), ν(ℝ^P) < ∞ (step 5), and limsup_i μ_{χ(i)}(F) ≤ ν(F) for every closed F ⊆ B̄_R(0) (step 7). ∎
+
+Implementation remark. The statement needs only the frozen imports. The proof also needs the imports Poincare.SimonGMT.Chapter01.CompactMetrizableCompactness and Mathlib.MeasureTheory.Measure.Portmanteau; accepted Submission versions already add SimonGMT imports. A Lean proof following steps 1–8 (about 40 lines) was compiled against the frozen project using only the axioms propext, Classical.choice and Quot.sound.
+
+## Key steps
+
+1. μ_j(ℝ^P) ≤ Λ := (sup_j μ_j(ℝ^P)).toNNReal.
+2. K = closedBall 0 R is a nonempty compact metrizable Borel subtype, and ι = Subtype.val is a measurable embedding, so (m.comap ι)(S) = m(ι S).
+3. m_j := μ_j.comap ι ∈ FiniteMeasure K with mass ≤ Λ.
+4. SimonGMT finiteMeasure_tendsto_subseq_of_compact_metrizable: m_{χ(i)} → ν̃ weakly for some strictly increasing χ.
+5. ν := ν̃.map ι is a finite measure on ℝ^P with ν(B) = ν̃(ι⁻¹B).
+6. Portmanteau (FiniteMeasure.limsup_measure_closed_le_of_tendsto) on K for the closed set ι⁻¹F, with m_{χ(i)}(ι⁻¹F) = μ_{χ(i)}(F) and ν̃(ι⁻¹F) = ν(F).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/{Contract,Submission}.lean against workspace GMT/Ch06/{Contract,Submission}.lean (identical); cmp snapshot mathlib Portmanteau/HasOuterApproxClosed/Embedding/Comap/Sequences/LiminfLimsup/Geometry/Euclidean/Volume/Measure.lean against .lake copies (identical)`
+- `python3 scan of dag.json: lean_name/status/lean_statement of all 360 nodes; ind_* names; frozen types of iwl_restriction_theory, rectifiability_density_comparison, rectifiability_mass_measure_representation (all accepted); statements containing dimensionalUpperDensity|IsMassMeasure|closedBall x r|limsup (fun`
+- `git grep 'ind_md_' over all refs; grep -rn 'ind_md_|closedBall_weak_subseq|diagonal_weak_subseq|ae_closedBall_growth|mass_measure_balls' snapshot project + mathlib/Mathlib + simongmt (no match)`
+- `git show afac113:GMT/Ch06/Submission.lean | grep 'theorem Submission.|import|namespace' (Submission.X declared inside namespace GMT.Ch06; accepted versions add SimonGMT imports)`
+- `grep -n 'def massOn|def mass|massOn_mono|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `grep -n 'finiteMeasure_tendsto_subseq_of_compact_metrizable|simon_theorem_4_16_compact_metrizable|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume' simongmt/Poincare/SimonGMT/Chapter01/*.lean`
+- `grep -rn 'limsup_measure_closed_le_of_tendsto|class HasOuterApproxClosed|instance|notation "μHE\["|theorem comap_apply|theorem subtype_coe|IsCompact.tendsto_subseq|limsup_eq_iInf_iSup_of_nat' mathlib/Mathlib`
+- `python3 -I: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 4 child statements and the parent`
+- `lake env lean /tmp/mdb-decomp/{Stmts,Api,Assembly,Feas1,Feas2,Feas3,Feas4,Final,Final2}.lean with #print axioms`
+- `sed -n 2400,2445p book/chapter-06.txt (printed Proof of 8.2, display (8)); grep -n '3.3 Theorem|4.16 Theorem' book/chapter-01.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/HasOuterApproxClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Comap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/mdb-decomp/Stmts.lean`
+- `/tmp/mdb-decomp/Assembly.lean`
+- `/tmp/mdb-decomp/Final.lean`
+- `/tmp/mdb-decomp/Final2.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract and a byte-identical Submission. Both are identical to the workspace copies compiled against.
+
+The supplied proof is fully supported by local declarations:
+- SimonGMT GeometricCurrentOn.mass = massOn univ and massOn_mono (Chapter06/Mass.lean).
+- finiteMeasure_tendsto_subseq_of_compact_metrizable (Chapter01/CompactMetrizableCompactness.lean; normalizes masses, so no metrizability of FiniteMeasure is needed).
+- dimensionalUpperDensity / dimensionalDensityQuotient (Chapter01/Densities.lean) and realUnitBallVolume (Chapter01/Hausdorff.lean).
+- Mathlib FiniteMeasure.limsup_measure_closed_le_of_tendsto, with HasOuterApproxClosed for pseudo-metrizable spaces.
+- MeasurableEmbedding.subtype_coe and comap_apply, Monotone.measure_iUnion, iUnion_ball_nat, limsup_eq_iInf_iSup_of_nat, eventually_lt_of_limsup_lt, mem_nhdsGT_iff_exists_Ioo_subset, and the μHE notation.
+
+The accepted DAG declarations iwl_restriction_theory (R2) and rectifiability_density_comparison are reused with byte-identical frozen types. No ind_md_* name exists anywhere.
+
+Scratch Lean checks (/tmp/mdb-decomp):
+- All 4 child statements elaborate in the comparator's contract scope, and `exact Submission.<name>` resolves for each.
+- parent_of_children proves the exact frozen parent type from children 1, 3 and 4, and diag_of_single proves child 3 from child 2.
+- Complete proofs of children 1, 2 and 4 compile.
+- Every check uses only the axioms propext, Classical.choice and Quot.sound.
+
+The printed Proof of 8.2 (chapter-06.txt lines 2420–2435) asserts that (8) remains valid for T_{j′} without proof; the supplied corrected argument fills this gap. Simon Ch. 1 3.3 and 4.16 are at chapter-01.txt lines 602 and 1750.

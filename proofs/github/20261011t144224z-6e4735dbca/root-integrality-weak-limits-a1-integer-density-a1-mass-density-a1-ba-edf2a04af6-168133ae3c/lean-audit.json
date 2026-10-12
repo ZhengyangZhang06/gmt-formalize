@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68d1e5227c4273d6d62e1bffa67a55db659b2aec08b8adf04d68e1d1d060923d",
+  "git_delta": {
+    "base_commit": "d55387547b3a9f71614ac268bb0ba5c14d727a62",
+    "candidate_commit": "7c4d6e5f527b74b8abfaae5845b652f1cb37e258",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_md_closedBall_weak_subseq",
+    "diff_sha256": "43f90b775fc4d6e55187bc42fd6f370e83861e6a8ec4af4864d7da9894acb9b1",
+    "source_sha256": "137b789d560fbb4c4549d7d356994b9c7c04812b96bc9a4c26f0a67ec8ccd872",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_md_closedBall_weak_subseq",
+      "statement": "∀ (P R : ℕ) (μ : ℕ → Measure (Eucl P)), (⨆ j, μ j univ) < ∞ → ∃ (χ : ℕ → ℕ) (ν : Measure (Eucl P)), StrictMono χ ∧ ν univ < ∞ ∧ ∀ F : Set (Eucl P), IsClosed F → F ⊆ closedBall 0 (R : ℝ) → limsup (fun i => μ (χ i) F) atTop ≤ ν F",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
