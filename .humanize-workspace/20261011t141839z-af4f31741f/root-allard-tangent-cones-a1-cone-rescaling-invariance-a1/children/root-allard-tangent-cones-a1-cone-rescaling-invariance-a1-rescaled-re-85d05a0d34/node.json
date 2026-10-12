@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1.rescaled_representation-a1",
+  "parent_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1",
+  "depth": 3,
+  "title": "Dilation of a varifold given by a fibrewise H^n-representation",
+  "statement": "Let N, n ∈ ℕ and let C be an n-varifold on ℝ^N (U = ℝ^N). Let M ⊆ ℝ^N, let P be a relation between points x ∈ ℝ^N and n-planes T ∈ G(N,n), and let g : ℝ^N → [0,∞]. Assume that for every Borel A ⊆ ℝ^N × G(N,n), C(A) = ∫⁻ over {x : x ∈ M ∧ ∃ T, P(x,T) ∧ (x,T) ∈ A} of g dH^n, with H^n = μHE[n]. Then for every s > 0 and every Borel A, (η_{0,s#}C)(A) = rescaledMeasure C 0 s A = ∫⁻ over {w : s·w ∈ M ∧ ∃ T, P(s·w,T) ∧ (w,T) ∈ A} of g(s·w) dH^n(w). Here rescaledMeasure C 0 s = ofReal(s⁻¹^n) • (C.measure pushed forward by z ↦ (s⁻¹•(z.1 − 0), z.2)).",
+  "lean_statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (P : Euclidean N → Grassmannian N n → Prop) (g : Euclidean N → ℝ≥0∞), (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, P x T ∧ (x, T) ∈ A}, g x ∂(μHE[n] : Measure (Euclidean N))) → ∀ s : ℝ, 0 < s → ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → rescaledMeasure C 0 s A = ∫⁻ w in {w : Euclidean N | s • w ∈ M ∧ ∃ T : Grassmannian N n, P (s • w) T ∧ (w, T) ∈ A}, g (s • w) ∂(μHE[n] : Measure (Euclidean N))",
+  "lean_name": "allard_tc_cri_rescaled_representation",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1.hausdorff_dilation_lintegral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1.hausdorff_dilation_lintegral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1-rescaled-re-85d05a0d34-a1"
+}
