@@ -359,6 +359,28 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A.e. measurability of the push-forward density `x ↦ ‖L(x)_# ξ(x)‖` (Simon Ch. 6, (3.6), as
+used in the area formula of Ch. 3, §2).  The map `(A, w) ↦ A_# w = w ∘ A^#` is jointly
+continuous (the pullback `A ↦ A^#` is continuous and composition of continuous linear maps is
+jointly continuous), so it carries the a.e. strongly measurable pair `(L, ξ)` to an a.e.
+strongly measurable function; its norm is then a.e. measurable, and `‖v‖ₑ = ofReal ‖v‖`. -/
+theorem Submission.lpf_raf_pushforward_enorm_aemeasurable : ∀ (P Q n : ℕ) (μ : Measure (Eucl P)) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (ξ : Eucl P → NVector (Eucl P) n), AEStronglyMeasurable L μ → AEStronglyMeasurable ξ μ → AEMeasurable (fun x => ‖nVectorPushforward n (L x) (ξ x)‖ₑ) μ := by
+  intro P Q n μ L ξ hL hξ
+  -- Step 1: `(A, w) ↦ A_# w = w ∘ A^#` is jointly continuous.
+  have hc : Continuous fun p : (Eucl P →L[ℝ] Eucl Q) × NVector (Eucl P) n =>
+      nVectorPushforward n p.1 p.2 := by
+    unfold nVectorPushforward covectorPullback
+    exact continuous_snd.clm_comp
+      (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp continuous_fst)
+  -- Step 2: compose with the a.e. strongly measurable pair `(L, ξ)`, then with the norm.
+  have hm : AEStronglyMeasurable (fun x => nVectorPushforward n (L x) (ξ x)) μ :=
+    hc.comp_aestronglyMeasurable (hL.prodMk hξ)
+  have hn : Continuous fun v : NVector (Eucl Q) n => ‖v‖ := continuous_norm (E := NVector (Eucl Q) n)
+  have hr : AEMeasurable (fun x => ENNReal.ofReal ‖nVectorPushforward n (L x) (ξ x)‖) μ :=
+    (hn.comp_aestronglyMeasurable hm).aemeasurable.ennreal_ofReal
+  -- Step 3: `‖v‖ₑ = ofReal ‖v‖`.
+  exact hr.congr (Filter.Eventually.of_forall fun x => ofReal_norm (nVectorPushforward n (L x) (ξ x)))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
