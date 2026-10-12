@@ -462,6 +462,44 @@ theorem Submission.br_weightedTangent_congr :
     _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
         (hcut M' θ').symm
 
+/-- Simon Ch. 6, 2.16 and 3.1: the restriction `Y|_W ∈ 𝒟ₖ(W)` of an integer multiplicity
+`Y = τ(M, θ, ξ) ∈ 𝒟ₖ(U)` to an open `W ⊆ U` is the integer multiplicity current
+`τ(M ∩ W, θ, ξ)`. -/
+theorem Submission.br_restrictDomain_isIntegerMultiplicity :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W →
+      ∀ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y →
+        IsIntegerMultiplicity (Y.restrictDomain hWU) := by
+  rintro P k U W hWU hW Y ⟨M, θ, ξ, hM, hθ, hY⟩
+  have hMW : NullMeasurableSet (M ∩ W) (μHE[k] : Measure (Eucl P)) :=
+    hM.nullMeasurableSet.inter hW.measurableSet.nullMeasurableSet
+  refine ⟨M ∩ W, θ, ξ,
+    { subset := inter_subset_right
+      nullMeasurableSet := hMW
+      countablyRectifiable := hM.countablyRectifiable.mono inter_subset_left
+      pos := fun x hx => hM.pos x hx.1
+      integrableOn := fun K hK hKW =>
+        (hM.integrableOn K hK (hKW.trans hWU)).mono_set fun y hy => ⟨hy.1.1, hy.2⟩
+      aestronglyMeasurable := hM.aestronglyMeasurable.mono_set inter_subset_left
+      orients := ?_ }, fun x hx => hθ x hx.1, fun ω => ?_⟩
+  · -- `M` and `M ∩ W` agree in the open set `W`, so they have the same weighted approximate
+    -- tangent spaces at points of `W`.
+    have hnull : symmDiff M (M ∩ W) ∩ W = ∅ := by
+      ext y
+      simp only [mem_inter_iff, mem_symmDiff, mem_empty_iff_false, iff_false]
+      tauto
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset inter_subset_left hM.orients,
+      ae_restrict_mem₀ hMW] with x hxM hx
+    obtain ⟨τ, hτ, hTx, hξ⟩ := hxM
+    exact ⟨τ, hτ, Submission.br_weightedTangent_congr P k M (M ∩ W) θ θ x W hW hx.2
+      (by rw [hnull, measure_empty]) (ae_of_all _ fun _ => rfl) rfl _ hTx, hξ⟩
+  · -- A test form on `W` vanishes off `W`, so the integrals over `M` and `M ∩ W` agree.
+    have h0 : ∀ x, x ∉ W → θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x) = 0 := fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport fun h => hx (ω.property.2 h), map_zero, mul_zero]
+    rw [GeometricCurrentOn.restrictDomain_apply, hY]
+    simp only [tauAction, testFormOnInclusion_coe]
+    rw [inter_comm M W, ← Measure.restrict_restrict hW.measurableSet,
+      setIntegral_eq_integral_of_forall_compl_eq_zero h0]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
