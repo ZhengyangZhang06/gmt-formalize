@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9a17184c016540720064be01851d30fb088d3cd4735db1b0ecfb73fac2478612",
+  "git_delta": {
+    "base_commit": "c68183f0ee8e83c34916b95880abddcd3bf4d50a",
+    "candidate_commit": "d9033b3002dda7cd8666c7573cdcd0624daa8c32",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_measure_null_of_hausdorff_null_ball_bound",
+    "diff_sha256": "07a2e3a11fdbd3bb6c86124a288a0e81b94bde35b7dea4edac4a456f67f0594f",
+    "source_sha256": "f4a6800cfa96e37615871d6cc3dd86bf4cb3d77b0f8cf2080b5796fcaa104383",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_measure_null_of_hausdorff_null_ball_bound",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (A : Set (Euclidean N)) (c : ℝ≥0∞) (δ : ℝ), c ≠ ∞ → 0 < δ → μHE[n] A = 0 → (∀ x ∈ A, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → μ (closedBall x ρ) ≤ c * ENNReal.ofReal ρ ^ n) → μ A = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
