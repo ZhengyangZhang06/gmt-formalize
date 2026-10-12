@@ -501,6 +501,45 @@ theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f 
   refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
   simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
     one_smul, add_sub_cancel]
+/-- **Scaling of `Hⁿ` under the blow-up map** `η_{x,r}(y) = r⁻¹(y − x)` (`Chapter03.blowUpMap`;
+Simon, Ch. 3, 1.4 and the proof of 1.9): for `r > 0` and **every** set `B ⊆ ℝ^{n+ℓ}` (no
+measurability needed), (i) `rⁿ Hⁿ(η_{x,r}(B)) = Hⁿ(B)` and
+(ii) `η_{x,r#}(Hⁿ ⌞ B) = rⁿ Hⁿ ⌞ η_{x,r}(B)`.
+(1) `η_{x,r}(S) = τ(r⁻¹S)` for the translation `τ(z) = z − r⁻¹x`, an isometry, so
+`Hⁿ(η_{x,r}(S)) = Hⁿ(r⁻¹S) = ‖r⁻¹‖ⁿ Hⁿ(S)` for every set `S`; since `rⁿ ‖r⁻¹‖ⁿ = 1`, this is (i).
+(2) `η_{x,r}` is continuous, hence Borel, and `T ∩ η_{x,r}(B) = η_{x,r}(η_{x,r}⁻¹(T) ∩ B)`, so
+by (1) both measures in (ii) give every Borel set `T` the value `Hⁿ(η_{x,r}⁻¹(T) ∩ B)`. -/
+theorem rsod_blowUpMap_measure_scaling : ∀ (n ℓ : ℕ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∀ B : Set (Amb n ℓ), ENNReal.ofReal (r ^ n) * (μHE[n] : Measure (Amb n ℓ)) (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B) = (μHE[n] : Measure (Amb n ℓ)) B ∧ ((μHE[n] : Measure (Amb n ℓ)).restrict B).map (Poincare.SimonGMT.Chapter03.blowUpMap x r) = ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Amb n ℓ)).restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B) := by
+  intro n ℓ x r hr B
+  -- Step (1), for every set `S`.
+  have hscale : ∀ S : Set (Amb n ℓ), ENNReal.ofReal (r ^ n) *
+      (μHE[n] : Measure (Amb n ℓ)) (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) =
+      (μHE[n] : Measure (Amb n ℓ)) S := by
+    intro S
+    -- `η_{x,r}(S) = τ(r⁻¹S)` with `τ(z) = z + (−r⁻¹x)`.
+    have himage : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S =
+        (fun z => z + -(r⁻¹ • x)) '' ((fun z => r⁻¹ • z) '' S) := by
+      rw [Set.image_image]
+      exact Set.image_congr fun y _ => by
+        simp only [Poincare.SimonGMT.Chapter03.blowUpMap, sub_eq_add_neg, smul_add, smul_neg]
+    -- `Hⁿ(r⁻¹S) = ‖r⁻¹‖₊ⁿ Hⁿ(S)`.
+    have hsmul := Measure.euclideanHausdorffMeasure_smul₀ (E := Amb n ℓ) n (inv_ne_zero hr.ne') S
+    -- `ofReal (rⁿ) · ‖r⁻¹‖₊ⁿ = ofReal ((r r⁻¹)ⁿ) = 1`.
+    have hc : ENNReal.ofReal (r ^ n) * ((‖r⁻¹‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+      rw [← ENNReal.ofReal_coe_nnreal, NNReal.coe_pow, coe_nnnorm, Real.norm_eq_abs, abs_inv,
+        abs_of_pos hr, ← ENNReal.ofReal_mul (pow_nonneg hr.le n), ← mul_pow,
+        mul_inv_cancel₀ hr.ne', one_pow, ENNReal.ofReal_one]
+    rw [himage, (isometry_add_right _).euclideanHausdorffMeasure_image, Set.image_smul, hsmul,
+      ENNReal.smul_def, smul_eq_mul, ← mul_assoc, hc, one_mul]
+  refine ⟨hscale B, ?_⟩
+  -- Step (2): both measures agree on Borel sets `T`.
+  have hmeas : Measurable (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+    unfold Poincare.SimonGMT.Chapter03.blowUpMap
+    fun_prop
+  ext T hT
+  rw [Measure.map_apply hmeas hT, Measure.restrict_apply (hmeas hT), Measure.smul_apply,
+    Measure.restrict_apply hT, smul_eq_mul, Set.inter_comm T, ← Set.image_inter_preimage,
+    hscale, Set.inter_comm]
 
 end Submission
 
