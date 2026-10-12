@@ -2261,6 +2261,53 @@ theorem ted_tangent_plane_facts : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
       rw [ContinuousLinearMap.coe_coe, hDGv]
     rw [hfun, ← LinearMap.coe_range, Submodule.span_eq]
 
+/-- **Tangent planes along a `C¹` graph piece** (Simon Ch. 3, Remark 1.8(1): locality of
+approximate tangent spaces).  Let `u` be `C¹` on the open set `Ω ⊆ ℝⁿ`, `F(x) = q(x, u(x))`, and
+suppose every `μ_V`-a.e. property holds at `F(x)` for `Lⁿ`-a.e. `x ∈ Ω`.  Then for `Lⁿ`-a.e.
+`x ∈ Ω`, `p_{F(x)} = V.tangentProj (F x)` is the projection onto `q(graph Du(x))`.  Proof: about
+each `x₀ ∈ Ω`, `u` is Lipschitz on a closed ball `K ⊆ Ω` (mean value inequality) and extends to a
+Lipschitz `g` with `g = u` on `K`; conjunct (4) of `ted_tangent_plane_facts` for `(q, g)`,
+transferred to the parameters, gives the identity on the open ball (there `Dg = Du`, and
+`span (q '' W) = q (span W)`), and `ℝⁿ` is second countable (`measure_null_of_locally_null`). -/
+theorem anyrad_gc_graph_tangentProj_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → (∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂V.weight, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x)))) → ∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection := by
+  intro n ℓ hn U hU V q u Ω hΩ hu htr
+  -- Step 1: `u` is differentiable on `Ω`, with `x ↦ Du(x)` continuous there.
+  have hud : ∀ x ∈ Ω, DifferentiableAt ℝ u x := fun x hx =>
+    (hu.differentiableOn one_ne_zero x hx).differentiableAt (hΩ.mem_nhds hx)
+  have hcont : ContinuousOn (fderiv ℝ u) Ω := hu.continuousOn_fderiv_of_isOpen hΩ le_rfl
+  -- Step 5: it suffices that the failure set in `Ω` is locally `Lⁿ`-null (`ℝⁿ` is second
+  -- countable).
+  rw [ae_restrict_iff' hΩ.measurableSet, ae_iff]
+  refine measure_null_of_locally_null _ fun x₀ hx₀ => ?_
+  -- Step 2: on `K = B_{ε/2}(x₀) ⊆ Ω`, `u` is Lipschitz (mean value inequality); extend it to a
+  -- globally Lipschitz `g` with `g = u` on `K`.
+  obtain ⟨ε, hε, hεΩ⟩ := Metric.isOpen_iff.1 hΩ x₀ (not_imp.1 hx₀).1
+  have hK : closedBall x₀ (ε / 2) ⊆ Ω := (closedBall_subset_ball (half_lt_self hε)).trans hεΩ
+  obtain ⟨C, hC⟩ := (isCompact_closedBall x₀ (ε / 2)).exists_bound_of_continuousOn (hcont.mono hK)
+  have hLip : LipschitzOnWith C.toNNReal u (closedBall x₀ (ε / 2)) :=
+    (convex_closedBall x₀ (ε / 2)).lipschitzOnWith_of_nnnorm_fderiv_le (fun x hx => hud x (hK hx))
+      fun x hx => by
+        rw [← NNReal.coe_le_coe, coe_nnnorm, Real.coe_toNNReal']
+        exact (hC x hx).trans (le_max_left _ _)
+  obtain ⟨g, hg, hgu⟩ := hLip.extend_finite_dimension
+  -- Step 3: `ted_tangent_plane_facts` (4) for `(q, g, R)` with `R = ε/2 + |x₀|`, transferred to the
+  -- parameters by the hypothesis.
+  have hae := htr _ ((ted_tangent_plane_facts n ℓ hn U hU V).2.2.2.2 q g (ε / 2 + dist x₀ 0) _
+    hg.lipschitzOnWith)
+  rw [ae_restrict_iff' hΩ.measurableSet, ae_iff] at hae
+  refine ⟨_, inter_mem_nhdsWithin _ (ball_mem_nhds x₀ (half_pos hε)), measure_mono_null ?_ hae⟩
+  -- Step 4: at such a parameter `x ∈ B̆_{ε/2}(x₀)`, `g = u` near `x`, so `Dg(x) = Du(x)`, and
+  -- `span {q w : w ∈ W} = q (span W)`.
+  rintro x ⟨hxbad, hxr⟩ hxQ
+  refine hxbad fun hxΩ => ?_
+  have hev : g =ᶠ[𝓝 x] u := Filter.eventuallyEq_of_mem (isOpen_ball.mem_nhds hxr)
+    fun y hy => (hgu (ball_subset_closedBall hy)).symm
+  rw [hxQ hxΩ x (ball_subset_ball' le_rfl hxr) (by rw [hgu (ball_subset_closedBall hxr)])
+    ((hud x hxΩ).congr_of_eventuallyEq hev), hev.fderiv_eq]
+  congr 1
+  rw [Submodule.map_span, ← Set.range_comp]
+  rfl
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
