@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "011419d77b1ebf7943f9f5be688faf88cc7c4e42acb2f3c65425346de4d53eaa",
+  "git_delta": {
+    "base_commit": "de4bba25657942ce0984f6776ad7195b5576a9c3",
+    "candidate_commit": "4d18f1d64ced18737b95cceccbeb3b1995ce254c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_lipschitz_c1_approximation",
+    "diff_sha256": "a65917dfa35399d41936c154b127af72911fbb18d4ad5d753dc932a1a064f893",
+    "source_sha256": "5e3dec0dd24851c17d7cf70e6484dcbd176a8111ff7c11ed351ac0e30d464992",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_lipschitz_c1_approximation",
+      "statement": "∀ (n : ℕ), 1 ≤ n → ∀ (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x} < ε",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
