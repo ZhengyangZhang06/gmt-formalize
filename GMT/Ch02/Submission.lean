@@ -446,6 +446,75 @@ theorem Submission.chart_tangentialDivergence_eq_gram_trace : ∀ (n N : ℕ) (M
   exact LinearMap.trace_comp_comm'
     (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A).toLinearMap
     (fderiv ℝ Y y ∘L A).toLinearMap
+/-- **Mean curvature through an injective parametrization differential** (Simon 4.27 in a chart).
+Let `A : ℝⁿ → ℝᴺ` be injective with `T_y M = range A`, and let `S` be bilinear (not necessarily
+symmetric) with `B_y(Aa, Ab) = S(a, b)^⊥`. With `G = A*A` and `eₗ` the standard basis of `ℝⁿ`,
+`H(y) = (∑ₗ S(eₗ, G⁻¹eₗ))^⊥`. Choose `aᵢ` with `Aaᵢ = τᵢ` for the frame `τᵢ` of `T_y M`, so
+`H(y) = (∑ᵢ S(aᵢ, aᵢ))^⊥`. Expanding `Ac ∈ T_y M` in the frame and using injectivity of `A` gives
+`c = ∑ᵢ ⟨Aaᵢ, Ac⟩ aᵢ`; for `c = G⁻¹eₗ`, `GG⁻¹ = 1` (`gram_inverse_range_starProjection`) turns this
+into `G⁻¹eₗ = ∑ᵢ ⟨aᵢ, eₗ⟩ aᵢ`. Bilinearity and `∑ₗ ⟨aᵢ, eₗ⟩ eₗ = aᵢ` give
+`∑ₗ S(eₗ, G⁻¹eₗ) = ∑ᵢ S(aᵢ, aᵢ)`. -/
+theorem Submission.chart_meanCurvature_eq_normalPart_gram_sum : ∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (S : Rn n →L[ℝ] Rn n →L[ℝ] Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → (∀ a b : Rn n, secondFundamentalForm M y (A a) (A b) = normalPart M y (S a b)) → meanCurvature M y = normalPart M y (∑ l : Fin n, S (EuclideanSpace.single l 1) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) (EuclideanSpace.single l 1))) := by
+  intro n N M y A S hA hT hB
+  -- Step 1: `G = A*A` is a unit (sibling `gram_projection`), so `A*(A(G⁻¹w)) = G(G⁻¹w) = w`.
+  have hG := (Submission.gram_inverse_range_starProjection n N (tangentSpace M y) A hA hT).1
+  have hGG : ∀ w : Rn n, ContinuousLinearMap.adjoint A
+      (A (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) w)) = w :=
+    fun w ↦ DFunLike.congr_fun (Ring.mul_inverse_cancel _ hG) w
+  -- Steps 2–3: every frame vector `τᵢ` of `T_y M = range A` has a preimage `aᵢ`.
+  have hpre : ∀ i, ∃ a : Rn n, A a = tangentFrame M y i := fun i ↦ by
+    have hi : tangentFrame M y i ∈ tangentSpace M y :=
+      (stdOrthonormalBasis ℝ (tangentSpace M y) i).2
+    rw [hT] at hi
+    exact LinearMap.mem_range.1 hi
+  choose a ha using hpre
+  -- Step 4: `H(y) = ∑ᵢ B(Aaᵢ, Aaᵢ) = ∑ᵢ S(aᵢ, aᵢ)^⊥ = (∑ᵢ S(aᵢ, aᵢ))^⊥`.
+  have hH : meanCurvature M y = normalPart M y (∑ i, S (a i) (a i)) := by
+    have hnp : normalPart M y (∑ i, S (a i) (a i)) = ∑ i, normalPart M y (S (a i) (a i)) := by
+      simp only [normalPart, map_sum, Finset.sum_sub_distrib]
+    rw [hnp, meanCurvature]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    rw [← ha i, hB]
+  -- Step 5: reproducing formula `c = ∑ᵢ ⟨Aaᵢ, Ac⟩ aᵢ`, from the frame expansion of `Ac ∈ T_y M`.
+  have hrep : ∀ c : Rn n, ∑ i, inner ℝ (A (a i)) (A c) • a i = c := by
+    intro c
+    apply hA
+    have hc : A c ∈ tangentSpace M y := by
+      rw [hT]
+      exact LinearMap.mem_range_self A.toLinearMap c
+    have h := congrArg Subtype.val
+      ((stdOrthonormalBasis ℝ (tangentSpace M y)).sum_repr' ⟨A c, hc⟩)
+    simp only [Submodule.coe_sum, Submodule.coe_smul, Submodule.coe_inner] at h
+    rw [map_sum]
+    simp only [map_smul, ha]
+    exact h
+  -- Step 6: `G⁻¹eₗ = ∑ᵢ ⟨aᵢ, eₗ⟩ aᵢ`, since `⟨Aaᵢ, A(G⁻¹eₗ)⟩ = ⟨aᵢ, A*A(G⁻¹eₗ)⟩ = ⟨aᵢ, eₗ⟩`.
+  have hGinv : ∀ l : Fin n, Ring.inverse (ContinuousLinearMap.adjoint A ∘L A)
+      (EuclideanSpace.single l 1) = ∑ i, inner ℝ (a i) (EuclideanSpace.single l 1) • a i := by
+    intro l
+    refine (hrep _).symm.trans (Finset.sum_congr rfl fun i _ ↦ ?_)
+    rw [← ContinuousLinearMap.adjoint_inner_right A (a i), hGG]
+  -- `∑ₗ ⟨v, eₗ⟩ eₗ = v`: the expansion in the standard orthonormal basis of `ℝⁿ`.
+  have hexp : ∀ v : Rn n,
+      ∑ l : Fin n, inner ℝ v (EuclideanSpace.single l 1) • EuclideanSpace.single l (1 : ℝ) = v := by
+    intro v
+    conv_rhs => rw [← (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr' v]
+    refine Finset.sum_congr rfl fun l _ ↦ ?_
+    rw [EuclideanSpace.basisFun_apply, real_inner_comm]
+  -- Step 7: `∑ₗ S(eₗ, G⁻¹eₗ) = ∑ᵢ ∑ₗ ⟨aᵢ, eₗ⟩ S(eₗ, aᵢ) = ∑ᵢ S(∑ₗ ⟨aᵢ, eₗ⟩ eₗ, aᵢ) = ∑ᵢ S(aᵢ, aᵢ)`.
+  have hS : ∑ l : Fin n, S (EuclideanSpace.single l 1)
+      (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) (EuclideanSpace.single l 1)) =
+      ∑ i, S (a i) (a i) := by
+    simp only [hGinv, map_sum, map_smul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    calc ∑ l : Fin n, inner ℝ (a i) (EuclideanSpace.single l 1) • S (EuclideanSpace.single l 1) (a i)
+        = S (∑ l : Fin n, inner ℝ (a i) (EuclideanSpace.single l 1) •
+            EuclideanSpace.single l (1 : ℝ)) (a i) := by
+          simp only [map_sum, map_smul, sum_apply, smul_apply]
+      _ = S (a i) (a i) := by rw [hexp]
+  -- Step 8: combine Steps 4 and 7.
+  rw [hH, hS]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
