@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c7ad665495997f2dfc592bbba47a3a537cfa51cc0a58cf224563f2ab4bd25124",
+  "git_delta": {
+    "base_commit": "9c720cdcfa008fbae122d86f0d890d2999414373",
+    "candidate_commit": "187071ef0620efdfdab35c3cbe868fcabb1716a6",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_fc_a_bound",
+    "diff_sha256": "902cca7ed039534f1ddf5e0df8ce754f70f8a763dde73902384847c249024973",
+    "source_sha256": "7a217168c52452233e21726301916912112dad6dbf31b18d28380635fb905785",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_fc_a_bound",
+      "statement": "∀ (n : ℕ), 1 ≤ n → ∀ (p R Λ ε t I E N : ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < ε → ε ≤ 1 → 0 < t → 0 ≤ I → 0 ≤ N → N ≤ (p - n) / (4 * p) * Λ * R ^ ((n : ℝ) / p - 1) → |E| ≤ (1 + ε) * t * N * I ^ (1 - 1 / p) → |E / t ^ (n + 1) / (1 + I / t ^ n)| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (t / R) ^ (-((n : ℝ) / p))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
