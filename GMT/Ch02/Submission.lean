@@ -373,6 +373,59 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Differentiability of the projection onto the range.** For an injective `A : ℝⁿ →L[ℝ] ℝᴺ`,
+the map `B ↦ (range B).starProjection` (the orthogonal projection of `ℝᴺ` onto the range of `B`) is
+Fréchet differentiable at `A`. The Gram operator `G(B) = B† ∘ B` is injective at `A`
+(`adjoint_comp_self_injective_iff`), hence a unit (finite dimension), hence a unit near `A`
+(`Units.isOpen`). There the projection equals `B ∘ G(B)⁻¹ ∘ B†`
+(`eq_starProjection_of_mem_of_inner_eq_zero`), and that map is differentiable at `A`
+(`DifferentiableAt.clm_comp`, `DifferentiableAt.inverse`). -/
+theorem Submission.sff_range_starProjection_differentiableAt : ∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), Function.Injective A → DifferentiableAt ℝ (fun B : Rn n →L[ℝ] Rn N ↦ (LinearMap.range B.toLinearMap).starProjection) A := by
+  intro n N A hA
+  -- Step 1: the adjoint `B ↦ B†` as a continuous `ℝ`-linear map (Mathlib bundles `adjoint` as a
+  -- conjugate-linear isometry, and conjugation is trivial on `ℝ`).
+  let adj : (Rn n →L[ℝ] Rn N) →L[ℝ] (Rn N →L[ℝ] Rn n) :=
+    { toFun := fun B ↦ ContinuousLinearMap.adjoint B
+      map_add' := fun B C ↦ by simp
+      map_smul' := fun c B ↦ by simp
+      cont := ContinuousLinearMap.adjoint.continuous }
+  have hadj : ∀ B, adj B = ContinuousLinearMap.adjoint B := fun _ ↦ rfl
+  -- The Gram operator `G(B) = B† ∘ B`.
+  let G : (Rn n →L[ℝ] Rn N) → (Rn n →L[ℝ] Rn n) := fun B ↦ (adj B).comp B
+  -- Step 2: `G(A)` is injective, hence bijective in finite dimension, hence a unit.
+  have hGA : IsUnit (G A) := by
+    have hinj : Function.Injective (G A) :=
+      (ContinuousLinearMap.adjoint_comp_self_injective_iff A).2 hA
+    exact ContinuousLinearMap.isUnit_iff_bijective.2
+      ⟨hinj, LinearMap.injective_iff_surjective.1 hinj⟩
+  -- Step 3: `G(B)` stays a unit for `B` near `A`.
+  have hS : ∀ᶠ B in 𝓝 A, IsUnit (G B) :=
+    (adj.continuous.clm_comp continuous_id).continuousAt.eventually (Units.isOpen.mem_nhds hGA)
+  -- Step 4: where `G(B)` is a unit, the projection onto `range B` is `B ∘ G(B)⁻¹ ∘ B†`.
+  have hformula : ∀ B : Rn n →L[ℝ] Rn N, IsUnit (G B) →
+      (LinearMap.range B.toLinearMap).starProjection =
+        B.comp ((Ring.inverse (G B)).comp (adj B)) := by
+    intro B hB
+    -- `B† (B (G(B)⁻¹ (B† w))) = B† w`, from `G(B) * G(B)⁻¹ = 1`.
+    have hcancel : ∀ w, adj B (B (Ring.inverse (G B) (adj B w))) = adj B w := fun w ↦ by
+      simpa [G] using
+        congrArg (fun T : Rn n →L[ℝ] Rn n ↦ T (adj B w)) (Ring.mul_inverse_cancel _ hB)
+    ext1 w
+    -- `p = B (G(B)⁻¹ (B† w))` lies in `range B`, and `w - p ⊥ B v` because `B† (w - p) = 0`.
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (LinearMap.mem_range_self _ _) ?_
+    rintro u ⟨v, rfl⟩
+    rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left]
+    simp only [ContinuousLinearMap.comp_apply, map_sub]
+    rw [← hadj, hcancel, sub_self, inner_zero_left]
+  -- Step 5: `B ↦ B ∘ G(B)⁻¹ ∘ B†` is differentiable at `A`.
+  have hdiff : DifferentiableAt ℝ
+      (fun B : Rn n →L[ℝ] Rn N ↦ B.comp ((Ring.inverse (G B)).comp (adj B))) A :=
+    differentiableAt_id.clm_comp
+      (((adj.differentiableAt.clm_comp differentiableAt_id).inverse hGA).clm_comp
+        adj.differentiableAt)
+  -- Step 6: the two maps agree near `A`.
+  exact hdiff.congr_of_eventuallyEq (hS.mono fun B hB ↦ hformula B hB)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
