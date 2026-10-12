@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9d68cf1a6f48d8a0e894db0a091efb1ec95eaf931db8231d0f80eb209559361e",
+  "git_delta": {
+    "base_commit": "08b7e2df9183d2d4048a3bbbcb394f441afc745e",
+    "candidate_commit": "0d42ec99ae83159c604b71571497cc9dccbc8509",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_gpa_isometry_conj",
+    "diff_sha256": "14ba813dfd781bfeadf460d97c441cdce093fc55b179c2e9d786cd4c060335da",
+    "source_sha256": "8827e080164de54433c7d3d2771bb37a456683d26339c5fce50866cdcf53254b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gpa_isometry_conj",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ K : Submodule ℝ (Amb n ℓ), (K.map q.toLinearEquiv.toLinearMap).starProjection = q.toLinearIsometry.toContinuousLinearMap ∘L K.starProjection ∘L q.symm.toLinearIsometry.toContinuousLinearMap) ∧ ∀ X : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq (q.toLinearIsometry.toContinuousLinearMap ∘L X ∘L q.symm.toLinearIsometry.toContinuousLinearMap) = hsNormSq X",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
