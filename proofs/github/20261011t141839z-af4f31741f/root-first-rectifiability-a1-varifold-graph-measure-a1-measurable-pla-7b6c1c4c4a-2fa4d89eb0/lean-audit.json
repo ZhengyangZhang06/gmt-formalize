@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "59ca36fb1720437704178496a0e48e33e3ddf04c744050ab68fadc2896a35003",
+  "git_delta": {
+    "base_commit": "7c6faf557c0dd52e581c8670828673d8d7b26a0a",
+    "candidate_commit": "29ee15a20ce49d52ebb66ba2716d569fa8a18206",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_mps_ball_integral_measurable",
+    "diff_sha256": "f9f31be9f03404f6fd78d8eaf7b946188540c5efa65e9706fff2ab1420ff3e50",
+    "source_sha256": "678556aedb366e29b704cff3b045d1e67877e79ea0ccd8f2b4a68537c37b09ff",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_mps_ball_integral_measurable",
+      "statement": "∀ (N n : ℕ) (ν : Measure (Euclidean N × Grassmannian N n)), SFinite ν → ∀ (r : ℝ) (β : C(Grassmannian N n, ℝ)), Measurable (fun x : Euclidean N ↦ ∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂ν)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
