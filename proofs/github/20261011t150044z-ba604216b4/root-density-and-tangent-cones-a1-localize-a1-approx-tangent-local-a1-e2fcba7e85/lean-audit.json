@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "21773b0e5649608116b6fd1b42f1f9054701e7252feedf3c7cceb92f6e6f910c",
+  "git_delta": {
+    "base_commit": "9fc696be8f4f5b697f59ac71581b8603f19a1fb6",
+    "candidate_commit": "022bd01bf7500f65a1cfbba033ecf91be9652452",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_approxTangent_of_null_diff",
+    "diff_sha256": "aff8b5292745745e7ae5dec39af65380b9ccc4fbdf601ebefd4c9143c30a1249",
+    "source_sha256": "ec950b1bc5680cc7fe6adf6f6429ef6a2406163dcc71498b0a7ffaaf9f3ed7ab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_approxTangent_of_null_diff",
+      "statement": "∀ (P n : ℕ) (M M' V : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), M' ⊆ M → IsOpen V → x ∈ V → μHE[n] ((M \\ M') ∩ V) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
