@@ -370,6 +370,38 @@ theorem Submission.deGiorgiRH_open_exhaustion : ∀ (N : ℕ) (U : Set (Rn N)), 
     refine mem_iUnion.2 ⟨max k m + 1, hm.trans_le ?_, lt_of_le_of_lt ?_ hk⟩
     · exact_mod_cast (le_max_right k m).trans (Nat.le_succ _)
     · exact ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_left k m).trans (Nat.le_succ _))
+/-- **Approximate tangent planes are local** (Simon Ch. 3, proof of Thm. 4.3; parent proof
+step 5). If `W ⊆ ℝᴺ` is open, `x ∈ W` and `μ` has approximate tangent plane `P` with multiplicity
+`θ` at `x`, then so does `μ ⌞ W`. For `f ∈ C_c(ℝᴺ, ℝ)` choose `R > 0` with `f = 0` off `B_R(0)`
+and `δ > 0` with `B_δ(x) ⊆ W`. For `0 < r < δ / R`, `f ∘ η_{x,r}` vanishes off `W`, so the
+blow-up integrals against `μ ⌞ W` and against `μ` agree. -/
+theorem Submission.deGiorgiRH_tangentPlane_restrict_open : ∀ (n N : ℕ) (μ : Measure (Rn N)) (W : Set (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), IsOpen W → x ∈ W → HasApproxTangentPlaneWithMultiplicity n μ x P θ → HasApproxTangentPlaneWithMultiplicity n (μ.restrict W) x P θ := by
+  intro n N μ W x P θ hW hxW hP
+  -- The dimension clause `finrank P = n` does not involve the measure.
+  refine ⟨hP.1, fun f ↦ ?_⟩
+  -- `tsupport f ⊆ B̄_{R₀}(0)`, so `f z = 0` once `‖z‖ ≥ R := max R₀ 0 + 1`.
+  obtain ⟨R, hR, hf⟩ : ∃ R > 0, ∀ z, R ≤ ‖z‖ → f z = 0 := by
+    obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+    refine ⟨max R₀ 0 + 1, by positivity, fun z hz ↦ ?_⟩
+    by_contra hfz
+    have := mem_closedBall_zero_iff.1 (hR₀ (subset_tsupport _ hfz))
+    linarith [le_max_left R₀ 0]
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hW x hxW
+  -- The two blow-up quotients agree for `0 < r < δ / R`.
+  refine (hP.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r hr
+  -- `f ∘ η_{x,r}` vanishes off `W`, so restricting to `W` does not change the integral (no
+  -- integrability needed).
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+  intro y hy
+  apply hf
+  -- `y ∉ B_δ(x)`, so `‖η_{x,r}(y)‖ = ‖y - x‖ / r ≥ δ / r > R`.
+  have hyx : δ ≤ ‖y - x‖ := by
+    by_contra h
+    exact hy (hball (by rw [Metric.mem_ball, dist_eq_norm]; linarith))
+  have hrR : r * R < δ := (lt_div_iff₀ hR).1 hr.2
+  rw [blowUpMap, norm_smul, norm_inv, Real.norm_of_nonneg hr.1.le, le_inv_mul_iff₀ hr.1]
+  linarith
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
