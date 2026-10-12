@@ -568,6 +568,123 @@ theorem Submission.slicing_ru_covector_expansion : ∀ (P k : ℕ) (α : Covecto
   simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
     ContinuousAlternatingMap.coe_toAlternatingMap]
   exact h2 v hv
+/-- **Simple `n`-vectors (step (P1) of Simon Ch. 6, Lemma 3.9).**  The operator norm of
+`v₁ ∧ ⋯ ∧ vₙ = simpleNVector v` is the square root of the Gram determinant `det (⟪vᵢ, vⱼ⟫)`, and a
+change of frame `τ ↦ Bτ` multiplies `simpleNVector τ` by `det B`.  The second identity is the
+uniqueness of alternating forms on `ℝⁿ` (`AlternatingMap.eq_smul_basis_det`).  A dependent `v`
+makes both sides of the first vanish.  An independent `v` is `Bτ` for an orthonormal basis `τ` of
+`span v`, so `G(v) = B Bᵀ`; `|α τ| ≤ ‖α‖` and the covector `u ↦ det (⟪τᵢ, uⱼ⟫)` (norm `≤ 1` by
+Hadamard's and Bessel's inequalities, value `1` at `τ`) give `‖simpleNVector v‖ = |det B|`. -/
+theorem Submission.lpf_simple_nvector_algebra : (∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
+  -- Change of frame: `α(Bτ) = det B · α(τ)` for every `n`-covector `α`, since
+  -- `B ↦ α(Bτ)` is alternating in the rows of `B` (`AlternatingMap.eq_smul_basis_det`).
+  have hframe : ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
+      simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
+    intro P n B τ
+    ext α
+    simp only [simpleNVector_apply, FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
+    set f : (Fin n → ℝ) [⋀^Fin n]→ₗ[ℝ] ℝ :=
+      α.toAlternatingMap.compLinearMap (Fintype.linearCombination ℝ τ) with hf
+    have h1 : f (fun i j => B i j) = α (fun i => ∑ j, B i j • τ j) := by
+      simp [hf, Fintype.linearCombination_apply]
+    have h2 : f (Pi.basisFun ℝ (Fin n)) = α τ := by
+      simp [hf, Fintype.linearCombination_apply_single]
+    rw [← h1, AlternatingMap.eq_smul_basis_det (Pi.basisFun ℝ (Fin n)) f,
+      AlternatingMap.smul_apply, h2, Pi.basisFun_det, smul_eq_mul, mul_comm]
+    rfl
+  refine ⟨fun P n v => ?_, hframe⟩
+  by_cases hv : LinearIndependent ℝ v
+  · -- Independent family: `v = Bτ` for an orthonormal basis `τ` of `W = span v`,
+    -- `B i j = ⟪v i, τ j⟫`, so `G(v) = B Bᵀ` and `simpleNVector v = det B • simpleNVector τ`.
+    set W := Submodule.span ℝ (Set.range v) with hW_def
+    have hW : Module.finrank ℝ W = n := by rw [finrank_span_eq_card hv, Fintype.card_fin]
+    set b : OrthonormalBasis (Fin n) ℝ W := (stdOrthonormalBasis ℝ W).reindex (finCongr hW)
+    set τ : Fin n → Eucl P := fun j => (b j : Eucl P) with hτ_def
+    have hτ : Orthonormal ℝ τ := b.orthonormal.comp_linearIsometry W.subtypeₗᵢ
+    have hvW : ∀ i, v i ∈ W := fun i => Submodule.subset_span (Set.mem_range_self i)
+    set B : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => inner ℝ (v i) (τ j) with hB_def
+    have hvB : (fun i => ∑ j, B i j • τ j) = v := by
+      funext i
+      have h := congrArg Subtype.val (b.sum_repr' ⟨v i, hvW i⟩)
+      simp only [Submodule.coe_sum, Submodule.coe_smul, Submodule.coe_inner] at h
+      simpa [hB_def, hτ_def, real_inner_comm] using h
+    have hgram : (Matrix.of fun i j => inner ℝ (v i) (v j)) = B * B.transpose := by
+      ext i k
+      have h := b.sum_inner_mul_inner ⟨v i, hvW i⟩ ⟨v k, hvW k⟩
+      simp only [Submodule.coe_inner] at h
+      simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, hB_def]
+      rw [← h]
+      simp [hτ_def, real_inner_comm]
+    have hsv : ∀ α : Covector (Eucl P) n, simpleNVector v α = B.det * α τ := by
+      intro α
+      rw [← hvB, hframe]
+      simp only [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul, simpleNVector_apply]
+    -- Upper bound: `|α τ| ≤ ‖α‖ ∏ ‖τ i‖ = ‖α‖`.
+    have hup : ∀ α : Covector (Eucl P) n, |α τ| ≤ ‖α‖ := by
+      intro α
+      have h := α.le_opNorm τ
+      simp only [hτ.1, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+      exact h
+    -- Lower bound: the calibrating covector `α₀(u) = det (⟪τ i, u j⟫)` has `α₀ τ = 1` and
+    -- `‖α₀‖ ≤ 1` by Hadamard's inequality for the columns `c j = (⟪τ i, u j⟫)ᵢ` together with
+    -- Bessel's inequality `‖c j‖ ≤ ‖u j‖`.
+    set α₀ : Covector (Eucl P) n := wedgeCovectors n fun i => innerSL ℝ (τ i) with hα₀_def
+    have hα₀τ : α₀ τ = 1 := by
+      rw [hα₀_def, wedgeCovectors_apply_det]
+      have h : (Matrix.of fun i j => innerSL ℝ (τ i) (τ j)) = 1 := by
+        ext i j
+        simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
+      rw [h, Matrix.det_one]
+    have hα₀ : ‖α₀‖ ≤ 1 := by
+      refine ContinuousAlternatingMap.opNorm_le_bound _ zero_le_one fun u => ?_
+      rw [one_mul, hα₀_def, wedgeCovectors_apply_det, Real.norm_eq_abs]
+      set c : Fin n → EuclideanSpace ℝ (Fin n) :=
+        fun j => WithLp.toLp 2 fun i => inner ℝ (τ i) (u j) with hc
+      set e := EuclideanSpace.basisFun (Fin n) ℝ
+      have hdet : (Matrix.of fun i j => innerSL ℝ (τ i) (u j)).det = e.toBasis.det c := by
+        rw [Module.Basis.det_apply]
+        congr 1
+      have hHad : |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := by
+        have : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n) :=
+          ⟨finrank_euclideanSpace_fin⟩
+        rw [← e.toBasis.orientation.volumeForm_robust' e c]
+        exact e.toBasis.orientation.abs_volumeForm_apply_le c
+      have hBessel : ∀ j, ‖c j‖ ≤ ‖u j‖ := by
+        intro j
+        rw [EuclideanSpace.norm_eq, ← Real.sqrt_sq (norm_nonneg (u j))]
+        apply Real.sqrt_le_sqrt
+        simpa [hc] using hτ.sum_inner_products_le (u j) (s := Finset.univ)
+      rw [hdet]
+      calc |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := hHad
+        _ ≤ ∏ j, ‖u j‖ := by gcongr with j; exact hBessel j
+    -- Hence `‖simpleNVector v‖ = |det B|`.
+    have hnorm : ‖simpleNVector v‖ = |B.det| := by
+      apply le_antisymm
+      · refine ContinuousLinearMap.opNorm_le_bound _ (abs_nonneg _) fun α => ?_
+        rw [hsv, Real.norm_eq_abs, abs_mul]
+        exact mul_le_mul_of_nonneg_left (hup α) (abs_nonneg _)
+      · calc |B.det| = ‖simpleNVector v α₀‖ := by rw [hsv, hα₀τ, mul_one, Real.norm_eq_abs]
+          _ ≤ ‖simpleNVector v‖ * ‖α₀‖ := (simpleNVector v).le_opNorm α₀
+          _ ≤ ‖simpleNVector v‖ * 1 :=
+            mul_le_mul_of_nonneg_left hα₀ (ContinuousLinearMap.opNorm_nonneg _)
+          _ = ‖simpleNVector v‖ := mul_one _
+    rw [hnorm, hgram, Matrix.det_mul, Matrix.det_transpose, sq_abs, sq]
+  · -- Dependent family: every alternating map vanishes on `v`, and `G(v) g = 0` for a
+    -- nontrivial relation `∑ g j • v j = 0`, so both sides vanish.
+    have h0 : ‖simpleNVector v‖ = 0 := by
+      refine le_antisymm (ContinuousLinearMap.opNorm_le_bound _ le_rfl fun α => ?_)
+        (ContinuousLinearMap.opNorm_nonneg _)
+      have hα : α v = 0 := α.toAlternatingMap.map_linearDependent v hv
+      rw [simpleNVector_apply, hα, norm_zero, zero_mul]
+    obtain ⟨g, hg, i₀, hi₀⟩ := Fintype.not_linearIndependent_iff.mp hv
+    have hdet : (Matrix.of fun i j => inner ℝ (v i) (v j)).det = 0 := by
+      rw [← Matrix.exists_mulVec_eq_zero_iff]
+      refine ⟨g, fun h => hi₀ (congrFun h i₀), ?_⟩
+      funext i
+      have h := congrArg (inner ℝ (v i)) hg
+      simp only [inner_sum, inner_smul_right, inner_zero_right] at h
+      simpa [Matrix.mulVec, dotProduct, mul_comm] using h
+    rw [h0, hdet, sq, mul_zero]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
