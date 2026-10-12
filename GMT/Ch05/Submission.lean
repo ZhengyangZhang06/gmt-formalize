@@ -458,6 +458,155 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Area transport onto a graph piece of `spt V`: if `Q(spt V − ξ) ∩ B̆_R(0) = graph u ∩ B̆_R(0)` with
+`u ∈ C¹(B̆ⁿ_R(0))`, `s ≤ R` and `μ_V ⌞ B̆_s(ξ) = Hⁿ ⌞ (spt V ∩ B̆_s(ξ))`, then for every `f`
+`∫_{B̆_s(ξ)} f dμ_V = ∫_{D_s} J(Du) f(Φ(x)) dx`, where `D_s = {x ∈ B̆ⁿ_R(0) : |(x, u(x))| < s}`,
+`Φ(x) = ξ + Q⁻¹(x, u(x))` and `J(P) = √det(I + PᵀP)`.  Proof: `spt V ∩ B̆_s(ξ) = Φ(D_s)`, and
+`Φ|_{D_s}` is a measurable embedding pushing `J(Du) dx` forward to `Hⁿ ⌞ Φ(D_s)` by
+`dohr_vel_graph_area_formula` and isometry invariance of `Hⁿ`. -/
+theorem dohr_vel_graph_area_transport : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (s R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), s ≤ R → ContDiffOn ℝ 1 u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → V.weight.restrict (ball ξ s) = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ ball ξ s) → ∀ f : Amb n ℓ → ℝ, ∫ y in ball ξ s, f y ∂V.weight = ∫ x in {x : Rn n | x ∈ ball (0 : Rn n) R ∧ ‖graphPoint x (u x)‖ < s}, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * f (ξ + Q.symm (graphPoint x (u x))) := by
+  intro n ℓ U V ξ s R Q u hsR hu hgraph hmeas f
+  -- `G(x) = (x, u(x))` is continuous on `B̆ⁿ_R(0)`; `π` recovers `x` from `G(x)`.
+  have hdiff : ∀ x ∈ ball (0 : Rn n) R, DifferentiableAt ℝ u x := fun x hx =>
+    ((hu.differentiableOn one_ne_zero) x hx).differentiableAt (isOpen_ball.mem_nhds hx)
+  let π : Amb n ℓ → Rn n := fun z => WithLp.toLp 2 (fun j : Fin n => WithLp.ofLp z (Fin.castAdd ℓ j))
+  have hπG : ∀ (x : Rn n) (w : Rn ℓ), π (graphPoint x w) = x := by
+    intro x w
+    simp [π, graphPoint]
+  let Γl : (Rn n × Rn ℓ) →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun p => graphPoint p.1 p.2
+      map_add' := by
+        intro p q
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+      map_smul' := by
+        intro c p
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint] }
+  have hGc : ContinuousOn (fun z : Rn n => graphPoint z (u z)) (ball 0 R) := fun x hx =>
+    ((LinearMap.toContinuousLinearMap Γl).continuous.continuousAt.comp_continuousWithinAt
+      (continuousWithinAt_id.prodMk ((hdiff x hx).continuousAt.continuousWithinAt)))
+  -- Step 2: `D_s` is open and contained in `B̆ⁿ_R(0)`.
+  set Ds := {x : Rn n | x ∈ ball (0 : Rn n) R ∧ ‖graphPoint x (u x)‖ < s} with hDsdef
+  have hDo : IsOpen Ds := by
+    have := hGc.isOpen_inter_preimage isOpen_ball (isOpen_ball : IsOpen (ball (0 : Amb n ℓ) s))
+    convert this using 1
+    ext x
+    simp [hDsdef]
+  have hDsR : Ds ⊆ ball 0 R := fun x hx => hx.1
+  -- Step 3: `Σ ∩ B̆_s(ξ) = Φ(D_s)` with `Φ(x) = ξ + Q⁻¹(G x)`.
+  set Φ : Rn n → Amb n ℓ := fun x => ξ + Q.symm (graphPoint x (u x)) with hΦdef
+  have hset : V.support ∩ ball ξ s = Φ '' Ds := by
+    ext y
+    constructor
+    · rintro ⟨hyS, hyb⟩
+      have hTy : Q (y - ξ) ∈ graphOver u (ball 0 R) ∩ ball 0 R := by
+        rw [← hgraph]
+        refine ⟨⟨y - ξ, ⟨y, hyS, rfl⟩, rfl⟩, ?_⟩
+        rw [mem_ball_zero_iff, LinearIsometryEquiv.norm_map, ← dist_eq_norm]
+        exact lt_of_lt_of_le (mem_ball.mp hyb) hsR
+      obtain ⟨⟨x, hxR, hxG⟩, -⟩ := hTy
+      have hxG' : graphPoint x (u x) = Q (y - ξ) := hxG
+      refine ⟨x, ⟨hxR, ?_⟩, ?_⟩
+      · rw [hxG', LinearIsometryEquiv.norm_map, ← dist_eq_norm]
+        exact mem_ball.mp hyb
+      · show ξ + Q.symm (graphPoint x (u x)) = y
+        rw [hxG', LinearIsometryEquiv.symm_apply_apply]
+        abel
+    · rintro ⟨x, ⟨hxR, hxs⟩, rfl⟩
+      have hGx : graphPoint x (u x) ∈ Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R := by
+        rw [hgraph]
+        exact ⟨⟨x, hxR, rfl⟩, by rw [mem_ball_zero_iff]; exact lt_of_lt_of_le hxs hsR⟩
+      obtain ⟨⟨z, ⟨y, hyS, rfl⟩, hz⟩, -⟩ := hGx
+      have hz' : Q (y - ξ) = graphPoint x (u x) := hz
+      refine ⟨?_, ?_⟩
+      · show ξ + Q.symm (graphPoint x (u x)) ∈ V.support
+        rw [← hz', LinearIsometryEquiv.symm_apply_apply]
+        simpa using hyS
+      · rw [mem_ball, dist_eq_norm]
+        show ‖ξ + Q.symm (graphPoint x (u x)) - ξ‖ < s
+        rw [add_sub_cancel_left, LinearIsometryEquiv.norm_map]
+        exact hxs
+  -- Step 4: `Φ` is continuous and injective on `D_s`; `z ↦ ξ + Q⁻¹ z` is an isometry.
+  have hΦcont : ContinuousOn Φ Ds :=
+    (continuous_const.add Q.symm.continuous).comp_continuousOn (hGc.mono hDsR)
+  have hΦinj : Set.InjOn Φ Ds := by
+    intro x _ x' _ h
+    have h1 : graphPoint x (u x) = graphPoint x' (u x') := Q.symm.injective (add_left_cancel h)
+    have := congrArg π h1
+    rwa [hπG, hπG] at this
+  have hAisom : Isometry (fun z : Amb n ℓ => ξ + Q.symm z) := by
+    refine Isometry.of_dist_eq (fun z z' => ?_)
+    rw [dist_eq_norm, dist_eq_norm, add_sub_add_left_eq_sub, ← map_sub, LinearIsometryEquiv.norm_map]
+  -- Step 5: set-level area formula `Hⁿ(Φ B) = ∫_B J(Du)` for measurable `B ⊆ D_s`.
+  have hsetF : ∀ B : Set (Rn n), MeasurableSet B → B ⊆ Ds →
+      (μHE[n] : Measure (Amb n ℓ)) (Φ '' B) =
+        ∫⁻ x in B, ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+          Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ)))
+            (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ)))))) := by
+    intro B hB hBD
+    have hΦB : Φ '' B = (fun z : Amb n ℓ => ξ + Q.symm z) '' ((fun x => graphPoint x (u x)) '' B) := by
+      rw [Set.image_image]
+    rw [hΦB, hAisom.euclideanHausdorffMeasure_image]
+    exact Submission.dohr_vel_graph_area_formula n ℓ Ds u hDo (hu.mono hDsR) B hB hBD
+  -- Step 6: the area density `J(Du)` is measurable and nonnegative.
+  set Jf : Rn n → ℝ := fun x => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+    Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ)))
+      (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) with hJfdef
+  have hJcont : Continuous (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+      Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ)))
+        (P (EuclideanSpace.single b (1 : ℝ)))))) := by
+    refine Real.continuous_sqrt.comp (Continuous.matrix_det ?_)
+    refine continuous_matrix (fun a b => ?_)
+    simp only [Matrix.add_apply, Matrix.of_apply]
+    exact continuous_const.add (Continuous.inner
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single a (1 : ℝ))).continuous
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single b (1 : ℝ))).continuous)
+  have hJfmeas : Measurable Jf := hJcont.measurable.comp (measurable_fderiv ℝ u)
+  have hJfnn : ∀ x, 0 ≤ Jf x := fun x => Real.sqrt_nonneg _
+  -- Step 7: `Φ|_{D_s}` pushes `(J(Du) dx)|_{D_s}` forward to `Hⁿ ⌞ Φ(D_s)`.
+  have hemb : MeasurableEmbedding (Ds.domRestrict Φ) := hΦcont.measurableEmbedding hDo.measurableSet hΦinj
+  have hsub := MeasurableEmbedding.subtype_coe hDo.measurableSet
+  have hmap : Measure.map (Ds.domRestrict Φ)
+      (((volume : Measure (Rn n)).withDensity (fun x => ENNReal.ofReal (Jf x))).comap (Subtype.val : Ds → Rn n)) =
+      (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' Ds) := by
+    ext t ht
+    rw [Measure.map_apply hemb.measurable ht, hsub.comap_apply]
+    have hB : MeasurableSet (Subtype.val '' ((Ds.domRestrict Φ) ⁻¹' t)) :=
+      hsub.measurableSet_image' (hemb.measurable ht)
+    have hBs : Subtype.val '' ((Ds.domRestrict Φ) ⁻¹' t) ⊆ Ds := by
+      rintro x ⟨w, _, rfl⟩
+      exact w.property
+    rw [withDensity_apply _ hB, ← hsetF _ hB hBs, Measure.restrict_apply ht]
+    congr 1
+    ext y
+    constructor
+    · rintro ⟨x, ⟨w, hw, rfl⟩, rfl⟩
+      exact ⟨hw, ⟨w, w.property, rfl⟩⟩
+    · rintro ⟨hy, x, hx, rfl⟩
+      exact ⟨x, ⟨⟨x, hx⟩, hy, rfl⟩, rfl⟩
+  -- Step 8: transport the integral of an arbitrary `f`.
+  calc ∫ y in ball ξ s, f y ∂V.weight
+      = ∫ y in V.support ∩ ball ξ s, f y ∂(μHE[n] : Measure (Amb n ℓ)) := by rw [hmeas]
+    _ = ∫ y in Φ '' Ds, f y ∂(μHE[n] : Measure (Amb n ℓ)) := by rw [hset]
+    _ = ∫ z, f (Ds.domRestrict Φ z) ∂(((volume : Measure (Rn n)).withDensity
+          (fun x => ENNReal.ofReal (Jf x))).comap (Subtype.val : Ds → Rn n)) := by
+        rw [← hmap, hemb.integral_map]
+    _ = ∫ x in Ds, f (Φ x) ∂((volume : Measure (Rn n)).withDensity (fun x => ENNReal.ofReal (Jf x))) := by
+        have h2 := hsub.integral_map (μ := ((volume : Measure (Rn n)).withDensity
+          (fun x => ENNReal.ofReal (Jf x))).comap (Subtype.val : Ds → Rn n)) (fun x => f (Φ x))
+        rw [map_comap_subtype_coe hDo.measurableSet] at h2
+        exact h2.symm
+    _ = ∫ x in Ds, Jf x * f (Φ x) := by
+        have h1 : (fun x => ENNReal.ofReal (Jf x)) = fun x => ((Real.toNNReal (Jf x) : ℝ≥0) : ℝ≥0∞) := rfl
+        rw [h1, setIntegral_withDensity_eq_setIntegral_smul (hJfmeas.real_toNNReal) _ hDo.measurableSet]
+        refine setIntegral_congr_fun hDo.measurableSet (fun x _ => ?_)
+        rw [NNReal.smul_def, Real.coe_toNNReal _ (hJfnn x), smul_eq_mul]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
