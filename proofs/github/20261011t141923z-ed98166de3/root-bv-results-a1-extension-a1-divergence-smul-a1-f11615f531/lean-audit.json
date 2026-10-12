@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9f78ac49a113b1d139603f6cee166627567cd711c97554acd04c1507f0efc681",
+  "git_delta": {
+    "base_commit": "a874a0f7584cf26f1ffe971bc7881ac0b3d1ab97",
+    "candidate_commit": "2b1faff96cbd32f20105b79201c5aa04557e71fe",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_ext_euclideanDivergence_smul",
+    "diff_sha256": "cebf07f059f805a345bfaec13b308e0901ec21700fc0ac1657ff96377e3655ea",
+    "source_sha256": "2590a80fd6ea5f3e0975b3f3ac17effa3ad095ee8144c97d8e5e88f9a904e513",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_ext_euclideanDivergence_smul",
+      "statement": "∀ (n : ℕ) (φ : Rn n → ℝ) (g : Rn n → Rn n) (x : Rn n), DifferentiableAt ℝ φ x → DifferentiableAt ℝ g x → Chapter02.euclideanDivergence (fun y ↦ φ y • g y) x = φ x * Chapter02.euclideanDivergence g x + fderiv ℝ φ x (g x)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
