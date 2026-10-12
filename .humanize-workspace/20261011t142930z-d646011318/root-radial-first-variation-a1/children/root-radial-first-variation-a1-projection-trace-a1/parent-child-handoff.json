@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+        "rg -n \"theorem trace_smulRight|theorem trace_eq_rank|IsProj.*trace|trace.*starProjection|trace_orthogonalProjection|theorem trace_comp_comm|theorem trace_id\\b|theorem trace_one\" <snapshot>/mathlib/Mathlib",
+        "rg -n \"IsProj|isProj\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/ ; rg -n \"starProjection_eq_self_iff|starProjection_inner_eq_zero|inner_starProjection_left_eq_right|norm_sq_eq_add_norm_sq_projection|starProjection_add_starProjection_orthogonal|starProjection_orthogonal_val\" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/*.lean",
+        "rg -n \"theorem HasFDerivAt.norm|theorem hasStrictFDerivAt_norm|theorem DifferentiableAt.norm |HasFDerivAt.sqrt|‖⁻¹ • innerSL\" <snapshot>/mathlib/Mathlib ; rg -n \"^theorem|^lemma\" <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+        "rg -n \"theorem support_fderiv_subset|theorem fderiv_of_notMem_tsupport|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem HasFDerivAt.smul |toDual_symm_apply|theorem setIntegral_congr_ae |theorem hasFDerivAt_iff_isLittleO_nhds_zero|theorem IsLittleO.smul_isBigO|theorem isLittleO_one_iff|theorem HasDerivAt.comp_hasFDerivAt |theorem ContDiff.differentiable |theorem image_eq_one_of_notMem_mulTSupport|theorem real_inner_smul_left\" <snapshot>/mathlib/Mathlib",
+        "rg -n \"trace|starProjection|radial|hasFDerivAt.*norm|tangentialDiv\" lake-packages-25730c7c/simongmt/Poincare ; rg -n \"RadialVectorField|tangentialDivergence_smul|trace_radialEndomorphism\" simongmt/Poincare/SimonGMT/Chapter04",
+        "lake env lean /tmp/radial-fv-decomp/test/SimonAx.lean (#check and #print axioms of Poincare.SimonGMT.Chapter04.RectifiableVarifold.trace_radialEndomorphism, trace_starProjection, hasFDerivAt_squaredRadialVectorField)",
+        "rg -n \"radial_vector_field_hasFDerivAt|trace_scalar_add_rankOne_comp_starProjection|tangentialDiv_weighted_radial_field\" <run dir> simongmt/Poincare <snapshot>/mathlib/Mathlib (and dag.json lean_name listing)",
+        "grep -n \"3.2|5.1|divM\" book/chapter-04.txt",
+        "python3 -I scope.py (verifier/gmt-compare.py contract_scope for GMT.Ch04.main_theorem) ; python3 -I validate.py (verifier/lean_contract.py validate_lean_statement on all four statements)",
+        "lake env lean GMT/Ch04/Submission.lean -o /tmp/radial-fv-decomp/olean/GMT/Ch04/Submission.olean",
+        "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/radial-fv-decomp/olean lean /tmp/radial-fv-decomp/final/Sim.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Projection.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Asymptotics/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/tmp/radial-fv-decomp/final/Sim.lean"
+      ],
+      "conclusion": "Snapshot contract sha256 6e58e5dd…0f4770b is byte-identical to the workspace Contract.lean/Submission.lean (project ff75f52a, Mathlib 25730c7c). Every step of the split exists in the snapshot Mathlib: LinearMap.trace_smulRight, LinearMap.IsProj.trace, LinearMap.trace_id (LinearAlgebra/Trace.lean); Submodule.starProjection_apply_mem, starProjection_eq_self_iff, inner_starProjection_left_eq_right, norm_sq_eq_add_norm_sq_starProjection (InnerProductSpace/Projection/Basic.lean); HasFDerivAt.norm_sq, HasFDerivAt.sqrt, HasDerivAt.comp_hasFDerivAt, HasFDerivAt.fun_smul, hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_one_iff, IsLittleO.smul_isBigO; InnerProductSpace.toDual_symm_apply (gradient); fderiv_of_notMem_tsupport, image_eq_zero_of_notMem_tsupport, setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_congr_ae, real_inner_smul_left. Mathlib has no HasFDerivAt lemma for the norm at a nonzero point (FDeriv/Norm.lean only has scaling lemmas), so child 1 goes through √(|y−ξ|²); SimonGMT Chapter04/FirstVariation.lean avoids the centre by using a squared-radius field (hasFDerivAt_squaredRadialVectorField), so the radius-r derivative at x = ξ is genuinely new (child 1), while its trace_radialEndomorphism (axioms propext, Classical.choice, Quot.sound) is child 2 with b = 1 (it is not imported by the contract). The three child names have no match in the run directory, dag.json, SimonGMT or Mathlib. The four statements pass verifier/lean_contract.py, and in the replayed contract scope (open MeasureTheory Metric Set Filter Topology; open scoped ENNReal ContDiff CompactlySupported; namespace GMT.Ch04; noncomputable section; open RectifiableVarifold) /tmp/radial-fv-decomp/final/Sim.lean declares Submission.radial_vector_field_hasFDerivAt, Submission.trace_scalar_add_rankOne_comp_starProjection, Submission.tangentialDiv_weighted_radial_field and the parent Submission.radial_first_variation (parent proved from child 3 only) with exactly these types, plus comparator-style `exact Submission.X` targets; lean exits 0 with no errors, only deprecation warnings, and #print axioms gives [propext, Classical.choice, Quot.sound] for all four. An independent reviewer rebuilt the olean, re-ran Sim.lean and confirmed it."
+    }
+  ],
+  "parent_id": "root.radial_first_variation-a1",
+  "child_id": "root.radial_first_variation-a1.projection_trace-a1",
+  "subproblem": {
+    "key": "projection_trace",
+    "title": "Trace of (cI + F(·)v) ∘ p_P equals c·dim P + F(p_P v)",
+    "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), P ⊆ E any linear subspace with orthogonal projection p = p_P (P.starProjection), c ∈ ℝ, F : E → ℝ a continuous linear functional and v ∈ E. Then the endomorphism A = c·I + F(·)v, A(u) = c·u + F(u)·v, satisfies trace(A ∘ p) = c·dim P + F(p v).",
+    "lean_statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ) (F : Ambient n ℓ →L[ℝ] ℝ) (v : Ambient n ℓ), LinearMap.trace ℝ (Ambient n ℓ) ((c • ContinuousLinearMap.id ℝ (Ambient n ℓ) + F.smulRight v).toLinearMap ∘ₗ P.starProjection.toLinearMap) = c * (Module.finrank ℝ P : ℝ) + F (P.starProjection v)",
+    "lean_name": "trace_scalar_add_rankOne_comp_starProjection",
+    "depends_on": [],
+    "natural_proof": "Conventions. n, ℓ ∈ ℕ; E = Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) = ℝ^{n+ℓ}, a finite-dimensional real inner product space with inner product ⟨·,·⟩ = inner ℝ and norm |·| = ‖·‖. Real division by 0 is 0 (Lean convention: a/0 = 0 for every a ∈ ℝ). N = n + ℓ = dim E. P is an arbitrary linear subspace of E, k = dim P = Module.finrank ℝ P, and p = P.starProjection is the orthogonal projection of E onto P (p u ∈ P and u − p u ⊥ P for all u; hence p u = u for u ∈ P and p u = 0 for u ∈ P^⊥). F : E → ℝ is a continuous linear functional, c ∈ ℝ, v ∈ E, and A = c • ContinuousLinearMap.id + F.smulRight v, i.e. A(u) = c·u + F(u)·v. trace = LinearMap.trace ℝ E, and A ∘ p is the composite u ↦ A(p u) (as a linear map).\n\n1. Choose an orthonormal basis τ_1, …, τ_k of P and an orthonormal basis τ_{k+1}, …, τ_N of P^⊥. Since E is finite-dimensional, E = P ⊕ P^⊥ is an orthogonal direct sum, so τ_1, …, τ_N is an orthonormal basis of E.\n2. For every linear map B : E → E, trace B = Σ_{j=1}^{N} ⟨Bτ_j, τ_j⟩, because ⟨Bτ_j, τ_j⟩ is the j-th diagonal entry of the matrix of B in the orthonormal basis (τ_j).\n3. pτ_j = τ_j for j ≤ k (as τ_j ∈ P) and pτ_j = 0 for j > k (as τ_j ∈ P^⊥). Applying step 2 to B = A ∘ p gives trace(A ∘ p) = Σ_{j=1}^{k} ⟨Aτ_j, τ_j⟩.\n4. For each j ≤ k, ⟨Aτ_j, τ_j⟩ = c⟨τ_j, τ_j⟩ + F(τ_j)⟨v, τ_j⟩ = c + F(τ_j)⟨v, τ_j⟩, since |τ_j| = 1.\n5. Summing over j ≤ k and using linearity of F: trace(A ∘ p) = ck + Σ_{j≤k} ⟨v, τ_j⟩F(τ_j) = ck + F(Σ_{j≤k} ⟨v, τ_j⟩τ_j) = ck + F(p v), because the orthogonal projection onto P has the expansion p v = Σ_{j≤k} ⟨v, τ_j⟩τ_j in the orthonormal basis τ_1, …, τ_k of P. Since k = dim P, this is the claim trace(A ∘ p) = c·dim P + F(p v).\nRemark (the same computation without bases, matching Mathlib): A ∘ p = c·p + G(·)v with G = F ∘ p linear; by linearity of the trace, trace(A ∘ p) = c·trace(p) + trace(u ↦ G(u)v); trace(p) = k because p maps E onto P and fixes P (Mathlib LinearMap.IsProj.trace), and the rank-one map u ↦ G(u)v has trace G(v) = F(p v) (Mathlib LinearMap.trace_smulRight). The pinned SimonGMT library contains this identity with an extra scalar b (Poincare.SimonGMT.Chapter04.RectifiableVarifold.trace_radialEndomorphism, take b = 1).",
+    "proof_key_steps": [
+      "Orthonormal basis τ_1..τ_N of E with τ_1..τ_k a basis of P and τ_{k+1}..τ_N a basis of P^⊥",
+      "trace B = Σ_j ⟨Bτ_j, τ_j⟩; since pτ_j = τ_j (j ≤ k) and pτ_j = 0 (j > k), trace(A∘p) = Σ_{j≤k} ⟨Aτ_j, τ_j⟩",
+      "⟨Aτ_j, τ_j⟩ = c + F(τ_j)⟨v, τ_j⟩",
+      "Sum: ck + F(Σ_{j≤k}⟨v, τ_j⟩τ_j) = c·dim P + F(p v)"
+    ]
+  },
+  "audit": {
+    "key": "projection_trace",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and standalone Lean type agree. Ambient finite dimensionality supplies the projection and trace instances. The adapted orthonormal-basis computation proves both the scalar contribution and F(p v), including zero-dimensional subspaces; the supplied basis-free route is also supported by the pinned trace lemmas. No additional hypotheses or child dependencies are needed."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1-projection-trace-a1/parent-supplied-natural-proof.json"
+}

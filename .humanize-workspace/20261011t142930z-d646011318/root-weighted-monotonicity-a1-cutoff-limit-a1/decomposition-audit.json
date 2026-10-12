@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "weighted_mono_cutoff_seq_exists|weighted_mono_cutoff_integral_tendsto|weighted_mono_kernel_limit|weighted_mono_kernel_term_tendsto|weighted_mono_curvature_term_tendsto",
+        "theorem measurable_deriv|theorem StronglyMeasurable.integral_prod_right|theorem continuousOn_of_dominated|theorem norm_integral_le_of_norm_le|theorem tendsto_integral_filter_of_dominated_convergence|theorem _root_.aestronglyMeasurable_of_tendsto_ae|lemma IntegrableOn.of_bound|theorem measure_closedBall_lt_top|theorem ContinuousOn.aestronglyMeasurable|theorem aestronglyMeasurable_indicator_iff|theorem integrable_indicator_iff|theorem integrableOn_const|theorem integral_indicator|theorem div₀",
+        "python3 /tmp/cutoff-limit-audit-r1sfywqi/compile.py challenges",
+        "python3 /tmp/cutoff-limit-audit-r1sfywqi/compile.py full"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-cutoff-limit-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1-cutoff-limit-a1/decomposition-v1.json",
+        "/tmp/cutoff-limit-audit-r1sfywqi/compile.py",
+        "/tmp/cutoff-limit-audit-r1sfywqi/FullAccepted.lean",
+        "/tmp/cutoff-limit-audit-r1sfywqi/FullAccepted.log"
+      ],
+      "conclusion": "Verified the pinned revisions and byte compatibility of the contract and relevant Mathlib sources. The cited cutoff, measurability, continuity, dominated-convergence and integrability lemmas support the supplied arguments. No proposed name conflicts with DAG reservations, other node contracts, searched snapshot declarations, or GMT declarations across 127 local branches. All five names are bare identifiers; all five types are standalone one-line propositions and freshly generated comparator challenges elaborate without child implementations. Independently recompiled the supplied child proofs and exact selected parent assembly using the accepted weighted_mono_kernel_bounds proof at its identical frozen type. All seven declarations report only propext, Classical.choice and Quot.sound. The split is appropriate: curvature_term depends on cutoff_integral, all other children are independent, and the resulting integrability and convergence conclusions establish all three selected parent conclusions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_seq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. The explicit widths a/(m+2) and smooth-transition construction prove every required property, including strict width bounds and convergence. The proof is complete and non-circular."
+    },
+    {
+      "key": "cutoff_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the Lean type. Vanishing outside B_R justifies global measurability and domination from restricted integrability. The pointwise limit includes the closed-ball boundary correctly. Dominated convergence proves the exact conclusion without needing an additional positivity hypothesis on the widths."
+    },
+    {
+      "key": "kernel_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all four stated conclusions. The proof uses the squeeze as an explicit hypothesis, without circular reliance on kernel bounds. The pinned measurable_deriv theorem applies to arbitrary real functions, and restricted Lebesgue measure supplies the required SFinite instance. Bounds, support and every endpoint case are proved."
+    },
+    {
+      "key": "kernel_term",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including the weaker radius assumptions. Annulus integrability follows from restricted measurability and the stated bound. Indicator domination and pointwise convergence prove the integral limit. Positivity of A is used only where ball membership supplies it; empty-ball and empty-annulus cases remain valid."
+    },
+    {
+      "key": "curvature_term",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions and every hypothesis match the Lean type. Uniform domination establishes parameter continuity; the declared cutoff_integral dependency gives pointwise convergence with all hypotheses checked. Measurability of the limit and the finite-interval bound establish integrability and dominated convergence. The dependency is correctly directed and non-circular."
+    }
+  ],
+  "required_changes": []
+}

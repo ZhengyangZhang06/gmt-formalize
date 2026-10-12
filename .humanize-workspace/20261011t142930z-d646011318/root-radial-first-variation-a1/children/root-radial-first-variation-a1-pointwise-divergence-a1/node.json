@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radial_first_variation-a1.pointwise_divergence-a1",
+  "parent_id": "root.radial_first_variation-a1",
+  "depth": 2,
+  "title": "Pointwise tangential divergence of h·γ(|x−ξ|)(x−ξ) (Simon Ch. 4, 3.2 and 5.1)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), V any rectifiable n-varifold in E (V : RectifiableVarifold n ℓ), h : E → ℝ, γ : ℝ → ℝ of class C¹, and ξ, x ∈ E, and suppose dim T_xV = n and h is differentiable at x. Let X(y) = (h(y)γ(|y − ξ|))(y − ξ) and r = |x − ξ|. Then div_M X(x) = h(x)(nγ(r) + rγ'(r)(1 − q_ξ(x))) + γ(r)⟨x − ξ, ∇^M h(x)⟩, where div_M X(x) = trace(DX(x) ∘ p_{T_xV}) (V.tangentialDiv X x), ∇^M h(x) = p_{T_xV}(∇h(x)) (V.tangentialGradient h x) and q_ξ(x) = |p_{T_xV}^⊥(x − ξ)|²/r² (V.normalRadialSq ξ x, equal to 0 when r = 0).",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), Module.finrank ℝ (V.tangentSpace x) = n → DifferentiableAt ℝ h x → ContDiff ℝ 1 γ → V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x = h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)",
+  "lean_name": "tangentialDiv_weighted_radial_field",
+  "depends_on": [
+    "root.radial_first_variation-a1.radial_derivative-a1",
+    "root.radial_first_variation-a1.projection_trace-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.radial_first_variation-a1.radial_derivative-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.radial_first_variation-a1.projection_trace-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-radial-first-variation-a1-pointwise-divergence-a1-a1"
+}
