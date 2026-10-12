@@ -2276,6 +2276,78 @@ theorem Submission.ts_fv_tangential_jacobian_hasDerivAt : ∀ (N : ℕ) (B : ℝ
     rw [Matrix.diag_apply, hS', hΛ0, one_apply_eq_self,
       real_inner_comm (P.starProjection (EuclideanSpace.single k (1 : ℝ)))]
     ring
+/-- **Differentiation under the integral sign for `θ`-weighted integrals over `M ∩ K`** (used for
+the first variation formula, Ch. 4, 2.2). Let `K` be compact and `δ > 0`. If for `|t| < δ`,
+`m(t) = ∫_{M ∩ K} θ J(t, ·) dHⁿ` with `J(t, ·)` `Hⁿ ⌞ M`-measurable, and for `Hⁿ`-a.e. `x ∈ M ∩ K`
+and all `|t| < δ`: `0 ≤ J(t, x) ≤ B`, `∂ₜJ(t, x) = J'(t, x)`, `|J'(t, x)| ≤ B`, and
+`J'(0, x) = g(x)`, where `g` is `Hⁿ ⌞ M`-measurable and vanishes off `K`, then `t ↦ m(t)` has
+derivative `∫ g dμ_V` at `t = 0`. -/
+theorem Submission.ts_fv_hasDerivAt_of_weighted_jacobian : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (K : Set (Ambient n ℓ)) (m : ℝ → ℝ≥0∞) (J J' : ℝ → Ambient n ℓ → ℝ) (g : Ambient n ℓ → ℝ) (δ B : ℝ), 0 < δ → IsCompact K → (∀ t ∈ Ioo (-δ) δ, m t = ∫⁻ x in a.M ∩ K, ENNReal.ofReal (a.θ x * J t x) ∂μHE[n]) → (∀ t ∈ Ioo (-δ) δ, AEStronglyMeasurable (J t) ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M)) → AEStronglyMeasurable g ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) → (∀ x ∉ K, g x = 0) → (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, x ∈ K → J' 0 x = g x ∧ ∀ t ∈ Ioo (-δ) δ, 0 ≤ J t x ∧ J t x ≤ B ∧ HasDerivAt (fun s ↦ J s x) (J' t x) t ∧ |J' t x| ≤ B) → HasDerivAt (fun t ↦ (m t).toReal) (∫ x, g x ∂(mk a).weight) 0 := by
+  intro n ℓ a K m J J' g δ B hδ hK hm hJ hg hg0 hae
+  -- Work with `ν = Hⁿ ⌞ (M ∩ K) = (Hⁿ ⌞ M) ⌞ K` on the neighbourhood `I = (-δ, δ)` of `0`.
+  set ν : Measure (Ambient n ℓ) := (μHE[n] : Measure (Ambient n ℓ)).restrict (a.M ∩ K)
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  have hνK : ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M).restrict K = ν := by
+    rw [Measure.restrict_restrict hKm, Set.inter_comm]
+  have hle : ν ≤ (μHE[n] : Measure (Ambient n ℓ)).restrict a.M :=
+    Measure.restrict_mono Set.inter_subset_left le_rfl
+  have hs : Ioo (-δ) δ ∈ 𝓝 (0 : ℝ) := Ioo_mem_nhds (by linarith) hδ
+  -- `θ` is `ν`-integrable and `ν`-a.e. positive, and the pointwise hypotheses hold `ν`-a.e.
+  have hθ : Integrable a.θ ν := a.isRectifiablePair.locallyIntegrable K hK
+  have hθpos : ∀ᵐ x ∂ν, 0 < a.θ x :=
+    (ae_restrict_mem₀ (a.isRectifiablePair.measurable.inter hKm.nullMeasurableSet)).mono
+      fun x hx ↦ a.isRectifiablePair.pos x hx.1
+  have hae' : ∀ᵐ x ∂ν, J' 0 x = g x ∧ ∀ t ∈ Ioo (-δ) δ, 0 ≤ J t x ∧ J t x ≤ B ∧
+      HasDerivAt (fun s ↦ J s x) (J' t x) t ∧ |J' t x| ≤ B := by
+    rw [← hνK]
+    exact (ae_restrict_iff' hKm).2 hae
+  -- For `t ∈ I`, `0 ≤ θ J(t, ·) ≤ B θ` `ν`-a.e., so `θ J(t, ·)` is `ν`-integrable and
+  -- `(m t).toReal = ∫ θ J(t, ·) dν`.
+  have hFint : ∀ t ∈ Ioo (-δ) δ, Integrable (fun x ↦ a.θ x * J t x) ν := by
+    intro t ht
+    refine (hθ.const_mul B).mono' (hθ.aestronglyMeasurable.mul ((hJ t ht).mono_measure hle)) ?_
+    filter_upwards [hθpos, hae'] with x hx hx'
+    obtain ⟨h0, h1, -, -⟩ := hx'.2 t ht
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hx.le h0), mul_comm B]
+    exact mul_le_mul_of_nonneg_left h1 hx.le
+  have hmt : ∀ t ∈ Ioo (-δ) δ, (m t).toReal = ∫ x, a.θ x * J t x ∂ν := by
+    intro t ht
+    have hnn : 0 ≤ᵐ[ν] fun x ↦ a.θ x * J t x := by
+      filter_upwards [hθpos, hae'] with x hx hx'
+      exact mul_nonneg hx.le (hx'.2 t ht).1
+    rw [hm t ht, ← ofReal_integral_eq_lintegral_ofReal (hFint t ht) hnn,
+      ENNReal.toReal_ofReal (integral_nonneg_of_ae hnn)]
+  -- Differentiate under the integral sign, with the integrable bound `B θ`.
+  obtain ⟨-, hD⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := ν)
+    (F := fun t x ↦ a.θ x * J t x) (F' := fun t x ↦ a.θ x * J' t x)
+    (bound := fun x ↦ B * a.θ x) hs
+    (Filter.eventually_of_mem hs fun t ht ↦ (hFint t ht).aestronglyMeasurable)
+    (hFint 0 ⟨by linarith, hδ⟩)
+    ((hθ.aestronglyMeasurable.mul (hg.mono_measure hle)).congr (by
+      filter_upwards [hae'] with x hx
+      show a.θ x * g x = a.θ x * J' 0 x
+      rw [hx.1]))
+    (by
+      filter_upwards [hθpos, hae'] with x hx hx' t ht
+      show ‖a.θ x * J' t x‖ ≤ B * a.θ x
+      rw [Real.norm_eq_abs, abs_mul, abs_of_pos hx, mul_comm B]
+      exact mul_le_mul_of_nonneg_left (hx'.2 t ht).2.2.2 hx.le)
+    (hθ.const_mul B)
+    (by
+      filter_upwards [hae'] with x hx t ht
+      exact (hx.2 t ht).2.2.1.const_mul (a.θ x))
+  -- The derivative is `∫ θ g dν = ∫_K g dμ_V = ∫ g dμ_V`, as `μ_V ⌞ K = ν.withDensity θ`.
+  have hval : ∫ x, a.θ x * J' 0 x ∂ν = ∫ x, g x ∂(mk a).weight := by
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hg0]
+    show _ = ∫ x, g x ∂(((μHE[n] : Measure (Ambient n ℓ)).restrict a.M).withDensity
+      fun x ↦ ENNReal.ofReal (a.θ x)).restrict K
+    rw [restrict_withDensity hKm, hνK, integral_withDensity_eq_integral_toReal_smul₀
+      hθ.aemeasurable.ennreal_ofReal (ae_of_all _ fun x ↦ ENNReal.ofReal_lt_top)]
+    refine integral_congr_ae ?_
+    filter_upwards [hθpos, hae'] with x hx hx'
+    rw [hx'.1, ENNReal.toReal_ofReal hx.le, smul_eq_mul]
+  rw [← hval]
+  exact hD.congr_of_eventuallyEq (Filter.eventually_of_mem hs hmt)
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
