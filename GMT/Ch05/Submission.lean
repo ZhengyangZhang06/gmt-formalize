@@ -529,6 +529,27 @@ theorem tdo_gl_lintegral_image_le : ∀ (n N : ℕ) (F : Rn n → EuclideanSpace
         rw [lintegral_smul_measure, smul_eq_mul]
     _ = (K : ℝ≥0∞) ^ n * ∫⁻ x' in D, g (F x') := by
         rw [lintegral_map' hg.aemeasurable hFm]
+/-- **Simon Ch. 5, proof of Theorem 4.5, display (14) on p. 119** (the area-formula step, Ch. 2,
+3.5, with `JF ≤ (1 + L²)^{n/2}`).  Let `q` be a linear isometry of `ℝ^{n+ℓ}`, `D ⊆ ℝⁿ` measurable
+and `f` `L`-Lipschitz on `D`, and put `F x' = q (x', f x')`.  Then for every measurable `g ≥ 0`,
+`∫_{q(graph f|D)} g dHⁿ ≤ √(1 + L²)ⁿ ∫_D g ∘ F dLⁿ`.  Indeed `q(graph f|D) = F(D)`, `F` is
+`√(1 + L²)`-Lipschitz on `D`, and the Lipschitz image bound for `Hⁿ`-integrals applies with
+`K = √(1 + L²)`. -/
+theorem tdo_graph_lintegral_le : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), MeasurableSet D → LipschitzOnWith L f D → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in q '' graphOver f D, g x ∂(μHE[n] : Measure (Amb n ℓ)) ≤ ENNReal.ofReal (Real.sqrt (1 + (L : ℝ) ^ 2) ^ n) * ∫⁻ x' in D, g (q (graphPoint x' (f x'))) := by
+  intro n ℓ q f D L hD hf g hg
+  -- Step (i): `q(graph f|D) = F(D)` for the rotated graph map `F x' = q (x', f x')`.
+  have hΓ : q '' graphOver f D = (fun x' => q (graphPoint x' (f x'))) '' D := by
+    rw [graphOver, Set.image_image]
+  -- Step (ii): `F` is `√(1 + L²)`-Lipschitz on `D`.
+  have hF := Submission.tdo_gl_graph_map_lipschitzOn n ℓ q f D L hf
+  -- Step (iv): the constant `√(1 + L²)ⁿ`, as the `n`-th power of `K = √(1 + L²) ∈ ℝ≥0`.
+  have hK : ENNReal.ofReal (Real.sqrt (1 + (L : ℝ) ^ 2) ^ n) =
+      ((NNReal.sqrt (1 + L ^ 2) : ℝ≥0) : ℝ≥0∞) ^ n := by
+    rw [ENNReal.ofReal_pow (Real.sqrt_nonneg _), ← ENNReal.ofReal_coe_nnreal, Real.coe_sqrt,
+      NNReal.coe_add, NNReal.coe_one, NNReal.coe_pow]
+  rw [hΓ, hK]
+  -- Step (iii): the Lipschitz image bound with `N = n + ℓ` and `K = √(1 + L²)`.
+  exact Submission.tdo_gl_lintegral_image_le n (n + ℓ) _ D _ hD hF g hg
 
 end Submission
 
