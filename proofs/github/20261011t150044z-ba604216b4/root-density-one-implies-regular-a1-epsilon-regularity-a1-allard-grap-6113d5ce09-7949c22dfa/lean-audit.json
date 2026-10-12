@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11191f488be1557c3d8ac2011619c140e8c20a560aac6ffddd8cd9fce721c9e8",
+  "git_delta": {
+    "base_commit": "ce1f38f2e49c72155dff5b0cbfb7d1dbc479a418",
+    "candidate_commit": "f2fb0a2b140ff1416c89e7eb125bac070f45f8fc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_lsc_grad_norm_sq",
+    "diff_sha256": "d265072c2f7f25b8be0aae7c17633637497a286ad7462ebe1583025f7d17dc80",
+    "source_sha256": "4fc1086251ec9c682456160deb9e5dd1220796f575249578f41a47543cb72604",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_lsc_grad_norm_sq",
+      "statement": "∀ (n : ℕ) (L : Euclid n →L[ℝ] ℝ), ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 ∧ ∀ a : Fin n → ℝ, |∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) * a i| ≤ ‖L‖ * Real.sqrt (∑ i : Fin n, a i ^ 2)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
