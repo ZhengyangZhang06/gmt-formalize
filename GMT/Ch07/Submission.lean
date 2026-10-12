@@ -508,6 +508,62 @@ theorem Submission.regcomp_rim_action_integrable : ∀ (P n : ℕ) (U : Set (Euc
   /- Step 6: dominated by an integrable function. -/
   exact hg.mono' hF hbound
 
+/-- **Splitting the multiplicity of an integer multiplicity triple** (Simon 7.5.11, proof).  Let
+`R = (C, θ, ξ)`, `R₁ = (C₁, θ₁, ξ)` and `R₂ = (C₂, θ₂, ξ)` be triples in `U` with `C₁, C₂ ⊆ C`
+and `θ = 1_{C₁} θ₁ + 1_{C₂} θ₂` on `C`.  Then the weights add, `θ Hⁿ⌞C = θ₁ Hⁿ⌞C₁ + θ₂ Hⁿ⌞C₂`,
+and so do the actions, `τ(C, θ, ξ)(ω) = τ(C₁, θ₁, ξ)(ω) + τ(C₂, θ₂, ξ)(ω)` for `ω ∈ 𝒟ⁿ(U)`: the
+densities agree `Hⁿ⌞C`-a.e., and the integrands of `R₁`, `R₂` are integrable
+(`Submission.regcomp_rim_action_integrable`), so the integral over `C` splits. -/
+theorem Submission.regcomp_rim_imrep_split : ∀ (P n : ℕ) (U : Set (Euclid P)) (R R₁ R₂ : IMRep U n), R₁.carrier ⊆ R.carrier → R₂.carrier ⊆ R.carrier → R₁.orient = R.orient → R₂.orient = R.orient → (∀ x ∈ R.carrier, R.mult x = R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) → R.measure = R₁.measure + R₂.measure ∧ ∀ ω : TestFormOn U n, R.action (ω : DifferentialForm (Euclid P) n) = R₁.action (ω : DifferentialForm (Euclid P) n) + R₂.action (ω : DifferentialForm (Euclid P) n) := by
+  intro P n U R R₁ R₂ h₁ h₂ ho₁ ho₂ hθ
+  have hC₁ : MeasurableSet R₁.carrier := R₁.measurableSet_carrier
+  have hC₂ : MeasurableSet R₂.carrier := R₂.measurableSet_carrier
+  refine ⟨?_, fun ω => ?_⟩
+  · /- Measures: `θ = 1_{C₁} θ₁ + 1_{C₂} θ₂` `Hⁿ⌞C`-a.e. as `ℝ≥0∞`-valued densities, so
+    `θ Hⁿ⌞C = θ₁ Hⁿ⌞(C₁ ∩ C) + θ₂ Hⁿ⌞(C₂ ∩ C)`, and `Cᵢ ∩ C = Cᵢ`. -/
+    have hae : (fun x => (R.mult x : ℝ≥0∞)) =ᵐ[μHE[n].restrict R.carrier]
+        R₁.carrier.indicator (fun x => (R₁.mult x : ℝ≥0∞)) +
+          R₂.carrier.indicator (fun x => (R₂.mult x : ℝ≥0∞)) := by
+      filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+      rw [hθ x hx, Nat.cast_add, Pi.add_apply]
+      congr 1
+      · by_cases h : x ∈ R₁.carrier <;> simp [h]
+      · by_cases h : x ∈ R₂.carrier <;> simp [h]
+    have hm₁ : Measurable (R₁.carrier.indicator fun x => (R₁.mult x : ℝ≥0∞)) :=
+      (measurable_from_nat.comp R₁.measurable_mult).indicator hC₁
+    unfold IMRep.measure
+    rw [withDensity_congr_ae hae, withDensity_add_left hm₁, withDensity_indicator hC₁,
+      withDensity_indicator hC₂, Measure.restrict_restrict hC₁, Measure.restrict_restrict hC₂,
+      inter_eq_left.mpr h₁, inter_eq_left.mpr h₂]
+  · /- Actions: with `Fᵢ = θᵢ ⟨ω, ξ⟩`, `θ ⟨ω, ξ⟩ = 1_{C₁} F₁ + 1_{C₂} F₂` on `C`, and each
+    `1_{Cᵢ} Fᵢ` is `Hⁿ⌞C`-integrable, so `∫_C θ ⟨ω, ξ⟩ = ∫_{C ∩ C₁} F₁ + ∫_{C ∩ C₂} F₂`. -/
+    set f : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+    set F₁ : Euclid P → ℝ := fun x => (R₁.mult x : ℝ) * R₁.orient x (f x)
+    set F₂ : Euclid P → ℝ := fun x => (R₂.mult x : ℝ) * R₂.orient x (f x)
+    have hF₁ : Integrable (R₁.carrier.indicator F₁) (μHE[n].restrict R.carrier) :=
+      (IntegrableOn.integrable_indicator (Submission.regcomp_rim_action_integrable P n U R₁ ω)
+        hC₁).restrict
+    have hF₂ : Integrable (R₂.carrier.indicator F₂) (μHE[n].restrict R.carrier) :=
+      (IntegrableOn.integrable_indicator (Submission.regcomp_rim_action_integrable P n U R₂ ω)
+        hC₂).restrict
+    have hpt : EqOn (fun x => (R.mult x : ℝ) * R.orient x (f x))
+        (fun x => R₁.carrier.indicator F₁ x + R₂.carrier.indicator F₂ x) R.carrier := by
+      intro x hx
+      simp only [F₁, F₂, hθ x hx, Nat.cast_add, ho₁, ho₂]
+      by_cases hx₁ : x ∈ R₁.carrier <;> by_cases hx₂ : x ∈ R₂.carrier <;>
+        simp [hx₁, hx₂, add_mul]
+    calc R.action f
+        = ∫ x in R.carrier, (R₁.carrier.indicator F₁ x + R₂.carrier.indicator F₂ x) ∂μHE[n] :=
+          setIntegral_congr_fun R.measurableSet_carrier hpt
+      _ = ∫ x in R.carrier, R₁.carrier.indicator F₁ x ∂μHE[n] +
+            ∫ x in R.carrier, R₂.carrier.indicator F₂ x ∂μHE[n] := integral_add hF₁ hF₂
+      _ = ∫ x in R.carrier ∩ R₁.carrier, F₁ x ∂μHE[n] +
+            ∫ x in R.carrier ∩ R₂.carrier, F₂ x ∂μHE[n] := by
+          rw [setIntegral_indicator hC₁, setIntegral_indicator hC₂]
+      _ = R₁.action f + R₂.action f := by
+          rw [inter_eq_right.mpr h₁, inter_eq_right.mpr h₂]
+          rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
