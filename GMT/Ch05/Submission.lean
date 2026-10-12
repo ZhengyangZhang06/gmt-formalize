@@ -458,6 +458,51 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Translating a rectifiable varifold (used for the translation `τ(x) = x − ξ` in Simon Ch. 5,
+7.1–7.3): for `τ(y) = y + x₀`, `v(τ⁻¹M, θ ∘ τ)` is a rectifiable `n`-varifold in `τ⁻¹U`.  `τ` is an
+isometry, so it preserves `Hⁿ`; null-measurability, countable rectifiability (via `τ⁻¹M₀` and the
+Lipschitz maps `F_j − x₀`), a.e.-measurability of `θ ∘ τ` on `τ⁻¹M` and its integrability on
+`τ⁻¹M ∩ K` (through the compact set `τ(K) ⊆ U`) all transfer. -/
+theorem rsod_tv_exists_structure : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ), ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ ∀ y, W.mult y = V.mult (y + x₀) := by
+  intro n ℓ U V x₀
+  -- `τ(y) = y + x₀` is an isometric equivalence, hence `Hⁿ`-measure preserving, and a
+  -- measurable embedding.
+  have hτ : MeasurePreserving (fun y : Amb n ℓ => y + x₀) μHE[n] μHE[n] :=
+    (IsometryEquiv.addRight x₀).measurePreserving_euclideanHausdorffMeasure n
+  have hτe : MeasurableEmbedding (fun y : Amb n ℓ => y + x₀) := measurableEmbedding_addRight x₀
+  refine ⟨{
+    carrier := (fun y => y + x₀) ⁻¹' V.carrier
+    mult := fun y => V.mult (y + x₀)
+    carrier_subset := preimage_mono V.carrier_subset
+    nullMeasurableSet_carrier := V.nullMeasurableSet_carrier.preimage hτ.quasiMeasurePreserving
+    countablyRectifiable := ?_
+    mult_pos := fun y hy => V.mult_pos (y + x₀) hy
+    aemeasurable_mult := ?_
+    integrableOn_mult := ?_ }, rfl, fun y => rfl⟩
+  · -- Translate the null set `M₀` and the Lipschitz pieces `F j` by `-x₀`.
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := V.countablyRectifiable
+    refine ⟨(fun y => y + x₀) ⁻¹' M₀, by rw [hτ.measure_preimage_emb hτe]; exact hM₀,
+      fun j z => F j z - x₀, fun j => ?_, fun y hy => ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨K + 0, hK.sub (LipschitzWith.const x₀)⟩
+    · rcases hcover hy with h | h
+      · exact Or.inl h
+      · obtain ⟨j, z, hz⟩ := mem_iUnion.1 h
+        exact Or.inr (mem_iUnion.2 ⟨j, z, by simp [hz]⟩)
+  · -- `τ` maps `Hⁿ⌞τ⁻¹M` to `Hⁿ⌞M`.
+    exact ((hτ.restrict_preimage_emb hτe V.carrier).aemeasurable_comp_iff hτe).2
+      V.aemeasurable_mult
+  · -- `τ(K)` is a compact subset of `U`, and `τ⁻¹(M ∩ τ(K)) = τ⁻¹M ∩ K`.
+    intro K hK hKU
+    have h := (hτ.integrableOn_comp_preimage hτe).2 (V.integrableOn_mult
+      ((fun y => y + x₀) '' K) (hK.image (continuous_add_const x₀))
+      (by rintro _ ⟨k, hk, rfl⟩; exact hKU hk))
+    rwa [preimage_inter, hτe.injective.preimage_image] at h
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
