@@ -673,6 +673,107 @@ theorem Submission.bv_ext_lintegral_enorm_mul_fderiv_le : ∀ (n : ℕ) (U : Set
     _ = ENNReal.ofReal R * Chapter02.bvVariationOn (fun x ↦ |u x|) U +
           (n : ℝ≥0∞) * ∫⁻ x in U, ‖u x‖ₑ :=
         add_comm _ _
+/-- **Simon Ch. 2, 2.8, estimate (4) for one test field.** Let `u ∈ L¹(ℝⁿ)`, let `φ` be Lipschitz
+with `0 ≤ φ ≤ 1`, compact support and `tsupport φ ⊆ U`, and let `g` be a Lipschitz `C_c` test
+field with `sup |g| ≤ 1`. Then `∫ φ u div g ≤ |Du|(U) + ∫ |u| |Dφ|` in `[0, ∞]`. The field
+`ψ = φ • g` is admissible for `bvVariationOn u U`, and wherever `φ` and `g` are differentiable
+(a.e., by Rademacher) `div ψ = φ div g + Dφ[g]`, so `φ u div g ≤ u div ψ + |u| ‖Dφ‖` a.e. Since
+`div ψ` vanishes off `tsupport ψ ⊆ U`, `∫ u div ψ = ∫_U u div ψ ≤ |Du|(U)`. -/
+theorem Submission.bv_ext_ofReal_integral_cutoff_le : ∀ (n : ℕ) (U : Set (Rn n)) (u φ : Rn n → ℝ) (g : CompactlySupportedContinuousMap (Rn n) (Rn n)), IsOpen U → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → Chapter02.IsLipschitzTestField g → Chapter02.compactlySupportedSupNorm g ≤ 1 → ENNReal.ofReal (∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ := by
+  rintro n U u φ g - hu ⟨Kφ, hφ⟩ hφ01 hφcs hφU ⟨Kg, hg⟩ hgn
+  -- Step 1: `‖g x‖ ≤ compactlySupportedSupNorm g ≤ 1`, and `‖φ x‖ ≤ 1`.
+  have hg1 : ∀ x, ‖g x‖ ≤ 1 := by
+    obtain ⟨C, hC⟩ := g.continuous.bounded_above_of_compact_support g.hasCompactSupport
+    have hbdd : BddAbove (range fun x ↦ ‖g x‖) := ⟨C, by rintro _ ⟨y, rfl⟩; exact hC y⟩
+    exact fun x ↦ (le_csSup hbdd ⟨x, rfl⟩).trans hgn
+  have hφ1 : ∀ x, ‖φ x‖ ≤ 1 := fun x ↦ by
+    rw [Real.norm_of_nonneg (hφ01 x).1]
+    exact (hφ01 x).2
+  -- Step 2: `ψ = φ • g` is `(Kφ + Kg)`-Lipschitz, compactly supported in `U`, and `‖ψ‖ ≤ 1`.
+  set ψ : Rn n → Rn n := fun y ↦ φ y • g y with hψ_def
+  have hψ : LipschitzWith (Kφ + Kg) ψ := by
+    refine LipschitzWith.of_dist_le_mul fun x y ↦ ?_
+    have hφxy : ‖φ x - φ y‖ ≤ Kφ * ‖x - y‖ := by
+      simpa only [dist_eq_norm] using hφ.dist_le_mul x y
+    have hgxy : ‖g x - g y‖ ≤ Kg * ‖x - y‖ := by
+      simpa only [dist_eq_norm] using hg.dist_le_mul x y
+    have hgx := hg1 x
+    have hφy := hφ1 y
+    have hsplit : ψ x - ψ y = (φ x - φ y) • g x + φ y • (g x - g y) := by
+      simp only [hψ_def]
+      rw [sub_smul, smul_sub, sub_add_sub_cancel]
+    rw [dist_eq_norm, dist_eq_norm, hsplit]
+    calc ‖(φ x - φ y) • g x + φ y • (g x - g y)‖
+        ≤ ‖φ x - φ y‖ * ‖g x‖ + ‖φ y‖ * ‖g x - g y‖ := by
+          rw [← norm_smul, ← norm_smul]
+          exact norm_add_le _ _
+      _ ≤ Kφ * ‖x - y‖ * 1 + 1 * (Kg * ‖x - y‖) := by gcongr
+      _ = ((Kφ + Kg : ℝ≥0) : ℝ) * ‖x - y‖ := by push_cast; ring
+  have hψcs : HasCompactSupport ψ := hφcs.smul_right
+  have hψU : tsupport ψ ⊆ U := (tsupport_smul_subset_left φ (g : Rn n → Rn n)).trans hφU
+  have hψ1 : ∀ x, ‖ψ x‖ ≤ 1 := fun x ↦ by
+    calc ‖ψ x‖ = ‖φ x‖ * ‖g x‖ := norm_smul _ _
+      _ ≤ 1 := (mul_le_of_le_one_left (norm_nonneg _) (hφ1 x)).trans (hg1 x)
+  -- Step 3: `ψ` is admissible in `U`, and `∫_U u div ψ = ∫ u div ψ` since `div ψ = 0` off
+  -- `tsupport ψ ⊆ U`.
+  have hset : ∫ x in U, u x * Chapter02.euclideanDivergence ψ x =
+      ∫ x, u x * Chapter02.euclideanDivergence ψ x := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx ↦ ?_
+    rw [Function.notMem_support.mp fun h ↦
+      hx (hψU (Chapter02.support_euclideanDivergence_subset ψ h)), mul_zero]
+  have hadm : ENNReal.ofReal (∫ x, u x * Chapter02.euclideanDivergence ψ x) ≤
+      Chapter02.bvVariationOn u U := by
+    rw [← hset]
+    exact Submission.bv_ext_ofReal_integral_le_bvVariationOn n U u ψ (Kφ + Kg) hψ hψcs hψU hψ1
+  -- Steps 4–5: where `φ` and `g` are differentiable (a.e., Rademacher), the product rule gives
+  -- `div ψ = φ div g + Dφ[g]`, so `φ u div g = u div ψ - u Dφ[g] ≤ u div ψ + |u| ‖Dφ‖`.
+  have hpt : ∀ᵐ x ∂(volume : Measure (Rn n)),
+      φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x ≤
+        u x * Chapter02.euclideanDivergence ψ x + |u x| * ‖fderiv ℝ φ x‖ := by
+    filter_upwards [hφ.ae_differentiableAt, hg.ae_differentiableAt] with x hφx hgx
+    have hdiv : Chapter02.euclideanDivergence ψ x =
+        φ x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x + fderiv ℝ φ x (g x) :=
+      Submission.bv_ext_euclideanDivergence_smul n φ g x hφx hgx
+    have hD : ‖fderiv ℝ φ x (g x)‖ ≤ ‖fderiv ℝ φ x‖ := by
+      simpa only [mul_one] using (fderiv ℝ φ x).le_opNorm_of_le (hg1 x)
+    have hneg : -(u x * fderiv ℝ φ x (g x)) ≤ |u x| * ‖fderiv ℝ φ x‖ :=
+      calc -(u x * fderiv ℝ φ x (g x)) ≤ |u x * fderiv ℝ φ x (g x)| := neg_le_abs _
+        _ = |u x| * ‖fderiv ℝ φ x (g x)‖ := by rw [abs_mul, Real.norm_eq_abs]
+        _ ≤ |u x| * ‖fderiv ℝ φ x‖ := by gcongr
+    rw [hdiv]
+    linarith
+  -- Step 6: integrability, from `|φ| ≤ 1`, `|div g| ≤ n Kg`, `|div ψ| ≤ n (Kφ + Kg)` and
+  -- `‖Dφ‖ ≤ Kφ`.
+  have hint₁ : Integrable fun x ↦
+      φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x :=
+    (hu.bdd_mul hφ.continuous.aestronglyMeasurable (ae_of_all _ hφ1)).mul_bdd
+      (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+      (ae_of_all _ (Chapter02.norm_euclideanDivergence_le_of_lipschitz hg))
+  have hint₂ : Integrable fun x ↦ u x * Chapter02.euclideanDivergence ψ x :=
+    hu.mul_bdd (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+      (ae_of_all _ (Chapter02.norm_euclideanDivergence_le_of_lipschitz hψ))
+  have hint₃ : Integrable fun x ↦ |u x| * ‖fderiv ℝ φ x‖ :=
+    hu.abs.mul_bdd (measurable_fderiv ℝ φ).norm.aestronglyMeasurable
+      (ae_of_all _ fun x ↦ (norm_norm _).trans_le (norm_fderiv_le_of_lipschitz ℝ hφ))
+  -- Step 7: integrate the a.e. inequality.
+  have hle : ∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x ≤
+      (∫ x, u x * Chapter02.euclideanDivergence ψ x) + ∫ x, |u x| * ‖fderiv ℝ φ x‖ := by
+    rw [← integral_add hint₂ hint₃]
+    exact integral_mono_ae hint₁ (hint₂.add hint₃) hpt
+  -- Step 8: pass to `[0, ∞]`, where `ofReal (∫ |u| ‖Dφ‖) = ∫⁻ ‖u‖ₑ ‖Dφ‖ₑ`.
+  have hlint : ENNReal.ofReal (∫ x, |u x| * ‖fderiv ℝ φ x‖) =
+      ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ := by
+    rw [ofReal_integral_eq_lintegral_ofReal hint₃
+      (ae_of_all _ fun x ↦ mul_nonneg (abs_nonneg _) (norm_nonneg _))]
+    refine lintegral_congr fun x ↦ ?_
+    rw [ENNReal.ofReal_mul (abs_nonneg _), ← Real.norm_eq_abs, ofReal_norm, ofReal_norm]
+  calc ENNReal.ofReal (∫ x, φ x * u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      ≤ ENNReal.ofReal ((∫ x, u x * Chapter02.euclideanDivergence ψ x) +
+          ∫ x, |u x| * ‖fderiv ℝ φ x‖) := ENNReal.ofReal_le_ofReal hle
+    _ ≤ ENNReal.ofReal (∫ x, u x * Chapter02.euclideanDivergence ψ x) +
+          ENNReal.ofReal (∫ x, |u x| * ‖fderiv ℝ φ x‖) := ENNReal.ofReal_add_le
+    _ ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ :=
+      add_le_add hadm hlint.le
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
