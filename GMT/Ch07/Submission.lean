@@ -451,6 +451,117 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A dense sequence in the Euclidean unit ball of `n`-covectors.**  There are `bₖ ∈ Λⁿ(ℝᴾ)`
+with `|bₖ|_E ≤ 1` such that every `β` with `|β|_E ≤ 1` lies in the closure of `{bₖ}` (normed
+topology of `Λⁿ`; `|·|_E` is the Euclidean coefficient norm of Simon (6.1.15)).
+
+`Λⁿ` is finite dimensional, since `α ↦ (α(e_{J(0)}, …, e_{J(n−1)}))_J` is linear and injective
+(a multilinear map is determined by its values on basis vectors).  Hence `Λⁿ` is proper, second
+countable and separable, so the ball `B = {|β|_E ≤ 1}` contains a countable `D` with
+`B ⊆ closure D`.  `D` is nonempty as `0 ∈ B`, so `D` is the range of a sequence. -/
+theorem Submission.regcomp_covector_unit_ball_dense_seq : ∀ (P n : ℕ), ∃ b : ℕ → Covector (Euclid P) n, (∀ k, covectorEuclideanNorm (b k) ≤ 1) ∧ ∀ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 → β ∈ closure (Set.range b) := by
+  intro P n
+  -- the standard basis `e` of `ℝᴾ`
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `ev α = (α(e ∘ J))_J`, linear since addition and scaling of covectors are pointwise
+  let ev : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α J => α fun i => e (J i)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  -- `ev` is injective, so `Λⁿ` is finite dimensional
+  have : FiniteDimensional ℝ (Covector (Euclid P) n) :=
+    FiniteDimensional.of_injective ev fun α β h =>
+      ContinuousAlternatingMap.toAlternatingMap_injective <|
+        AlternatingMap.coe_multilinearMap_injective <|
+          Module.Basis.ext_multilinear (fun _ => e) fun J => congr_fun h J
+  -- `Λⁿ` is separable, so `B` has a countable subset `D` with `B ⊆ closure D`
+  obtain ⟨D, hDB, hDc, hBD⟩ := (TopologicalSpace.IsSeparable.of_separableSpace
+    {β : Covector (Euclid P) n | covectorEuclideanNorm β ≤ 1}).exists_countable_dense_subset
+  -- `0 ∈ B ⊆ closure D`, so `D` is nonempty
+  have hD : D.Nonempty := closure_nonempty_iff.1 ⟨0, hBD (by simp)⟩
+  -- enumerate `D = range b`
+  obtain ⟨b, rfl⟩ := hDc.exists_eq_range hD
+  exact ⟨b, fun k => hDB (Set.mem_range_self k), fun β hβ => hBD hβ⟩
+/-- **First-hit selection** (step 4 of the proof of the near-maximizer lemma for Simon 7.5.11):
+for Borel sets `A k ⊆ ℝᴾ` and covectors `b k` there is a strongly measurable `g` with
+`g = b k` on `A k \ ⋃_{i<k} A i` and `g = 0` off `⋃ₖ A k`.  With `C 0 = (⋃ₖ A k)ᶜ`,
+`C (k + 1) = A k`, the first-hit index `N(x) = min {N | x ∈ C N}` is measurable
+(`measurable_find`), and `g = b' ∘ N` for `b' 0 = 0`, `b' (k + 1) = b k`. -/
+theorem Submission.regcomp_covector_first_hit_selection : ∀ (P n : ℕ) (A : ℕ → Set (Euclid P)) (b : ℕ → Covector (Euclid P) n), (∀ k, MeasurableSet (A k)) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ ∀ x, (g x = 0 ∧ ∀ k, x ∉ A k) ∨ ∃ k, x ∈ A k ∧ g x = b k := by
+  intro P n A b hA
+  classical
+  -- the augmented measurable family `C 0 = (⋃ₖ A k)ᶜ`, `C (k + 1) = A k` covers `ℝᴾ`
+  obtain ⟨C, hC0, hCs⟩ : ∃ C : ℕ → Set (Euclid P), C 0 = (⋃ k, A k)ᶜ ∧ ∀ k, C (k + 1) = A k :=
+    ⟨fun N => Nat.rec (motive := fun _ => Set (Euclid P)) (⋃ k, A k)ᶜ (fun k _ => A k) N, rfl,
+      fun _ => rfl⟩
+  have hCm : ∀ N, MeasurableSet (C N) := by
+    intro N
+    cases N with
+    | zero => rw [hC0]; exact (MeasurableSet.iUnion hA).compl
+    | succ k => rw [hCs]; exact hA k
+  have hcov : ∀ x, ∃ N, x ∈ C N := by
+    intro x
+    by_cases hx : ∃ k, x ∈ A k
+    · obtain ⟨k, hk⟩ := hx
+      exact ⟨k + 1, by rw [hCs]; exact hk⟩
+    · exact ⟨0, by rw [hC0, mem_compl_iff, mem_iUnion]; exact hx⟩
+  -- the first-hit index is measurable, and `g = b' ∘ N` with `b' 0 = 0`, `b' (k + 1) = b k`
+  have hNm : Measurable fun x => Nat.find (hcov x) := measurable_find hcov hCm
+  obtain ⟨b', hb'0, hb's⟩ : ∃ b' : ℕ → Covector (Euclid P) n, b' 0 = 0 ∧ ∀ k, b' (k + 1) = b k :=
+    ⟨fun N => Nat.rec (motive := fun _ => Covector (Euclid P) n) 0 (fun k _ => b k) N, rfl,
+      fun _ => rfl⟩
+  refine ⟨fun x => b' (Nat.find (hcov x)),
+    (StronglyMeasurable.of_discrete (f := b')).comp_measurable hNm, fun x => ?_⟩
+  have hspec := Nat.find_spec (hcov x)
+  show (b' (Nat.find (hcov x)) = 0 ∧ ∀ k, x ∉ A k) ∨ ∃ k, x ∈ A k ∧ b' (Nat.find (hcov x)) = b k
+  generalize Nat.find (hcov x) = N at hspec ⊢
+  cases N with
+  | zero =>
+    rw [hC0, mem_compl_iff, mem_iUnion] at hspec
+    exact Or.inl ⟨hb'0, fun k hk => hspec ⟨k, hk⟩⟩
+  | succ k =>
+    rw [hCs] at hspec
+    exact Or.inr ⟨k, hspec, hb's k⟩
+
+/-- **A near-maximizing covector field** (step 3.1 of the proof of the mass formula
+`M_W(T) = μ_T(W)` for Simon 7.5.11): if `μ`-a.e. `ξ(x)` attains the value `1` on the Euclidean
+unit ball `B = {|β|_E ≤ 1}` of `Λⁿ(ℝᴾ)`, then for every `η > 0` there is a strongly measurable
+`g : ℝᴾ → B` with `⟨g(x), ξ(x)⟩ ≥ 1 - η` for `μ`-a.e. `x`.
+
+Take a sequence `bₖ ∈ B` dense in `B` and a strongly measurable `ξ̃ = ξ` `μ`-a.e.; the sets
+`Aₖ = {x | 1 - η < ξ̃(x)(bₖ)}` are measurable.  Let `g = bₖ` on `Aₖ \ ⋃_{i<k} Aᵢ` and `g = 0`
+off `⋃ₖ Aₖ`.  For a.e. `x`, `{β' | 1 - η < ξ(x)(β')}` is an open neighbourhood of some `β ∈ B`,
+so it contains some `bₖ`, i.e. `x ∈ Aₖ`; hence `g(x) = bⱼ` with `x ∈ Aⱼ`. -/
+theorem Submission.regcomp_covector_field_near_maximizer : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (η : ℝ), 0 < η → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ x β = 1) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∀ᵐ x ∂μ, 1 - η ≤ ξ x (g x) := by
+  intro P n μ ξ η hη hξ hmax
+  -- a sequence `bₖ ∈ B` dense in `B`
+  obtain ⟨b, hbB, hbd⟩ := Submission.regcomp_covector_unit_ball_dense_seq P n
+  -- `Aₖ = {x | 1 - η < ξ̃(x)(bₖ)}` for the strongly measurable version `ξ̃ = hξ.mk ξ`
+  let A : ℕ → Set (Euclid P) := fun k => {x | 1 - η < hξ.mk ξ x (b k)}
+  have hA : ∀ k, MeasurableSet (A k) := fun k =>
+    measurableSet_lt measurable_const
+      ((ContinuousLinearMap.apply ℝ ℝ (b k)).continuous.comp_stronglyMeasurable
+        hξ.stronglyMeasurable_mk).measurable
+  -- `g = bₖ` on `Aₖ \ ⋃_{i<k} Aᵢ` and `g = 0` off `⋃ₖ Aₖ`
+  obtain ⟨g, hg, hgA⟩ := Submission.regcomp_covector_first_hit_selection P n A b hA
+  refine ⟨g, hg, fun x => ?_, ?_⟩
+  · -- `g(x) ∈ {0} ∪ {bₖ} ⊆ B`
+    rcases hgA x with ⟨h0, -⟩ | ⟨k, -, hk⟩
+    · rw [h0, covectorEuclideanNorm_zero]
+      exact zero_le_one
+    · rw [hk]
+      exact hbB k
+  · filter_upwards [hmax, hξ.ae_eq_mk] with x ⟨β, hβB, hβ⟩ hx
+    -- the open set `{β' | 1 - η < ξ(x)(β')}` contains `β ∈ closure (range b)`, hence some `bₖ`
+    obtain ⟨_, hk, k, rfl⟩ := mem_closure_iff.1 (hbd β hβB) {β' | 1 - η < ξ x β'}
+      (isOpen_lt continuous_const (ξ x).continuous) (by rw [mem_ofPred_eq, hβ]; linarith)
+    rw [mem_ofPred_eq, hx] at hk
+    -- so `x ∈ ⋃ₖ Aₖ`, and `g(x) = bⱼ` with `x ∈ Aⱼ`
+    rcases hgA x with ⟨-, hxA⟩ | ⟨j, hj, hgj⟩
+    · exact (hxA k hk).elim
+    · rw [hgj, hx]
+      exact le_of_lt hj
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

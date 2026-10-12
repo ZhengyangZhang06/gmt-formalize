@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1.first_hit_selection-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1",
+  "depth": 4,
+  "title": "Strongly measurable first-hit selection along measurable sets",
+  "statement": "Let P, n ∈ ℕ, let A_k ⊆ ℝ^P (k ∈ ℕ) be Borel-measurable sets, and let (b_k)_{k∈ℕ} be a sequence in Λ^n = Covector (Euclid P) n. Then there is a strongly measurable g : ℝ^P → Λ^n such that for every x ∈ ℝ^P either g(x) = 0 and x ∉ A_k for every k, or there is k with x ∈ A_k and g(x) = b_k.",
+  "lean_statement": "∀ (P n : ℕ) (A : ℕ → Set (Euclid P)) (b : ℕ → Covector (Euclid P) n), (∀ k, MeasurableSet (A k)) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ ∀ x, (g x = 0 ∧ ∀ k, x ∉ A k) ∨ ∃ k, x ∈ A k ∧ g x = b k",
+  "lean_name": "regcomp_covector_first_hit_selection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-near-34b4d5acc0-a1"
+}
