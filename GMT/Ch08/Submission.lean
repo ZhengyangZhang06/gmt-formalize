@@ -538,6 +538,48 @@ theorem Submission.radon_compactlySupported_countable_approx :
         _ = η := one_mul η
     · rw [hχ0 m (fun h => hx (interior_subset h)), Pi.zero_apply, zero_mul]
       exact hη.le
+/-- Final step of Simon Ch. 1, 4.16 (Riesz representation, Theorem 4.12): if the masses `μ_j(K)` of
+each compact `K` are eventually bounded and `∫ f dμ_j` converges for every `f ∈ C_c(X, ℝ)`, then
+the limits are the integrals `∫ f dν` against a single locally finite measure `ν` on `X`. -/
+theorem Submission.radon_exists_measure_of_tendsto_integral :
+    ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [MeasurableSpace X]
+      [BorelSpace X] (μ : ℕ → Measure X),
+      (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) →
+      (∀ f : C_c(X, ℝ), ∃ L : ℝ, Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 L)) →
+      ∃ ν : Measure X, IsLocallyFiniteMeasure ν ∧
+        ∀ f : C_c(X, ℝ), Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 (∫ x, f x ∂ν)) := by
+  intro X _ _ _ _ _ μ hμ hconv
+  -- Step 1: each `f ∈ C_c(X, ℝ)` is `μ j`-integrable for all large `j`, since `f` is continuous,
+  -- vanishes off the compact set `tsupport f`, and `μ j (tsupport f) < ∞` for large `j`.
+  have hint : ∀ f : C_c(X, ℝ), ∀ᶠ j in atTop, Integrable f (μ j) := by
+    intro f
+    obtain ⟨C, hC, hev⟩ := hμ (tsupport f) f.hasCompactSupport.isCompact
+    filter_upwards [hev] with j hj
+    have : IsFiniteMeasure ((μ j).restrict (tsupport f)) :=
+      isFiniteMeasure_restrict.2 (ne_top_of_le_ne_top hC hj)
+    exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).1
+      (f.continuous.integrable_of_hasCompactSupport f.hasCompactSupport)
+  -- Step 2: the limit functional `F f = lim_j ∫ f dμ_j` is additive, homogeneous and positive.
+  choose F hF using hconv
+  have hadd : ∀ f g : C_c(X, ℝ), F (f + g) = F f + F g := by
+    intro f g
+    refine tendsto_nhds_unique (hF (f + g)) (((hF f).add (hF g)).congr' ?_)
+    filter_upwards [hint f, hint g] with j hf hg
+    rw [CompactlySupportedContinuousMap.coe_add]
+    exact (integral_add hf hg).symm
+  have hsmul : ∀ (c : ℝ) (f : C_c(X, ℝ)), F (c • f) = c • F f := by
+    intro c f
+    refine tendsto_nhds_unique (hF (c • f)) (((hF f).const_smul c).congr fun j ↦ ?_)
+    rw [CompactlySupportedContinuousMap.coe_smul]
+    exact (integral_smul c _).symm
+  have hpos : ∀ f : C_c(X, ℝ), 0 ≤ f → 0 ≤ F f := fun f hf ↦
+    ge_of_tendsto' (hF f) fun j ↦ integral_nonneg (CompactlySupportedContinuousMap.le_def.1 hf)
+  -- Step 3: by the Riesz–Markov–Kakutani theorem, `F f = ∫ f dν` for the Riesz measure `ν` of `F`,
+  -- which is regular, hence finite on compact sets, hence locally finite.
+  refine ⟨RealRMK.rieszMeasure (PositiveLinearMap.mk₀ ⟨⟨F, hadd⟩, hsmul⟩ hpos), inferInstance,
+    fun f ↦ ?_⟩
+  rw [RealRMK.integral_rieszMeasure]
+  exact hF f
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
