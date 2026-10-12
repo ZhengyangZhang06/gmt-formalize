@@ -490,6 +490,72 @@ theorem Submission.dgcr_orthogonal_coordinates : ∀ (n k : ℕ) (ι : Euclid n 
   · -- Pythagoras: the cross term `2 ⟪ι v, ι' w⟫` vanishes and `ι`, `ι'` preserve norms
     rw [norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]
     ring
+/-- Step 8 of the proof that an integer multiplicity cycle carried by a `C¹` graph is regular
+(Simon 7.4.3, via Allard's theorem; consequences of the area formula, Ch. 2, 3.2–3.5): for the
+graph map `Φ(v) = z + ιv + ι'u(v)` of a `C¹` function `u` on `B_s(0)` (`ι`, `ι'` orthogonal linear
+isometries), `∫_A g ∘ Φ dLⁿ ≤ ∫_{Φ(A)} g dHⁿ` for Borel `A ⊆ B_s(0)` and Borel `g ≥ 0`, and
+`Hⁿ(Φ(B̄_t(0))) < ∞` for `t < s`.  `Pr = ι*(· − z)` is a 1-Lipschitz left inverse of `Φ`, so
+`Lⁿ(S) = Hⁿ(Pr(Φ(S))) ≤ Hⁿ(Φ(S))` and `Φ_#(Lⁿ⌞A) ≤ Hⁿ⌞Φ(A)`; on the compact convex set `B̄_t(0)`,
+`Φ` is Lipschitz by the mean value inequality. -/
+theorem Submission.dgcr_graph_measure_bounds : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → ContDiffOn ℝ 1 u (ball 0 s) → (∀ (A : Set (Euclid n)) (g : Euclid (n + k) → ℝ≥0∞), MeasurableSet A → A ⊆ ball 0 s → Measurable g → ∫⁻ v in A, g (z + ι v + ι' (u v)) ≤ ∫⁻ x in (fun v => z + ι v + ι' (u v)) '' A, g x ∂μHE[n]) ∧ ∀ t : ℝ, t < s → μHE[n] ((fun v => z + ι v + ι' (u v)) '' closedBall (0 : Euclid n) t) ≠ ∞ := by
+  intro n k ι ι' u z s horth hs hu
+  set Φ : Euclid n → Euclid (n + k) := fun v => z + ι v + ι' (u v) with hΦ
+  -- step 1: `Pr = ι*(· − z)` is a 1-Lipschitz left inverse of `Φ`
+  set ιs : Euclid (n + k) →L[ℝ] Euclid n := ContinuousLinearMap.adjoint ι.toContinuousLinearMap
+    with hιs
+  have hιsι : ∀ v, ιs (ι v) = v := fun v => ext_inner_right ℝ fun w => by
+    rw [hιs, ContinuousLinearMap.adjoint_inner_left, LinearIsometry.coe_toContinuousLinearMap,
+      LinearIsometry.inner_map_map]
+  have hιsι' : ∀ w, ιs (ι' w) = 0 := fun w => ext_inner_right ℝ fun v => by
+    rw [hιs, ContinuousLinearMap.adjoint_inner_left, LinearIsometry.coe_toContinuousLinearMap,
+      inner_zero_left, real_inner_comm, horth]
+  have hιs_le : ∀ y, ‖ιs y‖ ≤ ‖y‖ := fun y =>
+    calc ‖ιs y‖ ≤ ‖ιs‖ * ‖y‖ := ιs.le_opNorm y
+      _ = ‖ι.toContinuousLinearMap‖ * ‖y‖ := by rw [hιs, LinearIsometryEquiv.norm_map]
+      _ ≤ 1 * ‖y‖ := by gcongr; exact ι.norm_toContinuousLinearMap_le
+      _ = ‖y‖ := one_mul _
+  let Pr : Euclid (n + k) → Euclid n := fun x => ιs (x - z)
+  have hPrΦ : ∀ v, Pr (Φ v) = v := fun v => by
+    simp only [Pr, hΦ, add_assoc, add_sub_cancel_left, map_add, hιsι, hιsι', add_zero]
+  have hPr : LipschitzWith 1 Pr := LipschitzWith.of_dist_le_mul fun x y => by
+    simp only [Pr, dist_eq_norm, ← map_sub, sub_sub_sub_cancel_right, NNReal.coe_one, one_mul]
+    exact hιs_le _
+  -- step 3: `Lⁿ(S) ≤ Hⁿ(Φ(S))` for every `S`
+  have hvol : ∀ S : Set (Euclid n), volume S ≤ μHE[n] (Φ '' S) := fun S => by
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hPr.lipschitzOnWith (s := Φ '' S))
+    rwa [image_image, show (fun v => Pr (Φ v)) = id from funext hPrΦ, image_id,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume, ENNReal.coe_one, one_pow, one_mul] at h
+  have hΦC1 : ContDiffOn ℝ 1 Φ (ball 0 s) :=
+    (contDiffOn_const.add ι.contDiff.contDiffOn).add (ι'.contDiff.comp_contDiffOn hu)
+  refine ⟨fun A g hA hAs hg => ?_, fun t ht => ?_⟩
+  · -- steps 4–5: `Φ_#(Lⁿ⌞A) ≤ Hⁿ⌞Φ(A)`
+    have hΦm : AEMeasurable Φ (volume.restrict A) := (hΦC1.continuousOn.mono hAs).aemeasurable hA
+    have hν : Measure.map Φ (volume.restrict A) ≤ μHE[n].restrict (Φ '' A) := by
+      refine Measure.le_iff.2 fun S hS => ?_
+      rw [Measure.map_apply_of_aemeasurable hΦm hS, Measure.restrict_apply' hA,
+        Measure.restrict_apply hS, ← image_preimage_inter]
+      exact hvol _
+    calc ∫⁻ v in A, g (Φ v) = ∫⁻ x, g x ∂(Measure.map Φ (volume.restrict A)) :=
+          (lintegral_map' hg.aemeasurable hΦm).symm
+      _ ≤ ∫⁻ x in Φ '' A, g x ∂μHE[n] := lintegral_mono' hν le_rfl
+  · -- step 6: `Φ` is Lipschitz on `B̄_t(0)`
+    rcases lt_or_ge t 0 with ht0 | ht0
+    · rw [closedBall_eq_empty.2 ht0, image_empty, measure_empty]
+      exact ENNReal.zero_ne_top
+    have hKs : closedBall (0 : Euclid n) t ⊆ ball 0 s := closedBall_subset_ball ht
+    obtain ⟨C, hC⟩ := (isCompact_closedBall (0 : Euclid n) t).exists_bound_of_continuousOn
+      ((hΦC1.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl).mono hKs)
+    have hLip : LipschitzOnWith C.toNNReal Φ (closedBall 0 t) :=
+      (convex_closedBall (0 : Euclid n) t).lipschitzOnWith_of_nnnorm_hasFDerivWithin_le
+        (fun v hv => ((hΦC1.differentiableOn one_ne_zero).differentiableAt
+          (isOpen_ball.mem_nhds (hKs hv))).hasFDerivAt.hasFDerivWithinAt)
+        (fun v hv => by rw [← norm_toNNReal]; exact Real.toNNReal_le_toNNReal (hC v hv))
+    refine ne_top_of_le_ne_top ?_
+      (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hLip)
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top)
+      (isCompact_closedBall (0 : Euclid n) t).measure_lt_top.ne
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
