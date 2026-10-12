@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_level_slices_rectifiable-a1.regular_slices-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_level_slices_rectifiable-a1",
+  "depth": 3,
+  "title": "C¹ images of the regular part of a C¹ level set are countably k-rectifiable, for every y (implicit-function half of Simon Ch. 2, Thm 6.4)",
+  "statement": "Let m, k, N ∈ ℕ, n := m + k, D ⊆ ℝⁿ open, ψ : ℝⁿ → ℝᴺ of class C¹ on D, G : ℝⁿ → ℝᵐ of class C¹ (on all of ℝⁿ), and y ∈ ℝᵐ. Let S := {u ∈ ℝⁿ : DG(u) is surjective}. Then ψ(D ∩ S ∩ G⁻¹{y}) is countably k-rectifiable (SimonGMT CountablyRectifiable k in ℝᴺ). No assumption k > 0 or m > 0 is made. Notation: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); DG(u) = fderiv ℝ G u; D ∩ S ∩ G⁻¹{y} means (D ∩ S) ∩ G⁻¹{y}.",
+  "lean_statement": "∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (y : Rn m), IsOpen D → ContDiffOn ℝ 1 ψ D → ContDiff ℝ 1 G → CountablyRectifiable k (ψ '' (D ∩ {u | Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}))",
+  "lean_name": "c1_regular_level_slice_image_countablyRectifiable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-level-slices-rectifiable-a1-regular-slices-a1-a1"
+}

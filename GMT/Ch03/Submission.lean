@@ -1705,6 +1705,169 @@ theorem Submission.pcoarea_gluing : ∀ (n N m k : ℕ) (D Z : Set (Rn n)) (ψ :
       _ = ∫⁻ y, ∑' t, (∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume :=
         (lintegral_tsum fun t ↦ (hPgood t φ hφ).1).symm
       _ = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by rw [hfun]
+/-- **Regular level slices of a `C¹` map have countably `k`-rectifiable `C¹` images**
+(Simon Ch. 2, proof of Theorem 6.4, `chapter-02.txt` lines 1476–1496: off the critical set the
+implicit function theorem makes `G⁻¹(y)` a `k`-dimensional `C¹` submanifold). At a point `u₀` of
+`D` where `DG(u₀)` is onto, `K₀ = ker DG(u₀)` has dimension `k`; with `π` the orthogonal
+projection onto `K₀` followed by `K₀ ≅ ℝᵏ`, the map `Φ = (G, π)` has invertible derivative at
+`u₀`, and its local inverse `Θ` parametrizes the slice near `u₀` by the open set
+`W = {z | (y, z) ∈ Φ(U₀), Θ(y, z) ∈ D, DΦ(Θ(y, z)) invertible}` through the `C¹` map
+`z ↦ ψ(Θ(y, z))`. `C¹` images of open subsets of `ℝᵏ` are countably `k`-rectifiable (Lipschitz
+on each compact piece of a compact exhaustion, then extended), and by Lindelöf countably many
+such charts cover the regular part. -/
+theorem Submission.c1_regular_level_slice_image_countablyRectifiable : ∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (y : Rn m), IsOpen D → ContDiffOn ℝ 1 ψ D → ContDiff ℝ 1 G → CountablyRectifiable k (ψ '' (D ∩ {u | Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y})) := by
+  intro m k N D ψ G y hD hψ hG
+  -- C¹ images of open subsets of ℝᵏ are countably k-rectifiable
+  -- (inline copy of SimonGMT `countablyRectifiable_image_contDiffOn_open`).
+  have himage : ∀ (W : Set (Rn k)) (h : Rn k → Rn N), IsOpen W → ContDiffOn ℝ 1 h W →
+      CountablyRectifiable k (h '' W) := by
+    intro W h hW hh
+    let _ : LocallyCompactSpace W := hW.locallyCompactSpace
+    obtain ⟨Kc, hKc, hKcover⟩ := SigmaCompactSpace.exists_compact_covering (X := W)
+    let C : ℕ → Set (Rn k) := fun j => ((↑) : W → Rn k) '' Kc j
+    have hCc : ∀ j, IsCompact (C j) := fun j => (hKc j).image continuous_subtype_val
+    have hCW : ∀ j, C j ⊆ W := by
+      rintro j _ ⟨x, -, rfl⟩
+      exact x.2
+    have hLip : ∀ j, ∃ L : ℝ≥0, LipschitzOnWith L h (C j) := by
+      intro j
+      apply LocallyLipschitzOn.exists_lipschitzOnWith_of_compact (hCc j)
+      intro x hx
+      obtain ⟨L, t, ht, hht⟩ := (hh.contDiffAt (hW.mem_nhds (hCW j hx))).exists_lipschitzOnWith
+      exact ⟨L, t, mem_nhdsWithin_of_mem_nhds ht, hht⟩
+    choose L hL using hLip
+    choose g hgL hgeq using fun j => (hL j).extend_finite_dimension
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion (fun j => range (g j))
+      (fun j => Poincare.SimonGMT.Chapter03.countablyRectifiable_range (hgL j))).mono ?_
+    rintro _ ⟨x, hxW, rfl⟩
+    have hx : (⟨x, hxW⟩ : W) ∈ ⋃ j, Kc j := by rw [hKcover]; trivial
+    obtain ⟨j, hj⟩ := mem_iUnion.1 hx
+    exact mem_iUnion.2 ⟨j, x, (hgeq j ⟨⟨x, hxW⟩, hj, rfl⟩).symm⟩
+  -- Local charts at regular points (implicit function theorem via Φ = (G, π)).
+  have hloc : ∀ u₀ : ↥(D ∩ {u | Function.Surjective (fderiv ℝ G u)}),
+      ∃ O : Set (Rn (m + k)), IsOpen O ∧ (u₀ : Rn (m + k)) ∈ O ∧
+        CountablyRectifiable k (ψ '' (O ∩ G ⁻¹' {y})) := by
+    rintro ⟨u₀, hu₀D, hu₀S⟩
+    set A : Rn (m + k) →L[ℝ] Rn m := fderiv ℝ G u₀ with hA
+    have hrange : LinearMap.range (A : Rn (m + k) →ₗ[ℝ] Rn m) = ⊤ := LinearMap.range_eq_top.2 hu₀S
+    set K₀ : Submodule ℝ (Rn (m + k)) := LinearMap.ker (A : Rn (m + k) →ₗ[ℝ] Rn m) with hK₀
+    have hker : finrank ℝ K₀ = k := by
+      have h1 := LinearMap.finrank_range_add_finrank_ker (A : Rn (m + k) →ₗ[ℝ] Rn m)
+      rw [hrange, finrank_top] at h1
+      simp only [finrank_euclideanSpace, Fintype.card_fin] at h1
+      change m + finrank ℝ K₀ = m + k at h1
+      omega
+    obtain ⟨ι⟩ : Nonempty (K₀ ≃L[ℝ] Rn k) :=
+      FiniteDimensional.nonempty_continuousLinearEquiv_of_finrank_eq (by simp [hker])
+    let π : Rn (m + k) →L[ℝ] Rn k := (ι : K₀ →L[ℝ] Rn k).comp K₀.orthogonalProjectionOnto
+    let Φ : Rn (m + k) → Rn m × Rn k := fun u => (G u, π u)
+    have hΦ : ContDiff ℝ 1 Φ := hG.prodMk π.contDiff
+    have hΦd : ∀ u, HasFDerivAt Φ ((fderiv ℝ G u).prod π) u := fun u =>
+      ((hG.differentiable one_ne_zero u).hasFDerivAt).prodMk π.hasFDerivAt
+    have hinj : Function.Injective (A.prod π) := by
+      rw [injective_iff_map_eq_zero]
+      intro v hv
+      have hAv : A v = 0 := congrArg Prod.fst hv
+      have hπv : π v = 0 := congrArg Prod.snd hv
+      have hvK : v ∈ K₀ := hAv
+      have hP : K₀.orthogonalProjectionOnto v = ⟨v, hvK⟩ :=
+        Submodule.orthogonalProjectionOnto_mem_subspace_eq_self ⟨v, hvK⟩
+      have : ι ⟨v, hvK⟩ = 0 := by simpa [π, hP] using hπv
+      have h0 : (⟨v, hvK⟩ : K₀) = 0 := by simpa using this
+      simpa using congrArg Subtype.val h0
+    have hdim : finrank ℝ (Rn (m + k)) = finrank ℝ (Rn m × Rn k) := by
+      simp [Module.finrank_prod]
+    let e' : Rn (m + k) ≃L[ℝ] Rn m × Rn k :=
+      ((A.prod π : Rn (m + k) →ₗ[ℝ] Rn m × Rn k).linearEquivOfInjective hinj hdim).toContinuousLinearEquiv
+    have he' : (e' : Rn (m + k) →L[ℝ] Rn m × Rn k) = A.prod π := by ext1 v; rfl
+    -- `V`: the open set where `DΦ` is invertible.
+    let V : Set (Rn (m + k)) := (fderiv ℝ Φ) ⁻¹'
+      range ((↑) : (Rn (m + k) ≃L[ℝ] Rn m × Rn k) → Rn (m + k) →L[ℝ] Rn m × Rn k)
+    have hVo : IsOpen V := ContinuousLinearEquiv.isOpen.preimage (hΦ.continuous_fderiv one_ne_zero)
+    have hu₀V : u₀ ∈ V := ⟨e', by rw [he', (hΦd u₀).fderiv]⟩
+    have hΦa : ContDiffAt ℝ 1 Φ u₀ := hΦ.contDiffAt
+    have hΦ'a : HasFDerivAt Φ (e' : Rn (m + k) →L[ℝ] Rn m × Rn k) u₀ := by
+      rw [he']; exact hΦd u₀
+    have hstrict := ContDiffAt.hasStrictFDerivAt' hΦa hΦ'a one_ne_zero
+    let e := HasStrictFDerivAt.toOpenPartialHomeomorph Φ hstrict
+    have hecoe : (e : Rn (m + k) → Rn m × Rn k) = Φ := rfl
+    refine ⟨e.source ∩ D ∩ V, (e.open_source.inter hD).inter hVo,
+      ⟨⟨HasStrictFDerivAt.mem_toOpenPartialHomeomorph_source hstrict, hu₀D⟩, hu₀V⟩, ?_⟩
+    -- The slice through the chart is the image of the open set `W` under `h`.
+    let W : Set (Rn k) := (fun z => (y, z)) ⁻¹' (e.target ∩ e.symm ⁻¹' (D ∩ V))
+    have hWo : IsOpen W :=
+      (e.isOpen_inter_preimage_symm (hD.inter hVo)).preimage (continuous_const.prodMk continuous_id)
+    let h : Rn k → Rn N := fun z => ψ (e.symm (y, z))
+    have hh : ContDiffOn ℝ 1 h W := by
+      intro z hz
+      apply ContDiffAt.contDiffWithinAt
+      obtain ⟨hzt, hzD, ⟨L, hL⟩⟩ := hz
+      have h1 : ContDiffAt ℝ 1 e.symm (y, z) := by
+        refine e.contDiffAt_symm hzt (f₀' := L) ?_ ?_
+        · rw [hL, hecoe]
+          exact (hΦ.differentiable one_ne_zero _).hasFDerivAt
+        · rw [hecoe]; exact hΦ.contDiffAt
+      have h2 : ContDiffAt ℝ 1 ψ (e.symm (y, z)) := hψ.contDiffAt (hD.mem_nhds hzD)
+      exact h2.comp z (h1.comp z (contDiffAt_const.prodMk contDiffAt_id))
+    apply (himage W h hWo hh).mono
+    rintro _ ⟨u, ⟨⟨⟨hus, huD⟩, huV⟩, huy⟩, rfl⟩
+    have hey : e u = (y, π u) := by
+      rw [hecoe]; simp only [Φ]; rw [show G u = y from huy]
+    refine ⟨π u, ?_, ?_⟩
+    · show (y, π u) ∈ e.target ∩ e.symm ⁻¹' (D ∩ V)
+      rw [← hey]
+      exact ⟨e.map_source hus, by rw [mem_preimage, e.left_inv hus]; exact ⟨huD, huV⟩⟩
+    · show ψ (e.symm (y, π u)) = ψ u
+      rw [← hey, e.left_inv hus]
+  -- Lindelöf: countably many charts cover the regular part.
+  choose O hOo hmem hrect using hloc
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable O hOo
+  have hsub : ψ '' (D ∩ {u | Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}) ⊆
+      ⋃₀ ((fun i => ψ '' (O i ∩ G ⁻¹' {y})) '' T) := by
+    rintro _ ⟨u, ⟨huDS, huy⟩, rfl⟩
+    have hu : u ∈ ⋃ i ∈ T, O i := by
+      rw [hTU]; exact mem_iUnion.2 ⟨⟨u, huDS⟩, hmem _⟩
+    obtain ⟨i, hiT, hui⟩ := mem_iUnion₂.1 hu
+    exact ⟨_, ⟨i, hiT, rfl⟩, ⟨u, ⟨hui, huy⟩, rfl⟩⟩
+  refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion (hTc.image _) ?_).mono hsub
+  rintro _ ⟨i, -, rfl⟩
+  exact hrect i
+/-- **`C¹` maps on open sets send `Hᵏ`-null sets to `Hᵏ`-null sets**: the critical-part step of
+the slice rectifiability in Simon Ch. 3, Remark 2.10(2) (`chapter-03.txt` lines 437–442). Each
+`u ∈ D` has an open `t u ∋ u` on which `ψ` is `K u`-Lipschitz (mean value inequality); by
+Lindelöf countably many `t u`, `u ∈ T`, cover `Z ⊆ D`. By Ch. 2, Thm. 1.8(i) (`chapter-02.txt`
+lines 270–295, valid for non-measurable sets) `Hᵏ(ψ(Z ∩ t u)) ≤ (K u)ᵏ Hᵏ(Z ∩ t u) = 0`, and
+countable subadditivity gives `Hᵏ(ψ(Z)) = 0`. No measurability of `Z` and no relation between
+`k` and `n` is needed: all estimates are for outer measures. -/
+theorem Submission.contDiffOn_image_euclideanHausdorff_null : ∀ (n N k : ℕ) (D Z : Set (Rn n))
+    (ψ : Rn n → Rn N), IsOpen D → ContDiffOn ℝ 1 ψ D → Z ⊆ D → μHE[k] Z = 0 →
+    μHE[k] (ψ '' Z) = 0 := by
+  intro n N k D Z ψ hD hψ hZD hZ
+  -- Step 1: each `u ∈ D` has an open `t u ∋ u` on which `ψ` is `K u`-Lipschitz.
+  have hloc : ∀ u : D, ∃ K : ℝ≥0, ∃ t : Set (Rn n), IsOpen t ∧ (u : Rn n) ∈ t ∧
+      LipschitzOnWith K ψ t := by
+    intro u
+    obtain ⟨K, t, ht, hKt⟩ := (hψ.contDiffAt (hD.mem_nhds u.2)).exists_lipschitzOnWith
+    obtain ⟨t', ht't, ht'o, hut'⟩ := mem_nhds_iff.mp ht
+    exact ⟨K, t', ht'o, hut', hKt.mono ht't⟩
+  choose K t ht hut hKt using hloc
+  -- Step 2 (Lindelöf): countably many `t u`, `u ∈ T`, cover `Z ⊆ D`.
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable t ht
+  have hcover : Z ⊆ ⋃ i ∈ T, t i := by
+    intro z hz
+    rw [hTU]
+    exact mem_iUnion.2 ⟨⟨z, hZD hz⟩, hut _⟩
+  have himg : ψ '' Z ⊆ ⋃ i ∈ T, ψ '' (Z ∩ t i) := by
+    rintro _ ⟨z, hz, rfl⟩
+    obtain ⟨i, hiT, hzi⟩ := mem_iUnion₂.1 (hcover hz)
+    exact mem_iUnion₂.2 ⟨i, hiT, ⟨z, ⟨hz, hzi⟩, rfl⟩⟩
+  -- Steps 3–4: `Hᵏ(ψ(Z ∩ t i)) ≤ (K i)ᵏ Hᵏ(Z ∩ t i) = 0`, then countable subadditivity.
+  refine measure_mono_null himg ((measure_biUnion_null_iff hTc).2 fun i _ => ?_)
+  refine le_antisymm ?_ bot_le
+  calc μHE[k] (ψ '' (Z ∩ t i)) ≤ (K i : ℝ≥0∞) ^ k * μHE[k] (Z ∩ t i) :=
+        Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k
+          ((hKt i).mono inter_subset_right)
+    _ = 0 := by rw [measure_mono_null inter_subset_left hZ, mul_zero]
 /-- **Fine covers with small weighted image volume give `Hᵏ`-null slices** (the Fatou covering
 criterion behind Simon Ch. 2, p. 66, the consequence of (6.3) stated before 6.4,
 `chapter-02.txt` lines 1476–1478). Let `k > 0` and let `S ⊆ ℝⁿ` and `G : ℝⁿ → ℝᵐ` be arbitrary.
@@ -2453,6 +2616,36 @@ theorem Submission.c1_parametric_coarea_formula : ∀ (m k N : ℕ) (D : Set (Rn
     refine ⟨Φ.source, Φ.open_source, hpΦ, fun B hB hBm φ hφ ↦ ?_⟩
     exact Submission.pcoarea_formula_on_chart m k N ψ G Φ (hψ.mono hsrc) (hinj.mono hsrc) hΦ hΦs
       hfst B (hB.trans inter_subset_right) hBm φ hφ
+
+/-- **Level slices of a `C¹` map have countably `k`-rectifiable `C¹` images for `Lᵐ`-a.e. value**
+(Simon Ch. 3, Remark 2.10(2), `chapter-03.txt` lines 439–442, via the `C¹` Sard-type Ch. 2,
+Theorem 6.4, `chapter-02.txt` lines 1476–1497). With `C = {u | DG(u) not onto}`,
+`ψ(D ∩ G⁻¹{y})` is the union of the regular part `ψ(D ∖ C ∩ G⁻¹{y})`, countably
+`k`-rectifiable for every `y` (implicit function charts), and the critical part
+`ψ(D ∩ C ∩ G⁻¹{y})`. For `Lᵐ`-a.e. `y`, `Hᵏ(C ∩ G⁻¹{y}) = 0`, and `ψ`, locally Lipschitz on `D`,
+keeps it `Hᵏ`-null; an `Hᵏ`-null set is countably `k`-rectifiable. -/
+theorem Submission.c1_level_slices_countablyRectifiable : ∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m), 0 < k → IsOpen D → ContDiffOn ℝ 1 ψ D → ContDiff ℝ 1 G → ∀ᵐ y ∂(volume : Measure (Rn m)), CountablyRectifiable k (ψ '' (D ∩ G ⁻¹' {y})) := by
+  intro m k N D ψ G hk hD hψ hG
+  -- The critical slices are `Hᵏ`-null for `Lᵐ`-a.e. `y`.
+  filter_upwards [Submission.c1_critical_slices_null m k G hk hG] with y hy
+  -- Split the slice into its regular part and its critical part.
+  have hsplit : ψ '' (D ∩ G ⁻¹' {y}) ⊆
+      ⋃₀ {ψ '' (D ∩ {u | Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}),
+        ψ '' (D ∩ ({u | ¬ Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}))} := by
+    rw [sUnion_pair]
+    rintro _ ⟨u, ⟨huD, huy⟩, rfl⟩
+    by_cases hu : Function.Surjective (fderiv ℝ G u)
+    · exact Or.inl ⟨u, ⟨⟨huD, hu⟩, huy⟩, rfl⟩
+    · exact Or.inr ⟨u, ⟨huD, hu, huy⟩, rfl⟩
+  refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+    ((countable_singleton _).insert _) ?_).mono hsplit
+  rintro S (rfl | rfl)
+  -- Regular part: countably `k`-rectifiable for every `y` (implicit function charts).
+  · exact Submission.c1_regular_level_slice_image_countablyRectifiable m k N D ψ G y hD hψ hG
+  -- Critical part: `ψ`, locally Lipschitz on `D`, keeps it `Hᵏ`-null.
+  · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero
+      (Submission.contDiffOn_image_euclideanHausdorff_null (m + k) N k D _ ψ hD hψ
+        inter_subset_left (measure_mono_null inter_subset_right hy))
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry

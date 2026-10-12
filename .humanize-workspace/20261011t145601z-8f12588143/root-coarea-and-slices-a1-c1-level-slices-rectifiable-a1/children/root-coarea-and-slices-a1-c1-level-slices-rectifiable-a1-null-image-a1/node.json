@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_level_slices_rectifiable-a1.null_image-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_level_slices_rectifiable-a1",
+  "depth": 3,
+  "title": "C¹ maps on open sets send Hᵏ-null sets to Hᵏ-null sets",
+  "statement": "Let n, N, k ∈ ℕ, D ⊆ ℝⁿ open, ψ : ℝⁿ → ℝᴺ of class C¹ on D, and Z ⊆ D with Hᵏ(Z) = 0. Then Hᵏ(ψ(Z)) = 0 in ℝᴺ. No measurability or finiteness assumption on Z, and no relation between k and n, is needed. Notation: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hᵏ = μHE[k], the k-dimensional Euclidean Hausdorff measure, which on arbitrary sets is the Hausdorff outer measure.",
+  "lean_statement": "∀ (n N k : ℕ) (D Z : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen D → ContDiffOn ℝ 1 ψ D → Z ⊆ D → μHE[k] Z = 0 → μHE[k] (ψ '' Z) = 0",
+  "lean_name": "contDiffOn_image_euclideanHausdorff_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-level-slices-rectifiable-a1-null-image-a1-a1"
+}
