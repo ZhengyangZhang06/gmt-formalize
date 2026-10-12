@@ -1,0 +1,173 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.coarea_and_slices-a1.c1_parametric_coarea-a1.chart_formula-a1`
+- Child DAG node: `root.coarea_and_slices-a1.c1_parametric_coarea-a1.chart_formula-a1.slice_lintegral-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, steps 1–3 (slices of the chart and the area formula on every slice). Hypothesis (AF) is exactly the conclusion of the sibling c1_injective_area (Submission.pcoarea_c1_injOn_area_formula) for the fixed k, N, φ; the parent discharges it with that sibling.
+
+Standing facts about Φ (OpenPartialHomeomorph API): O and Ω are open (Φ.open_source, Φ.open_target); Φ maps O into Ω (Φ.map_source) and Φ⁻¹ maps Ω into O (Φ.map_target); Φ⁻¹(Φ u) = u for u ∈ O (Φ.left_inv); Φ is continuous and injective on O (Φ.continuousOn, Φ.injOn); Φ⁻¹ is injective on Ω (Φ.symm.injOn, as Φ.symm.source = Ω).
+
+Fix y ∈ ℝᵐ. Put B' := Φ(B), ι(z) := toLp(y, z) for z ∈ ℝᵏ, V := ι⁻¹(Ω), S := ι⁻¹(B') and χ(z) := ψ(Φ⁻¹(ι z)).
+
+1. The slice map ι. ι = (WithLp.prodContinuousLinearEquiv 2 ℝ ℝᵐ ℝᵏ).symm ∘ (z ↦ (y, z)). The inner map has derivative ContinuousLinearMap.inr at every point (hasFDerivAt_prodMk_right) and the outer map is a continuous linear equivalence, so by the chain rule HasFDerivAt ι j z for every z; equivalently ι(z) = toLp(y, 0) + j(z) is affine. ι is C¹ (ContinuousLinearEquiv.contDiff composed with contDiff_const.prodMk contDiff_id), hence continuous, and injective, because the second component of ι(z) is z (apply WithLp.snd).
+
+2. B' is a Borel subset of Ω. B ⊆ O and Φ is continuous and injective on O, hence on B; ℝⁿ is Polish and P carries its Borel σ-algebra (WithLp.borelSpace), so the Lusin–Souslin theorem MeasurableSet.image_of_continuousOn_injOn gives MeasurableSet B'. Every point of B' is Φ(u) with u ∈ B ⊆ O, so B' ⊆ Ω.
+
+3. V is open (Ω open, ι continuous: IsOpen.preimage), S is Borel (ι is measurable and B' is Borel), and S ⊆ V (because B' ⊆ Ω).
+
+4. χ is C¹ on V: ι is C¹ and maps V into Ω by definition of V; Φ⁻¹ is C¹ on Ω and maps Ω into O; ψ is C¹ on O. Two applications of ContDiffOn.comp give ContDiffOn ℝ 1 χ V.
+
+5. χ is injective on V. Let z₁, z₂ ∈ V with χ(z₁) = χ(z₂). Then Φ⁻¹(ι z₁), Φ⁻¹(ι z₂) ∈ O, so injectivity of ψ on O gives Φ⁻¹(ι z₁) = Φ⁻¹(ι z₂); injectivity of Φ⁻¹ on Ω (ι z₁, ι z₂ ∈ Ω) gives ι(z₁) = ι(z₂); injectivity of ι gives z₁ = z₂.
+
+6. ψ(B ∩ G⁻¹{y}) = χ(S).
+(⊆) Let u ∈ B with G(u) = y. Since u ∈ O, (Φ u).fst = G(u) = y, so ι((Φ u).snd) = toLp((Φ u).fst, (Φ u).snd) = Φ(u) (this holds definitionally: (Φ u).fst and (Φ u).snd are the components of ofLp(Φ u), and toLp ∘ ofLp = id). Hence z := (Φ u).snd satisfies ι(z) = Φ(u) ∈ B', i.e. z ∈ S, and χ(z) = ψ(Φ⁻¹(Φ u)) = ψ(u).
+(⊇) Let z ∈ S. Then ι(z) ∈ B', so Φ(u) = ι(z) for some u ∈ B. As u ∈ O, G(u) = (Φ u).fst = (ι z).fst = y, so u ∈ B ∩ G⁻¹{y}; and ψ(u) = ψ(Φ⁻¹(Φ u)) = ψ(Φ⁻¹(ι z)) = χ(z).
+
+7. Area formula on the slice. By steps 3–5, (AF) applies to V, χ and S: ∫_{χ(S)} φ dHᵏ = ∫_S φ(χ z)·ofReal(normDet(Dχ(z))) dz. By step 6 the left-hand side equals ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ.
+
+8. Derivative on the slice. Let z ∈ V. Φ⁻¹ is C¹ on the open set Ω ∋ ι(z), hence differentiable at ι(z) (ContDiffOn.differentiableOn with 1 ≠ 0, then DifferentiableOn.differentiableAt with IsOpen.mem_nhds); likewise ψ is differentiable at Φ⁻¹(ι z) ∈ O. So ρ = ψ ∘ Φ⁻¹ is differentiable at ι(z) (DifferentiableAt.comp). Since χ = ρ ∘ ι, the chain rule fderiv_comp and step 1 (HasFDerivAt.fderiv) give Dχ(z) = Dρ(ι z) ∘L j.
+
+9. Pointwise identity. For z ∈ S: χ(z) = ψ(Φ⁻¹(ι z)) and, by step 8 (S ⊆ V), Dχ(z) = Dρ(ι z) ∘L j, so φ(χ z)·ofReal(normDet(Dχ z)) = h(ι z) = F(ι z), because ι(z) ∈ B'. For z ∉ S: ι(z) ∉ B', so F(ι z) = 0. Hence 1_S(z)·φ(χ z)·ofReal(normDet(Dχ z)) = F(toLp(y, z)) for every z ∈ ℝᵏ (Set.indicator_of_mem, Set.indicator_of_notMem).
+
+10. Conclusion. ∫_S φ(χ z)·ofReal(normDet(Dχ(z))) dz = ∫_{ℝᵏ} 1_S(z)·φ(χ z)·ofReal(normDet(Dχ z)) dz (lintegral_indicator, S Borel) = ∫_{ℝᵏ} F(toLp(y, z)) dz (lintegral_congr and step 9). Together with step 7 this proves the claim. No measurability of φ is used. ∎
+
+Appendix (supplementary; the numbered argument above is complete without it). The following tactic script, placed after `theorem Submission.pcoarea_chart_slice_lintegral : <frozen type> := by` inside `namespace GMT.Ch03` with the Contract's `open` commands and `import GMT.Ch03.Submission`, compiled in the parent's decomposition session (Lean v4.35.0-rc3, Mathlib 25730c7c) with axioms propext, Classical.choice and Quot.sound only:
+```lean
+  intro m k N ψ G Φ hψ hinj hΦs hfst B hB hBm φ hAF y
+  classical
+  set j : Rn k →L[ℝ] WithLp 2 (Rn m × Rn k) := (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)) with hj
+  let ι : Rn k → WithLp 2 (Rn m × Rn k) := fun z ↦ WithLp.toLp 2 (y, z)
+  have hιd : ∀ z, HasFDerivAt ι j z := by
+    intro z
+    have h1 : HasFDerivAt (fun z : Rn k ↦ (y, z)) (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)) z :=
+      hasFDerivAt_prodMk_right y z
+    exact (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.hasFDerivAt.comp z h1
+  have hιcd : ContDiff ℝ 1 ι :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.contDiff.comp
+      (contDiff_const.prodMk contDiff_id)
+  have hιc : Continuous ι := hιcd.continuous
+  have hιinj : Function.Injective ι := by
+    intro z₁ z₂ h
+    have := congrArg WithLp.snd h
+    simpa [ι] using this
+  have hB' : MeasurableSet (Φ '' B) :=
+    hBm.image_of_continuousOn_injOn (Φ.continuousOn.mono hB) (Φ.injOn.mono hB)
+  have hB'Ω : Φ '' B ⊆ Φ.target := by
+    rintro _ ⟨u, hu, rfl⟩; exact Φ.map_source (hB hu)
+  have hV : IsOpen (ι ⁻¹' Φ.target) := Φ.open_target.preimage hιc
+  have hS : MeasurableSet (ι ⁻¹' (Φ '' B)) := hιc.measurable hB'
+  have hSV : ι ⁻¹' (Φ '' B) ⊆ ι ⁻¹' Φ.target := fun z hz ↦ hB'Ω hz
+  let χ : Rn k → Rn N := fun z ↦ ψ (Φ.symm (ι z))
+  have hχ : ContDiffOn ℝ 1 χ (ι ⁻¹' Φ.target) := by
+    have h1 : ContDiffOn ℝ 1 (fun z ↦ Φ.symm (ι z)) (ι ⁻¹' Φ.target) :=
+      hΦs.comp hιcd.contDiffOn (fun z hz ↦ hz)
+    exact hψ.comp h1 (fun z hz ↦ Φ.map_target hz)
+  have hχi : InjOn χ (ι ⁻¹' Φ.target) := by
+    intro z₁ h₁ z₂ h₂ h
+    have h' := hinj (Φ.map_target h₁) (Φ.map_target h₂) h
+    exact hιinj (Φ.symm.injOn h₁ h₂ h')
+  have himg : ψ '' (B ∩ G ⁻¹' {y}) = χ '' (ι ⁻¹' (Φ '' B)) := by
+    ext x; constructor
+    · rintro ⟨u, ⟨huB, huG⟩, rfl⟩
+      have hfu : (Φ u).fst = y := (hfst u (hB huB)).trans huG
+      have hιu : ι (Φ u).snd = Φ u := by
+        show WithLp.toLp 2 (y, (Φ u).snd) = Φ u
+        rw [← hfu]; rfl
+      refine ⟨(Φ u).snd, ?_, ?_⟩
+      · show ι (Φ u).snd ∈ Φ '' B
+        rw [hιu]; exact ⟨u, huB, rfl⟩
+      · show ψ (Φ.symm (ι (Φ u).snd)) = ψ u
+        rw [hιu, Φ.left_inv (hB huB)]
+    · rintro ⟨z, ⟨u, huB, hu⟩, rfl⟩
+      refine ⟨u, ⟨huB, ?_⟩, ?_⟩
+      · show G u = y
+        rw [← hfst u (hB huB), hu]; rfl
+      · show ψ u = ψ (Φ.symm (ι z))
+        rw [← hu, Φ.left_inv (hB huB)]
+  have hderiv : ∀ z ∈ ι ⁻¹' Φ.target, fderiv ℝ χ z = (fderiv ℝ (ψ ∘ Φ.symm) (ι z)).comp j := by
+    intro z hz
+    have hΦsd : DifferentiableAt ℝ Φ.symm (ι z) :=
+      (hΦs.differentiableOn one_ne_zero _ hz).differentiableAt (Φ.open_target.mem_nhds hz)
+    have hψd : DifferentiableAt ℝ ψ (Φ.symm (ι z)) :=
+      (hψ.differentiableOn one_ne_zero _ (Φ.map_target hz)).differentiableAt
+        (Φ.open_source.mem_nhds (Φ.map_target hz))
+    have hρd : DifferentiableAt ℝ (ψ ∘ Φ.symm) (ι z) := hψd.comp (ι z) hΦsd
+    have hχeq : χ = (ψ ∘ Φ.symm) ∘ ι := rfl
+    rw [hχeq, fderiv_comp z hρd (hιd z).differentiableAt, (hιd z).fderiv]
+  rw [himg, hAF (ι ⁻¹' Φ.target) χ hV hχ hχi (ι ⁻¹' (Φ '' B)) hSV hS, ← lintegral_indicator hS]
+  refine lintegral_congr (fun z ↦ ?_)
+  by_cases hz : z ∈ ι ⁻¹' (Φ '' B)
+  · rw [Set.indicator_of_mem hz, Set.indicator_of_mem (show WithLp.toLp 2 (y, z) ∈ Φ '' B from hz),
+      hderiv z (hSV hz)]
+  · rw [Set.indicator_of_notMem hz, Set.indicator_of_notMem (show WithLp.toLp 2 (y, z) ∉ Φ '' B from hz)]
+```
+
+## Key steps
+
+1. ι(z) = toLp(y, z) is C¹, injective and has derivative j; B' = Φ(B) is Borel (Lusin–Souslin) and B' ⊆ Ω.
+2. V = ι⁻¹(Ω) is open, S = ι⁻¹(B') ⊆ V is Borel, and χ = ψ ∘ Φ⁻¹ ∘ ι is C¹ and injective on V.
+3. ψ(B ∩ G⁻¹{y}) = χ(S), using (Φ u).fst = G u, ι((Φ u).snd) = Φ u and Φ⁻¹(Φ u) = u on O.
+4. Hypothesis (AF) on (V, χ, S): ∫_{ψ(B∩G⁻¹{y})} φ dHᵏ = ∫_S φ(χ z)·ofReal(normDet Dχ(z)) dz.
+5. Chain rule on V: Dχ(z) = Dρ(ι z) ∘ j, so 1_S·(integrand) = F ∘ ι pointwise.
+6. lintegral_indicator and lintegral_congr give ∫_S … = ∫_{ℝᵏ} F(toLp(y, z)) dz.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json  (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum of the snapshot copies vs the compiler-package copies (/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c) of NormDet.lean, ProdLp.lean, Lp/MeasurableSpace.lean, Function/Jacobian.lean, Haar/InnerProductSpace.lean, FDeriv/Measurable.lean and of project/GMT/Ch03/Contract.lean vs the workspace Contract (all identical; the package tree is the same Mathlib revision 25730c7c, so the remaining Mathlib files were read there)`
+- `grep -n 'theorem\|lemma\|def ' Mathlib/Analysis/InnerProductSpace/NormDet.lean (normDet, normDet_nonneg, ContinuousLinearMap.normDet_sq, normDet_comp_of_finrank_eq, normDet_eq_abs_det, LinearIsometry.normDet_eq_one)`
+- `grep -n 'fst|snd|fstL|sndL|inr|linearEquiv|prodContinuousLinearEquiv' Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `sed -n 1,60p Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean (WithLp.measurableSpace, WithLp.borelSpace)`
+- `sed -n 150,215p Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean (LinearIsometryEquiv.measurePreserving, WithLp.volume_preserving_toLp)`
+- `rg -n 'theorem lintegral_image_eq_lintegral_abs_det_fderiv_mul' -A 8 Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `grep -n 'variable|MeasurableSpace|OpensMeasurable' Mathlib/Analysis/Calculus/FDeriv/Measurable.lean (measurable_fderiv context)`
+- `per-file grep over Mathlib/Analysis/Calculus, Mathlib/MeasureTheory, Mathlib/Geometry/Manifold/IsManifold: of_local_left_inverse|hasFDerivAt_symm|contDiffAt_symm|lintegral_prod|lintegral_prod_right'|ContinuousOn.measurable_piecewise|lintegral_indicator|setLIntegral_comp_emb|lintegral_comp_emb|EventuallyEq.fderiv_eq|ContDiffOn.differentiableOn|volume_eq_prod|setLIntegral_congr_fun`
+- `grep 'continuous_normDet|Measurable.*normDet' Poincare/SimonGMT/Chapter02/*.lean Chapter03/*.lean (found Chapter02/AreaApproximation.lean continuous_normDet; not imported by GMT.Ch03.Submission)`
+- `grep -rn 'pcoarea_chart|chart_slice_lintegral|integrand_tonelli|chart_change_of_variables|pointwise_jacobian' snapshot project/ and SimonGMT (no match)`
+- `python3 -I scan of dag.json lean_name/theorems of all 200 nodes against the four proposed names (no collision)`
+- `python3 -I gen_lean.py: gmt-compare.py contract_scope + lean_contract.validate_lean_statement, then lean ChartFormulaSplitScope.lean (exit 0)`
+- `lean ChartFormulaSplitAssembly.lean (#print axioms Submission.pcoarea_formula_on_chart: propext, sorryAx, Classical.choice, Quot.sound)`
+- `lean ChartFormulaSplitFull.lean (four real child proofs: propext, Classical.choice, Quot.sound; parent: plus sorryAx from the two sibling stubs)`
+- `lean Inst.lean (#synth MeasureSpace/BorelSpace on WithLp 2 (Rn m × Rn k); j z = WithLp.toLp 2 (0, z) by rfl)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Function/Piecewise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/lakefile.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1-chart-formula-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ChartFormulaSplitScope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ChartFormulaSplitAssembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ChartFormulaSplitFull.lean`
+
+The snapshot is at project d09bc8a and Mathlib 25730c7c. Its Mathlib sources and Contract.lean are byte-identical to the compiler packages and the workspace. No-match results: the snapshot project and SimonGMT contain no slice, Tonelli-on-WithLp, change-of-variables-into-WithLp or chart-Jacobian lemma for this setting. None of the four proposed names exists anywhere or collides with the 200 DAG nodes. So the four children are new obligations. Every library fact the child proofs cite exists with the stated form in this snapshot. This covers the normDet API (normDet_nonneg, ContinuousLinearMap.normDet_sq, normDet_comp_of_finrank_eq, normDet_eq_abs_det, LinearIsometry.normDet_eq_one), WithLp.prodContinuousLinearEquiv, fstL, borelSpace, volume_preserving_toLp, LinearIsometryEquiv.measurePreserving, lintegral_image_eq_lintegral_abs_det_fderiv_mul (arbitrary integrand), measurable_fderiv (no hypothesis on the function), MeasurableSet.image_of_continuousOn_injOn, ContinuousOn.measurable_piecewise, lintegral_prod, Measurable.lintegral_prod_right', Measure.volume_eq_prod, lintegral_indicator, setLIntegral_congr_fun, MeasurePreserving.setLIntegral_comp_emb, Filter.EventuallyEq.fderiv_eq, HasFDerivAt.unique and congr_of_eventuallyEq, and ContDiffOn.differentiableOn (n ≠ 0). SimonGMT's continuous_normDet (Chapter02/AreaApproximation.lean) is not imported by GMT.Ch03.Submission, so its three-line argument is reproduced inline. Lean results: all four types elaborate in the comparator's Contract scope; the parent assembly proves the exact frozen type from them; and each child was itself proved in full with only propext, Classical.choice and Quot.sound.
