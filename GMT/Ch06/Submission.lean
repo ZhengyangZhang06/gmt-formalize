@@ -498,6 +498,130 @@ theorem Submission.ltg_simple_unit_rigidity :
   rw [← haa] at h
   exact smul_right_injective _ ha0 h
 
+/-- Uniqueness of `τ(M, θ, ξ)` on an open set (Simon Ch. 6, 3.1): if two rectifiable triples
+define the same current on test forms supported in an open `O ⊆ U`, then
+`Hᵏ((M₁ Δ M₂) ∩ O) = 0`, and `θ₁ = θ₂`, `ξ₁ = ξ₂` `Hᵏ`-a.e. on `M₁ ∩ O`.  For a covector `b`,
+testing with `φ b` and the fundamental lemma give `1_{M₁} θ₁ ξ₁(b) = 1_{M₂} θ₂ ξ₂(b)` a.e. on
+`O`; finitely many separating covectors upgrade this to `1_{M₁} θ₁ ξ₁ = 1_{M₂} θ₂ ξ₂`, and
+rigidity of nonnegative multiples of unit simple `k`-vectors concludes. -/
+theorem Submission.ltg_tau_unique_on_open :
+    ∀ (P k : ℕ) (U O : Set (Eucl P)), IsOpen O → O ⊆ U →
+      ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (ξ₁ ξ₂ : Eucl P → NVector (Eucl P) k),
+      IsRectifiableTriple U k M₁ θ₁ ξ₁ → IsRectifiableTriple U k M₂ θ₂ ξ₂ →
+      (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ O →
+        tauAction k M₁ θ₁ ξ₁ ω = tauAction k M₂ θ₂ ξ₂ ω) →
+      (μHE[k] : Measure (Eucl P)) (symmDiff M₁ M₂ ∩ O) = 0 ∧
+        ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M₁ ∩ O)), θ₁ x = θ₂ x ∧ ξ₁ x = ξ₂ x := by
+  intro P k U O hO hOU M₁ M₂ θ₁ θ₂ ξ₁ ξ₂ hT₁ hT₂ hτ
+  -- The scalar density `g^b = 1_M θ ξ(b)` of a triple is locally integrable on `O`, and
+  -- `∫ φ g^b dHᵏ = τ(M, θ, ξ)(φ b)` for smooth `φ` with compact support in `O`.
+  have key : ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k),
+      IsRectifiableTriple U k M θ ξ → ∀ b : Covector (Eucl P) k,
+      LocallyIntegrableOn (M.indicator fun y => θ y * ξ y b) O (μHE[k] : Measure (Eucl P)) ∧
+      ∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ O →
+        Integrable (fun x => φ x • M.indicator (fun y => θ y * ξ y b) x)
+          (μHE[k] : Measure (Eucl P)) ∧
+        ∫ x, φ x • M.indicator (fun y => θ y * ξ y b) x ∂(μHE[k] : Measure (Eucl P)) =
+          tauAction k M θ ξ (fun x => φ x • b) := by
+    intro M θ ξ hT b
+    have hI := Submission.ltg_tau_integrable P k U M θ ξ hT
+    refine ⟨?_, fun φ hφ hφc hφO => ?_⟩
+    · rw [locallyIntegrableOn_iff hO.isLocallyClosed]
+      intro K hKO hK
+      exact (integrableOn_indicator_iff hT.nullMeasurableSet).2 (hI.1 K b hK (hKO.trans hOU))
+    · have hint := hI.2 (fun x => φ x • b) (hφ.continuous.smul continuous_const)
+        hφc.smul_right ((tsupport_smul_subset_left φ fun _ => b).trans (hφO.trans hOU))
+      have heq : (fun x => φ x • M.indicator (fun y => θ y * ξ y b) x) =
+          M.indicator fun x => θ x * ξ x (φ x • b) := by
+        funext x
+        by_cases hx : x ∈ M
+        · simp only [Set.indicator_of_mem hx, map_smul, smul_eq_mul]
+          ring
+        · simp [Set.indicator_of_notMem hx]
+      rw [heq]
+      exact ⟨(integrable_indicator_iff₀ hT.nullMeasurableSet).2 hint,
+        integral_indicator₀ hT.nullMeasurableSet⟩
+  -- Fundamental lemma: for each covector `b`, `g₁^b = g₂^b` a.e. on `O`.
+  have hG : ∀ b : Covector (Eucl P) k, ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
+      M₁.indicator (fun y => θ₁ y * ξ₁ y b) x - M₂.indicator (fun y => θ₂ y * ξ₂ y b) x = 0 := by
+    intro b
+    obtain ⟨hl₁, hi₁⟩ := key M₁ θ₁ ξ₁ hT₁ b
+    obtain ⟨hl₂, hi₂⟩ := key M₂ θ₂ ξ₂ hT₂ b
+    refine hO.ae_eq_zero_of_integral_contDiff_smul_eq_zero (hl₁.sub hl₂) fun φ hφ hφc hφO => ?_
+    obtain ⟨hint₁, he₁⟩ := hi₁ φ hφ hφc hφO
+    obtain ⟨hint₂, he₂⟩ := hi₂ φ hφ hφc hφO
+    -- The test form `φ b ∈ 𝒟ᵏ(U)`, supported in `O`.
+    have hsmooth : IsSmoothForm (fun x => φ x • b : DifferentialForm (Eucl P) k) := by
+      unfold IsSmoothForm
+      exact hφ.smul contDiff_const
+    have hts : tsupport (fun x => φ x • b : DifferentialForm (Eucl P) k) ⊆ O :=
+      (tsupport_smul_subset_left φ fun _ => b).trans hφO
+    let ω : TestFormOn U k := ⟨fun x => φ x • b, ⟨hsmooth, hφc.smul_right⟩, hts.trans hOU⟩
+    simp_rw [smul_sub]
+    rw [integral_sub hint₁ hint₂, he₁, he₂]
+    exact sub_eq_zero.2 (hτ ω hts)
+  -- Finitely many covectors separate `k`-vectors: `1_{M₁} θ₁ ξ₁ = 1_{M₂} θ₂ ξ₂` a.e. on `O`.
+  obtain ⟨L, bs, hsep⟩ := Submission.ltg_covector_separating P k
+  have hind : ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k)
+      (x : Eucl P) (b : Covector (Eucl P) k),
+      (M.indicator θ x • ξ x) b = M.indicator (fun y => θ y * ξ y b) x := by
+    intro M θ ξ x b
+    by_cases hx : x ∈ M <;> simp [hx]
+  have hW : ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
+      M₁.indicator θ₁ x • ξ₁ x = M₂.indicator θ₂ x • ξ₂ x := by
+    have hall : ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), ∀ l, x ∈ O →
+        M₁.indicator (fun y => θ₁ y * ξ₁ y (bs l)) x -
+          M₂.indicator (fun y => θ₂ y * ξ₂ y (bs l)) x = 0 :=
+      ae_all_iff.2 fun l => hG (bs l)
+    filter_upwards [hall] with x hx hxO
+    refine hsep _ _ fun l => ?_
+    rw [hind, hind]
+    exact sub_eq_zero.1 (hx l hxO)
+  -- `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` for an orthonormal frame `τ`, a.e. on `M`.
+  have hor : ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k),
+      IsRectifiableTriple U k M θ ξ → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ M →
+        ∃ τ : Fin k → Eucl P, Orthonormal ℝ τ ∧
+          (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ) := by
+    intro M θ ξ hT
+    filter_upwards [(ae_restrict_iff'₀ hT.nullMeasurableSet).1 hT.orients] with x hx hxM
+    obtain ⟨τ, hτo, -, hξ⟩ := hx hxM
+    exact ⟨τ, hτo, hξ⟩
+  -- Pointwise rigidity, using `θᵢ > 0` on `Mᵢ`: a.e. on `O`, `x ∈ M₁ ↔ x ∈ M₂`, and on `M₁`
+  -- `θ₁ = θ₂`, `ξ₁ = ξ₂`.
+  have hpt : ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ O →
+      (x ∈ M₁ ↔ x ∈ M₂) ∧ (x ∈ M₁ → θ₁ x = θ₂ x ∧ ξ₁ x = ξ₂ x) := by
+    filter_upwards [hW, hor M₁ θ₁ ξ₁ hT₁, hor M₂ θ₂ ξ₂ hT₂] with x hWx h1x h2x hxO
+    have hW' := hWx hxO
+    by_cases h1 : x ∈ M₁ <;> by_cases h2 : x ∈ M₂
+    · obtain ⟨τ, hτo, hξτ⟩ := h1x h1
+      obtain ⟨τ', hτo', hξτ'⟩ := h2x h2
+      rw [Set.indicator_of_mem h1, Set.indicator_of_mem h2] at hW'
+      obtain ⟨hθ, hξ⟩ := Submission.ltg_simple_unit_rigidity P k τ τ' (ξ₁ x) (ξ₂ x) (θ₁ x)
+        (θ₂ x) hτo hτo' hξτ hξτ' (hT₁.pos x h1).le (hT₂.pos x h2).le hW'
+      exact ⟨iff_of_true h1 h2, fun _ => ⟨hθ, hξ (hT₁.pos x h1).ne'⟩⟩
+    · -- On `M₁ \ M₂`, `θ₁ ξ₁ = 0 = 0 ξ₁` would force `θ₁ = 0`.
+      obtain ⟨τ, hτo, hξτ⟩ := h1x h1
+      rw [Set.indicator_of_mem h1, Set.indicator_of_notMem h2, zero_smul] at hW'
+      exact absurd (Submission.ltg_simple_unit_rigidity P k τ τ (ξ₁ x) (ξ₁ x) (θ₁ x) 0 hτo hτo
+        hξτ hξτ (hT₁.pos x h1).le le_rfl (by rw [hW', zero_smul])).1 (hT₁.pos x h1).ne'
+    · obtain ⟨τ, hτo, hξτ⟩ := h2x h2
+      rw [Set.indicator_of_notMem h1, Set.indicator_of_mem h2, zero_smul] at hW'
+      exact absurd (Submission.ltg_simple_unit_rigidity P k τ τ (ξ₂ x) (ξ₂ x) (θ₂ x) 0 hτo hτo
+        hξτ hξτ (hT₂.pos x h2).le le_rfl (by rw [← hW', zero_smul])).1 (hT₂.pos x h2).ne'
+    · exact ⟨iff_of_false h1 h2, fun h => absurd h h1⟩
+  refine ⟨?_, ?_⟩
+  · -- `(M₁ Δ M₂) ∩ O` lies in the exceptional null set.
+    rw [ae_iff] at hpt
+    refine measure_mono_null ?_ hpt
+    rintro x ⟨hxs, hxO⟩ hcon
+    rcases Set.mem_symmDiff.1 hxs with ⟨h1, h2⟩ | ⟨h2, h1⟩
+    · exact h2 ((hcon hxO).1.1 h1)
+    · exact h1 ((hcon hxO).1.2 h2)
+  · rw [ae_restrict_iff'₀ (hT₁.nullMeasurableSet.inter hO.measurableSet.nullMeasurableSet)]
+    filter_upwards [hpt] with x hx hxMO
+    exact (hx hxMO.2).2 hxMO.1
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
