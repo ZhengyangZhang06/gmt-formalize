@@ -458,6 +458,35 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The Euclidean Hausdorff measure under the similarity `ψ(x) = c + R x` (`R > 0`):
+`ψ_# Hⁿ = R⁻ⁿ Hⁿ`.  `ψ⁻¹B` is the preimage of `τ⁻¹B`, `τ(z) = c + z`, under the homothety
+`x ↦ R • x`, and preimages under that homothety scale `Hⁿ` by `‖R‖₊⁻¹ ^ n = R⁻ⁿ`; the isometry
+`τ` preserves `Hⁿ`. -/
+theorem any_radius_rv_map_hausdorff : ∀ (n ℓ : ℕ) (c : Amb n ℓ) (R : ℝ), 0 < R → (μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x) = (ENNReal.ofReal (R ^ n))⁻¹ • (μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ c R hR
+  -- The constant: `(ofReal Rⁿ)⁻¹ = ‖R‖₊⁻¹ ^ n` since `R > 0`.
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ = ((‖R‖₊⁻¹ ^ n : ℝ≥0) : ℝ≥0∞) := by
+    rw [← ENNReal.ofReal_inv_of_pos (pow_pos hR n), ← ENNReal.ofReal_coe_nnreal]
+    congr 1
+    push_cast
+    rw [Real.norm_of_nonneg hR.le, inv_pow]
+  -- The translation `τ(z) = c + z` is an isometric equivalence, so it preserves `Hⁿ`.
+  have hτ : MeasurePreserving (fun z : Amb n ℓ => c + z) μHE[n] μHE[n] :=
+    (IsometryEquiv.addLeft c).measurePreserving_euclideanHausdorffMeasure n
+  ext B hB
+  -- `ψ⁻¹B` is the preimage of `τ⁻¹B` under the homothety `x ↦ R • x` (center `0`).
+  have hpre : (fun x : Amb n ℓ => c + R • x) ⁻¹' B =
+      AffineMap.homothety (0 : Amb n ℓ) R ⁻¹' ((fun z => c + z) ⁻¹' B) := by
+    ext x
+    simp [AffineMap.homothety_apply]
+  rw [Measure.map_apply (by fun_prop) hB, Measure.smul_apply, hκ, hpre,
+    euclideanHausdorffMeasure_homothety_preimage n 0 hR.ne',
+    hτ.measure_preimage hB.nullMeasurableSet, ENNReal.smul_def]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
