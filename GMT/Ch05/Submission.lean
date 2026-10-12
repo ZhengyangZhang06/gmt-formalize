@@ -475,17 +475,6 @@ theorem aal_cfs_hasDerivAt_cutoff_integral : ∀ (n ℓ : ℕ) (μ : Measure (Am
   -- `|u φ'(u)| ≤ C` for `u ≥ 0`.
   have hφc : Continuous φ := hφ.continuous
   have hdφc : Continuous (deriv φ) := hφ.continuous_deriv_one
-/-- Simon Ch. 4, 4.1–4.3 (continuity in the scale of the cutoff pairing): let `φ` be `C¹` and
-nonincreasing with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[1 + ε, ∞)`, and let `H` be
-`μ`-integrable on `B_S(y)`.  Then `L(s) = ∫ φ(‖x − y‖/s) (x − y)·H(x) dμ(x)` is continuous at
-every `t > 0` with `(1 + ε) t < S`.  For `0 < s < S/(1 + ε)` the integrand vanishes off
-`B_S(y)` and is bounded there by `S ‖H‖`, so dominated convergence applies to `μ ⌞ B_S(y)`. -/
-theorem aal_cfs_cutoff_pairing_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S ε t : ℝ), 0 < ε → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < t → (1 + ε) * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ) t := by
-  intro n ℓ μ H y φ S ε t hε hH hφ hanti hone hzero ht htS
-  have hε1 : (0 : ℝ) < 1 + ε := by linarith
-  have hHν : Integrable H (μ.restrict (closedBall y S)) := hH
-  -- Step 1: `φ` is continuous, and `0 ≤ φ ≤ 1` because `φ` is nonincreasing.
-  have hφc : Continuous φ := hφ.continuous
   have hφnn : ∀ s, 0 ≤ φ s := fun s => by
     have h := hanti (le_max_left s (1 + ε))
     rwa [hzero _ (le_max_right _ _)] at h
@@ -612,6 +601,24 @@ theorem aal_cfs_cutoff_pairing_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (A
   · filter_upwards with x s hs
     have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
     exact (hderiv ‖x - y‖ s hs0.ne').mul_const (q x)
+
+/-- Simon Ch. 4, 4.1–4.3 (continuity in the scale of the cutoff pairing): let `φ` be `C¹` and
+nonincreasing with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[1 + ε, ∞)`, and let `H` be
+`μ`-integrable on `B_S(y)`.  Then `L(s) = ∫ φ(‖x − y‖/s) (x − y)·H(x) dμ(x)` is continuous at
+every `t > 0` with `(1 + ε) t < S`.  For `0 < s < S/(1 + ε)` the integrand vanishes off
+`B_S(y)` and is bounded there by `S ‖H‖`, so dominated convergence applies to `μ ⌞ B_S(y)`. -/
+theorem aal_cfs_cutoff_pairing_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S ε t : ℝ), 0 < ε → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < t → (1 + ε) * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ) t := by
+  intro n ℓ μ H y φ S ε t hε hH hφ hanti hone hzero ht htS
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  have hHν : Integrable H (μ.restrict (closedBall y S)) := hH
+  -- Step 1: `φ` is continuous, and `0 ≤ φ ≤ 1` because `φ` is nonincreasing.
+  have hφc : Continuous φ := hφ.continuous
+  have hφnn : ∀ s, 0 ≤ φ s := fun s => by
+    have h := hanti (le_max_left s (1 + ε))
+    rwa [hzero _ (le_max_right _ _)] at h
+  have hφle : ∀ s, φ s ≤ 1 := fun s => by
+    have h := hanti (min_le_left s 1)
+    rwa [hone _ (min_le_right _ _)] at h
   -- `t < R* := S/(1 + ε)`.
   have htR : t < S / (1 + ε) := by
     rw [lt_div_iff₀ hε1]
@@ -661,6 +668,7 @@ theorem aal_cfs_cutoff_pairing_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (A
         continuousAt_const
   -- Step 4: both functions agree on the neighbourhood `(0, R*)` of `t`.
   exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
+
 /-- Simon Ch. 4, (4.3)–(4.4), in abstract form (`P = I'`, and `Q` plays the role of `J'`): if on
 `(0, R)` we have `I' = P`, `L` continuous, `I ≥ 0`, `nI − tP + tQ = −L`,
 `a = (L/t^{n+1})/(1 + I/tⁿ)` and `|a| ≤ M t^{−β}` with `β < 1`, then
@@ -924,6 +932,7 @@ theorem aal_cfs_squeeze_of_deriv : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) 
   rw [← hA]
   beta_reduce at hlow hup
   constructor <;> nlinarith [hlow, hup]
+
 /-- **Integrating-factor squeeze for one cutoff** (Simon Ch. 4, 3.4–3.5 and 4.3–4.4, with the
 weight `|D^⊥ r|²` replaced by an abstract `w`, `0 ≤ w ≤ 1`, and the Hölder bound 3.1 by
 `|a(t)| ≤ M t^{−β}`, `β < 1`).  Write `r = |x − y|`, `I(t) = ∫ φ(r/t) dμ`,
