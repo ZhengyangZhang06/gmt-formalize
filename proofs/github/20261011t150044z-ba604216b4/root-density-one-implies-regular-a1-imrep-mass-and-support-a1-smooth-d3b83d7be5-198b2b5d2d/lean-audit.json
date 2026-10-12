@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6d8278d0dde43766b0f11337582072ccb7ecaa311ed7266fa494001878708591",
+  "git_delta": {
+    "base_commit": "22c91beda4f37e141db8cbee84409f64f02e2294",
+    "candidate_commit": "087c53d93d07c5831b393483485f7af10fbd06b2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_ims_sua_coeff_norm_rep",
+    "diff_sha256": "07f42ad2ad62cf0cab36044d9f12b9e26db80ba0786794872cb223be39e61a39",
+    "source_sha256": "cb5b25929e987d706cfefec41cb37ff1ff1c977dee94efaeefa24581d2180b3e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_ims_sua_coeff_norm_rep",
+      "statement": "∀ (P n : ℕ), ∃ A : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin n → Fin P), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖A α‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
