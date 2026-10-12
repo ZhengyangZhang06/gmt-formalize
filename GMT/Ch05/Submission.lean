@@ -577,6 +577,388 @@ theorem ball_convolution_contDiff_laplacian_eq_zero : ∀ n : ℕ, 1 ≤ n → �
     simp [hWdef, Set.indicator_of_mem ht]
   · rw [Set.indicator_of_notMem ht]
     simp [hWdef, Set.indicator_of_notMem ht]
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Weyl's lemma for the weak limit `w`: the mean-value
+kernel.  With `E(σ) = expNegInvGlue (1 − σ)` (`C^∞`, `≥ 0`, `0` for `σ ≥ 1`, `> 0` for `σ < 1`),
+`ρ(z) = c E(|z|²)` with `c = (∫ E(|z|²) dz)⁻¹` is `C^∞`, even, zero for `|z| ≥ 1` and of mass `1`;
+`Ψ(z) = (c/2) P(|z|²)` with `P(σ) = ∫_1^σ E` is `C^∞` (`P' = E` by FTC), zero for `|z| ≥ 1`, and
+`DΨ(z)[v] = (c/2) E(|z|²) 2⟨z, v⟩ = ρ(z)⟨z, v⟩` by the chain rule. -/
+theorem mvk_exists_kernel_potential : ∀ n : ℕ, ∃ ρ Ψ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ ContDiff ℝ (⊤ : ℕ∞) Ψ ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) ∧ (∀ z : Rn n, ρ (-z) = ρ z) ∧ ∫ z, ρ z = 1 ∧ ∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v := by
+  intro n
+  -- The profile `E(σ) = expNegInvGlue (1 - σ)`: `C^∞`, `≥ 0`, `0` for `σ ≥ 1`, `> 0` for `σ < 1`.
+  set E : ℝ → ℝ := fun σ => expNegInvGlue (1 - σ)
+  have hE_smooth : ContDiff ℝ (⊤ : ℕ∞) E :=
+    expNegInvGlue.contDiff.comp (contDiff_const.sub contDiff_id)
+  have hE_cont : Continuous E := hE_smooth.continuous
+  have hE_nonneg : ∀ σ, 0 ≤ E σ := fun σ => expNegInvGlue.nonneg _
+  have hE_zero : ∀ σ, 1 ≤ σ → E σ = 0 := fun σ hσ =>
+    expNegInvGlue.zero_of_nonpos (by linarith)
+  have hE_pos : ∀ σ, σ < 1 → 0 < E σ := fun σ hσ =>
+    expNegInvGlue.pos_of_pos (by linarith)
+  -- The unnormalized kernel `ρ₀(z) = E(‖z‖²)`: `C^∞`, zero for `‖z‖ ≥ 1`, of positive mass.
+  set ρ₀ : Rn n → ℝ := fun z => E (‖z‖ ^ 2) with hρ₀_def
+  have hρ₀_smooth : ContDiff ℝ (⊤ : ℕ∞) ρ₀ := hE_smooth.comp (contDiff_norm_sq ℝ)
+  have hρ₀_zero : ∀ z : Rn n, 1 ≤ ‖z‖ → ρ₀ z = 0 := fun z hz =>
+    hE_zero _ (one_le_pow₀ hz)
+  have hρ₀_supp : HasCompactSupport ρ₀ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Rn n) 1) fun z hz =>
+      hρ₀_zero z (by rw [mem_closedBall_zero_iff, not_le] at hz; exact hz.le)
+  have hρ₀_int : Integrable ρ₀ := hρ₀_smooth.continuous.integrable_of_hasCompactSupport hρ₀_supp
+  have hI₀_pos : 0 < ∫ z, ρ₀ z := by
+    rw [integral_pos_iff_support_of_nonneg (fun z => hE_nonneg _) hρ₀_int]
+    refine (measure_ball_pos volume (0 : Rn n) one_pos).trans_le (measure_mono fun z hz => ?_)
+    rw [mem_ball_zero_iff] at hz
+    exact (hE_pos _ (pow_lt_one₀ (norm_nonneg z) hz two_ne_zero)).ne'
+  set c : ℝ := (∫ z, ρ₀ z)⁻¹ with hc_def
+  -- The primitive `P(σ) = ∫_1^σ E`: `P' = E` (FTC), so `P` is `C^∞`; `P = 0` on `[1, ∞)`.
+  set P : ℝ → ℝ := fun σ => ∫ s in (1 : ℝ)..σ, E s with hP_def
+  have hP_deriv : ∀ σ, HasDerivAt P (E σ) σ := fun σ =>
+    (hE_cont.integral_hasStrictDerivAt 1 σ).hasDerivAt
+  have hP_smooth : ContDiff ℝ (⊤ : ℕ∞) P :=
+    contDiff_infty_iff_deriv.2 ⟨fun σ => (hP_deriv σ).differentiableAt,
+      (funext fun σ => (hP_deriv σ).deriv : deriv P = E) ▸ hE_smooth⟩
+  have hP_zero : ∀ σ, 1 ≤ σ → P σ = 0 := fun σ hσ => by
+    simp only [hP_def]
+    rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+    · simp
+    · intro s hs
+      rw [uIcc_of_le hσ] at hs
+      exact hE_zero s hs.1
+  -- `ρ = c ρ₀` and `Ψ(z) = (c/2) P(‖z‖²)`.
+  refine ⟨fun z => c * ρ₀ z, fun z => c / 2 * P (‖z‖ ^ 2), contDiff_const.mul hρ₀_smooth,
+    contDiff_const.mul (hP_smooth.comp (contDiff_norm_sq ℝ)), fun z hz => ?_, fun z hz => ?_,
+    fun z => ?_, ?_, fun z v => ?_⟩
+  · show c * ρ₀ z = 0
+    rw [hρ₀_zero z hz, mul_zero]
+  · show c / 2 * P (‖z‖ ^ 2) = 0
+    rw [hP_zero _ (one_le_pow₀ hz), mul_zero]
+  · simp only [hρ₀_def, norm_neg]
+  · rw [integral_const_mul, hc_def, inv_mul_cancel₀ hI₀_pos.ne']
+  · -- Chain rule: `DΨ(z)[v] = (c/2) E(‖z‖²) 2⟨z, v⟩ = ρ(z) ⟨z, v⟩`.
+    have h : HasFDerivAt (fun z : Rn n => c / 2 * P (‖z‖ ^ 2))
+        ((c / 2) • (E (‖z‖ ^ 2) • (2 • innerSL ℝ z))) z :=
+      ((hP_deriv _).comp_hasFDerivAt z (hasStrictFDerivAt_norm_sq z).hasFDerivAt).const_mul _
+    rw [h.fderiv]
+    simp only [smul_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, hρ₀_def]
+    push_cast
+    ring
+/-- Fundamental theorem of calculus along rays, averaged against a kernel (used for the mean value
+kernel in Weyl's lemma, Simon Ch. 5, proof of Lemma 3.1): for continuous `ρ` vanishing where
+`‖z‖ ≥ 1`, `h ∈ C¹` and `t ≥ 0`,
+`∫ ρ(z) h(x₀ + t z) dz = (∫ ρ) h(x₀) + ∫₀ᵗ ∫ ρ(z) Dh(x₀ + σ z)[z] dz dσ`.  Raywise FTC, then
+Fubini for the continuous integrand, which vanishes off `[0, t] × B₁(0)`. -/
+theorem mvk_integral_ray_fubini : ∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 ≤ t → Continuous ρ → (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ 1 h → ∫ z, ρ z * h (x₀ + t • z) = (∫ z, ρ z) * h x₀ + ∫ σ in (0 : ℝ)..t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z := by
+  intro n ρ h x₀ t ht hρ hρ0 hh
+  -- `ρ` vanishes off the compact closed unit ball, so it has compact support.
+  have hρs : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Rn n) 1) fun z hz => hρ0 z ?_
+    rw [mem_closedBall, dist_zero_right, not_le] at hz
+    exact hz.le
+  have hhd : Differentiable ℝ h := hh.differentiable one_ne_zero
+  have hDh : Continuous (fderiv ℝ h) := hh.continuous_fderiv one_ne_zero
+  -- Products of `ρ` with continuous functions are integrable.
+  have hint : ∀ g : Rn n → ℝ, Continuous g → Integrable fun z => ρ z * g z := fun g hg =>
+    (hρ.mul hg).integrable_of_hasCompactSupport hρs.mul_right
+  -- FTC along the ray `σ ↦ x₀ + σ • z`, multiplied by the constant `ρ z`.
+  have hftc : ∀ z : Rn n, ∫ σ in (0 : ℝ)..t, ρ z * fderiv ℝ h (x₀ + σ • z) z =
+      ρ z * h (x₀ + t • z) - ρ z * h x₀ := by
+    intro z
+    have hderiv : ∀ σ : ℝ,
+        HasDerivAt (fun σ : ℝ => h (x₀ + σ • z)) (fderiv ℝ h (x₀ + σ • z) z) σ := by
+      intro σ
+      have hray : HasDerivAt (fun σ : ℝ => x₀ + σ • z) z σ := by
+        simpa using ((hasDerivAt_id σ).smul_const z).const_add x₀
+      exact (hhd (x₀ + σ • z)).hasFDerivAt.comp_hasDerivAt σ hray
+    have hcont : Continuous fun σ : ℝ => fderiv ℝ h (x₀ + σ • z) z := by fun_prop
+    rw [intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_eq_sub_of_hasDerivAt (fun σ _ => hderiv σ)
+        (hcont.intervalIntegrable _ _), zero_smul, add_zero, mul_sub]
+  -- The integrand is integrable on `(0, t] × ℝⁿ`: it is continuous and vanishes off the compact
+  -- set `[0, t] × B₁(0)`.
+  have hF : Integrable
+      (Function.uncurry fun (σ : ℝ) (z : Rn n) => ρ z * fderiv ℝ h (x₀ + σ • z) z)
+      ((volume.restrict (uIoc (0 : ℝ) t)).prod volume) := by
+    rw [Measure.restrict_prod_eq_prod_univ]
+    have hK : IntegrableOn
+        (Function.uncurry fun (σ : ℝ) (z : Rn n) => ρ z * fderiv ℝ h (x₀ + σ • z) z)
+        (Icc (0 : ℝ) t ×ˢ closedBall (0 : Rn n) 1) (volume.prod volume) :=
+      (Continuous.continuousOn (by fun_prop)).integrableOn_compact
+        (isCompact_Icc.prod (isCompact_closedBall _ _))
+    refine hK.of_forall_sdiff_eq_zero (measurableSet_uIoc.prod MeasurableSet.univ) ?_
+    rintro ⟨σ, z⟩ ⟨⟨hσ, -⟩, hnot⟩
+    rw [uIoc_of_le ht] at hσ
+    have hz : z ∉ closedBall (0 : Rn n) 1 := fun hz => hnot ⟨Ioc_subset_Icc_self hσ, hz⟩
+    rw [mem_closedBall, dist_zero_right, not_le] at hz
+    simp [hρ0 z hz.le]
+  -- Fubini, then integrate the raywise identity over `z`.
+  rw [MeasureTheory.intervalIntegral_integral_swap hF]
+  simp_rw [hftc]
+  rw [integral_sub (hint (fun z => h (x₀ + t • z)) (by fun_prop))
+    (hint (fun _ => h x₀) continuous_const), integral_mul_const]
+  ring
+/-- Green's first identity on `ℝⁿ` against a compactly supported `C¹` function (used for the mean
+value kernel in Weyl's lemma, Simon Ch. 5, proof of Lemma 3.1): if `H` is `C²`, `Ψ` is `C¹` with
+compact support and `w = ∇Ψ`, then `∫ DH(z)[w(z)] dz = -∫ ΔH(z) Ψ(z) dz`.  Each coordinate
+integration by parts reduces to `∫ DG(z)[v] dz = 0` for a compactly supported `C¹` function `G`,
+which holds because `t ↦ ∫ G(z + t v) dz` is constant by translation invariance. -/
+theorem mvk_integral_fderiv_grad_eq_neg_laplacian : ∀ (n : ℕ) (H Ψ : Rn n → ℝ) (w : Rn n → Rn n), ContDiff ℝ 2 H → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → (∀ z v : Rn n, fderiv ℝ Ψ z v = inner ℝ (w z) v) → ∫ z, fderiv ℝ H z (w z) = -∫ z, Laplacian.laplacian H z * Ψ z := by
+  intro n H Ψ w hH hΨ hΨc hw
+  -- For a compactly supported `C¹` function `G` and a direction `v`, `∫ DG(z)[v] dz = 0`:
+  -- `t ↦ ∫ G(z + t v) dz` is constant by translation invariance, and its derivative at `0` is
+  -- `∫ DG(z)[v] dz` by differentiation under the integral sign.
+  have key : ∀ G : Rn n → ℝ, ContDiff ℝ 1 G → HasCompactSupport G → ∀ v : Rn n,
+      ∫ z, fderiv ℝ G z v = 0 := by
+    intro G hG hGc v
+    have hGd : Differentiable ℝ G := hG.differentiable one_ne_zero
+    have hG' : Continuous fun y => fderiv ℝ G y v :=
+      (hG.continuous_fderiv one_ne_zero).clm_apply continuous_const
+    obtain ⟨C, hC⟩ := hG'.bounded_above_of_compact_support (hGc.fderiv_apply ℝ v)
+    obtain ⟨R, -, hR⟩ := (hGc.fderiv_apply ℝ v).exists_pos_le_norm
+    -- For `|t| < 1`, `|DG(z + t v)[v]|` is bounded by `C` times the indicator of `B_{R + |v|}(0)`.
+    have hbound : Integrable ((closedBall (0 : Rn n) (R + ‖v‖)).indicator fun _ => C) :=
+      (integrable_indicator_iff measurableSet_closedBall).2
+        (integrableOn_const measure_closedBall_lt_top.ne)
+    have hb : ∀ z : Rn n, ∀ t ∈ ball (0 : ℝ) 1,
+        ‖fderiv ℝ G (z + t • v) v‖ ≤ (closedBall (0 : Rn n) (R + ‖v‖)).indicator (fun _ => C) z := by
+      intro z t ht
+      by_cases hz : z ∈ closedBall (0 : Rn n) (R + ‖v‖)
+      · rw [indicator_of_mem hz]
+        exact hC _
+      · rw [mem_closedBall, dist_zero_right, not_le] at hz
+        rw [mem_ball, dist_zero_right, Real.norm_eq_abs] at ht
+        have h1 : ‖t • v‖ ≤ ‖v‖ := by
+          rw [norm_smul, Real.norm_eq_abs]
+          exact mul_le_of_le_one_left (norm_nonneg _) ht.le
+        have h2 : ‖z‖ ≤ ‖z + t • v‖ + ‖t • v‖ := by
+          calc ‖z‖ = ‖(z + t • v) - t • v‖ := by rw [add_sub_cancel_right]
+            _ ≤ ‖z + t • v‖ + ‖t • v‖ := norm_sub_le _ _
+        have hRz : R ≤ ‖z + t • v‖ := by linarith
+        rw [hR _ hRz, norm_zero]
+        exact indicator_nonneg (fun _ _ => (norm_nonneg _).trans (hC 0)) _
+    have hdiff : ∀ z : Rn n, ∀ t ∈ ball (0 : ℝ) 1,
+        HasDerivAt (fun t : ℝ => G (z + t • v)) (fderiv ℝ G (z + t • v) v) t := by
+      intro z t _
+      have h1 : HasDerivAt (fun t : ℝ => z + t • v) v t := by
+        simpa using ((hasDerivAt_id t).smul_const v).const_add z
+      exact (hGd (z + t • v)).hasFDerivAt.comp_hasDerivAt t h1
+    have hd : HasDerivAt (fun t : ℝ => ∫ z, G (z + t • v)) (∫ z, fderiv ℝ G (z + (0 : ℝ) • v) v) 0 :=
+      (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+        (F := fun (t : ℝ) (z : Rn n) => G (z + t • v))
+        (F' := fun (t : ℝ) (z : Rn n) => fderiv ℝ G (z + t • v) v)
+        (x₀ := 0) (ball_mem_nhds (0 : ℝ) one_pos)
+        (Eventually.of_forall fun t =>
+          (hG.continuous.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+        (by simpa using hG.continuous.integrable_of_hasCompactSupport hGc)
+        ((hG'.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+        (Eventually.of_forall hb) hbound (Eventually.of_forall hdiff)).2
+    have hd0 : HasDerivAt (fun t : ℝ => ∫ z, G (z + t • v)) 0 0 := by
+      have hconst : (fun t : ℝ => ∫ z, G (z + t • v)) = fun _ => ∫ z, G z :=
+        funext fun t => integral_add_right_eq_self G (t • v)
+      rw [hconst]
+      exact hasDerivAt_const _ _
+    simpa using hd.unique hd0
+  -- Integration by parts in the direction `v` against `Ψ`, applying `key` to `f Ψ`.
+  have hΨd : Differentiable ℝ Ψ := hΨ.differentiable one_ne_zero
+  have ibp : ∀ f : Rn n → ℝ, ContDiff ℝ 1 f → ∀ v : Rn n,
+      Integrable (fun z => fderiv ℝ f z v * Ψ z) ∧ Integrable (fun z => f z * fderiv ℝ Ψ z v) ∧
+        ∫ z, f z * fderiv ℝ Ψ z v = -∫ z, fderiv ℝ f z v * Ψ z := by
+    intro f hf v
+    have hfd : Differentiable ℝ f := hf.differentiable one_ne_zero
+    have h1 : Integrable (fun z => fderiv ℝ f z v * Ψ z) :=
+      (((hf.continuous_fderiv one_ne_zero).clm_apply continuous_const).mul
+        hΨ.continuous).integrable_of_hasCompactSupport hΨc.mul_left
+    have h2 : Integrable (fun z => f z * fderiv ℝ Ψ z v) :=
+      (hf.continuous.mul ((hΨ.continuous_fderiv one_ne_zero).clm_apply
+        continuous_const)).integrable_of_hasCompactSupport (hΨc.fderiv_apply ℝ v).mul_left
+    refine ⟨h1, h2, ?_⟩
+    have h3 := key (fun z => f z * Ψ z) (hf.mul hΨ) hΨc.mul_left v
+    have h4 : ∀ z, fderiv ℝ (fun z => f z * Ψ z) z v =
+        fderiv ℝ f z v * Ψ z + f z * fderiv ℝ Ψ z v := by
+      intro z
+      rw [show (fun z => f z * Ψ z) = f * Ψ from rfl, fderiv_mul (hfd z) (hΨd z)]
+      simp only [add_apply, smul_apply, smul_eq_mul]
+      ring
+    simp only [h4] at h3
+    rw [integral_add h1 h2] at h3
+    linarith
+  -- Second derivatives: `D(DH(·)[v])(z)[v] = D²H(z)[v, v]`.
+  have hH1 : ContDiff ℝ 1 (fderiv ℝ H) := hH.fderiv_right (by norm_num)
+  have hd2 : ∀ v z : Rn n,
+      fderiv ℝ (fun y => fderiv ℝ H y v) z v = iteratedFDeriv ℝ 2 H z ![v, v] := by
+    intro v z
+    rw [iteratedFDeriv_two_apply,
+      fderiv_clm_apply ((hH1.differentiable one_ne_zero) z) (differentiableAt_const v)]
+    simp
+  set e := EuclideanSpace.basisFun (Fin n) ℝ
+  -- `DH(z)[w(z)] = Σᵢ ∂ᵢH(z) ∂ᵢΨ(z)`, expanding `w(z)` in the standard orthonormal basis.
+  have hexp : ∀ z, fderiv ℝ H z (w z) = ∑ i, fderiv ℝ H z (e i) * fderiv ℝ Ψ z (e i) := by
+    intro z
+    conv_lhs => rw [← e.sum_repr' (w z)]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_smul, smul_eq_mul, hw, real_inner_comm (w z) (e i)]
+    ring
+  -- `ΔH(z) = Σᵢ D²H(z)[eᵢ, eᵢ]`.
+  have hlap : ∀ z, Laplacian.laplacian H z * Ψ z =
+      ∑ i, fderiv ℝ (fun y => fderiv ℝ H y (e i)) z (e i) * Ψ z := by
+    intro z
+    simp only [InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis H e, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun i _ => by rw [hd2]
+  have hfC : ∀ i, ContDiff ℝ 1 (fun y => fderiv ℝ H y (e i)) := fun i => hH1.clm_apply contDiff_const
+  calc ∫ z, fderiv ℝ H z (w z) = ∫ z, ∑ i, fderiv ℝ H z (e i) * fderiv ℝ Ψ z (e i) := by
+        simp only [hexp]
+    _ = ∑ i, ∫ z, fderiv ℝ H z (e i) * fderiv ℝ Ψ z (e i) :=
+        integral_finsetSum _ fun i _ => (ibp _ (hfC i) (e i)).2.1
+    _ = ∑ i, -∫ z, fderiv ℝ (fun y => fderiv ℝ H y (e i)) z (e i) * Ψ z :=
+        Finset.sum_congr rfl fun i _ => (ibp _ (hfC i) (e i)).2.2
+    _ = -∫ z, ∑ i, fderiv ℝ (fun y => fderiv ℝ H y (e i)) z (e i) * Ψ z := by
+        rw [integral_finsetSum _ fun i _ => (ibp _ (hfC i) (e i)).1, Finset.sum_neg_distrib]
+    _ = -∫ z, Laplacian.laplacian H z * Ψ z := by
+        simp only [hlap]
+/-- **Laplacian of an affinely rescaled `C²` function** (scaling step in the mean value property
+behind Weyl's lemma, used for Simon Ch. 5, Lemma 3.1, p. 114).  If `h : ℝⁿ → ℝ` is `C²`, then
+`Δ(y ↦ h(x₀ + σ y))(z) = σ² Δh(x₀ + σ z)` for all `x₀, z ∈ ℝⁿ` and `σ ∈ ℝ`.
+Proof: `y ↦ h(x₀ + σ y) = h₀ ∘ L` with `h₀ = h(x₀ + ·)` of class `C²` and `L = σ • id`.  Expanding
+both Laplacians in the standard orthonormal basis `(eᵢ)`, it suffices that
+`D²(h₀ ∘ L)(z)[eᵢ, eᵢ] = D²h₀(σ z)[σ eᵢ, σ eᵢ] = σ² D²h₀(σ z)[eᵢ, eᵢ]` (composition with a linear
+map on the right, then multilinearity) and `D²h₀(σ z) = D²h(x₀ + σ z)` (translation). -/
+theorem mvk_laplacian_comp_add_smul : ∀ (n : ℕ) (h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), ContDiff ℝ 2 h → ∀ z : Rn n, Laplacian.laplacian (fun y => h (x₀ + σ • y)) z = σ ^ 2 * Laplacian.laplacian h (x₀ + σ • z) := by
+  intro n h x₀ σ hh z
+  -- Step 1: `y ↦ h (x₀ + σ • y) = h₀ ∘ L`, where `h₀ y = h (x₀ + y)` is `C²` and `L = σ • id`.
+  have h₀ : ContDiff ℝ 2 (fun y : Rn n => h (x₀ + y)) := hh.comp (contDiff_const.add contDiff_id)
+  set L : Rn n →L[ℝ] Rn n := σ • ContinuousLinearMap.id ℝ (Rn n)
+  have hcomp : (fun y => h (x₀ + σ • y)) = (fun y => h (x₀ + y)) ∘ L := by
+    ext y
+    simp [L]
+  -- Step 2: expand both Laplacians in the standard orthonormal basis `eᵢ`.
+  set e := EuclideanSpace.basisFun (Fin n) ℝ
+  rw [InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis _ e,
+    InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis _ e, Finset.mul_sum, hcomp]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  -- Step 3: `D²(h₀ ∘ L)(z)[eᵢ, eᵢ] = D²h₀(σ z)[σ eᵢ, σ eᵢ] = σ² D²h₀(σ z)[eᵢ, eᵢ]`.
+  rw [L.iteratedFDeriv_comp_right h₀ z le_rfl, ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  have hsmul : (fun j => L (![e i, e i] j)) = fun j => σ • ![e i, e i] j := by
+    ext1 j
+    simp [L]
+  rw [hsmul, ContinuousMultilinearMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+    Fintype.card_fin, smul_eq_mul]
+  -- Step 4: `D²h₀(σ z) = D²h(x₀ + σ z)`.
+  rw [iteratedFDeriv_comp_add_left]
+  simp [L]
+/-- Rescaling and reflection of the convolution integral for an even kernel (used for the mean
+value kernel in Weyl's lemma, Simon Ch. 5, proof of Lemma 3.1): for `t > 0` and `ρ` even,
+`∫ t⁻ⁿ ρ(t⁻¹ y) h(x₀ − y) dy = ∫ ρ(z) h(x₀ + t z) dz`.  No integrability is needed: the Haar
+scaling formula, constant factors and the reflection `z ↦ −z` hold for the Bochner integral of an
+arbitrary function. -/
+theorem mvk_integral_rescale_reflect : ∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 < t → (∀ z : Rn n, ρ (-z) = ρ z) → ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y) = ∫ z, ρ z * h (x₀ + t • z) := by
+  intro n ρ h x₀ t ht hρ
+  -- The integrand is `f (t⁻¹ • y)` for `f z = t⁻ⁿ ρ(z) h(x₀ − t z)`, since `t • t⁻¹ • y = y`.
+  calc ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y)
+      = ∫ y, (fun z : Rn n => t⁻¹ ^ n * (ρ z * h (x₀ - t • z))) (t⁻¹ • y) := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+        simp only [smul_inv_smul₀ ht.ne', mul_assoc]
+    -- Scaling of Lebesgue measure: `∫ f (t⁻¹ • y) dy = tⁿ ∫ f`, since `finrank ℝ ℝⁿ = n`.
+    _ = t ^ n • ∫ z, t⁻¹ ^ n * (ρ z * h (x₀ - t • z)) := by
+        have hs := Measure.integral_comp_inv_smul_of_nonneg (volume : Measure (Rn n))
+          (fun z : Rn n => t⁻¹ ^ n * (ρ z * h (x₀ - t • z))) ht.le
+        rw [finrank_euclideanSpace_fin] at hs
+        exact hs
+    -- Pull out the constant `t⁻ⁿ` and cancel `tⁿ t⁻ⁿ = 1`.
+    _ = ∫ z, ρ z * h (x₀ - t • z) := by
+        rw [integral_const_mul, smul_eq_mul, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ ht.ne',
+          one_pow, one_mul]
+    -- `ρ` is even and `t • -z = -(t • z)`.
+    _ = ∫ z, ρ (-z) * h (x₀ + t • -z) := by
+        congr 1
+        ext z
+        rw [hρ, smul_neg, sub_eq_add_neg]
+    -- Lebesgue measure is invariant under `z ↦ -z`.
+    _ = ∫ z, ρ z * h (x₀ + t • z) := integral_neg_eq_self (fun z => ρ z * h (x₀ + t • z)) volume
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), mean value step of Weyl's lemma: integration by parts
+of the radial derivative against the kernel potential.  If `h` is `C²`, `σ ≠ 0`, and the `C¹`
+function `Ψ` vanishes for `‖z‖ ≥ 1` and has `DΨ(z)[v] = ρ(z) ⟨z, v⟩`, then
+`∫ ρ(z) Dh(x₀ + σ z)[z] dz = -σ ∫ Δh(x₀ + σ z) Ψ(z) dz`.  For `H(y) = h(x₀ + σ y)` the chain rule
+gives `ρ(z) Dh(x₀ + σ z)[z] = σ⁻¹ DH(z)[ρ(z) z]`.  Green's first identity
+(`mvk_integral_fderiv_grad_eq_neg_laplacian`, applied to the compactly supported `Ψ` with
+gradient `ρ(z) z`) gives `∫ DH(z)[ρ(z) z] dz = -∫ ΔH(z) Ψ(z) dz`, and
+`ΔH(z) = σ² Δh(x₀ + σ z)` (`mvk_laplacian_comp_add_smul`). -/
+theorem mvk_integral_radial_fderiv_eq_neg_laplacian : ∀ (n : ℕ) (ρ Ψ h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), σ ≠ 0 → ContDiff ℝ 2 h → ContDiff ℝ 1 Ψ → (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) → (∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v) → ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = -σ * ∫ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z := by
+  intro n ρ Ψ h x₀ σ hσ hh hΨ hΨ1 hdΨ
+  -- Step 1: `H(y) = h(x₀ + σ y)` is `C²`, with `DH(z)[v] = σ Dh(x₀ + σ z)[v]`.
+  have hH : ContDiff ℝ 2 (fun y : Rn n => h (x₀ + σ • y)) :=
+    hh.comp (contDiff_const.add (contDiff_id.const_smul σ))
+  have hdH : ∀ z v : Rn n,
+      fderiv ℝ (fun y => h (x₀ + σ • y)) z v = σ * fderiv ℝ h (x₀ + σ • z) v := by
+    intro z v
+    have hA : HasFDerivAt (fun y : Rn n => x₀ + σ • y) (σ • ContinuousLinearMap.id ℝ (Rn n)) z :=
+      ((hasFDerivAt_id z).const_smul σ).const_add x₀
+    have hc : HasFDerivAt (fun y => h (x₀ + σ • y))
+        ((fderiv ℝ h (x₀ + σ • z)).comp (σ • ContinuousLinearMap.id ℝ (Rn n))) z :=
+      (hh.differentiable (by norm_num) (x₀ + σ • z)).hasFDerivAt.comp z hA
+    rw [hc.fderiv]
+    simp
+  -- Step 2: `Ψ` vanishes off the closed unit ball, so it has compact support.
+  have hΨc : HasCompactSupport Ψ :=
+    HasCompactSupport.intro (isCompact_closedBall 0 1) fun z hz =>
+      hΨ1 z (le_of_lt (by simpa using hz))
+  -- Step 3: `w(z) = ρ(z) z` is the gradient of `Ψ`.
+  have hw : ∀ z v : Rn n, fderiv ℝ Ψ z v = inner ℝ (ρ z • z) v := fun z v => by
+    rw [hdΨ, real_inner_smul_left]
+  -- Step 4: `ρ(z) Dh(x₀ + σ z)[z] = σ⁻¹ DH(z)[w(z)]`.
+  have hpt : ∀ z, ρ z * fderiv ℝ h (x₀ + σ • z) z =
+      σ⁻¹ * fderiv ℝ (fun y => h (x₀ + σ • y)) z (ρ z • z) := fun z => by
+    rw [hdH, map_smul, smul_eq_mul, inv_mul_cancel_left₀ hσ]
+  -- Steps 5–6: Green's first identity for `H`, `Ψ`, `w`, and `ΔH(z) = σ² Δh(x₀ + σ z)`.
+  have hG := Submission.mvk_integral_fderiv_grad_eq_neg_laplacian n
+    (fun y => h (x₀ + σ • y)) Ψ (fun z => ρ z • z) hH hΨ hΨc hw
+  have hL := Submission.mvk_laplacian_comp_add_smul n h x₀ σ hh
+  -- Step 7: pull out the constants.
+  calc ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z
+      = ∫ z, σ⁻¹ * fderiv ℝ (fun y => h (x₀ + σ • y)) z (ρ z • z) :=
+        integral_congr_ae (Eventually.of_forall hpt)
+    _ = σ⁻¹ * -∫ z, Laplacian.laplacian (fun y => h (x₀ + σ • y)) z * Ψ z := by
+        rw [integral_const_mul, hG]
+    _ = σ⁻¹ * -∫ z, σ ^ 2 * (Laplacian.laplacian h (x₀ + σ • z) * Ψ z) := by
+        simp only [hL, mul_assoc]
+    _ = -σ * ∫ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z := by
+        rw [integral_const_mul]
+        field_simp
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), mean value step of Weyl's lemma: there is a smooth
+kernel `ρ` vanishing off the open unit ball with `∫ t⁻ⁿ ρ(t⁻¹ y) h(x₀ - y) dy = h(x₀)` for every
+`t > 0` and every `C²` function `h` with `Δh = 0` on `B_t(x₀)`.  Take `ρ` (even, `∫ ρ = 1`) and
+its potential `Ψ` (`DΨ(z)[v] = ρ(z) ⟨z, v⟩`, `Ψ = 0` off the unit ball); rescaling and reflecting
+turn the left side into `∫ ρ(z) h(x₀ + t z) dz`, the fundamental theorem of calculus along rays
+and Fubini give `h(x₀) + ∫₀ᵗ I(σ) dσ` with `I(σ) = ∫ ρ(z) Dh(x₀ + σ z)[z] dz`, and integration by
+parts against `Ψ` gives `I(σ) = -σ ∫ Δh(x₀ + σ z) Ψ(z) dz = 0` for `0 < σ ≤ t`. -/
+theorem exists_smooth_mean_value_kernel : ∀ n : ℕ, 1 ≤ n → ∃ ρ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) ∧ ∀ (h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 < t → ContDiff ℝ 2 h → (∀ y ∈ closedBall x₀ t, Laplacian.laplacian h y = 0) → ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y) = h x₀ := by
+  intro n _
+  -- Step 1: the kernel `ρ` and its potential `Ψ`.
+  obtain ⟨ρ, Ψ, hρ, hΨ, hρ1, hΨ1, hρneg, hρint, hdΨ⟩ := Submission.mvk_exists_kernel_potential n
+  refine ⟨ρ, hρ, hρ1, fun h x₀ t ht hh hΔ => ?_⟩
+  -- Step 2: `I(σ) = -σ ∫ Δh(x₀ + σ z) Ψ(z) dz = 0` for `0 < σ ≤ t`, since `Ψ(z) = 0` for
+  -- `‖z‖ ≥ 1` and `x₀ + σ z ∈ B_t(x₀)` for `‖z‖ < 1`.
+  have hI : ∀ σ ∈ Ioc (0 : ℝ) t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = 0 := by
+    rintro σ ⟨hσ, hσt⟩
+    rw [Submission.mvk_integral_radial_fderiv_eq_neg_laplacian n ρ Ψ h x₀ σ hσ.ne' hh
+      (hΨ.of_le (by exact_mod_cast le_top)) hΨ1 hdΨ]
+    have hzero : ∀ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z = 0 := by
+      intro z
+      rcases le_or_gt 1 ‖z‖ with hz | hz
+      · rw [hΨ1 z hz, mul_zero]
+      · have hmem : x₀ + σ • z ∈ closedBall x₀ t := by
+          rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul,
+            Real.norm_of_nonneg hσ.le]
+          nlinarith [norm_nonneg z]
+        rw [hΔ _ hmem, zero_mul]
+    simp only [hzero, integral_zero, mul_zero]
+  -- Step 3: so `∫₀ᵗ I(σ) dσ = 0`, the endpoint `σ = 0` being outside `(0, t]`.
+  have hint : ∫ σ in (0 : ℝ)..t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = 0 :=
+    intervalIntegral.integral_zero_ae (Eventually.of_forall fun σ hσ =>
+      hI σ (by rwa [uIoc_of_le ht.le] at hσ))
+  -- Step 4: rescale and reflect, then integrate along rays:
+  -- `∫ ρ(z) h(x₀ + t z) dz = (∫ ρ) h(x₀) + ∫₀ᵗ I(σ) dσ = h(x₀)`.
+  rw [Submission.mvk_integral_rescale_reflect n ρ h x₀ t ht hρneg,
+    Submission.mvk_integral_ray_fubini n ρ h x₀ t ht.le hρ.continuous hρ1
+      (hh.of_le (by norm_num)), hρint, one_mul, hint, add_zero]
 
 end Submission
 
