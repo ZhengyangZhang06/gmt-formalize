@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "39e20c0fdddb91e742197766066b6830bcd9b8c5555c77a34aeb7e6d0a848e85",
+  "git_delta": {
+    "base_commit": "edf6403e8f3705cbe1236f62087253a7ffede563",
+    "candidate_commit": "9f2a9c42fd07453d905e07663c2ba7a054df4679",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_diag_rescaled_radon_tendsto",
+    "diff_sha256": "5c003f8ba64bc9aa7ee4adf881291300ae3e16cf35a75bd0005785d7b4fa6145",
+    "source_sha256": "53a00bc4288114dc926dbbe068be2e2c1c09d09ff4b882d8afb6fe1170bb8004",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_diag_rescaled_radon_tendsto",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ) (F : C_c(Euclidean N × Grassmannian N n, ℝ)), Varifold.RadonConverges Vi V → 0 < t → (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Tendsto (fun i ↦ ∫ z, F z ∂(rescaledMeasure (Vi i) ξ t)) atTop (𝓝 (∫ z, F z ∂(rescaledMeasure V ξ t)))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
