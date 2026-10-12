@@ -458,6 +458,53 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- `det(I + G) > 0` for the Gram matrix `G = (⟨P eₐ, P e_b⟩)_{a,b}` of a linear map
+`P : ℝⁿ → ℝ^ℓ`.  Since `ξ ⬝ᵥ G ξ = ‖P (Σₐ ξₐ eₐ)‖² ≥ 0`, the matrix `I + s G` has trivial kernel
+for every `s ≥ 0` (`Matrix.exists_mulVec_eq_zero_iff`), so the continuous function
+`s ↦ det(I + s G)` does not vanish on `[0, 1]`.  It equals `1` at `s = 0`, hence is positive at
+`s = 1` by the intermediate value theorem (`intermediate_value_Icc'`). -/
+theorem dohr_eb_ail_gram_det_pos : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, 0 < Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) := by
+  intro n ℓ P
+  set G : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun a b : Fin n =>
+    inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))) with hG
+  have hquad : ∀ ξ : Fin n → ℝ, dotProduct ξ (G.mulVec ξ) =
+      ‖P (∑ a, ξ a • EuclideanSpace.single a (1 : ℝ))‖ ^ 2 := by
+    intro ξ
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [map_sum, map_smul, inner_sum, sum_inner, inner_smul_left, inner_smul_right,
+      dotProduct, Matrix.mulVec, Matrix.of_apply, Finset.mul_sum, conj_trivial, hG]
+    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+    rw [real_inner_comm]
+    ring
+  have hne : ∀ s : ℝ, 0 ≤ s → Matrix.det (1 + s • G) ≠ 0 := by
+    intro s hs hdet
+    obtain ⟨ξ, hξ, hker⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdet
+    have h0 : dotProduct ξ ((1 + s • G).mulVec ξ) = 0 := by rw [hker, dotProduct_zero]
+    rw [Matrix.add_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec, dotProduct_add, dotProduct_smul,
+      smul_eq_mul, hquad] at h0
+    have hsq : 0 ≤ dotProduct ξ ξ := Finset.sum_nonneg fun i _ => mul_self_nonneg (ξ i)
+    have hξξ : dotProduct ξ ξ = 0 := by
+      linarith [mul_nonneg hs (sq_nonneg ‖P (∑ a, ξ a • EuclideanSpace.single a (1 : ℝ))‖)]
+    apply hξ
+    funext i
+    exact mul_self_eq_zero.mp ((Finset.sum_eq_zero_iff_of_nonneg
+      fun j _ => mul_self_nonneg (ξ j)).mp hξξ i (Finset.mem_univ i))
+  have hcont : Continuous fun s : ℝ => Matrix.det (1 + s • G) :=
+    (continuous_const.add (continuous_id.smul continuous_const)).matrix_det
+  by_contra hneg
+  have h1 : Matrix.det (1 + (1 : ℝ) • G) ≤ 0 := by
+    rw [one_smul]
+    exact not_lt.mp hneg
+  have h0 : (0 : ℝ) ≤ Matrix.det (1 + (0 : ℝ) • G) := by
+    rw [zero_smul, add_zero, Matrix.det_one]
+    exact zero_le_one
+  obtain ⟨s, ⟨hs0, -⟩, hs⟩ := intermediate_value_Icc' zero_le_one hcont.continuousOn ⟨h1, h0⟩
+  exact hne s hs0 hs
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
