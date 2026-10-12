@@ -359,6 +359,85 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Integrability of the integrands of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
+rectifiable triple `(M, θ, ξ)` in `U`: (a) `x ↦ θ(x) ⟨b, ξ(x)⟩` is `Hᵏ`-integrable on `M ∩ K` for
+every compact `K ⊆ U` and `k`-covector `b`; (b) `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`
+for every continuous compactly supported `ω` with `spt ω ⊆ U`.  Since `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ`
+orthonormal, `|⟨α, ξ⟩| ≤ ‖α‖` `Hᵏ⌞M`-a.e.; `θ` is integrable on `M ∩ K`, and the integrand of
+(b) vanishes on `M \ spt ω`. -/
+theorem Submission.ltg_tau_integrable : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ (K : Set (Eucl P)) (b : Covector (Eucl P) k), IsCompact K → K ⊆ U → IntegrableOn (fun x => θ x * ξ x b) (M ∩ K) (μHE[k] : Measure (Eucl P))) ∧ ∀ ω : Eucl P → Covector (Eucl P) k, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → IntegrableOn (fun x => θ x * ξ x (ω x)) M (μHE[k] : Measure (Eucl P)) := by
+  intro P k U M θ ξ hT
+  -- Step 1: for `Hᵏ⌞M`-a.e. `x`, `|ξ(x)(α)| ≤ ‖α‖` for every covector `α`
+  -- (`|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`; the empty product for `k = 0`).
+  have hunit : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) k, ‖ξ x α‖ ≤ ‖α‖ := by
+    filter_upwards [hT.orients] with x hx α
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hs : ‖simpleNVector τ α‖ ≤ ‖α‖ :=
+      calc ‖simpleNVector τ α‖ = ‖α τ‖ := rfl
+        _ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+        _ = ‖α‖ := by simp [hτ.norm_eq_one]
+    rcases hξ with h | h
+    · rw [h]; exact hs
+    · rw [h, neg_apply, norm_neg]; exact hs
+  -- Step 2: `x ↦ ξ(x)(ω(x))` is a.e.-strongly measurable for `Hᵏ⌞M` whenever `ω` is
+  -- (continuous evaluation `(w, α) ↦ w(α)` composed with `(ξ, ω)`).
+  have hmeas : ∀ ω : Eucl P → Covector (Eucl P) k,
+      AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      AEStronglyMeasurable (fun x => ξ x (ω x)) ((μHE[k] : Measure (Eucl P)).restrict M) := by
+    intro ω hω
+    have hev : Continuous fun p : NVector (Eucl P) k × Covector (Eucl P) k => p.1 p.2 :=
+      continuous_fst.clm_apply continuous_snd
+    exact hev.comp_aestronglyMeasurable (hT.aestronglyMeasurable.prodMk hω)
+  -- Steps 3–4: for compact `K ⊆ U` and `‖ω‖ ≤ C`, `θ` is integrable on `M ∩ K` and
+  -- `ξ(·)(ω(·))` is measurable and a.e. bounded by `C` there, so the product is integrable.
+  have hK : ∀ (K : Set (Eucl P)) (ω : Eucl P → Covector (Eucl P) k) (C : ℝ), IsCompact K →
+      K ⊆ U → AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      (∀ x, ‖ω x‖ ≤ C) →
+      IntegrableOn (fun x => θ x * ξ x (ω x)) (M ∩ K) (μHE[k] : Measure (Eucl P)) := by
+    intro K ω C hKc hKU hω hC
+    have hle : (μHE[k] : Measure (Eucl P)).restrict (M ∩ K) ≤
+        (μHE[k] : Measure (Eucl P)).restrict M :=
+      Measure.restrict_mono Set.inter_subset_left le_rfl
+    have hθ : Integrable θ ((μHE[k] : Measure (Eucl P)).restrict (M ∩ K)) :=
+      hT.integrableOn K hKc hKU
+    refine hθ.mul_bdd (c := C) ((hmeas ω hω).mono_measure hle) ?_
+    filter_upwards [ae_mono hle hunit] with x hx
+    exact (hx (ω x)).trans (hC x)
+  -- Part (a): the constant field `b`, bounded by `‖b‖`.
+  refine ⟨fun K b hKc hKU => hK K (fun _ => b) ‖b‖ hKc hKU aestronglyMeasurable_const
+    (fun _ => le_rfl), ?_⟩
+  -- Part (b): integrable on `M ∩ spt ω` (Step 4) and zero on `M \ spt ω` (Step 5), with `M`
+  -- null-measurable.
+  intro ω hωc hωs hωU
+  obtain ⟨C, hC⟩ := hωc.bounded_above_of_compact_support hωs
+  refine (hK (tsupport ω) ω C hωs hωU hωc.aestronglyMeasurable hC).of_ae_sdiff_eq_zero
+    hT.nullMeasurableSet (Filter.Eventually.of_forall fun x hx => ?_)
+  have hx' : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, h⟩
+  rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
+
+/-- **`(Hᵏ⌞M, θξ)` represents `τ(M, θ, ξ)` as in (2.7) (Simon Ch. 6, 3.1, p. 146).**  If
+`X(ω) = τ(M, θ, ξ)(ω)` for every `ω ∈ 𝒟ᵏ(U)` and `(M, θ, ξ)` is a rectifiable triple in `U`, then
+`⟨ω, θξ⟩` is `Hᵏ⌞M`-integrable and `X(ω) = ∫ ⟨ω, θξ⟩ d(Hᵏ⌞M)`.  Pointwise
+`⟨ω(x), θ(x)ξ(x)⟩ = θ(x)⟨ω(x), ξ(x)⟩`, which is integrable on `M` by `ltg_tau_integrable` since a
+test form is continuous with compact support in `U`. -/
+theorem Submission.iwl_imc_tau_measure_representation : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (X : GeometricCurrentOn U k), IsRectifiableTriple U k M θ ξ → (∀ ω : TestFormOn U k, X ω = tauAction k M θ ξ ω) → IsMeasureRepresentation X ((μHE[k] : Measure (Eucl P)).restrict M) (fun x => θ x • ξ x) := by
+  intro P k U M θ ξ X hT hX ω
+  -- Step 3: `⟨ω(x), θ(x)ξ(x)⟩ = θ(x)⟨ω(x), ξ(x)⟩` (scalar multiplication is pointwise).
+  have hfun : (fun x => (θ x • ξ x) ((ω : DifferentialForm (Eucl P) k) x)) =
+      fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x) := by
+    funext x
+    simp only [smul_apply, smul_eq_mul]
+  refine ⟨?_, ?_⟩
+  -- Steps 1–2: `ω` is continuous with compact support in `U`, so `ltg_tau_integrable` applies.
+  · show Integrable (fun x => (θ x • ξ x) ((ω : DifferentialForm (Eucl P) k) x)) _
+    rw [hfun]
+    exact (Submission.ltg_tau_integrable P k U M θ ξ hT).2 ω ω.2.1.1.continuous ω.2.1.2 ω.2.2
+  -- Step 4: `X(ω) = τ(M, θ, ξ)(ω) = ∫_M θ⟨ω, ξ⟩ dHᵏ`.
+  · show X ω = ∫ x, (θ x • ξ x) ((ω : DifferentialForm (Eucl P) k) x) ∂_
+    rw [hfun]
+    exact hX ω
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
