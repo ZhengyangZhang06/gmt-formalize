@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61fba1f0825c87d974781091754324052bf7845b60266d48271e11b9f697f95b",
+  "git_delta": {
+    "base_commit": "9b3a62af300b37ae0290b0a0c44915b39f201542",
+    "candidate_commit": "4a31b0ba5894ad4da8df69cd454e0a37058768e8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_aa_height_bounds_of_net",
+    "diff_sha256": "1fc7183627b465d5ca77abd59b139a6521e3470984d6ad2b948c49477e0effca",
+    "source_sha256": "a2ebff29a30498a338f38188f06865834e8a33e9c91cf686725a4f178216e410",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_aa_height_bounds_of_net",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (S : Submodule ℝ (Euclid P)) (F : Finset (Euclid P)) (ξ x₀ : Euclid P) (r s L : ℝ), (∀ x ∈ μ.support ∩ closedBall ξ r, ∃ y ∈ F, dist x y ≤ s) → (∀ y ∈ F, ‖(y - x₀) - S.starProjection (y - x₀)‖ ≤ L) → dist x₀ ξ ≤ s → (∀ x ∈ μ.support ∩ closedBall ξ r, ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ 2 * s + L) ∧ ∫⁻ x in closedBall ξ r, ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂μ ≤ ENNReal.ofReal ((2 * s + L) ^ 2) * μ (closedBall ξ r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
