@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6edbf95da0582310c3d2c577da8297e0758e24c8a209b394268b966175c995e2",
+  "git_delta": {
+    "base_commit": "e2bdddaf6f9927098472265a94cec43c0968ffa5",
+    "candidate_commit": "8c7d96461d6fcc698faf88846ab8957220ce3e70",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "8c58d1ad2430d01967dd2ea526c3f66f951104381e30e30900719b11246206eb",
+    "source_sha256": "272f536e5530aa89738ee14e194ebf82f59ccf2cea096183e28e6bae8b8a0f19",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tae_hasDensity_of_weightedApproxTangent",
+      "statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), 1 ≤ n → IsOpen U → x ∈ V.carrier → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → V.HasDensity x (V.mult x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
