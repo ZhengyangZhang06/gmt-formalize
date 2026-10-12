@@ -1539,6 +1539,615 @@ theorem Submission.simon_submanifold_continuousOn_of_chart_continuousOn : ∀ (n
     by_contra hxU₀
     exact hzC ⟨x, ⟨⟨hxV, ball_subset_closedBall hzB⟩, hxU₀⟩, rfl⟩
   exact hU₀O hxU₀
+/-- **Derivative of the Gram map.** If `ψ : ℝⁿ → ℝᴺ` is `C²` on an open `V`, then
+`G(x) = Dψ(x)* ∘ Dψ(x)` is `C¹` on `V` and `DG(x)[v] = Dψ(x)* ∘ D²ψ(x)[v] + (D²ψ(x)[v])* ∘ Dψ(x)`,
+with `L*` the adjoint. Over `ℝ` the adjoint is a continuous linear map `adjR`, so
+`x ↦ Dψ(x)* = adjR ∘ Dψ` is `C¹` on `V` with derivative `adjR ∘ D²ψ(x)` (chain rule). Both claims
+then follow from the regularity (`ContDiffOn.clm_comp`) and the product rule
+(`HasFDerivAt.clm_comp`) of the continuous bilinear composition `(B, C) ↦ B ∘L C`. -/
+theorem Submission.adjoint_comp_fderiv_contDiffOn_fderiv_eq_add : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → ContDiffOn ℝ 1 (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) V ∧ ∀ x ∈ V, ∀ v : Rn n, fderiv ℝ (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) x v = ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x v + ContinuousLinearMap.adjoint (fderiv ℝ (fderiv ℝ ψ) x v) ∘L fderiv ℝ ψ x := by
+  intro n N V ψ hV hψ
+  -- Step 1: the adjoint over `ℝ` as a continuous `ℝ`-linear map `adjR`; `adjR L = L*` by `rfl`.
+  let adjR : (Rn n →L[ℝ] Rn N) →L[ℝ] (Rn N →L[ℝ] Rn n) :=
+    (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn n) (F := Rn N)).toContinuousLinearEquiv.toContinuousLinearMap
+  -- Step 2: `A = Dψ` is `C¹` on `V` (`1 + 1 ≤ 2`).
+  have hA : ContDiffOn ℝ 1 (fderiv ℝ ψ) V := hψ.fderiv_of_isOpen hV (by norm_num)
+  -- Step 3: `x ↦ A(x)* = adjR ∘ A` is `C¹` on `V`.
+  have hAd : ContDiffOn ℝ 1 (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x)) V :=
+    adjR.contDiff.comp_contDiffOn hA
+  -- Step 4 (first conjunct): `G = A* ∘L A` is `C¹` on `V`.
+  refine ⟨hAd.clm_comp hA, fun x hx v ↦ ?_⟩
+  -- Step 2 at `x ∈ V`: `A` has derivative `D²ψ(x)` at `x`, since `V` is a neighbourhood of `x`.
+  have hAx : HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) x) x :=
+    ((hA.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hx)).hasFDerivAt
+  -- Step 3 at `x` (chain rule): `x ↦ A(x)*` has derivative `adjR ∘L D²ψ(x)` at `x`.
+  have hAdx : HasFDerivAt (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x))
+      (adjR ∘L fderiv ℝ (fderiv ℝ ψ) x) x :=
+    adjR.hasFDerivAt.comp x hAx
+  -- Step 5 (second conjunct): by the product rule and uniqueness of the derivative,
+  -- `DG(x)[v] = A(x)* ∘L D²ψ(x)[v] + adjR (D²ψ(x)[v]) ∘L A(x)`, and `adjR L = L*` by `rfl`.
+  rw [(hAdx.clm_comp hAx).fderiv]
+  rfl
+/-- **Trace swap under a symmetric weight.** For `A, S : ℝⁿ → ℝᴺ` and a symmetric `P : ℝⁿ → ℝⁿ`
+(`⟨P v, w⟩ = ⟨v, P w⟩`), `tr(P ∘ S* ∘ A) = tr(P ∘ A* ∘ S)`, with `L*` the adjoint. By cyclicity,
+`tr(P ∘ A* ∘ S) = tr((A* ∘ S) ∘ P)`. Both traces are then expanded in the standard orthonormal
+basis `(e_l)` of `ℝⁿ`, and the terms agree:
+`⟨e, P S* A e⟩ = ⟨P e, S* A e⟩ = ⟨S P e, A e⟩ = ⟨A* S P e, e⟩ = ⟨e, A* S P e⟩`. -/
+theorem Submission.trace_comp_adjoint_comp_swap_of_symm : ∀ (n N : ℕ) (A S : Rn n →L[ℝ] Rn N) (P : Rn n →L[ℝ] Rn n), (∀ v w : Rn n, inner ℝ (P v) w = inner ℝ v (P w)) → LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint S ∘L A).toLinearMap = LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint A ∘L S).toLinearMap := by
+  intro n N A S P hP
+  -- Step 1 (cyclicity): `tr(P ∘ A* ∘ S) = tr((A* ∘ S) ∘ P)`.
+  have hcyc : LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint A ∘L S).toLinearMap =
+      LinearMap.trace ℝ (Rn n)
+        ((ContinuousLinearMap.adjoint A ∘L S).toLinearMap ∘ₗ P.toLinearMap) :=
+    LinearMap.trace_comp_comm' (ContinuousLinearMap.adjoint A ∘L S).toLinearMap P.toLinearMap
+  -- Step 2: expand both traces in the standard orthonormal basis `(e_l)` and compare termwise.
+  let e := EuclideanSpace.basisFun (Fin n) ℝ
+  rw [hcyc, LinearMap.trace_eq_sum_inner _ e, LinearMap.trace_eq_sum_inner _ e]
+  refine Finset.sum_congr rfl fun l _ ↦ ?_
+  -- Step 3: `⟨e, P S* A e⟩ = ⟨P e, S* A e⟩ = ⟨S P e, A e⟩ = ⟨A* S P e, e⟩ = ⟨e, A* S P e⟩`.
+  calc inner ℝ (e l) ((P ∘L ContinuousLinearMap.adjoint S ∘L A).toLinearMap (e l))
+      = inner ℝ (e l) (P (ContinuousLinearMap.adjoint S (A (e l)))) := rfl
+    _ = inner ℝ (P (e l)) (ContinuousLinearMap.adjoint S (A (e l))) := (hP _ _).symm
+    _ = inner ℝ (S (P (e l))) (A (e l)) := ContinuousLinearMap.adjoint_inner_right S _ _
+    _ = inner ℝ (ContinuousLinearMap.adjoint A (S (P (e l)))) (e l) :=
+      (ContinuousLinearMap.adjoint_inner_left A _ _).symm
+    _ = inner ℝ (e l) (ContinuousLinearMap.adjoint A (S (P (e l)))) := real_inner_comm _ _
+    _ = inner ℝ (e l)
+        (((ContinuousLinearMap.adjoint A ∘L S).toLinearMap ∘ₗ P.toLinearMap) (e l)) := rfl
+/-- **Gram operator of an injective linear map and the range projection.** For an injective
+`A : ℝⁿ →L[ℝ] ℝᴺ` with `K = range A`, the Gram operator `G = A* ∘L A` is a unit of `ℝⁿ →L[ℝ] ℝⁿ`,
+its ring inverse `G⁻¹` is symmetric, and `K.starProjection = A ∘L G⁻¹ ∘L A*`. `G` is injective
+because `ker (A* ∘L A) = ker A` (`ContinuousLinearMap.adjoint_comp_self_injective_iff`), so in
+finite dimension it is a continuous linear automorphism. Then
+`⟪G⁻¹v, w⟫ = ⟪G⁻¹v, G G⁻¹w⟫ = ⟪A G⁻¹v, A G⁻¹w⟫ = ⟪G G⁻¹v, G⁻¹w⟫ = ⟪v, G⁻¹w⟫`, and
+`A G⁻¹ A* z ∈ range A` with `⟪z - A G⁻¹ A* z, A c⟫ = ⟪A* z - G G⁻¹ A* z, c⟫ = 0`, which
+characterizes the orthogonal projection (`Submodule.eq_starProjection_of_mem_of_inner_eq_zero`). -/
+theorem Submission.gram_inverse_range_starProjection : ∀ (n N : ℕ) (K : Submodule ℝ (Rn N)) (A : Rn n →L[ℝ] Rn N), Function.Injective A → K = LinearMap.range A.toLinearMap → IsUnit (ContinuousLinearMap.adjoint A ∘L A) ∧ (∀ v w : Rn n, inner ℝ (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) v) w = inner ℝ v (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) w)) ∧ K.starProjection = A ∘L Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A := by
+  intro n N K A hA hK
+  subst hK
+  set G := ContinuousLinearMap.adjoint A ∘L A
+  -- Step 2: `G` is injective, since `ker (A* ∘L A) = ker A = ⊥`.
+  have hGinj : Function.Injective G := (ContinuousLinearMap.adjoint_comp_self_injective_iff A).2 hA
+  -- Step 3: an injective endomorphism of `ℝⁿ` is a continuous linear automorphism, so `G` is a unit.
+  have hunit : IsUnit G := by
+    let e : Rn n ≃L[ℝ] Rn n :=
+      (LinearEquiv.ofInjectiveEndo (G : Rn n →ₗ[ℝ] Rn n) hGinj).toContinuousLinearEquiv
+    exact ⟨e.toUnit, by ext x; rfl⟩
+  have hGG : ∀ x, G (Ring.inverse G x) = x := fun x => by
+    rw [← mul_apply_eq_comp, Ring.mul_inverse_cancel G hunit, one_apply_eq_self]
+  -- Step 1: `⟪G x, y⟫ = ⟪A x, A y⟫ = ⟪x, G y⟫`.
+  have hl : ∀ x y, inner ℝ (G x) y = inner ℝ (A x) (A y) := fun x y =>
+    ContinuousLinearMap.adjoint_inner_left A y (A x)
+  have hr : ∀ x y, inner ℝ x (G y) = inner ℝ (A x) (A y) := fun x y =>
+    ContinuousLinearMap.adjoint_inner_right A x (A y)
+  refine ⟨hunit, fun v w => ?_, ?_⟩
+  -- Step 4: `G⁻¹` is symmetric.
+  · calc inner ℝ (Ring.inverse G v) w = inner ℝ (Ring.inverse G v) (G (Ring.inverse G w)) := by
+          rw [hGG]
+      _ = inner ℝ (G (Ring.inverse G v)) (Ring.inverse G w) := by rw [hl, hr]
+      _ = inner ℝ v (Ring.inverse G w) := by rw [hGG]
+  -- Step 7: `A G⁻¹ A* z ∈ range A` and `z - A G⁻¹ A* z` is orthogonal to `range A`.
+  · ext1 z
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (LinearMap.mem_range_self _ _) ?_
+    rintro _ ⟨c, rfl⟩
+    rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left, map_sub]
+    have h : ContinuousLinearMap.adjoint A ((A ∘L Ring.inverse G ∘L ContinuousLinearMap.adjoint A) z) =
+        ContinuousLinearMap.adjoint A z := hGG _
+    rw [h, sub_self, inner_zero_left]
+
+/-- **Tangential divergence in a chart.** If `T_y M = range A` for an injective `A : ℝⁿ → ℝᴺ`, then
+`div_M Y(y) = tr(G⁻¹ A* L A)`, a trace on `ℝⁿ`, where `L = DY(y)`, `A*` is the adjoint and `G = A* A`;
+no differentiability of `Y` is needed. Write `T = T_y M`, `q : ℝᴺ → T` for the orthogonal projection
+and `ι : T → ℝᴺ` for the inclusion. In the orthonormal basis `τᵢ` of `T` defining the frame,
+`tr_T(q L ι) = ∑ᵢ ⟨τᵢ, q L τᵢ⟩ = ∑ᵢ ⟨τᵢ, L τᵢ⟩ = div_M Y(y)`, and cyclicity turns this into
+`tr_{ℝᴺ}(L P_T)` with `P_T = ι q`. The Gram projection formula `P_T = A G⁻¹ A*` and cyclicity once
+more give `tr_{ℝᴺ}((L A)(G⁻¹ A*)) = tr_{ℝⁿ}((G⁻¹ A*)(L A))`. -/
+theorem Submission.chart_tangentialDivergence_eq_gram_trace : ∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (Y : Rn N → Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → tangentialDivergence M Y y = LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A ∘L fderiv ℝ Y y ∘L A).toLinearMap := by
+  intro n N M y A Y hA hT
+  -- Steps 1–3: `div_M Y(y) = tr_{ℝᴺ}(L ∘ P_T)` with `T = T_y M`, `L = DY(y)` and `P_T = ι ∘ q`.
+  have hdiv : tangentialDivergence M Y y = LinearMap.trace ℝ (Rn N)
+      (fderiv ℝ Y y ∘L (tangentSpace M y).starProjection).toLinearMap := by
+    -- Steps 1–2: expand `tr_T(q ∘ L ∘ ι)` in the orthonormal basis `b` of `T` that defines the
+    -- frame `τᵢ = b i`; since `b i ∈ T`, `⟨b i, q (L (b i))⟩_T = ⟨b i, L (b i)⟩`.
+    have hsum : LinearMap.trace ℝ (tangentSpace M y)
+        ((tangentSpace M y).orthogonalProjectionOnto.toLinearMap ∘ₗ
+          ((fderiv ℝ Y y).toLinearMap ∘ₗ (tangentSpace M y).subtype)) =
+        tangentialDivergence M Y y := by
+      unfold tangentialDivergence
+      rw [LinearMap.trace_eq_sum_inner _ (stdOrthonormalBasis ℝ (tangentSpace M y))]
+      exact Finset.sum_congr rfl fun i _ ↦
+        Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left _ _
+    -- Step 3 (cyclicity): `tr_T(q ∘ (L ∘ ι)) = tr_{ℝᴺ}((L ∘ ι) ∘ q)`, and `ι ∘ q = P_T` by the
+    -- definition of `starProjection`.
+    rw [← hsum]
+    exact LinearMap.trace_comp_comm' _ _
+  -- Step 4: `P_T = A G⁻¹ A*` by the Gram projection formula (`T = range A`, `A` injective).
+  rw [hdiv, (Submission.gram_inverse_range_starProjection n N _ A hA hT).2.2]
+  -- Step 5 (cyclicity): `tr_{ℝᴺ}((L ∘ A) ∘ (G⁻¹ ∘ A*)) = tr_{ℝⁿ}((G⁻¹ ∘ A*) ∘ (L ∘ A))`.
+  exact LinearMap.trace_comp_comm'
+    (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A).toLinearMap
+    (fderiv ℝ Y y ∘L A).toLinearMap
+/-- **Mean curvature through an injective parametrization differential** (Simon 4.27 in a chart).
+Let `A : ℝⁿ → ℝᴺ` be injective with `T_y M = range A`, and let `S` be bilinear (not necessarily
+symmetric) with `B_y(Aa, Ab) = S(a, b)^⊥`. With `G = A*A` and `eₗ` the standard basis of `ℝⁿ`,
+`H(y) = (∑ₗ S(eₗ, G⁻¹eₗ))^⊥`. Choose `aᵢ` with `Aaᵢ = τᵢ` for the frame `τᵢ` of `T_y M`, so
+`H(y) = (∑ᵢ S(aᵢ, aᵢ))^⊥`. Expanding `Ac ∈ T_y M` in the frame and using injectivity of `A` gives
+`c = ∑ᵢ ⟨Aaᵢ, Ac⟩ aᵢ`; for `c = G⁻¹eₗ`, `GG⁻¹ = 1` (`gram_inverse_range_starProjection`) turns this
+into `G⁻¹eₗ = ∑ᵢ ⟨aᵢ, eₗ⟩ aᵢ`. Bilinearity and `∑ₗ ⟨aᵢ, eₗ⟩ eₗ = aᵢ` give
+`∑ₗ S(eₗ, G⁻¹eₗ) = ∑ᵢ S(aᵢ, aᵢ)`. -/
+theorem Submission.chart_meanCurvature_eq_normalPart_gram_sum : ∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (S : Rn n →L[ℝ] Rn n →L[ℝ] Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → (∀ a b : Rn n, secondFundamentalForm M y (A a) (A b) = normalPart M y (S a b)) → meanCurvature M y = normalPart M y (∑ l : Fin n, S (EuclideanSpace.single l 1) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) (EuclideanSpace.single l 1))) := by
+  intro n N M y A S hA hT hB
+  -- Step 1: `G = A*A` is a unit (sibling `gram_projection`), so `A*(A(G⁻¹w)) = G(G⁻¹w) = w`.
+  have hG := (Submission.gram_inverse_range_starProjection n N (tangentSpace M y) A hA hT).1
+  have hGG : ∀ w : Rn n, ContinuousLinearMap.adjoint A
+      (A (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) w)) = w :=
+    fun w ↦ DFunLike.congr_fun (Ring.mul_inverse_cancel _ hG) w
+  -- Steps 2–3: every frame vector `τᵢ` of `T_y M = range A` has a preimage `aᵢ`.
+  have hpre : ∀ i, ∃ a : Rn n, A a = tangentFrame M y i := fun i ↦ by
+    have hi : tangentFrame M y i ∈ tangentSpace M y :=
+      (stdOrthonormalBasis ℝ (tangentSpace M y) i).2
+    rw [hT] at hi
+    exact LinearMap.mem_range.1 hi
+  choose a ha using hpre
+  -- Step 4: `H(y) = ∑ᵢ B(Aaᵢ, Aaᵢ) = ∑ᵢ S(aᵢ, aᵢ)^⊥ = (∑ᵢ S(aᵢ, aᵢ))^⊥`.
+  have hH : meanCurvature M y = normalPart M y (∑ i, S (a i) (a i)) := by
+    have hnp : normalPart M y (∑ i, S (a i) (a i)) = ∑ i, normalPart M y (S (a i) (a i)) := by
+      simp only [normalPart, map_sum, Finset.sum_sub_distrib]
+    rw [hnp, meanCurvature]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    rw [← ha i, hB]
+  -- Step 5: reproducing formula `c = ∑ᵢ ⟨Aaᵢ, Ac⟩ aᵢ`, from the frame expansion of `Ac ∈ T_y M`.
+  have hrep : ∀ c : Rn n, ∑ i, inner ℝ (A (a i)) (A c) • a i = c := by
+    intro c
+    apply hA
+    have hc : A c ∈ tangentSpace M y := by
+      rw [hT]
+      exact LinearMap.mem_range_self A.toLinearMap c
+    have h := congrArg Subtype.val
+      ((stdOrthonormalBasis ℝ (tangentSpace M y)).sum_repr' ⟨A c, hc⟩)
+    simp only [Submodule.coe_sum, Submodule.coe_smul, Submodule.coe_inner] at h
+    rw [map_sum]
+    simp only [map_smul, ha]
+    exact h
+  -- Step 6: `G⁻¹eₗ = ∑ᵢ ⟨aᵢ, eₗ⟩ aᵢ`, since `⟨Aaᵢ, A(G⁻¹eₗ)⟩ = ⟨aᵢ, A*A(G⁻¹eₗ)⟩ = ⟨aᵢ, eₗ⟩`.
+  have hGinv : ∀ l : Fin n, Ring.inverse (ContinuousLinearMap.adjoint A ∘L A)
+      (EuclideanSpace.single l 1) = ∑ i, inner ℝ (a i) (EuclideanSpace.single l 1) • a i := by
+    intro l
+    refine (hrep _).symm.trans (Finset.sum_congr rfl fun i _ ↦ ?_)
+    rw [← ContinuousLinearMap.adjoint_inner_right A (a i), hGG]
+  -- `∑ₗ ⟨v, eₗ⟩ eₗ = v`: the expansion in the standard orthonormal basis of `ℝⁿ`.
+  have hexp : ∀ v : Rn n,
+      ∑ l : Fin n, inner ℝ v (EuclideanSpace.single l 1) • EuclideanSpace.single l (1 : ℝ) = v := by
+    intro v
+    conv_rhs => rw [← (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr' v]
+    refine Finset.sum_congr rfl fun l _ ↦ ?_
+    rw [EuclideanSpace.basisFun_apply, real_inner_comm]
+  -- Step 7: `∑ₗ S(eₗ, G⁻¹eₗ) = ∑ᵢ ∑ₗ ⟨aᵢ, eₗ⟩ S(eₗ, aᵢ) = ∑ᵢ S(∑ₗ ⟨aᵢ, eₗ⟩ eₗ, aᵢ) = ∑ᵢ S(aᵢ, aᵢ)`.
+  have hS : ∑ l : Fin n, S (EuclideanSpace.single l 1)
+      (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) (EuclideanSpace.single l 1)) =
+      ∑ i, S (a i) (a i) := by
+    simp only [hGinv, map_sum, map_smul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    calc ∑ l : Fin n, inner ℝ (a i) (EuclideanSpace.single l 1) • S (EuclideanSpace.single l 1) (a i)
+        = S (∑ l : Fin n, inner ℝ (a i) (EuclideanSpace.single l 1) •
+            EuclideanSpace.single l (1 : ℝ)) (a i) := by
+          simp only [map_sum, map_smul, sum_apply, smul_apply]
+      _ = S (a i) (a i) := by rw [hexp]
+  -- Step 8: combine Steps 4 and 7.
+  rw [hH, hS]
+/-- **Smoothness of the determinant on `L(ℝⁿ)`.** For every `n` and every order `k : WithTop ℕ∞`
+(finite, `∞` or analytic), `T ↦ T.det` is `C^k` on `ℝⁿ →L[ℝ] ℝⁿ`. In the standard basis `eᵢ` the
+Leibniz formula gives `T.det = ∑_σ sign σ * ∏ᵢ (T eᵢ)_{σ i}` (`LinearMap.det_toMatrix`,
+`Matrix.det_apply`). Each entry `T ↦ (T eᵢ)_l` is continuous linear, and finite sums and products of
+`C^k` functions are `C^k` (`ContDiff.sum`, `contDiff_prod`). -/
+theorem Submission.contDiff_rn_continuousLinearMap_det : ∀ (n : ℕ) (k : WithTop ℕ∞), ContDiff ℝ k (fun T : Rn n →L[ℝ] Rn n ↦ T.det) := by
+  intro n k
+  -- Steps 1–2: the Leibniz formula in the standard basis, whose matrix entries are `(T eᵢ)_l`.
+  let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  have h : (fun T : Rn n →L[ℝ] Rn n ↦ T.det) = fun T ↦ ∑ σ : Equiv.Perm (Fin n),
+      ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, (T (EuclideanSpace.single i (1 : ℝ))).ofLp (σ i) := by
+    funext T
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b, Matrix.det_apply]
+    refine Finset.sum_congr rfl fun σ _ ↦ ?_
+    rw [Units.smul_def, zsmul_eq_mul]
+    congr 1
+  rw [h]
+  -- Steps 3–4: each entry is a continuous linear functional of `T`; close under `∏` and `∑`.
+  refine ContDiff.sum fun σ _ ↦ contDiff_const.mul (contDiff_prod fun i _ ↦ ?_)
+  exact ((EuclideanSpace.proj (σ i)).comp
+    (ContinuousLinearMap.apply ℝ (Rn n) (EuclideanSpace.single i (1 : ℝ)))).contDiff
+/-- **Jacobi's formula at the identity.** For `K ∈ L(ℝⁿ)`, `t ↦ det(1 + t • K)` has derivative
+`trace K` at `t = 0`. With `b` the standard basis of `ℝⁿ` and `A = [K]_b`, the matrix of `1 + t • K` is
+`1 + t • A`, so `det(1 + t • K) = det(1 + t • A) = 1 + trace A · t + p(t) t²` for every `t`, with the
+fixed polynomial `p = (det(1 + X • A)).divX.divX` (`LinearMap.det_toMatrix`,
+`Matrix.det_one_add_smul`). The right side has derivative `trace A` at `0`, and `trace A = trace K`
+(`LinearMap.trace_eq_matrix_trace`). -/
+theorem Submission.hasDerivAt_rn_det_one_add_smul_trace : ∀ (n : ℕ) (K : Rn n →L[ℝ] Rn n), HasDerivAt (fun t : ℝ ↦ (1 + t • K).det) (LinearMap.trace ℝ (Rn n) K.toLinearMap) 0 := by
+  intro n K
+  -- Step 1: the standard basis `b` of `ℝⁿ`, the matrix `A` of `K` and the fixed polynomial `p`.
+  let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  obtain ⟨A, hA⟩ : ∃ A : Matrix (Fin n) (Fin n) ℝ, LinearMap.toMatrix b b K.toLinearMap = A :=
+    ⟨_, rfl⟩
+  obtain ⟨p, hp⟩ : ∃ p : Polynomial ℝ,
+      (1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C).det.divX.divX = p := ⟨_, rfl⟩
+  -- Steps 2–3: `[1 + t • K]_b = 1 + t • A`, so `det(1 + t • K) = 1 + trace A * t + p(t) * t ^ 2`.
+  have hexp : ∀ t : ℝ, (1 + t • K).det = 1 + A.trace * t + p.eval t * t ^ 2 := fun t ↦ by
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b, ContinuousLinearMap.toLinearMap_add,
+      ContinuousLinearMap.toLinearMap_smul, ContinuousLinearMap.toLinearMap_one, map_add, map_smul,
+      LinearMap.toMatrix_one, hA, Matrix.det_one_add_smul, hp]
+  -- Step 5: `t ↦ 1 + trace A * t + p(t) * t ^ 2` has derivative `trace A + 0` at `0`.
+  have hlin : HasDerivAt (fun t : ℝ ↦ A.trace * t) A.trace 0 := by
+    simpa using (hasDerivAt_id (0 : ℝ)).const_mul A.trace
+  have hquad : HasDerivAt (fun t : ℝ ↦ p.eval t * t ^ 2) 0 0 := by
+    simpa using (Polynomial.hasDerivAt p 0).fun_mul (hasDerivAt_pow 2 (0 : ℝ))
+  have hg := (hlin.const_add 1).fun_add hquad
+  rw [add_zero] at hg
+  -- Steps 4 and 6: `trace K = trace A`, and `det(1 + t • K)` agrees with the polynomial everywhere.
+  rw [LinearMap.trace_eq_matrix_trace ℝ b, hA]
+  exact hg.congr_of_eventuallyEq (Filter.Eventually.of_forall hexp)
+
+/-- **Jacobi's formula on `L(ℝⁿ)`.** `det : L(ℝⁿ) → ℝ` is `C¹`, and at a unit `T` of the ring
+`L(ℝⁿ)` (multiplication is composition), `D det(T)[H] = det T · trace(T⁻¹ ∘ H)` with
+`T⁻¹ = Ring.inverse T`. The first conjunct is `Submission.contDiff_rn_continuousLinearMap_det` at
+order `1`. For the second, put `K = T⁻¹ ∘ H`: then `T + t • H = T ∘ (1 + t • K)`
+(`Ring.mul_inverse_cancel`), so `det(T + t • H) = det T · det(1 + t • K)` (`LinearMap.det_comp`), which
+has derivative `det T · trace K` at `t = 0` by `Submission.hasDerivAt_rn_det_one_add_smul_trace`. The
+chain rule along `t ↦ T + t • H` and uniqueness of derivatives identify it with `D det(T)[H]`. -/
+theorem Submission.continuousLinearMap_det_contDiff_fderiv_eq_mul_trace : ∀ n : ℕ, ContDiff ℝ 1 (fun T : Rn n →L[ℝ] Rn n ↦ T.det) ∧ ∀ T H : Rn n →L[ℝ] Rn n, IsUnit T → fderiv ℝ (fun T : Rn n →L[ℝ] Rn n ↦ T.det) T H = T.det * LinearMap.trace ℝ (Rn n) (Ring.inverse T ∘L H).toLinearMap := by
+  intro n
+  -- Step 2: `det` is `C¹`, hence differentiable at every `T`.
+  have hC1 : ContDiff ℝ 1 (fun T : Rn n →L[ℝ] Rn n ↦ T.det) :=
+    Submission.contDiff_rn_continuousLinearMap_det n 1
+  refine ⟨hC1, fun T H hT ↦ ?_⟩
+  -- Step 3: `T ∘ (1 + t • K) = T + t • H` for `K = T⁻¹ ∘ H`, since `T ∘ T⁻¹ = 1`.
+  have hTK : T * (Ring.inverse T ∘L H) = H := by
+    rw [← ContinuousLinearMap.mul_def, ← mul_assoc, Ring.mul_inverse_cancel T hT, one_mul]
+  have hfac : ∀ t : ℝ, T * (1 + t • (Ring.inverse T ∘L H)) = T + t • H := fun t ↦ by
+    rw [mul_add, mul_one, ContinuousLinearMap.mul_def T, ContinuousLinearMap.comp_smul,
+      ← ContinuousLinearMap.mul_def, hTK]
+  -- Steps 3–5: `det(T + t • H) = det T · det(1 + t • K)` has derivative `det T · trace K` at `0`.
+  have hline : HasDerivAt (fun t : ℝ ↦ (T + t • H).det)
+      (T.det * LinearMap.trace ℝ (Rn n) (Ring.inverse T ∘L H).toLinearMap) 0 := by
+    have hmul : (fun t : ℝ ↦ (T + t • H).det) =
+        fun t ↦ T.det * (1 + t • (Ring.inverse T ∘L H)).det :=
+      funext fun t ↦ by rw [← hfac t]; exact LinearMap.det_comp _ _
+    rw [hmul]
+    exact (Submission.hasDerivAt_rn_det_one_add_smul_trace n (Ring.inverse T ∘L H)).const_mul T.det
+  -- Step 6: chain rule along `γ t = T + t • H` (`γ 0 = T`, `γ' 0 = H`) and uniqueness.
+  have hγ : HasDerivAt (fun t : ℝ ↦ T + t • H) H 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const H).const_add T
+  have hchain := ((hC1.differentiable one_ne_zero) T).hasFDerivAt.comp_hasDerivAt_of_eq 0 hγ
+    (show T = T + (0 : ℝ) • H by rw [zero_smul ℝ H, add_zero])
+  exact hchain.unique hline
+
+/-- **Simon Ch. 2, §5, derivative of the area Jacobian of a `C²` immersion.** Let `V ⊆ ℝⁿ` be open
+and `ψ : ℝⁿ → ℝᴺ` be `C²` on `V` with injective `A(x) = Dψ(x)`, and let `G(x) = A(x)* A(x)`. Then
+`J = areaJacobianAt ψ = √(det ∘ G)` is `C¹` on `V` and `DJ(x)[v] = J(x) tr(G(x)⁻¹ A(x)* S_v)`, where
+`S_v = D²ψ(x)[v]`. Indeed `G` is `C¹` with `DG(x)[v] = A* S_v + S_v* A`, Jacobi's formula gives
+`D(det ∘ G)(x)[v] = det G · tr(G⁻¹ DG(x)[v])`, the symmetry of `G⁻¹` turns `tr(G⁻¹ S_v* A)` into
+`tr(G⁻¹ A* S_v)`, and `det G = J² > 0` because `A(x)` is injective. -/
+theorem Submission.areaJacobianAt_contDiffOn_fderiv_eq_gram_trace : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 (Chapter02.areaJacobianAt ψ) V ∧ ∀ x ∈ V, ∀ v : Rn n, fderiv ℝ (Chapter02.areaJacobianAt ψ) x v = Chapter02.areaJacobianAt ψ x * LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x v).toLinearMap := by
+  intro n N V ψ hV hψ hinj
+  -- `G = A* A` is `C¹` on `V` with `DG(x)[v] = A* S_v + S_v* A`, and `det` is `C¹` with
+  -- `D det(T)[H] = det T · tr(T⁻¹ H)` at every unit `T` (Jacobi's formula).
+  obtain ⟨hGC, hGD⟩ := Submission.adjoint_comp_fderiv_contDiffOn_fderiv_eq_add n N V ψ hV hψ
+  obtain ⟨hdetC, hdetD⟩ := Submission.continuousLinearMap_det_contDiff_fderiv_eq_mul_trace n
+  -- Step 1: `J = √(det ∘ G)`.
+  have hJ : Chapter02.areaJacobianAt ψ = fun x ↦
+      Real.sqrt (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x).det :=
+    funext fun x ↦ Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp ψ x
+  -- Step 2: on `V`, `A(x)` is injective, so `J x = normDet A(x) ≠ 0` and `det G(x) = (J x)² ≠ 0`.
+  have hJ0 : ∀ x ∈ V, Chapter02.areaJacobianAt ψ x ≠ 0 := fun x hx ↦ by
+    rw [Chapter02.areaJacobianAt_eq_normDet]
+    exact ((fderiv ℝ ψ x).toLinearMap.normDet_ne_zero_tfae.out 1 5).2 (hinj x hx)
+  have hd0 : ∀ x ∈ V, (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x).det ≠ 0 :=
+    fun x hx ↦ Chapter02.areaJacobianAt_sq_eq_det_adjoint_comp ψ x ▸ pow_ne_zero 2 (hJ0 x hx)
+  refine ⟨?_, fun x hx v ↦ ?_⟩
+  · -- Step 6: `√(det ∘ G)` is `C¹` on `V`, as `det ∘ G` is `C¹` and nonvanishing there.
+    rw [hJ]
+    exact (hdetC.comp_contDiffOn hGC).sqrt hd0
+  · -- Steps 4 and 7: the chain rule for `√(det ∘ G)` at `x`.
+    have hGx := ((hGC.differentiableOn one_ne_zero x hx).differentiableAt
+      (hV.mem_nhds hx)).hasFDerivAt
+    have hdetx := ((hdetC.differentiable one_ne_zero)
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)).hasFDerivAt
+    have hc := hdetx.comp x hGx
+    have hJx : HasFDerivAt (fun y ↦
+        Real.sqrt (ContinuousLinearMap.adjoint (fderiv ℝ ψ y) ∘L fderiv ℝ ψ y).det) _ x :=
+      hc.sqrt (hd0 x hx)
+    rw [← hJ] at hJx
+    -- Step 5: `G(x)` is a unit with symmetric inverse (`gram_projection`), so the two traces in
+    -- `tr(G⁻¹ (A* S_v + S_v* A))` agree (`trace_swap`).
+    obtain ⟨hunit, hsymm, -⟩ := Submission.gram_inverse_range_starProjection n N
+      (LinearMap.range (fderiv ℝ ψ x).toLinearMap) (fderiv ℝ ψ x) (hinj x hx) rfl
+    rw [hJx.fderiv, smul_apply, ContinuousLinearMap.comp_apply, hGD x hx v, hdetD _ _ hunit,
+      ContinuousLinearMap.comp_add, ContinuousLinearMap.toLinearMap_add, map_add,
+      Submission.trace_comp_adjoint_comp_swap_of_symm n N (fderiv ℝ ψ x)
+        (fderiv ℝ (fderiv ℝ ψ) x v) _ hsymm, Function.comp_apply,
+      ← Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp ψ x,
+      ← Chapter02.areaJacobianAt_sq_eq_det_adjoint_comp ψ x, smul_eq_mul]
+    field_simp [hJ0 x hx]
+    ring
+/-- **`C¹` regularity of the tangential coefficient field.** Let `V ⊆ ℝⁿ` be open, `ψ : ℝⁿ → ℝᴺ`
+`C²` on `V` with `A(x) = Dψ(x)` injective for `x ∈ V`, and `u : ℝⁿ → ℝᴺ` `C¹` on `V`. Then
+`a(x) = G(x)⁻¹ (A(x)* u(x))`, `G = A* ∘ A`, is `C¹` on `V`. `A` is `C¹` because `ψ` is `C²` on the
+open set `V`. Over `ℝ` the adjoint is a continuous linear map, so `A*` is `C¹`, and `G` is `C¹`
+because composition is continuous bilinear. Each `G(x)` is a unit
+(`gram_inverse_range_starProjection` with `K = range A(x)`) and `Ring.inverse` is smooth at units,
+so `G⁻¹` is `C¹`. Evaluation is continuous bilinear, which gives `a`. -/
+theorem Submission.chart_tangential_coefficient_contDiffOn : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N) (u : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 u V → ContDiffOn ℝ 1 (fun x ↦ Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) (u x))) V := by
+  intro n N V ψ u hV hψ hinj hu
+  -- Step 1: `A = Dψ` is `C¹` on `V`.
+  have hA : ContDiffOn ℝ 1 (fderiv ℝ ψ) V := hψ.fderiv_of_isOpen hV (by norm_num)
+  -- Step 2: `x ↦ A(x)*` is `C¹` on `V`; over `ℝ` the adjoint is a continuous linear map `adjR`.
+  have hAs : ContDiffOn ℝ 1 (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x)) V := by
+    let adjR : (Rn n →L[ℝ] Rn N) →L[ℝ] Rn N →L[ℝ] Rn n :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn n) (F := Rn N)).toContinuousLinearEquiv
+        |>.toContinuousLinearMap
+    exact adjR.contDiff.comp_contDiffOn hA
+  -- Step 3: `G = A* ∘ A` is `C¹` on `V`.
+  have hG : ContDiffOn ℝ 1 (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) V :=
+    hAs.clm_comp hA
+  -- Steps 4-5: each `G(x)`, `x ∈ V`, is a unit and `Ring.inverse` is smooth at units.
+  have hGi : ContDiffOn ℝ 1
+      (fun x ↦ Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)) V := by
+    intro x hx
+    obtain ⟨U, hU⟩ := (Submission.gram_inverse_range_starProjection n N
+      (LinearMap.range (fderiv ℝ ψ x).toLinearMap) (fderiv ℝ ψ x) (hinj x hx) rfl).1
+    have hinv : ContDiffAt ℝ 1 Ring.inverse
+        (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) :=
+      hU ▸ contDiffAt_ringInverse ℝ U
+    exact (hinv.comp x (hG.contDiffAt (hV.mem_nhds hx))).contDiffWithinAt
+  -- Step 6: `a = G⁻¹ (A* u)` is `C¹` on `V`.
+  exact hGi.clm_apply (hAs.clm_apply hu)
+/-- **Symmetry of the second derivative (Schwarz).** If `ψ : ℝⁿ → ℝᴺ` is `C²` on an open set `V`,
+then `D²ψ(x)[v, w] = D²ψ(x)[w, v]` for `x ∈ V`. Mathlib's `ContDiffAt.isSymmSndFDerivAt` is in
+`Mathlib.Analysis.Calculus.FDeriv.Symmetric`, which the frozen header does not import, so this is
+the classical second-difference proof. For `ε > 0` take `δ` with `B_δ(x) ⊆ V` and
+`‖D²ψ(z) - D²ψ(x)‖ < ε` on `B_δ(x)`. For `‖a‖ + ‖b‖ < δ`, two applications of the mean value
+inequality on `[0, 1]` give
+`‖ψ(x + a + b) - ψ(x + a) - ψ(x + b) + ψ(x) - D²ψ(x)[a, b]‖ ≤ ε ‖a‖ ‖b‖`. The second difference
+is symmetric in `(a, b)`. With `a = t v`, `b = t w` this gives
+`‖D²ψ(x)[v, w] - D²ψ(x)[w, v]‖ ≤ 2 ε ‖v‖ ‖w‖` for every `ε > 0`. -/
+theorem Submission.fderiv_fderiv_symm_of_contDiffOn_two : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → ∀ x ∈ V, ∀ v w : Rn n, fderiv ℝ (fderiv ℝ ψ) x v w = fderiv ℝ (fderiv ℝ ψ) x w v := by
+  intro n N V ψ hV hψ x hx v w
+  -- Step 1: `Dψ` is `C¹` on `V`, `D²ψ` is continuous on `V`, and `ψ`, `Dψ` are differentiable at
+  -- every point of `V`.
+  have hD : ContDiffOn ℝ 1 (fderiv ℝ ψ) V := hψ.fderiv_of_isOpen hV (by norm_num)
+  have hD2 : ContinuousOn (fderiv ℝ (fderiv ℝ ψ)) V := hD.continuousOn_fderiv_of_isOpen hV le_rfl
+  have hψd : ∀ z ∈ V, HasFDerivAt ψ (fderiv ℝ ψ z) z := fun z hz ↦
+    ((hψ.differentiableOn (by norm_num)) z hz).differentiableAt (hV.mem_nhds hz) |>.hasFDerivAt
+  have hDd : ∀ z ∈ V, HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) z) z := fun z hz ↦
+    ((hD.differentiableOn (by norm_num)) z hz).differentiableAt (hV.mem_nhds hz) |>.hasFDerivAt
+  -- Steps 2-5: `‖D²ψ(x)[v, w] - D²ψ(x)[w, v]‖ ≤ 2 ε ‖v‖ ‖w‖` for every `ε > 0`.
+  have hbound : ∀ ε : ℝ, 0 < ε → ‖fderiv ℝ (fderiv ℝ ψ) x v w - fderiv ℝ (fderiv ℝ ψ) x w v‖ ≤
+      2 * ε * ‖v‖ * ‖w‖ := by
+    intro ε hε
+    -- Step 2: `B_δ(x) ⊆ V` and `‖D²ψ(z) - D²ψ(x)‖ < ε` for `z ∈ B_δ(x)`.
+    have hnhds : V ∩ fderiv ℝ (fderiv ℝ ψ) ⁻¹' ball (fderiv ℝ (fderiv ℝ ψ) x) ε ∈ 𝓝 x :=
+      inter_mem (hV.mem_nhds hx)
+        ((hD2.continuousAt (hV.mem_nhds hx)).preimage_mem_nhds
+          (ball_mem_nhds (fderiv ℝ (fderiv ℝ ψ) x) hε))
+    obtain ⟨δ, hδ, hδV⟩ := Metric.mem_nhds_iff.mp hnhds
+    -- Steps 3-4: for `‖a‖ + ‖b‖ < δ`, the second difference is `D²ψ(x)[a, b]` up to `ε ‖a‖ ‖b‖`.
+    have key : ∀ a b : Rn n, ‖a‖ + ‖b‖ < δ →
+        ‖ψ (x + a + b) - ψ (x + a) - ψ (x + b) + ψ x - fderiv ℝ (fderiv ℝ ψ) x a b‖ ≤
+          ε * ‖a‖ * ‖b‖ := by
+      intro a b hab
+      have hmem : ∀ r s : ℝ, r ∈ Icc (0 : ℝ) 1 → s ∈ Icc (0 : ℝ) 1 →
+          x + r • a + s • b ∈ ball x δ := by
+        intro r s hr hs
+        rw [mem_ball, dist_eq_norm, add_assoc, add_sub_cancel_left]
+        calc ‖r • a + s • b‖ ≤ ‖r • a‖ + ‖s • b‖ := norm_add_le _ _
+          _ = r * ‖a‖ + s * ‖b‖ := by
+            rw [norm_smul, norm_smul, Real.norm_of_nonneg hr.1, Real.norm_of_nonneg hs.1]
+          _ ≤ ‖a‖ + ‖b‖ := add_le_add (mul_le_of_le_one_left (norm_nonneg a) hr.2)
+            (mul_le_of_le_one_left (norm_nonneg b) hs.2)
+          _ < δ := hab
+      have hV' : ∀ r s : ℝ, r ∈ Icc (0 : ℝ) 1 → s ∈ Icc (0 : ℝ) 1 → x + r • a + s • b ∈ V :=
+        fun r s hr hs ↦ (hδV (hmem r s hr hs)).1
+      have hclose : ∀ r s : ℝ, r ∈ Icc (0 : ℝ) 1 → s ∈ Icc (0 : ℝ) 1 →
+          ‖fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b) - fderiv ℝ (fderiv ℝ ψ) x‖ < ε := by
+        intro r s hr hs
+        have h := (hδV (hmem r s hr hs)).2
+        rw [mem_preimage, mem_ball] at h
+        exact (dist_eq_norm (fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b))
+          (fderiv ℝ (fderiv ℝ ψ) x)).symm.trans_lt h
+      -- Step 3 (inner estimate): mean value inequality for
+      -- `k(r) = Dψ(x + r a + s b) b - r D²ψ(x)[a, b]`. Its derivative is
+      -- `k'(r) = (D²ψ(x + r a + s b) - D²ψ(x))[a, b]`.
+      have inner : ∀ s ∈ Icc (0 : ℝ) 1, ‖fderiv ℝ ψ (x + a + s • b) b - fderiv ℝ ψ (x + s • b) b -
+          fderiv ℝ (fderiv ℝ ψ) x a b‖ ≤ ε * ‖a‖ * ‖b‖ := by
+        intro s hs
+        have hk : ∀ r ∈ Icc (0 : ℝ) 1, HasDerivWithinAt
+            (fun r : ℝ ↦ fderiv ℝ ψ (x + r • a + s • b) b - r • fderiv ℝ (fderiv ℝ ψ) x a b)
+            (fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b) a b - fderiv ℝ (fderiv ℝ ψ) x a b)
+            (Icc (0 : ℝ) 1) r := by
+          intro r hr
+          have hγ : HasDerivAt (fun r : ℝ ↦ x + r • a + s • b) a r := by
+            simpa using (((hasDerivAt_id r).smul_const a).const_add x).add_const (s • b)
+          have h1 : HasDerivAt (fun r : ℝ ↦ fderiv ℝ ψ (x + r • a + s • b))
+              (fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b) a) r :=
+            (hDd _ (hV' r s hr hs)).comp_hasDerivAt r hγ
+          have h2 := (h1.clm_apply (hasDerivAt_const r b)).sub
+            ((hasDerivAt_id r).smul_const (fderiv ℝ (fderiv ℝ ψ) x a b))
+          simp only [id_eq, map_zero, add_zero, one_smul] at h2
+          exact h2.hasDerivWithinAt
+        have hb : ∀ r ∈ Ico (0 : ℝ) 1, ‖fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b) a b -
+            fderiv ℝ (fderiv ℝ ψ) x a b‖ ≤ ε * ‖a‖ * ‖b‖ := by
+          intro r hr
+          calc ‖fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b) a b - fderiv ℝ (fderiv ℝ ψ) x a b‖
+              = ‖(fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b) - fderiv ℝ (fderiv ℝ ψ) x) a b‖ := by
+                rw [sub_apply, sub_apply]
+            _ ≤ ‖fderiv ℝ (fderiv ℝ ψ) (x + r • a + s • b) - fderiv ℝ (fderiv ℝ ψ) x‖ * ‖a‖ * ‖b‖ :=
+                ContinuousLinearMap.le_opNorm₂ _ _ _
+            _ ≤ ε * ‖a‖ * ‖b‖ := by
+                gcongr
+                exact (hclose r s (Ico_subset_Icc_self hr) hs).le
+        have hfin := norm_image_sub_le_of_norm_deriv_le_segment_01' hk hb
+        simp only [one_smul, zero_smul, add_zero, sub_zero] at hfin
+        calc ‖fderiv ℝ ψ (x + a + s • b) b - fderiv ℝ ψ (x + s • b) b - fderiv ℝ (fderiv ℝ ψ) x a b‖
+            = ‖fderiv ℝ ψ (x + a + s • b) b - fderiv ℝ (fderiv ℝ ψ) x a b -
+                fderiv ℝ ψ (x + s • b) b‖ := by rw [sub_right_comm]
+          _ ≤ ε * ‖a‖ * ‖b‖ := hfin
+      -- Step 4 (outer estimate): mean value inequality for
+      -- `g(s) = ψ(x + a + s b) - ψ(x + s b) - s D²ψ(x)[a, b]`. `inner` bounds its derivative.
+      have hg : ∀ s ∈ Icc (0 : ℝ) 1, HasDerivWithinAt
+          (fun s : ℝ ↦ ψ (x + a + s • b) - ψ (x + s • b) - s • fderiv ℝ (fderiv ℝ ψ) x a b)
+          (fderiv ℝ ψ (x + a + s • b) b - fderiv ℝ ψ (x + s • b) b - fderiv ℝ (fderiv ℝ ψ) x a b)
+          (Icc (0 : ℝ) 1) s := by
+        intro s hs
+        have hγ1 : HasDerivAt (fun s : ℝ ↦ x + a + s • b) b s := by
+          simpa using ((hasDerivAt_id s).smul_const b).const_add (x + a)
+        have hγ0 : HasDerivAt (fun s : ℝ ↦ x + s • b) b s := by
+          simpa using ((hasDerivAt_id s).smul_const b).const_add x
+        have hm1 : x + a + s • b ∈ V := by
+          simpa using hV' 1 s (right_mem_Icc.2 zero_le_one) hs
+        have hm0 : x + s • b ∈ V := by
+          simpa using hV' 0 s (left_mem_Icc.2 zero_le_one) hs
+        have h1 : HasDerivAt (fun s : ℝ ↦ ψ (x + a + s • b)) (fderiv ℝ ψ (x + a + s • b) b) s :=
+          (hψd _ hm1).comp_hasDerivAt s hγ1
+        have h0 : HasDerivAt (fun s : ℝ ↦ ψ (x + s • b)) (fderiv ℝ ψ (x + s • b) b) s :=
+          (hψd _ hm0).comp_hasDerivAt s hγ0
+        have h2 := (h1.sub h0).sub ((hasDerivAt_id s).smul_const (fderiv ℝ (fderiv ℝ ψ) x a b))
+        simp only [id_eq, one_smul] at h2
+        exact h2.hasDerivWithinAt
+      have hfin := norm_image_sub_le_of_norm_deriv_le_segment_01' hg
+        (fun s hs ↦ inner s (Ico_subset_Icc_self hs))
+      simp only [one_smul, zero_smul, add_zero, sub_zero] at hfin
+      calc ‖ψ (x + a + b) - ψ (x + a) - ψ (x + b) + ψ x - fderiv ℝ (fderiv ℝ ψ) x a b‖
+          = ‖ψ (x + a + b) - ψ (x + b) - fderiv ℝ (fderiv ℝ ψ) x a b - (ψ (x + a) - ψ x)‖ := by
+            congr 1
+            abel
+        _ ≤ ε * ‖a‖ * ‖b‖ := hfin
+    -- Step 5: apply `key` to `(t v, t w)` and `(t w, t v)` with `t = δ / (‖v‖ + ‖w‖ + 1)`.
+    obtain ⟨t, ht0, hsum⟩ : ∃ t : ℝ, 0 < t ∧ ‖t • v‖ + ‖t • w‖ < δ := by
+      have hS : 0 < ‖v‖ + ‖w‖ + 1 := by positivity
+      refine ⟨δ / (‖v‖ + ‖w‖ + 1), div_pos hδ hS, ?_⟩
+      rw [norm_smul, norm_smul, Real.norm_of_nonneg (div_pos hδ hS).le, ← mul_add,
+        div_mul_eq_mul_div, div_lt_iff₀ hS]
+      nlinarith [norm_nonneg v, norm_nonneg w]
+    have k1 := key (t • v) (t • w) hsum
+    have k2 := key (t • w) (t • v) (by rw [add_comm]; exact hsum)
+    have hsmul : ∀ a b : Rn n, fderiv ℝ (fderiv ℝ ψ) x (t • a) (t • b) =
+        (t * t) • fderiv ℝ (fderiv ℝ ψ) x a b := by
+      intro a b
+      rw [map_smul, map_smul, smul_apply, smul_smul]
+    rw [hsmul, norm_smul, norm_smul, Real.norm_of_nonneg ht0.le] at k1 k2
+    rw [add_right_comm x (t • w) (t • v)] at k2
+    -- Step 6: the second difference is symmetric; cancel `t² > 0`.
+    have h3 : t * t * ‖fderiv ℝ (fderiv ℝ ψ) x v w - fderiv ℝ (fderiv ℝ ψ) x w v‖ ≤
+        t * t * (2 * ε * ‖v‖ * ‖w‖) := by
+      calc t * t * ‖fderiv ℝ (fderiv ℝ ψ) x v w - fderiv ℝ (fderiv ℝ ψ) x w v‖
+          = ‖(t * t) • (fderiv ℝ (fderiv ℝ ψ) x v w - fderiv ℝ (fderiv ℝ ψ) x w v)‖ := by
+            rw [norm_smul, Real.norm_of_nonneg (mul_self_nonneg t)]
+        _ = ‖(ψ (x + t • v + t • w) - ψ (x + t • w) - ψ (x + t • v) + ψ x -
+              (t * t) • fderiv ℝ (fderiv ℝ ψ) x w v) -
+            (ψ (x + t • v + t • w) - ψ (x + t • v) - ψ (x + t • w) + ψ x -
+              (t * t) • fderiv ℝ (fderiv ℝ ψ) x v w)‖ := by
+            rw [smul_sub]
+            congr 1
+            abel
+        _ ≤ ‖ψ (x + t • v + t • w) - ψ (x + t • w) - ψ (x + t • v) + ψ x -
+              (t * t) • fderiv ℝ (fderiv ℝ ψ) x w v‖ +
+            ‖ψ (x + t • v + t • w) - ψ (x + t • v) - ψ (x + t • w) + ψ x -
+              (t * t) • fderiv ℝ (fderiv ℝ ψ) x v w‖ := norm_sub_le _ _
+        _ ≤ ε * (t * ‖w‖) * (t * ‖v‖) + ε * (t * ‖v‖) * (t * ‖w‖) := add_le_add k2 k1
+        _ = t * t * (2 * ε * ‖v‖ * ‖w‖) := by ring
+    exact le_of_mul_le_mul_left h3 (mul_pos ht0 ht0)
+  -- Conclusion: `‖D²ψ(x)[v, w] - D²ψ(x)[w, v]‖ ≤ ε` for every `ε > 0`, so it vanishes.
+  have hzero : ‖fderiv ℝ (fderiv ℝ ψ) x v w - fderiv ℝ (fderiv ℝ ψ) x w v‖ ≤ 0 := by
+    refine le_of_forall_pos_le_add fun ε hε ↦ ?_
+    have hK : 0 < 2 * ‖v‖ * ‖w‖ + 1 := by positivity
+    calc ‖fderiv ℝ (fderiv ℝ ψ) x v w - fderiv ℝ (fderiv ℝ ψ) x w v‖
+        ≤ 2 * (ε / (2 * ‖v‖ * ‖w‖ + 1)) * ‖v‖ * ‖w‖ := hbound _ (div_pos hε hK)
+      _ = ε * (2 * ‖v‖ * ‖w‖ / (2 * ‖v‖ * ‖w‖ + 1)) := by ring
+      _ ≤ ε * 1 := by
+          gcongr
+          rw [div_le_one hK]
+          linarith
+      _ = 0 + ε := by ring
+  exact sub_eq_zero.mp (norm_le_zero_iff.mp hzero)
+
+/-- **Trace identity for the tangential coefficient field** (product-rule core of the chart
+divergence formula). Put `A(y) = Dψ(y)`, `G(y) = A(y)* A(y)` and `a = G⁻¹ A* u`; fix `x ∈ V` and
+write `A = A(x)`, `S = D²ψ(x)` and `p = u(x) - A a(x)`. By `gram_inverse_range_starProjection`
+each `G(y)`, `y ∈ V`, is a unit, so `A(y)* (u(y) - A(y) a(y)) = 0` on `V`. Hence for every `c` the
+function `y ↦ ⟪A(y) c, u(y) - A(y) a(y)⟫ = ⟪c, A(y)* (u(y) - A(y) a(y))⟫` vanishes near `x`, and
+the product rule at `x` (`a` is `C¹` by `chart_tangential_coefficient_contDiffOn`) gives
+`⟪A c, Du(x) v - A Da(x) v - S v a(x)⟫ + ⟪S v c, p⟫ = 0` for all `c, v`. For any `e` take
+`c = G⁻¹ e`, so `A* A c = e`; with the symmetry of `G⁻¹` (`gram_inverse_range_starProjection`)
+and `S v a(x) = S a(x) v` (`fderiv_fderiv_symm_of_contDiffOn_two`) this becomes
+`⟪e, Da(x) e⟫ + ⟪e, G⁻¹ A* S(a(x)) e⟫ = ⟪e, G⁻¹ A* Du(x) e⟫ + ⟪p, S e (G⁻¹ e)⟫`. Summing over the
+standard orthonormal basis `e_l` (`LinearMap.trace_eq_sum_inner`) gives the identity. -/
+theorem Submission.chart_tangential_coefficient_trace_identity : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N) (u : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 u V → let a : Rn n → Rn n := fun x ↦ Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) (u x)); ∀ x ∈ V, LinearMap.trace ℝ (Rn n) (fderiv ℝ a x).toLinearMap + LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x (a x)).toLinearMap = LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ u x).toLinearMap + inner ℝ (u x - fderiv ℝ ψ x (a x)) (∑ l : Fin n, fderiv ℝ (fderiv ℝ ψ) x (EuclideanSpace.single l 1) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) (EuclideanSpace.single l 1))) := by
+  intro n N V ψ u hV hψ hinj hu a x hx
+  -- Step 1: `Dψ`, `u` and `a` are differentiable at `x`, and `S = D²ψ(x)` is symmetric.
+  have hxV : V ∈ 𝓝 x := hV.mem_nhds hx
+  have hA : HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) x) x :=
+    (((hψ.fderiv_of_isOpen hV (m := 1) (by norm_num)).contDiffAt hxV).differentiableAt
+      one_ne_zero).hasFDerivAt
+  have hu' : HasFDerivAt u (fderiv ℝ u x) x :=
+    ((hu.contDiffAt hxV).differentiableAt one_ne_zero).hasFDerivAt
+  have ha' : HasFDerivAt a (fderiv ℝ a x) x :=
+    (((Submission.chart_tangential_coefficient_contDiffOn n N V ψ u hV hψ hinj hu).contDiffAt
+      hxV).differentiableAt one_ne_zero).hasFDerivAt
+  have hS := Submission.fderiv_fderiv_symm_of_contDiffOn_two n N V ψ hV hψ x hx
+  -- Step 2: `G(y) G(y)⁻¹ = 1` for `y ∈ V`, so `A(y)* (A(y) a(y)) = A(y)* u(y)` there.
+  have hGG : ∀ y ∈ V, ∀ w : Rn n, ContinuousLinearMap.adjoint (fderiv ℝ ψ y) (fderiv ℝ ψ y
+      (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ y) ∘L fderiv ℝ ψ y) w)) = w :=
+    fun y hy w ↦ congrArg (fun T : Rn n →L[ℝ] Rn n ↦ T w) (Ring.mul_inverse_cancel _
+      (Submission.gram_inverse_range_starProjection n N _ (fderiv ℝ ψ y) (hinj y hy) rfl).1)
+  have hGa : ∀ y ∈ V, ContinuousLinearMap.adjoint (fderiv ℝ ψ y) (fderiv ℝ ψ y (a y)) =
+      ContinuousLinearMap.adjoint (fderiv ℝ ψ y) (u y) := fun y hy ↦ hGG y hy _
+  -- Step 3: `y ↦ ⟪A(y) c, u y - A(y) (a y)⟫` vanishes on `V`; its derivative at `x` in direction
+  -- `v` is `⟪A c, Du v - (A Da v + S v a)⟫ + ⟪S v c, u - A a⟫`, which is therefore `0`.
+  have hkey : ∀ c v : Rn n, inner ℝ (fderiv ℝ ψ x c) (fderiv ℝ u x v -
+      (fderiv ℝ ψ x (fderiv ℝ a x v) + fderiv ℝ (fderiv ℝ ψ) x v (a x))) +
+      inner ℝ (fderiv ℝ (fderiv ℝ ψ) x v c) (u x - fderiv ℝ ψ x (a x)) = 0 := by
+    intro c v
+    have hF := (hA.clm_apply (hasFDerivAt_const c x)).inner ℝ (hu'.sub (hA.clm_apply ha'))
+    have hF0 : HasFDerivAt (fun y ↦ inner ℝ (fderiv ℝ ψ y c) (u y - fderiv ℝ ψ y (a y)))
+        (0 : Rn n →L[ℝ] ℝ) x := by
+      refine (hasFDerivAt_const (0 : ℝ) x).congr_of_eventuallyEq ?_
+      filter_upwards [hxV] with y hy
+      rw [← ContinuousLinearMap.adjoint_inner_right, map_sub, hGa y hy, sub_self,
+        inner_zero_right]
+    have h := congrArg (fun L : Rn n →L[ℝ] ℝ ↦ L v) (hF.unique hF0)
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply,
+      fderivInnerCLM_apply, add_apply, sub_apply, Pi.sub_apply, ContinuousLinearMap.flip_apply,
+      zero_apply, map_zero, zero_add] using h
+  -- Step 4: for every `e`, with `c = G⁻¹ e` (so `A* A c = e`) and `G⁻¹` symmetric,
+  -- `⟪e, Da e⟫ + ⟪e, G⁻¹ A* S(a) e⟫ = ⟪e, G⁻¹ A* Du e⟫ + ⟪u - A a, S e c⟫`.
+  obtain ⟨-, hsym, -⟩ :=
+    Submission.gram_inverse_range_starProjection n N _ (fderiv ℝ ψ x) (hinj x hx) rfl
+  have hterm : ∀ e : Rn n, inner ℝ e (fderiv ℝ a x e) + inner ℝ e ((Ring.inverse
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L
+      ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x (a x)) e) =
+      inner ℝ e ((Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L
+        ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ u x) e) +
+      inner ℝ (u x - fderiv ℝ ψ x (a x)) (fderiv ℝ (fderiv ℝ ψ) x e (Ring.inverse
+        (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) e)) := by
+    intro e
+    have hk :=
+      hkey (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) e) e
+    rw [inner_sub_right (fderiv ℝ ψ x _), inner_add_right (fderiv ℝ ψ x _), hS e (a x),
+      ← ContinuousLinearMap.adjoint_inner_left (fderiv ℝ ψ x) (fderiv ℝ a x e), hGG x hx,
+      real_inner_comm (u x - fderiv ℝ ψ x (a x))] at hk
+    simp only [ContinuousLinearMap.comp_apply]
+    rw [← hsym e, ← hsym e, ContinuousLinearMap.adjoint_inner_right,
+      ContinuousLinearMap.adjoint_inner_right]
+    linarith
+  -- Step 5: compute the three traces in the standard orthonormal basis `e_l` and sum.
+  have htr : ∀ T : Rn n →L[ℝ] Rn n, LinearMap.trace ℝ (Rn n) T.toLinearMap =
+      ∑ l : Fin n, inner ℝ (EuclideanSpace.single l (1 : ℝ) : Rn n)
+        (T (EuclideanSpace.single l 1)) := by
+    intro T
+    rw [LinearMap.trace_eq_sum_inner T.toLinearMap (EuclideanSpace.basisFun (Fin n) ℝ)]
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe]
+  rw [htr, htr, htr, inner_sum, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun l _ ↦ hterm _
 /-- **Differentiability of the projection onto the range.** For an injective `A : ℝⁿ →L[ℝ] ℝᴺ`,
 the map `B ↦ (range B).starProjection` (the orthogonal projection of `ℝᴺ` onto the range of `B`) is
 Fréchet differentiable at `A`. The Gram operator `G(B) = B† ∘ B` is injective at `A`
@@ -1807,6 +2416,56 @@ theorem Submission.second_fundamental_form_symm_normal_continuity : ((∀ (n N :
     (meanCurvature M) hM fun V W ψ hψ ↦
       Submission.mean_curvature_comp_chart_continuousOn n N M V W ψ hψ (hTH.2 n N 2 M hM).2
         (hR V W ψ hψ) (hC V W ψ hψ)
+/-- **Simon Ch. 2, 4.21–4.30 (pp. 59–61) in a chart: the divergence density.** Assume `(TH)`, the
+frozen statement of `simon_submanifold_tangent_basics`. Let `(V, W, ψ)` be a class-`2` local
+representation of `M`, `Y` a `C¹` field, and put `A = Dψ`, `G = A*A`, `J = areaJacobianAt ψ`,
+`u = Y ∘ ψ`, `a = G⁻¹A*u`. Then `w = J • a` is `C¹` on `V` and vanishes where `u` does. By the
+product rule and Jacobi's formula, `trace Dw = J (trace Da + trace(G⁻¹A* D²ψ[a]))`, and the
+coefficient trace identity rewrites the bracket as `trace(G⁻¹A* Du) + ⟨u - Aa, ∑ₗ D²ψ[eₗ, G⁻¹eₗ]⟩`.
+The first term is `div_M Y ∘ ψ` (chain rule and the chart formula for `div_M`). Since `Aa = Pu` with
+`P = AG⁻¹A*` self-adjoint, the chart formulas for `H` and `B` make the second term `⟨u, H ∘ ψ⟩`. -/
+theorem Submission.chart_divergence_density_formula : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (Y : Rn N → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ContDiff ℝ 1 Y → ∃ w : Rn n → Rn n, ContDiffOn ℝ 1 w V ∧ (∀ x ∈ V, Y (ψ x) = 0 → w x = 0) ∧ ∀ x ∈ V, LinearMap.trace ℝ (Rn n) (fderiv ℝ w x).toLinearMap = Chapter02.areaJacobianAt ψ x * (tangentialDivergence M Y (ψ x) + inner ℝ (Y (ψ x)) (meanCurvature M (ψ x))) := by
+  intro hTH n N M V W ψ Y hψ hY
+  have hV : IsOpen V := hψ.isOpen_source
+  have hψ2 : ContDiffOn ℝ 2 ψ V := hψ.contDiffOn
+  have hinj : ∀ x ∈ V, Function.Injective (fderiv ℝ ψ x) := fun x hx ↦ hψ.injective_fderiv hx
+  have hu : ContDiffOn ℝ 1 (fun x ↦ Y (ψ x)) V := hY.comp_contDiffOn (hψ2.of_le (by norm_num))
+  obtain ⟨hJ, hDJ⟩ :=
+    Submission.areaJacobianAt_contDiffOn_fderiv_eq_gram_trace n N V ψ hV hψ2 hinj
+  have ha := Submission.chart_tangential_coefficient_contDiffOn n N V ψ _ hV hψ2 hinj hu
+  -- `w = J • a` with `a = G⁻¹A*(Y ∘ ψ)`.
+  refine ⟨fun x ↦ Chapter02.areaJacobianAt ψ x • Ring.inverse
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) (Y (ψ x))), hJ.smul ha,
+    fun x _ h0 ↦ by simp only [h0, map_zero, smul_zero], fun x hx ↦ ?_⟩
+  have hxV : V ∈ 𝓝 x := hV.mem_nhds hx
+  have hT : tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    hTH.1 n N 2 M V W ψ (by norm_num) hψ x hx
+  -- Product rule and Jacobi's formula: `trace Dw = J trace Da + J trace(G⁻¹A* D²ψ[a])`.
+  have hsr (f : Rn n →L[ℝ] ℝ) (v : Rn n) :
+      LinearMap.trace ℝ (Rn n) (f.smulRight v).toLinearMap = f v :=
+    LinearMap.trace_smulRight f.toLinearMap v
+  rw [fderiv_fun_smul (hJ.contDiffAt hxV).differentiableAt_one
+      (ha.contDiffAt hxV).differentiableAt_one, ContinuousLinearMap.toLinearMap_add,
+    ContinuousLinearMap.toLinearMap_smul, map_add, map_smul, smul_eq_mul, hsr, hDJ x hx]
+  -- The coefficient trace identity, with `Du(x) = DY(ψ x) ∘ A` (chain rule).
+  have hcore :=
+    Submission.chart_tangential_coefficient_trace_identity n N V ψ _ hV hψ2 hinj hu x hx
+  dsimp only at hcore
+  rw [fderiv_fun_comp x (hY.differentiable one_ne_zero _)
+    ((hψ2.contDiffAt hxV).differentiableAt (by norm_num)), inner_sub_left] at hcore
+  -- The chart formulas for `div_M Y` and `H`; `P = AG⁻¹A*` is self-adjoint.
+  have hP := (Submission.gram_inverse_range_starProjection n N (tangentSpace M (ψ x))
+    (fderiv ℝ ψ x) (hinj x hx) hT).2.2
+  rw [Submission.chart_tangentialDivergence_eq_gram_trace n N M (ψ x) (fderiv ℝ ψ x) Y
+      (hinj x hx) hT,
+    Submission.chart_meanCurvature_eq_normalPart_gram_sum n N M (ψ x) (fderiv ℝ ψ x)
+      (fderiv ℝ (fderiv ℝ ψ) x) (hinj x hx) hT
+      (Submission.second_fundamental_form_chart_formula hTH n N M V W ψ hψ x hx),
+    normalPart, tangentProjection, inner_sub_right,
+    ← Submodule.inner_starProjection_left_eq_right, hP, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.comp_apply]
+  linear_combination Chapter02.areaJacobianAt ψ x * hcore
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
