@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.support_eq-a1",
+  "parent_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+  "depth": 3,
+  "title": "Support of the rescaled varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be any set, let V be a rectifiable n-varifold in U with weight μ_V, let c ∈ ℝ^{n+ℓ}, R > 0, ψ(x) := c + R x and φ(y) := R⁻¹(y − c), and let W be a rectifiable n-varifold in ψ⁻¹(U) whose weight satisfies μ_W = (ENNReal.ofReal (R^n))⁻¹ • Measure.map φ μ_V. Then spt W = ψ⁻¹(spt V), where spt W := ψ⁻¹(U) ∩ spt μ_W and spt V := U ∩ spt μ_V (contract RectifiableVarifold.support; spt = Measure.support).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → W.support = (fun x => c + R • x) ⁻¹' V.support",
+  "lean_name": "any_radius_rv_support_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-rescaled-varifold-a1-support-eq-a1-a1"
+}

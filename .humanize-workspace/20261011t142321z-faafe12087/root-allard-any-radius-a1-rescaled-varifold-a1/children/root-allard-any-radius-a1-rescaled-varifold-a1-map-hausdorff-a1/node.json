@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.map_hausdorff-a1",
+  "parent_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+  "depth": 3,
+  "title": "Euclidean Hausdorff measure under the similarity x ↦ c + R x",
+  "statement": "Let n, ℓ ∈ ℕ (n = 0 allowed), let c ∈ ℝ^{n+ℓ} = EuclideanSpace ℝ (Fin (n+ℓ)) and R > 0, and put ψ(x) := c + R x. Let H^n := μHE[n] be Mathlib's Euclidean Hausdorff measure on ℝ^{n+ℓ}. Then the push-forward of H^n under ψ equals R^{-n} H^n: Measure.map ψ H^n = (ENNReal.ofReal (R^n))⁻¹ • H^n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (c : Amb n ℓ) (R : ℝ), 0 < R → (μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x) = (ENNReal.ofReal (R ^ n))⁻¹ • (μHE[n] : Measure (Amb n ℓ))",
+  "lean_name": "any_radius_rv_map_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-rescaled-varifold-a1-map-hausdorff-a1-a1"
+}
