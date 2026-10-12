@@ -359,6 +359,77 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Signed area formula from the nonnegative one: if `∫⁻_{Φ(s)} g dHⁿ = ∫⁻_s J · (g ∘ Φ) dLⁿ`
+for every Borel `g ≥ 0`, then `∫_{Φ(Ω)} h dHⁿ = ∫_Ω J · (h ∘ Φ) dLⁿ` for every continuous
+compactly supported `h` with `Ω ∩ Φ⁻¹(spt h) ⊆ s`. -/
+theorem Submission.lpf_wtc_caf_signed_of_lintegral :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω s : Set (Eucl n)) (J : Eucl n → ℝ) (h : Eucl Q → ℝ),
+      IsOpen Ω → IsOpen s → s ⊆ Ω → Bornology.IsBounded s → Continuous Φ → InjOn Φ Ω →
+      Continuous J → (∀ v, 0 ≤ J v) → Continuous h → HasCompactSupport h →
+      Ω ∩ Φ ⁻¹' tsupport h ⊆ s →
+      (∀ g : Eucl Q → ℝ≥0∞, Measurable g →
+        ∫⁻ y in Φ '' s, g y ∂(μHE[n] : Measure (Eucl Q)) =
+          ∫⁻ v in s, ENNReal.ofReal (J v) * g (Φ v) ∂(volume : Measure (Eucl n))) →
+      ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) =
+        ∫ v in Ω, J v * h (Φ v) ∂(volume : Measure (Eucl n)) := by
+  intro Q n Φ Ω s J h hΩ hs hsΩ hsb hΦ hinj hJ hJ0 hh hhc hsupp H
+  -- `h ∘ Φ` vanishes on `Ω \ s`.
+  have hvan : ∀ v ∈ Ω \ s, h (Φ v) = 0 := fun v hv =>
+    image_eq_zero_of_notMem_tsupport fun hK => hv.2 (hsupp ⟨hv.1, hK⟩)
+  -- Bounds: `‖J‖ ≤ C` on `s`, `‖h‖ ≤ M`, and `Lⁿ(s) < ∞`.
+  obtain ⟨C, hC⟩ := hsb.isCompact_closure.exists_bound_of_continuousOn hJ.continuousOn
+  have hJC : ∀ v ∈ s, ‖J v‖ ≤ C := fun v hv => hC v (subset_closure hv)
+  obtain ⟨M, hM⟩ := hh.bounded_above_of_compact_support hhc
+  have hvol : volume s < ∞ := hsb.measure_lt_top
+  -- `Hⁿ(Φ(s)) < ∞`: the identity with `g ≡ 1`.
+  have hfin : (μHE[n] : Measure (Eucl Q)) (Φ '' s) < ∞ := by
+    have h1 := H (fun _ => 1) measurable_const
+    rw [setLIntegral_one] at h1
+    rw [h1]
+    calc ∫⁻ v in s, ENNReal.ofReal (J v) * 1 ∂volume
+        ≤ ∫⁻ _ in s, ENNReal.ofReal C ∂volume :=
+          setLIntegral_mono measurable_const fun v hv => by
+            rw [mul_one]
+            exact ENNReal.ofReal_le_ofReal ((Real.le_norm_self _).trans (hJC v hv))
+      _ = ENNReal.ofReal C * volume s := setLIntegral_const s _
+      _ < ∞ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hvol
+  -- Integrability of `h` on `Φ(s)` and of `J · (h ∘ Φ)` on `s`.
+  have hint₁ : IntegrableOn h (Φ '' s) (μHE[n] : Measure (Eucl Q)) :=
+    Measure.integrableOn_of_bounded hfin.ne hh.aestronglyMeasurable (ae_of_all _ hM)
+  have hint₂ : IntegrableOn (fun v => J v * h (Φ v)) s volume := by
+    refine Measure.integrableOn_of_bounded (M := C * M) hvol.ne
+      (hJ.mul (hh.comp hΦ)).aestronglyMeasurable
+      (ae_restrict_of_forall_mem hs.measurableSet fun v hv => ?_)
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg' (hJC v hv) (hM _) (norm_nonneg _)
+      ((norm_nonneg _).trans (hJC v hv))
+  -- The identity for `ofReal ∘ h` and `ofReal ∘ (-h)`, using `J ≥ 0`.
+  have ePos : ∫⁻ y in Φ '' s, ENNReal.ofReal (h y) ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫⁻ v in s, ENNReal.ofReal (J v * h (Φ v)) ∂(volume : Measure (Eucl n)) := by
+    rw [H (fun y => ENNReal.ofReal (h y)) (ENNReal.measurable_ofReal.comp hh.measurable)]
+    exact lintegral_congr fun v => (ENNReal.ofReal_mul (hJ0 v)).symm
+  have eNeg : ∫⁻ y in Φ '' s, ENNReal.ofReal (-h y) ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫⁻ v in s, ENNReal.ofReal (-(J v * h (Φ v))) ∂(volume : Measure (Eucl n)) := by
+    rw [H (fun y => ENNReal.ofReal (-h y)) (ENNReal.measurable_ofReal.comp hh.measurable.neg)]
+    exact lintegral_congr fun v => by rw [← mul_neg, ENNReal.ofReal_mul (hJ0 v)]
+  -- The signed identity on `s`.
+  have key : ∫ x in Φ '' s, h x ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫ v in s, J v * h (Φ v) ∂(volume : Measure (Eucl n)) := by
+    rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint₁,
+      integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint₂, ePos, eNeg]
+  -- The integrands vanish on `Ω \ s` and `Φ(Ω) \ Φ(s)`; `Φ(Ω)` is Borel by Lusin–Souslin.
+  have eΩ : ∫ v in Ω, J v * h (Φ v) ∂(volume : Measure (Eucl n)) =
+      ∫ v in s, J v * h (Φ v) ∂(volume : Measure (Eucl n)) :=
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hΩ.measurableSet hsΩ fun v hv => by
+      rw [hvan v hv, mul_zero]
+  have eΦΩ : ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫ x in Φ '' s, h x ∂(μHE[n] : Measure (Eucl Q)) := by
+    refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
+      (hΩ.measurableSet.image_of_continuousOn_injOn hΦ.continuousOn hinj) (image_mono hsΩ) ?_
+    rintro _ ⟨⟨v, hv, rfl⟩, hvs⟩
+    exact hvan v ⟨hv, fun hvs' => hvs (mem_image_of_mem Φ hvs')⟩
+  rw [eΦΩ, eΩ, key]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
