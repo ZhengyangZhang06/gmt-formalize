@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e5bd97d44d58e46a0723f58a373901afa9692f0d75b28bfda8d68f4994a9374e",
+  "git_delta": {
+    "base_commit": "88173e3323a3d067f88bbc57bacc27313c031662",
+    "candidate_commit": "6a5fd140c3e2963267900047042ec9f1e7fbbc5e",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiRH_measure_le_mul_hausdorffMeasure_of_closedBall_le",
+    "diff_sha256": "d6b954313bfe3c49cd352ad83fdb382ae7a10a3fac8191818f1a14dda1d50b37",
+    "source_sha256": "b3224352106b9111b2753fdcd012a2315e32f13daa5a402203dc58fe3a929fb3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_measure_le_mul_hausdorffMeasure_of_closedBall_le",
+      "statement": "∀ (n N : ℕ) (μ : Measure (Rn N)) (B : Set (Rn N)) (c : ℝ≥0∞) (δ : ℝ), c ≠ 0 → c ≠ ∞ → 0 < δ → (∀ x ∈ B, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ (Metric.closedBall x ρ) ≤ c * ENNReal.ofReal (ρ ^ n)) → μ B ≤ c * μH[(n : ℝ)] B",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
