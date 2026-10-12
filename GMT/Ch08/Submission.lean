@@ -658,6 +658,85 @@ theorem Submission.intcpt_graph_piece_lintegral_le_fibre_sum :
         rw [MeasureTheory.lintegral]
     _ ≤ C * ∫⁻ a in (P.plane : Set (Euclidean N)), F a ∂μ := iSup₂_le key
 
+/-- **Fibre bound over countably many Lipschitz graphs** (Simon Ch. 8, 5.9; child
+`graph_fibre_bound` of `integral_compactness`, the inequality of step B6 (iii)–(iv) of its proof,
+used there instead of the mapping formula in (5)–(6) of the book's proof).  Let `Γ_i` (`i ∈ ℕ`) be
+closed `L`-Lipschitz graphs over the `n`-plane `P` (`|q(y - z)| ≤ L |p(y - z)|` on each `Γ_i`, where
+`p` is the orthogonal projection onto `P` and `q = id - p`), `G ⊆ ⋃_i Γ_i` an `H^n`-measurable set
+and `g : ℝ^N → [0,∞]` arbitrary.  Then
+`∫⁻_G g dH^n ≤ (1 + L²)^{n/2} ∫⁻_P (Σ_{y ∈ G, p(y) = a} g(y)) dH^n(a)`.  The pieces
+`A_i = G ∩ (Γ_i ∖ ⋃_{j<i} Γ_j)` are pairwise disjoint `H^n`-measurable `L`-graphs with union `G`;
+the one-piece bound `intcpt_graph_piece_lintegral_le_fibre_sum` is summed over `i` by countable
+superadditivity of the lower integral, and over each `a` the fibres of the `A_i` are disjoint parts
+of the fibre of `G`. -/
+theorem Submission.intcpt_lipschitz_graph_fibre_bound :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (Γ : ℕ → Set (Euclidean N)) (G : Set (Euclidean N)) (g : Euclidean N → ℝ≥0∞), 0 ≤ L → (∀ i, IsClosed (Γ i)) → (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → G ⊆ ⋃ i, Γ i → NullMeasurableSet G (μHE[n] : Measure (Euclidean N)) → ∫⁻ y in G, g y ∂(μHE[n] : Measure (Euclidean N)) ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * ∫⁻ a in (P.plane : Set (Euclidean N)), (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro N n P L Γ G g hL hΓ hΓL hGΓ hG
+  set μ : Measure (Euclidean N) := μHE[n]
+  set C : ℝ≥0∞ := ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2))
+  -- Step 1: the pieces `A_i = G ∩ (Γ_i ∖ ⋃_{j<i} Γ_j)` are pairwise disjoint `H^n`-measurable
+  -- `L`-graphs over `P` with union `G`.
+  set A : ℕ → Set (Euclidean N) := fun i ↦ G ∩ disjointed Γ i
+  have hAG : ∀ i, A i ⊆ G := fun i ↦ inter_subset_left
+  have hAΓ : ∀ i, A i ⊆ Γ i := fun i ↦ inter_subset_right.trans (disjointed_subset Γ i)
+  have hAm : ∀ i, NullMeasurableSet (A i) μ := fun i ↦
+    hG.inter (MeasurableSet.disjointed (fun j ↦ (hΓ j).measurableSet) i).nullMeasurableSet
+  have hAd : Pairwise (Function.onFun Disjoint A) := fun i j hij ↦
+    (disjoint_disjointed Γ hij).mono inter_subset_right inter_subset_right
+  have hAU : ⋃ i, A i = G := by
+    show ⋃ i, G ∩ disjointed Γ i = G
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left.2 hGΓ]
+  -- Step 2: the lower integral is countably superadditive (no measurability is needed).
+  have hsup : ∀ (ν : Measure (Euclidean N)) (f : ℕ → Euclidean N → ℝ≥0∞),
+      ∑' i, ∫⁻ a, f i a ∂ν ≤ ∫⁻ a, ∑' i, f i a ∂ν := by
+    intro ν f
+    rw [ENNReal.tsum_eq_iSup_nat]
+    refine iSup_le fun m ↦ le_trans ?_
+      (lintegral_mono fun a ↦ ENNReal.sum_le_tsum (f := fun i ↦ f i a) (Finset.range m))
+    induction m with
+    | zero => simp
+    | succ m ih =>
+      calc ∑ i ∈ Finset.range (m + 1), ∫⁻ a, f i a ∂ν
+          = ∑ i ∈ Finset.range m, ∫⁻ a, f i a ∂ν + ∫⁻ a, f m a ∂ν := Finset.sum_range_succ _ _
+        _ ≤ ∫⁻ a, ∑ i ∈ Finset.range m, f i a ∂ν + ∫⁻ a, f m a ∂ν := by gcongr
+        _ ≤ ∫⁻ a, (∑ i ∈ Finset.range m, f i a + f m a) ∂ν := le_lintegral_add _ _
+        _ = ∫⁻ a, ∑ i ∈ Finset.range (m + 1), f i a ∂ν := by simp only [Finset.sum_range_succ]
+  -- Step 3: over each `a`, the fibres of the `A_i` are disjoint parts of the fibre of `G`.
+  have hfib : ∀ a : Euclidean N,
+      ∑' i, ∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y ≤
+        ∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y := by
+    intro a
+    let φ : (Σ i, {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}) →
+        {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a} :=
+      fun q ↦ ⟨q.2.1, hAG q.1 q.2.2.1, q.2.2.2⟩
+    have hφ : Function.Injective φ := by
+      rintro ⟨i, y, hyi, hya⟩ ⟨j, z, hzj, hza⟩ h
+      obtain rfl : y = z := congrArg Subtype.val h
+      obtain rfl : i = j := by
+        by_contra hij
+        exact Set.disjoint_left.1 (hAd hij) hyi hzj
+      rfl
+    calc ∑' i, ∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y
+        = ∑' q, g (φ q) := (ENNReal.tsum_sigma' fun q ↦ g (φ q)).symm
+      _ ≤ ∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y :=
+        ENNReal.tsum_comp_le_tsum_of_injective hφ fun y ↦ g y
+  -- Step 4: split `∫⁻_G` over the pieces, apply the one-piece bound and recombine.
+  calc ∫⁻ y in G, g y ∂μ = ∑' i, ∫⁻ y in A i, g y ∂μ := by
+        rw [← lintegral_iUnion₀ hAm hAd.aedisjoint g, hAU]
+    _ ≤ ∑' i, C * ∫⁻ a in (P.plane : Set (Euclidean N)),
+          (∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        ENNReal.tsum_le_tsum fun i ↦ Submission.intcpt_graph_piece_lintegral_le_fibre_sum N n P L
+          (A i) g hL (fun y hy z hz ↦ hΓL i y (hAΓ i hy) z (hAΓ i hz)) (hAm i)
+    _ = C * ∑' i, ∫⁻ a in (P.plane : Set (Euclidean N)),
+          (∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        ENNReal.tsum_mul_left
+    _ ≤ C * ∫⁻ a in (P.plane : Set (Euclidean N)),
+          ∑' i, (∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        mul_le_mul_right (hsup _ _) C
+    _ ≤ C * ∫⁻ a in (P.plane : Set (Euclidean N)),
+          (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        mul_le_mul_right (lintegral_mono hfib) C
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
