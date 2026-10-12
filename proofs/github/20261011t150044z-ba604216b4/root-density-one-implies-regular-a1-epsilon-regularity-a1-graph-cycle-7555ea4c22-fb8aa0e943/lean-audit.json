@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d4ba6d421a9f06ef68ccb262a8ef6e27e268dff300d3aa05a93aef86532a920",
+  "git_delta": {
+    "base_commit": "e3d56e8772aa92a58992791e8ee7ad64c9fc53e2",
+    "candidate_commit": "e4be7bb7bdc1498758ba0234d5e483cc3b7dfd65",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_graph_measure_bounds",
+    "diff_sha256": "0a948891251994f95e4ece5adf205c65b021a98c62e605c061b97596eba35c07",
+    "source_sha256": "a42771d310e4be58df8d0c509f95013fe12a8e1af68f30fc2f3d39806e6624c5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_graph_measure_bounds",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → ContDiffOn ℝ 1 u (ball 0 s) → (∀ (A : Set (Euclid n)) (g : Euclid (n + k) → ℝ≥0∞), MeasurableSet A → A ⊆ ball 0 s → Measurable g → ∫⁻ v in A, g (z + ι v + ι' (u v)) ≤ ∫⁻ x in (fun v => z + ι v + ι' (u v)) '' A, g x ∂μHE[n]) ∧ ∀ t : ℝ, t < s → μHE[n] ((fun v => z + ι v + ι' (u v)) '' closedBall (0 : Euclid n) t) ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
