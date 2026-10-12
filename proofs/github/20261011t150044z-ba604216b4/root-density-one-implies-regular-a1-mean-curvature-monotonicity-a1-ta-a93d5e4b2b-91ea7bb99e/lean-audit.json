@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c41c884a025e2f62153182bff19cb6c6bfd74653dd2974980cbae9fcdfa470d5",
+  "git_delta": {
+    "base_commit": "c91cb12509d0e3011357a09b2956de68781378fa",
+    "candidate_commit": "3431f3af76b1e3a98109fee58170bf66213d6371",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_measurable_blowUp_image_setIntegral",
+    "diff_sha256": "9649b06574f1b70757e7d56a1768414fc2c6c49573dc7c85d403f0250b24585f",
+    "source_sha256": "95bd1fd33ce2c1d5a40eb57b268d851c154dec41c7de1fc1674cfc467f41cc25",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_measurable_blowUp_image_setIntegral",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)), SFinite (μHE[n].restrict M) → ∀ f : Euclid P → ℝ, Continuous f → (∀ y, 0 ≤ f y) → ∀ r : ℝ, 0 < r → Measurable (fun x : Euclid P => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n])",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
