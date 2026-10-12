@@ -1455,6 +1455,75 @@ theorem Submission.areaFormula_on_chart_piece : ∀ (n N p : ℕ) (ψ : Rn n →
         ring
     _ = ∫⁻ y, ∑' x : ↥(B ∩ (f ∘ ψ) ⁻¹' {y}), h (ψ x) ∂μHE[n] := A2.2.symm
     _ = ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂μHE[n] := lintegral_congr hfib2
+/-- **Gluing fibre-sum area identities over a countable cover** (Simon Ch. 3, proof of the area
+formula (2.4)–(2.5), pp. 76–77: summation over the pieces, using that the image of the uncovered
+part is null), for abstract measure spaces. Write `F_S(y) = ∑_{x ∈ S ∩ f⁻¹{y}} h(x)`. Let `M` and
+every `G_α` be `μ`-null-measurable with `μ(M ∖ ⋃ G_α) = 0` and `ν(f(M ∖ ⋃ G_α)) = 0`, and assume
+that `∫_S g dμ = ∫ F_S dν`, with `F_S` `ν`-a.e. measurable, for every `μ`-null-measurable
+`S ⊆ M ∩ G_α`. Then `∫_M g dμ = ∫ F_M dν`. The pieces `S_α = M ∩ disjointed G α` are disjoint and
+null-measurable with union `M ∩ ⋃ G_α`, which is `μ`-a.e. equal to `M`; so the left side is
+`∑_α ∫_{S_α} g dμ = ∑_α ∫ F_{S_α} dν = ∫ ∑_α F_{S_α} dν` (monotone convergence). For `y` outside
+the `ν`-null set `f(M ∖ ⋃ G_α)`, the fibres `S_α ∩ f⁻¹{y}` partition `M ∩ f⁻¹{y}`, so
+`∑_α F_{S_α}(y) = F_M(y)`. -/
+theorem Submission.areaFormula_glue_pieces : ∀ (X Y : Type) [MeasurableSpace X]
+    [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (g h : X → ℝ≥0∞) (M : Set X)
+    (G : ℕ → Set X), NullMeasurableSet M μ → (∀ α, NullMeasurableSet (G α) μ) →
+    μ (M \ ⋃ α, G α) = 0 → ν (f '' (M \ ⋃ α, G α)) = 0 →
+    (∀ α, ∀ S ⊆ M ∩ G α, NullMeasurableSet S μ →
+      (∫⁻ x in S, g x ∂μ = ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂ν) ∧
+        AEMeasurable (fun y ↦ ∑' x : ↥(S ∩ f ⁻¹' {y}), h x) ν) →
+    ∫⁻ x in M, g x ∂μ = ∫⁻ y, ∑' x : ↥(M ∩ f ⁻¹' {y}), h x ∂ν := by
+  intro X Y _ _ μ ν f g h M G hM hG hnull himnull H
+  -- Disjoint null-measurable pieces `S α = M ∩ disjointed G α ⊆ M ∩ G α` with union `M ∩ ⋃ G`.
+  let S : ℕ → Set X := fun α ↦ M ∩ disjointed G α
+  have hSsub : ∀ α, S α ⊆ M ∩ G α := fun α x hx ↦ ⟨hx.1, disjointed_subset G α hx.2⟩
+  have hSmeas : ∀ α, NullMeasurableSet (S α) μ := fun α ↦
+    hM.inter (NullMeasurableSet.disjointed hG α)
+  have hSdisj : Pairwise (Function.onFun Disjoint S) := fun a b hab ↦
+    (show Disjoint (disjointed G a) (disjointed G b) from disjoint_disjointed G hab).mono
+      inter_subset_right inter_subset_right
+  have hSU : ⋃ α, S α = M ∩ ⋃ α, G α := by
+    show ⋃ α, (M ∩ disjointed G α) = M ∩ ⋃ α, G α
+    rw [← inter_iUnion, iUnion_disjointed]
+  -- Source side: `M ∩ ⋃ G` is `μ`-a.e. equal to `M`.
+  have hMae : M ∩ ⋃ α, G α =ᵐ[μ] M := by
+    rw [ae_eq_set]
+    refine ⟨?_, ?_⟩
+    · rw [sdiff_eq_empty.mpr inter_subset_left, measure_empty]
+    · exact measure_mono_null (show M \ (M ∩ ⋃ α, G α) ⊆ M \ ⋃ α, G α from
+        fun x hx ↦ ⟨hx.1, fun hG' ↦ hx.2 ⟨hx.1, hG'⟩⟩) hnull
+  -- Target side: off the `ν`-null set `f(M ∖ ⋃ G)`, the fibre sums over the pieces regroup to
+  -- the fibre sum over `M`.
+  have hE : ∀ᵐ y ∂ν,
+      ∑' α, ∑' x : ↥(S α ∩ f ⁻¹' {y}), h x = ∑' x : ↥(M ∩ f ⁻¹' {y}), h x := by
+    rw [ae_iff]
+    refine measure_mono_null (fun y hy ↦ ?_) himnull
+    rw [mem_ofPred_eq] at hy
+    by_contra hy'
+    apply hy
+    have hset : ⋃ α, (S α ∩ f ⁻¹' {y}) = M ∩ f ⁻¹' {y} := by
+      rw [← iUnion_inter, hSU]
+      ext x
+      simp only [mem_inter_iff, mem_iUnion, mem_preimage, mem_singleton_iff]
+      constructor
+      · rintro ⟨⟨hxM, _⟩, hfx⟩
+        exact ⟨hxM, hfx⟩
+      · rintro ⟨hxM, hfx⟩
+        refine ⟨⟨hxM, ?_⟩, hfx⟩
+        by_contra hxG
+        exact hy' ⟨x, ⟨hxM, by simpa [mem_iUnion] using hxG⟩, hfx⟩
+    have hdisj : (Set.univ : Set ℕ).PairwiseDisjoint (fun α ↦ S α ∩ f ⁻¹' {y}) := by
+      intro a _ b _ hab
+      exact (show Disjoint (S a) (S b) from hSdisj hab).mono inter_subset_left inter_subset_left
+    rw [← ENNReal.tsum_biUnion hdisj, hset]
+  calc ∫⁻ x in M, g x ∂μ = ∫⁻ x in ⋃ α, S α, g x ∂μ := by
+        rw [hSU, Measure.restrict_congr_set hMae]
+    _ = ∑' α, ∫⁻ x in S α, g x ∂μ := lintegral_iUnion₀ hSmeas hSdisj.aedisjoint g
+    _ = ∑' α, ∫⁻ y, ∑' x : ↥(S α ∩ f ⁻¹' {y}), h x ∂ν :=
+        tsum_congr fun α ↦ (H α (S α) (hSsub α) (hSmeas α)).1
+    _ = ∫⁻ y, ∑' α, ∑' x : ↥(S α ∩ f ⁻¹' {y}), h x ∂ν :=
+        (lintegral_tsum fun α ↦ (H α (S α) (hSsub α) (hSmeas α)).2).symm
+    _ = ∫⁻ y, ∑' x : ↥(M ∩ f ⁻¹' {y}), h x ∂ν := lintegral_congr_ae hE
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
