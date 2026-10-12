@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.level_integral_bound-a1",
+  "parent_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1",
+  "depth": 3,
+  "title": "Integrating the truncated superlevel estimates over levels (moment factor, Tonelli, layer cake)",
+  "statement": "Let n ≥ 2 and ℓ ∈ ℕ, and let μ be a measure on E = ℝ^{n+ℓ} (Borel σ-algebra) that is finite on compact sets. Let h: E → ℝ be continuous, nonnegative and compactly supported. Let D, K: E → ℝ be nonnegative, with D μ-integrable and K μ-integrable on tsupport h. Let γ: ℝ → ℝ be C¹ and nondecreasing with 0 ≤ γ ≤ 1 and γ = 0 on (−∞, 0], and let C ≥ 0 and ε > 0. Put p := n/(n − 1), M_s := {x : h(x) > s}, γ' := deriv γ, and write μ(M_s) for the real measure. Suppose that for every t ≥ 0, μ(M_{t+ε}) ≤ C·μ(M_t)^{1/n}·(∫γ'(h − t)D dμ + ∫_{M_t}K dμ). Then ((n − 1)/n)·∫_{M_ε}(h^p − ε^p) dμ ≤ C·(∫_{M_0}(h + ε)^p dμ)^{1/n}·∫(D + hK) dμ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h D K : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → (∀ x, 0 ≤ D x) → Integrable D μ → (∀ x, 0 ≤ K x) → IntegrableOn K (tsupport h) μ → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 ≤ C → 0 < ε → (∀ t : ℝ, 0 ≤ t → μ.real {x | t + ε < h x} ≤ C * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ)) → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * ∫ x, (D x + h x * K x) ∂μ",
+  "lean_name": "sobolev_level_integral_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-truncation-layer-cake-a1-level-integral-bound-a1-a1"
+}

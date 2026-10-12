@@ -434,6 +434,543 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Smooth level truncation** (Simon Ch. 4, 5.7, proof, with a general cut-off `γ`). If
+`∫_{g ≥ 1} g dμ_V ≤ C (∫ g dμ_V)^{1/n} ∫ (|∇^M g| + g|H|) dμ_V` for every nonnegative
+`g ∈ C¹_c(U)`, then for `h ∈ C¹_c(U)`, `h ≥ 0`, and `t ≥ 0` the truncation `g = γ(h - t)` gives
+`μ_V(h > t + ε) ≤ C μ_V(h > t)^{1/n} (∫ γ'(h - t)|∇^M h| dμ_V + ∫_{h > t} |H| dμ_V)`:
+`g = 1` on `{h > t + ε}`, `0 ≤ g ≤ 1_{h > t}`, and `∇^M g = γ'(h - t) ∇^M h` with `γ' ≥ 0`. -/
+theorem Submission.sobolev_truncation_superlevel_bound : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε t : ℝ), IsFiniteMeasureOnCompacts V.weight → LocallyIntegrableOn H U V.weight → 0 ≤ C → (∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ C * (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ * ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) → ContDiff ℝ 1 h → HasCompactSupport h → tsupport h ⊆ U → (∀ x, 0 ≤ h x) → Integrable (fun x ↦ ‖V.tangentialGradient h x‖) V.weight → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 < ε → (∀ s, ε ≤ s → γ s = 1) → 0 ≤ t → V.weight.real {x | t + ε < h x} ≤ C * (V.weight.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * ‖V.tangentialGradient h x‖ ∂V.weight) + ∫ x in {x | t < h x}, ‖H x‖ ∂V.weight) := by
+  intro n ℓ V U H h γ C ε t hfin hHloc hC hS hh hhc hhU hh0 hgrad hγ hγm hγ01 hγ0 hε hγ1 ht
+  have hhd : Differentiable ℝ h := hh.differentiable one_ne_zero
+  have hγd : Differentiable ℝ γ := hγ.differentiable one_ne_zero
+  have hγ' : Continuous (deriv γ) := hγ.continuous_deriv le_rfl
+  have hγ'0 : ∀ s, 0 ≤ deriv γ s := fun s ↦ hγm.deriv_nonneg
+  have hgc : Continuous fun x ↦ γ (h x - t) :=
+    hγ.continuous.comp (hh.continuous.sub continuous_const)
+  -- the superlevel sets `M_s = {h > s}` are open, and for `s ≥ 0` lie in the compact `tsupport h`
+  have hMmeas : ∀ s, MeasurableSet {x | s < h x} := fun s ↦
+    (isOpen_lt continuous_const hh.continuous).measurableSet
+  have hMsub : ∀ s, 0 ≤ s → {x | s < h x} ⊆ tsupport h := fun s hs x hx ↦
+    subset_tsupport _ (hs.trans_lt hx).ne'
+  have hMfin : ∀ s, 0 ≤ s → V.weight {x | s < h x} ≠ ⊤ := fun s hs ↦
+    ((measure_mono (hMsub s hs)).trans_lt hhc.isCompact.measure_lt_top).ne
+  -- the truncation `g = γ(h - t)` vanishes off `M_t`, so it is admissible in the hypothesis
+  have hg0 : ∀ x, ¬ t < h x → γ (h x - t) = 0 := fun x hx ↦ hγ0 _ (by linarith [not_lt.mp hx])
+  have hgsupp : Function.support (fun x ↦ γ (h x - t)) ⊆ Function.support h := fun x hx hx0 ↦
+    hx (hγ0 _ (by rw [hx0]; linarith))
+  have hgcs : HasCompactSupport fun x ↦ γ (h x - t) := hhc.mono hgsupp
+  have hgU : tsupport (fun x ↦ γ (h x - t)) ⊆ U := (closure_mono hgsupp).trans hhU
+  have hgint : Integrable (fun x ↦ γ (h x - t)) V.weight :=
+    hgc.integrable_of_hasCompactSupport hgcs
+  have A1 := hS (fun x ↦ γ (h x - t)) (hγ.comp (hh.sub contDiff_const)).contDiffOn hgcs hgU
+    (fun x ↦ (hγ01 _).1)
+  -- chain rule: `∇^M g = γ'(h - t) ∇^M h`
+  have hchain : ∀ x, V.tangentialGradient (fun y ↦ γ (h y - t)) x =
+      deriv γ (h x - t) • V.tangentialGradient h x := by
+    intro x
+    have hcomp : fderiv ℝ (fun y ↦ γ (h y - t)) x = deriv γ (h x - t) • fderiv ℝ h x :=
+      ((hγd _).hasDerivAt.comp_hasFDerivAt x ((hhd x).hasFDerivAt.sub_const t)).fderiv
+    simp only [RectifiableVarifold.tangentialGradient, gradient, hcomp, map_smul]
+  -- left side: `μ(M_{t+ε}) = ∫_{M_{t+ε}} g ≤ ∫_{g ≥ 1} g`
+  have hLHS : V.weight.real {x | t + ε < h x} ≤
+      ∫ x in {x | 1 ≤ γ (h x - t)}, γ (h x - t) ∂V.weight := by
+    calc V.weight.real {x | t + ε < h x} = ∫ x in {x | t + ε < h x}, γ (h x - t) ∂V.weight := by
+          rw [setIntegral_congr_fun (hMmeas (t + ε))
+            (fun x (hx : t + ε < h x) ↦ hγ1 _ (by linarith) :
+              EqOn (fun x ↦ γ (h x - t)) (fun _ ↦ (1 : ℝ)) _), setIntegral_const, smul_eq_mul,
+            mul_one]
+      _ ≤ ∫ x in {x | 1 ≤ γ (h x - t)}, γ (h x - t) ∂V.weight :=
+          setIntegral_mono_set hgint.integrableOn (Eventually.of_forall fun x ↦ (hγ01 _).1)
+            (EventuallySubset.of_subset fun x (hx : t + ε < h x) ↦ (hγ1 _ (by linarith)).ge)
+  -- mass factor: `0 ≤ g ≤ 1_{M_t}`
+  have hmass : ∫ x, γ (h x - t) ∂V.weight ≤ V.weight.real {x | t < h x} := by
+    rw [← integral_indicator_one (hMmeas t)]
+    refine integral_mono hgint ((integrableOn_const (hMfin t ht)).integrable_indicator (hMmeas t))
+      fun x ↦ ?_
+    by_cases hx : t < h x
+    · rw [Set.indicator_of_mem (show x ∈ {x | t < h x} from hx)]
+      exact (hγ01 _).2
+    · rw [Set.indicator_of_notMem (show x ∉ {x | t < h x} from hx), hg0 x hx]
+  have hmass' : (∫ x, γ (h x - t) ∂V.weight) ^ (n : ℝ)⁻¹ ≤
+      (V.weight.real {x | t < h x}) ^ (n : ℝ)⁻¹ :=
+    Real.rpow_le_rpow (integral_nonneg fun x ↦ (hγ01 _).1) hmass (inv_nonneg.mpr n.cast_nonneg)
+  -- energy factor: integrable majorant `γ'(h - t)|∇^M h| + 1_{M_t}|H|` (`γ'` is bounded on the
+  -- range of `h - t`, and `H` is integrable on the compact `tsupport h ⊆ U`)
+  have hPint : Integrable (fun x ↦ deriv γ (h x - t) * ‖V.tangentialGradient h x‖) V.weight := by
+    obtain ⟨m, hm⟩ := hh.continuous.bounded_above_of_compact_support hhc
+    obtain ⟨L, hL⟩ := (isCompact_Icc (a := -t) (b := m - t)).exists_bound_of_continuousOn
+      hγ'.continuousOn
+    refine hgrad.bdd_mul (c := L)
+      (hγ'.comp (hh.continuous.sub continuous_const)).aestronglyMeasurable
+      (Eventually.of_forall fun x ↦ hL _ ⟨?_, ?_⟩)
+    · linarith [hh0 x]
+    · have := hm x
+      rw [Real.norm_eq_abs] at this
+      linarith [le_abs_self (h x)]
+  have hRint : Integrable (Set.indicator {x | t < h x} fun x ↦ ‖H x‖) V.weight :=
+    (IntegrableOn.mono_set (Integrable.norm (hHloc.integrableOn_compact_subset hhU hhc.isCompact))
+      (hMsub t ht)).integrable_indicator (hMmeas t)
+  have hI : ∫ x, (‖V.tangentialGradient (fun y ↦ γ (h y - t)) x‖ + γ (h x - t) * ‖H x‖)
+      ∂V.weight ≤ (∫ x, deriv γ (h x - t) * ‖V.tangentialGradient h x‖ ∂V.weight) +
+        ∫ x in {x | t < h x}, ‖H x‖ ∂V.weight := by
+    rw [← integral_indicator (hMmeas t), ← integral_add hPint hRint]
+    refine integral_mono_of_nonneg (Eventually.of_forall fun x ↦ ?_) (hPint.add hRint)
+      (Eventually.of_forall fun x ↦ ?_)
+    · exact add_nonneg (norm_nonneg _) (mul_nonneg (hγ01 _).1 (norm_nonneg _))
+    · dsimp only
+      rw [hchain x, norm_smul, Real.norm_of_nonneg (hγ'0 _)]
+      refine add_le_add le_rfl ?_
+      by_cases hx : t < h x
+      · rw [Set.indicator_of_mem (show x ∈ {x | t < h x} from hx)]
+        exact mul_le_of_le_one_left (norm_nonneg _) (hγ01 _).2
+      · rw [Set.indicator_of_notMem (show x ∉ {x | t < h x} from hx), hg0 x hx, zero_mul]
+  have hI0 : 0 ≤ ∫ x, (‖V.tangentialGradient (fun y ↦ γ (h y - t)) x‖ + γ (h x - t) * ‖H x‖)
+      ∂V.weight :=
+    integral_nonneg fun x ↦ add_nonneg (norm_nonneg _) (mul_nonneg (hγ01 _).1 (norm_nonneg _))
+  calc V.weight.real {x | t + ε < h x}
+      ≤ ∫ x in {x | 1 ≤ γ (h x - t)}, γ (h x - t) ∂V.weight := hLHS
+    _ ≤ C * (∫ x, γ (h x - t) ∂V.weight) ^ (n : ℝ)⁻¹ *
+          ∫ x, (‖V.tangentialGradient (fun y ↦ γ (h y - t)) x‖ + γ (h x - t) * ‖H x‖) ∂V.weight :=
+        A1
+    _ ≤ _ := mul_le_mul (mul_le_mul_of_nonneg_left hmass' hC) hI hI0
+          (mul_nonneg hC (Real.rpow_nonneg measureReal_nonneg _))
+/-- **Level-set moment factor (Simon Ch. 4, proof of 5.7, p. 100).** The "trivial inequality"
+of Simon's proof, with `M_α = {x : h(x) > α}` and `p = n/(n-1)`: if `n ≥ 2`, `μ` is finite on
+compact sets, `h ≥ 0` is continuous with compact support, `ε > 0` and `t ≥ 0`, then
+`(t + ε)^{1/(n-1)} μ(M_t)^{1/n} ≤ (∫_{M_0} (h + ε)^p dμ)^{1/n}`. -/
+theorem Submission.sobolev_level_moment_factor : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε t : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → 0 ≤ t → (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ ≤ (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ := by
+  intro n ℓ μ h ε t hn hμ hh hhc hh0 hε ht
+  -- (1) Exponents: `p = n/(n-1) ≥ 0`, `p · (1/n) = 1/(n-1)`, and `t + ε ≥ 0`.
+  have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn0 : (0 : ℝ) < n := by linarith
+  have hn1 : (0 : ℝ) < n - 1 := by linarith
+  set p : ℝ := (n : ℝ) / ((n : ℝ) - 1) with hp_def
+  have hp : 0 ≤ p := div_nonneg hn0.le hn1.le
+  have hpn : p * (n : ℝ)⁻¹ = ((n : ℝ) - 1)⁻¹ := by
+    rw [hp_def, div_mul_eq_mul_div, mul_inv_cancel₀ hn0.ne', one_div]
+  have hte : 0 ≤ t + ε := by linarith
+  -- (2) Sets: `M_t ⊆ M_0 ⊆ tsupport h` (compact), so `μ(M_t) < ∞`; `M_t` is open.
+  have hMt : MeasurableSet {x | t < h x} := (isOpen_lt continuous_const hh).measurableSet
+  have hsub : {x | t < h x} ⊆ {x | 0 < h x} := fun x (hx : t < h x) ↦ ht.trans_lt hx
+  have hsubK : {x | 0 < h x} ⊆ tsupport h := fun x (hx : 0 < h x) ↦ subset_tsupport h hx.ne'
+  have hK : IsCompact (tsupport h) := hhc.isCompact
+  have hMt_fin : μ {x | t < h x} ≠ ⊤ :=
+    ((measure_mono (hsub.trans hsubK)).trans_lt hK.measure_lt_top).ne
+  -- (3) The continuous `(h + ε)^p` is integrable on `tsupport h`, hence on `M_0`.
+  have hcont : Continuous fun x ↦ (h x + ε) ^ p :=
+    (hh.add continuous_const).rpow_const fun _ ↦ Or.inr hp
+  have hint0 : IntegrableOn (fun x ↦ (h x + ε) ^ p) {x | 0 < h x} μ :=
+    (hcont.continuousOn.integrableOn_compact hK).mono_set hsubK
+  -- (4) `(t + ε)^p μ(M_t) = ∫_{M_t} (t + ε)^p ≤ ∫_{M_t} (h + ε)^p ≤ ∫_{M_0} (h + ε)^p`.
+  have hmom : (t + ε) ^ p * μ.real {x | t < h x} ≤ ∫ x in {x | 0 < h x}, (h x + ε) ^ p ∂μ := by
+    calc (t + ε) ^ p * μ.real {x | t < h x} = ∫ _ in {x | t < h x}, (t + ε) ^ p ∂μ := by
+          rw [setIntegral_const, smul_eq_mul, mul_comm]
+      _ ≤ ∫ x in {x | t < h x}, (h x + ε) ^ p ∂μ :=
+          setIntegral_mono_on (integrableOn_const hMt_fin) (hint0.mono_set hsub) hMt
+            fun x (hx : t < h x) ↦ Real.rpow_le_rpow hte (by linarith) hp
+      _ ≤ ∫ x in {x | 0 < h x}, (h x + ε) ^ p ∂μ :=
+          setIntegral_mono_set hint0
+            (ae_of_all _ fun x ↦ Real.rpow_nonneg (by linarith [hh0 x]) p)
+            (Eventually.of_forall hsub)
+  -- (5) `n`-th roots: `((t + ε)^p μ(M_t))^{1/n} = (t + ε)^{1/(n-1)} μ(M_t)^{1/n}`.
+  calc (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹
+      = ((t + ε) ^ p * μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ := by
+        rw [Real.mul_rpow (Real.rpow_nonneg hte p) measureReal_nonneg, ← Real.rpow_mul hte, hpn]
+    _ ≤ (∫ x in {x | 0 < h x}, (h x + ε) ^ p ∂μ) ^ (n : ℝ)⁻¹ :=
+        Real.rpow_le_rpow (mul_nonneg (Real.rpow_nonneg hte p) measureReal_nonneg) hmom
+          (inv_nonneg.2 hn0.le)
+/-- **Integrated truncation energy over the levels `t ∈ (0, ∞)`** (Simon Ch. 4, proof of 5.7,
+p. 100: "Now integrate over `t ∈ (0, ∞)`"). Let `μ` be finite on compacts, `h ≥ 0` continuous with
+compact support, `D ≥ 0` integrable, `K ≥ 0` integrable on `tsupport h`, and `γ` a nondecreasing
+`C¹` function with `0 ≤ γ ≤ 1` and `γ = 0` on `(-∞, 0]`. With `K' = 1_{tsupport h} K`, Tonelli
+turns the left side into `∫ (∫_0^∞ γ'(h - t) dt) D dμ + ∫ (∫_0^∞ 1_{t < h} dt) K' dμ`
+`= ∫ γ(h) D dμ + ∫ h K' dμ ≤ ∫ (D + h K) dμ`. -/
+theorem Submission.sobolev_level_energy_tonelli : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h D K : Ambient n ℓ → ℝ) (γ : ℝ → ℝ), IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → (∀ x, 0 ≤ D x) → Integrable D μ → (∀ x, 0 ≤ K x) → IntegrableOn K (tsupport h) μ → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) ≤ ENNReal.ofReal (∫ x, (D x + h x * K x) ∂μ) := by
+  intro n ℓ μ h D K γ hμ hhc hhcs hh0 hD0 hDi hK0 hKi hγ hγm hγb hγ0
+  -- `K₀ = tsupport h` is closed, hence measurable; `h = 0` off `K₀`; `M_t ⊆ K₀` for `t ≥ 0`
+  have hK₀m : MeasurableSet (tsupport h) := (isClosed_tsupport h).measurableSet
+  have hoff : ∀ x, x ∉ tsupport h → h x = 0 := fun x hx ↦ image_eq_zero_of_notMem_tsupport hx
+  have hMsub : ∀ t : ℝ, 0 ≤ t → {x | t < h x} ⊆ tsupport h := fun t ht x hx ↦
+    subset_tsupport h (ne_of_gt (lt_of_le_of_lt ht hx))
+  have hMm : ∀ t : ℝ, MeasurableSet {x | t < h x} := fun t ↦
+    measurableSet_lt measurable_const hhc.measurable
+  -- the truncation `K' = 1_{K₀} K` is integrable, nonnegative, and `h K' = h K`
+  set K' : Ambient n ℓ → ℝ := (tsupport h).indicator K with hK'eq
+  have hK'i : Integrable K' μ := (integrable_indicator_iff hK₀m).2 hKi
+  have hK'0 : ∀ x, 0 ≤ K' x := fun x ↦ Set.indicator_nonneg (fun y _ ↦ hK0 y) x
+  have hhK' : ∀ x, h x * K' x = h x * K x := by
+    intro x
+    by_cases hx : x ∈ tsupport h
+    · rw [hK'eq, Set.indicator_of_mem hx]
+    · rw [hoff x hx, zero_mul, zero_mul]
+  -- `γ'` is continuous, nonnegative, and vanishes on `(-∞, 0)`
+  have hγ'c : Continuous (deriv γ) := hγ.continuous_deriv le_rfl
+  have hγ'0 : ∀ s, 0 ≤ deriv γ s := fun s ↦ hγm.deriv_nonneg
+  have hγ'neg : ∀ s, s < 0 → deriv γ s = 0 := by
+    intro s hs
+    have : γ =ᶠ[𝓝 s] fun _ ↦ (0 : ℝ) :=
+      (eventually_lt_nhds hs).mono fun y hy ↦ hγ0 y hy.le
+    rw [this.deriv_eq, deriv_const]
+  -- (B1) `∫⁻_{(0,∞)} γ'(a - t) dt = γ(a) ≤ 1` for `a ≥ 0`
+  have hB1 : ∀ a : ℝ, 0 ≤ a → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (deriv γ (a - t)) ≤ 1 := by
+    intro a ha
+    rw [← Ioc_union_Ioi_eq_Ioi ha, lintegral_union measurableSet_Ioi (Ioc_disjoint_Ioi le_rfl)]
+    have h2 : ∫⁻ t in Ioi a, ENNReal.ofReal (deriv γ (a - t)) = 0 := by
+      refine (setLIntegral_eq_zero_iff' measurableSet_Ioi ?_).2 ?_
+      · exact (ENNReal.measurable_ofReal.comp ((measurable_deriv γ).comp
+          (measurable_const.sub measurable_id))).aemeasurable
+      · refine Eventually.of_forall fun t ht ↦ ?_
+        rw [hγ'neg _ (sub_neg.2 ht), ENNReal.ofReal_zero]
+    rw [h2, add_zero]
+    have hint : IntegrableOn (fun t ↦ deriv γ (a - t)) (Ioc 0 a) :=
+      ((hγ'c.comp (continuous_const.sub continuous_id)).integrableOn_Icc).mono_set
+        Ioc_subset_Icc_self
+    rw [← ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun t ↦ hγ'0 _),
+      ← intervalIntegral.integral_of_le ha, intervalIntegral.integral_comp_sub_left,
+      intervalIntegral.integral_deriv_eq_sub (fun x _ ↦ (hγ.differentiable one_ne_zero) x)
+        (hγ'c.intervalIntegrable _ _), sub_self, sub_zero, hγ0 0 le_rfl, sub_zero]
+    exact ENNReal.ofReal_le_one.2 (hγb a).2
+  -- (B2) `∫⁻_{(0,∞)} 1_{t < a} dt = a`
+  have hB2 : ∀ a : ℝ, ∫⁻ t in Ioi (0 : ℝ), (Iio a).indicator 1 t = ENNReal.ofReal a := by
+    intro a
+    rw [lintegral_indicator_one measurableSet_Iio, Measure.restrict_apply measurableSet_Iio,
+      Iio_inter_Ioi, Real.volume_Ioo, sub_zero]
+  -- the integrand `F` on `(0, ∞) × E`
+  set S : Set (ℝ × Ambient n ℓ) := {p | p.1 < h p.2} with hSdef
+  have hSm : MeasurableSet S := measurableSet_lt measurable_fst (hhc.measurable.comp measurable_snd)
+  have hSx : ∀ t x, S.indicator (1 : ℝ × Ambient n ℓ → ℝ≥0∞) (t, x) =
+      (Iio (h x)).indicator 1 t := by
+    intro t x
+    by_cases htx : t < h x
+    · rw [Set.indicator_of_mem (show (t, x) ∈ S from htx),
+        Set.indicator_of_mem (show t ∈ Iio (h x) from htx)]
+      rfl
+    · rw [Set.indicator_of_notMem (show (t, x) ∉ S from htx),
+        Set.indicator_of_notMem (show t ∉ Iio (h x) from htx)]
+  let F : ℝ → Ambient n ℓ → ℝ≥0∞ := fun t x ↦
+    ENNReal.ofReal (deriv γ (h x - t)) * ENNReal.ofReal (D x) +
+      ENNReal.ofReal (K' x) * S.indicator 1 (t, x)
+  have hFm : AEMeasurable (Function.uncurry F) ((volume.restrict (Ioi (0 : ℝ))).prod μ) := by
+    have h1 : Measurable fun p : ℝ × Ambient n ℓ ↦ ENNReal.ofReal (deriv γ (h p.2 - p.1)) :=
+      (hγ'c.measurable.comp
+        ((hhc.measurable.comp measurable_snd).sub measurable_fst)).ennreal_ofReal
+    have h2 : AEMeasurable (fun p : ℝ × Ambient n ℓ ↦ ENNReal.ofReal (D p.2))
+        ((volume.restrict (Ioi (0 : ℝ))).prod μ) :=
+      hDi.aemeasurable.ennreal_ofReal.comp_snd
+    have h3 : AEMeasurable (fun p : ℝ × Ambient n ℓ ↦ ENNReal.ofReal (K' p.2))
+        ((volume.restrict (Ioi (0 : ℝ))).prod μ) :=
+      hK'i.aemeasurable.ennreal_ofReal.comp_snd
+    have h4 : Measurable (S.indicator (1 : ℝ × Ambient n ℓ → ℝ≥0∞)) :=
+      measurable_one.indicator hSm
+    exact (h1.aemeasurable.mul h2).add (h3.mul h4.aemeasurable)
+  -- one level `t > 0`: `ofReal (P(t) + R(t)) = ∫⁻ F(t, x) dμ`
+  have hlevel : ∀ t ∈ Ioi (0 : ℝ), ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) +
+      ∫ x in {x | t < h x}, K x ∂μ) = ∫⁻ x, F t x ∂μ := by
+    intro t ht
+    have ht0 : (0 : ℝ) < t := ht
+    have hgc : Continuous fun x ↦ deriv γ (h x - t) := hγ'c.comp (hhc.sub continuous_const)
+    have hgs : HasCompactSupport fun x ↦ deriv γ (h x - t) := by
+      refine hhcs.comp_left (g := fun s ↦ deriv γ (s - t)) ?_
+      show deriv γ (0 - t) = 0
+      rw [zero_sub]
+      exact hγ'neg _ (neg_lt_zero.2 ht0)
+    obtain ⟨c, hc⟩ := hgc.bounded_above_of_compact_support hgs
+    have hPi : Integrable (fun x ↦ deriv γ (h x - t) * D x) μ :=
+      hDi.bdd_mul hgc.aestronglyMeasurable (Eventually.of_forall hc)
+    have hP0 : 0 ≤ ∫ x, deriv γ (h x - t) * D x ∂μ :=
+      integral_nonneg fun x ↦ mul_nonneg (hγ'0 _) (hD0 x)
+    have hRi : IntegrableOn K {x | t < h x} μ := hKi.mono_set (hMsub t ht0.le)
+    have hR0 : 0 ≤ ∫ x in {x | t < h x}, K x ∂μ := integral_nonneg fun x ↦ hK0 x
+    rw [ENNReal.ofReal_add hP0 hR0, ofReal_integral_eq_lintegral_ofReal hPi
+        (Eventually.of_forall fun x ↦ mul_nonneg (hγ'0 _) (hD0 x)),
+      ofReal_integral_eq_lintegral_ofReal hRi (Eventually.of_forall fun x ↦ hK0 x),
+      ← lintegral_indicator (hMm t)]
+    have hsplit : ∫⁻ x, F t x ∂μ =
+        ∫⁻ x, ENNReal.ofReal (deriv γ (h x - t)) * ENNReal.ofReal (D x) ∂μ +
+          ∫⁻ x, ENNReal.ofReal (K' x) * S.indicator 1 (t, x) ∂μ :=
+      lintegral_add_left' ((hgc.measurable.ennreal_ofReal).aemeasurable.mul
+        hDi.aemeasurable.ennreal_ofReal) _
+    rw [hsplit]
+    congr 1
+    · exact lintegral_congr fun x ↦ ENNReal.ofReal_mul (hγ'0 _)
+    · refine lintegral_congr fun x ↦ ?_
+      by_cases htx : t < h x
+      · rw [Set.indicator_of_mem (show x ∈ {x | t < h x} from htx),
+          Set.indicator_of_mem (show (t, x) ∈ S from htx), hK'eq,
+          Set.indicator_of_mem (hMsub t ht0.le htx)]
+        simp
+      · rw [Set.indicator_of_notMem (show x ∉ {x | t < h x} from htx),
+          Set.indicator_of_notMem (show (t, x) ∉ S from htx), mul_zero]
+  -- one point `x`: `∫⁻_{(0,∞)} F(t, x) dt ≤ ofReal (D x) + ofReal (h x K'(x))`
+  have hpoint : ∀ x, ∫⁻ t in Ioi (0 : ℝ), F t x ≤
+      ENNReal.ofReal (D x) + ENNReal.ofReal (h x * K' x) := by
+    intro x
+    have hm : Measurable fun t : ℝ ↦ ENNReal.ofReal (deriv γ (h x - t)) * ENNReal.ofReal (D x) :=
+      ((hγ'c.measurable.comp (measurable_const.sub measurable_id)).ennreal_ofReal).mul_const _
+    have hsplit : ∫⁻ t in Ioi (0 : ℝ), F t x =
+        (∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (deriv γ (h x - t))) * ENNReal.ofReal (D x) +
+          ENNReal.ofReal (K' x) * ∫⁻ t in Ioi (0 : ℝ), (Iio (h x)).indicator 1 t := by
+      rw [← lintegral_mul_const' _ _ ENNReal.ofReal_ne_top,
+        ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+      simp only [← hSx]
+      exact lintegral_add_left' hm.aemeasurable _
+    rw [hsplit, hB2, ENNReal.ofReal_mul (hh0 x), mul_comm (ENNReal.ofReal (K' x))]
+    gcongr
+    calc (∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (deriv γ (h x - t))) * ENNReal.ofReal (D x)
+        ≤ 1 * ENNReal.ofReal (D x) := by gcongr; exact hB1 _ (hh0 x)
+      _ = ENNReal.ofReal (D x) := one_mul _
+  -- `h K'` (equivalently `h K`) is integrable
+  obtain ⟨m, hm⟩ := hhc.bounded_above_of_compact_support hhcs
+  have hhK'i : Integrable (fun x ↦ h x * K' x) μ :=
+    hK'i.bdd_mul hhc.aestronglyMeasurable (Eventually.of_forall hm)
+  have hhKi : Integrable (fun x ↦ h x * K x) μ := by
+    simpa only [hhK'] using hhK'i
+  have hhK'0 : ∀ x, 0 ≤ h x * K' x := fun x ↦ mul_nonneg (hh0 x) (hK'0 x)
+  calc ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) +
+        ∫ x in {x | t < h x}, K x ∂μ)
+      = ∫⁻ t in Ioi (0 : ℝ), ∫⁻ x, F t x ∂μ := setLIntegral_congr_fun measurableSet_Ioi hlevel
+    _ = ∫⁻ x, (∫⁻ t in Ioi (0 : ℝ), F t x) ∂μ := lintegral_lintegral_swap hFm
+    _ ≤ ∫⁻ x, (ENNReal.ofReal (D x) + ENNReal.ofReal (h x * K' x)) ∂μ := lintegral_mono hpoint
+    _ = ENNReal.ofReal (∫ x, D x ∂μ) + ENNReal.ofReal (∫ x, h x * K' x ∂μ) := by
+      rw [lintegral_add_left' hDi.aemeasurable.ennreal_ofReal,
+        ofReal_integral_eq_lintegral_ofReal hDi (Eventually.of_forall hD0),
+        ofReal_integral_eq_lintegral_ofReal hhK'i (Eventually.of_forall hhK'0)]
+    _ = ENNReal.ofReal (∫ x, (D x + h x * K x) ∂μ) := by
+      rw [← ENNReal.ofReal_add (integral_nonneg hD0) (integral_nonneg hhK'0),
+        integral_add hDi hhKi]
+      simp only [hhK']
+/-- **Shifted layer-cake identity (Simon Ch. 4, 4.11 with `α = n/(n-1)`, `t₀ = ε`; used in the
+proof of 5.7, p. 100).** If `n ≥ 2`, `μ` is finite on compact sets, `h ≥ 0` is continuous with
+compact support and `ε > 0`, then with `M_s = {x : h(x) > s}` and `p = n/(n-1)`,
+`∫_0^∞ (t + ε)^{1/(n-1)} μ(M_{t+ε}) dt = ((n-1)/n) ∫_{M_ε} (h^p - ε^p) dμ`. -/
+theorem Submission.sobolev_level_layer_cake : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x}) = ENNReal.ofReal (((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ) := by
+  intro n ℓ μ h ε hn hμ hh hhc hh0 hε
+  -- (1) Exponents: `b = 1/(n-1) > 0`, `p = n/(n-1) = b + 1 > 0` and `1/p = (n-1)/n`.
+  have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn0 : (0 : ℝ) < n := by linarith
+  have hn1 : (0 : ℝ) < n - 1 := by linarith
+  set b : ℝ := ((n : ℝ) - 1)⁻¹ with hb_def
+  set p : ℝ := (n : ℝ) / ((n : ℝ) - 1) with hp_def
+  have hb : 0 < b := inv_pos.2 hn1
+  have hp : 0 < p := div_pos hn0 hn1
+  have hbp : b + 1 = p := by
+    rw [hb_def, hp_def]
+    field_simp
+    ring
+  have hpinv : p⁻¹ = ((n : ℝ) - 1) / n := by rw [hp_def, inv_div]
+  -- (2) Sets: for `s > 0`, `M_s = {h > s}` lies in the compact `tsupport h`, so `μ(M_s) < ∞`;
+  -- `M_ε` is open, hence measurable.
+  have hK : IsCompact (tsupport h) := hhc.isCompact
+  have hsubK : ∀ s, 0 < s → {x | s < h x} ⊆ tsupport h := fun s hs x (hx : s < h x) ↦
+    subset_tsupport h (hs.trans hx).ne'
+  have hfin : ∀ s, 0 < s → μ {x | s < h x} ≠ ⊤ := fun s hs ↦
+    ((measure_mono (hsubK s hs)).trans_lt hK.measure_lt_top).ne
+  have hM : MeasurableSet {x | ε < h x} := (isOpen_lt continuous_const hh).measurableSet
+  -- (3) With `f = max(h - ε, 0)` and `g(t) = (t + ε)^b`, the integrand is `μ{f > t} g(t)`.
+  have hg : Continuous fun t : ℝ ↦ (t + ε) ^ b :=
+    (continuous_id.add continuous_const).rpow_const fun _ ↦ Or.inr hb.le
+  have step3 :
+      ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ b * μ.real {x | t + ε < h x}) =
+      ∫⁻ t in Ioi (0 : ℝ), μ {x | t < max (h x - ε) 0} * ENNReal.ofReal ((t + ε) ^ b) := by
+    refine setLIntegral_congr_fun measurableSet_Ioi fun t (ht : 0 < t) ↦ ?_
+    have hset : {x | t < max (h x - ε) 0} = {x | t + ε < h x} := by
+      ext x
+      show t < max (h x - ε) 0 ↔ t + ε < h x
+      rw [lt_max_iff]
+      constructor
+      · rintro (hx | hx) <;> linarith
+      · intro hx
+        left
+        linarith
+    rw [hset, ENNReal.ofReal_mul (Real.rpow_nonneg (show (0 : ℝ) ≤ t + ε by linarith) b),
+      ofReal_measureReal (hfin (t + ε) (by linarith)), mul_comm]
+  -- (4) Layer cake (Tonelli): `∫⁻ μ{f > t} g(t) dt = ∫⁻ ofReal (∫_0^{f(x)} g) dμ(x)`.
+  have step4 : ∫⁻ x, ENNReal.ofReal (∫ t in (0 : ℝ)..max (h x - ε) 0, (t + ε) ^ b) ∂μ =
+      ∫⁻ t in Ioi (0 : ℝ), μ {x | t < max (h x - ε) 0} * ENNReal.ofReal ((t + ε) ^ b) :=
+    lintegral_comp_eq_lintegral_meas_lt_mul μ (f := fun x ↦ max (h x - ε) 0)
+      (g := fun t ↦ (t + ε) ^ b) (ae_of_all _ fun x ↦ le_max_right _ _)
+      ((hh.sub continuous_const).max continuous_const).measurable.aemeasurable
+      (fun t _ ↦ hg.intervalIntegrable 0 t)
+      (ae_restrict_of_forall_mem measurableSet_Ioi fun t (ht : 0 < t) ↦
+        show 0 ≤ (t + ε) ^ b from Real.rpow_nonneg (by linarith) b)
+  -- (5) Inner integral: `∫_0^{f(x)} (t + ε)^b dt = 1_{M_ε}(x) (h(x)^p - ε^p)/p`.
+  have step5 : ∀ x, ENNReal.ofReal (∫ t in (0 : ℝ)..max (h x - ε) 0, (t + ε) ^ b) =
+      {x | ε < h x}.indicator
+        (fun x ↦ ENNReal.ofReal (((n : ℝ) - 1) / n * (h x ^ p - ε ^ p))) x := by
+    intro x
+    by_cases hx : ε < h x
+    · rw [indicator_of_mem (show x ∈ {x | ε < h x} from hx),
+        max_eq_left (by linarith : (0 : ℝ) ≤ h x - ε)]
+      congr 1
+      calc ∫ t in (0 : ℝ)..h x - ε, (t + ε) ^ b
+          = ∫ u in (0 + ε)..(h x - ε + ε), u ^ b :=
+            intervalIntegral.integral_comp_add_right (fun u ↦ u ^ b) ε
+        _ = ∫ u in ε..h x, u ^ b := by rw [zero_add, sub_add_cancel]
+        _ = (h x ^ (b + 1) - ε ^ (b + 1)) / (b + 1) := integral_rpow (Or.inl (by linarith))
+        _ = ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p) := by
+            rw [hbp, div_eq_mul_inv, mul_comm, hpinv]
+    · rw [indicator_of_notMem (show x ∉ {x | ε < h x} from hx),
+        max_eq_right (by linarith : h x - ε ≤ 0), intervalIntegral.integral_same,
+        ENNReal.ofReal_zero]
+  -- (6)–(7) Restrict to `M_ε` and return to the Bochner integral.
+  have hcont : Continuous fun x ↦ ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p) :=
+    continuous_const.mul ((hh.rpow_const fun _ ↦ Or.inr hp.le).sub continuous_const)
+  have hint : IntegrableOn (fun x ↦ ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p)) {x | ε < h x} μ :=
+    (hcont.continuousOn.integrableOn_compact hK).mono_set (hsubK ε hε)
+  have hnn :
+      0 ≤ᵐ[μ.restrict {x | ε < h x}] fun x ↦ ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p) :=
+    ae_restrict_of_forall_mem hM fun x (hx : ε < h x) ↦
+      mul_nonneg (div_nonneg hn1.le hn0.le) (sub_nonneg.2 (Real.rpow_le_rpow hε.le hx.le hp.le))
+  rw [step3, ← step4, lintegral_congr step5, lintegral_indicator hM,
+    ← ofReal_integral_eq_lintegral_ofReal hint hnn, integral_const_mul]
+
+/-- **Integrated level-set estimate** (Simon Ch. 4, proof of 5.7, p. 100). Let `p = n/(n-1)`,
+`M_s = {x : h(x) > s}`, `P(t) = ∫ γ'(h - t) D dμ` and `R(t) = ∫_{M_t} K dμ`, and suppose
+`μ(M_{t+ε}) ≤ C μ(M_t)^{1/n} (P(t) + R(t))` for every `t ≥ 0`. Multiplying by `(t + ε)^{1/(n-1)}`
+and using the moment factor `(t + ε)^{1/(n-1)} μ(M_t)^{1/n} ≤ Q_ε^{1/n}`, where
+`Q_ε = ∫_{M_0} (h + ε)^p dμ`, gives `(t + ε)^{1/(n-1)} μ(M_{t+ε}) ≤ C Q_ε^{1/n} (P(t) + R(t))`.
+Integrating over `t ∈ (0, ∞)`, the right side is at most `C Q_ε^{1/n} ∫ (D + h K) dμ` by Tonelli,
+and the left side is `((n-1)/n) ∫_{M_ε} (h^p - ε^p) dμ` by the layer-cake identity 4.11. -/
+theorem Submission.sobolev_level_integral_bound : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h D K : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → (∀ x, 0 ≤ D x) → Integrable D μ → (∀ x, 0 ≤ K x) → IntegrableOn K (tsupport h) μ → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 ≤ C → 0 < ε → (∀ t : ℝ, 0 ≤ t → μ.real {x | t + ε < h x} ≤ C * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ)) → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * ∫ x, (D x + h x * K x) ∂μ := by
+  intro n ℓ μ h D K γ C ε hn hμ hhc hhcs hh0 hD0 hDi hK0 hKi hγ hγm hγb hγ0 hC hε hlev
+  -- the constants `A = C Q_ε^{1/n}` and `J = ∫ (D + h K) dμ` are nonnegative
+  set A : ℝ := C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹
+  set J : ℝ := ∫ x, (D x + h x * K x) ∂μ
+  have hA : 0 ≤ A := mul_nonneg hC (Real.rpow_nonneg
+    (integral_nonneg fun x ↦ Real.rpow_nonneg (by linarith [hh0 x]) _) _)
+  have hJ : 0 ≤ J := integral_nonneg fun x ↦ add_nonneg (hD0 x) (mul_nonneg (hh0 x) (hK0 x))
+  -- (5.a) for `t ≥ 0`: `(t + ε)^{1/(n-1)} μ(M_{t+ε}) ≤ A (P(t) + R(t))`
+  have hweight : ∀ t : ℝ, 0 ≤ t → (t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x} ≤
+      A * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) := by
+    intro t ht
+    have hb : 0 ≤ (t + ε) ^ ((n : ℝ) - 1)⁻¹ := Real.rpow_nonneg (by linarith) _
+    have hPR : 0 ≤ (∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ :=
+      add_nonneg (integral_nonneg fun x ↦ mul_nonneg hγm.deriv_nonneg (hD0 x))
+        (integral_nonneg fun x ↦ hK0 x)
+    calc (t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x}
+        ≤ (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (C * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ *
+            ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ)) :=
+          mul_le_mul_of_nonneg_left (hlev t ht) hb
+      _ = C * ((t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹) *
+            ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) := by ring
+      _ ≤ A * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
+            (Submission.sobolev_level_moment_factor n ℓ μ h ε t hn hμ hhc hhcs hh0 hε ht) hC) hPR
+  -- integrate over `t ∈ (0, ∞)`: the left side is 4.11, the right side is bounded by Tonelli
+  have hint : ENNReal.ofReal (((n : ℝ) - 1) / n * ∫ x in {x | ε < h x},
+      (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ) ≤
+      ENNReal.ofReal (A * J) := by
+    rw [← Submission.sobolev_level_layer_cake n ℓ μ h ε hn hμ hhc hhcs hh0 hε,
+      ENNReal.ofReal_mul hA]
+    calc ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ ((n : ℝ) - 1)⁻¹ *
+          μ.real {x | t + ε < h x})
+        ≤ ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal A *
+            ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) :=
+          setLIntegral_mono' measurableSet_Ioi fun t ht ↦ by
+            rw [← ENNReal.ofReal_mul hA]
+            exact ENNReal.ofReal_le_ofReal (hweight t (mem_Ioi.1 ht).le)
+      _ = ENNReal.ofReal A * ∫⁻ t in Ioi (0 : ℝ),
+            ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal A * ENNReal.ofReal J :=
+          mul_le_mul_right (Submission.sobolev_level_energy_tonelli n ℓ μ h D K γ hμ hhc hhcs hh0
+            hD0 hDi hK0 hKi hγ hγm hγb hγ0) _
+  exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hA hJ)).1 hint
+/-- **Sobolev inequality, letting the level shift `ε ↓ 0` (Simon Ch. 4, end of the proof of
+5.7).** Let `n ≥ 2`, let `μ` be finite on compact sets, let `h ≥ 0` be continuous with compact
+support, `C, J ≥ 0` and `p = n/(n-1)`. If for every `ε ∈ (0, 1]`
+`((n-1)/n) ∫_{h > ε} (h^p - ε^p) dμ ≤ C (∫_{h > 0} (h + ε)^p dμ)^{1/n} J`, then
+`(∫ h^p dμ)^{(n-1)/n} ≤ (n/(n-1)) C J`. -/
+theorem Submission.sobolev_of_level_integral_bounds : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (C J : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 ≤ C → 0 ≤ J → (∀ ε : ℝ, 0 < ε → ε ≤ 1 → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * J) → (∫ x, h x ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (((n : ℝ) - 1) / n) ≤ (n : ℝ) / ((n : ℝ) - 1) * C * J := by
+  intro n ℓ μ h C J hn hμ hc hcs hnn hC hJ hbound
+  have hn1 : (1 : ℝ) < n := by
+    have : (2 : ℝ) ≤ n := by exact_mod_cast hn
+    linarith
+  have hn0 : (0 : ℝ) < (n : ℝ) - 1 := by linarith
+  set p : ℝ := (n : ℝ) / ((n : ℝ) - 1) with hp
+  have hp0 : 0 < p := div_pos (by linarith) hn0
+  -- Step 1: `h ^ p` is continuous with compact support, hence `μ`-integrable.
+  have hpc : Continuous fun x ↦ h x ^ p := hc.rpow_const fun _ ↦ Or.inr hp0.le
+  have hpi : Integrable (fun x ↦ h x ^ p) μ :=
+    hpc.integrable_of_hasCompactSupport
+      (hcs.comp_left (g := fun y : ℝ ↦ y ^ p) (Real.zero_rpow hp0.ne'))
+  -- The level sets `{s < h}` are open, hence measurable.
+  have hmeas : ∀ s : ℝ, MeasurableSet {x | s < h x} := fun s ↦
+    (isOpen_lt continuous_const hc).measurableSet
+  -- The shifts `e k = 1/(k+1) ∈ (0, 1]` tend to `0`.
+  set e : ℕ → ℝ := fun k ↦ 1 / ((k : ℝ) + 1) with he
+  have he0 : ∀ k, 0 < e k := fun k ↦ by positivity
+  have he1 : ∀ k, e k ≤ 1 := fun k ↦ by
+    rw [he, div_le_one (by positivity)]
+    linarith [(k.cast_nonneg : (0 : ℝ) ≤ k)]
+  have helim : Tendsto e atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  -- Step 2: `∫_{e k < h} (h ^ p - e k ^ p) dμ → ∫ h ^ p dμ` (dominated by `h ^ p`).
+  have hlimA : Tendsto (fun k ↦ ∫ x in {x | e k < h x}, (h x ^ p - e k ^ p) ∂μ) atTop
+      (𝓝 (∫ x, h x ^ p ∂μ)) := by
+    have hind : (fun k ↦ ∫ x in {x | e k < h x}, (h x ^ p - e k ^ p) ∂μ) =
+        fun k ↦ ∫ x, {x | e k < h x}.indicator (fun x ↦ h x ^ p - e k ^ p) x ∂μ :=
+      funext fun k ↦ (integral_indicator (hmeas (e k))).symm
+    rw [hind]
+    refine tendsto_integral_of_dominated_convergence (fun x ↦ h x ^ p)
+      (fun k ↦ ((hpc.sub continuous_const).aestronglyMeasurable).indicator (hmeas (e k))) hpi
+      (fun k ↦ Eventually.of_forall fun x ↦ ?_) (Eventually.of_forall fun x ↦ ?_)
+    · by_cases hx : e k < h x
+      · rw [indicator_of_mem (show x ∈ {x | e k < h x} from hx), Real.norm_eq_abs,
+          abs_of_nonneg (sub_nonneg.2 (Real.rpow_le_rpow (he0 k).le hx.le hp0.le))]
+        linarith [Real.rpow_nonneg (he0 k).le p]
+      · rw [indicator_of_notMem (show x ∉ {x | e k < h x} from hx), norm_zero]
+        exact Real.rpow_nonneg (hnn x) p
+    · rcases (hnn x).lt_or_eq with hx | hx
+      · have hlim : Tendsto (fun k ↦ h x ^ p - e k ^ p) atTop (𝓝 (h x ^ p - 0)) :=
+          tendsto_const_nhds.sub (helim.rpow_const_nhds_zero hp0)
+        rw [sub_zero] at hlim
+        refine hlim.congr' ?_
+        filter_upwards [helim.eventually (eventually_lt_nhds hx)] with k hk
+        exact (indicator_of_mem (show x ∈ {x | e k < h x} from hk)
+          (fun x ↦ h x ^ p - e k ^ p)).symm
+      · have hzero : ∀ k, {x | e k < h x}.indicator (fun x ↦ h x ^ p - e k ^ p) x = 0 :=
+          fun k ↦ indicator_of_notMem (s := {x | e k < h x}) (a := x)
+            (not_lt.2 (by rw [← hx]; exact (he0 k).le : h x ≤ e k)) _
+        simp only [hzero, ← hx, Real.zero_rpow hp0.ne']
+        exact tendsto_const_nhds
+  -- Step 3: `∫_{0 < h} (h + e k) ^ p dμ → ∫ h ^ p dμ` (dominated by `(h + 1) ^ p` on `{0 < h}`).
+  have hlimB : Tendsto (fun k ↦ ∫ x in {x | 0 < h x}, (h x + e k) ^ p ∂μ) atTop
+      (𝓝 (∫ x, h x ^ p ∂μ)) := by
+    have hsub : {x | 0 < h x} ⊆ tsupport h := fun x hx ↦ subset_tsupport h (ne_of_gt hx)
+    have hbi : IntegrableOn (fun x ↦ (h x + 1) ^ p) {x | 0 < h x} μ :=
+      (((hc.add continuous_const).rpow_const fun _ ↦ Or.inr hp0.le).continuousOn
+        |>.integrableOn_compact hcs.isCompact).mono_set hsub
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := {x | 0 < h x}) fun x hx ↦ by
+      rw [show h x = 0 from le_antisymm (not_lt.1 hx) (hnn x), Real.zero_rpow hp0.ne']]
+    refine tendsto_integral_of_dominated_convergence (fun x ↦ (h x + 1) ^ p)
+      (fun k ↦ ((hc.add continuous_const).rpow_const fun _ ↦ Or.inr hp0.le).aestronglyMeasurable)
+      hbi (fun k ↦ (ae_restrict_iff' (hmeas 0)).2 (Eventually.of_forall fun x hx ↦ ?_))
+      (Eventually.of_forall fun x ↦ ?_)
+    · have hx0 : 0 ≤ h x + e k := by linarith [he0 k, hnn x]
+      rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg hx0 p)]
+      exact Real.rpow_le_rpow hx0 (by linarith [he1 k]) hp0.le
+    · have hlim := (tendsto_const_nhds (x := h x)).add helim |>.rpow_const (p := p) (Or.inr hp0.le)
+      simpa only [add_zero] using hlim
+  -- Step 4: pass to the limit in the hypothesis along `e k`.
+  set Q := ∫ x, h x ^ p ∂μ
+  have hkey : ((n : ℝ) - 1) / n * Q ≤ C * Q ^ (n : ℝ)⁻¹ * J :=
+    le_of_tendsto_of_tendsto' (tendsto_const_nhds.mul hlimA)
+      ((tendsto_const_nhds.mul (hlimB.rpow_const (Or.inr (by positivity)))).mul tendsto_const_nhds)
+      fun k ↦ hbound (e k) (he0 k) (he1 k)
+  -- Step 5: absorb `Q ^ (1/n)`.
+  have hQ0 : 0 ≤ Q := integral_nonneg fun x ↦ Real.rpow_nonneg (hnn x) p
+  have hA0 : 0 ≤ p * C * J := mul_nonneg (mul_nonneg hp0.le hC) hJ
+  have hnne : (n : ℝ) ≠ 0 := by positivity
+  rcases hQ0.eq_or_lt with hQe | hQpos
+  · rw [← hQe, Real.zero_rpow (div_pos hn0 (by linarith)).ne']
+    exact hA0
+  · have hexp : ((n : ℝ) - 1) / n = 1 - (n : ℝ)⁻¹ := by field_simp
+    have hpinv : p * (((n : ℝ) - 1) / n) = 1 := by rw [hp]; field_simp
+    have hQn : 0 < Q ^ (n : ℝ)⁻¹ := Real.rpow_pos_of_pos hQpos _
+    rw [hexp, Real.rpow_sub hQpos, Real.rpow_one, div_le_iff₀ hQn]
+    calc Q = p * (((n : ℝ) - 1) / n * Q) := by rw [← mul_assoc, hpinv, one_mul]
+      _ ≤ p * (C * Q ^ (n : ℝ)⁻¹ * J) := mul_le_mul_of_nonneg_left hkey hp0.le
+      _ = p * C * J * Q ^ (n : ℝ)⁻¹ := by ring
 /-- **Sobolev preliminaries (Simon Ch. 4, 5.7–5.9, Step 1).** If `μ_V` is finite on compact
 sets, `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly measurable, `U` is open, `H` is locally
 `μ_V`-integrable on `U`, and `g ∈ C¹(U)` has compact support in `U`, then `g ∈ C¹(ℝ^{n+ℓ})`,
@@ -908,6 +1445,46 @@ theorem Submission.sobolev_covering_inequality : ∀ (n ℓ : ℕ) (μ : Measure
   rw [← hconvg A hA, ← hconvφ univ MeasurableSet.univ, setIntegral_univ,
     ← ENNReal.ofReal_mul hK0] at hsum
   exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hK0 (integral_nonneg hφ0))).1 hsum
+
+/-- **Sobolev inequality from the superlevel inequality (Simon Ch. 4, 5.7–5.9, Steps 5–6, with
+4.11).** Let `n ≥ 2`, let `μ_V` be finite on compact sets with `x ↦ p_{T_x V}` `μ_V`-a.e. strongly
+measurable, `U` open, `H` locally `μ_V`-integrable on `U` and `C ≥ 0`. If every nonnegative
+`g ∈ C¹(U)` with compact support in `U` satisfies
+`∫_{g ≥ 1} g dμ_V ≤ C (∫ g dμ_V)^{1/n} ∫ (|∇^M g| + g|H|) dμ_V`, then every nonnegative
+`h ∈ C¹(U)` with compact support in `U` satisfies
+`(∫ h^{n/(n-1)} dμ_V)^{(n-1)/n} ≤ (n/(n-1)) C ∫ (|∇^M h| + h|H|) dμ_V`. -/
+theorem Submission.sobolev_of_superlevel_inequality : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (C : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → LocallyIntegrableOn H U V.weight → 0 ≤ C → (∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ C * (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ * ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) → ContDiffOn ℝ 1 h U → HasCompactSupport h → tsupport h ⊆ U → (∀ x, 0 ≤ h x) → (∫ x, h x ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂V.weight) ^ (((n : ℝ) - 1) / n) ≤ (n : ℝ) / ((n : ℝ) - 1) * C * ∫ x, (‖V.tangentialGradient h x‖ + h x * ‖H x‖) ∂V.weight := by
+  intro n ℓ V U H h C hn hfin hproj hU hH hC hsup hh hhc hhU hh0
+  -- (1) `h ∈ C¹(ℝ^{n+ℓ})`, `|∇^M h|` is `μ_V`-integrable, and `|H|` is integrable on the compact
+  -- set `tsupport h ⊆ U`.
+  obtain ⟨hC1, -, hgrad, -⟩ :=
+    Submission.sobolev_energy_integrable n ℓ V U H h hfin hproj hU hH hh hhc hhU
+  have hHK : IntegrableOn (fun x ↦ ‖H x‖) (tsupport h) V.weight :=
+    (hH.integrableOn_compact_subset hhU hhc).norm
+  -- (7)–(8) Letting `ε ↓ 0`, it suffices to prove the level-integral bound for each `ε ∈ (0, 1]`,
+  -- with `J = ∫ (|∇^M h| + h|H|) dμ_V ≥ 0`.
+  refine Submission.sobolev_of_level_integral_bounds n ℓ V.weight h C _ hn hfin hC1.continuous hhc
+    hh0 hC (integral_nonneg fun x ↦ add_nonneg (norm_nonneg _) (mul_nonneg (hh0 x) (norm_nonneg _)))
+    fun ε hε _ ↦ ?_
+  -- (2) The cut-off `γ(s) = ψ(s/ε)`, `ψ = Real.smoothTransition`: `C¹`, nondecreasing, with
+  -- values in `[0, 1]`, `γ = 0` on `(-∞, 0]` and `γ = 1` on `[ε, ∞)`.
+  let γ : ℝ → ℝ := fun s ↦ Real.smoothTransition (s / ε)
+  have hγC1 : ContDiff ℝ 1 γ := Real.smoothTransition.contDiff.comp (contDiff_id.div_const ε)
+  have hγmono : Monotone γ := fun a b hab ↦
+    Real.smoothTransition.monotone (div_le_div_of_nonneg_right hab hε.le)
+  have hγbd : ∀ s, 0 ≤ γ s ∧ γ s ≤ 1 := fun s ↦
+    ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  have hγ0 : ∀ s, s ≤ 0 → γ s = 0 := fun s hs ↦
+    Real.smoothTransition.zero_of_nonpos (div_nonpos_of_nonpos_of_nonneg hs hε.le)
+  have hγ1 : ∀ s, ε ≤ s → γ s = 1 := fun s hs ↦
+    Real.smoothTransition.one_of_one_le ((one_le_div hε).2 hs)
+  -- (3)–(6) The superlevel inequality for the truncations `γ(h - t)`, `t ≥ 0`, integrated over
+  -- the levels `t` (with `D = |∇^M h|` and `K = |H|`).
+  exact Submission.sobolev_level_integral_bound n ℓ V.weight h (fun x ↦ ‖V.tangentialGradient h x‖)
+    (fun x ↦ ‖H x‖) γ C ε hn hfin hC1.continuous hhc hh0 (fun _ ↦ norm_nonneg _) hgrad
+    (fun _ ↦ norm_nonneg _) hHK hγC1 hγmono hγbd hγ0 hC hε fun t ht ↦
+      Submission.sobolev_truncation_superlevel_bound n ℓ V U H h γ C ε t hfin hH hC hsup hC1 hhc
+        hhU hh0 hgrad hγC1 hγmono hγbd hγ0 hε hγ1 ht
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
