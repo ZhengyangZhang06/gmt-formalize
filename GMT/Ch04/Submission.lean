@@ -434,6 +434,68 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Radial cutoff limit (dominated convergence; Simon Ch. 4, 3.4–3.5 and 5.1, letting the cutoff
+`φ` tend to the indicator of `(-∞, 1]`).** If `f` is `μ`-integrable on `B_R(ξ)`, `t > 0`,
+`ε_m → 0` with `(1 + ε_m) t ≤ R`, and the measurable `φ_m : ℝ → [0, 1]` satisfy `φ_m = 1` on
+`(-∞, 1]` and `φ_m = 0` on `[1 + ε_m, ∞)`, then `∫ φ_m(|x - ξ|/t) f(x) dμ → ∫_{B_t(ξ)} f dμ`. -/
+theorem Submission.weighted_mono_cutoff_integral_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (f : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (t R : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < t → IntegrableOn f (closedBall ξ R) μ → Tendsto ε atTop (𝓝 0) → (∀ m, (1 + ε m) * t ≤ R) → (∀ m, Measurable (φ m)) → (∀ m s, 0 ≤ φ m s ∧ φ m s ≤ 1) → (∀ m s, s ≤ 1 → φ m s = 1) → (∀ m s, 1 + ε m ≤ s → φ m s = 0) → Tendsto (fun m ↦ ∫ x, φ m (‖x - ξ‖ / t) * f x ∂μ) atTop (𝓝 (∫ x in closedBall ξ t, f x ∂μ)) := by
+  intro n ℓ μ f ξ t R φ ε ht hf hε hR hφm hφ01 hφ1 hφ0
+  -- Step 1: `φ_m(r/t) = 0` off `B_R(ξ)`, since `(1 + ε_m) t ≤ R < r` and `t > 0`.
+  have hoff : ∀ m x, x ∉ closedBall ξ R → φ m (‖x - ξ‖ / t) = 0 := by
+    intro m x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    exact hφ0 m _ ((le_div_iff₀ ht).2 ((hR m).trans hx.le))
+  -- Hence `F_m = 1_{B_R(ξ)} F_m`, where `F_m(x) = φ_m(r/t) f(x)`.
+  have hind : ∀ m, (fun x ↦ φ m (‖x - ξ‖ / t) * f x) =
+      (closedBall ξ R).indicator (fun x ↦ φ m (‖x - ξ‖ / t) * f x) := by
+    intro m
+    funext x
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx]
+    · rw [indicator_of_notMem hx, hoff m x hx, zero_mul]
+  -- Step 2: `F_m` is `μ`-a.e. strongly measurable.
+  have hmeas : ∀ m, AEStronglyMeasurable (fun x ↦ φ m (‖x - ξ‖ / t) * f x) μ := by
+    intro m
+    rw [hind m, aestronglyMeasurable_indicator_iff measurableSet_closedBall]
+    have hc : Measurable (fun x : Ambient n ℓ ↦ φ m (‖x - ξ‖ / t)) :=
+      (hφm m).comp ((continuous_norm.comp (continuous_id.sub continuous_const)).div_const t).measurable
+    exact hc.aestronglyMeasurable.mul hf.aestronglyMeasurable
+  -- Step 3: `|F_m| ≤ 1_{B_R(ξ)} |f|`, which is `μ`-integrable.
+  have hbound : ∀ m, ∀ᵐ x ∂μ,
+      ‖φ m (‖x - ξ‖ / t) * f x‖ ≤ (closedBall ξ R).indicator (fun x ↦ ‖f x‖) x := by
+    intro m
+    refine Filter.Eventually.of_forall fun x ↦ ?_
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx, norm_mul, Real.norm_of_nonneg (hφ01 m _).1]
+      exact mul_le_of_le_one_left (norm_nonneg _) (hφ01 m _).2
+    · rw [indicator_of_notMem hx, hoff m x hx, zero_mul, norm_zero]
+  have hbi : Integrable ((closedBall ξ R).indicator (fun x ↦ ‖f x‖)) μ :=
+    (integrable_indicator_iff measurableSet_closedBall).2 hf.norm
+  -- Step 4: `F_m → 1_{B_t(ξ)} f` pointwise: `F_m(x) = f(x)` for all `m` if `r ≤ t`, and
+  -- `F_m(x) = 0` once `ε_m < r/t - 1` if `r > t`.
+  have hlim : ∀ x, Tendsto (fun m ↦ φ m (‖x - ξ‖ / t) * f x) atTop
+      (𝓝 ((closedBall ξ t).indicator f x)) := by
+    intro x
+    by_cases hx : x ∈ closedBall ξ t
+    · rw [indicator_of_mem hx]
+      have hle : ‖x - ξ‖ / t ≤ 1 := by
+        rw [div_le_one ht, ← dist_eq_norm]
+        exact hx
+      simp only [hφ1 _ _ hle, one_mul]
+      exact tendsto_const_nhds
+    · rw [indicator_of_notMem hx]
+      rw [mem_closedBall, dist_eq_norm, not_le] at hx
+      have hδ : 0 < ‖x - ξ‖ / t - 1 := by
+        rw [sub_pos, one_lt_div ht]
+        exact hx
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hε.eventually (gt_mem_nhds hδ)] with m hm
+      rw [hφ0 m _ (by linarith), zero_mul]
+  -- Step 5: dominated convergence, and `∫ 1_{B_t(ξ)} f dμ = ∫_{B_t(ξ)} f dμ`.
+  have h := tendsto_integral_of_dominated_convergence _ hmeas hbi hbound
+    (Filter.Eventually.of_forall hlim)
+  rwa [integral_indicator measurableSet_closedBall] at h
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
