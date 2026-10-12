@@ -441,6 +441,53 @@ theorem Submission.bv_isOpen_exists_compact_exhaustion : ∀ (n : ℕ) (U : Set 
       exact mem_iUnion.2 ⟨j, hQint j hj⟩)
     (directed_of_isDirected_le fun i j hij ↦ interior_mono (hQm (Nat.succ_le_succ hij)))
   exact ⟨j + 1, hj.trans interior_subset⟩
+/-- **One subsequence converging in `L¹` on countably many sets** (steps 0 and 2–4 of the diagonal
+extraction in the proof of Simon 2.6). Let `Qⱼ ⊆ ℝⁿ` (`j ∈ ℕ`) be arbitrary sets and let every `u_k`
+be integrable on every `Qⱼ`. Suppose that for every `j` and `ε > 0` finitely many `u_i` form an
+`ε`-net of `{u_k}` for `∫_{Qⱼ} |· - ·|`. Then one strictly increasing `ψ` and functions `Gⱼ`, each
+integrable on `Qⱼ`, satisfy `∫_{Qⱼ} |u_{ψ(k)} - Gⱼ| → 0` for every `j`. The classes
+`[u_k] ∈ L¹(Qⱼ)` form a totally bounded set, so its closure `Cⱼ` is compact in the complete space
+`L¹(Qⱼ)`. By Tychonoff `∏ⱼ Cⱼ` is compact in the first-countable space `∏ⱼ L¹(Qⱼ)`, so the sequence
+`k ↦ ([u_k])ⱼ` has a convergent subsequence; `Gⱼ` is a representative of its `j`-th limit. -/
+theorem Submission.bv_exists_subseq_tendsto_lintegral_of_finite_nets : ∀ (n : ℕ) (Q : ℕ → Set (Rn n)) (u : ℕ → Rn n → ℝ), (∀ j k, IntegrableOn (u k) (Q j) volume) → (∀ j, ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ i ∈ F, (∫⁻ x in Q j, ‖u k x - u i x‖ₑ) < ENNReal.ofReal ε) → ∃ (ψ : ℕ → ℕ) (G : ℕ → Rn n → ℝ), StrictMono ψ ∧ (∀ j, IntegrableOn (G j) (Q j) volume) ∧ ∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖u (ψ k) x - G j x‖ₑ) atTop (𝓝 0) := by
+  intro n Q u hint hnet
+  -- Step 1: `f j k = [u k]` in the complete space `L¹(Q j)`.
+  have hmem : ∀ j k, MemLp (u k) 1 (volume.restrict (Q j)) :=
+    fun j k ↦ memLp_one_iff_integrable.2 (hint j k)
+  let f : (j : ℕ) → ℕ → Lp ℝ 1 (volume.restrict (Q j)) := fun j k ↦ (hmem j k).toLp (u k)
+  -- Step 2: the `L¹(Q j)` distances are the lower integrals of the hypotheses.
+  have hdist : ∀ j k i, edist (f j k) (f j i) = ∫⁻ x in Q j, ‖u k x - u i x‖ₑ := by
+    intro j k i
+    rw [Lp.edist_toLp_toLp, eLpNorm_one_eq_lintegral_enorm
+      ((hint j k).aestronglyMeasurable.sub (hint j i).aestronglyMeasurable)]
+    rfl
+  -- Step 3: the finite nets make `range (f j)` totally bounded, so its closure is compact.
+  have htb : ∀ j, TotallyBounded (range (f j)) := by
+    intro j
+    rw [totallyBounded_iff]
+    intro ε hε
+    obtain ⟨F, hF⟩ := hnet j ε hε
+    refine ⟨f j '' F, F.finite_toSet.image _, ?_⟩
+    rintro _ ⟨k, rfl⟩
+    obtain ⟨i, hiF, hi⟩ := hF k
+    refine mem_iUnion₂.2 ⟨f j i, mem_image_of_mem _ hiF, ?_⟩
+    rw [mem_ball, dist_edist]
+    exact ENNReal.toReal_lt_of_lt_ofReal (by rw [hdist]; exact hi)
+  have hcpt : ∀ j, IsCompact (closure (range (f j))) :=
+    fun j ↦ (htb j).closure.isCompact_of_isClosed isClosed_closure
+  -- Step 4: Tychonoff and sequential compactness in the first-countable product `∏ j, L¹(Q j)`.
+  obtain ⟨a, -, ψ, hψ, hlim⟩ := (isCompact_univ_pi hcpt).tendsto_subseq
+    (x := fun k j ↦ f j k) fun k ↦ mem_univ_pi.2 fun j ↦ subset_closure (mem_range_self k)
+  -- Step 5: `G j = ⇑(a j)` is integrable on `Q j` and `f j (ψ k) → a j` in `L¹(Q j)`.
+  refine ⟨ψ, fun j ↦ ⇑(a j), hψ, fun j ↦ memLp_one_iff_integrable.1 (Lp.memLp (a j)), fun j ↦ ?_⟩
+  have h1 : Tendsto (fun k ↦ edist (f j (ψ k)) (a j)) atTop (𝓝 0) :=
+    tendsto_iff_edist_tendsto_0.1 (tendsto_pi_nhds.1 hlim j)
+  refine h1.congr fun k ↦ ?_
+  rw [Lp.edist_def, eLpNorm_one_eq_lintegral_enorm
+    ((Lp.aestronglyMeasurable _).sub (Lp.aestronglyMeasurable _))]
+  refine lintegral_congr_ae ?_
+  filter_upwards [MemLp.coeFn_toLp (hmem j (ψ k))] with x hx
+  simp only [f, Pi.sub_apply, hx]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
