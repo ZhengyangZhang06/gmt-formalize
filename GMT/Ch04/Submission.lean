@@ -549,6 +549,42 @@ theorem Submission.ts_piece_projection_continuousOn_image : ∀ (n ℓ : ℕ) (C
       (hcont.comp hψcont hψmaps) (fun y hy ↦ hinj (ψ y) (hψmaps hy))
   · intro w hw
     simp only [hψF w hw]
+/-- **Borel pasting of relatively continuous operator fields** (the field on the disjointified
+pieces `N_i \ ⋃_{j<i} N_j`). If every `N_i ⊆ ℝ^{n+ℓ}` is measurable and every
+`G_i : ℝ^{n+ℓ} → L(ℝ^{n+ℓ}, ℝ^{n+ℓ})` is continuous on `N_i`, then some strongly measurable `g`
+equals `G_i` on `N_i \ ⋃_{j<i} N_j` for every `i`: `g y = G_{i(y)} y` for the least `i(y)` with
+`y ∈ N_{i(y)}`, and `g = 0` off `⋃_i N_i`. -/
+theorem Submission.ts_stronglyMeasurable_paste_continuousOn : ∀ (n ℓ : ℕ) (N : ℕ → Set (Ambient n ℓ)) (G : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ)), (∀ i, MeasurableSet (N i)) → (∀ i, ContinuousOn (G i) (N i)) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ y ∈ N i, (∀ j < i, y ∉ N j) → g y = G i y := by
+  intro n ℓ N G hN hG
+  classical
+  -- `G' i` extends `G i` by `0` off `N i`; it is Borel as `G i` is continuous on the Borel `N i`.
+  set G' : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ) :=
+    fun i ↦ (N i).piecewise (G i) 0 with hG'
+  have hG'meas : ∀ i, Measurable (G' i) := fun i ↦
+    (hG i).measurable_piecewise continuousOn_const (hN i)
+  -- The index `i` is admissible at `y` if `y ∈ N i` or `y` lies in no piece.
+  set p : ℕ → Ambient n ℓ → Prop := fun i y ↦ y ∈ N i ∨ y ∉ ⋃ j, N j
+  have hpex : ∀ y, ∃ i, p i y := by
+    intro y
+    by_cases hy : y ∈ ⋃ j, N j
+    · obtain ⟨j, hj⟩ := mem_iUnion.mp hy
+      exact ⟨j, Or.inl hj⟩
+    · exact ⟨0, Or.inr hy⟩
+  have hpmeas : ∀ i, MeasurableSet {y | p i y} := fun i ↦
+    (hN i).union (MeasurableSet.iUnion hN).compl
+  -- `g y = G' i y` for the least admissible `i` is Borel (`Measurable.find`), hence strongly
+  -- measurable since `L(ℝ^{n+ℓ}, ℝ^{n+ℓ})` is finite-dimensional.
+  refine ⟨fun y ↦ G' (Nat.find (hpex y)) y, ?_, ?_⟩
+  · exact (Measurable.find hG'meas hpmeas hpex).stronglyMeasurable
+  · -- On `N i \ ⋃_{j<i} N j` the least admissible index is `i`.
+    intro i y hy hfirst
+    have hfind : Nat.find (hpex y) = i := by
+      rw [Nat.find_eq_iff]
+      refine ⟨Or.inl hy, fun j hj ↦ ?_⟩
+      rintro (hjy | hnot)
+      · exact hfirst j hj hjy
+      · exact hnot (mem_iUnion.mpr ⟨i, hy⟩)
+    simp only [hfind, hG', Set.piecewise_eq_of_mem _ _ _ hy]
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
