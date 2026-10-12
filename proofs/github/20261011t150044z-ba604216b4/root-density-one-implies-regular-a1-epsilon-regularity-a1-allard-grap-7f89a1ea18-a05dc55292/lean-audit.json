@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ca98a8a4188c485aa9564881cb4432230dc5b1ad27d8edf89ae6d8c8458351de",
+  "git_delta": {
+    "base_commit": "e4c3f11b52d8e5d8c241bd78caa2e9cdadab917b",
+    "candidate_commit": "7ad779ea252e680ca4988510a4594d9c5697cfe7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_pb_slice_bound",
+    "diff_sha256": "fbc1ee14062a36ab9172b2402a1aa4a3d066d95677057509a2b6a6aef2cc7379",
+    "source_sha256": "162418f38127f87abfc619956c7e20f9be0b15b688364c6a725de3141dc988dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_pb_slice_bound",
+      "statement": "∀ (n : ℕ) (g : Euclid n → ℝ≥0∞), Measurable g → ∀ t ∈ Icc (0 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x) ≤ 2 ^ n * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
