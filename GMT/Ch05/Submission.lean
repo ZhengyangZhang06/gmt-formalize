@@ -458,6 +458,85 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Hilbert–Schmidt facts for maps between Euclidean spaces (`|A|² = hsNormSq A`):
+(H1) if `Y` is an adjoint of `X` (`⟨X u, v⟩ = ⟨u, Y v⟩`), then `|Y| = |X|`;
+(H2) `|Y X| ≤ ‖Y‖ |X|`; (H3) `|X W| ≤ ‖W‖ |X|` (`‖·‖` the operator norm).
+(H1) exchanges the double sum of the entries `(X eᵢ)_j = (Y f_j)_i`; (H2) squares and sums
+`|Y (X eᵢ)| ≤ ‖Y‖ |X eᵢ|`; (H3) follows from (H1), (H2) applied to the explicit adjoints
+`T* v = Σᵢ ⟨T eᵢ, v⟩ eᵢ`, which satisfy `‖T*‖ ≤ ‖T‖`. -/
+theorem any_radius_gr_pp_hs_ideal : (∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (Y : Rn k →L[ℝ] Rn m), (∀ (u : Rn m) (v : Rn k), inner ℝ (X u) v = inner ℝ u (Y v)) → hsNormSq Y = hsNormSq X) ∧ (∀ (m k p : ℕ) (Y : Rn k →L[ℝ] Rn p) (X : Rn m →L[ℝ] Rn k), hsNormSq (Y ∘L X) ≤ ‖Y‖ ^ 2 * hsNormSq X) ∧ ∀ (m k p : ℕ) (X : Rn m →L[ℝ] Rn k) (W : Rn p →L[ℝ] Rn m), hsNormSq (X ∘L W) ≤ ‖W‖ ^ 2 * hsNormSq X := by
+  -- Step 2 (H1): the entries are transposed, `(X eᵢ)_j = ⟨X eᵢ, f_j⟩ = ⟨eᵢ, Y f_j⟩ = (Y f_j)_i`;
+  -- expand both squared norms in coordinates and exchange the finite double sum.
+  have H1 : ∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (Y : Rn k →L[ℝ] Rn m),
+      (∀ (u : Rn m) (v : Rn k), inner ℝ (X u) v = inner ℝ u (Y v)) →
+        hsNormSq Y = hsNormSq X := by
+    intro m k X Y hXY
+    have hent : ∀ (i : Fin m) (j : Fin k),
+        X (EuclideanSpace.single i 1) j = Y (EuclideanSpace.single j 1) i := by
+      intro i j
+      have h := hXY (EuclideanSpace.single i 1) (EuclideanSpace.single j 1)
+      rw [EuclideanSpace.inner_single_right, EuclideanSpace.inner_single_left] at h
+      simpa using h
+    unfold hsNormSq
+    simp_rw [EuclideanSpace.real_norm_sq_eq, hent]
+    exact Finset.sum_comm
+  -- Step 3 (H2): `|Y (X eᵢ)| ≤ ‖Y‖ |X eᵢ|`; square and sum over `i`.
+  have H2 : ∀ (m k p : ℕ) (Y : Rn k →L[ℝ] Rn p) (X : Rn m →L[ℝ] Rn k),
+      hsNormSq (Y ∘L X) ≤ ‖Y‖ ^ 2 * hsNormSq X := by
+    intro m k p Y X
+    unfold hsNormSq
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [ContinuousLinearMap.comp_apply, ← mul_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) (Y.le_opNorm _) 2
+  -- Step 4: every `T : ℝᵃ → ℝᵇ` has the adjoint `T* v = Σᵢ ⟨T eᵢ, v⟩ eᵢ`, with `‖T*‖ ≤ ‖T‖`.
+  have adj : ∀ (a b : ℕ) (T : Rn a →L[ℝ] Rn b), ∃ T' : Rn b →L[ℝ] Rn a,
+      (∀ (u : Rn a) (v : Rn b), inner ℝ (T u) v = inner ℝ u (T' v)) ∧ ‖T'‖ ≤ ‖T‖ := by
+    intro a b T
+    let T' : Rn b →L[ℝ] Rn a := ∑ i : Fin a,
+      (innerSL ℝ (T (EuclideanSpace.single i 1))).smulRight (EuclideanSpace.single i (1 : ℝ))
+    -- `⟨T u, v⟩ = Σᵢ uᵢ ⟨T eᵢ, v⟩ = ⟨u, T* v⟩`, writing `u = Σᵢ uᵢ eᵢ`.
+    have hT' : ∀ (u : Rn a) (v : Rn b), inner ℝ (T u) v = inner ℝ u (T' v) := by
+      intro u v
+      have hu : ∑ i, u i • EuclideanSpace.single i (1 : ℝ) = u := by
+        simpa only [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr] using
+          (EuclideanSpace.basisFun (Fin a) ℝ).sum_repr u
+      conv_lhs => rw [← hu]
+      simp only [T', sum_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
+        map_sum, map_smul, sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right,
+        EuclideanSpace.inner_single_right, one_mul, conj_trivial]
+      exact Finset.sum_congr rfl fun i _ => mul_comm _ _
+    -- `|T* v|² = ⟨T (T* v), v⟩ ≤ ‖T‖ |T* v| |v|`, hence `|T* v| ≤ ‖T‖ |v|`.
+    refine ⟨T', hT', T'.opNorm_le_bound (norm_nonneg T) fun v => ?_⟩
+    have h1 : ‖T' v‖ ^ 2 ≤ ‖T‖ * ‖v‖ * ‖T' v‖ := by
+      calc ‖T' v‖ ^ 2 = inner ℝ (T' v) (T' v) := (real_inner_self_eq_norm_sq _).symm
+        _ = inner ℝ (T (T' v)) v := (hT' _ _).symm
+        _ ≤ ‖T (T' v)‖ * ‖v‖ := real_inner_le_norm _ _
+        _ ≤ ‖T‖ * ‖T' v‖ * ‖v‖ := by gcongr; exact T.le_opNorm _
+        _ = ‖T‖ * ‖v‖ * ‖T' v‖ := by ring
+    nlinarith [norm_nonneg (T' v), mul_nonneg (norm_nonneg T) (norm_nonneg v)]
+  refine ⟨H1, H2, ?_⟩
+  -- Step 5 (H3): `X ∘ W` has adjoint `W* ∘ X*`, so by (H1), (H2), (H1):
+  -- `|X W|² = |W* X*|² ≤ ‖W*‖² |X*|² ≤ ‖W‖² |X*|² = ‖W‖² |X|²`.
+  intro m k p X W
+  obtain ⟨X', hX', -⟩ := adj m k X
+  obtain ⟨W', hW', hW'n⟩ := adj p m W
+  have ha : hsNormSq (W' ∘L X') = hsNormSq (X ∘L W) := by
+    apply H1
+    intro u v
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hX', hW']
+  have hb : hsNormSq X' = hsNormSq X := H1 m k X X' hX'
+  have hX'nn : 0 ≤ hsNormSq X' := Finset.sum_nonneg fun i _ => sq_nonneg _
+  calc hsNormSq (X ∘L W) = hsNormSq (W' ∘L X') := ha.symm
+    _ ≤ ‖W'‖ ^ 2 * hsNormSq X' := H2 k m p W' X'
+    _ ≤ ‖W‖ ^ 2 * hsNormSq X' :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hW'n 2) hX'nn
+    _ = ‖W‖ ^ 2 * hsNormSq X := by rw [hb]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
