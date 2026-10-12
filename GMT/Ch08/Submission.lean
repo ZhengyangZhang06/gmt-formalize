@@ -861,6 +861,23 @@ theorem Submission.intcpt_id_tpd_ball_mass_upper :
   rw [mul_comm (t ^ n), ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hctop,
     ENNReal.ofReal_pow ht.1.le]
 
+/-- Density at a weighted approximate tangent point (Simon Ch. 3, Remark 1.8(2)): if `M` is
+`H^n`-measurable, `θ ≥ 0` on `M` is `H^n`-integrable on `M ∩ B_{r₀}(x)`, `x ∈ M`, and `M` has
+weighted approximate tangent space `P` at `x` with respect to `θ` (Ch. 3, 1.7), then
+`ν = (H^n ⌞ M).withDensity θ` has `Θ^n(ν, x) = θ(x)`, i.e. `ν(B_ρ(x))/(ω_n ρ^n) → θ(x)` as
+`ρ ↓ 0`. -/
+theorem Submission.intcpt_id_tangent_point_density :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (P : Submodule ℝ (Euclidean N)) (r₀ : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → x ∈ M → 0 < r₀ → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P → HasDensity n (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) x (ENNReal.ofReal (θ x)) := by
+  intro N n M θ x P r₀ hM hθ hx hr₀ hint hP
+  -- Steps 1–5: comparing `1_{B_t(x)}` with cut-offs blown up by `η_{x,t}` and passing to the
+  -- limit in 1.7 gives `c t^n ≤ ν(B_t(x))` eventually for every `c < θ(x) ω_n` (sibling
+  -- `ball_mass_lower`) and `ν(B_t(x)) ≤ c t^n` eventually for every `c > θ(x) ω_n` (sibling
+  -- `ball_mass_upper`).
+  -- Step 6: the two-sided bounds squeeze `ν(B_t(x))/(ω_n t^n)` to `θ(x)` in `[0, ∞]`.
+  exact Submission.intcpt_id_tpd_hasDensity_of_ball_mass_bounds N n _ x _
+    (Submission.intcpt_id_tpd_ball_mass_lower N n M θ x P r₀ hM hθ hr₀ hint hP)
+    (Submission.intcpt_id_tpd_ball_mass_upper N n M θ x P r₀ hM hθ hx hr₀ hint hP)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
