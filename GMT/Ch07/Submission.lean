@@ -451,6 +451,119 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform bound for weakly bounded sequences** (Simon, Appendix A: needed tacitly by the weak
+limits `ψ_{y,1} = lim φ_{y+x,λⱼ}` in the proof of A.4, p. 228).  The bounded continuous functions
+vanishing off the compact set `K` form a closed subspace `X` of `Euclid P →ᵇ ℝ`, hence a Banach
+space.  On it, `Λₖ u = ∫ u • gₖ dμ` are continuous linear maps (`‖Λₖ u‖ ≤ (∫_K ‖gₖ‖ dμ) ‖u‖`),
+pointwise bounded by hypothesis, so the uniform boundedness principle, proved here from the Baire
+category theorem, gives `‖Λₖ‖ ≤ M` for all `k`. -/
+theorem Submission.adr_uniform_bound_of_weak_bounded : ∀ (P Q : ℕ) (μ : Measure (Euclid P)) (gs : ℕ → Euclid P → Euclid Q) (K : Set (Euclid P)), (∀ k, LocallyIntegrable (gs k) μ) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∃ C, ∀ k, ‖∫ x, f x • gs k x ∂μ‖ ≤ C) → IsCompact K → ∃ M, ∀ (k : ℕ) (h : Euclid P → ℝ) (C : ℝ), Continuous h → (∀ x ∉ K, h x = 0) → (∀ x, |h x| ≤ C) → ‖∫ x, h x • gs k x ∂μ‖ ≤ M * C := by
+  intro P Q μ gs K hloc hbdd hK
+  -- the subspace `X` of bounded continuous functions vanishing off `K`
+  let X : Submodule ℝ (BoundedContinuousFunction (Euclid P) ℝ) :=
+    { carrier := {u | ∀ x ∉ K, u x = 0}
+      add_mem' := fun {u v} hu hv x hx => by simp [hu x hx, hv x hx]
+      zero_mem' := fun x _ => rfl
+      smul_mem' := fun c u hu x hx => by simp [hu x hx] }
+  -- `X` is closed, hence complete
+  have hXclosed : IsClosed (X : Set (BoundedContinuousFunction (Euclid P) ℝ)) := by
+    change IsClosed {u : BoundedContinuousFunction (Euclid P) ℝ | ∀ x ∉ K, u x = 0}
+    simp only [Set.ofPred_forall]
+    exact isClosed_iInter fun x => isClosed_iInter fun _ =>
+      isClosed_eq ((continuous_apply x).comp BoundedContinuousFunction.continuous_coe)
+        continuous_const
+  let _ : SeminormedAddCommGroup X := Submodule.seminormedAddCommGroup X
+  let _ : NormedSpace ℝ X := Submodule.normedSpace X
+  have : CompleteSpace X := hXclosed.completeSpace_coe
+  -- every `u ∈ X` has compact support, so `u • gₖ` is integrable
+  have hcs : ∀ u : X,
+      HasCompactSupport ((u : BoundedContinuousFunction (Euclid P) ℝ) : Euclid P → ℝ) :=
+    fun u => HasCompactSupport.intro hK u.2
+  have hint : ∀ k (u : X),
+      Integrable (fun x => (u : BoundedContinuousFunction (Euclid P) ℝ) x • gs k x) μ :=
+    fun k u => (hloc k).integrable_smul_left_of_hasCompactSupport
+      (u : BoundedContinuousFunction (Euclid P) ℝ).continuous (hcs u)
+  -- `‖Λₖ u‖ ≤ (∫_K ‖gₖ‖ dμ) ‖u‖`
+  have hbound : ∀ k (u : X), ‖∫ x, (u : BoundedContinuousFunction (Euclid P) ℝ) x • gs k x ∂μ‖ ≤
+      (∫ x in K, ‖gs k x‖ ∂μ) * ‖u‖ := by
+    intro k u
+    have hgK : IntegrableOn (gs k) K μ := (hloc k).integrableOn_isCompact hK
+    calc ‖∫ x, (u : BoundedContinuousFunction (Euclid P) ℝ) x • gs k x ∂μ‖
+        ≤ ∫ x, ‖(u : BoundedContinuousFunction (Euclid P) ℝ) x • gs k x‖ ∂μ :=
+          norm_integral_le_integral_norm _
+      _ = ∫ x in K, ‖(u : BoundedContinuousFunction (Euclid P) ℝ) x • gs k x‖ ∂μ := by
+          refine (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_).symm
+          simp [u.2 x hx]
+      _ ≤ ∫ x in K, ‖u‖ * ‖gs k x‖ ∂μ := by
+          refine setIntegral_mono_on (hint k u).norm.integrableOn
+            (hgK.norm.const_mul _) hK.measurableSet fun x _ => ?_
+          rw [norm_smul]
+          exact mul_le_mul_of_nonneg_right
+            (BoundedContinuousFunction.norm_coe_le_norm
+              (u : BoundedContinuousFunction (Euclid P) ℝ) x)
+            (norm_nonneg _)
+      _ = (∫ x in K, ‖gs k x‖ ∂μ) * ‖u‖ := by
+          rw [integral_const_mul, mul_comm]
+  -- the continuous linear maps `Λₖ : X → ℝ^Q`
+  let L : ℕ → X →ₗ[ℝ] Euclid Q := fun k =>
+    { toFun := fun u => ∫ x, (u : BoundedContinuousFunction (Euclid P) ℝ) x • gs k x ∂μ
+      map_add' := fun u v => by
+        simp only [Submodule.coe_add, BoundedContinuousFunction.coe_add, Pi.add_apply, add_smul]
+        exact integral_add (hint k u) (hint k v)
+      map_smul' := fun c u => by
+        simp only [SetLike.val_smul, BoundedContinuousFunction.coe_smul, smul_eq_mul,
+          RingHom.id_apply, mul_smul]
+        exact integral_smul c _ }
+  let Λ : ℕ → X →L[ℝ] Euclid Q := fun k =>
+    LinearMap.mkContinuous (𝕜 := ℝ) (𝕜₂ := ℝ) (E := X) (F := Euclid Q) (L k)
+      (∫ x in K, ‖gs k x‖ ∂μ) (hbound k)
+  -- pointwise boundedness: the hypothesis applied to `u ∈ X`
+  have hpt : ∀ u : X, ∃ C, ∀ k, ‖Λ k u‖ ≤ C := fun u => by
+    obtain ⟨C, hC⟩ := hbdd _ (u : BoundedContinuousFunction (Euclid P) ℝ).continuous (hcs u)
+    exact ⟨C, fun k => hC k⟩
+  -- uniform boundedness principle (Banach–Steinhaus) from the Baire category theorem
+  obtain ⟨M', hM'⟩ : ∃ M', ∀ k, ‖Λ k‖ ≤ M' := by
+    let e : ℕ → Set X := fun n => ⋂ k : ℕ, {u : X | ‖Λ k u‖ ≤ n}
+    have hc : ∀ n, IsClosed (e n) := fun n =>
+      isClosed_iInter fun k => isClosed_le (Λ k).continuous.norm continuous_const
+    have hU : ⋃ n, e n = univ := by
+      refine eq_univ_of_forall fun u => ?_
+      obtain ⟨C, hC⟩ := hpt u
+      obtain ⟨m, hm⟩ := exists_nat_ge C
+      exact mem_iUnion.2 ⟨m, mem_iInter.2 fun k => (hC k).trans hm⟩
+    obtain ⟨m, u₀, hu₀⟩ := nonempty_interior_of_iUnion_of_closed hc hU
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 isOpen_interior u₀ hu₀
+    have hm : ∀ v ∈ Metric.ball u₀ ε, ∀ k, ‖Λ k v‖ ≤ m := fun v hv k =>
+      mem_iInter.1 (interior_subset (hball hv)) k
+    refine ⟨(m + m : ℝ) / (ε / 2), fun k =>
+      ContinuousLinearMap.opNorm_le_of_shell (c := (2 : ℝ)) hε (by positivity) (by norm_num)
+        fun v hv1 _ => ?_⟩
+    have hv1' : ε / 2 ≤ ‖v‖ := by simpa using hv1
+    calc ‖Λ k v‖ = ‖Λ k (v + u₀) - Λ k u₀‖ := by rw [map_add, add_sub_cancel_right]
+      _ ≤ ‖Λ k (v + u₀)‖ + ‖Λ k u₀‖ := norm_sub_le _ _
+      _ ≤ m + m := add_le_add
+          (hm _ (by rwa [Metric.mem_ball, dist_eq_norm, add_sub_cancel_right]) k)
+          (hm _ (Metric.mem_ball_self hε) k)
+      _ ≤ (m + m : ℝ) / (ε / 2) * ‖v‖ := by
+          rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+          exact mul_le_mul_of_nonneg_left hv1' (by positivity)
+  -- conclusion with `M = max M' 0`: a continuous `h` vanishing off `K` with `|h| ≤ C` is an
+  -- element of `X` of norm `≤ C`
+  refine ⟨max M' 0, fun k h C hcont hK0 hC => ?_⟩
+  have hC0 : 0 ≤ C := le_trans (abs_nonneg _) (hC 0)
+  let hb : BoundedContinuousFunction (Euclid P) ℝ :=
+    BoundedContinuousFunction.mkOfBound ⟨h, hcont⟩ (2 * C) (fun x y => by
+      simp only [ContinuousMap.coe_mk, Real.dist_eq]
+      calc |h x - h y| ≤ |h x| + |h y| := abs_sub _ _
+        _ ≤ 2 * C := by linarith [hC x, hC y])
+  have hbX : hb ∈ X := fun x hx => hK0 x hx
+  have hnorm : ‖(⟨hb, hbX⟩ : X)‖ ≤ C := by
+    change ‖hb‖ ≤ C
+    exact (BoundedContinuousFunction.norm_le hC0).2 fun x => by simpa [hb] using hC x
+  calc ‖∫ x, h x • gs k x ∂μ‖ = ‖Λ k ⟨hb, hbX⟩‖ := rfl
+    _ ≤ M' * ‖(⟨hb, hbX⟩ : X)‖ := (Λ k).le_of_opNorm_le (hM' k) _
+    _ ≤ max M' 0 * C := mul_le_mul (le_max_left _ _) hnorm (norm_nonneg _) (le_max_right _ _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
