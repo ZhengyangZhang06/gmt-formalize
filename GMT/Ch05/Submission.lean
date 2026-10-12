@@ -458,6 +458,48 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): for a linear isometry `q` of `ℝ^{n+ℓ}`, the
+orthogonal projection onto `q(K)` is `q ∘ p_K ∘ q⁻¹`, and conjugation by `q` preserves the
+Hilbert–Schmidt norm.  With the rows `w_j = Xᵀ e_j = Σ_k ⟨X e_k, e_j⟩ e_k` of `X`, Parseval gives
+`Σ_i |X b_i|² = Σ_i Σ_j ⟨w_j, b_i⟩² = Σ_j |w_j|²` for every orthonormal basis `b`; apply this to
+`b = q⁻¹ e` and to `b = e`. -/
+theorem allard52_gpa_isometry_conj : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ K : Submodule ℝ (Amb n ℓ), (K.map q.toLinearEquiv.toLinearMap).starProjection = q.toLinearIsometry.toContinuousLinearMap ∘L K.starProjection ∘L q.symm.toLinearIsometry.toContinuousLinearMap) ∧ ∀ X : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq (q.toLinearIsometry.toContinuousLinearMap ∘L X ∘L q.symm.toLinearIsometry.toContinuousLinearMap) = hsNormSq X := by
+  intro n ℓ q
+  -- `p_{q(K)} z = q (p_K (q⁻¹ z))` for every `z`.
+  refine ⟨fun K => ContinuousLinearMap.ext fun z => Submodule.starProjection_map_apply q K z, ?_⟩
+  intro X
+  -- The standard basis `e` and the rows `w j = Xᵀ e_j = Σ_k ⟨X e_k, e_j⟩ e_k` of `X`.
+  let e := EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ
+  let w : Fin (n + ℓ) → Amb n ℓ := fun j => ∑ k, inner ℝ (X (e k)) (e j) • e k
+  have hw : ∀ j v, inner ℝ (X v) (e j) = inner ℝ (w j) v := by
+    intro j v
+    conv_lhs => rw [← e.sum_repr' v]
+    simp only [w, map_sum, map_smul, sum_inner, real_inner_smul_left]
+    exact Finset.sum_congr rfl fun k _ => mul_comm _ _
+  -- Parseval twice: `Σ_i |X b_i|² = Σ_j |w_j|²` for every orthonormal basis `b`.
+  have key : ∀ b : OrthonormalBasis (Fin (n + ℓ)) ℝ (Amb n ℓ),
+      ∑ i, ‖X (b i)‖ ^ 2 = ∑ j, ‖w j‖ ^ 2 := by
+    intro b
+    calc ∑ i, ‖X (b i)‖ ^ 2 = ∑ i, ∑ j, inner ℝ (w j) (b i) ^ 2 := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [← e.sum_sq_inner_left]
+          simp only [hw]
+      _ = ∑ j, ∑ i, inner ℝ (w j) (b i) ^ 2 := Finset.sum_comm
+      _ = ∑ j, ‖w j‖ ^ 2 := Finset.sum_congr rfl fun j _ => b.sum_sq_inner_left (w j)
+  -- `|q X q⁻¹ e_i| = |X (q⁻¹ e_i)|`, and `q⁻¹ e` is again an orthonormal basis.
+  have h1 : hsNormSq (q.toLinearIsometry.toContinuousLinearMap ∘L X ∘L
+      q.symm.toLinearIsometry.toContinuousLinearMap) = ∑ i, ‖X (e.map q.symm i)‖ ^ 2 := by
+    simp only [hsNormSq, ContinuousLinearMap.comp_apply, LinearIsometry.coe_toContinuousLinearMap,
+      LinearIsometryEquiv.coe_toLinearIsometry, LinearIsometryEquiv.norm_map,
+      OrthonormalBasis.map_apply, EuclideanSpace.basisFun_apply, e]
+  have h2 : hsNormSq X = ∑ i, ‖X (e i)‖ ^ 2 := by
+    simp only [hsNormSq, EuclideanSpace.basisFun_apply, e]
+  rw [h1, h2, key, key]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
