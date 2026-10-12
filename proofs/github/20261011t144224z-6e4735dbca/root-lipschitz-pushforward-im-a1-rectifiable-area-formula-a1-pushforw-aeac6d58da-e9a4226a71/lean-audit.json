@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "00fd08dacc0853bb8ced6c3501928b4d568a59d5883f642f5879ad591ad55690",
+  "git_delta": {
+    "base_commit": "b06716dc2d4110f8370e4f25f66fdffa6e7942fb",
+    "candidate_commit": "3210ebf9ba882fd4ef0f53f44a1d1b40b92dee4d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_raf_pushforward_enorm_aemeasurable",
+    "diff_sha256": "5bd00f48be9aee4f7f65100e32ac52fe19de79d656dcde273f6deed32664ccc1",
+    "source_sha256": "6d0a4544e79e8367cc9b0b07c34298436437dc0014f4e14be75cabd7e71d29df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_raf_pushforward_enorm_aemeasurable",
+      "statement": "∀ (P Q n : ℕ) (μ : Measure (Eucl P)) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (ξ : Eucl P → NVector (Eucl P) n), AEStronglyMeasurable L μ → AEStronglyMeasurable ξ μ → AEMeasurable (fun x => ‖nVectorPushforward n (L x) (ξ x)‖ₑ) μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
