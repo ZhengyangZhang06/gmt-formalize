@@ -535,6 +535,37 @@ theorem Submission.allard_tc_cri_carrier_dilation_null :
     rw [inv_smul_smul₀ hs.ne']
   rw [hset, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hs.ne'),
     hkey _ (inv_pos.2 hs), smul_zero]
+/-- Set-lintegrals agree when the sets and the integrands agree on a null-measurable set `G`
+off which both sets are null (used for the rescaling invariance of tangent cones, Simon Ch. 8,
+5.3 and 5.7): if `μ (D \ G) = μ (D' \ G) = 0`, `x ∈ D ↔ x ∈ D'` and `f x = g x` for `x ∈ G`,
+then `∫⁻_D f dμ = ∫⁻_{D'} g dμ`.  `D`, `D'`, `f`, `g` are arbitrary and `μ` need not be
+σ-finite. -/
+theorem Submission.allard_tc_cri_setLIntegral_congr_off_null :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (G D D' : Set (Euclidean N)) (f g : Euclidean N → ℝ≥0∞), NullMeasurableSet G μ → μ (D \ G) = 0 → μ (D' \ G) = 0 → (∀ x ∈ G, x ∈ D ↔ x ∈ D') → (∀ x ∈ G, f x = g x) → ∫⁻ x in D, f x ∂μ = ∫⁻ x in D', g x ∂μ := by
+  intro N μ G D D' f g hG hD hD' hDD' hfg
+  -- Step 1: `D \ D' ⊆ D \ G` and `D' \ D ⊆ D' \ G`, so `D =ᵐ[μ] D'`.
+  have hDeq : D =ᵐ[μ] D' := by
+    refine ae_eq_set.2 ⟨measure_mono_null ?_ hD, measure_mono_null ?_ hD'⟩
+    · rintro x ⟨hxD, hxD'⟩
+      exact ⟨hxD, fun hxG ↦ hxD' ((hDD' x hxG).1 hxD)⟩
+    · rintro x ⟨hxD', hxD⟩
+      exact ⟨hxD', fun hxG ↦ hxD ((hDD' x hxG).2 hxD')⟩
+  -- Step 2: a measurable kernel `Z ⊆ G` with `μ (G \ Z) = 0`.
+  obtain ⟨Z, hZG, hZ, hZae⟩ := hG.exists_measurable_subset_ae_eq
+  have hGZ : μ (G \ Z) = 0 := (ae_eq_set.1 hZae).2
+  -- Step 3: `(μ.restrict D) Zᶜ = μ (Zᶜ ∩ D) = 0`, as `Zᶜ ∩ D ⊆ (D \ G) ∪ (G \ Z)`.
+  have hZc : μ.restrict D Zᶜ = 0 := by
+    rw [Measure.restrict_apply hZ.compl]
+    refine measure_mono_null ?_ (measure_union_null hD hGZ)
+    rintro x ⟨hxZ, hxD⟩
+    by_cases hxG : x ∈ G
+    · exact Or.inr ⟨hxG, hxZ⟩
+    · exact Or.inl ⟨hxD, hxG⟩
+  -- Step 4: `{x | f x ≠ g x} ⊆ Zᶜ`, so `f = g` `(μ.restrict D)`-a.e.
+  have hfg_ae : f =ᵐ[μ.restrict D] g :=
+    ae_iff.2 (measure_mono_null (fun x hx hxZ ↦ hx (hfg x (hZG hxZ))) hZc)
+  -- Step 5: `lintegral_congr_ae`, then `μ.restrict D = μ.restrict D'` (`setLIntegral_congr`).
+  exact (lintegral_congr_ae hfg_ae).trans (setLIntegral_congr hDeq)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
