@@ -410,6 +410,46 @@ theorem Submission.fiw_ims_frame_sign :
     refine ContinuousLinearMap.ext fun ω => ?_
     rw [_root_.neg_apply, simpleNVector_apply, simpleNVector_apply, key ω, hd, neg_one_mul]
 
+/-- Orientations of rectifiable triples agree up to sign on the overlap where every weighted
+approximate tangent space of `(M₁, θ₁)` is one of `(M₂, θ₂)` (Simon Ch. 6, 3.1: `ξ(x)` is
+`±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM`).  At `Hⁿ`-a.e. `x ∈ M₁ ∩ M₂` the `orients`
+fields give orthonormal frames `τ`, `τ'` with `ξ₁(x) = ±s(τ)` and `ξ₂(x) = ±s(τ')`, where
+`s = simpleNVector`.  By hypothesis `span τ` is a weighted approximate tangent space of
+`(M₂, θ₂)` at `x`, so `span τ = span τ'` by uniqueness (Ch. 3, 1.7; `θ₂(x) > 0`), and
+`Submission.fiw_ims_frame_sign` gives `s(τ') = ±s(τ)`. -/
+theorem Submission.fiw_ims_orientation_sign :
+    ∀ (P n : ℕ) (U M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ)
+      (ξ₁ ξ₂ : Eucl P → NVector (Eucl P) n),
+      IsRectifiableTriple U n M₁ θ₁ ξ₁ → IsRectifiableTriple U n M₂ θ₂ ξ₂ →
+      (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q →
+          HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q) →
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ξ₁ x = ξ₂ x ∨ ξ₁ x = -ξ₂ x := by
+  intro P n U M₁ M₂ θ₁ θ₂ ξ₁ ξ₂ h₁ h₂ htan
+  -- Step 1: `M₁ ∩ M₂` is `Hⁿ`-null-measurable, so a.e. point of the overlap lies in it.
+  have hmem : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), x ∈ M₁ ∩ M₂ :=
+    ae_restrict_mem₀ (h₁.nullMeasurableSet.inter h₂.nullMeasurableSet)
+  -- Step 2: both orientation conditions hold a.e. on the overlap.
+  have ho₁ := ae_restrict_of_ae_restrict_of_subset (inter_subset_left : M₁ ∩ M₂ ⊆ M₁) h₁.orients
+  have ho₂ := ae_restrict_of_ae_restrict_of_subset (inter_subset_right : M₁ ∩ M₂ ⊆ M₂) h₂.orients
+  filter_upwards [hmem, ho₁, ho₂, htan] with x hx hx₁ hx₂ hQ
+  obtain ⟨τ, hτ, hT, hξ₁⟩ := hx₁
+  obtain ⟨τ', hτ', hT', hξ₂⟩ := hx₂
+  -- Step 3: `span τ` is also a weighted approximate tangent space of `(M₂, θ₂)` at `x`, and
+  -- `θ₂ x > 0`, so it is `span τ'`.
+  have hspan : Submodule.span ℝ (range τ) = Submodule.span ℝ (range τ') :=
+    (hQ _ hT).unique (h₂.pos x hx.2).ne' hT'
+  -- Step 4: `s(τ') = ±s(τ)`; combine the three signs.  (`rw [neg_neg]` and `simp` do not fire
+  -- on `NVector` negation at this pin, but `neg_neg` applied to a term does.)
+  have hnn : ∀ v : NVector (Eucl P) n, - -v = v := fun v => neg_neg v
+  rcases Submission.fiw_ims_frame_sign P n τ τ' hτ hτ' hspan with hs | hs <;>
+    rcases hξ₁ with hξ₁ | hξ₁ <;> rcases hξ₂ with hξ₂ | hξ₂ <;> rw [hξ₁, hξ₂, hs] <;>
+    first
+    | exact Or.inl rfl
+    | exact Or.inr rfl
+    | exact Or.inl (hnn _).symm
+    | exact Or.inr (hnn _).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
