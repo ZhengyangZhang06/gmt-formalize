@@ -682,6 +682,100 @@ theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
     ContinuousAlternatingMap.coe_toAlternatingMap]
   exact h2 v hv
 
+/-- **Continuous forms against a measure representation: the step "by (2.7)" in the proof of
+Simon Ch. 6, Lemma 2.15 (p. 137).**  Let `(μ, v)` represent `T` as in (2.7), `W ⊂⊂ U` and
+`M_W(T) ≤ B`.  If `ω` is a continuous `n`-form with `tsupport ω ⊆ W` and `|ω(x)| ≤ C` everywhere
+(Euclidean coefficient norm), then `⟨ω, v⟩` is `μ`-integrable and `|∫ ⟨ω, v⟩ dμ| ≤ B · C`.
+Choose `V` open with `tsupport ω ⊆ V` and `closure V ⊆ W` compact.  The coefficients `v_β` of `v`
+are `μ`-integrable on `closure V`, so for every continuous `θ` vanishing off `closure V` with
+`|θ| ≤ D`, `⟨θ, v⟩ = ∑_β θ(e_β) v_β` is integrable and `|∫ ⟨θ, v⟩ dμ| ≤ D · G`, where
+`G = ∑_β ∫_{closure V} |v_β| dμ`.  For a test form `η` supported in `V` with `|ω - η| ≤ ε`, the
+mass bound gives `|∫ ⟨ω, v⟩ dμ| ≤ |T(η)| + ε G ≤ B (C + ε) + ε G`; let `ε → 0`. -/
+theorem Submission.cmb_measureRepresentation_continuous_bound : ∀ (P n : ℕ) (U W : Set (Eucl P)), CompactlyContainedOpen W U → ∀ (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → ∀ (B C : ℝ), 0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → tsupport ω ⊆ W → (∀ x, covectorEuclideanNorm (ω x) ≤ C) → Integrable (fun x => v x (ω x)) μ ∧ |∫ x, v x (ω x) ∂μ| ≤ B * C := by
+  intro P n U W hWU T μ v hT B C hB hM ω hω hωW hωC
+  obtain ⟨hWo, hWc, hWU'⟩ := hWU
+  have hWU₀ : W ⊆ U := subset_closure.trans hWU'
+  -- Step 1: `tsupport ω` is compact; choose `V` open with `tsupport ω ⊆ V`, `closure V ⊆ W`
+  -- compact.
+  have hωc : HasCompactSupport ω :=
+    hWc.of_isClosed_subset (isClosed_tsupport ω) (hωW.trans subset_closure)
+  obtain ⟨V, hVo, hωV, hVW, hVc⟩ :=
+    exists_open_between_and_isCompact_closure hωc.isCompact hWo hωW
+  have hVU : V ⊆ U := subset_closure.trans (hVW.trans hWU₀)
+  -- Step 2: the coefficients `v_β` of `v` are `μ`-integrable on `closure V`.
+  have hcoef : ∀ β : SimonMultiIndex n P,
+      IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) (closure V) μ :=
+    Submission.cmb_rb_measureRepresentation_integrableOn_coeff P n U W hWo hWU₀ T μ v hT
+      (closure V) hVc hVW
+  set G : ℝ := ∑ β : SimonMultiIndex n P,
+    ∫ x in closure V, |euclideanNVectorCoordinate (v x) β| ∂μ
+  have hG : 0 ≤ G := Finset.sum_nonneg fun β _ => integral_nonneg fun x => abs_nonneg _
+  -- Step 3: coordinate expansion `v(x)(α) = ∑_β α(e_β) v_β(x)`.
+  have hexp : ∀ (x : Eucl P) (α : Covector (Eucl P) n), v x α = ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate α β * euclideanNVectorCoordinate (v x) β := by
+    intro x α
+    conv_lhs => rw [Submission.cmb_covector_eq_sum_coord_smul_wedge P n α]
+    simp only [map_sum, map_smul, smul_eq_mul, euclideanNVectorCoordinate]
+  -- Step 4: pairings with continuous forms vanishing off `closure V` are integrable, and
+  -- `|∫ ⟨θ, v⟩ dμ| ≤ D G` when `|θ| ≤ D`.
+  have hpair : ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ →
+      (∀ x, x ∉ closure V → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) →
+      Integrable (fun x => v x (θ x)) μ ∧ |∫ x, v x (θ x) ∂μ| ≤ D * G := by
+    intro θ D hθ hθV hθD
+    have hfun : (fun x => v x (θ x)) = fun x => ∑ β : SimonMultiIndex n P,
+        euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β :=
+      funext fun x => hexp x (θ x)
+    rw [hfun]
+    exact Submission.cmb_rb_integral_coeff_pairing_bound P n μ v (closure V)
+      isClosed_closure.measurableSet hcoef θ D hθ hθV hθD
+  have hωV' : ∀ x, x ∉ closure V → ω x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hωV h))
+  refine ⟨(hpair ω C hω hωV' hωC).1, ?_⟩
+  -- Step 5: compare with a test form `η` supported in `V`, `|ω - η| ≤ ε`.
+  have key : ∀ ε : ℝ, 0 < ε → |∫ x, v x (ω x) ∂μ| ≤ B * (C + ε) + ε * G := by
+    intro ε hε
+    obtain ⟨η, hηV, hηω⟩ :=
+      Submission.cmb_exists_testForm_uniform_approx P n U V ω hVo hVU hω hωc hωV ε hε
+    -- `|η| ≤ C + ε`, hence `|T(η)| ≤ B (C + ε)` by the mass bound.
+    have hηC : ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ C + ε := by
+      intro x
+      have h := Submission.cmb_rb_covectorEuclideanNorm_add_le P n (ω x)
+        (-(ω x - (η : DifferentialForm (Eucl P) n) x))
+      have heq : ω x + -(ω x - (η : DifferentialForm (Eucl P) n) x) =
+          (η : DifferentialForm (Eucl P) n) x := by abel
+      rw [heq, covectorEuclideanNorm_neg] at h
+      linarith [hωC x, hηω x]
+    have hTη : |T η| ≤ B * (C + ε) :=
+      Submission.cmb_abs_apply_le_of_massOn_le P n U W T η B (C + ε) hB hM
+        (hηV.trans (subset_closure.trans hVW)) hηC
+    -- `θ = ω - η` is continuous, vanishes off `closure V` and `|θ| ≤ ε`.
+    have hηc : Continuous (η : DifferentialForm (Eucl P) n) := ContDiff.continuous η.property.1.1
+    have hθV : ∀ x, x ∉ closure V → ω x - (η : DifferentialForm (Eucl P) n) x = 0 := by
+      intro x hx
+      rw [hωV' x hx, image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hηV h)),
+        sub_zero]
+    obtain ⟨hθi, hθb⟩ :
+        Integrable (fun x => v x (ω x - (η : DifferentialForm (Eucl P) n) x)) μ ∧
+          |∫ x, v x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ| ≤ ε * G :=
+      hpair (fun x => ω x - (η : DifferentialForm (Eucl P) n) x) ε (hω.sub hηc) hθV hηω
+    -- `∫ ⟨ω, v⟩ dμ = T(η) + ∫ ⟨ω - η, v⟩ dμ`.
+    obtain ⟨hηi, hηT⟩ := hT η
+    have hsplit : ∫ x, v x (ω x) ∂μ =
+        T η + ∫ x, v x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ := by
+      rw [hηT, ← integral_add hηi hθi]
+      congr 1
+      funext x
+      rw [← map_add, add_sub_cancel]
+    rw [hsplit]
+    exact (abs_add_le _ _).trans (add_le_add hTη hθb)
+  -- Step 6: let `ε → 0`, with `ε = ε₀ / (B + G + 1)`.
+  refine le_of_forall_pos_le_add fun ε₀ hε₀ => ?_
+  have hBG : 0 < B + G + 1 := by linarith
+  have hε : 0 < ε₀ / (B + G + 1) := div_pos hε₀ hBG
+  have hεε₀ : ε₀ / (B + G + 1) * (B + G + 1) = ε₀ := div_mul_cancel₀ ε₀ hBG.ne'
+  have h := key _ hε
+  nlinarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
