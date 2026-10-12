@@ -359,6 +359,45 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Mass estimate (Simon Ch. 6, 2.4–2.5): if `M(Z) < ∞` and `|η(x)| ≤ c` everywhere (Euclidean
+coefficient norm) with `c > 0`, then `|Z(η)| ≤ c · M(Z)`. -/
+theorem Submission.fiw_tb_te_abs_apply_le_mul_mass :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (Z : GeometricCurrentOn U n) (η : TestFormOn U n) (c : ℝ),
+      0 < c → (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ c) →
+      Z.mass ≠ ∞ → |Z η| ≤ c * Z.mass.toReal := by
+  intro P n U Z η c hc hη hZ
+  -- Homogeneity of the Euclidean coefficient norm: `|t β| = |t| |β|`.
+  have hsmul : ∀ (t : ℝ) (β : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • β) = |t| * covectorEuclideanNorm β := by
+    intro t β
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- If `|θ| ≤ c` pointwise, then `c⁻¹ θ` is mass-admissible, hence `Z(θ) ≤ c · M(Z)`.
+  have hone : ∀ θ : TestFormOn U n,
+      (∀ x, covectorEuclideanNorm ((θ : DifferentialForm (Eucl P) n) x) ≤ c) →
+        Z θ ≤ c * Z.mass.toReal := by
+    intro θ hθ
+    have hadm : c⁻¹ • θ ∈ massAdmissibleOn U n U := by
+      refine ⟨(c⁻¹ • θ).property.2, fun x => ?_⟩
+      change covectorEuclideanNorm (c⁻¹ • (θ : DifferentialForm (Eucl P) n) x) ≤ 1
+      rw [hsmul, abs_of_pos (inv_pos.mpr hc), inv_mul_le_iff₀ hc, mul_one]
+      exact hθ x
+    have hle : ENNReal.ofReal (Z (c⁻¹ • θ)) ≤ Z.mass := Z.le_massOn hadm
+    rwa [ENNReal.ofReal_le_iff_le_toReal hZ, map_smul, smul_eq_mul, inv_mul_le_iff₀ hc] at hle
+  -- Apply this to `η` and to `-η`, using `|-η(x)| = |η(x)|` and `Z(-η) = -Z(η)`.
+  have hneg := hone (-η) fun x => by
+    change covectorEuclideanNorm (-(η : DifferentialForm (Eucl P) n) x) ≤ c
+    rw [covectorEuclideanNorm_neg]
+    exact hη x
+  have hZneg : Z (-η) = -Z η := map_neg Z.toCurrent η
+  rw [hZneg] at hneg
+  exact abs_le.mpr ⟨by linarith, hone η hη⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
