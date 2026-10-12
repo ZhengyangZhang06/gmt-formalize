@@ -653,6 +653,74 @@ theorem Submission.dsmc_measurable_blowUp_image_setIntegral : ∀ (P n : ℕ) (M
     (f := fun p : Euclid P × Euclid P => ENNReal.ofReal (f (η p.1 p.2)))
     (ENNReal.continuous_ofReal.comp (hf.comp hηc)).measurable).const_smul _).ennreal_toReal
 
+/-- **The approximate tangent projections of an integer multiplicity triple are measurable**
+(Simon Ch. 3, 1.4; Ch. 4, 2.3).  For `R = (M, θ, ξ)` in an open `U ⊆ ℝᴾ`, `x ↦ p_{TₓM}` is
+a.e.-measurable for `μ_R = θHⁿ⌞M`.  As `μ_R ≪ ν = Hⁿ⌞M`, it suffices to treat `ν`, which is
+σ-finite.  If `n = 0`, every candidate plane is `{0}`.  If `n ≥ 1`, `TₓM` is an approximate tangent
+plane at `ν`-a.e. `x`, so for `f_u(y) = max(1 − |y|², 0)⟨u, y⟩²` the blow-up integrals
+`∫_{η_{x,1/(k+1)}(M)} f_u dHⁿ`, which are Borel in `x`, converge `ν`-a.e. to
+`∫_{TₓM} f_u dHⁿ = c|p_x u|²`.  Hence each `x ↦ |p_x u|²`, and so `x ↦ p_x`, is
+`ν`-a.e.-measurable. -/
+theorem Submission.dsmc_approxTangentPlane_starProjection_aemeasurable : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure := by
+  intro P n U R hU
+  -- `μ_R = θHⁿ⌞M ≪ Hⁿ⌞M`, so it suffices to work with `ν = Hⁿ⌞M`
+  refine AEMeasurable.mono_ac ?_ (withDensity_absolutelyContinuous _ _)
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: every candidate plane is `0`-dimensional, so `p_x = 0` for every `x`
+    have h0 : ∀ x, (approxTangentPlane 0 R.carrier x).starProjection = 0 := by
+      intro x
+      have hK : approxTangentPlane 0 R.carrier x = ⊥ := by
+        rw [approxTangentPlane]
+        split_ifs with h
+        · exact Submodule.finrank_eq_zero.1 h.choose_spec.1
+        · rfl
+      refine ContinuousLinearMap.ext fun v => ?_
+      exact (Submodule.mem_bot ℝ).1
+        (hK.le ((approxTangentPlane 0 R.carrier x).starProjection_apply_mem v))
+    simp only [h0]
+    exact aemeasurable_const
+  have : SigmaFinite ((μHE[n] : Measure (Euclid P)).restrict R.carrier) :=
+    Submission.dsmc_imrep_carrier_sigmaFinite P n U R hU
+  obtain ⟨c, hc, hcQ⟩ := Submission.exists_plane_cutoff_quadratic_moment_eq n hn
+  -- `TₓM` is an approximate tangent plane of `M` at `ν`-a.e. `x`
+  have hT : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      HasApproximateTangentSpaceAt n R.carrier x (approxTangentPlane n R.carrier x) := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, hQ, -⟩ := hx
+    have h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec
+  refine Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq P _ _ fun u => ?_
+  -- the test function `f_u(y) = max(1 − |y|², 0)⟨u, y⟩² ∈ C_c(ℝᴾ)`
+  let f : Euclid P → ℝ := fun y => max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2
+  have hf : Continuous f := by fun_prop
+  have hf0 : ∀ y, 0 ≤ f y := fun y => mul_nonneg (le_max_right _ _) (sq_nonneg _)
+  have hfc : HasCompactSupport f := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) 1) fun y hy => ?_
+    have h1 : 1 < ‖y‖ := by simpa using hy
+    have h2 : 1 - ‖y‖ ^ 2 ≤ 0 := by nlinarith
+    simp [f, max_eq_right h2]
+  let F : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨f, hf⟩, hfc⟩
+  -- the scales `1/(k+1) ↓ 0`
+  have hr : Tendsto (fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+      Eventually.of_forall fun k => mem_Ioi.2 (by positivity)⟩
+  -- the blow-up integrals `Φₖ(x) = ∫_{η_{x,1/(k+1)}(M)} f_u dHⁿ` are Borel functions of `x`
+  let Φ : ℕ → Euclid P → ℝ := fun k x =>
+    ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x (1 / ((k : ℝ) + 1)) '' R.carrier, f y ∂μHE[n]
+  have hΦ : ∀ k, Measurable (Φ k) := fun k =>
+    Submission.dsmc_measurable_blowUp_image_setIntegral P n R.carrier inferInstance f hf hf0 _
+      (by positivity)
+  -- at `ν`-a.e. `x` they converge to `∫_{TₓM} f_u dHⁿ = c|p_x u|²`
+  have hlim : ∀ᵐ x ∂(μHE[n].restrict R.carrier), Tendsto (fun k => Φ k x) atTop
+      (𝓝 (c * ‖(approxTangentPlane n R.carrier x).starProjection u‖ ^ 2)) := by
+    filter_upwards [hT] with x hx
+    rw [← hcQ P _ hx.1 u]
+    exact (hx.2 F).comp hr
+  refine ((aemeasurable_of_tendsto_metrizable_ae' (fun k => (hΦ k).aemeasurable) hlim).const_mul
+    c⁻¹).congr (Eventually.of_forall fun x => ?_)
+  exact inv_mul_cancel_left₀ hc.ne' _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
