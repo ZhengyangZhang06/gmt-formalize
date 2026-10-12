@@ -482,6 +482,64 @@ theorem Submission.dsmc_att_blowUpMap_image_null : ∀ (P n : ℕ) (E : Set (Euc
   rw [himage, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hlam), htrans,
     smul_zero]
 
+/-- **Blow-ups of `M ∩ N` approach every vector of an approximate tangent space** (Simon Ch. 3,
+Definition 1.4, chapter-03.txt lines 77–83, tested as in Remark 1.5(3), lines 90–92).  If
+`Hⁿ(M \ N) = 0`, `Q` is an approximate tangent space of `M` at `x`, `w ∈ Q` and `s > 0`, then for
+all small `λ > 0` some `y ∈ M ∩ N` has `|λ⁻¹(y − x) − w| < s`.  The tent `f = max(0, s − |· − w|)`
+lies in `C_c`, vanishes off `B_s(w)` and has `∫_Q f dHⁿ > 0`, so `∫_{η_{x,λ}(M)} f dHⁿ > 0` for
+small `λ`; hence `Hⁿ(η_{x,λ}(M) ∩ B_s(w)) ≠ 0`, and since `η_{x,λ}(M \ N)` is `Hⁿ`-null,
+`η_{x,λ}(M ∩ N)` meets `B_s(w)`. -/
+theorem Submission.dsmc_att_blowUp_points_of_approxTangent : ∀ (P n : ℕ) (M N : Set (Euclid P)) (x w : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (M \ N) = 0 → HasApproximateTangentSpaceAt n M x Q → w ∈ Q → ∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ M ∩ N, ‖lam⁻¹ • (y - x) - w‖ < s := by
+  intro P n M N x w Q hMN hQ hw s hs
+  -- the tent `g = max(0, s − |· − w|)`: continuous, `g ≥ 0`, `g(w) = s` and `{g ≠ 0} ⊆ B_s(w)`
+  set g : Euclid P → ℝ := fun y => max 0 (s - ‖y - w‖)
+  have hg_cont : Continuous g :=
+    continuous_const.max (continuous_const.sub (continuous_id.sub continuous_const).norm)
+  have hg_nonneg : ∀ y, 0 ≤ g y := fun y => le_max_left _ _
+  have hg_ball : ∀ y, g y ≠ 0 → y ∈ ball w s := by
+    intro y hy
+    rw [mem_ball, dist_eq_norm]
+    by_contra h
+    exact hy (max_eq_left (by linarith [not_lt.mp h]))
+  have hg_supp : HasCompactSupport g :=
+    HasCompactSupport.intro (isCompact_closedBall w s) fun y hy =>
+      not_not.mp fun h => hy (ball_subset_closedBall (hg_ball y h))
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hg_cont⟩, hg_supp⟩
+  -- `∫_Q f dHⁿ > 0`, hence `∫_{η_{x,λ}(M)} f dHⁿ > 0` for every `λ ∈ (0, λ₀)`
+  have hI : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] :=
+    Submission.dsmc_att_setIntegral_submodule_pos P n Q g w hQ.1 hg_cont hg_supp hg_nonneg hw
+      (by simp [g, hs])
+  obtain ⟨lam₀, hlam₀, hpos⟩ :=
+    mem_nhdsGT_iff_exists_Ioo_subset.mp ((hQ.2 f).eventually (lt_mem_nhds hI))
+  refine ⟨lam₀, hlam₀, fun lam hlam hlam₀' => ?_⟩
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x lam with hη
+  -- a positive integral of `f` over `η(M)` forces `Hⁿ(η(M) ∩ B_s(w)) ≠ 0`
+  have hball : μHE[n] (η '' M ∩ ball w s) ≠ 0 := by
+    intro h0
+    have hF : 0 < ∫ y in η '' M, f y ∂μHE[n] := hpos ⟨hlam, hlam₀'⟩
+    have hF0 : ∫ y in η '' M, f y ∂μHE[n] = 0 := by
+      apply integral_eq_zero_of_ae
+      rw [EventuallyEq, ae_iff]
+      refine measure_mono_null (fun y hy => hg_ball y hy) ?_
+      rw [Measure.restrict_apply measurableSet_ball, inter_comm]
+      exact h0
+    exact hF.ne' hF0
+  -- `η(M \ N)` is `Hⁿ`-null and `η(M) ∩ B_s(w) ⊆ (η(M ∩ N) ∩ B_s(w)) ∪ η(M \ N)`
+  have hnull : μHE[n] (η '' (M \ N)) = 0 :=
+    Submission.dsmc_att_blowUpMap_image_null P n (M \ N) x lam hlam.ne' hMN
+  have hcov : η '' M ∩ ball w s ⊆ (η '' (M ∩ N) ∩ ball w s) ∪ η '' (M \ N) := by
+    rintro z ⟨⟨y, hyM, rfl⟩, hz⟩
+    by_cases hyN : y ∈ N
+    · exact Or.inl ⟨⟨y, ⟨hyM, hyN⟩, rfl⟩, hz⟩
+    · exact Or.inr ⟨y, ⟨hyM, hyN⟩, rfl⟩
+  have hne : μHE[n] (η '' (M ∩ N) ∩ ball w s) ≠ 0 := fun h0 =>
+    hball (measure_mono_null hcov (measure_union_null h0 hnull))
+  -- so `η(M ∩ N)` meets `B_s(w)`
+  obtain ⟨z, ⟨y, hy, rfl⟩, hz⟩ := nonempty_of_measure_ne_zero hne
+  refine ⟨y, hy, ?_⟩
+  rw [mem_ball, dist_eq_norm] at hz
+  simpa [hη, Poincare.SimonGMT.Chapter03.blowUpMap] using hz
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
