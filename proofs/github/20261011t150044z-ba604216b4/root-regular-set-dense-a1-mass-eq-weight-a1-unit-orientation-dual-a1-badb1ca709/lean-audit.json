@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f4e8b3cc0eba09d8983b4e9abba27c0f51dbaa36ebc0bdee1370cf04c4e442a4",
+  "git_delta": {
+    "base_commit": "61e88a16f40212590b5ab00c2732c90eb023e161",
+    "candidate_commit": "45e84ea3547a77a3e79217418f032678b820c8f3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_unit_orientation_dual",
+    "diff_sha256": "1c620aa2e53bed3cfa377265f473cc3c582cb380fc0e69e5994f81f1e4fb6591",
+    "source_sha256": "e3294cf0a4011f1dc02be644c5a817071c935a7cbdb846d27d24ead97ed62ea3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_unit_orientation_dual",
+      "statement": "∀ (P n : ℕ), ∃ J : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (J ξ) = 1 ∧ ξ (J ξ) = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
