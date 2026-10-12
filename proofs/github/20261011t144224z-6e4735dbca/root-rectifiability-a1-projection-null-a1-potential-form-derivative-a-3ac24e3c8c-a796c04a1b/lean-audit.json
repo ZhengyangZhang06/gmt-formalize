@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "60537a5246782721b60b3e47e96f278620d2c88ed098bc4142794660dd4086cc",
+  "git_delta": {
+    "base_commit": "64c1fb77e7b2e01f8079af4cf39a4b93b90f757f",
+    "candidate_commit": "ba0b2468925a2878fdaf3e25cddacdb5376fad3d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pfd_wedge_cons_isLinearMap",
+    "diff_sha256": "fe1f182c63e69624cc318798cab726a304a8e7c537ca5ec3c1b073c798266a77",
+    "source_sha256": "3cf2db4c6ef3f894ef7345e4b742c566d491a640b05cd598c0b445fa06f24f38",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pfd_wedge_cons_isLinearMap",
+      "statement": "∀ (P m : ℕ) (β : Fin m → (Eucl P →L[ℝ] ℝ)), IsLinearMap ℝ (fun γ : Eucl P →L[ℝ] ℝ => wedgeCovectors (m + 1) (Fin.cons γ β : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
