@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1.euler_ode_power-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1",
+  "depth": 4,
+  "title": "A solution of F′(t) = n·F(t)/t on (0,∞) satisfies F(s) = sⁿ·F(1)",
+  "statement": "Let n ∈ ℕ and let F : ℝ → ℝ be a function such that, for every t > 0, F is differentiable at t with derivative F′(t) = n·F(t)/t. Then F(s) = s^n·F(1) for every s > 0.",
+  "lean_statement": "∀ (n : ℕ) (F : ℝ → ℝ), (∀ t : ℝ, 0 < t → HasDerivAt F ((n : ℝ) * F t / t) t) → ∀ s : ℝ, 0 < s → F s = s ^ n * F 1",
+  "lean_name": "varifold_tangents_rh_edc_pow_of_hasDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-euler-dilation-c1-a1-76df93f87c-a1"
+}
