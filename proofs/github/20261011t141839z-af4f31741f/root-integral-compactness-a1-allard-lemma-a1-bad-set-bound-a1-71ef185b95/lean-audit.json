@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d3d61e998ec883aea1a957676cba7b21eb0fa14a51d8bcf8fb3cf1e1f52437a8",
+  "git_delta": {
+    "base_commit": "1d5fcdf6e54de298462068bacb58ccbe04a29406",
+    "candidate_commit": "c9be4d105082ef57fc2ca4d54f541a52969db1d0",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "0088fcfe2098d9ef399fa4a2539b99d6573edc94d242cb208a67236b08bbc4e5",
+    "source_sha256": "aae928923a400174688c41776445f6f869e31d4745c2cc9e99422ab73e55f0a5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_bad_set_bound",
+      "statement": "MonotonicityFormula → ∀ (N n : ℕ) (Λ : ℝ), 1 ≤ Λ → ∃ c₀ : ℝ, 0 ≤ c₀ ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → variationMeasure W (ball (0 : Euclidean N) 3) < ENNReal.ofReal (ε ^ 2) → (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) < ENNReal.ofReal (ε ^ 2) → W.weight {y | y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ ¬ ((∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)))} ≤ ENNReal.ofReal (c₀ * ε)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
