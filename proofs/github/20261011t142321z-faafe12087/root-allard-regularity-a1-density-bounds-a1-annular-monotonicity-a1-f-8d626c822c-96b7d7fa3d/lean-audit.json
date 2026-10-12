@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0593fd25a50d13740dd407e4bf876a535c444f99e3b49a178ebe970871027ac4",
+  "git_delta": {
+    "base_commit": "9c720cdcfa008fbae122d86f0d890d2999414373",
+    "candidate_commit": "168288f3dc379baf37c17de2a991e0719a1ec502",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_fc_primitive",
+    "diff_sha256": "3c6339ef991a9a2c48cf4b7af9885ae1370d071ec8d96aabee555d52c0fa7c61",
+    "source_sha256": "1772ccf1799e002c95e53b515c8e402815d1c859530c2c011a7681b4a1456393",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_fc_primitive",
+      "statement": "∀ (n : ℕ) (p R Λ ε : ℝ) (a : ℝ → ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < ε → (∀ t : ℝ, 0 < t → (1 + ε) * t < R → ContinuousAt a t ∧ |a t| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (t / R) ^ (-((n : ℝ) / p))) → ∀ t : ℝ, 0 < t → (1 + ε) * t < R → ContinuousAt (fun u => ∫ τ in (0)..u, a τ) t ∧ |∫ τ in (0)..t, a τ| ≤ Λ / 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
