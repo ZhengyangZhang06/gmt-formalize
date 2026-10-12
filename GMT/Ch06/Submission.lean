@@ -359,6 +359,27 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- If `M ⊆ U` is `μ`-null on every open `W ⊂⊂ U` on which `T` vanishes, then `μ(M ∖ spt T) = 0`:
+`M ∖ spt T` lies in the zero region (Simon 2.11), a countable union of such `W` (Lindelöf). -/
+theorem Submission.lpf_rsn_null_diff_support_of_local_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \ T.support) = 0 := by
+  intro P n U T M μ hMU hloc
+  -- Countably many of the open sets whose union is `T.zeroRegion` already cover it.
+  obtain ⟨S, hSc, hSsub, hSeq⟩ := TopologicalSpace.isOpen_sUnion_countable
+    {W : Set (Eucl P) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ T.VanishesOn W}
+    fun W hW => hW.1
+  -- As `M ⊆ U`, every point of `M ∖ spt T` lies in `T.zeroRegion = ⋃₀ S`.
+  have hsub : M \ T.support ⊆ ⋃ W ∈ S, M ∩ W := by
+    rintro x ⟨hxM, hxs⟩
+    have hxZ : x ∈ ⋃₀ S := by
+      rw [hSeq]
+      by_contra hxZ
+      exact hxs ⟨hMU hxM, hxZ⟩
+    obtain ⟨W, hWS, hxW⟩ := hxZ
+    exact mem_biUnion hWS ⟨hxM, hxW⟩
+  refine measure_mono_null hsub ((measure_biUnion_null_iff hSc).2 fun W hWS => ?_)
+  obtain ⟨hWo, hWc, hWU, hWv⟩ := hSsub hWS
+  exact hloc W hWo hWc hWU hWv
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
