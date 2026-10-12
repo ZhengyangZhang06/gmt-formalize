@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.energy_integrable-a1",
+  "parent_id": "root.sobolev_inequality-a1",
+  "depth": 2,
+  "title": "Sobolev preliminaries: C¹ extension and integrability of the energy integrand",
+  "statement": "Let n, ℓ ∈ ℕ and let V be a rectifiable n-varifold in E = ℝ^{n+ℓ} whose weight μ = μ_V is finite on compact sets and such that x ↦ p_{T_xV} is μ-a.e. strongly measurable. Let U ⊆ E be open, H: E → E locally μ-integrable on U, and g: E → ℝ C¹ on U with compact support and tsupport g ⊆ U. Then g is C¹ on all of E, ∇^M g(x) = 0 for every x ∉ tsupport g, and both |∇^M g| and g|H| are μ-integrable.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (g : Ambient n ℓ → ℝ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → LocallyIntegrableOn H U V.weight → ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → ContDiff ℝ 1 g ∧ (∀ x, x ∉ tsupport g → V.tangentialGradient g x = 0) ∧ Integrable (fun x ↦ ‖V.tangentialGradient g x‖) V.weight ∧ Integrable (fun x ↦ g x * ‖H x‖) V.weight",
+  "lean_name": "sobolev_energy_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-energy-integrable-a1-a1"
+}

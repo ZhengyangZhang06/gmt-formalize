@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.level_integral_bound-a1.layer_cake-a1",
+  "parent_id": "root.sobolev_inequality-a1.truncation_layer_cake-a1.level_integral_bound-a1",
+  "depth": 4,
+  "title": "Shifted layer-cake identity (Simon 4.11 with α = n/(n−1), t₀ = ε)",
+  "statement": "Let n ≥ 2 and ℓ ∈ ℕ, and let μ be a measure on E = ℝ^{n+ℓ} (Borel σ-algebra) that is finite on compact sets. Let h: E → ℝ be continuous, nonnegative and compactly supported, and let ε > 0. Put p := n/(n − 1) and M_s := {x : h(x) > s}, and write μ(M_s) for the real measure μ.real(M_s). Then ∫⁻_{(0,∞)} ofReal((t + ε)^{1/(n−1)} · μ(M_{t+ε})) dt = ofReal(((n − 1)/n) · ∫_{M_ε} (h^p − ε^p) dμ). Here ∫⁻ is the lower Lebesgue integral with respect to Lebesgue measure dt, ofReal y = max(y, 0) ∈ [0, ∞], powers are real powers of nonnegative bases, and ∫_{M_ε} is the Bochner set integral.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x}) = ENNReal.ofReal (((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ)",
+  "lean_name": "sobolev_level_layer_cake",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-truncation-layer-cake-a1-level-integral-bo-4e69efe26e-a1"
+}

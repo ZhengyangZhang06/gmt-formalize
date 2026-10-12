@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "lintegral_comp_eq_lintegral_meas_lt_mul|lintegral_lintegral_swap|ofReal_integral_eq_lintegral_ofReal|SigmaFinite.of_isFiniteMeasureOnCompacts|Monotone.deriv_nonneg|theorem integral_rpow",
+        "theorem integral_deriv_eq_sub|theorem integral_comp_add_right|theorem integral_comp_sub_left|theorem Integrable.bdd_mul|theorem lintegral_const_mul\\x27|theorem setIntegral_mono_on|theorem setIntegral_mono_set|theorem continuous_rpow_const|theorem mul_rpow|theorem rpow_mul",
+        "sobolev_level_moment_factor|sobolev_level_energy_tonelli|sobolev_level_layer_cake",
+        "python3 /tmp/independent-level-audit-csmtlzpu/run_lean_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-truncation-layer-cake-a1-level-integral-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-truncation-layer-cake-a1-level-integral-bound-a1/decomposition-v1.json",
+        "/tmp/independent-level-audit-csmtlzpu/Combined.lean",
+        "/tmp/independent-level-audit-csmtlzpu/ParseAndInstances.lean",
+        "/tmp/independent-level-audit-csmtlzpu/AssemblyFromHypotheses.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions, identical frozen Contract/Submission bytes, and compatibility of inspected snapshot library sources with compiler sources. The snapshot supplies the stated layer-cake, Tonelli, FTC, integrability and real-power lemmas with applicable hypotheses. All three one-line propositions independently elaborate in comparator-generated challenges without child declarations. Iff.rfl checks confirm the intended real powers, Lebesgue level integrals and restricted Bochner integrals; Borel and SFinite instance checks pass. The supplied complete child proofs and exact parent proof compile with only propext, Classical.choice and Quot.sound. An independently parameterized assembly also proves the frozen sobolev_level_integral_bound from precisely the three child conclusions. Splitting is appropriate: these are independent analytic obligations, and their empty dependency lists are correct and acyclic. All proposed names are valid bare identifiers; no reservations occur in the DAG or other node proposals, and no matching tracked Lean declarations were found across 357 Git refs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "moment_factor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact Lean proposition. Steps 1–3 establish exponent signs, finite superlevel measures and integrability. The two integral comparisons and subsequent nonnegative real-power identities yield precisely the claimed bound, including zero-measure cases. The proof is complete, directly formalizable and invokes neither the parent nor another child."
+    },
+    {
+      "key": "energy_tonelli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, correctly allowing arbitrary n and ℓ. Truncating K to the compact support supplies global integrability without assuming it for K. The proof establishes the shifted-derivative FTC identity, indicator integral, levelwise integrability, joint a.e. measurability and sigma-finiteness before Tonelli. Boundedness of h then justifies integrability of hK and the final Bochner integral equality. All steps are complete and independent of the parent and siblings."
+    },
+    {
+      "key": "layer_cake",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the conclusion match the frozen Lean type. Finite superlevel measures justify the real-measure conversion. The positive-part substitution gives the correct strict superlevel sets; Tonelli and the scalar power integral produce exactly the coefficient (n−1)/n. Compact-set integrability and nonnegativity on M_ε justify returning to the Bochner integral. The supplied proof covers both inner-integral cases and contains no circular reliance or deferred proof obligation."
+    }
+  ],
+  "required_changes": []
+}

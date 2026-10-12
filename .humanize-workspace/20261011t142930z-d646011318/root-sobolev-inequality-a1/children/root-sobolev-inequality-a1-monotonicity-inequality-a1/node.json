@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.monotonicity_inequality-a1",
+  "parent_id": "root.sobolev_inequality-a1",
+  "depth": 2,
+  "title": "Simon 5.5 for compactly supported g: the monotonicity inequality at all radii",
+  "statement": "Assume the weighted monotonicity identity (W), i.e. the exact frozen statement of weighted_monotonicity_identity. Let n ≥ 1, ℓ ∈ ℕ, V a rectifiable n-varifold in E = ℝ^{n+ℓ} with μ = μ_V finite on compacts, dim T_xV = n μ-a.e. and x ↦ p_{T_xV} μ-a.e. strongly measurable; U ⊆ E open; V has generalized mean curvature H in U; g ∈ C¹(U), g ≥ 0, with compact support and tsupport g ⊆ U; ζ ∈ E and 0 < s ≤ r. Then s^{−n}∫_{B_s(ζ)} g dμ ≤ r^{−n}∫_{B_r(ζ)} g dμ + ∫_{(s,r]} τ^{−n}(∫_{B_τ(ζ)} (|∇^M g| + g|H|) dμ) dτ.",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (g : Ambient n ℓ → ℝ) (ζ : Ambient n ℓ) (s r : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → 0 < s → s ≤ r → (∫ x in closedBall ζ s, g x ∂V.weight) / s ^ n ≤ (∫ x in closedBall ζ r, g x ∂V.weight) / r ^ n + ∫ τ in Ioc s r, (∫ x in closedBall ζ τ, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) / τ ^ n",
+  "lean_name": "sobolev_monotonicity_inequality",
+  "depends_on": [
+    "root.sobolev_inequality-a1.energy_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.sobolev_inequality-a1.energy_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-monotonicity-inequality-a1-a1"
+}
