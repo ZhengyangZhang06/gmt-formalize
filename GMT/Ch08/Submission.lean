@@ -4486,6 +4486,77 @@ theorem Submission.tangent_points_lipschitz_graph_cover :
       fun ε hε ↦ Submission.tgc_tangent_cone_weight_decay N n U V x T θ hn hx (L / 16)
         (by positivity) ε hε⟩
 
+/-- **Simon Ch. 8, 1.2 (First Rectifiability Theorem), p. 206** (child `first_rectifiability` of
+`root`; Step 9 of its proof, assembling Steps 0–8).  Let `M = {x ∈ spt μ_V : T_x, θ(x) exist}` and
+let `θ(x)` be the multiplicity of a tangent plane at `x` (and `0` off `M`).  Points of `M` have
+density `θ(x)`, and `μ_V(ℝ^N ∖ M) = 0`.  For every `L ∈ (0,1]`, countably many closed `L`-flat
+graphs cover `M` (sibling `tangent_points_lipschitz_graph_cover`), so `M` is `H^n`-null-measurable
+and countably `n`-rectifiable, and `μ_V = θ H^n ⌞ M`.  Lemma 1.3 (sibling `plane_disintegration`)
+gives `V(A) = μ_V({x : (x, T_x) ∈ A})`.  On `M` the tangent plane `T_x` is the unique approximate
+tangent plane of `(M, θ)` at `x`, which turns this identity into `V = v(M, θ)`. -/
+theorem Submission.first_rectifiability_theorem : FirstRectifiabilityTheorem := by
+  intro N n U V hae
+  classical
+  set M : Set (Euclidean N) := {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+    HasTangentPlane V x T θ'}
+  -- Step (0d): `θ(x)` is the multiplicity of a chosen tangent plane at `x`, and `0` elsewhere.
+  let θ : Euclidean N → ℝ := fun x ↦
+    if h : ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ' then
+      h.choose_spec.choose else 0
+  have hθ : ∀ x (h : ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'),
+      HasTangentPlane V x h.choose (θ x) := fun x h ↦ by
+    rw [show θ x = h.choose_spec.choose from dite_eq_left h]
+    exact h.choose_spec.choose_spec
+  have hMU : M ⊆ U := fun x hx ↦ (hθ x hx.2).1
+  have hθpos : ∀ x ∈ M, 0 < θ x := fun x hx ↦ (hθ x hx.2).2.1
+  -- Step (0c): the density of `μ_V` at a point `x` of `M` is `θ(x)`.
+  have hdens : ∀ x ∈ M, 0 < θ x ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x)) := fun x hx ↦
+    ⟨hθpos x hx, Submission.frt_tangent_plane_hasDensity N n U V x _ _ (hθ x hx.2)⟩
+  -- Step (0e): `μ_V` is carried by `spt μ_V` and, by hypothesis, by the tangent points.
+  have hMc : V.weight Mᶜ = 0 := by
+    have h0 := measure_union_null (Measure.measure_compl_support (μ := V.weight)) (ae_iff.1 hae)
+    refine measure_mono_null (fun x hx ↦ ?_) h0
+    by_contra h
+    simp only [mem_union, mem_compl_iff, mem_ofPred_eq, not_or, not_not] at h
+    exact hx h
+  -- Step 2: for `L ∈ (0,1]`, countably many closed `L`-flat graphs cover the tangent points.
+  have hcov := Submission.frt_tangent_points_flat_graph_cover N n U V
+    fun L hL hL1 P ↦ Submission.tangent_points_lipschitz_graph_cover N n L hL hL1 U V P
+  -- Step 4: `M` is `H^n`-null-measurable.
+  have hMmeas : NullMeasurableSet M μHE[n] :=
+    Submission.frt_carrier_nullMeasurable N n U V M θ hMU hMc hdens
+  -- Step 2 with `L = 1`: `M` is countably `n`-rectifiable.
+  have hrect : Chapter03.CountablyRectifiable n M := by
+    obtain ⟨C, hC, hCg, hCM⟩ := hcov 1 one_pos le_rfl
+    exact Submission.frt_countablyRectifiable_of_graph_cover N n M C hC
+      (fun c hc y hy z hz ↦ ((hCg c hc).2 y hy z hz).trans_eq (one_mul _)) fun x hx ↦ hCM hx.2
+  -- Steps 3, 5 and 6: `μ_V = θ H^n ⌞ M`, and `θ` is locally `H^n`-integrable on `M`.
+  obtain ⟨hint, hweight⟩ := Submission.frt_weight_eq_multiplicity_hausdorff N n U V M θ hMU hMc
+    hdens fun L hL hL1 ↦ (hcov L hL hL1).imp fun C hC ↦ ⟨hC.1, hC.2.1, fun x hx ↦ hC.2.2 hx.2⟩
+  refine ⟨θ, fun x hx ↦ ⟨_, hθ x hx.2⟩, hMU, hMmeas, hrect, hθpos, hint, fun A hA ↦ ?_⟩
+  -- Step 8: Lemma 1.3 gives `V(A) = μ_V({x : (x, T_x) ∈ A})`.
+  obtain ⟨hSA, hVA⟩ := Submission.frt_varifold_eq_tangent_graph_measure N n U V
+    (Submission.plane_disintegration N n U V) hae A hA
+  -- Step 7: at `x ∈ M`, `T_x` is the unique approximate tangent plane of `(M, θ)`.
+  have happrox : ∀ x (hx : x ∈ M) (S : Grassmannian N n),
+      Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = hx.2.choose :=
+    fun x hx ↦ Submission.frt_weighted_approx_tangent N n U V M θ x _ hMmeas hθpos hint
+      (fun B hB ↦ hweight B hB.nullMeasurableSet) (hθ x hx.2)
+  -- Step 9: by uniqueness of `T_x` (step (0d)), both sides integrate over the same set.
+  have hset : {x | ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ' ∧ (x, T) ∈ A} ∩ M =
+      {x | x ∈ M ∧ ∃ S : Grassmannian N n,
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ∧ (x, S) ∈ A} := by
+    ext x
+    constructor
+    · rintro ⟨⟨T, θ', hT, hxT⟩, hx⟩
+      refine ⟨hx, T, (happrox x hx T).2 ?_, hxT⟩
+      exact (Submission.frt_tangent_plane_unique N n U V x _ T (θ x) θ' (hθ x hx.2) hT).1
+    · rintro ⟨hx, S, hS, hxS⟩
+      refine ⟨⟨S, θ x, ?_, hxS⟩, hx⟩
+      rw [(happrox x hx S).1 hS]
+      exact hθ x hx.2
+  rw [hVA, hweight _ hSA, hset]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
