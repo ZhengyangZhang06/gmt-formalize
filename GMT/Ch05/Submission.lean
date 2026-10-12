@@ -473,6 +473,14 @@ preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, 
 characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
 theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
   intro n ℓ q
+/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 116–120), integrals over the Lipschitz graph: for a
+linear isometry `q` of `ℝ^{n+ℓ}` and `f : ℝⁿ → ℝ^ℓ` that is `L`-Lipschitz on `D`, the map
+`F(x) = q(x, f(x))` is `√(1 + L²)`-Lipschitz on `D`.  Since `q` preserves distances and
+`|(x, f x) − (y, f y)|² = |x − y|² + |f(x) − f(y)|²` (split the sum `Σ_k w_k²` over the indices
+`castAdd ℓ i` and `natAdd n j` of `Fin (n + ℓ)` with `Fin.sum_univ_add`), the hypothesis gives
+`|F(x) − F(y)|² ≤ (1 + L²)|x − y|² = (√(1 + L²) |x − y|)²` for `x, y ∈ D`; take square roots. -/
+theorem tdo_gl_graph_map_lipschitzOn : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), LipschitzOnWith L f D → LipschitzOnWith (NNReal.sqrt (1 + L ^ 2)) (fun x => q (graphPoint x (f x))) D := by
+  intro n ℓ q f D L hf
   -- the coordinates of `graphPoint a b`
   have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
     intro a b i
@@ -774,6 +782,81 @@ theorem allard52_cft_graph_map_sqrt_two : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃�
     exact h.symm
   have h := hlip x hx 0 h0
   rwa [hf0, hzero, map_zero, sub_zero, sub_zero] at h
+  -- `|(a, b) − (a', b')|² = |a − a'|² + |b − b'|²`, splitting `Σ_k w_k²` over the two blocks
+  have hsq : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      ‖graphPoint a b - graphPoint a' b'‖ ^ 2 = ‖a - a'‖ ^ 2 + ‖b - b'‖ ^ 2 := by
+    intro a a' b b'
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [PiLp.sub_apply, hl, hr]
+  -- `q` preserves distances, so it suffices to bound `|(x, f x) − (y, f y)|` by
+  -- `√(1 + L²) |x − y|` for `x, y ∈ D`
+  refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+  rw [LinearIsometryEquiv.dist_map, dist_eq_norm, dist_eq_norm, Real.coe_sqrt, NNReal.coe_add,
+    NNReal.coe_one, NNReal.coe_pow]
+  -- `|f x − f y|² ≤ L² |x − y|²` on `D`
+  have hfxy : ‖f x - f y‖ ^ 2 ≤ (L * ‖x - y‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) (hf.norm_sub_le hx hy) 2
+  refine (sq_le_sq₀ (norm_nonneg _) (by positivity)).mp ?_
+  rw [hsq, mul_pow, Real.sq_sqrt (by positivity)]
+  rw [mul_pow] at hfxy
+  linarith
+/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 116–120), integrals over a Lipschitz image: if
+`F : ℝⁿ → ℝ^N` is `K`-Lipschitz on the measurable set `D`, then for measurable `g ≥ 0`
+`∫_{F(D)} g dHⁿ ≤ Kⁿ ∫_D g(F(x')) dx'`.  For `E ⊆ D` the image bound gives
+`Hⁿ(F(E)) ≤ Kⁿ Hⁿ(E) = Kⁿ Lⁿ(E)`.  With `ν = F_#(Lⁿ ⌞ D)` (`F` is continuous on `D`, hence
+a.e. measurable for `Lⁿ ⌞ D`) and `B ∩ F(D) = F(F⁻¹(B) ∩ D)`, this gives
+`(Hⁿ ⌞ F(D))(B) ≤ Kⁿ ν(B)` for measurable `B`, i.e. `Hⁿ ⌞ F(D) ≤ Kⁿ ν`; integrate `g` and
+change variables. -/
+theorem tdo_gl_lintegral_image_le : ∀ (n N : ℕ) (F : Rn n → EuclideanSpace ℝ (Fin N)) (D : Set (Rn n)) (K : ℝ≥0), MeasurableSet D → LipschitzOnWith K F D → ∀ g : EuclideanSpace ℝ (Fin N) → ℝ≥0∞, Measurable g → ∫⁻ x in F '' D, g x ∂(μHE[n] : Measure (EuclideanSpace ℝ (Fin N))) ≤ (K : ℝ≥0∞) ^ n * ∫⁻ x' in D, g (F x') := by
+  intro n N F D K hD hF g hg
+  -- `F` is continuous on the measurable set `D`, hence a.e. measurable for `Lⁿ ⌞ D`
+  have hFm : AEMeasurable F ((volume : Measure (Rn n)).restrict D) :=
+    hF.continuousOn.aemeasurable hD
+  -- `Hⁿ ⌞ F(D) ≤ Kⁿ F_#(Lⁿ ⌞ D)`, tested on measurable `B` via `B ∩ F(D) = F(F⁻¹(B) ∩ D)`
+  have hle : (μHE[n] : Measure (EuclideanSpace ℝ (Fin N))).restrict (F '' D) ≤
+      ((K : ℝ≥0∞) ^ n) • Measure.map F ((volume : Measure (Rn n)).restrict D) := by
+    refine Measure.le_iff.2 fun B hB => ?_
+    rw [Measure.restrict_apply hB, Measure.smul_apply, Measure.map_apply_of_aemeasurable hFm hB,
+      Measure.restrict_apply' hD, smul_eq_mul]
+    have hset : B ∩ F '' D = F '' (F ⁻¹' B ∩ D) := by
+      ext y
+      constructor
+      · rintro ⟨hyB, x, hxD, rfl⟩
+        exact ⟨x, ⟨hyB, hxD⟩, rfl⟩
+      · rintro ⟨x, ⟨hxB, hxD⟩, rfl⟩
+        exact ⟨hxB, x, hxD, rfl⟩
+    rw [hset, ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume n]
+    exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hF.mono Set.inter_subset_right)
+  calc ∫⁻ x in F '' D, g x ∂(μHE[n] : Measure (EuclideanSpace ℝ (Fin N)))
+      ≤ ∫⁻ x, g x ∂(((K : ℝ≥0∞) ^ n) • Measure.map F ((volume : Measure (Rn n)).restrict D)) :=
+        lintegral_mono' hle le_rfl
+    _ = (K : ℝ≥0∞) ^ n * ∫⁻ x, g x ∂(Measure.map F ((volume : Measure (Rn n)).restrict D)) := by
+        rw [lintegral_smul_measure, smul_eq_mul]
+    _ = (K : ℝ≥0∞) ^ n * ∫⁻ x' in D, g (F x') := by
+        rw [lintegral_map' hg.aemeasurable hFm]
+/-- **Simon Ch. 5, proof of Theorem 4.5, display (14) on p. 119** (the area-formula step, Ch. 2,
+3.5, with `JF ≤ (1 + L²)^{n/2}`).  Let `q` be a linear isometry of `ℝ^{n+ℓ}`, `D ⊆ ℝⁿ` measurable
+and `f` `L`-Lipschitz on `D`, and put `F x' = q (x', f x')`.  Then for every measurable `g ≥ 0`,
+`∫_{q(graph f|D)} g dHⁿ ≤ √(1 + L²)ⁿ ∫_D g ∘ F dLⁿ`.  Indeed `q(graph f|D) = F(D)`, `F` is
+`√(1 + L²)`-Lipschitz on `D`, and the Lipschitz image bound for `Hⁿ`-integrals applies with
+`K = √(1 + L²)`. -/
+theorem tdo_graph_lintegral_le : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), MeasurableSet D → LipschitzOnWith L f D → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in q '' graphOver f D, g x ∂(μHE[n] : Measure (Amb n ℓ)) ≤ ENNReal.ofReal (Real.sqrt (1 + (L : ℝ) ^ 2) ^ n) * ∫⁻ x' in D, g (q (graphPoint x' (f x'))) := by
+  intro n ℓ q f D L hD hf g hg
+  -- Step (i): `q(graph f|D) = F(D)` for the rotated graph map `F x' = q (x', f x')`.
+  have hΓ : q '' graphOver f D = (fun x' => q (graphPoint x' (f x'))) '' D := by
+    rw [graphOver, Set.image_image]
+  -- Step (ii): `F` is `√(1 + L²)`-Lipschitz on `D`.
+  have hF := Submission.tdo_gl_graph_map_lipschitzOn n ℓ q f D L hf
+  -- Step (iv): the constant `√(1 + L²)ⁿ`, as the `n`-th power of `K = √(1 + L²) ∈ ℝ≥0`.
+  have hK : ENNReal.ofReal (Real.sqrt (1 + (L : ℝ) ^ 2) ^ n) =
+      ((NNReal.sqrt (1 + L ^ 2) : ℝ≥0) : ℝ≥0∞) ^ n := by
+    rw [ENNReal.ofReal_pow (Real.sqrt_nonneg _), ← ENNReal.ofReal_coe_nnreal, Real.coe_sqrt,
+      NNReal.coe_add, NNReal.coe_one, NNReal.coe_pow]
+  rw [hΓ, hK]
+  -- Step (iii): the Lipschitz image bound with `N = n + ℓ` and `K = √(1 + L²)`.
+  exact Submission.tdo_gl_lintegral_image_le n (n + ℓ) _ D _ hD hF g hg
 
 end Submission
 
