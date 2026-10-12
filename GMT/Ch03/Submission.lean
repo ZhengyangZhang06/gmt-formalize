@@ -438,6 +438,63 @@ theorem Submission.bf_cone_subset_iUnion_slabCones : ∀ (n ℓ : ℕ), 0 < ℓ 
         nlinarith [sq_nonneg ‖W.starProjection y‖]
     _ = (Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖) ^ 2 := by
         rw [mul_pow, mul_pow, hsqrt, hpj]
+/-- **Transfer of the cone density trichotomy from finitely many comparable cone families**: the
+case analysis in the slab-to-cone step of the proof of the Besicovitch–Federer projection theorem,
+Simon Ch. 3, Theorem 3.6 (`chapter-03.txt` lines 530–536, which defers the proof to [Fed69]; cf.
+M. G. Dall'Alba, *The Besicovitch–Federer Projection Theorem*, Lemma 5.5). Suppose
+`Z_j(s) ⊆ X(s) ⊆ ⋃_j Z_j(κ s)` for `s > 0`, and each `Z_j` has zero cone density `Ψ0_j`,
+infinite cone density `Ψ∞_j`, or an axis point `Ax'_j ⇒ Ax`. Then `X` has zero cone density,
+infinite cone density, or `Ax`. An axis point or an infinite density transfers directly by
+monotonicity. Otherwise, for `c > 0`, put `c' = c / (#ι κⁿ)` and `ε = min_j ε_j(c') / κ`; the
+cover and finite subadditivity bound `X` by `#ι · c' (r κ s)ⁿ = c (r s)ⁿ`. -/
+theorem Submission.bf_coneTrichotomy_of_slabCover : ∀ (N n : ℕ) (ι : Type) [Fintype ι] [Nonempty ι] (μ : Measure (Rn N)) (A : Set (Rn N)) (δ κ : ℝ) (a : Rn N) (X : ℝ → Set (Rn N)) (Z : ι → ℝ → Set (Rn N)) (Ax : Prop) (Ax' : ι → Prop), 0 < κ → (∀ j (s : ℝ), 0 < s → Z j s ⊆ X s) → (∀ s : ℝ, 0 < s → X s ⊆ ⋃ j, Z j (κ * s)) → (∀ j, Ax' j → Ax) → (∀ j, ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μ (A ∩ (Z j s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (Z j s ∩ Metric.ball a r))) ∨ Ax' j)) → ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μ (A ∩ (X s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (X s ∩ Metric.ball a r))) ∨ Ax) := by
+  intro N n ι _ _ μ A δ κ a X Z Ax Ax' hκ hZX hXZ hAx hcases
+  -- Case 1: some `Ax'_j` holds, hence `Ax`.
+  by_cases hax : ∃ j, Ax' j
+  · obtain ⟨j, hj⟩ := hax
+    exact Or.inr (Or.inr (hAx j hj))
+  -- Case 2: some `Ψ∞_j` holds; `Φ∞` follows with the same `s, r`, as `Z_j(s) ⊆ X(s)`.
+  by_cases hinf : ∃ j, ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧
+      r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μ (A ∩ (Z j s ∩ Metric.ball a r))
+  · obtain ⟨j, hj⟩ := hinf
+    refine Or.inr (Or.inl fun K ε hε ↦ ?_)
+    obtain ⟨s, hs, hsε, r, hr, hrδ, hK⟩ := hj K ε hε
+    exact ⟨s, hs, hsε, r, hr, hrδ, hK.trans (measure_mono
+      (Set.inter_subset_inter_right _ (Set.inter_subset_inter_left _ (hZX j s hs))))⟩
+  -- Case 3: every `Ψ0_j` holds; we prove `Φ0`.
+  have hzero : ∀ j, ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ,
+      0 < r → r < δ → μ (A ∩ (Z j s ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n) := by
+    intro j
+    rcases hcases j with h | h | h
+    · exact h
+    · exact absurd ⟨j, h⟩ hinf
+    · exact absurd ⟨j, h⟩ hax
+  refine Or.inl fun c hc ↦ ?_
+  have hM : (0 : ℝ) < Fintype.card ι := Nat.cast_pos.2 Fintype.card_pos
+  have hc' : 0 < c / (Fintype.card ι * κ ^ n) := div_pos hc (mul_pos hM (pow_pos hκ n))
+  -- Choice of `ε`: `ε_j` from `Ψ0_j` for `c'`, `ε₀ = min_j ε_j > 0` and `ε = ε₀ / κ`.
+  choose ε hε hεb using fun j ↦ hzero j _ hc'
+  set ε₀ : ℝ := Finset.univ.inf' Finset.univ_nonempty ε
+  have hε₀ : 0 < ε₀ := (Finset.lt_inf'_iff _).2 fun j _ ↦ hε j
+  refine ⟨ε₀ / κ, div_pos hε₀ hκ, fun s hs hsε r hr hrδ ↦ ?_⟩
+  -- `s' = κ s` satisfies `0 < s' < ε_j` for every `j`.
+  have hs' : 0 < κ * s := mul_pos hκ hs
+  have hs'ε : ∀ j, κ * s < ε j := fun j ↦
+    ((lt_div_iff₀' hκ).1 hsε).trans_le (Finset.inf'_le _ (Finset.mem_univ j))
+  -- Cover by the `Z_j(s')`, finite subadditivity, and `#ι · c' (r κ s)ⁿ = c (r s)ⁿ`.
+  calc μ (A ∩ (X s ∩ Metric.ball a r))
+      ≤ μ (⋃ j, A ∩ (Z j (κ * s) ∩ Metric.ball a r)) := by
+        refine measure_mono fun x ⟨hxA, hxX, hxB⟩ ↦ ?_
+        obtain ⟨j, hj⟩ := Set.mem_iUnion.1 (hXZ s hs hxX)
+        exact Set.mem_iUnion.2 ⟨j, hxA, hj, hxB⟩
+    _ ≤ ∑ j, μ (A ∩ (Z j (κ * s) ∩ Metric.ball a r)) := measure_iUnion_fintype_le μ _
+    _ ≤ ∑ _j : ι, ENNReal.ofReal (c / (Fintype.card ι * κ ^ n) * (r * (κ * s)) ^ n) :=
+        Finset.sum_le_sum fun j _ ↦ hεb j (κ * s) hs' (hs'ε j) r hr hrδ
+    _ = ENNReal.ofReal (c * (r * s) ^ n) := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, ← ENNReal.ofReal_natCast,
+          ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
+        congr 1
+        field_simp
         ring
 
 /-- The frozen Chapter 3 contract. -/
