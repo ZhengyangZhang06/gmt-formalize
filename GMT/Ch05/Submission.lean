@@ -458,6 +458,55 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.7 (p. 94)**: the limit `ε ↓ 0` of "integrating from `σ` to `ρ` and letting
+`ε ↓ 0`", for any `g : ℝ^{n+ℓ} → [0, ∞]` (no measurability is needed).  If `s > 0`, `ε k → 0`,
+`c k → L` and eventually `∫_{B_r(y) \ B̆_{(1 + ε k) s}(y)} g dμ ≤ c k`, then
+`∫_{B_r(y) \ B_s(y)} g dμ ≤ L`.
+The sets `D j = B_r(y) \ B̆_{(1 + 1 / (j + 1)) s}(y)` increase to `B_r(y) \ B_s(y)` (Archimedean
+property), and each `D j` eventually lies in `B_r(y) \ B̆_{(1 + ε k) s}(y)`, so `∫_{D j} g ≤ L`;
+the lower integral is continuous along directed countable unions
+(`setLIntegral_iUnion_of_directed`). -/
+theorem allard52_amcl_annular_lintegral_le : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ≥0∞) (y : Amb n ℓ) (ε c : ℕ → ℝ) (s r L : ℝ), 0 < s → Tendsto ε atTop (𝓝 0) → Tendsto c atTop (𝓝 L) → (∀ᶠ k in atTop, ∫⁻ x in closedBall y r \ ball y ((1 + ε k) * s), g x ∂μ ≤ ENNReal.ofReal (c k)) → ∫⁻ x in closedBall y r \ closedBall y s, g x ∂μ ≤ ENNReal.ofReal L := by
+  intro n ℓ μ g y ε c s r L hs hε hc hbound
+  set D : ℕ → Set (Amb n ℓ) := fun j => closedBall y r \ ball y ((1 + 1 / ((j : ℝ) + 1)) * s)
+  -- the `D j` increase, since `1 / (j + 1)` decreases
+  have hmono : Monotone D := by
+    intro i j hij x hx
+    simp only [D, Set.mem_sdiff, mem_closedBall, mem_ball, not_lt] at hx ⊢
+    refine ⟨hx.1, le_trans ?_ hx.2⟩
+    gcongr
+  -- `⋃ j, D j = B_r(y) \ B_s(y)`: if `s < |x - y|`, pick `1 / (j + 1) < (|x - y| - s) / s`
+  have hU : closedBall y r \ closedBall y s = ⋃ j, D j := by
+    ext x
+    simp only [D, Set.mem_sdiff, mem_closedBall, mem_ball, not_le, not_lt, mem_iUnion]
+    constructor
+    · rintro ⟨hxr, hxs⟩
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt (div_pos (sub_pos.2 hxs) hs)
+      refine ⟨j, hxr, ?_⟩
+      rw [lt_div_iff₀ hs] at hj
+      linarith
+    · rintro ⟨j, hxr, hxj⟩
+      refine ⟨hxr, lt_of_lt_of_le ?_ hxj⟩
+      have : 0 < 1 / ((j : ℝ) + 1) := by positivity
+      nlinarith
+  rw [hU, setLIntegral_iUnion_of_directed _ hmono.directed_le]
+  refine iSup_le fun j => ?_
+  have hδ : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+  -- eventually `ε k < 1 / (j + 1)`, so `D j ⊆ B_r(y) \ B̆_{(1 + ε k) s}(y)`
+  have hev : ∀ᶠ k in atTop, ∫⁻ x in D j, g x ∂μ ≤ ENNReal.ofReal (c k) := by
+    filter_upwards [hbound, hε.eventually (eventually_lt_nhds hδ)] with k hk hεk
+    refine le_trans (lintegral_mono_set ?_) hk
+    intro x hx
+    simp only [D, Set.mem_sdiff, mem_closedBall, mem_ball, not_lt] at hx ⊢
+    refine ⟨hx.1, le_trans ?_ hx.2⟩
+    gcongr
+  -- `ofReal (c k) → ofReal L`
+  exact ge_of_tendsto (ENNReal.tendsto_ofReal hc) hev
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
