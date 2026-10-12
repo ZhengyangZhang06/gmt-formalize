@@ -2491,6 +2491,65 @@ theorem anyrad_gc_hausdorff_restrict_le_weight : ∀ (n ℓ : ℕ) (U : Set (Amb
 
 end Submission
 
+/-- **Graph transfer along a continuous graph piece** (steps 1 and 5 of the graph comparison).
+For `F x = q (x, u x)` with `u` continuous on the Borel set `Ω` and `Hⁿ ⌞ q(graph u|Ω) ≤ ν`:
+`F` maps Borel sets `A ⊆ Ω` onto Borel sets `q(graph u|A) = F(A)` (Lusin–Souslin);
+`F_#(Lⁿ ⌞ A) ≤ ν ⌞ F(A)`, because `Lⁿ(B) ≤ Hⁿ(F(B)) ≤ ν(S)` whenever `B ⊆ Ω` and `F(B) ⊆ S`;
+and `ν`-null sets pull back under `F` to `Lⁿ`-null subsets of `Ω`. -/
+theorem Submission.anyrad_gc_graph_lintegral_transfer : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), MeasurableSet Ω → ContinuousOn u Ω → ∀ ν : Measure (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)).restrict (q '' graphOver u Ω) ≤ ν → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → MeasurableSet (q '' graphOver u A)) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂ν) ∧ ∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂ν, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x))) := by
+  intro n ℓ q u Ω hΩ hu ν hν
+  set F : Rn n → Amb n ℓ := fun x => q (graphPoint x (u x)) with hF
+  -- `q(graph u over A) = F(A)` for every `A`.
+  have himg : ∀ A : Set (Rn n), q '' graphOver u A = F '' A := fun A => by
+    simp only [graphOver, Set.image_image, hF]
+  -- Step 1: `F` is continuous on `Ω`, and injective (compare the first `n` coordinates).
+  have hgp : Continuous fun p : Rn n × Rn ℓ => graphPoint p.1 p.2 := by
+    unfold graphPoint
+    exact (PiLp.continuous_toLp 2 _).comp ((Fin.continuous_append n ℓ).comp
+      ((PiLp.continuous_ofLp 2 _).prodMap (PiLp.continuous_ofLp 2 _)))
+  have hFc : ContinuousOn F Ω :=
+    q.continuous.comp_continuousOn (hgp.comp_continuousOn (continuousOn_id.prodMk hu))
+  have hFi : Function.Injective F := by
+    intro x x' h
+    have h1 : graphPoint x (u x) = graphPoint x' (u x') := q.injective h
+    ext i
+    simpa [graphPoint] using congrArg (fun z : Amb n ℓ => z (Fin.castAdd ℓ i)) h1
+  -- Step 3: `Lⁿ(B) ≤ Hⁿ(F(B)) ≤ Hⁿ(S ∩ F(Ω)) ≤ ν(S)` whenever `B ⊆ Ω` and `F(B) ⊆ S`.
+  have key : ∀ (B : Set (Rn n)) (S : Set (Amb n ℓ)), B ⊆ Ω → F '' B ⊆ S → volume B ≤ ν S := by
+    intro B S hB hS
+    calc volume B ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver u B) :=
+          Submission.anyrad_gc_volume_le_graph_hausdorff n ℓ q u B
+      _ ≤ (μHE[n] : Measure (Amb n ℓ)) (S ∩ q '' graphOver u Ω) := by
+          rw [himg, himg]
+          exact measure_mono (subset_inter hS (image_mono hB))
+      _ ≤ (μHE[n] : Measure (Amb n ℓ)).restrict (q '' graphOver u Ω) S :=
+          Measure.le_restrict_apply _ _
+      _ ≤ ν S := Measure.le_iff'.1 hν S
+  refine ⟨fun A hA hAΩ => ?_, fun A hA hAΩ g hg => ?_, fun P hP => ?_⟩
+  · -- Step 2 (a): Lusin–Souslin for the continuous injective map `F` on the Borel set `A`.
+    rw [himg]
+    exact hA.image_of_continuousOn_injOn (hFc.mono hAΩ) hFi.injOn
+  · -- Step 4 (b): `F_#(Lⁿ ⌞ A) ≤ ν ⌞ F(A)` by step 3, then change variables.
+    have hFm : AEMeasurable F (volume.restrict A) := (hFc.mono hAΩ).aemeasurable hA
+    have hmle : Measure.map F (volume.restrict A) ≤ ν.restrict (q '' graphOver u A) := by
+      refine Measure.le_iff.2 fun B hB => ?_
+      rw [Measure.map_apply_of_aemeasurable hFm hB, Measure.restrict_apply' hA,
+        Measure.restrict_apply hB, himg]
+      refine key _ _ (inter_subset_right.trans hAΩ) ?_
+      rintro _ ⟨x, ⟨hxB, hxA⟩, rfl⟩
+      exact ⟨hxB, x, hxA, rfl⟩
+    calc ∫⁻ x in A, g (q (graphPoint x (u x)))
+        = ∫⁻ y, g y ∂(Measure.map F (volume.restrict A)) :=
+          (lintegral_map' hg.aemeasurable hFm).symm
+      _ ≤ ∫⁻ y in q '' graphOver u A, g y ∂ν := lintegral_mono' hmle le_rfl
+  · -- Step 5 (c): by step 3 the parameters of a `ν`-null set form an `Lⁿ`-null subset of `Ω`.
+    rw [ae_iff] at hP ⊢
+    rw [Measure.restrict_apply' hΩ]
+    refine le_antisymm ?_ zero_le
+    calc volume ({x | ¬P (q (graphPoint x (u x)))} ∩ Ω) ≤ ν {y | ¬P y} :=
+          key _ _ inter_subset_right (by rintro _ ⟨x, ⟨hx, -⟩, rfl⟩; exact hx)
+      _ = 0 := hP
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
