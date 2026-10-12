@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+  "depth": 3,
+  "title": "Compatible compactly supported pull-backs exist (cut-off of Simon 2.23)",
+  "statement": "Let P, Q, j ∈ ℕ, let U ⊆ ℝ^P be open, V ⊆ ℝ^Q and A ⊆ U, and let f : ℝ^P → ℝ^Q be of class C^∞ with f⁻¹(K) ∩ A compact for every compact K ⊆ V. Then for every ω ∈ D^j(V) there are η ∈ D^j(U), ζ : ℝ^P → ℝ and an open set N ⊆ ℝ^P such that:\n- A ⊆ N and 0 ≤ ζ ≤ 1;\n- η(x) = ζ(x)·(f^#ω)(x) for all x, and η(x) = (f^#ω)(x) for all x ∈ N;\n- tsupport η ⊆ f⁻¹(tsupport ω).\nHere (f^#ω)(x) := ω(f(x)).compContinuousLinearMap (Df(x)).",
+  "lean_statement": "∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (f : Eucl P → Eucl Q), IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) → ∀ ω : TestFormOn V j, ∃ (η : TestFormOn U j) (ζ : Eucl P → ℝ) (N : Set (Eucl P)), IsOpen N ∧ A ⊆ N ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x, (η : DifferentialForm (Eucl P) j) x = ζ x • ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧ (∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x = ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧ tsupport (η : DifferentialForm (Eucl P) j) ⊆ f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j)",
+  "lean_name": "iwl_sp_exists_compatible_testForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1-a1"
+}
