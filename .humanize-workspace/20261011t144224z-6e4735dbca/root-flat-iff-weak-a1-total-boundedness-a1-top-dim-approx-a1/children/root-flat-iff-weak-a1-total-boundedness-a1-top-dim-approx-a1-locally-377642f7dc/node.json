@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.locally_constant_im-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "depth": 4,
+  "title": "A top-dimensional current with integrable integer density, locally constant where nonzero, is integer multiplicity",
+  "statement": "Let m ∈ ℕ, n := m + 1, and T ∈ D_n(ℝ^n) (a GeometricCurrentOn univ n). Let v : ℝ^n → ℝ satisfy:\n- v is measurable and Lebesgue integrable;\n- v(x) ∈ ℤ for every x;\n- whenever v(x) ≠ 0, v(y) = v(x) for all y in a neighbourhood of x.\nIf T(ω) = ∫ v(x) ω(x)(e_0, …, e_m) dx for every ω ∈ D^n(ℝ^n), where e_i = EuclideanSpace.single i 1, then T is integer multiplicity.",
+  "lean_statement": "∀ (m : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (v : Eucl (m + 1) → ℝ), Measurable v → Integrable v → (∀ x, ∃ k : ℤ, v x = k) → (∀ x, v x ≠ 0 → ∀ᶠ y in 𝓝 x, v y = v x) → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), T ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → IsIntegerMultiplicity T",
+  "lean_name": "fiw_tb_tda_locally_constant_im",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-locally-377642f7dc-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.sub_mass-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "depth": 4,
+  "title": "Difference of two top-dimensional density currents and its mass bound",
+  "statement": "Let m ∈ ℕ, n := m + 1, X, Pc ∈ D_n(ℝ^n) (GeometricCurrentOn univ n), and u, v : ℝ^n → ℝ Lebesgue integrable. Write ω_e(x) := ω(x)(e_0, …, e_m) with e_i = EuclideanSpace.single i 1, and assume X(ω) = ∫ u ω_e dx and Pc(ω) = ∫ v ω_e dx for every ω ∈ D^n(ℝ^n). Then there is S ∈ D_n(ℝ^n) with X(ω) − Pc(ω) = S(ω) for every ω and M(S) ≤ ∫⁻ |u − v| dx.",
+  "lean_statement": "∀ (m : ℕ) (X Pc : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (u v : Eucl (m + 1) → ℝ), Integrable u → Integrable v → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = ∫ x, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), Pc ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → ∃ S : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), (∀ ω, X ω - Pc ω = S ω) ∧ S.mass ≤ ∫⁻ x, ENNReal.ofReal |u x - v x|",
+  "lean_name": "fiw_tb_tda_sub_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-sub-mass-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.density_current-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "depth": 4,
+  "title": "An integrable top-dimensional density defines a current",
+  "statement": "Let m ∈ ℕ, n := m + 1, and v : ℝ^n → ℝ Lebesgue integrable. Then there is T ∈ D_n(ℝ^n) (a GeometricCurrentOn univ n) with T(ω) = ∫ v(x) ω(x)(e_0, …, e_m) dx for every ω ∈ D^n(ℝ^n), where e_i = EuclideanSpace.single i 1.",
+  "lean_statement": "∀ (m : ℕ) (v : Eucl (m + 1) → ℝ), Integrable v → ∃ T : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), T ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "fiw_tb_tda_density_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-density-current-a1-a1"
+}
