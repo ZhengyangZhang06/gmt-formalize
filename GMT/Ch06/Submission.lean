@@ -359,6 +359,280 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Diagonal selection of a weakly convergent sequence with a mass bound** (the selection in the
+proof of Simon Ch. 6, Theorem 8.2, p. 176: "(8) remains valid with `T_{j'}` instead of `T`").
+Let `closure W` be compact.  Suppose that for every test form `ω` supported in `W`,
+`X_{k,j}(ω) → Z_k(ω)` as `j → ∞` and `Z_k(ω) → L(ω)` as `k → ∞`, and that for each `k`,
+`M_W(X_{k,j}) ≤ C` for all large `j`.  Then some strictly increasing `φ` gives
+`M_W(X_{k,φ(k)}) ≤ C` for every `k` and `X_{k,φ(k)}(ω) → L(ω)` for every such `ω`.  With
+`C⁺ = max C 0`, the mass bound gives `|X(ω) - X(ω')| ≤ C⁺ sup |ω - ω'|`, and `Z_k`, `L` inherit
+this bound in the limit.  Choose `φ(k)` with `|X_{k,φ(k)}(ωᵢ) - Z_k(ωᵢ)| < 1/(k+1)` for `i ≤ k`,
+where `(ωᵢ)` is a countable sup-norm-dense family.  A four-term estimate then gives convergence
+for every `ω`. -/
+theorem Submission.ind_diagonal_weak_limit : ∀ (P n : ℕ) (U W : Set (Eucl P)) (X : ℕ → ℕ → GeometricCurrentOn U n) (Z : ℕ → TestFormOn U n → ℝ) (L : TestFormOn U n → ℝ) (C : ℝ), IsCompact (closure W) → (∀ (k : ℕ) (ω : TestFormOn U n), tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → Tendsto (fun j => X k j ω) atTop (𝓝 (Z k ω))) → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → Tendsto (fun k => Z k ω) atTop (𝓝 (L ω))) → (∀ k, ∀ᶠ j in atTop, (X k j).massOn W ≤ ENNReal.ofReal C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ (∀ k, (X k (φ k)).massOn W ≤ ENNReal.ofReal C) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → Tendsto (fun k => X k (φ k) ω) atTop (𝓝 (L ω)) := by
+  intro P n U W X Z L C hW hXZ hZL hmass
+  classical
+  -- Step 1 (mass estimate): if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ M`
+  -- everywhere (Euclidean covector norm), then `|T(ω)| ≤ B M`.
+  have hF1 : ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B M : ℝ), 0 ≤ B →
+      T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ M) →
+      |T ω| ≤ B * M := by
+    intro T ω B M hB hM hWω hMω
+    -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+    have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+        covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+      intro t α
+      unfold covectorEuclideanNorm
+      rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+      · simp
+    -- `M ≥ 0`, by evaluating the pointwise bound at `0`.
+    have hM0 : 0 ≤ M := (covectorEuclideanNorm_nonneg _).trans (hMω 0)
+    -- For every `c > M`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
+    have key : ∀ c, M < c → |T ω| ≤ B * c := by
+      intro c hc
+      have hc0 : 0 < c := hM0.trans_lt hc
+      have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
+        intro s hs
+        have hadm : s • ω ∈ massAdmissibleOn U n W := by
+          refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hWω, fun x => ?_⟩
+          change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
+          rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
+          exact (hMω x).trans hc.le
+        have hle := (T.le_massOn hadm).trans hM
+        rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
+        have hlin : T (s • ω) = s * T ω := by
+          rw [map_smul, smul_eq_mul]
+        rwa [hlin] at hle
+      have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
+      have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
+      have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
+      have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
+      rw [abs_le]
+      constructor
+      · have := mul_le_mul_of_nonneg_left h2 hc0.le
+        rw [e2] at this
+        linarith
+      · have := mul_le_mul_of_nonneg_left h1 hc0.le
+        rw [e1] at this
+        linarith
+    -- Let `c ↓ M`: take `c = M + ε / (B + 1)`.
+    refine le_of_forall_pos_le_add fun ε hε => ?_
+    have hB1 : 0 < B + 1 := by linarith
+    have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+    have hBδ : B * (ε / (B + 1)) ≤ ε := by
+      calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+            mul_le_mul_of_nonneg_right (by linarith) hδ.le
+        _ = ε := by field_simp
+    have := key (M + ε / (B + 1)) (by linarith)
+    calc |T ω| ≤ B * (M + ε / (B + 1)) := this
+      _ = B * M + B * (ε / (B + 1)) := by ring
+      _ ≤ B * M + ε := by linarith
+  -- Step 2 (separability): a countable family `E` of test forms supported in `W` is dense, in the
+  -- sup of the Euclidean coefficient norm, among all test forms supported in `W`.  The
+  -- coefficient vector `c(α) = (α(e_{I 0}, …, e_{I (n-1)}))_I ∈ ℝ^(Fin n → Fin P)` satisfies
+  -- `|α| ≤ √N ‖c(α)‖_∞`; for each accuracy `1/(m+1)` and scale `1/(j+1)`, the forms whose
+  -- coefficients oscillate by less than `1/(m+1)` at scale `1/(j+1)` are approximated through
+  -- their values on a finite `1/(j+1)`-net of `closure W`.
+  have hdense : ∃ E : Set (TestFormOn U n), E.Countable ∧
+      (∀ η ∈ E, tsupport (η : DifferentialForm (Eucl P) n) ⊆ W) ∧
+      ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → ∀ ε : ℝ, 0 < ε →
+        ∃ η ∈ E, ∀ x, covectorEuclideanNorm
+          ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x) ≤ ε := by
+    -- The coefficient map `c` and the estimate `|α| ≤ √N ‖c α‖_∞`.
+    let c : Covector (Eucl P) n → (Fin n → Fin P) → ℝ :=
+      fun α I => α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+    have hc_cont : Continuous c := continuous_pi fun I => by fun_prop
+    have hc_sub : ∀ α γ, c (α - γ) = c α - c γ := fun α γ => by funext I; simp [c]
+    have hc_zero : c 0 = 0 := by funext I; simp [c]
+    set N : ℝ := Real.sqrt (Fintype.card (Fin n → Fin P)) with hN_def
+    have hN : 0 ≤ N := Real.sqrt_nonneg _
+    have hcmp : ∀ α, covectorEuclideanNorm α ≤ N * ‖c α‖ := by
+      intro α
+      unfold covectorEuclideanNorm
+      rw [hN_def, ← Real.sqrt_sq (norm_nonneg (c α)), ← Real.sqrt_mul (by positivity)]
+      apply Real.sqrt_le_sqrt
+      calc ∑ I : Fin n → Fin P,
+            (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+          ≤ ∑ _I : Fin n → Fin P, ‖c α‖ ^ 2 := by
+            apply Finset.sum_le_sum
+            intro I _
+            split_ifs
+            · have h : |c α I| ≤ ‖c α‖ := by
+                simpa [Real.norm_eq_abs] using norm_le_pi_norm (c α) I
+              calc (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 = |c α I| ^ 2 :=
+                    (sq_abs _).symm
+                _ ≤ ‖c α‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+            · positivity
+        _ = (Fintype.card (Fin n → Fin P) : ℝ) * ‖c α‖ ^ 2 := by simp
+    -- Test forms supported in `W` vanish off `closure W`.
+    let D : Set (TestFormOn U n) := {ω | tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W}
+    have hzero : ∀ ω ∈ D, ∀ x ∉ closure W, (ω : DifferentialForm (Eucl P) n) x = 0 :=
+      fun ω hω x hx => image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hω h))
+    -- Finite `1/(j+1)`-nets of the compact set `closure W`.
+    have hnet : ∀ j : ℕ, ∃ t : Finset (Eucl P),
+        closure W ⊆ ⋃ y ∈ t, Metric.ball y (1 / ((j : ℝ) + 1)) := by
+      intro j
+      obtain ⟨t, -, ht, hcov⟩ := hW.finite_cover_balls (e := 1 / ((j : ℝ) + 1)) (by positivity)
+      exact ⟨ht.toFinset, by simpa using hcov⟩
+    choose net hnet using hnet
+    -- Accuracy `r = 1/(m+1)` at scale `1/(j+1)`: take a countable dense subset of the coefficient
+    -- values on the net and choose preimages.
+    have key : ∀ m j : ℕ, ∃ E' : Set (TestFormOn U n), E'.Countable ∧ E' ⊆ D ∧
+        ∀ ω ∈ D, (∀ x y, dist x y < 1 / ((j : ℝ) + 1) →
+            dist (c ((ω : DifferentialForm (Eucl P) n) x)) (c ((ω : DifferentialForm (Eucl P) n) y))
+              < 1 / ((m : ℝ) + 1)) →
+          ∃ η ∈ E', ∀ x, ‖c ((ω : DifferentialForm (Eucl P) n) x)
+            - c ((η : DifferentialForm (Eucl P) n) x)‖ ≤ 3 / ((m : ℝ) + 1) := by
+      intro m j
+      set r : ℝ := 1 / ((m : ℝ) + 1) with hr_def
+      have hr : 0 < r := by positivity
+      let Dj : Set (TestFormOn U n) := {ω | ω ∈ D ∧ ∀ x y, dist x y < 1 / ((j : ℝ) + 1) →
+        dist (c ((ω : DifferentialForm (Eucl P) n) x))
+          (c ((ω : DifferentialForm (Eucl P) n) y)) < r}
+      let g : TestFormOn U n → (net j → (Fin n → Fin P) → ℝ) :=
+        fun ω y => c ((ω : DifferentialForm (Eucl P) n) y)
+      obtain ⟨S, hSA, hSc, hAS⟩ :=
+        (TopologicalSpace.IsSeparable.of_separableSpace (g '' Dj)).exists_countable_dense_subset
+      have hpre : ∀ s : S, ∃ ω ∈ Dj, g ω = s := fun s => hSA s.2
+      choose pick hpickD hpickg using hpre
+      have : Countable S := hSc.to_subtype
+      refine ⟨Set.range pick, Set.countable_range pick, ?_, ?_⟩
+      · rintro _ ⟨s, rfl⟩
+        exact (hpickD s).1
+      · intro ω hωD hωmod
+        obtain ⟨s, hsS, hdist⟩ :=
+          Metric.mem_closure_iff.mp (hAS ⟨ω, ⟨hωD, hωmod⟩, rfl⟩) r hr
+        set η := pick ⟨s, hsS⟩ with hη_def
+        have hηD : η ∈ Dj := hpickD ⟨s, hsS⟩
+        have hgη : g η = s := hpickg ⟨s, hsS⟩
+        refine ⟨η, ⟨⟨s, hsS⟩, rfl⟩, fun x => ?_⟩
+        by_cases hx : x ∈ closure W
+        · obtain ⟨y, hy, hxy⟩ := Set.mem_iUnion₂.mp (hnet j hx)
+          have h1 := hωmod x y (Metric.mem_ball.mp hxy)
+          rw [← hgη] at hdist
+          have h2 : dist (c ((ω : DifferentialForm (Eucl P) n) y))
+              (c ((η : DifferentialForm (Eucl P) n) y)) < r :=
+            (dist_le_pi_dist (g ω) (g η) ⟨y, hy⟩).trans_lt hdist
+          have h3 := hηD.2 y x (by rwa [dist_comm])
+          have h4 := dist_triangle4 (c ((ω : DifferentialForm (Eucl P) n) x))
+            (c ((ω : DifferentialForm (Eucl P) n) y)) (c ((η : DifferentialForm (Eucl P) n) y))
+            (c ((η : DifferentialForm (Eucl P) n) x))
+          rw [← dist_eq_norm, show 3 / ((m : ℝ) + 1) = r + r + r by rw [hr_def]; ring]
+          linarith
+        · rw [hzero ω hωD x hx, hzero η hηD.1 x hx, sub_self, norm_zero]
+          positivity
+    choose E' hE'c hE'D hE' using key
+    refine ⟨⋃ m, ⋃ j, E' m j,
+      Set.countable_iUnion fun m => Set.countable_iUnion fun j => hE'c m j, ?_, ?_⟩
+    · intro η hη
+      obtain ⟨m, j, hη⟩ := Set.mem_iUnion₂.mp hη
+      exact hE'D m j hη
+    · intro ω hω ε hε
+      obtain ⟨m, hm⟩ : ∃ m : ℕ, N * (3 / ((m : ℝ) + 1)) ≤ ε := by
+        obtain ⟨m, hm⟩ := exists_nat_gt (3 * N / ε)
+        refine ⟨m, ?_⟩
+        rw [div_lt_iff₀ hε] at hm
+        rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+        nlinarith
+      -- `c ∘ ω` is continuous with compact support, hence uniformly continuous.
+      have huc : UniformContinuous (c ∘ (ω : DifferentialForm (Eucl P) n)) :=
+        (ω.property.1.2.comp_left hc_zero).uniformContinuous_of_continuous
+          (hc_cont.comp ω.property.1.1.continuous)
+      obtain ⟨δ, hδ, hδ'⟩ :=
+        Metric.uniformContinuous_iff.mp huc (1 / ((m : ℝ) + 1)) (by positivity)
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+      obtain ⟨η, hηE, hη⟩ := hE' m j ω hω fun x y hxy => hδ' (hxy.trans hj)
+      refine ⟨η, Set.mem_iUnion.2 ⟨m, Set.mem_iUnion.2 ⟨j, hηE⟩⟩, fun x => ?_⟩
+      calc covectorEuclideanNorm
+            ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x)
+          ≤ N * ‖c ((ω : DifferentialForm (Eucl P) n) x
+              - (η : DifferentialForm (Eucl P) n) x)‖ := hcmp _
+        _ = N * ‖c ((ω : DifferentialForm (Eucl P) n) x)
+              - c ((η : DifferentialForm (Eucl P) n) x)‖ := by rw [hc_sub]
+        _ ≤ N * (3 / ((m : ℝ) + 1)) := mul_le_mul_of_nonneg_left (hη x) hN
+        _ ≤ ε := hm
+  obtain ⟨E, hEc, hEW, hEdense⟩ := hdense
+  -- `E` is nonempty (it approximates `0`); enumerate it as `E = {ωᵢ : i ∈ ℕ}`.
+  have hEne : E.Nonempty := by
+    obtain ⟨η, hη, -⟩ := hEdense 0 (by simp) 1 one_pos
+    exact ⟨η, hη⟩
+  obtain ⟨e, rfl⟩ := hEc.exists_eq_range hEne
+  have heW : ∀ i, tsupport (e i : DifferentialForm (Eucl P) n) ⊆ W := fun i => hEW _ ⟨i, rfl⟩
+  -- `C⁺ = max C 0`.
+  set C' : ℝ := max C 0
+  have hC'0 : 0 ≤ C' := le_max_right C 0
+  have hCC' : ENNReal.ofReal C ≤ ENNReal.ofReal C' := ENNReal.ofReal_le_ofReal (le_max_left C 0)
+  -- If `M_W(T) ≤ C` and `|ω - ω'| ≤ ε` everywhere, then `|T(ω) - T(ω')| = |T(ω - ω')| ≤ C⁺ ε`.
+  have hdiff : ∀ (T : GeometricCurrentOn U n) (ω ω' : TestFormOn U n) (ε : ℝ),
+      T.massOn W ≤ ENNReal.ofReal C → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      tsupport (ω' : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm
+        ((ω : DifferentialForm (Eucl P) n) x - (ω' : DifferentialForm (Eucl P) n) x) ≤ ε) →
+      |T ω - T ω'| ≤ C' * ε := by
+    intro T ω ω' ε hT hω hω' hε
+    have hsupp : tsupport ((ω - ω' : TestFormOn U n) : DifferentialForm (Eucl P) n) ⊆ W :=
+      (tsupport_sub _ _).trans (union_subset hω hω')
+    have h := hF1 T (ω - ω') C' ε hC'0 (hT.trans hCC') hsupp hε
+    have hlin : T (ω - ω') = T ω - T ω' := map_sub T.toCurrent ω ω'
+    rwa [hlin] at h
+  -- Step 3: the limits inherit the bound, first `Z_k` (`j → ∞`), then `L` (`k → ∞`).
+  have hLlip : ∀ (ω ω' : TestFormOn U n) (ε : ℝ), tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      tsupport (ω' : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm
+        ((ω : DifferentialForm (Eucl P) n) x - (ω' : DifferentialForm (Eucl P) n) x) ≤ ε) →
+      |L ω - L ω'| ≤ C' * ε := by
+    intro ω ω' ε hω hω' hε
+    have hZ : ∀ k, |Z k ω - Z k ω'| ≤ C' * ε := fun k =>
+      le_of_tendsto ((hXZ k ω hω).sub (hXZ k ω' hω')).abs
+        ((hmass k).mono fun j hj => hdiff (X k j) ω ω' ε hj hω hω' hε)
+    exact le_of_tendsto ((hZL ω hω).sub (hZL ω' hω')).abs (Eventually.of_forall hZ)
+  -- Step 4: for each `k`, the mass bound and `|X_{k,j}(ωᵢ) - Z_k(ωᵢ)| < 1/(k+1)` for all `i ≤ k`
+  -- hold for all large `j`; extract a strictly increasing `φ` along them.
+  have hev : ∀ k, ∀ᶠ j in atTop, (X k j).massOn W ≤ ENNReal.ofReal C ∧
+      ∀ i : Fin (k + 1), |X k j (e i) - Z k (e i)| < 1 / ((k : ℝ) + 1) := by
+    intro k
+    refine (hmass k).and (Filter.eventually_all.2 fun i => ?_)
+    exact (Metric.tendsto_nhds.1 (hXZ k (e i) (heW i)) (1 / ((k : ℝ) + 1)) (by positivity)).mono
+      fun j hj => by rwa [Real.dist_eq] at hj
+  obtain ⟨φ, hφmono, hφ⟩ := Filter.extraction_forall_of_eventually hev
+  refine ⟨φ, hφmono, fun k => (hφ k).1, fun ω hω => ?_⟩
+  -- Step 5: fix `δ > 0`; approximate `ω` by some `ωᵢ` within `ε`, where `C⁺ ε < δ / 4`.
+  rw [Metric.tendsto_nhds]
+  intro δ hδ
+  set ε : ℝ := δ / (4 * (C' + 1)) with hε_def
+  have hC1 : 0 < C' + 1 := by linarith
+  have hε : 0 < ε := by positivity
+  have hCε : C' * ε < δ / 4 := by
+    have h : (C' + 1) * ε = δ / 4 := by
+      rw [hε_def]
+      field_simp
+    nlinarith
+  obtain ⟨_, ⟨i, rfl⟩, hi⟩ := hEdense ω hω ε hε
+  have hL := hLlip ω (e i) ε hω (heW i) hi
+  -- For large `k ≥ i`, `|X_{k,φ(k)}(ω) - L(ω)|` is at most `|X_{k,φ(k)}(ω - ωᵢ)| ≤ C⁺ε`, plus
+  -- `|X_{k,φ(k)}(ωᵢ) - Z_k(ωᵢ)| < 1/(k+1)`, plus `|Z_k(ωᵢ) - L(ωᵢ)|`, plus `|L(ωᵢ) - L(ω)| ≤ C⁺ε`;
+  -- each of the four terms is `< δ/4`.
+  filter_upwards [Filter.eventually_ge_atTop i,
+    Metric.tendsto_nhds.1 (hZL (e i) (heW i)) (δ / 4) (by positivity),
+    (tendsto_order.1 (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))).2 (δ / 4)
+      (by positivity)] with k hik hZk hk
+  obtain ⟨hmk, happ⟩ := hφ k
+  have h1 := hdiff (X k (φ k)) ω (e i) ε hmk hω (heW i) hi
+  have h2 : |X k (φ k) (e i) - Z k (e i)| < 1 / ((k : ℝ) + 1) :=
+    happ ⟨i, Nat.lt_succ_of_le hik⟩
+  rw [Real.dist_eq] at hZk ⊢
+  have h1' := abs_le.1 h1
+  have h2' := abs_lt.1 h2
+  have h3' := abs_lt.1 hZk
+  have h4' := abs_le.1 hL
+  rw [abs_lt]
+  constructor <;> linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
