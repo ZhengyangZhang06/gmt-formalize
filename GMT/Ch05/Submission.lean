@@ -458,6 +458,133 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+theorem dohr_vel_vertical_test_field : ∀ n ℓ : ℕ, ∀ (ξ : Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (s r : ℝ) (u φ : Rn n → Rn ℓ), 0 < s → ContinuousOn u (ball 0 r) → (∀ x ∈ ball (0 : Rn n) r, ‖graphPoint x (u x)‖ < s) → ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∃ X : Amb n ℓ → Amb n ℓ, ContDiff ℝ 1 X ∧ HasCompactSupport X ∧ tsupport X ⊆ ball ξ s ∧ (∀ x : Rn n, X (ξ + Q.symm (graphPoint x (u x))) = Q.symm (graphPoint 0 (φ x))) ∧ ∀ (x v : Rn n) (w : Rn ℓ), fderiv ℝ X (ξ + Q.symm (graphPoint x (u x))) (Q.symm (graphPoint v w)) = Q.symm (graphPoint 0 (fderiv ℝ φ x v)) := by
+  intro n ℓ ξ Q s r u φ hs hu hGs hφ hφc hφr
+  -- the pairing map (v, w) ↦ graphPoint v w and the projection onto the first n coordinates
+  let Γl : (Rn n × Rn ℓ) →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun p => graphPoint p.1 p.2
+      map_add' := by
+        intro p q
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+      map_smul' := by
+        intro c p
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint] }
+  let Γ : (Rn n × Rn ℓ) →L[ℝ] Amb n ℓ := LinearMap.toContinuousLinearMap Γl
+  let ιL : Rn ℓ →L[ℝ] Amb n ℓ := Γ.comp (ContinuousLinearMap.inr ℝ (Rn n) (Rn ℓ))
+  have hι : ∀ w, ιL w = graphPoint 0 w := fun w => rfl
+  let πl : Amb n ℓ →ₗ[ℝ] Rn n :=
+    { toFun := fun z => WithLp.toLp 2 (fun j : Fin n => WithLp.ofLp z (Fin.castAdd ℓ j))
+      map_add' := by intro z z'; rfl
+      map_smul' := by intro c z; rfl }
+  let πL : Amb n ℓ →L[ℝ] Rn n := LinearMap.toContinuousLinearMap πl
+  have hπG : ∀ (x : Rn n) (w : Rn ℓ), πL (graphPoint x w) = x := by
+    intro x w
+    show (WithLp.toLp 2 (fun j : Fin n => WithLp.ofLp (graphPoint x w) (Fin.castAdd ℓ j)) : Rn n) = x
+    simp [graphPoint]
+  have hGc : ContinuousOn (fun x => graphPoint x (u x)) (ball 0 r) :=
+    Γ.continuous.comp_continuousOn (continuousOn_id.prodMk hu)
+  -- the compact image K of tsupport φ and the radii s' < s'' < s
+  have hKc : IsCompact ((fun x => graphPoint x (u x)) '' tsupport φ) :=
+    hφc.isCompact.image_of_continuousOn (hGc.mono hφr)
+  have hKs : (fun x => graphPoint x (u x)) '' tsupport φ ⊆ ball 0 s := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact mem_ball_zero_iff.mpr (hGs x (hφr hx))
+  obtain ⟨s1, hs1, hKs1⟩ := exists_lt_subset_ball hKc.isClosed hKs
+  have hs'pos : 0 < max s1 (s / 2) := lt_of_lt_of_le (half_pos hs) (le_max_right _ _)
+  have hs's : max s1 (s / 2) < s := max_lt hs1 (half_lt_self hs)
+  have hs's'' : max s1 (s / 2) < (max s1 (s / 2) + s) / 2 := by linarith
+  have hs''s : (max s1 (s / 2) + s) / 2 < s := by linarith
+  let ψ : ContDiffBump (0 : Amb n ℓ) := ⟨max s1 (s / 2), (max s1 (s / 2) + s) / 2, hs'pos, hs's''⟩
+  have hKψ : (fun x => graphPoint x (u x)) '' tsupport φ ⊆ ball 0 (max s1 (s / 2)) :=
+    hKs1.trans (ball_subset_ball (le_max_left _ _))
+  have hψ1 : ∀ z ∈ ball (0 : Amb n ℓ) (max s1 (s / 2)), ψ z = 1 := fun z hz =>
+    ψ.one_of_mem_closedBall (ball_subset_closedBall hz)
+  -- the fields
+  let Xt : Amb n ℓ → Amb n ℓ := fun z => ψ z • ιL (φ (πL z))
+  let X : Amb n ℓ → Amb n ℓ := fun y => Q.symm (Xt (Q (y - ξ)))
+  have hXt1 : ContDiff ℝ 1 Xt :=
+    (ψ.contDiff (n := 1)).smul (ιL.contDiff.comp (hφ.comp πL.contDiff))
+  have hX1 : ContDiff ℝ 1 X :=
+    Q.symm.contDiff.comp (hXt1.comp (Q.contDiff.comp (contDiff_id.sub contDiff_const)))
+  have hsuppX : Function.support X ⊆ closedBall ξ ((max s1 (s / 2) + s) / 2) := by
+    intro y hy
+    have hψne : ψ (Q (y - ξ)) ≠ 0 := by
+      intro h0
+      apply hy
+      show Q.symm (ψ (Q (y - ξ)) • ιL (φ (πL (Q (y - ξ))))) = 0
+      rw [h0, zero_smul, map_zero]
+    have hmem : Q (y - ξ) ∈ Function.support ψ := hψne
+    rw [ψ.support_eq, mem_ball_zero_iff, LinearIsometryEquiv.norm_map] at hmem
+    rw [mem_closedBall, dist_eq_norm]
+    exact hmem.le
+  have htsuppX : tsupport X ⊆ closedBall ξ ((max s1 (s / 2) + s) / 2) :=
+    closure_minimal hsuppX isClosed_closedBall
+  -- derivative of Xt on the graph
+  have hXtD : ∀ x : Rn n, HasFDerivAt Xt (ιL.comp ((fderiv ℝ φ x).comp πL)) (graphPoint x (u x)) := by
+    intro x
+    have hφd : ∀ y, DifferentiableAt ℝ φ y := fun y => (hφ.differentiable one_ne_zero) y
+    by_cases hx : x ∈ tsupport φ
+    · have hGK : graphPoint x (u x) ∈ ball (0 : Amb n ℓ) (max s1 (s / 2)) := hKψ ⟨x, hx, rfl⟩
+      have hh : HasFDerivAt (fun z => ιL (φ (πL z))) (ιL.comp ((fderiv ℝ φ x).comp πL)) (graphPoint x (u x)) := by
+        have h1 := (hφd (πL (graphPoint x (u x)))).hasFDerivAt.comp (graphPoint x (u x)) πL.hasFDerivAt
+        rw [hπG] at h1
+        exact ιL.hasFDerivAt.comp (graphPoint x (u x)) h1
+      refine hh.congr_of_eventuallyEq ?_
+      filter_upwards [isOpen_ball.mem_nhds hGK] with z hz
+      show ψ z • ιL (φ (πL z)) = ιL (φ (πL z))
+      rw [hψ1 z hz, one_smul]
+    · have hdφ : fderiv ℝ φ x = 0 := by
+        by_contra hne
+        exact hx (support_fderiv_subset ℝ (Function.mem_support.mpr hne))
+      rw [hdφ, ContinuousLinearMap.zero_comp, ContinuousLinearMap.comp_zero]
+      refine (hasFDerivAt_const (0 : Amb n ℓ) _).congr_of_eventuallyEq ?_
+      have hN : IsOpen (πL ⁻¹' (tsupport φ)ᶜ) := (isClosed_tsupport φ).isOpen_compl.preimage πL.continuous
+      have hGN : graphPoint x (u x) ∈ πL ⁻¹' (tsupport φ)ᶜ := by
+        show πL (graphPoint x (u x)) ∉ tsupport φ
+        rw [hπG]
+        exact hx
+      filter_upwards [hN.mem_nhds hGN] with z hz
+      show ψ z • ιL (φ (πL z)) = 0
+      rw [image_eq_zero_of_notMem_tsupport hz, map_zero, smul_zero]
+  refine ⟨X, hX1, ?_, htsuppX.trans (closedBall_subset_ball hs''s), ?_, ?_⟩
+  · exact HasCompactSupport.intro (isCompact_closedBall ξ ((max s1 (s / 2) + s) / 2))
+      (fun y hy => by
+        by_contra hne
+        exact hy (hsuppX hne))
+  · intro x
+    show Q.symm (ψ (Q (ξ + Q.symm (graphPoint x (u x)) - ξ)) • ιL (φ (πL (Q (ξ + Q.symm (graphPoint x (u x)) - ξ))))) =
+      Q.symm (graphPoint 0 (φ x))
+    rw [add_sub_cancel_left, LinearIsometryEquiv.apply_symm_apply, hπG]
+    by_cases hx : x ∈ tsupport φ
+    · rw [hψ1 _ (hKψ ⟨x, hx, rfl⟩), one_smul, hι]
+    · have h0 : φ x = 0 := image_eq_zero_of_notMem_tsupport hx
+      rw [h0, ← hι 0]
+      simp
+  · intro x v w
+    have hT : HasFDerivAt (fun y => Q (y - ξ)) (Q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ)
+        (ξ + Q.symm (graphPoint x (u x))) := by
+      have := (Q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).hasFDerivAt.comp
+        (ξ + Q.symm (graphPoint x (u x))) ((hasFDerivAt_id _).sub_const ξ)
+      rw [ContinuousLinearMap.comp_id] at this
+      exact this
+    have hTx : Q (ξ + Q.symm (graphPoint x (u x)) - ξ) = graphPoint x (u x) := by
+      rw [add_sub_cancel_left, LinearIsometryEquiv.apply_symm_apply]
+    have hXt' := hXtD x
+    rw [← hTx] at hXt'
+    have hX := (Q.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).hasFDerivAt.comp
+      (ξ + Q.symm (graphPoint x (u x))) (hXt'.comp (ξ + Q.symm (graphPoint x (u x))) hT)
+    have hXeq : X = (Q.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ) ∘ (Xt ∘ fun y => Q (y - ξ)) := rfl
+    rw [hXeq, hX.fderiv]
+    simp only [ContinuousLinearMap.comp_apply]
+    show Q.symm (ιL (fderiv ℝ φ x (πL (Q (Q.symm (graphPoint v w)))))) = Q.symm (graphPoint 0 (fderiv ℝ φ x v))
+    rw [LinearIsometryEquiv.apply_symm_apply, hπG, hι]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
