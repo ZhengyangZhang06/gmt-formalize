@@ -458,6 +458,128 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Mollifications of a weakly harmonic function are harmonic** (step 2 of the proof of
+Weyl's lemma, used for Simon Ch. 5, Lemma 3.1).  Let `w` be integrable on `B = B̆₁(0)` with
+`∫_B w Δζ = 0` for every `ζ ∈ C^∞_c(B)`, and let `κ` be `C^∞` with `κ(z) = 0` whenever `|z| ≥ ε`.
+Then `v(x) = ∫_B κ(x - y) w(y) dy` is `C^∞` on `ℝⁿ` and `Δv = 0` on `B̆_{1-ε}(0)`.
+
+With `W = 1_B w`, `v = W ⋆ κ` is the convolution of an integrable function with a smooth
+compactly supported kernel, so `v` is smooth and its derivatives fall on the kernel; summing over
+an orthonormal basis gives `Δv(x) = ∫_B Δκ(x - t) w(t) dt`.  For `|x| < 1 - ε`,
+`ζ(y) = κ(x - y)` is a test function with `tsupport ζ ⊆ B̄_ε(x) ⊆ B` and `Δζ(y) = Δκ(x - y)`, so
+`Δv(x) = ∫_B w Δζ = 0`. -/
+theorem ball_convolution_contDiff_laplacian_eq_zero : ∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, IntegrableOn w (ball (0 : Rn n) 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0) → ∀ (κ : Rn n → ℝ) (ε : ℝ), ContDiff ℝ (⊤ : ℕ∞) κ → (∀ z : Rn n, ε ≤ ‖z‖ → κ z = 0) → ContDiff ℝ (⊤ : ℕ∞) (fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y) ∧ ∀ x ∈ ball (0 : Rn n) (1 - ε), Laplacian.laplacian (fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y) x = 0 := by
+  intro n _hn w hw hharm κ ε hκ hκε
+  -- Step 1: `W = 1_B w` is integrable and `v = W ⋆ κ` (convolution with `L = lsmul`).
+  set W : Rn n → ℝ := (ball (0 : Rn n) 1).indicator w with hWdef
+  have hWloc : LocallyIntegrable W :=
+    ((integrable_indicator_iff measurableSet_ball).2 hw).locallyIntegrable
+  set L : ℝ →L[ℝ] ℝ →L[ℝ] ℝ := ContinuousLinearMap.lsmul ℝ ℝ with hLdef
+  have hv : (fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y) =
+      convolution (𝕜 := ℝ) W κ L volume := by
+    funext x
+    rw [convolution_def, ← integral_indicator measurableSet_ball]
+    congr 1
+    funext t
+    by_cases ht : t ∈ ball (0 : Rn n) 1
+    · simp [hWdef, hLdef, Set.indicator_of_mem ht, mul_comm]
+    · simp [hWdef, hLdef, Set.indicator_of_notMem ht]
+  -- Step 2: `κ = 0` off `B̄_ε(0)`, so `κ`, `Dκ` and `D²κ` are smooth with compact support.
+  have hκc : HasCompactSupport κ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Rn n) ε) (fun z hz => hκε z ?_)
+    rw [mem_closedBall, dist_zero_right, not_le] at hz
+    exact hz.le
+  have hκ1 : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ κ) := (contDiff_infty_iff_fderiv.1 hκ).2
+  have hκ2 : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ (fderiv ℝ κ)) := (contDiff_infty_iff_fderiv.1 hκ1).2
+  have hκ1c : HasCompactSupport (fderiv ℝ κ) := hκc.fderiv ℝ
+  have hκ2c : HasCompactSupport (fderiv ℝ (fderiv ℝ κ)) := hκ1c.fderiv ℝ
+  have hκ2cont : Continuous (fderiv ℝ (fderiv ℝ κ)) := hκ2.continuous
+  -- Step 3: `v = W ⋆ κ` is smooth.
+  refine ⟨?_, ?_⟩
+  · rw [hv]
+    exact hκc.contDiff_convolution_right L hWloc hκ
+  -- Steps 4–5: derivatives fall on the kernel, `D²v(x)[e, e] = ∫ W(t) D²κ(x - t)[e, e] dt`.
+  have hD2 : fderiv ℝ (fderiv ℝ (convolution (𝕜 := ℝ) W κ L volume)) =
+      convolution (𝕜 := ℝ) W (fderiv ℝ (fderiv ℝ κ)) ((L.precompR (Rn n)).precompR (Rn n))
+        volume := by
+    have hD1 : fderiv ℝ (convolution (𝕜 := ℝ) W κ L volume) =
+        convolution (𝕜 := ℝ) W (fderiv ℝ κ) (L.precompR (Rn n)) volume := by
+      funext x
+      exact (hκc.hasFDerivAt_convolution_right L hWloc (hκ.of_le (mod_cast le_top)) x).fderiv
+    rw [hD1]
+    funext x
+    exact (hκ1c.hasFDerivAt_convolution_right (L.precompR (Rn n)) hWloc
+      (hκ1.of_le (mod_cast le_top)) x).fderiv
+  have hD2v : ∀ x e : Rn n, fderiv ℝ (fderiv ℝ (convolution (𝕜 := ℝ) W κ L volume)) x e e =
+      ∫ t, W t * fderiv ℝ (fderiv ℝ κ) (x - t) e e := by
+    intro x e
+    rw [hD2, convolution_precompR_apply (L.precompR (Rn n)) hWloc hκ2c hκ2cont x e,
+      convolution_precompR_apply L hWloc (hκ1c.fderiv_apply ℝ e)
+        (hκ2cont.clm_apply continuous_const) x e, convolution_def]
+    simp [hLdef]
+  -- Each `t ↦ W(t) D²κ(x - t)[e, e]` is integrable: `D²κ(·)[e, e]` is continuous with compact
+  -- support.
+  have hint : ∀ x e : Rn n, Integrable (fun t => W t * fderiv ℝ (fderiv ℝ κ) (x - t) e e) := by
+    intro x e
+    have hc : HasCompactSupport (fun a => fderiv ℝ (fderiv ℝ κ) a e e) :=
+      (hκ1c.fderiv_apply ℝ e).comp_left (g := fun T : Rn n →L[ℝ] ℝ => T e) (by simp)
+    exact hc.convolutionExists_right L hWloc
+      ((hκ2cont.clm_apply continuous_const).clm_apply continuous_const) x
+  -- Step 6: `Δf(x) = ∑ᵢ D²f(x)[bᵢ, bᵢ]` for the standard orthonormal basis `b`.
+  set b := EuclideanSpace.basisFun (Fin n) ℝ
+  have hlap : ∀ (f : Rn n → ℝ) (x : Rn n),
+      Laplacian.laplacian f x = ∑ i, fderiv ℝ (fderiv ℝ f) x (b i) (b i) := by
+    intro f x
+    rw [InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis f b]
+    simp [iteratedFDeriv_two_apply]
+  -- Step 7: for `|x| < 1 - ε`, `ζ(y) = κ(x - y)` is a test function with `tsupport ζ ⊆ B`.
+  intro x hx
+  set ζ : Rn n → ℝ := fun y => κ (x - y) with hζdef
+  have hζ : ContDiff ℝ (⊤ : ℕ∞) ζ := hκ.comp (contDiff_const.sub contDiff_id)
+  have hζsupp : Function.support ζ ⊆ closedBall x ε := by
+    intro y hy
+    rw [mem_closedBall, dist_comm, dist_eq_norm]
+    by_contra h
+    exact hy (hκε _ (not_le.1 h).le)
+  have hζc : HasCompactSupport ζ :=
+    HasCompactSupport.intro (isCompact_closedBall x ε)
+      (fun y hy => by_contra (fun h => hy (hζsupp h)))
+  have hζB : tsupport ζ ⊆ ball 0 1 := by
+    refine (closure_minimal hζsupp isClosed_closedBall).trans (closedBall_subset_ball' ?_)
+    rw [mem_ball] at hx
+    linarith
+  -- Step 8: `Δζ(t) = Δκ(x - t)`, writing `ζ = κ(x + ·) ∘ (-id)`.
+  have hκx : ContDiff ℝ (⊤ : ℕ∞) (fun z => κ (x + z)) := hκ.comp (contDiff_const.add contDiff_id)
+  have hcomp : ζ = (fun z => κ (x + z)) ∘ (-(ContinuousLinearMap.id ℝ (Rn n))) := by
+    funext y
+    simp [hζdef, sub_eq_add_neg]
+  have hlapζ : ∀ t,
+      Laplacian.laplacian ζ t = ∑ i, fderiv ℝ (fderiv ℝ κ) (x - t) (b i) (b i) := by
+    intro t
+    rw [InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis ζ b]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [hcomp, ContinuousLinearMap.iteratedFDeriv_comp_right (i := 2) _ hκx t
+        (WithTop.coe_le_coe.2 le_top),
+      ContinuousMultilinearMap.compContinuousLinearMap_apply, iteratedFDeriv_comp_add_left,
+      iteratedFDeriv_two_apply]
+    simp [sub_eq_add_neg]
+  -- Steps 6 and 9: `Δv(x) = ∑ᵢ ∫ W(t) D²κ(x - t)[bᵢ, bᵢ] dt = ∫_B w(t) Δζ(t) dt = 0`.
+  rw [hv, hlap]
+  simp_rw [hD2v]
+  rw [← integral_finsetSum _ (fun i _ => hint x (b i)), ← hharm ζ hζ hζc hζB,
+    ← integral_indicator measurableSet_ball]
+  congr 1
+  funext t
+  by_cases ht : t ∈ ball (0 : Rn n) 1
+  · rw [Set.indicator_of_mem ht, hlapζ t, Finset.mul_sum]
+    simp [hWdef, Set.indicator_of_mem ht]
+  · rw [Set.indicator_of_notMem ht]
+    simp [hWdef, Set.indicator_of_notMem ht]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
