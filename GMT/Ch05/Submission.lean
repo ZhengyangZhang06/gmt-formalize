@@ -563,6 +563,23 @@ theorem exists_smooth_step_profile_lipschitz_three : ∃ φ : ℝ → ℝ, ContD
     calc c⁻¹ * g t ≤ c⁻¹ * 1 := mul_le_mul_of_nonneg_left (hg_le_one t) (inv_nonneg.2 hc_pos.le)
       _ ≤ 3 := by rw [mul_one]; exact hcinv_le
       _ = ((3 : ℝ≥0) : ℝ) := by norm_num
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 107), smoothness of the cutoff: if `φ` is `C^∞` with
+`φ ≡ 1` on `(-∞, 1/2]` and `ρ > 0`, then `ζ(x) = φ(‖x − ξ‖/ρ)` is `C^∞` on `ℝᵐ`.  Near `ξ`,
+`ζ ≡ 1` on `B̆_{ρ/2}(ξ)`; at `x ≠ ξ` the norm is `C^∞` at `x − ξ ≠ 0`. -/
+theorem contDiff_radial_profile_of_eq_one_le_half : ∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (φ : ℝ → ℝ), 0 < ρ → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ t, t ≤ 1 / 2 → φ t = 1) → ContDiff ℝ (⊤ : ℕ∞) (fun x : Rn m => φ (‖x - ξ‖ / ρ)) := by
+  intro m ξ ρ φ hρ hφ hφ1
+  rw [contDiff_iff_contDiffAt]
+  intro x
+  rcases eq_or_ne x ξ with rfl | hx
+  · -- `ζ ≡ 1` on the open ball `B̆_{ρ/2}(ξ)`, a neighbourhood of `ξ`.
+    refine (contDiffAt_const (c := (1 : ℝ))).congr_of_eventuallyEq ?_
+    filter_upwards [Metric.ball_mem_nhds x (half_pos hρ)] with y hy
+    rw [Metric.mem_ball, dist_eq_norm] at hy
+    exact hφ1 _ ((div_le_iff₀ hρ).2 (by linarith))
+  · -- `y ↦ ‖y − ξ‖/ρ` is `C^∞` at `x` since `x − ξ ≠ 0`; compose with `φ`.
+    have h : ContDiffAt ℝ (⊤ : ℕ∞) (fun y : Rn m => ‖y - ξ‖ / ρ) x :=
+      ((contDiffAt_id.sub contDiffAt_const).norm ℝ (sub_ne_zero.2 hx)).div_const ρ
+    exact hφ.contDiffAt.comp x h
 
 end Submission
 
