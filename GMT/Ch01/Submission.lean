@@ -681,4 +681,78 @@ def RadonCompactness : Prop :=
 /-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
+/-- Simon Ch. 1, Theorem 3.26, with (2.4)–(2.6).  (1) `Hⁿ` is additive on positively
+separated sets (`simonHausdorffOuterMeasureReal_isMetric`), so Theorem 1.13 makes every Borel
+set `Hⁿ`-measurable; with the Borel hulls of (2.6), `Hⁿ` and `σ = Hⁿ ⌞ A` are Borel regular, and
+`σ` is finite.  For `t > 1` and `E ⊆ A` on which `Θ^{*n}(Hⁿ, A, ·) ≥ t`, Theorem 3.3 applied to
+`σ` on `A ∩ U` for open `U ⊇ E`, followed by outer regularity of `σ` (Theorem 1.15(1)), gives
+`t · Hⁿ(E) ≤ Hⁿ(E) < ∞`, so `Hⁿ(E) = 0`; take a countable union over rational `t > 1`.
+(2) is the `Hⁿ_∞` covering argument `simon_theorem_3_26_ii`, which does not use measurability. -/
+theorem Submission.hausdorff_density_bounds : HausdorffDensityBounds := by
+  intro X _ n hn A hA
+  refine ⟨fun hAfin => ?_, fun hfin => ?_⟩
+  · have hsep : ∀ E F : Set X, (∃ r : ℝ, 0 < r ∧ ∀ a ∈ E, ∀ b ∈ F, r ≤ dist a b) →
+        simonHausdorffOuterMeasureReal n (E ∪ F) =
+          simonHausdorffOuterMeasureReal n E + simonHausdorffOuterMeasureReal n F := by
+      rintro E F ⟨r, hr, hEF⟩
+      refine simonHausdorffOuterMeasureReal_isMetric n E F
+        ⟨ENNReal.ofReal r, (ENNReal.ofReal_pos.mpr hr).ne', fun a ha b hb => ?_⟩
+      rw [edist_dist]
+      exact ENNReal.ofReal_le_ofReal (hEF a ha b hb)
+    have hH : IsBorelRegularOuterMeasure (simonHausdorffOuterMeasureReal (X := X) n) :=
+      ⟨fun E hE => Submission.caratheodory_criterion X _ hsep E hE,
+        (simonHausdorffOuterMeasureReal_isBorelRegular hn).exists_borel_superset⟩
+    obtain ⟨σ, hσ_def⟩ : ∃ σ : OuterMeasure X,
+        σ = OuterMeasure.restrict A (simonHausdorffOuterMeasureReal n) := ⟨_, rfl⟩
+    have hσapp : ∀ S, σ S = simonHausdorffOuterMeasureReal n (S ∩ A) := fun S => by
+      rw [hσ_def, OuterMeasure.restrict_apply]
+    have hσ : IsBorelRegularOuterMeasure σ := by
+      rw [hσ_def]
+      exact hH.restrict hA hAfin
+    have hσopen : IsOpenSigmaFinite σ :=
+      ⟨fun _ => univ, fun _ => ⟨isOpen_univ, by rw [hσapp, univ_inter]; exact hAfin⟩,
+        iUnion_const univ⟩
+    have hσden : ∀ S ⊆ A, ∀ x, dimensionalUpperDensity σ n S x =
+        dimensionalUpperDensity (simonHausdorffOuterMeasureReal n) n S x := by
+      intro S hS x
+      unfold dimensionalUpperDensity dimensionalDensityQuotient
+      congr 1
+      funext r
+      rw [hσapp, inter_eq_left.mpr (inter_subset_left.trans hS)]
+    have hlevel : ∀ t : ℝ, 1 < t → ∀ E ⊆ A, (∀ x ∈ E, ENNReal.ofReal t ≤
+        dimensionalUpperDensity (simonHausdorffOuterMeasureReal n) n A x) →
+        simonHausdorffOuterMeasureReal n E = 0 := by
+      intro t ht E hEA hEt
+      have hbound : ENNReal.ofReal t * simonHausdorffOuterMeasureReal n E ≤
+          simonHausdorffOuterMeasureReal n E := calc
+        ENNReal.ofReal t * simonHausdorffOuterMeasureReal n E ≤
+            ⨅ (U : Set X) (_ : E ⊆ U) (_ : IsOpen U), σ U := by
+          refine le_iInf fun U => le_iInf fun hEU => le_iInf fun hU => ?_
+          refine (Submission.upper_density_comparison_and_theorem.1 X σ hσ n hn t
+            (zero_le_one.trans ht.le) E (A ∩ U) (fun x hx => ⟨hEA hx, hEU hx⟩)
+            (fun x hx => ?_)).trans (measure_mono inter_subset_right)
+          rw [hσden (A ∩ U) inter_subset_left x, dimensionalUpperDensity_inter_of_mem_nhds
+            (simonHausdorffOuterMeasureReal n) n A U x (hU.mem_nhds (hEU hx))]
+          exact hEt x hx
+        _ = σ E := ((Submission.borel_regular_approximation X (fun C hC => hC.isGδ) σ hσ
+          hσopen).1 E).symm
+        _ = simonHausdorffOuterMeasureReal n E := by rw [hσapp, inter_eq_left.mpr hEA]
+      by_contra hne
+      have hfin : simonHausdorffOuterMeasureReal n E ≠ ∞ :=
+        ((measure_mono hEA).trans_lt hAfin).ne
+      have hlt := ENNReal.mul_lt_mul_left hne hfin (ENNReal.one_lt_ofReal.mpr ht)
+      rw [one_mul] at hlt
+      exact hlt.not_ge hbound
+    rw [ae_iff]
+    refine measure_mono_null (fun x hx => ?_) (measure_iUnion_null fun q : ℚ =>
+      measure_iUnion_null fun hq : (1 : ℝ) < q => hlevel q hq
+        {x | x ∈ A ∧ ENNReal.ofReal q ≤
+          dimensionalUpperDensity (simonHausdorffOuterMeasureReal n) n A x}
+        (fun x hx => hx.1) (fun x hx => hx.2))
+    simp only [mem_ofPred_eq, not_imp, not_le] at hx
+    obtain ⟨q, -, hq1, hqx⟩ := ENNReal.lt_iff_exists_rat_btwn.mp hx.2
+    exact mem_iUnion₂.mpr ⟨q, ENNReal.one_lt_ofReal.mp hq1, hx.1, hqx.le⟩
+  · rw [ae_iff]
+    simpa only [not_imp, not_le] using simon_theorem_3_26_ii hn hA hfin
+
 end GMT.Ch01
