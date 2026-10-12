@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "12c0b952561081469d204a9a5d11b7ebecb28ab8c6c4e767e6d8aa1fd5d96d94",
+  "git_delta": {
+    "base_commit": "31ddb47cd08e849575fe6ca5b89fd827537f835b",
+    "candidate_commit": "16144a475b272196ba8b2bd15f104028282dbcfc",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "697574a463d6a403dc1f54070aa5656eb486e2e782fdb5b17c62cc952ce66fab",
+    "source_sha256": "406c3cbef689693fdee229d2826a6c9b78b36d78bdbf55d1b2d8b9c742223b3f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covector_sq_sum_orthonormalBasis",
+      "statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (f : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => f (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
