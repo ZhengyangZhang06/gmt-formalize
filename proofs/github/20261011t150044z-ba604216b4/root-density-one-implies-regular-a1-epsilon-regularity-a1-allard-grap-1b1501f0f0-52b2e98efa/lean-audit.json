@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "16f11f474a1f869f1ed8092fb1ef38c2147c862d038feff08e38a01f9f86dfc1",
+  "git_delta": {
+    "base_commit": "047ad423f3b8dd30c98d39fc4971580114c26533",
+    "candidate_commit": "d7666f35224465300c3b37c506b59eb7ee0878b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_ie_sq_mul_volume_le_of_mean_value",
+    "diff_sha256": "fc0c88fc2a3d9844351bb6ef76b34e44ac1449281df7e01d8b12af780c9cfd14",
+    "source_sha256": "46af676673e6314a5e2cce6bfc3be98d385dd12fb92fe761763e69e579d44f98",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value",
+      "statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn f (closedBall y ρ) → ∫ z in ball y ρ, f z = (volume (ball y ρ)).toReal * f y → f y ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, f z ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
