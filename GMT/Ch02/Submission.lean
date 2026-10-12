@@ -373,6 +373,126 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, toward Theorem 1.6 (pp. 42–43): a Whitney cover of `ℝⁿ ∖ A`.** Let `A ⊆ ℝⁿ` be
+closed and nonempty, and put `r(x) = min{1, d(x, A)}/20`. Vitali's lemma (closed balls, `τ = 5`)
+selects `J ⊆ ℝⁿ ∖ A` such that the balls `B̄(s, r(s))`, `s ∈ J`, are pairwise disjoint and every
+`x ∉ A` lies within `5r(s)` of some `s ∈ J`. The sets `J(x) = {s ∈ J : |x - s| < 10r(s)}` have at
+most `N` elements for one `N`, and the sets `J'(x) = {s ∈ J : B(s, 10r(s)) ∩ B(x, r(x)) ≠ ∅}` are
+finite: rescaling by `r(x)` maps `J'(x) ⊇ J(x)` injectively onto a `1/2`-separated subset of
+`B̄(0, 31)`. -/
+theorem Submission.whitney_cover_finite_overlap : ∀ (n : ℕ) (A : Set (Rn n)), IsClosed A → A.Nonempty → ∃ (J : Set (Rn n)) (N : ℕ), J ⊆ Aᶜ ∧ (∀ x ∉ A, ∃ s ∈ J, ‖x - s‖ ≤ 5 * (min 1 (Metric.infDist s A) / 20)) ∧ (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ∧ Set.ncard {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ≤ N) ∧ (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ∃ z : Rn n, ‖z - s‖ < 10 * (min 1 (Metric.infDist s A) / 20) ∧ ‖z - x‖ < min 1 (Metric.infDist x A) / 20}) := by
+  intro n A hA hne
+  -- Step 1: the scale `r(x) = min{1, d(x)}/20` is in `[0, 1/20]`, positive off `A`, and
+  -- `1/20`-Lipschitz.
+  obtain ⟨r, hr⟩ : ∃ r : Rn n → ℝ, ∀ x, r x = min 1 (infDist x A) / 20 := ⟨_, fun _ ↦ rfl⟩
+  simp only [← hr]
+  have r_nonneg : ∀ x, 0 ≤ r x := fun x ↦ by
+    have h : 0 ≤ min 1 (infDist x A) := le_min zero_le_one infDist_nonneg
+    rw [hr]
+    linarith
+  have r_le : ∀ x, r x ≤ 1 / 20 := fun x ↦ by
+    have h := min_le_left (1 : ℝ) (infDist x A)
+    rw [hr]
+    linarith
+  have r_pos : ∀ x ∉ A, 0 < r x := fun x hx ↦ by
+    have h : 0 < min 1 (infDist x A) := lt_min one_pos ((hA.notMem_iff_infDist_pos hne).mp hx)
+    rw [hr]
+    linarith
+  have r_lip : ∀ x y, r x ≤ r y + ‖x - y‖ / 20 := fun x y ↦ by
+    have h := ((lipschitz_infDist_pt A).const_min 1).dist_le_mul x y
+    simp only [Real.dist_eq, NNReal.coe_one, one_mul] at h
+    rw [dist_eq_norm] at h
+    have h' := (abs_sub_le_iff.mp h).1
+    rw [hr, hr]
+    linarith
+  -- Step 2 (F1): `|x - s| ≤ 10r(s)` gives `(2/3)r(x) ≤ r(s) ≤ 2r(x)`.
+  have comp : ∀ x s, ‖x - s‖ ≤ 10 * r s → r s ≤ 2 * r x ∧ 2 * r x ≤ 3 * r s := fun x s h ↦ by
+    have h₁ := r_lip x s
+    have h₂ := r_lip s x
+    rw [norm_sub_rev] at h₂
+    constructor <;> linarith
+  -- Step 3: Vitali selection on `ℝⁿ ∖ A` with radii `r ≤ 1/20` and `τ = 5`.
+  obtain ⟨J, hJA, hJd, hJc⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall
+    Aᶜ (fun x ↦ x) r (1 / 20) (fun x _ ↦ r_le x) 5 (by norm_num)
+  -- Step 4: distinct `s, s' ∈ J` satisfy `|s - s'| > r(s)`.
+  have sep : ∀ s ∈ J, ∀ s' ∈ J, s ≠ s' → r s < ‖s - s'‖ := fun s hs s' hs' hss' ↦ by
+    refine not_le.mp fun h ↦ ?_
+    have h₁ : s' ∈ closedBall s (r s) := by rwa [mem_closedBall, dist_eq_norm, norm_sub_rev]
+    have h₂ : s' ∈ closedBall s' (r s') := mem_closedBall_self (r_nonneg s')
+    exact Set.disjoint_left.mp (hJd hs hs' hss') h₁ h₂
+  -- Step 5: a `δ`-separated subset of a totally bounded `K` injects into a finite `δ/2`-net of `K`.
+  have packing : ∀ K : Set (Rn n), TotallyBounded K → ∀ δ : ℝ, 0 < δ → ∃ N : ℕ,
+      ∀ S : Set (Rn n), S ⊆ K → S.Pairwise (fun y z ↦ δ ≤ dist y z) → S.Finite ∧ S.ncard ≤ N := by
+    intro K hK δ hδ
+    obtain ⟨T, hT, hKT⟩ := Metric.totallyBounded_iff.mp hK (δ / 2) (by positivity)
+    refine ⟨T.ncard, fun S hSK hS ↦ ?_⟩
+    have hq : ∀ y : S, ∃ q : T, dist (y : Rn n) q < δ / 2 := fun y ↦ by
+      obtain ⟨q, hqT, hyq⟩ := mem_iUnion₂.mp (hKT (hSK y.2))
+      exact ⟨⟨q, hqT⟩, hyq⟩
+    choose q hq using hq
+    have hinj : Function.Injective q := fun y y' hyy' ↦ by
+      by_contra hne
+      have h₁ := hS y.2 y'.2 (fun h ↦ hne (Subtype.ext h))
+      have h₂ := dist_triangle (y : Rn n) (q y') y'
+      have h₃ := hq y
+      rw [hyy'] at h₃
+      have h₄ := hq y'
+      rw [dist_comm] at h₄
+      linarith
+    have : Finite T := hT.to_subtype
+    have : Finite S := Finite.of_injective q hinj
+    exact ⟨S.toFinite, Nat.card_le_card_of_injective q hinj⟩
+  obtain ⟨N, hN⟩ := packing (closedBall 0 31) (isCompact_closedBall _ _).totallyBounded (1 / 2)
+    (by norm_num)
+  -- Steps 6–7 (F2, F3): for `x ∉ A`, `c ↦ (c - x)/r(x)` maps `J'(x)` injectively onto a
+  -- `1/2`-separated subset of `B̄(0, 31)`, so `J'(x)` is finite with at most `N` elements.
+  have key : ∀ x ∉ A, {s | s ∈ J ∧ ∃ z, ‖z - s‖ < 10 * r s ∧ ‖z - x‖ < r x}.Finite ∧
+      {s | s ∈ J ∧ ∃ z, ‖z - s‖ < 10 * r s ∧ ‖z - x‖ < r x}.ncard ≤ N := by
+    intro x hx
+    have hρ := r_pos x hx
+    obtain ⟨f, hf⟩ : ∃ f : Rn n → Rn n, ∀ c, f c = (r x)⁻¹ • (c - x) := ⟨_, fun _ ↦ rfl⟩
+    have hfinj : Function.Injective f := fun c c' h ↦ by
+      rw [hf, hf] at h
+      exact sub_left_inj.mp (smul_right_injective (Rn n) (inv_ne_zero hρ.ne') h)
+    have hfnorm : ∀ c, ‖f c‖ = (r x)⁻¹ * ‖c - x‖ := fun c ↦ by
+      rw [hf, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hρ]
+    have hfdist : ∀ c c', dist (f c) (f c') = (r x)⁻¹ * ‖c - c'‖ := fun c c' ↦ by
+      rw [dist_eq_norm, hf, hf, ← smul_sub, sub_sub_sub_cancel_right, norm_smul, norm_inv,
+        Real.norm_eq_abs, abs_of_pos hρ]
+    -- For `s ∈ J'(x)` with witness `z`: `r(s) > r(x)/2` and `|s - x| < 31r(x)`.
+    have hbd : ∀ s ∈ {s | s ∈ J ∧ ∃ z, ‖z - s‖ < 10 * r s ∧ ‖z - x‖ < r x},
+        r x < 2 * r s ∧ ‖s - x‖ < 31 * r x := by
+      rintro s ⟨-, z, hzs, hzx⟩
+      obtain ⟨h₁, h₂⟩ := comp z s hzs.le
+      have h₃ := r_lip z x
+      have h₄ := r_lip x z
+      rw [norm_sub_rev] at h₄
+      have h₅ := norm_sub_le_norm_sub_add_norm_sub s z x
+      rw [norm_sub_rev s z] at h₅
+      have h₆ := r_nonneg s
+      constructor <;> linarith
+    have hsub : f '' {s | s ∈ J ∧ ∃ z, ‖z - s‖ < 10 * r s ∧ ‖z - x‖ < r x} ⊆ closedBall 0 31 := by
+      rintro _ ⟨s, hs, rfl⟩
+      rw [mem_closedBall, dist_zero_right, hfnorm, inv_mul_le_iff₀ hρ]
+      linarith [(hbd s hs).2]
+    have hsep : (f '' {s | s ∈ J ∧ ∃ z, ‖z - s‖ < 10 * r s ∧ ‖z - x‖ < r x}).Pairwise
+        (fun y z ↦ 1 / 2 ≤ dist y z) := by
+      rintro _ ⟨s, hs, rfl⟩ _ ⟨s', hs', rfl⟩ hne
+      have hss' : s ≠ s' := fun h ↦ hne (congrArg f h)
+      rw [hfdist, le_inv_mul_iff₀ hρ]
+      linarith [sep s hs.1 s' hs'.1 hss', (hbd s hs).1]
+    obtain ⟨hfin, hcard⟩ := hN _ hsub hsep
+    exact ⟨hfin.of_finite_image hfinj.injOn, Set.ncard_image_of_injective _ hfinj ▸ hcard⟩
+  -- Step 8: (C1)–(C4); `J(x) ⊆ J'(x)` (take `z = x`), so (C3) follows from the bound on `J'(x)`.
+  refine ⟨J, N, hJA, fun x hx ↦ ?_, fun x hx ↦ ?_, fun x hx ↦ (key x hx).1⟩
+  · obtain ⟨s, hs, hxs⟩ := hJc x hx
+    exact ⟨s, hs, by simpa [dist_eq_norm] using hxs (mem_closedBall_self (r_nonneg x))⟩
+  · have hJJ' : {s | s ∈ J ∧ ‖x - s‖ < 10 * r s} ⊆
+        {s | s ∈ J ∧ ∃ z, ‖z - s‖ < 10 * r s ∧ ‖z - x‖ < r x} := fun s hs ↦
+      ⟨hs.1, x, hs.2, by rw [sub_self, norm_zero]; exact r_pos x hx⟩
+    obtain ⟨hfin, hcard⟩ := key x hx
+    exact ⟨hfin.subset hJJ', (Set.ncard_le_ncard hJJ' hfin).trans hcard⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
