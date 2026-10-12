@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d180590575525db0b3db9873082209718d56062e3f912e79a42828e8d0fde407",
+  "git_delta": {
+    "base_commit": "a755934e466f100e859718452ac35be8d45b0bfd",
+    "candidate_commit": "b1189c5f5e41695c3958bd9ab62558a69c307f86",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_line_deriv",
+    "diff_sha256": "9ad839105589d4cc5c6203b091793fe2d86097fa2678aaeb94c0b20ac1bb66d5",
+    "source_sha256": "363f759309a939524bdb3b49c7666a1b035908addf54e4790a90b4d900ecd94f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_line_deriv",
+      "statement": "∀ (n P : ℕ) (F : Eucl P → ℝ) (Φ : Eucl n → Eucl P) (w : Eucl n), (∃ K : ℝ≥0, ∃ V ∈ 𝓝 (Φ w), LipschitzOnWith K F V) → DifferentiableAt ℝ Φ w → DifferentiableAt ℝ (F ∘ Φ) w → ∀ s : Eucl n, HasDerivAt (fun t : ℝ => F (Φ w + t • fderiv ℝ Φ w s)) (fderiv ℝ (F ∘ Φ) w s) 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
