@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.weighted_tangent_compact-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "depth": 3,
+  "title": "Weighted tangent plane from the tangent plane of a Lusin compact (Simon Ch. 3, Remark 1.8(1))",
+  "statement": "Let n, ℓ ≥ 0, U ⊆ ℝ^{n+ℓ} open, and V = v(M, θ) a rectifiable n-varifold in U (contract structure RectifiableVarifold; M = V.carrier, θ = V.mult, μ_V = V.weight). Let K ⊆ M be compact with θ continuous on K, x ∈ K, and P a linear subspace which is the approximate tangent space of K at x (Simon Ch. 3, Def. 1.4). Assume that for every R > 0, μ_V((M ∖ K) ∩ B_{Rλ}(x))/λⁿ → 0 in [0, ∞] as λ ↓ 0 (closed balls). Then P is the approximate tangent space of M with respect to θ at x (Simon Ch. 3, Def. 1.7; Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P). (Simon Ch. 3, Remark 1.8(1).)",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (K : Set (Amb n ℓ)) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), IsCompact K → K ⊆ V.carrier → x ∈ K → ContinuousOn V.mult K → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => V.weight ((V.carrier \\ K) ∩ closedBall x (R * r)) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0)) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n K x P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P",
+  "lean_name": "aetp_weightedTangent_of_lusin_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-weighted-tan-d61905647d-a1"
+}
