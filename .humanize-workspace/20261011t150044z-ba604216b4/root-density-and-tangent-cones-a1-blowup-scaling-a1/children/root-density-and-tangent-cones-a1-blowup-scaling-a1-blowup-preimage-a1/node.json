@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_preimage-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "depth": 3,
+  "title": "Every current in η(U) is a blow-up of a current in U, preserving integer multiplicity",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, x ∈ ℝ^P, λ > 0 and η = η_{x,λ}. For every S' ∈ 𝒟_n(η(U)) there is S'' ∈ 𝒟_n(U) with η_{x,λ#}S'' = S', and S'' is integer multiplicity whenever S' is.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (S' : GeometricCurrentOn (dilation x lam '' U) n), ∃ S'' : GeometricCurrentOn U n, blowUp S'' x lam hlam.ne' = S' ∧ (IsIntegerMultiplicity S' → IsIntegerMultiplicity S'')",
+  "lean_name": "dtc_blowUp_preimage",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1-a1"
+}
