@@ -1,0 +1,23 @@
+{
+  "node_id": "root.tangent_graph_cover-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/330",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "1356c1e222f802f2186e043480b81ae9de4f14a5",
+  "integrated_commit": "",
+  "proof_base_commit": "c0da5d4e53f1a1e1c8f676ede5196978f7099231",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.tangent_graph_cover-a1.weight_blowup-a1",
+    "root.tangent_graph_cover-a1.plane_ball_measure-a1",
+    "root.tangent_graph_cover-a1.lower_mass_bound-a1",
+    "root.tangent_graph_cover-a1.cone_decay-a1",
+    "root.tangent_graph_cover-a1.dim_zero_countable-a1",
+    "root.tangent_graph_cover-a1.cone_linear_algebra-a1",
+    "root.tangent_graph_cover-a1.cone_graph_cover-a1"
+  ]
+}
