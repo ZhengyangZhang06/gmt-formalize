@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2c084a0dec826ba05c4678b26af582873da895259b09942d0ca886015652bf51",
+  "git_delta": {
+    "base_commit": "5af8d437a3af81d3d9ef9eba4bb8120f277c237c",
+    "candidate_commit": "39932cbf37b84018ac6ee152831751b2354d1c52",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_starProjection_map_orthogonal",
+    "diff_sha256": "3110832a2209c01d6447574824354c26011f6c0fa86df58714cbf1f81123f3f3",
+    "source_sha256": "f1d11405ace47aac2821f2b3a11807822c000d167de40e30573a54a9df21cef1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_starProjection_map_orthogonal",
+      "statement": "∀ (N : ℕ) (g : Rn N →L[ℝ] Rn N), ContinuousLinearMap.adjoint g * g = 1 → ∀ V : Submodule ℝ (Rn N), (V.map (g : Rn N →ₗ[ℝ] Rn N)).starProjection = g * V.starProjection * ContinuousLinearMap.adjoint g ∧ finrank ℝ (V.map (g : Rn N →ₗ[ℝ] Rn N)) = finrank ℝ V",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
