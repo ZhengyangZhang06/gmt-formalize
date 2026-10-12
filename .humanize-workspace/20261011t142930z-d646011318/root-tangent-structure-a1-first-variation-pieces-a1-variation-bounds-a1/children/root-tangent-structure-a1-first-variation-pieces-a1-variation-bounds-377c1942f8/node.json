@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.variation_bounds-a1.slice_fderiv_bounds-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.variation_bounds-a1",
+  "depth": 4,
+  "title": "Uniform bounds for the spatial derivative of a compact variation and for its inverse",
+  "statement": "Let n, ℓ ∈ ℕ, E := Ambient n ℓ = ℝ^{n+ℓ} (EuclideanSpace ℝ (Fin (n+ℓ)), Euclidean norm), φ : ℝ → E → E, ε ∈ ℝ and K ⊆ E, and assume IsCompactVariation φ ε K (Simon Ch. 4, 2.1), i.e. (H1) ε > 0; (H2) K is compact; (H3) (t, y) ↦ φ t y is C^∞ on (−ε, ε) × E; (H4) for every t ∈ (−ε, ε), φ t is bijective and Function.invFun (φ t) is C^∞ on E; (H5) φ 0 y = y for all y; (H6) φ t y = y for all t ∈ (−ε, ε) and y ∉ K. Then for every δ ∈ ℝ with 0 < δ < ε there is B ∈ ℝ such that for every x ∈ E and every t ∈ (−δ, δ): ‖fderiv ℝ (φ t) x‖ ≤ B (operator norm) and ‖v‖ ≤ B · ‖(fderiv ℝ (φ t) x) v‖ for every v ∈ E.",
+  "lean_statement": "∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ∀ δ : ℝ, 0 < δ → δ < ε → ∃ B : ℝ, ∀ x, ∀ t ∈ Ioo (-δ) δ, ‖fderiv ℝ (φ t) x‖ ≤ B ∧ ∀ v, ‖v‖ ≤ B * ‖fderiv ℝ (φ t) x v‖",
+  "lean_name": "ts_fv_cv_slice_fderiv_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-variation-bounds-377c1942f8-a1"
+}

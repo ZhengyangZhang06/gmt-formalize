@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Ambient|structure IsCompactVariation|namespace Submission|^import|^open|^namespace|^end",
+        "theorem ContDiffOn.fderiv_of_isOpen",
+        "theorem ContDiffAt.isSymmSndFDerivAt",
+        "theorem inverse_continuousAt",
+        "instance.*[Mm]ul|theorem.*mul_apply|mul_def|one_def",
+        "ts_fv_cv_(first_order_regularity|slice_fderiv_bounds|slice_fderiv_time_deriv)",
+        "python3 -I /tmp/vb-independent-audit-1617332b/check.py Full.lean",
+        "python3 -I /tmp/vb-independent-audit-1617332b/check.py Instances.lean",
+        "python3 -I /tmp/vb-independent-audit-1617332b/check.py Challenge_ts_fv_cv_first_order_regularity.lean Challenge_ts_fv_cv_slice_fderiv_bounds.lean Challenge_ts_fv_cv_slice_fderiv_time_deriv.lean Challenge_ts_fv_compact_variation_bounds.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-variation-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-variation-bounds-a1/decomposition-v1.json",
+        "/tmp/vb-independent-audit-1617332b/Full.lean",
+        "/tmp/vb-independent-audit-1617332b/Instances.lean"
+      ],
+      "conclusion": "Confirmed the frozen definitions and pinned revisions; relevant compiled-library sources match the snapshot. Independently regenerated and elaborated all three comparator challenge types against a freshly compiled frozen contract, without child implementations. Their statements are exact one-line propositions, with no placeholders, aliases, or implementation dependencies. Recompiled the supplied child proofs and exact parent assembly; all four declarations use only propext, Classical.choice, and Quot.sound. Explicit instance checks confirm endomorphism multiplication is composition and the completeness assumptions needed for inverse continuity hold. No proposed name is reserved in the 116-node DAG, other decompositions, or 386 run refs; all names are bare identifiers. The three independent obligations form an appropriate acyclic split. Taking δ = ε/2 and the maximum of the two bounds establishes precisely the selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "first_order_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all six variation hypotheses and exactly matches the Lean conclusions. The proof derives X from DΦ, establishes C¹ regularity, uses the open complement of K to prove DX = 0, and combines compact derivative bounds with the mean value inequality to obtain Lipschitz slices. Every step is justified independently of the parent and siblings. The NNReal constant and identity-norm inequality also handle empty K and zero-dimensional ambient space."
+    },
+    {
+      "key": "slice_fderiv_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary 0 < δ < ε and a single bound uniform in x, t, and v. Differentiating both inverse identities proves two-sided invertibility in the continuous-linear-endomorphism ring. Continuity of Ring.inverse at units and compactness of [−δ, δ] × K supply the bounds; identity behavior off K extends them globally. The max-adjusted constant handles all edge cases. No joint smoothness of the inverse family or sibling result is assumed."
+    },
+    {
+      "key": "slice_fderiv_time_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including one globally defined Λ' independent of δ. The proof constructs Λ' = DG(t,x)(1,0), transfers the time derivative by local equality, and explicitly computes both mixed derivatives before applying second-derivative symmetry. Continuity yields compact bounds, while joint local constancy of G off K gives Λ' = 0 there. These steps prove the full stated interval and quantifier order without circular reliance or deferred proof construction."
+    }
+  ],
+  "required_changes": []
+}
