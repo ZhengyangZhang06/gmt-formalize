@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d78c374635efaa4522f186ae08a0357535d427f3bee8b195170dbc2065d550d8",
+  "git_delta": {
+    "base_commit": "f23b0f76c478ee3f4d481d539fc32b2e9efac39e",
+    "candidate_commit": "a32584918c1e26cc05f5986b5ab0449c8c072d35",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "tangentialGradient_comp_of_differentiableAt",
+    "diff_sha256": "2a92e769267f9afd8f9dbac32504b9b282a4f70bd154b107d3c6f2198f11a50a",
+    "source_sha256": "9de504c7ba8b931059d3d2a895ef158b6ad4ad1b84e5385d421f9a434c5a291c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangentialGradient_comp_of_differentiableAt",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (ψ : ℝ → ℝ) (x : Ambient n ℓ), DifferentiableAt ℝ h x → DifferentiableAt ℝ ψ (h x) → V.tangentialGradient (fun y ↦ ψ (h y)) x = deriv ψ (h x) • V.tangentialGradient h x",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

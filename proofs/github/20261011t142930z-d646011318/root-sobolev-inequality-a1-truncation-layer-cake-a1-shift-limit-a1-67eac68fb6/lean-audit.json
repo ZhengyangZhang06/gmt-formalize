@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aa385219c7363d13a7ab7b2aa4ba8e65de4c9cceb8d9604dbdc0d463ae075a1d",
+  "git_delta": {
+    "base_commit": "d27ecddcdb83fe19a14e8e88c34e9aaba68a361e",
+    "candidate_commit": "d0b2d310fa9d4d7ba716591692a2a4245dc579e5",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_of_level_integral_bounds",
+    "diff_sha256": "11750dc11a8a1319bf7868f52f177d6ff72c88877b00e1fb2a4530d5aea8cf00",
+    "source_sha256": "58de94301191909c44f19d826f634b09a1cbb35969f8736156ab6bf2615a3033",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_of_level_integral_bounds",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (C J : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 ≤ C → 0 ≤ J → (∀ ε : ℝ, 0 < ε → ε ≤ 1 → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * J) → (∫ x, h x ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (((n : ℝ) - 1) / n) ≤ (n : ℝ) / ((n : ℝ) - 1) * C * J",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

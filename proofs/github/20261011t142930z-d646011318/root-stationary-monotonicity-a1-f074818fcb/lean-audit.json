@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "beab3279ff52dfd7a71f702fb0d383f5becf94d5d4a04457809171725a1cdabd",
+  "git_delta": {
+    "base_commit": "899f9088d26eac51e09655e5950969597d635f80",
+    "candidate_commit": "3a3fd2c8631d79bbcbc865c0981fc60eee3b052a",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "e6bc5510f6eedd38a44ae4b95887c3e20a39a2a187928bb04bbc2219a9ec93ec",
+    "source_sha256": "12ca543356c97968cb9db2c7ccf72d727c42f32b83c20a7a31254858d8358150",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.stationary_monotonicity_density",
+      "statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → StationaryMonotonicity ∧ StationaryDensity",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

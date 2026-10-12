@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1d7df7ad957f4e180999851ba6e15c897fd0649df60232696a13383b7ad31268",
+  "git_delta": {
+    "base_commit": "0da38dc8d60122b1d06aff3448785bb337204c3e",
+    "candidate_commit": "fb66e26ee9d0bfe262b31cd2d08c0c34f07a23ee",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "lower_lipschitz_cover_of_local_bound",
+    "diff_sha256": "b14dcb59507e70b13cf4a4b93ec3f7d90770fe766e71eb650b167576c8a2cfb3",
+    "source_sha256": "9790d2924caa27b76879f0fa1e36c1540de1851d3a0800616a8c0cab1218b5ee",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lower_lipschitz_cover_of_local_bound",
+      "statement": "∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] (f : EuclideanSpace ℝ (Fin n) → F) (R : Set (EuclideanSpace ℝ (Fin n))), Continuous f → MeasurableSet R → (∀ w ∈ R, ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖) → ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)), R ⊆ ⋃ p, T p ∧ ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧ T p ⊆ R ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

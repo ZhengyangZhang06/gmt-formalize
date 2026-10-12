@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "55c88b17cec76d4ea956a6fc6d4370e1ae46bf7ab35538a2a9e772e5ee662b42",
+  "git_delta": {
+    "base_commit": "e61fd53b6aa859072467413fd5487a8368cee397",
+    "candidate_commit": "1b7facd308a9e9a1533316356601541832c95804",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_blowup_cutoff_closedBall_bounds",
+    "diff_sha256": "b3927c9296a051f915c9efc508ba1c781b0a385db37ac9703ec6a1137187932a",
+    "source_sha256": "5a10ff8e4d088aee3d271a9be1edc04ce9c8b5924c49f17c2bf622d23c3cb55a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_blowup_cutoff_closedBall_bounds",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (x : Ambient n ℓ) (f : C_c(Ambient n ℓ, ℝ)) (t : ℝ), IsFiniteMeasureOnCompacts μ → 0 < t → ((∀ y : Ambient n ℓ, f y ≤ 1) → (∀ y : Ambient n ℓ, 1 < ‖y‖ → f y ≤ 0) → ∫ y, f (t⁻¹ • (y - x)) ∂μ ≤ μ.real (closedBall x t)) ∧ ((∀ y : Ambient n ℓ, 0 ≤ f y) → (∀ y : Ambient n ℓ, ‖y‖ ≤ 1 → 1 ≤ f y) → μ.real (closedBall x t) ≤ ∫ y, f (t⁻¹ • (y - x)) ∂μ)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

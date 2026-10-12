@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3f9e8caa614b06bc7203de0b14361418c18786dc98a0de8280813bf89ca6eb0b",
+  "git_delta": {
+    "base_commit": "75d35237fd8648b39782f502bbfd945ecba0bffa",
+    "candidate_commit": "4500abd69bcc731a89d16057341576636d9f5d03",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "classical_tangent_off_plane_mass_decay",
+    "diff_sha256": "afeb4eff6e5a79395594940f1d0a2e467a0f93a6432594a588b34f00f7bb5b85",
+    "source_sha256": "d4d32dd80b7dcf3415a104f62dad9d25fbe80012d5411a0c7a0df251cedbb414",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.classical_tangent_off_plane_mass_decay",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (ε : ℝ), IsFiniteMeasureOnCompacts V.weight → V.IsApproxTangentAt x P → 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * V.weight.real (closedBall x ρ \\ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

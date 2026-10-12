@@ -1,0 +1,28 @@
+{
+  "node_id": "root",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "2156da71dbcdc1db5f91fcb6a3bc0c8aff99897b",
+  "integrated_commit": "2156da71dbcdc1db5f91fcb6a3bc0c8aff99897b",
+  "proof_base_commit": "ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": null,
+  "requires": [
+    "root.lipschitz_pieces-a1",
+    "root.tangent_structure-a1",
+    "root.stationary_iff_variational-a1",
+    "root.radial_first_variation-a1",
+    "root.weighted_monotonicity-a1",
+    "root.stationary_monotonicity-a1",
+    "root.curvature_monotonicity-a1",
+    "root.canonical_representatives-a1",
+    "root.poincare_inequality-a1",
+    "root.sobolev_inequality-a1",
+    "root.support_convex_hull-a1",
+    "root.classical_tangent-a1"
+  ]
+}

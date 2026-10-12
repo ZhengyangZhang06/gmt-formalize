@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ab64c47eb3318d91cacdc63c5d05801283da2f2f881c961dcbe2811e40261879",
+  "git_delta": {
+    "base_commit": "367df48fe3f1c6e9bd8a815a9cd15bd0c93f9745",
+    "candidate_commit": "85545e30f961df6e2c85ae8b75bf3d7febab377c",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "weighted_mono_radial_test_field",
+    "diff_sha256": "bfe8a90a38666842e49cdfab7afc2aa457752bfd7b97caa75feaf00bed0b6ba0",
+    "source_sha256": "f5f2559e00cf25766ba68e5304d1f1ddc67292ded3809d4ae829dfee4b54524d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weighted_mono_radial_test_field",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ) (a b : ℝ), IsOpen U → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → 0 < a → (∀ t, t ≤ a → γ t = γ 0) → (∀ t, b ≤ t → γ t = 0) → tsupport h ∩ closedBall ξ b ⊆ U → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

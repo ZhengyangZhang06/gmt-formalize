@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "24744991f3b3eb302ee5675d793034b6d72253b728d73aa1a3b7d16093ef4fbd",
+  "git_delta": {
+    "base_commit": "d27ecddcdb83fe19a14e8e88c34e9aaba68a361e",
+    "candidate_commit": "e2b6eba4322c3a32eca2de0b5c91f27e7b982b79",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_truncation_superlevel_bound",
+    "diff_sha256": "29011b8066f6fcf3d7c1af32564997d83da8ad10dd7985837359d28ef6ff6df5",
+    "source_sha256": "16ae4f474c0ac915537abb61a9746022e0b4e4ceb131029f9c8b1581c530d353",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_truncation_superlevel_bound",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε t : ℝ), IsFiniteMeasureOnCompacts V.weight → LocallyIntegrableOn H U V.weight → 0 ≤ C → (∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ C * (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ * ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) → ContDiff ℝ 1 h → HasCompactSupport h → tsupport h ⊆ U → (∀ x, 0 ≤ h x) → Integrable (fun x ↦ ‖V.tangentialGradient h x‖) V.weight → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 < ε → (∀ s, ε ≤ s → γ s = 1) → 0 ≤ t → V.weight.real {x | t + ε < h x} ≤ C * (V.weight.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * ‖V.tangentialGradient h x‖ ∂V.weight) + ∫ x in {x | t < h x}, ‖H x‖ ∂V.weight)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

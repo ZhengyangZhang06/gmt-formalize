@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "91da32d215252089bcbfb46b0b09a6718cc6d90c566e45e8388b67b06c52e712",
+  "git_delta": {
+    "base_commit": "dc7bd0cac08457574771b1372d7758052d615565",
+    "candidate_commit": "69dc8db2fa20b36a733b296427249f750d84327c",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "compactVariation_velocity_isTestField",
+    "diff_sha256": "e99140804af58f1efc6c3e4214c1eea72d58fc9dffe189b5213b9b285119f67f",
+    "source_sha256": "8a69beb5605c142606dc9c3e667f1a6c10762e8b975f83fdeda9f9a93b1d9651",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.compactVariation_velocity_isTestField",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → K ⊆ U → IsTestField U (fun y ↦ deriv (fun t ↦ φ t y) 0)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

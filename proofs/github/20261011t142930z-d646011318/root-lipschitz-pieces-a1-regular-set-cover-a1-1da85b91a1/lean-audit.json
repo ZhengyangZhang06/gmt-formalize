@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7917479b13e1b4efe02f7c7fcaed102b1a834a1e284aa296b3b55511fabcd772",
+  "git_delta": {
+    "base_commit": "b56bcb428384d10fd4c8c0c2ca300ec35f7ee5c4",
+    "candidate_commit": "17dc1f680367500238f32c1f7a3e677ba21ee850",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "f0d6a99daac20bfbe25b40005e243ad732021d793ebcc398f996e0509e40fe5a",
+    "source_sha256": "198422986e1649aa7a52ade4feaca3de257fe7540c9087776b822fcf2d36a19b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regular_set_lower_lipschitz_cover",
+      "statement": "∀ (n ℓ : ℕ) (f : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), Continuous f → ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)), {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)} ⊆ ⋃ p, T p ∧ ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧ (∀ w ∈ T p, DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

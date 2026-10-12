@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2ea1dd2382b979c4b157d12ad50a7adee4076e97d4d721a83bb828615979f726",
+  "git_delta": {
+    "base_commit": "6f0d0acae9400e357e44ae527ceb4a88417a3fab",
+    "candidate_commit": "df237e6a01f8b1efbfb7f905ed7076206289ef69",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_cv_first_order_regularity",
+    "diff_sha256": "59f441b7fc1c042f309904f8fba3fe13acae4cfe84b07bbd5edc115a7cf3d924",
+    "source_sha256": "6cc1c701f0366faa6e07373f593a412d13f26d089800461060b3f51f83df1dc6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_cv_first_order_regularity",
+      "statement": "∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) ∧ (∀ y ∉ K, fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) y = 0) ∧ (∀ t ∈ Ioo (-ε) ε, (∃ L : NNReal, LipschitzWith L (φ t)) ∧ ContDiff ℝ 1 (φ t))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

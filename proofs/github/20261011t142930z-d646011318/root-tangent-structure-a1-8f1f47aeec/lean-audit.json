@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ed16e238023a11dd25468a887ca245c04ee8732de951acbe23228e79990d6bb7",
+  "git_delta": {
+    "base_commit": "c20d20b87abe934c1e5fe48308a3338389ca61e6",
+    "candidate_commit": "6daa9232afecca69b52d266d144db3e86be50878",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "dbdf71be871f69df0bd0baf99be0c0a8483610f9dd6287582fd52451579c83e7",
+    "source_sha256": "1629d315a7486df38a23d66a6ca4298324893b5c59b4e19fded394d1f23be618",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangent_structure_first_variation",
+      "statement": "ApproxTangentAE ∧ (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) ∧ FirstVariationFormula",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

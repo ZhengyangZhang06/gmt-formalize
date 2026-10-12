@@ -1,0 +1,202 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.poincare_inequality-a1`
+- Child DAG node: `root.poincare_inequality-a1.kernel_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 2, 'Kernel bound (4.10(2) for full balls, via 4.11)', stated for an abstract measure with the growth hypothesis (in the parent: K = 2Γ, giving 2nΓs). Only the full-ball case is used; the annular version printed in 4.10(2) is not needed.
+
+Fix 0 < s ≤ ρ.
+
+1. Case K < 0. Then K sⁿ < 0, so μ(B_s(y)) ≤ ENNReal.ofReal(K sⁿ) = 0; thus μ restricted to B_s(y) is the zero measure and the left side is 0 ≤ ENNReal.ofReal(nKs). From now on K ≥ 0.
+
+2. Case n = 1. The exponent is 1 − 1 = 0 and ‖x − y‖⁰ = 1 for every x (including x = y), so the integrand is 1 and the left side is μ(B_s(y)) ≤ ENNReal.ofReal(K s¹) = ENNReal.ofReal(1·K·s).
+
+3. Case n ≥ 2. Put z := 1 − n < 0 and F(x) := ‖x − y‖^z ≥ 0; F is Borel measurable. By the layer-cake formula (Cavalieri's principle) for the measure μ⌞B_s(y),
+∫_{B_s(y)} ofReal(F) dμ = ∫_{(0,∞)} μ(B_s(y) ∩ {F > t}) dt.
+
+4. Put T := s^z > 0. For every t, μ(B_s(y) ∩ {F > t}) ≤ μ(B_s(y)) ≤ ofReal(K sⁿ).
+
+5. Let t > T. If F(x) > t then x ≠ y, because F(y) = 0^z = 0 < t; so d := ‖x − y‖ > 0 and t < d^z. Since z < 0, u ↦ u^{1/z} is strictly decreasing on (0, ∞) and (d^z)^{1/z} = d, hence d < t^{1/z}, i.e. x ∈ B_{t^{1/z}}(y). Likewise t > T = s^z gives t^{1/z} < s ≤ ρ, and t^{1/z} > 0. By the growth hypothesis at radius t^{1/z},
+μ(B_s(y) ∩ {F > t}) ≤ μ(B_{t^{1/z}}(y)) ≤ ofReal(K (t^{1/z})ⁿ) = ofReal(K t^{n/z}).
+
+6. Split (0, ∞) = (0, T] ∪ (T, ∞). By step 4 the integral over (0, T] is at most ofReal(K sⁿ)·T = ofReal(K sⁿ s^{1−n}) = ofReal(K s).
+
+7. The exponent satisfies n/z + 1 = (n + z)/z = 1/z < 0, so n/z < −1 and t ↦ t^{n/z} is integrable on (T, ∞) with ∫_T^∞ t^{n/z} dt = −T^{n/z+1}/(n/z + 1) = −z T^{1/z} = −z s = (n − 1) s, using T^{1/z} = (s^z)^{1/z} = s. By step 5 and K ≥ 0, the integral over (T, ∞) is at most ∫_{(T,∞)} ofReal(K t^{n/z}) dt = ofReal(K ∫_T^∞ t^{n/z} dt) = ofReal(K (n − 1) s).
+
+8. Adding steps 6 and 7: ∫_{B_s(y)} ofReal(‖x − y‖^{1−n}) dμ ≤ ofReal(Ks) + ofReal(K(n − 1)s) = ofReal(nKs), since both arguments are nonnegative. ∎
+
+Formalization notes (Mathlib/Lean names used in a machine-checked transcription of the numbered argument): lintegral_eq_lintegral_meas_lt, Measure.restrict_eq_zero, Real.rpow_inv_lt_iff_of_neg, Real.lt_rpow_inv_iff_of_neg, Real.zero_rpow, Ioc_union_Ioi_eq_Ioi, lintegral_union, setLIntegral_const, Real.volume_Ioc, integrableOn_Ioi_rpow_of_lt, integral_Ioi_rpow_of_lt, Real.rpow_rpow_inv, ofReal_integral_eq_lintegral_ofReal.
+
+Appendix (machine-checked reference transcription; the numbered argument above is the proof). The following tactic block is the proof (the text after `:= by`) of the declaration `theorem closedBall_rpow_kernel_lintegral_le_of_growth` with exactly the frozen lean_statement above as its type, inside `namespace Submission` (scope `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal ContDiff CompactlySupported`, `namespace GMT.Ch04`, `noncomputable section`, `open RectifiableVarifold`, after `import GMT.Ch04.Submission`), compiles with Lean v4.35.0-rc3 / Mathlib 25730c7c and depends only on propext, Classical.choice and Quot.sound. Extra imports: `Mathlib.MeasureTheory.Integral.Layercake`, `Mathlib.Analysis.SpecialFunctions.ImproperIntegrals`.
+```lean
+  intro X _ _ _ μ n y ρ K hn hgrowth s hs hsρ
+  rcases lt_or_ge K 0 with hK | hK
+  · have h0 : μ (closedBall y s) = 0 := by
+      have := hgrowth s hs hsρ
+      rw [ENNReal.ofReal_of_nonpos (mul_nonpos_of_nonpos_of_nonneg hK.le (pow_pos hs n).le)] at this
+      exact le_antisymm this bot_le
+    rw [Measure.restrict_eq_zero.2 h0, lintegral_zero_measure]
+    exact bot_le
+  rcases Nat.lt_or_ge n 2 with hn2 | hn2
+  · have hn1 : n = 1 := by omega
+    subst hn1
+    simp only [Nat.cast_one, sub_self, Real.rpow_zero, ENNReal.ofReal_one, lintegral_const,
+      Measure.restrict_apply MeasurableSet.univ, univ_inter, one_mul]
+    simpa using hgrowth s hs hsρ
+  set z : ℝ := 1 - (n : ℝ) with hz
+  have hn2' : (2 : ℝ) ≤ n := by exact_mod_cast hn2
+  have hz0 : z < 0 := by linarith
+  set F : X → ℝ := fun x => ‖x - y‖ ^ z with hF
+  have hFmeas : Measurable F := (measurable_id.sub_const y).norm.pow_const z
+  have hF0 : ∀ x, 0 ≤ F x := fun x => Real.rpow_nonneg (norm_nonneg _) _
+  have hLC := lintegral_eq_lintegral_meas_lt (μ.restrict (closedBall y s))
+    (Eventually.of_forall hF0) hFmeas.aemeasurable
+  rw [hLC]
+  set T : ℝ := s ^ z with hT
+  have hTpos : 0 < T := Real.rpow_pos_of_pos hs z
+  have hlev1 : ∀ t : ℝ, (μ.restrict (closedBall y s)) {x | t < F x} ≤ ENNReal.ofReal (K * s ^ n) := by
+    intro t
+    calc (μ.restrict (closedBall y s)) {x | t < F x} ≤ (μ.restrict (closedBall y s)) univ :=
+          measure_mono (subset_univ _)
+      _ = μ (closedBall y s) := by rw [Measure.restrict_apply_univ]
+      _ ≤ _ := hgrowth s hs hsρ
+  have hlev2 : ∀ t : ℝ, T < t →
+      (μ.restrict (closedBall y s)) {x | t < F x} ≤ ENNReal.ofReal (K * t ^ ((n : ℝ) / z)) := by
+    intro t ht
+    have htpos : 0 < t := hTpos.trans ht
+    have hr : t ^ z⁻¹ < s := (Real.rpow_inv_lt_iff_of_neg htpos hs hz0).2 ht
+    have hrpos : 0 < t ^ z⁻¹ := Real.rpow_pos_of_pos htpos _
+    have hpow : (t ^ z⁻¹) ^ n = t ^ ((n : ℝ) / z) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul htpos.le, inv_mul_eq_div]
+    calc (μ.restrict (closedBall y s)) {x | t < F x} ≤ μ {x | t < F x} := Measure.restrict_le_self _
+      _ ≤ μ (closedBall y (t ^ z⁻¹)) := by
+          apply measure_mono
+          intro x hx
+          simp only [Set.mem_ofPred_eq, hF] at hx
+          rw [mem_closedBall, dist_eq_norm]
+          by_cases hxy : ‖x - y‖ = 0
+          · rw [hxy, Real.zero_rpow hz0.ne] at hx; linarith
+          · have hpos : 0 < ‖x - y‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hxy)
+            exact ((Real.lt_rpow_inv_iff_of_neg hpos htpos hz0).2 hx).le
+      _ ≤ ENNReal.ofReal (K * (t ^ z⁻¹) ^ n) := hgrowth _ hrpos (hr.le.trans hsρ)
+      _ = ENNReal.ofReal (K * t ^ ((n : ℝ) / z)) := by rw [hpow]
+  have hsplit : Ioi (0 : ℝ) = Ioc 0 T ∪ Ioi T := (Ioc_union_Ioi_eq_Ioi hTpos.le).symm
+  rw [hsplit, lintegral_union measurableSet_Ioi (Ioc_disjoint_Ioi le_rfl)]
+  have hI1 : ∫⁻ t in Ioc 0 T, (μ.restrict (closedBall y s)) {x | t < F x} ≤ ENNReal.ofReal (K * s) := by
+    calc ∫⁻ t in Ioc 0 T, (μ.restrict (closedBall y s)) {x | t < F x}
+        ≤ ∫⁻ t in Ioc 0 T, ENNReal.ofReal (K * s ^ n) := setLIntegral_mono' measurableSet_Ioc fun t _ => hlev1 t
+      _ = ENNReal.ofReal (K * s ^ n) * ENNReal.ofReal T := by
+          rw [setLIntegral_const, Real.volume_Ioc, sub_zero]
+      _ = ENNReal.ofReal (K * s) := by
+          rw [← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          rw [hT, hz, mul_assoc, ← Real.rpow_natCast, ← Real.rpow_add hs]
+          norm_num
+  have hexp : (n : ℝ) / z < -1 := by
+    have h1 : (n : ℝ) / z + 1 = z⁻¹ := by
+      have hzne : (1 : ℝ) - n ≠ 0 := by linarith
+      rw [hz]; field_simp; ring
+    have h2 : z⁻¹ < 0 := inv_lt_zero.2 hz0
+    linarith
+  have hI2 : ∫⁻ t in Ioi T, (μ.restrict (closedBall y s)) {x | t < F x} ≤
+      ENNReal.ofReal (K * ((n : ℝ) - 1) * s) := by
+    calc ∫⁻ t in Ioi T, (μ.restrict (closedBall y s)) {x | t < F x}
+        ≤ ∫⁻ t in Ioi T, ENNReal.ofReal (K * t ^ ((n : ℝ) / z)) :=
+          setLIntegral_mono' measurableSet_Ioi fun t ht => hlev2 t ht
+      _ = ENNReal.ofReal (∫ t in Ioi T, K * t ^ ((n : ℝ) / z)) := by
+          rw [ofReal_integral_eq_lintegral_ofReal]
+          · exact (integrableOn_Ioi_rpow_of_lt hexp hTpos).const_mul K
+          · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+            exact mul_nonneg hK (Real.rpow_nonneg (hTpos.trans ht).le _)
+      _ = ENNReal.ofReal (K * ((n : ℝ) - 1) * s) := by
+          congr 1
+          rw [integral_const_mul, integral_Ioi_rpow_of_lt hexp hTpos]
+          have h1 : (n : ℝ) / z + 1 = z⁻¹ := by
+            have hzne : (1 : ℝ) - n ≠ 0 := by linarith
+            rw [hz]; field_simp; ring
+          rw [h1, hT, Real.rpow_rpow_inv hs.le hz0.ne]
+          rw [hz]
+          field_simp
+          ring
+  calc _ ≤ ENNReal.ofReal (K * s) + ENNReal.ofReal (K * ((n : ℝ) - 1) * s) := add_le_add hI1 hI2
+    _ = ENNReal.ofReal (n * K * s) := by
+        rw [← ENNReal.ofReal_add (by positivity) (by
+          have : (0 : ℝ) ≤ (n : ℝ) - 1 := by linarith
+          positivity)]
+        congr 1
+        ring
+```
+
+## Key steps
+
+1. K < 0 forces μ(B_s(y)) = 0; n = 1 is the growth hypothesis itself
+2. n ≥ 2: layer cake ∫_{B_s}F dμ = ∫_0^∞ μ(B_s ∩ {F > t}) dt with F = ‖x−y‖^{1−n}
+3. levels t ≤ s^{1−n}: bound by μ(B_s) ≤ K sⁿ, contributing Ks
+4. levels t > s^{1−n}: {F > t} ⊆ B_{t^{1/(1−n)}}(y) with radius < s, measure ≤ K t^{n/(1−n)}
+5. ∫_{s^{1−n}}^∞ t^{n/(1−n)} dt = (n−1)s, total nKs
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `python3: read lean_name/lean_statement of every node in <run>/dag.json and every */decomposition*.json (uncle frozen types; name-collision check)`
+- `rg -n 'theorem|lemma' <snapshot>/mathlib/Mathlib/Analysis/ODE/Gronwall.lean; grep -ril gronwall <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem lintegral_eq_lintegral_meas_lt|theorem lintegral_comp_eq_lintegral_meas_lt_mul|theorem lintegral_lintegral_swap|theorem lintegral_prod_swap' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem measurable_fderiv |theorem measurable_deriv |theorem measurableSet_of_differentiableAt ' <snapshot>/mathlib/Mathlib`
+- `rg -n '^theorem|^lemma' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean; rg -n 'gradient_fun_const|gradient_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean`
+- `rg -n 'Integrable.bdd_mul|support_mem_ae|norm_starProjection_apply_le|aestronglyMeasurable_comp₂|apply_continuousLinearMap|Monotone.deriv_nonneg|integral_comp_sub_left|integral_deriv_eq_sub|integral_Ioi_rpow_of_lt|integrableOn_Ioi_rpow_of_lt|rpow_inv_lt_iff_of_neg|lt_rpow_inv_iff_of_neg|continuousOn_primitive_interval_left|integral_hasDerivAt_left|monotoneOn_of_deriv_nonneg|aemeasurable_restrict_of_monotoneOn|integrableOn_of_bounded|setIntegral_mono_set|AEMeasurable.comp_snd' <snapshot>/mathlib/Mathlib`
+- `grep -rniE 'gronwall|layercake|poincare|monotonicity' lake-packages-25730c7c/simongmt/Poincare; grep -n '^theorem' simongmt/Poincare/SimonGMT/Chapter04/{Poincare,PoincareKernel,PoincareTruncation,LayerCake}.lean`
+- `python3: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch04.main_theorem') and lean_contract.validate_lean_statement on all child statements`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-poincare-split/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=...:/tmp/ch04-poincare-split/olean lean /tmp/ch04-poincare-split/src/ChildTypes.lean`
+- `lean /tmp/ch04-poincare-split/asm/A7.lean (parent assembly from sorried children and byte-identical uncle stubs)`
+- `lean /tmp/ch04-poincare-split/kids/K1..K7.lean and /tmp/ch04-poincare-split/full/Full.lean with #print axioms`
+- `HUMANIZE_RUN_DIR=/tmp/ch04-poincare-split/fakerun python3 verifier/gmt-compare.py --lean-target GMT/Ch04/Submission.lean --verifier-dir verifier --packages lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef --dry-run root.poincare_inequality-a1.tangentialGradient_comp_of_differentiableAt-a1`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-poincare-inequality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/ODE/Gronwall.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/ODE/DiscreteGronwall.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/PoincareKernel.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/PoincareTruncation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LayerCake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ch04-poincare-split/src/ChildTypes.lean`
+- `/tmp/ch04-poincare-split/asm/A7.lean`
+- `/tmp/ch04-poincare-split/full/Full.lean`
+
+The snapshot contract (sha256 6e58e5dd…0f4770b) is byte-identical to the workspace Contract.lean and Submission.lean. The Mathlib (25730c7c) and SimonGMT (2b366308) revisions match the project manifest. The pinned Mathlib has no integral-form Gronwall inequality (only Analysis/ODE/Gronwall.lean, which is differential, and DiscreteGronwall.lean), so integral_gronwall is a genuine new obligation. Mathlib supplies the other ingredients: the layer-cake formula (lintegral_eq_lintegral_meas_lt), Tonelli (lintegral_lintegral_swap), measurable_fderiv for arbitrary functions, Real.smoothTransition, improper rpow integrals (integral_Ioi_rpow_of_lt) and FTC/monotonicity lemmas. SimonGMT has an earlier Poincaré development (Chapter04/Poincare.lean, PoincareKernel.lean, PoincareTruncation.lean), but it is stated for the strengthened Chapter04.RectifiableVarifold, which the Ch04 README says needs a transport construction, so it is not reused. Its generic kernel and truncation lemmas have different hypotheses, and the children were proved without them. All seven child types elaborate in the exact comparator scope and pass the comparator's statement validator, and a comparator dry run generates the expected challenge and solution modules. All children have machine-checked Lean proofs using only propext, Classical.choice and Quot.sound. The selected frozen type compiles from the seven children plus the byte-identical uncle types, with no other sorry.

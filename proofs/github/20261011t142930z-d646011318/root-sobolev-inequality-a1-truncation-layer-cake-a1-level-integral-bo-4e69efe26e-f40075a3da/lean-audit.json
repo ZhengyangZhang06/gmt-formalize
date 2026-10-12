@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c3a306b80a251e6518d9100d81299948ed5805eb498d71a4c13f7c77d1c05759",
+  "git_delta": {
+    "base_commit": "7c88ffe2f0baa760da66cbc8ac319652a7bfe021",
+    "candidate_commit": "c68410bdab13171af4402007f331fe4caadd1b0b",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_level_layer_cake",
+    "diff_sha256": "951ecc93b1f57fbcb5ab9758531f21d0d5d0034a794493d090a6f5030fc61190",
+    "source_sha256": "7921b057a196d9037ddcf056e0ffac3a6450e4d547348f4e28c08f34ef6e0b7c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_level_layer_cake",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x}) = ENNReal.ofReal (((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

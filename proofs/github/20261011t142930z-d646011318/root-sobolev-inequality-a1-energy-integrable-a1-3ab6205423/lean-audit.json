@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3be2c64827cc33026c4ff1a5802724d056a1fd7b3d9e08c82f4f4f8ca01cf6e8",
+  "git_delta": {
+    "base_commit": "712e6024112f83501b8b23201a2edba7d4d4fa42",
+    "candidate_commit": "4a329e22e4595dbb2de605e821f225d528f4f121",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_energy_integrable",
+    "diff_sha256": "7e64d79f1c4b73efecf3ff4c20631158a8440fb70fa221b832a1e94f03f97c1b",
+    "source_sha256": "1f5c31194e33b77c8941323911ec7538622cd191d9128ef93dd56c2996a48db6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_energy_integrable",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (g : Ambient n ℓ → ℝ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → LocallyIntegrableOn H U V.weight → ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → ContDiff ℝ 1 g ∧ (∀ x, x ∉ tsupport g → V.tangentialGradient g x = 0) ∧ Integrable (fun x ↦ ‖V.tangentialGradient g x‖) V.weight ∧ Integrable (fun x ↦ g x * ‖H x‖) V.weight",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

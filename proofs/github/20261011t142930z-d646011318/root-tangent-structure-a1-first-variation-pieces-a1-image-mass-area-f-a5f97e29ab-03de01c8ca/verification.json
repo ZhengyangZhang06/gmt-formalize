@@ -1,0 +1,15 @@
+{
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1.image_lintegral_gluing-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1225",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1447",
+  "candidate_commit": "faab72573cf7c2f6cc96292c9cb1ffd08cf1bd02",
+  "integrated_commit": "",
+  "proof_base_commit": "c73fba00e392d39c54fadae3b48c1f67ffaa3e38",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1",
+  "requires": []
+}

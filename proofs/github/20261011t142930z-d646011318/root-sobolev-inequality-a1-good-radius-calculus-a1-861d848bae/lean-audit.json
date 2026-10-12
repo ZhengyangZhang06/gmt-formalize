@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6156e06493fc074a87c8a6a3b664a219fa1230e7a11471e8c2f66b59c8cfe986",
+  "git_delta": {
+    "base_commit": "712e6024112f83501b8b23201a2edba7d4d4fa42",
+    "candidate_commit": "46ec93a9641fb63eb8912cb7f949a8702fa209e5",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_good_radius_calculus",
+    "diff_sha256": "3b40bf012320773c2e2f669f1e6a5bc2dd261f390080659207aaa2626e90ca3a",
+    "source_sha256": "ae7a35e4849ca1f0489463ce8fdd058ad4e986d15d988d09ef85de14dca07d49",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_good_radius_calculus",
+      "statement": "∀ (n : ℕ) (f k : ℝ → ℝ) (F : ℝ), 2 ≤ n → MonotoneOn f (Ioi 0) → MonotoneOn k (Ioi 0) → (∀ τ : ℝ, 0 < τ → 0 ≤ f τ ∧ f τ ≤ F) → (∀ τ : ℝ, 0 < τ → 0 ≤ k τ) → (∀ s r : ℝ, 0 < s → s ≤ r → f s / s ^ n ≤ f r / r ^ n + ∫ τ in Ioc s r, k τ / τ ^ n) → (∀ η : ℝ, η < 1 → ∃ᶠ s in 𝓝[>] (0 : ℝ), η < f s / s ^ n) → 0 < F ∧ ∃ r : ℝ, 0 < r ∧ r < 2 * F ^ (n : ℝ)⁻¹ ∧ f (5 * r) ≤ 5 ^ n * F ^ (n : ℝ)⁻¹ * k r",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

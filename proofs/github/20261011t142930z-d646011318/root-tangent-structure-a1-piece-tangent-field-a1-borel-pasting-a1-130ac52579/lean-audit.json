@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "678b5d40bc094a3fb7d247f5a039eaf1ac1d1264161d19730e2b7d8f7ac88b7e",
+  "git_delta": {
+    "base_commit": "bc36366ba824bd71ed97dbade16d53539bc96303",
+    "candidate_commit": "51bcbf25c6c34ab074bd724b1dbd8ee3383dae79",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_stronglyMeasurable_paste_continuousOn",
+    "diff_sha256": "eb95dac346b94fd363b933f97fd529cd4624fc6be3e7d7c2be137e767fe05586",
+    "source_sha256": "d773cbaaab7360738d3fe164a3494775d42456c94f4342ff33c52a04cdf416af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_stronglyMeasurable_paste_continuousOn",
+      "statement": "∀ (n ℓ : ℕ) (N : ℕ → Set (Ambient n ℓ)) (G : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ)), (∀ i, MeasurableSet (N i)) → (∀ i, ContinuousOn (G i) (N i)) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ y ∈ N i, (∀ j < i, y ∉ N j) → g y = G i y",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

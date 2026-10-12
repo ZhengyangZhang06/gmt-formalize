@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "91a5d70077828b7bb20814f1507a90c9fd64a9250eea60e452664b3fdf6309d9",
+  "git_delta": {
+    "base_commit": "6f0d0acae9400e357e44ae527ceb4a88417a3fab",
+    "candidate_commit": "4b6f9c5dd57191dd0deae2a14eb25882d8657ad4",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_cv_slice_fderiv_time_deriv",
+    "diff_sha256": "70b6c152fff85c3eef76df3fdcaa8375f5d2becf52a254bbb91c4ef2e952e470",
+    "source_sha256": "bbccfbcbe50ac92bb12de468638713707db3874cbedb32735189b8922ab192e0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_cv_slice_fderiv_time_deriv",
+      "statement": "∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ∃ Λ' : ℝ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), (∀ x, Λ' 0 x = fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) x ∧ ∀ t ∈ Ioo (-ε) ε, HasDerivAt (fun s ↦ fderiv ℝ (φ s) x) (Λ' t x) t) ∧ ∀ δ : ℝ, 0 < δ → δ < ε → ∃ B : ℝ, ∀ x, ∀ t ∈ Ioo (-δ) δ, ‖Λ' t x‖ ≤ B",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

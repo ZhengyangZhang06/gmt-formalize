@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c64c18b77d2ef40276d4b2a4843a2d1581ddd2437238575c766052cd60940b1e",
+  "git_delta": {
+    "base_commit": "fa9380011d5f03d1adddb236261084db2177da4a",
+    "candidate_commit": "d66bb55f013068565f4b69ab5adedaf595aa1d72",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "8e64c2b8b247bf3d08da2fd7883e66c1e7489b81b836319ccc697d75608ee046",
+    "source_sha256": "b69fc1f2f0b3f7a9df82211579b40fa9e36237bb0d96fa7d3e729e4dea97a1f7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.canonical_representatives",
+      "statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → CanonicalRepresentative ∧ LpSupportRepresentation",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

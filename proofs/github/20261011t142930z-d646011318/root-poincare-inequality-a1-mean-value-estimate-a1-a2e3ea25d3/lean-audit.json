@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "72be4998804f9cace996b8b21c579cd112a2da3a4c9222df0f112ef45917cf74",
+  "git_delta": {
+    "base_commit": "b45a1f17e8393d31cc4b755adb3cc40fb1d38e8e",
+    "candidate_commit": "4a1b1ba60be4c28533f58254645867f4cc6aaebf",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "density_point_mean_value_estimate",
+    "diff_sha256": "d6406ffb0925788eaedb8bc40406f1f011f9c786ec2f81deb28a4b2944d458f9",
+    "source_sha256": "7373bcacf1b3e1cb637a1eb598dd3eb1796eace50a232cdec4fd41473dc38edc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.density_point_mean_value_estimate",
+      "statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (Λ : ℝ) (g : Ambient n ℓ → ℝ) (ζ : Ambient n ℓ) (r θ₀ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → 0 ≤ Λ → (∀ᵐ x ∂V.weight, x ∈ U → ‖H x‖ ≤ Λ) → ContDiffOn ℝ 1 g U → (∀ x ∈ U, 0 ≤ g x) → 0 < r → closedBall ζ r ⊆ U → V.HasDensityAt ζ θ₀ → 1 ≤ θ₀ → IntegrableOn (fun x ↦ ‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ))) (closedBall ζ r) V.weight → omega n * g ζ ≤ Real.exp (Λ * r) * ((∫ x in closedBall ζ r, g x ∂V.weight) / r ^ n + (n : ℝ)⁻¹ * ∫ x in closedBall ζ r, ‖V.tangentialGradient g x‖ * ‖x - ζ‖ ^ (1 - (n : ℝ)) ∂V.weight)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

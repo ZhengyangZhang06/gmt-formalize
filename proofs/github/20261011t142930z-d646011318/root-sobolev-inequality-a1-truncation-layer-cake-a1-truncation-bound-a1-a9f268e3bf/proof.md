@@ -1,0 +1,137 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.sobolev_inequality-a1.truncation_layer_cake-a1`
+- Child DAG node: `root.sobolev_inequality-a1.truncation_layer_cake-a1.truncation_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. E = Ambient n ℓ = ℝ^{n+ℓ} with its Borel σ-algebra; μ = μ_V = V.weight; for a set A of finite measure, μ(A) is the real number μ.real A. All integrals ∫ are Bochner integrals (value 0 for non-integrable integrands), so integrability is checked wherever integrals are compared or split. p_x = (V.tangentSpace x).starProjection is the orthogonal projection onto T_xV, a continuous ℝ-linear map; ∇f(x) = gradient f x = (toDual ℝ E)⁻¹(Df(x)) is the Riesz representative of the Fréchet derivative; ∇^M f(x) = V.tangentialGradient f x = p_x(∇f(x)); γ' = deriv γ; e := (n : ℝ)⁻¹ ≥ 0 (e = 0 when n = 0, since 0⁻¹ = 0). Source: steps 1–4 of the parent proof (the truncation step at the end of the proof of Simon 5.7), with the particular cut-off ψ replaced by an arbitrary γ having the listed properties. Notation: K₀ := tsupport h, M_s := {x : h(x) > s} for s ∈ ℝ, g(x) := γ(h(x) − t), P := ∫ γ'(h − t)|∇^M h| dμ, R := ∫_{M_t} |H| dμ, I := ∫ (|∇^M g| + g|H|) dμ.
+
+1. (γ.) γ is C¹, so γ' is continuous. γ is nondecreasing, so γ'(s) ≥ 0 for every s (Mathlib Monotone.deriv_nonneg).
+2. (Sets of finite measure.) K₀ is compact because h has compact support, so μ(K₀) < ∞ (μ is finite on compacts). h is C¹, hence continuous, so every M_s is open, hence Borel. If s ≥ 0 and x ∈ M_s, then h(x) > s ≥ 0, so h(x) ≠ 0 and x ∈ support h ⊆ K₀. Thus M_s ⊆ K₀ and μ(M_s) ≤ μ(K₀) < ∞ for s ≥ 0; in particular M_t and M_{t+ε} have finite measure.
+3. (Admissibility of g.) g = γ ∘ (h − t) is C¹ on E as a composition of C¹ maps, hence C¹ on U. g ≥ 0 because γ ≥ 0. If g(x) ≠ 0 then h(x) − t > 0 (otherwise h(x) − t ≤ 0 and γ(h(x) − t) = 0), so h(x) > t ≥ 0 and x ∈ support h. Hence support g ⊆ support h ⊆ K₀; as K₀ is closed, tsupport g ⊆ K₀. So g has compact support and tsupport g ⊆ K₀ ⊆ U, and the hypothesis applies to g:
+ (A1) ∫_{{g ≥ 1}} g dμ ≤ C (∫ g dμ)^e · I.
+ Moreover g is continuous with compact support, hence μ-integrable.
+4. (Pointwise relations.) (i) 0 ≤ g ≤ 1_{M_t}: for x ∈ M_t, g(x) ≤ 1; for x ∉ M_t, h(x) − t ≤ 0, so g(x) = 0. (ii) g = 1 on M_{t+ε}: there h(x) − t > ε, so γ(h(x) − t) = 1; hence M_{t+ε} ⊆ {g ≥ 1}. (iii) Chain rule: h is differentiable at x and γ is differentiable at h(x) − t, so Dg(x) = γ'(h(x) − t)·Dh(x). The Riesz map (toDual ℝ E)⁻¹ is ℝ-linear, so ∇g(x) = γ'(h(x) − t)∇h(x). The projection p_x is linear, so ∇^M g(x) = γ'(h(x) − t)∇^M h(x). Taking norms and using γ' ≥ 0 gives |∇^M g(x)| = γ'(h(x) − t)|∇^M h(x)| for every x ∈ E.
+5. (Integrable majorant.) h is continuous with compact support, so 0 ≤ h ≤ m for some m ≥ 0. For every x, h(x) − t lies in the compact interval [−t, m − t], where the continuous γ' is bounded by some L. So x ↦ γ'(h(x) − t) is continuous with 0 ≤ γ'(h(x) − t) ≤ L. Since |∇^M h| is μ-integrable, so is γ'(h − t)|∇^M h| (a bounded continuous factor times an integrable function), and P ≥ 0. H is locally μ-integrable on U and K₀ ⊆ U is compact, so H is μ-integrable on K₀ (Mathlib LocallyIntegrableOn.integrableOn_compact_subset). Hence |H| is μ-integrable on the measurable set M_t ⊆ K₀, so 1_{M_t}|H| is μ-integrable with ∫ 1_{M_t}|H| dμ = R ≥ 0. Therefore F := γ'(h − t)|∇^M h| + 1_{M_t}|H| is μ-integrable and ∫ F dμ = P + R.
+6. (Left side.) g ≥ 0 is integrable on {g ≥ 1} and M_{t+ε} ⊆ {g ≥ 1}. The set integral of a nonnegative function is monotone in the set, so by 4(ii), and because M_{t+ε} is measurable with finite measure,
+ ∫_{{g ≥ 1}} g dμ ≥ ∫_{M_{t+ε}} g dμ = ∫_{M_{t+ε}} 1 dμ = μ(M_{t+ε}).
+7. (Mass factor.) By 4(i) and the integrability of g and of 1_{M_t}, 0 ≤ ∫ g dμ ≤ ∫ 1_{M_t} dμ = μ(M_t). Since e ≥ 0, y ↦ y^e is nondecreasing on [0, ∞), so 0 ≤ (∫ g dμ)^e ≤ μ(M_t)^e.
+8. (Energy factor.) By 4(i) and 4(iii), 0 ≤ |∇^M g| + g|H| ≤ γ'(h − t)|∇^M h| + 1_{M_t}|H| = F pointwise. F is integrable (step 5), and the integral is monotone when the smaller function is nonnegative and the larger is integrable. This needs no separate proof that |∇^M g| + g|H| is integrable (Mathlib integral_mono_of_nonneg), and gives 0 ≤ I ≤ ∫ F dμ = P + R.
+9. (Conclusion.) Combine step 6, (A1), steps 7–8, C ≥ 0, (∫ g dμ)^e ≥ 0, I ≥ 0 and μ(M_t)^e ≥ 0:
+ μ(M_{t+ε}) ≤ ∫_{{g ≥ 1}} g dμ ≤ C (∫ g dμ)^e I ≤ C μ(M_t)^e I ≤ C μ(M_t)^e (P + R).
+ This is μ(M_{t+ε}) ≤ C μ(M_t)^{1/n} (∫ γ'(h − t)|∇^M h| dμ + ∫_{M_t} |H| dμ). ∎
+
+## Key steps
+
+1. g := γ(h − t) is admissible for (S): C¹, nonnegative, support ⊆ {h > t} ⊆ tsupport h ⊆ U, compact support
+2. Pointwise: 0 ≤ g ≤ 1_{M_t}, g = 1 on M_{t+ε}, and |∇^M g| = γ'(h − t)|∇^M h| (chain rule, linearity of the Riesz map and of p_x, γ' ≥ 0)
+3. Left side of (S) for g is ≥ ∫_{M_{t+ε}} g = μ(M_{t+ε}); (∫g)^{1/n} ≤ μ(M_t)^{1/n} by g ≤ 1_{M_t}
+4. Integrable majorant F = γ'(h − t)|∇^M h| + 1_{M_t}|H| (γ' bounded on the range of h − t; H integrable on compact tsupport h ⊆ U) gives ∫(|∇^M g| + g|H|) ≤ P + R
+5. Combine the three bounds using C ≥ 0 and nonnegativity of all factors
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean`
+- `rg -n 'theorem lintegral_rpow_eq_lintegral_meas_lt_mul|theorem lintegral_comp_eq_lintegral_meas_lt_mul' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `rg -n 'lintegral_rpow_eq_lintegral_meas_lt_mul|lintegral_rpow_eq_lintegral_meas_le_mul' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem lintegral_lintegral_swap\b' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem tendsto_integral_filter_of_dominated_convergence|theorem tendsto_integral_of_dominated_convergence' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem Monotone.deriv_nonneg|lemma Monotone.deriv_nonneg' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem LocallyIntegrableOn.integrableOn_compact_subset' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `rg -n 'integral_mono_of_nonneg' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean; rg -n 'theorem setIntegral_mono_set' <snapshot>/mathlib/Mathlib`
+- `rg -n 'instance.*SigmaFinite|SigmaFinite.of_isFiniteMeasureOnCompacts' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `rg -n 'smoothTransition' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `rg -n '^theorem|^lemma|^def' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean; rg -n 'theorem norm_starProjection_apply_le' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n 'IntegrableOn.integrable_of_forall_notMem_eq_zero|integrableOn_iff_integrable_of_support_subset' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `grep -n 'theorem HasDerivAt.comp_hasFDerivAt' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean; grep -n 'theorem mul_rpow|theorem rpow_mul |theorem rpow_le_rpow |theorem rpow_sub ' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean; grep -n 'theorem continuousAt_rpow_const' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean; grep -n 'theorem lintegral_mul_right_eq_self' <snapshot>/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/{SobolevTruncation,SobolevLayerCake,Sobolev,LayerCake}.lean`
+- `grep -n '4.11|5.7|truncat' book/chapter-04.txt; sed -n 570,590p book/chapter-04.txt; sed -n 800,870p book/chapter-04.txt`
+- `for each proposed name: grep -c <name> dag.json; git grep -l <name> <branch> on every run branch; grep -rn <name> lake-packages-25730c7c/simongmt/Poincare`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/tlc-audit/olean/GMT/Ch04/Submission.olean`
+- `python3 -I /tmp/tlc-audit/scripts/gen_challenges.py (verifier lean_contract.validate_lean_statement + gmt-compare.child_modules(mode=contract)); LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/tlc-audit/olean lean /tmp/tlc-audit/lean/Challenge_<name>.lean`
+- `LEAN_PATH=... lean /tmp/tlc-audit/lean/Assembly.lean (selected frozen type proved from the uncle sobolev_energy_integrable and the three sorry'd children; #print axioms)`
+- `LEAN_PATH=... lean /tmp/tlc-audit/lean/Inspect.lean (Iff.rfl parse checks against explicit HMul/Real.rpow/integral forms; #print axioms of cited SimonGMT and Mathlib lemmas)`
+- `LEAN_PATH=... lean /tmp/tlc-audit/lean/Probe.lean (tangentialGradient chain rule, integrability of h*K with K integrable only on tsupport h, γ' facts, SFinite inference)`
+- `LEAN_PATH=... lean /tmp/tlc-audit/verify/Combined.lean (independent reviewer's full proofs of the three exact child types plus the assembly; python byte-compare of statements; #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-truncation-layer-cake-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-truncation-layer-cake-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevTruncation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevLayerCake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Sobolev.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LayerCake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/tlc-audit/children.json`
+- `/tmp/tlc-audit/final_children.json`
+- `/tmp/tlc-audit/lean/Challenge_sobolev_truncation_superlevel_bound.lean`
+- `/tmp/tlc-audit/lean/Challenge_sobolev_level_integral_bound.lean`
+- `/tmp/tlc-audit/lean/Challenge_sobolev_of_level_integral_bounds.lean`
+- `/tmp/tlc-audit/lean/Assembly.lean`
+- `/tmp/tlc-audit/lean/Inspect.lean`
+- `/tmp/tlc-audit/lean/Probe.lean`
+- `/tmp/tlc-audit/verify/Combined.lean`
+
+Contract provenance. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b). The manifest pins project ff75f52 and Mathlib 25730c7c.
+
+Mathlib lemmas in the snapshot used by the child proofs:
+- lintegral_rpow_eq_lintegral_meas_lt_mul (in Analysis/SpecialFunctions/Pow/Integral.lean:91, not in Layercake.lean, which only has lintegral_comp_eq_lintegral_meas_lt_mul:478)
+- lintegral_lintegral_swap (Prod.lean:1071)
+- tendsto_integral_(filter_)of_dominated_convergence
+- Monotone.deriv_nonneg
+- LocallyIntegrableOn.integrableOn_compact_subset
+- integral_mono_of_nonneg, setIntegral_mono_set
+- SigmaFinite.of_isFiniteMeasureOnCompacts (instance)
+- Real.smoothTransition API
+- the gradient/toDual API
+- IntegrableOn.integrable_of_forall_notMem_eq_zero
+- HasDerivAt.comp_hasFDerivAt
+- Real.mul_rpow, rpow_mul, rpow_le_rpow, rpow_sub, continuousAt_rpow_const
+- lintegral_mul_right_eq_self (to_additive gives the translation lemma)
+
+Pinned SimonGMT. Its general tools apply to any measure; each depends only on propext, Classical.choice and Quot.sound:
+- exists_smooth_superlevel_cutoff
+- lintegral_deriv_shifted_cutoff
+- lintegral_smooth_truncation_energy_le
+- layerCake_rpow, lintegral_tail_weight
+- rpow_one_sub_le_of_le_rpow_mul
+- contDiff_of_tsupport_subset
+Its varifold-specific Sobolev lemmas are tied to its own RectifiableVarifold and cannot be applied. Simon pp. 99–100 in book/chapter-04.txt confirms the truncation / (t+ε)^{1/(n−1)} weighting / 4.11 / ε ↓ 0 structure that the three children follow.
+
+Lean checks of the children:
+- All three child types pass validate_lean_statement and elaborate in comparator-generated contract-scope challenge files.
+- Iff.rfl confirms the intended parenthesization and Real.rpow.
+- Assembly.lean proves the selected frozen type, with no sorry in its body, from the uncle and the three sorry'd children.
+- Combined.lean compiles with no errors. It contains independent full proofs of the three exact child types, each depending only on propext, Classical.choice and Quot.sound; its only sorry is the uncle stub, which is now accepted in the DAG.
+- The proposed names do not occur in dag.json, in any run branch, or in SimonGMT.

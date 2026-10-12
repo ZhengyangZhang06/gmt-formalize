@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5bd29108f576977c75e382a5f7af471575331491c83ca2699b035a625c3d182",
+  "git_delta": {
+    "base_commit": "5582f7721a31ba95b47c0dfa49ec7df9ae99aecb",
+    "candidate_commit": "dd126fd2eb5b218897e972f7329fb5b976e620a7",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "mcm_lp_holder_bound",
+    "diff_sha256": "ab6516e0162539f2cbf92cea1e9c6a2464754649356a69f1091400817a1ac65a",
+    "source_sha256": "a683927aeb1763bb88b074178884a3a8b727fd9892e123f510e2d6d9c62c75cf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcm_lp_holder_bound",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (p : ℝ) (ξ : Ambient n ℓ) (R τ : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → (n : ℝ) < p → MemLp H (ENNReal.ofReal p) (μ.restrict (closedBall ξ R)) → 0 < τ → τ ≤ R → |(∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂μ) / τ ^ (n + 1)| ≤ (R ^ (p - n) * ∫ x in closedBall ξ R, ‖H x‖ ^ p ∂μ) ^ (1 / p) / R * (τ / R) ^ (-(n : ℝ) / p) * (1 + μ.real (closedBall ξ τ) / τ ^ n)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

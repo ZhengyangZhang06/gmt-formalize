@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4131b0fa885ec3c8e237eb5e7641909c58f4322eed181db45a5505fdb39054ca",
+  "git_delta": {
+    "base_commit": "367df48fe3f1c6e9bd8a815a9cd15bd0c93f9745",
+    "candidate_commit": "6e0266d6458e4cd18a93ec8fc9c7ba73dd268da9",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "weighted_mono_kernel_bounds",
+    "diff_sha256": "0276c3a67fabcc49b7c122fd5d91e9b6cdc2f0df3ca2a4593863980bc3548e9b",
+    "source_sha256": "92359ddf34ac6fc622f648de24636d5e57b0f2483756f6e852a38b544200a8a3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weighted_mono_kernel_bounds",
+      "statement": "∀ (n : ℕ) (φ : ℝ → ℝ) (ε σ ρ s : ℝ), ContDiff ℝ 1 φ → Antitone φ → (∀ t, t ≤ 1 → φ t = 1) → (∀ t, 1 + ε ≤ t → φ t = 0) → 0 < ε → 0 < σ → σ ≤ ρ → 0 < s → (φ (s / ρ) - φ (s / σ)) / s ^ n ≤ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ∧ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv φ (s / τ) / τ ^ n ≤ (1 + ε) ^ n * ((φ (s / ρ) - φ (s / σ)) / s ^ n)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

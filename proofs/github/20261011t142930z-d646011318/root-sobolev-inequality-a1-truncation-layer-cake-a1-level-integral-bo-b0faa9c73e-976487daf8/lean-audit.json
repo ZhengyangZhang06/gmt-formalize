@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6ba2abe4090fe86032f20f13ebbe5601b027e857756052ace203664fba514ca8",
+  "git_delta": {
+    "base_commit": "7c88ffe2f0baa760da66cbc8ac319652a7bfe021",
+    "candidate_commit": "8d703989e331a2d7e2c7c25a032bb826d0ba48e3",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_level_moment_factor",
+    "diff_sha256": "d699923d441c58ac0975116b8c600a9d1882086a43ac2a297268dfd3b82fd3ce",
+    "source_sha256": "1863807e0646f7dde01486ca027c5ca98976add9cca14d3bcedf7a64528a07d5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_level_moment_factor",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε t : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → 0 ≤ t → (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ ≤ (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

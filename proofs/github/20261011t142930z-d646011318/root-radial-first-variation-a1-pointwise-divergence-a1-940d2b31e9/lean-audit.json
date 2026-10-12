@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d1d6039e08b5ba65a3290d4ddeecdd3a3d8b9ceaee34bc9695ac887869d1e691",
+  "git_delta": {
+    "base_commit": "9ea288e51fea8f401389d2ec8942291c7f783f12",
+    "candidate_commit": "10c2566b0453ba9674ebeb65c446ab1cf2818086",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "tangentialDiv_weighted_radial_field",
+    "diff_sha256": "6fbc085f513c890900c2beaee386376f4c814fbcda2202ad02be1573ff080b9c",
+    "source_sha256": "6ea4ba76226083f72c382ec07d0bb9a18f4fb5346c0c21b1337fdfb93f9330b2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangentialDiv_weighted_radial_field",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), Module.finrank ℝ (V.tangentSpace x) = n → DifferentiableAt ℝ h x → ContDiff ℝ 1 γ → V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x = h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

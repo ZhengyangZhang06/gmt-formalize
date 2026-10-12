@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0c9c43421f6df388c9f40b50317650d439dafb9af36eecb8363fd6e0990ba570",
+  "git_delta": {
+    "base_commit": "6f0d0acae9400e357e44ae527ceb4a88417a3fab",
+    "candidate_commit": "454e27d2a6f90251d7e4684f1143af4cb370d045",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_cv_slice_fderiv_bounds",
+    "diff_sha256": "db10a4af52be0bb2928c4f65ee1cc6d3de3c49d198a4464e420a06cf7f7adeed",
+    "source_sha256": "34d9a208866eef5269ee2c24a8008e6c2b97809840c9a5f2621f4ef8a0aba782",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_cv_slice_fderiv_bounds",
+      "statement": "∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ∀ δ : ℝ, 0 < δ → δ < ε → ∃ B : ℝ, ∀ x, ∀ t ∈ Ioo (-δ) δ, ‖fderiv ℝ (φ t) x‖ ≤ B ∧ ∀ v, ‖v‖ ≤ B * ‖fderiv ℝ (φ t) x v‖",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

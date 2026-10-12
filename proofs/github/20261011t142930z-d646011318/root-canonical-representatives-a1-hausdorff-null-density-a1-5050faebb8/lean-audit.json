@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "105c7344ddd2d03830e563097d8dc6df7ee32929f99f018050eb79733a9d6e7a",
+  "git_delta": {
+    "base_commit": "32754d4743330d9d719ffc6874952dc421367a00",
+    "candidate_commit": "ec5f9858049f4fe82d393e52f9aa3d5c250ff47a",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "hausdorff_null_of_measure_null_density_ge",
+    "diff_sha256": "28c8582b0ad3cc9684e83bc9e6c1b569e66a2b4711717561b9bb1622192fa1e0",
+    "source_sha256": "30225641e63579628a5aa870d79b913ee14b26ede292f1e6e519ca8fc526f26a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.hausdorff_null_of_measure_null_density_ge",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (A : Set (Ambient n ℓ)) (t : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → 0 < t → μ A = 0 → (∀ x ∈ A, ∃ s : ℝ, t ≤ s ∧ Tendsto (fun ρ ↦ μ.real (closedBall x ρ) / (omega n * ρ ^ n)) (𝓝[>] 0) (𝓝 s)) → (μHE[n] : Measure (Ambient n ℓ)) A = 0",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
