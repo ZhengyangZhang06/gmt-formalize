@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "001b6e5a8c52dacbca97df72fa628930afceca152b9141bc3235b99801d65a19",
+  "git_delta": {
+    "base_commit": "2dcd02614975c100d8651de170661e5cb9eb6103",
+    "candidate_commit": "0cd491db9f9f7b1aea6721b459608a023f790c90",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_kernel",
+    "diff_sha256": "a894324afd346c741aad6ddeb904e93e5cb5de68ea1c4689d0c98b14937acfa0",
+    "source_sha256": "2898a26edc6594385eee49295d69bcbfb90c4049d5e4acd73e19c0b0707e21d6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_kernel",
+      "statement": "∀ (n : ℕ), ∃ (ρ : Euclid n → ℝ) (C : ℝ), Continuous ρ ∧ (∀ z, 0 ≤ ρ z) ∧ (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) ∧ ∫ z, ρ z = 1 ∧ (∀ z, |ρ z| ≤ C) ∧ ∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

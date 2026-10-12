@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Mollifier kernel** for the Rellich compactness step of the harmonic approximation lemma
+(Simon 5.3.1–5.3.4): a continuous probability density `ρ ≥ 0` on `ℝⁿ`, vanishing for `‖z‖ ≥ 1`,
+bounded by `C` and `C`-Lipschitz.  Take the tent `ρ₀(z) = (1 − ‖z‖)₊`, which is continuous, `0 ≤ ρ₀ ≤ 1`, zero off
+`B_1(0)` and `1`-Lipschitz; `c₀ = ∫ ρ₀ > 0` since `ρ₀` is compactly supported, nonnegative and
+`ρ₀(0) = 1`; then `ρ = c₀⁻¹ρ₀` and `C = c₀⁻¹`. -/
+theorem Submission.dorag_ha_rb_kernel : ∀ (n : ℕ), ∃ (ρ : Euclid n → ℝ) (C : ℝ), Continuous ρ ∧ (∀ z, 0 ≤ ρ z) ∧ (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) ∧ ∫ z, ρ z = 1 ∧ (∀ z, |ρ z| ≤ C) ∧ ∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖ := by
+  intro n
+  -- the tent `ρ₀(z) = (1 − ‖z‖)₊`: continuous, `0 ≤ ρ₀ ≤ 1`, zero off `B_1(0)`, `1`-Lipschitz
+  set ρ₀ : Euclid n → ℝ := fun z => max (1 - ‖z‖) 0 with hρ₀
+  have hcont : Continuous ρ₀ := (continuous_const.sub continuous_norm).max continuous_const
+  have hnonneg : ∀ z, 0 ≤ ρ₀ z := fun z => le_max_right _ _
+  have hle : ∀ z, ρ₀ z ≤ 1 := fun z => max_le (by linarith [norm_nonneg z]) zero_le_one
+  have hvanish : ∀ z : Euclid n, 1 ≤ ‖z‖ → ρ₀ z = 0 := fun z hz => max_eq_right (by linarith)
+  have hlip : ∀ z z', |ρ₀ z - ρ₀ z'| ≤ ‖z - z'‖ := fun z z' =>
+    calc |ρ₀ z - ρ₀ z'| ≤ |(1 - ‖z‖) - (1 - ‖z'‖)| := abs_max_sub_max_le_abs _ _ _
+      _ = |‖z'‖ - ‖z‖| := by ring_nf
+      _ ≤ ‖z' - z‖ := abs_norm_sub_norm_le _ _
+      _ = ‖z - z'‖ := norm_sub_rev _ _
+  -- `c₀ = ∫ ρ₀ > 0`: `ρ₀` is continuous, compactly supported, nonnegative and `ρ₀(0) = 1`
+  have hsupp : HasCompactSupport ρ₀ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) 1) fun z hz =>
+      hvanish z (by simpa using (not_le.mp (by simpa using hz)).le)
+  have hpos : 0 < ∫ z, ρ₀ z :=
+    hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hsupp hnonneg (x := 0) (by simp [hρ₀])
+  -- `ρ = c₀⁻¹ ρ₀` and `C = c₀⁻¹`
+  have hC : 0 ≤ (∫ z, ρ₀ z)⁻¹ := inv_nonneg.mpr hpos.le
+  refine ⟨fun z => (∫ z, ρ₀ z)⁻¹ * ρ₀ z, (∫ z, ρ₀ z)⁻¹, continuous_const.mul hcont,
+    fun z => mul_nonneg hC (hnonneg z), fun z hz => by simp [hvanish z hz], ?_, fun z => ?_,
+    fun z z' => ?_⟩
+  · rw [integral_const_mul]
+    exact inv_mul_cancel₀ hpos.ne'
+  · rw [abs_of_nonneg (mul_nonneg hC (hnonneg z))]
+    exact mul_le_of_le_one_right hC (hle z)
+  · rw [← mul_sub, abs_mul, abs_of_nonneg hC]
+    exact mul_le_mul_of_nonneg_left (hlip z z') hC
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
