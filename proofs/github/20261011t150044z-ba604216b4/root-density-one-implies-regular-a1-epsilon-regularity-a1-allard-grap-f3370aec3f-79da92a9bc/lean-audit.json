@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d6a88edcb6991a668af067953ce19f93692e35552e52bd9edc2c781a7cdc3772",
+  "git_delta": {
+    "base_commit": "047ad423f3b8dd30c98d39fc4971580114c26533",
+    "candidate_commit": "1ecdc4cf0994d2f87fa0b6274f6c70379c7a9c1a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_ie_taylor_two_le",
+    "diff_sha256": "68624755aa14b9664570e8f58c410a85f2a058a701c19c54c5f631228bc3f2c0",
+    "source_sha256": "e64fc3f053f9f5ccc08b00c6b9ac9215c08fdf90c3f1e07c03f155e4e398b351",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_ie_taylor_two_le",
+      "statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (R S : ℝ) (v : Euclid n), ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → ‖v‖ < R → (∀ τ ∈ Icc (0 : ℝ) 1, |iteratedFDeriv ℝ 2 h (τ • v) ![v, v]| ≤ S) → |h v - h 0 - fderiv ℝ h 0 v| ≤ S / 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
