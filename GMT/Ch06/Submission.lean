@@ -420,6 +420,50 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
   calc |T ω| ≤ B * (C + ε / (B + 1)) := this
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
+/-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
+lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
+theorem Submission.cmb_exists_compactly_contained_exhaustion :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P),
+      (∀ i, CompactlyContainedOpen (W i) U) ∧
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i := by
+  intro P U hU
+  -- `d x = infEDist x Uᶜ` is continuous and positive exactly on `U`.
+  have hd : Continuous fun x : Eucl P => infEDist x Uᶜ := continuous_infEDist
+  have hpos : ∀ x ∈ U, 0 < infEDist x Uᶜ := fun x hx => by
+    rw [infEDist_pos_iff_notMem_closure, hU.isClosed_compl.closure_eq, notMem_compl_iff]
+    exact hx
+  refine ⟨fun i => {x | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}, fun i => ?_,
+    fun K hK hKU => ?_⟩
+  · -- `closure (W i) ⊆ closedBall 0 i ∩ {(i + 1)⁻¹ ≤ d}`, a compact subset of `U`.
+    have hcl : closure ({x : Eucl P | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}) ⊆
+        closedBall 0 i ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ} :=
+      closure_minimal (fun x hx => ⟨mem_closedBall_zero_iff.2 hx.1.le,
+        show ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ from hx.2.le⟩)
+        (isClosed_closedBall.inter (isClosed_le continuous_const hd))
+    refine ⟨(isOpen_lt continuous_norm continuous_const).inter (isOpen_lt continuous_const hd),
+      (isCompact_closedBall 0 _).of_isClosed_subset isClosed_closure (hcl.trans inter_subset_left),
+      fun x hx => ?_⟩
+    by_contra hxU
+    have h : ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ := (hcl hx).2
+    rw [infEDist_zero_of_mem hxU, nonpos_iff_eq_zero, ENNReal.inv_eq_zero] at h
+    exact ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩ h
+  · -- A compact `K ⊆ U` is bounded and `d` has a positive minimum on it.
+    rcases K.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨0, empty_subset _⟩
+    obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.1 hK.isBounded
+    obtain ⟨i₁, hi₁⟩ := exists_nat_gt R
+    obtain ⟨x₀, hx₀K, hx₀⟩ := hK.exists_isMinOn hne hd.continuousOn
+    obtain ⟨i₂, hi₂⟩ := ENNReal.exists_inv_nat_lt (hpos x₀ (hKU hx₀K)).ne'
+    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
+    · show ‖x‖ < ((max i₁ i₂ : ℕ) : ℝ)
+      calc ‖x‖ ≤ R := hR x hx
+        _ < i₁ := hi₁
+        _ ≤ (max i₁ i₂ : ℕ) := Nat.cast_le.2 (le_max_left _ _)
+    · show (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ
+      calc (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ ≤ (i₂ : ℝ≥0∞)⁻¹ :=
+            ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
+        _ < infEDist x₀ Uᶜ := hi₂
+        _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
