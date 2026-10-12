@@ -520,6 +520,162 @@ theorem Submission.bf_coneFree_countablyRectifiable :
   show G k (J u) = a
   rw [hu, ← hGEq k ⟨a, hak, rfl⟩, hφ k a hak]
 
+/-- **Small cone mass forces small mass** (P. Mattila, *Geometry of Sets and Measures in
+Euclidean Spaces*, Lemma 15.14; M. G. Dall'Alba, *The Besicovitch–Federer Projection Theorem*,
+Lemma 4.6), Step 3 of the proof of the Besicovitch–Federer projection theorem (Simon Ch. 3,
+Theorem 3.6). Let `W ⊆ ℝ^{n+ℓ}` be an `n`-plane with orthogonal projection `P`, `0 < s < 1`, and
+let `B` be purely `n`-unrectifiable with `Hⁿ(B ∩ X(x, r, s)) ≤ c (rs)ⁿ` for `x ∈ B`, `0 < r < δ`,
+where `X(x, r, s) = {y : |P(y - x)| < s|y - x|} ∩ B(x, r)`. Then `Hⁿ(B ∩ B(a, δ/8)) ≤ 2·15ⁿ c δⁿ`.
+In `B' = B ∩ B(a, δ/8)` the points whose `(s/4)`-cone misses `B'` form a cone-free, hence
+rectifiable, hence null set. Every other `x` has a slab `{z : |P(z - x)| < s h(x)/4}` meeting `B'`
+in mass `≤ 2c·3ⁿ(s h(x))ⁿ`; the Vitali `5r`-lemma for the balls `B(Px, s h(x)/20)` covers the
+rest of `B'` by countably many slabs, and packing the disjoint balls in `W ∩ B(Pa, δ/4)` gives
+`∑ (s h(t))ⁿ ≤ 5ⁿ δⁿ`. -/
+theorem Submission.bf_coneMass_ball_le : ∀ (n ℓ : ℕ), 0 < n → ∀ (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ (s δ c : ℝ), 0 < s → s < 1 → 0 < δ → 0 ≤ c → ∀ B : Set (Rn (n + ℓ)), PurelyUnrectifiable n B → (∀ x ∈ B, ∀ r : ℝ, 0 < r → r < δ → μHE[n] (B ∩ ({y | ‖W.starProjection (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) → ∀ a : Rn (n + ℓ), μHE[n] (B ∩ Metric.ball a (δ / 8)) ≤ ENNReal.ofReal (2 * 15 ^ n * c * δ ^ n) := by
+  intro n ℓ hn W hW s δ c hs hs1 hδ hc B hB hH a
+  set P : Rn (n + ℓ) →L[ℝ] Rn (n + ℓ) := W.starProjection
+  -- Step 1: `B' = B ∩ B(a, δ/8)` and the points `B''` of `B'` whose `(s/4)`-cone meets `B'`.
+  set B' : Set (Rn (n + ℓ)) := B ∩ Metric.ball a (δ / 8)
+  set B'' : Set (Rn (n + ℓ)) := {x | x ∈ B' ∧ ∃ y ∈ B', ‖P (y - x)‖ < s / 4 * ‖y - x‖}
+  -- Step 2: the cone-free remainder `B' \ B''` is countably rectifiable, hence null.
+  have hE : μHE[n] (B' \ B'') = 0 := by
+    apply hB
+    · intro x hx
+      exact hx.1.1
+    · apply Submission.bf_coneFree_countablyRectifiable n ℓ W hW (s / 4) 1 (by positivity) one_pos
+      intro x hx y hy _
+      exact not_lt.1 fun hlt ↦ hx.2 ⟨hx.1, y, hy.1, hlt⟩
+  -- Steps 3–4: for `x ∈ B''`, the radius `h x ∈ (0, δ/4]`, the far cone point `x' x ∈ B'` and the
+  -- slab inclusion, from `bf_coneMass_slab_cover` (`|y - x| < δ/4` on `B'`).
+  have hslab : ∀ x, ∃ h : ℝ, ∃ x' : Rn (n + ℓ), x ∈ B'' → 0 < h ∧ h ≤ δ / 4 ∧ x' ∈ B' ∧
+      B' ∩ {z | ‖P (z - x)‖ < s * h / 4} ⊆ insert x ({y | ‖P (y - x)‖ < s * ‖y - x‖} ∩
+        Metric.ball x (3 * h) ∪ {y | ‖P (y - x')‖ < s * ‖y - x'‖} ∩ Metric.ball x' (3 * h)) := by
+    intro x
+    by_cases hx : x ∈ B''
+    · obtain ⟨h, hh, hhδ, x', hx', hsub⟩ :=
+        Submission.bf_coneMass_slab_cover (n + ℓ) P s (δ / 4) B' x hs hx.2 fun y hy ↦ by
+          have h1 : dist y a < δ / 8 := hy.2
+          have h2 : dist x a < δ / 8 := hx.1.2
+          calc ‖y - x‖ = dist y x := (dist_eq_norm y x).symm
+            _ ≤ dist y a + dist x a := dist_triangle_right y x a
+            _ ≤ δ / 4 := by linarith
+      exact ⟨h, x', fun _ ↦ ⟨hh, hhδ, hx', hsub⟩⟩
+    · exact ⟨0, 0, fun h ↦ absurd h hx⟩
+  choose h x' hhx using hslab
+  -- Step 5: mass of a slab, by (H) at `x` and at `x' x` with `r = 3 h x < δ`, and `Hⁿ{x} = 0`.
+  have hsingle : ∀ x : Rn (n + ℓ), μHE[n] ({x} : Set (Rn (n + ℓ))) = 0 := by
+    intro x
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply]
+    have := Measure.nullSingletonClass_hausdorff (Rn (n + ℓ))
+      (show (0 : ℝ) < (n : ℝ) by exact_mod_cast hn)
+    simp
+  have hmass : ∀ x ∈ B'', μHE[n] (B' ∩ {z | ‖P (z - x)‖ < s * h x / 4}) ≤
+      ENNReal.ofReal (2 * 60 ^ n * c) * ENNReal.ofReal ((s * h x / 20) ^ n) := by
+    intro x hx
+    obtain ⟨hh, hhδ, hx'B, hsub⟩ := hhx x hx
+    have hr : 0 < 3 * h x := by linarith
+    have hrδ : 3 * h x < δ := by linarith
+    have hsub' : B' ∩ {z | ‖P (z - x)‖ < s * h x / 4} ⊆ {x} ∪
+        ((B ∩ ({y | ‖W.starProjection (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x (3 * h x))) ∪
+          (B ∩ ({y | ‖W.starProjection (y - x' x)‖ < s * ‖y - x' x‖} ∩
+            Metric.ball (x' x) (3 * h x)))) := by
+      intro z hz
+      have hzB : z ∈ B := hz.1.1
+      rcases hsub hz with h1 | h2 | h3
+      · exact Or.inl h1
+      · exact Or.inr (Or.inl ⟨hzB, h2⟩)
+      · exact Or.inr (Or.inr ⟨hzB, h3⟩)
+    calc μHE[n] (B' ∩ {z | ‖P (z - x)‖ < s * h x / 4})
+        ≤ μHE[n] ({x} ∪
+          ((B ∩ ({y | ‖W.starProjection (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x (3 * h x))) ∪
+            (B ∩ ({y | ‖W.starProjection (y - x' x)‖ < s * ‖y - x' x‖} ∩
+              Metric.ball (x' x) (3 * h x))))) := measure_mono hsub'
+      _ ≤ μHE[n] ({x} : Set (Rn (n + ℓ))) +
+          (μHE[n] (B ∩ ({y | ‖W.starProjection (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x (3 * h x))) +
+            μHE[n] (B ∩ ({y | ‖W.starProjection (y - x' x)‖ < s * ‖y - x' x‖} ∩
+              Metric.ball (x' x) (3 * h x)))) :=
+          (measure_union_le _ _).trans (add_le_add le_rfl (measure_union_le _ _))
+      _ ≤ 0 + (ENNReal.ofReal (c * (3 * h x * s) ^ n) + ENNReal.ofReal (c * (3 * h x * s) ^ n)) := by
+          gcongr
+          · rw [hsingle]
+          · exact hH x hx.1.1 _ hr hrδ
+          · exact hH (x' x) hx'B.1 _ hr hrδ
+      _ = ENNReal.ofReal (2 * 60 ^ n * c) * ENNReal.ofReal ((s * h x / 20) ^ n) := by
+          rw [zero_add, ← ENNReal.ofReal_add (by positivity) (by positivity),
+            ← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          rw [div_pow, mul_pow, mul_pow, mul_pow, show (60 : ℝ) ^ n = 3 ^ n * 20 ^ n by
+            rw [← mul_pow]; norm_num]
+          field_simp
+          ring
+  -- Step 6: Vitali `5r`-covering of the balls `B(Px, s h x / 20)`, `x ∈ B''` (`τ = 2`); the
+  -- disjoint subfamily `T` is countable and its slabs cover `B''`.
+  have hρ : ∀ x ∈ B'', 0 < s * h x / 20 := fun x hx ↦ by have := (hhx x hx).1; positivity
+  obtain ⟨T, hTB, hTdisj, hTcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
+    (fun x ↦ Metric.ball (P x) (s * h x / 20)) B'' (fun x ↦ s * h x / 20) 2 one_lt_two
+    (fun x hx ↦ (hρ x hx).le) (s * δ / 80)
+    (fun x hx ↦ by
+      have h1 := (hhx x hx).2.1
+      have h2 : s * h x ≤ s * (δ / 4) := mul_le_mul_of_nonneg_left h1 hs.le
+      show s * h x / 20 ≤ s * δ / 80
+      linarith)
+    (fun x hx ↦ Metric.nonempty_ball.2 (hρ x hx))
+  have hTc : T.Countable := hTdisj.countable_of_isOpen (fun _ _ ↦ Metric.isOpen_ball)
+    (fun x hx ↦ Metric.nonempty_ball.2 (hρ x (hTB hx)))
+  have hcov : B'' ⊆ ⋃ t ∈ T, B' ∩ {z | ‖P (z - t)‖ < s * h t / 4} := by
+    intro x hx
+    obtain ⟨t, htT, ⟨z, hz1, hz2⟩, hle⟩ := hTcov x hx
+    have h1 : dist z (P x) < s * h x / 20 := hz1
+    have h2 : dist z (P t) < s * h t / 20 := hz2
+    have h3 : s * h x / 20 ≤ 2 * (s * h t / 20) := hle
+    have hd : dist (P x) (P t) < 3 * (s * h t / 20) :=
+      calc dist (P x) (P t) ≤ dist z (P x) + dist z (P t) := dist_triangle_left _ _ _
+        _ < s * h x / 20 + s * h t / 20 := add_lt_add h1 h2
+        _ ≤ 3 * (s * h t / 20) := by linarith
+    have ht := (hhx t (hTB htT)).1
+    refine mem_iUnion₂.2 ⟨t, htT, hx.1, ?_⟩
+    show ‖P (x - t)‖ < s * h t / 4
+    rw [map_sub, ← dist_eq_norm]
+    have : 0 < s * h t := mul_pos hs ht
+    linarith
+  -- Step 7: packing the disjoint balls `B(Pt, s h t / 20) ⊆ B(Pa, δ/4)` centred in `W`.
+  have hpack : ∑' t : T, ENNReal.ofReal ((s * h t / 20) ^ n) ≤ ENNReal.ofReal ((δ / 4) ^ n) :=
+    Submission.bf_coneMass_subspace_ball_packing n (n + ℓ) W hW (Rn (n + ℓ)) T (fun x ↦ P x)
+      (fun x ↦ s * h x / 20) (P a) (δ / 4) hTc (fun x _ ↦ W.starProjection_apply_mem x)
+      (W.starProjection_apply_mem a) (fun x hx ↦ hρ x (hTB hx)) hTdisj
+      (fun t ht ↦ by
+        apply Metric.ball_subset_ball'
+        have h1 : dist (P t) (P a) ≤ dist t a := by
+          rw [dist_eq_norm, dist_eq_norm, ← map_sub]
+          exact W.norm_starProjection_apply_le _
+        have h2 : dist t a < δ / 8 := (hTB ht).1.2
+        have h3 : h t ≤ δ / 4 := (hhx t (hTB ht)).2.1
+        have h4 : s * h t ≤ 1 * (δ / 4) :=
+          mul_le_mul hs1.le h3 (hhx t (hTB ht)).1.le zero_le_one
+        show s * h t / 20 + dist (P t) (P a) ≤ δ / 4
+        linarith)
+  -- Steps 8–9: `Hⁿ(B') ≤ Hⁿ(B'') ≤ ∑_{t ∈ T} 2c·60ⁿ (s h t / 20)ⁿ ≤ 2c·60ⁿ (δ/4)ⁿ = 2·15ⁿ c δⁿ`.
+  calc μHE[n] (B ∩ Metric.ball a (δ / 8)) = μHE[n] B' := rfl
+    _ ≤ μHE[n] B'' + μHE[n] (B' \ B'') := by
+        calc μHE[n] B' ≤ μHE[n] (B'' ∪ (B' \ B'')) := measure_mono fun x hx ↦ by
+              by_cases hxx : x ∈ B''
+              · exact Or.inl hxx
+              · exact Or.inr ⟨hx, hxx⟩
+          _ ≤ _ := measure_union_le _ _
+    _ = μHE[n] B'' := by rw [hE, add_zero]
+    _ ≤ μHE[n] (⋃ t ∈ T, B' ∩ {z | ‖P (z - t)‖ < s * h t / 4}) := measure_mono hcov
+    _ ≤ ∑' t : T, μHE[n] (B' ∩ {z | ‖P (z - t)‖ < s * h t / 4}) := measure_biUnion_le _ hTc _
+    _ ≤ ∑' t : T, ENNReal.ofReal (2 * 60 ^ n * c) * ENNReal.ofReal ((s * h t / 20) ^ n) :=
+        ENNReal.tsum_le_tsum fun t ↦ hmass t (hTB t.2)
+    _ = ENNReal.ofReal (2 * 60 ^ n * c) * ∑' t : T, ENNReal.ofReal ((s * h t / 20) ^ n) :=
+        ENNReal.tsum_mul_left
+    _ ≤ ENNReal.ofReal (2 * 60 ^ n * c) * ENNReal.ofReal ((δ / 4) ^ n) := by gcongr
+    _ = ENNReal.ofReal (2 * 15 ^ n * c * δ ^ n) := by
+        rw [← ENNReal.ofReal_mul (by positivity)]
+        congr 1
+        rw [div_pow, show (60 : ℝ) ^ n = 15 ^ n * 4 ^ n by rw [← mul_pow]; norm_num]
+        field_simp
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
