@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "04ce10b6feaa0cbd4f39ca74be689f1ce5521bfabbb13161004587fe5bd40714",
+  "git_delta": {
+    "base_commit": "e637e5994fdcfcd660a338a25a5aaa2cf326c076",
+    "candidate_commit": "52bf7c0a0b8032619411473b0f9ac8dc8f808e38",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_lcc_local_isolating_form",
+    "diff_sha256": "5e7bbd101cfb05384a51df81f888d32d96fb65fa8c3f8cfa94cc0177075fdde7",
+    "source_sha256": "c0e6865b2e13001f31256ba43db9b8c15abc0cad74f52e2810d5304219e927cf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_lcc_local_isolating_form",
+      "statement": "∀ (n N : ℕ) (ρ : ℝ) (F₀ : LatticeFaceIndex n N) (x : Eucl N) (W : Set (Eucl N)), 0 < ρ → x ∈ latticeFace ρ F₀ → IsOpen W → x ∈ W → ∃ ω : TestFormOn (univ : Set (Eucl N)) n, tsupport (ω : DifferentialForm (Eucl N) n) ⊆ W ∧ (∀ F : LatticeFaceIndex n N, F ≠ F₀ → latticeFaceAction ρ F (ω : DifferentialForm (Eucl N) n) = 0) ∧ 0 < latticeFaceAction ρ F₀ (ω : DifferentialForm (Eucl N) n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
