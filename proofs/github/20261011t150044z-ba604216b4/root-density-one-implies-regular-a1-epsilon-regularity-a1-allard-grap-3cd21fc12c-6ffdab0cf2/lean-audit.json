@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc9730e6385590f4617b58d83f405ffddd90da37e545b25cc5c2b8b0f0de0753",
+  "git_delta": {
+    "base_commit": "2dcd02614975c100d8651de170661e5cb9eb6103",
+    "candidate_commit": "043dcc28e6f06fdf02b550a807c0573e295fc4d9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_sup_net",
+    "diff_sha256": "91d95c194169e41f3b487003eb19bc75c8d1b5bf065a1664d6c2a1a369472141",
+    "source_sha256": "8dd986787b0ce5e28189469f44f465f7f16d60cadacab3ba19f21f728452ee09",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_sup_net",
+      "statement": "∀ (n : ℕ) (K : Set (Euclid n)) (g : ℕ → Euclid n → ℝ) (C : ℝ), IsCompact K → (∀ j, ∀ x ∈ K, |g j x| ≤ C) → (∀ j, ∀ x ∈ K, ∀ y ∈ K, |g j x - g j y| ≤ C * ‖x - y‖) → ∀ δ : ℝ, 0 < δ → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∀ x ∈ K, |g j x - g k x| ≤ δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
