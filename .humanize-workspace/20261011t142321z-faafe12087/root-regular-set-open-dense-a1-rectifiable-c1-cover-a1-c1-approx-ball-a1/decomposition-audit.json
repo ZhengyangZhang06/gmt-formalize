@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rsod_c1ab|RsodC1ab",
+        "tendstoUniformlyOn_of_ae_tendsto|exists_isClosed_sdiff_lt",
+        "Measurable.iSup",
+        "^variable|FiniteDimensional|Nontrivial",
+        "^instance|^noncomputable instance|MeasurableSpace|BorelSpace",
+        "sed -n '120,150p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "sed -n '1,55p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "sed -n '368,395p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake build GMT.AuditTypes GMT.AuditAxioms"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Bases.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyCover.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-a1/parent-child-handoff.json",
+        "/tmp/c1ab-independent-audit/GMT/AuditTypes.lean",
+        "/tmp/c1ab-independent-audit/GMT/AuditProof.lean",
+        "/tmp/c1ab-independent-audit/GMT/AuditAxioms.lean"
+      ],
+      "conclusion": "Verified the frozen handoff, project and dependency pins, and identity of the inspected snapshot Mathlib sources with the compiler package sources. No proposed-name conflicts were found in the frozen project, current GMT sources, DAG, or other nodes' decomposition/handoff records. All names are valid bare identifiers; no accepted declaration is being retyped. Each literal one-line proposition independently elaborates against the original Submission in the replayed comparator scope, without implemented children. Borel, weak regularity, finite-dimensionality and continuous-linear-map instances were checked explicitly. A fresh Lake build succeeded: all three supplied child proofs and the exact selected parent use only propext, Classical.choice and Quot.sound. The Whitney source copies match the pinned bodies under the documented namespace/header transformation. The split is appropriate and acyclic: the children are independent, and the supplied assembly combines their two ε'/2 error bounds with the null differentiability complement to prove precisely the selected closed-ball approximation theorem, including n = 0, arbitrary R and ε = ∞."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "clm_lusin_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the Lean proposition: for ENNReal, nonzero means positive and unequal to infinity means finite. Inner regularity and the cited scalar Lusin theorem apply with exactly the supplied hypotheses. The finite coordinate intersection has the required strict measure bound, and continuousOn_clm_apply gives operator-norm continuity. The empty coordinate family when n = 0 is handled. The proof is complete and independent of the parent and siblings."
+    },
+    {
+      "key": "uniform_taylor_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including differentiability everywhere on C and a radius uniform over all x,y in A. The bounded countable suprema are measurable, and density transfers their estimates to C using continuity in the second variable; continuity of the derivative field is not silently assumed. Differentiability gives pointwise convergence. Egoroff's non-strict measure bound plus the strict inner-regularity bound yields the claimed strict loss. Empty sets, diagonal pairs and n = 0 are covered. No sibling dependency or circular step is present."
+    },
+    {
+      "key": "whitney_c1_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact compact-uniform remainder hypothesis and both continuity hypotheses match the pinned HasWhitneyC1Compatibility fields. Applying the existing extension theorem and discarding its derivative conclusion proves exactly the frozen value-extension contract for every n. The source and axiom checks confirm genuine theorem reuse without circularity. The documented source-copy route was independently rebuilt successfully, so the proof requires no new mathematical construction or planning pass."
+    }
+  ],
+  "required_changes": []
+}
