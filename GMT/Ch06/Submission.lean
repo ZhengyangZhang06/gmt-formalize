@@ -590,4 +590,156 @@ theorem Submission.cmb_exists_countable_dense_testForms : ∀ (P n : ℕ) (U W :
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
+/-- **Weak compactness step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `sup_q M_W(T_q) < ∞` for
+every `W ⊂⊂ U`, a subsequence of `T_q` converges weakly in `U`.  Take an exhaustion `W i ⊂⊂ U`,
+`B i = sup_q M_{W i}(T_q)`, and countable families `E i` of test forms supported in `W i` that are
+uniformly dense there.  The mass estimate bounds `T_q(η)` uniformly in `q` for `η ∈ ⋃ i, E i`, so
+sequential compactness of the countable product `∏_η [-b_η, b_η]` gives one subsequence `φ` along
+which every `T_q(η)` converges.  Density and the mass estimate make `T_{φ q}(ω)` Cauchy for every
+test form `ω`; its limit `L` is linear, and `|L(ω)| ≤ B i · N · sup_x ‖ω(x)‖` for `spt ω ⊆ W i`
+(operator norm `‖·‖`, `N = √#(Fin n → Fin P)`) gives the sequential continuity of `L`. -/
+theorem Submission.cmb_exists_weakly_convergent_subseq : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : ℕ → GeometricCurrentOn U n, (∀ W, CompactlyContainedOpen W U → (⨆ q, (T q).massOn W) < ∞) → ∃ (φ : ℕ → ℕ) (T₀ : GeometricCurrentOn U n), StrictMono φ ∧ WeaklyConvergesOn (fun q => T (φ q)) T₀ := by
+  intro P n U hU T hT
+  classical
+  -- Step 0: `|α| ≤ N ‖α‖`, `N = √#(Fin n → Fin P)`, for the operator norm `‖α‖`.
+  set N : ℝ := Real.sqrt (Fintype.card (Fin n → Fin P)) with hN_def
+  have hN : 0 ≤ N := Real.sqrt_nonneg _
+  have hcmp : ∀ α : Covector (Eucl P) n, covectorEuclideanNorm α ≤ N * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hN_def, ← Real.sqrt_sq (norm_nonneg α), ← Real.sqrt_mul (by positivity)]
+    apply Real.sqrt_le_sqrt
+    calc ∑ I : Fin n → Fin P,
+          (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+        ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h : |α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)| ≤ ‖α‖ := by
+              have h1 := α.le_opNorm (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+              have h2 : ∀ i, ‖EuclideanSpace.basisFun (Fin P) ℝ (I i)‖ = 1 := fun i =>
+                (EuclideanSpace.basisFun (Fin P) ℝ).orthonormal.1 (I i)
+              simpa [Real.norm_eq_abs, h2] using h1
+            calc (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2
+                = |α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)| ^ 2 := (sq_abs _).symm
+              _ ≤ ‖α‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+          · positivity
+      _ = (Fintype.card (Fin n → Fin P) : ℝ) * ‖α‖ ^ 2 := by simp
+  -- Step 1: an exhaustion of `U` by open sets `W i ⊂⊂ U`.
+  obtain ⟨W, hW, hWK⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  -- Step 2: the finite mass bounds `M_{W i}(T_q) ≤ B i`.
+  set B : ℕ → ℝ := fun i => (⨆ q, (T q).massOn (W i)).toReal with hB_def
+  have hB0 : ∀ i, 0 ≤ B i := fun i => ENNReal.toReal_nonneg
+  have hBm : ∀ i q, (T q).massOn (W i) ≤ ENNReal.ofReal (B i) := fun i q => by
+    rw [hB_def, ENNReal.ofReal_toReal (hT (W i) (hW i)).ne]
+    exact le_iSup (fun q => (T q).massOn (W i)) q
+  -- Step 3: countable families `E i`, supported in `W i` and uniformly dense there.
+  choose E hEc hEsupp hEdense using fun i =>
+    Submission.cmb_exists_countable_dense_testForms P n U (W i) (hW i).2.1
+  -- Step 4: `|T_q(η)| ≤ B (idx η) * C η` for `η ∈ E (idx η)` and every `q`.
+  have hCη : ∀ η : TestFormOn U n, ∃ C : ℝ,
+      ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ C := by
+    intro η
+    obtain ⟨C', hC'⟩ := Continuous.bounded_above_of_compact_support
+      η.property.1.1.continuous η.property.1.2
+    exact ⟨N * C', fun x => (hcmp _).trans (mul_le_mul_of_nonneg_left (hC' x) hN)⟩
+  choose C hC using hCη
+  have hidx : ∀ η ∈ ⋃ i, E i, ∃ i, η ∈ E i := fun η h => mem_iUnion.1 h
+  choose! idx hidx using hidx
+  have hb : ∀ q, ∀ η ∈ ⋃ i, E i, |T q η| ≤ B (idx η) * C η := fun q η hη =>
+    Submission.cmb_abs_apply_le_of_massOn_le P n U (W (idx η)) (T q) η (B (idx η)) (C η)
+      (hB0 _) (hBm _ q) (hEsupp _ η (hidx η hη)) (hC η)
+  -- Step 5: one subsequence along which `T_q(η)` converges for every `η ∈ ⋃ i, E i`
+  -- (Tychonoff and sequential compactness in `ℝ^(⋃ i, E i)`, a countable product).
+  obtain ⟨φ, hφ, hconvE⟩ : ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ η ∈ ⋃ i, E i,
+      ∃ l : ℝ, Tendsto (fun q => T (φ q) η) atTop (𝓝 l) := by
+    have := (countable_iUnion hEc).to_subtype
+    have hK : IsCompact (Set.pi univ fun η : ↥(⋃ i, E i) =>
+        Icc (-(B (idx η) * C η)) (B (idx η) * C η)) :=
+      isCompact_univ_pi fun _ => isCompact_Icc
+    obtain ⟨a, -, φ, hφ, hlim⟩ := hK.tendsto_subseq
+      (x := fun q (η : ↥(⋃ i, E i)) => T q η)
+      (fun q => by
+        simp only [Set.mem_pi, Set.mem_univ, Set.mem_Icc, forall_const]
+        intro η
+        exact abs_le.1 (hb q η η.2))
+    exact ⟨φ, hφ, fun η hη => ⟨a ⟨η, hη⟩, (tendsto_pi_nhds.1 hlim) ⟨η, hη⟩⟩⟩
+  -- Step 6: `T_{φ q}(ω)` is a Cauchy sequence for every test form `ω`.
+  have hconv : ∀ ω : TestFormOn U n, ∃ l : ℝ, Tendsto (fun q => T (φ q) ω) atTop (𝓝 l) := by
+    intro ω
+    obtain ⟨i, hi⟩ := hWK _ ω.property.1.2 ω.property.2
+    apply cauchySeq_tendsto_of_complete
+    rw [Metric.cauchySeq_iff']
+    intro ε hε
+    obtain ⟨η, hηE, hη⟩ := hEdense i ω hi (ε / (3 * (B i + 1))) (by have := hB0 i; positivity)
+    obtain ⟨l, hl⟩ := hconvE η (mem_iUnion.2 ⟨i, hηE⟩)
+    obtain ⟨N₀, hN₀⟩ := Metric.cauchySeq_iff'.1 hl.cauchySeq (ε / 3) (by positivity)
+    have hdiff : ∀ q, |T q ω - T q η| ≤ ε / 3 := by
+      intro q
+      have hsupp : tsupport ((ω - η : TestFormOn U n) : DifferentialForm (Eucl P) n) ⊆ W i :=
+        (tsupport_sub _ _).trans (union_subset hi (hEsupp i η hηE))
+      have h := Submission.cmb_abs_apply_le_of_massOn_le P n U (W i) (T q) (ω - η) (B i)
+        (ε / (3 * (B i + 1))) (hB0 i) (hBm i q) hsupp (fun x => by simpa using hη x)
+      rw [(T q).toCurrent.map_sub ω η] at h
+      refine h.trans ?_
+      have hBi := hB0 i
+      rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    refine ⟨N₀, fun m hm => ?_⟩
+    have h1 := hdiff (φ m)
+    have h2 := hdiff (φ N₀)
+    have h3 := hN₀ m hm
+    rw [Real.dist_eq] at h3 ⊢
+    calc |T (φ m) ω - T (φ N₀) ω|
+        ≤ |T (φ m) ω - T (φ m) η| + |T (φ m) η - T (φ N₀) η| + |T (φ N₀) η - T (φ N₀) ω| := by
+          have := abs_sub_le (T (φ m) ω) (T (φ m) η) (T (φ N₀) ω)
+          have := abs_sub_le (T (φ m) η) (T (φ N₀) η) (T (φ N₀) ω)
+          linarith
+      _ < ε / 3 + ε / 3 + ε / 3 := by
+          rw [abs_sub_comm (T (φ N₀) η)]
+          have : |T (φ m) η - T (φ N₀) η| < ε / 3 := h3
+          linarith
+      _ = ε := by ring
+  -- Step 7: the limit `L` is linear.
+  choose L hL using hconv
+  let Lin : CurrentOn U n :=
+    { toFun := L
+      map_add' := fun ω ω' => tendsto_nhds_unique (hL (ω + ω'))
+        (by simpa only [map_add] using (hL ω).add (hL ω'))
+      map_smul' := fun t ω => tendsto_nhds_unique (hL (t • ω))
+        (by simpa only [map_smul, smul_eq_mul, RingHom.id_apply] using (hL ω).const_mul t) }
+  -- Steps 8–9: `L` is sequentially continuous, so `T₀ = L` is a current and `T_{φ q} ⇀ T₀`.
+  refine ⟨φ, ⟨Lin, ?_⟩, hφ, fun ω => hL ω⟩
+  intro ωs hωs
+  obtain ⟨K, hK, hKU, hsupp, -, hunif⟩ := hωs
+  obtain ⟨i, hi⟩ := hWK K hK hKU
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hBi := hB0 i
+  set δ : ℝ := ε / (2 * (B i + 1) * (N + 1)) with hδ_def
+  have hδ : 0 < δ := by positivity
+  -- Uniform convergence of the zeroth derivatives: `sup_K ‖ωs j‖ < δ` for large `j`.
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 (Metric.tendstoUniformlyOn_iff.1 (hunif 0) δ hδ)
+  refine ⟨J, fun j hj => ?_⟩
+  have hpt : ∀ x, covectorEuclideanNorm ((ωs j : DifferentialForm (Eucl P) n) x) ≤ N * δ := by
+    intro x
+    by_cases hx : x ∈ K
+    · have h2 : ‖(ωs j : DifferentialForm (Eucl P) n) x‖ < δ := by
+        simpa [iteratedFDeriv_fun_zero, norm_iteratedFDeriv_zero] using hJ j hj x hx
+      exact (hcmp _).trans (mul_le_mul_of_nonneg_left h2.le hN)
+    · rw [image_eq_zero_of_notMem_tsupport fun h => hx (hsupp j h), covectorEuclideanNorm_zero]
+      positivity
+  have hle : |L (ωs j)| ≤ B i * (N * δ) :=
+    le_of_tendsto' ((continuous_abs.tendsto _).comp (hL (ωs j))) fun q =>
+      Submission.cmb_abs_apply_le_of_massOn_le P n U (W i) (T (φ q)) (ωs j) (B i) (N * δ) hBi
+        (hBm i (φ q)) ((hsupp j).trans hi) hpt
+  have hlt : B i * (N * δ) < ε := by
+    have hfrac : B i * (N * δ) = ε * (B i * N) / (2 * (B i + 1) * (N + 1)) := by
+      rw [hδ_def]; field_simp
+    rw [hfrac, div_lt_iff₀ (by positivity)]
+    nlinarith [mul_nonneg hBi hN]
+  change dist (L (ωs j)) 0 < ε
+  rw [Real.dist_eq, sub_zero]
+  exact hle.trans_lt hlt
+
 end GMT.Ch06
