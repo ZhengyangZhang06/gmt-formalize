@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5821033727b21c74952d56c6ca4960aa63b2793ec31b7637b6198e47a041cf73",
+  "git_delta": {
+    "base_commit": "1c7e200dff092722755720170476c45d64949d57",
+    "candidate_commit": "9d7e85746c1db3fd80d33a02ebdb1a7d4c5d4766",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_retraction_dini_segment",
+    "diff_sha256": "1e25f2ad66e714c0aa5c911cc42ca1175771761f20f951b2dfaa85fb556317b5",
+    "source_sha256": "2e33c4792759a06f456648148bc5310cffacd78c563ce4bc4e1a9e142b164cf0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_retraction_dini_segment",
+      "statement": "∀ (N : ℕ) (γ : ℝ → Eucl N) (K : ℝ), (∀ s ∈ Icc (0 : ℝ) 1, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ s' ∈ Icc (0 : ℝ) 1, |s' - s| < δ → ‖γ s' - γ s‖ ≤ (K + ε) * |s' - s|) → ‖γ 1 - γ 0‖ ≤ K",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
