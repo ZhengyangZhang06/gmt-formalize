@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "52d4c38efdeb6879875ed0b2f67b8a055ec5393a292a870887c70c8e5086b134",
+  "git_delta": {
+    "base_commit": "ef14c7bfda9fb9c8b4872625817b76e862c8607d",
+    "candidate_commit": "b2a28db80c3f7dfe2241307d2e171d5e73578464",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_mv_flux_zero",
+    "diff_sha256": "2631b16d541fc831800a132dfd18c7c5169a503cc0bc95448abe9cc9ff352067",
+    "source_sha256": "b4331421a067faf39557f8694deef2fdc28ef06bb732c5c749d08c9458c9f7fd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_mv_flux_zero",
+      "statement": "∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ), IsOpen U → ContDiffOn ℝ 2 h U → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∀ (x : Euclid n) (r R : ℝ), 0 < r → r < R → closedBall x R ⊆ U → ∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, 0 < s → s ≤ 1 → ∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
