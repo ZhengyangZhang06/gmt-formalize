@@ -458,6 +458,89 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"): continuity of the segment integral `I(a, b) = ∫₀¹ g(a + τ(b − a))(b − a) dτ`
+on `U × U` for an operator field `g` continuous on an open convex `U`.  At `(a₀, b₀) ∈ U × U` the
+segment `[a₀, b₀] ⊆ U` is compact, so a closed `δ`-thickening of it is a compact subset of `U` on
+which `‖g‖ ≤ M`; it contains `[a, b]` whenever `‖a − a₀‖, ‖b − b₀‖ < δ`, and then
+`‖b − a‖ ≤ ‖b₀ − a₀‖ + 2δ`.  Dominated convergence with the constant bound `M (‖b₀ − a₀‖ + 2δ)`
+gives continuity at `(a₀, b₀)`. -/
+theorem allard52_lad_segment_integral_continuousOn : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ContinuousOn g U → ContinuousOn (fun p : Rn n × Rn n => ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)) (U ×ˢ U) := by
+  intro n ℓ g U hU hconv hg
+  rintro ⟨a₀, b₀⟩ ⟨ha₀, hb₀⟩
+  refine ContinuousAt.continuousWithinAt ?_
+  -- The segment `S₀ = [a₀, b₀]` is compact and lies in `U` by convexity.
+  set S₀ : Set (Rn n) := (fun τ : ℝ => a₀ + τ • (b₀ - a₀)) '' Icc (0 : ℝ) 1
+  have hS₀c : IsCompact S₀ := isCompact_Icc.image (by fun_prop)
+  have hS₀U : S₀ ⊆ U := by
+    rintro _ ⟨τ, hτ, rfl⟩
+    exact hconv.add_smul_sub_mem ha₀ hb₀ hτ
+  -- A closed `δ`-thickening `C` of `S₀` is a compact subset of `U`, on which `‖g‖ ≤ M`.
+  obtain ⟨δ, hδ, hδU⟩ := hS₀c.exists_cthickening_subset_open hU hS₀U
+  obtain ⟨M, hM⟩ := hS₀c.cthickening.exists_bound_of_continuousOn (hg.mono hδU)
+  have hM0 : 0 ≤ M :=
+    (norm_nonneg _).trans (hM a₀ (self_subset_cthickening S₀ ⟨0, ⟨le_rfl, zero_le_one⟩, by simp⟩))
+  -- If `‖a - a₀‖, ‖b - b₀‖ < δ`, the whole segment `[a, b]` lies in `C`.
+  have hmem : ∀ a b : Rn n, dist a a₀ < δ → dist b b₀ < δ → ∀ τ ∈ Icc (0 : ℝ) 1,
+      a + τ • (b - a) ∈ cthickening δ S₀ := by
+    intro a b ha hb τ hτ
+    refine mem_cthickening_of_dist_le _ (a₀ + τ • (b₀ - a₀)) _ _ ⟨τ, hτ, rfl⟩ ?_
+    have heq : a + τ • (b - a) - (a₀ + τ • (b₀ - a₀)) = (1 - τ) • (a - a₀) + τ • (b - b₀) := by
+      module
+    rw [dist_eq_norm] at ha hb ⊢
+    rw [heq]
+    calc ‖(1 - τ) • (a - a₀) + τ • (b - b₀)‖
+        ≤ ‖(1 - τ) • (a - a₀)‖ + ‖τ • (b - b₀)‖ := norm_add_le _ _
+      _ = (1 - τ) * ‖a - a₀‖ + τ * ‖b - b₀‖ := by
+        rw [norm_smul, norm_smul, Real.norm_of_nonneg (sub_nonneg.2 hτ.2),
+          Real.norm_of_nonneg hτ.1]
+      _ ≤ (1 - τ) * δ + τ * δ := by
+        gcongr
+        · exact sub_nonneg.2 hτ.2
+        · exact hτ.1
+      _ = δ := by ring
+  -- ... and `‖b - a‖ ≤ ‖b₀ - a₀‖ + 2δ`.
+  have hlen : ∀ a b : Rn n, dist a a₀ < δ → dist b b₀ < δ → ‖b - a‖ ≤ ‖b₀ - a₀‖ + 2 * δ := by
+    intro a b ha hb
+    rw [dist_eq_norm] at ha hb
+    have heq : b - a = (b₀ - a₀) + (b - b₀) - (a - a₀) := by abel
+    calc ‖b - a‖ = ‖(b₀ - a₀) + (b - b₀) - (a - a₀)‖ := by rw [heq]
+      _ ≤ ‖(b₀ - a₀) + (b - b₀)‖ + ‖a - a₀‖ := norm_sub_le _ _
+      _ ≤ ‖b₀ - a₀‖ + ‖b - b₀‖ + ‖a - a₀‖ := by gcongr; exact norm_add_le _ _
+      _ ≤ ‖b₀ - a₀‖ + 2 * δ := by linarith
+  have hW : ∀ᶠ p : Rn n × Rn n in 𝓝 (a₀, b₀), dist p.1 a₀ < δ ∧ dist p.2 b₀ < δ := by
+    filter_upwards [ball_mem_nhds (a₀, b₀) hδ] with p hp
+    rw [mem_ball, Prod.dist_eq, max_lt_iff] at hp
+    exact hp
+  have hIoc : uIoc (0 : ℝ) 1 ⊆ Icc 0 1 := by
+    rw [uIoc_of_le zero_le_one]
+    exact Ioc_subset_Icc_self
+  -- Dominated convergence with the constant bound `M (‖b₀ - a₀‖ + 2δ)`.
+  refine intervalIntegral.continuousAt_of_dominated_interval
+    (F := fun (p : Rn n × Rn n) (τ : ℝ) => g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1))
+    (bound := fun _ => M * (‖b₀ - a₀‖ + 2 * δ)) ?_ ?_ intervalIntegrable_const ?_
+  · filter_upwards [hW] with p hp
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_uIoc
+    refine ContinuousOn.clm_apply ?_ continuousOn_const
+    exact hg.comp (by fun_prop) fun τ hτ => hδU (hmem p.1 p.2 hp.1 hp.2 τ (hIoc hτ))
+  · filter_upwards [hW] with p hp
+    refine ae_of_all _ fun τ hτ => ?_
+    calc ‖g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)‖
+        ≤ ‖g (p.1 + τ • (p.2 - p.1))‖ * ‖p.2 - p.1‖ := (g _).le_opNorm _
+      _ ≤ M * (‖b₀ - a₀‖ + 2 * δ) :=
+        mul_le_mul (hM _ (hmem p.1 p.2 hp.1 hp.2 τ (hIoc hτ))) (hlen p.1 p.2 hp.1 hp.2)
+          (norm_nonneg _) hM0
+  · refine ae_of_all _ fun τ hτ => ?_
+    have hgτ : ContinuousAt g (a₀ + τ • (b₀ - a₀)) :=
+      hg.continuousAt (hU.mem_nhds (hS₀U ⟨τ, hIoc hτ, rfl⟩))
+    have hseg : ContinuousAt (fun p : Rn n × Rn n => p.1 + τ • (p.2 - p.1)) (a₀, b₀) := by
+      fun_prop
+    exact (hgτ.comp_of_eq hseg rfl).clm_apply (by fun_prop)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
