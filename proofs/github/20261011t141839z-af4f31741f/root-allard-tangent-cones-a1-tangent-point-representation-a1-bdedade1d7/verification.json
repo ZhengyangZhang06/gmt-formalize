@@ -1,0 +1,24 @@
+{
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/807",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "9d3622790171def690951e5f5face81856402e5c",
+  "integrated_commit": "",
+  "proof_base_commit": "d5b926e5068f44f48eefbb6aaf896bb3b7f9a831",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_tangent_cones-a1",
+  "requires": [
+    "root.allard_tangent_cones-a1.tangent_plane_density-a1",
+    "root.allard_tangent_cones-a1.tangent_plane_dilation-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.rectifiable_sigma_finite-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.hausdorff_null_of_weight_null-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.weight_eq_restrict-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.integral_eq_weighted-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.blowup_set_integral-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.weighted_approx_tangent-a1"
+  ]
+}
