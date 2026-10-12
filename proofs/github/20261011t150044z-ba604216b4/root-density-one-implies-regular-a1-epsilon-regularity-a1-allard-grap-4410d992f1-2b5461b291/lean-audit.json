@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a3415f6466ed27a7e03c5471af9362c6dc8bc20082fc9e8e46e6cf87fa07e45e",
+  "git_delta": {
+    "base_commit": "09bf83aff2da7919f71fa9431c5f1d5541e9fbb3",
+    "candidate_commit": "72f84801892257a4f5ffbe3e0c463530ff1d93aa",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_sn_hausdorff_le_mul_of_lower_density",
+    "diff_sha256": "c681551beaf9eabf879daecceec34b0fb85c476dc263d240d17faa0a3aab1428",
+    "source_sha256": "8340d7d985f337b0a81cc3307b2cfde60930d65924ffdfaba74c0ff3907856be",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_sn_hausdorff_le_mul_of_lower_density",
+      "statement": "∀ (N n : ℕ) (c : ℝ), 0 < c → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ (ν : Measure (Euclid N)) (A O : Set (Euclid N)), IsOpen O → A ⊆ O → (∀ x ∈ A, ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, 0 < t → t < t₀ → ENNReal.ofReal (c * t ^ n) ≤ ν (closedBall x t)) → μHE[n] A ≤ C * ν O",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
