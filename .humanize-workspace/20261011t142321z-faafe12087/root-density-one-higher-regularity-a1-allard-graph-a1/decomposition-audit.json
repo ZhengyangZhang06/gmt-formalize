@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "density_one_allard_scale|exists_translated_varifold_allardHypotheses|isHolderCk_one_of_scaledC1AlphaNorm_ne_top|dohr_allard_graph_at_density_one",
+        "iteratedFDeriv_one_apply|norm_iteratedFDeriv_one",
+        "fderivWithin_of_mem_nhds",
+        "lintegral_map",
+        "HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable|blowUpMap",
+        "python3 -I /tmp/dohr-independent-audit/run_checks.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-allard-graph-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-allard-graph-a1/decomposition-v4.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-allard-scale-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-translate-varifold-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-holder-class-a1/accepted-candidate.json",
+        "/tmp/dohr-independent-audit/Challenge.lean",
+        "/tmp/dohr-independent-audit/Assembly.lean",
+        "/tmp/dohr-independent-audit/Assembly.log"
+      ],
+      "conclusion": "Verified pinned project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; workspace Contract and Submission match the snapshot byte-for-byte. The four theorem names have no matches in the pinned Ch05 sources. Each reused child has exactly one comparator-accepted owner, an identical frozen type, and no child prerequisites. Accepted proof blocks were independently extracted from commits 556f326ab6126af50cb093c48702a0aefff24952, e8ad21ac2377acc7f942ccc877ba9e134580373cd and 2fa4e679ecc8f63ac77987a3b7b146f5a0d41c4b. Fresh Lean 4.35.0-rc3 checks passed: all frozen propositions elaborate before child implementations, and all three proofs plus the exact selected-parent assembly compile. Their axiom sets contain only propext, Classical.choice and Quot.sound. The split is appropriate and acyclic: scale selection and translation establish AllardHypotheses; the finite-norm lemma, inverse isometry and restriction to open balls establish every selected-parent conclusion. All names are bare identifiers, and accepted reuse creates no active-branch collision."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "allard_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every prose hypothesis and conclusion, including the extended-real bounds. Positive density gives support membership; local Lp supplies a finite integral on a compact ball; p > n implies p > 0 and decay of the scaled bound. Choosing below both thresholds proves the asserted radius. The proof is complete and independent of Allard or the parent, including when n = 0. Exact-type accepted reuse is valid."
+    },
+    {
+      "key": "translate_hypotheses",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone proposition matches the construction and both transfer assertions for arbitrary U and real p, delta and r. The proof verifies every varifold field, weight and support identities, equality of tangent predicates and their chosen projections, local integrability, and first variation. Measurable-equivalence change of variables requires no additional measurability hypothesis on H. All seven AllardHypotheses clauses follow. No scale theorem or parent conclusion is invoked, so the empty dependency list is correct. Exact-type accepted reuse is valid."
+    },
+    {
+      "key": "holder_class",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, without requiring W open or alpha < 1. Positive rho forces all three extended-real suprema to be finite. Interior membership identifies within derivatives with unrestricted derivatives; restriction gives C1 regularity. The Hilbert–Schmidt bound and the linear isometry identifying first iterated derivatives give both derivative bounds and the Hölder estimate, with coincident points handled using alpha > 0. The proof is complete and non-circular. Exact-type accepted reuse is valid."
+    }
+  ],
+  "required_changes": []
+}
