@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_height-a1.plane_frame-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_height-a1",
+  "depth": 6,
+  "title": "Frame, dimension and pointwise distance bounds for the affine graph plane",
+  "statement": "Let n, k ∈ ℕ, T an n-dimensional linear subspace of ℝ^{n+k} (Module.finrank ℝ T = n), ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 and ιv ∈ T for all v ∈ ℝⁿ, w ∈ ℝᵏ, Λ : ℝⁿ → ℝᵏ continuous linear (operator norm ‖Λ‖), ξ ∈ ℝ^{n+k} and c ∈ ℝᵏ. Put τ := ξ + ι'c, L := ι + ι'∘Λ (Lean ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap), S := LinearMap.range L, and write p_S, p_T for the orthogonal projections onto S and T (Submodule.starProjection). Then: (a) dim S = n (Module.finrank ℝ S = n); (b) for all v ∈ ℝⁿ and w ∈ ℝᵏ, with y := (ξ + ιv + ι'w) − τ: |y − p_S y| ≤ |w − c − Λv| and |v| ≤ |y|; (c) for every x ∈ ℝ^{n+k}: |(x − τ) − p_S(x − τ)| ≤ |(x − ξ) − p_T(x − ξ)| + |c| + ‖Λ‖·|x − τ|.",
+  "lean_statement": "∀ (n k : ℕ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (Λ : Euclid n →L[ℝ] Euclid k) (ξ : Euclid (n + k)) (c : Euclid k), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → Module.finrank ℝ (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)) = n ∧ (∀ (v : Euclid n) (w : Euclid k), ‖(ξ + ι v + ι' w - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (ξ + ι v + ι' w - (ξ + ι' c))‖ ≤ ‖w - c - Λ v‖ ∧ ‖v‖ ≤ ‖ξ + ι v + ι' w - (ξ + ι' c)‖) ∧ ∀ x : Euclid (n + k), ‖(x - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (x - (ξ + ι' c))‖ ≤ ‖(x - ξ) - T.starProjection (x - ξ)‖ + ‖c‖ + ‖Λ‖ * ‖x - (ξ + ι' c)‖",
+  "lean_name": "dorag_tes_gah_plane_frame_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-00e0b893c7-a1"
+}
