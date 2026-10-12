@@ -458,6 +458,88 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, proof of Theorem 4.5, steps (1)–(2): the plane `T(0, 2δρ)`.**  Assume the Affine
+Approximation Lemma 2.5, with constant `C_A = C_A(n, ℓ, p)`.  If 2.3 holds with `δ ∈ (0, 1/4]` and
+`(σ^{p−n} ∫_{B_σ(0)} |H|ᵖ dμ_V)^{1/p} ≤ δ` for `σ = 2δρ`, then the plane `T` given by 2.5 at
+`ξ = 0 ∈ spt V` and radius `2δρ` satisfies `E(0, δρ, T) ≤ C (δ^{1/(2n+2)})²` and
+`dist(x, T) ≤ C δ^{1/(2n+2)} δρ` for `x ∈ spt V ∩ B_{2δρ}(0)`, with `C = 2ⁿ C_A² (C_A + 1)² + 2 C_A`.
+Indeed `δ ≤ δ^{1/(2n+2)}`, so the right side of the first inequality of 2.5 is
+`≤ (C_A + 1) δ^{1/(2n+2)}`, and `E(0, δρ, T) = 2ⁿ (2δρ)⁻ⁿ ∫_{B_{δρ}(0)} |p_{T_x M} − p_T|² dμ_V`;
+each `dist(x, T)` is a term of the height supremum, so the second inequality of 2.5 gives
+`dist(x, T) ≤ 2 C_A δ^{1/(2n+2)} δρ`. -/
+theorem tdo_stp_origin_affine_plane : AffineApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C : ℝ, 0 < C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ 1 / 4 → V.AllardHypotheses H p δ ρ → V.scaledLpNorm H p 0 (2 * (δ * ρ)) ≤ ENNReal.ofReal δ → ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ V.tiltExcess 0 (δ * ρ) T ≤ C * (δ ^ (1 / (2 * (n : ℝ) + 2))) ^ 2 ∧ ∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)), infDist x (T : Set (Amb n ℓ)) ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ) := by
+  intro hAff n ℓ hn p hp
+  -- The constant `C_A` of the Affine Approximation Lemma 2.5 for `(n, ℓ, p)`.
+  obtain ⟨CA, hCA, hA⟩ := hAff n ℓ hn p hp
+  refine ⟨2 ^ n * CA ^ 2 * (CA + 1) ^ 2 + 2 * CA, by positivity, ?_⟩
+  intro U hU V H δ ρ hδ hδ4 hAH hK
+  have hρ : 0 < ρ := hAH.1
+  have h0 : (0 : Amb n ℓ) ∈ V.support := hAH.2.2.2.1
+  have hσ : 0 < δ * ρ := mul_pos hδ hρ
+  -- Lemma 2.5 at `ξ = 0` with radius `2δρ`.
+  obtain ⟨T, hT, h2a, h2b⟩ := hA U hU V H δ ρ hδ hδ4 hAH 0 ⟨h0, mem_closedBall_self hσ.le⟩
+    (2 * (δ * ρ)) (by positivity) (le_of_eq (by ring))
+  set σ := δ * ρ
+  set g := δ ^ (1 / (2 * (n : ℝ) + 2))
+  have hg0 : 0 ≤ g := Real.rpow_nonneg hδ.le _
+  -- `δ = δ ^ 1 ≤ δ ^ (1 / (2n + 2))` since `δ ≤ 1` and `1 / (2n + 2) ≤ 1`.
+  have hδg : δ ≤ g := by
+    have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    have hexp : 1 / (2 * (n : ℝ) + 2) ≤ 1 := by
+      rw [div_le_one₀ (by positivity)]
+      linarith
+    calc δ = δ ^ (1 : ℝ) := (Real.rpow_one δ).symm
+      _ ≤ g := Real.rpow_le_rpow_of_exponent_ge hδ (by linarith) hexp
+  refine ⟨T, hT, ?_, ?_⟩
+  · -- Tilt bound.
+    rw [show 2 * σ / 2 = σ by ring] at h2a
+    set J := ∫ x in closedBall (0 : Amb n ℓ) σ,
+      hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight
+    have hrhs : ENNReal.ofReal (2 * σ)⁻¹ * V.heightSup 0 (2 * σ) T +
+        V.scaledLpNorm H p 0 (2 * σ) ≤ ENNReal.ofReal ((CA + 1) * g) := by
+      calc _ ≤ ENNReal.ofReal (CA * g) + ENNReal.ofReal g :=
+            add_le_add h2b (hK.trans (ENNReal.ofReal_le_ofReal hδg))
+        _ = ENNReal.ofReal (CA * g + g) := (ENNReal.ofReal_add (by positivity) hg0).symm
+        _ = ENNReal.ofReal ((CA + 1) * g) := by congr 1; ring
+    have h3 := (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 (h2a.trans hrhs)
+    rw [inv_mul_le_iff₀ hCA] at h3
+    have h4 : ((2 * σ) ^ n)⁻¹ * J ≤ (CA * ((CA + 1) * g)) ^ 2 :=
+      (Real.sqrt_le_left (by positivity)).1 h3
+    -- `σ⁻ⁿ J = 2ⁿ (2σ)⁻ⁿ J`.
+    have h5 : V.tiltExcess 0 σ T = 2 ^ n * (((2 * σ) ^ n)⁻¹ * J) := by
+      have h2n : (2 : ℝ) ^ n ≠ 0 := by positivity
+      have key : ∀ s j : ℝ, (s ^ n)⁻¹ * j = 2 ^ n * (((2 * s) ^ n)⁻¹ * j) := fun s j => by
+        rw [mul_pow, mul_inv, ← mul_assoc, ← mul_assoc, mul_inv_cancel₀ h2n, one_mul]
+      exact key σ J
+    rw [h5]
+    calc 2 ^ n * (((2 * σ) ^ n)⁻¹ * J) ≤ 2 ^ n * (CA * ((CA + 1) * g)) ^ 2 := by gcongr
+      _ = 2 ^ n * CA ^ 2 * (CA + 1) ^ 2 * g ^ 2 := by ring
+      _ ≤ 2 ^ n * CA ^ 2 * (CA + 1) ^ 2 * g ^ 2 + 2 * CA * g ^ 2 :=
+          le_add_of_nonneg_right (by positivity)
+      _ = (2 ^ n * CA ^ 2 * (CA + 1) ^ 2 + 2 * CA) * g ^ 2 := by ring
+  · -- Height bound.
+    intro x hx
+    have hle : ENNReal.ofReal (infDist x (T : Set (Amb n ℓ))) ≤ V.heightSup 0 (2 * σ) T :=
+      calc ENNReal.ofReal (infDist x (T : Set (Amb n ℓ)))
+          = ENNReal.ofReal (infDist (x - 0) (T : Set (Amb n ℓ))) := by rw [sub_zero]
+        _ ≤ V.heightSup 0 (2 * σ) T :=
+          le_iSup₂ (f := fun y (_ : y ∈ V.support ∩ closedBall (0 : Amb n ℓ) (2 * σ)) =>
+            ENNReal.ofReal (infDist (y - 0) (T : Set (Amb n ℓ)))) x hx
+    have h1 : ENNReal.ofReal (2 * σ)⁻¹ * ENNReal.ofReal (infDist x (T : Set (Amb n ℓ))) ≤
+        ENNReal.ofReal (CA * g) :=
+      le_trans (by gcongr) h2b
+    rw [← ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_le_ofReal_iff (by positivity),
+      inv_mul_le_iff₀ (by positivity)] at h1
+    calc infDist x (T : Set (Amb n ℓ)) ≤ 2 * σ * (CA * g) := h1
+      _ = 2 * CA * g * σ := by ring
+      _ ≤ (2 ^ n * CA ^ 2 * (CA + 1) ^ 2 + 2 * CA) * g * σ := by
+          gcongr
+          exact le_add_of_nonneg_left (by positivity)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
