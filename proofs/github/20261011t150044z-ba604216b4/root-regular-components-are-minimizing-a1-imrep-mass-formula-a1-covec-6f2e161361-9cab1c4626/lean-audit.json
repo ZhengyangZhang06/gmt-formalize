@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7c4018d267d7fbf2a07a560ee345ad24d989495c8ea66a39b5df4a7faa9fb9a8",
+  "git_delta": {
+    "base_commit": "6a1a011098d883682aaf9a648e4ebe38134c7ff6",
+    "candidate_commit": "58e396c40bd56ed6eaaabc0a0a1b827f1d3b412d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_covector_sq_sum_basis_invariant",
+    "diff_sha256": "854d6db33f2881b0f530098b4bea29a570e1acde11d43348a3d557b31d0e48e4",
+    "source_sha256": "fd6510928748170daa42acf553f0fec7c8f9b351bf87ff7e87e134ef73236391",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covector_sq_sum_basis_invariant",
+      "statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (b b' : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => b (j k))) ^ 2 = ∑ j : Fin n → Fin P, (α (fun k => b' (j k))) ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
