@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "Harmonic approximation with affine output (Simon 5.3.1–5.3.4)",
+  "statement": "For every n ≥ 1 there is C > 0 such that for every ε' > 0 there is δ_h > 0 with the following property. Let R₀ > 0 and w : ℝⁿ → ℝ be Lipschitz with ∫_{B̆_{R₀}(0)} |Dw|² ≤ R₀ⁿ and |∫_{B̆_{R₀}(0)} Σ_i ∂_iw ∂_iζ| ≤ δ_hR₀ⁿG for every C¹ compactly supported ζ : ℝⁿ → ℝ with tsupport ζ ⊆ B̆_{R₀}(0) and every G ∈ ℝ with |Dζ(v)| ≤ G for all v (Dw = fderiv ℝ w, ∂_iw = Dw(e_i), Lebesgue integrals over the open ball). Then there are a ∈ ℝ and a continuous linear functional b on ℝⁿ with ‖b‖ ≤ C, |a| ≤ C(R₀^{−n}∫_{B̆_{R₀}(0)} w²)^{1/2} + C√ε' R₀, and ∫_{B̆_{θ'R₀}(0)} (w(v) − a − b(v))²dv ≤ C(ε'/θ'^{n+2} + θ'²)(θ'R₀)^{n+2} for every θ' ∈ (0, 1/4].",
+  "lean_statement": "∀ n : ℕ, 0 < n → ∃ C : ℝ, 0 < C ∧ ∀ ε' : ℝ, 0 < ε' → ∃ δh : ℝ, 0 < δh ∧ ∀ (R₀ : ℝ) (w : Euclid n → ℝ) (Lw : NNReal), 0 < R₀ → LipschitzWith Lw w → ∫ v in ball (0 : Euclid n) R₀, ‖fderiv ℝ w v‖ ^ 2 ≤ R₀ ^ n → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R₀ → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) R₀, ∑ i : Fin n, fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δh * R₀ ^ n * G) → ∃ (a : ℝ) (b : Euclid n →L[ℝ] ℝ), ‖b‖ ≤ C ∧ |a| ≤ C * Real.sqrt ((∫ v in ball (0 : Euclid n) R₀, w v ^ 2) / R₀ ^ n) + C * Real.sqrt ε' * R₀ ∧ ∀ θ' : ℝ, 0 < θ' → θ' ≤ 1 / 4 → ∫ v in ball (0 : Euclid n) (θ' * R₀), (w v - a - b v) ^ 2 ≤ C * (ε' / θ' ^ (n + 2) + θ' ^ 2) * (θ' * R₀) ^ (n + 2)",
+  "lean_name": "dorag_harmonic_affine_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-365b96669a-a1"
+}

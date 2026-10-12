@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "Tilt-excess controlled by height (Simon 5.2.1)",
+  "statement": "For all n, k ∈ ℕ there is C > 0 such that for every U ⊆ ℝ^{n+k} any set, R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n; ξ_R = R.orient is its orientation, and ξ below denotes a point) with μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]), W ⊆ U open, κ ∈ ℝ, H : ℝ^{n+k} → ℝ^{n+k} μ-a.e. strongly measurable with |H(x)| ≤ κ for all x, such that R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X : ℝ^{n+k} → ℝ^{n+k} with tsupport X ⊆ W, every ξ ∈ ℝ^{n+k}, r > 0 with the closed ball B_r(ξ) ⊆ W, and every n-dimensional subspace S: ∫_{B_{r/2}(ξ)} |p_x − p_S|² dμ ≤ C(r^{−2}∫_{B_r(ξ)} |(x − ξ) − p_S(x − ξ)|² dμ + κ²r²μ(B_r(ξ))). Here p_x is the orthogonal projection onto approxTangentPlane n M x, p_x^⊥ := I − p_x, p_S the orthogonal projection onto a subspace S, |A|² := Σ_i |Ae_i|² the Hilbert–Schmidt norm (the Lean sum over EuclideanSpace.single i 1), B_t(y) the closed ball, and integrals of nonnegative functions are lower Lebesgue integrals in [0, ∞] (Lean ∫⁻ of ENNReal.ofReal).",
+  "lean_statement": "∀ (n k : ℕ), ∃ C : ℝ, 0 < C ∧ ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ) (ξ : Euclid (n + k)) (r : ℝ) (S : Submodule ℝ (Euclid (n + k))), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → 0 < r → closedBall ξ r ⊆ W → Module.finrank ℝ S = n → ∫⁻ x in closedBall ξ (r / 2), ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal C * (ENNReal.ofReal (1 / r ^ 2) * ∫⁻ x in closedBall ξ r, ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂R.measure + ENNReal.ofReal (κ ^ 2 * r ^ 2) * R.measure (closedBall ξ r))",
+  "lean_name": "dorag_tilt_height_estimate",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-b5982cc9c1-a1"
+}
