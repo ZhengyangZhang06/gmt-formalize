@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f63b58369871f7d6d4b52515f0dd6649b3bb9665838a74c921641ba5cb32fb6",
+  "git_delta": {
+    "base_commit": "e8359b53bb7bc46effe2f2815350ceac0145cb4b",
+    "candidate_commit": "4501f4a974c1b7004fae0c50ede66cac082f0b66",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_tv_weight_eq",
+    "diff_sha256": "4c8f96231c72525c12da98ba33324d260b11730cf82c0d4fe3ee1fb3bceb3e0e",
+    "source_sha256": "6588d0197ae236a0ae190a21f5fb92d70c0010e550d1d058d7063d7ab40a37bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_tv_weight_eq",
+      "statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (x₀ : Amb n ℓ), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier → (∀ y, W.mult y = V.mult (y + x₀)) → W.weight = V.weight.map (fun y => y - x₀)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
