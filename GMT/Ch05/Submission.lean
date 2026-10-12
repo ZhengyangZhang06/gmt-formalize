@@ -597,6 +597,103 @@ theorem any_radius_gr_pp_hs_proj_split : (∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn
   simp only [ContinuousLinearMap.comp_apply, sub_apply, Submodule.starProjection_orthogonal_val,
     map_sub, inner_sub_left, inner_sub_right, hP, hQ, hQu, hQPu]
   ring
+/-- Graph parametrization of a rotated graph plane (plane projections in the graph-rate step of the
+proof of Simon Ch. 5, Remark 5.3).  Let `q` be a linear isometry of `ℝ^{n+ℓ}`, `A : ℝⁿ → ℝ^ℓ`
+continuous linear, `G_A = q(span{(v, A v) : v ∈ ℝⁿ})` and `P_A` the orthogonal projection onto
+`G_A` (`‖A‖` the operator norm).  Then
+(P1) `P_A q(x, A x) = q(x, A x)`;
+(P2) `|w| ≤ (1 + ‖A‖²)^{1/2} |q(0, w) − P_A q(0, w)|`;
+(W) `v ↦ q(v, A v)` is continuous linear with operator norm `≤ (1 + ‖A‖²)^{1/2}`;
+(D) `q(v, A v) − q(v, B v) = q(0, (A − B) v)`.
+Since `v ↦ (v, A v)` is linear, `G_A = {q(v, A v) : v ∈ ℝⁿ}`; (P2) and (W) follow from
+`|(a, b)|² = |a|² + |b|²`, `|A v| ≤ ‖A‖ |v|` and `(a + c b)² ≤ (1 + c²)(a² + b²)`. -/
+theorem any_radius_gr_pp_graph_param : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n), (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection (q (graphPoint x (A x))) = q (graphPoint x (A x))) ∧ (∀ (A : Rn n →L[ℝ] Rn ℓ) (w : Rn ℓ), ‖w‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2) * ‖q (graphPoint (0 : Rn n) w) - (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection (q (graphPoint (0 : Rn n) w))‖) ∧ (∀ A : Rn n →L[ℝ] Rn ℓ, ∃ W : Rn n →L[ℝ] Amb n ℓ, (∀ v : Rn n, W v = q (graphPoint v (A v))) ∧ ‖W‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2)) ∧ ∀ (A B : Rn n →L[ℝ] Rn ℓ) (v : Rn n), q (graphPoint v (A v)) - q (graphPoint v (B v)) = q (graphPoint (0 : Rn n) ((A - B) v)) := by
+  intro n ℓ q
+  -- Coordinates of `graphPoint a b` and the resulting algebra (G1)–(G4).
+  have hL : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hR : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  have hext : ∀ z z' : Amb n ℓ, (∀ i : Fin n, z (Fin.castAdd ℓ i) = z' (Fin.castAdd ℓ i)) →
+      (∀ j : Fin ℓ, z (Fin.natAdd n j) = z' (Fin.natAdd n j)) → z = z' := by
+    intro z z' h1 h2
+    ext k
+    exact Fin.addCases (fun i => h1 i) (fun j => h2 j) k
+  have G1 : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b' := by
+    intro a a' b b'
+    apply hext <;> intro i <;> simp [hL, hR]
+  have G2 : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint (a - a') (b - b') = graphPoint a b - graphPoint a' b' := by
+    intro a a' b b'
+    apply hext <;> intro i <;> simp [hL, hR]
+  have G3 : ∀ (t : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (t • a) (t • b) = t • graphPoint a b := by
+    intro t a b
+    apply hext <;> intro i <;> simp [hL, hR]
+  have G4 : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+      EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+    simp only [hL, hR]
+  -- `g_A v = graphPoint v (A v)` is linear, so `span (range g_A) = range g_A` and every element of
+  -- `G_A` is `q (graphPoint v (A v))` for some `v`.
+  let g : (Rn n →L[ℝ] Rn ℓ) → Rn n →ₗ[ℝ] Amb n ℓ := fun A =>
+    { toFun := fun v => graphPoint v (A v)
+      map_add' := fun v v' => by simp only [map_add]; exact G1 _ _ _ _
+      map_smul' := fun t v => by simp only [map_smul, RingHom.id_apply]; exact G3 _ _ _ }
+  have hspan : ∀ A : Rn n →L[ℝ] Rn ℓ,
+      Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)) = LinearMap.range (g A) := by
+    intro A
+    have h : (Set.range fun v : Rn n => graphPoint v (A v)) =
+        (LinearMap.range (g A) : Set (Amb n ℓ)) := by
+      rw [LinearMap.coe_range]
+      rfl
+    rw [h, Submodule.span_eq]
+  have hmem : ∀ (A : Rn n →L[ℝ] Rn ℓ) (z : Amb n ℓ),
+      z ∈ Submodule.map q.toLinearEquiv.toLinearMap
+        (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))) →
+      ∃ v, z = q (graphPoint v (A v)) := by
+    intro A z hz
+    rw [hspan A, Submodule.mem_map] at hz
+    obtain ⟨y, hy, rfl⟩ := hz
+    obtain ⟨v, rfl⟩ := LinearMap.mem_range.mp hy
+    exact ⟨v, rfl⟩
+  refine ⟨fun A x => ?_, fun A w => ?_, fun A => ?_, fun A B v => ?_⟩
+  · -- (P1): `q (graphPoint x (A x)) ∈ G_A` is fixed by the projection onto `G_A`.
+    rw [Submodule.starProjection_eq_self_iff]
+    exact Submodule.mem_map_of_mem (Submodule.subset_span ⟨x, rfl⟩)
+  · -- (P2): `P_A y = q (graphPoint v (A v))`, so `|y - P_A y|² = |v|² + |w - A v|²`; then
+    -- `|w| ≤ |w - A v| + ‖A‖ |v|` and `(a + c b)² ≤ (1 + c²)(a² + b²)`.
+    obtain ⟨v, hv⟩ := hmem A _ (Submodule.starProjection_apply_mem _ (q (graphPoint 0 w)))
+    rw [hv, ← map_sub, ← G2, LinearIsometryEquiv.norm_map]
+    have hN : ‖graphPoint (0 - v) (w - A v)‖ ^ 2 = ‖v‖ ^ 2 + ‖w - A v‖ ^ 2 := by
+      rw [G4, zero_sub, norm_neg]
+    have hw : ‖w‖ ≤ ‖w - A v‖ + ‖A‖ * ‖v‖ := by
+      calc ‖w‖ = ‖(w - A v) + A v‖ := by rw [sub_add_cancel]
+        _ ≤ ‖w - A v‖ + ‖A v‖ := norm_add_le _ _
+        _ ≤ ‖w - A v‖ + ‖A‖ * ‖v‖ := by gcongr; exact A.le_opNorm v
+    refine hw.trans ?_
+    have key : (‖w - A v‖ + ‖A‖ * ‖v‖) ^ 2 ≤
+        (Real.sqrt (1 + ‖A‖ ^ 2) * ‖graphPoint (0 - v) (w - A v)‖) ^ 2 := by
+      rw [mul_pow, Real.sq_sqrt (by positivity), hN]
+      nlinarith [sq_nonneg (‖A‖ * ‖w - A v‖ - ‖v‖)]
+    exact (pow_le_pow_iff_left₀ (by positivity) (by positivity) two_ne_zero).mp key
+  · -- (W): `W = q ∘ g_A`, with `|W v|² = |v|² + |A v|² ≤ (1 + ‖A‖²) |v|²`.
+    let Wl : Rn n →ₗ[ℝ] Amb n ℓ := q.toLinearEquiv.toLinearMap ∘ₗ g A
+    refine ⟨LinearMap.toContinuousLinearMap Wl, fun v => rfl, ?_⟩
+    refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _) (fun v => ?_)
+    show ‖q (graphPoint v (A v))‖ ≤ _
+    rw [LinearIsometryEquiv.norm_map]
+    have hb : ‖graphPoint v (A v)‖ ^ 2 ≤ (Real.sqrt (1 + ‖A‖ ^ 2) * ‖v‖) ^ 2 := by
+      rw [mul_pow, Real.sq_sqrt (by positivity), G4]
+      have h2 : ‖A v‖ ≤ ‖A‖ * ‖v‖ := A.le_opNorm v
+      have h3 : ‖A v‖ ^ 2 ≤ (‖A‖ * ‖v‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) h2 2
+      nlinarith [h3]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp hb
+  · -- (D): linearity of `q` and (G2), with `v - v = 0` and `(A - B) v = A v - B v`.
+    rw [← map_sub, ← G2, sub_self, sub_apply]
 
 end Submission
 
