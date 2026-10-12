@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30a91bb60ecf2a19648615f584f325006011486cc65b5f34087faa8b7fb870a5",
+  "git_delta": {
+    "base_commit": "229867f1a492ea45ca09251902c21af2338946f0",
+    "candidate_commit": "bc2dd17ae121e897b879af766a72e126b561df27",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_fli_weight_integral_tendsto",
+    "diff_sha256": "b762a5f2c8f10c2db3b5aeea310acc9bf5683d364f9172582d86f74f6dc27844",
+    "source_sha256": "dc135636aeb06d96a86a9e4f29739889746f528c433e6497477fcaa77ce05fbb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_fli_weight_integral_tendsto",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclidean N) 5 → Tendsto (fun k ↦ ∫ x, g x ∂(W k).weight) atTop (𝓝 (θ₀ * ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[n] : Measure (Euclidean N))))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
