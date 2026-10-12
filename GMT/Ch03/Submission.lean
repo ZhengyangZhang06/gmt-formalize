@@ -582,6 +582,70 @@ theorem Submission.areaFormula_good_chart_pieces : ∀ (n N p : ℕ) (M U N₀ :
       · exact Or.inl hxN
       · obtain ⟨π, hπI, -⟩ := hcovI x hxM hxN
         exact absurd ⟨π, hπI⟩ hIne
+/-- **Tangent plane, tangential differential and Jacobian chain rule at a chart parameter**
+(Simon Ch. 3, (2.1)–(2.3), `chapter-03.txt` lines 327–369, with the Jacobian chain rule of Ch. 2,
+(4.11), `chapter-02.txt` lines 960–981). Let `x = ψ(u)`, `A = Dψ(u)`, `T = range A` and
+`B = D(f ∘ ψ)(u)`. If `θ(x) ≠ 0`, `T` is a weighted approximate tangent space of `M` at `x`, and
+`t ↦ f(x + t A w)` has derivative `B w` at `t = 0` for every `w`, then `T_x M = T`, `d^M f_x`
+exists on `T`, and `J^M_f(x) · Jψ(u) = J(f ∘ ψ)(u)`. By uniqueness of approximate tangent spaces
+`T_x M = T`; `dim T = n` makes `A` injective, so `L = B ∘ (A|^T)⁻¹` is a tangential differential,
+and by uniqueness of line derivatives it is `d^M f_x`; finally `B = L ∘ A|^T` with
+`dim ℝⁿ = dim T` gives `normDet B = normDet L · normDet A`. -/
+theorem Submission.areaFormula_chart_jacobian_identity : ∀ (n N p : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (f : Rn N → Rn p) (ψ : Rn n → Rn N) (u : Rn n), θ (ψ u) ≠ 0 → HasWeightedApproximateTangentSpaceAt n M θ (ψ u) (LinearMap.range (fderiv ℝ ψ u).toLinearMap) → (∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) → approxTangentPlane n M θ (ψ u) = LinearMap.range (fderiv ℝ ψ u).toLinearMap ∧ (∃ L : ↥(LinearMap.range (fderiv ℝ ψ u).toLinearMap) →L[ℝ] Rn p, HasTangentialDifferentialAt (LinearMap.range (fderiv ℝ ψ u).toLinearMap) f (ψ u) L) ∧ areaJacobian (approxTangentPlane n M θ (ψ u)) f (ψ u) * (fderiv ℝ ψ u).toLinearMap.normDet = (fderiv ℝ (f ∘ ψ) u).toLinearMap.normDet := by
+  intro n N p M θ f ψ u hθ hW hline
+  classical
+  -- Step 1: `T_x M = T`, by uniqueness of weighted approximate tangent spaces (`θ x ≠ 0`).
+  have h1 : approxTangentPlane n M θ (ψ u) = LinearMap.range (fderiv ℝ ψ u).toLinearMap := by
+    have hex : ∃ P : Submodule ℝ (Rn N), HasWeightedApproximateTangentSpaceAt n M θ (ψ u) P :=
+      ⟨_, hW⟩
+    unfold approxTangentPlane
+    rw [dite_eq_left hex]
+    exact hex.choose_spec.unique hθ hW
+  -- Step 2: `finrank T = n = dim ℝⁿ`, so `A` is injective by rank–nullity.
+  have hinj : Function.Injective (fderiv ℝ ψ u).toLinearMap := by
+    have h := LinearMap.finrank_range_add_finrank_ker (fderiv ℝ ψ u).toLinearMap
+    rw [hW.1, finrank_euclideanSpace_fin] at h
+    have hk : Module.finrank ℝ (LinearMap.ker (fderiv ℝ ψ u).toLinearMap) = 0 := by omega
+    rw [← LinearMap.ker_eq_bot]
+    exact Submodule.finrank_eq_zero.mp hk
+  set T := LinearMap.range (fderiv ℝ ψ u).toLinearMap
+  -- The corestriction `A' : ℝⁿ ≃ T` of `A`.
+  let e : Rn n ≃ₗ[ℝ] T := LinearEquiv.ofInjective (fderiv ℝ ψ u).toLinearMap hinj
+  -- Step 3: `L = B ∘ (A')⁻¹` is a tangential differential of `f` at `x` along `T`.
+  let L : T →L[ℝ] Rn p :=
+    LinearMap.toContinuousLinearMap ((fderiv ℝ (f ∘ ψ) u).toLinearMap ∘ₗ e.symm.toLinearMap)
+  have hLapp : ∀ τ : T, L τ = fderiv ℝ (f ∘ ψ) u (e.symm τ) := fun τ ↦ rfl
+  have heA : ∀ τ : T, fderiv ℝ ψ u (e.symm τ) = (τ : Rn N) := fun τ ↦
+    congrArg Subtype.val (e.apply_symm_apply τ)
+  have hL : HasTangentialDifferentialAt T f (ψ u) L := by
+    intro τ
+    have := hline (e.symm τ)
+    rw [heA τ] at this
+    rwa [hLapp τ]
+  -- Step 4: by uniqueness of line derivatives, `d^M f_x = L`.
+  have hunique : tangentialDifferential T f (ψ u) = L := by
+    have hex : ∃ L' : T →L[ℝ] Rn p, HasTangentialDifferentialAt T f (ψ u) L' := ⟨L, hL⟩
+    unfold tangentialDifferential
+    rw [dite_eq_left hex]
+    refine ContinuousLinearMap.ext fun τ ↦ ?_
+    exact (hex.choose_spec τ).unique (hL τ)
+  refine ⟨h1, ⟨L, hL⟩, ?_⟩
+  rw [h1]
+  unfold areaJacobian
+  rw [hunique]
+  -- Step 5: `B = L ∘ A'` with `dim ℝⁿ = dim T`, and `normDet A' = normDet A`.
+  have hcomp : L.toLinearMap ∘ₗ e.toLinearMap = (fderiv ℝ (f ∘ ψ) u).toLinearMap := by
+    refine LinearMap.ext fun w ↦ ?_
+    show L (e w) = _
+    rw [hLapp]
+    simp
+  have hcod : e.toLinearMap =
+      (fderiv ℝ ψ u).toLinearMap.codRestrict T (fun c ↦ LinearMap.mem_range_self _ c) :=
+    LinearMap.ext fun w ↦ Subtype.ext rfl
+  have h2 := LinearMap.normDet_comp_of_finrank_eq e.toLinearMap L.toLinearMap
+    (by rw [finrank_euclideanSpace_fin, hW.1])
+  rw [hcomp, hcod, LinearMap.normDet_codRestrict] at h2
+  exact h2.symm
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
