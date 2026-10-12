@@ -448,6 +448,27 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
 
+/-- **A current has zero mass iff it is zero** (Simon Ch. 6, proof of 6.1, p. 168: "if
+`M(T) = 0` then `|T(ω)| ≤ M(T) ‖ω‖ = 0`").  `M(0)` is a supremum of zeros.  Conversely, every
+test form `ω` is supported in `U` with Euclidean coefficient norm `|ω(x)| ≤ C`, so the mass
+estimate gives `|T(ω)| ≤ M_U(T) · C = 0`. -/
+theorem Submission.isoperimetric_mass_eq_zero_iff : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n), T.mass = 0 ↔ T = 0 := by
+  intro P n U T
+  constructor
+  · intro hT
+    ext ω
+    -- `tsupport ω ⊆ U` and `|ω(x)| ≤ C`, while `M_U(T) = M(T) = 0`.
+    obtain ⟨C, -, hC⟩ := Submission.br_la_testForm_covectorNorm_bounded P n U ω
+    have h := Submission.cmb_abs_apply_le_of_massOn_le P n U U T ω 0 C le_rfl
+      (by rw [ENNReal.ofReal_zero]; exact hT.le) ω.property.2 hC
+    rw [zero_mul, abs_nonpos_iff] at h
+    simpa using h
+  · -- Every admissible value `ofReal (0 ω)` is `0`.
+    rintro rfl
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro r ⟨ω, -, rfl⟩
+    simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
