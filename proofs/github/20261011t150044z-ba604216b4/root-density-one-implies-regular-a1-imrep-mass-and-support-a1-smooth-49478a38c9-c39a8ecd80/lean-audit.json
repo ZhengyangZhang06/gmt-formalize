@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d8f939ab8fdf3103d10c397506833e1804219699068e0be2b4e41148ff4d7d6b",
+  "git_delta": {
+    "base_commit": "cb965d756d4a09047b1f393b92f61d9fc289b889",
+    "candidate_commit": "89e4c45cd3c15de46c24c98367597d7521664cb3",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "64ba448acbc249d62674d0f9e9bf023310170fbe29f214960ea7a234424ed982",
+    "source_sha256": "f4ba364f082566c73e10d76528a75ea4f367eb8cde7e46e8f91fd1d0a6087d64",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_ims_smooth_unit_approx",
+      "statement": "∀ (P n : ℕ) (K V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n) (δ : ℝ), IsCompact K → IsOpen V → K ⊆ V → ContinuousOn β K → (∀ x ∈ K, covectorEuclideanNorm (β x) ≤ 1) → 0 < δ → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∀ x ∈ K, covectorEuclideanNorm (ω x - β x) ≤ δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
