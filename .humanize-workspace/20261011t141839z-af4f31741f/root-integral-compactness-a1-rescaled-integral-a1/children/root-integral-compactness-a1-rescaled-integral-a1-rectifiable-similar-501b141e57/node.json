@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.rescaled_integral-a1.rectifiable_similarity_preimage-a1",
+  "parent_id": "root.integral_compactness-a1.rescaled_integral-a1",
+  "depth": 3,
+  "title": "Countable n-rectifiability is preserved by the inverse similarity",
+  "statement": "Let N, n ∈ ℕ, ξ ∈ ℝ^N, t > 0 and M ⊆ ℝ^N. Suppose M is countably n-rectifiable in the sense of Chapter03.CountablyRectifiable: there are a set M₀ ⊆ ℝ^N with H^n(M₀) = 0 (H^n = μHE[n]) and Lipschitz maps F_j : ℝ^n → ℝ^N (j ∈ ℕ) with M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n). Then σ^{-1}(M) = {y ∈ ℝ^N : ξ + t·y ∈ M} is countably n-rectifiable, where σ(y) := ξ + t·y.",
+  "lean_statement": "∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (M : Set (Euclidean N)), 0 < t → Chapter03.CountablyRectifiable n M → Chapter03.CountablyRectifiable n ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M)",
+  "lean_name": "intcpt_ri_countablyRectifiable_similarity_preimage",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-rescaled-integral-a1-rectifiable-similar-501b141e57-a1"
+}
