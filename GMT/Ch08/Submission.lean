@@ -410,6 +410,39 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The `n`-dimensional Hausdorff measure of the closed ball `B_r(0)` of an `n`-plane
+`T ∈ G(N,n)` is `ω_n r^n` (step 5, plane balls, of the tangent-ball average proof for Simon Ch. 8,
+1.2): `H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.frt_vgm_tba_plane_closedBall_hausdorff :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: an orthonormal basis `b` of `T.plane` indexed by `Fin n`, since `finrank T.plane = n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  -- Step 2: the isometric parametrization `ι : ℝ^n → ℝ^N`, `ι v = b.repr.symm v ∈ T.plane`.
+  let ι : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 3: `ι '' B_r(0) = T.plane ∩ B_r(0)`.
+  have himage : ι '' closedBall 0 r = (T.plane : Set (Euclidean N)) ∩ closedBall 0 r := by
+    ext w
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      refine ⟨(b.repr.symm v).2, ?_⟩
+      rw [mem_closedBall_zero_iff] at hv ⊢
+      rwa [ι.norm_map]
+    · rintro ⟨hw, hwr⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · rw [mem_closedBall_zero_iff] at hwr ⊢
+        rwa [b.repr.norm_map]
+      · change ((b.repr.symm (b.repr ⟨w, hw⟩) : T.plane) : Euclidean N) = w
+        rw [b.repr.symm_apply_apply]
+  -- Step 4: `H^n` is invariant under the isometry `ι`, and `H^n = vol` on `ℝ^n`.
+  rw [← himage, ι.isometry.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 5: Haar scaling `vol (B_r(0)) = r^n vol (B°_1(0))` (`r ≥ 0`; no `0 < n` needed).
+  rw [Measure.addHaar_closedBall _ _ hr, finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr,
+    unitBallVolume, mul_comm]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
