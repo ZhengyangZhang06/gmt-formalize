@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.one_dim_cones-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "One-dimensional minimizing cones are multiplicity lines",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟_1(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn C univ) with ∂C = 0 and C a cone (IsConeCurrent C: η_{0,λ#}C = C for every λ > 0). Then there are e ∈ ℝ^P and m ∈ ℕ such that |e| = 1 whenever m > 0, spt C ⊆ ℝe = span{e}, and Θ^1(μ_C, y) = m (HasMassDensity C y m) for every y ∈ ℝe. (In fact C = m[[ℝe]] up to orientation, or C = 0 with m = 0.)",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∃ (e : Euclid P) (m : ℕ), (0 < m → ‖e‖ = 1) ∧ C.support ⊆ (Submodule.span ℝ {e} : Set (Euclid P)) ∧ ∀ y ∈ Submodule.span ℝ {e}, HasMassDensity C y m",
+  "lean_name": "dimred_one_dim_minimizing_cone",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-one-dim-cones-a1-a1"
+}

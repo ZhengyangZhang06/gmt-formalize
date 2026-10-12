@@ -1,0 +1,80 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.zero_dim_vanishing-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 0 of the parent proof (Simon 7.1.1 with Ch. 6, 3.1); the details are supplied. H^0 := μHE[0].
+1. By the first conjunct of IsMinimizingIn, T is integer multiplicity; fix an IMRep R = (M, θ, ξ) in U with R.Represents T. By Mathlib, μHE[0] = μH[0] (euclideanHausdorffMeasure_zero) and μH[0]{x} = 1 (hausdorffMeasure_zero_singleton), so H^0 is the counting measure on countable sets and every point of M has H^0⌞M-measure ≥ 1. Consequently every statement that holds H^0⌞M-a.e. holds at every point of M.
+2. (Local finiteness.) For every compact K ⊆ U, Σ_{x ∈ M∩K} θ(x) = ∫_{M∩K} θ dH^0 < ∞ (field locallyIntegrable_mult) and θ ≥ 1 on M (field mult_pos), so M ∩ K is finite.
+3. Suppose, for a contradiction, that M ≠ ∅, and fix x₀ ∈ M. By step 1 and the field `orients`, ξ(x₀) satisfies IsUnitOrientationOf for a 0-dimensional subspace: the orthonormal family τ is empty and there is σ₀ ∈ {1, −1} with ξ(x₀)(α) = σ₀·α() for every 0-covector α.
+4. Choose ε₀ > 0 with closedBall x₀ ε₀ ⊆ U. By step 2, M ∩ closedBall x₀ ε₀ is finite, so there is ε ∈ (0, ε₀) with M ∩ closedBall x₀ ε = {x₀}. Put W := B_ε(x₀). Then W is open and closure W ⊆ closedBall x₀ ε is compact and contained in U, i.e. CompactlyContained W U.
+5. For every s > 0, μ_R(B_s(x₀)) ≥ θ(x₀) ≥ 1 > 0, where μ_R = R.measure. By the sibling child im_mass_measure (b), x₀ ∈ spt T, hence x₀ ∈ A.
+6. (The competitor.) Define S(ω) := T(ω) − θ(x₀)·σ₀·ω(x₀)() for ω ∈ 𝒟^0(U). S is linear, and it is a GeometricCurrentOn U 0: if ω_j → 0 in the test-form topology, the ω_j converge to 0 uniformly on a compact set containing all their supports, so ω_j(x₀)() → 0 and S(ω_j) → 0. S is integer multiplicity: R' := (M ∖ {x₀}, θ, ξ) is an IMRep in U (M ∖ {x₀} is Borel and is a subset of the countably 0-rectifiable set M, hence countably 0-rectifiable; θ is measurable and positive on it; local integrability, measurability of ξ and the a.e. orientation condition are inherited from R), and R'.action(ω) = Σ_{x ∈ M ∖ {x₀}} θ(x)·ξ(x)(ω(x)) = R.action(ω) − θ(x₀)σ₀ω(x₀)() = S(ω).
+7. (Support of S − T.) S − T is the current ω ↦ −θ(x₀)σ₀·ω(x₀)(). It vanishes on every open set with compact closure in U not containing x₀, so every point of U ∖ {x₀} lies in zeroRegion(S − T). Every open neighbourhood W' of x₀ with compact closure in U carries a smooth compactly supported 0-form ω with tsupport ω ⊆ W' and ω(x₀)() = 1, on which (S − T)(ω) = −θ(x₀)σ₀ ≠ 0; so x₀ ∉ zeroRegion(S − T). Hence (S − T).support = {x₀}, which is compact and contained in A ∩ W (steps 4 and 5).
+8. SameBoundary S T holds because the degree is 0. Applying the second conjunct of IsMinimizingIn T A to W (open, CompactlyContained W U) and the integer multiplicity S, we get M_W(T) ≤ M_W(S).
+9. By im_mass_measure (a) (W is open and W ⊆ U): M_W(T) = μ_R(W) = θ(x₀) ≥ 1, since M ∩ W = {x₀}; and M_W(S) = μ_{R'}(W) = 0, since (M ∖ {x₀}) ∩ W = ∅. This contradicts step 8. Hence M = ∅, so T(ω) = R.action(ω) = 0 for every ω ∈ 𝒟^0(U), i.e. T = 0 (GeometricCurrentOn.ext).
+
+## Key steps
+
+1. A representation of a 0-current is a locally finite set with positive integer weights (H^0 is counting measure); every point carries a ± orientation.
+2. A point x₀ of the carrier lies in spt T ⊆ A, and a small ball W isolates it.
+3. Deleting x₀ gives an integer multiplicity competitor whose difference with T is supported in {x₀} ⊆ A ∩ W.
+4. Mass comparison via im_mass_measure: M_W(T) = θ(x₀) ≥ 1 > 0 = M_W(S), contradicting minimality; so the carrier is empty and T = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)`
+- `grep -n 'μHE\|euclideanHausdorffMeasure' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; rg -n addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (same file)`
+- `grep -rn 'theorem massOn_le_liminf\|theorem boundary_affinePushforward\|exp_normalizedBallMass_monotoneOn\|theorem bvVariationOn_le_liminf_of_locallyL1\|theorem cone_simonsDefect_lower_bound' simongmt/Poincare`
+- `grep -n 'def support\|zeroRegion\|def massOn' simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `grep -rn dimred --include=*.lean GMT .lake/packages/simongmt/Poincare; grep -c dimred dag.json; grep -rln dimred_ .swarm-worktrees/*/gmt-ch07/GMT (no match anywhere)`
+- `python3 inspection of dag.json: sibling lean_statements (abstract_dimension_reduction, density_and_tangent_cones, density_one_implies_regular, compactness_of_minimizing_currents, minimizing_implies_stationary) and similar lemma nodes in other branches (dtc_mass_eq_measure, dor_imrep_massOn_eq_measure_and_support, dtc_dim_zero_eq_zero, imrep_measure_eq_of_represents_same_current, rsd_massOn_eq_measure)`
+- `lean -R /tmp/dr-v2-check/src /tmp/dr-v2-check/src/CheckV2Types.lean (private olean of GMT.Ch07.Submission; 12 child types declared as Submission.X in namespace GMT.Ch07 with the contract opens; assembly ⟨A, B, C⟩; #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-review-receipt-v1.json`
+- `/tmp/dr-v2-check/src/CheckV2Types.lean`
+
+Pins match. The snapshot has project b4d606d (equal to workspace HEAD), mathlib 25730c7c and simongmt 2b36630. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean; its only sorry is the frozen main_theorem.
+
+Normalization (decides correction R1). Mathlib defines μHE[d] = addHaarScalarFactor(volume, μH[d]) • μH[d] (Measure.lean, lines 68–101). The scalar is in ℝ≥0 and nonzero (addHaarScalarFactor_volume_hausdorffMeasure_ne_zero), so μ_A = ϑ_A·μHE[n] gives ∫_K ϑ_A dμH[n] = c_n⁻¹·μ_A(K).
+
+SimonGMT definitions used:
+- massOn is the sSup over admissible forms with Euclidean coefficient norm ≤ 1 (Mass.lean).
+- support = U \ zeroRegion (CurrentLocalEquality.lean, lines 108–117).
+- WeaklyConvergesOn.massOn_le_liminf (Mass.lean:100) gives the lower semicontinuity used for the new mass bounds.
+
+Other cited library facts exist:
+- GeometricCurrentOn.boundary_affinePushforward (AffineCurrentPushforward.lean:188);
+- HasGeneralizedMeanCurvatureIn.exp_normalizedBallMass_monotoneOn (Chapter04/MeanCurvature.lean:361);
+- bvVariationOn_le_liminf_of_locallyL1 (Chapter02/BV.lean:225);
+- cone_simonsDefect_lower_bound (AppendixB/ConeDefect.lean:228).
+
+The library provides none of the following for the contract's IMRep currents: the mass–measure identity, product currents, Federer–Fleming compactness, or Appendix A.4. These are children or sibling prerequisites.
+
+Lean check. All twelve child types elaborate after import GMT.Ch07.Submission, in namespace GMT.Ch07 with the contract opens, with only the stub sorry warnings. The assembly ⟨A, B, C⟩ proves IntegerDensityAndTangentPlanes ∧ SingularSetSmallWhereDensityBelowTwo ∧ CodimensionOneRegularity, and the conditional assembly depends only on propext, Classical.choice and Quot.sound.
+
+Names. No dimred_ identifier occurs in the workspace, SimonGMT, any speculative worktree or dag.json. Similar lemmas in other branches have different types and names, so there is neither reuse nor collision.
