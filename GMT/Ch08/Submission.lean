@@ -494,6 +494,67 @@ theorem Submission.intcpt_graph_hausdorff_le_projection :
             (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A)) := by
         gcongr
     _ = _ := mul_left_comm _ _ _
+/-- Child `graph_projection_null_measurable` of the graph fibre bound (Simon Ch. 8, proof of 5.9):
+the projection `p = Grassmannian.project P` of an `H^n`-null-measurable `L`-Lipschitz graph `A`
+over `P` is `H^n`-null-measurable.  The graph inequality makes `p` injective on `A`, and
+`‖p v‖² = ⟪v, p v⟫` makes `p` `1`-Lipschitz.  Writing `A = B ∪ (A ∖ B)` with `B ⊆ A` Borel and
+`A ∖ B` null, `p '' B` is Borel by Lusin–Souslin and `p '' (A ∖ B)` is null by the Lipschitz
+image bound for `μH[n]`. -/
+theorem Submission.intcpt_graph_projection_nullMeasurableSet :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)), 0 ≤ L →
+      (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤
+        L * ‖Grassmannian.project P (y - z)‖) →
+      NullMeasurableSet A (μHE[n] : Measure (Euclidean N)) →
+      NullMeasurableSet (Grassmannian.project P '' A) (μHE[n] : Measure (Euclidean N)) := by
+  intro N n P L A _ hgraph hA
+  -- `p = Grassmannian.project P` is the linear map `P.projectionLinearMap`.
+  have hsub : ∀ y z : Euclidean N,
+      Grassmannian.project P (y - z) = Grassmannian.project P y - Grassmannian.project P z :=
+    fun y z ↦ map_sub P.projectionLinearMap y z
+  -- Step 1: the graph inequality makes `p` injective on `A`.
+  have hinj : InjOn (Grassmannian.project P) A := by
+    intro y hy z hz hyz
+    have h := hgraph y hy z hz
+    rw [hsub, hyz, sub_self, norm_zero, mul_zero, sub_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  -- Step 2: `‖p v‖² = ⟪v, p v⟫ ≤ ‖v‖ ‖p v‖`, so `p` is `1`-Lipschitz.
+  have hnorm : ∀ v : Euclidean N, ‖Grassmannian.project P v‖ ≤ ‖v‖ := by
+    intro v
+    have hsq : ‖Grassmannian.project P v‖ ^ 2 = inner ℝ v (Grassmannian.project P v) := by
+      rw [← real_inner_self_eq_norm_sq]
+      calc inner ℝ (Grassmannian.project P v) (Grassmannian.project P v)
+          = inner ℝ v (Grassmannian.project P (Grassmannian.project P v)) :=
+            P.projectionLinearMap_isSymmetric v (Grassmannian.project P v)
+        _ = inner ℝ v (Grassmannian.project P v) := by rw [Grassmannian.project_project]
+    have hle := real_inner_le_norm v (Grassmannian.project P v)
+    nlinarith [norm_nonneg (Grassmannian.project P v), norm_nonneg v]
+  have hlip : LipschitzWith 1 (Grassmannian.project P) := by
+    refine LipschitzWith.of_dist_le_mul fun y z ↦ ?_
+    rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm, ← hsub]
+    exact hnorm (y - z)
+  -- Step 3: `A = B ∪ (A ∖ B)` with `B ⊆ A` Borel and `A ∖ B` null.
+  obtain ⟨B, hBA, hBm, hBae⟩ := hA.exists_measurable_subset_ae_eq
+  have hY : (μHE[n] : Measure (Euclidean N)) (A \ B) = 0 := (ae_eq_set.mp hBae).2
+  have himage : Grassmannian.project P '' A =
+      Grassmannian.project P '' B ∪ Grassmannian.project P '' (A \ B) := by
+    rw [← image_union, union_sdiff_cancel hBA]
+  -- Step 4: Lusin–Souslin, `p '' B` is Borel.
+  have hBimg : MeasurableSet (Grassmannian.project P '' B) :=
+    hBm.image_of_continuousOn_injOn hlip.continuous.continuousOn (hinj.mono hBA)
+  -- Step 5: the `1`-Lipschitz image of the null set `A ∖ B` is null.
+  have hYimg : (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' (A \ B)) = 0 := by
+    have hH : (μH[n] : Measure (Euclidean N)) (Grassmannian.project P '' (A \ B)) ≤
+        μH[n] (A \ B) := by
+      simpa using hlip.hausdorffMeasure_image_le (Nat.cast_nonneg n) (A \ B)
+    have hle : (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' (A \ B)) ≤
+        μHE[n] (A \ B) := by
+      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, Measure.smul_apply,
+        ENNReal.smul_def, ENNReal.smul_def, smul_eq_mul, smul_eq_mul]
+      gcongr
+    exact nonpos_iff_eq_zero.mp (hle.trans_eq hY)
+  -- Step 6: a Borel set union a null set is null-measurable.
+  rw [himage]
+  exact hBimg.nullMeasurableSet.union_null hYimg
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
