@@ -615,6 +615,45 @@ theorem Submission.intcpt_vdb_ball_mass_le_of_density :
           ENNReal.ofReal_add ENNReal.toReal_nonneg zero_le_one, ENNReal.ofReal_toReal hθ_top,
           ENNReal.ofReal_one, ENNReal.ofReal_toReal hω_top, ENNReal.ofReal_pow hρ.le, mul_assoc]
 
+/-- **Simon Ch. 8, proof of 5.9, printed estimates (1)–(2)** (child `variation_density_bound` of
+`integral_compactness`): if `μ(ℝ^N ∖ U) = 0`, `sup_i ν_i(W) < ∞` for every open `W ⊂⊂ U` and
+`Θ^n(μ, x)` exists and is finite for `μ`-a.e. `x`, then for `μ`-a.e. `x` there are `c` and `r > 0`
+with `liminf_i ν_i(B_ρ(x)) ≤ c ρ^n` for `0 < ρ < r`.  Cover `U` by countably many `W_p` whose
+`r_p`-thickenings are `⊂⊂ U` (child `open_thickening_exhaustion`).  At `μ`-a.e. `x ∈ W_p`,
+Besicovitch gives `liminf_i ν_i(B_ρ(x)) ≤ c μ(B_ρ(x))` for `ρ < r_p` (child
+`liminf_ratio_bound_ae`), and the finite density gives `μ(B_ρ(x)) ≤ C ρ^n` for small `ρ` (child
+`ball_mass_le_of_density`). -/
+theorem Submission.intcpt_variation_liminf_density_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N))
+      (ν : ℕ → Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 →
+      (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) →
+      (∀ W : Set (Euclidean N), IsRelCompactOpenIn W U → ⨆ i, ν i W ≠ ∞) →
+      (∀ᵐ x ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ x θ ∧ θ ≠ ∞) →
+      ∀ᵐ x ∂μ, ∃ c r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r →
+        liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ ENNReal.ofReal (c * ρ ^ n) := by
+  intro N n U μ ν hU hUc _ hν hdens
+  obtain ⟨W, r, hr, hWU, hUW⟩ := Submission.intcpt_vdb_open_thickening_exhaustion N U hU
+  -- Each `thickening (r p) (W p)` is `⊂⊂ U`, so its `ν_i`-masses are bounded and the
+  -- Besicovitch bound holds at `μ`-a.e. point of `W p`; countably many `p` keep it a.e.
+  have hratio : ∀ᵐ x ∂μ, ∀ p, x ∈ W p → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r p →
+      liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) :=
+    ae_all_iff.2 fun p ↦
+      Submission.intcpt_vdb_liminf_ratio_bound_ae N μ ν (W p) (r p) (hν _ (hWU p))
+  have hmemU : ∀ᵐ x ∂μ, x ∈ U := mem_ae_iff.2 hUc
+  filter_upwards [hratio, hmemU, hdens] with x hx hxU hxθ
+  obtain ⟨p, hxp⟩ := mem_iUnion.1 (hUW hxU)
+  obtain ⟨c, hc⟩ := hx p hxp
+  obtain ⟨θ, hθ, hθtop⟩ := hxθ
+  obtain ⟨C, r', hr', hC⟩ := Submission.intcpt_vdb_ball_mass_le_of_density N n μ x θ hθ hθtop
+  refine ⟨c * C, min (r p) r', lt_min (hr p) hr', fun ρ hρ hρr ↦ ?_⟩
+  calc liminf (fun i ↦ ν i (closedBall x ρ)) atTop
+      ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) := hc ρ hρ (hρr.trans_le (min_le_left _ _))
+    _ ≤ (c : ℝ≥0∞) * ENNReal.ofReal (C * ρ ^ n) := by
+        gcongr
+        exact hC ρ hρ (hρr.trans_le (min_le_right _ _))
+    _ = ENNReal.ofReal (c * C * ρ ^ n) := by
+        rw [mul_assoc, ENNReal.ofReal_mul (Nat.cast_nonneg c), ENNReal.ofReal_natCast]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
