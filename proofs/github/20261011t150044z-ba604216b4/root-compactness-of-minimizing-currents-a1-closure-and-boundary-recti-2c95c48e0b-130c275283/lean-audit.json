@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b01dfbd64786c7e19595ae07d6353127a67e78a9dc15e106d282ba9d8407c2f",
+  "git_delta": {
+    "base_commit": "3eb6c5646d0c9482942e030eb164f15e55e86190",
+    "candidate_commit": "fa0865963c3c41d720a70631405d05a1dfb8a2e3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ct_vs_compact_piece_subseq",
+    "diff_sha256": "05f49d506998f79548e0d6b61e38fc20d879c21ce227125ae0e4d9f41464ceff",
+    "source_sha256": "10f5676df24ff720de44c8f7974f8c32d322836116d385b4ff8bf015ea8b6636",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ct_vs_compact_piece_subseq",
+      "statement": "∀ (P : ℕ) (K : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)), IsCompact K → ⨆ j, μs j K < ∞ → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ f : Euclid P → ℝ, Continuous f → tsupport f ⊆ K → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(μs (θ j))) atTop (𝓝 c)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
