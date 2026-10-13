@@ -561,6 +561,202 @@ theorem Submission.codim1_rdo_dg_ftd_test_lower_bound : ∀ (N m : ℕ) (μ : Me
   exact (ENNReal.ofReal_le_ofReal hint.le).trans
     (hlint.trans (hind.trans (lintegral_indicator_one_le _)))
 
+/-- **Ball densities of a measure with a flat tangent measure** (Simon Ch. 3, Remark 1.5(3),
+first assertion, for `μ` in place of `Hⁿ⌞M`): if `P = v^⊥` (`‖v‖ = 1`), `μ(B̄_{r₀}(y)) < ∞`
+and `r⁻ᵐ ∫ f(r⁻¹(z − y)) dμ(z) → ∫_P f dHᵐ` as `r ↓ 0` for every continuous compactly
+supported `f`, then `μ(B̄_r(y))/(ωₘrᵐ) → 1` and `μ(B_r(y))/(ωₘrᵐ) → 1`.  Since
+`Hᵐ(P ∩ B_s(0)) = ωₘsᵐ`, the radial cutoffs `f₊ = 1` on `B̄₁(0)`, `= 0` off `B_{1+ε}(0)`, and
+`f₋ = 1` on `B̄_{1−ε}(0)`, `= 0` off `B₁(0)`, have `∫_P f₊ ≤ ωₘ(1 + ε)ᵐ` and
+`∫_P f₋ ≥ ωₘ(1 − ε)ᵐ`; the Markov-type bounds for rescaled measures then give
+`ωₘcrᵐ ≤ μ(B_r(y)) ≤ μ(B̄_r(y)) ≤ ωₘCrᵐ` for small `r > 0`, for any `c < 1 < C`. -/
+theorem Submission.codim1_rdo_dg_ftd_ball_density : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (y v : Euclid (m + 1)), 1 ≤ m → ‖v‖ = 1 → (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ (ball y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) := by
+  intro m μ y v _hm hv hr₀ hlim
+  -- Step 0(a): `P = v^⊥` is an `m`-dimensional subspace of `ℝ^{m+1}`
+  have hv0 : v ≠ 0 := by
+    rintro rfl
+    rw [norm_zero] at hv
+    exact zero_ne_one hv
+  have : Fact (Module.finrank ℝ (Euclid (m + 1)) = m + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hPdim : Module.finrank ℝ (Submodule.span ℝ {v})ᗮ = m :=
+    Submodule.finrank_orthogonal_span_singleton hv0
+  -- Step 0(b): `ωₘ = ofReal ω` with `ω > 0`
+  have hω0 : unitBallVolume m ≠ 0 := by
+    rw [unitBallVolume]
+    exact (measure_ball_pos _ _ one_pos).ne'
+  have hωtop : unitBallVolume m ≠ ∞ := by
+    rw [unitBallVolume]
+    exact measure_ball_lt_top.ne
+  obtain ⟨ω, hωpos, hωeq⟩ : ∃ ω : ℝ, 0 < ω ∧ unitBallVolume m = ENNReal.ofReal ω :=
+    ⟨(unitBallVolume m).toReal, ENNReal.toReal_pos hω0 hωtop, (ENNReal.ofReal_toReal hωtop).symm⟩
+  -- Step 0(c): `ν = Hᵐ⌞P` gives `B_s(0)` the measure `ω sᵐ`
+  set ν : Measure (Euclid (m + 1)) :=
+    μHE[m].restrict ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))) with hν
+  have hνball : ∀ s : ℝ, 0 < s → ν (ball 0 s) = ENNReal.ofReal (ω * s ^ m) := by
+    intro s hs
+    rw [hν, Measure.restrict_apply measurableSet_ball, inter_comm,
+      Submission.codim1_rdo_dg_ftd_plane_ball_measure (m + 1) m _ hPdim s hs, hωeq,
+      ENNReal.ofReal_mul hωpos.le]
+  have hνint : ∀ s : ℝ, 0 < s →
+      Integrable ((ball (0 : Euclid (m + 1)) s).indicator fun _ => (1 : ℝ)) ν := by
+    intro s hs
+    have hfin : ν (ball 0 s) ≠ ∞ := by
+      rw [hνball s hs]
+      exact ENNReal.ofReal_ne_top
+    exact (integrableOn_const hfin).integrable_indicator measurableSet_ball
+  have hνind : ∀ s : ℝ, 0 < s →
+      ∫ w, (ball (0 : Euclid (m + 1)) s).indicator (fun _ => (1 : ℝ)) w ∂ν = ω * s ^ m := by
+    intro s hs
+    rw [integral_indicator_const _ measurableSet_ball, measureReal_def, hνball s hs,
+      ENNReal.toReal_ofReal (mul_pos hωpos (pow_pos hs m)).le, smul_eq_mul, mul_one]
+  -- Step 1: comparison of `I(g) = ∫_P g dHᵐ` with plane balls
+  have hle_ind : ∀ (b : ℝ) (g : Euclid (m + 1) → ℝ), (∀ w, g w ≤ 1) →
+      (∀ w, b ≤ ‖w‖ → g w = 0) →
+      ∀ w, g w ≤ (ball (0 : Euclid (m + 1)) b).indicator (fun _ => (1 : ℝ)) w := by
+    intro b g hg1 hgb w
+    by_cases hw : w ∈ ball (0 : Euclid (m + 1)) b
+    · rw [indicator_of_mem hw]
+      exact hg1 w
+    · rw [indicator_of_notMem hw, hgb w (not_lt.mp fun h => hw (mem_ball_zero_iff.mpr h))]
+  have hgint : ∀ (b : ℝ) (g : Euclid (m + 1) → ℝ), 0 < b → Continuous g → (∀ w, 0 ≤ g w) →
+      (∀ w, g w ≤ 1) → (∀ w, b ≤ ‖w‖ → g w = 0) → Integrable g ν := by
+    intro b g hb hg hg0 hg1 hgb
+    refine (hνint b hb).mono' hg.aestronglyMeasurable (Eventually.of_forall fun w => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (hg0 w)]
+    exact hle_ind b g hg1 hgb w
+  -- (U) `I(g) ≤ ω bᵐ` if `0 ≤ g ≤ 1` vanishes off `B_b(0)`
+  have hplane_le : ∀ (b : ℝ) (g : Euclid (m + 1) → ℝ), 0 < b → Continuous g →
+      (∀ w, 0 ≤ g w) → (∀ w, g w ≤ 1) → (∀ w, b ≤ ‖w‖ → g w = 0) →
+      ∫ w, g w ∂ν ≤ ω * b ^ m := fun b g hb hg hg0 hg1 hgb =>
+    (integral_mono (hgint b g hb hg hg0 hg1 hgb) (hνint b hb) (hle_ind b g hg1 hgb)).trans_eq
+      (hνind b hb)
+  -- (L) `ω aᵐ ≤ I(g)` if moreover `g ≥ 1` on `B_a(0)`
+  have hplane_ge : ∀ (a b : ℝ) (g : Euclid (m + 1) → ℝ), 0 < a → 0 < b → Continuous g →
+      (∀ w, 0 ≤ g w) → (∀ w, g w ≤ 1) → (∀ w, ‖w‖ < a → 1 ≤ g w) →
+      (∀ w, b ≤ ‖w‖ → g w = 0) → ω * a ^ m ≤ ∫ w, g w ∂ν := by
+    intro a b g ha hb hg hg0 hg1 hga hgb
+    refine (hνind a ha).symm.trans_le
+      (integral_mono (hνint a ha) (hgint b g hb hg hg0 hg1 hgb) fun w => ?_)
+    by_cases hw : w ∈ ball (0 : Euclid (m + 1)) a
+    · rw [indicator_of_mem hw]
+      exact hga w (mem_ball_zero_iff.mp hw)
+    · rw [indicator_of_notMem hw]
+      exact hg0 w
+  -- Step 2: the radial cutoff `g_{a,b} = min 1 (max 0 ((b − ‖w‖)/(b − a)))`
+  have hcut : ∀ a b : ℝ, a < b → ∃ g : Euclid (m + 1) → ℝ, Continuous g ∧ HasCompactSupport g ∧
+      (∀ w, 0 ≤ g w) ∧ (∀ w, g w ≤ 1) ∧ (∀ w, ‖w‖ ≤ a → g w = 1) ∧
+      (∀ w, b ≤ ‖w‖ → g w = 0) := by
+    intro a b hab
+    have hba : 0 < b - a := sub_pos.mpr hab
+    have hzero : ∀ w : Euclid (m + 1), b ≤ ‖w‖ → min 1 (max 0 ((b - ‖w‖) / (b - a))) = 0 := by
+      intro w hw
+      rw [max_eq_left (div_nonpos_of_nonpos_of_nonneg (by linarith) hba.le),
+        min_eq_right zero_le_one]
+    refine ⟨fun w => min 1 (max 0 ((b - ‖w‖) / (b - a))), by fun_prop, ?_,
+      fun w => le_min zero_le_one (le_max_left _ _), fun w => min_le_left _ _, fun w hw => ?_,
+      hzero⟩
+    · refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid (m + 1)) b)
+        fun w hw => hzero w ?_
+      rw [mem_closedBall_zero_iff, not_le] at hw
+      exact hw.le
+    · have h1 : 1 ≤ (b - ‖w‖) / (b - a) := by
+        rw [le_div_iff₀ hba]
+        linarith
+      show min 1 (max 0 ((b - ‖w‖) / (b - a))) = 1
+      rw [max_eq_right (zero_le_one.trans h1), min_eq_left h1]
+  -- Step 3: `{z : r⁻¹(z − y) ∈ B̄₁(0)} = B̄_r(y)` and `{z : r⁻¹(z − y) ∈ B₁(0)} = B_r(y)`
+  have hset_closed : ∀ r : ℝ, 0 < r →
+      {z | r⁻¹ • (z - y) ∈ closedBall (0 : Euclid (m + 1)) 1} = closedBall y r := by
+    intro r hr
+    ext z
+    change r⁻¹ • (z - y) ∈ closedBall (0 : Euclid (m + 1)) 1 ↔ z ∈ closedBall y r
+    rw [mem_closedBall_zero_iff, mem_closedBall_iff_norm, norm_smul, Real.norm_eq_abs, abs_inv,
+      abs_of_pos hr, inv_mul_le_iff₀ hr, mul_one]
+  have hset_open : ∀ r : ℝ, 0 < r →
+      {z | r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) 1} = ball y r := by
+    intro r hr
+    ext z
+    change r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) 1 ↔ z ∈ ball y r
+    rw [mem_ball_zero_iff, mem_ball_iff_norm, norm_smul, Real.norm_eq_abs, abs_inv,
+      abs_of_pos hr, inv_mul_lt_iff₀ hr, mul_one]
+  -- Step 4: for `C > 1`, eventually `μ(B̄_r(y)) ≤ ω C rᵐ` (test with `f₊ = g_{1,1+ε}`)
+  have hupper : ∀ C : ℝ, 1 < C →
+      ∀ᶠ r in 𝓝[>] (0 : ℝ), μ (closedBall y r) ≤ ENNReal.ofReal (ω * C * r ^ m) := by
+    intro C hC
+    have hcont : Continuous fun t : ℝ => (1 + t) ^ m := by fun_prop
+    have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), (1 + t) ^ m < C :=
+      ((hcont.tendsto' 0 1 (by simp)).eventually (gt_mem_nhds hC)).filter_mono
+        nhdsWithin_le_nhds
+    obtain ⟨ε, hεC, hε⟩ := (hev.and self_mem_nhdsWithin).exists
+    have hε0 : (0 : ℝ) < ε := hε
+    obtain ⟨g, hgc, hgcs, hg0, hg1, hgone, hgzero⟩ :=
+      hcut 1 (1 + ε) (lt_add_of_pos_right 1 hε0)
+    have hI : ∫ w, g w ∂ν < ω * C :=
+      (hplane_le (1 + ε) g (by linarith) hgc hg0 hg1 hgzero).trans_lt
+        (mul_lt_mul_of_pos_left hεC hωpos)
+    filter_upwards [Submission.codim1_rdo_dg_ftd_test_upper_bound (m + 1) m μ y g
+      (closedBall 0 1) _ (ω * C) hr₀ hgc hgcs hg0
+      (fun w hw => (hgone w (mem_closedBall_zero_iff.mp hw)).ge) (hlim g hgc hgcs) hI,
+      self_mem_nhdsWithin] with r hr hrpos
+    rwa [hset_closed r hrpos] at hr
+  -- Step 5: for `c < 1`, eventually `ω c rᵐ ≤ μ(B_r(y))` (test with `f₋ = g_{1−ε,1}`)
+  have hlower : ∀ c : ℝ, c < 1 →
+      ∀ᶠ r in 𝓝[>] (0 : ℝ), ENNReal.ofReal (ω * c * r ^ m) ≤ μ (ball y r) := by
+    intro c hc
+    have hcont : Continuous fun t : ℝ => (1 - t) ^ m := by fun_prop
+    have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), c < (1 - t) ^ m :=
+      ((hcont.tendsto' 0 1 (by simp)).eventually (lt_mem_nhds hc)).filter_mono
+        nhdsWithin_le_nhds
+    obtain ⟨ε, hεc, hε⟩ := (hev.and (Ioo_mem_nhdsGT one_pos)).exists
+    have hε0 : (0 : ℝ) < ε := hε.1
+    have hε1 : ε < 1 := hε.2
+    obtain ⟨g, hgc, hgcs, hg0, hg1, hgone, hgzero⟩ := hcut (1 - ε) 1 (by linarith)
+    have hI : ω * c < ∫ w, g w ∂ν :=
+      (mul_lt_mul_of_pos_left hεc hωpos).trans_le
+        (hplane_ge (1 - ε) 1 g (by linarith) one_pos hgc hg0 hg1
+          (fun w hw => (hgone w hw.le).ge) hgzero)
+    filter_upwards [Submission.codim1_rdo_dg_ftd_test_lower_bound (m + 1) m μ y g
+      (ball 0 1) _ (ω * c) hgc hg0 hg1
+      (fun w hw => hgzero w (not_lt.mp fun h => hw (mem_ball_zero_iff.mpr h)))
+      (hlim g hgc hgcs) hI, self_mem_nhdsWithin] with r hr hrpos
+    rwa [hset_open r hrpos] at hr
+  -- Step 6: `ofReal (ω c rᵐ) / (ωₘ rᵐ) = ofReal c`
+  have hratio : ∀ c : ℝ, 0 ≤ c → ∀ r : ℝ, 0 < r →
+      ENNReal.ofReal (ω * c * r ^ m) / (unitBallVolume m * ENNReal.ofReal (r ^ m)) =
+        ENNReal.ofReal c := by
+    intro c hc r hr
+    have hden0 : unitBallVolume m * ENNReal.ofReal (r ^ m) ≠ 0 :=
+      mul_ne_zero hω0 (ENNReal.ofReal_pos.mpr (pow_pos hr m)).ne'
+    have hdentop : unitBallVolume m * ENNReal.ofReal (r ^ m) ≠ ∞ :=
+      ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+    rw [show ω * c * r ^ m = c * (ω * r ^ m) by ring, ENNReal.ofReal_mul hc,
+      ENNReal.ofReal_mul hωpos.le, ← hωeq, ENNReal.mul_div_cancel_right hden0 hdentop]
+  -- Step 7: squeeze between `B_r(y)` and `B̄_r(y)` in the order topology of `[0, ∞]`
+  have hsqueeze : ∀ F : ℝ → Set (Euclid (m + 1)), (∀ r, ball y r ⊆ F r) →
+      (∀ r, F r ⊆ closedBall y r) →
+      Tendsto (fun r : ℝ => μ (F r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0)
+        (𝓝 1) := by
+    intro F hF1 hF2
+    rw [tendsto_order]
+    refine ⟨fun a ha => ?_, fun b hb => ?_⟩
+    · obtain ⟨c, hc0, hac, hc1⟩ := ENNReal.lt_iff_exists_real_btwn.mp ha
+      filter_upwards [hlower c (ENNReal.ofReal_lt_one.mp hc1), self_mem_nhdsWithin]
+        with r hr hrpos
+      calc a < ENNReal.ofReal c := hac
+        _ = ENNReal.ofReal (ω * c * r ^ m) / (unitBallVolume m * ENNReal.ofReal (r ^ m)) :=
+          (hratio c hc0 r hrpos).symm
+        _ ≤ μ (F r) / (unitBallVolume m * ENNReal.ofReal (r ^ m)) :=
+          ENNReal.div_le_div_right (hr.trans (measure_mono (hF1 r))) _
+    · obtain ⟨C, hC0, h1C, hCb⟩ := ENNReal.lt_iff_exists_real_btwn.mp hb
+      filter_upwards [hupper C (ENNReal.one_lt_ofReal.mp h1C), self_mem_nhdsWithin]
+        with r hr hrpos
+      calc μ (F r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))
+          ≤ ENNReal.ofReal (ω * C * r ^ m) / (unitBallVolume m * ENNReal.ofReal (r ^ m)) :=
+            ENNReal.div_le_div_right ((measure_mono (hF2 r)).trans hr) _
+        _ = ENNReal.ofReal C := hratio C hC0 r hrpos
+        _ < b := hCb
+  exact ⟨hsqueeze (closedBall y) (fun _ => ball_subset_closedBall) (fun _ => subset_rfl),
+    hsqueeze (ball y) (fun _ => subset_rfl) (fun _ => ball_subset_closedBall)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
