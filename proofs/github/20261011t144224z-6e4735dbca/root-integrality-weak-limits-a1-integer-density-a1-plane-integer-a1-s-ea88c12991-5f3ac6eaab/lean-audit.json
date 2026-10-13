@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3868cc298c4a2606304471554b6a5db19f4b754db70a2c4be90e4228cfa099f4",
+  "git_delta": {
+    "base_commit": "d5a9de524afb5877a8341caa1dc345aa98f4ad30",
+    "candidate_commit": "e768182b2864bd49e48f88cdb453a31bf09f7d7b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_pi_ss_cycle_slice_family",
+    "diff_sha256": "5a3c600792bdcf4fa9e8a306751e1f096f02f3a2e18f56987b13360ce7ad09d8",
+    "source_sha256": "e230099c58323467cff3affa754ff61bca0fb2376159aeefa13e7673f8ebce74",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_ss_cycle_slice_family",
+      "statement": "SlicingTheorem → ∀ (P m : ℕ) (U W : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ), IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b → X.boundary = 0 → (∀ V, CompactlyContainedOpen V U → X.massOn V < ∞) → ∃ (A : ℝ → GeometricCurrentOn U (m + 1)) (g : ℝ → ℝ≥0∞), Measurable g ∧ (∀ t, IsRestriction X {x | x ∈ U ∧ d x < t} (A t)) ∧ (∀ t ∈ Ioo a b, (A t).boundary.massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * X.massOn W",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
