@@ -1,0 +1,17 @@
+{
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.chart_data-a1.lipschitz_on_c1_pieces-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4211",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "17098070bab17e7c3ce39fe56f59f65fb9d98e75",
+  "integrated_commit": "",
+  "proof_base_commit": "320ad2943903ac95634d9d3c1a4f768ae53fde15",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.chart_data-a1",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1"
+  ]
+}
