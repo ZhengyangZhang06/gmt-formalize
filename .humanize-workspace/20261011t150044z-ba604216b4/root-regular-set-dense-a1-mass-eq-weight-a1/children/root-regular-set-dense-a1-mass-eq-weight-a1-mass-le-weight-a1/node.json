@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.mass_le_weight-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+  "depth": 3,
+  "title": "Upper bound M_W(T) ≤ μ_T(W) for an integer multiplicity representation, for every set W",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and let R = (M, θ, ξ) be an IMRep in U with R.Represents T, i.e. T(ω) = ∫_M θ⟨ω, ξ⟩ dH^n for every ω ∈ 𝒟^n(U). Then for every set W ⊆ ℝ^P, M_W(T) ≤ μ_T(W). Here M_W(T) = T.massOn W = sup{ofReal T(ω) : ω ∈ 𝒟^n(U), spt ω ⊆ W, |ω(x)| ≤ 1 ∀x} with |·| = covectorEuclideanNorm, and μ_T = R.measure = (H^n⌞M).withDensity θ.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), T.massOn W ≤ R.measure W",
+  "lean_name": "rsd_mw_massOn_le_measure",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.unit_orientation_dual-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.unit_orientation_dual-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-mass-le-weight-a1-a1"
+}
