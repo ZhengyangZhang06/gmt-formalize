@@ -1,0 +1,125 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'LocallyLipschitzOn|IsLipschitzPushforward|LipschitzPushforwardIntegerMultiplicity|IsRectifiableTriple|IsIntegerMultiplicity' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "rg -n 'def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable|def blowUpMap|theorem HasWeightedApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "norm_simpleNVector|simpleNVector.*det|rectifiable_area_formula|weighted_tangent_on_c1_chart|lpf_",
+        "weighted_area_formula_lipschitzOn_fiberSum",
+        "aemeasurable_weightedAreaFiberSum_lipschitzOn",
+        "ae_fderivWithin_eq_of_lipschitz_extension",
+        "area_image_compl_regularSet_eq_zero",
+        "simon_theorem_3_6",
+        "exists_contDiff_one_extension_of_whitney",
+        "python3 Scratch/run_lean.py Scratch/Statements.lean",
+        "python3 Scratch/run_lean.py Scratch/Assembly.lean",
+        "python3 /tmp/lpf_independent_audit_5ahgnl7j/Scratch/run_lean.py Scratch/Instances.lean",
+        "python3 Scratch/run_lean.py Scratch/ReferenceAxioms.lean",
+        "python3 Scratch/run_lean.py -o .lake/build/lib/lean/Scratch/WhitneyCopy.olean Scratch/WhitneyCopy.lean",
+        "python3 Scratch/run_lean.py Scratch/WhitneyAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/tmp/lpf_independent_audit_5ahgnl7j/Scratch/Statements.lean",
+        "/tmp/lpf_independent_audit_5ahgnl7j/Scratch/Assembly.lean",
+        "/tmp/lpf_independent_audit_5ahgnl7j/Scratch/Instances.lean",
+        "/tmp/lpf_independent_audit_5ahgnl7j/Scratch/ReferenceAxioms.lean",
+        "/tmp/lpf_independent_audit_5ahgnl7j/Scratch/WhitneyCopy.lean",
+        "/tmp/lpf_independent_audit_5ahgnl7j/Scratch/WhitneyAxioms.lean"
+      ],
+      "conclusion": "Verified the frozen project and Mathlib revisions and compatibility with the pinned SimonGMT package. All 11 exact one-line propositions elaborate in the comparator scope without implementing any child. All lean_name values are bare, distinct, unreserved identifiers; no previously accepted declaration is reused. Dependencies are acyclic, correctly directed, and cover every sibling invoked by the proofs. The split is appropriate: its obligations support this selected theorem, and an independently checked assembly derives LipschitzPushforwardIntegerMultiplicity from children 7, 9, and 11, with only standard axioms. Operator-norm, extended-norm, Matrix.of Gram determinant, and normalized Hausdorff-measure conventions were verified. Searches found no existing lpf_* declarations or matching packaged Gram/tangent/rectifiable-area lemmas in the searched project and SimonGMT roots. The reused area, density, derivative-measurability, support-testing, and tangent-uniqueness results have only propext, Classical.choice, and Quot.sound as axioms. A byte-identical isolated copy of WhitneyExtension.lean also compiled, and its full extension theorem passed the same axiom check. Mathematical citations were cross-checked against [Simon’s text, Chapters 2–3 and Lemma 3.9](https://web.stanford.edu/class/math285/ts-gmt.pdf). These compiler checks establish types and conditional assembly; acceptance of the new child proofs follows from the independent mathematical review below."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "simple_nvector_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Leibniz expansion proves change of frame; the calibrating covector supplies the orthonormal lower bound, and Gram–Schmidt proves the Gram identity. Dependent families and n = 0 are covered. The operator norm and Matrix.of construction have the intended meanings."
+    },
+    {
+      "key": "rectifiable_support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly allows arbitrary U. On each relatively compact open zero region, the finite positive weighted measure and smooth scalar tests force every covector coordinate of ξ to vanish. This contradicts its almost-everywhere unit norm; the countable cover gives the exact null-set conclusion."
+    },
+    {
+      "key": "locally_lipschitz_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match their Lean hypotheses, including arbitrary U and null measurability. Relative neighborhoods give a countable Lipschitz cover. Compact approximation of the σ-finite measurable source, together with preservation of null sets, proves image null measurability."
+    },
+    {
+      "key": "lipschitz_c1_immersion_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the C¹ approximation argument using Rademacher, Lusin, Egoroff, and Whitney extension. Injectivity of the derivative yields local antilipschitz bounds by the mean-value estimate. Borel construction and disjointification establish every requested field, including the almost-everywhere covering and n = 0 case."
+    },
+    {
+      "key": "countably_rectifiable_c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact global-C¹ chart contract is proved. Exceptional regular points have null images, and critical images are null by the independently available Euclidean area formula. Shrinking to relatively compact balls supplies Lipschitz bounds while preserving antilipschitz bounds. This does not depend circularly on the proposed rectifiable area formula."
+    },
+    {
+      "key": "weighted_tangent_on_c1_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are stated and used correctly; rectifiability of the whole M is unnecessary. The chart blow-up follows from the Euclidean area formula, while Lusin pieces and the upper-density theorem control the weight and off-chart remainder. The resulting limit is precisely HasWeightedApproximateTangentSpaceAt, with the required dimension."
+    },
+    {
+      "key": "tangential_differential_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chartwise pseudoinverse construction gives measurable L. Rademacher, tangent identification, and uniqueness establish the derivative clause for every admissible tangent space. The directional estimate also bounds L at every point of M ∩ K, including points outside the almost-everywhere good set, as required by the stronger final conjunct."
+    },
+    {
+      "key": "chart_chain_rule",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse chart transfers source exceptional sets to null parameter sets. Rademacher supplies the Fréchet derivative of f ∘ Φ; comparison with the prescribed directional derivatives identifies it with L(Φ(w)) ∘ DΦ(w). The proof does not silently require measurability or ambient boundedness of L."
+    },
+    {
+      "key": "pushforward_is_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the weaker continuity-only contract. Support nullity and properness confine each integrand almost everywhere to a compact subset of U. Measurability and domination establish integrability and linearity; uniform convergence on a common compact support proves exactly the sequential continuity required of GeometricCurrentOn."
+    },
+    {
+      "key": "rectifiable_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both the integral identity and the explicitly required AEMeasurable fibre-sum conclusion. Chart transport and the chain rule give the correct Jacobian product; the Euclidean weighted area formula applies on disjoint Lipschitz pieces. Countable summation and null-image control handle the remainder and almost-everywhere representatives."
+    },
+    {
+      "key": "pushforward_integrality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact conditional integrality statement without assuming the parent conclusion. Tangential bounds suffice despite the absence of an ambient bound on L. The common exceptional set handles every contributing preimage and overlapping image sheets. Finite integer fibres, measurable orientation, the signed area formula, and all rectifiable-triple fields are verified, including degenerate dimensions."
+    }
+  ],
+  "required_changes": []
+}
