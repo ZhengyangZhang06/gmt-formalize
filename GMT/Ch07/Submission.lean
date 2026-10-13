@@ -913,6 +913,45 @@ theorem Submission.cbrr_tangent_cone_density_zero : ∀ (P n : ℕ) (M : Set (Eu
   rw [hset]
   exact hr
 
+/-- **Lusin's theorem for an a.e. strongly measurable map, keeping an a.e. property** (the closed
+set `F` of Simon Ch. 3, proof of Theorem 1.6 "⇐", (4)): if `A` is measurable with `μ(A) < ∞`,
+`f : ℝᴾ → Y` is `μ⌞A`-a.e. strongly measurable into a pseudo-metrizable, second-countable `Y` and
+`p` holds `μ⌞A`-a.e., then for every `η ≠ 0` there is a compact `K ⊆ A` with `μ(A \ K) < η` on
+which `p` holds and `f` is continuous.  With the Borel σ-algebra on `Y`, the strongly measurable
+representative `g` of `f` is measurable.  The bad set `Z = {f ≠ g} ∪ {¬p}` has
+`μ(Z ∩ A) = μ⌞A(Z) = 0`, so a measurable `μ`-null `N ⊇ Z ∩ A` leaves `A \ N`, on which `f = g`
+and `p` hold.  Lusin's theorem for `g` on `A \ N` gives `K`, and `A \ K ⊆ N ∪ ((A \ N) \ K)`. -/
+theorem Submission.cbrr_ud_lusin_of_aestronglyMeasurable : ∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [TopologicalSpace.PseudoMetrizableSpace Y] [SecondCountableTopology Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (f : Euclid P → Y) (p : Euclid P → Prop), MeasurableSet A → μ A ≠ ∞ → AEStronglyMeasurable f (μ.restrict A) → (∀ᵐ x ∂(μ.restrict A), p x) → ∀ η : ℝ≥0∞, η ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \ K) < η ∧ (∀ x ∈ K, p x) ∧ ContinuousOn f K := by
+  intro P Y _ _ _ μ A f p hA hμA hf hp η hη
+  -- Step 1: give `Y` its Borel σ-algebra; the strongly measurable representative `g = hf.mk f`
+  -- of `f` is then measurable, and `f = g` `μ⌞A`-a.e.
+  borelize Y
+  have hg : Measurable (hf.mk f) := hf.measurable_mk
+  -- Step 2: the bad set `Z = {f ≠ g} ∪ {¬p}` has `μ (Z ∩ A) = μ⌞A Z = 0`; a measurable `μ`-null
+  -- `N ⊇ Z ∩ A` leaves the measurable `A \ N`, on which `f = g` and `p` hold
+  have hZ : μ ({x | ¬(f x = hf.mk f x ∧ p x)} ∩ A) = 0 := by
+    rw [← Measure.restrict_apply' hA]
+    exact ae_iff.mp (hf.ae_eq_mk.and hp)
+  obtain ⟨N, hZN, hN, hN0⟩ := exists_measurable_superset_of_null hZ
+  have hgood : ∀ x ∈ A \ N, f x = hf.mk f x ∧ p x := fun x hx =>
+    not_not.mp fun h => hx.2 (hZN ⟨h, hx.1⟩)
+  -- Step 3: Lusin's theorem for `g` on `A \ N`: a compact `K ⊆ A \ N` with `μ ((A \ N) \ K) < η`
+  -- on which `g` is continuous
+  obtain ⟨K, hK, hKA, hKμ, hgK⟩ := Submission.dor_ims_lusin_measurable_continuousOn P μ (A \ N)
+    (hf.mk f) η hg (hA.diff hN) (measure_ne_top_of_subset sdiff_subset hμA) hη
+  -- Step 4: `f = g` and `p` hold on `K ⊆ A \ N`, and `A \ K ⊆ N ∪ (A \ N) \ K` with `μ N = 0`
+  refine ⟨K, hK, hKA.trans sdiff_subset, ?_, fun x hx => (hgood x (hKA hx)).2,
+    hgK.congr fun x hx => (hgood x (hKA hx)).1⟩
+  calc μ (A \ K)
+      ≤ μ (N ∪ (A \ N) \ K) := by
+        refine measure_mono fun x hx => ?_
+        by_cases hxN : x ∈ N
+        · exact Or.inl hxN
+        · exact Or.inr ⟨⟨hx.1, hxN⟩, hx.2⟩
+    _ ≤ μ N + μ ((A \ N) \ K) := measure_union_le _ _
+    _ = μ ((A \ N) \ K) := by rw [hN0, zero_add]
+    _ < η := hKμ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
