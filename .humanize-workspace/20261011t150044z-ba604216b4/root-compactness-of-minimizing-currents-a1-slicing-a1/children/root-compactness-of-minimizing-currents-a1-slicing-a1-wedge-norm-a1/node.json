@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+  "depth": 3,
+  "title": "Coefficient norm of the wedge of a 1-form with a k-covector: |β ∧ γ| ≤ ‖β‖·|γ| (fact (E1) behind Simon Ch. 6, 4.11)",
+  "statement": "Let P, k ∈ ℕ, let β : ℝ^P → ℝ be a continuous linear functional with operator norm ‖β‖ and γ a k-covector on ℝ^P (Covector (Euclid P) k). Let β ∧ γ be the (k+1)-covector ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ), i.e. (β ∧ γ)(v_0, …, v_k) = Σ_{i=0}^{k} (−1)^i·β(v_i)·γ(v_0, …, v̂_i, …, v_k). Then |β ∧ γ| ≤ ‖β‖·|γ|, where |·| = covectorEuclideanNorm is the Euclidean coefficient norm |α| = (Σ_{I strictly increasing} α(e_{I(0)}, …, e_{I(m−1)})²)^{1/2} of an m-covector α (e the standard basis of ℝ^P).",
+  "lean_statement": "∀ (P k : ℕ) (β : Euclid P →L[ℝ] ℝ) (γ : Covector (Euclid P) k), covectorEuclideanNorm (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ)) ≤ ‖β‖ * covectorEuclideanNorm γ",
+  "lean_name": "cmcs_wedge_norm_le",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d-a1",
+      "result_commit": "16144a475b272196ba8b2bd15f104028282dbcfc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1-a1"
+}

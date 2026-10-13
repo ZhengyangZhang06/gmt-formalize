@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.level_cutoff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+  "depth": 3,
+  "title": "Smooth cut-off of a sublevel set of a Lipschitz function, gradient ≤ L/(h(1 − h/2)) and supported in the strip {t − h < f < t}",
+  "statement": "Let P ∈ ℕ, L ≥ 0, f : ℝ^P → ℝ L-Lipschitz, t ∈ ℝ and 0 < h < 1. Then there is a C^∞ function g : ℝ^P → ℝ such that |g(x)| ≤ 2 for all x; ‖Dg(x)‖ ≤ L/(h(1 − h/2)) for all x (operator norm of fderiv ℝ g x); Dg(x) ≠ 0 implies t − h < f(x) < t; g(x) = 1 whenever f(x) ≤ t − h; and g(x) = 0 whenever f(x) ≥ t.",
+  "lean_statement": "∀ (P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (t h : ℝ), LipschitzWith L f → 0 < h → h < 1 → ∃ g : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g ∧ (∀ x, |g x| ≤ 2) ∧ (∀ x, ‖fderiv ℝ g x‖ ≤ L / (h * (1 - h / 2))) ∧ (∀ x, fderiv ℝ g x ≠ 0 → t - h < f x ∧ f x < t) ∧ (∀ x, f x ≤ t - h → g x = 1) ∧ (∀ x, t ≤ f x → g x = 0)",
+  "lean_name": "cmcs_level_cutoff",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-level-cutoff-a1-a1"
+}
