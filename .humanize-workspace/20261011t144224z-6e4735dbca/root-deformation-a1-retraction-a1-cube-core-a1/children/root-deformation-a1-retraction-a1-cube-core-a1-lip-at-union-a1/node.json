@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.retraction-a1.cube_core-a1.lip_at_union-a1",
+  "parent_id": "root.deformation-a1.retraction-a1.cube_core-a1",
+  "depth": 4,
+  "title": "Union rule for pointwise upper Lipschitz bounds over finitely many closed pieces",
+  "statement": "Let X, Y be pseudometric spaces, ι a finite type, G : ι → Set X a family of closed sets, B ⊆ ⋃_{k∈ι} G k, g : X → Y, y ∈ X and K ∈ ℝ. Assume that for every k with y ∈ G k and every ε > 0 there is δ > 0 such that d(g(y′), g(y)) ≤ (K + ε)·d(y′, y) for all y′ ∈ G k ∩ B with d(y′, y) < δ. Then for every ε > 0 there is δ > 0 such that d(g(y′), g(y)) ≤ (K + ε)·d(y′, y) for all y′ ∈ B with d(y′, y) < δ. (I.e. if g is K-Lipschitz at y within G k ∩ B for every piece G k containing y, then g is K-Lipschitz at y within B.)",
+  "lean_statement": "∀ (X Y : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] (ι : Type) [Finite ι] (G : ι → Set X) (B : Set X) (g : X → Y) (y : X) (K : ℝ), (∀ k, IsClosed (G k)) → B ⊆ ⋃ k, G k → (∀ k, y ∈ G k → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ G k ∩ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y",
+  "lean_name": "dr_cc_lip_at_union",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-retraction-a1-cube-core-a1-lip-at-union-a1-a1"
+}
