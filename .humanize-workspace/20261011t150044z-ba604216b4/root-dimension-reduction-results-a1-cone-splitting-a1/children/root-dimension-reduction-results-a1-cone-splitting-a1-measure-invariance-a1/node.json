@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1",
+  "depth": 3,
+  "title": "Invariant density function forces an invariant, n-homogeneous mass measure (μ = Θ·Hⁿ)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, S ∈ 𝒟_n(ℝ^P), R = (M, θ, ξ) an integer multiplicity representation of S in ℝ^P (IMRep univ n, R.Represents S), μ := R.measure = θ·H^n⌞M, and L ⊆ ℝ^P a linear subspace. Assume that S has a density at every point (for every x there is θ_x with HasMassDensity S x θ_x) and that the density is invariant under the maps w ↦ y + λw (y ∈ L, λ > 0): HasMassDensity S w θ implies HasMassDensity S (y + λw) θ. Then (i) μ(A − y) = μ(A) (written μ((fun x => y + x)⁻¹' A) = μ(A)) for every y ∈ L and Borel A ⊆ ℝ^P; (ii) μ(λA) = λ^n μ(A) for every λ > 0 and Borel A, where λA = (fun x => λ • x) '' A.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), 0 < n → R.Represents S → (∀ x : Euclid P, ∃ θ : ℝ, HasMassDensity S x θ) → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => y + x) ⁻¹' A) = R.measure A) ∧ ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A",
+  "lean_name": "dimred_cs_measure_invariant_of_density_invariant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1-a1"
+}
