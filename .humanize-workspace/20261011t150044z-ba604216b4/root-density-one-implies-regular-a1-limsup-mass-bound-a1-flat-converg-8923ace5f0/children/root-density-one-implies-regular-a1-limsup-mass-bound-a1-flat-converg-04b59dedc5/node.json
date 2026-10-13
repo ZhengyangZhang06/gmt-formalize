@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.localize-a1.good_level-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.localize-a1",
+  "depth": 5,
+  "title": "Choice of a good cutting level: Helly no-concentration, Fatou-bounded slice values and a.e. good slices at one common level",
+  "statement": "Let ν_j (j ∈ ℕ) be measures on the Borel sets of ℝ and let F_j : ℝ → [0, ∞] (j ∈ ℕ) be functions, each a.e.-measurable for Lebesgue measure L¹. Let Good_j (j ∈ ℕ) be predicates on ℝ (Good : ℕ → ℝ → Prop), let a < b be reals and let Λ ∈ [0, ∞). Assume that for every j: ν_j([a, b]) ≤ Λ, ∫_ℝ F_j dL¹ ≤ Λ (lower Lebesgue integral), and Good_j(t) holds for L¹-a.e. t ∈ ℝ. Then there are s ∈ (a, b), a strictly increasing φ : ℕ → ℕ and C ∈ [0, ∞) with the following properties: Good_j(s) holds for every j ∈ ℕ; F_{φ(j)}(s) ≤ C for every j ∈ ℕ; and for every ε ∈ (0, ∞] there is δ > 0 with ν_{φ(j)}([s − δ, s]) ≤ ε for all sufficiently large j.",
+  "lean_statement": "∀ (ν : ℕ → Measure ℝ) (F : ℕ → ℝ → ℝ≥0∞) (Good : ℕ → ℝ → Prop) (a b : ℝ) (Λ : ℝ≥0∞), a < b → Λ ≠ ∞ → (∀ j, ν j (Icc a b) ≤ Λ) → (∀ j, AEMeasurable (F j)) → (∀ j, ∫⁻ t, F j t ≤ Λ) → (∀ j, ∀ᵐ t, Good j t) → ∃ s ∈ Ioo a b, ∃ (φ : ℕ → ℕ) (C : ℝ≥0∞), StrictMono φ ∧ C ≠ ∞ ∧ (∀ j, Good j s) ∧ (∀ j, F (φ j) s ≤ C) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, ν (φ j) (Icc (s - δ) s) ≤ ε",
+  "lean_name": "dor_lmb_fcl_good_level",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.helly_no_concentration-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.helly_no_concentration-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c33ce83c1f-a1",
+      "result_commit": "38d550ecf9f29a3bf5ff9054e69a18f826a3fc3b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-04b59dedc5-a1"
+}

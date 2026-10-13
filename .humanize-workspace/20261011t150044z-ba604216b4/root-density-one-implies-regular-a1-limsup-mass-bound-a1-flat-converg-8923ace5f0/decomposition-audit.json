@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'dor_lmb_fcl|good_level|helly|cmc_fcl|lcmp_massOn' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project --glob '*.lean'",
+        "lintegral_liminf_le'|AEMeasurable.liminf|ae_lt_top'|integral_withDensity_eq_integral_smul|restrict_withDensity|exists_contMDiffMap_one_nhds_of_subset_interior|exists_contDiff_support_eq|exists_cthickening_subset_open",
+        "sed -n '545,625p' ../../verifier/gmt-compare.py",
+        "sed -n '1,145p' ../../verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/localize-independent-audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/localize-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/localize-independent-audit/GoodLevel.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-8923ace5f0/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-8923ace5f0/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c33ce83c1f/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-77f2fff68d/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-2bdc65f87f/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-a5cfc87778/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-l-9981f1246a/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-fe7f261e4c/accepted-candidate.json",
+        "/tmp/localize-independent-audit/Challenges.lean",
+        "/tmp/localize-independent-audit/Assembly.lean",
+        "/tmp/localize-independent-audit/GoodLevel.lean"
+      ],
+      "conclusion": "Independently verified the pinned project and Mathlib revisions and byte equality of the snapshot Contract.lean with the workspace contract and submission. The project search found no matching localization helper declarations; the inspected Mathlib sources supply the required measure, integration, compactness and cutoff tools. All seven exact child types elaborate independently in comparator scope and pass statement validation. The supplied assembly, checked against the exact frozen child, dependency and parent types, compiles; the good_level proof from helly also compiles. Both use only propext, Classical.choice and Quot.sound. Each reused name uniquely matches an accepted declaration with an identical frozen type and matching passing comparator receipts; underlying comparator configurations permit only those three axioms and record compatible pinned packages. The new name is unreserved. Dependencies, including existing prerequisites, are acyclic. The split appropriately isolates the analytic arguments and establishes every conclusion of the selected localization theorem using its authorized C1 and IMC dependencies and SL antecedent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "good_level",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and exact one-line type agree, including Lebesgue a.e. hypotheses, Good_j(s) for every original index, finite C, and eventual closed-band bounds. Helly extraction, measurable Fatou liminf, simultaneous conull conditions, positive interval measure and a second subsequence prove every conclusion. No circular reliance; helly is the correctly directed dependency. The declaration name is fresh."
+    },
+    {
+      "key": "helly",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse is verified. Restriction gives finite measures; compactness of the countable product gives rational-coordinate limits; the monotone extension has countably many discontinuities. At other interior points, the rational interval difference controls the closed band and becomes eventually small. The proof handles epsilon = infinity and vacuous intervals without assuming a < b. Prose and Lean match."
+    },
+    {
+      "key": "dist_sublevel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse is verified. Compact containment supplies a positive thickening radius. Nonemptiness justifies converting infEDist to infDist; each sublevel is closed inside that compact thickening and contained in U. Negative radii cause no gap. All hypotheses and quantifiers match the Lean type."
+    },
+    {
+      "key": "imrep_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse is verified. Local multiplicity integrability proves finiteness on compact subsets. Absolute continuity transfers strong measurability and the conditional covector bound. The measurable finite-valued density justifies the Bochner integral identity without an additional integrability hypothesis, as confirmed in the pinned lemma. All four clauses match the prose."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse is verified. Borel measurability of E permits commuting restriction with density and combining restricted measures. Substituting the carrier, multiplicity and orientation equalities into imrep_data gives the exact action formula. The dependency on imrep_data is correct and non-circular."
+    },
+    {
+      "key": "vanish_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse is verified. The empty compact set is handled explicitly. Otherwise the constructed smooth cutoff equals one on a neighborhood of C and has compact support in V. Splitting each admissible form preserves its evaluation and norm bound, yielding the supremum inequality for arbitrary G. No openness of U or containment C in U is silently required."
+    },
+    {
+      "key": "weak_conv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse is verified. The proof establishes measurability and integrability on the finite-measure sublevel before using integral subtraction. Shrinking inner layers control the limit measure; the assumed closed-band estimate controls the sequence. Smooth Urysohn supplies an admissible cutoff form, and weak convergence plus the explicit epsilon estimate proves the conclusion. No global finiteness or zero boundary mass assumption is missing."
+    }
+  ],
+  "required_changes": []
+}
