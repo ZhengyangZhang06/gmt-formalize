@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sum_repr\\x27|sum_inner_mul_inner|sum_sq_inner_right|sum_sq_norm_inner_right",
+        "abbrev Covector|def covectorEuclideanNorm|^namespace|^open|abbrev Euclid|def Euclid",
+        "theorem map_sum|theorem map_smul_univ|theorem map_eq_zero_of_not_injective|theorem map_perm",
+        "prod_sum|sum_mul_sum",
+        "regcomp_covector_sq_sum_basis_invariant|regcomp_covector_sq_sum_basisFun",
+        "git worktree list --porcelain",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/covector-independent-audit-20261012/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cvsq-split/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Ring/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/WellFounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Perm.lean",
+        "/tmp/covector-independent-audit-20261012/Contracts.lean",
+        "/tmp/cvsq-split/Full.lean"
+      ],
+      "conclusion": "Accept the split into independent basis invariance and standard-basis counting obligations. Instantiating the first child with the standard basis and composing with the second proves exactly the selected frozen parent; this assembly compiled using child propositions as parameters, without child implementations or sorry. Both literal child types independently elaborate as Prop with autoImplicit disabled. The supplied full prototype also compiled, and both children and the parent depend only on propext, Classical.choice and Quot.sound. The manifest revisions match the installed dependencies, the inspected mathlib files match the snapshot, and Submission.lean matches the frozen contract. The definitions and cited lemmas support every mathematical step. Neither proposed name is reserved in the 236-node DAG, 247 other decomposition files, or 142 worktree Submission files; no identical frozen DAG type was found. Both names are bare identifiers. The children have no dependencies, use neither parent nor sibling conclusions, and introduce no cycle. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "basis_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and matches the standalone one-line Lean proposition. The proof correctly expands every slot, squares and rearranges finite sums, factors the tuple sum, and applies real Parseval and orthonormality to obtain the diagonal delta. The surviving sum is exactly the stated right-hand side. Empty-index cases remain valid. The argument is complete, independent of the parent and other child, and detailed enough for direct formalization."
+    },
+    {
+      "key": "standard_basis_count",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree with the pinned coefficient-norm definition. Nonnegativity justifies squaring the square root; alternation eliminates repeated indices; permutation signs disappear after squaring. Equal ranges establish uniqueness of the increasing enumeration, and Tuple.sort supplies existence, proving the required bijection. Counting permutations yields precisely n! times the squared norm, including n = 0, P = 0 and n > P. This is a genuine special-case obligation with a complete non-circular proof."
+    }
+  ],
+  "required_changes": []
+}
