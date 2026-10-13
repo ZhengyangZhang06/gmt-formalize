@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1f2b037e76aa6bcc1b5c29c23fea7b3baffe6c5c9dd6eaac503751eedb15e309",
+  "git_delta": {
+    "base_commit": "bc78881a4cea400d6bdceb596beb636d4444b6ec",
+    "candidate_commit": "51ca5532ca48ad1d198cb5d61c63953b47301170",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "aa5cb72cf1262d36e41583f48b85718cccff57bf026761d67e180d521b026565",
+    "source_sha256": "1016388252351d3fb80df7b606fb39250e2bde513415729aaecc1aaccaf16d5d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_measure_invariant_of_density_invariant",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), 0 < n → R.Represents S → (∀ x : Euclid P, ∃ θ : ℝ, HasMassDensity S x θ) → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => y + x) ⁻¹' A) = R.measure A) ∧ ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
