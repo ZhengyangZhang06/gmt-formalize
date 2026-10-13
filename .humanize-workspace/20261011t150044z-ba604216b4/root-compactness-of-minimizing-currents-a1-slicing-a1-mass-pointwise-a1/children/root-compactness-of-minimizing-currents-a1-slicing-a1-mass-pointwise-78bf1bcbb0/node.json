@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.cutoff_integral_tendsto-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1",
+  "depth": 4,
+  "title": "Dominated convergence for level cut-offs: ∫ g_h F dμ → ∫_{f<t} F dμ as h → 0+",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P, F : ℝ^P → ℝ μ-integrable, f : ℝ^P → ℝ measurable, t, C ∈ ℝ, and g : ℝ → (ℝ^P → ℝ). Assume that for every h with 0 < h < 1: g_h := g(h) is μ-a.e. strongly measurable, |g_h(x)| ≤ C for all x, g_h(x) = 1 whenever f(x) ≤ t − h, and g_h(x) = 0 whenever t ≤ f(x). Then ∫ g_h(x)·F(x) dμ(x) → ∫_{{x : f(x) < t}} F dμ as h → 0+, i.e. along the filter 𝓝[>]0 on ℝ.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F f : Euclid P → ℝ) (t C : ℝ) (g : ℝ → Euclid P → ℝ), Integrable F μ → Measurable f → (∀ h : ℝ, 0 < h → h < 1 → AEStronglyMeasurable (g h) μ) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, |g h x| ≤ C) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, f x ≤ t - h → g h x = 1) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, t ≤ f x → g h x = 0) → Tendsto (fun h : ℝ => ∫ x, g h x * F x ∂μ) (𝓝[>] 0) (𝓝 (∫ x in {x | f x < t}, F x ∂μ))",
+  "lean_name": "cmcs_smp_cutoff_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-78bf1bcbb0-a1"
+}
