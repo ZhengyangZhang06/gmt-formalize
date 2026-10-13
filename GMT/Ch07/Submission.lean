@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.2.4** (the "standard approximation argument" at the end of its proof, p. 187,
+lower half): if `μ(G) ≤ liminf_j μ_j(G)` for every bounded open `G`, then
+`∫ g dμ ≤ liminf_j ∫ g dμ_j` in `[0, ∞]` for every continuous `g ≥ 0` with compact support.
+By the layer cake formula both sides integrate `t ↦ ν{g > t}` over `t > 0`; for `t > 0` the set
+`{g > t}` is open and lies in the compact `tsupport g`, and Fatou's lemma finishes. -/
+theorem Submission.dtc_bc_rc_lintegral_le_liminf : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → ∫⁻ x, ENNReal.ofReal (g x) ∂μ ≤ liminf (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop := by
+  intro P μs μ hG g hg hgc hg0
+  -- step 1: `tsupport g` is compact, hence bounded
+  have hK : Bornology.IsBounded (tsupport g) := hgc.isCompact.isBounded
+  -- step 2: layer cake, `∫⁻ ofReal (g x) ∂ν = ∫⁻ t in Ioi 0, ν {x | t < g x}`
+  simp_rw [lintegral_eq_lintegral_meas_lt _ (ae_of_all _ hg0) hg.measurable.aemeasurable]
+  calc ∫⁻ t in Ioi 0, μ {x | t < g x}
+      ≤ ∫⁻ t in Ioi 0, liminf (fun j => μs j {x | t < g x}) atTop := by
+        -- steps 3 and 5: for `t > 0`, `{x | t < g x}` is open and contained in `tsupport g`
+        refine setLIntegral_mono' measurableSet_Ioi fun t ht =>
+          hG _ (isOpen_lt continuous_const hg) ?_
+        exact hK.subset fun x hx => subset_tsupport g (lt_trans ht hx).ne'
+    _ ≤ liminf (fun j => ∫⁻ t in Ioi 0, μs j {x | t < g x}) atTop :=
+        -- steps 4 and 6: `t ↦ μs j {x | t < g x}` is antitone, hence measurable; Fatou
+        lintegral_liminf_le fun j => Antitone.measurable fun s t hst =>
+          measure_mono fun x hx => lt_of_le_of_lt hst hx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
