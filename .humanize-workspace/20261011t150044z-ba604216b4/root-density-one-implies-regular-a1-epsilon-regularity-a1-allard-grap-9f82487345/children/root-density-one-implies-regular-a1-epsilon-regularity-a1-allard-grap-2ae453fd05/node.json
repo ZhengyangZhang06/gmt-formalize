@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.green_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+  "depth": 6,
+  "title": "Green's first identity for a compactly supported C¹ function against a C² function",
+  "statement": "Let n ∈ ℕ, let V ⊆ ℝⁿ (= Euclid n) be open, let G : ℝⁿ → ℝ be C² on V, and let Ψ : ℝⁿ → ℝ be C¹ on ℝⁿ with compact support and tsupport Ψ ⊆ V. Write e_i = EuclideanSpace.single i 1, DF(y) = fderiv ℝ F y and D²G(y)(a, b) = iteratedFDeriv ℝ 2 G y ![a, b]; these are Mathlib's total functions, and their values off V are irrelevant. Then ∫_{ℝⁿ} Σ_{i<n} DΨ(y)e_i · DG(y)e_i dy = −∫_{ℝⁿ} Ψ(y)·Σ_{i<n} D²G(y)(e_i, e_i) dy.",
+  "lean_statement": "∀ (n : ℕ) (V : Set (Euclid n)) (G Ψ : Euclid n → ℝ), IsOpen V → ContDiffOn ℝ 2 G V → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → tsupport Ψ ⊆ V → ∫ y : Euclid n, ∑ i : Fin n, fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = -∫ y : Euclid n, Ψ y * ∑ i : Fin n, iteratedFDeriv ℝ 2 G y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]",
+  "lean_name": "dorag_ha_mv_green_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2ae453fd05-a1"
+}

@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "Read manifest.json and compare the snapshot Contract.lean byte-for-byte with workspace Contract.lean and Submission.lean.",
+        "rg -n 'theorem integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem iteratedFDeriv_two_apply|theorem iteratedFDeriv_comp_add_left|theorem iteratedFDerivWithin_comp_right|theorem comp_right_fderiv|theorem exists_hasDerivAt_eq_slope|theorem tendsto_integral_of_dominated_convergence|theorem support_fderiv_subset' Mathlib/Analysis/Calculus Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "rg -n -i 'mean_value|meanValue|mean value' mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic project/GMT/Ch07",
+        "sed -n '200,250p' Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean; sed -n '270,310p' Mathlib/Analysis/Calculus/ParametricIntegral.lean; sed -n '425,465p' Mathlib/Analysis/Calculus/ContDiff/Basic.lean; sed -n '938,970p' Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean; sed -n '207,237p' Mathlib/Analysis/Calculus/FDeriv/Equiv.lean; sed -n '46,72p' Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "Python scan of lean_name fields in dag.json and nodes/*/*.json; compare supplied proof signatures with frozen child types and proof references with depends_on.",
+        "Independently compile /tmp/mv-independent-audit-13b34197/StandaloneTypes.lean and /tmp/mv-independent-audit-13b34197/SuppliedProofs.lean using pinned Lean 4.35.0-rc3; run #print axioms for all six children and the selected parent."
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Harmonic/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9f82487345/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9f82487345/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/mv-independent-audit-13b34197/StandaloneTypes.lean",
+        "/tmp/mv-independent-audit-13b34197/SuppliedProofs.lean"
+      ],
+      "conclusion": "The snapshot pins project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace headers match. Searches found no general-dimensional mean-value theorem in the searched project and real harmonic directories; the inspected complex theorem concerns circle averages. The pinned integration-by-parts theorem permits precisely the support-local differentiability used here, and the affine-composition lemmas require no regularity assumption for continuous linear equivalences. The split is appropriate: all six obligations contribute to the selected theorem through compact-ball enlargement, dominated differentiation, vanishing flux, the ordinary mean value theorem, and kernel approximation. All frozen types are standalone one-line propositions and elaborate before child implementations exist. All names are bare identifiers; scanning 344 DAG nodes and 3210 node JSON files found no competing reservation. Dependencies are acyclic and match actual proof references. Independently extracted, unchanged proof appendices and the exact frozen parent assembly compile successfully, with only propext, Classical.choice, and Quot.sound. The additional integration-by-parts import is permitted. Inline scalar actions and inner products have the intended Euclidean instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_potential",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match. The FTC establishes the C¹ profile, the chain rule gives the exact derivative formula, and vanishing beyond r² gives the closed-ball support bound and compactness. Every asserted property is proved without circular reliance."
+    },
+    {
+      "key": "green_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and integral identity match exactly. The proof establishes all three integrability requirements by gluing across the complement of tsupport Ψ, checks support-local differentiability for integration by parts, identifies the second derivatives, and justifies exchanging finite sums with integrals. No regularity outside V is assumed."
+    },
+    {
+      "key": "affine_comp_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact affine identities hold for arbitrary h with the explicitly defined total derivatives. The proof handles s = 0 separately and uses unconditional translation and continuous-linear-equivalence composition formulas for s ≠ 0; multilinearity supplies s². No missing differentiability hypothesis or ordinary-chain-rule misuse occurs."
+    },
+    {
+      "key": "deriv_under_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches HasDerivAt and all its hypotheses. The supplied neighbourhood keeps relevant arguments inside U; continuity, measurability, initial integrability, pointwise derivatives including the support boundary, and an integrable uniform derivative bound are all established. The pinned differentiation-under-integral theorem applies directly."
+    },
+    {
+      "key": "flux_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose and uses exactly its three declared dependencies. The proof checks their hypotheses, annihilates the Green-identity right side using harmonicity and support, converts the left side using the Euclidean basis expansion, and cancels the nonzero factor −s. It never invokes the parent mean-value theorem."
+    },
+    {
+      "key": "ball_of_kernel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement is a genuine implication from the explicitly assumed kernel identity, which the parent establishes independently. The profiles converge pointwise to the open-ball indicator, including on the sphere; measurability and domination require only continuity on the closed ball. Dominated convergence and measure-preserving reflection yield the exact ENNReal.toReal conclusion."
+    }
+  ],
+  "required_changes": []
+}

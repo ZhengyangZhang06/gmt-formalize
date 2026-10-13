@@ -451,6 +451,589 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The radial potential of the mean value property (Simon Ch. 5, 3.2–3.4).  For continuous `g`
+vanishing on `[r², ∞)`, `Ψ(y) = P(|y|²)` with `P(t) = ½∫_{r²}^t g` is `C¹` with
+`DΨ(y)v = P'(|y|²)·2⟨y, v⟩ = g(|y|²)⟨y, v⟩` (FTC and the chain rule), and `Ψ(y) = 0` for
+`|y| ≥ r`, so `tsupport Ψ ⊆ closedBall 0 r`, which is compact. -/
+theorem Submission.dorag_ha_mv_radial_potential : ∀ (n : ℕ) (r : ℝ) (g : ℝ → ℝ), 0 < r → Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∃ Ψ : Euclid n → ℝ, ContDiff ℝ 1 Ψ ∧ HasCompactSupport Ψ ∧ tsupport Ψ ⊆ closedBall 0 r ∧ ∀ y v : Euclid n, fderiv ℝ Ψ y v = g (‖y‖ ^ 2) * inner ℝ y v := by
+  intro n r g hr hg hgr
+  set P : ℝ → ℝ := fun t => (1/2 : ℝ) * ∫ τ in r ^ 2..t, g τ with hP
+  have hPd : ∀ t, HasDerivAt P ((1/2 : ℝ) * g t) t := fun t =>
+    ((hg.integral_hasStrictDerivAt (r ^ 2) t).hasDerivAt).const_mul (1/2 : ℝ)
+  have hPC : ContDiff ℝ 1 P := by
+    rw [contDiff_one_iff_deriv]
+    refine ⟨fun t => (hPd t).differentiableAt, ?_⟩
+    have : deriv P = fun t => (1/2 : ℝ) * g t := funext fun t => (hPd t).deriv
+    rw [this]; exact continuous_const.mul hg
+  have hP0 : ∀ t, r ^ 2 ≤ t → P t = 0 := by
+    intro t ht
+    simp only [hP]
+    rw [intervalIntegral.integral_congr (g := fun _ => (0:ℝ)) ?_]
+    · simp
+    · intro τ hτ
+      rw [uIcc_of_le ht] at hτ
+      exact hgr τ hτ.1
+  have hsupp : tsupport (fun y : Euclid n => P (‖y‖ ^ 2)) ⊆ closedBall 0 r := by
+    refine closure_minimal (fun y hy => ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_zero_right]
+    by_contra hlt
+    push Not at hlt
+    exact hy (hP0 _ (pow_le_pow_left₀ hr.le hlt.le 2))
+  refine ⟨fun y => P (‖y‖ ^ 2), hPC.comp (contDiff_norm_sq ℝ), ?_, hsupp, ?_⟩
+  · exact IsCompact.of_isClosed_subset (isCompact_closedBall 0 r) (isClosed_tsupport _) hsupp
+  · intro y v
+    have hd : HasFDerivAt (fun y : Euclid n => P (‖y‖ ^ 2))
+        (((1/2 : ℝ) * g (‖y‖ ^ 2)) • (2 • innerSL ℝ y)) y :=
+      (hPd _).comp_hasFDerivAt y (hasStrictFDerivAt_norm_sq y).hasFDerivAt
+    rw [hd.fderiv]
+    simp only [smul_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul]
+    ring
+/-- **Green's first identity** for a compactly supported `C¹` function `Ψ` against a function `G`
+that is `C²` on an open set `V ⊇ tsupport Ψ` (step 4 of the mean value argument):
+`∫ ∑ᵢ DΨ(y)eᵢ · DG(y)eᵢ dy = -∫ Ψ(y) ∑ᵢ D²G(y)(eᵢ, eᵢ) dy`.
+
+For each direction `v = eᵢ`, the product `h = Ψ · DG(·)v` is differentiable everywhere (it vanishes
+near every point off `K = tsupport Ψ ⊆ V`), and `y ↦ Dh(y)v = DΨ(y)v · DG(y)v + Ψ(y) D²G(y)(v, v)`
+is continuous with compact support.  By translation invariance `t ↦ ∫ h(y + tv) dy` is constant,
+and differentiating under the integral at `t = 0` gives `∫ Dh(y)v dy = 0`.  Summing over `i`, with
+every summand integrable, gives the identity. -/
+theorem Submission.dorag_ha_mv_green_identity : ∀ (n : ℕ) (V : Set (Euclid n)) (G Ψ : Euclid n → ℝ), IsOpen V → ContDiffOn ℝ 2 G V → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → tsupport Ψ ⊆ V → ∫ y : Euclid n, ∑ i : Fin n, fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = -∫ y : Euclid n, Ψ y * ∑ i : Fin n, iteratedFDeriv ℝ 2 G y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+  intro n V G Ψ hV hG hΨ hΨc hΨV
+  -- Step 1: `DG` is `C¹` on the open set `V`
+  have hG1 : ContDiffOn ℝ 1 (fderiv ℝ G) V := hG.fderiv_of_isOpen hV (by norm_num)
+  have hGd : ∀ y ∈ V, DifferentiableAt ℝ (fderiv ℝ G) y := fun y hy =>
+    (hG1.differentiableOn one_ne_zero y hy).differentiableAt (hV.mem_nhds hy)
+  have hG1c : ContinuousOn (fderiv ℝ G) V := hG1.continuousOn
+  have hG2c : ContinuousOn (fderiv ℝ (fderiv ℝ G)) V :=
+    hG1.continuousOn_fderiv_of_isOpen hV le_rfl
+  -- Step 2: `Ψ` and `DΨ` vanish off `K = tsupport Ψ`
+  have hΨ0 : ∀ y, y ∉ tsupport Ψ → Ψ y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport hy
+  have hdΨ0 : ∀ y, y ∉ tsupport Ψ → fderiv ℝ Ψ y = 0 := fun y hy => by
+    by_contra h'
+    exact hy (support_fderiv_subset ℝ h')
+  have hdΨc : Continuous (fderiv ℝ Ψ) := hΨ.continuous_fderiv one_ne_zero
+  have hKo : ∀ y, y ∉ tsupport Ψ → (tsupport Ψ)ᶜ ∈ 𝓝 y := fun y hy =>
+    (isClosed_tsupport Ψ).isOpen_compl.mem_nhds hy
+  -- Step 3: continuous on `V` and zero off `K` gives continuous with compact support
+  have glue : ∀ f : Euclid n → ℝ, ContinuousOn f V → (∀ y, y ∉ tsupport Ψ → f y = 0) →
+      Continuous f ∧ HasCompactSupport f := by
+    intro f hf h0
+    refine ⟨continuous_iff_continuousAt.2 fun y => ?_, ?_⟩
+    · by_cases hy : y ∈ V
+      · exact hf.continuousAt (hV.mem_nhds hy)
+      · have hy' : y ∉ tsupport Ψ := fun h => hy (hΨV h)
+        have hfy : f =ᶠ[𝓝 y] fun _ => 0 := by
+          filter_upwards [hKo y hy'] with z hz
+          exact h0 z hz
+        exact continuousAt_const.congr hfy.symm
+    · refine IsCompact.of_isClosed_subset hΨc (isClosed_tsupport _) ?_
+      refine closure_minimal (fun y hy => ?_) (isClosed_tsupport Ψ)
+      by_contra h
+      exact hy (h0 y h)
+  -- the derivative along `v` of a compactly supported function has integral zero
+  have core : ∀ (h k : Euclid n → ℝ) (v : Euclid n), Continuous h → HasCompactSupport h →
+      Continuous k → HasCompactSupport k →
+      (∀ (y : Euclid n) (t : ℝ), HasDerivAt (fun s : ℝ => h (y + s • v)) (k (y + t • v)) t) →
+      ∫ y, k y = 0 := by
+    intro h k v hh hhc hk hkc hd
+    obtain ⟨C, hC⟩ := hk.bounded_above_of_compact_support hkc
+    have hSc : IsCompact (cthickening ‖v‖ (tsupport k)) := IsCompact.cthickening hkc
+    have hbound : ∀ (y : Euclid n) (t : ℝ), t ∈ ball (0 : ℝ) 1 →
+        ‖k (y + t • v)‖ ≤ (cthickening ‖v‖ (tsupport k)).indicator (fun _ => C) y := by
+      intro y t ht
+      by_cases hy : y ∈ cthickening ‖v‖ (tsupport k)
+      · rw [indicator_of_mem hy]
+        exact hC _
+      · rw [indicator_of_notMem hy]
+        have hk0 : k (y + t • v) = 0 := by
+          by_contra hne
+          apply hy
+          refine mem_cthickening_of_dist_le y (y + t • v) ‖v‖ (tsupport k)
+            (subset_tsupport k hne) ?_
+          have ht1 : ‖t‖ < 1 := by simpa using ht
+          rw [dist_eq_norm, sub_add_cancel_left, norm_neg, norm_smul]
+          nlinarith [norm_nonneg v, norm_nonneg t]
+        simp [hk0]
+    have hderiv := (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+      (F := fun (t : ℝ) (y : Euclid n) => h (y + t • v))
+      (F' := fun (t : ℝ) (y : Euclid n) => k (y + t • v))
+      (x₀ := 0) (bound := (cthickening ‖v‖ (tsupport k)).indicator (fun _ => C))
+      (ball_mem_nhds 0 one_pos)
+      (Eventually.of_forall fun t =>
+        (hh.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+      (by simpa using hh.integrable_of_hasCompactSupport hhc)
+      ((hk.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+      (ae_of_all _ fun y t ht => hbound y t ht)
+      ((integrableOn_const hSc.measure_lt_top.ne).integrable_indicator
+        isClosed_cthickening.measurableSet)
+      (ae_of_all _ fun y t _ => hd y t)).2
+    have hconst : (fun t : ℝ => ∫ y, h (y + t • v)) = fun _ => ∫ y, h y := by
+      funext t
+      exact integral_add_right_eq_self (fun y => h y) (t • v)
+    rw [hconst] at hderiv
+    simpa using hderiv.unique (hasDerivAt_const (0 : ℝ) (∫ y, h y))
+  -- Steps 4–6: one coordinate direction
+  have key : ∀ i : Fin n,
+      Integrable (fun y => fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) *
+        fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ))) ∧
+      Integrable (fun y => Ψ y * iteratedFDeriv ℝ 2 G y
+        ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]) ∧
+      ∫ y, fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) *
+          fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) =
+        -∫ y, Ψ y * iteratedFDeriv ℝ 2 G y
+          ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+    intro i
+    set v : Euclid n := EuclideanSpace.single i (1 : ℝ)
+    have h2 : (fun y => Ψ y * iteratedFDeriv ℝ 2 G y ![v, v]) =
+        fun y => Ψ y * fderiv ℝ (fderiv ℝ G) y v v := by
+      funext y
+      simp [iteratedFDeriv_two_apply]
+    rw [h2]
+    have hgc : ContinuousOn (fun y => fderiv ℝ G y v) V :=
+      (ContinuousLinearMap.apply ℝ ℝ v).continuous.comp_continuousOn hG1c
+    have hg2c : ContinuousOn (fun y => fderiv ℝ (fderiv ℝ G) y v v) V :=
+      ((ContinuousLinearMap.apply ℝ ℝ v).continuous.comp
+        (ContinuousLinearMap.apply ℝ (Euclid n →L[ℝ] ℝ) v).continuous).comp_continuousOn hG2c
+    obtain ⟨hAc, hAs⟩ := glue (fun y => fderiv ℝ Ψ y v * fderiv ℝ G y v)
+      ((hdΨc.clm_apply continuous_const).continuousOn.mul hgc)
+      (fun y hy => by simp [hdΨ0 y hy])
+    obtain ⟨hBc, hBs⟩ := glue (fun y => Ψ y * fderiv ℝ (fderiv ℝ G) y v v)
+      (hΨ.continuous.continuousOn.mul hg2c) (fun y hy => by simp [hΨ0 y hy])
+    obtain ⟨hhc, hhs⟩ := glue (fun y => Ψ y * fderiv ℝ G y v)
+      (hΨ.continuous.continuousOn.mul hgc) (fun y hy => by simp [hΨ0 y hy])
+    -- the product `Ψ · DG(·)v` is differentiable everywhere
+    have hF : ∀ z, HasFDerivAt (fun y => Ψ y * fderiv ℝ G y v)
+        (Ψ z • ((ContinuousLinearMap.apply ℝ ℝ v).comp (fderiv ℝ (fderiv ℝ G) z)) +
+          fderiv ℝ G z v • fderiv ℝ Ψ z) z := by
+      intro z
+      by_cases hz : z ∈ V
+      · exact (hΨ.differentiable one_ne_zero z).hasFDerivAt.mul
+          ((ContinuousLinearMap.apply ℝ ℝ v).hasFDerivAt.comp z (hGd z hz).hasFDerivAt)
+      · have hz' : z ∉ tsupport Ψ := fun h => hz (hΨV h)
+        rw [hΨ0 z hz', hdΨ0 z hz', zero_smul, smul_zero, add_zero]
+        refine (hasFDerivAt_const (0 : ℝ) z).congr_of_eventuallyEq ?_
+        filter_upwards [hKo z hz'] with y hy
+        simp [hΨ0 y hy]
+    have hd : ∀ (y : Euclid n) (t : ℝ),
+        HasDerivAt (fun s : ℝ => Ψ (y + s • v) * fderiv ℝ G (y + s • v) v)
+          ((fun y => fderiv ℝ Ψ y v * fderiv ℝ G y v + Ψ y * fderiv ℝ (fderiv ℝ G) y v v)
+            (y + t • v)) t := by
+      intro y t
+      have hp : HasDerivAt (fun s : ℝ => y + s • v) v t := by
+        simpa using ((hasDerivAt_id t).smul_const v).const_add y
+      refine ((hF (y + t • v)).comp_hasDerivAt t hp).congr_deriv ?_
+      simp only [add_apply, smul_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.apply_apply, smul_eq_mul]
+      ring
+    have hA := hAc.integrable_of_hasCompactSupport (μ := volume) hAs
+    have hB := hBc.integrable_of_hasCompactSupport (μ := volume) hBs
+    have h0 := core (fun y => Ψ y * fderiv ℝ G y v)
+      (fun y => fderiv ℝ Ψ y v * fderiv ℝ G y v + Ψ y * fderiv ℝ (fderiv ℝ G) y v v) v
+      hhc hhs (hAc.add hBc) (hAs.add hBs) hd
+    rw [integral_add hA hB] at h0
+    exact ⟨hA, hB, by linarith⟩
+  -- Step 7: sum over the coordinate directions
+  rw [integral_finsetSum _ (fun i _ => (key i).1)]
+  simp_rw [Finset.mul_sum]
+  rw [integral_finsetSum _ (fun i _ => (key i).2.1), ← Finset.sum_neg_distrib]
+  exact Finset.sum_congr rfl fun i _ => (key i).2.2
+/-- **Derivatives of `z ↦ h(x − s z)`** (the chain-rule step in the proof of the mean-value
+property of harmonic functions, cited in Simon Ch. 5 before 3.2; chapter-05.txt lines 643–644).
+For an arbitrary `h : ℝⁿ → ℝ` and `G(z) = h(x − s z)`: `DG(y) a = −s·Dh(x − s y) a` and
+`D²G(y)(a, b) = s²·D²h(x − s y)(a, b)`, with Mathlib's total derivatives (`0` where undefined).
+If `s = 0`, `G` is constant.  Otherwise `G = h(x + ·) ∘ L` for the continuous linear equivalence
+`L z = (−s) z`, and `fderiv`, `iteratedFDeriv` commute with `∘ L` and with translations for every
+function. -/
+theorem Submission.dorag_ha_mv_affine_comp_deriv : ∀ (n : ℕ) (h : Euclid n → ℝ) (x : Euclid n) (s : ℝ) (y a b : Euclid n), fderiv ℝ (fun z : Euclid n => h (x - s • z)) y a = -(s * fderiv ℝ h (x - s • y) a) ∧ iteratedFDeriv ℝ 2 (fun z : Euclid n => h (x - s • z)) y ![a, b] = s ^ 2 * iteratedFDeriv ℝ 2 h (x - s • y) ![a, b] := by
+  intro n h x s y a b
+  rcases eq_or_ne s 0 with rfl | hs
+  -- `s = 0`: `G` is the constant `h x`, so both sides vanish.
+  · simp only [zero_smul, sub_zero, zero_mul, neg_zero]
+    rw [iteratedFDeriv_const_of_ne (by norm_num)]
+    simp
+  -- `s ≠ 0`: `G = h (x + ·) ∘ L` with `L z = (-s) • z`.
+  · let L : Euclid n ≃L[ℝ] Euclid n :=
+      ContinuousLinearEquiv.smulLeft (Units.mk0 (-s) (neg_ne_zero.2 hs))
+    have hL : ∀ z, L z = (-s) • z := fun z => rfl
+    have hfun : (fun z : Euclid n => h (x - s • z)) = (fun w => h (x + w)) ∘ L := by
+      funext z; simp [hL, sub_eq_add_neg, neg_smul]
+    constructor
+    -- `DG(y) a = Dh(x + L y)(L a)`, and `L a = (-s) • a`.
+    · rw [hfun, ContinuousLinearEquiv.comp_right_fderiv, fderiv_comp_add_left]
+      simp [hL, sub_eq_add_neg, neg_smul, map_smul]
+    -- `D²G(y)(a, b) = D²h(x + L y)(L a, L b) = (-s) * (-s) * D²h(x - s • y)(a, b)`.
+    · rw [hfun]
+      have hcomp := L.iteratedFDerivWithin_comp_right (fun w => h (x + w)) uniqueDiffOn_univ
+        (mem_univ (L y)) 2
+      rw [preimage_univ, iteratedFDerivWithin_univ, iteratedFDerivWithin_univ] at hcomp
+      rw [hcomp, ContinuousMultilinearMap.compContinuousLinearMap_apply,
+        iteratedFDeriv_comp_add_left]
+      have hv : (fun i : Fin 2 => (L : Euclid n →L[ℝ] Euclid n) (![a, b] i)) =
+          fun i => (-s) • ![a, b] i := by
+        funext i; exact hL _
+      rw [hv, ContinuousMultilinearMap.map_smul_univ]
+      simp [hL, sub_eq_add_neg, neg_smul, sq]
+/-- **Differentiation under the integral sign** for `M(σ) = ∫ h(x − σy) g(|y|²) dy`, the step
+`M'(s) = −∫ Dh(x − sy)(y) g(|y|²) dy` in the proof of the mean value property of harmonic
+functions.  Here `h` is `C¹` on the open set `U ⊇ B̄_R(x)`, `r > 0`, `g` is continuous with
+`g(t) = 0` for `t ≥ r²`, and `|s| r < R`.  For `|σ − s| < δ = (R − |s|r)/(2r)` and `|y| ≤ r`,
+`x − σy ∈ B̄_{R₁}(x) ⊆ U` with `R₁ = (|s| + δ) r < R`; the integrand and its `σ`-derivative
+`−Dh(x − σy)(y) g(|y|²)` vanish for `|y| ≥ r`, and the derivative is bounded by
+`A₁ r γ 1_{B̄_r(0)}` with `A₁ = max_{B̄_{R₁}(x)} ‖Dh‖` and `γ = max_{[0,r²]} |g|`, so
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` applies. -/
+theorem Submission.dorag_ha_mv_deriv_under_integral : ∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ) (x : Euclid n) (r R : ℝ) (g : ℝ → ℝ), IsOpen U → ContDiffOn ℝ 1 h U → closedBall x R ⊆ U → 0 < r → Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, |s| * r < R → HasDerivAt (fun σ : ℝ => ∫ y : Euclid n, h (x - σ • y) * g (‖y‖ ^ 2)) (-∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2)) s := by
+  intro n U h x r R g hU hh hRU hr hg hgr s hs
+  -- the neighbourhood `ball s δ` of `s` and the radius `R₁ = (|s| + δ) r < R`
+  set δ : ℝ := (R - |s| * r) / (2 * r) with hδ
+  have hδpos : 0 < δ := div_pos (by linarith) (by positivity)
+  set R₁ : ℝ := (|s| + δ) * r with hR₁
+  have hR₁R : R₁ < R := by
+    have : R₁ = |s| * r + (R - |s| * r) / 2 := by
+      simp only [hR₁, hδ]; field_simp
+    rw [this]; linarith
+  -- `g(|y|²) = 0` for `|y| ≥ r`, and `|(x − σy) − x| = |σ| |y|`
+  have hgz : ∀ y : Euclid n, r ≤ ‖y‖ → g (‖y‖ ^ 2) = 0 := fun y hy =>
+    hgr _ (pow_le_pow_left₀ hr.le hy 2)
+  have hnorm : ∀ (σ : ℝ) (y : Euclid n), ‖x - σ • y - x‖ = |σ| * ‖y‖ := by
+    intro σ y; rw [sub_sub_cancel_left, norm_neg, norm_smul, Real.norm_eq_abs]
+  -- for `|y| ≤ r`: `x − σy ∈ U` if `|σ| r < R`, and `x − σy ∈ B̄_{R₁}(x)` if `σ ∈ ball s δ`
+  have hmemU : ∀ σ : ℝ, |σ| * r < R → ∀ y : Euclid n, ‖y‖ ≤ r → x - σ • y ∈ U := by
+    intro σ hσ y hy
+    apply hRU
+    rw [mem_closedBall, dist_eq_norm, hnorm]
+    nlinarith [abs_nonneg σ]
+  have hball : ∀ σ ∈ ball s δ, |σ| < |s| + δ := by
+    intro σ hσ
+    rw [mem_ball, Real.dist_eq] at hσ
+    have := abs_sub_abs_le_abs_sub σ s
+    linarith
+  have hball' : ∀ σ ∈ ball s δ, |σ| * r < R := by
+    intro σ hσ
+    have := hball σ hσ
+    have : |σ| * r < (|s| + δ) * r := mul_lt_mul_of_pos_right this hr
+    linarith
+  have hmemK : ∀ σ ∈ ball s δ, ∀ y : Euclid n, ‖y‖ ≤ r → x - σ • y ∈ closedBall x R₁ := by
+    intro σ hσ y hy
+    rw [mem_closedBall, dist_eq_norm, hnorm]
+    have := hball σ hσ
+    calc |σ| * ‖y‖ ≤ (|s| + δ) * r := by
+          apply mul_le_mul this.le hy (norm_nonneg _) (by positivity)
+      _ = R₁ := rfl
+  -- `h` is continuous and differentiable at every point of `U`, and `Dh` is continuous on `U`
+  have hhc : ∀ z ∈ U, ContinuousAt h z := fun z hz =>
+    hh.continuousOn.continuousAt (hU.mem_nhds hz)
+  have hdc : ContinuousOn (fderiv ℝ h) U := hh.continuousOn_fderiv_of_isOpen hU le_rfl
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ h z := fun z hz =>
+    (hh.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  -- bounds `A₁` for `‖Dh‖` on the compact `B̄_{R₁}(x)` and `γ` for `|g(|y|²)|`
+  obtain ⟨A₁, hA₁⟩ := (isCompact_closedBall x R₁).exists_bound_of_continuousOn
+    (hdc.mono ((closedBall_subset_closedBall hR₁R.le).trans hRU))
+  obtain ⟨γ, hγ⟩ := (isCompact_Icc (a := (0:ℝ)) (b := r ^ 2)).exists_bound_of_continuousOn
+    hg.continuousOn
+  have hgγ : ∀ y : Euclid n, ‖g (‖y‖ ^ 2)‖ ≤ γ := by
+    intro y
+    by_cases hy : ‖y‖ ≤ r
+    · exact hγ _ ⟨by positivity, pow_le_pow_left₀ (norm_nonneg _) hy 2⟩
+    · rw [hgz y (le_of_not_ge hy), norm_zero]
+      exact (norm_nonneg _).trans (hγ 0 ⟨le_rfl, by positivity⟩)
+  -- continuity in `y` of the integrand for `|σ| r < R`, and of its `σ`-derivative at `s`
+  have hFcont : ∀ σ : ℝ, |σ| * r < R →
+      Continuous (fun y : Euclid n => h (x - σ • y) * g (‖y‖ ^ 2)) := by
+    intro σ hσ
+    rw [continuous_iff_continuousAt]
+    intro y₀
+    by_cases hy₀ : ‖y₀‖ ≤ r
+    · have h1 : ContinuousAt (fun y : Euclid n => h (x - σ • y)) y₀ :=
+        ContinuousAt.comp (f := fun y : Euclid n => x - σ • y) (hhc _ (hmemU σ hσ y₀ hy₀)) (by fun_prop)
+      exact h1.mul (by fun_prop)
+    · push Not at hy₀
+      have : (fun y : Euclid n => h (x - σ • y) * g (‖y‖ ^ 2)) =ᶠ[𝓝 y₀] fun _ => 0 := by
+        filter_upwards [(isOpen_lt continuous_const continuous_norm).mem_nhds hy₀] with y hy
+        rw [hgz y (le_of_lt hy), mul_zero]
+      exact continuousAt_const.congr this.symm
+  have hF'cont : Continuous (fun y : Euclid n => -(fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2))) := by
+    rw [continuous_iff_continuousAt]
+    intro y₀
+    by_cases hy₀ : ‖y₀‖ ≤ r
+    · have h1 : ContinuousAt (fun y : Euclid n => fderiv ℝ h (x - s • y)) y₀ :=
+        ContinuousAt.comp (f := fun y : Euclid n => x - s • y)
+          (hdc.continuousAt (hU.mem_nhds (hmemU s hs y₀ hy₀))) (by fun_prop)
+      exact ((h1.clm_apply continuousAt_id).mul (by fun_prop)).neg
+    · push Not at hy₀
+      have : (fun y : Euclid n => -(fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2))) =ᶠ[𝓝 y₀]
+          fun _ => 0 := by
+        filter_upwards [(isOpen_lt continuous_const continuous_norm).mem_nhds hy₀] with y hy
+        rw [hgz y (le_of_lt hy), mul_zero, neg_zero]
+      exact continuousAt_const.congr this.symm
+  -- the integrand vanishes off `B̄_r(0)`
+  have hsupp : ∀ σ : ℝ, HasCompactSupport (fun y : Euclid n => h (x - σ • y) * g (‖y‖ ^ 2)) := by
+    intro σ
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) r) fun y hy => ?_
+    rw [mem_closedBall, dist_zero_right, not_le] at hy
+    rw [hgz y hy.le, mul_zero]
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+    (F := fun σ (y : Euclid n) => h (x - σ • y) * g (‖y‖ ^ 2))
+    (F' := fun σ (y : Euclid n) => -(fderiv ℝ h (x - σ • y) y * g (‖y‖ ^ 2)))
+    (x₀ := s) (bound := (closedBall (0 : Euclid n) r).indicator fun _ => A₁ * r * γ)
+    (ball_mem_nhds s hδpos)
+    (eventually_of_mem (ball_mem_nhds s hδpos) fun σ hσ =>
+      (hFcont σ (hball' σ hσ)).aestronglyMeasurable)
+    ((hFcont s hs).integrable_of_hasCompactSupport (hsupp s))
+    hF'cont.aestronglyMeasurable
+    -- domination: `|Dh(x − σy)(y) g(|y|²)| ≤ A₁ r γ` for `|y| ≤ r`, and `0` otherwise
+    (Eventually.of_forall fun y σ hσ => by
+      by_cases hy : ‖y‖ ≤ r
+      · rw [indicator_of_mem (by rwa [mem_closedBall, dist_zero_right])]
+        rw [norm_neg, norm_mul]
+        have h1 : ‖fderiv ℝ h (x - σ • y) y‖ ≤ A₁ * r :=
+          ((fderiv ℝ h (x - σ • y)).le_opNorm y).trans
+            (mul_le_mul (hA₁ _ (hmemK σ hσ y hy)) hy (norm_nonneg _)
+              ((norm_nonneg _).trans (hA₁ _ (hmemK σ hσ y hy))))
+        exact mul_le_mul h1 (hgγ y) (norm_nonneg _) (by nlinarith [norm_nonneg (fderiv ℝ h (x - σ • y) y)])
+      · rw [hgz y (le_of_not_ge hy), mul_zero, neg_zero, norm_zero]
+        rw [indicator_of_notMem (by rwa [mem_closedBall, dist_zero_right])])
+    ((integrableOn_const (measure_closedBall_lt_top (x := (0 : Euclid n)) (r := r)).ne).integrable_indicator
+      measurableSet_closedBall)
+    -- pointwise derivative: the chain rule for `|y| < r`, the zero function for `|y| ≥ r`
+    (Eventually.of_forall fun y σ hσ => by
+      by_cases hy : ‖y‖ < r
+      · have hd := (hdiff _ (hmemU σ (hball' σ hσ) y hy.le)).hasFDerivAt
+        have hγ' : HasDerivAt (fun σ : ℝ => x - σ • y) (-y) σ := by
+          simpa using (hasDerivAt_id σ).smul_const y |>.const_sub x
+        have := (hd.comp_hasDerivAt σ hγ').mul_const (g (‖y‖ ^ 2))
+        simpa [map_neg, neg_mul] using this
+      · push Not at hy
+        have h0 : (fun σ : ℝ => h (x - σ • y) * g (‖y‖ ^ 2)) = fun _ => 0 := by
+          funext σ; rw [hgz y hy, mul_zero]
+        rw [h0, hgz y hy, mul_zero, neg_zero]
+        exact hasDerivAt_const σ 0)
+  simpa [integral_neg] using key.2
+
+/-- **Vanishing flux in the mean value property** (step 4 of the mean value proof, `M'(s) = 0`).
+Let `h` be `C²` and harmonic on the open set `U ⊇ B̄_R(x)`, `0 < r < R`, `g` continuous with
+`g(t) = 0` for `t ≥ r²`, and `0 < s ≤ 1`.  Take the radial potential `Ψ` (`spt Ψ ⊆ B̄_r(0)`,
+`DΨ(y)v = g(|y|²) y · v`) and `G(z) = h(x − s z)`, `C²` on `B_R(0)`.  Green's identity gives
+`∫ DΨ · DG = −∫ Ψ ΔG = 0`, since `ΔG(y) = s² Δh(x − s y) = 0` on `B_R(0)` and `Ψ = 0` off it;
+as `DG(y) = −s Dh(x − s y)`, the left side is `−s ∫ Dh(x − s y)(y) g(|y|²) dy`. -/
+theorem Submission.dorag_ha_mv_flux_zero : ∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ), IsOpen U → ContDiffOn ℝ 2 h U → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∀ (x : Euclid n) (r R : ℝ), 0 < r → r < R → closedBall x R ⊆ U → ∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, 0 < s → s ≤ 1 → ∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2) = 0 := by
+  intro n U h hU hh hΔ x r R hr hrR hRU g hg hgr s hs0 hs1
+  -- the radial potential: `Ψ ∈ C¹_c`, `spt Ψ ⊆ B̄_r(0)`, `DΨ(y)v = g(|y|²) y · v`
+  obtain ⟨Ψ, hΨC, hΨc, hΨsupp, hΨd⟩ := Submission.dorag_ha_mv_radial_potential n r g hr hg hgr
+  -- `G(z) = h(x − s z)` is `C²` on `V = B_R(0)`, which `z ↦ x − s z` maps into `B̄_R(x) ⊆ U`
+  set G : Euclid n → ℝ := fun z => h (x - s • z) with hG
+  have hVmaps : ∀ z ∈ ball (0 : Euclid n) R, x - s • z ∈ U := by
+    intro z hz
+    apply hRU
+    rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg, norm_smul, Real.norm_eq_abs,
+      abs_of_pos hs0]
+    rw [mem_ball, dist_zero_right] at hz
+    nlinarith [norm_nonneg z]
+  have hGC : ContDiffOn ℝ 2 G (ball (0 : Euclid n) R) := by
+    have hA : ContDiff ℝ 2 (fun z : Euclid n => x - s • z) :=
+      contDiff_const.sub (contDiff_id.const_smul s)
+    exact hh.comp hA.contDiffOn (fun z hz => hVmaps z hz)
+  have hsuppV : tsupport Ψ ⊆ ball (0 : Euclid n) R := hΨsupp.trans (closedBall_subset_ball hrR)
+  -- Green's identity: `∫ Σᵢ DΨ eᵢ · DG eᵢ = −∫ Ψ ΔG`
+  have hgreen := Submission.dorag_ha_mv_green_identity n (ball (0 : Euclid n) R) G Ψ isOpen_ball
+    hGC hΨC hΨc hsuppV
+  -- `Ψ ΔG = 0`: on `V`, `ΔG(z) = s² Δh(x − s z) = 0`; off `V`, `Ψ(z) = 0`
+  have hRHS : ∀ z, Ψ z * ∑ i : Fin n, iteratedFDeriv ℝ 2 G z
+      ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+    intro z
+    by_cases hz : z ∈ ball (0 : Euclid n) R
+    · have hsum : ∑ i : Fin n, iteratedFDeriv ℝ 2 G z
+          ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+        simp_rw [hG, (Submission.dorag_ha_mv_affine_comp_deriv n h x s z _ _).2]
+        rw [← Finset.mul_sum, hΔ _ (hVmaps z hz), mul_zero]
+      rw [hsum, mul_zero]
+    · have : Ψ z = 0 := image_eq_zero_of_notMem_tsupport (fun h' => hz (hsuppV h'))
+      rw [this, zero_mul]
+  -- `Σᵢ (z · eᵢ) L eᵢ = L z` for linear `L`
+  have hexp : ∀ (L : Euclid n →L[ℝ] ℝ) (z : Euclid n),
+      ∑ i : Fin n, inner ℝ z (EuclideanSpace.single i (1 : ℝ)) * L (EuclideanSpace.single i 1) =
+        L z := by
+    intro L z
+    conv_rhs => rw [← (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr z]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp [EuclideanSpace.inner_single_right, map_smul]
+  -- `Σᵢ DΨ(z)eᵢ · DG(z)eᵢ = −s Dh(x − s z)(z) g(|z|²)`, as `DG(z) = −s Dh(x − s z)`
+  have hLHS : ∀ z, ∑ i : Fin n, fderiv ℝ Ψ z (EuclideanSpace.single i (1 : ℝ)) *
+      fderiv ℝ G z (EuclideanSpace.single i (1 : ℝ)) =
+      -s * (fderiv ℝ h (x - s • z) z * g (‖z‖ ^ 2)) := by
+    intro z
+    have hGd : ∀ a, fderiv ℝ G z a = -(s * fderiv ℝ h (x - s • z) a) := fun a =>
+      (Submission.dorag_ha_mv_affine_comp_deriv n h x s z a a).1
+    simp_rw [hΨd, hGd]
+    rw [← hexp (fderiv ℝ h (x - s • z)) z, Finset.sum_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  -- so `−s ∫ Dh(x − s y)(y) g(|y|²) dy = 0`, and `s ≠ 0`
+  simp_rw [hLHS, hRHS, integral_zero, neg_zero, integral_const_mul] at hgreen
+  exact (mul_eq_zero.1 hgreen).resolve_left (neg_ne_zero.2 hs0.ne')
+/-- **Ball mean value from the radial kernel identity.**  Let `r > 0`, let `h` be continuous on
+`B̄_r(x)`, and suppose `∫ h(x - y) g(|y|²) dy = h(x) ∫ g(|y|²) dy` for every continuous `g`
+vanishing on `[r², ∞)`.  Then `∫_{B_r(x)} h = |B_r(x)| h(x)`.  The proof applies the identity to
+`g_k(t) = min{1, max{0, (k + 1)(r² - t)}}`, which tend pointwise to `1_{[0, r²)}`.  Dominated
+convergence passes to the limit, with bounds `A₀ 1_{B̄_r(0)}` and `1_{B̄_r(0)}`.  The reflection
+`y ↦ x - y` then turns `B_r(0)` into `B_r(x)`. -/
+theorem Submission.dorag_ha_mv_ball_of_kernel : ∀ (n : ℕ) (h : Euclid n → ℝ) (x : Euclid n) (r : ℝ), 0 < r → ContinuousOn h (closedBall x r) → (∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∫ y : Euclid n, h (x - y) * g (‖y‖ ^ 2) = h x * ∫ y : Euclid n, g (‖y‖ ^ 2)) → ∫ y in ball x r, h y = (volume (ball x r)).toReal * h x := by
+  intro n h x r hr hhc hker
+  -- the profiles `g_k`: continuous, `0 ≤ g_k ≤ 1`, zero on `[r², ∞)`
+  set gk : ℕ → ℝ → ℝ := fun k t => min 1 (max 0 (((k : ℝ) + 1) * (r ^ 2 - t))) with hgk
+  have gk_cont : ∀ k, Continuous (gk k) := fun k => by
+    simp only [hgk]; fun_prop
+  have gk_zero : ∀ k t, r ^ 2 ≤ t → gk k t = 0 := by
+    intro k t ht
+    simp only [hgk]
+    have : ((k : ℝ) + 1) * (r ^ 2 - t) ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+    rw [max_eq_left this, min_eq_right zero_le_one]
+  have gk_nonneg : ∀ k t, 0 ≤ gk k t := fun k t => le_min zero_le_one (le_max_left _ _)
+  have gk_le : ∀ k t, gk k t ≤ 1 := fun k t => min_le_left _ _
+  have gkz : ∀ k (y : Euclid n), r ≤ ‖y‖ → gk k (‖y‖ ^ 2) = 0 := fun k y hy =>
+    gk_zero k _ (pow_le_pow_left₀ hr.le hy 2)
+  have gk_cont' : ∀ k, Continuous fun y : Euclid n => gk k (‖y‖ ^ 2) := fun k =>
+    (gk_cont k).comp (by fun_prop : Continuous fun y : Euclid n => ‖y‖ ^ 2)
+  -- `g_k(|y|²) → 1_{B_r(0)}(y)`: eventually `1` inside the ball, always `0` outside
+  have gk_lim : ∀ y : Euclid n, Tendsto (fun k => gk k (‖y‖ ^ 2)) atTop
+      (𝓝 ((ball (0 : Euclid n) r).indicator 1 y)) := by
+    intro y
+    by_cases hy : ‖y‖ < r
+    · rw [indicator_of_mem (by rwa [mem_ball, dist_zero_right]), Pi.one_apply]
+      have hpos : 0 < r ^ 2 - ‖y‖ ^ 2 := by nlinarith [norm_nonneg y]
+      obtain ⟨K, hK⟩ := exists_nat_ge (1 / (r ^ 2 - ‖y‖ ^ 2))
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [eventually_ge_atTop K] with k hk
+      simp only [hgk]
+      have hKk : (K : ℝ) ≤ k := by exact_mod_cast hk
+      rw [div_le_iff₀ hpos] at hK
+      have : 1 ≤ ((k : ℝ) + 1) * (r ^ 2 - ‖y‖ ^ 2) := by nlinarith
+      rw [max_eq_right (by linarith), min_eq_left this]
+    · push Not at hy
+      rw [indicator_of_notMem (by rwa [mem_ball, dist_zero_right, not_lt])]
+      exact tendsto_const_nhds.congr' (Eventually.of_forall fun k => (gkz k y hy).symm)
+  -- `|h| ≤ A₀` on the compact ball `B̄_r(x)`, which contains `x - y` for `|y| ≤ r`
+  obtain ⟨A₀, hA₀⟩ := (isCompact_closedBall x r).exists_bound_of_continuousOn hhc
+  have hmem : ∀ y : Euclid n, ‖y‖ ≤ r → x - y ∈ closedBall x r := by
+    intro y hy; rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg]; exact hy
+  have hcb : ∀ y : Euclid n, y ∈ closedBall (0 : Euclid n) r ↔ ‖y‖ ≤ r := fun y => by
+    rw [mem_closedBall, dist_zero_right]
+  -- the integrands vanish off `B̄_r(0)` and are continuous on it
+  have hF_meas : ∀ k,
+      AEStronglyMeasurable (fun y : Euclid n => h (x - y) * gk k (‖y‖ ^ 2)) volume := by
+    intro k
+    have : (fun y : Euclid n => h (x - y) * gk k (‖y‖ ^ 2)) =
+        (closedBall (0 : Euclid n) r).indicator (fun y => h (x - y) * gk k (‖y‖ ^ 2)) := by
+      funext y
+      by_cases hy : ‖y‖ ≤ r
+      · rw [indicator_of_mem ((hcb y).2 hy)]
+      · rw [indicator_of_notMem (fun h' => hy ((hcb y).1 h')), gkz k y (le_of_not_ge hy), mul_zero]
+    rw [this, aestronglyMeasurable_indicator_iff measurableSet_closedBall]
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_closedBall
+    refine ContinuousOn.mul ?_ (gk_cont' k).continuousOn
+    exact hhc.comp (by fun_prop : Continuous fun y : Euclid n => x - y).continuousOn
+      (fun y hy => hmem y ((hcb y).1 hy))
+  have hbint : ∀ c : ℝ, Integrable ((closedBall (0 : Euclid n) r).indicator fun _ => c) := fun c =>
+    IntegrableOn.integrable_indicator
+      (integrableOn_const (measure_closedBall_lt_top (x := (0 : Euclid n)) (r := r)).ne)
+      measurableSet_closedBall
+  -- dominated convergence for both sides of the kernel identity
+  have lim1 : Tendsto (fun k => ∫ y : Euclid n, h (x - y) * gk k (‖y‖ ^ 2)) atTop
+      (𝓝 (∫ y : Euclid n, h (x - y) * (ball (0 : Euclid n) r).indicator 1 y)) := by
+    refine tendsto_integral_of_dominated_convergence
+      ((closedBall (0 : Euclid n) r).indicator fun _ => A₀) hF_meas (hbint A₀) ?_ ?_
+    · intro k
+      refine Eventually.of_forall fun y => ?_
+      by_cases hy : ‖y‖ ≤ r
+      · rw [indicator_of_mem ((hcb y).2 hy), norm_mul]
+        have h1 := hA₀ _ (hmem y hy)
+        have h2 : ‖gk k (‖y‖ ^ 2)‖ ≤ 1 := by
+          rw [Real.norm_eq_abs, abs_of_nonneg (gk_nonneg _ _)]; exact gk_le _ _
+        nlinarith [norm_nonneg (h (x - y)), norm_nonneg (gk k (‖y‖ ^ 2))]
+      · rw [indicator_of_notMem (fun h' => hy ((hcb y).1 h')), gkz k y (le_of_not_ge hy), mul_zero,
+          norm_zero]
+    · exact Eventually.of_forall fun y => (gk_lim y).const_mul (h (x - y))
+  have lim2 : Tendsto (fun k => ∫ y : Euclid n, gk k (‖y‖ ^ 2)) atTop
+      (𝓝 (∫ y : Euclid n, (ball (0 : Euclid n) r).indicator 1 y)) := by
+    refine tendsto_integral_of_dominated_convergence
+      ((closedBall (0 : Euclid n) r).indicator fun _ => 1)
+      (fun k => (gk_cont' k).aestronglyMeasurable)
+      (hbint 1) ?_ (Eventually.of_forall gk_lim)
+    intro k
+    refine Eventually.of_forall fun y => ?_
+    by_cases hy : ‖y‖ ≤ r
+    · rw [indicator_of_mem ((hcb y).2 hy), Real.norm_eq_abs, abs_of_nonneg (gk_nonneg _ _)]
+      exact gk_le _ _
+    · rw [indicator_of_notMem (fun h' => hy ((hcb y).1 h')), gkz k y (le_of_not_ge hy), norm_zero]
+  -- the hypothesis identifies the two sequences, so the limits agree
+  have heq : (fun k => ∫ y : Euclid n, h (x - y) * gk k (‖y‖ ^ 2)) =
+      fun k => h x * ∫ y : Euclid n, gk k (‖y‖ ^ 2) :=
+    funext fun k => hker (gk k) (gk_cont k) (gk_zero k)
+  rw [heq] at lim1
+  have hlim := tendsto_nhds_unique lim1 (lim2.const_mul (h x))
+  -- left limit: the reflection `y ↦ x - y` preserves volume and maps `B_r(0)` onto `B_r(x)`
+  have e1 : ∫ y : Euclid n, h (x - y) * (ball (0 : Euclid n) r).indicator 1 y =
+      ∫ y in ball x r, h y := by
+    have : (fun y : Euclid n => h (x - y) * (ball (0 : Euclid n) r).indicator 1 y) =
+        (ball (0 : Euclid n) r).indicator (fun y => h (x - y)) := by
+      funext y; by_cases hy : y ∈ ball (0 : Euclid n) r <;> simp [hy]
+    rw [this, integral_indicator measurableSet_ball]
+    have hmp : MeasurePreserving (fun y : Euclid n => x - y) volume volume :=
+      Measure.measurePreserving_sub_left volume x
+    have hpre : (fun y : Euclid n => x - y) ⁻¹' (ball x r) = ball 0 r := by
+      ext y; simp [mem_ball, dist_eq_norm]
+    rw [← hpre]
+    exact hmp.setIntegral_preimage_emb (MeasurableEquiv.subLeft x).measurableEmbedding h (ball x r)
+  -- right limit: `∫ 1_{B_r(0)} = |B_r(0)| = |B_r(x)|` by translation invariance
+  have e2 : ∫ y : Euclid n, (ball (0 : Euclid n) r).indicator 1 y = (volume (ball x r)).toReal := by
+    rw [integral_indicator_one measurableSet_ball, Measure.addHaar_ball_center volume x r]
+    rfl
+  rw [← e1, hlim, e2, mul_comm]
+
+/-- **Mean value property of harmonic functions** (Simon Ch. 5, 3.2–3.4; Evans, PDE, §2.2.2).
+Let `h` be `C²` on the open set `U ⊇ B̄_r(x)`, `r > 0`, with `Σᵢ D²h(eᵢ, eᵢ) = 0` on `U`.  Then
+(i) `∫ h(x - y) g(|y|²) dy = h(x) ∫ g(|y|²) dy` for every continuous `g` vanishing on `[r², ∞)`,
+and (ii) `∫_{B_r(x)} h = |B_r(x)| h(x)`.  For (i), choose `η > 0` with `B̄_{η + r}(x) ⊆ U`.  Then
+`M(σ) = ∫ h(x - σy) g(|y|²) dy` has derivative `M'(s) = -∫ Dh(x - sy)(y) g(|y|²) dy` for
+`s ∈ [0, 1]`, and `M'` vanishes on `(0, 1)` (zero flux).  The mean value theorem gives
+`M(1) = M(0) = h(x) ∫ g(|y|²) dy`.  Part (ii) follows from (i) by approximating `1_{[0, r²)}`. -/
+theorem Submission.dorag_ha_mean_value : ∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ), 0 < n → IsOpen U → ContDiffOn ℝ 2 h U → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∀ (x : Euclid n) (r : ℝ), 0 < r → closedBall x r ⊆ U → (∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∫ y : Euclid n, h (x - y) * g (‖y‖ ^ 2) = h x * ∫ y : Euclid n, g (‖y‖ ^ 2)) ∧ ∫ y in ball x r, h y = (volume (ball x r)).toReal * h x := by
+  intro n U h _hn hU hh hΔ x r hr hxr
+  -- room around the ball: `B̄_{η + r}(x) ⊆ U` for some `η > 0`
+  obtain ⟨η, hη, hηU⟩ := (isCompact_closedBall x r).exists_cthickening_subset_open hU hxr
+  rw [cthickening_closedBall hη.le hr.le] at hηU
+  have hrR : r < η + r := by linarith
+  -- (i): `M(σ) = ∫ h(x - σy) g(|y|²) dy` is constant on `[0, 1]`
+  have hker : ∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) →
+      ∫ y : Euclid n, h (x - y) * g (‖y‖ ^ 2) = h x * ∫ y : Euclid n, g (‖y‖ ^ 2) := by
+    intro g hg hgr
+    set M : ℝ → ℝ := fun σ => ∫ y : Euclid n, h (x - σ • y) * g (‖y‖ ^ 2) with hM
+    set M' : ℝ → ℝ := fun s => -∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2)
+      with hM'
+    -- differentiation under the integral sign, valid while `|s| r < η + r`
+    have hderiv : ∀ s ∈ Icc (0 : ℝ) 1, HasDerivAt M (M' s) s := by
+      intro s hs
+      refine Submission.dorag_ha_mv_deriv_under_integral n U h x r (η + r) g hU
+        (hh.of_le (by norm_num)) hηU hr hg hgr s ?_
+      rw [abs_of_nonneg hs.1]
+      nlinarith [hs.2]
+    -- zero flux: `M' = 0` on `(0, 1)`
+    have hzero : ∀ s ∈ Ioo (0 : ℝ) 1, M' s = 0 := by
+      intro s hs
+      simp only [hM']
+      rw [Submission.dorag_ha_mv_flux_zero n U h hU hh hΔ x r (η + r) hr hrR hηU g hg hgr s hs.1
+        hs.2.le, neg_zero]
+    -- the mean value theorem on `[0, 1]` gives `M(1) = M(0)`
+    obtain ⟨c, hc, hc'⟩ := exists_hasDerivAt_eq_slope M M' (by norm_num : (0 : ℝ) < 1)
+      (fun s hs => (hderiv s hs).continuousAt.continuousWithinAt)
+      (fun s hs => hderiv s (Ioo_subset_Icc_self hs))
+    rw [hzero c hc, sub_zero, div_one, eq_comm, sub_eq_zero] at hc'
+    simp only [hM, one_smul, zero_smul, sub_zero] at hc'
+    rw [hc', integral_const_mul]
+  -- (ii): the ball average, from the kernel identity (i)
+  exact ⟨hker, Submission.dorag_ha_mv_ball_of_kernel n h x r hr (hh.continuousOn.mono hxr) hker⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
