@@ -1659,6 +1659,74 @@ theorem Submission.rsd_massOn_eq_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) 
   exact le_antisymm (Submission.rsd_mw_massOn_le_measure P n U T R hT W)
     (Submission.rsd_mw_measure_le_massOn P n U T R hT W hW hWU)
 
+/-- **Simon Ch. 4, p. 91** (Ch. 3, Remark 1.8(1)–(2) and Theorem 1.9): for an integer multiplicity
+`T = τ(M, θ, ξ)` in open `U`, `Θⁿ(μ_T, x) = θ(x)` for `μ_T`-a.e. `x`.  Write `μ = Hⁿ⌞M`, so
+`μ_T = θμ`, and let `x ∈ M` be a `μ`-generic point, with `B̄_s(x) ⊆ U`.
+* `R.orients` gives an approximate tangent plane at `x`, so `μ(B̄_ρ(x))/(ωₙρⁿ) → 1`
+  (`Submission.rsd_tendsto_closedBall_density_of_approxTangent`).  The required local finiteness
+  of `μ` and `μ_T` is `Submission.rsd_imrep_compact_measure_ne_top`.
+* Localized Besicovitch differentiation gives `μ_T(B̄_ρ(x))/μ(B̄_ρ(x)) → θ(x)`
+  (`Submission.rsd_ae_tendsto_withDensity_div_closedBall`).
+* For small `ρ`, `0 < μ(B̄_ρ(x)) < ∞`, so the product of the two ratios is
+  `μ_T(B̄_ρ(x))/(ωₙρⁿ)`, which tends to `θ(x)`.
+* Open balls give the same limit (`Submission.rsd_tendsto_ball_density_of_closedBall`), and
+  `M_{B_ρ(x)}(T) = μ_T(B_ρ(x))` once `B_ρ(x) ⊆ U` (`Submission.rsd_massOn_eq_measure`).
+
+Since `μ_T ≪ μ`, the `μ`-a.e. statement holds `μ_T`-a.e. -/
+theorem Submission.rsd_ae_hasMassDensity_mult : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ᵐ x ∂R.measure, HasMassDensity T x (R.mult x) := by
+  intro P n U T R hU hR
+  -- `μ = Hⁿ⌞M` and `θ = R.mult`; by definition `μ_T = R.measure = θμ`
+  set μ : Measure (Euclid P) := μHE[n].restrict R.carrier with hμ
+  set θ : Euclid P → ℝ≥0∞ := fun x => (R.mult x : ℝ≥0∞)
+  have hθm : Measurable θ := measurable_from_nat.comp R.measurable_mult
+  have hμK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K ≠ ∞ := fun K hK hKU => by
+    rw [hμ, Measure.restrict_apply' R.measurableSet_carrier, inter_comm]
+    exact (Submission.rsd_imrep_compact_measure_ne_top P n U R K hK hKU).1
+  have hνK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ.withDensity θ K ≠ ∞ :=
+    fun K hK hKU => (Submission.rsd_imrep_compact_measure_ne_top P n U R K hK hKU).2
+  -- Besicovitch differentiation of `θμ` with respect to `μ`, at `μ`-a.e. `x ∈ U`
+  have hbes := Submission.rsd_ae_tendsto_withDensity_div_closedBall P U μ θ hU hθm hμK hνK
+  have key : ∀ᵐ x ∂μ, HasMassDensity T x (R.mult x) := by
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier, R.orients, hbes]
+      with x hxM hQ hx
+    obtain ⟨Q, hxQ, -⟩ := hQ
+    have hxU : x ∈ U := R.carrier_subset hxM
+    -- a closed ball `B̄_s(x) ⊆ U`; every `B̄_ρ(x)`, `ρ ≤ s`, is a compact subset of `U`
+    obtain ⟨s, hs, hsU⟩ := nhds_basis_closedBall.mem_iff.1 (hU.mem_nhds hxU)
+    have hsub : ∀ ρ : ℝ, ρ ≤ s → closedBall x ρ ⊆ U := fun ρ hρ =>
+      (closedBall_subset_closedBall hρ).trans hsU
+    -- `μ(B̄_ρ(x))/(ωₙρⁿ) → 1` (approximate tangent plane at `x`)
+    have hden := Submission.rsd_tendsto_closedBall_density_of_approxTangent P n R.carrier x Q s hs
+      (Submission.rsd_imrep_compact_measure_ne_top P n U R _ (isCompact_closedBall x s) hsU).1 hxQ
+    -- `μ_T(B̄_ρ(x))/(ωₙρⁿ) = [μ_T(B̄_ρ(x))/μ(B̄_ρ(x))] · [μ(B̄_ρ(x))/(ωₙρⁿ)] → θ(x) · 1`
+    have hclosed : Tendsto (fun ρ : ℝ => R.measure (closedBall x ρ) /
+        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (θ x)) := by
+      have hprod := ENNReal.Tendsto.mul (hx hxU) (Or.inr ENNReal.one_ne_top) hden
+        (Or.inl one_ne_zero)
+      rw [mul_one] at hprod
+      refine hprod.congr' ?_
+      filter_upwards [Ioo_mem_nhdsGT hs, hden.eventually_ne one_ne_zero] with ρ hρ hne
+      -- `0 < μ(B̄_ρ(x)) < ∞` for small `ρ`
+      have hfin : μHE[n] (R.carrier ∩ closedBall x ρ) ≠ ∞ :=
+        (Submission.rsd_imrep_compact_measure_ne_top P n U R _ (isCompact_closedBall x ρ)
+          (hsub ρ hρ.2.le)).1
+      have hpos : μHE[n] (R.carrier ∩ closedBall x ρ) ≠ 0 := fun h0 =>
+        hne (by rw [h0, ENNReal.zero_div])
+      have hμρ : μ (closedBall x ρ) = μHE[n] (R.carrier ∩ closedBall x ρ) := by
+        rw [hμ, Measure.restrict_apply' R.measurableSet_carrier, inter_comm]
+      rw [hμρ]
+      exact ENNReal.div_mul_div_cancel hpos hfin
+    -- open balls, then `M_{B_ρ(x)}(T) = μ_T(B_ρ(x))` for `ρ < s`
+    have hopen := Submission.rsd_tendsto_ball_density_of_closedBall P n R.measure x (θ x) hclosed
+    refine ⟨Nat.cast_nonneg _, ?_⟩
+    rw [ENNReal.ofReal_natCast]
+    refine hopen.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hs] with ρ hρ
+    rw [Submission.rsd_massOn_eq_measure P n U T R hU hR (ball x ρ) isOpen_ball
+      (ball_subset_closedBall.trans (hsub ρ hρ.2.le))]
+  -- `μ_T = θμ ≪ μ`
+  exact (withDensity_absolutelyContinuous μ θ).ae_le key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
