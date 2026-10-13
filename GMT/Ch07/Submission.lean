@@ -2097,6 +2097,38 @@ theorem Submission.dimred_cs_mi_withDensity_dilate : ∀ (P n : ℕ) (f : Euclid
     ← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
     ENNReal.ofReal_one, one_mul]
 
+/-- **Density invariance gives invariance of the mass measure** (the measure step of the cone
+splitting in the dimension-reducing argument, Simon 7.3.4–7.3.5, chapter-07.txt lines 380–417).
+Let `S = τ(M, θ, ξ)` in `ℝᴾ` have a density `Θ(x)` at every `x`, and let
+`HasMassDensity S w θ → HasMassDensity S (y + λw) θ` for `y ∈ L`, `λ > 0`.  Then `μ = θHⁿ⌞M`
+satisfies (i) `μ(A − y) = μ(A)` for `y ∈ L` and (ii) `μ(λA) = λⁿμ(A)` for `λ > 0`, `A` Borel.
+Densities are unique, so `Θ(y + λw) = Θ(w)`; `μ = Θ·Hⁿ` (Simon Ch. 3, Remark 1.8(2); Ch. 1,
+Theorem 3.6); and `Θ·Hⁿ` inherits translation invariance and `n`-homogeneity from `Hⁿ`. -/
+theorem Submission.dimred_cs_measure_invariant_of_density_invariant : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), 0 < n → R.Represents S → (∀ x : Euclid P, ∃ θ : ℝ, HasMassDensity S x θ) → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => y + x) ⁻¹' A) = R.measure A) ∧ ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A := by
+  intro P n S R L _hn hRS hdens hinv
+  -- Step 1: choose the density `Θ(x)` of `S` at every `x`.
+  choose Θ hΘ using hdens
+  -- Step 2: `μ = Θ·Hⁿ`.
+  have hμ : R.measure = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (Θ x)) :=
+    Submission.dimred_cs_mi_measure_eq_withDensity P n S R Θ hRS hΘ
+  -- Step 3: densities are unique, so `Θ(y + λw) = Θ(w)` for `y ∈ L`, `λ > 0`.
+  have hΘinv : ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ w : Euclid P, Θ (y + lam • w) = Θ w :=
+    fun y hy lam hlam w => Submission.dimred_cs_mi_hasMassDensity_unique P n univ S (y + lam • w)
+      _ _ (hΘ (y + lam • w)) (hinv y hy lam hlam w (Θ w) (hΘ w))
+  refine ⟨fun y hy A hA => ?_, fun lam hlam A hA => ?_⟩
+  -- Step 4, (i): `Θ(y + x) = Θ(x)` (`λ = 1`), and `Θ·Hⁿ` is invariant under such translations.
+  · rw [hμ]
+    refine Submission.dimred_cs_mi_withDensity_translate P n _ y (fun x => ?_) A hA
+    have h := hΘinv y hy 1 one_pos x
+    rw [one_smul] at h
+    exact congrArg ENNReal.ofReal h
+  -- Step 5, (ii): `Θ(λx) = Θ(x)` (`y = 0 ∈ L`), and `Θ·Hⁿ` is `n`-homogeneous under such dilations.
+  · rw [hμ]
+    refine Submission.dimred_cs_mi_withDensity_dilate P n _ lam hlam (fun x => ?_) A hA
+    have h := hΘinv 0 L.zero_mem lam hlam x
+    rw [zero_add] at h
+    exact congrArg ENNReal.ofReal h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
