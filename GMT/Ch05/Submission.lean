@@ -458,6 +458,34 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Rank-one tangential divergence (the trace computation in step (5) of Simon's proof of 4.5):
+if `Df(x) = ⟨g, ·⟩`, then `div_M (f e)(x) = trace(v ↦ ⟨g, p_x v⟩ e) = ⟨g, p_x e⟩ = ⟨p_x e, p_x g⟩`,
+because `p_x = p_{T_x M}` is an orthogonal projection (or `0`), hence self-adjoint and idempotent. -/
+theorem gwe_vfv_divM_smul_const_eq_inner : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (f : Amb n ℓ → ℝ) (e g x : Amb n ℓ), HasFDerivAt f (innerSL ℝ g) x → V.divM (fun y => f y • e) x = inner ℝ (V.tangentProj x e) (V.tangentProj x g) := by
+  intro n ℓ U V f e g x hf
+  -- `⟨p u, p v⟩ = ⟨u, p v⟩` for `p = p_x`, an orthogonal projection or `0`.
+  have hp : ∀ u v : Amb n ℓ,
+      inner ℝ (V.tangentProj x u) (V.tangentProj x v) = inner ℝ u (V.tangentProj x v) := by
+    intro u v
+    rw [RectifiableVarifold.tangentProj]
+    split_ifs with h
+    · rw [Submodule.inner_starProjection_left_eq_right,
+        Submodule.starProjection_eq_self_iff.2 (Submodule.starProjection_apply_mem _ v)]
+    · simp
+  -- `D(f e)(x) = ⟨g, ·⟩ e`, so `D(f e)(x) ∘ p = ⟨g, p ·⟩ e` has rank one.
+  have hcomp : (fderiv ℝ (fun y => f y • e) x).toLinearMap ∘ₗ (V.tangentProj x).toLinearMap =
+      ((innerSL ℝ g).comp (V.tangentProj x)).toLinearMap.smulRight e := by
+    rw [(hf.smul_const e).fderiv]
+    refine LinearMap.ext fun w => ?_
+    simp
+  -- Its trace is `⟨g, p e⟩ = ⟨p g, p e⟩ = ⟨p e, p g⟩`.
+  rw [RectifiableVarifold.divM, hcomp, LinearMap.trace_smulRight, ContinuousLinearMap.coe_coe,
+    ContinuousLinearMap.comp_apply, innerSL_apply_apply, ← hp g e, real_inner_comm]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
