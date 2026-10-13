@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "75d72200ce20af3b492e3a287b4e4f7914f1821cb390f378e8dd594618319216",
+  "git_delta": {
+    "base_commit": "ca12072555e04bd4dace8ad2da632565de7e1a53",
+    "candidate_commit": "1885435586af714431a369bfde81453f524a7400",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fv_trace_comp_abs_le",
+    "diff_sha256": "181af35e8f317090b616e64b5505fca0b8f841bbd90bf097e32a2350b1292bec",
+    "source_sha256": "b2cd634dc90b4f6ebc0cc3a9eb813863f047209566f21a2265096468080c8d1d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fv_trace_comp_abs_le",
+      "statement": "∀ (P : ℕ) (K : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), |LinearMap.trace ℝ (Euclid P) (K.starProjection.toLinearMap ∘ₗ L.toLinearMap)| ≤ (Module.finrank ℝ K : ℝ) * ‖L‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
