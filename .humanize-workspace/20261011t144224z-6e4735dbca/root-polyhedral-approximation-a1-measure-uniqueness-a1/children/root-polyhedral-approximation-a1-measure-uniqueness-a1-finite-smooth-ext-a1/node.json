@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1.finite_smooth_ext-a1",
+  "parent_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1",
+  "depth": 3,
+  "title": "Finite measures agreeing on smooth test functions in an open set agree on functions vanishing outside it",
+  "statement": "Let P ∈ ℕ, let ν₁ and ν₂ be finite measures on the Borel σ-algebra of ℝ^P, and let O ⊆ ℝ^P be open. Suppose ∫ ψ dν₁ = ∫ ψ dν₂ for every C^∞ function ψ : ℝ^P → ℝ (smooth of every finite order) with compact support and tsupport ψ ⊆ O. Then ∫ b dν₁ = ∫ b dν₂ for every function b : ℝ^P → ℝ with b(x) = 0 for all x ∉ O. Integrals are Bochner integrals, so a non-integrable function has integral 0; no measurability or boundedness of b is assumed.",
+  "lean_statement": "∀ (P : ℕ) (ν₁ ν₂ : Measure (Eucl P)), IsFiniteMeasure ν₁ → IsFiniteMeasure ν₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ O → ∫ x, ψ x ∂ν₁ = ∫ x, ψ x ∂ν₂) → ∀ b : Eucl P → ℝ, (∀ x, x ∉ O → b x = 0) → ∫ x, b x ∂ν₁ = ∫ x, b x ∂ν₂",
+  "lean_name": "polyhedral_approx_finite_smooth_ext",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-measure-uniqueness-a1-finite-smooth-ext-a1-a1"
+}
