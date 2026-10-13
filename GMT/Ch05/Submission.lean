@@ -709,6 +709,47 @@ theorem dohr_eb_lhr_ds_bilin_leibniz : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : R
   simp only [sum_apply, add_apply, smul_apply, smul_eq_mul, ContinuousLinearMap.comp_apply,
     Finset.sum_add_distrib, mul_comm (a x (b _) P)]
   ring
+/-- Differentiated system in the linear higher-regularity step of the elliptic bootstrap for
+Simon Ch. 5, Theorem 7.1, second assertion (p. 127): translating the test functions of a weak
+identity.  If `∫_U ω₁(x)[Dφ(x)] dx = ∫_U ω₂(x)[Dφ(x)] dx` for every `C¹` compactly supported
+`φ` with `spt φ ⊆ U`, and `ζ` is `C¹` with compact support and `spt ζ + s e ⊆ U`, then
+`∫ ω₁(y + s e)[Dζ(y)] dy = ∫ ω₂(y + s e)[Dζ(y)] dy`.
+Proof: test with `φ(x) = ζ(x − s e)`, which is `C¹` with compact support,
+`spt φ = spt ζ + s e ⊆ U` and `Dφ(x) = Dζ(x − s e)`.  The integrands `ω_i(x)[Dφ(x)]` vanish off
+`U`, so the integrals over `U` are whole-space integrals, and the substitution `x = y + s e`
+(translation invariance of Lebesgue measure) turns them into `∫ ω_i(y + s e)[Dζ(y)] dy`.  No
+integrability or measurability is needed. -/
+theorem dohr_eb_lhr_ds_translate_weak_eq : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (ω₁ ω₂ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : Rn n) (s : ℝ) (ζ : Rn n → Rn ℓ), (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, ω₁ x (fderiv ℝ φ x) = ∫ x in U, ω₂ x (fderiv ℝ φ x)) → ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y ∈ tsupport ζ, y + s • e ∈ U) → ∫ y, ω₁ (y + s • e) (fderiv ℝ ζ y) = ∫ y, ω₂ (y + s • e) (fderiv ℝ ζ y) := by
+  intro n ℓ U ω₁ ω₂ e s ζ hweak hζ hζc hζU
+  -- Step 1: the translated test function `φ = ζ ∘ τ`, `τ x = x − s e`, is `C¹` with compact
+  -- support.
+  let φ : Rn n → Rn ℓ := ζ ∘ Homeomorph.subRight (s • e)
+  have hφC : ContDiff ℝ 1 φ := hζ.comp (contDiff_id.sub contDiff_const)
+  have hφc : HasCompactSupport φ := hζc.comp_homeomorph _
+  -- Step 2: `tsupport φ = τ⁻¹(tsupport ζ) ⊆ U`.
+  have hφU : tsupport φ ⊆ U := by
+    intro x hx
+    rw [tsupport_comp_eq_preimage] at hx
+    simpa using hζU _ hx
+  -- Step 3: `Dφ(x) = Dζ(x − s e)`.
+  have hDφ : ∀ x, fderiv ℝ φ x = fderiv ℝ ζ (x - s • e) := fun x =>
+    fderiv_comp_sub (f := ζ) (s • e)
+  -- Steps 4–5: the integrand vanishes off `U`, and `x = y + s e` turns the whole-space integral
+  -- into the translated one.
+  have key : ∀ ω : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ,
+      ∫ x in U, ω x (fderiv ℝ φ x) = ∫ y, ω (y + s • e) (fderiv ℝ ζ y) := by
+    intro ω
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+    · rw [← integral_add_right_eq_self (fun x => ω x (fderiv ℝ φ x)) (s • e)]
+      congr 1
+      funext y
+      rw [hDφ, add_sub_cancel_right]
+    · intro x hx
+      have hx' : x - s • e ∉ tsupport ζ := fun h => hx (by simpa using hζU _ h)
+      rw [hDφ, fderiv_of_notMem_tsupport ℝ hx', map_zero]
+  -- Step 6: combine with the weak identity for `φ`.
+  rw [← key ω₁, ← key ω₂]
+  exact hweak φ hφC hφc hφU
 
 end Submission
 
