@@ -3455,6 +3455,110 @@ theorem Submission.slicing_im_tg_chart_gradient : ∀ (P n : ℕ) (Φ : Eucl n �
   exact hy' ⟨w, ⟨hw, mem_univ _, fun hd =>
     hnd ((e.comp_differentiableAt_iff (f := f ∘ Φ) (x := w)).mp hd)⟩, rfl⟩
 
+/-- Tangential gradient of a Lipschitz function on a rectifiable carrier (Simon Ch. 3, 2.1, for the
+weighted tangent planes of 1.7): for `(M, θ, ξ)` as in 3.1 and `f` `L`-Lipschitz there is a Borel
+`G` with `‖G‖ ≤ L` everywhere such that for `Hⁿ`-a.e. `x ∈ M`, `G x` lies in every weighted
+approximate tangent plane `Q` of `(M, θ)` at `x` and `⟨G x, u⟩` is the derivative of `f` at `x`
+along every `u ∈ Q`.  Cover `M` up to an `Hⁿ`-null set by C¹ bi-Lipschitz charts
+`Φ_j : Ω_j → ℝ^P`, let `g_j` be the gradient of `f` along `range DΦ_j` on `Φ_j(Ω_j)`, and put
+`G = g_j` on `Φ_j(Ω_j)` for some `j` and `G = 0` off `⋃ j, Φ_j(Ω_j)`.  At `Hⁿ`-a.e.
+`x = Φ_j(w) ∈ M`, `range DΦ_j(w)` is a weighted approximate tangent plane, hence the only one as
+`θ x > 0`. -/
+theorem Submission.slicing_im_tangential_gradient :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1))
+      (f : Eucl P → ℝ) (L : ℝ≥0), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ →
+      LipschitzWith L f → ∃ G : Eucl P → Eucl P, Measurable G ∧ (∀ x, ‖G x‖ ≤ L) ∧
+        ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+          HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧
+            ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0 := by
+  intro P m U M θ ξ f L hU hT hf
+  classical
+  -- C¹ charts `Φ j`, Lipschitz and antilipschitz on the open sets `Ω j`, cover `M` up to null sets.
+  obtain ⟨Φ, Ω, hΩ, hΦ, hΦlip, hΦanti, hcov⟩ :=
+    Submission.slicing_im_tg_c1_chart_cover P (m + 1) M hT.countablyRectifiable
+  -- `Φ j` is injective on `Ω j`, so the chart images are Borel (Lusin–Souslin).
+  have hSm : ∀ j, MeasurableSet (Φ j '' Ω j) := by
+    intro j
+    obtain ⟨c, hc, hcΦ⟩ := hΦanti j
+    refine (hΩ j).measurableSet.image_of_continuousOn_injOn (hΦ j).continuous.continuousOn ?_
+    intro w hw w' hw' hww'
+    have h := hcΦ w hw w' hw'
+    rw [hww', sub_self, norm_zero, ← mul_zero c] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp (le_of_mul_le_mul_left h hc))
+  -- On each chart image, the gradient `g j` of `f` along `range DΦ_j`.
+  choose g hgm hgL hg using fun j =>
+    Submission.slicing_im_tg_chart_gradient P (m + 1) (Φ j) (Ω j) f L (hΩ j) (hΦ j) (hΦlip j)
+      (hΦanti j) hf
+  -- Glue: `G = g j` at a point of some `Φ j '' Ω j`, and `G = 0` off all chart images.
+  obtain ⟨G, hGm, hG⟩ : ∃ G : Eucl P → Eucl P, Measurable G ∧ ∀ x,
+      (x ∉ ⋃ j, Φ j '' Ω j ∧ G x = 0) ∨ ∃ j, x ∈ Φ j '' Ω j ∧ G x = g j x := by
+    -- Index `0` is the complement of the chart images, index `j + 1` the image of chart `j`.
+    let t : ℕ → Set (Eucl P) := fun
+      | 0 => (⋃ j, Φ j '' Ω j)ᶜ
+      | j + 1 => Φ j '' Ω j
+    let g' : ℕ → Eucl P → Eucl P := fun
+      | 0 => 0
+      | j + 1 => g j
+    have ht : ∀ x, ∃ k, x ∈ t k := by
+      intro x
+      by_cases hx : x ∈ ⋃ j, Φ j '' Ω j
+      · obtain ⟨j, hj⟩ := mem_iUnion.mp hx
+        exact ⟨j + 1, hj⟩
+      · exact ⟨0, hx⟩
+    refine ⟨fun x => g' (Nat.find (ht x)) x, Measurable.find (fun k => ?_) (fun k => ?_) ht,
+      fun x => ?_⟩
+    · cases k with
+      | zero => exact measurable_const
+      | succ j => exact hgm j
+    · cases k with
+      | zero => exact (MeasurableSet.iUnion hSm).compl
+      | succ j => exact hSm j
+    · have hx := Nat.find_spec (ht x)
+      beta_reduce
+      generalize Nat.find (ht x) = k at hx ⊢
+      cases k with
+      | zero => exact Or.inl ⟨hx, rfl⟩
+      | succ j => exact Or.inr ⟨j, hx, rfl⟩
+  refine ⟨G, hGm, fun x => ?_, ?_⟩
+  · rcases hG x with ⟨-, hx⟩ | ⟨j, -, hx⟩
+    · rw [hx, norm_zero]
+      exact L.coe_nonneg
+    · rw [hx]
+      exact hgL j x
+  -- `Hⁿ`-a.e. point of `M` lies in a chart image.
+  have hcovae : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), x ∈ ⋃ j, Φ j '' Ω j := by
+    rw [ae_restrict_iff'₀ hT.nullMeasurableSet, ae_iff]
+    refine measure_mono_null (fun x hx => ?_) hcov
+    simp only [mem_ofPred_eq, not_imp] at hx
+    exact hx
+  -- The chart gradients have the tangential-gradient property a.e. on the chart images.
+  have hgae : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ j, x ∈ Φ j '' Ω j →
+      ∀ w ∈ Ω j, Φ j w = x → g j x ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap ∧
+        ∀ v ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap,
+          HasDerivAt (fun s : ℝ => f (x + s • v)) (inner ℝ (g j x) v) 0 :=
+    ae_all_iff.mpr fun j => ae_restrict_of_ae ((ae_restrict_iff' (hSm j)).mp (hg j))
+  -- `range DΦ_j(w)` is a weighted approximate tangent plane at a.e. `x = Φ_j(w) ∈ M`.
+  have htae : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ j, x ∈ Φ j '' Ω j →
+      ∀ w ∈ Ω j, Φ j w = x → HasWeightedApproximateTangentSpaceAt (m + 1) M θ x
+        (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) := by
+    refine ae_all_iff.mpr fun j => (ae_restrict_iff' (hSm j)).mp ?_
+    rw [Measure.restrict_restrict (hSm j), inter_comm]
+    exact Submission.slicing_im_tg_weighted_tangent_chart P (m + 1) U M θ (Φ j) (Ω j) hU
+      hT.subset hT.nullMeasurableSet hT.pos hT.integrableOn (hΩ j) (hΦ j) (hΦanti j)
+  filter_upwards [ae_restrict_mem₀ hT.nullMeasurableSet, hcovae, hgae, htae] with
+    x hxM hxS hgx htx Q hQ
+  rcases hG x with ⟨hx, -⟩ | ⟨j, hxj, hGx⟩
+  · exact absurd hxS hx
+  have hgrad := hgx j hxj
+  have htan := htx j hxj
+  obtain ⟨w, hw, hwx⟩ := hxj
+  -- Weighted approximate tangent planes are unique where `θ ≠ 0`, so `Q = range DΦ_j(w)`.
+  obtain rfl : LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap = Q :=
+    Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt.unique
+      (hT.pos x hxM).ne' (htan w hw hwx) hQ
+  rw [hGx]
+  exact hgrad w hw hwx
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
