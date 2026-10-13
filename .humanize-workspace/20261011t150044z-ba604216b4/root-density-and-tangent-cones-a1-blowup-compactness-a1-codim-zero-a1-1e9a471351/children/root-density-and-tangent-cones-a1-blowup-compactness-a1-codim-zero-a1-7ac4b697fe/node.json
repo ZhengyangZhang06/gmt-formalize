@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.unit_current-a1.unit_imrep-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.unit_current-a1",
+  "depth": 5,
+  "title": "The integer multiplicity triple of c[[ℝⁿ]] and its action",
+  "statement": "Let n ≥ 1 and c ∈ ℤ. Then there is an integer multiplicity triple R = (M, θ, ξ) in U = ℝⁿ, i.e. R ∈ IMRep univ n: M ⊆ ℝⁿ is Borel and countably n-rectifiable, θ : ℝⁿ → ℕ is measurable, positive on M and locally Hⁿ-integrable, and ξ : ℝⁿ → Λₙ(ℝⁿ) is Hⁿ⌞M-a.e. strongly measurable and, Hⁿ-a.e. on M, a unit orientation ±τ₁∧…∧τₙ (τ orthonormal) of an approximate tangent space of M. Its action satisfies R.action ω = ∫_M θ(y)⟨ω(y), ξ(y)⟩ dHⁿ(y) = c·∫_{ℝⁿ} ω(y)(e) dLⁿ(y) for every ω ∈ 𝒟ⁿ(ℝⁿ) (TestFormOn univ n), where e = (e₁, …, eₙ) is the standard basis of ℝⁿ (EuclideanSpace.basisFun). Only existence is asserted; the proof takes R = (∅, 0, 0) if c = 0 and R = (ℝⁿ, |c|, sign(c)·e₁∧…∧eₙ) if c ≠ 0.",
+  "lean_statement": "∀ (n : ℕ) (c : ℤ), 0 < n → ∃ R : IMRep (univ : Set (Euclid n)) n, ∀ ω : TestFormOn (univ : Set (Euclid n)) n, R.action (ω : DifferentialForm (Euclid n) n) = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+  "lean_name": "dtc_bc_cz_unit_current_imrep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-7ac4b697fe-a1"
+}
