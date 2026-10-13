@@ -740,6 +740,61 @@ theorem Submission.cmr_covector_euclidean_equiv : ∀ (P n : ℕ), ∃ (d : ℕ)
   refine ⟨Module.finrank ℝ S, c₀.toContinuousLinearEquiv, fun α => ?_⟩
   rw [LinearEquiv.coe_toContinuousLinearEquiv', hc₀]
 
+/-- **Simon 6.1.1–1.2** (coordinate covectors): (a) for every `I` the coordinate covector
+`dx^I(v) = det(v_j(I k))_{k,j}` exists; (b) an `n`-vector vanishing on `dx^I` for every strictly
+increasing `I` vanishes.  Every `n`-covector expands as `α = Σ_I α(e_I) dx^I` over strictly
+increasing `I`: by `dx^I(e_J) = δ_IJ` the remainder vanishes on every `e_J`, so its coefficient
+norm `|·|_E` is `0`, and `|·|_E` is the norm of a linear isomorphism onto `ℝᵈ`. -/
+theorem Submission.cmr_coordinate_covectors_span : ∀ (P n : ℕ), (∀ I : Fin n → Fin P, ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) ∧ ∀ ζ : MultiVector P n, (∀ (I : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ζ θ = 0) → ζ = 0 := by
+  intro P n
+  refine ⟨Submission.cmr_cc_det_covector_exists P n, fun ζ hζ => ?_⟩
+  classical
+  -- `θ I = dx^I` for every `I`
+  choose θ hθ using Submission.cmr_cc_det_covector_exists P n
+  -- `dx^I(e_J) = δ_IJ` for strictly increasing `I`, `J`
+  have hδ : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
+      θ I (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = if I = J then 1 else 0 :=
+    fun I J hI hJ => Submission.cmr_cc_det_covector_basis_kronecker P n I J (θ I) hI hJ (hθ I)
+  -- `α = Σ_I α(e_I) dx^I` over strictly increasing `I`
+  have hexp : ∀ α : Covector (Euclid P) n, α = ∑ I : Fin n → Fin P,
+      if StrictMono I then α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) • θ I
+      else 0 := by
+    intro α
+    obtain ⟨α', hα'⟩ : ∃ α', α' = α - ∑ I : Fin n → Fin P,
+        if StrictMono I then α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) • θ I
+        else 0 := ⟨_, rfl⟩
+    -- `α'(e_J) = α(e_J) - Σ_I α(e_I) δ_IJ = 0` for strictly increasing `J`
+    have hJ : ∀ J : Fin n → Fin P, StrictMono J →
+        α' (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = 0 := by
+      intro J hJ
+      rw [hα', ContinuousAlternatingMap.sub_apply, ContinuousAlternatingMap.sum_apply,
+        Finset.sum_eq_single J, ite_eq_left hJ, ContinuousAlternatingMap.smul_apply,
+        hδ J J hJ hJ, ite_eq_left rfl, smul_eq_mul, mul_one, sub_self]
+      · intro I _ hIJ
+        split_ifs with hI
+        · rw [ContinuousAlternatingMap.smul_apply, hδ I J hI hJ, ite_eq_right hIJ, smul_zero]
+        · rfl
+      · intro h
+        exact absurd (Finset.mem_univ J) h
+    -- so `|α'|_E = 0`, and `α' = 0` as `|·|_E` is the norm of a linear isomorphism onto `ℝᵈ`
+    have hnorm : covectorEuclideanNorm α' = 0 := by
+      unfold covectorEuclideanNorm
+      rw [Finset.sum_eq_zero fun I _ => ?_, Real.sqrt_zero]
+      split_ifs with hI
+      · rw [hJ I hI, sq, mul_zero]
+      · rfl
+    obtain ⟨d, c, hc⟩ := Submission.cmr_covector_euclidean_equiv P n
+    have hc0 : c α' = 0 := norm_eq_zero.mp ((hc α').symm.trans hnorm)
+    rw [c.map_eq_zero_iff, hα'] at hc0
+    exact sub_eq_zero.mp hc0
+  -- `ζ` vanishes on every `dx^I`, hence on every covector
+  refine ContinuousLinearMap.ext fun α => ?_
+  rw [zero_apply, hexp α, map_sum]
+  refine Finset.sum_eq_zero fun I _ => ?_
+  split_ifs with hI
+  · rw [map_smul, hζ I (θ I) hI (hθ I), smul_zero]
+  · exact map_zero ζ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
