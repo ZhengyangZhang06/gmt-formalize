@@ -451,6 +451,61 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`C¹` maps on an open set: Lipschitz on compacta, null and rectifiable images** (Simon Ch. 2,
+1.8(i) and Ch. 3, 1.1; used for the area formula in the local unit representation of 7.5).  Let
+`D ⊆ ℝᵈ` be open and `G : ℝᵈ → ℝᴾ` be `C¹` on `D`.  Then (i) `G` is Lipschitz on every compact
+`K ⊆ D`; (ii) `Hᵐ(G(S)) = 0` whenever `S ⊆ D` and `Hᵐ(S) = 0`; (iii) `G(S)` is countably
+`m`-rectifiable whenever `S ⊆ D` is.  `G` is `C¹` at each point of `D`, hence locally Lipschitz on
+`D` and Lipschitz on compacta.  Write `D = ⋃ⱼ Kⱼ` with `Kⱼ` compact and `G` `Lⱼ`-Lipschitz on `Kⱼ`;
+then `Hᵐ(G(S ∩ Kⱼ)) ≤ Lⱼᵐ Hᵐ(S ∩ Kⱼ)`, and a Lipschitz extension `gⱼ : ℝᵈ → ℝᴾ` of `G|Kⱼ` gives
+`G(S ∩ Kⱼ) ⊆ gⱼ(M₀) ∪ ⋃ₖ range (gⱼ ∘ Ψₖ)` when `S ⊆ M₀ ∪ ⋃ₖ range Ψₖ`, `Hᵐ(M₀) = 0`. -/
+theorem Submission.codim1_lura_c1_image_lipschitz_null_rectifiable : ∀ (m d P : ℕ) (D : Set (Euclid d)) (G : Euclid d → Euclid P), IsOpen D → ContDiffOn ℝ 1 G D → (∀ K : Set (Euclid d), IsCompact K → K ⊆ D → ∃ L : NNReal, LipschitzOnWith L G K) ∧ (∀ S : Set (Euclid d), S ⊆ D → μHE[m] S = 0 → μHE[m] (G '' S) = 0) ∧ ∀ S : Set (Euclid d), S ⊆ D → CountablyRectifiable m S → CountablyRectifiable m (G '' S) := by
+  intro m d P D G hD hG
+  -- (i) `G` is `C¹` at every point of the open set `D`, so it is locally Lipschitz on `D`, hence
+  -- Lipschitz on every compact `K ⊆ D`
+  have hloc : LocallyLipschitzOn D G := fun x hx => by
+    obtain ⟨L, t, ht, hL⟩ := (hG.contDiffAt (hD.mem_nhds hx)).exists_lipschitzOnWith
+    exact ⟨L, t, mem_nhdsWithin_of_mem_nhds ht, hL⟩
+  have hi : ∀ K : Set (Euclid d), IsCompact K → K ⊆ D → ∃ L : NNReal, LipschitzOnWith L G K :=
+    fun K hK hKD => (hloc.mono hKD).exists_lipschitzOnWith_of_compact hK
+  -- compact exhaustion `D = ⋃ⱼ Kⱼ` (an open subset of `ℝᵈ` is σ-compact), `G` is `Lⱼ`-Lipschitz
+  -- on `Kⱼ`, and `G(S) ⊆ ⋃ⱼ G(S ∩ Kⱼ)` for `S ⊆ D`
+  have hσ : IsSigmaCompact D := by
+    have := hD.locallyCompactSpace
+    exact isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
+  obtain ⟨K, hKc, hKD⟩ := hσ
+  choose L hL using fun j => hi (K j) (hKc j) (hKD ▸ subset_iUnion K j)
+  have hcov : ∀ S : Set (Euclid d), S ⊆ D → G '' S ⊆ ⋃ j, G '' (S ∩ K j) := by
+    rintro S hSD _ ⟨x, hx, rfl⟩
+    obtain ⟨j, hj⟩ := mem_iUnion.mp (hKD.symm ▸ hSD hx : x ∈ ⋃ j, K j)
+    exact mem_iUnion.mpr ⟨j, x, ⟨hx, hj⟩, rfl⟩
+  refine ⟨hi, fun S hSD hS => ?_, fun S hSD hS => ?_⟩
+  · -- (ii) `Hᵐ(G(S ∩ Kⱼ)) ≤ Lⱼᵐ Hᵐ(S ∩ Kⱼ) = 0` and countable subadditivity
+    refine measure_mono_null (hcov S hSD) (measure_iUnion_null fun j => le_antisymm ?_ zero_le)
+    calc μHE[m] (G '' (S ∩ K j)) ≤ (L j : ℝ≥0∞) ^ m * μHE[m] (S ∩ K j) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m
+            ((hL j).mono inter_subset_right)
+      _ = 0 := by rw [measure_mono_null inter_subset_left hS, mul_zero]
+  · -- (iii) extend `G|Kⱼ` to a Lipschitz map `gⱼ : ℝᵈ → ℝᴾ`; then
+    -- `G(S ∩ Kⱼ) ⊆ gⱼ(M₀) ∪ ⋃ₖ range (gⱼ ∘ Ψₖ)` with `Hᵐ(gⱼ(M₀)) = 0`
+    obtain ⟨M₀, hM₀, Ψ, hΨ, hSΨ⟩ := hS
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun j => ?_).mono
+      (hcov S hSD)
+    obtain ⟨g, hg, hgG⟩ := (hL j).extend_finite_dimension
+    refine ⟨g '' M₀, le_antisymm ?_ zero_le, fun k => g ∘ Ψ k, fun k => ?_, ?_⟩
+    · calc μHE[m] (g '' M₀) ≤ _ ^ m * μHE[m] M₀ :=
+            Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m
+              hg.lipschitzOnWith
+        _ = 0 := by rw [hM₀, mul_zero]
+    · obtain ⟨c, hc⟩ := hΨ k
+      exact ⟨_, hg.comp hc⟩
+    · rintro _ ⟨x, ⟨hxS, hxK⟩, rfl⟩
+      rw [hgG hxK]
+      rcases hSΨ hxS with hx | hx
+      · exact Or.inl ⟨x, hx, rfl⟩
+      · obtain ⟨k, y, rfl⟩ := mem_iUnion.mp hx
+        exact Or.inr (mem_iUnion.mpr ⟨k, y, rfl⟩)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
