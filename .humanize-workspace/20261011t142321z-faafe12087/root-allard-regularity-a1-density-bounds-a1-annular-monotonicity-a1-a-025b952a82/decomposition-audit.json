@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "allard52_amt_kernel_lower_bound|allard52_amt_fubini_lintegral",
+        "integral_eq_sub_of_hasDerivAt|integral_mono_on|Antitone.deriv_nonpos|continuous_deriv|AEStronglyMeasurable.comp_snd|intervalIntegral_integral_swap|Integrable.integral_prod_right|quasiMeasurePreserving_fst|quasiMeasurePreserving_snd|ofReal_integral_eq_lintegral_ofReal|setLIntegral_eq_of_support_subset|setIntegral_eq_integral_of_forall_compl_eq_zero|setLIntegral_mono_ae.|setLIntegral_le_lintegral",
+        "python3 /tmp/annular-tonelli-audit-chzzrxal/run.py base",
+        "python3 /tmp/annular-tonelli-audit-chzzrxal/run.py Challenges.lean",
+        "python3 /tmp/annular-tonelli-audit-chzzrxal/run.py Full.lean",
+        "python3 /tmp/annular-tonelli-audit-chzzrxal/run.py AssemblyAx.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-a-025b952a82/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-a-025b952a82/decomposition-v1.json",
+        "/tmp/tonelli-decomp/check/Full.lean",
+        "/tmp/tonelli-decomp/check/AssemblyAx.lean",
+        "/tmp/annular-tonelli-audit-chzzrxal/Challenges.lean",
+        "/tmp/annular-tonelli-audit-chzzrxal/Full.lean",
+        "/tmp/annular-tonelli-audit-chzzrxal/AssemblyAx.lean"
+      ],
+      "conclusion": "Confirmed project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; inspected Mathlib sources match the compiler package. No proposed-name matches occur in the snapshot project, snapshot Mathlib, or current 379-node DAG. Both names are bare identifiers, and neither reuses an accepted declaration. Both exact one-line types pass validation and independently elaborate as Prop before either child is declared. No instance-sensitive inline construction is problematic. Fresh recompilation succeeds: both complete child proofs and the exact frozen parent depend only on propext, Classical.choice and Quot.sound. Assembly with child axioms depends only on those two obligations and standard axioms. The split appropriately separates FTC from finite-measure Fubini; both empty dependency lists are correct and acyclic. Annular comparison followed by the identity proves the selected parent, whose type matches the immutable handoff byte-for-byte."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "kernel_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes exactly the Lean hypotheses and conclusion. Steps 1–6 establish positive denominators, continuity and nonnegativity of k, the FTC identity integral k = 1, and the support implication k(t) ≠ 0 → t ≤ c. The resulting reciprocal-power comparison is integrated with justified integrability. Endpoint cases and n = 0 are covered. This is a complete independent proof, with no reliance on either the parent conclusion or the other child."
+    },
+    {
+      "key": "tonelli_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including the intentional omission of the lower cutoff normalization. Steps 1–9 prove spatial support, restrict to a finite measure, transfer a.e.-strong measurability and bounds to the product, and give an explicit integrable majorant. Fubini establishes both the identity and integrability of wH; a.e. nonnegativity justifies the ofReal conversion. Global σ-finiteness of μ is unnecessary. The cases s = r and n = 0 are covered. The proof is complete, non-circular, and combines with the kernel bound to establish the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
