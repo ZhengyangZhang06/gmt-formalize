@@ -699,6 +699,49 @@ theorem Submission.slicing_im_ll_gws_smooth_dense :
     _ < δ / 2 + δ / 2 := add_lt_add_of_lt_of_le h1 h2
     _ = δ := add_halves δ
 
+/-- Gradients of functions `u_k → u` that converge uniformly on an open `Ω ⊆ ℝⁿ` and are all
+`C`-Lipschitz on `Ω` converge weakly-* on `Ω`: `∫_Ω Du_k(c) → ∫_Ω Du(c)` for every field `c`
+integrable on `Ω`. -/
+theorem Submission.slicing_im_ll_gradient_weak_star :
+    ∀ (n : ℕ) (Ω : Set (Eucl n)) (C : ℝ≥0) (u : Eucl n → ℝ) (ug : ℕ → Eucl n → ℝ), IsOpen Ω →
+      LipschitzOnWith C u Ω → (∀ k, LipschitzOnWith C (ug k) Ω) →
+      TendstoUniformlyOn ug u atTop Ω → ∀ c : Eucl n → Eucl n,
+      IntegrableOn c Ω (volume : Measure (Eucl n)) →
+      Tendsto (fun k => ∫ w in Ω, fderiv ℝ (ug k) w (c w)) atTop
+        (𝓝 (∫ w in Ω, fderiv ℝ u w (c w))) := by
+  intro n Ω C u ug hΩ hu hug hconv c hc
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  -- A smooth field `b` compactly supported in `Ω` with `∫_Ω |c - b| < ε / (3 (C + 1))`,
+  -- so that `C ∫_Ω |c - b| < ε / 3`.
+  obtain ⟨b, hb, hbc, hbΩ, hcb⟩ := Submission.slicing_im_ll_gws_smooth_dense n Ω c hΩ hc
+    (ε / (3 * (C + 1))) (by positivity)
+  have hCcb : (C : ℝ) * ∫ w in Ω, ‖c w - b w‖ < ε / 3 := by
+    calc (C : ℝ) * ∫ w in Ω, ‖c w - b w‖ ≤ C * (ε / (3 * (C + 1))) :=
+          mul_le_mul_of_nonneg_left hcb.le C.coe_nonneg
+      _ < ε / 3 := by
+          rw [mul_div_assoc', div_lt_div_iff₀ (by positivity) (by norm_num)]
+          nlinarith
+  have hbi : IntegrableOn b Ω (volume : Measure (Eucl n)) :=
+    (hb.continuous.integrable_of_hasCompactSupport hbc).integrableOn
+  -- The pairings against the smooth field `b` converge.
+  obtain ⟨k₀, hk₀⟩ := Metric.tendsto_atTop.1
+    (Submission.slicing_im_ll_gws_smooth_tendsto n Ω C u ug hΩ hu hug hconv b
+      (hb.of_le (by exact_mod_cast le_top)) hbc hbΩ) (ε / 3) (by positivity)
+  refine ⟨k₀, fun k hk => ?_⟩
+  -- Replacing `c` by `b` moves the pairings with `Du_k` and with `Du` by at most
+  -- `C ∫_Ω |c - b| < ε / 3` each.
+  have h₁ := Submission.slicing_im_ll_gws_pairing_bound n Ω C (ug k) hΩ (hug k) c b hc hbi
+  have h₂ := Submission.slicing_im_ll_gws_pairing_bound n Ω C u hΩ hu c b hc hbi
+  have h₃ := hk₀ k hk
+  rw [Real.dist_eq] at h₃ ⊢
+  have h₄ := abs_sub_le (∫ w in Ω, fderiv ℝ (ug k) w (c w)) (∫ w in Ω, fderiv ℝ (ug k) w (b w))
+    (∫ w in Ω, fderiv ℝ u w (c w))
+  have h₅ := abs_sub_le (∫ w in Ω, fderiv ℝ (ug k) w (b w)) (∫ w in Ω, fderiv ℝ u w (b w))
+    (∫ w in Ω, fderiv ℝ u w (c w))
+  rw [abs_sub_comm (∫ w in Ω, fderiv ℝ u w (b w))] at h₅
+  linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
