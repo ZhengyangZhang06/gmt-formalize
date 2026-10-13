@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.chart_image_flat-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1",
+  "depth": 3,
+  "title": "A proper injective C¹ chart with injective Dψ(v) makes N flat at ψ(v) along range Dψ(v)",
+  "statement": "Let P, d ∈ ℕ and N ⊆ ℝ^P. Let V ⊆ ℝ^d and W ⊆ ℝ^P be open. Let ψ : ℝ^d → ℝ^P be of class C¹ on V and injective on V, with ψ(V) = W ∩ N, and such that V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W. This is a local representation of N in the sense of Simon Ch. 2, 4.1, except that Dψ is only required to be injective at the point v. Let v ∈ V be such that Dψ(v) = fderiv ℝ ψ v is injective. Then N is flat at ψ(v) along the range of Dψ(v): for every real ε > 0 there is a real ρ > 0 such that every z ∈ N with |z − ψ(v)| < ρ admits some h ∈ ℝ^d with |z − ψ(v) − Dψ(v)h| ≤ ε|z − ψ(v)|. All norms and distances are Euclidean.",
+  "lean_statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → Injective (fderiv ℝ ψ v) → v ∈ V → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z (ψ v) < ρ → ∃ h : Euclid d, ‖z - ψ v - fderiv ℝ ψ v h‖ ≤ ε * ‖z - ψ v‖",
+  "lean_name": "atsm_chart_image_flat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a-e7c970539f-a1"
+}

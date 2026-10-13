@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "HasApproximateTangentSpaceAt|ApproximateTangentCharacterization|ptd_|rsdic_|dpf_",
+        "theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_average_norm_sub|instHasBesicovitchCovering",
+        "theorem weighted_area_formula_lipschitz_injOn|def areaJacobianAt|theorem measurable_areaJacobianAt|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "euclideanHausdorffMeasure_image_eq_normDet_mul_volume|euclideanHausdorffMeasure_image \\(|normDet_of_subsingleton",
+        "euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "ptd_ae_approxTangent_iff_of_subset",
+        "ptd_piece_image_measurable_ae_pullback",
+        "ptd_piece_image_approxTangent_ae",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ptd-independent-audit-20261013/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ptd-independent-audit-20261013/LibraryChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-child-handoff.json",
+        "/tmp/ptd-independent-audit-20261013/Challenge1.lean",
+        "/tmp/ptd-independent-audit-20261013/Challenge2.lean",
+        "/tmp/ptd-independent-audit-20261013/Challenge3.lean",
+        "/tmp/ptd-independent-audit-20261013/Assembly.lean",
+        "/tmp/ptd-independent-audit-20261013/LibraryChecks.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected parent. Its three independent obligations assemble into the exact frozen conclusion; the conditional assembly compiled using only propext, Classical.choice and Quot.sound. All three exact child propositions independently elaborated in the comparator's replayed scope, without child implementations. Their names are bare identifiers, with no collisions found across the eight DAGs or other stored Chapter 7 proposals. No ptd_, rsdic_ or dpf_ declarations were found in the pinned project. The existing locality declarations have identical frozen types, but this split does not depend on them. Relevant live library sources match the pinned revisions; the principal analytic lemmas passed standard-axiom checks. Euclidean measure, derivative-range coercion, covering/doubling instances and the zero-dimensional Jacobian were independently checked in Lean. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including local finiteness and simultaneous quantification over all planes. The proof supplies one plane-independent exceptional set, derives growth from either assumed tangent using an integrable cutoff, obtains zero-density excess, and transfers all blow-up integrals in both directions. Local finiteness justifies the integral comparisons. The reverse implication supplies precisely the transfer to Y needed by the parent. No circular reliance occurs."
+    },
+    {
+      "key": "piece_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches both stated conclusions. The lower bound proves injectivity, Lusin–Souslin proves image measurability, and the Lipschitz inverse sends the null exceptional image set to a null parameter set. The outer-measure image bound applies to arbitrary subsets, so no measurability assumption on the predicate is missing. The proof is complete, independent, and valid in dimension zero."
+    },
+    {
+      "key": "piece_image_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the parameter-a.e. tangent conclusion match the frozen proposition. The proof fully establishes Jacobian bounds, a test-function-independent conull set, the derivative lower bound, integrability and rescaled area formula, localization, and all three convergence estimates. Linear image-measure transport identifies the limiting plane measure and injectivity gives its dimension. Dimension zero is covered. These are supplied arguments, not deferred proof-search instructions, and they use neither the parent conclusion nor another child."
+    }
+  ],
+  "required_changes": []
+}
