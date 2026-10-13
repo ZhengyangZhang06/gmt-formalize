@@ -451,6 +451,39 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A unit-scale blow-up is a translation** (Simon 6.2.23 for `η_{−v,1}(y) = v + y`; the
+translation `τ_{v#}` of Lemma 7.3.5).  For `S ∈ 𝒟ₙ(ℝᴾ)`, `v ∈ ℝᴾ` and `ω ∈ 𝒟ⁿ(ℝᴾ)`, the translate
+`ω' = ω(v + ·)` is a test form and `currentEval (η_{−v,1#}S) ω = S(ω')`: `η_{−v,1}(ℝᴾ) = ℝᴾ`, and
+unfolding `blowUp` (linear part `dilationCLM P 1 = id`, translation `−(1⁻¹ • −v) = v`) the affine
+pullback of `ω` is `y ↦ ω(v + y) ∘ id = ω'(y)`. -/
+theorem Submission.dimred_cs_ti_blowUp_translate_eval : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (v : Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), ∃ ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (v + y)) ∧ currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω' := by
+  intro P n S v ω
+  -- Step 1: the translate `y ↦ ω(v + y)` is a test form.
+  have hsm : ContDiff ℝ (⊤ : ℕ∞) (fun y => (ω : DifferentialForm (Euclid P) n) (v + y)) :=
+    ω.property.1.1.comp (contDiff_const.add contDiff_id)
+  have hcs : HasCompactSupport (fun y => (ω : DifferentialForm (Euclid P) n) (v + y)) :=
+    ω.property.1.2.comp_homeomorph (Homeomorph.addLeft v)
+  let ω' : TestFormOn (univ : Set (Euclid P)) n :=
+    ⟨fun y => (ω : DifferentialForm (Euclid P) n) (v + y), ⟨hsm, hcs⟩, subset_univ _⟩
+  refine ⟨ω', fun y => rfl, ?_⟩
+  -- Steps 2–3: `η_{−v,1}(ℝᴾ) = ℝᴾ`, so `currentEval` takes its test-form branch.
+  have hV : dilation (-v) (1 : ℝ) '' univ = univ := by
+    refine eq_univ_of_forall fun x => ⟨x - v, mem_univ _, ?_⟩
+    simp [dilation, dilationCLM]
+  have h : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ dilation (-v) (1 : ℝ) '' univ :=
+    ⟨ω.property.1, by rw [hV]; exact subset_univ _⟩
+  rw [currentEval, dite_eq_left h]
+  -- Steps 4–5: unfolding `blowUp`, the affine pullback of `ω` by `y ↦ v + 1⁻¹ y` is `ω'`.
+  change S _ = S ω'
+  congr 1
+  apply Subtype.ext
+  funext y
+  ext w
+  change (ω : DifferentialForm (Euclid P) n) (-((1 : ℝ)⁻¹ • -v) + dilationCLM P 1 y)
+      (fun i => dilationCLM P 1 (w i)) = (ω : DifferentialForm (Euclid P) n) (v + y) w
+  simp [dilationCLM]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
