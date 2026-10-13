@@ -1488,6 +1488,35 @@ theorem Submission.cmc_massOn_eq_imRep_measure : ∀ (P n : ℕ) (U : Set (Eucli
   exact le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
     (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
 
+/-- **Borel restrictions of integer multiplicity currents** (Simon Ch. 6, 2.9 and 3.1; used for
+the slices `X⌞{f < t}` and `(∂X)⌞{f < t}` of 4.5(2)).  Let `X ∈ 𝒟_q(U)` be integer multiplicity
+in the open set `U`, `(μ, ξ)` an admissible representation of `X` (`μ` finite on compact subsets
+of `U`, `ξ` `μ`-a.e. strongly measurable with `|⟨α, ξ(x)⟩| ≤ |α|` `μ`-a.e., `X(ω) = ∫ ⟨ω, ξ⟩ dμ`)
+and `E` Borel.  If `A(ω) = ∫_E ⟨ω, ξ⟩ dμ`, then `A` is integer multiplicity.  For
+`X = τ(M, θ, ζ)`, (IMC)(b) gives `R' = (M ∩ E, θ, ζ)` representing some `A'`; (RU) for `(μ, ξ)`,
+`(μ_R, ζ)` and the zero pair gives `∫_E ⟨ω, ξ⟩ dμ = ∫_E ⟨ω, ζ⟩ dμ_R`, which is `A'(ω)` by
+`cmc_fcl_imrep_restrict_formula`; hence `R'` represents `A`. -/
+theorem Submission.cbr_ccisp_restrict_isIntegerMultiplicity : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) → (∀ (P k : ℕ) (U : Set (Euclid P)) (μ₁ μ₂ μ₃ : Measure (Euclid P)) (ξ₁ ξ₂ ξ₃ : Euclid P → MultiVector P k), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₁ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₂ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₃ K < ∞) → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → AEStronglyMeasurable ξ₃ μ₃ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₃, ∀ α : Covector (Euclid P) k, |ξ₃ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, ∫ x, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (B : Set (Euclid P)) (ω : TestFormOn U k), MeasurableSet B → ∫ x in B, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in B, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x in B, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (P q : ℕ) (U : Set (Euclid P)) (X A : GeometricCurrentOn U q) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P q) (E : Set (Euclid P)), IsOpen U → IsIntegerMultiplicity X → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) q, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U q, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) q) x) ∂μ) → MeasurableSet E → (∀ ω : TestFormOn U q, A ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) q) x) ∂μ) → IsIntegerMultiplicity A := by
+  intro hIMCb hIMCd hRU P q U X A μ ξ E hU hX hμ hξm hξb hXrep hE hArep
+  -- Step 1: a representation `R_X = (M, θ, ζ)` of `X`; write `ν = R_X.measure`
+  obtain ⟨RX, hRX⟩ := hX
+  -- Step 2: (IMC)(b) gives a current `A'` represented by `R' = (M ∩ E, θ, ζ)`
+  obtain ⟨A', R', hR'A', hcar, hmult, hor⟩ := hIMCb P q U RX E hU hE
+  -- Step 3: `(ν, ζ)` is admissible (`imrep_data`; the unit bound from (IMC)(d))
+  obtain ⟨hfinK, hmeas, hbnd, hint⟩ := Submission.cmc_fcl_imrep_integral_data P q U X RX hRX
+  -- Step 4: (RU) with `(μ, ξ)`, `(ν, ζ)` and the zero measure with the zero field, since
+  -- `∫ ⟨ω, ξ⟩ dμ = X(ω) = ∫ ⟨ω, ζ⟩ dν = ∫ ⟨ω, ζ⟩ dν + ∫ 0 d0`
+  have hRU' := hRU P q U μ RX.measure 0 ξ RX.orient (fun _ => 0) hU hμ hfinK
+    (fun K _ _ => by simp) hξm hmeas aestronglyMeasurable_const hξb (hbnd (hIMCd P q U RX))
+    (by simp) (fun ω => by rw [← hXrep ω, ← hint ω]; simp)
+  -- Step 5: `A'(ω) = ∫_E ⟨ω, ζ⟩ dν` (`imrep_restrict`)
+  obtain ⟨-, hA'⟩ :=
+    Submission.cmc_fcl_imrep_restrict_formula P q U RX R' A' E hE hR'A' hcar hmult hor
+  -- Step 6: `A(ω) = ∫_E ⟨ω, ξ⟩ dμ = ∫_E ⟨ω, ζ⟩ dν + ∫_E 0 d0 = A'(ω) = R'.action ω`
+  refine ⟨R', fun ω => ?_⟩
+  rw [hArep ω, hRU' E ω hE, ← hA' ω, hR'A' ω]
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
