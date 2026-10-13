@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b2a4098d6272c35851459dbf7a3a61418f878cadff2ff6247e726ac90e227594",
+  "git_delta": {
+    "base_commit": "e7f02c96064e36cae195df401fd5502fe8adcb38",
+    "candidate_commit": "13c3e6ac8a8b5a690178ef03597aeff52d503ce3",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "91eba00f478880823924cc84759dfc888af87967a46a30722989702acf76cf3d",
+    "source_sha256": "33f1db28ea21e1550d1a35288a9e2dc45e662e7f5faff31d14cd502d252be7f9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_blowUp_density",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (x : Euclid P) (θ : ℝ) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), IsOpen U → 0 < n → x ∈ U → IsIntegerMultiplicity T → IsIntegerMultiplicity C → Tendsto lams atTop (𝓝 0) → HasMassDensity T x θ → MassMeasuresConverge (fun j => blowUp T x (lams j) (hlams j).ne') C → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ) ∧ HasMassDensity C 0 θ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
