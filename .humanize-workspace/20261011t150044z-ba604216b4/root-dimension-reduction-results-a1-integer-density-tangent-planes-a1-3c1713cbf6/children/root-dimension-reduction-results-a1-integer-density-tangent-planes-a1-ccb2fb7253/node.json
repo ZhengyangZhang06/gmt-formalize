@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_image_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "depth": 4,
+  "title": "Approximate tangent plane of a bi-Lipschitz piece image at a.e. parameter (parent steps 3(a), 3(d), 3(e))",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, g : ℝ^n → ℝ^P L-Lipschitz, A ⊆ ℝ^n Borel and c > 0 with c|a − a'| ≤ |g(a) − g(a')| for all a, a' ∈ A, and suppose g is differentiable at every a ∈ A with injective derivative Dg(a) = fderiv ℝ g a. Then for Lebesgue-a.e. a ∈ A (volume.restrict A), g(A) has the approximate tangent space range Dg(a) at g(a) in the sense of Simon Ch. 3, 1.4: HasApproximateTangentSpaceAt n (g(A)) (g(a)) (range Dg(a)), i.e. dim range Dg(a) = n and ∫_{η_{g(a),r}(g(A))} f dH^n → ∫_{range Dg(a)} f dH^n as r → 0⁺ for every f ∈ C_c(ℝ^P, ℝ), where η_{y,r}(z) = r^{−1}(z − y) and H^n = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → ∀ᵐ a ∂(volume.restrict A), HasApproximateTangentSpaceAt n (g '' A) (g a) (LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "idtp_caf_piece_image_approxTangent_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ccb2fb7253-a1"
+}

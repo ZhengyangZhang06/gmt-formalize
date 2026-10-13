@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "normDet_comp|normDet_sq_eq_det_gram|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|normDet_nonneg",
+        "ae_tendsto_average_norm_sub|ae_tendsto_measure_inter_div|euclideanHausdorffMeasure_homothety_image|def gram|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|def dimensionalUpperDensity",
+        "idtp_caf_",
+        "dpf_rectifiable_bilipschitz_pieces",
+        "doraggt_ae_approxTangent_transfer",
+        "ptd_piece_image_measurable_ae_pullback",
+        "dpf_itt_approxTangentPlane_eq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/caf_independent_audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/caf_independent_audit/GramAndAxiomsModule.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3c1713cbf6/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3c1713cbf6/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa16/20261013T045307Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a-9hox5g14/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa12/20261013T000724Z-ch07-root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_-d8it3wfq/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa4/20261013T061133Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_densit-w4oc3hn1/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T055743Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transp-5__bfi24/comparator.log",
+        "/tmp/caf_independent_audit/Assembly.lean",
+        "/tmp/caf_independent_audit/GramAndAxiomsModule.lean"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT revisions match the pinned snapshot. Splitting this selected carrier-area-formula theorem is appropriate. All ten standalone, one-line propositions elaborate, match their prose, and use valid bare declaration names. An independently checked assembly derives the exact frozen parent type from the proposed obligations; its only additional axioms are the named child assumptions. The dependency graph, including accepted reuse dependencies, is acyclic and has no reliance on this parent or its ancestors. The four reused types are byte-identical in both the DAG and accepted candidate sources; their recorded kernel exports contain only standard axioms. No new idtp_caf_ name occurs outside this node's proposal artifacts. The Gram-determinant identity and cited analytic library lemmas passed separate axiom checks with only propext, Classical.choice and Quot.sound. Matrix.of gives the intended Gram matrix. Each supplied child proof is complete enough to guide formalization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The empty case, compact convex balls, countable subcover, Lipschitz extensions and disjointification establish every conclusion without additional hypotheses."
+    },
+    {
+      "key": "null_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly uses its localization dependency, the Lipschitz image bound for arbitrary subsets, and μHE[n] = volume on Euclid n. Countable subadditivity completes the exact claim, including n = 0."
+    },
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse has the identical accepted type. Removing nonregular images, partitioning by linear approximation, applying Lusin–Souslin and disjointifying by least index prove all clauses. Degenerate dimensions are covered."
+    },
+    {
+      "key": "piece_image_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. A common conull parameter set supplies density and Lebesgue points. The support bounds, area-formula substitution, three error estimates and linear measure transport prove the full tangent condition for every compactly supported continuous test function."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted type is reused exactly. The upper-density theorem applies also at n = 0. Localization and symmetric-difference mass estimates justify integrability and convergence of the difference of blow-up integrals, proving both implications."
+    },
+    {
+      "key": "piece_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted type matches exactly. Lusin–Souslin proves the Borel image, and the Lipschitz inverse sends its null exceptional subsets to null parameter sets. The argument correctly allows arbitrary predicates and non-Borel exceptional sets."
+    },
+    {
+      "key": "chosen_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted type matches exactly. The given tangent plane witnesses the positive choice branch; choose_spec and tangent-plane uniqueness prove the stated equality."
+    },
+    {
+      "key": "piece_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four declared dependencies supply precisely the required conclusions. Local finiteness descends from M, tangent agreement pulls back to parameters, and uniqueness identifies the chosen plane. This assembly was independently checked in Lean."
+    },
+    {
+      "key": "piece_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both conclusions through measurable-weight replacement, null-image control, fibre reindexing, the chain rule and the verified Gram identity. The cited injective area formula permits arbitrary weights, and normDet_comp permits noninjective derivatives; no measurability assumption on T is missing."
+    },
+    {
+      "key": "glue_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes both necessary null-remainder assumptions. Restriction equality and measure summation handle arbitrary integrands; outside the null image, disjoint fibre reindexing, a.e. measurability of the countable sum and lintegral_tsum prove the conclusion."
+    }
+  ],
+  "required_changes": []
+}

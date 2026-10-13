@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_tangent_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "depth": 4,
+  "title": "Approximate tangent planes of the carrier along a bi-Lipschitz piece (parent step 3)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, M ⊆ ℝ^P Borel with H^n(M ∩ K) < ∞ for every compact K ⊆ ℝ^P (H^n = μHE[n]), g : ℝ^n → ℝ^P L-Lipschitz, A ⊆ ℝ^n Borel and c > 0 with c|a − a'| ≤ |g(a) − g(a')| for a, a' ∈ A, g differentiable with injective derivative Dg(a) = fderiv ℝ g a at every a ∈ A, and g(A) ⊆ M. Then approxTangentPlane n M (g(a)) = range Dg(a) for Lebesgue-a.e. a ∈ A (volume.restrict A).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → g '' A ⊆ M → ∀ᵐ a ∂(volume.restrict A), approxTangentPlane n M (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)",
+  "lean_name": "idtp_caf_piece_approxTangentPlane_ae",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_image_tangent-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_transfer-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.chosen_tangent_plane-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_image_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_transfer-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6e2110e6b7-a1",
+      "result_commit": "422e346ed7d2fe5411cb5400351e6936cc4d69fe",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0-a1",
+      "result_commit": "bed5b8494a351297a2be8f0a0b63079868d53507",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.chosen_tangent_plane-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-cd2837f661-a1",
+      "result_commit": "34325ececca5ed226212e37aa67e711a3a090e9d",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ba6adfa8ed-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.null_image-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "depth": 4,
+  "title": "C¹ maps on an open set send Hⁿ-null subsets to Lebesgue-null sets (parent step 1(c))",
+  "statement": "Let P, n ∈ ℕ, let Z ⊆ ℝ^P be open, F : ℝ^P → ℝ^n C¹ on Z (ContDiffOn ℝ 1 F Z), and S ⊆ Z with H^n(S) = 0, where H^n = μHE[n] on ℝ^P. Then L^n(F(S)) = 0, where L^n = volume on ℝ^n = Euclid n.",
+  "lean_statement": "∀ (P n : ℕ) (Z S : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → S ⊆ Z → μHE[n] S = 0 → volume (F '' S) = 0",
+  "lean_name": "idtp_caf_null_image",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.lipschitz_localization-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.lipschitz_localization-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-26a4b2ca30-a1"
+}
