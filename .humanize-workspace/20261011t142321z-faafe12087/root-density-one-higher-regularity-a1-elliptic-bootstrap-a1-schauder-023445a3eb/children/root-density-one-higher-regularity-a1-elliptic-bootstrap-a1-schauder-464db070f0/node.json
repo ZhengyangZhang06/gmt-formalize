@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1.energy_estimate-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1",
+  "depth": 5,
+  "title": "Caccioppoli energy estimate for an arbitrary admissible cutoff (constant-coefficient Legendre systems)",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, lam > 0 and Lam real. Let A be a continuous bilinear form on L with A[P][P] >= lam ||P||^2 and |A[P][Q]| <= Lam ||P|| ||Q|| for all P, Q in L. Let U be an open subset of R^n, V : R^n -> R^l a map that is C^1 on U, eta : R^n -> R a C^1 function on R^n with compact support, tsupport(eta) contained in U and eta >= 0, and c in R^l. Assume that the integral over R^n of A[DV(x)][D zeta(x)] is 0 for every C^1 compactly supported zeta : R^n -> R^l with tsupport(zeta) contained in U. Then the lower Lebesgue integral over R^n of ofReal(eta(x)^2 ||DV(x)||^2) is at most ofReal(4 Lam^2/lam^2) times the lower Lebesgue integral over R^n of ofReal(||V(x) - c||^2 ||D eta(x)||^2). Values are in [0, infinity].",
+  "lean_statement": "∀ (n ℓ : ℕ) (lam Lam : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : Set (Rn n)) (V : Rn n → Rn ℓ) (η : Rn n → ℝ) (c : Rn ℓ), 0 < lam → (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → IsOpen U → ContDiffOn ℝ 1 V U → ContDiff ℝ 1 η → HasCompactSupport η → tsupport η ⊆ U → (∀ x, 0 ≤ η x) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∫⁻ x, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) ≤ ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2) * ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2)",
+  "lean_name": "dohr_eb_sch_cacc_energy_estimate",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1.test_function-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1.test_function-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-464db070f0-a1"
+}
