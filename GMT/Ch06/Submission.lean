@@ -847,6 +847,47 @@ theorem Submission.slicing_im_creg_box_slice_area : ∀ (P m : ℕ) (Φ : Eucl (
     simp only [hderiv v hv.1]
   · have hev : e v ∉ B ∩ χ ⁻¹' S := hv
     rw [indicator_of_notMem hv, indicator_of_notMem hev]
+/-- Borel measurability of the straightened slice-Jacobian integrand
+`F̃ = 1_{S′} · (y ↦ g(Φ(χ y)) · √det(⟨DΦ(χ y)(Dχ(y)e_{i+1}), DΦ(χ y)(Dχ(y)e_{j+1})⟩)_{i,j<m})`,
+`S′ = B ∩ χ⁻¹(S)`, for `Φ` of class `C¹`, `χ` of class `C¹` on the open set `B`, `S` and `g`
+Borel.  The extension `χ̃ = B.piecewise χ 0` of `χ` is Borel, so `S′ = B ∩ χ̃⁻¹(S)` is Borel, and
+on `S′` the outer `χ` may be replaced by `χ̃`.  `y ↦ Dχ(y)v` is measurable for any `χ`, while
+`(x, u) ↦ DΦ(x)u`, the inner product and the determinant are continuous. -/
+theorem Submission.slicing_im_creg_box_integrand_measurable : (∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)) (S : Set (Eucl (m + 1))) (g : Eucl P → ℝ≥0∞), ContDiff ℝ 1 Φ → IsOpen B → ContDiffOn ℝ 1 χ B → MeasurableSet S → Measurable g → Measurable ((B ∩ χ ⁻¹' S).indicator (fun y => g (Φ (χ y)) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single i.succ 1))) (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single j.succ 1)))).det)))) := by
+  intro P m Φ B χ S g hΦ hB hχ hS hg
+  classical
+  -- `χ̃ = B.piecewise χ 0` is Borel and agrees with `χ` on `B`.
+  obtain ⟨χt, hχt, hχtB⟩ : ∃ χt : Eucl (m + 1) → Eucl (m + 1), Measurable χt ∧ EqOn χt χ B :=
+    ⟨B.piecewise χ 0, hχ.continuousOn.measurable_piecewise continuousOn_const hB.measurableSet,
+      piecewise_eqOn B χ 0⟩
+  -- `S′ = B ∩ χ⁻¹(S) = B ∩ χ̃⁻¹(S)` is Borel.
+  have hS' : MeasurableSet (B ∩ χ ⁻¹' S) := by
+    rw [hχtB.symm.inter_preimage_eq S]
+    exact hB.measurableSet.inter (hχt hS)
+  -- `y ↦ g(Φ(χ̃ y))` is measurable.
+  have h₁ : Measurable fun y => g (Φ (χt y)) := hg.comp (hΦ.continuous.measurable.comp hχt)
+  -- `a_k(y) = DΦ(χ̃ y)(Dχ(y)e_k)` is measurable.
+  have ha : ∀ k : Fin (m + 1), Measurable fun y =>
+      fderiv ℝ Φ (χt y) (fderiv ℝ χ y (EuclideanSpace.single k 1)) := fun k =>
+    (hΦ.continuous_fderiv_apply one_ne_zero).measurable.comp
+      (hχt.prodMk (measurable_fderiv_apply_const ℝ χ (EuclideanSpace.single k (1 : ℝ))))
+  -- The entries `M(y)_{ij} = ⟨a_{i+1}(y), a_{j+1}(y)⟩` are measurable.
+  have hM : ∀ i j : Fin m, Measurable fun y =>
+      inner ℝ (fderiv ℝ Φ (χt y) (fderiv ℝ χ y (EuclideanSpace.single i.succ 1)))
+        (fderiv ℝ Φ (χt y) (fderiv ℝ χ y (EuclideanSpace.single j.succ 1))) := fun i j =>
+    continuous_inner.measurable.comp ((ha i.succ).prodMk (ha j.succ))
+  -- `N ↦ det (Matrix.of N)` is continuous on `Fin m → Fin m → ℝ`, so `y ↦ ofReal √det M(y)` is
+  -- measurable.
+  have hdet : Continuous fun N : Fin m → Fin m → ℝ => (Matrix.of N).det :=
+    Continuous.matrix_det (continuous_matrix fun i j => continuous_apply_apply i j)
+  have h₂ : Measurable fun y => ENNReal.ofReal (Real.sqrt (Matrix.of fun i j : Fin m =>
+      inner ℝ (fderiv ℝ Φ (χt y) (fderiv ℝ χ y (EuclideanSpace.single i.succ 1)))
+        (fderiv ℝ Φ (χt y) (fderiv ℝ χ y (EuclideanSpace.single j.succ 1)))).det) :=
+    ENNReal.measurable_ofReal.comp (Real.continuous_sqrt.measurable.comp
+      (hdet.measurable.comp (Measurable.of_eval fun i => Measurable.of_eval fun j => hM i j)))
+  -- On `S′` the integrand agrees with the measurable `y ↦ g(Φ(χ̃ y)) · ofReal √det M(y)`.
+  convert (h₁.mul h₂).indicator hS' using 1
+  exact indicator_congr fun y hy => by simp only [Pi.mul_apply, hχtB hy.1]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
