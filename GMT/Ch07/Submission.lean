@@ -751,6 +751,152 @@ theorem codim1_zsl_pc_smooth_grad_bound : ∀ (m : ℕ) (g : Euclid m → ℝ) (
     _ ≤ ENNReal.ofReal c := liminf_le_of_frequently_le' (Frequently.of_forall hbound)
 
 end Submission
+/-- Mollifying a test field (Simon Ch. 2, 2.5): with the reflected kernel `ρ̌(z) = ρ(-z)`, the
+field `ψ' = ρ̌ ⋆ ψ` is `C^∞`, has compact support in `B_{r+ε}(0)` (`spt ψ ⊆ B_{r₁}(0)`, `r₁ < r`,
+and `spt ρ̌ ⊆ B̄_ε(0)`) and satisfies `|ψ'| ≤ ∫ρ̌ = 1`.  Differentiating under the convolution and
+commuting the trace with the integral gives `div ψ'(w) = ∫ ρ(z) div ψ(w + z) dz`; Fubini and the
+measure-preserving shear `(v, z) ↦ (v + z, z)` then turn `∫ (ρ ⋆ 1_F) div ψ` into `∫_F div ψ'`. -/
+theorem Submission.codim1_zsl_pc_mollify_test_field : ∀ (m : ℕ) (F : Set (Euclid m)) (ρ : Euclid m → ℝ) (ψ : Euclid m → Euclid m) (r ε : ℝ), MeasurableSet F → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → (∀ z, ε < ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid m) r → (∀ v, ‖ψ v‖ ≤ 1) → ∃ ψ' : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) ψ' ∧ HasCompactSupport ψ' ∧ tsupport ψ' ⊆ ball (0 : Euclid m) (r + ε) ∧ (∀ v, ‖ψ' v‖ ≤ 1) ∧ ∫ v, (∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap = ∫ w in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ' w).toLinearMap := by
+  intro m F ρ ψ r ε hF hρ hρ0 hρε hρ1 hψ hψcs hψr hψ1
+  -- basic facts about `ρ` and its reflection `ρ'`
+  have hρc : Continuous ρ := hρ.continuous
+  have hρcs : HasCompactSupport ρ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid m) ε)
+      (fun z hz => hρε z (by simpa using hz))
+  have hρi : Integrable ρ := hρc.integrable_of_hasCompactSupport hρcs
+  set ρ' : Euclid m → ℝ := fun z => ρ (-z) with hρ'_def
+  have hρ'c : Continuous ρ' := hρc.comp continuous_neg
+  have hρ'cs : HasCompactSupport ρ' :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid m) ε)
+      (fun z hz => hρε (-z) (by simpa using hz))
+  have hρ'smooth : ContDiff ℝ (⊤ : ℕ∞) ρ' := hρ.comp contDiff_neg
+  have hρ'i : Integrable ρ' := hρ'c.integrable_of_hasCompactSupport hρ'cs
+  have hρ'1 : ∫ z, ρ' z = 1 := by
+    rw [show (∫ z, ρ' z) = ∫ z, ρ (-z) from rfl, integral_neg_eq_self ρ volume]
+    exact hρ1
+  -- the trace as a continuous linear map
+  obtain ⟨Tr, hTr⟩ : ∃ Tr : (Euclid m →L[ℝ] Euclid m) →L[ℝ] ℝ, ∀ A : Euclid m →L[ℝ] Euclid m,
+      Tr A = LinearMap.trace ℝ (Euclid m) A.toLinearMap :=
+    ⟨LinearMap.toContinuousLinearMap
+      ((LinearMap.trace ℝ (Euclid m)) ∘ₗ (ContinuousLinearMap.coeLM ℝ)), fun A => rfl⟩
+  -- the mollified field `ψ' = ρ' ⋆ ψ`
+  set L : ℝ →L[ℝ] Euclid m →L[ℝ] Euclid m := ContinuousLinearMap.lsmul ℝ ℝ with hL
+  set ψ' : Euclid m → Euclid m := convolution ρ' ψ L volume with hψ'_def
+  have hψ'apply : ∀ w, ψ' w = ∫ t, ρ' t • ψ (w - t) := by
+    intro w
+    rw [hψ'_def, convolution_def]
+    simp [L]
+  -- support
+  obtain ⟨r₁, hr₁r, hr₁⟩ := exists_lt_subset_ball (isClosed_tsupport ψ) hψr
+  have hsupp : support ψ' ⊆ closedBall 0 (r₁ + ε) := by
+    intro w hw
+    rw [Function.mem_support, hψ'apply] at hw
+    by_contra hcon
+    apply hw
+    have hzero : ∀ t, ρ' t • ψ (w - t) = 0 := by
+      intro t
+      by_cases h1 : ρ' t = 0
+      · simp [h1]
+      by_cases h2 : ψ (w - t) = 0
+      · simp [h2]
+      exfalso
+      apply hcon
+      have ht : ‖t‖ ≤ ε := by
+        by_contra h
+        push Not at h
+        exact h1 (hρε (-t) (by rwa [norm_neg]))
+      have hwt : w - t ∈ ball (0 : Euclid m) r₁ := hr₁ (subset_tsupport ψ h2)
+      rw [mem_ball_zero_iff] at hwt
+      rw [mem_closedBall_zero_iff]
+      calc ‖w‖ = ‖(w - t) + t‖ := by rw [sub_add_cancel]
+        _ ≤ ‖w - t‖ + ‖t‖ := norm_add_le _ _
+        _ ≤ r₁ + ε := by linarith
+    simp [hzero]
+  have htsupp : tsupport ψ' ⊆ closedBall 0 (r₁ + ε) := closure_minimal hsupp isClosed_closedBall
+  -- derivative of `ψ'` and its trace
+  have hderiv : ∀ w, fderiv ℝ ψ' w =
+      convolution ρ' (fderiv ℝ ψ) (ContinuousLinearMap.precompR (Euclid m) L) volume w := fun w =>
+    (hψcs.hasFDerivAt_convolution_right L hρ'i.locallyIntegrable
+      (hψ.of_le (by exact_mod_cast le_top)) w).fderiv
+  have hG' : ∀ w, LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ' w).toLinearMap =
+      ∫ z, ρ z * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ (w + z)).toLinearMap := by
+    intro w
+    have hint : Integrable (fun t => ρ' t • fderiv ℝ ψ (w - t)) :=
+      (hψcs.fderiv (𝕜 := ℝ)).convolutionExists_right (ContinuousLinearMap.precompR (Euclid m) L)
+        hρ'i.locallyIntegrable (hψ.continuous_fderiv (by simp)) w
+    have h1 : fderiv ℝ ψ' w = ∫ t, ρ' t • fderiv ℝ ψ (w - t) := by
+      rw [hderiv w, convolution_def]
+      congr 1
+    rw [← hTr, h1, ← ContinuousLinearMap.integral_comp_comm Tr hint,
+      ← integral_neg_eq_self
+        (fun z => ρ z * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ (w + z)).toLinearMap) volume]
+    congr 1
+    funext t
+    rw [map_smul, smul_eq_mul, hTr, ← sub_eq_add_neg]
+  refine ⟨ψ', ?_, ?_, ?_, ?_, ?_⟩
+  · exact hρ'cs.contDiff_convolution_left L hρ'smooth hψ.continuous.locallyIntegrable
+  · exact (isCompact_closedBall _ _).of_isClosed_subset (isClosed_tsupport _) htsupp
+  · exact htsupp.trans (closedBall_subset_ball (by linarith))
+  · intro v
+    rw [hψ'apply]
+    refine (norm_integral_le_of_norm_le hρ'i (ae_of_all _ fun t => ?_)).trans hρ'1.le
+    rw [norm_smul, Real.norm_of_nonneg (hρ0 _)]
+    exact mul_le_of_le_one_right (hρ0 _) (hψ1 _)
+  · -- Fubini
+    set u : Euclid m → ℝ := F.indicator (fun _ => (1 : ℝ)) with hu
+    set G : Euclid m → ℝ :=
+      fun v => LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap with hG
+    have hGeq : G = Tr ∘ fderiv ℝ ψ := by
+      funext v
+      simp only [G, Function.comp_apply, hTr]
+    have hGc : Continuous G := by
+      rw [hGeq]; exact Tr.continuous.comp (hψ.continuous_fderiv (by simp))
+    have hGcs : HasCompactSupport G := by
+      rw [hGeq]; exact (hψcs.fderiv (𝕜 := ℝ)).comp_left (map_zero Tr)
+    have hGi : Integrable G := hGc.integrable_of_hasCompactSupport hGcs
+    have hum : Measurable u := measurable_const.indicator hF
+    have hu01 : ∀ x, 0 ≤ u x ∧ u x ≤ 1 := fun x => by
+      by_cases hx : x ∈ F <;> simp [u, hx]
+    set g : Euclid m × Euclid m → ℝ := fun p => ρ p.2 * u (p.1 - p.2) * G p.1 with hg
+    have hgm : Measurable g :=
+      ((hρc.measurable.comp measurable_snd).mul
+        (hum.comp (measurable_fst.sub measurable_snd))).mul (hGc.measurable.comp measurable_fst)
+    have hgi : Integrable g (volume.prod volume) := by
+      refine Integrable.mono' (hGi.norm.mul_prod hρi) hgm.aestronglyMeasurable
+        (ae_of_all _ fun p => ?_)
+      have h1 := hu01 (p.1 - p.2)
+      have h2 := hρ0 p.2
+      simp only [g, Real.norm_eq_abs, abs_mul, abs_of_nonneg h2, abs_of_nonneg h1.1]
+      nlinarith [mul_nonneg (mul_nonneg h2 (abs_nonneg (G p.1))) (sub_nonneg.mpr h1.2)]
+    have hT : MeasurePreserving (fun p : Euclid m × Euclid m => (p.1 + p.2, p.2))
+        (volume.prod volume) (volume.prod volume) := measurePreserving_add_prod volume volume
+    have hgTi : Integrable (fun p : Euclid m × Euclid m => g (p.1 + p.2, p.2))
+        (volume.prod volume) :=
+      (hT.integrable_comp hgm.aestronglyMeasurable).mpr hgi
+    have hgT : ∫ p, g (p.1 + p.2, p.2) ∂(volume.prod volume) =
+        ∫ p, g p ∂(volume.prod volume) := by
+      have := integral_map (μ := volume.prod volume) hT.measurable.aemeasurable
+        (f := g) (by rw [hT.map_eq]; exact hgm.aestronglyMeasurable)
+      rw [hT.map_eq] at this
+      exact this.symm
+    have hLHS : ∫ v, (∫ z, ρ z * u (v - z)) * G v = ∫ p, g p ∂(volume.prod volume) := by
+      rw [integral_prod g hgi]
+      congr 1
+      funext v
+      rw [← integral_mul_const]
+    have hRHS : ∫ w in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ' w).toLinearMap =
+        ∫ p, g (p.1 + p.2, p.2) ∂(volume.prod volume) := by
+      rw [integral_prod _ hgTi, ← integral_indicator hF]
+      congr 1
+      funext w
+      have h1 : ∀ z, g (w + z, z) = u w * (ρ z * G (w + z)) := fun z => by
+        simp only [g, add_sub_cancel_right]
+        ring
+      dsimp only
+      simp only [h1]
+      rw [integral_const_mul, ← hG' w]
+      by_cases hw : w ∈ F <;> simp [u, hw]
+    exact hLHS.trans (hgT.symm.trans hRHS.symm)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
