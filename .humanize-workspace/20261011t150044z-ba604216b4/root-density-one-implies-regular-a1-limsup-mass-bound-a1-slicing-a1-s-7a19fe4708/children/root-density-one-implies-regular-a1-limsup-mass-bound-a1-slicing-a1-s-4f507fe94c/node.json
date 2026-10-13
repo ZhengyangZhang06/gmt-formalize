@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1.coarea_ae_transfer-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1",
+  "depth": 6,
+  "title": "Co-area transfer of almost-everywhere properties to almost every slice",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P, (ν_t)_{t∈ℝ} a family of measures on ℝ^P, and w : ℝ^P → [0, ∞] any function. Assume the co-area identity: for every Borel φ : ℝ^P → [0, ∞], the function t ↦ ∫ φ dν_t is a.e.-measurable for Lebesgue measure on ℝ and ∫_ℝ (∫ φ dν_t) dt = ∫ w·φ dμ (lower Lebesgue integrals in [0, ∞]). Then for every predicate p on ℝ^P that holds μ-a.e.: for Lebesgue-a.e. t ∈ ℝ, p(x) holds for ν_t-a.e. x.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : ℝ → Measure (Euclid P)) (w : Euclid P → ℝ≥0∞) (p : Euclid P → Prop), (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x, φ x ∂(ν t)) ∧ ∫⁻ t, ∫⁻ x, φ x ∂(ν t) = ∫⁻ x, w x * φ x ∂μ) → (∀ᵐ x ∂μ, p x) → ∀ᵐ t, ∀ᵐ x ∂(ν t), p x",
+  "lean_name": "dor_lmbsf_si_coarea_ae_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-4f507fe94c-a1"
+}
