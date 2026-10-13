@@ -599,6 +599,86 @@ theorem dohr_eb_ehs_del_chain_symm : ∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] 
     exact hsymm w e
   rw [h1, h2, h3]
   rfl
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap, differentiated Euler–Lagrange
+equation): uniform convergence of difference quotients.**
+If `f : ℝⁿ → E` (`E` any real normed space) is `C¹` on an open `U` and `K ⊆ U` is compact, then for
+every direction `e` the difference quotients `h⁻¹ (f(x + h e) − f(x))` converge to `Df(x) e`
+uniformly on `K` as `h → 0`, `h ≠ 0`.
+Proof: `K` has a compact closed thickening `K_ε ⊆ U`, on which `Df` is uniformly continuous
+(Heine–Cantor).  Given `η > 0`, pick `θ > 0` with `‖Df(w) − Df(x)‖ < η/(‖e‖ + 1)` whenever
+`w, x ∈ K_ε` and `‖w − x‖ < θ`.  For `0 < |h| < min(ε, θ)/(‖e‖ + 1)` and `x ∈ K`, the segment
+`[x, x + h e]` lies in `B_{‖h e‖}(x) ⊆ K_ε`, so the mean value inequality with the fixed linear map
+`Df(x)` gives `‖f(x + h e) − f(x) − Df(x)(h e)‖ ≤ η |h| ‖e‖/(‖e‖ + 1)`; dividing by `|h|`,
+`‖Df(x) e − h⁻¹ (f(x + h e) − f(x))‖ ≤ η ‖e‖/(‖e‖ + 1) < η`. -/
+theorem dohr_eb_ehs_del_diffquot_uniform : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Rn n → E) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 f U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (h : ℝ) (x : Rn n) => h⁻¹ • (f (x + h • e) - f x)) (fun x => fderiv ℝ f x e) (𝓝[≠] 0) K := by
+  intro n E _ _ f U K e hU hf hK hKU
+  -- Step 1: a compact closed thickening `K_ε = cthickening ε K` of `K` inside `U`.
+  obtain ⟨ε, hε, hεU⟩ := hK.exists_cthickening_subset_open hU hKU
+  have hK' : IsCompact (cthickening ε K) := hK.cthickening
+  -- Step 2: `f` is differentiable on `U` and `Df` is uniformly continuous on `K_ε`.
+  have hcont : ContinuousOn (fderiv ℝ f) U := hf.continuousOn_fderiv_of_isOpen hU le_rfl
+  have huc : UniformContinuousOn (fderiv ℝ f) (cthickening ε K) :=
+    hK'.uniformContinuousOn_of_continuous (hcont.mono hεU)
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ f z := fun z hz =>
+    (hf.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  -- Step 3: given `η > 0`, choose `θ` and restrict to `0 < |d| < min ε θ / (‖e‖ + 1)`.
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro η hη
+  rw [Metric.uniformContinuousOn_iff] at huc
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  obtain ⟨θ, hθ, hθK⟩ := huc (η / (‖e‖ + 1)) (div_pos hη he1)
+  have hpos : 0 < min ε θ / (‖e‖ + 1) := div_pos (lt_min hε hθ) he1
+  have hev : ∀ᶠ d in 𝓝[≠] (0 : ℝ), |d| < min ε θ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with d hd
+    simpa [Real.dist_eq] using hd
+  filter_upwards [hev, self_mem_nhdsWithin] with d hd hd0
+  have hd0' : d ≠ 0 := hd0
+  intro x hx
+  -- Step 4: the segment `[x, x + d • e]` lies in `closedBall x ‖d • e‖ ⊆ K_ε ⊆ U`.
+  have hde : ‖d • e‖ < min ε θ := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc |d| * ‖e‖ ≤ |d| * (‖e‖ + 1) := by gcongr; linarith
+      _ < min ε θ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = min ε θ := div_mul_cancel₀ _ he1.ne'
+  have hball : closedBall x ‖d • e‖ ⊆ cthickening ε K :=
+    (closedBall_subset_closedBall (hde.le.trans (min_le_left _ _))).trans
+      (closedBall_subset_cthickening hx ε)
+  have hxde : x + d • e ∈ closedBall x ‖d • e‖ := by
+    rw [mem_closedBall, dist_eq_norm]; simp
+  have hseg : segment ℝ x (x + d • e) ⊆ closedBall x ‖d • e‖ :=
+    (convex_closedBall x _).segment_subset (mem_closedBall_self (norm_nonneg _)) hxde
+  have hxK' : x ∈ cthickening ε K := self_subset_cthickening K hx
+  -- Step 5: the mean value inequality with the fixed linear map `Df(x)`.
+  have hmvt : ‖f (x + d • e) - f x - fderiv ℝ f x ((x + d • e) - x)‖ ≤
+      η / (‖e‖ + 1) * ‖(x + d • e) - x‖ := by
+    refine (convex_segment x (x + d • e)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun w hw => hdiff w (hεU (hball (hseg hw)))) (fun w hw => ?_) (left_mem_segment ℝ _ _)
+      (right_mem_segment ℝ _ _)
+    have hw := hseg hw
+    have hwx : dist w x < θ := by
+      rw [mem_closedBall] at hw
+      exact hw.trans_lt (hde.trans_le (min_le_right _ _))
+    have := hθK w (hball hw) x hxK' hwx
+    rw [dist_eq_norm] at this
+    exact this.le
+  have hsub : (x + d • e) - x = d • e := by abel
+  rw [hsub] at hmvt
+  -- Step 6: divide by `d ≠ 0`.
+  rw [dist_eq_norm]
+  have hrw : fderiv ℝ f x e - d⁻¹ • (f (x + d • e) - f x) =
+      -(d⁻¹ • (f (x + d • e) - f x - fderiv ℝ f x (d • e))) := by
+    rw [map_smul, smul_sub d⁻¹ (f (x + d • e) - f x) (d • fderiv ℝ f x e), smul_smul,
+      inv_mul_cancel₀ hd0', one_smul]; abel
+  rw [hrw, norm_neg, norm_smul, norm_inv, Real.norm_eq_abs]
+  calc |d|⁻¹ * ‖f (x + d • e) - f x - fderiv ℝ f x (d • e)‖
+      ≤ |d|⁻¹ * (η / (‖e‖ + 1) * ‖d • e‖) := by gcongr
+    _ = η * (‖e‖ / (‖e‖ + 1)) := by
+      rw [norm_smul, Real.norm_eq_abs]; field_simp
+    _ < η * 1 := by
+      gcongr
+      rw [div_lt_one he1]; linarith
+    _ = η := mul_one η
 
 end Submission
 
