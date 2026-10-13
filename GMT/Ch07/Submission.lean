@@ -778,6 +778,122 @@ theorem Submission.cmcs_slice_support : ∀ (P k : ℕ) (U : Set (Euclid P)) (T 
       lt_asymm (show t < f x from h₂ hx) (show f x < t from hx'))
   -- `∂A` and `B` are linear
   rw [A.boundary.toCurrent.map_add, B.toCurrent.map_add, e₁, e₂, e₂']
+/-- **Orthonormal basis adapted to a linear functional** (used for the wedge-norm bound
+`|β ∧ γ| ≤ ‖β‖ |γ|`, Simon 6.1): for a continuous linear functional `β` on `ℝᴾ` and `i₀ : Fin P`
+there is an orthonormal basis `f` of `ℝᴾ` with `β(f_{i₀}) = ‖β‖` and `β(f_i) = 0` for `i ≠ i₀`.
+Write `β = ⟨b, ·⟩` (Riesz, `‖b‖ = ‖β‖`).  If `b = 0`, the standard basis `e` works.  Otherwise the
+reflection `R` in `(ℝ ∙ (e_{i₀} − u))ᗮ`, `u = ‖b‖⁻¹ b`, maps `e_{i₀}` to `u`, and `f = R ∘ e` has
+`β(f_i) = ‖b‖ ⟨R e_{i₀}, R e_i⟩ = ‖b‖ ⟨e_{i₀}, e_i⟩`. -/
+theorem Submission.cmcs_wn_adapted_orthonormalBasis : ∀ (P : ℕ) (β : Euclid P →L[ℝ] ℝ) (i₀ : Fin P), ∃ f : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i : Fin P, β (f i) = if i = i₀ then ‖β‖ else 0 := by
+  intro P β i₀
+  set e := EuclideanSpace.basisFun (Fin P) ℝ
+  -- Riesz representative: `β x = ⟪b, x⟫` and `‖b‖ = ‖β‖`
+  set b : Euclid P := (InnerProductSpace.toDual ℝ (Euclid P)).symm β with hb
+  have hβb : ∀ x, β x = inner ℝ b x := fun x => InnerProductSpace.toDual_symm_apply.symm
+  have hnorm : ‖b‖ = ‖β‖ := by
+    rw [hb, LinearIsometryEquiv.norm_map]
+  by_cases hb0 : b = 0
+  · -- `β = 0`: the standard basis works
+    refine ⟨e, fun i => ?_⟩
+    have h0 : ‖β‖ = 0 := by rw [← hnorm, hb0, norm_zero]
+    rw [hβb, hb0, inner_zero_left, h0, ite_self]
+  · -- `u = ‖b‖⁻¹ b` is a unit vector and `b = ‖b‖ u`
+    have hbpos : 0 < ‖b‖ := norm_pos_iff.mpr hb0
+    set u : Euclid P := ‖b‖⁻¹ • b with hu_def
+    have hu : ‖u‖ = 1 := by
+      rw [hu_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hbpos.ne']
+    have hbu : b = ‖b‖ • u := by
+      rw [hu_def, smul_smul, mul_inv_cancel₀ hbpos.ne', one_smul]
+    -- the reflection `R` in `(ℝ ∙ (e_{i₀} − u))ᗮ` maps `e_{i₀}` to `u`
+    have he : ‖e i₀‖ = 1 := e.orthonormal.1 i₀
+    set R := (ℝ ∙ (e i₀ - u))ᗮ.reflection
+    have hR : R (e i₀) = u := Submodule.reflection_sub (he.trans hu.symm)
+    -- `f = R ∘ e`: `β(f_i) = ‖b‖ ⟪R e_{i₀}, R e_i⟫ = ‖β‖ ⟪e_{i₀}, e_i⟫`
+    refine ⟨e.map R, fun i => ?_⟩
+    rw [OrthonormalBasis.map_apply, hβb, hbu, real_inner_smul_left, ← hR,
+      LinearIsometryEquiv.inner_map_map, hnorm, orthonormal_iff_ite.mp e.orthonormal i₀ i]
+    by_cases hi : i = i₀
+    · rw [ite_eq_left hi.symm, ite_eq_left hi, mul_one]
+    · rw [ite_eq_right (Ne.symm hi), ite_eq_right hi, mul_zero]
+/-- **`β ∧ γ` on tuples of a family adapted to `β`** (Simon 6.1.1–1.3; step 4 of the proof of
+`|β ∧ γ| ≤ ‖β‖ |γ|`): if `β(v_a) = c` for `a = i₀` and `β(v_a) = 0` otherwise, then for every
+`j : Fin (k + 1) → Fin P`, `(β ∧ γ)(v_{j(0)}, …, v_{j(k)})² ≤ c² Σ_{i, j(i) = i₀} γ(v ∘ ĵᵢ)²`,
+where `ĵᵢ = i.removeNth j` deletes the `i`-th entry of `j`.  By definition
+`(β ∧ γ)(v ∘ j) = Σᵢ (−1)ⁱ β(v_{j(i)}) γ(v ∘ ĵᵢ)`.  A repeated index in `j` makes `v ∘ j`
+non-injective, so the left side vanishes (alternation); otherwise at most one `i₁` has
+`j(i₁) = i₀`, only `i₁` contributes to either side, and `((−1)^{i₁})² = 1`. -/
+theorem Submission.cmcs_wn_tuple_sq_le : ∀ (P k : ℕ) (β : Euclid P →L[ℝ] ℝ) (γ : Covector (Euclid P) k) (v : Fin P → Euclid P) (i₀ : Fin P) (c : ℝ), Function.Injective v → (∀ i : Fin P, β (v i) = if i = i₀ then c else 0) → ∀ j : Fin (k + 1) → Fin P, (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ) (fun m => v (j m))) ^ 2 ≤ c ^ 2 * ∑ i : Fin (k + 1), if j i = i₀ then (γ (fun m => v (i.removeNth j m))) ^ 2 else 0 := by
+  intro P k β γ v i₀ c _hv hβ j
+  classical
+  -- the right side is `c²` times a sum of squares and zeros
+  have hRHS : 0 ≤ c ^ 2 * ∑ i : Fin (k + 1),
+      (if j i = i₀ then (γ (fun m => v (i.removeNth j m))) ^ 2 else 0) :=
+    mul_nonneg (sq_nonneg c) (Finset.sum_nonneg fun i _ => by split_ifs <;> positivity)
+  by_cases hj : Injective j
+  · -- `(β ∧ γ)(v ∘ j) = Σᵢ (−1)ⁱ β(v_{j(i)}) γ(v ∘ ĵᵢ)`, with `β(v_{j(i)}) = c [j(i) = i₀]`
+    have hexp : ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ)
+        (fun m => v (j m)) = ∑ i : Fin (k + 1),
+          (-1 : ℝ) ^ (i : ℕ) *
+            ((if j i = i₀ then c else 0) * γ (fun m => v (i.removeNth j m))) := by
+      rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [ContinuousLinearMap.smulRight_apply, hβ (j i)]
+      simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, zsmul_eq_mul]
+      push_cast
+      rfl
+    rw [hexp]
+    by_cases hex : ∃ i₁, j i₁ = i₀
+    · -- `j` is injective, so `i₁` is the only index with `j(i₁) = i₀`
+      obtain ⟨i₁, hi₁⟩ := hex
+      have huniq : ∀ i, i ≠ i₁ → j i ≠ i₀ := fun i hi h => hi (hj (h.trans hi₁.symm))
+      rw [Finset.sum_eq_single i₁ (fun i _ hi => by rw [ite_eq_right (huniq i hi)]; ring)
+          (fun h => absurd (Finset.mem_univ i₁) h),
+        Finset.sum_eq_single i₁ (fun i _ hi => ite_eq_right (huniq i hi))
+          (fun h => absurd (Finset.mem_univ i₁) h),
+        ite_eq_left hi₁, ite_eq_left hi₁]
+      have hsign : ((-1 : ℝ) ^ (i₁ : ℕ)) ^ 2 = 1 := by
+        rw [← pow_mul, mul_comm, pow_mul]
+        norm_num
+      refine le_of_eq ?_
+      calc ((-1 : ℝ) ^ (i₁ : ℕ) * (c * γ (fun m => v (i₁.removeNth j m)))) ^ 2
+          = ((-1 : ℝ) ^ (i₁ : ℕ)) ^ 2 * (c ^ 2 * (γ (fun m => v (i₁.removeNth j m))) ^ 2) := by
+            ring
+        _ = c ^ 2 * (γ (fun m => v (i₁.removeNth j m))) ^ 2 := by rw [hsign, one_mul]
+    · -- no index hits `i₀`: every term vanishes
+      have h0 : ∑ i : Fin (k + 1), (-1 : ℝ) ^ (i : ℕ) *
+          ((if j i = i₀ then c else 0) * γ (fun m => v (i.removeNth j m))) = 0 :=
+        Finset.sum_eq_zero fun i _ => by rw [ite_eq_right fun h => hex ⟨i, h⟩]; ring
+      rw [h0]
+      simpa using hRHS
+  · -- a repeated index makes `v ∘ j` non-injective, and `β ∧ γ` is alternating
+    have hvj : ¬ Injective (fun m => v (j m)) := fun h => hj (Injective.of_comp (f := v) h)
+    rw [ContinuousAlternatingMap.map_eq_zero_of_not_injective _ _ hvj]
+    simpa using hRHS
+/-- **Fibres of `j ↦ removeNth i j`** (the counting step of the bound `|β ∧ γ| ≤ ‖β‖ |γ|` for the
+Euclidean norm of covectors, Simon Ch. 6, 1.1–1.3, 1.15): for `i₀ : Fin P` and
+`F : (Fin k → Fin P) → ℝ`,
+`Σ_{j : Fin (k+1) → Fin P} Σ_i [j i = i₀] F(removeNth i j) = (k + 1) Σ_{j' : Fin k → Fin P} F j'`.
+For fixed `i`, `j ↦ (j i, removeNth i j)` is a bijection onto `Fin P × (Fin k → Fin P)`
+(`Fin.insertNthEquiv`), so only `j i = i₀` survives and each of the `k + 1` indices `i`
+contributes `Σ_{j'} F j'`. -/
+theorem Submission.cmcs_wn_removeNth_fiber_sum : ∀ (k P : ℕ) (i₀ : Fin P) (F : (Fin k → Fin P) → ℝ), ∑ j : Fin (k + 1) → Fin P, ∑ i : Fin (k + 1), (if j i = i₀ then F (i.removeNth j) else 0) = ((k : ℝ) + 1) * ∑ j' : Fin k → Fin P, F j' := by
+  intro k P i₀ F
+  rw [Finset.sum_comm]
+  -- for fixed `i`, reindex along `j ↦ (j i, removeNth i j)`; only `j i = i₀` survives
+  have hfib : ∀ i : Fin (k + 1),
+      ∑ j : Fin (k + 1) → Fin P, (if j i = i₀ then F (i.removeNth j) else 0) =
+        ∑ j' : Fin k → Fin P, F j' := by
+    intro i
+    rw [Fintype.sum_equiv (Fin.insertNthEquiv (fun _ => Fin P) i).symm
+      (fun j => if j i = i₀ then F (i.removeNth j) else 0)
+      (fun p => if p.1 = i₀ then F p.2 else 0) fun _ => rfl,
+      Fintype.sum_prod_type, Fintype.sum_eq_single i₀]
+    · simp
+    · intro x hx
+      simp [hx]
+  -- each of the `k + 1` indices `i` contributes `Σ_{j'} F j'`
+  rw [Finset.sum_congr rfl fun i _ => hfib i, Finset.sum_const, Finset.card_univ,
+    Fintype.card_fin, nsmul_eq_mul, Nat.cast_add_one]
 /-- **Basis independence of `Σ_j α(b ∘ j)²`** (Simon 6.1): for an `n`-covector `α` on `ℝᴾ` and
 orthonormal bases `b`, `b'` of `ℝᴾ`, `Σ_{j : Fin n → Fin P} α(b_{j 0}, …, b_{j (n-1)})²` is the same
 for `b` and `b'`.  Expand `bᵢ = Σₛ ⟨b'ₛ, bᵢ⟩ b'ₛ` in every slot (multilinearity), square and sum
@@ -914,6 +1030,52 @@ theorem Submission.regcomp_covector_sq_sum_orthonormalBasis : ∀ (P n : ℕ) (�
   rw [Submission.regcomp_covector_sq_sum_basis_invariant P n α f
     (EuclideanSpace.basisFun (Fin P) ℝ)]
   exact Submission.regcomp_covector_sq_sum_basisFun P n α
+
+/-- **`|β ∧ γ| ≤ ‖β‖ |γ|`** (Simon 6.1.1–1.3 and 1.15): for a linear functional `β` and a
+`k`-covector `γ` on `ℝᴾ`, the Euclidean coefficient norm of the `(k+1)`-covector
+`β ∧ γ = alternatizeUncurryFin (β.smulRight γ)` is at most `‖β‖ |γ|`.  Take an orthonormal basis
+`f` with `β(fᵢ) = ‖β‖ [i = i₀]`; then `(β ∧ γ)(f ∘ j)² ≤ ‖β‖² Σᵢ [j i = i₀] γ(f ∘ i.removeNth j)²`.
+Summing over `j`, each `j' : Fin k → Fin P` arises as `i.removeNth j` with `j i = i₀` for exactly
+`k + 1` pairs `(i, j)`, so `(k+1)! |β ∧ γ|² ≤ ‖β‖² (k+1) k! |γ|²` by
+`regcomp_covector_sq_sum_orthonormalBasis` in degrees `k + 1` and `k`.  For `P = 0` there are no
+coordinate tuples and `|β ∧ γ| = 0`. -/
+theorem Submission.cmcs_wedge_norm_le : ∀ (P k : ℕ) (β : Euclid P →L[ℝ] ℝ) (γ : Covector (Euclid P) k), covectorEuclideanNorm (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ)) ≤ ‖β‖ * covectorEuclideanNorm γ := by
+  intro P k β γ
+  classical
+  set ω := ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ)
+  have hrhs : 0 ≤ ‖β‖ * covectorEuclideanNorm γ :=
+    mul_nonneg (norm_nonneg β) (covectorEuclideanNorm_nonneg γ)
+  rcases Nat.eq_zero_or_pos P with hP | hP
+  · -- `P = 0`: there is no tuple `Fin (k + 1) → Fin 0`, so `|ω| = 0`
+    subst hP
+    have h0 : covectorEuclideanNorm ω = 0 := by
+      simp [covectorEuclideanNorm]
+    rw [h0]
+    exact hrhs
+  · -- an orthonormal basis `f` with `β(fᵢ) = ‖β‖ [i = i₀]`
+    set i₀ : Fin P := ⟨0, hP⟩
+    obtain ⟨f, hf⟩ := Submission.cmcs_wn_adapted_orthonormalBasis P β i₀
+    -- `ω(f ∘ j)² ≤ ‖β‖² Σᵢ [j i = i₀] γ(f ∘ i.removeNth j)²` for every `j`
+    have hle : ∑ j : Fin (k + 1) → Fin P, (ω (fun m => f (j m))) ^ 2 ≤
+        ∑ j : Fin (k + 1) → Fin P, ‖β‖ ^ 2 * ∑ i : Fin (k + 1),
+          (if j i = i₀ then (γ (fun m => f (i.removeNth j m))) ^ 2 else 0) :=
+      Finset.sum_le_sum fun j _ => Submission.cmcs_wn_tuple_sq_le P k β γ f i₀ ‖β‖
+        f.orthonormal.linearIndependent.injective hf j
+    -- count the fibres of `j ↦ i.removeNth j`, then `Σ_j α(f ∘ j)² = m! |α|²` for `m = k + 1, k`
+    rw [← Finset.mul_sum,
+      Submission.cmcs_wn_removeNth_fiber_sum k P i₀ (fun j' => (γ (fun m => f (j' m))) ^ 2),
+      Submission.regcomp_covector_sq_sum_orthonormalBasis P (k + 1) ω f,
+      Submission.regcomp_covector_sq_sum_orthonormalBasis P k γ f] at hle
+    -- cancel `(k+1)! = (k+1) k! > 0`
+    have hpos : (0 : ℝ) < ((k + 1).factorial : ℝ) := by positivity
+    have hsq : covectorEuclideanNorm ω ^ 2 ≤ (‖β‖ * covectorEuclideanNorm γ) ^ 2 := by
+      refine le_of_mul_le_mul_left ?_ hpos
+      calc ((k + 1).factorial : ℝ) * covectorEuclideanNorm ω ^ 2
+          ≤ ‖β‖ ^ 2 * (((k : ℝ) + 1) * ((k.factorial : ℝ) * covectorEuclideanNorm γ ^ 2)) := hle
+        _ = ((k + 1).factorial : ℝ) * (‖β‖ * covectorEuclideanNorm γ) ^ 2 := by
+          push_cast [Nat.factorial_succ]
+          ring
+    exact (sq_le_sq₀ (covectorEuclideanNorm_nonneg ω) hrhs).mp hsq
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

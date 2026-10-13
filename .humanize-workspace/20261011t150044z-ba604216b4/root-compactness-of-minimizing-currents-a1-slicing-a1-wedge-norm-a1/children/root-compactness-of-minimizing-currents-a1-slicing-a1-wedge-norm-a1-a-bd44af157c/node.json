@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1.adapted_basis-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "Orthonormal basis adapted to a linear functional on ℝ^P",
+  "statement": "Let P ∈ ℕ, let β : ℝ^P → ℝ be a continuous linear functional (Euclid P →L[ℝ] ℝ) with operator norm ‖β‖, and let i₀ ∈ Fin P. Then there is an orthonormal basis f = (f_i)_{i ∈ Fin P} of ℝ^P (an OrthonormalBasis (Fin P) ℝ (Euclid P)) such that for every i ∈ Fin P, β(f_i) = ‖β‖ if i = i₀ and β(f_i) = 0 if i ≠ i₀.",
+  "lean_statement": "∀ (P : ℕ) (β : Euclid P →L[ℝ] ℝ) (i₀ : Fin P), ∃ f : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i : Fin P, β (f i) = if i = i₀ then ‖β‖ else 0",
+  "lean_name": "cmcs_wn_adapted_orthonormalBasis",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1-a-bd44af157c-a1"
+}
