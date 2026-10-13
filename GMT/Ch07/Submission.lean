@@ -451,6 +451,23 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Converging normal averages force positive mass on every ball** (step 2 of the lower volume
+density bound in De Giorgi's argument for 7.5.8).  Let `A(ρ) = μ(B̄_ρ(y))⁻¹ ∫_{B̄_ρ(y)} ν dμ`
+(with `0⁻¹ = 0`).  If `A(ρ) → v ≠ 0` as `ρ ↓ 0`, then `μ(B̄_r(y)) ≠ 0` for every `r > 0`: some
+`ρ ∈ (0, r)` has `A(ρ) ≠ 0`, while `μ(B̄_r(y)) = 0` would give `μ(B̄_ρ(y)) = 0` and so `A(ρ) = 0`. -/
+theorem Submission.codim1_rdo_dg_vdl_measure_closedBall_ne_zero : ∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P), v ≠ 0 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ r : ℝ, 0 < r → μ (closedBall y r) ≠ 0 := by
+  intro P μ ν y v hv hlim r hr hμr
+  -- Step 1: `A(ρ) → v ≠ 0`, so `A(ρ) ≠ 0` for all small `ρ > 0`
+  have hA : ∀ᶠ ρ in 𝓝[>] (0 : ℝ),
+      (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ ≠ 0 :=
+    hlim.eventually_ne hv
+  -- Step 2: pick `ρ ∈ (0, r)` with `A(ρ) ≠ 0`
+  obtain ⟨ρ, hAρ, hρ⟩ := (hA.and (Ioo_mem_nhdsGT hr)).exists
+  -- Step 3: `μ(B̄_ρ(y)) ≤ μ(B̄_r(y)) = 0` would force `A(ρ) = 0`
+  have hμρ : μ (closedBall y ρ) = 0 := measure_mono_null (closedBall_subset_closedBall hρ.2.le) hμr
+  rw [hμρ, ENNReal.toReal_zero, inv_zero, zero_smul] at hAρ
+  exact hAρ rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
