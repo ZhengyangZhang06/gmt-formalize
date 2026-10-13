@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ad0db9a70112de6df928c49026d038767f76811591b52e771db58c8abaa0fa31",
+  "git_delta": {
+    "base_commit": "eed0166ae396da49aafc53882ecebdff8ec1ba47",
+    "candidate_commit": "25351a5ac77744ae4c5d8645c3f0e7b4c4cd2644",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrld_cone_extDeriv_affine_contraction",
+    "diff_sha256": "9bddc2533b5bd92423d80e8b60900a336a895e07c9233d4f93859b3f3825e720",
+    "source_sha256": "8ad0bf0e7da483c2838e876438b91b7c2d7e878818ea0243f7330025df10e2ed",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_cone_extDeriv_affine_contraction",
+      "statement": "∀ (P n : ℕ) (α : Covector (Euclid P) (n + 1)) (x₀ x : Euclid P), extDeriv (fun y : Euclid P => ((n : ℝ) + 1)⁻¹ • α.curryLeft (y - x₀)) x = α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
