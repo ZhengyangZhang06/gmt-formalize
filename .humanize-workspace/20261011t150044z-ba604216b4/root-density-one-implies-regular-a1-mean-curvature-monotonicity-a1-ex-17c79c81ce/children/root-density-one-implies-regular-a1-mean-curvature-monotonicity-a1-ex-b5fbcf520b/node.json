@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1.cutoff_integral_derivative-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+  "depth": 4,
+  "title": "Continuity and differentiability of radial cutoff integrals I(t) = ∫ η(|x − z|²/t²) dμ",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P (Borel σ-algebra of Euclid P), z ∈ ℝ^P and r ∈ ℝ with μ(B_r(z)) < ∞ (open ball). Let η : ℝ → ℝ be C¹ with η(u) = 0 for all u ≥ 1, and put I(t) := ∫ η(|x − z|²/t²) dμ(x) (Bochner integral). Then (i) I is continuous on (0, r]; (ii) for every s ∈ (0, r), I has derivative −(1/s)·∫ 2·(|x − z|²/s²)·η′(|x − z|²/s²) dμ(x) at s, where η′ = deriv η (written −(∫ 2·(‖x − z‖²/s²)·deriv η (‖x − z‖²/s²) dμ)/s).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (r : ℝ) (η : ℝ → ℝ), μ (ball z r) < ∞ → ContDiff ℝ 1 η → (∀ u, 1 ≤ u → η u = 0) → ContinuousOn (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (Ioc 0 r) ∧ ∀ s ∈ Ioo 0 r, HasDerivAt (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (-(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s) s",
+  "lean_name": "dsmc_em_cutoff_integral_hasDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-b5fbcf520b-a1"
+}
