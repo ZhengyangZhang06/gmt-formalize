@@ -1,0 +1,155 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1.centre_tangency-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Steps 2–4 of the parent proof for one fixed centre z, in the form of Simon's printed argument in the proof of 7.3.1 (chapter-07.txt lines 352–360): the normalized ball mass is constant, "(ω_nρ^n)^{−1}μ_C(B_ρ(0)) = Θ^n(T, x) for each ρ > 0. Then by the monotonicity formula 3.6 of Ch. 4, applied to the stationary varifold V_C …, we have D^⊥r = 0 μ_C-a.e. … That is x ∈ T_x spt C for μ_C-a.e. x"; here the centre 0 is replaced by z. The parent's step 3 (testing stationarity with X_ρ = φ(|x − z|/ρ)(x − z), which gives d/dρ(ρ^{−n}I(ρ)) = ρ^{−n}J'(ρ), Simon Ch. 4, 3.2–3.4) and the integration of that relation over [σ, ρ] (Simon Ch. 4, 3.5–3.6, chapter-04.txt lines 215–307) are exactly the sibling monotonicity_identity (Simon 4.3.6 with closed balls and arbitrary centre z, comparator-accepted). It is used below in this integrated form, and the parent's step-4 conclusion (the normal part of x − z vanishes μ-a.e.) follows from it. The same argument at z = 0 is the accepted proof of Submission.dtc_cone_radial_tangency.
+Notation. M = R.carrier, θ = R.mult, μ = R.measure = (H^n⌞M).withDensity θ, T_x = approxTangentPlane n M x and p_x its orthogonal projection (starProjection). B̄_t := closedBall z t, a := μ(B̄_1), and for x ∈ ℝ^P d(x) := ofReal(‖(x − z) − p_x(x − z)‖²/‖x − z‖^{n+2}) ∈ [0, ∞). This is the integrand of the sibling identity; for x ≠ z, ‖(x − z) − p_x(x − z)‖/‖x − z‖ = |D^⊥r| in Simon's notation. Hypotheses: (S) R.firstVariation X = 0 for every C¹ compactly supported X : ℝ^P → ℝ^P; (C) μ(B̄_ρ) = ofReal(ρ^n)·a for every ρ > 0.
+1. (a is finite.) B̄_1 is compact and Borel. By withDensity_apply and restrict_restrict, μ(B̄_1) = ∫⁻_{B̄_1} θ d(H^n⌞M) = ∫⁻_{M ∩ B̄_1} θ dH^n, which is ≠ ∞ by the field locallyIntegrable_mult applied to K = B̄_1 ⊆ ℝ^P. So a < ∞.
+2. (Normalized ratios.) For ρ > 0, ofReal(ρ^n) ∈ (0, ∞), so by (C), μ(B̄_ρ)/ofReal(ρ^n) = (ofReal(ρ^n)·a)/ofReal(ρ^n) = a.
+3. (Measurability.) By the sibling tangent_projection_measurable, x ↦ p_x ∈ L(ℝ^P, ℝ^P) is μ-a.e. measurable. Evaluation (A, v) ↦ A v is continuous on L(ℝ^P, ℝ^P) × ℝ^P and x ↦ x − z is measurable, so x ↦ p_x(x − z) is μ-a.e. measurable. Composing with subtraction, the norm, squaring, division by the measurable function x ↦ ‖x − z‖^{n+2} and the measurable map ofReal, d is μ-a.e. measurable; hence it is also μ⌞A-a.e. measurable for every Borel A, since μ⌞A ≤ μ.
+4. (The defect vanishes on annuli.) Let 0 < σ ≤ ρ and A := B̄_ρ \ B̄_σ (Borel). The sibling monotonicity_identity, applied to R with (S), centre z and radii σ, ρ, gives μ(B̄_σ)/ofReal(σ^n) + ∫⁻_A d dμ = μ(B̄_ρ)/ofReal(ρ^n). By step 2 this reads a + ∫⁻_A d dμ = a = a + 0, and since a ≠ ∞ (step 1) the summand a cancels in [0, ∞]: ∫⁻_A d dμ = 0. By step 3 and the characterization of vanishing lower integrals of a.e.-measurable functions (Mathlib lintegral_eq_zero_iff'), d = 0 μ⌞A-a.e.; as A is measurable (ae_restrict_iff'), for μ-a.e. x: x ∈ A ⇒ d(x) = 0. Fix such an x with x ∈ A. Then x ∉ B̄_σ, so ‖x − z‖ > σ > 0. ofReal(q) = 0 means q ≤ 0, so ‖(x − z) − p_x(x − z)‖²/‖x − z‖^{n+2} ≤ 0; multiplying by ‖x − z‖^{n+2} > 0 gives ‖(x − z) − p_x(x − z)‖² ≤ 0, hence = 0. So (x − z) − p_x(x − z) = 0, i.e. p_x(x − z) = x − z.
+5. (Exhaustion.) For k ∈ ℕ put σ_k := 1/(k + 1) and ρ_k := k + 1, so 0 < σ_k ≤ 1 ≤ ρ_k. Step 4 for every k and the countable intersection of full-measure sets (ae_all_iff) give: for μ-a.e. x, for every k, x ∈ B̄_{ρ_k} \ B̄_{σ_k} ⇒ p_x(x − z) = x − z. Fix such an x. If x = z, then p_x(x − z) = p_x(0) = 0 = x − z by linearity. Otherwise r := ‖x − z‖ > 0; choose k ∈ ℕ with k > max(r, r^{−1}). Then r < k + 1 = ρ_k, so x ∈ B̄_{ρ_k}; and k + 1 > r^{−1} gives σ_k = 1/(k + 1) < r, so x ∉ B̄_{σ_k}. Hence p_x(x − z) = x − z.
+Therefore p_x(x − z) = x − z for μ-a.e. x, i.e. x − z ∈ T_x μ-a.e. (Submodule.starProjection_eq_self_iff). ∎
+Remarks. The hypothesis n ≥ 1 is not needed, because the sibling identity holds for every n. The statement is the centre-z generalization of the accepted centre-0 lemmas Submission.dtc_cone_radial_tangency and Submission.stationary_imrep_radial_tangency_of_ball_ratio.
+
+Lean implementation (compiled during decomposition after the frozen contract, together with the accepted code of both siblings; #print axioms: propext, Classical.choice, Quot.sound):
+theorem Submission.dimred_cs_st_tangent_sub_of_ball_ratio : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (z : Euclid P), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall z ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall z 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection (x - z) = x - z := by
+  intro P n R z hstat hball
+  -- Step 1: `a := μ(B̄_1(z)) < ∞`
+  have ha : R.measure (closedBall z 1) ≠ ∞ := by
+    have h := R.locallyIntegrable_mult (closedBall z 1) (isCompact_closedBall z 1) (subset_univ _)
+    rwa [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+  -- Step 2: the normalized ratio is constantly `a`
+  have hratio : ∀ ρ : ℝ, 0 < ρ →
+      R.measure (closedBall z ρ) / ENNReal.ofReal (ρ ^ n) = R.measure (closedBall z 1) := by
+    intro ρ hρ
+    rw [hball ρ hρ, mul_comm, ENNReal.mul_div_cancel_right
+      (ENNReal.ofReal_pos.2 (pow_pos hρ n)).ne' ENNReal.ofReal_ne_top]
+  -- Step 3: measurability of the defect integrand
+  have hp : AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection (x - z))
+      R.measure :=
+    (continuous_fst.clm_apply continuous_snd).aemeasurable2
+      (Submission.imrep_univ_tangent_starProjection_aemeasurable P n R)
+      (aemeasurable_id.sub_const z)
+  have hf : AEMeasurable (fun x => ENNReal.ofReal
+      (‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 /
+        ‖x - z‖ ^ (n + 2))) R.measure :=
+    ENNReal.measurable_ofReal.comp_aemeasurable
+      ((((aemeasurable_id.sub_const z).sub hp).norm.pow_const 2).div
+        ((measurable_id.sub_const z).norm.pow_const (n + 2)).aemeasurable)
+  -- Step 4: the defect over each annulus vanishes
+  have hann : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ∀ᵐ x ∂R.measure,
+      x ∈ closedBall z ρ \ closedBall z σ →
+      (approxTangentPlane n R.carrier x).starProjection (x - z) = x - z := by
+    intro σ ρ hσ hσρ
+    have h := Submission.dtc_cone_monotonicity_identity P n R hstat z σ ρ hσ hσρ
+    rw [hratio σ hσ, hratio ρ (hσ.trans_le hσρ)] at h
+    have hD := (lintegral_eq_zero_iff' (hf.mono_measure Measure.restrict_le_self)).1
+      ((ENNReal.add_right_inj ha).1 (h.trans (add_zero _).symm))
+    have hA : MeasurableSet (closedBall z ρ \ closedBall z σ) :=
+      measurableSet_closedBall.diff measurableSet_closedBall
+    filter_upwards [(ae_restrict_iff' hA).1 hD] with x hx hxA
+    have hxσ : σ < ‖x - z‖ := by
+      have h2 := hxA.2
+      rw [mem_closedBall, dist_eq_norm, not_le] at h2
+      exact h2
+    have h0 : ‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 /
+        ‖x - z‖ ^ (n + 2) ≤ 0 :=
+      ENNReal.ofReal_eq_zero.1 (hx hxA)
+    rw [div_le_iff₀ (pow_pos (hσ.trans hxσ) _), zero_mul] at h0
+    have hnorm := (pow_eq_zero_iff two_ne_zero).1 (le_antisymm h0 (sq_nonneg _))
+    exact (sub_eq_zero.1 (norm_eq_zero.1 hnorm)).symm
+  -- Step 5: the annuli `B̄_{k+1}(z) \ B̄_{1/(k+1)}(z)` exhaust `ℝᴾ \ {z}`
+  have hk1 : ∀ k : ℕ, (1 : ℝ) ≤ (k : ℝ) + 1 := fun k => le_add_of_nonneg_left k.cast_nonneg
+  have hall := ae_all_iff.2 fun k : ℕ => hann (1 / ((k : ℝ) + 1)) ((k : ℝ) + 1) (by positivity)
+    (((div_le_one (by positivity)).2 (hk1 k)).trans (hk1 k))
+  filter_upwards [hall] with x hx
+  rcases eq_or_ne x z with rfl | hxz
+  · simp
+  have hxpos : 0 < ‖x - z‖ := norm_pos_iff.2 (sub_ne_zero.2 hxz)
+  obtain ⟨k, hk⟩ := exists_nat_gt (max ‖x - z‖ ‖x - z‖⁻¹)
+  have hk0 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  refine hx k (Set.mem_sdiff_of_mem ?_ ?_)
+  · rw [mem_closedBall, dist_eq_norm]
+    linarith [le_max_left ‖x - z‖ ‖x - z‖⁻¹]
+  · rw [mem_closedBall, dist_eq_norm, not_le, one_div_lt hk0 hxpos, one_div]
+    linarith [le_max_right ‖x - z‖ ‖x - z‖⁻¹]
+
+## Key steps
+
+1. a := μ(B̄_1(z)) < ∞ by locallyIntegrable_mult, and the hypothesis gives μ(B̄_ρ(z))/ρ^n = a for every ρ > 0.
+2. The accepted monotonicity identity at centre z then reads a + ∫⁻_{B̄_ρ(z)∖B̄_σ(z)} |(x − z) − p_x(x − z)|²/|x − z|^{n+2} dμ = a, so the defect integral over every annulus is 0.
+3. The defect integrand is μ-a.e. measurable (tangent_projection_measurable), so it vanishes μ-a.e. on each annulus, where |x − z| > σ > 0; hence p_x(x − z) = x − z there.
+4. The annuli B̄_{k+1}(z)∖B̄_{1/(k+1)}(z) exhaust ℝ^P∖{z} and p_x(0) = 0, so p_x(x − z) = x − z for μ-a.e. x.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (b4d606db…, 25730c7c…, 2b366308…)`
+- `cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `python3 -I inspection of dag.json: lean_statement/status/depends_on/candidate_commit of dtc_cone_monotonicity_identity, dtc_cone_radial_tangency, stationary_imrep_radial_tangency_of_ball_ratio, imrep_univ_tangent_starProjection_aemeasurable, dtc_cone_tangentProjection_aemeasurable, doragm_radial_first_variation, doragm_radial_cutoff_hasDerivAt, dsmc_firstVariation_eq_integral, stationary_radial_imrep_weighted_moment_eq_zero`
+- `git show 251e7a15:GMT/Ch07/Submission.lean | sed -n 1180,1267p (accepted proof of dtc_cone_radial_tangency from dtc_cone_monotonicity_identity); git show 4d61ba7a / 74a7d911:GMT/Ch07/Submission.lean | grep -n '^theorem'; git cat-file -t on 4d61ba7a, 74a7d911, 251e7a15, 44fd07a8`
+- `isolated-comparator-result.json of nodes root-density-and-tangent-cones-a1-cone-a1-monotonicity-identity-a1 and root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1 (passed: True); their parent-supplied-natural-proof.md (accepted proofs copied verbatim)`
+- `python3 -I scan of nodes/*/decomposition-v*.json and decomposition-audit-v*.json for cross-branch reuse of accepted nodes with their own dependencies (dsmc_exp_ball_mass_monotone, dor_ims_massOn_le_measure: sibling deps [], audits acceptable)`
+- `grep -n 'theorem smul_unitClosedBall_of_nonneg|lemma image_smul|theorem lintegral_eq_zero_iff\'|theorem starProjection_eq_self_iff|theorem ae_all_iff|def finBasis|theorem span_eq' in the snapshot mathlib`
+- `sed -n 330,440p book/chapter-07.txt (7.3.1 proof lines 352–360, Remark 7.3.4, Lemma 7.3.5); sed -n 215,335p book/chapter-04.txt (3.1–3.10); grep -n 'monotonicity formula 3.6' book/sources/chapter-07-source.txt`
+- `python3 -I /tmp/st-decomp/gen_cmp.py (verifier gmt-compare.contract_scope + child_modules mode=contract, lean_contract.validate_lean_statement); lake env lean /tmp/st-decomp/cmp/Challenge_*.lean /tmp/st-decomp/cmp/SolutionSide.lean`
+- `lake env lean /tmp/st-decomp/Full.lean (contract + accepted code of 4d61ba7a and 74a7d911 + both new children + parent assembly; #print axioms) and lake env lean /tmp/st-decomp/Assembly.lean`
+- `grep dimred_cs_st_ in dag.json, run node JSONs, GMT, .lake/packages/{simongmt,mathlib}; git grep -e dimred_cs_st_ over all 2595 refs; grep over 1202 Lean files workspaces/.swarm-worktrees/*/gmt-ch07/GMT/{Ch07,Scratch} (no match anywhere)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-spine-tangency-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-spine-tangency-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-monotonicity-identity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-monotonicity-identity-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Group/Pointwise/Set/Scalar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Free.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt`
+- `/tmp/st-decomp/Full.lean`
+- `/tmp/st-decomp/Assembly.lean`
+- `/tmp/st-decomp/gen_cmp.py`
+- `/tmp/st-decomp/cmp/SolutionSide.lean`
+
+Pins. The snapshot is at project b4d606d (= workspace HEAD), Mathlib 25730c7c and SimonGMT 2b36630. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reusable accepted declarations. dag.json and the accepted candidates provide:
+- the centre-z stationary monotonicity identity on closed balls, Submission.dtc_cone_monotonicity_identity (accepted, 4d61ba7a, comparator passed);
+- the R.measure-a.e. measurability of x ↦ p_x, Submission.imrep_univ_tangent_starProjection_aemeasurable (accepted, 74a7d911, comparator passed). This is already this node's dependency.
+Both are reused with byte-identical types.
+
+Not reusable here. The accepted radial-tangency lemmas (dtc_cone_radial_tangency, stationary_imrep_radial_tangency_of_ball_ratio) cover only centre 0. Hence centre_tangency is new and mirrors the accepted proof of dtc_cone_radial_tangency at centre z.
+
+Mathlib facts used, all present in the snapshot: Set.image_smul, smul_unitClosedBall_of_nonneg, lintegral_eq_zero_iff', Submodule.starProjection_eq_self_iff, ae_all_iff, Module.finBasis and Basis.span_eq.
+
+Lean checks.
+- All four child types pass validate_lean_statement and elaborate in the comparator's exact child scope; the solution side elaborates.
+- The new children and the frozen parent compile from the accepted reuse code with only propext, Classical.choice and Quot.sound.
+- The two new names have no match in the DAG, the project, SimonGMT, Mathlib, any git ref or any Ch07 swarm worktree.
