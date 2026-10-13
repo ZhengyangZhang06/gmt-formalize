@@ -421,6 +421,47 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
 
+/-- Mass comparison through bounded transfer forms: if for every mass-admissible `ω` and `δ > 0`
+there is a test form `ψ` with `C(ω) = X(ψ)` and `|ψ(x)| ≤ c (R + δ)` everywhere, then
+`M(C) ≤ c R · M(X)`. -/
+theorem Submission.iwl_cr_cest_mass_le_of_forms :
+    ∀ (P n k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) n)
+      (C : GeometricCurrentOn (univ : Set (Eucl P)) k) (c R : ℝ), 0 ≤ c → 0 ≤ R → X.mass < ∞ →
+      (∀ ω ∈ massAdmissibleOn (univ : Set (Eucl P)) k univ, ∀ δ : ℝ, 0 < δ →
+        ∃ ψ : TestFormOn (univ : Set (Eucl P)) n, C ω = X ψ ∧
+          ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) n) x) ≤ c * (R + δ)) →
+      C.mass ≤ ENNReal.ofReal (c * R) * X.mass := by
+  intro P n k X C c R hc hR hX hforms
+  -- `M(X) = ofReal B` with `B = M(X).toReal ≥ 0`.
+  set B := X.mass.toReal
+  have hB : 0 ≤ B := ENNReal.toReal_nonneg
+  have hXB : X.mass = ENNReal.ofReal B := (ENNReal.ofReal_toReal hX.ne).symm
+  -- Every admissible `ω` has `C(ω) ≤ c R B`: use the transfer form for `δ = ε / (B c + 1)`.
+  have key : ∀ ω ∈ massAdmissibleOn (univ : Set (Eucl P)) k univ, C ω ≤ c * R * B := by
+    intro ω hω
+    refine le_of_forall_pos_lt_add fun ε hε => ?_
+    have hBc : 0 ≤ B * c := mul_nonneg hB hc
+    have hBc1 : 0 < B * c + 1 := by linarith
+    have hδ : 0 < ε / (B * c + 1) := div_pos hε hBc1
+    obtain ⟨ψ, hCψ, hψ⟩ := hforms ω hω (ε / (B * c + 1)) hδ
+    have habs := Submission.cmb_abs_apply_le_of_massOn_le P n univ univ X ψ B
+      (c * (R + ε / (B * c + 1))) hB hXB.le (subset_univ _) hψ
+    have hBcδ : B * c * (ε / (B * c + 1)) < ε := by
+      have e : B * c * (ε / (B * c + 1)) + ε / (B * c + 1) = ε := by field_simp
+      linarith
+    calc C ω = X ψ := hCψ
+      _ ≤ |X ψ| := le_abs_self _
+      _ ≤ B * (c * (R + ε / (B * c + 1))) := habs
+      _ = c * R * B + B * c * (ε / (B * c + 1)) := by ring
+      _ < c * R * B + ε := by linarith
+  -- Take the supremum over admissible `ω`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  calc ENNReal.ofReal (C ω) ≤ ENNReal.ofReal (c * R * B) :=
+        ENNReal.ofReal_le_ofReal (key ω hω)
+    _ = ENNReal.ofReal (c * R) * ENNReal.ofReal B := ENNReal.ofReal_mul (mul_nonneg hc hR)
+    _ = ENNReal.ofReal (c * R) * X.mass := by rw [hXB]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
