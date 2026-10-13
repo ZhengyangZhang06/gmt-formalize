@@ -841,6 +841,138 @@ theorem Submission.codim1_lura_gram_area_formula : ∀ (m P : ℕ) (f : Euclid m
   · simp only [eventually_true, ENNReal.ofReal_lt_top]
   · exact (hGc.measurable.comp (measurable_fderiv ℝ f)).ennreal_ofReal.aemeasurable
 
+/-- **Slice area formula and Tonelli** (Simon Ch. 2, (3.5), sliced along the first coordinate).
+Let `S ⊆ ℝⁿ⁺¹` be Borel and `Φ : ℝⁿ⁺¹ → ℝᴾ` differentiable with injective `DΦ(w)` at every
+`w ∈ S` and injective on `S`; put `J'(w) = √det(⟨DΦ(w)eᵢ₊₁, DΦ(w)eⱼ₊₁⟩)`.  Then for Borel `φ ≥ 0`,
+`t ↦ ∫_{Φ(S ∩ {w₀ = t})} φ dHⁿ` is a.e.-measurable and
+`∫_ℝ ∫_{Φ(S ∩ {w₀ = t})} φ dHⁿ dt = ∫_S J'(w) φ(Φ(w)) dw`.  With `ins_t(z) = (t, z)` and
+`ι(z) = (0, z)`, the slice `Φ(S ∩ {w₀ = t})` is the injective image of `S_t = ins_t⁻¹(S)` under
+`Φ ∘ ins_t`, whose derivative `DΦ(ins_t z) ∘ ι` is injective with `ι eₖ = eₖ₊₁`; so the Gram area
+formula (`codim1_lura_gram_area_formula`) gives `∫_{ℝⁿ} H(ins_t z) dz` for the Borel integrand
+`H = 1_S · J' · (φ ∘ Φ)`.  The splitting `(t, z) ↦ ins_t(z)`, `ℝ × ℝⁿ ≅ ℝⁿ⁺¹`, is measure
+preserving (`ofLp`, `piFinSuccAbove 0`, `toLp`), and Tonelli gives both claims. -/
+theorem Submission.dor_lmbsf_pc_slice_area_tonelli : ∀ (P n : ℕ) (Φ : Euclid (n + 1) → Euclid P) (S : Set (Euclid (n + 1))), MeasurableSet S → (∀ w ∈ S, DifferentiableAt ℝ Φ w) → (∀ w ∈ S, Injective (fderiv ℝ Φ w)) → InjOn Φ S → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) = ∫⁻ w in S, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i.succ 1)) (fderiv ℝ Φ w (EuclideanSpace.single j.succ 1))))) * φ (Φ w) ∂volume := by
+  have hR := Submission.codim1_lura_gram_area_formula
+  intro P n Φ S hS hd hinj hInj φ hφ
+  classical
+  -- the slice embeddings `z ↦ (t, z)` and their common linear part `ι`
+  let ins : ℝ → Euclid n → Euclid (n + 1) := fun t z =>
+    WithLp.toLp 2 (Fin.cons t (WithLp.ofLp z) : Fin (n + 1) → ℝ)
+  let ιlin : Euclid n →ₗ[ℝ] Euclid (n + 1) :=
+    { toFun := fun z => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp z) : Fin (n + 1) → ℝ)
+      map_add' := by
+        intro y z; ext j; refine Fin.cases ?_ (fun k => ?_) j <;> simp
+      map_smul' := by
+        intro c y; ext j; refine Fin.cases ?_ (fun k => ?_) j <;> simp }
+  let ι : Euclid n →L[ℝ] Euclid (n + 1) := LinearMap.toContinuousLinearMap ιlin
+  have hins : ∀ t z, ins t z = ins t 0 + ι z := by
+    intro t z; ext j; refine Fin.cases ?_ (fun k => ?_) j <;> simp [ins, ι, ιlin]
+  have hinsD : ∀ t z, HasFDerivAt (ins t) ι z := by
+    intro t z
+    have : ins t = fun z => ins t 0 + ι z := funext (hins t)
+    rw [this]
+    exact ι.hasFDerivAt.const_add _
+  have hιe : ∀ k : Fin n, ι (EuclideanSpace.single k 1) = EuclideanSpace.single k.succ 1 := by
+    intro k; ext j; refine Fin.cases ?_ (fun l => ?_) j <;> simp [ι, ιlin, Pi.single_apply]
+  -- slice Jacobian and integrand
+  let J' : Euclid (n + 1) → ℝ := fun w => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n =>
+    inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i.succ 1)) (fderiv ℝ Φ w (EuclideanSpace.single j.succ 1))))
+  have hJ'm : Measurable J' := by
+    have hc : Continuous (fun L : Euclid (n + 1) →L[ℝ] Euclid P => Real.sqrt (Matrix.det
+        (Matrix.of fun i j : Fin n => inner ℝ (L (EuclideanSpace.single i.succ 1))
+          (L (EuclideanSpace.single j.succ 1))))) := by
+      refine Real.continuous_sqrt.comp (Continuous.matrix_det ?_)
+      refine continuous_pi fun k => continuous_pi fun l => ?_
+      exact (continuous_id.clm_apply continuous_const).inner (continuous_id.clm_apply continuous_const)
+    exact hc.measurable.comp (measurable_fderiv ℝ Φ)
+  let H : Euclid (n + 1) → ℝ≥0∞ := S.indicator (fun w => ENNReal.ofReal (J' w) * φ (Φ w))
+  have hΦc : ContinuousOn Φ S := fun w hw => (hd w hw).continuousAt.continuousWithinAt
+  have hHm : Measurable H := by
+    have hpw : Measurable (S.piecewise Φ (fun _ => 0)) :=
+      hΦc.measurable_piecewise continuousOn_const hS
+    have : H = S.indicator (fun w => ENNReal.ofReal (J' w) * φ (S.piecewise Φ (fun _ => 0) w)) := by
+      ext w
+      by_cases hw : w ∈ S
+      · simp [H, hw, Set.piecewise_eq_of_mem]
+      · simp [H, hw]
+    rw [this]
+    exact ((hJ'm.ennreal_ofReal).mul (hφ.comp hpw)).indicator hS
+  -- the inner integral, slice by slice
+  have hinner : ∀ t : ℝ, ∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n] = ∫⁻ z, H (ins t z) := by
+    intro t
+    let St : Set (Euclid n) := ins t ⁻¹' S
+    have hinsc : Continuous (ins t) := by
+      have : ins t = fun z => ins t 0 + ι z := funext (hins t)
+      rw [this]; exact continuous_const.add ι.continuous
+    have hSt : MeasurableSet St := hinsc.measurable hS
+    have himg : Φ '' (S ∩ {w | w 0 = t}) = (Φ ∘ ins t) '' St := by
+      rw [image_comp]
+      congr 1
+      ext w
+      constructor
+      · rintro ⟨hwS, hwt⟩
+        refine ⟨WithLp.toLp 2 (Fin.tail (WithLp.ofLp w)), ?_, ?_⟩
+        · have : ins t (WithLp.toLp 2 (Fin.tail (WithLp.ofLp w))) = w := by
+            ext j; refine Fin.cases ?_ (fun k => ?_) j
+            · simpa [ins] using hwt.symm
+            · simp [ins, Fin.tail]
+          show ins t _ ∈ S
+          rw [this]; exact hwS
+        · ext j; refine Fin.cases ?_ (fun k => ?_) j
+          · simpa [ins] using hwt.symm
+          · simp [ins, Fin.tail]
+      · rintro ⟨z, hz, rfl⟩
+        exact ⟨hz, by simp [ins]⟩
+    have hdt : ∀ z ∈ St, DifferentiableAt ℝ (Φ ∘ ins t) z := fun z hz =>
+      (hd _ hz).comp z (hinsD t z).differentiableAt
+    have hDt : ∀ z ∈ St, fderiv ℝ (Φ ∘ ins t) z = (fderiv ℝ Φ (ins t z)).comp ι := fun z hz =>
+      ((hd _ hz).hasFDerivAt.comp z (hinsD t z)).fderiv
+    have hιinj : Injective ι := by
+      intro y z hyz
+      ext k
+      have := congrArg (fun v : Euclid (n + 1) => v k.succ) hyz
+      simpa [ι, ιlin] using this
+    have hinjt : ∀ z ∈ St, Injective (fderiv ℝ (Φ ∘ ins t) z) := by
+      intro z hz
+      rw [hDt z hz]
+      exact (hinj _ hz).comp hιinj
+    have hInjt : InjOn (Φ ∘ ins t) St := by
+      intro y hy z hz hyz
+      have h1 : ins t y = ins t z := hInj hy hz hyz
+      have h2 : ι y = ι z := by
+        rw [hins t y, hins t z] at h1; exact add_left_cancel h1
+      exact hιinj h2
+    rw [himg, (hR n P (Φ ∘ ins t)).2 St hSt hdt hinjt hInjt φ, ← lintegral_indicator hSt]
+    congr 1
+    ext z
+    by_cases hz : z ∈ St
+    · have hz' : ins t z ∈ S := hz
+      simp only [indicator_of_mem hz, H, indicator_of_mem hz', hDt z hz, J',
+        ContinuousLinearMap.comp_apply, hιe, comp_apply]
+    · have hz' : ins t z ∉ S := hz
+      simp only [indicator_of_notMem hz, H, indicator_of_notMem hz']
+  -- the volume-preserving splitting `ℝ × ℝⁿ ≃ ℝⁿ⁺¹`
+  have he : MeasurePreserving (fun p : ℝ × Euclid n => ins p.1 p.2) volume volume := by
+    have h1 : MeasurePreserving (Prod.map (id : ℝ → ℝ) (WithLp.ofLp : Euclid n → (Fin n → ℝ)))
+        (volume : Measure (ℝ × Euclid n)) (volume : Measure (ℝ × (Fin n → ℝ))) :=
+      (MeasurePreserving.id volume).prod (PiLp.volume_preserving_ofLp (Fin n))
+    have h2 := (volume_preserving_piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm
+    have h3 := PiLp.volume_preserving_toLp (Fin (n + 1))
+    have h := h3.comp (h2.comp h1)
+    convert h using 1
+    funext p
+    simp [ins, MeasurableEquiv.piFinSuccAbove_symm_apply]
+    rfl
+  have hHe : Measurable (fun p : ℝ × Euclid n => H (ins p.1 p.2)) := hHm.comp he.measurable
+  refine ⟨?_, ?_⟩
+  · simp_rw [hinner]
+    exact hHe.lintegral_prod_right'.aemeasurable
+  · simp_rw [hinner]
+    rw [← lintegral_indicator hS]
+    change ∫⁻ t, ∫⁻ z, H (ins t z) = ∫⁻ w, H w
+    rw [← he.lintegral_comp hHm]
+    exact (lintegral_prod _ hHe.aemeasurable).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
