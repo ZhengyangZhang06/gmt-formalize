@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1dbaca65b0030f9a51b51c262cb604f269ba59e15a30b1e589f700c25c60d43f",
+  "git_delta": {
+    "base_commit": "b5efb21e61ecb57acbd8710ef974b0a14f283b00",
+    "candidate_commit": "3e668ac28e115eb8f0ea048303f011a078058f28",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_rc_ambient_restriction",
+    "diff_sha256": "11e96527b320520d7eced2080c719c14ab04f20a182395b77d608a5a5fcc7f7d",
+    "source_sha256": "12dc4046e8d08f14aa94384d7e10d382806f93f0d0d27f610c12e584952f20a0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_rc_ambient_restriction",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (S : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → IsOpen W → CompactlyContained W U → R.Represents S → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) n) (RQ : IMRep (univ : Set (Euclid P)) n), RQ.Represents Q ∧ RQ.carrier = R.carrier ∩ W ∧ RQ.mult = R.mult ∧ RQ.orient = R.orient ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → Q (testFormOnInclusion (subset_univ U) n ω) = S ω) ∧ Q.support ⊆ closure W ∩ S.support ∧ IsCompact Q.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
