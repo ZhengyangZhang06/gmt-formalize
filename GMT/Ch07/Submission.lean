@@ -726,6 +726,66 @@ theorem Submission.dtc_cwv_scaled_action_hasDerivAt : ∀ (P n : ℕ) (R : IMRep
   have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound
     ((hθB.integrable_indicator hBm).const_mul K) h_diff
   exact key.2
+/-- **`∂C = 0` and `x ∧ C⃗ = 0` kill Euler–Lie derivatives** (the homotopy term in the proof of
+Simon Ch. 6, Lemma 2.33, as applied in 7.3.1).  Let `C = τ(M, θ, ξ) ∈ 𝒟ₙ(ℝᴾ)`, `n ≥ 1`, with
+`∂C = 0` and `ξ(x)(ι_x α) = 0` for `μ_C`-a.e. `x` and every `(n+1)`-covector `α`.  Then
+`C(L_X β) = 0` for the Euler field `X(y) = y`, where `L_X β(y) = n β(y) + Dβ(y)[y]`.  By Cartan's
+formula `L_X β = d(ι_X β) + ι_X dβ` (`dtc_cone_euler_cartan`), with `ι_X β` and `ι_X dβ` test forms
+(`dtc_cwv_euler_contraction_isTestForm`): `C(d ι_X β) = ∂C(ι_X β) = 0`, and
+`C(ι_X dβ) = ∫_M θ ξ(ι_y dβ(y)) dHⁿ = 0` since `θ > 0` on `M`. -/
+theorem Submission.dtc_cwv_euler_lie_annihilated : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 0 < n → R.Represents C → BoundaryVanishes C → (∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β x) = 0) → ∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = (n : ℝ) • (β : DifferentialForm (Euclid P) n) y + fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) → C γ = 0 := by
+  intro P n C R hn hR hb hw β γ hγ
+  -- write `n = m + 1`
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  -- `ψ = ι_X β` is a test `m`-form
+  have hψ : IsTestForm (fun z => ContinuousAlternatingMap.curryLeft
+      ((β : DifferentialForm (Euclid P) (m + 1)) z) z) :=
+    Submission.dtc_cwv_euler_contraction_isTestForm P m _ β.property.1
+  let ψ : TestFormOn (univ : Set (Euclid P)) m := ⟨_, hψ, subset_univ _⟩
+  -- `χ = ι_X dβ` is a test `(m + 1)`-form
+  have hdβ : IsTestForm (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1))) :=
+    exteriorDerivative_isTestForm β.property.1
+  have hχ := Submission.dtc_cwv_euler_contraction_isTestForm P (m + 1) _ hdβ
+  let χ : TestFormOn (univ : Set (Euclid P)) (m + 1) := ⟨_, hχ, subset_univ _⟩
+  -- Cartan's formula: `γ = L_X β = dψ + χ`
+  have hsplit : γ = exteriorDerivativeTestOn univ m ψ + χ := by
+    apply Subtype.ext
+    funext y
+    have hdiff : DifferentiableAt ℝ (β : DifferentialForm (Euclid P) (m + 1)) y :=
+      (β.property.1.1.differentiable (by simp)).differentiableAt
+    have hc := Submission.dtc_cone_euler_cartan P m β y hdiff
+    rw [hγ y]
+    push_cast
+    exact hc.symm
+  -- `C(dψ) = ∂C(ψ) = 0`
+  have hbd : C.boundary = 0 := hb
+  have h1 : C (exteriorDerivativeTestOn univ m ψ) = 0 := by
+    have := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) m => T ψ) hbd
+    simpa [GeometricCurrentOn.boundary_apply] using this
+  -- `C(χ) = ∫_M θ ξ(ι_y dβ(y)) dHⁿ = 0`: the wedge hypothesis passes from `θHⁿ⌞M` to `Hⁿ⌞M`
+  have h2 : C χ = 0 := by
+    rw [hR χ]
+    unfold IMRep.action
+    apply integral_eq_zero_of_ae
+    have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+      measurable_from_nat.comp R.measurable_mult
+    have h' := (ae_withDensity_iff hθ).1 hw
+    have hmem : ∀ᵐ x ∂(μHE[m + 1].restrict R.carrier), x ∈ R.carrier :=
+      ae_restrict_mem R.measurableSet_carrier
+    filter_upwards [h', hmem] with x hx hxM
+    have hpos : (R.mult x : ℝ≥0∞) ≠ 0 := by
+      have := R.mult_pos x hxM
+      exact_mod_cast this.ne'
+    have := hx hpos (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1)) x)
+    simp only [Pi.zero_apply]
+    change (R.mult x : ℝ) * R.orient x (ContinuousAlternatingMap.curryLeft
+      (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1)) x) x) = 0
+    rw [this, mul_zero]
+  -- linearity: `C(γ) = C(dψ) + C(χ) = 0`
+  rw [hsplit]
+  change C.toCurrent (exteriorDerivativeTestOn univ m ψ + χ) = 0
+  rw [map_add]
+  exact (congrArg₂ (· + ·) h1 h2).trans (add_zero 0)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
