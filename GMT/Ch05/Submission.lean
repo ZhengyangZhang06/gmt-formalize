@@ -474,6 +474,7 @@ theorem Submission.tdo_ods_integrableOn_norm_deriv : ∀ (ℓ : ℕ) (W : ℝ �
   -- (2) `[-a, a]` is a neighbourhood of `r ∈ (-a, a)`, so `‖W'(r)‖ ≤ K`
   rw [norm_norm]
   exact norm_deriv_le_of_lipschitzOn (Icc_mem_nhds hr.1 hr.2) hW
+
 namespace Submission
 
 /-- A.e. derivative comparison for the one-dimensional sup bound in the tilt-excess decay
@@ -497,6 +498,9 @@ theorem tdo_ods_ae_abs_deriv_inner_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a 
   calc |inner ℝ u (deriv W r)| ≤ ‖u‖ * ‖deriv W r‖ := abs_real_inner_le_norm u (deriv W r)
     _ ≤ 1 * ‖deriv W r‖ := mul_le_mul_of_nonneg_right hu (norm_nonneg _)
     _ = ‖deriv W r‖ := one_mul _
+
+end Submission
+
 namespace Submission
 
 /-- Interval integral bounded by an a.e. dominating function, for the FTC bound in the
@@ -539,6 +543,9 @@ theorem tdo_ods_intervalIntegral_le_of_ae_abs_le : ∀ (g h : ℝ → ℝ) (a s 
         exact hr (hsub hrI)
     _ ≤ ∫ r in Ioc (-a) a, h r := setIntegral_mono_set hhIoc hnonneg (ae_of_all _ hsub)
     _ = ∫ r in Ioo (-a) a, h r := integral_Ioc_eq_integral_Ioo
+
+end Submission
+
 namespace Submission
 
 /-- **FTC bound for a Lipschitz curve** (used for the one-dimensional sup bound in the proof of the
