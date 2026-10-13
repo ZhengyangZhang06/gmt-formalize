@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "094efc1046d6d850dcd9981d6b5701b6bf8e645970c4dfe49746f47b2f2851ac",
+  "git_delta": {
+    "base_commit": "96a5a73db643b083070ba1ded462d1c7df8ad49f",
+    "candidate_commit": "1e941b2e92ada2dfdbe2cb7ee580b752adf2379b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_mollify_l2",
+    "diff_sha256": "b764ec4b5111891acb35ea8ced5ec9f178e7013b97a2600e5fdf5a3820f19bd3",
+    "source_sha256": "e13847c80adf737b5cd063aaa3960ee70dd2717e572019db7bea6c0bf2b60b8c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_mollify_l2",
+      "statement": "∀ (n : ℕ) (u ρ : Euclid n → ℝ) (L : NNReal) (ε s : ℝ), LipschitzWith L u → Continuous ρ → (∀ z, 0 ≤ ρ z) → (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → 0 < ε → ε ≤ s → ∫ x in ball (0 : Euclid n) (1 - s), (u x - ∫ z, u (x - ε • z) * ρ z) ^ 2 ≤ ε ^ 2 * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
