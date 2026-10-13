@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "959d9ee71c8084bb34b52a3221147a5960f95c8ab2aab5d7a5fe8adff6c57715",
+  "git_delta": {
+    "base_commit": "5f22c59eefa552dbd6fc880d5bf468ca71a5a64b",
+    "candidate_commit": "02398599cce73fa665db4bead350cacced4e70dd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_volume_coordProj_image_null",
+    "diff_sha256": "dfac5f66fef34e0bae0d880f3357d3a0eca07cf9148e1522bcef46b269fd3852",
+    "source_sha256": "63ed23440042a06cd94987e6f22e99524151ecd2b28558a6766b200419e14bcb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_volume_coordProj_image_null",
+      "statement": "∀ (P n : ℕ) (I : Fin n → Fin P) (C : Set (Euclid P)), Function.Injective I → μHE[n] C = 0 → volume ((fun x : Euclid P => (WithLp.toLp 2 (fun k => x (I k)) : Euclid n)) '' C) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
