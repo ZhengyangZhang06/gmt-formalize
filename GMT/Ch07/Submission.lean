@@ -954,6 +954,26 @@ theorem dorag_ha_lsc_exhaustion : ∀ (n : ℕ) (R E : ℝ) (f : Euclid n → �
 
 end Submission
 
+/-- **Lower semicontinuity of the Dirichlet energy** (the step "`∇f_{k'} ⇀ ∇w` weakly in `L²`, with
+`∫_B |∇w|² ≤ 1`" of Simon's proof of Lemma 5.3.1, p. 114, in a Lipschitz/`L²` setting).  Let
+`B = B̆_R(0) ⊆ ℝⁿ`, let `u_j` be Lipschitz with `∫_B ‖Du_j‖² ≤ E` and `u_j - c_j → W` in `L²(B)`,
+and let `h` be `C²` on `B` with `h = W` a.e. on `B`.  Then `‖Dh‖²` is integrable on `B` and
+`∫_B ‖Dh‖² ≤ E`.  Duality against `C¹` vector fields `Φ` compactly supported in `B` gives
+`∫_B ∇h·Φ ≤ √E ‖Φ‖_{L²(B)}`; testing with `Φ = χ_r ∇h` bounds the energy of `h` on each `B̆_r(0)`,
+`r < R`, by `E`, and exhausting `B` by these balls gives the claim. -/
+theorem Submission.dorag_ha_energy_lsc : ∀ (n : ℕ) (R E : ℝ) (u : ℕ → Euclid n → ℝ) (c : ℕ → ℝ) (W h : Euclid n → ℝ), 0 < n → 0 < R → (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ E) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (u j x - c j - W x) ^ 2) atTop (𝓝 0) → ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → (∀ᵐ x ∂(volume.restrict (ball (0 : Euclid n) R)), h x = W x) → IntegrableOn (fun x => ‖fderiv ℝ h x‖ ^ 2) (ball (0 : Euclid n) R) ∧ ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ h x‖ ^ 2 ≤ E := by
+  intro n R E u c W h _ hR hu hE hW hconv hh hhW
+  -- Step 0: `E ≥ 0`, from the energy bound for `u₀`
+  have hE0 : 0 ≤ E := (integral_nonneg fun x => sq_nonneg _).trans (hE 0)
+  -- Step 3: the duality bound `∫_B ∇h·Φ ≤ √E ‖Φ‖_{L²(B)}`, `h` being in particular `C¹` on `B`
+  have hdual := fun Φ => Submission.dorag_ha_lsc_duality_bound n R E u c W h Φ hu hE hW hconv
+    (hh.of_le one_le_two) hhW
+  -- Step 5: exhaust `B` by the balls `B̆_r(0)`, `r < R`, on which Step 4 bounds the energy by `E`
+  refine Submission.dorag_ha_lsc_exhaustion n R E (fun x => ‖fderiv ℝ h x‖ ^ 2) hR
+    ((hh.continuousOn_fderiv_of_isOpen isOpen_ball one_le_two).norm.fun_pow 2)
+    (fun x _ => sq_nonneg _) fun r hr hrR => ?_
+  exact Submission.dorag_ha_lsc_interior_energy n R E r h hr hrR hE0 hh hdual
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
