@@ -1,0 +1,124 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.local_comparison-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, (F4) (“μ_{A±B}(E) ≤ μ_A(E) + μ_B(E) for compact E ⊆ U (apply to E_δ, let δ ↓ 0)”) and step 8 (“As γ ↑ α, W_γ decreases to {ψ ≥ α} ... by continuity from above, (9) gives μ_{T′}({ψ ≥ α}) ≤ μ_Z({ψ ≥ α})”). Both pass an inequality between Radon measures from open neighbourhoods of a compact set to the set itself by continuity from above; this child states that step once, for the neighbourhoods E_δ.
+
+1. If E = ∅ then μ(E) = 0 and there is nothing to prove; the argument below also covers this case. Choose δ > 0 with C_δ := {x : dist(x, E) ≤ δ} ⊆ U (IsCompact.exists_cthickening_subset_open). For k ∈ ℕ put r_k := δ/(k + 2) ∈ (0, δ) and G_k := {x : dist(x, E) < r_k} (open thickening).
+2. Each G_k is open and contains E (r_k > 0). closure(G_k) ⊆ {dist(·, E) ≤ r_k} ⊆ C_δ ⊆ U, and C_δ is compact (closed thickening of a compact set in the proper space ℝ^P), so closure(G_k) is compact and contained in U. By hypothesis and monotonicity, μ(E) ≤ μ(G_k) ≤ ν(G_k) + c for every k.
+3. Since r_k decreases, (G_k) is decreasing. ⋂_k G_k = E: E ⊆ G_k for all k; conversely, if dist(x, E) < r_k for all k, then for every ε > 0 some r_k < ε gives x ∈ {dist(·, E) < ε}, so x ∈ ⋂_{ε>0} {dist(·, E) < ε} = closure(E) (Metric.closure_eq_iInter_thickening) = E, E being compact and hence closed. The G_k are open, hence measurable, and ν(G_0) ≤ ν(C_δ) < ∞.
+4. By continuity from above (Mathlib tendsto_measure_iInter_atTop), ν(G_k) → ν(E). Addition of the constant c is continuous on [0, ∞], so ν(G_k) + c → ν(E) + c, and letting k → ∞ in μ(E) ≤ ν(G_k) + c gives μ(E) ≤ ν(E) + c. ∎
+
+Remark (how the parent uses the child; not part of the proof). In step 8, (i) with E = {ψ ≥ α}, μ = μ_{T′}, ν = μ_Z, c = 0: for every open G ⊇ {ψ ≥ α} with closure(G) compact in U (these include the W_γ, γ < α), spt(Z − T′) ⊆ {ψ ≥ α} ⊆ U ∩ G and minimality give M_G(T′) ≤ M_G(Z), i.e. μ_{T′}(G) ≤ μ_Z(G) by sibling mass_equals_rep_measure; the child yields μ_{T′}({ψ ≥ α}) ≤ μ_Z({ψ ≥ α}), which is “letting γ ↑ α”. (ii) with E = {ψ = α}, μ = μ_Z, ν = μ_{T′} + μ_X + μ_{∂R}⌞W and c = M(P): for such G, child mass_triangle and mass_equals_rep_measure give μ_Z(G) = M_G(Z) ≤ M_G(T′) + M_G(X) + M_G((∂R)⌞W) + M_G(P) ≤ ν(G) + M(P); the child yields μ_Z({ψ = α}) ≤ ν({ψ = α}) + M(P) = M(P), the error term of (10).
+
+Appendix (verified Lean realization of the numbered proof above; not part of the proof). The declaration below was compiled in this decomposition session with Lean v4.35.0-rc3, Mathlib 25730c7c and SimonGMT 2b366308, placed after `import GMT.Ch07.Submission` in the child comparator scope (inside `namespace GMT.Ch07` with the frozen contract's `open` commands, after its `noncomputable section ... end`). `exact Submission.lcmp_measure_le_add_of_open_nhds` closes the frozen type, and `#print axioms` reports only propext, Classical.choice and Quot.sound.
+
+```lean
+theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (Euclid P)) (μ ν : Measure (Euclid P)) (c : ℝ≥0∞), IsOpen U → IsCompact E → E ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ G : Set (Euclid P), IsOpen G → E ⊆ G → CompactlyContained G U → μ G ≤ ν G + c) → μ E ≤ ν E + c := by
+  intro P U E μ ν c hU hE hEU hν hG
+  obtain ⟨δ, hδ, hδU⟩ := hE.exists_cthickening_subset_open hU hEU
+  set r : ℕ → ℝ := fun k => δ / ((k : ℝ) + 2) with hr
+  have hrpos : ∀ k, 0 < r k := fun k => div_pos hδ (by positivity)
+  have hrle : ∀ k, r k ≤ δ := fun k =>
+    div_le_self hδ.le (by have : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith)
+  have hranti : Antitone r := fun a b hab =>
+    div_le_div_of_nonneg_left hδ.le (by positivity) (by
+      have : (a : ℝ) ≤ b := Nat.cast_le.2 hab
+      linarith)
+  set G : ℕ → Set (Euclid P) := fun k => thickening (r k) E with hGdef
+  have hGo : ∀ k, IsOpen (G k) := fun k => isOpen_thickening
+  have hEG : ∀ k, E ⊆ G k := fun k => self_subset_thickening (hrpos k) E
+  have hclG : ∀ k, closure (G k) ⊆ cthickening δ E := fun k =>
+    (closure_thickening_subset_cthickening _ _).trans (cthickening_mono (hrle k) E)
+  have hGcc : ∀ k, CompactlyContained (G k) U := fun k =>
+    ⟨hE.cthickening.of_isClosed_subset isClosed_closure (hclG k), (hclG k).trans hδU⟩
+  have hle : ∀ k, μ E ≤ ν (G k) + c := fun k =>
+    (measure_mono (hEG k)).trans (hG _ (hGo k) (hEG k) (hGcc k))
+  have hanti : Antitone G := fun a b hab => thickening_mono (hranti hab) E
+  have hinter : ⋂ k, G k = E := by
+    apply subset_antisymm
+    · intro x hx
+      rw [mem_iInter] at hx
+      have hxcl : x ∈ closure E := by
+        rw [closure_eq_iInter_thickening]
+        simp only [mem_iInter]
+        intro ε hε
+        obtain ⟨k, hk⟩ := exists_nat_gt (δ / ε)
+        have hrk : r k < ε := by
+          rw [hr, div_lt_iff₀ (by positivity)]
+          rw [div_lt_iff₀ hε] at hk
+          nlinarith
+        exact thickening_mono hrk.le E (hx k)
+      rwa [hE.isClosed.closure_eq] at hxcl
+    · exact subset_iInter hEG
+  have hfin0 : ν (G 0) ≠ ∞ :=
+    ((measure_mono ((subset_closure).trans (hclG 0))).trans_lt
+      (hν _ hE.cthickening hδU)).ne
+  have htend : Tendsto (fun k => ν (G k)) atTop (𝓝 (ν E)) := by
+    have := tendsto_measure_iInter_atTop (μ := ν)
+      (fun k => (hGo k).measurableSet.nullMeasurableSet) hanti ⟨0, hfin0⟩
+    rwa [hinter] at this
+  exact ge_of_tendsto' (htend.add_const c) hle
+```
+
+## Key steps
+
+1. δ > 0 with closed δ-thickening of E inside U; G_k := open δ/(k + 2)-thickening of E.
+2. Each G_k is open, contains E and has compact closure in U, so μ(E) ≤ μ(G_k) ≤ ν(G_k) + c.
+3. G_k decreases to closure(E) = E and ν(G_0) < ∞; continuity from above gives ν(G_k) → ν(E), hence μ(E) ≤ ν(E) + c.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical); cat local-references/123e8435b4a2469b/manifest.json`
+- `rg -n 'lcmp_|good_slice|lipschitz_cutoff' local-references/123e8435b4a2469b/project (no match)`
+- `rg -n 'theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc|theorem countable_meas_level_set_pos|theorem IsOpen.exists_contDiff_support_eq|theorem prod_apply_symm|theorem measurable_measure_prodMk_left|theorem lintegral_liminf_le|theorem extraction_forall_of_frequently|theorem integral_withDensity_eq_integral_smul|theorem tendsto_measure_iInter_atTop|theorem closure_eq_iInter_thickening' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'; rg -n 'theorem (one_of_one_le|zero_of_nonpos|le_one|nonneg)|protected theorem contDiff' .../Analysis/SpecialFunctions/SmoothTransition.lean`
+- `lake env lean /tmp/lcmp/Names.lean, Names2.lean, Names3.lean, N4.lean (#check of every cited Mathlib/SimonGMT declaration after import GMT.Ch07.Submission; MonotoneOn.intervalIntegral_deriv_mem_uIcc and MonotoneOn.intervalIntegrable_deriv are not in the import closure)`
+- `sed SimonGMT Chapter06/{Mass,Currents,CurrentLocalEquality,Forms}.lean (massOn, massAdmissibleOn, covectorEuclideanNorm_neg, le_massOn, massOn_mono, boundary_apply, boundary_boundary, zeroRegion/support, TestFormOn); rg -n -i 'slice by|lipschitz slic|flat norm|deformation theorem' Chapter06 (no match)`
+- `python3 -I scans of dag.json: lean_statement/status/children/depends_on of all 514 nodes; sibling frozen types of the selected node; accepted nodes mentioning support/massOn/IMRep/withDensity (155); smooth cut-off and mass-triangle candidates; collision check of the 8 proposed names`
+- `grep -c of the six lcmp_ names in dag.json, issue-workers.json, DAG.md, GMT/, .lake/packages/simongmt; git grep -l lcmp_ over all 1117 distinct ref commits -- GMT (no match)`
+- `git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean and 702e7082a5a7012f7a8f6efd9d272697e426f50b:GMT/Ch07/Submission.lean (accepted proofs of the two reused declarations)`
+- `sed -n 3160,3230p and 6557,6600p runtime.py (_overlay_accepted_children: prerequisites = children + depends_on; _existing_lean_name_problem: reuse only for accepted identical types); sed -n 480,620p verifier/gmt-compare.py (contract_scope, child_modules)`
+- `lake env lean /tmp/lcmp/Types1.lean; /tmp/lcmp/AsmFinal.lean; /tmp/lcmp/Validate.lean; /tmp/lcmp/FinalCheck.lean (#print axioms)`
+- `sed -n 150,262p book/chapter-07.txt (Simon 7.2.4 proof, (1)–(12))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/lcmp/Types1.lean`
+- `/tmp/lcmp/AsmFinal.lean`
+- `/tmp/lcmp/Validate.lean`
+- `/tmp/lcmp/FinalCheck.lean`
+- `/tmp/lcmp/out/subproblems.json`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (manifest: project b4d606db, mathlib 25730c7c), and the snapshot project contains no lcmp_ declaration. Neither the snapshot Mathlib nor the pinned SimonGMT states any of the six new child facts: Lipschitz cut-off, good slicing level, mass localization, mass triangle inequality, IMRep restriction calculus, compact outer bound. SimonGMT Chapter06 has only massOn/le_massOn/massOn_mono and covectorEuclideanNorm_neg. Every Mathlib declaration cited in the child proofs is located in the snapshot and checked importable after import GMT.Ch07.Submission. The exception is MonotoneOn.intervalIntegral_deriv_mem_uIcc (DerivIntegrable.lean): it is cited by the parent's step 5 but is not imported, so child good_slice_level uses a Tonelli-based majorant instead. Two accepted DAG declarations with byte-identical frozen types are reused: rsd_cmr_support_subset_of_vanish and rsd_imrep_compact_measure_ne_top. In Lean: all eight child types elaborate in the comparator scope, and all eight child proofs compile with only propext, Classical.choice and Quot.sound. A conditional assembly from the six exact sibling types plus the eight child types proves the exact frozen parent type, with the same axioms. Simon's text (chapter-07.txt lines 176–258) confirms the parent's corrections S̃_j = S_j⌞W_α − P_j and γ ↑ α.
