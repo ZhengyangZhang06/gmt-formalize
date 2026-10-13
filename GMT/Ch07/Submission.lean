@@ -451,6 +451,133 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Flattening of rescaled `C¹` graphs** (Simon 7.5.5: the rescaled sheets of `N` flatten to the
+tangent plane).  Let `u` be `C¹` on `B_δ ⊆ ℝᵐ` with `Du(0) = 0`, `sᵢ → 0`, `λᵢ ↓ 0`, and let the
+offsets `tᵢ` be such that `gᵢ(w) = λᵢ⁻¹ (u(sᵢ + λᵢ w) − tᵢ)` satisfies `|gᵢ(w)| ≤ C₀` at some
+`|w| ≤ C₀`.  Since `Du` is continuous with `Du(0) = 0`, `u` is `η`-Lipschitz with `‖Du‖ < η` on a
+small ball (mean value inequality), and `Dgᵢ(w) = Du(sᵢ + λᵢ w)` by the chain rule.  Hence
+`|gᵢ(0)| ≤ 2 C₀` eventually; a subsequence `gᵢ(0) → b` (compactness), and on `B_R` the rescalings
+converge to the constant `b` in `C¹`. -/
+theorem Submission.codim1_zsl_gbl_rescaled_graph_flattening : ∀ (m k : ℕ) (u : Euclid m → Euclid k) (δ C₀ : ℝ) (s : ℕ → Euclid m) (t : ℕ → Euclid k) (lams : ℕ → ℝ), 0 < δ → ContDiffOn ℝ 1 u (ball 0 δ) → fderiv ℝ u 0 = 0 → (∀ i, 0 < lams i) → Tendsto s atTop (𝓝 0) → Tendsto lams atTop (𝓝 0) → (∀ᶠ i in atTop, ∃ w : Euclid m, ‖w‖ ≤ C₀ ∧ s i + lams i • w ∈ ball (0 : Euclid m) δ ∧ ‖u (s i + lams i • w) - t i‖ ≤ C₀ * lams i) → ∃ (σ : ℕ → ℕ) (b : Euclid k), StrictMono σ ∧ (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, DifferentiableAt ℝ (fun w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i))) w) ∧ ∀ R ε : ℝ, 0 < R → 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, ‖(lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i)) - b‖ < ε ∧ ‖fderiv ℝ (fun w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i))) w‖ < ε := by
+  intro m k u δ C₀ s t lams hδ hu hDu0 hlams hs hlam hoff
+  -- `u` is differentiable on the open ball `B_δ` and `Du` is continuous there
+  have hdiff : ∀ v ∈ ball (0 : Euclid m) δ, DifferentiableAt ℝ u v := fun v hv =>
+    (hu.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hv)
+  have hcont : ContinuousOn (fderiv ℝ u) (ball (0 : Euclid m) δ) :=
+    hu.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+  -- for every `η > 0`: `‖Du‖ < η` and `u` is `η`-Lipschitz on some `B_ρ ⊆ B_δ`
+  have hsmall : ∀ η : ℝ, 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ δ ∧
+      (∀ v ∈ ball (0 : Euclid m) ρ, ‖fderiv ℝ u v‖ < η) ∧
+      ∀ v ∈ ball (0 : Euclid m) ρ, ∀ v' ∈ ball (0 : Euclid m) ρ, ‖u v' - u v‖ ≤ η * ‖v' - v‖ := by
+    intro η hη
+    obtain ⟨ρ₀, hρ₀, hρ₀D⟩ := Metric.continuousOn_iff.1 hcont 0 (mem_ball_self hδ) η hη
+    have hD : ∀ v ∈ ball (0 : Euclid m) (min ρ₀ δ), ‖fderiv ℝ u v‖ < η := by
+      intro v hv
+      have h := hρ₀D v (ball_subset_ball (min_le_right _ _) hv)
+        (mem_ball.1 (ball_subset_ball (min_le_left _ _) hv))
+      rwa [hDu0, dist_zero_right] at h
+    refine ⟨min ρ₀ δ, lt_min hρ₀ hδ, min_le_right _ _, hD, fun v hv v' hv' => ?_⟩
+    exact Convex.norm_image_sub_le_of_norm_fderiv_le
+      (fun x hx => hdiff x (ball_subset_ball (min_le_right _ _) hx))
+      (fun x hx => (hD x hx).le) (convex_ball _ _) hv hv'
+  -- chain rule: `Dgᵢ(w) = Du(sᵢ + λᵢ w)` whenever `sᵢ + λᵢ w ∈ B_δ`
+  have hchain : ∀ (i : ℕ) (w : Euclid m), s i + lams i • w ∈ ball (0 : Euclid m) δ →
+      HasFDerivAt (fun w => (lams i)⁻¹ • (u (s i + lams i • w) - t i))
+        (fderiv ℝ u (s i + lams i • w)) w := by
+    intro i w hw
+    have h1 : HasFDerivAt (fun w : Euclid m => s i + lams i • w)
+        (lams i • ContinuousLinearMap.id ℝ (Euclid m)) w :=
+      ((hasFDerivAt_id w).const_smul (lams i)).const_add (s i)
+    have h2 := (((hdiff _ hw).hasFDerivAt.comp w h1).sub_const (t i)).const_smul (lams i)⁻¹
+    refine h2.congr_fderiv ?_
+    ext1 v
+    simp [smul_smul, inv_mul_cancel₀ (hlams i).ne']
+  -- `|sᵢ + λᵢ w| ≤ |sᵢ| + λᵢ R` for `|w| ≤ R`, and `|sᵢ| + λᵢ c → 0`
+  have hball : ∀ (i : ℕ) (R r : ℝ) (w : Euclid m), ‖w‖ ≤ R → ‖s i‖ + lams i * R < r →
+      s i + lams i • w ∈ ball (0 : Euclid m) r := by
+    intro i R r w hw hr
+    rw [mem_ball_zero_iff]
+    have hmul : lams i * ‖w‖ ≤ lams i * R := mul_le_mul_of_nonneg_left hw (hlams i).le
+    calc ‖s i + lams i • w‖ ≤ ‖s i‖ + ‖lams i • w‖ := norm_add_le _ _
+      _ = ‖s i‖ + lams i * ‖w‖ := by rw [norm_smul, Real.norm_of_nonneg (hlams i).le]
+      _ < r := by linarith
+  have htend : ∀ c : ℝ, Tendsto (fun i => ‖s i‖ + lams i * c) atTop (𝓝 0) := by
+    intro c
+    simpa using hs.norm.add (hlam.mul_const c)
+  -- `C₀ ≥ 0`, witnessed by some offset point
+  have hC₀ : 0 ≤ C₀ := by
+    obtain ⟨i, w, hw, -, -⟩ := hoff.exists
+    exact (norm_nonneg w).trans hw
+  -- `|gᵢ(0)| ≤ 2 C₀` for all `i ≥ i₂`
+  obtain ⟨ρ₁, hρ₁, -, -, hlip₁⟩ := hsmall 1 one_pos
+  obtain ⟨i₂, hi₂⟩ := eventually_atTop.1 (hoff.and ((htend C₀).eventually_lt_const hρ₁))
+  have hbound : ∀ j, (lams (i₂ + j))⁻¹ • (u (s (i₂ + j)) - t (i₂ + j)) ∈
+      closedBall (0 : Euclid k) (2 * C₀) := by
+    intro j
+    obtain ⟨⟨w, hw, -, hut⟩, hlt⟩ := hi₂ (i₂ + j) (Nat.le_add_right _ _)
+    have hl0 := hlams (i₂ + j)
+    have hs0 : s (i₂ + j) ∈ ball (0 : Euclid m) ρ₁ := by
+      simpa using hball (i₂ + j) C₀ ρ₁ 0 (by simpa using hC₀) hlt
+    have hsw := hball (i₂ + j) C₀ ρ₁ w hw hlt
+    have h1 := hlip₁ _ hsw _ hs0
+    have hmul : lams (i₂ + j) * ‖w‖ ≤ lams (i₂ + j) * C₀ := mul_le_mul_of_nonneg_left hw hl0.le
+    rw [mem_closedBall_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hl0.le,
+      inv_mul_le_iff₀ hl0]
+    calc ‖u (s (i₂ + j)) - t (i₂ + j)‖
+        ≤ ‖u (s (i₂ + j)) - u (s (i₂ + j) + lams (i₂ + j) • w)‖ +
+          ‖u (s (i₂ + j) + lams (i₂ + j) • w) - t (i₂ + j)‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+      _ ≤ 1 * ‖s (i₂ + j) - (s (i₂ + j) + lams (i₂ + j) • w)‖ + C₀ * lams (i₂ + j) :=
+          add_le_add h1 hut
+      _ = lams (i₂ + j) * ‖w‖ + C₀ * lams (i₂ + j) := by
+          rw [one_mul, sub_add_cancel_left, norm_neg, norm_smul, Real.norm_of_nonneg hl0.le]
+      _ ≤ lams (i₂ + j) * (2 * C₀) := by linarith
+  -- a subsequence along which `gᵢ(0) → b`
+  obtain ⟨b, -, φ, hφ, hφb⟩ := (isCompact_closedBall (0 : Euclid k) (2 * C₀)).tendsto_subseq hbound
+  obtain ⟨σ, hσ, hg0⟩ : ∃ σ : ℕ → ℕ, StrictMono σ ∧
+      Tendsto (fun j => (lams (σ j))⁻¹ • (u (s (σ j)) - t (σ j))) atTop (𝓝 b) :=
+    ⟨fun j => i₂ + φ j, fun a a' h => Nat.add_lt_add_left (hφ h) i₂, hφb⟩
+  refine ⟨σ, b, hσ, ?_, ?_⟩
+  · -- (H1): differentiability on `B_R`
+    intro R hR
+    filter_upwards [((htend R).comp hσ.tendsto_atTop).eventually_lt_const hδ] with j hj w hw
+    exact (hchain (σ j) w (hball (σ j) R δ w (mem_ball_zero_iff.1 hw).le hj)).differentiableAt
+  · -- (H2): `C¹`-closeness to the constant `b` on `B_R`
+    intro R ε hR hε
+    have hηpos : 0 < min ε (ε / (2 * R)) := lt_min hε (by positivity)
+    have hηR : min ε (ε / (2 * R)) * R ≤ ε / 2 := by
+      calc min ε (ε / (2 * R)) * R ≤ ε / (2 * R) * R :=
+            mul_le_mul_of_nonneg_right (min_le_right _ _) hR.le
+        _ = ε / 2 := by field_simp
+    obtain ⟨ρ, hρ, hρδ, hD, hlip⟩ := hsmall _ hηpos
+    filter_upwards [((htend R).comp hσ.tendsto_atTop).eventually_lt_const hρ,
+      hg0.eventually (ball_mem_nhds b (half_pos hε))] with j hj hgj w hw
+    have hl0 := hlams (σ j)
+    have hwR : ‖w‖ < R := mem_ball_zero_iff.1 hw
+    have hsw : s (σ j) + lams (σ j) • w ∈ ball (0 : Euclid m) ρ := hball (σ j) R ρ w hwR.le hj
+    have hs0 : s (σ j) ∈ ball (0 : Euclid m) ρ := by
+      simpa using hball (σ j) R ρ 0 (by simpa using hR.le) hj
+    have hfd := (hchain (σ j) w (ball_subset_ball hρδ hsw)).fderiv
+    refine ⟨?_, ?_⟩
+    · have hl := hlip _ hs0 _ hsw
+      have hηw : min ε (ε / (2 * R)) * ‖w‖ ≤ ε / 2 :=
+        (mul_le_mul_of_nonneg_left hwR.le hηpos.le).trans hηR
+      calc ‖(lams (σ j))⁻¹ • (u (s (σ j) + lams (σ j) • w) - t (σ j)) - b‖
+          ≤ ‖(lams (σ j))⁻¹ • (u (s (σ j) + lams (σ j) • w) - t (σ j)) -
+              (lams (σ j))⁻¹ • (u (s (σ j)) - t (σ j))‖ +
+            ‖(lams (σ j))⁻¹ • (u (s (σ j)) - t (σ j)) - b‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+        _ < ε / 2 + ε / 2 := by
+            refine add_lt_add_of_le_of_lt ?_ (mem_ball_iff_norm.1 hgj)
+            rw [← smul_sub, sub_sub_sub_cancel_right, norm_smul, norm_inv,
+              Real.norm_of_nonneg hl0.le, inv_mul_le_iff₀ hl0]
+            calc ‖u (s (σ j) + lams (σ j) • w) - u (s (σ j))‖
+                ≤ min ε (ε / (2 * R)) * ‖s (σ j) + lams (σ j) • w - s (σ j)‖ := hl
+              _ = lams (σ j) * (min ε (ε / (2 * R)) * ‖w‖) := by
+                  rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hl0.le]; ring
+              _ ≤ lams (σ j) * (ε / 2) := mul_le_mul_of_nonneg_left hηw hl0.le
+        _ = ε := add_halves ε
+    · rw [hfd]
+      exact (hD _ hsw).trans_le (min_le_left _ _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
