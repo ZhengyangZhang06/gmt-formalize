@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.poly_const-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1",
+  "depth": 5,
+  "title": "A function with vanishing m-th derivative and sublinear growth is constant",
+  "statement": "Let l, m be natural numbers, alpha < 1 and C real. Let G_0, G_1, G_2, ... : R -> R^l (a sequence G : N -> (R -> R^l)) be such that for every j < m and every t in R the map G_j has derivative G_{j+1}(t) at t, G_m(t) = 0 for all t, and |G_0(t) - G_0(0)| <= C |t|^alpha for all t. Then G_0(t) = G_0(0) for every t in R.",
+  "lean_statement": "∀ (ℓ m : ℕ) (α C : ℝ) (G : ℕ → ℝ → Rn ℓ), α < 1 → (∀ j < m, ∀ t : ℝ, HasDerivAt (G j) (G (j + 1) t) t) → (∀ t : ℝ, G m t = 0) → (∀ t : ℝ, ‖G 0 t - G 0 0‖ ≤ C * |t| ^ α) → ∀ t : ℝ, G 0 t = G 0 0",
+  "lean_name": "dohr_eb_sch_liou_poly_sublinear_const",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-457f9e35d5-a1"
+}
