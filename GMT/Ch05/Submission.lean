@@ -540,6 +540,8 @@ theorem dohr_eb_ehs_del_diffquot_uniform : ∀ (n : ℕ) (E : Type) [NormedAddCo
       gcongr
       rw [div_lt_one he1]; linarith
     _ = η := mul_one η
+
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap, differentiated Euler–Lagrange
 equation): limit of the right side.**
 If `ζ : ℝⁿ → ℝ^ℓ` is `C¹` with compact support, `tsupport ζ ⊆ U` for an open `U`, and `g` is
 continuous on `U`, then for every direction `e`, with `φ_h = h⁻¹ (ζ − ζ(· − h e))`,
