@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.signed_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+  "depth": 4,
+  "title": "Signed integer density of an integer multiplicity current supported in an n-plane",
+  "statement": "Let P, n ∈ ℕ, V ⊆ ℝ^P open, τ = (τ_1, …, τ_n) an orthonormal family in ℝ^P, Q := span{τ_1, …, τ_n}, and S ∈ 𝒟_n(V) an integer multiplicity current (IsIntegerMultiplicity S) with spt S ⊆ Q. Then there is g : ℝ^P → ℝ such that, with H^n = μHE[n] and |g(x)| read as the extended norm ‖g x‖ₑ ∈ [0, ∞]: (i) g is a.e.-strongly measurable for H^n⌞Q; (ii) g(x) ∈ ℤ for H^n⌞Q-a.e. x; (iii) ∫_{K∩Q} |g| dH^n < ∞ (lower Lebesgue integral) for every compact K ⊆ V; (iv) S(ω) = ∫_{V∩Q} g(x)·ω(x)(τ_1, …, τ_n) dH^n(x) (Bochner integral) for every ω ∈ 𝒟^n(V); (v) M_W(S) = S.massOn W = ∫_{W∩Q} |g| dH^n for every open W ⊆ V.",
+  "lean_statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P), IsOpen V → Orthonormal ℝ τ → IsIntegerMultiplicity S → S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → ∃ g : Euclid P → ℝ, AEStronglyMeasurable g (μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) ∧ (∀ᵐ x ∂(μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))), ∃ m : ℤ, g x = m) ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → ∫⁻ x in K ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] ≠ ∞) ∧ (∀ ω : TestFormOn V n, S ω = ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → S.massOn W = ∫⁻ x in W ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n]",
+  "lean_name": "idtp_pc_signed_density",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.planar_orientation_sign-a1",
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.minimizing_implies_stationary-a1.support_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.planar_orientation_sign-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-a1",
+      "result_commit": "d15b5cf486116871dce9295932632b12f0af96e0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c87608d4f0-a1"
+}
