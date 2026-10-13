@@ -803,6 +803,77 @@ theorem Submission.smr_ci_norm_eq_sqrt_sum_coord_sq :
   · -- Matching summands: `basisFun i = EuclideanSpace.single i 1`.
     simp only [euclideanCovectorCoordinate, EuclideanSpace.basisFun_apply]
 
+/-- **Polar test form for a `k`-vector field** (Simon Ch. 6, 2.6–2.8).  If the coordinates
+`κ^γ = κ(dx^γ)` of `κ : ℝ^N → Λ_k(ℝ^N)` are `μ`-integrable on `B = B_R(0)`, then for every `ε > 0`
+there is a continuous `k`-form `ω` with `tsupport ω ⊆ B` and `|ω| ≤ 1` such that
+`∫_B |κ| dμ ≤ ∫ κ(ω) dμ + ε`, where `|κ| = (∑_γ (κ^γ)²)^{1/2}`.  Apply
+`imc_mlb_exists_unit_field_integral_ge` to the coefficient field `c = (κ^γ)_γ ∈ ℝ^I` and put
+`ω = ∑_γ F^γ dx^γ`, so that `|ω| = |F| ≤ 1` and `κ(ω) = ⟨F, c⟩`. -/
+theorem Submission.imc_mlb_exists_form_lintegral_coordNorm_le : ∀ (N k : ℕ) (μ : Measure (Eucl N)) (κ : Eucl N → NVector (Eucl N) k) (R : ℝ), (∀ γ : SimonMultiIndex k N, IntegrableOn (fun x => euclideanNVectorCoordinate (κ x) γ) (ball (0 : Eucl N) R) μ) → ∀ ε : ℝ, 0 < ε → ∃ ω : Eucl N → Covector (Eucl N) k, Continuous ω ∧ tsupport ω ⊆ ball (0 : Eucl N) R ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ Integrable (fun x => κ x (ω x)) μ ∧ ∫⁻ x in ball (0 : Eucl N) R, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ ≤ ENNReal.ofReal (∫ x, κ x (ω x) ∂μ + ε) := by
+  intro N k μ κ R hκ ε hε
+  classical
+  -- Step 1: the coefficient field `c(x) = (κ^γ(x))_γ = ∑_γ κ^γ(x) e_γ` in `ℝ^I`.
+  obtain ⟨c, hc_apply⟩ : ∃ c : Eucl N → EuclideanSpace ℝ (SimonMultiIndex k N),
+      ∀ x γ, c x γ = euclideanNVectorCoordinate (κ x) γ :=
+    ⟨fun x => WithLp.toLp 2 fun γ => euclideanNVectorCoordinate (κ x) γ, fun _ _ => rfl⟩
+  have hc_sum : c = fun x => ∑ γ : SimonMultiIndex k N,
+      euclideanNVectorCoordinate (κ x) γ • EuclideanSpace.single γ (1 : ℝ) := by
+    funext x
+    ext β
+    simp [hc_apply, Pi.single_apply, mul_ite]
+  -- Step 2: `c` is `μ`-integrable on `B`.
+  have hc : IntegrableOn c (ball (0 : Eucl N) R) μ := by
+    rw [hc_sum]
+    exact integrable_finsetSum _ fun γ _ => (hκ γ).smul_const _
+  -- Step 3: `|c(x)| = (∑_γ κ^γ(x)²)^{1/2}`.
+  have hc_norm : ∀ x, ‖c x‖ =
+      Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2) := by
+    intro x
+    simp [EuclideanSpace.norm_eq, hc_apply]
+  -- Step 4: a continuous unit field `F` nearly attaining `∫_B |c| dμ`.
+  obtain ⟨F, hF, hFB, hF1, hFi, hFle⟩ := Submission.imc_mlb_exists_unit_field_integral_ge N
+    (EuclideanSpace ℝ (SimonMultiIndex k N)) μ R c hc ε hε
+  -- Step 5: the test form `ω = ∑_γ F^γ dx^γ`.
+  obtain ⟨ω, hω⟩ : ∃ ω : Eucl N → Covector (Eucl N) k, ∀ x, ω x = ∑ γ : SimonMultiIndex k N,
+      F x γ • wedgeCovectors k (fun j => EuclideanSpace.proj (γ j)) :=
+    ⟨_, fun _ => rfl⟩
+  -- Step 5(d): `κ(x)(ω(x)) = ∑_γ F^γ(x) κ^γ(x) = ⟨F(x), c(x)⟩`.
+  have hpair : (fun x => κ x (ω x)) = fun x => inner ℝ (F x) (c x) := by
+    funext x
+    simp only [hω, map_sum, map_smul, smul_eq_mul, PiLp.inner_apply, RCLike.inner_apply,
+      conj_trivial, hc_apply, euclideanNVectorCoordinate, mul_comm]
+  refine ⟨ω, ?_, ?_, fun x => ?_, ?_, ?_⟩
+  · -- Step 5(a): `ω` is continuous.
+    rw [show ω = _ from funext hω]
+    fun_prop
+  · -- Step 5(b): `support ω ⊆ support F`, so `tsupport ω ⊆ tsupport F ⊆ B`.
+    refine (closure_mono (Function.support_subset_iff'.2 fun x hx => ?_)).trans hFB
+    rw [Function.notMem_support] at hx
+    simp [hω, hx]
+  · -- Step 5(c): the coordinates of `ω(x)` are `F^β(x)`, so `|ω(x)| = |F(x)| ≤ 1`.
+    have hcoord : ∀ β, euclideanCovectorCoordinate (ω x) β = F x β := by
+      intro β
+      rw [hω]
+      exact Submission.smr_ci_coord_sum_smul_wedge N k (fun γ => F x γ) β
+    calc covectorEuclideanNorm (ω x)
+        = Real.sqrt (∑ β : SimonMultiIndex k N, (F x β) ^ 2) := by
+          rw [Submission.smr_ci_norm_eq_sqrt_sum_coord_sq]
+          simp only [hcoord]
+      _ = ‖F x‖ := by simp [EuclideanSpace.norm_eq]
+      _ ≤ 1 := hF1 x
+  · -- Step 6: `κ(ω) = ⟨F, c⟩` is `μ`-integrable.
+    rw [hpair]
+    exact hFi
+  · -- Step 7: `∫⁻_B |κ| dμ = ofReal (∫_B |c| dμ) ≤ ofReal (∫ ⟨F, c⟩ dμ + ε)`.
+    rw [hpair]
+    calc ∫⁻ x in ball (0 : Eucl N) R, ENNReal.ofReal (Real.sqrt
+          (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ
+        = ∫⁻ x in ball (0 : Eucl N) R, ENNReal.ofReal ‖c x‖ ∂μ := by simp only [hc_norm]
+      _ = ENNReal.ofReal (∫ x in ball (0 : Eucl N) R, ‖c x‖ ∂μ) :=
+        (ofReal_integral_eq_lintegral_ofReal (Integrable.norm hc)
+          (Eventually.of_forall fun x => norm_nonneg (c x))).symm
+      _ ≤ ENNReal.ofReal (∫ x, inner ℝ (F x) (c x) ∂μ + ε) := ENNReal.ofReal_le_ofReal hFle
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
