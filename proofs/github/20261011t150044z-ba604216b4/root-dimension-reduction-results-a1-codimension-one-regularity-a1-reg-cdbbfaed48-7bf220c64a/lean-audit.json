@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9d1d8a9ced8eee23815ffaa9f1a934bbba90c6c4fa19be0621318512252f5951",
+  "git_delta": {
+    "base_commit": "2408ff2335cf5b7fcae586bcea182d8e961174a6",
+    "candidate_commit": "cf9d93b2949c657ed5dcbbd4b43e1cff4432399d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_rc_ball_cone_measurable",
+    "diff_sha256": "6f978011134fe9a478d9933672c698bd416e34ac0fa59832997a0766cd722f95",
+    "source_sha256": "94339a36043c4509e18a2cfd86287f0e5e7c0a3555e88240e9921ef87d142c4f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_rc_ball_cone_measurable",
+      "statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (α q : ℝ), SFinite μ → Measurable ν → Measurable (fun x : Euclid (m + 1) => μ (closedBall x q)) ∧ Measurable (fun x : Euclid (m + 1) => μ ({z | α * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x q))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The ball and cone masses are Borel functions of the centre.**  This is the measurability
+that Simon's proof of Ch. 3, 1.6 "⇐" does not check when it applies Egoroff's theorem to `f_k`
+and `q_k`, which are built from `μ(B_ρ(x))` and `μ(X_{1/2}(P_x^⊥, x) ∩ B_ρ(x))`.  For an s-finite
+`μ` on `E = ℝ^{m+1}`, a Borel `ν : E → E` and `α, q ∈ ℝ`, the maps `x ↦ μ(B̄_q(x))` and
+`x ↦ μ({z : α|z - x| ≤ |⟨z - x, ν(x)⟩|} ∩ B̄_q(x))` are measurable.  Each is `x ↦ μ(S_x)` for a
+measurable `S ⊆ E × E`, namely `S = A = {(x, z) : |z - x| ≤ q}` or `S = B ∩ A` with
+`B = {(x, z) : α|z - x| ≤ |⟨z - x, ν(x)⟩|}`, so the section lemma of Tonelli's theorem applies. -/
+theorem Submission.codim1_rdo_dg_rc_ball_cone_measurable : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (α q : ℝ), SFinite μ → Measurable ν → Measurable (fun x : Euclid (m + 1) => μ (closedBall x q)) ∧ Measurable (fun x : Euclid (m + 1) => μ ({z | α * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x q)) := by
+  intro m μ ν α q hμ hν
+  -- `A = {(x, z) : |z - x| ≤ q}` is measurable, with sections `B̄_q(x)`
+  have hA : MeasurableSet {p : Euclid (m + 1) × Euclid (m + 1) | dist p.2 p.1 ≤ q} :=
+    measurableSet_le (continuous_dist.comp (continuous_snd.prodMk continuous_fst)).measurable
+      measurable_const
+  -- `B = {(x, z) : α|z - x| ≤ |⟨z - x, ν(x)⟩|}` is measurable since `ν` is
+  have hB : MeasurableSet {p : Euclid (m + 1) × Euclid (m + 1) |
+      α * ‖p.2 - p.1‖ ≤ |inner ℝ (p.2 - p.1) (ν p.1)|} := by
+    refine measurableSet_le ?_ ?_
+    · exact (continuous_const.mul (continuous_norm.comp
+        (continuous_snd.sub continuous_fst))).measurable
+    · exact continuous_abs.measurable.comp (Continuous.measurable2 continuous_inner
+        (measurable_snd.sub measurable_fst) (hν.comp measurable_fst))
+  -- for s-finite `μ`, `x ↦ μ(S_x)` is measurable for every measurable `S ⊆ E × E`
+  refine ⟨?_, ?_⟩
+  · have h := measurable_measure_prodMk_left (ν := μ) hA
+    convert h using 2 with x
+    rfl
+  · have h := measurable_measure_prodMk_left (ν := μ) (hB.inter hA)
+    convert h using 2 with x
+    rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
