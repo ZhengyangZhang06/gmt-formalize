@@ -1705,6 +1705,70 @@ theorem Submission.lpf_wtc_weighted_tangent_transfer :
   rw [hsplit]
   ring
 
+/-- Weighted approximate tangent planes along a `C¹` chart (Simon Ch. 3, proof of Theorem 1.6
+"⇒" and Remark 1.8(1), for one chart): if `Φ : ℝⁿ → ℝ^Q` is `C¹` and antilipschitz on the open
+set `Ω`, then at `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)`, with `y = Φ(w)`, `DΦ(w)(ℝⁿ)` is the approximate tangent
+space of `M` with respect to `θ`.  Cover `M` up to a null set by compact pieces `C` with `θ|C`
+continuous (`lpf_wtc_lusin_compact_pieces`).  At a.e. `y ∈ C ∩ Φ(Ω)`, the sets `C ∖ Φ(Ω)`,
+`Φ(Ω) ∖ C` and the measure `θ Hⁿ ⌞ (M ∖ C)` have zero `n`-density
+(`lpf_wtc_ae_zero_density_off_set`); there the tangent plane of `Φ(Ω)`
+(`lpf_wtc_chart_approx_tangent`) passes to `C` (`lpf_wtc_tangent_transfer`) and then to the
+weighted set `(M, θ)` (`lpf_wtc_weighted_tangent_transfer`). -/
+theorem Submission.slicing_im_coarea_chart_tangent : ∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict (M ∩ Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → HasWeightedApproximateTangentSpaceAt n M θ y (LinearMap.range (fderiv ℝ Φ w).toLinearMap) := by
+  intro Q n V M θ Φ Ω hV hMV hM hθ hint hΩ hΦ hanti
+  -- Step 0: `N = Φ(Ω)` is Borel and locally `Hⁿ`-finite.
+  obtain ⟨hNm, hNfin⟩ :=
+    Submission.lpf_wtc_chart_image_measurable_locally_finite Q n Φ Ω hΩ hΦ hanti
+  -- Step 1 (Remark 1.8(1)): compact pieces `C k ⊆ M` of finite measure with `θ|C k` continuous,
+  -- covering `M` up to an `Hⁿ`-null set.
+  obtain ⟨C, hCc, hCM, hθC, hCfin, hnull⟩ :=
+    Submission.lpf_wtc_lusin_compact_pieces Q n V M θ hV hMV hM hθ hint
+  -- Steps 2–4 on a fixed piece: the conclusion holds at `Hⁿ`-a.e. point of `C k ∩ Φ(Ω)`.
+  have hpiece : ∀ k, ∀ᵐ y ∂(μHE[n] : Measure (Eucl Q)), y ∈ C k → y ∈ Φ '' Ω →
+      ∀ w ∈ Ω, Φ w = y → HasWeightedApproximateTangentSpaceAt n M θ y
+        (LinearMap.range (fderiv ℝ Φ w).toLinearMap) := by
+    intro k
+    have hCm : MeasurableSet (C k) := (hCc k).isClosed.measurableSet
+    -- (i) `Hⁿ ⌞ (C k ∖ Φ(Ω))` has zero `n`-density off `C k ∖ Φ(Ω)`.
+    have h₁ := Submission.lpf_wtc_ae_zero_density_off_set Q n univ (C k \ Φ '' Ω) (fun _ => 1)
+      isOpen_univ (hCm.diff hNm).nullMeasurableSet fun K _ _ => by
+        rw [setLIntegral_one]
+        exact (measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt (hCfin k)
+    -- (ii) `Hⁿ ⌞ (Φ(Ω) ∖ C k)` has zero `n`-density off `Φ(Ω) ∖ C k`.
+    have h₂ := Submission.lpf_wtc_ae_zero_density_off_set Q n univ (Φ '' Ω \ C k) (fun _ => 1)
+      isOpen_univ (hNm.diff hCm).nullMeasurableSet fun K hK _ => by
+        rw [setLIntegral_one]
+        exact (measure_mono (inter_subset_inter_left K sdiff_subset)).trans_lt (hNfin K hK)
+    -- (iii) `θ Hⁿ ⌞ (M ∖ C k)` has zero `n`-density at a.e. point of `V ∖ (M ∖ C k)`.
+    have h₃ := Submission.lpf_wtc_ae_zero_density_off_set Q n V (M \ C k)
+      (fun x => ENNReal.ofReal (θ x)) hV (hM.diff hCm.nullMeasurableSet) fun K hK hKV =>
+        (lintegral_mono_set (inter_subset_inter_left K sdiff_subset)).trans_lt
+          (hint K hK hKV).setLIntegral_lt_top
+    filter_upwards [h₁, h₂, h₃] with y hy₁ hy₂ hy₃ hyC hyN w hw hwy
+    subst hwy
+    simp only [setLIntegral_one] at hy₁ hy₂
+    have hyV : Φ w ∈ V := hMV (hCM k hyC)
+    -- Step 2: the approximate tangent plane of `Φ(Ω)` at `Φ w` is also that of `C k`.
+    have hT := Submission.lpf_wtc_chart_approx_tangent Q n Φ Ω hΩ hΦ hanti w hw
+    have hCT := Submission.lpf_wtc_tangent_transfer Q n (C k) (Φ '' Ω) (Φ w) _
+      hCm.nullMeasurableSet hNm.nullMeasurableSet hT
+      ⟨1, one_pos, hNfin _ (isCompact_closedBall _ _)⟩
+      (hy₁ (mem_univ _) fun h => h.2 hyN) (hy₂ (mem_univ _) fun h => h.2 hyC)
+    -- Step 4: weighted blow-up on `M`, with `closedBall (Φ w) (ε / 2) ⊆ V`.
+    obtain ⟨ε, hε, hεV⟩ := Metric.isOpen_iff.1 hV _ hyV
+    exact Submission.lpf_wtc_weighted_tangent_transfer Q n M (C k) θ (Φ w) _ hM
+      hCm.nullMeasurableSet (hCM k) hyC (fun x hx => (hθ x hx).le) hCT
+      ⟨ε / 2, half_pos hε, (measure_mono inter_subset_left).trans_lt (hCfin k),
+        hint _ (isCompact_closedBall _ _)
+          ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
+      ((hθC k).continuousWithinAt hyC) (hy₃ hyV fun h => h.2 hyC)
+  -- Step 5: a.e. point of `M ∩ Φ(Ω)` lies in some piece `C k` and is good for it.
+  filter_upwards [ae_restrict_mem₀ (hM.inter hNm.nullMeasurableSet),
+    ae_restrict_of_ae (ae_all_iff.2 hpiece),
+    ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 hnull)] with y hy hyk hyU
+  obtain ⟨k, hk⟩ := mem_iUnion.1 (not_not.1 fun h => hyU ⟨hy.1, h⟩)
+  exact hyk k hk hy.2
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
