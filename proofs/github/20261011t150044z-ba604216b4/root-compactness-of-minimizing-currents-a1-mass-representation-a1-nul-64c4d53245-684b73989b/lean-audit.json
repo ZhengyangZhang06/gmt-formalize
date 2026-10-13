@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "777f7c0aa1a6339f9771dedd5457d24335ea09aa8c5ac189639cf7184d4e8b79",
+  "git_delta": {
+    "base_commit": "5f22c59eefa552dbd6fc880d5bf468ca71a5a64b",
+    "candidate_commit": "ee459dbf76f2a3e67fe32f662f28bc9bef089a5d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_null_of_compact_null",
+    "diff_sha256": "85029d69c40f54dbea2225282a834b75c596158e0af0348d9b8c626c9ebc5310",
+    "source_sha256": "3e7889074aa01e7f2cb6370144e2cd72b4039800fb825b68e946e8cb6ff1ca32",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_null_of_compact_null",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ν C = 0 → μ C = 0) → ∀ E : Set (Euclid P), ν E = 0 → μ E = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
