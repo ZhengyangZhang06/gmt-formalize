@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.wedge_covector-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1",
+  "depth": 5,
+  "title": "The constant 2-covector a♭ ∧ e♭",
+  "statement": "For P ∈ ℕ and a, e ∈ ℝ^P there is a continuous alternating 2-form β ∈ Covector(ℝ^P, 2) (= ℝ^P [⋀^Fin 2]→L[ℝ] ℝ) with β(v) = ⟨a, v₀⟩⟨e, v₁⟩ − ⟨a, v₁⟩⟨e, v₀⟩ for every v : Fin 2 → ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (a e : Euclid P), ∃ β : Covector (Euclid P) 2, ∀ v : Fin 2 → Euclid P, β v = inner ℝ a (v 0) * inner ℝ e (v 1) - inner ℝ a (v 1) * inner ℝ e (v 0)",
+  "lean_name": "idtp_cse_bml_wedge_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d23715ed45-a1"
+}

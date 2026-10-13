@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.rescaled_portmanteau-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1",
+  "depth": 5,
+  "title": "Portmanteau bounds for the rescaled measures λ_j^{-2}(η_j)_#μ",
+  "statement": "Let P ∈ ℕ, μ and ν measures on ℝ^P that are finite on compact sets, a ∈ ℝ^P and λ_j > 0 (j ∈ ℕ); put η_j := dilation a λ_j. Assume that λ_j^{-2}∫ g(η_j(x)) dμ(x) → ∫ g dν for every continuous compactly supported g : ℝ^P → ℝ. Then limsup_j ofReal(λ_j^{-2})·μ(η_j^{-1}(K)) ≤ ν(K) for every compact K, and ν(U) ≤ liminf_j ofReal(λ_j^{-2})·μ(η_j^{-1}(U)) for every open U.",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (a : Euclid P) (lams : ℕ → ℝ), IsFiniteMeasureOnCompacts μ → IsFiniteMeasureOnCompacts ν → (∀ j, 0 < lams j) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ) atTop (𝓝 (∫ x, g x ∂ν))) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' K)) atTop ≤ ν K) ∧ ∀ U : Set (Euclid P), IsOpen U → ν U ≤ liminf (fun j => ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' U)) atTop",
+  "lean_name": "idtp_cse_bml_rescaled_portmanteau",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-808e14f9e9-a1"
+}

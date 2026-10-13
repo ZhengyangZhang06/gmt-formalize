@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_mass_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1",
+  "depth": 5,
+  "title": "The boxes Z(s, s') have mass asymptotic to 4m s'²",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P that is finite on compact sets, Q a linear subspace of ℝ^P with dim Q = 2 and orthogonal projection π, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, m ∈ ℕ and s > 0. For s' ∈ ℝ let Z(s, s') := {x : ⟨x, a⟩ > 0, ||x| − 1| < s', |arctan(⟨x, e⟩/⟨x, a⟩)| < s', |x − πx| < s|x|}. Assume (L) μ(Z(s, s') ∖ B_{3s'}(a)) = 0 for every 0 < s' ≤ s, and (V) for every sequence λ_j > 0 with λ_j → 0 there is a strictly increasing φ such that λ_{φ(j)}^{-2}∫ g(dilation a λ_{φ(j)} x) dμ(x) → m∫_Q g dH² for every continuous compactly supported g : ℝ^P → ℝ. Then μ(Z(s, s'))/ofReal(s'²) → 4m in [0, ∞] as s' → 0⁺.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (m : ℕ) (s : ℝ), IsFiniteMeasureOnCompacts μ → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → (∀ s' : ℝ, 0 < s' → s' ≤ s → μ ({x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} \\ ball a (3 * s')) = 0) → (∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂μ) atTop (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) → Tendsto (fun s' : ℝ => μ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 (4 * (m : ℝ≥0∞)))",
+  "lean_name": "idtp_cse_bml_box_mass_limit",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.subseq_criterion-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.square_measure-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.rescaled_portmanteau-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.subseq_criterion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.square_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.rescaled_portmanteau-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d6130874a2-a1"
+}

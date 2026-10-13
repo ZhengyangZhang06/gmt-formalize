@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_bml_",
+        "HasApproximateTangentSpaceAt.unique|regular_euclideanHausdorffMeasure_restrict_submodule|def HasApproximateTangentSpaceAt|finrank_eq",
+        "tendsto_of_subseq_tendsto|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|support_mem_ae|def mkContinuous|theorem ofReal_integral_eq_lintegral_ofReal|theorem tendsto_of_le_liminf_of_limsup_le",
+        "class Regular|extends.*IsFiniteMeasureOnCompacts|volume_preserving_ofLp|theorem volume_pi_Ioo|theorem volume_Icc_pi|one_of_mem_closedBall",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bml-independent-audit-6vgtyma5/ExactTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bml-decomp-k7q2/check/ParentAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bml-decomp-k7q2/check/M4.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bml-decomp-k7q2/check/Small.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-da1a1b47c9/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-da1a1b47c9/decomposition-v1.json",
+        "/tmp/bml-independent-audit-6vgtyma5/ExactTypes.lean",
+        "/tmp/bml-decomp-k7q2/check/ParentAx.lean",
+        "/tmp/bml-decomp-k7q2/check/M4.lean",
+        "/tmp/bml-decomp-k7q2/check/Small.lean",
+        "/tmp/bml-independent-audit-6vgtyma5/Source_cbr_vague_portmanteau.lean",
+        "/tmp/bml-independent-audit-6vgtyma5/Source_cbr_imRep_measure_basic.lean",
+        "/tmp/bml-independent-audit-6vgtyma5/Source_cmc_fcl_imrep_integral_data.lean",
+        "/tmp/bml-independent-audit-6vgtyma5/Source_dtc_blowUp_testForm_corr.lean",
+        "/tmp/bml-independent-audit-6vgtyma5/Source_rsd_imrep_compact_measure_ne_top.lean",
+        "/tmp/bml-independent-audit-6vgtyma5/Source_dimred_cs_mi_hasMassDensity_unique.lean",
+        "/tmp/bml-independent-audit-6vgtyma5/Source_imrep_represents_support_eq_inter_measure_support.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected box-mass theorem. The workspace contract matches the pinned snapshot; mathlib and SimonGMT revisions match their pins. All eight exact one-line propositions elaborate without declaring any proposed child. Their names are bare identifiers and unreserved in the DAG and other node records; the snapshot contains no idtp_cse_bml_* declaration. Dependencies are acyclic, every child contributes, and external prerequisites do not depend back on this node. Conditional Lean checks establish the exact frozen parent from its direct children and prerequisites, and box_mass_limit from its four listed dependencies. Seven reused accepted declarations were checked against their frozen types and immutable source hashes, then recompiled: their axiom reports contain only propext, Classical.choice and Quot.sound. The covector and projection constructions have the intended types; no problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "subseq_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Countable generation, the eventually positive tail shift, and the supplied subsequence establish the exact one-sided limit, including when L is infinite. The argument is complete and non-circular."
+    },
+    {
+      "key": "box_inclusions",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses match exactly. The norm and arctangent error bounds are valid with constant 30; projection contraction and 6s' < s give the transverse bound. Both inclusions follow. Neither e ∈ Q nor an upper bound on η is needed."
+    },
+    {
+      "key": "square_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthonormal parametrization identifies Q with Euclid 2 and transfers normalized Hausdorff measure to volume. The bound 2r² ≤ 8 < 9 removes the ball constraints. Compact finiteness and both exact formulas follow, including r = 0."
+    },
+    {
+      "key": "rescaled_portmanteau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive scales give proper homeomorphisms and locally finite rescaled push-forwards. The integral identity supplies precisely the accepted portmanteau lemma's hypotheses. Its compact upper bound and open lower bound yield the stated conclusions with the correct scaling."
+    },
+    {
+      "key": "box_mass_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly its four listed dependencies. Localization and the inclusions give eventual mass bounds; portmanteau and the square formulas squeeze their limits to 4m. The common subsequence, ENNReal normalization, and final one-sided limit are handled correctly."
+    },
+    {
+      "key": "wedge_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit determinant formula is multilinear and alternating, with the stated product-norm bound. AlternatingMap.mkContinuous therefore constructs the required covector with exactly the prescribed evaluation formula. No additional hypotheses or circular construction are used."
+    },
+    {
+      "key": "tilt_pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute continuity transfers orientation, and tangent uniqueness identifies the chosen plane. Bessel's inequality bounds |ξβ|; radial coordinates give ‖p_T(Ax)‖² = |ξβ|²‖x‖². Positivity of the denominator on the stated half-space then proves both exact inequalities."
+    },
+    {
+      "key": "tilt_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "BP supplies a common subsequence for current and mass convergence. The test-form correspondence and representation justify the scaled evaluation identity; compact support and almost-everywhere bounds ensure integrability. The calibration squeeze and ofReal comparison prove the exact normalized lintegral limit without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
