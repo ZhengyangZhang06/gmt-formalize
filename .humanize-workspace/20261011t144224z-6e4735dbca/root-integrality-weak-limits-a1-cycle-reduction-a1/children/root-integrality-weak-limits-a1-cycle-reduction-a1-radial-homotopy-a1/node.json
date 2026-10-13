@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Radial homotopy formula for forms",
+  "statement": "(a) Let P, k ∈ ℕ, let φ be a C^∞ (k+1)-form on ℝ^P, ψ any k-form and χ any (k+1)-form on ℝ^P such that Dψ(x)[w](v) = ∫_0^1 t^k ( t·(Dφ(tx)[w])(x, v) + φ(tx)(w, v) ) dt for all x, w ∈ ℝ^P, v ∈ (ℝ^P)^k, and χ(x)(v) = ∫_0^1 t^{k+1} dφ(tx)(x, v) dt for all x ∈ ℝ^P, v ∈ (ℝ^P)^{k+1}. Then χ(x) + dψ(x) = φ(x) for every x (radial homotopy formula H(dφ) + d(H′φ) = φ). (b) Let φ be a C^∞ 0-form and χ a 0-form on ℝ^P with χ(x)(v) = ∫_0^1 t^0 dφ(tx)(x, v) dt (v the empty tuple). Then χ(x) = φ(x) − φ(0) for every x. Here d = Mathlib's extDeriv (dψ(x) = alternatizeUncurryFin (Dψ(x)), defined for every function), D = fderiv, and (x, v) = Fin.cons x v.",
+  "lean_statement": "(∀ (P k : ℕ) (φ : DifferentialForm (Eucl P) (k + 1)) (ψ : DifferentialForm (Eucl P) k) (χ : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → (∀ (x w : Eucl P) (v : Fin k → Eucl P), fderiv ℝ ψ x w v = ∫ t in (0 : ℝ)..1, t ^ k * (t * fderiv ℝ φ (t • x) w (Fin.cons x v) + φ (t • x) (Fin.cons w v))) → (∀ (x : Eucl P) (v : Fin (k + 1) → Eucl P), χ x v = ∫ t in (0 : ℝ)..1, t ^ (k + 1) * extDeriv φ (t • x) (Fin.cons x v)) → ∀ x, χ x + extDeriv ψ x = φ x) ∧ (∀ (P : ℕ) (φ χ : DifferentialForm (Eucl P) 0), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → (∀ (x : Eucl P) (v : Fin 0 → Eucl P), χ x v = ∫ t in (0 : ℝ)..1, t ^ 0 * extDeriv φ (t • x) (Fin.cons x v)) → ∀ x, χ x = φ x - φ 0)",
+  "lean_name": "iwl_cr_radial_homotopy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-homotopy-a1-a1"
+}
