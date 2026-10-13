@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Borel gluing along disjoint injective continuous images** (definition of the weight `J` in
+the area formula for the local unit representation).  Let `Fᵢ : ℝᵐ → ℝᵈ` be continuous and
+injective on the Borel set `Bᵢ`, with the images `Fᵢ(Bᵢ)` pairwise disjoint, and let `hᵢ ≥ 0` be
+Borel.  By Lusin–Souslin `Fᵢ|_{Bᵢ}` is a measurable embedding, so `Jᵢ = hᵢ ∘ (Fᵢ|_{Bᵢ})⁻¹` on
+`Fᵢ(Bᵢ)`, `Jᵢ = 0` off it, is Borel; `J = Σᵢ Jᵢ` is Borel and `≥ 0`, and at `Fᵢ(b)` every term
+but the `i`-th vanishes. -/
+theorem Submission.codim1_lura_glue_measurable_on_pieces : ∀ (m d : ℕ) (F : ℕ → Euclid m → Euclid d) (B : ℕ → Set (Euclid m)) (h : ℕ → Euclid m → ℝ), (∀ i, Continuous (F i)) → (∀ i, MeasurableSet (B i)) → (∀ i, InjOn (F i) (B i)) → Pairwise (fun i j => Disjoint (F i '' B i) (F j '' B j)) → (∀ i, Measurable (h i)) → (∀ i a, 0 ≤ h i a) → ∃ J : Euclid d → ℝ, Measurable J ∧ (∀ v, 0 ≤ J v) ∧ ∀ i, ∀ b ∈ B i, J (F i b) = h i b := by
+  intro m d F B h hF hB hFi hdisj hh hpos
+  -- Lusin–Souslin: `Fᵢ|_{Bᵢ}` is a measurable embedding
+  have he : ∀ i, MeasurableEmbedding ((B i).domRestrict (F i)) := fun i =>
+    (hF i).continuousOn.measurableEmbedding (hB i) (hFi i)
+  -- `Jᵢ = hᵢ ∘ (Fᵢ|_{Bᵢ})⁻¹` on `Fᵢ(Bᵢ)` and `Jᵢ = 0` off it
+  let G : ℕ → Euclid d → ℝ := fun i =>
+    Function.extend ((B i).domRestrict (F i)) (fun b : B i => h i b) 0
+  have hGm : ∀ i, Measurable (G i) := fun i =>
+    (he i).measurable_extend ((hh i).comp measurable_subtype_coe) measurable_const
+  have hGF : ∀ i, ∀ b ∈ B i, G i (F i b) = h i b := fun i b hb =>
+    (he i).injective.extend_apply (fun b : B i => h i b) 0 ⟨b, hb⟩
+  have hG0 : ∀ i v, v ∉ F i '' B i → G i v = 0 := fun i v hv =>
+    Function.extend_apply' _ _ v fun ⟨a, ha⟩ => hv ⟨a, a.2, ha⟩
+  have hGnn : ∀ i v, 0 ≤ G i v := by
+    intro i v
+    by_cases hv : v ∈ F i '' B i
+    · obtain ⟨b, hb, rfl⟩ := hv
+      rw [hGF i b hb]
+      exact hpos i b
+    · rw [hG0 i v hv]
+  -- `J = Σᵢ Jᵢ`; at `Fᵢ(b)` the terms `j ≠ i` vanish since `Fᵢ(Bᵢ) ∩ Fⱼ(Bⱼ) = ∅`
+  refine ⟨fun v => ∑' i, G i v, Measurable.tsum hGm, fun v => tsum_nonneg fun i => hGnn i v,
+    fun i b hb => ?_⟩
+  show ∑' j, G j (F i b) = h i b
+  rw [tsum_eq_single i fun j hj =>
+    hG0 j (F i b) fun hv => Set.disjoint_left.mp (hdisj hj) hv ⟨b, hb, rfl⟩]
+  exact hGF i b hb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

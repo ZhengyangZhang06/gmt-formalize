@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1dc56008de86a8c78d6c7ec1ba4f61451bbf8a52173239b01d0e3a26fafb2917",
+  "git_delta": {
+    "base_commit": "c41220806ce5c78b76f5f2547d6ed3bb7d972229",
+    "candidate_commit": "45b3a5307207c7a18a89f18dd1815cce43bfecff",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lura_glue_measurable_on_pieces",
+    "diff_sha256": "1165f433def456a00c13bd664b7136efb12311e203bcd6feb40fd464787cc824",
+    "source_sha256": "f2e57fe16a074cf8326b6d8ca4637248a50900a44c359f8bbd1e41576a3f51a7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lura_glue_measurable_on_pieces",
+      "statement": "∀ (m d : ℕ) (F : ℕ → Euclid m → Euclid d) (B : ℕ → Set (Euclid m)) (h : ℕ → Euclid m → ℝ), (∀ i, Continuous (F i)) → (∀ i, MeasurableSet (B i)) → (∀ i, InjOn (F i) (B i)) → Pairwise (fun i j => Disjoint (F i '' B i) (F j '' B j)) → (∀ i, Measurable (h i)) → (∀ i a, 0 ≤ h i a) → ∃ J : Euclid d → ℝ, Measurable J ∧ (∀ v, 0 ≤ J v) ∧ ∀ i, ∀ b ∈ B i, J (F i b) = h i b",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
