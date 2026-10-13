@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c07bc02368329b8d68b87f75b05eb1e31482fb952e3c506d47e1ce61f9f01206",
+  "git_delta": {
+    "base_commit": "bbbfd3b812ab009259680fa5dd7023ca7251538b",
+    "candidate_commit": "d120e82c5f334e13a8ac0625327f60a02d5d5cc0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_cwv_isConeCurrent_of_pullback_invariant",
+    "diff_sha256": "da65dee7cda966fc0459e585eb45aa5f79423007900e8ef41e6e2c977d11dba4",
+    "source_sha256": "72bb69881b3616464d3a13e9419da2cb1d73e6c9056912ce6f75a7e8f3db3aec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cwv_isConeCurrent_of_pullback_invariant",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ lam : ℝ, 0 < lam → ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) → C ω' = C ω) → IsConeCurrent C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
