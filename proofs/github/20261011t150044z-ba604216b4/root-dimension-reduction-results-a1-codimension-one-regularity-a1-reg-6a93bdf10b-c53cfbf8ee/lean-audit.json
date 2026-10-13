@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b5a25bb2a3608677a3766caff9536b081f4e6103a90b5b7ab4f4a5f873aa19be",
+  "git_delta": {
+    "base_commit": "7bb777de68274e217c899a5bac2c5680782b589e",
+    "candidate_commit": "09c630bfa800ad4ad5ea18c7277a7f69962283e9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_rc_halving_step",
+    "diff_sha256": "e18ce6b6f62bdc86f89f954570824c339f154c3d198aa740b9a4c837998f3705",
+    "source_sha256": "456db2c93be432cd41ce43db73c9db1860b5d2dcafeab9389fbc40ebed15b410",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_rc_halving_step",
+      "statement": "∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)) → ∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \\ Γ) ≤ μ U / 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
