@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2522c3a9c0807662652a5d3738c2d22a0cb3c4be4dea535dafd5de4c030952fe",
+  "git_delta": {
+    "base_commit": "c41220806ce5c78b76f5f2547d6ed3bb7d972229",
+    "candidate_commit": "875fab55731e68ac4945b677b23f2c95edf6f43a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lura_c1_image_lipschitz_null_rectifiable",
+    "diff_sha256": "a05f1c0ce5f46d322db288da9727a579cbab86b3e21eeda84807c1887cb8f179",
+    "source_sha256": "f92b906142240b54e915e7976bc4cbadab7d52548eba222ada87b51253d65d99",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lura_c1_image_lipschitz_null_rectifiable",
+      "statement": "∀ (m d P : ℕ) (D : Set (Euclid d)) (G : Euclid d → Euclid P), IsOpen D → ContDiffOn ℝ 1 G D → (∀ K : Set (Euclid d), IsCompact K → K ⊆ D → ∃ L : NNReal, LipschitzOnWith L G K) ∧ (∀ S : Set (Euclid d), S ⊆ D → μHE[m] S = 0 → μHE[m] (G '' S) = 0) ∧ ∀ S : Set (Euclid d), S ⊆ D → CountablyRectifiable m S → CountablyRectifiable m (G '' S)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
