@@ -784,6 +784,57 @@ theorem tdo_ghe_ae_mem_support : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : Re
     (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
   filter_upwards [h1, h2] with x hx1 hx2
   exact ⟨V.carrier_subset hx2, hx1⟩
+/-- Simon Ch. 5, proof of Theorem 4.5, displays (5), (6) and the curvature term of (8)
+(pp. 117–118), in the rotated frame `T = q(ℝⁿ × {0})`: with `e'_j = q(0, e_j)`, `a(x)` the first
+block of `q⁻¹x` and `g(x) = q(∇ζ(a(x)), 0)`,
+`|∫_{B_{σ/2}(0)} p_x e'_j · p_x g(x) dμ_V| ≤ M (σ/4) ∫_{B_{σ/2}(0)} |H| dμ_V`.
+`ζ̃ = ζ ∘ a` has `Dζ̃(x) = ⟨g(x), ·⟩`, so the integrand is `div_M(ζ̃ e'_j)`.  On
+`spt V ∩ B_σ(0) ∩ tsupport ζ̃`, `|x| ≤ |a(x)| + dist(x, T) < σ/4 + σ/16 = 5σ/16`, so the first
+variation formula localizes to `B_{σ/2}(0)`; then `|ζ| ≤ Mσ/4`, `|e'_j| = 1` and the integrability
+of `|H|` on the compact `B_{σ/2}(0) ⊆ U` bound the curvature term. -/
+theorem gwe_vertical_first_variation : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ σ : ℝ, 0 < σ → closedBall 0 σ ⊆ U → ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, (∀ x ∈ V.support ∩ closedBall 0 σ, infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16) → ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in closedBall (0 : Amb n ℓ) (σ / 2), inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))) (V.tangentProj x (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) ∂V.weight| ≤ M * (σ / 4) * ∫ x in closedBall (0 : Amb n ℓ) (σ / 2), ‖H x‖ ∂V.weight := by
+  intro n ℓ hn U _hU V H hH σ hσ hσU q hheight ζ hζ _hζc hζσ M hM j
+  -- `ζ̃ = ζ ∘ a` is `C¹`, since `a(y) = (q⁻¹y)₁` is continuous linear.
+  have ha : Continuous fun y : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm y)).1 :=
+    continuous_fst.comp (EuclideanSpace.finAddEquivProd.continuous.comp q.symm.continuous)
+  have hζ' : ContDiff ℝ 1 fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1 :=
+    hζ.comp (contDiff_fst.comp (EuclideanSpace.finAddEquivProd.contDiff.comp q.symm.contDiff))
+  have hζd : Differentiable ℝ ζ := hζ.differentiable one_ne_zero
+  -- The integrand is `div_M(ζ̃ e'_j)`: `Dζ̃(x) = ⟨g(x), ·⟩`, and the trace of the rank-one map.
+  have hdiv : ∀ x, inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))))
+      (V.tangentProj x
+        (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) =
+      V.divM (fun y => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1 •
+        q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))) x := fun x =>
+    (Submission.gwe_vfv_divM_smul_const_eq_inner n ℓ U V _ _ _ x
+      (Submission.gwe_vfv_hasFDerivAt_comp_first_block n ℓ q ζ x (hζd _))).symm
+  -- Localization: on `spt V ∩ B_σ(0) ∩ tsupport ζ̃`, `|x| ≤ |a(x)| + dist(x, T) < σ/4 + σ/16`.
+  have hloc : ∀ x ∈ V.support ∩ closedBall 0 σ,
+      x ∈ tsupport (fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1) →
+      ‖x‖ < 5 * σ / 16 := by
+    intro x hx hxζ
+    have h₁ : ‖(EuclideanSpace.finAddEquivProd (q.symm x)).1‖ < σ / 4 :=
+      mem_ball_zero_iff.1 (hζσ (tsupport_comp_subset_preimage ζ ha hxζ))
+    linarith [hheight x hx, Submission.gwe_vfv_norm_le_first_block_add_infDist n ℓ q x]
+  -- The first variation formula on `B_{σ/2}(0)`, with `r = 5σ/16` and `R = σ`.
+  simp only [hdiv]
+  rw [Submission.gwe_vfv_localized_first_variation n ℓ U V H hH _ _ (5 * σ / 16) (σ / 2) σ hζ'
+      (by positivity) (by linarith) (by linarith) (by linarith) hσU hloc, abs_neg,
+    ← Real.norm_eq_abs, ← integral_const_mul]
+  -- `|ζ| ≤ Mσ/4`, `|e'_j| = 1`, and `|H|` is integrable on the compact `B_{σ/2}(0) ⊆ U`.
+  have hζM : ∀ y, |ζ y| ≤ M * (σ / 4) :=
+    Submission.gwe_vfv_abs_le_grad_bound_mul_radius n hn ζ (σ / 4) M (by positivity) hζd hζσ hM
+  have he : ‖q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))‖ = 1 := by
+    rw [q.norm_map, ← Real.sqrt_sq (norm_nonneg _),
+      (Submission.lip_approx_graph_coordinates n ℓ q).2.1]
+    simp
+  have hH' : IntegrableOn H (closedBall 0 (σ / 2)) V.weight :=
+    hH.1.integrableOn_compact_subset ((closedBall_subset_closedBall (by linarith)).trans hσU)
+      (isCompact_closedBall 0 _)
+  refine norm_integral_le_of_norm_le (hH'.norm.const_mul _) (Eventually.of_forall fun x => ?_)
+  rw [Real.norm_eq_abs, abs_mul]
+  exact mul_le_mul (hζM _) ((abs_real_inner_le_norm _ _).trans_eq (by rw [he, one_mul]))
+    (abs_nonneg _) ((abs_nonneg _).trans (hζM 0))
 
 end Submission
 
