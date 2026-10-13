@@ -1741,6 +1741,51 @@ theorem Submission.slicing_im_tg_cc_contDiff_range_chart_cover : ∀ (n P : ℕ)
     obtain ⟨k, hk⟩ := hreg w hinj
     exact hy (mem_iUnion.2 ⟨k, w, hk, rfl⟩)
 
+/-- Simon Ch. 3, Lemma 1.2 ("only if", pp. 69–70) with Remark 1.3 (p. 70), in chart form: a
+countably `n`-rectifiable `M ⊆ ℝ^P` is covered, up to an `Hⁿ`-null set, by images `Φ_j(Ω_j)` of
+open `Ω_j ⊆ ℝⁿ` under `C¹` maps `Φ_j : ℝⁿ → ℝ^P` that are Lipschitz and antilipschitz on `Ω_j`.
+Write `M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` (1.1); each `F_j(ℝⁿ)` is covered up to an `Hⁿ`-null set by `C¹`
+images `G_{ji}(ℝⁿ)` (display (1)), and each `G_{ji}(ℝⁿ)` by images `G_{ji}(O_{jik})` of open sets
+on which `G_{ji}` is Lipschitz and antilipschitz (the area formula at critical points and the
+inverse function theorem at regular points); the triples `(j, i, k)` are enumerated by `ℕ`. -/
+theorem Submission.slicing_im_tg_c1_chart_cover : ∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \ ⋃ j, Φ j '' Ω j) = 0 := by
+  intro P n M hM
+  -- 1.1: `M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and `F_j` `K_j`-Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hM
+  choose K hK using hF
+  -- `C¹` maps `G_{ji}` with `Hⁿ(F_j(ℝⁿ) ∖ ⋃_i G_{ji}(ℝⁿ)) = 0`.
+  choose G hG hGnull using fun j =>
+    Submission.slicing_im_tg_cc_lipschitz_range_c1_cover n P (F j) (K j) (hK j)
+  -- Open `O_{jik}` on which `G_{ji}` is Lipschitz and antilipschitz, with
+  -- `Hⁿ(G_{ji}(ℝⁿ) ∖ ⋃_k G_{ji}(O_{jik})) = 0`.
+  choose O hO hOL hOA hOnull using fun j i =>
+    Submission.slicing_im_tg_cc_contDiff_range_chart_cover n P (G j i) (hG j i)
+  -- The charts `(Φ_m, Ω_m) = (G_{ji}, O_{jik})` for `e m = (j, i, k)`, `e : ℕ ≃ ℕ × ℕ × ℕ`.
+  let e : ℕ ≃ ℕ × ℕ × ℕ := (Denumerable.eqv (ℕ × ℕ × ℕ)).symm
+  refine ⟨fun m => G (e m).1 (e m).2.1, fun m => O (e m).1 (e m).2.1 (e m).2.2,
+    fun m => hO _ _ _, fun m => hG _ _, fun m => hOL _ _ _, fun m => hOA _ _ _, ?_⟩
+  -- `M ∖ ⋃_m Φ_m(Ω_m)` lies in `M₀ ∪ ⋃_j (F_j(ℝⁿ) ∖ ⋃_i G_{ji}(ℝⁿ))` together with
+  -- `⋃_{j,i} (G_{ji}(ℝⁿ) ∖ ⋃_k G_{ji}(O_{jik}))`, a countable union of `Hⁿ`-null sets.
+  refine measure_mono_null (t := M₀ ∪ (⋃ j, (range (F j) \ ⋃ i, range (G j i))) ∪
+    ⋃ j, ⋃ i, (range (G j i) \ ⋃ k, G j i '' O j i k)) ?_
+    (measure_union_null (measure_union_null hM₀ (measure_iUnion_null hGnull))
+      (measure_iUnion_null fun j => measure_iUnion_null (hOnull j)))
+  rintro x ⟨hxM, hxΦ⟩
+  rcases hMF hxM with hx0 | hxF
+  · exact Or.inl (Or.inl hx0)
+  obtain ⟨j, hj⟩ := mem_iUnion.1 hxF
+  by_cases hGi : x ∈ ⋃ i, range (G j i)
+  · obtain ⟨i, hi⟩ := mem_iUnion.1 hGi
+    by_cases hOk : x ∈ ⋃ k, G j i '' O j i k
+    · -- `x ∈ G_{ji}(O_{jik}) = Φ_m(Ω_m)` for `m = e⁻¹(j, i, k)`, which is excluded.
+      obtain ⟨k, hk⟩ := mem_iUnion.1 hOk
+      exfalso
+      apply hxΦ
+      refine mem_iUnion.2 ⟨e.symm (j, i, k), ?_⟩
+      simpa only [Equiv.apply_symm_apply] using hk
+    · exact Or.inr (mem_iUnion.2 ⟨j, mem_iUnion.2 ⟨i, hi, hOk⟩⟩)
+  · exact Or.inl (Or.inr (mem_iUnion.2 ⟨j, hj, hGi⟩))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
