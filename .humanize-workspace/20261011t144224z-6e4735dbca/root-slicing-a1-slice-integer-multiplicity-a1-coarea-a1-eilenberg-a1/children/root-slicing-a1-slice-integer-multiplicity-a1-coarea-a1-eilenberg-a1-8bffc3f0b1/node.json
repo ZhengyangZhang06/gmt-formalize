@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.eilenberg-a1.cover_majorant-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.eilenberg-a1",
+  "depth": 5,
+  "title": "Borel majorant of the slice covering sums of one cover (Eilenberg intervals)",
+  "statement": "Let X be an extended metric space, m ∈ ℕ, f : X → ℝ, L ∈ [0, ∞) and A ⊆ X such that f is L-Lipschitz on A (edist(f x, f y) ≤ L·edist(x, y) for x, y ∈ A), and let S_i ⊆ A (i ∈ ℕ). Then there is a Borel function ψ : ℝ → [0, ∞] such that Σ_i ⨆_{S_i ∩ (A ∩ f⁻¹{t}) ≠ ∅} (ediam(S_i ∩ (A ∩ f⁻¹{t})))^m ≤ ψ(t) for every t ∈ ℝ, and ∫_ℝ ψ dλ¹ ≤ 2L·Σ_i ⨆_{S_i ≠ ∅} (ediam S_i)^{m+1}. The exponents are the real casts of the natural numbers m and m + 1, ediam is the extended diameter, and λ¹ is Lebesgue measure on ℝ.",
+  "lean_statement": "∀ (X : Type) [EMetricSpace X] (m : ℕ) (f : X → ℝ) (L : ℝ≥0) (A : Set X) (S : ℕ → Set X), LipschitzOnWith L f A → (∀ i, S i ⊆ A) → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, ∑' i, ⨆ (_ : (S i ∩ (A ∩ f ⁻¹' {t})).Nonempty), ediam (S i ∩ (A ∩ f ⁻¹' {t})) ^ (m : ℝ) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ 2 * (L : ℝ≥0∞) * ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ ((m + 1 : ℕ) : ℝ)",
+  "lean_name": "slicing_im_coarea_eil_cover_majorant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1-8bffc3f0b1-a1"
+}
