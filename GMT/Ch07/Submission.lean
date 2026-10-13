@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, 3.13 and the remark after it**: let `M_W(T) = μ(W)` for open `W ⊆ U`, let
+`μ(B_ε(x)) ≠ 0` for `x ∈ spt T` and `ε > 0`, and let every existing density
+`lim_{ρ ↓ 0} μ(B_ρ(x))/(ωₙρⁿ)` be `≥ 1` for `μ`-a.e. `x`.  If `Θ` is an upper semicontinuous
+density of `T` on the open set `U`, then every density of `T` at a point `y ∈ spt T` is `≥ 1`.
+Such a density equals `Θ(y)`.  If `Θ(y) < 1`, then `Θ < 1` on a ball `B_ε(y) ⊆ U`.  On this ball
+the mass ratios equal the `μ`-ratios for small radii, so no point of `B_ε(y)` has the a.e.
+property.  Hence `μ(B_ε(y)) = 0`, contradicting `y ∈ spt T`. -/
+theorem Submission.dimred_mono_support_density_ge_one_of_usc : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (Θ : Euclid P → ℝ), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = μ W) → (∀ x ∈ T.support, ∀ ε : ℝ, 0 < ε → μ (ball x ε) ≠ 0) → (∀ᵐ x ∂μ, ∀ θ : ℝ, Tendsto (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → 1 ≤ θ) → (∀ y ∈ U, HasMassDensity T y (Θ y)) → UpperSemicontinuousOn Θ U → ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ := by
+  intro P n U T μ Θ hU hmass hpos hae hΘ husc y hy θ hθ
+  have hyU : y ∈ U := T.support_subset_domain hy
+  -- `θ = Θ(y)`: both are nonnegative limits of the same ratio in `[0, ∞]`
+  rw [(ENNReal.ofReal_eq_ofReal_iff hθ.1 (hΘ y hyU).1).1 (tendsto_nhds_unique hθ.2 (hΘ y hyU).2)]
+  by_contra! hlt
+  -- if `Θ(y) < 1`, then `Θ < 1` on a ball `B_ε(y) ⊆ U`
+  have hlt' : ∀ᶠ z in 𝓝[U] y, Θ z < 1 := husc y hyU 1 hlt
+  rw [hU.nhdsWithin_eq hyU] at hlt'
+  obtain ⟨ε, hε, hball⟩ := eventually_nhds_iff_ball.1 (hlt'.and (hU.eventually_mem hyU))
+  -- no point of `B_ε(y)` has the a.e. property, so `μ(B_ε(y)) = 0`, contradicting `y ∈ spt T`
+  refine hpos y hy ε hε (measure_mono_null ?_ (ae_iff.1 hae))
+  intro z hz hgood
+  obtain ⟨hzΘ, hzU⟩ := hball z hz
+  -- for `0 < ρ < ε - |z - y|`, `B_ρ(z) ⊆ B_ε(y) ⊆ U`, so `M_{B_ρ(z)}(T) = μ(B_ρ(z))`
+  have hρ : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ < ε - dist z y :=
+    eventually_nhdsWithin_of_eventually_nhds (eventually_lt_nhds (sub_pos.2 (mem_ball.1 hz)))
+  refine hzΘ.not_ge (hgood (Θ z) ((hΘ z hzU).2.congr' (hρ.mono fun ρ hρ => ?_)))
+  dsimp only
+  rw [hmass (ball z ρ) isOpen_ball fun w hw => (hball w (ball_subset_ball' (by linarith) hw)).2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
