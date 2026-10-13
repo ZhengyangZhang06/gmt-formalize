@@ -540,6 +540,343 @@ theorem allard52_c1h_holder_extension : ∀ (n m k : ℕ) (F : Rn n → (Rn m �
     exact le_of_tendsto_of_tendsto ((hcont.tendsto _).comp
       (((hg x (hSZ hx)).comp tendsto_fst).sub ((hg y (hSZ hy)).comp tendsto_snd)))
       (hmod x y) (hZ x y)
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"), Fubini on lines: if `Lⁿ(N) = 0`, then for all `x, h ∈ ℝⁿ` and `Lⁿ`-a.e. `w`
+the line `t ↦ x + w + t h` meets `N` in an `L¹`-null set.  Enclose `N` in a measurable null set
+`N'`.  The set `E = {(w, t) : x + w + t h ∈ N'}` is measurable (a preimage under a continuous map),
+and each `t`-section `{w : w + (x + t h) ∈ N'}` is a translate of `N'`, hence `Lⁿ`-null.  So
+`(Lⁿ × L¹)(E) = 0` by Tonelli, almost every `w`-section of `E` is `L¹`-null, and monotonicity
+passes this from `N'` to `N`. -/
+theorem allard52_lad_segment_null : ∀ (n : ℕ) (N : Set (Rn n)), volume N = 0 → ∀ (x h : Rn n), ∀ᵐ w ∂(volume : Measure (Rn n)), volume {t : ℝ | x + w + t • h ∈ N} = 0 := by
+  intro n N hN x h
+  -- A measurable null envelope `N'` of `N`.
+  obtain ⟨N', hNN', hN'm, hN'0⟩ := exists_measurable_superset_of_null hN
+  -- `E = {(w, t) : x + w + t h ∈ N'}` is measurable.
+  set E : Set (Rn n × ℝ) := {p | x + p.1 + p.2 • h ∈ N'} with hE
+  have hEm : MeasurableSet E :=
+    (show Continuous fun p : Rn n × ℝ => x + p.1 + p.2 • h by fun_prop).measurable hN'm
+  -- Each `t`-section of `E` is the translate `N' - (x + t h)`, hence null.
+  have hsec : ∀ t : ℝ, (volume : Measure (Rn n)) ((fun w => (w, t)) ⁻¹' E) = 0 := by
+    intro t
+    have hset : (fun w => (w, t)) ⁻¹' E = (fun w => w + (x + t • h)) ⁻¹' N' := by
+      ext w
+      simp only [mem_preimage, hE, mem_ofPred_eq]
+      rw [show x + w + t • h = w + (x + t • h) by abel]
+    rw [hset, measure_preimage_add_right]
+    exact hN'0
+  -- Tonelli: `(Lⁿ × L¹)(E) = ∫⁻ Lⁿ(t-section of E) dt = 0`.
+  have hprod : (volume : Measure (Rn n)).prod (volume : Measure ℝ) E = 0 := by
+    rw [Measure.prod_apply_symm hEm]
+    exact (lintegral_congr hsec).trans lintegral_zero
+  -- Hence almost every `w`-section `{t : x + w + t h ∈ N'}` is `L¹`-null, and so is the smaller
+  -- set `{t : x + w + t h ∈ N}`.
+  rw [Measure.measure_prod_null hEm] at hprod
+  filter_upwards [hprod] with w hw
+  exact measure_mono_null (fun t ht => hNN' ht) hw
+
+/-- Fundamental theorem of calculus for a Lipschitz curve with an a.e. derivative (node
+`lipschitz_ftc` of `lipschitz_ae_derivative`): if `φ : ℝ → ℝ^ℓ` is `L`-Lipschitz on `[a, b]`, `k`
+is continuous on `[a, b]` and `φ` has derivative `k(t)` at a.e. `t ∈ (a, b)`, then
+`φ(b) - φ(a) = ∫_a^b k`.  The extension `ψ = φ ∘ projIcc a b` is `L`-Lipschitz on `ℝ`, so the
+difference quotients `h⁻¹ (ψ(t + h) - ψ(t))` are bounded by `L`; as `h → 0⁺` they tend to `k(t)`
+for a.e. `t ∈ (a, b]`, and dominated convergence gives convergence of their integrals over
+`[a, b]` to `∫_a^b k`.  For a primitive `G` of the continuous `ψ` the same integrals equal
+`h⁻¹ (G(b + h) - G(b)) - h⁻¹ (G(a + h) - G(a))`, which tend to `ψ(b) - ψ(a) = φ(b) - φ(a)`. -/
+theorem allard52_lad_lipschitz_ftc : ∀ (ℓ : ℕ) (φ k : ℝ → Rn ℓ) (a b : ℝ) (L : ℝ≥0), a ≤ b → LipschitzOnWith L φ (Icc a b) → ContinuousOn k (Icc a b) → (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → HasDerivAt φ (k t) t) → φ b - φ a = ∫ t in a..b, k t := by
+  intro ℓ φ k a b L hab hφ _ hderiv
+  -- The extension `ψ = φ ∘ projIcc a b` is `L`-Lipschitz on `ℝ` and agrees with `φ` on `[a, b]`.
+  set ψ : ℝ → Rn ℓ := fun t => φ (projIcc a b hab t) with hψ
+  have hψL : LipschitzWith L ψ := by
+    have h := hφ.to_restrict.comp (LipschitzWith.projIcc hab)
+    rw [mul_one] at h
+    exact h
+  have hψc : Continuous ψ := hψL.continuous
+  have hψa : ψ a = φ a := by
+    simp only [hψ, projIcc_left]
+  have hψb : ψ b = φ b := by
+    simp only [hψ, projIcc_right]
+  have hψeq : ∀ t ∈ Ioo a b, ψ =ᶠ[𝓝 t] φ := by
+    intro t ht
+    filter_upwards [Icc_mem_nhds ht.1 ht.2] with s hs
+    simp only [hψ, projIcc_of_mem hab hs]
+  -- The difference quotients of `ψ` are bounded by `L`.
+  have hbound : ∀ h : ℝ, 0 < h → ∀ t : ℝ, ‖h⁻¹ • (ψ (t + h) - ψ t)‖ ≤ L := by
+    intro h hh t
+    rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hh, ← dist_eq_norm]
+    have h1 := hψL.dist_le_mul (t + h) t
+    rw [Real.dist_eq, add_sub_cancel_left, abs_of_pos hh] at h1
+    calc h⁻¹ * dist (ψ (t + h)) (ψ t) ≤ h⁻¹ * (L * h) := by gcongr
+      _ = L := by field_simp
+  -- Dominated convergence: the integrals of the difference quotients tend to `∫_a^b k`, since
+  -- `ψ = φ` near every `t ∈ (a, b)` and `{b}` is null.
+  have hlim1 : Tendsto (fun h : ℝ => ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t)) (𝓝[>] 0)
+      (𝓝 (∫ t in a..b, k t)) := by
+    refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence (fun _ => (L : ℝ))
+      ?_ ?_ intervalIntegrable_const ?_
+    · refine Eventually.of_forall (fun h => ?_)
+      exact (((hψc.comp (continuous_id.add continuous_const)).sub hψc).const_smul
+        h⁻¹).aestronglyMeasurable
+    · filter_upwards [self_mem_nhdsWithin] with h hh
+      exact ae_of_all _ (fun t _ => hbound h hh t)
+    · filter_upwards [hderiv, Measure.ae_ne volume b] with t ht htb htI
+      rw [uIoc_of_le hab] at htI
+      have htIoo : t ∈ Ioo a b := ⟨htI.1, lt_of_le_of_ne htI.2 htb⟩
+      exact ((ht htIoo).congr_of_eventuallyEq (hψeq t htIoo)).tendsto_slope_zero_right
+  -- The same integrals are difference quotients at `b` and at `a` of a primitive `G` of `ψ`.
+  set G : ℝ → Rn ℓ := fun x => ∫ t in a..x, ψ t
+  have hGd : ∀ x, HasDerivAt G (ψ x) x := fun x =>
+    (hψc.integral_hasStrictDerivAt a x).hasDerivAt
+  have hGint : ∀ u v, ∫ t in u..v, ψ t = G v - G u := fun u v =>
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hGd x) (hψc.intervalIntegrable u v)
+  have hrepr : ∀ h : ℝ, ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t) =
+      h⁻¹ • (G (b + h) - G b) - h⁻¹ • (G (a + h) - G a) := by
+    intro h
+    have hint : IntervalIntegrable (fun t => ψ (t + h)) volume a b :=
+      (hψc.comp (continuous_id.add continuous_const)).intervalIntegrable a b
+    rw [intervalIntegral.integral_smul,
+      intervalIntegral.integral_sub hint (hψc.intervalIntegrable a b),
+      intervalIntegral.integral_comp_add_right ψ h, hGint (a + h) (b + h), hGint a b, ← smul_sub]
+    congr 1
+    abel
+  have hlim2 : Tendsto (fun h : ℝ => ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t)) (𝓝[>] 0)
+      (𝓝 (ψ b - ψ a)) := by
+    simp only [hrepr]
+    exact (hGd b).tendsto_slope_zero_right.sub (hGd a).tendsto_slope_zero_right
+  rw [← hψa, ← hψb]
+  exact tendsto_nhds_unique hlim2 hlim1
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"): continuity of the segment integral `I(a, b) = ∫₀¹ g(a + τ(b − a))(b − a) dτ`
+on `U × U` for an operator field `g` continuous on an open convex `U`.  At `(a₀, b₀) ∈ U × U` the
+segment `[a₀, b₀] ⊆ U` is compact, so a closed `δ`-thickening of it is a compact subset of `U` on
+which `‖g‖ ≤ M`; it contains `[a, b]` whenever `‖a − a₀‖, ‖b − b₀‖ < δ`, and then
+`‖b − a‖ ≤ ‖b₀ − a₀‖ + 2δ`.  Dominated convergence with the constant bound `M (‖b₀ − a₀‖ + 2δ)`
+gives continuity at `(a₀, b₀)`. -/
+theorem allard52_lad_segment_integral_continuousOn : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ContinuousOn g U → ContinuousOn (fun p : Rn n × Rn n => ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)) (U ×ˢ U) := by
+  intro n ℓ g U hU hconv hg
+  rintro ⟨a₀, b₀⟩ ⟨ha₀, hb₀⟩
+  refine ContinuousAt.continuousWithinAt ?_
+  -- The segment `S₀ = [a₀, b₀]` is compact and lies in `U` by convexity.
+  set S₀ : Set (Rn n) := (fun τ : ℝ => a₀ + τ • (b₀ - a₀)) '' Icc (0 : ℝ) 1
+  have hS₀c : IsCompact S₀ := isCompact_Icc.image (by fun_prop)
+  have hS₀U : S₀ ⊆ U := by
+    rintro _ ⟨τ, hτ, rfl⟩
+    exact hconv.add_smul_sub_mem ha₀ hb₀ hτ
+  -- A closed `δ`-thickening `C` of `S₀` is a compact subset of `U`, on which `‖g‖ ≤ M`.
+  obtain ⟨δ, hδ, hδU⟩ := hS₀c.exists_cthickening_subset_open hU hS₀U
+  obtain ⟨M, hM⟩ := hS₀c.cthickening.exists_bound_of_continuousOn (hg.mono hδU)
+  have hM0 : 0 ≤ M :=
+    (norm_nonneg _).trans (hM a₀ (self_subset_cthickening S₀ ⟨0, ⟨le_rfl, zero_le_one⟩, by simp⟩))
+  -- If `‖a - a₀‖, ‖b - b₀‖ < δ`, the whole segment `[a, b]` lies in `C`.
+  have hmem : ∀ a b : Rn n, dist a a₀ < δ → dist b b₀ < δ → ∀ τ ∈ Icc (0 : ℝ) 1,
+      a + τ • (b - a) ∈ cthickening δ S₀ := by
+    intro a b ha hb τ hτ
+    refine mem_cthickening_of_dist_le _ (a₀ + τ • (b₀ - a₀)) _ _ ⟨τ, hτ, rfl⟩ ?_
+    have heq : a + τ • (b - a) - (a₀ + τ • (b₀ - a₀)) = (1 - τ) • (a - a₀) + τ • (b - b₀) := by
+      module
+    rw [dist_eq_norm] at ha hb ⊢
+    rw [heq]
+    calc ‖(1 - τ) • (a - a₀) + τ • (b - b₀)‖
+        ≤ ‖(1 - τ) • (a - a₀)‖ + ‖τ • (b - b₀)‖ := norm_add_le _ _
+      _ = (1 - τ) * ‖a - a₀‖ + τ * ‖b - b₀‖ := by
+        rw [norm_smul, norm_smul, Real.norm_of_nonneg (sub_nonneg.2 hτ.2),
+          Real.norm_of_nonneg hτ.1]
+      _ ≤ (1 - τ) * δ + τ * δ := by
+        gcongr
+        · exact sub_nonneg.2 hτ.2
+        · exact hτ.1
+      _ = δ := by ring
+  -- ... and `‖b - a‖ ≤ ‖b₀ - a₀‖ + 2δ`.
+  have hlen : ∀ a b : Rn n, dist a a₀ < δ → dist b b₀ < δ → ‖b - a‖ ≤ ‖b₀ - a₀‖ + 2 * δ := by
+    intro a b ha hb
+    rw [dist_eq_norm] at ha hb
+    have heq : b - a = (b₀ - a₀) + (b - b₀) - (a - a₀) := by abel
+    calc ‖b - a‖ = ‖(b₀ - a₀) + (b - b₀) - (a - a₀)‖ := by rw [heq]
+      _ ≤ ‖(b₀ - a₀) + (b - b₀)‖ + ‖a - a₀‖ := norm_sub_le _ _
+      _ ≤ ‖b₀ - a₀‖ + ‖b - b₀‖ + ‖a - a₀‖ := by gcongr; exact norm_add_le _ _
+      _ ≤ ‖b₀ - a₀‖ + 2 * δ := by linarith
+  have hW : ∀ᶠ p : Rn n × Rn n in 𝓝 (a₀, b₀), dist p.1 a₀ < δ ∧ dist p.2 b₀ < δ := by
+    filter_upwards [ball_mem_nhds (a₀, b₀) hδ] with p hp
+    rw [mem_ball, Prod.dist_eq, max_lt_iff] at hp
+    exact hp
+  have hIoc : uIoc (0 : ℝ) 1 ⊆ Icc 0 1 := by
+    rw [uIoc_of_le zero_le_one]
+    exact Ioc_subset_Icc_self
+  -- Dominated convergence with the constant bound `M (‖b₀ - a₀‖ + 2δ)`.
+  refine intervalIntegral.continuousAt_of_dominated_interval
+    (F := fun (p : Rn n × Rn n) (τ : ℝ) => g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1))
+    (bound := fun _ => M * (‖b₀ - a₀‖ + 2 * δ)) ?_ ?_ intervalIntegrable_const ?_
+  · filter_upwards [hW] with p hp
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_uIoc
+    refine ContinuousOn.clm_apply ?_ continuousOn_const
+    exact hg.comp (by fun_prop) fun τ hτ => hδU (hmem p.1 p.2 hp.1 hp.2 τ (hIoc hτ))
+  · filter_upwards [hW] with p hp
+    refine ae_of_all _ fun τ hτ => ?_
+    calc ‖g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)‖
+        ≤ ‖g (p.1 + τ • (p.2 - p.1))‖ * ‖p.2 - p.1‖ := (g _).le_opNorm _
+      _ ≤ M * (‖b₀ - a₀‖ + 2 * δ) :=
+        mul_le_mul (hM _ (hmem p.1 p.2 hp.1 hp.2 τ (hIoc hτ))) (hlen p.1 p.2 hp.1 hp.2)
+          (norm_nonneg _) hM0
+  · refine ae_of_all _ fun τ hτ => ?_
+    have hgτ : ContinuousAt g (a₀ + τ • (b₀ - a₀)) :=
+      hg.continuousAt (hU.mem_nhds (hS₀U ⟨τ, hIoc hτ, rfl⟩))
+    have hseg : ContinuousAt (fun p : Rn n × Rn n => p.1 + τ • (p.2 - p.1)) (a₀, b₀) := by
+      fun_prop
+    exact (hgτ.comp_of_eq hseg rfl).clm_apply (by fun_prop)
+
+/-- Simon Ch. 5, end of the proof of Theorem 5.2 (p. 124: a Lipschitz `f` whose a.e. derivative
+is continuous is `C¹`).  The integral mean-value formula
+`f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for `x, y` in an open convex `U`, when `f` is
+Lipschitz on `U`, `g` is continuous on `U` and `Df = g` a.e. in `U`.  Put
+`F(w) = f(y + w) − f(x + w) − I(x + w, y + w)` with `I` the segment integral.  If the line
+`t ↦ x + w + t(y − x)` meets the null set where `Df = g` fails in an `L¹`-null set, the Lipschitz
+fundamental theorem of calculus along it gives `F(w) = 0`; by Fubini this holds for a.e. `w` near
+`0`, and `F` is continuous there, so `F(0) = 0`. -/
+theorem allard52_lad_line_integral_rep : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (K : ℝ≥0), IsOpen U → Convex ℝ U → LipschitzOnWith K f U → ContinuousOn g U → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ U → HasFDerivAt f (g x) x) → ∀ x ∈ U, ∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x) := by
+  intro n ℓ f g U K hU hUc hf hg hae x hx y hy
+  -- The bad set `N₀ = {p ∈ U : Df(p) ≠ g(p)}` is Lebesgue-null.
+  let N₀ : Set (Rn n) := {p | ¬(p ∈ U → HasFDerivAt f (g p) p)}
+  have hN₀ : volume N₀ = 0 := ae_iff.mp hae
+  -- A ball `B̆_ρ(0)` of translations `w` with `x + w, y + w ∈ U`.
+  obtain ⟨ρ₁, hρ₁, hxU⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨ρ₂, hρ₂, hyU⟩ := Metric.isOpen_iff.mp hU y hy
+  have hρ : 0 < min ρ₁ ρ₂ := lt_min hρ₁ hρ₂
+  have hxw : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂), x + w ∈ U := fun w hw =>
+    hxU (by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
+      exact (mem_ball_zero_iff.mp hw).trans_le (min_le_left _ _))
+  have hyw : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂), y + w ∈ U := fun w hw =>
+    hyU (by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
+      exact (mem_ball_zero_iff.mp hw).trans_le (min_le_right _ _))
+  -- `F(w) = f(y + w) − f(x + w) − I(x + w, y + w)`; the claim is `F(0) = 0`.
+  let I : Rn n × Rn n → Rn ℓ := fun p =>
+    ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)
+  let F : Rn n → Rn ℓ := fun w => f (y + w) - f (x + w) - I (x + w, y + w)
+  -- `F(w) = 0` if `w ∈ B̆_ρ(0)` and the line `t ↦ x + w + t(y − x)` meets `N₀` in a null set.
+  have hgood : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂),
+      volume {t : ℝ | x + w + t • (y - x) ∈ N₀} = 0 → F w = 0 := by
+    intro w hw hnull
+    have hseg : ∀ t ∈ Icc (0:ℝ) 1, x + w + t • (y - x) ∈ U := fun t ht => by
+      simpa only [add_sub_add_right_eq_sub] using hUc.add_smul_sub_mem (hxw w hw) (hyw w hw) ht
+    let φ : ℝ → Rn ℓ := fun t => f (x + w + t • (y - x))
+    let k : ℝ → Rn ℓ := fun t => g (x + w + t • (y - x)) (y - x)
+    -- `φ` is `K‖y − x‖`-Lipschitz on `[0, 1]`.
+    have hφ : LipschitzOnWith (K * ‖y - x‖₊) φ (Icc 0 1) := by
+      refine LipschitzOnWith.of_dist_le_mul fun t ht t' ht' => ?_
+      calc dist (φ t) (φ t')
+          ≤ K * dist (x + w + t • (y - x)) (x + w + t' • (y - x)) :=
+            hf.dist_le_mul _ (hseg t ht) _ (hseg t' ht')
+        _ = ↑(K * ‖y - x‖₊) * dist t t' := by
+            rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, Real.dist_eq,
+              Real.norm_eq_abs, NNReal.coe_mul, coe_nnnorm]
+            ring
+    -- `k` is continuous on `[0, 1]`.
+    have hk : ContinuousOn k (Icc 0 1) :=
+      (hg.comp (by fun_prop : Continuous fun t : ℝ => x + w + t • (y - x)).continuousOn
+        fun t ht => hseg t ht).clm_apply continuousOn_const
+    -- For a.e. `t ∈ (0, 1)`, `φ'(t) = k(t)` by the chain rule.
+    have hderiv : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo (0:ℝ) 1 → HasDerivAt φ (k t) t := by
+      filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with t ht htI
+      have hfd : HasFDerivAt f (g (x + w + t • (y - x))) (x + w + t • (y - x)) :=
+        not_not.mp ht (hseg t (Ioo_subset_Icc_self htI))
+      have hσ : HasDerivAt (fun t : ℝ => x + w + t • (y - x)) (y - x) t := by
+        simpa only [one_smul] using ((hasDerivAt_id' t).smul_const (y - x)).const_add (x + w)
+      exact hfd.comp_hasDerivAt t hσ
+    -- The Lipschitz fundamental theorem of calculus for `φ` on `[0, 1]`.
+    have hftc := Submission.allard52_lad_lipschitz_ftc ℓ φ k 0 1 (K * ‖y - x‖₊) zero_le_one hφ
+      hk hderiv
+    have hyx : x + w + (y - x) = y + w := by abel
+    simp only [φ, k, zero_smul, add_zero, one_smul, hyx] at hftc
+    show f (y + w) - f (x + w) - I (x + w, y + w) = 0
+    simp only [I, add_sub_add_right_eq_sub, ← hftc, sub_self]
+  -- By Fubini (`segment_null`), `F = 0` a.e. on `B̆_ρ(0)`.
+  have hFae : F =ᵐ[volume.restrict (ball (0 : Rn n) (min ρ₁ ρ₂))] 0 := by
+    refine (ae_restrict_iff' measurableSet_ball).mpr ?_
+    filter_upwards [Submission.allard52_lad_segment_null n N₀ hN₀ x (y - x)] with w hw hwB
+    exact hgood w hwB hw
+  -- `F` is continuous on `B̆_ρ(0)`: `f` is Lipschitz and `I` is continuous on `U × U`.
+  have hFc : ContinuousOn F (ball (0 : Rn n) (min ρ₁ ρ₂)) := by
+    have hfU : ContinuousOn f U := hf.continuousOn
+    have hIc : ContinuousOn I (U ×ˢ U) :=
+      Submission.allard52_lad_segment_integral_continuousOn n ℓ g U hU hUc hg
+    exact ((hfU.comp (by fun_prop : Continuous fun w : Rn n => y + w).continuousOn hyw).sub
+      (hfU.comp (by fun_prop : Continuous fun w : Rn n => x + w).continuousOn hxw)).sub
+      (hIc.comp (by fun_prop : Continuous fun w : Rn n => (x + w, y + w)).continuousOn
+        fun w hw => ⟨hxw w hw, hyw w hw⟩)
+  -- A continuous function vanishing a.e. on an open set vanishes there; evaluate at `w = 0`.
+  have hF0 : F 0 = 0 :=
+    Measure.eqOn_open_of_ae_eq hFae isOpen_ball hFc continuousOn_const (mem_ball_self hρ)
+  simpa only [F, I, add_zero, sub_eq_zero] using hF0
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"): Fréchet differentiability from the integral mean-value formula.  If `g` is
+continuous on an open `U ∋ x` and `f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for all `y ∈ U`,
+then `Df(x) = g(x)`.  Given `ε > 0`, pick `η > 0` with `B̆_η(x) ⊆ U` and `‖g(z) − g(x)‖ < ε` on
+`B̆_η(x)`; for `‖h‖ < η` the segment `[x, x + h]` lies in `B̆_η(x)`, so the remainder
+`f(x + h) − f(x) − g(x)h = ∫₀¹ (g(x + τh) − g(x))h dτ` has norm at most `ε‖h‖`. -/
+theorem allard52_lad_hasFDerivAt_of_line_integral : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (x : Rn n), IsOpen U → x ∈ U → ContinuousOn g U → (∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x)) → HasFDerivAt f (g x) x := by
+  intro n ℓ f g U x hU hx hg hf
+  -- Little-o criterion: for each `ε > 0`, eventually `‖f(x + h) − f(x) − g(x)h‖ ≤ ε‖h‖`.
+  rw [hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_iff]
+  intro ε hε
+  -- Choose `η > 0` with `B̆_η(x) ⊆ U` and `‖g(z) − g(x)‖ < ε` for `z ∈ B̆_η(x)`.
+  obtain ⟨η₁, hη₁, hη₁U⟩ := Metric.isOpen_iff.1 hU x hx
+  obtain ⟨η₂, hη₂, hη₂g⟩ := Metric.continuousAt_iff.1 (hg.continuousAt (hU.mem_nhds hx)) ε hε
+  obtain ⟨η, hη, hηη₁, hηη₂⟩ : ∃ η : ℝ, 0 < η ∧ η ≤ η₁ ∧ η ≤ η₂ :=
+    ⟨min η₁ η₂, lt_min hη₁ hη₂, min_le_left _ _, min_le_right _ _⟩
+  filter_upwards [ball_mem_nhds (0 : Rn n) hη] with h hh
+  rw [mem_ball_zero_iff] at hh
+  -- For `‖h‖ < η` the segment `x + τh`, `τ ∈ [0, 1]`, lies in `B̆_η(x) ⊆ U`.
+  have hseg : ∀ τ ∈ Icc (0 : ℝ) 1, dist (x + τ • h) x < η := by
+    intro τ hτ
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hτ.1]
+    calc τ * ‖h‖ ≤ 1 * ‖h‖ := mul_le_mul_of_nonneg_right hτ.2 (norm_nonneg h)
+      _ < η := by rwa [one_mul]
+  have hsegU : MapsTo (fun τ : ℝ => x + τ • h) (Icc 0 1) U := fun τ hτ =>
+    hη₁U (mem_ball.2 ((hseg τ hτ).trans_le hηη₁))
+  have hfh := hf (x + h) (by simpa using hsegU ⟨zero_le_one, le_rfl⟩)
+  rw [add_sub_cancel_left] at hfh
+  -- The remainder is `∫₀¹ (g(x + τh)h − g(x)h) dτ`.
+  have hint : IntervalIntegrable (fun τ : ℝ => g (x + τ • h) h) volume 0 1 := by
+    refine ContinuousOn.intervalIntegrable ?_
+    rw [uIcc_of_le zero_le_one]
+    exact (hg.comp (by fun_prop) hsegU).clm_apply continuousOn_const
+  have hrem : f (x + h) - f x - g x h = ∫ τ in (0:ℝ)..1, (g (x + τ • h) h - g x h) := by
+    rw [intervalIntegral.integral_sub hint intervalIntegrable_const, hfh,
+      intervalIntegral.integral_const, sub_zero, one_smul]
+  -- On `uIoc 0 1` the integrand has norm `‖(g(x + τh) − g(x))h‖ ≤ ε‖h‖`.
+  have hbound : ∀ τ ∈ uIoc (0 : ℝ) 1, ‖g (x + τ • h) h - g x h‖ ≤ ε * ‖h‖ := by
+    intro τ hτ
+    rw [uIoc_of_le zero_le_one] at hτ
+    have hgτ : dist (g (x + τ • h)) (g x) < ε :=
+      hη₂g ((hseg τ (Ioc_subset_Icc_self hτ)).trans_le hηη₂)
+    rw [dist_eq_norm] at hgτ
+    calc ‖g (x + τ • h) h - g x h‖ = ‖(g (x + τ • h) - g x) h‖ := by
+          rw [sub_apply]
+      _ ≤ ‖g (x + τ • h) - g x‖ * ‖h‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ ε * ‖h‖ := mul_le_mul_of_nonneg_right hgτ.le (norm_nonneg h)
+  rw [hrem]
+  calc ‖∫ τ in (0:ℝ)..1, (g (x + τ • h) h - g x h)‖ ≤ ε * ‖h‖ * |(1 : ℝ) - 0| :=
+        intervalIntegral.norm_integral_le_of_norm_le_const hbound
+    _ = ε * ‖h‖ := by rw [sub_zero, abs_one, mul_one]
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124: "Since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"), for an arbitrary continuous a.e. derivative: if `f` is `K`-Lipschitz on the
+open ball `B̆_r(c)`, `g` is continuous on `B̆_r(c)` and `Df(x) = g(x)` for `Lⁿ`-a.e.
+`x ∈ B̆_r(c)`, then `Df(x) = g(x)` at every `x ∈ B̆_r(c)`.  The ball is open and convex, so
+`f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for all `x, y ∈ B̆_r(c)`
+(`allard52_lad_line_integral_rep`), and continuity of `g` at `x` turns this formula into
+differentiability at `x` (`allard52_lad_hasFDerivAt_of_line_integral`). -/
+theorem allard52_lipschitz_hasFDerivAt_of_ae : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (c : Rn n) (r : ℝ) (K : ℝ≥0), LipschitzOnWith K f (ball c r) → ContinuousOn g (ball c r) → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x) → ∀ x ∈ ball c r, HasFDerivAt f (g x) x := by
+  intro n ℓ f g c r K hf hg hae x hx
+  -- Steps 0–3: the integral mean-value formula on the open convex ball.
+  have hrep : ∀ y ∈ ball c r, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x) :=
+    Submission.allard52_lad_line_integral_rep n ℓ f g (ball c r) K isOpen_ball
+      (convex_ball c r) hf hg hae x hx
+  -- Step 4: continuity of `g` at `x` upgrades the formula to the Fréchet derivative `g x` at `x`.
+  exact Submission.allard52_lad_hasFDerivAt_of_line_integral n ℓ f g (ball c r) x isOpen_ball hx
+    hg hrep
 
 end Submission
 
