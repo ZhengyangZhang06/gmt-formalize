@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d0532a740716ea843ad905cc2b79f471a013ce01a86cbbc6289ebf9af4e49939",
+  "git_delta": {
+    "base_commit": "a524d429f54ad6b668093b4b209906e9c9f55c9e",
+    "candidate_commit": "1743f4fa79eb3e24850c91b07e41b1ce5a8c1c04",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrfg_face_isometry_diam",
+    "diff_sha256": "c1d62fba286454511d316a6279fc8c508a4ff951b87840884c07f5241f4d67ec",
+    "source_sha256": "496dcf752ad0ccc89e0399a5ce1676129aa11aef6a4b80e1f88ce8b543e2ef3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrfg_face_isometry_diam",
+      "statement": "∀ (P k : ℕ) (ι : Fin k → Fin P) (b : Fin P → ℤ), Function.Injective ι → (∀ y y' : Euclid k, dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) = dist y y') ∧ (∀ y y' : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) ≤ Real.sqrt P)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
