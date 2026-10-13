@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1.holder_of_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1",
+  "depth": 6,
+  "title": "Hoelder bounds pass to pointwise limits, and the limit is continuous",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, alpha > 0 and K >= 0 real, F_j : R^n -> L (j in N) and V : R^n -> L with F_j(z) -> V(z) for every z in R^n. Assume that for all z, z' in R^n, ||F_j(z) - F_j(z')|| <= K |z - z'|^alpha for all sufficiently large j. Then ||V(z) - V(z')|| <= K |z - z'|^alpha for all z, z' in R^n, and V is continuous.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α K : ℝ) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → (∀ z, Tendsto (fun j => F j z) atTop (𝓝 (V z))) → (∀ z z' : Rn n, ∀ᶠ j in atTop, ‖F j z - F j z'‖ ≤ K * ‖z - z'‖ ^ α) → (∀ z z' : Rn n, ‖V z - V z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ Continuous V",
+  "lean_name": "dohr_eb_sch_bu_hds_holder_of_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-0003d4c06d-a1"
+}

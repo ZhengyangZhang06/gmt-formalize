@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1.unif_of_dense-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1",
+  "depth": 6,
+  "title": "Uniformly Hoelder sequences converging on a dense subset of a compact set converge uniformly",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, alpha > 0 and K >= 0 real, S a compact subset of R^n, and D a subset of S whose closure contains S. Let F_j : R^n -> L (j in N) satisfy ||F_j(z) - F_j(z')|| <= K |z - z'|^alpha for every j and all z, z' in S. Assume that for every d in D the sequence (F_j(d))_j converges in L. Then there is G : R^n -> L with F_j -> G uniformly on S as j -> infinity.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α K : ℝ) (S D : Set (Rn n)) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → IsCompact S → D ⊆ S → S ⊆ closure D → (∀ d ∈ D, ∃ v : Rn n →L[ℝ] Rn ℓ, Tendsto (fun j => F j d) atTop (𝓝 v)) → (∀ j, ∀ z ∈ S, ∀ z' ∈ S, ‖F j z - F j z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ G : Rn n → (Rn n →L[ℝ] Rn ℓ), TendstoUniformlyOn F G atTop S",
+  "lean_name": "dohr_eb_sch_bu_hds_unif_of_dense",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-7a58251a2a-a1"
+}
