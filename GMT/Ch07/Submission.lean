@@ -566,6 +566,47 @@ theorem Submission.dorag_tes_gah_mult_one_le_hausdorff : ∀ (P n : ℕ) (U : Se
   have hA : R.measure.restrict A ≤ (μHE[n] : Measure (Euclid P)).restrict A := by
     simpa only [Measure.restrict_restrict_of_subset hAB] using Measure.restrict_mono_measure hle A
   exact lintegral_mono' hA le_rfl
+/-- Area-weight bound for `1`-Lipschitz graphs, closed to open parameter ball: if `n ≥ 1` and
+`|f(v) - f(w)| ≤ |v - w|`, then `∫⁻_{B̄ₜ(0)} (1 + 2ⁿ Σᵢ |Df(v)eᵢ|²) G ≤ (1 + n2ⁿ) ∫⁻_{Bₜ(0)} G`
+for every `G ≥ 0` and `t`.  As `f` is `1`-Lipschitz, `‖Df(v)‖ ≤ 1` (also where `Df(v) = 0`), so
+`|Df(v)eᵢ| ≤ 1`, `Σᵢ |Df(v)eᵢ|² ≤ n` and the weight is at most the finite constant `1 + n2ⁿ`,
+which is pulled out of the integral.  For `n ≥ 1` the sphere is Lebesgue-null, so
+`closedBall 0 t =ᵐ ball 0 t` and the two lower integrals of `G` agree. -/
+theorem Submission.dorag_tes_gah_lipschitz_weight_ball_le : ∀ (n k : ℕ), 0 < n → ∀ (f : Euclid n → Euclid k), (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → ∀ (G : Euclid n → ℝ≥0∞) (t : ℝ), (∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * G v) ≤ ENNReal.ofReal (1 + n * 2 ^ n) * (∫⁻ v in ball (0 : Euclid n) t, G v) := by
+  intro n k hn f hf G t
+  have hlip : LipschitzWith 1 f := LipschitzWith.mk_one fun v w => by
+    simpa only [dist_eq_norm] using hf v w
+  have hw : ∀ v, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+      ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤ ENNReal.ofReal (1 + n * 2 ^ n) := by
+    intro v
+    have hD : ‖fderiv ℝ f v‖ ≤ 1 := by
+      simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := v) hlip
+    have hsum : ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ n := by
+      calc ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+          ≤ ∑ _i : Fin n, (1 : ℝ) := by
+            refine Finset.sum_le_sum fun i _ => pow_le_one₀ (norm_nonneg _) ?_
+            calc ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖
+                ≤ ‖fderiv ℝ f v‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ := (fderiv ℝ f v).le_opNorm _
+              _ ≤ 1 := by simpa using hD
+        _ = n := by simp
+    have h2 : (0 : ℝ) ≤ 2 ^ n := by positivity
+    have := mul_le_mul_of_nonneg_left hsum h2
+    exact ENNReal.ofReal_le_ofReal (by linarith)
+  have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  have hae : closedBall (0 : Euclid n) t =ᵐ[volume] ball (0 : Euclid n) t := by
+    refine ae_eq_set.2 ⟨?_, ?_⟩
+    · rw [closedBall_sdiff_ball]
+      exact Measure.addHaar_sphere volume 0 t
+    · rw [Set.sdiff_eq_empty.2 ball_subset_closedBall]
+      exact measure_empty
+  calc (∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+        ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * G v)
+      ≤ ∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + n * 2 ^ n) * G v :=
+        lintegral_mono fun v => mul_le_mul_left (hw v) (G v)
+    _ = ENNReal.ofReal (1 + n * 2 ^ n) * ∫⁻ v in closedBall (0 : Euclid n) t, G v :=
+        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+    _ = ENNReal.ofReal (1 + n * 2 ^ n) * ∫⁻ v in ball (0 : Euclid n) t, G v := by
+        rw [setLIntegral_congr hae]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
