@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5dbae3bb33bebccc8e517eb9bc452f81538b5bb297b220f80b34ebcb06d9dcdf",
+  "git_delta": {
+    "base_commit": "41c74f174351383535e7a5bdcbb0e3bdc9de20dc",
+    "candidate_commit": "cbc8f59ccd3b2dbfa3ef0cebf0a163abbe998778",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pe_ray_ftc",
+    "diff_sha256": "658787ec6b64ff600ed38904b3db59e94874c97e5dbbe418937ad90e00904492",
+    "source_sha256": "49966e15ac0dc69ff293b824bb9b0295dbd04c2b656f0d1b7cc0f1c824453abe",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pe_ray_ftc",
+      "statement": "∀ (n : ℕ) (a : Eucl n → ℝ), ContDiff ℝ 1 a → HasCompactSupport a → ∀ y θ : Eucl n, θ ≠ 0 → ∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • θ) θ = a y",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
