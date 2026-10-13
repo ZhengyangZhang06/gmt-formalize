@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4c54e381c7bd6ecd524870d65142b058421562cdcb4646608ee6c560c0099cd",
+  "git_delta": {
+    "base_commit": "e93b56428c3bd9b6251e58af6c1f8383dddc7faf",
+    "candidate_commit": "c2e5d50b952ab082accd4198e9899fc17788d9ef",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_lipschitz_smooth_approx",
+    "diff_sha256": "0b6f201e0901d661a3923bf0da4b904fdfde92813bf0a8952806893bb650783c",
+    "source_sha256": "7af1a1bfb073a314cdf9d9dec3104d4ea2222c6b56114459225a5fd841b8d153",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_lipschitz_smooth_approx",
+      "statement": "∀ (k : ℕ) (L : ℝ≥0) (g : Eucl k → ℝ), LipschitzWith L g → ∃ G : ℕ → Eucl k → ℝ, (∀ m, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (G m)) ∧ (∀ m, LipschitzWith L (G m)) ∧ TendstoUniformly G g atTop ∧ ∀ᵐ w ∂(volume : Measure (Eucl k)), Tendsto (fun m => fderiv ℝ (G m) w) atTop (𝓝 (fderiv ℝ g w))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
