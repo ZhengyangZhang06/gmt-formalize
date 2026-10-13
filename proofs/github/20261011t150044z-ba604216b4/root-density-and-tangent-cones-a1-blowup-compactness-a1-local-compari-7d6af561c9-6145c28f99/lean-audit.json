@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "91c140bafd9f0107eaa84c7049e66b04f59e512d606913ecadf0f86e104cbba2",
+  "git_delta": {
+    "base_commit": "a0827bb8d49ba3d3caa05a9a2338467d3337477d",
+    "candidate_commit": "23ecde7c16b69c45d01c914ed5649f3a89629ac4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_rc_cycle_competitor",
+    "diff_sha256": "af9f287787ae10172e85fd7610984ad3d2258c443179e975094a006b2b9a5de3",
+    "source_sha256": "0b6a1a127e01e49dfe1c21cfe8b2511a3d26f12ac1c90069a9aea7cf89d7af66",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_rc_cycle_competitor",
+      "statement": "∀ (P m : ℕ) (U A W K : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsMinimizingIn S A → IsOpen W → CompactlyContained W U → IsIntegerMultiplicity X → X.boundary = 0 → IsCompact K → X.support ⊆ K → K ⊆ A ∩ W → S.massOn W ≤ (S - (0 - X.restrictDomain (subset_univ U))).massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
