@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5aecd4b4d0e9b5373ebefc481c668de984b8e9bb4590b87a3e7d3330e9af4d34",
+  "git_delta": {
+    "base_commit": "41c74f174351383535e7a5bdcbb0e3bdc9de20dc",
+    "candidate_commit": "920181d0d005fa1101bdfcf80d354dcec8651081",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pe_convolution_contDiff_fderiv",
+    "diff_sha256": "6d8cef9eca6b799788ec079fabad626221d8886cb9af482968952308a046b246",
+    "source_sha256": "c7edf95212f68fa4a06fba6e4127c610f2a3a51243bf9a83844f4b5022b9bf48",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pe_convolution_contDiff_fderiv",
+      "statement": "∀ (n : ℕ) (K a : Eucl n → ℝ), LocallyIntegrable K → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y => ∫ t, K t * a (y - t)) ∧ ∀ y v : Eucl n, Integrable (fun t => K t * fderiv ℝ a (y - t) v) ∧ fderiv ℝ (fun y => ∫ t, K t * a (y - t)) y v = ∫ t, K t * fderiv ℝ a (y - t) v",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
