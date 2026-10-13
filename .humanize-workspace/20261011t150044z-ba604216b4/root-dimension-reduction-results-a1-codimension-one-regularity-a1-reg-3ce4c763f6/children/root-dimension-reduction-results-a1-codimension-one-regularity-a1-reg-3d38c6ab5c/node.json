@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.normal_average_lower-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1",
+  "depth": 6,
+  "title": "Quantitative form of Simon 4.3 (1): normal averages converging to a unit vector give ∫_{B̄_r}⟨ν,v⟩dμ ≥ ½μ(B̄_r) for small r (parent step 1)",
+  "statement": "Let P ∈ ℕ and let μ be a measure on ℝ^P (Euclid P, Borel σ-algebra). Let ν : ℝ^P → ℝ^P be measurable with |ν(z)| ≤ 1 for all z, let y, v ∈ ℝ^P with |v| = 1, and let ρ₀ > 0 with μ(B̄_{ρ₀}(y)) < ∞. Suppose A(ρ) := μ(B̄_ρ(y))_ℝ^{−1} ∫_{B̄_ρ(y)} ν dμ → v as ρ ↓ 0, as a limit along 𝓝[>]0, with μ(·)_ℝ = ENNReal.toReal and 0^{−1} = 0. Then there is ρ₂ with 0 < ρ₂ ≤ ρ₀ such that ½ μ(B̄_r(y))_ℝ ≤ ∫_{B̄_r(y)} ⟨ν(z), v⟩ dμ(z) for every r with 0 < r < ρ₂.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₀ : ℝ), 0 < ρ₀ → μ (closedBall y ρ₀) ≠ ∞ → Measurable ν → (∀ z, ‖ν z‖ ≤ 1) → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∃ ρ₂ : ℝ, 0 < ρ₂ ∧ ρ₂ ≤ ρ₀ ∧ ∀ r : ℝ, 0 < r → r < ρ₂ → (1 / 2 : ℝ) * (μ (closedBall y r)).toReal ≤ ∫ z in closedBall y r, inner ℝ (ν z) v ∂μ",
+  "lean_name": "codim1_rdo_dg_ce_normal_average_lower",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3d38c6ab5c-a1"
+}
