@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.graph_fderiv-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+  "depth": 6,
+  "title": "Derivative of the graph map and its norm lower bound (supplied steps 1–2)",
+  "statement": "Let m, k ∈ ℕ, let ι : ℝ^m → ℝ^{m+k} and ι' : ℝ^k → ℝ^{m+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝ^m, w ∈ ℝ^k, let g : ℝ^m → ℝ^k and w₀ ∈ ℝ^m, and suppose that g is (Fréchet) differentiable at w₀. Put G(w) := ιw + ι'g(w). Then the Fréchet derivative of G at w₀ is DG(w₀) = ι + ι'∘Dg(w₀) (equality of continuous linear maps ℝ^m → ℝ^{m+k}, where DG(w₀) = fderiv ℝ G w₀, Dg(w₀) = fderiv ℝ g w₀, and ι, ι' are viewed as continuous linear maps), and |h| ≤ |DG(w₀)h| for every h ∈ ℝ^m.",
+  "lean_statement": "∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ g w₀ → fderiv ℝ (fun w => ι w + ι' (g w)) w₀ = ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ g w₀ ∧ ∀ h : Euclid m, ‖h‖ ≤ ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h‖",
+  "lean_name": "codim1_zsl_ga_lc_graph_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f-a1"
+}
