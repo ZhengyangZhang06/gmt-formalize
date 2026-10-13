@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_volume-a1.steiner_slice_length-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_volume-a1",
+  "depth": 6,
+  "title": "Line slices of the Steiner symmetral have the length of the slices of A",
+  "statement": "Let d ∈ ℕ, j ∈ Fin d and let A ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) be compact. For x ∈ ℝ^d and s ∈ ℝ let x[j↦s] be x with its j-th coordinate replaced by s (Lean: WithLp.toLp 2 (Function.update x.ofLp j s)). Let A^j_x := {s ∈ ℝ : x[j↦s] ∈ A} and S_j(A) := {x ∈ ℝ^d : A^j_x ≠ ∅ and |x_j| ≤ (L¹(A^j_x)).toReal/2}. Then for every y ∈ ℝ^d, L¹({t ∈ ℝ : y[j↦t] ∈ S_j(A)}) = L¹(A^j_y), where L¹ is the volume (Lebesgue measure) of ℝ.",
+  "lean_statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ {x : Euclid d | {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}.Nonempty ∧ |x j| ≤ (volume {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}).toReal / 2}} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}",
+  "lean_name": "cbr_ci_iso_svol_steiner_slice_volume_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-458bff221b-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_volume-a1.cavalieri_coordinate-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_volume-a1",
+  "depth": 6,
+  "title": "Cavalieri's principle along a coordinate direction",
+  "statement": "Let d ∈ ℕ, j ∈ Fin d, and let S, A ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) be measurable sets. For y ∈ ℝ^d and t ∈ ℝ let y[j↦t] be y with its j-th coordinate replaced by t (Lean: WithLp.toLp 2 (Function.update y.ofLp j t)). Suppose that for every y ∈ ℝ^d the line slices through y in direction e_j have equal one-dimensional Lebesgue measure: L¹({t ∈ ℝ : y[j↦t] ∈ S}) = L¹({t ∈ ℝ : y[j↦t] ∈ A}). Then L^d(S) = L^d(A). Here L^d is the volume (Lebesgue measure) of EuclideanSpace ℝ (Fin d) and L¹ is the volume of ℝ.",
+  "lean_statement": "∀ (d : ℕ) (j : Fin d) (S A : Set (Euclid d)), MeasurableSet S → MeasurableSet A → (∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ S} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}) → volume S = volume A",
+  "lean_name": "cbr_ci_iso_svol_volume_eq_of_slice_volume_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-4b414d5c51-a1"
+}
