@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.c1_image-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1",
+  "depth": 6,
+  "title": "C¹ maps on an open set: Lipschitz on compacta, null images, rectifiable images",
+  "statement": "Let m, d, P ∈ ℕ, let D ⊆ ℝ^d be open and let G : ℝ^d → ℝ^P be C¹ on D. Write H^m := μHE[m]. Then (i) for every compact K ⊆ D there is L ≥ 0 such that G is L-Lipschitz on K; (ii) H^m(G(S)) = 0 for every S ⊆ D with H^m(S) = 0; (iii) G(S) is countably m-rectifiable for every countably m-rectifiable S ⊆ D (Simon Ch. 3, 1.1: S ⊆ M₀ ∪ ⋃_k Ψ_k(ℝ^m) with H^m(M₀) = 0 and every Ψ_k : ℝ^m → ℝ^d Lipschitz).",
+  "lean_statement": "∀ (m d P : ℕ) (D : Set (Euclid d)) (G : Euclid d → Euclid P), IsOpen D → ContDiffOn ℝ 1 G D → (∀ K : Set (Euclid d), IsCompact K → K ⊆ D → ∃ L : NNReal, LipschitzOnWith L G K) ∧ (∀ S : Set (Euclid d), S ⊆ D → μHE[m] S = 0 → μHE[m] (G '' S) = 0) ∧ ∀ S : Set (Euclid d), S ⊆ D → CountablyRectifiable m S → CountablyRectifiable m (G '' S)",
+  "lean_name": "codim1_lura_c1_image_lipschitz_null_rectifiable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-c93e40078c-a1"
+}
