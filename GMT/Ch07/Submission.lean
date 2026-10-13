@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Steps 1–2 of the local comparison for a graph (Simon 7.5, codimension one regularity): for
+linear isometries `ι : ℝᵐ → ℝ^{m+k}`, `ι' : ℝᵏ → ℝ^{m+k}` with `⟨ιv, ι'w⟩ = 0` and `g`
+differentiable at `w₀`, the graph map `G(w) = ιw + ι'g(w)` has `DG(w₀) = ι + ι' ∘ Dg(w₀)`, and
+`|h| ≤ |DG(w₀)h|` because `|DG(w₀)h|² = |h|² + |Dg(w₀)h|²`. -/
+theorem Submission.codim1_zsl_ga_lc_graph_fderiv : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ g w₀ → fderiv ℝ (fun w => ι w + ι' (g w)) w₀ = ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ g w₀ ∧ ∀ h : Euclid m, ‖h‖ ≤ ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h‖ := by
+  intro m k ι ι' g w₀ horth hg
+  -- (1) sum and chain rules, then uniqueness: `DG(w₀) = ι + ι' ∘ Dg(w₀)`
+  have hder : fderiv ℝ (fun w => ι w + ι' (g w)) w₀ =
+      ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ g w₀ :=
+    (ι.toContinuousLinearMap.hasFDerivAt.add
+      (ι'.toContinuousLinearMap.hasFDerivAt.comp w₀ hg.hasFDerivAt)).fderiv
+  refine ⟨hder, fun h => ?_⟩
+  -- (2) Pythagoras: `|ιh + ι'(Dg(w₀)h)|² = |h|² + 2 ⟨ιh, ι'(Dg(w₀)h)⟩ + |Dg(w₀)h|²`, where the
+  -- middle term vanishes by orthogonality and `ι`, `ι'` preserve norms
+  have hsq : ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h‖ ^ 2 =
+      ‖h‖ ^ 2 + ‖fderiv ℝ g w₀ h‖ ^ 2 := by
+    have happly : fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h = ι h + ι' (fderiv ℝ g w₀ h) := by
+      rw [hder]; rfl
+    rw [happly, norm_add_sq_real, horth, ι.norm_map, ι'.norm_map]
+    ring
+  -- (3) `|h|² ≤ |DG(w₀)h|²`, and both norms are nonnegative
+  refine (pow_le_pow_iff_left₀ (norm_nonneg h) (norm_nonneg _) two_ne_zero).1 ?_
+  rw [hsq]
+  exact le_add_of_nonneg_right (sq_nonneg _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
