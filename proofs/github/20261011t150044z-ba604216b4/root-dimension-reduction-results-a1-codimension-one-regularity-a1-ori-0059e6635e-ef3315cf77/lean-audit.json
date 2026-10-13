@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7644e8742fff1df268a6c266e69db553759125eafbea5df53122ee2e74945965",
+  "git_delta": {
+    "base_commit": "a33b2168c78abaa20dfebe902c3b7ab2263f0a0d",
+    "candidate_commit": "d9a3e0cb294378ec42db35359e88d92050d4beba",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "2b4690696eb8a5c809f4933346d98472133a5fc275ef5035ff985066c10ce124",
+    "source_sha256": "86324eb9f6fe9f7f7dd7726330a0534c2aa120ea833baeaa1514196513c41e41",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_massOn_eq_lintegral_of_oriented_rep",
+      "statement": "∀ (P k : ℕ) (U V M' : Set (Euclid P)) (T : GeometricCurrentOn U k) (θ' : Euclid P → ℝ) (ξ' : Euclid P → MultiVector P k), IsOpen V → V ⊆ U → MeasurableSet M' → M' ⊆ V → Measurable θ' → (∀ x, 0 ≤ θ' x) → AEStronglyMeasurable ξ' (μHE[k].restrict M') → (∀ᵐ x ∂(μHE[k].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' x) Q) → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ V → T ω = ∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) → ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → T.massOn W ≤ ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ∧ (∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ≠ ∞ → T.massOn W = ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k])",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
