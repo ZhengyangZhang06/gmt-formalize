@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.varifold_graph_transfer-a1.graph_measurability-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.varifold_graph_transfer-a1",
+  "depth": 4,
+  "title": "Borel measurability of the graph map and of the graph Jacobian over a closed ball",
+  "statement": "Let n, l be natural numbers, q a linear isometry of R^{n+l}, R a real number, and f : R^n -> R^l continuous on the closed ball B := B_R(0) of R^n (nothing is assumed off B). Write F(x) := q(graphPoint x (f x)). Write J_f(x) := sqrt(det(I_n + (<Df(x) e_a, Df(x) e_b>)_{a,b})), where:\n- Df(x) = fderiv R f x, which is 0 where f is not differentiable;\n- e_a = EuclideanSpace.single a 1;\n- I_n is the identity matrix and + is entrywise matrix addition.\nThen:\n(i) for every Borel set A contained in B (MeasurableSet A for the Borel sigma-algebra of R^n = EuclideanSpace R (Fin n)), the image F(A) = q '' graphOver f A is a Borel subset of R^{n+l};\n(ii) there is a Borel map Fh : R^n -> R^{n+l} with Fh(x) = F(x) for every x in B;\n(iii) the function J_f : R^n -> R is Borel.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), ContinuousOn f (closedBall 0 R) → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → MeasurableSet (q '' graphOver f A)) ∧ (∃ Fh : Rn n → Amb n ℓ, Measurable Fh ∧ ∀ x ∈ closedBall (0 : Rn n) R, Fh x = q (graphPoint x (f x))) ∧ Measurable (fun x : Rn n => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ))))))",
+  "lean_name": "gwe_vgt_graph_measurability",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-varifold-graph-trans-d8e29c328c-a1"
+}

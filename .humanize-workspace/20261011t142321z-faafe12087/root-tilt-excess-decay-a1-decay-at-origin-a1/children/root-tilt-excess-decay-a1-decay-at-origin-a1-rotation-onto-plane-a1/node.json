@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.rotation_onto_plane-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "Every n-dimensional subspace is a rotated horizontal plane",
+  "statement": "For all natural numbers n and l and every linear subspace T of R^{n+l} = Amb n l with dim T = n, there is a linear isometry equivalence q of R^{n+l} such that rotatedPlane q = q(horizontalPlane n l) = T, where horizontalPlane n l is the span of the first n standard basis vectors e_{castAdd l i}, i < n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T",
+  "lean_name": "tdo_exists_isometry_rotatedPlane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-rotation-onto-plane-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.density_constants-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1",
+  "depth": 3,
+  "title": "Choice of the constants delta_P, C_P from n, kappa, omega only (pure real analysis)",
+  "statement": "Let n be a natural number (n = 0 is allowed) and let kappa > 0 and omega > 0 be real numbers. Then there exist real numbers delta_P and C_P (depending only on n, kappa and omega) with 0 < delta_P, delta_P <= 1/8, delta_P <= kappa, 0 < C_P and C_P * delta_P <= 1/2, such that for every real t with 0 < t <= delta_P, writing Lambda := t/kappa and q := (1 + t)/(1 - 3t)^n (natural-number power), the following three inequalities hold: (a) e^(2 Lambda) * (q * omega) + 2 * e^Lambda * Lambda <= (1 + C_P t) * omega; (b) (1 - C_P t) * omega <= e^(-Lambda) * (omega - Lambda); (c) e^Lambda * (e^Lambda * (q * omega) + Lambda - omega) <= C_P * omega * t.",
+  "lean_statement": "∀ (n : ℕ) (κ ω : ℝ), 0 < κ → 0 < ω → ∃ δP CP : ℝ, 0 < δP ∧ δP ≤ 1 / 8 ∧ δP ≤ κ ∧ 0 < CP ∧ CP * δP ≤ 1 / 2 ∧ ∀ t : ℝ, 0 < t → t ≤ δP → Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 3 * t) ^ n * ω) + 2 * Real.exp (t / κ) * (t / κ) ≤ (1 + CP * t) * ω ∧ (1 - CP * t) * ω ≤ Real.exp (-(t / κ)) * (ω - t / κ) ∧ Real.exp (t / κ) * (Real.exp (t / κ) * ((1 + t) / (1 - 3 * t) ^ n * ω) + t / κ - ω) ≤ CP * ω * t",
+  "lean_name": "allard52_density_constants",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-density-constants-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1.gram_fderiv_zero-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1",
+  "depth": 5,
+  "title": "Derivative at 0 of the Gram-formula projection",
+  "statement": "Let n, l be natural numbers, iota : R^n -> R^(n+l) and kappa : R^l -> R^(n+l) continuous linear maps, and tau : L(R^n, R^(n+l)) -> L(R^(n+l), R^n) a continuous linear map (spaces of continuous linear maps carry the operator norm; R^k = Rn k, R^(n+l) = Amb n l) such that (T) <tau(L) w, v> = <w, L v> for all L in L(R^n, R^(n+l)), w in R^(n+l), v in R^n; (I) <iota v, iota u> = <v, u> for all v, u in R^n; (O) <iota v, kappa z> = 0 for all v in R^n, z in R^l. For A in L(R^n, R^l) put J_A := iota + kappa o A and F(A) := J_A o (Ring.inverse(tau(J_A) o J_A) o tau(J_A)), where Ring.inverse is taken in the ring L(R^n, R^n) whose multiplication is composition (Ring.inverse x is the two-sided inverse of x when x is a unit and 0 otherwise). Then for every H in L(R^n, R^l): (fderiv R F 0) H = iota o tau(kappa o H) + kappa o H o tau(iota).",
+  "lean_statement": "∀ (n ℓ : ℕ) (ι : Rn n →L[ℝ] Amb n ℓ) (κ : Rn ℓ →L[ℝ] Amb n ℓ) (τ : (Rn n →L[ℝ] Amb n ℓ) →L[ℝ] (Amb n ℓ →L[ℝ] Rn n)), (∀ (L : Rn n →L[ℝ] Amb n ℓ) (w : Amb n ℓ) (v : Rn n), inner ℝ (τ L w) v = inner ℝ w (L v)) → (∀ v u : Rn n, inner ℝ (ι v) (ι u) = inner ℝ v u) → (∀ (v : Rn n) (z : Rn ℓ), inner ℝ (ι v) (κ z) = 0) → ∀ H : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (ι + κ ∘L A) ∘L Ring.inverse (τ (ι + κ ∘L A) ∘L (ι + κ ∘L A)) ∘L τ (ι + κ ∘L A)) 0 H = ι ∘L τ (κ ∘L H) + κ ∘L H ∘L τ ι",
+  "lean_name": "allard52_gfz_gram_fderiv_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-5d45a2143d-a1"
+}

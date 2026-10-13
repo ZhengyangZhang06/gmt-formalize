@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "trace_smulRight|inner_starProjection_left_eq_right|starProjection_orthogonal\\x27|dist_starProjection_eq_infDist|def finAddEquivProd|def gradient|toDual_symm_apply",
+        "norm_integral_le_of_norm_le",
+        "integrableOn_compact_subset",
+        "mulTSupport_comp_subset_preimage",
+        "notMem_mulTSupport_iff_eventuallyEq",
+        "withDensity_absolutelyContinuous",
+        "gwe_vfv_|tdo_ghe_ae_mem_support|hsNorm_starProjection_trace_identities|lip_approx_graph_coordinates|exists_smooth_cutoff_half_ball_grad_le",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/vfv-independent-review-tfhnonys/checks/FullChain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/vfv-independent-review-tfhnonys/checks/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-variation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-variation-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-projection-algebra-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-a-e32a298e67/accepted-candidate.json",
+        "/tmp/vfv-independent-review-tfhnonys/checks/FullChain.lean",
+        "/tmp/vfv-independent-review-tfhnonys/checks/Assembly.lean",
+        "/tmp/vfv-independent-review-tfhnonys/environment.json"
+      ],
+      "conclusion": "The split appropriately establishes the selected gwe_vertical_first_variation contract. All nine statements match their prose, are standalone one-line propositions, and use valid bare names. Dependencies are correctly directed and acyclic, including the reused declarations' dependency closures. The five new names are unreserved; no proposed-name matches occur in the searched snapshot/project GMT sources. All four reused declarations have successful comparator records and byte-identical frozen types. The snapshot contract equals the workspace contract, and compiler package revisions match the pins. Typeclass-sensitive constructions are correct: finAddEquivProd is used as a continuous linear equivalence, with the Euclidean norm on its first block; no matrix-unit construction occurs. Fresh checks against a contract-only Submission compiled all ten comparator challenges, all five new child proofs with exactly their declared dependencies, the parent assembly, and the complete accepted proof chain: 17 checks passed. Every checked proof depends only on propext, Classical.choice and Quot.sound. The integral APIs confirm that the argument requires neither tangent-projection measurability nor integrability of the divergence integrand."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "projection_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conjuncts match the prose and are proved by Cauchy–Schwarz, orthogonal distance minimization, and the projection trace calculation. Part (ii) supplies height localization. Reuse at 164f08e4 has the identical accepted type."
+    },
+    {
+      "key": "graph_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinate calculations prove subtraction, the norm identity and decomposition; horizontal membership and vertical orthogonality prove the projection formula. The proof covers all stated dimensions without additional hypotheses. Reuse at e2915745 has the identical accepted type."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit bump gives a normalizing constant at least 1/3 and a smooth 3-Lipschitz profile. Its radial lift is locally constant at the center and satisfies every stated value and derivative bound. Reuse at cfec0688 has the identical accepted type."
+    },
+    {
+      "key": "sup_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses match exactly. The proof derives M ≥ 0, vanishing at the boundary, and the derivative bound through the Riesz isometry. The unit-vector construction and mean value inequality cover y = 0 and r = 0 without any extra regularity assumption."
+    },
+    {
+      "key": "height_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly graph_coordinates and projection_algebra: it identifies the first block, equates the normal-block norm with infDist, and obtains the claimed inequality from the Euclidean norm identity. No product-norm isometry is assumed."
+    },
+    {
+      "key": "rotated_chain_rule",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability at a(x) suffices. The continuous linear block map, chain rule, coordinate inner-product identity and Riesz representation produce exactly the stated innerSL derivative. The proof is complete and independent of the other proposed children."
+    },
+    {
+      "key": "rank_one_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract makes tangentProj an orthogonal projection or zero at every point. The supplied proof correctly combines its self-adjointness and idempotence with smul_const differentiation and trace_smulRight. No support or measurability hypothesis is missing."
+    },
+    {
+      "key": "ae_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Null-measurability concentrates the restricted Hausdorff measure on the carrier; absolute continuity transfers this to the weight. Intersecting with the conull measure support gives exactly V.support, even for arbitrary U. Reuse at 8c1c6087 is comparator-accepted with identical type."
+    },
+    {
+      "key": "localized_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff yields an admissible compactly supported C¹ field. The three radial cases cover all boundaries and prove both indicator identities on V.support. The declared ae_support dependency and unconditional integral congruence justify the equality without added integrability assumptions. Taking (r,s,R) = (5σ/16,σ/2,σ) supplies precisely the selected parent's first-variation identity."
+    }
+  ],
+  "required_changes": []
+}

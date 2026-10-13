@@ -1,0 +1,132 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1.rotated_chain_rule-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Context. This is step 1(ii) of the parent proof: D ζ~(x) v = ⟨g(x), v⟩, with ζ~ = ζ ∘ a and g(x) = q(graphPoint (∇ζ(a(x))) 0). (The C^1 regularity of ζ~ in step 1(i) is a one-line ContDiff.comp in the parent.) The parent combines it with gwe_vfv_divM_smul_const_eq_inner to identify div_M(ζ~ e'_j) with the parent's integrand.
+
+1. a is a continuous linear map. Indeed a = L := fst ∘ finAddEquivProd ∘ q^{-1}. Here finAddEquivProd : R^{n+l} ≃L[ℝ] R^n × R^l is a continuous linear equivalence, q^{-1} is a linear isometry equivalence, and fst is the continuous linear first projection. L y = (finAddEquivProd (q^{-1} y)).1 holds by definition, so y ↦ ζ(a(y)) is ζ ∘ L.
+2. Chain rule (HasFDerivAt.comp with ContinuousLinearMap.hasFDerivAt; ζ is differentiable at L x): ζ ∘ L has Fréchet derivative Dζ(a(x)) ∘ L at x.
+3. Coordinate identity: for w ∈ R^n and z ∈ R^{n+l}, ⟨graphPoint w 0, z⟩ = ⟨w, (finAddEquivProd z).1⟩.
+   - The inner product on EuclideanSpace is Σ_k u_k z_k (PiLp.inner_apply). Split the sum over Fin (n + l) into its castAdd and natAdd parts (Fin.sum_univ_add).
+   - graphPoint w 0 has castAdd coordinates w_i and natAdd coordinates 0 (Fin.append_left, Fin.append_right), and (finAddEquivProd z).1 has i-th coordinate z_{castAdd l i}.
+   - So the sum is Σ_i w_i z_{castAdd l i} = ⟨w, (finAddEquivProd z).1⟩.
+4. Let G := ∇ζ(a(x)) and v ∈ R^{n+l}. Then:
+   - ⟨q(graphPoint G 0), v⟩ = ⟨graphPoint G 0, q^{-1} v⟩ (LinearIsometryEquiv.inner_map_eq_flip);
+   - ⟨graphPoint G 0, q^{-1} v⟩ = ⟨G, a(v)⟩ (step 3 with z = q^{-1} v);
+   - ⟨G, a(v)⟩ = Dζ(a(x))(a(v)), because by definition ∇ζ(p) = (toDual ℝ R^n)^{-1}(Dζ(p)) and ⟨(toDual)^{-1} φ, u⟩ = φ(u) (InnerProductSpace.toDual_symm_apply);
+   - Dζ(a(x))(a(v)) = (Dζ(a(x)) ∘ L)(v).
+5. By step 4, the continuous linear maps innerSL ℝ (q(graphPoint G 0)) and Dζ(a(x)) ∘ L agree at every v, hence are equal. Step 2 then gives the claim (HasFDerivAt.congr_fderiv). ∎
+
+## Key steps
+
+1. a = fst ∘ finAddEquivProd ∘ q^{-1} is continuous linear, so the chain rule gives D(ζ ∘ a)(x) = Dζ(a(x)) ∘ a
+2. ⟨graphPoint w 0, z⟩ = ⟨w, (finAddEquivProd z).1⟩ (split the coordinate sum with Fin.sum_univ_add)
+3. ⟨q(graphPoint G 0), v⟩ = ⟨graphPoint G 0, q^{-1} v⟩ = ⟨G, a(v)⟩ = Dζ(a(x))(a(v)) (q an isometry; definition of the gradient)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean; cmp GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean (both identical); cat <snapshot>/manifest.json; git -C lake-packages-25730c7c/{mathlib,simongmt} rev-parse HEAD; python3 -I over lake-manifest.json package revs`
+- `rg -n "theorem trace_smulRight|theorem inner_starProjection_left_eq_right|theorem starProjection_eq_self_iff|theorem starProjection_apply_mem|theorem starProjection_orthogonal'|theorem measure_compl_support|theorem withDensity_absolutelyContinuous|theorem ae_restrict_mem₀|theorem measure_eq_zero_iff_ae_notMem|theorem norm_image_sub_le_of_norm_fderiv_le|theorem integral_indicator |theorem integral_congr_ae|theorem norm_integral_le_of_norm_le|theorem integral_const_mul|theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem HasFDerivAt.smul_const|theorem toDual_symm_apply|theorem inner_map_eq_flip|def finAddEquivProd|^def gradient|theorem Filter.EventuallyEq.fderiv_eq|theorem dist_starProjection_eq_infDist|theorem support_mem_ae" <snapshot>/mathlib/Mathlib`
+- `rg -n "lemma trace_smulRight|lemma starProjection_apply_mem|starProjection_orthogonal'|lemma measure_compl_support|support_mem_ae|mulTSupport_comp_subset_preimage|notMem_mulTSupport_iff_eventuallyEq|notMem_tsupport_iff_eventuallyEq" <snapshot>/mathlib/Mathlib`
+- `rg -n finAddEquivProd <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; sed -n 360,384p PiL2.lean; rg -n inner_map_eq_flip <snapshot>/mathlib/Mathlib; rg -n 'theorem HasFDerivAt.comp |theorem HasFDerivAt.congr_fderiv' FDeriv/Comp.lean FDeriv/Congr.lean`
+- `rg -il varifold <snapshot>/mathlib/Mathlib | wc -l (0); rg -n 'gwe_vfv|gwe_vertical|tdo_ghe' <snapshot>/project (no match)`
+- `python3 -I name_check.py: replay of Runtime._existing_lean_name_problem/_accepted_checkpoint on the live dag.json, plus a census of the five new names over dag.json lean_name/theorems, every other nodes/*/*.json, workspace GMT/**/*.lean and <snapshot>/project/**/*.lean`
+- `sed -n 6520,6620p, 1395,1560p, 1800,1900p and 2360,2380p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py; sed -n 100,270p .../store.py; sha256 of _existing_lean_name_problem and _accepted_checkpoint across all 34 /runtime/flows/*/_recursive_lean/runtime.py`
+- `ls --full-time nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-a-e32a298e67/; python3 -I over issue-workers.json (worker for issue 2691) and dag.json (status, candidate_commit, updated_at, ancestor statuses of the four reused nodes)`
+- `grep -oh '.{300}already reserved by active DAG node.{300}' nodes/*/*.json; python3 -I over nodes/root-conical-approximation-a1/decomposition-v5.json and nodes/root-lipschitz-approximation-a1-tangent-structure-a1/decomposition-v3.json rationale, and dag.json status/children of both nodes`
+- `git show {164f08e4,e2915745,cfec0688,8c1c6087}:GMT/Ch05/Submission.lean (accepted blocks; each declares its theorem with the byte-identical frozen type)`
+- `lean -o <tmp>/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (contract-only, Lean v4.35.0-rc3)`
+- `python3 -I gen_all.py verifier/gmt-compare.py GMT/Ch05/Contract.lean decomposition-v1.json parent-child-handoff.json <tmp> (challenges built by the verifier's contract_scope/child_modules)`
+- `lean checks/challenge/<X>.lean for all 10 declarations; lean checks/TypesSubmission.lean; lean checks/Assembly.lean; lean checks/C1.lean ... C6.lean; lean checks/FullChainReal.lean (#print axioms on each)`
+- `grep -n '4.5 Theorem|(5)|(6)' book/chapter-05.txt; sed -n 800,830p book/chapter-05.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-variation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-variation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-a-e32a298e67/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-conical-approximation-a1/decomposition-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-tangent-structure-a1/decomposition-v3.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/prompts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/vfv-decomp-a2-20261012/scripts/gen_all.py`
+- `/tmp/vfv-decomp-a2-20261012/scripts/name_check.py`
+- `/tmp/vfv-decomp-a2-20261012/checks/Assembly.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/C1.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/C2.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/C3.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/C4.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/C5.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/C6.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/FullChainReal.lean`
+- `/tmp/vfv-decomp-a2-20261012/checks/TypesSubmission.lean`
+
+Revisions. Snapshot a7f8fcd21d5c8fc7 pins project ea56075 and Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The workspace and lake-packages pin simongmt 2b36630.
+
+Mathlib facts used by the child proofs, all located in the snapshot:
+- LinearMap.trace_smulRight: LinearAlgebra/Trace.lean:272.
+- In Analysis/InnerProductSpace/Projection/Basic.lean: Submodule.inner_starProjection_left_eq_right (:652), starProjection_eq_self_iff (:290), starProjection_apply_mem (:156), starProjection_orthogonal' (:223) and dist_starProjection_eq_infDist (:234).
+- Measure.support_mem_ae and measure_compl_support: Measure/Support.lean:198/202.
+- withDensity_absolutelyContinuous (Measure/WithDensity.lean:146), ae_restrict_mem₀ (Measure/Restrict.lean:637), measure_eq_zero_iff_ae_notMem (OuterMeasure/AE.lean:145).
+- Convex.norm_image_sub_le_of_norm_fderiv_le: Analysis/Calculus/MeanValue.lean:499.
+- In Integral/Bochner: integral_indicator (Set.lean:185); integral_congr_ae (:301), norm_integral_le_of_norm_le (:985) and integral_const_mul (:290), all in Basic.lean.
+- LocallyIntegrableOn.integrableOn_compact_subset: Function/LocallyIntegrable.lean:122.
+- In Analysis/Calculus/FDeriv: HasFDerivAt.smul_const (Mul.lean:126), HasFDerivAt.comp (Comp.lean:107), HasFDerivAt.congr_fderiv (Congr.lean:120), Filter.EventuallyEq.fderiv_eq (Congr.lean:260).
+- gradient (Gradient/Basic.lean:83), InnerProductSpace.toDual_symm_apply (Dual.lean:178), LinearIsometryEquiv.inner_map_eq_flip (LinearMap.lean:121).
+- mulTSupport_comp_subset_preimage and notMem_mulTSupport_iff_eventuallyEq (Topology/Algebra/Support.lean:99/185); their to_additive tsupport forms are used.
+- EuclideanSpace.finAddEquivProd (PiL2.lean:378) is only a ContinuousLinearEquiv into the sup-normed product. So each statement takes the Euclidean norm of the Rn n block (.1).
+
+No-match results:
+- Mathlib has no varifold notion (0 files). The varifold steps (divM locality and rank-one trace, a.e. support, first variation) are therefore proved from the contract's definitions.
+- No gwe_vfv_ name appears in the snapshot project, the workspace GMT sources, dag.json (lean_name or theorems) or any other node JSON.
+- No DAG node has any of the five new types.
+
+Controller rule for the attempt-1 correction. Runtime._existing_lean_name_problem (runtime.py:6532, identical in all 34 flows) allows cross-branch reuse when the frozen types are equal and the existing node is an accepted checkpoint (_accepted_checkpoint, runtime.py:2364: accepted with a candidate commit). It reads the store refreshed by Store.update at attempt start (store.py:216-221; runtime.py:1406-1410).
+- tdo_ghe_ae_mem_support's accepted-candidate.json (candidate 8c1c608) was written at 22:32:00Z. That is after attempt 1's worker start (21:36:21Z) and before attempt 2's start (22:57:12Z).
+- The replay on the live dag.json returns no problem. All four reused names are accepted with a candidate commit, a byte-identical type, title and statement, and empty depends_on.
+- Precedent: conical_approximation (v5) and tangent_structure (v3) re-proposed reuse after the same stale-snapshot rejection, and both are now accepted.
+
+Source: Simon 4.5 proof, book/chapter-05.txt:800-830, displays (5) (line 807) and (6) (line 826).
+
+Lean results, against a freshly compiled contract-only Submission olean:
+- All 10 exact comparator challenges elaborate. They were generated by the verifier's contract_scope/child_modules (namespace GMT.Ch05; opens MeasureTheory Metric Set Filter Topology, scoped ENNReal NNReal, RectifiableVarifold).
+- TypesSubmission declares all 10 as Submission.X.
+- parent_check proves the frozen parent from the child propositions.
+- c1_check..c6_check prove each child from its declared dependencies.
+- FullChainReal, with the real accepted blocks from 164f08e, e291574, cfec068 and 8c1c608, proves the five new children and the parent with no sorry.
+- All use only propext, Classical.choice and Quot.sound.

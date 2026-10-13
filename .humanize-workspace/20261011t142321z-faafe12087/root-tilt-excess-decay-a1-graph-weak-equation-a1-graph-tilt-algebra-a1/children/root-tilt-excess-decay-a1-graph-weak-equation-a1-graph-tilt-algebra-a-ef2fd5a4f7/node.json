@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1.graph_row_orthogonal-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1",
+  "depth": 4,
+  "title": "Graph orthogonality: p_S e'_j = p_S q(r, 0) when r is the j-th row of D (Simon 4.5 (7))",
+  "statement": "For all n, l in N, every linear isometry equivalence q of R^(n+l), every continuous linear map D : R^n -> R^l, every j in Fin l and every r in R^n with <r, v> = (D v)_j for all v in R^n: let S := span_R{q(graphPoint v (D v)) : v in R^n} and p := S.starProjection. Then p(q(graphPoint 0 (EuclideanSpace.single j 1))) = p(q(graphPoint r 0)). Here graphPoint a b is the point of R^(n+l) whose first n coordinates are those of a in R^n and whose last l coordinates are those of b in R^l.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Rn n →L[ℝ] Rn ℓ) (j : Fin ℓ) (r : Rn n), (∀ v : Rn n, inner ℝ r v = D v j) → (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))) = (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint r 0))",
+  "lean_name": "gwe_gta_graph_row_orthogonal",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.graph_coords-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.graph_coords-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1-graph-coords-a1-a1",
+      "result_commit": "600de562dfc2c85c0bccd82c39d0b21114a01827",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tilt-algebra-a-ef2fd5a4f7-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.l1_tilt_height-a1.cutoff-a1",
+  "parent_id": "root.affine_approximation-a1.l1_tilt_height-a1",
+  "depth": 3,
+  "title": "C^1 radial cutoff with zeta = 1 on B_{rho/2}(xi), zeta = 0 off the open ball B_rho(xi), and |D zeta| <= 3/rho",
+  "statement": "For every m in N, xi in R^m (= Rn m = EuclideanSpace R (Fin m)) and rho > 0 there is a C^1 function zeta : R^m -> R such that: 0 <= zeta(x) <= 1 for every x; zeta(x) = 1 for every x in the closed ball B_{rho/2}(xi); zeta(x) = 0 whenever dist(x, xi) >= rho; and ||D zeta(x)|| <= 3/rho for every x, where D zeta(x) = fderiv R zeta x and ||.|| is the operator norm.",
+  "lean_statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ), 0 < ρ → ∃ ζ : Rn m → ℝ, ContDiff ℝ 1 ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ closedBall ξ (ρ / 2), ζ x = 1) ∧ (∀ x, ρ ≤ dist x ξ → ζ x = 0) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / ρ",
+  "lean_name": "aal_l1th_exists_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-l1-tilt-height-a1-cutoff-a1-a1"
+}

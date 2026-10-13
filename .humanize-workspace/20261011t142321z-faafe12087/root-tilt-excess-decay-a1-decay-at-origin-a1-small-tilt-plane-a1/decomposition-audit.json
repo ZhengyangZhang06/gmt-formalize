@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Amb|abbrev Rn|def (hsNorm|tangentProj|tiltExcess|scaledLpNorm|heightSup|AllardHypotheses|AffineApproximationLemma)|namespace|^end ",
+        "dist_starProjection_eq_infDist|starProjection_norm_le",
+        "integrableOn_of_bounded|integrableOn_const|setIntegral_const|theorem setIntegral_mono",
+        "ofReal_le_ofReal_iff|ofReal_le_iff_le_toReal",
+        "ofReal_le_ofReal_iff|ofReal_le_iff_le_toReal|rpow_le_rpow_of_exponent_ge|theorem rpow_le_one |sqrt_le_left|sqrt_mul|sqrt_sq|Gamma_pos_of_pos",
+        "tdo_stp_origin_affine_plane|tdo_stp_hsNormSq_sub_le_tiltExcess|tdo_stp_infDist_le_infDist_add_hsNorm|lgc_hsNormSq_bounds",
+        "git show 7372f81c6640dd17bd99bd3c9bbe79675f27d126:GMT/Ch05/Submission.lean",
+        "python3 -I /tmp/stp-independent-audit-11x2qsq1/run.py contract",
+        "python3 -I /tmp/stp-independent-audit-11x2qsq1/run.py AllChecks.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gamma/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-small-tilt-plane-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-small-tilt-plane-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hs-norm-bounds-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hs-norm-bounds-a1/isolated-comparator-result.json",
+        "/tmp/stp-independent-audit-11x2qsq1/AllChecks.lean",
+        "/tmp/stp-independent-audit-11x2qsq1/AllChecks.lean.log"
+      ],
+      "conclusion": "Confirmed pinned project ea5607598f3133b40a13241f2e51517a8c6423cd and mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The frozen contract matches the workspace definitions. Projection/Basic.lean:234,386 supplies the nearest-point and operator-norm bounds; IntegrableOn.lean:716 and Bochner/Set.lean:524 support bounded finite-measure integration; Basic/ENNReal/Real.lean:262 justifies the finite-mass conversion. The inline projection expressions are continuous linear maps with the intended instances. No proposed new name matched the snapshot or another DAG branch. The reused declaration is comparator-accepted with an identical frozen type and compatible proof source. Independently rebuilt the frozen contract and compiled AllChecks.lean successfully: all four child propositions elaborate before their implementations, all four proofs pass, and the exact selected parent follows from the four child contracts plus its declared scaling dependency, supplied as explicit hypotheses. Each checked proof uses only propext, Classical.choice and Quot.sound. The split is appropriate, dependencies are acyclic and correctly directed, and all names are bare identifiers. Enlarging the constants as described preserves the selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hs_norm_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Permitted exact reuse of the comparator-accepted declaration: the frozen type is identical. The proof establishes continuity and nonnegativity, sums the operator-norm column bounds, then uses the coordinate expansion and Cauchy–Schwarz for the vector estimate. It covers zero-dimensional domains, is non-circular, and proves every conjunct of the matching one-line proposition."
+    },
+    {
+      "key": "plane_dist_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree for arbitrary subspaces and points. Finite-dimensionality supplies orthogonal projections without additional hypotheses. Taking square roots of the declared Hilbert–Schmidt estimate, applying the nearest-point identities, and using the displayed vector decomposition proves exactly the distance inequality. The only child dependency is hs_norm_bounds."
+    },
+    {
+      "key": "plane_tilt_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All necessary hypotheses are explicit and match the type. The proof derives integrability from a.e. strong measurability, the bound 4(n+ℓ), and finite ball mass; establishes the columnwise factor-two inequality; integrates using the real-valued mass; and cancels s^n using s>0. No dimension restriction on P or Q is needed. The proof is complete and uses only its declared child dependency."
+    },
+    {
+      "key": "origin_affine_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the stated affine-approximation consequence. The proof verifies the admissible centre and radius, derives δ≤δ^γ, and correctly uses the explicit curvature-bound hypothesis. The ENNReal conversions, square-root estimate, factor 2^n, and supremum argument establish both bounds with a uniform positive constant. Integral nonnegativity requires no additional integrability assumption here. Neither the parent theorem nor an undeclared scaling dependency is used."
+    }
+  ],
+  "required_changes": []
+}

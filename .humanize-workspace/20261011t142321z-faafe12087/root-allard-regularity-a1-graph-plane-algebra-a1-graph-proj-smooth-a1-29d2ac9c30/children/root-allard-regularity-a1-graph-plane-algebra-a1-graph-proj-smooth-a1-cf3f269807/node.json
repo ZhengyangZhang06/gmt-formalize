@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1.graph_point_split-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1",
+  "depth": 5,
+  "title": "Graph points split as iota x + kappa y with continuous linear iota, kappa",
+  "statement": "For all natural numbers n, l there exist continuous linear maps iota : R^n -> R^(n+l) and kappa : R^l -> R^(n+l) such that graphPoint x y = iota x + kappa y for all x in R^n and y in R^l. Here R^k = EuclideanSpace R (Fin k) = Rn k, R^(n+l) = Amb n l, and graphPoint x y = toLp 2 (Fin.append (ofLp x) (ofLp y)) is the point of R^(n+l) whose first n coordinates are those of x and whose last l coordinates are those of y.",
+  "lean_statement": "∀ (n ℓ : ℕ), ∃ (ι : Rn n →L[ℝ] Amb n ℓ) (κ : Rn ℓ →L[ℝ] Amb n ℓ), ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y = ι x + κ y",
+  "lean_name": "allard52_gfz_graphPoint_split",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-cf3f269807-a1"
+}

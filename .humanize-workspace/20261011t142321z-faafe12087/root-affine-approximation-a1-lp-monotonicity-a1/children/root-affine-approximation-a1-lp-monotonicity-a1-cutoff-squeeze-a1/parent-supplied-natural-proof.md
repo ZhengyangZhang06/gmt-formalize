@@ -1,0 +1,157 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.affine_approximation-a1.lp_monotonicity-a1`
+- Child DAG node: `root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 4, 3.4-3.5 and 4.3-4.4, for one fixed cutoff. This is Step 2 (from (2.1) on) and Step 4 of the parent proof. The weight |D^perp r|^2 is replaced by the abstract weight w, and the Hoelder bound (3.1) by the hypothesis |a(t)| <= M t^(-beta).
+
+Notation and reductions:
+ - r = r(x) := |x - y| and rho* := S/(1 + epsilon).
+ - If S <= 0, no rho > 0 has (1 + epsilon) rho < S, and there is nothing to prove. So assume S > 0. All radii t used below lie in (0, rho*), so (1 + epsilon) t < S.
+ - L(t) := integral phi(r/t)(x - y).H dmu and J(t) := integral phi(r/t) w dmu. Thus a(t) = t^(-(n+1)) L(t)/(1 + t^(-n) I(t)).
+ - d_t denotes the derivative in t.
+
+1. Properties of phi.
+ - Since phi is nonincreasing, phi = 1 on (-infinity, 1] and phi = 0 on [1 + epsilon, infinity), we have 0 <= phi <= 1.
+ - phi' is continuous and phi' <= 0.
+ - phi'(s) = 0 for s < 1 and for s > 1 + epsilon, because phi is locally constant there. By continuity, also phi'(1) = phi'(1 + epsilon) = 0.
+ - Hence phi' is bounded: |phi'| <= C_1 for some C_1.
+
+2. Supports and integrability. Let t be in (0, rho*) and x arbitrary.
+ - phi(r/t) = 0 and phi'(r/t) = 0 unless r <= (1 + epsilon) t < S.
+ - Hence each of x -> phi(r/t), phi(r/t) w(x), (r/t) phi'(r/t), (r/t) phi'(r/t) w(x):
+ * is a.e. strongly measurable (a continuous function of x, possibly times w);
+ * is bounded a.e., by 1, 1, (1 + epsilon) C_1 and (1 + epsilon) C_1 respectively;
+ * vanishes outside B_S(y).
+ Since mu(B_S(y)) < infinity, these functions are integrable.
+ - |phi(r/t)(x - y).H(x)| <= S |H(x)| 1_{B_S(y)}(x), which is integrable.
+ So I(t), J(t), L(t) are finite, I(t) >= 0, and the integrals in the radial identity (R_t) are integrals of integrable functions.
+
+3. Differentiation under the integral sign.
+ - For fixed x, t -> phi(r/t) is C^1 on (0, infinity), with d_t phi(r/t) = -(r/t^2) phi'(r/t) >= 0.
+ - Let [t_1, t_2] be a compact subinterval of (0, rho*). For t in [t_1, t_2], d_t phi(r/t) vanishes unless r <= (1 + epsilon) t_2 < S, and then |d_t phi(r/t)| <= (1 + epsilon) t_2 C_1 / t_1^2.
+ - Since 0 <= w <= 1 a.e., both |d_t phi(r/t)| and |d_t phi(r/t) w(x)| are dominated by the integrable function ((1 + epsilon) t_2 C_1 / t_1^2) 1_{B_S(y)}(x).
+ By the theorem on differentiation of parametric integrals, I and J are differentiable on (0, rho*), with
+ I'(t) = integral -(r/t^2) phi'(r/t) dmu >= 0 and J'(t) = integral -(r/t^2) phi'(r/t) w dmu >= 0.
+ The integrands are continuous in t because phi' is continuous. So dominated convergence with the same bound shows that I' and J' are continuous on (0, rho*). Likewise I and L are continuous on (0, rho*), by dominated convergence with the bounds 1_{B_S(y)} and S |H| 1_{B_S(y)}.
+
+4. Differential identity. Let t be in (0, rho*). Then (1 + epsilon) t <= S, so (R_t) holds. Since (r/t) phi'(r/t) = -t d_t phi(r/t), splitting the integral in (R_t) into its integrable pieces (step 2) gives
+ n I(t) - t I'(t) + t J'(t) = -L(t).
+ Dividing by t^(n+1):
+ d/dt (t^(-n) I(t)) = -n t^(-n-1) I(t) + t^(-n) I'(t) = t^(-n) J'(t) + t^(-(n+1)) L(t). (C.1)
+
+5. The coefficient a and the factor F.
+ - On (0, rho*) we have 1 + t^(-n) I(t) >= 1 > 0, and I, L are continuous. So a is continuous there, and t^(-(n+1)) L(t) = a(t)(1 + t^(-n) I(t)).
+ - Let 0 < rho < rho*. On (0, rho], |a(t)| <= M t^(-beta) with beta < 1, and t -> t^(-beta) is integrable on (0, rho]. Since a is also continuous, hence measurable, on (0, rho], a is integrable on (0, rho].
+ - a is continuous at each t in (0, rho*). By the fundamental theorem of calculus, t -> integral_0^t a is differentiable on (0, rho*) with derivative a(t).
+ Hence F(t) = exp(-integral_0^t a) is continuous, positive and differentiable on (0, rho*), with F'(t) = -a(t) F(t).
+
+6. Integrating factor. Put Psi(t) := F(t)(1 + t^(-n) I(t)). By the product rule, (C.1) and step 5, on (0, rho*):
+ Psi'(t) = -a F (1 + t^(-n) I) + F (t^(-n) J' + a (1 + t^(-n) I)) = F(t) t^(-n) J'(t).
+ This derivative is continuous on (0, rho*). By the fundamental theorem of calculus, for 0 < sigma <= rho < rho*:
+ Psi(rho) - Psi(sigma) = integral_sigma^rho F(t) t^(-n) J'(t) dt =: D. (C.2)
+
+7. Bounds for F. For 0 < t <= rho: |integral_0^t a| <= integral_0^t |a| <= integral_0^rho |a| = c. Hence e^(-c) <= F(t) <= e^c.
+
+8. Fubini.
+ - For t in [sigma, rho], every x-integrand used here vanishes for x outside B_S(y). So we may integrate against the finite measure mu_S := mu restricted to B_S(y) instead of mu.
+ - Define g(t, x) := F(t) t^(-n) (-(r(x)/t^2) phi'(r(x)/t)) w(x) on [sigma, rho] x R^(n+l). It is a.e. strongly measurable (a continuous function of (t, x) times w(x)).
+ - g >= 0 for mu-a.e. x, because w >= 0 a.e. and phi' <= 0.
+ - g is bounded by e^c sigma^(-n) (1 + epsilon) rho C_1 / sigma^2, using step 7 and the support property of step 3.
+ - Lebesgue measure on [sigma, rho] times mu_S is finite, so g is integrable.
+ Fubini's theorem and the formula for J' from step 3 give
+ D = integral_sigma^rho integral g(t, x) dmu_S(x) dt = integral w(x) [integral_sigma^rho F(t) t^(-n) d_t phi(r(x)/t) dt] dmu(x).
+
+9. The inner integral. Fix x.
+ - If r = r(x) = 0: phi(r/t) = phi(0) = 1 for all t > 0, so d_t phi(r/t) = 0 and the inner integral is 0. The integrand of A also vanishes at x, since phi(0) - phi(0) = 0.
+ - If r > 0: d_t phi(r/t) >= 0, and d_t phi(r/t) = 0 unless 1 <= r/t <= 1 + epsilon, i.e. unless r/(1 + epsilon) <= t <= r. For such t, r^(-n) <= t^(-n) <= (1 + epsilon)^n r^(-n). Together with step 7, for every t in [sigma, rho]:
+ e^(-c) r^(-n) d_t phi(r/t) <= F(t) t^(-n) d_t phi(r/t) <= e^c (1 + epsilon)^n r^(-n) d_t phi(r/t).
+ Integrate over [sigma, rho]. The fundamental theorem of calculus gives integral_sigma^rho d_t phi(r/t) dt = phi(r/rho) - phi(r/sigma). Hence
+ e^(-c) r^(-n) (phi(r/rho) - phi(r/sigma)) <= [inner integral at x] <= e^c (1 + epsilon)^n r^(-n) (phi(r/rho) - phi(r/sigma)).
+
+10. Integration in x. Consider x -> (phi(r/rho) - phi(r/sigma)) w(x)/r^n.
+ - It is a.e. strongly measurable.
+ - It vanishes unless sigma < r < (1 + epsilon) rho: if r <= sigma <= rho, both cutoffs equal 1; if r >= (1 + epsilon) rho, both vanish.
+ - Where it is nonzero it is bounded a.e. by sigma^(-n), since 0 <= phi(r/rho) - phi(r/sigma) <= 1 and 0 <= w <= 1 a.e.
+ - It vanishes outside B_S(y).
+ So it is integrable and A is finite. Multiply the inequalities of step 9 by w(x) >= 0 (valid a.e.), integrate in x, and use step 8:
+ e^(-c) A <= D <= e^c (1 + epsilon)^n A.
+ Together with (C.2), this is the asserted pair of inequalities.
+
+## Key steps
+
+1. All cutoff integrands are bounded, supported in B_S(y) and integrable. I and J are differentiable on (0, S/(1+epsilon)) with continuous I', J' >= 0 (differentiation under the integral sign). I and L are continuous.
+2. The radial identity (R_t) gives n I - t I' + t J' = -L, i.e. d/dt(t^-n I) = t^-n J' + t^-(n+1) L = t^-n J' + a (1 + t^-n I).
+3. a is continuous on (0, S/(1+epsilon)) and integrable near 0, since |a| <= M t^-beta with beta < 1. By the FTC, F = exp(-integral_0^t a) satisfies F' = -a F.
+4. (F(1 + t^-n I))' = F t^-n J', so by the FTC F(rho)(1+rho^-n I(rho)) - F(sigma)(1+sigma^-n I(sigma)) = integral_sigma^rho F t^-n J' dt.
+5. e^-c <= F <= e^c on (0, rho]. Fubini over [sigma, rho] x (mu restricted to B_S(y)) rewrites the increment as integral w [integral_sigma^rho F t^-n d_t phi(r/t) dt] dmu.
+6. d_t phi(r/t) >= 0 is supported in r/(1+epsilon) <= t <= r, where r^-n <= t^-n <= (1+epsilon)^n r^-n. Integrating in t and then in x gives e^-c A <= increment <= e^c (1+epsilon)^n A.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `timeout 300 rg -n "aal_radial|radial_first_variation|curvature_pairing|integrating_factor|monotonicity_of_radial" <snapshot>/project`
+- `timeout 300 rg -n "^theorem integral_mul_le_Lp_mul_Lq_of_nonneg|^theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|^theorem tendsto_integral_filter_of_dominated_convergence|^theorem integral_hasDerivAt_right|^theorem integral_integral_swap|^theorem integral_eq_sub_of_hasDerivAt\b|^lemma starProjection_orthogonal'|^theorem norm_starProjection_apply_le|^theorem contDiffAt_norm|^theorem intervalIntegrable_rpow'|^theorem integral_rpow" <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "theorem trace_smulRight|protected theorem contDiff|protected theorem monotone|theorem zero_of_nonpos|theorem one_of_one_le" <snapshot>/mathlib/Mathlib/LinearAlgebra/Trace.lean <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `timeout 300 rg -n "theorem setIntegral_nonneg_of_ae_restrict|theorem lintegral_mono_set|theorem measure_mono" <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem isBoundedBilinearMap_apply|protected theorem prodMk" <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean <snapshot>/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `grep -n "^theorem\|^def\|^structure\|^private theorem" .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/{FirstVariation,LpMeanCurvature,LpCancellation,MeanCurvature,LpAnnular}.lean`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement on the four child types; string comparison of the assembled aal_lp_monotonicity and aal_tangent_structure types against the handoff files`
+- `lake env lean /tmp/claude-1000/lpm-check/Check.lean (contract lines 1-459 + sorried aal_tangent_structure and four children + sorry-free assembly of Submission.aal_lp_monotonicity + example instantiating children 2 and 3 inside child 4's context)`
+- `lake env lean /tmp/claude-1000/lpm-check/CheckAx.lean (#print axioms GMT.Ch05.Submission.aal_lp_monotonicity with children as axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/claude-1000/lpm-check/Check.lean`
+- `/tmp/claude-1000/lpm-check/CheckAx.lean`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+
+No existing declarations: the snapshot project has no match for the proposed child names or their topics.
+
+Mathlib tools located for the children (paths under mathlib/Mathlib):
+- Child 2: integral_mul_le_Lp_mul_Lq_of_nonneg (MeasureTheory/Integral/Bochner/Basic.lean:1230), Hölder.
+- Child 3: hasDerivAt_integral_of_dominated_loc_of_deriv_le (Analysis/Calculus/ParametricIntegral.lean:286); integral_hasDerivAt_right (IntervalIntegral/FundThmCalculus.lean:725) and integral_eq_sub_of_hasDerivAt (:1148) for the FTC; integral_integral_swap (MeasureTheory/Integral/Prod.lean:478) for Fubini; intervalIntegrable_rpow' (SpecialFunctions/Integrability/Basic.lean:47).
+- Child 4: tendsto_integral_filter_of_dominated_convergence (MeasureTheory/Integral/DominatedConvergence.lean:67); integral_rpow (SpecialFunctions/Integrals/Basic.lean:146); smoothTransition contDiff/monotone/zero_of_nonpos/one_of_one_le (Analysis/SpecialFunctions/SmoothTransition.lean:161-222).
+- Child 1: contDiffAt_norm (Analysis/InnerProductSpace/Calculus.lean:154); LinearMap.trace_smulRight (LinearAlgebra/Trace.lean:272).
+- Parent assembly: starProjection_orthogonal' (InnerProductSpace/Projection/Basic.lean:223); norm_starProjection_apply_le (:411); LocallyIntegrableOn.integrableOn_compact_subset (MeasureTheory/Function/LocallyIntegrable.lean:122); isBoundedBilinearMap_apply (Normed/Operator/BoundedLinearMaps.lean:391); AEStronglyMeasurable.prodMk (AEStronglyMeasurable.lean:256); setIntegral_nonneg_of_ae_restrict (Bochner/Set.lean:809).
+
+Pinned SimonGMT Chapter04 (outside the snapshot):
+- Directly usable, stated for any finite-dimensional E and Submodule P: trace_starProjection, trace_radialEndomorphism and inner_starProjection_eq_norm_sq (FirstVariation.lean:122-157) for child 1; monotonicityCutoff = 1 - smoothTransition((t-1)/eps) and its lemmas (FirstVariation.lean:825-870) for child 4.
+- Patterns to adapt from SimonGMT's own varifold structure to an abstract finite measure: hasDerivAt_integral_scaledRadialCutoff_mul (FirstVariation.lean:680) and cancelledCutoffMass_squeeze (LpCancellation.lean:400).
+- Not used: exists_lpAnnularCorrection (LpAnnular.lean:358). It is the same result for the strengthened Chapter04.RectifiableVarifold, and the supplied proof deliberately avoids that bridge. The printed Simon Ch. 4, 3.2-3.6 and 4.1-4.8 (book/chapter-04.txt) matches Steps 0-6.
+
+Lean checks:
+- Check.lean compiles. All four child types elaborate in the contract scope and pass validate_lean_statement.
+- The sorry-free assembly of the exact frozen aal_lp_monotonicity type typechecks from children 1 and 4 plus aal_tangent_structure.
+- The example shows child 4 can instantiate children 2 and 3.
+- CheckAx.lean: #print axioms lists only propext, Classical.choice, Quot.sound and the three used declarations.

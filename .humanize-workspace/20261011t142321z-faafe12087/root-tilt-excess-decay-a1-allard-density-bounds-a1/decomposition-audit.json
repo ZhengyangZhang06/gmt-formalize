@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def AllardHypotheses|def scaledLpNorm|def weight|def support|nullMeasurableSet_carrier|def unitBallVolume|def HasDensity",
+        "exists_measurable_subset_ae_eq|measure_inter_conull|le_limsup_of_frequently_le|one_add_mul_le_pow|euclideanHausdorffMeasure_def|withDensity_apply|setLIntegral_measure_zero",
+        "simon_theorem_3_6|mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem simon_theorem_3_3|simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure",
+        "ted_adb_constants",
+        "ted_adb_support_diff_carrier_null",
+        "ted_adb_constants|ted_adb_support_diff_carrier_null",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean AllChallenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean AllSolutions.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-allard-density-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-allard-density-bounds-a1/decomposition-v1.json",
+        "/tmp/adb-review/FullReal.lean",
+        "/tmp/adb-review/ud_commit_Submission.lean",
+        "/tmp/adb-independent-audit-4qifhsg1/combined/GMT/Ch05/Submission.lean",
+        "/tmp/adb-independent-audit-4qifhsg1/AllChallenges.lean",
+        "/tmp/adb-independent-audit-4qifhsg1/AllSolutions.lean"
+      ],
+      "conclusion": "The five-child split is appropriate for this selected theorem. The handoff, DAG and assembly have identical parent types. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Inspected sources confirm the weight, support, density, power and Hausdorff-normalization conventions. Neither fresh name occurs in the snapshot, another node directory, or a DAG reservation. All three reused declarations are accepted with byte-identical frozen types; their commits preserve the frozen imports and definitions. The proposed dependency graph, including existing dependencies, is acyclic. Independently rebuilt proofs establish all five children using only propext, Classical.choice and Quot.sound. The exact parent assembly adds only its three declared sibling inputs, with no sorryAx. All five generated comparator challenges elaborate against the frozen base without child implementations; all five solution checks pass. Names are bare identifiers, types are standalone one-line propositions, and no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "constants",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary n ≥ 0 and positive κ, ω. The explicit max/min constants satisfy every side condition. Bernoulli and exponential estimates prove the upper inequality; the sign split on ω − Λ proves the lower inequality. The proof is complete, non-circular and directly formalizable. The name is fresh."
+    },
+    {
+      "key": "allard_subball_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and four conclusions match exactly. Ball inclusion supplies containment and mass monotonicity. Positive exponents give scaled-norm monotonicity, while the nonzero radius factor and finite scaled norm force curvature-integral finiteness. No openness or positive-δ assumption is silently added. Reuse at accepted commit 595bf34cad5e797b1ca2c89a3d419f3daecdab75 has the identical frozen type."
+    },
+    {
+      "key": "monotone_quantity_ge_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice: α > 0 yields decay of the error, and the proper right-neighborhood filter supplies a common small radius. The chosen η makes F positive and yields Φ(u) > Φ(t), contradicting monotonicity. No missing sign assumption on Λ is needed. Reuse at accepted commit 616bebf7c199fd722e8ffc5d97e22dd0ddeb25f3 has the identical frozen type."
+    },
+    {
+      "key": "upper_density_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree on null-measurability, finite mass, closed balls and ENNReal limsup. The supplied argument correctly uses Caratheodory measurability, closed approximation, density comparison and countable threshold levels; normalization transfers the null conclusion to μHE[n], including n = 0. Ambient local finiteness is unnecessary. The accepted cfc18a0cf91fdfb9fd76e7bf19262ed872cbe8bb proof has the identical type and passes independent compatibility and axiom checks."
+    },
+    {
+      "key": "support_diff_carrier_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type allow the positive constant to depend on the support point. The measurable carrier subset carries all weight; openness identifies sufficiently small restricted-ball masses, and the positive lower bound forces a nonzero limsup. Finite mass permits the declared upper-density dependency, giving the required null-set inclusion. This dependency is correctly directed and non-circular, and the name is fresh."
+    }
+  ],
+  "required_changes": []
+}

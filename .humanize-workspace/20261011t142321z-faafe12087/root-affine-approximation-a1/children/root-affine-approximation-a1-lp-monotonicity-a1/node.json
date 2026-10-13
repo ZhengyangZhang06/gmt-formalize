@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.lp_monotonicity-a1",
+  "parent_id": "root.affine_approximation-a1",
+  "depth": 2,
+  "title": "L^p monotonicity identity with corrected constant kappa = (p-n)/(4p) (Simon Ch. 4, 3.2-3.6 and 4.1-4.8)",
+  "statement": "Let n >= 1, l >= 0, p > n, U open in R^(n+l), V a RectifiableVarifold n l U with generalized mean curvature H in U, mu = V.weight, p_x = V.tangentProj x, kappa = (p-n)/(4p). Let y in R^(n+l), 0 < R < S and Lambda > 0 with B_S(y) contained in U, integral_{B_S(y)} |H|^p dmu < infinity and (R^(p-n) integral_{B_R(y)} |H|^p dmu)^(1/p) <= kappa Lambda. Then there are F : R -> R and G : R x R -> R such that (i) for 0 < r <= R: e^(-Lambda) <= F(r) <= e^Lambda, |F(r) - 1| <= (1/2) e^(Lambda/2) Lambda (r/R)^(1-n/p), and |F(r) - 1| <= Lambda (r/R)^(1-n/p) if Lambda <= 1; (ii) for 0 < s <= r <= R: e^(-Lambda) <= G(s,r) <= e^Lambda, the function g_y(x) = |x - y - p_x(x - y)|^2/|x - y|^(n+2) is mu-integrable on B_r(y) minus B_s(y), and Phi(r) - Phi(s) = G(s,r) integral_{B_r(y) minus B_s(y)} g_y dmu, where Phi(t) := F(t) t^(-n) mu(B_t(y)) + F(t) - 1.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R S Λ : ℝ), 0 < R → R < S → 0 < Λ → closedBall y S ⊆ U → ∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂V.weight < ⊤ → V.scaledLpNorm H p y R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ (F : ℝ → ℝ) (G : ℝ → ℝ → ℝ), (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - (n : ℝ) / p) ∧ (Λ ≤ 1 → |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p))) ∧ (∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R → Real.exp (-Λ) ≤ G s r ∧ G s r ≤ Real.exp Λ ∧ IntegrableOn (fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) (closedBall y r \\ closedBall y s) V.weight ∧ (F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1)) - (F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1)) = G s r * ∫ x in closedBall y r \\ closedBall y s, ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight)",
+  "lean_name": "aal_lp_monotonicity",
+  "depends_on": [
+    "root.affine_approximation-a1.tangent_structure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-lp-monotonicity-a1-a1"
+}

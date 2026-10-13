@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_comparison-a1",
+  "parent_id": "root.allard_regularity-a1",
+  "depth": 2,
+  "title": "Lipschitz graph of the support: parameter integrals are bounded by varifold integrals",
+  "statement": "For n >= 1 and p > n there is delta_2 > 0, depending only on n and p (the same for every codimension l >= 0), such that: for every l >= 0, if U is open in R^(n+l), V has generalized mean curvature H in U, 0 < delta <= delta_2, 2.3 holds (AllardHypotheses H p delta rho), q is a linear isometry of R^(n+l), f : R^n -> R^l, 0 < R <= delta rho, f(0) = 0, f is 1-Lipschitz on B^n_R(0) and spt V cap B_R(0) = q(graph f over B^n_R(0)) cap B_R(0), then for every jointly Borel Phi : R^(n+l) x L(R^(n+l)) -> [0, infinity] and every measurable A contained in the open ball B^o_{R/2}(0) of R^n: integral_A Phi(F(x), P_q(Df(x))) dL^n(x) <= integral_{F(A)} Phi(w, p_w) dmu(w), where F(x) = q(graphPoint x (f x)), Df(x) = fderiv f x, P_q(B) is the orthogonal projection onto q(graph B) = (span{graphPoint v (B v)}).map q, p_w = V.tangentProj w and mu = V.weight.",
+  "lean_statement": "∀ (n : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₂ : ℝ, 0 < δ₂ ∧ ∀ (ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₂ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), 0 < R → R ≤ δ * ρ → f 0 = 0 → LipschitzOnWith 1 f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → ∀ Φ : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ) → ℝ≥0∞, Measurable (Function.uncurry Φ) → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ ball 0 (R / 2) → ∫⁻ x in A, Φ (q (graphPoint x (f x))) ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection ≤ ∫⁻ y in q '' graphOver f A, Φ y (V.tangentProj y) ∂V.weight",
+  "lean_name": "allard52_graph_comparison",
+  "depends_on": [
+    "root.allard_regularity-a1.tangent_ae-a1",
+    "root.allard_regularity-a1.density_bounds-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.density_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-comparison-a1-a1"
+}

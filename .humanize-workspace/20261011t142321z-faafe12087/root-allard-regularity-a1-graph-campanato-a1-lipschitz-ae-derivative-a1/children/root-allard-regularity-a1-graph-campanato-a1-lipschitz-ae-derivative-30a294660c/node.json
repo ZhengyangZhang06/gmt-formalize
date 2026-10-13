@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.line_integral_rep-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+  "depth": 4,
+  "title": "Integral mean-value formula for a Lipschitz map with continuous a.e. derivative",
+  "statement": "Let n, l >= 0, f : R^n -> R^l, g : R^n -> L(R^n, R^l), U ⊆ R^n open and convex, and K >= 0. Suppose f is K-Lipschitz on U, g is continuous on U, and for Lebesgue-almost every x ∈ U the map f has Frechet derivative g(x) at x. Then for all x, y ∈ U: f(y) - f(x) = integral_0^1 g(x + tau(y - x))(y - x) dtau.",
+  "lean_statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (K : ℝ≥0), IsOpen U → Convex ℝ U → LipschitzOnWith K f U → ContinuousOn g U → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ U → HasFDerivAt f (g x) x) → ∀ x ∈ U, ∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x)",
+  "lean_name": "allard52_lad_line_integral_rep",
+  "depends_on": [
+    "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.segment_null-a1",
+    "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.lipschitz_ftc-a1",
+    "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.segment_integral_continuous-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.segment_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.lipschitz_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.segment_integral_continuous-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-lipschitz-ae-derivative-30a294660c-a1"
+}

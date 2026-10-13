@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1.vertical_trace_sum-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1",
+  "depth": 4,
+  "title": "Vertical trace identity: sum_j |p_S e'_j|^2 = |p_S - p_T|^2 / 2 for an n-plane S and T = q(R^n x {0}) (Simon 4.4)",
+  "statement": "For all n, l in N, every linear isometry equivalence q of R^(n+l) = Amb n l and every linear subspace S of R^(n+l) with finrank S = n: let T := rotatedPlane q = q(R^n x {0}), p := S.starProjection, P := T.starProjection and, for j in Fin l, e'_j := q(graphPoint 0 (EuclideanSpace.single j 1)) (the image under q of the standard basis vector with index n + j). Then sum_{j in Fin l} |p e'_j|^2 = hsNormSq(p - P) / 2, where hsNormSq A = sum_{k in Fin (n+l)} |A eps_k|^2 over the standard basis eps_k of R^(n+l), and graphPoint a b is the point of R^(n+l) whose first n coordinates are those of a in R^n and whose last l coordinates are those of b in R^l.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (S : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ S = n → ∑ j : Fin ℓ, ‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 = hsNormSq (S.starProjection - (rotatedPlane q).starProjection) / 2",
+  "lean_name": "gwe_gta_vertical_trace_sum",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.graph_coords-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.rotated_plane-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-projection-algebra-a1-a1",
+      "result_commit": "164f08e449a335e8b0962c8f511579e3e102246a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.graph_coords-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1-graph-coords-a1-a1",
+      "result_commit": "600de562dfc2c85c0bccd82c39d0b21114a01827",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.rotated_plane-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1-rotated-plane-a1-a1",
+      "result_commit": "b1a6014f632b63d6344dec2f438823629559e2e1",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tilt-algebra-a-62853e6db2-a1"
+}

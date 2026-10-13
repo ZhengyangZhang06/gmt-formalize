@@ -1,0 +1,126 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_graph_corollary-a1`
+- Child DAG node: `root.lipschitz_graph_corollary-a1.height_cone-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 2 of the parent proof (Simon 2.6, inequalities (3)-(4), and the proof of 2.7: 'the set G ... includes all of spt mu ∩ B_{sigma_0/2}(0)'), with beta L replaced by an arbitrary tau >= delta^(1/(2n+2)); the parent applies this child with tau = beta L and instantiates the premise with its resolved sibling Submission.affine_approximation_lemma.
+
+Notation. sigma_0 := delta rho; alpha := 1/(2n+2); mu := V.weight; omega_n := unitBallVolume n > 0; P := p_{T_0} = (rotatedPlane q).starProjection and Q := I - P, so |Q v| = dist(v, T_0) = infDist v T_0 for every v; for any subspace T, dist(v, T) = |v - p_T v|; |A| is the Hilbert-Schmidt norm (|A|^2 = hsNormSq A, a norm on linear maps) and ||A|| the operator norm, ||A|| <= |A|; tilt(A) := integral over A of |p_x - P|^2 dmu; G' := spt V ∩ B_{sigma_0/2}(0); h(xi, sigma, T) := sup{dist(x - xi, T) : x in spt V ∩ B_sigma(xi)} = V.heightSup xi sigma T in [0, infinity]; K(xi, sigma) := V.scaledLpNorm H p xi sigma in [0, infinity]. The tilt hypothesis says tilt(B_sigma(xi)) <= tau^2 sigma^n for xi in G', sigma in (0, sigma_0/2].
+
+Inputs.
+(Aff) The premise AffineApproximationLemma at (n, l, p) yields C > 0; put C_A := max{C, 1} (enlarging the constant preserves both inequalities: the left side of the first one decreases and the right side of the second one increases). Thus: if 0 < delta <= 1/4, 2.3 holds, xi in spt V ∩ B_{delta rho}(0) and 0 < sigma <= 2 delta rho, there is an n-dimensional subspace T with (Aff.1) C_A^-1 (sigma^-n * integral over B_{sigma/2}(xi) of |p_x - p_T|^2 dmu)^(1/2) <= sigma^-1 h(xi, sigma, T) + K(xi, sigma) and (Aff.2) sigma^-1 h(xi, sigma, T) <= C_A delta^alpha (both in [0, infinity]).
+(D) [sibling child density_monotonicity, part (ii)] There is delta_0 > 0, depending only on n, l, p, such that if 0 < delta <= delta_0 and 2.3 holds then mu(B_s(y)) >= omega_n s^n/2 for every y in spt V with |y| <= 3 delta rho and every 0 < s <= rho/2.
+(F1) [sibling child tangent_plane_ae] x -> p_x is mu-a.e. strongly measurable. Since ||p_x|| <= 1 for every x (p_x is an orthogonal projection or 0 by definition of tangentProj) and ||p_T|| <= 1, |p_x - p_T|^2 <= (n+l) ||p_x - p_T||^2 <= 4(n+l). Hence for every ball B with mu(B) < infinity and every subspace T, x -> |p_x - p_T|^2 is mu-integrable on B, so its Bochner integral is the genuine integral. Under 2.3, mu(B_rho(0)) <= (1 + delta) omega_n rho^n < infinity, so this applies to every ball contained in B_rho(0).
+(K) If B_sigma(xi) ⊆ B_rho(0) and 0 < sigma <= rho, then K(xi, sigma) <= delta: K(xi, sigma)^p = sigma^(p-n) * (integral over B_sigma(xi) of |H|^p dmu) <= (sigma/rho)^(p-n) rho^(p-n) * (integral over B_rho(0) of |H|^p dmu) = (sigma/rho)^(p-n) K(0, rho)^p <= delta^p, using p > n and 2.3.
+(Extraction) In the situation of (Aff) with moreover B_sigma(xi) ⊆ B_rho(0) and delta <= 1: by (Aff.2), for every x in spt V ∩ B_sigma(xi), dist(x - xi, T) <= h(xi, sigma, T) <= C_A delta^alpha sigma (multiply (Aff.2) by sigma > 0; the supremum dominates each term). By (Aff.1), (Aff.2), (K) and delta <= delta^alpha: C_A^-1 (sigma^-n X)^(1/2) <= C_A delta^alpha + delta <= (C_A + 1) delta^alpha, where X := integral over B_{sigma/2}(xi) of |p_x - p_T|^2 dmu >= 0; squaring, X <= C_A^2 (C_A + 1)^2 delta^(2 alpha) sigma^n.
+
+Proof.
+1. Constants. delta_1 := min{delta_0, 1/4}; C_2 := (4 (1 + 2^n C_A^2 (C_A+1)^2)/omega_n)^(1/2); C_3 := C_A + C_2; C_5 := (2^(n+2) (1 + C_A^2 (C_A+1)^2)/omega_n)^(1/2); C_6 := C_A + C_5; C_1 := max{C_6, 4 C_3} > 0. These depend only on n, l, p.
+2. Let 0 < delta <= delta_1, let 2.3 hold, and let q, tau satisfy delta^alpha <= tau and the tilt hypothesis. Since 0 < delta <= 1/4 < 1 and 0 < alpha <= 1/4, delta <= delta^alpha <= tau; so tau > 0 and delta^(2 alpha) <= tau^2. Also sigma_0 = delta rho <= rho/4, so every ball B_s(z) with |z| + s <= sigma_0 lies in B_rho(0) ⊆ U.
+3. Comparison of planes. Let B be a closed ball with 0 < m <= mu(B) < infinity and let A_1, A_2 be linear maps with integral over B of |p_x - A_1|^2 dmu <= a and integral over B of |p_x - A_2|^2 dmu <= b. Then |A_1 - A_2|^2 <= 2(a + b)/m. Indeed, |.| is a norm, so |A_1 - A_2| <= |A_1 - p_x| + |p_x - A_2| and |A_1 - A_2|^2 <= 2 |p_x - A_1|^2 + 2 |p_x - A_2|^2 for every x; integrating over B (all functions integrable by (F1)) gives mu(B) |A_1 - A_2|^2 <= 2a + 2b.
+4. Height bound (parent step 1). 0 in spt V by 2.3, 0 < sigma_0 <= 2 delta rho and B_{sigma_0}(0) ⊆ B_rho(0); (Aff) at (0, sigma_0) and (Extraction) give an n-plane T* with dist(x, T*) <= C_A delta^alpha sigma_0 <= C_A tau sigma_0 for every x in spt V ∩ B_{sigma_0}(0), and integral over B_{sigma_0/2}(0) of |p_x - p_{T*}|^2 <= C_A^2 (C_A+1)^2 tau^2 sigma_0^n. The tilt hypothesis at (0, sigma_0/2) (0 in G') gives tilt(B_{sigma_0/2}(0)) <= tau^2 (sigma_0/2)^n. By (D) at y = 0 and s = sigma_0/2 <= rho/2, mu(B_{sigma_0/2}(0)) >= omega_n sigma_0^n 2^-(n+1) (and it is finite). Step 3 gives |P - p_{T*}|^2 <= 2 tau^2 sigma_0^n (2^-n + C_A^2 (C_A+1)^2) 2^(n+1)/(omega_n sigma_0^n) = 4 tau^2 (1 + 2^n C_A^2 (C_A+1)^2)/omega_n = C_2^2 tau^2. Hence, for x in spt V ∩ B_{sigma_0}(0): dist(x, T_0) = |x - P x| <= |x - p_{T*} x| + |(p_{T*} - P) x| <= dist(x, T*) + ||p_{T*} - P|| |x| <= C_A tau sigma_0 + C_2 tau sigma_0 = C_3 tau sigma_0 <= C_1 tau delta rho. This proves (1); write h_0 := C_3 tau sigma_0.
+5. Cone condition at small scales (parent step 2(a)). Let y, z in G' with 0 < s := |y - z| <= sigma_0/2. The tilt hypothesis at (z, s/2) (z in G', s/2 in (0, sigma_0/2]) gives tilt(B_{s/2}(z)) <= tau^2 (s/2)^n <= tau^2 s^n. Since |z| <= sigma_0/2 <= delta rho, 0 < s <= 2 delta rho and B_s(z) ⊆ B_{sigma_0}(0) ⊆ B_rho(0), (Aff) at (z, s) and (Extraction) give an n-plane T_1 with dist(x - z, T_1) <= C_A tau s for every x in spt V ∩ B_s(z), and integral over B_{s/2}(z) of |p_x - p_{T_1}|^2 <= C_A^2 (C_A+1)^2 tau^2 s^n. By (D) at z (|z| <= 3 delta rho, s/2 <= rho/2), mu(B_{s/2}(z)) >= omega_n s^n 2^-(n+1). Step 3 gives |P - p_{T_1}|^2 <= 2 tau^2 s^n (1 + C_A^2 (C_A+1)^2) 2^(n+1)/(omega_n s^n) = C_5^2 tau^2. Since y in spt V ∩ B_s(z): dist(y - z, T_0) = |Q(y - z)| = |(y - z) - P(y - z)| <= |(y - z) - p_{T_1}(y - z)| + |(p_{T_1} - P)(y - z)| <= dist(y - z, T_1) + ||p_{T_1} - P|| s <= C_A tau s + C_5 tau s = C_6 tau |y - z| <= C_1 tau |y - z|.
+6. Cone condition at large scales (parent step 2(b)). If y, z in G' and s := |y - z| > sigma_0/2, then y, z in spt V ∩ B_{sigma_0}(0) and, Q being linear, step 4 gives dist(y - z, T_0) = |Q y - Q z| <= |Q y| + |Q z| = dist(y, T_0) + dist(z, T_0) <= 2 h_0 = 2 C_3 tau sigma_0 < 4 C_3 tau s <= C_1 tau |y - z|. If y = z, both sides of (2) are 0. Steps 5 and 6 prove (2). QED
+
+## Key steps
+
+1. Normalize the affine-approximation constant to C_A >= 1; set delta_1 = min{delta_0, 1/4} and C_1 = max{C_A + C_5, 4(C_A + C_2)}
+2. Inside B_rho(0) the curvature term is <= delta <= delta^alpha <= tau, so each affine plane T has height <= C_A tau sigma and tilt integral <= C_A^2 (C_A+1)^2 tau^2 sigma^n
+3. Plane comparison: |A_1 - A_2|^2 <= 2(a+b)/mu(B) by the Hilbert-Schmidt triangle inequality, integrability (F1) and the lower density bound (D)
+4. Height: the plane T* at (0, sigma_0) and the tilt hypothesis at (0, sigma_0/2) give |P - p_{T*}| <= C_2 tau, hence dist(x, T_0) <= C_3 tau sigma_0 on spt V ∩ B_{sigma_0}(0)
+5. Cone at scales |y - z| <= sigma_0/2: the plane T_1 at (z, |y-z|) and the tilt hypothesis at (z, |y-z|/2) give |P - p_{T_1}| <= C_5 tau and |Q(y - z)| <= C_6 tau |y - z|
+6. Cone at scales |y - z| > sigma_0/2: |Q(y - z)| <= 2 C_3 tau sigma_0 < 4 C_3 tau |y - z|
+
+## Reference use
+
+### local-project
+
+Queries:
+- `diff <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean (identical); diff GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean (identical)`
+- `grep -o '"lgc_[a-z_]*"' <run>/dag.json (no match); python3 listing of every dag.json node id, status and lean_name, plus the lean_statements of aal_lp_monotonicity, aal_tangent_structure, aal_density_ge_one, aal_pinched_density_bounds and rectifiableVarifold_ae_tangentProj_starProjection`
+- `grep -n 'theorem HasGeneralizedMeanCurvatureIn.cutoffMass_deriv_identity\|theorem HasGeneralizedMeanCurvatureIn.hasDerivAt_normalizedCutoffMass\b\|Corrected Simon (4.3.16)\|^def cutoffCancellationFactor\|theorem HasGeneralizedMeanCurvatureIn.hasDerivAt_cancelledCutoffMass\|theorem HasGeneralizedMeanCurvatureIn.exists_cancellationFactor_squeeze_of_lt\|structure LpAnnularCorrection\|theorem HasGeneralizedMeanCurvatureIn.cancelledCutoffMass_squeeze\|def lpMeanCurvatureKappa\|def monotonicityCutoff\|theorem integral_lpCurvatureCoefficientBound\|theorem tendsto_cutoffDefect_difference\|theorem tendsto_cutoffMass' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/*.lean`
+- `grep -rn sorry .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Lp*.lean | wc -l (0)`
+- `sed -n 240,330p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean; sed -n 1,330p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean; sed -n 1,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean; sed -n 395,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `grep -n 'structure RectifiableVarifold' -A 40 .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `sed -n 1,120p and sed -n 280,420p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'theorem hausdorff_blowUp_image\|theorem .*blowUp' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `rg -n 'μHE\[' <snapshot>/mathlib/Mathlib (timed out after 120 s; replaced by the targeted greps below)`
+- `grep -n 'theorem\|lemma\|notation\|def ' .lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; diff -q against <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (identical)`
+- `timeout 100 grep -rn 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le\b\|theorem tendsto_integral_of_dominated_convergence\b\|theorem integral_integral_swap\b\|theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume\|theorem euclideanHausdorffMeasure_coe_image\|lemma measure_compl_support' on ParametricIntegral.lean, DominatedConvergence.lean, Integral/Prod.lean, Geometry/Euclidean/Volume/Measure.lean, Measure/Support.lean`
+- `timeout 100 grep -rn 'theorem integral_hasDerivAt_right\b\|theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image\|theorem lintegral_mul_le_Lp_mul_Lq \|theorem lintegral_lintegral_swap \|theorem add_one_le_exp \|lemma mem_support_iff_forall\|lemma one_add_mul_le_pow\|theorem volume_closedBall\|tendsto_measure_iInter_atTop' on the corresponding <snapshot>/mathlib/Mathlib files; grep -rln 'theorem tendsto_measure_iInter_atTop' <snapshot>/mathlib/Mathlib/MeasureTheory/`
+- `timeout 60 grep -rn 'theorem integral_withDensity_eq_integral_toReal_smul\b\|theorem integral_withDensity_eq_integral_toReal_smul₀\|theorem ae_restrict_mem₀\|theorem LocallyIntegrableOn.integrableOn_compact_subset\|theorem Monotone.measurable\|theorem restrict_map\b' on Bochner/ContinuousLinearMap.lean, Function/LocallyIntegrable.lean, Measure/Restrict.lean, BorelSpace/Order.lean`
+- `grep -n '^3\.[0-9]' and sed -n 250,560p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `lake env lean -o /tmp/lgc-v2-check/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean`
+- `LEAN_PATH=/tmp/lgc-v2-check/olean:$(lake env printenv LEAN_PATH) lean /tmp/lgc-v2-check/src/Types.lean`
+- `LEAN_PATH=/tmp/lgc-v2-check/olean:$(lake env printenv LEAN_PATH) lean /tmp/lgc-v2-check/src/Asm.lean (with #print axioms GMT.Ch05.Submission.lipschitz_graph_corollary)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/lgc-v2-check/src/Types.lean`
+- `/tmp/lgc-v2-check/src/Asm.lean`
+- `/tmp/lgc-v2-scripts/density_monotonicity_proof.txt`
+
+Snapshot and names. manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean equals the workspace Contract.lean, and Submission.lean equals Contract.lean. No lgc_ name occurs in the snapshot or in dag.json. Related nodes in other branches (aal_lp_monotonicity, aal_tangent_structure, aal_pinched_density_bounds, rectifiableVarifold_ae_tangentProj_starProjection) carry different names and types.
+
+Book versus library. The printed text (chapter-04.txt) has 4.1 with a minus curvature term and the integrating factor exp(+integral F_0) in 4.3-4.4. The pinned SimonGMT corrects this:
+- cutoffMass_deriv_identity (Chapter04/MeanCurvature.lean:251) gives n I - rho I' = -rho J' - C.
+- hasDerivAt_normalizedCutoffMass (MeanCurvature.lean:283-286) is documented as 'Corrected Simon (4.3.16) ... plus'.
+- cutoffCancellationFactor (LpCancellation.lean:162) is exp(-integral).
+- cancelledCutoffMass_squeeze (LpCancellation.lean:400) and exists_cancellationFactor_squeeze_of_lt (LpAnnular.lean:47) are the squeeze-and-limit route.
+- lpMeanCurvatureKappa = (p-n)/(4p) (LpMeanCurvature.lean:76).
+- Chapter04/Lp*.lean contains no sorry.
+These results are stated for Chapter04.RectifiableVarifold, which has a measurable carrier, a stored tangent field and a globally locally finite weight (Basic.lean:53-72). They are therefore used only as cross-checks, and the corrected child proof re-derives (M) for the contract's varifold. hausdorff_blowUp_image (TangentDensity.lean:31) models the blow-up scaling.
+
+Mathlib items used by the corrected proof, all present in the snapshot:
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (ParametricIntegral.lean:286)
+- tendsto_integral_of_dominated_convergence (DominatedConvergence.lean:57)
+- integral_hasDerivAt_right (FundThmCalculus.lean:725)
+- ENNReal.lintegral_mul_le_Lp_mul_Lq (MeanInequalities.lean:202)
+- lintegral_lintegral_swap (Measure/Prod.lean:1071)
+- integral_withDensity_eq_integral_toReal_smul₀ (Bochner/ContinuousLinearMap.lean:311)
+- ae_restrict_mem₀ and MeasurableEquiv.restrict_map (Restrict.lean:637, 910)
+- LocallyIntegrableOn.integrableOn_compact_subset (LocallyIntegrable.lean:122)
+- Monotone.measurable (BorelSpace/Order.lean:790)
+- mem_support_iff_forall and measure_compl_support (Support.lean:75, 202)
+- tendsto_measure_iInter_atTop (Measure/Continuity.lean:220)
+- one_add_mul_le_pow (Ring/Pow.lean:99) and add_one_le_exp (Complex/Exponential.lean:632)
+- the notation μHE[d], Isometry.euclideanHausdorffMeasure_image, MeasureTheory.euclideanHausdorffMeasure_homothety_image, InnerProductSpace.euclideanHausdorffMeasure_eq_volume and euclideanHausdorffMeasure_coe_image (Geometry/Euclidean/Volume/Measure.lean:72, 131, 164, 191, 226)
+- volume_closedBall (VolumeOfBalls.lean:324, 354)
+A whole-tree rg for μHE[ timed out, so the targeted greps above were used instead.
+
+Lean (lean-4.35.0-rc3). The five child types elaborate after importing GMT.Ch05.Submission. The parent assembly compiles to GMT.Ch05.Submission.lipschitz_graph_corollary : GMT.Ch05.LipschitzGraphCorollary, with axioms propext, sorryAx, Classical.choice and Quot.sound; sorry occurs only in the five children and the sibling placeholder.

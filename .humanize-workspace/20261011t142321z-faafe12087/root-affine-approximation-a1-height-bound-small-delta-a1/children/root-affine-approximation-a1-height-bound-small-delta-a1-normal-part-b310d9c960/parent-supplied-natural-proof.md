@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.affine_approximation-a1.height_bound_small_delta-a1`
+- Child DAG node: `root.affine_approximation-a1.height_bound_small_delta-a1.normal_part_conical_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 5, printed proof of Lemma 2.5 (p. 109), inequality (1), first inequality (after rescaling to sigma = 1):
+ int_{B_2(y)} |p_{(T_x M)^perp}(x - y)|^2 dmu <= 2^{n+2} int_{B_2(y)} |p_{(T_x M)^perp}(x - y)|^2 |x - y|^{-n-2} dmu.
+This is Step 3 of the parent proof: "For x in B_{2 sigma}(y) with x != y, |p_x^perp(x - y)|^2 = |x - y|^(n+2) g_y(x) <= (2 sigma)^(n+2) g_y(x), and both sides vanish at x = y". Here it is stated for an arbitrary measure mu, an arbitrary map P in place of x -> p_x = V.tangentProj x, and an arbitrary radius s > 0 (parent: s = 2 sigma). No erratum affects this step.
+
+Hypotheses and notation.
+- n, l are natural numbers; mu is a measure on R^(n+l); for each x, P(x) is a continuous linear map R^(n+l) -> R^(n+l); y in R^(n+l); s > 0; B_s(y) is the closed ball.
+- For real t, ofReal(t) := max(t, 0) in [0, infinity).
+- Integrals are Lebesgue integrals over B_s(y) of [0, infinity]-valued functions (lower integrals; no measurability is assumed). Real division by 0 equals 0.
+- Put v(x) := (x - y) - P(x)(x - y) and q(x) := |v(x)|^2 / |x - y|^(n+2). Thus q(x) >= 0 for all x, and q(y) = 0.
+
+1. Pointwise inequality: for every x in B_s(y), |v(x)|^2 <= s^(n+2) q(x).
+ (a) If x = y: then x - y = 0 and P(y)(0) = 0 by linearity, so v(y) = 0 and |v(y)|^2 = 0 <= s^(n+2) q(y), since s^(n+2) > 0 and q(y) >= 0.
+ (b) If x != y: d := |x - y| satisfies 0 < d <= s because x in B_s(y). Then d^(n+2) > 0, so |v(x)|^2 = d^(n+2) (|v(x)|^2 / d^(n+2)) = d^(n+2) q(x). Since 0 <= d <= s and t -> t^(n+2) is monotone on [0, infinity), d^(n+2) <= s^(n+2). Multiplying by q(x) >= 0 gives |v(x)|^2 <= s^(n+2) q(x).
+
+2. Passing to [0, infinity]. ofReal is monotone, and since s^(n+2) >= 0 we have ofReal(s^(n+2) q(x)) = ofReal(s^(n+2)) ofReal(q(x)). Hence ofReal(|v(x)|^2) <= ofReal(s^(n+2)) ofReal(q(x)) for every x in B_s(y).
+
+3. Integration. B_s(y) is closed, hence Borel measurable. For [0, infinity]-valued functions f <= g at every point of a measurable set B (no measurability of f, g needed), int_B f dmu <= int_B g dmu. Therefore
+ int_{B_s(y)} ofReal(|v|^2) dmu <= int_{B_s(y)} ofReal(s^(n+2)) ofReal(q) dmu.
+
+4. Constant factor. c := ofReal(s^(n+2)) is finite, and for a finite constant c, int_B c g dmu = c int_B g dmu for every [0, infinity]-valued g (no measurability needed). Hence the right side of Step 3 equals ofReal(s^(n+2)) int_{B_s(y)} ofReal(q) dmu.
+
+5. Conclusion. Combining Steps 3 and 4:
+ int_{B_s(y)} ofReal(|(x - y) - P(x)(x - y)|^2) dmu(x) <= ofReal(s^(n+2)) int_{B_s(y)} ofReal(|(x - y) - P(x)(x - y)|^2 / |x - y|^(n+2)) dmu(x). QED
+
+(Mathlib: setLIntegral_mono' with measurableSet_closedBall; lintegral_const_mul' with ENNReal.ofReal_ne_top; ENNReal.ofReal_mul; ENNReal.ofReal_le_ofReal; pow_le_pow_left₀.)
+
+## Key steps
+
+1. At x = y both integrands vanish: v(y) = 0 by linearity of P(y), and q(y) = 0 by the a/0 = 0 convention.
+2. For 0 < |x - y| <= s: |v(x)|^2 = |x - y|^(n+2) q(x) <= s^(n+2) q(x).
+3. ofReal is monotone and ofReal(s^(n+2) q) = ofReal(s^(n+2)) ofReal(q) since s^(n+2) >= 0.
+4. Integrate over the measurable closed ball (pointwise monotonicity, no measurability needed) and pull out the finite constant ofReal(s^(n+2)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `timeout 300 rg -n 'aal_packing_finite_net|aal_normal_sq_lintegral_le_conical|aal_good_tangent_point|aal_height_of_net_plane' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib  (no match, rc=1)`
+- `python3 -I: list lean_name of every node in .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json (collision check)`
+- `rg -n "theorem measure_biUnion_finset\b|theorem closedBall_disjoint_closedBall|theorem infDist_le_dist_of_mem|theorem lintegral_finset_sum'|theorem setLIntegral_const\b|theorem lintegral_mono_set\b|theorem lintegral_const_mul'\b|theorem setLIntegral_mono'|lemma starProjection_apply_mem|theorem sSup_mem|theorem mul_meas_ge_le_lintegral₀|theorem ae_restrict_mem\b|theorem dist_starProjection_eq_infDist|theorem infDist_le_infDist_add_dist" <snapshot>/mathlib/Mathlib`
+- `rg -n "lintegral_finset_sum|theorem lintegral_const_mul'|clm_apply|apply_continuousLinearMap" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/*.lean`
+- `rg -n "clm_apply" <snapshot>/mathlib/Mathlib/MeasureTheory`
+- `rg -n "theorem lintegral_finsetSum'|aestronglyMeasurable_comp₂|theorem PairwiseDisjoint.insert\b|theorem le_csSup\b|theorem card_insert_of_notMem\b|theorem sSup_mem" <snapshot>/mathlib/Mathlib`
+- `rg -n "exists_fiveTimesCovering|PairwiseDisjoint" .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean`
+- `grep -n '2.5\|2.4\|2.3' book/sources/chapter-05-source.txt; sed -n 255,380p book/sources/chapter-05-source.txt (printed Lemma 2.5 and proof (1)-(6))`
+- `python3 -I: lean_contract.validate_lean_statement on the 4 child lean_statements; gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') for the comparator replay`
+- `lake env lean /tmp/claude-1000/hb-split/Check1.lean (child types elaborate), Check2.lean (sorry-free parent assembly from sorried children + uncles), Check3.lean (Lean proofs of the 4 children), Check4.lean (combined + #print axioms), Check5.lean (comparator-style challenge per child), Check6.lean (pp.explicit instance inspection)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/Lattice/Nat.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/ConditionallyCompleteLattice/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Set/Pairwise/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Finset/Card.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-height-bound-small-delta-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-05-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/claude-1000/hb-split/Check4.lean`
+- `/tmp/claude-1000/hb-split/Check5.lean`
+
+Snapshot a7f8fcd21d5c8fc7: manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+
+No-match results:
+- The four proposed names (aal_packing_finite_net, aal_normal_sq_lintegral_le_conical, aal_good_tangent_point, aal_height_of_net_plane) occur nowhere in <snapshot>/project or <snapshot>/mathlib (rg rc=1).
+- dag.json reserves none of them. Existing aal_* names: density_ge_one, height_bound_small_delta, l1_tilt_height, lp_monotonicity, mass_upper_bound, pinched_density_bounds, tangent_structure, tilt_height_curvature_bound.
+- No Mathlib or SimonGMT lemma packages the maximal-disjoint-ball net with a measure count. SimonGMT Chapter01/DensityCovering.lean:26 exists_fiveTimesCovering is the Vitali 5r lemma, which is not what is needed here.
+- There is no AEStronglyMeasurable.clm_apply in the snapshot; only ContinuousOn.clm_apply appears, in CurveIntegral.
+
+Located items (under <snapshot>/mathlib/Mathlib):
+- ContinuousLinearMap.aestronglyMeasurable_comp₂: MeasureTheory/Function/StronglyMeasurable/Lemmas.lean:79
+- lintegral_finsetSum': MeasureTheory/Integral/Lebesgue/Add.lean:343 (old name lintegral_finset_sum' is a deprecated alias at :354)
+- lintegral_const_mul': Add.lean:420
+- lintegral_mono_set: MeasureTheory/Integral/Lebesgue/Basic.lean:98
+- setLIntegral_const: Basic.lean:121
+- setLIntegral_mono': Basic.lean:254
+- mul_meas_ge_le_lintegral₀: MeasureTheory/Integral/Lebesgue/Markov.lean:52
+- ae_restrict_mem: MeasureTheory/Measure/Restrict.lean:640
+- measure_biUnion_finset: MeasureTheory/Measure/Basic.lean:150
+- Metric.closedBall_disjoint_closedBall: Topology/MetricSpace/Pseudo/Defs.lean:495
+- Set.PairwiseDisjoint.insert: Data/Set/Pairwise/Basic.lean:297
+- Nat.sSup_mem: Order/Lattice/Nat.lean:145
+- le_csSup: Order/ConditionallyCompleteLattice/Basic.lean:197
+- Finset.card_insert_of_notMem: Data/Finset/Card.lean:103
+- Metric.infDist_le_dist_of_mem: Topology/MetricSpace/HausdorffDistance.lean:500
+- Submodule.starProjection_apply_mem: Analysis/InnerProductSpace/Projection/Basic.lean:156
+- Submodule.dist_starProjection_eq_infDist: Analysis/InnerProductSpace/Projection/Basic.lean:234
+
+Book source: chapter-05-source.txt lines 294-370 (Lemma 2.5 and the printed proof (1)-(6)), used for the child Source lines.
+
+Lean results (scratch, contract scope):
+- The 4 child types elaborate, pass validate_lean_statement, and close comparator-style challenges.
+- The 4 children are proved using only propext, Classical.choice and Quot.sound.
+- The selected frozen type is proved from the children plus the frozen uncle types (aal_tangent_structure, aal_pinched_density_bounds); sorryAx comes only from those two sorried uncle stubs.
+- The uncle and selected types match dag.json byte-for-byte.
