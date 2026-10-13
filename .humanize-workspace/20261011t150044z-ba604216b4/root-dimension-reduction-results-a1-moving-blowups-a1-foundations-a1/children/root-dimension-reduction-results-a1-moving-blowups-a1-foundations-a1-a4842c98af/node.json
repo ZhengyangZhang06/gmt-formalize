@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.vector_riesz-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1",
+  "depth": 4,
+  "title": "Riesz representation of locally bounded functionals on C_c(X, ℝ^d) (parent step 3)",
+  "statement": "Let X be a locally compact Hausdorff space with a countable basis, equipped with its Borel σ-algebra; let d ∈ ℕ. Let L be a real linear functional on C_c(X, ℝ^d) (CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d))) that is locally bounded: for every compact K ⊆ X there is M ∈ ℝ with |L(g)| ≤ M for all g with tsupport g ⊆ K and ‖g(x)‖ ≤ 1 for all x. Then there are a Borel measure μ₀ on X that is finite on compact sets and a measurable map ν : X → ℝ^d that is μ₀-integrable on every compact set, such that L(g) = ∫ ⟨g(x), ν(x)⟩ dμ₀(x) for every g ∈ C_c(X, ℝ^d).",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∃ (μ₀ : Measure X) (ν : X → EuclideanSpace ℝ (Fin d)), IsFiniteMeasureOnCompacts μ₀ ∧ Measurable ν ∧ (∀ K : Set X, IsCompact K → IntegrableOn ν K μ₀) ∧ ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), L g = ∫ x, inner ℝ (g x) (ν x) ∂μ₀",
+  "lean_name": "dimred_mbl_fnd_vector_riesz_representation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-a4842c98af-a1"
+}

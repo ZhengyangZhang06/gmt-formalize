@@ -1,0 +1,73 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.coordinate_covectors-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Notation paragraph: the alternating dx^I(v_1, …, v_n) := det((v_j)^{i_k})_{k,j} satisfies dx^I(e_J) = δ_{IJ}, and every covector is α = Σ_I α(e_I) dx^I; this is used in step 10 of the parent proof (ω = Σ_α ω_α dx^α).
+Notation: e_i := EuclideanSpace.basisFun (Fin P) ℝ i = EuclideanSpace.single i 1, so e_i(l) = 1 if l = i and 0 otherwise; e_J := (fun j => e_{J j}); 𝓘 := the finset of strictly increasing J : Fin n → Fin P (classical decidability); |·| := covectorEuclideanNorm.
+1. (Part (a).) Fix I. The map Θ : (Fin n → (Fin n → ℝ)) → ℝ, Θ(u) := det(Matrix.of fun k j => u j k), is multilinear and alternating in the family u. Indeed it is the determinant of the matrix whose j-th column is u j, i.e. of the transpose of the matrix with rows u j; since det Mᵀ = det M, Θ is Matrix.detRowAlternating, an alternating multilinear map. The coordinate map p_I : ℝ^P →ₗ[ℝ] (Fin n → ℝ), p_I x := (fun k => x (I k)), is linear. Hence θ⁰ := Θ.compLinearMap p_I is an alternating n-linear map ℝ^P → ℝ with θ⁰(v) = det(Matrix.of fun k j => v j (I k)). By the Leibniz formula and |x(l)| ≤ ‖x‖, |θ⁰(v)| ≤ Σ_σ Π_j |v_j(I(σ j))| ≤ n!·Π_j ‖v_j‖. So θ_I := AlternatingMap.mkContinuous θ⁰ (n!) (with this bound) is an n-covector with θ_I(v) = det(Matrix.of fun k j => v j (I k)) for all v.
+2. (Kronecker property.) Let I, J be strictly increasing. Since (e_{J j})(I k) = if J j = I k then 1 else 0, θ_I(e_J) = det M with M k j := if J j = I k then 1 else 0.
+ - If I = J, then M = 1, because J j = J k iff j = k by injectivity; so θ_I(e_J) = 1.
+ - If I ≠ J, there is k₀ with I k₀ ∉ range J. Otherwise range I ⊆ range J; both ranges have exactly n elements (strictly increasing maps are injective), so range I = range J and hence I = J (two strictly increasing maps Fin n → Fin P with the same range are equal, StrictMono.range_inj_of_wellFoundedLT), a contradiction. Then row k₀ of M is zero, so θ_I(e_J) = 0 (Matrix.det_eq_zero_of_row_eq_zero).
+ So θ_I(e_J) = δ_{IJ} for I, J ∈ 𝓘.
+3. (Expansion.) Let α be an n-covector and α' := α − Σ_{I∈𝓘} α(e_I)•θ_I. For J ∈ 𝓘, α'(e_J) = α(e_J) − Σ_{I∈𝓘} α(e_I)·θ_I(e_J) = α(e_J) − α(e_J) = 0 by step 2. Every term of the sum defining |α'| therefore vanishes, so |α'| = 0. By the sibling covector_euclidean_equiv there are d and c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d) with |β| = ‖c β‖ for all β. Thus c α' = 0 and α' = 0, since c is injective. Therefore α = Σ_{I∈𝓘} α(e_I)•θ_I.
+4. (Part (b).) Let ζ satisfy the hypothesis of (b). For each I ∈ 𝓘 the covector θ_I of step 1 satisfies the determinant identity, hence ζ θ_I = 0. By step 3 and linearity, ζ α = Σ_{I∈𝓘} α(e_I)·ζ θ_I = 0 for every n-covector α. So ζ = 0 (ContinuousLinearMap.ext).
+5. (Degenerate cases.) For n = 0, 𝓘 consists of the empty map and θ_∅ is the constant 1 (the determinant of the empty matrix). For n > P, 𝓘 = ∅ and step 3 shows that every n-covector vanishes. The argument covers both cases without change.
+
+## Key steps
+
+1. θ_I := det of the coordinate rows (I k), made continuous by the bound n!·Π‖v_j‖.
+2. θ_I(e_J) = δ_IJ for strictly increasing I, J (a zero row when I ≠ J).
+3. α − Σ_I α(e_I)θ_I has covectorEuclideanNorm 0, hence vanishes by covector_euclidean_equiv.
+4. ζ vanishes on every θ_I, hence on every covector.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean and Submission.lean against workspace GMT/Ch07/Contract.lean and Submission.lean  (identical)`
+- `rg -n 'dimred_mbl_fnd' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n 'cmr_|cmc_imRep|rsd_mw_exists|dor_ims_sua' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n -i 'massRepresentation|vector_riesz|vectorRiesz' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n 'structure IMRep|def IsIntegerMultiplicity|def boundaryMassOn|def CompactlyContained|abbrev MultiVector' <snapshot>/project/GMT/Ch07/Contract.lean  (lines 61, 92, 120, 127, 48)`
+- `rg -n 'def rieszMeasure|theorem integral_rieszMeasure|def toRealPositiveLinear|theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem tendsto_measure_cthickening_of_isCompact|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem integral_withDensity_eq_integral_toReal_smul|theorem exists_contDiff_tsupport_subset|theorem eLpNorm_le_eLpNorm_fderiv_one|theorem extDeriv_apply|theorem monotone_sort' <snapshot>/mathlib/Mathlib -g '*.lean'`
+- `python3 walk of `import` lines from the contract's SimonGMT imports through lake-packages simongmt (closure: Chapter01.{Basic,Hausdorff,MetricCriterion}, Chapter02.Lipschitz, Chapter03.Rectifiable, Chapter04.Basic, Chapter06.{Forms,Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward})`
+- `lake env lean /tmp/fnd-split/Probe2.lean and Probe3.lean  (#check of every cited name after `import GMT.Ch07.Submission`; unknown: simon_theorem_4_14_caratheodory, eLpNorm_le_eLpNorm_fderiv_one, ContDiffBump.normed, SignedMeasure.toJordanDecomposition, ContinuousAlternatingMap.map_perm, Measure.withDensity_rnDeriv_eq; all other cited names resolve)`
+- `lake env lean /tmp/fnd-split/check/Final.lean  (12 child types + parent type in the replayed comparator scope; conditional assembly; #print axioms)`
+- `python3 scans of dag.json: selected node, string identity parent = '(' + REP + ') ∧ (' + IMC + ')', statuses/candidate commits of reused nodes, dependency closures of reused nodes, lean_name collisions; lean_contract.validate_lean_statement on all 12 child types`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py; contract_scope/child_modules in verifier/gmt-compare.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/isolated-comparator-result.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/fnd-split/check/Final.lean`
+
+The snapshot pins match: project b4d606db and mathlib 25730c7c. The snapshot Contract.lean and Submission.lean are byte-identical to the workspace's. The snapshot contains no dimred_mbl_fnd_*, cmr_*, cmc_imRep*, rsd_mw_exists* or dor_ims_sua* declaration and no mass-representation or vector-Riesz theorem, so no snapshot declaration is reused and no fresh name collides. The snapshot mathlib has the in-scope replacement tools the children cite: RealRMK.rieszMeasure/integral_rieszMeasure, toRealPositiveLinear, IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, tendsto_measure_cthickening_of_isCompact, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, integral_withDensity_eq_integral_toReal_smul, extDeriv_apply and Tuple.monotone_sort. eLpNorm_le_eLpNorm_fderiv_one exists in the snapshot (SobolevInequality.lean:439) but is outside the import closure of GMT.Ch07.Submission, as are SimonGMT's simon_theorem_4_14_caratheodory and ContDiffBump.normed (Lean probe: unknown identifiers). Five DAG declarations are reused with byte-identical frozen types. All are accepted, with candidate commits and passed comparators, and their closures are fully accepted: cmc_imRep_locality_restrict_sub, cmr_abs_apply_le_massOn, cmr_covector_euclidean_equiv, dor_ims_sua_mollify_unit_field and rsd_mw_exists_testForm_approx. All 12 child types and the parent type elaborate in the replayed comparator scope. The conditional assembly proves the exact selected type with axioms propext, Classical.choice and Quot.sound.
