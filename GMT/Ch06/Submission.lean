@@ -435,6 +435,303 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     intro x hx
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
+/-- Counting identity: for any family `u` of vectors of `ℝ^P` and any `k`-covector `φ`,
+`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = k! ∑_{I strictly increasing} φ(u_{I 0}, …, u_{I (k-1)})²`,
+where `I` ranges over all maps `Fin k → Fin P`. -/
+theorem Submission.slicing_mb_wn_sq_sum_eq_factorial_mul :
+    ∀ (P k : ℕ) (u : Fin P → Eucl P) (φ : Covector (Eucl P) k),
+      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
+        (k.factorial : ℝ) * ∑ I : Fin k → Fin P,
+          if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P k u φ
+  classical
+  set g : (Fin k → Fin P) → ℝ := fun I => (φ (fun i => u (I i))) ^ 2
+  -- A non-injective `I` repeats a vector of `u ∘ I`, so `φ (u ∘ I) = 0`.
+  have h0 : ∀ I : Fin k → Fin P, ¬Function.Injective I → g I = 0 := by
+    intro I hI
+    have hv : ¬Function.Injective (fun i => u (I i)) :=
+      fun h => hI fun a b hab => h (by simp only [hab])
+    simp only [g, φ.map_eq_zero_of_not_injective _ hv, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, zero_pow]
+  -- `φ (u ∘ I ∘ σ) = sign σ • φ (u ∘ I)`, so the square is invariant under permutations.
+  have hperm : ∀ (I : Fin k → Fin P) (σ : Equiv.Perm (Fin k)), g (I ∘ σ) = g I := by
+    intro I σ
+    have h : φ (fun i => u ((I ∘ σ) i)) = Equiv.Perm.sign σ • φ (fun i => u (I i)) :=
+      φ.toAlternatingMap.map_perm (fun i => u (I i)) σ
+    simp only [g, h]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h' | h' <;> simp [h']
+  -- Write both sides as sums over the injective, resp. strictly increasing, maps.
+  have hL : ∑ I, g I = ∑ I ∈ Finset.univ.filter Function.Injective, g I := by
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs with h
+    · rfl
+    · exact h0 I h
+  have hR : (∑ I : Fin k → Fin P, if StrictMono I then g I else 0) =
+      ∑ I ∈ Finset.univ.filter StrictMono, g I := (Finset.sum_filter _ _).symm
+  -- `(σ, β) ↦ β ∘ σ` is a bijection from permutations × strictly increasing maps onto the
+  -- injective maps, with inverse `I ↦ ((sort I)⁻¹, I ∘ sort I)`.
+  have hbij : ∑ I ∈ Finset.univ.filter Function.Injective, g I =
+      ∑ p ∈ (Finset.univ : Finset (Equiv.Perm (Fin k))) ×ˢ Finset.univ.filter StrictMono,
+        g (p.2 ∘ p.1) := by
+    refine Finset.sum_nbij' (fun I => ((Tuple.sort I)⁻¹, I ∘ Tuple.sort I))
+      (fun p => p.2 ∘ p.1) ?_ ?_ ?_ ?_ ?_
+    · intro I hI
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hI
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and]
+      exact (Tuple.monotone_sort I).strictMono_of_injective (hI.comp (Tuple.sort I).injective)
+    · rintro ⟨σ, β⟩ hp
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact hp.injective.comp σ.injective
+    · intro I _
+      funext i
+      simp
+    · rintro ⟨σ, β⟩ hp
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
+      -- sorting `β ∘ σ` recovers the strictly increasing `β`
+      have hsorted : (β ∘ σ) ∘ Tuple.sort (β ∘ σ) = β := by
+        rw [Tuple.comp_perm_comp_sort_eq_comp_sort,
+          (Tuple.sort_eq_refl_iff_monotone).2 hp.monotone]
+        rfl
+      have hσ : σ * Tuple.sort (β ∘ σ) = 1 := by
+        ext i
+        have := congrFun hsorted i
+        simp only [Function.comp_apply] at this
+        simpa using congrArg Fin.val (hp.injective this)
+      have hinv : (Tuple.sort (β ∘ σ))⁻¹ = σ := by
+        rw [inv_eq_iff_eq_inv]
+        exact eq_inv_of_mul_eq_one_right hσ
+      simp only [hinv, hsorted]
+    · intro I _
+      congr 1
+      funext i
+      simp
+  -- Each permutation contributes `∑_β g β`, and there are `k!` permutations.
+  rw [hL, hbij, hR, Finset.sum_product]
+  simp_rw [hperm]
+  rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+/-- Basis independence of the full coefficient sum (Parseval's identity, one slot at a time): for
+orthonormal bases `u`, `v` of `ℝ^P` and a `k`-covector `φ`,
+`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = ∑_I φ(v_{I 0}, …, v_{I (k-1)})²`, both sums over all index maps
+`I : Fin k → Fin P`.  Induction on `k`: write `I = (i, J)` and `φ(w_I) = (φ.curryLeft w_i)(w_J)`,
+replace `u` by `v` in the last `k` slots by the induction hypothesis for `φ.curryLeft (u i)`, then
+in slot `0` by `OrthonormalBasis.norm_dual` for the functional `z ↦ (φ.curryLeft z)(v_J)`. -/
+theorem Submission.slicing_mb_wn_sq_sum_onb_invariant :
+    ∀ (P k : ℕ) (u v : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
+        ∑ I : Fin k → Fin P, (φ (fun i => v (I i))) ^ 2 := by
+  intro P k u v
+  induction k with
+  | zero =>
+    -- Both families are the empty tuple.
+    intro φ
+    exact Fintype.sum_congr _ _ fun I => by
+      rw [Subsingleton.elim (fun i => u (I i)) (fun i => v (I i))]
+  | succ k ih =>
+    intro φ
+    -- Split `I = Fin.cons i J`; then `φ(w_I) = (φ.curryLeft w_i)(w_J)`.
+    have hsplit : ∀ w : OrthonormalBasis (Fin P) ℝ (Eucl P),
+        ∑ I : Fin (k + 1) → Fin P, (φ (fun i => w (I i))) ^ 2 =
+          ∑ i : Fin P, ∑ J : Fin k → Fin P, (φ.curryLeft (w i) (fun j => w (J j))) ^ 2 := by
+      intro w
+      rw [← Fintype.sum_prod_type', ← (Fin.consEquiv fun _ => Fin P).sum_comp]
+      refine Fintype.sum_congr _ _ fun p => ?_
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      congr 2
+      funext i
+      refine Fin.cases ?_ (fun j => ?_) i <;>
+        simp only [Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ, Matrix.cons_val_zero,
+          Matrix.cons_val_succ]
+    -- Slots `1, …, k`: the induction hypothesis for each `k`-covector `φ.curryLeft (u i)`.
+    rw [hsplit u, hsplit v]
+    simp_rw [ih]
+    -- Slot `0`: for each `J`, Parseval for `ℓ_J z = (φ.curryLeft z)(v_J)` in the bases `u`, `v`.
+    rw [Finset.sum_comm]
+    conv_rhs => rw [Finset.sum_comm]
+    refine Fintype.sum_congr _ _ fun J => ?_
+    let ℓ : StrongDual ℝ (Eucl P) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (fun j => v (J j))).comp φ.curryLeft
+    have hu := u.norm_dual ℓ
+    have hv := v.norm_dual ℓ
+    simp only [ℓ, ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.apply_apply] at hu hv
+    rw [← hu, ← hv]
+
+/-- The Euclidean coefficient norm of a `k`-covector can be computed in any orthonormal basis
+`u` of `ℝ^P` (Simon Ch. 6, 1.5–1.6 and Remark 2.6): `|φ|² = ∑_{I increasing} φ(u_I)²`.
+With `e` the standard basis used by `covectorEuclideanNorm` and `N_w(φ) = ∑_{all I} φ(w_I)²`,
+`k! |φ|² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`, and `k! ≠ 0`. -/
+theorem Submission.slicing_mb_wn_norm_sq_eq_onb_sum :
+    ∀ (P k : ℕ) (u : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      covectorEuclideanNorm φ ^ 2 =
+        ∑ I : Fin k → Fin P, if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P k u φ
+  -- `k! ∑_{I increasing} φ(e_I)² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`.
+  have key := (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) φ).symm.trans
+    ((Submission.slicing_mb_wn_sq_sum_onb_invariant P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) u φ).trans
+        (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k u φ))
+  -- `|φ|² = ∑_{I increasing} φ(e_I)²`: the radicand is a sum of squares and zeros.
+  rw [covectorEuclideanNorm, Real.sq_sqrt]
+  · exact mul_left_cancel₀ (Nat.cast_ne_zero.mpr k.factorial_ne_zero) key
+  · exact Finset.sum_nonneg fun I _ => by split_ifs <;> positivity
+
+/-- Full tuple sum of squared coefficients in the standard basis `e` of `ℝ^m`: for a `j`-covector
+`γ`, `∑_i γ(e_{i 0}, …, e_{i (j-1)})² = j! |γ|²`, the sum over all index maps `i : Fin j → Fin m`.
+The counting identity turns the left side into `j! ∑_{I increasing} γ(e_I)²`, and the
+orthonormal-basis formula for `|γ|²`, applied to `e` itself, identifies that sum with `|γ|²`. -/
+theorem Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul :
+    ∀ (m j : ℕ) (γ : Covector (Eucl m) j),
+      ∑ i : Fin j → Fin m, (γ (fun k => EuclideanSpace.basisFun (Fin m) ℝ (i k))) ^ 2 =
+        (j.factorial : ℝ) * covectorEuclideanNorm γ ^ 2 := by
+  intro m j γ
+  rw [Submission.slicing_mb_wn_norm_sq_eq_onb_sum m j (EuclideanSpace.basisFun (Fin m) ℝ) γ]
+  exact Submission.slicing_mb_wn_sq_sum_eq_factorial_mul m j (EuclideanSpace.basisFun (Fin m) ℝ) γ
+/-- One-slot bound: for `L : ℝ^P → ℝ^Q` and a linear functional `f` on `ℝ^Q`,
+`∑_a f(L e_a)² ≤ ‖L‖² ∑_b f(e′_b)²`.  The Riesz vector `g = (f(e′_b))_b` gives `f = ⟨g, ·⟩`
+and the test vector `u = (f(L e_a))_a` has `f(L u) = |u|²`, so Cauchy–Schwarz and the operator
+norm give `|u|² = ⟨g, L u⟩ ≤ |g| ‖L‖ |u|`; cancel `|u|` and square. -/
+theorem Submission.iwl_sp_pn_sum_sq_comp_basis_le : ∀ (P Q : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (f : Eucl Q →ₗ[ℝ] ℝ), ∑ a : Fin P, (f (L (EuclideanSpace.basisFun (Fin P) ℝ a))) ^ 2 ≤ ‖L‖ ^ 2 * ∑ b : Fin Q, (f (EuclideanSpace.basisFun (Fin Q) ℝ b)) ^ 2 := by
+  intro P Q L f
+  -- The Riesz vector `g` of `f`: `f y = ⟨g, y⟩` and `|g|² = ∑_b f(e′_b)²`.
+  set g : Eucl Q := WithLp.toLp 2 (fun b => f (EuclideanSpace.basisFun (Fin Q) ℝ b)) with hg_def
+  have hf : ∀ y : Eucl Q, f y = inner ℝ g y := by
+    intro y
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin Q) ℝ).sum_repr y]
+    rw [map_sum]
+    simp only [map_smul, smul_eq_mul, EuclideanSpace.basisFun_repr]
+    rw [PiLp.inner_apply]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    simp [hg_def]
+  have hg : ‖g‖ ^ 2 = ∑ b : Fin Q, (f (EuclideanSpace.basisFun (Fin Q) ℝ b)) ^ 2 := by
+    rw [EuclideanSpace.real_norm_sq_eq]
+  -- The test vector `u`: `|u|² = ∑_a f(L e_a)²` and `f(L u) = |u|²`.
+  set u : Eucl P := WithLp.toLp 2 (fun a => f (L (EuclideanSpace.basisFun (Fin P) ℝ a)))
+    with hu_def
+  have hu : ‖u‖ ^ 2 = ∑ a : Fin P, (f (L (EuclideanSpace.basisFun (Fin P) ℝ a))) ^ 2 := by
+    rw [EuclideanSpace.real_norm_sq_eq]
+  have hfLu : f (L u) = ‖u‖ ^ 2 := by
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr u]
+    rw [map_sum, map_sum, hu]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    simp [hu_def, sq]
+  -- Cauchy–Schwarz and the operator norm: `|u|² = ⟨g, L u⟩ ≤ |g| ‖L‖ |u|`.
+  have key : ‖u‖ ^ 2 ≤ ‖g‖ * (‖L‖ * ‖u‖) := by
+    rw [← hfLu, hf]
+    calc inner ℝ g (L u) ≤ ‖g‖ * ‖L u‖ := real_inner_le_norm _ _
+      _ ≤ ‖g‖ * (‖L‖ * ‖u‖) := mul_le_mul_of_nonneg_left (L.le_opNorm u) (norm_nonneg _)
+  -- Cancel `|u|` (trivial if `|u| = 0`), then square.
+  have hle : ‖u‖ ≤ ‖L‖ * ‖g‖ := by
+    rcases (norm_nonneg u).eq_or_lt with h0 | hpos
+    · rw [← h0]
+      exact mul_nonneg (norm_nonneg _) (norm_nonneg _)
+    · have : ‖u‖ * ‖u‖ ≤ (‖L‖ * ‖g‖) * ‖u‖ := by nlinarith [key]
+      exact le_of_mul_le_mul_right this hpos
+  rw [← hu, ← hg, ← mul_pow]
+  exact pow_le_pow_left₀ (norm_nonneg _) hle 2
+
+/-- Multilinear tensor-power bound: for every continuous linear `L : ℝ^P → ℝ^Q` and every
+`j`-multilinear `β : (ℝ^Q)^j → ℝ` (not necessarily alternating or continuous),
+`∑_{i : Fin j → Fin P} β(L e_{i(1)}, …, L e_{i(j)})²`
+`≤ (‖L‖²)^j ∑_{i : Fin j → Fin Q} β(e′_{i(1)}, …, e′_{i(j)})²`,
+with `e`, `e′` the standard bases.  Induction on `j`, generalizing `β`: split the sums over
+`Fin (j + 1) → Fin n` along `Fin.cons`, apply the inductive hypothesis to `β.curryLeft (L e_a)`,
+exchange the sums and bound each slot functional `y ↦ β(Fin.cons y (e′ ∘ i″))` by the one-slot
+estimate `Submission.iwl_sp_pn_sum_sq_comp_basis_le`. -/
+theorem Submission.iwl_sp_pn_multilinear_sum_sq_le :
+    ∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ),
+      ∑ i : Fin j → Fin P, (β (fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i k)))) ^ 2 ≤
+        (‖L‖ ^ 2) ^ j *
+          ∑ i : Fin j → Fin Q, (β (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k))) ^ 2 := by
+  intro P Q j L
+  induction j with
+  | zero =>
+    -- Both sums have the single empty tuple as index, and both arguments of `β` are empty.
+    intro β
+    rw [Fintype.sum_unique, Fintype.sum_unique, pow_zero, one_mul]
+    exact (congrArg (fun v => β v ^ 2) (Subsingleton.elim _ _)).le
+  | succ j ih =>
+    intro β
+    -- Sums over `Fin (j + 1) → Fin n` split along `Fin.cons` (`Fin.consEquiv`).
+    have split : ∀ (n : ℕ) (G : (Fin (j + 1) → Fin n) → ℝ),
+        ∑ i, G i = ∑ a : Fin n, ∑ i' : Fin j → Fin n, G (Fin.cons a i') := by
+      intro n G
+      rw [← Fintype.sum_prod_type']
+      exact (Fintype.sum_equiv (Fin.consEquiv fun _ => Fin n) _ _ fun _ => rfl).symm
+    -- The slot functionals `y ↦ β (Fin.cons y w)` are linear.
+    let slot : (Fin j → Eucl Q) → Eucl Q →ₗ[ℝ] ℝ := fun w =>
+      { toFun := fun y => β (Fin.cons y w)
+        map_add' := fun x y => β.cons_add w x y
+        map_smul' := fun c x => β.cons_smul w c x }
+    calc ∑ i : Fin (j + 1) → Fin P, (β fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i k))) ^ 2
+        = ∑ a : Fin P, ∑ i' : Fin j → Fin P,
+            (β.curryLeft (L (EuclideanSpace.basisFun (Fin P) ℝ a))
+              fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i' k))) ^ 2 := by
+          rw [split P]
+          exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun i' _ =>
+            congrArg (fun v => β v ^ 2)
+              (Fin.comp_cons (fun p => L (EuclideanSpace.basisFun (Fin P) ℝ p)) a i')
+      -- the inductive hypothesis for `β.curryLeft (L e_a)`
+      _ ≤ ∑ a : Fin P, (‖L‖ ^ 2) ^ j * ∑ i'' : Fin j → Fin Q,
+            (β.curryLeft (L (EuclideanSpace.basisFun (Fin P) ℝ a))
+              fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k)) ^ 2 :=
+          Finset.sum_le_sum fun a _ => ih _
+      _ = (‖L‖ ^ 2) ^ j * ∑ i'' : Fin j → Fin Q, ∑ a : Fin P,
+            (slot (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k))
+              (L (EuclideanSpace.basisFun (Fin P) ℝ a))) ^ 2 := by
+          rw [← Finset.mul_sum, Finset.sum_comm]
+          rfl
+      -- the one-slot bound for each slot functional
+      _ ≤ (‖L‖ ^ 2) ^ j * ∑ i'' : Fin j → Fin Q, ‖L‖ ^ 2 * ∑ b : Fin Q,
+            (slot (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k))
+              (EuclideanSpace.basisFun (Fin Q) ℝ b)) ^ 2 :=
+          mul_le_mul_of_nonneg_left
+            (Finset.sum_le_sum fun i'' _ => Submission.iwl_sp_pn_sum_sq_comp_basis_le P Q L _)
+            (by positivity)
+      _ = (‖L‖ ^ 2) ^ (j + 1) * ∑ b : Fin Q, ∑ i'' : Fin j → Fin Q,
+            (β (Fin.cons (EuclideanSpace.basisFun (Fin Q) ℝ b)
+              fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k))) ^ 2 := by
+          rw [← Finset.mul_sum, Finset.sum_comm, pow_succ (‖L‖ ^ 2) j, mul_assoc]
+          rfl
+      _ = (‖L‖ ^ 2) ^ (j + 1) * ∑ i : Fin (j + 1) → Fin Q,
+            (β fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k)) ^ 2 := by
+          rw [split Q]
+          exact congrArg _ (Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun i'' _ =>
+            congrArg (fun v => β v ^ 2)
+              (Fin.comp_cons (fun p => EuclideanSpace.basisFun (Fin Q) ℝ p) b i'').symm)
+
+/-- Pullback bound for the Euclidean covector norm: for `L : ℝ^P → ℝ^Q` and a `j`-covector `α`
+on `ℝ^Q`, `|L^#α| ≤ ‖L‖^j |α|`.  The multilinear bound
+`Submission.iwl_sp_pn_multilinear_sum_sq_le` for `β := α` gives
+`∑_i α(L e∘i)² ≤ (‖L‖²)^j ∑_i α(e′∘i)²`, and `α(L e∘i) = (L^#α)(e∘i)` by definition.  By
+`Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul` the two sums over all index tuples are
+`j! |L^#α|²` and `j! |α|²`; cancel `j! > 0` and take square roots. -/
+theorem Submission.iwl_sp_covectorEuclideanNorm_pullback_le : ∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (α : Covector (Eucl Q) j), covectorEuclideanNorm (α.compContinuousLinearMap L) ≤ ‖L‖ ^ j * covectorEuclideanNorm α := by
+  intro P Q j L α
+  -- Sums over all index tuples: `j! |L^#α|²` on `ℝ^P` and `j! |α|²` on `ℝ^Q`.
+  have hP := Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul P j (α.compContinuousLinearMap L)
+  have hQ := Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul Q j α
+  -- The multilinear bound for `β := α`.
+  have hβ := Submission.iwl_sp_pn_multilinear_sum_sq_le P Q j L α.toMultilinearMap
+  have key : (j.factorial : ℝ) * covectorEuclideanNorm (α.compContinuousLinearMap L) ^ 2 ≤
+      (j.factorial : ℝ) * (‖L‖ ^ j * covectorEuclideanNorm α) ^ 2 :=
+    calc (j.factorial : ℝ) * covectorEuclideanNorm (α.compContinuousLinearMap L) ^ 2
+        = ∑ i : Fin j → Fin P,
+            (α.compContinuousLinearMap L fun k => EuclideanSpace.basisFun (Fin P) ℝ (i k)) ^ 2 :=
+          hP.symm
+      -- `(L^#α)(e∘i) = α(L e∘i)` holds by definition (`compContinuousLinearMap_apply`).
+      _ ≤ (‖L‖ ^ 2) ^ j * ∑ i : Fin j → Fin Q,
+            (α fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k)) ^ 2 := hβ
+      _ = (j.factorial : ℝ) * (‖L‖ ^ j * covectorEuclideanNorm α) ^ 2 := by
+          rw [hQ]
+          ring
+  -- Cancel `j! > 0`, then take square roots of nonnegative quantities.
+  have hsq : covectorEuclideanNorm (α.compContinuousLinearMap L) ^ 2 ≤
+      (‖L‖ ^ j * covectorEuclideanNorm α) ^ 2 :=
+    le_of_mul_le_mul_left key (by exact_mod_cast j.factorial_pos)
+  exact le_of_sq_le_sq hsq
+    (mul_nonneg (pow_nonneg (norm_nonneg L) j) (covectorEuclideanNorm_nonneg α))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
