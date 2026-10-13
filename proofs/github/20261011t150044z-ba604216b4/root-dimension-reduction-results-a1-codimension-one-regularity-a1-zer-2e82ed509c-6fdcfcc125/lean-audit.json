@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "853965fd0b192f90635489bf6d6f04dc0989545903ef22349ed10d9fff50bb1b",
+  "git_delta": {
+    "base_commit": "74c1cc2acd68b2e5c44200214ef77b4c39995908",
+    "candidate_commit": "5a0b278aa2eb148f0e7b5919268a8a68afe5f192",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_fl_isometry_image_setIntegral",
+    "diff_sha256": "6bbb619c778cc3e6e5e764b011cbb6030c42656eed2ca2dbaa148d3cf4a1728e",
+    "source_sha256": "59732bb3b4a9c70b627ad9d957639619bb930d8ff6b4a5a6ecde98178e5dfc1b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_fl_isometry_image_setIntegral",
+      "statement": "∀ (m P : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (c : Euclid P) (A : Set (Euclid m)), MeasurableSet A → MeasurableSet ((fun w => ι w + c) '' A) ∧ ∀ f : Euclid P → ℝ, ∫ y in (fun w => ι w + c) '' A, f y ∂μHE[m] = ∫ w in A, f (ι w + c)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
