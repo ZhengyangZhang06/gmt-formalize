@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mass_measure_rectifiable-a1.positive_density_cover_null-a1",
+  "parent_id": "root.rectifiability-a1.mass_measure_rectifiable-a1",
+  "depth": 3,
+  "title": "Positive-upper-density subsets of a finite-measure open cover are Hⁿ-σ-finite, and ν-null ones are Hⁿ-null (Simon 6, proof of 8.1, (1) and (6))",
+  "statement": "Let P, n ∈ ℕ and let ν be a Borel measure on ℝ^P; for an arbitrary E ⊆ ℝ^P, ν(E) denotes its outer measure. Let (W_q)_{q∈ℕ} be open subsets of ℝ^P with ν(W_q) < ∞ for every q. Let S ⊆ ⋃_q W_q be an arbitrary, not necessarily measurable, set such that the upper density Θ*ⁿ(ν, x) = limsup_{r↓0} ν(B̄_r(x))/(ω_n rⁿ) (dimensionalUpperDensity ν n univ x) is > 0 for every x ∈ S. Write Hⁿ = μHE[n] for the n-dimensional Hausdorff outer measure on ℝ^P. Then (i) there are sets C_i ⊆ ℝ^P (i ∈ ℕ) with S ⊆ ⋃_i C_i and Hⁿ(C_i) < ∞ for every i; and (ii) if ν(S) = 0, then Hⁿ(S) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Eucl P)) (W : ℕ → Set (Eucl P)) (S : Set (Eucl P)), (∀ q, IsOpen (W q)) → (∀ q, ν (W q) < ∞) → S ⊆ ⋃ q, W q → (∀ x ∈ S, 0 < dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x) → (∃ C : ℕ → Set (Eucl P), S ⊆ ⋃ i, C i ∧ ∀ i, (μHE[n] : Measure (Eucl P)) (C i) < ∞) ∧ (ν S = 0 → (μHE[n] : Measure (Eucl P)) S = 0)",
+  "lean_name": "rectifiability_positive_density_cover_null",
+  "depends_on": [
+    "root.rectifiability-a1.density_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.density_comparison-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-density-comparison-a1-a1",
+      "result_commit": "c5336e1a14131119b486a9306a19dac19728d9fb",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mass-measure-rectifiable-a1-positive-density-c-4b4a9741fc-a1"
+}
