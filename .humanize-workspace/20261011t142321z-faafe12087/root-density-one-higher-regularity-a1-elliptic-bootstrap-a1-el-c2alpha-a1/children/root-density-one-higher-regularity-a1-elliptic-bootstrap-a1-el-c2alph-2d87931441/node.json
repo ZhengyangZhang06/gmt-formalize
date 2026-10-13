@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1.shift_ibp-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1",
+  "depth": 4,
+  "title": "Shifted integration by parts: integral of <zeta(x) - zeta(x - de), g(x)> equals d times integral of <segment average of g, D_e zeta>",
+  "statement": "Let n, l be natural numbers, U an open subset of R^n, g : R^n -> R^l continuous on U, zeta : R^n -> R^l of class C^1 with compact support, e in R^n and d in R, such that x + (td)e lies in U for every x in tsupport zeta and every t in [0,1]. Then the integral over R^n of <zeta(x) - zeta(x - de), g(x)> dx equals d times the integral over R^n of < integral_0^1 g(x + (td)e) dt , Dzeta(x)e > dx.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (g ζ : Rn n → Rn ℓ) (e : Rn n) (d : ℝ), IsOpen U → ContinuousOn g U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ x ∈ tsupport ζ, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U) → ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) = d * ∫ x, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e)",
+  "lean_name": "dohr_eb_elc2_shift_ibp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-c2alph-2d87931441-a1"
+}

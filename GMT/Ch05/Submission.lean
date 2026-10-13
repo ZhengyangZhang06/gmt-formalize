@@ -968,102 +968,760 @@ theorem dohr_eb_hsif_contDiffOn_clm_iff_columns : ∀ (n : ℕ) (E : Type) [Norm
   -- Step 4: `g = ∑ k, ι k ∘ g_k` is a finite sum of `C^m` maps on `U`.
   · rw [hrec]
     exact ContDiffOn.sum fun k _ => (ι k).contDiff.comp_contDiffOn (hk k)
+/-- Constants `M_B`, `L_B` for the Hessian of the integrand (step 1 of the `C^{2,α}` regularity of
+`C^{1,α}` weak solutions of uniformly convex Euler–Lagrange systems, in the elliptic bootstrap for
+Simon 7.1): if `Ψ : L(ℝⁿ, ℝ^ℓ) → ℝ` is `C³` and `B(P) = D²Ψ(P)`, then for `‖P‖, ‖P'‖ ≤ ε`
+`|B(P)[Q][Q']| ≤ M_B ‖Q‖ ‖Q'‖` and `|B(P)[Q][Q'] - B(P')[Q][Q']| ≤ L_B ‖P - P'‖ ‖Q‖ ‖Q'‖`.
+`B` is `C¹` and the closed ball `‖P‖ ≤ ε` is compact and convex, so `‖B‖` is bounded there and `B`
+is Lipschitz there; `|β[Q][Q']| ≤ ‖β‖ ‖Q‖ ‖Q'‖` for a bilinear form `β` gives both estimates. -/
+theorem dohr_eb_elc2_hessian_bounds : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ), ContDiff ℝ 3 Ψ → ∀ ε : ℝ, ∃ MB LB : ℝ, 0 ≤ MB ∧ 0 ≤ LB ∧ (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) ∧ ∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖ := by
+  -- Argue for an abstract finite-dimensional space `X = L(ℝⁿ, ℝ^ℓ)`: this keeps the instances on
+  -- the bilinear forms `X →L[ℝ] X →L[ℝ] ℝ` within the default instance synthesis depth.
+  suffices H : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
+      (Ψ : X → ℝ), ContDiff ℝ 3 Ψ → ∀ ε : ℝ, ∃ MB LB : ℝ, 0 ≤ MB ∧ 0 ≤ LB ∧
+        (∀ P : X, ‖P‖ ≤ ε → ∀ Q Q' : X, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) ∧
+        ∀ P P' : X, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : X,
+          |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤
+            LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖ from
+    fun n ℓ => H (Rn n →L[ℝ] Rn ℓ)
+  intro X _ _ _ Ψ hΨ ε
+  -- Step 1: `B = D²Ψ` is `C¹`.
+  have hB : ContDiff ℝ 1 (fderiv ℝ (fderiv ℝ Ψ)) :=
+    (hΨ.fderiv_right (m := 2) (by norm_num)).fderiv_right (by norm_num)
+  -- Step 2: the closed ball `‖P‖ ≤ ε` is compact (finite dimension) and convex.
+  have hK : IsCompact (closedBall (0 : X) ε) := isCompact_closedBall _ _
+  -- Step 3: `‖B‖ ≤ M` on the ball.
+  obtain ⟨M, hM⟩ :=
+    hK.exists_bound_of_continuousOn (E := X →L[ℝ] X →L[ℝ] ℝ) hB.continuous.continuousOn
+  -- Step 4: `B` is `L`-Lipschitz on the ball.
+  obtain ⟨L, hL⟩ := hB.contDiffOn.exists_lipschitzOnWith one_ne_zero (convex_closedBall _ _) hK
+  refine ⟨max M 0, L, le_max_right _ _, L.coe_nonneg, ?_, ?_⟩
+  -- Step 3, bound (i): `|B(P)[Q][Q']| ≤ ‖B(P)‖ ‖Q‖ ‖Q'‖`.
+  · intro P hP Q Q'
+    have h := (fderiv ℝ (fderiv ℝ Ψ) P).le_opNorm₂ Q Q'
+    rw [Real.norm_eq_abs] at h
+    refine h.trans ?_
+    gcongr
+    exact (hM P (mem_closedBall_zero_iff.2 hP)).trans (le_max_left _ _)
+  -- Step 5, bound (ii): the same estimate for the bilinear form `B(P) - B(P')`.
+  · intro P P' hP hP' Q Q'
+    have h := (fderiv ℝ (fderiv ℝ Ψ) P - fderiv ℝ (fderiv ℝ Ψ) P').le_opNorm₂ Q Q'
+    rw [Real.norm_eq_abs] at h
+    simp only [sub_apply] at h
+    refine h.trans ?_
+    gcongr
+    exact hL.norm_sub_le (mem_closedBall_zero_iff.2 hP) (mem_closedBall_zero_iff.2 hP')
 
-/-- Columns of an operator-valued map (step 3, "Components", of the proof that `f` is
-`C^{m+1,α}` iff `Df` is `C^{m,α}`, in the elliptic bootstrap for Simon 7.1): if
-`g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on the open set `U` and `g_k = g(·) e_k`, then on `U` the differences
-of `D^m g_k` are bounded by those of `D^m g`, and those of `D^m g` by the sum over `k` of those of
-`D^m g_k`.  Indeed `D^m g_k = ev_k ∘ D^m g` and `D^m g = ∑_k ι_k ∘ D^m g_k`, where the evaluation
-`ev_k T = T e_k` and the reconstruction `ι_k w = (h ↦ h_k • w)` have norm at most one. -/
-theorem dohr_eb_hsif_iteratedFDeriv_column_bounds : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ m g U → ∀ x ∈ U, ∀ y ∈ U, (∀ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖) ∧ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ ∑ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ := by
-  intro n E _ _ m g U hU hg x hx y hy
-  -- Step 1: the evaluation maps `ev k : T ↦ T e_k` have norm at most one.
-  let ev : Fin n → (Rn n →L[ℝ] E) →L[ℝ] E := fun k =>
-    ContinuousLinearMap.apply ℝ E (EuclideanSpace.single k (1 : ℝ))
-  have hev : ∀ k, ‖ev k‖ ≤ 1 := fun k =>
-    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun T => by
-      simpa [ev] using T.le_opNorm (EuclideanSpace.single k (1 : ℝ))
-  -- Step 2: the reconstruction maps `ι k : w ↦ (h ↦ h_k • w)` have norm at most one.
-  let ι : Fin n → E →L[ℝ] (Rn n →L[ℝ] E) := fun k =>
-    ContinuousLinearMap.smulRightL ℝ (Rn n) E (EuclideanSpace.proj k)
-  have hι : ∀ k, ‖ι k‖ ≤ 1 := fun k =>
-    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun w => by
-      have hproj : ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n))‖ ≤ 1 :=
-        ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun h => by
-          simpa using PiLp.norm_apply_le h k
-      show ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n)).smulRight w‖ ≤ 1 * ‖w‖
-      rw [ContinuousLinearMap.norm_smulRight_apply]
-      exact mul_le_mul_of_nonneg_right hproj (norm_nonneg w)
-  -- Step 3: `L ∘ A - L ∘ B = L ∘ (A - B)` and `‖L ∘ A‖ ≤ ‖A‖` when `‖L‖ ≤ 1`.
-  have hcomp : ∀ {F G : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G]
-      [NormedSpace ℝ G] (L : F →L[ℝ] G), ‖L‖ ≤ 1 →
-      ∀ A B : ContinuousMultilinearMap ℝ (fun _ : Fin m => Rn n) F,
-        ‖L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B‖ ≤ ‖A - B‖ := by
-    intro F G _ _ _ _ L hL A B
-    have : L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B =
-        L.compContinuousMultilinearMap (A - B) := by
-      ext v
-      simp
+/-- **Averaged Hessian coefficient** (Steps 4–5 of the `C^{2,α}` regularity proof for uniformly
+convex Euler–Lagrange systems, in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second
+assertion).  Let `Ψ` be `C²` on `L = L(ℝⁿ, ℝ^ℓ)` and `B = D²Ψ`.  Assume that on the closed `ε`-ball
+`B` satisfies `λ|Q|² ≤ B(P)[Q][Q]`, `|B(P)[Q][Q']| ≤ M_B|Q||Q'|` and a Lipschitz bound with constant
+`L_B ≥ 0`, and that `P₀, P₁ : ℝⁿ → L` take values in that ball and are `(H, α)`-Hölder on `S`.  Then
+`a(x)[P][Q] = ∫₀¹ B(P₀(x) + t(P₁(x) - P₀(x)))[P][Q] dt` defines continuous bilinear forms that are
+coercive, bounded by `M_B` and `L_B H`-Hölder in `x` on `S`.
+Proof: `P_t(x) = (1 - t)P₀(x) + tP₁(x)` stays in the `ε`-ball, so the bounds on `B` hold for each
+`t ∈ [0, 1]` and pass to the integral.  For the Hölder bound, `‖P_t(x) - P_t(y)‖ ≤ H‖x - y‖^α` as a
+convex combination of the two Hölder bounds. -/
+theorem Submission.dohr_eb_elc2_averaged_hessian : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε MB LB H α : ℝ) (S : Set (Rn n)) (P₀ P₁ : Rn n → Rn n →L[ℝ] Rn ℓ), ContDiff ℝ 2 Ψ → 0 ≤ LB → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) → (∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖) → (∀ x ∈ S, ‖P₀ x‖ ≤ ε) → (∀ x ∈ S, ‖P₁ x‖ ≤ ε) → (∀ x ∈ S, ∀ y ∈ S, ‖P₀ x - P₀ y‖ ≤ H * ‖x - y‖ ^ α) → (∀ x ∈ S, ∀ y ∈ S, ‖P₁ x - P₁ y‖ ≤ H * ‖x - y‖ ^ α) → ∃ a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P Q : Rn n →L[ℝ] Rn ℓ), a x P Q = ∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ) (P₀ x + t • (P₁ x - P₀ x)) P Q) ∧ (∀ x ∈ S, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) ∧ (∀ x ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ MB * ‖P‖ * ‖Q‖) ∧ ∀ x ∈ S, ∀ y ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by
+  intro n ℓ Ψ lam ε MB LB H α S P₀ P₁ hΨ hLB hLeg hMB hLip hP₀ hP₁ hH₀ hH₁
+  -- Step 1: `B = D²Ψ` is continuous since `Ψ` is `C²`, so each scalar integrand
+  -- `t ↦ B(P_t(x))[P][Q]` is continuous, hence interval integrable on `[0, 1]`.
+  have hB := (hΨ.fderiv_right (m := 1) (by norm_num)).continuous_fderiv (by norm_num)
+  set B := fderiv ℝ (fderiv ℝ Ψ)
+  set Pt : Rn n → ℝ → (Rn n →L[ℝ] Rn ℓ) := fun x t => P₀ x + t • (P₁ x - P₀ x) with hPt
+  have hint : ∀ (x : Rn n) (P Q : Rn n →L[ℝ] Rn ℓ),
+      IntervalIntegrable (fun t : ℝ => B (Pt x t) P Q) volume 0 1 := fun x P Q =>
+    Continuous.intervalIntegrable (by simp only [hPt]; fun_prop) 0 1
+  -- Step 2: for fixed `x`, `(P, Q) ↦ ∫₀¹ B(P_t(x))[P][Q] dt` is bilinear; it is continuous
+  -- because `L(ℝⁿ, ℝ^ℓ)` is finite-dimensional.
+  let φ : Rn n → (Rn n →L[ℝ] Rn ℓ) → (Rn n →L[ℝ] Rn ℓ) →ₗ[ℝ] ℝ := fun x P =>
+    { toFun := fun Q => ∫ t in (0 : ℝ)..1, B (Pt x t) P Q
+      map_add' := fun Q Q' => by
+        simp only [map_add]
+        exact intervalIntegral.integral_add (hint x P Q) (hint x P Q')
+      map_smul' := fun c Q => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        exact intervalIntegral.integral_const_mul c _ }
+  let ψ : Rn n → (Rn n →L[ℝ] Rn ℓ) →ₗ[ℝ] ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) := fun x =>
+    { toFun := fun P => LinearMap.toContinuousLinearMap (φ x P)
+      map_add' := fun P P' => by
+        ext Q
+        change (∫ t in (0 : ℝ)..1, B (Pt x t) (P + P') Q)
+          = (∫ t in (0 : ℝ)..1, B (Pt x t) P Q) + ∫ t in (0 : ℝ)..1, B (Pt x t) P' Q
+        simp only [map_add, add_apply]
+        exact intervalIntegral.integral_add (hint x P Q) (hint x P' Q)
+      map_smul' := fun c P => by
+        ext Q
+        change (∫ t in (0 : ℝ)..1, B (Pt x t) (c • P) Q) = c * ∫ t in (0 : ℝ)..1, B (Pt x t) P Q
+        simp only [map_smul, smul_apply, smul_eq_mul]
+        exact intervalIntegral.integral_const_mul c _ }
+  -- Step 3: for `x ∈ S` and `t ∈ [0, 1]`, `P_t(x)` is a convex combination of `P₀(x)` and `P₁(x)`,
+  -- so it stays in the closed `ε`-ball.
+  have hball : ∀ x ∈ S, ∀ t ∈ Icc (0 : ℝ) 1, ‖Pt x t‖ ≤ ε := by
+    intro x hx t ht
+    have : Pt x t = (1 - t) • P₀ x + t • P₁ x := by simp only [hPt]; module
     rw [this]
-    exact (L.norm_compContinuousMultilinearMap_le _).trans
-      (mul_le_of_le_one_left (norm_nonneg _) hL)
-  -- Step 4: `g` and its columns are `C^m` at every point of the open set `U`.
-  have hgat : ∀ z ∈ U, ContDiffAt ℝ m g z := fun z hz => hg.contDiffAt (hU.mem_nhds hz)
-  have hcolat : ∀ k, ∀ z ∈ U,
-      ContDiffAt ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z := fun k z hz =>
-    (hgat z hz).continuousLinearMap_comp (ev k)
-  -- Step 5: the column formula `D^m g_k(z) = ev k ∘ D^m g(z)`.
-  have hcol : ∀ k, ∀ z ∈ U,
-      iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z =
-        (ev k).compContinuousMultilinearMap (iteratedFDeriv ℝ m g z) := fun k z hz =>
-    (ev k).iteratedFDeriv_comp_left (hgat z hz) le_rfl
-  -- Step 7: the reconstruction `g = ∑ k, ι k ∘ g_k`.
-  have hrec : g = fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ))) := by
-    funext z
-    ext h
-    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
-      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
-    conv_lhs => rw [← hh]
-    simp [ι, map_sum, map_smul]
-  -- Step 8: the sum formula `D^m g(z) = ∑ k, ι k ∘ D^m g_k(z)`.
-  have hsum : ∀ z ∈ U, iteratedFDeriv ℝ m g z = ∑ k, (ι k).compContinuousMultilinearMap
-      (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) := by
-    intro z hz
-    calc iteratedFDeriv ℝ m g z
-        = iteratedFDeriv ℝ m (fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
-          congrArg (iteratedFDeriv ℝ m · z) hrec
-      _ = ∑ k, iteratedFDeriv ℝ m (fun z => ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
-          iteratedFDeriv_fun_sum_apply fun k _ => (hcolat k z hz).continuousLinearMap_comp (ι k)
-      _ = ∑ k, (ι k).compContinuousMultilinearMap
-            (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) :=
-          Finset.sum_congr rfl fun k _ => (ι k).iteratedFDeriv_comp_left (hcolat k z hz) le_rfl
-  refine ⟨fun k => ?_, ?_⟩
-  -- Step 6: bound (i).
-  · rw [hcol k x hx, hcol k y hy]
-    exact hcomp (ev k) (hev k) _ _
-  -- Step 9: bound (ii).
-  · rw [hsum x hx, hsum y hy, ← Finset.sum_sub_distrib]
-    exact (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => hcomp (ι k) (hι k) _ _)
+    calc ‖(1 - t) • P₀ x + t • P₁ x‖ ≤ ‖(1 - t) • P₀ x‖ + ‖t • P₁ x‖ := norm_add_le _ _
+      _ = (1 - t) * ‖P₀ x‖ + t * ‖P₁ x‖ := by
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+            abs_of_nonneg (by linarith [ht.2]), abs_of_nonneg ht.1]
+      _ ≤ (1 - t) * ε + t * ε := by
+          gcongr
+          · linarith [ht.2]
+          · exact hP₀ x hx
+          · exact ht.1
+          · exact hP₁ x hx
+      _ = ε := by ring
+  -- `a(x)` is `ψ x` as a continuous linear map.  The type arguments are explicit so that the
+  -- instances on `L(L, ℝ)` are synthesized directly rather than during unification.
+  refine ⟨fun x => LinearMap.toContinuousLinearMap (𝕜 := ℝ) (E := Rn n →L[ℝ] Rn ℓ)
+    (F' := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ψ x), ?_, ?_, ?_, ?_⟩
+  -- The formula holds by definition.
+  · intro x P Q
+    rfl
+  -- Step 4: coercivity, by monotonicity of the integral.
+  · intro x hx P
+    change lam * ‖P‖ ^ 2 ≤ ∫ t in (0 : ℝ)..1, B (Pt x t) P P
+    have := intervalIntegral.integral_mono_on (a := 0) (b := 1) zero_le_one
+      intervalIntegrable_const (hint x P P) (fun t ht => hLeg _ (hball x hx t ht) P)
+    simpa using this
+  -- Step 5: the bound, from the pointwise bound on `(0, 1]`.
+  · intro x hx P Q
+    change |∫ t in (0 : ℝ)..1, B (Pt x t) P Q| ≤ MB * ‖P‖ * ‖Q‖
+    rw [← Real.norm_eq_abs]
+    have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+      (C := MB * ‖P‖ * ‖Q‖) (f := fun t => B (Pt x t) P Q) (by
+        intro t ht
+        rw [uIoc_of_le zero_le_one] at ht
+        rw [Real.norm_eq_abs]
+        exact hMB _ (hball x hx t ⟨ht.1.le, ht.2⟩) P Q)
+    simpa using this
+  -- Step 6: Hölder continuity, from `‖P_t(x) - P_t(y)‖ ≤ H‖x - y‖^α` and the Lipschitz bound on `B`.
+  · intro x hx y hy P Q
+    change |(∫ t in (0 : ℝ)..1, B (Pt x t) P Q) - ∫ t in (0 : ℝ)..1, B (Pt y t) P Q| ≤ _
+    rw [← intervalIntegral.integral_sub (hint x P Q) (hint y P Q), ← Real.norm_eq_abs]
+    have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+      (C := LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) (f := fun t => B (Pt x t) P Q - B (Pt y t) P Q) (by
+        intro t ht
+        rw [uIoc_of_le zero_le_one] at ht
+        have ht' : t ∈ Icc (0 : ℝ) 1 := ⟨ht.1.le, ht.2⟩
+        rw [Real.norm_eq_abs]
+        have hdiff : ‖Pt x t - Pt y t‖ ≤ H * ‖x - y‖ ^ α := by
+          have : Pt x t - Pt y t = (1 - t) • (P₀ x - P₀ y) + t • (P₁ x - P₁ y) := by
+            simp only [hPt]; module
+          rw [this]
+          calc ‖(1 - t) • (P₀ x - P₀ y) + t • (P₁ x - P₁ y)‖
+              ≤ ‖(1 - t) • (P₀ x - P₀ y)‖ + ‖t • (P₁ x - P₁ y)‖ := norm_add_le _ _
+            _ = (1 - t) * ‖P₀ x - P₀ y‖ + t * ‖P₁ x - P₁ y‖ := by
+                rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+                  abs_of_nonneg (by linarith [ht'.2]), abs_of_nonneg ht'.1]
+            _ ≤ (1 - t) * (H * ‖x - y‖ ^ α) + t * (H * ‖x - y‖ ^ α) := by
+                gcongr
+                · linarith [ht'.2]
+                · exact hH₀ x hx y hy
+                · exact ht'.1
+                · exact hH₁ x hx y hy
+            _ = H * ‖x - y‖ ^ α := by ring
+        calc |B (Pt x t) P Q - B (Pt y t) P Q| ≤ LB * ‖Pt x t - Pt y t‖ * ‖P‖ * ‖Q‖ :=
+              hLip _ _ (hball x hx t ht') (hball y hy t ht') P Q
+          _ ≤ LB * (H * ‖x - y‖ ^ α) * ‖P‖ * ‖Q‖ := by gcongr
+          _ = LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by ring)
+    simpa using this
+/-- Shifted integration by parts (difference-quotient step of the `C^{1,α} ⇒ C^{2,α}` regularity for
+Euler–Lagrange systems in the elliptic bootstrap of Simon Ch. 5, Theorem 7.1): if `g` is continuous on
+the open set `U`, `ζ ∈ C¹_c(ℝⁿ; ℝ^ℓ)` and `x + t d e ∈ U` for `x ∈ spt ζ`, `t ∈ [0, 1]`, then
+`∫ ⟨ζ(x) − ζ(x − de), g(x)⟩ dx = d ∫ ⟨∫₀¹ g(x + tde) dt, Dζ(x) e⟩ dx`.  Write
+`ζ(x) − ζ(x − de) = d ∫₀¹ Dζ(x − sde) e ds`, exchange the integrals (Fubini), translate
+`x = y + sde` for each `s`, and exchange back; `s` is clamped to `[0, 1]` so that both integrands are
+continuous on `ℝ × ℝⁿ` and vanish off a compact set. -/
+theorem dohr_eb_elc2_shift_ibp : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (g ζ : Rn n → Rn ℓ) (e : Rn n) (d : ℝ), IsOpen U → ContinuousOn g U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ x ∈ tsupport ζ, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U) → ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) = d * ∫ x, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e) := by
+  intro n ℓ U g ζ e d hU hg hζ hζc hseg
+  set K := tsupport ζ with hK_def
+  have hKc : IsCompact K := hζc
+  have hKcl : IsClosed K := isClosed_tsupport ζ
+  have hDζ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hDζ0 : ∀ y ∉ K, fderiv ℝ ζ y = 0 := fun y hy => fderiv_of_notMem_tsupport ℝ hy
+  have hζdiff : Differentiable ℝ ζ := hζ.differentiable one_ne_zero
+  -- clamp
+  set c : ℝ → ℝ := fun s => max 0 (min s 1) with hc_def
+  have hc_cont : Continuous c := by simp only [hc_def]; fun_prop
+  have hc_mem : ∀ s, c s ∈ Icc (0:ℝ) 1 := fun s =>
+    ⟨le_max_left _ _, max_le zero_le_one (min_le_right _ _)⟩
+  have hc_eq : ∀ s ∈ Icc (0:ℝ) 1, c s = s := fun s hs => by
+    simp only [hc_def, min_eq_left hs.2, max_eq_right hs.1]
+  have hc_eq' : ∀ s ∈ uIcc (0:ℝ) 1, c s = s := fun s hs => hc_eq s (by rwa [uIcc_of_le zero_le_one] at hs)
+  -- the compact set K'
+  set K' : Set (Rn n) := (fun p : ℝ × Rn n => p.2 + (p.1 * d) • e) '' (Icc (0:ℝ) 1 ×ˢ K) with hK'_def
+  have hK'c : IsCompact K' := (isCompact_Icc.prod hKc).image (by fun_prop)
+  have hK'U : K' ⊆ U := by
+    rintro _ ⟨⟨t, y⟩, ⟨ht, hy⟩, rfl⟩
+    exact hseg y hy t ht
+  -- F and Ft
+  set F : ℝ → Rn n → ℝ := fun s x => inner ℝ (fderiv ℝ ζ (x - (c s * d) • e) e) (g x) with hF_def
+  set Ft : ℝ → Rn n → ℝ := fun s y => inner ℝ (fderiv ℝ ζ y e) (g (y + (c s * d) • e)) with hFt_def
+  have hFcont : Continuous (Function.uncurry F) := by
+    rw [continuous_iff_continuousAt]
+    rintro ⟨s, x⟩
+    by_cases hx : x - (c s * d) • e ∈ K
+    · have hxU : x ∈ U := by
+        have := hseg _ hx (c s) (hc_mem s)
+        simpa using this
+      have hgx : ContinuousAt g x := hg.continuousAt (hU.mem_nhds hxU)
+      have h1 : Continuous (fun p : ℝ × Rn n => fderiv ℝ ζ (p.2 - (c p.1 * d) • e) e) := by
+        have hm : Continuous (fun p : ℝ × Rn n => p.2 - (c p.1 * d) • e) := by fun_prop
+        exact (hDζ.comp hm).clm_apply continuous_const
+      have h2 : ContinuousAt (fun p : ℝ × Rn n => g p.2) (s, x) := hgx.comp continuousAt_snd
+      exact h1.continuousAt.inner h2
+    · have hopen : IsOpen {p : ℝ × Rn n | p.2 - (c p.1 * d) • e ∉ K} :=
+        hKcl.isOpen_compl.preimage (by fun_prop)
+      have hev : Function.uncurry F =ᶠ[𝓝 (s, x)] fun _ => (0:ℝ) := by
+        filter_upwards [hopen.mem_nhds hx] with p hp
+        simp [hF_def, Function.uncurry, hDζ0 _ hp]
+      exact continuousAt_const.congr hev.symm
+  have hFtcont : Continuous (Function.uncurry Ft) := by
+    rw [continuous_iff_continuousAt]
+    rintro ⟨s, y⟩
+    by_cases hy : y ∈ K
+    · have hyU : y + (c s * d) • e ∈ U := hseg y hy (c s) (hc_mem s)
+      have hgy : ContinuousAt g (y + (c s * d) • e) := hg.continuousAt (hU.mem_nhds hyU)
+      have h1 : Continuous (fun p : ℝ × Rn n => fderiv ℝ ζ p.2 e) :=
+        (hDζ.comp continuous_snd).clm_apply continuous_const
+      have hm : Continuous (fun p : ℝ × Rn n => p.2 + (c p.1 * d) • e) := by fun_prop
+      have h2 : ContinuousAt (fun p : ℝ × Rn n => g (p.2 + (c p.1 * d) • e)) (s, y) :=
+        hgy.comp_of_eq hm.continuousAt rfl
+      exact h1.continuousAt.inner h2
+    · have hopen : IsOpen {p : ℝ × Rn n | p.2 ∉ K} := hKcl.isOpen_compl.preimage continuous_snd
+      have hev : Function.uncurry Ft =ᶠ[𝓝 (s, y)] fun _ => (0:ℝ) := by
+        filter_upwards [hopen.mem_nhds hy] with p hp
+        simp [hFt_def, Function.uncurry, hDζ0 _ hp]
+      exact continuousAt_const.congr hev.symm
+  -- integrability on the product
+  have hprod : (volume.restrict (uIoc (0:ℝ) 1)).prod (volume : Measure (Rn n)) =
+      ((volume : Measure ℝ).prod (volume : Measure (Rn n))).restrict (uIoc (0:ℝ) 1 ×ˢ univ) := by
+    rw [← Measure.prod_restrict, Measure.restrict_univ]
+  have hsub : uIoc (0:ℝ) 1 ×ˢ (univ : Set (Rn n)) ⊆ Icc (0:ℝ) 1 ×ˢ univ := by
+    rw [uIoc_of_le zero_le_one]
+    exact prod_mono Ioc_subset_Icc_self le_rfl
+  have hFint : Integrable (Function.uncurry F)
+      ((volume.restrict (uIoc (0:ℝ) 1)).prod (volume : Measure (Rn n))) := by
+    rw [hprod]
+    have h1 : IntegrableOn (Function.uncurry F) (Icc (0:ℝ) 1 ×ˢ K')
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) :=
+      hFcont.continuousOn.integrableOn_compact (isCompact_Icc.prod hK'c)
+    have h2 : IntegrableOn (Function.uncurry F) (Icc (0:ℝ) 1 ×ˢ univ)
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) := by
+      refine h1.of_forall_sdiff_eq_zero (measurableSet_Icc.prod MeasurableSet.univ) ?_
+      rintro ⟨s, x⟩ ⟨⟨hs, -⟩, hnot⟩
+      have hx : x ∉ K' := fun hx => hnot ⟨hs, hx⟩
+      have hnk : x - (c s * d) • e ∉ K := by
+        intro hk
+        apply hx
+        refine ⟨(c s, x - (c s * d) • e), ⟨hc_mem s, hk⟩, ?_⟩
+        simp
+      simp [hF_def, Function.uncurry, hDζ0 _ hnk]
+    exact h2.mono_set hsub
+  have hFtint : Integrable (Function.uncurry Ft)
+      ((volume.restrict (uIoc (0:ℝ) 1)).prod (volume : Measure (Rn n))) := by
+    rw [hprod]
+    have h1 : IntegrableOn (Function.uncurry Ft) (Icc (0:ℝ) 1 ×ˢ K)
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) :=
+      hFtcont.continuousOn.integrableOn_compact (isCompact_Icc.prod hKc)
+    have h2 : IntegrableOn (Function.uncurry Ft) (Icc (0:ℝ) 1 ×ˢ univ)
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) := by
+      refine h1.of_forall_sdiff_eq_zero (measurableSet_Icc.prod MeasurableSet.univ) ?_
+      rintro ⟨s, y⟩ ⟨⟨hs, -⟩, hnot⟩
+      have hy : y ∉ K := fun hy => hnot ⟨hs, hy⟩
+      simp [hFt_def, Function.uncurry, hDζ0 _ hy]
+    exact h2.mono_set hsub
+  -- pointwise identity (i)
+  have hI : ∀ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) = d * ∫ s in (0:ℝ)..1, F s x := by
+    intro x
+    have hderiv : ∀ s ∈ uIcc (0:ℝ) 1, HasDerivAt (fun s : ℝ => ζ (x - (s * d) • e))
+        (fderiv ℝ ζ (x - (s * d) • e) (-(d • e))) s := by
+      intro s _
+      have hl : HasDerivAt (fun s : ℝ => x - (s * d) • e) (-(d • e)) s := by
+        have := (((hasDerivAt_id s).mul_const d).smul_const e).const_sub x
+        simpa using this
+      exact (hζdiff _).hasFDerivAt.comp_hasDerivAt s hl
+    have hcontd : Continuous (fun s : ℝ => fderiv ℝ ζ (x - (s * d) • e) e) := by
+      have hm : Continuous (fun s : ℝ => x - (s * d) • e) := by fun_prop
+      exact (hDζ.comp hm).clm_apply continuous_const
+    have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (by
+      have hm : Continuous (fun s : ℝ => x - (s * d) • e) := by fun_prop
+      exact ((hDζ.comp hm).clm_apply continuous_const).intervalIntegrable 0 1)
+    have hrw : (fun s : ℝ => fderiv ℝ ζ (x - (s * d) • e) (-(d • e))) =
+        fun s => -(d • fderiv ℝ ζ (x - (s * d) • e) e) := by
+      funext s; rw [map_neg, map_smul]
+    rw [hrw, intervalIntegral.integral_neg, intervalIntegral.integral_smul] at hftc
+    simp only [one_mul, zero_mul, zero_smul, sub_zero] at hftc
+    have hdiff : ζ x - ζ (x - d • e) = d • ∫ s in (0:ℝ)..1, fderiv ℝ ζ (x - (s * d) • e) e := by
+      rw [← neg_neg (d • ∫ s in (0:ℝ)..1, fderiv ℝ ζ (x - (s * d) • e) e), hftc]; abel
+    rw [hdiff, real_inner_smul_left]
+    congr 1
+    have hcongr : ∫ s in (0:ℝ)..1, F s x =
+        ∫ s in (0:ℝ)..1, inner ℝ (fderiv ℝ ζ (x - (s * d) • e) e) (g x) := by
+      apply intervalIntegral.integral_congr
+      intro s hs
+      simp only [hF_def, hc_eq' s hs]
+    rw [hcongr, real_inner_comm]
+    have := ContinuousLinearMap.intervalIntegral_comp_comm (innerSL ℝ (g x))
+      (hcontd.intervalIntegrable (μ := volume) 0 1)
+    simp only [innerSL_apply_apply] at this
+    rw [← this]
+    apply intervalIntegral.integral_congr
+    intro s _
+    simp only [real_inner_comm]
+  -- pointwise identity (ii)
+  have hII : ∀ y, ∫ s in (0:ℝ)..1, Ft s y =
+      inner ℝ (∫ t in (0 : ℝ)..1, g (y + (t * d) • e)) (fderiv ℝ ζ y e) := by
+    intro y
+    by_cases hy : y ∈ K
+    · have hgc : ContinuousOn (fun t : ℝ => g (y + (t * d) • e)) (uIcc 0 1) := by
+        rw [uIcc_of_le zero_le_one]
+        exact hg.comp (by fun_prop) (fun t ht => hseg y hy t ht)
+      have hcongr : ∫ s in (0:ℝ)..1, Ft s y =
+          ∫ s in (0:ℝ)..1, inner ℝ (fderiv ℝ ζ y e) (g (y + (s * d) • e)) := by
+        apply intervalIntegral.integral_congr
+        intro s hs
+        simp only [hFt_def, hc_eq' s hs]
+      rw [hcongr, real_inner_comm]
+      have := ContinuousLinearMap.intervalIntegral_comp_comm (innerSL ℝ (fderiv ℝ ζ y e))
+        (hgc.intervalIntegrable (μ := volume))
+      simp only [innerSL_apply_apply] at this
+      exact this
+    · simp [hFt_def, hDζ0 _ hy]
+  -- translation
+  have hT : ∀ s, ∫ x, F s x = ∫ y, Ft s y := by
+    intro s
+    rw [← integral_add_right_eq_self (fun x => F s x) ((c s * d) • e)]
+    congr 1
+    funext y
+    simp [hF_def, hFt_def]
+  -- main chain
+  calc ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x)
+      = ∫ x, d * ∫ s in (0:ℝ)..1, F s x := by
+        congr 1; funext x; exact hI x
+    _ = d * ∫ x, ∫ s in (0:ℝ)..1, F s x := integral_const_mul d _
+    _ = d * ∫ s in (0:ℝ)..1, ∫ x, F s x := by
+        rw [intervalIntegral_integral_swap hFint]
+    _ = d * ∫ s in (0:ℝ)..1, ∫ y, Ft s y := by
+        congr 1
+        apply intervalIntegral.integral_congr
+        intro s _
+        exact hT s
+    _ = d * ∫ y, ∫ s in (0:ℝ)..1, Ft s y := by
+        rw [intervalIntegral_integral_swap hFtint]
+    _ = d * ∫ x, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e) := by
+        congr 1
+        congr 1
+        funext y
+        exact hII y
 
-/-- **`C^{m+1,α}_loc` through first derivatives**: `u ∈ C^{m+1,α}_loc` iff `Du ∈ C^{m,α}_loc` iff
-every `D_k u ∈ C^{m,α}_loc`, the bookkeeping of the Schauder bootstrap in the proof of Simon Ch. 5,
-Theorem 7.1 (p. 128).  For `f : ℝⁿ → E` and open `U ⊆ ℝⁿ`, write
-(A) `f` is `C^{m+1}` on `U` and `D^{m+1}f` is `α`-Hölder on each compact `K ⊆ U`;
-(B) `f` is `C¹` on `U`, `Df` is `C^m` on `U` and `D^m(Df)` is `α`-Hölder on each compact `K ⊆ U`;
-(C) `f` is `C¹` on `U` and every partial derivative `D_k f = Df(·) e_k` is `C^m` on `U` with
-`D^m(D_k f)` `α`-Hölder on each compact `K ⊆ U`.
-Then `(A ↔ B) ∧ (A ↔ C)`. -/
-theorem dohr_eb_holder_succ_iff_fderiv : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → (((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) ∧ ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ∀ k : Fin n, ContDiffOn ℝ m (fun x => fderiv ℝ f x (EuclideanSpace.single k (1 : ℝ))) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ C * ‖x - y‖ ^ α))) := by
-  intro n E _ _ m α f U hU
-  -- Steps 1–2, (A ↔ B): `D^{m+1}f = Ψ ∘ D^m(Df)` for a linear isometry `Ψ`, and on the open set
-  -- `U`, `f ∈ C^{m+1}` iff `f ∈ C¹` and `Df ∈ C^m`.
-  have hAB := Submission.dohr_eb_hsif_succ_iff_curry n E m α f U hU
-  refine ⟨hAB, hAB.trans (and_congr_right fun _ => ?_)⟩
-  -- Steps 3–4, (B ↔ C) once `f ∈ C¹(U)`: `Df ∈ C^m(U)` iff every column `D_k f ∈ C^m(U)`; on `U`,
-  -- `‖Δ D^m(D_k f)‖ ≤ ‖Δ D^m(Df)‖ ≤ Σ_k ‖Δ D^m(D_k f)‖` (`Δ h = h(x) - h(y)`) transfers the Hölder
-  -- constants: `C` for each `D_k f`, and `Σ_k C_k` for `Df`.
-  have hcols := Submission.dohr_eb_hsif_contDiffOn_clm_iff_columns n E m (fderiv ℝ f) U
-  have hbds := Submission.dohr_eb_hsif_iteratedFDeriv_column_bounds n E m (fderiv ℝ f) U hU
+/-- Elliptic bootstrap for Simon Ch. 5, Theorem 7.1 (second assertion), `C^{1,α} ⇒ C^{2,α}` step:
+difference quotients of a weak solution satisfy the averaged linearized weak equation.  Let
+`Ψ ∈ C²`, `u ∈ C¹(U; ℝ^ℓ)` and `g ∈ C⁰(U; ℝ^ℓ)` with `∫_U DΨ(Du)[Dφ] = -∫_U ⟨φ, g⟩` for every
+`φ ∈ C¹_c(U; ℝ^ℓ)`, let `d ≠ 0` and `x + t d e ∈ U` for `x ∈ V`, `t ∈ [0, 1]`.  With
+`Δ(x) = Du(x + d e) - Du(x)`, every `ζ ∈ C¹_c(V; ℝ^ℓ)` satisfies
+`∫_V ∫₀¹ D²Ψ(Du(x) + tΔ(x))[d⁻¹Δ(x)][Dζ(x)] dt dx = ∫_V ⟨∫₀¹ g(x + t d e) dt, Dζ(x) e⟩ dx`.
+Test the equation with `ζ` and with `ζ(· - d e)` and translate back.  By the fundamental theorem of
+calculus for the real function `t ↦ DΨ(Du(x) + tΔ(x))[Dζ(x)]` the difference of the left sides is
+`d` times the left side above; by `dohr_eb_elc2_shift_ibp` the difference of the right sides is `d`
+times the right side above; cancel `d`. -/
+theorem dohr_eb_elc2_dq_weak_equation : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U V : Set (Rn n)) (u g : Rn n → Rn ℓ) (e : Rn n) (d : ℝ), ContDiff ℝ 2 Ψ → IsOpen U → IsOpen V → ContDiffOn ℝ 1 u U → ContinuousOn g U → d ≠ 0 → (∀ x ∈ V, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U) → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ V → ∫ x in V, (∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x)) = ∫ x in V, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e) := by
+  intro n ℓ Ψ U V u g e d hΨ hU hV hu hg hd hseg hweak ζ hζ hζc hζV
+  set K := tsupport ζ
+  have hKc : IsCompact K := hζc
+  have hKV : K ⊆ V := hζV
+  -- the segments from points of `K` stay in `U`
+  have hsegK : ∀ y ∈ K, ∀ t ∈ Icc (0 : ℝ) 1, y + (t * d) • e ∈ U := fun y hy => hseg y (hKV hy)
+  have hKU : K ⊆ U := fun y hy => by simpa using hsegK y hy 0 (by simp)
+  have hKdU : ∀ y ∈ K, y + d • e ∈ U := fun y hy => by simpa using hsegK y hy 1 (by simp)
+  have hDuAt : ∀ y ∈ U, ContinuousAt (fderiv ℝ u) y := fun y hy =>
+    (hu.continuousOn_fderiv_of_isOpen hU le_rfl).continuousAt (hU.mem_nhds hy)
+  have hgAt : ∀ y ∈ U, ContinuousAt g y := fun y hy => hg.continuousAt (hU.mem_nhds hy)
+  have hDζ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hζcont : Continuous ζ := hζ.continuous
+  have hDζ0 : ∀ y ∉ K, fderiv ℝ ζ y = 0 := fun y hy => fderiv_of_notMem_tsupport ℝ hy
+  have hζ0 : ∀ y ∉ K, ζ y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport hy
+  -- `A = DΨ` is `C¹` with derivative `B = D²Ψ`
+  have hA1 : ContDiff ℝ 1 (fderiv ℝ Ψ) := hΨ.fderiv_right (by norm_num)
+  have hAc : Continuous (fderiv ℝ Ψ) := hA1.continuous
+  have hAd : Differentiable ℝ (fderiv ℝ Ψ) := hA1.differentiable one_ne_zero
+  -- a function vanishing off a compact `C` and continuous at the points of `C` is integrable
+  have integ_of : ∀ (F : Rn n → ℝ) (C : Set (Rn n)), IsCompact C → (∀ y ∉ C, F y = 0) →
+      (∀ y ∈ C, ContinuousAt F y) → Integrable F := by
+    intro F C hC h0 hcont
+    have hFc : Continuous F := by
+      rw [continuous_iff_continuousAt]
+      intro y
+      by_cases hy : y ∈ C
+      · exact hcont y hy
+      · have hev : F =ᶠ[𝓝 y] fun _ => (0 : ℝ) := by
+          filter_upwards [hC.isClosed.isOpen_compl.mem_nhds hy] with z hz using h0 z hz
+        exact continuousAt_const.congr hev.symm
+    exact hFc.integrable_of_hasCompactSupport (HasCompactSupport.intro hC h0)
+  -- the integrands of the two tested equations
+  set F1 : Rn n → ℝ := fun y => fderiv ℝ Ψ (fderiv ℝ u (y + d • e)) (fderiv ℝ ζ y) with hF1
+  set F2 : Rn n → ℝ := fun y => fderiv ℝ Ψ (fderiv ℝ u y) (fderiv ℝ ζ y) with hF2
+  set R2 : Rn n → ℝ := fun y => inner ℝ (ζ y) (g y) with hR2
+  set R3 : Rn n → ℝ := fun x => inner ℝ (ζ (x - d • e)) (g x) with hR3
+  set Kd : Set (Rn n) := (fun y => y + d • e) '' K
+  have hKdc : IsCompact Kd := hKc.image (continuous_id.add continuous_const)
+  have hmemKd : ∀ x, x - d • e ∈ K → x ∈ Kd := fun x hx => ⟨x - d • e, hx, by simp⟩
+  have hKdU' : Kd ⊆ U := by rintro _ ⟨y, hy, rfl⟩; exact hKdU y hy
+  have hF1i : Integrable F1 := by
+    refine integ_of F1 K hKc (fun y hy => by simp [hF1, hDζ0 y hy]) (fun y hy => ?_)
+    have h1 : ContinuousAt (fun y => fderiv ℝ u (y + d • e)) y :=
+      (hDuAt _ (hKdU y hy)).comp_of_eq (continuous_id.add continuous_const).continuousAt rfl
+    exact (hAc.continuousAt.comp h1).clm_apply hDζ.continuousAt
+  have hF2i : Integrable F2 := by
+    refine integ_of F2 K hKc (fun y hy => by simp [hF2, hDζ0 y hy]) (fun y hy => ?_)
+    exact (hAc.continuousAt.comp (hDuAt y (hKU hy))).clm_apply hDζ.continuousAt
+  have hR2i : Integrable R2 := by
+    refine integ_of R2 K hKc (fun y hy => by simp [hR2, hζ0 y hy]) (fun y hy => ?_)
+    exact hζcont.continuousAt.inner (hgAt y (hKU hy))
+  have hR3i : Integrable R3 := by
+    refine integ_of R3 Kd hKdc (fun x hx => ?_) (fun x hx => ?_)
+    · have : x - d • e ∉ K := fun h => hx (hmemKd x h)
+      simp [hR3, hζ0 _ this]
+    · have h1 : ContinuousAt (fun x => ζ (x - d • e)) x :=
+        (hζcont.comp (continuous_sub_right _)).continuousAt
+      exact h1.inner (hgAt x (hKdU' hx))
+  -- (E2): the equation tested with `ζ`
+  have hE2 : ∫ y, F2 y = -∫ y, R2 y := by
+    have h := hweak ζ hζ hζc hKU
+    have hl : ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ ζ x) = ∫ y, F2 y := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hx
+      have : x ∉ K := fun h' => hx (hKU h')
+      simp [hDζ0 x this]
+    have hr : ∫ x in U, inner ℝ (ζ x) (g x) = ∫ y, R2 y := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hx
+      have : x ∉ K := fun h' => hx (hKU h')
+      simp [hζ0 x this]
+    rw [hl, hr] at h
+    exact h
+  -- (E1): the equation tested with the translate `φ₁ = ζ(· - d e)`, translated back
+  set φ1 : Rn n → Rn ℓ := fun x => ζ (x - d • e) with hφ1
+  have hφ1C : ContDiff ℝ 1 φ1 := hζ.comp (contDiff_id.sub contDiff_const)
+  have hφ1c : HasCompactSupport φ1 :=
+    hζc.comp_isClosedEmbedding (Homeomorph.subRight (d • e)).isClosedEmbedding
+  have hφ1ts : tsupport φ1 ⊆ U := by
+    intro x hx
+    have h := (tsupport_comp_eq_preimage ζ (Homeomorph.subRight (d • e))).subset hx
+    have hxK : x - d • e ∈ K := h
+    simpa using hKdU _ hxK
+  have hφ1D : ∀ x, fderiv ℝ φ1 x = fderiv ℝ ζ (x - d • e) := fun x => fderiv_comp_sub (d • e)
+  have hE1 : ∫ y, F1 y = -∫ y, inner ℝ (ζ y) (g (y + d • e)) := by
+    have h := hweak φ1 hφ1C hφ1c hφ1ts
+    have hl : ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ1 x) =
+        ∫ x, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ ζ (x - d • e)) := by
+      rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+      · simp only [hφ1D]
+      · intro x hx
+        have : x - d • e ∉ K := fun h' => hx (hKdU' (hmemKd x h'))
+        simp [hφ1D, hDζ0 _ this]
+    have hr : ∫ x in U, inner ℝ (φ1 x) (g x) = ∫ x, R3 x := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hx
+      have : x - d • e ∉ K := fun h' => hx (hKdU' (hmemKd x h'))
+      simp [hφ1, hζ0 _ this]
+    have hl' : ∫ x, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ ζ (x - d • e)) = ∫ y, F1 y := by
+      rw [← integral_add_right_eq_self _ (d • e)]
+      simp [hF1]
+    have hr' : ∫ x, R3 x = ∫ y, inner ℝ (ζ y) (g (y + d • e)) := by
+      rw [← integral_add_right_eq_self _ (d • e)]
+      simp [hR3]
+    rw [hl, hr, hl', hr'] at h
+    exact h
+  have hR1R3 : ∫ y, inner ℝ (ζ y) (g (y + d • e)) = ∫ x, R3 x := by
+    rw [← integral_add_right_eq_self R3 (d • e)]
+    simp [hR3]
+  -- (E1) - (E2)
+  have hE3 : ∫ y, (F1 y - F2 y) = ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) := by
+    rw [integral_sub hF1i hF2i, hE1, hE2, hR1R3]
+    have : ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) = ∫ x, (R2 x - R3 x) := by
+      congr 1; funext x; simp [hR2, hR3, inner_sub_left]
+    rw [this, integral_sub hR2i hR3i]
+    ring
+  -- pointwise: `F1 - F2 = d • I`, by the fundamental theorem of calculus for the real function
+  -- `t ↦ DΨ(P + t (Q - P))[w]` with `P = Du(y)`, `Q = Du(y + d e)`, `w = Dζ(y)`
+  set I : Rn n → ℝ := fun x => ∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ)
+    (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x))
+    (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x) with hI
+  set J : Rn n → ℝ := fun x => inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e)
+    with hJ
+  have hFTC : ∀ y, F1 y - F2 y = d * I y := by
+    intro y
+    simp only [hF1, hF2, hI]
+    generalize fderiv ℝ u (y + d • e) = Q
+    generalize fderiv ℝ u y = P
+    generalize fderiv ℝ ζ y = w
+    have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+        HasDerivAt (fun t : ℝ => fderiv ℝ Ψ (P + t • (Q - P)) w)
+          (fderiv ℝ (fderiv ℝ Ψ) (P + t • (Q - P)) (Q - P) w) t := by
+      intro t _
+      have h1 := (hAd (P + t • (Q - P))).hasFDerivAt.clm_apply
+        (hasFDerivAt_const w (P + t • (Q - P)))
+      have hl : HasDerivAt (fun t : ℝ => P + t • (Q - P)) (Q - P) t := by
+        simpa using ((hasDerivAt_id t).smul_const (Q - P)).const_add P
+      have h2 := h1.comp_hasDerivAt t hl
+      simp only [add_apply, ContinuousLinearMap.comp_apply, zero_apply, map_zero, zero_add,
+        ContinuousLinearMap.flip_apply] at h2
+      exact h2
+    have hcont : Continuous fun t : ℝ => fderiv ℝ (fderiv ℝ Ψ) (P + t • (Q - P)) (Q - P) w := by
+      have hB := hA1.continuous_fderiv one_ne_zero
+      fun_prop
+    have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (hcont.intervalIntegrable 0 1)
+    rw [one_smul ℝ (Q - P), add_sub_cancel P Q, zero_smul ℝ (Q - P), add_zero P] at hftc
+    rw [← hftc, ← intervalIntegral.integral_const_mul]
+    apply intervalIntegral.integral_congr
+    intro t _
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    rw [← mul_assoc, mul_inv_cancel₀ hd, one_mul]
+  -- the right sides, by the sibling `dohr_eb_elc2_shift_ibp`
+  have hIBP := Submission.dohr_eb_elc2_shift_ibp n ℓ U g ζ e d hU hg hζ hζc hsegK
+  have hmain : ∫ x, I x = ∫ x, J x := by
+    have h1 : ∫ y, (F1 y - F2 y) = d * ∫ x, I x := by
+      rw [← integral_const_mul]; congr 1; funext y; exact hFTC y
+    have h2 : d * ∫ x, I x = d * ∫ x, J x := by rw [← h1, hE3, hIBP]
+    exact mul_left_cancel₀ hd h2
+  -- both integrands vanish off `K ⊆ V`
+  have hIV : ∫ x in V, I x = ∫ x, I x := by
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro x hx
+    have : x ∉ K := fun h' => hx (hKV h')
+    simp [hI, hDζ0 x this]
+  have hJV : ∫ x in V, J x = ∫ x, J x := by
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro x hx
+    have : x ∉ K := fun h' => hx (hKV h')
+    simp [hJ, hDζ0 x this]
+  calc _ = ∫ x in V, I x := rfl
+    _ = ∫ x in V, J x := by rw [hIV, hJV, hmain]
+    _ = _ := rfl
+/-- Elementary properties of the difference quotient `w = d⁻¹ (u(· + d e) - u)` of a `C¹` map `u`
+whose derivative is bounded by `ε` and `α`-Hölder with constant `H` on a set `K ⊆ U` containing the
+segments `x + [0, 1] d e` (`x ∈ V`): `w` is `C¹` on `V`, `Dw = d⁻¹ (Du(· + d e) - Du)` on `V`,
+`‖w‖ ≤ ε ‖e‖` on `V` (mean value inequality along the segment), and `Dw` is `α`-Hölder on `V`
+with constant `2 |d|⁻¹ H`. -/
+theorem dohr_eb_elc2_dq_basic : ∀ (n ℓ : ℕ) (u : Rn n → Rn ℓ) (U V K : Set (Rn n)) (e : Rn n) (d ε H α : ℝ), IsOpen U → ContDiffOn ℝ 1 u U → K ⊆ U → d ≠ 0 → (∀ x ∈ V, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ K) → (∀ x ∈ K, ‖fderiv ℝ u x‖ ≤ ε) → (∀ x ∈ K, ∀ y ∈ K, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ H * ‖x - y‖ ^ α) → ContDiffOn ℝ 1 (fun z => d⁻¹ • (u (z + d • e) - u z)) V ∧ (∀ x ∈ V, fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x = d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) ∧ (∀ x ∈ V, ‖d⁻¹ • (u (x + d • e) - u x)‖ ≤ ε * ‖e‖) ∧ ∀ x ∈ V, ∀ y ∈ V, ‖fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x - fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) y‖ ≤ 2 * |d|⁻¹ * H * ‖x - y‖ ^ α := by
+  intro n ℓ u U V K e d ε H α hU hu hKU hd hseg hε hH
+  have hx0 : ∀ x ∈ V, x ∈ K := fun x hx => by simpa using hseg x hx 0 (by simp)
+  have hx1 : ∀ x ∈ V, x + d • e ∈ K := fun x hx => by simpa using hseg x hx 1 (by simp)
+  have hdiff : ∀ y ∈ U, DifferentiableAt ℝ u y := fun y hy =>
+    (hu.differentiableOn one_ne_zero y hy).differentiableAt (hU.mem_nhds hy)
+  have hD : ∀ x ∈ V, fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x =
+      d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x) := by
+    intro x hx
+    have h1 : DifferentiableAt ℝ (fun z => u (z + d • e)) x := by
+      have := hdiff _ (hKU (hx1 x hx))
+      exact this.comp x (differentiableAt_id.add_const _)
+    have h2 := hdiff x (hKU (hx0 x hx))
+    have ha : HasFDerivAt (fun z => u (z + d • e)) (fderiv ℝ u (x + d • e)) x := by
+      have := (hdiff _ (hKU (hx1 x hx))).hasFDerivAt.comp x ((hasFDerivAt_id x).add_const (d • e))
+      simp only [ContinuousLinearMap.comp_id] at this
+      exact this
+    exact ((ha.sub h2.hasFDerivAt).const_smul d⁻¹).fderiv
+  refine ⟨?_, hD, ?_, ?_⟩
+  · have h1 : ContDiffOn ℝ 1 (fun z => u (z + d • e)) V :=
+      hu.comp (by fun_prop) (fun x hx => hKU (hx1 x hx))
+    have h2 : ContDiffOn ℝ 1 u V := hu.mono (fun x hx => hKU (hx0 x hx))
+    exact (h1.sub h2).const_smul d⁻¹
+  · intro x hx
+    have hmv : ‖u (x + d • e) - u x‖ ≤ ε * (|d| * ‖e‖) := by
+      have := norm_image_sub_le_of_norm_deriv_le_segment_01' (f := fun t : ℝ => u (x + (t * d) • e))
+        (f' := fun t => fderiv ℝ u (x + (t * d) • e) (d • e)) (C := ε * (|d| * ‖e‖))
+        (fun t ht => by
+          have hp : x + (t * d) • e ∈ U := hKU (hseg x hx t ⟨ht.1, ht.2⟩)
+          have hda := (hdiff _ hp).hasFDerivAt
+          have hl : HasDerivAt (fun t : ℝ => x + (t * d) • e) (d • e) t := by
+            have := ((hasDerivAt_id t).mul_const d).smul_const e
+            simpa using this.const_add x
+          exact (hda.comp_hasDerivAt t hl).hasDerivWithinAt)
+        (fun t ht => by
+          have hp : x + (t * d) • e ∈ K := hseg x hx t ⟨ht.1, ht.2.le⟩
+          calc ‖fderiv ℝ u (x + (t * d) • e) (d • e)‖ ≤ ‖fderiv ℝ u (x + (t * d) • e)‖ * ‖d • e‖ :=
+                (fderiv ℝ u _).le_opNorm _
+            _ ≤ ε * ‖d • e‖ := by gcongr; exact hε _ hp
+            _ = ε * (|d| * ‖e‖) := by rw [norm_smul, Real.norm_eq_abs])
+      simpa using this
+    rw [norm_smul, norm_inv, Real.norm_eq_abs]
+    have hd' : 0 < |d| := abs_pos.mpr hd
+    calc |d|⁻¹ * ‖u (x + d • e) - u x‖ ≤ |d|⁻¹ * (ε * (|d| * ‖e‖)) := by gcongr
+      _ = ε * ‖e‖ := by field_simp
+  · intro x hx y hy
+    rw [hD x hx, hD y hy]
+    have hsm : d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x) - d⁻¹ • (fderiv ℝ u (y + d • e) - fderiv ℝ u y)
+        = d⁻¹ • ((fderiv ℝ u (x + d • e) - fderiv ℝ u x) - (fderiv ℝ u (y + d • e) - fderiv ℝ u y)) :=
+      (smul_sub _ _ _).symm
+    rw [hsm, norm_smul, norm_inv, Real.norm_eq_abs]
+    have h1 := hH _ (hx1 x hx) _ (hx1 y hy)
+    have h2 := hH _ (hx0 x hx) _ (hx0 y hy)
+    have h3 : x + d • e - (y + d • e) = x - y := by abel
+    rw [h3] at h1
+    have : ‖fderiv ℝ u (x + d • e) - fderiv ℝ u x - (fderiv ℝ u (y + d • e) - fderiv ℝ u y)‖ ≤
+        2 * H * ‖x - y‖ ^ α := by
+      calc _ = ‖(fderiv ℝ u (x + d • e) - fderiv ℝ u (y + d • e)) - (fderiv ℝ u x - fderiv ℝ u y)‖ := by
+            congr 1; abel
+        _ ≤ ‖fderiv ℝ u (x + d • e) - fderiv ℝ u (y + d • e)‖ + ‖fderiv ℝ u x - fderiv ℝ u y‖ :=
+            norm_sub_le _ _
+        _ ≤ H * ‖x - y‖ ^ α + H * ‖x - y‖ ^ α := add_le_add h1 h2
+        _ = 2 * H * ‖x - y‖ ^ α := by ring
+    calc |d|⁻¹ * _ ≤ |d|⁻¹ * (2 * H * ‖x - y‖ ^ α) := by gcongr
+      _ = 2 * |d|⁻¹ * H * ‖x - y‖ ^ α := by ring
+/-- Segment-averaged forcing (Simon Ch. 5, §7, Step 4 and (H4) of the `C^{2,α}` bootstrap): with
+`G(x) = ∫₀¹ g(x + (t d) e) dt`, `Φ(x) := ⟨G(x), · e⟩` is a continuous linear form on
+`L(ℝⁿ, ℝ^ℓ)`, and if every segment `x + [0, d] e`, `x ∈ S`, lies in a set `K` on which `g` is
+`α`-Hölder with constant `H`, then `|Φ(x)[P] − Φ(y)[P]| ≤ H ‖e‖ ‖x − y‖^α ‖P‖` on `S`. -/
+theorem dohr_eb_elc2_averaged_forcing : ∀ (n ℓ : ℕ) (α H d : ℝ) (g : Rn n → Rn ℓ) (S K : Set (Rn n)) (e : Rn n), 0 < α → (∀ x ∈ S, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ K) → (∀ x ∈ K, ∀ y ∈ K, ‖g x - g y‖ ≤ H * ‖x - y‖ ^ α) → ∃ Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P : Rn n →L[ℝ] Rn ℓ), Φ x P = inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (P e)) ∧ ∀ x ∈ S, ∀ y ∈ S, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ H * ‖e‖ * ‖x - y‖ ^ α * ‖P‖ := by
+  intro n ℓ α H d g S K e hα hseg hH
+  -- `G(x) = ∫₀¹ g(x + (t d) e) dt` and `Φ(x) = ⟨G(x), ·⟩ ∘ (P ↦ P e)`.
+  set G : Rn n → Rn ℓ := fun x => ∫ t in (0 : ℝ)..1, g (x + (t * d) • e) with hG
+  refine ⟨fun x => (innerSL ℝ (G x)).comp (ContinuousLinearMap.apply ℝ (Rn ℓ) e), ?_, ?_⟩
+  · intro x P
+    simp [G, innerSL_apply_apply]
+  · -- `g` is continuous on `K`: `‖g q − g p‖ ≤ max H 0 ‖q − p‖^α → 0` as `q → p`, since `α > 0`.
+    have hgc : ContinuousOn g K := by
+      intro p hp
+      rw [Metric.continuousWithinAt_iff]
+      intro η hη
+      have hcont : Tendsto (fun r : ℝ => max H 0 * r ^ α) (𝓝[≥] 0) (𝓝 (max H 0 * 0 ^ α)) := by
+        apply Tendsto.const_mul
+        exact ((Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto).mono_left
+          nhdsWithin_le_nhds
+      rw [Real.zero_rpow hα.ne', mul_zero] at hcont
+      obtain ⟨δ, hδ, hδη⟩ := (Metric.tendsto_nhdsWithin_nhds.mp hcont) η hη
+      refine ⟨δ, hδ, fun q hq hqp => ?_⟩
+      rw [dist_eq_norm] at hqp ⊢
+      have h2 : max H 0 * ‖q - p‖ ^ α < η := by
+        have := hδη (x := ‖q - p‖) (by simp)
+          (by simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using hqp)
+        rw [Real.dist_eq, sub_zero] at this
+        exact lt_of_le_of_lt (le_abs_self _) this
+      calc ‖g q - g p‖ ≤ H * ‖q - p‖ ^ α := hH q hq p hp
+        _ ≤ max H 0 * ‖q - p‖ ^ α := by gcongr; exact le_max_left _ _
+        _ < η := h2
+    -- For `x ∈ S`, `t ↦ g(x + (t d) e)` is continuous on `[0, 1]`, hence interval integrable.
+    have hint : ∀ x ∈ S, IntervalIntegrable (fun t : ℝ => g (x + (t * d) • e)) volume 0 1 := by
+      intro x hx
+      apply ContinuousOn.intervalIntegrable
+      rw [uIcc_of_le zero_le_one]
+      exact hgc.comp (by fun_prop) (fun t ht => hseg x hx t ht)
+    intro x hx y hy P
+    -- `‖G x − G y‖ ≤ H ‖x − y‖^α`: the integrand difference is bounded pointwise on `(0, 1]`.
+    have hGd : ‖G x - G y‖ ≤ H * ‖x - y‖ ^ α := by
+      simp only [G]
+      rw [← intervalIntegral.integral_sub (hint x hx) (hint y hy)]
+      have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+        (C := H * ‖x - y‖ ^ α) (f := fun t => g (x + (t * d) • e) - g (y + (t * d) • e)) (by
+          intro t ht
+          rw [uIoc_of_le zero_le_one] at ht
+          have h := hH _ (hseg x hx t ⟨ht.1.le, ht.2⟩) _ (hseg y hy t ⟨ht.1.le, ht.2⟩)
+          simpa using h)
+      simpa using this
+    -- Cauchy–Schwarz and `‖P e‖ ≤ ‖P‖ ‖e‖`.
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply,
+      innerSL_apply_apply]
+    rw [← inner_sub_left]
+    calc |inner ℝ (G x - G y) (P e)| ≤ ‖G x - G y‖ * ‖P e‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖G x - G y‖ * (‖P‖ * ‖e‖) := by gcongr; exact P.le_opNorm e
+      _ ≤ (H * ‖x - y‖ ^ α) * (‖P‖ * ‖e‖) := by gcongr
+      _ = H * ‖e‖ * ‖x - y‖ ^ α * ‖P‖ := by ring
+/-- Local-to-global step of the elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1
+(pp. 127–128): if every point of the open set `U` has a ball `B_r(x)` on which `f` is `C¹` with
+`‖Df(y) - Df(z)‖ ≤ C ‖y - z‖^α`, then `f` is `C^{1,α}` in `U`.  `f` is `C¹` on `U` by locality
+(`contDiffOn_of_locally_contDiffOn`), and `D¹f` corresponds to `Df` under the linear isometry
+`continuousMultilinearCurryFin1`.  A compact `K ⊆ U` is covered by finitely many of the balls; for a
+Lebesgue number `δ` of this cover, pairs with `‖y - z‖ < δ` lie in one ball, while pairs with
+`‖y - z‖ ≥ δ` satisfy `‖Df(y) - Df(z)‖ ≤ 2B ≤ (2B/δ^α) ‖y - z‖^α`, where `B ≥ sup_K ‖Df‖`. -/
+theorem dohr_eb_elc2_local_to_global_holder : ∀ (n ℓ : ℕ) (α : ℝ) (f : Rn n → Rn ℓ) (U : Set (Rn n)), 0 < α → IsOpen U → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ContDiffOn ℝ 1 f (ball x r) ∧ ∃ C : ℝ, ∀ y ∈ ball x r, ∀ z ∈ ball x r, ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ C * ‖y - z‖ ^ α) → IsLocallyHolderCkα 1 α f U := by
+  intro n ℓ α f U hα hU hloc
+  -- Step 1: `f` is `C¹` on `U`, being `C¹` on a ball around each point of `U`.
+  have hC1 : ContDiffOn ℝ 1 f U := by
+    refine contDiffOn_of_locally_contDiffOn fun x hx => ?_
+    obtain ⟨r, hr, hf, -⟩ := hloc x hx
+    exact ⟨ball x r, isOpen_ball, mem_ball_self hr, hf.mono inter_subset_right⟩
+  refine ⟨by simpa using hC1, fun K hK hKU => ?_⟩
+  -- Step 2: `‖D¹f x - D¹f y‖ = ‖Df x - Df y‖`, via the isometry `continuousMultilinearCurryFin1`.
+  have hconv : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ 1 f x - iteratedFDeriv ℝ 1 f y‖ = ‖fderiv ℝ f x - fderiv ℝ f y‖ := by
+    intro x y
+    have hc : ∀ z, iteratedFDeriv ℝ 1 f z =
+        (continuousMultilinearCurryFin1 ℝ (Rn n) (Rn ℓ)).symm (fderiv ℝ f z) := by
+      intro z
+      ext m
+      simp
+    rw [hc, hc, ← LinearIsometryEquiv.map_sub, LinearIsometryEquiv.norm_map]
+  simp_rw [hconv]
+  -- Step 3: `Df` is continuous on `U`, hence bounded on `K` by some `B ≥ 0`.
+  obtain ⟨B, hB⟩ :=
+    hK.exists_bound_of_continuousOn ((hC1.continuousOn_fderiv_of_isOpen hU le_rfl).mono hKU)
+  have hB0 : 0 ≤ max B 0 := le_max_right _ _
+  -- Step 4: finitely many of the balls cover `K`; `δ > 0` is a Lebesgue number of this cover.
+  choose! r hr _hfr C hC using hloc
+  obtain ⟨t, ht⟩ := hK.elim_finite_subcover (fun i : K => ball (i : Rn n) (r i))
+    (fun _ => isOpen_ball) fun x hx => mem_iUnion.mpr ⟨⟨x, hx⟩, mem_ball_self (hr x (hKU hx))⟩
+  obtain ⟨δ, hδ, hleb⟩ := lebesgue_number_lemma_of_metric hK
+    (c := fun i : t => ball ((i : K) : Rn n) (r (i : K))) (fun _ => isOpen_ball) fun x hx => by
+      obtain ⟨i, hi, hx'⟩ := mem_iUnion₂.mp (ht hx)
+      exact mem_iUnion.mpr ⟨⟨i, hi⟩, hx'⟩
+  -- Step 5: `Cs = ∑_{i ∈ t} |C i|` dominates every local Hölder constant of the subcover.
+  have hCs : ∀ i ∈ t, C i ≤ ∑ j ∈ t, |C j| := fun i hi =>
+    (le_abs_self _).trans (Finset.single_le_sum (f := fun j : K => |C j|) (fun j _ => abs_nonneg _) hi)
+  have hδα : 0 < δ ^ α := Real.rpow_pos_of_pos hδ α
+  have hD0 : 0 ≤ 2 * max B 0 / δ ^ α := div_nonneg (mul_nonneg zero_le_two hB0) hδα.le
+  refine ⟨∑ j ∈ t, |C j| + 2 * max B 0 / δ ^ α, fun y hy z hz => ?_⟩
+  have hpow : 0 ≤ ‖y - z‖ ^ α := Real.rpow_nonneg (norm_nonneg _) α
+  by_cases hyz : ‖y - z‖ < δ
+  · -- Step 6a: `y` and `z` lie in one ball `B_{r_i}(x_i)` of the subcover.
+    obtain ⟨⟨i, hi⟩, hsub⟩ := hleb y hy
+    have hyb : y ∈ ball (i : Rn n) (r i) := hsub (mem_ball_self hδ)
+    have hzb : z ∈ ball (i : Rn n) (r i) :=
+      hsub (by rwa [mem_ball, dist_eq_norm, norm_sub_rev])
+    calc ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ C i * ‖y - z‖ ^ α := hC i (hKU i.2) y hyb z hzb
+      _ ≤ (∑ j ∈ t, |C j| + 2 * max B 0 / δ ^ α) * ‖y - z‖ ^ α :=
+        mul_le_mul_of_nonneg_right (by linarith [hCs i hi]) hpow
+  · -- Step 6b: `‖y - z‖ ≥ δ`, so `‖Df y - Df z‖ ≤ 2 max B 0 ≤ (2 max B 0 / δ^α) ‖y - z‖^α`.
+    have hδyz : δ ^ α ≤ ‖y - z‖ ^ α := Real.rpow_le_rpow hδ.le (not_lt.mp hyz) hα.le
+    calc ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ ‖fderiv ℝ f y‖ + ‖fderiv ℝ f z‖ := norm_sub_le _ _
+      _ ≤ max B 0 + max B 0 :=
+        add_le_add ((hB y hy).trans (le_max_left _ _)) ((hB z hz).trans (le_max_left _ _))
+      _ = 2 * max B 0 / δ ^ α * δ ^ α := by rw [div_mul_cancel₀ _ hδα.ne']; ring
+      _ ≤ 2 * max B 0 / δ ^ α * ‖y - z‖ ^ α := mul_le_mul_of_nonneg_left hδyz hD0
+      _ ≤ (∑ j ∈ t, |C j| + 2 * max B 0 / δ ^ α) * ‖y - z‖ ^ α :=
+        mul_le_mul_of_nonneg_right
+          (le_add_of_nonneg_left (Finset.sum_nonneg fun j _ => abs_nonneg (C j))) hpow
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): under the change of variables `x = y + ρ z` with `ρ > 0`, which maps `B̆_r(0)` onto
+`B̆_{ρr}(y)`, the Hölder bound `‖ρ g(y + ρ z) − ρ g(y + ρ z')‖ ≤ c ‖z − z'‖^α` on `B̆_r(0)` is
+equivalent to the scale-weighted bound `ρ^{1+α} ‖g(x) − g(x')‖ ≤ c ‖x − x'‖^α` on `B̆_{ρr}(y)`,
+because `ρ^{1+α} = ρ ρ^α` and `‖x − x'‖^α = ρ^α ‖z − z'‖^α`. -/
+theorem dohr_eb_sch_ube_holder_rescale : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (y : Rn n) (ρ r α c : ℝ), 0 < ρ → ((∀ z ∈ ball (0 : Rn n) r, ∀ z' ∈ ball (0 : Rn n) r, ‖ρ • g (y + ρ • z) - ρ • g (y + ρ • z')‖ ≤ c * ‖z - z'‖ ^ α) ↔ ∀ x ∈ ball y (ρ * r), ∀ x' ∈ ball y (ρ * r), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ c * ‖x - x'‖ ^ α) := by
+  intro n ℓ g y ρ r α c hρ
+  -- Step 1: `ρ^α > 0`, `ρ^{1+α} = ρ ρ^α`, `‖(y + ρ z) − (y + ρ z')‖^α = ρ^α ‖z − z'‖^α` and
+  -- `‖ρ A − ρ B‖ = ρ ‖A − B‖`.
+  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
+  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
+  have hnorm : ∀ z z' : Rn n, ‖(y + ρ • z) - (y + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
+    intro z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
+      Real.mul_rpow hρ.le (norm_nonneg _)]
+  have hsm : ∀ u v : Rn n →L[ℝ] Rn ℓ, ‖ρ • u - ρ • v‖ = ρ * ‖u - v‖ := by
+    intro u v
+    rw [show ρ • u - ρ • v = ρ • (u - v) from (smul_sub ρ u v).symm, norm_smul, Real.norm_eq_abs,
+      abs_of_pos hρ]
+  -- Step 2: `z(x) = ρ⁻¹ (x − y)` satisfies `y + ρ z(x) = x` and maps `B̆_{ρr}(y)` into `B̆_r(0)`.
+  have hback : ∀ x : Rn n, y + ρ • (ρ⁻¹ • (x - y)) = x := by
+    intro x
+    rw [smul_smul, mul_inv_cancel₀ hρ.ne', one_smul, add_sub_cancel]
+  have hinball : ∀ x ∈ ball y (ρ * r), ρ⁻¹ • (x - y) ∈ ball (0 : Rn n) r := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ,
+      inv_mul_lt_iff₀ hρ]
+    exact hx
   constructor
   · rintro ⟨hm, hH⟩ k
     refine ⟨hcols.1 hm k, fun K hK hKU => ?_⟩
@@ -3231,6 +3889,383 @@ theorem dohr_eb_dql_c1Holder_of_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (ι : Typ
   -- Step 5: the uniform-limit theorem for derivatives gives `DG = V` on `B`.
   have hG : ∀ x ∈ ball x₀ ρ, HasFDerivAt G (V x) x := by
     intro x hx
+    by_contra hxs
+    apply hx
+    simp [hg3, fderiv_of_notMem_tsupport ℝ hxs]
+  -- continuous on `U` with `tsupport ⊆ U`, hence continuous with compact support
+  have hcont_h : Continuous h := by
+    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
+      ((closure_minimal hsupp_h (isClosed_tsupport _)).trans hζU)
+    exact (A.continuous.comp_continuousOn hDVc).clm_apply hDζ.continuousOn
+  have hcont_g1 : Continuous g1 := by
+    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
+      ((closure_minimal hsupp_g1 (isClosed_tsupport _)).trans hηU)
+    exact (hη.continuous.pow 2).continuousOn.mul (hDVc.norm.pow 2)
+  have hcont_g3 : Continuous g3 := by
+    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
+      ((closure_minimal hsupp_g3 (isClosed_tsupport _)).trans hηU)
+    exact ((hVc.sub continuousOn_const).norm.pow 2).mul (hDη.norm.pow 2).continuousOn
+  have hint_h : Integrable h := hcont_h.integrable_of_hasCompactSupport (hζc.mono' hsupp_h)
+  have hint_g1 : Integrable g1 := hcont_g1.integrable_of_hasCompactSupport (hηc.mono' hsupp_g1)
+  have hint_g3 : Integrable g3 := hcont_g3.integrable_of_hasCompactSupport (hηc.mono' hsupp_g3)
+  -- pointwise lower bound: Legendre condition, bound on `A`, and Young's inequality
+  have hpt : ∀ x, lam / 2 * g1 x - 2 * Lam ^ 2 / lam * g3 x ≤ h x := by
+    intro x
+    have hid : h x = η x ^ 2 * A (fderiv ℝ V x) (fderiv ℝ V x) +
+        2 * η x * A (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c)) := by
+      simp only [hh, hζd x, map_add, map_smul, smul_eq_mul]
+    rw [hid]
+    have hc := hcoer (fderiv ℝ V x)
+    have hb := hbdd (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c))
+    rw [ContinuousLinearMap.norm_smulRight_apply] at hb
+    have hb' := (abs_le.mp hb).1
+    set a := η x * ‖fderiv ℝ V x‖ with ha
+    set b := ‖V x - c‖ * ‖fderiv ℝ η x‖ with hb_def
+    have e1 : lam * a ^ 2 ≤ η x ^ 2 * A (fderiv ℝ V x) (fderiv ℝ V x) := by
+      rw [ha, mul_pow]
+      nlinarith [mul_le_mul_of_nonneg_left hc (sq_nonneg (η x))]
+    have e2 : -(2 * Lam * (a * b)) ≤
+        2 * η x * A (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c)) := by
+      have h2η : 0 ≤ 2 * η x := by linarith [hη0 x]
+      have := mul_le_mul_of_nonneg_left hb' h2η
+      rw [ha, hb_def]
+      linarith [this]
+    have e3 : 2 * Lam * (a * b) ≤ lam / 2 * a ^ 2 + 2 * Lam ^ 2 / lam * b ^ 2 := by
+      have key : lam / 2 * a ^ 2 + 2 * Lam ^ 2 / lam * b ^ 2 - 2 * Lam * (a * b) =
+          (lam * a - 2 * Lam * b) ^ 2 / (2 * lam) := by
+        field_simp
+        ring
+      have : 0 ≤ (lam * a - 2 * Lam * b) ^ 2 / (2 * lam) := by positivity
+      linarith
+    have hg1x : g1 x = a ^ 2 := by rw [hg1, ha, mul_pow]
+    have hg3x : g3 x = b ^ 2 := by rw [hg3, hb_def, mul_pow]
+    rw [hg1x, hg3x]
+    linarith
+  -- integrate (`∫ h = 0`) and absorb
+  have hint_lhs : Integrable (fun x => lam / 2 * g1 x - 2 * Lam ^ 2 / lam * g3 x) :=
+    (hint_g1.const_mul _).sub (hint_g3.const_mul _)
+  have hmono := integral_mono hint_lhs hint_h hpt
+  rw [h0, integral_sub (hint_g1.const_mul _) (hint_g3.const_mul _), integral_const_mul,
+    integral_const_mul] at hmono
+  have key : ∫ x, g1 x ≤ 4 * Lam ^ 2 / lam ^ 2 * ∫ x, g3 x := by
+    have h2 : lam / 2 * ∫ x, g1 x ≤ 2 * Lam ^ 2 / lam * ∫ x, g3 x := by linarith
+    have hlam2 : 0 < lam / 2 := by positivity
+    calc ∫ x, g1 x = (lam / 2)⁻¹ * (lam / 2 * ∫ x, g1 x) := by field_simp
+      _ ≤ (lam / 2)⁻¹ * (2 * Lam ^ 2 / lam * ∫ x, g3 x) :=
+          mul_le_mul_of_nonneg_left h2 (inv_nonneg.mpr hlam2.le)
+      _ = 4 * Lam ^ 2 / lam ^ 2 * ∫ x, g3 x := by field_simp; ring
+  -- pass to lower integrals
+  have hg1n : 0 ≤ᵐ[volume] g1 := ae_of_all _ (fun x => by positivity)
+  have hg3n : 0 ≤ᵐ[volume] g3 := ae_of_all _ (fun x => by positivity)
+  rw [← ofReal_integral_eq_lintegral_ofReal hint_g1 hg1n,
+    ← ofReal_integral_eq_lintegral_ofReal hint_g3 hg3n, ← ENNReal.ofReal_mul (by positivity)]
+  exact ENNReal.ofReal_le_ofReal key
+/-- Caccioppoli inequality for constant-coefficient Legendre systems: if `V` is `C¹` on
+`B̆_{2ρ}(y)` and `∫ A[DV][Dζ] = 0` for every `ζ ∈ C¹_c(B̆_{2ρ}(y); ℝ^ℓ)`, then
+`∫_{B̆_ρ(y)} |DV|² ≤ C ρ⁻² ∫_{B̆_{2ρ}(y)} |V − c|²` in `[0, ∞]`, with `C = C(λ, Λ)`.
+Take the cutoff `η` of `dohr_eb_sch_cacc_exists_cutoff` (`‖Dη‖ ≤ K/ρ`), apply
+`dohr_eb_sch_cacc_energy_estimate` with `U = B̆_{2ρ}(y)`, and put `C = (4Λ²/λ²) K²`. -/
+theorem dohr_eb_sch_caccioppoli_const_coeff : ∀ (n ℓ : ℕ) (lam Lam : ℝ), 0 < lam → ∃ C : ℝ, 0 ≤ C ∧ ∀ (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (y : Rn n) (ρ : ℝ) (c : Rn ℓ), (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → 0 < ρ → ContDiffOn ℝ 1 V (ball y (2 * ρ)) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball y (2 * ρ) → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 := by
+  intro n ℓ lam Lam hlam
+  obtain ⟨K, hK0, hcut⟩ := Submission.dohr_eb_sch_cacc_exists_cutoff
+  refine ⟨4 * Lam ^ 2 / lam ^ 2 * K ^ 2, by positivity, ?_⟩
+  intro A V y ρ c hleg hbd hρ hV hweak
+  obtain ⟨η, hη, hη01, hη1, hηc, hηU, hDη⟩ := hcut n y ρ hρ
+  have hen := Submission.dohr_eb_sch_cacc_energy_estimate n ℓ lam Lam A (ball y (2 * ρ)) V η c
+    hlam hleg hbd isOpen_ball hV hη hηc hηU (fun x => (hη01 x).1) hweak
+  -- `η = 1` on `B̆_ρ(y)`
+  have hL : ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤
+      ∫⁻ x, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) := by
+    calc ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2
+        = ∫⁻ x in ball y ρ, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) := by
+          refine setLIntegral_congr_fun measurableSet_ball fun x hx => ?_
+          rw [hη1 x hx, one_pow, one_mul, ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]
+      _ ≤ ∫⁻ x, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) := setLIntegral_le_lintegral _ _
+  -- `‖Dη‖ ≤ K/ρ`, and `Dη = 0` off `tsupport η ⊆ B̆_{2ρ}(y)`
+  have hR : ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2) ≤
+      ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 := by
+    calc ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2)
+        ≤ ∫⁻ x, (ball y (2 * ρ)).indicator
+            (fun x => ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ‖V x - c‖ₑ ^ 2) x := by
+          refine lintegral_mono fun x => ?_
+          by_cases hx : x ∈ ball y (2 * ρ)
+          · rw [indicator_of_mem hx, ← ofReal_norm, ← ENNReal.ofReal_pow (norm_nonneg _),
+              ← ENNReal.ofReal_mul (by positivity)]
+            refine ENNReal.ofReal_le_ofReal ?_
+            calc ‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2 ≤ ‖V x - c‖ ^ 2 * (K / ρ) ^ 2 := by
+                  gcongr
+                  exact hDη x
+              _ = K ^ 2 / ρ ^ 2 * ‖V x - c‖ ^ 2 := by ring
+          · have hx' : x ∉ tsupport η := fun h => hx (hηU h)
+            rw [fderiv_of_notMem_tsupport ℝ hx', norm_zero]
+            simp
+      _ = ∫⁻ x in ball y (2 * ρ), ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ‖V x - c‖ₑ ^ 2 :=
+          lintegral_indicator measurableSet_ball _
+      _ = ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  calc ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2
+      ≤ ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2) *
+          ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2) := hL.trans hen
+    _ ≤ ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2) *
+          (ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2) := by
+        gcongr
+    _ = ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2 * K ^ 2 / ρ ^ 2) *
+          ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), mul_div_assoc']
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): difference quotients.**
+If `f` is `C¹` on an open `U` and `K ⊆ U` is compact, then for every direction `e` the difference
+quotients `g_d(x) = d⁻¹ (f(x + d e) − f(x))` converge to `Df(x) e` uniformly on `K` as `d → 0`,
+`d ≠ 0`.
+Proof: `K` has a compact closed thickening `K_ε ⊆ U`, on which `Df` is uniformly continuous
+(Heine–Cantor).  Given `η > 0`, pick `θ > 0` with `‖Df(w) − Df(x)‖ < η/(|e| + 1)` whenever
+`w, x ∈ K_ε` and `|w − x| < θ`.  For `0 < |d| < min(ε, θ)/(|e| + 1)` and `x ∈ K`, the segment
+`[x, x + d e]` lies in `B_{|d e|}(x) ⊆ K_ε`, so the mean value inequality with the fixed linear map
+`Df(x)` gives `|f(x + d e) − f(x) − Df(x)(d e)| ≤ η |d| |e|/(|e| + 1)`; dividing by `|d|`,
+`|Df(x) e − g_d(x)| ≤ η |e|/(|e| + 1) < η`. -/
+theorem dohr_eb_dql_diffQuot_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 f U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (d : ℝ) (x : Rn n) => d⁻¹ • (f (x + d • e) - f x)) (fun x => fderiv ℝ f x e) (𝓝[≠] 0) K := by
+  intro n ℓ f U K e hU hf hK hKU
+  -- Step 1: a compact closed thickening `K_ε = cthickening ε K` of `K` inside `U`.
+  obtain ⟨ε, hε, hεU⟩ := hK.exists_cthickening_subset_open hU hKU
+  have hK' : IsCompact (cthickening ε K) := hK.cthickening
+  -- Step 2: `f` is differentiable on `U` and `Df` is uniformly continuous on `K_ε`.
+  have hcont : ContinuousOn (fderiv ℝ f) U := hf.continuousOn_fderiv_of_isOpen hU le_rfl
+  have huc : UniformContinuousOn (fderiv ℝ f) (cthickening ε K) :=
+    hK'.uniformContinuousOn_of_continuous (hcont.mono hεU)
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ f z := fun z hz =>
+    (hf.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  -- Step 3: given `η > 0`, choose `θ` and restrict to `0 < |d| < min ε θ / (‖e‖ + 1)`.
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro η hη
+  rw [Metric.uniformContinuousOn_iff] at huc
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  obtain ⟨θ, hθ, hθK⟩ := huc (η / (‖e‖ + 1)) (div_pos hη he1)
+  have hpos : 0 < min ε θ / (‖e‖ + 1) := div_pos (lt_min hε hθ) he1
+  have hev : ∀ᶠ d in 𝓝[≠] (0 : ℝ), |d| < min ε θ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with d hd
+    simpa [Real.dist_eq] using hd
+  filter_upwards [hev, self_mem_nhdsWithin] with d hd hd0
+  have hd0' : d ≠ 0 := hd0
+  intro x hx
+  -- Step 4: the segment `[x, x + d • e]` lies in `closedBall x ‖d • e‖ ⊆ K_ε ⊆ U`.
+  have hde : ‖d • e‖ < min ε θ := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc |d| * ‖e‖ ≤ |d| * (‖e‖ + 1) := by gcongr; linarith
+      _ < min ε θ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = min ε θ := div_mul_cancel₀ _ he1.ne'
+  have hball : closedBall x ‖d • e‖ ⊆ cthickening ε K :=
+    (closedBall_subset_closedBall (hde.le.trans (min_le_left _ _))).trans
+      (closedBall_subset_cthickening hx ε)
+  have hxde : x + d • e ∈ closedBall x ‖d • e‖ := by
+    rw [mem_closedBall, dist_eq_norm]; simp
+  have hseg : segment ℝ x (x + d • e) ⊆ closedBall x ‖d • e‖ :=
+    (convex_closedBall x _).segment_subset (mem_closedBall_self (norm_nonneg _)) hxde
+  have hxK' : x ∈ cthickening ε K := self_subset_cthickening K hx
+  -- Step 5: the mean value inequality with the fixed linear map `Df(x)`.
+  have hmvt : ‖f (x + d • e) - f x - fderiv ℝ f x ((x + d • e) - x)‖ ≤
+      η / (‖e‖ + 1) * ‖(x + d • e) - x‖ := by
+    refine (convex_segment x (x + d • e)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun w hw => hdiff w (hεU (hball (hseg hw)))) (fun w hw => ?_) (left_mem_segment ℝ _ _)
+      (right_mem_segment ℝ _ _)
+    have hw := hseg hw
+    have hwx : dist w x < θ := by
+      rw [mem_closedBall] at hw
+      exact hw.trans_lt (hde.trans_le (min_le_right _ _))
+    have := hθK w (hball hw) x hxK' hwx
+    rw [dist_eq_norm] at this
+    exact this.le
+  have hsub : (x + d • e) - x = d • e := by abel
+  rw [hsub] at hmvt
+  -- Step 6: divide by `d ≠ 0`.
+  rw [dist_eq_norm]
+  have hrw : fderiv ℝ f x e - d⁻¹ • (f (x + d • e) - f x) =
+      -(d⁻¹ • (f (x + d • e) - f x - fderiv ℝ f x (d • e))) := by
+    rw [map_smul, smul_sub d⁻¹ (f (x + d • e) - f x) (d • fderiv ℝ f x e), smul_smul,
+      inv_mul_cancel₀ hd0', one_smul]; abel
+  rw [hrw, norm_neg, norm_smul, norm_inv, Real.norm_eq_abs]
+  calc |d|⁻¹ * ‖f (x + d • e) - f x - fderiv ℝ f x (d • e)‖
+      ≤ |d|⁻¹ * (η / (‖e‖ + 1) * ‖d • e‖) := by gcongr
+    _ = η * (‖e‖ / (‖e‖ + 1)) := by
+      rw [norm_smul, Real.norm_eq_abs]; field_simp
+    _ < η * 1 := by
+      gcongr
+      rw [div_lt_one he1]; linarith
+    _ = η := mul_one η
+/-- Interpolation bound for the derivative (step 3 of `dohr_eb_difference_quotient_limit`): if `h`
+is differentiable on `B_{2r}(x)`, `Dh` is `α`-Hölder there with constant `L ≥ 0` and `‖h‖ ≤ S` on
+`B_{2r}(x)`, then `‖Dh(y)‖ ≤ 2S/t + L t^α` for all `y ∈ B_r(x)` and `0 < t ≤ r`.
+For `v ≠ 0` put `u = (t/‖v‖) v` and `z = y + u`; the mean value inequality on `[y, z] ⊆ B_{2r}(x)`
+with the fixed map `Dh(y)` gives `‖h(z) − h(y) − Dh(y)u‖ ≤ L t^α · t`, so `‖Dh(y)u‖ ≤ 2S + L t^α t`,
+and rescaling by `‖v‖/t` gives `‖Dh(y)v‖ ≤ (2S/t + L t^α)‖v‖`. -/
+theorem dohr_eb_dql_interpolation_fderiv_bound : ∀ (n ℓ : ℕ) (h : Rn n → Rn ℓ) (x : Rn n) (r t α L S : ℝ), 0 < t → t ≤ r → 0 < α → 0 ≤ L → (∀ y ∈ closedBall x (2 * r), DifferentiableAt ℝ h y) → (∀ y ∈ closedBall x (2 * r), ∀ y' ∈ closedBall x (2 * r), ‖fderiv ℝ h y - fderiv ℝ h y'‖ ≤ L * ‖y - y'‖ ^ α) → (∀ y ∈ closedBall x (2 * r), ‖h y‖ ≤ S) → ∀ y ∈ closedBall x r, ‖fderiv ℝ h y‖ ≤ 2 * S / t + L * t ^ α := by
+  intro n ℓ h x r t α L S ht htr hα hL hdiff hhol hS y hy
+  -- Step 1: `S ≥ 0`, the bound is nonnegative, and it suffices to bound `‖Dh(y)v‖` for `v ≠ 0`.
+  have hr : 0 < r := ht.trans_le htr
+  have hxB : x ∈ closedBall x (2 * r) := mem_closedBall_self (by linarith)
+  have hS0 : 0 ≤ S := (norm_nonneg _).trans (hS x hxB)
+  have hyB : y ∈ closedBall x (2 * r) := closedBall_subset_closedBall (by linarith) hy
+  have hbound0 : 0 ≤ 2 * S / t + L * t ^ α := by positivity
+  refine ContinuousLinearMap.opNorm_le_bound _ hbound0 (fun v => ?_)
+  rcases eq_or_ne v 0 with rfl | hv
+  · simp
+  have hvpos : 0 < ‖v‖ := norm_pos_iff.2 hv
+  -- Step 2: the test point `z = y + u`, `u = (t/‖v‖) v`, and the segment `[y, z]`.
+  set c : ℝ := t / ‖v‖ with hc
+  have hcpos : 0 < c := div_pos ht hvpos
+  set u : Rn n := c • v with hu
+  have hunorm : ‖u‖ = t := by
+    rw [hu, norm_smul, Real.norm_eq_abs, abs_of_pos hcpos, hc, div_mul_cancel₀ _ hvpos.ne']
+  set z := y + u with hz
+  have hzy : z - y = u := by rw [hz]; abel
+  have hzB : z ∈ closedBall x (2 * r) := by
+    rw [mem_closedBall] at hy ⊢
+    calc dist z x = ‖(y - x) + u‖ := by rw [dist_eq_norm]; congr 1; rw [hz]; abel
+      _ ≤ ‖y - x‖ + ‖u‖ := norm_add_le _ _
+      _ ≤ r + t := by rw [← dist_eq_norm, hunorm]; linarith
+      _ ≤ 2 * r := by linarith
+  have hseg : segment ℝ y z ⊆ closedBall x (2 * r) :=
+    (convex_closedBall x (2 * r)).segment_subset hyB hzB
+  have hseg' : segment ℝ y z ⊆ closedBall y t := by
+    refine (convex_closedBall y t).segment_subset (mem_closedBall_self ht.le) ?_
+    rw [mem_closedBall, dist_eq_norm, hzy, hunorm]
+  -- Steps 3–4: `‖Dh(w) − Dh(y)‖ ≤ L t^α` on `[y, z]`, and the mean value inequality.
+  have hmvt : ‖h z - h y - fderiv ℝ h y (z - y)‖ ≤ (L * t ^ α) * ‖z - y‖ := by
+    refine (convex_segment y z).norm_image_sub_le_of_norm_fderiv_le'
+      (fun w hw => hdiff w (hseg hw)) (fun w hw => ?_) (left_mem_segment ℝ y z)
+      (right_mem_segment ℝ y z)
+    have hwy : ‖w - y‖ ≤ t := by
+      have := hseg' hw
+      rwa [mem_closedBall, dist_eq_norm] at this
+    calc ‖fderiv ℝ h w - fderiv ℝ h y‖ ≤ L * ‖w - y‖ ^ α := hhol w (hseg hw) y hyB
+      _ ≤ L * t ^ α := by
+        gcongr
+  rw [hzy, hunorm] at hmvt
+  -- Step 5: `‖Dh(y)u‖ ≤ 2S + L t^α t`.
+  have hhzy : ‖h z - h y‖ ≤ 2 * S := by
+    calc ‖h z - h y‖ ≤ ‖h z‖ + ‖h y‖ := norm_sub_le _ _
+      _ ≤ S + S := add_le_add (hS z hzB) (hS y hyB)
+      _ = 2 * S := by ring
+  have hfu : ‖fderiv ℝ h y u‖ ≤ L * t ^ α * t + 2 * S := by
+    have : fderiv ℝ h y u = (h z - h y) - (h z - h y - fderiv ℝ h y u) := by abel
+    rw [this]
+    calc ‖(h z - h y) - (h z - h y - fderiv ℝ h y u)‖
+        ≤ ‖h z - h y‖ + ‖h z - h y - fderiv ℝ h y u‖ := norm_sub_le _ _
+      _ ≤ 2 * S + L * t ^ α * t := add_le_add hhzy hmvt
+      _ = L * t ^ α * t + 2 * S := by ring
+  -- Step 6: rescale by `c = t/‖v‖`.
+  have hfu' : ‖fderiv ℝ h y u‖ = c * ‖fderiv ℝ h y v‖ := by
+    rw [hu, map_smul, norm_smul, Real.norm_eq_abs, abs_of_pos hcpos]
+  rw [hfu'] at hfu
+  have key : ‖fderiv ℝ h y v‖ ≤ (L * t ^ α * t + 2 * S) / c := by
+    rw [le_div_iff₀ hcpos]; linarith
+  calc ‖fderiv ℝ h y v‖ ≤ (L * t ^ α * t + 2 * S) / c := key
+    _ = (2 * S / t + L * t ^ α) * ‖v‖ := by
+      rw [hc]; field_simp; ring
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): `C^{1,α}` bounds pass to limits.**
+Let `B = B̆_ρ(x₀)` and let `F_i → G` uniformly on every compact `K ⊆ B` along a filter `l ≠ ⊥`.
+If eventually in `l` each `F_i` is differentiable on `B` with `‖DF_i‖ ≤ M` and
+`‖DF_i(x) − DF_i(y)‖ ≤ M ‖x − y‖^α` on `B` (`α > 0`), then `G` is `C¹` on `B` with the same bounds.
+Proof: for `x ∈ B` choose `r > 0` with `B_{2r}(x) ⊆ B`.  Given `η > 0`, pick `t ∈ (0, r]` with
+`2M t^α < η/2`; once `‖G − F_i‖ < ηt/8` on `B_{2r}(x)`, the interpolation inequality
+(`dohr_eb_dql_interpolation_fderiv_bound`) applied to `F_i − F_j` (Hölder constant `2M`, sup bound
+`ηt/4`) gives `‖DF_i − DF_j‖ ≤ η/2 + 2M t^α < η` on `B_r(x)`.  So `DF_i` is uniformly Cauchy on
+`B_r(x)` and, `L(ℝⁿ, ℝ^ℓ)` being complete, converges uniformly there to `V := lim DF_i`.  The limit
+`V` inherits the bound `M` and the Hölder constant `M`, hence is continuous on `B`, and the theorem
+on uniform limits of derivatives gives `DG = V` on `B`; thus `G` is `C¹` on `B`. -/
+theorem dohr_eb_dql_c1Holder_of_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (ι : Type) (l : Filter ι), l.NeBot → ∀ (F : ι → Rn n → Rn ℓ) (G : Rn n → Rn ℓ) (x₀ : Rn n) (ρ α M : ℝ), 0 < α → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, DifferentiableAt ℝ (F i) x) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x‖ ≤ M) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x - fderiv ℝ (F i) y‖ ≤ M * ‖x - y‖ ^ α) → (∀ K : Set (Rn n), IsCompact K → K ⊆ ball x₀ ρ → TendstoUniformlyOn F G l K) → ContDiffOn ℝ 1 G (ball x₀ ρ) ∧ (∀ x ∈ ball x₀ ρ, ‖fderiv ℝ G x‖ ≤ M) ∧ ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ G x - fderiv ℝ G y‖ ≤ M * ‖x - y‖ ^ α := by
+  intro n ℓ ι l hl F G x₀ ρ α M hα hD hB hH hU
+  have := hl
+  -- The good indices: eventually all three hypotheses hold at once.
+  have hE := hD.and (hB.and hH)
+  -- The candidate derivative of `G`: the (chosen) pointwise limit of the `DF_i`.
+  set V : Rn n → (Rn n →L[ℝ] Rn ℓ) := fun y => limUnder l (fun i => fderiv ℝ (F i) y)
+  -- Step 1: radii with `B_{2r}(x) ⊆ B`, and `M ≥ 0`.
+  have hrad : ∀ x ∈ ball x₀ ρ, ∃ r > 0, closedBall x (2 * r) ⊆ ball x₀ ρ := by
+    intro x hx
+    rw [mem_ball] at hx
+    refine ⟨(ρ - dist x x₀) / 4, by linarith, fun z hz => ?_⟩
+    rw [mem_closedBall] at hz
+    rw [mem_ball]
+    calc dist z x₀ ≤ dist z x + dist x x₀ := dist_triangle _ _ _
+      _ < ρ := by linarith
+  have hM : ∀ x ∈ ball x₀ ρ, 0 ≤ M := by
+    intro x hx
+    obtain ⟨i, hi⟩ := hB.exists
+    exact (norm_nonneg _).trans (hi x hx)
+  -- Steps 2–3: on `B_r(x)` the `DF_i` are uniformly Cauchy, hence converge uniformly to `V`.
+  have hconv : ∀ x ∈ ball x₀ ρ, ∀ r > 0, closedBall x (2 * r) ⊆ ball x₀ ρ →
+      TendstoUniformlyOn (fun i => fderiv ℝ (F i)) V l (closedBall x r) := by
+    intro x hx r hr hsub
+    have hM0 := hM x hx
+    have hUC : UniformCauchySeqOn (fun i => fderiv ℝ (F i)) l (closedBall x r) := by
+      intro u hu
+      obtain ⟨η, hη, hηu⟩ := Metric.mem_uniformity_dist.1 hu
+      -- (a) a scale `t ∈ (0, r]` with `2M t^α < η/2`.
+      have ht_ev : ∀ᶠ t in 𝓝[>] (0 : ℝ), 2 * M * t ^ α < η / 2 := by
+        have hc : Tendsto (fun t : ℝ => 2 * M * t ^ α) (𝓝 0) (𝓝 (2 * M * (0 : ℝ) ^ α)) :=
+          ((continuousAt_id.rpow_const (Or.inr hα.le)).tendsto).const_mul _
+        rw [Real.zero_rpow hα.ne', mul_zero] at hc
+        exact nhdsWithin_le_nhds (hc.eventually (gt_mem_nhds (by linarith)))
+      have hIoc : ∀ᶠ t in 𝓝[>] (0 : ℝ), t ∈ Ioc 0 r := Ioc_mem_nhdsGT hr
+      obtain ⟨t, ht1, ht2⟩ := (ht_ev.and hIoc).exists
+      have htpos : 0 < t := ht2.1
+      have htr : t ≤ r := ht2.2
+      -- (b) eventually `‖G − F_i‖ < ηt/8` on the compact set `B_{2r}(x) ⊆ B`.
+      have hTU := hU (closedBall x (2 * r)) (isCompact_closedBall x _) hsub
+      rw [Metric.tendstoUniformlyOn_iff] at hTU
+      have hP := hE.and (hTU (η * t / 8) (by positivity))
+      filter_upwards [hP.prod_mk hP] with ij hij y hy
+      obtain ⟨⟨hDi, hBi, hHi⟩, hGi⟩ := hij.1
+      obtain ⟨⟨hDj, hBj, hHj⟩, hGj⟩ := hij.2
+      apply hηu
+      rw [dist_eq_norm]
+      have hyB : y ∈ closedBall x (2 * r) := closedBall_subset_closedBall (by linarith) hy
+      -- (c) `h = F_i − F_j` has Hölder constant `2M` and sup bound `ηt/4` on `B_{2r}(x)`.
+      set h : Rn n → Rn ℓ := fun z => F ij.1 z - F ij.2 z
+      have hdh : ∀ z ∈ closedBall x (2 * r), DifferentiableAt ℝ h z := fun z hz =>
+        (hDi z (hsub hz)).sub (hDj z (hsub hz))
+      have hfd : ∀ z ∈ closedBall x (2 * r),
+          fderiv ℝ h z = fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.2) z := fun z hz =>
+        fderiv_sub (hDi z (hsub hz)) (hDj z (hsub hz))
+      -- (d) the interpolation inequality on `B_r(x)`.
+      have hbd := Submission.dohr_eb_dql_interpolation_fderiv_bound n ℓ h x r t α (2 * M)
+        (η * t / 4) htpos htr hα (by linarith) hdh
+        (fun z hz z' hz' => by
+          rw [hfd z hz, hfd z' hz']
+          calc ‖fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.2) z -
+                (fderiv ℝ (F ij.1) z' - fderiv ℝ (F ij.2) z')‖
+              = ‖(fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.1) z') -
+                  (fderiv ℝ (F ij.2) z - fderiv ℝ (F ij.2) z')‖ := by congr 1; abel
+            _ ≤ ‖fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.1) z'‖ +
+                  ‖fderiv ℝ (F ij.2) z - fderiv ℝ (F ij.2) z'‖ := norm_sub_le _ _
+            _ ≤ M * ‖z - z'‖ ^ α + M * ‖z - z'‖ ^ α :=
+                add_le_add (hHi z (hsub hz) z' (hsub hz')) (hHj z (hsub hz) z' (hsub hz'))
+            _ = 2 * M * ‖z - z'‖ ^ α := by ring)
+        (fun z hz => by
+          have h1 := hGi z hz
+          have h2 := hGj z hz
+          rw [dist_eq_norm] at h1 h2
+          calc ‖h z‖ = ‖(G z - F ij.2 z) - (G z - F ij.1 z)‖ := by
+                show ‖F ij.1 z - F ij.2 z‖ = _; congr 1; abel
+            _ ≤ ‖G z - F ij.2 z‖ + ‖G z - F ij.1 z‖ := norm_sub_le _ _
+            _ ≤ η * t / 4 := by linarith)
+        y hy
+      rw [hfd y hyB] at hbd
+      calc ‖fderiv ℝ (F ij.1) y - fderiv ℝ (F ij.2) y‖
+          ≤ 2 * (η * t / 4) / t + 2 * M * t ^ α := hbd
+        _ = η / 2 + 2 * M * t ^ α := by field_simp; ring
+        _ < η := by linarith
+    -- (e)/(3) completeness: pointwise limits exist, and the convergence is uniform.
+    refine hUC.tendstoUniformlyOn_of_tendsto (fun y hy => ?_)
+    obtain ⟨L, hL⟩ := cauchy_map_iff_exists_tendsto.1 (hUC.cauchy_map hy)
+    exact tendsto_nhds_limUnder ⟨L, hL⟩
+  have hpt : ∀ y ∈ ball x₀ ρ, Tendsto (fun i => fderiv ℝ (F i) y) l (𝓝 (V y)) := by
+    intro y hy
+    obtain ⟨r, hr, hsub⟩ := hrad y hy
+    exact (hconv y hy r hr hsub).tendsto_at (mem_closedBall_self hr.le)
+  -- Step 5: the uniform-limit theorem for derivatives gives `DG = V` on `B`.
+  have hG : ∀ x ∈ ball x₀ ρ, HasFDerivAt G (V x) x := by
+    intro x hx
     obtain ⟨r, hr, hsub⟩ := hrad x hx
     refine hasFDerivAt_of_tendstoUniformlyOnFilter (l := l) (f := F)
       (f' := fun i => fderiv ℝ (F i)) ?_ ?_ ?_
@@ -3323,6 +4358,176 @@ theorem dohr_eb_difference_quotient_limit : ∀ (n ℓ : ℕ) (α : ℝ) (f : Rn
       exact hhol d hd.1 hd.2 x hx y hy)
     (fun K hK hKB => Submission.dohr_eb_dql_diffQuot_tendstoUniformlyOn n ℓ f _ K e hB'open hf
       hK (hKB.trans hBB'))
+/-- Currying step of the proof that `f` is `C^{m+1,α}` iff `Df` is `C^{m,α}` (elliptic bootstrap
+for Simon 7.1): on an open `U`, `f` is `C^{m+1}` with `D^{m+1}f` locally `α`-Hölder iff `f` is `C¹`,
+`Df` is `C^m` and `D^m(Df)` is locally `α`-Hölder, with the same constants.  Indeed
+`D^{m+1}f(x) = Φ (D^m(Df)(x))` for the currying linear isometry `Φ`, and `C^{m+1}` on an open set
+means differentiable with `C^m` derivative. -/
+theorem dohr_eb_hsif_succ_iff_curry : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) := by
+  intro n E _ _ m α f U hU
+  -- Steps 1–2: `D^{m+1}f(x) = Φ (D^m(Df)(x))` with `Φ` a linear isometry, so the two Hölder
+  -- differences have equal norms at every pair of points.
+  have hnorm : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ =
+        ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ := by
+    intro x y
+    rw [iteratedFDeriv_succ_eq_comp_right, iteratedFDeriv_succ_eq_comp_right]
+    simp only [Function.comp_apply]
+    rw [← LinearIsometryEquiv.map_sub, LinearIsometryEquiv.norm_map]
+  -- Step 3: hence the Hölder clauses coincide, with the same constant on each compact `K`.
+  have hhol : (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔
+      (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤
+        C * ‖x - y‖ ^ α) := by
+    simp only [hnorm]
+  -- Step 4: on the open set `U`, `f` is `C^{m+1}` iff it is differentiable with `C^m` derivative
+  -- (the analyticity clause is vacuous since `m` is finite).
+  have hsucc := contDiffOn_succ_iff_fderiv_of_isOpen (𝕜 := ℝ) (f := f) (n := (m : WithTop ℕ∞)) hU
+  -- Steps 5–6: the regularity parts agree.
+  have hreg : ContDiffOn ℝ (m + 1 : ℕ) f U ↔
+      ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U := by
+    push_cast
+    refine ⟨fun h => ⟨h.of_le le_add_self, (hsucc.1 h).2.2⟩, fun h => ?_⟩
+    exact hsucc.2 ⟨h.1.differentiableOn one_ne_zero, by simp, h.2⟩
+  -- Step 7: combine.
+  rw [hreg, hhol, and_assoc]
+
+/-- Columns of an operator-valued map (step 1 of the proof that `f` is `C^{m+1,α}` iff `Df` is
+`C^{m,α}`, in the elliptic bootstrap for Simon 7.1): `g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on a set `U` iff
+every column `g_k = g(·) e_k` is.  Indeed `g_k = ev_k ∘ g` for the evaluation `ev_k T = T e_k`, and
+conversely `g = ∑_k ι_k ∘ g_k` for the continuous linear reconstruction `ι_k w = (h ↦ h_k • w)`. -/
+theorem dohr_eb_hsif_contDiffOn_clm_iff_columns : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), ContDiffOn ℝ m g U ↔ ∀ k : Fin n, ContDiffOn ℝ m (fun x => g x (EuclideanSpace.single k (1 : ℝ))) U := by
+  intro n E _ _ m g U
+  -- Step 1: the reconstruction maps `ι k : w ↦ (h ↦ h_k • w)` are continuous linear.
+  let ι : Fin n → E →L[ℝ] (Rn n →L[ℝ] E) := fun k =>
+    ContinuousLinearMap.smulRightL ℝ (Rn n) E (EuclideanSpace.proj k)
+  -- Step 2: the reconstruction `g = ∑ k, ι k ∘ g_k`, from `h = ∑ k, h_k • e_k`.
+  have hrec : g = fun x => ∑ k, ι k (g x (EuclideanSpace.single k (1 : ℝ))) := by
+    funext x
+    ext h
+    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
+    conv_lhs => rw [← hh]
+    simp [ι, map_sum, map_smul]
+  refine ⟨fun hg k => ?_, fun hk => ?_⟩
+  -- Step 3: each column `g_k = ev_k ∘ g` is `C^m` on `U`.
+  · exact hg.clm_apply contDiffOn_const
+  -- Step 4: `g = ∑ k, ι k ∘ g_k` is a finite sum of `C^m` maps on `U`.
+  · rw [hrec]
+    exact ContDiffOn.sum fun k _ => (ι k).contDiff.comp_contDiffOn (hk k)
+
+/-- Columns of an operator-valued map (step 3, "Components", of the proof that `f` is
+`C^{m+1,α}` iff `Df` is `C^{m,α}`, in the elliptic bootstrap for Simon 7.1): if
+`g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on the open set `U` and `g_k = g(·) e_k`, then on `U` the differences
+of `D^m g_k` are bounded by those of `D^m g`, and those of `D^m g` by the sum over `k` of those of
+`D^m g_k`.  Indeed `D^m g_k = ev_k ∘ D^m g` and `D^m g = ∑_k ι_k ∘ D^m g_k`, where the evaluation
+`ev_k T = T e_k` and the reconstruction `ι_k w = (h ↦ h_k • w)` have norm at most one. -/
+theorem dohr_eb_hsif_iteratedFDeriv_column_bounds : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ m g U → ∀ x ∈ U, ∀ y ∈ U, (∀ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖) ∧ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ ∑ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ := by
+  intro n E _ _ m g U hU hg x hx y hy
+  -- Step 1: the evaluation maps `ev k : T ↦ T e_k` have norm at most one.
+  let ev : Fin n → (Rn n →L[ℝ] E) →L[ℝ] E := fun k =>
+    ContinuousLinearMap.apply ℝ E (EuclideanSpace.single k (1 : ℝ))
+  have hev : ∀ k, ‖ev k‖ ≤ 1 := fun k =>
+    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun T => by
+      simpa [ev] using T.le_opNorm (EuclideanSpace.single k (1 : ℝ))
+  -- Step 2: the reconstruction maps `ι k : w ↦ (h ↦ h_k • w)` have norm at most one.
+  let ι : Fin n → E →L[ℝ] (Rn n →L[ℝ] E) := fun k =>
+    ContinuousLinearMap.smulRightL ℝ (Rn n) E (EuclideanSpace.proj k)
+  have hι : ∀ k, ‖ι k‖ ≤ 1 := fun k =>
+    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun w => by
+      have hproj : ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n))‖ ≤ 1 :=
+        ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun h => by
+          simpa using PiLp.norm_apply_le h k
+      show ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n)).smulRight w‖ ≤ 1 * ‖w‖
+      rw [ContinuousLinearMap.norm_smulRight_apply]
+      exact mul_le_mul_of_nonneg_right hproj (norm_nonneg w)
+  -- Step 3: `L ∘ A - L ∘ B = L ∘ (A - B)` and `‖L ∘ A‖ ≤ ‖A‖` when `‖L‖ ≤ 1`.
+  have hcomp : ∀ {F G : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G]
+      [NormedSpace ℝ G] (L : F →L[ℝ] G), ‖L‖ ≤ 1 →
+      ∀ A B : ContinuousMultilinearMap ℝ (fun _ : Fin m => Rn n) F,
+        ‖L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B‖ ≤ ‖A - B‖ := by
+    intro F G _ _ _ _ L hL A B
+    have : L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B =
+        L.compContinuousMultilinearMap (A - B) := by
+      ext v
+      simp
+    rw [this]
+    exact (L.norm_compContinuousMultilinearMap_le _).trans
+      (mul_le_of_le_one_left (norm_nonneg _) hL)
+  -- Step 4: `g` and its columns are `C^m` at every point of the open set `U`.
+  have hgat : ∀ z ∈ U, ContDiffAt ℝ m g z := fun z hz => hg.contDiffAt (hU.mem_nhds hz)
+  have hcolat : ∀ k, ∀ z ∈ U,
+      ContDiffAt ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z := fun k z hz =>
+    (hgat z hz).continuousLinearMap_comp (ev k)
+  -- Step 5: the column formula `D^m g_k(z) = ev k ∘ D^m g(z)`.
+  have hcol : ∀ k, ∀ z ∈ U,
+      iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z =
+        (ev k).compContinuousMultilinearMap (iteratedFDeriv ℝ m g z) := fun k z hz =>
+    (ev k).iteratedFDeriv_comp_left (hgat z hz) le_rfl
+  -- Step 7: the reconstruction `g = ∑ k, ι k ∘ g_k`.
+  have hrec : g = fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ))) := by
+    funext z
+    ext h
+    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
+    conv_lhs => rw [← hh]
+    simp [ι, map_sum, map_smul]
+  -- Step 8: the sum formula `D^m g(z) = ∑ k, ι k ∘ D^m g_k(z)`.
+  have hsum : ∀ z ∈ U, iteratedFDeriv ℝ m g z = ∑ k, (ι k).compContinuousMultilinearMap
+      (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) := by
+    intro z hz
+    calc iteratedFDeriv ℝ m g z
+        = iteratedFDeriv ℝ m (fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
+          congrArg (iteratedFDeriv ℝ m · z) hrec
+      _ = ∑ k, iteratedFDeriv ℝ m (fun z => ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
+          iteratedFDeriv_fun_sum_apply fun k _ => (hcolat k z hz).continuousLinearMap_comp (ι k)
+      _ = ∑ k, (ι k).compContinuousMultilinearMap
+            (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) :=
+          Finset.sum_congr rfl fun k _ => (ι k).iteratedFDeriv_comp_left (hcolat k z hz) le_rfl
+  refine ⟨fun k => ?_, ?_⟩
+  -- Step 6: bound (i).
+  · rw [hcol k x hx, hcol k y hy]
+    exact hcomp (ev k) (hev k) _ _
+  -- Step 9: bound (ii).
+  · rw [hsum x hx, hsum y hy, ← Finset.sum_sub_distrib]
+    exact (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => hcomp (ι k) (hι k) _ _)
+
+/-- **`C^{m+1,α}_loc` through first derivatives**: `u ∈ C^{m+1,α}_loc` iff `Du ∈ C^{m,α}_loc` iff
+every `D_k u ∈ C^{m,α}_loc`, the bookkeeping of the Schauder bootstrap in the proof of Simon Ch. 5,
+Theorem 7.1 (p. 128).  For `f : ℝⁿ → E` and open `U ⊆ ℝⁿ`, write
+(A) `f` is `C^{m+1}` on `U` and `D^{m+1}f` is `α`-Hölder on each compact `K ⊆ U`;
+(B) `f` is `C¹` on `U`, `Df` is `C^m` on `U` and `D^m(Df)` is `α`-Hölder on each compact `K ⊆ U`;
+(C) `f` is `C¹` on `U` and every partial derivative `D_k f = Df(·) e_k` is `C^m` on `U` with
+`D^m(D_k f)` `α`-Hölder on each compact `K ⊆ U`.
+Then `(A ↔ B) ∧ (A ↔ C)`. -/
+theorem dohr_eb_holder_succ_iff_fderiv : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → (((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) ∧ ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ∀ k : Fin n, ContDiffOn ℝ m (fun x => fderiv ℝ f x (EuclideanSpace.single k (1 : ℝ))) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ C * ‖x - y‖ ^ α))) := by
+  intro n E _ _ m α f U hU
+  -- Steps 1–2, (A ↔ B): `D^{m+1}f = Ψ ∘ D^m(Df)` for a linear isometry `Ψ`, and on the open set
+  -- `U`, `f ∈ C^{m+1}` iff `f ∈ C¹` and `Df ∈ C^m`.
+  have hAB := Submission.dohr_eb_hsif_succ_iff_curry n E m α f U hU
+  refine ⟨hAB, hAB.trans (and_congr_right fun _ => ?_)⟩
+  -- Steps 3–4, (B ↔ C) once `f ∈ C¹(U)`: `Df ∈ C^m(U)` iff every column `D_k f ∈ C^m(U)`; on `U`,
+  -- `‖Δ D^m(D_k f)‖ ≤ ‖Δ D^m(Df)‖ ≤ Σ_k ‖Δ D^m(D_k f)‖` (`Δ h = h(x) - h(y)`) transfers the Hölder
+  -- constants: `C` for each `D_k f`, and `Σ_k C_k` for `Df`.
+  have hcols := Submission.dohr_eb_hsif_contDiffOn_clm_iff_columns n E m (fderiv ℝ f) U
+  have hbds := Submission.dohr_eb_hsif_iteratedFDeriv_column_bounds n E m (fderiv ℝ f) U hU
+  constructor
+  · rintro ⟨hm, hH⟩ k
+    refine ⟨hcols.1 hm k, fun K hK hKU => ?_⟩
+    obtain ⟨C, hC⟩ := hH K hK hKU
+    exact ⟨C, fun x hx y hy => ((hbds hm x (hKU hx) y (hKU hy)).1 k).trans (hC x hx y hy)⟩
+  · intro hk
+    have hm : ContDiffOn ℝ m (fderiv ℝ f) U := hcols.2 fun k => (hk k).1
+    refine ⟨hm, fun K hK hKU => ?_⟩
+    choose C hC using fun k => (hk k).2 K hK hKU
+    refine ⟨∑ k, C k, fun x hx y hy => ?_⟩
+    calc _ ≤ ∑ k : Fin n,
+          ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x -
+            iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ :=
+          (hbds hm x (hKU hx) y (hKU hy)).2
+      _ ≤ ∑ k : Fin n, C k * ‖x - y‖ ^ α := Finset.sum_le_sum fun k _ => hC k x hx y hy
+      _ = (∑ k : Fin n, C k) * ‖x - y‖ ^ α := (Finset.sum_mul _ _ _).symm
 
 end Submission
 
@@ -4687,6 +5892,176 @@ theorem dohr_eb_schauder_interior_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α
           refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ hC₁)
             (Real.rpow_nonneg (norm_nonneg _) _)
           exact le_add_of_nonneg_left (inv_nonneg.2 hR.le)
+
+/-- **`C^{2,α}` regularity of `C^{1,α}` weak solutions of an Euler–Lagrange system** (first step
+of the elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, p. 128; [GM] Proposition 8.6
+and Theorem 5.19).  Let `Ψ` be smooth with `λ‖Q‖² ≤ D²Ψ(P)[Q, Q]` for `‖P‖ ≤ ε`, `g` be
+`C^{0,α}_loc(U)` and `u ∈ C^{1,α}_loc(U)` with `‖Du‖ ≤ ε` solve `div DΨ(Du) = g` weakly in the open
+set `U`.  Then `u ∈ C^{2,α}_loc(U)`.  The difference quotients `w_d = d⁻¹ (u(· + d e_k) − u)`
+solve linear systems with averaged coefficients that satisfy the hypotheses of the Schauder
+estimate uniformly in `d`; the resulting uniform `C^{1,α}` bounds pass to the limit `d → 0`, so
+every `D_k u` is `C^{1,α}_loc(U)`. -/
+theorem dohr_eb_el_c2alpha_regularity : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε : ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), 0 < lam → IsOpen U → ContDiff ℝ (⊤ : ℕ∞) Ψ → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → IsLocallyHolderCkα 1 α u U → (∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε) → IsLocallyHolderCkα 0 α g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → IsLocallyHolderCkα 2 α u U := by
+  intro n ℓ hn α hα0 hα1 Ψ lam ε U u g hlam hU hΨ hLeg hu hDu hg hweak
+  -- Step 0: `Ψ` is `C³`, `u` is `C¹` and `g` is continuous on `U`.
+  have hΨ3 : ContDiff ℝ 3 Ψ := hΨ.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hΨ2 : ContDiff ℝ 2 Ψ := hΨ.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hu1 : ContDiffOn ℝ 1 u U := by simpa using hu.1
+  have hg0 : ContinuousOn g U := by
+    have h0 : ContDiffOn ℝ 0 g U := by simpa using hg.1
+    exact contDiffOn_zero.mp h0
+  -- Step 0: the Hölder differences of `D¹u` and `D⁰g` are those of `Du` and `g`, since
+  -- `continuousMultilinearCurryFin1` and `continuousMultilinearCurryFin0` are linear isometries.
+  have hconv1 : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ 1 u x - iteratedFDeriv ℝ 1 u y‖ = ‖fderiv ℝ u x - fderiv ℝ u y‖ := by
+    intro x y
+    set c := continuousMultilinearCurryFin1 ℝ (Rn n) (Rn ℓ)
+    have hc : ∀ z, c (iteratedFDeriv ℝ 1 u z) = fderiv ℝ u z := by
+      intro z; ext v; simp [c, iteratedFDeriv_one_apply]
+    rw [← c.norm_map, c.map_sub, hc, hc]
+  have hconv0 : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ 0 g x - iteratedFDeriv ℝ 0 g y‖ = ‖g x - g y‖ := by
+    intro x y
+    set c := continuousMultilinearCurryFin0 ℝ (Rn n) (Rn ℓ)
+    have hc : ∀ z, c (iteratedFDeriv ℝ 0 g z) = g z := by
+      intro z; simp [c]
+    rw [← c.norm_map, c.map_sub, hc, hc]
+  -- Step 1: the bound `M_B` and the Lipschitz constant `L_B` of `D²Ψ` on the `ε`-ball.
+  obtain ⟨MB, LB, hMB0, hLB0, hMB, hLB⟩ := Submission.dohr_eb_elc2_hessian_bounds n ℓ Ψ hΨ3 ε
+  -- Steps 2–7: every partial derivative `D_k u = Du(·) e_k` is `C^{1,α}_loc(U)`.
+  have hcol : ∀ k : Fin n,
+      IsLocallyHolderCkα 1 α (fun x => fderiv ℝ u x (EuclideanSpace.single k (1 : ℝ))) U := by
+    intro k
+    set e : Rn n := EuclideanSpace.single k (1 : ℝ)
+    have he : ‖e‖ = 1 := by simp [e]
+    -- Step 7: it suffices to show that `D_k u` is `C¹` with `α`-Hölder derivative on a ball
+    -- around each point of `U`.
+    apply Submission.dohr_eb_elc2_local_to_global_holder n ℓ α _ U hα0 hU
+    intro xb hxb
+    -- Step 2: localization to `K₀ = B̄_{4R}(xb) ⊆ U`, where `Du` and `g` have the Hölder
+    -- constants `H1` and `H2`.
+    obtain ⟨r0, hr0, hr0U⟩ := Metric.isOpen_iff.mp hU xb hxb
+    set R := r0 / 5 with hR_def
+    have hR : 0 < R := by positivity
+    have hK0U : closedBall xb (4 * R) ⊆ U :=
+      (closedBall_subset_ball (by rw [hR_def]; linarith)).trans hr0U
+    obtain ⟨C1, hC1⟩ := hu.2 _ (isCompact_closedBall xb (4 * R)) hK0U
+    obtain ⟨C2, hC2⟩ := hg.2 _ (isCompact_closedBall xb (4 * R)) hK0U
+    set H1 := max C1 0
+    set H2 := max C2 0
+    have hH1 : ∀ x ∈ closedBall xb (4 * R), ∀ y ∈ closedBall xb (4 * R),
+        ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ H1 * ‖x - y‖ ^ α := by
+      intro x hx y hy
+      rw [← hconv1]
+      exact (hC1 x hx y hy).trans
+        (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
+    have hH2 : ∀ x ∈ closedBall xb (4 * R), ∀ y ∈ closedBall xb (4 * R),
+        ‖g x - g y‖ ≤ H2 * ‖x - y‖ ^ α := by
+      intro x hx y hy
+      rw [← hconv0]
+      exact (hC2 x hx y hy).trans
+        (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
+    -- Step 5: one constant `M` for all hypotheses of the Schauder estimate on `B_{2R}(xb)`, and
+    -- the Schauder constant `C`, independent of `d`.
+    set M := max (max MB (LB * H1)) (max H2 (max ε 0))
+    have hMB_M : MB ≤ M := le_max_of_le_left (le_max_left _ _)
+    have hLB_M : LB * H1 ≤ M := le_max_of_le_left (le_max_right _ _)
+    have hH2_M : H2 ≤ M := le_max_of_le_right (le_max_left _ _)
+    have hε_M : ε ≤ M := le_max_of_le_right (le_max_of_le_right (le_max_left _ _))
+    obtain ⟨C, hC⟩ := Submission.dohr_eb_schauder_interior_estimate n ℓ hn α hα0 hα1 lam M
+      (2 * R) hlam (by positivity)
+    -- For `|d| < R`, the segments `x + [0, d] e` with `x ∈ B_{2R}(xb)` lie in `K₀`.
+    have hseg : ∀ d : ℝ, |d| < R → ∀ x ∈ ball xb (2 * R), ∀ t ∈ Icc (0 : ℝ) 1,
+        x + (t * d) • e ∈ closedBall xb (4 * R) := by
+      intro d hd x hx t ht
+      rw [mem_closedBall, dist_eq_norm]
+      rw [mem_ball, dist_eq_norm] at hx
+      have h1 : ‖(t * d) • e‖ ≤ R := by
+        rw [norm_smul, he, mul_one, Real.norm_eq_abs, abs_mul, abs_of_nonneg ht.1]
+        calc t * |d| ≤ 1 * |d| := by gcongr; exact ht.2
+          _ ≤ R := by linarith
+      calc ‖x + (t * d) • e - xb‖ = ‖(x - xb) + (t * d) • e‖ := by congr 1; abel
+        _ ≤ ‖x - xb‖ + ‖(t * d) • e‖ := norm_add_le _ _
+        _ ≤ 4 * R := by linarith
+    -- Steps 3–5: the difference quotients `w_d = d⁻¹ (u(· + d e) − u)`, `0 < |d| < R`, are
+    -- bounded in `C^{1,α}(B_R(xb))` uniformly in `d`.
+    have hd_est : ∀ d : ℝ, d ≠ 0 → |d| < R →
+        (∀ x ∈ ball xb R, ‖d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)‖ ≤ C) ∧
+        (∀ x ∈ ball xb R, ∀ y ∈ ball xb R,
+          ‖d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x) -
+            d⁻¹ • (fderiv ℝ u (y + d • e) - fderiv ℝ u y)‖ ≤ C * ‖x - y‖ ^ α) := by
+      intro d hd0 hdR
+      have hsegK := hseg d hdR
+      have hsegU : ∀ x ∈ ball xb (2 * R), ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U :=
+        fun x hx t ht => hK0U (hsegK x hx t ht)
+      have hxK : ∀ x ∈ ball xb (2 * R), x ∈ closedBall xb (4 * R) := by
+        intro x hx
+        simpa using hsegK x hx 0 (by simp)
+      have hxdK : ∀ x ∈ ball xb (2 * R), x + d • e ∈ closedBall xb (4 * R) := by
+        intro x hx
+        simpa using hsegK x hx 1 (by simp)
+      -- Step 3, (H5)–(H7): `w_d` is `C¹` on `B_{2R}(xb)`, `Dw_d = d⁻¹ (Du(· + d e) − Du)`,
+      -- `‖w_d‖ ≤ ε` and `Dw_d` is `α`-Hölder.
+      obtain ⟨hw1, hwD, hwB, hwH⟩ := Submission.dohr_eb_elc2_dq_basic n ℓ u U (ball xb (2 * R))
+        (closedBall xb (4 * R)) e d ε H1 α hU hu1 hK0U hd0 hsegK (fun x hx => hDu x (hK0U hx))
+        hH1
+      -- Step 4, (H1)–(H3): the averaged coefficients `a_d(x) = ∫₀¹ D²Ψ(P_t(x)) dt`.
+      obtain ⟨a, ha_eq, ha1, ha2, ha3⟩ := Submission.dohr_eb_elc2_averaged_hessian n ℓ Ψ lam ε
+        MB LB H1 α (ball xb (2 * R)) (fderiv ℝ u) (fun x => fderiv ℝ u (x + d • e)) hΨ2 hLB0
+        hLeg hMB hLB (fun x hx => hDu x (hK0U (hxK x hx)))
+        (fun x hx => hDu _ (hK0U (hxdK x hx))) (fun x hx y hy => hH1 x (hxK x hx) y (hxK y hy))
+        (fun x hx y hy => by simpa using hH1 _ (hxdK x hx) _ (hxdK y hy))
+      -- Step 4, (H4): the averaged right-hand side `Φ_d(x)[P] = ⟪∫₀¹ g(x + t d e) dt, P e⟫`.
+      obtain ⟨Φ, hΦ_eq, hΦH⟩ := Submission.dohr_eb_elc2_averaged_forcing n ℓ α H2 d g
+        (ball xb (2 * R)) (closedBall xb (4 * R)) e hα0 hsegK hH2
+      -- Step 4, (H8): `w_d` solves the linear system with coefficients `a_d` and right side `Φ_d`.
+      have hweq := Submission.dohr_eb_elc2_dq_weak_equation n ℓ Ψ U (ball xb (2 * R)) u g e d
+        hΨ2 hU isOpen_ball hu1 hg0 hd0 hsegU hweak
+      -- Step 5: the Schauder estimate on `B_{2R}(xb)`.
+      have hS := hC xb a Φ (fun z => d⁻¹ • (u (z + d • e) - u z)) ha1
+        (fun x hx P Q => (ha2 x hx P Q).trans (by gcongr))
+        (fun x hx y hy P Q => (ha3 x hx y hy P Q).trans (by
+          rw [show LB * H1 * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ =
+              (LB * H1) * (‖x - y‖ ^ α * ‖P‖ * ‖Q‖) by ring,
+            show M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ = M * (‖x - y‖ ^ α * ‖P‖ * ‖Q‖) by ring]
+          gcongr))
+        (fun x hx y hy P => (hΦH x hx y hy P).trans (by rw [he, mul_one]; gcongr))
+        (fun x hx => (hwB x hx).trans (by rw [he, mul_one]; exact hε_M))
+        hw1 ⟨2 * |d|⁻¹ * H1, hwH⟩
+        (by
+          intro ζ hζ1 hζc hζs
+          have e1 : ∫ x in ball xb (2 * R),
+                a x (fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x) (fderiv ℝ ζ x) =
+              ∫ x in ball xb (2 * R), (∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ)
+                (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x))
+                (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x)) := by
+            apply setIntegral_congr_fun measurableSet_ball
+            intro x hx
+            simp only [hwD x hx, ha_eq]
+          have e2 : ∫ x in ball xb (2 * R), Φ x (fderiv ℝ ζ x) =
+              ∫ x in ball xb (2 * R), inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e))
+                (fderiv ℝ ζ x e) := by
+            simp only [hΦ_eq]
+          rw [e1, e2]
+          exact hweq ζ hζ1 hζc hζs)
+      rw [show 2 * R / 2 = R by ring] at hS
+      refine ⟨fun x hx => ?_, fun x hx y hy => ?_⟩
+      · rw [← hwD x (ball_subset_ball (by linarith) hx)]
+        exact hS.1 x hx
+      · rw [← hwD x (ball_subset_ball (by linarith) hx),
+          ← hwD y (ball_subset_ball (by linarith) hy)]
+        exact hS.2 x hx y hy
+    -- Step 6: letting `d → 0`, `D_k u` is `C¹` on `B_R(xb)` with `α`-Hölder derivative.
+    have hu2R : ContDiffOn ℝ 1 u (ball xb (R + R * ‖e‖)) := by
+      rw [he, mul_one]
+      exact hu1.mono ((ball_subset_ball (by linarith)).trans (ball_subset_closedBall.trans hK0U))
+    obtain ⟨hv1, -, hvH⟩ := Submission.dohr_eb_difference_quotient_limit n ℓ α u xb e R R C hα0
+      hα1.le hR hu2R (fun d hd0 hdR => (hd_est d hd0 hdR).1)
+      (fun d hd0 hdR => (hd_est d hd0 hdR).2)
+    exact ⟨R, hR, hv1, C, hvH⟩
+  -- Step 8: `u` is `C¹` on `U` and every `D_k u` is `C^{1,α}_loc(U)`, so `u` is `C^{2,α}_loc(U)`.
+  exact (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) 1 α u U hU).2.2
+    ⟨hu1, fun k => ⟨(hcol k).1, (hcol k).2⟩⟩
 
 end Submission
 
