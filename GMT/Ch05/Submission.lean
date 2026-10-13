@@ -757,6 +757,109 @@ theorem gwe_wewe_weight_error_bound : ∀ (n ℓ : ℕ) (cJ σ κ M : ℝ) (f : 
           M * κ * (∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖) +
           2 * cJ * M * ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x) := by
         linarith
+/-- Simon Ch. 5, 4.5 (14)–(16) in the parameter domain: from the weighted estimates
+`Lⁿ(B̆_{3σ/8} ∩ {W = 0}) ≤ K₀Eσⁿ` and `∫_{B̆_{3σ/8}} |Df|² W ≤ K₀Eσⁿ` to the unweighted energy
+bound `∫_{B̆_{3σ/8}} |Df|² ≤ CEσⁿ` and the approximate weak equation
+`|∫_{B̆_{σ/4}} ⟨∇fʲ, ∇ζ⟩| ≤ C(E + h + κ√E)Mσⁿ`.  The constant is
+`C = max {C_E, 2K₀ + 2c_J C_E, √(ω C_E), 1}` with `C_E = (1 + n)K₀` and `ω = Lⁿ(B̆₁(0))`. -/
+theorem gwe_weighted_energy_weak_equation : ∀ n ℓ : ℕ, 1 ≤ n → ∀ K0 cJ : ℝ, 0 ≤ K0 → 0 ≤ cJ → ∃ C : ℝ, 0 < C ∧ ∀ (σ κ E h : ℝ) (f : Rn n → Rn ℓ) (W : Rn n → ℝ), 0 < σ → 0 ≤ κ → κ ≤ 1 → 0 ≤ E → 0 ≤ h → LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → Measurable W → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨ (1 ≤ W x ∧ W x ≤ (1 + κ) * (1 + cJ * hsNormSq (fderiv ℝ f x)))) → volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → ∫⁻ x in ball (0 : Rn n) (3 * σ / 8), ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → (∫ x in ball (0 : Rn n) (3 * σ / 8), hsNormSq (fderiv ℝ f x) ≤ C * E * σ ^ n) ∧ ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x| ≤ K0 * (E + h) * M * σ ^ n → |∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)| ≤ C * (E + h + κ * Real.sqrt E) * M * σ ^ n := by
+  intro n ℓ _ K0 cJ hK0 hcJ
+  -- The constants depend only on `n`, `K0` and `cJ`.
+  obtain ⟨ω, hω⟩ : ∃ ω : ℝ, ω = (volume (ball (0 : Rn n) 1)).toReal := ⟨_, rfl⟩
+  obtain ⟨CE, hCE⟩ : ∃ CE : ℝ, CE = (1 + n) * K0 := ⟨_, rfl⟩
+  obtain ⟨C, hC⟩ : ∃ C : ℝ,
+      C = max (max CE (2 * K0 + 2 * cJ * CE)) (max (Real.sqrt (ω * CE)) 1) := ⟨_, rfl⟩
+  have hω0 : 0 ≤ ω := by rw [hω]; exact ENNReal.toReal_nonneg
+  have hCE0 : 0 ≤ CE := by rw [hCE]; positivity
+  have hCEC : CE ≤ C := by rw [hC]; exact (le_max_left _ _).trans (le_max_left _ _)
+  have hKC : 2 * K0 + 2 * cJ * CE ≤ C := by
+    rw [hC]; exact (le_max_right _ _).trans (le_max_left _ _)
+  have hsqC : Real.sqrt (ω * CE) ≤ C := by
+    rw [hC]; exact (le_max_left _ _).trans (le_max_right _ _)
+  have h1C : 1 ≤ C := by rw [hC]; exact (le_max_right _ _).trans (le_max_right _ _)
+  have hK0C : K0 ≤ C := by linarith [mul_nonneg hcJ hCE0]
+  refine ⟨C, one_pos.trans_le h1C, ?_⟩
+  intro σ κ E h f W hσ hκ0 hκ1 hE hh hf hW hH1 hH2 hH3
+  have hσn : 0 ≤ σ ^ n := pow_nonneg hσ.le n
+  have hKE : 0 ≤ K0 * E * σ ^ n := by positivity
+  -- Step 1: derivative facts on `B̆_{σ/2}(0)`.
+  obtain ⟨-, hGmeas, hDnn, -, hae⟩ := Submission.gwe_wewe_lipschitz_fderiv_facts n ℓ (σ / 2) f hf
+  -- Steps 2–3: the unweighted energy bound, with constant `C_E = (1 + n) K0`.
+  have hH1' : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨ 1 ≤ W x := by
+    filter_upwards [hH1] with x hx hxB
+    exact (hx hxB).imp id And.left
+  obtain ⟨hDint, hEnergy⟩ :=
+    Submission.gwe_wewe_energy_bound n ℓ K0 σ E f W hK0 hσ hE hf hW hH1' hH2 hH3
+  refine ⟨?_, ?_⟩
+  · calc ∫ x in ball (0 : Rn n) (3 * σ / 8), hsNormSq (fderiv ℝ f x)
+        ≤ (1 + n) * K0 * E * σ ^ n := hEnergy
+      _ = CE * (E * σ ^ n) := by rw [hCE]; ring
+      _ ≤ C * (E * σ ^ n) := mul_le_mul_of_nonneg_right hCEC (mul_nonneg hE hσn)
+      _ = C * E * σ ^ n := by ring
+  -- Steps 4–7: the weak equation.
+  intro ζ _ _ _ M hM j hWeq
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  have herr := Submission.gwe_wewe_weight_error_bound n ℓ cJ σ κ M f W ζ j hcJ hσ hκ0 hκ1 hf hW
+    hH1 hM
+  have hN : (volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0})).toReal ≤ K0 * E * σ ^ n :=
+    ENNReal.toReal_le_of_le_ofReal hKE hH2
+  have hB21 : ball (0 : Rn n) (σ / 4) ⊆ ball 0 (3 * σ / 8) := ball_subset_ball (by linarith)
+  have hB2 : ball (0 : Rn n) (σ / 4) ⊆ ball 0 (σ / 2) := ball_subset_ball (by linarith)
+  have hD2 : ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x) ≤ CE * E * σ ^ n :=
+    calc ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x)
+        ≤ ∫ x in ball (0 : Rn n) (3 * σ / 8), hsNormSq (fderiv ℝ f x) :=
+          setIntegral_mono_set hDint (ae_of_all _ hDnn) hB21.eventuallyLE
+      _ ≤ (1 + n) * K0 * E * σ ^ n := hEnergy
+      _ = CE * E * σ ^ n := by rw [hCE]
+  -- Cauchy–Schwarz on `B̆_{σ/4}(0)`, with `‖∇fʲ‖² ≤ |Df|²` a.e.
+  have hG : ∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖ ≤
+      Real.sqrt (volume (ball (0 : Rn n) (σ / 4))).toReal *
+        Real.sqrt (∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x)) := by
+    refine Submission.gwe_wewe_setIntegral_le_sqrt_mul_sqrt (Rn n) volume (ball 0 (σ / 4))
+      (fun x => ‖gradient (fun y => f y j) x‖) (fun x => hsNormSq (fderiv ℝ f x))
+      measure_ball_lt_top (hGmeas j).norm.aestronglyMeasurable (hDint.mono_set hB21) ?_
+    rw [ae_restrict_iff' measurableSet_ball]
+    filter_upwards [hae] with x hx hxB
+    exact ⟨norm_nonneg _, hx (hB2 hxB) j⟩
+  have hvol : (volume (ball (0 : Rn n) (σ / 4))).toReal ≤ ω * σ ^ n := by
+    have hσ4 : (0 : ℝ) < σ / 4 := by positivity
+    rw [Measure.addHaar_ball_of_pos volume (0 : Rn n) hσ4, finrank_euclideanSpace_fin,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (pow_nonneg hσ4.le n), ← hω, mul_comm ω]
+    exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hσ4.le (by linarith) n) hω0
+  have hGb : ∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖ ≤
+      Real.sqrt (ω * CE) * σ ^ n * Real.sqrt E :=
+    calc ∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖
+        ≤ Real.sqrt (volume (ball (0 : Rn n) (σ / 4))).toReal *
+            Real.sqrt (∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x)) := hG
+      _ ≤ Real.sqrt (ω * σ ^ n) * Real.sqrt (CE * E * σ ^ n) :=
+          mul_le_mul (Real.sqrt_le_sqrt hvol) (Real.sqrt_le_sqrt hD2) (Real.sqrt_nonneg _)
+            (Real.sqrt_nonneg _)
+      _ = Real.sqrt (ω * CE) * σ ^ n * Real.sqrt E := by
+          rw [← Real.sqrt_mul (mul_nonneg hω0 hσn),
+            show ω * σ ^ n * (CE * E * σ ^ n) = (σ ^ n) ^ 2 * (ω * CE * E) by ring,
+            Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq hσn, Real.sqrt_mul (mul_nonneg hω0 hCE0)]
+          ring
+  -- Collect the terms.
+  have h1 := mul_le_mul_of_nonneg_left hN hM0
+  have h2 := mul_le_mul_of_nonneg_left hGb (mul_nonneg hM0 hκ0)
+  have h3 := mul_le_mul_of_nonneg_left hD2 (mul_nonneg (mul_nonneg zero_le_two hcJ) hM0)
+  have hfinal : K0 * (E + h) * M * σ ^ n + (M * (K0 * E * σ ^ n) +
+      M * κ * (Real.sqrt (ω * CE) * σ ^ n * Real.sqrt E) + 2 * cJ * M * (CE * E * σ ^ n)) ≤
+      C * (E + h + κ * Real.sqrt E) * M * σ ^ n := by
+    have e1 := mul_le_mul_of_nonneg_right hKC hE
+    have e2 := mul_le_mul_of_nonneg_right hK0C hh
+    have e3 := mul_le_mul_of_nonneg_right hsqC (mul_nonneg hκ0 (Real.sqrt_nonneg E))
+    calc K0 * (E + h) * M * σ ^ n + (M * (K0 * E * σ ^ n) +
+          M * κ * (Real.sqrt (ω * CE) * σ ^ n * Real.sqrt E) + 2 * cJ * M * (CE * E * σ ^ n))
+        = ((2 * K0 + 2 * cJ * CE) * E + K0 * h + Real.sqrt (ω * CE) * (κ * Real.sqrt E)) *
+            (M * σ ^ n) := by ring
+      _ ≤ C * (E + h + κ * Real.sqrt E) * (M * σ ^ n) :=
+          mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hM0 hσn)
+      _ = C * (E + h + κ * Real.sqrt E) * M * σ ^ n := by ring
+  have key := abs_sub_abs_le_abs_sub
+    (∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x))
+    (∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x)
+  linarith
 
 end Submission
 
