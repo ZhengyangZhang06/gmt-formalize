@@ -404,6 +404,31 @@ theorem Submission.dph_lpf_proper_transfer :
     · show e.symm (Fin.cons (e y 0) (e' (e'.symm (Fin.tail (e y))))) = y
       rw [e'.apply_symm_apply, Fin.cons_self_tail, e.symm_apply_apply]
 
+/-- **Reference smooth approximations near a closed set** (Simon Ch. 6, 2.28–2.29; Step 2 of the
+Lipschitz push-forward).  Assume the smooth approximation statement (SA) of
+`dph_lipschitz_smooth_approx`.  If `F` is closed, `G` is `Λ`-Lipschitz on `F_r` (`r > 0`) and
+proper on `F`, (SA) with `A := F`, `δ := r` gives `C^∞` maps `Gₙ` with `‖DGₙ‖ ≤ Λ` on `F_(r/2)`
+and `Gₙ → Ĝ` uniformly, where `Ĝ = G` on `F_r ⊇ F_(r/2)`.  So `Gₙ → G` uniformly on `F_(r/2)`,
+eventually `dist (Gₙ x) (G x) ≤ 1` on `F`, and `dph_lpf_proper_transfer` (a) makes `Gₙ` proper
+on `F`. -/
+theorem Submission.dph_lpf_reference_sequence : (∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (A : Set (Eucl m)) (δ : ℝ), 0 < δ → LipschitzOnWith Λ G (thickening δ A) → ∃ (G' : Eucl m → Eucl m') (Gj : ℕ → Eucl m → Eucl m') (L : ℝ≥0), LipschitzWith L G' ∧ EqOn G' G (thickening δ A) ∧ (∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj j)) ∧ (∀ j, LipschitzWith L (Gj j)) ∧ TendstoUniformly Gj G' atTop ∧ (∀ j, ∀ x ∈ thickening (δ / 2) A, ‖fderiv ℝ (Gj j) x‖ ≤ Λ) ∧ ∀ (k : ℕ) (α : SimonMultiIndex k m') (z : Eucl m') (ω : TestFormOn (univ : Set (Eucl m')) k) (ε : ℝ), 0 < ε → (∀ x ∈ thickening ε A, G x ∈ thickening ε (tsupport (ω : DifferentialForm (Eucl m') k)) → ∀ i, i ∉ range α → G x i = z i) → (∀ y, (ω : DifferentialForm (Eucl m') k) y (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 0) → ∃ r : ℝ, 0 < r ∧ ∀ᶠ j in atTop, ∀ x ∈ thickening r A, ((ω : DifferentialForm (Eucl m') k) (Gj j x)).compContinuousLinearMap (fderiv ℝ (Gj j) x) = 0) → (∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (F : Set (Eucl m)), 0 < r → IsClosed F → LipschitzOnWith Λ G (thickening r F) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) → ∃ Gj : ℕ → Eucl m → Eucl m', (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) ∧ (∀ n, ∀ x ∈ thickening (r / 2) F, ‖fderiv ℝ (Gj n) x‖ ≤ Λ) ∧ TendstoUniformlyOn Gj G atTop (thickening (r / 2) F) ∧ ∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ F)) := by
+  intro hSA m m' G Λ r F hr hF hG hprop
+  -- 1. (SA) with `A := F`, `δ := r`.
+  obtain ⟨G', Gj, L, -, hG'G, hsmooth, -, hconv, hderiv, -⟩ := hSA m m' G Λ F r hr hG
+  -- 2. `F_(r/2) ⊆ F_r`, where `G' = G`, so `Gj → G` uniformly on `F_(r/2)`.
+  have hsub : thickening (r / 2) F ⊆ thickening r F := thickening_mono (half_le_self hr.le) F
+  have hconvG : TendstoUniformlyOn Gj G atTop (thickening (r / 2) F) :=
+    hconv.tendstoUniformlyOn.congr_right (hG'G.mono hsub)
+  refine ⟨Gj, hsmooth, hderiv, hconvG, ?_⟩
+  -- 3. Eventually `dist (G x) (Gj n x) < 1` on `F_(r/2) ⊇ F`.
+  have hFsub : F ⊆ thickening (r / 2) F := self_subset_thickening (half_pos hr) F
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp hconvG 1 one_pos] with n hn
+  -- 4. `Gj n` is continuous and `1`-close to `G` on `F`, hence proper on `F`.
+  exact Submission.dph_lpf_proper_transfer.1 m m' G (Gj n) F 1 hF (hsmooth n).continuous hprop
+    fun x hx => by
+      rw [dist_comm]
+      exact (hn x (hFsub hx)).le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
