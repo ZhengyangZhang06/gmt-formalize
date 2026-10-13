@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1769cc6572543b377464f259946923862f75ac9830edb2aef7d9e211b0068685",
+  "git_delta": {
+    "base_commit": "6980e0e77aec541adc0903efff99406ea7efca24",
+    "candidate_commit": "21e4e0a22ce3be62d2574c29c90eb7228d3e8676",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ccisp_ae_massOn_lt_top",
+    "diff_sha256": "9cd449892dd72259cfdafa81c1ec282fe1e6a2f39a69677b299920d0f8571120",
+    "source_sha256": "65b2a4e3c52b38831bbcde58f9871d6e6576e4393a3b0a58e55b49f487670b17",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ccisp_ae_massOn_lt_top",
+      "statement": "(∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P q : ℕ) (U : Set (Euclid P)) (Z : ℝ → GeometricCurrentOn U q) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), Continuous f → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → (Z t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ W : Set (Euclid P), Bornology.IsBounded W → (Z t).massOn W < ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
