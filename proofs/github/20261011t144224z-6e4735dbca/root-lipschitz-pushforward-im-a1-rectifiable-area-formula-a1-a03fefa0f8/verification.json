@@ -1,0 +1,28 @@
+{
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/740",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "2acb4ed7dac37610ae69a612e57acaa7849b6e1b",
+  "integrated_commit": "",
+  "proof_base_commit": "93f3462dde9fe25fdf74219a3064c1d34e6b724d",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.lipschitz_pushforward_im-a1",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+    "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1",
+    "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.fiber_sum_glue-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.jacobian_identity-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_jacobian_ae-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_area_formula-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.pushforward_enorm_aemeasurable-a1"
+  ]
+}
