@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.mean_curvature-a1",
+  "parent_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+  "depth": 3,
+  "title": "Generalized mean curvature of the rescaled varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be any set, let V be a rectifiable n-varifold in U with weight μ_V, let c ∈ ℝ^{n+ℓ}, R > 0, ψ(x) := c + R x and φ(y) := R⁻¹(y − c), and let W be a rectifiable n-varifold in ψ⁻¹(U) with W.weight = (ENNReal.ofReal (R^n))⁻¹ • Measure.map φ μ_V and W.tangentProj(x) = V.tangentProj(c + R x) for every x. Let H : ℝ^{n+ℓ} → ℝ^{n+ℓ}. Suppose V has generalized mean curvature H in U (contract HasGeneralizedMeanCurvature): H is locally μ_V-integrable on U (LocallyIntegrableOn H U μ_V), and ∫ div_V X dμ_V = −∫ ⟨X, H⟩ dμ_V for every C¹ map X : ℝ^{n+ℓ} → ℝ^{n+ℓ} with compact support and tsupport X ⊆ U, where div_V X(x) = trace(DX(x) ∘ V.tangentProj(x)). Then W has generalized mean curvature H'(x) := R H(c + R x) in ψ⁻¹(U) (with div_W built from W.tangentProj and integrals against W.weight). All integrals are Mathlib Bochner integrals, which are 0 for non-integrable integrands.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → (∀ x, W.tangentProj x = V.tangentProj (c + R • x)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x))",
+  "lean_name": "any_radius_rv_meanCurvature",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-rescaled-varifold-a1-mean-curvature-a1-a1"
+}
