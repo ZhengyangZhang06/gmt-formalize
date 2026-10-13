@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.decay_plane-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1",
+  "depth": 5,
+  "title": "At μ-a.e. point, a plane with decaying tilt-excess is the approximate tangent plane (parent steps 2–3)",
+  "statement": "Let P, n ∈ ℕ, U, W ⊆ ℝ^P with W open and W ⊆ U, R ∈ IMRep U n with μ := R.measure and M := R.carrier, κ ∈ ℝ, p_x the orthogonal projection onto approxTangentPlane n M x, ω_n := unitBallVolume n, and |A|² := Σ_i |Aε_i|² over the standard basis of ℝ^P. Assume x ↦ p_x is μ-a.e. strongly measurable and ω_n ≤ (e^{κt}/tⁿ)·μ(B_t(y)) whenever y ∈ spt μ, t > 0 and B_t(y) ⊆ W (closed balls). Then for μ-a.e. x ∈ W: for every subspace S of ℝ^P and all s₀ > 0, K ∈ ℝ with ∫_{B_s(x)} |p_y − p_S|² dμ(y) ≤ ENNReal.ofReal(K s^{n+1}) for all s ∈ (0, s₀] (lower Lebesgue integral of ofReal), S = approxTangentPlane n M x.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (κ : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t)) → ∀ᵐ x ∂R.measure, x ∈ W → ∀ (S : Submodule ℝ (Euclid P)) (s₀ K : ℝ), 0 < s₀ → (∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ y in closedBall x s, ENNReal.ofReal (∑ i : Fin P, ‖(approxTangentPlane n R.carrier y).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (K * s ^ (n + 1))) → S = approxTangentPlane n R.carrier x",
+  "lean_name": "dorag_gc_decay_plane_eq_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-61758856dc-a1"
+}
