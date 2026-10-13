@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dtc_bc_lc_sl_si|dor_lmbs_testForm_countable_approx|dpf_pfc_imrep|slice_identity|countable dense",
+        "structure IMRep|def IMRep.action|def IMRep.measure|IsUnitOrientationOf|locallyIntegrable_mult|aestronglyMeasurable_orient|orients :",
+        "theorem ae_tendsto_average|theorem tendsto_Icc_vitaliFamily_left|theorem tendsto_integral_filter_of_dominated_convergence|theorem setIntegral_indicator|theorem ae_ball_iff|instSeparableSpace|instSecondCountableTopology",
+        "def IsTestForm|abbrev TestFormOn|theorem exteriorDerivative_isTestForm|theorem tsupport_exteriorDerivative_subset",
+        "#print axioms Submission.dpf_pfc_imrep_orient_abs_apply_le",
+        "#print axioms Submission.dpf_pfc_imrep_pairing_integrable_abs_le",
+        "#print axioms Submission.dor_lmbs_testForm_countable_approx",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-identity-audit-4ky33mf4/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/OneDim.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-567cec0764/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-567cec0764/decomposition-v1.json",
+        "/tmp/slice-identity-audit-4ky33mf4/Accepted_orient_bound.lean",
+        "/tmp/slice-identity-audit-4ky33mf4/Accepted_pairing_bound.lean",
+        "/tmp/slice-identity-audit-4ky33mf4/Accepted_testform_dense.lean",
+        "/tmp/slice-identity-audit-4ky33mf4/Assembly.lean"
+      ],
+      "conclusion": "Verified pinned project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot project search found no matching child or slice-identity declarations. Inspected definitions and library lemmas support the supplied arguments. Each proposed name has exactly one accepted DAG owner; its frozen type, accepted source hash, definitions, imports and build inputs match. Dependency closures are acyclic and exclude the selected parent. Independently generated comparator challenges for all three children and the selected parent elaborate. Recompiled all three accepted proofs and the assembly; their axiom reports contain only propext, Classical.choice and Quot.sound. The reuse split is appropriate: pairing bounds and countable approximation support dominated convergence, left-average differentiation and extension to all forms. The assembly proves exactly the selected frozen parent type."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree, including the simultaneous quantifier over covectors. R.orients supplies one a.e. orthonormal frame; the operator-norm inequality proves the bound for both signs, including n = 0. The proof is complete and independent of the parent. The bare name validly reuses the identical comparator-accepted type from commit 056f1b9b0f63f29ad638c335a0b984ac1606c017."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both conclusions match the one-line Lean type. Compactness and C ⊆ U give an integrable multiplicity indicator; continuous evaluation gives a.e. strong measurability; orient_bound supplies domination. The restriction and nonnegative-integral identities yield exactly the stated toReal bound. No additional positivity assumption on B is required. The dependency on orient_bound is correctly directed and non-circular. The bare name reuses the identical accepted type from commit 5c8c6597411e77948b224fda014774beaa21ebaf."
+    },
+    {
+      "key": "testform_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree on openness, countability, common compact supports and uniform convergence of both forms and exterior derivatives. The proof handles empty and full domains, constructs a compact exhaustion, obtains dense subsets through separable continuous-map spaces, and chooses explicit approximation tolerances. These steps prove the exact statement without invoking the parent or assuming the child. The bare name reuses the identical accepted type from commit b7ecbda9150d7985c7094c40f6aebfb81c4ec24b; its accepted dependency closure is acyclic."
+    }
+  ],
+  "required_changes": []
+}
