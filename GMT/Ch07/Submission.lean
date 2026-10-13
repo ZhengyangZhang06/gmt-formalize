@@ -3492,6 +3492,182 @@ theorem Submission.dorag_standing_density_bounds : ∀ (n k : ℕ), 0 < n → �
             ENNReal.ofReal (t ^ n) := (hsharp x hx t ht.1 ht.2).2
       _ ≤ ENNReal.ofReal (3 / 2) * unitBallVolume n * ENNReal.ofReal (t ^ n) := by gcongr
 
+/-- **Simon Ch. 5, Lemma 2.5 (Affine Approximation Lemma, p. 108)** under the standing
+assumptions `(SA_δ)`, with `α = 1/(2n+2)`: for `ξ ∈ spt μ ∩ B̄_{2δρ}(z)` and `r ∈ (0, 2δρ]` some
+`n`-plane `S` has `|p_S^⊥(x − ξ)| ≤ C₃δ^α r` on `spt μ ∩ B̄_r(ξ)` and
+`∫_{B̄_{r/2}(ξ)} |p_x − p_S|² dμ ≤ C₃δ^{2α}(r/2)ⁿ`.  With `e = δ^α`, a maximal `er`-separated net
+`F` of `spt μ ∩ B̄_r(ξ)` has `#F·eⁿ ≤ 2^{2n+2}` by the density bounds; Chebyshev's inequality and
+the weighted tilt bounds at the points of `F` give `x₀ ∈ B̄_{er}(ξ)` with `dim T_{x₀}M = n` and
+`|p^⊥_{T_{x₀}M}(y − x₀)| ≤ C_λ e r` for `y ∈ F`; `S = T_{x₀}M` then satisfies the height bound,
+which the tilt-height estimate turns into the tilt bound. -/
+theorem Submission.dorag_affine_approximation : ∀ (n k : ℕ), 0 < n → ∃ δ₃ C₃ : ℝ, 0 < δ₃ ∧ δ₃ ≤ 1 / 8 ∧ 1 ≤ C₃ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₃ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → ∀ ξ ∈ R.measure.support ∩ closedBall z (2 * δ * ρ), ∀ r : ℝ, 0 < r → r ≤ 2 * δ * ρ → ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧ (∀ x ∈ R.measure.support ∩ closedBall ξ r, ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ C₃ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * r) ∧ ∫⁻ x in closedBall ξ (r / 2), ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (C₃ * (δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 * (r / 2) ^ n) := by
+  intro n k hn
+  -- Step 0: constants `δ₁, C₂` (density bounds), `C_T` (tilt-height), `w = ωₙ`,
+  -- `C_Ψ = 2^{2n+2}·2^{n+2}·C₂` and `C_λ = (4C_Ψ/w)^{1/2}`; `δ₃ = δ₁`
+  obtain ⟨δ₁, C₂, hδ₁, hδ₁8, hC₂, hdens⟩ := Submission.dorag_standing_density_bounds n k hn
+  obtain ⟨CT, hCT, htilt⟩ := Submission.dorag_tilt_height_estimate n k
+  obtain ⟨w, hw, hωw⟩ : ∃ w : ℝ, 0 < w ∧ unitBallVolume n = ENNReal.ofReal w := by
+    have hωT : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+    exact ⟨(unitBallVolume n).toReal,
+      ENNReal.toReal_pos (measure_ball_pos volume (0 : Euclid n) one_pos).ne' hωT,
+      (ENNReal.ofReal_toReal hωT).symm⟩
+  obtain ⟨CΨ, hCΨ⟩ : ∃ C : ℝ, C = 2 ^ (2 * n + 2) * 2 ^ (n + 2) * C₂ := ⟨_, rfl⟩
+  have hCΨ0 : 0 < CΨ := by rw [hCΨ]; positivity
+  obtain ⟨CL, hCL0, hCLsq⟩ : ∃ C : ℝ, 0 < C ∧ C ^ 2 = 4 * CΨ / w :=
+    ⟨√(4 * CΨ / w), Real.sqrt_pos.mpr (by positivity), Real.sq_sqrt (by positivity)⟩
+  refine ⟨δ₁, max 1 (max (CL + 2) (2 ^ n * 2 * w * CT * ((CL + 2) ^ 2 + 1))), hδ₁, hδ₁8,
+    le_max_left _ _, ?_⟩
+  intro δ hδ hδδ₁ U W R H κ ρ z hW hWU hρ hzW hH hHκ hfv hz hmass hκρ ξ hξ r hr hrδ
+  set C₃ := max 1 (max (CL + 2) (2 ^ n * 2 * w * CT * ((CL + 2) ^ 2 + 1)))
+  obtain ⟨ha, hb, hc, -⟩ := hdens δ hδ hδδ₁ U W R H κ ρ z hW hWU hρ hzW hH hHκ hfv hz hmass hκρ
+  -- the exponent `e = δ^α`: `0 < e ≤ 1` and `δ = e^{2n+2} ≤ e`
+  obtain ⟨e, he⟩ : ∃ e : ℝ, δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) = e := ⟨_, rfl⟩
+  rw [he]
+  have he0 : 0 < e := by rw [← he]; exact Real.rpow_pos_of_pos hδ _
+  have hepow : e ^ (2 * n + 2) = δ := by
+    rw [← he, ← Real.rpow_natCast, ← Real.rpow_mul hδ.le]
+    have h1 : (1 : ℝ) / (2 * (n : ℝ) + 2) * ((2 * n + 2 : ℕ) : ℝ) = 1 := by
+      push_cast
+      exact one_div_mul_cancel (by positivity)
+    rw [h1, Real.rpow_one]
+  have hδ8 : δ ≤ 1 / 8 := hδδ₁.trans hδ₁8
+  have he1 : e ≤ 1 := by rw [← he]; exact Real.rpow_le_one hδ.le (by linarith) (by positivity)
+  have hδe : δ ≤ e := hepow ▸ pow_le_of_le_one he0.le he1 (by omega)
+  -- Step 1: radii.  Centres lie in `B̄_{4δρ}(z)` and radii are `≤ 2r ≤ (1 - 4δ)ρ`
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have h8 : 0 ≤ (1 - 8 * δ) * ρ := mul_nonneg (by linarith) hρ.le
+  have hξz : dist ξ z ≤ 2 * δ * ρ := mem_closedBall.mp hξ.2
+  have hr2 : 2 * r ≤ (1 - 4 * δ) * ρ := by linarith
+  have hrρ : r ≤ ρ := by linarith
+  have hcen : ∀ y ∈ closedBall ξ r, y ∈ closedBall z (4 * δ * ρ) := fun y hy =>
+    mem_closedBall.mpr ((dist_triangle y ξ z).trans (by linarith [mem_closedBall.mp hy]))
+  have hξ4 : ξ ∈ R.measure.support ∩ closedBall z (4 * δ * ρ) :=
+    ⟨hξ.1, hcen ξ (mem_closedBall_self hr.le)⟩
+  -- (a) at `ξ` and (b) at points of `spt μ ∩ B̄_r(ξ)`, as real bounds
+  have hup : ∀ t : ℝ, 0 < t → t ≤ 2 * r →
+      R.measure (closedBall ξ t) ≤ ENNReal.ofReal (2 * w * t ^ n) := by
+    intro t ht htr
+    calc R.measure (closedBall ξ t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n) :=
+          ha ξ hξ4.2 t ht (htr.trans hr2)
+      _ = ENNReal.ofReal (2 * w * t ^ n) := by
+          rw [hωw, ENNReal.ofReal_mul (p := 2 * w) (by positivity),
+            ENNReal.ofReal_mul (p := 2) (by norm_num), ENNReal.ofReal_ofNat]
+  have hlow : ∀ y ∈ R.measure.support ∩ closedBall ξ r, ∀ t : ℝ, 0 < t → t ≤ r →
+      ENNReal.ofReal (w * t ^ n / 2) ≤ R.measure (closedBall y t) := by
+    intro y hy t ht htr
+    have h := hb y ⟨hy.1, hcen y hy.2⟩ t ht (by linarith)
+    rw [hωw, ← ENNReal.ofReal_mul hw.le] at h
+    rw [ENNReal.ofReal_div_of_pos two_pos, ENNReal.ofReal_ofNat]
+    exact ENNReal.div_le_of_le_mul (h.trans_eq (mul_comm _ _))
+  -- Step 2: a maximal `er`-separated net `F` of `spt μ ∩ B̄_r(ξ)`, with `#F·eⁿ ≤ 2^{2n+2}`
+  have hs0 : 0 < e * r := mul_pos he0 hr
+  have hsr : e * r ≤ r := mul_le_of_le_one_left hr.le he1
+  obtain ⟨F, hFK, hFcard, hFnet⟩ := Submission.dorag_aa_finite_separated_net (n + k) R.measure
+    (R.measure.support ∩ closedBall ξ r) (closedBall ξ (2 * r)) (e * r)
+    (ENNReal.ofReal (w * (e * r / 2) ^ n / 2)) hs0 (ENNReal.ofReal_pos.mpr (by positivity))
+    ((hup (2 * r) (by positivity) le_rfl).trans_lt ENNReal.ofReal_lt_top).ne
+    (fun y hy x hx => mem_closedBall.mpr ((dist_triangle x y ξ).trans
+      (by linarith [mem_closedBall.mp hx, mem_closedBall.mp hy.2])))
+    (fun y hy => hlow y hy _ (by positivity) (by linarith))
+  have hcard : (F.card : ℝ) * e ^ n ≤ 2 ^ (2 * n + 2) := by
+    have h := hFcard.trans (hup (2 * r) (by positivity) le_rfl)
+    rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (Nat.cast_nonneg _)] at h
+    have h' := (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp h
+    refine le_of_mul_le_mul_right ?_ (by positivity : 0 < w * r ^ n)
+    calc (F.card : ℝ) * e ^ n * (w * r ^ n)
+        = (F.card : ℝ) * (w * (e * r / 2) ^ n / 2) * (2 ^ n * 2) := by
+          rw [div_pow, mul_pow]
+          field_simp
+      _ ≤ 2 * w * (2 * r) ^ n * (2 ^ n * 2) := by gcongr
+      _ = 2 ^ (2 * n + 2) * (w * r ^ n) := by rw [mul_pow]; ring
+  -- Steps 3–5: Chebyshev selection of `x₀ ∈ B̄_{er}(ξ)` with `dim T_{x₀}M = n` and
+  -- `|p^⊥_{T_{x₀}M}(y − x₀)|² ≤ (C_λ e r)²` for `y ∈ F`
+  have hiii : (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ (n + 2) * (C₂ * δ)) <
+      ENNReal.ofReal ((CL * e * r) ^ 2) * R.measure (closedBall ξ (e * r)) := by
+    have hE : 0 < e ^ (n + 2) * r ^ (n + 2) := by positivity
+    have hX : (F.card : ℝ) * ((2 * r) ^ (n + 2) * (C₂ * δ)) ≤
+        CΨ * (e ^ (n + 2) * r ^ (n + 2)) := by
+      rw [← hepow, hCΨ]
+      calc (F.card : ℝ) * ((2 * r) ^ (n + 2) * (C₂ * e ^ (2 * n + 2)))
+          = (F.card : ℝ) * e ^ n * (2 ^ (n + 2) * C₂ * (e ^ (n + 2) * r ^ (n + 2))) := by ring
+        _ ≤ 2 ^ (2 * n + 2) * (2 ^ (n + 2) * C₂ * (e ^ (n + 2) * r ^ (n + 2))) := by gcongr
+        _ = 2 ^ (2 * n + 2) * 2 ^ (n + 2) * C₂ * (e ^ (n + 2) * r ^ (n + 2)) := by ring
+    have hY : (CL * e * r) ^ 2 * (w * (e * r) ^ n / 2) =
+        2 * CΨ * (e ^ (n + 2) * r ^ (n + 2)) := by
+      simp only [mul_pow]
+      rw [hCLsq]
+      field_simp
+      ring
+    calc (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ (n + 2) * (C₂ * δ))
+        = ENNReal.ofReal ((F.card : ℝ) * ((2 * r) ^ (n + 2) * (C₂ * δ))) := by
+          rw [ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast]
+      _ < ENNReal.ofReal ((CL * e * r) ^ 2 * (w * (e * r) ^ n / 2)) :=
+          (ENNReal.ofReal_lt_ofReal_iff (by positivity)).mpr (by linarith [mul_pos hCΨ0 hE])
+      _ = ENNReal.ofReal ((CL * e * r) ^ 2) * ENNReal.ofReal (w * (e * r) ^ n / 2) :=
+          ENNReal.ofReal_mul (sq_nonneg _)
+      _ ≤ ENNReal.ofReal ((CL * e * r) ^ 2) * R.measure (closedBall ξ (e * r)) := by
+          gcongr
+          exact hlow ξ ⟨hξ.1, mem_closedBall_self hr.le⟩ _ hs0 hsr
+  obtain ⟨x₀, hx₀, hx₀n, hx₀F⟩ := Submission.dorag_aa_exists_low_height_point (n + k) (n + 2)
+    R.measure (approxTangentPlane n R.carrier)
+    (fun x => Module.finrank ℝ (approxTangentPlane n R.carrier x) = n) F ξ r (e * r) (C₂ * δ)
+    ((CL * e * r) ^ 2) (Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R)
+    (Submission.dorag_aa_ae_finrank_approxTangentPlane (n + k) n U R) hr hsr
+    (fun y hy => mem_closedBall.mp (hFK hy).2)
+    (fun y hy => hc y ⟨(hFK hy).1, hcen y (hFK hy).2⟩ (2 * r) (by positivity) hr2) hiii
+  -- Steps 6–7: `S = T_{x₀}M`; every point of `spt μ ∩ B̄_r(ξ)` is within `(2 + C_λ)er` of `ξ + S`
+  obtain ⟨h4a, hint⟩ := Submission.dorag_aa_height_bounds_of_net (n + k) R.measure
+    (approxTangentPlane n R.carrier x₀) F ξ x₀ r (e * r) (CL * e * r) hFnet
+    (fun y hy => le_of_sq_le_sq (hx₀F y hy) (by positivity)) (mem_closedBall.mp hx₀)
+  refine ⟨approxTangentPlane n R.carrier x₀, hx₀n, fun x hx => (h4a x hx).trans ?_, ?_⟩
+  · calc 2 * (e * r) + CL * e * r = (CL + 2) * (e * r) := by ring
+      _ ≤ C₃ * (e * r) := by gcongr; exact le_max_of_le_right (le_max_left _ _)
+      _ = C₃ * e * r := by ring
+  -- Step 8: the tilt-height estimate at `(ξ, r, S)`, with `μ(B̄_r(ξ)) ≤ 2wrⁿ` and `κr ≤ δ ≤ e`
+  · have hκ0 : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+    have hκr : κ * r ≤ e := (mul_le_mul_of_nonneg_left hrρ hκ0).trans (hκρ.trans hδe)
+    have hBW : closedBall ξ r ⊆ W := fun x hx => hzW (mem_closedBall.mpr
+      ((dist_triangle x ξ z).trans (by linarith [mem_closedBall.mp hx])))
+    have hμr := hup r hr (by linarith)
+    have hA : 0 ≤ 1 / r ^ 2 * ((2 * (e * r) + CL * e * r) ^ 2 * (2 * w * r ^ n)) := by
+      positivity
+    have hB : 0 ≤ κ ^ 2 * r ^ 2 * (2 * w * r ^ n) := by positivity
+    calc _ ≤ _ := htilt U W R H κ ξ r _ hW hWU hH hHκ hfv hr hBW hx₀n
+      _ ≤ ENNReal.ofReal CT * (ENNReal.ofReal (1 / r ^ 2) *
+            (ENNReal.ofReal ((2 * (e * r) + CL * e * r) ^ 2) * ENNReal.ofReal (2 * w * r ^ n)) +
+            ENNReal.ofReal (κ ^ 2 * r ^ 2) * ENNReal.ofReal (2 * w * r ^ n)) := by
+          gcongr
+          exact hint.trans (by gcongr)
+      _ = ENNReal.ofReal (CT * (1 / r ^ 2 * ((2 * (e * r) + CL * e * r) ^ 2 * (2 * w * r ^ n)) +
+            κ ^ 2 * r ^ 2 * (2 * w * r ^ n))) := by
+          rw [ENNReal.ofReal_mul hCT.le, ENNReal.ofReal_add hA hB,
+            ENNReal.ofReal_mul (p := 1 / r ^ 2) (by positivity),
+            ENNReal.ofReal_mul (p := (2 * (e * r) + CL * e * r) ^ 2) (sq_nonneg _),
+            ENNReal.ofReal_mul (p := κ ^ 2 * r ^ 2) (by positivity)]
+      _ ≤ ENNReal.ofReal (C₃ * e ^ 2 * (r / 2) ^ n) := by
+          apply ENNReal.ofReal_le_ofReal
+          have hκ2 : κ ^ 2 * r ^ 2 ≤ e ^ 2 := by
+            rw [← mul_pow]
+            exact pow_le_pow_left₀ (by positivity) hκr 2
+          have hrn : r ^ n = 2 ^ n * (r / 2) ^ n := by
+            rw [div_pow]
+            field_simp
+          calc CT * (1 / r ^ 2 * ((2 * (e * r) + CL * e * r) ^ 2 * (2 * w * r ^ n)) +
+                κ ^ 2 * r ^ 2 * (2 * w * r ^ n))
+              = CT * ((CL + 2) ^ 2 * e ^ 2 * (2 * w * r ^ n) +
+                  κ ^ 2 * r ^ 2 * (2 * w * r ^ n)) := by
+                field_simp
+                ring
+            _ ≤ CT * ((CL + 2) ^ 2 * e ^ 2 * (2 * w * r ^ n) + e ^ 2 * (2 * w * r ^ n)) := by
+                gcongr
+            _ = 2 ^ n * 2 * w * CT * ((CL + 2) ^ 2 + 1) * (e ^ 2 * (r / 2) ^ n) := by
+                rw [hrn]
+                ring
+            _ ≤ C₃ * (e ^ 2 * (r / 2) ^ n) := by
+                gcongr
+                exact le_max_of_le_right (le_max_right _ _)
+            _ = C₃ * e ^ 2 * (r / 2) ^ n := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
