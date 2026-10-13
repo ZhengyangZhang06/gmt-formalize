@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.harmonic_replacement-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1",
+  "depth": 6,
+  "title": "Harmonic replacement with energy bound for Δw = div F on a ball (orthogonal projection in L², Poincaré inequality, Weyl's lemma)",
+  "statement": "Let m ≥ 1, k ∈ ℕ, x₀ ∈ ℝ^m, 0 < R < R', let w : ℝ^m → ℝ^k be C¹ on B_{R'}(x₀) and F : ℝ^m → L(ℝ^m, ℝ^k) continuous on B_{R'}(x₀), and assume Δw = div F weakly in B_R(x₀): ∫_{B_R(x₀)} Σ_j ⟨Dw e_j, Dζ e_j⟩ = ∫_{B_R(x₀)} Σ_j ⟨F e_j, Dζ e_j⟩ for every C¹ map ζ : ℝ^m → ℝ^k with compact support and tsupport ζ ⊆ B_R(x₀). Then there is h : ℝ^m → ℝ^k, C^j on B_R(x₀) for every j, with Σ_i D²h(x)(e_i, e_i) = 0 for x ∈ B_R(x₀), such that x ↦ |Dw(x) − Dh(x)|² := Σ_j ‖(Dw(x) − Dh(x))e_j‖² is integrable on B_R(x₀) and, for every constant c ∈ L(ℝ^m, ℝ^k), ∫_{B_R(x₀)} |Dw − Dh|² ≤ ∫_{B_R(x₀)} |F − c|², where |A|² := Σ_j ‖Ae_j‖².",
+  "lean_statement": "∀ (m k : ℕ), 1 ≤ m → ∀ (x₀ : Euclid m) (R R' : ℝ) (w : Euclid m → Euclid k) (F : Euclid m → (Euclid m →L[ℝ] Euclid k)), 0 < R → R < R' → ContDiffOn ℝ 1 w (ball x₀ R') → ContinuousOn F (ball x₀ R') → (∀ ζ : Euclid m → Euclid k, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball x₀ R → ∫ x in ball x₀ R, ∑ j : Fin m, inner ℝ (fderiv ℝ w x (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ))) = ∫ x in ball x₀ R, ∑ j : Fin m, inner ℝ (F x (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ)))) → ∃ h : Euclid m → Euclid k, (∀ n : ℕ, ContDiffOn ℝ n h (ball x₀ R)) ∧ (∀ x ∈ ball x₀ R, ∑ i : Fin m, iteratedFDeriv ℝ 2 h x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧ IntegrableOn (fun x => ∑ j : Fin m, ‖(fderiv ℝ w x - fderiv ℝ h x) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (ball x₀ R) ∧ ∀ c : Euclid m →L[ℝ] Euclid k, ∫ x in ball x₀ R, ∑ j : Fin m, ‖(fderiv ℝ w x - fderiv ℝ h x) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ ∫ x in ball x₀ R, ∑ j : Fin m, ‖(F x - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2",
+  "lean_name": "codim1_hcp_sr_harmonic_replacement",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ea25690300-a1",
+      "result_commit": "980570c006affbbfdf2a38abacef28a874a719a8",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-adfa3f96a9-a1"
+}

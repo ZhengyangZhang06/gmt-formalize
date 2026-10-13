@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "sed -n '211,238p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n -i 'campanato|schauder (estimate|theory|regularity)|elliptic regularity|codim1_hcp_sr_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "iteratedFDeriv_succ_eq_comp_right|continuousMultilinearCurryRightEquiv|contDiffOn_succ_iff_fderiv_of_isOpen|theorem contDiffAt_ringInverse|ae_eq_zero_of_integral_contDiff_smul_eq_zero|image_of_continuousOn_injOn",
+        "codim1_hcp_sr_",
+        "dorag_ha_weyl_lemma",
+        "dorag_ha_interior_estimates",
+        "git show 980570c006affbbfdf2a38abacef28a874a719a8:GMT/Ch07/Submission.lean",
+        "git show 3853ad1ff1a11a7855f6e8df2d2f252bc76c23a4:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sr-independent-audit/Elaboration.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sr-independent-audit/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sr-split-ch07/check/AssemblyFinal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sr-independent-audit/dorag_ha_weyl_lemma_axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sr-independent-audit/dorag_ha_interior_estimates_axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e4e7109ad1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e4e7109ad1/decomposition-v1.json",
+        "/tmp/sr-independent-audit/Elaboration.lean",
+        "/tmp/sr-independent-audit/Instances.lean",
+        "/tmp/sr-independent-audit/dorag_ha_weyl_lemma_axioms.lean",
+        "/tmp/sr-independent-audit/dorag_ha_interior_estimates_axioms.lean",
+        "/tmp/sr-split-ch07/check/AssemblyFinal.lean",
+        "/tmp/sr-split-ch07/check/Inst.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected stationary-C¹ regularity theorem. All twelve frozen propositions independently elaborate against the unchanged baseline, match their prose hypotheses and conclusions, and contain neither implementation-dependent aliases nor placeholders. Their dependencies are correctly directed and acyclic, and every child contributes to the selected parent. The parent assembly kernel-checks with precisely graph_chart, stationary_mss and quasilinear_smooth as additional assumptions. All names are bare identifiers; the ten new names have no reservation in the inspected DAG or matches across 2,798 git reference trees. Both reused declarations have byte-identical accepted types and comparator inputs; independent recompilation and axiom inspection report only propext, Classical.choice and Quot.sound. Neither reuse depends on the selected parent. Snapshot searches found no matching Campanato or elliptic Schauder theorem. The inspected library supplies the required chart definitions, normalized area formula, orthogonal projection and derivative calculus. Independent checks confirm smoothness orders, averages, powers and projection instances; no child contains an IsUnit/Matrix construction. The supplied auxiliary Inst.lean has a Monoid.npow identifier typo, but the independent instance checks pass. [Simon, Chapter 5, Theorem 7.1](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=67) confirms the regularity argument being expanded; the [Giaquinta–Martinazzi author preview](https://lmartinazzi.github.io/papers/lectures2_pre.pdf#page=8) confirms the cited chapter organization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches the frozen chart and curve-based tangent definitions. Properness establishes the chart homeomorphism; the inverse function theorem produces the small-slope graph. Both tangent inclusions, exact cylinder representation and compact inverse images are proved."
+    },
+    {
+      "key": "stationary_mss",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The admissible cutoff field, tangent-projection calculation and normalized area formula yield precisely the stated weak system. Local finiteness supplies integrability. The explicit globally smooth G satisfies G(0) = DG(0) = 0."
+    },
+    {
+      "key": "weyl_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical comparator-accepted type. Mollification, the accepted mean-value identity, convolution symmetry, local gluing and Lebesgue differentiation prove the exact conclusion without circular dependence."
+    },
+    {
+      "key": "harmonic_replacement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Poincaré controls the potentials of approximating gradients. Orthogonal projection gives the energy inequality for every constant c; Weyl's lemma and distributional uniqueness identify the smooth harmonic replacement and its gradient."
+    },
+    {
+      "key": "interior_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical comparator-accepted type. Mean-value bounds use the stated integrability and energy hypotheses; shifted-ball comparison controls second derivatives, and Taylor's formula gives the required remainder."
+    },
+    {
+      "key": "harmonic_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalization on compactly contained balls supplies every hypothesis of interior_estimates, including square-integrability of the scalar function. The gradient bound and two-center Taylor comparison establish both decay inequalities; the large-radius case is covered."
+    },
+    {
+      "key": "campanato_lemmas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Geometric iteration and monotone interpolation prove (I). Telescoping averages, continuity and overlapping-ball comparison prove (II), also for the stated operator norm. Positivity conditions and quantified scale ranges match the Lean proposition."
+    },
+    {
+      "key": "c1alpha_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof accounts for Hilbert–Schmidt/operator-norm factors and chooses the smallness threshold independently of K and R. Harmonic comparison, Caccioppoli and the two Campanato passes provide the uniform gradient and α-Hölder bounds with the required constant dependencies."
+    },
+    {
+      "key": "difference_quotient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Segment averaging proves convergence of directional quotients without assuming differentiability. Coordinate increments on sufficiently small neighborhoods establish the Fréchet derivative; uniform directional bounds give exactly the claimed operator-norm constant C."
+    },
+    {
+      "key": "holder_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six clauses are established by local derivative bounds, isometric currying, the product rule and the chain rule. The arguments cover l = 0, α = 1 and the stated general normed codomains without additional completeness assumptions."
+    },
+    {
+      "key": "linear_bootstrap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient threshold is fixed independently of derivative order. The base estimate and uniform difference quotients establish the first two stages; subsequent differentiated equations have exactly the regularity needed for induction. No higher derivative is assumed before it is obtained."
+    },
+    {
+      "key": "quasilinear_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DG(0) = 0 supplies the required uniform smallness. The proof obtains C¹,α and then C²,α before differentiating classically; holder_algebra and linear_bootstrap yield all higher orders. Its conclusion upgrades the graph chart while preserving properness and derivative injectivity."
+    }
+  ],
+  "required_changes": []
+}

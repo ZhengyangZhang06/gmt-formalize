@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.c1alpha_estimate-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1",
+  "depth": 6,
+  "title": "Quantitative C^{1,α} estimate for Δw = div F when F is a small Campanato perturbation of Dw (Caccioppoli, Morrey and Campanato iterations; Giaquinta–Martinazzi Ch. 5, §5.4)",
+  "statement": "Let m ≥ 1, k ∈ ℕ and 0 < α < 1. There is ε₁ > 0 such that for all K ≥ 0 and R > 0 there is C ≥ 0 with the following property. Let x₀ ∈ ℝ^m, w : ℝ^m → ℝ^k C¹ on B_R(x₀), F : ℝ^m → L(ℝ^m, ℝ^k) continuous on B_R(x₀), with ‖w‖ ≤ K and ‖F‖ ≤ ε₁‖Dw‖ + K on B_R(x₀) (operator norms); assume (H_F): for every ball with closedBall(x, ρ) ⊆ B_R(x₀), ρ > 0, there is a constant c ∈ L(ℝ^m, ℝ^k) with ∫_{B_ρ(x)} ‖F − c‖² ≤ ε₁∫_{B_ρ(x)} ‖Dw − ⨍_{B_ρ(x)} Dw‖² + Kρ^{2α}∫_{B_ρ(x)} ‖Dw‖² + Kρ^{m+2α}; and assume Δw = div F weakly in B_R(x₀) (∫ Σ_j ⟨Dw e_j, Dζ e_j⟩ = ∫ Σ_j ⟨F e_j, Dζ e_j⟩ over B_R(x₀) for all C¹ ζ with compact support, tsupport ζ ⊆ B_R(x₀)). Then ‖Dw(x)‖ ≤ C and ‖Dw(x) − Dw(y)‖ ≤ C‖x − y‖^α for all x, y ∈ B_{R/4}(x₀).",
+  "lean_statement": "∀ (m k : ℕ) (α : ℝ), 1 ≤ m → 0 < α → α < 1 → ∃ ε₁ : ℝ, 0 < ε₁ ∧ ∀ K R : ℝ, 0 ≤ K → 0 < R → ∃ C : ℝ, 0 ≤ C ∧ ∀ (x₀ : Euclid m) (w : Euclid m → Euclid k) (F : Euclid m → (Euclid m →L[ℝ] Euclid k)), ContDiffOn ℝ 1 w (ball x₀ R) → ContinuousOn F (ball x₀ R) → (∀ x ∈ ball x₀ R, ‖w x‖ ≤ K) → (∀ x ∈ ball x₀ R, ‖F x‖ ≤ ε₁ * ‖fderiv ℝ w x‖ + K) → (∀ (x : Euclid m) (ρ : ℝ), 0 < ρ → closedBall x ρ ⊆ ball x₀ R → ∃ c : Euclid m →L[ℝ] Euclid k, ∫ z in ball x ρ, ‖F z - c‖ ^ 2 ≤ ε₁ * ∫ z in ball x ρ, ‖fderiv ℝ w z - ⨍ z' in ball x ρ, fderiv ℝ w z'‖ ^ 2 + K * ρ ^ (2 * α) * ∫ z in ball x ρ, ‖fderiv ℝ w z‖ ^ 2 + K * ρ ^ ((m : ℝ) + 2 * α)) → (∀ ζ : Euclid m → Euclid k, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball x₀ R → ∫ x in ball x₀ R, ∑ j : Fin m, inner ℝ (fderiv ℝ w x (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ))) = ∫ x in ball x₀ R, ∑ j : Fin m, inner ℝ (F x (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ)))) → (∀ x ∈ ball x₀ (R / 4), ‖fderiv ℝ w x‖ ≤ C) ∧ ∀ x ∈ ball x₀ (R / 4), ∀ y ∈ ball x₀ (R / 4), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C * ‖x - y‖ ^ α",
+  "lean_name": "codim1_hcp_sr_c1alpha_estimate",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.harmonic_replacement-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.harmonic_decay-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.campanato_lemmas-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.harmonic_replacement-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.harmonic_decay-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.campanato_lemmas-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b0c2c7b107-a1"
+}

@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; sed -n 1,457p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, approxTangentPlane, tangentialDivergence)",
+        "python3 scans of dag.json: selected node, parent hypercone_plane and its 12 children with statuses; regex Allard|Schauder|elliptic|harmonic|Campanato|Caccioppoli|Weyl|difference quotient|Hölder|Sobolev|mollif|Poincar|inverse function|graph over; accepted nodes whose types mention IsEmbeddedSubmanifold",
+        "name checks: lean_name scan of dag.json (1531 nodes); grep -rln codim1_hcp_sr GMT/ simongmt/Poincare local-references/.../project (no match); git for-each-ref | xargs git grep -l codim1_hcp_sr -- 'GMT/*.lean' (no match)",
+        "runtime.py: _decompose (node.depth >= max_depth), _existing_lean_name_problem, _solve_children, _accepted_checkpoint",
+        "grep -rn in local-references/123e8435b4a2469b/mathlib/Mathlib: iteratedFDeriv_succ_eq_comp_right, contDiffOn_succ_iff_fderiv_of_isOpen, ContDiffOn.fderiv_of_isOpen, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable, ae_eq_zero_of_integral_contDiff_smul_eq_zero, MeasurableSet.image_of_continuousOn_injOn, exists_contDiff_tsupport_subset, exists_contMDiff_zero_iff_one_iff_of_isClosed, contDiffAt_ringInverse, Submodule.topologicalClosure, trace_comp_comm, LipschitzOnWith.extend_real, norm_integral_le_integral_norm, HolderOnWith; ls Analysis/InnerProductSpace/{Harmonic,Laplacian.lean,LaxMilgram.lean}, Analysis/Distribution/Sobolev.lean",
+        "sed -n 100,220p simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean (injective_area_formula_of_injective_derivative); grep euclideanHausdorffMeasure mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "book: chapter-05.txt lines 50-131 (§1, system 1.1-1.3) and 1270-1397 (Theorem 7.1 and its proof); accepted proofs of dorag_ha_weyl_lemma and dorag_ha_interior_estimates (parent-supplied-natural-proof.md)",
+        "lean -DautoImplicit=false /tmp/sr-split-ch07/check/{Types,TypesFinal,Assembly,AssemblyFinal,Inst}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)",
+        "WebSearch (standard): Giaquinta Martinazzi Regularity Theory for Elliptic Systems Campanato iteration lemma Schauder estimates divergence form chapter 5"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e4e7109ad1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e4e7109ad1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ea25690300/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f15d71c3ef/parent-supplied-natural-proof.md",
+        "/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/Sobolev.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/tmp/sr-split-ch07/check/TypesFinal.lean",
+        "/tmp/sr-split-ch07/check/AssemblyFinal.lean",
+        "/tmp/sr-split-ch07/check/Inst.lean"
+      ],
+      "conclusion": "Pins: manifest records project b4d606db and Mathlib 25730c7c, matching the workspace.\nLibrary gaps: Mathlib has no interior elliptic or Schauder regularity, Campanato theory, or Dirichlet solver; it has only the Laplacian, HarmonicAt, Fourier-side Sobolev spaces and Lax–Milgram.\nLibrary support used by the leaf proofs:\n- Mathlib: the inverse function theorem, integration by parts, the fundamental lemma of distributions, Lusin–Souslin, smooth bumps, smoothness of ring inversion, iteratedFDeriv currying and contDiffOn_succ_iff_fderiv_of_isOpen;\n- SimonGMT: injective_area_formula_of_injective_derivative.\nDAG: dorag_ha_weyl_lemma and dorag_ha_interior_estimates are accepted with candidate commits and are reused with byte-identical types. dor_allard_bounded_curvature_graph is accepted but only gives C¹. The ten new codim1_hcp_sr_* names are unused everywhere.\nLean: all 12 child types elaborate. The selected frozen type is kernel-checked from graph_chart, stationary_mss and quasilinear_smooth as axioms (axioms: propext, Classical.choice, Quot.sound and the three children)."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1",
+  "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.campanato_lemmas-a1",
+  "subproblem": {
+    "key": "campanato_lemmas",
+    "title": "Iteration lemma and Campanato's Hölder criterion (Giaquinta–Martinazzi Ch. 5, §5.1.1 and §5.3)",
+    "statement": "(I) For all A ≥ 0 and 0 < b < a there are ε₀, C > 0 such that: if φ : ℝ → ℝ, R₀, ε, B ∈ ℝ satisfy 0 ≤ ε ≤ ε₀, B ≥ 0, φ ≥ 0 on (0, R₀], φ(r) ≤ φ(ρ) and φ(r) ≤ A((r/ρ)^a + ε)φ(ρ) + Bρ^b whenever 0 < r ≤ ρ ≤ R₀, then φ(r) ≤ C((r/ρ)^b φ(ρ) + B r^b) whenever 0 < r ≤ ρ ≤ R₀ (real powers). (II) For all m ≥ 1, k ∈ ℕ and 0 < α ≤ 1 there is C₀ > 0 such that: if f : ℝ^m → L(ℝ^m, ℝ^k) is continuous on closedBall(x₀, R + ρ₁) with R, ρ₁ > 0, K ≥ 0, and ∫_{B_ρ(x)} ‖f − ⨍_{B_ρ(x)} f‖² ≤ Kρ^{m+2α} for all x ∈ B_R(x₀) and 0 < ρ ≤ ρ₁, then ‖f(x) − f(y)‖ ≤ C₀√K‖x − y‖^α for all x, y ∈ B_R(x₀) with ‖x − y‖ ≤ ρ₁/2.",
+    "lean_statement": "(∀ (A a b : ℝ), 0 ≤ A → 0 < b → b < a → ∃ ε₀ C : ℝ, 0 < ε₀ ∧ 0 < C ∧ ∀ (φ : ℝ → ℝ) (R₀ ε B : ℝ), 0 ≤ ε → ε ≤ ε₀ → 0 ≤ B → (∀ r : ℝ, 0 < r → r ≤ R₀ → 0 ≤ φ r) → (∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ φ ρ) → (∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ A * ((r / ρ) ^ a + ε) * φ ρ + B * ρ ^ b) → ∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ C * ((r / ρ) ^ b * φ ρ + B * r ^ b)) ∧ (∀ (m k : ℕ) (α : ℝ), 1 ≤ m → 0 < α → α ≤ 1 → ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (f : Euclid m → (Euclid m →L[ℝ] Euclid k)) (x₀ : Euclid m) (R ρ₁ K : ℝ), 0 < R → 0 < ρ₁ → 0 ≤ K → ContinuousOn f (closedBall x₀ (R + ρ₁)) → (∀ x ∈ ball x₀ R, ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ → ∫ z in ball x ρ, ‖f z - ⨍ z' in ball x ρ, f z'‖ ^ 2 ≤ K * ρ ^ ((m : ℝ) + 2 * α)) → ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ‖x - y‖ ≤ ρ₁ / 2 → ‖f x - f y‖ ≤ C₀ * Real.sqrt K * ‖x - y‖ ^ α)",
+    "lean_name": "codim1_hcp_sr_campanato_lemmas",
+    "depends_on": [],
+    "natural_proof": "Sources: (I) is the iteration lemma of Campanato's method (Giaquinta, Multiple Integrals in the Calculus of Variations and Nonlinear Elliptic Systems, 1983, Ch. III, Lemma 2.1; Giaquinta–Martinazzi 2012, §5.3). (II) is Campanato's characterization of Hölder continuity (Giaquinta–Martinazzi 2012, §5.1.1), in the local form needed here.\n\nPart (I).\n1. Let γ := (a + b)/2 ∈ (b, a). Choose τ ∈ (0, 1/2] with 2Aτ^{a−γ} ≤ 1 (any τ ∈ (0, 1/2] if A = 0; otherwise τ := min(1/2, (2A)^{−1/(a−γ)})). Put q := τ^{γ−b} ∈ (0, 1), ε₀ := τ^a and C := τ^{−b}(1 + τ^{−b}/(1 − q)); these depend only on A, a, b.\n2. Let φ, R₀, ε, B satisfy the hypotheses and fix 0 < ρ ≤ R₀. For 0 < ρ' ≤ ρ, the hypothesis with r = τρ' gives φ(τρ') ≤ A(τ^a + ε)φ(ρ') + Bρ'^b ≤ 2Aτ^aφ(ρ') + Bρ'^b ≤ τ^γφ(ρ') + Bρ'^b (φ ≥ 0, ε ≤ τ^a, 2Aτ^a ≤ τ^γ).\n3. Let S_j := τ^{−jb}φ(τ^jρ). Step 2 with ρ' = τ^jρ gives S_{j+1} ≤ qS_j + Bρ^bτ^{−b}. With D := Bρ^bτ^{−b}/(1 − q) one gets S_j ≤ S_0 + D for all j by induction (S_{j+1} ≤ q(S_0 + D) + Bρ^bτ^{−b} ≤ S_0 + D, using qS_0 ≤ S_0 and qD + Bρ^bτ^{−b} = D). So φ(τ^jρ) ≤ τ^{jb}(φ(ρ) + D).\n4. Let 0 < r ≤ ρ. Since τ^jρ → 0, there is a largest j ≥ 0 with r ≤ τ^jρ; then τ^{j+1}ρ < r, so τ^{jb} = τ^{−b}τ^{(j+1)b} < τ^{−b}(r/ρ)^b. By monotonicity and step 3: φ(r) ≤ φ(τ^jρ) ≤ τ^{−b}(r/ρ)^b(φ(ρ) + Bρ^bτ^{−b}/(1 − q)) = τ^{−b}(r/ρ)^bφ(ρ) + τ^{−2b}(1 − q)^{−1}Br^b ≤ C((r/ρ)^bφ(ρ) + Br^b).\n\nPart (II).\n5. Let ω := |B_1(0)| > 0, so |B_ρ(x)| = ωρ^m. Put C₁ := (2^m/ω)^{1/2}/(1 − 2^{−α}), C₂ := (2^{m+2α}/ω)^{1/2}, C₀ := C₁(2^α + 1) + C₂ + 1.\n6. Let f, x₀, R, ρ₁, K satisfy the hypotheses. For x ∈ B_R(x₀) and 0 < ρ ≤ ρ₁, B_ρ(x) ⊆ closedBall(x₀, R + ρ₁), where f is continuous, hence bounded; so f is integrable on B_ρ(x) and f_{x,ρ} := ⨍_{B_ρ(x)} f and the integrals in the hypothesis are genuine. Using ‖⨍ g‖ ≤ ⨍‖g‖ and Cauchy–Schwarz: ‖f_{x,ρ/2} − f_{x,ρ}‖ ≤ ⨍_{B_{ρ/2}(x)} ‖f − f_{x,ρ}‖ ≤ (|B_{ρ/2}|^{−1}∫_{B_ρ(x)} ‖f − f_{x,ρ}‖²)^{1/2} ≤ (Kρ^{m+2α}/(ω(ρ/2)^m))^{1/2} = (2^mK/ω)^{1/2}ρ^α.\n7. Telescoping, ‖f_{x,2^{−j}ρ} − f_{x,ρ}‖ ≤ Σ_{i<j}(2^mK/ω)^{1/2}(2^{−i}ρ)^α ≤ C₁√Kρ^α. As f is continuous at x, ‖f_{x,r} − f(x)‖ ≤ sup_{B_r(x)}‖f − f(x)‖ → 0 as r → 0. Hence ‖f(x) − f_{x,ρ}‖ ≤ C₁√Kρ^α for x ∈ B_R(x₀), 0 < ρ ≤ ρ₁.\n8. Let x, y ∈ B_R(x₀) and d := ‖x − y‖ ≤ ρ₁/2. If d = 0 there is nothing to prove (0 ≤ 0). Otherwise B_d(y) ⊆ B_{2d}(x) and 2d ≤ ρ₁, so ‖f_{y,d} − f_{x,2d}‖ ≤ ⨍_{B_d(y)} ‖f − f_{x,2d}‖ ≤ (|B_d|^{−1}∫_{B_{2d}(x)} ‖f − f_{x,2d}‖²)^{1/2} ≤ (K(2d)^{m+2α}/(ωd^m))^{1/2} = C₂√Kd^α. By step 7 at x (radius 2d) and at y (radius d): ‖f(x) − f(y)‖ ≤ C₁√K(2d)^α + C₂√Kd^α + C₁√Kd^α ≤ C₀√K‖x − y‖^α. ∎",
+    "proof_key_steps": [
+      "(I) Pick τ with 2Aτ^{a−γ} ≤ 1, γ = (a+b)/2, and ε₀ = τ^a, so φ(τρ') ≤ τ^γφ(ρ') + Bρ'^b.",
+      "(I) Iterate along τ^jρ (S_j = τ^{−jb}φ(τ^jρ) ≤ S_0 + D) and interpolate between scales by monotonicity.",
+      "(II) Averages over concentric balls differ by at most (2^mK/ω)^{1/2}ρ^α; telescoping and continuity give ‖f(x) − f_{x,ρ}‖ ≤ C₁√Kρ^α.",
+      "(II) Compare f_{y,d} with f_{x,2d} for d = ‖x − y‖ ≤ ρ₁/2 and use the triangle inequality."
+    ]
+  },
+  "audit": {
+    "key": "campanato_lemmas",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Geometric iteration and monotone interpolation prove (I). Telescoping averages, continuity and overlapping-ball comparison prove (II), also for the stated operator norm. Positivity conditions and quantified scale ranges match the Lean proposition."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6cc538f739/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6cc538f739/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6cc538f739/parent-supplied-natural-proof.json"
+}
