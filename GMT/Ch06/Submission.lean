@@ -359,6 +359,38 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Derivative lower bound (step 1 of the C¹ chart approximate tangent argument for Simon Ch. 6,
+3.9): if `c ‖v - v'‖ ≤ ‖Φ v - Φ v'‖` on an open `Ω ∋ w` and `Φ` is differentiable at `w`, then
+`c ‖s‖ ≤ ‖DΦ(w) s‖` for every `s` (no sign condition on `c`).  Apply the bound to `v = w + t • s`,
+`v' = w`, divide by `t > 0` and let `t → 0⁺`. -/
+theorem Submission.lpf_wtc_cat_fderiv_lower_bound :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (c : ℝ) (w : Eucl n), IsOpen Ω → w ∈ Ω → DifferentiableAt ℝ Φ w → (∀ v ∈ Ω, ∀ v' ∈ Ω, c * ‖v - v'‖ ≤ ‖Φ v - Φ v'‖) → ∀ s : Eucl n, c * ‖s‖ ≤ ‖fderiv ℝ Φ w s‖ := by
+  intro Q n Φ Ω c w hΩ hw hdiff hanti s
+  -- `γ t = Φ (w + t • s)` has derivative `DΦ(w) s` at `0`, so its right slopes converge to it.
+  have hline : HasDerivAt (fun t : ℝ => w + t • s) s 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const s).const_add w
+  have hγ : HasDerivAt (fun t : ℝ => Φ (w + t • s)) (fderiv ℝ Φ w s) 0 := by
+    have h0 : w + (0 : ℝ) • s = w := by simp
+    exact hdiff.hasFDerivAt.comp_hasDerivAt_of_eq 0 hline h0.symm
+  have hnorm : Tendsto (fun t : ℝ => ‖t⁻¹ • (Φ (w + (0 + t) • s) - Φ (w + (0 : ℝ) • s))‖)
+      (𝓝[>] 0) (𝓝 ‖fderiv ℝ Φ w s‖) := hγ.tendsto_slope_zero_right.norm
+  -- The segment `w + t • s` stays in the open set `Ω` for small `t`.
+  have hcont : Continuous (fun t : ℝ => w + t • s) :=
+    continuous_const.add (continuous_id.smul continuous_const)
+  have hmem : ∀ᶠ t in 𝓝 (0 : ℝ), w + t • s ∈ Ω := by
+    apply hcont.continuousAt.preimage_mem_nhds
+    simpa using hΩ.mem_nhds hw
+  have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+      c * ‖s‖ ≤ ‖t⁻¹ • (Φ (w + (0 + t) • s) - Φ (w + (0 : ℝ) • s))‖ := by
+    filter_upwards [nhdsWithin_le_nhds hmem, self_mem_nhdsWithin] with t ht htpos
+    have htpos : (0 : ℝ) < t := htpos
+    have h1 := hanti (w + t • s) ht w hw
+    simp only [zero_add, zero_smul, add_zero]
+    rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg htpos.le] at h1
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr htpos.le), le_inv_mul_iff₀ htpos]
+    linarith [h1]
+  exact ge_of_tendsto hnorm hev
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
