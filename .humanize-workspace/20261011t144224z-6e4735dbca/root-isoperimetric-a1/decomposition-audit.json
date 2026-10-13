@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n -A 74 '^def DeformationTheorem|^def IsoperimetricTheorem' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "rg -n -A 22 -B 3 'theorem exists_isSubordinate|theorem exists_contMDiffMap_one_nhds_of_subset_interior' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "rg -n -A 16 -B 3 'theorem.*euclideanHausdorffMeasure_image|theorem.*euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n -i 'cauchy.?binet|det_mul_eq_sum' mathlib/Mathlib/LinearAlgebra/Matrix",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake build GMT.Ch06.Submission",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/iso_a1_independent_audit_8bdbimae/AuditChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/iso_a1_independent_audit_8bdbimae/AuditProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix",
+        "/tmp/iso_a1_decomp_check/Scratch/ReviewAll.lean",
+        "/tmp/iso_a1_independent_audit_8bdbimae/AuditChallengeTypes.lean",
+        "/tmp/iso_a1_independent_audit_8bdbimae/AuditProofs.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical compiler contract. The snapshot supplies the stated support, mass, partition-of-unity and normalized Hausdorff-measure definitions and lemmas. The specified matrix-directory search found no Cauchy–Binet match; the elementary P^n proof avoids needing it. All five exact one-line propositions pass lexical validation and independently elaborate without child implementations. All proposed names are bare identifiers, unreserved in the current DAG and other branch proposals. Fresh compilation of the inspected supplied proofs, exact Submission-name checks, and DeformationTheorem → IsoperimetricTheorem succeeded; all checked proofs depend only on propext, Classical.choice and Quot.sound. The split appropriately isolates genuine analytic obligations. Dependencies are correctly directed and acyclic, and assembly establishes the selected parent’s exact dimensions, compact support, integrality and exponent, including degenerate cases."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U. Disjointness places the compact test-form support inside the zero region. A finite subcover and subordinate smooth partition produce valid test forms annihilated by T; their sum recovers ω. Empty support is covered. No openness assumption on U or circular dependency is needed."
+    },
+    {
+      "key": "covector_eval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact bound follows from alternation, sorting injective coordinate tuples, multilinear basis expansion and coordinate norm bounds. Counting all tuples gives P^n. The proof handles n = 0 and degenerate dimensions, uses the actual Euclidean coefficient norm, and requires no parent result."
+    },
+    {
+      "key": "finite_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes integer multiplicity and compact support. The proof correctly extracts local integrability and almost-everywhere orthonormal orientation, localizes using a smooth cutoff and vanish_off_support, then applies covector_eval_bound. The integrable indicator majorant uniformly bounds admissible evaluations, hence their ENNReal supremum is finite. Its two declared dependencies are sufficient."
+    },
+    {
+      "key": "zero_mass_iff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches total mass on U. Continuity and compact support bound each test form’s coefficient norm; homogeneity makes both signed rescalings admissible. Zero mass forces both signs of its evaluation to be nonpositive, giving zero evaluation and extensional equality. The converse follows directly from the supremum definition."
+    },
+    {
+      "key": "lattice_mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly allows arbitrary real coefficients and requires positive scale. The determinant covector, separated boxes and smooth cutoff isolate exactly one lattice term, so no extra summability assumption is needed. Isometry invariance and the pinned measure normalization give the face and shrunken-face volumes. Integrability, positivity and the limit δ → 0 establish the exact ENNReal inequality. The proof is complete and independent of the parent."
+    }
+  ],
+  "required_changes": []
+}

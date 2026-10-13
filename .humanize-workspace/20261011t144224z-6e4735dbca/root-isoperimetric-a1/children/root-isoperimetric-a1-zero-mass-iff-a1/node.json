@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.zero_mass_iff-a1",
+  "parent_id": "root.isoperimetric-a1",
+  "depth": 2,
+  "title": "A current has zero mass if and only if it is zero",
+  "statement": "For all P, n ∈ ℕ, every set U ⊆ ℝ^P and every current T ∈ GeometricCurrentOn U n: M(T) = M_U(T) = 0 if and only if T = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n), T.mass = 0 ↔ T = 0",
+  "lean_name": "isoperimetric_mass_eq_zero_iff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-zero-mass-iff-a1-a1"
+}
