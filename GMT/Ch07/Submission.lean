@@ -704,6 +704,52 @@ theorem Submission.regcomp_covector_sq_sum_orthonormalBasis : ∀ (P n : ℕ) (�
     (EuclideanSpace.basisFun (Fin P) ℝ)]
   exact Submission.regcomp_covector_sq_sum_basisFun P n α
 
+/-- **`|β ∧ γ| ≤ ‖β‖ |γ|`** (Simon 6.1.1–1.3 and 1.15): for a linear functional `β` and a
+`k`-covector `γ` on `ℝᴾ`, the Euclidean coefficient norm of the `(k+1)`-covector
+`β ∧ γ = alternatizeUncurryFin (β.smulRight γ)` is at most `‖β‖ |γ|`.  Take an orthonormal basis
+`f` with `β(fᵢ) = ‖β‖ [i = i₀]`; then `(β ∧ γ)(f ∘ j)² ≤ ‖β‖² Σᵢ [j i = i₀] γ(f ∘ i.removeNth j)²`.
+Summing over `j`, each `j' : Fin k → Fin P` arises as `i.removeNth j` with `j i = i₀` for exactly
+`k + 1` pairs `(i, j)`, so `(k+1)! |β ∧ γ|² ≤ ‖β‖² (k+1) k! |γ|²` by
+`regcomp_covector_sq_sum_orthonormalBasis` in degrees `k + 1` and `k`.  For `P = 0` there are no
+coordinate tuples and `|β ∧ γ| = 0`. -/
+theorem Submission.cmcs_wedge_norm_le : ∀ (P k : ℕ) (β : Euclid P →L[ℝ] ℝ) (γ : Covector (Euclid P) k), covectorEuclideanNorm (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ)) ≤ ‖β‖ * covectorEuclideanNorm γ := by
+  intro P k β γ
+  classical
+  set ω := ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ)
+  have hrhs : 0 ≤ ‖β‖ * covectorEuclideanNorm γ :=
+    mul_nonneg (norm_nonneg β) (covectorEuclideanNorm_nonneg γ)
+  rcases Nat.eq_zero_or_pos P with hP | hP
+  · -- `P = 0`: there is no tuple `Fin (k + 1) → Fin 0`, so `|ω| = 0`
+    subst hP
+    have h0 : covectorEuclideanNorm ω = 0 := by
+      simp [covectorEuclideanNorm]
+    rw [h0]
+    exact hrhs
+  · -- an orthonormal basis `f` with `β(fᵢ) = ‖β‖ [i = i₀]`
+    set i₀ : Fin P := ⟨0, hP⟩
+    obtain ⟨f, hf⟩ := Submission.cmcs_wn_adapted_orthonormalBasis P β i₀
+    -- `ω(f ∘ j)² ≤ ‖β‖² Σᵢ [j i = i₀] γ(f ∘ i.removeNth j)²` for every `j`
+    have hle : ∑ j : Fin (k + 1) → Fin P, (ω (fun m => f (j m))) ^ 2 ≤
+        ∑ j : Fin (k + 1) → Fin P, ‖β‖ ^ 2 * ∑ i : Fin (k + 1),
+          (if j i = i₀ then (γ (fun m => f (i.removeNth j m))) ^ 2 else 0) :=
+      Finset.sum_le_sum fun j _ => Submission.cmcs_wn_tuple_sq_le P k β γ f i₀ ‖β‖
+        f.orthonormal.linearIndependent.injective hf j
+    -- count the fibres of `j ↦ i.removeNth j`, then `Σ_j α(f ∘ j)² = m! |α|²` for `m = k + 1, k`
+    rw [← Finset.mul_sum,
+      Submission.cmcs_wn_removeNth_fiber_sum k P i₀ (fun j' => (γ (fun m => f (j' m))) ^ 2),
+      Submission.regcomp_covector_sq_sum_orthonormalBasis P (k + 1) ω f,
+      Submission.regcomp_covector_sq_sum_orthonormalBasis P k γ f] at hle
+    -- cancel `(k+1)! = (k+1) k! > 0`
+    have hpos : (0 : ℝ) < ((k + 1).factorial : ℝ) := by positivity
+    have hsq : covectorEuclideanNorm ω ^ 2 ≤ (‖β‖ * covectorEuclideanNorm γ) ^ 2 := by
+      refine le_of_mul_le_mul_left ?_ hpos
+      calc ((k + 1).factorial : ℝ) * covectorEuclideanNorm ω ^ 2
+          ≤ ‖β‖ ^ 2 * (((k : ℝ) + 1) * ((k.factorial : ℝ) * covectorEuclideanNorm γ ^ 2)) := hle
+        _ = ((k + 1).factorial : ℝ) * (‖β‖ * covectorEuclideanNorm γ) ^ 2 := by
+          push_cast [Nat.factorial_succ]
+          ring
+    exact (sq_le_sq₀ (covectorEuclideanNorm_nonneg ω) hrhs).mp hsq
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
