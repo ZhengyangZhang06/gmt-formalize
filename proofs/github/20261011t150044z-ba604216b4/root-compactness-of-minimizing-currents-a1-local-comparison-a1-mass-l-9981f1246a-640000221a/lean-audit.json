@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e509914fbf94928f9fca3a2a241b7c62cb3f8b7ff8dda1340941cb0ddf3099b1",
+  "git_delta": {
+    "base_commit": "12109df833ff2617a5885984291ddf40eb23621d",
+    "candidate_commit": "a3cc98d1f008606225ddd111bbd6688136867146",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcmp_massOn_le_of_vanish_off_compact",
+    "diff_sha256": "d256289a084ad9a03002b78bbbc137d18d65488cbe77918869e2915f79abece3",
+    "source_sha256": "1f2ffc26b56c07f3aa9f5d872aeed0be839458ec311acea8111b6b8fcc809376",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcmp_massOn_le_of_vanish_off_compact",
+      "statement": "∀ (P k : ℕ) (U V C : Set (Euclid P)) (X : GeometricCurrentOn U k), IsCompact C → IsOpen V → C ⊆ V → (∀ ω : TestFormOn U k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) C → X ω = 0) → ∀ G : Set (Euclid P), X.massOn G ≤ X.massOn V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
