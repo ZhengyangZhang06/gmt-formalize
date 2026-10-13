@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "fb2aba1206e43f70ac8e006e8a2f8d51f63d05916949dc699779a60e68aa30a6",
+  "git_delta": {
+    "base_commit": "96a206b42170a06a0cc3ebb0d1c19555ca230e21",
+    "candidate_commit": "5424155f9db2bd9754b78ddcb6b2f397a6b7335e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "809a197ff472c90c7e3ab873f3c14e238c952c12e75715559d7e55daea8f112c",
+    "source_sha256": "e0c22d7dd4122efbecb277926dfb0b2bd78403835a1ef951bf163bf757a5142d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_fnd_null_of_div_bound",
+      "statement": "∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∀ K : Set (Euclid n), IsCompact K → volume K = 0 → ∫ x in q ⁻¹' K, h x ∂ν = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
