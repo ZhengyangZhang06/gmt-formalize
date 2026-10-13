@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slice|slicing|coarea|co.area|countable.*dense|SeparableSpace",
+        "ae_hasDerivAt_integral|instSeparableSpace|instSecondCountableTopology|integral_lineDeriv_mul_eq|tendsto_slope_zero_left",
+        "FiniteDimensional.*Multilinear|Module.Finite.*Alternating|finiteDimensional.*[Aa]lternating|[Aa]lternating.*finiteDimensional|finiteDimensional.*[Mm]ultilinear|Module.Finite.*Multilinear",
+        "dor_lmbs_imrep_slice_family|dor_lmbs_testForm_countable_approx|dor_lmbs_slice_identity_of_averages",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dor-slicing-independent-audit/AssemblyAndInstances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/LebesgueDifferentiationThm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Multilinear/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/dor-slicing-independent-audit/AssemblyAndInstances.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical frozen/workspace contracts. The project search finds slicing specifications, not a proved slicing theorem available for reuse. All three proposed types independently pass lexical validation and elaborate in comparator scope without their implementations. All names are bare identifiers; no collisions were found in the DAG or 1,467 local branches. Dependencies are acyclic, and the TL antecedent matches its frozen sibling exactly. Lebesgue measure defaults, interval-integral conventions, covector norm uniformity, and finite-dimensionality were independently checked. The split is appropriate: a conditional Lean assembly from the exact children and authorized sibling hypotheses proves dor_lmb_slicing_lipschitz. Its axiom report, and those of the checked differentiation, integration-by-parts, and separability lemmas, contain only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all stated hypotheses and four conclusions. The supplied proof constructs chartwise tangential derivatives, establishes weighted coarea and valid slice orientations, handles exceptional levels with empty triples, and proves global action integrability and the averaged identity. The compactly supported weighted weak-convergence argument justifies the mollification limit and its sign. TL is explicit and used correctly; neither the child nor parent theorem is assumed. This agrees with the construction in [Simon, Chapter 6 §4](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    },
+    {
+      "key": "testform_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses the required countable family, common compact supports, and both uniform limits. The proof correctly uses a compact exhaustion, support preservation under exterior differentiation, and separability of the compact-domain continuous-map spaces. The embedding is injective and preserves the stated metric. The empty-domain case is covered. This is a complete, independent obligation."
+    },
+    {
+      "key": "pointwise_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes precisely the measurable-function, local-integrability, and averaged-identity hypotheses used. Dominated convergence gives the strict-sublevel integrals, and one-sided Lebesgue differentiation identifies each fixed-form limit. The countable union of exceptional sets followed by compact-support integral bounds extends the identity simultaneously to every test form. The dependency on testform_dense is correctly directed; no representation or boundary assumption is silently introduced."
+    }
+  ],
+  "required_changes": []
+}

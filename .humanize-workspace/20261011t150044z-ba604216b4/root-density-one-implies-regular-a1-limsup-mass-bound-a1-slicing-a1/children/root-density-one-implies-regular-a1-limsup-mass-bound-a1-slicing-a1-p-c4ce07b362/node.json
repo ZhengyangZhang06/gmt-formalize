@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.pointwise_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1",
+  "depth": 4,
+  "title": "From averaged slice identities to the pointwise slice identity for a.e. t, with a null set independent of the test form",
+  "statement": "Let P, n ∈ ℕ and let U ⊆ ℝ^P be open. Let RT = (M, θ, ξ) be an integer multiplicity triple in U of dimension n+1 (IMRep U (n+1)), RB = (M', θ', ξ') an integer multiplicity triple in U of dimension n (IMRep U n), (R_s)_{s∈ℝ} a family of integer multiplicity triples in U of dimension n (Rs : ℝ → IMRep U n), and f : ℝ^P → ℝ Borel measurable. For an integer multiplicity triple R = (N, φ, ζ) write τ(R)(ω) := ∫_N φ⟨ω, ζ⟩ dHⁿ (R.action ω), and put γ_{a,b}(s) := min{1, max{0, (b − s)/(b − a)}}. Assume:\n(i) for every ω ∈ 𝒟ⁿ(U), the function s ↦ τ(R_s)(ω) is locally integrable on ℝ;\n(ii) for every ω ∈ 𝒟ⁿ(U) and all real a < b,\n  ∫_a^b τ(R_s)(ω) ds = (b − a)·( ∫_M θ·γ_{a,b}(f)·⟨dω, ξ⟩ dH^{n+1} − ∫_{M'} θ'·γ_{a,b}(f)·⟨ω, ξ'⟩ dHⁿ ).\nThen for L¹-almost every t ∈ ℝ, simultaneously for every ω ∈ 𝒟ⁿ(U),\n  τ(R_t)(ω) = ∫_{M∩{f<t}} θ⟨dω, ξ⟩ dH^{n+1} − ∫_{M'∩{f<t}} θ'⟨ω, ξ'⟩ dHⁿ.\n(Hⁿ = μHE[n], d = exteriorDerivative, ⟨α, ζ⟩ = ζ(α).)",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (Rs : ℝ → IMRep U n) (f : Euclid P → ℝ), IsOpen U → Measurable f → (∀ ω : TestFormOn U n, LocallyIntegrable (fun s => (Rs s).action (ω : DifferentialForm (Euclid P) n))) → (∀ (ω : TestFormOn U n) (a b : ℝ), a < b → ∫ s in a..b, (Rs s).action (ω : DifferentialForm (Euclid P) n) = (b - a) * ((∫ x in RT.carrier, (RT.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier, (RB.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n])) → ∀ᵐ t, ∀ ω : TestFormOn U n, (Rs t).action (ω : DifferentialForm (Euclid P) n) = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]",
+  "lean_name": "dor_lmbs_slice_identity_of_averages",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-p-c4ce07b362-a1"
+}
