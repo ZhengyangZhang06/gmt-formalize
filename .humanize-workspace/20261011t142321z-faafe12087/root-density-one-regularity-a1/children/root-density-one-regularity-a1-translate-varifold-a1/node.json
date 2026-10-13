@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.translate_varifold-a1",
+  "parent_id": "root.density_one_regularity-a1",
+  "depth": 2,
+  "title": "Translation of a rectifiable varifold and transfer of the hypotheses 5.1 to the origin",
+  "statement": "Let U be any subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U (contract structure) with weight mu, xi in R^(n+l), and tau(x) := x - xi. Then there is a rectifiable n-varifold V' in tau(U) with carrier tau(M), multiplicity theta'(x) = theta(x + xi) for all x, weight mu_{V'} = tau_# mu (Measure.map), and spt V' = tau(spt V), such that: (i) if V has generalized mean curvature H in U then V' has generalized mean curvature H' := H(. + xi) in tau(U); (ii) for all H and reals p, delta, r: if V has generalized mean curvature H in U, theta >= 1 mu-a.e., xi is in spt V, r > 0, B_r(xi) is contained in U, mu(B_r(xi)) <= (1 + delta) omega_n r^n and (r^(p-n) int_{B_r(xi)} |H|^p dmu)^(1/p) <= delta, then V' satisfies the hypotheses 5.1 at the origin: V'.AllardHypotheses H' p delta r.",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ (∀ x, V'.mult x = V.mult (x + ξ)) ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ V'.support = (fun x => x - ξ) '' V.support ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => H (x + ξ))) ∧ ∀ (H : Amb n ℓ → Amb n ℓ) (p δ r : ℝ), V.HasGeneralizedMeanCurvature H → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ξ ∈ V.support → 0 < r → closedBall ξ r ⊆ U → V.weight (closedBall ξ r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * r ^ n)) → V.scaledLpNorm H p ξ r ≤ ENNReal.ofReal δ → V'.AllardHypotheses (fun x => H (x + ξ)) p δ r",
+  "lean_name": "exists_translated_varifold_allardHypotheses",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-translate-varifold-a1-a1"
+}

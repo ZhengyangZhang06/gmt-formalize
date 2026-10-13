@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1",
+  "parent_id": "root.density_one_regularity-a1",
+  "depth": 2,
+  "title": "A.e. approximate tangent spaces, measurability of tangentProj, and density = theta (Simon Ch. 3, 1.2-1.9)",
+  "statement": "Let n >= 1, U an open subset of R^(n+l), and V = v(M, theta) a rectifiable n-varifold in U (contract structure: M contained in U, M H^n-null-measurable and countably n-rectifiable, theta > 0 on M, theta a.e.-measurable for H^n restricted to M, theta integrable on M cap K for every compact K contained in U), mu = mu_V. Then (a) the map x -> tangentProj_V(x) is a.e. strongly measurable for H^n restricted to M; and (b) for H^n-a.e. x in M there is a linear subspace P which is an approximate tangent space of M with respect to theta at x (HasWeightedApproximateTangentSpaceAt n M theta x P: dim P = n and lim_{r -> 0+} int_{eta_{x,r}(M)} f(y) theta(x + r y) dH^n(y) = theta(x) int_P f dH^n for all f in C_c(R^(n+l))), and Theta^n(mu, x) = theta(x), i.e. mu(B_r(x)) / (omega_n r^n) -> theta(x) as r -> 0+.",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), 1 ≤ n → IsOpen U → AEStronglyMeasurable V.tangentProj ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier) ∧ ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier), (∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P) ∧ V.HasDensity x (V.mult x)",
+  "lean_name": "ae_weightedApproximateTangent_density_eq_mult",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-a1"
+}
