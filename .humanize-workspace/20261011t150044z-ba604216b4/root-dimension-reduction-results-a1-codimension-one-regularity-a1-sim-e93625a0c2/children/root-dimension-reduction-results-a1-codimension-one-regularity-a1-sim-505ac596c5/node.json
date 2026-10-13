@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.jacobian_first_order-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1",
+  "depth": 6,
+  "title": "Uniform first-order upper bound for the area-formula Jacobian of I + tB on n-planes (parent steps 3–4)",
+  "statement": "Let P, n ∈ ℕ, A ≥ 0 and ε > 0. There is δ > 0 such that for every real t with |t| < δ, every linear subspace K ⊆ ℝ^P with dim K = n and every continuous linear B : ℝ^P → ℝ^P with ‖B‖ ≤ A: √det(((I + tB)∘ι_K)* ∘ ((I + tB)∘ι_K)) ≤ 1 + t·trace(P_K ∘ B) + ε|t|, where ι_K = K.subtypeL : K → ℝ^P is the inclusion, * is the Hilbert adjoint (K with the induced inner product), det is the determinant of the resulting endomorphism of K (ContinuousLinearMap.det), P_K = K.starProjection and √ is Real.sqrt.",
+  "lean_statement": "∀ (P n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ (K : Submodule ℝ (Euclid P)) (B : Euclid P →L[ℝ] Euclid P), Module.finrank ℝ K = n → ‖B‖ ≤ A → Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • B).comp K.subtypeL).adjoint ∘L ((ContinuousLinearMap.id ℝ (Euclid P) + t • B).comp K.subtypeL)).det) ≤ 1 + t * LinearMap.trace ℝ (Euclid P) (K.starProjection.toLinearMap ∘ₗ B.toLinearMap) + ε * |t|",
+  "lean_name": "codim1_hcp_fv_subspace_jacobian_first_order",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.trace_projection_frame-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61-a1",
+      "result_commit": "84fc998516edd166a10a19d138d7fd5856000352",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.trace_projection_frame-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-t-e90143df5c-a1",
+      "result_commit": "56e107017393dc93d7e61087e6b2c2ef320f68b4",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-505ac596c5-a1"
+}

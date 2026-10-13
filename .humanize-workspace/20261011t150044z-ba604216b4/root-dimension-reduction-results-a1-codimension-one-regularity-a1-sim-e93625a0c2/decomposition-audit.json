@@ -1,0 +1,109 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsEmbeddedSubmanifold|def tangentSpace|tangentialDivergence|codim1_hcp_fv_|codim1_hcp_deformation_minimal_stationary",
+        "setLIntegral_mono\\x27|ofReal_integral_eq_lintegral_ofReal|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|tendsto_integral_of_dominated_convergence|theorem support_fderiv_subset|theorem HasCompactSupport.fderiv|inverse_continuousAt|eq_starProjection_of_mem_of_inner_eq_zero",
+        "def det|def adjoint|theorem adjoint_inner_right|isUnit_iff_bijective|mul_apply_eq_comp|def of |def mul ",
+        "rg -n 'codim1_hcp_fv_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT .lake/packages/simongmt/Poincare",
+        "git show 44afba4d4bb94935d28c2adb17f6284821cebaca:GMT/Ch07/Submission.lean",
+        "git show 6da66b1edf6f809895011d303069229d599f99d6:GMT/Ch07/Submission.lean",
+        "git show 84fc998516edd166a10a19d138d7fd5856000352:GMT/Ch07/Submission.lean",
+        "git show 56e107017393dc93d7e61087e6b2c2ef320f68b4:GMT/Ch07/Submission.lean",
+        "git show 6b000c36933a8a81221ba4327d703ad549d26fb0:GMT/Ch07/Submission.lean",
+        "python3 /tmp/fv-independent-audit-e936/run_checks.py",
+        "python3 /tmp/fv-independent-audit-e936/run_checks.py instances"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e93625a0c2/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e93625a0c2/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/fv-independent-audit-e936/types.lean",
+        "/tmp/fv-independent-audit-e936/instances.lean",
+        "/tmp/fv-independent-audit-e936/combined.lean",
+        "/tmp/fv-independent-audit-e936/combined.log",
+        "/tmp/fv-independent-audit-e936/run_checks.py"
+      ],
+      "conclusion": "The split is appropriate for the selected first-variation theorem. Project b4d606db and Mathlib 25730c7c match the manifest; frozen definitions and inspected library sources match the snapshot. All eleven types independently elaborate as one-line propositions before child declarations. All names are bare identifiers; the six new names have no reservation matches, and the five reused declarations are accepted with byte-identical frozen types and compatible definitions. Dependencies are correctly directed and acyclic, including existing reuse dependencies. Independently recompiling each supplied new proof with only its listed prerequisites succeeded. Combining those proofs with the unchanged accepted proof bodies gives standard axioms only for every child. The exact selected parent type then compiles using only standard axioms and its existing area-formula prerequisite, which remains an external obligation. Instance checks confirm induced subspace inner products, ordinary endomorphism composition, the intended determinant and projection, Matrix.of multiplication, and C-infinity regularity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree, including properness and injective derivatives. Compactness proves inverse continuity; differentiability gives the secant estimate; closed-range limits and explicitly constructed curves prove both tangent-space inclusions. Accepted reuse has an identical type and standard axioms."
+    },
+    {
+      "key": "locally_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All chart hypotheses match the definition, including when r = 0. Proper chart slices give compact intersections, and M = O ∩ closure M proves Borel measurability. The accepted declaration has the identical frozen type."
+    },
+    {
+      "key": "gram_first_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The spectral Gram bound, explicit positive constants, perturbation estimate and exponential remainder prove the stated uniform inequality for either sign of t, including n = 0. Matrix.of gives the intended matrix expression. Accepted reuse and its axioms were verified."
+    },
+    {
+      "key": "trace_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthogonal-projection characterization gives the frame expansion; rank-one trace identities prove the exact formula. The spanning and orthonormality hypotheses are correctly used. The accepted frozen type is identical."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact thickening and normalized mollifiers supply common support, smoothness, a uniform derivative bound and both pointwise limits. All hypotheses match the type, including empty K. The unchanged accepted proof compiles with standard axioms."
+    },
+    {
+      "key": "tangent_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Injectivity makes D*D a unit in the continuous-endomorphism ring. The projection formula, chart inverse continuity and finite-dimensional trace continuity prove all three conjuncts. The supplied proof compiles using only chart_tangent."
+    },
+    {
+      "key": "trace_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "An orthonormal basis of K, trace_frame and Cauchy–Schwarz give exactly finrank(K) times the operator norm, including zero-dimensional K. The supplied proof compiles with its sole declared prerequisite."
+    },
+    {
+      "key": "jacobian_first_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthonormal-basis calculation identifies the subspace determinant with the Gram determinant. Applying gram_first_order to L = I + tB and then trace_frame proves the uniform bound with the stated quantifier order. The supplied proof and inferred instances check."
+    },
+    {
+      "key": "perturbation_injective",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support bounds DZ; the mean-value inequality and |t|Λ < 1 establish global injectivity and injectivity of I + tDZ. The exact C¹ contract is proved without sibling prerequisites or additional assumptions."
+    },
+    {
+      "key": "jacobian_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes divergence measurability and integrability on E, then converts minimality and the uniform Jacobian upper bound into 0 ≤ tI + ε|t|a. Both signs of t force I = 0; derivative support gives the integral over M. Lower-integral monotonicity requires no missing Jacobian measurability assumption. The exact proof compiles from the listed dependencies."
+    },
+    {
+      "key": "smooth_to_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Applying smooth_approx to id + X gives admissible smooth fields with common compact support, bounded derivatives and pointwise derivative convergence. The measurable divergence functions have an integrable common bound, so dominated convergence proves the precise C¹ conclusion. No M ⊆ U assumption is needed for this child. The supplied proof compiles from exactly its listed prerequisites."
+    }
+  ],
+  "required_changes": []
+}

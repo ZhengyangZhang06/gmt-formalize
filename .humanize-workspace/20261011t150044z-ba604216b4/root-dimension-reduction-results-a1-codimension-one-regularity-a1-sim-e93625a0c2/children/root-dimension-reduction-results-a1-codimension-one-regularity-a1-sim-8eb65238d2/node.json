@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.trace_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1",
+  "depth": 6,
+  "title": "Trace bound |trace(P_K ∘ L)| ≤ dim K · ‖L‖ for orthogonal projections (parent step 0.2)",
+  "statement": "Let P ∈ ℕ, let K be a linear subspace of ℝ^P with orthogonal projection P_K = K.starProjection : ℝ^P → ℝ^P, and let L : ℝ^P → ℝ^P be a continuous linear map. Then |trace(P_K ∘ L)| ≤ (dim K)·‖L‖ (operator norm).",
+  "lean_statement": "∀ (P : ℕ) (K : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), |LinearMap.trace ℝ (Euclid P) (K.starProjection.toLinearMap ∘ₗ L.toLinearMap)| ≤ (Module.finrank ℝ K : ℝ) * ‖L‖",
+  "lean_name": "codim1_hcp_fv_trace_comp_abs_le",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.trace_projection_frame-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.trace_projection_frame-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-t-e90143df5c-a1",
+      "result_commit": "56e107017393dc93d7e61087e6b2c2ef320f68b4",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-8eb65238d2-a1"
+}
