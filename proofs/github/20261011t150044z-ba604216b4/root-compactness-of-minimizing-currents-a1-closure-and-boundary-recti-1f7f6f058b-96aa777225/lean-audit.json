@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d39f0bd010cc74868368dd6819a91254d7abe06d0c07fab2e220da1f70fa9c32",
+  "git_delta": {
+    "base_commit": "8210e965c42c2ccf84cd609caee5ed7f7cf76e66",
+    "candidate_commit": "2880613c02923e587753fdf016b892279cc19084",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cc_seg_segment_imrep",
+    "diff_sha256": "44fc7353a4faad02113cbadb032817813f405fd00ed67299b44355f0ad53af31",
+    "source_sha256": "f078bbddd1b2b743add5fc2fa2b96f3b114c3b8d362fdfa30a9408356b60b111",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cc_seg_segment_imrep",
+      "statement": "∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → 0 < ℓ → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.carrier ⊆ segment ℝ a (a + ℓ • τ) ∧ R.measure univ < ∞ ∧ ∀ ω : DifferentialForm (Euclid P) 1, R.action ω = ∫ u in Ioo 0 ℓ, ω (a + u • τ) (fun _ => τ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
