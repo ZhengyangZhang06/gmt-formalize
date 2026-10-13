@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2a18bc1472b1cb8608c12a52e47f594ac564477a08468162e7a83dc08827a293",
+  "git_delta": {
+    "base_commit": "0dd71e660ae4b2aa40f4ffd645548afd0062870d",
+    "candidate_commit": "41f452316ac3a8dbbb2756b5fcb156a8b8b423a0",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "259dd90aaba7397af3d7cb2fa1f806123c392f59391b385cd282d65457f8f896",
+    "source_sha256": "e648f5bfeb011898064c41a54a2e8d25270f39759d0caf70877de9340a7f244d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_isIntegerMultiplicity_of_ae_tangent",
+      "statement": "(∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → CountablyRectifiable n M) → ∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m) → IsIntegerMultiplicity Γ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
