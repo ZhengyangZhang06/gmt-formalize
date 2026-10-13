@@ -851,6 +851,29 @@ theorem Submission.dimred_cs_ti_action_translation_invariant : ∀ (P n : ℕ) (
     simp [G]
   rw [← hG1, hconst, hG0]
 
+/-- **Translation invariance from tangency** (the translation counterpart of Simon Ch. 6,
+Lemma 2.33; the translation invariance `η_{x,1#}S = S` of the cone splitting in 7.3.3, 7.3.5).
+Let `S = τ(M, θ, ξ) ∈ 𝒟ₙ(ℝᴾ)`, `n ≥ 1`, with `∂S = 0` and `v ∈ TₓM` for `μ_S`-a.e. `x`.  Then
+`η_{−v,1#}S = S`.  Since `η_{−v,1}(y) = v + y`, `η_{−v,1#}S(ω) = S(ω(v + ·))`, so it suffices that
+`s ↦ S(β_s)`, `β_s = ω(sv + ·)`, is constant.  Its derivative is `S(Dβ_s[v])`, and
+`S(Dβ[v]) = S(d ι_v β) + S(ι_v dβ) = ∂S(ι_v β) + 0 = 0` by Cartan's formula for the constant
+field `v`, `∂S = 0` and `v ∧ ξ = 0` `μ_S`-a.e. -/
+theorem Submission.dimred_cs_translation_invariant_of_tangency : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (v : Euclid P), 0 < n → R.Represents S → BoundaryVanishes S → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection v = v) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω := by
+  intro P n S R v hn hR hb htan ω
+  -- `η_{−v,1#}S(ω) = S(ω')` with `ω'(y) = ω(v + y)`, so it suffices that `S(ω') = S(ω)`
+  obtain ⟨ω', hω', heval⟩ := Submission.dimred_cs_ti_blowUp_translate_eval P n S v ω
+  rw [heval, hR ω', hR ω]
+  have hfun : (ω' : DifferentialForm (Euclid P) n) =
+      fun y => (ω : DifferentialForm (Euclid P) n) (v + y) := funext hω'
+  rw [hfun]
+  -- `s ↦ τ(M, θ, ξ)(ω(sv + ·))` is constant once `τ(M, θ, ξ)` kills every `Dβ[v]`
+  refine Submission.dimred_cs_ti_action_translation_invariant P n R v ?_ ω
+  intro β γ hγ
+  -- `S(Dβ[v]) = S(d ι_v β) + S(ι_v dβ) = 0`, as `v ∧ ξ = 0` `μ_S`-a.e.
+  rw [← hR γ]
+  exact Submission.dimred_cs_ti_directional_annihilated P n S R v hn hR hb
+    (Submission.dimred_cs_ti_wedge_vanishes P n univ R v htan) β γ hγ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
