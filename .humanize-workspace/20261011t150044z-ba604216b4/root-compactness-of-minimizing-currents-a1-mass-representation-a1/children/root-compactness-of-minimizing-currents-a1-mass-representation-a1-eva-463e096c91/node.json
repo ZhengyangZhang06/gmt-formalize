@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Evaluation bound |T(ω)| ≤ r·M_W(T) when tsupport ω ⊆ W and |ω| ≤ r (fact (E1))",
+  "statement": "Let P, n ∈ ℕ, let U, W ⊆ ℝ^P be arbitrary sets, let T ∈ 𝒟_n(U) (GeometricCurrentOn U n), ω ∈ 𝒟ⁿ(U) (TestFormOn U n) and r ∈ ℝ. Write |α| := covectorEuclideanNorm α and M_W(T) := T.massOn W ∈ [0, ∞]. By Simon 6.2.5, M_W(T) is the supremum of ofReal T(φ) over φ ∈ 𝒟ⁿ(U) with tsupport φ ⊆ W and |φ(x)| ≤ 1 for all x. If M_W(T) ≠ ∞, tsupport ω ⊆ W and |ω(x)| ≤ r for every x ∈ ℝ^P, then |T(ω)| ≤ r·(M_W(T)).toReal.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal",
+  "lean_name": "cmr_abs_apply_le_massOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91-a1"
+}

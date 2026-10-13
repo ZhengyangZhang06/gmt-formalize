@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "curryLeft|extDeriv|LipschitzWith|ContDiffBump|cbrld_cone|cmr_abs_apply_le_massOn|rsd_mw_tfa_norm_props",
+        "curryLeft_apply_apply|def curryLeft|alternatizeUncurryFin_curryLeft|alternatizeUncurryFin_smul|def extDeriv|EventuallyEq.extDeriv_eq|structure ContDiffBump|one_of_mem_closedBall|zero_of_le_dist|HasCompactSupport.fderiv|HasCompactSupport.smul_right|bounded_above_of_compact_support|norm_image_sub_le_of_norm_fderiv_le",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "git show 7a706164baaf42fc7f55751247396a8836928310:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbrld-cone-decomp-k7/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-independent-audit-npnosehh/IsolatedChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8ea6d63a05/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8ea6d63a05/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91/accepted-candidate.json",
+        "/tmp/cbrld-cone-decomp-k7/EndToEnd.lean",
+        "/tmp/cone-independent-audit-npnosehh/IsolatedChecks.lean"
+      ],
+      "conclusion": "The split appropriately establishes the exact selected contract Submission.cbrld_cycle_eval_le_radius_mul_mass. No matching new child declarations were found in the snapshot project. Pinned definitions and calculus lemmas support the supplied arguments, including the exterior-derivative normalization and inferred scalar actions. Both reused declarations have identical frozen types and passing comparator records; their proof bodies match the accepted commits. All names are bare identifiers, and the four new names are unreserved. Dependencies are acyclic and correctly directed. All six raw types independently elaborate before any child implementation. Each new proof compiles with only its declared sibling hypotheses, and the assembly proves the exact parent type. The complete development also compiles; every checked theorem uses only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. The coefficient-vector construction proves additivity and homogeneity, the coordinate bounds give C = √card, and the resulting Lipschitz estimate proves continuity. The proof is complete and non-circular. Reuse of rsd_mw_tfa_norm_props preserves its exact accepted type."
+    },
+    {
+      "key": "mass_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The general U,W statement matches its Lean type. Nonnegativity of r follows from the bound at 0; both signed rescalings are admissible. Finite mass justifies conversion to toReal, and the limit gives the claimed bound. Reuse of cmr_abs_apply_le_massOn preserves its exact accepted type."
+    },
+    {
+      "key": "coeff_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Global smoothness and compact support give a continuous, compactly supported derivative and hence a uniform bound. The mean value inequality and norm_props produce the stated nonnegative coefficient-norm Lipschitz constant. No openness assumption on U is needed. The supplied proof compiles using only its declared dependency."
+    },
+    {
+      "key": "affine_primitive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit derivative is the scaled continuous linear map α.curryLeft. The pinned alternatization identity yields (n+1)•α, and the nonzero real scalar n+1 cancels. This proves the exact proposition for every P,n without additional hypotheses or dependencies."
+    },
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The difference is a test form vanishing on G. Openness places its topological support in Gᶜ, disjoint from X.support. The verbatim VO hypothesis and linearity give equality of evaluations. All hypotheses are present, and the proof has no circular reliance."
+    },
+    {
+      "key": "cycle_const",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bump with radii r and r+1 produces a compactly supported primitive. Germ locality and affine_primitive identify its exterior derivative with φ on the ball; boundary vanishing and localize then give X φ = 0. Both dependencies are correctly declared. The proof needs no finite-mass assumption and applies in the parent at radius ϱ+ε/2."
+    }
+  ],
+  "required_changes": []
+}
