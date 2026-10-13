@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.2.4** (proof, the "standard approximation argument", upper bound): if `μ` is finite
+on compact sets and `limsup_j μⱼ(K) ≤ μ(K)` for every compact `K`, then
+`limsup_j ∫ g dμⱼ ≤ ∫ g dμ` for every continuous compactly supported `g ≥ 0`.  By the layer cake
+formula `∫ g dν = ∫₀^∞ ν{g ≥ t} dt`; for `t > 0` the sets `{g ≥ t}` are compact subsets of
+`tsupport g`, so after an index shift the integrands are dominated by
+`(μ(tsupport g) + 1) · 1_{t ≤ M}` (`g ≤ M`), and the reverse Fatou lemma applies. -/
+theorem Submission.dtc_bc_rc_limsup_lintegral_le : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → limsup (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop ≤ ∫⁻ x, ENNReal.ofReal (g x) ∂μ := by
+  intro P μs μ hfin hlim g hg hgc hg0
+  -- `g ≤ M`
+  obtain ⟨M, hM⟩ := hg.bounded_above_of_compact_support hgc
+  have hgM : ∀ x, g x ≤ M := fun x => (Real.le_norm_self (g x)).trans (hM x)
+  -- `μⱼ(tsupport g) < A := μ(tsupport g) + 1 < ∞` for `j ≥ j₁`
+  have hK₀ : IsCompact (tsupport g) := hgc.isCompact
+  have hAtop : μ (tsupport g) + 1 ≠ ∞ :=
+    ENNReal.add_ne_top.2 ⟨(hfin _ hK₀).ne, ENNReal.one_ne_top⟩
+  obtain ⟨j₁, hj₁⟩ := eventually_atTop.1 (eventually_lt_of_limsup_lt
+    ((hlim _ hK₀).trans_lt (ENNReal.lt_add_right (hfin _ hK₀).ne one_ne_zero)))
+  -- for `t > 0`, `{g ≥ t}` is a compact subset of `tsupport g`
+  have hsub : ∀ t : ℝ, 0 < t → {x | t ≤ g x} ⊆ tsupport g := fun t ht x hx =>
+    subset_tsupport g (ht.trans_le hx).ne'
+  have hcpt : ∀ t : ℝ, 0 < t → IsCompact {x | t ≤ g x} := fun t ht =>
+    hK₀.of_isClosed_subset (isClosed_le continuous_const hg) (hsub t ht)
+  -- layer cake: `∫ g dν = ∫₀^∞ ν{g ≥ t} dt`
+  have hlc : ∀ ν : Measure (Euclid P),
+      ∫⁻ x, ENNReal.ofReal (g x) ∂ν = ∫⁻ t in Ioi 0, ν {x | t ≤ g x} := fun ν =>
+    lintegral_eq_lintegral_meas_le ν (ae_of_all _ hg0) hg.measurable.aemeasurable
+  simp_rw [hlc]
+  rw [← limsup_nat_add _ j₁]
+  calc limsup (fun i => ∫⁻ t in Ioi 0, μs (i + j₁) {x | t ≤ g x}) atTop
+      ≤ ∫⁻ t in Ioi 0, limsup (fun i => μs (i + j₁) {x | t ≤ g x}) atTop := by
+        -- reverse Fatou, dominated by `A · 1_{(-∞, M]}`
+        refine limsup_lintegral_le (f := fun i t => μs (i + j₁) {x | t ≤ g x})
+          ((Iic M).indicator fun _ => μ (tsupport g) + 1) (fun i => ?_) (fun i => ?_) ?_
+        · exact Antitone.measurable fun s t hst => measure_mono fun x hx => hst.trans hx
+        · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+          by_cases htM : t ≤ M
+          · rw [indicator_of_mem (mem_Iic.2 htM)]
+            exact (measure_mono (hsub t ht)).trans (hj₁ _ (Nat.le_add_left _ _)).le
+          · have he : {x | t ≤ g x} = (∅ : Set (Euclid P)) :=
+              eq_empty_iff_forall_notMem.2 fun x hx => htM (le_trans hx (hgM x))
+            simp [he]
+        · rw [lintegral_indicator_const measurableSet_Iic, Measure.restrict_apply measurableSet_Iic,
+            Iic_inter_Ioi, Real.volume_Ioc]
+          exact ENNReal.mul_ne_top hAtop ENNReal.ofReal_ne_top
+    _ ≤ ∫⁻ t in Ioi 0, μ {x | t ≤ g x} := by
+        refine setLIntegral_mono' measurableSet_Ioi fun t ht => ?_
+        rw [limsup_nat_add (fun j => μs j {x | t ≤ g x}) j₁]
+        exact hlim _ (hcpt t ht)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

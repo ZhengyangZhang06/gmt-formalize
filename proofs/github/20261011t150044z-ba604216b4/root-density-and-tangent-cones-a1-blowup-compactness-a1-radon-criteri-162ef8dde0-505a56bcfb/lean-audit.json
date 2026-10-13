@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "668263b8b5d5e3cc1b7572f300c2dc0098c01e6720f8dd452370e607a1a71fb4",
+  "git_delta": {
+    "base_commit": "89325b5cff95b182be028149962343fa65df85f7",
+    "candidate_commit": "c805f6b5a90f6183d9c132e8c2d99d55c654e143",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_rc_limsup_lintegral_le",
+    "diff_sha256": "7b9cd625d16f106398866e23f120c201d8c3926b849a7d99ddee025b9a9acf12",
+    "source_sha256": "02fe06adcf88db5d2849b2bc4206ad5f486c914f34b7c00a44083645b326f92d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_rc_limsup_lintegral_le",
+      "statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → limsup (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop ≤ ∫⁻ x, ENNReal.ofReal (g x) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
