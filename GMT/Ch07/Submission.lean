@@ -1740,6 +1740,25 @@ theorem Submission.rsd_ae_hasMassDensity_mult : ∀ (P n : ℕ) (U : Set (Euclid
   -- `μ_T = θμ ≪ μ`
   exact (withDensity_absolutelyContinuous μ θ).ae_le key
 
+/-- **Simon Ch. 3, Remark 1.8(2) with Theorem 1.9** (as used in Ch. 4, 3.12): if `S = τ(M, θ, ξ)`
+in `ℝᴾ` and `Θ(x) = Θⁿ(μ_S, x)` at every `x`, then `Θ = θ` for `Hⁿ`-a.e. `x ∈ M`.
+`Θⁿ(μ_S, x) = θ(x)` for `μ_S`-a.e. `x` (`Submission.rsd_ae_hasMassDensity_mult`), so densities
+being unique (`Submission.dimred_cs_mi_hasMassDensity_unique`) gives `Θ = θ` `μ_S`-a.e.  Since
+`θ ≥ 1` on `M`, `Hⁿ⌞M ≪ θHⁿ⌞M = μ_S`, which transfers the equality to `Hⁿ⌞M`-a.e. -/
+theorem Submission.dimred_cs_mi_density_eq_mult_ae : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Θ : Euclid P → ℝ), R.Represents S → (∀ x : Euclid P, HasMassDensity S x (Θ x)) → ∀ᵐ x ∂((μHE[n] : Measure (Euclid P)).restrict R.carrier), Θ x = (R.mult x : ℝ) := by
+  intro P n S R Θ hR hΘ
+  -- `Θ = θ` `μ_S`-a.e., by uniqueness of densities
+  have hμ : ∀ᵐ x ∂R.measure, Θ x = (R.mult x : ℝ) := by
+    filter_upwards [Submission.rsd_ae_hasMassDensity_mult P n univ S R isOpen_univ hR] with x hx
+    exact Submission.dimred_cs_mi_hasMassDensity_unique P n univ S x (Θ x) (R.mult x) (hΘ x) hx
+  -- `Hⁿ⌞M ≪ μ_S = θHⁿ⌞M`, as `θ ≠ 0` on `M`
+  have hθ : ∀ᵐ x ∂((μHE[n] : Measure (Euclid P)).restrict R.carrier),
+      (R.mult x : ℝ≥0∞) ≠ 0 := by
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact Nat.cast_ne_zero.2 (R.mult_pos x hx).ne'
+  exact (withDensity_absolutelyContinuous'
+    (measurable_from_nat.comp R.measurable_mult).aemeasurable hθ).ae_le hμ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
