@@ -1332,6 +1332,35 @@ theorem Submission.codim1_zsl_gc_orientation_along_graph : ∀ (n k : ℕ) (N : 
   rw [hpos]
   exact hJ v hv α
 
+/-- Step 4 of the zero-scale limit plane argument (Simon 7.5.3–7.5.5; embedded submanifolds and
+tangent spaces: Ch. 2, §4 (4.1); orientations: Ch. 6, 2.2): near `x ∈ N`, an oriented embedded `C²`
+`(n+1)`-submanifold `N ⊆ ℝ^{n+1+k}` is an oriented `C¹` graph over its tangent plane.
+`IsOrientation` gives `T_xN = Q₀` with `ξ_N(x)` a unit orientation of `Q₀`; isometries `ι` onto
+`Q₀`, adapted to `ξ_N(x)`, and `ι'` orthogonal to it give (a) and (d).  As `T_xN ⊆ range ι`, `N`
+is near `x` the graph of `Γ(v) = x + ιv + ι'u(v)` with `u` of class `C¹`, `u(0) = 0`, `Du(0) = 0`;
+inside a cylinder `{x + ιv + ι'w : |v| < δ₁, |w| < δ₂}` this gives (b) and (c).  Along `Γ`, `ξ_N`
+is the Jacobian orientation `α ↦ α(DΓ(v)e₀, …, DΓ(v)eₙ)/√det(DΓ(v)*DΓ(v))`, which is (e). -/
+theorem Submission.codim1_zsl_oriented_graph_chart : ∀ (n k : ℕ) (N : Set (Euclid (n + 1 + k))) (ξN : Euclid (n + 1 + k) → MultiVector (n + 1 + k) (n + 1)) (x : Euclid (n + 1 + k)), IsEmbeddedSubmanifold 2 (n + 1) N → IsOrientation (n + 1) N ξN → x ∈ N → ∃ (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (u : Euclid (n + 1) → Euclid k) (δ₁ δ₂ : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) ∧ 0 < δ₁ ∧ 0 < δ₂ ∧ ContDiffOn ℝ 1 u (ball 0 δ₁) ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, u v ∈ ball (0 : Euclid k) δ₂) ∧ N ∩ {y | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid (n + 1)) δ₁ ∧ (∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξN x α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))) ∧ ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), α (fun j => fderiv ℝ (fun v => x + ι v + ι' (u v)) v (EuclideanSpace.single j (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => x + ι v + ι' (u v)) v).det) * ξN (x + ι v + ι' (u v)) α := by
+  intro n k N ξN x hN hξN hx
+  -- `T_xN = Q₀`, and `ξ_N(x)` is a unit orientation of `Q₀`
+  obtain ⟨Q₀, hQ₀, hξx⟩ := hξN.2 x hx
+  -- (a), (d): `ι` maps onto `Q₀` and is adapted to `ξ_N(x)`; `ι'` is orthogonal to `ι`
+  obtain ⟨ι, ι', hperp, hspan, hrange, hframe⟩ :=
+    Submission.codim1_zsl_gc_oriented_frame n k Q₀ (ξN x) hξx
+  -- near `x`, `N` is the graph of `Γ(v) = x + ιv + ι'u(v)` over an open `O ∋ 0`
+  obtain ⟨O, u, s, hO, hO0, hs, hu, hu0, hDu0, hΓN, hcover⟩ :=
+    Submission.codim1_zsl_gc_local_graph (n + 1) k N x ι ι' hN hx hperp hspan
+      (hQ₀.symm.trans hrange.symm).subset
+  -- (b), (c): inside the cylinder `{x + ιv + ι'w : |v| < δ₁, |w| < δ₂}`, `N` is `Γ(B_{δ₁})`
+  obtain ⟨δ₁, δ₂, hδ₁, hδ₂, hO₁, hmaps, hcyl⟩ :=
+    Submission.codim1_zsl_gc_graph_cylinder (n + 1) k N x ι ι' O u s hperp hO hO0
+      (hu.continuousOn.continuousAt (hO.mem_nhds hO0)) hu0 hs hΓN hcover
+  have hu₁ : ContDiffOn ℝ 1 u (ball 0 δ₁) := hu.mono hO₁
+  -- (e): along `Γ`, `ξ_N` is the Jacobian orientation normalized by `√det(DΓ*DΓ)`
+  exact ⟨ι, ι', u, δ₁, δ₂, hperp, hspan, hδ₁, hδ₂, hu₁, hu0, hDu0, hmaps, hcyl, hframe,
+    Submission.codim1_zsl_gc_orientation_along_graph n k N ξN x ι ι' u δ₁ hξN hperp hδ₁ hu₁ hu0
+      hDu0 (fun v hv => hΓN v (hO₁ hv)) hframe⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
