@@ -652,6 +652,102 @@ theorem Submission.codim1_zsl_pc_translate_tendsto_zero : ∀ (m : ℕ) (F : Set
         add_le_add (add_le_add hK.le hO.le) (add_le_add hK.le hO.le)
     _ = ε := by rw [ENNReal.add_halves, ENNReal.add_halves]
 
+/-- Mollifying `u = 1_F` with any continuous `ρ ≥ 0`, `∫ρ = 1`, `spt ρ ⊆ B̄_δ(0)`, moves it by at
+most `η` in `L¹(B_R(0))` once `δ` is small (Simon 2.5).  By `∫ρ = 1`,
+`|ρ * u(v) - u(v)| ≤ ∫ρ(z)|u(v - z) - u(v)| dz`; Tonelli bounds `∫_{B_R}|ρ * u - u|` by
+`∫ρ(z) L^m(((F + z) Δ F) ∩ B_R) dz`, and `codim1_zsl_pc_translate_tendsto_zero` makes the
+translation defect `≤ η` for `|z| ≤ δ`. -/
+theorem Submission.codim1_zsl_pc_mollify_indicator_l1 : ∀ (m : ℕ) (F : Set (Euclid m)) (R η : ℝ), MeasurableSet F → 0 < η → ∃ δ : ℝ, 0 < δ ∧ ∀ ρ : Euclid m → ℝ, Continuous ρ → (∀ z, 0 ≤ ρ z) → (∀ z, δ < ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → ∫⁻ v in ball (0 : Euclid m) R, ‖(∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ ≤ ENNReal.ofReal η := by
+  intro m F R η hF hη
+  -- `δ = ε/2`, where the translation defect is `< η` on `B_ε(0)`.
+  have hev : ∀ᶠ y in 𝓝 (0 : Euclid m),
+      volume (symmDiff ((fun v => v + y) ⁻¹' F) F ∩ ball (0 : Euclid m) R) < ENNReal.ofReal η :=
+    (Submission.codim1_zsl_pc_translate_tendsto_zero m F R hF).eventually
+      (eventually_lt_nhds (ENNReal.ofReal_pos.2 hη))
+  obtain ⟨ε, hε, hεP⟩ := Metric.eventually_nhds_iff.1 hev
+  refine ⟨ε / 2, half_pos hε, ?_⟩
+  intro ρ hρc hρ0 hρsupp hρ1
+  -- Facts about the indicator `u = 1_F`, which is then made opaque.
+  have hu_meas : Measurable (F.indicator (fun _ => (1 : ℝ))) := measurable_const.indicator hF
+  have hu_bd : ∀ x, ‖F.indicator (fun _ => (1 : ℝ)) x‖ ≤ 1 := by
+    intro x
+    by_cases hx : x ∈ F <;> simp [hx]
+  have hu_sd : ∀ v y : Euclid m,
+      ‖F.indicator (fun _ => (1 : ℝ)) (v + y) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ
+        = (symmDiff ((fun w => w + y) ⁻¹' F) F).indicator 1 v := by
+    intro v y
+    by_cases h1 : v + y ∈ F <;> by_cases h2 : v ∈ F <;>
+      simp [h1, h2, Set.mem_symmDiff]
+  generalize F.indicator (fun _ => (1 : ℝ)) = u at hu_meas hu_bd hu_sd ⊢
+  -- `ρ` is integrable (compact support), hence so is each convolution integrand.
+  have hρ_cs : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid m) (ε / 2)) fun x hx => ?_
+    apply hρsupp
+    simpa using hx
+  have hρ_int : Integrable ρ := hρc.integrable_of_hasCompactSupport hρ_cs
+  have hρ_meas : Measurable ρ := hρc.measurable
+  have hint : ∀ v, Integrable (fun z => ρ z * u (v - z)) := by
+    intro v
+    refine hρ_int.mono
+      (by exact (hρ_meas.mul (hu_meas.comp (measurable_const_sub v))).aestronglyMeasurable)
+      (ae_of_all _ fun z => ?_)
+    rw [norm_mul]
+    calc ‖ρ z‖ * ‖u (v - z)‖ ≤ ‖ρ z‖ * 1 := by gcongr; exact hu_bd _
+      _ = ‖ρ z‖ := mul_one _
+  -- Pointwise bound, using `∫ ρ = 1`.
+  have hpt : ∀ v, ‖(∫ z, ρ z * u (v - z)) - u v‖ₑ ≤ ∫⁻ z, ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ := by
+    intro v
+    have h1 : (∫ z, ρ z * u (v - z)) - u v = ∫ z, (ρ z * u (v - z) - ρ z * u v) := by
+      rw [integral_sub (hint v) (hρ_int.mul_const (u v)), integral_mul_const (u v) ρ, hρ1,
+        one_mul]
+    rw [h1]
+    refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq ?_)
+    refine lintegral_congr fun z => ?_
+    rw [← mul_sub, enorm_mul]
+  -- The inner integral is the translation defect of `codim1_zsl_pc_translate_tendsto_zero`.
+  have hΦ : ∀ z, ∫⁻ v in ball (0 : Euclid m) R, ‖u (v - z) - u v‖ₑ
+      = volume (symmDiff ((fun v => v + -z) ⁻¹' F) F ∩ ball (0 : Euclid m) R) := by
+    intro z
+    have hS : MeasurableSet (symmDiff ((fun v => v + -z) ⁻¹' F) F) :=
+      (hF.preimage (measurable_add_const _)).symmDiff hF
+    rw [← Measure.restrict_apply hS, ← lintegral_indicator_one hS]
+    refine lintegral_congr fun v => ?_
+    rw [sub_eq_add_neg v z]
+    exact hu_sd v (-z)
+  have hmeas : Measurable (Function.uncurry fun (v z : Euclid m) =>
+      ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ) := by
+    have : Measurable fun p : Euclid m × Euclid m => ‖ρ p.2‖ₑ * ‖u (p.1 - p.2) - u p.1‖ₑ :=
+      (hρ_meas.comp measurable_snd).enorm.mul
+        ((hu_meas.comp (measurable_fst.sub measurable_snd)).sub
+          (hu_meas.comp measurable_fst)).enorm
+    exact this
+  -- Tonelli, then `Φ(-z) ≤ η` wherever `ρ z ≠ 0`, and `∫⁻ ‖ρ‖ₑ = ofReal (∫ ρ) = 1`.
+  calc ∫⁻ v in ball (0 : Euclid m) R, ‖(∫ z, ρ z * u (v - z)) - u v‖ₑ
+      ≤ ∫⁻ v in ball (0 : Euclid m) R, ∫⁻ z, ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ :=
+        lintegral_mono fun v => hpt v
+    _ = ∫⁻ z, ∫⁻ v in ball (0 : Euclid m) R, ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ :=
+        lintegral_lintegral_swap hmeas.aemeasurable
+    _ = ∫⁻ z, ‖ρ z‖ₑ * ∫⁻ v in ball (0 : Euclid m) R, ‖u (v - z) - u v‖ₑ := by
+        refine lintegral_congr fun z => ?_
+        exact lintegral_const_mul _ (by fun_prop)
+    _ ≤ ∫⁻ z, ‖ρ z‖ₑ * ENNReal.ofReal η := by
+        refine lintegral_mono fun z => ?_
+        by_cases hz : ρ z = 0
+        · simp [hz]
+        · have hz' : ‖z‖ ≤ ε / 2 := by
+            by_contra h
+            exact hz (hρsupp z (not_le.1 h))
+          gcongr
+          rw [hΦ z]
+          refine (hεP ?_).le
+          rw [dist_zero_right, norm_neg]
+          linarith
+    _ = (∫⁻ z, ‖ρ z‖ₑ) * ENNReal.ofReal η := lintegral_mul_const _ (by fun_prop)
+    _ = ENNReal.ofReal η := by
+        rw [← ofReal_integral_norm_eq_lintegral_enorm hρ_int]
+        have : (fun x => ‖ρ x‖) = ρ := funext fun x => Real.norm_of_nonneg (hρ0 x)
+        rw [this, hρ1, ENNReal.ofReal_one, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
