@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1.tangent_field-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "A bounded Borel field W, a.e. tangent to M, with ξ(β∧ω) = β(W) a.e. on M",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let R = (M, θ, ξ) be an integer multiplicity triple in U of dimension n+1 (IMRep U (n+1), with M = R.carrier and ξ = R.orient), let ω : ℝ^P → Λⁿ(ℝ^P) be a continuous n-form (DifferentialForm (Euclid P) n), and let B ∈ ℝ satisfy ‖ω(x)‖ ≤ B for all x. Then there exist a Borel measurable W : ℝ^P → ℝ^P and c′ ∈ ℝ such that: W(x) = 0 whenever ω(x) = 0; ‖W(x)‖ ≤ c′ for all x; and for H^{n+1}-a.e. x ∈ M (μHE[n+1].restrict M; one null set for all β), W(x) ∈ T_xM := approxTangentPlane (n+1) M x and, for every 1-covector β : ℝ^P →L[ℝ] ℝ, ξ(x)(β∧ω(x)) = β(W(x)), where β∧ω(x) := alternatizeUncurryFin(β.smulRight ω(x)).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U (n + 1)) (ω : DifferentialForm (Euclid P) n) (B : ℝ), Continuous ω → (∀ x, ‖ω x‖ ≤ B) → ∃ (W : Euclid P → Euclid P) (c' : ℝ), Measurable W ∧ (∀ x, ω x = 0 → W x = 0) ∧ (∀ x, ‖W x‖ ≤ c') ∧ ∀ᵐ x ∂(μHE[n + 1].restrict R.carrier), W x ∈ approxTangentPlane (n + 1) R.carrier x ∧ ∀ β : Euclid P →L[ℝ] ℝ, R.orient x (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight (ω x))) = β (W x)",
+  "lean_name": "dor_lmbsf_ll_tangent_wedge_field",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.orient_approx_tangent_plane-a1",
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1.wedge_vector-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.orient_approx_tangent_plane-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-o-90c59096a1-a1",
+      "result_commit": "533617d27b3abcf7aac464798fdc2118b21e9d82",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5-a1",
+      "result_commit": "0325970d8b47298803106a41abbcdb3c8c9ac103",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1.wedge_vector-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-c56b8b0c44-a1"
+}

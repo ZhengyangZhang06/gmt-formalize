@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1.wedge_vector-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "The functional β ↦ ζ(β∧α) is represented by V = Σ_l ζ(e_l♭∧α)e_l, and V ∈ Q when ζ orients Q",
+  "statement": "Let P, n ∈ ℕ, let ζ ∈ Λ_{n+1}(ℝ^P) = MultiVector P (n+1) (a continuous linear functional on (n+1)-covectors) and let α ∈ Λⁿ(ℝ^P) = Covector (Euclid P) n. For a 1-covector β : ℝ^P →L[ℝ] ℝ write β∧α := alternatizeUncurryFin(β.smulRight α), so that (β∧α)(v_0, …, v_n) = Σ_{i=0}^{n} (−1)^i·β(v_i)·α(v_0, …, v̂_i, …, v_n). Let e_l := EuclideanSpace.single l 1 (l ∈ Fin P) be the standard basis, e_l♭ := innerSL ℝ e_l = ⟨e_l, ·⟩, and V := Σ_l ζ(e_l♭∧α)·e_l ∈ ℝ^P. Then (1) ζ(β∧α) = β(V) for every 1-covector β; and (2) V ∈ Q for every linear subspace Q ⊆ ℝ^P of which ζ is a unit orientation (IsUnitOrientationOf ζ Q).",
+  "lean_statement": "∀ (P n : ℕ) (ζ : MultiVector P (n + 1)) (α : Covector (Euclid P) n), (∀ β : Euclid P →L[ℝ] ℝ, ζ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α)) = β (∑ l : Fin P, ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight α)) • EuclideanSpace.single l (1 : ℝ))) ∧ ∀ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ζ Q → (∑ l : Fin P, ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight α)) • EuclideanSpace.single l (1 : ℝ)) ∈ Q",
+  "lean_name": "dor_lmbsf_ll_wedge_representing_vector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-5a530448f8-a1"
+}
