@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3cf14cead035c75b3818e84e7339c2634ef7ed762ecbd2e418bb7d79478d1e24",
+  "git_delta": {
+    "base_commit": "c0e7a8e201a78361dae52512b9ab186aff1901cd",
+    "candidate_commit": "a5b46600e53937ecc5591c60b431688c5c0fc05f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_ps_ball_volume_le",
+    "diff_sha256": "adb97f344d49ff796df445db77b68008b8909b9bad2fb0746425270b1cf37e4d",
+    "source_sha256": "bbaaf6035d51f1470c73784e58a133b6ef1cb485e7538cb95407f9b7efe3ee3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_ps_ball_volume_le",
+      "statement": "∀ (n : ℕ) (r : ℝ), 0 ≤ r → volume (closedBall (0 : Eucl n) r) ≤ ENNReal.ofReal ((2 * r) ^ n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
