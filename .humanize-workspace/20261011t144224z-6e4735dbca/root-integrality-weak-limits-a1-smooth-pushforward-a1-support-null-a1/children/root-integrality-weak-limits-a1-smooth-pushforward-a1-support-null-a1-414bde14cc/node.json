@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.weighted_fundamental_lemma-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1",
+  "depth": 4,
+  "title": "Fundamental lemma of the calculus of variations with a positive weight on a set",
+  "statement": "Let P ∈ ℕ and let μ be a measure on ℝ^P (Borel σ-algebra). Let M, W ⊆ ℝ^P with W open and M μ-null-measurable, let θ, g : ℝ^P → ℝ, and let C ∈ ℝ. Assume:\n(i) θ(x) > 0 for every x ∈ M;\n(ii) θ is μ-integrable on M ∩ W;\n(iii) g is a.e.-strongly measurable for μ⌞M = μ.restrict M;\n(iv) |g(x)| ≤ C for μ⌞M-a.e. x;\n(v) ∫_M θ(x)·(φ(x)·g(x)) dμ(x) = 0 for every C^∞ function φ : ℝ^P → ℝ with compact support and tsupport φ ⊆ W.\nThen for μ⌞M-a.e. x, x ∈ W implies g(x) = 0.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0",
+  "lean_name": "iwl_sp_sn_weighted_fundamental_lemma",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1-414bde14cc-a1"
+}
