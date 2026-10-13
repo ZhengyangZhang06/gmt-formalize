@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "blow.?up|arzela|ascoli|weak equation|weak solution|dohr_eb_sch_bu_",
+        "theorem arzela_ascoli|theorem hasFDerivAt_of_tendstoUniformlyOn|theorem tendsto_subseq_of_bounded|theorem TendstoUniformlyOn.tendsto_comp|support_fderiv_subset|theorem opNorm_le_bound₂|theorem le_opNorm₂|setIntegral_eq_integral_of_forall_compl_eq_zero|integral_eq_sub_of_hasDerivAt",
+        "theorem ContinuousOn.integrableOn_compact|lemma ContinuousOn.integrableOn_compact|theorem Continuous.integrable_of_hasCompactSupport|lemma Continuous.integrable_of_hasCompactSupport",
+        "dohr_eb_sch_bu_(weak_eq_sub_affine|holder_diag_subseq|contDiff_of_fderiv_tendsto|weak_eq_limit|blowup_limit)",
+        "m.contract_scope(s.read_text(),'GMT.Ch05.main_theorem')"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-22cb2001d8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-22cb2001d8/decomposition-v1.json",
+        "/tmp/blowup-independent-audit-3ihtr2zv/src/Challenges.lean",
+        "/tmp/blowup-independent-audit-3ihtr2zv/src/Instances.lean",
+        "/tmp/blowup-independent-audit-3ihtr2zv/src/AsmLimit.lean",
+        "/tmp/blowup-independent-audit-3ihtr2zv/src/AsmParent.lean"
+      ],
+      "conclusion": "Verified project pin ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d; relevant runtime sources match the snapshot. The project search found only unrelated Ch08 blow-up references. Pinned Mathlib supplies the cited compactness, differentiation and integration tools, whose checked axiom lists contain only standard axioms. All five exact one-line propositions independently elaborate against a freshly compiled frozen contract without child implementations. Scalar actions, bilinear evaluation, operator-norm uniform convergence, real powers and Haar measure instances check correctly. All names are bare, distinct and unreserved; no accepted declaration is reused. Dependencies are acyclic. Both conditional assembly proofs compile: blowup_limit uses exactly its three declared prerequisites, and the exact selected parent uses weak_eq_sub_affine, blowup_limit and its four frozen sibling prerequisites, plus standard axioms and no sorryAx. The split is appropriate and establishes the selected contract. The scaling/compactness methodology is also consistent with [Vita, §5.2](https://arxiv.org/html/2510.01765v1#S5.SS2)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weak_eq_sub_affine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary real scaling and both global zero-mean hypotheses. Openness justifies the derivative formula; compact support of the test derivative supplies integrability before integral subtraction. The stated algebra proves all three conclusions without undeclared dependencies or circularity."
+    },
+    {
+      "key": "holder_diag_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract matches the prose. Arzela-Ascoli applies to continuous, uniformly bounded tails on compact balls. The nested extraction yields a strictly increasing diagonal, its indices tend to infinity within every fixed subsequence, and uniqueness makes the local limits compatible. The proof establishes every-radius convergence, normalization, continuity and the global Holder bound."
+    },
+    {
+      "key": "c1_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone proposition coincide. Eventual smoothness on larger balls validates the segment FTC formula. Uniform derivative convergence gives pointwise convergence to the stated integral, satisfying the pinned derivative-limit theorem on each open ball. Continuity of V then gives the required global C1 function."
+    },
+    {
+      "key": "weak_eq_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. On sufficiently large domains, continuity and compact support justify every integral manipulation. The explicit uniform bounds force the error integrals to zero and the principal integrals to the claimed limit. Absolute values handle unrestricted signs of c_k and d_k; alpha = 0 is covered. No circular dependency occurs."
+    },
+    {
+      "key": "blowup_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Coefficient compactness uses max(M,0), subsequences preserve all convergence hypotheses, and the three declared children apply with the supplied data. Ellipticity and boundedness pass to A; uniform convergence at moving points preserves the unit gradient. Together with affine subtraction and the parent's existing prerequisites, these conclusions yield the exact selected estimate. The conditional Lean assembly independently confirms both dependency direction and sufficiency."
+    }
+  ],
+  "required_changes": []
+}
