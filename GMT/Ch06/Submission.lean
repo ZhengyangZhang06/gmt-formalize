@@ -359,6 +359,41 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- `v ↦ ι(v)`, `ι(v) α = alternatizeUncurryFin ((innerSL ℝ v).smulRight α) = v♭ ∧ α`, is
+`(m + 1)`-Lipschitz from `ℝ^P` to `Λ^m →L Λ^{m+1}` with the operator norm. -/
+theorem Submission.slicing_im_st_mf_contraction_lipschitz :
+    ∀ (P m : ℕ), LipschitzWith ((m : ℝ≥0) + 1) (fun v : Eucl P =>
+      (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ v))) := by
+  intro P m
+  let ι : Eucl P → (Covector (Eucl P) m →L[ℝ] Covector (Eucl P) (m + 1)) := fun v =>
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+      (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ v))
+  -- Step 1: `ι(v) α = alternatizeUncurryFin ((innerSL ℝ v).smulRight α)` by definition.
+  have hform (v : Eucl P) (α : Covector (Eucl P) m) :
+      ι v α = ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ v).smulRight α) := rfl
+  -- Step 2: `ι(v) - ι(w) = ι(v - w)`, checked at every `α` and `σ = (σ₀, …, σₘ)`.
+  have hsub (v w : Eucl P) : ι v - ι w = ι (v - w) := by
+    ext α σ
+    simp only [_root_.sub_apply, ContinuousAlternatingMap.sub_apply, hform,
+      ContinuousAlternatingMap.alternatizeUncurryFin_apply, ContinuousLinearMap.smulRight_apply,
+      ContinuousAlternatingMap.smul_apply, innerSL_apply_apply, inner_sub_left, sub_smul,
+      smul_sub, Finset.sum_sub_distrib]
+  -- Step 3: `‖ι(u)‖ ≤ (m + 1) |u|`.
+  have hnorm (u : Eucl P) : ‖ι u‖ ≤ ((m : ℝ) + 1) * ‖u‖ := by
+    refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun α => ?_
+    rw [hform]
+    calc ‖ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ u).smulRight α)‖
+        ≤ ((m : ℝ) + 1) * ‖(innerSL ℝ u).smulRight α‖ :=
+          ContinuousAlternatingMap.norm_alternatizeUncurryFin_le _
+      _ = ((m : ℝ) + 1) * ‖u‖ * ‖α‖ := by
+          rw [ContinuousLinearMap.norm_smulRight_apply, innerSL_apply_norm, mul_assoc]
+  -- Step 4: `dist (ι v) (ι w) = ‖ι (v - w)‖ ≤ (m + 1) dist v w`.
+  change LipschitzWith ((m : ℝ≥0) + 1) ι
+  refine LipschitzWith.of_dist_le_mul fun v w => ?_
+  rw [dist_eq_norm, dist_eq_norm, hsub, NNReal.coe_add, NNReal.coe_natCast, NNReal.coe_one]
+  exact hnorm (v - w)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
