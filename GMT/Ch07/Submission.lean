@@ -3024,6 +3024,63 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Bounded mean curvature and monotonicity for a varifold stationary in `U ∩ N`** (Simon Ch. 4,
+2.5–2.7 and 3.14–3.17; step 2 of the proof of 7.4.3).  `dsmc_tangent_projection_field` gives `r₀`,
+`β` and a `C¹` field `Pt` of tangent projections of `N` near `y₀`; put `κ = nβ`.  For
+`T = τ(M, θ, ξ)` with `spt T ⊆ N`, `μ_R` is carried by `U ∩ spt μ_R = spt T ⊆ N`
+(`dor_imrep_massOn_eq_measure_and_support`, `M ⊆ U`); as `θ ≥ 1` on `M`, `Hⁿ(M \ N) = 0`, so
+`TₓM ⊆ TₓN` at `μ_R`-a.e. `x` (`dsmc_approxTangentPlane_subset_tangentSpace`).  Then
+`dsmc_firstVariation_eq_neg_meanCurvature` gives (a), and `dsmc_exp_ball_mass_monotone` on
+`B̄_{r₀}(z) ⊆ U`, `B_{r₀}(z) ⊆ B_{2r₀}(y₀)` gives (b). -/
+theorem Submission.dor_stationary_mean_curvature_monotonicity : ∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (y₀ : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → y₀ ∈ N ∩ U → ∃ r₀ κ : ℝ, 0 < r₀ ∧ 0 ≤ κ ∧ closedBall y₀ (3 * r₀) ⊆ U ∧ ∀ (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → T.support ⊆ N → R.IsStationaryAlong N → (∃ H : Euclid (n + k) → Euclid (n + k), AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ κ) ∧ ∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball y₀ (2 * r₀) → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) ∧ ∀ z ∈ ball y₀ r₀, ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ ≤ r₀ → ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) * R.measure (ball z σ) ≤ ENNReal.ofReal (Real.exp (κ * ρ) / ρ ^ n) * R.measure (ball z ρ) := by
+  intro n k ℓ _ _ U N y₀ hU hN _ hy₀
+  -- Step 1: a `C¹` field `Pt` of tangent projections of `N` near `y₀`; `r₀ = r` and `κ = nβ`
+  obtain ⟨r, β, Pt, hr, hβ, hcl, hPt, hsym, hDPt, hPtT, hPtfix⟩ :=
+    Submission.dsmc_tangent_projection_field (n + k) (n + ℓ) U N y₀ hU hN hy₀
+  refine ⟨r, n * β, hr, by positivity, hcl, fun T R hRT hTN hstat => ?_⟩
+  -- Step 2: `μ_R ≪ Hⁿ⌞M` with `M ⊆ U`, and `U ∩ spt μ_R = spt T ⊆ N`, so `μ_R(ℝᴾ \ N) = 0`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hU0 : R.measure Uᶜ = 0 := by
+    refine hac ?_
+    rw [Measure.restrict_apply' R.measurableSet_carrier]
+    exact measure_mono_null (fun x hx => (hx.1 (R.carrier_subset hx.2)).elim) measure_empty
+  have hspt := (Submission.dor_imrep_massOn_eq_measure_and_support (n + k) n U T R hU hRT).2
+  have hN0 : R.measure Nᶜ = 0 := by
+    refine measure_mono_null (fun x hxN => ?_)
+      (measure_union_null hU0 (Measure.measure_compl_support (μ := R.measure)))
+    by_contra hx
+    simp only [mem_union, mem_compl_iff, not_or, not_not] at hx hxN
+    exact hxN (hTN (by rw [hspt]; exact hx))
+  have hNae : ∀ᵐ x ∂R.measure, x ∈ N := mem_ae_iff.2 hN0
+  -- `θ ≥ 1` on `M`, so `Hⁿ⌞M ≪ μ_R` and `Hⁿ(M \ N) = 0`
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  have hac' : μHE[n].restrict R.carrier ≪ R.measure := by
+    refine withDensity_absolutelyContinuous' hθ.aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact_mod_cast (R.mult_pos x hx).ne'
+  have hMN : μHE[n] (R.carrier \ N) = 0 := by
+    have h := hac' hN0
+    rwa [Measure.restrict_apply' R.measurableSet_carrier, inter_comm, ← Set.sdiff_eq] at h
+  -- Step 3: `TₓM ⊆ TₓN` at `μ_R`-a.e. `x`, `TₓM` being an approximate tangent plane there
+  have hTM : ∀ᵐ x ∂R.measure, x ∈ ball y₀ (3 * r) →
+      (approxTangentPlane n R.carrier x : Set (Euclid (n + k))) ⊆ tangentSpace N x := by
+    filter_upwards [hac.ae_le R.orients, hNae] with x hx hxN _
+    obtain ⟨Q, hQ, -⟩ := hx
+    have h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    rw [approxTangentPlane, dite_eq_left h]
+    exact Submission.dsmc_approxTangentPlane_subset_tangentSpace (n + k) n 2 (n + ℓ) R.carrier N
+      x h.choose (by norm_num) hN hxN hMN h.choose_spec
+  have hpm := Submission.dsmc_approxTangentPlane_starProjection_aemeasurable (n + k) n U R hU
+  -- Step 4: (a), the generalized mean curvature `H` of `V` in `B_{2r₀}(y₀)`, `|H| ≤ nβ`
+  obtain ⟨H, hHm, hHb, hHfv⟩ := Submission.dsmc_firstVariation_eq_neg_meanCurvature (n + k) n U N
+    R Pt y₀ r β hβ (ball_subset_closedBall.trans hcl) hPt hsym hDPt hPtT hPtfix hNae hTM hpm hstat
+  refine ⟨⟨H, hHm, hHb, hHfv⟩, fun z hz σ ρ hσ hσρ hρ => ?_⟩
+  -- Step 5: (b) in `B_{r₀}(z)`, as `B̄_{r₀}(z) ⊆ B̄_{3r₀}(y₀)` and `B_{r₀}(z) ⊆ B_{2r₀}(y₀)`
+  have hz' : dist z y₀ < r := hz
+  exact Submission.dsmc_exp_ball_mass_monotone (n + k) n U R H (n * β) z r
+    ((closedBall_subset_closedBall' (by linarith)).trans hcl) hpm hHm hHb
+    (fun X hX hXc hXs => hHfv X hX hXc (hXs.trans (ball_subset_ball' (by linarith)))) σ ρ hσ hσρ hρ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
