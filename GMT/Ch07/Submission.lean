@@ -451,6 +451,59 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Orthogonal projection onto a 2-plane in an orthonormal frame** (the linear-algebra half of
+the polar-angle differential `idtp_cse_rc_angle_fderiv`, used for Simon 7.3.3(1)).  If `a, e ∈ Q`
+are orthonormal and `dim Q = 2`, then `π_Q y = ⟨y, a⟩ a + ⟨y, e⟩ e` and
+`|π_Q y|² = ⟨y, a⟩² + ⟨y, e⟩²`.  The orthonormal pair `![a, e]` is independent, so it spans `Q`;
+`y − (⟨y, a⟩ a + ⟨y, e⟩ e)` is orthogonal to `a` and `e`, hence to `Q`, and `π_Q y` is the unique
+point of `Q` with this property. -/
+theorem Submission.idtp_cse_rc_af_plane_projection : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ y : Euclid P, Q.starProjection y = inner ℝ y a • a + inner ℝ y e • e ∧ ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 := by
+  intro P Q a e hQ ha he ha1 he1 hae y
+  -- `⟪a, a⟫ = ⟪e, e⟫ = 1` and `⟪a, e⟫ = ⟪e, a⟫ = 0`
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha1, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he1, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  -- `![a, e]` is orthonormal, hence linearly independent
+  have hv : Orthonormal ℝ ![a, e] := by
+    rw [orthonormal_iff_ite]
+    simp only [Fin.forall_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, haa, hee, hae, hea]
+    simp
+  -- `span {a, e} = Q`: the span lies in `Q` and has the same dimension `2`
+  have hrange : Set.range ![a, e] = {a, e} := Matrix.range_cons_cons_empty a e ![]
+  have hspan : Submodule.span ℝ {a, e} = Q := by
+    rw [← hrange]
+    refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+    · rw [Submodule.span_le, hrange, Set.insert_subset_iff, Set.singleton_subset_iff]
+      exact ⟨ha, he⟩
+    · rw [finrank_span_eq_card hv.linearIndependent, hQ, Fintype.card_fin]
+  -- `w = ⟪y, a⟫ a + ⟪y, e⟫ e` lies in `Q`, and `y - w` is orthogonal to `a` and `e`
+  have hwQ : inner ℝ y a • a + inner ℝ y e • e ∈ Q :=
+    Q.add_mem (Q.smul_mem _ ha) (Q.smul_mem _ he)
+  have hya : inner ℝ (y - (inner ℝ y a • a + inner ℝ y e • e)) a = (0 : ℝ) := by
+    rw [inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, haa, hea]
+    ring
+  have hye : inner ℝ (y - (inner ℝ y a • a + inner ℝ y e • e)) e = (0 : ℝ) := by
+    rw [inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, hae, hee]
+    ring
+  -- so `y - w` is orthogonal to `span {a, e} = Q` (the kernel of `⟪y - w, ·⟫`), and `π y = w`
+  have hproj : Q.starProjection y = inner ℝ y a • a + inner ℝ y e • e := by
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero hwQ fun z hz => ?_
+    have hK : Submodule.span ℝ {a, e} ≤
+        LinearMap.ker (innerₛₗ ℝ (y - (inner ℝ y a • a + inner ℝ y e • e))) := by
+      rw [Submodule.span_le, Set.insert_subset_iff, Set.singleton_subset_iff]
+      exact ⟨by rw [SetLike.mem_coe, LinearMap.mem_ker, innerₛₗ_apply_apply, hya],
+        by rw [SetLike.mem_coe, LinearMap.mem_ker, innerₛₗ_apply_apply, hye]⟩
+    rw [← hspan] at hz
+    have hz' := hK hz
+    rwa [LinearMap.mem_ker, innerₛₗ_apply_apply] at hz'
+  -- `‖π y‖² = ⟪w, w⟫ = ⟪y, a⟫² + ⟪y, e⟫²`
+  refine ⟨hproj, ?_⟩
+  rw [hproj, ← real_inner_self_eq_norm_sq, inner_add_left, inner_add_right, inner_add_right,
+    real_inner_smul_left, real_inner_smul_left, real_inner_smul_left, real_inner_smul_left,
+    real_inner_smul_right, real_inner_smul_right, real_inner_smul_right, real_inner_smul_right,
+    haa, hee, hae, hea]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
