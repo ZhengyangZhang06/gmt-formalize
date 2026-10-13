@@ -707,6 +707,33 @@ theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Euc
   rw [harea, ← lintegral_indicator₀ hA]
   exact lintegral_congr fun y => (hfib y).symm
 
+/-- Bochner change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6 for
+integrable integrands; used for Ch. 6, 4.5(2)): if `Φ` is Lipschitz and `κ`-antilipschitz on the
+open set `Ω`, `A ⊆ Φ(Ω)` is `Hⁿ`-null-measurable and `F` is Banach-valued and `Hⁿ⌞A`-integrable,
+then `D = Ω ∩ Φ⁻¹(A)` is `Lⁿ`-null-measurable, `JΦ · (F ∘ Φ)` is `Lⁿ`-integrable on `D` and
+`∫_A F dHⁿ = ∫_D JΦ(w) F(Φ(w)) dLⁿ(w)`.  The nonnegative chart formula, valid for every Borel
+`g ≥ 0`, says that `Φ` pushes `JΦ · Lⁿ⌞D` forward to `Hⁿ⌞A`. -/
+theorem Submission.slicing_im_ll_twl_chart_integral_eq : ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (F : Eucl P → E), IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → IntegrableOn F A (μHE[n] : Measure (Eucl P)) → NullMeasurableSet (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl n)) ∧ IntegrableOn (fun w => Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det • F (Φ w)) (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl n)) ∧ ∫ x in A, F x ∂(μHE[n] : Measure (Eucl P)) = ∫ w in Ω ∩ Φ ⁻¹' A, Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det • F (Φ w) ∂(volume : Measure (Eucl n)) := by
+  intro E _ _ _ P n Φ Ω A F hΩ hLip hanti hAΩ hA hF
+  -- Step 1: the nonnegative chart formula with `g = 0` gives that `D` is null-measurable.
+  have hD : NullMeasurableSet (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl n)) :=
+    (Submission.lpf_raf_chart_change_of_variables P n Φ Ω A (fun _ => 0) hΩ hLip hanti hAΩ hA
+      aemeasurable_const).1
+  -- Step 2: `Φ` is continuous on the open set `Ω ⊇ D`, hence a.e.-measurable on `D`.
+  obtain ⟨K, hK⟩ := hLip
+  have hΦ : AEMeasurable Φ ((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)) :=
+    (hK.continuousOn.aemeasurable hΩ.measurableSet).mono_set inter_subset_left
+  -- Steps 3–6: transfer `F` along `Φ` with the weight `JΦ` (Borel, and nonnegative as a square
+  -- root), using the nonnegative chart formula for each Borel `g`.
+  exact ⟨hD, Submission.slicing_im_ll_twl_cie_weighted_transfer (Eucl n) (Eucl P) E
+    ((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)) ((μHE[n] : Measure (Eucl P)).restrict A)
+    Φ (fun w => Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1))
+      (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) F hΦ
+    (Submission.slicing_im_ll_twl_cie_jacobian_measurable P n Φ).aemeasurable
+    (fun _ => Real.sqrt_nonneg _)
+    (fun g hg => (Submission.lpf_raf_chart_change_of_variables P n Φ Ω A g hΩ ⟨K, hK⟩ hanti hAΩ
+      hA hg.aemeasurable).2.2) hF⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
