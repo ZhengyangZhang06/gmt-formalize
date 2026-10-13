@@ -451,6 +451,56 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Strip masses of an arbitrary set** (Simon Ch. 6, remark before 4.10: `M_W(T⌞{f < t})` is
+increasing in `t`).  Put `F(s) = μ(G ∩ {a < f < min(s, b)})`, finite by hypothesis.  Then `F` is
+nondecreasing, `F(b) − F(a) = μ(G ∩ {a < f < b})`, and `μ(G ∩ {t − h < f < t}) ≤ F(t) − F(t − h)`
+because the strip `{t − h < f < t}` is open, hence measurable, and splits the possibly
+non-measurable `G ∩ {a < f < t}` into `G ∩ {t − h < f < t}` and a superset of
+`G ∩ {a < f < t − h}`. -/
+theorem Submission.cbr_smm_strip_distribution_function : ∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ), Continuous f → μ (G ∩ {x | a < f x ∧ f x < b}) < ∞ → ∃ F : ℝ → ℝ, Monotone F ∧ ENNReal.ofReal (F b - F a) = μ (G ∩ {x | a < f x ∧ f x < b}) ∧ ∀ t ∈ Ioo a b, ∀ h ∈ Ioo 0 (t - a), μ (G ∩ {x | t - h < f x ∧ f x < t}) ≤ ENNReal.ofReal (F t - F (t - h)) := by
+  intro P μ f G a b hf hfin
+  -- `G ∩ {a < f < s}` increases with `s` and has finite measure for `s ≤ b`
+  have hmono : ∀ {s s' : ℝ}, s ≤ s' →
+      G ∩ {x | a < f x ∧ f x < s} ⊆ G ∩ {x | a < f x ∧ f x < s'} :=
+    fun hss' x hx => ⟨hx.1, hx.2.1, hx.2.2.trans_le hss'⟩
+  have hfin' : ∀ {s : ℝ}, s ≤ b → μ (G ∩ {x | a < f x ∧ f x < s}) ≠ ∞ :=
+    fun hs => ((measure_mono (hmono hs)).trans_lt hfin).ne
+  refine ⟨fun s => (μ (G ∩ {x | a < f x ∧ f x < min s b})).toReal, ?_, ?_, ?_⟩
+  · intro s s' hss'
+    exact ENNReal.toReal_mono (hfin' (min_le_right _ _))
+      (measure_mono (hmono (min_le_min_right b hss')))
+  · simp only [min_self]
+    rcases le_or_gt b a with hba | hab
+    · -- `b ≤ a`: both sides vanish
+      have hempty : G ∩ {x | a < f x ∧ f x < b} = ∅ :=
+        eq_empty_of_forall_notMem fun x hx => (hx.2.1.trans hx.2.2).not_ge hba
+      rw [min_eq_right hba, sub_self, ENNReal.ofReal_zero, hempty, measure_empty]
+    · -- `a < b`: `F a = μ ∅ = 0`
+      have hempty : G ∩ {x | a < f x ∧ f x < a} = ∅ :=
+        eq_empty_of_forall_notMem fun x hx => (hx.2.1.trans hx.2.2).false
+      rw [min_eq_left hab.le, hempty, measure_empty, ENNReal.toReal_zero, sub_zero,
+        ENNReal.ofReal_toReal hfin.ne]
+  · rintro t ⟨-, htb⟩ h ⟨hh0, hht⟩
+    have hst : t - h ≤ b := by linarith
+    simp only [min_eq_left htb.le, min_eq_left hst]
+    -- the strip `{t - h < f < t}` is open, hence measurable; split `G ∩ {a < f < t}` along it
+    have hS : MeasurableSet {x | t - h < f x ∧ f x < t} :=
+      ((isOpen_lt continuous_const hf).inter (isOpen_lt hf continuous_const)).measurableSet
+    have hinter : G ∩ {x | a < f x ∧ f x < t} ∩ {x | t - h < f x ∧ f x < t} =
+        G ∩ {x | t - h < f x ∧ f x < t} :=
+      Subset.antisymm (fun x hx => ⟨hx.1.1, hx.2⟩) fun x hx =>
+        ⟨⟨hx.1, by linarith [hx.2.1], hx.2.2⟩, hx.2⟩
+    have hdiff : G ∩ {x | a < f x ∧ f x < t - h} ⊆
+        (G ∩ {x | a < f x ∧ f x < t}) \ {x | t - h < f x ∧ f x < t} :=
+      fun x hx => ⟨hmono (by linarith) hx, fun hx' => hx.2.2.not_gt hx'.1⟩
+    have key : μ (G ∩ {x | t - h < f x ∧ f x < t}) + μ (G ∩ {x | a < f x ∧ f x < t - h}) ≤
+        μ (G ∩ {x | a < f x ∧ f x < t}) := by
+      rw [← measure_inter_add_sdiff (G ∩ {x | a < f x ∧ f x < t}) hS, hinter]
+      exact add_le_add le_rfl (measure_mono hdiff)
+    rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, ENNReal.ofReal_toReal (hfin' htb.le),
+      ENNReal.ofReal_toReal (hfin' hst)]
+    exact ENNReal.le_sub_of_add_le_right (hfin' hst) key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
