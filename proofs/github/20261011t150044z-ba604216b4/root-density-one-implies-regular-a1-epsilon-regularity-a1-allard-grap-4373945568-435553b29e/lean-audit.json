@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1352f78a47479cad4884d1f3dc9f73559bbe461397929ccc3bd5e4d9b7735f0e",
+  "git_delta": {
+    "base_commit": "9e4469b4c7f6626a8883905bc210b7f990c8b92d",
+    "candidate_commit": "cba007e5f6e22a17c7f31874532dc05ab81f14e3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_pb_double_integral_bound",
+    "diff_sha256": "d9f85181da893549aa3def1cc0420ca3137ce92c4879a84c657ae286ae0d1edc",
+    "source_sha256": "ef6f5f55ff3c0386712a42ad5925e65041d1d2117f1186c5cc3081dbfc497355",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_pb_double_integral_bound",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∫ x in ball (0 : Euclid n) 1, ∫ y in ball (0 : Euclid n) 1, (u x - u y) ^ 2 ≤ 2 ^ (n + 2) * (volume (ball (0 : Euclid n) 1)).toReal * ∫ z in ball (0 : Euclid n) 1, ‖fderiv ℝ u z‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
