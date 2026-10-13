@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ecef8601be46942d257ecef26025ae4279d2725c66a7052575e1a9dee8107d10",
+  "git_delta": {
+    "base_commit": "de560c469d02806243edab2d35b9c4b91028dbc8",
+    "candidate_commit": "6c5fc81ba5e7aa6b8d027fdfa80b448b6039e423",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_iprod_slice_covector_norm_le",
+    "diff_sha256": "a2529bb8ca2a8611e2b4f82c2c46f0f12fe0c840028df121a22c0ececf8c0954",
+    "source_sha256": "a2ae4247cccd2f213d56df049d88f1daf6985940bfd4ea0b7883f8bcf9cd47a1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_iprod_slice_covector_norm_le",
+      "statement": "(∀ (m k : ℕ) (γ : Covector (Eucl (m + 1)) (k + 1)) (γ' : Covector (Eucl m) k), (∀ v : Fin k → Eucl m, γ' v = γ (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧ (∀ (m q : ℕ) (γ : Covector (Eucl (m + 1)) q) (γ' : Covector (Eucl m) q), (∀ v : Fin q → Eucl m, γ' v = γ (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧ (∀ (P n : ℕ) (α : Covector (Eucl P) n), covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
