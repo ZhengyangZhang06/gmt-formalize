@@ -776,6 +776,78 @@ theorem Submission.dorag_tes_lipschitz_graph_area_bounds : ∀ (n k : ℕ), 0 < 
     filter_upwards [ae_restrict_of_ae hJ] with v hv
     exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal hv.2) zero_le
 
+/-- **`L²` height of `μ` about the plane of an affine approximation of a Lipschitz graph** (Simon
+Ch. 5, proof of 4.5; chapter-05.txt lines 960–970, with (2)–(4) at lines 789–797).  Put
+`τ = ξ + ι'c`, `S = range(ι + ι'Λ)`, `Φ(v) = ξ + ιv + ι'f(v)` and `F = Φ(ℝⁿ)`.  Then `dim S = n`,
+and if `θ = 1` `μ`-a.e. on `B = B_t(τ)` and `|(x − ξ) − p_T(x − ξ)| ≤ h₀` on `spt μ ∩ B`, then
+`∫_B |(x − τ) − p_S(x − τ)|² dμ ≤ (1 + n2ⁿ) ∫_{B̆ⁿ_t(0)} |f − c − Λ·|²` plus
+`(h₀ + |c| + ‖Λ‖t)² μ(B ∖ F)`.  On `B ∩ F ⊆ Φ(Bⁿ_t)` we have `μ ≤ Hⁿ`, and the area formula with
+`|(Φ(v) − τ) − p_S(Φ(v) − τ)| ≤ |f(v) − c − Λv|` gives the first term; `μ`-a.e. point of `B ∖ F`
+lies in `spt μ`, where the integrand is at most `(h₀ + |c| + ‖Λ‖t)²`. -/
+theorem Submission.dorag_tes_graph_affine_height : ∀ (n k : ℕ), 0 < n → ∀ (U : Set (Euclid (n + k))) (R : IMRep U n) (ξ : Euclid (n + k)) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (c : Euclid k) (Λ : Euclid n →L[ℝ] Euclid k) (t h₀ : ℝ), 0 < t → 0 ≤ h₀ → Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → (∀ᵐ x ∂R.measure, x ∈ closedBall (ξ + ι' c) t → R.mult x = 1) → (∀ x ∈ R.measure.support ∩ closedBall (ξ + ι' c) t, ‖(x - ξ) - T.starProjection (x - ξ)‖ ≤ h₀) → Module.finrank ℝ (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)) = n ∧ (∫⁻ x in closedBall (ξ + ι' c) t, ENNReal.ofReal (‖(x - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (x - (ξ + ι' c))‖ ^ 2) ∂R.measure) ≤ ENNReal.ofReal (1 + n * 2 ^ n) * (∫⁻ v in ball (0 : Euclid n) t, ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2)) + ENNReal.ofReal ((h₀ + ‖c‖ + ‖Λ‖ * t) ^ 2) * R.measure (closedBall (ξ + ι' c) t \ range (fun v => ξ + ι v + ι' (f v))) := by
+  intro n k hn U R ξ T ι ι' f c Λ t h₀ ht hh₀ hT horth hιT hf hmult hheight
+  -- `dim S = n` and the pointwise distance bounds come from the frame lemma.
+  obtain ⟨hrank, hgraph, hoff⟩ :=
+    Submission.dorag_tes_gah_plane_frame_bounds n k T ι ι' Λ ξ c hT horth hιT
+  refine ⟨hrank, ?_⟩
+  set τ := ξ + ι' c
+  set S := LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)
+  set Φ : Euclid n → Euclid (n + k) := fun v => ξ + ι v + ι' (f v)
+  set g : Euclid (n + k) → ℝ≥0∞ := fun x =>
+    ENNReal.ofReal (‖(x - τ) - S.starProjection (x - τ)‖ ^ 2)
+  have hgm : Measurable g := by fun_prop
+  -- Split `B = (B ∩ F) ∪ (B ∖ F)`; no measurability of `F` is needed.
+  have hsplit : ∫⁻ x in closedBall τ t, g x ∂R.measure ≤
+      ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂R.measure +
+        ∫⁻ x in closedBall τ t \ range Φ, g x ∂R.measure := by
+    conv_lhs => rw [← Set.inter_union_sdiff (closedBall τ t) (range Φ)]
+    exact lintegral_union_le _ _ _
+  -- Graph part: `B ∩ F ⊆ Φ(Bⁿ_t)` since `|v| ≤ |Φ(v) − τ|`.
+  have hsub : closedBall τ t ∩ range Φ ⊆ Φ '' closedBall (0 : Euclid n) t := by
+    rintro x ⟨hxB, v, rfl⟩
+    refine ⟨v, ?_, rfl⟩
+    rw [mem_closedBall, dist_eq_norm] at hxB
+    rw [mem_closedBall_zero_iff]
+    exact (hgraph v (f v)).2.trans hxB
+  have hgraph_part : ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂R.measure ≤
+      ENNReal.ofReal (1 + n * 2 ^ n) *
+        ∫⁻ v in ball (0 : Euclid n) t, ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2) := by
+    calc ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂R.measure
+        ≤ ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂μHE[n] :=
+          (Submission.dorag_tes_gah_mult_one_le_hausdorff (n + k) n U R (closedBall τ t)
+            measurableSet_closedBall hmult).2 _ g inter_subset_left
+      _ ≤ ∫⁻ x in Φ '' closedBall (0 : Euclid n) t, g x ∂μHE[n] := lintegral_mono_set hsub
+      _ ≤ ∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+            ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * g (Φ v) :=
+          (Submission.dorag_tes_lipschitz_graph_area_bounds n k hn ι ι' ξ f
+            (closedBall (0 : Euclid n) t) g horth hf measurableSet_closedBall hgm).2
+      _ ≤ ∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+            ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) *
+              ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2) := by
+          refine lintegral_mono fun v => mul_le_mul' le_rfl ?_
+          exact ENNReal.ofReal_le_ofReal
+            (pow_le_pow_left₀ (norm_nonneg _) (hgraph v (f v)).1 2)
+      _ ≤ _ := Submission.dorag_tes_gah_lipschitz_weight_ball_le n k hn f hf _ t
+  -- Off-graph part: `μ`-a.e. point of `B ∖ F` lies in `spt μ ∩ B`, where `g ≤ K²`.
+  have hoff_part : ∫⁻ x in closedBall τ t \ range Φ, g x ∂R.measure ≤
+      ENNReal.ofReal ((h₀ + ‖c‖ + ‖Λ‖ * t) ^ 2) * R.measure (closedBall τ t \ range Φ) := by
+    rw [← setLIntegral_const]
+    refine lintegral_mono_ae ?_
+    have h1 : ∀ᵐ x ∂R.measure.restrict (closedBall τ t \ range Φ), x ∈ R.measure.support :=
+      ae_restrict_of_ae Measure.support_mem_ae
+    have h2 : ∀ᵐ x ∂R.measure.restrict (closedBall τ t \ range Φ), x ∈ closedBall τ t :=
+      ae_restrict_of_ae_restrict_of_subset sdiff_subset (ae_restrict_mem measurableSet_closedBall)
+    filter_upwards [h1, h2] with x hx1 hx2
+    have hxt : ‖x - τ‖ ≤ t := by rwa [mem_closedBall, dist_eq_norm] at hx2
+    have hK : ‖(x - τ) - S.starProjection (x - τ)‖ ≤ h₀ + ‖c‖ + ‖Λ‖ * t :=
+      calc ‖(x - τ) - S.starProjection (x - τ)‖
+          ≤ ‖(x - ξ) - T.starProjection (x - ξ)‖ + ‖c‖ + ‖Λ‖ * ‖x - τ‖ := hoff x
+        _ ≤ h₀ + ‖c‖ + ‖Λ‖ * t := by
+          gcongr
+          exact hheight x ⟨hx1, hx2⟩
+    exact ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ (norm_nonneg _) hK 2)
+  exact hsplit.trans (add_le_add hgraph_part hoff_part)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
