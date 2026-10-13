@@ -2756,6 +2756,33 @@ theorem Submission.rectifiability_projection_null : ∀ (P m : ℕ) (U : Set (Eu
   exact Submission.rpn_compact_null_of_le_mul_diff P U K μ C hU hK hKU hfin fun W hW =>
     (hμ.2 W hW).trans_le (hC W hW)
 
+/-- **Simon Ch. 6, Remark 2.37(1) (p. 144).**  If `M_W(T) + M_W(∂T) < ∞` for all `W ⊂⊂ U`, the
+mass measure `μ_T` is absolutely continuous with respect to `Hⁿ`.  Each coordinate projection
+`p_α` is 1-Lipschitz, so a Borel set `B` with `Hⁿ(B) = 0` has `Lⁿ(p_α(B)) = Hⁿ(p_α(B)) ≤ Hⁿ(B) = 0`
+for every `α`, and Lemma 2.36 (`projection_null`, with `Q = id`) gives `μ_T(B) = 0`; an arbitrary
+`Hⁿ`-null set lies in a Borel `Hⁿ`-null set.  (Book `n = m + 1`.) -/
+theorem Submission.rectifiability_mass_measure_abs_continuous :
+    ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1),
+      (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) →
+      ∀ μ : Measure (Eucl P), IsMassMeasure T μ → μ ≪ (μHE[m + 1] : Measure (Eucl P)) := by
+  intro P m U hU T hT μ hμ
+  -- It suffices to treat Borel `Hⁿ`-null sets `B` (measurable hulls).
+  refine Measure.AbsolutelyContinuous.mk fun B hB hB0 => ?_
+  -- Lemma 2.36 with `Q = id` and `E = B`.
+  refine Submission.rectifiability_projection_null P m U hU T hT μ hμ
+    (LinearIsometryEquiv.refl ℝ (Eucl P)) B hB fun α => nonpos_iff_eq_zero.mp ?_
+  -- `Lⁿ = Hⁿ` on `ℝⁿ`, and `Hⁿ(p_α(B)) ≤ 1ⁿ · Hⁿ(B) = 0`.
+  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume (m + 1)]
+  refine (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (K := 1)
+    (m + 1) (LipschitzWith.lipschitzOnWith ?_)).trans_eq (by rw [hB0, mul_zero])
+  -- `p_α` is 1-Lipschitz since `α` is injective.
+  refine LipschitzWith.mk_one fun x y => ?_
+  rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+  refine Real.sqrt_le_sqrt ?_
+  simp only [LinearIsometryEquiv.coe_refl, id]
+  exact Finset.sum_le_sum_of_injOn α α.injective.injOn (Finset.subset_univ _)
+    (fun _ _ => le_rfl) fun _ _ _ => sq_nonneg _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
