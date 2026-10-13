@@ -5244,6 +5244,332 @@ theorem Submission.intcpt_allard_integrality_lemma :
       calc (m₀ : ℝ≥0∞) = ∑ _y ∈ t, (1 : ℝ≥0∞) := by simp [htcard]
         _ ≤ ∑ y ∈ t, Θ y := Finset.sum_le_sum fun y hy ↦ (hs y (hts hy)).2.2.2.2.2.2.2
     exact absurd (hlow.trans (hsub t hts htcard.le)) (not_le.2 hB)
+/-- Hausdorff measure of an `L`-Lipschitz graph piece over an `n`-plane (a step in the proof of
+Simon Ch. 8, 5.9): if `|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|` for `y, z ∈ A` and `L ≥ 0`, then
+`p_P` is injective on `A` with a `(1 + L²)^{1/2}`-Lipschitz inverse on `p_P(A)`, so
+`H^n(A) ≤ (1 + L²)^{n/2} H^n(p_P(A))`.  `A` need not be closed or measurable. -/
+theorem Submission.intcpt_graph_hausdorff_le_projection :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → (μHE[n] : Measure (Euclidean N)) A ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' A) := by
+  intro N n P L A hL hgraph
+  -- Step 1: `p_P` is linear, symmetric and idempotent, so `|v|² = |p_P v|² + |v - p_P v|²`.
+  have hsub : ∀ u v : Euclidean N,
+      Grassmannian.project P (u - v) = Grassmannian.project P u - Grassmannian.project P v :=
+    fun u v ↦ map_sub P.projectionLinearMap u v
+  have hpyth : ∀ v : Euclidean N,
+      ‖v‖ ^ 2 = ‖Grassmannian.project P v‖ ^ 2 + ‖v - Grassmannian.project P v‖ ^ 2 := by
+    intro v
+    have hker : Grassmannian.project P (v - Grassmannian.project P v) = 0 := by
+      rw [hsub, Grassmannian.project_project, sub_self]
+    have horth : inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) = 0 := by
+      rw [show inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) =
+          inner ℝ v (Grassmannian.project P (v - Grassmannian.project P v)) from
+        P.projectionLinearMap_isSymmetric v (v - Grassmannian.project P v), hker, inner_zero_right]
+    have h := norm_add_sq_real (Grassmannian.project P v) (v - Grassmannian.project P v)
+    rw [horth, add_sub_cancel] at h
+    linarith
+  -- Step 2: on `A`, `|y - z|² ≤ (1 + L²) |p_P(y - z)|²`, i.e.
+  -- `|y - z| ≤ (1 + L²)^{1/2} |p_P y - p_P z|`.
+  have hkey : ∀ y ∈ A, ∀ z ∈ A, ‖y - z‖ ≤
+      Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P y - Grassmannian.project P z‖ := by
+    intro y hy z hz
+    rw [← hsub]
+    have h1 := hpyth (y - z)
+    have h2 := hgraph y hy z hz
+    have h3 : ‖(y - z) - Grassmannian.project P (y - z)‖ ^ 2 ≤
+        (L * ‖Grassmannian.project P (y - z)‖) ^ 2 := by
+      gcongr
+    have h4 : ‖y - z‖ ^ 2 ≤ (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2 := by
+      nlinarith
+    calc ‖y - z‖ = Real.sqrt (‖y - z‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+      _ ≤ Real.sqrt ((1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2) := Real.sqrt_le_sqrt h4
+      _ = Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ := by
+        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+  -- Step 3: `p_P` is injective on `A`, and `h = invFunOn p_P A` has `h (p_P y) = y` for `y ∈ A`.
+  have hinj : InjOn (Grassmannian.project P) A := by
+    intro y hy z hz hyz
+    have h := hkey y hy z hz
+    rw [hyz, sub_self, norm_zero, mul_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  have hleft : ∀ y ∈ A,
+      Function.invFunOn (Grassmannian.project P) A (Grassmannian.project P y) = y :=
+    fun y hy ↦ hinj.leftInvOn_invFunOn hy
+  -- Step 4: `h` is `(1 + L²)^{1/2}`-Lipschitz on `p_P(A)`.
+  have hinv : LipschitzOnWith (Real.toNNReal (Real.sqrt (1 + L ^ 2)))
+      (Function.invFunOn (Grassmannian.project P) A) (Grassmannian.project P '' A) := by
+    refine LipschitzOnWith.of_dist_le' ?_
+    rintro _ ⟨y, hy, rfl⟩ _ ⟨z, hz, rfl⟩
+    rw [hleft y hy, hleft z hz, dist_eq_norm, dist_eq_norm]
+    exact hkey y hy z hz
+  -- Step 5: `A = h(p_P(A))` and the Lipschitz image bound for `μH[n]`, with
+  -- `((1 + L²)^{1/2})^n = (1 + L²)^{n/2}` in `[0, ∞]`.
+  have hpow : (Real.toNNReal (Real.sqrt (1 + L ^ 2)) : ℝ≥0∞) ^ (n : ℝ) =
+      ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) := by
+    change ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ (n : ℝ) = _
+    rw [ENNReal.ofReal_rpow_of_nonneg (Real.sqrt_nonneg _) (Nat.cast_nonneg n),
+      Real.rpow_div_two_eq_sqrt _ (by positivity)]
+  have hH : (μH[(n : ℝ)] : Measure (Euclidean N)) A ≤
+      ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) *
+        (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A) := by
+    calc (μH[(n : ℝ)] : Measure (Euclidean N)) A
+        = (μH[(n : ℝ)] : Measure (Euclidean N))
+            (Function.invFunOn (Grassmannian.project P) A '' (Grassmannian.project P '' A)) := by
+          rw [hinj.invFunOn_image subset_rfl]
+      _ ≤ (Real.toNNReal (Real.sqrt (1 + L ^ 2)) : ℝ≥0∞) ^ (n : ℝ) *
+            (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A) :=
+          hinv.hausdorffMeasure_image_le (Nat.cast_nonneg n)
+      _ = ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) *
+            (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A) := by
+          rw [hpow]
+  -- Step 6: `μHE[n] = c • μH[n]` with `c = addHaarScalarFactor volume μH[n]`; multiply by `c`.
+  simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+    smul_eq_mul]
+  calc _ ≤ (Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin n))) μH[n] :
+          ℝ≥0∞) * (ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) *
+            (μH[(n : ℝ)] : Measure (Euclidean N)) (Grassmannian.project P '' A)) := by
+        gcongr
+    _ = _ := mul_left_comm _ _ _
+/-- Child `graph_projection_null_measurable` of the graph fibre bound (Simon Ch. 8, proof of 5.9):
+the projection `p = Grassmannian.project P` of an `H^n`-null-measurable `L`-Lipschitz graph `A`
+over `P` is `H^n`-null-measurable.  The graph inequality makes `p` injective on `A`, and
+`‖p v‖² = ⟪v, p v⟫` makes `p` `1`-Lipschitz.  Writing `A = B ∪ (A ∖ B)` with `B ⊆ A` Borel and
+`A ∖ B` null, `p '' B` is Borel by Lusin–Souslin and `p '' (A ∖ B)` is null by the Lipschitz
+image bound for `μH[n]`. -/
+theorem Submission.intcpt_graph_projection_nullMeasurableSet :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)), 0 ≤ L →
+      (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤
+        L * ‖Grassmannian.project P (y - z)‖) →
+      NullMeasurableSet A (μHE[n] : Measure (Euclidean N)) →
+      NullMeasurableSet (Grassmannian.project P '' A) (μHE[n] : Measure (Euclidean N)) := by
+  intro N n P L A _ hgraph hA
+  -- `p = Grassmannian.project P` is the linear map `P.projectionLinearMap`.
+  have hsub : ∀ y z : Euclidean N,
+      Grassmannian.project P (y - z) = Grassmannian.project P y - Grassmannian.project P z :=
+    fun y z ↦ map_sub P.projectionLinearMap y z
+  -- Step 1: the graph inequality makes `p` injective on `A`.
+  have hinj : InjOn (Grassmannian.project P) A := by
+    intro y hy z hz hyz
+    have h := hgraph y hy z hz
+    rw [hsub, hyz, sub_self, norm_zero, mul_zero, sub_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  -- Step 2: `‖p v‖² = ⟪v, p v⟫ ≤ ‖v‖ ‖p v‖`, so `p` is `1`-Lipschitz.
+  have hnorm : ∀ v : Euclidean N, ‖Grassmannian.project P v‖ ≤ ‖v‖ := by
+    intro v
+    have hsq : ‖Grassmannian.project P v‖ ^ 2 = inner ℝ v (Grassmannian.project P v) := by
+      rw [← real_inner_self_eq_norm_sq]
+      calc inner ℝ (Grassmannian.project P v) (Grassmannian.project P v)
+          = inner ℝ v (Grassmannian.project P (Grassmannian.project P v)) :=
+            P.projectionLinearMap_isSymmetric v (Grassmannian.project P v)
+        _ = inner ℝ v (Grassmannian.project P v) := by rw [Grassmannian.project_project]
+    have hle := real_inner_le_norm v (Grassmannian.project P v)
+    nlinarith [norm_nonneg (Grassmannian.project P v), norm_nonneg v]
+  have hlip : LipschitzWith 1 (Grassmannian.project P) := by
+    refine LipschitzWith.of_dist_le_mul fun y z ↦ ?_
+    rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm, ← hsub]
+    exact hnorm (y - z)
+  -- Step 3: `A = B ∪ (A ∖ B)` with `B ⊆ A` Borel and `A ∖ B` null.
+  obtain ⟨B, hBA, hBm, hBae⟩ := hA.exists_measurable_subset_ae_eq
+  have hY : (μHE[n] : Measure (Euclidean N)) (A \ B) = 0 := (ae_eq_set.mp hBae).2
+  have himage : Grassmannian.project P '' A =
+      Grassmannian.project P '' B ∪ Grassmannian.project P '' (A \ B) := by
+    rw [← image_union, union_sdiff_cancel hBA]
+  -- Step 4: Lusin–Souslin, `p '' B` is Borel.
+  have hBimg : MeasurableSet (Grassmannian.project P '' B) :=
+    hBm.image_of_continuousOn_injOn hlip.continuous.continuousOn (hinj.mono hBA)
+  -- Step 5: the `1`-Lipschitz image of the null set `A ∖ B` is null.
+  have hYimg : (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' (A \ B)) = 0 := by
+    have hH : (μH[n] : Measure (Euclidean N)) (Grassmannian.project P '' (A \ B)) ≤
+        μH[n] (A \ B) := by
+      simpa using hlip.hausdorffMeasure_image_le (Nat.cast_nonneg n) (A \ B)
+    have hle : (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' (A \ B)) ≤
+        μHE[n] (A \ B) := by
+      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, Measure.smul_apply,
+        ENNReal.smul_def, ENNReal.smul_def, smul_eq_mul, smul_eq_mul]
+      gcongr
+    exact nonpos_iff_eq_zero.mp (hle.trans_eq hY)
+  -- Step 6: a Borel set union a null set is null-measurable.
+  rw [himage]
+  exact hBimg.nullMeasurableSet.union_null hYimg
+
+/-- **Fibre bound for one Lipschitz graph piece** (Simon Ch. 8, 5.9; child `graph_piece_fibre_bound`
+of `graph_fibre_bound`, steps (iii)–(iv) of B6 in the proof of the integral compactness theorem).
+Let `A` be an `H^n`-measurable `L`-Lipschitz graph over the `n`-plane `P`
+(`|q(y - z)| ≤ L |p(y - z)|` on `A`, where `p` is the orthogonal projection onto `P` and
+`q = id - p`) and `g : ℝ^N → [0,∞]` arbitrary.  Then
+`∫⁻_A g dH^n ≤ (1 + L²)^{n/2} ∫⁻_P (Σ_{y ∈ A, p(y) = a} g(y)) dH^n(a)`.  For a
+Borel simple `s ≤ g` the level pieces `A_c = s⁻¹{c} ∩ A` are `L`-graphs, so
+`H^n(A_c) ≤ (1 + L²)^{n/2} H^n(p(A_c))` (`intcpt_graph_hausdorff_le_projection`) with `p(A_c)`
+`H^n`-measurable (`intcpt_graph_projection_nullMeasurableSet`); as `p` is injective on `A`,
+`Σ_c c 1_{p(A_c)}` is at most the fibre sum on `P`.  The lower integral is the supremum over such
+`s`, so no measurability of `g` is needed. -/
+theorem Submission.intcpt_graph_piece_lintegral_le_fibre_sum :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)) (g : Euclidean N → ℝ≥0∞), 0 ≤ L → (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → NullMeasurableSet A (μHE[n] : Measure (Euclidean N)) → ∫⁻ y in A, g y ∂(μHE[n] : Measure (Euclidean N)) ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * ∫⁻ a in (P.plane : Set (Euclidean N)), (∑' y : {y : Euclidean N // y ∈ A ∧ Grassmannian.project P y = a}, g y) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro N n P L A g hL hgraph hA
+  classical
+  set μ : Measure (Euclidean N) := μHE[n]
+  set C : ℝ≥0∞ := ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2))
+  set F : Euclidean N → ℝ≥0∞ := fun a ↦
+    ∑' y : {y : Euclidean N // y ∈ A ∧ Grassmannian.project P y = a}, g y
+  -- Step 1: `p` is injective on `A` (if `p(y) = p(z)` the graph inequality forces `y = z`), it
+  -- maps into `P`, and the finite-dimensional subspace `P` is closed, hence Borel.
+  have hinj : InjOn (Grassmannian.project P) A := by
+    intro y hy z hz hyz
+    have h0 : Grassmannian.project P (y - z) = 0 := by
+      change P.projectionLinearMap (y - z) = 0
+      rw [map_sub, sub_eq_zero]
+      exact hyz
+    have h := hgraph y hy z hz
+    rwa [h0, norm_zero, mul_zero, sub_zero, norm_le_zero_iff, sub_eq_zero] at h
+  have hmem : ∀ y, Grassmannian.project P y ∈ (P.plane : Set (Euclidean N)) :=
+    fun y ↦ LinearMap.mem_range_self P.projectionLinearMap y
+  have hplane : MeasurableSet (P.plane : Set (Euclidean N)) :=
+    (Submodule.closed_of_finiteDimensional P.plane).measurableSet
+  -- Steps 2–6: the bound for every Borel simple function `s ≤ g`.
+  have key : ∀ s : SimpleFunc (Euclidean N) ℝ≥0∞, ⇑s ≤ g →
+      s.lintegral (μ.restrict A) ≤ C * ∫⁻ a in (P.plane : Set (Euclidean N)), F a ∂μ := by
+    intro s hsg
+    -- Step 2: the level pieces `A_c = s⁻¹{c} ∩ A` are `H^n`-measurable `L`-graphs over `P`, so
+    -- `p(A_c)` is `H^n`-measurable and `H^n(A_c) ≤ C H^n(p(A_c))`.
+    have hgr : ∀ c, ∀ y ∈ s ⁻¹' {c} ∩ A, ∀ z ∈ s ⁻¹' {c} ∩ A,
+        ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖ :=
+      fun c y hy z hz ↦ hgraph y hy.2 z hz.2
+    have hnull : ∀ c, NullMeasurableSet (Grassmannian.project P '' (s ⁻¹' {c} ∩ A)) μ :=
+      fun c ↦ Submission.intcpt_graph_projection_nullMeasurableSet N n P L _ hL (hgr c)
+        ((s.measurableSet_fiber c).nullMeasurableSet.inter hA)
+    have hbound : ∀ c, μ (s ⁻¹' {c} ∩ A) ≤ C * μ (Grassmannian.project P '' (s ⁻¹' {c} ∩ A)) :=
+      fun c ↦ Submission.intcpt_graph_hausdorff_le_projection N n P L _ hL (hgr c)
+    -- Step 5: pointwise, `Σ_c c 1_{p(A_c)} ≤ 1_P F`.
+    have hpt : ∀ a, ∑ c ∈ s.range,
+        (Grassmannian.project P '' (s ⁻¹' {c} ∩ A)).indicator (fun _ ↦ c) a ≤
+          (P.plane : Set (Euclidean N)).indicator F a := by
+      intro a
+      by_cases ha : a ∈ Grassmannian.project P '' A
+      · -- (ii) `a = p(y₀)` with `y₀ ∈ A`: by injectivity `a ∈ p(A_c)` iff `s(y₀) = c`, so the sum
+        -- is `s(y₀) ≤ g(y₀)`, one term of the fibre sum `F(a)`; and `a ∈ P`.
+        obtain ⟨y₀, hy₀, rfl⟩ := ha
+        have hterm : ∀ c ∈ s.range,
+            (Grassmannian.project P '' (s ⁻¹' {c} ∩ A)).indicator (fun _ ↦ c)
+              (Grassmannian.project P y₀) = if s y₀ = c then c else 0 := by
+          intro c _
+          by_cases hc : s y₀ = c
+          · rw [ite_eq_left hc, Set.indicator_of_mem]
+            exact ⟨y₀, ⟨hc, hy₀⟩, rfl⟩
+          · rw [ite_eq_right hc, Set.indicator_of_notMem]
+            rintro ⟨y, ⟨hyc, hyA⟩, hyp⟩
+            obtain rfl := hinj hyA hy₀ hyp
+            exact hc hyc
+        rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq_of_mem _ _ _ (s.mem_range_self y₀),
+          Set.indicator_of_mem (hmem y₀)]
+        exact (hsg y₀).trans (ENNReal.le_tsum (f := fun y : {y : Euclidean N //
+          y ∈ A ∧ Grassmannian.project P y = Grassmannian.project P y₀} ↦ g y) ⟨y₀, hy₀, rfl⟩)
+      · -- (i) `a ∉ p(A)`: then `a ∉ p(A_c) ⊆ p(A)` for every `c`, so the sum vanishes.
+        have hzero : ∀ c ∈ s.range,
+            (Grassmannian.project P '' (s ⁻¹' {c} ∩ A)).indicator (fun _ ↦ c) a = 0 :=
+          fun c _ ↦ Set.indicator_of_notMem (fun h ↦ ha (image_mono inter_subset_right h)) _
+        rw [Finset.sum_eq_zero hzero]
+        exact zero_le
+    -- Steps 3, 4 and 6: `∫ s d(H^n ⌞ A) = Σ_c c H^n(A_c) ≤ C Σ_c c H^n(p(A_c))
+    -- = C ∫ Σ_c c 1_{p(A_c)} dH^n ≤ C ∫_P F dH^n`.
+    calc s.lintegral (μ.restrict A) = ∑ c ∈ s.range, c * μ (s ⁻¹' {c} ∩ A) := by
+          simp only [SimpleFunc.lintegral, Measure.restrict_apply (s.measurableSet_fiber _)]
+      _ ≤ ∑ c ∈ s.range, c * (C * μ (Grassmannian.project P '' (s ⁻¹' {c} ∩ A))) :=
+          Finset.sum_le_sum fun c _ ↦ mul_le_mul_right (hbound c) c
+      _ = C * ∑ c ∈ s.range,
+            ∫⁻ a, (Grassmannian.project P '' (s ⁻¹' {c} ∩ A)).indicator (fun _ ↦ c) a ∂μ := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun c _ ↦ ?_
+          rw [lintegral_indicator_const₀ (hnull c), mul_left_comm]
+      _ = C * ∫⁻ a, ∑ c ∈ s.range,
+            (Grassmannian.project P '' (s ⁻¹' {c} ∩ A)).indicator (fun _ ↦ c) a ∂μ := by
+          rw [lintegral_finsetSum' _ fun c _ ↦ aemeasurable_const.indicator₀ (hnull c)]
+      _ ≤ C * ∫⁻ a, (P.plane : Set (Euclidean N)).indicator F a ∂μ :=
+          mul_le_mul_right (lintegral_mono hpt) C
+      _ = C * ∫⁻ a in (P.plane : Set (Euclidean N)), F a ∂μ := by
+          rw [lintegral_indicator hplane]
+  -- Step 7: the lower integral `∫⁻_A g` is the supremum of `∫ s d(H^n ⌞ A)` over Borel simple
+  -- `s ≤ g`.
+  calc ∫⁻ y in A, g y ∂μ
+      = ⨆ (s : SimpleFunc (Euclidean N) ℝ≥0∞) (_ : ⇑s ≤ g), s.lintegral (μ.restrict A) := by
+        rw [MeasureTheory.lintegral]
+    _ ≤ C * ∫⁻ a in (P.plane : Set (Euclidean N)), F a ∂μ := iSup₂_le key
+
+/-- **Fibre bound over countably many Lipschitz graphs** (Simon Ch. 8, 5.9; child
+`graph_fibre_bound` of `integral_compactness`, the inequality of step B6 (iii)–(iv) of its proof,
+used there instead of the mapping formula in (5)–(6) of the book's proof).  Let `Γ_i` (`i ∈ ℕ`) be
+closed `L`-Lipschitz graphs over the `n`-plane `P` (`|q(y - z)| ≤ L |p(y - z)|` on each `Γ_i`, where
+`p` is the orthogonal projection onto `P` and `q = id - p`), `G ⊆ ⋃_i Γ_i` an `H^n`-measurable set
+and `g : ℝ^N → [0,∞]` arbitrary.  Then
+`∫⁻_G g dH^n ≤ (1 + L²)^{n/2} ∫⁻_P (Σ_{y ∈ G, p(y) = a} g(y)) dH^n(a)`.  The pieces
+`A_i = G ∩ (Γ_i ∖ ⋃_{j<i} Γ_j)` are pairwise disjoint `H^n`-measurable `L`-graphs with union `G`;
+the one-piece bound `intcpt_graph_piece_lintegral_le_fibre_sum` is summed over `i` by countable
+superadditivity of the lower integral, and over each `a` the fibres of the `A_i` are disjoint parts
+of the fibre of `G`. -/
+theorem Submission.intcpt_lipschitz_graph_fibre_bound :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (Γ : ℕ → Set (Euclidean N)) (G : Set (Euclidean N)) (g : Euclidean N → ℝ≥0∞), 0 ≤ L → (∀ i, IsClosed (Γ i)) → (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → G ⊆ ⋃ i, Γ i → NullMeasurableSet G (μHE[n] : Measure (Euclidean N)) → ∫⁻ y in G, g y ∂(μHE[n] : Measure (Euclidean N)) ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * ∫⁻ a in (P.plane : Set (Euclidean N)), (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro N n P L Γ G g hL hΓ hΓL hGΓ hG
+  set μ : Measure (Euclidean N) := μHE[n]
+  set C : ℝ≥0∞ := ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2))
+  -- Step 1: the pieces `A_i = G ∩ (Γ_i ∖ ⋃_{j<i} Γ_j)` are pairwise disjoint `H^n`-measurable
+  -- `L`-graphs over `P` with union `G`.
+  set A : ℕ → Set (Euclidean N) := fun i ↦ G ∩ disjointed Γ i
+  have hAG : ∀ i, A i ⊆ G := fun i ↦ inter_subset_left
+  have hAΓ : ∀ i, A i ⊆ Γ i := fun i ↦ inter_subset_right.trans (disjointed_subset Γ i)
+  have hAm : ∀ i, NullMeasurableSet (A i) μ := fun i ↦
+    hG.inter (MeasurableSet.disjointed (fun j ↦ (hΓ j).measurableSet) i).nullMeasurableSet
+  have hAd : Pairwise (Function.onFun Disjoint A) := fun i j hij ↦
+    (disjoint_disjointed Γ hij).mono inter_subset_right inter_subset_right
+  have hAU : ⋃ i, A i = G := by
+    show ⋃ i, G ∩ disjointed Γ i = G
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left.2 hGΓ]
+  -- Step 2: the lower integral is countably superadditive (no measurability is needed).
+  have hsup : ∀ (ν : Measure (Euclidean N)) (f : ℕ → Euclidean N → ℝ≥0∞),
+      ∑' i, ∫⁻ a, f i a ∂ν ≤ ∫⁻ a, ∑' i, f i a ∂ν := by
+    intro ν f
+    rw [ENNReal.tsum_eq_iSup_nat]
+    refine iSup_le fun m ↦ le_trans ?_
+      (lintegral_mono fun a ↦ ENNReal.sum_le_tsum (f := fun i ↦ f i a) (Finset.range m))
+    induction m with
+    | zero => simp
+    | succ m ih =>
+      calc ∑ i ∈ Finset.range (m + 1), ∫⁻ a, f i a ∂ν
+          = ∑ i ∈ Finset.range m, ∫⁻ a, f i a ∂ν + ∫⁻ a, f m a ∂ν := Finset.sum_range_succ _ _
+        _ ≤ ∫⁻ a, ∑ i ∈ Finset.range m, f i a ∂ν + ∫⁻ a, f m a ∂ν := by gcongr
+        _ ≤ ∫⁻ a, (∑ i ∈ Finset.range m, f i a + f m a) ∂ν := le_lintegral_add _ _
+        _ = ∫⁻ a, ∑ i ∈ Finset.range (m + 1), f i a ∂ν := by simp only [Finset.sum_range_succ]
+  -- Step 3: over each `a`, the fibres of the `A_i` are disjoint parts of the fibre of `G`.
+  have hfib : ∀ a : Euclidean N,
+      ∑' i, ∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y ≤
+        ∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y := by
+    intro a
+    let φ : (Σ i, {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}) →
+        {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a} :=
+      fun q ↦ ⟨q.2.1, hAG q.1 q.2.2.1, q.2.2.2⟩
+    have hφ : Function.Injective φ := by
+      rintro ⟨i, y, hyi, hya⟩ ⟨j, z, hzj, hza⟩ h
+      obtain rfl : y = z := congrArg Subtype.val h
+      obtain rfl : i = j := by
+        by_contra hij
+        exact Set.disjoint_left.1 (hAd hij) hyi hzj
+      rfl
+    calc ∑' i, ∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y
+        = ∑' q, g (φ q) := (ENNReal.tsum_sigma' fun q ↦ g (φ q)).symm
+      _ ≤ ∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y :=
+        ENNReal.tsum_comp_le_tsum_of_injective hφ fun y ↦ g y
+  -- Step 4: split `∫⁻_G` over the pieces, apply the one-piece bound and recombine.
+  calc ∫⁻ y in G, g y ∂μ = ∑' i, ∫⁻ y in A i, g y ∂μ := by
+        rw [← lintegral_iUnion₀ hAm hAd.aedisjoint g, hAU]
+    _ ≤ ∑' i, C * ∫⁻ a in (P.plane : Set (Euclidean N)),
+          (∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        ENNReal.tsum_le_tsum fun i ↦ Submission.intcpt_graph_piece_lintegral_le_fibre_sum N n P L
+          (A i) g hL (fun y hy z hz ↦ hΓL i y (hAΓ i hy) z (hAΓ i hz)) (hAm i)
+    _ = C * ∑' i, ∫⁻ a in (P.plane : Set (Euclidean N)),
+          (∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        ENNReal.tsum_mul_left
+    _ ≤ C * ∫⁻ a in (P.plane : Set (Euclidean N)),
+          ∑' i, (∑' y : {y : Euclidean N // y ∈ A i ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        mul_le_mul_right (hsup _ _) C
+    _ ≤ C * ∫⁻ a in (P.plane : Set (Euclidean N)),
+          (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂μ :=
+        mul_le_mul_right (lintegral_mono hfib) C
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
