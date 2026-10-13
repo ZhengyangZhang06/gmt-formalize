@@ -1184,4 +1184,113 @@ theorem Submission.dohr_eb_sch_liou_abstract : ∀ (n ℓ : ℕ) (α K C : ℝ) 
     hα1 hderiv hzero hgrow 1
   simpa [G] using this
 
+/-- Directional derivatives of `C²` global weak solutions of a constant-coefficient system are
+again global weak solutions: translate the test function, differentiate the (identically zero)
+translated integral under the integral sign, and identify `D(d_v V)` with `D²V(·) v` using the
+symmetry of `D²V` (sibling `Submission.dohr_eb_sch_liou_snd_deriv_symm`). -/
+theorem dohr_eb_sch_liou_dir_deriv_solution : ∀ (n ℓ : ℕ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (v : Rn n), ContDiff ℝ 2 V → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ (fun y => fderiv ℝ V y v) x) (fderiv ℝ ζ x) = 0 := by
+  intro n ℓ A V v hV hsol ζ hζ hζc
+  -- Step 0: `DV` is `C¹`, `Dζ` is continuous with compact support.
+  have hDV : ContDiff ℝ 1 (fderiv ℝ V) := hV.fderiv_right (by norm_num)
+  have hDVd : Differentiable ℝ (fderiv ℝ V) := hDV.differentiable one_ne_zero
+  have hDζcont : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hDζc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv (𝕜 := ℝ)
+  -- `y ↦ D²V(y) v` is continuous (values in `L`)
+  have hD2v : Continuous (fun y => fderiv ℝ (fderiv ℝ V) y v) :=
+    (hDV.continuous_fderiv_apply one_ne_zero).comp (continuous_id.prodMk continuous_const)
+  -- Step 1: translated equation `∫ A[DV(x + h v)][Dζ(x)] dx = 0` for every `h`, tested with
+  -- `ζ(· - h v)` and translation invariance of Lebesgue measure.
+  have hF : ∀ h : ℝ, ∫ x, A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x) = 0 := by
+    intro h
+    have h1 := hsol (fun x => ζ (x + (-(h • v)))) (hζ.comp (contDiff_id.add contDiff_const))
+      (hζc.comp_homeomorph (Homeomorph.addRight (-(h • v))))
+    have h2 : ∀ x, fderiv ℝ (fun x => ζ (x + (-(h • v)))) x = fderiv ℝ ζ (x + (-(h • v))) :=
+      fun x => fderiv_comp_add_right _
+    simp_rw [h2] at h1
+    rw [← integral_add_right_eq_self
+      (fun x => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x)) (-(h • v))]
+    simpa [add_assoc] using h1
+  -- Step 2: differentiation under the integral sign at `h = 0`, dominated on `|h| < 1` by
+  -- `M⁺ |Dζ|`, where `M` bounds `‖A[D²V(·) v]‖` on the `|v|`-thickening of `tsupport Dζ`.
+  set T := tsupport (fderiv ℝ ζ) with hTdef
+  have hT : IsCompact T := hDζc
+  have hT' : IsCompact (cthickening ‖v‖ T) := hT.cthickening
+  have hAcont : Continuous (fun y => A (fderiv ℝ (fderiv ℝ V) y v)) := A.continuous.comp hD2v
+  obtain ⟨M, hM⟩ : ∃ M, ∀ y ∈ cthickening ‖v‖ T, ‖A (fderiv ℝ (fderiv ℝ V) y v)‖ ≤ M :=
+    hT'.exists_bound_of_continuousOn (f := fun y => A (fderiv ℝ (fderiv ℝ V) y v))
+      hAcont.continuousOn
+  set M' := max M 0 with hM'
+  have hM'0 : 0 ≤ M' := le_max_right _ _
+  set F : ℝ → Rn n → ℝ := fun h x => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x) with hFdef
+  set F' : ℝ → Rn n → ℝ := fun h x => A (fderiv ℝ (fderiv ℝ V) (x + h • v) v) (fderiv ℝ ζ x)
+    with hFdef'
+  have hFcont : ∀ h, Continuous (F h) := fun h =>
+    (A.continuous.comp (hDV.continuous.comp (continuous_id.add continuous_const))).clm_apply
+      hDζcont
+  have hF'cont : ∀ h, Continuous (F' h) := fun h =>
+    (hAcont.comp (continuous_id.add continuous_const)).clm_apply hDζcont
+  have hzero_out : ∀ x, x ∉ T → fderiv ℝ ζ x = 0 := fun x hx => image_eq_zero_of_notMem_tsupport hx
+  have hsuppF0 : HasCompactSupport (F 0) := by
+    apply HasCompactSupport.intro hT
+    intro x hx
+    simp [hFdef, hzero_out x hx]
+  have hbound_int : Integrable (fun x => M' * ‖fderiv ℝ ζ x‖) volume := by
+    apply Continuous.integrable_of_hasCompactSupport
+    · exact continuous_const.mul hDζcont.norm
+    · apply HasCompactSupport.intro hT
+      intro x hx
+      simp [hzero_out x hx]
+  have hderiv := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume) (F := F)
+    (F' := F') (x₀ := 0) (s := ball (0 : ℝ) 1)
+    (bound := fun x => M' * ‖fderiv ℝ ζ x‖)
+    (ball_mem_nhds 0 one_pos)
+    (Eventually.of_forall fun h => (hFcont h).aestronglyMeasurable)
+    ((hFcont 0).integrable_of_hasCompactSupport hsuppF0)
+    (hF'cont 0).aestronglyMeasurable
+    (Eventually.of_forall fun x h hh => by
+      by_cases hx : x ∈ T
+      · have hmem : x + h • v ∈ cthickening ‖v‖ T := by
+          apply mem_cthickening_of_dist_le (x + h • v) x ‖v‖ T hx
+          rw [dist_eq_norm, add_sub_cancel_left, norm_smul]
+          have : ‖h‖ ≤ 1 := (mem_ball_zero_iff.mp hh).le
+          calc ‖h‖ * ‖v‖ ≤ 1 * ‖v‖ := by gcongr
+            _ = ‖v‖ := one_mul _
+        calc ‖F' h x‖ ≤ ‖A (fderiv ℝ (fderiv ℝ V) (x + h • v) v)‖ * ‖fderiv ℝ ζ x‖ :=
+              ContinuousLinearMap.le_opNorm _ _
+          _ ≤ M' * ‖fderiv ℝ ζ x‖ := by
+              gcongr; exact (hM _ hmem).trans (le_max_left _ _)
+      · simp [hFdef', hzero_out x hx])
+    hbound_int
+    (Eventually.of_forall fun x h _ => by
+      have h1 : HasDerivAt (fun h : ℝ => x + h • v) v h := by
+        simpa using ((hasDerivAt_id h).smul_const v).const_add x
+      have h2 : HasDerivAt (fun h : ℝ => fderiv ℝ V (x + h • v))
+          (fderiv ℝ (fderiv ℝ V) (x + h • v) v) h :=
+        (hDVd (x + h • v)).hasFDerivAt.comp_hasDerivAt h h1
+      have h3 : HasDerivAt (fun h : ℝ => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x))
+          (A (fderiv ℝ (fderiv ℝ V) (x + h • v) v) (fderiv ℝ ζ x)) h :=
+        (A.flip (fderiv ℝ ζ x)).hasFDerivAt.comp_hasDerivAt h h2
+      exact h3)
+  -- Step 3: the translated integral is identically `0`, so its derivative at `0` vanishes.
+  have hzero : (∫ x, F' 0 x) = 0 := by
+    have hconst : (fun h : ℝ => ∫ x, F h x) = fun _ => 0 := funext hF
+    have := hderiv.2
+    rw [hconst] at this
+    exact this.unique (hasDerivAt_const 0 0)
+  -- Step 4: `D(d_v V)(x) = D²V(x) v`, by the chain rule and symmetry of the second derivative.
+  have hsym : ∀ x, fderiv ℝ (fun y => fderiv ℝ V y v) x = fderiv ℝ (fderiv ℝ V) x v := by
+    intro x
+    have hd : HasFDerivAt (fun y => fderiv ℝ V y v)
+        ((ContinuousLinearMap.apply ℝ (Rn ℓ) v).comp (fderiv ℝ (fderiv ℝ V) x)) x :=
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) v).hasFDerivAt.comp x (hDVd x).hasFDerivAt
+    rw [hd.fderiv]
+    refine ContinuousLinearMap.ext fun w => ?_
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply]
+    exact Submission.dohr_eb_sch_liou_snd_deriv_symm n ℓ V hV x w v
+  -- Step 5: conclusion.
+  simp_rw [hsym]
+  simpa [hFdef'] using hzero
+
+end Submission
+
 end GMT.Ch05
