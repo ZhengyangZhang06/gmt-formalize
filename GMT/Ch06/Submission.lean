@@ -6844,6 +6844,37 @@ tuples of standard basis vectors, `Φ(α)(r) = α(e_{r(1)}, …, e_{r(n)})`, emb
 into `ℝ^(Fin n → Fin P)`, since a multilinear map is determined by its values on basis vectors.
 So `Λⁿ(ℝ^P)` is finite-dimensional, and an `n`-vector vanishing on a basis `b₁, …, b_N` is zero. -/
 theorem Submission.lpf_rsn_covector_separating_family : ∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0 := by
+/-- If `M ⊆ U` is `μ`-null on every open `W ⊂⊂ U` on which `T` vanishes, then `μ(M ∖ spt T) = 0`:
+`M ∖ spt T` lies in the zero region (Simon 2.11), a countable union of such `W` (Lindelöf). -/
+theorem Submission.iwl_sp_sn_null_diff_support_of_local_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \ T.support) = 0 := by
+  intro P n U T M μ hMU hloc
+  -- As `M ⊆ U` and `spt T = U ∖ T.zeroRegion`, `M ∖ spt T ⊆ T.zeroRegion`.
+  have hzero : M \ T.support ⊆ T.zeroRegion := by
+    rintro x ⟨hxM, hxs⟩
+    by_contra hxZ
+    exact hxs ⟨hMU hxM, hxZ⟩
+  -- Lindelöf: countably many of the open sets whose union is `T.zeroRegion` have the same union.
+  obtain ⟨S, hSc, hSsub, hSeq⟩ := TopologicalSpace.isOpen_sUnion_countable
+    {W : Set (Eucl P) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ T.VanishesOn W}
+    fun W hW => hW.1
+  have hsub : M \ T.support ⊆ ⋃ W ∈ S, M ∩ W := by
+    intro x hx
+    have hxS : x ∈ ⋃₀ S := by
+      rw [hSeq]
+      exact hzero hx
+    obtain ⟨W, hWS, hxW⟩ := hxS
+    exact mem_biUnion hWS ⟨hx.1, hxW⟩
+  -- Each `M ∩ W` with `W ∈ S` is `μ`-null, so their countable union is `μ`-null.
+  refine measure_mono_null hsub ((measure_biUnion_null_iff hSc).2 fun W hWS => ?_)
+  obtain ⟨hWo, hWc, hWU, hWv⟩ := hSsub hWS
+  exact hloc W hWo hWc hWU hWv
+/-- Finitely many `n`-covectors separate `n`-vectors (Simon Ch. 6, §1; used for Theorem 8.2 to
+show that a representation `τ(M, θ, ξ)` of `T` lives on `spt T` up to an `Hⁿ`-null set).
+Evaluation on tuples of standard basis vectors, `Φ(α)(r) = α(e_{r(1)}, …, e_{r(n)})`, embeds
+`Λⁿ(ℝ^P)` linearly into `ℝ^(Fin n → Fin P)`, since a multilinear map is determined by its values
+on basis vectors.  So `Λⁿ(ℝ^P)` is finite-dimensional, and an `n`-vector vanishing on a basis
+`b₁, …, b_N` is zero. -/
+theorem Submission.iwl_sp_sn_covector_separating_family : ∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0 := by
   intro P n
   -- Step 1: evaluation on `n`-tuples of standard basis vectors of `ℝ^P` is linear.
   let e : Module.Basis (Fin P) ℝ (Eucl P) := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
@@ -6875,6 +6906,45 @@ for `μ ⌞ M`, and `∫_M θ φ g dμ = 0` for every smooth compactly supported
 `tsupport φ ⊆ W`, then `g = 0` `μ ⌞ M`-a.e. on `W`.  Mathlib's fundamental lemma applied to `θ g`,
 which is integrable on `W` for `μ ⌞ M`, gives `θ g = 0` there; divide by `θ`. -/
 theorem Submission.lpf_rsn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0 := by
+/-- A signed simple `n`-vector `w = ±τ₁ ∧ ⋯ ∧ τₙ` of an orthonormal frame `τ` (the orientations
+`ξ(x)` of Simon Ch. 6, 3.1) has `|⟨b, w⟩| ≤ ‖b‖` for every `n`-covector `b` and is nonzero:
+`|⟨b, w⟩| = |b(τ)| ≤ ‖b‖ ∏ ‖τᵢ‖ = ‖b‖`, and the covector `b_τ = ⟨τ₁, ·⟩ ∧ ⋯ ∧ ⟨τₙ, ·⟩` has
+`b_τ(τ) = det(⟨τᵢ, τⱼ⟩) = det 1 = 1` (1.1). -/
+theorem Submission.iwl_sp_sn_signed_simpleNVector_bound_ne_zero : ∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → (∀ b : Covector (Eucl P) n, |w b| ≤ ‖b‖) ∧ w ≠ 0 := by
+  intro P n τ w hτ hw
+  -- Whatever the sign, `|⟨b, w⟩| = |b(τ₁, …, τₙ)|`.
+  have habs : ∀ b : Covector (Eucl P) n, |w b| = |b τ| := by
+    intro b
+    rcases hw with rfl | rfl
+    · simp only [simpleNVector_apply]
+    · simp only [neg_apply, simpleNVector_apply, abs_neg]
+  -- `|b(τ)| ≤ ‖b‖ ∏ ‖τᵢ‖ = ‖b‖`, as the frame vectors are unit vectors.
+  have hbound : ∀ b : Covector (Eucl P) n, |b τ| ≤ ‖b‖ := by
+    intro b
+    have h1 := b.le_opNorm τ
+    have hprod : ∏ i, ‖τ i‖ = 1 := Finset.prod_eq_one (fun i _ => hτ.1 i)
+    rw [hprod, mul_one, Real.norm_eq_abs] at h1
+    exact h1
+  refine ⟨fun b => (habs b).trans_le (hbound b), ?_⟩
+  -- `b_τ(τ) = det(⟨τᵢ, τⱼ⟩) = det 1 = 1`, so `w = 0` would give `0 = |w(b_τ)| = 1`.
+  intro h0
+  have hdet : wedgeCovectors n (fun i => innerSL ℝ (τ i)) τ = 1 := by
+    rw [wedgeCovectors_apply_det]
+    have hm : (Matrix.of fun i j => (innerSL ℝ (τ i)) (τ j)) = (1 : Matrix (Fin n) (Fin n) ℝ) := by
+      ext i j
+      rw [Matrix.of_apply, innerSL_apply_apply, orthonormal_iff_ite.mp hτ i j, Matrix.one_apply]
+    rw [hm, Matrix.det_one]
+  have h1 := habs (wedgeCovectors n (fun i => innerSL ℝ (τ i)))
+  rw [h0, hdet] at h1
+  simp only [zero_apply, abs_zero, abs_one, zero_ne_one] at h1
+/-- **Fundamental lemma of the calculus of variations with a positive weight** (a step of the
+proof that a rectifiable representation `T = τ(M, θ, ξ)` has `Hⁿ(M ∖ spt T) = 0`, used for the
+smooth push-forward in Simon Ch. 6, 8.2).  If `θ > 0` on `M`, `θ` is `μ`-integrable on `M ∩ W`
+with `W` open, `g` is a.e.-strongly measurable and a.e. bounded for `μ ⌞ M`, and
+`∫_M θ φ g dμ = 0` for every smooth compactly supported `φ` with `tsupport φ ⊆ W`, then `g = 0`
+`μ ⌞ M`-a.e. on `W`.  Mathlib's fundamental lemma applied to `θ g`, which is integrable on `W`
+for `μ ⌞ M`, gives `θ g = 0` there; divide by `θ`. -/
+theorem Submission.iwl_sp_sn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0 := by
   intro P μ M W θ g C hW hM hpos hθ hg hgC hint
   -- Step 1: `θ g` is integrable on `W` for `μ ⌞ M`, as `(μ ⌞ M) ⌞ W = μ ⌞ (M ∩ W)`.
   have hfint : IntegrableOn (fun x => θ x * g x) W (μ.restrict M) := by
@@ -6894,6 +6964,7 @@ theorem Submission.lpf_rsn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Meas
       simp only [smul_eq_mul]
       ring)
   -- Step 4: `μ ⌞ M`-a.e. point lies in `M`, where `θ > 0`.
+  -- Step 4: `μ ⌞ M`-a.e. point lies in `M`, where `θ > 0`; divide by `θ`.
   filter_upwards [hzero, ae_restrict_mem₀ hM] with x hx hxM hxW
   rcases mul_eq_zero.mp (hx hxW) with h | h
   · exact absurd h (hpos x hxM).ne'
@@ -6919,6 +6990,35 @@ theorem Submission.lpf_rsn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (T 
       calc |ξ x α| = ‖ξ x α‖ := (Real.norm_eq_abs _).symm
         _ ≤ ‖ξ x‖ * ‖α‖ := (ξ x).le_opNorm α
         _ = ‖α‖ := by rw [hx, one_mul]
+/-- **A rectifiable representation is null where the current vanishes (a step of the proof that
+`τ(M, θ, ξ)` lives on `spt T`, used for Simon Ch. 6, Theorem 8.2).**  If `T = τ(M, θ, ξ)` and `T`
+vanishes on an open `W` with `closure W` a compact subset of `U`, then `Hⁿ(M ∩ W) = 0`.  Testing
+`T` with `φ α` (`φ ∈ C_c^∞(W)`, `α` an `n`-covector) gives `∫_M θ φ ⟨α, ξ⟩ dHⁿ = 0`, so
+`⟨α, ξ⟩ = 0` a.e. on `M ∩ W` (`iwl_sp_sn_weighted_fundamental_lemma`; `|⟨α, ξ⟩| ≤ ‖α‖` by
+`iwl_sp_sn_signed_simpleNVector_bound_ne_zero`).  Finitely many covectors separate `n`-vectors
+(`iwl_sp_sn_covector_separating_family`), so `ξ = 0` a.e. on `M ∩ W`, while `ξ ≠ 0` a.e. on `M`. -/
+theorem Submission.iwl_sp_sn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0 := by
+  intro P n U W T M θ ξ h hrep hWo hWc hWU hvan
+  have hWU' : W ⊆ U := subset_closure.trans hWU
+  -- `θ` is integrable on `M ∩ W ⊆ M ∩ closure W`, as `closure W` is a compact subset of `U`.
+  have hθ : IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) :=
+    (h.integrableOn (closure W) hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure)
+  -- Step 1: `ξ x = ±simpleNVector τ` with `τ` orthonormal, so `|ξ x b| ≤ ‖b‖` and `ξ x ≠ 0`.
+  have hgood : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M),
+      (∀ b : Covector (Eucl P) n, |ξ x b| ≤ ‖b‖) ∧ ξ x ≠ 0 := by
+    filter_upwards [h.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    exact Submission.iwl_sp_sn_signed_simpleNVector_bound_ne_zero P n τ (ξ x) hτ hξ
+  -- Steps 3–5: each coefficient `x ↦ ξ x α` vanishes a.e. on `M ∩ W`.
+  have key : ∀ α : Covector (Eucl P) n,
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ W → ξ x α = 0 := by
+    intro α
+    refine Submission.iwl_sp_sn_weighted_fundamental_lemma P (μHE[n] : Measure (Eucl P)) M W θ
+      (fun x => ξ x α) ‖α‖ hWo h.nullMeasurableSet h.pos hθ ?_ ?_ ?_
+    · exact (ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
+        h.aestronglyMeasurable
+    · filter_upwards [hgood] with x hx
+      exact hx.1 α
     · -- `ω = φ α` is a test form supported in `W`, so `T ω = 0`.
       intro φ hφ hφc hφW
       let ω : DifferentialForm (Eucl P) n := fun x => φ x • α
@@ -7371,6 +7471,139 @@ theorem Submission.dph_lipschitz_pushforward : (∀ (m m' k : ℕ) (X : Geometri
   have hI := Submission.dph_lpf_existence hRef hCmp
   -- (II) boundary (Step 7) and (III) linearity (Step 8).
   exact ⟨hI, Submission.dph_lpf_boundary hRef hI, Submission.dph_lpf_linearity hRef⟩
+      let ωU : TestFormOn U n := ⟨ω, ⟨hωs, hωc⟩, hωW.trans hWU'⟩
+      have h0 : T ωU = 0 := hvan ωU hωW
+      rw [hrep ωU] at h0
+      simpa [tauAction, ωU, ω, map_smul, smul_eq_mul] using h0
+  -- Steps 6–7: finitely many covectors separate `n`-vectors, so `ξ = 0` a.e. on `M ∩ W`,
+  -- contradicting `ξ ≠ 0`.
+  obtain ⟨N, b, hb⟩ := Submission.iwl_sp_sn_covector_separating_family P n
+  have hall : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ i, x ∈ W → ξ x (b i) = 0 :=
+    ae_all_iff.mpr fun i => key (b i)
+  have hnotW : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∉ W := by
+    filter_upwards [hall, hgood] with x hx hg hxW
+    exact hg.2 (hb (ξ x) fun i => hx i hxW)
+  -- Step 8: `(Hⁿ ⌞ M)(W) = Hⁿ(M ∩ W)`, as `W` is open.
+  have hres : (μHE[n] : Measure (Eucl P)).restrict M W = 0 := by
+    rw [ae_iff] at hnotW
+    simpa using hnotW
+  rwa [Measure.restrict_apply hWo.measurableSet, Set.inter_comm] at hres
+
+/-- **A rectifiable representation carries no `Hⁿ`-measure off the support** (step 3 of the
+smooth push-forward argument; cf. Simon Ch. 6, 2.11 and Lemma 3.9).  If `T = τ(M, θ, ξ)` then
+`Hⁿ(M ∖ spt T) = 0`.  Testing `T` with `φ b` (`φ ∈ C_c^∞(W)`, `b` an `n`-covector) shows
+`Hⁿ(M ∩ W) = 0` for every open `W ⊂⊂ U` on which `T` vanishes (`iwl_sp_sn_local_null`).  As
+`M ⊆ U`, countably many such `W` cover `M ∖ spt T`
+(`iwl_sp_sn_null_diff_support_of_local_null`). -/
+theorem Submission.iwl_sp_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \ T.support) = 0 := by
+  intro P n U T M θ ξ hM hT
+  -- Step 8: since `M ⊆ U`, it suffices that `Hⁿ(M ∩ W) = 0` for each open `W ⊂⊂ U` on which
+  -- `T` vanishes; steps 1–7 give exactly that.
+  exact Submission.iwl_sp_sn_null_diff_support_of_local_null P n U T M
+    (μHE[n] : Measure (Eucl P)) hM.subset fun W hW hWc hWU hTW =>
+      Submission.iwl_sp_sn_local_null P n U W T M θ ξ hM hT hW hWc hWU hTW
+
+/-- **Integrality of the Lipschitz push-forward defined by smooth approximation** (step 5.9 of the
+push-forward homotopy argument; Simon Ch. 6, 2.29 and Lemma 3.9).  Assume (S5′): `g_# X` is an
+integer multiplicity `S'` with `∫_M θ ⟨ω(g_j x), (Dg_j)_# ξ⟩ dHᵏ → S'(ω)` along `C¹` maps
+`g_j → g`.  If `S` is the limit of `X(η_n)` for forms `η_n` compatible with smooth approximations
+`G_n → G` near `spt X`, then `S` is integer multiplicity.  Take `G_n → Ĝ` from
+`dph_lipschitz_smooth_approx` and `η_n` from `iwl_sp_exists_compatible_testForm`.  As
+`Hᵏ(M ∖ spt X) = 0` (`iwl_sp_rectifiable_support_null`), `X(η_n)` is the integral for `g_j = G_n`,
+so `S = S'`. -/
+theorem Submission.dph_lipschitz_pushforward_im : (∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω))) → ∀ (m m' k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (S : GeometricCurrentOn (univ : Set (Eucl m')) k), IsIntegerMultiplicity X → 0 < r → LipschitzOnWith Λ G (thickening r X.support) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ X.support)) → (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X.support ⊆ O → (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) → (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O → ∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k), (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (ηj n : DifferentialForm (Eucl m) k) x = ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap (fderiv ℝ (Gj n) x)) → Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) → IsIntegerMultiplicity S := by
+  intro hS5 m m' k X G Λ r S hX hr hGLip hGprop hLipPF
+  -- 1. `X = τ(M, θ, ξ)` with `θ` integer-valued.
+  obtain ⟨M, θ, ξ, hT, hθ, hXτ⟩ := hX
+  -- 2. `Ĝ = G'` is Lipschitz with `Ĝ = G` on `(spt X)_r`; the `C^∞` maps `G_n` are `L`-Lipschitz,
+  -- `G_n → Ĝ` uniformly and `‖DG_n‖ ≤ Λ` on `O₀ = (spt X)_{r/2}`, where `G_n → G` uniformly.
+  obtain ⟨G', Gj, L, hG'Lip, hG'eq, hGjsmooth, hGjLip, hGjconv, hGjderiv, -⟩ :=
+    Submission.dph_lipschitz_smooth_approx m m' G Λ X.support r hr hGLip
+  have hsptO : X.support ⊆ thickening (r / 2) X.support := self_subset_thickening (half_pos hr) _
+  have hOr : thickening (r / 2) X.support ⊆ thickening r X.support :=
+    thickening_mono (half_le_self hr.le) _
+  have hsptr : X.support ⊆ thickening r X.support := self_subset_thickening hr _
+  have hconvO : TendstoUniformlyOn Gj G atTop (thickening (r / 2) X.support) :=
+    hGjconv.tendstoUniformlyOn.congr_right (hG'eq.mono hOr)
+  -- 3. `Ĝ` is proper on `spt X` (it equals `G` there), so (S5′) gives an integer multiplicity `S'`
+  -- with `I_n(ω) = ∫_M θ ⟨ω(G_n x), (DG_n)_# ξ⟩ dHᵏ → S'(ω)`.
+  have hG'prop : ∀ K : Set (Eucl m'), IsCompact K → IsCompact (G' ⁻¹' K ∩ X.support) := by
+    intro K hK
+    have hEq : G' ⁻¹' K ∩ X.support = G ⁻¹' K ∩ X.support := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hx, hxs⟩
+        exact ⟨hG'eq (hsptr hxs) ▸ hx, hxs⟩
+      · rintro ⟨hx, hxs⟩
+        exact ⟨(hG'eq (hsptr hxs)).symm ▸ hx, hxs⟩
+    rw [hEq]
+    exact hGprop K hK
+  obtain ⟨S', -, hS'im, hS'lim⟩ := hS5 m m' k X M θ ξ hT hθ hXτ G' L hG'Lip hG'prop
+  -- 4. Eventually `dist (G x) (G_n x) < 1` on `spt X`, so `G_n` is proper on the closed `spt X`:
+  -- `G_n⁻¹(K) ∩ spt X` is a closed subset of the compact `G⁻¹(cthickening 1 K) ∩ spt X`.
+  have hsptClosed : IsClosed X.support := isClosed_univ.sdiff X.isOpen_zeroRegion
+  have hprop_ev : ∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K →
+      IsCompact (Gj n ⁻¹' K ∩ X.support) := by
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hconvO.mono hsptO) 1 one_pos] with n hn
+    intro K hK
+    refine (hGprop (cthickening 1 K) hK.cthickening).of_isClosed_subset
+      ((hK.isClosed.preimage (hGjsmooth n).continuous).inter hsptClosed) ?_
+    rintro x ⟨hxK, hxs⟩
+    exact ⟨Metric.mem_cthickening_of_dist_le (G x) (Gj n x) 1 K hxK (hn x hxs).le, hxs⟩
+  -- `Hᵏ(M ∖ spt X) = 0`: `Hᵏ`-a.e. point of `M` lies in `spt X`.
+  have hnull := Submission.iwl_sp_rectifiable_support_null m k univ X M θ ξ hT hXτ
+  have hspt : ∀ᵐ x ∂((μHE[k] : Measure (Eucl m)).restrict M), x ∈ X.support := by
+    rw [ae_restrict_iff'₀ hT.nullMeasurableSet]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hnull] with x hx hxM
+    by_contra hxX
+    exact hx ⟨hxM, hxX⟩
+  -- 5. `S(ω) = S'(ω)`: both are limits of `X(η_n) = I_n(ω)`.
+  have hSeq : ∀ ω, S ω = S' ω := by
+    intro ω
+    -- `η_n` is compatible with `(G_n, ω)` near `spt X` whenever `G_n` is proper on `spt X`.
+    have hex : ∀ n, ∃ η : TestFormOn (univ : Set (Eucl m)) k,
+        (∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ X.support)) →
+        ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+          (η : DifferentialForm (Eucl m) k) x =
+            ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+              (fderiv ℝ (Gj n) x) := by
+      intro n
+      by_cases hp : ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ X.support)
+      · obtain ⟨η, _ζ, N, hN, hAN, -, -, hηN, -⟩ :=
+          Submission.iwl_sp_exists_compatible_testForm m m' k univ univ X.support (Gj n)
+            isOpen_univ (subset_univ _) (hGjsmooth n) (fun K hK _ => hp K hK) ω
+        exact ⟨η, fun _ => ⟨N, hN, hAN, hηN⟩⟩
+      · exact ⟨0, fun h => absurd h hp⟩
+    choose ηj hηj using hex
+    have hcompat : ∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+        (ηj n : DifferentialForm (Eucl m) k) x =
+          ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+            (fderiv ℝ (Gj n) x) :=
+      hprop_ev.mono fun n hn => hηj n hn
+    -- `LipPF(X, G, S)` for the admissible `(G_n, O₀, Λ)`: `X(η_n) → S(ω)`.
+    have hlim1 : Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω)) :=
+      hLipPF Gj (thickening (r / 2) X.support) (Λ : ℝ) isOpen_thickening hsptO hGjsmooth
+        (Eventually.of_forall fun n x hx => hGjderiv n x hx) hconvO ω ηj hcompat
+    -- Step 3 with `g_n = G_n` (`C^∞` maps are `C¹`): `I_n(ω) → S'(ω)`.
+    have hlim2 := hS'lim Gj L (fun n => (hGjsmooth n).of_le (by exact_mod_cast le_top))
+      hGjLip hGjconv ω
+    -- Eventually `X(η_n) = I_n(ω)`: `η_n = (ω ∘ G_n) ∘ DG_n` on `N ⊇ spt X`, which carries
+    -- `Hᵏ ⌞ M`, and `⟨(ω ∘ G_n) ∘ DG_n, ξ⟩ = ⟨ω ∘ G_n, (DG_n)_# ξ⟩` by definition.
+    have hevEq : ∀ᶠ n in atTop, X (ηj n) = ∫ x in M, θ x * nVectorPushforward k
+        (fderiv ℝ (Gj n) x) (ξ x) ((ω : DifferentialForm (Eucl m') k) (Gj n x))
+          ∂(μHE[k] : Measure (Eucl m)) := by
+      filter_upwards [hcompat] with n hn
+      obtain ⟨N, -, hXN, hηN⟩ := hn
+      rw [hXτ, tauAction]
+      refine integral_congr_ae ?_
+      filter_upwards [hspt] with x hxX
+      rw [hηN x (hXN hxX)]
+      rfl
+    exact tendsto_nhds_unique hlim1 (hlim2.congr' (hevEq.mono fun n h => h.symm))
+  -- `S` inherits the integer multiplicity representation of `S'`.
+  obtain ⟨M', θ', ξ', hT', hθ', hS'τ⟩ := hS'im
+  exact ⟨M', θ', ξ', hT', hθ', fun ω => (hSeq ω).trans (hS'τ ω)⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
