@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "Constancy theorem for integer multiplicity cycles supported in an n-plane: S = c[[Q]] and M_W(S) = |c|·H^n(W ∩ Q)",
+  "statement": "For all P, n ∈ ℕ with n ≥ 1, every open V ⊆ ℝ^P, every orthonormal family τ = (τ_1, …, τ_n) in ℝ^P with Q := span{τ_1, …, τ_n}, and every S ∈ 𝒟_n(V): if S is integer multiplicity, ∂S = 0 in V (BoundaryVanishes S), spt S ⊆ Q and V ∩ Q is connected (in particular nonempty), then there is c ∈ ℤ such that S(ω) = c·∫_{V∩Q} ω(x)(τ_1, …, τ_n) dH^n(x) for every ω ∈ 𝒟^n(V) (S = c[[Q]] in V, with Q oriented by τ), and M_W(S) = |c|·H^n(W ∩ Q) for every open W ⊆ V. Here H^n = μHE[n] and |c| = c.natAbs.",
+  "lean_statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P), 1 ≤ n → IsOpen V → Orthonormal ℝ τ → IsIntegerMultiplicity S → BoundaryVanishes S → S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → IsConnected (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → ∃ c : ℤ, (∀ ω : TestFormOn V n, S ω = (c : ℝ) * ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → S.massOn W = (c.natAbs : ℝ≥0∞) * μHE[n] (W ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)))",
+  "lean_name": "idtp_planar_cycle_eq_const_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677-a1"
+}

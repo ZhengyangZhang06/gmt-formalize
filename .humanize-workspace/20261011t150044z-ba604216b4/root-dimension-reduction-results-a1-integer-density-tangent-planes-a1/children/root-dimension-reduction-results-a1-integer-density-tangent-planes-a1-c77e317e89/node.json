@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "Tangent cones of a 2-dimensional minimizing cone at points p ≠ 0 are integer multiples of planes through p",
+  "statement": "For every P ∈ ℕ and every C ∈ 𝒟_2(ℝ^P) that is minimizing in ℝ^P (IsMinimizingIn C univ), has ∂C = 0 (BoundaryVanishes C) and is a cone (IsConeCurrent C), every p ∈ spt C with p ≠ 0, and every sequence λ_j > 0 with λ_j → 0: there are a strictly increasing φ : ℕ → ℕ, C' ∈ 𝒟_2(ℝ^P), an orthonormal pair τ = (τ_1, τ_2) in ℝ^P and c ∈ ℤ such that blowUp C p λ_{φ(j)} ⇀ C' in ℝ^P (ConvergesWeakly), the mass measures of these blow-ups converge to that of C' for all integer multiplicity representations (MassMeasuresConverge), p ∈ Q := span{τ_1, τ_2}, |c| ≥ 1, Θ²(μ_C, p) = |c| (HasMassDensity C p |c|), and C' = c[[Q]], i.e. C'(ω) = c∫_Q ω(x)(τ_1, τ_2) dH²(x) for every ω ∈ 𝒟²(ℝ^P), where H² = μHE[2].",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∀ p ∈ C.support, p ≠ 0 → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (τ : Fin 2 → Euclid P) (c : ℤ), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ MassMeasuresConverge (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧ 1 ≤ c.natAbs ∧ HasMassDensity C p (c.natAbs : ℝ) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x τ ∂μHE[2]",
+  "lean_name": "idtp_cone_tangent_cone_planar",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c77e317e89-a1"
+}
