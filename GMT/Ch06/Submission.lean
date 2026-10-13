@@ -359,6 +359,71 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Cylinders over countably `m`-rectifiable sets: if `π(y) = (y_1, …, y_P)` pulls
+`Hᵐ`-null sets of `ℝ^P` back to `H^{m+1}`-null sets of `ℝ^{P+1}`, then for countably
+`m`-rectifiable `M ⊆ ℝ^P` the cylinder `{y : π(y) ∈ M}` is countably `(m+1)`-rectifiable,
+parametrized by `G_j(u) = (u_0, F_j(u_1, …, u_m))`. -/
+theorem Submission.iwl_cr_ip_pt_cylinder_countablyRectifiable : ∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) → ∀ M : Set (Eucl P), CountablyRectifiable m M → CountablyRectifiable (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
+  intro P m hNT M hM
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hM
+  -- Step 1: the continuous linear maps `hd u = u_0`, `tl u = (u_1, …, u_m)` and
+  -- `Ψ (a, x) = (a, x_1, …, x_P)`.
+  let hd : Eucl (m + 1) →L[ℝ] ℝ :=
+    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (m + 1) => ℝ) 0).comp
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).toContinuousLinearMap
+  let tl : Eucl (m + 1) →L[ℝ] Eucl m :=
+    (EuclideanSpace.equiv (Fin m) ℝ).symm.toContinuousLinearMap.comp
+      ((ContinuousLinearMap.pi fun i : Fin m =>
+          ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (m + 1) => ℝ) i.succ).comp
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).toContinuousLinearMap)
+  let Ψ : ℝ × Eucl P →L[ℝ] Eucl (P + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      map_add' := by
+        intro p q
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Prod.fst_add, Prod.snd_add, map_add, ContinuousLinearEquiv.apply_symm_apply]
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := by
+        intro c p
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Prod.smul_fst, Prod.smul_snd, map_smul, ContinuousLinearEquiv.apply_symm_apply,
+          RingHom.id_apply]
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  -- Step 2: the exceptional set is the cylinder over `M₀` (null by `hNT`) and
+  -- `G_j = Ψ ∘ (hd, F_j ∘ tl)` is Lipschitz.
+  refine ⟨{y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M₀},
+    hNT M₀ hM₀, fun j u => Ψ (hd u, F j (tl u)), fun j => ?_, ?_⟩
+  · obtain ⟨K, hK⟩ := hF j
+    exact ⟨_, Ψ.lipschitzWith.comp (hd.lipschitzWith.prodMk (hK.comp tl.lipschitzWith))⟩
+  -- Step 3: if `π(y) = F_j(w)` then `G_j(y_0, w) = (y_0, π(y)) = y`.
+  · intro y hy
+    rcases hcover hy with h0 | h1
+    · exact Or.inl h0
+    · right
+      obtain ⟨j, w, hw⟩ := mem_iUnion.mp h1
+      refine mem_iUnion.mpr ⟨j, (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w)), ?_⟩
+      have h1' : hd ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w))) =
+          EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 := by
+        simp [hd]
+      have h2' : tl ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w))) = w := by
+        apply (EuclideanSpace.equiv (Fin m) ℝ).injective
+        ext i
+        simp [tl]
+      show Ψ (hd _, F j (tl _)) = y
+      rw [h1', h2', hw]
+      show (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+        (EuclideanSpace.equiv (Fin P) ℝ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))) = y
+      simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+        ContinuousLinearEquiv.symm_apply_apply]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
