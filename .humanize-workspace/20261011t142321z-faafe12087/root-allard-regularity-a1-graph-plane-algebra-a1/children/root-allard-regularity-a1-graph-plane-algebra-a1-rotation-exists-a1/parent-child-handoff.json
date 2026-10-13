@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "diff GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean; diff GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean",
+        "rg -c 'allard52_gpa' <snapshot>/project; grep -c allard52_gpa <run>/dag.json",
+        "python: list dag.json nodes with lean_name, status, lean_statement (name reservation; reuse candidates aetp_starProjection_range_continuousOn, hsNorm_starProjection_trace_identities, rsod_graphPoint_eq_finAddEquivProd_symm, rsod_norm_graphPoint_sq)",
+        "rg -n 'exists_orthonormalBasis_extension_of_card_eq|starProjection_map|orthogonalProjection_map_apply' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace",
+        "rg -n 'theorem ContDiffOn.exists_lipschitzOnWith|theorem Convex.norm_image_sub_le_of_norm_fderiv_le|lipschitzOnWith_of_nnnorm_fderiv_le' <snapshot>/mathlib/Mathlib/Analysis",
+        "grep -rn 'theorem contDiffAt_ringInverse\\|theorem hasFDerivAt_ringInverse' <snapshot>/mathlib/Mathlib/Analysis/Calculus/",
+        "grep -n 'class HasOrthogonalProjection\\|theorem eq_starProjection_of_mem_of_inner_eq_zero\\|theorem starProjection_map_apply' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "grep -n 'repr_symm_single\\|sum_sq_inner_right\\|finrank_euclideanSpace_fin\\|stdOrthonormalBasis' PiL2.lean; grep finrank_add_finrank_orthogonal Projection/FiniteDimensional.lean; grep 'ContDiff.fderiv_right' ContDiff/Comp.lean; grep 'HasFDerivAt.clm_comp' FDeriv/CompCLM.lean; grep opNorm_le_bound Normed/Operator/Basic.lean; grep norm_eq_of_L2 Normed/Lp/PiLp.lean",
+        "git show 9f89be4c6f3781e8d518dff64e552c3d1263533e -- GMT/Ch05/Submission.lean; git show --stat 164f08e449a335e8b0962c8f511579e3e102246a 18a457c495d0ee5b9257b1656886d4da963c6fd8",
+        "lean GMT/Ch05/Submission.lean -o /tmp/gpa-decomp-3B7ONF/build/lib/lean/GMT/Ch05/Submission.olean; lean Probe.lean and Probe2.lean (#check of every cited lemma; ContinuousLinearMap.adjoint and LinearMap.adjoint; instance probes)",
+        "lean Assembly.lean (7 child types by sorry + parent frozen type proved); lean BilipFromSiblings.lean (child 7 proved from children 1 and 6); lean_contract.validate_lean_statement on all 7 statements",
+        "sed -n 1015,1180p book/sources/chapter-05-source.txt (Simon 5.2 proof, p. 123)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/1240ad3fa3ef4b348796c806151f8f30.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-05-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/gpa-decomp-3B7ONF/check/Probe.lean",
+        "/tmp/gpa-decomp-3B7ONF/check/Probe2.lean",
+        "/tmp/gpa-decomp-3B7ONF/check/Assembly.lean",
+        "/tmp/gpa-decomp-3B7ONF/check/BilipFromSiblings.lean",
+        "/tmp/gpa-scripts/check.py"
+      ],
+      "conclusion": "Snapshot pins: project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Contract.lean and Submission.lean are byte-identical to the snapshot copies.\n\nNames.\n- 'allard52_gpa' has no match in the snapshot project or in dag.json (214 nodes), so the seven bare names are globally unique.\n- Accepted precedents: aetp_starProjection_range_continuousOn (commit 9f89be4c builds the projection formula with a hand-made transpose), hsNorm_starProjection_trace_identities (164f08e4) and rsod_graphPoint_eq_finAddEquivProd_symm (18a457c4). None is reused, because none removes a child.\n- rsod_norm_graphPoint_sq is still decomposing under another parent, so it cannot be shared.\n\nMathlib lemmas found, all inside the import closure:\n- Orthonormal.exists_orthonormalBasis_extension_of_card_eq (PiL2.lean:1044), OrthonormalBasis.repr_symm_single (PiL2.lean:430), OrthonormalBasis.sum_sq_inner_right (PiL2.lean:528), finrank_euclideanSpace_fin (PiL2.lean:205), stdOrthonormalBasis (PiL2.lean:1073);\n- HasOrthogonalProjection, a Prop class (Projection/Basic.lean:48), eq_starProjection_of_mem_of_inner_eq_zero (Projection/Basic.lean:180), starProjection_map_apply (Projection/Basic.lean:358), finrank_add_finrank_orthogonal (Projection/FiniteDimensional.lean:110);\n- ContDiffOn.exists_lipschitzOnWith (ContDiff/RCLike.lean:149), ContDiff.fderiv_right (ContDiff/Comp.lean:750), contDiffAt_ringInverse (ContDiff/Operations.lean:772), hasFDerivAt_ringInverse (FDeriv/Mul.lean:661), HasFDerivAt.clm_comp (FDeriv/CompCLM.lean:61);\n- Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499), opNorm_le_bound (Normed/Operator/Basic.lean:196), PiLp.norm_eq_of_L2 (PiLp.lean:780).\n\nImport gaps and instances.\n- ContinuousLinearMap.adjoint and LinearMap.adjoint are Unknown constants after `import GMT.Ch05.Submission`, so the transposes are built by hand.\n- These instances are inferred: IsCompact (closedBall 0 1) and FiniteDimensional in Rn n ->L Rn l, and HasSummableGeomSeries (Rn n ->L Rn n).\n\nLean checks.\n- Assembly.lean proves the parent's exact frozen type from the 7 child types, with no other sorry.\n- BilipFromSiblings.lean proves child 7 from children 1 and 6.\n\nSimon's printed text (p. 123) gives P = [[I, Df],[Df^t, O]] + F(Df) with F(0) = 0, DF(0) = 0 and |F(p1) - F(p2)| <= C(|p1| + |p2|)|p1 - p2|. This matches children 6-7.\n\nNumeric check: |DPi(0)H|^2 / |H|^2 = 2, and the Gp ratio lies in [1.77, 1.96] for |A|, |B| <= 1/4."
+    }
+  ],
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "child_id": "root.allard_regularity-a1.graph_plane_algebra-a1.rotation_exists-a1",
+  "subproblem": {
+    "key": "rotation_exists",
+    "title": "Every n-dimensional subspace of R^(n+l) is a rotated coordinate plane",
+    "statement": "For all natural numbers n, l and every linear subspace T of R^(n+l) = Amb n l with dim T = n, there is a linear isometry equivalence q of R^(n+l) with rotatedPlane q = T, where rotatedPlane q = (horizontalPlane n l).map q and horizontalPlane n l = span{EuclideanSpace.single (Fin.castAdd l i) 1 : i < n} = R^n x {0}.",
+    "lean_statement": "∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T",
+    "lean_name": "allard52_gpa_exists_rotatedPlane_eq",
+    "depends_on": [],
+    "natural_proof": "Source: parent proof, step 7 (rotations).\n\nNotation. E_k := EuclideanSpace.single k 1 (k in Fin (n+l)) is the standard orthonormal basis of R^(n+l) = Amb n l = EuclideanSpace R (Fin (n+l)); the indices Fin.castAdd l i (i < n) are the first n coordinates and Fin.natAdd n j (j < l) the last l. By definition rotatedPlane q = (horizontalPlane n l).map q and horizontalPlane n l = span{E_(castAdd l i) : i < n}.\n\n1. Since finrank T = n, T has an orthonormal basis u_0, ..., u_(n-1) indexed by Fin n (stdOrthonormalBasis R T is indexed by Fin (finrank R T); reindex it along the equality finrank R T = n, e.g. with finCongr). Regard each u_i as a vector of R^(n+l); then (u_i) is an orthonormal family in R^(n+l) whose span is T.\n\n2. The orthogonal complement T^perp has dimension (n + l) - n = l, because finrank T + finrank T^perp = finrank R^(n+l) = n + l (Submodule.finrank_add_finrank_orthogonal, finrank_euclideanSpace_fin). Choose an orthonormal basis u_n, ..., u_(n+l-1) of T^perp. Put b(castAdd l i) := u_i and b(natAdd n j) := u_(n+j). The family (b k)_(k in Fin (n+l)) is orthonormal: vectors from T are orthonormal among themselves, vectors from T^perp are orthonormal among themselves, and every vector of T is orthogonal to every vector of T^perp. It consists of n + l = dim R^(n+l) orthonormal, hence linearly independent, vectors, so it is an orthonormal basis b of R^(n+l) indexed by Fin (n+l) with b(castAdd l i) = u_i for all i < n.\n   (Formal shortcut for this step: apply Orthonormal.exists_orthonormalBasis_extension_of_card_eq with index type Fin (n+l), card = n + l = finrank R^(n+l), s := range (Fin.castAdd l), v(castAdd l i) := u_i and v(natAdd n j) := 0 (defined by Fin.addCases). The restriction of v to s is orthonormal because Fin.castAdd l is injective and (u_i) is orthonormal. The lemma yields an orthonormal basis b with b k = v k for k in s, i.e. b(castAdd l i) = u_i.)\n\n3. Let q := b.repr.symm. Here b.repr : R^(n+l) -> EuclideanSpace R (Fin (n+l)) is a linear isometry equivalence, and EuclideanSpace R (Fin (n+l)) is literally Amb n l, so q : Amb n l ≃ₗᵢ[R] Amb n l. It sends the standard orthonormal basis to b: q E_k = b k for every k (OrthonormalBasis.repr_symm_single).\n\n4. Then rotatedPlane q = (span{E_(castAdd l i)}).map q = span{q E_(castAdd l i) : i < n} (Submodule.map_span) = span{b(castAdd l i) : i < n} = span{u_i : i < n} = T, the last equality by step 1: (u_i) is a basis of T, so the span in R^(n+l) of the vectors u_i is the image of T under the inclusion, i.e. T itself.\n\n5. Hence q is a linear isometry equivalence with rotatedPlane q = T.",
+    "proof_key_steps": [
+      "Orthonormal basis u_0..u_(n-1) of T indexed by Fin n (finrank T = n)",
+      "Extend to an orthonormal basis b of R^(n+l) indexed by Fin (n+l) with b(castAdd i) = u_i (T plus T^perp, or exists_orthonormalBasis_extension_of_card_eq)",
+      "q := b.repr.symm is a linear isometry equivalence with q E_k = b k",
+      "rotatedPlane q = span{q E_(castAdd i)} = span{u_i} = T"
+    ]
+  },
+  "audit": {
+    "key": "rotation_exists",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The finrank hypothesis and conclusion match exactly. Extending an orthonormal basis of T and taking b.repr.symm gives the required isometry equivalence; mapping the coordinate generators proves rotatedPlane q = T. The construction also covers zero dimensions."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-rotation-exists-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-rotation-exists-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-rotation-exists-a1/parent-supplied-natural-proof.json"
+}
