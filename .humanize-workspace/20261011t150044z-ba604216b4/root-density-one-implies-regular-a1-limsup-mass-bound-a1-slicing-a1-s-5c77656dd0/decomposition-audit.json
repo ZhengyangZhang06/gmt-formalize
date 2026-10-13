@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def IsEmbeddedSubmanifold|dor_lmbsf_cp_|axiom|sorry|namespace Submission|end GMT' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "theorem isOpen_iUnion_countable|theorem ContDiffOn.exists_lipschitzOnWith|theorem ContDiffAt.exists_lipschitzOnWith|theorem LipschitzOnWith.extend_real",
+        "theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem HasFDerivWithinAt.lim|theorem ContinuousOn.measurableEmbedding|theorem MeasurableSet.image_of_continuousOn_injOn|theorem measurable_extend",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "inverse_continuousAt|exists_measurable_superset_of_null|protected theorem mul_apply|theorem mul_apply \\(.*→L|mul_def.*comp",
+        "sed -n '560,607p' mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cp-independent-audit-1rdnvetb/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-5c77656dd0/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-5c77656dd0/decomposition-v1.json",
+        "GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/tmp/cp-decomp/v2/Final.lean",
+        "/tmp/cp-independent-audit-1rdnvetb/Assembly.lean"
+      ],
+      "conclusion": "The pinned definitions and library results support the supplied proofs. Snapshot and workspace contracts are byte-identical; installed mathlib and SimonGMT revisions match their pins. All eight names are bare identifiers, with no collisions found in the DAG or local branch declarations. Every frozen type passes lexical validation and elaborates in comparator scope. Independently compiled all eight supplied proof bodies under their proposed Submission names: each uses only propext, Classical.choice and Quot.sound. The supplied parent assembly also compiles with the four exact inherited contracts as parameters, with the same axiom list. Its conclusion is the selected frozen parent type. The reachable dependency graph is acyclic; the children require no undeclared dependencies. The eight-way split is appropriate and establishes this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. Local chart extraction, Lindelöf selection, shrinking into U and enumeration with an empty chart establish every conclusion. The proof is complete and non-circular."
+    },
+    {
+      "key": "chart_c1_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "CA is explicitly assumed with the correct frozen type. Lipschitz extension and C¹ approximation produce compact equality pieces inside the enlarged balls; reciprocal error bounds prove the null remainder. Empty-family padding is valid."
+    },
+    {
+      "key": "c1_image_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable local Lipschitz cover, Hausdorff image estimate and equality of domain Hausdorff measure with volume prove the exact statement. No measurability assumption on Z is needed."
+    },
+    {
+      "key": "chart_tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness and convexity provide the finite-measure image needed for TL. Both TL applications have all required hypotheses, and their uniformly quantified equivalences transfer IT to M for every relevant preimage."
+    },
+    {
+      "key": "gradient_bound_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The density theorem supplies one full-measure set supporting every direction. DD, differentiability and the Lipschitz comparison give the unit-direction bound; linear scaling covers all e. The exact conditional statement is proved."
+    },
+    {
+      "key": "disjoint_refinement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restricted-measure null supersets permit Borel deletions without assuming Good measurable. Disjointification, measurable pullbacks and the explicit null-remainder inclusion prove all conclusions; injectivity is unnecessary."
+    },
+    {
+      "key": "chart_tangent_lift",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram operator has trivial kernel, giving its inverse, the defining identity and continuity. The quadratic inequality proves the norm bound. Independently checked that IsUnit and Ring.inverse use continuous-linear-endomorphism composition, not pointwise multiplication."
+    },
+    {
+      "key": "measurable_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lusin–Souslin provides measurable embeddings and Borel images under exactly the stated hypotheses. Measurable extensions and countable least-index gluing yield the required values and zero complement. Disjointness makes the assignments consistent."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.disjoint_refinement-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Disjoint Borel refinement of chart pieces keeping a.e.-good points (Simon Ch. 3, Remark 1.3; parent Steps 5–6)",
+  "statement": "Let:\n- m, P ∈ ℕ;\n- μ a measure on the Borel sets of ℝ^P;\n- M ⊆ ℝ^P Borel;\n- for each j ∈ ℕ: C_j ⊆ ℝ^m compact, ψ_j : ℝ^m → ℝ^P continuous on C_j, and a predicate Good_j on ℝ^m.\nAssume:\n- μ(M ∖ ⋃_j ψ_j(C_j)) = 0;\n- for every j, for μ⌞(M ∩ ψ_j(C_j))-a.e. x, every y ∈ C_j with ψ_j(y) = x satisfies Good_j(y).\nThen there are Borel sets Y_j ⊆ C_j (j ∈ ℕ) such that:\n- ψ_j(Y_j) ⊆ M;\n- Good_j(y) holds for every y ∈ Y_j;\n- the sets ψ_j(Y_j) are pairwise disjoint;\n- μ(M ∖ ⋃_j ψ_j(Y_j)) = 0.",
+  "lean_statement": "∀ (m P : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (C : ℕ → Set (Euclid m)) (ψ : ℕ → Euclid m → Euclid P) (Good : ℕ → Euclid m → Prop), MeasurableSet M → (∀ j, IsCompact (C j) ∧ ContinuousOn (ψ j) (C j)) → μ (M \\ ⋃ j, ψ j '' C j) = 0 → (∀ j, ∀ᵐ x ∂(μ.restrict (M ∩ ψ j '' C j)), ∀ y ∈ C j, ψ j y = x → Good j y) → ∃ Y : ℕ → Set (Euclid m), (∀ j, MeasurableSet (Y j) ∧ Y j ⊆ C j ∧ ψ j '' Y j ⊆ M ∧ ∀ y ∈ Y j, Good j y) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) ∧ μ (M \\ ⋃ j, ψ j '' Y j) = 0",
+  "lean_name": "dor_lmbsf_cp_disjoint_refinement",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-00ec0fb5db-a1"
+}

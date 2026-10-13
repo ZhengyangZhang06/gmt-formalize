@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.gradient_bound_ae-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Derivative bound |DF(y)e| ≤ L|Dψ(y)e| at a.e. point of a set where F = f∘ψ (parent Step 8)",
+  "statement": "Assume (DD): for every d ∈ ℕ, every Z' ⊆ ℝ^d and y' ∈ ℝ^d with L^d(Z' ∩ B̄_r(y'))/L^d(B̄_r(y')) → 1 as r ↓ 0 (L^d = volume on Euclid d), and every v ∈ ℝ^d with |v| = 1, there is a sequence (y_i) in Z' ∖ {y'} with y_i → y' and (y_i − y')/|y_i − y'| → v.\n\nLet:\n- m, P ∈ ℕ and Z ⊆ ℝ^m Borel;\n- F : ℝ^m → ℝ and ψ : ℝ^m → ℝ^P, both differentiable at every point of Z;\n- f : ℝ^P → ℝ L-Lipschitz (L ≥ 0), with f(ψ(y)) = F(y) for every y ∈ Z.\nThen for L^m-a.e. y with y ∈ Z, and every e ∈ ℝ^m, |DF(y)e| ≤ L·|Dψ(y)e|. Here DF(y) = fderiv ℝ F y and Dψ(y) = fderiv ℝ ψ y.",
+  "lean_statement": "(∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (m P : ℕ) (Z : Set (Euclid m)) (F : Euclid m → ℝ) (ψ : Euclid m → Euclid P) (f : Euclid P → ℝ) (L : NNReal), MeasurableSet Z → (∀ y ∈ Z, DifferentiableAt ℝ F y ∧ DifferentiableAt ℝ ψ y) → (∀ y ∈ Z, f (ψ y) = F y) → LipschitzWith L f → ∀ᵐ y ∂volume, y ∈ Z → ∀ e : Euclid m, |fderiv ℝ F y e| ≤ (L : ℝ) * ‖fderiv ℝ ψ y e‖",
+  "lean_name": "dor_lmbsf_cp_gradient_bound_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-136eb8e2d7-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.chart_c1_pieces-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Compact pieces of a C¹ chart on which f∘ψ agrees with C¹ functions (C¹ approximation; parent Step 3)",
+  "statement": "Assume (CA): for every m ∈ ℕ, every K ≥ 0, every K-Lipschitz u : ℝ^m → ℝ and every ε ∈ (0, ∞], there is a C¹ function G : ℝ^m → ℝ with L^m({y : u(y) ≠ G(y)}) < ε. Here L^m = volume on Euclid m.\n\nLet m, P ∈ ℕ, V ⊆ ℝ^m open, ψ : ℝ^m → ℝ^P C¹ on V, and f : ℝ^P → ℝ L-Lipschitz (L ≥ 0). Then there are C_k, C'_k ⊆ ℝ^m and F_k : ℝ^m → ℝ (k ∈ ℕ) such that for every k:\n- C_k is compact;\n- C'_k is compact and convex;\n- C_k ⊆ int C'_k and C'_k ⊆ V;\n- F_k is C¹ on ℝ^m;\n- f(ψ(y)) = F_k(y) for every y ∈ C_k.\nMoreover L^m(V ∖ ⋃_k C_k) = 0.",
+  "lean_statement": "(∀ (m : ℕ) (u : Euclid m → ℝ) (K : NNReal), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ G : Euclid m → ℝ, ContDiff ℝ 1 G ∧ volume {y | u y ≠ G y} < ε) → ∀ (m P : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (f : Euclid P → ℝ) (L : NNReal), IsOpen V → ContDiffOn ℝ 1 ψ V → LipschitzWith L f → ∃ (C C' : ℕ → Set (Euclid m)) (F : ℕ → Euclid m → ℝ), (∀ k, IsCompact (C k) ∧ IsCompact (C' k) ∧ Convex ℝ (C' k) ∧ C k ⊆ interior (C' k) ∧ C' k ⊆ V ∧ ContDiff ℝ 1 (F k) ∧ ∀ y ∈ C k, f (ψ y) = F k y) ∧ volume (V \\ ⋃ k, C k) = 0",
+  "lean_name": "dor_lmbsf_cp_chart_c1_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-df0833bd77-a1"
+}
