@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.total_bounded-a1.mass_sub-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.total_bounded-a1",
+  "depth": 4,
+  "title": "Mass of a difference is at most the sum of the masses (fact (F1); Simon Ch. 6, 2.5)",
+  "statement": "Let P, n ∈ ℕ, let U, G ⊆ ℝ^P be arbitrary sets and let A, B ∈ 𝒟_n(U). Then M_G(A − B) ≤ M_G(A) + M_G(B) in [0, ∞]. Conventions: 𝒟_n(U) is the space of n-currents in U (SimonGMT GeometricCurrentOn U n) and 𝒟ⁿ(U) the test n-forms in U (TestFormOn U n: smooth n-forms on ℝ^P with compact support contained in U, a submodule of the space of forms); |α| is the Euclidean coefficient norm of a covector (covectorEuclideanNorm); M_G(X) = X.massOn G is the supremum in [0, ∞] of ENNReal.ofReal(X(ω)) over ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x (such ω are called admissible for M_G; massAdmissibleOn U n G); A − B is the contract instance Sub, whose underlying linear functional is ω ↦ A(ω) − B(ω).",
+  "lean_statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G",
+  "lean_name": "cmc_fc_tb_massOn_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-9f0b8dd764-a1"
+}
