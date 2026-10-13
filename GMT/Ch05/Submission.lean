@@ -458,6 +458,19 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Inner product of graph points: `⟨(x, y), (x', y')⟩ = ⟨x, x'⟩ + ⟨y, y'⟩` in `ℝ^{n+ℓ}`.  Each inner
+product of `EuclideanSpace` is the coordinate sum (`PiLp.inner_apply`); split the sum over
+`Fin (n + ℓ)` into its `Fin.castAdd ℓ` and `Fin.natAdd n` parts (`Fin.sum_univ_add`), where the
+coordinates of `graphPoint x y` are `x i`, resp. `y j` (`Fin.append_left`/`Fin.append_right`). -/
+theorem allard52_gfz_graphPoint_inner : ∀ (n ℓ : ℕ) (x x' : Rn n) (y y' : Rn ℓ),
+    inner ℝ (graphPoint x y) (graphPoint x' y') = inner ℝ x x' + inner ℝ y y' := by
+  intro n ℓ x x' y y'
+  simp only [graphPoint, PiLp.inner_apply, Fin.sum_univ_add, Fin.append_left, Fin.append_right]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
