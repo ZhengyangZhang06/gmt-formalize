@@ -392,6 +392,116 @@ theorem Submission.slicing_im_ll_gws_pairing_bound :
   simp_rw [← map_sub]
   rw [← Real.norm_eq_abs, ← integral_const_mul]
   exact norm_integral_le_of_norm_le ((hb.sub hb').norm.const_mul C) (hle (b - b'))
+/-- **Integration by parts against a `C¹` field, for functions Lipschitz on `Ω`.**  Let `Ω ⊆ ℝⁿ`
+be open and `b : ℝⁿ → ℝⁿ` be `C¹` with compact support and `tsupport b ⊆ Ω`.  The divergence
+`g = ∑ᵢ Dbᵢ(·)(eᵢ)` of `b` is integrable, and for every `f` that is `L`-Lipschitz on `Ω`, `f g` is
+integrable on `Ω` and `∫_Ω Df(b) = −∫_Ω f g`, where `Df(w) = fderiv ℝ f w` (`0` where `f` is not
+differentiable).  Extend `f` to an `L`-Lipschitz `F` on `ℝⁿ` (McShane); `DF = Df` on the open set
+`Ω` and `b, g` vanish off `Ω`, so both sides are integrals over `ℝⁿ` with `F` in place of `f`.
+Expand `b = ∑ᵢ bᵢ eᵢ`: by Rademacher's theorem `DF(w)(eᵢ)` is the line derivative of `F` along
+`eᵢ` for a.e. `w`, and integration by parts for Lipschitz functions moves it onto the compactly
+supported Lipschitz coordinate `bᵢ`. -/
+theorem Submission.slicing_im_ll_gws_lipschitz_ibp :
+    ∀ (n : ℕ) (Ω : Set (Eucl n)) (b : Eucl n → Eucl n), IsOpen Ω → ContDiff ℝ 1 b →
+      HasCompactSupport b → tsupport b ⊆ Ω → ∃ g : Eucl n → ℝ,
+        Integrable g (volume : Measure (Eucl n)) ∧
+        ∀ (L : ℝ≥0) (f : Eucl n → ℝ), LipschitzOnWith L f Ω →
+          IntegrableOn (fun w => f w * g w) Ω (volume : Measure (Eucl n)) ∧
+          ∫ w in Ω, fderiv ℝ f w (b w) = -∫ w in Ω, f w * g w := by
+  intro n Ω b hΩ hb hbc hbΩ
+  classical
+  -- Coordinates `bᵢ` of `b`: `C¹` with compact support, hence Lipschitz; `Dbᵢ = 0` off
+  -- `tsupport b`.
+  let e : Fin n → Eucl n := fun i => EuclideanSpace.single i 1
+  let bi : Fin n → Eucl n → ℝ := fun i x => EuclideanSpace.proj i (b x)
+  have hbi_cd : ∀ i, ContDiff ℝ 1 (bi i) := fun i =>
+    (EuclideanSpace.proj i : StrongDual ℝ (Eucl n)).contDiff.comp hb
+  have hbi_cs : ∀ i, HasCompactSupport (bi i) := fun i =>
+    hbc.comp_left (g := fun y => EuclideanSpace.proj i y) (map_zero _)
+  have hbi_ts : ∀ i, tsupport (bi i) ⊆ tsupport b := fun i =>
+    tsupport_comp_subset (g := fun y => EuclideanSpace.proj i y) (map_zero _) b
+  have hbi_lip : ∀ i, ∃ D, LipschitzWith D (bi i) := fun i =>
+    ContDiff.lipschitzWith_of_hasCompactSupport (hbi_cs i) (hbi_cd i) one_ne_zero
+  have hbi_diff : ∀ i, Differentiable ℝ (bi i) := fun i => (hbi_cd i).differentiable one_ne_zero
+  have hbi_cfd : ∀ i, Continuous (fderiv ℝ (bi i)) := fun i =>
+    (hbi_cd i).continuous_fderiv one_ne_zero
+  have hDbi_zero : ∀ i w, w ∉ tsupport b → fderiv ℝ (bi i) w = 0 := fun i w hw =>
+    image_eq_zero_of_notMem_tsupport fun h => hw (hbi_ts i (tsupport_fderiv_subset ℝ h))
+  -- The divergence `g = ∑ᵢ Dbᵢ(·)(eᵢ)` is continuous and vanishes off `tsupport b`, so it has
+  -- compact support and is integrable.  It does not depend on `L` or `f`.
+  let g : Eucl n → ℝ := fun w => ∑ i, fderiv ℝ (bi i) w (e i)
+  have hg_cont : Continuous g :=
+    continuous_finsetSum _ fun i _ => (hbi_cfd i).clm_apply continuous_const
+  have hg_zero : ∀ w, w ∉ tsupport b → g w = 0 := fun w hw =>
+    Finset.sum_eq_zero fun i _ => by simp [hDbi_zero i w hw]
+  have hg_cs : HasCompactSupport g := HasCompactSupport.intro hbc hg_zero
+  refine ⟨g, hg_cont.integrable_of_hasCompactSupport hg_cs, fun L f hf => ?_⟩
+  -- McShane: `F` is `L`-Lipschitz on `ℝⁿ` and `F = f` on `Ω`, so `DF = Df` on the open set `Ω`.
+  obtain ⟨F, hF, hfF⟩ := hf.extend_real
+  have hDf : ∀ w ∈ Ω, fderiv ℝ f w = fderiv ℝ F w := fun w hw =>
+    Filter.EventuallyEq.fderiv_eq (Filter.eventuallyEq_of_mem (hΩ.mem_nhds hw) hfF)
+  -- (a): `F g` is continuous with compact support, and `f g = F g` on `Ω`.
+  have hFg_int : Integrable (fun w => F w * g w) volume :=
+    (hF.continuous.mul hg_cont).integrable_of_hasCompactSupport (hg_cs.mul_left (f := F))
+  refine ⟨hFg_int.integrableOn.congr_fun (fun w hw => by simp [hfF hw]) hΩ.measurableSet, ?_⟩
+  -- (b) reduces to `∫ DF(b) = −∫ F g` over `ℝⁿ`, as `b` and `g` vanish off `Ω`.
+  have h1 : ∫ w in Ω, fderiv ℝ f w (b w) = ∫ w, fderiv ℝ F w (b w) := by
+    rw [setIntegral_congr_fun hΩ.measurableSet (g := fun w => fderiv ℝ F w (b w))
+      (fun w hw => by simp only [hDf w hw])]
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun w hw => ?_
+    simp [image_eq_zero_of_notMem_tsupport fun h => hw (hbΩ h)]
+  have h2 : ∫ w in Ω, f w * g w = ∫ w, F w * g w := by
+    rw [setIntegral_congr_fun hΩ.measurableSet (g := fun w => F w * g w)
+      (fun w hw => by simp only [hfF hw])]
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun w hw => ?_
+    simp [hg_zero w fun h => hw (hbΩ h)]
+  rw [h1, h2]
+  -- Expand `b = ∑ᵢ bᵢ eᵢ`; each term `DF(·)(eᵢ) bᵢ` is integrable, as `‖DF‖ ≤ L` and `bᵢ` is
+  -- continuous with compact support.
+  have hexp : ∀ w, fderiv ℝ F w (b w) = ∑ i, fderiv ℝ F w (e i) * bi i w := by
+    intro w
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr (b w)]
+    simp [map_sum, map_smul, EuclideanSpace.basisFun_apply, mul_comm, e, bi]
+  have hterm_int : ∀ i, Integrable (fun w => fderiv ℝ F w (e i) * bi i w) volume := by
+    intro i
+    refine Integrable.bdd_mul (c := L * ‖e i‖)
+      ((hbi_cd i).continuous.integrable_of_hasCompactSupport (hbi_cs i))
+      (measurable_fderiv_apply_const ℝ F (e i)).aestronglyMeasurable ?_
+    filter_upwards with w
+    exact (ContinuousLinearMap.le_opNorm _ _).trans
+      (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hF) (norm_nonneg _))
+  -- Rademacher (`DF(w)(eᵢ) = ∂_{eᵢ}F(w)` a.e.) and integration by parts for Lipschitz functions.
+  have hibp : ∀ i, ∫ w, fderiv ℝ F w (e i) * bi i w
+      = -∫ w, fderiv ℝ (bi i) w (e i) * F w := by
+    intro i
+    obtain ⟨D, hD⟩ := hbi_lip i
+    have hae : (fun w => fderiv ℝ F w (e i) * bi i w)
+        =ᵐ[volume] (fun w => lineDeriv ℝ F w (e i) * bi i w) := by
+      filter_upwards [hF.ae_differentiableAt (μ := volume)] with w hw
+      rw [hw.lineDeriv_eq_fderiv]
+    rw [integral_congr_ae hae, hF.integral_lineDeriv_mul_eq hD (hbi_cs i) (e i), ← integral_neg]
+    congr 1
+    ext w
+    rw [((hbi_diff i) w).lineDeriv_eq_fderiv]
+    simp
+  -- Sum over `i`; each `Dbᵢ(·)(eᵢ) F` is continuous and vanishes off the compact `tsupport b`.
+  have hterm2_int : ∀ i, Integrable (fun w => fderiv ℝ (bi i) w (e i) * F w) volume := by
+    intro i
+    refine (((hbi_cfd i).clm_apply continuous_const).mul
+      hF.continuous).integrable_of_hasCompactSupport (HasCompactSupport.intro hbc fun w hw => ?_)
+    simp [hDbi_zero i w hw]
+  calc ∫ w, fderiv ℝ F w (b w) = ∫ w, ∑ i, fderiv ℝ F w (e i) * bi i w := by
+        simp_rw [hexp]
+    _ = ∑ i, ∫ w, fderiv ℝ F w (e i) * bi i w :=
+        integral_finsetSum _ fun i _ => hterm_int i
+    _ = ∑ i, -∫ w, fderiv ℝ (bi i) w (e i) * F w :=
+        Finset.sum_congr rfl fun i _ => hibp i
+    _ = -∫ w, ∑ i, fderiv ℝ (bi i) w (e i) * F w := by
+        rw [integral_finsetSum _ fun i _ => hterm2_int i, Finset.sum_neg_distrib]
+    _ = -∫ w, F w * g w := by
+        congr 1
+        refine integral_congr_ae (Eventually.of_forall fun w => ?_)
+        simp [g, Finset.mul_sum, mul_comm]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
