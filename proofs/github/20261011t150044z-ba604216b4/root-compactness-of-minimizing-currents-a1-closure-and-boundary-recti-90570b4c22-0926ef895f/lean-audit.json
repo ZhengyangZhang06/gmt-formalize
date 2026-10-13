@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a3eacc65ed748f5604ddafacdbf696d4d6142ca969464872944c141e7b44d7c2",
+  "git_delta": {
+    "base_commit": "e3ba472b9e348461f73b05cffdec4f00208b9b6c",
+    "candidate_commit": "83e1683a29dd306d488f5d311b3237fe6b20cb16",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_orient_ae_eq_of_setIntegral_eq",
+    "diff_sha256": "8c2c0bd4e31f0e58f11f726047536e0ee202555fd23e4fdc97b3f290ea27dd51",
+    "source_sha256": "4ed937e44199f8517a8b7b8ddc8415bdb1248ffde0ed82f77877f2ed71afe095",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_orient_ae_eq_of_setIntegral_eq",
+      "statement": "∀ (P k : ℕ) (B : Set (Euclid P)) (μ₁ μ₂ : Measure (Euclid P)) (ξ₁ ξ₂ : Euclid P → MultiVector P k), IsOpen B → (∀ K : Set (Euclid P), IsCompact K → K ⊆ B → μ₁ K < ∞) → μ₁.restrict B = μ₂.restrict B → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ (E : Set (Euclid P)) (ω : TestFormOn B k), MeasurableSet E → ∫ x in E, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in E, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂) → ∀ᵐ x ∂μ₁, x ∈ B → ξ₁ x = ξ₂ x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
