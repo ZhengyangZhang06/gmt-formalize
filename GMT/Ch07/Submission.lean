@@ -514,6 +514,95 @@ theorem Submission.fvmb_perturbed_frame_sum_norm_sq_sub_le : ∀ (P n : ℕ) (A 
             Finset.sum_const, Finset.sum_const, Finset.sum_const, ← Finset.mul_sum,
             Finset.card_fin, nsmul_eq_mul, nsmul_eq_mul, nsmul_eq_mul]
           ring
+/-- **Simon Ch. 2, §5** (the expansion `J_t = 1 + t div_M X + O(t²)` behind the first variation
+formula 5.3), scalar one-sided step: given `n`, `A ≥ 0`, `ε > 0` there are `0 < η ≤ 1` and
+`δ > 0` such that `|t| < δ`, `|D| ≤ nA` and `g ≤ exp(2tD + 2nη|t| + n(A + 1)²t²)` imply
+`√g ≤ 1 + tD + ε|t|`.  With `σ = tD + nη|t| + n(A + 1)²t²/2` the hypothesis gives
+`√g ≤ √(e^σ e^σ) = e^σ`; `|σ| ≤ c₀|t| ≤ 1` for `c₀ = (n + 1)(A + 2 + (A + 1)²)`, so
+`e^σ ≤ 1 + σ + σ² ≤ 1 + tD + nη|t| + Kt²` with `K = n(A + 1)²/2 + c₀²`.  Take
+`η = min(1, ε/(2n + 1))` (so `nη ≤ ε/2`) and `δ = min(1, 1/c₀, ε/(2K))` (so `Kt² ≤ (ε/2)|t|`). -/
+theorem Submission.fvmb_sqrt_le_first_order_of_le_exp : ∀ (n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t D g : ℝ, |t| < δ → |D| ≤ (n : ℝ) * A → g ≤ Real.exp (2 * t * D + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2) → Real.sqrt g ≤ 1 + t * D + ε * |t| := by
+  intro n A ε hA hε
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  -- Step 1: the constants `c₀`, `K`, `η`, `δ`
+  obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℝ, c₀ = ((n : ℝ) + 1) * (A + 2 + (A + 1) ^ 2) := ⟨_, rfl⟩
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = (n : ℝ) * (A + 1) ^ 2 / 2 + c₀ ^ 2 := ⟨_, rfl⟩
+  have hc₀pos : 0 < c₀ := by rw [hc₀]; positivity
+  have hKpos : 0 < K := by
+    rw [hK]; exact add_pos_of_nonneg_of_pos (by positivity) (pow_pos hc₀pos 2)
+  obtain ⟨η, hη⟩ : ∃ η : ℝ, η = min 1 (ε / (2 * (n : ℝ) + 1)) := ⟨_, rfl⟩
+  have h2n : (0 : ℝ) < 2 * (n : ℝ) + 1 := by positivity
+  have hηpos : 0 < η := by rw [hη]; exact lt_min one_pos (div_pos hε h2n)
+  have hη1 : η ≤ 1 := by rw [hη]; exact min_le_left _ _
+  -- Step 2: `nη ≤ ε/2`
+  have hnη : (n : ℝ) * η ≤ ε / 2 := by
+    have h1 : η * (2 * (n : ℝ) + 1) ≤ ε := by
+      rw [← le_div_iff₀ h2n, hη]; exact min_le_right _ _
+    linarith
+  refine ⟨η, hηpos, hη1, min 1 (min (1 / c₀) (ε / (2 * K))),
+    lt_min one_pos (lt_min (one_div_pos.mpr hc₀pos) (div_pos hε (mul_pos two_pos hKpos))), ?_⟩
+  intro t D g ht hD hg
+  -- Step 3: `|t| ≤ 1`, `|t| ≤ 1/c₀`, `|t| ≤ ε/(2K)`, `t² ≤ |t|`
+  have ht1 : |t| ≤ 1 := (ht.trans_le (min_le_left _ _)).le
+  have htc : |t| ≤ 1 / c₀ := (ht.trans_le ((min_le_right _ _).trans (min_le_left _ _))).le
+  have htK : |t| ≤ ε / (2 * K) := (ht.trans_le ((min_le_right _ _).trans (min_le_right _ _))).le
+  have hta : 0 ≤ |t| := abs_nonneg t
+  have ht2 : t ^ 2 ≤ |t| := by
+    rw [← sq_abs]; nlinarith [mul_nonneg hta (sub_nonneg.mpr ht1)]
+  -- Step 4: `√g ≤ exp σ`
+  obtain ⟨σ, hσ⟩ : ∃ σ : ℝ, σ = t * D + (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2 :=
+    ⟨_, rfl⟩
+  have hsqrt : Real.sqrt g ≤ Real.exp σ := by
+    have h2σ : 2 * t * D + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 = σ + σ := by
+      rw [hσ]; ring
+    rw [h2σ, Real.exp_add] at hg
+    calc Real.sqrt g ≤ Real.sqrt (Real.exp σ * Real.exp σ) := Real.sqrt_le_sqrt hg
+      _ = Real.exp σ := Real.sqrt_mul_self (Real.exp_pos σ).le
+  -- Step 5: `|σ| ≤ c₀|t|`
+  have hσabs : |σ| ≤ c₀ * |t| := by
+    have h1 : |t * D| ≤ |t| * ((n : ℝ) * A) := by
+      rw [abs_mul]; exact mul_le_mul_of_nonneg_left hD hta
+    have h2 : abs ((n : ℝ) * η * |t|) ≤ (n : ℝ) * |t| := by
+      rw [abs_of_nonneg (mul_nonneg (mul_nonneg hn hηpos.le) hta)]
+      exact mul_le_mul_of_nonneg_right (mul_le_of_le_one_right hn hη1) hta
+    have h3 : |(n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2| ≤ (n : ℝ) * (A + 1) ^ 2 * |t| := by
+      have hc : (0 : ℝ) ≤ (n : ℝ) * (A + 1) ^ 2 := by positivity
+      have hc2 : (0 : ℝ) ≤ (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by positivity
+      rw [abs_of_nonneg (by positivity)]
+      calc (n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2 ≤ (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by linarith
+        _ ≤ (n : ℝ) * (A + 1) ^ 2 * |t| := mul_le_mul_of_nonneg_left ht2 hc
+    have htri : |σ| ≤ |t * D| + abs ((n : ℝ) * η * |t|) + |(n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2| := by
+      rw [hσ]
+      exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
+    have hcoef : (n : ℝ) * (A + 1 + (A + 1) ^ 2) ≤ c₀ := by
+      rw [hc₀]; nlinarith [sq_nonneg (A + 1)]
+    calc |σ| ≤ |t| * ((n : ℝ) * A) + (n : ℝ) * |t| + (n : ℝ) * (A + 1) ^ 2 * |t| := by linarith
+      _ = (n : ℝ) * (A + 1 + (A + 1) ^ 2) * |t| := by ring
+      _ ≤ c₀ * |t| := mul_le_mul_of_nonneg_right hcoef hta
+  -- Step 6: `|σ| ≤ 1` and `σ² ≤ c₀²t²`
+  have hσ1 : |σ| ≤ 1 := by
+    calc |σ| ≤ c₀ * |t| := hσabs
+      _ ≤ c₀ * (1 / c₀) := mul_le_mul_of_nonneg_left htc hc₀pos.le
+      _ = 1 := mul_one_div_cancel hc₀pos.ne'
+  have hσsq : σ ^ 2 ≤ c₀ ^ 2 * t ^ 2 := by
+    have h := pow_le_pow_left₀ (abs_nonneg σ) hσabs 2
+    rwa [sq_abs, mul_pow, sq_abs] at h
+  -- Step 7: `exp σ ≤ 1 + σ + σ²`
+  have hexp : Real.exp σ ≤ 1 + σ + σ ^ 2 := by
+    have h := (le_abs_self _).trans (Real.abs_exp_sub_one_sub_id_le hσ1)
+    linarith
+  -- Step 8: the error terms `nη|t| ≤ (ε/2)|t|` and `Kt² ≤ (ε/2)|t|`
+  have hnηt : (n : ℝ) * η * |t| ≤ ε / 2 * |t| := mul_le_mul_of_nonneg_right hnη hta
+  have hKt : K * t ^ 2 ≤ ε / 2 * |t| := by
+    have hK' : K * |t| ≤ ε / 2 := by
+      calc K * |t| ≤ K * (ε / (2 * K)) := mul_le_mul_of_nonneg_left htK hKpos.le
+        _ = ε / 2 := by field_simp
+    calc K * t ^ 2 = (K * |t|) * |t| := by rw [← sq_abs t]; ring
+      _ ≤ ε / 2 * |t| := mul_le_mul_of_nonneg_right hK' hta
+  have hKt2 : K * t ^ 2 = (n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2 + c₀ ^ 2 * t ^ 2 := by
+    rw [hK]; ring
+  -- Step 9: `√g ≤ exp σ ≤ 1 + σ + σ² ≤ 1 + tD + nη|t| + Kt² ≤ 1 + tD + ε|t|`
+  linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
