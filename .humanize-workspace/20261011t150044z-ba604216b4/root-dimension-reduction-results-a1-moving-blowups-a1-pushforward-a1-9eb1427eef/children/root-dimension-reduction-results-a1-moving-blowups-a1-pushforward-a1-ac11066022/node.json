@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_current-a1.integrand_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_current-a1",
+  "depth": 5,
+  "title": "Uniform integrability bound for the C¹ push-forward integrand localized to K (Simon 6.2.24(2))",
+  "statement": "Let P, n ∈ ℕ, let U, K, O ⊆ ℝ^P, let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n; M = R.carrier, θ = R.mult, ξ = R.orient) and let f : ℝ^P → ℝ^P. Assume that K is compact, K ⊆ U, Hⁿ(M ∖ K) = 0 (Hⁿ = μHE[n]), O is open, K ⊆ O and f is C¹ on O (ContDiffOn ℝ 1 f O). Then there is A ∈ ℝ with A ≥ 0 such that for every continuous n-form ω : ℝ^P → Covector(ℝ^P, n) (DifferentialForm (Euclid P) n) and every B ∈ ℝ with ‖ω(z)‖ ≤ B for all z ∈ ℝ^P (operator norm of n-covectors): the function x ↦ θ(x)·ξ(x)(ω(f(x))∘Df(x)) is Hⁿ⌞M-integrable (with respect to μHE[n].restrict R.carrier), and |∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x)| ≤ A·B. Here Df(x) = fderiv ℝ f x and (α∘L)(v₁, …, vₙ) = α(Lv₁, …, Lvₙ) (α.compContinuousLinearMap L).",
+  "lean_statement": "∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ A : ℝ, 0 ≤ A ∧ ∀ (ω : DifferentialForm (Euclid P) n) (B : ℝ), Continuous ω → (∀ z, ‖ω z‖ ≤ B) → Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω (f x)).compContinuousLinearMap (fderiv ℝ f x))) (μHE[n].restrict R.carrier) ∧ |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((ω (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]| ≤ A * B",
+  "lean_name": "dimred_mbl_pfc_pullback_integrand_bound",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978-a1",
+      "result_commit": "5c8c6597411e77948b224fda014774beaa21ebaf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-ac11066022-a1"
+}

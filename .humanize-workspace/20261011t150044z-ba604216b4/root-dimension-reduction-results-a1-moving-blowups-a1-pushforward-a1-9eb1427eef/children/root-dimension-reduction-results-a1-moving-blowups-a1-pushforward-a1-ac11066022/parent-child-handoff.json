@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9eb1427eef/{parent-child-handoff.json,parent-supplied-plan.md} (frozen type, supplied proof, no sibling prerequisites)",
+        "cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp SNAP/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; git rev-parse HEAD; git -C .lake/packages/{simongmt,mathlib} rev-parse HEAD",
+        "cat .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Forms,FormSupNorm}.lean (GeometricCurrentOn, TestFormOnConverges, zeroRegion, support)",
+        "python3 scans of RUN/dag.json lean_statement for compContinuousLinearMap, '∃ Q : GeometricCurrentOn', '.support' with Disjoint/tsupport, and 'TestFormOn U n →ₗ[ℝ] ℝ' (accepted reusable lemmas: dpf_pfc_imrep_orient_abs_apply_le, dpf_pfc_imrep_pairing_integrable_abs_le, cmcs_rc_order_zero_current, rsd_cmr_support_subset_of_vanish)",
+        "rg/grep -rn 'continuous_compContinuousLinearMapCLM|theorem norm_compContinuousLinearMap_le|lemma Continuous.bounded_above_of_compact_support|image_eq_zero_of_notMem_tsupport|scoped[MeasureTheory] notation \"μHE[\"' SNAP/mathlib/Mathlib",
+        "git show <candidate>:GMT/Ch07/Submission.lean and git diff b4d606db1 <candidate> for 056f1b9, 5c8c659, 4935893, 02c6122 (Contract/lakefile/manifest unchanged; Submission.lean insert-only)",
+        "grep node_id in cluster-state/verification/results/*/*/result.json for the four reused node ids (status passed, lean_kernel_accepted; exports propext, Quot.sound, Classical.choice)",
+        "dag.json lean_name scan and git log --all -S'dimred_mbl_pfc_' (no match for dimred_mbl_pfc_pullback_integrand_bound)",
+        "lake env lean /tmp/pfcd/T1.lean (5 child types + parent type elaborate)",
+        "lake env lean /tmp/pfcd/T2.lean (conditional assembly of the exact parent type from the 5 child types)",
+        "lake env lean /tmp/pfcd/T3.lean (integrand_bound proved from pairing_bound)",
+        "lake env lean /tmp/pfcd/T4.lean (sorry-free end-to-end proof with accepted candidate proofs; #print axioms)",
+        "python3 runtime lean_contract.validate_lean_statement on all six types",
+        "sed -n 176,200p / 292,304p / 395,440p / 728,750p book/chapter-06.txt (Simon 6.2.1, 6.2.11, 6.2.23–2.24, 6.3.1)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/VectorBundle/ContinuousAlternatingMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9eb1427eef/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-curren-7244aadae8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py",
+        "/tmp/pfcd/T1.lean",
+        "/tmp/pfcd/T2.lean",
+        "/tmp/pfcd/T3.lean",
+        "/tmp/pfcd/T4.lean"
+      ],
+      "conclusion": "The pins match: project b4d606d and Mathlib 25730c7c (manifest), SimonGMT 2b366308. Submission.lean is byte-identical to the frozen contract. Neither the contract nor SimonGMT pushes currents forward by nonlinear C¹ maps; SimonGMT has only the affine push-forward. Four comparator-accepted DAG declarations match steps 1, 3, 5 and 7–8 of the supplied proof exactly, and are reused with byte-identical frozen types and candidate commits: dpf_pfc_imrep_orient_abs_apply_le, dpf_pfc_imrep_pairing_integrable_abs_le, cmcs_rc_order_zero_current and rsd_cmr_support_subset_of_vanish. Each only inserts theorems on the frozen contract, and each passed the kernel comparator with standard axioms. The one new lemma, dimred_mbl_pfc_pullback_integrand_bound, is globally unique. Every Mathlib lemma it cites exists in the pinned snapshot (continuous_compContinuousLinearMapCLM, norm_compContinuousLinearMap_le, Continuous.bounded_above_of_compact_support, image_eq_zero_of_notMem_tsupport). All types elaborate. The exact frozen parent type is proved, without sorry, from the accepted proofs plus the new lemma's proof and the assembly, with axioms [propext, Classical.choice, Quot.sound]."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_current-a1",
+  "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_current-a1.integrand_bound-a1",
+  "subproblem": {
+    "key": "integrand_bound",
+    "title": "Uniform integrability bound for the C¹ push-forward integrand localized to K (Simon 6.2.24(2))",
+    "statement": "Let P, n ∈ ℕ, let U, K, O ⊆ ℝ^P, let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n; M = R.carrier, θ = R.mult, ξ = R.orient) and let f : ℝ^P → ℝ^P. Assume that K is compact, K ⊆ U, Hⁿ(M ∖ K) = 0 (Hⁿ = μHE[n]), O is open, K ⊆ O and f is C¹ on O (ContDiffOn ℝ 1 f O). Then there is A ∈ ℝ with A ≥ 0 such that for every continuous n-form ω : ℝ^P → Covector(ℝ^P, n) (DifferentialForm (Euclid P) n) and every B ∈ ℝ with ‖ω(z)‖ ≤ B for all z ∈ ℝ^P (operator norm of n-covectors): the function x ↦ θ(x)·ξ(x)(ω(f(x))∘Df(x)) is Hⁿ⌞M-integrable (with respect to μHE[n].restrict R.carrier), and |∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x)| ≤ A·B. Here Df(x) = fderiv ℝ f x and (α∘L)(v₁, …, vₙ) = α(Lv₁, …, Lvₙ) (α.compContinuousLinearMap L).",
+    "lean_statement": "∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ A : ℝ, 0 ≤ A ∧ ∀ (ω : DifferentialForm (Euclid P) n) (B : ℝ), Continuous ω → (∀ z, ‖ω z‖ ≤ B) → Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω (f x)).compContinuousLinearMap (fderiv ℝ f x))) (μHE[n].restrict R.carrier) ∧ |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((ω (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]| ≤ A * B",
+    "lean_name": "dimred_mbl_pfc_pullback_integrand_bound",
+    "depends_on": [
+      "pairing_bound"
+    ],
+    "natural_proof": "Source: steps 1–3 of the parent proof (Simon Ch. 6, Remark 2.24(2), chapter-06.txt lines 414–425: for C¹ f the push-forward f_#T(ω) = ∫⟨ω(f(x)), df_x#ξ(x)⟩θ dHⁿ makes sense), with the constant made explicit as A := Λⁿ·c_K and the sup-norm bound B of ω kept as a parameter. This proof uses the sibling theorem pairing_bound (Submission.dpf_pfc_imrep_pairing_integrable_abs_le).\nNotation. M := R.carrier, θ := R.mult, ξ := R.orient, Hⁿ := μHE[n], μ := Hⁿ⌞M = μHE[n].restrict M. Df(x) := fderiv ℝ f x. ‖·‖ is the operator norm of linear maps and of n-covectors (continuous alternating maps). For an n-covector α and a linear map L, α∘L := α.compContinuousLinearMap L. c_K := (∫⁻_{M∩K} θ dHⁿ).toReal, a nonnegative real number.\n1. Derivative bound. Since f is C¹ on the open set O, the map x ↦ Df(x) is continuous on O (ContDiffOn.continuousOn_fderiv_of_isOpen, with 1 ≤ 1). Since K ⊆ O is compact, there is Λ₀ ∈ ℝ with ‖Df(x)‖ ≤ Λ₀ for every x ∈ K (IsCompact.exists_bound_of_continuousOn). Put Λ := max(Λ₀, 0). Then Λ ≥ 0 and ‖Df(x)‖ ≤ Λ for every x ∈ K.\n2. The constant. Put A := Λⁿ·c_K. Since Λ ≥ 0 and c_K ≥ 0, A ≥ 0. A depends only on f, K and R. Now fix a continuous ω : ℝ^P → Covector(ℝ^P, n) and B ∈ ℝ with ‖ω(z)‖ ≤ B for all z; it remains to prove the two conjuncts for this ω and B. Note B ≥ ‖ω(0)‖ ≥ 0. K is compact, hence closed, hence a measurable set.\n3. Continuity of the pulled-back covector on K. Let β(x) := ω(f(x))∘Df(x). The map x ↦ ω(f(x)) is continuous on K, since ω is continuous and f is continuous on O ⊇ K (ContDiffOn.continuousOn). The map x ↦ compContinuousLinearMapCLM(Df(x)) (the continuous linear map α ↦ α∘Df(x) on n-covectors) is continuous on K: it is the composition of x ↦ Df(x), continuous on K by step 1, with the continuous map L ↦ compContinuousLinearMapCLM L (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM). Applying a continuous family of continuous linear maps to a continuous family of vectors is continuous (ContinuousOn.clm_apply), and compContinuousLinearMapCLM(Df(x))(ω(f(x))) = β(x). Hence β is continuous on K.\n4. The localized field. Let F := 1_K·β (Set.indicator), i.e. F(x) = β(x) for x ∈ K and F(x) = 0 for x ∉ K.\n   (a) F is μ-a.e. strongly measurable: β is continuous on the measurable set K, so β is a.e. strongly measurable for μ restricted to K (ContinuousOn.aestronglyMeasurable); this is equivalent to a.e. strong measurability of the indicator F for μ (aestronglyMeasurable_indicator_iff, K measurable).\n   (b) F(x) = 0 for every x ∉ K, by definition.\n   (c) ‖F(x)‖ ≤ B·Λⁿ for every x. If x ∈ K, then by ContinuousAlternatingMap.norm_compContinuousLinearMap_le and Fintype.card (Fin n) = n, ‖F(x)‖ = ‖ω(f(x))∘Df(x)‖ ≤ ‖ω(f(x))‖·‖Df(x)‖ⁿ ≤ B·Λⁿ, using 0 ≤ ‖ω(f(x))‖ ≤ B, 0 ≤ ‖Df(x)‖ ≤ Λ (step 1), monotonicity of t ↦ tⁿ on [0, ∞), and B ≥ 0. If x ∉ K, then ‖F(x)‖ = 0 ≤ B·Λⁿ, because B ≥ 0 and Λ ≥ 0.\n5. Pairing estimate. Apply pairing_bound with C := K (compact, K ⊆ U), the covector field F and the bound B·Λⁿ; its hypotheses are steps 4(a)–(c). It gives: x ↦ θ(x)·ξ(x)(F(x)) is μ-integrable, and |∫_M θ(x)·ξ(x)(F(x)) dHⁿ(x)| ≤ B·Λⁿ·c_K.\n6. μ-almost every point lies in K. Since M is measurable, \"x ∈ K for μ-a.e. x\" is equivalent (ae_restrict_iff') to \"x ∈ M → x ∈ K for Hⁿ-a.e. x\", i.e. to Hⁿ({x : x ∈ M and x ∉ K}) = 0. That set is M ∖ K, which is Hⁿ-null by hypothesis. For every x ∈ K we have F(x) = β(x), hence θ(x)·ξ(x)(F(x)) = θ(x)·ξ(x)(β(x)).\n7. Conclusion. By step 6, the functions x ↦ θ(x)·ξ(x)(F(x)) and x ↦ θ(x)·ξ(x)(β(x)) agree μ-a.e. Integrability is invariant under a.e. equality (Integrable.congr), so by step 5 the function x ↦ θ(x)·ξ(x)(ω(f(x))∘Df(x)) is μ-integrable; this is the first conjunct. The two integrals agree (integral_congr_ae), so |∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x)| = |∫_M θ(x)·ξ(x)(F(x)) dHⁿ(x)| ≤ B·Λⁿ·c_K = A·B; this is the second conjunct. ∎",
+    "proof_key_steps": [
+      "Df is continuous on the open O ⊇ K, so Λ := max(sup_K ‖Df‖, 0) is finite; put A := Λⁿ·c_K ≥ 0 with c_K := (∫⁻_{M∩K} θ dHⁿ).toReal.",
+      "For continuous ω with ‖ω‖ ≤ B, β(x) = ω(f(x))∘Df(x) is continuous on K, so F := 1_K·β is μ-a.e. strongly measurable, vanishes off K and satisfies ‖F‖ ≤ B·Λⁿ (norm_compContinuousLinearMap_le).",
+      "pairing_bound with C := K gives integrability of θ·ξ(F) and |∫_M θ·ξ(F) dHⁿ| ≤ B·Λⁿ·c_K.",
+      "Hⁿ(M ∖ K) = 0 makes θ·ξ(F) = θ·ξ(β) μ-a.e., which transfers integrability and gives the bound A·B."
+    ]
+  },
+  "audit": {
+    "key": "integrand_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The statement and type match exactly. The proof constructs a uniform derivative bound, establishes continuity and measurability of the localized pullback, and derives B ≥ 0 from the bound at zero. Applying pairing_bound and transferring along almost-everywhere equality proves both conclusions with A independent of ω and B. No global regularity of f is assumed. The new name is unreserved."
+  },
+  "resolved_dependencies": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-ac11066022/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-ac11066022/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-ac11066022/parent-supplied-natural-proof.json"
+}
