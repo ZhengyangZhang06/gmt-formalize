@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9e2b1538a344cb9a44eed96ba5120e77a91c9573a8d5071efb26c02bb546159e",
+  "git_delta": {
+    "base_commit": "c695fd2994e7085ad9661bae5d13f08bc6c343c8",
+    "candidate_commit": "019cb6ab6097137640912f7f72a272b858e079f6",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "58a7cbe1a45e8ba13a0d514ec23bff8af82f0d9a31d8a112eb821a0d200ba51e",
+    "source_sha256": "1b10229f4e67e2df8f6559379a8955ed6d46b3c460a477836b2ddd5ac5566644",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_c1_holder_of_ae_fderiv",
+      "statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (c : Rn n) (r : ℝ) (K : ℝ≥0) (Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → LipschitzOnWith K f (ball c r) → Z ⊆ ball c r → volume (ball c r \\ Z) = 0 → (∀ x ∈ Z, DifferentiableAt ℝ f x) → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α) → ContDiffOn ℝ 1 f (ball c r) ∧ ∀ x ∈ ball c r, ∀ y ∈ ball c r, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
