@@ -565,6 +565,139 @@ theorem Submission.iwl_cr_support_lemmas :
       rw [hZ ω, e1, e2]
       ring
 
+/-- Part (II) of the Lipschitz push-forward: if `S` is the Lipschitz push-forward of `X`, with
+`M(X), M(∂X) < ∞`, then `∂S` is that of `∂X`.  Part (I) applied to `∂X` gives a push-forward `S_∂`
+of `∂X`.  For a reference sequence `Gₙ` of (RS) on `(spt X)_{r/2}` and forms `θₙ` compatible with
+`(Gₙ, φ)` near `spt X`, `dθₙ` is compatible with `(Gₙ, dφ)` since `d` commutes with pull-back, so
+`S_∂(φ) = lim ∂X(θₙ) = lim X(dθₙ) = S(dφ) = ∂S(φ)`. -/
+theorem Submission.dph_lpf_boundary :
+    (∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (F : Set (Eucl m)), 0 < r →
+      IsClosed F → LipschitzOnWith Λ G (thickening r F) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) →
+      ∃ Gj : ℕ → Eucl m → Eucl m', (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) ∧
+        (∀ n, ∀ x ∈ thickening (r / 2) F, ‖fderiv ℝ (Gj n) x‖ ≤ Λ) ∧
+        TendstoUniformlyOn Gj G atTop (thickening (r / 2) F) ∧
+        ∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ F)) →
+    (∀ (m m' k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (G : Eucl m → Eucl m')
+      (Λ : ℝ≥0) (r : ℝ), X.mass < ∞ →
+      (∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1)), k = j + 1 → HEq Y X →
+        Y.boundary.mass < ∞) →
+      0 < r → LipschitzOnWith Λ G (thickening r X.support) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ X.support)) →
+      ∃ S : GeometricCurrentOn (univ : Set (Eucl m')) k,
+        (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X.support ⊆ O →
+          (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+          (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+          ∀ (ω : TestFormOn (univ : Set (Eucl m')) k)
+            (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k),
+            (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+              (ηj n : DifferentialForm (Eucl m) k) x =
+                ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+                  (fderiv ℝ (Gj n) x)) →
+            Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) ∧
+        (∀ S' : GeometricCurrentOn (univ : Set (Eucl m')) k,
+          (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X.support ⊆ O →
+            (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+            (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+            ∀ (ω : TestFormOn (univ : Set (Eucl m')) k)
+              (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k),
+              (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+                (ηj n : DifferentialForm (Eucl m) k) x =
+                  ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+                    (fderiv ℝ (Gj n) x)) →
+              Tendsto (fun n => X (ηj n)) atTop (𝓝 (S' ω))) → S' = S) ∧
+        S.mass ≤ (Λ : ℝ≥0∞) ^ k * X.mass ∧ S.support ⊆ closure (G '' X.support)) →
+    (∀ (m m' j : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1))
+      (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ)
+      (S : GeometricCurrentOn (univ : Set (Eucl m')) (j + 1)),
+      X.mass < ∞ → X.boundary.mass < ∞ → 0 < r → LipschitzOnWith Λ G (thickening r X.support) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ X.support)) →
+      (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X.support ⊆ O →
+        (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+        (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+        ∀ (ω : TestFormOn (univ : Set (Eucl m')) (j + 1))
+          (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) (j + 1)),
+          (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+            (ηj n : DifferentialForm (Eucl m) (j + 1)) x =
+              ((ω : DifferentialForm (Eucl m') (j + 1)) (Gj n x)).compContinuousLinearMap
+                (fderiv ℝ (Gj n) x)) →
+          Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) →
+      (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O →
+        X.boundary.support ⊆ O → (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+        (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+        ∀ (ω : TestFormOn (univ : Set (Eucl m')) j)
+          (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) j),
+          (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.boundary.support ⊆ N ∧ ∀ x ∈ N,
+            (ηj n : DifferentialForm (Eucl m) j) x =
+              ((ω : DifferentialForm (Eucl m') j) (Gj n x)).compContinuousLinearMap
+                (fderiv ℝ (Gj n) x)) →
+          Tendsto (fun n => X.boundary (ηj n)) atTop (𝓝 (S.boundary ω)))) := by
+  intro hRS hI m m' j X G Λ r S _ hXbm hr hLip hprop hS Gj O L hO hXO hGj hL hGjG ω ηj hη
+  -- 1. `spt ∂X ⊆ spt X`; supports of currents on `univ` are closed.
+  have hsub : X.boundary.support ⊆ X.support := Submission.iwl_cr_support_lemmas.1 m j univ X
+  have hcl : ∀ {k : ℕ} (Z : GeometricCurrentOn (univ : Set (Eucl m)) k), IsClosed Z.support :=
+    fun Z => isClosed_univ.sdiff Z.isOpen_zeroRegion
+  -- 2. Part (I) applied to `∂X` (`∂∂X = 0` has mass `0`) gives a push-forward `Sb` of `∂X`.
+  obtain ⟨Sb, hSb, -⟩ := hI m m' j X.boundary G Λ r hXbm (by
+      intro j' Y hj hY
+      subst hj
+      obtain rfl := eq_of_heq hY
+      rw [GeometricCurrentOn.boundary_boundary]
+      refine lt_of_le_of_lt (sSup_le ?_) ENNReal.zero_lt_top
+      rintro _ ⟨φ, -, rfl⟩
+      simp) hr (hLip.mono (thickening_subset_of_subset r hsub)) fun K hK => by
+    have h := (hprop K hK).inter_right (hcl X.boundary)
+    rwa [inter_assoc, inter_eq_right.2 hsub] at h
+  -- It remains to identify `Sb ω` with `∂S ω = S (dω)`.
+  suffices key : Sb ω = S.boundary ω by
+    rw [← key]
+    exact hSb Gj O L hO hXO hGj hL hGjG ω ηj hη
+  -- 3. A reference sequence `Gn` for `F = spt X` on `O₀ = (spt X)_{r/2}`, and forms `θ n`
+  -- compatible with `(Gn n, ω)` near `spt X` whenever `Gn n` is proper on `spt X`.
+  obtain ⟨Gn, hGns, hGnd, hGnu, hGnp⟩ := hRS m m' G Λ r X.support hr (hcl X) hLip hprop
+  have hXO₀ : X.support ⊆ thickening (r / 2) X.support := self_subset_thickening (half_pos hr) _
+  have hθ : ∀ n, ∃ θ : TestFormOn (univ : Set (Eucl m)) j,
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gn n ⁻¹' K ∩ X.support)) →
+      ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+        (θ : DifferentialForm (Eucl m) j) x =
+          ((ω : DifferentialForm (Eucl m') j) (Gn n x)).compContinuousLinearMap
+            (fderiv ℝ (Gn n) x) := by
+    intro n
+    by_cases hp : ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gn n ⁻¹' K ∩ X.support)
+    · obtain ⟨θ, -, N, hN, hXN, -, -, hθN, -⟩ := Submission.iwl_sp_exists_compatible_testForm
+        m m' j univ univ X.support (Gn n) isOpen_univ (subset_univ _) (hGns n)
+        (fun K hK _ => hp K hK) ω
+      exact ⟨θ, fun _ => ⟨N, hN, hXN, hθN⟩⟩
+    · exact ⟨0, fun h => absurd h hp⟩
+  choose θ hθ using hθ
+  -- 4. `∂X (θ n) → Sb ω`.
+  have h1 : Tendsto (fun n => X.boundary (θ n)) atTop (𝓝 (Sb ω)) :=
+    hSb Gn (thickening (r / 2) X.support) Λ isOpen_thickening (hsub.trans hXO₀) hGns
+      (Eventually.of_forall hGnd) hGnu ω θ (hGnp.mono fun n hn => by
+        obtain ⟨N, hN, hXN, hθN⟩ := hθ n hn
+        exact ⟨N, hN, hsub.trans hXN, hθN⟩)
+  -- 5–6. `dθ n` is compatible with `(Gn n, dω)` near `spt X` (`d` commutes with pull-back), so
+  -- `X (dθ n) → S (dω)`.
+  have h2 : Tendsto (fun n => X (exteriorDerivativeTestOn univ j (θ n))) atTop
+      (𝓝 (S (exteriorDerivativeTestOn univ j ω))) :=
+    hS Gn (thickening (r / 2) X.support) Λ isOpen_thickening hXO₀ hGns
+      (Eventually.of_forall hGnd) hGnu (exteriorDerivativeTestOn univ j ω)
+      (fun n => exteriorDerivativeTestOn univ j (θ n)) (hGnp.mono fun n hn => by
+        obtain ⟨N, hN, hXN, hθN⟩ := hθ n hn
+        refine ⟨N, hN, hXN, fun x hx => ?_⟩
+        have hev : (θ n : DifferentialForm (Eucl m) j) =ᶠ[𝓝 x] fun y =>
+            ((ω : DifferentialForm (Eucl m') j) (Gn n y)).compContinuousLinearMap
+              (fderiv ℝ (Gn n) y) :=
+          eventually_of_mem (hN.mem_nhds hx) hθN
+        change extDeriv (θ n : DifferentialForm (Eucl m) j) x =
+          (extDeriv (ω : DifferentialForm (Eucl m') j) (Gn n x)).compContinuousLinearMap
+            (fderiv ℝ (Gn n) x)
+        rw [hev.extDeriv_eq]
+        exact extDeriv_pullback ((ω.property.1.1.differentiable (by simp)).differentiableAt)
+          (hGns n).contDiffAt (by simp))
+  -- 7. `∂X (θ n) = X (dθ n)`, so the two limits agree.
+  exact tendsto_nhds_unique h1 h2
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
