@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp … GMT/Ch07/Submission.lean (identical); git rev-parse HEAD = b4d606db; git -C lake-packages-25730c7c/simongmt rev-parse HEAD = 2b366308; git -C lake-packages-25730c7c/mathlib rev-parse HEAD = 25730c7c",
+        "grep -nE '^(theorem|def)' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean (IsStationaryIn.satisfiesStationaryMonotonicity, SatisfiesStationaryMonotonicity, normalizedBallMass, monotonicityDefect, radialNormalSq_eq, tangentialDivergence_integrable_of_isAdmissible); sed -n 1,230p Chapter04/Basic.lean (structure RectifiableVarifold); sed -n 1,80p Chapter04/MultiplicityBridge.lean (weight_eq_carrier_withDensity, ae_weight_iff_ae_carrier)",
+        "grep -nE '^(theorem|def)' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique, approximateTangentField_ae_eq, IsLocallyIntegrableMultiplicity)",
+        "cat simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,AffineCurrentPushforward,CurrentLocalEquality}.lean; sed -n 100,200p Chapter06/FormsDuality.lean (wedgeCovectors, wedgeCovectors_apply_det); sed -n 20,60p Chapter06/Mass.lean (covectorEuclideanNorm)",
+        "grep -rln Binet mathlib/Mathlib (only GoldenRatio, CrossProduct: no Cauchy–Binet); Mathlib/Analysis/Normed/Module/Alternating/Curry.lean (curryLeft, curryLeftLI, curryLeft_same); grep theorem Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean (alternatizeUncurryFin_apply, alternatizeUncurryFin_curryLeft, map_insertNth); grep 'def extDeriv' Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean; head Mathlib/Analysis/Calculus/DifferentialForm/VectorField.lean; grep theorem Mathlib/Analysis/InnerProductSpace/NormDet.lean; grep det_mul Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean; grep 'lemma removeNth_' Mathlib/Data/Fin/Tuple/Basic.lean",
+        "inventory of all lean_name values in runs/20261011T150044Z-ba604216b4 (dag.json and node JSON files): 100 reserved names; grep -rl for each of the six proposed names: 0 hits",
+        "sed -n 300,370p book/chapter-07.txt (7.3.1 and proof, lines 326-360); sed -n 85,112p, 430,480p, 540,580p, 733,760p book/chapter-06.txt (1.5-1.7, 2.25-2.27, 2.33, 3.1); sed -n 205,320p book/chapter-04.txt (3.1-3.6); grep -n 'approximate tangent' book/chapter-03.txt (1.4-1.5)",
+        "python3 -I scripts/gen.py: verifier gmt-compare.contract_scope + child_modules(mode=contract) and lean_contract.validate_lean_statement on the six child types; lake env lean Check/Ch_*.lean and Check/Sol_*.lean",
+        "lake env lean Check/Types.lean, Check/Assembly.lean, Check/Cartan.lean, Check/Wedge.lean, Check/Unfold.lean, Check/Mono.lean, Check/Radial.lean, each with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/VectorField.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Types.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Assembly.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Cartan.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Wedge.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Unfold.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Mono.lean",
+        "/tmp/cone-decomp-iFw2Y3/proj/Check/Radial.lean",
+        "/tmp/cone-decomp-iFw2Y3/scripts/gen.py",
+        "/tmp/cone-decomp-iFw2Y3/scripts/children.json"
+      ],
+      "conclusion": "The snapshot contract (project b4d606d, Mathlib 25730c7c, simongmt 2b36630) is byte-identical to the workspace Contract.lean and Submission.lean, so all six child types elaborate after `import GMT.Ch07.Submission` in the contract scope (namespace GMT.Ch07 with its opens).\n\nSimonGMT supplies:\n- the exact stationary monotonicity identity (Chapter04 RectifiableVarifold.IsStationaryIn.satisfiesStationaryMonotonicity, closed balls, all n);\n- the weight bridge weight_eq_carrier_withDensity;\n- HasApproximateTangentSpaceAt.unique;\n- wedgeCovectors_apply_det;\n- the proper affine push-forward used by blowUp.\nThe monotonicity results are stated for the strengthened RectifiableVarifold, whose tangent-projection measurability field is exactly what child 1 provides; a scratch bridge proved child 2 from child 1 with standard axioms. The submission may import Chapter04.FirstVariation and MultiplicityBridge (the comparator only byte-checks frozen inputs).\n\nMathlib supplies extDeriv = alternatizeUncurryFin ∘ fderiv, ContinuousAlternatingMap.curryLeft/curryLeftLI and alternatizeUncurryFin_curryLeft; with these the Euler-field Cartan identity (child 5) and the x ∧ ξ = 0 lemma (child 4) were proved outright. Mathlib has no Cauchy–Binet theorem and no Lie derivative or Cartan formula, so child 1 proves its Gram identity by the Leibniz expansion.\n\nThe conditional assembly of the selected type from dtc_mass_eq_measure and children 3, 4 and 6 compiles with propext, Classical.choice and Quot.sound only. None of the six names occurs anywhere else in the run."
+    }
+  ],
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "child_id": "root.density_and_tangent_cones-a1.cone-a1.radial_tangency-a1",
+  "subproblem": {
+    "key": "radial_tangency",
+    "title": "Constant ball-mass ratio forces radial tangency x ∈ T_xM a.e. (Simon 7.3.1 proof)",
+    "statement": "Let P, n ∈ ℕ and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with R.firstVariation X = 0 for every C¹ compactly supported X : ℝ^P → ℝ^P. Suppose there is a ∈ [0, ∞] with μ(B_ρ(0)) = a·ρⁿ (as a * ofReal(ρⁿ)) for every ρ > 0, where μ = R.measure and B_ρ is the open ball. Then p_x(x) = x, i.e. x ∈ approxTangentPlane n M x, for μ-a.e. x ∈ ℝ^P (p_x being the orthogonal projection onto approxTangentPlane n M x).",
+    "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (a : ℝ≥0∞), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ ρ : ℝ, 0 < ρ → R.measure (ball 0 ρ) = a * ENNReal.ofReal (ρ ^ n)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x",
+    "lean_name": "dtc_cone_radial_tangency",
+    "depends_on": [
+      "tangent_projection_measurable",
+      "monotonicity_identity"
+    ],
+    "natural_proof": "Source. Proof of Simon 7.3.1 (chapter-07.txt lines 343–358): \"(ω_nρⁿ)⁻¹μ_C(B_ρ(0)) = Θⁿ(T, x) for each ρ > 0. Then by the monotonicity formula 3.6 of Ch. 4 … we have D^⊥r = 0 μ_C-a.e. … That is x ∈ T_x spt C for μ_C-a.e. x.\" These are steps 1 and 4 of the parent proof. Uses siblings tangent_projection_measurable (child 1) and monotonicity_identity (child 2).\n\nNotation. μ := R.measure = (Hⁿ⌞M).withDensity θ, and p_x := starProjection of approxTangentPlane n M x. B_ρ and B̄_ρ are the open and closed balls about 0.\n\n1. Local finiteness. For compact K, μ(K) = ∫_{M∩K} θ dHⁿ < ∞ (locallyIntegrable_mult with U = ℝ^P; withDensity_apply and Measure.restrict_restrict on the closed set K).\n\n2. a < ∞. Indeed a = a·ofReal(1ⁿ) = μ(B_1) ≤ μ(B̄_1) < ∞.\n\n3. Closed balls. Fix ρ > 0.\n- μ(B̄_ρ) ≥ μ(B_ρ) = a·ofReal(ρⁿ).\n- For every t > ρ, B̄_ρ ⊆ B_t, so μ(B̄_ρ) ≤ a·ofReal(tⁿ).\n- Since a < ∞, t ↦ a·ofReal(tⁿ) is continuous; letting t ↓ ρ gives μ(B̄_ρ) ≤ a·ofReal(ρⁿ).\nHence μ(B̄_ρ) = a·ofReal(ρⁿ). As 0 < ofReal(ρⁿ) < ∞, the normalized ratio is μ(B̄_ρ)/ofReal(ρⁿ) = a.\n\n4. Annuli. Let 0 < σ ≤ ρ, A(σ,ρ) := B̄_ρ ∖ B̄_σ and f(x) := |x − p_x x|²/|x|^{n+2}. Child 2 with z = 0, together with step 3, gives a + D(σ,ρ) = a, where D(σ,ρ) := ∫⁻_{A(σ,ρ)} ofReal(f) dμ. Since a < ∞, D(σ,ρ) = 0.\n\n5. Measurability and pointwise vanishing.\n- x ↦ p_x is μ-AEMeasurable: by child 1, and μ ≪ Hⁿ⌞M (withDensity_absolutelyContinuous).\n- Evaluation (L, v) ↦ Lv is continuous, hence Borel. So x ↦ p_x x is μ-AEMeasurable, and so are f and ofReal∘f.\n- Therefore D(σ,ρ) = 0 gives ofReal(f(x)) = 0, i.e. f(x) ≤ 0, for μ-a.e. x ∈ A(σ,ρ).\n- On A(σ,ρ) we have |x| > σ > 0, so |x − p_x x|² ≤ 0, i.e. p_x x = x.\n\n6. Exhaustion.\n- Let A_k := A(1/(k+1), k+1) for k ∈ ℕ (note 1/(k+1) ≤ k+1).\n- By step 5 and countable intersection of a.e. statements, for μ-a.e. x: for every k, x ∈ A_k implies p_x x = x.\n- Every x ≠ 0 lies in A_k as soon as k > max(|x|, 1/|x|).\n- For x = 0, p_0(0) = 0 by linearity.\nHence p_x x = x for μ-a.e. x. Neither n ≥ 1 nor μ({0}) = 0 is needed. ∎\n\nImplementation note. During decomposition this exact statement was proved in Lean from the exact statements of children 1 and 2, with standard axioms only. Key lemmas: withDensity_apply, Measure.restrict_restrict, ge_of_tendsto with ENNReal.continuousAt_const_mul, ENNReal.mul_div_cancel_right, ENNReal.add_right_inj, lintegral_eq_zero_iff', ae_restrict_iff', ContinuousLinearMap.measurable_apply₂, ae_all_iff.",
+    "proof_key_steps": [
+      "Local finiteness forces a < ∞; squeezing between open balls gives μ(B̄_ρ(0)) = aρⁿ, so the normalized ratio is constantly a.",
+      "Child 2 at z = 0 then forces the defect ∫_{annulus}|x − p_x x|²|x|^{−n−2} dμ to vanish.",
+      "Child 1 makes the integrand measurable, so p_x x = x μ-a.e. on every annulus.",
+      "Countably many annuli exhaust ℝ^P∖{0}; p_0(0) = 0 handles the origin."
+    ]
+  },
+  "audit": {
+    "key": "radial_tangency",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Prose and type agree, including the initially unrestricted ENNReal constant. The proof establishes a < ∞ before cancellation, derives closed-ball masses, and uses measurable nonnegative defects to obtain tangency on annuli. Countable exhaustion and linearity at zero complete the argument, including n = 0."
+  },
+  "resolved_dependencies": [
+    "root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1",
+    "root.density_and_tangent_cones-a1.cone-a1.monotonicity_identity-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-radial-tangency-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-radial-tangency-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-radial-tangency-a1/parent-supplied-natural-proof.json"
+}
