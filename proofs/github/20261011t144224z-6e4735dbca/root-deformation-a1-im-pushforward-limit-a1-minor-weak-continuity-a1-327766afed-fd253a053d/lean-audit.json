@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7de23efa05fae3d184fcb95953e50e8368248b72878cf62a94868d0e039ec95a",
+  "git_delta": {
+    "base_commit": "91388336e2f6da24d35a7e39a68b19de315dad46",
+    "candidate_commit": "58585f8d0e411b6efcc944eba930fbc4874e59c6",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "bcb0ca30c247ef48ac7fe4d52fb4d9d2cf9c4769de7394e12160c287d5f864bd",
+    "source_sha256": "3a2f08d6c10544dbb44fda946b30b42bed04f85e8420ccec8ab6a8ca9275e70a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_minor_ibp_smooth",
+      "statement": "∀ (k r : ℕ) (V : Fin (r + 1) → Eucl k → ℝ) (b : Fin (r + 1) → Fin k) (φ : Eucl k → ℝ), (∀ t, ContDiff ℝ 2 (V t)) → ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ w, φ w * Matrix.det (Matrix.of fun t s : Fin (r + 1) => fderiv ℝ (V t) w (EuclideanSpace.single (b s) 1)) ∂(volume : Measure (Eucl k)) = -∑ q : Fin (r + 1), ∫ w, V 0 w * ((-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1))) * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) ∂(volume : Measure (Eucl k))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
