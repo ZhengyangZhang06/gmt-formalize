@@ -359,6 +359,53 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Support of the cone** (the cone `0 ⨯ X` of Simon Ch. 6, 2.30, p. 141).  Suppose
+`spt X ⊆ B̄_R(0)` and `C(ω) = X(ψ)` whenever `ψ` agrees on an open neighbourhood of `spt X` with
+the radial form `x ↦ ∫_0^1 t^m ω(tx)(x, ·) dt`.  Then `spt C ⊆ B̄_R(0)`: for `‖p‖ > R` and
+`r = (‖p‖ − R)/2`, a test form `ω` supported in `B_r(p)` vanishes at `tx` for `x ∈ B_{R+r}(0)`,
+`t ∈ [0, 1]`, so `ψ = 0` is admissible and `C(ω) = X(0) = 0`; thus `C` vanishes on `B_r(p)`
+and `p ∉ spt C`. -/
+theorem Submission.iwl_cr_cest_cone_support : ∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → C.support ⊆ closedBall 0 R := by
+  intro P m R X C hX hcone p hp
+  -- Suppose `‖p‖ > R` and put `r = (‖p‖ - R) / 2 > 0`.
+  by_contra hpR
+  rw [mem_closedBall_zero_iff, not_le] at hpR
+  set r := (‖p‖ - R) / 2 with hr_def
+  have hr : 0 < r := by rw [hr_def]; linarith
+  -- `C` vanishes on `B_r(p)`: for `tsupport ω ⊆ B_r(p)`, `ψ = 0` satisfies the radial formula
+  -- on `N = B_{R+r}(0) ⊇ spt X`, so `C ω = X 0 = 0`.
+  have hvan : C.VanishesOn (ball p r) := by
+    intro ω hω
+    have hC := hcone ω 0
+      ⟨ball 0 (R + r), isOpen_ball, hX.trans (closedBall_subset_ball (by linarith)), ?_⟩
+    · rw [hC, map_zero]
+    intro x hx v
+    have hx' : ‖x‖ < R + r := mem_ball_zero_iff.mp hx
+    -- For `t ∈ [0, 1]`, `‖tx‖ ≤ ‖x‖ < R + r = ‖p‖ - r`, so `tx ∉ B_r(p) ⊇ tsupport ω`.
+    have hzero : EqOn (fun t : ℝ =>
+        t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v))
+        (fun _ => 0) (uIcc 0 1) := by
+      intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      have htx : t • x ∉ tsupport (ω : DifferentialForm (Eucl P) (m + 1)) := by
+        intro hmem
+        have h1 : dist (t • x) p < r := hω hmem
+        rw [dist_eq_norm] at h1
+        have h2 : ‖t • x‖ ≤ ‖x‖ := by
+          rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
+          exact mul_le_of_le_one_left (norm_nonneg _) ht.2
+        have h3 : ‖p‖ ≤ ‖t • x‖ + ‖t • x - p‖ := by
+          have h4 := norm_le_insert' p (t • x)
+          rwa [norm_sub_rev] at h4
+        linarith
+      simp only [image_eq_zero_of_notMem_tsupport htx, ContinuousAlternatingMap.coe_zero,
+        Pi.zero_apply, mul_zero]
+    simp only [Submodule.coe_zero, Pi.zero_apply, ContinuousAlternatingMap.coe_zero]
+    rw [intervalIntegral.integral_congr hzero, intervalIntegral.integral_zero]
+  -- Hence `B_r(p)` lies in the zero region of `C`, contradicting `p ∈ spt C`.
+  exact hp.2 ⟨ball p r, ⟨isOpen_ball, by rw [closure_ball p hr.ne']; exact isCompact_closedBall p r,
+    subset_univ _, hvan⟩, mem_ball_self hr⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
