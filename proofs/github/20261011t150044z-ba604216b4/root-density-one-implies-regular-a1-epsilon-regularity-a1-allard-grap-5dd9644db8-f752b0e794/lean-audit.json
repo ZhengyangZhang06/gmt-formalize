@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "66d6e7c3fa38be62265b531b5772715ad881a57873b9c5394373871731c2e366",
+  "git_delta": {
+    "base_commit": "8b03460c0b68ddb462cb844ca7eba5efd990ccc1",
+    "candidate_commit": "1080bdf996faf32e3c676da03d690d6c3986264b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_boundary_layer",
+    "diff_sha256": "262d070df2e3ebd7d3feab05aee3580998434eeb8f62c064b4c054e3185dcce8",
+    "source_sha256": "4ada203088f463103a20a7f1a3492efa7dedf1ee3c402628c36b77b653aab16d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_boundary_layer",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (s : ℝ), LipschitzWith L u → 0 < s → s ≤ 1 / 2 → ∫ x in ball (0 : Euclid n) 1 \\ ball (0 : Euclid n) (1 - s), u x ^ 2 ≤ 2 ^ (n + 3) * s * ((∫ x in ball (0 : Euclid n) 1, u x ^ 2) + ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
