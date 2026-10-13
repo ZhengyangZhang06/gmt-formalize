@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Image measure comparison** (image representation of the diffeomorphism push-forward, used
+for Simon 7.1.2).  If `φ` is `Λ`-Lipschitz and `ψ` is a measurable left inverse of `φ`, then
+`ψ_#(Hⁿ⌞φ(S)) ≤ Λⁿ Hⁿ⌞S` for every set `S`, not assumed measurable.  For Borel `A`,
+`ψ⁻¹(A) ∩ φ(S) = φ(A ∩ S)`, and `Hⁿ(φ(A ∩ S)) ≤ Λⁿ Hⁿ(A ∩ S)` (Simon Ch. 2, 1.8(i)). -/
+theorem Submission.dpfir_ii_map_restrict_image_le_smul : ∀ (P n : ℕ) (φ ψ : Euclid P → Euclid P) (Λ : NNReal) (S : Set (Euclid P)), LipschitzWith Λ φ → Measurable ψ → LeftInverse ψ φ → (μHE[n].restrict (φ '' S)).map ψ ≤ ((Λ : ℝ≥0∞) ^ n) • μHE[n].restrict S := by
+  intro P n φ ψ Λ S hφ hψ hψφ
+  refine Measure.le_iff.2 fun A hA => ?_
+  -- `ψ⁻¹(A) ∩ φ(S) = φ(A ∩ S)`, as `ψ ∘ φ = id`
+  have hset : ψ ⁻¹' A ∩ φ '' S = φ '' (A ∩ S) := by
+    ext y
+    constructor
+    · rintro ⟨hy, x, hx, rfl⟩
+      exact ⟨x, ⟨by rwa [mem_preimage, hψφ x] at hy, hx⟩, rfl⟩
+    · rintro ⟨x, ⟨hxA, hxS⟩, rfl⟩
+      exact ⟨by rwa [mem_preimage, hψφ x], x, hxS, rfl⟩
+  -- both sides are values of `μHE[n]`; no measurability of `S` or `φ '' S` is needed
+  rw [Measure.map_apply hψ hA, Measure.restrict_apply (hψ hA), hset, Measure.smul_apply,
+    Measure.restrict_apply hA, smul_eq_mul]
+  exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+    hφ.lipschitzOnWith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
