@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a23e5d4bc342fa5b97bcdffb6d95e0b9ec313790f35dcf5370e0fca1692e854d",
+  "git_delta": {
+    "base_commit": "9482428cb297d79794bb0a92e003609cbb0d107c",
+    "candidate_commit": "3119226885a48a9dba60dfcf8feb87b2354213fe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq",
+    "diff_sha256": "3408f5615f7f313d482a000c5b464ba4423e494998543562e5044e15bfecc9b0",
+    "source_sha256": "42e6e789a64a96594a40c2375a6b102f6206679f84bf1e1e486b9d2e0d181bf7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq",
+      "statement": "∀ (P n : ℕ) (v : Fin n → Euclid P) (pL : Euclid P →L[ℝ] Euclid n), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → ∀ (l : ℕ) (γ : Covector (Euclid n) l), covectorEuclideanNorm (γ.compContinuousLinearMap pL) = covectorEuclideanNorm γ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
