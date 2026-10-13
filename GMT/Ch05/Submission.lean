@@ -2326,6 +2326,404 @@ theorem dohr_eb_sch_liou_poly_sublinear_const : ∀ (ℓ m : ℕ) (α C : ℝ) (
     simp only [ha] at this
     simp [this]
 
+end Submission
+
+/-- Abstract Liouville theorem.  Let `S` be a class of `C¹` maps `ℝⁿ → ℝ^ℓ` that is closed under
+directional derivatives and satisfies the Caccioppoli inequality on balls centred at `0`.  If
+`W ∈ S` satisfies `‖DW(x) - DW(0)‖ ≤ K |x|^α` with `0 < α < 1`, then `DW` is constant. -/
+theorem Submission.dohr_eb_sch_liou_abstract : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Set (Rn n → Rn ℓ)) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 ≤ K → 0 ≤ C → (∀ V ∈ S, ContDiff ℝ 1 V) → (∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S) → (∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ, ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2) → W ∈ S → (∀ x : Rn n, ‖fderiv ℝ W x - fderiv ℝ W 0‖ ≤ K * ‖x‖ ^ α) → ∀ x : Rn n, fderiv ℝ W x = fderiv ℝ W 0 := by
+  intro n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS hgrowth x
+  -- It suffices to show `DW(x) w = DW(0) w` for every `w`.
+  ext1 w
+  -- `D g = (z ↦ Dg(z) x)` is the directional derivative along `x`.
+  set D : (Rn n → Rn ℓ) → (Rn n → Rn ℓ) := fun g z => fderiv ℝ g z x with hD
+  -- `U_j := D^[j] (z ↦ DW(z) w)` lies in `S` by (S2), hence is `C¹` by (S1).
+  have hUS : ∀ j : ℕ, (D^[j] (fun z => fderiv ℝ W z w)) ∈ S := by
+    intro j
+    induction j with
+    | zero => exact hS2 W hWS w
+    | succ j ih =>
+      rw [Function.iterate_succ_apply']
+      exact hS2 _ ih x
+  -- `G_j(t) := U_j(t x)`; by the chain rule `G_j' = G_{j+1}`.
+  let G : ℕ → ℝ → Rn ℓ := fun j t => (D^[j] (fun z => fderiv ℝ W z w)) (t • x)
+  have hderiv : ∀ j < n + 1, ∀ t : ℝ, HasDerivAt (G j) (G (j + 1) t) t := by
+    intro j _ t
+    have hdiff : DifferentiableAt ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) :=
+      ((hS1 _ (hUS j)).differentiable one_ne_zero) _
+    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    have h2 := hdiff.hasFDerivAt.comp_hasDerivAt t h1
+    have h3 : G (j + 1) t = fderiv ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) x := by
+      simp only [G]
+      rw [Function.iterate_succ_apply']
+    rw [h3]
+    exact h2
+  -- `G_{n+1}(t) = DU_n(t x) x = 0` by `chain_vanish` with `u := x`.
+  have hzero : ∀ t : ℝ, G (n + 1) t = 0 := by
+    intro t
+    simp only [G]
+    rw [Function.iterate_succ_apply']
+    have := Submission.dohr_eb_sch_liou_chain_vanish n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS
+      hgrowth x w (t • x)
+    simp only [hD] at this ⊢
+    rw [this]
+    rfl
+  -- Growth: `|G_0(t) - G_0(0)| ≤ (K |x|^α |w|) |t|^α`.
+  have hgrow : ∀ t : ℝ, ‖G 0 t - G 0 0‖ ≤ (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
+    intro t
+    simp only [G, Function.iterate_zero, id, zero_smul]
+    calc ‖fderiv ℝ W (t • x) w - fderiv ℝ W 0 w‖
+        = ‖(fderiv ℝ W (t • x) - fderiv ℝ W 0) w‖ := by simp
+      _ ≤ ‖fderiv ℝ W (t • x) - fderiv ℝ W 0‖ * ‖w‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ (K * ‖t • x‖ ^ α) * ‖w‖ := by gcongr; exact hgrowth _
+      _ = (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
+        rw [norm_smul, Real.norm_eq_abs, Real.mul_rpow (abs_nonneg _) (norm_nonneg _)]
+        ring
+  -- `poly_sublinear_const` with `m := n + 1` gives `G_0(1) = G_0(0)`, i.e. `DW(x) w = DW(0) w`.
+  have := Submission.dohr_eb_sch_liou_poly_sublinear_const ℓ (n + 1) α (K * ‖x‖ ^ α * ‖w‖) G
+    hα1 hderiv hzero hgrow 1
+  simpa [G] using this
+
+namespace Submission
+
+/-- Directional derivatives of `C²` global weak solutions of a constant-coefficient system are
+again global weak solutions: translate the test function, differentiate the (identically zero)
+translated integral under the integral sign, and identify `D(d_v V)` with `D²V(·) v` using the
+symmetry of `D²V` (sibling `Submission.dohr_eb_sch_liou_snd_deriv_symm`). -/
+theorem dohr_eb_sch_liou_dir_deriv_solution : ∀ (n ℓ : ℕ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (v : Rn n), ContDiff ℝ 2 V → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ (fun y => fderiv ℝ V y v) x) (fderiv ℝ ζ x) = 0 := by
+  intro n ℓ A V v hV hsol ζ hζ hζc
+  -- Step 0: `DV` is `C¹`, `Dζ` is continuous with compact support.
+  have hDV : ContDiff ℝ 1 (fderiv ℝ V) := hV.fderiv_right (by norm_num)
+  have hDVd : Differentiable ℝ (fderiv ℝ V) := hDV.differentiable one_ne_zero
+  have hDζcont : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hDζc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv (𝕜 := ℝ)
+  -- `y ↦ D²V(y) v` is continuous (values in `L`)
+  have hD2v : Continuous (fun y => fderiv ℝ (fderiv ℝ V) y v) :=
+    (hDV.continuous_fderiv_apply one_ne_zero).comp (continuous_id.prodMk continuous_const)
+  -- Step 1: translated equation `∫ A[DV(x + h v)][Dζ(x)] dx = 0` for every `h`, tested with
+  -- `ζ(· - h v)` and translation invariance of Lebesgue measure.
+  have hF : ∀ h : ℝ, ∫ x, A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x) = 0 := by
+    intro h
+    have h1 := hsol (fun x => ζ (x + (-(h • v)))) (hζ.comp (contDiff_id.add contDiff_const))
+      (hζc.comp_homeomorph (Homeomorph.addRight (-(h • v))))
+    have h2 : ∀ x, fderiv ℝ (fun x => ζ (x + (-(h • v)))) x = fderiv ℝ ζ (x + (-(h • v))) :=
+      fun x => fderiv_comp_add_right _
+    simp_rw [h2] at h1
+    rw [← integral_add_right_eq_self
+      (fun x => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x)) (-(h • v))]
+    simpa [add_assoc] using h1
+  -- Step 2: differentiation under the integral sign at `h = 0`, dominated on `|h| < 1` by
+  -- `M⁺ |Dζ|`, where `M` bounds `‖A[D²V(·) v]‖` on the `|v|`-thickening of `tsupport Dζ`.
+  set T := tsupport (fderiv ℝ ζ) with hTdef
+  have hT : IsCompact T := hDζc
+  have hT' : IsCompact (cthickening ‖v‖ T) := hT.cthickening
+  have hAcont : Continuous (fun y => A (fderiv ℝ (fderiv ℝ V) y v)) := A.continuous.comp hD2v
+  obtain ⟨M, hM⟩ : ∃ M, ∀ y ∈ cthickening ‖v‖ T, ‖A (fderiv ℝ (fderiv ℝ V) y v)‖ ≤ M :=
+    hT'.exists_bound_of_continuousOn (f := fun y => A (fderiv ℝ (fderiv ℝ V) y v))
+      hAcont.continuousOn
+  set M' := max M 0 with hM'
+  have hM'0 : 0 ≤ M' := le_max_right _ _
+  set F : ℝ → Rn n → ℝ := fun h x => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x) with hFdef
+  set F' : ℝ → Rn n → ℝ := fun h x => A (fderiv ℝ (fderiv ℝ V) (x + h • v) v) (fderiv ℝ ζ x)
+    with hFdef'
+  have hFcont : ∀ h, Continuous (F h) := fun h =>
+    (A.continuous.comp (hDV.continuous.comp (continuous_id.add continuous_const))).clm_apply
+      hDζcont
+  have hF'cont : ∀ h, Continuous (F' h) := fun h =>
+    (hAcont.comp (continuous_id.add continuous_const)).clm_apply hDζcont
+  have hzero_out : ∀ x, x ∉ T → fderiv ℝ ζ x = 0 := fun x hx => image_eq_zero_of_notMem_tsupport hx
+  have hsuppF0 : HasCompactSupport (F 0) := by
+    apply HasCompactSupport.intro hT
+    intro x hx
+    simp [hFdef, hzero_out x hx]
+  have hbound_int : Integrable (fun x => M' * ‖fderiv ℝ ζ x‖) volume := by
+    apply Continuous.integrable_of_hasCompactSupport
+    · exact continuous_const.mul hDζcont.norm
+    · apply HasCompactSupport.intro hT
+      intro x hx
+      simp [hzero_out x hx]
+  have hderiv := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume) (F := F)
+    (F' := F') (x₀ := 0) (s := ball (0 : ℝ) 1)
+    (bound := fun x => M' * ‖fderiv ℝ ζ x‖)
+    (ball_mem_nhds 0 one_pos)
+    (Eventually.of_forall fun h => (hFcont h).aestronglyMeasurable)
+    ((hFcont 0).integrable_of_hasCompactSupport hsuppF0)
+    (hF'cont 0).aestronglyMeasurable
+    (Eventually.of_forall fun x h hh => by
+      by_cases hx : x ∈ T
+      · have hmem : x + h • v ∈ cthickening ‖v‖ T := by
+          apply mem_cthickening_of_dist_le (x + h • v) x ‖v‖ T hx
+          rw [dist_eq_norm, add_sub_cancel_left, norm_smul]
+          have : ‖h‖ ≤ 1 := (mem_ball_zero_iff.mp hh).le
+          calc ‖h‖ * ‖v‖ ≤ 1 * ‖v‖ := by gcongr
+            _ = ‖v‖ := one_mul _
+        calc ‖F' h x‖ ≤ ‖A (fderiv ℝ (fderiv ℝ V) (x + h • v) v)‖ * ‖fderiv ℝ ζ x‖ :=
+              ContinuousLinearMap.le_opNorm _ _
+          _ ≤ M' * ‖fderiv ℝ ζ x‖ := by
+              gcongr; exact (hM _ hmem).trans (le_max_left _ _)
+      · simp [hFdef', hzero_out x hx])
+    hbound_int
+    (Eventually.of_forall fun x h _ => by
+      have h1 : HasDerivAt (fun h : ℝ => x + h • v) v h := by
+        simpa using ((hasDerivAt_id h).smul_const v).const_add x
+      have h2 : HasDerivAt (fun h : ℝ => fderiv ℝ V (x + h • v))
+          (fderiv ℝ (fderiv ℝ V) (x + h • v) v) h :=
+        (hDVd (x + h • v)).hasFDerivAt.comp_hasDerivAt h h1
+      have h3 : HasDerivAt (fun h : ℝ => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x))
+          (A (fderiv ℝ (fderiv ℝ V) (x + h • v) v) (fderiv ℝ ζ x)) h :=
+        (A.flip (fderiv ℝ ζ x)).hasFDerivAt.comp_hasDerivAt h h2
+      exact h3)
+  -- Step 3: the translated integral is identically `0`, so its derivative at `0` vanishes.
+  have hzero : (∫ x, F' 0 x) = 0 := by
+    have hconst : (fun h : ℝ => ∫ x, F h x) = fun _ => 0 := funext hF
+    have := hderiv.2
+    rw [hconst] at this
+    exact this.unique (hasDerivAt_const 0 0)
+  -- Step 4: `D(d_v V)(x) = D²V(x) v`, by the chain rule and symmetry of the second derivative.
+  have hsym : ∀ x, fderiv ℝ (fun y => fderiv ℝ V y v) x = fderiv ℝ (fderiv ℝ V) x v := by
+    intro x
+    have hd : HasFDerivAt (fun y => fderiv ℝ V y v)
+        ((ContinuousLinearMap.apply ℝ (Rn ℓ) v).comp (fderiv ℝ (fderiv ℝ V) x)) x :=
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) v).hasFDerivAt.comp x (hDVd x).hasFDerivAt
+    rw [hd.fderiv]
+    refine ContinuousLinearMap.ext fun w => ?_
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply]
+    exact Submission.dohr_eb_sch_liou_snd_deriv_symm n ℓ V hV x w v
+  -- Step 5: conclusion.
+  simp_rw [hsym]
+  simpa [hFdef'] using hzero
+/-- Mollification of a `C^{1,α}` global weak solution: `V = φ_ε ⋆ W` is smooth, keeps the Hölder
+constant, is `Kε^α`-close in `C¹`, and is again a global weak solution. -/
+theorem dohr_eb_sch_liou_mollify : ∀ (n ℓ : ℕ) (α K ε : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → 0 ≤ K → 0 < ε → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∃ V : Rn n → Rn ℓ, ContDiff ℝ (⊤ : ℕ∞) V ∧ (∀ x y : Rn n, ‖fderiv ℝ V x - fderiv ℝ V y‖ ≤ K * ‖x - y‖ ^ α) ∧ (∀ x : Rn n, ‖fderiv ℝ V x - fderiv ℝ W x‖ ≤ K * ε ^ α) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0 := by
+  intro n ℓ α K ε A W hα hK hε hW hhol hsol
+  -- Step 1: mollifier φ := (∫ b)⁻¹ • b for the smooth bump b with radii ε/2 < ε
+  let b : ContDiffBump (0 : Rn n) := ⟨ε / 2, ε, by positivity, by linarith⟩
+  have hb_cont : Continuous b := b.continuous
+  have hb_nonneg : ∀ z, 0 ≤ b z := fun z => b.nonneg
+  have hb_cpt : HasCompactSupport b := b.hasCompactSupport
+  have hb_int : Integrable b := hb_cont.integrable_of_hasCompactSupport hb_cpt
+  have hb_pos : 0 < ∫ z, b z := by
+    rw [integral_pos_iff_support_of_nonneg (fun z => hb_nonneg z) hb_int, b.support_eq]
+    exact measure_ball_pos volume _ hε
+  set c : ℝ := (∫ z, b z)⁻¹ with hc_def
+  have hc_pos : 0 < c := inv_pos.mpr hb_pos
+  set φ : Rn n → ℝ := fun z => c * b z with hφ_def
+  have hφ_smooth : ContDiff ℝ (⊤ : ℕ∞) φ := contDiff_const.mul b.contDiff
+  have hφ_cont : Continuous φ := hφ_smooth.continuous
+  have hφ_nonneg : ∀ z, 0 ≤ φ z := fun z => mul_nonneg hc_pos.le (hb_nonneg z)
+  have hφ_cpt : HasCompactSupport φ := hb_cpt.mul_left
+  have hφ_int1 : ∫ z, φ z = 1 := by
+    simp only [hφ_def]
+    rw [integral_const_mul, hc_def, inv_mul_cancel₀ hb_pos.ne']
+  have hφ_integrable : Integrable φ := hφ_cont.integrable_of_hasCompactSupport hφ_cpt
+  have hφ_zero : ∀ z, ε ≤ ‖z‖ → φ z = 0 := by
+    intro z hz
+    have : z ∉ Function.support b := by
+      rw [b.support_eq, mem_ball_zero_iff]
+      exact not_lt.mpr hz
+    simp only [hφ_def, Function.notMem_support.mp this, mul_zero]
+  have hint : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (g : Rn n → E),
+      Continuous g → Integrable (fun z => φ z • g z) := by
+    intro E _ _ g hg
+    exact (hφ_cont.smul hg).integrable_of_hasCompactSupport (hφ_cpt.smul_right)
+  have hDW_cont : Continuous (fderiv ℝ W) := hW.continuous_fderiv one_ne_zero
+  have hW_diff : Differentiable ℝ W := hW.differentiable one_ne_zero
+  -- Step 2: V := φ ⋆ W
+  set V : Rn n → Rn ℓ := fun x => ∫ z, φ z • W (x - z) with hV_def
+  have hVconv : V = MeasureTheory.convolution φ W (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    funext x; simp [hV_def, convolution_def]
+  -- Step 3: smoothness
+  have hV_smooth : ContDiff ℝ (⊤ : ℕ∞) V := by
+    rw [hVconv]
+    exact hφ_cpt.contDiff_convolution_left _ hφ_smooth hW.continuous.locallyIntegrable
+  -- Step 4: derivative formula DV(x) = ∫ φ(z) DW(x - z) dz
+  have hVderiv : ∀ x0 : Rn n, fderiv ℝ V x0 = ∫ z, φ z • fderiv ℝ W (x0 - z) := by
+    intro x0
+    obtain ⟨Mw, hMw⟩ : ∃ Mw, ∀ y ∈ closedBall x0 (1 + ε), ‖fderiv ℝ W y‖ ≤ Mw :=
+      (isCompact_closedBall x0 (1 + ε)).exists_bound_of_continuousOn (f := fderiv ℝ W)
+        hDW_cont.continuousOn
+    set Mw' := max Mw 0
+    have h := hasFDerivAt_integral_of_dominated_of_fderiv_le (μ := volume)
+      (F := fun x z => φ z • W (x - z)) (F' := fun x z => φ z • fderiv ℝ W (x - z))
+      (x₀ := x0) (s := ball x0 1) (bound := fun z => Mw' * ‖φ z‖)
+      (ball_mem_nhds x0 one_pos)
+      (Eventually.of_forall fun x =>
+        (hφ_cont.smul (hW.continuous.comp (continuous_const.sub continuous_id))).aestronglyMeasurable)
+      (hint _ (hW.continuous.comp (continuous_const.sub continuous_id)))
+      ((hφ_cont.smul (hDW_cont.comp (continuous_const.sub continuous_id))).aestronglyMeasurable)
+      (Eventually.of_forall fun z x hx => by
+        by_cases hz : φ z = 0
+        · simp [hz]
+        · have hz' : ‖z‖ < ε := by
+            by_contra h'
+            exact hz (hφ_zero z (not_lt.mp h'))
+          have hmem : x - z ∈ closedBall x0 (1 + ε) := by
+            rw [mem_closedBall, dist_eq_norm]
+            have hx' : ‖x - x0‖ < 1 := by rw [← dist_eq_norm]; exact hx
+            calc ‖x - z - x0‖ = ‖(x - x0) - z‖ := by congr 1; abel
+              _ ≤ ‖x - x0‖ + ‖z‖ := norm_sub_le _ _
+              _ ≤ 1 + ε := by linarith
+          rw [norm_smul, mul_comm]
+          gcongr
+          exact (hMw _ hmem).trans (le_max_left _ _))
+      ((hφ_integrable.norm).const_mul Mw')
+      (Eventually.of_forall fun z x _ => by
+        have h2 : HasFDerivAt (fun x => W (x - z)) (fderiv ℝ W (x - z)) x :=
+          (hasFDerivAt_comp_sub z).mpr (hW_diff (x - z)).hasFDerivAt
+        exact h2.const_smul (φ z))
+    exact h.fderiv
+  have hDWint : ∀ x : Rn n, Integrable (fun z => φ z • fderiv ℝ W (x - z)) := fun x =>
+    hint _ (hDW_cont.comp (continuous_const.sub continuous_id))
+  -- Step 5: Hölder bound
+  have hhol' : ∀ x y : Rn n, ‖fderiv ℝ V x - fderiv ℝ V y‖ ≤ K * ‖x - y‖ ^ α := by
+    intro x y
+    rw [hVderiv x, hVderiv y, ← integral_sub (hDWint x) (hDWint y)]
+    calc ‖∫ z, (φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W (y - z))‖
+        ≤ ∫ z, φ z * (K * ‖x - y‖ ^ α) := by
+          apply norm_integral_le_of_norm_le (hφ_integrable.mul_const _)
+          refine Eventually.of_forall fun z => ?_
+          have hs : φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W (y - z) =
+              φ z • (fderiv ℝ W (x - z) - fderiv ℝ W (y - z)) := (smul_sub _ _ _).symm
+          rw [hs, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hφ_nonneg z)]
+          have := hhol (x - z) (y - z)
+          rw [sub_sub_sub_cancel_right] at this
+          exact mul_le_mul_of_nonneg_left this (hφ_nonneg z)
+      _ = K * ‖x - y‖ ^ α := by rw [integral_mul_const, hφ_int1, one_mul]
+  -- Step 6: approximation
+  have happrox : ∀ x : Rn n, ‖fderiv ℝ V x - fderiv ℝ W x‖ ≤ K * ε ^ α := by
+    intro x
+    have hconst : fderiv ℝ W x = ∫ z, φ z • fderiv ℝ W x := by
+      rw [integral_smul_const, hφ_int1, one_smul]
+    rw [hVderiv x, hconst, ← integral_sub (hDWint x) (hφ_integrable.smul_const _)]
+    calc ‖∫ z, (φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W x)‖
+        ≤ ∫ z, φ z * (K * ε ^ α) := by
+          apply norm_integral_le_of_norm_le (hφ_integrable.mul_const _)
+          refine Eventually.of_forall fun z => ?_
+          have hs : φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W x =
+              φ z • (fderiv ℝ W (x - z) - fderiv ℝ W x) := (smul_sub _ _ _).symm
+          rw [hs, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hφ_nonneg z)]
+          by_cases hz : φ z = 0
+          · simp [hz]
+          · have hz' : ‖z‖ < ε := by
+              by_contra h'
+              exact hz (hφ_zero z (not_lt.mp h'))
+            apply mul_le_mul_of_nonneg_left _ (hφ_nonneg z)
+            calc ‖fderiv ℝ W (x - z) - fderiv ℝ W x‖ ≤ K * ‖(x - z) - x‖ ^ α := hhol _ _
+              _ = K * ‖z‖ ^ α := by rw [sub_sub_cancel_left, norm_neg]
+              _ ≤ K * ε ^ α := by
+                apply mul_le_mul_of_nonneg_left _ hK
+                exact Real.rpow_le_rpow (norm_nonneg _) hz'.le hα.le
+      _ = K * ε ^ α := by rw [integral_mul_const, hφ_int1, one_mul]
+  -- Step 7: weak equation (Fubini + translated test functions)
+  have hweak : ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0 := by
+    intro ζ hζ hζc
+    have hDζcont : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+    have hDζc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv (𝕜 := ℝ)
+    have ha : ∀ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) =
+        ∫ z, φ z * A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) := by
+      intro x
+      rw [hVderiv x]
+      have := (A.flip (fderiv ℝ ζ x)).integral_comp_comm (hDWint x)
+      simp only [ContinuousLinearMap.flip_apply, map_smul, smul_eq_mul] at this
+      exact this.symm
+    set H : Rn n → Rn n → ℝ := fun x z => φ z * A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) with hH
+    have hHcont : Continuous (Function.uncurry H) :=
+      (hφ_cont.comp continuous_snd).mul
+        ((A.continuous.comp (hDW_cont.comp (continuous_fst.sub continuous_snd))).clm_apply
+          (hDζcont.comp continuous_fst))
+    have hHsupp : HasCompactSupport (Function.uncurry H) := by
+      apply HasCompactSupport.intro (hDζc.prod hφ_cpt)
+      intro p hp
+      simp only [mem_prod, not_and_or] at hp
+      rcases hp with h | h
+      · simp [H, Function.uncurry, image_eq_zero_of_notMem_tsupport h]
+      · simp [H, Function.uncurry, image_eq_zero_of_notMem_tsupport h]
+    have hHint : Integrable (Function.uncurry H) ((volume : Measure (Rn n)).prod volume) :=
+      hHcont.integrable_of_hasCompactSupport (μ := (volume : Measure (Rn n)).prod volume) hHsupp
+    have hswap := integral_integral_swap hHint
+    have hinner : ∀ z, ∫ x, H x z = 0 := by
+      intro z
+      simp only [hH]
+      rw [integral_const_mul]
+      have h1 := hsol (fun x => ζ (x + z)) (hζ.comp (contDiff_id.add contDiff_const))
+        (hζc.comp_homeomorph (Homeomorph.addRight z))
+      have h2 : ∀ x, fderiv ℝ (fun x => ζ (x + z)) x = fderiv ℝ ζ (x + z) :=
+        fun x => fderiv_comp_add_right _
+      simp_rw [h2] at h1
+      have h3 : ∫ x, A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) =
+          ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ (x + z)) := by
+        rw [← integral_add_right_eq_self (fun x => A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x)) z]
+        simp
+      rw [h3, h1, mul_zero]
+    calc ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = ∫ x, ∫ z, H x z := by
+          congr 1; funext x; exact ha x
+      _ = ∫ z, ∫ x, H x z := hswap
+      _ = 0 := by simp [hinner]
+  exact ⟨V, hV_smooth, hhol', happrox, hweak⟩
+
+/-- **Liouville theorem for constant-coefficient Legendre-elliptic systems** (Schauder estimate in
+the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion, p. 127).  Let `A` be a
+bilinear form on `L = L(ℝⁿ, ℝ^ℓ)` with `A[P][P] ≥ λ‖P‖²` and `|A[P][Q]| ≤ Λ‖P‖‖Q‖`, and let
+`W ∈ C¹(ℝⁿ; ℝ^ℓ)` with `‖DW(x) − DW(y)‖ ≤ K‖x − y‖^α` (`0 < α < 1`) solve `∫ A[DW][Dζ] = 0` for
+every `ζ ∈ C¹_c(ℝⁿ; ℝ^ℓ)`.  Then `DW` is constant.
+Proof: let `C ≥ 0` be the Caccioppoli constant for `(λ, Λ)` and `K₊ = max K 0`.  The smooth global
+solutions form a class `S` of `C¹` maps that is closed under directional derivatives and satisfies
+the Caccioppoli inequality at `0`.  For `ε > 0` the mollification `W_ε` lies in `S`, has Hölder
+constant `K₊` and satisfies `‖DW_ε − DW‖ ≤ K₊ ε^α`; the abstract Liouville theorem makes `DW_ε`
+constant, so `‖DW(x) − DW(y)‖ ≤ 2 K₊ ε^α`, which tends to `0` as `ε → 0⁺`. -/
+theorem dohr_eb_sch_liouville_const_coeff : ∀ (n ℓ : ℕ) (α lam Lam K : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 < lam → (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∀ x y : Rn n, fderiv ℝ W x = fderiv ℝ W y := by
+  intro n ℓ α lam Lam K A W hα hα1 hlam hcoer hbdd hW hhol hsol x y
+  -- Step 0: the Caccioppoli constant `C ≥ 0` for `(λ, Λ)`; `K₊ = max K 0` is a Hölder constant.
+  obtain ⟨C, hC0, hcacc⟩ := Submission.dohr_eb_sch_caccioppoli_const_coeff n ℓ lam Lam hlam
+  obtain ⟨Kp, hKp, hKKp⟩ : ∃ Kp : ℝ, 0 ≤ Kp ∧ K ≤ Kp := ⟨max K 0, le_max_right K 0, le_max_left K 0⟩
+  have hholp : ∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ Kp * ‖x - y‖ ^ α := fun x y =>
+    (hhol x y).trans (mul_le_mul_of_nonneg_right hKKp (Real.rpow_nonneg (norm_nonneg _) α))
+  -- Step 1: the class `S` of smooth global solutions.
+  let S : Set (Rn n → Rn ℓ) := {V | ContDiff ℝ (⊤ : ℕ∞) V ∧
+    ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0}
+  -- (S1): smooth maps are `C¹`.
+  have hS1 : ∀ V ∈ S, ContDiff ℝ 1 V := fun V hV => contDiff_infty.1 hV.1 1
+  -- (S2): `x ↦ DV(x) v` is smooth, and a global solution by `dir_deriv_solution` (`V ∈ C²`).
+  have hS2 : ∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S := by
+    intro V hV v
+    refine ⟨?_, Submission.dohr_eb_sch_liou_dir_deriv_solution n ℓ A V v
+      (contDiff_infty.1 hV.1 2) hV.2⟩
+    exact (hV.1.fderiv_right (m := ((⊤ : ℕ∞) : WithTop ℕ∞)) (by simp)).clm_apply contDiff_const
+  -- (S3): the Caccioppoli inequality centred at `0`, tested with all of `C¹_c(B_{2ρ}(0))`.
+  have hS3 : ∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ,
+      ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤
+        ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2 :=
+    fun V hV ρ hρ c => hcacc A V 0 ρ c hcoer hbdd hρ (hS1 V hV).contDiffOn
+      fun ζ hζ hζc _ => hV.2 ζ hζ hζc
+  -- Steps 2–5: the mollification `W_ε ∈ S` has constant derivative, so
+  -- `‖DW(x) − DW(y)‖ ≤ ‖DW_ε(x) − DW(x)‖ + ‖DW_ε(y) − DW(y)‖ ≤ 2 K₊ ε^α`.
+  have hε : ∀ ε : ℝ, 0 < ε → ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ 2 * (Kp * ε ^ α) := by
+    intro ε hε
+    obtain ⟨V, hVsm, hVhol, hVW, hVsol⟩ :=
+      Submission.dohr_eb_sch_liou_mollify n ℓ α Kp ε A W hα hKp hε hW hholp hsol
+    have hconst := Submission.dohr_eb_sch_liou_abstract n ℓ α Kp C S V hα hα1 hKp hC0 hS1 hS2
+      hS3 ⟨hVsm, hVsol⟩ fun z => by simpa only [sub_zero] using hVhol z 0
+    have hxy : fderiv ℝ V x = fderiv ℝ V y := (hconst x).trans (hconst y).symm
+    calc ‖fderiv ℝ W x - fderiv ℝ W y‖ = dist (fderiv ℝ W x) (fderiv ℝ W y) :=
+          (dist_eq_norm _ _).symm
+      _ ≤ dist (fderiv ℝ W x) (fderiv ℝ V x) + dist (fderiv ℝ V x) (fderiv ℝ V y) +
+          dist (fderiv ℝ V y) (fderiv ℝ W y) := dist_triangle4 _ _ _ _
+      _ = ‖fderiv ℝ V x - fderiv ℝ W x‖ + ‖fderiv ℝ V y - fderiv ℝ W y‖ := by
+          rw [hxy, dist_self, add_zero, dist_comm (fderiv ℝ W x), dist_eq_norm, dist_eq_norm]
+      _ ≤ Kp * ε ^ α + Kp * ε ^ α := add_le_add (hVW x) (hVW y)
+      _ = 2 * (Kp * ε ^ α) := (two_mul _).symm
+  -- Step 6: let `ε → 0⁺`; `ε^α → 0^α = 0` as `α > 0`.
+  have hlim : Tendsto (fun ε : ℝ => 2 * (Kp * ε ^ α)) (𝓝[>] 0) (𝓝 0) := by
+    have h0 : Tendsto (fun ε : ℝ => ε ^ α) (𝓝 0) (𝓝 0) := by
+      simpa only [Real.zero_rpow hα.ne'] using
+        (Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto
+    simpa only [mul_zero] using ((h0.const_mul Kp).const_mul 2).mono_left nhdsWithin_le_nhds
+  exact sub_eq_zero.mp (norm_le_zero_iff.mp
+    (ge_of_tendsto hlim (eventually_nhdsWithin_of_forall hε)))
+
 /-- **Blow-up Hölder estimate on the unit ball** (L. Simon's scaling argument; step 5 of the
 Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).
 For `0 < α < 1`, `λ > 0`, `M` and `δ > 0` there is `C_δ ≥ 0` such that every `C¹` weak solution `w`
@@ -2738,404 +3136,6 @@ theorem dohr_eb_sch_blowup_holder_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α
     hA1 hA2 hW'C hW'H hW'eq e₀ 0
   rw [hconst, hW'0, norm_zero] at he₀
   exact zero_ne_one he₀
-
-end Submission
-
-/-- Abstract Liouville theorem.  Let `S` be a class of `C¹` maps `ℝⁿ → ℝ^ℓ` that is closed under
-directional derivatives and satisfies the Caccioppoli inequality on balls centred at `0`.  If
-`W ∈ S` satisfies `‖DW(x) - DW(0)‖ ≤ K |x|^α` with `0 < α < 1`, then `DW` is constant. -/
-theorem Submission.dohr_eb_sch_liou_abstract : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Set (Rn n → Rn ℓ)) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 ≤ K → 0 ≤ C → (∀ V ∈ S, ContDiff ℝ 1 V) → (∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S) → (∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ, ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2) → W ∈ S → (∀ x : Rn n, ‖fderiv ℝ W x - fderiv ℝ W 0‖ ≤ K * ‖x‖ ^ α) → ∀ x : Rn n, fderiv ℝ W x = fderiv ℝ W 0 := by
-  intro n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS hgrowth x
-  -- It suffices to show `DW(x) w = DW(0) w` for every `w`.
-  ext1 w
-  -- `D g = (z ↦ Dg(z) x)` is the directional derivative along `x`.
-  set D : (Rn n → Rn ℓ) → (Rn n → Rn ℓ) := fun g z => fderiv ℝ g z x with hD
-  -- `U_j := D^[j] (z ↦ DW(z) w)` lies in `S` by (S2), hence is `C¹` by (S1).
-  have hUS : ∀ j : ℕ, (D^[j] (fun z => fderiv ℝ W z w)) ∈ S := by
-    intro j
-    induction j with
-    | zero => exact hS2 W hWS w
-    | succ j ih =>
-      rw [Function.iterate_succ_apply']
-      exact hS2 _ ih x
-  -- `G_j(t) := U_j(t x)`; by the chain rule `G_j' = G_{j+1}`.
-  let G : ℕ → ℝ → Rn ℓ := fun j t => (D^[j] (fun z => fderiv ℝ W z w)) (t • x)
-  have hderiv : ∀ j < n + 1, ∀ t : ℝ, HasDerivAt (G j) (G (j + 1) t) t := by
-    intro j _ t
-    have hdiff : DifferentiableAt ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) :=
-      ((hS1 _ (hUS j)).differentiable one_ne_zero) _
-    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
-      simpa using (hasDerivAt_id t).smul_const x
-    have h2 := hdiff.hasFDerivAt.comp_hasDerivAt t h1
-    have h3 : G (j + 1) t = fderiv ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) x := by
-      simp only [G]
-      rw [Function.iterate_succ_apply']
-    rw [h3]
-    exact h2
-  -- `G_{n+1}(t) = DU_n(t x) x = 0` by `chain_vanish` with `u := x`.
-  have hzero : ∀ t : ℝ, G (n + 1) t = 0 := by
-    intro t
-    simp only [G]
-    rw [Function.iterate_succ_apply']
-    have := Submission.dohr_eb_sch_liou_chain_vanish n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS
-      hgrowth x w (t • x)
-    simp only [hD] at this ⊢
-    rw [this]
-    rfl
-  -- Growth: `|G_0(t) - G_0(0)| ≤ (K |x|^α |w|) |t|^α`.
-  have hgrow : ∀ t : ℝ, ‖G 0 t - G 0 0‖ ≤ (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
-    intro t
-    simp only [G, Function.iterate_zero, id, zero_smul]
-    calc ‖fderiv ℝ W (t • x) w - fderiv ℝ W 0 w‖
-        = ‖(fderiv ℝ W (t • x) - fderiv ℝ W 0) w‖ := by simp
-      _ ≤ ‖fderiv ℝ W (t • x) - fderiv ℝ W 0‖ * ‖w‖ := ContinuousLinearMap.le_opNorm _ _
-      _ ≤ (K * ‖t • x‖ ^ α) * ‖w‖ := by gcongr; exact hgrowth _
-      _ = (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
-        rw [norm_smul, Real.norm_eq_abs, Real.mul_rpow (abs_nonneg _) (norm_nonneg _)]
-        ring
-  -- `poly_sublinear_const` with `m := n + 1` gives `G_0(1) = G_0(0)`, i.e. `DW(x) w = DW(0) w`.
-  have := Submission.dohr_eb_sch_liou_poly_sublinear_const ℓ (n + 1) α (K * ‖x‖ ^ α * ‖w‖) G
-    hα1 hderiv hzero hgrow 1
-  simpa [G] using this
-
-namespace Submission
-
-/-- Directional derivatives of `C²` global weak solutions of a constant-coefficient system are
-again global weak solutions: translate the test function, differentiate the (identically zero)
-translated integral under the integral sign, and identify `D(d_v V)` with `D²V(·) v` using the
-symmetry of `D²V` (sibling `Submission.dohr_eb_sch_liou_snd_deriv_symm`). -/
-theorem dohr_eb_sch_liou_dir_deriv_solution : ∀ (n ℓ : ℕ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (v : Rn n), ContDiff ℝ 2 V → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ (fun y => fderiv ℝ V y v) x) (fderiv ℝ ζ x) = 0 := by
-  intro n ℓ A V v hV hsol ζ hζ hζc
-  -- Step 0: `DV` is `C¹`, `Dζ` is continuous with compact support.
-  have hDV : ContDiff ℝ 1 (fderiv ℝ V) := hV.fderiv_right (by norm_num)
-  have hDVd : Differentiable ℝ (fderiv ℝ V) := hDV.differentiable one_ne_zero
-  have hDζcont : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
-  have hDζc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv (𝕜 := ℝ)
-  -- `y ↦ D²V(y) v` is continuous (values in `L`)
-  have hD2v : Continuous (fun y => fderiv ℝ (fderiv ℝ V) y v) :=
-    (hDV.continuous_fderiv_apply one_ne_zero).comp (continuous_id.prodMk continuous_const)
-  -- Step 1: translated equation `∫ A[DV(x + h v)][Dζ(x)] dx = 0` for every `h`, tested with
-  -- `ζ(· - h v)` and translation invariance of Lebesgue measure.
-  have hF : ∀ h : ℝ, ∫ x, A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x) = 0 := by
-    intro h
-    have h1 := hsol (fun x => ζ (x + (-(h • v)))) (hζ.comp (contDiff_id.add contDiff_const))
-      (hζc.comp_homeomorph (Homeomorph.addRight (-(h • v))))
-    have h2 : ∀ x, fderiv ℝ (fun x => ζ (x + (-(h • v)))) x = fderiv ℝ ζ (x + (-(h • v))) :=
-      fun x => fderiv_comp_add_right _
-    simp_rw [h2] at h1
-    rw [← integral_add_right_eq_self
-      (fun x => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x)) (-(h • v))]
-    simpa [add_assoc] using h1
-  -- Step 2: differentiation under the integral sign at `h = 0`, dominated on `|h| < 1` by
-  -- `M⁺ |Dζ|`, where `M` bounds `‖A[D²V(·) v]‖` on the `|v|`-thickening of `tsupport Dζ`.
-  set T := tsupport (fderiv ℝ ζ) with hTdef
-  have hT : IsCompact T := hDζc
-  have hT' : IsCompact (cthickening ‖v‖ T) := hT.cthickening
-  have hAcont : Continuous (fun y => A (fderiv ℝ (fderiv ℝ V) y v)) := A.continuous.comp hD2v
-  obtain ⟨M, hM⟩ : ∃ M, ∀ y ∈ cthickening ‖v‖ T, ‖A (fderiv ℝ (fderiv ℝ V) y v)‖ ≤ M :=
-    hT'.exists_bound_of_continuousOn (f := fun y => A (fderiv ℝ (fderiv ℝ V) y v))
-      hAcont.continuousOn
-  set M' := max M 0 with hM'
-  have hM'0 : 0 ≤ M' := le_max_right _ _
-  set F : ℝ → Rn n → ℝ := fun h x => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x) with hFdef
-  set F' : ℝ → Rn n → ℝ := fun h x => A (fderiv ℝ (fderiv ℝ V) (x + h • v) v) (fderiv ℝ ζ x)
-    with hFdef'
-  have hFcont : ∀ h, Continuous (F h) := fun h =>
-    (A.continuous.comp (hDV.continuous.comp (continuous_id.add continuous_const))).clm_apply
-      hDζcont
-  have hF'cont : ∀ h, Continuous (F' h) := fun h =>
-    (hAcont.comp (continuous_id.add continuous_const)).clm_apply hDζcont
-  have hzero_out : ∀ x, x ∉ T → fderiv ℝ ζ x = 0 := fun x hx => image_eq_zero_of_notMem_tsupport hx
-  have hsuppF0 : HasCompactSupport (F 0) := by
-    apply HasCompactSupport.intro hT
-    intro x hx
-    simp [hFdef, hzero_out x hx]
-  have hbound_int : Integrable (fun x => M' * ‖fderiv ℝ ζ x‖) volume := by
-    apply Continuous.integrable_of_hasCompactSupport
-    · exact continuous_const.mul hDζcont.norm
-    · apply HasCompactSupport.intro hT
-      intro x hx
-      simp [hzero_out x hx]
-  have hderiv := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume) (F := F)
-    (F' := F') (x₀ := 0) (s := ball (0 : ℝ) 1)
-    (bound := fun x => M' * ‖fderiv ℝ ζ x‖)
-    (ball_mem_nhds 0 one_pos)
-    (Eventually.of_forall fun h => (hFcont h).aestronglyMeasurable)
-    ((hFcont 0).integrable_of_hasCompactSupport hsuppF0)
-    (hF'cont 0).aestronglyMeasurable
-    (Eventually.of_forall fun x h hh => by
-      by_cases hx : x ∈ T
-      · have hmem : x + h • v ∈ cthickening ‖v‖ T := by
-          apply mem_cthickening_of_dist_le (x + h • v) x ‖v‖ T hx
-          rw [dist_eq_norm, add_sub_cancel_left, norm_smul]
-          have : ‖h‖ ≤ 1 := (mem_ball_zero_iff.mp hh).le
-          calc ‖h‖ * ‖v‖ ≤ 1 * ‖v‖ := by gcongr
-            _ = ‖v‖ := one_mul _
-        calc ‖F' h x‖ ≤ ‖A (fderiv ℝ (fderiv ℝ V) (x + h • v) v)‖ * ‖fderiv ℝ ζ x‖ :=
-              ContinuousLinearMap.le_opNorm _ _
-          _ ≤ M' * ‖fderiv ℝ ζ x‖ := by
-              gcongr; exact (hM _ hmem).trans (le_max_left _ _)
-      · simp [hFdef', hzero_out x hx])
-    hbound_int
-    (Eventually.of_forall fun x h _ => by
-      have h1 : HasDerivAt (fun h : ℝ => x + h • v) v h := by
-        simpa using ((hasDerivAt_id h).smul_const v).const_add x
-      have h2 : HasDerivAt (fun h : ℝ => fderiv ℝ V (x + h • v))
-          (fderiv ℝ (fderiv ℝ V) (x + h • v) v) h :=
-        (hDVd (x + h • v)).hasFDerivAt.comp_hasDerivAt h h1
-      have h3 : HasDerivAt (fun h : ℝ => A (fderiv ℝ V (x + h • v)) (fderiv ℝ ζ x))
-          (A (fderiv ℝ (fderiv ℝ V) (x + h • v) v) (fderiv ℝ ζ x)) h :=
-        (A.flip (fderiv ℝ ζ x)).hasFDerivAt.comp_hasDerivAt h h2
-      exact h3)
-  -- Step 3: the translated integral is identically `0`, so its derivative at `0` vanishes.
-  have hzero : (∫ x, F' 0 x) = 0 := by
-    have hconst : (fun h : ℝ => ∫ x, F h x) = fun _ => 0 := funext hF
-    have := hderiv.2
-    rw [hconst] at this
-    exact this.unique (hasDerivAt_const 0 0)
-  -- Step 4: `D(d_v V)(x) = D²V(x) v`, by the chain rule and symmetry of the second derivative.
-  have hsym : ∀ x, fderiv ℝ (fun y => fderiv ℝ V y v) x = fderiv ℝ (fderiv ℝ V) x v := by
-    intro x
-    have hd : HasFDerivAt (fun y => fderiv ℝ V y v)
-        ((ContinuousLinearMap.apply ℝ (Rn ℓ) v).comp (fderiv ℝ (fderiv ℝ V) x)) x :=
-      (ContinuousLinearMap.apply ℝ (Rn ℓ) v).hasFDerivAt.comp x (hDVd x).hasFDerivAt
-    rw [hd.fderiv]
-    refine ContinuousLinearMap.ext fun w => ?_
-    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply]
-    exact Submission.dohr_eb_sch_liou_snd_deriv_symm n ℓ V hV x w v
-  -- Step 5: conclusion.
-  simp_rw [hsym]
-  simpa [hFdef'] using hzero
-/-- Mollification of a `C^{1,α}` global weak solution: `V = φ_ε ⋆ W` is smooth, keeps the Hölder
-constant, is `Kε^α`-close in `C¹`, and is again a global weak solution. -/
-theorem dohr_eb_sch_liou_mollify : ∀ (n ℓ : ℕ) (α K ε : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → 0 ≤ K → 0 < ε → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∃ V : Rn n → Rn ℓ, ContDiff ℝ (⊤ : ℕ∞) V ∧ (∀ x y : Rn n, ‖fderiv ℝ V x - fderiv ℝ V y‖ ≤ K * ‖x - y‖ ^ α) ∧ (∀ x : Rn n, ‖fderiv ℝ V x - fderiv ℝ W x‖ ≤ K * ε ^ α) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0 := by
-  intro n ℓ α K ε A W hα hK hε hW hhol hsol
-  -- Step 1: mollifier φ := (∫ b)⁻¹ • b for the smooth bump b with radii ε/2 < ε
-  let b : ContDiffBump (0 : Rn n) := ⟨ε / 2, ε, by positivity, by linarith⟩
-  have hb_cont : Continuous b := b.continuous
-  have hb_nonneg : ∀ z, 0 ≤ b z := fun z => b.nonneg
-  have hb_cpt : HasCompactSupport b := b.hasCompactSupport
-  have hb_int : Integrable b := hb_cont.integrable_of_hasCompactSupport hb_cpt
-  have hb_pos : 0 < ∫ z, b z := by
-    rw [integral_pos_iff_support_of_nonneg (fun z => hb_nonneg z) hb_int, b.support_eq]
-    exact measure_ball_pos volume _ hε
-  set c : ℝ := (∫ z, b z)⁻¹ with hc_def
-  have hc_pos : 0 < c := inv_pos.mpr hb_pos
-  set φ : Rn n → ℝ := fun z => c * b z with hφ_def
-  have hφ_smooth : ContDiff ℝ (⊤ : ℕ∞) φ := contDiff_const.mul b.contDiff
-  have hφ_cont : Continuous φ := hφ_smooth.continuous
-  have hφ_nonneg : ∀ z, 0 ≤ φ z := fun z => mul_nonneg hc_pos.le (hb_nonneg z)
-  have hφ_cpt : HasCompactSupport φ := hb_cpt.mul_left
-  have hφ_int1 : ∫ z, φ z = 1 := by
-    simp only [hφ_def]
-    rw [integral_const_mul, hc_def, inv_mul_cancel₀ hb_pos.ne']
-  have hφ_integrable : Integrable φ := hφ_cont.integrable_of_hasCompactSupport hφ_cpt
-  have hφ_zero : ∀ z, ε ≤ ‖z‖ → φ z = 0 := by
-    intro z hz
-    have : z ∉ Function.support b := by
-      rw [b.support_eq, mem_ball_zero_iff]
-      exact not_lt.mpr hz
-    simp only [hφ_def, Function.notMem_support.mp this, mul_zero]
-  have hint : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (g : Rn n → E),
-      Continuous g → Integrable (fun z => φ z • g z) := by
-    intro E _ _ g hg
-    exact (hφ_cont.smul hg).integrable_of_hasCompactSupport (hφ_cpt.smul_right)
-  have hDW_cont : Continuous (fderiv ℝ W) := hW.continuous_fderiv one_ne_zero
-  have hW_diff : Differentiable ℝ W := hW.differentiable one_ne_zero
-  -- Step 2: V := φ ⋆ W
-  set V : Rn n → Rn ℓ := fun x => ∫ z, φ z • W (x - z) with hV_def
-  have hVconv : V = MeasureTheory.convolution φ W (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
-    funext x; simp [hV_def, convolution_def]
-  -- Step 3: smoothness
-  have hV_smooth : ContDiff ℝ (⊤ : ℕ∞) V := by
-    rw [hVconv]
-    exact hφ_cpt.contDiff_convolution_left _ hφ_smooth hW.continuous.locallyIntegrable
-  -- Step 4: derivative formula DV(x) = ∫ φ(z) DW(x - z) dz
-  have hVderiv : ∀ x0 : Rn n, fderiv ℝ V x0 = ∫ z, φ z • fderiv ℝ W (x0 - z) := by
-    intro x0
-    obtain ⟨Mw, hMw⟩ : ∃ Mw, ∀ y ∈ closedBall x0 (1 + ε), ‖fderiv ℝ W y‖ ≤ Mw :=
-      (isCompact_closedBall x0 (1 + ε)).exists_bound_of_continuousOn (f := fderiv ℝ W)
-        hDW_cont.continuousOn
-    set Mw' := max Mw 0
-    have h := hasFDerivAt_integral_of_dominated_of_fderiv_le (μ := volume)
-      (F := fun x z => φ z • W (x - z)) (F' := fun x z => φ z • fderiv ℝ W (x - z))
-      (x₀ := x0) (s := ball x0 1) (bound := fun z => Mw' * ‖φ z‖)
-      (ball_mem_nhds x0 one_pos)
-      (Eventually.of_forall fun x =>
-        (hφ_cont.smul (hW.continuous.comp (continuous_const.sub continuous_id))).aestronglyMeasurable)
-      (hint _ (hW.continuous.comp (continuous_const.sub continuous_id)))
-      ((hφ_cont.smul (hDW_cont.comp (continuous_const.sub continuous_id))).aestronglyMeasurable)
-      (Eventually.of_forall fun z x hx => by
-        by_cases hz : φ z = 0
-        · simp [hz]
-        · have hz' : ‖z‖ < ε := by
-            by_contra h'
-            exact hz (hφ_zero z (not_lt.mp h'))
-          have hmem : x - z ∈ closedBall x0 (1 + ε) := by
-            rw [mem_closedBall, dist_eq_norm]
-            have hx' : ‖x - x0‖ < 1 := by rw [← dist_eq_norm]; exact hx
-            calc ‖x - z - x0‖ = ‖(x - x0) - z‖ := by congr 1; abel
-              _ ≤ ‖x - x0‖ + ‖z‖ := norm_sub_le _ _
-              _ ≤ 1 + ε := by linarith
-          rw [norm_smul, mul_comm]
-          gcongr
-          exact (hMw _ hmem).trans (le_max_left _ _))
-      ((hφ_integrable.norm).const_mul Mw')
-      (Eventually.of_forall fun z x _ => by
-        have h2 : HasFDerivAt (fun x => W (x - z)) (fderiv ℝ W (x - z)) x :=
-          (hasFDerivAt_comp_sub z).mpr (hW_diff (x - z)).hasFDerivAt
-        exact h2.const_smul (φ z))
-    exact h.fderiv
-  have hDWint : ∀ x : Rn n, Integrable (fun z => φ z • fderiv ℝ W (x - z)) := fun x =>
-    hint _ (hDW_cont.comp (continuous_const.sub continuous_id))
-  -- Step 5: Hölder bound
-  have hhol' : ∀ x y : Rn n, ‖fderiv ℝ V x - fderiv ℝ V y‖ ≤ K * ‖x - y‖ ^ α := by
-    intro x y
-    rw [hVderiv x, hVderiv y, ← integral_sub (hDWint x) (hDWint y)]
-    calc ‖∫ z, (φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W (y - z))‖
-        ≤ ∫ z, φ z * (K * ‖x - y‖ ^ α) := by
-          apply norm_integral_le_of_norm_le (hφ_integrable.mul_const _)
-          refine Eventually.of_forall fun z => ?_
-          have hs : φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W (y - z) =
-              φ z • (fderiv ℝ W (x - z) - fderiv ℝ W (y - z)) := (smul_sub _ _ _).symm
-          rw [hs, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hφ_nonneg z)]
-          have := hhol (x - z) (y - z)
-          rw [sub_sub_sub_cancel_right] at this
-          exact mul_le_mul_of_nonneg_left this (hφ_nonneg z)
-      _ = K * ‖x - y‖ ^ α := by rw [integral_mul_const, hφ_int1, one_mul]
-  -- Step 6: approximation
-  have happrox : ∀ x : Rn n, ‖fderiv ℝ V x - fderiv ℝ W x‖ ≤ K * ε ^ α := by
-    intro x
-    have hconst : fderiv ℝ W x = ∫ z, φ z • fderiv ℝ W x := by
-      rw [integral_smul_const, hφ_int1, one_smul]
-    rw [hVderiv x, hconst, ← integral_sub (hDWint x) (hφ_integrable.smul_const _)]
-    calc ‖∫ z, (φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W x)‖
-        ≤ ∫ z, φ z * (K * ε ^ α) := by
-          apply norm_integral_le_of_norm_le (hφ_integrable.mul_const _)
-          refine Eventually.of_forall fun z => ?_
-          have hs : φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W x =
-              φ z • (fderiv ℝ W (x - z) - fderiv ℝ W x) := (smul_sub _ _ _).symm
-          rw [hs, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hφ_nonneg z)]
-          by_cases hz : φ z = 0
-          · simp [hz]
-          · have hz' : ‖z‖ < ε := by
-              by_contra h'
-              exact hz (hφ_zero z (not_lt.mp h'))
-            apply mul_le_mul_of_nonneg_left _ (hφ_nonneg z)
-            calc ‖fderiv ℝ W (x - z) - fderiv ℝ W x‖ ≤ K * ‖(x - z) - x‖ ^ α := hhol _ _
-              _ = K * ‖z‖ ^ α := by rw [sub_sub_cancel_left, norm_neg]
-              _ ≤ K * ε ^ α := by
-                apply mul_le_mul_of_nonneg_left _ hK
-                exact Real.rpow_le_rpow (norm_nonneg _) hz'.le hα.le
-      _ = K * ε ^ α := by rw [integral_mul_const, hφ_int1, one_mul]
-  -- Step 7: weak equation (Fubini + translated test functions)
-  have hweak : ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
-      ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0 := by
-    intro ζ hζ hζc
-    have hDζcont : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
-    have hDζc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv (𝕜 := ℝ)
-    have ha : ∀ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) =
-        ∫ z, φ z * A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) := by
-      intro x
-      rw [hVderiv x]
-      have := (A.flip (fderiv ℝ ζ x)).integral_comp_comm (hDWint x)
-      simp only [ContinuousLinearMap.flip_apply, map_smul, smul_eq_mul] at this
-      exact this.symm
-    set H : Rn n → Rn n → ℝ := fun x z => φ z * A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) with hH
-    have hHcont : Continuous (Function.uncurry H) :=
-      (hφ_cont.comp continuous_snd).mul
-        ((A.continuous.comp (hDW_cont.comp (continuous_fst.sub continuous_snd))).clm_apply
-          (hDζcont.comp continuous_fst))
-    have hHsupp : HasCompactSupport (Function.uncurry H) := by
-      apply HasCompactSupport.intro (hDζc.prod hφ_cpt)
-      intro p hp
-      simp only [mem_prod, not_and_or] at hp
-      rcases hp with h | h
-      · simp [H, Function.uncurry, image_eq_zero_of_notMem_tsupport h]
-      · simp [H, Function.uncurry, image_eq_zero_of_notMem_tsupport h]
-    have hHint : Integrable (Function.uncurry H) ((volume : Measure (Rn n)).prod volume) :=
-      hHcont.integrable_of_hasCompactSupport (μ := (volume : Measure (Rn n)).prod volume) hHsupp
-    have hswap := integral_integral_swap hHint
-    have hinner : ∀ z, ∫ x, H x z = 0 := by
-      intro z
-      simp only [hH]
-      rw [integral_const_mul]
-      have h1 := hsol (fun x => ζ (x + z)) (hζ.comp (contDiff_id.add contDiff_const))
-        (hζc.comp_homeomorph (Homeomorph.addRight z))
-      have h2 : ∀ x, fderiv ℝ (fun x => ζ (x + z)) x = fderiv ℝ ζ (x + z) :=
-        fun x => fderiv_comp_add_right _
-      simp_rw [h2] at h1
-      have h3 : ∫ x, A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) =
-          ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ (x + z)) := by
-        rw [← integral_add_right_eq_self (fun x => A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x)) z]
-        simp
-      rw [h3, h1, mul_zero]
-    calc ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = ∫ x, ∫ z, H x z := by
-          congr 1; funext x; exact ha x
-      _ = ∫ z, ∫ x, H x z := hswap
-      _ = 0 := by simp [hinner]
-  exact ⟨V, hV_smooth, hhol', happrox, hweak⟩
-
-/-- **Liouville theorem for constant-coefficient Legendre-elliptic systems** (Schauder estimate in
-the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion, p. 127).  Let `A` be a
-bilinear form on `L = L(ℝⁿ, ℝ^ℓ)` with `A[P][P] ≥ λ‖P‖²` and `|A[P][Q]| ≤ Λ‖P‖‖Q‖`, and let
-`W ∈ C¹(ℝⁿ; ℝ^ℓ)` with `‖DW(x) − DW(y)‖ ≤ K‖x − y‖^α` (`0 < α < 1`) solve `∫ A[DW][Dζ] = 0` for
-every `ζ ∈ C¹_c(ℝⁿ; ℝ^ℓ)`.  Then `DW` is constant.
-Proof: let `C ≥ 0` be the Caccioppoli constant for `(λ, Λ)` and `K₊ = max K 0`.  The smooth global
-solutions form a class `S` of `C¹` maps that is closed under directional derivatives and satisfies
-the Caccioppoli inequality at `0`.  For `ε > 0` the mollification `W_ε` lies in `S`, has Hölder
-constant `K₊` and satisfies `‖DW_ε − DW‖ ≤ K₊ ε^α`; the abstract Liouville theorem makes `DW_ε`
-constant, so `‖DW(x) − DW(y)‖ ≤ 2 K₊ ε^α`, which tends to `0` as `ε → 0⁺`. -/
-theorem dohr_eb_sch_liouville_const_coeff : ∀ (n ℓ : ℕ) (α lam Lam K : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 < lam → (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∀ x y : Rn n, fderiv ℝ W x = fderiv ℝ W y := by
-  intro n ℓ α lam Lam K A W hα hα1 hlam hcoer hbdd hW hhol hsol x y
-  -- Step 0: the Caccioppoli constant `C ≥ 0` for `(λ, Λ)`; `K₊ = max K 0` is a Hölder constant.
-  obtain ⟨C, hC0, hcacc⟩ := Submission.dohr_eb_sch_caccioppoli_const_coeff n ℓ lam Lam hlam
-  obtain ⟨Kp, hKp, hKKp⟩ : ∃ Kp : ℝ, 0 ≤ Kp ∧ K ≤ Kp := ⟨max K 0, le_max_right K 0, le_max_left K 0⟩
-  have hholp : ∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ Kp * ‖x - y‖ ^ α := fun x y =>
-    (hhol x y).trans (mul_le_mul_of_nonneg_right hKKp (Real.rpow_nonneg (norm_nonneg _) α))
-  -- Step 1: the class `S` of smooth global solutions.
-  let S : Set (Rn n → Rn ℓ) := {V | ContDiff ℝ (⊤ : ℕ∞) V ∧
-    ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
-      ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0}
-  -- (S1): smooth maps are `C¹`.
-  have hS1 : ∀ V ∈ S, ContDiff ℝ 1 V := fun V hV => contDiff_infty.1 hV.1 1
-  -- (S2): `x ↦ DV(x) v` is smooth, and a global solution by `dir_deriv_solution` (`V ∈ C²`).
-  have hS2 : ∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S := by
-    intro V hV v
-    refine ⟨?_, Submission.dohr_eb_sch_liou_dir_deriv_solution n ℓ A V v
-      (contDiff_infty.1 hV.1 2) hV.2⟩
-    exact (hV.1.fderiv_right (m := ((⊤ : ℕ∞) : WithTop ℕ∞)) (by simp)).clm_apply contDiff_const
-  -- (S3): the Caccioppoli inequality centred at `0`, tested with all of `C¹_c(B_{2ρ}(0))`.
-  have hS3 : ∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ,
-      ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤
-        ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2 :=
-    fun V hV ρ hρ c => hcacc A V 0 ρ c hcoer hbdd hρ (hS1 V hV).contDiffOn
-      fun ζ hζ hζc _ => hV.2 ζ hζ hζc
-  -- Steps 2–5: the mollification `W_ε ∈ S` has constant derivative, so
-  -- `‖DW(x) − DW(y)‖ ≤ ‖DW_ε(x) − DW(x)‖ + ‖DW_ε(y) − DW(y)‖ ≤ 2 K₊ ε^α`.
-  have hε : ∀ ε : ℝ, 0 < ε → ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ 2 * (Kp * ε ^ α) := by
-    intro ε hε
-    obtain ⟨V, hVsm, hVhol, hVW, hVsol⟩ :=
-      Submission.dohr_eb_sch_liou_mollify n ℓ α Kp ε A W hα hKp hε hW hholp hsol
-    have hconst := Submission.dohr_eb_sch_liou_abstract n ℓ α Kp C S V hα hα1 hKp hC0 hS1 hS2
-      hS3 ⟨hVsm, hVsol⟩ fun z => by simpa only [sub_zero] using hVhol z 0
-    have hxy : fderiv ℝ V x = fderiv ℝ V y := (hconst x).trans (hconst y).symm
-    calc ‖fderiv ℝ W x - fderiv ℝ W y‖ = dist (fderiv ℝ W x) (fderiv ℝ W y) :=
-          (dist_eq_norm _ _).symm
-      _ ≤ dist (fderiv ℝ W x) (fderiv ℝ V x) + dist (fderiv ℝ V x) (fderiv ℝ V y) +
-          dist (fderiv ℝ V y) (fderiv ℝ W y) := dist_triangle4 _ _ _ _
-      _ = ‖fderiv ℝ V x - fderiv ℝ W x‖ + ‖fderiv ℝ V y - fderiv ℝ W y‖ := by
-          rw [hxy, dist_self, add_zero, dist_comm (fderiv ℝ W x), dist_eq_norm, dist_eq_norm]
-      _ ≤ Kp * ε ^ α + Kp * ε ^ α := add_le_add (hVW x) (hVW y)
-      _ = 2 * (Kp * ε ^ α) := (two_mul _).symm
-  -- Step 6: let `ε → 0⁺`; `ε^α → 0^α = 0` as `α > 0`.
-  have hlim : Tendsto (fun ε : ℝ => 2 * (Kp * ε ^ α)) (𝓝[>] 0) (𝓝 0) := by
-    have h0 : Tendsto (fun ε : ℝ => ε ^ α) (𝓝 0) (𝓝 0) := by
-      simpa only [Real.zero_rpow hα.ne'] using
-        (Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto
-    simpa only [mul_zero] using ((h0.const_mul Kp).const_mul 2).mono_left nhdsWithin_le_nhds
-  exact sub_eq_zero.mp (norm_le_zero_iff.mp
-    (ge_of_tendsto hlim (eventually_nhdsWithin_of_forall hε)))
 
 end Submission
 
