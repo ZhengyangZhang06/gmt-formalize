@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_localization-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1",
+  "depth": 3,
+  "title": "Mass localization for a current vanishing away from a compact set (step 4(a))",
+  "statement": "Let P, k ∈ ℕ, U, V, C ⊆ ℝ^P with C compact, V open and C ⊆ V, and let X ∈ 𝒟_k(U) satisfy X(ω) = 0 for every ω ∈ 𝒟^k(U) whose topological support is disjoint from C. Then M_G(X) ≤ M_V(X) for every set G ⊆ ℝ^P (M_G = SimonGMT massOn with the Euclidean coefficient norm).",
+  "lean_statement": "∀ (P k : ℕ) (U V C : Set (Euclid P)) (X : GeometricCurrentOn U k), IsCompact C → IsOpen V → C ⊆ V → (∀ ω : TestFormOn U k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) C → X ω = 0) → ∀ G : Set (Euclid P), X.massOn G ≤ X.massOn V",
+  "lean_name": "lcmp_massOn_le_of_vanish_off_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-l-9981f1246a-a1"
+}
