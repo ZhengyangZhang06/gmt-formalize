@@ -3543,6 +3543,100 @@ theorem Submission.lpf_countably_rectifiable_c1_cover : ∀ (P n : ℕ) (M : Set
     refine mem_iUnion.mpr ⟨e.symm (j, k, m), w, ?_, ?_⟩ <;> simp only [Equiv.apply_symm_apply]
     exact ⟨hw, mem_ball_zero_iff.mpr hm⟩
 
+/-- Tangential differential of a locally Lipschitz map along a rectifiable triple (Simon Ch. 3 §2,
+2.1–2.2 and p. 76; input to Simon Ch. 6, 3.6).  If `U ⊆ ℝ^P` is open, `(M, θ, ξ)` is a rectifiable
+triple in `U` and `f` is locally Lipschitz on `U`, there is `L : ℝ^P → L(ℝ^P, ℝ^Q)`, strongly
+measurable and bounded on `M ∩ K` for compact `K ⊆ U`, such that for `Hⁿ`-a.e. `x ∈ M`,
+`t ↦ f(x + t v)` has derivative `L(x) v` at `0` for every `v` in every weighted approximate
+tangent space of `(M, θ)` at `x`. -/
+theorem Submission.lpf_tangential_differential_exists : ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q), IsOpen U → IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f → ∃ L : Eucl P → (Eucl P →L[ℝ] Eucl Q), (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) ∧ AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ M ∩ K, ‖L x‖ ≤ C := by
+  intro P Q n U M θ ξ f hU hM hf
+  -- Step 1: `C¹` charts `Φ j`, Lipschitz and antilipschitz on the open `Ω j`, whose images cover
+  -- `Hⁿ`-almost all of `M`.
+  obtain ⟨Φ, Ω, hΩ, hΦ, hΦlip, hΦanti, hcov⟩ :=
+    Submission.lpf_countably_rectifiable_c1_cover P n M hM.countablyRectifiable
+  choose KΦ hKΦ using hΦlip
+  have hΦd : ∀ j w, HasFDerivAt (Φ j) (fderiv ℝ (Φ j) w) w := fun j w =>
+    ((hΦ j).differentiable one_ne_zero w).hasFDerivAt
+  -- Steps 2–3: a strongly measurable `L`, `0` off the charts, with `L x (DΦ j(w) s) =
+  -- D(f ∘ Φ j)(w) s` at a chart point `x = Φ j w`.
+  obtain ⟨L, hLm, hL0, hLc⟩ :=
+    Submission.lpf_tde_measurable_chart_differential P Q n Φ Ω f hΩ hΦ hΦanti
+  refine ⟨L, ?_, hLm.aestronglyMeasurable, ?_⟩
+  · -- Step 4 (a): `Hⁿ`-almost every point of `M` lies in a chart.
+    have h₁ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ ⋃ j, Φ j '' Ω j := by
+      rw [ae_restrict_iff'₀ hM.nullMeasurableSet, ae_iff]
+      exact measure_mono_null (fun x hx => not_imp.1 hx) hcov
+    -- Step 4 (b): Rademacher; the chart image of the non-differentiability set of `f ∘ Φ j` is
+    -- `Hⁿ`-null.
+    have h₂ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ j,
+        x ∉ Φ j '' {w | w ∈ Ω j ∧ Φ j w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ j) w} :=
+      ae_restrict_of_ae (ae_all_iff.2 fun j => measure_eq_zero_iff_ae_notMem.1
+        (Submission.lpf_tde_chart_nondiff_image_null P Q n U f (Φ j) (Ω j) (KΦ j) hU hf (hΩ j)
+          (hKΦ j)))
+    -- Step 4 (c): at `Hⁿ`-a.e. `x = Φ j w ∈ M`, `range DΦ j(w)` is a weighted approximate tangent
+    -- space of `(M, θ)`.
+    have h₃ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ j, ∀ w ∈ Ω j, Φ j w = x →
+        HasWeightedApproximateTangentSpaceAt n M θ x
+          (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) := by
+      refine ae_all_iff.2 fun j => ?_
+      have h := Submission.lpf_weighted_tangent_on_c1_chart P n U M θ (Φ j) (Ω j) hU hM.subset
+        hM.nullMeasurableSet hM.pos hM.integrableOn (hΩ j) (hΦ j) (hΦanti j)
+      -- The statement is vacuous off `Φ j '' Ω j`, so it passes from `M ∩ Φ j '' Ω j` to `M`.
+      rw [ae_iff] at h ⊢
+      rw [Measure.restrict_apply₀' hM.nullMeasurableSet]
+      refine measure_mono_null ?_
+        (nonpos_iff_eq_zero.1 ((Measure.le_restrict_apply _ _).trans h.le))
+      intro x hx
+      refine ⟨hx.1, hx.2, ?_⟩
+      by_contra hxS
+      exact hx.1 fun w hw hwx => (hxS ⟨w, hw, hwx⟩).elim
+    -- Step 5: on the good set, `Tₓ = range DΦ j(w)` and fact (DD) gives the derivative.
+    filter_upwards [h₁, h₂, h₃, ae_restrict_mem₀ hM.nullMeasurableSet] with x hx₁ hx₂ hx₃ hxM
+    intro Tx hTx v hv
+    obtain ⟨j, w, hwΩ, hwx, hLs, -⟩ := hLc x hx₁
+    have hxU : x ∈ U := hM.subset hxM
+    -- Uniqueness of weighted approximate tangent spaces (`θ x > 0`).
+    rw [hTx.unique (hM.pos x hxM).ne' (hx₃ j w hwΩ hwx)] at hv
+    obtain ⟨s, rfl⟩ := hv
+    -- `f ∘ Φ j` is differentiable at `w`, since `x` avoids the image in (b).
+    have hd : DifferentiableAt ℝ (f ∘ Φ j) w := by
+      by_contra hnd
+      exact hx₂ j ⟨w, ⟨hwΩ, by rw [hwx]; exact hxU, hnd⟩, hwx⟩
+    -- `f` is Lipschitz on a ball around `x`.
+    obtain ⟨C, ρ, hρ, hCρ⟩ := Submission.lpf_tde_uniform_lipschitz_near_compact P Q U {x} f hU hf
+      isCompact_singleton (singleton_subset_iff.2 hxU)
+    have hlip : LipschitzOnWith C f (ball (Φ j w) ρ) := by
+      rw [hwx]
+      exact (hCρ x (mem_singleton x)).2
+    have hDD := (Submission.lpf_tde_chart_directional_deriv P Q n f (Φ j) w _ _ C ρ hρ hlip
+      (hΦd j w) hd.hasFDerivAt s).1
+    rw [hwx] at hDD
+    rw [ContinuousLinearMap.coe_coe, hLs s]
+    exact hDD
+  · -- Step 6: a uniform Lipschitz constant near `K` and fact (DD) bound `‖L x‖`.
+    intro K hK hKU
+    obtain ⟨C, ρ, hρ, hCρ⟩ :=
+      Submission.lpf_tde_uniform_lipschitz_near_compact P Q U K f hU hf hK hKU
+    refine ⟨(C : ℝ), fun x hx => ?_⟩
+    by_cases hx₁ : x ∈ ⋃ j, Φ j '' Ω j
+    · obtain ⟨j, w, hwΩ, hwx, -, hLv⟩ := hLc x hx₁
+      have hlip : LipschitzOnWith C f (ball (Φ j w) ρ) := by
+        rw [hwx]
+        exact (hCρ x hx.2).2
+      refine ContinuousLinearMap.opNorm_le_bound _ C.coe_nonneg fun v => ?_
+      obtain ⟨s, hs, hLvs⟩ := hLv v
+      rw [hLvs]
+      by_cases hd : DifferentiableAt ℝ (f ∘ Φ j) w
+      · calc ‖fderiv ℝ (f ∘ Φ j) w s‖ ≤ C * ‖fderiv ℝ (Φ j) w s‖ :=
+              (Submission.lpf_tde_chart_directional_deriv P Q n f (Φ j) w _ _ C ρ hρ hlip
+                (hΦd j w) hd.hasFDerivAt s).2
+          _ ≤ C * ‖v‖ := mul_le_mul_of_nonneg_left hs C.coe_nonneg
+      · rw [fderiv_zero_of_not_differentiableAt hd, zero_apply, norm_zero]
+        positivity
+    · rw [hL0 x hx₁, norm_zero]
+      exact C.coe_nonneg
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
