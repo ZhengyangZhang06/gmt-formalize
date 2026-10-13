@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1.cutoff_mass_derivative-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1",
+  "depth": 4,
+  "title": "Derivative of the radial cutoff mass t -> integral phi(|x - y|/t) dmu (Simon Ch. 4, 4.3)",
+  "statement": "Let n, l be natural numbers, E := R^{n+l} (Euclidean space), mu a measure on E, y in E, phi : R -> R and S, T, t real numbers. Write r(x) := |x - y|, B_S(y) for the closed ball of radius S about y, and phi' := deriv phi. Assume: T > 0; mu(B_S(y)) < infinity; phi is C^1; phi(u) = 0 for every u >= T; t > 0; and T t < S. Then:\n (a) x -> phi(r(x)/t) is mu-integrable;\n (b) x -> (r(x)/t) phi'(r(x)/t) is mu-integrable;\n (c) the function s -> integral_E phi(r(x)/s) dmu(x) has derivative -(integral_E (r(x)/t) phi'(r(x)/t) dmu(x))/t at s = t.\nIntegrals are Bochner integrals, and division follows Lean's convention x/0 = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → μ (closedBall y S) < ⊤ → ContDiff ℝ 1 φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → Integrable (fun x => φ (‖x - y‖ / t)) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t) t",
+  "lean_name": "ted_lpm_fcm_cutoff_mass_hasDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-d08fa2abc9-a1"
+}
