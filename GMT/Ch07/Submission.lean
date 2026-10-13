@@ -451,6 +451,58 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The covector `w₁♭ ∧ ⋯ ∧ wₙ♭`** (Simon Ch. 6, 1.1 with 1.4): for every `w : Fin n → ℝᴾ`
+some `n`-covector `β` on `ℝᴾ` has `β(u₁, …, uₙ) = det (⟨u_a, w_b⟩)_{a,b}`.  With the row map
+`p_w x = (⟨x, w_b⟩)_b`, linear since `⟨·, ·⟩` is linear in its first argument, `β⁰ = det ∘ p_w`
+is alternating, and the Leibniz formula with Cauchy–Schwarz gives
+`|β⁰(u)| ≤ n! ∏_b ‖w_b‖ ∏_a ‖u_a‖`, so `β⁰` is continuous. -/
+theorem Submission.cbr_ci_pw_pu_inner_det_covector : ∀ (P n : ℕ) (w : Fin n → Euclid P), ∃ β : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, β u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b)) := by
+  intro P n w
+  -- Step 1: the row map `p_w x = (⟨x, w_b⟩)_b` is linear
+  let p : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+    { toFun := fun x b => inner ℝ x (w b)
+      map_add' := fun x y => by
+        funext b
+        simp [inner_add_left]
+      map_smul' := fun c x => by
+        funext b
+        simp [real_inner_smul_left] }
+  -- Step 2: `β⁰ = det ∘ p_w` is alternating, and `β⁰(u) = det (⟨u_a, w_b⟩)_{a,b}`
+  let β₀ : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap p
+  have hβ₀ : ∀ u : Fin n → Euclid P,
+      β₀ u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b)) := fun u => rfl
+  -- Step 3: the Leibniz formula, `|sign σ| = 1`, Cauchy–Schwarz, reindexing along `σ` and
+  -- `n!` permutations give `|β⁰(u)| ≤ (n! ∏_b ‖w_b‖) ∏_a ‖u_a‖`
+  have hbound : ∀ u : Fin n → Euclid P,
+      ‖β₀ u‖ ≤ ((n.factorial : ℝ) * ∏ b, ‖w b‖) * ∏ a, ‖u a‖ := by
+    intro u
+    rw [hβ₀, Real.norm_eq_abs, Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin n),
+            Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i|
+        ≤ ∑ σ : Equiv.Perm (Fin n),
+            |Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin n), (∏ a, ‖u a‖) * ∏ b, ‖w b‖ := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          have hσ : |Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i| =
+              ∏ i, |inner ℝ (u (σ i)) (w i)| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
+              simp [h, Finset.abs_prod]
+          calc |Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i|
+              = ∏ i, |inner ℝ (u (σ i)) (w i)| := hσ
+            _ ≤ ∏ i, ‖u (σ i)‖ * ‖w i‖ := by
+                gcongr with i
+                exact abs_real_inner_le_norm (u (σ i)) (w i)
+            _ = (∏ i, ‖u (σ i)‖) * ∏ i, ‖w i‖ := Finset.prod_mul_distrib
+            _ = (∏ a, ‖u a‖) * ∏ b, ‖w b‖ := by
+                rw [Equiv.prod_comp σ fun a => ‖u a‖]
+      _ = ((n.factorial : ℝ) * ∏ b, ‖w b‖) * ∏ a, ‖u a‖ := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+            nsmul_eq_mul]
+          ring
+  -- Step 4: `β = β⁰.mkContinuous (n! ∏_b ‖w_b‖)` is an `n`-covector with the values of `β⁰`
+  exact ⟨β₀.mkContinuous _ hbound, hβ₀⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
