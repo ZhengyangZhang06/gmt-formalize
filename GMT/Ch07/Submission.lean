@@ -662,6 +662,50 @@ theorem Submission.dtc_massOn_eq_of_agreeOn : ∀ (P n : ℕ) (U V W : Set (Eucl
     refine ⟨testFormOnInclusion hVU n ω', hω', ?_⟩
     dsimp only
     rw [hagree ω' hω'.1]
+/-- **Simon 7.2 (proof), cutoff** (an extension to `ℝᴾ` supported in a compact `K ⊂ U` has no
+more mass or boundary mass than its restriction to `U`).  Let `X ∈ 𝒟ₘ₊₁(U)` and
+`Y ∈ 𝒟ₘ₊₁(ℝᴾ)` with `Y(ιη) = X(η)` for `η ∈ 𝒟ᵐ⁺¹(U)` and `spt Y ⊆ K`.  By Simon 6.2.11, `Y`
+kills every `ω` with `spt ω ∩ K = ∅`, and so does `∂Y`, since `spt dω ⊆ spt ω`.  The cutoff
+`X̂(ω) = X(ζω)`, `ζ = 1` near `K`, `spt ζ ⊆ U`, gives `M(Y) ≤ M_U(Y)` and `M(∂Y) ≤ M_U(∂Y)`.
+Finally `Y`, `X` agree on test forms in `U`, and so do `∂Y`, `∂X`, because `d(ιη) = ι(dη)`;
+hence `M_U(Y) = M_U(X) = M(X)` and `M_U(∂Y) = M_U(∂X) = M(∂X)`. -/
+theorem Submission.cmc_fc_eu_cutoff_mass_le : ∀ (P m : ℕ) (U K : Set (Euclid P)) (X : GeometricCurrentOn U (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsCompact K → K ⊆ U → Y.restrictDomain (subset_univ U) = X → Y.support ⊆ K → Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass := by
+  intro P m U K X Y hU hK hKU hYX hYK
+  -- `Y(ω) = 0` when `spt ω ∩ K = ∅`, as `spt Y ⊆ K` (Simon 6.2.11)
+  have hvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → Y ω = 0 :=
+    fun ω hω => Submission.dtc_vanish_off_support P (m + 1) univ Y ω (hω.mono_right hYK)
+  -- `∂Y(ω) = Y(dω) = 0` when `spt ω ∩ K = ∅`, as `spt dω ⊆ spt ω`
+  have hvan' : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → Y.boundary ω = 0 := by
+    intro ω hω
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hvan _ (hω.mono_left (tsupport_exteriorDerivative_subset _))
+  -- `Y(ιη) = X(η)`, and `∂Y(ιη) = Y(d(ιη)) = Y(ι(dη)) = X(dη) = ∂X(η)`
+  have hagree : ∀ η : TestFormOn U (m + 1),
+      Y (testFormOnInclusion (subset_univ U) (m + 1) η) = X η := by
+    intro η
+    rw [← hYX, GeometricCurrentOn.restrictDomain_apply]
+  have hagree' : ∀ η : TestFormOn U m,
+      Y.boundary (testFormOnInclusion (subset_univ U) m η) = X.boundary η := by
+    intro η
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply,
+      ← hagree (exteriorDerivativeTestOn U m η)]
+    rfl
+  constructor
+  · -- `M(Y) ≤ M_U(Y) = M_U(X) = M(X)`
+    calc Y.mass ≤ Y.massOn U :=
+          Submission.lcmp_massOn_le_of_vanish_off_compact P (m + 1) univ U K Y hK hU hKU hvan univ
+      _ = X.mass :=
+          Submission.dtc_massOn_eq_of_agreeOn P (m + 1) univ U U (subset_univ U) Y X
+            Subset.rfl fun η _ => hagree η
+  · -- `M(∂Y) ≤ M_U(∂Y) = M_U(∂X) = M(∂X)`
+    calc Y.boundary.mass ≤ Y.boundary.massOn U :=
+          Submission.lcmp_massOn_le_of_vanish_off_compact P m univ U K Y.boundary hK hU hKU
+            hvan' univ
+      _ = X.boundary.mass :=
+          Submission.dtc_massOn_eq_of_agreeOn P m univ U U (subset_univ U) Y.boundary X.boundary
+            Subset.rfl fun η _ => hagree' η
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
