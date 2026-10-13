@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.mass_identity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+  "depth": 3,
+  "title": "Local mass of a current that equals m₀[[M]] on an open set W is |m₀|·Hⁿ(M ∩ W)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), M, W ⊆ ℝ^P, m₀ ∈ ℤ and ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n). Assume: W is open and W ⊆ U; M is measurable; ξ is continuous on M; for every x ∈ M there is a linear subspace Q with IsUnitOrientationOf (ξ x) Q (ξ(x) = ±τ₁∧⋯∧τₙ for an orthonormal basis τ of Q); Hⁿ(M ∩ W) < ∞, where Hⁿ = μHE[n]; and T(ω) = m₀ ∫_M ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω ⊆ W. Then the local mass satisfies M_W(T) = T.massOn W = |m₀|·Hⁿ(M ∩ W) in [0, ∞] (with |m₀| = m₀.natAbs).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (M W : Set (Euclid P)) (m₀ : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen W → W ⊆ U → MeasurableSet M → ContinuousOn ξ M → (∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ x) Q) → μHE[n] (M ∩ W) ≠ ∞ → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → T ω = m₀ * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → T.massOn W = (m₀.natAbs : ℝ≥0∞) * μHE[n] (M ∩ W)",
+  "lean_name": "dimred_rpd_massOn_eq_mult_measure",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-49478a38c9-a1",
+      "result_commit": "89e4c45cd3c15de46c24c98367597d7521664cb3",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-mass-identity-a1-a1"
+}
