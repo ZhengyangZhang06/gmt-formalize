@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "adc28a78fcd8dfa75eef67a8f2363c9f6d113a2e02e404c2cf6fe792412a1905",
+  "git_delta": {
+    "base_commit": "e604a10b5f32812b26abccccf1ce7413bc6ca41c",
+    "candidate_commit": "0848d4fe3f26091a1879f5da8e95ad2f84ae26bf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorwbl_test_fn_diff_quotient_integral_tendsto_zero",
+    "diff_sha256": "842580727263657c47e77012d1b203ba906aa0d806bc489fbe0fa3f282e018f4",
+    "source_sha256": "bebc51d57740115cf8f90a9e9a73d0733e19619e44cb60a772e8ccef40ce664e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorwbl_test_fn_diff_quotient_integral_tendsto_zero",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (ψ : Euclid (n + k) → ℝ), Continuous f → DifferentiableAt ℝ f v → Continuous ψ → HasCompactSupport ψ → ∀ R : ℝ, Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
