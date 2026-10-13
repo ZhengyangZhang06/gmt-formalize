@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.chart_nondiff_image_null-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+  "depth": 3,
+  "title": "Chart image of the non-differentiability set of f∘Φ is Hⁿ-null (Rademacher)",
+  "statement": "Let U ⊆ ℝ^P be open, f : ℝ^P → ℝ^Q locally Lipschitz on U, Ω ⊆ ℝⁿ open, and Φ : ℝⁿ → ℝ^P K-Lipschitz on Ω. Then Hⁿ(Φ(Z)) = 0, where Z = {w ∈ Ω : Φ(w) ∈ U and f∘Φ is not Fréchet differentiable at w} and Hⁿ = μHE[n] on ℝ^P.",
+  "lean_statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (K : ℝ≥0), IsOpen U → LocallyLipschitzOn U f → IsOpen Ω → LipschitzOnWith K Φ Ω → (μHE[n] : Measure (Eucl P)) (Φ '' {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w}) = 0",
+  "lean_name": "lpf_tde_chart_nondiff_image_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-ch-34870e43f7-a1"
+}

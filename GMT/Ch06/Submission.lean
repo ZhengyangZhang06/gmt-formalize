@@ -3193,6 +3193,150 @@ theorem Submission.slicing_im_tg_weighted_tangent_chart :
     ⟨ε / 2, half_pos hε, (measure_mono inter_subset_left).trans_lt (hCfin k),
       hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
     ((hθC k).continuousWithinAt hyk) (hy₃ (hMV hyMN.1) fun h => h.2 hyk)
+/-- Rademacher on a Lipschitz chart (Simon Ch. 2, 1.4 and 1.8(i)): for `f` locally Lipschitz on
+an open `U` and `Φ` `K`-Lipschitz on an open `Ω ⊆ ℝⁿ`, the `Φ`-image of the set of `w ∈ Ω` with
+`Φ w ∈ U` at which `f ∘ Φ` is not differentiable is `Hⁿ`-null. -/
+theorem Submission.lpf_tde_chart_nondiff_image_null :
+    ∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P)
+      (Ω : Set (Eucl n)) (K : ℝ≥0), IsOpen U → LocallyLipschitzOn U f → IsOpen Ω →
+      LipschitzOnWith K Φ Ω →
+      (μHE[n] : Measure (Eucl P))
+        (Φ '' {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w}) = 0 := by
+  intro P Q n U f Φ Ω K hU hf hΩ hΦ
+  -- Each `w ∈ Ω ∩ Φ⁻¹(U)` has an open `V ∋ w`, `V ⊆ Ω`, on which `f ∘ Φ` is Lipschitz.
+  have hloc : ∀ w ∈ Ω ∩ Φ ⁻¹' U, ∃ V : Set (Eucl n), IsOpen V ∧ w ∈ V ∧ V ⊆ Ω ∧
+      ∃ C : ℝ≥0, LipschitzOnWith C (f ∘ Φ) V := by
+    rintro w ⟨hwΩ, hwU⟩
+    obtain ⟨C, t, ht, hft⟩ := hf hwU
+    rw [hU.nhdsWithin_eq hwU] at ht
+    have hcont : ContinuousAt Φ w := hΦ.continuousOn.continuousAt (hΩ.mem_nhds hwΩ)
+    have hmem : Ω ∩ Φ ⁻¹' t ∈ 𝓝 w := inter_mem (hΩ.mem_nhds hwΩ) (hcont.preimage_mem_nhds ht)
+    obtain ⟨V, hVsub, hVo, hwV⟩ := _root_.mem_nhds_iff.1 hmem
+    exact ⟨V, hVo, hwV, fun y hy => (hVsub hy).1,
+      C * K, hft.comp (hΦ.mono fun y hy => (hVsub hy).1) fun y hy => (hVsub hy).2⟩
+  choose! V hVo hwV hVΩ C hC using hloc
+  -- Countably many of the `V w` cover `Ω ∩ Φ⁻¹(U)` (Lindelöf).
+  obtain ⟨T, hTsub, hTc, hTU⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable (Ω ∩ Φ ⁻¹' U) V fun w hw => hVo w hw
+  -- Rademacher on each `V w`: the non-differentiability set of `f ∘ Φ` is Lebesgue-null.
+  have hZ : (volume : Measure (Eucl n))
+      {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w} = 0 := by
+    have hcover : {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w} ⊆
+        ⋃ w ∈ T, {y | y ∈ V w ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) y} := by
+      rintro y ⟨hyΩ, hyU, hyd⟩
+      have hy : y ∈ ⋃ w ∈ T, V w := hTU ▸ mem_biUnion ⟨hyΩ, hyU⟩ (hwV y ⟨hyΩ, hyU⟩)
+      obtain ⟨w, hwT, hyV⟩ := mem_iUnion₂.1 hy
+      exact mem_biUnion hwT ⟨hyV, hyd⟩
+    refine measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 fun w hwT => ?_)
+    have hw := hTsub hwT
+    have hR := (hC w hw).ae_differentiableWithinAt_of_mem (μ := (volume : Measure (Eucl n)))
+    rw [ae_iff] at hR
+    refine measure_mono_null (fun y hy => ?_) hR
+    obtain ⟨hyV, hyd⟩ := hy
+    exact fun h => hyd ((h hyV).differentiableAt ((hVo w hw).mem_nhds hyV))
+  -- `μHE[n] = volume` on `ℝⁿ`, and the Lipschitz image bound `Hⁿ(Φ(Z)) ≤ Kⁿ Hⁿ(Z) = 0`.
+  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at hZ
+  have himage := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+    (Y := Eucl P) n (hΦ.mono fun w (hw : w ∈ {w | w ∈ Ω ∧ Φ w ∈ U ∧
+      ¬ DifferentiableAt ℝ (f ∘ Φ) w}) => hw.1)
+  rw [hZ, mul_zero] at himage
+  exact nonpos_iff_eq_zero.1 himage
+/-- Gram representative of a differential along a `C¹` chart (chart gradient for the tangential
+gradient in the slicing of Simon Ch. 6, §4): if `Φ : ℝⁿ → ℝ^P` is `C¹` and `A_w = DΦ(w)` is
+injective on an open `Ω`, then for any `h : ℝⁿ → ℝ` the field `γ(w) = A_w (A_w* A_w)⁻¹ a_w`, with
+`a_w` the Riesz vector of `Dh(w)`, extended by `0` off `Ω`, is Borel, lies in `range A_w` and
+satisfies `⟨γ(w), A_w u⟩ = Dh(w) u` on `Ω`. -/
+theorem Submission.slicing_im_tg_cg_gram_field :
+    ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (h : Eucl n → ℝ), IsOpen Ω → ContDiff ℝ 1 Φ → (∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w)) → ∃ γ : Eucl n → Eucl P, Measurable γ ∧ ∀ w ∈ Ω, γ w ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u : Eucl n, inner ℝ (γ w) (fderiv ℝ Φ w u) = fderiv ℝ h w u := by
+  intro P n Φ Ω h hΩ hΦ hinj
+  classical
+  set A : Eucl n → (Eucl n →L[ℝ] Eucl P) := fderiv ℝ Φ with hA
+  have hAc : Continuous A := hΦ.continuous_fderiv one_ne_zero
+  -- The Gram operator `G w = A_w* A_w` depends continuously on `w`.
+  let G : Eucl n → (Eucl n →L[ℝ] Eucl n) := fun w => (ContinuousLinearMap.adjoint (A w)).comp (A w)
+  have hGc : Continuous G := by
+    have h1 : Continuous fun w => ContinuousLinearMap.adjoint (A w) :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Eucl n) (F := Eucl P)).continuous.comp hAc
+    exact h1.clm_comp hAc
+  -- On `Ω`, `⟨G w u, u⟩ = ‖A_w u‖²` makes `G w` injective, hence (finite dimension) a unit.
+  have hGunit : ∀ w ∈ Ω, IsUnit (G w) := by
+    intro w hw
+    rw [ContinuousLinearMap.isUnit_iff_bijective]
+    have hi : Function.Injective (G w) := by
+      rw [injective_iff_map_eq_zero]
+      intro u hu
+      have h1 : inner ℝ (G w u) u = ‖A w u‖ ^ 2 := by
+        simp only [G, ContinuousLinearMap.coe_comp, Function.comp_apply,
+          ContinuousLinearMap.adjoint_inner_left, real_inner_self_eq_norm_sq]
+      rw [hu, inner_zero_left] at h1
+      have h2 : A w u = 0 := by
+        have h3 : ‖A w u‖ ^ 2 = 0 := h1.symm
+        exact norm_eq_zero.mp (pow_eq_zero_iff two_ne_zero |>.mp h3)
+      exact (injective_iff_map_eq_zero _).mp (hinj w hw) u h2
+    refine ⟨hi, ?_⟩
+    exact (LinearMap.injective_iff_surjective
+      (f := ((G w : Eucl n →L[ℝ] Eucl n) : Eucl n →ₗ[ℝ] Eucl n))).mp hi
+  -- `B w = A_w (G w)⁻¹` is continuous on `Ω`, since `Ring.inverse` is continuous at units.
+  let B : Eucl n → (Eucl n →L[ℝ] Eucl P) := fun w => (A w).comp (Ring.inverse (G w))
+  have hBc : ContinuousOn B Ω := by
+    intro w hw
+    apply ContinuousAt.continuousWithinAt
+    have h1 : ContinuousAt (fun w => Ring.inverse (G w)) w := by
+      obtain ⟨U, hU⟩ := hGunit w hw
+      have h2 := NormedRing.inverse_continuousAt U
+      rw [hU] at h2
+      exact h2.comp hGc.continuousAt
+    exact hAc.continuousAt.clm_comp h1
+  -- The Riesz vector `a w` of `Dh(w)` is Borel in `w` (`measurable_fderiv`).
+  let a : Eucl n → Eucl n := fun w => (InnerProductSpace.toDual ℝ (Eucl n)).symm (fderiv ℝ h w)
+  have ham : Measurable a :=
+    (InnerProductSpace.toDual ℝ (Eucl n)).symm.continuous.measurable.comp (measurable_fderiv ℝ h)
+  -- `B` extended by `0` off the open set `Ω` is Borel, and `γ w = Bt w (a w)`.
+  let Bt : Eucl n → (Eucl n →L[ℝ] Eucl P) := Ω.piecewise B 0
+  have hBtm : Measurable Bt :=
+    ContinuousOn.measurable_piecewise hBc continuousOn_const hΩ.measurableSet
+  refine ⟨fun w => Bt w (a w), ?_, ?_⟩
+  · exact isBoundedBilinearMap_apply.continuous.measurable2 hBtm ham
+  · intro w hw
+    have hBt : Bt w = B w := Set.piecewise_eq_of_mem _ _ _ hw
+    simp only [hBt]
+    refine ⟨LinearMap.mem_range.mpr ⟨Ring.inverse (G w) (a w), rfl⟩, ?_⟩
+    intro u
+    -- `⟨A_w x, A_w u⟩ = ⟨G w x, u⟩` with `G w x = a w` for `x = (G w)⁻¹ a w`.
+    obtain ⟨U, hU⟩ := hGunit w hw
+    have hGR : G w (Ring.inverse (G w) (a w)) = a w := by
+      rw [← hU, Ring.inverse_unit]
+      show ((U : Eucl n →L[ℝ] Eucl n) * ((U⁻¹ : (Eucl n →L[ℝ] Eucl n)ˣ) : Eucl n →L[ℝ] Eucl n)) (a w)
+        = a w
+      rw [Units.mul_inv]
+      rfl
+    calc inner ℝ (B w (a w)) (A w u)
+        = inner ℝ ((ContinuousLinearMap.adjoint (A w)) (A w (Ring.inverse (G w) (a w)))) u := by
+          rw [ContinuousLinearMap.adjoint_inner_left]; rfl
+      _ = inner ℝ (G w (Ring.inverse (G w) (a w))) u := rfl
+      _ = inner ℝ (a w) u := by rw [hGR]
+      _ = fderiv ℝ h w u := InnerProductSpace.toDual_symm_apply
+/-- Borel transfer through a chart (Lusin–Souslin, Kechris, *Classical Descriptive Set Theory*,
+Thm. 15.1): if `D ⊆ ℝⁿ` is Borel and `Φ` is continuous and injective on `D`, then `Φ|_D` is a
+measurable embedding, so a Borel `γ` factors as `γ = g ∘ Φ` on `D` through the Borel map
+`g = extend (Φ|_D) (γ|_D) 0`, which vanishes off `Φ(D)`. -/
+theorem Submission.slicing_im_tg_cg_borel_transfer :
+    ∀ (n P Q : ℕ) (Φ : Eucl n → Eucl P) (D : Set (Eucl n)) (γ : Eucl n → Eucl Q), MeasurableSet D → ContinuousOn Φ D → InjOn Φ D → Measurable γ → ∃ g : Eucl P → Eucl Q, Measurable g ∧ (∀ w ∈ D, g (Φ w) = γ w) ∧ ∀ y, y ∉ Φ '' D → g y = 0 := by
+  intro n P Q Φ D γ hD hc hi hγ
+  -- Lusin–Souslin: `Φ|_D : D → ℝ^P` is a measurable embedding.
+  have hE := hc.measurableEmbedding hD hi
+  -- `g = extend (Φ|_D) (γ|_D) 0` is Borel because `γ|_D` and `0` are.
+  refine ⟨Function.extend (D.domRestrict Φ) (D.domRestrict γ) 0,
+    hE.measurable_extend (hγ.comp measurable_subtype_coe) measurable_const, ?_, ?_⟩
+  -- On `Φ(D)`: `g (Φ w) = γ w` since `Φ|_D` is injective.
+  · intro w hw
+    exact hE.injective.extend_apply (D.domRestrict γ) 0 ⟨w, hw⟩
+  -- Off `Φ(D)`: no `w ∈ D` has `Φ w = y`, so `g y = 0`.
+  · intro y hy
+    rw [Function.extend_apply']
+    · rfl
+    rintro ⟨⟨w, hw⟩, hwy⟩
+    exact hy ⟨w, hw, hwy⟩
 /-- Simon Ch. 2, 4.10 (cf. 4.7): if `f` is `L`-Lipschitz and both `Φ` and `f ∘ Φ` are
 differentiable at `w`, then `s ↦ f(Φ(w) + s DΦ(w)u)` has derivative `D(f∘Φ)(w)u` at `0`.  It
 differs from `s ↦ f(Φ(w + su))` by at most `L ‖Φ(w + su) - Φ(w) - s DΦ(w)u‖ = o(s)`, and the
@@ -3231,6 +3375,85 @@ theorem Submission.slicing_im_tg_line_deriv_of_comp : ∀ (n P : ℕ) (f : Eucl 
   rw [add_zero] at hsum
   refine hsum.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
   simp
+
+/-- Tangential gradient of a Lipschitz function on a C¹ bi-Lipschitz chart (the gradient `∇ᴹf`
+of Simon Ch. 3, 2.1, via Ch. 2, 4.10; used for the slices of Ch. 6, §4): for `f` `L`-Lipschitz and
+`Φ` C¹, Lipschitz and antilipschitz on the open `Ω`, there is a Borel `g` with `‖g‖ ≤ L` such that
+for `Hⁿ`-a.e. `y = Φ(w) ∈ Φ(Ω)`, `g(y) ∈ DΦ(w)(ℝⁿ)` and `s ↦ f(y + s v)` has derivative
+`⟨g(y), v⟩` at `0` for every `v ∈ DΦ(w)(ℝⁿ)`.  Take `g := γ ∘ (Φ|_D)⁻¹` on `Φ(D)` and `0`
+elsewhere, where `D` is the Borel set of `w ∈ Ω` at which `f ∘ Φ` is differentiable and
+`γ(w) ∈ range DΦ(w)` is the Gram representative of `D(f ∘ Φ)(w)`; the failure set lies in the
+`Hⁿ`-null `Φ(Ω ∖ D)`. -/
+theorem Submission.slicing_im_tg_chart_gradient : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (f : Eucl P → ℝ) (L : ℝ≥0), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → LipschitzWith L f → ∃ g : Eucl P → Eucl P, Measurable g ∧ (∀ x, ‖g x‖ ≤ L) ∧ ∀ᵐ y ∂((μHE[n] : Measure (Eucl P)).restrict (Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → g y ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ v ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => f (y + s • v)) (inner ℝ (g y) v) 0 := by
+  rintro P n Φ Ω f L hΩ hΦ ⟨K, hK⟩ ⟨c, hc, hanti⟩ hf
+  have hdiff : Differentiable ℝ Φ := hΦ.differentiable one_ne_zero
+  -- Step 1: `c ‖u‖ ≤ ‖DΦ(w) u‖` makes `DΦ(w)` injective for `w ∈ Ω`; `Φ` is injective on `Ω`.
+  have hinj : ∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w) := by
+    intro w hw
+    rw [injective_iff_map_eq_zero]
+    intro u hu
+    have h1 := Submission.lpf_wtc_cat_fderiv_lower_bound P n Φ Ω c w hΩ hw (hdiff w) hanti u
+    rw [hu, norm_zero] at h1
+    exact norm_le_zero_iff.mp (by nlinarith [norm_nonneg u])
+  have hΦinj : InjOn Φ Ω := by
+    intro w hw w' hw' hww'
+    have h1 := hanti w hw w' hw'
+    rw [hww', sub_self, norm_zero] at h1
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp (by nlinarith [norm_nonneg (w - w')]))
+  -- Steps 4–5: a Borel Gram representative `γ(w) ∈ range DΦ(w)` of `D(f ∘ Φ)(w)` on `Ω`.
+  obtain ⟨γ, hγm, hγ⟩ := Submission.slicing_im_tg_cg_gram_field P n Φ Ω (f ∘ Φ) hΩ hΦ hinj
+  -- Step 2: the Borel set `D ⊆ Ω` of differentiability points of `f ∘ Φ`.
+  set D : Set (Eucl n) := Ω ∩ {w | DifferentiableAt ℝ (f ∘ Φ) w}
+  have hDm : MeasurableSet D :=
+    hΩ.measurableSet.inter (measurableSet_of_differentiableAt ℝ (f ∘ Φ))
+  -- Step 6: transfer `γ` through `Φ|_D` (Lusin–Souslin); `g = 0` off `Φ(D)`.
+  obtain ⟨g, hgm, hgD, hg0⟩ := Submission.slicing_im_tg_cg_borel_transfer n P P Φ D γ hDm
+    hdiff.continuous.continuousOn (hΦinj.mono inter_subset_left) hγm
+  -- Step 7: the conclusion at `y = Φ w` for `w ∈ D` (line_deriv and the Gram identity).
+  have hkey : ∀ w ∈ D, g (Φ w) ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧
+      ∀ v ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap,
+        HasDerivAt (fun s : ℝ => f (Φ w + s • v)) (inner ℝ (g (Φ w)) v) 0 := by
+    intro w hw
+    rw [hgD w hw]
+    refine ⟨(hγ w hw.1).1, fun v hv => ?_⟩
+    obtain ⟨u, rfl⟩ := LinearMap.mem_range.mp hv
+    have h1 := Submission.slicing_im_tg_line_deriv_of_comp n P f L Φ w hf (hdiff w) hw.2 u
+    rw [← (hγ w hw.1).2 u] at h1
+    exact h1
+  -- Step 8: `‖g‖ ≤ L` everywhere (converse mean value inequality in the direction `g(y)`).
+  have hbound : ∀ x, ‖g x‖ ≤ L := by
+    intro x
+    by_cases hx : x ∈ Φ '' D
+    · obtain ⟨w, hw, rfl⟩ := hx
+      obtain ⟨hr, hd⟩ := hkey w hw
+      have h1 : HasLineDerivAt ℝ f (inner ℝ (g (Φ w)) (g (Φ w))) (Φ w) (g (Φ w)) := hd _ hr
+      have h2 := h1.le_of_lipschitz hf
+      rw [real_inner_self_eq_norm_sq, Real.norm_of_nonneg (sq_nonneg _), sq] at h2
+      rcases (norm_nonneg (g (Φ w))).eq_or_lt with h0 | h0
+      · rw [← h0]
+        exact L.coe_nonneg
+      · exact le_of_mul_le_mul_right h2 h0
+    · rw [hg0 x hx, norm_zero]
+      exact L.coe_nonneg
+  refine ⟨g, hgm, hbound, ae_restrict_of_ae ?_⟩
+  -- Steps 2–3 and 9: every failure lies in `Φ(Ω ∖ D)`, which is `Hⁿ`-null (Rademacher in the
+  -- chart for `e ∘ f : ℝ^P → ℝ¹`, `e : ℝ ≃L ℝ¹`).
+  let e : ℝ ≃L[ℝ] Eucl 1 :=
+    (ContinuousLinearEquiv.funUnique (Fin 1) ℝ ℝ).symm.trans (EuclideanSpace.equiv (Fin 1) ℝ).symm
+  have hef : LocallyLipschitzOn univ (e ∘ f) :=
+    locallyLipschitzOn_univ.mpr (e.lipschitzWith.comp hf).locallyLipschitz
+  have hnull := Submission.lpf_tde_chart_nondiff_image_null P 1 n univ (e ∘ f) Φ Ω K isOpen_univ
+    hef hΩ hK
+  rw [ae_iff]
+  refine measure_mono_null (fun y hy => ?_) hnull
+  rw [mem_ofPred_eq] at hy
+  by_contra hy'
+  refine hy fun w hw hwy => ?_
+  subst hwy
+  refine hkey w ⟨hw, ?_⟩
+  by_contra hnd
+  exact hy' ⟨w, ⟨hw, mem_univ _, fun hd =>
+    hnd ((e.comp_differentiableAt_iff (f := f ∘ Φ) (x := w)).mp hd)⟩, rfl⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
