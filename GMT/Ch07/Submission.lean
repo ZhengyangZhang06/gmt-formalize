@@ -451,6 +451,77 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Comparison of measures from open subsets, by outer regularity (Simon 1.15(1)): if
+`μ(ℝᴾ \ U) = 0`, `ν` is finite on compact subsets of the open set `U`, and `μ(V) ≤ ν(V)` for every
+open `V ⊆ U`, then `μ ≤ ν`.  `U` is exhausted by the open sets
+`V_k = {‖x‖ < k, 1/k < d(x, ℝᴾ \ U)}`, each inside the compact `K_k ⊆ U`; `ν⌞V_k` is finite,
+hence outer regular, which gives `μ(E ∩ V_k) ≤ ν(E ∩ V_k)`; continuity from below finishes. -/
+theorem Submission.dtc_bc_lc_measure_le_of_le_on_open : ∀ (P : ℕ) (U : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ V : Set (Euclid P), IsOpen V → V ⊆ U → μ V ≤ ν V) → μ ≤ ν := by
+  intro P U μ ν hU hμU hν hle
+  -- Steps 1–3: the exhaustion `V k ⊆ K k ⊆ U`, `V` increasing with union `U`
+  set V : ℕ → Set (Euclid P) :=
+    fun k => {x | ‖x‖ < k ∧ (k : ℝ≥0∞)⁻¹ < infEDist x Uᶜ}
+  set K : ℕ → Set (Euclid P) :=
+    fun k => {x | ‖x‖ ≤ k ∧ (k : ℝ≥0∞)⁻¹ ≤ infEDist x Uᶜ}
+  have hVopen : ∀ k, IsOpen (V k) := fun k =>
+    (isOpen_lt continuous_norm continuous_const).inter
+      (isOpen_lt continuous_const continuous_infEDist)
+  have hKcpt : ∀ k, IsCompact (K k) := fun k => by
+    refine isCompact_of_isClosed_isBounded ?_ ?_
+    · exact (isClosed_le continuous_norm continuous_const).inter
+        (isClosed_le continuous_const continuous_infEDist)
+    · refine (isBounded_closedBall (x := (0 : Euclid P)) (r := (k : ℝ))).subset ?_
+      intro x hx
+      simpa [mem_closedBall, dist_zero_right] using hx.1
+  have hKU : ∀ k, K k ⊆ U := fun k x hx => by
+    by_contra hxU
+    have h0 : infEDist x Uᶜ = 0 := infEDist_zero_of_mem hxU
+    have h1 : (k : ℝ≥0∞)⁻¹ ≤ 0 := h0 ▸ hx.2
+    exact (ENNReal.inv_ne_zero.mpr (ENNReal.natCast_ne_top k)) (nonpos_iff_eq_zero.mp h1)
+  have hVK : ∀ k, V k ⊆ K k := fun k x hx => ⟨hx.1.le, hx.2.le⟩
+  have hVmono : Monotone V := fun k m hkm x hx =>
+    ⟨lt_of_lt_of_le hx.1 (by exact_mod_cast hkm),
+      lt_of_le_of_lt (ENNReal.inv_le_inv.mpr (by exact_mod_cast hkm)) hx.2⟩
+  have hVU : ⋃ k, V k = U := by
+    apply subset_antisymm
+    · exact iUnion_subset fun k => (hVK k).trans (hKU k)
+    · intro x hx
+      have hpos : 0 < infEDist x Uᶜ := by
+        rw [infEDist_pos_iff_notMem_closure, hU.isClosed_compl.closure_eq]
+        exact fun h => h hx
+      obtain ⟨a, ha⟩ := ENNReal.exists_inv_nat_lt hpos.ne'
+      obtain ⟨b, hb⟩ := exists_nat_gt ‖x‖
+      refine mem_iUnion.mpr ⟨max a b, ?_, ?_⟩
+      · exact lt_of_lt_of_le hb (by exact_mod_cast le_max_right a b)
+      · exact lt_of_le_of_lt (ENNReal.inv_le_inv.mpr (by exact_mod_cast le_max_left a b)) ha
+  -- Step 4: `ν (V k) < ∞`
+  have hνV : ∀ k, ν (V k) ≠ ∞ := fun k =>
+    ne_of_lt (lt_of_le_of_lt (measure_mono (hVK k)) (hν _ (hKcpt k) (hKU k)))
+  -- Step 5: comparison inside `V k`, by outer regularity of the finite measure `ν⌞V k`
+  have hcomp : ∀ k (E : Set (Euclid P)), μ (E ∩ V k) ≤ ν (E ∩ V k) := by
+    intro k E
+    have : IsFiniteMeasure (ν.restrict (V k)) := isFiniteMeasure_restrict.mpr (hνV k)
+    refine le_of_forall_gt fun r hr => ?_
+    rw [← Measure.restrict_apply' (hVopen k).measurableSet] at hr
+    obtain ⟨O, hEO, hO, hOr⟩ := Set.exists_isOpen_lt_of_lt E r hr
+    rw [Measure.restrict_apply' (hVopen k).measurableSet] at hOr
+    calc μ (E ∩ V k) ≤ μ (O ∩ V k) := measure_mono (inter_subset_inter_left _ hEO)
+      _ ≤ ν (O ∩ V k) := hle _ (hO.inter (hVopen k))
+          (inter_subset_right.trans ((hVK k).trans (hKU k)))
+      _ < r := hOr
+  -- Steps 6–8: concentration on `U`, continuity from below, `Measure.le_iff`
+  rw [Measure.le_iff]
+  intro E hE
+  calc μ E = μ (E ∩ U) := by
+        have h := measure_inter_add_sdiff E hU.measurableSet (μ := μ)
+        have h2 : μ (E \ U) = 0 := measure_mono_null (fun x hx => hx.2) hμU
+        rw [h2, add_zero] at h
+        exact h.symm
+    _ = ⨆ k, μ (E ∩ V k) := by
+        rw [← hVU, inter_iUnion]
+        exact Monotone.measure_iUnion fun k m hkm => inter_subset_inter_right E (hVmono hkm)
+    _ ≤ ν E := iSup_le fun k => (hcomp k E).trans (measure_mono inter_subset_left)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
