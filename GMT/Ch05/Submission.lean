@@ -842,6 +842,49 @@ theorem gwe_gta_graph_row_orthogonal : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
   have h0 := (Submodule.starProjection_apply_eq_zero_iff _).mpr hmem
   rw [map_sub, sub_eq_zero] at h0
   exact h0
+/-- Rows of a linear map `D : ℝⁿ → ℝ^ℓ` (in the proof of Simon Ch. 5, Theorem 4.5, `D = Df(x)`,
+whose rows are the gradients `∇f^j`): (i) every row `r` of `D`, i.e. `⟪r, v⟫ = (D v)_j` for all `v`,
+has `|r| ≤ ‖D‖`; (ii) the rows `R_j` (Riesz representatives of `v ↦ (D v)_j`) satisfy
+`Σ_j |R_j|² = |D|²`. -/
+theorem gwe_gta_row_bounds : ∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ), (∀ (j : Fin ℓ) (r : Rn n), (∀ v : Rn n, inner ℝ r v = D v j) → ‖r‖ ≤ ‖D‖) ∧ ∃ R : Fin ℓ → Rn n, (∀ (j : Fin ℓ) (v : Rn n), inner ℝ (R j) v = D v j) ∧ ∑ j : Fin ℓ, ‖R j‖ ^ 2 = hsNormSq D := by
+  intro n ℓ D
+  refine ⟨?_, ?_⟩
+  · -- (i) `|r|² = ⟪r, r⟫ = (D r)_j ≤ |D r| ≤ ‖D‖ |r|`; divide by `|r|` unless `r = 0`.
+    intro j r hr
+    have h1 : ‖r‖ ^ 2 ≤ ‖D‖ * ‖r‖ :=
+      calc ‖r‖ ^ 2 = inner ℝ r r := (real_inner_self_eq_norm_sq r).symm
+        _ = D r j := hr r
+        _ ≤ |D r j| := le_abs_self _
+        _ = ‖D r j‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ‖D r‖ := PiLp.norm_apply_le (D r) j
+        _ ≤ ‖D‖ * ‖r‖ := D.le_opNorm r
+    rcases (norm_nonneg r).eq_or_lt with h | h
+    · rw [← h]
+      exact norm_nonneg D
+    · nlinarith
+  · -- (ii) `R_j` is the Riesz representative of `v ↦ (D v)_j`; its coordinates are `(D eᵢ)_j`.
+    let R : Fin ℓ → Rn n := fun j =>
+      (InnerProductSpace.toDual ℝ (Rn n)).symm ((EuclideanSpace.proj j).comp D)
+    have hR : ∀ (j : Fin ℓ) (v : Rn n), inner ℝ (R j) v = D v j := by
+      intro j v
+      simp only [R, InnerProductSpace.toDual_symm_apply]
+      rfl
+    refine ⟨R, hR, ?_⟩
+    have hcoord : ∀ (j : Fin ℓ) (i : Fin n), R j i = D (EuclideanSpace.single i 1) j := by
+      intro j i
+      rw [← hR j (EuclideanSpace.single i 1), EuclideanSpace.inner_single_right]
+      simp
+    -- Parseval in `ℝⁿ` and in `ℝ^ℓ`, after exchanging the two finite sums.
+    unfold hsNormSq
+    calc ∑ j : Fin ℓ, ‖R j‖ ^ 2
+        = ∑ j : Fin ℓ, ∑ i : Fin n, (D (EuclideanSpace.single i 1) j) ^ 2 := by
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [EuclideanSpace.real_norm_sq_eq]
+          exact Finset.sum_congr rfl fun i _ => by rw [hcoord]
+      _ = ∑ i : Fin n, ∑ j : Fin ℓ, (D (EuclideanSpace.single i 1) j) ^ 2 := Finset.sum_comm
+      _ = ∑ i : Fin n, ‖D (EuclideanSpace.single i 1)‖ ^ 2 := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [EuclideanSpace.real_norm_sq_eq]
 
 end Submission
 
