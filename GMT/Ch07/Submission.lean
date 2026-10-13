@@ -867,6 +867,65 @@ theorem Submission.codim1_hcp_sc_graph_reparam : ∀ (P d r : ℕ) (N W : Set (E
   rw [hDK]
   exact hNKc.image (π.continuous.comp (continuous_sub_right c))
 
+/-- **Simon Ch. 2, §4, (4.1)–(4.4)**: a `C¹` local representation `G : D → W₀` of an embedded
+`Cʳ` submanifold `M` (`r ≥ 1`; 1:1, proper, `G(D) = W₀ ∩ M`, `DG` injective) which is a graph
+over the projection `π`, `π(G(a) − c) = a`, is `Cʳ` on `D`.  At `a₀ ∈ D`, `x₀ = G(a₀)`, take a
+`Cʳ` chart `ψ'` of `M` with `ψ'(v₀) = x₀`.  By (4.3), `Dψ'(v₀)(ℝᵈ) = T_{x₀}M = DG(a₀)(ℝᵈ)`, and
+`π ∘ DG(a₀) = id`, so `π ∘ Dψ'(v₀)` is injective.  Re-parametrizing `ψ'` over `π` gives a `Cʳ`
+graph `g` on an open `U` with `g(U) = O ∩ M`, `x₀ ∈ O` and `π(g(a) − c) = a`; then `a₀ ∈ U`,
+`g(a₀) = x₀`.  For `a` in the open set `U ∩ g⁻¹(W₀) ∋ a₀`, `g(a) ∈ W₀ ∩ M = G(D)`, and the
+projection identity forces `G(a) = g(a)`, so `G` is `Cʳ` at `a₀`. -/
+theorem Submission.codim1_hcp_sc_graph_contDiffOn : ∀ (P d r : ℕ) (M W₀ : Set (Euclid P)) (D : Set (Euclid d)) (G : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P), 1 ≤ r → IsEmbeddedSubmanifold r d M → IsOpen D → IsOpen W₀ → ContDiffOn ℝ 1 G D → InjOn G D → G '' D = W₀ ∩ M → (∀ K ⊆ W₀, IsCompact K → IsCompact (D ∩ G ⁻¹' K)) → (∀ a ∈ D, Injective (fderiv ℝ G a)) → (∀ a ∈ D, π (G a - c) = a) → ContDiffOn ℝ r G D := by
+  intro P d r M W₀ D G π c hr hM hD hW₀ hG hGinj hGD hGproper hDG hπG a₀ ha₀
+  -- it suffices that `G` is `Cʳ` at `a₀ ∈ D`; `x₀ = G(a₀) ∈ W₀ ∩ M`
+  refine ContDiffAt.contDiffWithinAt ?_
+  have hx₀ : G a₀ ∈ W₀ ∩ M := hGD ▸ mem_image_of_mem G ha₀
+  -- a `Cʳ` chart `ψ'` of `M` at `x₀`, with `ψ'(v₀) = x₀`
+  obtain ⟨V', W', ψ', hV', hW', hx₀W', hψ', hψ'inj, hψ'V', hψ'proper, hDψ'⟩ := hM (G a₀) hx₀.2
+  obtain ⟨v₀, hv₀, hψv₀⟩ : G a₀ ∈ ψ' '' V' := hψ'V' ▸ ⟨hx₀W', hx₀.2⟩
+  -- `Dψ'(v₀)(ℝᵈ) = T_{x₀}M = DG(a₀)(ℝᵈ)`, applying (4.3) to `ψ'` (`Cʳ`) and to `G` (`C¹`)
+  have hrange : Set.range (fderiv ℝ ψ' v₀) = Set.range (fderiv ℝ G a₀) := by
+    rw [← Submission.chart_tangentSpace_eq_range_fderiv P d r M W' V' ψ' v₀ hr hV' hW' hψ'
+        hψ'inj hψ'V' hψ'proper hDψ' hv₀, hψv₀,
+      Submission.chart_tangentSpace_eq_range_fderiv P d 1 M W₀ D G a₀ le_rfl hD hW₀
+        (by exact_mod_cast hG) hGinj hGD hGproper hDG ha₀]
+  -- `π ∘ DG(a₀) = id`
+  have hπDG : ∀ w, π (fderiv ℝ G a₀ w) = w := fun w => by
+    simpa using DFunLike.congr_fun ((Submission.codim1_hcp_sc_left_inverse_immersion P d D G π c
+      hD hG.differentiableOn_one hπG).2 a₀ ha₀).1 w
+  -- `π ∘ Dψ'(v₀)` is injective: if `π(Dψ'(v₀)u) = 0`, write `Dψ'(v₀)u = DG(a₀)w`; then
+  -- `w = π(DG(a₀)w) = 0`, so `Dψ'(v₀)u = 0` and `u = 0`
+  have hπDψ' : Injective (π ∘L fderiv ℝ ψ' v₀) := by
+    refine (injective_iff_map_eq_zero _).2 fun u hu => hDψ' v₀ hv₀ ?_
+    obtain ⟨w, hw⟩ : fderiv ℝ ψ' v₀ u ∈ Set.range (fderiv ℝ G a₀) :=
+      hrange ▸ Set.mem_range_self u
+    have hw0 : w = 0 := by
+      rw [← hπDG w, hw]
+      simpa using hu
+    rw [map_zero, ← hw, hw0, map_zero]
+  -- re-parametrize `ψ'` as a `Cʳ` graph `g` over `π` on `U`, with `g(U) = O ∩ M` and `x₀ ∈ O`
+  obtain ⟨U, O, g, hU, -, hx₀O, -, hg, -, hgU, -, -, hπg⟩ :=
+    Submission.codim1_hcp_sc_graph_reparam P d r M W' V' ψ' π c v₀ hr hV' hW' hψ' hψ'inj hψ'V'
+      hψ'proper hv₀ hπDψ'
+  -- `x₀ = g(a₁)` with `a₁ ∈ U`, and `a₁ = π(g(a₁) − c) = π(G(a₀) − c) = a₀`
+  rw [hψv₀] at hx₀O
+  obtain ⟨a₁, ha₁, hga₁⟩ : G a₀ ∈ g '' U := hgU ▸ ⟨hx₀O, hx₀.2⟩
+  have ha₁₀ : a₁ = a₀ := by rw [← hπg a₁ ha₁, hga₁, hπG a₀ ha₀]
+  rw [ha₁₀] at ha₁ hga₁
+  -- `G = g` on the open set `U ∩ g⁻¹(W₀) ∋ a₀`: there `g(a) ∈ W₀ ∩ M = G(D)`, say `g(a) = G(a')`,
+  -- and `a' = π(G(a') − c) = π(g(a) − c) = a`
+  have hGg : G =ᶠ[𝓝 a₀] g := by
+    have hUg : IsOpen (U ∩ g ⁻¹' W₀) := hg.continuousOn.isOpen_inter_preimage hU hW₀
+    have ha₀Ug : a₀ ∈ U ∩ g ⁻¹' W₀ := ⟨ha₁, show g a₀ ∈ W₀ from hga₁ ▸ hx₀.1⟩
+    filter_upwards [hUg.mem_nhds ha₀Ug] with a ha
+    obtain ⟨haU, haW₀⟩ := ha
+    have hgaM : g a ∈ O ∩ M := hgU ▸ mem_image_of_mem g haU
+    obtain ⟨a', ha', hGa'⟩ : g a ∈ G '' D := hGD ▸ ⟨haW₀, hgaM.2⟩
+    have ha'a : a' = a := by rw [← hπG a' ha', hGa', hπg a haU]
+    rw [← hGa', ha'a]
+  -- `g` is `Cʳ` at `a₀` (`U` is open), and `G = g` near `a₀`
+  exact (hg.contDiffAt (hU.mem_nhds ha₁)).congr_of_eventuallyEq hGg
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
