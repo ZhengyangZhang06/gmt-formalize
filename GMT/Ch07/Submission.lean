@@ -2077,6 +2077,58 @@ theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euc
   push_cast
   ring
 
+/-- **Simon 6.2.13, 6.2.16, 7.2.4 and Remark 7.2.5(1)** (eventual local agreement with a limit
+current).  Assume measure locality (the type of `dtc_bc_measure_restrict_eq_of_eqOn`).  Let
+`Sⱼ ∈ 𝒟ₙ(Uⱼ)`, `n = m + 1`, `Uⱼ` open, and `C ∈ 𝒟ₙ(ℝᴾ)`, and suppose that for every `R`, for all
+large `j`: `B_R(0) ⊆ Uⱼ`, `Sⱼ(ω) = C(ω)` if `spt ω ⊆ B_R(0)`, and `∂Sⱼ(β) = 0` if
+`spt β ⊆ B_R(0)`.  Then `Sⱼ ⇀ C`, `μ_{Sⱼ} → μ_C` and `∂C = 0`.  Every compact set lies in some
+ball `B_R(0)`: so `Sⱼ(ω) = C(ω)` for large `j`; for `spt f ⊆ B_R(0)` measure locality gives
+`μ_{Sⱼ}⌞B_R(0) = μ_C⌞B_R(0)`, hence `∫ f dμ_{Sⱼ} = ∫ f dμ_C`, for large `j`; and
+`∂C(β) = C(dβ) = Sⱼ(dβ) = ∂Sⱼ(β) = 0`. -/
+theorem Submission.dtc_bc_cz_local_agreement : (∀ (P n : ℕ) (U₁ U₂ W : Set (Euclid P)) (T₁ : GeometricCurrentOn U₁ n) (T₂ : GeometricCurrentOn U₂ n) (R₁ : IMRep U₁ n) (R₂ : IMRep U₂ n), IsOpen U₁ → IsOpen U₂ → IsOpen W → W ⊆ U₁ → W ⊆ U₂ → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn W n, currentEval T₁ (ω : DifferentialForm (Euclid P) n) = currentEval T₂ (ω : DifferentialForm (Euclid P) n)) → R₁.measure.restrict W = R₂.measure.restrict W) → ∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, ball (0 : Euclid P) R ⊆ Us j ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 R → currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1)) = C ω) ∧ ∀ β : TestFormOn (Us j) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (Ss j).boundary β = 0) → ConvergesWeakly Ss C ∧ MassMeasuresConverge Ss C ∧ C.boundary = 0 := by
+  intro hmeas P m Us Ss C hUs hagree
+  refine ⟨?_, ?_, ?_⟩
+  · -- 1. `spt ω ⊆ B_r(0)` for some `r`, so `Sⱼ(ω) = C(ω)` for all large `j`
+    intro ω
+    obtain ⟨r, hr⟩ := ω.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hagree r] with j hj
+    exact (hj.2.1 ω hr).symm
+  · -- 2. `spt f ⊆ B_r(0)` for some `r`, so `f = 0` off `B_r(0)`
+    intro Rs hRs R hR f _ hfc _
+    obtain ⟨r, hr⟩ := hfc.isCompact.isBounded.subset_ball (0 : Euclid P)
+    have hf0 : ∀ x, x ∉ ball (0 : Euclid P) r → f x = 0 := fun x hx =>
+      image_eq_zero_of_notMem_tsupport fun h => hx (hr h)
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hagree r] with j hj
+    -- `Sⱼ = C` on `𝒟ⁿ(B_r(0))`, read through `currentEval`
+    have hloc : ∀ ω : TestFormOn (ball (0 : Euclid P) r) (m + 1),
+        currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1)) =
+          currentEval C (ω : DifferentialForm (Euclid P) (m + 1)) := by
+      intro ω
+      have h := hj.2.1 (testFormOnInclusion (subset_univ _) (m + 1) ω) ω.property.2
+      rw [testFormOnInclusion_coe] at h
+      rw [h, currentEval, dite_eq_left ⟨ω.property.1, subset_univ _⟩]
+      rfl
+    -- measure locality on `B_r(0) ⊆ Uⱼ`: `μ_{Sⱼ}⌞B_r(0) = μ_C⌞B_r(0)`
+    have hrestr := hmeas P (m + 1) (Us j) univ (ball 0 r) (Ss j) C (Rs j) R (hUs j) isOpen_univ
+      isOpen_ball hj.1 (subset_univ _) (hRs j) hR hloc
+    calc ∫ x, f x ∂R.measure = ∫ x in ball (0 : Euclid P) r, f x ∂R.measure :=
+          (setIntegral_eq_integral_of_forall_compl_eq_zero hf0).symm
+      _ = ∫ x in ball (0 : Euclid P) r, f x ∂(Rs j).measure := by rw [hrestr]
+      _ = ∫ x, f x ∂(Rs j).measure := setIntegral_eq_integral_of_forall_compl_eq_zero hf0
+  · -- 3. `spt β ⊆ B_r(0) ⊆ Uⱼ` for some `r`, `j`, and `C(dβ) = Sⱼ(dβ) = ∂Sⱼ(β) = 0`
+    ext β
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+    obtain ⟨r, hr⟩ := β.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)
+    obtain ⟨j, hj⟩ := (hagree r).exists
+    have hdβ : tsupport ((exteriorDerivativeTestOn univ m β : TestFormOn (univ : Set (Euclid P))
+        (m + 1)) : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 r :=
+      (tsupport_exteriorDerivative_subset (β : DifferentialForm (Euclid P) m)).trans hr
+    rw [← hj.2.1 _ hdβ, currentEval,
+      dite_eq_left ⟨(exteriorDerivativeTestOn univ m β).property.1, hdβ.trans hj.1⟩]
+    exact hj.2.2 ⟨β, β.property.1, hr.trans hj.1⟩ hr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
