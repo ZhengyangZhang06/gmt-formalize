@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Kronecker property of the determinant covectors** (Simon 6.1, chapter-06.txt lines 22–47:
+`dxʲ(v) = vⱼ`, `dx^{i₁} ∧ ⋯ ∧ dx^{iₙ}(v₁, …, vₙ) = det(dx^{iₖ}(vⱼ))` (1.1), and
+`ω_α = ω(e_{i₁}, …, e_{iₙ})` for the basis `{dx^α : α ∈ I_{n,P}}` (1.2)): if `I`, `J` are strictly
+increasing and `θ(v) = det (v_j(I k))_{k,j}`, then `θ(e_{J 1}, …, e_{J n}) = δ_{IJ}`.  The matrix
+of `θ(e_J)` has entries `[I k = J j]`.  It is the identity if `I = J`.  Otherwise some `I k₀` is
+not a value of `J` (else `range I ⊆ range J`, both have `n` elements, so the ranges agree and the
+strictly increasing maps agree), and row `k₀` vanishes. -/
+theorem Submission.cmr_cc_det_covector_basis_kronecker : ∀ (P n : ℕ) (I J : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → StrictMono J → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → θ (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = if I = J then 1 else 0 := by
+  intro P n I J θ hI hJ hθ
+  -- Step 1: `θ(e_J) = det M` with `M k j = e_{J j}(I k)`
+  rw [hθ]
+  -- Step 2: `M k j = e_{J j}(I k) = if I k = J j then 1 else 0`
+  simp only [EuclideanSpace.basisFun_apply, PiLp.single_apply]
+  by_cases hIJ : I = J
+  · -- Step 3: if `I = J`, injectivity of `J` gives `M = 1`, so `det M = 1`
+    rw [ite_eq_left hIJ]
+    subst hIJ
+    refine (congrArg Matrix.det ?_).trans Matrix.det_one
+    ext k j
+    simp only [Matrix.of_apply, Matrix.one_apply, hI.injective.eq_iff]
+  · -- Step 4: if `I ≠ J`, some `I k₀` is not a value of `J`: otherwise `range I ⊆ range J`,
+    -- both ranges have `n` elements, so they are equal and `I = J`
+    rw [ite_eq_right hIJ]
+    obtain ⟨k₀, hk₀⟩ : ∃ k₀, I k₀ ∉ Set.range J := by
+      by_contra hcon
+      have hsub : Set.range I ⊆ Set.range J := by
+        rintro _ ⟨k, rfl⟩
+        by_contra hk
+        exact hcon ⟨k, hk⟩
+      have hcard : (Set.range J).ncard ≤ (Set.range I).ncard :=
+        ((Set.ncard_range_of_injective hJ.injective).trans
+          (Set.ncard_range_of_injective hI.injective).symm).le
+      exact hIJ ((hI.range_inj_of_wellFoundedLT hJ).1 (Set.eq_of_subset_of_ncard_le hsub hcard))
+    -- Step 5: row `k₀` of `M` vanishes, so `det M = 0`
+    refine Matrix.det_eq_zero_of_row_eq_zero k₀ fun j => ?_
+    simp only [Matrix.of_apply]
+    exact ite_eq_right fun hEq => hk₀ ⟨j, hEq.symm⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
