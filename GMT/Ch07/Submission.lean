@@ -1774,53 +1774,6 @@ theorem Submission.codim1_rdo_dg_sp_gauss_green_variation : ∀ (P : ℕ) (D F :
   rw [hkey, show ∀ a b : ℝ, -a - b = -(a + b) from fun a b => by ring, abs_neg]
   exact (abs_add_le _ _).trans (add_le_add hA hB)
 
-/-- **Lower volume density** of `F` and of its complement (Simon Ch. 3, proof of Theorem 4.3,
-(10)–(11)) at a point `y` where the normal averages of the Gauss–Green measure `μ` tend to a unit
-vector `v`.  `codim1_rdo_dg_cutoff_estimates` gives `ρ₁ > 0` and `C₁ ≥ 0` with `B̄_{ρ₁}(y) ⊆ D` and
-the annular bounds `δ μ(B̄_ρ(y)) ≤ C₁ L(F ∩ (B_{ρ+δ}(y) \ B̄_ρ(y)))` and
-`δ μ(B̄_ρ(y)) ≤ C₁ L((B_{ρ+δ}(y) \ B̄_ρ(y)) \ F)` for `ρ + δ < ρ₁`, and
-`codim1_rdo_dg_sobolev_perimeter` gives `c_S > 0` with
-`(∫_F ζ^{(m+1)/m})^{m/(m+1)} ≤ c_S (∫ ζ dμ + ∫_F |Dζ|)`.  Since `v ≠ 0`, every closed ball about
-`y` has positive `μ`-measure, and `μ(B̄_{ρ₁}(y)) < ∞` by local finiteness.  The finite-difference
-isoperimetric inequality and its discrete integration (`codim1_rdo_dg_vdl_one_sided_density`)
-give `L(F ∩ B_ρ(y)) ≥ c₁ ρ^{m+1}` for `ρ < ρ₁` (printed (10)).  Since `∫ div φ = 0`, `Fᶜ`
-satisfies the Gauss–Green identity with normal `−ν`, so the Sobolev inequality and the annular
-bound hold for `Fᶜ` as well, and the same argument gives `L(B_ρ(y) \ F) ≥ c₂ ρ^{m+1}`
-(printed (11)).  Take `c = min c₁ c₂` and `ρ₂ = ρ₁`. -/
-theorem Submission.codim1_rdo_dg_volume_density_lower : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), 1 ≤ m → IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → y ∈ D → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∃ c ρ₂ : ℝ, 0 < c ∧ 0 < ρ₂ ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₂ → ENNReal.ofReal (c * ρ ^ (m + 1)) ≤ volume (F ∩ ball y ρ) ∧ ENNReal.ofReal (c * ρ ^ (m + 1)) ≤ volume (ball y ρ \ F) := by
-  intro m D F μ ν y v hm hD hF hμD hμK hν hν1 hGG hy hv hT
-  -- step 1: `ρ₁`, `C₁` and the annular bounds (a) for `F` and (b) for its complement
-  obtain ⟨ρ₁, C₁, hρ₁, hC₁, hρ₁D, hann, -⟩ :=
-    Submission.codim1_rdo_dg_cutoff_estimates m D F μ ν y v hD hF hμD hμK hν hν1 hGG hy hv hT
-  -- step 2: the Sobolev inequality, with a constant `c_S` independent of `(D, F, μ, ν)`
-  obtain ⟨cS, hcS, hS⟩ := Submission.codim1_rdo_dg_sobolev_perimeter m hm
-  -- step 3: every closed ball about `y` has positive mass, and `μ(B̄_{ρ₁}(y)) < ∞`
-  have hv0 : v ≠ 0 := norm_ne_zero_iff.mp (by rw [hv]; exact one_ne_zero)
-  have hpos : ∀ r : ℝ, 0 < r → μ (closedBall y r) ≠ 0 :=
-    Submission.codim1_rdo_dg_vdl_measure_closedBall_ne_zero (m + 1) μ ν y v hv0 hT
-  have hfin : μ (closedBall y ρ₁) ≠ ∞ := hμK _ (isCompact_closedBall y ρ₁) hρ₁D
-  -- step 4: the lower bound for `F` (printed (10))
-  obtain ⟨c₁, hc₁, h₁⟩ := Submission.codim1_rdo_dg_vdl_one_sided_density m D F μ y ρ₁ C₁ cS hm
-    hF hcS hC₁ hρ₁D hfin hpos (hS D F μ ν hD hF hμD hμK hν hν1 hGG)
-    fun ρ δ hρ hδ hρδ => (hann ρ δ hρ hδ hρδ).1
-  -- step 5: `Fᶜ` satisfies the Gauss–Green identity with normal `−ν`, so the Sobolev inequality
-  -- holds for `Fᶜ`; with (b) this gives the lower bound for `Fᶜ` (printed (11))
-  have hGGc := Submission.codim1_rdo_dg_vdl_gauss_green_compl (m + 1) D F μ ν hF hGG
-  obtain ⟨c₂, hc₂, h₂⟩ := Submission.codim1_rdo_dg_vdl_one_sided_density m D Fᶜ μ y ρ₁ C₁ cS hm
-    hF.compl hcS hC₁ hρ₁D hfin hpos
-    (hS D Fᶜ μ (fun z => -ν z) hD hF.compl hμD hμK hν.neg
-      (fun z => (norm_neg (ν z)).trans (hν1 z)) hGGc)
-    fun ρ δ hρ hδ hρδ => by
-      rw [← Set.sdiff_eq_compl_inter]
-      exact (hann ρ δ hρ hδ hρδ).2
-  -- step 6: `c = min c₁ c₂` and `ρ₂ = ρ₁`, using `B_ρ(y) \ F = Fᶜ ∩ B_ρ(y)`
-  refine ⟨min c₁ c₂, ρ₁, lt_min hc₁ hc₂, hρ₁, fun ρ hρ hρρ₁ => ⟨?_, ?_⟩⟩
-  · exact (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (min_le_left c₁ c₂)
-      (pow_nonneg hρ.le _))).trans (h₁ ρ hρ hρρ₁)
-  · rw [Set.sdiff_eq_compl_inter]
-    exact (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (min_le_right c₁ c₂)
-      (pow_nonneg hρ.le _))).trans (h₂ ρ hρ hρρ₁)
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -2120,6 +2073,53 @@ theorem codim1_rdo_dg_sobolev_perimeter : ∀ (m : ℕ), 1 ≤ m → ∃ c : ℝ
     · simp [hz, abs_of_nonneg (hζ0 z)]
     · simp [hz, Real.zero_rpow hp.ne']
   rwa [hint, inv_div] at key
+
+/-- **Lower volume density** of `F` and of its complement (Simon Ch. 3, proof of Theorem 4.3,
+(10)–(11)) at a point `y` where the normal averages of the Gauss–Green measure `μ` tend to a unit
+vector `v`.  `codim1_rdo_dg_cutoff_estimates` gives `ρ₁ > 0` and `C₁ ≥ 0` with `B̄_{ρ₁}(y) ⊆ D` and
+the annular bounds `δ μ(B̄_ρ(y)) ≤ C₁ L(F ∩ (B_{ρ+δ}(y) \ B̄_ρ(y)))` and
+`δ μ(B̄_ρ(y)) ≤ C₁ L((B_{ρ+δ}(y) \ B̄_ρ(y)) \ F)` for `ρ + δ < ρ₁`, and
+`codim1_rdo_dg_sobolev_perimeter` gives `c_S > 0` with
+`(∫_F ζ^{(m+1)/m})^{m/(m+1)} ≤ c_S (∫ ζ dμ + ∫_F |Dζ|)`.  Since `v ≠ 0`, every closed ball about
+`y` has positive `μ`-measure, and `μ(B̄_{ρ₁}(y)) < ∞` by local finiteness.  The finite-difference
+isoperimetric inequality and its discrete integration (`codim1_rdo_dg_vdl_one_sided_density`)
+give `L(F ∩ B_ρ(y)) ≥ c₁ ρ^{m+1}` for `ρ < ρ₁` (printed (10)).  Since `∫ div φ = 0`, `Fᶜ`
+satisfies the Gauss–Green identity with normal `−ν`, so the Sobolev inequality and the annular
+bound hold for `Fᶜ` as well, and the same argument gives `L(B_ρ(y) \ F) ≥ c₂ ρ^{m+1}`
+(printed (11)).  Take `c = min c₁ c₂` and `ρ₂ = ρ₁`. -/
+theorem codim1_rdo_dg_volume_density_lower : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), 1 ≤ m → IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → y ∈ D → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∃ c ρ₂ : ℝ, 0 < c ∧ 0 < ρ₂ ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₂ → ENNReal.ofReal (c * ρ ^ (m + 1)) ≤ volume (F ∩ ball y ρ) ∧ ENNReal.ofReal (c * ρ ^ (m + 1)) ≤ volume (ball y ρ \ F) := by
+  intro m D F μ ν y v hm hD hF hμD hμK hν hν1 hGG hy hv hT
+  -- step 1: `ρ₁`, `C₁` and the annular bounds (a) for `F` and (b) for its complement
+  obtain ⟨ρ₁, C₁, hρ₁, hC₁, hρ₁D, hann, -⟩ :=
+    Submission.codim1_rdo_dg_cutoff_estimates m D F μ ν y v hD hF hμD hμK hν hν1 hGG hy hv hT
+  -- step 2: the Sobolev inequality, with a constant `c_S` independent of `(D, F, μ, ν)`
+  obtain ⟨cS, hcS, hS⟩ := Submission.codim1_rdo_dg_sobolev_perimeter m hm
+  -- step 3: every closed ball about `y` has positive mass, and `μ(B̄_{ρ₁}(y)) < ∞`
+  have hv0 : v ≠ 0 := norm_ne_zero_iff.mp (by rw [hv]; exact one_ne_zero)
+  have hpos : ∀ r : ℝ, 0 < r → μ (closedBall y r) ≠ 0 :=
+    Submission.codim1_rdo_dg_vdl_measure_closedBall_ne_zero (m + 1) μ ν y v hv0 hT
+  have hfin : μ (closedBall y ρ₁) ≠ ∞ := hμK _ (isCompact_closedBall y ρ₁) hρ₁D
+  -- step 4: the lower bound for `F` (printed (10))
+  obtain ⟨c₁, hc₁, h₁⟩ := Submission.codim1_rdo_dg_vdl_one_sided_density m D F μ y ρ₁ C₁ cS hm
+    hF hcS hC₁ hρ₁D hfin hpos (hS D F μ ν hD hF hμD hμK hν hν1 hGG)
+    fun ρ δ hρ hδ hρδ => (hann ρ δ hρ hδ hρδ).1
+  -- step 5: `Fᶜ` satisfies the Gauss–Green identity with normal `−ν`, so the Sobolev inequality
+  -- holds for `Fᶜ`; with (b) this gives the lower bound for `Fᶜ` (printed (11))
+  have hGGc := Submission.codim1_rdo_dg_vdl_gauss_green_compl (m + 1) D F μ ν hF hGG
+  obtain ⟨c₂, hc₂, h₂⟩ := Submission.codim1_rdo_dg_vdl_one_sided_density m D Fᶜ μ y ρ₁ C₁ cS hm
+    hF.compl hcS hC₁ hρ₁D hfin hpos
+    (hS D Fᶜ μ (fun z => -ν z) hD hF.compl hμD hμK hν.neg
+      (fun z => (norm_neg (ν z)).trans (hν1 z)) hGGc)
+    fun ρ δ hρ hδ hρδ => by
+      rw [← Set.sdiff_eq_compl_inter]
+      exact (hann ρ δ hρ hδ hρδ).2
+  -- step 6: `c = min c₁ c₂` and `ρ₂ = ρ₁`, using `B_ρ(y) \ F = Fᶜ ∩ B_ρ(y)`
+  refine ⟨min c₁ c₂, ρ₁, lt_min hc₁ hc₂, hρ₁, fun ρ hρ hρρ₁ => ⟨?_, ?_⟩⟩
+  · exact (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (min_le_left c₁ c₂)
+      (pow_nonneg hρ.le _))).trans (h₁ ρ hρ hρρ₁)
+  · rw [Set.sdiff_eq_compl_inter]
+    exact (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (min_le_right c₁ c₂)
+      (pow_nonneg hρ.le _))).trans (h₂ ρ hρ hρρ₁)
 
 end Submission
 
