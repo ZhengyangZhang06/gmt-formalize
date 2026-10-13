@@ -467,6 +467,7 @@ theorem Submission.doraggt_graph_map_gram_identity : ∀ (n k : ℕ) (ι : Eucli
   simp only [LinearMap.comp_apply, LinearMap.adjoint_inner_left, LinearMap.add_apply,
     LinearMap.id_apply, LinearIsometry.coe_toLinearMap, inner_add_left, inner_add_right,
     LinearIsometry.inner_map_map, h, h', add_zero, zero_add]
+
 /-- **Metric and Hausdorff-measure properties of a Lipschitz graph map** (Simon Ch. 2,
 Theorem 1.8(i); Steps 0, 1 and 3 of the graph-tangent argument for Allard's graph).  Let
 `ι : ℝⁿ → ℝ^{n+k}`, `ι' : ℝᵏ → ℝ^{n+k}` be linear isometries with orthogonal ranges, `g` an
@@ -488,6 +489,94 @@ theorem Submission.doraggt_lipschitz_graph_map_basics : ∀ (n k : ℕ) (ι : Eu
     intro u u'
     rw [dist_eq_norm, dist_eq_norm, hdiff]
     have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (horth (u - u') (g u - g u'))
+    rw [LinearIsometry.norm_map, LinearIsometry.norm_map] at h
+    refine (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).2 ?_
+    rw [h]
+    exact le_add_of_nonneg_right (mul_self_nonneg _)
+  -- Step 3 (ii): triangle inequality and the Lipschitz bound for `g`.
+  have hlip : LipschitzWith (1 + L) Ψ := by
+    refine LipschitzWith.of_dist_le_mul fun u u' => ?_
+    rw [dist_eq_norm, dist_eq_norm, hdiff]
+    calc ‖ι (u - u') + ι' (g u - g u')‖ ≤ ‖ι (u - u')‖ + ‖ι' (g u - g u')‖ := norm_add_le _ _
+      _ = ‖u - u'‖ + dist (g u) (g u') := by
+          rw [LinearIsometry.norm_map, LinearIsometry.norm_map, dist_eq_norm]
+      _ ≤ ‖u - u'‖ + L * ‖u - u'‖ := by
+          rw [← dist_eq_norm u u']
+          gcongr
+          exact hg.dist_le_mul u u'
+      _ = ((1 + L : NNReal) : ℝ) * ‖u - u'‖ := by
+          push_cast
+          ring
+  -- Step 4 (iii): `Ψ` is antilipschitz and uniformly continuous on the complete `ℝⁿ`.
+  have hclosed : IsClosed (Set.range Ψ) := by
+    have hanti : AntilipschitzWith 1 Ψ :=
+      AntilipschitzWith.of_le_mul_dist fun u u' => by simpa using hdist u u'
+    exact hanti.isClosed_range hlip.uniformContinuous
+  -- Step 5: `Hⁿ(Ψ(A)) ≤ (1 + L)ⁿ Lⁿ(A)`, using `Hⁿ = Lⁿ` on `ℝⁿ`.
+  have himage : ∀ A : Set (Euclid n),
+      μHE[n] (Ψ '' A) ≤ ((1 + L : NNReal) : ℝ≥0∞) ^ n * volume A := by
+    intro A
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hlip.lipschitzOnWith (s := A))
+    rwa [EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at h
+  -- Step 6 (iv): `Ψ(ℝⁿ) ∩ K ⊆ Ψ(B̄ₘ(0))` for `K ⊆ B̄ₘ(Ψ(0))`, by (i).
+  have hfin : ∀ K : Set (Euclid (n + k)), IsCompact K → μHE[n] (Set.range Ψ ∩ K) ≠ ∞ := by
+    intro K hK
+    obtain ⟨m, hm⟩ := hK.isBounded.subset_closedBall (Ψ 0)
+    have hsub : Set.range Ψ ∩ K ⊆ Ψ '' closedBall 0 m := by
+      rintro _ ⟨⟨u, rfl⟩, huK⟩
+      exact ⟨u, mem_closedBall.2 ((hdist u 0).trans (mem_closedBall.1 (hm huK))), rfl⟩
+    refine ne_top_of_le_ne_top ?_ ((measure_mono hsub).trans (himage _))
+    exact ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) measure_closedBall_lt_top.ne
+  -- Step 7 (v): null sets go to null sets.
+  have hnull : ∀ N : Set (Euclid n), volume N = 0 → μHE[n] (Ψ '' N) = 0 := by
+    intro N hN
+    exact le_zero_iff.1 ((himage N).trans (by rw [hN, mul_zero]))
+  exact ⟨hdist, hlip, hclosed, hfin, hnull⟩
+
+/-- **Blow-ups of a graph are graphs of difference quotients** (Simon Ch. 3, 1.4: the dilation
+`η_{x,λ}(y) = λ⁻¹(y − x)`).  Let `Φ(u) = a + ιu + ι'f(u)`, `r ≠ 0` and
+`f_{v,r}(w) = r⁻¹(f(v + rw) − f(v))`.  By linearity
+`η_{Φ(v),r}(Φ(u)) = ι(r⁻¹(u − v)) + ι'(r⁻¹(f(u) − f(v)))`, so the bijection `u = v + rw` of `ℝⁿ`
+gives `η_{Φ(v),r}(Φ(ℝⁿ)) = {ιw + ι'f_{v,r}(w) : w ∈ ℝⁿ}`.  Where `f` is differentiable at
+`v + rw`, the chain rule gives `Df_{v,r}(w) = r⁻¹ Df(v + rw) ∘ (r id) = Df(v + rw)`; elsewhere
+`f_{v,r}` is not differentiable at `w` either (`f(u) = f(v) + r f_{v,r}(r⁻¹(u − v))`), and both
+`fderiv`s are `0`. -/
+theorem Submission.doraggt_graph_blowup_rescaling : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (a : Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (r : ℝ), r ≠ 0 → Poincare.SimonGMT.Chapter03.blowUpMap (a + ι v + ι' (f v)) r '' Set.range (fun u => a + ι u + ι' (f u)) = Set.range (fun w => ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) ∧ ∀ w : Euclid n, fderiv ℝ (fun w' => r⁻¹ • (f (v + r • w') - f v)) w = fderiv ℝ f (v + r • w) := by
+  intro n k ι ι' a f v r hr
+  refine ⟨?_, fun w => ?_⟩
+  · -- Steps 2–3: reparametrize `ℝⁿ` by the bijection `w ↦ v + r • w`
+    have he : Function.Surjective fun w : Euclid n => v + r • w := fun u =>
+      ⟨r⁻¹ • (u - v), by simp only [smul_inv_smul₀ hr, add_sub_cancel]⟩
+    rw [← Set.range_comp, ← he.range_comp]
+    congr 1
+    funext w
+    -- Step 1: `η(Φ(v + r • w)) = r⁻¹ • (r • ι w + (ι' (f (v + r • w)) - ι' (f v)))`
+    simp only [Function.comp_apply, Poincare.SimonGMT.Chapter03.blowUpMap, map_add, map_smul,
+      map_sub]
+    rw [show a + (ι v + r • ι w) + ι' (f (v + r • w)) - (a + ι v + ι' (f v)) =
+        r • ι w + (ι' (f (v + r • w)) - ι' (f v)) by abel, smul_add, inv_smul_smul₀ hr]
+  · by_cases hf : DifferentiableAt ℝ f (v + r • w)
+    · -- Step 4: chain rule through `w' ↦ v + r • w'`, whose derivative is `r • id`
+      have h : HasFDerivAt (fun w' => r⁻¹ • (f (v + r • w') - f v))
+          (r⁻¹ • (fderiv ℝ f (v + r • w)).comp (r • ContinuousLinearMap.id ℝ (Euclid n))) w :=
+        ((hf.hasFDerivAt.comp w (((hasFDerivAt_id w).const_smul r).const_add v)).sub_const
+          (f v)).const_smul r⁻¹
+      rw [h.fderiv, ContinuousLinearMap.comp_smulₛₗ, RingHom.id_apply,
+        ContinuousLinearMap.comp_id, inv_smul_smul₀ hr]
+    · -- Step 5: `u ↦ r⁻¹ • (u - v)` maps `v + r • w` to `w` and
+      -- `f u = f v + r • f_{v,r} (r⁻¹ • (u - v))`, so `f_{v,r}` is not differentiable at `w`
+      -- either; both derivatives are `0`
+      rw [fderiv_zero_of_not_differentiableAt hf, fderiv_zero_of_not_differentiableAt]
+      intro hg
+      have hw : r⁻¹ • (v + r • w - v) = w := by rw [add_sub_cancel_left, inv_smul_smul₀ hr]
+      rw [← hw] at hg
+      have hL : DifferentiableAt ℝ (fun u : Euclid n => r⁻¹ • (u - v)) (v + r • w) :=
+        (differentiableAt_id.sub_const v).const_smul r⁻¹
+      refine hf ((((hg.comp (v + r • w) hL).const_smul r).const_add (f v)).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun u => ?_))
+      simp only [Pi.smul_apply, Function.comp_apply, smul_inv_smul₀ hr, add_sub_cancel]
+
 /-- Difference quotients `r⁻¹(f(v + rw) − f(v))` of a map differentiable at `v` converge to
 `Df(v)w` uniformly on every closed ball `B̄_R(0)` as `r ↓ 0` (the `o(|h|)` estimate in the
 weighted blow-up limit of the Allard graph step).  With `R' = max R 1`, pick `ρ > 0` such that
@@ -592,88 +681,6 @@ theorem Submission.dorwbl_weighted_blowup_tendsto_at_point : ∀ (n k : ℕ) (ι
     refine (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).2 ?_
     rw [h]
     exact le_add_of_nonneg_right (mul_self_nonneg _)
-  -- Step 3 (ii): triangle inequality and the Lipschitz bound for `g`.
-  have hlip : LipschitzWith (1 + L) Ψ := by
-    refine LipschitzWith.of_dist_le_mul fun u u' => ?_
-    rw [dist_eq_norm, dist_eq_norm, hdiff]
-    calc ‖ι (u - u') + ι' (g u - g u')‖ ≤ ‖ι (u - u')‖ + ‖ι' (g u - g u')‖ := norm_add_le _ _
-      _ = ‖u - u'‖ + dist (g u) (g u') := by
-          rw [LinearIsometry.norm_map, LinearIsometry.norm_map, dist_eq_norm]
-      _ ≤ ‖u - u'‖ + L * ‖u - u'‖ := by
-          rw [← dist_eq_norm u u']
-          gcongr
-          exact hg.dist_le_mul u u'
-      _ = ((1 + L : NNReal) : ℝ) * ‖u - u'‖ := by
-          push_cast
-          ring
-  -- Step 4 (iii): `Ψ` is antilipschitz and uniformly continuous on the complete `ℝⁿ`.
-  have hclosed : IsClosed (Set.range Ψ) := by
-    have hanti : AntilipschitzWith 1 Ψ :=
-      AntilipschitzWith.of_le_mul_dist fun u u' => by simpa using hdist u u'
-    exact hanti.isClosed_range hlip.uniformContinuous
-  -- Step 5: `Hⁿ(Ψ(A)) ≤ (1 + L)ⁿ Lⁿ(A)`, using `Hⁿ = Lⁿ` on `ℝⁿ`.
-  have himage : ∀ A : Set (Euclid n),
-      μHE[n] (Ψ '' A) ≤ ((1 + L : NNReal) : ℝ≥0∞) ^ n * volume A := by
-    intro A
-    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
-      (hlip.lipschitzOnWith (s := A))
-    rwa [EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at h
-  -- Step 6 (iv): `Ψ(ℝⁿ) ∩ K ⊆ Ψ(B̄ₘ(0))` for `K ⊆ B̄ₘ(Ψ(0))`, by (i).
-  have hfin : ∀ K : Set (Euclid (n + k)), IsCompact K → μHE[n] (Set.range Ψ ∩ K) ≠ ∞ := by
-    intro K hK
-    obtain ⟨m, hm⟩ := hK.isBounded.subset_closedBall (Ψ 0)
-    have hsub : Set.range Ψ ∩ K ⊆ Ψ '' closedBall 0 m := by
-      rintro _ ⟨⟨u, rfl⟩, huK⟩
-      exact ⟨u, mem_closedBall.2 ((hdist u 0).trans (mem_closedBall.1 (hm huK))), rfl⟩
-    refine ne_top_of_le_ne_top ?_ ((measure_mono hsub).trans (himage _))
-    exact ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) measure_closedBall_lt_top.ne
-  -- Step 7 (v): null sets go to null sets.
-  have hnull : ∀ N : Set (Euclid n), volume N = 0 → μHE[n] (Ψ '' N) = 0 := by
-    intro N hN
-    exact le_zero_iff.1 ((himage N).trans (by rw [hN, mul_zero]))
-  exact ⟨hdist, hlip, hclosed, hfin, hnull⟩
-/-- **Blow-ups of a graph are graphs of difference quotients** (Simon Ch. 3, 1.4: the dilation
-`η_{x,λ}(y) = λ⁻¹(y − x)`).  Let `Φ(u) = a + ιu + ι'f(u)`, `r ≠ 0` and
-`f_{v,r}(w) = r⁻¹(f(v + rw) − f(v))`.  By linearity
-`η_{Φ(v),r}(Φ(u)) = ι(r⁻¹(u − v)) + ι'(r⁻¹(f(u) − f(v)))`, so the bijection `u = v + rw` of `ℝⁿ`
-gives `η_{Φ(v),r}(Φ(ℝⁿ)) = {ιw + ι'f_{v,r}(w) : w ∈ ℝⁿ}`.  Where `f` is differentiable at
-`v + rw`, the chain rule gives `Df_{v,r}(w) = r⁻¹ Df(v + rw) ∘ (r id) = Df(v + rw)`; elsewhere
-`f_{v,r}` is not differentiable at `w` either (`f(u) = f(v) + r f_{v,r}(r⁻¹(u − v))`), and both
-`fderiv`s are `0`. -/
-theorem Submission.doraggt_graph_blowup_rescaling : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (a : Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (r : ℝ), r ≠ 0 → Poincare.SimonGMT.Chapter03.blowUpMap (a + ι v + ι' (f v)) r '' Set.range (fun u => a + ι u + ι' (f u)) = Set.range (fun w => ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) ∧ ∀ w : Euclid n, fderiv ℝ (fun w' => r⁻¹ • (f (v + r • w') - f v)) w = fderiv ℝ f (v + r • w) := by
-  intro n k ι ι' a f v r hr
-  refine ⟨?_, fun w => ?_⟩
-  · -- Steps 2–3: reparametrize `ℝⁿ` by the bijection `w ↦ v + r • w`
-    have he : Function.Surjective fun w : Euclid n => v + r • w := fun u =>
-      ⟨r⁻¹ • (u - v), by simp only [smul_inv_smul₀ hr, add_sub_cancel]⟩
-    rw [← Set.range_comp, ← he.range_comp]
-    congr 1
-    funext w
-    -- Step 1: `η(Φ(v + r • w)) = r⁻¹ • (r • ι w + (ι' (f (v + r • w)) - ι' (f v)))`
-    simp only [Function.comp_apply, Poincare.SimonGMT.Chapter03.blowUpMap, map_add, map_smul,
-      map_sub]
-    rw [show a + (ι v + r • ι w) + ι' (f (v + r • w)) - (a + ι v + ι' (f v)) =
-        r • ι w + (ι' (f (v + r • w)) - ι' (f v)) by abel, smul_add, inv_smul_smul₀ hr]
-  · by_cases hf : DifferentiableAt ℝ f (v + r • w)
-    · -- Step 4: chain rule through `w' ↦ v + r • w'`, whose derivative is `r • id`
-      have h : HasFDerivAt (fun w' => r⁻¹ • (f (v + r • w') - f v))
-          (r⁻¹ • (fderiv ℝ f (v + r • w)).comp (r • ContinuousLinearMap.id ℝ (Euclid n))) w :=
-        ((hf.hasFDerivAt.comp w (((hasFDerivAt_id w).const_smul r).const_add v)).sub_const
-          (f v)).const_smul r⁻¹
-      rw [h.fderiv, ContinuousLinearMap.comp_smulₛₗ, RingHom.id_apply,
-        ContinuousLinearMap.comp_id, inv_smul_smul₀ hr]
-    · -- Step 5: `u ↦ r⁻¹ • (u - v)` maps `v + r • w` to `w` and
-      -- `f u = f v + r • f_{v,r} (r⁻¹ • (u - v))`, so `f_{v,r}` is not differentiable at `w`
-      -- either; both derivatives are `0`
-      rw [fderiv_zero_of_not_differentiableAt hf, fderiv_zero_of_not_differentiableAt]
-      intro hg
-      have hw : r⁻¹ • (v + r • w - v) = w := by rw [add_sub_cancel_left, inv_smul_smul₀ hr]
-      rw [← hw] at hg
-      have hL : DifferentiableAt ℝ (fun u : Euclid n => r⁻¹ • (u - v)) (v + r • w) :=
-        (differentiableAt_id.sub_const v).const_smul r⁻¹
-      refine hf ((((hg.comp (v + r • w) hL).const_smul r).const_add (f v)).congr_of_eventuallyEq
-        (Filter.Eventually.of_forall fun u => ?_))
-      simp only [Pi.smul_apply, Function.comp_apply, smul_inv_smul₀ hr, add_sub_cancel]
   -- Both integrands vanish off `closedBall 0 R`.
   have hvanish : ∀ w : Euclid n, w ∉ closedBall (0 : Euclid n) R → ∀ u : Euclid k,
       ψ (ι w + ι' u) = 0 := by
@@ -841,6 +848,7 @@ theorem Submission.doraggt_ae_weighted_graph_blowup_tendsto : ∀ (n k : ℕ) (�
   -- at such `v`, the blow-up limit holds for every test function `ψ`
   exact ⟨hv, Submission.dorwbl_weighted_blowup_tendsto_at_point n k ι ι' f G C v horth
     hf.continuous hG hGC hv hleb⟩
+
 /-- **Upper density theorem for `Hⁿ` off a Borel set of finite measure** (Simon Ch. 1, 3.3 and
 3.6, with the crude covering constant `6ⁿ`; chapter-01.txt lines 602–721).  If `S ⊆ ℝᴾ` is Borel
 with `Hⁿ(S) < ∞`, then for `Hⁿ`-a.e. `x ∉ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  A failure
