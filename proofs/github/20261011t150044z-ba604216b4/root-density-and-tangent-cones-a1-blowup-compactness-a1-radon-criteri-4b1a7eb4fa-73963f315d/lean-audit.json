@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9800b1b7760350cd6fe172540bcec42b2c30f1fa5fb026501079b4aa67a258ee",
+  "git_delta": {
+    "base_commit": "89325b5cff95b182be028149962343fa65df85f7",
+    "candidate_commit": "4a2d980625c59830384c72630443c8df3ae465df",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_rc_lintegral_le_liminf",
+    "diff_sha256": "a2dda6e711206588b674c3c9deaaf0b7278cb7c3c8ea560244977aed4883a90c",
+    "source_sha256": "2e897c432d90dc951d0eeac0a9c50dbd70745be14001663ecd757fae6e8d7708",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_rc_lintegral_le_liminf",
+      "statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → ∫⁻ x, ENNReal.ofReal (g x) ∂μ ≤ liminf (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
