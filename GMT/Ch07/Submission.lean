@@ -549,6 +549,51 @@ theorem Submission.dgoj_exists_orthonormal_frame_range : ∀ (P n : ℕ) (F : Eu
     rw [h1, Set.range_comp, Submodule.span_image, ← T.coe_toBasis, T.toBasis.span_eq,
       Submodule.map_top, Submodule.range_subtype]
 
+/-- **The normalized evaluation at `F e` is a unit orientation of `range F`** (Simon 6.1.1,
+6.1.7; `√det(F* ∘ F)` is the area Jacobian of Ch. 2, 3.1/3.3).  For injective `F : ℝⁿ → ℝᴾ`,
+`det(F* ∘ F) > 0`, and if `α(F e₁, …, F eₙ) = √det(F* ∘ F) ξ(α)` for every `n`-covector `α` then
+`ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal frame `τ` of `range F`: with `d = det(⟨τᵢ, F eⱼ⟩)` one has
+`det(F* ∘ F) = d² ≠ 0` and `α(F e) = d α(τ)`, so `|d| ξ(α) = d α(τ)` and the sign is that of `d`. -/
+theorem Submission.dgoj_unitOrientation_of_injective : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → 0 < (F.adjoint ∘L F).det ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, α (fun i => F (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt ((F.adjoint ∘L F).det) * ξ α) → IsUnitOrientationOf ξ (LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F hF
+  -- an orthonormal frame `τ` of `range F`; every `F eⱼ` lies in its span
+  obtain ⟨τ, hτo, hτs⟩ := Submission.dgoj_exists_orthonormal_frame_range P n F hF
+  have hb : ∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ) := by
+    intro j
+    rw [hτs]
+    exact LinearMap.mem_range_self _ _
+  -- `det(F* ∘ F) = d²` for `d = det(⟨τᵢ, F eⱼ⟩)`
+  set d := (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det
+  have hdet : (F.adjoint ∘L F).det = d ^ 2 :=
+    Submission.dgoj_det_adjoint_comp_eq_det_sq P n F τ hτo hb
+  -- `ker(F* ∘ F) = ker F = 0`, so `det(F* ∘ F) ≠ 0` and hence `d ≠ 0`
+  have hd : d ≠ 0 := by
+    intro h
+    have h0 : (F.adjoint ∘L F).det = 0 := by rw [hdet, h, zero_pow two_ne_zero]
+    apply LinearMap.det_eq_zero_iff_ker_ne_bot.1 h0
+    rw [F.ker_adjoint_comp_self, LinearMap.ker_eq_bot]
+    exact hF
+  -- (i): `det(F* ∘ F) = d² > 0`
+  refine ⟨by rw [hdet]; positivity, fun ξ hξ => ⟨τ, hτo, hτs, ?_⟩⟩
+  -- (ii): `|d| ξ(α) = √det(F* ∘ F) ξ(α) = α(F e) = d α(τ)` for every `α`
+  have key : ∀ α : Covector (Euclid P) n, |d| * ξ α = d * α τ := by
+    intro α
+    rw [← Real.sqrt_sq_eq_abs, ← hdet, ← hξ α]
+    exact Submission.dgoj_covector_eq_det_mul_of_mem_span P n τ _ hτo hb α
+  -- the sign of `d` decides between `ξ(α) = -α(τ)` and `ξ(α) = α(τ)`
+  rcases hd.lt_or_gt with hneg | hpos
+  · right
+    intro α
+    have h := key α
+    rw [abs_of_neg hneg] at h
+    apply mul_left_cancel₀ hd
+    linarith
+  · left
+    intro α
+    have h := key α
+    rw [abs_of_pos hpos] at h
+    exact mul_left_cancel₀ hd h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
