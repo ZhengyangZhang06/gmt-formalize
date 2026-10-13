@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "de635a4eab1a7183eb5c4a95d095ae7359cd0e7c6b74e6eaa98364ba059dc3d8",
+  "git_delta": {
+    "base_commit": "35c8da38a930359cb8722602afb7b5fe5d1c9960",
+    "candidate_commit": "9dcae6bdd56dfe358491f8344e7a8610f929bf88",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_bwd_extDeriv_smul_const",
+    "diff_sha256": "3f6ffdef35c879cf89c82cd0016e4f774e3c08c917296ac1ee025eeb844c0a23",
+    "source_sha256": "72703658638a96c70447281522c78b6c65e2f3d7faca074836a2b987dd874de6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_bwd_extDeriv_smul_const",
+      "statement": "∀ (P m : ℕ) (a : Euclid P → ℝ) (β : Covector (Euclid P) m) (x : Euclid P) (w : Fin (m + 1) → Euclid P), DifferentiableAt ℝ a x → exteriorDerivative (fun y => a y • β) x w = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ a x (w i) * β (i.removeNth w))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
