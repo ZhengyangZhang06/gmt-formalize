@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1eace30b5683ae778d0ad321fc9f647e2e74af6a5c004aa09f448faac5c3f0bc",
+  "git_delta": {
+    "base_commit": "0916a631e191569320da0bbfa4b2d1b4183f18b9",
+    "candidate_commit": "fc049f3e53075689fdb7404a5d8fe5da90a14dbf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_mu_conv_lipschitz",
+    "diff_sha256": "51d454cf883c8b203d917ed9d80f08cb528c54598707442e49a8d9ebe849deab",
+    "source_sha256": "afb7d044c303990eb387e6dc8ab8db1e497a7a9b31e29f2a32719b7e48624eff",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_mu_conv_lipschitz",
+      "statement": "∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∃ L : ℝ, 0 ≤ L ∧ ∀ (S : Set (Euclid n)) (v : Euclid n → ℝ), IntegrableOn v S → ∀ x x' : Euclid n, |(∫ y in S, v y * φ (x - y)) - ∫ y in S, v y * φ (x' - y)| ≤ L * (∫ y in S, |v y|) * dist x x'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
