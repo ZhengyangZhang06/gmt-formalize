@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1",
+  "depth": 4,
+  "title": "Zero current, mass of integer combinations, finite integer combinations of IM currents",
+  "statement": "(a) For all P, n ∈ ℕ and every U ⊆ ℝ^P, the zero current 0 ∈ 𝒟_n(U) is integer multiplicity. (b) For all P, n, every U ⊆ ℝ^P, currents A, B, C ∈ 𝒟_n(U) and integers p, q with A(ω) = p·B(ω) + q·C(ω) for every ω ∈ 𝒟ⁿ(U), one has M_W(A) ≤ |p|·M_W(B) + |q|·M_W(C) in [0, ∞] for every W ⊆ ℝ^P. M_W(X) = X.massOn W is the supremum of ofReal(X(ω)) over test forms ω with tsupport ω ⊆ W and |ω(x)| ≤ 1 for all x (Euclidean coefficient norm), and M(X) = M_{ℝ^P}(X). (c) Assume (IMC)(c): for all P, n, every open U ⊆ ℝ^P and integer multiplicity A, B ∈ 𝒟_n(U), the difference A − B is integer multiplicity. Then for all P, n, every open U ⊆ ℝ^P, every type ι, finite set F ⊆ ι, currents S_i ∈ 𝒟_n(U) (i ∈ ι) that are integer multiplicity for i ∈ F, and integers m_i (i ∈ ι), there is an integer multiplicity Y ∈ 𝒟_n(U) with Y(ω) = Σ_{i∈F} m_i·S_i(ω) for every ω ∈ 𝒟ⁿ(U) and M_W(Y) ≤ Σ_{i∈F} |m_i|·M_W(S_i) for every W ⊆ ℝ^P.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)), IsIntegerMultiplicity (0 : GeometricCurrentOn U n)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B C : GeometricCurrentOn U n) (p q : ℤ), (∀ ω : TestFormOn U n, A ω = (p : ℝ) * B ω + (q : ℝ) * C ω) → ∀ W : Set (Euclid P), A.massOn W ≤ (p.natAbs : ℝ≥0∞) * B.massOn W + (q.natAbs : ℝ≥0∞) * C.massOn W) ∧ ((∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P n : ℕ) (U : Set (Euclid P)) (ι : Type) (F : Finset ι) (S : ι → GeometricCurrentOn U n) (m : ι → ℤ), IsOpen U → (∀ i ∈ F, IsIntegerMultiplicity (S i)) → ∃ Y : GeometricCurrentOn U n, IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U n, Y ω = ∑ i ∈ F, (m i : ℝ) * S i ω) ∧ ∀ W : Set (Euclid P), Y.massOn W ≤ ∑ i ∈ F, ((m i).natAbs : ℝ≥0∞) * (S i).massOn W)",
+  "lean_name": "cbr_cc_current_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-253f25df92-a1"
+}
