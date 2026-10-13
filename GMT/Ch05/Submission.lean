@@ -1332,6 +1332,139 @@ theorem Submission.dohr_eb_sch_fderiv_norm_interpolation : ∀ (n ℓ : ℕ) (w 
   rw [hv', norm_smul, Real.norm_of_nonneg (norm_nonneg v)]
   exact (mul_le_mul_of_nonneg_left (hunit _ (norm_smul_inv_norm hv)) (norm_nonneg v)).trans_eq
     (mul_comm _ _)
+/-- **Affine rescaling of `C¹` weak solutions** (scaling step of the Schauder estimate in the
+elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).  Let `w` be `C¹` on the open
+set `U` with `∫_U a(x)[Dw][Dζ] = ∫_U Φ(x)[Dζ]` for every `ζ ∈ C¹_c(U; ℝ^ℓ)`, and let
+`B_{ρr}(y + ρz₀) ⊆ U`, `ρ > 0`.  Then `w̃(z) = w(y + ρz)` is `C¹` on `B_r(z₀)`,
+`Dw̃(z) = ρ Dw(y + ρz)` there, and `∫_{B_r(z₀)} a(y + ρz)[Dw̃][Dζ] = ∫_{B_r(z₀)} (ρΦ(y + ρz))[Dζ]`
+for every `ζ ∈ C¹_c(B_r(z₀); ℝ^ℓ)`.
+Proof: with `T z = y + ρz`, the test function `ζ ∘ T⁻¹` is admissible on `U`; both integrands
+are `ρ²` times the original ones composed with `T` and vanish off the supports, and
+`∫ H(y + ρz) dz = ρ⁻ⁿ ∫ H` holds for every `H` (no integrability needed). -/
+theorem dohr_eb_sch_weak_eq_affine_rescale : ∀ (n ℓ : ℕ) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ) (U : Set (Rn n)) (y z₀ : Rn n) (ρ r : ℝ), 0 < ρ → IsOpen U → ball (y + ρ • z₀) (ρ * r) ⊆ U → ContDiffOn ℝ 1 w U → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ w x) (fderiv ℝ ζ x) = ∫ x in U, Φ x (fderiv ℝ ζ x)) → ContDiffOn ℝ 1 (fun z => w (y + ρ • z)) (ball z₀ r) ∧ (∀ z ∈ ball z₀ r, fderiv ℝ (fun z => w (y + ρ • z)) z = ρ • fderiv ℝ w (y + ρ • z)) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball z₀ r → ∫ z in ball z₀ r, a (y + ρ • z) (fderiv ℝ (fun z => w (y + ρ • z)) z) (fderiv ℝ ζ z) = ∫ z in ball z₀ r, (ρ • Φ (y + ρ • z)) (fderiv ℝ ζ z) := by
+  intro n ℓ a Φ w U y z₀ ρ r hρ hU hball hw hweak
+  have hρ0 : ρ ≠ 0 := hρ.ne'
+  -- Step 0: `T z = y + ρ • z` maps `B_r(z₀)` into `B_{ρ r}(y + ρ z₀) ⊆ U`.
+  have hT : MapsTo (fun z : Rn n => y + ρ • z) (ball z₀ r) U := by
+    intro z hz
+    apply hball
+    show dist (y + ρ • z) (y + ρ • z₀) < ρ * r
+    rw [dist_add_left, dist_smul₀, Real.norm_eq_abs, abs_of_pos hρ]
+    exact mul_lt_mul_of_pos_left (mem_ball.mp hz) hρ
+  -- `T` is affine with derivative `ρ • id` everywhere.
+  have hTd : ∀ z : Rn n,
+      HasFDerivAt (fun z : Rn n => y + ρ • z) (ρ • ContinuousLinearMap.id ℝ (Rn n)) z :=
+    fun z => ((hasFDerivAt_id z).const_smul ρ).const_add y
+  -- Step 1 (ii): chain rule at points of `B_r(z₀)`, where `w` is differentiable.
+  have hderiv : ∀ z ∈ ball z₀ r,
+      fderiv ℝ (fun z => w (y + ρ • z)) z = ρ • fderiv ℝ w (y + ρ • z) := by
+    intro z hz
+    have hwd : DifferentiableAt ℝ w (y + ρ • z) :=
+      (hw.differentiableOn one_ne_zero _ (hT hz)).differentiableAt (hU.mem_nhds (hT hz))
+    have h := hwd.hasFDerivAt.comp z (hTd z)
+    rw [show (fun z => w (y + ρ • z)) = w ∘ (fun z : Rn n => y + ρ • z) from rfl, h.fderiv]
+    refine ContinuousLinearMap.ext fun v => ?_
+    simp
+  have hTC : ContDiff ℝ 1 (fun z : Rn n => y + ρ • z) :=
+    contDiff_const.add (contDiff_id.const_smul ρ)
+  refine ⟨hw.comp hTC.contDiffOn hT, hderiv, ?_⟩
+  -- Step 2: transfer the test function, `ζ' = ζ ∘ T⁻¹`.
+  intro ζ hζ hζc hζs
+  obtain ⟨ζ', hζ'⟩ : ∃ ζ' : Rn n → Rn ℓ, ζ' = fun x => ζ (ρ⁻¹ • (x - y)) := ⟨_, rfl⟩
+  have hζ'T : ∀ z, ζ' (y + ρ • z) = ζ z := by
+    intro z
+    simp [hζ', inv_smul_smul₀ hρ0]
+  have hζ'C : ContDiff ℝ 1 ζ' := by
+    rw [hζ']
+    exact hζ.comp ((contDiff_id.sub contDiff_const).const_smul ρ⁻¹)
+  have hK : IsCompact ((fun z : Rn n => y + ρ • z) '' tsupport ζ) :=
+    hζc.isCompact.image hTC.continuous
+  have hζ'K : ∀ x, x ∉ (fun z : Rn n => y + ρ • z) '' tsupport ζ → ζ' x = 0 := by
+    intro x hx
+    rw [hζ']
+    apply image_eq_zero_of_notMem_tsupport
+    intro hmem
+    apply hx
+    refine ⟨ρ⁻¹ • (x - y), hmem, ?_⟩
+    simp [smul_inv_smul₀ hρ0]
+  have hζ'c : HasCompactSupport ζ' := HasCompactSupport.intro hK hζ'K
+  have hζ'sK : tsupport ζ' ⊆ (fun z : Rn n => y + ρ • z) '' tsupport ζ :=
+    closure_minimal (Function.support_subset_iff'.mpr hζ'K) hK.isClosed
+  have hζ's : tsupport ζ' ⊆ U := by
+    intro x hx
+    obtain ⟨z, hz, rfl⟩ := hζ'sK hx
+    exact hT (hζs hz)
+  have hweak' := hweak ζ' hζ'C hζ'c hζ's
+  -- `Dζ(z) = ρ • Dζ'(T z)` for every `z`.
+  have hζd : ∀ z, fderiv ℝ ζ z = ρ • fderiv ℝ ζ' (y + ρ • z) := by
+    intro z
+    have h := (hζ'C.differentiable one_ne_zero (y + ρ • z)).hasFDerivAt.comp z (hTd z)
+    have hfun : ζ' ∘ (fun z : Rn n => y + ρ • z) = ζ := funext hζ'T
+    rw [hfun] at h
+    rw [h.fderiv]
+    refine ContinuousLinearMap.ext fun v => ?_
+    simp
+  -- Step 3: the integrands over `U` vanish off `U`.
+  have hF0 : ∀ x, x ∉ U → a x (fderiv ℝ w x) (fderiv ℝ ζ' x) = 0 := by
+    intro x hx
+    have hx' : x ∉ tsupport ζ' := fun h => hx (hζ's h)
+    rw [fderiv_of_notMem_tsupport ℝ hx', map_zero]
+  have hG0 : ∀ x, x ∉ U → Φ x (fderiv ℝ ζ' x) = 0 := by
+    intro x hx
+    have hx' : x ∉ tsupport ζ' := fun h => hx (hζ's h)
+    rw [fderiv_of_notMem_tsupport ℝ hx', map_zero]
+  -- Step 4: pointwise identities.
+  have hFt : ∀ z, a (y + ρ • z) (fderiv ℝ (fun z => w (y + ρ • z)) z) (fderiv ℝ ζ z) =
+      ρ ^ 2 * a (y + ρ • z) (fderiv ℝ w (y + ρ • z)) (fderiv ℝ ζ' (y + ρ • z)) := by
+    intro z
+    by_cases hz : z ∈ ball z₀ r
+    · rw [hderiv z hz, hζd z]
+      simp only [map_smul, smul_apply, smul_eq_mul]
+      ring
+    · have h1 : fderiv ℝ ζ z = 0 := fderiv_of_notMem_tsupport ℝ (fun h => hz (hζs h))
+      have h2 : fderiv ℝ ζ' (y + ρ • z) = 0 := by
+        have h3 := hζd z
+        rw [h1] at h3
+        exact (smul_eq_zero.mp h3.symm).resolve_left hρ0
+      rw [h1, h2]
+      simp
+  have hGt : ∀ z, (ρ • Φ (y + ρ • z)) (fderiv ℝ ζ z) =
+      ρ ^ 2 * Φ (y + ρ • z) (fderiv ℝ ζ' (y + ρ • z)) := by
+    intro z
+    rw [hζd z]
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    ring
+  -- Step 5: change of variables, valid without integrability.
+  have hcov : ∀ H : Rn n → ℝ,
+      ∫ z, H (y + ρ • z) = |(ρ ^ Module.finrank ℝ (Rn n))⁻¹| • ∫ x, H x := by
+    intro H
+    rw [Measure.integral_comp_smul volume (fun x => H (y + x)) ρ, integral_add_left_eq_self H y]
+  -- Step 6: conclusion.
+  calc ∫ z in ball z₀ r, a (y + ρ • z) (fderiv ℝ (fun z => w (y + ρ • z)) z) (fderiv ℝ ζ z)
+      = ∫ z, a (y + ρ • z) (fderiv ℝ (fun z => w (y + ρ • z)) z) (fderiv ℝ ζ z) := by
+        refine setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => ?_
+        rw [fderiv_of_notMem_tsupport ℝ (fun h => hz (hζs h)), map_zero]
+    _ = ∫ z, ρ ^ 2 * a (y + ρ • z) (fderiv ℝ w (y + ρ • z)) (fderiv ℝ ζ' (y + ρ • z)) := by
+        congr 1
+        funext z
+        exact hFt z
+    _ = ρ ^ 2 * (|(ρ ^ Module.finrank ℝ (Rn n))⁻¹| •
+          ∫ x, a x (fderiv ℝ w x) (fderiv ℝ ζ' x)) := by
+        rw [integral_const_mul, hcov (fun x => a x (fderiv ℝ w x) (fderiv ℝ ζ' x))]
+    _ = ρ ^ 2 * (|(ρ ^ Module.finrank ℝ (Rn n))⁻¹| • ∫ x, Φ x (fderiv ℝ ζ' x)) := by
+        rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hF0, hweak',
+          setIntegral_eq_integral_of_forall_compl_eq_zero hG0]
+    _ = ∫ z, ρ ^ 2 * Φ (y + ρ • z) (fderiv ℝ ζ' (y + ρ • z)) := by
+        rw [integral_const_mul, hcov (fun x => Φ x (fderiv ℝ ζ' x))]
+    _ = ∫ z, (ρ • Φ (y + ρ • z)) (fderiv ℝ ζ z) := by
+        congr 1
+        funext z
+        exact (hGt z).symm
+    _ = ∫ z in ball z₀ r, (ρ • Φ (y + ρ • z)) (fderiv ℝ ζ z) := by
+        refine (setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => ?_).symm
+        rw [fderiv_of_notMem_tsupport ℝ (fun h => hz (hζs h)), map_zero]
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
