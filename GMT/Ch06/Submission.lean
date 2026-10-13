@@ -419,6 +419,32 @@ theorem Submission.deformation_ipl_mwc_mil_tendsto_integral_mul_det : ∀ (α : 
     refine hx1.mul ?_
     have hc : Continuous (Matrix.det : Matrix (Fin n) (Fin n) ℝ → ℝ) := continuous_id.matrix_det
     exact (hc.tendsto _).comp (tendsto_pi_nhds.2 fun t => tendsto_pi_nhds.2 fun s => hx2 t s)
+/-- A.e. derivative of a coordinate of a Lipschitz map (the Rademacher step of the Lipschitz
+minor integration by parts in the proof of Simon Ch. 6, 3.9): if `v : ℝᵏ → ℝ^Q` is `C`-Lipschitz
+on an open `Ω` and `g = v^c := proj_c ∘ v` on `Ω`, then for Lebesgue-a.e. `w ∈ Ω`,
+`Dg(w) x = proj_c (Dv(w) x)` for every `x`.  By Rademacher's theorem `v` is differentiable within
+`Ω` at a.e. `w ∈ Ω`, hence at `w` as `Ω` is open; `g` and `v^c` agree near `w`, so they have the
+same `fderiv`, which is `proj_c ∘L Dv(w)` by the chain rule.  No regularity of `g` is needed. -/
+theorem Submission.deformation_ipl_mwc_mil_ae_fderiv_eq_proj :
+    ∀ (k Q : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (v : Eucl k → Eucl Q) (c : Fin Q)
+      (g : Eucl k → ℝ), IsOpen Ω → LipschitzOnWith C v Ω →
+      EqOn g (fun w => EuclideanSpace.proj c (v w)) Ω →
+      ∀ᵐ w ∂(volume : Measure (Eucl k)), w ∈ Ω → ∀ x : Eucl k,
+        fderiv ℝ g w x = EuclideanSpace.proj c (fderiv ℝ v w x) := by
+  intro k Q Ω C v c g hΩ hv hg
+  -- Rademacher's theorem on `Ω`: `v` is differentiable within `Ω` at a.e. `w ∈ Ω`.
+  filter_upwards [hv.ae_differentiableWithinAt_of_mem (μ := volume)] with w hw hwΩ x
+  -- `Ω` is a neighbourhood of `w`, so `v` is differentiable at `w` and `g = proj_c ∘ v` near `w`.
+  have hd : DifferentiableAt ℝ v w := (hw hwΩ).differentiableAt (hΩ.mem_nhds hwΩ)
+  have heq : g =ᶠ[𝓝 w] (fun w => EuclideanSpace.proj c (v w)) :=
+    eventuallyEq_of_mem (hΩ.mem_nhds hwΩ) hg
+  -- Chain rule for the continuous linear map `proj_c`.
+  have hcomp : HasFDerivAt (fun w => EuclideanSpace.proj c (v w))
+      ((EuclideanSpace.proj c).comp (fderiv ℝ v w)) w :=
+    (EuclideanSpace.proj c : Eucl Q →L[ℝ] ℝ).hasFDerivAt.comp w hd.hasFDerivAt
+  -- Locality of `fderiv`: `Dg(w) = D(proj_c ∘ v)(w) = proj_c ∘L Dv(w)`.
+  rw [heq.fderiv_eq, hcomp.fderiv]
+  rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
