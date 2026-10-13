@@ -2063,6 +2063,211 @@ theorem allard52_center_density_bounds : ∀ (n ℓ : ℕ) (μ : Measure (Amb n 
             lintegral_union_le _ _ _
         _ ≤ ENNReal.ofReal (Real.exp Λ * (Real.exp Λ * (M / R ^ n) + Λ - ω)) := by
             rw [hsingle, add_zero]; exact hmain
+/-- The linear algebra in the proof of Simon Ch. 5, Lemma 2.1 (p. 107): (i) the operator norm of a
+linear map is at most its Hilbert–Schmidt norm `|A|`; (ii) `|p_{T⊥} v| = dist(v, T)`; and
+(iii) display (2) of the proof, `trace(p_{T⊥} ∘ p_P) = ½ |p_P − p_T|²` when `dim P = dim T`. -/
+theorem hsNorm_starProjection_trace_identities : (∀ (m k : ℕ) (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A) ∧ (∀ (m : ℕ) (T : Submodule ℝ (Rn m)) (v : Rn m), ‖Tᗮ.starProjection v‖ = Metric.infDist v (T : Set (Rn m))) ∧ ∀ (m : ℕ) (P T : Submodule ℝ (Rn m)), Module.finrank ℝ P = Module.finrank ℝ T → LinearMap.trace ℝ (Rn m) (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) = hsNormSq (P.starProjection - T.starProjection) / 2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · -- (i) `‖A v‖ ≤ Σᵢ |vᵢ| ‖A eᵢ‖ ≤ ‖v‖ |A|` by the triangle and Cauchy–Schwarz inequalities.
+    intro m k A
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  · -- (ii) `p_{T⊥} v = v − p_T v`, and `p_T v` is the point of `T` nearest to `v`.
+    intro m T v
+    rw [Submodule.starProjection_orthogonal_val, ← dist_eq_norm,
+      Submodule.dist_starProjection_eq_infDist]
+  · -- (iii) Compute both sides in the standard orthonormal basis `eᵢ`.
+    intro m P T hPT
+    -- The trace is the sum of the diagonal entries `⟪eᵢ, f eᵢ⟫`.
+    have htr : ∀ f : Rn m →ₗ[ℝ] Rn m, LinearMap.trace ℝ (Rn m) f =
+        ∑ i, inner ℝ (EuclideanSpace.single i (1 : ℝ)) (f (EuclideanSpace.single i 1)) := by
+      intro f
+      rw [LinearMap.trace_eq_matrix_trace ℝ (EuclideanSpace.basisFun (Fin m) ℝ).toBasis f,
+        Matrix.trace]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [Matrix.diag_apply, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis,
+        EuclideanSpace.basisFun_apply]
+    -- The trace of an orthogonal projection is the dimension of its range.
+    have hproj : ∀ W : Submodule ℝ (Rn m),
+        LinearMap.trace ℝ (Rn m) W.starProjection.toLinearMap = Module.finrank ℝ W := fun W =>
+      LinearMap.IsProj.trace
+        ⟨W.starProjection_apply_mem, fun _ hx => W.starProjection_eq_self_iff.2 hx⟩
+    -- `‖p_W x‖² = ⟪x, p_W x⟫`, since `p_W` is self-adjoint and idempotent.
+    have hsq : ∀ (W : Submodule ℝ (Rn m)) (x : Rn m),
+        ‖W.starProjection x‖ ^ 2 = inner ℝ x (W.starProjection x) := by
+      intro W x
+      rw [← real_inner_self_eq_norm_sq, W.inner_starProjection_left_eq_right,
+        W.starProjection_eq_self_iff.2 (W.starProjection_apply_mem x)]
+    -- Pointwise, `2 ⟪x, (I − q) p x⟫ = ‖(p − q) x‖² + ⟪x, p x⟫ − ⟪x, q x⟫`.
+    have hterm : ∀ x : Rn m, 2 * inner ℝ x (Tᗮ.starProjection (P.starProjection x)) =
+        ‖(P.starProjection - T.starProjection) x‖ ^ 2 + inner ℝ x (P.starProjection x) -
+          inner ℝ x (T.starProjection x) := by
+      intro x
+      rw [Submodule.starProjection_orthogonal_val, sub_apply, norm_sub_sq_real, hsq P, hsq T,
+        inner_sub_right, ← T.inner_starProjection_left_eq_right,
+        real_inner_comm (T.starProjection x)]
+      ring
+    -- `trace p_P = dim P = dim T = trace p_T`.
+    have hdim : ∑ i, inner ℝ (EuclideanSpace.single i (1 : ℝ))
+          (P.starProjection (EuclideanSpace.single i 1)) =
+        ∑ i, inner ℝ (EuclideanSpace.single i (1 : ℝ))
+          (T.starProjection (EuclideanSpace.single i 1)) := by
+      have h := hproj P
+      rw [hPT, ← hproj T, htr, htr] at h
+      exact h
+    rw [htr, hsNormSq, eq_div_iff two_ne_zero, mul_comm, Finset.mul_sum]
+    simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
+    rw [Finset.sum_congr rfl fun i _ => hterm (EuclideanSpace.single i 1), Finset.sum_sub_distrib,
+      Finset.sum_add_distrib, hdim, add_sub_cancel_right]
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 108): the profile of the cutoff `ζ(x) = φ(|x − ξ|/ρ)` with
+`ζ ≡ 1` in `B_{ρ/2}(ξ)`, `ζ ≡ 0` outside `B_ρ(ξ)` and `|∇ζ| ≤ 3/ρ`.  With `S = smoothTransition`,
+the bump `g(t) = S(12(t − 1/2)) S(12(1 − t)) ∈ [0, 1]` vanishes for `t ≤ 1/2` and for `t ≥ 1` and
+equals `1` on `[7/12, 11/12]`, so `c = ∫_{1/2}^1 g ≥ 1/3`; then `φ(t) = 1 − c⁻¹ ∫_{1/2}^t g` is
+`C^∞` with `|φ'| = c⁻¹ g ≤ 3`. -/
+theorem exists_smooth_step_profile_lipschitz_three : ∃ φ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ ∧ (∀ t, 0 ≤ φ t ∧ φ t ≤ 1) ∧ (∀ t, t ≤ 1 / 2 → φ t = 1) ∧ (∀ t, 1 ≤ t → φ t = 0) ∧ LipschitzWith 3 φ := by
+  -- The bump `g`: smooth, with values in `[0, 1]`, zero off `(1/2, 1)`, one on `[7/12, 11/12]`.
+  set g : ℝ → ℝ := fun t =>
+    Real.smoothTransition (12 * (t - 1 / 2)) * Real.smoothTransition (12 * (1 - t)) with hg_def
+  have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g := by
+    have h₁ : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => 12 * (t - 1 / 2) := by fun_prop
+    have h₂ : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => 12 * (1 - t) := by fun_prop
+    exact (Real.smoothTransition.contDiff.comp h₁).mul (Real.smoothTransition.contDiff.comp h₂)
+  have hg_cont : Continuous g := hg_smooth.continuous
+  have hg_int : ∀ a b : ℝ, IntervalIntegrable g volume a b := fun a b =>
+    hg_cont.intervalIntegrable a b
+  have hg_nonneg : ∀ t, 0 ≤ g t := fun t =>
+    mul_nonneg (Real.smoothTransition.nonneg _) (Real.smoothTransition.nonneg _)
+  have hg_le_one : ∀ t, g t ≤ 1 := fun t =>
+    (mul_le_of_le_one_left (Real.smoothTransition.nonneg _) (Real.smoothTransition.le_one _)).trans
+      (Real.smoothTransition.le_one _)
+  have hg_left : ∀ t, t ≤ 1 / 2 → g t = 0 := fun t ht => by
+    simp only [hg_def]
+    rw [Real.smoothTransition.zero_of_nonpos (by linarith), zero_mul]
+  have hg_right : ∀ t, 1 ≤ t → g t = 0 := fun t ht => by
+    simp only [hg_def]
+    rw [Real.smoothTransition.zero_of_nonpos (by linarith : 12 * (1 - t) ≤ 0), mul_zero]
+  have hg_mid : ∀ t, 7 / 12 ≤ t → t ≤ 11 / 12 → g t = 1 := fun t h₁ h₂ => by
+    simp only [hg_def]
+    rw [Real.smoothTransition.one_of_one_le (by linarith),
+      Real.smoothTransition.one_of_one_le (by linarith), mul_one]
+  -- The normalizing constant `c = ∫_{1/2}^1 g ≥ ∫_{7/12}^{11/12} 1 = 1/3`, so `c⁻¹ ≤ 3`.
+  set c : ℝ := ∫ s in (1 / 2 : ℝ)..1, g s with hc_def
+  have hc_ge : 1 / 3 ≤ c := by
+    have h : ∫ s in (7 / 12 : ℝ)..(11 / 12), g s = 1 / 3 := by
+      rw [intervalIntegral.integral_congr (g := fun _ => (1 : ℝ)) ?_]
+      · simp only [intervalIntegral.integral_const, smul_eq_mul, mul_one]
+        norm_num
+      · intro s hs
+        rw [uIcc_of_le (by norm_num)] at hs
+        exact hg_mid s hs.1 hs.2
+    rw [← h]
+    exact intervalIntegral.integral_mono_interval (by norm_num) (by norm_num) (by norm_num)
+      (ae_of_all _ hg_nonneg) (hg_int _ _)
+  have hc_pos : 0 < c := by linarith
+  have hcinv_le : c⁻¹ ≤ 3 := by
+    rw [inv_le_comm₀ hc_pos (by norm_num)]
+    linarith
+  -- The primitive `F(t) = ∫_{1/2}^t g`: `F' = g` (FTC), so `F` is smooth; `0 ≤ F ≤ c`,
+  -- `F = 0` on `(-∞, 1/2]` and `F = c` on `[1, ∞)`.
+  set F : ℝ → ℝ := fun t => ∫ s in (1 / 2 : ℝ)..t, g s with hF_def
+  have hF_deriv : ∀ t, HasDerivAt F (g t) t := fun t =>
+    (hg_cont.integral_hasStrictDerivAt (1 / 2) t).hasDerivAt
+  have hF_smooth : ContDiff ℝ (⊤ : ℕ∞) F :=
+    contDiff_infty_iff_deriv.2 ⟨fun t => (hF_deriv t).differentiableAt,
+      (funext fun t => (hF_deriv t).deriv : deriv F = g) ▸ hg_smooth⟩
+  have hF_left : ∀ t, t ≤ 1 / 2 → F t = 0 := fun t ht => by
+    simp only [hF_def]
+    rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+    · simp
+    · intro s hs
+      rw [uIcc_of_ge ht] at hs
+      exact hg_left s hs.2
+  have hF_right : ∀ t, 1 ≤ t → F t = c := fun t ht => by
+    simp only [hF_def, hc_def]
+    rw [← intervalIntegral.integral_add_adjacent_intervals (hg_int (1 / 2) 1) (hg_int 1 t)]
+    have h : ∫ s in (1 : ℝ)..t, g s = 0 := by
+      rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+      · simp
+      · intro s hs
+        rw [uIcc_of_le ht] at hs
+        exact hg_right s hs.1
+    rw [h, add_zero]
+  have hF_bounds : ∀ t, 0 ≤ F t ∧ F t ≤ c := fun t => by
+    rcases le_total t (1 / 2) with ht | ht
+    · rw [hF_left t ht]
+      exact ⟨le_rfl, hc_pos.le⟩
+    rcases le_total 1 t with ht' | ht'
+    · rw [hF_right t ht']
+      exact ⟨hc_pos.le, le_rfl⟩
+    exact ⟨intervalIntegral.integral_nonneg ht fun u _ => hg_nonneg u,
+      intervalIntegral.integral_mono_interval le_rfl ht ht' (ae_of_all _ hg_nonneg) (hg_int _ _)⟩
+  -- The profile `φ = 1 − c⁻¹ F`, with `φ' = −c⁻¹ g`.
+  have hφ_deriv : ∀ t, HasDerivAt (fun t => 1 - c⁻¹ * F t) (-(c⁻¹ * g t)) t := fun t => by
+    simpa using ((hF_deriv t).const_mul c⁻¹).const_sub 1
+  refine ⟨fun t => 1 - c⁻¹ * F t, contDiff_const.sub (contDiff_const.mul hF_smooth), ?_, ?_, ?_, ?_⟩
+  · intro t
+    obtain ⟨h₀, h₁⟩ := hF_bounds t
+    have hci : 0 ≤ c⁻¹ := inv_nonneg.2 hc_pos.le
+    have h : c⁻¹ * F t ≤ 1 := by
+      calc c⁻¹ * F t ≤ c⁻¹ * c := mul_le_mul_of_nonneg_left h₁ hci
+        _ = 1 := inv_mul_cancel₀ hc_pos.ne'
+    exact ⟨by linarith, by linarith [mul_nonneg hci h₀]⟩
+  · intro t ht
+    simp only [hF_left t ht, mul_zero, sub_zero]
+  · intro t ht
+    simp only [hF_right t ht, inv_mul_cancel₀ hc_pos.ne', sub_self]
+  · refine lipschitzWith_of_nnnorm_deriv_le (fun t => (hφ_deriv t).differentiableAt) fun t => ?_
+    rw [(hφ_deriv t).deriv, ← NNReal.coe_le_coe, coe_nnnorm, Real.norm_eq_abs, abs_neg,
+      abs_of_nonneg (mul_nonneg (inv_nonneg.2 hc_pos.le) (hg_nonneg t))]
+    calc c⁻¹ * g t ≤ c⁻¹ * 1 := mul_le_mul_of_nonneg_left (hg_le_one t) (inv_nonneg.2 hc_pos.le)
+      _ ≤ 3 := by rw [mul_one]; exact hcinv_le
+      _ = ((3 : ℝ≥0) : ℝ) := by norm_num
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 107), smoothness of the cutoff: if `φ` is `C^∞` with
+`φ ≡ 1` on `(-∞, 1/2]` and `ρ > 0`, then `ζ(x) = φ(‖x − ξ‖/ρ)` is `C^∞` on `ℝᵐ`.  Near `ξ`,
+`ζ ≡ 1` on `B̆_{ρ/2}(ξ)`; at `x ≠ ξ` the norm is `C^∞` at `x − ξ ≠ 0`. -/
+theorem contDiff_radial_profile_of_eq_one_le_half : ∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (φ : ℝ → ℝ), 0 < ρ → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ t, t ≤ 1 / 2 → φ t = 1) → ContDiff ℝ (⊤ : ℕ∞) (fun x : Rn m => φ (‖x - ξ‖ / ρ)) := by
+  intro m ξ ρ φ hρ hφ hφ1
+  rw [contDiff_iff_contDiffAt]
+  intro x
+  rcases eq_or_ne x ξ with rfl | hx
+  · -- `ζ ≡ 1` on the open ball `B̆_{ρ/2}(ξ)`, a neighbourhood of `ξ`.
+    refine (contDiffAt_const (c := (1 : ℝ))).congr_of_eventuallyEq ?_
+    filter_upwards [Metric.ball_mem_nhds x (half_pos hρ)] with y hy
+    rw [Metric.mem_ball, dist_eq_norm] at hy
+    exact hφ1 _ ((div_le_iff₀ hρ).2 (by linarith))
+  · -- `y ↦ ‖y − ξ‖/ρ` is `C^∞` at `x` since `x − ξ ≠ 0`; compose with `φ`.
+    have h : ContDiffAt ℝ (⊤ : ℕ∞) (fun y : Rn m => ‖y - ξ‖ / ρ) x :=
+      ((contDiffAt_id.sub contDiffAt_const).norm ℝ (sub_ne_zero.2 hx)).div_const ρ
+    exact hφ.contDiffAt.comp x h
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 108): the cutoff gradient bound `|∇ζ| ≤ 3/ρ`, for a general
+Lipschitz constant `K` in place of `3`.  If `φ` is `K`-Lipschitz and `ρ > 0`, then
+`ζ(y) = φ(‖y - ξ‖/ρ)` is `(K/ρ)`-Lipschitz by the reverse triangle inequality, so
+`‖Dζ(x)‖ ≤ K/ρ` at every `x` (where `ζ` is not differentiable, `fderiv ℝ ζ x = 0`). -/
+theorem norm_fderiv_radial_profile_le_of_lipschitzWith : ∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (K : ℝ≥0) (φ : ℝ → ℝ), 0 < ρ → LipschitzWith K φ → ∀ x : Rn m, ‖fderiv ℝ (fun y : Rn m => φ (‖y - ξ‖ / ρ)) x‖ ≤ (K : ℝ) / ρ := by
+  intro m ξ ρ K φ hρ hφ x
+  -- `ζ(y) = φ(‖y - ξ‖/ρ)` is `(K/ρ)`-Lipschitz by the reverse triangle inequality.
+  have hKρ : ((K / ρ.toNNReal : ℝ≥0) : ℝ) = K / ρ := by
+    rw [NNReal.coe_div, Real.coe_toNNReal ρ hρ.le]
+  have hlip : LipschitzWith (K / ρ.toNNReal) fun y : Rn m => φ (‖y - ξ‖ / ρ) := by
+    refine LipschitzWith.of_dist_le_mul fun y z => ?_
+    rw [hKρ]
+    calc dist (φ (‖y - ξ‖ / ρ)) (φ (‖z - ξ‖ / ρ))
+        ≤ K * dist (‖y - ξ‖ / ρ) (‖z - ξ‖ / ρ) := hφ.dist_le_mul _ _
+      _ = K / ρ * |‖y - ξ‖ - ‖z - ξ‖| := by
+          rw [Real.dist_eq, ← sub_div, abs_div, abs_of_pos hρ]; ring
+      _ ≤ K / ρ * ‖(y - ξ) - (z - ξ)‖ := by gcongr; exact abs_norm_sub_norm_le _ _
+      _ = K / ρ * dist y z := by rw [sub_sub_sub_cancel_right, dist_eq_norm]
+  -- A `C`-Lipschitz function has `‖Dζ(x)‖ ≤ C` (and `fderiv ℝ ζ x = 0` where not differentiable).
+  exact (norm_fderiv_le_of_lipschitz ℝ hlip).trans_eq hKρ
 /-- **Blow-up change of variables** (Simon Ch. 3, Remark 1.8(2)).  For `η = η_{x,r}`,
 `η(z) = r⁻¹(z − x)`, with `r > 0`, any set `M` and any `f, θ`:
 `∫_{η(M)} f(y) θ(x + r y) dHⁿ(y) = r⁻ⁿ ∫_M f(η z) θ(z) dHⁿ(z)`.  As `η` is a homeomorphism and
@@ -3570,6 +3775,339 @@ theorem allard52_tangent_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n
     filter_upwards [hallμ, hmem] with x hx hxM
     obtain ⟨m, j, k, i, -, ⟨P, hP⟩, -⟩ := hx
     exact density_of_tangent x hxM P hP
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 107), in the `L¹` form used for Theorem 5.2: if
+`dist(x − z, T) ≤ h` for `x ∈ spt V ∩ B_r(z)`, then
+`∫_{B_{r/2}(z)} |p_{T_x M} − p_T|² dμ_V
+   ≤ C r⁻² ∫_{B_r(z)} dist(x − z, T)² dμ_V + C h ∫_{B_r(z)} |H| dμ_V`
+with `C = 144`.  Test the first variation with `X = ζ² p_{T⊥}(x − z)`, `ζ(x) = φ(|x − z|/r)`;
+tangent planes exist `μ_V`-a.e. by `allard52_tangent_ae` (Ch. 3, 1.9). -/
+theorem allard52_tilt_height_l1 : ∀ (n ℓ : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → 0 ≤ h → closedBall z r ⊆ U → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ C * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + C * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+  intro n ℓ hn
+  refine ⟨144, by norm_num, ?_⟩
+  intro U hU V H hH z r h hr hh hBU T hT hheight
+  -- (T) a.e. tangent planes and measurability of `x ↦ p_x` (sibling `allard52_tangent_ae`).
+  obtain ⟨hmeas, hae, -⟩ := Submission.allard52_tangent_ae n ℓ hn U hU V
+  -- Step 1: the cutoff `ζ(x) = φ(|x - z|/r)` with `φ` the accepted 3-Lipschitz step profile.
+  obtain ⟨φ, hφs, hφ01, hφ1, hφ0, hφL⟩ := exists_smooth_step_profile_lipschitz_three
+  obtain ⟨ζ, hζs, hζ01, hζ1, hζ0, hζd⟩ : ∃ ζ : Amb n ℓ → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ ∧
+      (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ closedBall z (r / 2), ζ x = 1) ∧
+      (∀ x, r ≤ dist x z → ζ x = 0) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / r := by
+    refine ⟨fun x => φ (‖x - z‖ / r),
+      contDiff_radial_profile_of_eq_one_le_half (n + ℓ) z r φ hr hφs hφ1,
+      fun x => hφ01 _, fun x hx => ?_, fun x hx => ?_, fun x => ?_⟩
+    · apply hφ1
+      rw [mem_closedBall, dist_eq_norm] at hx
+      rw [div_le_iff₀ hr]
+      linarith
+    · apply hφ0
+      rw [dist_eq_norm] at hx
+      rw [le_div_iff₀ hr]
+      linarith
+    · have h3 := norm_fderiv_radial_profile_le_of_lipschitzWith (n + ℓ) z r 3 φ hr hφL x
+      simpa using h3
+  have hζC1 : ContDiff ℝ 1 ζ := hζs.of_le (by exact_mod_cast le_top)
+  -- (F2) finite weight on compact subsets of `U`, and `μ`-a.e. point lies in `spt V`.
+  have hfin : ∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ U → V.weight K < ⊤ := by
+    intro K hK hKU
+    have hint := V.integrableOn_mult K hK hKU
+    rw [RectifiableVarifold.weight, withDensity_apply _ hK.isClosed.measurableSet,
+      Measure.restrict_restrict hK.isClosed.measurableSet, inter_comm]
+    exact hint.lintegral_lt_top
+  have hsupp : ∀ᵐ x ∂V.weight, x ∈ V.support := by
+    have hUc : V.weight Uᶜ = 0 := by
+      rw [RectifiableVarifold.weight, withDensity_apply _ hU.isClosed_compl.measurableSet,
+        Measure.restrict_restrict hU.isClosed_compl.measurableSet]
+      have hempty : Uᶜ ∩ V.carrier = ∅ := by
+        ext x
+        simp only [mem_inter_iff, mem_compl_iff, mem_empty_iff_false, iff_false, not_and]
+        exact fun hxU hxM => hxU (V.carrier_subset hxM)
+      rw [hempty, Measure.restrict_empty, lintegral_zero_measure]
+    have h1 : ∀ᵐ x ∂V.weight, x ∈ U := by
+      rw [ae_iff]
+      simpa [compl_def] using hUc
+    filter_upwards [h1, Measure.support_mem_ae (μ := V.weight)] with x hx1 hx2
+    show x ∈ U ∩ V.weight.support
+    exact ⟨hx1, hx2⟩
+  have hopHS : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, ‖A‖ ≤ hsNorm A := fun A =>
+    hsNorm_starProjection_trace_identities.1 (n + ℓ) (n + ℓ) A
+  have hperp : ∀ v : Amb n ℓ, ‖Tᗮ.starProjection v‖ = infDist v (T : Set (Amb n ℓ)) :=
+    fun v => hsNorm_starProjection_trace_identities.2.1 (n + ℓ) T v
+  -- Step 3: `div_M X = ζ² |p_P - p_T|²/2 + 2ζ ∇ζ · (p_P - p_T) x'` where `p_x = p_P`, `dim P = n`.
+  have hdivpt : ∀ (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ P = n →
+      V.tangentProj x = P.starProjection →
+      V.divM (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - z)) x =
+        ζ x ^ 2 * (hsNormSq (V.tangentProj x - T.starProjection) / 2) +
+          2 * ζ x * fderiv ℝ ζ x
+            ((V.tangentProj x - T.starProjection) (Tᗮ.starProjection (x - z))) := by
+    intro x P hP hV
+    have hζx : DifferentiableAt ℝ ζ x := hζC1.differentiable one_ne_zero x
+    have hsq : HasFDerivAt (fun y => ζ y ^ 2) ((2 * ζ x) • fderiv ℝ ζ x) x := by
+      simpa using hζx.hasFDerivAt.pow 2
+    have hlin : HasFDerivAt (fun y => Tᗮ.starProjection (y - z)) Tᗮ.starProjection x :=
+      (Tᗮ.starProjection.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const z)).congr_fderiv
+        (ContinuousLinearMap.comp_id _)
+    have hX := hsq.fun_smul hlin
+    have hx' : T.starProjection (Tᗮ.starProjection (x - z)) = 0 :=
+      (T.starProjection_apply_eq_zero_iff).mpr (Tᗮ.starProjection_apply_mem _)
+    have htr : LinearMap.trace ℝ (Amb n ℓ)
+        (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) =
+          hsNormSq (P.starProjection - T.starProjection) / 2 :=
+      hsNorm_starProjection_trace_identities.2.2 (n + ℓ) P T (hP.trans hT.symm)
+    have hrk : (((2 * ζ x) • fderiv ℝ ζ x).smulRight (Tᗮ.starProjection (x - z))).toLinearMap ∘ₗ
+        P.starProjection.toLinearMap =
+          (((2 * ζ x) • fderiv ℝ ζ x).toLinearMap ∘ₗ P.starProjection.toLinearMap).smulRight
+            (Tᗮ.starProjection (x - z)) := by
+      ext v
+      simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe,
+        ContinuousLinearMap.smulRight_apply, LinearMap.smulRight_apply]
+    rw [RectifiableVarifold.divM, hX.fderiv, hV, ContinuousLinearMap.toLinearMap_add,
+      ContinuousLinearMap.toLinearMap_smul, LinearMap.add_comp, LinearMap.smul_comp, hrk, map_add,
+      map_smul, htr, LinearMap.trace_smulRight]
+    simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe,
+      smul_apply, smul_eq_mul, sub_apply, hx', sub_zero]
+  -- Notation: `g = |p_x - p_T|²`, `w = x' = p_{T⊥}(x - z)`, the drift term `b`, the field `X`.
+  obtain ⟨g, hg⟩ : ∃ g : Amb n ℓ → ℝ, ∀ x, g x = hsNormSq (V.tangentProj x - T.starProjection) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨w, hw⟩ : ∃ w : Amb n ℓ → Amb n ℓ, ∀ x, w x = Tᗮ.starProjection (x - z) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b : Amb n ℓ → ℝ,
+      ∀ x, b x = 2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨X, hX⟩ : ∃ X : Amb n ℓ → Amb n ℓ, ∀ x, X x = ζ x ^ 2 • w x := ⟨_, fun _ => rfl⟩
+  have hζcont : Continuous ζ := hζC1.continuous
+  have hDζcont : Continuous (fderiv ℝ ζ) := hζC1.continuous_fderiv one_ne_zero
+  have hwcont : Continuous w := by
+    rw [show w = fun x => Tᗮ.starProjection (x - z) from funext hw]
+    fun_prop
+  have hXcont : Continuous X := by
+    rw [show X = fun x => ζ x ^ 2 • w x from funext hX]
+    exact (hζcont.pow 2).smul hwcont
+  have hζout : ∀ x, x ∉ closedBall z r → ζ x = 0 := fun x hx =>
+    hζ0 x (not_le.1 fun h' => hx (mem_closedBall.2 h')).le
+  have hw_le : ∀ x, ‖w x‖ ≤ ‖x - z‖ := by
+    intro x
+    rw [hw]
+    calc ‖Tᗮ.starProjection (x - z)‖ ≤ ‖Tᗮ.starProjection‖ * ‖x - z‖ :=
+          ContinuousLinearMap.le_opNorm _ _
+      _ ≤ 1 * ‖x - z‖ := by gcongr; exact Submodule.starProjection_norm_le _
+      _ = ‖x - z‖ := one_mul _
+  have hwB : ∀ x ∈ closedBall z r, ‖w x‖ ≤ r := fun x hx =>
+    (hw_le x).trans (by rw [← dist_eq_norm]; exact mem_closedBall.1 hx)
+  have hPnorm : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+    intro x
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  have hA2 : ∀ x, ‖V.tangentProj x - T.starProjection‖ ≤ 2 := fun x =>
+    (norm_sub_le _ _).trans (by linarith [hPnorm x, Submodule.starProjection_norm_le T])
+  have hhs0 : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, 0 ≤ hsNormSq A := fun A => by
+    unfold hsNormSq
+    positivity
+  have hhs_le : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq A ≤ (n + ℓ : ℕ) * ‖A‖ ^ 2 := by
+    intro A
+    unfold hsNormSq
+    calc ∑ i : Fin (n + ℓ), ‖A (EuclideanSpace.single i 1)‖ ^ 2
+        ≤ ∑ _i : Fin (n + ℓ), ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = (n + ℓ : ℕ) * ‖A‖ ^ 2 := by simp
+  have hg0 : ∀ x, 0 ≤ g x := fun x => by rw [hg]; exact hhs0 _
+  have hgle : ∀ x, g x ≤ (n + ℓ : ℕ) * 4 := fun x => by
+    rw [hg]
+    refine (hhs_le _).trans ?_
+    gcongr
+    nlinarith [hA2 x, norm_nonneg (V.tangentProj x - T.starProjection)]
+  -- `μ_V(B_r(z)) < ∞`.
+  have hμB : V.weight (closedBall z r) < ∞ := hfin _ (isCompact_closedBall z r) hBU
+  have : IsFiniteMeasure (V.weight.restrict (closedBall z r)) :=
+    isFiniteMeasure_restrict.2 hμB.ne
+  -- Measurability.
+  have hPm : AEStronglyMeasurable (fun x => V.tangentProj x - T.starProjection)
+      (V.weight.restrict (closedBall z r)) :=
+    hmeas.restrict.sub aestronglyMeasurable_const
+  have hgm : AEStronglyMeasurable g (V.weight.restrict (closedBall z r)) := by
+    rw [show g = fun x => hsNormSq (V.tangentProj x - T.starProjection) from funext hg]
+    have hcont : Continuous fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq A := by
+      unfold hsNormSq
+      exact continuous_finsetSum _ fun i _ =>
+        ((continuous_id.clm_apply continuous_const).norm).pow 2
+    exact hcont.comp_aestronglyMeasurable hPm
+  have hbm : AEStronglyMeasurable b (V.weight.restrict (closedBall z r)) := by
+    rw [show b = fun x => 2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))
+      from funext hb]
+    have happ : Continuous (Function.uncurry
+        fun (A : Amb n ℓ →L[ℝ] Amb n ℓ) (v : Amb n ℓ) => A v) :=
+      continuous_fst.clm_apply continuous_snd
+    have happ' : Continuous (Function.uncurry
+        fun (L : Amb n ℓ →L[ℝ] ℝ) (v : Amb n ℓ) => L v) :=
+      continuous_fst.clm_apply continuous_snd
+    exact (continuous_const.mul hζcont).aestronglyMeasurable.mul
+      (happ'.comp_aestronglyMeasurable₂ hDζcont.aestronglyMeasurable
+        (happ.comp_aestronglyMeasurable₂ hPm hwcont.aestronglyMeasurable))
+  -- Step 4: integrability on `B_r(z)`.
+  have hHint : Integrable H (V.weight.restrict (closedBall z r)) :=
+    hH.1.integrableOn_compact_subset hBU (isCompact_closedBall z r)
+  have hzg : Integrable (fun x => ζ x ^ 2 * g x) (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.of_bound ((hζcont.pow 2).aestronglyMeasurable.mul hgm) ((n + ℓ : ℕ) * 4)
+      (ae_of_all _ fun x => ?_)
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (hg0 x))]
+    calc ζ x ^ 2 * g x ≤ 1 * ((n + ℓ : ℕ) * 4) :=
+          mul_le_mul (by nlinarith) (hgle x) (hg0 x) zero_le_one
+      _ = (n + ℓ : ℕ) * 4 := one_mul _
+  have hbi : Integrable b (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.of_bound hbm 12
+      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    have hD : ‖fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))‖ ≤ 3 / r * (2 * r) := by
+      refine (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul (hζd x) ?_ (norm_nonneg _) (by positivity))
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul (hA2 x) (hwB x hx) (norm_nonneg _) zero_le_two)
+    rw [hb, norm_mul, norm_mul, Real.norm_of_nonneg hz0, Real.norm_of_nonneg zero_le_two]
+    calc 2 * ζ x * ‖fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))‖
+        ≤ 2 * 1 * (3 / r * (2 * r)) := by gcongr
+      _ = 12 := by field_simp; norm_num
+  have hh2 : Integrable (fun x => ‖w x‖ ^ 2) (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.of_bound (hwcont.norm.pow 2).aestronglyMeasurable (r ^ 2)
+      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
+    rw [Real.norm_of_nonneg (sq_nonneg _)]
+    exact pow_le_pow_left₀ (norm_nonneg _) (hwB x hx) 2
+  have hXH : Integrable (fun x => inner ℝ (X x) (H x)) (V.weight.restrict (closedBall z r)) := by
+    refine Integrable.mono' (hHint.norm.const_mul r)
+      (continuous_inner.comp_aestronglyMeasurable
+        (hXcont.aestronglyMeasurable.prodMk hHint.aestronglyMeasurable))
+      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    have hz2 : ζ x ^ 2 ≤ 1 := by nlinarith
+    rw [Real.norm_eq_abs]
+    refine (abs_real_inner_le_norm _ _).trans ?_
+    gcongr
+    rw [hX, norm_smul, Real.norm_of_nonneg (sq_nonneg _)]
+    calc ζ x ^ 2 * ‖w x‖ ≤ 1 * r := mul_le_mul hz2 (hwB x hx) (norm_nonneg _) zero_le_one
+      _ = r := one_mul _
+  -- Step 2: the test field `X = ζ² x'` is admissible.
+  have hX1 : ContDiff ℝ 1 X := by
+    rw [show X = fun x => ζ x ^ 2 • Tᗮ.starProjection (x - z) from funext fun x => by
+      rw [hX, hw]]
+    exact (hζC1.pow 2).smul ((Tᗮ.starProjection).contDiff.comp (contDiff_id.sub contDiff_const))
+  have hXout : ∀ x, x ∉ closedBall z r → X x = 0 := fun x hx => by
+    rw [hX, hζout x hx]
+    simp
+  have hXcs : HasCompactSupport X := HasCompactSupport.intro (isCompact_closedBall z r) hXout
+  have hXts : tsupport X ⊆ U := by
+    refine (closure_minimal (fun x hx => ?_) isClosed_closedBall).trans hBU
+    by_contra h'
+    exact hx (hXout x h')
+  -- Step 3 at `μ`-a.e. point.
+  have hdiv : ∀ᵐ x ∂V.weight, V.divM X x = 1 / 2 * (ζ x ^ 2 * g x) + b x := by
+    filter_upwards [hae] with x hx
+    obtain ⟨P, hP, hPx⟩ := hx
+    rw [show X = fun y => ζ y ^ 2 • Tᗮ.starProjection (y - z) from funext fun y => by
+      rw [hX, hw]]
+    rw [hdivpt x P hP hPx, hg, hb, hw]
+    ring
+  -- The first variation identity, localized to `B_r(z)`.
+  have hFV := hH.2 X hX1 hXcs hXts
+  have hL : ∫ x, V.divM X x ∂V.weight =
+      ∫ x in closedBall z r, (1 / 2 * (ζ x ^ 2 * g x) + b x) ∂V.weight := by
+    rw [integral_congr_ae hdiv]
+    refine (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_).symm
+    rw [hb, hζout x hx]
+    ring
+  have hR : ∫ x, inner ℝ (X x) (H x) ∂V.weight =
+      ∫ x in closedBall z r, inner ℝ (X x) (H x) ∂V.weight :=
+    (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hXout x hx, inner_zero_left]).symm
+  -- Step 5: absorption (AM-GM) for the drift term.
+  have hb_bd : ∀ x, -b x ≤ 1 / 4 * (ζ x ^ 2 * g x) + 36 / r ^ 2 * ‖w x‖ ^ 2 := by
+    intro x
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    have hsq : Real.sqrt (g x) ^ 2 = g x := Real.sq_sqrt (hg0 x)
+    have hD : |fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))| ≤
+        3 / r * (Real.sqrt (g x) * ‖w x‖) := by
+      rw [← Real.norm_eq_abs]
+      refine (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul (hζd x) ?_ (norm_nonneg _) (by positivity))
+      refine (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right ?_ (norm_nonneg _))
+      rw [hg]
+      exact hopHS _
+    have h1 : -b x ≤ 2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) := by
+      rw [hb]
+      calc -(2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)))
+          = 2 * ζ x * -fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)) := by ring
+        _ ≤ 2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) :=
+          mul_le_mul_of_nonneg_left ((neg_le_abs _).trans hD) (by positivity)
+    have e : 1 / 4 * (ζ x ^ 2 * g x) + 36 / r ^ 2 * ‖w x‖ ^ 2 -
+        2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) =
+        (ζ x * Real.sqrt (g x) / 2 - 6 / r * ‖w x‖) ^ 2 := by
+      linear_combination (-(1 / 4) * ζ x ^ 2) * hsq
+    linarith [sq_nonneg (ζ x * Real.sqrt (g x) / 2 - 6 / r * ‖w x‖)]
+  -- Step 6: the mean curvature term, using the height bound at `μ`-a.e. point of `B_r(z)`.
+  have hXH_bd : ∀ᵐ x ∂(V.weight.restrict (closedBall z r)),
+      -inner ℝ (X x) (H x) ≤ h * ‖H x‖ := by
+    filter_upwards [ae_restrict_of_ae hsupp, ae_restrict_mem measurableSet_closedBall]
+      with x hxs hxB
+    obtain ⟨hz0, hz1⟩ := hζ01 x
+    have hz2 : ζ x ^ 2 ≤ 1 := by nlinarith
+    have hwx : ‖w x‖ ≤ h := by
+      rw [hw, hperp]
+      exact hheight x ⟨hxs, hxB⟩
+    refine (neg_le_abs _).trans ((abs_real_inner_le_norm _ _).trans ?_)
+    rw [hX, norm_smul, Real.norm_of_nonneg (sq_nonneg _)]
+    calc ζ x ^ 2 * ‖w x‖ * ‖H x‖ ≤ 1 * h * ‖H x‖ := by gcongr
+      _ = h * ‖H x‖ := by ring
+  have e1 : ∫ x in closedBall z r, (1 / 2 * (ζ x ^ 2 * g x) + b x) ∂V.weight =
+      1 / 2 * ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight +
+        ∫ x in closedBall z r, b x ∂V.weight := by
+    rw [integral_add (hzg.const_mul _) hbi, integral_const_mul]
+  have e2 : -∫ x in closedBall z r, b x ∂V.weight ≤
+      1 / 4 * ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight +
+        36 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight := by
+    have h' := integral_mono hbi.neg ((hzg.const_mul (1 / 4)).add (hh2.const_mul (36 / r ^ 2)))
+      hb_bd
+    simp only [Pi.neg_apply, Pi.add_apply] at h'
+    rwa [integral_neg, integral_add (hzg.const_mul _) (hh2.const_mul _), integral_const_mul,
+      integral_const_mul] at h'
+  have e3 : -∫ x in closedBall z r, inner ℝ (X x) (H x) ∂V.weight ≤
+      h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+    rw [← integral_neg, ← integral_const_mul]
+    exact integral_mono_ae hXH.neg (hHint.norm.const_mul h) hXH_bd
+  have key : ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight ≤
+      144 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight +
+        4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+    have hid := hFV
+    rw [hL, hR, e1] at hid
+    have r1 : 144 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight =
+        4 * (36 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight) := by ring
+    have r2 : 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight =
+        4 * (h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight) := by ring
+    linarith
+  -- `ζ = 1` on `B_{r/2}(z)`.
+  have hB2 : ∫ x in closedBall z (r / 2), g x ∂V.weight ≤
+      ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight := by
+    calc ∫ x in closedBall z (r / 2), g x ∂V.weight
+        = ∫ x in closedBall z (r / 2), ζ x ^ 2 * g x ∂V.weight :=
+          setIntegral_congr_fun measurableSet_closedBall fun x hx => by rw [hζ1 x hx]; ring
+      _ ≤ ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight :=
+          setIntegral_mono_set hzg (ae_of_all _ fun x => mul_nonneg (sq_nonneg _) (hg0 x))
+            (closedBall_subset_closedBall (by linarith)).eventuallyLE
+  have hId : ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight =
+      ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight := by
+    congr 1
+    funext x
+    rw [hw, hperp]
+  have hHn0 : 0 ≤ ∫ x in closedBall z r, ‖H x‖ ∂V.weight := integral_nonneg fun x => norm_nonneg _
+  simp_rw [← hg]
+  rw [hId]
+  have hfin' := hB2.trans key
+  have hc : 144 / r ^ 2 = 144 * (r ^ 2)⁻¹ := by ring
+  rw [hc] at hfin'
+  nlinarith [mul_nonneg hh hHn0]
 
 end Submission
 
