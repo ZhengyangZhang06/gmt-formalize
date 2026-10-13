@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.least_integer_density_point-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Least integer density point in a ball (proof of Simon 5.7.3)",
+  "statement": "Let V = v(M, θ) be a rectifiable n-varifold in U ⊆ ℝ^{n+ℓ} such that Θⁿ(μ_V, x) = θ(x) for μ_V-a.e. x and θ(x) is a positive integer for μ_V-a.e. x. Then for every ξ ∈ spt V and r > 0 there are an integer N ≥ 1 and a point x₀ ∈ B̆_r(ξ) with Θⁿ(μ_V, x₀) = N and θ ≥ N μ_V-a.e. on B̆_r(ξ).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x)) → (∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) → ∀ ξ ∈ V.support, ∀ r : ℝ, 0 < r → ∃ (N : ℕ) (x₀ : Amb n ℓ), 1 ≤ N ∧ x₀ ∈ ball ξ r ∧ V.HasDensity x₀ N ∧ ∀ᵐ x ∂V.weight, x ∈ ball ξ r → (N : ℝ) ≤ V.mult x",
+  "lean_name": "rsod_exists_least_integer_density_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-least-integer-density-point-a1-a1"
+}

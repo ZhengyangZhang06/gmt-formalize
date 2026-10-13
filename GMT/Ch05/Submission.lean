@@ -458,6 +458,33 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 2 §4: an open subset of an `m`-dimensional `C¹` submanifold is again one.  Given a
+chart `(V, W, φ)` of `S` at `y ∈ B ∩ S`, the restricted chart `(V ∩ φ⁻¹(B), W ∩ B, φ)` works:
+`φ(V ∩ φ⁻¹(B)) = φ(V) ∩ B`, and for compact `K ⊆ W ∩ B`,
+`V ∩ φ⁻¹(B) ∩ φ⁻¹(K) = V ∩ φ⁻¹(K)`. -/
+theorem rsod_isC1Submanifold_open_inter : ∀ (m N : ℕ) (S B : Set (EuclideanSpace ℝ (Fin N))),
+    IsC1Submanifold m S → IsOpen B → IsC1Submanifold m (B ∩ S) := by
+  intro m N S B hS hB y hy
+  obtain ⟨V, W, φ, hV, hW, hyW, hφ, hinj, himg, hprop, hder⟩ := hS y hy.2
+  refine ⟨V ∩ φ ⁻¹' B, W ∩ B, φ, hφ.continuousOn.isOpen_inter_preimage hV hB, hW.inter hB,
+    ⟨hyW, hy.1⟩, hφ.mono inter_subset_left, hinj.mono inter_subset_left, ?_, ?_,
+    fun x hx => hder x hx.1⟩
+  · rw [image_inter_preimage, himg]
+    ext z
+    simp only [mem_inter_iff]
+    tauto
+  · intro K hK hKWB
+    have hKV : V ∩ φ ⁻¹' B ∩ φ ⁻¹' K = V ∩ φ ⁻¹' K := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage]
+      exact ⟨fun hx => ⟨hx.1.1, hx.2⟩, fun hx => ⟨⟨hx.1, (hKWB hx.2).2⟩, hx.2⟩⟩
+    rw [hKV]
+    exact hprop K hK fun z hz => (hKWB hz).1
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
