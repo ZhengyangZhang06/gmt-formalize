@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d42f09344614b1e479cd76586c23a39cdbb9356bbd05b175a2b0f359f9107afa",
+  "git_delta": {
+    "base_commit": "dd721795100f97edbbe395230981825f73776c89",
+    "candidate_commit": "aff8111c8b3f3a5f56e71f3a85840b83820feee3",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ehs_del_diffquot_uniform",
+    "diff_sha256": "4076b75db6e018303a3aeb248a69d98c248abd863ac8f8714cb84b7c5fa3bd76",
+    "source_sha256": "0314c111f52c2409d54376a2b0ae28708815b39c6e83139ea232976c72d6791c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ehs_del_diffquot_uniform",
+      "statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Rn n → E) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 f U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (h : ℝ) (x : Rn n) => h⁻¹ • (f (x + h • e) - f x)) (fun x => fderiv ℝ f x e) (𝓝[≠] 0) K",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
