@@ -1507,6 +1507,52 @@ theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (
         intro x hx
         exact_mod_cast R.mult_pos x hx.1
 
+/-- **Simon 7.2.4, (8)**, localized (minimality of the limit `C`).  For a competitor `S` with
+`K = spt(S − C)` compact and `K ⊆ W`, pick `ε > 0` with `thickening ε K ⊆ W`; the local comparison
+with `ψ = id` gives an open `W'`, `K ⊆ W' ⊆ W`, and `φ'` with `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`,
+so `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)` by lower semicontinuity of mass.  Off `K` the
+currents `S` and `C` agree, so their weights `μ_S, μ_C` agree on the Borel set `W \ W' ⊆ ℝᴾ \ K`,
+and `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`. -/
+theorem Submission.dtc_bc_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ := by
+  intro P n Us Ss C hUs hC hconv hcomp
+  refine ⟨hC, fun W S hW _ hS hbd hKc hsub => ?_⟩
+  -- `K = spt(S − C)` is a compact subset of `W`; pick `ε > 0` with `thickening ε K ⊆ W`
+  set K := (S - C).support
+  have hKW : K ⊆ W := fun x hx => (hsub hx).2
+  obtain ⟨ε, hε, hεW⟩ := hKc.exists_thickening_subset_open hW hKW
+  -- the local comparison with `ψ = id`: `K ⊆ W' ⊆ W`, `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`
+  obtain ⟨W', hW'o, hKW', hW'ε, φ', hφ', hcmp⟩ := hcomp K ε hKc hε id strictMono_id
+  have hW'W : W' ⊆ W := hW'ε.trans hεW
+  -- lower semicontinuity: `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ limsup ≤ M_{W'}(S)`
+  have hCS : C.massOn W' ≤ S.massOn W' :=
+    le_trans (Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hUs hconv φ' hφ' W')
+      (le_trans liminf_le_limsup (hcmp S hS hbd subset_rfl))
+  -- on open sets the masses are the weights `μ_C = μ_{R_C}` and `μ_S = μ_{R_S}`
+  obtain ⟨RC, hRC⟩ := hC
+  obtain ⟨RS, hRS⟩ := hS
+  have hmC := Submission.cmc_massOn_eq_imRep_measure P n univ C RC isOpen_univ hRC
+  have hmS := Submission.cmc_massOn_eq_imRep_measure P n univ S RS isOpen_univ hRS
+  -- `μ_S = μ_C` on the open subsets of `ℝᴾ \ K` (there `S = C`), hence on its Borel subsets
+  have hagree : ∀ A : Set (Euclid P), MeasurableSet A → A ⊆ Kᶜ → RS.measure A = RC.measure A :=
+    Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P Kᶜ RS.measure RC.measure
+      hKc.isClosed.isOpen_compl
+      (fun K' hK' _ =>
+        (Submission.rsd_imrep_compact_measure_ne_top P n univ RS K' hK' (subset_univ _)).2)
+      (fun G hG hGK => by
+        rw [← hmS G hG, ← hmC G hG]
+        exact Submission.cmc_ml_massOn_eq_of_disjoint_sub_support P n univ S C K G subset_rfl
+          (subset_compl_iff_disjoint_right.mp hGK))
+  have hdiff : RS.measure (W \ W') = RC.measure (W \ W') :=
+    hagree _ (hW.measurableSet.diff hW'o.measurableSet) fun x hx hxK => hx.2 (hKW' hxK)
+  -- additivity: `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`
+  have hsplit : ∀ μ : Measure (Euclid P), μ W' + μ (W \ W') = μ W := fun μ => by
+    rw [← measure_inter_add_sdiff W hW'o.measurableSet, inter_eq_right.mpr hW'W]
+  calc C.massOn W = RC.measure W' + RC.measure (W \ W') := by rw [hmC W hW, hsplit]
+    _ ≤ RS.measure W' + RS.measure (W \ W') := by
+        rw [← hmC W' hW'o, ← hmS W' hW'o, hdiff]
+        exact add_le_add hCS le_rfl
+    _ = S.massOn W := by rw [hmS W hW, hsplit]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
