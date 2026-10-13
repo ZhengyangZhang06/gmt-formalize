@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c433c58fe9d89c96d0b5e7a4bef1d41ae478ba8e9adf4a527f98d658d3465011",
+  "git_delta": {
+    "base_commit": "2499a200bce0b5d74d2ff4d9ec107424e16af52a",
+    "candidate_commit": "2136a7f0eda5fcda3b881c1f486da4ab6c447f2f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ci_ie_nvector_intervalIntegral",
+    "diff_sha256": "8bf00dbc7d3fa5b6d4e8a90bac479e87b41d27791c01ace78000e31ac5408d27",
+    "source_sha256": "089707b0fd21daa476bb8bf7a2c9e35fa393872d8f489f351f2908e8ce698f98",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_ie_nvector_intervalIntegral",
+      "statement": "∀ (P m : ℕ) (a b : ℝ) (f : ℝ → Covector (Eucl P) m) (c : Covector (Eucl P) m) (w : NVector (Eucl P) m), Continuous f → (∀ v : Fin m → Eucl P, c v = ∫ s in a..b, f s v) → ∫ s in a..b, w (f s) = w c",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
