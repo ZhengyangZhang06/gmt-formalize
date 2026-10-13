@@ -551,6 +551,46 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 
+/-- **Constant forms are boundaries near the support of a cycle** (steps 5 and 7 of the cone
+inequality used in Simon Ch. 6, 8.2(4)–(6), via the homotopy formula 2.25 and the cone 2.30).
+Assume (VO), the vanishing of a current on test forms supported off its support.  If
+`X ∈ 𝒟_{n+1}(ℝᴾ)` has `∂X = 0` and `spt X ⊆ B_r(x₀)`, and the test form `φ` equals the constant
+covector `α` on `B_r(x₀)`, then `X(φ) = 0`.  With the bump `ζ` (`ζ = 1` on `B̄_r(x₀)`) and the
+primitive `ψ(y) = (n + 1)⁻¹ ι_{y−x₀} α` of `α` (`cbrld_cone_extDeriv_affine_contraction`), the
+test form `η = ζψ` has `dη = dψ = α = φ` on `B_r(x₀)`, so `cbrld_cone_eval_eq_of_eqOn_open` gives
+`X(φ) = X(dη) = ∂X(η) = 0`. -/
+theorem Submission.cbrld_cone_cycle_eval_eq_zero_of_const_on_ball : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)) (x₀ : Euclid P) (r : ℝ) (α : Covector (Euclid P) (n + 1)) (φ : TestFormOn (univ : Set (Euclid P)) (n + 1)), 0 < r → X.boundary = 0 → X.support ⊆ ball x₀ r → (∀ x ∈ ball x₀ r, (φ : DifferentialForm (Euclid P) (n + 1)) x = α) → X φ = 0 := by
+  intro VO P n X x₀ r α φ hr hbd hspt hφ
+  -- Step 1: the cut-off `ζ`, equal to `1` on `B̄_r(x₀)`
+  let ζ : ContDiffBump x₀ := ⟨r, r + 1, hr, by linarith⟩
+  -- Step 2: the affine primitive `ψ` of `α`
+  let ψ : DifferentialForm (Euclid P) n := fun y => ((n : ℝ) + 1)⁻¹ • α.curryLeft (y - x₀)
+  have hψ : IsSmoothForm ψ :=
+    (α.curryLeft.contDiff.comp (contDiff_id.sub contDiff_const)).const_smul _
+  -- Step 3: the compactly supported primitive `η = ζψ`
+  let g : DifferentialForm (Euclid P) n := fun y => ζ y • ψ y
+  have hg : IsSmoothForm g := ζ.contDiff.smul hψ
+  have hgc : HasCompactSupport g := ζ.hasCompactSupport.smul_right
+  let η : TestFormOn (univ : Set (Euclid P)) n := ⟨g, ⟨hg, hgc⟩, subset_univ _⟩
+  -- Step 4: `X(dη) = ∂X(η) = 0`
+  have h0 : X (exteriorDerivativeTestOn univ n η) = 0 := by
+    have h := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) n => T η) hbd
+    simpa using h
+  -- Step 5: `φ = dη` on `B_r(x₀)`, since `η = ψ` near each point of the ball
+  have heq : EqOn (φ : DifferentialForm (Euclid P) (n + 1))
+      ((exteriorDerivativeTestOn univ n η : TestFormOn (univ : Set (Euclid P)) (n + 1)) :
+        DifferentialForm (Euclid P) (n + 1)) (ball x₀ r) := by
+    intro y hy
+    rw [hφ y hy]
+    change α = extDeriv g y
+    have hev : g =ᶠ[𝓝 y] ψ := by
+      filter_upwards [isOpen_ball.mem_nhds hy] with z hz
+      simp [g, ζ.one_of_mem_closedBall (ball_subset_closedBall hz)]
+    rw [hev.extDeriv_eq, Submission.cbrld_cone_extDeriv_affine_contraction P n α x₀ y]
+  -- Step 6: localization to the open ball containing `spt X`
+  rw [Submission.cbrld_cone_eval_eq_of_eqOn_open VO P (n + 1) univ (ball x₀ r) X φ _ isOpen_ball
+    hspt heq, h0]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
