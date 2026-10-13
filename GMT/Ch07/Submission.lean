@@ -590,6 +590,28 @@ theorem Submission.dtc_blowUp_massOn_image : ∀ (P n : ℕ) (U : Set (Euclid P)
       exact ⟨x + lam • z, hωs hz, hηι z⟩
     · have h := hωn (x + lam • z)
       rwa [hω, hηι] at h
+/-- **Simon 6.2.14 on varying domains**: mass bounds pass to `ConvergesWeakly`-limits.  If
+`Tⱼ ⇀ S` and, for all large `j`, `W ⊆ Uⱼ` and `M_W(Tⱼ) ≤ B`, then `M_W(S) ≤ B`.  An admissible
+`ω` for `M_W(S)` has `spt ω ⊆ W ⊆ Uⱼ`, so `currentEval Tⱼ ω = Tⱼ(ω)` with `ω` admissible for
+`M_W(Tⱼ)`; hence eventually `ofReal (currentEval Tⱼ ω) ≤ B`, and the limit `ofReal (S(ω))` lies
+in the closed set `{t ≤ B}`. -/
+theorem Submission.idtp_convergesWeakly_massOn_le : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (V : Set (Euclid P)) (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n) (S : GeometricCurrentOn V n) (W : Set (Euclid P)) (B : ℝ≥0∞), ConvergesWeakly Ts S → (∀ᶠ j in atTop, W ⊆ Us j ∧ (Ts j).massOn W ≤ B) → S.massOn W ≤ B := by
+  intro P n Us V Ts S W B hconv hev
+  -- `M_W(S)` is the supremum of `ofReal (S(ω))` over admissible `ω`
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  -- `ofReal (currentEval Tⱼ ω) → ofReal (S(ω))`, and `{t ≤ B}` is closed
+  refine le_of_tendsto (ENNReal.tendsto_ofReal (hconv ω)) ?_
+  -- for large `j`, `spt ω ⊆ W ⊆ Uⱼ`: `ω` is a test form of `Uⱼ`, admissible for `M_W(Tⱼ)`
+  filter_upwards [hev] with j hj
+  obtain ⟨hWU, hB⟩ := hj
+  have h : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us j :=
+    ⟨ω.2.1, hω.1.trans hWU⟩
+  have heval : currentEval (Ts j) (ω : DifferentialForm (Euclid P) n) = Ts j ⟨_, h⟩ :=
+    dite_eq_left h
+  rw [heval]
+  exact ((Ts j).le_massOn (W := W) (omega := ⟨_, h⟩) hω).trans hB
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
