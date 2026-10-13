@@ -1005,6 +1005,99 @@ theorem Submission.dpf_pushforward_formula_boundaryVanishes : ∀ (P n : ℕ) (U
     hψC hψφ hDψφ
   -- Step 7: the limit of the vanishing integrals is `0`
   exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr fun k => (hI k).symm)
+/-- **The chosen approximate tangent plane** (Simon Ch. 3, Remark 1.5(1), used for 7.1.2).  If `Q`
+is an approximate tangent space of `M` at `x` (Ch. 3, 1.4), then `approxTangentPlane n M x = Q`:
+`Q` witnesses the existential in its definition, so it returns the chosen plane, which is an
+approximate tangent space of `M` at `x` and hence equals `Q` by uniqueness. -/
+theorem Submission.dpf_itt_approxTangentPlane_eq : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n M x Q → approxTangentPlane n M x = Q := by
+  intro P n M x Q hQ
+  have h : ∃ Q', HasApproximateTangentSpaceAt n M x Q' := ⟨Q, hQ⟩
+  unfold approxTangentPlane
+  rw [dite_eq_left h]
+  exact h.choose_spec.unique hQ
+/-- **Bi-Lipschitz images of Borel, locally `Hⁿ`-finite subsets of `U`** (Simon 6.3.7, the image
+`φ(M)` in the push-forward of `τ(M, θ, ξ)` by a diffeomorphism, used in 7.1.2).  If `M ⊆ U` is
+Borel with `Hⁿ(M ∩ C) < ∞` for every compact `C ⊆ U`, and `φ : ℝᴾ → ℝᴾ` is `Λ`-Lipschitz and
+`Λ'`-antilipschitz with `φ⁻¹(U) = U`, then `φ(M)` is Borel (Lusin–Souslin: `φ` is continuous and
+injective), `φ(M) ⊆ U`, and `Hⁿ(φ(M) ∩ C) ≤ Λⁿ Hⁿ(M ∩ φ⁻¹(C)) < ∞` for every compact `C ⊆ U`,
+because `φ⁻¹(C)` is closed and bounded, hence a compact subset of `φ⁻¹(U) = U`. -/
+theorem Submission.dpf_itt_bilipschitz_image_locfin : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ Λ' : NNReal), MeasurableSet M → M ⊆ U → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → φ ⁻¹' U = U → MeasurableSet (φ '' M) ∧ φ '' M ⊆ U ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (φ '' M ∩ C) ≠ ∞ := by
+  intro P n U M φ Λ Λ' hM hMU hfin hL hA hU
+  -- Step 1: `φ` is continuous (Lipschitz) and injective (antilipschitz)
+  have hcont : Continuous φ := hL.continuous
+  have hinj : Injective φ := hA.injective
+  -- Step 2: `φ(M)` is Borel by the Lusin–Souslin theorem
+  refine ⟨hM.image_of_continuousOn_injOn hcont.continuousOn hinj.injOn, ?_, ?_⟩
+  -- Step 3: `φ(M) ⊆ U`, since `M ⊆ U = φ⁻¹(U)`
+  · rintro _ ⟨x, hx, rfl⟩
+    have hx' : x ∈ φ ⁻¹' U := by
+      rw [hU]
+      exact hMU hx
+    exact hx'
+  · intro C hC hCU
+    -- Step 4: `K = φ⁻¹(C)` is closed and bounded, hence compact, and `K ⊆ φ⁻¹(U) = U`
+    have hK : IsCompact (φ ⁻¹' C) :=
+      Metric.isCompact_of_isClosed_isBounded (hC.isClosed.preimage hcont)
+        (hA.isBounded_preimage hC.isBounded)
+    have hKU : φ ⁻¹' C ⊆ U := by
+      rw [← hU]
+      exact preimage_mono hCU
+    have hMK : μHE[n] (M ∩ φ ⁻¹' C) ≠ ∞ := hfin _ hK hKU
+    -- Step 5: `Hⁿ(φ(S)) ≤ Λⁿ Hⁿ(S)`, since `μHE[n] = c • μH[n]` for a constant `c`
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    have hle (S : Set (Euclid P)) : μHE[n] (φ '' S) ≤ (Λ : ℝ≥0∞) ^ (n : ℝ) * μHE[n] S := by
+      simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+        smul_eq_mul]
+      calc _ ≤ _ * ((Λ : ℝ≥0∞) ^ (n : ℝ) * μH[n] S) :=
+            mul_le_mul_right (hL.hausdorffMeasure_image_le hn S) _
+        _ = _ := by ring
+    -- Step 6: `φ(M) ∩ C = φ(M ∩ K)`, so `Hⁿ(φ(M) ∩ C) ≤ Λⁿ Hⁿ(M ∩ K) < ∞`
+    rw [← image_inter_preimage]
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg hn ENNReal.coe_ne_top) hMK) (hle _)
+/-- Composing a bi-Lipschitz immersed piece `F` with a bi-Lipschitz immersion `φ` of `ℝᴾ`:
+`φ ∘ F` is `ΛL`-Lipschitz, bounded below on `B` by `m' = m / (Λ' + 1)`, differentiable on `B` with
+injective derivative `D(φ ∘ F)(a) = Dφ(F a) ∘ DF(a)` (chain rule), and so
+`range D(φ ∘ F)(a) = Dφ(F a)(range DF(a))`. -/
+theorem Submission.dpf_itt_comp_bilipschitz_piece : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (φ : Euclid P → Euclid P) (B : Set (Euclid n)) (L Λ Λ' : NNReal) (m : ℝ), LipschitzWith L F → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → Differentiable ℝ φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → LipschitzWith (Λ * L) (φ ∘ F) ∧ (∃ m' : ℝ, 0 < m' ∧ ∀ a ∈ B, ∀ a' ∈ B, m' * ‖a - a'‖ ≤ ‖(φ ∘ F) a - (φ ∘ F) a'‖) ∧ (∀ a ∈ B, DifferentiableAt ℝ (φ ∘ F) a ∧ Injective (fderiv ℝ (φ ∘ F) a)) ∧ ∀ a ∈ B, LinearMap.range (fderiv ℝ (φ ∘ F) a : Euclid n →ₗ[ℝ] Euclid P) = Submodule.map (fderiv ℝ φ (F a) : Euclid P →ₗ[ℝ] Euclid P) (LinearMap.range (fderiv ℝ F a : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F φ B L Λ Λ' m hF hm hlow hdiff hφ hφinj hφL hφA
+  refine ⟨hφL.comp hF, ⟨m / ((Λ' : ℝ) + 1), div_pos hm (by positivity), fun a ha a' ha' => ?_⟩,
+    fun a ha => ⟨(hφ (F a)).comp a (hdiff a ha).1, ?_⟩, fun a ha => ?_⟩
+  · have h1 : ‖F a - F a'‖ ≤ (Λ' : ℝ) * ‖φ (F a) - φ (F a')‖ := by
+      simpa only [dist_eq_norm] using hφA.le_mul_dist (F a) (F a')
+    rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity), comp_apply, comp_apply]
+    nlinarith [hlow a ha a' ha', norm_nonneg (φ (F a) - φ (F a'))]
+  · rw [fderiv_comp a (hφ (F a)) (hdiff a ha).1, ContinuousLinearMap.coe_comp]
+    exact (hφinj (F a)).comp (hdiff a ha).2
+  · rw [fderiv_comp a (hφ (F a)) (hdiff a ha).1, ContinuousLinearMap.toLinearMap_comp]
+    exact LinearMap.range_comp _ _
+/-- **A.e. transfer through Lipschitz pieces** (step 6 of the image tangent transport).  Let
+`M ⊆ ℝᴾ` be Borel with `Hⁿ(M \ ⋃ᵢ Fᵢ(Bᵢ)) = 0` for Lipschitz `Fᵢ : ℝⁿ → ℝᴾ`.  If `p (Fᵢ b)` holds
+for Lebesgue-a.e. `b ∈ Bᵢ`, then `p x` holds for `Hⁿ`-a.e. `x ∈ M`: the bad parameters
+`Nᵢ ⊆ Bᵢ` are Lebesgue-null, so `Hⁿ(Fᵢ(Nᵢ)) ≤ Lᵢⁿ Hⁿ(Nᵢ) = 0` (`Hⁿ = Lⁿ` on `ℝⁿ`), and every
+`x ∈ M` with `¬p x` lies in `(M \ ⋃ᵢ Fᵢ(Bᵢ)) ∪ ⋃ᵢ Fᵢ(Nᵢ)`. -/
+theorem Submission.dpf_itt_ae_of_ae_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (p : Euclid P → Prop), MeasurableSet M → (∀ i, ∃ L : NNReal, LipschitzWith L (F i)) → μHE[n] (M \ ⋃ i, F i '' B i) = 0 → (∀ i, ∀ᵐ b ∂(volume.restrict (B i)), p (F i b)) → ∀ᵐ x ∂(μHE[n].restrict M), p x := by
+  intro P n M F B p hM hF hcov hp
+  -- `μHE[n] = c • μH[n]` with `c ≠ 0`
+  have hc := Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n
+  -- the bad parameters `Nᵢ = {b ∈ Bᵢ | ¬p (Fᵢ b)}` have `μHE[n]`-null images
+  have hnull : ∀ i, μHE[n] (F i '' {b | ¬(b ∈ B i → p (F i b))}) = 0 := by
+    intro i
+    obtain ⟨L, hL⟩ := hF i
+    have hN : μHE[n] {b | ¬(b ∈ B i → p (F i b))} = 0 := by
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact ae_iff.mp (ae_imp_of_ae_restrict (hp i))
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, smul_eq_zero] at hN ⊢
+    exact Or.inr (le_zero_iff.mp ((hL.hausdorffMeasure_image_le (Nat.cast_nonneg n) _).trans_eq
+      (by rw [hN.resolve_left hc, mul_zero])))
+  -- every bad point of `M` lies in `(M \ ⋃ᵢ Fᵢ(Bᵢ)) ∪ ⋃ᵢ Fᵢ(Nᵢ)`
+  rw [ae_restrict_iff' hM, ae_iff]
+  refine measure_mono_null (fun x hx => ?_) (measure_union_null hcov (measure_iUnion_null hnull))
+  obtain ⟨hxM, hpx⟩ := not_imp.mp hx
+  by_cases hxU : x ∈ ⋃ i, F i '' B i
+  · obtain ⟨i, b, hb, rfl⟩ := mem_iUnion.mp hxU
+    exact Or.inr (mem_iUnion.mpr ⟨i, b, fun h => hpx (h hb), rfl⟩)
+  · exact Or.inl ⟨hxM, hxU⟩
 /-- **Simon Ch. 3, Lemma 1.2 and Remark 1.3**, with bi-Lipschitz Borel pieces in place of `C¹`
 submanifolds: a Borel countably `n`-rectifiable `M ⊆ ℝᴾ` is, up to an `Hⁿ`-null set, the disjoint
 union of Borel sets `Fᵢ(Bᵢ) ⊆ M`, where `Fᵢ : ℝⁿ → ℝᴾ` is Lipschitz, `Bᵢ` is Borel,
@@ -2448,6 +2541,41 @@ theorem Submission.dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y
   filter_upwards [hpull _ hloc,
     Submission.ptd_piece_image_approxTangent_ae P n F B L m hF hB hm hbi hdiff] with b hYA hA'
   exact (hYA _).2 hA'
+
+/-- **Simon 6.3.7** (the approximate tangent space of `φ(M)` at `φ(x)` is spanned by the images
+`Dφ(x)(τᵢ)`), for a bi-Lipschitz `C¹` map `φ` with injective derivative and `φ⁻¹(U) = U`: for
+`Hⁿ`-a.e. `x ∈ M`, `M` has the approximate tangent space `Q(x) = approxTangentPlane n M x` at `x`
+and `φ(M)` has the approximate tangent space `Dφ(x)(Q(x))` at `φ(x)`.  `M` is, up to an
+`Hⁿ`-null set, the union of bi-Lipschitz pieces `Fᵢ(Bᵢ)`; for a.e. `b ∈ Bᵢ`,
+`T_{Fᵢ(b)}M = range DFᵢ(b)` and `T_{φ(Fᵢ(b))}φ(M) = range D(φ ∘ Fᵢ)(b) = Dφ(Fᵢ(b))(range DFᵢ(b))`,
+and Lipschitz images of null parameter sets are `Hⁿ`-null. -/
+theorem Submission.dpf_approxTangent_bilipschitz_image_ae : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable n M → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → ContDiff ℝ 1 φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → ∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (approxTangentPlane n M x) ∧ HasApproximateTangentSpaceAt n (φ '' M) (φ x) (Submodule.map (fderiv ℝ φ x : Euclid P →ₗ[ℝ] Euclid P) (approxTangentPlane n M x)) := by
+  intro P n U M φ Λ hU hM hMU hrect hloc hφ hφinj hlip hanti hpre
+  -- Step 1: bi-Lipschitz pieces `Fᵢ(Bᵢ) ⊆ M` covering `M` up to an `Hⁿ`-null set
+  obtain ⟨F, B, m, hFlip, hBmeas, hmpos, hFlow, hFdiff, -, hFM, -, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
+  -- Step 3: `φ(M)` is Borel, contained in `U` and locally `Hⁿ`-finite in `U`
+  obtain ⟨hφMmeas, hφMU, hφMloc⟩ :=
+    Submission.dpf_itt_bilipschitz_image_locfin P n U M φ Λ Λ hM hMU hloc hlip hanti hpre
+  -- Step 6: it suffices to prove the conclusion at `Fᵢ(b)` for a.e. `b ∈ Bᵢ`
+  refine Submission.dpf_itt_ae_of_ae_pieces P n M F B _ hM hFlip hnull fun i => ?_
+  obtain ⟨L, hL⟩ := hFlip i
+  -- Step 4: `φ ∘ Fᵢ` is bi-Lipschitz on `Bᵢ`, with injective derivative of range
+  -- `Dφ(Fᵢ(b))(range DFᵢ(b))`
+  obtain ⟨hφFlip, ⟨m', hm'pos, hφFlow⟩, hφFdiff, hrange⟩ :=
+    Submission.dpf_itt_comp_bilipschitz_piece P n (F i) φ (B i) L Λ Λ (m i) hL (hmpos i)
+      (hFlow i) (hFdiff i) (hφ.differentiable one_ne_zero) hφinj hlip hanti
+  -- Step 2: `T_{Fᵢ(b)}M = range DFᵢ(b)` for a.e. `b ∈ Bᵢ`
+  have hM_ae := Submission.dpf_approxTangent_ae_bilipschitz_piece P n U M (F i) (B i) L (m i) hU
+    hM hMU hloc hL (hBmeas i) (hmpos i) (hFlow i) (hFdiff i) (hFM i)
+  -- Step 4: `T_{φ(Fᵢ(b))}φ(M) = range D(φ ∘ Fᵢ)(b)` for a.e. `b ∈ Bᵢ`
+  have hφM_ae := Submission.dpf_approxTangent_ae_bilipschitz_piece P n U (φ '' M) (φ ∘ F i)
+    (B i) (Λ * L) m' hU hφMmeas hφMU hφMloc hφFlip (hBmeas i) hm'pos hφFlow hφFdiff
+    (by rw [image_comp]; exact image_mono (hFM i))
+  -- Step 5: combine, using `Q(Fᵢ(b)) = range DFᵢ(b)` (uniqueness of approximate tangent planes)
+  filter_upwards [hM_ae, hφM_ae, ae_restrict_mem (hBmeas i)] with b hb hφb hbB
+  rw [Submission.dpf_itt_approxTangentPlane_eq P n M (F i b) _ hb, ← hrange b hbB]
+  exact ⟨hb, hφb⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
