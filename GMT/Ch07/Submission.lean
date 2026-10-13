@@ -451,6 +451,76 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Orientation normal form (Simon Ch. 6, 1.1 and 2.2; step 1 of the graph chart in Ch. 7, §5):
+a unit orientation `ξ = ±τ₀ ∧ ⋯ ∧ τₘ` of `Q` equals `ι(e₀) ∧ ⋯ ∧ ι(eₘ)` for a linear isometry
+`ι : ℝ^{m+1} → ℝᴾ` with range `Q`.  If the sign is `−`, replace `τ₀` by `−τ₀`: the family stays
+orthonormal with the same span, and `α(τ') = −α(τ)` by linearity of `α` in slot `0`.  Then `ι` is
+the linear map `eᵢ ↦ τ'ᵢ`; it sends the standard orthonormal basis to an orthonormal family, so it
+is an isometry, and its range is `span τ' = Q`. -/
+theorem Submission.codim1_rdo_gc_unitOrientation_isometry : ∀ (P m : ℕ) (ξ : MultiVector P (m + 1)) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid P, Set.range ι = (Q : Set (Euclid P)) ∧ ∀ α : Covector (Euclid P) (m + 1), ξ α = α (fun i => ι (EuclideanSpace.single i 1)) := by
+  intro P m ξ Q ⟨τ, hτ, hspan, hsign⟩
+  -- normalize the sign: an orthonormal `τ'` spanning `Q` with `ξ(α) = α(τ')`
+  obtain ⟨τ', hτ', hspan', hξ'⟩ : ∃ τ' : Fin (m + 1) → Euclid P, Orthonormal ℝ τ' ∧
+      Submodule.span ℝ (Set.range τ') = Q ∧ ∀ α : Covector (Euclid P) (m + 1), ξ α = α τ' := by
+    rcases hsign with h | h
+    · exact ⟨τ, hτ, hspan, h⟩
+    · -- `τ' = update τ 0 (−τ₀)`
+      refine ⟨Function.update τ 0 ((-1 : ℝ) • τ 0), ?_, ?_, ?_⟩
+      · rw [orthonormal_iff_ite] at hτ ⊢
+        intro i j
+        rcases eq_or_ne i 0 with rfl | hi <;> rcases eq_or_ne j 0 with rfl | hj
+        · simp only [Function.update_self, inner_smul_left, inner_smul_right, hτ 0 0]
+          norm_num
+        · simp [Function.update_of_ne hj, hτ 0 j, hj.symm]
+        · simp [hτ i 0, hi]
+        · simp only [Function.update_of_ne hi, Function.update_of_ne hj, hτ i j]
+      · rw [← hspan]
+        apply le_antisymm
+        · rw [Submodule.span_le]
+          rintro _ ⟨i, rfl⟩
+          rcases eq_or_ne i 0 with rfl | hi
+          · simp only [Function.update_self]
+            exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩)
+          · rw [Function.update_of_ne hi]; exact Submodule.subset_span ⟨i, rfl⟩
+        · rw [Submodule.span_le]
+          rintro _ ⟨i, rfl⟩
+          rcases eq_or_ne i 0 with rfl | hi
+          · have h0 : Function.update τ 0 ((-1 : ℝ) • τ 0) 0 ∈
+                Submodule.span ℝ (Set.range (Function.update τ 0 ((-1 : ℝ) • τ 0))) :=
+              Submodule.subset_span ⟨0, rfl⟩
+            have h1 := Submodule.smul_mem _ (-1 : ℝ) h0
+            simpa using h1
+          · have h0 : Function.update τ 0 ((-1 : ℝ) • τ 0) i ∈
+                Submodule.span ℝ (Set.range (Function.update τ 0 ((-1 : ℝ) • τ 0))) :=
+              Submodule.subset_span ⟨i, rfl⟩
+            rwa [Function.update_of_ne hi] at h0
+      · intro α
+        rw [h α, α.map_update_smul, Function.update_eq_self]
+        simp
+  -- `ι` is the linear map `eᵢ ↦ τ'ᵢ`, an isometry since it maps an orthonormal basis to `τ'`
+  let B := EuclideanSpace.basisFun (Fin (m + 1)) ℝ
+  let f : Euclid (m + 1) →ₗ[ℝ] Euclid P := B.toBasis.constr ℝ τ'
+  have hfB : ∀ i, f (B i) = τ' i := fun i => by
+    have := B.toBasis.constr_basis ℝ τ' i
+    rwa [OrthonormalBasis.coe_toBasis] at this
+  have hf : Orthonormal ℝ (f ∘ B.toBasis) := by
+    convert hτ' using 1; funext i; exact hfB i
+  let ι := f.isometryOfOrthonormal (v := B.toBasis) (by simp [B.orthonormal]) hf
+  refine ⟨ι, ?_, ?_⟩
+  · -- `range ι = span τ' = Q`
+    have : Set.range ι = Set.range f := rfl
+    rw [this, ← LinearMap.coe_range, ← hspan']
+    congr 1
+    rw [Module.Basis.constr_range]
+  · -- `ξ(α) = α(τ') = α(ι e₀, …, ι eₘ)`
+    intro α
+    rw [hξ' α]
+    congr 1
+    funext i
+    have : (EuclideanSpace.single i 1 : Euclid (m + 1)) = B i := by simp [B]
+    rw [this]
+    exact (hfB i).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
