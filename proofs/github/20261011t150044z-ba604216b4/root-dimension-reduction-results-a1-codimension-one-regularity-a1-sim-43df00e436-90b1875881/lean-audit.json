@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5595f2dc53f46e76efec8a678e5517c862ca77fa52a95757964522c515486f0f",
+  "git_delta": {
+    "base_commit": "ca8b0e31e429fb9bd356351736aa15bfb1bf1ff4",
+    "candidate_commit": "85d9444aafa57c41d9085550dda6732f4821bf8f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sc_left_inverse_immersion",
+    "diff_sha256": "6a935c2e333fdd991b4af1e64768dbe4b6c9d61c5d226067ebd46919d4344a62",
+    "source_sha256": "517ee337da2f872c3ca1d527306b52b8bde060069a58b02a74fba65bdc752cec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sc_left_inverse_immersion",
+      "statement": "∀ (P d : ℕ) (D : Set (Euclid d)) (g : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P), IsOpen D → DifferentiableOn ℝ g D → (∀ a ∈ D, π (g a - c) = a) → InjOn g D ∧ ∀ a ∈ D, π ∘L fderiv ℝ g a = ContinuousLinearMap.id ℝ (Euclid d) ∧ Injective (fderiv ℝ g a)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
