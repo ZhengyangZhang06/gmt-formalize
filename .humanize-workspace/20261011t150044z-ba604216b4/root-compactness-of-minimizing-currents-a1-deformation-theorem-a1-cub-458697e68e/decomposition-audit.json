@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_cbm_sa_|mollif|convolution",
+        "cmcdt_cbm_sa_",
+        "hasFDerivAt_convolution_left|contDiff_convolution_left|convolutionExists_left|continuous_convolution_left|support_convolution_subset_swap|dist_convolution_le|convolution_integrand|convolution_def|convolution_eq_swap",
+        "exists_hasCompactSupport_lintegral_sub_le|theorem (normed_neg|support_normed_eq|integral_normed|contDiff_normed|hasCompactSupport_normed|continuous_normed|nonneg_normed)",
+        "trace_smulRight|toDual_symm_apply|norm_apply_le|enorm_integral_le_lintegral_enorm|uniformContinuous_of_continuous",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/sa-independent-audit-jp1inf47/MinimalCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-458697e68e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/sa-independent-audit-jp1inf47/MinimalCheck.lean",
+        "/tmp/sa-independent-audit-jp1inf47/minimal.log",
+        "/tmp/sa-independent-audit-jp1inf47/import-closure.json"
+      ],
+      "conclusion": "The pinned revisions and frozen Euclid definition match the workspace. No matching project theorem or reservation of the four proposed bare names was found. Inspected Mathlib declarations support the differentiation, support, trace, density and normalization arguments. Source import inspection confirms the two documented additional imports. All exact proposition strings elaborate before child implementation; scalar convolution and Euclidean measure instances were checked. The unchanged supplied Lean proof bodies, including the exact parent assembly under Submission.*, compile in a reduced pinned-Mathlib harness with only propext, Classical.choice and Quot.sound. The full-project import rerun was stopped because of memory pressure; this is not a full-project comparator receipt. The split is appropriate: its acyclic dependencies and normalized bumps of radii δ/(k+2) establish precisely the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mollify_adjoint",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the C¹ compact-kernel and integrability hypotheses. The reflection chain rule supplies the correct sign; continuity of trace and the rank-one trace formula justify the divergence identity. The explicit integrable bound C‖s(x)‖|u(z)| justifies Fubini. The proof is complete, independent of other children or ancestors, and covers P = 0."
+    },
+    {
+      "key": "smoothed_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree on every hypothesis and all four conclusions. Measurability and boundedness give local integrability; compact-kernel convolution gives smoothness. Nonnegativity and normalization give the unit bound. The closed padded box correctly controls topological support, is compact, and lies strictly inside Q₁ because σ < δ. Empty inner cubes are covered."
+    },
+    {
+      "key": "grad_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact parent variation hypothesis and operator-norm conclusion are preserved. The normalized Riesz field is measurable and integrable, with Df(s) equal to the indicated gradient norm. Applying smoothed_field to the reflected kernel makes −G admissible; mollify_adjoint then gives the required bound with the correct sign. These are exactly the two declared dependencies, with no circular reliance or hidden positivity assumption on V."
+    },
+    {
+      "key": "mollify_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the uniform ε–r statement with a non-vacuous extended L¹ integral. The proof chooses r before ρ, establishes contraction by Tonelli, uses compactly supported continuous density, and controls the smoothing error on a compact Minkowski sum. Pointwise convolution existence justifies linearity; the three ε/4 estimates yield the stated bound. The proof is independent and includes n = 0."
+    }
+  ],
+  "required_changes": []
+}

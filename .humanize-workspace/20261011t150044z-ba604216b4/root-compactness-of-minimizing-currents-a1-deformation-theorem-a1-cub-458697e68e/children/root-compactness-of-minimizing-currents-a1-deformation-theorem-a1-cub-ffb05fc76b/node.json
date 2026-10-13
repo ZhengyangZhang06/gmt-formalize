@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_adjoint-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1",
+  "depth": 5,
+  "title": "Adjoint identity for mollification: ∫ D(η⋆u)(s) = −∫ u · div(η̌⋆s) for C¹ compactly supported η",
+  "statement": "Let P ∈ ℕ, ℝ^P = Euclid P with Lebesgue measure, and div G := trace DG. Let η : ℝ^P → ℝ be C¹ with compact support and put η̌(z) := η(−z). Let u : ℝ^P → ℝ and s : ℝ^P → ℝ^P be integrable. Write (k ⋆ a)(x) := ∫ k(t) a(x − t) dt (Mathlib's convolution with lsmul ℝ ℝ and volume). Then ∫ D(η ⋆ u)(x)(s(x)) dx = −∫ u(z) div(η̌ ⋆ s)(z) dz.",
+  "lean_statement": "∀ (P : ℕ) (η u : Euclid P → ℝ) (s : Euclid P → Euclid P), ContDiff ℝ 1 η → HasCompactSupport η → Integrable u → Integrable s → ∫ x, fderiv ℝ (convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume) x (s x) = -∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ (convolution (fun z => η (-z)) s (ContinuousLinearMap.lsmul ℝ ℝ) volume) z : Euclid P →ₗ[ℝ] Euclid P)",
+  "lean_name": "cmcdt_cbm_sa_mollify_adjoint",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-ffb05fc76b-a1"
+}
