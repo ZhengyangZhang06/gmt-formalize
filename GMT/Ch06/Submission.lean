@@ -359,6 +359,44 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) are invariant under the dilation
+`y ↦ ρ y`, `ρ > 0`: if `Q` is the approximate tangent space of `(M, θ)` at `x`, it is the
+approximate tangent space of `(ρ M, θ(ρ⁻¹ ·))` at `ρ x`.  The blow-up of `ρ M` at `ρ x` with
+ratio `s` is the blow-up of `M` at `x` with ratio `ρ⁻¹ s`, and `s ↦ ρ⁻¹ s` preserves `𝓝[>] 0`. -/
+theorem Submission.deformation_dilation_im_weightedTangent :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (x : Eucl N)
+      (Q : Submodule ℝ (Eucl N)), 0 < ρ → HasWeightedApproximateTangentSpaceAt k M θ x Q →
+        HasWeightedApproximateTangentSpaceAt k ((fun y : Eucl N => ρ • y) '' M)
+          (fun y : Eucl N => θ (ρ⁻¹ • y)) (ρ • x) Q := by
+  intro N k ρ M θ x Q hρ hQ
+  -- The new multiplicity at `ρ x` is `θ(x)`.
+  have hval : θ (ρ⁻¹ • ρ • x) = θ x := by rw [inv_smul_smul₀ hρ.ne']
+  -- Blow-ups of `ρ M` at `ρ x` with ratio `s` are blow-ups of `M` at `x` with ratio `ρ⁻¹ s`.
+  have hset : ∀ s : ℝ,
+      Poincare.SimonGMT.Chapter03.blowUpMap (ρ • x) s '' ((fun y : Eucl N => ρ • y) '' M) =
+        Poincare.SimonGMT.Chapter03.blowUpMap x (ρ⁻¹ * s) '' M := by
+    intro s
+    rw [Set.image_image]
+    refine Set.image_congr fun z _ => ?_
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+    rw [← smul_sub, smul_smul, mul_inv_rev, inv_inv]
+  have hweight : ∀ (s : ℝ) (u : Eucl N),
+      θ (ρ⁻¹ • (ρ • x + s • u)) = θ (x + (ρ⁻¹ * s) • u) := by
+    intro s u
+    rw [smul_add, inv_smul_smul₀ hρ.ne', smul_smul]
+  -- `s ↦ ρ⁻¹ s` maps `𝓝[>] 0` to itself.
+  have hlim : Tendsto (fun s : ℝ => ρ⁻¹ * s) (𝓝[>] 0) (𝓝[>] 0) := by
+    have h0 : Tendsto (fun s : ℝ => ρ⁻¹ * s) (𝓝 0) (𝓝 (ρ⁻¹ * 0)) :=
+      (continuous_const_mul ρ⁻¹).tendsto 0
+    rw [mul_zero] at h0
+    exact tendsto_nhdsWithin_iff.2 ⟨h0.mono_left nhdsWithin_le_nhds,
+      eventually_nhdsWithin_of_forall fun s hs => mul_pos (inv_pos.2 hρ) hs⟩
+  refine ⟨hQ.1, fun f => ?_⟩
+  show Tendsto _ _ (𝓝 (θ (ρ⁻¹ • ρ • x) * _))
+  rw [hval]
+  refine ((hQ.2 f).comp hlim).congr fun s => ?_
+  simp only [Function.comp_apply, hset, hweight]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
