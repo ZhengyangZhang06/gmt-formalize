@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Packing count for unit balls translated along a subspace `V` (used in the proof of Simon 7.2.4,
+p. 184, to show that a measure with `ν(B_R(0)) ≤ C Rⁿ` that is invariant under the translations of
+`V` has `dim V ≤ n`): if `ν` is invariant under translation by every `v ∈ V`, and `S ⊆ V` is finite
+with `‖x‖ ≤ ρ` for `x ∈ S` and `dist x y ≥ 2` for distinct `x, y ∈ S`, then
+`#S · ν(B_1(0)) ≤ ν(B_{ρ+1}(0))`.  Each `B_1(x) = {y : -x + y ∈ B_1(0)}` has measure `ν(B_1(0))`
+(as `-x ∈ V`), and these balls are pairwise disjoint (triangle inequality) and lie in
+`B_{ρ+1}(0)`. -/
+theorem Submission.cbr_ci_cp_gd_translated_ball_count : ∀ (P : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (S : Finset (Euclid P)) (ρ : ℝ), (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → (∀ x ∈ S, x ∈ V) → (∀ x ∈ S, ‖x‖ ≤ ρ) → (∀ x ∈ S, ∀ y ∈ S, x ≠ y → 2 ≤ dist x y) → (S.card : ℝ≥0∞) * ν (ball 0 1) ≤ ν (ball 0 (ρ + 1)) := by
+  intro P ν V S ρ hinv hSV hSρ hsep
+  -- equal mass: `B_1(x)` is the preimage of `B_1(0)` under `y ↦ -x + y`, and `-x ∈ V`
+  have hmass : ∀ x ∈ S, ν (ball x 1) = ν (ball 0 1) := by
+    intro x hx
+    have hpre : (fun y => -x + y) ⁻¹' ball (0 : Euclid P) 1 = ball x 1 := by
+      ext y
+      simp only [mem_preimage, mem_ball_iff_norm, sub_zero, neg_add_eq_sub]
+    rw [← hpre]
+    exact hinv (-x) (V.neg_mem (hSV x hx)) _ measurableSet_ball
+  -- disjointness: a common point `z` would give `2 ≤ dist x y ≤ dist z x + dist z y < 2`
+  have hdisj : (S : Set (Euclid P)).PairwiseDisjoint fun x => ball x 1 := by
+    intro x hx y hy hxy
+    refine Set.disjoint_left.mpr fun z hzx hzy => ?_
+    rw [mem_ball] at hzx hzy
+    linarith [hsep x hx y hy hxy, dist_triangle_left x y z]
+  -- containment: `‖z‖ ≤ ‖x‖ + ‖z - x‖ < ρ + 1`
+  have hsub : (⋃ x ∈ S, ball x 1) ⊆ ball (0 : Euclid P) (ρ + 1) := by
+    refine iUnion₂_subset fun x hx z hz => ?_
+    rw [mem_ball_iff_norm] at hz
+    rw [mem_ball_zero_iff]
+    linarith [hSρ x hx, norm_le_norm_add_norm_sub' z x]
+  -- counting: `#S · ν(B_1(0)) = Σ_{x ∈ S} ν(B_1(x)) = ν(⋃_{x ∈ S} B_1(x)) ≤ ν(B_{ρ+1}(0))`
+  calc (S.card : ℝ≥0∞) * ν (ball 0 1) = ∑ x ∈ S, ν (ball x 1) := by
+        rw [Finset.sum_congr rfl hmass, Finset.sum_const, nsmul_eq_mul]
+    _ = ν (⋃ x ∈ S, ball x 1) :=
+        (measure_biUnion_finset hdisj fun x _ => measurableSet_ball).symm
+    _ ≤ ν (ball 0 (ρ + 1)) := measure_mono hsub
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
