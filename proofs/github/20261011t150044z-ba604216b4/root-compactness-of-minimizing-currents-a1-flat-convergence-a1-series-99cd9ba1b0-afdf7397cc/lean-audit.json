@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cba755d4e8081b707bad14dfa00eb20368efb687837c7ef4a43548d08527c8ac",
+  "git_delta": {
+    "base_commit": "e26b6794d9d1d655802fa4eab0f51a9e0a3c73a2",
+    "candidate_commit": "970ade23f816818f39a2762490197646385e93f8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_sc_abs_le_mul_mass",
+    "diff_sha256": "9d5f8aa7bb8c8da75d444ae5762d91ba10ebdad7e943c18112f79749afb82474",
+    "source_sha256": "a3fbf74c8dce6db1bd5680c4be286a61588bab9837f9db49b56eec93178f6eb1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_sc_abs_le_mul_mass",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (ω : TestFormOn U n) (c : ℝ), 0 < c → X.mass ≠ ∞ → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |X ω| ≤ c * X.mass.toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
