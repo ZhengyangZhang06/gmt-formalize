@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4d4b74418fbd3368cbc0bb59089cf827cff80f14f036c1f068035b6b532c4c8c",
+  "git_delta": {
+    "base_commit": "eeda203a9075479f81b5b83969692073c42235c3",
+    "candidate_commit": "31160ac806e848ed4f4b660776ddbb97defb44ab",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fcp_punctured_subspace_isConnected",
+    "diff_sha256": "00bb3328460004e7073c0b2a495c57f1ca62ce86b40df8722b133d5c0c85509e",
+    "source_sha256": "2d9f243da7a9f70c4d9f508e187dcf56471323b4978b5022b62ebd6762a26f48",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fcp_punctured_subspace_isConnected",
+      "statement": "∀ (P : ℕ) (H : Submodule ℝ (Euclid P)), 2 ≤ Module.finrank ℝ H → IsConnected ((H : Set (Euclid P)) \\ {0})",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
