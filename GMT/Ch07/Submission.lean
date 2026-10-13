@@ -869,6 +869,45 @@ theorem Submission.dor_ims_massOn_le_measure : ∀ (P n : ℕ) (U : Set (Euclid 
           ENNReal.ofReal_toReal hμK]
     _ ≤ R.measure W := measure_mono hωW
 
+/-- **Simon 6.2.2, 6.3.1, 6.3.2(3) with `θ ≡ 1`**: a Borel, countably `m`-rectifiable `M ⊆ ℝᴾ`
+with `Hᵐ(M ∩ K) < ∞` for compact `K`, oriented `Hᵐ`-a.e. by a unit orientation `η` of its
+approximate tangent space, defines the integer multiplicity current `D = [[M]] = τ(M, 1, η)`:
+`⟨ω, η⟩` is `Hᵐ⌞M`-integrable, `D(ω) = ∫_M ⟨ω, η⟩ dHᵐ`, and `M_W(D) ≤ μ_{τ(M,1,η)}(W) =
+Hᵐ(M ∩ W)` for every `W`. -/
+theorem Submission.codim1_ac_pp_unit_rectifiable_current : ∀ (P m : ℕ) (M : Set (Euclid P)) (η : Euclid P → MultiVector P m), MeasurableSet M → CountablyRectifiable m M → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → AEStronglyMeasurable η (μHE[m].restrict M) → (∀ᵐ y ∂(μHE[m].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt m M y Q ∧ IsUnitOrientationOf (η y) Q) → ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity D ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Integrable (fun y => η y ((ω : DifferentialForm (Euclid P) m) y)) (μHE[m].restrict M) ∧ D ω = ∫ y in M, η y ((ω : DifferentialForm (Euclid P) m) y) ∂μHE[m]) ∧ ∀ W' : Set (Euclid P), D.massOn W' ≤ μHE[m] (M ∩ W') := by
+  intro P m M η hM hrect hfin hη horient
+  -- the multiplicity-one triple `R = (M, 1, η)` in `ℝᴾ`; `∫_{M ∩ K} 1 dHᵐ = Hᵐ(M ∩ K) < ∞`
+  let R : IMRep (univ : Set (Euclid P)) m :=
+    { carrier := M
+      mult := fun _ => 1
+      orient := η
+      measurableSet_carrier := hM
+      carrier_subset := subset_univ M
+      rectifiable := hrect
+      measurable_mult := measurable_const
+      mult_pos := fun _ _ => Nat.one_pos
+      locallyIntegrable_mult := fun K hK _ => by
+        simp only [Nat.cast_one, setLIntegral_const, one_mul]
+        exact hfin K hK
+      aestronglyMeasurable_orient := hη
+      orients := horient }
+  -- `D = τ(M, 1, η)` is an integer multiplicity current
+  obtain ⟨D, hD⟩ := Submission.dtc_imrep_current P m univ R
+  refine ⟨D, ⟨R, hD⟩, fun ω => ?_, fun W' => ?_⟩
+  · -- `1 · ⟨ω, η⟩` is `Hᵐ⌞M`-integrable and `D(ω) = ∫_M 1 · ⟨ω, η⟩ dHᵐ`
+    have hi := Submission.regcomp_rim_action_integrable P m univ R ω
+    simp only [R, Nat.cast_one, one_mul] at hi
+    refine ⟨hi, ?_⟩
+    rw [hD ω]
+    simp only [IMRep.action, R, Nat.cast_one, one_mul]
+  · -- `M_W(D) ≤ μ_R(W)`, and `μ_R = 1 · Hᵐ⌞M`, so `μ_R(W) = Hᵐ(W ∩ M)` (`M` Borel)
+    have hm := Submission.dor_ims_massOn_le_measure P m univ D R hD W'
+    have hmeas : R.measure = μHE[m].restrict M := by
+      simp only [IMRep.measure, R, Nat.cast_one]
+      exact withDensity_one
+    rw [hmeas, Measure.restrict_apply' hM, inter_comm] at hm
+    exact hm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
