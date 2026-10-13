@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "af027211085eb459b60fe30bb8ba49835b1275a565cde71f0337dec20b8bae94",
+  "git_delta": {
+    "base_commit": "c30de475cd6e39dedfbf89838afffea0b07a39fa",
+    "candidate_commit": "efabafdb22bde64cbe4a7253b3be4163d72d874d",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "2df2095cdf8e859d81bdda0f05bc3025be02679962b3b97a2a3223bbbbf088bb",
+    "source_sha256": "a47c08e6a3b82b2932ca5dddcd3fdf46bc31a9974878743253ea4c2905ef2064",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_total_boundedness",
+      "statement": "DeformationTheorem → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (K : Set (Eucl P)), IsCompact K → K ⊆ U → ∀ (B : ℝ≥0∞), B ≠ ∞ → ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, IsIntegerMultiplicity (Tj j).boundary) → (∀ j, (Tj j).support ⊆ K) → (∀ j, (Tj j).mass + (Tj j).boundary.mass ≤ B) → ∀ ε : ℝ≥0∞, 0 < ε → ∀ J : Set ℕ, J.Infinite → ∃ J' ⊆ J, J'.Infinite ∧ ∀ i ∈ J', ∀ j ∈ J', ∃ (R : GeometricCurrentOn U (m + 1 + 1)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω, Tj i ω - Tj j ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
