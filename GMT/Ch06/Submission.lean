@@ -412,6 +412,29 @@ theorem Submission.fiw_tb_tda_ps_translation_ball :
         · rw [indicator_of_notMem hh, indicator_of_notMem hh, zero_mul]
     _ = ENNReal.ofReal r * Λ * volume (closedBall (0 : Eucl n) r) :=
         lintegral_indicator_const hBm _
+/-- Box bound for the volume of a Euclidean ball, used in `fiw_tb_tda_poincare_sum`:
+`closedBall(0, r) ⊆ [-r, r]ⁿ`, hence `Lⁿ(closedBall(0, r)) ≤ (2r)ⁿ`. -/
+theorem Submission.fiw_tb_tda_ps_ball_volume_le : ∀ (n : ℕ) (r : ℝ), 0 ≤ r → volume (closedBall (0 : Eucl n) r) ≤ ENNReal.ofReal ((2 * r) ^ n) := by
+  intro n r hr
+  -- Steps 1–2: `|xᵢ| ≤ ‖x‖ ≤ r`, so `closedBall(0, r) ⊆ ofLp⁻¹(Icc(-r, r))`.
+  have hsub : closedBall (0 : Eucl n) r ⊆
+      WithLp.ofLp ⁻¹' Icc (fun _ : Fin n => -r) (fun _ : Fin n => r) := by
+    intro x hx
+    rw [mem_closedBall, dist_zero_right] at hx
+    have hcoord : ∀ i, |x i| ≤ r := fun i => by
+      have h := PiLp.norm_apply_le x i
+      rw [Real.norm_eq_abs] at h
+      exact h.trans hx
+    exact ⟨fun i => (abs_le.mp (hcoord i)).1, fun i => (abs_le.mp (hcoord i)).2⟩
+  -- Steps 3–4: `ofLp` preserves volume, and the box has volume `ofReal (2r) ^ n = ofReal ((2r)ⁿ)`.
+  calc volume (closedBall (0 : Eucl n) r)
+      ≤ volume (WithLp.ofLp ⁻¹' Icc (fun _ : Fin n => -r) (fun _ : Fin n => r)) :=
+        measure_mono hsub
+    _ = volume (Icc (fun _ : Fin n => -r) (fun _ : Fin n => r)) :=
+        (PiLp.volume_preserving_ofLp (Fin n)).measure_preimage measurableSet_Icc.nullMeasurableSet
+    _ = ENNReal.ofReal ((2 * r) ^ n) := by
+        rw [Real.volume_Icc_pi, ENNReal.ofReal_pow (by linarith)]
+        simp only [sub_neg_eq_add, Finset.prod_const, Finset.card_univ, Fintype.card_fin, two_mul]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
