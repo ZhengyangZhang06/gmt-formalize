@@ -766,6 +766,52 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
 
+/-- **Simon Ch. 2, §5** (the expansion `J_t = 1 + t div_M X + O(t²)` behind the first variation
+formula 5.3, for the linear map `I + tB` on an `n`-plane): given `P`, `n`, `A ≥ 0` and `ε > 0`
+there is `δ > 0` such that for `|t| < δ`, every subspace `K ⊆ ℝᴾ` with `dim K = n` and every `B`
+with `‖B‖ ≤ A`, `(det(((I + tB) ∘ ι_K)* ((I + tB) ∘ ι_K)))^{1/2} ≤ 1 + t trace(p_K ∘ B) + ε|t|`.
+In an orthonormal basis `e` of `K` the matrix of `((I + tB) ∘ ι_K)* ((I + tB) ∘ ι_K)` is the Gram
+matrix `((I + tB)eᵢ · (I + tB)eⱼ)`, so the orthonormal-frame first-order bound applies with
+`L = I + tB` (`‖L − I − tB‖ = 0`), and `Σₐ eₐ · Beₐ = trace(p_K ∘ B)` by the frame trace formula. -/
+theorem Submission.codim1_hcp_fv_subspace_jacobian_first_order : ∀ (P n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ (K : Submodule ℝ (Euclid P)) (B : Euclid P →L[ℝ] Euclid P), Module.finrank ℝ K = n → ‖B‖ ≤ A → Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • B).comp K.subtypeL).adjoint ∘L ((ContinuousLinearMap.id ℝ (Euclid P) + t • B).comp K.subtypeL)).det) ≤ 1 + t * LinearMap.trace ℝ (Euclid P) (K.starProjection.toLinearMap ∘ₗ B.toLinearMap) + ε * |t| := by
+  intro P n A ε hA hε
+  -- step 1: `η` and `δ` of the orthonormal-frame bound depend only on `P`, `n`, `A` and `ε`
+  obtain ⟨η, hη, δ, hδ, hgram⟩ :=
+    Submission.fvmb_orthonormal_gram_sqrt_det_le_first_order P n A ε hA hε
+  refine ⟨δ, hδ, fun t ht K B hK hB => ?_⟩
+  -- step 3: the standard orthonormal basis `e` of `K` is an orthonormal frame of `ℝᴾ` spanning `K`
+  subst hK
+  set e := stdOrthonormalBasis ℝ K
+  have hon : Orthonormal ℝ (fun i => ((e i : K) : Euclid P)) :=
+    e.orthonormal.comp_linearIsometry K.subtypeₗᵢ
+  have hspan : Submodule.span ℝ (Set.range (fun i => ((e i : K) : Euclid P))) = K := by
+    have h : Set.range (fun i => ((e i : K) : Euclid P)) = K.subtype '' Set.range e := by
+      rw [← Set.range_comp]; rfl
+    have htop : Submodule.span ℝ (Set.range e) = ⊤ := by
+      simpa using e.toBasis.span_eq
+    rw [h, Submodule.span_image, htop, Submodule.map_top, Submodule.range_subtype]
+  -- step 4: the determinant on `K` is the Gram determinant of the frame `(L eᵢ)`
+  have hgramdet : ∀ L : Euclid P →L[ℝ] Euclid P,
+      ((L.comp K.subtypeL).adjoint ∘L (L.comp K.subtypeL)).det =
+        Matrix.det (Matrix.of fun i j => inner ℝ (L ((e i : K) : Euclid P))
+          (L ((e j : K) : Euclid P))) := by
+    intro L
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix e.toBasis]
+    congr 1
+    ext i j
+    rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+      OrthonormalBasis.coe_toBasis, OrthonormalBasis.repr_apply_apply, Matrix.of_apply]
+    rw [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.adjoint_inner_right]
+    rfl
+  -- steps 5-6: the frame bound for `L = I + tB`, where `‖L − I − tB‖ = 0`, and the frame trace
+  rw [hgramdet, Submission.fvmb_trace_starProjection_comp_eq_sum_inner P _ K _ B hon hspan]
+  refine hgram t ht B _ hB ?_ _ hon
+  have : ContinuousLinearMap.id ℝ (Euclid P) + t • B - ContinuousLinearMap.id ℝ (Euclid P) -
+      t • B = 0 := by abel
+  rw [this, norm_zero]
+  exact mul_nonneg hη.le (abs_nonneg t)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
