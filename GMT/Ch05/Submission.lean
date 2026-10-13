@@ -647,6 +647,59 @@ theorem gte_lipschitz_ball_calculus : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (K
       (EuclideanSpace.proj j : Rn ℓ →L[ℝ] ℝ).hasFDerivAt.comp x hfx.hasFDerivAt
     rw [inner_gradient_left, hd.fderiv]
     rfl
+/-- **Simon Ch. 5, proof of Theorem 4.5, displays (8)–(12) (pp. 118–119)**, localization step in an
+abstract measure space.  If `Φ` is integrable on `B`, `|Φ| ≤ M` everywhere, `Φ` vanishes on
+`(B \ G') ∩ G`, `μ((B \ G') \ G) ≤ m < ∞`, and `|Φ − φ| ≤ M ψ` a.e. on `G' ⊆ B ∩ B'` with `ψ ≥ 0`
+integrable on `B'`, then `|∫_{G'} φ| ≤ |∫_B Φ| + M m + M ∫_{B'} ψ`.
+Proof: splitting `∫_B Φ` along `G'` and then along `G` gives `∫_{G'} Φ = ∫_B Φ − ∫_{(B \ G') \ G} Φ`,
+and the last integral is at most `M μ((B \ G') \ G) ≤ M m` in absolute value.  On `G'`, `Φ − φ` is
+dominated by `M ψ`, so `φ` is integrable there and `|∫_{G'} Φ − ∫_{G'} φ| ≤ M ∫_{G'} ψ ≤ M ∫_{B'} ψ`;
+conclude by the triangle inequality. -/
+theorem gte_localized_comparison : ∀ {X : Type} [MeasurableSpace X] (μ : Measure X) (B B' G G' : Set X) (Φ φ ψ : X → ℝ) (M : ℝ) (m : ℝ≥0∞), 0 ≤ M → MeasurableSet G → MeasurableSet G' → G' ⊆ B → G' ⊆ B' → IntegrableOn Φ B μ → (∀ x, |Φ x| ≤ M) → (∀ x ∈ (B \ G') ∩ G, Φ x = 0) → μ ((B \ G') \ G) ≤ m → m < ⊤ → AEStronglyMeasurable φ (μ.restrict G') → IntegrableOn ψ B' μ → (∀ x, 0 ≤ ψ x) → (∀ᵐ x ∂μ, x ∈ G' → |Φ x - φ x| ≤ M * ψ x) → |∫ x in G', φ x ∂μ| ≤ |∫ x in B, Φ x ∂μ| + M * m.toReal + M * ∫ x in B', ψ x ∂μ := by
+  intro X _ μ B B' G G' Φ φ ψ M m hM hG hG' hG'B hG'B' hΦ hΦM hΦ0 hμm hm hφ hψ hψ0 hcmp
+  -- Steps 1–3: split `∫_B Φ` along `G'` (`B ∩ G' = G'`) and then `∫_{B \ G'} Φ` along `G`; the
+  -- `(B \ G') ∩ G` part vanishes, so `∫_{G'} Φ = ∫_B Φ − ∫_{(B \ G') \ G} Φ`.
+  have h1 : ∫ x in B ∩ G', Φ x ∂μ + ∫ x in B \ G', Φ x ∂μ = ∫ x in B, Φ x ∂μ :=
+    integral_inter_add_sdiff hG' hΦ
+  rw [inter_eq_right.mpr hG'B] at h1
+  have h2 : ∫ x in (B \ G') ∩ G, Φ x ∂μ + ∫ x in (B \ G') \ G, Φ x ∂μ =
+      ∫ x in B \ G', Φ x ∂μ :=
+    integral_inter_add_sdiff hG (hΦ.mono_set sdiff_subset)
+  rw [setIntegral_eq_zero_of_forall_eq_zero hΦ0, zero_add] at h2
+  -- Step 4: the off part is at most `M μ((B \ G') \ G) ≤ M m` in absolute value.
+  have h4 : |∫ x in (B \ G') \ G, Φ x ∂μ| ≤ M * m.toReal := by
+    have h := norm_setIntegral_le_of_norm_le_const (hμm.trans_lt hm)
+      (fun x _ => (Real.norm_eq_abs (Φ x)).le.trans (hΦM x))
+    rw [Real.norm_eq_abs, measureReal_def] at h
+    exact h.trans (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hm.ne hμm) hM)
+  -- Step 5: `Φ − φ` is dominated by `M ψ` on `G'`, so `φ = Φ − (Φ − φ)` is integrable on `G'`.
+  have hΦG' : Integrable Φ (μ.restrict G') := (hΦ.mono_set hG'B).integrable
+  have hψG' : Integrable (fun x => M * ψ x) (μ.restrict G') :=
+    (hψ.mono_set hG'B').integrable.const_mul M
+  have hae : ∀ᵐ x ∂μ.restrict G', ‖Φ x - φ x‖ ≤ M * ψ x := by
+    rw [ae_restrict_iff' hG']
+    filter_upwards [hcmp] with x hx hxG'
+    rw [Real.norm_eq_abs]
+    exact hx hxG'
+  have hdiff : Integrable (fun x => Φ x - φ x) (μ.restrict G') :=
+    hψG'.mono' (hΦG'.aestronglyMeasurable.sub hφ) hae
+  have hφG' : Integrable φ (μ.restrict G') :=
+    (hΦG'.sub hdiff).congr (Eventually.of_forall fun x => sub_sub_cancel (Φ x) (φ x))
+  -- Step 6: `|∫_{G'} Φ − ∫_{G'} φ| = |∫_{G'} (Φ − φ)| ≤ M ∫_{G'} ψ ≤ M ∫_{B'} ψ`.
+  have h6 : |∫ x in G', Φ x ∂μ - ∫ x in G', φ x ∂μ| ≤ M * ∫ x in B', ψ x ∂μ := by
+    rw [← integral_sub hΦG' hφG', ← Real.norm_eq_abs]
+    calc ‖∫ x in G', (Φ x - φ x) ∂μ‖ ≤ ∫ x in G', M * ψ x ∂μ :=
+          norm_integral_le_of_norm_le hψG' hae
+      _ = M * ∫ x in G', ψ x ∂μ := integral_const_mul M _
+      _ ≤ M * ∫ x in B', ψ x ∂μ :=
+          mul_le_mul_of_nonneg_left (setIntegral_mono_set hψ (Eventually.of_forall hψ0)
+            (Eventually.of_forall hG'B')) hM
+  -- Step 7: the triangle inequality.
+  have hI := le_abs_self (∫ x in B, Φ x ∂μ)
+  have hI' := neg_abs_le (∫ x in B, Φ x ∂μ)
+  obtain ⟨h4l, h4r⟩ := abs_le.mp h4
+  obtain ⟨h6l, h6r⟩ := abs_le.mp h6
+  exact abs_le.mpr ⟨by linarith, by linarith⟩
 
 end Submission
 
