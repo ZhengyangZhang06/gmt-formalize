@@ -913,6 +913,60 @@ theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Ty
     · exact (hCA k hxC).2
     · exact absurd hxD' hxD
 
+/-- **Closed cone-mass sublevel sets** (Simon Ch. 3, proof of Theorem 1.6 "⇐", (7)–(8); this
+closedness replaces the measurability of the functions `q_k` there).  Let `F` be closed and
+`w ↦ p_{Q(w)}` continuous on `F`, and put `S(w) = X(w) ∩ B_ρ(w)`, where
+`X(w) = {z : 2|p_{Q(w)}(z − w)| < |z − w|}`.  Then `{x ∈ F : μ(S(x)) ≤ s}` is closed.  Let
+`xᵢ → x` in this set; then `x ∈ F`.  Each `S(w)` is open.  As `p_{Q(xᵢ)} → p_{Q(x)}`, every
+`z ∈ S(x)` lies in `S(xᵢ)` for all large `i`, so `1_{S(x)} ≤ liminf 1_{S(xᵢ)}`.  Fatou's lemma
+gives `μ(S(x)) ≤ liminf μ(S(xᵢ)) ≤ s`. -/
+theorem Submission.cbrr_ud_isClosed_cone_mass_le : ∀ (P : ℕ) (μ : Measure (Euclid P)) (F : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (ρ : ℝ) (s : ℝ≥0∞), IsClosed F → ContinuousOn (fun x => (Q x).starProjection) F → IsClosed {x | x ∈ F ∧ μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ s} := by
+  intro P μ F Q ρ s hF hQ
+  -- Step 1: sequential closedness; the limit `x` of the `xᵢ ∈ F` lies in the closed set `F`
+  refine IsSeqClosed.isClosed fun xs x hxs hx => ?_
+  have hxsF : ∀ i, xs i ∈ F := fun i => (hxs i).1
+  have hxF : x ∈ F := hF.mem_of_tendsto hx (Eventually.of_forall hxsF)
+  refine ⟨hxF, ?_⟩
+  set S : Euclid P → Set (Euclid P) := fun w =>
+    {z | 2 * ‖(Q w).starProjection (z - w)‖ < ‖z - w‖} ∩ ball w ρ
+  change μ (S x) ≤ s
+  -- Step 2: every `S(w) = X(w) ∩ B_ρ(w)` is open, hence measurable
+  have hSm : ∀ w, MeasurableSet (S w) := fun w =>
+    ((isOpen_lt (continuous_const.mul ((Q w).starProjection.continuous.comp
+      (continuous_id.sub continuous_const)).norm) (continuous_id.sub continuous_const).norm).inter
+      isOpen_ball).measurableSet
+  -- Step 3: `xᵢ → x` within `F`, where `w ↦ p_{Q(w)}` is continuous
+  have hxW : Tendsto xs atTop (𝓝[F] x) :=
+    tendsto_nhdsWithin_iff.mpr ⟨hx, Eventually.of_forall hxsF⟩
+  -- Step 4: `2|p_{Q(xᵢ)}(z − xᵢ)| − |z − xᵢ| → 2|p_{Q(x)}(z − x)| − |z − x| < 0` and
+  -- `|z − xᵢ| → |z − x| < ρ`, so every `z ∈ S(x)` lies in `S(xᵢ)` for all large `i`
+  have hev : ∀ z ∈ S x, ∀ᶠ i in atTop, z ∈ S (xs i) := by
+    intro z hz
+    have hcont : ContinuousWithinAt
+        (fun w => 2 * ‖(Q w).starProjection (z - w)‖ - ‖z - w‖) F x :=
+      (continuousWithinAt_const.mul ((hQ x hxF).clm_apply
+        (continuousWithinAt_const.sub continuousWithinAt_id)).norm).sub
+        (continuousWithinAt_const.sub continuousWithinAt_id).norm
+    have h1 := (hcont.tendsto.comp hxW).eventually (gt_mem_nhds (sub_neg.mpr hz.1))
+    have h2 := (tendsto_const_nhds.dist hx).eventually (gt_mem_nhds (mem_ball.mp hz.2))
+    filter_upwards [h1, h2] with i hi1 hi2
+    exact ⟨sub_neg.mp hi1, hi2⟩
+  -- Step 5: `1_{S(x)} ≤ liminf 1_{S(xᵢ)}` pointwise, and Fatou's lemma
+  calc μ (S x) = ∫⁻ z, (S x).indicator 1 z ∂μ := (lintegral_indicator_one (hSm x)).symm
+    _ ≤ ∫⁻ z, liminf (fun i => (S (xs i)).indicator 1 z) atTop ∂μ := by
+        refine lintegral_mono fun z => ?_
+        by_cases hz : z ∈ S x
+        · rw [indicator_of_mem hz]
+          refine le_liminf_of_le (by isBoundedDefault) ?_
+          filter_upwards [hev z hz] with i hi
+          rw [indicator_of_mem hi]
+        · rw [indicator_of_notMem hz]
+          exact zero_le
+    _ ≤ liminf (fun i => ∫⁻ z, (S (xs i)).indicator 1 z ∂μ) atTop :=
+        lintegral_liminf_le fun i => measurable_one.indicator (hSm (xs i))
+    _ = liminf (fun i => μ (S (xs i))) atTop := by simp_rw [lintegral_indicator_one (hSm _)]
+    _ ≤ s := liminf_le_of_frequently_le' (Frequently.of_forall fun i => (hxs i).2)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
