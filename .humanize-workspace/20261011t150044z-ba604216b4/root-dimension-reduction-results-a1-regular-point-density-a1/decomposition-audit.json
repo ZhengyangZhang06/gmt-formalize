@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def (IsEmbeddedSubmanifold|IsOrientation|regularSet|HasMassDensity|unitBallVolume|IsUnitOrientationOf)|dimred_rpd_|dor_ims_unitOrientation_dual|dor_ims_smooth_unit_approx|dsmc_chart_inverse_continuity' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07 GMT/Ch07",
+        "rg -n 'dimred_rpd_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "rg -n 'massOn.*(measure|mult)|submanifold_density|regular_point_density' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+        "euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_eq_volume|hausdorffMeasure_image_le|exists_isCompact_sdiff_lt|hasStrictFDerivAt|addHaar_ball_of_pos",
+        "Python inspection of dag.json, reused-node comparator records, frozen-type equality, dependency reachability, and git candidate/base insertion diffs.",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rpd-independent-audit-gksnqne6/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rpd-independent-audit-gksnqne6/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-49478a38c9/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/isolated-comparator-result.json",
+        "/tmp/rpd-independent-audit-gksnqne6/Types.lean",
+        "/tmp/rpd-independent-audit-gksnqne6/Full.lean"
+      ],
+      "conclusion": "The split appropriately isolates five new obligations and three accepted reuses that establish this selected parent. Pinned revisions match; the workspace contract and all relevant proof bases are byte-identical to the snapshot contract. The inspected definitions confirm the coefficient-norm mass and relative-support conventions. The library supplies the normalization, Lipschitz measure bounds, strict differentiability and finite-measure regularity used here. The mass-characterization search found only conditional representation data, not a replacement proof. No dimred_rpd_ name occurs in dag.json. All three reused types are byte-identical to comparator-accepted declarations; their transitive dependencies introduce no cycle. Every name is a bare identifier. Independently reconstructed checks successfully elaborate all eight propositions before declaring any child. The supplied proofs, accepted reuse implementations and exact selected-parent assembly also compile together with no placeholders or ancestor theorem available; every audited declaration depends only on propext, Classical.choice and Quot.sound. No problematic inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "locally_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the stated hypotheses and conclusions. Proper chart preimages and continuity give compact slices; the argument M = O ∩ closure M then proves Borel measurability. It also works for r = 0 and empty M."
+    },
+    {
+      "key": "orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinate expansion and the supplied Cauchy–Binet derivation prove the dual bound and both properties of the continuous linear map L, including degenerate dimensions. This is an identical-type comparator-accepted reuse."
+    },
+    {
+      "key": "smooth_unit_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Tietze extension, radial retraction, compact cutoff and normalized mollification establish smoothness, support containment, the coefficient-norm bound and the approximation estimate. Empty K is covered. The frozen type exactly matches the accepted reused declaration."
+    },
+    {
+      "key": "mass_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and match the type. Domination proves integrability and the upper bound; finite-restriction regularity and the declared smoothing dependency give the lower bound with error |m₀|η(2+a). Letting η decrease to zero proves the identity, with m₀ = 0 handled separately."
+    },
+    {
+      "key": "chart_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The image sequence together with its limit is compact inside W. Properness, subsequential compactness, continuity and injectivity yield the stated inverse-continuity estimate without openness assumptions. This is an identical-type comparator-accepted reuse."
+    },
+    {
+      "key": "near_isometric_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Isometric normalization of the injective derivative and strict differentiability give the two-point bounds. The declared chart_inverse dependency supplies neighborhood coverage with explicit radii. The proof establishes exactly the stated contract without assuming density one."
+    },
+    {
+      "key": "bilipschitz_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Forward and inverse Lipschitz Hausdorff bounds, followed by the common normalization factor, prove both inequalities. Positive c₁ justifies inversion and cancellation. No measurability assumption on E is needed, and dimension zero is included."
+    },
+    {
+      "key": "density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two ball-image inclusions and declared measure-comparison dependency give the claimed squeeze. The denominator is positive and finite for positive radii; order convergence as ε tends to zero proves the exact ENNReal limit, including n = 0. This supplies the density limit required by the selected parent."
+    }
+  ],
+  "required_changes": []
+}
