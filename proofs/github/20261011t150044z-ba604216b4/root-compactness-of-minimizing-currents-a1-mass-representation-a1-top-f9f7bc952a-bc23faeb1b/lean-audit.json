@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bbc3654336c0f846704c92aab9ca4578cb843187b6f6487b51d8985875ba63bd",
+  "git_delta": {
+    "base_commit": "54709047846d42fdd0cf05ef3c75009640fc8294",
+    "candidate_commit": "6c1beed6b7a07bb316d4759ef071c8c81b06ec7e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_tdn_null_set_cutoffs",
+    "diff_sha256": "ad754e4f2eb82dbf2788c3e213b1c1cfa70e0e1868c9cc5c472675fd7d736348",
+    "source_sha256": "8a68f3910443c328bf82905b6faf3e0b9af67d5aa7e2004bf39a9ae33938741e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_tdn_null_set_cutoffs",
+      "statement": "∀ (n : ℕ) (K : Set (Euclid n)), IsCompact K → volume K = 0 → ∃ a : ℕ → Euclid n → ℝ, (∀ k, ContDiff ℝ (⊤ : ℕ∞) (a k)) ∧ (∀ k, HasCompactSupport (a k)) ∧ (∀ k y, 0 ≤ a k y) ∧ (∀ k y, a k y ≤ 1) ∧ (∀ k, ∀ y ∈ K, a k y = 1) ∧ (∀ y, y ∉ K → ∀ᶠ k in atTop, a k y = 0) ∧ Tendsto (fun k => ∫ y, a k y) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
