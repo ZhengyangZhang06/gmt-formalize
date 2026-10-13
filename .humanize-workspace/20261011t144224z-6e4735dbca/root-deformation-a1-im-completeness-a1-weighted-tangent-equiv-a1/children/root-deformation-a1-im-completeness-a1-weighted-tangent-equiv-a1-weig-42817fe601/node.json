@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1.weighted_density_bound-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1",
+  "depth": 4,
+  "title": "Density bound at a weighted tangent point (Simon Ch. 3, Remark 1.8(1); Step 5, second bullet, of the parent proof)",
+  "statement": "Let Q, n ∈ ℕ and μ := Hⁿ = μHE[n] on ℝ^Q. Let M, C ⊆ ℝ^Q be μ-null-measurable with C ⊆ M, let θ : ℝ^Q → ℝ satisfy θ ≥ 0 on M, let y ∈ ℝ^Q with θ(y) > 0, and let T be a linear subspace of ℝ^Q which is the approximate tangent space of M at y with respect to θ (HasWeightedApproximateTangentSpaceAt n M θ y T, Simon Ch. 3, Def. 1.7). Assume that some r > 0 has μ(C ∩ B̄_r(y)) < ∞ and θ μ-integrable on M ∩ B̄_r(y), and that θ|C is continuous at y (ContinuousWithinAt θ C y). Then there is K ∈ ℝ≥0 such that μ(C ∩ B̄_ρ(y)) ≤ K · ofReal(ρⁿ) for all sufficiently small ρ > 0.",
+  "lean_statement": "∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → (∀ x ∈ M, 0 ≤ θ x) → 0 < θ y → HasWeightedApproximateTangentSpaceAt n M θ y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ContinuousWithinAt θ C y → ∃ K : ℝ≥0, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y ρ) ≤ K * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "imc_wte_density_bound_of_weightedTangent",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-blow-7c8d1035a6-a1",
+      "result_commit": "8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-weighted-tangent-equiv-a1-weig-42817fe601-a1"
+}
