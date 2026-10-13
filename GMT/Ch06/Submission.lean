@@ -406,6 +406,52 @@ theorem Submission.slicing_im_coarea_eil_liminf_cover_bound :
           (ENNReal.tsum_le_tsum fun j => le_iSup_of_le j.2 le_rfl).trans
             (ENNReal.tsum_comp_le_tsum_of_injective Subtype.val_injective
               fun i => ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d))
+/-- If `f` is `L`-Lipschitz on `A` and `S i ⊆ A`, a Borel `ψ : ℝ → [0, ∞]` majorizes the slice
+sums `∑ᵢ (ediam (S i ∩ A ∩ f⁻¹{t}))^m` over nonempty pieces, with
+`∫ ψ ≤ 2 L ∑ᵢ (ediam (S i))^(m+1)` (empty `S i` omitted).  Pick `a i = f xᵢ` with `xᵢ ∈ S i`
+(any `a i` if `S i = ∅`), so `f (S i) ⊆ Iᵢ := closedEBall (a i) (L · ediam (S i))`, and take
+`ψ = ∑ᵢ cᵢ 1_{Iᵢ}`, `cᵢ = (ediam (S i))^m` (`0` if `S i = ∅`): a nonempty piece
+`S i ∩ (A ∩ f⁻¹{t}) ∋ y` forces `t = f y ∈ Iᵢ`, and `λ¹(Iᵢ) = 2 L ediam (S i)`
+(`Real.volume_closedEBall`). -/
+theorem Submission.slicing_im_coarea_eil_cover_majorant :
+    ∀ (X : Type) [EMetricSpace X] (m : ℕ) (f : X → ℝ) (L : ℝ≥0) (A : Set X) (S : ℕ → Set X),
+      LipschitzOnWith L f A → (∀ i, S i ⊆ A) →
+      ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧
+        (∀ t : ℝ, ∑' i, ⨆ (_ : (S i ∩ (A ∩ f ⁻¹' {t})).Nonempty),
+          ediam (S i ∩ (A ∩ f ⁻¹' {t})) ^ (m : ℝ) ≤ ψ t) ∧
+        ∫⁻ t, ψ t ≤ 2 * (L : ℝ≥0∞) *
+          ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ ((m + 1 : ℕ) : ℝ) := by
+  intro X _ m f L A S hf hSA
+  -- Centres: `edist (f y) (a i) ≤ L · ediam (S i)` for `y ∈ S i` (`a i = f xᵢ` with `xᵢ ∈ S i`).
+  have hcen : ∀ i, ∃ a : ℝ, ∀ y ∈ S i, edist (f y) a ≤ L * ediam (S i) := by
+    intro i
+    rcases (S i).eq_empty_or_nonempty with h | ⟨x, hx⟩
+    · exact ⟨0, by simp [h]⟩
+    · exact ⟨f x, fun y hy => (hf (hSA i hy) (hSA i hx)).trans
+        (mul_le_mul_right (edist_le_ediam_of_mem hy hx) _)⟩
+  choose a ha using hcen
+  have hI : ∀ i, MeasurableSet (closedEBall (a i) (L * ediam (S i))) :=
+    fun i => isClosed_closedEBall.measurableSet
+  refine ⟨fun t => ∑' i, (closedEBall (a i) (L * ediam (S i))).indicator
+      (fun _ => ⨆ (_ : (S i).Nonempty), ediam (S i) ^ (m : ℝ)) t,
+    Measurable.tsum fun i => measurable_const.indicator (hI i), fun t => ?_, ?_⟩
+  · -- A nonempty slice piece `S i ∩ (A ∩ f⁻¹{t}) ∋ y` gives `t = f y ∈ Iᵢ`.
+    refine ENNReal.tsum_le_tsum fun i => iSup_le fun ⟨y, hyS, _, hyt⟩ => ?_
+    have htI : t ∈ closedEBall (a i) (L * ediam (S i)) := by
+      rw [mem_closedEBall, ← show f y = t from hyt]
+      exact ha i y hyS
+    rw [indicator_of_mem htI]
+    exact le_iSup_of_le ⟨y, hyS⟩
+      (ENNReal.rpow_le_rpow (ediam_mono inter_subset_left) (Nat.cast_nonneg m))
+  · -- `∫ ψ = ∑ᵢ cᵢ λ¹(Iᵢ)` and `cᵢ λ¹(Iᵢ) = 2 L (ediam (S i))^(m+1)` for `S i ≠ ∅`.
+    rw [lintegral_tsum fun i => (measurable_const.indicator (hI i)).aemeasurable,
+      ← ENNReal.tsum_mul_left]
+    refine ENNReal.tsum_le_tsum fun i => ?_
+    rw [lintegral_indicator_const (hI i), Real.volume_closedEBall]
+    rcases (S i).eq_empty_or_nonempty with h | h
+    · simp [h]
+    · simp only [iSup_pos h, ENNReal.rpow_natCast]
+      exact le_of_eq (by ring)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
