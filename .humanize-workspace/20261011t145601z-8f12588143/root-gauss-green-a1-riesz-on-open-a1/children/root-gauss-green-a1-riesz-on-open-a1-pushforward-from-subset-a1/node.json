@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.riesz_on_open-a1.pushforward_from_subset-a1",
+  "parent_id": "root.gauss_green-a1.riesz_on_open-a1",
+  "depth": 3,
+  "title": "Push-forward of a measure and unit field from a Borel set U ⊆ ℝ^N to ℝ^N",
+  "statement": "Let N ∈ ℕ and U ⊆ ℝ^N a Borel set, carrying the subspace topology and the subspace σ-algebra {B ∩ U : B Borel}. Let μ₀ be a measure on U with μ₀(K) < ∞ for every compact K ⊆ U. Let ν₀ : U → ℝ^N be μ₀-a.e. strongly measurable with |ν₀(y)| = 1 for μ₀-a.e. y. Then there are a Borel measure μ on ℝ^N and ν : ℝ^N → ℝ^N with: μ(ℝ^N ∖ U) = 0; μ(K) < ∞ for every compact K ⊆ U; ν μ-a.e. strongly measurable; |ν(x)| = 1 for μ-a.e. x; and ∫_{ℝ^N} ⟨g(x), ν(x)⟩ dμ(x) = ∫_U ⟨g(y), ν₀(y)⟩ dμ₀(y) for every function g : ℝ^N → ℝ^N (Bochner integrals, which are 0 for non-integrable integrands).",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ₀ : Measure U) (ν₀ : U → Rn N), MeasurableSet U → (∀ K : Set U, IsCompact K → μ₀ K < ∞) → AEStronglyMeasurable ν₀ μ₀ → (∀ᵐ y ∂μ₀, ‖ν₀ y‖ = 1) → ∃ (μ : Measure (Rn N)) (ν : Rn N → Rn N), μ Uᶜ = 0 ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ν μ ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ g : Rn N → Rn N, ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ y, inner ℝ (g ↑y) (ν₀ y) ∂μ₀",
+  "lean_name": "gaussGreenRep_riesz_pushforward_subtype",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-riesz-on-open-a1-pushforward-from-subset-a1-a1"
+}

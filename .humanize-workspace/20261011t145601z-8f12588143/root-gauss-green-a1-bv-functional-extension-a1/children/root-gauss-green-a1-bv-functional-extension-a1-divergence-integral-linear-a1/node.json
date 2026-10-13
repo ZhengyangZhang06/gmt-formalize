@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.bv_functional_extension-a1.divergence_integral_linear-a1",
+  "parent_id": "root.gauss_green-a1.bv_functional_extension-a1",
+  "depth": 3,
+  "title": "Linearity of g ↦ ∫_S div g on compactly supported C¹ vector fields",
+  "statement": "Let N ∈ ℕ and let S ⊆ ℝ^N be an arbitrary set. Write div g(x) for the trace of the Fréchet derivative Dg(x) (SimonGMT Chapter02.euclideanDivergence) and ∫_S for the Lebesgue integral over S. (i) If g, h : ℝ^N → ℝ^N are C¹ with compact support, then ∫_S div(g + h) dL^N = ∫_S div g dL^N + ∫_S div h dL^N. (ii) If c ∈ ℝ and g : ℝ^N → ℝ^N is C¹, then ∫_S div(c g) dL^N = c ∫_S div g dL^N.",
+  "lean_statement": "∀ (N : ℕ) (S : Set (Rn N)), (∀ g h : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → ContDiff ℝ 1 h → HasCompactSupport h → ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence (g + h) x = (∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence g x) + ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence h x) ∧ ∀ (c : ℝ) (g : Rn N → Rn N), ContDiff ℝ 1 g → ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence (c • g) x = c * ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence g x",
+  "lean_name": "gaussGreenRep_setIntegral_divergence_linear",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-bv-functional-extension-a1-divergence-integral-linear-a1-a1"
+}

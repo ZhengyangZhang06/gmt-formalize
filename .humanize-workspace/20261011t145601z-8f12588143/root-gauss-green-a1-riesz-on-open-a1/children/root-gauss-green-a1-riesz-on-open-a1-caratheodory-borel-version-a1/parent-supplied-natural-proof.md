@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.gauss_green-a1.riesz_on_open-a1`
+- Child DAG node: `root.gauss_green-a1.riesz_on_open-a1.caratheodory_borel_version-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 6(a)-(e) of the supplied proof of gaussGreenRep_riesz_on_open. That step produces the Borel version of the field from Simon Ch. 1, Theorem 4.14 (chapter-01.txt lines 1654-1663). Here it is stated for an arbitrary Hausdorff, locally compact, σ-compact X in place of the open set U.
+
+Notation:
+- μ*(A) := inf{μ(H) : H ⊇ A Borel} is the outer measure of μ (Lean: μ.toOuterMeasure; μ A means μ*(A) for every A ⊆ X).
+- A ⊆ X is μ*-Carathéodory measurable if μ*(S) = μ*(S ∩ A) + μ*(S ∖ A) for all S ⊆ X.
+- 'μ-a.e.' means outside a set of outer measure 0.
+
+1. Borel regularity of μ* (Step 6(a)). Every Borel set is μ*-Carathéodory measurable (Mathlib le_toOuterMeasure_caratheodory). Every A ⊆ X has a Borel hull H ⊇ A with μ*(H) = μ*(A) (Mathlib exists_measurable_superset / toMeasurable). So μ* is Borel regular (SimonGMT Chapter01.measure_toOuterMeasure_isBorelRegular μ).
+
+2. A countable open cover by sets of finite measure (Step 6(b)). By σ-compactness, X = ⋃ₙ Kₙ with every Kₙ compact. As X is locally compact Hausdorff, each Kₙ has an open Vₙ ⊇ Kₙ with compact closure (Mathlib exists_isOpen_superset_and_isCompact_closure). Then μ*(Vₙ) ≤ μ(closure Vₙ) < ∞ by hypothesis, and ⋃ₙ Vₙ = X. (SimonGMT Chapter01.isOpenSigmaFinite_of_finite_compacts.)
+
+3. Carathéodory-measurable sets are μ-null-measurable (Step 6(c)). Let A be μ*-Carathéodory measurable and fix n.
+- Aₙ := A ∩ Vₙ is Carathéodory measurable: Vₙ is Borel (step 1) and the Carathéodory sets form a σ-algebra. Moreover μ*(Aₙ) ≤ μ*(Vₙ) < ∞.
+- By step 1 choose a Borel Sₙ ⊇ Aₙ with μ*(Sₙ) = μ*(Aₙ). The Carathéodory identity for Aₙ with test set Sₙ reads μ*(Sₙ) = μ*(Sₙ ∩ Aₙ) + μ*(Sₙ ∖ Aₙ) = μ*(Aₙ) + μ*(Sₙ ∖ Aₙ). Since μ*(Sₙ) = μ*(Aₙ) < ∞, we get μ*(Sₙ ∖ Aₙ) = 0.
+- Choose a Borel Zₙ ⊇ Sₙ ∖ Aₙ with μ*(Zₙ) = 0 and put Bₙ := Sₙ ∖ Zₙ. Then Bₙ is Borel. Bₙ ⊆ Aₙ, because a point of Sₙ outside Aₙ lies in Zₙ. And Aₙ ∖ Bₙ ⊆ Zₙ, so μ*(Aₙ ∖ Bₙ) = 0.
+Now B := ⋃ₙ Bₙ is a Borel subset of A. Every x ∈ A ∖ B lies in some Vₙ, hence in Aₙ ∖ Bₙ, so μ*(A ∖ B) = 0 by countable subadditivity. (This is SimonGMT IsBorelRegularOuterMeasure.exists_borel_subset_mod_null applied with steps 1-2.) Since B ⊆ A, also μ*(B ∖ A) = 0. So A = B μ-a.e. (Mathlib ae_eq_set), and A is μ-null-measurable with Borel representative B (MeasurableSet.nullMeasurableSet together with NullMeasurableSet.congr).
+
+4. ν is μ-null-measurable (Step 6(d)). For every Borel G ⊆ ℝ^N, ν⁻¹(G) is μ*-Carathéodory measurable by hypothesis, hence μ-null-measurable by step 3. This is precisely NullMeasurable ν μ.
+
+5. ν is μ-a.e. measurable (Step 6(e)).
+- The Borel σ-algebra of the second-countable space ℝ^N is countably generated, say by (Gₖ)ₖ.
+- For each k, step 4 gives Borel sets Tₖ ⊆ ν⁻¹(Gₖ) ⊆ Wₖ with μ(Wₖ ∖ Tₖ) = 0. The set Z := ⋃ₖ (Wₖ ∖ Tₖ) is Borel and μ-null.
+- Define ν̂ := ν on X ∖ Z and ν̂ := 0 on Z. Then ν̂ is Borel measurable: it is constant on the Borel set Z, and ν̂⁻¹(Gₖ) ∩ (X ∖ Z) = Tₖ ∖ Z is Borel for every generator Gₖ (on X ∖ Z the sets ν⁻¹(Gₖ) and Tₖ coincide, because Wₖ ∖ Tₖ ⊆ Z).
+- ν̂ = ν outside the null set Z. (Mathlib NullMeasurable.aemeasurable.)
+
+6. Strongly measurable version. ℝ^N is a second-countable metric space, so a Borel measurable map into it is strongly measurable. Hence ν is μ-a.e. strongly measurable (AEMeasurable.aestronglyMeasurable). Its representative ν' := AEStronglyMeasurable.mk is strongly measurable for the Borel σ-algebra of X (stronglyMeasurable_mk), and ν = ν' μ-a.e. (ae_eq_mk). This proves the claim.
+
+Formalization note: the SimonGMT lemmas above are in Poincare.SimonGMT.Chapter01.{Basic, RadonOuterMeasure, RegularityCompletion}, all built in the pinned package. Importing Poincare.SimonGMT.Chapter01.RadonPolarRepresentation provides all of them. In Lean, MeasurableSet[μ.toOuterMeasure.caratheodory] A is definitionally μ.toOuterMeasure.IsCaratheodory A, which is SimonGMT's IsCaratheodoryMeasurable. The Borel set B obtained from exists_borel_subset_mod_null satisfies MeasurableSet[borel X] B, which BorelSpace.measurable_eq turns into MeasurableSet B.
+
+## Key steps
+
+1. The outer measure μ* of the Borel measure μ is Borel regular: Borel sets are Carathéodory measurable, and every set has a Borel hull of equal outer measure.
+2. σ-compactness, local compactness and finiteness on compacts give a countable open cover Vₙ of X with μ*(Vₙ) < ∞.
+3. Every Carathéodory-measurable A contains a Borel B with μ*(A ∖ B) = 0, via Borel hulls and the Carathéodory identity on each A ∩ Vₙ. So A is μ-null-measurable.
+4. Preimages of Borel sets under ν are Carathéodory measurable, hence null-measurable: ν is NullMeasurable.
+5. The Borel σ-algebra of ℝ^N is countably generated, so ν is μ-a.e. measurable, hence μ-a.e. strongly measurable. Its strongly measurable representative ν' satisfies ν = ν' μ-a.e.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `diff local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean workspaces/gmt-ch03/GMT/Ch03/Contract.lean (identical); grep -n -i 'unfaithful|Riesz|4.14|### 11' project/GMT/Ch03/README.md`
+- `python3 transitive import scan of Poincare.SimonGMT.Chapter02.BV + Chapter03.Rectifiable (Submission imports): only Chapter01.{Basic,Hausdorff,MetricCriterion}; ls simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter01 (RadonPolarRepresentation.olean present)`
+- `grep -n 'theorem simon_theorem_4_14' -A 60 Poincare/SimonGMT/Chapter01/*.lean`
+- `sed -n 1,135p RadonPolarRepresentation.lean; sed -n 1,120p,200,280p VectorFunctionalEnvelope.lean; cat RadonCaratheodoryIntegral.lean`
+- `grep -rn 'exists_borel_subset_mod_null|isOpenSigmaFinite_of_finite_compacts|measure_toOuterMeasure_isBorelRegular|def IsOpenSigmaFinite|def IsBorelRegularOuterMeasure|structure IsRadonOuterMeasure|toCaratheodoryMeasure_apply_all' Poincare/SimonGMT; grep -n 'IsCaratheodoryMeasurable' Chapter01/Basic.lean`
+- `rg -n 'NullMeasurable.aemeasurable|theorem integral_map|aestronglyMeasurable_map_iff|ae_map_iff|subtype_coe|measurable_extend|map_apply' mathlib/Mathlib/MeasureTheory/{Measure/AEMeasurable,Integral/Bochner/Basic,Function/StronglyMeasurable/AEStronglyMeasurable,MeasurableSpace/Embedding,Measure/Map}.lean`
+- `rg -n 'continuous_extend_one|continuous_extend_zero|extend_zero|extendByZero|continuous_of_mulTSupport' mathlib/Mathlib/Topology; sed -n 280,365p Mathlib/Topology/Algebra/Support.lean`
+- `rg -n 'theorem IsOpen.locallyCompactSpace|sigmaCompactSpace_of_locallyCompact_secondCountable|instance Subtype.borelSpace|theorem Subtype.isCompact_iff' mathlib/Mathlib`
+- `sed -n 1640,1760p book/chapter-01.txt (Thm 4.14 at line 1654); sed -n 480,500p book/chapter-02.txt`
+- `sed -n 1,80p,520,570p verifier/gmt-compare.py; cat verifier/lean_contract.py (child_modules, contract_scope, validate_lean_statement)`
+- `python3: lean_contract.validate_lean_statement on the 4 statements; grep -rl candidate lean_names over the run directory; dag.json lean_name scan`
+- `lake env lean /tmp/riesz_decomp/gen/ChallengeCheck.lean (exact NodeChallenge forms, pp.explicit #check, assembly from A2,B,C, #print axioms)`
+- `lake env lean /tmp/riesz_decomp/gen/ProofCheck.lean (Submission-style proofs of the 4 children and the parent, exact Submission.X checks, #print axioms)`
+- `WebSearch: Evans Gariepy vector-valued Riesz representation §1.8; Folland Proposition 2.12 completion-measurable functions a.e. equal measurable`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RegularityCompletion.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-riesz-on-open-a1/parent-child-handoff.json`
+
+Snapshot state: project d09bc8a with Contract.lean identical to the workspace contract, Mathlib 25730c7c, pinned simongmt. No declaration proves the selected statement or any of the four child statements.
+
+SimonGMT supplies the following:
+- Simon 4.14 only in Carathéodory form: simon_theorem_4_14_caratheodory, with vectorFunctionalEnvelopeMeasure (Regular), IsLocallyBoundedCcFunctional, radonCaratheodoryMeasure_apply, ae_radonCaratheodoryMeasure_iff and integral_radonCaratheodoryMeasure (used by child riesz_sigma_compact).
+- The Borel-regularity tools measure_toOuterMeasure_isBorelRegular, isOpenSigmaFinite_of_finite_compacts and IsBorelRegularOuterMeasure.exists_borel_subset_mod_null (child caratheodory_borel_version). IsCaratheodoryMeasurable is an abbrev for Mathlib's OuterMeasure.IsCaratheodory.
+- These modules are not imported by GMT.Ch03.Submission, but their oleans are built. A child proof may add `import Poincare.SimonGMT.Chapter01.RadonPolarRepresentation`, as earlier proved nodes added SimonGMT imports. The frozen statements use only Mathlib notions, so they elaborate with or without that import.
+- README section 11 flags only Chapter03.FinitePerimeterRepresentation (not used). No SimonGMT Chapter01 Riesz definition is marked unfaithful.
+
+Mathlib supplies the following:
+- Zero extension from an open set: HasCompactSupport.continuous_extend_zero, tsupport_extend_zero_subset, extend_zero and HasCompactSupport.intro (child zero_extension_functional).
+- Push-forward: MeasurableEmbedding.subtype_coe, map_apply (valid on all sets), ae_map_iff, aestronglyMeasurable_map_iff and integral_map (child pushforward_from_subset).
+- NullMeasurable.aemeasurable (child caratheodory_borel_version).
+- For the parent assembly: IsOpen.locallyCompactSpace, the instance sigmaCompactSpace_of_locallyCompact_secondCountable, and Subtype.borelSpace.
+
+No match: Mathlib and SimonGMT have no Riesz theorem with a Borel unit field on σ-compact spaces and no ambient push-forward of a Riesz pair from an open subset. These are therefore supplied as children.
+
+Checks run:
+- All four frozen statements pass validate_lean_statement and elaborate in the exact NodeChallenge form.
+- The assembly A2 + B + C ⇒ parent compiles.
+- Complete Submission-style proofs of all four children and the parent compile with only propext, Classical.choice and Quot.sound.
+- Public references: Simon Ch. 1 Thm 4.14 (chapter-01.txt 1654-1663) and Ch. 2 (2.1)-(2.2) (chapter-02.txt 485-496); Evans–Gariepy §1.8; Folland Prop. 2.12.

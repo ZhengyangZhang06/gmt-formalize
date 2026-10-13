@@ -1,0 +1,576 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T145601Z-8f12588143",
+  "parent_id": "root.gauss_green-a1.variation_formula-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch03/20261011t145601z-8f12588143/dispatch/root-gauss-green-a1-variation-formula-a1",
+  "source_commit": "d09bc8a18ce60face651f042976e8465f21f0f68",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch03/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.gauss_green-a1.variation_formula-a1.compact_inner_approx-a1",
+      "key": "compact_inner_approx",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "diff project/GMT/Ch03/Contract.lean <workspace>/GMT/Ch03/Contract.lean (identical); grep -n '### 11' -A 8 project/GMT/Ch03/README.md",
+              "rg -n -i 'lusin' mathlib/Mathlib",
+              "rg -n 'exists_isClosed.*continuousOn|continuousOn.*isClosed.*measure' mathlib/Mathlib/MeasureTheory",
+              "grep -n 'theorem' Poincare/SimonGMT/Chapter01/Lusin.lean; rg -n 'exists_isClosed_continuousOn|IsClosed C ∧.*ContinuousOn' Poincare/SimonGMT",
+              "rg -n 'MeasurableSet.exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|tendsto_measure_thickening_of_isClosed|exists_cthickening_subset_open|exists_continuousMap_one_of_isCompact_subset_isOpen|IsOpen.exists_iUnion_isClosed|enorm_integral_le_lintegral_enorm|lintegral_indicator_one' mathlib/Mathlib",
+              "rg -n 'instance.*TietzeExtension|ContinuousMap.exists_restrict_eq|exists_forall_mem_restrict_eq' mathlib/Mathlib",
+              "rg -n 'AEStronglyMeasurable.inner|thickening_subset_cthickening_of_le|Monotone.measure_iUnion|integral_sub\\'|integral_indicator_one|add_thirds|le_of_forall_pos_le_add|exists_pos_mul_lt|EuclideanSpace.equiv|enorm_eq_ofReal_abs' mathlib/Mathlib",
+              "lake env lean GMT/Scratch/VarFormulaAvail.lean (import GMT.Ch03.Submission only: SimonGMT Chapter01 Lusin lemma and TietzeExtension are unknown identifiers)",
+              "lake env lean GMT/Scratch/VarFormulaSplit.lean (assembly of the 6 child types ⇒ frozen parent type, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaFull.lean (all six children proved plus assembly, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaStmtCheck.lean (six lean_statement strings after import GMT.Ch03.Submission only, contract scope)",
+              "python3 lean_contract.validate_lean_statement on the six strings; dag.json lean_name scan; grep -rl gaussGreenVar .humanize GMT",
+              "sed -n 300,384p verifier/gmt-compare.py (frozen_inputs / candidate_inputs import policy)",
+              "sed -n 270,372p book/chapter-01.txt (Simon 1.15, 1.16, 1.17); sed -n 505,530p book/chapter-02.txt ((2.4))"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/TietzeExtension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaSplit.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaFull.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaStmtCheck.lean"
+            ],
+            "conclusion": "Snapshot: project d09bc8a, Mathlib 25730c7c. Contract.lean is identical to the workspace copy. README §11 marks GaussGreenRepresentation as new, and nothing in the project or SimonGMT states the total-variation formula itself.\n\nAvailable and cited by the children:\n- Mathlib MeasurableSet.exists_isClosed_sdiff_lt and Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure (Regular.lean:1036, 1072).\n- Mathlib tendsto_measure_thickening_of_isClosed (BorelSpace/Metric.lean:160).\n- Mathlib IsCompact.exists_cthickening_subset_open and IsCompact.cthickening, Metric.isOpen_thickening, Metric.self_subset_thickening and Metric.thickening_subset_cthickening_of_le (Thickening.lean:426, 283, 74, 309, 272).\n- Mathlib IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207).\n- Mathlib Monotone.measure_iUnion (Measure/Continuity.lean:71).\n- Mathlib exists_continuousMap_one_of_isCompact_subset_isOpen (UrysohnsLemma.lean:529).\n- Mathlib ContinuousMap.exists_forall_mem_restrict_eq (TietzeExtension.lean) with Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean:54).\n- Mathlib AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean:50).\n- Mathlib enorm_integral_le_lintegral_enorm, integral_sub' (Bochner/Basic.lean:333, 268), integral_indicator_one (Bochner/Set.lean:533) and lintegral_indicator_one (Lebesgue/Basic.lean:572).\n- Mathlib ENNReal.exists_pos_mul_lt, ENNReal.add_thirds and ENNReal.le_of_forall_pos_le_add, plus EuclideanSpace.equiv.\n- SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127): real-valued Lusin under a closed-inner-regularity hypothesis.\n\nNo match, hence supplied as children:\n- Mathlib has no Lusin continuity theorem; rg 'lusin' finds only Lusin separation and Lusin–Souslin in Constructions/Polish/Basic.lean.\n- SimonGMT has no vector-valued Lusin; its only Lusin results are in Chapter01/Lusin.lean.\n- Neither library has the open/compact regularity statements, the Tietze–Urysohn unit-field lemma, or the pairing bounds in the frozen forms needed here.\n- The sibling lusin_closed_subset_continuousOn_volume (c1_approximation branch) covers only volume, so it does not apply to an arbitrary μ.\n\nImport closure: after import GMT.Ch03.Submission alone, TietzeExtension, Poincare.SimonGMT.Chapter01.Lusin and StronglyMeasurable.Inner are not in scope. The children may add these imports, because gmt-compare.py does not byte-check Submission.lean.\n\nScratch checks:\n- All six frozen statements elaborate against GMT.Ch03.Submission in the contract scope and pass validate_lean_statement.\n- The six children and the assembly were all proved in GMT/Scratch/VarFormulaFull.lean with axioms propext, Classical.choice and Quot.sound only.\n- The gaussGreenVar_ names collide with nothing in the DAG."
+          }
+        ],
+        "parent_id": "root.gauss_green-a1.variation_formula-a1",
+        "child_id": "root.gauss_green-a1.variation_formula-a1.compact_inner_approx-a1",
+        "subproblem": {
+          "key": "compact_inner_approx",
+          "title": "The measure of an open set is bounded by any common bound on its compact subsets",
+          "statement": "Let N ∈ ℕ, let O ⊆ ℝ^N (= EuclideanSpace ℝ (Fin N)) be open, let μ be any measure on the Borel σ-algebra of ℝ^N (no finiteness is assumed), and let c ∈ [0, ∞]. If μ(K) ≤ c for every compact K ⊆ O, then μ(O) ≤ c. In other words, μ(O) = sup{μ(K) : K ⊆ O compact}.",
+          "lean_statement": "∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (c : ℝ≥0∞), IsOpen O → (∀ K : Set (Rn N), IsCompact K → K ⊆ O → μ K ≤ c) → μ O ≤ c",
+          "lean_name": "gaussGreenVar_measure_isOpen_le_of_isCompact",
+          "depends_on": [],
+          "natural_proof": "Source. This is step 2 of the parent proof (reduction to compact sets: O is σ-compact and μ is continuous from below). Compare Simon Ch. 1, Remark 1.16 (chapter-01.txt lines 287–295), where a closed subset of a σ-compact space is written as an increasing union of compact sets.\n\n1. Closed exhaustion. O is an open subset of the metric space ℝ^N, so there are closed sets F_0 ⊆ F_1 ⊆ F_2 ⊆ … with F_n ⊆ O for every n and ⋃_n F_n = O. For example, if O = ℝ^N take F_n := ℝ^N. Otherwise take F_n := {x : dist(x, ℝ^N ∖ O) ≥ 1/(n+1)}:\n- F_n is closed because x ↦ dist(x, ℝ^N ∖ O) is continuous.\n- F_n ⊆ O because points of the closed set ℝ^N ∖ O have distance 0.\n- F_n increases with n.\n- The F_n exhaust O, because each x ∈ O has a ball around it inside O and therefore positive distance to ℝ^N ∖ O.\nMathlib's IsOpen.exists_iUnion_isClosed provides such a monotone family.\n2. Compact exhaustion. Put K_n := F_n ∩ B̄(0, n), where B̄(0, n) = {x : |x| ≤ n}.\n- K_n is closed and bounded in ℝ^N, so it is compact (Heine–Borel: a closed subset of the compact ball; isCompact_closedBall with IsCompact.inter_left).\n- K_n ⊆ F_n ⊆ O.\n- If m ≤ n, then F_m ⊆ F_n and B̄(0, m) ⊆ B̄(0, n), so K_m ⊆ K_n.\n3. ⋃_n K_n = O. The inclusion ⊆ follows from step 2. Conversely, let x ∈ O. Choose n with x ∈ F_n (step 1) and m ∈ ℕ with m ≥ |x| (Archimedean property). With p := max(n, m), x ∈ F_n ⊆ F_p and |x| ≤ m ≤ p, so x ∈ K_p.\n4. Continuity from below. For any measure and any increasing sequence of sets, μ(⋃_n K_n) = sup_n μ(K_n) (Mathlib Monotone.measure_iUnion, which needs no measurability; here the K_n are closed anyway). With step 3, μ(O) = sup_n μ(K_n).\n5. Each K_n is a compact subset of O, so μ(K_n) ≤ c by hypothesis. Therefore μ(O) = sup_n μ(K_n) ≤ c. ∎",
+          "proof_key_steps": [
+            "O = ⋃_n F_n with closed, increasing F_n ⊆ O.",
+            "K_n := F_n ∩ B̄(0, n) are compact, increasing, contained in O, and ⋃_n K_n = O.",
+            "Continuity from below gives μ(O) = sup_n μ(K_n) ≤ c."
+          ]
+        },
+        "audit": {
+          "key": "compact_inner_approx",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type includes precisely the stated hypotheses. Intersecting the increasing closed exhaustion with expanding compact balls gives an increasing compact exhaustion of O. Continuity from below proves the conclusion without any finiteness assumption."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.gauss_green-a1.variation_formula-a1.open_outer_approx-a1",
+      "key": "open_outer_approx",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "diff project/GMT/Ch03/Contract.lean <workspace>/GMT/Ch03/Contract.lean (identical); grep -n '### 11' -A 8 project/GMT/Ch03/README.md",
+              "rg -n -i 'lusin' mathlib/Mathlib",
+              "rg -n 'exists_isClosed.*continuousOn|continuousOn.*isClosed.*measure' mathlib/Mathlib/MeasureTheory",
+              "grep -n 'theorem' Poincare/SimonGMT/Chapter01/Lusin.lean; rg -n 'exists_isClosed_continuousOn|IsClosed C ∧.*ContinuousOn' Poincare/SimonGMT",
+              "rg -n 'MeasurableSet.exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|tendsto_measure_thickening_of_isClosed|exists_cthickening_subset_open|exists_continuousMap_one_of_isCompact_subset_isOpen|IsOpen.exists_iUnion_isClosed|enorm_integral_le_lintegral_enorm|lintegral_indicator_one' mathlib/Mathlib",
+              "rg -n 'instance.*TietzeExtension|ContinuousMap.exists_restrict_eq|exists_forall_mem_restrict_eq' mathlib/Mathlib",
+              "rg -n 'AEStronglyMeasurable.inner|thickening_subset_cthickening_of_le|Monotone.measure_iUnion|integral_sub\\'|integral_indicator_one|add_thirds|le_of_forall_pos_le_add|exists_pos_mul_lt|EuclideanSpace.equiv|enorm_eq_ofReal_abs' mathlib/Mathlib",
+              "lake env lean GMT/Scratch/VarFormulaAvail.lean (import GMT.Ch03.Submission only: SimonGMT Chapter01 Lusin lemma and TietzeExtension are unknown identifiers)",
+              "lake env lean GMT/Scratch/VarFormulaSplit.lean (assembly of the 6 child types ⇒ frozen parent type, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaFull.lean (all six children proved plus assembly, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaStmtCheck.lean (six lean_statement strings after import GMT.Ch03.Submission only, contract scope)",
+              "python3 lean_contract.validate_lean_statement on the six strings; dag.json lean_name scan; grep -rl gaussGreenVar .humanize GMT",
+              "sed -n 300,384p verifier/gmt-compare.py (frozen_inputs / candidate_inputs import policy)",
+              "sed -n 270,372p book/chapter-01.txt (Simon 1.15, 1.16, 1.17); sed -n 505,530p book/chapter-02.txt ((2.4))"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/TietzeExtension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaSplit.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaFull.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaStmtCheck.lean"
+            ],
+            "conclusion": "Snapshot: project d09bc8a, Mathlib 25730c7c. Contract.lean is identical to the workspace copy. README §11 marks GaussGreenRepresentation as new, and nothing in the project or SimonGMT states the total-variation formula itself.\n\nAvailable and cited by the children:\n- Mathlib MeasurableSet.exists_isClosed_sdiff_lt and Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure (Regular.lean:1036, 1072).\n- Mathlib tendsto_measure_thickening_of_isClosed (BorelSpace/Metric.lean:160).\n- Mathlib IsCompact.exists_cthickening_subset_open and IsCompact.cthickening, Metric.isOpen_thickening, Metric.self_subset_thickening and Metric.thickening_subset_cthickening_of_le (Thickening.lean:426, 283, 74, 309, 272).\n- Mathlib IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207).\n- Mathlib Monotone.measure_iUnion (Measure/Continuity.lean:71).\n- Mathlib exists_continuousMap_one_of_isCompact_subset_isOpen (UrysohnsLemma.lean:529).\n- Mathlib ContinuousMap.exists_forall_mem_restrict_eq (TietzeExtension.lean) with Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean:54).\n- Mathlib AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean:50).\n- Mathlib enorm_integral_le_lintegral_enorm, integral_sub' (Bochner/Basic.lean:333, 268), integral_indicator_one (Bochner/Set.lean:533) and lintegral_indicator_one (Lebesgue/Basic.lean:572).\n- Mathlib ENNReal.exists_pos_mul_lt, ENNReal.add_thirds and ENNReal.le_of_forall_pos_le_add, plus EuclideanSpace.equiv.\n- SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127): real-valued Lusin under a closed-inner-regularity hypothesis.\n\nNo match, hence supplied as children:\n- Mathlib has no Lusin continuity theorem; rg 'lusin' finds only Lusin separation and Lusin–Souslin in Constructions/Polish/Basic.lean.\n- SimonGMT has no vector-valued Lusin; its only Lusin results are in Chapter01/Lusin.lean.\n- Neither library has the open/compact regularity statements, the Tietze–Urysohn unit-field lemma, or the pairing bounds in the frozen forms needed here.\n- The sibling lusin_closed_subset_continuousOn_volume (c1_approximation branch) covers only volume, so it does not apply to an arbitrary μ.\n\nImport closure: after import GMT.Ch03.Submission alone, TietzeExtension, Poincare.SimonGMT.Chapter01.Lusin and StronglyMeasurable.Inner are not in scope. The children may add these imports, because gmt-compare.py does not byte-check Submission.lean.\n\nScratch checks:\n- All six frozen statements elaborate against GMT.Ch03.Submission in the contract scope and pass validate_lean_statement.\n- The six children and the assembly were all proved in GMT/Scratch/VarFormulaFull.lean with axioms propext, Classical.choice and Quot.sound only.\n- The gaussGreenVar_ names collide with nothing in the DAG."
+          }
+        ],
+        "parent_id": "root.gauss_green-a1.variation_formula-a1",
+        "child_id": "root.gauss_green-a1.variation_formula-a1.open_outer_approx-a1",
+        "subproblem": {
+          "key": "open_outer_approx",
+          "title": "A compact K ⊆ O has an open neighbourhood V ⊆ O of finite measure with μ(V ∖ K) < ε",
+          "statement": "Let N ∈ ℕ, let O ⊆ ℝ^N (= EuclideanSpace ℝ (Fin N)) be open, let K ⊆ O be compact, and let μ be a measure on the Borel σ-algebra of ℝ^N with μ(L) < ∞ for every compact L ⊆ O. Then for every ε ∈ (0, ∞] there is an open set V ⊆ ℝ^N with K ⊆ V ⊆ O, μ(V) < ∞ and μ(V ∖ K) < ε.",
+          "lean_statement": "∀ (N : ℕ) (O K : Set (Rn N)) (μ : Measure (Rn N)), IsOpen O → IsCompact K → K ⊆ O → (∀ L : Set (Rn N), IsCompact L → L ⊆ O → μ L < ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ V : Set (Rn N), IsOpen V ∧ K ⊆ V ∧ V ⊆ O ∧ μ V < ∞ ∧ μ (V \\ K) < ε",
+          "lean_name": "gaussGreenVar_exists_isOpen_superset_measure_sdiff_lt",
+          "depends_on": [],
+          "natural_proof": "Source. This is step 4 of the parent proof. There, a compact neighbourhood L of K with μ(L ∖ K) < ε is built from thickenings by continuity from above, together with an open V with K ⊆ V ⊆ L. Here continuity from above is applied directly to the open thickenings, which yields V at once.\n\n1. A compact neighbourhood inside O. There is δ₀ > 0 with L₀ := {x : dist(x, K) ≤ δ₀} ⊆ O (Mathlib IsCompact.exists_cthickening_subset_open). If K = ∅ then L₀ = ∅, and if O = ℝ^N any δ₀ > 0 works. Otherwise x ↦ dist(x, ℝ^N ∖ O) is continuous and positive on the nonempty compact K, so it has a minimum 2δ₀ > 0 there. If dist(x, K) ≤ δ₀, compactness gives k ∈ K with |x − k| ≤ δ₀. Then dist(x, ℝ^N ∖ O) ≥ 2δ₀ − δ₀ > 0, so x ∈ O. L₀ is closed and bounded, hence compact (IsCompact.cthickening), and L₀ ⊆ O, so μ(L₀) < ∞ by hypothesis. Likewise μ(K) < ∞, because K is a compact subset of O.\n2. Open thickenings. For r > 0 let V_r := {x : dist(x, K) < r} (Mathlib Metric.thickening r K; V_r = ∅ if K = ∅). Then:\n- V_r is open (Metric.isOpen_thickening).\n- K ⊆ V_r, since points of K have distance 0 < r (Metric.self_subset_thickening).\n- V_r ⊆ V_s whenever r ≤ s.\n- V_r ⊆ L₀ whenever r ≤ δ₀ (Metric.thickening_subset_cthickening_of_le).\n3. Continuity from above. K is closed (compact in a Hausdorff space), so ⋂_{r>0} V_r = closure K = K. Since μ(V_{δ₀}) ≤ μ(L₀) < ∞, continuity from above along the decreasing family V_r gives μ(V_r) → μ(K) as r ↓ 0 (Mathlib tendsto_measure_thickening_of_isClosed). Concretely, μ(V_{δ₀/m}) ↓ μ(K) as m → ∞, and r ↦ μ(V_r) is monotone.\n4. Choice of V. Since μ(K) < ∞ and ε > 0, μ(K) < μ(K) + ε (ENNReal.lt_add_right). By step 3 there is r with 0 < r < δ₀ and μ(V_r) < μ(K) + ε. Put V := V_r.\n5. Verification.\n- V is open and K ⊆ V, by step 2.\n- V ⊆ L₀ ⊆ O because r ≤ δ₀.\n- μ(V) ≤ μ(L₀) < ∞.\n- K ⊆ V, K is Borel (closed) and μ(K) < ∞, so μ(V ∖ K) = μ(V) − μ(K) < ε (Mathlib measure_sdiff and ENNReal.sub_lt_of_lt_add, using μ(V) < μ(K) + ε). ∎",
+          "proof_key_steps": [
+            "Some closed δ₀-neighbourhood L₀ of K is compact and contained in O, so μ(L₀) < ∞ and μ(K) < ∞.",
+            "The open r-neighbourhoods V_r of K are open, contain K, lie in L₀ for r ≤ δ₀, and decrease to K as r ↓ 0, so μ(V_r) → μ(K) by continuity from above.",
+            "Choose r ∈ (0, δ₀) with μ(V_r) < μ(K) + ε. Then V := V_r works, with μ(V ∖ K) = μ(V) − μ(K) < ε."
+          ]
+        },
+        "audit": {
+          "key": "open_outer_approx",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and type match. A compact thickening inside O supplies finite measure; shrinking open thickenings converge in measure to K. Finite-measure subtraction yields the required strict error bound. Empty K and infinite ε are covered."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.gauss_green-a1.variation_formula-a1.pairing_lower_bound-a1",
+      "key": "pairing_lower_bound",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "diff project/GMT/Ch03/Contract.lean <workspace>/GMT/Ch03/Contract.lean (identical); grep -n '### 11' -A 8 project/GMT/Ch03/README.md",
+              "rg -n -i 'lusin' mathlib/Mathlib",
+              "rg -n 'exists_isClosed.*continuousOn|continuousOn.*isClosed.*measure' mathlib/Mathlib/MeasureTheory",
+              "grep -n 'theorem' Poincare/SimonGMT/Chapter01/Lusin.lean; rg -n 'exists_isClosed_continuousOn|IsClosed C ∧.*ContinuousOn' Poincare/SimonGMT",
+              "rg -n 'MeasurableSet.exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|tendsto_measure_thickening_of_isClosed|exists_cthickening_subset_open|exists_continuousMap_one_of_isCompact_subset_isOpen|IsOpen.exists_iUnion_isClosed|enorm_integral_le_lintegral_enorm|lintegral_indicator_one' mathlib/Mathlib",
+              "rg -n 'instance.*TietzeExtension|ContinuousMap.exists_restrict_eq|exists_forall_mem_restrict_eq' mathlib/Mathlib",
+              "rg -n 'AEStronglyMeasurable.inner|thickening_subset_cthickening_of_le|Monotone.measure_iUnion|integral_sub\\'|integral_indicator_one|add_thirds|le_of_forall_pos_le_add|exists_pos_mul_lt|EuclideanSpace.equiv|enorm_eq_ofReal_abs' mathlib/Mathlib",
+              "lake env lean GMT/Scratch/VarFormulaAvail.lean (import GMT.Ch03.Submission only: SimonGMT Chapter01 Lusin lemma and TietzeExtension are unknown identifiers)",
+              "lake env lean GMT/Scratch/VarFormulaSplit.lean (assembly of the 6 child types ⇒ frozen parent type, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaFull.lean (all six children proved plus assembly, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaStmtCheck.lean (six lean_statement strings after import GMT.Ch03.Submission only, contract scope)",
+              "python3 lean_contract.validate_lean_statement on the six strings; dag.json lean_name scan; grep -rl gaussGreenVar .humanize GMT",
+              "sed -n 300,384p verifier/gmt-compare.py (frozen_inputs / candidate_inputs import policy)",
+              "sed -n 270,372p book/chapter-01.txt (Simon 1.15, 1.16, 1.17); sed -n 505,530p book/chapter-02.txt ((2.4))"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/TietzeExtension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaSplit.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaFull.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaStmtCheck.lean"
+            ],
+            "conclusion": "Snapshot: project d09bc8a, Mathlib 25730c7c. Contract.lean is identical to the workspace copy. README §11 marks GaussGreenRepresentation as new, and nothing in the project or SimonGMT states the total-variation formula itself.\n\nAvailable and cited by the children:\n- Mathlib MeasurableSet.exists_isClosed_sdiff_lt and Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure (Regular.lean:1036, 1072).\n- Mathlib tendsto_measure_thickening_of_isClosed (BorelSpace/Metric.lean:160).\n- Mathlib IsCompact.exists_cthickening_subset_open and IsCompact.cthickening, Metric.isOpen_thickening, Metric.self_subset_thickening and Metric.thickening_subset_cthickening_of_le (Thickening.lean:426, 283, 74, 309, 272).\n- Mathlib IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207).\n- Mathlib Monotone.measure_iUnion (Measure/Continuity.lean:71).\n- Mathlib exists_continuousMap_one_of_isCompact_subset_isOpen (UrysohnsLemma.lean:529).\n- Mathlib ContinuousMap.exists_forall_mem_restrict_eq (TietzeExtension.lean) with Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean:54).\n- Mathlib AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean:50).\n- Mathlib enorm_integral_le_lintegral_enorm, integral_sub' (Bochner/Basic.lean:333, 268), integral_indicator_one (Bochner/Set.lean:533) and lintegral_indicator_one (Lebesgue/Basic.lean:572).\n- Mathlib ENNReal.exists_pos_mul_lt, ENNReal.add_thirds and ENNReal.le_of_forall_pos_le_add, plus EuclideanSpace.equiv.\n- SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127): real-valued Lusin under a closed-inner-regularity hypothesis.\n\nNo match, hence supplied as children:\n- Mathlib has no Lusin continuity theorem; rg 'lusin' finds only Lusin separation and Lusin–Souslin in Constructions/Polish/Basic.lean.\n- SimonGMT has no vector-valued Lusin; its only Lusin results are in Chapter01/Lusin.lean.\n- Neither library has the open/compact regularity statements, the Tietze–Urysohn unit-field lemma, or the pairing bounds in the frozen forms needed here.\n- The sibling lusin_closed_subset_continuousOn_volume (c1_approximation branch) covers only volume, so it does not apply to an arbitrary μ.\n\nImport closure: after import GMT.Ch03.Submission alone, TietzeExtension, Poincare.SimonGMT.Chapter01.Lusin and StronglyMeasurable.Inner are not in scope. The children may add these imports, because gmt-compare.py does not byte-check Submission.lean.\n\nScratch checks:\n- All six frozen statements elaborate against GMT.Ch03.Submission in the contract scope and pass validate_lean_statement.\n- The six children and the assembly were all proved in GMT/Scratch/VarFormulaFull.lean with axioms propext, Classical.choice and Quot.sound only.\n- The gaussGreenVar_ names collide with nothing in the DAG."
+          }
+        ],
+        "parent_id": "root.gauss_green-a1.variation_formula-a1",
+        "child_id": "root.gauss_green-a1.variation_formula-a1.pairing_lower_bound-a1",
+        "subproblem": {
+          "key": "pairing_lower_bound",
+          "title": "Lower bound for the pairing: μ(C) ≤ ofReal(∫⟨g, ν⟩ dμ) + μ(V ∖ C)",
+          "statement": "Let N ∈ ℕ and ℝ^N = EuclideanSpace ℝ (Fin N). Let μ be a measure on the Borel σ-algebra of ℝ^N. Let ν : ℝ^N → ℝ^N be μ-a.e. strongly measurable with |ν(x)| ≤ 1 for μ-a.e. x. Let g : ℝ^N → ℝ^N be continuous with |g(x)| ≤ 1 for every x. Let C ⊆ V ⊆ ℝ^N be Borel sets with μ(V) < ∞. Assume g(x) = 0 for every x ∉ V, and ⟨g(x), ν(x)⟩ = 1 for μ-a.e. x ∈ C. Then μ(C) ≤ ofReal(∫⟨g(x), ν(x)⟩ dμ(x)) + μ(V ∖ C) in [0, ∞], where ∫ is the Bochner integral and ofReal(t) := max(t, 0).",
+          "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ν g : Rn N → Rn N) (C V : Set (Rn N)), MeasurableSet C → MeasurableSet V → C ⊆ V → μ V ≠ ∞ → AEStronglyMeasurable ν μ → Continuous g → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → (∀ x, ‖g x‖ ≤ 1) → (∀ x, x ∉ V → g x = 0) → (∀ᵐ x ∂μ, x ∈ C → inner ℝ (g x) (ν x) = 1) → μ C ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \\ C)",
+          "lean_name": "gaussGreenVar_measure_le_ofReal_integral_inner_add",
+          "depends_on": [],
+          "natural_proof": "Source. This is step 8 of the parent proof: the estimate ∫⟨g, ν⟩ dμ ≥ μ(K') − μ(L ∖ K'). Here K' is renamed C. The set L outside which g vanishes is replaced by V; only g = 0 off V and μ(V) < ∞ are used. The conclusion is stated in [0, ∞].\n\nNotation. f(x) := ⟨g(x), ν(x)⟩ ∈ ℝ. For a Borel set B, 1_B is its real-valued indicator, and μ_ℝ(B) := μ(B) ∈ [0, ∞) whenever μ(B) < ∞.\n\n1. Measurability. g is continuous, hence strongly measurable. ν is μ-a.e. strongly measurable, and (u, v) ↦ ⟨u, v⟩ is continuous. Hence f is μ-a.e. strongly measurable. In Mathlib: continuous_inner.comp_aestronglyMeasurable applied to (hg.aestronglyMeasurable.prodMk hν), or AEStronglyMeasurable.inner from Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean.\n2. A.e. bounds. Let G₀ be the μ-full set of points x with |ν(x)| ≤ 1 and (x ∈ C ⇒ f(x) = 1); it is the intersection of two μ-full sets. For x ∈ G₀:\n- |f(x)| ≤ |g(x)|·|ν(x)| ≤ 1 by Cauchy–Schwarz.\n- If x ∉ V, then g(x) = 0 and so f(x) = 0.\nHence |f| ≤ 1_V μ-a.e.\n3. Integrability.\n- Since μ(V) < ∞, 1_V is μ-integrable. By steps 1 and 2, f is μ-integrable by domination (Integrable.mono').\n- C and V ∖ C are Borel subsets of V, so μ(C) ≤ μ(V) < ∞ and μ(V ∖ C) ≤ μ(V) < ∞.\n- 1_C and 1_{V∖C} are integrable, with ∫ 1_C dμ = μ_ℝ(C) and ∫ 1_{V∖C} dμ = μ_ℝ(V ∖ C) (integral_indicator_one).\n4. Pointwise lower bound. For x ∈ G₀ we show f(x) ≥ 1_C(x) − 1_{V∖C}(x).\n (a) If x ∈ C: f(x) = 1 = 1 − 0, since x ∉ V ∖ C.\n (b) If x ∈ V ∖ C: f(x) ≥ −|f(x)| ≥ −1 = 0 − 1.\n (c) If x ∉ V: x ∉ C because C ⊆ V, and x ∉ V ∖ C, and f(x) = 0 = 0 − 0.\n5. Integration. The integral is monotone for integrable functions under a μ-a.e. inequality, and it is linear (integral_mono_ae, integral_sub'). Therefore\n μ_ℝ(C) − μ_ℝ(V ∖ C) = ∫ (1_C − 1_{V∖C}) dμ ≤ ∫ f dμ.\n6. Passage to [0, ∞]. Since μ(C) < ∞, μ(C) = ofReal(μ_ℝ(C)). By step 5, μ_ℝ(C) ≤ ∫ f dμ + μ_ℝ(V ∖ C). Also:\n- ofReal is monotone.\n- ofReal(a + b) ≤ ofReal(a) + ofReal(b) for all real a, b (ENNReal.ofReal_add_le).\n- ofReal(μ_ℝ(V ∖ C)) = μ(V ∖ C), since μ(V ∖ C) < ∞.\nTherefore μ(C) = ofReal(μ_ℝ(C)) ≤ ofReal(∫ f dμ + μ_ℝ(V ∖ C)) ≤ ofReal(∫ f dμ) + μ(V ∖ C). ∎",
+          "proof_key_steps": [
+            "f := ⟨g, ν⟩ is a.e. strongly measurable and |f| ≤ 1_V μ-a.e., so f is integrable because μ(V) < ∞.",
+            "μ-a.e., f ≥ 1_C − 1_{V∖C}: f = 1 on C, f ≥ −1 on V∖C, and f = 0 off V.",
+            "Integrating gives μ(C) − μ(V∖C) ≤ ∫ f dμ as real numbers.",
+            "Converting to [0, ∞] gives μ(C) = ofReal(μ(C)) ≤ ofReal(∫ f) + μ(V∖C)."
+          ]
+        },
+        "audit": {
+          "key": "pairing_lower_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and type agree, including the conditional a.e. equality on C. Domination by 1_V establishes integrability. Integrating f ≥ 1_C − 1_(V\\C), then converting finite measure values through ENNReal.ofReal, proves the exact inequality."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.gauss_green-a1.variation_formula-a1.pairing_upper_bound-a1",
+      "key": "pairing_upper_bound",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "diff project/GMT/Ch03/Contract.lean <workspace>/GMT/Ch03/Contract.lean (identical); grep -n '### 11' -A 8 project/GMT/Ch03/README.md",
+              "rg -n -i 'lusin' mathlib/Mathlib",
+              "rg -n 'exists_isClosed.*continuousOn|continuousOn.*isClosed.*measure' mathlib/Mathlib/MeasureTheory",
+              "grep -n 'theorem' Poincare/SimonGMT/Chapter01/Lusin.lean; rg -n 'exists_isClosed_continuousOn|IsClosed C ∧.*ContinuousOn' Poincare/SimonGMT",
+              "rg -n 'MeasurableSet.exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|tendsto_measure_thickening_of_isClosed|exists_cthickening_subset_open|exists_continuousMap_one_of_isCompact_subset_isOpen|IsOpen.exists_iUnion_isClosed|enorm_integral_le_lintegral_enorm|lintegral_indicator_one' mathlib/Mathlib",
+              "rg -n 'instance.*TietzeExtension|ContinuousMap.exists_restrict_eq|exists_forall_mem_restrict_eq' mathlib/Mathlib",
+              "rg -n 'AEStronglyMeasurable.inner|thickening_subset_cthickening_of_le|Monotone.measure_iUnion|integral_sub\\'|integral_indicator_one|add_thirds|le_of_forall_pos_le_add|exists_pos_mul_lt|EuclideanSpace.equiv|enorm_eq_ofReal_abs' mathlib/Mathlib",
+              "lake env lean GMT/Scratch/VarFormulaAvail.lean (import GMT.Ch03.Submission only: SimonGMT Chapter01 Lusin lemma and TietzeExtension are unknown identifiers)",
+              "lake env lean GMT/Scratch/VarFormulaSplit.lean (assembly of the 6 child types ⇒ frozen parent type, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaFull.lean (all six children proved plus assembly, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaStmtCheck.lean (six lean_statement strings after import GMT.Ch03.Submission only, contract scope)",
+              "python3 lean_contract.validate_lean_statement on the six strings; dag.json lean_name scan; grep -rl gaussGreenVar .humanize GMT",
+              "sed -n 300,384p verifier/gmt-compare.py (frozen_inputs / candidate_inputs import policy)",
+              "sed -n 270,372p book/chapter-01.txt (Simon 1.15, 1.16, 1.17); sed -n 505,530p book/chapter-02.txt ((2.4))"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/TietzeExtension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaSplit.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaFull.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaStmtCheck.lean"
+            ],
+            "conclusion": "Snapshot: project d09bc8a, Mathlib 25730c7c. Contract.lean is identical to the workspace copy. README §11 marks GaussGreenRepresentation as new, and nothing in the project or SimonGMT states the total-variation formula itself.\n\nAvailable and cited by the children:\n- Mathlib MeasurableSet.exists_isClosed_sdiff_lt and Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure (Regular.lean:1036, 1072).\n- Mathlib tendsto_measure_thickening_of_isClosed (BorelSpace/Metric.lean:160).\n- Mathlib IsCompact.exists_cthickening_subset_open and IsCompact.cthickening, Metric.isOpen_thickening, Metric.self_subset_thickening and Metric.thickening_subset_cthickening_of_le (Thickening.lean:426, 283, 74, 309, 272).\n- Mathlib IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207).\n- Mathlib Monotone.measure_iUnion (Measure/Continuity.lean:71).\n- Mathlib exists_continuousMap_one_of_isCompact_subset_isOpen (UrysohnsLemma.lean:529).\n- Mathlib ContinuousMap.exists_forall_mem_restrict_eq (TietzeExtension.lean) with Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean:54).\n- Mathlib AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean:50).\n- Mathlib enorm_integral_le_lintegral_enorm, integral_sub' (Bochner/Basic.lean:333, 268), integral_indicator_one (Bochner/Set.lean:533) and lintegral_indicator_one (Lebesgue/Basic.lean:572).\n- Mathlib ENNReal.exists_pos_mul_lt, ENNReal.add_thirds and ENNReal.le_of_forall_pos_le_add, plus EuclideanSpace.equiv.\n- SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127): real-valued Lusin under a closed-inner-regularity hypothesis.\n\nNo match, hence supplied as children:\n- Mathlib has no Lusin continuity theorem; rg 'lusin' finds only Lusin separation and Lusin–Souslin in Constructions/Polish/Basic.lean.\n- SimonGMT has no vector-valued Lusin; its only Lusin results are in Chapter01/Lusin.lean.\n- Neither library has the open/compact regularity statements, the Tietze–Urysohn unit-field lemma, or the pairing bounds in the frozen forms needed here.\n- The sibling lusin_closed_subset_continuousOn_volume (c1_approximation branch) covers only volume, so it does not apply to an arbitrary μ.\n\nImport closure: after import GMT.Ch03.Submission alone, TietzeExtension, Poincare.SimonGMT.Chapter01.Lusin and StronglyMeasurable.Inner are not in scope. The children may add these imports, because gmt-compare.py does not byte-check Submission.lean.\n\nScratch checks:\n- All six frozen statements elaborate against GMT.Ch03.Submission in the contract scope and pass validate_lean_statement.\n- The six children and the assembly were all proved in GMT/Scratch/VarFormulaFull.lean with axioms propext, Classical.choice and Quot.sound only.\n- The gaussGreenVar_ names collide with nothing in the DAG."
+          }
+        ],
+        "parent_id": "root.gauss_green-a1.variation_formula-a1",
+        "child_id": "root.gauss_green-a1.variation_formula-a1.pairing_upper_bound-a1",
+        "subproblem": {
+          "key": "pairing_upper_bound",
+          "title": "The pairing of a unit field supported in O with a field ν with |ν| ≤ 1 a.e. is at most μ(O)",
+          "statement": "Let N ∈ ℕ, write ℝ^N for EuclideanSpace ℝ (Fin N) with its Euclidean norm and inner product, and let μ be any measure on the Borel σ-algebra of ℝ^N. Let O ⊆ ℝ^N be a Borel set. Let ν, g : ℝ^N → ℝ^N be arbitrary maps (no measurability is assumed) such that |ν(x)| ≤ 1 for μ-a.e. x, tsupport g (the closure of {g ≠ 0}) is contained in O, and |g(x)| ≤ 1 for every x. Then ofReal(∫⟨g(x), ν(x)⟩ dμ(x)) ≤ μ(O) in [0, ∞]. Here ∫ is the Bochner integral, which is 0 when the integrand is not μ-integrable, and ofReal(t) := max(t, 0).",
+          "lean_statement": "∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (ν g : Rn N → Rn N), MeasurableSet O → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → tsupport g ⊆ O → (∀ x, ‖g x‖ ≤ 1) → ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) ≤ μ O",
+          "lean_name": "gaussGreenVar_ofReal_integral_inner_le_measure",
+          "depends_on": [],
+          "natural_proof": "Source. This is step 1 of the parent proof (S ≤ μ(O)), for a single field g. The parent bounds |⟨g, ν⟩| a.e. by the indicator of tsupport g ⊆ O and then integrates. Here the same a.e. bound is taken against the indicator of O and integrated with the lower Lebesgue integral. That route needs no integrability, measurability or compact-support hypothesis, which is why the statement has none.\n\nNotation. f(x) := ⟨g(x), ν(x)⟩ ∈ ℝ. For t ∈ ℝ, ‖t‖ₑ := ofReal(|t|) ∈ [0, ∞) is the extended norm of t. 1_O : ℝ^N → [0, ∞] is the indicator function of O.\n\n1. A.e. pointwise bound. We claim ‖f(x)‖ₑ ≤ 1_O(x) for μ-a.e. x. Fix x in the μ-full set where |ν(x)| ≤ 1.\n (a) Suppose x ∈ O. By the Cauchy–Schwarz inequality, |f(x)| ≤ |g(x)| |ν(x)| ≤ 1 · 1 = 1. Hence ‖f(x)‖ₑ = ofReal(|f(x)|) ≤ ofReal(1) = 1 = 1_O(x).\n (b) Suppose x ∉ O. Since tsupport g ⊆ O, x ∉ tsupport g. Since support g ⊆ tsupport g, g(x) = 0 (Mathlib image_eq_zero_of_notMem_tsupport). Then f(x) = ⟨0, ν(x)⟩ = 0 and ‖f(x)‖ₑ = 0 = 1_O(x).\n2. For every real t, t ≤ |t| and ofReal is monotone, so ofReal(t) ≤ ofReal(|t|) = ‖t‖ₑ (Real.enorm_eq_ofReal_abs). Taking t := ∫ f dμ gives ofReal(∫ f dμ) ≤ ‖∫ f dμ‖ₑ.\n3. ‖∫ f dμ‖ₑ ≤ ∫⁻ ‖f(x)‖ₑ dμ(x). This holds with no hypothesis on f (Mathlib enorm_integral_le_lintegral_enorm). If f is not μ-integrable, the Bochner integral is 0 and the left side is 0. Otherwise this is the triangle inequality for the Bochner integral.\n4. By step 1 and monotonicity of the lower integral under μ-a.e. inequalities (lintegral_mono_ae), ∫⁻ ‖f‖ₑ dμ ≤ ∫⁻ 1_O dμ. Since O is measurable, ∫⁻ 1_O dμ = μ(O) (lintegral_indicator_one).\n5. Chaining steps 2, 3 and 4 gives ofReal(∫⟨g, ν⟩ dμ) ≤ ‖∫ f dμ‖ₑ ≤ ∫⁻ ‖f‖ₑ dμ ≤ μ(O). ∎",
+          "proof_key_steps": [
+            "For μ-a.e. x, |⟨g(x), ν(x)⟩| ≤ 1_O(x): Cauchy–Schwarz gives the bound on O, and off O we have x ∉ tsupport g, so g(x) = 0.",
+            "ofReal(∫f) ≤ ‖∫f‖ₑ ≤ ∫⁻‖f‖ₑ dμ, with no integrability needed.",
+            "∫⁻‖f‖ₑ dμ ≤ ∫⁻ 1_O dμ = μ(O) because O is measurable."
+          ]
+        },
+        "audit": {
+          "key": "pairing_upper_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and Lean type agree, including the absence of measurability assumptions. The a.e. indicator bound, unconditional extended-norm integral inequality, and measurable-indicator integral prove the exact conclusion, including the nonintegrable case."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.gauss_green-a1.variation_formula-a1.unit_field_extension-a1",
+      "key": "unit_field_extension",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "diff project/GMT/Ch03/Contract.lean <workspace>/GMT/Ch03/Contract.lean (identical); grep -n '### 11' -A 8 project/GMT/Ch03/README.md",
+              "rg -n -i 'lusin' mathlib/Mathlib",
+              "rg -n 'exists_isClosed.*continuousOn|continuousOn.*isClosed.*measure' mathlib/Mathlib/MeasureTheory",
+              "grep -n 'theorem' Poincare/SimonGMT/Chapter01/Lusin.lean; rg -n 'exists_isClosed_continuousOn|IsClosed C ∧.*ContinuousOn' Poincare/SimonGMT",
+              "rg -n 'MeasurableSet.exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|tendsto_measure_thickening_of_isClosed|exists_cthickening_subset_open|exists_continuousMap_one_of_isCompact_subset_isOpen|IsOpen.exists_iUnion_isClosed|enorm_integral_le_lintegral_enorm|lintegral_indicator_one' mathlib/Mathlib",
+              "rg -n 'instance.*TietzeExtension|ContinuousMap.exists_restrict_eq|exists_forall_mem_restrict_eq' mathlib/Mathlib",
+              "rg -n 'AEStronglyMeasurable.inner|thickening_subset_cthickening_of_le|Monotone.measure_iUnion|integral_sub\\'|integral_indicator_one|add_thirds|le_of_forall_pos_le_add|exists_pos_mul_lt|EuclideanSpace.equiv|enorm_eq_ofReal_abs' mathlib/Mathlib",
+              "lake env lean GMT/Scratch/VarFormulaAvail.lean (import GMT.Ch03.Submission only: SimonGMT Chapter01 Lusin lemma and TietzeExtension are unknown identifiers)",
+              "lake env lean GMT/Scratch/VarFormulaSplit.lean (assembly of the 6 child types ⇒ frozen parent type, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaFull.lean (all six children proved plus assembly, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaStmtCheck.lean (six lean_statement strings after import GMT.Ch03.Submission only, contract scope)",
+              "python3 lean_contract.validate_lean_statement on the six strings; dag.json lean_name scan; grep -rl gaussGreenVar .humanize GMT",
+              "sed -n 300,384p verifier/gmt-compare.py (frozen_inputs / candidate_inputs import policy)",
+              "sed -n 270,372p book/chapter-01.txt (Simon 1.15, 1.16, 1.17); sed -n 505,530p book/chapter-02.txt ((2.4))"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/TietzeExtension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaSplit.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaFull.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaStmtCheck.lean"
+            ],
+            "conclusion": "Snapshot: project d09bc8a, Mathlib 25730c7c. Contract.lean is identical to the workspace copy. README §11 marks GaussGreenRepresentation as new, and nothing in the project or SimonGMT states the total-variation formula itself.\n\nAvailable and cited by the children:\n- Mathlib MeasurableSet.exists_isClosed_sdiff_lt and Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure (Regular.lean:1036, 1072).\n- Mathlib tendsto_measure_thickening_of_isClosed (BorelSpace/Metric.lean:160).\n- Mathlib IsCompact.exists_cthickening_subset_open and IsCompact.cthickening, Metric.isOpen_thickening, Metric.self_subset_thickening and Metric.thickening_subset_cthickening_of_le (Thickening.lean:426, 283, 74, 309, 272).\n- Mathlib IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207).\n- Mathlib Monotone.measure_iUnion (Measure/Continuity.lean:71).\n- Mathlib exists_continuousMap_one_of_isCompact_subset_isOpen (UrysohnsLemma.lean:529).\n- Mathlib ContinuousMap.exists_forall_mem_restrict_eq (TietzeExtension.lean) with Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean:54).\n- Mathlib AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean:50).\n- Mathlib enorm_integral_le_lintegral_enorm, integral_sub' (Bochner/Basic.lean:333, 268), integral_indicator_one (Bochner/Set.lean:533) and lintegral_indicator_one (Lebesgue/Basic.lean:572).\n- Mathlib ENNReal.exists_pos_mul_lt, ENNReal.add_thirds and ENNReal.le_of_forall_pos_le_add, plus EuclideanSpace.equiv.\n- SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127): real-valued Lusin under a closed-inner-regularity hypothesis.\n\nNo match, hence supplied as children:\n- Mathlib has no Lusin continuity theorem; rg 'lusin' finds only Lusin separation and Lusin–Souslin in Constructions/Polish/Basic.lean.\n- SimonGMT has no vector-valued Lusin; its only Lusin results are in Chapter01/Lusin.lean.\n- Neither library has the open/compact regularity statements, the Tietze–Urysohn unit-field lemma, or the pairing bounds in the frozen forms needed here.\n- The sibling lusin_closed_subset_continuousOn_volume (c1_approximation branch) covers only volume, so it does not apply to an arbitrary μ.\n\nImport closure: after import GMT.Ch03.Submission alone, TietzeExtension, Poincare.SimonGMT.Chapter01.Lusin and StronglyMeasurable.Inner are not in scope. The children may add these imports, because gmt-compare.py does not byte-check Submission.lean.\n\nScratch checks:\n- All six frozen statements elaborate against GMT.Ch03.Submission in the contract scope and pass validate_lean_statement.\n- The six children and the assembly were all proved in GMT/Scratch/VarFormulaFull.lean with axioms propext, Classical.choice and Quot.sound only.\n- The gaussGreenVar_ names collide with nothing in the DAG."
+          }
+        ],
+        "parent_id": "root.gauss_green-a1.variation_formula-a1",
+        "child_id": "root.gauss_green-a1.variation_formula-a1.unit_field_extension-a1",
+        "subproblem": {
+          "key": "unit_field_extension",
+          "title": "Tietze–Urysohn: a field continuous on compact C ⊆ V with |f| ≤ 1 extends to a compactly supported continuous unit field in V",
+          "statement": "Let N ∈ ℕ and ℝ^N = EuclideanSpace ℝ (Fin N). Let C ⊆ ℝ^N be compact, let V ⊆ ℝ^N be open with C ⊆ V, and let f : ℝ^N → ℝ^N be continuous on C with |f(x)| ≤ 1 for all x ∈ C. Then there is a continuous g : ℝ^N → ℝ^N such that g has compact support, tsupport g ⊆ V, |g(x)| ≤ 1 for every x ∈ ℝ^N, and g(x) = f(x) for every x ∈ C.",
+          "lean_statement": "∀ (N : ℕ) (C V : Set (Rn N)) (f : Rn N → Rn N), IsCompact C → IsOpen V → C ⊆ V → ContinuousOn f C → (∀ x ∈ C, ‖f x‖ ≤ 1) → ∃ g : Rn N → Rn N, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ V ∧ (∀ x, ‖g x‖ ≤ 1) ∧ ∀ x ∈ C, g x = f x",
+          "lean_name": "gaussGreenVar_exists_unit_field_eqOn_compact",
+          "depends_on": [],
+          "natural_proof": "Source. These are steps 6 (Tietze extension and radial retraction) and 7 (Urysohn cut-off) of the parent proof. The parent's closed set K' is renamed C. The cut-off is taken equal to 1 on C; in the parent it is 1 on K ⊇ K', but only χ = 1 on K' is used afterwards.\n\n1. Topology. C is compact in the Hausdorff space ℝ^N, hence closed. ℝ^N is a metric space, hence normal, and it is locally compact Hausdorff.\n2. Tietze extension. For i = 1, …, N, the coordinate x ↦ f(x)_i is a real function continuous on the closed set C. By the Tietze extension theorem it has a continuous extension G₁^i : ℝ^N → ℝ with G₁^i(x) = f(x)_i for x ∈ C. Put G₁ := (G₁^1, …, G₁^N) : ℝ^N → ℝ^N. G₁ is continuous and G₁ = f on C.\n3. Radial retraction. Let r(z) := z / max(1, |z|) for z ∈ ℝ^N.\n- r is continuous, since z ↦ max(1, |z|) is continuous and ≥ 1.\n- |r(z)| = |z| / max(1, |z|) ≤ 1.\n- r(z) = z when |z| ≤ 1.\nPut G := r ∘ G₁. Then G is continuous and |G(x)| ≤ 1 for all x. For x ∈ C, G(x) = r(f(x)) = f(x), because |f(x)| ≤ 1.\nLean shortcut for steps 2–3: the closed unit ball B̄(0, 1) ⊆ ℝ^N has the Tietze extension property (Mathlib instance Set.instTietzeExtensionUnitClosedBall in Mathlib/Analysis/Complex/Tietze.lean). That module is not in the import closure of GMT.Ch03.Submission, so add `import Mathlib.Analysis.Complex.Tietze`. Apply ContinuousMap.exists_forall_mem_restrict_eq to the closed set C and the continuous map C → ℝ^N, x ↦ f(x) (continuous by ContinuousOn.domRestrict), whose values lie in B̄(0, 1). This yields a continuous G : ℝ^N → ℝ^N with G(x) ∈ B̄(0, 1) for all x and G = f on C.\n4. Urysohn cut-off. ℝ^N is locally compact Hausdorff, C is compact, V is open and C ⊆ V. So there is a continuous χ : ℝ^N → ℝ with 0 ≤ χ ≤ 1, χ = 1 on C, tsupport χ compact and tsupport χ ⊆ V (Mathlib exists_continuousMap_one_of_isCompact_subset_isOpen).\n5. Definition and properties of g. Put g(x) := χ(x)·G(x).\n (a) g is continuous, as the product of the continuous scalar function χ and the continuous field G.\n (b) support g ⊆ support χ, hence tsupport g ⊆ tsupport χ ⊆ V (tsupport_smul_subset_left).\n (c) tsupport g is a closed subset of the compact set tsupport χ, hence compact; that is, g has compact support (HasCompactSupport.smul_right).\n (d) For every x, |g(x)| = |χ(x)|·|G(x)| ≤ 1·1 = 1.\n (e) For x ∈ C, χ(x) = 1 and G(x) = f(x), so g(x) = f(x). ∎",
+          "proof_key_steps": [
+            "C is closed, and Tietze extends f|C coordinatewise to a continuous G₁ : ℝ^N → ℝ^N.",
+            "G := r ∘ G₁, with r(z) = z/max(1,|z|), is continuous, satisfies |G| ≤ 1, and equals f on C because |f| ≤ 1 there. Equivalently, use Tietze into the closed unit ball.",
+            "Urysohn gives a continuous χ with values in [0,1], χ = 1 on C, and compact tsupport χ ⊆ V.",
+            "g := χG is continuous, compactly supported in V, satisfies |g| ≤ 1, and equals f on C."
+          ]
+        },
+        "audit": {
+          "key": "unit_field_extension",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The hypotheses and conclusion match exactly. Tietze extension and radial retraction preserve the values on C and the unit bound; the Urysohn cutoff supplies compact support inside V. The cited closed-unit-ball instance applies to Rn N with its Euclidean norm."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.gauss_green-a1.variation_formula-a1.vector_lusin-a1",
+      "key": "vector_lusin",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "diff project/GMT/Ch03/Contract.lean <workspace>/GMT/Ch03/Contract.lean (identical); grep -n '### 11' -A 8 project/GMT/Ch03/README.md",
+              "rg -n -i 'lusin' mathlib/Mathlib",
+              "rg -n 'exists_isClosed.*continuousOn|continuousOn.*isClosed.*measure' mathlib/Mathlib/MeasureTheory",
+              "grep -n 'theorem' Poincare/SimonGMT/Chapter01/Lusin.lean; rg -n 'exists_isClosed_continuousOn|IsClosed C ∧.*ContinuousOn' Poincare/SimonGMT",
+              "rg -n 'MeasurableSet.exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|tendsto_measure_thickening_of_isClosed|exists_cthickening_subset_open|exists_continuousMap_one_of_isCompact_subset_isOpen|IsOpen.exists_iUnion_isClosed|enorm_integral_le_lintegral_enorm|lintegral_indicator_one' mathlib/Mathlib",
+              "rg -n 'instance.*TietzeExtension|ContinuousMap.exists_restrict_eq|exists_forall_mem_restrict_eq' mathlib/Mathlib",
+              "rg -n 'AEStronglyMeasurable.inner|thickening_subset_cthickening_of_le|Monotone.measure_iUnion|integral_sub\\'|integral_indicator_one|add_thirds|le_of_forall_pos_le_add|exists_pos_mul_lt|EuclideanSpace.equiv|enorm_eq_ofReal_abs' mathlib/Mathlib",
+              "lake env lean GMT/Scratch/VarFormulaAvail.lean (import GMT.Ch03.Submission only: SimonGMT Chapter01 Lusin lemma and TietzeExtension are unknown identifiers)",
+              "lake env lean GMT/Scratch/VarFormulaSplit.lean (assembly of the 6 child types ⇒ frozen parent type, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaFull.lean (all six children proved plus assembly, #print axioms)",
+              "lake env lean GMT/Scratch/VarFormulaStmtCheck.lean (six lean_statement strings after import GMT.Ch03.Submission only, contract scope)",
+              "python3 lean_contract.validate_lean_statement on the six strings; dag.json lean_name scan; grep -rl gaussGreenVar .humanize GMT",
+              "sed -n 300,384p verifier/gmt-compare.py (frozen_inputs / candidate_inputs import policy)",
+              "sed -n 270,372p book/chapter-01.txt (Simon 1.15, 1.16, 1.17); sed -n 505,530p book/chapter-02.txt ((2.4))"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/TietzeExtension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaSplit.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaFull.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/VarFormulaStmtCheck.lean"
+            ],
+            "conclusion": "Snapshot: project d09bc8a, Mathlib 25730c7c. Contract.lean is identical to the workspace copy. README §11 marks GaussGreenRepresentation as new, and nothing in the project or SimonGMT states the total-variation formula itself.\n\nAvailable and cited by the children:\n- Mathlib MeasurableSet.exists_isClosed_sdiff_lt and Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure (Regular.lean:1036, 1072).\n- Mathlib tendsto_measure_thickening_of_isClosed (BorelSpace/Metric.lean:160).\n- Mathlib IsCompact.exists_cthickening_subset_open and IsCompact.cthickening, Metric.isOpen_thickening, Metric.self_subset_thickening and Metric.thickening_subset_cthickening_of_le (Thickening.lean:426, 283, 74, 309, 272).\n- Mathlib IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207).\n- Mathlib Monotone.measure_iUnion (Measure/Continuity.lean:71).\n- Mathlib exists_continuousMap_one_of_isCompact_subset_isOpen (UrysohnsLemma.lean:529).\n- Mathlib ContinuousMap.exists_forall_mem_restrict_eq (TietzeExtension.lean) with Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean:54).\n- Mathlib AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean:50).\n- Mathlib enorm_integral_le_lintegral_enorm, integral_sub' (Bochner/Basic.lean:333, 268), integral_indicator_one (Bochner/Set.lean:533) and lintegral_indicator_one (Lebesgue/Basic.lean:572).\n- Mathlib ENNReal.exists_pos_mul_lt, ENNReal.add_thirds and ENNReal.le_of_forall_pos_le_add, plus EuclideanSpace.equiv.\n- SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127): real-valued Lusin under a closed-inner-regularity hypothesis.\n\nNo match, hence supplied as children:\n- Mathlib has no Lusin continuity theorem; rg 'lusin' finds only Lusin separation and Lusin–Souslin in Constructions/Polish/Basic.lean.\n- SimonGMT has no vector-valued Lusin; its only Lusin results are in Chapter01/Lusin.lean.\n- Neither library has the open/compact regularity statements, the Tietze–Urysohn unit-field lemma, or the pairing bounds in the frozen forms needed here.\n- The sibling lusin_closed_subset_continuousOn_volume (c1_approximation branch) covers only volume, so it does not apply to an arbitrary μ.\n\nImport closure: after import GMT.Ch03.Submission alone, TietzeExtension, Poincare.SimonGMT.Chapter01.Lusin and StronglyMeasurable.Inner are not in scope. The children may add these imports, because gmt-compare.py does not byte-check Submission.lean.\n\nScratch checks:\n- All six frozen statements elaborate against GMT.Ch03.Submission in the contract scope and pass validate_lean_statement.\n- The six children and the assembly were all proved in GMT/Scratch/VarFormulaFull.lean with axioms propext, Classical.choice and Quot.sound only.\n- The gaussGreenVar_ names collide with nothing in the DAG."
+          }
+        ],
+        "parent_id": "root.gauss_green-a1.variation_formula-a1",
+        "child_id": "root.gauss_green-a1.variation_formula-a1.vector_lusin-a1",
+        "subproblem": {
+          "key": "vector_lusin",
+          "title": "Lusin's theorem for ℝ^N-valued Borel maps on a set of finite μ-measure",
+          "statement": "Let N ∈ ℕ, let μ be a measure on the Borel σ-algebra of ℝ^N (= EuclideanSpace ℝ (Fin N)); no local finiteness is assumed. Let f : ℝ^N → ℝ^N be Borel measurable, let A ⊆ ℝ^N be a Borel set with μ(A) < ∞, and let ε ∈ (0, ∞]. Then there is a closed set C ⊆ ℝ^N with C ⊆ A, μ(A ∖ C) < ε, and f continuous on C (i.e. the restriction f|C is continuous).",
+          "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (f : Rn N → Rn N) (A : Set (Rn N)), Measurable f → MeasurableSet A → μ A ≠ ∞ → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C ⊆ A, IsClosed C ∧ μ (A \\ C) < ε ∧ ContinuousOn f C",
+          "lean_name": "gaussGreenVar_lusin_closed_subset_continuousOn",
+          "depends_on": [],
+          "natural_proof": "Source. This is step 5 of the parent proof: Lusin's theorem applied coordinatewise to the finite Borel measure μ⌞A.\n- Lusin's theorem: Simon Ch. 1, Theorem 1.17, chapter-01.txt lines 346–372. For real-valued functions it is formalized as SimonGMT Poincare.SimonGMT.Chapter01.exists_isClosed_continuousOn_of_measurable in Poincare/SimonGMT/Chapter01/Lusin.lean. That module is not in the import closure of GMT.Ch03.Submission, so add `import Poincare.SimonGMT.Chapter01.Lusin`.\n- Regularity: finite Borel measures on metric spaces are closed-inner-regular (Simon Ch. 1, Theorem 1.15(2), chapter-01.txt lines 274–343).\n- Generalizations of the parent argument: A is an arbitrary Borel set of finite measure and f an arbitrary Borel map. An extra closed set F is intersected in so that N = 0 needs no separate case.\n\n1. The restricted measure. Let ρ := μ⌞A, i.e. ρ(S) := μ(S ∩ A) for Borel S. Then ρ(ℝ^N) = μ(A) < ∞, so ρ is a finite Borel measure on the metric space ℝ^N. For every Borel S ⊆ A, ρ(S) = μ(S).\n2. Closed inner regularity of ρ. For every Borel S and every δ > 0 there is a closed F ⊆ S with ρ(S ∖ F) < δ. This is Simon Ch. 1, Theorem 1.15(2) for the finite measure ρ: in a metric space every closed set is a countable intersection of open sets. In Mathlib, ρ is weakly regular (Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure, with IsFiniteMeasure ρ from isFiniteMeasure_restrict), and MeasurableSet.exists_isClosed_sdiff_lt gives F.\n3. Choice of δ. Since ε > 0, choose a real δ > 0 with (N + 1)·δ < ε. If ε = ∞, any δ > 0 works. Otherwise take δ := ε/(2(N + 1)). (Mathlib ENNReal.exists_pos_mul_lt gives δ with δ·(N + 1) < ε.)\n4. A closed subset of A. By step 2 with S = A, there is a closed F ⊆ A with ρ(A ∖ F) < δ.\n5. Coordinates. For i = 1, …, N let f^i(x) := f(x)_i be the i-th coordinate. f^i : ℝ^N → ℝ is Borel, as the composition of f with the continuous coordinate projection (EuclideanSpace.proj i). Apply Lusin's theorem for real functions to ρ, the Borel set A with ρ(A) < ∞, the function f^i and the tolerance δ. Its regularity hypothesis is exactly step 2. This gives a closed C_i ⊆ A with ρ(A ∖ C_i) < δ such that f^i is continuous on C_i.\n6. Definition of C. Put C := F ∩ C_1 ∩ … ∩ C_N. C is closed as a finite intersection of closed sets, and C ⊆ F ⊆ A. When N = 0 there are no C_i and C = F; intersecting with F guarantees C ⊆ A in all cases.\n7. Measure estimate. If x ∈ A ∖ C, then x ∉ F or x ∉ C_i for some i, so A ∖ C ⊆ (A ∖ F) ∪ ⋃_{i=1}^N (A ∖ C_i). All of these are Borel subsets of A, so by step 1 and subadditivity\n μ(A ∖ C) = ρ(A ∖ C) ≤ ρ(A ∖ F) + Σ_{i=1}^N ρ(A ∖ C_i) < δ + N·δ = (N + 1)·δ < ε.\n8. Continuity. Each f^i is continuous on C, since C ⊆ C_i and f^i is continuous on C_i. The coordinate map z ↦ (z_1, …, z_N) is a linear homeomorphism from ℝ^N onto ℝ^{Fin N} (Mathlib EuclideanSpace.equiv). A map into a finite product is continuous on C iff each coordinate is (continuousOn_pi). So x ↦ (f^1(x), …, f^N(x)) is continuous on C, and composing with the inverse homeomorphism shows that f is continuous on C. ∎",
+          "proof_key_steps": [
+            "ρ := μ⌞A is a finite Borel measure on a metric space, so every Borel set contains a closed set of nearly full ρ-measure.",
+            "Fix δ > 0 with (N+1)δ < ε. Take a closed F ⊆ A with ρ(A∖F) < δ, and by real Lusin closed C_i ⊆ A with ρ(A∖C_i) < δ and f^i continuous on C_i.",
+            "C := F ∩ C_1 ∩ … ∩ C_N is closed, C ⊆ A, and μ(A∖C) = ρ(A∖C) ≤ ρ(A∖F) + Σ_i ρ(A∖C_i) < (N+1)δ < ε.",
+            "Every coordinate of f is continuous on C, so f is continuous on C."
+          ]
+        },
+        "audit": {
+          "key": "vector_lusin",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The finite restriction μ⌞A supplies weak regularity without assuming local finiteness of μ. Scalar Lusin applies to every coordinate; intersecting with the additional closed F handles N = 0. Subadditivity and coordinate continuity prove the exact stated conclusion."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/task.md": "e75273998f7c4f95ebf065f0fad2d086525ca06c562b9d468f9786e0824e1b5d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/problem.md": "d450b947d5616531ac8cc4a99158db188c875f9e857bfcaf8b809a207631a989",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/problem.json": "8a4e29f58fc3cd9ec56e6ed45bec4c9008d5eb705e95bd016943fc957faf50db",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/reference-manifest.json": "b6a97248df40c5dc702e39c00119a850911686a21d507e00b0849f87a8d3d512",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/decomposition.json": "39482b9e9cfe7f6ba5d88b8201a892124e9e063750e1b3c120a6a57ae97eeaba",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/decomposition-audit.json": "3a6088a4359e75a73dbea906d9b3e60b86970b91296bb8eac7570c75e9139748",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/controller-contract.json": "31d3ac7a976c9c9beab4104bf5eed7a165f1f72155288ca9c3600d33f425a627",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/parent-child-handoff.json": "f6b440fd760fe676b26bc9559cae343267fb7d90573dd27a0a01110e18ad49ff",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/parent-supplied-plan.md": "def23e1f8d0b257bf00ba576a19e1ba4af88937df8c06927002a2ec57a08f3b4",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/parent-supplied-natural-proof.md": "05b13e315d5379925d9bfa7fb6ef8683164bc225e7e1b320432df002c4429004",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/parent-supplied-natural-proof.json": "88e554dcfb52c662b6627afd2151f38c2880dbfef5a84cd37df1a6b4ac553341",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1/node.json": "fecfce6dd85f49243ac654d63506eb90285cf347c2fb24981aafe92a34eb7414",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/parent-child-handoff.json": "0a61c823520f4f61a868851cd8f23a037289f5e8f7141c184a3d4a6fb57bc342",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/parent-supplied-plan.md": "b63a3746c7c3813e8dc943c054ca7ff8c20524503949870f8a7218bf78326bdd",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/parent-supplied-natural-proof.md": "9e74590d704d968fe257e6b5d596c114f1459bd09176c3bfe2d99335232417f9",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/parent-supplied-natural-proof.json": "abac87d741ef00ff07a76901172b7cad0fe49cbf5ff7fde88c7ae3183e439ba2",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1/node.json": "76710e7d4ae139ec71856665ecab348723edeb576e9328ac788d19f5cff36c8a",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/parent-child-handoff.json": "a811c34765bbe03ae505be367facaacefd4f6de0b29ab2fc252b8b413cdb96d7",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/parent-supplied-plan.md": "143dbba934adc6c2c50f3c08b3d7d49ac2f47552e1beeaf8e2a076150b38d412",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/parent-supplied-natural-proof.md": "ead23bc15e83b4641134bf23a9f998301710e5fe0172c022e062458b2f7af960",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/parent-supplied-natural-proof.json": "198897004e40251fada07b1d573abae23f37bcc31ee7d68f012b392d5b7fc70b",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1/node.json": "73e282bd06f002fc3d68d9bc14a24220158ce93f84d0e5e8e4dbf9ab09a7ed25",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/parent-child-handoff.json": "614dde2848fe38e83f42db7cc731c3886955aa06813d09e526113c19211d8ef4",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/parent-supplied-plan.md": "de291e920c398ae1deadf1fb9eb6fa912bfa9ecd17a0123f66e4f86ab6de5eaf",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/parent-supplied-natural-proof.md": "093731689427a27950cc12488b2206b2c796e70a976992c3698f28d208069955",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/parent-supplied-natural-proof.json": "cb5290b6a32b4a229c1f9247e75b267cdbf6d85e86c9d32676c7807d25f90daf",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1/node.json": "8dd7081a366535213d88b8500e4138eab77261a9c356c9e070ce0b0c2a39d51b",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/parent-child-handoff.json": "ba9318a1134605ac044e25ce6cbfc9b118a0ec5a4b927dd6fb3f3d0c98762a31",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/parent-supplied-plan.md": "09e7ee4bcc32929c2f2ebffdf25c7afdf31fcabeb246e79ad26ba4632e9380b2",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/parent-supplied-natural-proof.md": "cc0798a878c975f7d1bc0e7da59dbb33a37666f2412632414d33aaf2d94cee2e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/parent-supplied-natural-proof.json": "79f18824e48ae5dec61450227843c576b0d7b29e38974039ab2c0775ce4c2bba",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1/node.json": "71c83624b3670dff77d38affb2f6eeea1741743f8f97a96abf2975ee385ed320",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/parent-child-handoff.json": "7c7cf98fa16a03addfbc31181596719618b65e0a9d76f8796652b6f71c4afec5",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/parent-supplied-plan.md": "c294649424a5d0240f4da9c14d37363b92758d1888b6d0b0cc55cfac167a1c9e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/parent-supplied-natural-proof.md": "8dcddcec8d7197edf3adcb07afa32b32b9b7e1753f780d34cae2408794b1552a",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/parent-supplied-natural-proof.json": "ddeea472318ce18f2f3550eaba772d986be2d966c240fc470eccc68baee79413",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1/children/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1/node.json": "06a510444c4760a7661c095ea94ed60e090f42792db400079d08dd5d60f061d6"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.variation_formula-a1",
+  "parent_id": "root.gauss_green-a1",
+  "depth": 2,
+  "title": "Total variation on open sets: μ(O) is the supremum of pairings with continuous unit fields supported in O",
+  "statement": "Let N ∈ ℕ, O ⊆ ℝ^N open, μ a Borel measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ O, and ν : ℝ^N → ℝ^N μ-a.e. strongly measurable with |ν| = 1 μ-a.e. Then μ(O) = sup { ofReal(∫⟨g(x), ν(x)⟩ dμ(x)) : g : ℝ^N → ℝ^N continuous with compact support, tsupport g ⊆ O, |g(x)| ≤ 1 for all x }, the supremum taken in [0, ∞] with ofReal(t) := max(t, 0).",
+  "lean_statement": "∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen O → (∀ K : Set (Rn N), IsCompact K → K ⊆ O → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ x ∂μ, ‖ν x‖ = 1) → μ O = ⨆ (g : Rn N → Rn N) (_ : Continuous g) (_ : HasCompactSupport g) (_ : tsupport g ⊆ O) (_ : ∀ x, ‖g x‖ ≤ 1), ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ)",
+  "lean_name": "gaussGreenRep_measure_eq_iSup_pairing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-a1"
+}
