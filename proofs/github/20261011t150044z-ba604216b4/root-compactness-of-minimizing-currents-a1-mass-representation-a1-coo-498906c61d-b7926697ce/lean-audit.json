@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "741cec085f5ebdba6c78ff5614105da100abb94b2677689e77a976866312130a",
+  "git_delta": {
+    "base_commit": "547e13f2284ca8cdb900e91aebf02adcdc6f4106",
+    "candidate_commit": "fee01ff86c9de6b32f7cfc6b3f5088750ef5af7e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_cc_det_covector_exists",
+    "diff_sha256": "78115256af33bb2317b9685352c3b4c430dfcb91a6fb6ddd2b820b88104339f9",
+    "source_sha256": "98791550b984490d841d5e31d973a3fed3955bbe40269a8feab1c1619d99eb78",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_cc_det_covector_exists",
+      "statement": "∀ (P n : ℕ) (I : Fin n → Fin P), ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
