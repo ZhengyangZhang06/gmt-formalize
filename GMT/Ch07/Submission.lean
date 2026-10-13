@@ -451,7 +451,149 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Smooth normal cutoff (step 1 of the boundary computation for graph cycles in the
+ε-regularity proof of Simon 7.4.3): for compact `K ⊆ B_h(0) ⊆ ℝᵏ` there is a `C^∞` function `η`
+with compact support in `B_h(0)` and `η = 1` near every point of `K`.  Take `r' < h` with
+`K ⊆ B_{r'}(0)`, put `r = max r' (h/2) ∈ (0, h)`, and let `η` be the `ContDiffBump` at `0` with
+radii `r < (r + h)/2`: `η = 1` on `closedBall 0 r` and `tsupport η = closedBall 0 ((r + h)/2)`. -/
+theorem Submission.dgcr_bwd_normal_cutoff : ∀ (k : ℕ) (K : Set (Euclid k)) (h : ℝ), 0 < h → IsCompact K → K ⊆ ball (0 : Euclid k) h → ∃ η : Euclid k → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ ball (0 : Euclid k) h ∧ ∀ w ∈ K, ∀ᶠ y in 𝓝 w, η y = 1 := by
+  intro k K h hh hK hKh
+  -- `K ⊆ B_{r'}(0)` for some `r' < h`; enlarge to `r = max r' (h/2) ∈ (0, h)`
+  obtain ⟨r', hr'h, hKr'⟩ := exists_lt_subset_ball hK.isClosed hKh
+  set r : ℝ := max r' (h / 2)
+  have hr0 : 0 < r := lt_max_of_lt_right (by linarith)
+  have hrh : r < h := max_lt hr'h (by linarith)
+  have hKr : K ⊆ ball (0 : Euclid k) r := hKr'.trans (ball_subset_ball (le_max_left _ _))
+  -- the bump at `0` with radii `r < (r + h)/2`
+  let f : ContDiffBump (0 : Euclid k) := ⟨r, (r + h) / 2, hr0, by linarith⟩
+  refine ⟨f, f.contDiff, f.hasCompactSupport, ?_, ?_⟩
+  · rw [f.tsupport_eq]
+    exact closedBall_subset_ball (show (r + h) / 2 < h by linarith)
+  · intro w hw
+    filter_upwards [isOpen_ball.mem_nhds (hKr hw)] with y hy
+    exact f.one_of_mem_closedBall (ball_subset_closedBall hy)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
+
+/-- Cut-off lift of a form to the cylinder `C = {z + ιv + ι'w : v ∈ B_s(0), w ∈ B_h(0)}`: with
+`L = ι*`, `Q = ι'*(· − z)` and the normal cut-off `η` of `u(spt ψ)` (`dgcr_bwd_normal_cutoff`),
+`φ = (η ∘ Q) · P^#ψ` is a test form in `U` supported in `C` that agrees with
+`P^#ψ = affinePullbackForm L (−Lz) ψ` near every graph point `z + ιv + ι'u(v)`, `v ∈ B_s(0)`. -/
+theorem Submission.dgcr_bwd_graph_cutoff_lift : ∀ (m k : ℕ) (U : Set (Euclid (m + 1 + k))) (ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid (m + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + 1 + k)) (u : Euclid (m + 1) → Euclid k) (z : Euclid (m + 1 + k)) (s h : ℝ) (ψ : DifferentialForm (Euclid (m + 1)) m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (m + 1 + k), ∃ v : Euclid (m + 1), ∃ w : Euclid k, x = ι v + ι' w) → 0 < h → ContinuousOn u (ball 0 s) → (∀ v ∈ ball (0 : Euclid (m + 1)) s, u v ∈ ball (0 : Euclid k) h) → {x | ∃ v ∈ ball (0 : Euclid (m + 1)) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → IsSmoothForm ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid (m + 1)) s → ∃ φ : TestFormOn U m, tsupport (φ : DifferentialForm (Euclid (m + 1 + k)) m) ⊆ {x | ∃ v ∈ ball (0 : Euclid (m + 1)) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ∧ ∀ v ∈ ball (0 : Euclid (m + 1)) s, (φ : DifferentialForm (Euclid (m + 1 + k)) m) =ᶠ[𝓝 (z + ι v + ι' (u v))] affinePullbackForm (ContinuousLinearMap.adjoint ι.toContinuousLinearMap) (-(ContinuousLinearMap.adjoint ι.toContinuousLinearMap z)) ψ := by
+  intro m k U ι ι' u z s h ψ hperp hspan hh hu hmaps hCU hψs hψc hψsupp
+  set L := ContinuousLinearMap.adjoint ι.toContinuousLinearMap with hL
+  set L' := ContinuousLinearMap.adjoint ι'.toContinuousLinearMap with hL'
+  -- Adjoint identities: `Lι = id`, `Lι' = 0`, `L'ι = 0`, `L'ι' = id`.
+  have hLι : ∀ v', L (ι v') = v' := by
+    intro v'
+    apply ext_inner_right ℝ
+    intro y
+    rw [hL, ContinuousLinearMap.adjoint_inner_left]
+    exact ι.inner_map_map v' y
+  have hLι' : ∀ w, L (ι' w) = 0 := by
+    intro w
+    apply ext_inner_right ℝ
+    intro y
+    rw [hL, ContinuousLinearMap.adjoint_inner_left, inner_zero_left, real_inner_comm]
+    exact hperp y w
+  have hL'ι : ∀ v', L' (ι v') = 0 := by
+    intro v'
+    apply ext_inner_right ℝ
+    intro y
+    rw [hL', ContinuousLinearMap.adjoint_inner_left, inner_zero_left]
+    exact hperp v' y
+  have hL'ι' : ∀ w, L' (ι' w) = w := by
+    intro w
+    apply ext_inner_right ℝ
+    intro y
+    rw [hL', ContinuousLinearMap.adjoint_inner_left]
+    exact ι'.inner_map_map w y
+  -- Orthogonal decomposition `x = z + ι(L(x − z)) + ι'(L'(x − z))`.
+  have hdec : ∀ x, z + ι (L (x - z)) + ι' (L' (x - z)) = x := by
+    intro x
+    obtain ⟨v₀, w₀, hx⟩ := hspan (x - z)
+    have h1 : L (x - z) = v₀ := by rw [hx, map_add, hLι, hLι', add_zero]
+    have h2 : L' (x - z) = w₀ := by rw [hx, map_add, hL'ι, hL'ι', zero_add]
+    rw [h1, h2]
+    calc z + ι v₀ + ι' w₀ = z + (ι v₀ + ι' w₀) := add_assoc _ _ _
+      _ = z + (x - z) := by rw [hx]
+      _ = x := add_sub_cancel z x
+  -- Normal cut-off `η ≡ 1` near the compact set `u(spt ψ) ⊆ B_h(0)`.
+  have hK : IsCompact (tsupport ψ) := hψc
+  obtain ⟨η, hηs, hηc, hηsupp, hη1⟩ := Submission.dgcr_bwd_normal_cutoff k (u '' tsupport ψ) h hh
+    (hK.image_of_continuousOn (hu.mono hψsupp))
+    (by rintro _ ⟨v, hv, rfl⟩; exact hmaps v (hψsupp hv))
+  have hPr : Continuous (fun x : Euclid (m + 1 + k) => L (x - z)) :=
+    L.continuous.comp (continuous_id.sub continuous_const)
+  have hQ : Continuous (fun x : Euclid (m + 1 + k) => L' (x - z)) :=
+    L'.continuous.comp (continuous_id.sub continuous_const)
+  have hPapply : ∀ x, affinePullbackForm L (-(L z)) ψ x = (ψ (L (x - z))).compContinuousLinearMap L := by
+    intro x
+    simp only [affinePullbackForm, map_sub, neg_add_eq_sub]
+  -- The test form `φ = (η ∘ Q) · P^#ψ`.
+  let φ : DifferentialForm (Euclid (m + 1 + k)) m :=
+    fun x => η (L' (x - z)) • affinePullbackForm L (-(L z)) ψ x
+  have hφs : IsSmoothForm φ := by
+    have hηQ : ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid (m + 1 + k) => η (L' (x - z))) :=
+      hηs.comp (L'.contDiff.comp (contDiff_id.sub contDiff_const))
+    exact hηQ.smul (affinePullbackForm_isSmoothForm L (-(L z)) hψs)
+  -- Support: `spt φ ⊆ F(spt ψ × spt η) ⊆ C`, where `F(v, w) = z + ιv + ι'w`.
+  let F : Euclid (m + 1) × Euclid k → Euclid (m + 1 + k) := fun p => z + ι p.1 + ι' p.2
+  have hF : Continuous F := by
+    have h1 : Continuous (fun p : Euclid (m + 1) × Euclid k => ι p.1) := ι.continuous.comp continuous_fst
+    have h2 : Continuous (fun p : Euclid (m + 1) × Euclid k => ι' p.2) := ι'.continuous.comp continuous_snd
+    exact (continuous_const.add h1).add h2
+  have hS : IsClosed {x : Euclid (m + 1 + k) | L (x - z) ∈ tsupport ψ ∧ L' (x - z) ∈ tsupport η} :=
+    ((isClosed_tsupport ψ).preimage hPr).inter ((isClosed_tsupport η).preimage hQ)
+  have hsuppS : support φ ⊆ {x | L (x - z) ∈ tsupport ψ ∧ L' (x - z) ∈ tsupport η} := by
+    intro x hx
+    by_contra hcon
+    apply hx
+    rcases not_and_or.mp hcon with h1 | h1
+    · have h0 : ψ (L (x - z)) = 0 := image_eq_zero_of_notMem_tsupport h1
+      have hP0 : affinePullbackForm L (-(L z)) ψ x = 0 := by
+        rw [hPapply, h0]
+        ext w
+        simp
+      show η (L' (x - z)) • affinePullbackForm L (-(L z)) ψ x = 0
+      rw [hP0, smul_zero]
+    · have h0 : η (L' (x - z)) = 0 := image_eq_zero_of_notMem_tsupport h1
+      show η (L' (x - z)) • affinePullbackForm L (-(L z)) ψ x = 0
+      rw [h0, zero_smul]
+  have hsupp : tsupport φ ⊆ F '' (tsupport ψ ×ˢ tsupport η) := by
+    refine (closure_minimal hsuppS hS).trans ?_
+    rintro x ⟨hx1, hx2⟩
+    exact ⟨(L (x - z), L' (x - z)), ⟨hx1, hx2⟩, hdec x⟩
+  have hFC : F '' (tsupport ψ ×ˢ tsupport η) ⊆
+      {x | ∃ v ∈ ball (0 : Euclid (m + 1)) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} := by
+    rintro _ ⟨⟨v, w⟩, ⟨hv, hw⟩, rfl⟩
+    exact ⟨v, hψsupp hv, w, hηsupp hw, rfl⟩
+  have hcomp : IsCompact (F '' (tsupport ψ ×ˢ tsupport η)) := (hK.prod hηc).image hF
+  refine ⟨⟨φ, ⟨hφs, hcomp.of_isClosed_subset (isClosed_tsupport _) hsupp⟩,
+    (hsupp.trans hFC).trans hCU⟩, hsupp.trans hFC, ?_⟩
+  -- Germ at a graph point: `η ∘ Q ≡ 1` there if `v ∈ spt ψ`, else `P^#ψ ≡ 0` there.
+  intro v hv
+  have hQv : L' (z + ι v + ι' (u v) - z) = u v := by
+    rw [add_assoc z, add_sub_cancel_left, map_add, hL'ι, hL'ι', zero_add]
+  have hPv : L (z + ι v + ι' (u v) - z) = v := by
+    rw [add_assoc z, add_sub_cancel_left, map_add, hLι, hLι', add_zero]
+  by_cases hvK : v ∈ tsupport ψ
+  · have hev : ∀ᶠ y in 𝓝 (u v), η y = 1 := hη1 (u v) ⟨v, hvK, rfl⟩
+    have hT := hQ.tendsto (z + ι v + ι' (u v))
+    rw [hQv] at hT
+    filter_upwards [hT.eventually hev] with x hx
+    show η (L' (x - z)) • affinePullbackForm L (-(L z)) ψ x = affinePullbackForm L (-(L z)) ψ x
+    rw [hx, one_smul]
+  · have hopen : IsOpen {x : Euclid (m + 1 + k) | L (x - z) ∉ tsupport ψ} :=
+      (isClosed_tsupport ψ).isOpen_compl.preimage hPr
+    filter_upwards [hopen.mem_nhds (show L (z + ι v + ι' (u v) - z) ∉ tsupport ψ by rw [hPv]; exact hvK)] with x hx
+    have h0 : ψ (L (x - z)) = 0 := image_eq_zero_of_notMem_tsupport hx
+    have hP0 : affinePullbackForm L (-(L z)) ψ x = 0 := by
+      rw [hPapply, h0]
+      ext w
+      simp
+    show η (L' (x - z)) • affinePullbackForm L (-(L z)) ψ x = affinePullbackForm L (-(L z)) ψ x
+    rw [hP0, smul_zero]
 
 end GMT.Ch07
