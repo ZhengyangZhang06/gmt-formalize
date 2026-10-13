@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0df59856a2e859d12411b6500d7eaffdcfad4742d6d59a383679e96587a638d0",
+  "git_delta": {
+    "base_commit": "b9eeec72ba7e2f71c08586cf80541482076317c4",
+    "candidate_commit": "b37371edfee5081564887141b86d4f6eaca14fbf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn",
+    "diff_sha256": "ecc93a94b91f560457c5ad43bbf53b53bc63da182cd82d7245f39200b101b508",
+    "source_sha256": "bdca4281e5f5b4f918f083af7bb860d83a8f4d71bd1d6d4bb9bc0b52c11ac574",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn",
+      "statement": "(∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (d : ℕ) (Z : Set (Euclid d)) (v₁ v₂ : Euclid d → ℝ), MeasurableSet Z → EqOn v₁ v₂ Z → ∀ᵐ y ∂(volume : Measure (Euclid d)), y ∈ Z → DifferentiableAt ℝ v₁ y → DifferentiableAt ℝ v₂ y → fderiv ℝ v₁ y = fderiv ℝ v₂ y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
