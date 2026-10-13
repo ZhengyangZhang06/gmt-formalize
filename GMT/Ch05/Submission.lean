@@ -650,6 +650,65 @@ theorem dohr_eb_lhr_ds_clm_family : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn 
     (hC1.differentiableOn one_ne_zero x hx).differentiableAt (hU.mem_nhds hx)
   rw [fderiv_clm_apply hd (differentiableAt_const P)]
   simp
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): Leibniz rule for a family of bilinear
+forms.**
+Let `L = L(ℝⁿ, ℝ^ℓ)`, let `a : ℝⁿ → L(L, L*)` be such that `x ↦ a(x)[P][Q]` is `C¹` on an open `U`
+for all `P, Q ∈ L`, and let `w : ℝⁿ → L` be `C¹` on `U`.  Then `x ↦ a(x)[w(x)]` is `C¹` on `U` as an
+`L*`-valued map, and for `x ∈ U`, `P ∈ L` and `e ∈ ℝⁿ`,
+`(D(a(·)[w(·)])(x) e)[P] = a(x)[Dw(x) e][P] + D(a(·)[w(x)][P])(x) e`, with `w(x)` frozen in the
+last term.
+Proof: with a basis `E_r` of `L` and its continuous coordinate forms `π_r`, linearity gives
+`a(z)[Q][P] = Σ_r π_r(Q) · a(z)[E_r][P]`.  So each evaluation `z ↦ a(z)[w(z)][P]` is a finite sum of
+products of `C¹` functions, and `dohr_eb_lhr_ds_clm_family` makes `z ↦ a(z)[w(z)]` a `C¹` map
+with `(D(a(·)[w(·)])(x) e)[P] = D(a(·)[w(·)][P])(x) e`.  The product and sum rules give
+`D(a(·)[w(·)][P])(x) e = Σ_r π_r(w(x)) · D(a(·)[E_r][P])(x) e + Σ_r π_r(Dw(x) e) · a(x)[E_r][P]`;
+by the expansion the second sum is `a(x)[Dw(x) e][P]`, and the first is `D(a(·)[w(x)][P])(x) e`. -/
+theorem dohr_eb_lhr_ds_bilin_leibniz : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → (Rn n →L[ℝ] Rn ℓ)) (e : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U) → ContDiffOn ℝ 1 w U → ContDiffOn ℝ 1 (fun x => a x (w x)) U ∧ ∀ x ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun z => a z (w z)) x e P = a x (fderiv ℝ w x e) P + fderiv ℝ (fun z => a z (w x) P) x e := by
+  intro n ℓ U a w e hU ha hw
+  -- Step 1: a basis `E_r = b r` of `L` with continuous coordinate forms `π r`, and the expansion
+  -- `a(z)[Q][P] = Σ_r π_r(Q) · a(z)[E_r][P]`.
+  let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+  let π : Fin (Module.finrank ℝ (Rn n →L[ℝ] Rn ℓ)) → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ :=
+    fun r => LinearMap.toContinuousLinearMap (b.coord r)
+  have hexp : ∀ z Q P, a z Q P = ∑ r, π r Q * a z (b r) P := by
+    intro z Q P
+    have hQ : a z Q = a z (∑ r, b.repr Q r • b r) := by rw [b.sum_repr]
+    rw [hQ, map_sum, sum_apply]
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    rfl
+  -- Step 2: each evaluation `z ↦ a(z)[w(z)][P] = Σ_r π_r(w(z)) · a(z)[E_r][P]` is `C¹` on `U`, so
+  -- `clm_family` makes `z ↦ a(z)[w(z)]` a `C¹` map into `L*` and reduces the derivative identity
+  -- to the evaluation at `P`.
+  have hπw : ∀ r, ContDiffOn ℝ 1 (fun z => π r (w z)) U := fun r =>
+    (π r).contDiff.comp_contDiffOn hw
+  have hC1P : ∀ P, ContDiffOn ℝ 1 (fun z => a z (w z) P) U := fun P =>
+    (ContDiffOn.sum fun r _ => (hπw r).mul (ha (b r) P)).congr fun z _ => hexp z (w z) P
+  obtain ⟨hC1, hcf⟩ := Submission.dohr_eb_lhr_ds_clm_family n ℓ U (fun z => a z (w z)) hU hC1P
+  refine ⟨hC1, fun x hx P => ?_⟩
+  rw [hcf x hx e P]
+  -- Step 3: product and sum rules for the expansion of `z ↦ a(z)[w(z)][P]`.
+  have hxU : U ∈ 𝓝 x := hU.mem_nhds hx
+  have hdw : HasFDerivAt w (fderiv ℝ w x) x :=
+    ((hw.differentiableOn one_ne_zero x hx).differentiableAt hxU).hasFDerivAt
+  have hdA : ∀ r, HasFDerivAt (fun z => a z (b r) P) (fderiv ℝ (fun z => a z (b r) P) x) x :=
+    fun r => (((ha (b r) P).differentiableOn one_ne_zero x hx).differentiableAt hxU).hasFDerivAt
+  have hD : HasFDerivAt (fun z => a z (w z) P)
+      (∑ r, (π r (w x) • fderiv ℝ (fun z => a z (b r) P) x
+        + a x (b r) P • (π r).comp (fderiv ℝ w x))) x := by
+    rw [show (fun z => a z (w z) P) = fun z => ∑ r, π r (w z) * a z (b r) P from
+      funext fun z => hexp z (w z) P]
+    exact HasFDerivAt.fun_sum fun r _ => ((π r).hasFDerivAt.comp x hdw).mul (hdA r)
+  -- Step 4: the derivative of `z ↦ a(z)[w(x)][P]`, with `w(x)` frozen.
+  have hF : HasFDerivAt (fun z => a z (w x) P)
+      (∑ r, π r (w x) • fderiv ℝ (fun z => a z (b r) P) x) x := by
+    rw [show (fun z => a z (w x) P) = fun z => ∑ r, π r (w x) * a z (b r) P from
+      funext fun z => hexp z (w x) P]
+    exact HasFDerivAt.fun_sum fun r _ => (hdA r).const_mul (π r (w x))
+  -- Step 5: by the expansion, the two sums are `a(x)[Dw(x) e][P]` and `D(a(·)[w(x)][P])(x) e`.
+  rw [hD.fderiv, hF.fderiv, hexp x (fderiv ℝ w x e) P]
+  simp only [sum_apply, add_apply, smul_apply, smul_eq_mul, ContinuousLinearMap.comp_apply,
+    Finset.sum_add_distrib, mul_comm (a x (b _) P)]
+  ring
 
 end Submission
 
