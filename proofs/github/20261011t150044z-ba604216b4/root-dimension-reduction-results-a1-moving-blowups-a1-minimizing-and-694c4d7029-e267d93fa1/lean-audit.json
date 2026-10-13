@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "579ba6904aa1591bc542ce06fd112f9ff7433d228671c141083170bfebc217b0",
+  "git_delta": {
+    "base_commit": "9aabcc6fb871d241d158831a481902c925d4e0d9",
+    "candidate_commit": "40adb476277bf1302e90b47418f2043e797eeea2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_mm_limsup_le_of_subseq",
+    "diff_sha256": "4e2a1fd5630c39aca42d0e41c464e9d06b6c3082effeb36e409f7643ac4f3e55",
+    "source_sha256": "ab79f39eba7d2d8c73a130a8c7120aab7a3fadc6385d3f553fc09172ce0d1312",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_mm_limsup_le_of_subseq",
+      "statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ limsup (fun i => μs (ψ (φ' i)) W) atTop ≤ μ W) → ∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
