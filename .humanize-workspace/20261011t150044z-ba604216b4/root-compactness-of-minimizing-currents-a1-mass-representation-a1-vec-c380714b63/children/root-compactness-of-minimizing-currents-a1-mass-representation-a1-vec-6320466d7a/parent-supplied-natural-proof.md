@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.coordinate_functional-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent proof (the scalar functionals Λ_i(f) := L(f•e_i)). The rescaling Claim (B) is not needed here; it is done in the Jordan-decomposition sibling.
+Notation: H := EuclideanSpace ℝ (Fin d); e := e_i := EuclideanSpace.single i 1, so ‖e‖ = 1 (PiLp.norm_single).
+1. Fix i ∈ Fin d. The map c : ℝ → H, c(t) := t•e, is continuous (product of the identity and a constant) and c(0) = 0.
+2. For f ∈ C_c(X, ℝ) put T f := f.compLeft c ∈ C_c(X, H). Since c(0) = 0, (T f)(x) = c(f(x)) = f(x)•e for every x ∈ X (CompactlySupportedContinuousMap.compLeft_apply). Mathematically, c∘f is continuous and vanishes wherever f does, so its closed support lies in the compact set tsupport f.
+3. T is ℝ-linear. For all x, (T(f₁+f₂))(x) = (f₁(x)+f₂(x))•e = (T f₁)(x) + (T f₂)(x), and (T(r•f))(x) = (r·f(x))•e = r•((T f)(x)). Elements of C_c(X, H) with the same values are equal (extensionality).
+4. Define Λ := L ∘ T, an ℝ-linear map C_c(X, ℝ) → ℝ.
+5. (Representation clause.) Let f ∈ C_c(X, ℝ) and g ∈ C_c(X, H) with g(x) = f(x)•e for all x. By step 2, g(x) = (T f)(x) for all x, so g = T f by extensionality, and L g = L(T f) = Λ f.
+6. (Bound clause.) Let K ⊆ X be compact and let M be the constant from the hypothesis on L for this K. Let f ∈ C_c(X, ℝ) with tsupport f ⊆ K and |f(x)| ≤ 1 for all x, and put g := T f.
+ (a) Since g(x) = f(x)•e, g(x) = 0 wherever f(x) = 0. So support g ⊆ support f, and taking closures, tsupport g ⊆ tsupport f ⊆ K (Lean: tsupport_smul_subset_left).
+ (b) For every x, ‖g(x)‖ = |f(x)|·‖e‖ = |f(x)| ≤ 1.
+ By the hypothesis on L, |Λ f| = |L g| ≤ M. M depends only on K, so it is the required constant.
+7. Steps 4–6 give, for each i ∈ Fin d, a linear map Λ with properties (i) and (ii).
+
+## Key steps
+
+1. The map t ↦ t•e_i is continuous and vanishes at 0, so T f := f.compLeft (t ↦ t•e_i) lies in C_c(X, H) and (T f)(x) = f(x)•e_i.
+2. T is ℝ-linear (check values pointwise, then extensionality); set Λ := L ∘ T.
+3. If g(x) = f(x)•e_i for all x, then g = T f by extensionality, so L g = Λ f.
+4. tsupport(T f) ⊆ tsupport f and ‖(T f)(x)‖ = |f(x)|, so L's bound at K gives |Λ f| ≤ M with the same constant.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'cmr_vr|jordan_decomposition|common_density|coordinate_assembly|coordinate_functional' <snapshot>/project -g '*.lean'  (no match)`
+- `rg -n -i 'jordan' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/  (no match: Mathlib has no Jordan decomposition of functionals on C_c)`
+- `grep -n 'def compLeft|compLeft_apply|def nnrealPart|def toReal|def toRealPositiveLinear|eq_toRealPositiveLinear_toReal|sup_apply|inf_apply|instance.*Lattice|toNNRealLinear' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `rg -n 'def rieszMeasure|theorem integral_rieszMeasure|regular_rieszMeasure' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `rg -n 'measurable_rnDeriv|haveLebesgueDecomposition_add|singularPart_eq_zero_of_ac|lintegral_rnDeriv_lt_top_of_measure_ne_top|rnDeriv_lt_top' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean`
+- `rg -n 'theorem withDensity_rnDeriv_eq|setLIntegral_rnDeriv' <snapshot>/mathlib/Mathlib -g '*.lean'  (found in RadonNikodym.lean, but #check after import GMT.Ch07.Submission reports unknown constant)`
+- `rg -n 'integral_withDensity_eq_integral_toReal_smul|theorem Integrable.bdd_mul|theorem Integrable.mul_bdd|IntegrableOn.integrable_of_forall_notMem_eq_zero|SigmaFinite.of_isFiniteMeasureOnCompacts|sigmaCompactSpace_of_locallyCompact_secondCountable' <snapshot>/mathlib/Mathlib -g '*.lean'`
+- `python3: contract_scope() from verifier/gmt-compare.py applied to GMT/Ch07/Contract.lean (scope replay for child challenges)`
+- `python3 scan of dag.json lean_name for cmr_vr_* and the four proposed names (all free; 668 nodes)`
+- `lake env lean /tmp/vr-split-c380/Avail.lean Avail2.lean Inst.lean (#check / #synth: rieszMeasure, toRealPositiveLinear, IsFiniteMeasureOnCompacts and SigmaFinite instances, WithLp.measurableSpace / PiLp.borelSpace on EuclideanSpace)`
+- `lake env lean /tmp/vr-split-c380/Stmts.lean (4 frozen child types + parent glue) and /tmp/vr-split-c380/All.lean (complete child proofs + glue, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-c380714b63/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/vr-split-c380/Stmts.lean`
+- `/tmp/vr-split-c380/All.lean`
+- `/tmp/vr-split-c380/C1.lean`
+- `/tmp/vr-split-c380/C2.lean`
+- `/tmp/vr-split-c380/C3.lean`
+- `/tmp/vr-split-c380/C4.lean`
+
+No reusable declaration exists:
+- No cmr_vr_* or Jordan-decomposition-of-functionals declaration exists in the project snapshot or in Mathlib's C_c/RMK files.
+- The four proposed names are free in dag.json.
+
+In-closure Mathlib API (snapshot line numbers):
+- CompactlySupported.lean: compLeft / compLeft_apply (137/150), lattice sup_apply/inf_apply (464/490), nnrealPart (688), toReal (739), toRealPositiveLinear (799), eq_toRealPositiveLinear_toReal (825).
+- RieszMarkovKakutani/Real.lean: rieszMeasure (65), integral_rieszMeasure (345), regular_rieszMeasure (357), hence IsFiniteMeasureOnCompacts.
+- Lebesgue.lean: measurable_rnDeriv (100), haveLebesgueDecomposition_add (115), singularPart_eq_zero_of_ac (252), lintegral_rnDeriv_lt_top_of_measure_ne_top (364), rnDeriv_lt_top (384).
+- integral_withDensity_eq_integral_toReal_smul (Bochner/ContinuousLinearMap.lean:318).
+- Integrable.bdd_mul / mul_bdd (Integrable.lean:1067/1072).
+- IntegrableOn.integrable_of_forall_notMem_eq_zero (IntegrableOn.lean:453).
+- SigmaFinite.of_isFiniteMeasureOnCompacts (SFinite.lean:701).
+- sigmaCompactSpace_of_locallyCompact_secondCountable (SigmaCompact.lean:187).
+
+Not in the import closure, so the child proofs avoid them: RadonNikodym.lean (withDensity_rnDeriv_eq, setLIntegral_rnDeriv) and EuclideanSpace.measurableEquiv.
+
+Comparator scope: the child-comparator replay (open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (...); noncomputable section; end) was reproduced. All four child types elaborate in it.
+
+Lean results:
+- The parent glue compiles from the four child types.
+- Complete Lean proofs of all four children were also checked (All.lean). Every theorem, including the assembled cmr_vector_riesz_representation, depends only on propext, Classical.choice and Quot.sound.

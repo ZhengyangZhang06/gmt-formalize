@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.coordinate_assembly-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+  "depth": 4,
+  "title": "Assembling coordinate density representations into a vector representation",
+  "statement": "Let X be a topological space with a σ-algebra containing all open sets, d ∈ ℕ, H := EuclideanSpace ℝ (Fin d) and e_i := EuclideanSpace.single i 1 for i ∈ Fin d. Let L : C_c(X, H) → ℝ be real linear, μ₀ a measure on X, and ρᵢ : X → ℝ (i ∈ Fin d) measurable functions, each μ₀-integrable on every compact subset of X. Assume L g = ∫ f(x)·ρᵢ(x) dμ₀(x) whenever i ∈ Fin d, f ∈ C_c(X, ℝ), g ∈ C_c(X, H) and g(x) = f(x)·e_i for all x ∈ X. Then there is a measurable ν : X → H, μ₀-integrable on every compact subset of X, such that L g = ∫ ⟨g(x), ν(x)⟩ dμ₀(x) for every g ∈ C_c(X, H).",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [MeasurableSpace X] [OpensMeasurableSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ) (μ₀ : Measure X) (ρ : Fin d → X → ℝ), (∀ i, Measurable (ρ i)) → (∀ i, ∀ K : Set X, IsCompact K → IntegrableOn (ρ i) K μ₀) → (∀ (i : Fin d) (f : CompactlySupportedContinuousMap X ℝ) (g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d))), (∀ x, g x = f x • EuclideanSpace.single i (1 : ℝ)) → L g = ∫ x, f x * ρ i x ∂μ₀) → ∃ ν : X → EuclideanSpace ℝ (Fin d), Measurable ν ∧ (∀ K : Set X, IsCompact K → IntegrableOn ν K μ₀) ∧ ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), L g = ∫ x, inner ℝ (g x) (ν x) ∂μ₀",
+  "lean_name": "cmr_vr_coordinate_assembly",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-54a4dfc386-a1"
+}

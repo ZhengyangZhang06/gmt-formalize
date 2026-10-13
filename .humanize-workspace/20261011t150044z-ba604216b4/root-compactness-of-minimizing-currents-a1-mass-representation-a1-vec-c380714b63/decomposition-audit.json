@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmr_vr_|jordan_decomposition|common_density|coordinate_assembly|coordinate_functional",
+        "jordan",
+        "def compLeft|compLeft_apply|instance.*Lattice|def nnrealPart|def toReal|def toRealPositiveLinear|eq_toRealPositiveLinear_toReal|sup_apply|inf_apply",
+        "def rieszMeasure|integral_rieszMeasure|regular_rieszMeasure|IsFiniteMeasureOnCompacts|variable",
+        "measurable_rnDeriv|haveLebesgueDecomposition_add|singularPart_eq_zero_of_ac|lintegral_rnDeriv_lt_top_of_measure_ne_top|rnDeriv_lt_top|instance.*Lebesgue",
+        "norm_single|smul_apply|single_apply|sum_single|continuous_apply",
+        "finsetSum_apply|finset_sum_apply",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vector-riesz-independent-audit/Interfaces.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vector-riesz-independent-audit/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vector-riesz-independent-audit/Clamp.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-c380714b63/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-c380714b63/decomposition-scope-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/vector-riesz-independent-audit/Interfaces.lean",
+        "/tmp/vector-riesz-independent-audit/Instances.lean",
+        "/tmp/vector-riesz-independent-audit/Clamp.lean"
+      ],
+      "conclusion": "The split is appropriate: four substantive, independent obligations establish exactly the selected vector-Riesz contract. All four frozen types independently elaborate as propositions in the comparator scope, and a Lean proof taking those exact contracts as hypotheses establishes the unchanged parent type. All names are bare identifiers and remain unreserved in the latest 684-node DAG; no accepted declaration is being reused. Empty dependency lists are correct and acyclic. Searches found no matching project declarations or Jordan-functional decomposition in the inspected compact-support/RMK sources. Independent Lean probes verified the Euclidean scalar action, norm and inner product, measurability, finite-sum integrability, compact-finiteness calculation, sigma-finiteness, Lebesgue-decomposition instances, and clamp inequality. Checked library results and audit lemmas use only propext, Classical.choice and Quot.sound. The author's temporary complete proofs were unavailable and were not relied upon. Scalar RMK was also cross-checked against [Terra's notes, Theorem 4.7](https://www.ime.usp.br/~glaucio/mat6704/textos/aulas6.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coordinate_functional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including both representation and local-bound clauses. The zero-preserving coordinate embedding is continuous and linear, preserves support containment, and has norm |f(x)|. Composition with L proves both clauses under the stated topological hypothesis, without circular reliance."
+    },
+    {
+      "key": "jordan_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Rescaling bounds the nonempty variation sets; the detailed clamp argument proves additivity, and positive rescaling proves homogeneity. The positive extension and P = V̂ + Λ give the required difference of positive linear maps. The proof works for arbitrary topological X and supplies every substantive construction."
+    },
+    {
+      "key": "common_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all Lean hypotheses. RMK supplies compact-finite measures; their finite sum dominates them, and sigma-compactness supplies the required sigma-finiteness. Absolute continuity removes singular parts. The supplied local density integrability and bounded compact-support arguments justify integral subtraction. The empty-family case is valid, and no sibling or parent theorem is assumed."
+    },
+    {
+      "key": "coordinate_assembly",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree with only OpensMeasurableSpace required. Finite basis sums give measurable, compactwise integrable ν. Coordinate decomposition and integrability of the compactly supported products justify exchanging the finite sum and integral. The Euclidean inner-product identity completes the representation, including dimension zero, without additional measure or separation hypotheses."
+    }
+  ],
+  "required_changes": []
+}

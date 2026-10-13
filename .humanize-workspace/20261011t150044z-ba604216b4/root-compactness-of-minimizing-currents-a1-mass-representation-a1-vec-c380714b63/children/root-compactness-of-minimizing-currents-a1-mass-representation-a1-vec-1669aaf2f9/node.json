@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+  "depth": 4,
+  "title": "Common dominating measure and densities for finitely many RMK measures",
+  "statement": "Let X be a locally compact Hausdorff space with a countable basis, equipped with its Borel σ-algebra. Let m ∈ ℕ and, for i ∈ Fin m, let Λ₁ᵢ and Λ₂ᵢ be positive linear functionals on C_c(X, ℝ), i.e. elements of C_c(X, ℝ) →ₚ[ℝ] ℝ. Then there are a measure μ₀ on X that is finite on compact sets and measurable functions ρᵢ : X → ℝ (i ∈ Fin m), each μ₀-integrable on every compact subset of X, such that Λ₁ᵢ f − Λ₂ᵢ f = ∫ f(x)·ρᵢ(x) dμ₀(x) for every i ∈ Fin m and every f ∈ C_c(X, ℝ).",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (Λ₁ Λ₂ : Fin m → (CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ)), ∃ (μ₀ : Measure X) (ρ : Fin m → X → ℝ), IsFiniteMeasureOnCompacts μ₀ ∧ (∀ i, Measurable (ρ i)) ∧ (∀ i, ∀ K : Set X, IsCompact K → IntegrableOn (ρ i) K μ₀) ∧ ∀ (i : Fin m) (f : CompactlySupportedContinuousMap X ℝ), Λ₁ i f - Λ₂ i f = ∫ x, f x * ρ i x ∂μ₀",
+  "lean_name": "cmr_vr_common_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-1669aaf2f9-a1"
+}
