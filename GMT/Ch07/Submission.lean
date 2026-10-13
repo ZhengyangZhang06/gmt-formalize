@@ -961,7 +961,7 @@ theorem Submission.cmcdt_ims_imrep_of_int_density : ∀ (P n : ℕ) (U N : Set (
   intro P n U N η m hU hN hNU hrect hfin hη hm hint hloc hor
   classical
   -- Step 1: the carrier `N' = N ∩ {m ≠ 0}`
-  set N' : Set (Euclid P) := N ∩ {x | m x ≠ 0} with hN'def
+  set N' : Set (Euclid P) := N ∩ {x | m x ≠ 0}
   have hN'meas : MeasurableSet N' :=
     hN.inter ((measurableSet_singleton (0 : ℝ)).preimage hm).compl
   have hN'N : N' ⊆ N := inter_subset_left
