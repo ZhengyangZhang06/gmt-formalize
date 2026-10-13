@@ -1,0 +1,137 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.simons_identity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon Appendix B, B.4–B.9 (chapter-B.txt lines 88–160), as organized in step 1 of the parent proof. Parent (0c) and (0g) supply the bridge between the frame-free Lean quantities and the frame components. Documented erratum: as printed, the second line of B.7 carries the opposite sign on the two curvature terms relative to its first line and to B.6. One fixed convention is used below (II.4), and the result coincides with the printed B.8.
+
+Notation. Fix an open O ⊇ M on which ν is C^∞. T_y := tangentSpace M y; P_y := orthogonal projection onto span T_y; e_1, …, e_P the standard basis; Π := orthogonal projection onto A₀. |A|²(y) := Σ_i |Dν(y)(P_ye_i)|². δ_jg(y) := fderivWithin ℝ g M y (P_ye_j) and Δ_Mg(x) := Σ_j δ_j(δ_jg)(x). C(y) := Dν(y)∘P_y and D_aC := fderivWithin ℝ C M x a. |∇A|²(x) := Σ_{i,j,k} ((D_{P_xe_k}C)(P_xe_i)·P_xe_j)². The claim is Δ_M|A|²(x) = 2|∇A|²(x) − 2(|A|²(x))² for x ∈ M.
+
+Part I. Ambient extensions, a frame, and three bridges.
+
+I.1 (Extensions.) P̃(y)w := Πw − (ν(y)·w)ν(y), C̃(y) := Dν(y)∘P̃(y) and Ã(y) := Σ_i |C̃(y)e_i|² are C^∞ on O (Dν is C^∞ on the open O by ContDiffOn.fderiv_of_isOpen). By the sibling normal_complement, for y ∈ M: T_y = A₀ ∩ ν(y)^⊥ (a subspace) and P_y = P̃(y). Hence C = C̃ and |A|² = Ã on M.
+ Extension principle (E). Let g : ℝ^P → F agree on M ∩ U (U an open neighbourhood of y ∈ M) with a function G differentiable at y. Then fderivWithin ℝ g M y τ = DG(y)τ for every τ ∈ T_y. Reason: g has derivative DG(y) within M at y (congruence on M ∩ U; fderivWithin is local, fderivWithin_inter); now apply the sibling tangent_fderiv.
+ Consequently δ_j|A|² = G_j on M with G_j(y) := DÃ(y)(P̃(y)e_j), and Δ_M|A|²(x) = Σ_j DG_j(x)(P_xe_j). Also D_aC = DC̃(x)a for a ∈ T_x.
+
+I.2 (Second fundamental form.) By the sibling codazzi, for y ∈ M and a, b, d ∈ T_y: Dν(y)a ∈ T_y; Dν(y)a·b = Dν(y)b·a; and (D_aC)(b)·d is symmetric in (a, b) and in (b, d).
+
+I.3 (Frame.) Fix x₀ ∈ M. The vectors P_{x₀}e_1, …, P_{x₀}e_P span T_{x₀}, which has dimension m. Choose j_1, …, j_m with P_{x₀}e_{j_1}, …, P_{x₀}e_{j_m} linearly independent. P̃ is continuous, so there is an open ball B ⊆ O around x₀ on which w_a(y) := P̃(y)e_{j_a} (a = 1, …, m) are linearly independent. Gram–Schmidt gives C^∞ maps E_1, …, E_m : B → ℝ^P, orthonormal at every y ∈ B, with span{E_a(y)} = span{w_a(y)}. For y ∈ M ∩ B, w_a(y) ∈ T_y and dim T_y = m. So (E_a(y))_a is an orthonormal basis of T_y.
+
+I.4 (Tangent fields; connection.) A tangent field is a C^∞ map X : B → ℝ^P with X(y) ∈ T_y for y ∈ M ∩ B; examples are E_a and Σ_a f_aE_a with f_a C^∞. For a tangent field X and a C¹ map Z on B put D_XZ(y) := DZ(y)X(y). By (E), D_XZ at points of M ∩ B depends only on Z restricted to M ∩ B. Define ∇_XY := P(D_XY) and [X, Y] := D_XY − D_YX.
+ (a) Gauss formula. For tangent X, Y and y ∈ M ∩ B: D_XY ∈ A₀. Indeed, let γ witness X(y) ∈ T_y. Then Y∘γ takes values in A₀ near s = 0 (Y(z) ∈ T_z ⊆ A₀ for z ∈ M). Its derivative at 0 is DY(y)X(y) = D_XY(y). The difference quotients lie in the closed subspace A₀, so D_XY(y) ∈ A₀. Also ν·D_XY = −Dν(X)·Y: differentiate ν·Y, which vanishes on M ∩ B, along X and use (E). Since A₀ = T_y ⊕ ℝν(y) orthogonally, D_XY = ∇_XY + h(X, Y)ν with h(X, Y) := −Dν(X)·Y = SX·Y, where SX := −Dν(X) is tangent (I.2). h is symmetric (I.2).
+ (b) Torsion-freeness. ν·[X, Y] = h(X, Y) − h(Y, X) = 0 and [X, Y] ∈ A₀, so [X, Y] is tangent and ∇_XY − ∇_YX = P[X, Y] = [X, Y].
+ (c) Metric compatibility. X(Y·Z) = ∇_XY·Z + Y·∇_XZ for tangent Y, Z. Indeed X(Y·Z) = D_XY·Z + Y·D_XZ, and only tangential parts pair with tangent vectors.
+ (d) Flatness. For tangent X, Y and a C² map Z on B: D_XD_YZ − D_YD_XZ − D_{[X,Y]}Z = 0 on M ∩ B. This follows from D_X(DZ·Y) − D_Y(DZ·X) = D²Z(X, Y) + DZ(D_XY) − D²Z(Y, X) − DZ(D_YX) = DZ([X, Y]), using symmetry of D²Z (ContDiffAt.isSymmSndFDerivAt). Applied to scalar functions f, this gives XYf − YXf = [X, Y]f.
+
+I.5 (Covariant derivatives in the frame.) Indices a, b, c, … run over 1, …, m and repeated indices are summed. For functions f on M ∩ B put E_cf := D_{E_c}f. Define:
+ h_ab := h(E_a, E_b);
+ h_{ab;c} := E_c(h_ab) − h(∇_{E_c}E_a, E_b) − h(E_a, ∇_{E_c}E_b);
+ h_{ab;cd} := E_d(h_{ab;c}) − (∇h)(∇_{E_d}E_a, E_b, E_c) − (∇h)(E_a, ∇_{E_d}E_b, E_c) − (∇h)(E_a, E_b, ∇_{E_d}E_c), so the index c is differentiated first;
+ f_{;c} := E_cf and f_{;cd} := E_d(E_cf) − (∇_{E_d}E_c)f;
+ H := h_aa.
+All are C^∞ functions on M ∩ B (restrictions of ambient C^∞ functions).
+
+I.6 (Bridges.) At points of M ∩ B:
+ (B1) h_{ab;c} = −(D_{E_c}C)(E_a)·E_b, and |∇A|² = Σ_{a,b,c} h_{ab;c}². For the first claim, h(X, Y) = −C X·Y for tangent X, Y, so E_c(h_ab) = −(D_{E_c}C)E_a·E_b − C(D_{E_c}E_a)·E_b − CE_a·D_{E_c}E_b. C kills normal components (C(y)w = Dν(y)(P_yw)), so C(D_{E_c}E_a) = C(∇_{E_c}E_a). CE_a is tangent (I.2), so CE_a·D_{E_c}E_b = CE_a·∇_{E_c}E_b. This gives the formula. For the second claim, use the Hilbert–Schmidt identity: for a linear functional ℓ on ℝ^P, Σ_jℓ(P_ye_j)² = Σ_aℓ(E_a)². Indeed P_ye_j = Σ_a(e_j·E_a)E_a and Σ_j(e_j·E_a)(e_j·E_b) = E_a·E_b = δ_ab. Apply it in each slot of the trilinear form (u, v, w) ↦ (D_{P_yu}C)(P_yv)·P_yw (D_·C is linear in the direction, by I.1).
+ (B2) |A|² = h_ab h_ab. |A|²(y) = Σ_j|Dν(y)(P_ye_j)|² = Σ_a|Dν(y)E_a|², by the Hilbert–Schmidt identity for the linear map Dν(y). Then Σ_a|Dν(y)E_a|² = Σ_{a,b}(Dν(y)E_a·E_b)² because Dν(y)E_a ∈ T_y (Parseval).
+ (B3) Δ_M|A|² = (|A|²)_{;cc}. Let g := |A|² and ∇g := (E_ag)E_a, a tangent field. For y ∈ M ∩ B, δ_jg(y) = Σ_a(e_j·E_a)E_ag = ∇g·e_j, by linearity of fderivWithin and P_ye_j = Σ_a(e_j·E_a)E_a. By (E), δ_j(δ_jg)(x₀) = D(∇g·e_j)(x₀)(P_{x₀}e_j) = (D_{P_{x₀}e_j}∇g)·e_j. Summing over j gives the trace of the linear map L∘P_{x₀}, where L := D(∇g)(x₀). This trace equals Σ_c(LE_c)·E_c, since L∘P_{x₀} vanishes on T_{x₀}^⊥. Moreover (LE_c)·E_c = (∇_{E_c}∇g)·E_c = E_c(∇g·E_c) − ∇g·∇_{E_c}E_c = E_c(E_cg) − (∇_{E_c}E_c)g = g_{;cc}, by (c) of I.4.
+
+Part II. The intrinsic computation (Simon B.4–B.9, parent step 1), at points of M ∩ B.
+II.1 (B.4) h_ab = h_ba (I.2). Hence h_{ab;c} and h_{ab;cd} are symmetric in a, b.
+II.2 (Codazzi, B.5) h_{ab;c} is totally symmetric: by (B1), h_{ab;c} = −(D_{E_c}C)(E_a)·E_b, and I.2 gives symmetry in (c, a) and in (a, b).
+II.3 (Gauss, B.6) R(X, Y)Z := ∇_X∇_YZ − ∇_Y∇_XZ − ∇_{[X,Y]}Z = h(Y, Z)SX − h(X, Z)SY for tangent X, Y, Z. Expand I.4(d) with D_YZ = ∇_YZ + h(Y, Z)ν and D_Xν = −SX: D_X(D_YZ) = ∇_X∇_YZ + h(X, ∇_YZ)ν + X(h(Y, Z))ν − h(Y, Z)SX. Do the same with X and Y exchanged, and use D_{[X,Y]}Z = ∇_{[X,Y]}Z + h([X, Y], Z)ν. The tangential component of I.4(d) is the Gauss equation. In components, R(E_a, E_b)E_c·E_d = h_bc h_ad − h_ac h_bd.
+II.4 (Ricci identity, B.7, fixed convention) h_{ab;cd} − h_{ab;dc} = −h(R(E_d, E_c)E_a, E_b) − h(E_a, R(E_d, E_c)E_b). Here h_{ab;cd} = (∇²_{E_d,E_c}h)(E_a, E_b) with ∇²_{X,Y} := ∇_X∇_Y − ∇_{∇_XY}. Expand the definitions and use torsion-freeness ∇_XY − ∇_YX = [X, Y] (I.4(b)): ∇²_{X,Y}h − ∇²_{Y,X}h = ∇_X∇_Yh − ∇_Y∇_Xh − ∇_{[X,Y]}h. Evaluated on (U, W), the terms in which the operators act on the function h(U, W) cancel, because XYf − YXf − [X, Y]f = 0 (I.4(d)). The remaining terms are −h(R(X, Y)U, W) − h(U, R(X, Y)W).
+II.5 (Commutation) Write SE_a = h_abE_b, (h²)_ab = h_ach_cb, (h³)_ab = h_ach_cdh_db (symmetric) and |A|² = h_abh_ab. Then
+ Σ_c(h_{ca;bc} − h_{ca;cb}) = −h(R(E_c, E_b)E_c, E_a) − h(E_c, R(E_c, E_b)E_a)   [II.4 with (a, b, c, d) ↦ (c, a, b, c)]
+ = −[(h³)_ba − H(h²)_ba] − [|A|²h_ba − (h³)_ab] = H(h²)_ab − |A|²h_ab.
+ Here Gauss gives R(E_c, E_b)E_c = h_bcSE_c − h_ccSE_b, so h(R(E_c, E_b)E_c, E_a) = (h³)_ba − H(h²)_ba. Likewise R(E_c, E_b)E_a = h_baSE_c − h_caSE_b, so h(E_c, R(E_c, E_b)E_a) = |A|²h_ba − (h³)_ab.
+II.6 (Laplacian of h) h_{ab;cc} = h_{ac;bc} (Codazzi II.2: the 3-tensors (a, b, c) ↦ h_{ab;c} and (a, b, c) ↦ h_{ac;b} coincide, hence so do their covariant derivatives) = h_{ca;bc} (II.1) = h_{ca;cb} + H(h²)_ab − |A|²h_ab (II.5) = H_{;ab} + H(h²)_ab − |A|²h_ab. For the last step, Σ_ch_{ca;c} = Σ_ch_{cc;a} = H_{;a} by Codazzi, because contraction commutes with ∇ for the orthonormal frame; hence Σ_ch_{ca;cb} = H_{;ab}.
+II.7 (B.8) By metric compatibility, (|A|²)_{;c} = 2h_abh_{ab;c} and ½(|A|²)_{;cc} = h_{ab;c}h_{ab;c} + h_abh_{ab;cc}. With II.6:
+ ½(|A|²)_{;cc} = Σ h²_{ab;c} − |A|⁴ + h_abH_{;ab} + H h_ab(h²)_ab.
+II.8 (H = 0) H = h_aa = −Σ_aDν(y)E_a·E_a = −trace(Dν(y)∘P_y) = −trace(P_y∘Dν(y)) = 0 for every y ∈ M ∩ B, by hypothesis (trace is cyclic). A function vanishing on M ∩ B has vanishing derivative within M; by (E) all its derivatives along tangent fields vanish. So H_{;a} = 0, and H_{;ab} = E_b(E_aH) − (∇_{E_b}E_a)H = 0, because E_aH also vanishes on M ∩ B.
+
+Part III. Conclusion. At x₀, II.7 and II.8 give ½(|A|²)_{;cc}(x₀) = Σ h²_{ab;c}(x₀) − (|A|²(x₀))². By (B3), (B1) and (B2), Δ_M|A|²(x₀) = 2|∇A|²(x₀) − 2(|A|²(x₀))². x₀ ∈ M was arbitrary. This is the identity of the statement, Σ_j fderivWithin ℝ (fun y => fderivWithin ℝ |A|² M y (P_ye_j)) M x (P_xe_j) = 2|∇A|²(x) − 2(|A|²(x))², with |A|² as defined. (Numerical check, not part of the proof: with ν = ∇F/|∇F| for the minimal catenoid x²+y² = cosh²z and for the Clifford cone x₁²+x₂² = x₃²+x₄², also inside A₀ ⊊ ℝ⁵, both sides agree.) ∎
+
+## Key steps
+
+1. Ambient C^∞ extensions (P_y = Π − ν⊗ν on M) and tangent_fderiv make all tangential derivatives derivatives of ambient smooth maps.
+2. A C^∞ orthonormal tangent frame E_a near x₀; Levi-Civita connection ∇ = P∘D, Gauss formula D_XY = ∇_XY + h(X,Y)ν, torsion-freeness, flatness of ℝ^P.
+3. Bridges: h_{ab;c} = −(D_{E_c}C)(E_a)·E_b, so |∇A|² = Σh²_{ab;c}; |A|² = Σh_ab²; Δ_M = Σ_c (·)_{;cc} (Hilbert–Schmidt identities).
+4. B.4 symmetry, Codazzi (codazzi sibling), Gauss B.6, Ricci identity B.7 (fixed sign convention) ⇒ Σ_c(h_{ca;bc} − h_{ca;cb}) = H(h²)_ab − |A|²h_ab.
+5. h_{ab;cc} = H_{;ab} + H(h²)_ab − |A|²h_ab, contraction gives B.8; H ≡ 0 on M kills the H-terms: ½Δ_M|A|² = |∇A|² − |A|⁴.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `rg -n 'Simons|Codazzi|Laplace|second fundamental' project/GMT`
+- `rg -n 'def tangentSpace|def IsEmbeddedSubmanifold' project/GMT/Ch07/Contract.lean`
+- `rg -n 'theorem HasFDerivWithinAt.unique_on|theorem DifferentiableWithinAt.hasFDerivWithinAt|mem_tangentConeAt_of_seq|irreducible_def tangentConeAt|irreducible_def fderivWithin' mathlib/Mathlib/Analysis/Calculus`
+- `rg -n 'hausdorffMeasure_smul₀|hausdorffMeasure_image_le|EuclideanSpace.euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib`
+- `rg -n '^theorem|^lemma' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `rg -n 'isSymmSndFDerivAt|exists_orthonormalBasis_extension|ContDiffOn.fderiv_of_isOpen|exists_contDiff_support_eq_eq_one_iff|eq_starProjection_of_mem_of_inner_eq_zero|eq_of_le_of_finrank_eq|IsLocalMin.hasDerivAt_eq_zero|tendsto_integral_of_dominated_convergence|ContinuousOn.aestronglyMeasurable|ae_restrict_iff' mathlib/Mathlib`
+- `rg -n 'def localInverse|theorem eventually_left_inverse|theorem to_localInverse' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem`
+- `rg -n 'theorem exists_smooth_tsupport_subset|theorem HasStrictFDerivAt.to_localInverse|theorem LocallyLipschitzOn' mathlib/Mathlib (no match under these exact names)`
+- `grep -n 'theorem|def' simongmt/Poincare/SimonGMT/AppendixB/{SimonsInequalities,ConeDefect,LagrangeIdentity}.lean; lean Avail.lean: #check Poincare.SimonGMT.AppendixB.cone_simonsDefect_lower_bound after import GMT.Ch07.Submission`
+- `python3 scans of dag.json (nodes under hypercone_plane-a1, statuses and frozen types of chart_tangentSpace_eq_range_fderiv, dimred_rpd_submanifold_density_one, codim1_hcp_lipschitz_smooth_approx, codim1_hcp_smooth_charts); grep -c codim1_hcp_sc dag.json; git log --all -S codim1_hcp_sc -- GMT`
+- `lean -DautoImplicit=false /tmp/simons-cone-split/check/{Parent,TypesAll,Assembly,Inst}.lean with LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean`
+- `python3 verifier/lean_contract.py validate_lean_statement on all 12 child types`
+- `/tmp/simons-cone-venv/env/bin/python -I /tmp/simons-cone-split/scripts/jets.py {clifford,more} and generic2.py {ell,gen3,cubic}`
+- `book/chapter-B.txt lines 1–282 (B.1–B.11 and proof of B.2)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/TangentCone/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/SimonsInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/LagrangeIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-a3c4818ec8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt`
+- `/tmp/simons-cone-split/check/TypesAll.lean`
+- `/tmp/simons-cone-split/check/Assembly.lean`
+- `/tmp/simons-cone-split/check/Inst.lean`
+- `/tmp/simons-cone-split/scripts/jets.py`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c; these equal the workspace HEAD and .lake/packages/mathlib (simongmt is at 2b366308). The snapshot's project/GMT/Ch07/Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f9503aa28…).
+
+Project: there is no Simons, Codazzi or Laplace–Beltrami development. rg finds only the Ch02 B_y doc-comment, the Ch07 'Simons cone' remark and README pointers to the AppendixB numerics. tangentSpace (Contract.lean:228) and IsEmbeddedSubmanifold (:221) are the definitions used.
+
+Mathlib snapshot: it contains every library fact the child proofs cite.
+- HasFDerivWithinAt.unique_on (FDeriv/Basic.lean:159) and DifferentiableWithinAt.hasFDerivWithinAt (:391); the fderivWithin definition (FDeriv/Defs.lean:151); mem_tangentConeAt_of_seq (TangentCone/Defs.lean:96).
+- Measure.hausdorffMeasure_smul₀ (Hausdorff.lean:753); LipschitzOnWith.hausdorffMeasure_image_le (:733); LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher.lean:361); EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187).
+- ContDiffAt.isSymmSndFDerivAt (FDeriv/Symmetric.lean:533); Orthonormal.exists_orthonormalBasis_extension (PiL2.lean:1031); ContDiffOn.fderiv_of_isOpen (ContDiff/Defs.lean:907); exists_contDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:789); HasStrictFDerivAt.localInverse, eventually_left_inverse and to_localInverse (InverseFunctionTheorem/FDeriv.lean:149–186).
+- Submodule.eq_starProjection_of_mem_of_inner_eq_zero (Projection/Basic.lean:180); Submodule.eq_of_le_of_finrank_eq (FiniteDimensional/Basic.lean:257); IsLocalMin.hasDerivAt_eq_zero (LocalExtr/Basic.lean:237); tendsto_integral_of_dominated_convergence (DominatedConvergence.lean:57); ae_restrict_iff' (Restrict.lean:629).
+- No match for theorems named exists_smooth_tsupport_subset or HasStrictFDerivAt.to_localInverse. The proofs use exists_contDiff_support_eq_eq_one_iff and the namespaced inverse-function lemmas instead.
+
+SimonGMT: AppendixB supplies the B.10–B.11 algebra (ConeDefect.lean:136–228, LagrangeIdentity.lean:122) and ε = 1/10 (SimonsInequalities.lean:88). However, #check of cone_simonsDefect_lower_bound after import GMT.Ch07.Submission gives Unknown identifier. Child statements therefore avoid it, and cone_defect's proof notes the extra import and includes the printed algebra.
+
+DAG: chart_tangentSpace_eq_range_fderiv is accepted (candidate d626082a69a0) and is reused with an identical type. lipschitz_approx and smooth_charts are unaccepted children of this node's parent, so they cannot be reused here. lipschitz_approx's exact conclusion is passed as hypothesis (HL), and density one as a hypothesis; the parent discharges both from its own resolved dependencies. The codim1_hcp_sc_ names are free in dag.json, in the git history and in all reference trees.
+
+Lean: all 12 types elaborate (TypesAll, exit 0), and the parent's frozen type is kernel-checked from them (Assembly, exit 0).

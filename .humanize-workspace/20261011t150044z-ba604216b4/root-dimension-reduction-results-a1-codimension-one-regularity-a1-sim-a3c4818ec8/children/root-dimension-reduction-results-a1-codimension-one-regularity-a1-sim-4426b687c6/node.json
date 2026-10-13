@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.cone_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1",
+  "depth": 6,
+  "title": "Hausdorff measure on a cone: spheres are null and |x|^α is integrable near 0 (α > −m) and near ∞ (β < −m)",
+  "statement": "Let P, m ∈ ℕ and M ⊆ ℝ^P with 0 ∉ M, closure(M) ⊆ M ∪ {0}, tx ∈ M for all x ∈ M and t > 0, and H^m(M ∩ K) < ∞ for every compact K (H^m = μHE[m]). Then (a) H^m(M ∩ {|x| = c}) = 0 for every c > 0; (b) ∫⁻_{M ∩ {|x| < 1}} ofReal(|x|^α) dH^m < ∞ for every real α > −m; (c) ∫⁻_{M ∖ {|x| < 1}} ofReal(|x|^β) dH^m < ∞ for every real β < −m (real powers).",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)), (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ c : ℝ, 0 < c → μHE[m] (M ∩ sphere (0 : Euclid P) c) = 0) ∧ (∀ α : ℝ, -(m : ℝ) < α → ∫⁻ x in M ∩ ball (0 : Euclid P) 1, ENNReal.ofReal (‖x‖ ^ α) ∂μHE[m] ≠ ∞) ∧ (∀ β : ℝ, β < -(m : ℝ) → ∫⁻ x in M \\ ball (0 : Euclid P) 1, ENNReal.ofReal (‖x‖ ^ β) ∂μHE[m] ≠ ∞)",
+  "lean_name": "codim1_hcp_sc_cone_annuli_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-4426b687c6-a1"
+}

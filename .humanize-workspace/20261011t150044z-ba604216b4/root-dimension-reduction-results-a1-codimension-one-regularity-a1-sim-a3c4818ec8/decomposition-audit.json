@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "Simons|Codazzi|Laplace|second fundamental",
+        "fderiv_of_isOpen|isSymmSndFDerivAt|eq_starProjection_of_mem_of_inner_eq_zero|def localInverse|eventually_left_inverse|to_localInverse",
+        "codim1_hcp_sc_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/independent-simons-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/independent-simons-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/independent-simons-audit/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/TangentCone/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-a3c4818ec8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/lean-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa61/20261013T015510Z-ch07-root.minimizing_implies_stationary-a1.chart_tangent_space-a1-ln1m5mdi/comparator.log",
+        "/tmp/independent-simons-audit/Types.lean",
+        "/tmp/independent-simons-audit/Assembly.lean",
+        "/tmp/independent-simons-audit/Instances.lean"
+      ],
+      "conclusion": "Project and Mathlib revisions match the manifest; the snapshot contract and workspace contract/submission are byte-identical. No existing project Simons identity or Codazzi development was found. All twelve one-line propositions elaborate independently without child implementations; projection, composition, inner-product and real-power checks pass. Conditional assembly proves the exact selected parent type using only standard axioms. The approximation and density assumptions are discharged by recorded parent dependencies, whose dependency closures do not return to this parent. Chart reuse has the identical accepted type, matching candidate source hash and clean comparator axiom export. All eleven new complete names are unreserved. The prefix itself is shared with smooth_charts children, contrary to the proposal's blanket prefix-availability claim, but no declaration collides. The split is appropriate, acyclic, and establishes this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Bounded reparametrized curves prove one inclusion; properness gives inverse continuity, and the injective-derivative remainder estimate proves the reverse inclusion. All chart hypotheses are present."
+    },
+    {
+      "key": "tangent_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Curve velocities lie in the tangent cone by the supplied sequence. The two within-derivatives agree there by unique_on, and their linear agreement set contains the span. No submanifold or ambient derivative-uniqueness assumption is needed."
+    },
+    {
+      "key": "normal_complement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart dependency supplies tangent dimension m; curve differentiation supplies containment in A₀. Rank–nullity and orthogonality give the stated tangent space and projection formula. The Lean proposition includes all required hypotheses."
+    },
+    {
+      "key": "cone_normal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Scaling curves establishes tangent-space invariance. Continuity eliminates the normal's sign ambiguity on each positive ray. Differentiating the resulting identities proves both derivative conclusions, without assuming flatness."
+    },
+    {
+      "key": "cone_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Closure and vertex exclusion make M Borel. Hausdorff scaling and finite measure on bounded annuli prove sphere nullity. The dyadic series converge precisely under the stated exponent inequalities; the Lean lower integrals and real powers match."
+    },
+    {
+      "key": "rademacher",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proper charts provide local inverse continuity and Borel measurability. The projected-chart inverse transfers differentiability from coordinates to differentiation within M. Countably many Lipschitz chart pieces transfer the Lebesgue-null exceptional sets to Hausdorff-null sets."
+    },
+    {
+      "key": "codazzi",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The smooth extension C̃=Dν∘(Π−ν⊗ν) justifies the exact fderivWithin expressions. Differentiated normal constraints give tangency; chart Hessian symmetry gives self-adjointness. The displayed derivative formula and differentiated operator symmetry prove both Codazzi symmetries."
+    },
+    {
+      "key": "simons_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly bridges the Lean sums to the covariant derivative norm and Laplacian. Gauss, Ricci commutation, contraction and H=0 yield the stated identity with consistent signs. This matches the argument in [Simon, Appendix B](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=119), without invoking B.2."
+    },
+    {
+      "key": "cone_defect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Homogeneity supplies the radial derivative, and Codazzi supplies the required component symmetries. All three ambient sums are translated explicitly. The included four-placement Lagrange-identity argument proves the bound independently of the optional import; positivity justifies multiplication."
+    },
+    {
+      "key": "stationary_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ambient gradient extension, compact-support bounds, HL approximation and L²-to-L¹ estimates prove both integrability claims and the equality. The cited cutoff lemma gives tsupport β=closure W₁; the already stipulated compact closure W₁⊆U suffices throughout, so the stronger incidental claim tsupport β⊆W₁ is unnecessary."
+    },
+    {
+      "key": "simons_hardy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rademacher and the minimum argument handle curvature zeros. The two curvature children give the almost-everywhere inequality; stability and integration by parts cancel only quantities whose integrability is established. HL is explicit and dischargeable, not a circular appeal."
+    },
+    {
+      "key": "hardy_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Homogeneity bounds curvature, dyadic estimates prove both integrability requirements, and radial cutoffs justify the limiting inequality. ε=1/10 gives positive coefficients for every allowed dimension. Density and continuity upgrade almost-everywhere vanishing to the exact tangential derivative conclusion."
+    }
+  ],
+  "required_changes": []
+}
