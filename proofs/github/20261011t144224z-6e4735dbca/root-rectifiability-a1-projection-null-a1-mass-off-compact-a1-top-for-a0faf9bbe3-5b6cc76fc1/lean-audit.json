@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "447acd18809df0a3b9a4dcb2fc4202afd38cc665ecab489b2659a5e2893a2d8c",
+  "git_delta": {
+    "base_commit": "556e75bd4df1f7fcd1940510cb0ada1b5fa27be5",
+    "candidate_commit": "c3b9daddd1ccd9ec4f05290c40aa433d993d3df6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_moc_abs_apply_top_form_le",
+    "diff_sha256": "e8f15f73e66dc649d0f2c10623a267f572c34ec40ffa9222772b32f0b9d1dd51",
+    "source_sha256": "7e511afc01fea92c6e2054064757ecc66483dd0d967f749bb0ab0d3fcc29fb5e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_moc_abs_apply_top_form_le",
+      "statement": "∀ (P m : ℕ) (U W K : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P)) (ξ : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ ξ → IsOpen W → W ⊆ U → IsCompact K → μ (W \\ K) ≠ ∞ → ∀ (L : Eucl P →L[ℝ] Eucl (m + 1)) (f : Eucl P → ℝ) (c c' : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → tsupport f ⊆ W → (∀ x, |f x| ≤ c) → (∀ᵐ x ∂μ, |ξ x (wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L))| ≤ c') → (∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ φ : TestFormOn U (m + 1), (∀ x, (φ : DifferentialForm (Eucl P) (m + 1)) x = (f x * a (L x)) • wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)) → |T φ| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))) → (∀ δ : ℝ, 0 < δ → ∃ b : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b ∧ HasCompactSupport b ∧ (∀ y, 0 ≤ b y ∧ b y ≤ 1) ∧ (∀ y ∈ L '' K, b y = 1) ∧ ((volume : Measure (Eucl (m + 1))) (tsupport b)).toReal ≤ δ) → ∀ ζ : TestFormOn U (m + 1), (∀ x, (ζ : DifferentialForm (Eucl P) (m + 1)) x = f x • wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)) → |T ζ| ≤ c * c' * (μ (W \\ K)).toReal",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
