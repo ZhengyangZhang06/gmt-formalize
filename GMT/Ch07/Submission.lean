@@ -451,6 +451,387 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Tube about the shifted dual skeleton** (Simon Ch. 6, proof of 5.1, the identity before
+display (6), inclusion `⊆`).  Let `L*(a)` be the set of `w` with `w_i − a_i ∈ ℤ` for at least
+`m + 2` indices `i`.  It contains `a`, so `infDist x L*(a) < r` gives `w ∈ L*(a)` with
+`|x − w| < r`.  Enumerate `m + 2` of the indices of `w` by `e`, and put
+`z_k = w_{e(k)} − a_{e(k)} ∈ ℤ`.  Then
+`Σ_k (x_{e(k)} − a_{e(k)} − z_k)² = Σ_k (x_{e(k)} − w_{e(k)})² ≤ |x − w|² < r²`. -/
+theorem Submission.cmcdt_gc_tube_cover : ∀ (P m : ℕ), m + 1 < P → ∀ (a x : Euclid P) (r : ℝ), infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r → ∃ e : Fin (m + 2) → Fin P, Function.Injective e ∧ ∃ z : Fin (m + 2) → ℤ, ∑ k, (x (e k) - a (e k) - z k) ^ 2 < r ^ 2 := by
+  classical
+  intro P m hPm a x r hx
+  set L := {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  -- Steps 1–2: `a ∈ L*(a)` (all `P ≥ m + 2` indices), so some `w ∈ L*(a)` has `|x − w| < r`
+  have hne : L.Nonempty := ⟨a, Finset.univ, by simp; omega, fun i _ => ⟨0, by simp⟩⟩
+  obtain ⟨w, ⟨s, hs, hsz⟩, hxw⟩ := (infDist_lt_iff hne).1 hx
+  -- Step 3: `m + 2` of the indices in `s`, enumerated injectively by `e`
+  obtain ⟨J, hJs, hJ⟩ := Finset.exists_subset_card_eq hs
+  let e : Fin (m + 2) → Fin P := fun k => J.orderEmbOfFin hJ k
+  have he : Function.Injective e := (J.orderEmbOfFin hJ).injective
+  have hes : ∀ k, e k ∈ s := fun k => hJs (J.orderEmbOfFin_mem hJ k)
+  -- Step 4: `z_k = w_{e(k)} − a_{e(k)} ∈ ℤ`
+  choose z hz using fun k => hsz (e k) (hes k)
+  refine ⟨e, he, z, ?_⟩
+  have hterm : ∀ k, x (e k) - a (e k) - z k = x (e k) - w (e k) := fun k => by
+    rw [← hz k]; ring
+  -- Step 5: the `m + 2` selected squares are among the `P` nonnegative squares
+  have hsub : ∑ k, (x (e k) - w (e k)) ^ 2 ≤ ∑ i, (x i - w i) ^ 2 := by
+    have := Finset.sum_map Finset.univ ⟨e, he⟩ (fun i => (x i - w i) ^ 2)
+    simp only [Function.Embedding.coeFn_mk] at this
+    rw [← this]
+    exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
+      fun i _ _ => sq_nonneg _
+  -- Step 6: `Σ_i (x_i − w_i)² = |x − w|²`
+  have hdist : ∑ i, (x i - w i) ^ 2 = dist x w ^ 2 := by
+    rw [EuclideanSpace.dist_eq, Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+    simp [Real.dist_eq, sq_abs]
+  have h0 : 0 ≤ dist x w := dist_nonneg
+  -- Step 7
+  calc ∑ k, (x (e k) - a (e k) - z k) ^ 2 = ∑ k, (x (e k) - w (e k)) ^ 2 := by
+        simp_rw [hterm]
+    _ ≤ ∑ i, (x i - w i) ^ 2 := hsub
+    _ = dist x w ^ 2 := hdist
+    _ < r ^ 2 := by nlinarith
+/-- **Simon, Ch. 6, proof of 5.1** ((1)–(4) and the summation after them: the bad set of centres
+is small).  Let `ρ` be a finite measure on `ℝᵈ` and `β > 0`.  Call a centre `g` of the open cube
+`(1/4, 3/4)ᵈ` bad if `β rᵈ ρ(ℝᵈ) < ρ(O_r(g))` for some `r ∈ (0, 1/4]`, where
+`O_r(g) = {y : |y − g − z| < r for some z ∈ ℤᵈ}` is the open `r`-neighbourhood of `g + ℤᵈ`.  Then
+the bad set has Lebesgue measure at most `10ᵈ/β`.  Vitali's covering lemma gives bad centres `b`
+with pairwise disjoint sup-metric balls `B(b, r_b)` such that the balls `B(b, 3r_b)` cover the bad
+set.  The sets `O_{r_b}(b)` are then pairwise disjoint as well, so `Σ_b β r_bᵈ ≤ 1`, and the
+bad set has measure at most `Σ_b (6r_b)ᵈ ≤ 6ᵈ/β`. -/
+theorem Submission.cmcdt_gc_bad_set_volume : ∀ (d : ℕ) (ρ : Measure (Fin d → ℝ)), IsFiniteMeasure ρ → ∀ β : ℝ, 0 < β → volume {g : Fin d → ℝ | (∀ k, |g k - 1 / 2| < 1 / 4) ∧ ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 4 ∧ ENNReal.ofReal (β * r ^ d) * ρ univ < ρ {y | ∃ z : Fin d → ℤ, ∑ k, (y k - g k - z k) ^ 2 < r ^ 2}} ≤ ENNReal.ofReal (10 ^ d / β) := by
+  classical
+  intro d ρ hρ β hβ
+  set O : (Fin d → ℝ) → ℝ → Set (Fin d → ℝ) := fun g r =>
+    {y | ∃ z : Fin d → ℤ, ∑ k, (y k - g k - z k) ^ 2 < r ^ 2} with hO
+  set Bad := {g : Fin d → ℝ | (∀ k, |g k - 1 / 2| < 1 / 4) ∧ ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 4 ∧
+    ENNReal.ofReal (β * r ^ d) * ρ univ < ρ (O g r)}
+  -- step 1: the periodic sets `O_r(g)` are open
+  have hOopen : ∀ g r, IsOpen (O g r) := by
+    intro g r
+    have : O g r = ⋃ z : Fin d → ℤ, {y | ∑ k, (y k - g k - z k) ^ 2 < r ^ 2} := by
+      ext y; simp [hO]
+    rw [this]
+    exact isOpen_iUnion fun z => isOpen_lt (by fun_prop) continuous_const
+  -- step 2: if `ρ(ℝᵈ) = 0` the bad set is empty
+  by_cases h0 : ρ univ = 0
+  · have : Bad = ∅ := by
+      ext g
+      simp only [mem_empty_iff_false, iff_false]
+      rintro ⟨-, r, -, -, hr⟩
+      rw [h0, mul_zero, measure_mono_null (subset_univ _) h0] at hr
+      exact lt_irrefl _ hr
+    rw [this, measure_empty]
+    exact bot_le
+  have hfin : ρ univ ≠ ∞ := measure_ne_top ρ univ
+  -- step 3: a radius `r_g` for every bad centre `g`
+  have hrad : ∀ g ∈ Bad, ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 4 ∧
+      ENNReal.ofReal (β * r ^ d) * ρ univ < ρ (O g r) := fun g hg => hg.2
+  choose! rad hrad0 hrad1 hradlt using hrad
+  -- step 4: Vitali's covering lemma for the balls `B(g, r_g)`, with `τ = 2`
+  obtain ⟨u, huBad, hudisj, hucov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
+    (fun g => ball g (rad g)) Bad rad 2 one_lt_two (fun g hg => (hrad0 g hg).le) (1 / 4) hrad1
+    (fun g hg => ⟨g, mem_ball_self (hrad0 g hg)⟩)
+  -- step 5: `u` is countable
+  have hucount : u.Countable := hudisj.countable_of_isOpen (fun _ _ => isOpen_ball)
+    (fun g hg => ⟨g, mem_ball_self (hrad0 g (huBad hg))⟩)
+  -- step 6: the balls `B(b, 3 r_b)`, `b ∈ u`, cover the bad set
+  have hBadsub : Bad ⊆ ⋃ b ∈ u, ball b (3 * rad b) := by
+    intro g hg
+    obtain ⟨b, hbu, ⟨y, hy1, hy2⟩, hle⟩ := hucov g hg
+    refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
+    rw [mem_ball] at hy1 hy2 ⊢
+    calc dist g b ≤ dist g y + dist y b := dist_triangle _ _ _
+      _ < rad g + rad b := by rw [dist_comm g y]; exact add_lt_add hy1 hy2
+      _ ≤ 3 * rad b := by linarith
+  -- step 7: the periodic sets `O_{r_b}(b)`, `b ∈ u`, are pairwise disjoint
+  have hcoord : ∀ (y g : Fin d → ℝ) (r : ℝ) (z : Fin d → ℤ),
+      ∑ k, (y k - g k - z k) ^ 2 < r ^ 2 → 0 < r → ∀ k, |y k - g k - z k| < r := by
+    intro y g r z h hr k
+    have hk : (y k - g k - z k) ^ 2 < r ^ 2 :=
+      lt_of_le_of_lt (Finset.single_le_sum (f := fun i => (y i - g i - z i) ^ 2)
+        (fun i _ => sq_nonneg _) (Finset.mem_univ k)) h
+    exact abs_lt_of_sq_lt_sq hk hr.le
+  have hOdisj : u.PairwiseDisjoint fun b => O b (rad b) := by
+    intro b hb b' hb' hne
+    rw [Function.onFun, Set.disjoint_left]
+    rintro y ⟨z, hz⟩ ⟨z', hz'⟩
+    have hb0 := hrad0 b (huBad hb)
+    have hb'0 := hrad0 b' (huBad hb')
+    have h1 := hcoord y b (rad b) z hz hb0
+    have h2 := hcoord y b' (rad b') z' hz' hb'0
+    have hr1 := hrad1 b (huBad hb)
+    have hr2 := hrad1 b' (huBad hb')
+    -- the centres lie in `(1/4, 3/4)ᵈ` and the radii are `≤ 1/4`, so the integer shifts agree
+    have hzz : z = z' := by
+      funext k
+      have a1 := abs_lt.1 (h1 k)
+      have a2 := abs_lt.1 (h2 k)
+      have a3 := abs_lt.1 ((huBad hb).1 k)
+      have a4 := abs_lt.1 ((huBad hb').1 k)
+      have c1 : (z k : ℝ) < z' k + 1 := by linarith
+      have c2 : (z' k : ℝ) < z k + 1 := by linarith
+      have c1' : z k < z' k + 1 := by exact_mod_cast c1
+      have c2' : z' k < z k + 1 := by exact_mod_cast c2
+      omega
+    subst hzz
+    -- then `y − z` lies in both balls `B(b, r_b)` and `B(b', r_{b'})`
+    have hv : (fun k => y k - z k) ∈ ball b (rad b) ∩ ball b' (rad b') := by
+      constructor
+      · rw [mem_ball, dist_pi_lt_iff hb0]
+        intro k
+        rw [Real.dist_eq]
+        have := h1 k
+        rwa [show y k - z k - b k = y k - b k - z k by ring]
+      · rw [mem_ball, dist_pi_lt_iff hb'0]
+        intro k
+        rw [Real.dist_eq]
+        have := h2 k
+        rwa [show y k - z k - b' k = y k - b' k - z k by ring]
+    exact (Set.disjoint_left.1 (hudisj hb hb' hne)) hv.1 hv.2
+  -- step 8: `S = Σ_{b ∈ u} β r_bᵈ ≤ 1`
+  set S : ℝ≥0∞ := ∑' b : u, ENNReal.ofReal (β * rad b ^ d)
+  have hSle : S ≤ 1 := by
+    have hsum : S * ρ univ ≤ 1 * ρ univ := by
+      calc S * ρ univ = ∑' b : u, ENNReal.ofReal (β * rad b ^ d) * ρ univ :=
+            (ENNReal.tsum_mul_right).symm
+        _ ≤ ∑' b : u, ρ (O b (rad b)) :=
+            ENNReal.tsum_le_tsum fun b => (hradlt b (huBad b.2)).le
+        _ = ρ (⋃ b ∈ u, O b (rad b)) :=
+            (measure_biUnion hucount hOdisj fun b _ => (hOopen _ _).measurableSet).symm
+        _ ≤ ρ univ := measure_mono (subset_univ _)
+        _ = 1 * ρ univ := (one_mul _).symm
+    exact (ENNReal.mul_le_mul_iff_left h0 hfin).1 hsum
+  -- step 9: the volume estimate
+  calc volume Bad ≤ volume (⋃ b ∈ u, ball b (3 * rad b)) := measure_mono hBadsub
+    _ ≤ ∑' b : u, volume (ball (b : Fin d → ℝ) (3 * rad b)) := measure_biUnion_le _ hucount _
+    _ = ∑' b : u, ENNReal.ofReal (6 ^ d / β) * ENNReal.ofReal (β * rad b ^ d) := by
+        refine tsum_congr fun b => ?_
+        have hb0 := hrad0 b (huBad b.2)
+        rw [Real.volume_pi_ball _ (by positivity), Fintype.card_fin,
+          ← ENNReal.ofReal_mul (by positivity)]
+        congr 1
+        field_simp
+        ring
+    _ = ENNReal.ofReal (6 ^ d / β) * S := ENNReal.tsum_mul_left
+    _ ≤ ENNReal.ofReal (6 ^ d / β) * 1 := by gcongr
+    _ ≤ ENNReal.ofReal (10 ^ d / β) := by
+        rw [mul_one]
+        apply ENNReal.ofReal_le_ofReal
+        gcongr
+        norm_num
+/-- **Simon, Ch. 6, proof of 5.1** ((5) and the choice of `a`, cube version).  If sets
+`E_e ⊆ ℝ^d`, one for each map `e : Fin d → Fin P`, have total Lebesgue outer measure
+`< (1/2)^P`, then some `a` in the open cube `(1/4, 3/4)^P` has `(a_{e(k)})_k ∉ E_e` for every
+injective `e`.  By Fubini over the coordinates in `range e` and the rest, the centres in the cube
+whose `e`-projection lies in `E_e` have volume `≤ L^d(E_e)`; the cube has volume `(1/2)^P`, so the
+union bound leaves a good centre. -/
+theorem Submission.cmcdt_gc_cube_selection : ∀ (P d : ℕ) (E : (Fin d → Fin P) → Set (Fin d → ℝ)), ∑ e, volume (E e) < ENNReal.ofReal ((1 / 2) ^ P) → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ e : Fin d → Fin P, Function.Injective e → (fun k => a (e k)) ∉ E e := by
+  classical
+  intro P d E hsum
+  -- Step 2 (Fubini): for injective `e`, the points of the cube whose `e`-projection lies in `F`
+  -- have volume at most `volume F`
+  have fubini : ∀ e : Fin d → Fin P, Function.Injective e → ∀ F : Set (Fin d → ℝ),
+      volume {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F} ≤
+        volume F := by
+    intro e he F
+    let p : Fin P → Prop := fun i => i ∈ range e
+    let Φ := MeasurableEquiv.piEquivPiSubtypeProd (fun _ : Fin P => ℝ) p
+    have hΦ : MeasurePreserving Φ := by
+      convert volume_preserving_piEquivPiSubtypeProd (fun _ : Fin P => ℝ) p
+    let σ : Fin d ≃ {i // p i} := Equiv.ofInjective e he
+    let ψ := (MeasurableEquiv.piCongrLeft (fun _ : {i // p i} => ℝ) σ).symm
+    have hψ : MeasurePreserving ψ :=
+      (volume_measurePreserving_piCongrLeft (fun _ : {i // p i} => ℝ) σ).symm _
+    have hψapp : ∀ u k, ψ u k = u (σ k) := by
+      intro u k
+      simp [ψ, MeasurableEquiv.piCongrLeft, Equiv.piCongrLeft_symm_apply]
+    let G : Set ({i // p i} → ℝ) := ψ ⁻¹' F
+    let H : Set ({i // ¬ p i} → ℝ) := Set.pi univ fun _ => Ioo (1 / 4 : ℝ) (3 / 4)
+    have hsub : {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F} ⊆
+        Φ ⁻¹' (G ×ˢ H) := by
+      rintro x ⟨hx1, hx2⟩
+      refine ⟨?_, fun i _ => hx1 i⟩
+      show ψ (fun i => x i) ∈ F
+      have : ψ (fun i : {i // p i} => x i) = fun k => x (e k) := by
+        funext k; rw [hψapp]; rfl
+      rw [this]; exact hx2
+    have hG : volume G = volume F := hψ.measure_preimage_equiv F
+    have hH : volume H ≤ 1 := by
+      rw [Real.volume_pi_Ioo]
+      refine Finset.prod_le_one fun i _ => ?_
+      rw [ENNReal.ofReal_le_one]; norm_num
+    calc volume {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F}
+        ≤ volume (Φ ⁻¹' (G ×ˢ H)) := measure_mono hsub
+      _ = volume (G ×ˢ H) := hΦ.measure_preimage_equiv _
+      _ = volume G * volume H := by
+          rw [Measure.volume_eq_prod]; exact Measure.prod_prod G H
+      _ ≤ volume G * 1 := by gcongr
+      _ = volume F := by rw [mul_one, hG]
+  have hI : ∀ t : ℝ, |t - 1 / 2| < 1 / 4 ↔ t ∈ Ioo (1 / 4 : ℝ) (3 / 4) := by
+    intro t
+    rw [abs_sub_lt_iff, mem_Ioo]
+    constructor <;> rintro ⟨h1, h2⟩ <;> constructor <;> linarith
+  -- Step 1: the open cube `Q` in `Euclid P` has volume `(1/2)^P`
+  let Q : Set (Euclid P) := {a | ∀ i, a i ∈ Ioo (1 / 4 : ℝ) (3 / 4)}
+  have hofLp : MeasurePreserving (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm :=
+    EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin P)
+  have hQ : volume Q = ENNReal.ofReal ((1 / 2) ^ P) := by
+    have : Q = (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm ⁻¹'
+        (Set.pi univ fun _ => Ioo (1 / 4 : ℝ) (3 / 4)) := by
+      ext a; simp [Q, Set.mem_pi]
+    rw [this, hofLp.measure_preimage_equiv, Real.volume_pi_Ioo, Finset.prod_const,
+      Finset.card_univ, Fintype.card_fin, ← ENNReal.ofReal_pow (by norm_num)]
+    norm_num
+  -- Step 3: the sets of centres with a bad projection
+  let A : (Fin d → Fin P) → Set (Euclid P) := fun e =>
+    {a | Function.Injective e ∧ a ∈ Q ∧ (fun k => a (e k)) ∈ E e}
+  have hA : ∀ e, volume (A e) ≤ volume (E e) := by
+    intro e
+    by_cases he : Function.Injective e
+    · have hsub : A e ⊆ (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm ⁻¹'
+          {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ E e} := by
+        rintro a ⟨-, haQ, haE⟩
+        exact ⟨haQ, haE⟩
+      calc volume (A e) ≤ _ := measure_mono hsub
+        _ = _ := hofLp.measure_preimage_equiv _
+        _ ≤ volume (E e) := fubini e he (E e)
+    · have : A e = ∅ := by
+        ext a; simp only [mem_empty_iff_false, iff_false]; exact fun h => he h.1
+      rw [this, measure_empty]; exact bot_le
+  -- Steps 4–5: union bound and choice of `a`
+  by_contra hcon
+  push Not at hcon
+  have hcov : Q ⊆ ⋃ e, A e := by
+    intro a haQ
+    obtain ⟨e, he, haE⟩ := hcon a fun i => (hI _).2 (haQ i)
+    exact mem_iUnion.2 ⟨e, he, haQ, haE⟩
+  have : volume Q < volume Q :=
+    calc volume Q ≤ volume (⋃ e, A e) := measure_mono hcov
+      _ ≤ ∑ e, volume (A e) := measure_iUnion_fintype_le _ _
+      _ ≤ ∑ e, volume (E e) := Finset.sum_le_sum fun e _ => hA e
+      _ < ENNReal.ofReal ((1 / 2) ^ P) := hsum
+      _ = volume Q := hQ.symm
+  exact lt_irrefl _ this
+
+/-- **Simon 6.5.1, proof, (1)–(7): a good centre for the shifted dual skeleton.**  For
+`m + 1 < P` there is `C = C(P, m)` such that any two finite measures `μ, μ'` on `ℝᴾ` have a common
+centre `a ∈ (1/4, 3/4)ᴾ` for which the `r`-tube about
+`L*(a) = {w : wᵢ − aᵢ ∈ ℤ for at least m + 2 indices i}` has `μ`-measure `≤ C r^{m+2} μ(ℝᴾ)` and
+`μ'`-measure `≤ C r^{m+2} μ'(ℝᴾ)` for every `r ∈ (0, 1/4]`.  Put `d = m + 2`,
+`K = #(Fin d → Fin P)`, `β = 2K·10ᵈ·2ᴾ + 1` and `prj_e x = (x_{e k})_k`.  The bad centres `E_e` of
+the image measures `prj_e#μ`, `prj_e#μ'` have volume `≤ 2·10ᵈ/β` (`cmcdt_gc_bad_set_volume`), so
+`Σ_e |E_e| ≤ 2K·10ᵈ/β < (1/2)ᴾ` and `cmcdt_gc_cube_selection` gives `a` with `prj_e a ∉ E_e` for
+every injective `e`.  The tube lies in `⋃_e prj_e⁻¹(O_r(prj_e a))` (`cmcdt_gc_tube_cover`), where
+`O_r(g)` is the union of the balls `B_r(g + z)`, `z ∈ ℤᵈ`; each piece has `ν`-measure
+`≤ β rᵈ ν(ℝᴾ)` because `prj_e a` is not bad for `prj_e#ν`, hence `C = Kβ`. -/
+theorem Submission.cmcdt_good_center : ∀ (P m : ℕ), m + 1 < P → ∃ C : NNReal, ∀ μ μ' : Measure (Euclid P), IsFiniteMeasure μ → IsFiniteMeasure μ' → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ r : ℝ, 0 < r → r ≤ 1 / 4 → μ {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * μ univ ∧ μ' {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * μ' univ := by
+  classical
+  intro P m hPm
+  -- the constants `K = #(Fin (m + 2) → Fin P)`, `β = 2K·10^{m+2}·2ᴾ + 1` and `C = Kβ`
+  set K : ℕ := Fintype.card (Fin (m + 2) → Fin P) with hK
+  set β : ℝ := 2 * K * 10 ^ (m + 2) * 2 ^ P + 1 with hβ
+  have hβpos : 0 < β := by positivity
+  refine ⟨Real.toNNReal (K * β), ?_⟩
+  intro μ μ' hμ hμ'
+  -- the coordinate projections `prj_e x = (x_{e k})_k`
+  let prj : (Fin (m + 2) → Fin P) → Euclid P → (Fin (m + 2) → ℝ) := fun e x k => x (e k)
+  have hprj : ∀ e, Measurable (prj e) := fun e =>
+    (continuous_pi fun k => PiLp.continuous_apply 2 (fun _ : Fin P => ℝ) (e k)).measurable
+  -- the bad centres `g ∈ (1/4, 3/4)^{m+2}` of `ρ`: `ρ(O_r(g)) > β r^{m+2} ρ(ℝ^{m+2})` for some
+  -- `r ∈ (0, 1/4]`
+  let Bad : Measure (Fin (m + 2) → ℝ) → Set (Fin (m + 2) → ℝ) := fun ρ =>
+    {g | (∀ k, |g k - 1 / 2| < 1 / 4) ∧ ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 4 ∧
+      ENNReal.ofReal (β * r ^ (m + 2)) * ρ univ <
+        ρ {y | ∃ z : Fin (m + 2) → ℤ, ∑ k, (y k - g k - z k) ^ 2 < r ^ 2}}
+  let E : (Fin (m + 2) → Fin P) → Set (Fin (m + 2) → ℝ) := fun e =>
+    Bad (μ.map (prj e)) ∪ Bad (μ'.map (prj e))
+  have hE : ∀ e, volume (E e) ≤ 2 * ENNReal.ofReal (10 ^ (m + 2) / β) := by
+    intro e
+    calc volume (E e) ≤ volume (Bad (μ.map (prj e))) + volume (Bad (μ'.map (prj e))) :=
+          measure_union_le _ _
+      _ ≤ ENNReal.ofReal (10 ^ (m + 2) / β) + ENNReal.ofReal (10 ^ (m + 2) / β) :=
+          add_le_add (Submission.cmcdt_gc_bad_set_volume (m + 2) _ inferInstance β hβpos)
+            (Submission.cmcdt_gc_bad_set_volume (m + 2) _ inferInstance β hβpos)
+      _ = 2 * ENNReal.ofReal (10 ^ (m + 2) / β) := (two_mul _).symm
+  -- so the bad sets have total volume `≤ 2K·10^{m+2}/β < (1/2)ᴾ`
+  have hsum : ∑ e, volume (E e) < ENNReal.ofReal ((1 / 2) ^ P) := by
+    calc ∑ e, volume (E e) ≤ ∑ _e : Fin (m + 2) → Fin P, 2 * ENNReal.ofReal (10 ^ (m + 2) / β) :=
+          Finset.sum_le_sum fun e _ => hE e
+      _ = ENNReal.ofReal (2 * K * 10 ^ (m + 2) / β) := by
+          rw [Finset.sum_const, Finset.card_univ, ← hK, nsmul_eq_mul,
+            show (2 : ℝ≥0∞) = ENNReal.ofReal 2 by simp, ← ENNReal.ofReal_natCast,
+            ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          ring
+      _ < ENNReal.ofReal ((1 / 2) ^ P) := by
+          rw [ENNReal.ofReal_lt_ofReal_iff (by positivity), div_lt_iff₀ hβpos, hβ]
+          have h2 : ((1 : ℝ) / 2) ^ P * 2 ^ P = 1 := by
+            rw [← mul_pow]; norm_num
+          have h3 : (0 : ℝ) < (1 / 2) ^ P := by positivity
+          have h4 : ((1 : ℝ) / 2) ^ P * (2 * K * 10 ^ (m + 2) * 2 ^ P + 1) =
+              2 * K * 10 ^ (m + 2) * ((1 / 2) ^ P * 2 ^ P) + (1 / 2) ^ P := by ring
+          rw [h4, h2]
+          linarith
+  -- a centre `a ∈ (1/4, 3/4)ᴾ` none of whose projections `prj_e a` (`e` injective) is bad
+  obtain ⟨a, ha, hgood⟩ := Submission.cmcdt_gc_cube_selection P (m + 2) E hsum
+  refine ⟨a, ha, ?_⟩
+  intro r hr0 hr1
+  have key : ∀ ν : Measure (Euclid P),
+      (∀ e : Fin (m + 2) → Fin P, Function.Injective e → prj e a ∉ Bad (ν.map (prj e))) →
+      ν {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+        ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤
+        (Real.toNNReal (K * β) : ℝ≥0∞) * ENNReal.ofReal (r ^ (m + 2)) * ν univ := by
+    intro ν hνgood
+    -- the periodic unions of balls `O_e = O_r(prj_e a)` and the pieces `T_e = prj_e⁻¹(O_e)`
+    -- (`e` injective) of the tube
+    let O : (Fin (m + 2) → Fin P) → Set (Fin (m + 2) → ℝ) := fun e =>
+      {y | ∃ z : Fin (m + 2) → ℤ, ∑ k, (y k - prj e a k - z k) ^ 2 < r ^ 2}
+    let T : (Fin (m + 2) → Fin P) → Set (Euclid P) := fun e =>
+      {x | Function.Injective e ∧ prj e x ∈ O e}
+    have hcover : {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+        ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ⊆ ⋃ e, T e := by
+      intro x hx
+      obtain ⟨e, he, z, hz⟩ := Submission.cmcdt_gc_tube_cover P m hPm a x r hx
+      exact mem_iUnion.2 ⟨e, he, z, hz⟩
+    -- `ν(T_e) ≤ prj_e#ν(O_e) ≤ β r^{m+2} ν(ℝᴾ)`, since `prj_e a` is not bad for `prj_e#ν`
+    have hT : ∀ e, ν (T e) ≤ ENNReal.ofReal (β * r ^ (m + 2)) * ν univ := by
+      intro e
+      by_cases he : Function.Injective e
+      · have hsub : T e ⊆ prj e ⁻¹' O e := fun x hx => hx.2
+        have hcube : ∀ k, |prj e a k - 1 / 2| < 1 / 4 := fun k => ha (e k)
+        have hle : (ν.map (prj e)) (O e) ≤
+            ENNReal.ofReal (β * r ^ (m + 2)) * (ν.map (prj e)) univ := by
+          by_contra hlt
+          exact hνgood e he ⟨hcube, r, hr0, hr1, not_le.1 hlt⟩
+        calc ν (T e) ≤ ν (prj e ⁻¹' O e) := measure_mono hsub
+          _ ≤ (ν.map (prj e)) (O e) := Measure.le_map_apply (hprj e).aemeasurable _
+          _ ≤ ENNReal.ofReal (β * r ^ (m + 2)) * (ν.map (prj e)) univ := hle
+          _ = ENNReal.ofReal (β * r ^ (m + 2)) * ν univ := by
+              rw [Measure.map_apply (hprj e) MeasurableSet.univ, preimage_univ]
+      · have : T e = ∅ := by
+          ext x
+          simp only [mem_empty_iff_false, iff_false]
+          exact fun hx => he hx.1
+        rw [this, measure_empty]
+        exact bot_le
+    -- finite subadditivity over the `K` maps `e`
+    calc ν {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+          ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ ν (⋃ e, T e) := measure_mono hcover
+      _ ≤ ∑ e, ν (T e) := measure_iUnion_fintype_le ν T
+      _ ≤ ∑ _e : Fin (m + 2) → Fin P, ENNReal.ofReal (β * r ^ (m + 2)) * ν univ :=
+          Finset.sum_le_sum fun e _ => hT e
+      _ = (Real.toNNReal (K * β) : ℝ≥0∞) * ENNReal.ofReal (r ^ (m + 2)) * ν univ := by
+          rw [Finset.sum_const, Finset.card_univ, ← hK, nsmul_eq_mul, ← mul_assoc]
+          congr 1
+          rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (by positivity),
+            show ((Real.toNNReal (K * β) : ℝ≥0∞)) = ENNReal.ofReal (K * β) from rfl,
+            ← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          ring
+  exact ⟨key μ fun e he h => hgood e he (Or.inl h), key μ' fun e he h => hgood e he (Or.inr h)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
