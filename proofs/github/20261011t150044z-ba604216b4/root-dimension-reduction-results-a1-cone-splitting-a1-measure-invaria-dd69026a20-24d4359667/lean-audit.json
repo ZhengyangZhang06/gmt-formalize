@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1e944deed693a56297ca88e17dd0cd9208c8ebc53a845a54e42127ccff19614f",
+  "git_delta": {
+    "base_commit": "a4985b8f096fbe795a55747ca612d1cd13796ce7",
+    "candidate_commit": "d408abab7ae076a849c6684f554429c6f150613c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_mi_withDensity_translate",
+    "diff_sha256": "c1e286e0f2d975e73e8a80d4c1b5c1c2b1cca5c9b6ffccd57923f31f279ad606",
+    "source_sha256": "de62cd4cb24f202f1fb71a807685f8a91cb279ebdbe543556f96afcb650bf799",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_mi_withDensity_translate",
+      "statement": "∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (y : Euclid P), (∀ x : Euclid P, f (y + x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => y + x) ⁻¹' A) = (μHE[n] : Measure (Euclid P)).withDensity f A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
