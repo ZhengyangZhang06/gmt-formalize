@@ -673,6 +673,7 @@ theorem rsod_approxTangent_transfer : ∀ (n ℓ : ℕ) (C N D : Set (Amb n ℓ)
       (hint _ ((measure_mono sdiff_subset).trans_lt hS)) (hint _ ((measure_mono hDS).trans_lt hS))
   -- Step 7: the identity `(∗)`.
   rw [hCV C, hCV N, hCV (N \ D), hCV (C \ D), hsplit C hDC hC, hsplit N hDN hN]
+  ring
 /-- **Ball-mass bound at an approximate tangent plane** (Simon Ch. 3, Remark 1.5(3)).  If
 `Hⁿ(C) < ∞` and `T_x C = P`, then for each `R > 0` the ratios `r⁻ⁿ Hⁿ(C ∩ B_{rR}(x))` are
 eventually bounded as `r ↓ 0`: test Definition 1.4 against a cutoff `g ∈ C_c` with `0 ≤ g ≤ 1`
