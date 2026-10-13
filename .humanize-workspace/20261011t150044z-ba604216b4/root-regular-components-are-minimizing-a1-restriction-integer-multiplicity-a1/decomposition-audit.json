@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep\\.|def IsIntegerMultiplicity|def CompactlyContained",
+        "CountablyRectifiable.mono|def CountablyRectifiable|def HasApproximateTangentSpaceAt",
+        "abbrev Covector|abbrev DifferentialForm|def IsTestForm|def TestFormOn|abbrev TestFormOn|structure GeometricCurrentOn|instance.*CoeFun",
+        "bounded_above_of_compact_support",
+        "bounded_above_of_compact_support|theorem le_opNorm|theorem withDensity_add_left|theorem withDensity_indicator|theorem setIntegral_indicator|theorem setLIntegral_mono|theorem CountablyRectifiable.mono",
+        "regcomp_rim_action_integrable|regcomp_rim_sub_imrep|regcomp_rim_imrep_split",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/rim-independent-audit-w8adrsn3/Review.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-restriction-integer-multiplicity-a1/parent-child-handoff.json",
+        "/tmp/regcomp-rim-scratch/Scratch/Children.lean",
+        "/tmp/regcomp-rim-scratch/Scratch/Full.lean",
+        "/tmp/rim-independent-audit-w8adrsn3/Review.lean"
+      ],
+      "conclusion": "The split is appropriate. The pinned contract matches the compilation context; inspected library sources match the pinned versions. All three frozen propositions independently elaborate before their implementations, and the supplied child proofs compile with only propext, Classical.choice and Quot.sound. Independently compiling the supplied parent assembly with the two exact sibling contracts as explicit assumptions also succeeds with only those standard axioms. It establishes both integer-multiplicity conclusions, mass additivity and local finiteness for the selected parent. Dependencies are correctly directed and acyclic. All proposed names are bare identifiers, with no DAG reservations or existing project declarations found. Public consistency check: the representation and mass integral agree with [Ambrosio, Definitions 1.1–1.3](https://www.math.stonybrook.edu/~bishop/classes/math638.F20/Ambrosio_Reg_Min_Currents.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "action_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the stated IMRep and test-form hypotheses. The proof establishes continuous-evaluation measurability, the orientation norm bound, an integrable compact-support dominator, and the required almost-everywhere domination. It covers n = 0 and arbitrary U without additional assumptions or circular reliance."
+    },
+    {
+      "key": "sub_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated restriction, multiplicity and tangent-inheritance hypothesis. The proof verifies every IMRep field, including local integrability and restricted orientation measurability, then transfers the approximate tangent using the explicit hypothesis. The parent discharges that hypothesis through its declared locality dependency."
+    },
+    {
+      "key": "imrep_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the carrier inclusions, orientation equalities, multiplicity identity and both additive conclusions. Indicator casts and withDensity identities justify measure additivity. The declared action_integrable dependency supplies integrability before integral_add; indicator restriction then proves action additivity. Overlapping carriers require no extra assumption."
+    }
+  ],
+  "required_changes": []
+}
