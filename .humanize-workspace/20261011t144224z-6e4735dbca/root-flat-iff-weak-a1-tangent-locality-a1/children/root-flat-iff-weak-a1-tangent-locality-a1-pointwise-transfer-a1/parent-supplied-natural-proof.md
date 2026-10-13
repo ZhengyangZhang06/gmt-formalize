@@ -1,0 +1,105 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.tangent_locality-a1`
+- Child DAG node: `root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 4(iii)–(iv) of the parent-supplied proof. The three error terms there are bundled into the single function h := 1_{M₂}θ₂ − c·1_{M₁}θ₁, whose smallness is hypothesis (iv). Notation: H := μHE[n], η_r := blowUpMap x r, t⁺ := ENNReal.ofReal t, and I_i(r) := ∫_{η_r(M_i)} f(y)·θ_i(x + r•y) dH(y) for i = 1, 2.
+
+1. Fix Q with HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q. Its first component, finrank Q = n, is the first component of the goal. Fix f ∈ C_c(ℝ^P, ℝ). We must show I₂(r) → θ₂(x)·∫_Q f dH as r → 0⁺.
+
+2. Growth. Apply the sibling lemma fiw_tl_growth_bound to M₁, θ₁, x, ρ, Q, using (i), (ii) and null-measurability of M₁. This gives C₀ ∈ ℝ with ∫⁻_{M₁∩B̄_s(x)} θ₁⁺ dH ≤ (C₀sⁿ)⁺ for all sufficiently small s > 0. Put C₁ := max(C₀, 0).
+
+3. Bounds on f. There is R > 0 with f(y) = 0 whenever R ≤ ‖y‖ (HasCompactSupport.exists_pos_le_norm). There is K ≥ 0 with |f(y)| ≤ K for all y (Continuous.bounded_above_of_compact_support). For r > 0, ‖η_r(z)‖ = ‖z − x‖/r, so f(η_r(z)) = 0 whenever R·r ≤ ‖z − x‖.
+
+4. Representation. Let r > 0 and i ∈ {1, 2}. Apply fiw_tl_blowup_setIntegral with S = M_i and g(y) = f(y)θ_i(x + r•y), and use x + r•η_r(z) = z. This gives I_i(r) = r^{−n}·∫_{M_i} f(η_r z)θ_i(z) dH(z). Since M_i is null-measurable (integral_indicator₀) and by indicator_mul_right, this equals r^{−n}·∫ G_i dH with G_i(z) := f(η_r(z))·(1_{M_i}θ_i)(z).
+
+5. Integrability. Let 0 < r with R·r < ρ. If z ∉ B̄_ρ(x), then ‖z − x‖ > ρ > R·r, so f(η_r(z)) = 0. Hence G_i(z) = f(η_r(z))·(1_{M_i ∩ B̄_ρ(x)}θ_i)(z) for all z. The function 1_{M_i∩B̄_ρ(x)}θ_i is H-integrable by (ii) (IntegrableOn.integrable_indicator₀ on the null-measurable set). The factor f∘η_r is continuous and bounded by K. So G_i is H-integrable (Integrable.bdd_mul).
+
+6. Key estimate. Put h := 1_{M₂}θ₂ − c·1_{M₁}θ₁. For 0 < r with R·r < ρ, steps 4–5 and linearity (integral_sub, integral_const_mul) give I₂(r) − c·I₁(r) = r^{−n}·∫ f(η_r(z))·h(z) dH(z). Hence, in [0, ∞]:
+‖I₂(r) − c·I₁(r)‖ₑ ≤ (r^{−n})⁺·∫⁻ ‖f(η_r z)·h(z)‖ₑ dH(z), by enorm_integral_le_lintegral_enorm;
+≤ (r^{−n})⁺·K⁺·∫⁻_{B̄_{Rr}(x)} ‖h‖ₑ dH.
+For the last inequality: on B̄_{Rr}(x) bound |f(η_r z)| ≤ K; off it f(η_r(z)) = 0 by step 3; then use lintegral_indicator for the closed ball and lintegral_const_mul'.
+
+7. The difference tends to 0. Let ε > 0 and put ε' := ε / (2(K·C₁·Rⁿ + 1)) > 0. As r → 0⁺ we have s = R·r → 0⁺, since R > 0: r ↦ R·r maps 𝓝[>] 0 into 𝓝[>] 0 (tendsto_nhdsWithin_iff). So for all sufficiently small r > 0, hypothesis (iv) with ε' and step 2 both hold at s = R·r; also R·r < ρ. For such r:
+∫⁻_{B̄_{Rr}(x)} ‖h‖ₑ dH ≤ ε'⁺·(C₀(Rr)ⁿ)⁺ ≤ (ε'·C₁·Rⁿ·rⁿ)⁺.
+By step 6, |I₂(r) − c·I₁(r)| ≤ r^{−n}·K·ε'·C₁·Rⁿ·rⁿ = K·C₁·Rⁿ·ε' < ε, after converting with ofReal_norm and ENNReal.ofReal_le_ofReal_iff. Thus I₂(r) − c·I₁(r) → 0 as r → 0⁺ (Metric.tendsto_nhds).
+
+8. By the hypothesis on (M₁, θ₁), I₁(r) → θ₁(x)·∫_Q f dH. So c·I₁(r) → c·θ₁(x)·∫_Q f dH = θ₂(x)·∫_Q f dH, by (iii). Adding the limit of step 7, I₂(r) = (I₂(r) − c·I₁(r)) + c·I₁(r) → θ₂(x)·∫_Q f dH.
+
+9. f was arbitrary and finrank Q = n, so HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q. ∎
+
+## Key steps
+
+1. finrank Q = n is inherited; fix f ∈ C_c with f = 0 off B_R(0) and |f| ≤ K.
+2. fiw_tl_growth_bound gives ∫⁻_{M₁∩B̄_s(x)} θ₁⁺ ≤ (C₀sⁿ)⁺ for small s.
+3. fiw_tl_blowup_setIntegral and integral_indicator₀ give I_i(r) = r^{−n}∫ f(η_r z)(1_{M_i}θ_i)(z) dH, with integrable integrands once R r < ρ.
+4. |I₂(r) − cI₁(r)| ≤ r^{−n}K∫⁻_{B̄_{Rr}(x)}|1_{M₂}θ₂ − c1_{M₁}θ₁| dH.
+5. With s = Rr, the L¹-closeness hypothesis and the growth bound give |I₂ − cI₁| ≤ K C₁ Rⁿ ε' → 0.
+6. cI₁(r) → cθ₁(x)∫_Q f = θ₂(x)∫_Q f, hence I₂(r) → θ₂(x)∫_Q f.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `grep -n 'blowUpMap\|HasWeightedApproximateTangentSpaceAt\|^import\|^namespace\|^open' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'μHE\|theorem\|lemma\|def \|notation' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_smul₀, Isometry.euclideanHausdorffMeasure_image, IsometryEquiv.measurePreserving_euclideanHausdorffMeasure)`
+- `grep -n -A6 'theorem ae_tendsto_measure_inter_div\b\|theorem tendsto_filterAt\|protected def vitaliFamily' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\b' mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `grep -rn 'theorem ae_restrict_biUnion_iff\|theorem isOpen_iUnion_countable\|withDensity_apply'\|withDensity_absolutelyContinuous'\|setLIntegral_withDensity_eq_lintegral_mul₀\|lintegral_withDensity_eq_lintegral_mul₀\|of_ae_diff_eq_zero\|theorem integral_smul_measure\|theorem integral_map' mathlib/Mathlib`
+- `python3 -I scan of dag.json (220 nodes) and nodes/*/decomposition-v*.json (223 files) for fiw_tl_blowup_setIntegral|fiw_tl_growth_bound|fiw_tl_transfer|fiw_tl_ae_l1_density and for related blow/tangent/growth/transfer/density lean_names`
+- `for r in $(git for-each-ref): git grep -E 'fiw_tl_(blowup_setIntegral|growth_bound|transfer|ae_l1_density)' $r -- '*.lean' (626 refs, no match)`
+- `git archive d8d46c9587747dee0751a1f780fcafdba16a3886 | tar -x -C /tmp/fiw_tl_a3_wb2ctk; LEAN_PATH=... lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean (exit 0)`
+- `python3 -I /tmp/fiw_tl_a3_scripts/gen.py: lean_contract.validate_lean_statement + gmt-compare.py child_modules(mode='contract') for the 4 child types and the frozen parent; lean Cmp/*_Challenge.lean (5 files, exit 0)`
+- `lean Audit/Assembly.lean (#print axioms FiwTlAudit.assembly_exact: [propext, Classical.choice, Quot.sound])`
+- `lean Audit/Names.lean, Audit/Names2.lean, Audit/Names3.lean (#check of every lemma cited in the child proofs; 0 errors)`
+- `read nodes/root-flat-iff-weak-a1-tangent-locality-a1/{parent-child-handoff,decomposition-v1,decomposition-v2,decomposition-audit-v1,decomposition-audit-v2,decomposition-review-receipt-v2}.json and issue-workers.json entries for issue 809`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/decomposition-audit-v2.json`
+- `/tmp/fiw_tl_a3_wb2ctk/Cmp/fiw_tangent_locality_Challenge.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Cmp/fiw_tl_transfer_Challenge.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Cmp/fiw_tl_ae_l1_density_Challenge.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Audit/Assembly.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Audit/Names.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Audit/Names3.lean`
+
+The snapshot is project d8d46c9587747dee0751a1f780fcafdba16a3886 with Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Contract.lean and Submission.lean are byte-identical at that commit.
+
+SimonGMT Chapter03 defines blowUpMap x r y = r⁻¹ • (y − x) and HasWeightedApproximateTangentSpaceAt as finrank Q = n together with convergence, for every f ∈ C_c, of ∫_{blowUpMap x r '' M} f(y)·θ(x + r•y) dμHE[n] to θ(x)·∫_Q f dμHE[n] as r → 0⁺. These definitions match the supplied proof.
+
+Mathlib supplies every tool the children use:
+- euclideanHausdorffMeasure_smul₀ (arbitrary sets) and Isometry.euclideanHausdorffMeasure_image;
+- MeasurableEmbedding.integral_map and integral_smul_measure;
+- Besicovitch.ae_tendsto_measure_inter_div, Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;
+- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (LocallyIntegrable);
+- withDensity_absolutelyContinuous', withDensity_apply₀ and setLIntegral_withDensity_eq_lintegral_mul₀;
+- ae_restrict_biUnion_iff and TopologicalSpace.isOpen_iUnion_countable;
+- ENNReal.div_lt_iff and ENNReal.lt_div_iff_mul_lt, with the side conditions used.
+
+There is no reusable accepted declaration. SimonGMT's Chapter04 blow-up lemmas are outside the frozen import closure. lpf_wtc_blowup_setIntegral_image is only alpha-equivalent to fiw_tl_blowup_setIntegral, belongs to another branch and is not accepted (rlcr-lean).
+
+The fiw_tl_* names are reserved nowhere else: not in the DAG, not in other decompositions, not in any of the 626 git refs.
+
+In a fresh build of the frozen commit, all four child types and the parent type elaborate in the comparator's exact challenge layout. FiwTlAudit.assembly_exact derives the byte-exact frozen parent type from the verbatim fiw_tl_transfer and fiw_tl_ae_l1_density types, using only propext, Classical.choice and Quot.sound.
