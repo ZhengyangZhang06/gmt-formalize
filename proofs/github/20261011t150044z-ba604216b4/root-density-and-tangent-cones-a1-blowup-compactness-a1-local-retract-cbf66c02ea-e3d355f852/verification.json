@@ -1,0 +1,15 @@
+{
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.local_inverse-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5067",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "349a0378e821d9b7d2c594e64d499b488449c145",
+  "integrated_commit": "",
+  "proof_base_commit": "dd25541de271cfdc4595e994cae7753e92841c6f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+  "requires": []
+}

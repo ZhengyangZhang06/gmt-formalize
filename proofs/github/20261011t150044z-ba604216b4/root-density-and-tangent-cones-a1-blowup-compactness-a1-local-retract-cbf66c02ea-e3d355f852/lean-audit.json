@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5993f72acd588429a2acad1179e44d8bf60ee76bbdc6eb8c1a824544aa9eac00",
+  "git_delta": {
+    "base_commit": "dd25541de271cfdc4595e994cae7753e92841c6f",
+    "candidate_commit": "349a0378e821d9b7d2c594e64d499b488449c145",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lr_local_inverse",
+    "diff_sha256": "4dcca0ea41fbda9bb0d73cceeeb8fd0683b342d20dd8062bf96ec97e189a6a14",
+    "source_sha256": "fc26dc4682aa5b2c1624ce101c1be8fc7595ca2816790fdd4d76d7617c7ba803",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lr_local_inverse",
+      "statement": "∀ (d : ℕ) (h : Euclid d → Euclid d) (V : Set (Euclid d)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 h V → fderiv ℝ h v₀ = ContinuousLinearMap.id ℝ (Euclid d) → ∃ (V₀ O : Set (Euclid d)) (k : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ V₀ ⊆ V ∧ v₀ ∈ V₀ ∧ MapsTo h V₀ O ∧ MapsTo k O V₀ ∧ (∀ v ∈ V₀, k (h v) = v) ∧ (∀ u ∈ O, h (k u) = u) ∧ ContDiffOn ℝ 1 k O ∧ fderiv ℝ k (h v₀) = ContinuousLinearMap.id ℝ (Euclid d)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
