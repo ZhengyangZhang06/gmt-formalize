@@ -762,6 +762,142 @@ theorem rsod_exists_localized_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
     exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (lt_of_le_of_lt
       (lintegral_mono' (Measure.restrict_mono subset_rfl Measure.restrict_le_self) le_rfl)
       (hL K hK (hKB.trans hBU)))
+/-- Pythagorean identity for graph points: `|(x, y)|² = |x|² + |y|²` for the point
+`(x, y) ∈ ℝⁿ × ℝ^ℓ = ℝ^{n+ℓ}`.  Expand the three squared Euclidean norms as sums of squared
+coordinates (`EuclideanSpace.real_norm_sq_eq`), split the sum over `Fin (n + ℓ)` into the indices
+`Fin.castAdd ℓ j` and `Fin.natAdd n k` (`Fin.sum_univ_add`), and read off the coordinates `x j`,
+resp. `y k`, of `graphPoint x y` there (`Fin.append_left`/`Fin.append_right`). -/
+theorem rsod_norm_graphPoint_sq : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+  intro n ℓ x y
+  rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+    EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+  simp [graphPoint]
+/-- The graph point `(x, y) ∈ ℝ^{n+ℓ}` is the inverse image of `(x, y)` under Mathlib's canonical
+equivalence `EuclideanSpace.finAddEquivProd : ℝ^{n+ℓ} ≃L[ℝ] ℝⁿ × ℝ^ℓ` (reindexing by
+`finSumFinEquiv.symm`, then splitting into the `Sum.inl`/`Sum.inr` parts).  Compare coordinates:
+every index of `Fin (n + ℓ)` is `Fin.castAdd ℓ j` or `Fin.natAdd n k` (`Fin.addCases`); there both
+sides equal `x j`, resp. `y k` (`Fin.append_left`/`Fin.append_right` on the left,
+`finSumFinEquiv_symm_apply_castAdd`/`finSumFinEquiv_symm_apply_natAdd` on the right). -/
+theorem rsod_graphPoint_eq_finAddEquivProd_symm : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    graphPoint x y = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (x, y) := by
+  intro n ℓ x y
+  ext i
+  refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+  · simp [graphPoint]
+  · simp [graphPoint]
+
+/-- The rotated, translated graph chart `φ x = q (graphPoint x (u x)) + x₀` of a map `u` that is
+`C¹` on an open set `Ω ⊆ ℝⁿ` is injective on all of `ℝⁿ`, `C¹` on `Ω`, and has injective
+derivative at every point of `Ω`.  By `rsod_graphPoint_eq_finAddEquivProd_symm`,
+`φ x = A (x, u x) + x₀` for the injective continuous linear map `A = q ∘ E.symm`,
+`E = EuclideanSpace.finAddEquivProd`.  Hence `φ x = φ x'` forces `(x, u x) = (x', u x')`; `φ` is
+`C¹` on `Ω` as `A` after the `C¹` map `x ↦ (x, u x)`, plus a constant; and at `x ∈ Ω` (a
+neighbourhood of `x`, so `u` is differentiable there) the chain rule gives
+`Dφ(x) v = A (v, Du(x) v)`, which determines `v` since `A` is injective. -/
+theorem rsod_graphChart_injective_contDiffOn_fderiv_injective : ∀ {n ℓ : ℕ}
+    (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (Ω : Set (Rn n)), IsOpen Ω →
+    ContDiffOn ℝ 1 u Ω → Function.Injective (fun x => q (graphPoint x (u x)) + x₀) ∧
+      ContDiffOn ℝ 1 (fun x => q (graphPoint x (u x)) + x₀) Ω ∧
+      ∀ x ∈ Ω, Function.Injective (fderiv ℝ (fun x => q (graphPoint x (u x)) + x₀) x) := by
+  intro n ℓ q u x₀ Ω hΩ hu
+  let E : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ := EuclideanSpace.finAddEquivProd
+  let A : Rn n × Rn ℓ →L[ℝ] Amb n ℓ := (q : Amb n ℓ →L[ℝ] Amb n ℓ).comp (E.symm : _ →L[ℝ] _)
+  have hA : Function.Injective A := q.injective.comp E.symm.injective
+  have hφ : (fun x => q (graphPoint x (u x)) + x₀) = fun x => A (x, u x) + x₀ := by
+    funext x
+    simp [A, E, rsod_graphPoint_eq_finAddEquivProd_symm]
+  rw [hφ]
+  refine ⟨fun x x' h => (Prod.ext_iff.mp (hA (add_right_cancel h))).1,
+    (A.contDiff.comp_contDiffOn (contDiffOn_id.prodMk hu)).add contDiffOn_const, fun x hx => ?_⟩
+  have hux : HasFDerivAt u (fderiv ℝ u x) x :=
+    ((hu.contDiffAt (hΩ.mem_nhds hx)).differentiableAt one_ne_zero).hasFDerivAt
+  have hφx : HasFDerivAt (fun x => A (x, u x) + x₀)
+      (A.comp ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ u x))) x :=
+    (A.hasFDerivAt.comp x ((hasFDerivAt_id x).prodMk hux)).add_const x₀
+  rw [hφx.fderiv]
+  exact fun v w h => (Prod.ext_iff.mp (hA h)).1
+/-- Fact (Gr) in the proof of Simon Ch. 5, Corollary 7.3, for the Ch. 2 §4 notion of a `C¹`
+submanifold: if `u` is `C¹` on the closed ball `Bⁿ_s(0)` and `{y : y + x₀ ∈ S}` agrees with
+`q(graph u)` in `B_s(0)`, then `B̆_s(x₀) ∩ S` is an `n`-dimensional `C¹` submanifold.  A single
+chart `φ(x) = q(x, u(x)) + x₀` on `Ω = B̆ⁿ_s(0) ∩ φ⁻¹(B̆_s(x₀))` serves every point, because
+`|x| ≤ |(x, u(x))| = |φ(x) - x₀|`; for compact `K ⊆ B̆_s(x₀)`, `Ω ∩ φ⁻¹(K) = Bⁿ_s(0) ∩ φ⁻¹(K)` is a
+closed subset of the compact ball. -/
+theorem rsod_isC1Submanifold_ball_inter_graph : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ)
+    (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (s : ℝ) (S : Set (Amb n ℓ)), 0 < s →
+    ContDiffOn ℝ 1 u (closedBall 0 s) →
+    (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s →
+    IsC1Submanifold n (ball x₀ s ∩ S) := by
+  intro n ℓ q u x₀ s S _hs hu hS
+  set φ : Rn n → Amb n ℓ := fun x => q (graphPoint x (u x)) + x₀
+  -- Step 1: `|x| ≤ |(x, u(x))| = |φ(x) - x₀|`, so `φ(x) ∈ B̆_s(x₀)` forces `x ∈ B̆ⁿ_s(0)`.
+  have hnorm : ∀ x : Rn n, ‖x‖ ≤ ‖graphPoint x (u x)‖ := fun x => by
+    nlinarith [Submission.rsod_norm_graphPoint_sq x (u x), norm_nonneg x,
+      norm_nonneg (graphPoint x (u x)), sq_nonneg ‖u x‖]
+  have hdist : ∀ x : Rn n, dist (φ x) x₀ = ‖graphPoint x (u x)‖ := fun x => by
+    rw [dist_eq_norm]
+    show ‖q (graphPoint x (u x)) + x₀ - x₀‖ = _
+    rw [add_sub_cancel_right, q.norm_map]
+  have hball : ∀ x : Rn n, φ x ∈ ball x₀ s → x ∈ ball (0 : Rn n) s := fun x hx =>
+    mem_ball_zero_iff.2 ((hnorm x).trans_lt ((hdist x).symm.trans_lt (mem_ball.1 hx)))
+  -- Step 2: for `|z| ≤ s`, `z + x₀ ∈ S` iff `z = q(x, u(x))` for some `x ∈ Bⁿ_s(0)`.
+  have hH : ∀ z : Amb n ℓ, ‖z‖ ≤ s →
+      (z + x₀ ∈ S ↔ ∃ x ∈ closedBall (0 : Rn n) s, q (graphPoint x (u x)) = z) := by
+    intro z hz
+    have hz' : z ∈ closedBall (0 : Amb n ℓ) s := mem_closedBall_zero_iff.2 hz
+    constructor
+    · intro hzS
+      have hzq : z ∈ q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s := by
+        rw [← hS]
+        exact ⟨hzS, hz'⟩
+      obtain ⟨⟨w, ⟨x, hx, rfl⟩, rfl⟩, -⟩ := hzq
+      exact ⟨x, hx, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      have hzS : q (graphPoint x (u x)) ∈ (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s := by
+        rw [hS]
+        exact ⟨⟨graphPoint x (u x), ⟨x, hx, rfl⟩, rfl⟩, hz'⟩
+      exact hzS.1
+  -- Steps 3–6: `φ` is injective, and `C¹` with injective derivative on `B̆ⁿ_s(0)`; it is
+  -- continuous on `Bⁿ_s(0)` because `(x, y) ↦ graphPoint x y` is a continuous linear map.
+  obtain ⟨hinj, hC1, hder⟩ := Submission.rsod_graphChart_injective_contDiffOn_fderiv_injective
+    q u x₀ (ball 0 s) isOpen_ball (hu.mono ball_subset_closedBall)
+  have hcont : ContinuousOn φ (closedBall 0 s) := by
+    have hG : ContinuousOn (fun x : Rn n => graphPoint x (u x)) (closedBall 0 s) := by
+      simp_rw [Submission.rsod_graphPoint_eq_finAddEquivProd_symm]
+      exact (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm.continuous
+        |>.comp_continuousOn (continuousOn_id.prodMk hu.continuousOn)
+    exact (q.continuous.comp_continuousOn hG).add continuousOn_const
+  intro y hy
+  refine ⟨ball 0 s ∩ φ ⁻¹' ball x₀ s, ball x₀ s, φ,
+    (hcont.mono ball_subset_closedBall).isOpen_inter_preimage isOpen_ball isOpen_ball,
+    isOpen_ball, hy.1, hC1.mono inter_subset_left, hinj.injOn, ?_, ?_,
+    fun x hx => hder x hx.1⟩
+  · -- Step 7: `φ(Ω) = B̆_s(x₀) ∩ S`.
+    ext y'
+    constructor
+    · rintro ⟨x, ⟨hx, hφx⟩, rfl⟩
+      refine ⟨hφx, hφx, (hH (q (graphPoint x (u x))) ?_).2 ⟨x, ball_subset_closedBall hx, rfl⟩⟩
+      rw [q.norm_map, ← hdist]
+      exact (mem_ball.1 hφx).le
+    · rintro ⟨-, hy', hy'S⟩
+      obtain ⟨x, -, hx⟩ := (hH (y' - x₀) (mem_ball_iff_norm.1 hy').le).1
+        (by rwa [sub_add_cancel])
+      have hφx : φ x = y' := by
+        show q (graphPoint x (u x)) + x₀ = y'
+        rw [hx, sub_add_cancel]
+      have hφx' : φ x ∈ ball x₀ s := by
+        rw [hφx]
+        exact hy'
+      exact ⟨x, ⟨hball x hφx', hφx'⟩, hφx⟩
+  · -- Step 8: for compact `K ⊆ B̆_s(x₀)`, `Ω ∩ φ⁻¹(K) = Bⁿ_s(0) ∩ φ⁻¹(K)` is compact.
+    intro K hK hKW
+    have hset : ball 0 s ∩ φ ⁻¹' ball x₀ s ∩ φ ⁻¹' K = closedBall 0 s ∩ φ ⁻¹' K := by
+      ext x
+      exact ⟨fun hx => ⟨ball_subset_closedBall hx.1.1, hx.2⟩,
+        fun hx => ⟨⟨hball x (hKW hx.2), hKW hx.2⟩, hx.2⟩⟩
+    rw [hset]
+    exact (isCompact_closedBall 0 s).of_isClosed_subset
+      (hcont.preimage_isClosed_of_isClosed isClosed_closedBall hK.isClosed) inter_subset_left
 /-- Translating a rectifiable varifold (used for the translation `τ(x) = x − ξ` in Simon Ch. 5,
 7.1–7.3): for `τ(y) = y + x₀`, `v(τ⁻¹M, θ ∘ τ)` is a rectifiable `n`-varifold in `τ⁻¹U`.  `τ` is an
 isometry, so it preserves `Hⁿ`; null-measurability, countable rectifiability (via `τ⁻¹M₀` and the
@@ -4163,6 +4299,84 @@ theorem rsod_exists_least_integer_density_point : ∀ (n ℓ : ℕ) (U : Set (Am
   filter_upwards [hdens, hint] with x hx ⟨k, hk, hxk⟩ hxB
   rw [hxk]
   exact Nat.cast_le.2 (Nat.find_min' hJ ⟨hk, x, hxB, hxk ▸ hx⟩)
+
+/-- **Regular points are dense in `spt V`** (Simon Ch. 5, Corollary 7.3, density half, p. 129).
+Assuming Allard's theorem 5.2: if `V = v(M, θ)` has generalized mean curvature `H` in the open set
+`U`, `H` is locally in `Lᵖ(μ_V)` for some `p > n`, and `θ` is a positive integer `μ_V`-a.e. on
+`spt V`, then every open ball `B̆_r(ξ)` with `ξ ∈ spt V` meets `reg V`.  Normalize `V` by the least
+integer density `N` in a smaller ball `B̆_{r'}(ξ) ⊆ U` and apply 7.1 at a point of density `1`. -/
+theorem rsod_regularSet_meets_ball : AllardRegularityTheorem → ∀ (n ℓ : ℕ), 1 ≤ n →
+    ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U)
+    (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H →
+    V.LocallyLp H p → (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) →
+    ∀ ξ ∈ V.support, ∀ r : ℝ, 0 < r → (V.regularSet ∩ ball ξ r).Nonempty := by
+  intro hAllard n ℓ hn U hU V H p hp hH hLp hint ξ hξ r hr
+  -- `μ_V ≪ Hⁿ ⌞ M` and `M ⊆ U`, so `μ_V`-a.e. point lies in `U ∩ spt μ_V = spt V`.
+  have hM_ae : ∀ᵐ x ∂V.weight, x ∈ V.carrier :=
+    (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  have hU_ae : ∀ᵐ x ∂V.weight, x ∈ U := hM_ae.mono fun _ hx => V.carrier_subset hx
+  have hspt_ae : ∀ᵐ x ∂V.weight, x ∈ V.support := by
+    filter_upwards [hU_ae, Measure.support_mem_ae (μ := V.weight)] with x hxU hx
+    exact ⟨hxU, hx⟩
+  -- Hence `θ` is a positive integer `μ_V`-a.e.; in particular `θ ≥ 1` `μ_V`-a.e.
+  have hI : ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k := by
+    filter_upwards [hint, hspt_ae] with x hx hxV using hx hxV
+  have hθ : ∀ᵐ x ∂V.weight, 1 ≤ V.mult x := by
+    filter_upwards [hI] with x ⟨k, hk, hxk⟩
+    rw [hxk]
+    exact_mod_cast hk
+  -- `Θⁿ(μ_V, x) = θ(x)` `μ_V`-a.e., via approximate tangent planes (Ch. 3, 1.9 and Remark 1.8(2)).
+  have hdens : ∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x) := by
+    filter_upwards [Submission.rsod_ae_exists_approxTangent n ℓ hn U hU V hθ, hU_ae]
+      with x ⟨P, hP⟩ hxU
+    exact Submission.rsod_hasDensity_of_approxTangent n ℓ hn U hU V x P hxU hP
+  -- Shrink the ball into `U`: `B = B̆_{r'}(ξ)` with `r' ≤ r` and `B ⊆ U`.
+  obtain ⟨r₀, hr₀, hr₀U⟩ := Metric.isOpen_iff.1 hU ξ hξ.1
+  obtain ⟨r', hr', hr'r, hBU⟩ : ∃ r' : ℝ, 0 < r' ∧ r' ≤ r ∧ ball ξ r' ⊆ U :=
+    ⟨min r r₀, lt_min hr hr₀, min_le_left _ _, (ball_subset_ball (min_le_right _ _)).trans hr₀U⟩
+  -- The least integer density `N ≥ 1` in `B` is attained at some `x₀ ∈ B`, and `θ ≥ N` a.e. on `B`.
+  obtain ⟨N, x₀, hN, hx₀, hx₀N, hNθ⟩ :=
+    Submission.rsod_exists_least_integer_density_point n ℓ U V hdens hI ξ hξ r' hr'
+  have hN₀ : (0 : ℝ) < N := by exact_mod_cast hN
+  -- The normalized varifold `W = v(M ∩ B, θ / N)` in `B`.
+  obtain ⟨W, -, hWmult, hWweight, hWsupp, hWH, hWLp⟩ :=
+    Submission.rsod_exists_localized_varifold n ℓ U V (ball ξ r') (1 / (N : ℝ)) isOpen_ball hBU
+      (one_div_pos.2 hN₀)
+  -- `θ / N ≥ 1` `μ_W`-a.e.
+  have hWθ : ∀ᵐ x ∂W.weight, 1 ≤ W.mult x := by
+    rw [hWweight]
+    refine Measure.ae_smul_measure ((ae_restrict_iff' measurableSet_ball).2 ?_) _
+    filter_upwards [hNθ] with x hx hxB
+    rw [hWmult, one_div_mul_eq_div, one_le_div₀ hN₀]
+    exact hx hxB
+  -- `B_s(x₀) ⊆ B` for `s < d`, so `μ_W(B_s(x₀)) = N⁻¹ μ_V(B_s(x₀))` and `Θⁿ(μ_W, x₀) = N / N = 1`.
+  obtain ⟨d, hd, hdB⟩ := Metric.isOpen_iff.1 isOpen_ball x₀ hx₀
+  have hWdens : W.HasDensity x₀ 1 := by
+    have hc : ENNReal.ofReal (1 / (N : ℝ)) ≠ ⊤ := ENNReal.ofReal_ne_top
+    have hlim := ENNReal.Tendsto.const_mul hx₀N (Or.inr hc)
+    rw [← ENNReal.ofReal_mul (one_div_pos.2 hN₀).le, one_div_mul_cancel hN₀.ne'] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hd] with s hs
+    rw [hWweight, Measure.smul_apply, smul_eq_mul, Measure.restrict_apply measurableSet_closedBall,
+      inter_eq_left.2 ((closedBall_subset_ball hs.2).trans hdB), mul_div_assoc]
+  -- By 7.1 (via Allard's theorem) `x₀` is a regular point of `W`.
+  obtain ⟨hx₀W, ρ, hρ, hC1⟩ :=
+    Submission.rsod_mem_regularSet_of_density_one hAllard n ℓ hn (ball ξ r') isOpen_ball W H p hp
+      (hWH H hH) (hWLp H p hLp) hWθ x₀ hx₀ hWdens
+  rw [hWsupp] at hx₀W hC1
+  -- Shrinking the radius to `min ρ d` transfers regularity from `W` to `V`.
+  refine ⟨x₀, ⟨hx₀W.2, min ρ d, lt_min hρ hd, ?_⟩, ball_subset_ball hr'r hx₀⟩
+  have hball : ball x₀ (min ρ d) ∩ V.support =
+      ball x₀ (min ρ d) ∩ (ball x₀ ρ ∩ (ball ξ r' ∩ V.support)) := by
+    ext y
+    constructor
+    · rintro ⟨hy, hyV⟩
+      exact ⟨hy, ball_subset_ball (min_le_left _ _) hy,
+        hdB (ball_subset_ball (min_le_right _ _) hy), hyV⟩
+    · rintro ⟨hy, -, -, hyV⟩
+      exact ⟨hy, hyV⟩
+  rw [hball]
+  exact Submission.rsod_isC1Submanifold_open_inter n (n + ℓ) _ _ hC1 isOpen_ball
 
 end Submission
 
