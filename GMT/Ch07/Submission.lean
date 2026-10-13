@@ -1391,6 +1391,56 @@ theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (
         intro x hx
         exact_mod_cast R.mult_pos x hx.1
 
+/-- **Simon 7.2.4 (12)–(14)** (chapter-07.txt lines 260–288): for the weights `μⱼ = θⱼ Hⁿ⌞Mⱼ`
+of `Sⱼ = τ(Mⱼ, θⱼ, ξⱼ)` and `μ = θ Hⁿ⌞M` of `C = τ(M, θ, ξ)`, (a) `μ(K) < ∞` and (b)
+`limsup_j μⱼ(K) ≤ μ(K)` for compact `K`, and (c) `μ(G) ≤ liminf_j μⱼ(G)` for bounded open `G`.
+On open sets mass is the weight (Simon 6.3.2(3)); (c) is the lower semicontinuity of mass, and
+(b) is the local comparison with the admissible competitor `S = C`, passed to the whole sequence
+by the subsequence-of-subsequence criterion (lines 278–280). -/
+theorem Submission.dtc_bc_mm_measure_bounds : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → ∀ Rs : (j : ℕ) → IMRep (Us j) n, (∀ j, (Rs j).Represents (Ss j)) → ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → (∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞) ∧ (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => (Rs j).measure K) atTop ≤ R.measure K) ∧ (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → R.measure G ≤ liminf (fun j => (Rs j).measure G) atTop) := by
+  intro P n Us Ss C hUs hexh hconv hloc Rs hRs R hR
+  -- on open sets mass is the weight: `M_G(C) = μ(G)` and `M_G(Sⱼ) = μⱼ(G)`
+  have hC : ∀ G : Set (Euclid P), IsOpen G → C.massOn G = R.measure G := fun G hG =>
+    Submission.cmc_massOn_eq_imRep_measure P n univ C R isOpen_univ hR G hG
+  have hS : ∀ G : Set (Euclid P), IsOpen G → ∀ j, (Ss j).massOn G = (Rs j).measure G :=
+    fun G hG j =>
+      Submission.cmc_massOn_eq_imRep_measure P n (Us j) (Ss j) (Rs j) (hUs j) (hRs j) G hG
+  -- (a): `μ(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
+  have ha : ∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞ := fun K hK =>
+    lt_top_iff_ne_top.2
+      (Submission.rsd_imrep_compact_measure_ne_top P n univ R K hK (subset_univ K)).2
+  -- `C` is an admissible competitor for itself: `∂C = ∂C`, and `spt(C − C) = ∅` since `C − C`
+  -- vanishes on every ball `B₁(x)`, whose closure is compact
+  have hsame : SameBoundary C C := by
+    cases n
+    · trivial
+    · rfl
+  have hspt : ∀ K : Set (Euclid P), (C - C).support ⊆ K := by
+    intro K x hx
+    have hx' : x ∈ univ \ (C - C).zeroRegion := hx
+    refine absurd (mem_sUnion.2 ⟨ball x 1, ?_, mem_ball_self one_pos⟩) hx'.2
+    refine ⟨isOpen_ball, isBounded_ball.isCompact_closure, subset_univ _, fun ω _ => ?_⟩
+    exact sub_self (C ω)
+  refine ⟨ha, ?_, ?_⟩
+  · -- (b): the comparison with `S = C` gives `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)` on the open
+    -- `W ⊇ K` it provides, the hypothesis of the subsequence criterion
+    refine Submission.dtc_bc_mm_limsup_le_of_subseq P (fun j => (Rs j).measure) R.measure ha ?_
+    intro K ε hK hε ψ hψ
+    obtain ⟨W, hW, hKW, hWK, φ', hφ', hcmp⟩ := hloc K ε hK hε ψ hψ
+    refine ⟨W, hKW, hWK, φ', hφ', ?_⟩
+    calc limsup (fun i => (Rs (ψ (φ' i))).measure W) atTop
+        = limsup (fun i => (Ss (ψ (φ' i))).massOn W) atTop := by
+          congr 1; funext i; exact (hS W hW _).symm
+      _ ≤ C.massOn W := hcmp C ⟨R, hR⟩ hsame (hspt K)
+      _ = R.measure W := hC W hW
+  · -- (c): lower semicontinuity of mass along the whole sequence (`φ = id`)
+    intro G hG _
+    calc R.measure G = C.massOn G := (hC G hG).symm
+      _ ≤ liminf (fun i => (Ss (id i)).massOn G) atTop :=
+          Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hexh hconv id strictMono_id G
+      _ = liminf (fun j => (Rs j).measure G) atTop := by
+          congr 1; funext j; exact hS G hG j
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
