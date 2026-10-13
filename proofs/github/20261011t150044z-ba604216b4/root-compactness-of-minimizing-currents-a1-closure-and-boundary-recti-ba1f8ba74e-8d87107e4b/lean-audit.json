@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ebc2f4d3ea763e12833f3665a3c6bfc62911b67ad6d970552cb9f171fda5c6ad",
+  "git_delta": {
+    "base_commit": "abdf4230d35b79c3fbc57269092e2989dfa9c965",
+    "candidate_commit": "d820e1f064673fefb480ad9fd49d5bd1ec29e5f5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_rlim_thin_band",
+    "diff_sha256": "04b94139b18a04111558f7f0d1888dfa28d2978b8360d983ccebbf73ad7d3d33",
+    "source_sha256": "a9912526e8279376807f7be1463a7f685ca331799ef93bb718f2ff3862116733",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_rlim_thin_band",
+      "statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (C : Set (Euclid P)) (f : Euclid P → ℝ) (t δ : ℝ), MeasurableSet C → μ C < ∞ → ν C < ∞ → Continuous f → μ {x | f x = t} = 0 → 0 < δ → ∃ ε : ℝ, 0 < ε ∧ μ (C ∩ {x | t - ε ≤ f x ∧ f x ≤ t}) < ENNReal.ofReal δ ∧ ν (C ∩ {x | t - ε < f x ∧ f x < t}) < ENNReal.ofReal δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
