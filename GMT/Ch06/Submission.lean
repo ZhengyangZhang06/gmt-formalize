@@ -359,6 +359,119 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Cone-ratio dichotomy.  Write `L x = (⟨v₁, x⟩, …, ⟨v_k, x⟩)` (`k = m + 1`),
+`X(r, s) = {x : |x − a| < r, |L(x − a)| < s|x − a|}` and
+`Φ = limsup_{s→0⁺} sup_{0<r<δ} μ(X(r, s))/(rs)ᵏ`.  If `Φ = 0`, then for each `η > 0` some
+`s ∈ (0, 1)` has `μ(X(r, s)) ≤ η(rs)ᵏ` for all `r ∈ (0, δ)`.  If `Φ = ∞`, then
+`X(r, s) ⊆ L⁻¹(B̄(La, rs))`, so the push-forward `L_# μ` has infinite upper `k`-density at
+`La`: its density quotients at the radii `rs → 0⁺` are unbounded. -/
+theorem Submission.rectifiability_bf_cone_ratio_reduction :
+    (∀ (N m : ℕ) (μ : Measure (Eucl N)) (δ : ℝ) (a : Eucl N) (v : Fin (m + 1) → Eucl N),
+      (limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x a < r ∧
+          ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) (x - a)) : Eucl (m + 1))‖ <
+            s * ‖x - a‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0) = 0 →
+        ∀ η : ℝ, 0 < η → ∃ s ∈ Ioo (0 : ℝ) 1, ∀ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x a < r ∧
+          ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) (x - a)) : Eucl (m + 1))‖ <
+            s * ‖x - a‖} ≤ ENNReal.ofReal (η * (r * s) ^ (m + 1))) ∧
+      (limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x a < r ∧
+          ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) (x - a)) : Eucl (m + 1))‖ <
+            s * ‖x - a‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0) = ⊤ →
+        dimensionalUpperDensity (Measure.map (fun x : Eucl N =>
+          (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1))) μ).toOuterMeasure
+          ((m + 1 : ℕ) : ℝ) univ
+          (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) a) : Eucl (m + 1)) = ⊤)) := by
+  intro N m μ δ a v
+  -- `X r s` is the cone, `F s` the supremum of the ratios `μ(X r s)/(rs)ᵏ` over `r ∈ (0, δ)`
+  set X : ℝ → ℝ → Set (Eucl N) := fun r s => {x | dist x a < r ∧
+    ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) (x - a)) : Eucl (m + 1))‖ < s * ‖x - a‖}
+  set F : ℝ → ℝ≥0∞ := fun s =>
+    ⨆ r ∈ Ioo (0 : ℝ) δ, μ (X r s) / ENNReal.ofReal ((r * s) ^ (m + 1)) with hF
+  constructor
+  · -- `Φ = 0`: eventually `F s < η`; take such an `s ∈ (0, 1)`
+    intro h0 η hη
+    have hlt : limsup F (𝓝[>] 0) < ENNReal.ofReal η := by
+      rw [h0]; exact ENNReal.ofReal_pos.2 hη
+    obtain ⟨s, hs1, hs2⟩ :=
+      ((eventually_lt_of_limsup_lt hlt).and (Ioo_mem_nhdsGT one_pos)).exists
+    refine ⟨s, hs2, fun r hr => ?_⟩
+    have hpos : 0 < (r * s) ^ (m + 1) := pow_pos (mul_pos hr.1 hs2.1) _
+    have h3 : μ (X r s) / ENNReal.ofReal ((r * s) ^ (m + 1)) < ENNReal.ofReal η :=
+      (le_iSup₂ (f := fun r (_ : r ∈ Ioo (0 : ℝ) δ) =>
+        μ (X r s) / ENNReal.ofReal ((r * s) ^ (m + 1))) r hr).trans_lt hs1
+    rw [ENNReal.div_lt_iff (Or.inl (ENNReal.ofReal_pos.2 hpos).ne') (Or.inl ENNReal.ofReal_ne_top)]
+      at h3
+    rw [ENNReal.ofReal_mul hη.le]
+    exact h3.le
+  · -- `Φ = ∞`: ratios above `b ω_k` at `r < δ`, small `s` give density quotients above `b` at `rs`
+    intro htop
+    set L : Eucl N → Eucl (m + 1) := fun x =>
+      (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1)) with hL
+    have hLc : Continuous L :=
+      (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => continuous_const.inner continuous_id)
+    have hLsub : ∀ x y, L x - L y = L (x - y) := by
+      intro x y
+      simp only [hL, ← WithLp.toLp_sub]
+      congr 1
+      funext i
+      simp [inner_sub_right]
+    set ω := Poincare.SimonGMT.Chapter01.realUnitBallVolume (((m + 1 : ℕ) : ℝ)) with hω
+    have hω0 : ω ≠ 0 := by
+      rw [hω, Poincare.SimonGMT.Chapter01.realUnitBallVolume]
+      refine (ENNReal.ofReal_pos.2 (div_pos (Real.rpow_pos_of_pos Real.pi_pos _)
+        (Real.Gamma_pos_of_pos ?_))).ne'
+      positivity
+    have hωt : ω ≠ ⊤ := by
+      rw [hω, Poincare.SimonGMT.Chapter01.realUnitBallVolume]
+      exact ENNReal.ofReal_ne_top
+    -- `δ > 0`, since otherwise `F = 0` and `Φ = 0`
+    have hδ : 0 < δ := by
+      by_contra hδ
+      have hF0 : F = fun _ => 0 := by
+        funext s
+        rw [hF, Ioo_eq_empty (not_lt.2 (not_lt.1 hδ))]
+        simp
+      rw [hF0, limsup_const] at htop
+      exact ENNReal.zero_ne_top htop
+    unfold dimensionalUpperDensity
+    refine ENNReal.eq_top_of_forall_nnreal_le fun b => ?_
+    refine le_limsup_of_frequently_le ?_ (by isBoundedDefault)
+    rw [(nhdsGT_basis (0 : ℝ)).frequently_iff]
+    intro ρ₀ hρ₀
+    have hΛ : (b : ℝ≥0∞) * ω < limsup F (𝓝[>] 0) := by
+      rw [htop]
+      exact ENNReal.mul_lt_top ENNReal.coe_lt_top (lt_top_iff_ne_top.2 hωt)
+    obtain ⟨s, hs1, hs2⟩ := ((frequently_lt_of_lt_limsup (by isBoundedDefault) hΛ).and_eventually
+      (Ioo_mem_nhdsGT (div_pos hρ₀ hδ))).exists
+    obtain ⟨r, hr, hrs⟩ := lt_biSup_iff.1 hs1
+    have hrs0 : 0 < r * s := mul_pos hr.1 hs2.1
+    have hrsρ : r * s < ρ₀ := by
+      have h1 : r * s < δ * (ρ₀ / δ) := mul_lt_mul'' hr.2 hs2.2 hr.1.le hs2.1.le
+      rwa [mul_div_cancel₀ _ hδ.ne'] at h1
+    refine ⟨r * s, ⟨hrs0, hrsρ⟩, ?_⟩
+    have hpos : 0 < (r * s) ^ (m + 1) := pow_pos hrs0 _
+    -- the cone lies in the preimage of the closed ball `B̄(La, rs)`
+    have hsub : X r s ⊆ L ⁻¹' closedBall (L a) (r * s) := by
+      intro x hx
+      simp only [mem_preimage, mem_closedBall, dist_eq_norm, hLsub]
+      have h1 : ‖x - a‖ < r := by rw [← dist_eq_norm]; exact hx.1
+      calc ‖L (x - a)‖ ≤ s * ‖x - a‖ := hx.2.le
+        _ ≤ s * r := by gcongr; exact hs2.1.le
+        _ = r * s := mul_comm _ _
+    have hmap :
+        μ (X r s) ≤ (Measure.map L μ).toOuterMeasure (univ ∩ closedBall (L a) (r * s)) := by
+      rw [Measure.coe_toOuterMeasure, univ_inter,
+        Measure.map_apply hLc.measurable isClosed_closedBall.measurableSet]
+      exact measure_mono hsub
+    unfold Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient
+    rw [ENNReal.ofReal_rpow_of_nonneg hrs0.le (by positivity), Real.rpow_natCast,
+      ENNReal.le_div_iff_mul_le (Or.inl (mul_ne_zero hω0 (ENNReal.ofReal_pos.2 hpos).ne'))
+        (Or.inl (ENNReal.mul_ne_top hωt ENNReal.ofReal_ne_top))]
+    refine le_trans ?_ hmap
+    rw [ENNReal.lt_div_iff_mul_lt (Or.inl (ENNReal.ofReal_pos.2 hpos).ne')
+      (Or.inl ENNReal.ofReal_ne_top)] at hrs
+    rw [← mul_assoc]
+    exact hrs.le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
