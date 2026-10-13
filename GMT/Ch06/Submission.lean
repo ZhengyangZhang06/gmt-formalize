@@ -953,6 +953,178 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
 
+/-- The product `[[0, 1]] × X` of a finite-mass current `X` on `ℝ^m`: with chosen `dt`-slices
+`φ^η s x = η(s, x)(e₀, ι ·)`, the functional `η ↦ ∫₀¹ X(φ^η s) ds` is linear and bounded by
+`M(X) · sup |η|`, hence a current `Z` with `M(Z) ≤ M(X)`; the integral does not depend on the
+slice family, which gives the characterization and uniqueness; and `Z` vanishes on every ball
+missing the closed cylinder `[0, 1] × spt X`, since there every slice `φ^η s` misses `spt X`. -/
+theorem Submission.dph_iprod_exists :
+    ∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k), X.mass < ∞ →
+      ∃ Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1),
+        (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+            (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k),
+          (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
+            (φ s : DifferentialForm (Eucl m) k) x v =
+              (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                  (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          Z η = ∫ s in (0 : ℝ)..1, X (φ s)) ∧
+        (∀ Z' : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1),
+          (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+              (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k),
+            (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
+              (φ s : DifferentialForm (Eucl m) k) x v =
+                (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+                  ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                  (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+            Z' η = ∫ s in (0 : ℝ)..1, X (φ s)) → Z' = Z) ∧
+        Z.mass ≤ X.mass ∧
+        Z.support ⊆ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+          (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈
+            X.support} := by
+  have hSF := Submission.iwl_cr_ci_slice_testForm
+  have hVS := Submission.isoperimetric_apply_eq_zero_of_disjoint_support
+  have hCC := Submission.dph_iprod_current_of_bound
+  have hC := Submission.dph_iprod_slice_continuity
+  intro m k X hX
+  -- A chosen slice family `φ η` of every `η`.
+  choose φ hφc hφ using fun η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1) => hSF m k η
+  have hB0 : 0 ≤ X.mass.toReal := ENNReal.toReal_nonneg
+  -- Any slice family of `η` on `[0, 1]` agrees with `φ η` there, so has the same integral.
+  have hcongr : ∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+      (ψ : ℝ → TestFormOn (univ : Set (Eucl m)) k),
+      (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
+        (ψ s : DifferentialForm (Eucl m) k) x v =
+          (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+            ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+            (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+              (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+      ∫ s in (0 : ℝ)..1, X (ψ s) = ∫ s in (0 : ℝ)..1, X (φ η s) := by
+    intro η ψ hψ
+    apply intervalIntegral.integral_congr
+    intro s hs
+    rw [Set.uIcc_of_le zero_le_one] at hs
+    have : ψ s = φ η s := by
+      apply Subtype.ext; funext x; ext v; rw [hψ s hs x v, hφ η s x v]
+    simp only [this]
+  have hint : ∀ η, IntervalIntegrable (fun s => X (φ η s)) MeasureTheory.volume 0 1 := by
+    intro η
+    exact ((hC.1 m k X hX η (φ η) (fun s _ x v => hφ η s x v)).1).intervalIntegrable_of_Icc
+      zero_le_one
+  -- The linear functional `T₀ η = ∫₀¹ X(φ η s) ds`.
+  let T₀ : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1) →ₗ[ℝ] ℝ :=
+    { toFun := fun η => ∫ s in (0 : ℝ)..1, X (φ η s)
+      map_add' := by
+        intro η η'
+        have h := hcongr (η + η') (fun s => φ η s + φ η' s) (by
+          intro s _ x v
+          show ((φ η s : DifferentialForm (Eucl m) k) +
+            (φ η' s : DifferentialForm (Eucl m) k)) x v = _
+          rw [Pi.add_apply, ContinuousAlternatingMap.add_apply, hφ η s x v, hφ η' s x v]
+          rfl)
+        rw [← h]
+        have : (fun s => X (φ η s + φ η' s)) = fun s => X (φ η s) + X (φ η' s) := by
+          funext s; exact map_add X.toCurrent _ _
+        rw [this, intervalIntegral.integral_add (hint η) (hint η')]
+      map_smul' := by
+        intro c η
+        have h := hcongr (c • η) (fun s => c • φ η s) (by
+          intro s _ x v
+          show (c • (φ η s : DifferentialForm (Eucl m) k)) x v = _
+          rw [Pi.smul_apply, ContinuousAlternatingMap.smul_apply, hφ η s x v]
+          rfl)
+        rw [← h]
+        have : (fun s => X (c • φ η s)) = fun s => c * X (φ η s) := by
+          funext s; exact map_smul X.toCurrent c _
+        rw [this, intervalIntegral.integral_const_mul]
+        rfl }
+  have hT₀ : ∀ η, T₀ η = ∫ s in (0 : ℝ)..1, X (φ η s) := fun η => rfl
+  -- `|T₀ η| ≤ M(X) · C` whenever `|η| ≤ C` pointwise.
+  have hbound : ∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (C : ℝ),
+      (∀ y, covectorEuclideanNorm ((η : DifferentialForm (Eucl (m + 1)) (k + 1)) y) ≤ C) →
+      |T₀ η| ≤ X.mass.toReal * C := by
+    intro η C hηC
+    have hb := (hC.1 m k X hX η (φ η) (fun s _ x v => hφ η s x v)).2 C hηC
+    have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+      (C := X.mass.toReal * C) (f := fun s => X (φ η s)) (by
+        intro s hs
+        rw [Set.uIoc_of_le zero_le_one] at hs
+        rw [Real.norm_eq_abs]
+        exact hb s ⟨hs.1.le, hs.2⟩)
+    rw [hT₀]
+    simpa only [Real.norm_eq_abs, sub_zero, abs_one, mul_one] using this
+  obtain ⟨Z, hZ, hZm⟩ := hCC (m + 1) (k + 1) univ T₀ X.mass.toReal hB0 hbound
+  refine ⟨Z, ?_, ?_, ?_, ?_⟩
+  · intro η ψ hψ
+    rw [hZ η, hT₀, hcongr η ψ hψ]
+  · intro Z' hZ'
+    ext η
+    rw [hZ' η (φ η) (fun s _ x v => hφ η s x v), hZ η, hT₀]
+  · calc Z.mass ≤ ENNReal.ofReal X.mass.toReal := hZm
+      _ = X.mass := ENNReal.ofReal_toReal hX.ne
+  · -- A point off the closed cylinder `[0, 1] × spt X` has a ball around it missing the
+    -- cylinder; `Z` vanishes there, so the point lies in the zero region of `Z`.
+    intro y₀ hy₀
+    by_contra hcyl
+    have hsuppX : IsClosed X.support := by
+      have : X.support = (X.zeroRegion)ᶜ := by
+        ext y; simp [GeometricCurrentOn.support]
+      rw [this]; exact X.isOpen_zeroRegion.isClosed_compl
+    have hclosed : IsClosed {y : Eucl (m + 1) |
+        EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+          (EuclideanSpace.equiv (Fin m) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} := by
+      apply IsClosed.inter
+      · exact isClosed_Icc.preimage (by fun_prop)
+      · exact hsuppX.preimage (by fun_prop)
+    obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.mp hclosed.isOpen_compl y₀ hcyl
+    have hvan : Z.VanishesOn (ball y₀ ρ) := by
+      intro η hη
+      rw [hZ η, hT₀]
+      -- For `s ∈ [0, 1]`, the slice `φ η s` is supported in `{x | (s, x) ∈ tsupport η}`,
+      -- which misses `spt X`.
+      have h0 : ∀ s ∈ Set.uIcc (0 : ℝ) 1, X (φ η s) = 0 := by
+        intro s hs
+        rw [Set.uIcc_of_le zero_le_one] at hs
+        apply hVS
+        rw [Set.disjoint_left]
+        intro x hx hxX
+        have hsub : tsupport (φ η s : DifferentialForm (Eucl m) k) ⊆
+            (fun x : Eucl m => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) ⁻¹'
+              tsupport (η : DifferentialForm (Eucl (m + 1)) (k + 1)) := by
+          apply closure_minimal _ ((isClosed_tsupport _).preimage (by fun_prop))
+          intro x' hx'
+          by_contra hn
+          apply hx'
+          ext v
+          rw [hφ η s x' v, image_eq_zero_of_notMem_tsupport hn]
+          rfl
+        have h2 := hη (hsub hx)
+        apply hball h2
+        refine ⟨?_, ?_⟩
+        · simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero]
+          exact hs
+        · simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+            ContinuousLinearEquiv.symm_apply_apply]
+          exact hxX
+      rw [intervalIntegral.integral_congr h0]
+      simp
+    have hW : ball y₀ ρ ⊆ Z.zeroRegion := by
+      intro y hy
+      refine Set.mem_sUnion.mpr ⟨ball y₀ ρ, ⟨isOpen_ball, ?_, subset_univ _, hvan⟩, hy⟩
+      exact (isCompact_closedBall y₀ ρ).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    exact hy₀.2 (hW (mem_ball_self hρ))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
