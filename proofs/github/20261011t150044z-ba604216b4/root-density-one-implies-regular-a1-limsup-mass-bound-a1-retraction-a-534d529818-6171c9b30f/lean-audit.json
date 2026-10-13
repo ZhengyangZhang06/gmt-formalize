@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "64e173ee32e70edd0e7144c310b0e3b0a4bfff94e162140eccc3e2e0441741d4",
+  "git_delta": {
+    "base_commit": "a59808a784efc602484977049b93727d558ebec7",
+    "candidate_commit": "7d0e7d04f4a805e0dbb603168e6eb0fe26a9e491",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_chart_localization",
+    "diff_sha256": "a8ccc4a0b65cedf58be225ba9f557c1fc207b2c012346327e7ad170757a71909",
+    "source_sha256": "83b3cc6708ceae7bf69cc6c8db2349653fc65d910339edd3943d08e553a3a3c0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_chart_localization",
+      "statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ closedBall (ψ v₀) ρ ⊆ W ∧ N ∩ closedBall (ψ v₀) ρ ⊆ ψ '' (V ∩ ball v₀ ε) ∧ IsCompact (N ∩ closedBall (ψ v₀) ρ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
