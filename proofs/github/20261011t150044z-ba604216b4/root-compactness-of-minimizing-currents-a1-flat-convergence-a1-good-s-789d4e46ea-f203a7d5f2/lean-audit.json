@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b57e1c58c0b72e4445694f20c93135fc3d7f0d959b58aa3dd232f6078994e6f",
+  "git_delta": {
+    "base_commit": "8d9b32300879fdebf5953719329e5c1a637a5e4a",
+    "candidate_commit": "21abc17d8d4c65cc3c511b941d1602fe6e217eb8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_gs_aqf_ae_seq_liminf_finite",
+    "diff_sha256": "8783a4865f2e11145c106ce15ae854342e1549769bc88bec53130baaa9be78f9",
+    "source_sha256": "ef16b039b7e03d47459a80ca4efa3b6b487e6d8ed8d828ebf9d8557e793491af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_gs_aqf_ae_seq_liminf_finite",
+      "statement": "∀ (ν : ℕ → Measure ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, ν j univ ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), liminf (fun j => liminf (fun n : ℕ => ((n : ℝ≥0∞) + 1) * ν j (Ioo (t - 1 / ((n : ℝ) + 1)) t)) atTop) atTop ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
