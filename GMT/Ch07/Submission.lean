@@ -14538,6 +14538,286 @@ theorem Submission.dorag_graph_c1_of_tilt_decay : ∀ (n k : ℕ), 0 < n → ∀
   exact Submission.dorag_gc_contDiffOn_of_ae_hasFDerivAt n k f (1 / 4) (ball 0 (a / 2)) g hn hLip
     isOpen_ball hg hfg
 
+/-- **Simon Ch. 5, Theorem 5.2 with Remark 5.3 (Allard regularity), bounded mean curvature
+(`p = 2n` in 5.1).**  If `z ∈ spt μ`, `μ(B̄_ρ(z)) ≤ (1 + δ₀)ωₙρⁿ` and `κρ ≤ δ₀`, then
+`spt μ ∩ B_{γρ}(z)` is the graph over `B_{γρ}(0)` of a `C¹` map `u` with `u(0) = 0` and
+`‖Du‖ ≤ ε`.  Parts 8.1–8.9 of the proof: the base plane (`dorag_affine_approximation`),
+tilt-excess decay at every point of `spt μ ∩ B_{δ₀ρ/2}(z)` (`dorag_tilt_excess_decay`), the
+graph criterion (`dorag_lipschitz_approximation`) and `C¹` regularity
+(`dorag_graph_c1_of_tilt_decay`), with `δ₀ = min{δ₁, δ₂, δ₃, δ₅, t^{2n+2}}` and `γ = δ₀/16`. -/
+theorem Submission.dor_allard_bounded_curvature_graph : ∀ (n k : ℕ), 0 < n → ∀ ε : ℝ, 0 < ε → ∃ δ₀ γ : ℝ, 0 < δ₀ ∧ 0 < γ ∧ γ ≤ 1 ∧ ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ₀) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ₀ → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ u 0 = 0 ∧ ContDiffOn ℝ 1 u (ball 0 (γ * ρ)) ∧ (∀ v ∈ ball (0 : Euclid n) (γ * ρ), ‖fderiv ℝ u v‖ ≤ ε) ∧ R.measure.support ∩ ball z (γ * ρ) = ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) (γ * ρ)) ∩ ball z (γ * ρ) := by
+  have h_db := Submission.dorag_standing_density_bounds
+  have h_aa := Submission.dorag_affine_approximation
+  have h_la := Submission.dorag_lipschitz_approximation
+  have h_td := Submission.dorag_tilt_excess_decay
+  have h_gc := Submission.dorag_graph_c1_of_tilt_decay
+  intro n k hn ε hε
+  -- Part 0: the constants of the children (Simon 5.2 with `p = 2n`)
+  obtain ⟨δ₁, C₂, hδ₁, hδ₁8, -, hDB⟩ := h_db n k hn
+  obtain ⟨δ₃, C₃, hδ₃, -, hC₃, hAA⟩ := h_aa n k hn
+  obtain ⟨δ₅, β, β', C₇, hδ₅, -, hβ', hβ'β, -, -, hLA⟩ :=
+    h_la n k hn (2 * C₃) (by linarith)
+  obtain ⟨δ₂, C, hδ₂, -, hC, hTD⟩ := h_td n k hn
+  have hC₃0 : 0 < C₃ := by linarith
+  have hω_fin : unitBallVolume n ≠ ⊤ := measure_ball_lt_top.ne
+  obtain ⟨ω, hω⟩ : ∃ ω : ℝ, ω = (unitBallVolume n).toReal := ⟨_, rfl⟩
+  have hω0 : 0 ≤ ω := by rw [hω]; exact ENNReal.toReal_nonneg
+  have hω_eq : ENNReal.ofReal ω = unitBallVolume n := by
+    rw [hω, ENNReal.ofReal_toReal hω_fin]
+  obtain ⟨L₀, hL₀⟩ : ∃ L₀ : ℝ, L₀ = min ε (1 / 4) := ⟨_, rfl⟩
+  have hL₀0 : 0 < L₀ := by rw [hL₀]; exact lt_min hε (by norm_num)
+  have hL₀ε : L₀ ≤ ε := by rw [hL₀]; exact min_le_left _ _
+  have hL₀4 : L₀ ≤ 1 / 4 := by rw [hL₀]; exact min_le_right _ _
+  obtain ⟨A, hA⟩ : ∃ A : ℝ, A = (2 * C + 4 * ω * C) * 2 ^ n * C₃ := ⟨_, rfl⟩
+  have hA0 : 0 ≤ A := by rw [hA]; positivity
+  obtain ⟨t, ht⟩ : ∃ t : ℝ, t = β' * L₀ / (A + 1) := ⟨_, rfl⟩
+  have hA1 : A + 1 ≠ 0 := by positivity
+  have ht0 : 0 < t := by rw [ht]; positivity
+  have htA : (A + 1) * t = β' * L₀ := by rw [ht]; field_simp
+  have htβ' : t ≤ β' * L₀ := by have := mul_nonneg hA0 ht0.le; linarith
+  have htβ : t ≤ β * L₀ := htβ'.trans (by gcongr)
+  have hAt : A * t ^ 2 ≤ β' ^ 2 * L₀ ^ 2 := by
+    calc A * t ^ 2 ≤ (A + 1) * t ^ 2 := by have := sq_nonneg t; linarith
+      _ = β' * L₀ * t := by rw [← htA]; ring
+      _ ≤ β' * L₀ * (β' * L₀) := by gcongr
+      _ = β' ^ 2 * L₀ ^ 2 := by ring
+  obtain ⟨δ₀, hδ₀⟩ : ∃ δ₀ : ℝ,
+      δ₀ = min δ₁ (min δ₂ (min δ₃ (min δ₅ (t ^ (2 * n + 2))))) := ⟨_, rfl⟩
+  have hδ₀0 : 0 < δ₀ := by
+    rw [hδ₀]; exact lt_min hδ₁ (lt_min hδ₂ (lt_min hδ₃ (lt_min hδ₅ (by positivity))))
+  have hδ₀δ₁ : δ₀ ≤ δ₁ := by rw [hδ₀]; exact min_le_left _ _
+  have hδ₀δ₂ : δ₀ ≤ δ₂ := by rw [hδ₀]; exact (min_le_right _ _).trans (min_le_left _ _)
+  have hδ₀δ₃ : δ₀ ≤ δ₃ := by
+    rw [hδ₀]; exact (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hδ₀δ₅ : δ₀ ≤ δ₅ := by
+    rw [hδ₀]
+    exact (min_le_right _ _).trans
+      ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have hδ₀t : δ₀ ≤ t ^ (2 * n + 2) := by
+    rw [hδ₀]
+    exact (min_le_right _ _).trans
+      ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _)))
+  have hδ₀8 : δ₀ ≤ 1 / 8 := hδ₀δ₁.trans hδ₁8
+  have hδ₀1 : δ₀ ≤ 1 := by linarith
+  -- `α = 1/(2n+2)` and `δ₀ ≤ δ₀ ^ α ≤ t`
+  have hα0 : (0 : ℝ) < (1 : ℝ) / (2 * (n : ℝ) + 2) := by positivity
+  have hα1 : (1 : ℝ) / (2 * (n : ℝ) + 2) ≤ 1 := by
+    rw [div_le_one (by positivity)]; have : (0 : ℝ) ≤ n := Nat.cast_nonneg n; linarith
+  have hd0 : 0 < δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) := Real.rpow_pos_of_pos hδ₀0 _
+  have hδ₀d : δ₀ ≤ δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) :=
+    Real.self_le_rpow_of_le_one hδ₀0.le hδ₀1 hα1
+  have hdt : δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) ≤ t := by
+    calc δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))
+        ≤ (t ^ (2 * n + 2)) ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) :=
+          Real.rpow_le_rpow hδ₀0.le hδ₀t hα0.le
+      _ = t := by
+          rw [show (1 : ℝ) / (2 * (n : ℝ) + 2) = ((2 * n + 2 : ℕ) : ℝ)⁻¹ by push_cast; ring]
+          exact Real.pow_rpow_inv_natCast ht0.le (by omega)
+  -- `E₀ = 2ⁿC₃δ₀^{2α}` bounds every normalized tilt-excess `E_*` below (Simon 5.2, (1))
+  obtain ⟨E₀, hE₀⟩ : ∃ E₀ : ℝ,
+      E₀ = 2 ^ n * C₃ * (δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 := ⟨_, rfl⟩
+  have hE₀0 : 0 ≤ E₀ := by rw [hE₀]; positivity
+  have hdE₀ : (δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 ≤ E₀ := by
+    rw [hE₀]
+    have h2n : (1 : ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
+    exact le_mul_of_one_le_left (sq_nonneg _) (one_le_mul_of_one_le_of_one_le h2n hC₃)
+  have hAE₀ : A * (δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 ≤ β' ^ 2 * L₀ ^ 2 :=
+    (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hd0.le hdt 2) hA0).trans hAt
+  refine ⟨δ₀, δ₀ / 16, hδ₀0, by positivity, by linarith, ?_⟩
+  intro U W R H κ ρ z hW hWU hρ hzρ hH hHκ hMC hz hmass hκρ
+  have hκ0 : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+  obtain ⟨hDBa, -, -, -⟩ :=
+    hDB δ₀ hδ₀0 hδ₀δ₁ U W R H κ ρ z hW hWU hρ hzρ hH hHκ hMC hz hmass hκρ
+  have hδρ : 0 < δ₀ * ρ := mul_pos hδ₀0 hρ
+  have hδρ8 : δ₀ * ρ ≤ ρ / 8 := by
+    have := mul_le_mul_of_nonneg_right hδ₀8 hρ.le; linarith
+  have hzmem : ∀ r : ℝ, 0 ≤ r → z ∈ R.measure.support ∩ closedBall z r := fun r hr =>
+    ⟨hz, mem_closedBall_self hr⟩
+  -- (8.1) the base plane `T₀`: affine approximation at `(z, 2δ₀ρ)`
+  obtain ⟨T₀, hT₀n, hT₀a, hT₀b⟩ := hAA δ₀ hδ₀0 hδ₀δ₃ U W R H κ ρ z hW hWU hρ hzρ hH hHκ hMC
+    hz hmass hκρ z (hzmem _ (by positivity)) (2 * δ₀ * ρ) (by positivity) le_rfl
+  rw [show 2 * δ₀ * ρ / 2 = δ₀ * ρ by ring] at hT₀b
+  -- (8.2–8.3) tilt-excess decay at every point of `spt μ ∩ B_{δ₀ρ/2}(z)`, with `E_* ≤ E₀`
+  have hdecay : ∀ y ∈ R.measure.support ∩ closedBall z (δ₀ * ρ / 2),
+      ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧
+        (∀ s : ℝ, 0 < s → s ≤ δ₀ * ρ / 2 →
+          ∫⁻ x in closedBall y s, ENNReal.ofReal (∑ i : Fin (n + k),
+            ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+              S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤
+            ENNReal.ofReal (C * (s / (δ₀ * ρ / 2)) * s ^ n * E₀)) ∧
+        ENNReal.ofReal (∑ i : Fin (n + k),
+          ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+            T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤
+          ENNReal.ofReal (C * E₀) := by
+    intro y hy
+    have hyz : dist y z ≤ δ₀ * ρ / 2 := mem_closedBall.1 hy.2
+    obtain ⟨S, hSn, hS1, hS2⟩ := hTD δ₀ hδ₀0 hδ₀δ₂ U W R H κ ρ z hW hWU hρ hzρ hH hHκ hMC hz
+      hmass hκρ y ⟨hy.1, closedBall_subset_closedBall (by linarith) hy.2⟩ (δ₀ * ρ / 2) T₀
+      (by positivity) (by linarith) hT₀n
+    have hE : max (ENNReal.ofReal (1 / (δ₀ * ρ / 2) ^ n) *
+        ∫⁻ x in closedBall y (δ₀ * ρ / 2), ENNReal.ofReal (∑ i : Fin (n + k),
+          ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+            T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure)
+        (ENNReal.ofReal (κ ^ 2 * (δ₀ * ρ / 2) ^ 2 / δ₀)) ≤ ENNReal.ofReal E₀ := by
+      apply max_le
+      · calc _ ≤ ENNReal.ofReal (1 / (δ₀ * ρ / 2) ^ n) * ENNReal.ofReal
+              (C₃ * (δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 * (δ₀ * ρ) ^ n) := by
+              gcongr
+              exact (lintegral_mono_set (closedBall_subset_closedBall' (by linarith))).trans
+                hT₀b
+          _ = ENNReal.ofReal E₀ := by
+              rw [← ENNReal.ofReal_mul (by positivity), hE₀]
+              congr 1
+              rw [div_pow, one_div_div, div_mul_eq_mul_div, div_eq_iff (by positivity)]
+              ring
+      · apply ENNReal.ofReal_le_ofReal
+        rw [div_le_iff₀ hδ₀0]
+        have hκσ : κ * (δ₀ * ρ / 2) ≤ δ₀ ^ 2 / 2 := by
+          linarith [mul_le_mul_of_nonneg_right hκρ hδ₀0.le]
+        calc κ ^ 2 * (δ₀ * ρ / 2) ^ 2 = (κ * (δ₀ * ρ / 2)) ^ 2 := by ring
+          _ ≤ (δ₀ ^ 2 / 2) ^ 2 := pow_le_pow_left₀ (by positivity) hκσ 2
+          _ ≤ δ₀ ^ 2 * δ₀ := by
+              linarith [pow_pos hδ₀0 3, mul_le_mul_of_nonneg_left hδ₀1 (pow_pos hδ₀0 3).le]
+          _ ≤ E₀ * δ₀ := by
+              gcongr
+              exact (pow_le_pow_left₀ hδ₀0.le hδ₀d 2).trans hdE₀
+    refine ⟨S, hSn, fun s hs hsσ => ?_, ?_⟩
+    · calc _ ≤ _ := hS1 s hs hsσ
+        _ ≤ ENNReal.ofReal (C * (s / (δ₀ * ρ / 2)) * s ^ n) * ENNReal.ofReal E₀ := by gcongr
+        _ = _ := (ENNReal.ofReal_mul (by positivity)).symm
+    · calc _ ≤ _ := hS2
+        _ ≤ ENNReal.ofReal C * ENNReal.ofReal E₀ := by gcongr
+        _ = _ := (ENNReal.ofReal_mul hC.le).symm
+  -- pointwise `|p_x − p_T|² ≤ 2|p_x − p_S|² + 2|p_S − p_T|²`
+  have hsplit : ∀ P Q S : Submodule ℝ (Euclid (n + k)),
+      ENNReal.ofReal (∑ i : Fin (n + k), ‖P.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        Q.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤
+      2 * ENNReal.ofReal (∑ i : Fin (n + k),
+        ‖P.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) +
+      2 * ENNReal.ofReal (∑ i : Fin (n + k),
+        ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          Q.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+    intro P Q S
+    have key : ∀ a b c : Euclid (n + k),
+        ‖a - c‖ ^ 2 ≤ 2 * ‖a - b‖ ^ 2 + 2 * ‖b - c‖ ^ 2 := by
+      intro a b c
+      have h1 := norm_sub_le_norm_sub_add_norm_sub a b c
+      have h2 := pow_le_pow_left₀ (norm_nonneg _) h1 2
+      linarith [sq_nonneg (‖a - b‖ - ‖b - c‖)]
+    have hsum : ∑ i : Fin (n + k), ‖P.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          Q.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤
+        2 * ∑ i : Fin (n + k), ‖P.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 +
+        2 * ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          Q.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_le_sum fun i _ => key _ _ _
+    have h := ENNReal.ofReal_le_ofReal hsum
+    rw [ENNReal.ofReal_add (by positivity) (by positivity), ENNReal.ofReal_mul (by positivity),
+      ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_ofNat] at h
+    exact h
+  -- (8.4) hypothesis of the graph criterion (Simon 5.2.7) for `T₀` on `B_{δ₀ρ/2}(z)`
+  have h5Bhyp : ∀ y ∈ R.measure.support ∩ closedBall z (δ₀ * ρ / 2), ∀ t' : ℝ, 0 < t' →
+      t' ≤ δ₀ * ρ / 2 →
+      ∫⁻ x in closedBall y t', ENNReal.ofReal (∑ i : Fin (n + k),
+        ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤
+        ENNReal.ofReal (β' ^ 2 * L₀ ^ 2 * t' ^ n) := by
+    intro y hy t' ht'0 ht'σ
+    obtain ⟨S, -, hS1, hS2⟩ := hdecay y hy
+    have hball : R.measure (closedBall y t') ≤ ENNReal.ofReal (2 * ω * t' ^ n) := by
+      refine (hDBa y ?_ t' ht'0 (by linarith)).trans (le_of_eq ?_)
+      · exact closedBall_subset_closedBall (by linarith) hy.2
+      · rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by norm_num), hω_eq,
+          ENNReal.ofReal_ofNat]
+    refine (lintegral_mono fun x => hsplit (approxTangentPlane n R.carrier x) T₀ S).trans ?_
+    rw [lintegral_add_right _ measurable_const, setLIntegral_const,
+      lintegral_const_mul' _ _ (by simp)]
+    refine (add_le_add (mul_le_mul_right (hS1 t' ht'0 ht'σ) 2)
+      (mul_le_mul' (mul_le_mul_right hS2 2) hball)).trans ?_
+    have hreal : 2 * (C * (t' / (δ₀ * ρ / 2)) * t' ^ n * E₀) +
+        2 * (C * E₀) * (2 * ω * t' ^ n) ≤ β' ^ 2 * L₀ ^ 2 * t' ^ n := by
+      have hq : t' / (δ₀ * ρ / 2) ≤ 1 := div_le_one_of_le₀ ht'σ (by positivity)
+      have hX : 0 ≤ 2 * C * E₀ * t' ^ n := by positivity
+      have hkey : A * (δ₀ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 * t' ^ n -
+          (2 * (C * (t' / (δ₀ * ρ / 2)) * t' ^ n * E₀) + 2 * (C * E₀) * (2 * ω * t' ^ n)) =
+          2 * C * E₀ * t' ^ n * (1 - t' / (δ₀ * ρ / 2)) := by
+        rw [hA, hE₀]; ring
+      have := mul_nonneg hX (sub_nonneg.2 hq)
+      have := mul_le_mul_of_nonneg_right hAE₀ (pow_nonneg ht'0.le n)
+      linarith
+    have h := ENNReal.ofReal_le_ofReal hreal
+    rw [ENNReal.ofReal_add (by positivity) (by positivity),
+      ENNReal.ofReal_mul (p := 2) (q := C * (t' / (δ₀ * ρ / 2)) * t' ^ n * E₀) (by norm_num),
+      ENNReal.ofReal_mul (p := 2 * (C * E₀)) (q := 2 * ω * t' ^ n) (by positivity),
+      ENNReal.ofReal_mul (p := 2) (q := C * E₀) (by norm_num), ENNReal.ofReal_ofNat] at h
+    exact h
+  -- (8.4) Lipschitz approximation and graph criterion at `(z, δ₀ρ, T₀, L₀)`
+  obtain ⟨ι, ι', f, hιι', -, hfL, -, -, h5B⟩ := hLA δ₀ hδ₀0 hδ₀δ₅ U W R H κ ρ z hW hWU hρ hzρ
+    hH hHκ hMC hz hmass hκρ z (hzmem _ (by positivity)) (δ₀ * ρ) L₀ T₀ hδρ le_rfl hT₀n hL₀0
+    (by linarith) (hdt.trans htβ)
+    (hT₀b.trans (ENNReal.ofReal_le_ofReal (by gcongr; linarith)))
+    (fun x hx => (hT₀a x ⟨hx.1, closedBall_subset_closedBall (by linarith) hx.2⟩).trans
+      (le_of_eq (by ring)))
+  have hgraph := h5B h5Bhyp
+  -- `|v| ≤ |ιv + ι'w|`
+  have hnorm : ∀ v w, ‖v‖ ≤ ‖ι v + ι' w‖ := by
+    intro v w
+    have h : ‖ι v + ι' w‖ ^ 2 = ‖v‖ ^ 2 + ‖w‖ ^ 2 := by
+      rw [norm_add_sq_real, hιι', LinearIsometry.norm_map, LinearIsometry.norm_map]; ring
+    refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 ?_
+    rw [h]; linarith [sq_nonneg ‖w‖]
+  -- `f(0) = 0`, since `z ∈ spt μ`
+  have hf0 : f 0 = 0 := by
+    have hzg : z ∈ range (fun v => z + ι v + ι' (f v)) ∩ closedBall z (δ₀ * ρ / 8) := by
+      rw [← hgraph]; exact hzmem _ (by positivity)
+    obtain ⟨v₀, hv₀⟩ := hzg.1
+    have hsum : ι v₀ + ι' (f v₀) = 0 := by
+      have h : z + (ι v₀ + ι' (f v₀)) = z + 0 := by rw [← add_assoc, add_zero]; exact hv₀
+      exact add_left_cancel h
+    have hv : v₀ = 0 := by
+      have := hnorm v₀ (f v₀)
+      rw [hsum, norm_zero] at this
+      exact norm_le_zero_iff.1 this
+    subst hv
+    have h1 : ι' (f 0) = 0 := by simpa using hsum
+    rw [← norm_eq_zero, ← LinearIsometry.norm_map ι' (f 0), h1, norm_zero]
+  -- (8.5–8.8) `f` is `C¹` on `B_{δ₀ρ/16}(0)`
+  have hC1 : ContDiffOn ℝ 1 f (ball (0 : Euclid n) (δ₀ * ρ / 8 / 2)) :=
+    h_gc n k hn U W R H κ ι ι' f z (δ₀ * ρ / 8) (δ₀ * ρ / 2) (C * E₀ / (δ₀ * ρ / 2)) hW hWU
+      hH hHκ hMC hιι' (fun v w => (hfL v w).trans (by gcongr)) hf0 (by positivity)
+      (by positivity) ((closedBall_subset_closedBall (by linarith)).trans hzρ) hgraph
+      (fun ξ hξ => by
+        obtain ⟨S, hSn, hS1, -⟩ :=
+          hdecay ξ ⟨hξ.1, closedBall_subset_closedBall (by linarith) hξ.2⟩
+        exact ⟨S, hSn, fun s hs hsσ => (hS1 s hs hsσ).trans (le_of_eq (by congr 1; ring))⟩)
+  -- (8.9, 9) conclusion with `u := f`
+  have hlip : LipschitzWith (Real.toNNReal L₀) f := LipschitzWith.of_dist_le_mul fun v w => by
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ hL₀0.le]; exact hfL v w
+  have hball8 : ball z (δ₀ / 16 * ρ) ⊆ closedBall z (δ₀ * ρ / 8) :=
+    ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))
+  refine ⟨ι, ι', f, hιι', hf0, ?_, fun v _ => ?_, ?_⟩
+  · rw [show δ₀ / 16 * ρ = δ₀ * ρ / 8 / 2 by ring]; exact hC1
+  · exact (norm_fderiv_le_of_lipschitz ℝ hlip).trans
+      (by rw [Real.coe_toNNReal _ hL₀0.le]; exact hL₀ε)
+  · ext x
+    constructor
+    · rintro ⟨hx, hxb⟩
+      have hx' : x ∈ range (fun v => z + ι v + ι' (f v)) ∩ closedBall z (δ₀ * ρ / 8) := by
+        rw [← hgraph]; exact ⟨hx, hball8 hxb⟩
+      obtain ⟨⟨v, rfl⟩, -⟩ := hx'
+      refine ⟨⟨v, ?_, rfl⟩, hxb⟩
+      rw [mem_ball, dist_eq_norm] at hxb
+      rw [mem_ball_zero_iff]
+      calc ‖v‖ ≤ ‖ι v + ι' (f v)‖ := hnorm v (f v)
+        _ = ‖z + ι v + ι' (f v) - z‖ := by congr 1; abel
+        _ < _ := hxb
+    · rintro ⟨⟨v, -, rfl⟩, hxb⟩
+      have hx' : z + ι v + ι' (f v) ∈ R.measure.support ∩ closedBall z (δ₀ * ρ / 8) := by
+        rw [hgraph]; exact ⟨⟨v, rfl⟩, hball8 hxb⟩
+      exact ⟨hx'.1, hxb⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
