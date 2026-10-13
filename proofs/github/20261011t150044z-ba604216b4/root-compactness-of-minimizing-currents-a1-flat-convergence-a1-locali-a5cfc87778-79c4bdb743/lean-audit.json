@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "540f1b9cf58a793eae8479fcf3d29c5db7127db6097d9c447b0f0d213e99cb6f",
+  "git_delta": {
+    "base_commit": "9ee737d696891269425956a25396d590f03847d5",
+    "candidate_commit": "7868c22b38dbdc703e1a2389cdb4934a853752b2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fcl_imrep_restrict_formula",
+    "diff_sha256": "40cf1265fcd80628b310a85286b7ea41c18d29030c6559f71549d212106deabf",
+    "source_sha256": "160c13ccfe378520593b9d6914fe83d6bcbfc0308fbb42f1a416bfee53ca6198",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fcl_imrep_restrict_formula",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R R' : IMRep U n) (A : GeometricCurrentOn U n) (E : Set (Euclid P)), MeasurableSet E → R'.Represents A → R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient → R'.measure = R.measure.restrict E ∧ ∀ ω : TestFormOn U n, A ω = ∫ x in E, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
