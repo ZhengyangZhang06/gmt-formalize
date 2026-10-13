@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1.total_weight-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1",
+  "depth": 6,
+  "title": "Euclidean growth of a sum of weighted parallel n-planes bounds its total weight by 1",
+  "statement": "Let P, n ∈ ℕ, let V ⊆ ℝ^P be a linear subspace with dim V = n (Module.finrank ℝ V = n), let Z ⊆ V^⊥ be any set and a : ℝ^P → [0, ∞] any function, and let ν = Σ_{w∈Z} a(w)·Hⁿ⌞{y : y − w ∈ V} (Measure.sum indexed by the subtype Z; Hⁿ = μHE[n]). Assume ν(B_R(0)) ≤ ω_n·ofReal(Rⁿ) for every R > 0 (B_R(0) the open ball, ω_n = unitBallVolume n). Then Σ'_{w∈Z} a(w) ≤ 1, the unconditional sum (tsum) over the subtype Z being taken in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)) (a : Euclid P → ℝ≥0∞), Module.finrank ℝ V = n → Z ⊆ (Vᗮ : Set (Euclid P)) → ν = Measure.sum (fun w : Z => a w • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) → ∑' w : Z, a w ≤ 1",
+  "lean_name": "cbr_ci_cp_fp_tsum_weight_le_one",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1.plane_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1.plane_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8aa9220aac-a1"
+}

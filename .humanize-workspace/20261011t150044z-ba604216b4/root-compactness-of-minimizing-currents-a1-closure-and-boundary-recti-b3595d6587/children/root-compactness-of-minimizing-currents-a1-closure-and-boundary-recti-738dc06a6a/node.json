@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1.zero_offset-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1",
+  "depth": 6,
+  "title": "Positive mass in every ball about 0 forces one of finitely many parallel planes through 0",
+  "statement": "Let P, n, N ∈ ℕ, let V ⊆ ℝ^P be a linear subspace (of any dimension), let w_1, …, w_N ∈ V^⊥ (w : Fin N → ℝ^P), let α_1, …, α_N ∈ ℝ be arbitrary, and let ν = Σ_{i} ofReal(α_i)·Hⁿ⌞{y : y − w_i ∈ V} (a finite sum of measures over Fin N; Hⁿ = μHE[n]; ofReal = ENNReal.ofReal). If ν(B_r(0)) > 0 for every r > 0 (open balls), then w_i = 0 for some i.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, w i ∈ Vᗮ) → ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ V} → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → ∃ i, w i = 0",
+  "lean_name": "cbr_ci_cp_fp_exists_offset_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-738dc06a6a-a1"
+}
