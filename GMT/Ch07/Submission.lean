@@ -951,6 +951,40 @@ theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Eu
     _ ≤ δ := by
         rw [hδ'_def, div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
         nlinarith
+/-- **Scale invariance of the two-sided volume density bounds** (Simon Ch. 3, 4.3 (10)–(11)): if
+`L(F ∩ B_ρ(y)) ≥ c₂ρ^{m+1}` and `L(B_ρ(y) \ F) ≥ c₂ρ^{m+1}` for `0 < ρ < ρ₂`, then the rescaled set
+`F_{y,r} = {w : y + rw ∈ F}` satisfies the same bounds on `B_s(0)` whenever `rs < ρ₂`.  The map
+`w ↦ y + rw` scales Lebesgue measure by `r^{m+1}` and pulls `B_{rs}(y)` back to `B_s(0)`. -/
+theorem Submission.codim1_rdo_dg_bh_rescaled_volume_lower : ∀ (m : ℕ) (F : Set (Euclid (m + 1))) (y : Euclid (m + 1)) (c₂ ρ₂ : ℝ), MeasurableSet F → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₂ → ENNReal.ofReal (c₂ * ρ ^ (m + 1)) ≤ volume (F ∩ ball y ρ) ∧ ENNReal.ofReal (c₂ * ρ ^ (m + 1)) ≤ volume (ball y ρ \ F)) → ∀ s r : ℝ, 0 < s → 0 < r → r * s < ρ₂ → ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume ((fun w => y + r • w) ⁻¹' F ∩ ball (0 : Euclid (m + 1)) s) ∧ ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume (ball (0 : Euclid (m + 1)) s \ (fun w => y + r • w) ⁻¹' F) := by
+  intro m F y c₂ ρ₂ _ hvol s r hs hr hrs
+  -- `L((y + r ·)⁻¹' S) = r^{-(m+1)} L(S)`: Haar scaling, then translation invariance
+  have hscale : ∀ S : Set (Euclid (m + 1)), volume ((fun w => y + r • w) ⁻¹' S) =
+      ENNReal.ofReal (|r ^ (m + 1)|⁻¹) * volume S := by
+    intro S
+    have : (fun w => y + r • w) ⁻¹' S = (r • ·) ⁻¹' ((fun u => y + u) ⁻¹' S) := rfl
+    rw [this, Measure.addHaar_preimage_smul volume hr.ne', finrank_euclideanSpace_fin,
+      measure_preimage_add, abs_inv]
+  -- `|(y + rw) − y| = r|w|`, so `(y + r ·)⁻¹' B_{rs}(y) = B_s(0)`
+  have hball : (fun w => y + r • w) ⁻¹' ball y (r * s) = ball (0 : Euclid (m + 1)) s := by
+    ext w
+    simp only [Set.mem_preimage, mem_ball, dist_eq_norm, add_sub_cancel_left, sub_zero, norm_smul,
+      Real.norm_eq_abs, abs_of_pos hr]
+    exact mul_lt_mul_iff_right₀ hr
+  -- the hypothesis at `ρ = rs`, and both sets as preimages of the unscaled ones
+  obtain ⟨h1, h2⟩ := hvol (r * s) (mul_pos hr hs) hrs
+  have e1 : (fun w => y + r • w) ⁻¹' F ∩ ball (0 : Euclid (m + 1)) s =
+      (fun w => y + r • w) ⁻¹' (F ∩ ball y (r * s)) := by rw [Set.preimage_inter, hball]
+  have e2 : ball (0 : Euclid (m + 1)) s \ (fun w => y + r • w) ⁻¹' F =
+      (fun w => y + r • w) ⁻¹' (ball y (r * s) \ F) := by rw [Set.preimage_sdiff, hball]
+  -- `r^{-(m+1)} · c₂(rs)^{m+1} = c₂s^{m+1}` in `[0, ∞]` (both sides `0` if `c₂ ≤ 0`)
+  have hfac : ENNReal.ofReal (c₂ * s ^ (m + 1)) =
+      ENNReal.ofReal (|r ^ (m + 1)|⁻¹) * ENNReal.ofReal (c₂ * (r * s) ^ (m + 1)) := by
+    rw [← ENNReal.ofReal_mul (by positivity)]
+    congr 1
+    rw [abs_of_pos (pow_pos hr _), mul_pow]
+    field_simp
+  rw [e1, e2, hscale, hscale, hfac]
+  exact ⟨by gcongr, by gcongr⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
