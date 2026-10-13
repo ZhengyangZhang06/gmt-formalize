@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5fa708ccd6b0ca27b1e96d7c5ad7ada627cf561bb1d54bdcbdaff6d180b85dc4",
+  "git_delta": {
+    "base_commit": "9f7f41cda774bfc0046c3a5f40779b3d3154b7f0",
+    "candidate_commit": "4909658680414b8e07ddaa6c645ba59e9739d9f7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgid_orthogonal_cylinder_isOpen",
+    "diff_sha256": "54d49a406965ccf0e06c052d833f64cd29cf308205f8896f4879d9c8b9ff9676",
+    "source_sha256": "1d4e8ee96ee9fb5f4979596f9bad67ebf92bc86c9283dbf0afa1cdc603b650a7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgid_orthogonal_cylinder_isOpen",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (z : Euclid (n + k)) (s h : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (n + k), ∃ v : Euclid n, ∃ w : Euclid k, x = ι v + ι' w) → IsOpen {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
