@@ -1297,6 +1297,89 @@ theorem Submission.regcomp_approx_tangent_locality : ∀ (P n : ℕ) (U A B : Se
   exact Submission.regcomp_atl_tangent_iff_of_density_zero P n A B x (ε / 2) hA hB hAB
     (half_pos hε) (hfin _ (isCompact_closedBall x (ε / 2)) hsub) (hx hxU fun h => h.2 hxA)
 
+/-- **Simon Ch. 6, Remark 3.2(1)** (chapter-06.txt lines 755–756, stated there without proof): if
+`U` is open and `S, T ∈ 𝒟ₙ(U)` are integer multiplicity, so is `S − T`.  Let `S = τ(M₁, θ₁, ξ₁)`
+and `T = τ(M₂, θ₂, ξ₂)`.  As `θᵢ ≥ 1` on `Mᵢ`, `Hⁿ(Mᵢ ∩ K) ≤ ∫_{Mᵢ ∩ K} θᵢ dHⁿ < ∞` for compact
+`K ⊆ U`.  Locality of approximate tangent spaces (Simon Ch. 3, Remark 1.5(2)) gives
+`TₓM₁ = Tₓ(M₁ ∩ M₂) = TₓM₂` for `Hⁿ`-a.e. `x ∈ M₁ ∩ M₂`, so `ξ₂ = ±ξ₁` there.  On the overlap
+`1_{M₁} θ₁ ξ₁ − 1_{M₂} θ₂ ξ₂ = (θ₁ − σ θ₂) ξ₁` with `σ = ±1`, which yields a carrier
+`C ⊆ M₁ ∪ M₂`, a multiplicity `1 ≤ θ ≤ θ₁ + θ₂` and a signed orientation `ξ` with
+`1_C θ ξ = 1_{M₁} θ₁ ξ₁ − 1_{M₂} θ₂ ξ₂` `Hⁿ`-a.e.  Locality again (`C ∩ M₁ ⊆ M₁`, `C \ M₁ ⊆ M₂`,
+both `⊆ C`) shows that `ξ` orients `TₓC`, so `(C, θ, ξ)` is a triple in `U`, and integrating the
+pointwise identity against `ω ∈ 𝒟ⁿ(U)` shows that it represents `S − T`. -/
+theorem Submission.regcomp_integer_multiplicity_sub : ∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsIntegerMultiplicity (S - T) := by
+  rintro P n U S T hU ⟨R₁, hR₁⟩ ⟨R₂, hR₂⟩
+  have hM₁ := R₁.measurableSet_carrier
+  have hM₂ := R₂.measurableSet_carrier
+  -- Step 1: a carrier has locally finite `Hⁿ`-measure in `U`, its multiplicity being `≥ 1`
+  have hfin : ∀ R : IMRep U n, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      μHE[n] (R.carrier ∩ K) ≠ ∞ := by
+    intro R K hK hKU
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
+    calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+        setLIntegral_mono' (R.measurableSet_carrier.inter hK.measurableSet)
+          fun x hx => Nat.one_le_cast.2 (R.mult_pos x hx.1)
+  -- Step 2: `M₁` and `M₂` have the approximate tangent spaces of `M₁ ∩ M₂` a.e. on `M₁ ∩ M₂`
+  have h₁ : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∀ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R₁.carrier x Q →
+        HasApproximateTangentSpaceAt n (R₁.carrier ∩ R₂.carrier) x Q := by
+    filter_upwards [Submission.regcomp_approx_tangent_locality P n U (R₁.carrier ∩ R₂.carrier)
+      R₁.carrier hU (hM₁.inter hM₂) hM₁ inter_subset_left R₁.carrier_subset (hfin R₁)]
+      with x hx Q hQ
+    exact (hx Q).1 hQ
+  have h₂ : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∀ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R₂.carrier x Q →
+        HasApproximateTangentSpaceAt n (R₁.carrier ∩ R₂.carrier) x Q := by
+    filter_upwards [Submission.regcomp_approx_tangent_locality P n U (R₁.carrier ∩ R₂.carrier)
+      R₂.carrier hU (hM₁.inter hM₂) hM₂ inter_subset_right R₂.carrier_subset (hfin R₂)]
+      with x hx Q hQ
+    exact (hx Q).1 hQ
+  -- Step 3: hence `ξ₂ = ±ξ₁` a.e. on `M₁ ∩ M₂`
+  have hsign := Submission.regcomp_ims_overlap_orient_eq_or_neg P n U R₁ R₂ h₁ h₂
+  -- Step 4: the data `(C, θ, ξ)` of the difference, `1_C θ ξ = 1_{M₁} θ₁ ξ₁ − 1_{M₂} θ₂ ξ₂` a.e.
+  obtain ⟨C, θ, ξ, hC, hCsub, hθ, hθpos, hθle, hξ, hξ₁, hξ₂, hid⟩ :=
+    Submission.regcomp_ims_difference_data P n U R₁ R₂ hsign
+  -- Step 5: `C ⊆ M₁ ∪ M₂ ⊆ U` has locally finite `Hⁿ`-measure in `U`, and its approximate tangent
+  -- spaces are those of `M₁` a.e. on `C ∩ M₁` and those of `M₂` a.e. on `C \ M₁ ⊆ M₂`
+  have hCU : C ⊆ U := hCsub.trans (union_subset R₁.carrier_subset R₂.carrier_subset)
+  have hCfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (C ∩ K) ≠ ∞ := by
+    intro K hK hKU
+    refine ne_top_of_le_ne_top (ENNReal.add_ne_top.2 ⟨hfin R₁ K hK hKU, hfin R₂ K hK hKU⟩) ?_
+    calc μHE[n] (C ∩ K) ≤ μHE[n] (R₁.carrier ∩ K ∪ R₂.carrier ∩ K) := by
+          rw [← union_inter_distrib_right]
+          exact measure_mono (inter_subset_inter_left K hCsub)
+      _ ≤ μHE[n] (R₁.carrier ∩ K) + μHE[n] (R₂.carrier ∩ K) := measure_union_le _ _
+  have hl₁ : ∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R₁.carrier x Q → HasApproximateTangentSpaceAt n C x Q := by
+    filter_upwards [Submission.regcomp_approx_tangent_locality P n U (C ∩ R₁.carrier) R₁.carrier hU
+        (hC.inter hM₁) hM₁ inter_subset_right R₁.carrier_subset (hfin R₁),
+      Submission.regcomp_approx_tangent_locality P n U (C ∩ R₁.carrier) C hU (hC.inter hM₁) hC
+        inter_subset_left hCU hCfin] with x hx hxC Q hQ
+    exact (hxC Q).2 ((hx Q).1 hQ)
+  have hl₂ : ∀ᵐ x ∂(μHE[n].restrict (C \ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R₂.carrier x Q → HasApproximateTangentSpaceAt n C x Q := by
+    have hsub : C \ R₁.carrier ⊆ R₂.carrier := fun x hx => (hCsub hx.1).resolve_left hx.2
+    filter_upwards [Submission.regcomp_approx_tangent_locality P n U (C \ R₁.carrier) R₂.carrier hU
+        (hC.diff hM₁) hM₂ hsub R₂.carrier_subset (hfin R₂),
+      Submission.regcomp_approx_tangent_locality P n U (C \ R₁.carrier) C hU (hC.diff hM₁) hC
+        sdiff_subset hCU hCfin] with x hx hxC Q hQ
+    exact (hxC Q).2 ((hx Q).1 hQ)
+  -- so `(C, θ, ξ)` is a triple in `U`
+  obtain ⟨R, hRC, hRθ, hRξ⟩ := Submission.regcomp_ims_imrep_of_signed_pieces P n U C R₁ R₂ θ ξ
+    hC hCsub hθ hθpos hθle hξ hξ₁ hξ₂ hl₁ hl₂
+  -- Step 6: integrating the a.e. identity of Step 4, `τ(C, θ, ξ)(ω) = S(ω) − T(ω)`
+  have hact := Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R 1 (-1) (by
+    filter_upwards [hid] with x hx
+    rw [hRC, hRθ, hRξ, hx]
+    module)
+  refine ⟨R, fun ω => ?_⟩
+  calc (S - T) ω = S ω - T ω := rfl
+    _ = R.action (ω : DifferentialForm (Euclid P) n) := by
+      rw [hR₁ ω, hR₂ ω, hact ω]
+      push_cast
+      ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
