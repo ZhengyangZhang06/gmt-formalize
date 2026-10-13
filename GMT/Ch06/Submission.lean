@@ -9614,6 +9614,41 @@ theorem Submission.slicing_im_tau_current : ∀ (P k : ℕ) (U M : Set (Eucl P))
       rw [map_zero] at h1
       simpa using (tendsto_const_nhds (x := θ x)).mul h1
 
+/-- Simon Ch. 6, 4.4–4.5(2) (pp. 155–157): if `T` is integer multiplicity, with `M_W(T)` and
+`M_W(∂T)` finite for every `W ⊂⊂ U`, and `f` is `L`-Lipschitz on `U`, then for `L¹`-a.e. `t` every
+slice `S` with `IsSlice T f t S` is integer multiplicity.  Write `T = τ(M, θ, ξ)` and let `g` be
+a McShane extension of `f`.  `IsSlice` only sees `f` on `U`, so slices of `T` by `f` and by `g`
+coincide.  Let `G` be a tangential gradient of `g` on `M` and `E` a countable family of test forms
+determining currents.  For a.e. `t`, the triple `(M_t, θ, ξ⌞(G/|G|))` with
+`M_t = {x ∈ M : g(x) = t, G(x) ≠ 0}` is rectifiable, and every slice agrees on each `e ∈ E` with
+the current `τ(M_t, θ, ξ⌞(G/|G|))`, hence equals it; `θ` is integer-valued on `M_t ⊆ M`. -/
+theorem Submission.slicing_integer_multiplicity_ae : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → IsIntegerMultiplicity T → ∀ᵐ t ∂(volume : Measure ℝ), ∀ S : GeometricCurrentOn U m, IsSlice T f t S → IsIntegerMultiplicity S := by
+  intro P m U hU T _hmass f L hf hT
+  obtain ⟨M, θ, ξ, hMθξ, hθ, hTM⟩ := hT
+  -- Step 1: a McShane extension `g` of `f`; the sets `{f < t}` and `{g < t}` agree inside `U`.
+  obtain ⟨g, hg, hfg⟩ := hf.extend_real
+  have hslice : ∀ t (S : GeometricCurrentOn U m), IsSlice T f t S → IsSlice T g t S := by
+    intro t S hS
+    have hA : {x | x ∈ U ∧ f x < t} = {x | x ∈ U ∧ g x < t} :=
+      Set.ext fun x => and_congr_right fun hx => by rw [hfg hx]
+    unfold IsSlice at hS ⊢
+    rwa [← hA]
+  -- Step 2: a tangential gradient `G` of `g` on `M`, and a countable determining family `E`.
+  obtain ⟨G, hGm, hGL, hG⟩ := Submission.slicing_im_tangential_gradient P m U M θ ξ g L hU hMθξ hg
+  obtain ⟨E, hEc, hE⟩ := Submission.slicing_im_testform_determining P m U hU
+  -- Step 3: for a.e. `t` the slice triple is rectifiable and every slice agrees with its current
+  -- on each of the countably many `e ∈ E`.
+  filter_upwards [Submission.slicing_im_slice_triple P m U M θ ξ g L G hU hMθξ hg hGm hGL hG,
+    (ae_ball_iff hEc).2 fun e (_ : e ∈ E) =>
+      Submission.slicing_im_slice_identity P m U M θ ξ T g L G hU hMθξ hTM hg hGm hGL hG e]
+    with t ht hSE
+  intro S hS
+  -- Step 4: `S` equals the current `τ(M_t, θ, ξ⌞(G/|G|))`, whose multiplicity is `θ`.
+  obtain ⟨R, hR⟩ := Submission.slicing_im_tau_current P m U _ θ _ ht
+  have hSR : S = R := hE S R fun e he => (hSE e he S (hslice t S hS)).trans (hR e).symm
+  refine ⟨_, θ, _, ht, fun x hx => hθ x hx.1, fun ω => ?_⟩
+  rw [hSR, hR]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
