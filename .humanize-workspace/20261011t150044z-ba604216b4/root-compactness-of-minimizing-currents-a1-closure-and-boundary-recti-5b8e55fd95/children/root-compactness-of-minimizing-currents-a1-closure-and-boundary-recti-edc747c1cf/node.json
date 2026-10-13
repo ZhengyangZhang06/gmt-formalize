@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.local_filling-a1.small_scale-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.local_filling-a1",
+  "depth": 5,
+  "title": "Positive unit-ball volume and a small scale below the lower-density threshold",
+  "statement": "For every n ∈ ℕ the following hold, where ω_n := unitBallVolume n is the Lebesgue (volume) measure, a value in [0, ∞], of the open unit ball ball(0, 1) of Euclid n = ℝ^n, and w := ω_n.toReal.\n(a) w > 0.\n(b) Let P ∈ ℕ, let μ be any measure on ℝ^P = Euclid P (no finiteness assumption), let x₁ ∈ ℝ^P, and let η₀, δ be real numbers with δ > 0. Suppose liminf_{r→0, r>0} μ(B_r(x₁))/(ω_n r^n) < η₀. Precisely: the liminf along 𝓝[>] 0 of the [0, ∞]-valued function r ↦ μ(ball x₁ r)/(unitBallVolume n · ENNReal.ofReal(r^n)) is < ENNReal.ofReal η₀, with ENNReal division. Then there is a real s with 0 < s < δ and μ(B_s(x₁)) < ENNReal.ofReal(η₀ · w · s^n). Here B_s(x₁) = ball x₁ s is the open ball and s^n is a natural power.",
+  "lean_statement": "∀ n : ℕ, 0 < (unitBallVolume n).toReal ∧ ∀ (P : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (η₀ δ : ℝ), 0 < δ → liminf (fun r : ℝ => μ (ball x₁ r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) < ENNReal.ofReal η₀ → ∃ s : ℝ, 0 < s ∧ s < δ ∧ μ (ball x₁ s) < ENNReal.ofReal (η₀ * (unitBallVolume n).toReal * s ^ n)",
+  "lean_name": "cbrldlf_exists_small_scale_of_lower_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-edc747c1cf-a1"
+}
