@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8c6792d584a43ac02e78453f4380eacaa68854c8b50cb31dbb4e4cfc93fb307c",
+  "git_delta": {
+    "base_commit": "b91e0c1538ec9d10d4275f36593251683d51732a",
+    "candidate_commit": "6a02093ce754575571b6e18aa5394bdf7470394d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fcl_massOn_le_add",
+    "diff_sha256": "61584f7fc53a26a7006e339563b566358ac82fc125563008377ba2bc90629e1e",
+    "source_sha256": "52d1a13780b36ca2cef1803c7870664ddc7f12fb88bdde4eee24af704c7c6416",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fcl_massOn_le_add",
+      "statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (X Y Z : GeometricCurrentOn U d) (V : Set (Euclid P)), (∀ ω : TestFormOn U d, X ω = Y ω + Z ω) → X.massOn V ≤ Y.massOn V + Z.massOn V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
