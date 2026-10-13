@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1.stationarity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Registration note (context, not part of the numbered proof). This child is a new obligation with a fresh Lean name. Its frozen type is byte-identical to that of DAG node root.minimizing_implies_stationary-a1 (Submission.minimizing_implies_stationary, status speculative-ready). That node is not comparator-accepted and is owned by another parent, so the runtime forbids reusing its name here, and ancestor dependencies are not inherited by the selected node. It is registered because the sibling tangent_cones invokes Lemma 7.1.2 as its prerequisite, exactly as root.density_and_tangent_cones-a1 depends on root.minimizing_implies_stationary-a1. The numbered proof below is that node's parent-supplied natural proof, accepted in the decomposition audit of root, reproduced unchanged. Like the original node it has no DAG prerequisites; its citations are to Simon's book. All children of root.minimizing_implies_stationary-a1 except imrep_c1_diffeo_pushforward_im (diffeo_pushforward-a1) and stationaryAlong_of_minimizing_in_submanifold (stationary_of_minimizing-a1), both speculative-ready, are comparator-accepted and can be reused at their identical frozen types in this node's own split; those two should be reused once comparator-accepted rather than re-proved as depth-6 leaves. Once minimizing_implies_stationary itself is comparator-accepted it can likewise be reused at its identical type.
+
+Source: Simon 7.1.2 and its proof (chapter-07.txt lines 29–60), with the README erratum 1: the hypotheses spt T ⊆ N and (N̄∖N) ∩ U = ∅ are used, and 1.2(‡) is used in the form "φ = id outside a compact K ⊂ W, φ(N ∩ U) ⊆ N ∩ U" (as printed, K ⊂ W ∩ N makes (‡) vacuous when ℓ < k). Throughout, μ_T = R.measure = θH^n⌞M for every representation (Ch. 6, 3.2(3)), and M_W(T) = μ_T(W) for open W.
+1. Case n = 0. Let R represent T and suppose x₀ ∈ M (H^0 is counting measure, so the a.e. conditions on R hold at every point of M; M is locally finite since ∫_{M∩K}θ dH^0 < ∞). Testing T with a 0-form supported near x₀ shows x₀ ∈ spt T ⊆ N. Let S be represented by (M∖{x₀}, θ, ξ); S is integer multiplicity, SameBoundary holds trivially (n = 0), spt(S−T) = {x₀} ⊆ N ∩ U ∩ W for a small open ball W ⊂⊂ U, and M_W(S) = M_W(T) − θ(x₀) < M_W(T), contradicting minimality. So M = ∅, the first variation vanishes identically, and H := 0 works. Assume n ≥ 1 from now on.
+2. Support facts. μ_T(U ∖ spt T) = 0, hence H^n(M ∖ N) = 0. Since N is a C¹ submanifold, for H^n-a.e. x ∈ M the approximate tangent space T_xM exists, is the plane oriented by ξ(x) (definition of IMRep) and is contained in T_xN (approximate tangent spaces of subsets of a C¹ submanifold, Ch. 3 §1 and Ch. 2 §4); also div_M X(x) = trace(p_{T_xM}∘DX(x)) = tangentialDivergence (Ch. 4, 2.3).
+3. Deformations (book: "φ = φ_t of 2.1 of Ch. 4 with U ∩ N in place of U"; Ch. 4, 2.5–2.6). Let X ∈ C¹_c(U; ℝ^{n+k}) be tangent to N on N ∩ U, K := spt X. X is globally Lipschitz, so it has a C¹ flow φ_t (t ∈ ℝ), each φ_t a C¹ diffeomorphism of U onto U with φ_t = id outside K. N ∩ U is relatively closed in U (because (N̄∖N) ∩ U = ∅) and X|_{N∩U} is a C¹ tangent field on the C² manifold N; integral curves of this tangent field are integral curves of X, so by uniqueness the orbit of a point of N ∩ U stays in N ∩ U (it cannot leave the relatively closed set N ∩ U while staying in K ∪ {x} ⊂ U). Hence φ_t(N ∩ U) ⊆ N ∩ U.
+4. Competitors (book (2),(3)). Let S_t := φ_{t#}T, defined from the representation (Ch. 6, 2.24(2), 3.3–3.9): S_t = τ(φ_t(M), θ∘φ_t^{−1}, induced orientation), an integer multiplicity current in U. ∂S_t = 0: choose smooth diffeomorphisms φ^ε of U, equal to the identity outside a fixed compact set, with φ^ε → φ_t in C¹; then φ^ε_#T(dω) = T((φ^ε)^#dω) = T(d(φ^ε)^#ω) = 0 and φ^ε_#T(dω) → S_t(dω) by dominated convergence in the integral formula of 2.24(2). Since φ_t = id off K, spt T ⊆ N and φ_t(N ∩ U) ⊆ N ∩ U, spt(S_t − T) ⊆ K ∩ N is compact. For any open W with K ⊂ W ⊂⊂ U, minimality gives M_W(T) ≤ M_W(S_t) for all t.
+5. First variation (book (1)). By the area formula (Ch. 6, 3.2(3), 3.3–3.5; Ch. 4, 1.7–1.8), M_W(S_t) = ∫_{M∩W} J^M φ_t θ dH^n. Since φ_t(x) = x + tX(x) + o(t) in C¹ uniformly on K, d/dt J^Mφ_t(x)|_{t=0} = div_M X(x) with uniform bounds on K, and θ is integrable on K; so t ↦ M_W(S_t) is differentiable at 0 with derivative ∫_M θ div_M X dH^n (Ch. 4, 2.2). The minimum at t = 0 forces this derivative to vanish: R.firstVariation X = 0. This is IsStationaryAlong N.
+6. Mean curvature (Ch. 4, 2.7 and 3.14). Let X ∈ C¹_c(U; ℝ^{n+k}) be arbitrary. Choose an open V ⊂ U containing N ∩ spt X on which the nearest point projection π onto N is C¹ (N is C²), let P(z) be the orthogonal projection onto T_zN (C¹ in z ∈ N), χ ∈ C¹_c(V) with χ = 1 near N ∩ spt X, and X^T := χ·P(π(·))X. Then X^T ∈ C¹_c(U) is tangent to N on N ∩ U, so δV(X^T) = 0 by step 5. On N, X − X^T = X^⊥ is normal to N, and at H^n-a.e. x ∈ M (where T_xM ⊆ T_xN by step 2) div_M X^⊥ = −X·H_N(x), H_N(x) := Σ_{i=1}^n B_x(τ_i, τ_i) with τ_i an orthonormal basis of T_xM and B the second fundamental form of N (Ch. 2, 5.9; Ch. 4, 2.7). Hence δV(X) = −∫ X·H dμ_V with H := H_N on M ∩ N and 0 elsewhere (Borel). On a compact K ⊂ U, K ∩ N is compact (N ∩ U relatively closed), B is continuous, so |H| ≤ √n·sup_{K∩N}|B| μ_V-a.e. on K. This is HasLocallyBoundedMeanCurvature. (If ℓ = k, B = 0 and H = 0.)
+
+## Key steps
+
+1. n = 0 gives T = 0; otherwise H^n(M∖N) = 0 and flows of fields tangent to N preserve N ∩ U.
+2. φ_{t#}T are integer multiplicity competitors, so the first variation of their mass vanishes: stationarity in N ∩ U.
+3. Splitting X into tangential and normal parts gives δV(X) = −∫X·H_N dμ_V with H_N locally bounded.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fde813c052/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json}`
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git show 00832a8f:GMT/Ch07/Submission.lean | diff - GMT/Ch07/Contract.lean`
+- `python3 dag.json scans: status/depends_on/children/candidate_commit of density_and_tangent_cones, minimizing_implies_stationary, dimred_minimizing_monotonicity and their children; lean_statement regex 'IsConeCurrent|ConvergesWeakly|MassMeasuresConverge|1 ≤ θ|IsTangentConeAt'; lean_name lookups for the 7 children; prefix 'idtp_cttp_ctc'`
+- `python3 subtree dump (depth 3) of root.density_and_tangent_cones-a1.blowup_compactness-a1, root.minimizing_implies_stationary-a1, root.compactness_of_minimizing_currents-a1`
+- `grep -n '_existing_lean_name_problem|_dependency_problem|_accepted_checkpoint|resolved_dependencies|def _solve_children|def _decompose|def _wait_for_accepted_dependencies' /runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py; sed -n 1840,1990p; 6640,6728p; grep -n 'def ensure' store.py; DECOMPOSE/DECOMPOSITION_AUDIT/RLCR_LEAN_TASK in prompts.py`
+- `cat /runtime/flows/gmt-claude-9a0895c8c5e1/scripts/gmt-campaign-ops/remove_dependency.py; cat operator-dependency-edits/*/receipt.json; ls decomposition-reopenings`
+- `read nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fcbfb5d62/{decomposition-v2.json,decomposition-audit-v1.json,decomposition-audit-v2.json} (flat_off_null_set precedent)`
+- `read parent-child-handoff.json of root.density_and_tangent_cones-a1, root.minimizing_implies_stationary-a1, root.dimension_reduction_results-a1.monotonicity-a1 (+ its decomposition-v2.json keys), im_mass_measure-a1, ae_density_lower_bound-a1, support_density_lower_bound-a1, unweighted_density_one-a1, closed_to_open_ball_density-a1`
+- `git show {02c6122c94d0,f498a8efc56f,01ae2c59e8d7,b59dbf93abba,61b1b7b2cd0e}:GMT/Ch07/Submission.lean; diff each against Contract.lean (single hunk after line 453; no duplicate declaration names)`
+- `grep -rl 'idtp_cttp_ctc_density_tangent_cones|idtp_cttp_ctc_minimizing_stationary' nodes dag.json GMT; grep -rl --include=*.lean 'idtp_cttp_ctc_' .swarm-worktrees/*/gmt-ch07/GMT (1194 worktrees)`
+- `sed -n 300,312p book/chapter-07.txt; sed -n 26,34p book/chapter-07.txt; sed -n 348,366p book/chapter-04.txt`
+- `lake env lean /tmp/ctc_dec2/check2/{Assembly,Context}.lean and /tmp/ctc_dec2/check/{Stmts,TypeEq}.lean, one at a time (container cgroup limit 3.67 GB), with #print axioms`
+- `python3 read of nodes/root-dimension-reduction-results-a1-monotonicity-a1/decomposition-v2.json rationale item 3 (assembly of (iv)); independent reviewer subagent: /tmp/ctc_dec2/review/Indep.lean, validate.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fde813c052/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fde813c052/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fde813c052/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1-ae-density-lower-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1-support-density-l-69839965cf/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fcbfb5d62/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fcbfb5d62/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/operator-dependency-edits/20261013T091722Z-revert/receipt.json`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/prompts.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/scripts/gmt-campaign-ops/remove_dependency.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/ctc_dec2/check2/Assembly.lean`
+- `/tmp/ctc_dec2/check2/Assembly.out`
+- `/tmp/ctc_dec2/check2/Context.lean`
+- `/tmp/ctc_dec2/check2/Context.out`
+- `/tmp/ctc_dec2/check/Stmts.lean`
+- `/tmp/ctc_dec2/check/Stmts.out`
+- `/tmp/ctc_dec2/check/TypeEq.lean`
+- `/tmp/ctc_dec2/check/TypeEq.out`
+- `/tmp/ctc_dec2/review/Indep.lean`
+
+Pins match the manifest: workspace HEAD b4d606d, Mathlib 25730c7c, SimonGMT 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and to the Submission.lean of this node's proof base 00832a8f (the bare contract).
+
+Prerequisite gap (the attempt-1 audit finding):
+- This node has depends_on [] and its handoff has resolved_dependencies [].
+- density_and_tangent_cones is speculative-ready. Its children are all accepted except dtc_blowUp_compactness, whose subtree is still decomposing. It depends on minimizing_implies_stationary, also speculative-ready.
+- dimred_minimizing_monotonicity is rlcr-lean. All its children are accepted, and its proof invokes minimizing_implies_stationary without registering it.
+- runtime.py _existing_lean_name_problem rejects reuse of an unaccepted node under another parent.
+- remove_dependency.py forbids adding edges to handed-off children, and the edge added to monotonicity-a1 on 2026-10-13 was reverted.
+- The flat_off_null_set decomposition-audit-v2 accepted fresh-name registered obligations with byte-identical types and verbatim reviewed proofs.
+
+Reused declarations, all status accepted with byte-identical types in dag.json:
+- rsd_cmr_support_subset_of_vanish (02c6122c)
+- idtp_tpf_blowUp_limit_boundaryVanishes (f498a8ef)
+- dimred_im_mass_measure (01ae2c59)
+- dimred_mono_ae_ball_density_ge_one (b59dbf93, whose history includes rsd_tendsto_closedBall_density_of_approxTangent and rsd_tendsto_ball_density_of_closedBall)
+- dimred_mono_support_density_ge_one_of_usc (61b1b7b2)
+
+Each candidate inserts a single hunk after contract line 453, and no declaration name is duplicated across the hunks. The handoff titles, statements and types equal the dag.json records.
+
+New names: idtp_cttp_ctc_density_tangent_cones and idtp_cttp_ctc_minimizing_stationary occur nowhere in dag.json, nodes/, the workspace GMT/ or 1194 swarm worktrees.
+
+Book: Theorem 3.1 is chapter-07.txt lines 302–309, Lemma 1.2 is lines 29–34, and Ch. 4, 3.11–3.13 (Θ ≥ α on spt V from a.e. bounds and upper semicontinuity) is chapter-04.txt lines 348–364.
+
+Mathlib: AlternatingMap.map_linearDependent is in Mathlib/LinearAlgebra/Alternating/Basic.lean.
+
+Lean, run sequentially because the container's cgroup limit is 3.67 GB:
+- Assembly.lean (all seven children as axioms) proves the exact frozen parent type, exit 0. Its axioms are propext, Classical.choice and Quot.sound plus the six children it uses directly; stationarity enters only through tangent_cones.
+- Context.lean (the five accepted hunks verbatim plus the two new obligations as axioms) compiles, exit 0. Each reused declaration has only propext, Classical.choice and Quot.sound. The parent has those three plus Submission.idtp_cttp_ctc_density_tangent_cones, and no other stub.
+- Both of these are the final check2 versions, which compile without warnings.
+- Stmts.lean (all seven types and the parent type) compiles, exit 0.
+- TypeEq.lean (each accepted declaration closes its proposed type) compiles, exit 0.
+- An independent reviewer subagent re-ran an assembly built from the proposal's own type strings (Indep.lean, exit 0, same axiom list) and returned ACCEPT.
+
+Precedent for the step-5 replacement: MON's accepted decomposition-v2 (item 3) assembles (iv) from support_density_lower_bound, im_mass_measure, ae_density_lower_bound and (iii).
